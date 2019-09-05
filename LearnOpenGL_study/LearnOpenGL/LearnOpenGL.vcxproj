@@ -137,6 +137,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\GameEngine\Input.h" />
     <ClInclude Include="src\GameEngine\Renderer\Renderer.h" />
     <ClInclude Include="src\GameEngine\Renderer\Camera\Camera.h" />
     <ClInclude Include="src\GameEngine\Renderer\Camera\PerspectiveCamera.h" />
@@ -149,6 +150,7 @@
     <ClInclude Include="src\GameEngine\Renderer\Texture\Texture.h" />
     <ClInclude Include="src\GameEngine\Window.h" />
     <ClInclude Include="src\pch.h" />
+    <ClInclude Include="src\GameEngine\Timestep\Timestep.h" />
     <ClInclude Include="vendor\glm\glm\common.hpp" />
     <ClInclude Include="vendor\glm\glm\detail\_features.hpp" />
     <ClInclude Include="vendor\glm\glm\detail\_fixes.hpp" />
@@ -520,6 +522,7 @@
     <ClInclude Include="vendor\stb\stb_image.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\GameEngine\Input.cpp" />
     <ClCompile Include="src\GameEngine\Renderer\Renderer.cpp" />
     <ClCompile Include="src\GameEngine\Renderer\Camera\Camera.cpp" />
     <ClCompile Include="src\GameEngine\Renderer\Camera\PerspectiveCamera.cpp" />
@@ -534,6 +537,7 @@
     <ClCompile Include="src\pch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="src\GameEngine\Timestep\Timestep.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="src\GameEngine\Renderer\Texture\awesomeface.png" />

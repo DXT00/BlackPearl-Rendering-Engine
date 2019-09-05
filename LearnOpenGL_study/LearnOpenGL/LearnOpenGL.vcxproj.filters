@@ -1174,6 +1174,8 @@
     <ClInclude Include="src\GameEngine\Renderer\Camera\PerspectiveCamera.h" />
     <ClInclude Include="src\GameEngine\Renderer\Camera\OrthographicCamera.h" />
     <ClInclude Include="src\GameEngine\Renderer\Renderer.h" />
+    <ClInclude Include="src\GameEngine\Input.h" />
+    <ClInclude Include="src\GameEngine\Timestep\Timestep.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\GameEngine\Application.cpp">
@@ -1204,6 +1206,8 @@
     <ClCompile Include="src\GameEngine\Renderer\Camera\PerspectiveCamera.cpp" />
     <ClCompile Include="src\GameEngine\Renderer\Camera\OrthographicCamera.cpp" />
     <ClCompile Include="src\GameEngine\Renderer\Renderer.cpp" />
+    <ClCompile Include="src\GameEngine\Input.cpp" />
+    <ClCompile Include="src\GameEngine\Timestep\Timestep.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="src\GameEngine\Renderer\Texture\awesomeface.png">
