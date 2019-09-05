@@ -1,0 +1,19 @@
+﻿生成启动时间为 2019/9/2 19:39:23。
+     1>项目“F:\OpenGL\LearnOpenGL\LearnOpenGL\vendor\GLFW\GLFW.vcxproj”在节点 2 上(Build 个目标)。
+     1>InitializeBuildStatus:
+         正在创建“bin-int\Debug-windows-x86_64\GLFW\GLFW.tlog\unsuccessfulbuild”，因为已指定“AlwaysCreate”。
+       ClCompile:
+         所有输出均为最新。
+       Lib:
+         所有输出均为最新。
+         GLFW.vcxproj -> F:\OpenGL\LearnOpenGL\LearnOpenGL\vendor\GLFW\bin\Debug-windows-x86_64\GLFW\GLFW.lib
+       FinalizeBuildStatus:
+         正在删除文件“bin-int\Debug-windows-x86_64\GLFW\GLFW.tlog\unsuccessfulbuild”。
+         正在对“bin-int\Debug-windows-x86_64\GLFW\GLFW.tlog\GLFW.lastbuildstate”执行 Touch 任务。
+     1>已完成生成项目“F:\OpenGL\LearnOpenGL\LearnOpenGL\vendor\GLFW\GLFW.vcxproj”(Build 个目标)的操作。
+
+已成功生成。
+    0 个警告
+    0 个错误
+
+已用时间 00:00:00.89
