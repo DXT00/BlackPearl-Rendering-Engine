@@ -13,6 +13,7 @@
 #include "GameEngine/Renderer/Camera/PerspectiveCamera.h"
 #include "Core.h"
 #include "Input.h"
+#include "Renderer/Renderer.h"
 Application* Application::s_Instance = nullptr;
 Application::Application()
 {
@@ -20,39 +21,77 @@ Application::Application()
 	s_Instance = this;
 	m_Window.reset(new Window());
 	m_Camera.reset(Camera::Create(Camera::Perspective, { 45.0f, 800.0f, 600.0f, 0.1f, 100.0f }));
+	Renderer::Init();
 
 	float vertices[] = {
-		// positions       // colors        // texture coords
-		 0.5f, 0.5f,0.0f,  1.0f,0.0f,0.0f,  1.0f,1.0f,
-		 0.5f,-0.5f,0.0f,  0.0f,1.0f,0.0f,  1.0f,0.0f,
-		-0.5f,-0.5f,0.0f,  0.0f,0.0f,1.0f,  0.0f,0.0f,
-		-0.5f, 0.5f,0.0f,  1.0f,1.0f,0.0f,  0.0f,1.0f,
+		// positions      // texture coords
+	 -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+	 0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
+	 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+	 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+	-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+	-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+
+	-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+	 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+	 0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+	 0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+	-0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
+	-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+
+	-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+	-0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+	-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+	-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+	-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+	-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+	 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+	 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+	 0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+	 0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+	 0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+	 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+	-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+	 0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
+	 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+	 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+	-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+	-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+
+	-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+	 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+	 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+	 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+	-0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
+	-0.5f,  0.5f, -0.5f,  0.0f, 1.0f
 	};
 
-	unsigned int indices[] = {
+	/*unsigned int indices[] = {
 		0,1,3,
 		1,2,3
-	};
+	};*/
 	glGenVertexArrays(1, &m_VertexArrayID);
 	glGenBuffers(1, &m_VertexBufferID);
-	glGenBuffers(1, &m_IndexBufferID);
+	//glGenBuffers(1, &m_IndexBufferID);
 
 	glBindVertexArray(m_VertexArrayID);
 
 	glBindBuffer(GL_ARRAY_BUFFER, m_VertexBufferID);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_IndexBufferID);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_IndexBufferID);
+	//glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
 
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
 	glEnableVertexAttribArray(1);
 
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
-	glEnableVertexAttribArray(2);
+	//glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+	//glEnableVertexAttribArray(2);
 
 	// load and create a texture 
 	m_Texture1.reset(new Texture("F:\\OpenGL\\LearnOpenGL\\LearnOpenGL\\src\\GameEngine\\Renderer\\Texture\\container.jpg"));
@@ -63,10 +102,8 @@ Application::Application()
 	const std::string vertexSrc = R"(
 		#version 330 core
 		layout(location = 0) in vec3 aPos;
-		layout(location = 1) in vec3 aColor;
-		layout(location = 2) in vec2 aTexCoord;
+		layout(location = 1) in vec2 aTexCoord;
 		
-		out vec3 ourColor;
 		out vec2 TexCoord;
 				
 		uniform mat4 u_Model;
@@ -76,7 +113,6 @@ Application::Application()
 		void main()
 		{
 			gl_Position = u_Projection * u_View * u_Model * vec4(aPos,1.0);
-			ourColor = aColor;
 			TexCoord = vec2(aTexCoord.x,aTexCoord.y);
 		}
 
@@ -86,7 +122,6 @@ Application::Application()
 		#version 330 core
 		out vec4 FragColor;
 		
-		in vec3 ourColor;
 		in vec2 TexCoord;
 		
 		uniform sampler2D texture1;
@@ -103,7 +138,7 @@ Application::Application()
 	m_Shader->SetUniform1i("texture1", 0);
 	m_Shader->SetUniform1i("texture2", 1);
 	m_Shader->SetUniform1f("mixValue", 0.2);
-	m_Camera->SetPosition(glm::vec3(0.0f, 0.0f, 3.0f));
+	m_Camera->SetPosition(glm::vec3(1.0f, 0.0f, 8.0f));
 	m_CameraPosition = m_Camera->GetPosition();
 
 }
@@ -129,7 +164,7 @@ void Application::Run()
 		// render
 		// ------
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		// bind textures on corresponding texture units
 		glActiveTexture(GL_TEXTURE0);
@@ -149,8 +184,18 @@ void Application::Run()
 		m_Shader->SetUniform1f("mixValue", 0.5);
 
 		glBindVertexArray(m_VertexArrayID);
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+		//glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+		glDrawArrays(GL_TRIANGLES, 0, 36);
 
+		model = glm::mat4(1.0f);
+		model = glm::translate(model,glm::vec3(2.0f,0.0f,0.0f));
+		model = glm::rotate(model, (float)glfwGetTime(), glm::vec3(1.0f, 0.0f, 0.0f));
+		m_Shader->SetUniformMat4f("u_Model", model);
+
+
+		glBindVertexArray(m_VertexArrayID);
+		//glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+		glDrawArrays(GL_TRIANGLES, 0, 36);
 		glfwSwapBuffers(m_Window->GetNativeWindow());
 		glfwPollEvents();
 	}
