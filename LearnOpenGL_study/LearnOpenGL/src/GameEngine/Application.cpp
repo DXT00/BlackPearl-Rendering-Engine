@@ -143,7 +143,6 @@ Application::Application()
 
 }
 
-
 Application::~Application()
 {
 
@@ -151,6 +150,19 @@ Application::~Application()
 
 void Application::Run()
 {
+	glm::vec3 cubePositions[] = {
+	glm::vec3(0.0f,  0.0f,  0.0f),
+	glm::vec3(2.0f,  5.0f, -15.0f),
+	glm::vec3(-1.5f, -2.2f, -2.5f),
+	glm::vec3(-3.8f, -2.0f, -12.3f),
+	glm::vec3(2.4f, -0.4f, -3.5f),
+	glm::vec3(-1.7f,  3.0f, -7.5f),
+	glm::vec3(1.3f, -2.0f, -2.5f),
+	glm::vec3(1.5f,  2.0f, -2.5f),
+	glm::vec3(1.5f,  0.2f, -1.5f),
+	glm::vec3(-1.3f,  1.0f, -1.5f)
+	};
+
 	//render loop
 	while (!glfwWindowShouldClose(m_Window->GetNativeWindow())) {
 
@@ -174,28 +186,33 @@ void Application::Run()
 
 		m_Shader->Bind();
 
-		glm::mat4 model	= glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
+	//	glm::mat4 model	= glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
+	//	model = glm::rotate(model, glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 	
-		model = glm::rotate(model, glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-	
+		glBindVertexArray(m_VertexArrayID);
 		m_Shader->SetUniformMat4f("u_View", m_Camera->GetViewMatrix());
 		m_Shader->SetUniformMat4f("u_Projection", m_Camera->GetProjectionMatrix());
-		m_Shader->SetUniformMat4f("u_Model", model);
+	//	m_Shader->SetUniformMat4f("u_Model", model);
 		m_Shader->SetUniform1f("mixValue", 0.5);
-
-		glBindVertexArray(m_VertexArrayID);
 		//glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-		glDrawArrays(GL_TRIANGLES, 0, 36);
+	//	glDrawArrays(GL_TRIANGLES, 0, 36);
 
-		model = glm::mat4(1.0f);
-		model = glm::translate(model,glm::vec3(2.0f,0.0f,0.0f));
-		model = glm::rotate(model, (float)glfwGetTime(), glm::vec3(1.0f, 0.0f, 0.0f));
-		m_Shader->SetUniformMat4f("u_Model", model);
+		for (unsigned int i = 0; i < 10; i++)
+		{
+			glBindVertexArray(m_VertexArrayID);
+			glm::mat4 model = glm::mat4(1.0f);
+			model = glm::translate(model, cubePositions[i]);
+			model = glm::rotate(model, (float)(glfwGetTime()), glm::vec3(1.0f, (float)i*20, 0.0f));
+			m_Shader->SetUniformMat4f("u_Model", model);
+			glDrawArrays(GL_TRIANGLES, 0, 36);
+
+		}
+
+	
 
 
-		glBindVertexArray(m_VertexArrayID);
-		//glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-		glDrawArrays(GL_TRIANGLES, 0, 36);
+		//glBindVertexArray(m_VertexArrayID);
+
 		glfwSwapBuffers(m_Window->GetNativeWindow());
 		glfwPollEvents();
 	}
