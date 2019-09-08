@@ -2,6 +2,8 @@
 #include "Input.h"
 #include <GLFW/glfw3.h>
 #include "Application.h"
+
+bool Input::s_FirstMouse = true;
  bool Input::IsKeyPressed(int keycode)
 {
 	GLFWwindow* window = Application::Get().GetWindow().GetNativeWindow();

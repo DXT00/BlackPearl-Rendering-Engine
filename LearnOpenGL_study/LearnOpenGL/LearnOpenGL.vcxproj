@@ -137,6 +137,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\GameEngine\Event\Event.h" />
+    <ClInclude Include="src\GameEngine\Event\KeyEvent.h" />
+    <ClInclude Include="src\GameEngine\Event\MouseEvent.h" />
     <ClInclude Include="src\GameEngine\Input.h" />
     <ClInclude Include="src\GameEngine\Renderer\Renderer.h" />
     <ClInclude Include="src\GameEngine\Renderer\Camera\Camera.h" />

@@ -14,12 +14,16 @@
 #include "Core.h"
 #include "Input.h"
 #include "Renderer/Renderer.h"
+#include "Event/Event.h"
+#include "Event/MouseEvent.h"
+
 Application* Application::s_Instance = nullptr;
 Application::Application()
 {
 	GE_ASSERT(!s_Instance, "Application's Instance already exist!")
 	s_Instance = this;
 	m_Window.reset(new Window());
+	m_Window->SetCallBack(std::bind(&Application::OnEvent,this, std::placeholders::_1));
 	m_Camera.reset(Camera::Create(Camera::Perspective, { 45.0f, 800.0f, 600.0f, 0.1f, 100.0f }));
 	Renderer::Init();
 
@@ -138,7 +142,7 @@ Application::Application()
 	m_Shader->SetUniform1i("texture1", 0);
 	m_Shader->SetUniform1i("texture2", 1);
 	m_Shader->SetUniform1f("mixValue", 0.2);
-	m_Camera->SetPosition(glm::vec3(1.0f, 0.0f, 8.0f));
+	m_Camera->SetPosition(glm::vec3(0.0f, 0.0f, 8.0f));
 	m_CameraPosition = m_Camera->GetPosition();
 
 }
@@ -189,20 +193,26 @@ void Application::Run()
 	//	glm::mat4 model	= glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
 	//	model = glm::rotate(model, glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 	
+		/*float radius = 20.0f;
+		float camX = glm::sin(glfwGetTime())*radius;
+		float camZ = glm::cos(glfwGetTime())*radius;
+		glm::mat4 view;
+		view = glm::lookAt(glm::vec3(camX, 0.0f, camZ), glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0));
+
+		m_Camera->SetViewMatrix(view);*/
+
 		glBindVertexArray(m_VertexArrayID);
 		m_Shader->SetUniformMat4f("u_View", m_Camera->GetViewMatrix());
 		m_Shader->SetUniformMat4f("u_Projection", m_Camera->GetProjectionMatrix());
-	//	m_Shader->SetUniformMat4f("u_Model", model);
 		m_Shader->SetUniform1f("mixValue", 0.5);
-		//glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-	//	glDrawArrays(GL_TRIANGLES, 0, 36);
+
 
 		for (unsigned int i = 0; i < 10; i++)
 		{
 			glBindVertexArray(m_VertexArrayID);
 			glm::mat4 model = glm::mat4(1.0f);
 			model = glm::translate(model, cubePositions[i]);
-			model = glm::rotate(model, (float)(glfwGetTime()), glm::vec3(1.0f, (float)i*20, 0.0f));
+			model = glm::rotate(model, (float)(glfwGetTime()), glm::vec3(1.0f, (float)i*20, 0.0f));//(float)(glfwGetTime())
 			m_Shader->SetUniformMat4f("u_Model", model);
 			glDrawArrays(GL_TRIANGLES, 0, 36);
 
@@ -211,7 +221,6 @@ void Application::Run()
 	
 
 
-		//glBindVertexArray(m_VertexArrayID);
 
 		glfwSwapBuffers(m_Window->GetNativeWindow());
 		glfwPollEvents();
@@ -249,5 +258,58 @@ void Application::InputCheck(Timestep ts)
 		m_CameraPosition.y += m_CameraMoveSpeed * ts;
 
 	}
+	// ---------------------Rotation--------------------------------------
+
+	float posx = Input::GetMouseX();
+	float posy = Input::GetMouseY();
+	if (Input::IsMouseButtonPressed(GLFW_MOUSE_BUTTON_RIGHT)) {
+
+	
+		if (Input::IsFirstMouse()) {
+			Input::SetFirstMouse(false);
+			m_LastMouseX = posx;
+			m_LastMouseY = posy;
+		}
+		float diffx = -posx + m_LastMouseX;
+		float diffy = -posy + m_LastMouseY;
+
+		m_LastMouseX = posx;
+		m_LastMouseY = posy;
+		m_CameraRotation.y += diffx * m_CameraRotateSpeed * ts;
+		m_CameraRotation.x += diffy * m_CameraRotateSpeed * ts;
+
+		if (m_CameraRotation.x > 89.0f)
+			m_CameraRotation.x = 89.0f;
+		if (m_CameraRotation.x < -89.0f)
+			m_CameraRotation.x = -89.0f;
+
+		m_Camera->SetRotation(m_CameraRotation);
+
+	}
+	else {
+
+		m_LastMouseX = posx;//lastMouse时刻记录当前坐标位置，防止再次点击右键时，发生抖动！
+		m_LastMouseY = posy;
+	}
+	
+
 	m_Camera->SetPosition(m_CameraPosition);
+}
+
+void Application::OnEvent(Event& event)
+{
+	EventDispacher dispacher(event);
+
+	dispacher.Dispatch<MouseMovedEvent>(std::bind(&Application::OnCameraRotate, this, std::placeholders::_1));
+
+
+
+}
+
+bool Application::OnCameraRotate(MouseMovedEvent & e)
+{
+	float posx = e.GetMouseX();
+	float posy = e.GetMouseY();
+
+	return true;
 }
