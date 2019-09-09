@@ -4,7 +4,7 @@
 class OrthographicCamera :public Camera
 {
 public:
-	OrthographicCamera(float left, float right, float bottom, float top);
+	OrthographicCamera(float left, float right, float bottom, float top, const ViewMatrixProps &viewMatrixProps);
 	virtual ~OrthographicCamera() = default;
 
 	

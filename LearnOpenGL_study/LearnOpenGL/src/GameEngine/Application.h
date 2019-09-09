@@ -16,7 +16,7 @@ public:
 	inline Window& GetWindow() { return *m_Window; }
 	
 	void Run();
-	void InputCheck(Timestep ts);
+	void InputCheck(float ts);
 	void OnEvent(Event &event);
 
 private:
@@ -34,8 +34,12 @@ private:
 	float m_CameraMoveSpeed = 5.0f;
 	float m_CameraRotateSpeed = 9.0f;
 	glm::vec3 m_CameraPosition = { 0.0f,0.0f,0.0f };
-	glm::vec3 m_CameraRotation = { 0.0f,0.0f,0.0f };
-
+	struct CameraRotation {
+		float Yaw;
+		float Pitch;
+		
+	};
+	CameraRotation m_CameraRotation;
 	float m_LastMouseX;
 	float m_LastMouseY;
 

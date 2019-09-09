@@ -3,7 +3,7 @@
 class PerspectiveCamera :public Camera
 {
 public:
-	PerspectiveCamera(float fov, float width, float height, float znear, float zfar);
+	PerspectiveCamera(float fov, float width, float height, float znear, float zfar, const ViewMatrixProps &viewMatrixProps);
 	virtual ~PerspectiveCamera() = default;
 
 	void RecalculateProjectionMatrix();
