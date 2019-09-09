@@ -4,6 +4,7 @@
 #include"Window.h"
 #include"Renderer/Texture/Texture.h"
 #include"Renderer/Camera/Camera.h"
+#include"Renderer/VertexArray.h"
 #include"GameEngine/Timestep/Timestep.h"
 #include "Event/MouseEvent.h"
 class Application
@@ -29,6 +30,10 @@ private:
 	std::unique_ptr<Texture> m_Texture1;
 	std::unique_ptr<Texture> m_Texture2;
 	unsigned int m_VertexArrayID, m_IndexBufferID, m_VertexBufferID;
+
+	std::shared_ptr<VertexArray> m_VertexArray;
+
+
 
 	std::unique_ptr<Camera> m_Camera;
 	float m_CameraMoveSpeed = 5.0f;

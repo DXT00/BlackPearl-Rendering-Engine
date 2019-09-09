@@ -137,6 +137,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\GameEngine\Renderer\Buffer.h" />
+    <ClInclude Include="src\GameEngine\Renderer\Lighting\LightSource.h" />
     <ClInclude Include="src\GameEngine\Event\Event.h" />
     <ClInclude Include="src\GameEngine\Event\KeyEvent.h" />
     <ClInclude Include="src\GameEngine\Event\MouseEvent.h" />
@@ -151,6 +153,7 @@
     <ClInclude Include="src\GameEngine\Renderer\Context.h" />
     <ClInclude Include="src\GameEngine\Renderer\Shader.h" />
     <ClInclude Include="src\GameEngine\Renderer\Texture\Texture.h" />
+    <ClInclude Include="src\GameEngine\Renderer\VertexArray.h" />
     <ClInclude Include="src\GameEngine\Window.h" />
     <ClInclude Include="src\pch.h" />
     <ClInclude Include="src\GameEngine\Timestep\Timestep.h" />
@@ -525,6 +528,8 @@
     <ClInclude Include="vendor\stb\stb_image.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\GameEngine\Renderer\Buffer.cpp" />
+    <ClCompile Include="src\GameEngine\Renderer\Lighting\LightSource.cpp" />
     <ClCompile Include="src\GameEngine\Input.cpp" />
     <ClCompile Include="src\GameEngine\Renderer\Renderer.cpp" />
     <ClCompile Include="src\GameEngine\Renderer\Camera\Camera.cpp" />
@@ -536,6 +541,7 @@
     <ClCompile Include="src\GameEngine\Renderer\Context.cpp" />
     <ClCompile Include="src\GameEngine\Renderer\Shader.cpp" />
     <ClCompile Include="src\GameEngine\Renderer\Texture\Texture.cpp" />
+    <ClCompile Include="src\GameEngine\Renderer\VertexArray.cpp" />
     <ClCompile Include="src\GameEngine\Window.cpp" />
     <ClCompile Include="src\pch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>

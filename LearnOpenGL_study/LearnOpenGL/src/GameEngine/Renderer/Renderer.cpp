@@ -14,3 +14,10 @@ void Renderer::Init()
 {
 	glEnable(GL_DEPTH_TEST);
 }
+
+void Renderer::Submit(const std::shared_ptr<VertexArray>& vertexArray, const std::shared_ptr<Shader>& shader, const glm::mat4 & model)
+{
+
+
+
+}

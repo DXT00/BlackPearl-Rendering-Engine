@@ -1179,6 +1179,9 @@
     <ClInclude Include="src\GameEngine\Event\Event.h" />
     <ClInclude Include="src\GameEngine\Event\KeyEvent.h" />
     <ClInclude Include="src\GameEngine\Event\MouseEvent.h" />
+    <ClInclude Include="src\GameEngine\Renderer\VertexArray.h" />
+    <ClInclude Include="src\GameEngine\Renderer\Buffer.h" />
+    <ClInclude Include="src\GameEngine\Renderer\Lighting\LightSource.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\GameEngine\Application.cpp">
@@ -1211,6 +1214,9 @@
     <ClCompile Include="src\GameEngine\Renderer\Renderer.cpp" />
     <ClCompile Include="src\GameEngine\Input.cpp" />
     <ClCompile Include="src\GameEngine\Timestep\Timestep.cpp" />
+    <ClCompile Include="src\GameEngine\Renderer\VertexArray.cpp" />
+    <ClCompile Include="src\GameEngine\Renderer\Buffer.cpp" />
+    <ClCompile Include="src\GameEngine\Renderer\Lighting\LightSource.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="src\GameEngine\Renderer\Texture\awesomeface.png">

@@ -1,4 +1,4 @@
-#include "pch.h"
+ #include "pch.h"
 #include "Application.h"
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -9,11 +9,13 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "GameEngine/Renderer/Texture/Texture.h"
-#include "GameEngine/Renderer/Camera/PerspectiveCamera.h"
+#include "Renderer/Texture/Texture.h"
+#include "Renderer/Camera/PerspectiveCamera.h"
+#include "Renderer/Buffer.h"
+#include "Renderer/Renderer.h"
+
 #include "Core.h"
 #include "Input.h"
-#include "Renderer/Renderer.h"
 #include "Event/Event.h"
 #include "Event/MouseEvent.h"
 
@@ -28,7 +30,7 @@ Application::Application()
 	Renderer::Init();
 
 	float vertices[] = {
-		// positions      // texture coords
+	// positions          // texture coords
 	 -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
 	 0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
 	 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
@@ -72,30 +74,21 @@ Application::Application()
 	-0.5f,  0.5f, -0.5f,  0.0f, 1.0f
 	};
 
-	/*unsigned int indices[] = {
-		0,1,3,
-		1,2,3
-	};*/
-	glGenVertexArrays(1, &m_VertexArrayID);
-	glGenBuffers(1, &m_VertexBufferID);
-	//glGenBuffers(1, &m_IndexBufferID);
+	m_VertexArray.reset(new VertexArray());
+	
+	std::shared_ptr<VertexBuffer> vertexBuffer;
+	vertexBuffer.reset(new VertexBuffer(vertices, sizeof(vertices)));
 
-	glBindVertexArray(m_VertexArrayID);
 
-	glBindBuffer(GL_ARRAY_BUFFER, m_VertexBufferID);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+	VertexBufferLayout layout = {
+		{ElementDataType::Float3,"aPos",false},
+		{ElementDataType::Float2,"aTexCoord",false}
+	};
+	vertexBuffer->SetBufferLayout(layout);
+	m_VertexArray->AddVertexBuffer(vertexBuffer);
 
-	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_IndexBufferID);
-	//glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
-	glEnableVertexAttribArray(0);
 
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
-	glEnableVertexAttribArray(1);
-
-	//glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
-	//glEnableVertexAttribArray(2);
 
 	// load and create a texture 
 	m_Texture1.reset(new Texture("F:\\OpenGL\\LearnOpenGL\\LearnOpenGL\\src\\GameEngine\\Renderer\\Texture\\container.jpg"));
@@ -195,18 +188,7 @@ void Application::Run()
 
 		m_Shader->Bind();
 
-		//	glm::mat4 model	= glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
-		//	model = glm::rotate(model, glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-
-			/*float radius = 20.0f;
-			float camX = glm::sin(glfwGetTime())*radius;
-			float camZ = glm::cos(glfwGetTime())*radius;
-			glm::mat4 view;
-			view = glm::lookAt(glm::vec3(camX, 0.0f, camZ), glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0));
-
-			m_Camera->SetViewMatrix(view);*/
-
-		glBindVertexArray(m_VertexArrayID);
+		m_VertexArray->Bind();
 		m_Shader->SetUniformMat4f("u_View", m_Camera->GetViewMatrix());
 		m_Shader->SetUniformMat4f("u_Projection", m_Camera->GetProjectionMatrix());
 		m_Shader->SetUniform1f("mixValue", 0.5);
@@ -214,7 +196,7 @@ void Application::Run()
 
 		for (unsigned int i = 0; i < 10; i++)
 		{
-			glBindVertexArray(m_VertexArrayID);
+			m_VertexArray->Bind();
 			glm::mat4 model = glm::mat4(1.0f);
 			model = glm::translate(model, cubePositions[i]);
 			model = glm::rotate(model, (float)(glfwGetTime()), glm::vec3(1.0f, (float)i * 20, 0.0f));//(float)(glfwGetTime())

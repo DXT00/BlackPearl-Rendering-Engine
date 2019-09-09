@@ -51,7 +51,7 @@ void Camera::RecalculateViewMatrix(float yaw,float pitch)
 		glm::rotate(glm::mat4(1.0f), glm::radians(m_Rotation.x), glm::vec3(1.0f, 0.0f, 0.0f))*
 		glm::rotate(glm::mat4(1.0f), glm::radians(m_Rotation.y), glm::vec3(0.0f, 1.0f, 0.0f));*/
 
-		//m_ViewMatrix = glm::inverse(transform);
+	//m_ViewMatrix = glm::inverse(transform);
 
 	glm::vec3 front;
 	front.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
