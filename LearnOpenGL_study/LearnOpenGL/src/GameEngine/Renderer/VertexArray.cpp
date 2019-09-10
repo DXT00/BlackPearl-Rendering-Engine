@@ -20,6 +20,9 @@ void VertexArray::UnBind()
 
 void VertexArray::AddVertexBuffer(const std::shared_ptr<VertexBuffer>& vertexBuffer)
 {
+	GE_ASSERT(vertexBuffer->GetBufferLayout().GetElements().size(), "Vertex Buffer has no layout!!");
+	glBindVertexArray(m_RendererID);
+	vertexBuffer->Bind();
 	uint32_t index = 0;
 	auto layout = vertexBuffer->GetBufferLayout();
 	for (BufferElement element : layout.GetElements()) {
@@ -32,5 +35,7 @@ void VertexArray::AddVertexBuffer(const std::shared_ptr<VertexBuffer>& vertexBuf
 
 void VertexArray::SetIndexBuffer(const std::shared_ptr<IndexBuffer>& indexBuffer)
 {
+	glBindVertexArray(m_RendererID);
+	indexBuffer->Bind();
 	m_IndexBuffer = indexBuffer;
 }

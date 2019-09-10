@@ -7,6 +7,7 @@
 #include"Renderer/VertexArray.h"
 #include"GameEngine/Timestep/Timestep.h"
 #include "Event/MouseEvent.h"
+#include "Renderer/Lighting/LightSource.h"
 class Application
 {
 public:
@@ -36,6 +37,7 @@ private:
 
 
 	std::unique_ptr<Camera> m_Camera;
+	std::unique_ptr<LightSource> m_LightSource;
 	float m_CameraMoveSpeed = 5.0f;
 	float m_CameraRotateSpeed = 9.0f;
 	glm::vec3 m_CameraPosition = { 0.0f,0.0f,0.0f };

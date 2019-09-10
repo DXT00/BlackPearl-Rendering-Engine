@@ -56,7 +56,7 @@ public:
 	}
 	
 	inline void SetViewMatrix(glm::mat4 view) { m_ViewMatrix = view; m_ViewProjectionMatrix = m_ProjectionMatrix * m_ViewMatrix; }
-	inline void SetProjectionMatrix(glm::mat4 projection) { m_ProjectionMatrix = projection; m_ProjectionMatrix * m_ViewMatrix; }
+	inline void SetProjectionMatrix(glm::mat4 projection) { m_ProjectionMatrix = projection; m_ViewProjectionMatrix=m_ProjectionMatrix * m_ViewMatrix; }
 	inline void SetViewProjectionMatrix(glm::mat4 viewProjection) { m_ViewProjectionMatrix = viewProjection; }
 	static Camera* Create(unsigned int type, const std::initializer_list<float> &projectionMatrixProps,const ViewMatrixProps &viewMatrixProps = ViewMatrixProps());
 

@@ -23,10 +23,11 @@ Application* Application::s_Instance = nullptr;
 Application::Application()
 {
 	GE_ASSERT(!s_Instance, "Application's Instance already exist!")
-		s_Instance = this;
+	s_Instance = this;
 	m_Window.reset(new Window());
 	m_Window->SetCallBack(std::bind(&Application::OnEvent, this, std::placeholders::_1));
 	m_Camera.reset(Camera::Create(Camera::Perspective, { 45.0f, 800.0f, 600.0f, 0.1f, 100.0f }));
+	m_LightSource.reset(new LightSource());
 	Renderer::Init();
 
 	float vertices[] = {
@@ -104,12 +105,12 @@ Application::Application()
 		out vec2 TexCoord;
 				
 		uniform mat4 u_Model;
-		uniform mat4 u_View;
-		uniform mat4 u_Projection;
+		uniform mat4 u_ProjectionView;
+	
 
 		void main()
 		{
-			gl_Position = u_Projection * u_View * u_Model * vec4(aPos,1.0);
+			gl_Position = u_ProjectionView * u_Model * vec4(aPos,1.0);
 			TexCoord = vec2(aTexCoord.x,aTexCoord.y);
 		}
 
@@ -177,7 +178,8 @@ void Application::Run()
 			glfwSetWindowShouldClose(m_Window->GetNativeWindow(), true);
 		// render
 		// ------
-		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+		//glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+		glClearColor(0.1f, 0.1f, 0.1f, 0.1f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		// bind textures on corresponding texture units
@@ -186,27 +188,26 @@ void Application::Run()
 		glActiveTexture(GL_TEXTURE1);
 		m_Texture2->Bind();
 
-		m_Shader->Bind();
-
-		m_VertexArray->Bind();
-		m_Shader->SetUniformMat4f("u_View", m_Camera->GetViewMatrix());
-		m_Shader->SetUniformMat4f("u_Projection", m_Camera->GetProjectionMatrix());
+		
 		m_Shader->SetUniform1f("mixValue", 0.5);
+		Renderer::BeginScene(*m_Camera);
 
+		glm::mat4 model = glm::mat4(1.0f);
+		model = glm::translate(model, m_LightSource->GetPosition());
+		model = glm::scale(model, glm::vec3(0.5f));
+		Renderer::Submit(m_LightSource->GetVertexArray(), m_LightSource->GetShader(),model);
+		glDrawArrays(GL_TRIANGLES, 0, 36);
 
 		for (unsigned int i = 0; i < 10; i++)
 		{
-			m_VertexArray->Bind();
+			
 			glm::mat4 model = glm::mat4(1.0f);
 			model = glm::translate(model, cubePositions[i]);
 			model = glm::rotate(model, (float)(glfwGetTime()), glm::vec3(1.0f, (float)i * 20, 0.0f));//(float)(glfwGetTime())
-			m_Shader->SetUniformMat4f("u_Model", model);
+			Renderer::Submit(m_VertexArray, m_Shader, model);
 			glDrawArrays(GL_TRIANGLES, 0, 36);
 
 		}
-
-
-
 
 
 		glfwSwapBuffers(m_Window->GetNativeWindow());

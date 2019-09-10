@@ -12,6 +12,7 @@ public:
 	void SetUniform1i(const std::string &name,int val) const;
 	void SetUniform1f(const std::string &name, float val) const;
 	void SetUniformMat4f(const std::string &name, const glm::mat4 &mat) const;
+	void SetUniformVec3f(const std::string & name, const glm::vec3& value) const;
 
 
 private:
