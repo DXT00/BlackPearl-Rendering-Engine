@@ -125,9 +125,16 @@ Application::Application()
 		uniform sampler2D texture1;
 		uniform sampler2D texture2;
 		uniform float mixValue;
+
+		float ambientStrength =0.5f;
+		uniform vec3 u_LightColor;
+		
+		vec4 ambient = vec4(ambientStrength * u_LightColor,1.0);
+	
+
 		void main(){
 			// linearly interpolate between both textures (80% container, 20% awesomeface)
-			FragColor = mix(texture(texture1, TexCoord), texture(texture2, vec2(1.0 - TexCoord.x, TexCoord.y)), mixValue);
+			FragColor = ambient * mix(texture(texture1, TexCoord), texture(texture2, vec2(1.0 - TexCoord.x, TexCoord.y)), mixValue);
 		}
 	)";
 
@@ -136,6 +143,7 @@ Application::Application()
 	m_Shader->SetUniform1i("texture1", 0);
 	m_Shader->SetUniform1i("texture2", 1);
 	m_Shader->SetUniform1f("mixValue", 0.2);
+	m_Shader->SetUniformVec3f("u_LightColor", m_LightSource->GetLightColor());
 	m_Camera->SetPosition(glm::vec3(0.0f, 0.0f, 8.0f));
 	
 	m_CameraPosition = m_Camera->GetPosition();

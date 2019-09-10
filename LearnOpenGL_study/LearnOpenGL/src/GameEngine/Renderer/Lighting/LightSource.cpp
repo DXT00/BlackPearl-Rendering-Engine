@@ -68,11 +68,10 @@ void LightSource::Init()
 		#version 330 core
 		out vec4 FragColor;
 		
-		uniform vec3 u_BlubColor;
 		uniform vec3 u_LightColor;		
 		
 		void main(){
-			FragColor = vec4(u_LightColor * u_BlubColor,1.0);
+			FragColor = vec4(u_LightColor,1.0);
 		}
 	)";
 
@@ -87,8 +86,9 @@ void LightSource::Init()
 	m_VertexArray->AddVertexBuffer(lightVertexBuffer);
 
 	m_Shader->Bind();
-	m_Shader->SetUniformVec3f("u_BlubColor", this->GetBlubColor());
+	m_LightColor = m_BlubColor * m_EmitColor;
 	m_Shader->SetUniformVec3f("u_LightColor", this->GetLightColor());
+
 
 
 }
