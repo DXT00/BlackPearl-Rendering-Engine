@@ -1,4 +1,4 @@
- #include "pch.h"
+#include "pch.h"
 #include "Application.h"
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -23,7 +23,7 @@ Application* Application::s_Instance = nullptr;
 Application::Application()
 {
 	GE_ASSERT(!s_Instance, "Application's Instance already exist!")
-	s_Instance = this;
+		s_Instance = this;
 	m_Window.reset(new Window());
 	m_Window->SetCallBack(std::bind(&Application::OnEvent, this, std::placeholders::_1));
 	m_Camera.reset(Camera::Create(Camera::Perspective, { 45.0f, 800.0f, 600.0f, 0.1f, 100.0f }));
@@ -31,59 +31,60 @@ Application::Application()
 	Renderer::Init();
 
 	float vertices[] = {
-	// positions          // texture coords
-	 -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-	 0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
-	 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-	 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-	-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-	-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-
-	-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-	 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-	 0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-	 0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-	-0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
-	-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-
-	-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-	-0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-	-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-	-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-	-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-	-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-
-	 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-	 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-	 0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-	 0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-	 0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-	 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-
-	-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-	 0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
-	 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-	 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-	-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-	-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-
-	-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-	 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-	 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-	 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-	-0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
-	-0.5f,  0.5f, -0.5f,  0.0f, 1.0f
+		// positions          // texture coords  //normal
+		 -0.5f, -0.5f, -0.5f, 0.0f, 0.0f,   0.0f, 0.0f, -1.0f,
+		 0.5f, -0.5f, -0.5f,  1.0f, 0.0f,   0.0f, 0.0f, -1.0f,
+		 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,   0.0f, 0.0f, -1.0f,
+		 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,   0.0f, 0.0f, -1.0f,
+		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,   0.0f, 0.0f, -1.0f,
+		-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,   0.0f, 0.0f, -1.0f,
+										    
+		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,   0.0f, 0.0f, 1.0f,
+		 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,   0.0f, 0.0f, 1.0f,
+		 0.5f,  0.5f,  0.5f,  1.0f, 1.0f,   0.0f, 0.0f, 1.0f,
+		 0.5f,  0.5f,  0.5f,  1.0f, 1.0f,   0.0f, 0.0f, 1.0f,
+		-0.5f,  0.5f,  0.5f,  0.0f, 1.0f,   0.0f, 0.0f, 1.0f,
+		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,   0.0f, 0.0f, 1.0f,
+										    
+		-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,   -1.0f, 0.0f, 0.0f,
+		-0.5f,  0.5f, -0.5f,  1.0f, 1.0f,   -1.0f, 0.0f, 0.0f,
+		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,   -1.0f, 0.0f, 0.0f,
+		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,   -1.0f, 0.0f, 0.0f,
+		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,   -1.0f, 0.0f, 0.0f,
+		-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,   -1.0f, 0.0f, 0.0f,
+										    
+		 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,   1.0f, 0.0f, 0.0f,
+		 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,   1.0f, 0.0f, 0.0f,
+		 0.5f, -0.5f, -0.5f,  0.0f, 1.0f,   1.0f, 0.0f, 0.0f,
+		 0.5f, -0.5f, -0.5f,  0.0f, 1.0f,   1.0f, 0.0f, 0.0f,
+		 0.5f, -0.5f,  0.5f,  0.0f, 0.0f,   1.0f, 0.0f, 0.0f,
+		 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,   1.0f, 0.0f, 0.0f,
+										    
+		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,   0.0f, -1.0f, 0.0f,
+		 0.5f, -0.5f, -0.5f,  1.0f, 1.0f,   0.0f, -1.0f, 0.0f,
+		 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,   0.0f, -1.0f, 0.0f,
+		 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,   0.0f, -1.0f, 0.0f,
+		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,   0.0f, -1.0f, 0.0f,
+		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,   0.0f, -1.0f, 0.0f,
+										    
+		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,   0.0f, 1.0f, 0.0f,
+		 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,   0.0f, 1.0f, 0.0f,
+		 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,   0.0f, 1.0f, 0.0f,
+		 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,   0.0f, 1.0f, 0.0f,
+		-0.5f,  0.5f,  0.5f,  0.0f, 0.0f,   0.0f, 1.0f, 0.0f,
+		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,   0.0f, 1.0f, 0.0f
 	};
-
-	m_VertexArray.reset(new VertexArray());
 	
+		m_VertexArray.reset(new VertexArray());
+
 	std::shared_ptr<VertexBuffer> vertexBuffer;
 	vertexBuffer.reset(new VertexBuffer(vertices, sizeof(vertices)));
 
 
 	VertexBufferLayout layout = {
 		{ElementDataType::Float3,"aPos",false},
-		{ElementDataType::Float2,"aTexCoord",false}
+		{ElementDataType::Float2,"aTexCoord",false},
+		{ElementDataType::Float3,"aNormal",false}
 	};
 	vertexBuffer->SetBufferLayout(layout);
 	m_VertexArray->AddVertexBuffer(vertexBuffer);
@@ -101,9 +102,12 @@ Application::Application()
 		#version 330 core
 		layout(location = 0) in vec3 aPos;
 		layout(location = 1) in vec2 aTexCoord;
+		layout(location = 2) in vec3 aNormal;
 		
-		out vec2 TexCoord;
-				
+		out vec2 v_TexCoord;
+		out vec3 v_Normal;
+		out vec3 v_FragPos;
+
 		uniform mat4 u_Model;
 		uniform mat4 u_ProjectionView;
 	
@@ -111,7 +115,9 @@ Application::Application()
 		void main()
 		{
 			gl_Position = u_ProjectionView * u_Model * vec4(aPos,1.0);
-			TexCoord = vec2(aTexCoord.x,aTexCoord.y);
+			v_FragPos = vec3(u_Model* vec4(aPos,1.0));
+			v_TexCoord = vec2(aTexCoord.x,aTexCoord.y);
+			v_Normal =  mat3(transpose(inverse(u_Model)))* aNormal;//vec3(u_Model * vec4(aNormal,1.0));
 		}
 
 	)";
@@ -120,32 +126,42 @@ Application::Application()
 		#version 330 core
 		out vec4 FragColor;
 		
-		in vec2 TexCoord;
+		float ambientStrength = 0.1f;
 		
-		uniform sampler2D texture1;
-		uniform sampler2D texture2;
-		uniform float mixValue;
+		in vec2 v_TexCoord;
+		in vec3 v_Normal;		
+		in vec3 v_FragPos;		
 
-		float ambientStrength =0.5f;
+		uniform sampler2D u_Texture1;
+		uniform sampler2D u_Texture2;
+		uniform float u_MixValue;
+
 		uniform vec3 u_LightColor;
-		
-		vec4 ambient = vec4(ambientStrength * u_LightColor,1.0);
-	
+		uniform vec3 u_LightPos;
+
+		vec3 ambient = ambientStrength * u_LightColor;
+
+		vec3 lightDir = normalize(u_LightPos-v_FragPos);
+		vec3 norm = normalize(v_Normal);
+
+		float theta = max(dot(lightDir,norm),0.0f);
+		vec3 diffuse =  theta * u_LightColor;
 
 		void main(){
-			// linearly interpolate between both textures (80% container, 20% awesomeface)
-			FragColor = ambient * mix(texture(texture1, TexCoord), texture(texture2, vec2(1.0 - TexCoord.x, TexCoord.y)), mixValue);
+			FragColor = vec4((diffuse + ambient),1.0) * mix(texture(u_Texture1, v_TexCoord), texture(u_Texture2, vec2(1.0 - v_TexCoord.x, v_TexCoord.y)), u_MixValue);
 		}
 	)";
 
 	m_Shader.reset(new Shader(vertexSrc, fragmentSrc));
 	m_Shader->Bind();
-	m_Shader->SetUniform1i("texture1", 0);
-	m_Shader->SetUniform1i("texture2", 1);
-	m_Shader->SetUniform1f("mixValue", 0.2);
+	m_Shader->SetUniform1i("u_Texture1", 0);
+	m_Shader->SetUniform1i("u_Texture2", 1);
+	m_Shader->SetUniform1f("u_MixValue", 0.5);
 	m_Shader->SetUniformVec3f("u_LightColor", m_LightSource->GetLightColor());
+	m_Shader->SetUniformVec3f("u_LightPos", m_LightSource->GetPosition());
+
 	m_Camera->SetPosition(glm::vec3(0.0f, 0.0f, 8.0f));
-	
+
 	m_CameraPosition = m_Camera->GetPosition();
 
 	m_CameraRotation.Yaw = m_Camera->Yaw();
@@ -196,19 +212,19 @@ void Application::Run()
 		glActiveTexture(GL_TEXTURE1);
 		m_Texture2->Bind();
 
+
 		
-		m_Shader->SetUniform1f("mixValue", 0.5);
 		Renderer::BeginScene(*m_Camera);
 
 		glm::mat4 model = glm::mat4(1.0f);
 		model = glm::translate(model, m_LightSource->GetPosition());
 		model = glm::scale(model, glm::vec3(0.5f));
-		Renderer::Submit(m_LightSource->GetVertexArray(), m_LightSource->GetShader(),model);
+		Renderer::Submit(m_LightSource->GetVertexArray(), m_LightSource->GetShader(), model);
 		glDrawArrays(GL_TRIANGLES, 0, 36);
 
 		for (unsigned int i = 0; i < 10; i++)
 		{
-			
+
 			glm::mat4 model = glm::mat4(1.0f);
 			model = glm::translate(model, cubePositions[i]);
 			model = glm::rotate(model, (float)(glfwGetTime()), glm::vec3(1.0f, (float)i * 20, 0.0f));//(float)(glfwGetTime())
@@ -278,7 +294,7 @@ void Application::InputCheck(float ts)
 		if (m_CameraRotation.Pitch < -89.0f)
 			m_CameraRotation.Pitch = -89.0f;
 
-		m_Camera->SetRotation(m_CameraRotation.Yaw,m_CameraRotation.Pitch);
+		m_Camera->SetRotation(m_CameraRotation.Yaw, m_CameraRotation.Pitch);
 
 	}
 	else {

@@ -78,7 +78,6 @@ void LightSource::Init()
 	std::shared_ptr<VertexBuffer> lightVertexBuffer;
 	lightVertexBuffer.reset(new VertexBuffer(lightVertices,sizeof(lightVertices)));
 	m_Shader.reset(new Shader(lightvVertexSrc, lightFragmentSrc));
-
 	m_VertexArray.reset(new VertexArray());
 	lightVertexBuffer->SetBufferLayout({
 		{ElementDataType::Float3,"aPos",false}
