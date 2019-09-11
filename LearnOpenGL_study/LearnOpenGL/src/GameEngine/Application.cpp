@@ -23,7 +23,7 @@ Application* Application::s_Instance = nullptr;
 Application::Application()
 {
 	GE_ASSERT(!s_Instance, "Application's Instance already exist!")
-		s_Instance = this;
+	s_Instance = this;
 	m_Window.reset(new Window());
 	m_Window->SetCallBack(std::bind(&Application::OnEvent, this, std::placeholders::_1));
 	m_Camera.reset(Camera::Create(Camera::Perspective, { 45.0f, 800.0f, 600.0f, 0.1f, 100.0f }));
@@ -75,7 +75,7 @@ Application::Application()
 		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,   0.0f, 1.0f, 0.0f
 	};
 	
-		m_VertexArray.reset(new VertexArray());
+	m_VertexArray.reset(new VertexArray());
 
 	std::shared_ptr<VertexBuffer> vertexBuffer;
 	vertexBuffer.reset(new VertexBuffer(vertices, sizeof(vertices)));
@@ -109,6 +109,7 @@ Application::Application()
 		out vec3 v_FragPos;
 
 		uniform mat4 u_Model;
+		uniform mat4 u_TranInverseModel;//transpose(inverse(u_Model))-->最好在cpu运算完再传进来!
 		uniform mat4 u_ProjectionView;
 	
 
@@ -117,7 +118,7 @@ Application::Application()
 			gl_Position = u_ProjectionView * u_Model * vec4(aPos,1.0);
 			v_FragPos = vec3(u_Model* vec4(aPos,1.0));
 			v_TexCoord = vec2(aTexCoord.x,aTexCoord.y);
-			v_Normal =  mat3(transpose(inverse(u_Model)))* aNormal;//vec3(u_Model * vec4(aNormal,1.0));
+			v_Normal =  mat3(u_TranInverseModel)* aNormal;//vec3(u_Model * vec4(aNormal,1.0));
 		}
 
 	)";
@@ -127,7 +128,8 @@ Application::Application()
 		out vec4 FragColor;
 		
 		float ambientStrength = 0.1f;
-		
+		float specularStrength = 0.8f;
+
 		in vec2 v_TexCoord;
 		in vec3 v_Normal;		
 		in vec3 v_FragPos;		
@@ -138,17 +140,23 @@ Application::Application()
 
 		uniform vec3 u_LightColor;
 		uniform vec3 u_LightPos;
+		uniform vec3 u_CameraViewPos;
 
 		vec3 ambient = ambientStrength * u_LightColor;
 
 		vec3 lightDir = normalize(u_LightPos-v_FragPos);
 		vec3 norm = normalize(v_Normal);
-
 		float theta = max(dot(lightDir,norm),0.0f);
 		vec3 diffuse =  theta * u_LightColor;
+		
+		vec3 reflectDir = normalize(reflect(-lightDir,norm));
+		vec3 viewDir = normalize(u_CameraViewPos-v_FragPos);
+		float spec = pow(max(dot(reflectDir,viewDir),0.0),32);
+		vec3 specular = specularStrength * spec * u_LightColor;
+		
 
 		void main(){
-			FragColor = vec4((diffuse + ambient),1.0) * mix(texture(u_Texture1, v_TexCoord), texture(u_Texture2, vec2(1.0 - v_TexCoord.x, v_TexCoord.y)), u_MixValue);
+			FragColor = vec4((diffuse + ambient + specular),1.0) * mix(texture(u_Texture1, v_TexCoord), texture(u_Texture2, vec2(1.0 - v_TexCoord.x, v_TexCoord.y)), u_MixValue);
 		}
 	)";
 
@@ -161,9 +169,7 @@ Application::Application()
 	m_Shader->SetUniformVec3f("u_LightPos", m_LightSource->GetPosition());
 
 	m_Camera->SetPosition(glm::vec3(0.0f, 0.0f, 8.0f));
-
 	m_CameraPosition = m_Camera->GetPosition();
-
 	m_CameraRotation.Yaw = m_Camera->Yaw();
 	m_CameraRotation.Pitch = m_Camera->Pitch();
 
@@ -228,6 +234,8 @@ void Application::Run()
 			glm::mat4 model = glm::mat4(1.0f);
 			model = glm::translate(model, cubePositions[i]);
 			model = glm::rotate(model, (float)(glfwGetTime()), glm::vec3(1.0f, (float)i * 20, 0.0f));//(float)(glfwGetTime())
+			m_Shader->SetUniformMat4f("u_TranInverseModel", glm::transpose(glm::inverse(model)));
+			m_Shader->SetUniformVec3f("u_CameraViewPos", m_Camera->GetPosition());
 			Renderer::Submit(m_VertexArray, m_Shader, model);
 			glDrawArrays(GL_TRIANGLES, 0, 36);
 
