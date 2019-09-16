@@ -98,8 +98,6 @@ Application::Application()
 
 
 	//Shader
-	
-
 	m_Shader.reset(new Shader("assets/shaders/Texture.glsl"));
 	m_Shader->Bind();
 	m_Shader->SetUniform1i("u_Texture1", 0);
@@ -176,7 +174,19 @@ void Application::Run()
 			model = glm::rotate(model, (float)(glfwGetTime()), glm::vec3(1.0f, (float)i * 20, 0.0f));//(float)(glfwGetTime())
 			m_Shader->SetUniformMat4f("u_TranInverseModel", glm::transpose(glm::inverse(model)));
 			m_Shader->SetUniformVec3f("u_CameraViewPos", m_Camera->GetPosition());
-			m_Shader->SetUniform1f("u_shininessStrength", 128.0f);
+
+			glm::vec3 lightColor;// = m_LightSource->GetLightColor();
+			lightColor.x = sin(glfwGetTime() * 2.0f);
+			lightColor.y = sin(glfwGetTime() * 0.7f);
+			lightColor.z = sin(glfwGetTime() * 1.3f);
+
+			m_Shader->SetUniformVec3f("u_LightColor", lightColor);
+
+			m_Shader->SetUniformVec3f("u_Material.ambient", glm::vec3(0.19225, 0.19225, 0.19225));
+			m_Shader->SetUniformVec3f("u_Material.diffuse", glm::vec3(0.50754, 0.50754, 0.50754));
+			m_Shader->SetUniformVec3f("u_Material.specular", glm::vec3(0.508273, 0.508273, 0.508273));
+			m_Shader->SetUniform1f("u_Material.shininess", 0.4*128);
+
 
 			Renderer::Submit(m_VertexArray, m_Shader, model);
 			glDrawArrays(GL_TRIANGLES, 0, 36);
