@@ -7,7 +7,8 @@
 class LightSource
 {
 public:
-	LightSource(const glm::vec3 &position = {2.2f,1.0f,2.0f}, const glm::vec3 &emitColor = { 1.0f,1.0f,1.0f }, const glm::vec3 &blubColor = { 1.0f,1.0f,1.0f })
+	//{2.2f,1.0f,2.0f}
+	LightSource(const glm::vec3 &position = { 2.2f,1.0f,2.0f }, const glm::vec3 &emitColor = { 1.0f,1.0f,1.0f }, const glm::vec3 &blubColor = { 1.0f,1.0f,1.0f })
 		:m_Position(position),m_EmitColor(emitColor),m_BlubColor(blubColor){
 		Init();
 	}

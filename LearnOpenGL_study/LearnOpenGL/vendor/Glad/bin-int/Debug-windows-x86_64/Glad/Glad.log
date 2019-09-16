@@ -1,19 +1,31 @@
-﻿生成启动时间为 2019/9/2 19:39:23。
-     1>项目“F:\OpenGL\LearnOpenGL\LearnOpenGL\vendor\Glad\Glad.vcxproj”在节点 3 上(Build 个目标)。
-     1>InitializeBuildStatus:
+﻿生成启动时间为 2019/9/16 13:49:20。
+     1>项目“F:\OpenGL\LearnOpenGL\LearnOpenGL\vendor\Glad\Glad.vcxproj”在节点 3 上(Rebuild 个目标)。
+     1>_PrepareForClean:
+         正在删除文件“bin-int\Debug-windows-x86_64\Glad\Glad.tlog\Glad.lastbuildstate”。
+       InitializeBuildStatus:
          正在创建“bin-int\Debug-windows-x86_64\Glad\Glad.tlog\unsuccessfulbuild”，因为已指定“AlwaysCreate”。
        ClCompile:
-         所有输出均为最新。
+         C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\bin\HostX86\x64\CL.exe /c /Iinclude /ZI /JMC /nologo /W3 /WX- /diagnostics:classic /Od /D _UNICODE /D UNICODE /Gm- /EHsc /RTC1 /MTd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"bin-int\Debug-windows-x86_64\Glad\\" /Fd"bin-int\Debug-windows-x86_64\Glad\Glad.pdb" /Gd /TC /FC /errorReport:prompt src\glad.c
+         glad.c
+     1>c:\program files (x86)\windows kits\10\include\10.0.17763.0\shared\minwindef.h(130): warning C4005: “APIENTRY”: 宏重定义
+         f:\opengl\learnopengl\learnopengl\vendor\glad\include\glad\glad.h(32): note: 参见“APIENTRY”的前一个定义
        Lib:
-         所有输出均为最新。
+         C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\bin\HostX86\x64\Lib.exe /OUT:"bin\Debug-windows-x86_64\Glad\Glad.lib" /NOLOGO /MACHINE:X64 "bin-int\Debug-windows-x86_64\Glad\glad.obj"
          Glad.vcxproj -> F:\OpenGL\LearnOpenGL\LearnOpenGL\vendor\Glad\bin\Debug-windows-x86_64\Glad\Glad.lib
+       CopyFilesToOutputDirectory:
+         正在将文件从“bin-int\Debug-windows-x86_64\Glad\Glad.pdb”复制到“bin\Debug-windows-x86_64\Glad\Glad.pdb”。
        FinalizeBuildStatus:
          正在删除文件“bin-int\Debug-windows-x86_64\Glad\Glad.tlog\unsuccessfulbuild”。
          正在对“bin-int\Debug-windows-x86_64\Glad\Glad.tlog\Glad.lastbuildstate”执行 Touch 任务。
-     1>已完成生成项目“F:\OpenGL\LearnOpenGL\LearnOpenGL\vendor\Glad\Glad.vcxproj”(Build 个目标)的操作。
+     1>已完成生成项目“F:\OpenGL\LearnOpenGL\LearnOpenGL\vendor\Glad\Glad.vcxproj”(Rebuild 个目标)的操作。
 
 已成功生成。
-    0 个警告
+
+       “F:\OpenGL\LearnOpenGL\LearnOpenGL\vendor\Glad\Glad.vcxproj”(Rebuild 目标) (1) ->
+       (ClCompile 目标) -> 
+         c:\program files (x86)\windows kits\10\include\10.0.17763.0\shared\minwindef.h(130): warning C4005: “APIENTRY”: 宏重定义
+
+    1 个警告
     0 个错误
 
-已用时间 00:00:00.86
+已用时间 00:00:04.65
