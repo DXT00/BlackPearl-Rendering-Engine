@@ -1219,11 +1219,9 @@
     <ClCompile Include="src\GameEngine\Renderer\Lighting\LightSource.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="src\GameEngine\Renderer\Texture\awesomeface.png">
-      <Filter>src\GameEngine\Renderer\Texture</Filter>
-    </Image>
-    <Image Include="src\GameEngine\Renderer\Texture\container.jpg">
-      <Filter>src\GameEngine\Renderer\Texture</Filter>
-    </Image>
+    <Image Include="assets\texture\container2.png" />
+    <Image Include="assets\texture\container.jpg" />
+    <Image Include="assets\texture\awesomeface.png" />
+    <Image Include="assets\texture\1.jpg" />
   </ItemGroup>
 </Project>

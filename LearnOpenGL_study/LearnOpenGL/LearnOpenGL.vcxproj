@@ -549,8 +549,10 @@
     <ClCompile Include="src\GameEngine\Timestep\Timestep.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="src\GameEngine\Renderer\Texture\awesomeface.png" />
-    <Image Include="src\GameEngine\Renderer\Texture\container.jpg" />
+    <Image Include="assets\texture\1.jpg" />
+    <Image Include="assets\texture\awesomeface.png" />
+    <Image Include="assets\texture\container.jpg" />
+    <Image Include="assets\texture\container2.png" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="vendor\GLFW\GLFW.vcxproj">

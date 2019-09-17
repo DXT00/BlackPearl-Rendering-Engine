@@ -31,54 +31,97 @@ Application::Application()
 	Renderer::Init();
 
 	float vertices[] = {
-		// positions          // texture coords  //normal
-		 -0.5f, -0.5f, -0.5f, 0.0f, 0.0f,   0.0f, 0.0f, -1.0f,
-		 0.5f, -0.5f, -0.5f,  1.0f, 0.0f,   0.0f, 0.0f, -1.0f,
-		 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,   0.0f, 0.0f, -1.0f,
-		 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,   0.0f, 0.0f, -1.0f,
-		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,   0.0f, 0.0f, -1.0f,
-		-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,   0.0f, 0.0f, -1.0f,
-										    
-		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,   0.0f, 0.0f, 1.0f,
-		 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,   0.0f, 0.0f, 1.0f,
-		 0.5f,  0.5f,  0.5f,  1.0f, 1.0f,   0.0f, 0.0f, 1.0f,
-		 0.5f,  0.5f,  0.5f,  1.0f, 1.0f,   0.0f, 0.0f, 1.0f,
-		-0.5f,  0.5f,  0.5f,  0.0f, 1.0f,   0.0f, 0.0f, 1.0f,
-		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,   0.0f, 0.0f, 1.0f,
-										    
-		-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,   -1.0f, 0.0f, 0.0f,
-		-0.5f,  0.5f, -0.5f,  1.0f, 1.0f,   -1.0f, 0.0f, 0.0f,
-		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,   -1.0f, 0.0f, 0.0f,
-		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,   -1.0f, 0.0f, 0.0f,
-		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,   -1.0f, 0.0f, 0.0f,
-		-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,   -1.0f, 0.0f, 0.0f,
-										    
-		 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,   1.0f, 0.0f, 0.0f,
-		 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,   1.0f, 0.0f, 0.0f,
-		 0.5f, -0.5f, -0.5f,  0.0f, 1.0f,   1.0f, 0.0f, 0.0f,
-		 0.5f, -0.5f, -0.5f,  0.0f, 1.0f,   1.0f, 0.0f, 0.0f,
-		 0.5f, -0.5f,  0.5f,  0.0f, 0.0f,   1.0f, 0.0f, 0.0f,
-		 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,   1.0f, 0.0f, 0.0f,
-										    
-		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,   0.0f, -1.0f, 0.0f,
-		 0.5f, -0.5f, -0.5f,  1.0f, 1.0f,   0.0f, -1.0f, 0.0f,
-		 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,   0.0f, -1.0f, 0.0f,
-		 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,   0.0f, -1.0f, 0.0f,
-		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,   0.0f, -1.0f, 0.0f,
-		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,   0.0f, -1.0f, 0.0f,
-										    
-		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,   0.0f, 1.0f, 0.0f,
-		 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,   0.0f, 1.0f, 0.0f,
-		 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,   0.0f, 1.0f, 0.0f,
-		 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,   0.0f, 1.0f, 0.0f,
-		-0.5f,  0.5f,  0.5f,  0.0f, 0.0f,   0.0f, 1.0f, 0.0f,
-		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,   0.0f, 1.0f, 0.0f
+		// positions			// texture coords  //normal
+		 -0.5f, -0.5f, -0.5f,	0.0f, 0.0f,		0.0f, 0.0f, -1.0f,
+		 0.5f, -0.5f, -0.5f,	1.0f, 0.0f,		0.0f, 0.0f, -1.0f,
+		 0.5f,  0.5f, -0.5f,	1.0f, 1.0f,		0.0f, 0.0f, -1.0f,
+		 0.5f,  0.5f, -0.5f,	1.0f, 1.0f,		0.0f, 0.0f, -1.0f,
+		-0.5f,  0.5f, -0.5f,	0.0f, 1.0f,		0.0f, 0.0f, -1.0f,
+		-0.5f, -0.5f, -0.5f,	0.0f, 0.0f,		0.0f, 0.0f, -1.0f,
+										
+		-0.5f, -0.5f,  0.5f,	0.0f, 0.0f,		0.0f, 0.0f, 1.0f,
+		 0.5f, -0.5f,  0.5f,	1.0f, 0.0f,		0.0f, 0.0f, 1.0f,
+		 0.5f,  0.5f,  0.5f,	1.0f, 1.0f,		0.0f, 0.0f, 1.0f,
+		 0.5f,  0.5f,  0.5f,	1.0f, 1.0f,		0.0f, 0.0f, 1.0f,
+		-0.5f,  0.5f,  0.5f,	0.0f, 1.0f,		0.0f, 0.0f, 1.0f,
+		-0.5f, -0.5f,  0.5f,	0.0f, 0.0f,		0.0f, 0.0f, 1.0f,
+										
+		-0.5f,  0.5f,  0.5f,	1.0f, 0.0f,		-1.0f, 0.0f, 0.0f,
+		-0.5f,  0.5f, -0.5f,	1.0f, 1.0f,		-1.0f, 0.0f, 0.0f,
+		-0.5f, -0.5f, -0.5f,	0.0f, 1.0f,		-1.0f, 0.0f, 0.0f,
+		-0.5f, -0.5f, -0.5f,	0.0f, 1.0f,		-1.0f, 0.0f, 0.0f,
+		-0.5f, -0.5f,  0.5f,	0.0f, 0.0f,		-1.0f, 0.0f, 0.0f,
+		-0.5f,  0.5f,  0.5f,	1.0f, 0.0f,		-1.0f, 0.0f, 0.0f,
+										
+		 0.5f,  0.5f,  0.5f,	1.0f, 0.0f,		1.0f, 0.0f, 0.0f,
+		 0.5f,  0.5f, -0.5f,	1.0f, 1.0f,		1.0f, 0.0f, 0.0f,
+		 0.5f, -0.5f, -0.5f,	0.0f, 1.0f,		1.0f, 0.0f, 0.0f,
+		 0.5f, -0.5f, -0.5f,	0.0f, 1.0f,		1.0f, 0.0f, 0.0f,
+		 0.5f, -0.5f,  0.5f,	0.0f, 0.0f,		1.0f, 0.0f, 0.0f,
+		 0.5f,  0.5f,  0.5f,	1.0f, 0.0f,		1.0f, 0.0f, 0.0f,
+										
+		-0.5f, -0.5f, -0.5f,	0.0f, 1.0f,		0.0f, -1.0f, 0.0f,
+		 0.5f, -0.5f, -0.5f,	1.0f, 1.0f,		0.0f, -1.0f, 0.0f,
+		 0.5f, -0.5f,  0.5f,	1.0f, 0.0f,		0.0f, -1.0f, 0.0f,
+		 0.5f, -0.5f,  0.5f,	1.0f, 0.0f,		0.0f, -1.0f, 0.0f,
+		-0.5f, -0.5f,  0.5f,	0.0f, 0.0f,		0.0f, -1.0f, 0.0f,
+		-0.5f, -0.5f, -0.5f,	0.0f, 1.0f,		0.0f, -1.0f, 0.0f,
+										
+		-0.5f,  0.5f, -0.5f,	0.0f, 1.0f,		0.0f, 1.0f, 0.0f,
+		 0.5f,  0.5f, -0.5f,	1.0f, 1.0f,		0.0f, 1.0f, 0.0f,
+		 0.5f,  0.5f,  0.5f,	1.0f, 0.0f,		0.0f, 1.0f, 0.0f,
+		 0.5f,  0.5f,  0.5f,	1.0f, 0.0f,		0.0f, 1.0f, 0.0f,
+		-0.5f,  0.5f,  0.5f,	0.0f, 0.0f,		0.0f, 1.0f, 0.0f,
+		-0.5f,  0.5f, -0.5f,	0.0f, 1.0f,		0.0f, 1.0f, 0.0f
 	};
-	
+	float woodboxVertices[] = {
+		// positions			 // texture coords				 // normals          
+		-0.5f, -0.5f, -0.5f,	 0.0f,  0.0f,	 0.0f,  0.0f, -1.0f,
+		 0.5f, -0.5f, -0.5f,	 1.0f,  0.0f,	 0.0f,  0.0f, -1.0f,
+		 0.5f,  0.5f, -0.5f,	 1.0f,  1.0f,	 0.0f,  0.0f, -1.0f,
+		 0.5f,  0.5f, -0.5f,	 1.0f,  1.0f,	 0.0f,  0.0f, -1.0f,
+		-0.5f,  0.5f, -0.5f,	 0.0f,  1.0f,	 0.0f,  0.0f, -1.0f,
+		-0.5f, -0.5f, -0.5f,	 0.0f,  0.0f,	 0.0f,  0.0f, -1.0f,
+
+		-0.5f, -0.5f,  0.5f,	 0.0f,  0.0f,	 0.0f,  0.0f,  1.0f,
+		 0.5f, -0.5f,  0.5f,	 1.0f,  0.0f,	 0.0f,  0.0f,  1.0f,
+		 0.5f,  0.5f,  0.5f,	 1.0f,  1.0f,	 0.0f,  0.0f,  1.0f,
+		 0.5f,  0.5f,  0.5f,	 1.0f,  1.0f,	 0.0f,  0.0f,  1.0f,
+		-0.5f,  0.5f,  0.5f,	 0.0f,  1.0f,	 0.0f,  0.0f,  1.0f,
+		-0.5f, -0.5f,  0.5f,	 0.0f,  0.0f,	 0.0f,  0.0f,  1.0f,
+
+		-0.5f,  0.5f,  0.5f,	 1.0f,  0.0f,	-1.0f,  0.0f,  0.0f,
+		-0.5f,  0.5f, -0.5f,	 1.0f,  1.0f,	-1.0f,  0.0f,  0.0f,
+		-0.5f, -0.5f, -0.5f,	 0.0f,  1.0f,	-1.0f,  0.0f,  0.0f,
+		-0.5f, -0.5f, -0.5f,	 0.0f,  1.0f,	-1.0f,  0.0f,  0.0f,
+		-0.5f, -0.5f,  0.5f,	 0.0f,  0.0f,	-1.0f,  0.0f,  0.0f,
+		-0.5f,  0.5f,  0.5f,	 1.0f,  0.0f,	-1.0f,  0.0f,  0.0f,
+
+		 0.5f,  0.5f,  0.5f,	 1.0f,  0.0f,	 1.0f,  0.0f,  0.0f,
+		 0.5f,  0.5f, -0.5f,	 1.0f,  1.0f,	 1.0f,  0.0f,  0.0f,
+		 0.5f, -0.5f, -0.5f,	 0.0f,  1.0f,	 1.0f,  0.0f,  0.0f,
+		 0.5f, -0.5f, -0.5f,	 0.0f,  1.0f,	 1.0f,  0.0f,  0.0f,
+		 0.5f, -0.5f,  0.5f,	 0.0f,  0.0f,	 1.0f,  0.0f,  0.0f,
+		 0.5f,  0.5f,  0.5f,	 1.0f,  0.0f,	 1.0f,  0.0f,  0.0f,
+
+		-0.5f, -0.5f, -0.5f,	 0.0f,  1.0f,	 0.0f, -1.0f,  0.0f,
+		 0.5f, -0.5f, -0.5f,	 1.0f,  1.0f,	 0.0f, -1.0f,  0.0f,
+		 0.5f, -0.5f,  0.5f,	 1.0f,  0.0f,	 0.0f, -1.0f,  0.0f,
+		 0.5f, -0.5f,  0.5f,	 1.0f,  0.0f,	 0.0f, -1.0f,  0.0f,
+		-0.5f, -0.5f,  0.5f,	 0.0f,  0.0f,	 0.0f, -1.0f,  0.0f,
+		-0.5f, -0.5f, -0.5f,	 0.0f,  1.0f,	 0.0f, -1.0f,  0.0f,
+
+		-0.5f,  0.5f, -0.5f,	 0.0f,  1.0f,	 0.0f,  1.0f,  0.0f,
+		 0.5f,  0.5f, -0.5f,	 1.0f,  1.0f,	 0.0f,  1.0f,  0.0f,
+		 0.5f,  0.5f,  0.5f,	 1.0f,  0.0f,	 0.0f,  1.0f,  0.0f,
+		 0.5f,  0.5f,  0.5f,	 1.0f,  0.0f,	 0.0f,  1.0f,  0.0f,
+		-0.5f,  0.5f,  0.5f,	 0.0f,  0.0f,	 0.0f,  1.0f,  0.0f,
+		-0.5f,  0.5f, -0.5f,	 0.0f,  1.0f,	 0.0f,  1.0f,  0.0f,
+	};
 	m_VertexArray.reset(new VertexArray());
 
 	std::shared_ptr<VertexBuffer> vertexBuffer;
-	vertexBuffer.reset(new VertexBuffer(vertices, sizeof(vertices)));
+	vertexBuffer.reset(new VertexBuffer(woodboxVertices, sizeof(woodboxVertices)));
 
 
 	VertexBufferLayout layout = {
@@ -93,15 +136,16 @@ Application::Application()
 
 
 	// load and create a texture 
-	m_Texture1.reset(new Texture("F:\\OpenGL\\LearnOpenGL\\LearnOpenGL\\src\\GameEngine\\Renderer\\Texture\\container.jpg"));
-	m_Texture2.reset(new Texture("F:\\OpenGL\\LearnOpenGL\\LearnOpenGL\\src\\GameEngine\\Renderer\\Texture\\1.jpg"));
-
-
+	m_Texture1.reset(new Texture("assets/texture/container.jpg"));
+	m_Texture2.reset(new Texture("assets/texture/1.jpg"));
+	m_DiffuseMap.reset(new Texture("assets/texture/awesomeface.png"));
+	
 	//Shader
 	m_Shader.reset(new Shader("assets/shaders/Texture.glsl"));
 	m_Shader->Bind();
 	m_Shader->SetUniform1i("u_Texture1", 0);
 	m_Shader->SetUniform1i("u_Texture2", 1);
+	m_Shader->SetUniform1i("u_Material.diffuse", 2);
 	m_Shader->SetUniform1f("u_MixValue", 0.5);
 	m_Shader->SetUniformVec3f("u_LightColor", m_LightSource->GetLightColor());
 	m_Shader->SetUniformVec3f("u_LightPos", m_LightSource->GetPosition());
@@ -155,7 +199,8 @@ void Application::Run()
 		m_Texture1->Bind();
 		glActiveTexture(GL_TEXTURE1);
 		m_Texture2->Bind();
-
+		glActiveTexture(GL_TEXTURE2);
+		m_DiffuseMap->Bind();
 
 		
 		Renderer::BeginScene(*m_Camera);
@@ -175,17 +220,19 @@ void Application::Run()
 			m_Shader->SetUniformMat4f("u_TranInverseModel", glm::transpose(glm::inverse(model)));
 			m_Shader->SetUniformVec3f("u_CameraViewPos", m_Camera->GetPosition());
 
-			glm::vec3 lightColor;// = m_LightSource->GetLightColor();
-			lightColor.x = sin(glfwGetTime() * 2.0f);
-			lightColor.y = sin(glfwGetTime() * 0.7f);
-			lightColor.z = sin(glfwGetTime() * 1.3f);
+			//glm::vec3 lightColor;// = m_LightSource->GetLightColor();
+			//lightColor.x = sin(glfwGetTime() * 2.0f);
+			//lightColor.y = sin(glfwGetTime() * 0.7f);
+			//lightColor.z = sin(glfwGetTime() * 1.3f);
 
-			m_Shader->SetUniformVec3f("u_LightColor", lightColor);
+			m_Shader->SetUniformVec3f("u_LightColor", m_LightSource->GetLightColor());
 
-			m_Shader->SetUniformVec3f("u_Material.ambient", glm::vec3(0.19225, 0.19225, 0.19225));
-			m_Shader->SetUniformVec3f("u_Material.diffuse", glm::vec3(0.50754, 0.50754, 0.50754));
-			m_Shader->SetUniformVec3f("u_Material.specular", glm::vec3(0.508273, 0.508273, 0.508273));
-			m_Shader->SetUniform1f("u_Material.shininess", 0.4*128);
+			m_Shader->SetUniformVec3f("u_Material.ambient", glm::vec3(0.25,0.20725,0.20725));
+			m_Shader->SetUniform1i("u_Material.diffuse", 2);
+
+			//m_Shader->SetUniformVec3f("u_Material.diffuse", glm::vec3(1	,0.829	,0.829));
+			m_Shader->SetUniformVec3f("u_Material.specular", glm::vec3(0.5,	0.5,0.5));
+			m_Shader->SetUniform1f("u_Material.shininess",64.0f);
 
 
 			Renderer::Submit(m_VertexArray, m_Shader, model);

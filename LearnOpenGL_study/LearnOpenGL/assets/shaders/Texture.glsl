@@ -27,7 +27,7 @@ void main()
 
 struct Material{
 	vec3 ambient;
-	vec3 diffuse;
+	sampler2D diffuse;
 	vec3 specular;
 	float shininess;
 
@@ -56,13 +56,13 @@ uniform vec3 u_LightPos;
 uniform vec3 u_CameraViewPos;
 
 //ambient
-vec3 ambient =  u_LightColor * u_Material.ambient;
+vec3 ambient = u_LightColor * u_Material.ambient* texture(u_Material.diffuse,v_TexCoord).rgb;//u_LightColor * u_Material.ambient
 
 //diffuse
 vec3 lightDir = normalize(u_LightPos-v_FragPos);
 vec3 norm = normalize(v_Normal);
 float diff = max(dot(lightDir,norm),0.0f);
-vec3 diffuse = u_LightColor * diff * u_Material.diffuse;// u_Material.diffuse);
+vec3 diffuse = u_LightColor * diff * texture(u_Material.diffuse,v_TexCoord).rgb;// u_Material.diffuse);u_LightColor
 
 //specular
 vec3 reflectDir = normalize(reflect(-lightDir,norm));
