@@ -31,6 +31,8 @@ private:
 	std::unique_ptr<Texture> m_Texture1;
 	std::unique_ptr<Texture> m_Texture2;
 	std::unique_ptr<Texture> m_DiffuseMap;
+	std::unique_ptr<Texture> m_SpecularMap;
+	std::unique_ptr<Texture> m_EmissionMap;
 
 	unsigned int m_VertexArrayID, m_IndexBufferID, m_VertexBufferID;
 

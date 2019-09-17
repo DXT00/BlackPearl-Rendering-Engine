@@ -138,14 +138,19 @@ Application::Application()
 	// load and create a texture 
 	m_Texture1.reset(new Texture("assets/texture/container.jpg"));
 	m_Texture2.reset(new Texture("assets/texture/1.jpg"));
-	m_DiffuseMap.reset(new Texture("assets/texture/awesomeface.png"));
-	
+	m_DiffuseMap.reset(new Texture("assets/texture/container2.png"));
+	m_SpecularMap.reset(new Texture("assets/texture/container2_specular.png"));
+	m_EmissionMap.reset(new Texture("assets/texture/matrix.jpg"));
+
 	//Shader
 	m_Shader.reset(new Shader("assets/shaders/Texture.glsl"));
 	m_Shader->Bind();
 	m_Shader->SetUniform1i("u_Texture1", 0);
 	m_Shader->SetUniform1i("u_Texture2", 1);
 	m_Shader->SetUniform1i("u_Material.diffuse", 2);
+	m_Shader->SetUniform1i("u_Material.specular", 3);
+	m_Shader->SetUniform1i("u_Material.emission", 4);
+
 	m_Shader->SetUniform1f("u_MixValue", 0.5);
 	m_Shader->SetUniformVec3f("u_LightColor", m_LightSource->GetLightColor());
 	m_Shader->SetUniformVec3f("u_LightPos", m_LightSource->GetPosition());
@@ -191,7 +196,7 @@ void Application::Run()
 		// render
 		// ------
 		//glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-		glClearColor(0.1f, 0.1f, 0.1f, 0.1f);
+		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		// bind textures on corresponding texture units
@@ -201,8 +206,10 @@ void Application::Run()
 		m_Texture2->Bind();
 		glActiveTexture(GL_TEXTURE2);
 		m_DiffuseMap->Bind();
-
-		
+		glActiveTexture(GL_TEXTURE3);
+		m_SpecularMap->Bind();
+		glActiveTexture(GL_TEXTURE4);
+		m_EmissionMap->Bind();
 		Renderer::BeginScene(*m_Camera);
 
 		glm::mat4 model = glm::mat4(1.0f);
@@ -228,8 +235,10 @@ void Application::Run()
 			m_Shader->SetUniformVec3f("u_LightColor", m_LightSource->GetLightColor());
 
 			m_Shader->SetUniformVec3f("u_Material.ambient", glm::vec3(0.25,0.20725,0.20725));
-			m_Shader->SetUniform1i("u_Material.diffuse", 2);
-
+			/*m_Shader->SetUniform1i("u_Material.diffuse", 2);
+			m_Shader->SetUniform1i("u_Material.specular", 3);
+			m_Shader->SetUniform1i("u_Material.emission", 4);
+*/
 			//m_Shader->SetUniformVec3f("u_Material.diffuse", glm::vec3(1	,0.829	,0.829));
 			m_Shader->SetUniformVec3f("u_Material.specular", glm::vec3(0.5,	0.5,0.5));
 			m_Shader->SetUniform1f("u_Material.shininess",64.0f);

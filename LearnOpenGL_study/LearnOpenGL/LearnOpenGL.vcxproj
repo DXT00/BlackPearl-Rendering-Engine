@@ -137,6 +137,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\GameEngine\Renderer\Lighting\ParallelLight.h" />
     <ClInclude Include="src\GameEngine\Renderer\Buffer.h" />
     <ClInclude Include="src\GameEngine\Renderer\Lighting\LightSource.h" />
     <ClInclude Include="src\GameEngine\Event\Event.h" />
@@ -528,6 +529,7 @@
     <ClInclude Include="vendor\stb\stb_image.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\GameEngine\Renderer\Lighting\ParallelLight.cpp" />
     <ClCompile Include="src\GameEngine\Renderer\Buffer.cpp" />
     <ClCompile Include="src\GameEngine\Renderer\Lighting\LightSource.cpp" />
     <ClCompile Include="src\GameEngine\Input.cpp" />
@@ -553,6 +555,8 @@
     <Image Include="assets\texture\awesomeface.png" />
     <Image Include="assets\texture\container.jpg" />
     <Image Include="assets\texture\container2.png" />
+    <Image Include="assets\texture\container2_specular.png" />
+    <Image Include="assets\texture\matrix.jpg" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="vendor\GLFW\GLFW.vcxproj">
