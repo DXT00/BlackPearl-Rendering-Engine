@@ -137,27 +137,29 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="src\GameEngine\Renderer\Lighting\ParallelLight.h" />
-    <ClInclude Include="src\GameEngine\Renderer\Buffer.h" />
-    <ClInclude Include="src\GameEngine\Renderer\Lighting\LightSource.h" />
+    <ClInclude Include="src\GameEngine\Application.h" />
+    <ClInclude Include="src\GameEngine\Core.h" />
     <ClInclude Include="src\GameEngine\Event\Event.h" />
     <ClInclude Include="src\GameEngine\Event\KeyEvent.h" />
     <ClInclude Include="src\GameEngine\Event\MouseEvent.h" />
     <ClInclude Include="src\GameEngine\Input.h" />
-    <ClInclude Include="src\GameEngine\Renderer\Renderer.h" />
-    <ClInclude Include="src\GameEngine\Renderer\Camera\Camera.h" />
-    <ClInclude Include="src\GameEngine\Renderer\Camera\PerspectiveCamera.h" />
-    <ClInclude Include="src\GameEngine\Renderer\Camera\OrthographicCamera.h" />
-    <ClInclude Include="src\GameEngine\Application.h" />
-    <ClInclude Include="src\GameEngine\Core.h" />
     <ClInclude Include="src\GameEngine\Log.h" />
+    <ClInclude Include="src\GameEngine\Renderer\Buffer.h" />
+    <ClInclude Include="src\GameEngine\Renderer\Camera\Camera.h" />
+    <ClInclude Include="src\GameEngine\Renderer\Camera\OrthographicCamera.h" />
+    <ClInclude Include="src\GameEngine\Renderer\Camera\PerspectiveCamera.h" />
     <ClInclude Include="src\GameEngine\Renderer\Context.h" />
+    <ClInclude Include="src\GameEngine\Renderer\Lighting\Light.h" />
+    <ClInclude Include="src\GameEngine\Renderer\Lighting\LightType.h" />
+    <ClInclude Include="src\GameEngine\Renderer\Lighting\ParallelLight.h" />
+    <ClInclude Include="src\GameEngine\Renderer\Lighting\PointLight.h" />
+    <ClInclude Include="src\GameEngine\Renderer\Renderer.h" />
     <ClInclude Include="src\GameEngine\Renderer\Shader.h" />
     <ClInclude Include="src\GameEngine\Renderer\Texture\Texture.h" />
     <ClInclude Include="src\GameEngine\Renderer\VertexArray.h" />
+    <ClInclude Include="src\GameEngine\Timestep\Timestep.h" />
     <ClInclude Include="src\GameEngine\Window.h" />
     <ClInclude Include="src\pch.h" />
-    <ClInclude Include="src\GameEngine\Timestep\Timestep.h" />
     <ClInclude Include="vendor\glm\glm\common.hpp" />
     <ClInclude Include="vendor\glm\glm\detail\_features.hpp" />
     <ClInclude Include="vendor\glm\glm\detail\_fixes.hpp" />
@@ -529,34 +531,28 @@
     <ClInclude Include="vendor\stb\stb_image.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\GameEngine\Renderer\Lighting\ParallelLight.cpp" />
-    <ClCompile Include="src\GameEngine\Renderer\Buffer.cpp" />
-    <ClCompile Include="src\GameEngine\Renderer\Lighting\LightSource.cpp" />
-    <ClCompile Include="src\GameEngine\Input.cpp" />
-    <ClCompile Include="src\GameEngine\Renderer\Renderer.cpp" />
-    <ClCompile Include="src\GameEngine\Renderer\Camera\Camera.cpp" />
-    <ClCompile Include="src\GameEngine\Renderer\Camera\PerspectiveCamera.cpp" />
-    <ClCompile Include="src\GameEngine\Renderer\Camera\OrthographicCamera.cpp" />
     <ClCompile Include="src\GameEngine\Application.cpp" />
     <ClCompile Include="src\GameEngine\EntryPoint.cpp" />
+    <ClCompile Include="src\GameEngine\Input.cpp" />
     <ClCompile Include="src\GameEngine\Log.cpp" />
+    <ClCompile Include="src\GameEngine\Renderer\Buffer.cpp" />
+    <ClCompile Include="src\GameEngine\Renderer\Camera\Camera.cpp" />
+    <ClCompile Include="src\GameEngine\Renderer\Camera\OrthographicCamera.cpp" />
+    <ClCompile Include="src\GameEngine\Renderer\Camera\PerspectiveCamera.cpp" />
     <ClCompile Include="src\GameEngine\Renderer\Context.cpp" />
+    <ClCompile Include="src\GameEngine\Renderer\Lighting\Light.cpp" />
+    <ClCompile Include="src\GameEngine\Renderer\Lighting\LightType.cpp" />
+    <ClCompile Include="src\GameEngine\Renderer\Lighting\ParallelLight.cpp" />
+    <ClCompile Include="src\GameEngine\Renderer\Lighting\PointLight.cpp" />
+    <ClCompile Include="src\GameEngine\Renderer\Renderer.cpp" />
     <ClCompile Include="src\GameEngine\Renderer\Shader.cpp" />
     <ClCompile Include="src\GameEngine\Renderer\Texture\Texture.cpp" />
     <ClCompile Include="src\GameEngine\Renderer\VertexArray.cpp" />
+    <ClCompile Include="src\GameEngine\Timestep\Timestep.cpp" />
     <ClCompile Include="src\GameEngine\Window.cpp" />
     <ClCompile Include="src\pch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="src\GameEngine\Timestep\Timestep.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="assets\texture\1.jpg" />
-    <Image Include="assets\texture\awesomeface.png" />
-    <Image Include="assets\texture\container.jpg" />
-    <Image Include="assets\texture\container2.png" />
-    <Image Include="assets\texture\container2_specular.png" />
-    <Image Include="assets\texture\matrix.jpg" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="vendor\GLFW\GLFW.vcxproj">

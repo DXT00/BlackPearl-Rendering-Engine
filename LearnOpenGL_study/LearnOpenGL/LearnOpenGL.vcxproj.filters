@@ -7,11 +7,23 @@
     <Filter Include="src\GameEngine">
       <UniqueIdentifier>{8CEC7F4E-78BA-7354-614E-E47A4DBB4FB9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\GameEngine\Event">
+      <UniqueIdentifier>{DDA65F2D-C935-E9F6-7254-FDF15EC2F99C}</UniqueIdentifier>
+    </Filter>
     <Filter Include="src\GameEngine\Renderer">
       <UniqueIdentifier>{B20D7C77-1E45-C40E-274F-28329305EB07}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\GameEngine\Renderer\Camera">
+      <UniqueIdentifier>{EA05E516-D62B-AF7D-BF71-3449AB36D449}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\GameEngine\Renderer\Lighting">
+      <UniqueIdentifier>{7729990C-637A-844E-8CDE-7210788E17B8}</UniqueIdentifier>
+    </Filter>
     <Filter Include="src\GameEngine\Renderer\Texture">
       <UniqueIdentifier>{12C5471A-7EA8-565A-87AB-8496F30D1DAB}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\GameEngine\Timestep">
+      <UniqueIdentifier>{2650AD81-9287-F518-9B91-593C07481C12}</UniqueIdentifier>
     </Filter>
     <Filter Include="vendor">
       <UniqueIdentifier>{B3738122-9F15-ACF8-88D0-BF4C74113349}</UniqueIdentifier>
@@ -45,10 +57,49 @@
     <ClInclude Include="src\GameEngine\Core.h">
       <Filter>src\GameEngine</Filter>
     </ClInclude>
+    <ClInclude Include="src\GameEngine\Event\Event.h">
+      <Filter>src\GameEngine\Event</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GameEngine\Event\KeyEvent.h">
+      <Filter>src\GameEngine\Event</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GameEngine\Event\MouseEvent.h">
+      <Filter>src\GameEngine\Event</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GameEngine\Input.h">
+      <Filter>src\GameEngine</Filter>
+    </ClInclude>
     <ClInclude Include="src\GameEngine\Log.h">
       <Filter>src\GameEngine</Filter>
     </ClInclude>
+    <ClInclude Include="src\GameEngine\Renderer\Buffer.h">
+      <Filter>src\GameEngine\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GameEngine\Renderer\Camera\Camera.h">
+      <Filter>src\GameEngine\Renderer\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GameEngine\Renderer\Camera\OrthographicCamera.h">
+      <Filter>src\GameEngine\Renderer\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GameEngine\Renderer\Camera\PerspectiveCamera.h">
+      <Filter>src\GameEngine\Renderer\Camera</Filter>
+    </ClInclude>
     <ClInclude Include="src\GameEngine\Renderer\Context.h">
+      <Filter>src\GameEngine\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GameEngine\Renderer\Lighting\Light.h">
+      <Filter>src\GameEngine\Renderer\Lighting</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GameEngine\Renderer\Lighting\LightType.h">
+      <Filter>src\GameEngine\Renderer\Lighting</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GameEngine\Renderer\Lighting\ParallelLight.h">
+      <Filter>src\GameEngine\Renderer\Lighting</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GameEngine\Renderer\Lighting\PointLight.h">
+      <Filter>src\GameEngine\Renderer\Lighting</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GameEngine\Renderer\Renderer.h">
       <Filter>src\GameEngine\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="src\GameEngine\Renderer\Shader.h">
@@ -56,6 +107,12 @@
     </ClInclude>
     <ClInclude Include="src\GameEngine\Renderer\Texture\Texture.h">
       <Filter>src\GameEngine\Renderer\Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GameEngine\Renderer\VertexArray.h">
+      <Filter>src\GameEngine\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GameEngine\Timestep\Timestep.h">
+      <Filter>src\GameEngine\Timestep</Filter>
     </ClInclude>
     <ClInclude Include="src\GameEngine\Window.h">
       <Filter>src\GameEngine</Filter>
@@ -1170,19 +1227,6 @@
     <ClInclude Include="vendor\stb\stb_image.h">
       <Filter>vendor\stb</Filter>
     </ClInclude>
-    <ClInclude Include="src\GameEngine\Renderer\Camera\Camera.h" />
-    <ClInclude Include="src\GameEngine\Renderer\Camera\PerspectiveCamera.h" />
-    <ClInclude Include="src\GameEngine\Renderer\Camera\OrthographicCamera.h" />
-    <ClInclude Include="src\GameEngine\Renderer\Renderer.h" />
-    <ClInclude Include="src\GameEngine\Input.h" />
-    <ClInclude Include="src\GameEngine\Timestep\Timestep.h" />
-    <ClInclude Include="src\GameEngine\Event\Event.h" />
-    <ClInclude Include="src\GameEngine\Event\KeyEvent.h" />
-    <ClInclude Include="src\GameEngine\Event\MouseEvent.h" />
-    <ClInclude Include="src\GameEngine\Renderer\VertexArray.h" />
-    <ClInclude Include="src\GameEngine\Renderer\Buffer.h" />
-    <ClInclude Include="src\GameEngine\Renderer\Lighting\LightSource.h" />
-    <ClInclude Include="src\GameEngine\Renderer\Lighting\ParallelLight.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\GameEngine\Application.cpp">
@@ -1191,10 +1235,40 @@
     <ClCompile Include="src\GameEngine\EntryPoint.cpp">
       <Filter>src\GameEngine</Filter>
     </ClCompile>
+    <ClCompile Include="src\GameEngine\Input.cpp">
+      <Filter>src\GameEngine</Filter>
+    </ClCompile>
     <ClCompile Include="src\GameEngine\Log.cpp">
       <Filter>src\GameEngine</Filter>
     </ClCompile>
+    <ClCompile Include="src\GameEngine\Renderer\Buffer.cpp">
+      <Filter>src\GameEngine\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GameEngine\Renderer\Camera\Camera.cpp">
+      <Filter>src\GameEngine\Renderer\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GameEngine\Renderer\Camera\OrthographicCamera.cpp">
+      <Filter>src\GameEngine\Renderer\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GameEngine\Renderer\Camera\PerspectiveCamera.cpp">
+      <Filter>src\GameEngine\Renderer\Camera</Filter>
+    </ClCompile>
     <ClCompile Include="src\GameEngine\Renderer\Context.cpp">
+      <Filter>src\GameEngine\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GameEngine\Renderer\Lighting\Light.cpp">
+      <Filter>src\GameEngine\Renderer\Lighting</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GameEngine\Renderer\Lighting\LightType.cpp">
+      <Filter>src\GameEngine\Renderer\Lighting</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GameEngine\Renderer\Lighting\ParallelLight.cpp">
+      <Filter>src\GameEngine\Renderer\Lighting</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GameEngine\Renderer\Lighting\PointLight.cpp">
+      <Filter>src\GameEngine\Renderer\Lighting</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GameEngine\Renderer\Renderer.cpp">
       <Filter>src\GameEngine\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="src\GameEngine\Renderer\Shader.cpp">
@@ -1203,29 +1277,17 @@
     <ClCompile Include="src\GameEngine\Renderer\Texture\Texture.cpp">
       <Filter>src\GameEngine\Renderer\Texture</Filter>
     </ClCompile>
+    <ClCompile Include="src\GameEngine\Renderer\VertexArray.cpp">
+      <Filter>src\GameEngine\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GameEngine\Timestep\Timestep.cpp">
+      <Filter>src\GameEngine\Timestep</Filter>
+    </ClCompile>
     <ClCompile Include="src\GameEngine\Window.cpp">
       <Filter>src\GameEngine</Filter>
     </ClCompile>
     <ClCompile Include="src\pch.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\GameEngine\Renderer\Camera\Camera.cpp" />
-    <ClCompile Include="src\GameEngine\Renderer\Camera\PerspectiveCamera.cpp" />
-    <ClCompile Include="src\GameEngine\Renderer\Camera\OrthographicCamera.cpp" />
-    <ClCompile Include="src\GameEngine\Renderer\Renderer.cpp" />
-    <ClCompile Include="src\GameEngine\Input.cpp" />
-    <ClCompile Include="src\GameEngine\Timestep\Timestep.cpp" />
-    <ClCompile Include="src\GameEngine\Renderer\VertexArray.cpp" />
-    <ClCompile Include="src\GameEngine\Renderer\Buffer.cpp" />
-    <ClCompile Include="src\GameEngine\Renderer\Lighting\LightSource.cpp" />
-    <ClCompile Include="src\GameEngine\Renderer\Lighting\ParallelLight.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="assets\texture\container2.png" />
-    <Image Include="assets\texture\container.jpg" />
-    <Image Include="assets\texture\awesomeface.png" />
-    <Image Include="assets\texture\1.jpg" />
-    <Image Include="assets\texture\container2_specular.png" />
-    <Image Include="assets\texture\matrix.jpg" />
   </ItemGroup>
 </Project>

@@ -18,7 +18,7 @@
 #include "Input.h"
 #include "Event/Event.h"
 #include "Event/MouseEvent.h"
-
+#include "Renderer/Lighting/ParallelLight.h"
 Application* Application::s_Instance = nullptr;
 Application::Application()
 {
@@ -27,7 +27,7 @@ Application::Application()
 	m_Window.reset(new Window());
 	m_Window->SetCallBack(std::bind(&Application::OnEvent, this, std::placeholders::_1));
 	m_Camera.reset(Camera::Create(Camera::Perspective, { 45.0f, 800.0f, 600.0f, 0.1f, 100.0f }));
-	m_LightSource.reset(new LightSource());
+	m_LightSource.reset(Light::Create());
 	Renderer::Init();
 
 	float vertices[] = {
@@ -152,8 +152,9 @@ Application::Application()
 	m_Shader->SetUniform1i("u_Material.emission", 4);
 
 	m_Shader->SetUniform1f("u_MixValue", 0.5);
-	m_Shader->SetUniformVec3f("u_LightColor", m_LightSource->GetLightColor());
-	m_Shader->SetUniformVec3f("u_LightPos", m_LightSource->GetPosition());
+	m_Shader->SetUniformVec3f("u_ParallelLight.ambient", m_LightSource->GetLightProps().ambient);
+	m_Shader->SetUniformVec3f("u_ParallelLight.diffuse", m_LightSource->GetLightProps().diffuse);
+	m_Shader->SetUniformVec3f("u_ParallelLight.specular", m_LightSource->GetLightProps().specular);
 
 	m_Camera->SetPosition(glm::vec3(0.0f, 0.0f, 8.0f));
 	m_CameraPosition = m_Camera->GetPosition();
@@ -213,7 +214,7 @@ void Application::Run()
 		Renderer::BeginScene(*m_Camera);
 
 		glm::mat4 model = glm::mat4(1.0f);
-		model = glm::translate(model, m_LightSource->GetPosition());
+		//model = glm::translate(model, m_LightSource->GetPosition());
 		model = glm::scale(model, glm::vec3(0.5f));
 		Renderer::Submit(m_LightSource->GetVertexArray(), m_LightSource->GetShader(), model);
 		glDrawArrays(GL_TRIANGLES, 0, 36);
@@ -227,12 +228,11 @@ void Application::Run()
 			m_Shader->SetUniformMat4f("u_TranInverseModel", glm::transpose(glm::inverse(model)));
 			m_Shader->SetUniformVec3f("u_CameraViewPos", m_Camera->GetPosition());
 
-			//glm::vec3 lightColor;// = m_LightSource->GetLightColor();
-			//lightColor.x = sin(glfwGetTime() * 2.0f);
-			//lightColor.y = sin(glfwGetTime() * 0.7f);
-			//lightColor.z = sin(glfwGetTime() * 1.3f);
 
-			m_Shader->SetUniformVec3f("u_LightColor", m_LightSource->GetLightColor());
+			m_Shader->SetUniformVec3f("u_ParallelLight.ambient", m_LightSource->GetLightProps().ambient);
+			m_Shader->SetUniformVec3f("u_ParallelLight.diffuse", m_LightSource->GetLightProps().diffuse);
+			m_Shader->SetUniformVec3f("u_ParallelLight.specular", m_LightSource->GetLightProps().specular);
+			m_Shader->SetUniformVec3f("u_ParallelLight.direction", std::dynamic_pointer_cast<ParallelLight>(m_LightSource)->GetDirection());
 
 			m_Shader->SetUniformVec3f("u_Material.ambient", glm::vec3(0.25,0.20725,0.20725));
 			/*m_Shader->SetUniform1i("u_Material.diffuse", 2);

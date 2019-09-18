@@ -25,6 +25,22 @@ void main()
 #type fragment
 #version 330 core
 
+
+struct PointLight{
+	vec3 ambient;
+	vec3 diffuse;
+	vec3 specular;
+	vec3 position;
+
+};
+struct ParallelLight{
+	vec3 ambient;
+	vec3 diffuse;
+	vec3 specular;
+	vec3 direction;
+
+};
+
 struct Material{
 	vec3 ambient;
 	sampler2D diffuse;
@@ -34,10 +50,7 @@ struct Material{
 
 };
 
-out vec4 FragColor;
-
-	
-		
+out vec4 FragColor;		
 float ambientStrength = 0.1f;
 float specularStrength = 1.0f;
 //uniform float u_shininessStrength;//反光度因子，可以是2,4,8,16,..256,一个物体的反光度越高，反射光的能力越强，散射得越少，高光点就会越小
@@ -52,29 +65,69 @@ uniform sampler2D u_Texture1;
 uniform sampler2D u_Texture2;
 uniform float u_MixValue;
 
-uniform vec3 u_LightColor;
-uniform vec3 u_LightPos;
+uniform ParallelLight u_ParallelLight;
+uniform PointLight u_PointLight;
+
 uniform vec3 u_CameraViewPos;
 
-//ambient
-vec3 ambient = u_LightColor * u_Material.ambient* texture(u_Material.diffuse,v_TexCoord).rgb;//u_LightColor * u_Material.ambient
 
-//diffuse
-vec3 lightDir = normalize(u_LightPos-v_FragPos);
-vec3 norm = normalize(v_Normal);
-float diff = max(dot(lightDir,norm),0.0f);
-vec3 diffuse = u_LightColor * diff * texture(u_Material.diffuse,v_TexCoord).rgb;// u_Material.diffuse);u_LightColor
 
-//specular
-vec3 reflectDir = normalize(reflect(-lightDir,norm));
-vec3 viewDir = normalize(u_CameraViewPos-v_FragPos);
-float spec = pow(max(dot(reflectDir,viewDir),0.0),u_Material.shininess);
-vec3 specular =  u_LightColor * spec  * texture(u_Material.specular,v_TexCoord).rgb;
+vec4 CalcPointLight(PointLight light);
+vec4 CalcParallelLight(ParallelLight light);
+
+
+
 
 //emission
 vec3 emission = texture(u_Material.emission,v_TexCoord).rgb;
 
 void main(){
+	
+	FragColor = CalcParallelLight(u_ParallelLight);
+}
 
-	FragColor = vec4((diffuse + ambient + specular + emission),1.0);// * mix(texture(u_Texture1, v_TexCoord), texture(u_Texture2, vec2(1.0 - v_TexCoord.x, v_TexCoord.y)), u_MixValue);
+vec4 CalcParallelLight(ParallelLight light){
+	vec4 fragColor;
+	//ambient
+	vec3 ambient = light.ambient * u_Material.ambient* texture(u_Material.diffuse,v_TexCoord).rgb;//u_LightColor * u_Material.ambient
+	
+	//diffuse
+	vec3 lightDir = normalize(-light.direction);
+	vec3 norm = normalize(v_Normal);
+	float diff = max(dot(lightDir,norm),0.0f);
+	vec3 diffuse = light.diffuse * diff * texture(u_Material.diffuse,v_TexCoord).rgb;// u_Material.diffuse);u_LightColor
+	
+	//specular
+	vec3 reflectDir = normalize(reflect(-lightDir,norm));
+	vec3 viewDir = normalize(u_CameraViewPos-v_FragPos);
+	float spec = pow(max(dot(reflectDir,viewDir),0.0),u_Material.shininess);
+	vec3 specular =  light.specular * spec  * texture(u_Material.specular,v_TexCoord).rgb;
+
+
+	fragColor = vec4((diffuse + ambient + specular),1.0);// * mix(texture(u_Texture1, v_TexCoord), texture(u_Texture2, vec2(1.0 - v_TexCoord.x, v_TexCoord.y)), u_MixValue);
+	
+	return fragColor;
+}
+
+vec4 CalcPointLight(PointLight light){
+	vec4 fragColor;
+	//ambient
+	vec3 ambient = light.ambient * u_Material.ambient* texture(u_Material.diffuse,v_TexCoord).rgb;//u_LightColor * u_Material.ambient
+	
+	//diffuse
+	vec3 lightDir = normalize(light.position-v_FragPos);
+	vec3 norm = normalize(v_Normal);
+	float diff = max(dot(lightDir,norm),0.0f);
+	vec3 diffuse = light.diffuse * diff * texture(u_Material.diffuse,v_TexCoord).rgb;// u_Material.diffuse);u_LightColor
+	
+	//specular
+	vec3 reflectDir = normalize(reflect(-lightDir,norm));
+	vec3 viewDir = normalize(u_CameraViewPos-v_FragPos);
+	float spec = pow(max(dot(reflectDir,viewDir),0.0),u_Material.shininess);
+	vec3 specular =  light.specular * spec  * texture(u_Material.specular,v_TexCoord).rgb;
+
+
+	fragColor = vec4((diffuse + ambient + specular),1.0);// * mix(texture(u_Texture1, v_TexCoord), texture(u_Texture2, vec2(1.0 - v_TexCoord.x, v_TexCoord.y)), u_MixValue);
+	
+	return fragColor;
 }
