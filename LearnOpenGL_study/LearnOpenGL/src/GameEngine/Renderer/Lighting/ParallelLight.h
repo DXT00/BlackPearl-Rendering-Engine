@@ -8,7 +8,7 @@ public:
 		:m_Direction(direction) {
 		Init();
 	}
-	~ParallelLight();
+	virtual ~ParallelLight() = default;
 	virtual void Init() override;
 
 	inline void SetDirection(const glm::vec3& direction) { m_Direction = direction; }

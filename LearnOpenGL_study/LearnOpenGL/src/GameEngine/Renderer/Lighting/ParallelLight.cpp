@@ -4,10 +4,6 @@
 #include "GameEngine/Renderer/Renderer.h"
 
 
-ParallelLight::~ParallelLight()
-{
-}
-
 void ParallelLight::Init()
 {
 	//平行光只提供个方向并不需要Shader渲染！也不需要画出来！

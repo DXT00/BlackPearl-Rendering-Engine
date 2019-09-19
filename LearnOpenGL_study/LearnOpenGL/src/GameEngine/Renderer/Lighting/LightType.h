@@ -4,8 +4,9 @@ class LightType
 public:
 
 	enum Type {
+		ParallelLight,
 		PointLight,
-		ParallelLight
+		SpotLight
 	};
 
 	LightType();

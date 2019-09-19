@@ -1,7 +1,7 @@
 #pragma once
 #include"GameEngine/Renderer/VertexArray.h"
-#include "GameEngine/Renderer/Shader.h"
-
+//#include "GameEngine/Renderer/Shader.h"
+#include<glm/glm.hpp>
 
 
 class Light
@@ -16,14 +16,14 @@ public:
 	};
 	//position{2.2f,1.0f,2.0f}
 
-	
+	virtual ~Light() = default;
 
 	inline Props GetLightProps() const { return  m_LightProp; }
 //	virtual std::shared_ptr<VertexArray> GetVertexArray() = 0;
 	//virtual std::shared_ptr<Shader> GetShader() = 0;
 
 	virtual void Init() = 0;
-	static Light* Create(const glm::vec3& position = { 2.2f,1.0f,2.0f }, const glm::vec3& direction = { -0.2f, -1.0f, -0.3f },Props props=Props());
+	static Light* Create(const glm::vec3& position = { 2.2f,1.0f,2.0f }, const glm::vec3& direction = { -0.2f, -1.0f, -0.3f },const float cutOffAngle = glm::cos(glm::radians(45.0f)),Props props=Props());
 
 protected:
 	Props m_LightProp;

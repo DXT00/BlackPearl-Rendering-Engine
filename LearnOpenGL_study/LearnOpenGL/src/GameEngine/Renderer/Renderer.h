@@ -8,7 +8,7 @@ public:
 	Renderer();
 	~Renderer();
 	static void Init();
-	static void BeginScene(const Camera& camera);//每次Update都要调用BeginScene一次，因为Camera的ViewProjection Matrix会改变
+	static void BeginScene(const Camera& camera, const std::shared_ptr<Light> lightSource);//每次Update都要调用BeginScene一次，因为Camera的ViewProjection Matrix会改变
 	static void Submit(const std::shared_ptr<VertexArray>& vertexArray,const std::shared_ptr<Shader>& shader,const glm::mat4 &model = glm::mat4(1.0f));//Submmit前记得调用 BeginScene()!
 private:
 	struct SceneData {

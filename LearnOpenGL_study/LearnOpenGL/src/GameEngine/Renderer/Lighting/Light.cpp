@@ -2,7 +2,8 @@
 #include "LightType.h"
 #include "ParallelLight.h"
 #include "PointLight.h"
-Light * Light::Create(const glm::vec3 & position, const glm::vec3& direction, Props props)
+#include "SpotLight.h"
+Light * Light::Create(const glm::vec3 & position, const glm::vec3& direction, const float cutOffAngle, Props props)
 {
 	switch (LightType::Get())
 	{
@@ -10,6 +11,8 @@ Light * Light::Create(const glm::vec3 & position, const glm::vec3& direction, Pr
 		return new ParallelLight(direction);
 	case LightType::Type::PointLight:
 		return new PointLight(position);
+	case LightType::Type::SpotLight:
+		return new SpotLight(position, direction, cutOffAngle);
 	default:
 		GE_CORE_ERROR("Unknown Light Type!")
 		break;

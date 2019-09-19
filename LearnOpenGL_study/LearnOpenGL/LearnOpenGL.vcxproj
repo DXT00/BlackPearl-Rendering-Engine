@@ -153,6 +153,7 @@
     <ClInclude Include="src\GameEngine\Renderer\Lighting\LightType.h" />
     <ClInclude Include="src\GameEngine\Renderer\Lighting\ParallelLight.h" />
     <ClInclude Include="src\GameEngine\Renderer\Lighting\PointLight.h" />
+    <ClInclude Include="src\GameEngine\Renderer\Lighting\SpotLight.h" />
     <ClInclude Include="src\GameEngine\Renderer\Renderer.h" />
     <ClInclude Include="src\GameEngine\Renderer\Shader.h" />
     <ClInclude Include="src\GameEngine\Renderer\Texture\Texture.h" />
@@ -544,6 +545,7 @@
     <ClCompile Include="src\GameEngine\Renderer\Lighting\LightType.cpp" />
     <ClCompile Include="src\GameEngine\Renderer\Lighting\ParallelLight.cpp" />
     <ClCompile Include="src\GameEngine\Renderer\Lighting\PointLight.cpp" />
+    <ClCompile Include="src\GameEngine\Renderer\Lighting\SpotLight.cpp" />
     <ClCompile Include="src\GameEngine\Renderer\Renderer.cpp" />
     <ClCompile Include="src\GameEngine\Renderer\Shader.cpp" />
     <ClCompile Include="src\GameEngine\Renderer\Texture\Texture.cpp" />

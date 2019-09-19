@@ -19,6 +19,9 @@
 #include "Event/Event.h"
 #include "Event/MouseEvent.h"
 #include "Renderer/Lighting/ParallelLight.h"
+#include "Renderer/Lighting/PointLight.h"
+#include "Renderer/Lighting/SpotLight.h"
+#include "Renderer/Lighting/LightType.h"
 Application* Application::s_Instance = nullptr;
 Application::Application()
 {
@@ -27,7 +30,8 @@ Application::Application()
 	m_Window.reset(new Window());
 	m_Window->SetCallBack(std::bind(&Application::OnEvent, this, std::placeholders::_1));
 	m_Camera.reset(Camera::Create(Camera::Perspective, { 45.0f, 800.0f, 600.0f, 0.1f, 100.0f }));
-	m_LightSource.reset(Light::Create());
+	LightType::Set(LightType::Type::SpotLight);
+	m_LightSource.reset(Light::Create(m_Camera->GetPosition(),m_Camera->Front(),glm::cos(glm::radians(10.0f))));
 	Renderer::Init();
 
 	float vertices[] = {
@@ -45,7 +49,7 @@ Application::Application()
 		 0.5f,  0.5f,  0.5f,	1.0f, 1.0f,		0.0f, 0.0f, 1.0f,
 		-0.5f,  0.5f,  0.5f,	0.0f, 1.0f,		0.0f, 0.0f, 1.0f,
 		-0.5f, -0.5f,  0.5f,	0.0f, 0.0f,		0.0f, 0.0f, 1.0f,
-										
+					
 		-0.5f,  0.5f,  0.5f,	1.0f, 0.0f,		-1.0f, 0.0f, 0.0f,
 		-0.5f,  0.5f, -0.5f,	1.0f, 1.0f,		-1.0f, 0.0f, 0.0f,
 		-0.5f, -0.5f, -0.5f,	0.0f, 1.0f,		-1.0f, 0.0f, 0.0f,
@@ -152,15 +156,14 @@ Application::Application()
 	m_Shader->SetUniform1i("u_Material.emission", 4);
 
 	m_Shader->SetUniform1f("u_MixValue", 0.5);
-	m_Shader->SetUniformVec3f("u_ParallelLight.ambient", m_LightSource->GetLightProps().ambient);
-	m_Shader->SetUniformVec3f("u_ParallelLight.diffuse", m_LightSource->GetLightProps().diffuse);
-	m_Shader->SetUniformVec3f("u_ParallelLight.specular", m_LightSource->GetLightProps().specular);
+	//m_Shader->SetUniformVec3f("u_ParallelLight.ambient", m_LightSource->GetLightProps().ambient);
+	//m_Shader->SetUniformVec3f("u_ParallelLight.diffuse", m_LightSource->GetLightProps().diffuse);
+	//m_Shader->SetUniformVec3f("u_ParallelLight.specular", m_LightSource->GetLightProps().specular);
 
 	m_Camera->SetPosition(glm::vec3(0.0f, 0.0f, 8.0f));
 	m_CameraPosition = m_Camera->GetPosition();
 	m_CameraRotation.Yaw = m_Camera->Yaw();
 	m_CameraRotation.Pitch = m_Camera->Pitch();
-
 
 }
 
@@ -211,13 +214,9 @@ void Application::Run()
 		m_SpecularMap->Bind();
 		glActiveTexture(GL_TEXTURE4);
 		m_EmissionMap->Bind();
-		Renderer::BeginScene(*m_Camera);
+		Renderer::BeginScene(*m_Camera, m_LightSource);
 
-		//glm::mat4 model = glm::mat4(1.0f);
-		////model = glm::translate(model, m_LightSource->GetPosition());
-		//model = glm::scale(model, glm::vec3(0.5f));
-		//Renderer::Submit(m_LightSource->GetVertexArray(), m_LightSource->GetShader(), model);
-		//glDrawArrays(GL_TRIANGLES, 0, 36);
+		
 
 		for (unsigned int i = 0; i < 10; i++)
 		{
@@ -228,19 +227,16 @@ void Application::Run()
 			m_Shader->SetUniformMat4f("u_TranInverseModel", glm::transpose(glm::inverse(model)));
 			m_Shader->SetUniformVec3f("u_CameraViewPos", m_Camera->GetPosition());
 
-
-			m_Shader->SetUniformVec3f("u_ParallelLight.ambient", m_LightSource->GetLightProps().ambient);
-			m_Shader->SetUniformVec3f("u_ParallelLight.diffuse", m_LightSource->GetLightProps().diffuse);
-			m_Shader->SetUniformVec3f("u_ParallelLight.specular", m_LightSource->GetLightProps().specular);
-			m_Shader->SetUniformVec3f("u_ParallelLight.direction", std::dynamic_pointer_cast<ParallelLight>(m_LightSource)->GetDirection());
+			std::dynamic_pointer_cast<SpotLight>(m_LightSource)->UpdatePositionAndDirection(m_Camera->GetPosition(), m_Camera->Front());
+			m_Shader->SetLightUniform(LightType::Get(), m_LightSource);
 
 			m_Shader->SetUniformVec3f("u_Material.ambient", glm::vec3(0.25,0.20725,0.20725));
-			/*m_Shader->SetUniform1i("u_Material.diffuse", 2);
+		  /*m_Shader->SetUniform1i("u_Material.diffuse", 2);
 			m_Shader->SetUniform1i("u_Material.specular", 3);
-			m_Shader->SetUniform1i("u_Material.emission", 4);
-*/
+			m_Shader->SetUniform1i("u_Material.emission", 4);*/
+
 			//m_Shader->SetUniformVec3f("u_Material.diffuse", glm::vec3(1	,0.829	,0.829));
-			m_Shader->SetUniformVec3f("u_Material.specular", glm::vec3(0.5,	0.5,0.5));
+		    //m_Shader->SetUniformVec3f("u_Material.specular", glm::vec3(0.5,	0.5,0.5));
 			m_Shader->SetUniform1f("u_Material.shininess",64.0f);
 
 

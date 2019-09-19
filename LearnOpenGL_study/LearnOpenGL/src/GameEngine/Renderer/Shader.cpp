@@ -3,6 +3,9 @@
 #include "Shader.h"
 #include<glad/glad.h>
 #include<GameEngine/Core.h>
+#include"Lighting/ParallelLight.h"
+#include"Lighting/PointLight.h"
+#include"Lighting/SpotLight.h"
 
 static GLenum ShaderTypeFromString(const std::string&type) {
 
@@ -151,6 +154,49 @@ void Shader::Compile(const std::unordered_map<GLenum, std::string>& shaderSource
 		glDetachShader(program, shader);
 	}
 	m_RendererID = program;
+}
+
+void Shader::SetLightUniform(LightType::Type type, const std::shared_ptr<Light>& m_LightSource)
+{
+	switch (LightType::Get())
+	{
+	case LightType::Type::ParallelLight:
+		this->SetUniformVec3f("u_ParallelLight.ambient", m_LightSource->GetLightProps().ambient);
+		this->SetUniformVec3f("u_ParallelLight.diffuse", m_LightSource->GetLightProps().diffuse);
+		this->SetUniformVec3f("u_ParallelLight.specular", m_LightSource->GetLightProps().specular);
+		this->SetUniformVec3f("u_ParallelLight.direction", std::dynamic_pointer_cast<ParallelLight>(m_LightSource)->GetDirection());
+		break;
+	case LightType::Type::PointLight:
+
+		this->SetUniformVec3f("u_PointLight.ambient", m_LightSource->GetLightProps().ambient);
+		this->SetUniformVec3f("u_PointLight.diffuse", m_LightSource->GetLightProps().diffuse);
+		this->SetUniformVec3f("u_PointLight.specular", m_LightSource->GetLightProps().specular);
+		this->SetUniformVec3f("u_PointLight.position", std::dynamic_pointer_cast<PointLight>(m_LightSource)->GetPosition());
+	
+		this->SetUniform1f("u_PointLight.constant", std::dynamic_pointer_cast<PointLight>(m_LightSource)->GetAttenuation().constant);
+		this->SetUniform1f("u_PointLight.linear", std::dynamic_pointer_cast<PointLight>(m_LightSource)->GetAttenuation().linear);
+		this->SetUniform1f("u_PointLight.quadratic", std::dynamic_pointer_cast<PointLight>(m_LightSource)->GetAttenuation().quadratic);
+
+		break;
+	case LightType::Type::SpotLight:
+		this->SetUniformVec3f("u_SpotLight.ambient", m_LightSource->GetLightProps().ambient);
+		this->SetUniformVec3f("u_SpotLight.diffuse", m_LightSource->GetLightProps().diffuse);
+		this->SetUniformVec3f("u_SpotLight.specular", m_LightSource->GetLightProps().specular);
+		this->SetUniformVec3f("u_SpotLight.position", std::dynamic_pointer_cast<SpotLight>(m_LightSource)->GetPosition());
+		this->SetUniformVec3f("u_SpotLight.direction", std::dynamic_pointer_cast<SpotLight>(m_LightSource)->GetDirection());
+
+		this->SetUniform1f("u_SpotLight.cutOff", std::dynamic_pointer_cast<SpotLight>(m_LightSource)->GetCutOffAngle());
+
+		this->SetUniform1f("u_SpotLight.constant", std::dynamic_pointer_cast<SpotLight>(m_LightSource)->GetAttenuation().constant);
+		this->SetUniform1f("u_SpotLight.linear", std::dynamic_pointer_cast<SpotLight>(m_LightSource)->GetAttenuation().linear);
+		this->SetUniform1f("u_SpotLight.quadratic", std::dynamic_pointer_cast<SpotLight>(m_LightSource)->GetAttenuation().quadratic);
+		break;
+
+	default:
+		GE_CORE_ERROR("SetLightUniform failed! Unknown Light Type!")
+		break;
+	}
+
 }
 
 void Shader::Bind() const
