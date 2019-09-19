@@ -213,11 +213,11 @@ void Application::Run()
 		m_EmissionMap->Bind();
 		Renderer::BeginScene(*m_Camera);
 
-		glm::mat4 model = glm::mat4(1.0f);
-		//model = glm::translate(model, m_LightSource->GetPosition());
-		model = glm::scale(model, glm::vec3(0.5f));
-		Renderer::Submit(m_LightSource->GetVertexArray(), m_LightSource->GetShader(), model);
-		glDrawArrays(GL_TRIANGLES, 0, 36);
+		//glm::mat4 model = glm::mat4(1.0f);
+		////model = glm::translate(model, m_LightSource->GetPosition());
+		//model = glm::scale(model, glm::vec3(0.5f));
+		//Renderer::Submit(m_LightSource->GetVertexArray(), m_LightSource->GetShader(), model);
+		//glDrawArrays(GL_TRIANGLES, 0, 36);
 
 		for (unsigned int i = 0; i < 10; i++)
 		{
