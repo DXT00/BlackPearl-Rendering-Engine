@@ -12,8 +12,8 @@ public:
 		//默认距离3250constant(1.0f),linear(0.0014f),quadratic(0.000007)
 		//查表：https://learnopengl-cn.github.io/02%20Lighting/05%20Light%20casters/
 	};
-	SpotLight(const glm::vec3& position ,const glm::vec3& direction,float cutoffAngle)
-	:m_Position(position),m_Direction(direction),m_CutOffAngle(cutoffAngle)
+	SpotLight(const glm::vec3& position ,const glm::vec3& direction,float cutoffAngle,float outterCutOffAngle)
+	:m_Position(position),m_Direction(direction),m_CutOffAngle(cutoffAngle),m_OuterCutOffAngle(outterCutOffAngle)
 	{
 		Init();
 	};
@@ -27,11 +27,14 @@ public:
 	inline void UpdateCutOffAngle(float angle) { m_CutOffAngle = angle; }
 	inline glm::vec3 GetPosition() { return m_Position; }
 	inline glm::vec3 GetDirection() { return m_Direction; }
+	inline float GetOuterCutOffAngle() { return m_OuterCutOffAngle; }
 	inline float GetCutOffAngle() { return m_CutOffAngle; }
+
 	inline Attenuation GetAttenuation() const { return m_Attenuation; }
 
 private:
-	float m_CutOffAngle;//切广角大小
+	float m_CutOffAngle;//内切广角大小 （内圆锥）
+	float m_OuterCutOffAngle; //外广切角大小 (外圆锥)
 	glm::vec3 m_Position;
 	glm::vec3 m_Direction;
 	Attenuation m_Attenuation;

@@ -186,6 +186,7 @@ void Shader::SetLightUniform(LightType::Type type, const std::shared_ptr<Light>&
 		this->SetUniformVec3f("u_SpotLight.direction", std::dynamic_pointer_cast<SpotLight>(m_LightSource)->GetDirection());
 
 		this->SetUniform1f("u_SpotLight.cutOff", std::dynamic_pointer_cast<SpotLight>(m_LightSource)->GetCutOffAngle());
+		this->SetUniform1f("u_SpotLight.outerCutOff", std::dynamic_pointer_cast<SpotLight>(m_LightSource)->GetOuterCutOffAngle());
 
 		this->SetUniform1f("u_SpotLight.constant", std::dynamic_pointer_cast<SpotLight>(m_LightSource)->GetAttenuation().constant);
 		this->SetUniform1f("u_SpotLight.linear", std::dynamic_pointer_cast<SpotLight>(m_LightSource)->GetAttenuation().linear);

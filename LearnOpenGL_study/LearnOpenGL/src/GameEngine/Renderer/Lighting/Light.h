@@ -23,7 +23,12 @@ public:
 	//virtual std::shared_ptr<Shader> GetShader() = 0;
 
 	virtual void Init() = 0;
-	static Light* Create(const glm::vec3& position = { 2.2f,1.0f,2.0f }, const glm::vec3& direction = { -0.2f, -1.0f, -0.3f },const float cutOffAngle = glm::cos(glm::radians(45.0f)),Props props=Props());
+	static Light* Create(
+		const glm::vec3& position = { 2.2f,1.0f,2.0f },
+		const glm::vec3& direction = { -0.2f, -1.0f, -0.3f },
+		const float cutOffAngle = glm::cos(glm::radians(20.0f)), 
+		const float outterCutOffAngle = glm::cos(glm::radians(30.0f)),
+		Props props=Props());
 
 protected:
 	Props m_LightProp;

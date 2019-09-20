@@ -161,8 +161,10 @@ vec4 CalcSpotLight(SpotLight light){
 	
 	vec3 lightDir = normalize(light.position - v_FragPos);
 	float theta = dot(lightDir,normalize(-light.direction));
+	float intensity = (theta-light.outerCutOff)/(light.cutOff-light.outerCutOff);
+	intensity =clamp(intensity,0.0,1.0);
 	vec4 fragColor;
-	if(theta>light.cutOff){
+	//if(theta>light.outerCutOff){
 		
 
 		float distance = length(light.position-v_FragPos);
@@ -171,7 +173,7 @@ vec4 CalcSpotLight(SpotLight light){
 		vec3 ambient = light.ambient *  texture(u_Material.diffuse,v_TexCoord).rgb;//u_LightColor * u_Material.ambient
 		
 		//diffuse
-		vec3 lightDir = normalize(light.position-v_FragPos);
+	
 		vec3 norm = normalize(v_Normal);
 		float diff = max(dot(lightDir,norm),0.0f);
 		vec3 diffuse = light.diffuse * diff * texture(u_Material.diffuse,v_TexCoord).rgb;// u_Material.diffuse);u_LightColor
@@ -187,16 +189,19 @@ vec4 CalcSpotLight(SpotLight light){
 		diffuse  *= attenuation;
 		specular *= attenuation;
 
+		
+		diffuse  *= intensity;
+		specular *= intensity;
 		fragColor = vec4((diffuse + ambient + specular),1.0);// * mix(texture(u_Texture1, v_TexCoord), texture(u_Texture2, vec2(1.0 - v_TexCoord.x, v_TexCoord.y)), u_MixValue);
 		
 		
 
-	}
-	else{
-	//TODO:l
-		fragColor = vec4(light.ambient * texture(u_Material.diffuse,v_TexCoord).rgb,1.0);
+//	}
+//	else{
+//	//TODO:l
+//		fragColor = vec4(light.ambient * texture(u_Material.diffuse,v_TexCoord).rgb,1.0);
+//	
+//	}
 	
-	}
-	
-	return fragColor;
+		return fragColor;
 }

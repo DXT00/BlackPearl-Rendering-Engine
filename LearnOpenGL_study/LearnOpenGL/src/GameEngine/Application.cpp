@@ -31,7 +31,7 @@ Application::Application()
 	m_Window->SetCallBack(std::bind(&Application::OnEvent, this, std::placeholders::_1));
 	m_Camera.reset(Camera::Create(Camera::Perspective, { 45.0f, 800.0f, 600.0f, 0.1f, 100.0f }));
 	LightType::Set(LightType::Type::SpotLight);
-	m_LightSource.reset(Light::Create(m_Camera->GetPosition(),m_Camera->Front(),glm::cos(glm::radians(10.0f))));
+	m_LightSource.reset(Light::Create(m_Camera->GetPosition(),m_Camera->Front(),glm::cos(glm::radians(10.0f)), glm::cos(glm::radians(12.0f))));
 	Renderer::Init();
 
 	float vertices[] = {
