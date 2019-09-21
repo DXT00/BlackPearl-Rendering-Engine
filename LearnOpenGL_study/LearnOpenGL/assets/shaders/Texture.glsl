@@ -106,11 +106,11 @@ vec3 CalcSpotLight(SpotLight light,vec3 normal,vec3 viewDir);
 vec3 emission = texture(u_Material.emission,v_TexCoord).rgb;
 
 void main(){
-
+	//根据Application中设置的光源选择
 	vec3 viewDir = normalize(u_CameraViewPos-v_FragPos);
 	vec3 outColor;
 	outColor = CalcParallelLight(u_ParallelLight,v_Normal,viewDir);
-//	outColor += CalcSpotLight(u_SpotLight, v_Normal,viewDir);
+	outColor += CalcSpotLight(u_SpotLight, v_Normal,viewDir);
 
 	for(int i=0;i<u_PointLightNums;i++){
 

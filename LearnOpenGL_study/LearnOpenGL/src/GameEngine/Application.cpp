@@ -33,14 +33,17 @@ Application::Application()
 	
 	//set light sources
 	//注意：如果时SpotLight就要更新相机位置！
-	//std::shared_ptr<Light> spotLight;
-	//spotLight.reset(Light::Create(LightType::SpotLight,m_Camera->GetPosition(),m_Camera->Front(),glm::cos(glm::radians(10.0f)), glm::cos(glm::radians(12.0f))));
-	//m_LightSources.AddLight(spotLight);
+	std::shared_ptr<Light> spotLight;
+	spotLight.reset(Light::Create(LightType::SpotLight,m_Camera->GetPosition(),m_Camera->Front(),glm::cos(glm::radians(8.0f)), glm::cos(glm::radians(10.0f))));
+	std::dynamic_pointer_cast<SpotLight>(spotLight)->SetAttenuation(SpotLight::Attenuation(200));
+	m_LightSources.AddLight(spotLight);
 	// positions of the point lights
 	glm::vec3 pointLightPositions[] = {
 		glm::vec3(0.7f,  0.2f,  2.0f),
+
 		glm::vec3(2.3f, -3.3f, -4.0f),
-		glm::vec3(-4.0f,  2.0f, -12.0f),
+		glm::vec3(-2.7f,  3.0f, -7.5f),
+		//glm::vec3(-4.0f,  2.0f, -12.0f),
 	};
 	std::vector<Light::Props> pointLightProps= {
 	{{0.2f, 0.2f, 0.2f},{ 1.0f, 0.2f, 0.1f},{1.0f, 1.0f, 1.0f}},
@@ -52,6 +55,8 @@ Application::Application()
 		std::shared_ptr<Light> pointLight;
 		
 		pointLight.reset(Light::Create(LightType::PointLight, pointLightPositions[i], {}, 0, 0, pointLightProps[i]));
+		std::dynamic_pointer_cast<PointLight>(pointLight)->SetAttenuation(PointLight::Attenuation(3250));
+
 		m_LightSources.AddLight(pointLight);
 	}
 	Renderer::Init();
@@ -164,7 +169,7 @@ Application::Application()
 	// load and create a texture 
 	m_Texture1.reset(new Texture("assets/texture/container.jpg"));
 	m_Texture2.reset(new Texture("assets/texture/1.jpg"));
-	m_DiffuseMap.reset(new Texture("assets/texture/awesomeface1.png"));
+	m_DiffuseMap.reset(new Texture("assets/texture/container2.png"));
 	m_SpecularMap.reset(new Texture("assets/texture/container2_specular.png"));
 	m_EmissionMap.reset(new Texture("assets/texture/matrix.jpg"));
 
@@ -286,10 +291,10 @@ void Application::InputCheck(float ts)
 		m_CameraPosition += m_Camera->Right() * m_CameraMoveSpeed * ts;
 
 	}
-	if (Input::IsKeyPressed(GLFW_KEY_Q)) {
+	if (Input::IsKeyPressed(GLFW_KEY_E)) {
 		m_CameraPosition -= m_Camera->Up() * m_CameraMoveSpeed * ts;
 	}
-	else if (Input::IsKeyPressed(GLFW_KEY_E)) {
+	else if (Input::IsKeyPressed(GLFW_KEY_Q)) {
 		m_CameraPosition += m_Camera->Up() * m_CameraMoveSpeed * ts;
 
 	}

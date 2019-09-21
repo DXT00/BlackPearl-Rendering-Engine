@@ -36,7 +36,8 @@ public:
 		const glm::vec3& direction = { -0.2f, -1.0f, -0.3f },
 		const float cutOffAngle = glm::cos(glm::radians(20.0f)), 
 		const float outterCutOffAngle = glm::cos(glm::radians(30.0f)),
-		Props props=Props());
+		Props props=Props()
+		);
 
 protected:
 	Props m_LightProp;
