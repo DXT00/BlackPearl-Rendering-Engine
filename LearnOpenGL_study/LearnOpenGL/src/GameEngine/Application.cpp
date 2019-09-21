@@ -21,7 +21,7 @@
 #include "Renderer/Lighting/ParallelLight.h"
 #include "Renderer/Lighting/PointLight.h"
 #include "Renderer/Lighting/SpotLight.h"
-#include "Renderer/Lighting/LightType.h"
+
 Application* Application::s_Instance = nullptr;
 Application::Application()
 {
@@ -30,8 +30,30 @@ Application::Application()
 	m_Window.reset(new Window());
 	m_Window->SetCallBack(std::bind(&Application::OnEvent, this, std::placeholders::_1));
 	m_Camera.reset(Camera::Create(Camera::Perspective, { 45.0f, 800.0f, 600.0f, 0.1f, 100.0f }));
-	LightType::Set(LightType::Type::SpotLight);
-	m_LightSource.reset(Light::Create(m_Camera->GetPosition(),m_Camera->Front(),glm::cos(glm::radians(10.0f)), glm::cos(glm::radians(12.0f))));
+	
+	//set light sources
+	//注意：如果时SpotLight就要更新相机位置！
+	//std::shared_ptr<Light> spotLight;
+	//spotLight.reset(Light::Create(LightType::SpotLight,m_Camera->GetPosition(),m_Camera->Front(),glm::cos(glm::radians(10.0f)), glm::cos(glm::radians(12.0f))));
+	//m_LightSources.AddLight(spotLight);
+	// positions of the point lights
+	glm::vec3 pointLightPositions[] = {
+		glm::vec3(0.7f,  0.2f,  2.0f),
+		glm::vec3(2.3f, -3.3f, -4.0f),
+		glm::vec3(-4.0f,  2.0f, -12.0f),
+	};
+	std::vector<Light::Props> pointLightProps= {
+	{{0.2f, 0.2f, 0.2f},{ 1.0f, 0.2f, 0.1f},{1.0f, 1.0f, 1.0f}},
+	{{0.2f, 0.2f, 0.2f},{ 0.2f, 1.0f, 0.1f},{1.0f, 1.0f, 1.0f}},
+	{{0.2f, 0.2f, 0.2f},{ 0.1f, 0.2f, 1.0f},{1.0f, 1.0f, 1.0f}}
+	};
+	for (int i = 0; i < 3; i++)
+	{
+		std::shared_ptr<Light> pointLight;
+		
+		pointLight.reset(Light::Create(LightType::PointLight, pointLightPositions[i], {}, 0, 0, pointLightProps[i]));
+		m_LightSources.AddLight(pointLight);
+	}
 	Renderer::Init();
 
 	float vertices[] = {
@@ -142,7 +164,7 @@ Application::Application()
 	// load and create a texture 
 	m_Texture1.reset(new Texture("assets/texture/container.jpg"));
 	m_Texture2.reset(new Texture("assets/texture/1.jpg"));
-	m_DiffuseMap.reset(new Texture("assets/texture/container2.png"));
+	m_DiffuseMap.reset(new Texture("assets/texture/awesomeface1.png"));
 	m_SpecularMap.reset(new Texture("assets/texture/container2_specular.png"));
 	m_EmissionMap.reset(new Texture("assets/texture/matrix.jpg"));
 
@@ -154,11 +176,8 @@ Application::Application()
 	m_Shader->SetUniform1i("u_Material.diffuse", 2);
 	m_Shader->SetUniform1i("u_Material.specular", 3);
 	m_Shader->SetUniform1i("u_Material.emission", 4);
-
 	m_Shader->SetUniform1f("u_MixValue", 0.5);
-	//m_Shader->SetUniformVec3f("u_ParallelLight.ambient", m_LightSource->GetLightProps().ambient);
-	//m_Shader->SetUniformVec3f("u_ParallelLight.diffuse", m_LightSource->GetLightProps().diffuse);
-	//m_Shader->SetUniformVec3f("u_ParallelLight.specular", m_LightSource->GetLightProps().specular);
+
 
 	m_Camera->SetPosition(glm::vec3(0.0f, 0.0f, 8.0f));
 	m_CameraPosition = m_Camera->GetPosition();
@@ -214,9 +233,7 @@ void Application::Run()
 		m_SpecularMap->Bind();
 		glActiveTexture(GL_TEXTURE4);
 		m_EmissionMap->Bind();
-		Renderer::BeginScene(*m_Camera, m_LightSource);
-
-		
+		Renderer::BeginScene(*m_Camera, m_LightSources);
 
 		for (unsigned int i = 0; i < 10; i++)
 		{
@@ -227,38 +244,20 @@ void Application::Run()
 			m_Shader->SetUniformMat4f("u_TranInverseModel", glm::transpose(glm::inverse(model)));
 			m_Shader->SetUniformVec3f("u_CameraViewPos", m_Camera->GetPosition());
 
-			std::dynamic_pointer_cast<SpotLight>(m_LightSource)->UpdatePositionAndDirection(m_Camera->GetPosition(), m_Camera->Front());
-			m_Shader->SetLightUniform(LightType::Get(), m_LightSource);
+			
+			m_Shader->SetLightUniform(m_LightSources);
 
 			m_Shader->SetUniformVec3f("u_Material.ambient", glm::vec3(0.25,0.20725,0.20725));
-		  /*m_Shader->SetUniform1i("u_Material.diffuse", 2);
-			m_Shader->SetUniform1i("u_Material.specular", 3);
-			m_Shader->SetUniform1i("u_Material.emission", 4);*/
-
-			//m_Shader->SetUniformVec3f("u_Material.diffuse", glm::vec3(1	,0.829	,0.829));
-		    //m_Shader->SetUniformVec3f("u_Material.specular", glm::vec3(0.5,	0.5,0.5));
 			m_Shader->SetUniform1f("u_Material.shininess",64.0f);
 
+			
 
 			Renderer::Submit(m_VertexArray, m_Shader, model);
 			glDrawArrays(GL_TRIANGLES, 0, 36);
 
 		}
 
-		//for (unsigned int i = 0; i < 8; i++)
-		//{
-
-		//	glm::mat4 model = glm::mat4(1.0f);
-		//	model = glm::translate(model, glm::vec3(0.0, 0.0f, -3.0 - (float)i));
-		//	model = glm::scale(model, glm::vec3(0.5));
-		//	//model = glm::rotate(model, (float)(glfwGetTime()), glm::vec3(1.0f, (float)i * 20, 0.0f));//(float)(glfwGetTime())
-		//	m_Shader->SetUniformMat4f("u_TranInverseModel", glm::transpose(glm::inverse(model)));
-		//	m_Shader->SetUniformVec3f("u_CameraViewPos", m_Camera->GetPosition());
-		//	m_Shader->SetUniform1f("u_shininessStrength", glm::pow(2, i+1));
-		//	Renderer::Submit(m_VertexArray, m_Shader, model);
-		//	glDrawArrays(GL_TRIANGLES, 0, 36);
-
-		//}
+		
 		glfwSwapBuffers(m_Window->GetNativeWindow());
 		glfwPollEvents();
 	}

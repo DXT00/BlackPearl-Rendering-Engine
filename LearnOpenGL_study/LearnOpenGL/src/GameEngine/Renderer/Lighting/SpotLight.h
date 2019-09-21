@@ -12,9 +12,12 @@ public:
 		//默认距离3250constant(1.0f),linear(0.0014f),quadratic(0.000007)
 		//查表：https://learnopengl-cn.github.io/02%20Lighting/05%20Light%20casters/
 	};
-	SpotLight(const glm::vec3& position ,const glm::vec3& direction,float cutoffAngle,float outterCutOffAngle)
+	SpotLight(const glm::vec3& position ,const glm::vec3& direction,float cutoffAngle,float outterCutOffAngle,Props props)
 	:m_Position(position),m_Direction(direction),m_CutOffAngle(cutoffAngle),m_OuterCutOffAngle(outterCutOffAngle)
 	{
+		this->m_LightProp.ambient = props.ambient;
+		this->m_LightProp.diffuse = props.diffuse;
+		this->m_LightProp.specular = props.specular;
 		Init();
 	};
 	virtual ~SpotLight()=default;
@@ -32,6 +35,7 @@ public:
 
 	inline Attenuation GetAttenuation() const { return m_Attenuation; }
 
+	virtual inline LightType GetType() override{ return LightType::SpotLight; }
 private:
 	float m_CutOffAngle;//内切广角大小 （内圆锥）
 	float m_OuterCutOffAngle; //外广切角大小 (外圆锥)

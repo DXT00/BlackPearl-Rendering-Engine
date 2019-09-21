@@ -9,13 +9,16 @@ public:
 		float constant;
 		float linear;
 		float quadratic;
-		Attenuation():constant(1.0f), linear(0.22f), quadratic(0.2){}
+		Attenuation():constant(1.0f), linear(0.0014f), quadratic(0.000007){}
 		//默认距离50 constant(1.0f),linear(0.09f),quadratic(0.032){}
 		//默认距离3250constant(1.0f),linear(0.0014f),quadratic(0.000007)
 		//查表：https://learnopengl-cn.github.io/02%20Lighting/05%20Light%20casters/
 	};
-	PointLight(const glm::vec3& position)
+	PointLight(const glm::vec3& position,Props props)
 		:m_Position(position) {
+		this->m_LightProp.ambient = props.ambient;
+		this->m_LightProp.diffuse = props.diffuse;
+		this->m_LightProp.specular = props.specular;
 		Init();
 	}
 	virtual ~PointLight() = default;
@@ -27,6 +30,7 @@ public:
 
 	std::shared_ptr<VertexArray> GetVertexArray() { return m_VertexArray; };
 	std::shared_ptr<Shader> GetShader() { return m_Shader; };
+	virtual inline LightType GetType() override { return LightType::PointLight; }
 private:
 	glm::vec3 m_Position;
 	std::shared_ptr<VertexArray> m_VertexArray;

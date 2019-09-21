@@ -137,6 +137,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\GameEngine\Renderer\Lighting\LightSources.h" />
     <ClInclude Include="src\GameEngine\Application.h" />
     <ClInclude Include="src\GameEngine\Core.h" />
     <ClInclude Include="src\GameEngine\Event\Event.h" />
@@ -150,7 +151,6 @@
     <ClInclude Include="src\GameEngine\Renderer\Camera\PerspectiveCamera.h" />
     <ClInclude Include="src\GameEngine\Renderer\Context.h" />
     <ClInclude Include="src\GameEngine\Renderer\Lighting\Light.h" />
-    <ClInclude Include="src\GameEngine\Renderer\Lighting\LightType.h" />
     <ClInclude Include="src\GameEngine\Renderer\Lighting\ParallelLight.h" />
     <ClInclude Include="src\GameEngine\Renderer\Lighting\PointLight.h" />
     <ClInclude Include="src\GameEngine\Renderer\Lighting\SpotLight.h" />
@@ -532,6 +532,7 @@
     <ClInclude Include="vendor\stb\stb_image.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\GameEngine\Renderer\Lighting\LightSources.cpp" />
     <ClCompile Include="src\GameEngine\Application.cpp" />
     <ClCompile Include="src\GameEngine\EntryPoint.cpp" />
     <ClCompile Include="src\GameEngine\Input.cpp" />
@@ -542,7 +543,6 @@
     <ClCompile Include="src\GameEngine\Renderer\Camera\PerspectiveCamera.cpp" />
     <ClCompile Include="src\GameEngine\Renderer\Context.cpp" />
     <ClCompile Include="src\GameEngine\Renderer\Lighting\Light.cpp" />
-    <ClCompile Include="src\GameEngine\Renderer\Lighting\LightType.cpp" />
     <ClCompile Include="src\GameEngine\Renderer\Lighting\ParallelLight.cpp" />
     <ClCompile Include="src\GameEngine\Renderer\Lighting\PointLight.cpp" />
     <ClCompile Include="src\GameEngine\Renderer\Lighting\SpotLight.cpp" />

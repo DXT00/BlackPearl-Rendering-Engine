@@ -90,9 +90,6 @@
     <ClInclude Include="src\GameEngine\Renderer\Lighting\Light.h">
       <Filter>src\GameEngine\Renderer\Lighting</Filter>
     </ClInclude>
-    <ClInclude Include="src\GameEngine\Renderer\Lighting\LightType.h">
-      <Filter>src\GameEngine\Renderer\Lighting</Filter>
-    </ClInclude>
     <ClInclude Include="src\GameEngine\Renderer\Lighting\ParallelLight.h">
       <Filter>src\GameEngine\Renderer\Lighting</Filter>
     </ClInclude>
@@ -1228,6 +1225,7 @@
       <Filter>vendor\stb</Filter>
     </ClInclude>
     <ClInclude Include="src\GameEngine\Renderer\Lighting\SpotLight.h" />
+    <ClInclude Include="src\GameEngine\Renderer\Lighting\LightSources.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\GameEngine\Application.cpp">
@@ -1260,9 +1258,6 @@
     <ClCompile Include="src\GameEngine\Renderer\Lighting\Light.cpp">
       <Filter>src\GameEngine\Renderer\Lighting</Filter>
     </ClCompile>
-    <ClCompile Include="src\GameEngine\Renderer\Lighting\LightType.cpp">
-      <Filter>src\GameEngine\Renderer\Lighting</Filter>
-    </ClCompile>
     <ClCompile Include="src\GameEngine\Renderer\Lighting\ParallelLight.cpp">
       <Filter>src\GameEngine\Renderer\Lighting</Filter>
     </ClCompile>
@@ -1291,5 +1286,6 @@
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="src\GameEngine\Renderer\Lighting\SpotLight.cpp" />
+    <ClCompile Include="src\GameEngine\Renderer\Lighting\LightSources.cpp" />
   </ItemGroup>
 </Project>

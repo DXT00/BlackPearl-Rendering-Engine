@@ -4,8 +4,12 @@
 class ParallelLight :public Light
 {
 public:
-	ParallelLight(const glm::vec3& direction)
+	ParallelLight(const glm::vec3& direction, Props props)
 		:m_Direction(direction) {
+		this->m_LightProp.ambient = props.ambient;
+		this->m_LightProp.diffuse = props.diffuse;
+		this->m_LightProp.specular = props.specular;
+
 		Init();
 	}
 	virtual ~ParallelLight() = default;
@@ -14,6 +18,7 @@ public:
 	inline void SetDirection(const glm::vec3& direction) { m_Direction = direction; }
 	inline glm::vec3 GetDirection() { return m_Direction; }
 
+	virtual inline LightType GetType() override { return LightType::ParallelLight; }
 //	virtual std::shared_ptr<VertexArray> GetVertexArray()override { return m_VertexArray; };
 //	virtual std::shared_ptr<Shader> GetShader() override { return m_Shader; };
 private:
