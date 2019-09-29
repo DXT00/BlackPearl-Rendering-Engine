@@ -1,5 +1,5 @@
 workspace "LearnOpenGL"
-	architecture "x64"
+	architecture "x86"
 	startproject "LearnOpenGL"
 
 	configurations
@@ -18,10 +18,12 @@ IncludeDir["Glad"] = "LearnOpenGL/vendor/Glad/include"
 IncludeDir["ImGui"] = "LearnOpenGL/vendor/imgui"
 IncludeDir["glm"] = "LearnOpenGL/vendor/glm"
 IncludeDir["stb"] = "LearnOpenGL/vendor/stb"
+IncludeDir["assimp"] = "LearnOpenGL/vendor/assimp/include"
 
 include "LearnOpenGL/vendor/GLFW"
 include "LearnOpenGL/vendor/Glad"
 include "LearnOpenGL/vendor/imgui"
+--include "LearnOpenGL/vendor/assimp"
 
 project "LearnOpenGL"
 	location "LearnOpenGL"
@@ -45,7 +47,15 @@ project "LearnOpenGL"
 		"%{prj.name}/vendor/glm/glm/**.hpp",
 		"%{prj.name}/vendor/glm/glm/**.inl",
 		"%{prj.name}/vendor/stb/**.h",
+		
+		--"%{prj.name}/vendor/assimp/include/assimp/**.hpp",
+		--"%{prj.name}/vendor/assimp/include/assimp/**.h",
+		--"%{prj.name}/vendor/assimp/include/assimp/**.inl",
+		--"%{prj.name}/vendor/assimp/include/assimp/**.cpp",
 
+		--"%{prj.name}/vendor/assimp/contrib/irrXML/**",
+		--"%{prj.name}/vendor/assimp/contrib/zlib/**",
+		--"%{prj.name}/vendor/assimp/contrib/rapidjson/include/**",
 	}
 	defines
 	{
@@ -60,15 +70,20 @@ project "LearnOpenGL"
 		"%{IncludeDir.Glad}",
 		"%{IncludeDir.ImGui}",
 		"%{IncludeDir.glm}",
-		"%{IncludeDir.stb}"
+		"%{IncludeDir.stb}",
+		"%{IncludeDir.assimp}"
 	}
-
+	libdirs{
+	"%{prj.name}/vendor/assimp_build/code/Debug"
+	}
 	links 
 	{ 
 		"GLFW",
 		"Glad",
 		"ImGui",
-		"opengl32.lib"
+		--"assimp",
+		"opengl32.lib",
+		"assimp-vc140-mt.lib"
 	}
 
 	filter "system:windows"

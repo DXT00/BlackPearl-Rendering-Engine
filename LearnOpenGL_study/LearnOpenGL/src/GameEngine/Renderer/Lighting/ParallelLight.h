@@ -6,9 +6,7 @@ class ParallelLight :public Light
 public:
 	ParallelLight(const glm::vec3& direction, Props props)
 		:m_Direction(direction) {
-		this->m_LightProp.ambient = props.ambient;
-		this->m_LightProp.diffuse = props.diffuse;
-		this->m_LightProp.specular = props.specular;
+		SetProps(props);
 
 		Init();
 	}

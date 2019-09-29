@@ -7,6 +7,7 @@
 #include "Lighting/SpotLight.h"
 #include "Lighting/LightSources.h"
 #include "glm/gtc/matrix_transform.hpp"
+#include "Mesh.h"
 Renderer::SceneData * Renderer::m_SceneData = new Renderer::SceneData;
 
 Renderer::Renderer()
@@ -21,6 +22,8 @@ Renderer::~Renderer()
 void Renderer::Init()
 {
 	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
 void Renderer::BeginScene(const Camera & camera,const LightSources& lightSources)
@@ -64,10 +67,9 @@ void Renderer::Submit(const std::shared_ptr<VertexArray>& vertexArray, const std
 	shader->Bind();
 	shader->SetUniformMat4f("u_ProjectionView", m_SceneData->ViewProjectionMatrix);
 	shader->SetUniformMat4f("u_Model", model);
+	shader->SetUniformVec3f("u_CameraViewPos", m_SceneData->CameraPosition);
+
 	vertexArray->Bind();
-
-
-
 
 
 }

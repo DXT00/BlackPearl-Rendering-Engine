@@ -1,53 +1,19 @@
-﻿生成启动时间为 2019/9/18 20:56:00。
-     1>项目“F:\OpenGL\LearnOpenGL\LearnOpenGL\vendor\GLFW\GLFW.vcxproj”在节点 2 上(Rebuild 个目标)。
-     1>_PrepareForClean:
-         正在删除文件“bin-int\Debug-windows-x86_64\GLFW\GLFW.tlog\GLFW.lastbuildstate”。
-       InitializeBuildStatus:
+﻿生成启动时间为 2019/9/26 20:32:46。
+     1>项目“F:\OpenGL\LearnOpenGL\LearnOpenGL\vendor\GLFW\GLFW.vcxproj”在节点 2 上(Build 个目标)。
+     1>InitializeBuildStatus:
          正在创建“bin-int\Debug-windows-x86_64\GLFW\GLFW.tlog\unsuccessfulbuild”，因为已指定“AlwaysCreate”。
        ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\bin\HostX86\x64\CL.exe /c /ZI /JMC /nologo /W3 /WX- /diagnostics:classic /Od /D _GLFW_WIN32 /D _CRT_SECURE_NO_WARNINGS /D _UNICODE /D UNICODE /Gm- /EHsc /RTC1 /MTd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"bin-int\Debug-windows-x86_64\GLFW\\" /Fd"bin-int\Debug-windows-x86_64\GLFW\GLFW.pdb" /Gd /TC /FC /errorReport:prompt src\context.c src\egl_context.c src\init.c src\input.c src\monitor.c src\osmesa_context.c src\vulkan.c src\wgl_context.c src\win32_init.c src\win32_joystick.c src\win32_monitor.c src\win32_thread.c src\win32_time.c src\win32_window.c src\window.c
-         context.c
-         egl_context.c
-         init.c
-         input.c
-         monitor.c
-         osmesa_context.c
-         vulkan.c
-         wgl_context.c
-         win32_init.c
-         win32_joystick.c
-         win32_monitor.c
-         win32_thread.c
-         win32_time.c
-         win32_window.c
-         window.c
-         正在生成代码...
+         所有输出均为最新。
        Lib:
-         C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\bin\HostX86\x64\Lib.exe /OUT:"bin\Debug-windows-x86_64\GLFW\GLFW.lib" /NOLOGO /MACHINE:X64 "bin-int\Debug-windows-x86_64\GLFW\context.obj"
-         "bin-int\Debug-windows-x86_64\GLFW\egl_context.obj"
-         "bin-int\Debug-windows-x86_64\GLFW\init.obj"
-         "bin-int\Debug-windows-x86_64\GLFW\input.obj"
-         "bin-int\Debug-windows-x86_64\GLFW\monitor.obj"
-         "bin-int\Debug-windows-x86_64\GLFW\osmesa_context.obj"
-         "bin-int\Debug-windows-x86_64\GLFW\vulkan.obj"
-         "bin-int\Debug-windows-x86_64\GLFW\wgl_context.obj"
-         "bin-int\Debug-windows-x86_64\GLFW\win32_init.obj"
-         "bin-int\Debug-windows-x86_64\GLFW\win32_joystick.obj"
-         "bin-int\Debug-windows-x86_64\GLFW\win32_monitor.obj"
-         "bin-int\Debug-windows-x86_64\GLFW\win32_thread.obj"
-         "bin-int\Debug-windows-x86_64\GLFW\win32_time.obj"
-         "bin-int\Debug-windows-x86_64\GLFW\win32_window.obj"
-         "bin-int\Debug-windows-x86_64\GLFW\window.obj"
+         所有输出均为最新。
          GLFW.vcxproj -> F:\OpenGL\LearnOpenGL\LearnOpenGL\vendor\GLFW\bin\Debug-windows-x86_64\GLFW\GLFW.lib
-       CopyFilesToOutputDirectory:
-         正在将文件从“bin-int\Debug-windows-x86_64\GLFW\GLFW.pdb”复制到“bin\Debug-windows-x86_64\GLFW\GLFW.pdb”。
        FinalizeBuildStatus:
          正在删除文件“bin-int\Debug-windows-x86_64\GLFW\GLFW.tlog\unsuccessfulbuild”。
          正在对“bin-int\Debug-windows-x86_64\GLFW\GLFW.tlog\GLFW.lastbuildstate”执行 Touch 任务。
-     1>已完成生成项目“F:\OpenGL\LearnOpenGL\LearnOpenGL\vendor\GLFW\GLFW.vcxproj”(Rebuild 个目标)的操作。
+     1>已完成生成项目“F:\OpenGL\LearnOpenGL\LearnOpenGL\vendor\GLFW\GLFW.vcxproj”(Build 个目标)的操作。
 
 已成功生成。
     0 个警告
     0 个错误
 
-已用时间 00:00:08.20
+已用时间 00:00:00.82

@@ -19,6 +19,9 @@
     <Filter Include="src\GameEngine\Renderer\Lighting">
       <UniqueIdentifier>{7729990C-637A-844E-8CDE-7210788E17B8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\GameEngine\Renderer\Model">
+      <UniqueIdentifier>{7274E2D2-DE8C-C9FC-A739-599613115E96}</UniqueIdentifier>
+    </Filter>
     <Filter Include="src\GameEngine\Renderer\Texture">
       <UniqueIdentifier>{12C5471A-7EA8-565A-87AB-8496F30D1DAB}</UniqueIdentifier>
     </Filter>
@@ -90,11 +93,23 @@
     <ClInclude Include="src\GameEngine\Renderer\Lighting\Light.h">
       <Filter>src\GameEngine\Renderer\Lighting</Filter>
     </ClInclude>
+    <ClInclude Include="src\GameEngine\Renderer\Lighting\LightSources.h">
+      <Filter>src\GameEngine\Renderer\Lighting</Filter>
+    </ClInclude>
     <ClInclude Include="src\GameEngine\Renderer\Lighting\ParallelLight.h">
       <Filter>src\GameEngine\Renderer\Lighting</Filter>
     </ClInclude>
     <ClInclude Include="src\GameEngine\Renderer\Lighting\PointLight.h">
       <Filter>src\GameEngine\Renderer\Lighting</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GameEngine\Renderer\Lighting\SpotLight.h">
+      <Filter>src\GameEngine\Renderer\Lighting</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GameEngine\Renderer\Mesh.h">
+      <Filter>src\GameEngine\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GameEngine\Renderer\Model\Model.h">
+      <Filter>src\GameEngine\Renderer\Model</Filter>
     </ClInclude>
     <ClInclude Include="src\GameEngine\Renderer\Renderer.h">
       <Filter>src\GameEngine\Renderer</Filter>
@@ -1224,8 +1239,6 @@
     <ClInclude Include="vendor\stb\stb_image.h">
       <Filter>vendor\stb</Filter>
     </ClInclude>
-    <ClInclude Include="src\GameEngine\Renderer\Lighting\SpotLight.h" />
-    <ClInclude Include="src\GameEngine\Renderer\Lighting\LightSources.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\GameEngine\Application.cpp">
@@ -1258,11 +1271,23 @@
     <ClCompile Include="src\GameEngine\Renderer\Lighting\Light.cpp">
       <Filter>src\GameEngine\Renderer\Lighting</Filter>
     </ClCompile>
+    <ClCompile Include="src\GameEngine\Renderer\Lighting\LightSources.cpp">
+      <Filter>src\GameEngine\Renderer\Lighting</Filter>
+    </ClCompile>
     <ClCompile Include="src\GameEngine\Renderer\Lighting\ParallelLight.cpp">
       <Filter>src\GameEngine\Renderer\Lighting</Filter>
     </ClCompile>
     <ClCompile Include="src\GameEngine\Renderer\Lighting\PointLight.cpp">
       <Filter>src\GameEngine\Renderer\Lighting</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GameEngine\Renderer\Lighting\SpotLight.cpp">
+      <Filter>src\GameEngine\Renderer\Lighting</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GameEngine\Renderer\Mesh.cpp">
+      <Filter>src\GameEngine\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GameEngine\Renderer\Model\Model.cpp">
+      <Filter>src\GameEngine\Renderer\Model</Filter>
     </ClCompile>
     <ClCompile Include="src\GameEngine\Renderer\Renderer.cpp">
       <Filter>src\GameEngine\Renderer</Filter>
@@ -1285,7 +1310,5 @@
     <ClCompile Include="src\pch.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\GameEngine\Renderer\Lighting\SpotLight.cpp" />
-    <ClCompile Include="src\GameEngine\Renderer\Lighting\LightSources.cpp" />
   </ItemGroup>
 </Project>

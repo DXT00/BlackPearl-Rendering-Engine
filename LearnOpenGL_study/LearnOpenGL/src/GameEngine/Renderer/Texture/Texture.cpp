@@ -6,11 +6,12 @@
 
 
 
-Texture::Texture(const char *image)
+Texture::Texture(Type type, const std::string &image)
 {
-	
-	glGenTextures(1, &m_Texture);
-	glBindTexture(GL_TEXTURE_2D, m_Texture);
+	m_Path = image;
+	m_Type = type;
+	glGenTextures(1, &m_TextureID);
+	glBindTexture(GL_TEXTURE_2D, m_TextureID);
 
 	//set the texture warpping parameters
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);//…Ë÷√s÷·
@@ -25,7 +26,7 @@ Texture::Texture(const char *image)
 
 	stbi_set_flip_vertically_on_load(true);
 	int width, height, nrChannels;
-	unsigned char *data = stbi_load(image, &width, &height, &nrChannels, 0);
+	unsigned char *data = stbi_load(m_Path.c_str(), &width, &height, &nrChannels, 0);
 	GE_ASSERT(data, "fail to load texture data!")
 
 	GLenum format;
@@ -41,7 +42,7 @@ Texture::Texture(const char *image)
 		format = GL_RGBA;
 		break;
 	default:
-		GE_CORE_ERROR("Channel {0} has unknown format!")
+		GE_CORE_ERROR("Channel {0} has unknown format!",nrChannels)
 		break;
 	}
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, format, GL_UNSIGNED_BYTE, data);
@@ -59,7 +60,7 @@ Texture::Texture(const char *image)
 
 void Texture::Bind()
 {
-	glBindTexture(GL_TEXTURE_2D, m_Texture);
+	glBindTexture(GL_TEXTURE_2D, m_TextureID);
 }
 
 void Texture::UnBind()

@@ -1,0 +1,859 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="MinSizeRel|Win32">
+      <Configuration>MinSizeRel</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="RelWithDebInfo|Win32">
+      <Configuration>RelWithDebInfo</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{5401E050-51E2-338C-88FC-6411A02D8B80}</ProjectGuid>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
+    <Keyword>Win32Proj</Keyword>
+    <Platform>Win32</Platform>
+    <ProjectName>assimp</ProjectName>
+    <VCProjectUpgraderObjectName>NoUpgrade</VCProjectUpgraderObjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.20506.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">F:\OpenGL\assimp_build\code\Debug\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">assimp.dir\Debug\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">assimp-vc140-mt</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.dll</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</GenerateManifest>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">F:\OpenGL\assimp_build\code\Release\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">assimp.dir\Release\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">assimp-vc140-mt</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.dll</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</GenerateManifest>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">F:\OpenGL\assimp_build\code\MinSizeRel\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">assimp.dir\MinSizeRel\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">assimp-vc140-mt</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">.dll</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">false</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">true</GenerateManifest>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">F:\OpenGL\assimp_build\code\RelWithDebInfo\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">assimp.dir\RelWithDebInfo\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">assimp-vc140-mt</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">.dll</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">true</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">true</GenerateManifest>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>F:\OpenGL\assimp-4.1.0\.;F:\OpenGL\assimp-4.1.0\include;F:\OpenGL\assimp_build;F:\OpenGL\assimp_build\include;F:\OpenGL\assimp-4.1.0\contrib\zlib;F:\OpenGL\assimp_build\contrib\zlib;F:\OpenGL\assimp-4.1.0\code\..\contrib\rapidjson\include;F:\OpenGL\assimp-4.1.0\code\..\contrib;F:\OpenGL\assimp-4.1.0\code\..\contrib\unzip;F:\OpenGL\assimp-4.1.0\contrib\irrXML;F:\OpenGL\assimp-4.1.0\code\..\contrib\openddlparser\include;F:\OpenGL\assimp-4.1.0\code\..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>Debug/</AssemblerListingLocation>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <Optimization>Disabled</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;WIN32_LEAN_AND_MEAN;OPENDDL_NO_USE_CPP11;ASSIMP_BUILD_NO_C4D_IMPORTER;ASSIMP_IMPORTER_GLTF_USE_OPEN3DGC=1;ASSIMP_BUILD_DLL_EXPORT;_SCL_SECURE_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;OPENDDLPARSER_BUILD;CMAKE_INTDIR="Debug";assimp_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;WIN32_LEAN_AND_MEAN;OPENDDL_NO_USE_CPP11;ASSIMP_BUILD_NO_C4D_IMPORTER;ASSIMP_IMPORTER_GLTF_USE_OPEN3DGC=1;ASSIMP_BUILD_DLL_EXPORT;_SCL_SECURE_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;OPENDDLPARSER_BUILD;CMAKE_INTDIR=\"Debug\";assimp_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>F:\OpenGL\assimp-4.1.0\.;F:\OpenGL\assimp-4.1.0\include;F:\OpenGL\assimp_build;F:\OpenGL\assimp_build\include;F:\OpenGL\assimp-4.1.0\contrib\zlib;F:\OpenGL\assimp_build\contrib\zlib;F:\OpenGL\assimp-4.1.0\code\..\contrib\rapidjson\include;F:\OpenGL\assimp-4.1.0\code\..\contrib;F:\OpenGL\assimp-4.1.0\code\..\contrib\unzip;F:\OpenGL\assimp-4.1.0\contrib\irrXML;F:\OpenGL\assimp-4.1.0\code\..\contrib\openddlparser\include;F:\OpenGL\assimp-4.1.0\code\..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>F:\OpenGL\assimp-4.1.0\.;F:\OpenGL\assimp-4.1.0\include;F:\OpenGL\assimp_build;F:\OpenGL\assimp_build\include;F:\OpenGL\assimp-4.1.0\contrib\zlib;F:\OpenGL\assimp_build\contrib\zlib;F:\OpenGL\assimp-4.1.0\code\..\contrib\rapidjson\include;F:\OpenGL\assimp-4.1.0\code\..\contrib;F:\OpenGL\assimp-4.1.0\code\..\contrib\unzip;F:\OpenGL\assimp-4.1.0\contrib\irrXML;F:\OpenGL\assimp-4.1.0\code\..\contrib\openddlparser\include;F:\OpenGL\assimp-4.1.0\code\..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Link>
+      <AdditionalDependencies>..\contrib\zlib\Debug\zlibstaticd.lib;..\contrib\irrXML\Debug\IrrXML.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /machine:X86</AdditionalOptions>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ImportLibrary>F:/OpenGL/assimp_build/code/Debug/assimp-vc140-mt.lib</ImportLibrary>
+      <ProgramDataBaseFile>F:/OpenGL/assimp_build/code/Debug/assimp-vc140-mt.pdb</ProgramDataBaseFile>
+      <SubSystem>Console</SubSystem>
+      <Version></Version>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>F:\OpenGL\assimp-4.1.0\.;F:\OpenGL\assimp-4.1.0\include;F:\OpenGL\assimp_build;F:\OpenGL\assimp_build\include;F:\OpenGL\assimp-4.1.0\contrib\zlib;F:\OpenGL\assimp_build\contrib\zlib;F:\OpenGL\assimp-4.1.0\code\..\contrib\rapidjson\include;F:\OpenGL\assimp-4.1.0\code\..\contrib;F:\OpenGL\assimp-4.1.0\code\..\contrib\unzip;F:\OpenGL\assimp-4.1.0\contrib\irrXML;F:\OpenGL\assimp-4.1.0\code\..\contrib\openddlparser\include;F:\OpenGL\assimp-4.1.0\code\..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>Release/</AssemblerListingLocation>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;WIN32_LEAN_AND_MEAN;OPENDDL_NO_USE_CPP11;ASSIMP_BUILD_NO_C4D_IMPORTER;ASSIMP_IMPORTER_GLTF_USE_OPEN3DGC=1;ASSIMP_BUILD_DLL_EXPORT;_SCL_SECURE_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;OPENDDLPARSER_BUILD;CMAKE_INTDIR="Release";assimp_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat></DebugInformationFormat>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;WIN32_LEAN_AND_MEAN;OPENDDL_NO_USE_CPP11;ASSIMP_BUILD_NO_C4D_IMPORTER;ASSIMP_IMPORTER_GLTF_USE_OPEN3DGC=1;ASSIMP_BUILD_DLL_EXPORT;_SCL_SECURE_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;OPENDDLPARSER_BUILD;CMAKE_INTDIR=\"Release\";assimp_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>F:\OpenGL\assimp-4.1.0\.;F:\OpenGL\assimp-4.1.0\include;F:\OpenGL\assimp_build;F:\OpenGL\assimp_build\include;F:\OpenGL\assimp-4.1.0\contrib\zlib;F:\OpenGL\assimp_build\contrib\zlib;F:\OpenGL\assimp-4.1.0\code\..\contrib\rapidjson\include;F:\OpenGL\assimp-4.1.0\code\..\contrib;F:\OpenGL\assimp-4.1.0\code\..\contrib\unzip;F:\OpenGL\assimp-4.1.0\contrib\irrXML;F:\OpenGL\assimp-4.1.0\code\..\contrib\openddlparser\include;F:\OpenGL\assimp-4.1.0\code\..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>F:\OpenGL\assimp-4.1.0\.;F:\OpenGL\assimp-4.1.0\include;F:\OpenGL\assimp_build;F:\OpenGL\assimp_build\include;F:\OpenGL\assimp-4.1.0\contrib\zlib;F:\OpenGL\assimp_build\contrib\zlib;F:\OpenGL\assimp-4.1.0\code\..\contrib\rapidjson\include;F:\OpenGL\assimp-4.1.0\code\..\contrib;F:\OpenGL\assimp-4.1.0\code\..\contrib\unzip;F:\OpenGL\assimp-4.1.0\contrib\irrXML;F:\OpenGL\assimp-4.1.0\code\..\contrib\openddlparser\include;F:\OpenGL\assimp-4.1.0\code\..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Link>
+      <AdditionalDependencies>..\contrib\zlib\Release\zlibstatic.lib;..\contrib\irrXML\Release\IrrXML.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /machine:X86</AdditionalOptions>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ImportLibrary>F:/OpenGL/assimp_build/code/Release/assimp-vc140-mt.lib</ImportLibrary>
+      <ProgramDataBaseFile>F:/OpenGL/assimp_build/code/Release/assimp-vc140-mt.pdb</ProgramDataBaseFile>
+      <SubSystem>Console</SubSystem>
+      <Version></Version>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>F:\OpenGL\assimp-4.1.0\.;F:\OpenGL\assimp-4.1.0\include;F:\OpenGL\assimp_build;F:\OpenGL\assimp_build\include;F:\OpenGL\assimp-4.1.0\contrib\zlib;F:\OpenGL\assimp_build\contrib\zlib;F:\OpenGL\assimp-4.1.0\code\..\contrib\rapidjson\include;F:\OpenGL\assimp-4.1.0\code\..\contrib;F:\OpenGL\assimp-4.1.0\code\..\contrib\unzip;F:\OpenGL\assimp-4.1.0\contrib\irrXML;F:\OpenGL\assimp-4.1.0\code\..\contrib\openddlparser\include;F:\OpenGL\assimp-4.1.0\code\..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>MinSizeRel/</AssemblerListingLocation>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <Optimization>MinSpace</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;WIN32_LEAN_AND_MEAN;OPENDDL_NO_USE_CPP11;ASSIMP_BUILD_NO_C4D_IMPORTER;ASSIMP_IMPORTER_GLTF_USE_OPEN3DGC=1;ASSIMP_BUILD_DLL_EXPORT;_SCL_SECURE_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;OPENDDLPARSER_BUILD;CMAKE_INTDIR="MinSizeRel";assimp_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat></DebugInformationFormat>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;WIN32_LEAN_AND_MEAN;OPENDDL_NO_USE_CPP11;ASSIMP_BUILD_NO_C4D_IMPORTER;ASSIMP_IMPORTER_GLTF_USE_OPEN3DGC=1;ASSIMP_BUILD_DLL_EXPORT;_SCL_SECURE_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;OPENDDLPARSER_BUILD;CMAKE_INTDIR=\"MinSizeRel\";assimp_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>F:\OpenGL\assimp-4.1.0\.;F:\OpenGL\assimp-4.1.0\include;F:\OpenGL\assimp_build;F:\OpenGL\assimp_build\include;F:\OpenGL\assimp-4.1.0\contrib\zlib;F:\OpenGL\assimp_build\contrib\zlib;F:\OpenGL\assimp-4.1.0\code\..\contrib\rapidjson\include;F:\OpenGL\assimp-4.1.0\code\..\contrib;F:\OpenGL\assimp-4.1.0\code\..\contrib\unzip;F:\OpenGL\assimp-4.1.0\contrib\irrXML;F:\OpenGL\assimp-4.1.0\code\..\contrib\openddlparser\include;F:\OpenGL\assimp-4.1.0\code\..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>F:\OpenGL\assimp-4.1.0\.;F:\OpenGL\assimp-4.1.0\include;F:\OpenGL\assimp_build;F:\OpenGL\assimp_build\include;F:\OpenGL\assimp-4.1.0\contrib\zlib;F:\OpenGL\assimp_build\contrib\zlib;F:\OpenGL\assimp-4.1.0\code\..\contrib\rapidjson\include;F:\OpenGL\assimp-4.1.0\code\..\contrib;F:\OpenGL\assimp-4.1.0\code\..\contrib\unzip;F:\OpenGL\assimp-4.1.0\contrib\irrXML;F:\OpenGL\assimp-4.1.0\code\..\contrib\openddlparser\include;F:\OpenGL\assimp-4.1.0\code\..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Link>
+      <AdditionalDependencies>..\contrib\zlib\MinSizeRel\zlibstatic.lib;..\contrib\irrXML\MinSizeRel\IrrXML.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /machine:X86</AdditionalOptions>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ImportLibrary>F:/OpenGL/assimp_build/code/MinSizeRel/assimp-vc140-mt.lib</ImportLibrary>
+      <ProgramDataBaseFile>F:/OpenGL/assimp_build/code/MinSizeRel/assimp-vc140-mt.pdb</ProgramDataBaseFile>
+      <SubSystem>Console</SubSystem>
+      <Version></Version>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>F:\OpenGL\assimp-4.1.0\.;F:\OpenGL\assimp-4.1.0\include;F:\OpenGL\assimp_build;F:\OpenGL\assimp_build\include;F:\OpenGL\assimp-4.1.0\contrib\zlib;F:\OpenGL\assimp_build\contrib\zlib;F:\OpenGL\assimp-4.1.0\code\..\contrib\rapidjson\include;F:\OpenGL\assimp-4.1.0\code\..\contrib;F:\OpenGL\assimp-4.1.0\code\..\contrib\unzip;F:\OpenGL\assimp-4.1.0\contrib\irrXML;F:\OpenGL\assimp-4.1.0\code\..\contrib\openddlparser\include;F:\OpenGL\assimp-4.1.0\code\..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>RelWithDebInfo/</AssemblerListingLocation>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;WIN32_LEAN_AND_MEAN;OPENDDL_NO_USE_CPP11;ASSIMP_BUILD_NO_C4D_IMPORTER;ASSIMP_IMPORTER_GLTF_USE_OPEN3DGC=1;ASSIMP_BUILD_DLL_EXPORT;_SCL_SECURE_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;OPENDDLPARSER_BUILD;CMAKE_INTDIR="RelWithDebInfo";assimp_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;WIN32_LEAN_AND_MEAN;OPENDDL_NO_USE_CPP11;ASSIMP_BUILD_NO_C4D_IMPORTER;ASSIMP_IMPORTER_GLTF_USE_OPEN3DGC=1;ASSIMP_BUILD_DLL_EXPORT;_SCL_SECURE_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;OPENDDLPARSER_BUILD;CMAKE_INTDIR=\"RelWithDebInfo\";assimp_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>F:\OpenGL\assimp-4.1.0\.;F:\OpenGL\assimp-4.1.0\include;F:\OpenGL\assimp_build;F:\OpenGL\assimp_build\include;F:\OpenGL\assimp-4.1.0\contrib\zlib;F:\OpenGL\assimp_build\contrib\zlib;F:\OpenGL\assimp-4.1.0\code\..\contrib\rapidjson\include;F:\OpenGL\assimp-4.1.0\code\..\contrib;F:\OpenGL\assimp-4.1.0\code\..\contrib\unzip;F:\OpenGL\assimp-4.1.0\contrib\irrXML;F:\OpenGL\assimp-4.1.0\code\..\contrib\openddlparser\include;F:\OpenGL\assimp-4.1.0\code\..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>F:\OpenGL\assimp-4.1.0\.;F:\OpenGL\assimp-4.1.0\include;F:\OpenGL\assimp_build;F:\OpenGL\assimp_build\include;F:\OpenGL\assimp-4.1.0\contrib\zlib;F:\OpenGL\assimp_build\contrib\zlib;F:\OpenGL\assimp-4.1.0\code\..\contrib\rapidjson\include;F:\OpenGL\assimp-4.1.0\code\..\contrib;F:\OpenGL\assimp-4.1.0\code\..\contrib\unzip;F:\OpenGL\assimp-4.1.0\contrib\irrXML;F:\OpenGL\assimp-4.1.0\code\..\contrib\openddlparser\include;F:\OpenGL\assimp-4.1.0\code\..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Link>
+      <AdditionalDependencies>..\contrib\zlib\RelWithDebInfo\zlibstatic.lib;..\contrib\irrXML\RelWithDebInfo\IrrXML.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /machine:X86</AdditionalOptions>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ImportLibrary>F:/OpenGL/assimp_build/code/RelWithDebInfo/assimp-vc140-mt.lib</ImportLibrary>
+      <ProgramDataBaseFile>F:/OpenGL/assimp_build/code/RelWithDebInfo/assimp-vc140-mt.pdb</ProgramDataBaseFile>
+      <SubSystem>Console</SubSystem>
+      <Version></Version>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <CustomBuild Include="F:\OpenGL\assimp-4.1.0\code\CMakeLists.txt">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Building Custom Rule F:/OpenGL/assimp-4.1.0/code/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">setlocal
+E:\CMake\bin\cmake.exe -HF:/OpenGL/assimp-4.1.0 -BF:/OpenGL/assimp_build --check-stamp-file F:/OpenGL/assimp_build/code/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">F:/OpenGL/assimp-4.1.0/code/CMakeLists.txt;F:\OpenGL\assimp-4.1.0\code\CMakeLists.txt;F:\OpenGL\assimp-4.1.0\cmake-modules\FindRT.cmake;E:\CMake\share\cmake-3.9\Modules\FindPackageHandleStandardArgs.cmake;E:\CMake\share\cmake-3.9\Modules\FindPackageMessage.cmake;F:\OpenGL\assimp-4.1.0\code\CMakeLists.txt;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">F:\OpenGL\assimp_build\code\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Building Custom Rule F:/OpenGL/assimp-4.1.0/code/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">setlocal
+E:\CMake\bin\cmake.exe -HF:/OpenGL/assimp-4.1.0 -BF:/OpenGL/assimp_build --check-stamp-file F:/OpenGL/assimp_build/code/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">F:/OpenGL/assimp-4.1.0/code/CMakeLists.txt;F:\OpenGL\assimp-4.1.0\code\CMakeLists.txt;F:\OpenGL\assimp-4.1.0\cmake-modules\FindRT.cmake;E:\CMake\share\cmake-3.9\Modules\FindPackageHandleStandardArgs.cmake;E:\CMake\share\cmake-3.9\Modules\FindPackageMessage.cmake;F:\OpenGL\assimp-4.1.0\code\CMakeLists.txt;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">F:\OpenGL\assimp_build\code\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">Building Custom Rule F:/OpenGL/assimp-4.1.0/code/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">setlocal
+E:\CMake\bin\cmake.exe -HF:/OpenGL/assimp-4.1.0 -BF:/OpenGL/assimp_build --check-stamp-file F:/OpenGL/assimp_build/code/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">F:/OpenGL/assimp-4.1.0/code/CMakeLists.txt;F:\OpenGL\assimp-4.1.0\code\CMakeLists.txt;F:\OpenGL\assimp-4.1.0\cmake-modules\FindRT.cmake;E:\CMake\share\cmake-3.9\Modules\FindPackageHandleStandardArgs.cmake;E:\CMake\share\cmake-3.9\Modules\FindPackageMessage.cmake;F:\OpenGL\assimp-4.1.0\code\CMakeLists.txt;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">F:\OpenGL\assimp_build\code\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">Building Custom Rule F:/OpenGL/assimp-4.1.0/code/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">setlocal
+E:\CMake\bin\cmake.exe -HF:/OpenGL/assimp-4.1.0 -BF:/OpenGL/assimp_build --check-stamp-file F:/OpenGL/assimp_build/code/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">F:/OpenGL/assimp-4.1.0/code/CMakeLists.txt;F:\OpenGL\assimp-4.1.0\code\CMakeLists.txt;F:\OpenGL\assimp-4.1.0\cmake-modules\FindRT.cmake;E:\CMake\share\cmake-3.9\Modules\FindPackageHandleStandardArgs.cmake;E:\CMake\share\cmake-3.9\Modules\FindPackageMessage.cmake;F:\OpenGL\assimp-4.1.0\code\CMakeLists.txt;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">F:\OpenGL\assimp_build\code\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">false</LinkObjects>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\Assimp.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\fast_atof.h" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\qnan.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\BaseImporter.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\BaseImporter.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\BaseProcess.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\BaseProcess.h" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\Importer.h" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\ScenePrivate.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\PostStepRegistry.cpp"  />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\ImporterRegistry.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\ByteSwapper.h" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\DefaultProgressHandler.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\DefaultIOStream.cpp"  />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\DefaultIOSystem.cpp"  />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\CInterfaceIOWrapper.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\CInterfaceIOWrapper.h" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\Hash.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\Importer.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\IFF.h" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\MemoryIOWrapper.h" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\ParsingUtils.h" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\StreamReader.h" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\StreamWriter.h" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\StringComparison.h" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\StringUtils.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\SGSpatialSort.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\SGSpatialSort.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\VertexTriangleAdjacency.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\VertexTriangleAdjacency.h" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\GenericProperty.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\SpatialSort.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\SpatialSort.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\SceneCombiner.cpp"  />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\ScenePreprocessor.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\ScenePreprocessor.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\SkeletonMeshBuilder.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\SkeletonMeshBuilder.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\SplitByBoneCountProcess.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\SplitByBoneCountProcess.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\ScaleProcess.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\ScaleProcess.h" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\SmoothingGroups.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\StandardShapes.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\StandardShapes.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\TargetAnimation.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\TargetAnimation.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\RemoveComments.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\RemoveComments.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\Subdivision.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\Subdivision.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\scene.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\Vertex.h" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\LineSplitter.h" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\TinyFormatter.h" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\Profiler.h" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\LogAux.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\Bitmap.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\Bitmap.h" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\XMLTools.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\Version.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\IOStreamBuffer.h" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\CreateAnimMesh.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\CreateAnimMesh.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\include\assimp\DefaultLogger.hpp" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\include\assimp\LogStream.hpp" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\include\assimp\Logger.hpp" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\include\assimp\NullLogger.hpp" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\Win32DebugLogStream.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\DefaultLogger.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\FileLogStream.h" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\StdOStreamLogStream.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\Exporter.cpp"  />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\AssimpCExport.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\BlobIOSystem.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\CalcTangentsProcess.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\CalcTangentsProcess.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\ComputeUVMappingProcess.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\ComputeUVMappingProcess.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\ConvertToLHProcess.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\ConvertToLHProcess.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\FindDegenerates.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\FindDegenerates.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\FindInstancesProcess.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\FindInstancesProcess.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\FindInvalidDataProcess.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\FindInvalidDataProcess.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\FixNormalsStep.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\FixNormalsStep.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\GenFaceNormalsProcess.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\GenFaceNormalsProcess.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\GenVertexNormalsProcess.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\GenVertexNormalsProcess.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\PretransformVertices.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\PretransformVertices.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\ImproveCacheLocality.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\ImproveCacheLocality.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\JoinVerticesProcess.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\JoinVerticesProcess.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\LimitBoneWeightsProcess.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\LimitBoneWeightsProcess.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\RemoveRedundantMaterials.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\RemoveRedundantMaterials.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\RemoveVCProcess.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\RemoveVCProcess.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\SortByPTypeProcess.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\SortByPTypeProcess.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\SplitLargeMeshes.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\SplitLargeMeshes.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\TextureTransform.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\TextureTransform.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\TriangulateProcess.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\TriangulateProcess.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\ValidateDataStructure.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\ValidateDataStructure.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\OptimizeGraph.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\OptimizeGraph.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\OptimizeMeshes.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\OptimizeMeshes.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\DeboneProcess.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\DeboneProcess.h" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\ProcessHelper.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\ProcessHelper.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\PolyTools.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\MakeVerboseFormat.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\MakeVerboseFormat.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\MaterialSystem.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\MaterialSystem.h" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\StepExporter.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\StepExporter.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\AMFImporter.hpp" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\AMFImporter_Macro.hpp" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\AMFImporter_Node.hpp" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\AMFImporter.cpp"  />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\AMFImporter_Geometry.cpp"  />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\AMFImporter_Material.cpp"  />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\AMFImporter_Postprocess.cpp"  />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\3DSConverter.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\3DSHelper.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\3DSLoader.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\3DSLoader.h" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\3DSExporter.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\3DSExporter.cpp"  />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\ACLoader.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\ACLoader.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\ASELoader.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\ASELoader.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\ASEParser.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\ASEParser.h" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\AssbinExporter.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\AssbinExporter.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\AssbinLoader.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\AssbinLoader.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\AssxmlExporter.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\AssxmlExporter.cpp"  />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\B3DImporter.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\B3DImporter.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\BVHLoader.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\BVHLoader.h" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\ColladaHelper.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\ColladaLoader.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\ColladaLoader.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\ColladaParser.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\ColladaParser.h" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\ColladaExporter.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\ColladaExporter.cpp"  />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\DXFLoader.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\DXFLoader.h" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\DXFHelper.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\CSMLoader.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\CSMLoader.h" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\HMPFileData.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\HMPLoader.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\HMPLoader.h" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\HalfLifeFileData.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\IRRMeshLoader.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\IRRMeshLoader.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\IRRShared.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\IRRShared.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\IRRLoader.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\IRRLoader.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\LWOAnimation.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\LWOAnimation.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\LWOBLoader.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\LWOFileData.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\LWOLoader.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\LWOLoader.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\LWOMaterial.cpp"  />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\LWSLoader.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\LWSLoader.h" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\MD2FileData.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\MD2Loader.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\MD2Loader.h" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\MD2NormalTable.h" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\MD3FileData.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\MD3Loader.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\MD3Loader.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\MD5Loader.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\MD5Loader.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\MD5Parser.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\MD5Parser.h" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\MDCFileData.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\MDCLoader.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\MDCLoader.h" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\MDCNormalTable.h" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\MDLDefaultColorMap.h" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\MDLFileData.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\MDLLoader.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\MDLLoader.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\MDLMaterialLoader.cpp"  />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\NFFLoader.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\NFFLoader.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\NDOLoader.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\NDOLoader.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\OFFLoader.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\OFFLoader.h" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\ObjFileData.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\ObjFileImporter.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\ObjFileImporter.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\ObjFileMtlImporter.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\ObjFileMtlImporter.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\ObjFileParser.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\ObjFileParser.h" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\ObjTools.h" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\ObjExporter.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\ObjExporter.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\OgreImporter.h" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\OgreStructs.h" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\OgreParsingUtils.h" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\OgreBinarySerializer.h" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\OgreXmlSerializer.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\OgreImporter.cpp"  />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\OgreStructs.cpp"  />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\OgreBinarySerializer.cpp"  />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\OgreXmlSerializer.cpp"  />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\OgreMaterial.cpp"  />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\OpenGEXExporter.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\OpenGEXExporter.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\OpenGEXImporter.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\OpenGEXImporter.h" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\OpenGEXStructs.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\PlyLoader.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\PlyLoader.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\PlyParser.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\PlyParser.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\PlyExporter.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\PlyExporter.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\MS3DLoader.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\MS3DLoader.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\COBLoader.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\COBLoader.h" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\COBScene.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\BlenderLoader.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\BlenderLoader.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\BlenderDNA.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\BlenderDNA.h" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\BlenderDNA.inl" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\BlenderScene.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\BlenderScene.h" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\BlenderSceneGen.h" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\BlenderIntermediate.h" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\BlenderModifier.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\BlenderModifier.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\BlenderBMesh.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\BlenderBMesh.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\BlenderTessellator.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\BlenderTessellator.cpp"  />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\IFCLoader.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\IFCLoader.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\IFCReaderGen1.cpp" >
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(AdditionalOptions) /bigobj</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(AdditionalOptions) /bigobj</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">%(AdditionalOptions) /bigobj</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">%(AdditionalOptions) /bigobj</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\IFCReaderGen2.cpp" >
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(AdditionalOptions) /bigobj</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(AdditionalOptions) /bigobj</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">%(AdditionalOptions) /bigobj</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">%(AdditionalOptions) /bigobj</AdditionalOptions>
+    </ClCompile>
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\IFCReaderGen.h" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\IFCUtil.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\IFCUtil.cpp"  />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\IFCGeometry.cpp"  />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\IFCMaterial.cpp"  />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\IFCProfile.cpp"  />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\IFCCurve.cpp"  />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\IFCBoolean.cpp"  />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\IFCOpenings.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\STEPFile.h" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\STEPFileReader.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\STEPFileReader.cpp"  />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\STEPFileEncoding.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\STEPFileEncoding.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\XGLLoader.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\XGLLoader.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\FBXImporter.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\FBXCompileConfig.h" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\FBXImporter.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\FBXParser.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\FBXParser.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\FBXTokenizer.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\FBXTokenizer.h" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\FBXImportSettings.h" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\FBXConverter.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\FBXConverter.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\FBXUtil.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\FBXUtil.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\FBXDocument.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\FBXDocument.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\FBXProperties.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\FBXProperties.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\FBXMeshGeometry.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\FBXMeshGeometry.cpp"  />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\FBXMaterial.cpp"  />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\FBXModel.cpp"  />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\FBXAnimation.cpp"  />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\FBXNodeAttribute.cpp"  />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\FBXDeformer.cpp"  />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\FBXBinaryTokenizer.cpp"  />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\FBXDocumentUtil.cpp"  />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\Q3DLoader.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\Q3DLoader.h" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\Q3BSPFileData.h" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\Q3BSPFileParser.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\Q3BSPFileParser.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\Q3BSPFileImporter.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\Q3BSPFileImporter.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\Q3BSPZipArchive.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\Q3BSPZipArchive.cpp"  />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\RawLoader.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\RawLoader.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\SIBImporter.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\SIBImporter.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\SMDLoader.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\SMDLoader.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\STLLoader.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\STLLoader.h" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\STLExporter.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\STLExporter.cpp"  />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\TerragenLoader.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\TerragenLoader.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\UnrealLoader.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\UnrealLoader.h" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\XFileHelper.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\XFileImporter.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\XFileImporter.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\XFileParser.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\XFileParser.h" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\XFileExporter.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\XFileExporter.cpp"  />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\X3DExporter.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\X3DExporter.hpp" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\X3DImporter.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\X3DImporter.hpp" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\X3DImporter_Geometry2D.cpp"  />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\X3DImporter_Geometry3D.cpp"  />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\X3DImporter_Group.cpp"  />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\X3DImporter_Light.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\X3DImporter_Macro.hpp" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\X3DImporter_Metadata.cpp"  />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\X3DImporter_Networking.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\X3DImporter_Node.hpp" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\X3DImporter_Postprocess.cpp"  />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\X3DImporter_Rendering.cpp"  />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\X3DImporter_Shape.cpp"  />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\X3DImporter_Texturing.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\FIReader.hpp" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\FIReader.cpp"  />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\X3DVocabulary.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\glTFAsset.h" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\glTFAsset.inl" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\glTFAssetWriter.h" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\glTFAssetWriter.inl" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\glTFImporter.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\glTFImporter.h" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\glTFExporter.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\glTFExporter.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\glTF2Asset.h" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\glTF2Asset.inl" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\glTF2AssetWriter.h" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\glTF2AssetWriter.inl" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\glTF2Importer.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\glTF2Importer.h" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\glTF2Exporter.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\glTF2Exporter.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\D3MFImporter.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\D3MFImporter.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\D3MFExporter.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\D3MFExporter.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\D3MFOpcPackage.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\D3MFOpcPackage.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\3MFXmlTags.h" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\MMDCpp14.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\MMDImporter.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\MMDImporter.h" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\MMDPmdParser.h" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\MMDPmxParser.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\MMDPmxParser.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\MMDVmdParser.h" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\irrXMLWrapper.h" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\contrib\unzip\crypt.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\contrib\unzip\ioapi.c" >
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\contrib\unzip\ioapi.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\contrib\unzip\unzip.c" >
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\contrib\unzip\unzip.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\contrib\poly2tri\poly2tri\common\shapes.cc"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\contrib\poly2tri\poly2tri\common\shapes.h" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\contrib\poly2tri\poly2tri\common\utils.h" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\contrib\poly2tri\poly2tri\sweep\advancing_front.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\contrib\poly2tri\poly2tri\sweep\advancing_front.cc"  />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\contrib\poly2tri\poly2tri\sweep\cdt.cc"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\contrib\poly2tri\poly2tri\sweep\cdt.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\contrib\poly2tri\poly2tri\sweep\sweep.cc"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\contrib\poly2tri\poly2tri\sweep\sweep.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\contrib\poly2tri\poly2tri\sweep\sweep_context.cc"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\contrib\poly2tri\poly2tri\sweep\sweep_context.h" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\contrib\clipper\clipper.hpp" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\contrib\clipper\clipper.cpp"  />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\contrib\openddlparser\code\OpenDDLParser.cpp"  />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\contrib\openddlparser\code\DDLNode.cpp"  />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\contrib\openddlparser\code\OpenDDLCommon.cpp"  />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\contrib\openddlparser\code\OpenDDLExport.cpp"  />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\contrib\openddlparser\code\Value.cpp"  />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\contrib\openddlparser\code\OpenDDLStream.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\contrib\openddlparser\include\openddlparser\OpenDDLParser.h" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\contrib\openddlparser\include\openddlparser\OpenDDLParserUtils.h" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\contrib\openddlparser\include\openddlparser\OpenDDLCommon.h" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\contrib\openddlparser\include\openddlparser\OpenDDLExport.h" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\contrib\openddlparser\include\openddlparser\OpenDDLStream.h" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\contrib\openddlparser\include\openddlparser\DDLNode.h" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\contrib\openddlparser\include\openddlparser\Value.h" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\contrib\Open3DGC\o3dgcAdjacencyInfo.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\contrib\Open3DGC\o3dgcArithmeticCodec.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\contrib\Open3DGC\o3dgcArithmeticCodec.h" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\contrib\Open3DGC\o3dgcBinaryStream.h" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\contrib\Open3DGC\o3dgcCommon.h" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\contrib\Open3DGC\o3dgcDVEncodeParams.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\contrib\Open3DGC\o3dgcDynamicVectorDecoder.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\contrib\Open3DGC\o3dgcDynamicVectorDecoder.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\contrib\Open3DGC\o3dgcDynamicVectorEncoder.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\contrib\Open3DGC\o3dgcDynamicVectorEncoder.h" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\contrib\Open3DGC\o3dgcDynamicVector.h" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\contrib\Open3DGC\o3dgcFIFO.h" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\contrib\Open3DGC\o3dgcIndexedFaceSet.h" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\contrib\Open3DGC\o3dgcIndexedFaceSet.inl" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\contrib\Open3DGC\o3dgcSC3DMCDecoder.h" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\contrib\Open3DGC\o3dgcSC3DMCDecoder.inl" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\contrib\Open3DGC\o3dgcSC3DMCEncodeParams.h" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\contrib\Open3DGC\o3dgcSC3DMCEncoder.h" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\contrib\Open3DGC\o3dgcSC3DMCEncoder.inl" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\contrib\Open3DGC\o3dgcTimer.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\contrib\Open3DGC\o3dgcTools.cpp"  />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\contrib\Open3DGC\o3dgcTriangleFans.cpp"  />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\contrib\Open3DGC\o3dgcTriangleFans.h" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\contrib\Open3DGC\o3dgcTriangleListDecoder.h" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\contrib\Open3DGC\o3dgcTriangleListDecoder.inl" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\contrib\Open3DGC\o3dgcTriangleListEncoder.h" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\contrib\Open3DGC\o3dgcTriangleListEncoder.inl" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\contrib\Open3DGC\o3dgcVector.h" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\contrib\Open3DGC\o3dgcVector.inl" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\contrib\zip\src\miniz.h" />
+    <ClCompile Include="F:\OpenGL\assimp-4.1.0\contrib\zip\src\zip.c" >
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\contrib\zip\src\zip.h" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\include\assimp\anim.h" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\include\assimp\ai_assert.h" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\include\assimp\camera.h" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\include\assimp\color4.h" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\include\assimp\color4.inl" />
+    <ClInclude Include="F:\OpenGL\assimp_build\include\assimp\config.h" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\include\assimp\defs.h" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\include\assimp\Defines.h" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\include\assimp\cfileio.h" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\include\assimp\light.h" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\include\assimp\material.h" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\include\assimp\material.inl" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\include\assimp\matrix3x3.h" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\include\assimp\matrix3x3.inl" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\include\assimp\matrix4x4.h" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\include\assimp\matrix4x4.inl" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\include\assimp\mesh.h" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\include\assimp\postprocess.h" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\include\assimp\quaternion.h" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\include\assimp\quaternion.inl" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\include\assimp\scene.h" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\include\assimp\metadata.h" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\include\assimp\texture.h" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\include\assimp\types.h" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\include\assimp\vector2.h" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\include\assimp\vector2.inl" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\include\assimp\vector3.h" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\include\assimp\vector3.inl" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\include\assimp\version.h" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\include\assimp\cimport.h" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\include\assimp\importerdesc.h" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\include\assimp\Importer.hpp" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\include\assimp\ProgressHandler.hpp" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\include\assimp\IOStream.hpp" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\include\assimp\IOSystem.hpp" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\include\assimp\cexport.h" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\include\assimp\Exporter.hpp" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\include\assimp\DefaultIOStream.h" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\include\assimp\DefaultIOSystem.h" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\include\assimp\SceneCombiner.h" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\include\assimp\Compiler\pushpack1.h" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\include\assimp\Compiler\poppack1.h" />
+    <ClInclude Include="F:\OpenGL\assimp-4.1.0\include\assimp\Compiler\pstdint.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="F:\OpenGL\assimp_build\ZERO_CHECK.vcxproj">
+      <Project>{879655C1-50F0-352B-AE63-BC59151600C3}</Project>
+      <Name>ZERO_CHECK</Name>
+    </ProjectReference>
+    <ProjectReference Include="F:\OpenGL\assimp_build\contrib\irrXML\IrrXML.vcxproj">
+      <Project>{7EA13183-BB2C-3B50-8720-25DDE703E1B1}</Project>
+      <Name>IrrXML</Name>
+    </ProjectReference>
+    <ProjectReference Include="F:\OpenGL\assimp_build\contrib\zlib\zlibstatic.vcxproj">
+      <Project>{08DE4914-CF06-3AF6-8F3A-B8A32B04B078}</Project>
+      <Name>zlibstatic</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

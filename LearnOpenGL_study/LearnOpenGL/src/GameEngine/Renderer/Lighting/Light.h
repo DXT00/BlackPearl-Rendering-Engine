@@ -38,7 +38,12 @@ public:
 		const float outterCutOffAngle = glm::cos(glm::radians(30.0f)),
 		Props props=Props()
 		);
-
+	inline void SetProps(const Props& props){
+		m_LightProp.ambient = props.ambient;
+		m_LightProp.diffuse = props.diffuse;
+		m_LightProp.specular = props.specular;
+	
+	}
 protected:
 	Props m_LightProp;
 	

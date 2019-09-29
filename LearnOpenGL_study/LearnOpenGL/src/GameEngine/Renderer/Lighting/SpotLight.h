@@ -61,9 +61,7 @@ public:
 	SpotLight(const glm::vec3& position ,const glm::vec3& direction,float cutoffAngle,float outterCutOffAngle,Props props)
 	:m_Position(position),m_Direction(direction),m_CutOffAngle(cutoffAngle),m_OuterCutOffAngle(outterCutOffAngle)
 	{
-		this->m_LightProp.ambient = props.ambient;
-		this->m_LightProp.diffuse = props.diffuse;
-		this->m_LightProp.specular = props.specular;
+		SetProps(props);
 		Init();
 	};
 	virtual ~SpotLight()=default;

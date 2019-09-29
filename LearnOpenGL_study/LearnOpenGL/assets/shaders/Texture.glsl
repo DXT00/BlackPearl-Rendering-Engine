@@ -84,8 +84,8 @@ in vec3 v_FragPos;
 
 uniform uint u_LightType;
 uniform Material u_Material;
-uniform sampler2D u_Texture1;
-uniform sampler2D u_Texture2;
+//uniform sampler2D u_Texture1;
+//uniform sampler2D u_Texture2;
 uniform float u_MixValue;
 
 uniform ParallelLight u_ParallelLight;

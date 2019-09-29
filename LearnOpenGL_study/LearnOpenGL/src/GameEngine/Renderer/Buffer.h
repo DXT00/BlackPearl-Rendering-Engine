@@ -118,7 +118,8 @@ private:
 class VertexBuffer {
 public:
 
-	VertexBuffer(float* vertices,uint32_t size);
+	VertexBuffer(const std::vector<float>&vertices);
+	VertexBuffer(float*vertices, uint32_t size);
 	void Bind();
 	void UnBind();
 	void SetBufferLayout(const VertexBufferLayout& layout) { m_BufferLayout = layout; }
@@ -133,7 +134,9 @@ private:
 
 class IndexBuffer {
 public:
-	IndexBuffer(float* indices,uint32_t size);
+	IndexBuffer(const std::vector<unsigned int>& indices);
+	IndexBuffer(unsigned int *indices, uint32_t size);
+
 	void Bind();
 	void UnBind();
 

@@ -62,9 +62,7 @@ public:
 	};
 	PointLight(const glm::vec3& position,Props props)
 		:m_Position(position) {
-		this->m_LightProp.ambient = props.ambient;
-		this->m_LightProp.diffuse = props.diffuse;
-		this->m_LightProp.specular = props.specular;
+		SetProps(props);
 		Init();
 	}
 	virtual ~PointLight() = default;

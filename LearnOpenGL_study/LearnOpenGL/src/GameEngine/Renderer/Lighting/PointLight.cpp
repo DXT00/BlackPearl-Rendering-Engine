@@ -10,7 +10,7 @@ void PointLight::Init()
 {
 
 	//data
-	float lightVertices[] = {
+	std::vector<float> lightVertices = {
 		-0.5f, -0.5f, -0.5f,
 		 0.5f, -0.5f, -0.5f,
 		 0.5f,  0.5f, -0.5f,
@@ -56,7 +56,7 @@ void PointLight::Init()
 
 
 	std::shared_ptr<VertexBuffer> pointLightVertexBuffer;
-	pointLightVertexBuffer.reset(new VertexBuffer(lightVertices, sizeof(lightVertices)));
+	pointLightVertexBuffer.reset(new VertexBuffer(lightVertices));
 	m_Shader.reset(new Shader("assets/shaders/PointLight.glsl"));
 	m_VertexArray.reset(new VertexArray());
 	pointLightVertexBuffer->SetBufferLayout({

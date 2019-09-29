@@ -11,9 +11,8 @@
 
 #include "Renderer/Texture/Texture.h"
 #include "Renderer/Camera/PerspectiveCamera.h"
-#include "Renderer/Buffer.h"
 #include "Renderer/Renderer.h"
-
+#include "Renderer/Buffer.h"
 #include "Core.h"
 #include "Input.h"
 #include "Event/Event.h"
@@ -31,6 +30,10 @@ Application::Application()
 	m_Window->SetCallBack(std::bind(&Application::OnEvent, this, std::placeholders::_1));
 	m_Camera.reset(Camera::Create(Camera::Perspective, { 45.0f, 800.0f, 600.0f, 0.1f, 100.0f }));
 	
+	std::shared_ptr<Light> parallelLight;
+	parallelLight.reset(Light::Create(LightType::ParallelLight));
+	parallelLight->SetProps({ {0.2f, 0.2f, 0.2f},{1.0f, 0.2f, 0.1f},{1.0f, 1.0f, 1.0f} });
+	m_LightSources.AddLight(parallelLight);
 	//set light sources
 	//注意：如果时SpotLight就要更新相机位置！
 	std::shared_ptr<Light> spotLight;
@@ -149,45 +152,24 @@ Application::Application()
 		-0.5f,  0.5f,  0.5f,	 0.0f,  0.0f,	 0.0f,  1.0f,  0.0f,
 		-0.5f,  0.5f, -0.5f,	 0.0f,  1.0f,	 0.0f,  1.0f,  0.0f,
 	};
-	m_VertexArray.reset(new VertexArray());
-
-	std::shared_ptr<VertexBuffer> vertexBuffer;
-	vertexBuffer.reset(new VertexBuffer(woodboxVertices, sizeof(woodboxVertices)));
 
 
-	VertexBufferLayout layout = {
-		{ElementDataType::Float3,"aPos",false},
-		{ElementDataType::Float2,"aTexCoord",false},
-		{ElementDataType::Float3,"aNormal",false}
-	};
-	vertexBuffer->SetBufferLayout(layout);
-	m_VertexArray->AddVertexBuffer(vertexBuffer);
-
-
-
-
-	// load and create a texture 
-	m_Texture1.reset(new Texture("assets/texture/container.jpg"));
-	m_Texture2.reset(new Texture("assets/texture/1.jpg"));
-	m_DiffuseMap.reset(new Texture("assets/texture/container2.png"));
-	m_SpecularMap.reset(new Texture("assets/texture/container2_specular.png"));
-	m_EmissionMap.reset(new Texture("assets/texture/matrix.jpg"));
 
 	//Shader
-	m_Shader.reset(new Shader("assets/shaders/Texture.glsl"));
+	m_Shader.reset(new Shader("assets/shaders/NanoMode.glsl"));
 	m_Shader->Bind();
-	m_Shader->SetUniform1i("u_Texture1", 0);
-	m_Shader->SetUniform1i("u_Texture2", 1);
-	m_Shader->SetUniform1i("u_Material.diffuse", 2);
-	m_Shader->SetUniform1i("u_Material.specular", 3);
-	m_Shader->SetUniform1i("u_Material.emission", 4);
-	m_Shader->SetUniform1f("u_MixValue", 0.5);
 
 
 	m_Camera->SetPosition(glm::vec3(0.0f, 0.0f, 8.0f));
 	m_CameraPosition = m_Camera->GetPosition();
 	m_CameraRotation.Yaw = m_Camera->Yaw();
 	m_CameraRotation.Pitch = m_Camera->Pitch();
+
+
+	m_Model.reset(new Model("assets/models/nanosuit/nanosuit.obj"));
+	//m_Model.reset(new Model("assets/models/IronMan/IronMan.obj"));
+
+
 
 }
 
@@ -223,56 +205,49 @@ void Application::Run()
 			glfwSetWindowShouldClose(m_Window->GetNativeWindow(), true);
 		// render
 		// ------
-		//glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+
 		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		m_Shader->Bind();
 
-		// bind textures on corresponding texture units
-		glActiveTexture(GL_TEXTURE0);
-		m_Texture1->Bind();
-		glActiveTexture(GL_TEXTURE1);
-		m_Texture2->Bind();
-		glActiveTexture(GL_TEXTURE2);
-		m_DiffuseMap->Bind();
-		glActiveTexture(GL_TEXTURE3);
-		m_SpecularMap->Bind();
-		glActiveTexture(GL_TEXTURE4);
-		m_EmissionMap->Bind();
+
 		Renderer::BeginScene(*m_Camera, m_LightSources);
 
-		for (unsigned int i = 0; i < 10; i++)
-		{
+		glm::mat4 model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(0.0f,-1.75f,0.0f));
+		model = glm::rotate(model,glm::radians(180.0f) ,glm::vec3(0.0f,1.0f, 0.0f));
 
-			glm::mat4 model = glm::mat4(1.0f);
-			model = glm::translate(model, cubePositions[i]);
-			model = glm::rotate(model, (float)(glfwGetTime()), glm::vec3(1.0f, (float)i * 20, 0.0f));//(float)(glfwGetTime())
-			m_Shader->SetUniformMat4f("u_TranInverseModel", glm::transpose(glm::inverse(model)));
-			m_Shader->SetUniformVec3f("u_CameraViewPos", m_Camera->GetPosition());
+		model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));
+
+	
+		
+		m_Model->Draw(m_Shader,model, m_LightSources);
+		//for (unsigned int i = 0; i < 10; i++)
+		//{
+
+		//	glm::mat4 model = glm::mat4(1.0f);
+		//	model = glm::translate(model, cubePositions[i]);
+		//	model = glm::rotate(model, (float)(glfwGetTime()), glm::vec3(1.0f, (float)i * 20, 0.0f));//(float)(glfwGetTime())
+		//	m_Shader->SetUniformMat4f("u_TranInverseModel", glm::transpose(glm::inverse(model)));
+		//	m_Shader->SetUniformVec3f("u_CameraViewPos", m_Camera->GetPosition());
+
+		//	
+
+		//	m_Shader->SetUniformVec3f("u_Material.ambient", glm::vec3(0.25,0.20725,0.20725));
+		//	m_Shader->SetUniform1f("u_Material.shininess",64.0f);
+
+		////	m_Model->Draw(m_Shader);
 
 			
-			m_Shader->SetLightUniform(m_LightSources);
-
-			m_Shader->SetUniformVec3f("u_Material.ambient", glm::vec3(0.25,0.20725,0.20725));
-			m_Shader->SetUniform1f("u_Material.shininess",64.0f);
-
-			
-
-			Renderer::Submit(m_VertexArray, m_Shader, model);
-			glDrawArrays(GL_TRIANGLES, 0, 36);
-
-		}
+		//}
 
 		
 		glfwSwapBuffers(m_Window->GetNativeWindow());
 		glfwPollEvents();
 	}
 
-	glDeleteVertexArrays(1, &m_VertexArrayID);
-	glDeleteBuffers(1, &m_VertexBufferID);
-	glDeleteBuffers(1, &m_IndexBufferID);
 
-	// glfw: terminate, clearing all previously allocated GLFW resources.
-	// ------------------------------------------------------------------
+
 	glfwTerminate();
 }
 
