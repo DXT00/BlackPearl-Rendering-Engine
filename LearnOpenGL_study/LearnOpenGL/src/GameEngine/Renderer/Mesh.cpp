@@ -41,6 +41,28 @@ void Mesh::Draw(const std::shared_ptr<Shader>& shader, const glm::mat4 & model, 
 		m_Textures[i]->Bind();
 
 	}
+
+	for (unsigned int i = 0; i < m_MaterialColors.size(); i++) {
+		
+		switch (m_MaterialColors[i]->GetType()) {
+		case MaterialColor::Type::DiffuseColor:
+			shader->SetUniformVec3f("u_Material.diffuseColor", m_MaterialColors[i]->Get());
+			break;
+		case MaterialColor::Type::SpecularColor:
+			shader->SetUniformVec3f("u_Material.specularColor", m_MaterialColors[i]->Get());
+			break;
+
+		case MaterialColor::Type::AmbientColor:
+			shader->SetUniformVec3f("u_Material.ambientColor", m_MaterialColors[i]->Get());
+			break;
+		default:
+			GE_CORE_ERROR(" Mesh::Draw failed! Unknown MaterialColor type!!")
+				break;
+
+		}
+
+
+	}
 	shader->SetUniformMat4f("u_TranInverseModel", glm::transpose(glm::inverse(model)));
 	shader->SetUniform1f("u_Material.shininess", 64.0f);
 	shader->SetLightUniform(lightSources);

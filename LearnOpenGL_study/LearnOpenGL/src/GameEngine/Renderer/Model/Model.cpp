@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Model.h"
 #include "GameEngine/Renderer/Texture/Texture.h"
+#include <memory>
 //#include "GameEngine/Renderer/Renderer.h"
 static void glmInsertVector(glm::vec2 v, std::vector<float> &vec) {
 	vec.push_back(v.x);
@@ -79,6 +80,7 @@ Mesh Model::ProcessMesh(aiMesh * aimesh, const aiScene * scene)
 	std::vector<unsigned int> indices;
 	// maps
 	std::vector<std::shared_ptr<Texture >> textures;
+	std::vector<std::shared_ptr<MaterialColor >> colors;
 
 	VertexBufferLayout layout = {
 		{ElementDataType::Float3,"aPos",false},
@@ -147,12 +149,12 @@ Mesh Model::ProcessMesh(aiMesh * aimesh, const aiScene * scene)
 	}
 	if (aimesh->mMaterialIndex >=0) {
 		aiMaterial *material = scene->mMaterials[aimesh->mMaterialIndex];
-
 		LoadMaterialTextures(material, aiTextureType_DIFFUSE, Texture::Type::DiffuseMap, textures);
 		LoadMaterialTextures(material, aiTextureType_SPECULAR, Texture::Type::SpecularMap, textures);
 		LoadMaterialTextures(material, aiTextureType_NORMALS, Texture::Type::NormalMap, textures);
 		LoadMaterialTextures(material, aiTextureType_HEIGHT, Texture::Type::HeightMap, textures);
 
+		LoadMaterialColors(material,colors);
 	}
 
 
@@ -167,7 +169,12 @@ Mesh Model::ProcessMesh(aiMesh * aimesh, const aiScene * scene)
 
 
 
-	return Mesh( vertices_, vertices.size()*sizeof(float),indices_, indices.size()*sizeof(unsigned int), textures, layout);
+	return Mesh( 
+		vertices_, vertices.size()*sizeof(float),
+		indices_, indices.size()*sizeof(unsigned int), 
+		textures,
+		colors,
+		layout);
 
 }
 
@@ -183,6 +190,26 @@ void Model::LoadMaterialTextures(aiMaterial * material, aiTextureType type, Text
 		std::string path_str = m_Directory + "/" + std::string(path.C_Str());
 		texture.reset(new Texture(typeName, path_str.c_str()));
 		textures.push_back(texture);
+
+
 	}
+
+}
+
+void Model::LoadMaterialColors(aiMaterial * material, std::vector< std::shared_ptr<MaterialColor>>& colors)
+{
+
+	aiColor3D color(0.f, 0.f, 0.f);
+	if(AI_SUCCESS==material->Get(AI_MATKEY_COLOR_DIFFUSE, color))
+	colors.push_back(std::make_shared<MaterialColor>(MaterialColor::Type::DiffuseColor, glm::vec3(color.r,color.g,color.b)));
+
+	color = { 0.f, 0.f, 0.f };
+	if (AI_SUCCESS==material->Get(AI_MATKEY_COLOR_AMBIENT, color))
+	colors.push_back(std::make_shared<MaterialColor>(MaterialColor::Type::AmbientColor, glm::vec3(color.r, color.g, color.b)));
+
+	color = { 0.f, 0.f, 0.f };
+
+	if (AI_SUCCESS == material->Get(AI_MATKEY_COLOR_SPECULAR, color))
+	colors.push_back(std::make_shared<MaterialColor>(MaterialColor::Type::SpecularColor, glm::vec3(color.r, color.g, color.b)));
 
 }

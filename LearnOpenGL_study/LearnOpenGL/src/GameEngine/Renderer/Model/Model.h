@@ -1,6 +1,7 @@
 #pragma once
 #include "pch.h"
 #include "GameEngine/Renderer/Mesh.h"
+#include "GameEngine/Renderer/Texture/MaterialColor.h"
 #include "assimp/Importer.hpp"	//OO version Header!
 #include "assimp/postprocess.h"
 #include "assimp/scene.h"
@@ -28,6 +29,9 @@ public:
 		Texture::Type typeName,
 		std::vector<std::shared_ptr<Texture >> &textures);
 
+	void LoadMaterialColors(
+		aiMaterial * material,
+		std::vector< std::shared_ptr<MaterialColor>> &colors);
 private:
 	std:: vector<Mesh> m_Meshes;
 	std::string m_Directory;

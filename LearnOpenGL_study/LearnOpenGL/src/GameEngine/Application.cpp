@@ -37,12 +37,12 @@ Application::Application()
 	//set light sources
 	//注意：如果时SpotLight就要更新相机位置！
 	std::shared_ptr<Light> spotLight;
-	spotLight.reset(Light::Create(LightType::SpotLight,m_Camera->GetPosition(),m_Camera->Front(),glm::cos(glm::radians(8.0f)), glm::cos(glm::radians(10.0f))));
+	spotLight.reset(Light::Create(LightType::SpotLight,m_Camera->GetPosition(),m_Camera->Front(),glm::cos(glm::radians(20.0f)), glm::cos(glm::radians(30.0f))));
 	std::dynamic_pointer_cast<SpotLight>(spotLight)->SetAttenuation(SpotLight::Attenuation(200));
 	m_LightSources.AddLight(spotLight);
 	// positions of the point lights
 	glm::vec3 pointLightPositions[] = {
-		glm::vec3(0.7f,  0.2f,  2.0f),
+		glm::vec3(2.3f,  0.2f,  2.0f),
 
 		glm::vec3(2.3f, -3.3f, -4.0f),
 		glm::vec3(-2.7f,  3.0f, -7.5f),
@@ -156,7 +156,7 @@ Application::Application()
 
 
 	//Shader
-	m_Shader.reset(new Shader("assets/shaders/NanoMode.glsl"));
+	m_Shader.reset(new Shader("assets/shaders/IronMan.glsl"));
 	m_Shader->Bind();
 
 
@@ -166,8 +166,8 @@ Application::Application()
 	m_CameraRotation.Pitch = m_Camera->Pitch();
 
 
-	m_Model.reset(new Model("assets/models/nanosuit/nanosuit.obj"));
-	//m_Model.reset(new Model("assets/models/IronMan/IronMan.obj"));
+	//m_Model.reset(new Model("assets/models/nanosuit/nanosuit.obj"));
+	m_Model.reset(new Model("assets/models/IronMan/IronMan.obj"));
 
 
 
@@ -180,18 +180,18 @@ Application::~Application()
 
 void Application::Run()
 {
-	glm::vec3 cubePositions[] = {
-	glm::vec3(0.0f,  0.0f,  0.0f),
-	glm::vec3(2.0f,  5.0f, -15.0f),
-	glm::vec3(-1.5f, -2.2f, -2.5f),
-	glm::vec3(-3.8f, -2.0f, -12.3f),
-	glm::vec3(2.4f, -0.4f, -3.5f),
-	glm::vec3(-1.7f,  3.0f, -7.5f),
-	glm::vec3(1.3f, -2.0f, -2.5f),
-	glm::vec3(1.5f,  2.0f, -2.5f),
-	glm::vec3(1.5f,  0.2f, -1.5f),
-	glm::vec3(-1.3f,  1.0f, -1.5f)
-	};
+	//glm::vec3 cubePositions[] = {
+	//glm::vec3(0.0f,  0.0f,  0.0f),
+	//glm::vec3(2.0f,  5.0f, -15.0f),
+	//glm::vec3(-1.5f, -2.2f, -2.5f),
+	//glm::vec3(-3.8f, -2.0f, -12.3f),
+	//glm::vec3(2.4f, -0.4f, -3.5f),
+	//glm::vec3(-1.7f,  3.0f, -7.5f),
+	//glm::vec3(1.3f, -2.0f, -2.5f),
+	//glm::vec3(1.5f,  2.0f, -2.5f),
+	//glm::vec3(1.5f,  0.2f, -1.5f),
+	//glm::vec3(-1.3f,  1.0f, -1.5f)
+	//};
 
 	//render loop
 	while (!glfwWindowShouldClose(m_Window->GetNativeWindow())) {
@@ -217,7 +217,7 @@ void Application::Run()
 		model = glm::translate(model, glm::vec3(0.0f,-1.75f,0.0f));
 		model = glm::rotate(model,glm::radians(180.0f) ,glm::vec3(0.0f,1.0f, 0.0f));
 
-		model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));
+		model = glm::scale(model, glm::vec3(0.01f, 0.01f, 0.01f));
 
 	
 		

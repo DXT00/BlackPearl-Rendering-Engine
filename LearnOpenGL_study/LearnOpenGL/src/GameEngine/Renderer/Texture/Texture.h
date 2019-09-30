@@ -12,7 +12,7 @@ public:
 		HeightMap
 	};
 	Texture(Type type,const std::string &image);
-	~Texture() {};
+	~Texture() = default;
 
 	void Bind();
 	void UnBind();

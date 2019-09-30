@@ -1239,6 +1239,7 @@
     <ClInclude Include="vendor\stb\stb_image.h">
       <Filter>vendor\stb</Filter>
     </ClInclude>
+    <ClInclude Include="src\GameEngine\Renderer\Texture\MaterialColor.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\GameEngine\Application.cpp">
@@ -1310,5 +1311,6 @@
     <ClCompile Include="src\pch.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\GameEngine\Renderer\Texture\MaterialColor.cpp" />
   </ItemGroup>
 </Project>

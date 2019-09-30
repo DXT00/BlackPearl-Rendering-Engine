@@ -4,6 +4,7 @@
 #include"GameEngine/Renderer/Shader.h"
 #include"GameEngine/Renderer/Buffer.h"
 #include"GameEngine/Renderer/Lighting/LightSources.h"
+#include"GameEngine/Renderer/Texture/MaterialColor.h"
 //#include "GameEngine/Renderer/VertexArray.h"
 struct Vertex {
 
@@ -34,10 +35,12 @@ public:
 		unsigned int* indices,
 		uint32_t indicesSize,
 		const std::vector<std::shared_ptr<Texture>>& textures,
+		const std::vector<std::shared_ptr<MaterialColor>>& colors,
+
 		const VertexBufferLayout& layout
 	)
 		:m_Vertices(vertices), m_VerticesSize(verticesSize), m_Indices(indices), m_IndicesSize(indicesSize),
-		m_Textures(textures), m_VertexBufferLayout(layout) {
+		m_Textures(textures),m_MaterialColors(colors), m_VertexBufferLayout(layout) {
 		Init();
 	};
 	~Mesh();
@@ -60,7 +63,7 @@ private:
 	uint32_t m_VerticesSize;
 	uint32_t m_IndicesSize;
 	std::vector<std::shared_ptr<Texture> >m_Textures;
-
+	std::vector<std::shared_ptr<MaterialColor>> m_MaterialColors;
 
 
 };
