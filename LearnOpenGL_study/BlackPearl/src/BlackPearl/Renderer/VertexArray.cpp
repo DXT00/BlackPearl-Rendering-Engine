@@ -1,0 +1,63 @@
+#include "pch.h"
+#include "VertexArray.h"
+#include <glad/glad.h>
+#include "Buffer.h"
+#include "BlackPearl/Core.h"
+namespace BlackPearl {
+	static uint32_t ShaderDataTypeToBufferType(const ElementDataType & type) {
+
+		switch (type) {
+		case ElementDataType::Int:      return GL_INT;
+		case ElementDataType::Int2:     return GL_INT;
+		case ElementDataType::Int3:     return GL_INT;
+		case ElementDataType::Int4:     return GL_INT;
+		case ElementDataType::Float:    return GL_FLOAT;
+		case ElementDataType::Float2:   return GL_FLOAT;
+		case ElementDataType::Float3:   return GL_FLOAT;
+		case ElementDataType::Float4:   return GL_FLOAT;
+		case ElementDataType::Mat3:		return GL_FLOAT;
+		case ElementDataType::Mat4:		return GL_FLOAT;
+		case ElementDataType::False:	return GL_FALSE;
+		case ElementDataType::True:		return GL_TRUE;
+		}
+		GE_ASSERT(false, "Unknown ShaderDataType!")
+			return 0;
+	}
+	VertexArray::VertexArray()
+	{
+		glGenVertexArrays(1, &m_RendererID);
+		glBindVertexArray(m_RendererID);
+	}
+
+	void VertexArray::Bind()
+	{
+		glBindVertexArray(m_RendererID);
+	}
+
+	void VertexArray::UnBind()
+	{
+		glBindVertexArray(0);
+	}
+
+	void VertexArray::AddVertexBuffer(const std::shared_ptr<VertexBuffer>& vertexBuffer)
+	{
+		GE_ASSERT(vertexBuffer->GetBufferLayout().GetElements().size(), "Vertex Buffer has no layout!!");
+		glBindVertexArray(m_RendererID);
+		vertexBuffer->Bind();
+		uint32_t index = 0;
+		auto layout = vertexBuffer->GetBufferLayout();
+		for (BufferElement element : layout.GetElements()) {
+			glVertexAttribPointer(index, element.GetElementCount(), ShaderDataTypeToBufferType(element.Type), element.Normalized == true ? GL_TRUE : GL_FALSE, layout.GetStride(), (void*)element.Offset);
+			glEnableVertexAttribArray(index);
+			index++;
+		}
+		m_VertexBuffers.push_back(vertexBuffer);
+	}
+
+	void VertexArray::SetIndexBuffer(const std::shared_ptr<IndexBuffer>& indexBuffer)
+	{
+		glBindVertexArray(m_RendererID);
+		indexBuffer->Bind();
+		m_IndexBuffer = indexBuffer;
+	}
+}

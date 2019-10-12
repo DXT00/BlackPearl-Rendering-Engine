@@ -1,0 +1,34 @@
+﻿生成启动时间为 2019/9/26 20:56:35。
+     1>项目“F:\OpenGL\assimp_build\contrib\irrXML\IrrXML.vcxproj”在节点 2 上(Build 个目标)。
+     1>PrepareForBuild:
+         正在创建目录“F:\OpenGL\assimp_build\contrib\irrXML\Debug\”。
+         正在创建目录“IrrXML.dir\Debug\IrrXML.tlog\”。
+       InitializeBuildStatus:
+         正在创建“IrrXML.dir\Debug\IrrXML.tlog\unsuccessfulbuild”，因为已指定“AlwaysCreate”。
+       CustomBuild:
+         Building Custom Rule F:/OpenGL/assimp-4.1.0/contrib/irrXML/CMakeLists.txt
+         CMake does not need to re-run because F:/OpenGL/assimp_build/contrib/irrXML/CMakeFiles/generate.stamp is up-to-date.
+       ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\bin\HostX86\x86\CL.exe /c /I"F:\OpenGL\assimp-4.1.0\." /I"F:\OpenGL\assimp-4.1.0\include" /IF:\OpenGL\assimp_build /IF:\OpenGL\assimp_build\include /I"F:\OpenGL\assimp-4.1.0\contrib\zlib" /IF:\OpenGL\assimp_build\contrib\zlib /Zi /nologo /W3 /WX- /diagnostics:classic /MP /Od /Ob0 /Oy- /D WIN32 /D _WINDOWS /D WIN32_LEAN_AND_MEAN /D OPENDDL_NO_USE_CPP11 /D ASSIMP_BUILD_NO_C4D_IMPORTER /D _SCL_SECURE_NO_WARNINGS /D _CRT_SECURE_NO_WARNINGS /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /GR /Fo"IrrXML.dir\Debug\\" /Fd"IrrXML.dir\Debug\IrrXML.pdb" /Gd /TP /analyze- /FC /errorReport:prompt "F:\OpenGL\assimp-4.1.0\contrib\irrXML\irrXML.cpp"
+         irrXML.cpp
+     1>f:\opengl\assimp-4.1.0\contrib\irrxml\irrstring.h : warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+       Lib:
+         C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\bin\HostX86\x86\Lib.exe /OUT:"F:\OpenGL\assimp_build\contrib\irrXML\Debug\IrrXML.lib" /NOLOGO  /machine:X86 IrrXML.dir\Debug\irrXML.obj
+         IrrXML.vcxproj -> F:\OpenGL\assimp_build\contrib\irrXML\Debug\IrrXML.lib
+       CopyFilesToOutputDirectory:
+         正在将文件从“IrrXML.dir\Debug\IrrXML.pdb”复制到“F:\OpenGL\assimp_build\contrib\irrXML\Debug\IrrXML.pdb”。
+       FinalizeBuildStatus:
+         正在删除文件“IrrXML.dir\Debug\IrrXML.tlog\unsuccessfulbuild”。
+         正在对“IrrXML.dir\Debug\IrrXML.tlog\IrrXML.lastbuildstate”执行 Touch 任务。
+     1>已完成生成项目“F:\OpenGL\assimp_build\contrib\irrXML\IrrXML.vcxproj”(Build 个目标)的操作。
+
+已成功生成。
+
+       “F:\OpenGL\assimp_build\contrib\irrXML\IrrXML.vcxproj”(Build 目标) (1) ->
+       (ClCompile 目标) -> 
+         f:\opengl\assimp-4.1.0\contrib\irrxml\irrstring.h : warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+
+    1 个警告
+    0 个错误
+
+已用时间 00:00:07.81

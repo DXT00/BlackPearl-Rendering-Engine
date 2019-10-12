@@ -1,0 +1,57 @@
+﻿生成启动时间为 2019/9/26 20:56:37。
+     1>项目“F:\OpenGL\assimp_build\contrib\zlib\zlib.vcxproj”在节点 4 上(Build 个目标)。
+     1>PrepareForBuild:
+         正在创建目录“zlib.dir\Debug\zlib.tlog\”。
+       InitializeBuildStatus:
+         正在创建“zlib.dir\Debug\zlib.tlog\unsuccessfulbuild”，因为已指定“AlwaysCreate”。
+       CustomBuild:
+         Building Custom Rule F:/OpenGL/assimp-4.1.0/contrib/zlib/CMakeLists.txt
+         CMake does not need to re-run because F:/OpenGL/assimp_build/contrib/zlib/CMakeFiles/generate.stamp is up-to-date.
+       ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\bin\HostX86\x86\CL.exe /c /I"F:\OpenGL\assimp-4.1.0\." /I"F:\OpenGL\assimp-4.1.0\include" /IF:\OpenGL\assimp_build /IF:\OpenGL\assimp_build\include /I"F:\OpenGL\assimp-4.1.0\contrib\zlib" /IF:\OpenGL\assimp_build\contrib\zlib /I"F:\OpenGL\assimp-4.1.0" /Zi /nologo /W3 /WX- /diagnostics:classic /MP /Od /Ob0 /Oy- /D WIN32 /D _WINDOWS /D WIN32_LEAN_AND_MEAN /D OPENDDL_NO_USE_CPP11 /D NO_FSEEKO /D _CRT_SECURE_NO_DEPRECATE /D _CRT_NONSTDC_NO_DEPRECATE /D "CMAKE_INTDIR=\"Debug\"" /D ZLIB_DLL /D _WINDLL /D _MBCS /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"zlib.dir\Debug\\" /Fd"zlib.dir\Debug\vc141.pdb" /Gd /TC /analyze- /FC /errorReport:prompt "F:\OpenGL\assimp-4.1.0\contrib\zlib\adler32.c" "F:\OpenGL\assimp-4.1.0\contrib\zlib\compress.c" "F:\OpenGL\assimp-4.1.0\contrib\zlib\crc32.c" "F:\OpenGL\assimp-4.1.0\contrib\zlib\deflate.c" "F:\OpenGL\assimp-4.1.0\contrib\zlib\gzclose.c" "F:\OpenGL\assimp-4.1.0\contrib\zlib\gzlib.c" "F:\OpenGL\assimp-4.1.0\contrib\zlib\gzread.c" "F:\OpenGL\assimp-4.1.0\contrib\zlib\gzwrite.c" "F:\OpenGL\assimp-4.1.0\contrib\zlib\inflate.c" "F:\OpenGL\assimp-4.1.0\contrib\zlib\infback.c" "F:\OpenGL\assimp-4.1.0\contrib\zlib\inftrees.c" "F:\OpenGL\assimp-4.1.0\contrib\zlib\inffast.c" "F:\OpenGL\assimp-4.1.0\contrib\zlib\trees.c" "F:\OpenGL\assimp-4.1.0\contrib\zlib\uncompr.c" "F:\OpenGL\assimp-4.1.0\contrib\zlib\zutil.c"
+         adler32.c
+         compress.c
+         crc32.c
+         deflate.c
+         gzclose.c
+         gzlib.c
+         gzread.c
+         gzwrite.c
+         inflate.c
+         infback.c
+         inftrees.c
+         inffast.c
+         trees.c
+         uncompr.c
+         zutil.c
+       ResourceCompile:
+         C:\Program Files (x86)\Windows Kits\10\bin\10.0.17763.0\x86\rc.exe /D WIN32 /D _DEBUG /D _WINDOWS /D WIN32_LEAN_AND_MEAN /D OPENDDL_NO_USE_CPP11 /D NO_FSEEKO /D _CRT_SECURE_NO_DEPRECATE /D _CRT_NONSTDC_NO_DEPRECATE /D "CMAKE_INTDIR=\\\"Debug\\\"" /D ZLIB_DLL /l"0x0409" /I"F:\OpenGL\assimp-4.1.0\." /I"F:\OpenGL\assimp-4.1.0\include" /IF:\OpenGL\assimp_build /IF:\OpenGL\assimp_build\include /I"F:\OpenGL\assimp-4.1.0\contrib\zlib" /IF:\OpenGL\assimp_build\contrib\zlib /I"F:\OpenGL\assimp-4.1.0" /nologo /fo"zlib.dir\Debug\zlib1.res" F:\OpenGL\assimp-4.1.0\contrib\zlib\win32\zlib1.rc 
+       Link:
+         C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\bin\HostX86\x86\link.exe /ERRORREPORT:PROMPT /OUT:"F:\OpenGL\assimp_build\contrib\zlib\Debug\zlibd.dll" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"F:/OpenGL/assimp_build/contrib/zlib/Debug/zlibd.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"F:/OpenGL/assimp_build/contrib/zlib/Debug/zlibd.lib" /MACHINE:X86 /SAFESEH  /machine:X86 /DLL zlib.dir\Debug\zlib1.res
+         zlib.dir\Debug\adler32.obj
+         zlib.dir\Debug\compress.obj
+         zlib.dir\Debug\crc32.obj
+         zlib.dir\Debug\deflate.obj
+         zlib.dir\Debug\gzclose.obj
+         zlib.dir\Debug\gzlib.obj
+         zlib.dir\Debug\gzread.obj
+         zlib.dir\Debug\gzwrite.obj
+         zlib.dir\Debug\inflate.obj
+         zlib.dir\Debug\infback.obj
+         zlib.dir\Debug\inftrees.obj
+         zlib.dir\Debug\inffast.obj
+         zlib.dir\Debug\trees.obj
+         zlib.dir\Debug\uncompr.obj
+         zlib.dir\Debug\zutil.obj
+           正在创建库 F:/OpenGL/assimp_build/contrib/zlib/Debug/zlibd.lib 和对象 F:/OpenGL/assimp_build/contrib/zlib/Debug/zlibd.exp
+         zlib.vcxproj -> F:\OpenGL\assimp_build\contrib\zlib\Debug\zlibd.dll
+       FinalizeBuildStatus:
+         正在删除文件“zlib.dir\Debug\zlib.tlog\unsuccessfulbuild”。
+         正在对“zlib.dir\Debug\zlib.tlog\zlib.lastbuildstate”执行 Touch 任务。
+     1>已完成生成项目“F:\OpenGL\assimp_build\contrib\zlib\zlib.vcxproj”(Build 个目标)的操作。
+
+已成功生成。
+    0 个警告
+    0 个错误
+
+已用时间 00:00:09.98

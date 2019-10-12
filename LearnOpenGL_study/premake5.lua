@@ -1,6 +1,6 @@
-workspace "LearnOpenGL"
+workspace "BlackPearl"
 	architecture "x86"
-	startproject "LearnOpenGL"
+	startproject "Sandbox"
 
 	configurations
 	{
@@ -13,21 +13,21 @@ outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
 -- Include directories relative to root folder (solution directory)
 IncludeDir = {}
-IncludeDir["GLFW"] = "LearnOpenGL/vendor/GLFW/include"
-IncludeDir["Glad"] = "LearnOpenGL/vendor/Glad/include"
-IncludeDir["ImGui"] = "LearnOpenGL/vendor/imgui"
-IncludeDir["glm"] = "LearnOpenGL/vendor/glm"
-IncludeDir["stb"] = "LearnOpenGL/vendor/stb"
-IncludeDir["assimp"] = "LearnOpenGL/vendor/assimp/include"
+IncludeDir["GLFW"] = "BlackPearl/vendor/GLFW/include"
+IncludeDir["Glad"] = "BlackPearl/vendor/Glad/include"
+IncludeDir["ImGui"] = "BlackPearl/vendor/imgui"
+IncludeDir["glm"] = "BlackPearl/vendor/glm"
+IncludeDir["stb"] = "BlackPearl/vendor/stb"
+IncludeDir["assimp"] = "BlackPearl/vendor/assimp/include"
 
-include "LearnOpenGL/vendor/GLFW"
-include "LearnOpenGL/vendor/Glad"
-include "LearnOpenGL/vendor/imgui"
---include "LearnOpenGL/vendor/assimp"
+include "BlackPearl/vendor/GLFW"
+include "BlackPearl/vendor/Glad"
+include "BlackPearl/vendor/imgui"
+--include "BlackPearl/vendor/assimp"
 
-project "LearnOpenGL"
-	location "LearnOpenGL"
-	kind "ConsoleApp"
+project "BlackPearl"
+	location "BlackPearl"
+	kind "StaticLib"
 	language "C++"
 	cppdialect "C++17"
 	staticruntime "on"
@@ -36,7 +36,7 @@ project "LearnOpenGL"
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
 
 	pchheader "pch.h"
-	pchsource "LearnOpenGL/src/pch.cpp"
+	pchsource "BlackPearl/src/pch.cpp"
 
 	files
 	{
@@ -91,6 +91,7 @@ project "LearnOpenGL"
 
 		defines
 		{
+		    "GE_PLATFORM_WINDOWS",
 			--"HZ_PLATFORM_WINDOWS",
 			--"HZ_BUILD_DLL",
 			"GLFW_INCLUDE_NONE",
@@ -112,3 +113,61 @@ project "LearnOpenGL"
 		runtime "Release"
 		optimize "on"
 
+
+project "Sandbox"
+	location "Sandbox"
+	kind "ConsoleApp"
+	language "C++"
+	cppdialect "C++17"
+	staticruntime "on"
+
+	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
+	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
+
+	files
+	{
+		"%{prj.name}/src/**.h",
+		"%{prj.name}/src/**.cpp"
+	}
+
+	includedirs
+	{
+		"BlackPearl/vendor/spdlog/include",
+		"BlackPearl/src",
+		"BlackPearl/vendor",
+		"%{IncludeDir.glm}",
+		"%{IncludeDir.GLFW}",
+		"%{IncludeDir.assimp}",
+		"%{IncludeDir.Glad}",
+	
+	}
+
+	links
+	{
+		"BlackPearl",
+		
+	}
+
+	filter "system:windows"
+		systemversion "latest"
+
+		defines
+		{
+		"GLFW_INCLUDE_NONE",
+			"GE_PLATFORM_WINDOWS"
+		}
+
+	filter "configurations:Debug"
+		defines "GE_DEBUG"
+		runtime "Debug"
+		symbols "on"
+
+	filter "configurations:Release"
+		defines "GE_RELEASE"
+		runtime "Release"
+		optimize "on"
+
+	filter "configurations:Dist"
+		defines "GE_DIST"
+		runtime "Release"
+		optimize "on"

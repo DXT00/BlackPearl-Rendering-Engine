@@ -1,6 +1,0 @@
-# CMake generation dependency list for this directory.
-F:/OpenGL/assimp-4.1.0/test/CMakeLists.txt
-E:/CMake/share/cmake-3.9/Modules/CTest.cmake
-E:/CMake/share/cmake-3.9/Modules/CTestUseLaunchers.cmake
-E:/CMake/share/cmake-3.9/Modules/CTestTargets.cmake
-E:/CMake/share/cmake-3.9/Modules/DartConfiguration.tcl.in

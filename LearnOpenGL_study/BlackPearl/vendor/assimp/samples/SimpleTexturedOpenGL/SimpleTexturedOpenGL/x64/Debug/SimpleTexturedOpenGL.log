@@ -1,0 +1,80 @@
+﻿生成启动时间为 2019/9/26 20:23:51。
+     1>项目“F:\OpenGL\LearnOpenGL\LearnOpenGL\vendor\assimp\samples\SimpleTexturedOpenGL\SimpleTexturedOpenGL\SimpleTexturedOpenGL.vcxproj”在节点 2 上(Build 个目标)。
+     1>InitializeBuildStatus:
+         正在对“x64\Debug\SimpleTe.A03DCB69.tlog\unsuccessfulbuild”执行 Touch 任务。
+       ClCompile:
+         所有输出均为最新。
+     1>C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\IDE\VC\VCTargets\Microsoft.CppBuild.targets(1216,5): warning MSB8012: TargetPath(F:\OpenGL\LearnOpenGL\LearnOpenGL\vendor\assimp\samples\SimpleTexturedOpenGL\x64\Debug\SimpleTexturedOpenGL.exe) 与 Linker 的 OutputFile 属性值(F:\OpenGL\LearnOpenGL\LearnOpenGL\vendor\assimp\samples\SimpleTexturedOpenGL\x64\Debug\SimpleTexturedOpenGL_Debug.exe)不匹配。这可能导致项目生成不正确。若要更正此问题，请确保 $(OutDir)、$(TargetName) 和 $(TargetExt) 属性值与 %(Link.OutputFile) 中指定的值匹配。
+     1>C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\IDE\VC\VCTargets\Microsoft.CppBuild.targets(1218,5): warning MSB8012: TargetName(SimpleTexturedOpenGL) 与 Linker 的 OutputFile 属性值(SimpleTexturedOpenGL_Debug)不匹配。这可能导致项目生成不正确。若要更正此问题，请确保 $(OutDir)、$(TargetName) 和 $(TargetExt) 属性值与 %(Link.OutputFile) 中指定的值匹配。
+       Link:
+         C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\bin\HostX86\x64\link.exe /ERRORREPORT:PROMPT /OUT:"F:\OpenGL\LearnOpenGL\LearnOpenGL\vendor\assimp\samples\SimpleTexturedOpenGL\x64\Debug\SimpleTexturedOpenGL_Debug.exe" /INCREMENTAL /NOLOGO /LIBPATH:..\..\DevIL\lib /LIBPATH:"..\..\..\lib\assimp_debug-dll_win32" OpenGL32.lib GLu32.lib DevIL.lib assimp.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"F:\OpenGL\LearnOpenGL\LearnOpenGL\vendor\assimp\samples\SimpleTexturedOpenGL\x64\Debug\SimpleTexturedOpenGL.pdb" /SUBSYSTEM:WINDOWS /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"F:\OpenGL\LearnOpenGL\LearnOpenGL\vendor\assimp\samples\SimpleTexturedOpenGL\x64\Debug\SimpleTexturedOpenGL.lib" /MACHINE:X64 x64\Debug\model_loading.obj
+     1>model_loading.obj : error LNK2019: 无法解析的外部符号 __imp_ilBindImage，该符号在函数 "int __cdecl LoadGLTextures(struct aiScene const *)" (?LoadGLTextures@@YAHPEBUaiScene@@@Z) 中被引用
+     1>model_loading.obj : error LNK2019: 无法解析的外部符号 __imp_ilConvertImage，该符号在函数 "int __cdecl LoadGLTextures(struct aiScene const *)" (?LoadGLTextures@@YAHPEBUaiScene@@@Z) 中被引用
+     1>model_loading.obj : error LNK2019: 无法解析的外部符号 __imp_ilDeleteImages，该符号在函数 "int __cdecl LoadGLTextures(struct aiScene const *)" (?LoadGLTextures@@YAHPEBUaiScene@@@Z) 中被引用
+     1>model_loading.obj : error LNK2019: 无法解析的外部符号 __imp_ilGenImages，该符号在函数 "int __cdecl LoadGLTextures(struct aiScene const *)" (?LoadGLTextures@@YAHPEBUaiScene@@@Z) 中被引用
+     1>model_loading.obj : error LNK2019: 无法解析的外部符号 __imp_ilGetData，该符号在函数 "int __cdecl LoadGLTextures(struct aiScene const *)" (?LoadGLTextures@@YAHPEBUaiScene@@@Z) 中被引用
+     1>model_loading.obj : error LNK2019: 无法解析的外部符号 __imp_ilGetInteger，该符号在函数 "int __cdecl LoadGLTextures(struct aiScene const *)" (?LoadGLTextures@@YAHPEBUaiScene@@@Z) 中被引用
+     1>model_loading.obj : error LNK2019: 无法解析的外部符号 __imp_ilInit，该符号在函数 "int __cdecl LoadGLTextures(struct aiScene const *)" (?LoadGLTextures@@YAHPEBUaiScene@@@Z) 中被引用
+     1>model_loading.obj : error LNK2019: 无法解析的外部符号 __imp_ilLoadImage，该符号在函数 "int __cdecl LoadGLTextures(struct aiScene const *)" (?LoadGLTextures@@YAHPEBUaiScene@@@Z) 中被引用
+     1>model_loading.obj : error LNK2019: 无法解析的外部符号 "public: __cdecl Assimp::Importer::Importer(void)" (??0Importer@Assimp@@QEAA@XZ)，该符号在函数 "void __cdecl `dynamic initializer for 'importer''(void)" (??__Eimporter@@YAXXZ) 中被引用
+     1>model_loading.obj : error LNK2019: 无法解析的外部符号 "public: __cdecl Assimp::Importer::~Importer(void)" (??1Importer@Assimp@@QEAA@XZ)，该符号在函数 "void __cdecl `dynamic atexit destructor for 'importer''(void)" (??__Fimporter@@YAXXZ) 中被引用
+     1>model_loading.obj : error LNK2019: 无法解析的外部符号 "public: struct aiScene const * __cdecl Assimp::Importer::ReadFile(char const *,unsigned int)" (?ReadFile@Importer@Assimp@@QEAAPEBUaiScene@@PEBDI@Z)，该符号在函数 "public: struct aiScene const * __cdecl Assimp::Importer::ReadFile(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &,unsigned int)" (?ReadFile@Importer@Assimp@@QEAAPEBUaiScene@@AEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@I@Z) 中被引用
+     1>model_loading.obj : error LNK2019: 无法解析的外部符号 "public: char const * __cdecl Assimp::Importer::GetErrorString(void)const " (?GetErrorString@Importer@Assimp@@QEBAPEBDXZ)，该符号在函数 "bool __cdecl Import3DFromFile(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &)" (?Import3DFromFile@@YA_NAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z) 中被引用
+     1>model_loading.obj : error LNK2019: 无法解析的外部符号 aiGetMaterialFloatArray，该符号在函数 "void __cdecl apply_material(struct aiMaterial const *)" (?apply_material@@YAXPEBUaiMaterial@@@Z) 中被引用
+     1>model_loading.obj : error LNK2019: 无法解析的外部符号 aiGetMaterialIntegerArray，该符号在函数 "void __cdecl apply_material(struct aiMaterial const *)" (?apply_material@@YAXPEBUaiMaterial@@@Z) 中被引用
+     1>model_loading.obj : error LNK2019: 无法解析的外部符号 aiGetMaterialColor，该符号在函数 "void __cdecl apply_material(struct aiMaterial const *)" (?apply_material@@YAXPEBUaiMaterial@@@Z) 中被引用
+     1>model_loading.obj : error LNK2019: 无法解析的外部符号 aiGetMaterialTexture，该符号在函数 "public: enum aiReturn __cdecl aiMaterial::GetTexture(enum aiTextureType,unsigned int,struct aiString *,enum aiTextureMapping *,unsigned int *,float *,enum aiTextureOp *,enum aiTextureMapMode *)const " (?GetTexture@aiMaterial@@QEBA?AW4aiReturn@@W4aiTextureType@@IPEAUaiString@@PEAW4aiTextureMapping@@PEAIPEAMPEAW4aiTextureOp@@PEAW4aiTextureMapMode@@@Z) 中被引用
+     1>model_loading.obj : error LNK2019: 无法解析的外部符号 "public: void __cdecl Assimp::Logger::debug(char const *)" (?debug@Logger@Assimp@@QEAAXPEBD@Z)，该符号在函数 "void __cdecl logDebug(char const *)" (?logDebug@@YAXPEBD@Z) 中被引用
+     1>model_loading.obj : error LNK2019: 无法解析的外部符号 "public: void __cdecl Assimp::Logger::info(char const *)" (?info@Logger@Assimp@@QEAAXPEBD@Z)，该符号在函数 "void __cdecl createAILogger(void)" (?createAILogger@@YAXXZ) 中被引用
+     1>model_loading.obj : error LNK2019: 无法解析的外部符号 "public: static class Assimp::Logger * __cdecl Assimp::DefaultLogger::create(char const *,enum Assimp::Logger::LogSeverity,unsigned int,class Assimp::IOSystem *)" (?create@DefaultLogger@Assimp@@SAPEAVLogger@2@PEBDW4LogSeverity@32@IPEAVIOSystem@2@@Z)，该符号在函数 "void __cdecl createAILogger(void)" (?createAILogger@@YAXXZ) 中被引用
+     1>model_loading.obj : error LNK2019: 无法解析的外部符号 "public: static class Assimp::Logger * __cdecl Assimp::DefaultLogger::get(void)" (?get@DefaultLogger@Assimp@@SAPEAVLogger@2@XZ)，该符号在函数 "void __cdecl createAILogger(void)" (?createAILogger@@YAXXZ) 中被引用
+     1>model_loading.obj : error LNK2019: 无法解析的外部符号 "public: static void __cdecl Assimp::DefaultLogger::kill(void)" (?kill@DefaultLogger@Assimp@@SAXXZ)，该符号在函数 "void __cdecl destroyAILogger(void)" (?destroyAILogger@@YAXXZ) 中被引用
+     1>..\..\DevIL\lib\DevIL.lib : warning LNK4272: 库计算机类型“x86”与目标计算机类型“x64”冲突
+     1>F:\OpenGL\LearnOpenGL\LearnOpenGL\vendor\assimp\samples\SimpleTexturedOpenGL\x64\Debug\SimpleTexturedOpenGL_Debug.exe : fatal error LNK1120: 21 个无法解析的外部命令
+     1>已完成生成项目“F:\OpenGL\LearnOpenGL\LearnOpenGL\vendor\assimp\samples\SimpleTexturedOpenGL\SimpleTexturedOpenGL\SimpleTexturedOpenGL.vcxproj”(Build 个目标)的操作 - 失败。
+
+生成失败。
+
+       “F:\OpenGL\LearnOpenGL\LearnOpenGL\vendor\assimp\samples\SimpleTexturedOpenGL\SimpleTexturedOpenGL\SimpleTexturedOpenGL.vcxproj”(Build 目标) (1) ->
+       (DoLinkOutputFilesMatch 目标) -> 
+         C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\IDE\VC\VCTargets\Microsoft.CppBuild.targets(1216,5): warning MSB8012: TargetPath(F:\OpenGL\LearnOpenGL\LearnOpenGL\vendor\assimp\samples\SimpleTexturedOpenGL\x64\Debug\SimpleTexturedOpenGL.exe) 与 Linker 的 OutputFile 属性值(F:\OpenGL\LearnOpenGL\LearnOpenGL\vendor\assimp\samples\SimpleTexturedOpenGL\x64\Debug\SimpleTexturedOpenGL_Debug.exe)不匹配。这可能导致项目生成不正确。若要更正此问题，请确保 $(OutDir)、$(TargetName) 和 $(TargetExt) 属性值与 %(Link.OutputFile) 中指定的值匹配。
+
+
+       “F:\OpenGL\LearnOpenGL\LearnOpenGL\vendor\assimp\samples\SimpleTexturedOpenGL\SimpleTexturedOpenGL\SimpleTexturedOpenGL.vcxproj”(Build 目标) (1) ->
+         C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\IDE\VC\VCTargets\Microsoft.CppBuild.targets(1218,5): warning MSB8012: TargetName(SimpleTexturedOpenGL) 与 Linker 的 OutputFile 属性值(SimpleTexturedOpenGL_Debug)不匹配。这可能导致项目生成不正确。若要更正此问题，请确保 $(OutDir)、$(TargetName) 和 $(TargetExt) 属性值与 %(Link.OutputFile) 中指定的值匹配。
+
+
+       “F:\OpenGL\LearnOpenGL\LearnOpenGL\vendor\assimp\samples\SimpleTexturedOpenGL\SimpleTexturedOpenGL\SimpleTexturedOpenGL.vcxproj”(Build 目标) (1) ->
+       (Link 目标) -> 
+         ..\..\DevIL\lib\DevIL.lib : warning LNK4272: 库计算机类型“x86”与目标计算机类型“x64”冲突
+
+
+       “F:\OpenGL\LearnOpenGL\LearnOpenGL\vendor\assimp\samples\SimpleTexturedOpenGL\SimpleTexturedOpenGL\SimpleTexturedOpenGL.vcxproj”(Build 目标) (1) ->
+       (Link 目标) -> 
+         model_loading.obj : error LNK2019: 无法解析的外部符号 __imp_ilBindImage，该符号在函数 "int __cdecl LoadGLTextures(struct aiScene const *)" (?LoadGLTextures@@YAHPEBUaiScene@@@Z) 中被引用
+         model_loading.obj : error LNK2019: 无法解析的外部符号 __imp_ilConvertImage，该符号在函数 "int __cdecl LoadGLTextures(struct aiScene const *)" (?LoadGLTextures@@YAHPEBUaiScene@@@Z) 中被引用
+         model_loading.obj : error LNK2019: 无法解析的外部符号 __imp_ilDeleteImages，该符号在函数 "int __cdecl LoadGLTextures(struct aiScene const *)" (?LoadGLTextures@@YAHPEBUaiScene@@@Z) 中被引用
+         model_loading.obj : error LNK2019: 无法解析的外部符号 __imp_ilGenImages，该符号在函数 "int __cdecl LoadGLTextures(struct aiScene const *)" (?LoadGLTextures@@YAHPEBUaiScene@@@Z) 中被引用
+         model_loading.obj : error LNK2019: 无法解析的外部符号 __imp_ilGetData，该符号在函数 "int __cdecl LoadGLTextures(struct aiScene const *)" (?LoadGLTextures@@YAHPEBUaiScene@@@Z) 中被引用
+         model_loading.obj : error LNK2019: 无法解析的外部符号 __imp_ilGetInteger，该符号在函数 "int __cdecl LoadGLTextures(struct aiScene const *)" (?LoadGLTextures@@YAHPEBUaiScene@@@Z) 中被引用
+         model_loading.obj : error LNK2019: 无法解析的外部符号 __imp_ilInit，该符号在函数 "int __cdecl LoadGLTextures(struct aiScene const *)" (?LoadGLTextures@@YAHPEBUaiScene@@@Z) 中被引用
+         model_loading.obj : error LNK2019: 无法解析的外部符号 __imp_ilLoadImage，该符号在函数 "int __cdecl LoadGLTextures(struct aiScene const *)" (?LoadGLTextures@@YAHPEBUaiScene@@@Z) 中被引用
+         model_loading.obj : error LNK2019: 无法解析的外部符号 "public: __cdecl Assimp::Importer::Importer(void)" (??0Importer@Assimp@@QEAA@XZ)，该符号在函数 "void __cdecl `dynamic initializer for 'importer''(void)" (??__Eimporter@@YAXXZ) 中被引用
+         model_loading.obj : error LNK2019: 无法解析的外部符号 "public: __cdecl Assimp::Importer::~Importer(void)" (??1Importer@Assimp@@QEAA@XZ)，该符号在函数 "void __cdecl `dynamic atexit destructor for 'importer''(void)" (??__Fimporter@@YAXXZ) 中被引用
+         model_loading.obj : error LNK2019: 无法解析的外部符号 "public: struct aiScene const * __cdecl Assimp::Importer::ReadFile(char const *,unsigned int)" (?ReadFile@Importer@Assimp@@QEAAPEBUaiScene@@PEBDI@Z)，该符号在函数 "public: struct aiScene const * __cdecl Assimp::Importer::ReadFile(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &,unsigned int)" (?ReadFile@Importer@Assimp@@QEAAPEBUaiScene@@AEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@I@Z) 中被引用
+         model_loading.obj : error LNK2019: 无法解析的外部符号 "public: char const * __cdecl Assimp::Importer::GetErrorString(void)const " (?GetErrorString@Importer@Assimp@@QEBAPEBDXZ)，该符号在函数 "bool __cdecl Import3DFromFile(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &)" (?Import3DFromFile@@YA_NAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z) 中被引用
+         model_loading.obj : error LNK2019: 无法解析的外部符号 aiGetMaterialFloatArray，该符号在函数 "void __cdecl apply_material(struct aiMaterial const *)" (?apply_material@@YAXPEBUaiMaterial@@@Z) 中被引用
+         model_loading.obj : error LNK2019: 无法解析的外部符号 aiGetMaterialIntegerArray，该符号在函数 "void __cdecl apply_material(struct aiMaterial const *)" (?apply_material@@YAXPEBUaiMaterial@@@Z) 中被引用
+         model_loading.obj : error LNK2019: 无法解析的外部符号 aiGetMaterialColor，该符号在函数 "void __cdecl apply_material(struct aiMaterial const *)" (?apply_material@@YAXPEBUaiMaterial@@@Z) 中被引用
+         model_loading.obj : error LNK2019: 无法解析的外部符号 aiGetMaterialTexture，该符号在函数 "public: enum aiReturn __cdecl aiMaterial::GetTexture(enum aiTextureType,unsigned int,struct aiString *,enum aiTextureMapping *,unsigned int *,float *,enum aiTextureOp *,enum aiTextureMapMode *)const " (?GetTexture@aiMaterial@@QEBA?AW4aiReturn@@W4aiTextureType@@IPEAUaiString@@PEAW4aiTextureMapping@@PEAIPEAMPEAW4aiTextureOp@@PEAW4aiTextureMapMode@@@Z) 中被引用
+         model_loading.obj : error LNK2019: 无法解析的外部符号 "public: void __cdecl Assimp::Logger::debug(char const *)" (?debug@Logger@Assimp@@QEAAXPEBD@Z)，该符号在函数 "void __cdecl logDebug(char const *)" (?logDebug@@YAXPEBD@Z) 中被引用
+         model_loading.obj : error LNK2019: 无法解析的外部符号 "public: void __cdecl Assimp::Logger::info(char const *)" (?info@Logger@Assimp@@QEAAXPEBD@Z)，该符号在函数 "void __cdecl createAILogger(void)" (?createAILogger@@YAXXZ) 中被引用
+         model_loading.obj : error LNK2019: 无法解析的外部符号 "public: static class Assimp::Logger * __cdecl Assimp::DefaultLogger::create(char const *,enum Assimp::Logger::LogSeverity,unsigned int,class Assimp::IOSystem *)" (?create@DefaultLogger@Assimp@@SAPEAVLogger@2@PEBDW4LogSeverity@32@IPEAVIOSystem@2@@Z)，该符号在函数 "void __cdecl createAILogger(void)" (?createAILogger@@YAXXZ) 中被引用
+         model_loading.obj : error LNK2019: 无法解析的外部符号 "public: static class Assimp::Logger * __cdecl Assimp::DefaultLogger::get(void)" (?get@DefaultLogger@Assimp@@SAPEAVLogger@2@XZ)，该符号在函数 "void __cdecl createAILogger(void)" (?createAILogger@@YAXXZ) 中被引用
+         model_loading.obj : error LNK2019: 无法解析的外部符号 "public: static void __cdecl Assimp::DefaultLogger::kill(void)" (?kill@DefaultLogger@Assimp@@SAXXZ)，该符号在函数 "void __cdecl destroyAILogger(void)" (?destroyAILogger@@YAXXZ) 中被引用
+         F:\OpenGL\LearnOpenGL\LearnOpenGL\vendor\assimp\samples\SimpleTexturedOpenGL\x64\Debug\SimpleTexturedOpenGL_Debug.exe : fatal error LNK1120: 21 个无法解析的外部命令
+
+    3 个警告
+    22 个错误
+
+已用时间 00:00:02.80

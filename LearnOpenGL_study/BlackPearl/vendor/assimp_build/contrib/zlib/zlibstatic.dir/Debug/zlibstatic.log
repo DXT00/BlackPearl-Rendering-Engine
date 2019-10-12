@@ -1,0 +1,54 @@
+﻿生成启动时间为 2019/9/26 20:56:35。
+     1>项目“F:\OpenGL\assimp_build\contrib\zlib\zlibstatic.vcxproj”在节点 3 上(Build 个目标)。
+     1>PrepareForBuild:
+         正在创建目录“F:\OpenGL\assimp_build\contrib\zlib\Debug\”。
+         正在创建目录“zlibstatic.dir\Debug\zlibstatic.tlog\”。
+       InitializeBuildStatus:
+         正在创建“zlibstatic.dir\Debug\zlibstatic.tlog\unsuccessfulbuild”，因为已指定“AlwaysCreate”。
+       CustomBuild:
+         Building Custom Rule F:/OpenGL/assimp-4.1.0/contrib/zlib/CMakeLists.txt
+         CMake does not need to re-run because F:/OpenGL/assimp_build/contrib/zlib/CMakeFiles/generate.stamp is up-to-date.
+       ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\bin\HostX86\x86\CL.exe /c /I"F:\OpenGL\assimp-4.1.0\." /I"F:\OpenGL\assimp-4.1.0\include" /IF:\OpenGL\assimp_build /IF:\OpenGL\assimp_build\include /I"F:\OpenGL\assimp-4.1.0\contrib\zlib" /IF:\OpenGL\assimp_build\contrib\zlib /I"F:\OpenGL\assimp-4.1.0" /Zi /nologo /W3 /WX- /diagnostics:classic /MP /Od /Ob0 /Oy- /D WIN32 /D _WINDOWS /D WIN32_LEAN_AND_MEAN /D OPENDDL_NO_USE_CPP11 /D NO_FSEEKO /D _CRT_SECURE_NO_DEPRECATE /D _CRT_NONSTDC_NO_DEPRECATE /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"zlibstatic.dir\Debug\\" /Fd"zlibstatic.dir\Debug\zlibstatic.pdb" /Gd /TC /analyze- /FC /errorReport:prompt "F:\OpenGL\assimp-4.1.0\contrib\zlib\adler32.c" "F:\OpenGL\assimp-4.1.0\contrib\zlib\compress.c" "F:\OpenGL\assimp-4.1.0\contrib\zlib\crc32.c" "F:\OpenGL\assimp-4.1.0\contrib\zlib\deflate.c" "F:\OpenGL\assimp-4.1.0\contrib\zlib\gzclose.c" "F:\OpenGL\assimp-4.1.0\contrib\zlib\gzlib.c" "F:\OpenGL\assimp-4.1.0\contrib\zlib\gzread.c" "F:\OpenGL\assimp-4.1.0\contrib\zlib\gzwrite.c" "F:\OpenGL\assimp-4.1.0\contrib\zlib\inflate.c" "F:\OpenGL\assimp-4.1.0\contrib\zlib\infback.c" "F:\OpenGL\assimp-4.1.0\contrib\zlib\inftrees.c" "F:\OpenGL\assimp-4.1.0\contrib\zlib\inffast.c" "F:\OpenGL\assimp-4.1.0\contrib\zlib\trees.c" "F:\OpenGL\assimp-4.1.0\contrib\zlib\uncompr.c" "F:\OpenGL\assimp-4.1.0\contrib\zlib\zutil.c"
+         adler32.c
+         compress.c
+         crc32.c
+         deflate.c
+         gzclose.c
+         gzlib.c
+         gzread.c
+         gzwrite.c
+         inflate.c
+         infback.c
+         inftrees.c
+         inffast.c
+         trees.c
+         uncompr.c
+         zutil.c
+       Lib:
+         C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\bin\HostX86\x86\Lib.exe /OUT:"F:\OpenGL\assimp_build\contrib\zlib\Debug\zlibstaticd.lib" /NOLOGO  /machine:X86 zlibstatic.dir\Debug\adler32.obj
+         zlibstatic.dir\Debug\compress.obj
+         zlibstatic.dir\Debug\crc32.obj
+         zlibstatic.dir\Debug\deflate.obj
+         zlibstatic.dir\Debug\gzclose.obj
+         zlibstatic.dir\Debug\gzlib.obj
+         zlibstatic.dir\Debug\gzread.obj
+         zlibstatic.dir\Debug\gzwrite.obj
+         zlibstatic.dir\Debug\inflate.obj
+         zlibstatic.dir\Debug\infback.obj
+         zlibstatic.dir\Debug\inftrees.obj
+         zlibstatic.dir\Debug\inffast.obj
+         zlibstatic.dir\Debug\trees.obj
+         zlibstatic.dir\Debug\uncompr.obj
+         zlibstatic.dir\Debug\zutil.obj
+         zlibstatic.vcxproj -> F:\OpenGL\assimp_build\contrib\zlib\Debug\zlibstaticd.lib
+       FinalizeBuildStatus:
+         正在删除文件“zlibstatic.dir\Debug\zlibstatic.tlog\unsuccessfulbuild”。
+         正在对“zlibstatic.dir\Debug\zlibstatic.tlog\zlibstatic.lastbuildstate”执行 Touch 任务。
+     1>已完成生成项目“F:\OpenGL\assimp_build\contrib\zlib\zlibstatic.vcxproj”(Build 个目标)的操作。
+
+已成功生成。
+    0 个警告
+    0 个错误
+
+已用时间 00:00:07.70
