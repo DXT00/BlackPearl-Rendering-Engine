@@ -10,28 +10,32 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "Renderer/Texture/Texture.h"
-#include "Renderer/Camera/PerspectiveCamera.h"
+#include "Renderer/CameraComponent/PerspectiveCamera.h"
 #include "Renderer/Renderer.h"
 #include "Renderer/Buffer.h"
 #include "Core.h"
 #include "Input.h"
 #include "Event/Event.h"
 #include "Event/MouseEvent.h"
-#include "Renderer/Lighting/ParallelLight.h"
-#include "Renderer/Lighting/PointLight.h"
-#include "Renderer/Lighting/SpotLight.h"
+#include "Renderer/LightComponent/ParallelLight.h"
+#include "Renderer/LightComponent/PointLight.h"
+#include "Renderer/LightComponent/SpotLight.h"
 #include "ImGui/ImGuiLayer.h"
+#include "BlackPearl/System/System.h"
+#include "BlackPearl/Entity/Entity.h"
 namespace BlackPearl {
 
 	Application* Application::s_Instance = nullptr;
 	Application::Application()
 	{
 		GE_ASSERT(!s_Instance, "Application's Instance already exist!")
-			s_Instance = this;
-		m_Window.reset(new Window());
+		s_Instance = this;
+		m_Window.reset(DBG_NEW Window());
 		m_Window->SetCallBack(std::bind(&Application::OnEvent, this, std::placeholders::_1));
 
-		m_ImGuiLayer = new ImGuiLayer();
+		EntityManager *ImGuiEntityMgr = DBG_NEW EntityManager();
+		SystemManager *ImGuiSystemMgr = DBG_NEW SystemManager(*ImGuiEntityMgr);
+		m_ImGuiLayer = DBG_NEW ImGuiLayer("ImGuiLayer",ImGuiSystemMgr,ImGuiEntityMgr);
 		PushOverLayer(m_ImGuiLayer);
 
 	}
@@ -62,7 +66,7 @@ namespace BlackPearl {
 			m_ImGuiLayer->End();
 
 			m_Window->OnUpdate();
-		
+
 		}
 
 

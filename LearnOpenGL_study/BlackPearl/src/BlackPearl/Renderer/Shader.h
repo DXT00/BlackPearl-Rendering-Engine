@@ -5,8 +5,7 @@
 //#include<glad/glad.h>
 #include "glad/glad.h"
 #include <unordered_map>
-#include "Lighting/LightSources.h"
-#include "Lighting/Light.h"
+#include "LightComponent/LightSources.h"
 namespace BlackPearl {
 
 

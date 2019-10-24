@@ -161,11 +161,11 @@ namespace BlackPearl {
 
 
 
-		float * vertices_ = new float[vertices.size()];
+		float * vertices_ = DBG_NEW float[vertices.size()];
 		//if (vertices.size() > 0)
 		memcpy(vertices_, &vertices[0], vertices.size() * sizeof(float));//注意memcpy最后一个参数是字节数!!!
 
-		unsigned int* indices_ = new unsigned int[indices.size()];
+		unsigned int* indices_ = DBG_NEW unsigned int[indices.size()];
 		//if (indices.size() > 0)
 		memcpy(indices_, &indices[0], indices.size() * sizeof(unsigned int));
 
@@ -190,7 +190,7 @@ namespace BlackPearl {
 			material->GetTexture(type, i, &path);
 
 			std::string path_str = m_Directory + "/" + std::string(path.C_Str());
-			texture.reset(new Texture(typeName, path_str.c_str()));
+			texture.reset(DBG_NEW Texture(typeName, path_str.c_str()));
 			textures.push_back(texture);
 
 

@@ -4,32 +4,32 @@
 #include "PerspectiveCamera.h"
 #include "BlackPearl/Core.h"
 #include <glm/gtc/matrix_transform.hpp>
+#include "BlackPearl/Component/Component.h"
 namespace BlackPearl {
+//const std::initializer_list<float> &projectionMatrixProps
 
-	Camera * Camera::Create(unsigned int type, const std::initializer_list<float> &projectionMatrixProps,
-		const ViewMatrixProps &viewMatrixProps)
+	Camera * Camera::Create(EntityManager * entityManager, Entity::Id id, unsigned int type)
+	
 	{
-		auto it = projectionMatrixProps.begin();
+		//m_EntityManager = entityManager;
+		//m_Id = id;
+		//auto it = projectionMatrixProps.begin();
 		switch (type)
 		{
 		case Orthographic:
-			GE_ASSERT(projectionMatrixProps.size() == 4, "parameters' list of Orthographic Camera doesn't match!")
-				return new OrthographicCamera(*it, *(it + 1), *(it + 2), *(it + 3), viewMatrixProps);
+			//GE_ASSERT(sizeof...(Args) == 4, "parameters' list of Orthographic Camera doesn't match!")
+			return DBG_NEW OrthographicCamera(entityManager, id);
 			break;
 		case Perspective:
-			GE_ASSERT(projectionMatrixProps.size() == 5, "parameters' list of Perspective Camera doesn't match!")
-				return new PerspectiveCamera(*it, *(it + 1), *(it + 2), *(it + 3), *(it + 4), viewMatrixProps);
+			//GE_ASSERT(sizeof...(Args) == 5, "parameters' list of Perspective Camera doesn't match!")
+			return DBG_NEW PerspectiveCamera(entityManager, id);
 
 			break;
 		default:
 			GE_CORE_ERROR("non defined camera type!")
 				break;
 		}
-
-
-
-
-
+		return nullptr;
 	}
 
 	void Camera::RecalculateViewMatrix()
@@ -70,4 +70,5 @@ namespace BlackPearl {
 		m_ViewProjectionMatrix = m_ProjectionMatrix * m_ViewMatrix;
 
 	}
+
 }

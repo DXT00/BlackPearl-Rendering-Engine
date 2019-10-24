@@ -3,7 +3,7 @@
 #include"BlackPearl/Renderer/Texture/Texture.h"
 #include"BlackPearl/Renderer/Shader.h"
 #include"BlackPearl/Renderer/Buffer.h"
-#include"BlackPearl/Renderer/Lighting/LightSources.h"
+#include"BlackPearl/Renderer/LightComponent/LightSources.h"
 #include"BlackPearl/Renderer/Texture/MaterialColor.h"
 //#include "BlackPearl/Renderer/VertexArray.h"
 namespace BlackPearl {
@@ -17,7 +17,7 @@ namespace BlackPearl {
 		glm::vec3 bitTangent;
 
 	};
-	class Mesh
+	class Mesh 
 	{
 	public:
 		Mesh() {};

@@ -3,13 +3,13 @@
 #include<memory>
 #include"Window.h"
 #include"Renderer/Texture/Texture.h"
-#include"Renderer/Camera/Camera.h"
+#include"Renderer/CameraComponent/Camera.h"
 #include"Renderer/VertexArray.h"
 #include"BlackPearl/Timestep/Timestep.h"
 #include "Event/MouseEvent.h"
-#include "Renderer/Lighting/Light.h"
-#include"Renderer/Lighting/LightSources.h"
-#include "Renderer/Mesh.h"
+#include "Renderer/LightComponent/Light.h"
+#include"Renderer/LightComponent/LightSources.h"
+#include "Renderer/Mesh/Mesh.h"
 #include "Renderer/Model/Model.h"
 #include "Layer.h"
 #include "LayerStack.h"
@@ -37,7 +37,7 @@ namespace BlackPearl {
 	
 	
 	private:
-		static Application* s_Instance;
+		static Application* s_Instance; //TODO::可以不delete,或者改为 unique_ptr
 		float m_LastFrameTime = 0.0f;
 
 	private:

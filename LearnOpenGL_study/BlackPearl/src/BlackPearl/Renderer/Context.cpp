@@ -13,6 +13,7 @@ namespace BlackPearl {
 
 	Context::~Context()
 	{
+		//delete m_WindowHandle;
 	}
 
 	void Context::Init()

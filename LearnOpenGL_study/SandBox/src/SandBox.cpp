@@ -1,236 +1,128 @@
+//#ifdef _DEBUG
+//#define DBG_NEW new ( _NORMAL_BLOCK , __FILE__ , __LINE__ )
+//// Replace _NORMAL_BLOCK with _CLIENT_BLOCK if you want the
+//// allocations to be of _CLIENT_BLOCK type
+//#else
+//#define DBG_NEW new
+//#endif
+//
+//#define _CRTDBG_MAP_ALLOC
+//#include <stdlib.h>
+//#include <crtdbg.h>
 #include <BlackPeral.h>
 #include "glm/glm.hpp"
 #include "glm/ext/matrix_transform.hpp"
 #include "BlackPearl/Application.h"
 #include "imgui/imgui.h"
-class ExampleLayer :public BlackPearl::Layer{
+#include "BlackPearl/System/System.h"
 
-
+class EntityTestLayer :public BlackPearl::Layer {
 public:
-	ExampleLayer(const std::string& name):Layer(name) {
-	
-		m_Camera.reset(BlackPearl::Camera::Create(BlackPearl::Camera::Perspective, { 45.0f, 800.0f, 600.0f, 0.1f, 100.0f }));
 
-		std::shared_ptr<BlackPearl::Light> parallelLight;
-		parallelLight.reset(BlackPearl::Light::Create(BlackPearl::LightType::ParallelLight));
-		parallelLight->SetProps({ {0.2f, 0.2f, 0.2f},{1.0f, 0.2f, 0.1f},{1.0f, 1.0f, 1.0f} });
-		m_LightSources.AddLight(parallelLight);
-		//set light sources
-		//注意：如果时SpotLight就要更新相机位置！
-		std::shared_ptr<BlackPearl::Light> spotLight;
-		spotLight.reset(BlackPearl::Light::Create(BlackPearl::LightType::SpotLight, m_Camera->GetPosition(), m_Camera->Front(), glm::cos(glm::radians(20.0f)), glm::cos(glm::radians(30.0f))));
-		std::dynamic_pointer_cast<BlackPearl::SpotLight>(spotLight)->SetAttenuation(BlackPearl::SpotLight::Attenuation(200));
-		m_LightSources.AddLight(spotLight);
-		// positions of the point lights
+	EntityTestLayer(const std::string& name, BlackPearl::SystemManager *systemManager, BlackPearl::EntityManager *entityManager)
+		: Layer(name, systemManager, entityManager)
+	{
+	
+
+		BlackPearl::Entity *entity = entityManager->CreateEntity();
+		m_CameraObj = new BlackPearl::Object(entity->GetEntityManager(), entity->GetId());
+		auto cameraComponent=m_CameraObj->AddComponent<BlackPearl::PerspectiveCamera>();
+		
+
+		cameraComponent->SetPosition(glm::vec3(0.0f, 0.0f, 8.0f));
+		m_CameraPosition = cameraComponent->GetPosition();
+		m_CameraRotation.Yaw = cameraComponent->Yaw();
+		m_CameraRotation.Pitch = cameraComponent->Pitch();
+
+
 		glm::vec3 pointLightPositions[] = {
-			glm::vec3(2.3f,  0.2f,  2.0f),
-			glm::vec3(2.3f, -3.3f, -4.0f),
-			glm::vec3(-2.7f,  3.0f, -7.5f),
-			//glm::vec3(-4.0f,  2.0f, -12.0f),
+		glm::vec3(2.3f,  0.2f,  2.0f),
+		glm::vec3(2.3f, -3.3f, -4.0f),
+		glm::vec3(-2.7f,  3.0f, -7.5f),
+		glm::vec3(-4.0f,  2.0f, -12.0f),
 		};
 		std::vector<BlackPearl::Light::Props> pointLightProps = {
 		{{0.2f, 0.2f, 0.2f},{ 1.0f, 0.2f, 0.1f},{1.0f, 1.0f, 1.0f}},
 		{{0.2f, 0.2f, 0.2f},{ 0.2f, 1.0f, 0.1f},{1.0f, 1.0f, 1.0f}},
-		{{0.2f, 0.2f, 0.2f},{ 0.1f, 0.2f, 1.0f},{1.0f, 1.0f, 1.0f}}
+		{{0.2f, 0.2f, 0.2f},{ 0.1f, 0.2f, 1.0f},{1.0f, 1.0f, 1.0f}},
+		{ {0.2f, 0.2f, 0.2f},{ 0.1f, 0.5f, 0.5f},{1.0f, 1.0f, 1.0f}}
+
 		};
-		for (int i = 0; i < 3; i++)
+		m_LightObjs.resize(pointLightProps.size());
+		for (int i = 0; i < pointLightProps.size(); i++)
 		{
-			std::shared_ptr<BlackPearl::Light> pointLight;
+			BlackPearl::Entity* lightEntity = entityManager->CreateEntity();
+			m_LightObjs[i] = new BlackPearl::Object(lightEntity->GetEntityManager(), lightEntity->GetId());
 
-			pointLight.reset(BlackPearl::Light::Create(BlackPearl::LightType::PointLight, pointLightPositions[i], {}, 0, 0, pointLightProps[i]));
-			std::dynamic_pointer_cast<BlackPearl::PointLight>(pointLight)->SetAttenuation(BlackPearl::PointLight::Attenuation(3250));
 
-			m_LightSources.AddLight(pointLight);
+			std::shared_ptr<BlackPearl::Light> lightComponent;
+			lightComponent.reset(m_LightObjs[i]->AddComponent<BlackPearl::PointLight>());
+			lightComponent->SetProps(pointLightProps[i]);
+			std::dynamic_pointer_cast<BlackPearl::PointLight>(lightComponent)->SetPosition(pointLightPositions[i]);
+
+			std::dynamic_pointer_cast<BlackPearl::PointLight>(lightComponent)->SetAttenuation(BlackPearl::PointLight::Attenuation(3250));
+
+			m_LightSources.AddLight(lightComponent);
 		}
+
 		BlackPearl::Renderer::Init();
-
-		float vertices[] = {
-			// positions			// texture coords  //normal
-			 -0.5f, -0.5f, -0.5f,	0.0f, 0.0f,		0.0f, 0.0f, -1.0f,
-			 0.5f, -0.5f, -0.5f,	1.0f, 0.0f,		0.0f, 0.0f, -1.0f,
-			 0.5f,  0.5f, -0.5f,	1.0f, 1.0f,		0.0f, 0.0f, -1.0f,
-			 0.5f,  0.5f, -0.5f,	1.0f, 1.0f,		0.0f, 0.0f, -1.0f,
-			-0.5f,  0.5f, -0.5f,	0.0f, 1.0f,		0.0f, 0.0f, -1.0f,
-			-0.5f, -0.5f, -0.5f,	0.0f, 0.0f,		0.0f, 0.0f, -1.0f,
-
-			-0.5f, -0.5f,  0.5f,	0.0f, 0.0f,		0.0f, 0.0f, 1.0f,
-			 0.5f, -0.5f,  0.5f,	1.0f, 0.0f,		0.0f, 0.0f, 1.0f,
-			 0.5f,  0.5f,  0.5f,	1.0f, 1.0f,		0.0f, 0.0f, 1.0f,
-			 0.5f,  0.5f,  0.5f,	1.0f, 1.0f,		0.0f, 0.0f, 1.0f,
-			-0.5f,  0.5f,  0.5f,	0.0f, 1.0f,		0.0f, 0.0f, 1.0f,
-			-0.5f, -0.5f,  0.5f,	0.0f, 0.0f,		0.0f, 0.0f, 1.0f,
-
-			-0.5f,  0.5f,  0.5f,	1.0f, 0.0f,		-1.0f, 0.0f, 0.0f,
-			-0.5f,  0.5f, -0.5f,	1.0f, 1.0f,		-1.0f, 0.0f, 0.0f,
-			-0.5f, -0.5f, -0.5f,	0.0f, 1.0f,		-1.0f, 0.0f, 0.0f,
-			-0.5f, -0.5f, -0.5f,	0.0f, 1.0f,		-1.0f, 0.0f, 0.0f,
-			-0.5f, -0.5f,  0.5f,	0.0f, 0.0f,		-1.0f, 0.0f, 0.0f,
-			-0.5f,  0.5f,  0.5f,	1.0f, 0.0f,		-1.0f, 0.0f, 0.0f,
-
-			 0.5f,  0.5f,  0.5f,	1.0f, 0.0f,		1.0f, 0.0f, 0.0f,
-			 0.5f,  0.5f, -0.5f,	1.0f, 1.0f,		1.0f, 0.0f, 0.0f,
-			 0.5f, -0.5f, -0.5f,	0.0f, 1.0f,		1.0f, 0.0f, 0.0f,
-			 0.5f, -0.5f, -0.5f,	0.0f, 1.0f,		1.0f, 0.0f, 0.0f,
-			 0.5f, -0.5f,  0.5f,	0.0f, 0.0f,		1.0f, 0.0f, 0.0f,
-			 0.5f,  0.5f,  0.5f,	1.0f, 0.0f,		1.0f, 0.0f, 0.0f,
-
-			-0.5f, -0.5f, -0.5f,	0.0f, 1.0f,		0.0f, -1.0f, 0.0f,
-			 0.5f, -0.5f, -0.5f,	1.0f, 1.0f,		0.0f, -1.0f, 0.0f,
-			 0.5f, -0.5f,  0.5f,	1.0f, 0.0f,		0.0f, -1.0f, 0.0f,
-			 0.5f, -0.5f,  0.5f,	1.0f, 0.0f,		0.0f, -1.0f, 0.0f,
-			-0.5f, -0.5f,  0.5f,	0.0f, 0.0f,		0.0f, -1.0f, 0.0f,
-			-0.5f, -0.5f, -0.5f,	0.0f, 1.0f,		0.0f, -1.0f, 0.0f,
-
-			-0.5f,  0.5f, -0.5f,	0.0f, 1.0f,		0.0f, 1.0f, 0.0f,
-			 0.5f,  0.5f, -0.5f,	1.0f, 1.0f,		0.0f, 1.0f, 0.0f,
-			 0.5f,  0.5f,  0.5f,	1.0f, 0.0f,		0.0f, 1.0f, 0.0f,
-			 0.5f,  0.5f,  0.5f,	1.0f, 0.0f,		0.0f, 1.0f, 0.0f,
-			-0.5f,  0.5f,  0.5f,	0.0f, 0.0f,		0.0f, 1.0f, 0.0f,
-			-0.5f,  0.5f, -0.5f,	0.0f, 1.0f,		0.0f, 1.0f, 0.0f
-		};
-		float woodboxVertices[] = {
-			// positions			 // texture coords				 // normals          
-			-0.5f, -0.5f, -0.5f,	 0.0f,  0.0f,	 0.0f,  0.0f, -1.0f,
-			 0.5f, -0.5f, -0.5f,	 1.0f,  0.0f,	 0.0f,  0.0f, -1.0f,
-			 0.5f,  0.5f, -0.5f,	 1.0f,  1.0f,	 0.0f,  0.0f, -1.0f,
-			 0.5f,  0.5f, -0.5f,	 1.0f,  1.0f,	 0.0f,  0.0f, -1.0f,
-			-0.5f,  0.5f, -0.5f,	 0.0f,  1.0f,	 0.0f,  0.0f, -1.0f,
-			-0.5f, -0.5f, -0.5f,	 0.0f,  0.0f,	 0.0f,  0.0f, -1.0f,
-
-			-0.5f, -0.5f,  0.5f,	 0.0f,  0.0f,	 0.0f,  0.0f,  1.0f,
-			 0.5f, -0.5f,  0.5f,	 1.0f,  0.0f,	 0.0f,  0.0f,  1.0f,
-			 0.5f,  0.5f,  0.5f,	 1.0f,  1.0f,	 0.0f,  0.0f,  1.0f,
-			 0.5f,  0.5f,  0.5f,	 1.0f,  1.0f,	 0.0f,  0.0f,  1.0f,
-			-0.5f,  0.5f,  0.5f,	 0.0f,  1.0f,	 0.0f,  0.0f,  1.0f,
-			-0.5f, -0.5f,  0.5f,	 0.0f,  0.0f,	 0.0f,  0.0f,  1.0f,
-
-			-0.5f,  0.5f,  0.5f,	 1.0f,  0.0f,	-1.0f,  0.0f,  0.0f,
-			-0.5f,  0.5f, -0.5f,	 1.0f,  1.0f,	-1.0f,  0.0f,  0.0f,
-			-0.5f, -0.5f, -0.5f,	 0.0f,  1.0f,	-1.0f,  0.0f,  0.0f,
-			-0.5f, -0.5f, -0.5f,	 0.0f,  1.0f,	-1.0f,  0.0f,  0.0f,
-			-0.5f, -0.5f,  0.5f,	 0.0f,  0.0f,	-1.0f,  0.0f,  0.0f,
-			-0.5f,  0.5f,  0.5f,	 1.0f,  0.0f,	-1.0f,  0.0f,  0.0f,
-
-			 0.5f,  0.5f,  0.5f,	 1.0f,  0.0f,	 1.0f,  0.0f,  0.0f,
-			 0.5f,  0.5f, -0.5f,	 1.0f,  1.0f,	 1.0f,  0.0f,  0.0f,
-			 0.5f, -0.5f, -0.5f,	 0.0f,  1.0f,	 1.0f,  0.0f,  0.0f,
-			 0.5f, -0.5f, -0.5f,	 0.0f,  1.0f,	 1.0f,  0.0f,  0.0f,
-			 0.5f, -0.5f,  0.5f,	 0.0f,  0.0f,	 1.0f,  0.0f,  0.0f,
-			 0.5f,  0.5f,  0.5f,	 1.0f,  0.0f,	 1.0f,  0.0f,  0.0f,
-
-			-0.5f, -0.5f, -0.5f,	 0.0f,  1.0f,	 0.0f, -1.0f,  0.0f,
-			 0.5f, -0.5f, -0.5f,	 1.0f,  1.0f,	 0.0f, -1.0f,  0.0f,
-			 0.5f, -0.5f,  0.5f,	 1.0f,  0.0f,	 0.0f, -1.0f,  0.0f,
-			 0.5f, -0.5f,  0.5f,	 1.0f,  0.0f,	 0.0f, -1.0f,  0.0f,
-			-0.5f, -0.5f,  0.5f,	 0.0f,  0.0f,	 0.0f, -1.0f,  0.0f,
-			-0.5f, -0.5f, -0.5f,	 0.0f,  1.0f,	 0.0f, -1.0f,  0.0f,
-
-			-0.5f,  0.5f, -0.5f,	 0.0f,  1.0f,	 0.0f,  1.0f,  0.0f,
-			 0.5f,  0.5f, -0.5f,	 1.0f,  1.0f,	 0.0f,  1.0f,  0.0f,
-			 0.5f,  0.5f,  0.5f,	 1.0f,  0.0f,	 0.0f,  1.0f,  0.0f,
-			 0.5f,  0.5f,  0.5f,	 1.0f,  0.0f,	 0.0f,  1.0f,  0.0f,
-			-0.5f,  0.5f,  0.5f,	 0.0f,  0.0f,	 0.0f,  1.0f,  0.0f,
-			-0.5f,  0.5f, -0.5f,	 0.0f,  1.0f,	 0.0f,  1.0f,  0.0f,
-		};
-
-
-
-		//Shader
-		m_Shader.reset(new BlackPearl::Shader("assets/shaders/IronMan.glsl"));
-		m_Shader->Bind();
-
-
-		m_Camera->SetPosition(glm::vec3(0.0f, 0.0f, 8.0f));
-		m_CameraPosition = m_Camera->GetPosition();
-		m_CameraRotation.Yaw = m_Camera->Yaw();
-		m_CameraRotation.Pitch = m_Camera->Pitch();
-
-
-		//m_Model.reset(new Model("assets/models/nanosuit/nanosuit.obj"));
-		m_Model.reset(new BlackPearl::Model("assets/models/IronMan/IronMan.obj"));
-
-	
-	
-	
-	
-	
-	
-	
-	
-	};
-	void OnAttach() override {
 
 
 	}
-	void OnImguiRender() override {
+
+	virtual ~EntityTestLayer() {
+
+		for (auto lightObj : m_LightObjs)
+			delete lightObj;
+		delete m_CameraObj;
+
+	}
+	void OnUpdate(BlackPearl::Timestep ts) override {
+
 	
+		InputCheck(ts);
+
+		// render
+		BlackPearl::RenderCommand::SetClearColor({ 0.0f,0.0f,0.0f,0.0f });
+		//m_Shader->Bind();
+
+
+		BlackPearl::Renderer::BeginScene(*(m_CameraObj->GetComponent<BlackPearl::PerspectiveCamera>()), m_LightSources);
+	}
+
+	void OnImguiRender() override {
+
 		ImGui::Begin("Settings");
 		ImGui::Text("Hello World");
 		ImGui::End();
-	
-	
+
+
 	}
-	void OnUpdate(BlackPearl::Timestep ts) override {
-		
-
-			InputCheck(ts);
-	
-			// render
-			BlackPearl::RenderCommand::SetClearColor({0.0f,0.0f,0.0f,0.0f});
-			m_Shader->Bind();
-
-
-			BlackPearl::Renderer::BeginScene(*m_Camera, m_LightSources);
-
-			glm::mat4 model = glm::mat4(1.0f);
-			model = glm::translate(model, glm::vec3(0.0f, -1.75f, 0.0f));
-			model = glm::rotate(model, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-			model = glm::scale(model, glm::vec3(0.01f, 0.01f, 0.01f));
-
-
-
-			m_Model->Draw(m_Shader, model, m_LightSources);
-			//for (unsigned int i = 0; i < 10; i++)
-			//{
-
-			//	glm::mat4 model = glm::mat4(1.0f);
-			//	model = glm::translate(model, cubePositions[i]);
-			//	model = glm::rotate(model, (float)(glfwGetTime()), glm::vec3(1.0f, (float)i * 20, 0.0f));//(float)(glfwGetTime())
-			//	m_Shader->SetUniformMat4f("u_TranInverseModel", glm::transpose(glm::inverse(model)));
-			//	m_Shader->SetUniformVec3f("u_CameraViewPos", m_Camera->GetPosition());
-
-			//	
-
-			//	m_Shader->SetUniformVec3f("u_Material.ambient", glm::vec3(0.25,0.20725,0.20725));
-			//	m_Shader->SetUniform1f("u_Material.shininess",64.0f);
-
-			////	m_Model->Draw(m_Shader);
-
-
-			//}
+	void OnAttach() override {
 
 
 	}
 	void InputCheck(float ts)
 	{
+		auto cameraComponent = m_CameraObj->GetComponent<BlackPearl::PerspectiveCamera>();
 		if (BlackPearl::Input::IsKeyPressed(BP_KEY_W)) {
-			m_CameraPosition += m_Camera->Front() * m_CameraMoveSpeed * ts;
+			m_CameraPosition += cameraComponent->Front() * m_CameraMoveSpeed * ts;
 		}
 		else if (BlackPearl::Input::IsKeyPressed(BP_KEY_S)) {
-			m_CameraPosition -= m_Camera->Front()* m_CameraMoveSpeed * ts;
+			m_CameraPosition -= cameraComponent->Front()* m_CameraMoveSpeed * ts;
 		}
 		if (BlackPearl::Input::IsKeyPressed(BP_KEY_A)) {
-			m_CameraPosition -= m_Camera->Right() * m_CameraMoveSpeed * ts;
+			m_CameraPosition -= cameraComponent->Right() * m_CameraMoveSpeed * ts;
 		}
 		else if (BlackPearl::Input::IsKeyPressed(BP_KEY_D)) {
-			m_CameraPosition += m_Camera->Right() * m_CameraMoveSpeed * ts;
+			m_CameraPosition += cameraComponent->Right() * m_CameraMoveSpeed * ts;
 
 		}
 		if (BlackPearl::Input::IsKeyPressed(BP_KEY_E)) {
-			m_CameraPosition -= m_Camera->Up() * m_CameraMoveSpeed * ts;
+			m_CameraPosition -= cameraComponent->Up() * m_CameraMoveSpeed * ts;
 		}
 		else if (BlackPearl::Input::IsKeyPressed(BP_KEY_Q)) {
-			m_CameraPosition += m_Camera->Up() * m_CameraMoveSpeed * ts;
+			m_CameraPosition += cameraComponent->Up() * m_CameraMoveSpeed * ts;
 
 		}
 		// ---------------------Rotation--------------------------------------
@@ -258,7 +150,7 @@ public:
 			if (m_CameraRotation.Pitch < -89.0f)
 				m_CameraRotation.Pitch = -89.0f;
 
-			m_Camera->SetRotation(m_CameraRotation.Yaw, m_CameraRotation.Pitch);
+			cameraComponent->SetRotation(m_CameraRotation.Yaw, m_CameraRotation.Pitch);
 
 		}
 		else {
@@ -268,30 +160,15 @@ public:
 		}
 
 
-		m_Camera->SetPosition(m_CameraPosition);
+		cameraComponent->SetPosition(m_CameraPosition);
 	}
-
 private:
-	std::unique_ptr<BlackPearl::Camera> m_Camera;
-
-	std::shared_ptr<BlackPearl::Shader> m_Shader;
-	std::shared_ptr<BlackPearl::Texture> m_Texture1;
-	std::shared_ptr<BlackPearl::Texture> m_Texture2;
-	std::shared_ptr<BlackPearl::Texture> m_DiffuseMap;
-	std::shared_ptr<BlackPearl::Texture> m_SpecularMap;
-	std::shared_ptr<BlackPearl::Texture> m_EmissionMap;
-
-	//	unsigned int m_VertexArrayID, m_IndexBufferID, m_VertexBufferID;
-
-		//std::shared_ptr<VertexArray> m_VertexArray;
-
-	std::shared_ptr<BlackPearl::Mesh> m_Mesh;
-
-	std::shared_ptr<BlackPearl::Model> m_Model;
-	//std::shared_ptr<Light> m_SpotLightSource;
 	BlackPearl::LightSources m_LightSources;
-	float m_CameraMoveSpeed = 5.0f;
-	float m_CameraRotateSpeed = 9.0f;
+	std::vector<BlackPearl::Object*> m_LightObjs;
+	BlackPearl::Object *m_CameraObj;
+	//std::shared_ptr<BlackPearl::Light> m_LightComponent;
+	//std::shared_ptr<BlackPearl::Camera> m_CameraComponent;
+
 	glm::vec3 m_CameraPosition = { 0.0f,0.0f,0.0f };
 	struct CameraRotation {
 		float Yaw;
@@ -301,27 +178,27 @@ private:
 	CameraRotation m_CameraRotation;
 	float m_LastMouseX;
 	float m_LastMouseY;
-
-
-
-
+	float m_CameraMoveSpeed = 5.0f;
+	float m_CameraRotateSpeed = 9.0f;
 
 };
 
 
-class SandBox :public BlackPearl::Application{
+class SandBox :public BlackPearl::Application {
 public:
 	SandBox() {
-		
-		PushLayer(new ExampleLayer("ExampleLayer"));
+		//PushLayer(new ExampleLayer("ExampleLayer"));
+		BlackPearl::EntityManager * entityManager = DBG_NEW BlackPearl::EntityManager();
+		BlackPearl::Layer* layer = DBG_NEW EntityTestLayer("Entity Layer", nullptr, entityManager);
+		PushLayer(layer);
 	}
 	virtual ~SandBox() = default;
 
 };
 
 BlackPearl::Application* BlackPearl::CreateApplication() {
-	
-	return new SandBox();
+
+	return DBG_NEW SandBox();
 
 }
 

@@ -1,6 +1,6 @@
 #pragma once
 #include "pch.h"
-#include "BlackPearl/Renderer/Mesh.h"
+#include "BlackPearl/Renderer/Mesh/Mesh.h"
 #include "BlackPearl/Renderer/Texture/MaterialColor.h"
 #include "assimp/Importer.hpp"	//OO version Header!
 #include "assimp/postprocess.h"

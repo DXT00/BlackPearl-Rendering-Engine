@@ -1,7 +1,7 @@
 #pragma once
 #include"BlackPearl/Renderer/VertexArray.h"
 #include "BlackPearl/Renderer/Shader.h"
-#include "BlackPearl/Renderer/Camera/Camera.h"
+#include "BlackPearl/Renderer/CameraComponent/Camera.h"
 namespace BlackPearl {
 
 	class Renderer

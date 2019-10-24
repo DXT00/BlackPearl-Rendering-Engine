@@ -1,24 +1,27 @@
 #include "pch.h"
 #include "Renderer.h"
 #include<glad/glad.h>
-#include "Lighting/Light.h"
-#include "Lighting/ParallelLight.h"
-#include "Lighting/PointLight.h"
-#include "Lighting/SpotLight.h"
-#include "Lighting/LightSources.h"
+#include "LightComponent/Light.h"
+#include "LightComponent/ParallelLight.h"
+#include "LightComponent/PointLight.h"
+#include "LightComponent/SpotLight.h"
+#include "LightComponent/LightSources.h"
 #include "glm/gtc/matrix_transform.hpp"
-#include "Mesh.h"
+#include "Mesh/Mesh.h"
 namespace BlackPearl {
 
-	Renderer::SceneData * Renderer::m_SceneData = new Renderer::SceneData;
+	Renderer::SceneData * Renderer::m_SceneData = DBG_NEW Renderer::SceneData;
 
 	Renderer::Renderer()
 	{
+		
 	}
 
 
 	Renderer::~Renderer()
 	{
+	/*	delete m_SceneData;
+		m_SceneData = nullptr;*/
 	}
 
 	void Renderer::Init()

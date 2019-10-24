@@ -2,9 +2,10 @@
 #include "glm/glm.hpp"
 #include<string>
 #include<initializer_list>
+#include "BlackPearl/Component/Component.h"
 namespace BlackPearl {
 
-	class Camera
+	class Camera :public Component<Camera>
 	{
 
 	public:
@@ -60,8 +61,11 @@ namespace BlackPearl {
 		inline void SetViewMatrix(glm::mat4 view) { m_ViewMatrix = view; m_ViewProjectionMatrix = m_ProjectionMatrix * m_ViewMatrix; }
 		inline void SetProjectionMatrix(glm::mat4 projection) { m_ProjectionMatrix = projection; m_ViewProjectionMatrix = m_ProjectionMatrix * m_ViewMatrix; }
 		inline void SetViewProjectionMatrix(glm::mat4 viewProjection) { m_ViewProjectionMatrix = viewProjection; }
-		static Camera* Create(unsigned int type, const std::initializer_list<float> &projectionMatrixProps, const ViewMatrixProps &viewMatrixProps = ViewMatrixProps());
-
+		//static Camera* Create(unsigned int type, const std::initializer_list<float> &projectionMatrixProps, const ViewMatrixProps &viewMatrixProps = ViewMatrixProps());
+		Camera(EntityManager* entityManager, Entity::Id id):
+		Component(entityManager,id){}//TODO::
+		static Camera * Create(EntityManager* entityManager, Entity::Id id,unsigned int type
+			);
 	protected:
 		glm::vec3 m_Position = { 0.0f,0.0f,0.0f };
 		glm::mat4 m_ViewMatrix;

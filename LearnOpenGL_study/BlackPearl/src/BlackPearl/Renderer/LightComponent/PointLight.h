@@ -1,11 +1,13 @@
 #pragma once
-#include"Light.h"
+#include "Light.h"
+#include<glm/glm.hpp>
+#include"BlackPearl/Renderer/Shader.h"
 namespace BlackPearl {
 
-	class SpotLight :public Light
+	class PointLight :public Light
 	{
 	public:
-		struct Attenuation { //衰减系数
+		struct Attenuation {
 			unsigned int maxDistance;
 			float constant;
 			float linear;
@@ -48,7 +50,7 @@ namespace BlackPearl {
 					constant = 1.0f, linear = 0.007f, quadratic = 0.0002f;
 					break;
 				case 3250:
-					constant = 1.0f, linear = 0.0014, quadratic = 0.000007;
+					constant = 1.0f, linear = 0.0014f, quadratic = 0.000007f;
 					break;
 				default:
 					GE_CORE_ERROR("Undefined maxDistance! Failed to construct Attenuation!")
@@ -60,36 +62,29 @@ namespace BlackPearl {
 			//默认距离3250constant(1.0f),linear(0.0014f),quadratic(0.000007)
 			//查表：https://learnopengl-cn.github.io/02%20Lighting/05%20Light%20casters/
 		};
-		SpotLight(const glm::vec3& position, const glm::vec3& direction, float cutoffAngle, float outterCutOffAngle, Props props)
-			:m_Position(position), m_Direction(direction), m_CutOffAngle(cutoffAngle), m_OuterCutOffAngle(outterCutOffAngle)
-		{
+		PointLight(EntityManager * entityManager, Entity::Id id, Props props = Props())
+			:Light(entityManager,id),m_Position({ 2.2f,1.0f,2.0f }) {
 			SetProps(props);
 			Init();
-		};
-		virtual ~SpotLight() = default;
+		}
+		virtual ~PointLight() = default;
 		virtual void Init() override;
 
-		inline void UpdatePositionAndDirection(const glm::vec3& position, const glm::vec3& direction)
-		{
-			m_Position = position; m_Direction = direction;
-		}
-		inline void UpdateCutOffAngle(float angle) { m_CutOffAngle = angle; }
+		void SetPosition(const glm::vec3& position) { m_Position = position; }
 		inline void SetAttenuation(const Attenuation& attenuation) { m_Attenuation = attenuation; }
 
 		inline glm::vec3 GetPosition() { return m_Position; }
-		inline glm::vec3 GetDirection() { return m_Direction; }
-		inline float GetOuterCutOffAngle() { return m_OuterCutOffAngle; }
-		inline float GetCutOffAngle() { return m_CutOffAngle; }
-
 		inline Attenuation GetAttenuation() const { return m_Attenuation; }
-		virtual inline LightType GetType() override { return LightType::SpotLight; }
-	private:
-		float m_CutOffAngle;//内切广角大小 （内圆锥）
-		float m_OuterCutOffAngle; //外广切角大小 (外圆锥)
-		glm::vec3 m_Position;
-		glm::vec3 m_Direction;
-		Attenuation m_Attenuation;
+		virtual inline LightType GetType() override { return LightType::PointLight; }
 
+		std::shared_ptr<VertexArray> GetVertexArray() { return m_VertexArray; };
+		std::shared_ptr<Shader> GetShader() { return m_Shader; };
+	private:
+		glm::vec3 m_Position;
+		std::shared_ptr<VertexArray> m_VertexArray;
+		std::shared_ptr<Shader> m_Shader;
+
+		Attenuation m_Attenuation;
 	};
 
 }

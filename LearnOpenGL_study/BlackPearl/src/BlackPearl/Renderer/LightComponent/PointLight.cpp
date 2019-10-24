@@ -57,9 +57,9 @@ namespace BlackPearl {
 
 
 		std::shared_ptr<VertexBuffer> pointLightVertexBuffer;
-		pointLightVertexBuffer.reset(new VertexBuffer(lightVertices));
-		m_Shader.reset(new Shader("assets/shaders/PointLight.glsl"));
-		m_VertexArray.reset(new VertexArray());
+		pointLightVertexBuffer.reset(DBG_NEW VertexBuffer(lightVertices));
+		m_Shader.reset(DBG_NEW Shader("assets/shaders/PointLight.glsl"));
+		m_VertexArray.reset(DBG_NEW VertexArray());
 		pointLightVertexBuffer->SetBufferLayout({
 			{ElementDataType::Float3,"aPos",false}
 			});

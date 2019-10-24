@@ -30,7 +30,7 @@ namespace BlackPearl {
 	private:
 
 		GLFWwindow* m_Window;
-		Context* m_Context;
+		std::unique_ptr<Context> m_Context;
 		WindowData m_Data;
 	};
 

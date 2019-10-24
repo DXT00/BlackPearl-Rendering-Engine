@@ -5,8 +5,6 @@
 namespace BlackPearl {
 
 	static bool s_GLFWInitialized = false;
-
-
 	void Window::Init()
 	{	//glfw:initialize and configure
 		if (!s_GLFWInitialized) {
@@ -26,7 +24,7 @@ namespace BlackPearl {
 
 			glfwSetInputMode(m_Window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 
-		m_Context = new Context(m_Window);
+		m_Context.reset(DBG_NEW Context(m_Window));
 		m_Context->Init();
 	}
 

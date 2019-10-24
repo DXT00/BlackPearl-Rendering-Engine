@@ -4,9 +4,9 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 namespace BlackPearl {
-
-	PerspectiveCamera::PerspectiveCamera(float fov, float width, float height, float znear, float zfar, const ViewMatrixProps &viewMatrixProps)
-		:m_Fov(fov), m_Width(width), m_Height(height), m_zNear(znear), m_zFar(zfar)
+	//float fov, float width, float height, float znear, float zfar,
+	PerspectiveCamera::PerspectiveCamera(EntityManager * entityManager, Entity::Id id, const ViewMatrixProps &viewMatrixProps)
+		:Camera(entityManager, id),m_Fov(45.0f), m_Width(800.0f), m_Height(600.0f), m_zNear(0.1f), m_zFar(100.0f)
 	{
 
 		m_ProjectionMatrix = glm::perspective(glm::radians(m_Fov), m_Width / m_Height, m_zNear, m_zFar);

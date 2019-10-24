@@ -80,14 +80,14 @@ namespace BlackPearl {
 	void Mesh::Init()
 	{
 
-		m_VertexArray.reset(new VertexArray());
+		m_VertexArray.reset(DBG_NEW VertexArray());
 
 		std::shared_ptr<VertexBuffer> vertexBuffer;
 		//vertexBuffer.reset(new VertexBuffer(m_Vertices));
-		vertexBuffer.reset(new VertexBuffer(m_Vertices, m_VerticesSize));
+		vertexBuffer.reset(DBG_NEW VertexBuffer(m_Vertices, m_VerticesSize));
 		std::shared_ptr<IndexBuffer> indexBuffer;
 		//indexBuffer.reset(new IndexBuffer(m_Indices));
-		indexBuffer.reset(new IndexBuffer(m_Indices, m_IndicesSize));
+		indexBuffer.reset(DBG_NEW IndexBuffer(m_Indices, m_IndicesSize));
 
 		vertexBuffer->SetBufferLayout(m_VertexBufferLayout);
 		m_VertexArray->SetIndexBuffer(indexBuffer);

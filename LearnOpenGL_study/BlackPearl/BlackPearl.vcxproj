@@ -143,6 +143,13 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\BlackPearl\Object\Object.h" />
+    <ClInclude Include="src\BlackPearl\Component\ComponentHandle.h" />
+    <ClInclude Include="src\BlackPearl\System\BaseSystem.h" />
+    <ClInclude Include="src\BlackPearl\Component\BaseComponent.h" />
+    <ClInclude Include="src\BlackPearl\Entity\Config.h" />
+    <ClInclude Include="src\BlackPearl\Component\Component.h" />
+    <ClInclude Include="src\BlackPearl\Entity\Entity.h" />
     <ClInclude Include="src\BlackPearl\Application.h" />
     <ClInclude Include="src\BlackPearl\Core.h" />
     <ClInclude Include="src\BlackPearl\EntryPoint.h" />
@@ -156,16 +163,16 @@
     <ClInclude Include="src\BlackPearl\LayerStack.h" />
     <ClInclude Include="src\BlackPearl\Log.h" />
     <ClInclude Include="src\BlackPearl\Renderer\Buffer.h" />
-    <ClInclude Include="src\BlackPearl\Renderer\Camera\Camera.h" />
-    <ClInclude Include="src\BlackPearl\Renderer\Camera\OrthographicCamera.h" />
-    <ClInclude Include="src\BlackPearl\Renderer\Camera\PerspectiveCamera.h" />
+    <ClInclude Include="src\BlackPearl\Renderer\CameraComponent\Camera.h" />
+    <ClInclude Include="src\BlackPearl\Renderer\CameraComponent\OrthographicCamera.h" />
+    <ClInclude Include="src\BlackPearl\Renderer\CameraComponent\PerspectiveCamera.h" />
     <ClInclude Include="src\BlackPearl\Renderer\Context.h" />
-    <ClInclude Include="src\BlackPearl\Renderer\Lighting\Light.h" />
-    <ClInclude Include="src\BlackPearl\Renderer\Lighting\LightSources.h" />
-    <ClInclude Include="src\BlackPearl\Renderer\Lighting\ParallelLight.h" />
-    <ClInclude Include="src\BlackPearl\Renderer\Lighting\PointLight.h" />
-    <ClInclude Include="src\BlackPearl\Renderer\Lighting\SpotLight.h" />
-    <ClInclude Include="src\BlackPearl\Renderer\Mesh.h" />
+    <ClInclude Include="src\BlackPearl\Renderer\LightComponent\Light.h" />
+    <ClInclude Include="src\BlackPearl\Renderer\LightComponent\LightSources.h" />
+    <ClInclude Include="src\BlackPearl\Renderer\LightComponent\ParallelLight.h" />
+    <ClInclude Include="src\BlackPearl\Renderer\LightComponent\PointLight.h" />
+    <ClInclude Include="src\BlackPearl\Renderer\LightComponent\SpotLight.h" />
+    <ClInclude Include="src\BlackPearl\Renderer\Mesh\Mesh.h" />
     <ClInclude Include="src\BlackPearl\Renderer\Model\Model.h" />
     <ClInclude Include="src\BlackPearl\Renderer\RenderCommand.h" />
     <ClInclude Include="src\BlackPearl\Renderer\Renderer.h" />
@@ -177,6 +184,7 @@
     <ClInclude Include="src\BlackPearl\Window.h" />
     <ClInclude Include="src\BlackPeral.h" />
     <ClInclude Include="src\pch.h" />
+    <ClInclude Include="src\BlackPearl\System\System.h" />
     <ClInclude Include="vendor\glm\glm\common.hpp" />
     <ClInclude Include="vendor\glm\glm\detail\_features.hpp" />
     <ClInclude Include="vendor\glm\glm\detail\_fixes.hpp" />
@@ -548,6 +556,12 @@
     <ClInclude Include="vendor\stb\stb_image.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\BlackPearl\Object\Object.cpp" />
+    <ClCompile Include="src\BlackPearl\Component\ComponentHandle.cpp" />
+    <ClCompile Include="src\BlackPearl\System\BaseSystem.cpp" />
+    <ClCompile Include="src\BlackPearl\Component\BaseComponent.cpp" />
+    <ClCompile Include="src\BlackPearl\Component\Component.cpp" />
+    <ClCompile Include="src\BlackPearl\Entity\Entity.cpp" />
     <ClCompile Include="src\BlackPearl\Application.cpp" />
     <ClCompile Include="src\BlackPearl\ImGui\ImGuiBuild.cpp" />
     <ClCompile Include="src\BlackPearl\ImGui\ImGuiLayer.cpp" />
@@ -556,16 +570,16 @@
     <ClCompile Include="src\BlackPearl\LayerStack.cpp" />
     <ClCompile Include="src\BlackPearl\Log.cpp" />
     <ClCompile Include="src\BlackPearl\Renderer\Buffer.cpp" />
-    <ClCompile Include="src\BlackPearl\Renderer\Camera\Camera.cpp" />
-    <ClCompile Include="src\BlackPearl\Renderer\Camera\OrthographicCamera.cpp" />
-    <ClCompile Include="src\BlackPearl\Renderer\Camera\PerspectiveCamera.cpp" />
+    <ClCompile Include="src\BlackPearl\Renderer\CameraComponent\Camera.cpp" />
+    <ClCompile Include="src\BlackPearl\Renderer\CameraComponent\OrthographicCamera.cpp" />
+    <ClCompile Include="src\BlackPearl\Renderer\CameraComponent\PerspectiveCamera.cpp" />
     <ClCompile Include="src\BlackPearl\Renderer\Context.cpp" />
-    <ClCompile Include="src\BlackPearl\Renderer\Lighting\Light.cpp" />
-    <ClCompile Include="src\BlackPearl\Renderer\Lighting\LightSources.cpp" />
-    <ClCompile Include="src\BlackPearl\Renderer\Lighting\ParallelLight.cpp" />
-    <ClCompile Include="src\BlackPearl\Renderer\Lighting\PointLight.cpp" />
-    <ClCompile Include="src\BlackPearl\Renderer\Lighting\SpotLight.cpp" />
-    <ClCompile Include="src\BlackPearl\Renderer\Mesh.cpp" />
+    <ClCompile Include="src\BlackPearl\Renderer\LightComponent\Light.cpp" />
+    <ClCompile Include="src\BlackPearl\Renderer\LightComponent\LightSources.cpp" />
+    <ClCompile Include="src\BlackPearl\Renderer\LightComponent\ParallelLight.cpp" />
+    <ClCompile Include="src\BlackPearl\Renderer\LightComponent\PointLight.cpp" />
+    <ClCompile Include="src\BlackPearl\Renderer\LightComponent\SpotLight.cpp" />
+    <ClCompile Include="src\BlackPearl\Renderer\Mesh\Mesh.cpp" />
     <ClCompile Include="src\BlackPearl\Renderer\Model\Model.cpp" />
     <ClCompile Include="src\BlackPearl\Renderer\RenderCommand.cpp" />
     <ClCompile Include="src\BlackPearl\Renderer\Renderer.cpp" />
@@ -578,6 +592,7 @@
     <ClCompile Include="src\pch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="src\BlackPearl\System\System.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="vendor\GLFW\GLFW.vcxproj">
