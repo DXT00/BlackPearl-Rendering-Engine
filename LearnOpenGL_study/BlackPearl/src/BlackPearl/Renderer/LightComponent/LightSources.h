@@ -7,7 +7,10 @@ namespace BlackPearl {
 	public:
 		LightSources()
 			:m_PointLightNums(0) {};
-		~LightSources() = default;
+		~LightSources() {
+			m_LightSources.clear();
+		
+		};
 		void AddLight(const std::shared_ptr<Light>&light);
 		inline int const GetPointLightNum()const { return m_PointLightNums; }
 		inline std::vector<std::shared_ptr<Light>> Get()const { return m_LightSources; }

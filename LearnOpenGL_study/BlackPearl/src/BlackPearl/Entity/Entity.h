@@ -11,7 +11,7 @@ namespace BlackPearl {
 	class Entity
 	{
 	public:
-	//	static const unsigned int s_MaxComponents;//一个Entity最多32个Component!//TODO::这些常量最好写到一个文件里！
+		//	static const unsigned int s_MaxComponents;//一个Entity最多32个Component!//TODO::这些常量最好写到一个文件里！
 
 		struct Id {
 			Id() :id(0) {}
@@ -25,10 +25,10 @@ namespace BlackPearl {
 				return id == Other.id;
 			}
 
-			Id &operator = (const Id &Other)  {
-				Id Id_;
-				Id_.id = Other.id;
-				return Id_;
+			Id &operator = (const Id &Other) {
+				
+				this->id = Other.id;
+				return *this;
 			}
 
 		};
@@ -44,15 +44,15 @@ namespace BlackPearl {
 		//Entity Instantiate(Entity original, glm::vec3 position) { s_InstanceID++; };
 		virtual ~Entity() { Destroy(); };
 
-	
+
 	public:
 		Id GetId()const { return m_Id; }
 		EntityManager* GetEntityManager() const { return m_EntityManager; }
 	public:
-		 bool Vaild();
+		bool Vaild();
 		virtual void Destroy() {
 			m_Id = Entity::s_INVALID;
-			
+
 		};
 
 

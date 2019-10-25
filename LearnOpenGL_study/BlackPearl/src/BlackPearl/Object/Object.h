@@ -8,20 +8,20 @@ namespace BlackPearl {
 	{
 	public:
 		Object(EntityManager* manager, Entity::Id id)
-		:Entity(manager,id){};
-	
+			:Entity(manager, id) {};
+
 		virtual ~Object() {
 			Destroy();
 		};
 
-		 bool Vaild()  {
+		bool Vaild() {
 			return m_EntityManager && m_EntityManager->Valid(m_Id);
 		}
 		ComponentMask GetComponentMask()const;
 
-		
+
 		template<typename C, typename ...Args>
-		C* AddComponent(Args ...args)
+		std::shared_ptr<C> AddComponent(Args ...args)
 		{
 			//GE_ASSERT(Valid(), "invalid entity" + std::to_string(m_Id.index())); //TODO::https://bbs.csdn.net/topics/391862079
 			//C* component = m_EntityManager->AddComponent(m_Id, args);
@@ -35,11 +35,10 @@ namespace BlackPearl {
 
 			//所有的component都用Create实例化-->方便子类继承！
 			//C* component = C::Create(m_EntityManager, m_Id, std::forward<Args>(args)...);
-			C* component = DBG_NEW C(m_EntityManager, m_Id, std::forward<Args>(args)...);
-			std::shared_ptr<C> componentSharePtr;
-			componentSharePtr.reset(component);
+			//C* component = DBG_NEW C(m_EntityManager, m_Id, std::forward<Args>(args)...);
+			std::shared_ptr<C> componentSharePtr(DBG_NEW C(m_EntityManager, m_Id, std::forward<Args>(args)...));
 			m_Components.insert(std::make_pair(C::Famliy(), componentSharePtr));
-			return component;
+			return componentSharePtr;
 
 		}
 
@@ -47,16 +46,13 @@ namespace BlackPearl {
 		C* GetComponent() const
 		{
 			//GE_ASSERT(Valid(), "invalid entity" + m_Id);
-			 std::unordered_map<BaseComponent::Family, std::shared_ptr<BaseComponent>>::const_iterator it = m_Components.find(C::Famliy());
-			 GE_ASSERT(HasComponent<C>() && it != m_Components.end(), "Entity dose not have component C!")
-				 //	return ComponentHandle<C>(m_EntityManager, m_Id, m_Components[C::Famliy()]);
-			 //Component<C> * component = std::dynamic_pointer_cast<Component<C>>(it->second);
-				// C* result = std::dynamic_cast<C*>(it->second);
-			 return std::dynamic_pointer_cast<C>(it->second).get();
+			std::unordered_map<BaseComponent::Family, std::shared_ptr<BaseComponent>>::const_iterator it = m_Components.find(C::Famliy());
+			GE_ASSERT(HasComponent<C>() && it != m_Components.end(), "Entity dose not have component C!")
+				//	return ComponentHandle<C>(m_EntityManager, m_Id, m_Components[C::Famliy()]);
+			//Component<C> * component = std::dynamic_pointer_cast<Component<C>>(it->second);
+			   // C* result = std::dynamic_cast<C*>(it->second);
+				return std::dynamic_pointer_cast<C>(it->second).get();
 		}
-
-
-
 
 		template<typename C>
 		bool HasComponent() const
@@ -67,7 +63,6 @@ namespace BlackPearl {
 				return true;
 			else
 				return false;
-
 		}
 
 		template<typename C>

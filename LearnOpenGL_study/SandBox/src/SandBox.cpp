@@ -15,6 +15,7 @@
 #include "BlackPearl/Application.h"
 #include "imgui/imgui.h"
 #include "BlackPearl/System/System.h"
+#include <glm/gtc/type_ptr.hpp>
 
 class EntityTestLayer :public BlackPearl::Layer {
 public:
@@ -22,12 +23,12 @@ public:
 	EntityTestLayer(const std::string& name, BlackPearl::SystemManager *systemManager, BlackPearl::EntityManager *entityManager)
 		: Layer(name, systemManager, entityManager)
 	{
-	
+
 
 		BlackPearl::Entity *entity = entityManager->CreateEntity();
 		m_CameraObj = new BlackPearl::Object(entity->GetEntityManager(), entity->GetId());
-		auto cameraComponent=m_CameraObj->AddComponent<BlackPearl::PerspectiveCamera>();
-		
+		std::shared_ptr<BlackPearl::Camera> cameraComponent(m_CameraObj->AddComponent<BlackPearl::PerspectiveCamera>());
+
 
 		cameraComponent->SetPosition(glm::vec3(0.0f, 0.0f, 8.0f));
 		m_CameraPosition = cameraComponent->GetPosition();
@@ -45,7 +46,7 @@ public:
 		{{0.2f, 0.2f, 0.2f},{ 1.0f, 0.2f, 0.1f},{1.0f, 1.0f, 1.0f}},
 		{{0.2f, 0.2f, 0.2f},{ 0.2f, 1.0f, 0.1f},{1.0f, 1.0f, 1.0f}},
 		{{0.2f, 0.2f, 0.2f},{ 0.1f, 0.2f, 1.0f},{1.0f, 1.0f, 1.0f}},
-		{ {0.2f, 0.2f, 0.2f},{ 0.1f, 0.5f, 0.5f},{1.0f, 1.0f, 1.0f}}
+		{{0.2f, 0.2f, 0.2f},{ 0.1f, 0.5f, 0.5f},{1.0f, 1.0f, 1.0f}}
 
 		};
 		m_LightObjs.resize(pointLightProps.size());
@@ -55,14 +56,15 @@ public:
 			m_LightObjs[i] = new BlackPearl::Object(lightEntity->GetEntityManager(), lightEntity->GetId());
 
 
-			std::shared_ptr<BlackPearl::Light> lightComponent;
-			lightComponent.reset(m_LightObjs[i]->AddComponent<BlackPearl::PointLight>());
+			std::shared_ptr<BlackPearl::Light> lightComponent = m_LightObjs[i]->AddComponent<BlackPearl::PointLight>();
+
+			//lightComponent.reset();
+
 			lightComponent->SetProps(pointLightProps[i]);
 			std::dynamic_pointer_cast<BlackPearl::PointLight>(lightComponent)->SetPosition(pointLightPositions[i]);
-
 			std::dynamic_pointer_cast<BlackPearl::PointLight>(lightComponent)->SetAttenuation(BlackPearl::PointLight::Attenuation(3250));
 
-			m_LightSources.AddLight(lightComponent);
+			m_LightSources.AddLight(std::move(lightComponent));
 		}
 
 		BlackPearl::Renderer::Init();
@@ -79,11 +81,11 @@ public:
 	}
 	void OnUpdate(BlackPearl::Timestep ts) override {
 
-	
+
 		InputCheck(ts);
 
 		// render
-		BlackPearl::RenderCommand::SetClearColor({ 0.0f,0.0f,0.0f,0.0f });
+		BlackPearl::RenderCommand::SetClearColor(m_BackgroundColor);
 		//m_Shader->Bind();
 
 
@@ -92,8 +94,9 @@ public:
 
 	void OnImguiRender() override {
 
+		
 		ImGui::Begin("Settings");
-		ImGui::Text("Hello World");
+		ImGui::ColorEdit3("Suqare Color", glm::value_ptr(m_BackgroundColor));
 		ImGui::End();
 
 
@@ -116,14 +119,12 @@ public:
 		}
 		else if (BlackPearl::Input::IsKeyPressed(BP_KEY_D)) {
 			m_CameraPosition += cameraComponent->Right() * m_CameraMoveSpeed * ts;
-
 		}
 		if (BlackPearl::Input::IsKeyPressed(BP_KEY_E)) {
 			m_CameraPosition -= cameraComponent->Up() * m_CameraMoveSpeed * ts;
 		}
 		else if (BlackPearl::Input::IsKeyPressed(BP_KEY_Q)) {
 			m_CameraPosition += cameraComponent->Up() * m_CameraMoveSpeed * ts;
-
 		}
 		// ---------------------Rotation--------------------------------------
 
@@ -163,9 +164,10 @@ public:
 		cameraComponent->SetPosition(m_CameraPosition);
 	}
 private:
-	BlackPearl::LightSources m_LightSources;
+
 	std::vector<BlackPearl::Object*> m_LightObjs;
 	BlackPearl::Object *m_CameraObj;
+	BlackPearl::LightSources m_LightSources;
 	//std::shared_ptr<BlackPearl::Light> m_LightComponent;
 	//std::shared_ptr<BlackPearl::Camera> m_CameraComponent;
 
@@ -181,8 +183,10 @@ private:
 	float m_CameraMoveSpeed = 5.0f;
 	float m_CameraRotateSpeed = 9.0f;
 
-};
+	glm::vec4 m_BackgroundColor = { 0.0f,0.0f,0.0f,0.0f };
 
+
+};
 
 class SandBox :public BlackPearl::Application {
 public:

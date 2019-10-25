@@ -26,5 +26,5 @@
 #include "BlackPearl/System/BaseSystem.h"
 #include "BlackPearl/System/System.h"
 #include "BlackPearl/Entity/Entity.h"
-#include "BlackPearl/Component/ComponentHandle.h"
+//#include "BlackPearl/Component/ComponentHandle.h"
 #include "BlackPearl/Object/Object.h"

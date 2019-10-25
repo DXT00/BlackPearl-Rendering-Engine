@@ -12,8 +12,7 @@ namespace BlackPearl {
 		:m_EntityManager(entityManager),m_Id(id){}
 		virtual ~Component()=default;
 
-		//friend class EntityManager;
-		
+		//friend class EntityManager;		
 		static BaseComponent::Family Famliy();
 	protected:
 		EntityManager* m_EntityManager = nullptr;

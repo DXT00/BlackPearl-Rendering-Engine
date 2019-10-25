@@ -10,7 +10,6 @@ namespace BlackPearl {
 		GE_ASSERT(m_WindowHandle, "windowHandle is null");
 	}
 
-
 	Context::~Context()
 	{
 		//delete m_WindowHandle;

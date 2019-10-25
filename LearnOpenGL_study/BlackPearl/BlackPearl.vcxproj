@@ -144,7 +144,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="src\BlackPearl\Object\Object.h" />
-    <ClInclude Include="src\BlackPearl\Component\ComponentHandle.h" />
     <ClInclude Include="src\BlackPearl\System\BaseSystem.h" />
     <ClInclude Include="src\BlackPearl\Component\BaseComponent.h" />
     <ClInclude Include="src\BlackPearl\Entity\Config.h" />
@@ -557,7 +556,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\BlackPearl\Object\Object.cpp" />
-    <ClCompile Include="src\BlackPearl\Component\ComponentHandle.cpp" />
     <ClCompile Include="src\BlackPearl\System\BaseSystem.cpp" />
     <ClCompile Include="src\BlackPearl\Component\BaseComponent.cpp" />
     <ClCompile Include="src\BlackPearl\Component\Component.cpp" />

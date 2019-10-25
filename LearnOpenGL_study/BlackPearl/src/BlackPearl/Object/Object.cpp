@@ -16,9 +16,9 @@ namespace BlackPearl {
 	void Object::Destroy()
 	{
 		//for (auto& pair : m_Components) { //TODO::看一下要不要用智能指针
-		//	BaseComponent* component = pair.second;
-		//	delete component;
-		//	component = nullptr;
+		//	auto component = pair.second;
+		//	component.reset(nullptr);
+		//	
 		//}
 		m_ComponentMask.reset();
 		m_EntityManager->DestroyEntity(m_Id);	

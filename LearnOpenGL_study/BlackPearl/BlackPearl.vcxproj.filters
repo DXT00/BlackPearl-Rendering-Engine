@@ -1269,7 +1269,6 @@
     <ClInclude Include="src\BlackPearl\Renderer\CameraComponent\PerspectiveCamera.h">
       <Filter>src\BlackPearl\Renderer\Camera</Filter>
     </ClInclude>
-    <ClInclude Include="src\BlackPearl\Component\ComponentHandle.h" />
     <ClInclude Include="src\BlackPearl\Renderer\Mesh\Mesh.h">
       <Filter>src\BlackPearl\Renderer</Filter>
     </ClInclude>
@@ -1362,7 +1361,6 @@
     <ClCompile Include="src\BlackPearl\Renderer\CameraComponent\PerspectiveCamera.cpp">
       <Filter>src\BlackPearl\Renderer\Camera</Filter>
     </ClCompile>
-    <ClCompile Include="src\BlackPearl\Component\ComponentHandle.cpp" />
     <ClCompile Include="src\BlackPearl\Renderer\Mesh\Mesh.cpp">
       <Filter>src\BlackPearl\Renderer</Filter>
     </ClCompile>
