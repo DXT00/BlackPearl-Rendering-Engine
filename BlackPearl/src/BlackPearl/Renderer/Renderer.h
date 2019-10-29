@@ -11,6 +11,7 @@ namespace BlackPearl {
 			glm::mat4 ViewProjectionMatrix;
 			glm::vec3 CameraPosition;
 			glm::vec3 CameraFront;
+			LightSources LightSources;
 		};
 
 		Renderer();

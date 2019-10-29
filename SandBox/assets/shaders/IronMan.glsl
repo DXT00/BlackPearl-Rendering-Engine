@@ -105,8 +105,8 @@ void main()
 
 	vec3 viewDir = normalize(u_CameraViewPos-v_FragPos);
 	vec3 outColor ;//=vec3(0.2,0.3,0.9);
-	outColor = CalcParallelLight(u_ParallelLight,v_Normal,viewDir);
-	outColor += CalcSpotLight(u_SpotLight, v_Normal,viewDir);
+	//outColor = CalcParallelLight(u_ParallelLight,v_Normal,viewDir);
+	//outColor += CalcSpotLight(u_SpotLight, v_Normal,viewDir);
 
 	for(int i=0;i<u_PointLightNums;i++){
 

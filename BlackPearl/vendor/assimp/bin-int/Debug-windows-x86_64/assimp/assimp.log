@@ -1,0 +1,32 @@
+﻿生成启动时间为 2019/9/26 20:51:36。
+     1>项目“F:\OpenGL\LearnOpenGL\LearnOpenGL\vendor\assimp\assimp.vcxproj”在节点 2 上(Build 个目标)。
+     1>InitializeBuildStatus:
+         正在对“bin-int\Debug-windows-x86_64\assimp\assimp.tlog\unsuccessfulbuild”执行 Touch 任务。
+       ClCompile:
+         所有输出均为最新。
+         C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\bin\HostX86\x64\CL.exe /c /Iinclude /ZI /JMC /nologo /W3 /WX- /diagnostics:classic /Od /D _UNICODE /D UNICODE /Gm- /EHsc /RTC1 /MTd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /std:c++17 /Fo"bin-int\Debug-windows-x86_64\assimp\\" /Fd"bin-int\Debug-windows-x86_64\assimp\assimp.pdb" /Gd /TP /FC /errorReport:prompt contrib\irrXML\irrXML.cpp
+         irrXML.cpp
+     1>f:\opengl\learnopengl\learnopengl\vendor\assimp\contrib\irrxml\irrstring.h : warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+     1>f:\opengl\learnopengl\learnopengl\vendor\assimp\contrib\irrxml\irrxml.cpp(30): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+         c:\program files (x86)\windows kits\10\include\10.0.17763.0\ucrt\stdio.h(208): note: 参见“fopen”的声明
+       Lib:
+         C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\bin\HostX86\x64\Lib.exe /OUT:"bin\Debug-windows-x86_64\assimp\assimp.lib" /NOLOGO /MACHINE:X64 "bin-int\Debug-windows-x86_64\assimp\irrXML.obj"
+         assimp.vcxproj -> F:\OpenGL\LearnOpenGL\LearnOpenGL\vendor\assimp\bin\Debug-windows-x86_64\assimp\assimp.lib
+       CopyFilesToOutputDirectory:
+         正在将文件从“bin-int\Debug-windows-x86_64\assimp\assimp.pdb”复制到“bin\Debug-windows-x86_64\assimp\assimp.pdb”。
+       FinalizeBuildStatus:
+         正在删除文件“bin-int\Debug-windows-x86_64\assimp\assimp.tlog\unsuccessfulbuild”。
+         正在对“bin-int\Debug-windows-x86_64\assimp\assimp.tlog\assimp.lastbuildstate”执行 Touch 任务。
+     1>已完成生成项目“F:\OpenGL\LearnOpenGL\LearnOpenGL\vendor\assimp\assimp.vcxproj”(Build 个目标)的操作。
+
+已成功生成。
+
+       “F:\OpenGL\LearnOpenGL\LearnOpenGL\vendor\assimp\assimp.vcxproj”(Build 目标) (1) ->
+       (ClCompile 目标) -> 
+         f:\opengl\learnopengl\learnopengl\vendor\assimp\contrib\irrxml\irrstring.h : warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+         f:\opengl\learnopengl\learnopengl\vendor\assimp\contrib\irrxml\irrxml.cpp(30): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+
+    2 个警告
+    0 个错误
+
+已用时间 00:00:05.30

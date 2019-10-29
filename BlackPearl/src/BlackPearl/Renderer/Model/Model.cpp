@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "Model.h"
-#include "BlackPearl/Renderer/Texture/Texture.h"
-#include <memory>
+#include "BlackPearl/Renderer/Material/Texture.h"
+#include "BlackPearl/Renderer/Material/Material.h"
 //#include "BlackPearl/Renderer/Renderer.h"
 namespace BlackPearl {
 
@@ -16,15 +16,15 @@ namespace BlackPearl {
 		vec.push_back(v.z);
 	}
 
-	void Model::Draw(const std::shared_ptr<Shader>& shader, const glm::mat4 & model, const LightSources& lightSources)
-	{
-		for (unsigned int i = 0; i < m_Meshes.size(); i++)
-		{
-			m_Meshes[i].Draw(shader, model, lightSources);
+	//void Model::Draw( const glm::mat4 & model, const LightSources& lightSources)
+	//{
+	//	for (unsigned int i = 0; i < m_Meshes.size(); i++)
+	//	{
+	//		m_Meshes[i].Draw(model, lightSources);
 
-		}
+	//	}
 
-	}
+	//}
 
 
 
@@ -169,13 +169,12 @@ namespace BlackPearl {
 		//if (indices.size() > 0)
 		memcpy(indices_, &indices[0], indices.size() * sizeof(unsigned int));
 
-
+		std::shared_ptr<Material> material(new Material(m_Shader,textures, colors));
 
 		return Mesh(
 			vertices_, vertices.size() * sizeof(float),
 			indices_, indices.size() * sizeof(unsigned int),
-			textures,
-			colors,
+			material,
 			layout);
 
 	}

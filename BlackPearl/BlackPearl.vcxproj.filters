@@ -111,12 +111,6 @@
     <ClInclude Include="src\BlackPearl\Renderer\Shader.h">
       <Filter>src\BlackPearl\Renderer</Filter>
     </ClInclude>
-    <ClInclude Include="src\BlackPearl\Renderer\Texture\MaterialColor.h">
-      <Filter>src\BlackPearl\Renderer\Texture</Filter>
-    </ClInclude>
-    <ClInclude Include="src\BlackPearl\Renderer\Texture\Texture.h">
-      <Filter>src\BlackPearl\Renderer\Texture</Filter>
-    </ClInclude>
     <ClInclude Include="src\BlackPearl\Renderer\VertexArray.h">
       <Filter>src\BlackPearl\Renderer</Filter>
     </ClInclude>
@@ -1273,6 +1267,15 @@
       <Filter>src\BlackPearl\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="src\BlackPearl\Object\Object.h" />
+    <ClInclude Include="src\BlackPearl\Renderer\RendererComponent\MeshRenderer.h" />
+    <ClInclude Include="src\BlackPearl\Renderer\Material\MaterialColor.h">
+      <Filter>src\BlackPearl\Renderer\Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BlackPearl\Renderer\Material\Texture.h">
+      <Filter>src\BlackPearl\Renderer\Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BlackPearl\Renderer\Material\Material.h" />
+    <ClInclude Include="src\BlackPearl\Renderer\TransformComponent\Transform.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\BlackPearl\Application.cpp">
@@ -1313,12 +1316,6 @@
     </ClCompile>
     <ClCompile Include="src\BlackPearl\Renderer\Shader.cpp">
       <Filter>src\BlackPearl\Renderer</Filter>
-    </ClCompile>
-    <ClCompile Include="src\BlackPearl\Renderer\Texture\MaterialColor.cpp">
-      <Filter>src\BlackPearl\Renderer\Texture</Filter>
-    </ClCompile>
-    <ClCompile Include="src\BlackPearl\Renderer\Texture\Texture.cpp">
-      <Filter>src\BlackPearl\Renderer\Texture</Filter>
     </ClCompile>
     <ClCompile Include="src\BlackPearl\Renderer\VertexArray.cpp">
       <Filter>src\BlackPearl\Renderer</Filter>
@@ -1365,5 +1362,14 @@
       <Filter>src\BlackPearl\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="src\BlackPearl\Object\Object.cpp" />
+    <ClCompile Include="src\BlackPearl\Renderer\RendererComponent\MeshRenderer.cpp" />
+    <ClCompile Include="src\BlackPearl\Renderer\Material\MaterialColor.cpp">
+      <Filter>src\BlackPearl\Renderer\Texture</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BlackPearl\Renderer\Material\Texture.cpp">
+      <Filter>src\BlackPearl\Renderer\Texture</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BlackPearl\Renderer\Material\Material.cpp" />
+    <ClCompile Include="src\BlackPearl\Renderer\TransformComponent\Transform.cpp" />
   </ItemGroup>
 </Project>

@@ -6,10 +6,12 @@
 #include "BlackPearl/Layer.h"
 
 #include "BlackPearl/Renderer/Shader.h"
-#include "BlackPearl/Renderer/Texture/Texture.h"
+#include "BlackPearl/Renderer/Material/Texture.h"
 
+#include "BlackPearl/Renderer/TransformComponent/Transform.h"
+#include "BlackPearl/Renderer/RendererComponent/MeshRenderer.h"
 #include "BlackPearl/Renderer/CameraComponent/Camera.h"
-#include"BlackPearl/Renderer/CameraComponent/PerspectiveCamera.h"
+#include "BlackPearl/Renderer/CameraComponent/PerspectiveCamera.h"
 #include "BlackPearl/Renderer/LightComponent/LightSources.h"
 #include "BlackPearl/Renderer/LightComponent/PointLight.h"
 #include "BlackPearl/Renderer/LightComponent/ParallelLight.h"

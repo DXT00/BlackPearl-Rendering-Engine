@@ -1,10 +1,11 @@
 #pragma once
 #include<vector>
-#include"BlackPearl/Renderer/Texture/Texture.h"
+#include"BlackPearl/Renderer/Material/Texture.h"
 #include"BlackPearl/Renderer/Shader.h"
 #include"BlackPearl/Renderer/Buffer.h"
 #include"BlackPearl/Renderer/LightComponent/LightSources.h"
-#include"BlackPearl/Renderer/Texture/MaterialColor.h"
+#include"BlackPearl/Renderer/Material/MaterialColor.h"
+#include "BlackPearl/Renderer/Material/Material.h"
 //#include "BlackPearl/Renderer/VertexArray.h"
 namespace BlackPearl {
 
@@ -36,17 +37,17 @@ namespace BlackPearl {
 			uint32_t verticesSize,
 			unsigned int* indices,
 			uint32_t indicesSize,
-			const std::vector<std::shared_ptr<Texture>>& textures,
-			const std::vector<std::shared_ptr<MaterialColor>>& colors,
-
+			//const std::vector<std::shared_ptr<Texture>>& textures,
+			//const std::vector<std::shared_ptr<MaterialColor>>& colors,
+			std::shared_ptr<Material> material,
 			const VertexBufferLayout& layout
 		)
 			:m_Vertices(vertices), m_VerticesSize(verticesSize), m_Indices(indices), m_IndicesSize(indicesSize),
-			m_Textures(textures), m_MaterialColors(colors), m_VertexBufferLayout(layout) {
+			m_Material(material), m_VertexBufferLayout(layout) {
 			Init();
 		};
 		~Mesh();
-		void Draw(const std::shared_ptr<Shader>& shader, const glm::mat4 & model, const LightSources& lightSources);
+		void Draw(const glm::mat4 & model, const LightSources& lightSources);
 		std::shared_ptr<VertexArray> GetVertexArray() const { return m_VertexArray; }
 		uint32_t GetIndicesSize()const { return m_IndicesSize; }
 		uint32_t GetVerticesSize()const { return m_VerticesSize; }
@@ -64,9 +65,9 @@ namespace BlackPearl {
 		unsigned int*m_Indices;
 		uint32_t m_VerticesSize;
 		uint32_t m_IndicesSize;
-		std::vector<std::shared_ptr<Texture> >m_Textures;
-		std::vector<std::shared_ptr<MaterialColor>> m_MaterialColors;
-
+		//std::vector<std::shared_ptr<Texture> >m_Textures;
+		//std::vector<std::shared_ptr<MaterialColor>> m_MaterialColors;
+		std::shared_ptr<Material> m_Material;
 
 	};
 

@@ -2,7 +2,7 @@
 #include"BlackPearl/Renderer/Shader.h"
 #include<memory>
 #include"Window.h"
-#include"Renderer/Texture/Texture.h"
+#include"Renderer/Material/Texture.h"
 #include"Renderer/CameraComponent/Camera.h"
 #include"Renderer/VertexArray.h"
 #include"BlackPearl/Timestep/Timestep.h"

@@ -12,12 +12,15 @@ namespace BlackPearl {
 	{
 	}
 
-	void Mesh::Draw(const std::shared_ptr<Shader>& shader, const glm::mat4 & model, const LightSources& lightSources)
+	void Mesh::Draw( const glm::mat4 & model, const LightSources& lightSources)
 	{
-		for (unsigned int i = 0; i < m_Textures.size(); i++) {
+		std::shared_ptr<Shader> shader = m_Material->GetShader();
+		shader->Bind();
+		std::vector<std::shared_ptr<Texture>> textures = m_Material->GetTextureMaps();
+		for (unsigned int i = 0; i < textures.size(); i++) {
 			glActiveTexture(GL_TEXTURE0 + i);
 
-			switch (m_Textures[i]->GetType()) {
+			switch (m_Material->GetTextureMaps()[i]->GetType()) {
 			case Texture::Type::DiffuseMap:
 				shader->SetUniform1i("u_Material.diffuse", i);
 				break;
@@ -39,22 +42,22 @@ namespace BlackPearl {
 					break;
 
 			}
-			m_Textures[i]->Bind();
+			textures[i]->Bind();
 
 		}
+		std::vector<std::shared_ptr<MaterialColor>> materialColor = m_Material->GetMaterialColor();
+		for (unsigned int i = 0; i < materialColor.size(); i++) {
 
-		for (unsigned int i = 0; i < m_MaterialColors.size(); i++) {
-
-			switch (m_MaterialColors[i]->GetType()) {
+			switch (materialColor[i]->GetType()) {
 			case MaterialColor::Type::DiffuseColor:
-				shader->SetUniformVec3f("u_Material.diffuseColor", m_MaterialColors[i]->Get());
+				shader->SetUniformVec3f("u_Material.diffuseColor", materialColor[i]->Get());
 				break;
 			case MaterialColor::Type::SpecularColor:
-				shader->SetUniformVec3f("u_Material.specularColor", m_MaterialColors[i]->Get());
+				shader->SetUniformVec3f("u_Material.specularColor", materialColor[i]->Get());
 				break;
 
 			case MaterialColor::Type::AmbientColor:
-				shader->SetUniformVec3f("u_Material.ambientColor", m_MaterialColors[i]->Get());
+				shader->SetUniformVec3f("u_Material.ambientColor", materialColor[i]->Get());
 				break;
 			default:
 				GE_CORE_ERROR(" Mesh::Draw failed! Unknown MaterialColor type!!")
@@ -70,7 +73,7 @@ namespace BlackPearl {
 		Renderer::Submit(m_VertexArray, shader, model);
 
 		glDrawElements(GL_TRIANGLES, m_IndicesSize / sizeof(unsigned int), GL_UNSIGNED_INT, 0);
-		for (GLuint i = 0; i < this->m_Textures.size(); i++)
+		for (GLuint i = 0; i < textures.size(); i++)
 		{
 			glActiveTexture(GL_TEXTURE0 + i);
 			glBindTexture(GL_TEXTURE_2D, 0);

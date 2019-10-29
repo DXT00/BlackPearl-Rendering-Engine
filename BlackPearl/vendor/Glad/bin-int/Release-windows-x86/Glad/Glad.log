@@ -1,0 +1,30 @@
+﻿生成启动时间为 2019/10/24 14:44:53。
+     1>项目“F:\OpenGL\LearnOpenGL\BlackPearl\vendor\Glad\Glad.vcxproj”在节点 3 上(Build 个目标)。
+     1>PrepareForBuild:
+         正在创建目录“bin\Release-windows-x86\Glad\”。
+         正在创建目录“bin-int\Release-windows-x86\Glad\Glad.tlog\”。
+       InitializeBuildStatus:
+         正在创建“bin-int\Release-windows-x86\Glad\Glad.tlog\unsuccessfulbuild”，因为已指定“AlwaysCreate”。
+       ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\bin\HostX86\x86\CL.exe /c /Iinclude /Zi /nologo /W3 /WX- /diagnostics:classic /Ox /Oi /Oy- /D _UNICODE /D UNICODE /GF /Gm- /EHsc /MT /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"bin-int\Release-windows-x86\Glad\\" /Fd"bin-int\Release-windows-x86\Glad\Glad.pdb" /Gd /TC /analyze- /FC /errorReport:prompt src\glad.c
+         glad.c
+     1>c:\program files (x86)\windows kits\10\include\10.0.17763.0\shared\minwindef.h(130): warning C4005: “APIENTRY”: 宏重定义
+         f:\opengl\learnopengl\blackpearl\vendor\glad\include\glad\glad.h(32): note: 参见“APIENTRY”的前一个定义
+       Lib:
+         C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\bin\HostX86\x86\Lib.exe /OUT:"bin\Release-windows-x86\Glad\Glad.lib" /NOLOGO "bin-int\Release-windows-x86\Glad\glad.obj"
+         Glad.vcxproj -> F:\OpenGL\LearnOpenGL\BlackPearl\vendor\Glad\bin\Release-windows-x86\Glad\Glad.lib
+       FinalizeBuildStatus:
+         正在删除文件“bin-int\Release-windows-x86\Glad\Glad.tlog\unsuccessfulbuild”。
+         正在对“bin-int\Release-windows-x86\Glad\Glad.tlog\Glad.lastbuildstate”执行 Touch 任务。
+     1>已完成生成项目“F:\OpenGL\LearnOpenGL\BlackPearl\vendor\Glad\Glad.vcxproj”(Build 个目标)的操作。
+
+已成功生成。
+
+       “F:\OpenGL\LearnOpenGL\BlackPearl\vendor\Glad\Glad.vcxproj”(Build 目标) (1) ->
+       (ClCompile 目标) -> 
+         c:\program files (x86)\windows kits\10\include\10.0.17763.0\shared\minwindef.h(130): warning C4005: “APIENTRY”: 宏重定义
+
+    1 个警告
+    0 个错误
+
+已用时间 00:00:05.68

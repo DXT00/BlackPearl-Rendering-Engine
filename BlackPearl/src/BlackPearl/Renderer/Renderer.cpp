@@ -33,6 +33,7 @@ namespace BlackPearl {
 
 	void Renderer::BeginScene(const Camera & camera, const LightSources& lightSources)
 	{
+		m_SceneData->LightSources = lightSources;
 		m_SceneData->ViewProjectionMatrix = camera.GetViewProjectionMatrix();
 		m_SceneData->CameraPosition = camera.GetPosition();
 		m_SceneData->CameraFront = camera.Front();

@@ -1,14 +1,3 @@
-//#ifdef _DEBUG
-//#define DBG_NEW new ( _NORMAL_BLOCK , __FILE__ , __LINE__ )
-//// Replace _NORMAL_BLOCK with _CLIENT_BLOCK if you want the
-//// allocations to be of _CLIENT_BLOCK type
-//#else
-//#define DBG_NEW new
-//#endif
-//
-//#define _CRTDBG_MAP_ALLOC
-//#include <stdlib.h>
-//#include <crtdbg.h>
 #include <BlackPeral.h>
 #include "glm/glm.hpp"
 #include "glm/ext/matrix_transform.hpp"
@@ -67,6 +56,25 @@ public:
 			m_LightSources.AddLight(std::move(lightComponent));
 		}
 
+
+		/*m_Shader.reset(new BlackPearl::Shader("assets/shaders/IronMan.glsl"));
+		m_Shader->Bind();
+		m_Model.reset(new BlackPearl::Model("assets/models/IronMan/IronMan.obj"));*/
+		std::shared_ptr<BlackPearl::Shader>IronManShader(new BlackPearl::Shader("assets/shaders/IronMan.glsl"));
+		IronManShader->Bind();
+		std::shared_ptr<BlackPearl::Model> IronManModel(new BlackPearl::Model("assets/models/IronMan/IronMan.obj", IronManShader));
+		BlackPearl::Entity *ironManEntity = entityManager->CreateEntity();
+		m_IronManObj = new BlackPearl::Object(ironManEntity->GetEntityManager(), ironManEntity->GetId());
+
+		std::shared_ptr<BlackPearl::Transform> TransformComponent(m_IronManObj->AddComponent<BlackPearl::Transform>());
+		TransformComponent->SetPosition({ 0.0f, -1.75f, 0.0f });
+		TransformComponent->SetRotation({ 0.0,180.0,0.0 });
+		TransformComponent->SetScale({ 0.01f, 0.01f, 0.01f });
+
+		std::shared_ptr<BlackPearl::MeshRenderer> meshRendererComponent(m_IronManObj->AddComponent<BlackPearl::MeshRenderer>(IronManModel, TransformComponent->GetTransformMatrix()));
+
+
+
 		BlackPearl::Renderer::Init();
 
 
@@ -88,8 +96,9 @@ public:
 		BlackPearl::RenderCommand::SetClearColor(m_BackgroundColor);
 		//m_Shader->Bind();
 
-
 		BlackPearl::Renderer::BeginScene(*(m_CameraObj->GetComponent<BlackPearl::PerspectiveCamera>()), m_LightSources);
+		m_IronManObj->GetComponent<BlackPearl::MeshRenderer>()->DrawModel();
+
 	}
 
 	void OnImguiRender() override {
@@ -167,6 +176,7 @@ private:
 
 	std::vector<BlackPearl::Object*> m_LightObjs;
 	BlackPearl::Object *m_CameraObj;
+	BlackPearl::Object *m_IronManObj;
 	BlackPearl::LightSources m_LightSources;
 	//std::shared_ptr<BlackPearl::Light> m_LightComponent;
 	//std::shared_ptr<BlackPearl::Camera> m_CameraComponent;

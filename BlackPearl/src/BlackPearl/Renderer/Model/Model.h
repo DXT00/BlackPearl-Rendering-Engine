@@ -1,7 +1,7 @@
 #pragma once
 #include "pch.h"
 #include "BlackPearl/Renderer/Mesh/Mesh.h"
-#include "BlackPearl/Renderer/Texture/MaterialColor.h"
+#include "BlackPearl/Renderer/Material/MaterialColor.h"
 #include "assimp/Importer.hpp"	//OO version Header!
 #include "assimp/postprocess.h"
 #include "assimp/scene.h"
@@ -14,11 +14,12 @@ namespace BlackPearl {
 	class Model
 	{
 	public:
-		Model(const std::string& path) {
+		Model(const std::string& path,const std::shared_ptr<Shader>shader)
+		:m_Shader(shader){
 			LoadModel(path);
 
 		};
-		void Draw(const std::shared_ptr<Shader>& shader, const glm::mat4 & model, const LightSources& lightSources);
+		//void Draw(const glm::mat4 & model, const LightSources& lightSources);
 
 		~Model() = default;
 		void LoadModel(const std::string& path);
@@ -34,8 +35,14 @@ namespace BlackPearl {
 		void LoadMaterialColors(
 			aiMaterial * material,
 			std::vector< std::shared_ptr<MaterialColor>> &colors);
+
+		inline std::vector<Mesh> GetMeshes()const { return m_Meshes; }
+		std::shared_ptr<Shader> GetShader()const { return m_Shader; }
+
 	private:
+		std::shared_ptr<Shader> m_Shader;//多个Mesh使用同一个shader
 		std::vector<Mesh> m_Meshes;
+
 		std::string m_Directory;
 
 		//std::vector<Texture> m_Textures;//存储所有的已经load的Textures.

@@ -1,0 +1,52 @@
+﻿生成启动时间为 2019/10/24 14:44:53。
+     1>项目“F:\OpenGL\LearnOpenGL\BlackPearl\vendor\GLFW\GLFW.vcxproj”在节点 2 上(Build 个目标)。
+     1>PrepareForBuild:
+         正在创建目录“bin\Release-windows-x86\GLFW\”。
+         正在创建目录“bin-int\Release-windows-x86\GLFW\GLFW.tlog\”。
+       InitializeBuildStatus:
+         正在创建“bin-int\Release-windows-x86\GLFW\GLFW.tlog\unsuccessfulbuild”，因为已指定“AlwaysCreate”。
+       ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\bin\HostX86\x86\CL.exe /c /Zi /nologo /W3 /WX- /diagnostics:classic /Ox /Oi /Oy- /D _GLFW_WIN32 /D _CRT_SECURE_NO_WARNINGS /D _UNICODE /D UNICODE /GF /Gm- /EHsc /MT /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"bin-int\Release-windows-x86\GLFW\\" /Fd"bin-int\Release-windows-x86\GLFW\GLFW.pdb" /Gd /TC /analyze- /FC /errorReport:prompt src\context.c src\egl_context.c src\init.c src\input.c src\monitor.c src\osmesa_context.c src\vulkan.c src\wgl_context.c src\win32_init.c src\win32_joystick.c src\win32_monitor.c src\win32_thread.c src\win32_time.c src\win32_window.c src\window.c
+         context.c
+         egl_context.c
+         init.c
+         input.c
+         monitor.c
+         osmesa_context.c
+         vulkan.c
+         wgl_context.c
+         win32_init.c
+         win32_joystick.c
+         win32_monitor.c
+         win32_thread.c
+         win32_time.c
+         win32_window.c
+         window.c
+         正在生成代码...
+       Lib:
+         C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\bin\HostX86\x86\Lib.exe /OUT:"bin\Release-windows-x86\GLFW\GLFW.lib" /NOLOGO "bin-int\Release-windows-x86\GLFW\context.obj"
+         "bin-int\Release-windows-x86\GLFW\egl_context.obj"
+         "bin-int\Release-windows-x86\GLFW\init.obj"
+         "bin-int\Release-windows-x86\GLFW\input.obj"
+         "bin-int\Release-windows-x86\GLFW\monitor.obj"
+         "bin-int\Release-windows-x86\GLFW\osmesa_context.obj"
+         "bin-int\Release-windows-x86\GLFW\vulkan.obj"
+         "bin-int\Release-windows-x86\GLFW\wgl_context.obj"
+         "bin-int\Release-windows-x86\GLFW\win32_init.obj"
+         "bin-int\Release-windows-x86\GLFW\win32_joystick.obj"
+         "bin-int\Release-windows-x86\GLFW\win32_monitor.obj"
+         "bin-int\Release-windows-x86\GLFW\win32_thread.obj"
+         "bin-int\Release-windows-x86\GLFW\win32_time.obj"
+         "bin-int\Release-windows-x86\GLFW\win32_window.obj"
+         "bin-int\Release-windows-x86\GLFW\window.obj"
+         GLFW.vcxproj -> F:\OpenGL\LearnOpenGL\BlackPearl\vendor\GLFW\bin\Release-windows-x86\GLFW\GLFW.lib
+       FinalizeBuildStatus:
+         正在删除文件“bin-int\Release-windows-x86\GLFW\GLFW.tlog\unsuccessfulbuild”。
+         正在对“bin-int\Release-windows-x86\GLFW\GLFW.tlog\GLFW.lastbuildstate”执行 Touch 任务。
+     1>已完成生成项目“F:\OpenGL\LearnOpenGL\BlackPearl\vendor\GLFW\GLFW.vcxproj”(Build 个目标)的操作。
+
+已成功生成。
+    0 个警告
+    0 个错误
+
+已用时间 00:00:14.82
