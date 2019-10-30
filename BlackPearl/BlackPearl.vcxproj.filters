@@ -1237,8 +1237,6 @@
     <ClInclude Include="src\BlackPearl\Entity\Entity.h" />
     <ClInclude Include="src\BlackPearl\Component\BaseComponent.h" />
     <ClInclude Include="src\BlackPearl\Entity\Config.h" />
-    <ClInclude Include="src\BlackPearl\System\BaseSystem.h" />
-    <ClInclude Include="src\BlackPearl\System\System.h" />
     <ClInclude Include="src\BlackPearl\Renderer\LightComponent\Light.h">
       <Filter>src\BlackPearl\Renderer\Lighting</Filter>
     </ClInclude>
@@ -1276,6 +1274,7 @@
     </ClInclude>
     <ClInclude Include="src\BlackPearl\Renderer\Material\Material.h" />
     <ClInclude Include="src\BlackPearl\Renderer\TransformComponent\Transform.h" />
+    <ClInclude Include="src\BlackPearl\Scene\Scene.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\BlackPearl\Application.cpp">
@@ -1332,8 +1331,6 @@
     <ClCompile Include="src\BlackPearl\Component\Component.cpp" />
     <ClCompile Include="src\BlackPearl\Entity\Entity.cpp" />
     <ClCompile Include="src\BlackPearl\Component\BaseComponent.cpp" />
-    <ClCompile Include="src\BlackPearl\System\BaseSystem.cpp" />
-    <ClCompile Include="src\BlackPearl\System\System.cpp" />
     <ClCompile Include="src\BlackPearl\Renderer\LightComponent\Light.cpp">
       <Filter>src\BlackPearl\Renderer\Lighting</Filter>
     </ClCompile>
@@ -1371,5 +1368,6 @@
     </ClCompile>
     <ClCompile Include="src\BlackPearl\Renderer\Material\Material.cpp" />
     <ClCompile Include="src\BlackPearl\Renderer\TransformComponent\Transform.cpp" />
+    <ClCompile Include="src\BlackPearl\Scene\Scene.cpp" />
   </ItemGroup>
 </Project>

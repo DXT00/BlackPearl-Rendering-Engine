@@ -1,17 +1,24 @@
 #pragma once
-#include"Timestep/Timestep.h"
+
 #include<string>
-#include "BlackPearl/System/System.h"
+#include"Object/Object.h"
+#include "Entity/Entity.h"
+#include "Renderer/LightComponent/Light.h"
+#include "Renderer/LightComponent/LightSources.h"
+#include"Timestep/Timestep.h"
+
 namespace BlackPearl {
 
 	class Layer
 	{
 	public:
-		Layer(const std::string& name, SystemManager *systemManager, EntityManager *entityManager)
-			:m_DebugName(name),m_SystemManager(systemManager),m_EntityManager(entityManager) {};
+		Layer(const std::string& name, EntityManager *entityManager)
+			:m_DebugName(name),m_EntityManager(entityManager) {
+			m_LightSources = new LightSources();
+		}
 		virtual ~Layer() {
 			delete m_EntityManager;
-			delete m_SystemManager;
+			
 		};
 		virtual void OnAttach() {}
 		virtual void OnDetach() {}
@@ -19,12 +26,24 @@ namespace BlackPearl {
 		virtual void OnImguiRender() {}
 
 		inline std::string GetString() { return m_DebugName; }
+		EntityManager *GetEntityManager() { return m_EntityManager; }
+		LightSources *GetLightSources() { return m_LightSources; }
+
+		virtual Object* CreateEmpty();
+		virtual Object* CreateLight(LightType type);
+		virtual Object* CreateModel();
+		virtual Object* CreateCube();
+
+
+		void DrawObjects();
+		void DestroyObjects();
 
 
 	protected:
 		std::string m_DebugName;
-		SystemManager *m_SystemManager;
 		EntityManager *m_EntityManager;
+		std::unordered_map<std::uint32_t, Object*> m_EntityToObjects;
+		LightSources* m_LightSources;
 	};
 
 }

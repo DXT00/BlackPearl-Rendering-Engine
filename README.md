@@ -1,29 +1,17 @@
-1.添加Material class:
-
-包含 一个 TextureMaps vector
-
-     一个 Shader
-
-     一个 MaterialColors vector
+通过ImGui界面创建 Object
 
 
-2.修改Mesh类：
-	
-	每个Mesh包含一种Material
+ImGui 的回调处理 全部通过 Layer class处理
 
-	vertices
-
-	indices
+包括 Create各种 Objects, DrawObjects,DestroyObjects等事件.....
 
 
+一个Appliacation可以有多个Scenes,但当前运行的只有一个Scene!
 
-3.添加 MeshComponent class:
+一个Scene 可以有多个 Layer,每个Layer都有自己的EntityManager
 
-	用于Draw Model
+渲染是以Layer为单位渲染的！
 
-	    Draw Mesh
-	
-4.添加 TransformComponet class:
+Application运行 ---> Scene Update --->Sence中的每个Layer Update(Draw())
 
-	用于描述Entity 的位置，旋转，大小
 		

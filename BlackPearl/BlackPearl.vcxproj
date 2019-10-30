@@ -146,7 +146,6 @@
     <ClInclude Include="src\BlackPearl\Renderer\Material\Material.h" />
     <ClInclude Include="src\BlackPearl\Renderer\RendererComponent\MeshRenderer.h" />
     <ClInclude Include="src\BlackPearl\Object\Object.h" />
-    <ClInclude Include="src\BlackPearl\System\BaseSystem.h" />
     <ClInclude Include="src\BlackPearl\Component\BaseComponent.h" />
     <ClInclude Include="src\BlackPearl\Entity\Config.h" />
     <ClInclude Include="src\BlackPearl\Component\Component.h" />
@@ -185,7 +184,7 @@
     <ClInclude Include="src\BlackPearl\Window.h" />
     <ClInclude Include="src\BlackPeral.h" />
     <ClInclude Include="src\pch.h" />
-    <ClInclude Include="src\BlackPearl\System\System.h" />
+    <ClInclude Include="src\BlackPearl\Scene\Scene.h" />
     <ClInclude Include="src\BlackPearl\Renderer\TransformComponent\Transform.h" />
     <ClInclude Include="vendor\glm\glm\common.hpp" />
     <ClInclude Include="vendor\glm\glm\detail\_features.hpp" />
@@ -561,7 +560,6 @@
     <ClCompile Include="src\BlackPearl\Renderer\Material\Material.cpp" />
     <ClCompile Include="src\BlackPearl\Renderer\RendererComponent\MeshRenderer.cpp" />
     <ClCompile Include="src\BlackPearl\Object\Object.cpp" />
-    <ClCompile Include="src\BlackPearl\System\BaseSystem.cpp" />
     <ClCompile Include="src\BlackPearl\Component\BaseComponent.cpp" />
     <ClCompile Include="src\BlackPearl\Component\Component.cpp" />
     <ClCompile Include="src\BlackPearl\Entity\Entity.cpp" />
@@ -595,7 +593,7 @@
     <ClCompile Include="src\pch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="src\BlackPearl\System\System.cpp" />
+    <ClCompile Include="src\BlackPearl\Scene\Scene.cpp" />
     <ClCompile Include="src\BlackPearl\Renderer\TransformComponent\Transform.cpp" />
   </ItemGroup>
   <ItemGroup>

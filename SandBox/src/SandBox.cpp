@@ -1,19 +1,20 @@
 #include <BlackPeral.h>
 #include "glm/glm.hpp"
 #include "glm/ext/matrix_transform.hpp"
-#include "BlackPearl/Application.h"
+
 #include "imgui/imgui.h"
-#include "BlackPearl/System/System.h"
+
 #include <glm/gtc/type_ptr.hpp>
+#include <string>
+//#include "BlackPearl/Scene/Scene.h"
+#include "BlackPearl/Application.h"
 
 class EntityTestLayer :public BlackPearl::Layer {
 public:
 
-	EntityTestLayer(const std::string& name, BlackPearl::SystemManager *systemManager, BlackPearl::EntityManager *entityManager)
-		: Layer(name, systemManager, entityManager)
+	EntityTestLayer(const std::string& name, BlackPearl::EntityManager *entityManager)
+		: Layer(name, entityManager)
 	{
-
-
 		BlackPearl::Entity *entity = entityManager->CreateEntity();
 		m_CameraObj = new BlackPearl::Object(entity->GetEntityManager(), entity->GetId());
 		std::shared_ptr<BlackPearl::Camera> cameraComponent(m_CameraObj->AddComponent<BlackPearl::PerspectiveCamera>());
@@ -25,42 +26,40 @@ public:
 		m_CameraRotation.Pitch = cameraComponent->Pitch();
 
 
-		glm::vec3 pointLightPositions[] = {
-		glm::vec3(2.3f,  0.2f,  2.0f),
-		glm::vec3(2.3f, -3.3f, -4.0f),
-		glm::vec3(-2.7f,  3.0f, -7.5f),
-		glm::vec3(-4.0f,  2.0f, -12.0f),
-		};
-		std::vector<BlackPearl::Light::Props> pointLightProps = {
-		{{0.2f, 0.2f, 0.2f},{ 1.0f, 0.2f, 0.1f},{1.0f, 1.0f, 1.0f}},
-		{{0.2f, 0.2f, 0.2f},{ 0.2f, 1.0f, 0.1f},{1.0f, 1.0f, 1.0f}},
-		{{0.2f, 0.2f, 0.2f},{ 0.1f, 0.2f, 1.0f},{1.0f, 1.0f, 1.0f}},
-		{{0.2f, 0.2f, 0.2f},{ 0.1f, 0.5f, 0.5f},{1.0f, 1.0f, 1.0f}}
+		//glm::vec3 pointLightPositions[] = {
+		//glm::vec3(2.3f,  0.2f,  2.0f),
+		//glm::vec3(2.3f, -3.3f, -4.0f),
+		//glm::vec3(-2.7f,  3.0f, -7.5f),
+		//glm::vec3(-4.0f,  2.0f, -12.0f),
+		//};
+		//std::vector<BlackPearl::Light::Props> pointLightProps = {
+		//{{0.2f, 0.2f, 0.2f},{ 1.0f, 0.2f, 0.1f},{1.0f, 1.0f, 1.0f}},
+		//{{0.2f, 0.2f, 0.2f},{ 0.2f, 1.0f, 0.1f},{1.0f, 1.0f, 1.0f}},
+		//{{0.2f, 0.2f, 0.2f},{ 0.1f, 0.2f, 1.0f},{1.0f, 1.0f, 1.0f}},
+		//{{0.2f, 0.2f, 0.2f},{ 0.1f, 0.5f, 0.5f},{1.0f, 1.0f, 1.0f}}
 
-		};
-		m_LightObjs.resize(pointLightProps.size());
-		for (int i = 0; i < pointLightProps.size(); i++)
-		{
-			BlackPearl::Entity* lightEntity = entityManager->CreateEntity();
-			m_LightObjs[i] = new BlackPearl::Object(lightEntity->GetEntityManager(), lightEntity->GetId());
-
-
-			std::shared_ptr<BlackPearl::Light> lightComponent = m_LightObjs[i]->AddComponent<BlackPearl::PointLight>();
-
-			//lightComponent.reset();
-
-			lightComponent->SetProps(pointLightProps[i]);
-			std::dynamic_pointer_cast<BlackPearl::PointLight>(lightComponent)->SetPosition(pointLightPositions[i]);
-			std::dynamic_pointer_cast<BlackPearl::PointLight>(lightComponent)->SetAttenuation(BlackPearl::PointLight::Attenuation(3250));
-
-			m_LightSources.AddLight(std::move(lightComponent));
-		}
+		//};
+		//m_LightObjs.resize(pointLightProps.size());
+		//for (int i = 0; i < pointLightProps.size(); i++)
+		//{
+		//	BlackPearl::Entity* lightEntity = entityManager->CreateEntity();
+		//	m_LightObjs[i] = new BlackPearl::Object(lightEntity->GetEntityManager(), lightEntity->GetId());
 
 
-		/*m_Shader.reset(new BlackPearl::Shader("assets/shaders/IronMan.glsl"));
-		m_Shader->Bind();
-		m_Model.reset(new BlackPearl::Model("assets/models/IronMan/IronMan.obj"));*/
-		std::shared_ptr<BlackPearl::Shader>IronManShader(new BlackPearl::Shader("assets/shaders/IronMan.glsl"));
+		//	std::shared_ptr<BlackPearl::Light> lightComponent = m_LightObjs[i]->AddComponent<BlackPearl::PointLight>();
+
+		//	//lightComponent.reset();
+
+		//	lightComponent->SetProps(pointLightProps[i]);
+		//	std::dynamic_pointer_cast<BlackPearl::PointLight>(lightComponent)->SetPosition(pointLightPositions[i]);
+		//	std::dynamic_pointer_cast<BlackPearl::PointLight>(lightComponent)->SetAttenuation(BlackPearl::PointLight::Attenuation(3250));
+
+		//	m_LightSources.AddLight(std::move(lightComponent));
+		//}
+
+
+
+		/*std::shared_ptr<BlackPearl::Shader>IronManShader(new BlackPearl::Shader("assets/shaders/IronMan.glsl"));
 		IronManShader->Bind();
 		std::shared_ptr<BlackPearl::Model> IronManModel(new BlackPearl::Model("assets/models/IronMan/IronMan.obj", IronManShader));
 		BlackPearl::Entity *ironManEntity = entityManager->CreateEntity();
@@ -72,7 +71,7 @@ public:
 		TransformComponent->SetScale({ 0.01f, 0.01f, 0.01f });
 
 		std::shared_ptr<BlackPearl::MeshRenderer> meshRendererComponent(m_IronManObj->AddComponent<BlackPearl::MeshRenderer>(IronManModel, TransformComponent->GetTransformMatrix()));
-
+*/
 
 
 		BlackPearl::Renderer::Init();
@@ -82,9 +81,10 @@ public:
 
 	virtual ~EntityTestLayer() {
 
-		for (auto lightObj : m_LightObjs)
+		/*for (auto lightObj : m_LightObjs)
 			delete lightObj;
-		delete m_CameraObj;
+		delete m_CameraObj;*/
+		DestroyObjects();
 
 	}
 	void OnUpdate(BlackPearl::Timestep ts) override {
@@ -94,19 +94,54 @@ public:
 
 		// render
 		BlackPearl::RenderCommand::SetClearColor(m_BackgroundColor);
-		//m_Shader->Bind();
-
-		BlackPearl::Renderer::BeginScene(*(m_CameraObj->GetComponent<BlackPearl::PerspectiveCamera>()), m_LightSources);
-		m_IronManObj->GetComponent<BlackPearl::MeshRenderer>()->DrawModel();
-
+		BlackPearl::Renderer::BeginScene(*(m_CameraObj->GetComponent<BlackPearl::PerspectiveCamera>()), *GetLightSources());
+		//m_IronManObj->GetComponent<BlackPearl::MeshRenderer>()->DrawModel();
+		DrawObjects();
 	}
 
 	void OnImguiRender() override {
 
-		
+
 		ImGui::Begin("Settings");
 		ImGui::ColorEdit3("Suqare Color", glm::value_ptr(m_BackgroundColor));
 		ImGui::End();
+
+
+		if (ImGui::CollapsingHeader("Create")) {
+
+			const char* const entityItems[] = { "Empty","PointLight","SpotLight","IronMan","Cube" };
+			static int entityIdx = -1;
+			if (ImGui::Combo("CreateEntity", &entityIdx, entityItems, 5))
+			{
+				switch (entityIdx)
+				{
+				case 0:
+					GE_CORE_INFO("Creating Empty...");
+					Layer::CreateEmpty();
+					break;
+				case 1:
+					GE_CORE_INFO("Creating PointLight...");
+					Layer::CreateLight(BlackPearl::LightType::PointLight);
+					break;
+				case 2:
+					GE_CORE_INFO("SpotLight");
+					Layer::CreateLight(BlackPearl::LightType::SpotLight);
+					break;
+				case 3:
+					GE_CORE_INFO("IronMan");
+					Layer::CreateModel();
+					break;
+				case 4:
+					GE_CORE_INFO("Cube");
+					Layer::CreateCube();
+					break;
+				}
+			}
+		}
+		if (ImGui::CollapsingHeader("Scene")) {
+
+
+		}
 
 
 	}
@@ -177,9 +212,7 @@ private:
 	std::vector<BlackPearl::Object*> m_LightObjs;
 	BlackPearl::Object *m_CameraObj;
 	BlackPearl::Object *m_IronManObj;
-	BlackPearl::LightSources m_LightSources;
-	//std::shared_ptr<BlackPearl::Light> m_LightComponent;
-	//std::shared_ptr<BlackPearl::Camera> m_CameraComponent;
+
 
 	glm::vec3 m_CameraPosition = { 0.0f,0.0f,0.0f };
 	struct CameraRotation {
@@ -203,8 +236,8 @@ public:
 	SandBox() {
 		//PushLayer(new ExampleLayer("ExampleLayer"));
 		BlackPearl::EntityManager * entityManager = DBG_NEW BlackPearl::EntityManager();
-		BlackPearl::Layer* layer = DBG_NEW EntityTestLayer("Entity Layer", nullptr, entityManager);
-		PushLayer(layer);
+		BlackPearl::Layer* layer = DBG_NEW EntityTestLayer("Entity Layer", entityManager);
+		GetScene()->PushLayer(layer);
 	}
 	virtual ~SandBox() = default;
 

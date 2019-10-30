@@ -15,7 +15,7 @@ namespace BlackPearl {
 	void Mesh::Draw( const glm::mat4 & model, const LightSources& lightSources)
 	{
 		std::shared_ptr<Shader> shader = m_Material->GetShader();
-		shader->Bind();
+		//shader->Bind();
 		std::vector<std::shared_ptr<Texture>> textures = m_Material->GetTextureMaps();
 		for (unsigned int i = 0; i < textures.size(); i++) {
 			glActiveTexture(GL_TEXTURE0 + i);

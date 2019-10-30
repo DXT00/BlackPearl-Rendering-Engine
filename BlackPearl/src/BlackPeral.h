@@ -25,8 +25,7 @@
 #include "BlackPearl/KeyCodes.h"
 //#include "BlackPearl/Application.h"
 
-#include "BlackPearl/System/BaseSystem.h"
-#include "BlackPearl/System/System.h"
+#include "BlackPearl/Scene/Scene.h"
 #include "BlackPearl/Entity/Entity.h"
 //#include "BlackPearl/Component/ComponentHandle.h"
 #include "BlackPearl/Object/Object.h"

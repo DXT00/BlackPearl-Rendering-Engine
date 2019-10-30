@@ -21,7 +21,6 @@
 #include "Renderer/LightComponent/PointLight.h"
 #include "Renderer/LightComponent/SpotLight.h"
 #include "ImGui/ImGuiLayer.h"
-#include "BlackPearl/System/System.h"
 #include "BlackPearl/Entity/Entity.h"
 namespace BlackPearl {
 
@@ -33,10 +32,7 @@ namespace BlackPearl {
 		m_Window.reset(DBG_NEW Window());
 		m_Window->SetCallBack(std::bind(&Application::OnEvent, this, std::placeholders::_1));
 
-		EntityManager *ImGuiEntityMgr = DBG_NEW EntityManager();
-		SystemManager *ImGuiSystemMgr = DBG_NEW SystemManager(*ImGuiEntityMgr);
-		m_ImGuiLayer = DBG_NEW ImGuiLayer("ImGuiLayer",ImGuiSystemMgr,ImGuiEntityMgr);
-		PushOverLayer(m_ImGuiLayer);
+		m_CurrentScene = DBG_NEW Scene();
 
 	}
 
@@ -55,15 +51,7 @@ namespace BlackPearl {
 			if (glfwGetKey(m_Window->GetNativeWindow(), GLFW_KEY_ESCAPE) == GLFW_PRESS)
 				glfwSetWindowShouldClose(m_Window->GetNativeWindow(), true);
 
-			for (Layer* layer : m_LayerStack) {
-
-				layer->OnUpdate(ts);
-
-			}
-			m_ImGuiLayer->Begin();
-			for (Layer* layer : m_LayerStack)
-				layer->OnImguiRender();
-			m_ImGuiLayer->End();
+			m_CurrentScene->OnUpdateLayers(ts);
 
 			m_Window->OnUpdate();
 
@@ -106,15 +94,5 @@ namespace BlackPearl {
 		return true;
 	}
 
-	void Application::PushLayer(Layer * layer)
-	{
-		m_LayerStack.PushLayer(layer);
-		layer->OnAttach();
-	}
 
-	void Application::PushOverLayer(Layer * overlay)
-	{
-		m_LayerStack.PushOverLay(overlay);
-		overlay->OnAttach();
-	}
 }
