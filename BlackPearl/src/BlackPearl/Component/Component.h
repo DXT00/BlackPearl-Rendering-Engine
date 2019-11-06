@@ -8,15 +8,20 @@ namespace BlackPearl {
 	class Component : public BaseComponent 
 	{
 	public:
-		Component(EntityManager* entityManager, Entity::Id id)
-		:m_EntityManager(entityManager),m_Id(id){}
+
+		
+
+		Component(EntityManager* entityManager, Entity::Id id,Type type)
+		:m_EntityManager(entityManager),m_Id(id), BaseComponent(type){}
 		virtual ~Component()=default;
 
+		
 		//friend class EntityManager;		
 		static BaseComponent::Family Famliy();
 	protected:
 		EntityManager* m_EntityManager = nullptr;
 		Entity::Id m_Id;
+	
 	};
 
 	template<typename C>

@@ -6,7 +6,6 @@
 #include"BlackPearl/Renderer/LightComponent/LightSources.h"
 #include"BlackPearl/Renderer/Material/MaterialColor.h"
 #include "BlackPearl/Renderer/Material/Material.h"
-//#include "BlackPearl/Renderer/VertexArray.h"
 namespace BlackPearl {
 
 	struct Vertex {
@@ -18,27 +17,16 @@ namespace BlackPearl {
 		glm::vec3 bitTangent;
 
 	};
-	class Mesh 
+	class Mesh
 	{
 	public:
 		Mesh() {};
-		//Mesh(
-		//	std::vector<float> vertices,
-		//	std::vector<unsigned int>indices,
-		//	const std::vector<std::shared_ptr<Texture>>& textures,
-		//	const VertexBufferLayout& layout
-		//)
-		//	:m_Vertices(vertices), m_Indices(indices),
-		//	m_Textures(textures),m_VertexBufferLayout(layout){
-		//	Init();
-		//};
 		Mesh(
 			float* vertices,
 			uint32_t verticesSize,
 			unsigned int* indices,
 			uint32_t indicesSize,
-			//const std::vector<std::shared_ptr<Texture>>& textures,
-			//const std::vector<std::shared_ptr<MaterialColor>>& colors,
+
 			std::shared_ptr<Material> material,
 			const VertexBufferLayout& layout
 		)
@@ -46,8 +34,30 @@ namespace BlackPearl {
 			m_Material(material), m_VertexBufferLayout(layout) {
 			Init();
 		};
+
+		Mesh(
+			std::vector<float>vertices,
+			std::vector<unsigned int>indices,
+			std::shared_ptr<Material> material,
+			const VertexBufferLayout& layout
+		)
+			:m_VerticesSize(vertices.size() * sizeof(float)), m_IndicesSize(indices.size() * sizeof(unsigned int)),
+			m_Material(material), m_VertexBufferLayout(layout) {
+
+			m_Vertices = DBG_NEW float[vertices.size()];
+			if (vertices.size() > 0)
+				memcpy(m_Vertices, &vertices[0], vertices.size() * sizeof(float));//注意memcpy最后一个参数是字节数!!!
+
+			m_Indices = DBG_NEW unsigned int[indices.size()];
+			if (indices.size() > 0)
+				memcpy(m_Indices, &indices[0], indices.size() * sizeof(unsigned int));
+			Init();
+		};
 		~Mesh();
+		//Draw Light
+		void Draw(const glm::mat4 & model);
 		void Draw(const glm::mat4 & model, const LightSources& lightSources);
+
 		std::shared_ptr<VertexArray> GetVertexArray() const { return m_VertexArray; }
 		uint32_t GetIndicesSize()const { return m_IndicesSize; }
 		uint32_t GetVerticesSize()const { return m_VerticesSize; }
@@ -55,18 +65,12 @@ namespace BlackPearl {
 	private:
 		void Init();
 		std::shared_ptr<VertexArray> m_VertexArray;
-		//std::shared_ptr<VertexBuffer>  m_VertexBuffer;
-		//std::shared_ptr<IndexBuffer> m_IndexBuffer;
 		VertexBufferLayout m_VertexBufferLayout;
 
-		//std::vector<float> m_Vertices;
-		//std::vector<unsigned int> m_Indices;
-		float*m_Vertices;
-		unsigned int*m_Indices;
-		uint32_t m_VerticesSize;
-		uint32_t m_IndicesSize;
-		//std::vector<std::shared_ptr<Texture> >m_Textures;
-		//std::vector<std::shared_ptr<MaterialColor>> m_MaterialColors;
+		float*m_Vertices = nullptr;
+		unsigned int*m_Indices = nullptr;
+		uint32_t m_VerticesSize = 0;
+		uint32_t m_IndicesSize = 0;
 		std::shared_ptr<Material> m_Material;
 
 	};

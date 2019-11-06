@@ -25,7 +25,7 @@ namespace BlackPearl {
 		};
 		//position{2.2f,1.0f,2.0f}
 		Light(EntityManager* entityManager, Entity::Id id)
-			:Component(entityManager,id) {};
+			:Component(entityManager,id,Component::Type::Light) {};
 		virtual ~Light() = default;
 
 		inline Props GetLightProps() const { return  m_LightProp; }

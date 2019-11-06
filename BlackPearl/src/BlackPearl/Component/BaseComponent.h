@@ -10,7 +10,15 @@ namespace BlackPearl {
 	class BaseComponent {
 	public:
 		typedef size_t Family;
+		enum Type {
+			Transform,
+			MeshRenderer,
+			Light,
+			Camera
 
+		};
+		BaseComponent(Type type)
+			:m_Type(type){}
 		// NOTE: Component memory is *always* managed by the EntityManager.
 		// Use Entity::destroy() instead.
 		//void operator delete(void *p) { fail(); }
@@ -18,7 +26,9 @@ namespace BlackPearl {
 		virtual ~BaseComponent(){}
 		static Family s_FamliyCounter;
 		virtual void ToString(){}
+		Type GetType() { return m_Type; }
 	protected:
+		Type m_Type;
 		static void fail() {
 #if defined(_HAS_EXCEPTIONS) || defined(__EXCEPTIONS)
 			throw std::bad_alloc();

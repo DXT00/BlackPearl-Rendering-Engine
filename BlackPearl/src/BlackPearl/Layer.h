@@ -6,6 +6,8 @@
 #include "Renderer/LightComponent/Light.h"
 #include "Renderer/LightComponent/LightSources.h"
 #include"Timestep/Timestep.h"
+#include "Renderer/TransformComponent/Transform.h"
+#include "Renderer/RendererComponent/MeshRenderer.h"
 
 namespace BlackPearl {
 
@@ -29,12 +31,17 @@ namespace BlackPearl {
 		EntityManager *GetEntityManager() { return m_EntityManager; }
 		LightSources *GetLightSources() { return m_LightSources; }
 
-		virtual Object* CreateEmpty();
+		virtual Object* CreateEmpty(std::string name = "");
 		virtual Object* CreateLight(LightType type);
 		virtual Object* CreateModel();
 		virtual Object* CreateCube();
 
+		void ShowMeshRenderer(std::shared_ptr<BlackPearl::MeshRenderer> comp);
+		void ShowTransform(std::shared_ptr<BlackPearl::Transform> comp);
 
+
+		std::vector<Object*> GetObjects();
+		std::vector<std::string> GetObjectsName();
 		void DrawObjects();
 		void DestroyObjects();
 

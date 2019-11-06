@@ -7,7 +7,7 @@ namespace BlackPearl {
 	{
 	public:
 		Transform(EntityManager* entityManager, Entity::Id id)
-			:Component(entityManager, id) {}
+			:Component(entityManager, id,Component::Type::Transform) {}
 		~Transform();
 		glm::vec3 GetPosition()const { return m_Position; }
 		glm::vec3 GetRotation()const { return m_Rotation; }

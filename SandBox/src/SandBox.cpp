@@ -81,9 +81,6 @@ public:
 
 	virtual ~EntityTestLayer() {
 
-		/*for (auto lightObj : m_LightObjs)
-			delete lightObj;
-		delete m_CameraObj;*/
 		DestroyObjects();
 
 	}
@@ -106,6 +103,7 @@ public:
 		ImGui::ColorEdit3("Suqare Color", glm::value_ptr(m_BackgroundColor));
 		ImGui::End();
 
+		static BlackPearl::Object* currentObj = nullptr;//TODO::×¢ÒâÄÚ´æÐ¹Â©
 
 		if (ImGui::CollapsingHeader("Create")) {
 
@@ -124,15 +122,15 @@ public:
 					Layer::CreateLight(BlackPearl::LightType::PointLight);
 					break;
 				case 2:
-					GE_CORE_INFO("SpotLight");
+					GE_CORE_INFO("Creating SpotLight ...");
 					Layer::CreateLight(BlackPearl::LightType::SpotLight);
 					break;
 				case 3:
-					GE_CORE_INFO("IronMan");
+					GE_CORE_INFO("Creating IronMan ...");
 					Layer::CreateModel();
 					break;
 				case 4:
-					GE_CORE_INFO("Cube");
+					GE_CORE_INFO("Creating Cube ...");
 					Layer::CreateCube();
 					break;
 				}
@@ -140,10 +138,57 @@ public:
 		}
 		if (ImGui::CollapsingHeader("Scene")) {
 
+			std::vector<BlackPearl::Object*> objsList = GetObjects();		//TODO::
+			ImGui::ListBoxHeader("CurrentEntities", (int)objsList.size(), 6);
 
+			for (int n = 0; n < objsList.size(); n++) {
+				//ImGui::Text("%s", objsList[n].c_str());
+				bool is_selected = (currentObj!=nullptr && currentObj->ToString() == objsList[n]->ToString());
+				if (ImGui::Selectable(objsList[n]->ToString().c_str(), is_selected)) {
+					currentObj = objsList[n];
+					GE_CORE_INFO(objsList[n]->ToString() + "is selected")
+				}
+
+				if (is_selected)
+					ImGui::SetItemDefaultFocus();
+			}
+			ImGui::ListBoxFooter();
 		}
 
+		////////////////////Inspector/////////////////////////
+		ImGui::Begin("Inspector");
+		if (currentObj != nullptr) {
 
+			std::unordered_map<BlackPearl::BaseComponent::Family, std::shared_ptr<BlackPearl::BaseComponent>> componentList = currentObj->GetComponentList();
+
+			for (auto pair : componentList) {
+				auto component = pair.second;
+				if (component != nullptr) {
+
+					switch (component->GetType()) {
+					case BlackPearl::BaseComponent::Type::MeshRenderer: {
+						std::shared_ptr<BlackPearl::MeshRenderer> comp = std::dynamic_pointer_cast<BlackPearl::MeshRenderer>(component);
+						ShowMeshRenderer(comp);
+						break;
+					}
+					case BlackPearl::BaseComponent::Type::Transform: {
+						std::shared_ptr<BlackPearl::Transform> comp = std::dynamic_pointer_cast<BlackPearl::Transform>(component);
+						ShowTransform(comp);
+						break;
+					}
+
+					default:
+						break;
+					}
+
+				}
+
+			}
+		}
+		
+
+
+		ImGui::End();
 	}
 	void OnAttach() override {
 

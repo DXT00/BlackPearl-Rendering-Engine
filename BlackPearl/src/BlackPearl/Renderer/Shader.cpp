@@ -9,6 +9,7 @@
 #include "LightComponent/Light.h"
 #include "Renderer.h"
 #include "LightComponent/LightSources.h"
+#include "TransformComponent/Transform.h"
 namespace BlackPearl {
 
 	static GLenum ShaderTypeFromString(const std::string&type) {
@@ -160,58 +161,67 @@ namespace BlackPearl {
 		m_RendererID = program;
 	}
 
-	void Shader::SetLightUniform(const LightSources& lightSources)
+	void Shader::SetLightUniform( LightSources lightSources)
 	{
 		unsigned int pointLightIndex = 0;
 		this->SetUniform1i("u_PointLightNums", lightSources.GetPointLightNum());
-		for (auto lightSource : lightSources.Get()) {
-
-			switch (lightSource->GetType())
+		for (auto lightObj : lightSources.Get()) {
+			/*std::shared_ptr<Light> lightSource;
+			lightSource.reset(lightObj->GetComponent<Light>());*/
+			/*switch (lightSource->GetType())
 			{
-			case LightType::ParallelLight:
+			case LightType::ParallelLight:*/
+			if (lightObj->HasComponent<ParallelLight>()) {
+				auto lightSource = lightObj->GetComponent<ParallelLight>();
 				this->SetUniform1ui("u_LightType", (unsigned int)LightType::ParallelLight);
 
 				this->SetUniformVec3f("u_ParallelLight.ambient", lightSource->GetLightProps().ambient);
 				this->SetUniformVec3f("u_ParallelLight.diffuse", lightSource->GetLightProps().diffuse);
 				this->SetUniformVec3f("u_ParallelLight.specular", lightSource->GetLightProps().specular);
-				this->SetUniformVec3f("u_ParallelLight.direction", std::dynamic_pointer_cast<ParallelLight>(lightSource)->GetDirection());
-				break;
-			case LightType::PointLight:
+				this->SetUniformVec3f("u_ParallelLight.direction", lightSource->GetDirection());
+			}
+			//case LightType::PointLight:
+			if (lightObj->HasComponent<PointLight>()) {
+				auto lightSource = lightObj->GetComponent<PointLight>();
 				this->SetUniform1ui("u_LightType", (unsigned int)LightType::PointLight);
 
 				this->SetUniformVec3f("u_PointLights[" + std::to_string(pointLightIndex) + "].ambient", lightSource->GetLightProps().ambient);
 				this->SetUniformVec3f("u_PointLights[" + std::to_string(pointLightIndex) + "].diffuse", lightSource->GetLightProps().diffuse);
 				this->SetUniformVec3f("u_PointLights[" + std::to_string(pointLightIndex) + "].specular", lightSource->GetLightProps().specular);
-				this->SetUniformVec3f("u_PointLights[" + std::to_string(pointLightIndex) + "].position", std::dynamic_pointer_cast<PointLight>(lightSource)->GetPosition());
+				this->SetUniformVec3f("u_PointLights[" + std::to_string(pointLightIndex) + "].position", lightObj->GetComponent<Transform>()->GetPosition());
 
-				this->SetUniform1f("u_PointLights[" + std::to_string(pointLightIndex) + "].constant", std::dynamic_pointer_cast<PointLight>(lightSource)->GetAttenuation().constant);
-				this->SetUniform1f("u_PointLights[" + std::to_string(pointLightIndex) + "].linear", std::dynamic_pointer_cast<PointLight>(lightSource)->GetAttenuation().linear);
-				this->SetUniform1f("u_PointLights[" + std::to_string(pointLightIndex) + "].quadratic", std::dynamic_pointer_cast<PointLight>(lightSource)->GetAttenuation().quadratic);
+				this->SetUniform1f("u_PointLights[" + std::to_string(pointLightIndex) + "].constant", lightSource->GetAttenuation().constant);
+				this->SetUniform1f("u_PointLights[" + std::to_string(pointLightIndex) + "].linear",lightSource->GetAttenuation().linear);
+				this->SetUniform1f("u_PointLights[" + std::to_string(pointLightIndex) + "].quadratic", lightSource->GetAttenuation().quadratic);
 				pointLightIndex++;
-				break;
-			case LightType::SpotLight:
-				std::dynamic_pointer_cast<SpotLight>(lightSource)->UpdatePositionAndDirection(Renderer::GetSceneData()->CameraPosition, Renderer::GetSceneData()->CameraFront);//SpotLight的时候记得更新Camera
+			}
+				//break;
+		//	case LightType::SpotLight:
+			if (lightObj->HasComponent<SpotLight>()) {
+				auto lightSource = lightObj->GetComponent<SpotLight>();
+
+				lightSource->UpdatePositionAndDirection(Renderer::GetSceneData()->CameraPosition, Renderer::GetSceneData()->CameraFront);//SpotLight的时候记得更新Camera
 
 				this->SetUniform1ui("u_LightType", (unsigned int)LightType::SpotLight);
 
 				this->SetUniformVec3f("u_SpotLight.ambient", lightSource->GetLightProps().ambient);
 				this->SetUniformVec3f("u_SpotLight.diffuse", lightSource->GetLightProps().diffuse);
 				this->SetUniformVec3f("u_SpotLight.specular", lightSource->GetLightProps().specular);
-				this->SetUniformVec3f("u_SpotLight.position", std::dynamic_pointer_cast<SpotLight>(lightSource)->GetPosition());
-				this->SetUniformVec3f("u_SpotLight.direction", std::dynamic_pointer_cast<SpotLight>(lightSource)->GetDirection());
+				this->SetUniformVec3f("u_SpotLight.position",lightSource->GetPosition()); //TODO:Position 应该从Transform拿
+				this->SetUniformVec3f("u_SpotLight.direction", lightSource->GetDirection());
 
-				this->SetUniform1f("u_SpotLight.cutOff", std::dynamic_pointer_cast<SpotLight>(lightSource)->GetCutOffAngle());
-				this->SetUniform1f("u_SpotLight.outerCutOff", std::dynamic_pointer_cast<SpotLight>(lightSource)->GetOuterCutOffAngle());
+				this->SetUniform1f("u_SpotLight.cutOff",lightSource->GetCutOffAngle());
+				this->SetUniform1f("u_SpotLight.outerCutOff", lightSource->GetOuterCutOffAngle());
 
-				this->SetUniform1f("u_SpotLight.constant", std::dynamic_pointer_cast<SpotLight>(lightSource)->GetAttenuation().constant);
-				this->SetUniform1f("u_SpotLight.linear", std::dynamic_pointer_cast<SpotLight>(lightSource)->GetAttenuation().linear);
-				this->SetUniform1f("u_SpotLight.quadratic", std::dynamic_pointer_cast<SpotLight>(lightSource)->GetAttenuation().quadratic);
-				break;
+				this->SetUniform1f("u_SpotLight.constant", lightSource->GetAttenuation().constant);
+				this->SetUniform1f("u_SpotLight.linear", lightSource->GetAttenuation().linear);
+				this->SetUniform1f("u_SpotLight.quadratic",lightSource->GetAttenuation().quadratic);
+			}//break;
 
-			default:
-				GE_CORE_ERROR("SetLightUniform failed! Unknown Light Type!")
-					break;
-			}
+			
+				//GE_CORE_ERROR("SetLightUniform failed! Unknown Light Type!")
+					
+			
 		}
 
 	}

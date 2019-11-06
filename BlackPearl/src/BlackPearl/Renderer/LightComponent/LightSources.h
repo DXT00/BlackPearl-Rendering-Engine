@@ -1,5 +1,6 @@
 #pragma once
 #include"Light.h"
+#include "BlackPearl/Object/Object.h"
 namespace BlackPearl {
 
 	class LightSources
@@ -11,13 +12,13 @@ namespace BlackPearl {
 			m_LightSources.clear();
 		
 		};
-		void AddLight(const std::shared_ptr<Light>&light);
-		inline int const GetPointLightNum()const { return m_PointLightNums; }
-		inline std::vector<std::shared_ptr<Light>> Get()const { return m_LightSources; }
+		void AddLight(Object* light);
+		inline unsigned int const GetPointLightNum()const { return m_PointLightNums; }
+		inline std::vector<Object*> Get()const { return m_LightSources; }
 	private:
 
-		std::vector<std::shared_ptr<Light>>m_LightSources;
-		int m_PointLightNums;
+		std::vector<Object*>m_LightSources;//TODO::×¢ÒâÄÚ´æÐ¹Â©
+		unsigned int m_PointLightNums;
 	};
 
 }

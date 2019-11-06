@@ -21,7 +21,7 @@ namespace BlackPearl {
 		std::unordered_map<GLenum, std::string> Shader::PreProcess(const std::string& source);
 		void Compile(const std::unordered_map<GLenum, std::string>& shaderSources);
 
-		void SetLightUniform(const LightSources& lightSources);
+		void SetLightUniform( LightSources lightSources);
 
 		void SetUniform1i(const std::string &name, int val) const;
 		void SetUniform1ui(const std::string & name, const unsigned int val) const;

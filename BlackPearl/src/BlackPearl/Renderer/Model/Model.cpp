@@ -16,19 +16,6 @@ namespace BlackPearl {
 		vec.push_back(v.z);
 	}
 
-	//void Model::Draw( const glm::mat4 & model, const LightSources& lightSources)
-	//{
-	//	for (unsigned int i = 0; i < m_Meshes.size(); i++)
-	//	{
-	//		m_Meshes[i].Draw(model, lightSources);
-
-	//	}
-
-	//}
-
-
-
-
 	void Model::LoadModel(const std::string& path)
 	{
 		Assimp::Importer importer;
@@ -169,7 +156,7 @@ namespace BlackPearl {
 		//if (indices.size() > 0)
 		memcpy(indices_, &indices[0], indices.size() * sizeof(unsigned int));
 
-		std::shared_ptr<Material> material(new Material(m_Shader,textures, colors));
+		std::shared_ptr<Material> material(new Material(m_Shader, textures, colors));
 
 		return Mesh(
 			vertices_, vertices.size() * sizeof(float),

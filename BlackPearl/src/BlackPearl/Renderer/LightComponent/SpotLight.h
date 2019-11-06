@@ -92,6 +92,7 @@ namespace BlackPearl {
 		glm::vec3 m_Direction;
 		Attenuation m_Attenuation;
 
+
 	};
 
 }

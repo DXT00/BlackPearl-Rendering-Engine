@@ -16,8 +16,10 @@
 #include "BlackPearl/Renderer/LightComponent/PointLight.h"
 #include "BlackPearl/Renderer/LightComponent/ParallelLight.h"
 #include "BlackPearl/Renderer/LightComponent/SpotLight.h"
+#include "BlackPearl/Component/BaseComponent.h"
 #include "BlackPearl/Renderer/Renderer.h"
 #include "BlackPearl/Renderer/RenderCommand.h"
+#include "BlackPearl/Object/Object.h"
 //#include "BlackPearl/Renderer/Buffer.h"
 
 #include "BlackPearl/Input.h"

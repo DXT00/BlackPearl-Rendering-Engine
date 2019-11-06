@@ -1,7 +1,8 @@
 #pragma once
 #include "Light.h"
-#include<glm/glm.hpp>
-#include"BlackPearl/Renderer/Shader.h"
+#include <glm/glm.hpp>
+#include "BlackPearl/Renderer/Shader.h"
+#include "BlackPearl/Renderer/Mesh/Mesh.h"
 namespace BlackPearl {
 
 	class PointLight :public Light
@@ -63,27 +64,30 @@ namespace BlackPearl {
 			//²é±í£ºhttps://learnopengl-cn.github.io/02%20Lighting/05%20Light%20casters/
 		};
 		PointLight(EntityManager * entityManager, Entity::Id id, Props props = Props())
-			:Light(entityManager,id),m_Position({ 2.2f,1.0f,2.0f }) {
+			:Light(entityManager,id) {
 			SetProps(props);
 			Init();
 		}
 		virtual ~PointLight() = default;
 		virtual void Init() override;
 
-		void SetPosition(const glm::vec3& position) { m_Position = position; }
+		//void SetPosition(const glm::vec3& position) { m_Position = position; }
 		inline void SetAttenuation(const Attenuation& attenuation) { m_Attenuation = attenuation; }
 
-		inline glm::vec3 GetPosition() { return m_Position; }
+		//inline glm::vec3 GetPosition() { return m_Position; }
 		inline Attenuation GetAttenuation() const { return m_Attenuation; }
 		virtual inline LightType GetType() override { return LightType::PointLight; }
 
-		std::shared_ptr<VertexArray> GetVertexArray() { return m_VertexArray; };
-		std::shared_ptr<Shader> GetShader() { return m_Shader; };
-	private:
-		glm::vec3 m_Position;
-		std::shared_ptr<VertexArray> m_VertexArray;
-		std::shared_ptr<Shader> m_Shader;
+		//std::shared_ptr<VertexArray> GetVertexArray() { return m_VertexArray; };
+		//std::shared_ptr<Shader> GetShader() { return m_Shader; };
+		inline std::vector<Mesh> GetMeshes()const { return m_Meshes; }
 
+	private:
+	//	glm::vec3 m_Position;
+	/*	std::shared_ptr<VertexArray> m_VertexArray;
+		std::shared_ptr<Shader> m_Shader;*/
+
+		std::vector<Mesh> m_Meshes;
 		Attenuation m_Attenuation;
 	};
 

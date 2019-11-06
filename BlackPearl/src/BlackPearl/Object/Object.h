@@ -2,23 +2,28 @@
 #include "BlackPearl/Entity/Entity.h"
 #include "BlackPearl/Component/BaseComponent.h"
 #include "BlackPearl/Component/Component.h"
+#include <string>
 namespace BlackPearl {
 
 	class Object :public Entity
 	{
 	public:
-		Object(EntityManager* manager, Entity::Id id)
-			:Entity(manager, id) {};
+		Object(EntityManager* manager, Entity::Id id, std::string name = "")
+			:Entity(manager, id) {
+			m_Name = (name == "") ? "EmptyObject(" + std::to_string(id.index()) + ")" : name+ "(" + std::to_string(id.index()) + ")";
+		};
 
 		virtual ~Object() {
 			Destroy();
 		};
 
-		bool Vaild() {
+		inline std::string ToString() { return m_Name; }
+		inline void SetName(std::string name) { m_Name = name; }
+		inline bool Vaild() {
 			return m_EntityManager && m_EntityManager->Valid(m_Id);
 		}
 		ComponentMask GetComponentMask()const;
-
+		std::unordered_map<BaseComponent::Family, std::shared_ptr<BaseComponent>> GetComponentList() { return m_Components; }
 
 		template<typename C, typename ...Args>
 		std::shared_ptr<C> AddComponent(Args ...args)
@@ -36,7 +41,8 @@ namespace BlackPearl {
 			//所有的component都用Create实例化-->方便子类继承！
 			//C* component = C::Create(m_EntityManager, m_Id, std::forward<Args>(args)...);
 			//C* component = DBG_NEW C(m_EntityManager, m_Id, std::forward<Args>(args)...);
-			std::shared_ptr<C> componentSharePtr(DBG_NEW C(m_EntityManager, m_Id, std::forward<Args>(args)...));
+			std::shared_ptr<C> componentSharePtr;
+			componentSharePtr.reset(DBG_NEW C(m_EntityManager, m_Id, std::forward<Args>(args)...));
 			m_Components.insert(std::make_pair(C::Famliy(), componentSharePtr));
 			return componentSharePtr;
 
@@ -88,7 +94,7 @@ namespace BlackPearl {
 	private:
 		std::unordered_map<BaseComponent::Family, std::shared_ptr<BaseComponent>> m_Components;
 		ComponentMask m_ComponentMask;
-
+		std::string m_Name;
 	};
 
 
