@@ -143,8 +143,12 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\BlackPearl\Component\MeshFilterComponent\CubeMeshFilter.h" />
+    <ClInclude Include="src\BlackPearl\ObjectManager\ObjectManager.h" />
+    <ClInclude Include="src\BlackPearl\ObjectCreater\ObjectCreater.h" />
+    <ClInclude Include="src\BlackPearl\Component\MeshFilterComponent\MeshFilter.h" />
     <ClInclude Include="src\BlackPearl\Renderer\Material\Material.h" />
-    <ClInclude Include="src\BlackPearl\Renderer\RendererComponent\MeshRenderer.h" />
+    <ClInclude Include="src\BlackPearl\Component\MeshRendererComponent\MeshRenderer.h" />
     <ClInclude Include="src\BlackPearl\Object\Object.h" />
     <ClInclude Include="src\BlackPearl\Component\BaseComponent.h" />
     <ClInclude Include="src\BlackPearl\Entity\Config.h" />
@@ -163,15 +167,15 @@
     <ClInclude Include="src\BlackPearl\LayerStack.h" />
     <ClInclude Include="src\BlackPearl\Log.h" />
     <ClInclude Include="src\BlackPearl\Renderer\Buffer.h" />
-    <ClInclude Include="src\BlackPearl\Renderer\CameraComponent\Camera.h" />
-    <ClInclude Include="src\BlackPearl\Renderer\CameraComponent\OrthographicCamera.h" />
-    <ClInclude Include="src\BlackPearl\Renderer\CameraComponent\PerspectiveCamera.h" />
+    <ClInclude Include="src\BlackPearl\Component\CameraComponent\Camera.h" />
+    <ClInclude Include="src\BlackPearl\Component\CameraComponent\OrthographicCamera.h" />
+    <ClInclude Include="src\BlackPearl\Component\CameraComponent\PerspectiveCamera.h" />
     <ClInclude Include="src\BlackPearl\Renderer\Context.h" />
-    <ClInclude Include="src\BlackPearl\Renderer\LightComponent\Light.h" />
-    <ClInclude Include="src\BlackPearl\Renderer\LightComponent\LightSources.h" />
-    <ClInclude Include="src\BlackPearl\Renderer\LightComponent\ParallelLight.h" />
-    <ClInclude Include="src\BlackPearl\Renderer\LightComponent\PointLight.h" />
-    <ClInclude Include="src\BlackPearl\Renderer\LightComponent\SpotLight.h" />
+    <ClInclude Include="src\BlackPearl\Component\LightComponent\Light.h" />
+    <ClInclude Include="src\BlackPearl\Component\LightComponent\LightSources.h" />
+    <ClInclude Include="src\BlackPearl\Component\LightComponent\ParallelLight.h" />
+    <ClInclude Include="src\BlackPearl\Component\LightComponent\PointLight.h" />
+    <ClInclude Include="src\BlackPearl\Component\LightComponent\SpotLight.h" />
     <ClInclude Include="src\BlackPearl\Renderer\Mesh\Mesh.h" />
     <ClInclude Include="src\BlackPearl\Renderer\Model\Model.h" />
     <ClInclude Include="src\BlackPearl\Renderer\RenderCommand.h" />
@@ -185,7 +189,7 @@
     <ClInclude Include="src\BlackPeral.h" />
     <ClInclude Include="src\pch.h" />
     <ClInclude Include="src\BlackPearl\Scene\Scene.h" />
-    <ClInclude Include="src\BlackPearl\Renderer\TransformComponent\Transform.h" />
+    <ClInclude Include="src\BlackPearl\Component\TransformComponent\Transform.h" />
     <ClInclude Include="vendor\glm\glm\common.hpp" />
     <ClInclude Include="vendor\glm\glm\detail\_features.hpp" />
     <ClInclude Include="vendor\glm\glm\detail\_fixes.hpp" />
@@ -557,8 +561,12 @@
     <ClInclude Include="vendor\stb\stb_image.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\BlackPearl\Component\MeshFilterComponent\CubeMeshFilter.cpp" />
+    <ClCompile Include="src\BlackPearl\ObjectManager\ObjectManager.cpp" />
+    <ClCompile Include="src\BlackPearl\ObjectCreater\ObjectCreater.cpp" />
+    <ClCompile Include="src\BlackPearl\Component\MeshFilterComponent\MeshFilter.cpp" />
     <ClCompile Include="src\BlackPearl\Renderer\Material\Material.cpp" />
-    <ClCompile Include="src\BlackPearl\Renderer\RendererComponent\MeshRenderer.cpp" />
+    <ClCompile Include="src\BlackPearl\Component\MeshRendererComponent\MeshRenderer.cpp" />
     <ClCompile Include="src\BlackPearl\Object\Object.cpp" />
     <ClCompile Include="src\BlackPearl\Component\BaseComponent.cpp" />
     <ClCompile Include="src\BlackPearl\Component\Component.cpp" />
@@ -571,15 +579,15 @@
     <ClCompile Include="src\BlackPearl\LayerStack.cpp" />
     <ClCompile Include="src\BlackPearl\Log.cpp" />
     <ClCompile Include="src\BlackPearl\Renderer\Buffer.cpp" />
-    <ClCompile Include="src\BlackPearl\Renderer\CameraComponent\Camera.cpp" />
-    <ClCompile Include="src\BlackPearl\Renderer\CameraComponent\OrthographicCamera.cpp" />
-    <ClCompile Include="src\BlackPearl\Renderer\CameraComponent\PerspectiveCamera.cpp" />
+    <ClCompile Include="src\BlackPearl\Component\CameraComponent\Camera.cpp" />
+    <ClCompile Include="src\BlackPearl\Component\CameraComponent\OrthographicCamera.cpp" />
+    <ClCompile Include="src\BlackPearl\Component\CameraComponent\PerspectiveCamera.cpp" />
     <ClCompile Include="src\BlackPearl\Renderer\Context.cpp" />
-    <ClCompile Include="src\BlackPearl\Renderer\LightComponent\Light.cpp" />
-    <ClCompile Include="src\BlackPearl\Renderer\LightComponent\LightSources.cpp" />
-    <ClCompile Include="src\BlackPearl\Renderer\LightComponent\ParallelLight.cpp" />
-    <ClCompile Include="src\BlackPearl\Renderer\LightComponent\PointLight.cpp" />
-    <ClCompile Include="src\BlackPearl\Renderer\LightComponent\SpotLight.cpp" />
+    <ClCompile Include="src\BlackPearl\Component\LightComponent\Light.cpp" />
+    <ClCompile Include="src\BlackPearl\Component\LightComponent\LightSources.cpp" />
+    <ClCompile Include="src\BlackPearl\Component\LightComponent\ParallelLight.cpp" />
+    <ClCompile Include="src\BlackPearl\Component\LightComponent\PointLight.cpp" />
+    <ClCompile Include="src\BlackPearl\Component\LightComponent\SpotLight.cpp" />
     <ClCompile Include="src\BlackPearl\Renderer\Mesh\Mesh.cpp" />
     <ClCompile Include="src\BlackPearl\Renderer\Model\Model.cpp" />
     <ClCompile Include="src\BlackPearl\Renderer\RenderCommand.cpp" />
@@ -594,7 +602,7 @@
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="src\BlackPearl\Scene\Scene.cpp" />
-    <ClCompile Include="src\BlackPearl\Renderer\TransformComponent\Transform.cpp" />
+    <ClCompile Include="src\BlackPearl\Component\TransformComponent\Transform.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="vendor\GLFW\GLFW.vcxproj">
@@ -606,6 +614,25 @@
     <ProjectReference Include="vendor\imgui\ImGui.vcxproj">
       <Project>{C0FF640D-2C14-8DBE-F595-301E616989EF}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ClassDiagram.cd" />
+    <None Include="ClassDiagram1.cd" />
+    <None Include="ClassDiagram10.cd" />
+    <None Include="ClassDiagram11.cd" />
+    <None Include="ClassDiagram12.cd" />
+    <None Include="ClassDiagram13.cd" />
+    <None Include="ClassDiagram14.cd" />
+    <None Include="ClassDiagram15.cd" />
+    <None Include="ClassDiagram16.cd" />
+    <None Include="ClassDiagram2.cd" />
+    <None Include="ClassDiagram3.cd" />
+    <None Include="ClassDiagram4.cd" />
+    <None Include="ClassDiagram5.cd" />
+    <None Include="ClassDiagram6.cd" />
+    <None Include="ClassDiagram7.cd" />
+    <None Include="ClassDiagram8.cd" />
+    <None Include="ClassDiagram9.cd" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

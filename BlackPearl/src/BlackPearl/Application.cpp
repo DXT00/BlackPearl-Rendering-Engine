@@ -10,16 +10,16 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "Renderer/Material/Texture.h"
-#include "Renderer/CameraComponent/PerspectiveCamera.h"
+#include "Component/CameraComponent/PerspectiveCamera.h"
 #include "Renderer/Renderer.h"
 #include "Renderer/Buffer.h"
 #include "Core.h"
 #include "Input.h"
 #include "Event/Event.h"
 #include "Event/MouseEvent.h"
-#include "Renderer/LightComponent/ParallelLight.h"
-#include "Renderer/LightComponent/PointLight.h"
-#include "Renderer/LightComponent/SpotLight.h"
+#include "Component/LightComponent/ParallelLight.h"
+#include "Component/LightComponent/PointLight.h"
+#include "Component/LightComponent/SpotLight.h"
 #include "ImGui/ImGuiLayer.h"
 #include "BlackPearl/Entity/Entity.h"
 namespace BlackPearl {

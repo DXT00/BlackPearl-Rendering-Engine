@@ -45,32 +45,41 @@ namespace BlackPearl {
 			textures[i]->Bind();
 
 		}
-		std::vector<std::shared_ptr<MaterialColor>> materialColor = m_Material->GetMaterialColor();
-		for (unsigned int i = 0; i < materialColor.size(); i++) {
+		MaterialColor::Color materialColor = m_Material->GetMaterialColor().Get();
+		
+		/*for (unsigned int i = 0; i < materialColor.size(); i++) {
 
-			switch (materialColor[i]->GetType()) {
+			switch (materialColor[i].GetType()) {
 			case MaterialColor::Type::DiffuseColor:
-				shader->SetUniformVec3f("u_Material.diffuseColor", materialColor[i]->Get());
+				shader->SetUniformVec3f("u_Material.diffuseColor", materialColor[i].Get());
 				break;
 			case MaterialColor::Type::SpecularColor:
-				shader->SetUniformVec3f("u_Material.specularColor", materialColor[i]->Get());
+				shader->SetUniformVec3f("u_Material.specularColor", materialColor[i].Get());
 				break;
 
 			case MaterialColor::Type::AmbientColor:
-				shader->SetUniformVec3f("u_Material.ambientColor", materialColor[i]->Get());
+				shader->SetUniformVec3f("u_Material.ambientColor", materialColor[i].Get());
+				break;
+			case MaterialColor::Type::EmissionColor:
+				shader->SetUniformVec3f("u_Material.emissionColor", materialColor[i].Get());
 				break;
 			default:
 				GE_CORE_ERROR(" Mesh::Draw failed! Unknown MaterialColor type!!")
 					break;
 
-			}
+			}*/
+//}
+		shader->SetUniformVec3f("u_Material.diffuseColor", materialColor.diffuseColor);
+		shader->SetUniformVec3f("u_Material.specularColor", materialColor.specularColor);
+		shader->SetUniformVec3f("u_Material.ambientColor", materialColor.ambientColor);
+		shader->SetUniformVec3f("u_Material.emissionColor", materialColor.emissionColor);
 
-
-		}
 		shader->SetUniformMat4f("u_TranInverseModel", glm::transpose(glm::inverse(model)));
 		shader->SetUniform1f("u_Material.shininess", 64.0f);
 		shader->SetLightUniform(lightSources);
 		Renderer::Submit(m_VertexArray, shader, model);
+		//TODO :: Çø·ÖModelºÍcube
+	//glDrawArrays(GL_TRIANGLES, 0, m_VerticesSize / m_VertexBufferLayout.GetStride());
 
 		glDrawElements(GL_TRIANGLES, m_IndicesSize / sizeof(unsigned int), GL_UNSIGNED_INT, 0);
 		for (GLuint i = 0; i < textures.size(); i++)
@@ -113,19 +122,22 @@ namespace BlackPearl {
 			textures[i]->Bind();
 
 		}
-		std::vector<std::shared_ptr<MaterialColor>> materialColor = m_Material->GetMaterialColor();
+		/*std::vector<MaterialColor> materialColor = m_Material->GetMaterialColor();
 		for (unsigned int i = 0; i < materialColor.size(); i++) {
 
-			switch (materialColor[i]->GetType()) {
+			switch (materialColor[i].GetType()) {
 			case MaterialColor::Type::DiffuseColor:
-				shader->SetUniformVec3f("u_Material.diffuseColor", materialColor[i]->Get());
+				shader->SetUniformVec3f("u_Material.diffuseColor", materialColor[i].Get());
 				break;
 			case MaterialColor::Type::SpecularColor:
-				shader->SetUniformVec3f("u_Material.specularColor", materialColor[i]->Get());
+				shader->SetUniformVec3f("u_Material.specularColor", materialColor[i].Get());
 				break;
 
 			case MaterialColor::Type::AmbientColor:
-				shader->SetUniformVec3f("u_Material.ambientColor", materialColor[i]->Get());
+				shader->SetUniformVec3f("u_Material.ambientColor", materialColor[i].Get());
+				break;
+			case MaterialColor::Type::EmissionColor:
+				shader->SetUniformVec3f("u_Material.emissionColor", materialColor[i].Get());
 				break;
 			default:
 				GE_CORE_ERROR(" Mesh::Draw failed! Unknown MaterialColor type!!")
@@ -134,14 +146,22 @@ namespace BlackPearl {
 			}
 
 
-		}
+		}*/
+		MaterialColor::Color materialColor = m_Material->GetMaterialColor().Get();
+
+	
+		shader->SetUniformVec3f("u_Material.diffuseColor", materialColor.diffuseColor);
+		shader->SetUniformVec3f("u_Material.specularColor", materialColor.specularColor);
+		shader->SetUniformVec3f("u_Material.ambientColor", materialColor.ambientColor);
+		shader->SetUniformVec3f("u_Material.emissionColor", materialColor.emissionColor);
+
 		//shader->SetUniformMat4f("u_TranInverseModel", glm::transpose(glm::inverse(model)));
 		//shader->SetUniform1f("u_Material.shininess", 64.0f);
 		//shader->SetLightUniform(lightSources);
 
 
 		Renderer::Submit(m_VertexArray, shader, model);
-		glDrawArrays(GL_TRIANGLES, 0, 36);
+		glDrawArrays(GL_TRIANGLES, 0, m_VerticesSize/m_VertexBufferLayout.GetStride());
 		//glDrawElements(GL_TRIANGLES, m_IndicesSize / sizeof(unsigned int), GL_UNSIGNED_INT, 0);
 		for (GLuint i = 0; i < textures.size(); i++)
 		{

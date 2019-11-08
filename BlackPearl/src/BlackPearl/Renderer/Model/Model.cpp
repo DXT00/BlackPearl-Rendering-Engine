@@ -69,7 +69,7 @@ namespace BlackPearl {
 		std::vector<unsigned int> indices;
 		// maps
 		std::vector<std::shared_ptr<Texture >> textures;
-		std::vector<std::shared_ptr<MaterialColor >> colors;
+		MaterialColor  colors;
 
 		VertexBufferLayout layout = {
 			{ElementDataType::Float3,"aPos",false},
@@ -184,21 +184,30 @@ namespace BlackPearl {
 
 	}
 
-	void Model::LoadMaterialColors(aiMaterial * material, std::vector< std::shared_ptr<MaterialColor>>& colors)
+	void Model::LoadMaterialColors(aiMaterial * material, MaterialColor& colors)
 	{
 
 		aiColor3D color(0.f, 0.f, 0.f);
 		if (AI_SUCCESS == material->Get(AI_MATKEY_COLOR_DIFFUSE, color))
-			colors.push_back(std::make_shared<MaterialColor>(MaterialColor::Type::DiffuseColor, glm::vec3(color.r, color.g, color.b)));
+			colors.SetDiffuseColor(glm::vec3(color.r, color.g, color.b));
+			//colors.push_back(MaterialColor(MaterialColor::Type::DiffuseColor,));
 
 		color = { 0.f, 0.f, 0.f };
 		if (AI_SUCCESS == material->Get(AI_MATKEY_COLOR_AMBIENT, color))
-			colors.push_back(std::make_shared<MaterialColor>(MaterialColor::Type::AmbientColor, glm::vec3(color.r, color.g, color.b)));
+			colors.SetAmbientColor(glm::vec3(color.r, color.g, color.b));
+
+			//colors.push_back(MaterialColor(MaterialColor::Type::AmbientColor, glm::vec3(color.r, color.g, color.b)));
 
 		color = { 0.f, 0.f, 0.f };
 
 		if (AI_SUCCESS == material->Get(AI_MATKEY_COLOR_SPECULAR, color))
-			colors.push_back(std::make_shared<MaterialColor>(MaterialColor::Type::SpecularColor, glm::vec3(color.r, color.g, color.b)));
+			colors.SetSpecularColor(glm::vec3(color.r, color.g, color.b));
+
+		color = { 0.f, 0.f, 0.f };
+
+		if (AI_SUCCESS == material->Get(AI_MATKEY_COLOR_EMISSIVE, color))
+			colors.SetEmissionColor(glm::vec3(color.r, color.g, color.b));
+			//colors.push_back(MaterialColor(MaterialColor::Type::SpecularColor, glm::vec3(color.r, color.g, color.b)));
 
 	}
 }

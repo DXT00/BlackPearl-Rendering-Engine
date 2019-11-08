@@ -12,14 +12,15 @@
 class EntityTestLayer :public BlackPearl::Layer {
 public:
 
-	EntityTestLayer(const std::string& name, BlackPearl::EntityManager *entityManager)
-		: Layer(name, entityManager)
+	EntityTestLayer(const std::string& name, BlackPearl::ObjectManager *objectManager)
+		: Layer(name, objectManager)
 	{
-		BlackPearl::Entity *entity = entityManager->CreateEntity();
+		/*BlackPearl::Entity *entity = entityManager->CreateEntity();
 		m_CameraObj = new BlackPearl::Object(entity->GetEntityManager(), entity->GetId());
 		std::shared_ptr<BlackPearl::Camera> cameraComponent(m_CameraObj->AddComponent<BlackPearl::PerspectiveCamera>());
-
-
+*/
+		m_CameraObj = CreateCamera();
+		auto cameraComponent = m_CameraObj->GetComponent<BlackPearl::PerspectiveCamera>();
 		cameraComponent->SetPosition(glm::vec3(0.0f, 0.0f, 8.0f));
 		m_CameraPosition = cameraComponent->GetPosition();
 		m_CameraRotation.Yaw = cameraComponent->Yaw();
@@ -127,7 +128,7 @@ public:
 					break;
 				case 3:
 					GE_CORE_INFO("Creating IronMan ...");
-					Layer::CreateModel();
+					Layer::CreateModel("assets/models/IronMan/IronMan.obj", "assets/shaders/IronMan.glsl");
 					break;
 				case 4:
 					GE_CORE_INFO("Creating Cube ...");
@@ -176,7 +177,12 @@ public:
 						ShowTransform(comp);
 						break;
 					}
+					case BlackPearl::BaseComponent::Type::Light: {
 
+						std::shared_ptr<BlackPearl::Light> comp = std::dynamic_pointer_cast<BlackPearl::Light>(component);
+						ShowLight(comp);
+						break;
+					}
 					default:
 						break;
 					}
@@ -210,10 +216,10 @@ public:
 			m_CameraPosition += cameraComponent->Right() * m_CameraMoveSpeed * ts;
 		}
 		if (BlackPearl::Input::IsKeyPressed(BP_KEY_E)) {
-			m_CameraPosition -= cameraComponent->Up() * m_CameraMoveSpeed * ts;
+			m_CameraPosition += cameraComponent->Up() * m_CameraMoveSpeed * ts;
 		}
 		else if (BlackPearl::Input::IsKeyPressed(BP_KEY_Q)) {
-			m_CameraPosition += cameraComponent->Up() * m_CameraMoveSpeed * ts;
+			m_CameraPosition -= cameraComponent->Up() * m_CameraMoveSpeed * ts;
 		}
 		// ---------------------Rotation--------------------------------------
 
@@ -281,7 +287,9 @@ public:
 	SandBox() {
 		//PushLayer(new ExampleLayer("ExampleLayer"));
 		BlackPearl::EntityManager * entityManager = DBG_NEW BlackPearl::EntityManager();
-		BlackPearl::Layer* layer = DBG_NEW EntityTestLayer("Entity Layer", entityManager);
+		BlackPearl::ObjectManager *objectManager = DBG_NEW BlackPearl::ObjectManager(entityManager);
+
+		BlackPearl::Layer* layer = DBG_NEW EntityTestLayer("Entity Layer", objectManager);
 		GetScene()->PushLayer(layer);
 	}
 	virtual ~SandBox() = default;

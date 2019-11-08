@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "Object.h"
-#include "BlackPearl/Renderer/CameraComponent/PerspectiveCamera.h"
+#include "BlackPearl/Component/CameraComponent/PerspectiveCamera.h"
 #include <utility>
 namespace BlackPearl {
 

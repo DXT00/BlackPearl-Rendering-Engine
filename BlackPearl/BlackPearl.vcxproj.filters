@@ -1237,35 +1237,10 @@
     <ClInclude Include="src\BlackPearl\Entity\Entity.h" />
     <ClInclude Include="src\BlackPearl\Component\BaseComponent.h" />
     <ClInclude Include="src\BlackPearl\Entity\Config.h" />
-    <ClInclude Include="src\BlackPearl\Renderer\LightComponent\Light.h">
-      <Filter>src\BlackPearl\Renderer\Lighting</Filter>
-    </ClInclude>
-    <ClInclude Include="src\BlackPearl\Renderer\LightComponent\LightSources.h">
-      <Filter>src\BlackPearl\Renderer\Lighting</Filter>
-    </ClInclude>
-    <ClInclude Include="src\BlackPearl\Renderer\LightComponent\ParallelLight.h">
-      <Filter>src\BlackPearl\Renderer\Lighting</Filter>
-    </ClInclude>
-    <ClInclude Include="src\BlackPearl\Renderer\LightComponent\PointLight.h">
-      <Filter>src\BlackPearl\Renderer\Lighting</Filter>
-    </ClInclude>
-    <ClInclude Include="src\BlackPearl\Renderer\LightComponent\SpotLight.h">
-      <Filter>src\BlackPearl\Renderer\Lighting</Filter>
-    </ClInclude>
-    <ClInclude Include="src\BlackPearl\Renderer\CameraComponent\Camera.h">
-      <Filter>src\BlackPearl\Renderer\Camera</Filter>
-    </ClInclude>
-    <ClInclude Include="src\BlackPearl\Renderer\CameraComponent\OrthographicCamera.h">
-      <Filter>src\BlackPearl\Renderer\Camera</Filter>
-    </ClInclude>
-    <ClInclude Include="src\BlackPearl\Renderer\CameraComponent\PerspectiveCamera.h">
-      <Filter>src\BlackPearl\Renderer\Camera</Filter>
-    </ClInclude>
     <ClInclude Include="src\BlackPearl\Renderer\Mesh\Mesh.h">
       <Filter>src\BlackPearl\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="src\BlackPearl\Object\Object.h" />
-    <ClInclude Include="src\BlackPearl\Renderer\RendererComponent\MeshRenderer.h" />
     <ClInclude Include="src\BlackPearl\Renderer\Material\MaterialColor.h">
       <Filter>src\BlackPearl\Renderer\Texture</Filter>
     </ClInclude>
@@ -1273,8 +1248,37 @@
       <Filter>src\BlackPearl\Renderer\Texture</Filter>
     </ClInclude>
     <ClInclude Include="src\BlackPearl\Renderer\Material\Material.h" />
-    <ClInclude Include="src\BlackPearl\Renderer\TransformComponent\Transform.h" />
     <ClInclude Include="src\BlackPearl\Scene\Scene.h" />
+    <ClInclude Include="src\BlackPearl\Component\CameraComponent\Camera.h">
+      <Filter>src\BlackPearl\Renderer\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BlackPearl\Component\CameraComponent\OrthographicCamera.h">
+      <Filter>src\BlackPearl\Renderer\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BlackPearl\Component\CameraComponent\PerspectiveCamera.h">
+      <Filter>src\BlackPearl\Renderer\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BlackPearl\Component\LightComponent\Light.h">
+      <Filter>src\BlackPearl\Renderer\Lighting</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BlackPearl\Component\LightComponent\LightSources.h">
+      <Filter>src\BlackPearl\Renderer\Lighting</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BlackPearl\Component\LightComponent\ParallelLight.h">
+      <Filter>src\BlackPearl\Renderer\Lighting</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BlackPearl\Component\LightComponent\PointLight.h">
+      <Filter>src\BlackPearl\Renderer\Lighting</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BlackPearl\Component\LightComponent\SpotLight.h">
+      <Filter>src\BlackPearl\Renderer\Lighting</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BlackPearl\Component\TransformComponent\Transform.h" />
+    <ClInclude Include="src\BlackPearl\ObjectCreater\ObjectCreater.h" />
+    <ClInclude Include="src\BlackPearl\ObjectManager\ObjectManager.h" />
+    <ClInclude Include="src\BlackPearl\Component\MeshRendererComponent\MeshRenderer.h" />
+    <ClInclude Include="src\BlackPearl\Component\MeshFilterComponent\MeshFilter.h" />
+    <ClInclude Include="src\BlackPearl\Component\MeshFilterComponent\CubeMeshFilter.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\BlackPearl\Application.cpp">
@@ -1331,35 +1335,10 @@
     <ClCompile Include="src\BlackPearl\Component\Component.cpp" />
     <ClCompile Include="src\BlackPearl\Entity\Entity.cpp" />
     <ClCompile Include="src\BlackPearl\Component\BaseComponent.cpp" />
-    <ClCompile Include="src\BlackPearl\Renderer\LightComponent\Light.cpp">
-      <Filter>src\BlackPearl\Renderer\Lighting</Filter>
-    </ClCompile>
-    <ClCompile Include="src\BlackPearl\Renderer\LightComponent\LightSources.cpp">
-      <Filter>src\BlackPearl\Renderer\Lighting</Filter>
-    </ClCompile>
-    <ClCompile Include="src\BlackPearl\Renderer\LightComponent\ParallelLight.cpp">
-      <Filter>src\BlackPearl\Renderer\Lighting</Filter>
-    </ClCompile>
-    <ClCompile Include="src\BlackPearl\Renderer\LightComponent\PointLight.cpp">
-      <Filter>src\BlackPearl\Renderer\Lighting</Filter>
-    </ClCompile>
-    <ClCompile Include="src\BlackPearl\Renderer\LightComponent\SpotLight.cpp">
-      <Filter>src\BlackPearl\Renderer\Lighting</Filter>
-    </ClCompile>
-    <ClCompile Include="src\BlackPearl\Renderer\CameraComponent\Camera.cpp">
-      <Filter>src\BlackPearl\Renderer\Camera</Filter>
-    </ClCompile>
-    <ClCompile Include="src\BlackPearl\Renderer\CameraComponent\OrthographicCamera.cpp">
-      <Filter>src\BlackPearl\Renderer\Camera</Filter>
-    </ClCompile>
-    <ClCompile Include="src\BlackPearl\Renderer\CameraComponent\PerspectiveCamera.cpp">
-      <Filter>src\BlackPearl\Renderer\Camera</Filter>
-    </ClCompile>
     <ClCompile Include="src\BlackPearl\Renderer\Mesh\Mesh.cpp">
       <Filter>src\BlackPearl\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="src\BlackPearl\Object\Object.cpp" />
-    <ClCompile Include="src\BlackPearl\Renderer\RendererComponent\MeshRenderer.cpp" />
     <ClCompile Include="src\BlackPearl\Renderer\Material\MaterialColor.cpp">
       <Filter>src\BlackPearl\Renderer\Texture</Filter>
     </ClCompile>
@@ -1367,7 +1346,55 @@
       <Filter>src\BlackPearl\Renderer\Texture</Filter>
     </ClCompile>
     <ClCompile Include="src\BlackPearl\Renderer\Material\Material.cpp" />
-    <ClCompile Include="src\BlackPearl\Renderer\TransformComponent\Transform.cpp" />
     <ClCompile Include="src\BlackPearl\Scene\Scene.cpp" />
+    <ClCompile Include="src\BlackPearl\Component\CameraComponent\Camera.cpp">
+      <Filter>src\BlackPearl\Renderer\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BlackPearl\Component\CameraComponent\OrthographicCamera.cpp">
+      <Filter>src\BlackPearl\Renderer\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BlackPearl\Component\CameraComponent\PerspectiveCamera.cpp">
+      <Filter>src\BlackPearl\Renderer\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BlackPearl\Component\LightComponent\Light.cpp">
+      <Filter>src\BlackPearl\Renderer\Lighting</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BlackPearl\Component\LightComponent\LightSources.cpp">
+      <Filter>src\BlackPearl\Renderer\Lighting</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BlackPearl\Component\LightComponent\ParallelLight.cpp">
+      <Filter>src\BlackPearl\Renderer\Lighting</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BlackPearl\Component\LightComponent\PointLight.cpp">
+      <Filter>src\BlackPearl\Renderer\Lighting</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BlackPearl\Component\LightComponent\SpotLight.cpp">
+      <Filter>src\BlackPearl\Renderer\Lighting</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BlackPearl\Component\TransformComponent\Transform.cpp" />
+    <ClCompile Include="src\BlackPearl\ObjectCreater\ObjectCreater.cpp" />
+    <ClCompile Include="src\BlackPearl\ObjectManager\ObjectManager.cpp" />
+    <ClCompile Include="src\BlackPearl\Component\MeshRendererComponent\MeshRenderer.cpp" />
+    <ClCompile Include="src\BlackPearl\Component\MeshFilterComponent\MeshFilter.cpp" />
+    <ClCompile Include="src\BlackPearl\Component\MeshFilterComponent\CubeMeshFilter.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ClassDiagram.cd" />
+    <None Include="ClassDiagram1.cd" />
+    <None Include="ClassDiagram2.cd" />
+    <None Include="ClassDiagram3.cd" />
+    <None Include="ClassDiagram4.cd" />
+    <None Include="ClassDiagram5.cd" />
+    <None Include="ClassDiagram6.cd" />
+    <None Include="ClassDiagram7.cd" />
+    <None Include="ClassDiagram8.cd" />
+    <None Include="ClassDiagram9.cd" />
+    <None Include="ClassDiagram10.cd" />
+    <None Include="ClassDiagram11.cd" />
+    <None Include="ClassDiagram12.cd" />
+    <None Include="ClassDiagram13.cd" />
+    <None Include="ClassDiagram14.cd" />
+    <None Include="ClassDiagram15.cd" />
+    <None Include="ClassDiagram16.cd" />
   </ItemGroup>
 </Project>

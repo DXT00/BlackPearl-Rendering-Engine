@@ -13,6 +13,7 @@ namespace BlackPearl {
 		enum Type {
 			Transform,
 			MeshRenderer,
+			MeshFilter,
 			Light,
 			Camera
 

@@ -1,11 +1,11 @@
 #include "pch.h"
 #include "Renderer.h"
 #include<glad/glad.h>
-#include "LightComponent/Light.h"
-#include "LightComponent/ParallelLight.h"
-#include "LightComponent/PointLight.h"
-#include "LightComponent/SpotLight.h"
-#include "LightComponent/LightSources.h"
+#include "BlackPearl/Component/LightComponent/Light.h"
+#include "BlackPearl/Component/LightComponent/ParallelLight.h"
+#include "BlackPearl/Component/LightComponent/PointLight.h"
+#include "BlackPearl/Component/LightComponent/SpotLight.h"
+#include "BlackPearl/Component/LightComponent/LightSources.h"
 #include "glm/gtc/matrix_transform.hpp"
 #include "Mesh/Mesh.h"
 namespace BlackPearl {

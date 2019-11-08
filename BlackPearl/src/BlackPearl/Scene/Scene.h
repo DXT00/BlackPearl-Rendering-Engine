@@ -1,11 +1,11 @@
 #pragma once
-#include "BlackPearl/Renderer/LightComponent/Light.h"
+#include "BlackPearl/Component/LightComponent/Light.h"
 #include "BlackPearl/Layer.h"
 #include "BlackPearl/LayerStack.h"
 #include "BlackPearl/ImGui/ImGuiLayer.h"
 #include "BlackPearl/Timestep/Timestep.h"
 #include "BlackPearl/Entity/Entity.h"
-
+#include "BlackPearl/ObjectManager/ObjectManager.h"
 
 namespace BlackPearl {
 
@@ -13,7 +13,8 @@ namespace BlackPearl {
 	public:
 		Scene() {
 			EntityManager *ImGuiEntityMgr = DBG_NEW EntityManager();
-			m_ImGuiLayer = DBG_NEW ImGuiLayer("ImGuiLayer", ImGuiEntityMgr);
+			ObjectManager *ImGuiObjectMgr = DBG_NEW ObjectManager(ImGuiEntityMgr);
+			m_ImGuiLayer = DBG_NEW ImGuiLayer("ImGuiLayer", ImGuiObjectMgr);
 			PushOverLayer(m_ImGuiLayer);
 		}
 		~Scene();

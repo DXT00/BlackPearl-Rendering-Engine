@@ -3,7 +3,7 @@
 #include"BlackPearl/Renderer/Material/Texture.h"
 #include"BlackPearl/Renderer/Shader.h"
 #include"BlackPearl/Renderer/Buffer.h"
-#include"BlackPearl/Renderer/LightComponent/LightSources.h"
+#include"BlackPearl/Component/LightComponent/LightSources.h"
 #include"BlackPearl/Renderer/Material/MaterialColor.h"
 #include "BlackPearl/Renderer/Material/Material.h"
 namespace BlackPearl {
@@ -26,7 +26,6 @@ namespace BlackPearl {
 			uint32_t verticesSize,
 			unsigned int* indices,
 			uint32_t indicesSize,
-
 			std::shared_ptr<Material> material,
 			const VertexBufferLayout& layout
 		)
@@ -54,24 +53,24 @@ namespace BlackPearl {
 			Init();
 		};
 		~Mesh();
+	
+		std::shared_ptr<VertexArray> GetVertexArray() const { return m_VertexArray; }
+		uint32_t GetIndicesSize()const { return m_IndicesSize; }
+		uint32_t GetVerticesSize()const { return m_VerticesSize; }
+		std::shared_ptr<Material> GetMaterial()const { return m_Material; }
 		//Draw Light
 		void Draw(const glm::mat4 & model);
 		void Draw(const glm::mat4 & model, const LightSources& lightSources);
 
-		std::shared_ptr<VertexArray> GetVertexArray() const { return m_VertexArray; }
-		uint32_t GetIndicesSize()const { return m_IndicesSize; }
-		uint32_t GetVerticesSize()const { return m_VerticesSize; }
-
 	private:
 		void Init();
 		std::shared_ptr<VertexArray> m_VertexArray;
-		VertexBufferLayout m_VertexBufferLayout;
-
-		float*m_Vertices = nullptr;
-		unsigned int*m_Indices = nullptr;
-		uint32_t m_VerticesSize = 0;
-		uint32_t m_IndicesSize = 0;
-		std::shared_ptr<Material> m_Material;
+		VertexBufferLayout           m_VertexBufferLayout;
+		float*                       m_Vertices = nullptr;
+		unsigned int*                m_Indices = nullptr;
+		uint32_t                     m_VerticesSize = 0;
+		uint32_t                     m_IndicesSize = 0;
+		std::shared_ptr<Material>    m_Material;
 
 	};
 

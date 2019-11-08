@@ -3,13 +3,13 @@
 #include "Shader.h"
 #include<glad/glad.h>
 #include<BlackPearl/Core.h>
-#include"LightComponent/ParallelLight.h"
-#include"LightComponent/PointLight.h"
-#include"LightComponent/SpotLight.h"
-#include "LightComponent/Light.h"
+#include"BlackPearl/Component/LightComponent/ParallelLight.h"
+#include"BlackPearl/Component/LightComponent/PointLight.h"
+#include"BlackPearl/Component/LightComponent/SpotLight.h"
+#include "BlackPearl/Component/LightComponent/Light.h"
 #include "Renderer.h"
-#include "LightComponent/LightSources.h"
-#include "TransformComponent/Transform.h"
+#include "BlackPearl/Component/LightComponent/LightSources.h"
+#include "BlackPearl/Component/TransformComponent/Transform.h"
 namespace BlackPearl {
 
 	static GLenum ShaderTypeFromString(const std::string&type) {

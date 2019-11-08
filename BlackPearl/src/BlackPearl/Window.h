@@ -11,7 +11,7 @@ namespace BlackPearl {
 			std::string Title;
 			unsigned int Height;
 			unsigned int Width;
-			WindowData(const std::string& title = "BlackPearl", unsigned int width = 800, unsigned int height = 600)
+			WindowData(const std::string& title = "BlackPearl", unsigned int width = 960, unsigned int height = 540)//1920：1080 对应的PerspeciveCamera projectionMatrix也要改
 				:Title(title), Width(width), Height(height) {}
 
 			std::function<void(Event&)> EventCallback;
