@@ -110,12 +110,22 @@ namespace BlackPearl {
 
 		}
 	}
-	void ObjectManager::DrawObjectsExcept(Object * obj)
+	void ObjectManager::DrawObjectsExcept(std::vector<Object *>objs)
 	{
+
 		for (auto pair : m_EntityToObjects) {
 			Object* Obj = pair.second;
-			if(Obj->GetId().id!=obj->GetId().id)
+
+			bool canDraw = true;
+			for (auto obj : objs) {
+				if (Obj->GetId().id == obj->GetId().id) {
+					canDraw = false;
+				}
+			}
+			if(canDraw)
 				DrawObject(Obj);
+			//if(Obj->GetId().id!=obj->GetId().id)
+				
 		}
 	}
 	void ObjectManager::DestroyObjects()

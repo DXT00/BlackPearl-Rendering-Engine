@@ -90,9 +90,9 @@ namespace BlackPearl {
 	{
 		m_ObjectManager->DrawObject(obj);
 	}
-	void Layer::DrawObjectsExcept(Object * obj)
+	void Layer::DrawObjectsExcept(std::vector<Object *>objs)
 	{
-		m_ObjectManager->DrawObjectsExcept(obj);
+		m_ObjectManager->DrawObjectsExcept(objs);
 
 	}
 	std::vector<Object*> Layer::GetObjects()
