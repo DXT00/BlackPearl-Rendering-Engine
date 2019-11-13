@@ -1,6 +1,7 @@
 #pragma once
 #include<string>
 #include "BlackPearl/Renderer/Context.h"
+#include "BlackPearl/Config.h"
 #include "Event/Event.h"
 namespace BlackPearl {
 
@@ -11,7 +12,7 @@ namespace BlackPearl {
 			std::string Title;
 			unsigned int Height;
 			unsigned int Width;
-			WindowData(const std::string& title = "BlackPearl", unsigned int width = 960, unsigned int height = 540)//1920：1080 对应的PerspeciveCamera projectionMatrix也要改
+			WindowData(const std::string& title = "BlackPearl", unsigned int width = Configuration::WindowWidth, unsigned int height = Configuration::WindowHeight)//1920：1080 对应的PerspeciveCamera projectionMatrix也要改
 				:Title(title), Width(width), Height(height) {}
 
 			std::function<void(Event&)> EventCallback;

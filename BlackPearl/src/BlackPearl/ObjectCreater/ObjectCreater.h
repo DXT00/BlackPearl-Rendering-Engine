@@ -35,7 +35,8 @@ namespace BlackPearl {
 			m_EntityManager = entityManager;
 		}
 
-		Object* CreateCube();
+		Object* CreateCube(const std::string& shaderPath, const std::string& texturePath);
+		Object* CreatePlane();
 		Object* CreateSphere();
 		Object* CreateModel(std::string modelPath,std::string shaderPath);
 
@@ -47,6 +48,8 @@ namespace BlackPearl {
 	public:
 		Object2DCreater(EntityManager *entityManager)
 			:ObjectCreater(entityManager) {}
+
+		Object* CreateQuad(const std::string& shaderPath, const std::string& texturePath);
 
 
 	};

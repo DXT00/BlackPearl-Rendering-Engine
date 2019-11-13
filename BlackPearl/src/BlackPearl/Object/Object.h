@@ -22,7 +22,7 @@ namespace BlackPearl {
 		inline bool Vaild() {
 			return m_EntityManager && m_EntityManager->Valid(m_Id);
 		}
-		ComponentMask GetComponentMask()const;
+		Configuration::ComponentMask GetComponentMask()const;
 		std::unordered_map<BaseComponent::Family, std::shared_ptr<BaseComponent>> GetComponentList() { return m_Components; }
 
 		template<typename C, typename ...Args>
@@ -93,7 +93,7 @@ namespace BlackPearl {
 
 	private:
 		std::unordered_map<BaseComponent::Family, std::shared_ptr<BaseComponent>> m_Components;
-		ComponentMask m_ComponentMask;
+		Configuration::ComponentMask m_ComponentMask;
 		std::string m_Name;
 	};
 

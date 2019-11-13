@@ -3,7 +3,7 @@
 
 
 namespace BlackPearl {
-	Material::Material(const std::string shaderPath, const std::vector<std::shared_ptr<Texture>>& textureMaps, glm::vec3 ambientColor, glm::vec3 diffuseColor, glm::vec3 specularColor, glm::vec3 emissionColor)
+	Material::Material(const std::string shaderPath, const std::shared_ptr<TextureMaps>& textureMaps, glm::vec3 ambientColor, glm::vec3 diffuseColor, glm::vec3 specularColor, glm::vec3 emissionColor)
 	{
 		m_TextureMaps = textureMaps;
 		m_Shader.reset(DBG_NEW Shader(shaderPath));
@@ -41,9 +41,31 @@ namespace BlackPearl {
 	{
 	}
 
-	void Material::AddTextureMap(std::shared_ptr<Texture> textureMap)
+	void Material::SetTexture(const std::shared_ptr<Texture> texture)
 	{
-		m_TextureMaps.push_back(textureMap);
+		switch (texture->GetType())
+		{
+		case Texture::Type::DiffuseMap:
+			m_TextureMaps->diffuseTextureMap = texture;
+			break;
+		case Texture::Type::SpecularMap:
+			m_TextureMaps->specularTextureMap = texture;
+			break;
+		case Texture::Type::EmissionMap:
+			m_TextureMaps->emissionTextureMap = texture;
+			break;
+		case Texture::Type::HeightMap:
+			m_TextureMaps->heightTextureMap = texture;
+			break;
+		case Texture::Type::NormalMap:
+			m_TextureMaps->normalTextureMap = texture;
+			break;
+
+		default:
+			break;
+		}
 	}
+
+	
 
 }

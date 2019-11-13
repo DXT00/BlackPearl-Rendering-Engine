@@ -6,7 +6,7 @@ namespace BlackPearl {
 
 
 	
-	ComponentMask Object::GetComponentMask() const
+	Configuration::ComponentMask Object::GetComponentMask() const
 	{
 		return m_ComponentMask;
 	}

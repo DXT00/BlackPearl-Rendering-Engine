@@ -41,12 +41,27 @@ namespace BlackPearl {
 
 	}
 
-	Object * ObjectManager::CreateCube()
+	Object * ObjectManager::CreateCube(const std::string& shaderPath, const std::string& texturePath)
 	{
-		Object *obj = m_Object3DCreater->CreateCube();
+		Object *obj = m_Object3DCreater->CreateCube(shaderPath, texturePath);
 		m_EntityToObjects.insert(std::make_pair(obj->GetId().index(), obj));
 		return obj;
 
+	}
+
+	Object * ObjectManager::CreatePlane()
+	{
+		Object* obj = m_Object3DCreater->CreatePlane();
+		m_EntityToObjects.insert(std::make_pair(obj->GetId().index(), obj));
+		return obj;
+	}
+
+	///////////////////////2D///////////////////////////////
+	Object * ObjectManager::CreateQuad(const std::string & shaderPath, const std::string & texturePath)
+	{
+		Object* obj = m_Object2DCreater->CreateQuad(shaderPath, texturePath);
+		m_EntityToObjects.insert(std::make_pair(obj->GetId().index(), obj));
+		return obj;
 	}
 
 	std::vector<Object*> ObjectManager::GetObjects()
@@ -75,20 +90,32 @@ namespace BlackPearl {
 	{
 		for (auto pair : m_EntityToObjects) {
 			Object* obj = pair.second;
-			if (obj != nullptr &&obj->HasComponent<MeshRenderer>()) {
-				auto transformMatrix = obj->GetComponent<Transform>()->GetTransformMatrix();
-				obj->GetComponent<MeshRenderer>()->UpdateTransformMatrix(transformMatrix);
+			DrawObject(obj);
+		}
+	}
+	void ObjectManager::DrawObject(Object * obj)
+	{
+		if (obj != nullptr &&obj->HasComponent<MeshRenderer>()) {
+			auto transformMatrix = obj->GetComponent<Transform>()->GetTransformMatrix();
+			obj->GetComponent<MeshRenderer>()->UpdateTransformMatrix(transformMatrix);
 
-				//灯光单独处理
-				if (obj->HasComponent<PointLight>() || obj->HasComponent<ParallelLight>() || obj->HasComponent<SpotLight>()) {
-					obj->GetComponent<MeshRenderer>()->DrawLight();
-				}
-				else {
-					obj->GetComponent<MeshRenderer>()->DrawMeshes();
-					obj->GetComponent<MeshRenderer>()->DrawModel();
-				}
-
+			//灯光单独处理
+			if (obj->HasComponent<PointLight>() || obj->HasComponent<ParallelLight>() || obj->HasComponent<SpotLight>()) {
+				obj->GetComponent<MeshRenderer>()->DrawLight();
 			}
+			else {
+				obj->GetComponent<MeshRenderer>()->DrawMeshes();
+				obj->GetComponent<MeshRenderer>()->DrawModel();
+			}
+
+		}
+	}
+	void ObjectManager::DrawObjectsExcept(Object * obj)
+	{
+		for (auto pair : m_EntityToObjects) {
+			Object* Obj = pair.second;
+			if(Obj->GetId().id!=obj->GetId().id)
+				DrawObject(Obj);
 		}
 	}
 	void ObjectManager::DestroyObjects()

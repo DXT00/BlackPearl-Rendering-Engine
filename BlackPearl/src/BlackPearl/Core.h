@@ -24,3 +24,8 @@
 #endif
 
 #define _CRTDBG_MAP_ALLOC
+
+//Ê¹ÓÃÄ£°å»º³å
+#ifdef GE_STENCIL_TEST
+#define GE_ENABLE_STENCIL_TEST
+#endif // GE_STENCIL_TEST

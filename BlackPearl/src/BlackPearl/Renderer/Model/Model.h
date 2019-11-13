@@ -30,7 +30,7 @@ namespace BlackPearl {
 			aiMaterial * material,
 			aiTextureType type,
 			Texture::Type typeName,
-			std::vector<std::shared_ptr<Texture >> &textures);
+			std::shared_ptr<Material::TextureMaps> &textures);
 
 		void LoadMaterialColors(
 			aiMaterial * material,

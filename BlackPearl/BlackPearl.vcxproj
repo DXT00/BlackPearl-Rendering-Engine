@@ -143,6 +143,9 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\BlackPearl\Component\MeshFilterComponent\QuadMeshFilter.h" />
+    <ClInclude Include="src\BlackPearl\Object\2DObject\Quad.h" />
+    <ClInclude Include="src\BlackPearl\Component\MeshFilterComponent\PlaneMeshFilter.h" />
     <ClInclude Include="src\BlackPearl\Component\MeshFilterComponent\CubeMeshFilter.h" />
     <ClInclude Include="src\BlackPearl\ObjectManager\ObjectManager.h" />
     <ClInclude Include="src\BlackPearl\ObjectCreater\ObjectCreater.h" />
@@ -151,7 +154,7 @@
     <ClInclude Include="src\BlackPearl\Component\MeshRendererComponent\MeshRenderer.h" />
     <ClInclude Include="src\BlackPearl\Object\Object.h" />
     <ClInclude Include="src\BlackPearl\Component\BaseComponent.h" />
-    <ClInclude Include="src\BlackPearl\Entity\Config.h" />
+    <ClInclude Include="src\BlackPearl\Config.h" />
     <ClInclude Include="src\BlackPearl\Component\Component.h" />
     <ClInclude Include="src\BlackPearl\Entity\Entity.h" />
     <ClInclude Include="src\BlackPearl\Application.h" />
@@ -561,6 +564,10 @@
     <ClInclude Include="vendor\stb\stb_image.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="QUADMESHFILTER.CPP" />
+    <ClCompile Include="src\BlackPearl\Component\MeshFilterComponent\QuadMeshFilter.cpp" />
+    <ClCompile Include="src\BlackPearl\Object\2DObject\Quad.cpp" />
+    <ClCompile Include="src\BlackPearl\Component\MeshFilterComponent\PlaneMeshFilter.cpp" />
     <ClCompile Include="src\BlackPearl\Component\MeshFilterComponent\CubeMeshFilter.cpp" />
     <ClCompile Include="src\BlackPearl\ObjectManager\ObjectManager.cpp" />
     <ClCompile Include="src\BlackPearl\ObjectCreater\ObjectCreater.cpp" />

@@ -27,4 +27,13 @@ namespace BlackPearl {
 		for (Mesh mesh : m_Meshes)
 			mesh.Draw(m_TransformMatrix);
 	}
+
+	void MeshRenderer::SetTexture(unsigned int meshIndex, std::shared_ptr<Texture> texture) {
+		if (meshIndex >= m_Meshes.size() - 1) {
+			m_Meshes[meshIndex].SetTexture(texture);
+		}
+		else {
+			GE_CORE_ERROR("meshIndex out of m_Meshes range!")
+		}
+	}
 }

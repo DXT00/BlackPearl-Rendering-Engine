@@ -1,5 +1,6 @@
 #pragma once
 #include<vector>
+#include<string>
 #include"BlackPearl/Renderer/Material/Texture.h"
 #include"BlackPearl/Renderer/Shader.h"
 #include"BlackPearl/Renderer/Buffer.h"
@@ -61,6 +62,10 @@ namespace BlackPearl {
 		//Draw Light
 		void Draw(const glm::mat4 & model);
 		void Draw(const glm::mat4 & model, const LightSources& lightSources);
+
+		void SetTexture(const std::shared_ptr<Texture> texture);
+		//void SetTexture(const Texture::Type type ,const std::string texturePath);
+
 
 	private:
 		void Init();

@@ -38,6 +38,9 @@ namespace BlackPearl {
 
 		virtual Object* CreateModel(const std::string& modelPath, const std::string& shaderPath);
 		virtual Object* CreateCube();
+		virtual Object* CreatePlane();
+
+		virtual Object* CreateQuad();
 
 		void ShowMeshRenderer(std::shared_ptr<BlackPearl::MeshRenderer> comp);
 		void ShowTransform(std::shared_ptr<BlackPearl::Transform> comp);
@@ -46,6 +49,9 @@ namespace BlackPearl {
 		std::vector<Object*> GetObjects();
 		std::vector<std::string> GetObjectsName();
 		void DrawObjects();
+		void DrawObject(Object* obj);
+		void DrawObjectsExcept(Object* obj);
+
 		void DestroyObjects();
 
 

@@ -34,7 +34,10 @@ namespace BlackPearl {
 		Object* CreateCamera();
 		Object* CreateLight(LightType type,LightSources* lightSources);
 		Object* CreateModel(const std::string& modelPath, const std::string& shaderPath);
-		Object* CreateCube();
+		Object* CreateCube(const std::string& shaderPath="assets/shaders/Cube.glsl",const std::string& texturePath="assets/texture/1.jpg");
+		Object* CreatePlane();
+
+		Object* CreateQuad(const std::string& shaderPath = "assets/shaders/Quad.glsl", const std::string& texturePath = "assets/texture/1.jpg");
 
 
 
@@ -42,6 +45,8 @@ namespace BlackPearl {
 		std::vector<std::string> GetObjectsName();
 
 		void DrawObjects();
+		void DrawObject(Object* obj);
+		void DrawObjectsExcept(Object* obj);
 		void DestroyObjects();
 
 	private:

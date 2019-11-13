@@ -1,6 +1,7 @@
 #pragma once
 #include <bitset>
 #include "BlackPearl/Component/BaseComponent.h"
+#include "BlackPearl/Config.h"
 #include "BlackPearl/Entity/Entity.h"
 //#include "BlackPearl/Entity/EntityManager.h"
 namespace BlackPearl {
@@ -30,7 +31,7 @@ namespace BlackPearl {
 		//static变量只初始化一次！
 		//这句话只会执行一次！s_FamliyCounter只会在第一次famliy初始化时加1
 		static BaseComponent::Family famliy = BaseComponent::s_FamliyCounter++;
-		GE_ASSERT(famliy < MaxComponents, "famliy num exceed MaxComponents!")
+		GE_ASSERT(famliy < Configuration::MaxComponents, "famliy num exceed MaxComponents!")
 			return famliy;
 	}
 }

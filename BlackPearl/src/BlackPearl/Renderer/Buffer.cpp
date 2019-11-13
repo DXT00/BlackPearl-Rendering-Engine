@@ -1,8 +1,9 @@
 #include "pch.h"
 #include "Buffer.h"
 #include "glad/glad.h"
+#include "BlackPearl/Config.h"
 namespace BlackPearl {
-
+	//------------------------VertexBuffer-----------------//
 	VertexBuffer::VertexBuffer(const std::vector<float>&vertices)
 	{
 		glGenBuffers(1, &m_RendererID);
@@ -60,5 +61,96 @@ namespace BlackPearl {
 			strides += element.ElementSize;
 		}
 		m_Stride = strides;
+	}
+
+
+	//------------------------FrameBuffer-----------------//
+
+	FrameBuffer::FrameBuffer(const int width,int height)
+	{
+		m_Width = width;
+		m_Height = height;
+		glGenFramebuffers(1, &m_RendererID);
+		Bind(width, height);
+		AttachColorTexture();
+		AttachRenderBuffer();
+		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+			GE_CORE_ERROR("Framebuffer is not complete!");
+		UnBind();
+	}
+
+	void FrameBuffer::AttachColorTexture()
+	{
+		// create a color attachment texture
+		// The texture we're going to render to
+		//glGenTextures(1, &m_TextureColorBufferID);
+		//glBindTexture(GL_TEXTURE_2D, m_TextureColorBufferID);
+		//// Give an empty image to OpenGL ( the last "NULL" )
+		//glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, Configuration::WindowWidth, Configuration::WindowHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);//TODO::窗口大小
+		//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		//glBindTexture(GL_TEXTURE_2D, 0);
+
+		m_TextureColorBuffer.reset(DBG_NEW Texture(Texture::Type::DiffuseMap, m_Width,m_Height));
+		m_TextureColorBuffer->UnBind();
+		//将它附加到当前绑定的帧缓冲对象
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_TextureColorBuffer->GetRendererID(), 0);
+	}
+
+	void FrameBuffer::AttachDepthTexture()
+	{
+		//glGenTextures(1, &m_TextureDepthBufferID);
+		//glBindTexture(GL_TEXTURE_2D, m_TextureDepthBufferID);
+		//glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, Configuration::WindowWidth, Configuration::WindowHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);//TODO::窗口大小
+		//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+		m_TextureDepthBuffer.reset(DBG_NEW Texture(Texture::Type::DiffuseMap, m_Width, m_Height));
+		m_TextureDepthBuffer->UnBind();
+
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, m_TextureDepthBuffer->GetRendererID(), 0);
+
+	}
+
+	void FrameBuffer::AttachRenderBuffer()
+	{
+		//  create a renderbuffer object for depth and stencil attachment (we won't be sampling these)
+		//	unsigned int renderBuffer;
+		// The depth buffer
+		glGenRenderbuffers(1, &m_RenderBufferID);
+		glBindRenderbuffer(GL_RENDERBUFFER, m_RenderBufferID);
+		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, Configuration::WindowWidth, Configuration::WindowHeight);
+		glBindRenderbuffer(GL_RENDERBUFFER, 0);
+		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, m_RenderBufferID);
+
+	}
+
+	void FrameBuffer::Bind(int width,int height)
+	{
+		glBindTexture(GL_TEXTURE_2D, 0);
+		glBindFramebuffer(GL_FRAMEBUFFER, m_RendererID);
+		glViewport(0, 0, width, height);
+
+	}
+	void FrameBuffer::UnBind()
+	{
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		glViewport(0, 0, Configuration::WindowWidth, Configuration::WindowHeight);
+
+	}
+	void FrameBuffer::BindTexture()
+	{
+		m_TextureColorBuffer->Bind();
+
+	}
+	void FrameBuffer::UnBindTexture()
+	{
+		m_TextureColorBuffer->UnBind();
+
+	}
+	void FrameBuffer::CleanUp()
+	{
+	/*	glDeleteFramebuffers(1,m_RendererID);*/
+
 	}
 }

@@ -68,7 +68,7 @@ namespace BlackPearl {
 		std::vector<float> vertices;
 		std::vector<unsigned int> indices;
 		// maps
-		std::vector<std::shared_ptr<Texture >> textures;
+		std::shared_ptr<Material::TextureMaps> textures;
 		MaterialColor  colors;
 
 		VertexBufferLayout layout = {
@@ -166,7 +166,7 @@ namespace BlackPearl {
 
 	}
 
-	void Model::LoadMaterialTextures(aiMaterial * material, aiTextureType type, Texture::Type typeName, std::vector<std::shared_ptr<Texture >> &textures)
+	void Model::LoadMaterialTextures(aiMaterial * material, aiTextureType type, Texture::Type typeName, std::shared_ptr<Material::TextureMaps> &textures)
 	{
 
 		for (unsigned int i = 0; i < material->GetTextureCount(type); i++)
@@ -176,8 +176,17 @@ namespace BlackPearl {
 			material->GetTexture(type, i, &path);
 
 			std::string path_str = m_Directory + "/" + std::string(path.C_Str());
-			texture.reset(DBG_NEW Texture(typeName, path_str.c_str()));
-			textures.push_back(texture);
+			if (typeName == Texture::Type::DiffuseMap)
+				textures->diffuseTextureMap.reset(DBG_NEW Texture(typeName, path_str.c_str()));
+			if (typeName == Texture::Type::SpecularMap)
+				textures->specularTextureMap.reset(DBG_NEW Texture(typeName, path_str.c_str()));
+			if (typeName == Texture::Type::EmissionMap)
+				textures->emissionTextureMap.reset(DBG_NEW Texture(typeName, path_str.c_str()));
+			if (typeName == Texture::Type::NormalMap)
+				textures->normalTextureMap.reset(DBG_NEW Texture(typeName, path_str.c_str()));
+			if (typeName == Texture::Type::HeightMap)
+				textures->heightTextureMap.reset(DBG_NEW Texture(typeName, path_str.c_str()));
+			
 
 
 		}

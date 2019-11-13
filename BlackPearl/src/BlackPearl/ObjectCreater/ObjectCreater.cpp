@@ -5,10 +5,12 @@
 #include "BlackPearl/Component/LightComponent/SpotLight.h"
 #include "BlackPearl/Component/MeshRendererComponent/MeshRenderer.h"
 #include "BlackPearl/Component/MeshFilterComponent/CubeMeshFilter.h"
+#include "BlackPearl/Component/MeshFilterComponent/PlaneMeshFilter.h"
+#include "BlackPearl/Component/MeshFilterComponent/QuadMeshFilter.h"
 #include "BlackPearl/Component/CameraComponent/PerspectiveCamera.h"
 
 namespace BlackPearl {
-	
+
 	////////////////////////ObjectCreater////////////////////////////////
 	/////////////////////////////////////////////////////////////////////
 	Object * ObjectCreater::CreateEmpty(std::string name)
@@ -22,19 +24,44 @@ namespace BlackPearl {
 
 	////////////////////////Object3DCreater////////////////////////////////
 	/////////////////////////////////////////////////////////////////////
-	Object * Object3DCreater::CreateCube()
+	Object * Object3DCreater::CreateCube(const std::string& shaderPath, const std::string& texturePath)
 	{
 		Object* obj = CreateEmpty("Cube");
 		std::shared_ptr<CubeMeshFilter> meshFilter = obj->AddComponent<CubeMeshFilter>();
 		Transform *transformComponent = obj->GetComponent<Transform>();
-		std::shared_ptr<Material> lightMaterial;
-		lightMaterial.reset(DBG_NEW Material("assets/shaders/Cube.glsl", std::vector<std::shared_ptr<Texture>>(), {}, {0.2,0.5,0.6}, {}, {}));
+		
+		std::shared_ptr<Material> material;
+		std::shared_ptr<Material::TextureMaps> texture(DBG_NEW Material::TextureMaps());
+		texture->diffuseTextureMap.reset(DBG_NEW Texture(Texture::Type::DiffuseMap, texturePath));
+	
+		material.reset(DBG_NEW Material(shaderPath, texture, {}, { 0.2,0.5,0.6 }, {}, {}));
 		VertexBufferLayout layout = {
-		{ElementDataType::Float3,"aPos",false}
+		{ElementDataType::Float3,"aPos",false},
+		{ElementDataType::Float2,"aTexCoords",false}
+
 		};
-		Mesh mesh(meshFilter->GetVertices(), meshFilter->GetIndices(), lightMaterial, layout);
+		Mesh mesh(meshFilter->GetVertices(), meshFilter->GetIndices(), material, layout);
 		obj->AddComponent<MeshRenderer>(mesh, transformComponent->GetTransformMatrix());
 
+		return obj;
+	}
+	Object * Object3DCreater::CreatePlane()
+	{
+		Object* obj = CreateEmpty("Plane");
+		std::shared_ptr<PlaneMeshFilter> meshFilter = obj->AddComponent<PlaneMeshFilter>();
+		Transform *transformComponent = obj->GetComponent<Transform>();
+		std::shared_ptr<Material> material;
+
+		std::shared_ptr<Material::TextureMaps> texture(DBG_NEW Material::TextureMaps());
+		texture->diffuseTextureMap.reset(DBG_NEW Texture(Texture::Type::DiffuseMap, "assets/texture/container.jpg"));
+
+		material.reset(DBG_NEW Material("assets/shaders/Plane.glsl", texture, {}, { 0.2,0.2,0.0 }, {}, {}));
+		VertexBufferLayout layout = {
+		{ElementDataType::Float3,"aPos",false},
+		{ElementDataType::Float2,"aTexCoords",false}
+		};
+		Mesh mesh(meshFilter->GetVertices(), meshFilter->GetIndices(), material, layout);
+		obj->AddComponent<MeshRenderer>(mesh, transformComponent->GetTransformMatrix());
 		return obj;
 	}
 	Object * Object3DCreater::CreateSphere()
@@ -60,11 +87,12 @@ namespace BlackPearl {
 
 	////////////////////////LightCreater//////////////////////////////////
 	/////////////////////////////////////////////////////////////////////
-	Object * LightCreater::CreateLight(LightType type,LightSources* lightSources)
+	Object * LightCreater::CreateLight(LightType type, LightSources* lightSources)
 	{
 		Object *Obj = CreateEmpty("Light");
 		Transform *TransformComponent = Obj->GetComponent<Transform>();
 		TransformComponent->SetScale({ 0.2f,0.2f,0.2f });
+		TransformComponent->SetPosition({ 0.0f,2.0f,0.0f });
 		switch (type)
 		{
 		case LightType::ParallelLight: {
@@ -98,7 +126,36 @@ namespace BlackPearl {
 	Object * CameraCreater::CreateCamera()
 	{
 		Object *obj = CreateEmpty("Camera");
-		std::shared_ptr<PerspectiveCamera> cameraComponent= obj->AddComponent<PerspectiveCamera>();
+		std::shared_ptr<PerspectiveCamera> cameraComponent = obj->AddComponent<PerspectiveCamera>();
+
+		return obj;
+	}
+	////////////////////////Object2DCreater////////////////////////////////
+	/////////////////////////////////////////////////////////////////////
+	Object * Object2DCreater::CreateQuad(const std::string& shaderPath, const std::string& texturePath)
+	{
+
+		Object *obj = CreateEmpty("Quad");
+
+		std::shared_ptr<QuadMeshFilter> meshFilter = obj->AddComponent<QuadMeshFilter>();
+		Transform *transformComponent = obj->GetComponent<Transform>();
+		std::shared_ptr<Material> material;
+
+		std::shared_ptr<Material::TextureMaps> texture(DBG_NEW Material::TextureMaps());
+		if (texturePath != "") {
+			texture->diffuseTextureMap.reset(DBG_NEW Texture(Texture::Type::DiffuseMap, texturePath));
+
+		}
+		material.reset(DBG_NEW Material(shaderPath, texture, {}, { 0.2,0.5,0.6 }, {}, {}));
+		material->GetShader()->SetUniform1i("u_Material.diffuse",0);
+	
+		VertexBufferLayout layout = {
+		{ElementDataType::Float2,"aPos",false},
+		{ElementDataType::Float2,"aTexCoords",false}
+
+		};
+		Mesh mesh(meshFilter->GetVertices(), meshFilter->GetIndices(), material, layout);
+		obj->AddComponent<MeshRenderer>(mesh, transformComponent->GetTransformMatrix());
 
 		return obj;
 	}

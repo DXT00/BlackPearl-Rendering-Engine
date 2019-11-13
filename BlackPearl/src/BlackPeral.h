@@ -6,6 +6,7 @@
 #include "BlackPearl/Layer.h"
 
 #include "BlackPearl/Renderer/Shader.h"
+#include "BlackPearl/Renderer/Buffer.h"
 #include "BlackPearl/Renderer/Material/Texture.h"
 
 #include "BlackPearl/Component/TransformComponent/Transform.h"

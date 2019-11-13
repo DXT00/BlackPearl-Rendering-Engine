@@ -1,35 +1,49 @@
 
 
-1.添加了ObjectManager,和ObjectCreater 类
+1.添加FrameBuffer
 
-ObjectManager用于的管理Object列表 和 Draw Objects
+2.把FrameBuffer中的TextureBuffer作为贴图，贴到正方体CubeObj上
 
-ObjectCreater 采用工厂模式生成 Object
+3.主要代码如下：
 
+	初始化：
+```
+	  	m_PlaneObj= Layer::CreatePlane();
+	
+		m_CubeObj = Layer::CreateCube();
+		
 
-2.添加 MeshFilter 存储 Object的 数据（vertices 和 Indices）
+		//把FrameBuffer中的texture作为贴图，贴到m_CubeObj上
+		auto CubemeshComponent = m_CubeObj->GetComponent<BlackPearl::MeshRenderer>();
+		CubemeshComponent->SetTexture(0, m_FrameBuffer->GetColorTexture());
+```
 
+	Update循环：
+```
+		m_FrameBuffer->Bind(960,540);
 
-3.通过ImGui 控制生成 Cube,Sphere(还未添加)这些基本3D Object
+		glEnable(GL_DEPTH_TEST);
 
-把Component参数放到了ImGui,使得参数可调。
+		BlackPearl::RenderCommand::SetClearColor(m_BackgroundColor);
 
-光源可通过LightComponent改变颜色 大小。
+		BlackPearl::Renderer::BeginScene(*(m_CameraObj->GetComponent<BlackPearl::PerspectiveCamera>()), *GetLightSources());
+		
 
+		
+		DrawObjectsExcept(m_CubeObj);
+		
 
+		m_FrameBuffer->UnBind();
+		
 
-1. ObjectManager and ObjectCreater classes have been added
+		glClearColor(0.0f, 0.1f, 0.1f, 1.0f);
 
-ObjectManager is used to manage the list of Objects and Draw Objects
+		glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT );
 
-ObjectCreater USES the factory pattern to generate objects
+		glViewport(0, 0, 960, 540);
+		
 
-
-2. Add MeshFilter to store the data of objects (vertices and Indices)
-
-
-3. Generate Cube,Sphere(not yet added) these basic 3D objects through ImGui control.
-
-Put Component parameters in the ImGui to make the parameters tunable.
-
-Light sources can change color sizes through LightComponent.
+		DrawObjects();
+```
+4.FrameBuffer 学习链接参考：https://www.youtube.com/watch?v=21UsMuFTN0k&list=PLRIWtICgwaX23jiqVByUs0bqhnalNTNZh&index=2
+		

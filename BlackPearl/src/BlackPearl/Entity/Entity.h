@@ -1,7 +1,7 @@
 #pragma once
 #include<string>
 #include "glm/glm.hpp"
-#include "BlackPearl/Entity/Config.h"
+#include "BlackPearl/Config.h"
 #include "BlackPearl/Core.h"
 #include <unordered_map>
 namespace BlackPearl {

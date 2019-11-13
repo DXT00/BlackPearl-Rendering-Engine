@@ -1,6 +1,7 @@
 #pragma once
 #include <initializer_list>
 #include "BlackPearl/Core.h"
+#include "BlackPearl/Renderer/Material/Texture.h"
 namespace BlackPearl {
 
 	enum class ElementDataType {
@@ -123,6 +124,8 @@ namespace BlackPearl {
 		VertexBuffer(float*vertices, uint32_t size);
 		void Bind();
 		void UnBind();
+		void CleanUp();
+
 		void SetBufferLayout(const VertexBufferLayout& layout) { m_BufferLayout = layout; }
 		VertexBufferLayout &GetBufferLayout() { return m_BufferLayout; }
 
@@ -140,9 +143,45 @@ namespace BlackPearl {
 
 		void Bind();
 		void UnBind();
+		void CleanUp();
 
 	private:
 		unsigned int m_RendererID;
+
+
+	};
+
+	class FrameBuffer {
+	public:
+		enum Type {
+			TextureBuffer,
+			RenderBuffer
+		};
+		FrameBuffer(const int width, const int height);
+		void AttachColorTexture();
+		void AttachDepthTexture();
+		void AttachRenderBuffer();
+		void Bind(int width,int height);
+		//switch back to default framebuffer
+		void UnBind();
+
+		void BindTexture();
+		void UnBindTexture();
+		void CleanUp();
+
+		std::shared_ptr<Texture> GetColorTexture() { return m_TextureColorBuffer; }
+		std::shared_ptr<Texture> GetDepthTexture() { return m_TextureDepthBuffer; }
+
+
+	private:
+		unsigned int m_Width, m_Height;
+		unsigned int m_RendererID;
+		//unsigned int m_TextureColorBufferID;
+		//unsigned int m_TextureDepthBufferID;
+		std::shared_ptr<Texture> m_TextureColorBuffer;
+		std::shared_ptr<Texture> m_TextureDepthBuffer;
+
+		unsigned int m_RenderBufferID;
 
 
 	};

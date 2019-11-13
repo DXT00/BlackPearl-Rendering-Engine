@@ -20,6 +20,14 @@ namespace BlackPearl {
 	{
 		return m_ObjectManager->CreateCube();
 	}
+	Object * Layer::CreatePlane()
+	{
+		return m_ObjectManager->CreatePlane();
+	}
+	Object * Layer::CreateQuad()
+	{
+		return m_ObjectManager->CreateQuad();
+	}
 	Object* Layer::CreateModel(const std::string& modelPath, const std::string& shaderPath)
 	{	
 		return m_ObjectManager->CreateModel(modelPath,shaderPath);
@@ -44,8 +52,12 @@ namespace BlackPearl {
 		comp->SetPosition({ pos[0],pos[1],pos[2] });
 
 		 float scale[] = { comp->GetScale().x,comp->GetScale().y,comp->GetScale().z };
-		ImGui::DragFloat3("scale", scale, 0.001f, 0.001f, 100.0f, "%.3f ");
+		ImGui::DragFloat3("scale", scale, 0.5f, 0.001f, 100.0f, "%.3f ");
 		comp->SetScale({ scale[0],scale[1],scale[2] });
+
+		float rotate[] = { comp->GetRotation().x,comp->GetRotation().y,comp->GetRotation().z };
+		ImGui::DragFloat3("rotation", rotate, 0.5f, -360.0f, 360.0f, "%.3f ");
+		comp->SetRotation({ rotate[0],rotate[1],rotate[2] });
 
 	}
 
@@ -73,6 +85,15 @@ namespace BlackPearl {
 	void Layer::DrawObjects()
 	{
 		m_ObjectManager->DrawObjects();
+	}
+	void Layer::DrawObject(Object * obj)
+	{
+		m_ObjectManager->DrawObject(obj);
+	}
+	void Layer::DrawObjectsExcept(Object * obj)
+	{
+		m_ObjectManager->DrawObjectsExcept(obj);
+
 	}
 	std::vector<Object*> Layer::GetObjects()
 	{

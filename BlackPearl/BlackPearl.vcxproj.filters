@@ -1236,7 +1236,6 @@
     <ClInclude Include="src\BlackPearl\Component\Component.h" />
     <ClInclude Include="src\BlackPearl\Entity\Entity.h" />
     <ClInclude Include="src\BlackPearl\Component\BaseComponent.h" />
-    <ClInclude Include="src\BlackPearl\Entity\Config.h" />
     <ClInclude Include="src\BlackPearl\Renderer\Mesh\Mesh.h">
       <Filter>src\BlackPearl\Renderer</Filter>
     </ClInclude>
@@ -1279,6 +1278,10 @@
     <ClInclude Include="src\BlackPearl\Component\MeshRendererComponent\MeshRenderer.h" />
     <ClInclude Include="src\BlackPearl\Component\MeshFilterComponent\MeshFilter.h" />
     <ClInclude Include="src\BlackPearl\Component\MeshFilterComponent\CubeMeshFilter.h" />
+    <ClInclude Include="src\BlackPearl\Component\MeshFilterComponent\PlaneMeshFilter.h" />
+    <ClInclude Include="src\BlackPearl\Object\2DObject\Quad.h" />
+    <ClInclude Include="src\BlackPearl\Config.h" />
+    <ClInclude Include="src\BlackPearl\Component\MeshFilterComponent\QuadMeshFilter.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\BlackPearl\Application.cpp">
@@ -1377,6 +1380,10 @@
     <ClCompile Include="src\BlackPearl\Component\MeshRendererComponent\MeshRenderer.cpp" />
     <ClCompile Include="src\BlackPearl\Component\MeshFilterComponent\MeshFilter.cpp" />
     <ClCompile Include="src\BlackPearl\Component\MeshFilterComponent\CubeMeshFilter.cpp" />
+    <ClCompile Include="src\BlackPearl\Component\MeshFilterComponent\PlaneMeshFilter.cpp" />
+    <ClCompile Include="src\BlackPearl\Object\2DObject\Quad.cpp" />
+    <ClCompile Include="src\BlackPearl\Component\MeshFilterComponent\QuadMeshFilter.cpp" />
+    <ClCompile Include="QUADMESHFILTER.CPP" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram.cd" />
