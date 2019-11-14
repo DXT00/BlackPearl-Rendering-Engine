@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Layers">
+      <UniqueIdentifier>{157446C0-0116-7196-EAD0-84EAD611F8E6}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\Layers\FrameBufferTestLayer.h">
+      <Filter>Layers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Layers\SkyBoxTestLayer.h">
+      <Filter>Layers</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\SandBox.cpp" />
+  </ItemGroup>
+</Project>

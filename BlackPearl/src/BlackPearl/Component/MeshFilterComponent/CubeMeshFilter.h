@@ -8,7 +8,7 @@ namespace BlackPearl {
 		CubeMeshFilter(EntityManager * entityManager, Entity::Id id)
 			:MeshFilter(entityManager, id) {
 			Init();
-		};
+		}
 		void Init();
 
 		~CubeMeshFilter();

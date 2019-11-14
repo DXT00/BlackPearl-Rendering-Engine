@@ -60,7 +60,9 @@ namespace BlackPearl {
 		case Texture::Type::NormalMap:
 			m_TextureMaps->normalTextureMap = texture;
 			break;
-
+		case Texture::Type::CubeMap:
+			m_TextureMaps->cubeTextureMap= texture;
+			break;
 		default:
 			break;
 		}

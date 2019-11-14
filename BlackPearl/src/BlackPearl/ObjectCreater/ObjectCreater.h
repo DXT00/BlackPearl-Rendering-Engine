@@ -39,6 +39,7 @@ namespace BlackPearl {
 		Object* CreatePlane();
 		Object* CreateSphere();
 		Object* CreateModel(std::string modelPath,std::string shaderPath);
+		Object* CreateSkyBox(const std::vector<std::string>& textureFaces);
 
 	};
 

@@ -56,6 +56,13 @@ namespace BlackPearl {
 		return obj;
 	}
 
+	Object * ObjectManager::CreateSkyBox(const std::vector<std::string>& textureFaces)
+	{
+		Object* obj = m_Object3DCreater->CreateSkyBox(textureFaces);
+		m_EntityToObjects.insert(std::make_pair(obj->GetId().index(), obj));
+		return obj;
+	}
+
 	///////////////////////2D///////////////////////////////
 	Object * ObjectManager::CreateQuad(const std::string & shaderPath, const std::string & texturePath)
 	{

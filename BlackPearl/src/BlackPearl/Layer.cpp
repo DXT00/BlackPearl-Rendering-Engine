@@ -24,6 +24,10 @@ namespace BlackPearl {
 	{
 		return m_ObjectManager->CreatePlane();
 	}
+	Object * Layer::CreateSkyBox(const std::vector<std::string>& textureFaces)
+	{
+		return m_ObjectManager->CreateSkyBox(textureFaces);
+	}
 	Object * Layer::CreateQuad()
 	{
 		return m_ObjectManager->CreateQuad();

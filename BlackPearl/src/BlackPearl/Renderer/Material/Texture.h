@@ -1,5 +1,9 @@
 #pragma once
 #include <string>
+#include <vector>
+
+
+
 namespace BlackPearl {
 
 	class Texture
@@ -10,19 +14,27 @@ namespace BlackPearl {
 			SpecularMap,
 			EmissionMap,
 			NormalMap,
-			HeightMap
+			HeightMap,
+			CubeMap
 		};
 		Texture(Type type, const std::string &image);
 		//没有Image的texture
 		Texture(Type type, const int width,const int height);
 
-		~Texture() = default;
+		//用于CubeMap初始化
+		Texture(Type type, std::vector<std::string> faces);
 
-		void Bind();
-		void UnBind();
+
+		virtual ~Texture() = default;
+
+		virtual void LoadTexture(const std::string &image);
+		virtual void Bind();
+		virtual void UnBind();
 		inline Type GetType() { return m_Type; }
 		unsigned int GetRendererID() { return m_TextureID; }
-	private:
+
+
+	protected:
 		unsigned int m_TextureID;
 		std::string m_Path;
 		Type m_Type;

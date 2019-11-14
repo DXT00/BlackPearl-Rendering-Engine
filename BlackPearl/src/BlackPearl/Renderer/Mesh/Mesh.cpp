@@ -44,6 +44,11 @@ namespace BlackPearl {
 				textures->normalTextureMap->Bind();
 				k++;
 			}
+			if (textures->cubeTextureMap != nullptr) {
+				shader->SetUniform1i("u_Material.cube", k);
+				textures->cubeTextureMap->Bind();
+				k++;
+			}
 		}
 		//std::vector<std::shared_ptr<Texture>> textures = m_Material->GetTextureMaps();
 		//for (unsigned int i = 0; i < textures.size(); i++) {
@@ -137,6 +142,11 @@ namespace BlackPearl {
 			if (textures->normalTextureMap != nullptr) {
 				shader->SetUniform1i("u_Material.normal", k);
 				textures->normalTextureMap->Bind();
+				k++;
+			}
+			if (textures->cubeTextureMap != nullptr) {
+				shader->SetUniform1i("u_Material.cube", k);
+				textures->cubeTextureMap->Bind();
 				k++;
 			}
 		}

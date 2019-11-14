@@ -39,7 +39,7 @@ namespace BlackPearl {
 		virtual Object* CreateModel(const std::string& modelPath, const std::string& shaderPath);
 		virtual Object* CreateCube();
 		virtual Object* CreatePlane();
-
+		virtual Object* CreateSkyBox(const std::vector<std::string>& textureFaces);
 		virtual Object* CreateQuad();
 
 		void ShowMeshRenderer(std::shared_ptr<BlackPearl::MeshRenderer> comp);

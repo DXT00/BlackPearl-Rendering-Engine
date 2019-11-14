@@ -1,7 +1,6 @@
 #pragma once
 #include<vector>
 #include<string>
-#include"BlackPearl/Renderer/Material/Texture.h"
 #include"BlackPearl/Renderer/Shader.h"
 #include"BlackPearl/Renderer/Buffer.h"
 #include"BlackPearl/Component/LightComponent/LightSources.h"

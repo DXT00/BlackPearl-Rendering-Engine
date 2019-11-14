@@ -12,12 +12,15 @@ namespace BlackPearl {
 			std::shared_ptr<Texture> emissionTextureMap;
 			std::shared_ptr<Texture> normalTextureMap;
 			std::shared_ptr<Texture> heightTextureMap;
+			std::shared_ptr<Texture> cubeTextureMap;
+
 			TextureMaps() {
 				diffuseTextureMap
 				= specularTextureMap
 				= emissionTextureMap
 				= normalTextureMap
 				= heightTextureMap
+				= cubeTextureMap
 				= nullptr;
 			}
 		};

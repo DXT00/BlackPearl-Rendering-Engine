@@ -7,26 +7,59 @@
     <Filter Include="src\BlackPearl">
       <UniqueIdentifier>{6D6C1DE5-593A-11EB-42CE-81112E3BED4F}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\BlackPearl\Component">
+      <UniqueIdentifier>{0F713F11-FB95-8E91-24E1-732110658DAF}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\BlackPearl\Component\CameraComponent">
+      <UniqueIdentifier>{DAFD54AB-C67A-48EE-EFF7-4802DBD3E481}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\BlackPearl\Component\LightComponent">
+      <UniqueIdentifier>{09DCBC04-756B-7EEF-7E67-5F07EA75B9FB}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\BlackPearl\Component\MeshFilterComponent">
+      <UniqueIdentifier>{A493B102-90A6-B15B-3990-8E4825824EA9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\BlackPearl\Component\MeshRendererComponent">
+      <UniqueIdentifier>{355180DE-21CF-D077-0AC7-8E0FF6E312A0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\BlackPearl\Component\TransformComponent">
+      <UniqueIdentifier>{2D88E135-99ED-74BC-22C6-16958E2A6A2B}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\BlackPearl\Entity">
+      <UniqueIdentifier>{199C408B-8508-FC85-4EFC-93E3BA271EEE}</UniqueIdentifier>
+    </Filter>
     <Filter Include="src\BlackPearl\Event">
       <UniqueIdentifier>{7ECBCF51-6A5A-591B-1379-6D16FFE669C1}</UniqueIdentifier>
     </Filter>
     <Filter Include="src\BlackPearl\ImGui">
       <UniqueIdentifier>{57BF1252-434E-9C1B-EC6C-B016D8DAACC1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\BlackPearl\Object">
+      <UniqueIdentifier>{537DB5A1-BFE9-709C-88DD-08FAF4089304}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\BlackPearl\Object\2DObject">
+      <UniqueIdentifier>{2F673C8F-1B8D-06F6-04D3-8BC1F0972BC2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\BlackPearl\ObjectCreater">
+      <UniqueIdentifier>{B9B623F9-A571-13A5-4E29-8CEF3AC35D35}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\BlackPearl\ObjectManager">
+      <UniqueIdentifier>{CE08E5D3-BAC3-D47F-637B-4DCA4F151F10}</UniqueIdentifier>
+    </Filter>
     <Filter Include="src\BlackPearl\Renderer">
       <UniqueIdentifier>{B3FA019A-1F32-4A31-283C-AE5494F2702A}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\BlackPearl\Renderer\Camera">
-      <UniqueIdentifier>{CB272070-B74D-EAD6-A093-6FA28C580FA3}</UniqueIdentifier>
+    <Filter Include="src\BlackPearl\Renderer\Material">
+      <UniqueIdentifier>{B1E2AF43-9D33-9B85-C697-8947B2472EEF}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\BlackPearl\Renderer\Lighting">
-      <UniqueIdentifier>{984724A1-8498-0FE3-ADFC-FDA499ACA24C}</UniqueIdentifier>
+    <Filter Include="src\BlackPearl\Renderer\Mesh">
+      <UniqueIdentifier>{4F1858D1-3BD3-477D-E48A-C0C7D024920D}</UniqueIdentifier>
     </Filter>
     <Filter Include="src\BlackPearl\Renderer\Model">
       <UniqueIdentifier>{335E60FC-9F76-4726-6823-D7BFD4FADBBF}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\BlackPearl\Renderer\Texture">
-      <UniqueIdentifier>{1323E79A-7F06-F6DA-8809-2417F46BBC2B}</UniqueIdentifier>
+    <Filter Include="src\BlackPearl\Scene">
+      <UniqueIdentifier>{4AB7C252-3646-4C1C-DF64-6017CBD25CC2}</UniqueIdentifier>
     </Filter>
     <Filter Include="src\BlackPearl\Timestep">
       <UniqueIdentifier>{273D33A4-9374-7B3B-9C7E-DF5E0835A234}</UniqueIdentifier>
@@ -60,8 +93,65 @@
     <ClInclude Include="src\BlackPearl\Application.h">
       <Filter>src\BlackPearl</Filter>
     </ClInclude>
+    <ClInclude Include="src\BlackPearl\Component\BaseComponent.h">
+      <Filter>src\BlackPearl\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BlackPearl\Component\CameraComponent\Camera.h">
+      <Filter>src\BlackPearl\Component\CameraComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BlackPearl\Component\CameraComponent\OrthographicCamera.h">
+      <Filter>src\BlackPearl\Component\CameraComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BlackPearl\Component\CameraComponent\PerspectiveCamera.h">
+      <Filter>src\BlackPearl\Component\CameraComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BlackPearl\Component\Component.h">
+      <Filter>src\BlackPearl\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BlackPearl\Component\LightComponent\Light.h">
+      <Filter>src\BlackPearl\Component\LightComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BlackPearl\Component\LightComponent\LightSources.h">
+      <Filter>src\BlackPearl\Component\LightComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BlackPearl\Component\LightComponent\ParallelLight.h">
+      <Filter>src\BlackPearl\Component\LightComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BlackPearl\Component\LightComponent\PointLight.h">
+      <Filter>src\BlackPearl\Component\LightComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BlackPearl\Component\LightComponent\SpotLight.h">
+      <Filter>src\BlackPearl\Component\LightComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BlackPearl\Component\MeshFilterComponent\CubeMeshFilter.h">
+      <Filter>src\BlackPearl\Component\MeshFilterComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BlackPearl\Component\MeshFilterComponent\MeshFilter.h">
+      <Filter>src\BlackPearl\Component\MeshFilterComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BlackPearl\Component\MeshFilterComponent\PlaneMeshFilter.h">
+      <Filter>src\BlackPearl\Component\MeshFilterComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BlackPearl\Component\MeshFilterComponent\QuadMeshFilter.h">
+      <Filter>src\BlackPearl\Component\MeshFilterComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BlackPearl\Component\MeshFilterComponent\SkyBoxMeshFilter.h">
+      <Filter>src\BlackPearl\Component\MeshFilterComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BlackPearl\Component\MeshRendererComponent\MeshRenderer.h">
+      <Filter>src\BlackPearl\Component\MeshRendererComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BlackPearl\Component\TransformComponent\Transform.h">
+      <Filter>src\BlackPearl\Component\TransformComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BlackPearl\Config.h">
+      <Filter>src\BlackPearl</Filter>
+    </ClInclude>
     <ClInclude Include="src\BlackPearl\Core.h">
       <Filter>src\BlackPearl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BlackPearl\Entity\Entity.h">
+      <Filter>src\BlackPearl\Entity</Filter>
     </ClInclude>
     <ClInclude Include="src\BlackPearl\EntryPoint.h">
       <Filter>src\BlackPearl</Filter>
@@ -93,11 +183,38 @@
     <ClInclude Include="src\BlackPearl\Log.h">
       <Filter>src\BlackPearl</Filter>
     </ClInclude>
+    <ClInclude Include="src\BlackPearl\Object\2DObject\Quad.h">
+      <Filter>src\BlackPearl\Object\2DObject</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BlackPearl\Object\Object.h">
+      <Filter>src\BlackPearl\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BlackPearl\ObjectCreater\ObjectCreater.h">
+      <Filter>src\BlackPearl\ObjectCreater</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BlackPearl\ObjectManager\ObjectManager.h">
+      <Filter>src\BlackPearl\ObjectManager</Filter>
+    </ClInclude>
     <ClInclude Include="src\BlackPearl\Renderer\Buffer.h">
       <Filter>src\BlackPearl\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="src\BlackPearl\Renderer\Context.h">
       <Filter>src\BlackPearl\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BlackPearl\Renderer\Material\CubeMapTexture.h">
+      <Filter>src\BlackPearl\Renderer\Material</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BlackPearl\Renderer\Material\Material.h">
+      <Filter>src\BlackPearl\Renderer\Material</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BlackPearl\Renderer\Material\MaterialColor.h">
+      <Filter>src\BlackPearl\Renderer\Material</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BlackPearl\Renderer\Material\Texture.h">
+      <Filter>src\BlackPearl\Renderer\Material</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BlackPearl\Renderer\Mesh\Mesh.h">
+      <Filter>src\BlackPearl\Renderer\Mesh</Filter>
     </ClInclude>
     <ClInclude Include="src\BlackPearl\Renderer\Model\Model.h">
       <Filter>src\BlackPearl\Renderer\Model</Filter>
@@ -113,6 +230,9 @@
     </ClInclude>
     <ClInclude Include="src\BlackPearl\Renderer\VertexArray.h">
       <Filter>src\BlackPearl\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BlackPearl\Scene\Scene.h">
+      <Filter>src\BlackPearl\Scene</Filter>
     </ClInclude>
     <ClInclude Include="src\BlackPearl\Timestep\Timestep.h">
       <Filter>src\BlackPearl\Timestep</Filter>
@@ -1233,59 +1353,64 @@
     <ClInclude Include="vendor\stb\stb_image.h">
       <Filter>vendor\stb</Filter>
     </ClInclude>
-    <ClInclude Include="src\BlackPearl\Component\Component.h" />
-    <ClInclude Include="src\BlackPearl\Entity\Entity.h" />
-    <ClInclude Include="src\BlackPearl\Component\BaseComponent.h" />
-    <ClInclude Include="src\BlackPearl\Renderer\Mesh\Mesh.h">
-      <Filter>src\BlackPearl\Renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="src\BlackPearl\Object\Object.h" />
-    <ClInclude Include="src\BlackPearl\Renderer\Material\MaterialColor.h">
-      <Filter>src\BlackPearl\Renderer\Texture</Filter>
-    </ClInclude>
-    <ClInclude Include="src\BlackPearl\Renderer\Material\Texture.h">
-      <Filter>src\BlackPearl\Renderer\Texture</Filter>
-    </ClInclude>
-    <ClInclude Include="src\BlackPearl\Renderer\Material\Material.h" />
-    <ClInclude Include="src\BlackPearl\Scene\Scene.h" />
-    <ClInclude Include="src\BlackPearl\Component\CameraComponent\Camera.h">
-      <Filter>src\BlackPearl\Renderer\Camera</Filter>
-    </ClInclude>
-    <ClInclude Include="src\BlackPearl\Component\CameraComponent\OrthographicCamera.h">
-      <Filter>src\BlackPearl\Renderer\Camera</Filter>
-    </ClInclude>
-    <ClInclude Include="src\BlackPearl\Component\CameraComponent\PerspectiveCamera.h">
-      <Filter>src\BlackPearl\Renderer\Camera</Filter>
-    </ClInclude>
-    <ClInclude Include="src\BlackPearl\Component\LightComponent\Light.h">
-      <Filter>src\BlackPearl\Renderer\Lighting</Filter>
-    </ClInclude>
-    <ClInclude Include="src\BlackPearl\Component\LightComponent\LightSources.h">
-      <Filter>src\BlackPearl\Renderer\Lighting</Filter>
-    </ClInclude>
-    <ClInclude Include="src\BlackPearl\Component\LightComponent\ParallelLight.h">
-      <Filter>src\BlackPearl\Renderer\Lighting</Filter>
-    </ClInclude>
-    <ClInclude Include="src\BlackPearl\Component\LightComponent\PointLight.h">
-      <Filter>src\BlackPearl\Renderer\Lighting</Filter>
-    </ClInclude>
-    <ClInclude Include="src\BlackPearl\Component\LightComponent\SpotLight.h">
-      <Filter>src\BlackPearl\Renderer\Lighting</Filter>
-    </ClInclude>
-    <ClInclude Include="src\BlackPearl\Component\TransformComponent\Transform.h" />
-    <ClInclude Include="src\BlackPearl\ObjectCreater\ObjectCreater.h" />
-    <ClInclude Include="src\BlackPearl\ObjectManager\ObjectManager.h" />
-    <ClInclude Include="src\BlackPearl\Component\MeshRendererComponent\MeshRenderer.h" />
-    <ClInclude Include="src\BlackPearl\Component\MeshFilterComponent\MeshFilter.h" />
-    <ClInclude Include="src\BlackPearl\Component\MeshFilterComponent\CubeMeshFilter.h" />
-    <ClInclude Include="src\BlackPearl\Component\MeshFilterComponent\PlaneMeshFilter.h" />
-    <ClInclude Include="src\BlackPearl\Object\2DObject\Quad.h" />
-    <ClInclude Include="src\BlackPearl\Config.h" />
-    <ClInclude Include="src\BlackPearl\Component\MeshFilterComponent\QuadMeshFilter.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\BlackPearl\Application.cpp">
       <Filter>src\BlackPearl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BlackPearl\Component\BaseComponent.cpp">
+      <Filter>src\BlackPearl\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BlackPearl\Component\CameraComponent\Camera.cpp">
+      <Filter>src\BlackPearl\Component\CameraComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BlackPearl\Component\CameraComponent\OrthographicCamera.cpp">
+      <Filter>src\BlackPearl\Component\CameraComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BlackPearl\Component\CameraComponent\PerspectiveCamera.cpp">
+      <Filter>src\BlackPearl\Component\CameraComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BlackPearl\Component\Component.cpp">
+      <Filter>src\BlackPearl\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BlackPearl\Component\LightComponent\Light.cpp">
+      <Filter>src\BlackPearl\Component\LightComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BlackPearl\Component\LightComponent\LightSources.cpp">
+      <Filter>src\BlackPearl\Component\LightComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BlackPearl\Component\LightComponent\ParallelLight.cpp">
+      <Filter>src\BlackPearl\Component\LightComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BlackPearl\Component\LightComponent\PointLight.cpp">
+      <Filter>src\BlackPearl\Component\LightComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BlackPearl\Component\LightComponent\SpotLight.cpp">
+      <Filter>src\BlackPearl\Component\LightComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BlackPearl\Component\MeshFilterComponent\CubeMeshFilter.cpp">
+      <Filter>src\BlackPearl\Component\MeshFilterComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BlackPearl\Component\MeshFilterComponent\MeshFilter.cpp">
+      <Filter>src\BlackPearl\Component\MeshFilterComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BlackPearl\Component\MeshFilterComponent\PlaneMeshFilter.cpp">
+      <Filter>src\BlackPearl\Component\MeshFilterComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BlackPearl\Component\MeshFilterComponent\QuadMeshFilter.cpp">
+      <Filter>src\BlackPearl\Component\MeshFilterComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BlackPearl\Component\MeshFilterComponent\SkyBoxMeshFilter.cpp">
+      <Filter>src\BlackPearl\Component\MeshFilterComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BlackPearl\Component\MeshRendererComponent\MeshRenderer.cpp">
+      <Filter>src\BlackPearl\Component\MeshRendererComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BlackPearl\Component\TransformComponent\Transform.cpp">
+      <Filter>src\BlackPearl\Component\TransformComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BlackPearl\Entity\Entity.cpp">
+      <Filter>src\BlackPearl\Entity</Filter>
     </ClCompile>
     <ClCompile Include="src\BlackPearl\ImGui\ImGuiBuild.cpp">
       <Filter>src\BlackPearl\ImGui</Filter>
@@ -1305,11 +1430,38 @@
     <ClCompile Include="src\BlackPearl\Log.cpp">
       <Filter>src\BlackPearl</Filter>
     </ClCompile>
+    <ClCompile Include="src\BlackPearl\Object\2DObject\Quad.cpp">
+      <Filter>src\BlackPearl\Object\2DObject</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BlackPearl\Object\Object.cpp">
+      <Filter>src\BlackPearl\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BlackPearl\ObjectCreater\ObjectCreater.cpp">
+      <Filter>src\BlackPearl\ObjectCreater</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BlackPearl\ObjectManager\ObjectManager.cpp">
+      <Filter>src\BlackPearl\ObjectManager</Filter>
+    </ClCompile>
     <ClCompile Include="src\BlackPearl\Renderer\Buffer.cpp">
       <Filter>src\BlackPearl\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="src\BlackPearl\Renderer\Context.cpp">
       <Filter>src\BlackPearl\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BlackPearl\Renderer\Material\CubeMapTexture.cpp">
+      <Filter>src\BlackPearl\Renderer\Material</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BlackPearl\Renderer\Material\Material.cpp">
+      <Filter>src\BlackPearl\Renderer\Material</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BlackPearl\Renderer\Material\MaterialColor.cpp">
+      <Filter>src\BlackPearl\Renderer\Material</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BlackPearl\Renderer\Material\Texture.cpp">
+      <Filter>src\BlackPearl\Renderer\Material</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BlackPearl\Renderer\Mesh\Mesh.cpp">
+      <Filter>src\BlackPearl\Renderer\Mesh</Filter>
     </ClCompile>
     <ClCompile Include="src\BlackPearl\Renderer\Model\Model.cpp">
       <Filter>src\BlackPearl\Renderer\Model</Filter>
@@ -1326,6 +1478,9 @@
     <ClCompile Include="src\BlackPearl\Renderer\VertexArray.cpp">
       <Filter>src\BlackPearl\Renderer</Filter>
     </ClCompile>
+    <ClCompile Include="src\BlackPearl\Scene\Scene.cpp">
+      <Filter>src\BlackPearl\Scene</Filter>
+    </ClCompile>
     <ClCompile Include="src\BlackPearl\Timestep\Timestep.cpp">
       <Filter>src\BlackPearl\Timestep</Filter>
     </ClCompile>
@@ -1335,73 +1490,5 @@
     <ClCompile Include="src\pch.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\BlackPearl\Component\Component.cpp" />
-    <ClCompile Include="src\BlackPearl\Entity\Entity.cpp" />
-    <ClCompile Include="src\BlackPearl\Component\BaseComponent.cpp" />
-    <ClCompile Include="src\BlackPearl\Renderer\Mesh\Mesh.cpp">
-      <Filter>src\BlackPearl\Renderer</Filter>
-    </ClCompile>
-    <ClCompile Include="src\BlackPearl\Object\Object.cpp" />
-    <ClCompile Include="src\BlackPearl\Renderer\Material\MaterialColor.cpp">
-      <Filter>src\BlackPearl\Renderer\Texture</Filter>
-    </ClCompile>
-    <ClCompile Include="src\BlackPearl\Renderer\Material\Texture.cpp">
-      <Filter>src\BlackPearl\Renderer\Texture</Filter>
-    </ClCompile>
-    <ClCompile Include="src\BlackPearl\Renderer\Material\Material.cpp" />
-    <ClCompile Include="src\BlackPearl\Scene\Scene.cpp" />
-    <ClCompile Include="src\BlackPearl\Component\CameraComponent\Camera.cpp">
-      <Filter>src\BlackPearl\Renderer\Camera</Filter>
-    </ClCompile>
-    <ClCompile Include="src\BlackPearl\Component\CameraComponent\OrthographicCamera.cpp">
-      <Filter>src\BlackPearl\Renderer\Camera</Filter>
-    </ClCompile>
-    <ClCompile Include="src\BlackPearl\Component\CameraComponent\PerspectiveCamera.cpp">
-      <Filter>src\BlackPearl\Renderer\Camera</Filter>
-    </ClCompile>
-    <ClCompile Include="src\BlackPearl\Component\LightComponent\Light.cpp">
-      <Filter>src\BlackPearl\Renderer\Lighting</Filter>
-    </ClCompile>
-    <ClCompile Include="src\BlackPearl\Component\LightComponent\LightSources.cpp">
-      <Filter>src\BlackPearl\Renderer\Lighting</Filter>
-    </ClCompile>
-    <ClCompile Include="src\BlackPearl\Component\LightComponent\ParallelLight.cpp">
-      <Filter>src\BlackPearl\Renderer\Lighting</Filter>
-    </ClCompile>
-    <ClCompile Include="src\BlackPearl\Component\LightComponent\PointLight.cpp">
-      <Filter>src\BlackPearl\Renderer\Lighting</Filter>
-    </ClCompile>
-    <ClCompile Include="src\BlackPearl\Component\LightComponent\SpotLight.cpp">
-      <Filter>src\BlackPearl\Renderer\Lighting</Filter>
-    </ClCompile>
-    <ClCompile Include="src\BlackPearl\Component\TransformComponent\Transform.cpp" />
-    <ClCompile Include="src\BlackPearl\ObjectCreater\ObjectCreater.cpp" />
-    <ClCompile Include="src\BlackPearl\ObjectManager\ObjectManager.cpp" />
-    <ClCompile Include="src\BlackPearl\Component\MeshRendererComponent\MeshRenderer.cpp" />
-    <ClCompile Include="src\BlackPearl\Component\MeshFilterComponent\MeshFilter.cpp" />
-    <ClCompile Include="src\BlackPearl\Component\MeshFilterComponent\CubeMeshFilter.cpp" />
-    <ClCompile Include="src\BlackPearl\Component\MeshFilterComponent\PlaneMeshFilter.cpp" />
-    <ClCompile Include="src\BlackPearl\Object\2DObject\Quad.cpp" />
-    <ClCompile Include="src\BlackPearl\Component\MeshFilterComponent\QuadMeshFilter.cpp" />
-    <ClCompile Include="QUADMESHFILTER.CPP" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="ClassDiagram.cd" />
-    <None Include="ClassDiagram1.cd" />
-    <None Include="ClassDiagram2.cd" />
-    <None Include="ClassDiagram3.cd" />
-    <None Include="ClassDiagram4.cd" />
-    <None Include="ClassDiagram5.cd" />
-    <None Include="ClassDiagram6.cd" />
-    <None Include="ClassDiagram7.cd" />
-    <None Include="ClassDiagram8.cd" />
-    <None Include="ClassDiagram9.cd" />
-    <None Include="ClassDiagram10.cd" />
-    <None Include="ClassDiagram11.cd" />
-    <None Include="ClassDiagram12.cd" />
-    <None Include="ClassDiagram13.cd" />
-    <None Include="ClassDiagram14.cd" />
-    <None Include="ClassDiagram15.cd" />
-    <None Include="ClassDiagram16.cd" />
   </ItemGroup>
 </Project>

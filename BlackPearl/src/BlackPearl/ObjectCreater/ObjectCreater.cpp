@@ -7,7 +7,9 @@
 #include "BlackPearl/Component/MeshFilterComponent/CubeMeshFilter.h"
 #include "BlackPearl/Component/MeshFilterComponent/PlaneMeshFilter.h"
 #include "BlackPearl/Component/MeshFilterComponent/QuadMeshFilter.h"
+#include "BlackPearl/Component/MeshFilterComponent/SkyBoxMeshFilter.h"
 #include "BlackPearl/Component/CameraComponent/PerspectiveCamera.h"
+#include "BlackPearl/Renderer/Material/CubeMapTexture.h"
 
 namespace BlackPearl {
 
@@ -50,12 +52,12 @@ namespace BlackPearl {
 		Object* obj = CreateEmpty("Plane");
 		std::shared_ptr<PlaneMeshFilter> meshFilter = obj->AddComponent<PlaneMeshFilter>();
 		Transform *transformComponent = obj->GetComponent<Transform>();
-		std::shared_ptr<Material> material;
 
+		std::shared_ptr<Material> material;
 		std::shared_ptr<Material::TextureMaps> texture(DBG_NEW Material::TextureMaps());
 		texture->diffuseTextureMap.reset(DBG_NEW Texture(Texture::Type::DiffuseMap, "assets/texture/container.jpg"));
-
 		material.reset(DBG_NEW Material("assets/shaders/Plane.glsl", texture, {}, { 0.2,0.2,0.0 }, {}, {}));
+
 		VertexBufferLayout layout = {
 		{ElementDataType::Float3,"aPos",false},
 		{ElementDataType::Float2,"aTexCoords",false}
@@ -77,11 +79,30 @@ namespace BlackPearl {
 		Object *obj = CreateEmpty("Model");
 
 		Transform *transformComponent = obj->GetComponent<Transform>();
-		transformComponent->SetPosition({ 0.0f, -1.75f, 0.0f });
+		transformComponent->SetPosition({ 0.0f, 0.0f, 0.0f });
 		transformComponent->SetRotation({ 0.0,180.0,0.0 });
 		transformComponent->SetScale({ 0.01f, 0.01f, 0.01f });
 
 		obj->AddComponent<MeshRenderer>(model, transformComponent->GetTransformMatrix());
+		return obj;
+	}
+
+	Object * Object3DCreater::CreateSkyBox(const std::vector<std::string>& textureFaces)
+	{
+		Object *obj = CreateEmpty("SkyBox");
+		std::shared_ptr<SkyBoxMeshFilter> meshFilter = obj->AddComponent<SkyBoxMeshFilter>();
+		Transform *transformComponent = obj->GetComponent<Transform>();
+		std::shared_ptr<Material> material;
+		std::shared_ptr<Material::TextureMaps> texture(DBG_NEW Material::TextureMaps());
+		std::shared_ptr<Texture> cubeMapTexture(DBG_NEW CubeMapTexture(Texture::Type::CubeMap, textureFaces));
+		texture->cubeTextureMap = cubeMapTexture;
+		material.reset(DBG_NEW Material("assets/shaders/SkyBox.glsl", texture, {}, { 0.2,0.2,0.0 }, {}, {}));
+
+		VertexBufferLayout layout = {
+		{ElementDataType::Float3,"aPos",false},
+		};
+		Mesh mesh(meshFilter->GetVertices(), meshFilter->GetIndices(), material, layout);
+		obj->AddComponent<MeshRenderer>(mesh, transformComponent->GetTransformMatrix());
 		return obj;
 	}
 

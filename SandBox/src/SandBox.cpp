@@ -5,6 +5,7 @@
 
 //#include "BlackPearl/Scene/Scene.h"
 #include "Layers/FrameBufferTestLayer.h"
+#include "Layers/SkyBoxTestLayer.h"
 #include "BlackPearl/Application.h"
 
 class SandBox :public BlackPearl::Application {
@@ -14,7 +15,9 @@ public:
 		BlackPearl::EntityManager * entityManager = DBG_NEW BlackPearl::EntityManager();
 		BlackPearl::ObjectManager *objectManager = DBG_NEW BlackPearl::ObjectManager(entityManager);
 
-		BlackPearl::Layer* layer = DBG_NEW FrameBufferTestLayer("FrameBufferTest Layer", objectManager);
+		//BlackPearl::Layer* layer = DBG_NEW FrameBufferTestLayer("FrameBufferTest Layer", objectManager);
+		BlackPearl::Layer* layer = DBG_NEW SkyBoxTestLayer("SkyBoxTest Layer", objectManager);
+
 		GetScene()->PushLayer(layer);
 	}
 	virtual ~SandBox() = default;

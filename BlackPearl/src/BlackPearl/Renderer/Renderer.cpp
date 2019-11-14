@@ -37,6 +37,8 @@ namespace BlackPearl {
 		m_SceneData->ViewProjectionMatrix = camera.GetViewProjectionMatrix();
 		m_SceneData->CameraPosition = camera.GetPosition();
 		m_SceneData->CameraFront = camera.Front();
+		m_SceneData->ViewMatrix = camera.GetViewMatrix();
+		m_SceneData->ProjectionMatrix = camera.GetProjectionMatrix();
 		for (Object* lightObj : lightSources.Get()) {
 			//std::shared_ptr<Light> lightSource(lightObj->GetComponent<Light>());
 			if (lightObj->HasComponent<ParallelLight>()) {
@@ -69,6 +71,10 @@ namespace BlackPearl {
 	{
 		shader->Bind();
 		shader->SetUniformMat4f("u_ProjectionView", m_SceneData->ViewProjectionMatrix);
+		shader->SetUniformMat4f("u_Projection", m_SceneData->ProjectionMatrix);
+		shader->SetUniformMat4f("u_View", m_SceneData->ViewMatrix);
+
+
 		shader->SetUniformMat4f("u_Model", model);
 		shader->SetUniformVec3f("u_CameraViewPos", m_SceneData->CameraPosition);
 

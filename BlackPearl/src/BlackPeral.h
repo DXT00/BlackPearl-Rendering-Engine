@@ -22,7 +22,6 @@
 #include "BlackPearl/Renderer/RenderCommand.h"
 #include "BlackPearl/Object/Object.h"
 #include "BlackPearl/ObjectManager/ObjectManager.h"
-//#include "BlackPearl/Renderer/Buffer.h"
 
 #include "BlackPearl/Input.h"
 #include "BlackPearl/Timestep/Timestep.h"
@@ -32,4 +31,3 @@
 #include "BlackPearl/Scene/Scene.h"
 #include "BlackPearl/Entity/Entity.h"
 //#include "BlackPearl/Component/ComponentHandle.h"
-#include "BlackPearl/Object/Object.h"

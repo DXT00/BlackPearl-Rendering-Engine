@@ -11,10 +11,7 @@ public:
 	FrameBufferTestLayer(const std::string& name, BlackPearl::ObjectManager *objectManager)
 		: Layer(name, objectManager)
 	{
-		/*BlackPearl::Entity *entity = entityManager->CreateEntity();
-		m_CameraObj = new BlackPearl::Object(entity->GetEntityManager(), entity->GetId());
-		std::shared_ptr<BlackPearl::Camera> cameraComponent(m_CameraObj->AddComponent<BlackPearl::PerspectiveCamera>());
-*/
+		
 		m_CameraObj = CreateCamera();
 		auto cameraComponent = m_CameraObj->GetComponent<BlackPearl::PerspectiveCamera>();
 		cameraComponent->SetPosition(glm::vec3(0.0f, 0.0f, 8.0f));
