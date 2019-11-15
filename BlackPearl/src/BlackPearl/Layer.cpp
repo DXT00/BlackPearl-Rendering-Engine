@@ -1,12 +1,20 @@
 #include "pch.h"
+
 #include"BlackPearl/Layer.h"
 #include "BlackPearl/Component/LightComponent/PointLight.h"
 #include "Renderer/Model/Model.h"
 #include "Renderer/Shader.h"
 #include "imgui.h"
 #include <glm/gtc/type_ptr.hpp>
-
+#include <stdio.h>
+#include <stdlib.h>
 namespace BlackPearl {
+
+
+
+
+
+
 
 	Object* Layer::CreateEmpty(std::string name) {
 
@@ -16,9 +24,9 @@ namespace BlackPearl {
 	{
 		return m_ObjectManager->CreateLight(type, m_LightSources);
 	}
-	Object * Layer::CreateCube() //TODO:
+	Object * Layer::CreateCube(const std::string& shaderPath, const std::string& texturePath) //TODO:
 	{
-		return m_ObjectManager->CreateCube();
+		return m_ObjectManager->CreateCube(shaderPath, texturePath);
 	}
 	Object * Layer::CreatePlane()
 	{
@@ -28,34 +36,135 @@ namespace BlackPearl {
 	{
 		return m_ObjectManager->CreateSkyBox(textureFaces);
 	}
-	Object * Layer::CreateQuad()
+	Object * Layer::CreateQuad(const std::string& shaderPath, const std::string& texturePath)
 	{
-		return m_ObjectManager->CreateQuad();
+		return m_ObjectManager->CreateQuad(shaderPath, texturePath);
 	}
 	Object* Layer::CreateModel(const std::string& modelPath, const std::string& shaderPath)
-	{	
-		return m_ObjectManager->CreateModel(modelPath,shaderPath);
+	{
+		return m_ObjectManager->CreateModel(modelPath, shaderPath);
 	}
 	Object* Layer::CreateCamera() {
 
 		return m_ObjectManager->CreateCamera();
 	}
-	
+
+	void Layer::ShowShader(static std::string &imguiShaders, static char* shader, Mesh & mesh, int meshIndex, static  int &itemIndex)
+	{
+
+		std::string buttonName = "select file##" + std::to_string(meshIndex);
+		std::string inputTextName = "shader##" + std::to_string(meshIndex);
+
+		imguiShaders = mesh.GetMaterial()->GetShader()->GetPath();
+		shader = const_cast<char*>(imguiShaders.c_str());
+		ImGui::InputText(inputTextName.c_str(), shader, IM_ARRAYSIZE(shader));
+		ImGui::SameLine();
+		if (ImGui::Button(buttonName.c_str())) {
+			itemIndex = meshIndex;
+			m_fileDialog.Open();
+		}
+
+
+	}
 
 	void Layer::ShowMeshRenderer(std::shared_ptr<BlackPearl::MeshRenderer> comp)
 	{
 
 
 
+
+
+		ImGui::Text("MeshRenderer");
+
+
+		if (!comp->GetMeshes().empty()) {
+			ImGui::TextColored({ 1.0,0.64,0.0,1.0 }, "Material");
+			static std::vector<std::string> imguiShaders(comp->GetMeshes().size());
+			static std::vector<char*> shader(comp->GetMeshes().size());
+			static  int itemIndex = -1;
+
+			for (int i = 0; i < comp->GetMeshes().size(); i++)
+			{
+				ShowShader(imguiShaders[i], shader[i], comp->GetMeshes()[i], i, itemIndex);
+			}
+			if (itemIndex != -1) {
+			
+
+				if (m_fileDialog.HasSelected()) {
+					imguiShaders[itemIndex] = m_fileDialog.GetSelected().string();
+					std::cout << "Selected filename" << m_fileDialog.GetSelected().string() << std::endl;
+					shader[itemIndex] = const_cast<char*>(imguiShaders[itemIndex].c_str());// (m_fileDialog.GetSelected().string().c_str());
+					comp->GetMeshes()[itemIndex].GetMaterial()->SetShader("assets/shaders/" + imguiShaders[itemIndex]);
+
+					m_fileDialog.ClearSelected();
+					itemIndex = -1;
+				}
+				
+
+
+
+			}
+
+		}
+
+		if (comp->GetModel() != nullptr) {
+			ImGui::TextColored({ 1.0,0.64,0.0,1.0 }, "Model");
+			static std::vector< std::string> imguiModelShaders(comp->GetModel()->GetMeshes().size());
+			static std::vector<char*> Modelshader(comp->GetModel()->GetMeshes().size());
+			static  int itemIndex = -1;
+			
+
+			for (int i = 0; i < comp->GetModel()->GetMeshes().size(); i++) {
+
+				ShowShader(imguiModelShaders[i], Modelshader[i], comp->GetModel()->GetMeshes()[i], i, itemIndex);
+
+			}
+			std::cout << "itemIndex:" << itemIndex << std::endl;
+			if (itemIndex != -1) {
+
+
+				if (m_fileDialog.HasSelected()) {
+					imguiModelShaders[itemIndex] = m_fileDialog.GetSelected().string();
+					std::cout << "Selected filename" << m_fileDialog.GetSelected().string() << std::endl;
+					Modelshader[itemIndex] = const_cast<char*>(imguiModelShaders[itemIndex].c_str());// (m_fileDialog.GetSelected().string().c_str());
+					comp->GetModel()->GetMeshes()[itemIndex].GetMaterial()->SetShader("assets/shaders/" + imguiModelShaders[itemIndex]);
+
+					m_fileDialog.ClearSelected();
+					itemIndex = -1;
+				}
+				
+
+
+
+			}
+
+		}
+
+
+
+
+
+
+
+
+
+
 	}
+
+
+
+
 
 	void Layer::ShowTransform(std::shared_ptr<BlackPearl::Transform> comp)
 	{
-		 float pos[] = { comp->GetPosition().x,comp->GetPosition().y,comp->GetPosition().z };
+		//ImGui::Text("Transform");
+		ImGui::Text("Transform");
+
+		float pos[] = { comp->GetPosition().x,comp->GetPosition().y,comp->GetPosition().z };
 		ImGui::DragFloat3("position", pos, 0.1f, -100.0f, 100.0f, "%.3f ");
 		comp->SetPosition({ pos[0],pos[1],pos[2] });
 
-		 float scale[] = { comp->GetScale().x,comp->GetScale().y,comp->GetScale().z };
+		float scale[] = { comp->GetScale().x,comp->GetScale().y,comp->GetScale().z };
 		ImGui::DragFloat3("scale", scale, 0.5f, 0.001f, 100.0f, "%.3f ");
 		comp->SetScale({ scale[0],scale[1],scale[2] });
 
@@ -85,6 +194,8 @@ namespace BlackPearl {
 
 		}
 	}
+
+
 
 	void Layer::DrawObjects()
 	{

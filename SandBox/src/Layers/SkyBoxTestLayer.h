@@ -5,6 +5,7 @@
 #include "glm/ext/matrix_transform.hpp"
 
 #include "imgui/imgui.h"
+#include "imgui/imfilebrowser.h"
 #include <glm/gtc/type_ptr.hpp>
 class SkyBoxTestLayer :public BlackPearl::Layer {
 public:
@@ -34,14 +35,29 @@ public:
 			});
 		//m_PlaneObj =CreatePlane();
 		//m_QuadObj = CreateQuad();
-		//m_CubeObj = CreateCube();
-		//auto meshComponent = m_QuadObj->GetComponent<BlackPearl::MeshRenderer>();
-		//meshComponent->SetTexture(0, m_FrameBuffer->GetColorTexture());
+
+		m_CubeObj = CreateCube("assets/shaders/CubeRefraction.glsl","");
+		auto meshComponent = m_CubeObj->GetComponent<BlackPearl::MeshRenderer>();
+		std::shared_ptr<BlackPearl::Texture> cubeMapTexture(DBG_NEW BlackPearl::CubeMapTexture(BlackPearl::Texture::Type::CubeMap, 
+			{ "assets/skybox/skybox/right.jpg",
+			 "assets/skybox/skybox/left.jpg",
+			 "assets/skybox/skybox/top.jpg",
+			 "assets/skybox/skybox/bottom.jpg",
+			 "assets/skybox/skybox/front.jpg",
+			 "assets/skybox/skybox/back.jpg",
+			}));
+		meshComponent->SetTexture(0, cubeMapTexture);
 
 		//把FrameBuffer中的texture作为贴图，贴到m_CubeObj上
 	//	auto CubemeshComponent = m_CubeObj->GetComponent<BlackPearl::MeshRenderer>();
 		//CubemeshComponent->SetTexture(0, m_FrameBuffer->GetColorTexture());
 		//	Layer::CreateLight(BlackPearl::LightType::PointLight);
+
+		
+
+		// (optional) set browser properties
+		
+		//m_fileDialog.SetTypeFilters({ ".h", ".cpp" });
 	}
 
 	virtual ~SkyBoxTestLayer() {
@@ -141,27 +157,35 @@ public:
 				}
 			}
 		}
-		if (ImGui::CollapsingHeader("Scene")) {
+		if (ImGui::BeginTabBar("TabBar 0", ImGuiTabBarFlags_None))
+		{
+			if (ImGui::BeginTabItem("Scene")) {
+				std::vector<BlackPearl::Object*> objsList = GetObjects();		//TODO::
+				ImGui::ListBoxHeader("CurrentEntities", (int)objsList.size(), 6);
 
-			std::vector<BlackPearl::Object*> objsList = GetObjects();		//TODO::
-			ImGui::ListBoxHeader("CurrentEntities", (int)objsList.size(), 6);
+				for (int n = 0; n < objsList.size(); n++) {
+					//ImGui::Text("%s", objsList[n].c_str());
+					bool is_selected = (currentObj != nullptr && currentObj->ToString() == objsList[n]->ToString());
+					if (ImGui::Selectable(objsList[n]->ToString().c_str(), is_selected)) {
+						currentObj = objsList[n];
+						GE_CORE_INFO(objsList[n]->ToString() + "is selected")
+					}
 
-			for (int n = 0; n < objsList.size(); n++) {
-				//ImGui::Text("%s", objsList[n].c_str());
-				bool is_selected = (currentObj != nullptr && currentObj->ToString() == objsList[n]->ToString());
-				if (ImGui::Selectable(objsList[n]->ToString().c_str(), is_selected)) {
-					currentObj = objsList[n];
-					GE_CORE_INFO(objsList[n]->ToString() + "is selected")
+					if (is_selected)
+						ImGui::SetItemDefaultFocus();
 				}
-
-				if (is_selected)
-					ImGui::SetItemDefaultFocus();
+				ImGui::ListBoxFooter();
+				ImGui::EndTabItem();
 			}
-			ImGui::ListBoxFooter();
+			//}
 		}
+		ImGui::EndTabBar();
 
 		////////////////////Inspector/////////////////////////
 		ImGui::Begin("Inspector");
+
+
+		
 		if (currentObj != nullptr) {
 
 			std::unordered_map<BlackPearl::BaseComponent::Family, std::shared_ptr<BlackPearl::BaseComponent>> componentList = currentObj->GetComponentList();
@@ -196,9 +220,15 @@ public:
 			}
 		}
 
-
-
 		ImGui::End();
+
+
+
+		m_fileDialog.Display();
+
+		
+	
+		
 	}
 	void OnAttach() override {
 
@@ -284,6 +314,9 @@ private:
 	float m_CameraRotateSpeed = 9.0f;
 
 	glm::vec4 m_BackgroundColor = { 0.0f,0.0f,0.0f,0.0f };
+
+	
+
 
 	//std::shared_ptr<BlackPearl::FrameBuffer> m_FrameBuffer;
 

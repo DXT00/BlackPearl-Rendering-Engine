@@ -68,7 +68,7 @@ namespace BlackPearl {
 		std::vector<float> vertices;
 		std::vector<unsigned int> indices;
 		// maps
-		std::shared_ptr<Material::TextureMaps> textures;
+		std::shared_ptr<Material::TextureMaps> textures(DBG_NEW Material::TextureMaps());
 		MaterialColor  colors;
 
 		VertexBufferLayout layout = {

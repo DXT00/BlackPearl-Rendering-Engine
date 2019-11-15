@@ -32,10 +32,12 @@ namespace BlackPearl {
 		virtual void UnBind();
 		inline Type GetType() { return m_Type; }
 		unsigned int GetRendererID() { return m_TextureID; }
-
+		std::vector<std::string> GetFacesPath() { return m_FacesPath; }
+		std::string GetPath() { return m_Path; }
 
 	protected:
 		unsigned int m_TextureID;
+		std::vector<std::string> m_FacesPath;
 		std::string m_Path;
 		Type m_Type;
 	};

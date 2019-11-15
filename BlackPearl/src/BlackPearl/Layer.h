@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+
 #include "Object/Object.h"
 #include "ObjectManager/ObjectManager.h"
 #include "Component/LightComponent/Light.h"
@@ -8,6 +9,9 @@
 #include "Timestep/Timestep.h"
 #include "Component/TransformComponent/Transform.h"
 #include "Component/MeshRendererComponent/MeshRenderer.h"
+#include "imgui/imgui.h"
+#include "imgui/imfilebrowser.h"
+
 namespace BlackPearl {
 
 	class Layer
@@ -15,8 +19,10 @@ namespace BlackPearl {
 	public:
 		Layer(const std::string& name, ObjectManager *objectManager)
 			:m_DebugName(name), m_ObjectManager(objectManager){
-			m_LightSources    = new LightSources();
-		
+			
+			m_LightSources    = new LightSources();	
+			m_fileDialog.SetTitle("file selector");
+			m_fileDialog.SetPwd("./assets");
 
 		}
 		virtual ~Layer() {
@@ -37,14 +43,16 @@ namespace BlackPearl {
 		virtual Object* CreateCamera();
 
 		virtual Object* CreateModel(const std::string& modelPath, const std::string& shaderPath);
-		virtual Object* CreateCube();
+		virtual Object* CreateCube(const std::string& shaderPath = "assets/shaders/Cube.glsl", const std::string& texturePath = "");
 		virtual Object* CreatePlane();
 		virtual Object* CreateSkyBox(const std::vector<std::string>& textureFaces);
-		virtual Object* CreateQuad();
+		virtual Object* CreateQuad(const std::string& shaderPath = "assets/shaders/Quad.glsl", const std::string& texturePath = "assets/texture/1.jpg");
 
 		void ShowMeshRenderer(std::shared_ptr<BlackPearl::MeshRenderer> comp);
 		void ShowTransform(std::shared_ptr<BlackPearl::Transform> comp);
 		void ShowLight(std::shared_ptr<BlackPearl::Light>comp);
+
+		void ShowShader(static std::string &imguiShaders, static char* shader, Mesh & mesh,int meshIndex, static  int &itemIndex);
 
 		std::vector<Object*> GetObjects();
 		std::vector<std::string> GetObjectsName();
@@ -60,6 +68,7 @@ namespace BlackPearl {
 
 		ObjectManager*   m_ObjectManager;
 		LightSources*    m_LightSources;
+		ImGui::FileBrowser m_fileDialog;
 
 	};
 

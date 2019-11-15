@@ -25,6 +25,7 @@ namespace BlackPearl {
 	Texture::Texture(Type type, const int width, const int height)
 	{
 		m_Path = "";
+		
 		m_Type = type;
 		glGenTextures(1, &m_TextureID);
 		glBindTexture(GL_TEXTURE_2D, m_TextureID);
@@ -42,6 +43,7 @@ namespace BlackPearl {
 	Texture::Texture(Type type, std::vector<std::string> faces)
 	{
 		m_Path = "";
+		m_FacesPath = faces;
 		m_Type = type;
 		glGenTextures(1, &m_TextureID);
 		Bind();

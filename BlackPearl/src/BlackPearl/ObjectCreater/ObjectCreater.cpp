@@ -34,11 +34,14 @@ namespace BlackPearl {
 		
 		std::shared_ptr<Material> material;
 		std::shared_ptr<Material::TextureMaps> texture(DBG_NEW Material::TextureMaps());
-		texture->diffuseTextureMap.reset(DBG_NEW Texture(Texture::Type::DiffuseMap, texturePath));
+		if (texturePath != "")
+			texture->diffuseTextureMap.reset(DBG_NEW Texture(Texture::Type::DiffuseMap, texturePath));
 	
 		material.reset(DBG_NEW Material(shaderPath, texture, {}, { 0.2,0.5,0.6 }, {}, {}));
 		VertexBufferLayout layout = {
 		{ElementDataType::Float3,"aPos",false},
+		{ElementDataType::Float3,"aNormal",false},
+
 		{ElementDataType::Float2,"aTexCoords",false}
 
 		};
@@ -84,6 +87,15 @@ namespace BlackPearl {
 		transformComponent->SetScale({ 0.01f, 0.01f, 0.01f });
 
 		obj->AddComponent<MeshRenderer>(model, transformComponent->GetTransformMatrix());
+		std::shared_ptr<BlackPearl::Texture> cubeMapTexture(DBG_NEW BlackPearl::CubeMapTexture(Texture::Type::CubeMap,
+			{ "assets/skybox/skybox/right.jpg",
+			 "assets/skybox/skybox/left.jpg",
+			 "assets/skybox/skybox/top.jpg",
+			 "assets/skybox/skybox/bottom.jpg",
+			 "assets/skybox/skybox/front.jpg",
+			 "assets/skybox/skybox/back.jpg",
+			}));
+		obj->GetComponent<MeshRenderer>()->SetModelTextures(cubeMapTexture);
 		return obj;
 	}
 

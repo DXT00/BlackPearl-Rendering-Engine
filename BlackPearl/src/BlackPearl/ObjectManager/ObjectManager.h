@@ -34,11 +34,11 @@ namespace BlackPearl {
 		Object* CreateCamera();
 		Object* CreateLight(LightType type,LightSources* lightSources);
 		Object* CreateModel(const std::string& modelPath, const std::string& shaderPath);
-		Object* CreateCube(const std::string& shaderPath="assets/shaders/Cube.glsl",const std::string& texturePath="assets/texture/1.jpg");
+		Object* CreateCube(const std::string& shaderPath,const std::string& texturePath);
 		Object* CreatePlane();
 		Object* CreateSkyBox(const std::vector<std::string>& textureFaces);
 
-		Object* CreateQuad(const std::string& shaderPath = "assets/shaders/Quad.glsl", const std::string& texturePath = "assets/texture/1.jpg");
+		Object* CreateQuad(const std::string& shaderPath , const std::string& texturePath);
 
 
 

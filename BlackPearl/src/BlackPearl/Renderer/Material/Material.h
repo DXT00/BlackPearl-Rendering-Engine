@@ -43,17 +43,16 @@ namespace BlackPearl {
 		std::shared_ptr<Shader> GetShader()const { return m_Shader; }
 		std::shared_ptr<TextureMaps> GetTextureMaps() { return m_TextureMaps; }
 		MaterialColor GetMaterialColor()const { return m_MaterialColors; }
+		void SetShader(std::string shaderPath) {
 
+			m_Shader.reset(DBG_NEW Shader(shaderPath));
+		}
 
 		void SetMaterialColor(MaterialColor::Color color) { m_MaterialColors.SetColor(color); }
 		void SetTexture(const std::shared_ptr<Texture> texture);
 		
 		std::shared_ptr<Shader> m_Shader;
-		/*std::shared_ptr<Texture> m_DiffuseTextureMap;
-		std::shared_ptr<Texture> m_SpecularTextureMap;
-		std::shared_ptr<Texture> m_EmissionTextureMap;
-		std::shared_ptr<Texture> m_NormalTextureMap;
-		std::shared_ptr<Texture> m_HeightTextureMap;*/
+
 		std::shared_ptr<TextureMaps> m_TextureMaps;
 		//std::vector<std::shared_ptr<Texture>> m_TextureMaps;
 		MaterialColor m_MaterialColors;

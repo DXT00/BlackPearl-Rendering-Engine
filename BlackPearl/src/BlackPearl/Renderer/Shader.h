@@ -12,7 +12,6 @@ namespace BlackPearl {
 	class Shader
 	{
 	public:
-		Shader(const std::string& vertexSrc, const std::string& fragmentSrc);
 		Shader(const std::string& filepath);
 		~Shader();
 		void Bind()const;
@@ -29,10 +28,13 @@ namespace BlackPearl {
 		void SetUniformMat4f(const std::string &name, const glm::mat4 &mat) const;
 		void SetUniformVec3f(const std::string & name, const glm::vec3& value) const;
 
+		std::string GetPath() { return m_ShaderPath; }
 
 	private:
-		uint32_t m_RendererID;
+		Shader(const std::string& vertexSrc, const std::string& fragmentSrc);
 
+		uint32_t m_RendererID;
+		std::string m_ShaderPath;
 
 	};
 }

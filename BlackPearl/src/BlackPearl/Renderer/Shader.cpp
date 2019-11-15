@@ -32,6 +32,7 @@ namespace BlackPearl {
 
 	Shader::Shader(const std::string & filepath)
 	{
+		m_ShaderPath = filepath;
 		std::string source = ReadFile(filepath);
 		std::unordered_map<GLenum, std::string> shaderSources = PreProcess(source);
 		Compile(shaderSources);

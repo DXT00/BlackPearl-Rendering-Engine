@@ -7,7 +7,9 @@
 
 #include "BlackPearl/Renderer/Shader.h"
 #include "BlackPearl/Renderer/Buffer.h"
-#include "BlackPearl/Renderer/Material/Texture.h"
+#include "BlackPearl/Renderer/Material/CubeMapTexture.h"
+#include "BlackPearl/Renderer/Renderer.h"
+#include "BlackPearl/Renderer/RenderCommand.h"
 
 #include "BlackPearl/Component/TransformComponent/Transform.h"
 #include "BlackPearl/Component/MeshRendererComponent/MeshRenderer.h"
@@ -18,8 +20,7 @@
 #include "BlackPearl/Component/LightComponent/ParallelLight.h"
 #include "BlackPearl/Component/LightComponent/SpotLight.h"
 #include "BlackPearl/Component/BaseComponent.h"
-#include "BlackPearl/Renderer/Renderer.h"
-#include "BlackPearl/Renderer/RenderCommand.h"
+
 #include "BlackPearl/Object/Object.h"
 #include "BlackPearl/ObjectManager/ObjectManager.h"
 

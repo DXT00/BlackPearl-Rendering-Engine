@@ -60,7 +60,7 @@ project "BlackPearl"
 	defines
 	{
 		"_CRT_SECURE_NO_WARNINGS",
-		"STB_IMAGE_IMPLEMENTATION"
+		--"STB_IMAGE_IMPLEMENTATION"
 	}
 	includedirs
 	{
@@ -71,7 +71,9 @@ project "BlackPearl"
 		"%{IncludeDir.ImGui}",
 		"%{IncludeDir.glm}",
 		"%{IncludeDir.stb}",
-		"%{IncludeDir.assimp}"
+		"%{IncludeDir.assimp}",
+		"BlackPearl/vendor"
+
 	}
 	libdirs{
 	"%{prj.name}/vendor/assimp_build/code/Debug"
