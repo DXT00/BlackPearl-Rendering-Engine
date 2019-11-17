@@ -49,9 +49,9 @@ namespace BlackPearl {
 
 	}
 
-	Object * ObjectManager::CreatePlane()
+	Object * ObjectManager::CreatePlane(const std::string& shaderPath, const std::string& texturePath)
 	{
-		Object* obj = m_Object3DCreater->CreatePlane();
+		Object* obj = m_Object3DCreater->CreatePlane(shaderPath, texturePath);
 		m_EntityToObjects.insert(std::make_pair(obj->GetId().index(), obj));
 		return obj;
 	}
@@ -112,7 +112,7 @@ namespace BlackPearl {
 			}
 			else {
 				obj->GetComponent<MeshRenderer>()->DrawMeshes();
-				obj->GetComponent<MeshRenderer>()->DrawModel();
+			//	obj->GetComponent<MeshRenderer>()->DrawModel();
 			}
 
 		}

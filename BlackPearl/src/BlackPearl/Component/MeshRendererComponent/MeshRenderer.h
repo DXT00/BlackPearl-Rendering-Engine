@@ -16,19 +16,21 @@ namespace BlackPearl {
 
 		MeshRenderer(EntityManager* entityManager, Entity::Id id,const Mesh &mesh,glm::mat4 transformMatrix)
 			:Component(entityManager, id, Component::Type::MeshRenderer), m_TransformMatrix(transformMatrix) {
+		
 			m_Meshes.push_back(mesh);
 		}
 		MeshRenderer(EntityManager* entityManager, Entity::Id id, const std::shared_ptr<Model>& model, glm::mat4 transformMatrix)
 			:Component(entityManager, id, Component::Type::MeshRenderer),m_Model(model), m_TransformMatrix(transformMatrix) {
-			//m_Meshes = m_Model->GetMeshes();
 		}
 		~MeshRenderer() {};
 		void UpdateTransformMatrix(glm::mat4 transformMatrix);
 		void DrawMeshes();
-		void DrawModel();
+	//	void DrawModel();
 		void DrawLight();
-		std::shared_ptr<Model> GetModel() { return m_Model; }
-		std::vector<Mesh> GetMeshes() { return m_Meshes; }
+		std::shared_ptr<Model>   GetModel()  const { return m_Model; }
+		std::vector<Mesh>        GetMeshes() const {
+			return m_Model != nullptr ? m_Model->GetMeshes() : m_Meshes;
+		}
 
 		void SetTexture(unsigned int meshIndex,std::shared_ptr<Texture> texture);
 		void SetTextures(std::shared_ptr<Texture> texture);

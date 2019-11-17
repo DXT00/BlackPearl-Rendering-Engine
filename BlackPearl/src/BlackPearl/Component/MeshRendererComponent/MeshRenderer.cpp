@@ -9,20 +9,20 @@ namespace BlackPearl {
 	//注意：Draw之前要UpdateTransformMatrix！
 	void MeshRenderer::DrawMeshes() {
 
-		for (Mesh mesh : m_Meshes)
+		for (Mesh mesh : GetMeshes())
 			mesh.Draw(m_TransformMatrix, Renderer::GetSceneData()->LightSources);
 	}
-	void MeshRenderer::DrawModel() {
-		//m_Model->GetShader()->Bind();
-		if (m_Model == nullptr)return;
-		std::vector<Mesh> meshes = m_Model->GetMeshes();
+	//void MeshRenderer::DrawModel() {
+	//	//m_Model->GetShader()->Bind();
+	//	if (m_Model == nullptr)return;
+	//	std::vector<Mesh> meshes = m_Model->GetMeshes();
 
-		for (Mesh mesh : meshes)
-		{
-			mesh.Draw(m_TransformMatrix, Renderer::GetSceneData()->LightSources);
+	//	for (Mesh mesh : meshes)
+	//	{
+	//		mesh.Draw(m_TransformMatrix, Renderer::GetSceneData()->LightSources);
 
-		}
-	}
+	//	}
+	//}
 	void MeshRenderer::DrawLight() {
 		for (Mesh mesh : m_Meshes)
 			mesh.Draw(m_TransformMatrix);

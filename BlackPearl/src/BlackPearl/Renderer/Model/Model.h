@@ -36,7 +36,7 @@ namespace BlackPearl {
 			aiMaterial * material,
 			 MaterialColor &colors);
 
-		inline std::vector<Mesh> GetMeshes()const { return m_Meshes; }
+		std::vector<Mesh>       GetMeshes()const { return m_Meshes; }
 		std::shared_ptr<Shader> GetShader()const { return m_Shader; }
 
 	private:

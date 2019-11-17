@@ -44,7 +44,7 @@ namespace BlackPearl {
 
 		virtual Object* CreateModel(const std::string& modelPath, const std::string& shaderPath);
 		virtual Object* CreateCube(const std::string& shaderPath = "assets/shaders/Cube.glsl", const std::string& texturePath = "");
-		virtual Object* CreatePlane();
+		virtual Object* CreatePlane(const std::string& shaderPath = "assets/shaders/Plane.glsl", const std::string& texturePath = "assets/texture/container.jpg");
 		virtual Object* CreateSkyBox(const std::vector<std::string>& textureFaces);
 		virtual Object* CreateQuad(const std::string& shaderPath = "assets/shaders/Quad.glsl", const std::string& texturePath = "assets/texture/1.jpg");
 
@@ -52,8 +52,9 @@ namespace BlackPearl {
 		void ShowTransform(std::shared_ptr<BlackPearl::Transform> comp);
 		void ShowLight(std::shared_ptr<BlackPearl::Light>comp);
 
-		void ShowShader(static std::string &imguiShaders, static char* shader, Mesh & mesh,int meshIndex, static  int &itemIndex);
-
+		void ShowShader( std::string imguiShaders, int meshIndex, static int &itemIndex, int offset);
+		void ShowTextures( std::string imguiShaders, int meshIndex, static  int &itemIndex, Texture::Type textureType, static Texture::Type &type,int offset);
+		void ShowMaterialProps(Material::Props& imGuiProps);
 		std::vector<Object*> GetObjects();
 		std::vector<std::string> GetObjectsName();
 		void DrawObjects();

@@ -5,6 +5,7 @@
 namespace BlackPearl {
 	Material::Material(const std::string shaderPath, const std::shared_ptr<TextureMaps>& textureMaps, glm::vec3 ambientColor, glm::vec3 diffuseColor, glm::vec3 specularColor, glm::vec3 emissionColor)
 	{
+		m_Props = Props();
 		m_TextureMaps = textureMaps;
 		m_Shader.reset(DBG_NEW Shader(shaderPath));
 		m_Shader->Bind();
@@ -15,21 +16,17 @@ namespace BlackPearl {
 		}
 		if (diffuseColor.length() != 0) {
 			m_MaterialColors.SetDiffuseColor(diffuseColor);
-			//m_MaterialColors.push_back(MaterialColor(MaterialColor::Type::DiffuseColor, diffuseColor));
 			m_Shader->SetUniformVec3f("u_Material.diffuseColor", diffuseColor);
 
 		}
 		if (specularColor.length() != 0) {
 			m_MaterialColors.SetSpecularColor(specularColor);
 
-			//m_MaterialColors.push_back(MaterialColor(MaterialColor::Type::SpecularColor, specularColor));
 			m_Shader->SetUniformVec3f("u_Material.specularColor", specularColor);
 
 		}
 		if (emissionColor.length() != 0) {
 			m_MaterialColors.SetEmissionColor(emissionColor);
-
-			//m_MaterialColors.push_back(MaterialColor(MaterialColor::Type::EmissionColor, emissionColor));
 			m_Shader->SetUniformVec3f("u_Material.emissionColor", emissionColor);
 
 		}
@@ -39,6 +36,17 @@ namespace BlackPearl {
 
 	Material::~Material()
 	{
+	}
+
+	void Material::SetShader(std::string shaderPath)
+	{
+		m_Shader.reset(DBG_NEW Shader(shaderPath));
+		
+	}
+
+	void Material::SetMaterialColor(MaterialColor::Color color)
+	{
+		m_MaterialColors.SetColor(color); 
 	}
 
 	void Material::SetTexture(const std::shared_ptr<Texture> texture)
@@ -66,6 +74,33 @@ namespace BlackPearl {
 		default:
 			break;
 		}
+	}
+
+	void Material::SetTexture(const Texture::Type type,const std::string& image)
+	{
+		std::shared_ptr<Texture>texture(DBG_NEW Texture(type, image));
+		SetTexture(texture);
+	}
+
+	void Material::SetProps(const Props & props)
+	{
+		m_Props.isBinnLight = props.isBinnLight;
+		m_Props.shininess = props.shininess;
+	}
+
+	void Material::SetShininess(float shininess)
+	{
+		m_Props.shininess = shininess;
+	}
+
+	void Material::SetBinnLight(bool isBinnLight)
+	{
+		m_Props.isBinnLight = isBinnLight;
+	}
+
+	void Material::SetTextureSample(int isTextureSample)
+	{
+		m_Props.isTextureSample = isTextureSample;
 	}
 
 	

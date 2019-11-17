@@ -50,7 +50,7 @@ namespace BlackPearl {
 
 		return obj;
 	}
-	Object * Object3DCreater::CreatePlane()
+	Object * Object3DCreater::CreatePlane(const std::string& shaderPath, const std::string& texturePath)
 	{
 		Object* obj = CreateEmpty("Plane");
 		std::shared_ptr<PlaneMeshFilter> meshFilter = obj->AddComponent<PlaneMeshFilter>();
@@ -58,18 +58,20 @@ namespace BlackPearl {
 
 		std::shared_ptr<Material> material;
 		std::shared_ptr<Material::TextureMaps> texture(DBG_NEW Material::TextureMaps());
-		texture->diffuseTextureMap.reset(DBG_NEW Texture(Texture::Type::DiffuseMap, "assets/texture/container.jpg"));
-		material.reset(DBG_NEW Material("assets/shaders/Plane.glsl", texture, {}, { 0.2,0.2,0.0 }, {}, {}));
+		texture->diffuseTextureMap.reset(DBG_NEW Texture(Texture::Type::DiffuseMap, texturePath));
+		material.reset(DBG_NEW Material(shaderPath, texture, {}, { 0.2,0.2,0.0 }, {}, {}));
 
 		VertexBufferLayout layout = {
 		{ElementDataType::Float3,"aPos",false},
-		{ElementDataType::Float2,"aTexCoords",false}
+		{ElementDataType::Float2,"aTexCoords",false},
+		{ElementDataType::Float3,"aNormal",false}
+
 		};
 		Mesh mesh(meshFilter->GetVertices(), meshFilter->GetIndices(), material, layout);
 		obj->AddComponent<MeshRenderer>(mesh, transformComponent->GetTransformMatrix());
 		return obj;
 	}
-	Object * Object3DCreater::CreateSphere()
+	Object * Object3DCreater::CreateSphere(const std::string& shaderPath, const std::string& texturePath)
 	{
 		return nullptr;
 	}
@@ -135,7 +137,7 @@ namespace BlackPearl {
 		}
 		case LightType::PointLight: {
 			std::shared_ptr<PointLight> lightComponent = Obj->AddComponent<PointLight>();
-			lightComponent->SetAttenuation(PointLight::Attenuation(3250));
+			lightComponent->SetAttenuation(PointLight::Attenuation(200));
 			lightSources->AddLight(Obj);
 			Obj->AddComponent<MeshRenderer>(lightComponent->GetMeshes(), TransformComponent->GetTransformMatrix());
 

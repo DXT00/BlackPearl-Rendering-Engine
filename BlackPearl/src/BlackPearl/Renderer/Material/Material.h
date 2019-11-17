@@ -6,6 +6,13 @@ namespace BlackPearl {
 	class Material
 	{
 	public:
+		struct Props {
+			float shininess;
+			bool  isBinnLight;
+			int  isTextureSample;//是否使用纹理
+			Props():shininess(64.0f),isBinnLight(false),isTextureSample(1){}
+
+		};
 		struct TextureMaps {
 			std::shared_ptr<Texture> diffuseTextureMap;
 			std::shared_ptr<Texture> specularTextureMap;
@@ -30,7 +37,7 @@ namespace BlackPearl {
 			const std::shared_ptr<TextureMaps> &textureMaps,
 			const MaterialColor &materialColors
 		)
-			:m_Shader(shader), m_TextureMaps(textureMaps), m_MaterialColors(materialColors) {}
+			:m_Shader(shader), m_TextureMaps(textureMaps), m_MaterialColors(materialColors), m_Props(Props()){}
 
 		Material(
 			const std::string shaderPath,
@@ -40,24 +47,26 @@ namespace BlackPearl {
 
 		~Material();
 		
-		std::shared_ptr<Shader> GetShader()const { return m_Shader; }
-		std::shared_ptr<TextureMaps> GetTextureMaps() { return m_TextureMaps; }
-		MaterialColor GetMaterialColor()const { return m_MaterialColors; }
-		void SetShader(std::string shaderPath) {
+		std::shared_ptr<Shader>      GetShader()const        { return m_Shader; }
+		std::shared_ptr<TextureMaps> GetTextureMaps()const   { return m_TextureMaps; }
+		MaterialColor                GetMaterialColor()const { return m_MaterialColors; }
+		Props                        GetProps() const { return m_Props; }
 
-			m_Shader.reset(DBG_NEW Shader(shaderPath));
-		}
-
-		void SetMaterialColor(MaterialColor::Color color) { m_MaterialColors.SetColor(color); }
+		void SetShader(std::string shaderPath);
+		void SetMaterialColor(MaterialColor::Color color);
 		void SetTexture(const std::shared_ptr<Texture> texture);
-		
-		std::shared_ptr<Shader> m_Shader;
+		void SetTexture(const Texture::Type type, const std::string& image);
 
+		void SetProps(const Props& props);
+		void SetShininess(float shininess);
+		void SetBinnLight(bool isBinnLight);
+		void SetTextureSample(int isTextureSample);
+
+	private:
+		std::shared_ptr<Shader>		 m_Shader;
 		std::shared_ptr<TextureMaps> m_TextureMaps;
-		//std::vector<std::shared_ptr<Texture>> m_TextureMaps;
-		MaterialColor m_MaterialColors;
-
-
+		MaterialColor				 m_MaterialColors;
+		Props                        m_Props;
 	};
 
 }

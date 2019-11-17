@@ -131,6 +131,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\Layers\AdvanceLightTestLayer.h" />
     <ClInclude Include="src\Layers\FrameBufferTestLayer.h" />
     <ClInclude Include="src\Layers\SkyBoxTestLayer.h" />
   </ItemGroup>

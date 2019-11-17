@@ -50,35 +50,7 @@ namespace BlackPearl {
 				k++;
 			}
 		}
-		//std::vector<std::shared_ptr<Texture>> textures = m_Material->GetTextureMaps();
-		//for (unsigned int i = 0; i < textures.size(); i++) {
-		//	glActiveTexture(GL_TEXTURE0 + i);
-
-		//	switch (m_Material->GetTextureMaps()[i]->GetType()) {
-		//	case Texture::Type::DiffuseMap:
-		//		shader->SetUniform1i("u_Material.diffuse", i);
-		//		break;
-		//	case Texture::Type::SpecularMap:
-		//		shader->SetUniform1i("u_Material.specular", i);
-		//		break;
-
-		//	case Texture::Type::EmissionMap:
-		//		shader->SetUniform1i("u_Material.emission", i);
-		//		break;
-		//	case Texture::Type::NormalMap:
-		//		shader->SetUniform1i("u_Material.normal", i);
-		//		break;
-		//	case Texture::Type::HeightMap:
-		//		shader->SetUniform1i("u_Material.height", i);
-		//		break;
-		//	default:
-		//		GE_CORE_ERROR(" Mesh::Draw failed! Unknown Texture type!!")
-		//			break;
-
-		//	}
-		//	textures[i]->Bind();
-
-		//}
+	
 		MaterialColor::Color materialColor = m_Material->GetMaterialColor().Get();
 
 
@@ -88,7 +60,10 @@ namespace BlackPearl {
 		shader->SetUniformVec3f("u_Material.emissionColor", materialColor.emissionColor);
 
 		shader->SetUniformMat4f("u_TranInverseModel", glm::transpose(glm::inverse(model)));
-		shader->SetUniform1f("u_Material.shininess", 64.0f);
+		shader->SetUniform1f("u_Material.shininess", m_Material->GetProps().shininess);
+		shader->SetUniform1i("u_Material.isBlinnLight", m_Material->GetProps().isBinnLight);
+		shader->SetUniform1i("u_Material.isTextureSample", m_Material->GetProps().isTextureSample);
+
 		shader->SetLightUniform(lightSources);
 		Renderer::Submit(m_VertexArray, shader, model);
 		//TODO :: Çø·ÖModelºÍcube
