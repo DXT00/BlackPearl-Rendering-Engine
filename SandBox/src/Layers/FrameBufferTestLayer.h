@@ -19,7 +19,12 @@ public:
 		m_CameraRotation.Yaw = cameraComponent->Yaw();
 		m_CameraRotation.Pitch = cameraComponent->Pitch();
 
-		m_FrameBuffer.reset(DBG_NEW BlackPearl::FrameBuffer(BlackPearl::Configuration::WindowWidth, BlackPearl::Configuration::WindowHeight));
+		m_FrameBuffer.reset(DBG_NEW BlackPearl::FrameBuffer(
+			BlackPearl::Configuration::WindowWidth, 
+			BlackPearl::Configuration::WindowHeight, 
+			{BlackPearl::FrameBuffer::Attachment::ColorTexture,  BlackPearl::FrameBuffer::Attachment::RenderBuffer},
+			false
+		));
 
 		BlackPearl::Renderer::Init();
 

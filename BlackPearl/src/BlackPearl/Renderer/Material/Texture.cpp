@@ -11,31 +11,27 @@
 #include "stb_image.h"
 namespace BlackPearl {
 
-	Texture::Texture(Type type, const std::string &image)
+	Texture::Texture(Type type, const std::string &image)//TODO::构造函数里头不能有虚函数！
 	{
 		m_Path = image;
 		m_Type = type;
 		glGenTextures(1, &m_TextureID);
 		Bind();
-		LoadTexture(m_Path);
+		Init(image);
 		
 
 	}
 
-	Texture::Texture(Type type, const int width, const int height)
+	Texture::Texture(Type type, const int width, const int height,bool isDepth)
 	{
 		m_Path = "";
 		
 		m_Type = type;
 		glGenTextures(1, &m_TextureID);
 		glBindTexture(GL_TEXTURE_2D, m_TextureID);
-
-
-		//纹理过滤---邻近过滤和线性过滤
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
-
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);//纹理缩小时用邻近过滤
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);//纹理放大时也用邻近过滤
+		if(isDepth==false)
+		Init(width, height);
+		
 
 
 	}
@@ -46,9 +42,27 @@ namespace BlackPearl {
 		m_FacesPath = faces;
 		m_Type = type;
 		glGenTextures(1, &m_TextureID);
-		Bind();
+		//glBindTexture(GL_TEXTURE_2D, m_TextureID);
+		//Init(faces);
 	}
 
+
+	void Texture::Init(const std::string &image)
+	{
+		LoadTexture(image);
+
+	}
+
+	void Texture::Init(const int width, const int height)
+	{
+		//纹理过滤---邻近过滤和线性过滤
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);//纹理缩小时用邻近过滤
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);//纹理放大时也用邻近过滤
+	}
+
+	
 
 	void Texture::LoadTexture(const std::string & image)
 	{

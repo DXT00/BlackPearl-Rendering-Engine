@@ -9,10 +9,10 @@ namespace BlackPearl {
 			LoadCubeMap(faces);
 		};
 		virtual ~CubeMapTexture();
+		void LoadCubeMap(std::vector<std::string> faces);
 
-		void LoadCubeMap(std::vector<std::string> faces) ;
-		virtual void Bind()override;
-		virtual void UnBind()override;
+		void Bind();
+		void UnBind();
 	};
 
 }

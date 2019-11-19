@@ -4,6 +4,8 @@
 #include <glad/glad.h>
 #include <BlackPearl/Renderer/Shader.h>
 #include "BlackPearl/Renderer/Renderer.h"
+#include <glm/gtc/type_ptr.hpp>
+#include "glm/ext/matrix_transform.hpp"
 
 namespace BlackPearl {
 
@@ -49,6 +51,11 @@ namespace BlackPearl {
 				textures->cubeTextureMap->Bind();
 				k++;
 			}
+			if (textures->depthTextureMap != nullptr) {
+				shader->SetUniform1i("u_Material.depth", k);
+				textures->depthTextureMap->Bind();
+				k++;
+			}
 		}
 	
 		MaterialColor::Color materialColor = m_Material->GetMaterialColor().Get();
@@ -64,6 +71,14 @@ namespace BlackPearl {
 		shader->SetUniform1i("u_Material.isBlinnLight", m_Material->GetProps().isBinnLight);
 		shader->SetUniform1i("u_Material.isTextureSample", m_Material->GetProps().isTextureSample);
 
+		glm::mat4 lightProjection, lightView;
+		glm::mat4 lightProjectionViewMatrix;
+		GLfloat nearPlane = -20.0f, farPlane =20.0f;
+		lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, nearPlane, farPlane);
+		lightView = glm::lookAt(glm::vec3( 0.0f, 2.0f, 2.0f ), glm::vec3(0.0f), glm::vec3( 0.0,1.0,0.0));
+		lightProjectionViewMatrix = lightProjection * lightView;
+		//m_Shader->Bind();
+		shader->SetUniformMat4f("lightProjectionViewMatrix", lightProjectionViewMatrix);
 		shader->SetLightUniform(lightSources);
 		Renderer::Submit(m_VertexArray, shader, model);
 		//TODO :: Çø·ÖModelºÍcube
@@ -122,6 +137,11 @@ namespace BlackPearl {
 			if (textures->cubeTextureMap != nullptr) {
 				shader->SetUniform1i("u_Material.cube", k);
 				textures->cubeTextureMap->Bind();
+				k++;
+			}
+			if (textures->depthTextureMap != nullptr) {
+				shader->SetUniform1i("u_Material.depth", k);
+				textures->depthTextureMap->Bind();
 				k++;
 			}
 		}

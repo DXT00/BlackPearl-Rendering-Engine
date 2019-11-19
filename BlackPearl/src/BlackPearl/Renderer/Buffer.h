@@ -2,6 +2,7 @@
 #include <initializer_list>
 #include "BlackPearl/Core.h"
 #include "BlackPearl/Renderer/Material/Texture.h"
+
 namespace BlackPearl {
 
 	enum class ElementDataType {
@@ -153,14 +154,18 @@ namespace BlackPearl {
 
 	class FrameBuffer {
 	public:
-		enum Type {
-			TextureBuffer,
+		
+		enum Attachment{
+			ColorTexture,
+			DepthTexture,
 			RenderBuffer
+
 		};
-		FrameBuffer(const int width, const int height);
+		FrameBuffer(const int width, const int height,std::initializer_list<Attachment> attachment,bool disableColor);
 		void AttachColorTexture();
 		void AttachDepthTexture();
 		void AttachRenderBuffer();
+		void DisableColorBuffer();
 		void Bind(int width,int height);
 		//switch back to default framebuffer
 		void UnBind();

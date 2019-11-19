@@ -182,10 +182,10 @@ namespace BlackPearl {
 
 		}
 		material.reset(DBG_NEW Material(shaderPath, texture, {}, { 0.2,0.5,0.6 }, {}, {}));
-		material->GetShader()->SetUniform1i("u_Material.diffuse",0);
+		//material->GetShader()->SetUniform1i("u_Material.diffuse",0);
 	
 		VertexBufferLayout layout = {
-		{ElementDataType::Float2,"aPos",false},
+		{ElementDataType::Float3,"aPos",false},
 		{ElementDataType::Float2,"aTexCoords",false}
 
 		};

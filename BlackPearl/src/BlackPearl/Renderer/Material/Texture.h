@@ -15,11 +15,12 @@ namespace BlackPearl {
 			EmissionMap,
 			NormalMap,
 			HeightMap,
-			CubeMap
+			CubeMap,
+			DepthMap
 		};
 		Texture(Type type, const std::string &image);
 		//没有Image的texture
-		Texture(Type type, const int width,const int height);
+		Texture(Type type, const int width,const int height, bool isDepth = false);
 
 		//用于CubeMap初始化
 		Texture(Type type, std::vector<std::string> faces);
@@ -27,9 +28,13 @@ namespace BlackPearl {
 
 		virtual ~Texture() = default;
 
-		virtual void LoadTexture(const std::string &image);
-		virtual void Bind();
-		virtual void UnBind();
+		 void Init(const std::string &image);
+		 void Init(const int width, const int height);
+
+
+		void LoadTexture(const std::string &image);
+		 void Bind();
+		 void UnBind();
 		inline Type GetType() { return m_Type; }
 		unsigned int GetRendererID() { return m_TextureID; }
 		std::vector<std::string> GetFacesPath() { return m_FacesPath; }

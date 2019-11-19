@@ -60,6 +60,7 @@ namespace BlackPearl {
 		void DrawObjects();
 		void DrawObject(Object* obj);
 		void DrawObjectsExcept(std::vector<Object *>objs);
+		void DrawObjectsExcept(Object * obj);
 
 		void DestroyObjects();
 

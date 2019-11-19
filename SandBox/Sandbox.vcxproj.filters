@@ -13,6 +13,7 @@
       <Filter>Layers</Filter>
     </ClInclude>
     <ClInclude Include="src\Layers\AdvanceLightTestLayer.h" />
+    <ClInclude Include="src\Layers\ShadowMapTestLayer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\SandBox.cpp" />

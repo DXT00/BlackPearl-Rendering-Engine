@@ -120,7 +120,13 @@ namespace BlackPearl {
 			buttonName += "cubeMap";
 			inputTextName += "cubeMap";
 			break;
+		case Texture::Type::DepthMap:
+			buttonName += "depthMap";
+			inputTextName += "depthMap";
+			break;
 		}
+			
+	
 		//imguiShaders = mesh.GetMaterial()->GetShader()->GetPath();
 		//ImGui::PushID(meshIndex);
 		
@@ -199,7 +205,7 @@ namespace BlackPearl {
 		ImGui::TextColored({ 1.0,0.64,0.0,1.0 }, "Shader");
 		std::vector<std::string> imguiShaders; 
 		static int itemIndex = -1;
-		std::cout << "itemIndex" << itemIndex <<std::endl;
+		//std::cout << "itemIndex" << itemIndex <<std::endl;
 		imguiShaders.resize(imGuiMeshes.size());
 		for (int i = 0; i < imGuiMeshes.size(); i++)
 		{
@@ -226,12 +232,13 @@ namespace BlackPearl {
 			std::vector<std::string> imguiNormalTextures(imGuiMeshes.size());
 			std::vector<std::string> imguiCubeTextures(imGuiMeshes.size());
 			std::vector<std::string> imguiHeightTextures(imGuiMeshes.size());
+			std::vector<std::string> imguiDepthTextures(imGuiMeshes.size());
 
 
 			static  int itemIndexTexture = -1;
 			static Texture::Type type;
-			std::cout << "itemIndexTexture" << itemIndexTexture << std::endl;
-
+			//std::cout << "itemIndexTexture" << itemIndexTexture << std::endl;
+			GE_CORE_TRACE("itemIndexTexture:"+std::to_string(itemIndexTexture) );
 			for (int i = 0; i < imGuiMeshes.size(); i++)
 			{
 				std::string text = "Mesh" + std::to_string(i);
@@ -261,6 +268,10 @@ namespace BlackPearl {
 				if (imGuiMeshes[i].GetMaterial()->GetTextureMaps()->heightTextureMap != nullptr)
 					imguiHeightTextures[i] = imGuiMeshes[i].GetMaterial()->GetTextureMaps()->heightTextureMap->GetPath();
 				ShowTextures(imguiHeightTextures[i], i, itemIndexTexture, Texture::HeightMap, type, imGuiMeshes.size()*2);
+
+				if (imGuiMeshes[i].GetMaterial()->GetTextureMaps()->depthTextureMap != nullptr)
+					imguiDepthTextures[i] = imGuiMeshes[i].GetMaterial()->GetTextureMaps()->depthTextureMap->GetPath();
+				ShowTextures(imguiDepthTextures[i], i, itemIndexTexture, Texture::DepthMap, type, imGuiMeshes.size() * 2);
 			}
 			if (itemIndexTexture != -1) {
 				if (m_fileDialog.HasSelected()) {
@@ -283,6 +294,9 @@ namespace BlackPearl {
 						break;
 					case Texture::HeightMap:
 						imGuiMeshes[itemIndexTexture].GetMaterial()->SetTexture(Texture::HeightMap,"assets/texture/" + m_fileDialog.GetSelected().string());
+						break;
+					case Texture::DepthMap:
+						imGuiMeshes[itemIndexTexture].GetMaterial()->SetTexture(Texture::DepthMap, "assets/texture/" + m_fileDialog.GetSelected().string());
 						break;
 					defalut:
 						GE_CORE_ERROR("Unknown texture type");
@@ -384,6 +398,11 @@ namespace BlackPearl {
 	void Layer::DrawObjectsExcept(std::vector<Object *>objs)
 	{
 		m_ObjectManager->DrawObjectsExcept(objs);
+
+	}
+	void Layer::DrawObjectsExcept(Object * obj)
+	{
+		m_ObjectManager->DrawObjectsExcept(obj);
 
 	}
 	std::vector<Object*> Layer::GetObjects()

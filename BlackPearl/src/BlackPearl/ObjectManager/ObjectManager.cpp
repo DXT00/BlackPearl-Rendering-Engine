@@ -131,8 +131,15 @@ namespace BlackPearl {
 			}
 			if(canDraw)
 				DrawObject(Obj);
-			//if(Obj->GetId().id!=obj->GetId().id)
 				
+		}
+	}
+	void ObjectManager::DrawObjectsExcept(Object * obj)
+	{
+		for (auto pair : m_EntityToObjects) {
+			Object* Obj = pair.second;		
+			if (Obj->GetId().id != obj->GetId().id)
+				DrawObject(Obj);
 		}
 	}
 	void ObjectManager::DestroyObjects()

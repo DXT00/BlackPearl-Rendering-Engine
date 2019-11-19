@@ -1353,6 +1353,7 @@
     <ClInclude Include="vendor\stb\stb_image.h">
       <Filter>vendor\stb</Filter>
     </ClInclude>
+    <ClInclude Include="src\BlackPearl\Renderer\Material\DepthTexture.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\BlackPearl\Application.cpp">
@@ -1490,5 +1491,6 @@
     <ClCompile Include="src\pch.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\BlackPearl\Renderer\Material\DepthTexture.cpp" />
   </ItemGroup>
 </Project>

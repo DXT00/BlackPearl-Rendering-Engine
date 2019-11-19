@@ -20,6 +20,7 @@ namespace BlackPearl {
 			std::shared_ptr<Texture> normalTextureMap;
 			std::shared_ptr<Texture> heightTextureMap;
 			std::shared_ptr<Texture> cubeTextureMap;
+			std::shared_ptr<Texture> depthTextureMap;
 
 			TextureMaps() {
 				diffuseTextureMap
@@ -28,6 +29,7 @@ namespace BlackPearl {
 				= normalTextureMap
 				= heightTextureMap
 				= cubeTextureMap
+				= depthTextureMap
 				= nullptr;
 			}
 		};
@@ -53,6 +55,7 @@ namespace BlackPearl {
 		Props                        GetProps() const { return m_Props; }
 
 		void SetShader(std::string shaderPath);
+		void SetShader(const std::shared_ptr<Shader> &shader);
 		void SetMaterialColor(MaterialColor::Color color);
 		void SetTexture(const std::shared_ptr<Texture> texture);
 		void SetTexture(const Texture::Type type, const std::string& image);

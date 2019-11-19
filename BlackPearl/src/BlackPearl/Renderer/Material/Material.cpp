@@ -43,7 +43,11 @@ namespace BlackPearl {
 		m_Shader.reset(DBG_NEW Shader(shaderPath));
 		
 	}
+	void Material::SetShader(const std::shared_ptr<Shader> &shader)
+	{
+		m_Shader = shader;
 
+	}
 	void Material::SetMaterialColor(MaterialColor::Color color)
 	{
 		m_MaterialColors.SetColor(color); 
@@ -70,6 +74,9 @@ namespace BlackPearl {
 			break;
 		case Texture::Type::CubeMap:
 			m_TextureMaps->cubeTextureMap= texture;
+			break;
+		case Texture::Type::DepthMap:
+			m_TextureMaps->depthTextureMap = texture;
 			break;
 		default:
 			break;
