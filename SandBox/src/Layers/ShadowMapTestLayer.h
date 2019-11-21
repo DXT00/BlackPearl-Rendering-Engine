@@ -6,8 +6,16 @@
 
 #include "imgui/imgui.h"
 #include "imgui/imfilebrowser.h"
+#include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+const GLuint SHADOW_WIDTH = 1024, SHADOW_HEIGHT = 1024;
+const GLuint SCR_WIDTH = 960, SCR_HEIGHT = 540;
+GLuint quadVAO = 0;
+GLuint quadVBO = 0;
+GLuint cubeVAO = 0;
+GLuint cubeVBO = 0;
 class ShadowMapTestLayer :public BlackPearl::Layer {
+
 public:
 
 	ShadowMapTestLayer(const std::string& name, BlackPearl::ObjectManager *objectManager)
@@ -21,21 +29,101 @@ public:
 		m_CameraRotation.Yaw = cameraComponent->Yaw();
 		m_CameraRotation.Pitch = cameraComponent->Pitch();
 
-		m_FrameBuffer.reset(DBG_NEW BlackPearl::FrameBuffer(960, 540, {BlackPearl::FrameBuffer::Attachment::DepthTexture },true));
-
 		BlackPearl::Renderer::Init();
-		m_Shader.reset(DBG_NEW BlackPearl::Shader("assets/shaders/DepthShader_ShadowMapLayer.glsl"));
+
+		//	m_FrameBuffer.reset(DBG_NEW BlackPearl::FrameBuffer(960, 540, {BlackPearl::FrameBuffer::Attachment::DepthTexture },false));
+
+		glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
+
+		// 设置OpenGL可选项
+		glEnable(GL_DEPTH_TEST); // 开启深度测试
+
+			//Shader reset
+		m_Shader.reset(DBG_NEW BlackPearl::Shader("assets/shaders/ShadowMaping_ShadowMapLayer.glsl"));
+		m_SimpleDepthShader.reset(DBG_NEW BlackPearl::Shader("assets/shaders/DepthShader_ShadowMapLayer.glsl"));
+		m_QuadDepthShader.reset(DBG_NEW BlackPearl::Shader("assets/shaders/Quad_ShadowMapLayer.glsl"));
+
+		m_Shader->Bind();
+		m_Shader->SetUniform1i("u_Material.diffuse", 0);
+		m_Shader->SetUniform1i("u_Material.depth", 1);
+		m_Shader->SetUniform1f("u_Material.shininess",128.0f);
+
 		
-		CreateLight(BlackPearl::LightType::PointLight);
-		m_CubeObj = CreateCube("assets/shaders/Cube.glsl", "assets/texture/wood.png");
-		m_CubeObj1 = CreateCube();
 
-		auto meshes = m_CubeObj->GetComponent<BlackPearl::MeshRenderer>()->GetMeshes();
-		for (auto mesh : meshes)
-			mesh.GetMaterial()->SetShader(m_Shader);
+		GLfloat planeVertices[] = {
+			// Positions          // Normals         // Texture Coords
+			 25.0f, -0.5f, 25.0f, 0.0f, 1.0f, 0.0f, 25.0f, 0.0f,
+		-25.0f, -0.5f, -25.0f, 0.0f, 1.0f, 0.0f, 0.0f, 25.0f,
+		-25.0f, -0.5f, 25.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f,
 
-		m_QuadObj = CreateQuad("assets/shaders/Quad_ShadowMapLayer.glsl","");
-		m_QuadObj->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(m_FrameBuffer->GetDepthTexture());
+		25.0f, -0.5f, 25.0f, 0.0f, 1.0f, 0.0f, 25.0f, 0.0f,
+		25.0f, -0.5f, -25.0f, 0.0f, 1.0f, 0.0f, 25.0f, 25.0f,
+		-25.0f, -0.5f, -25.0f, 0.0f, 1.0f, 0.0f, 0.0f, 25.0f
+		};
+		// Setup plane VAO
+		GLuint planeVBO;
+		glGenVertexArrays(1, &planeVAO);
+		glGenBuffers(1, &planeVBO);
+		glBindVertexArray(planeVAO);
+		glBindBuffer(GL_ARRAY_BUFFER, planeVBO);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(planeVertices), &planeVertices, GL_STATIC_DRAW);
+		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)0);
+		glEnableVertexAttribArray(1);
+		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
+		glEnableVertexAttribArray(2);
+		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)(6 * sizeof(GLfloat)));
+		glBindVertexArray(0);
+
+		
+
+		BlackPearl::Texture wood(BlackPearl::Texture::Type::DiffuseMap, "assets/texture/wood.png");
+		woodTexture = wood.GetRendererID();
+
+		glGenFramebuffers(1, &depthMapFBO);
+		// - Create depth texture
+		//GLuint depthMap;
+		glGenTextures(1, &depthMap);
+		glBindTexture(GL_TEXTURE_2D, depthMap);
+
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, SHADOW_WIDTH, SHADOW_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+		GLfloat borderColor[] = { 1.0, 1.0, 1.0, 1.0 };
+		glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
+
+		glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthMap, 0);
+		glDrawBuffer(GL_NONE);
+		glReadBuffer(GL_NONE);
+		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+			GE_CORE_ERROR("Framebuffer is not complete!");
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+
+		
+
+		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+
+
+
+		//CreateLight(BlackPearl::LightType::PointLight);
+		//m_CubeObj = CreateCube("assets/shaders/DepthShader_ShadowMapLayer.glsl", "assets/texture/1.jpg");
+		////m_CubeObj1 = CreateCube();
+		//m_CubeObj1 = CreateCube("assets/shaders/DepthShader_ShadowMapLayer.glsl", "assets/texture/1.jpg");
+		//CreateCube();
+		//CreatePlane();
+
+		//m_CubeObj->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(m_FrameBuffer->GetDepthTexture());
+		//m_CubeObj1->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(m_FrameBuffer->GetDepthTexture());
+		//m_QuadObj = CreateQuad("assets/shaders/Quad_ShadowMapLayer.glsl","");
+		//m_QuadObj->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(m_FrameBuffer->GetDepthTexture());
+
+
+
+
 	}
 
 	virtual ~ShadowMapTestLayer() {
@@ -48,49 +136,261 @@ public:
 
 		InputCheck(ts);
 
-		// render
+		//// render
 
 		BlackPearl::RenderCommand::SetClearColor(m_BackgroundColor);
 		BlackPearl::Renderer::BeginScene(*(m_CameraObj->GetComponent<BlackPearl::PerspectiveCamera>()), *GetLightSources());
 
-	
+
+		// 1. Render depth of scene to texture (from ligth's perspective)
+	   // - Get light projection/view matrix.
 		glm::mat4 lightProjection, lightView;
-		//glm::mat4 lightProjectionViewMatrix;
-		//GLfloat nearPlane = -1.0f, farPlane = 1.0f;
-		//lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, nearPlane, farPlane);
-		//lightView = glm::lookAt(m_LightPos, glm::vec3(0.0f), glm::vec3{ 0.0,1.0,0.0 });
-		//lightProjectionViewMatrix = lightProjection * lightView;
-		//m_Shader->Bind();
-		//m_Shader->SetUniformMat4f("lightProjectionViewMatrix", lightProjectionViewMatrix);
-		////m_Shader->SetUniformMat4f("model", glm::mat4(1.0f));
+		glm::mat4 lightSpaceMatrix;
+		//GLfloat near_plane = -20.0f, far_plane =20.0f;
+		lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, near_plane, far_plane);
+		lightView = glm::lookAt(m_LightPos, glm::vec3(0.0f), glm::vec3(0.0, 1.0, 0.0));
+		lightSpaceMatrix = lightProjection * lightView;
 
-		m_FrameBuffer->Bind(960, 540);
-		glClear(GL_DEPTH_BUFFER_BIT| GL_COLOR_BUFFER_BIT );
+		m_SimpleDepthShader->Bind();
+		m_SimpleDepthShader->SetUniformMat4f("u_LightProjectionViewMatrix", lightSpaceMatrix);
 
-		DrawObjectsExcept(m_QuadObj);
-		m_FrameBuffer->UnBind();
+		glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
+		glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
+		glClear(GL_DEPTH_BUFFER_BIT);
+	
+	
+		RenderScene(m_SimpleDepthShader, lightSpaceMatrix);
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-		glClearColor(0.0f, 0.1f, 0.1f, 1.0f);
-
+		// 2. Render scene as normal 
+		glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		glViewport(0, 0, 960, 540);
-		DrawObjectsExcept(m_QuadObj);
+		m_Shader->Bind();
 
-		glViewport(0, 0, 480, 270);
+		m_Shader->SetUniformMat4f("u_ProjectionView", BlackPearl::Renderer::GetSceneData()->ViewProjectionMatrix);
+		m_Shader->SetUniformMat4f("u_Projection", BlackPearl::Renderer::GetSceneData()->ProjectionMatrix);
+		m_Shader->SetUniformMat4f("u_View", BlackPearl::Renderer::GetSceneData()->ViewMatrix);
+		m_Shader->SetUniformVec3f("u_CameraViewPos", BlackPearl::Renderer::GetSceneData()->CameraPosition);
 
-		DrawObject(m_QuadObj);
-		//DrawObjects();
-		//DrawObjectsExcept(objs);
-		//小于等于当前深度缓冲的fragment才被绘制
-		//glDepthFunc(GL_LEQUAL);
-		//DrawObject(m_SkyBoxObj);
+		// Set light uniforms
+		m_Shader->SetUniformVec3f("u_LightPos", m_LightPos);
+		m_Shader->SetUniformMat4f("u_LightProjectionViewMatrix", lightSpaceMatrix);
 
-		//glDepthFunc(GL_LESS);
+	//m_Shader->SetUniform1i("u_Material.diffuse", 0);
+
+	//	m_Shader->SetUniform1i("u_Material.depth", 1);
+//		glBindTexture(GL_TEXTURE_2D, depthMap);
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, woodTexture);
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, depthMap);
+	////	RenderScene(m_Shader,);
+	//	//m_Shader->SetUniform1f("u_Material.shininess", 64.0f);
+
+		RenderScene(m_Shader, lightSpaceMatrix);
+		//glBindTexture(GL_TEXTURE_2D, 0);
+
+		//glViewport(0, 0, 240, 135);
+
+		/*m_QuadDepthShader->Bind();
+
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, depthMap);
+		RenderQuad();*/
+		//glm::mat4 lightProjection, lightView;
+		//
+
+		//m_FrameBuffer->Bind(960, 540);
+		//glClear(GL_DEPTH_BUFFER_BIT| GL_COLOR_BUFFER_BIT );
+		//m_CubeObj->GetComponent<BlackPearl::MeshRenderer>()->SetShaders("assets/shaders/DepthShader_ShadowMapLayer.glsl");
+
+
+
+		//m_CubeObj1->GetComponent<BlackPearl::MeshRenderer>()->SetShaders("assets/shaders/DepthShader_ShadowMapLayer.glsl");
+		//
+		//DrawObjectsExcept(m_QuadObj);
+
+		//m_FrameBuffer->UnBind();
+
+		//
+
+		//glViewport(0, 0, 960, 540);
+		//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		//m_CubeObj->GetComponent<BlackPearl::MeshRenderer>()->SetShaders("assets/shaders/ShadowMaping_ShadowMapLayer.glsl");//ShadowMaping_ShadowMapLayer
+
+		//m_CubeObj1->GetComponent<BlackPearl::MeshRenderer>()->SetShaders("assets/shaders/ShadowMaping_ShadowMapLayer.glsl");
+		//DrawObjectsExcept(m_QuadObj);
+		//glViewport(0, 0, 240, 135);
+
+		//DrawObject(m_QuadObj);
+		//
 
 
 
 	}
 
+	void RenderQuad()
+	{
+		if (quadVAO == 0)
+		{
+			GLfloat quadVertices[] = {
+				// Positions        // Texture Coords
+				-1.0f,  1.0f, 0.0f,  0.0f, 1.0f,
+				-1.0f, -1.0f, 0.0f,  0.0f, 0.0f,
+				 1.0f,  1.0f, 0.0f,  1.0f, 1.0f,
+				 1.0f, -1.0f, 0.0f,  1.0f, 0.0f,
+			};
+			// Setup plane VAO
+			glGenVertexArrays(1, &quadVAO);
+			glGenBuffers(1, &quadVBO);
+			glBindVertexArray(quadVAO);
+			glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
+			glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
+			glEnableVertexAttribArray(0);
+			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (GLvoid*)0);
+			glEnableVertexAttribArray(1);
+			glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
+		}
+		glBindVertexArray(quadVAO);
+		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+		glBindVertexArray(0);
+	}
+
+	void RenderScene(std::shared_ptr<BlackPearl::Shader> &shader,glm::mat4 lightSpaceMatrix) {
+
+		// Floor
+		glm::mat4 model(1.0f);
+		shader->SetUniformVec3f("u_LightPos", m_LightPos);
+		shader->SetUniformMat4f("u_LightProjectionViewMatrix", lightSpaceMatrix);
+
+		shader->SetUniformMat4f("u_Model", model);
+		shader->SetUniformMat4f("u_TranInverseModel", glm::transpose(glm::inverse(model)));
+	
+		glBindVertexArray(planeVAO);
+		glDrawArrays(GL_TRIANGLES, 0, 6);
+		glBindVertexArray(0);
+		// Cubes
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(0.0f, 1.5f, 0.0f));
+		shader->SetUniformMat4f("u_Model", model);
+		shader->SetUniformMat4f("u_TranInverseModel", glm::transpose(glm::inverse(model)));
+		// Set light uniforms
+		shader->SetUniformVec3f("u_LightPos", m_LightPos);
+		shader->SetUniformMat4f("u_LightProjectionViewMatrix", lightSpaceMatrix);
+
+
+
+		RenderCube();
+
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(2.0f, 0.0f, 1.0f));
+		model = glm::scale(model, glm::vec3(3.0f, 1.0f, 3.0f));
+		shader->SetUniformMat4f("u_Model", model);
+		shader->SetUniformMat4f("u_TranInverseModel", glm::transpose(glm::inverse(model)));
+		// Set light uniforms
+		shader->SetUniformVec3f("u_LightPos", m_LightPos);
+		shader->SetUniformMat4f("u_LightProjectionViewMatrix", lightSpaceMatrix);
+
+
+	
+		RenderCube();
+
+
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-20.0f, 3.0f, 2.0f));
+		shader->SetUniformMat4f("u_Model", model);
+		shader->SetUniformMat4f("u_TranInverseModel", glm::transpose(glm::inverse(model)));
+		// Set light uniforms
+		shader->SetUniformVec3f("u_LightPos", m_LightPos);
+		shader->SetUniformMat4f("u_LightProjectionViewMatrix", lightSpaceMatrix);
+
+
+		RenderCube();
+
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-1.0f, 0.0f, 2.0));
+		model = glm::rotate(model, 60.0f, glm::normalize(glm::vec3(1.0, 0.0, 1.0)));
+		model = glm::scale(model, glm::vec3(0.5));
+		shader->SetUniformMat4f("u_Model", model);
+		shader->SetUniformMat4f("u_TranInverseModel", glm::transpose(glm::inverse(model)));
+		
+		// Set light uniforms
+		shader->SetUniformVec3f("u_LightPos", m_LightPos);
+		shader->SetUniformMat4f("u_LightProjectionViewMatrix", lightSpaceMatrix);
+
+
+		RenderCube();
+	}
+	void RenderCube() {
+
+		// Initialize (if necessary)
+		if (cubeVAO == 0)
+		{
+			GLfloat vertices[] = {
+				// Back face
+				-0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f, // Bottom-left
+				0.5f, 0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 1.0f, 1.0f, // top-right
+				0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f, // bottom-right         
+				0.5f, 0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 1.0f, 1.0f,  // top-right
+				-0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f,  // bottom-left
+				-0.5f, 0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 0.0f, 1.0f,// top-left
+				// Front face
+				-0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, // bottom-left
+				0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f,  // bottom-right
+				0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f,  // top-right
+				0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, // top-right
+				-0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f,  // top-left
+				-0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,  // bottom-left
+				// Left face
+				-0.5f, 0.5f, 0.5f, -1.0f, 0.0f, 0.0f, 1.0f, 0.0f, // top-right
+				-0.5f, 0.5f, -0.5f, -1.0f, 0.0f, 0.0f, 1.0f, 1.0f, // top-left
+				-0.5f, -0.5f, -0.5f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f,  // bottom-left
+				-0.5f, -0.5f, -0.5f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f, // bottom-left
+				-0.5f, -0.5f, 0.5f, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f,  // bottom-right
+				-0.5f, 0.5f, 0.5f, -1.0f, 0.0f, 0.0f, 1.0f, 0.0f, // top-right
+				// Right face
+				0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, // top-left
+				0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f, // bottom-right
+				0.5f, 0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, // top-right         
+				0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f,  // bottom-right
+				0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f,  // top-left
+				0.5f, -0.5f, 0.5f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, // bottom-left     
+				// Bottom face
+				-0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f, 0.0f, 1.0f, // top-right
+				0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f, 1.0f, 1.0f, // top-left
+				0.5f, -0.5f, 0.5f, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f,// bottom-left
+				0.5f, -0.5f, 0.5f, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f, // bottom-left
+				-0.5f, -0.5f, 0.5f, 0.0f, -1.0f, 0.0f, 0.0f, 0.0f, // bottom-right
+				-0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f, 0.0f, 1.0f, // top-right
+				// Top face
+				-0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,// top-left
+				0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, // bottom-right
+				0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f, // top-right     
+				0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, // bottom-right
+				-0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,// top-left
+				-0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f // bottom-left        
+			};
+			glGenVertexArrays(1, &cubeVAO);
+			glGenBuffers(1, &cubeVBO);
+			// Fill buffer
+			glBindBuffer(GL_ARRAY_BUFFER, cubeVBO);
+			glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+			// Link vertex attributes
+			glBindVertexArray(cubeVAO);
+			glEnableVertexAttribArray(0);
+			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)0);
+			glEnableVertexAttribArray(1);
+			glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
+			glEnableVertexAttribArray(2);
+			glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)(6 * sizeof(GLfloat)));
+			glBindBuffer(GL_ARRAY_BUFFER, 0);
+			glBindVertexArray(0);
+		}
+		// Render Cube
+		glBindVertexArray(cubeVAO);
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+		glBindVertexArray(0);
+	}
 	void OnImguiRender() override {
 
 
@@ -167,6 +467,13 @@ public:
 		ImGui::Begin("Inspector");
 
 
+		float pos[] = { m_LightPos.x,m_LightPos.y,m_LightPos.z };
+		ImGui::DragFloat3("m_LightPos", pos, 0.1f, -100.0f, 100.0f, "%.3f ");
+		m_LightPos = { pos[0],pos[1],pos[2] };
+
+		
+		ImGui::DragFloat("near_plane", &near_plane, 0.5f, -50.0f, 100.0f, "%.3f ");
+		ImGui::DragFloat("far_plane", &far_plane, 0.5f, -50.0f, 100.0f, "%.3f ");
 
 		if (currentObj != nullptr) {
 
@@ -302,6 +609,15 @@ private:
 
 
 	std::shared_ptr<BlackPearl::FrameBuffer> m_FrameBuffer;
-	glm::vec3 m_LightPos={ -2.0f, 4.0f, -1.0f };
+	glm::vec3 m_LightPos = { 0.0f, 1.5f, 0.0f };
+	std::shared_ptr<BlackPearl::Shader> m_SimpleDepthShader;
 	std::shared_ptr<BlackPearl::Shader> m_Shader;
+	std::shared_ptr<BlackPearl::Shader> m_QuadDepthShader;
+
+
+	GLuint woodTexture;
+	GLuint planeVAO;
+	GLuint depthMapFBO;
+	GLuint depthMap;
+	GLfloat near_plane = 1.0f, far_plane = 7.5f;
 };

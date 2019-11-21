@@ -63,6 +63,11 @@ namespace BlackPearl {
 		void Draw(const glm::mat4 & model, const LightSources& lightSources);
 
 		void SetTexture(const std::shared_ptr<Texture> texture);
+		void SetShader(const std::string& image) {
+			m_Material->SetShader(image);
+		
+		};
+
 		//void SetTexture(const Texture::Type type ,const std::string texturePath);
 
 

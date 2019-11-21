@@ -2,7 +2,7 @@
 #include <initializer_list>
 #include "BlackPearl/Core.h"
 #include "BlackPearl/Renderer/Material/Texture.h"
-
+#include "BlackPearl/Renderer/Material/DepthTexture.h"
 namespace BlackPearl {
 
 	enum class ElementDataType {
@@ -175,7 +175,7 @@ namespace BlackPearl {
 		void CleanUp();
 
 		std::shared_ptr<Texture> GetColorTexture() { return m_TextureColorBuffer; }
-		std::shared_ptr<Texture> GetDepthTexture() { return m_TextureDepthBuffer; }
+		std::shared_ptr<BlackPearl::DepthTexture> GetDepthTexture() { return m_TextureDepthBuffer; }
 
 
 	private:
@@ -184,7 +184,7 @@ namespace BlackPearl {
 		//unsigned int m_TextureColorBufferID;
 		//unsigned int m_TextureDepthBufferID;
 		std::shared_ptr<Texture> m_TextureColorBuffer;
-		std::shared_ptr<Texture> m_TextureDepthBuffer;
+		std::shared_ptr<BlackPearl::DepthTexture> m_TextureDepthBuffer;
 
 		unsigned int m_RenderBufferID;
 

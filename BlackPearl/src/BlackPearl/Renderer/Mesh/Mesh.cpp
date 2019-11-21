@@ -22,36 +22,50 @@ namespace BlackPearl {
 		unsigned int k = 0;
 		if (textures != nullptr) {
 			if (textures->diffuseTextureMap != nullptr) {
+				glActiveTexture(GL_TEXTURE0 + k);
+
 				shader->SetUniform1i("u_Material.diffuse", k);
 				textures->diffuseTextureMap->Bind();
 				k++;
 			}
 			if (textures->specularTextureMap != nullptr) {
+				glActiveTexture(GL_TEXTURE0 + k);
+
 				shader->SetUniform1i("u_Material.specular", k);
 				textures->specularTextureMap->Bind();
 				k++;
 			}
 			if (textures->emissionTextureMap != nullptr) {
+				glActiveTexture(GL_TEXTURE0 + k);
+
 				shader->SetUniform1i("u_Material.emission", k);
 				textures->emissionTextureMap->Bind();
 				k++;
 			}
 			if (textures->heightTextureMap != nullptr) {
+				glActiveTexture(GL_TEXTURE0 + k);
+
 				shader->SetUniform1i("u_Material.height", k);
 				textures->heightTextureMap->Bind();
 				k++;
 			}
 			if (textures->normalTextureMap != nullptr) {
+				glActiveTexture(GL_TEXTURE0 + k);
+
 				shader->SetUniform1i("u_Material.normal", k);
 				textures->normalTextureMap->Bind();
 				k++;
 			}
 			if (textures->cubeTextureMap != nullptr) {
+				glActiveTexture(GL_TEXTURE0 + k);
+
 				shader->SetUniform1i("u_Material.cube", k);
 				textures->cubeTextureMap->Bind();
 				k++;
 			}
 			if (textures->depthTextureMap != nullptr) {
+				glActiveTexture(GL_TEXTURE0 + k);
+
 				shader->SetUniform1i("u_Material.depth", k);
 				textures->depthTextureMap->Bind();
 				k++;
@@ -73,12 +87,15 @@ namespace BlackPearl {
 
 		glm::mat4 lightProjection, lightView;
 		glm::mat4 lightProjectionViewMatrix;
-		GLfloat nearPlane = -20.0f, farPlane =20.0f;
-		lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, nearPlane, farPlane);
-		lightView = glm::lookAt(glm::vec3( 0.0f, 2.0f, 2.0f ), glm::vec3(0.0f), glm::vec3( 0.0,1.0,0.0));
+		GLfloat nearPlane = 1.0f, farPlane =7.5f;
+		glm::vec3 LightPos = { 0.0f, 2.0f, 2.0f };
+		lightProjection = glm::ortho(-48.0f, 48.0f, -27.0f, 27.0f, nearPlane, farPlane);
+		lightView = glm::lookAt(LightPos, glm::vec3(0.0f), glm::vec3( 0.0,1.0,0.0));
 		lightProjectionViewMatrix = lightProjection * lightView;
 		//m_Shader->Bind();
-		shader->SetUniformMat4f("lightProjectionViewMatrix", lightProjectionViewMatrix);
+		shader->SetUniformMat4f("u_LightProjectionViewMatrix", lightProjectionViewMatrix);
+		shader->SetUniformVec3f("u_LightPos", LightPos);
+
 		shader->SetLightUniform(lightSources);
 		Renderer::Submit(m_VertexArray, shader, model);
 		//TODO :: Çø·ÖModelºÍcube
@@ -87,11 +104,11 @@ namespace BlackPearl {
 		else
 			glDrawArrays(GL_TRIANGLES, 0, m_VerticesSize / m_VertexBufferLayout.GetStride());
 
-		/*for (GLuint i = 0; i < textures.size(); i++)
-		{
-			glActiveTexture(GL_TEXTURE0 + i);
-			glBindTexture(GL_TEXTURE_2D, 0);
-		}*/
+		//for (GLuint i = 0; i < k; i++)
+		//{
+		//	glActiveTexture(GL_TEXTURE0 + i);
+		//	//glBindTexture(GL_TEXTURE_2D, 0);
+		//}
 	}
 
 	void Mesh::SetTexture(const std::shared_ptr<Texture> texture)
@@ -110,37 +127,48 @@ namespace BlackPearl {
 		unsigned int k = 0;
 		if (textures != nullptr) {
 			if (textures->diffuseTextureMap != nullptr) {
+				glActiveTexture(GL_TEXTURE0 + k);
 				shader->SetUniform1i("u_Material.diffuse", k);
 				textures->diffuseTextureMap->Bind();
 				k++;
 			}
 			if (textures->specularTextureMap != nullptr) {
+				glActiveTexture(GL_TEXTURE0 + k);
 				shader->SetUniform1i("u_Material.specular", k);
 				textures->specularTextureMap->Bind();
 				k++;
 			}
 			if (textures->emissionTextureMap != nullptr) {
+				glActiveTexture(GL_TEXTURE0 + k);
+
 				shader->SetUniform1i("u_Material.emission", k);
 				textures->emissionTextureMap->Bind();
 				k++;
 			}
 			if (textures->heightTextureMap != nullptr) {
+				glActiveTexture(GL_TEXTURE0 + k);
+
 				shader->SetUniform1i("u_Material.height", k);
 				textures->heightTextureMap->Bind();
 				k++;
 			}
 			if (textures->normalTextureMap != nullptr) {
+				glActiveTexture(GL_TEXTURE0 + k);
+
 				shader->SetUniform1i("u_Material.normal", k);
 				textures->normalTextureMap->Bind();
 				k++;
 			}
 			if (textures->cubeTextureMap != nullptr) {
+				glActiveTexture(GL_TEXTURE0 + k);
 				shader->SetUniform1i("u_Material.cube", k);
 				textures->cubeTextureMap->Bind();
 				k++;
 			}
 			if (textures->depthTextureMap != nullptr) {
+				glActiveTexture(GL_TEXTURE0 + k);
 				shader->SetUniform1i("u_Material.depth", k);
+
 				textures->depthTextureMap->Bind();
 				k++;
 			}

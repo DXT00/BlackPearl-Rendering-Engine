@@ -1,11 +1,11 @@
 #pragma once
 #include"pch.h"
 #include "Shader.h"
-#include<glad/glad.h>
-#include<BlackPearl/Core.h>
-#include"BlackPearl/Component/LightComponent/ParallelLight.h"
-#include"BlackPearl/Component/LightComponent/PointLight.h"
-#include"BlackPearl/Component/LightComponent/SpotLight.h"
+#include <glad/glad.h>
+#include <BlackPearl/Core.h>
+#include "BlackPearl/Component/LightComponent/ParallelLight.h"
+#include "BlackPearl/Component/LightComponent/PointLight.h"
+#include "BlackPearl/Component/LightComponent/SpotLight.h"
 #include "BlackPearl/Component/LightComponent/Light.h"
 #include "Renderer.h"
 #include "BlackPearl/Component/LightComponent/LightSources.h"
@@ -155,6 +155,10 @@ namespace BlackPearl {
 
 				return;
 		}
+
+		glValidateProgram(program);
+
+		
 		// Always detach shaders after a successful link.
 		for (auto& shader : ShaderID) {
 			glDetachShader(program, shader);
@@ -167,11 +171,7 @@ namespace BlackPearl {
 		unsigned int pointLightIndex = 0;
 		this->SetUniform1i("u_PointLightNums", lightSources.GetPointLightNum());
 		for (auto lightObj : lightSources.Get()) {
-			/*std::shared_ptr<Light> lightSource;
-			lightSource.reset(lightObj->GetComponent<Light>());*/
-			/*switch (lightSource->GetType())
-			{
-			case LightType::ParallelLight:*/
+
 			if (lightObj->HasComponent<ParallelLight>()) {
 				auto lightSource = lightObj->GetComponent<ParallelLight>();
 				this->SetUniform1ui("u_LightType", (unsigned int)LightType::ParallelLight);
@@ -181,7 +181,6 @@ namespace BlackPearl {
 				this->SetUniformVec3f("u_ParallelLight.specular", lightSource->GetLightProps().specular);
 				this->SetUniformVec3f("u_ParallelLight.direction", lightSource->GetDirection());
 			}
-			//case LightType::PointLight:
 			if (lightObj->HasComponent<PointLight>()) {
 				auto lightSource = lightObj->GetComponent<PointLight>();
 				this->SetUniform1ui("u_LightType", (unsigned int)LightType::PointLight);
@@ -196,8 +195,7 @@ namespace BlackPearl {
 				this->SetUniform1f("u_PointLights[" + std::to_string(pointLightIndex) + "].quadratic", lightSource->GetAttenuation().quadratic);
 				pointLightIndex++;
 			}
-				//break;
-		//	case LightType::SpotLight:
+			
 			if (lightObj->HasComponent<SpotLight>()) {
 				auto lightSource = lightObj->GetComponent<SpotLight>();
 
@@ -217,11 +215,10 @@ namespace BlackPearl {
 				this->SetUniform1f("u_SpotLight.constant", lightSource->GetAttenuation().constant);
 				this->SetUniform1f("u_SpotLight.linear", lightSource->GetAttenuation().linear);
 				this->SetUniform1f("u_SpotLight.quadratic",lightSource->GetAttenuation().quadratic);
-			}//break;
+			}
 
 			
-				//GE_CORE_ERROR("SetLightUniform failed! Unknown Light Type!")
-					
+			
 			
 		}
 

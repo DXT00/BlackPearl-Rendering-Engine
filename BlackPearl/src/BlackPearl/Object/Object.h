@@ -49,7 +49,7 @@ namespace BlackPearl {
 		}
 
 		template<typename C>
-		C* GetComponent() const
+		C* GetComponent() 
 		{
 			//GE_ASSERT(Valid(), "invalid entity" + m_Id);
 			std::unordered_map<BaseComponent::Family, std::shared_ptr<BaseComponent>>::const_iterator it = m_Components.find(C::Famliy());

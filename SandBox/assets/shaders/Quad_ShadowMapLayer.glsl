@@ -35,8 +35,9 @@ struct Material{
 uniform Material u_Material;
 void main(){
 	
-	float depthValue = texture(u_Material.depth,v_TexCoords).r;
+	float depthValue = texture(u_Material.depth,v_TexCoords).x;
 	FragColor = vec4(vec3(depthValue),1.0);
-
+//	depthValue = 1.0 - (1.0 - depthValue) * 25.0;                                             
+//    FragColor = vec4(depthValue);    
 
 }
