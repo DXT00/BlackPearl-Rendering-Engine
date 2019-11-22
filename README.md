@@ -60,4 +60,4 @@ ShadowMapTextLayer.h
 
 
 ```
-![Alt text](/results/image9.png)
+![Alt text](/results/Image9.png)
