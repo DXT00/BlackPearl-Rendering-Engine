@@ -72,7 +72,7 @@ namespace BlackPearl {
 		m_Width = width;
 		m_Height = height;
 		glGenFramebuffers(1, &m_RendererID);
-		Bind(width, height);
+		Bind();
 		if (disableColor) {
 			DisableColorBuffer();
 		}
@@ -106,7 +106,7 @@ namespace BlackPearl {
 	{	
 		m_TextureDepthBuffer.reset(DBG_NEW BlackPearl::DepthTexture(Texture::Type::DepthMap, m_Width, m_Height));
 	//	m_TextureDepthBuffer->UnBind();
-		Bind(m_Width,m_Height);
+		Bind();
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, m_TextureDepthBuffer->GetRendererID(), 0);
 
 	}
@@ -127,14 +127,14 @@ namespace BlackPearl {
 	void FrameBuffer::DisableColorBuffer()
 	{
 		glDrawBuffer(GL_NONE);
-		//glReadBuffer(GL_NONE);
+		glReadBuffer(GL_NONE);
 	}
 
-	void FrameBuffer::Bind(int width,int height)
+	void FrameBuffer::Bind()
 	{
 		//glBindTexture(GL_TEXTURE_2D, 0);
 		glBindFramebuffer(GL_FRAMEBUFFER, m_RendererID);
-		glViewport(0, 0, width, height);
+		//glViewport(0, 0, width, height);
 
 	}
 	void FrameBuffer::UnBind()

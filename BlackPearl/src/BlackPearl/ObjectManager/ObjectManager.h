@@ -45,10 +45,11 @@ namespace BlackPearl {
 		std::vector<Object*> GetObjects();
 		std::vector<std::string> GetObjectsName();
 
+	/*	void DrawShadowMap(std::vector<Object *>objs);
 		void DrawObjects();
 		void DrawObject(Object* obj);
 		void DrawObjectsExcept(std::vector<Object *>objs);
-		void DrawObjectsExcept(Object * obj);
+		void DrawObjectsExcept(Object * obj);*/
 
 		void DestroyObjects();
 

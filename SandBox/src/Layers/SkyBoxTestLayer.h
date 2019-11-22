@@ -33,6 +33,7 @@ public:
 			 "assets/skybox/skybox/front.jpg",
 			 "assets/skybox/skybox/back.jpg",
 			});
+		//m_ObjectsList.push_back(m_SkyBoxObj);
 		//m_PlaneObj =CreatePlane();
 		//m_QuadObj = CreateQuad();
 
@@ -47,6 +48,7 @@ public:
 			 "assets/skybox/skybox/back.jpg",
 			}));
 		meshComponent->SetTexture(0, cubeMapTexture);
+	//	m_ObjectsList.push_back(m_CubeObj);
 
 		//把FrameBuffer中的texture作为贴图，贴到m_CubeObj上
 	//	auto CubemeshComponent = m_CubeObj->GetComponent<BlackPearl::MeshRenderer>();
@@ -84,11 +86,11 @@ public:
 		objs.push_back(m_SkyBoxObj);
 	//	objs.push_back(m_CubeObj);
 
-
-		DrawObjectsExcept(objs);
+		m_MasterRenderer.RenderSceneExcept(m_ObjectsList, m_SkyBoxObj, GetLightSources());
+		//DrawObjectsExcept(objs);
 		//小于等于当前深度缓冲的fragment才被绘制
 		glDepthFunc(GL_LEQUAL);
-		DrawObject(m_SkyBoxObj);
+		m_MasterRenderer.RenderObject(m_SkyBoxObj);
 
 		glDepthFunc(GL_LESS);
 
@@ -314,6 +316,7 @@ private:
 	float m_CameraRotateSpeed = 9.0f;
 
 	glm::vec4 m_BackgroundColor = { 0.0f,0.0f,0.0f,0.0f };
+	BlackPearl::MasterRenderer m_MasterRenderer;
 
 	
 

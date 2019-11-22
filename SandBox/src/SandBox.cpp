@@ -17,9 +17,10 @@ public:
 		BlackPearl::EntityManager * entityManager = DBG_NEW BlackPearl::EntityManager();
 		BlackPearl::ObjectManager *objectManager = DBG_NEW BlackPearl::ObjectManager(entityManager);
 
-		//BlackPearl::Layer* layer = DBG_NEW FrameBufferTestLayer("FrameBufferTest Layer", objectManager);
-		BlackPearl::Layer* layer = DBG_NEW ShadowMapTestLayer("SkyBoxTest Layer", objectManager);
+	//	BlackPearl::Layer* layer = DBG_NEW FrameBufferTestLayer("FrameBufferTest Layer", objectManager);
+		//BlackPearl::Layer* layer = DBG_NEW SkyBoxTestLayer("SkyBoxTest Layer", objectManager);
 		//BlackPearl::Layer* layer = DBG_NEW AdvanceLightTestLayer("AdvanceLight Layer", objectManager);
+		BlackPearl::Layer* layer = DBG_NEW ShadowMapTestLayer("ShadowMapTest Layer", objectManager);
 
 		GetScene()->PushLayer(layer);
 	}

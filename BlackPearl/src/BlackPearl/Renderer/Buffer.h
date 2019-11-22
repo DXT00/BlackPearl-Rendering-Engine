@@ -166,7 +166,7 @@ namespace BlackPearl {
 		void AttachDepthTexture();
 		void AttachRenderBuffer();
 		void DisableColorBuffer();
-		void Bind(int width,int height);
+		void Bind();
 		//switch back to default framebuffer
 		void UnBind();
 

@@ -2,7 +2,6 @@
 #include<glm/glm.hpp>
 #include<string>
 #include<memory>
-//#include<glad/glad.h>
 #include "glad/glad.h"
 #include <unordered_map>
 #include "BlackPearl/Component/LightComponent/LightSources.h"
@@ -29,11 +28,13 @@ namespace BlackPearl {
 		void SetUniformMat4f(const std::string &name, const glm::mat4 &mat) const;
 		void SetUniformVec3f(const std::string & name, const glm::vec3& value) const;
 
+
+		virtual void SetExtraUniform() {};
+
 		std::string GetPath() { return m_ShaderPath; }
 
 	private:
 		Shader(const std::string& vertexSrc, const std::string& fragmentSrc);
-
 		uint32_t m_RendererID;
 		std::string m_ShaderPath;
 

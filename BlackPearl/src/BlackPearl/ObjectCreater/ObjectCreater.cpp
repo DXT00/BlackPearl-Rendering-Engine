@@ -31,19 +31,17 @@ namespace BlackPearl {
 		Object* obj = CreateEmpty("Cube");
 		std::shared_ptr<CubeMeshFilter> meshFilter = obj->AddComponent<CubeMeshFilter>();
 		Transform *transformComponent = obj->GetComponent<Transform>();
-		
+
 		std::shared_ptr<Material> material;
 		std::shared_ptr<Material::TextureMaps> texture(DBG_NEW Material::TextureMaps());
 		if (texturePath != "")
 			texture->diffuseTextureMap.reset(DBG_NEW Texture(Texture::Type::DiffuseMap, texturePath));
-	
+
 		material.reset(DBG_NEW Material(shaderPath, texture, {}, { 0.2,0.5,0.6 }, {}, {}));
 		VertexBufferLayout layout = {
 		{ElementDataType::Float3,"aPos",false},
 		{ElementDataType::Float3,"aNormal",false},
-
 		{ElementDataType::Float2,"aTexCoords",false}
-
 		};
 		Mesh mesh(meshFilter->GetVertices(), meshFilter->GetIndices(), material, layout);
 		obj->AddComponent<MeshRenderer>(mesh, transformComponent->GetTransformMatrix());
@@ -58,14 +56,14 @@ namespace BlackPearl {
 
 		std::shared_ptr<Material> material;
 		std::shared_ptr<Material::TextureMaps> texture(DBG_NEW Material::TextureMaps());
-		texture->diffuseTextureMap.reset(DBG_NEW Texture(Texture::Type::DiffuseMap, texturePath));
-		material.reset(DBG_NEW Material(shaderPath, texture, {}, { 0.2,0.2,0.0 }, {}, {}));
+		if (texturePath != "")
+			texture->diffuseTextureMap.reset(DBG_NEW Texture(Texture::Type::DiffuseMap, texturePath));
 
+		material.reset(DBG_NEW Material(shaderPath, texture, {}, { 0.2,0.2,0.0 }, {}, {}));
 		VertexBufferLayout layout = {
 		{ElementDataType::Float3,"aPos",false},
-		{ElementDataType::Float2,"aTexCoords",false},
-		{ElementDataType::Float3,"aNormal",false}
-
+		{ElementDataType::Float3,"aNormal",false},
+		{ElementDataType::Float2,"aTexCoords",false}
 		};
 		Mesh mesh(meshFilter->GetVertices(), meshFilter->GetIndices(), material, layout);
 		obj->AddComponent<MeshRenderer>(mesh, transformComponent->GetTransformMatrix());
@@ -182,8 +180,7 @@ namespace BlackPearl {
 
 		}
 		material.reset(DBG_NEW Material(shaderPath, texture, {}, { 0.2,0.5,0.6 }, {}, {}));
-		//material->GetShader()->SetUniform1i("u_Material.diffuse",0);
-	
+
 		VertexBufferLayout layout = {
 		{ElementDataType::Float3,"aPos",false},
 		{ElementDataType::Float2,"aTexCoords",false}

@@ -3,7 +3,7 @@
 #include"BlackPearl/Layer.h"
 #include "BlackPearl/Component/LightComponent/PointLight.h"
 #include "Renderer/Model/Model.h"
-#include "Renderer/Shader.h"
+#include "Renderer/Shader/Shader.h"
 #include "imgui.h"
 #include <glm/gtc/type_ptr.hpp>
 #include <stdio.h>
@@ -18,35 +18,51 @@ namespace BlackPearl {
 
 	Object* Layer::CreateEmpty(std::string name) {
 
-		return m_ObjectManager->CreateEmpty(name);
+		Object* obj= m_ObjectManager->CreateEmpty(name);
+		m_ObjectsList.push_back(obj);
+		return obj;
 	}
 	Object* Layer::CreateLight(LightType type)
 	{
-		return m_ObjectManager->CreateLight(type, m_LightSources);
+		Object* obj= m_ObjectManager->CreateLight(type, m_LightSources);
+		m_ObjectsList.push_back(obj);
+		return obj;
 	}
 	Object * Layer::CreateCube(const std::string& shaderPath, const std::string& texturePath) //TODO:
 	{
-		return m_ObjectManager->CreateCube(shaderPath, texturePath);
+		Object* obj= m_ObjectManager->CreateCube(shaderPath, texturePath);
+		m_ObjectsList.push_back(obj);
+		return obj;
 	}
 	Object * Layer::CreatePlane(const std::string& shaderPath, const std::string& texturePath)
 	{
-		return m_ObjectManager->CreatePlane(shaderPath, texturePath);
+		Object* obj= m_ObjectManager->CreatePlane(shaderPath, texturePath);
+		m_ObjectsList.push_back(obj);
+		return obj;
 	}
 	Object * Layer::CreateSkyBox(const std::vector<std::string>& textureFaces)
 	{
-		return m_ObjectManager->CreateSkyBox(textureFaces);
+		Object* obj= m_ObjectManager->CreateSkyBox(textureFaces);
+		m_ObjectsList.push_back(obj);
+		return obj;
 	}
 	Object * Layer::CreateQuad(const std::string& shaderPath, const std::string& texturePath)
 	{
-		return m_ObjectManager->CreateQuad(shaderPath, texturePath);
+		Object* obj= m_ObjectManager->CreateQuad(shaderPath, texturePath);
+		m_ObjectsList.push_back(obj);
+		return obj;
 	}
 	Object* Layer::CreateModel(const std::string& modelPath, const std::string& shaderPath)
 	{
-		return m_ObjectManager->CreateModel(modelPath, shaderPath);
+		Object* obj= m_ObjectManager->CreateModel(modelPath, shaderPath);
+		m_ObjectsList.push_back(obj);
+		return obj;
 	}
 	Object* Layer::CreateCamera() {
 
-		return m_ObjectManager->CreateCamera();
+		Object* obj= m_ObjectManager->CreateCamera();
+		m_ObjectsList.push_back(obj);
+		return obj;
 	}
 
 	//void Layer::ShowShader(static std::string &imguiShaders, static char* shader, Mesh & mesh, int meshIndex, static  int &itemIndex)
@@ -140,36 +156,7 @@ namespace BlackPearl {
 			ImGui::Text(imguiShaders.c_str());
 
 
-		//if (imguiShaders.size()==0) {
-		//	//char name[] = { 0 };
-		//	//ImGui::InputText(inputTextName.c_str(), name, IM_ARRAYSIZE(name));
-		//	const char* const entityItems[] = { "" };
-		//	 int entityIdx = -1;
-
-		//	ImGui::Combo(inputTextName.c_str(), &entityIdx, entityItems, 1);
-		//}
-		//else {
-		//	//const char* const entityItems[] = { imguiShaders.c_str() };
-		//	// int entityIdx = -1;
-		//	 ImGui::Text(imguiShaders.c_str());
-		////	ImGui::Combo(inputTextName.c_str(), &entityIdx, entityItems, 1);
-		///*	std::string s = "Hello World!";
-
-		//	char cstr[] = imguiShaders.c_str();
-		//	imguiShaders.copy(cstr, imguiShaders.size() + 1);
-		//	cstr[imguiShaders.size()] = '\0';*/
-
-
-		//	//char* shader = &(imguiShaders[0]);
-		//	///*char tab2[1024];
-		//	//strncpy(tab2, imguiShaders.c_str(), sizeof(tab2));
-		//	//tab2[sizeof(tab2) - 1] = 0;*/
-		//	////const char *array = imguiShaders.c_str();
-		//	//ImGui::InputText(inputTextName.c_str(), shader, IM_ARRAYSIZE(shader));
-		//
-		//	/*char* shader = const_cast<char*>(imguiShaders.c_str());
-		//	ImGui::InputText(inputTextName.c_str(), shader, IM_ARRAYSIZE(shader));*/
-		//}
+	
 		ImGui::SameLine();
 
 		if (ImGui::Button(buttonName.c_str())) {
@@ -387,7 +374,7 @@ namespace BlackPearl {
 
 
 
-	void Layer::DrawObjects()
+	/*void Layer::DrawObjects()
 	{
 		m_ObjectManager->DrawObjects();
 	}
@@ -404,7 +391,7 @@ namespace BlackPearl {
 	{
 		m_ObjectManager->DrawObjectsExcept(obj);
 
-	}
+	}*/
 	std::vector<Object*> Layer::GetObjects()
 	{
 		return m_ObjectManager->GetObjects();

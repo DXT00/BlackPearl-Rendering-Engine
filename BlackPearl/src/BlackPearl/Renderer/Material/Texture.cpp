@@ -3,7 +3,6 @@
 #include "Texture.h"
 #include "BlackPearl/Core.h"
 #include <glad/glad.h>
-
 #include "BlackPearl/Config.h"
 
 
@@ -21,29 +20,27 @@ namespace BlackPearl {
 		
 
 	}
-
+	//Use in ShadowMap (DepthMap) or FrameBuffer's empty ColorMap
 	Texture::Texture(Type type, const int width, const int height,bool isDepth)
 	{
 		m_Path = "";
-		
 		m_Type = type;
 		glGenTextures(1, &m_TextureID);
 		glBindTexture(GL_TEXTURE_2D, m_TextureID);
 		if(isDepth==false)
-		Init(width, height);
+			Init(width, height);
 		
 
 
 	}
-
+	//Use in CubeMap
 	Texture::Texture(Type type, std::vector<std::string> faces)
 	{
 		m_Path = "";
 		m_FacesPath = faces;
 		m_Type = type;
 		glGenTextures(1, &m_TextureID);
-		//glBindTexture(GL_TEXTURE_2D, m_TextureID);
-		//Init(faces);
+	
 	}
 
 
@@ -57,7 +54,6 @@ namespace BlackPearl {
 	{
 		//纹理过滤---邻近过滤和线性过滤
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
-
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);//纹理缩小时用邻近过滤
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);//纹理放大时也用邻近过滤
 	}
@@ -66,6 +62,8 @@ namespace BlackPearl {
 
 	void Texture::LoadTexture(const std::string & image)
 	{
+		GE_ASSERT(image.size()!=0, "texture image is empty!");
+
 		int width, height, nrChannels;
 
 		stbi_set_flip_vertically_on_load(true);

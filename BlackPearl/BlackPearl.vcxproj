@@ -143,6 +143,9 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\BlackPearl\Renderer\MasterRenderer\MasterRenderer.h" />
+    <ClInclude Include="src\BlackPearl\Renderer\MasterRenderer\BasicRenderer.h" />
+    <ClInclude Include="src\BlackPearl\Renderer\MasterRenderer\ShadowMapRenderer.h" />
     <ClInclude Include="src\BlackPearl\Renderer\Material\DepthTexture.h" />
     <ClInclude Include="src\BlackPearl\Application.h" />
     <ClInclude Include="src\BlackPearl\Component\BaseComponent.h" />
@@ -189,7 +192,7 @@
     <ClInclude Include="src\BlackPearl\Renderer\Model\Model.h" />
     <ClInclude Include="src\BlackPearl\Renderer\RenderCommand.h" />
     <ClInclude Include="src\BlackPearl\Renderer\Renderer.h" />
-    <ClInclude Include="src\BlackPearl\Renderer\Shader.h" />
+    <ClInclude Include="src\BlackPearl\Renderer\Shader\Shader.h" />
     <ClInclude Include="src\BlackPearl\Renderer\VertexArray.h" />
     <ClInclude Include="src\BlackPearl\Scene\Scene.h" />
     <ClInclude Include="src\BlackPearl\Timestep\Timestep.h" />
@@ -567,6 +570,9 @@
     <ClInclude Include="vendor\stb\stb_image.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\BlackPearl\Renderer\MasterRenderer\MasterRenderer.cpp" />
+    <ClCompile Include="src\BlackPearl\Renderer\MasterRenderer\BasicRenderer.cpp" />
+    <ClCompile Include="src\BlackPearl\Renderer\MasterRenderer\ShadowMapRenderer.cpp" />
     <ClCompile Include="src\BlackPearl\Renderer\Material\DepthTexture.cpp" />
     <ClCompile Include="src\BlackPearl\Application.cpp" />
     <ClCompile Include="src\BlackPearl\Component\BaseComponent.cpp" />
@@ -607,7 +613,7 @@
     <ClCompile Include="src\BlackPearl\Renderer\Model\Model.cpp" />
     <ClCompile Include="src\BlackPearl\Renderer\RenderCommand.cpp" />
     <ClCompile Include="src\BlackPearl\Renderer\Renderer.cpp" />
-    <ClCompile Include="src\BlackPearl\Renderer\Shader.cpp" />
+    <ClCompile Include="src\BlackPearl\Renderer\Shader\Shader.cpp" />
     <ClCompile Include="src\BlackPearl\Renderer\VertexArray.cpp" />
     <ClCompile Include="src\BlackPearl\Scene\Scene.cpp" />
     <ClCompile Include="src\BlackPearl\Timestep\Timestep.cpp" />

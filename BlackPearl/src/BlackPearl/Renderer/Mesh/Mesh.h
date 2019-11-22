@@ -1,7 +1,7 @@
 #pragma once
 #include<vector>
 #include<string>
-#include"BlackPearl/Renderer/Shader.h"
+#include"BlackPearl/Renderer/Shader/Shader.h"
 #include"BlackPearl/Renderer/Buffer.h"
 #include"BlackPearl/Component/LightComponent/LightSources.h"
 #include"BlackPearl/Renderer/Material/MaterialColor.h"
@@ -58,17 +58,15 @@ namespace BlackPearl {
 		uint32_t GetIndicesSize()const { return m_IndicesSize; }
 		uint32_t GetVerticesSize()const { return m_VerticesSize; }
 		std::shared_ptr<Material> GetMaterial()const { return m_Material; }
-		//Draw Light
-		void Draw(const glm::mat4 & model);
-		void Draw(const glm::mat4 & model, const LightSources& lightSources);
+		VertexBufferLayout GetVertexBufferLayout() const { return m_VertexBufferLayout; }
+		////Draw Light
+		//void Draw(const glm::mat4 & model);
+		//void Draw(const glm::mat4 & model, const LightSources& lightSources);
 
-		void SetTexture(const std::shared_ptr<Texture> texture);
-		void SetShader(const std::string& image) {
-			m_Material->SetShader(image);
-		
-		};
+		void SetTexture(const std::shared_ptr<Texture>& texture) { m_Material->SetTexture(texture); }
+		void SetShader(const std::string& image) { m_Material->SetShader(image);};
+		void SetShader(const std::shared_ptr<Shader> &shader) { m_Material->SetShader(shader);};
 
-		//void SetTexture(const Texture::Type type ,const std::string texturePath);
 
 
 	private:

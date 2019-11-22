@@ -23,28 +23,24 @@ namespace BlackPearl {
 			:Component(entityManager, id, Component::Type::MeshRenderer),m_Model(model), m_TransformMatrix(transformMatrix) {
 		}
 		~MeshRenderer() {};
+
 		void UpdateTransformMatrix(glm::mat4 transformMatrix);
-		void DrawMeshes();
-	//	void DrawModel();
+	/*	void DrawMeshes();
 		void DrawLight();
-		std::shared_ptr<Model>   GetModel()  const { return m_Model; }
-		std::vector<Mesh>        GetMeshes() const {
+*/
+		inline std::shared_ptr<Model>GetModel()  const { return m_Model; }
+		inline std::vector<Mesh>     GetMeshes() const {
 			return m_Model != nullptr ? m_Model->GetMeshes() : m_Meshes;
 		}
 
-		void SetTexture(unsigned int meshIndex,std::shared_ptr<Texture> texture);
-		void SetTextures(std::shared_ptr<Texture> texture);
+		void SetTexture(unsigned int meshIndex, const std::shared_ptr<Texture>& texture);
+		void SetTextures(const std::shared_ptr<Texture>& texture);
+		void SetModelTexture(unsigned int meshIndex, const std::shared_ptr<Texture>& texture);
+		void SetModelTextures(const std::shared_ptr<Texture> &texture);
 
-		void SetModelTexture(unsigned int meshIndex, std::shared_ptr<Texture> texture);
-		void SetModelTextures(std::shared_ptr<Texture> texture);
+		void SetShaders(const std::string& image);
+		void SetShaders(const std::shared_ptr<Shader> &shader);
 
-		void SetShaders(const std::string& image) {
-			for (int i = 0; i < m_Meshes.size(); i++)
-			{
-				m_Meshes[i].SetShader(image);
-
-			}
-		}
 	private:
 		std::vector<Mesh> m_Meshes;
 		std::shared_ptr<Model> m_Model = nullptr;

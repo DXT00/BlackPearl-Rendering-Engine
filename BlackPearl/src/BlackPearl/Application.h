@@ -1,5 +1,5 @@
 #pragma once
-#include "BlackPearl/Renderer/Shader.h"
+#include "BlackPearl/Renderer/Shader/Shader.h"
 #include <memory>
 #include "Window.h"
 #include "Renderer/Material/Texture.h"

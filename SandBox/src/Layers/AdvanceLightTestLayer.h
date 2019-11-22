@@ -73,7 +73,8 @@ public:
 		//std::vector<BlackPearl::Object*> objs;
 		//objs.push_back(m_SkyBoxObj);
 		//	objs.push_back(m_CubeObj);
-		DrawObjects();
+		//DrawObjects();
+		m_MasterRenderer.RenderScene(m_ObjectsList, GetLightSources());
 
 		//DrawObjectsExcept(objs);
 		//小于等于当前深度缓冲的fragment才被绘制
@@ -293,6 +294,7 @@ private:
 	glm::vec4 m_BackgroundColor = { 0.0f,0.0f,0.0f,0.0f };
 
 
+	BlackPearl::MasterRenderer m_MasterRenderer;
 
 
 	//std::shared_ptr<BlackPearl::FrameBuffer> m_FrameBuffer;

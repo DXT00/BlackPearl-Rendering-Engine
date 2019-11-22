@@ -38,7 +38,7 @@ namespace BlackPearl {
 	{
 	}
 
-	void Material::SetShader(std::string shaderPath)
+	void Material::SetShader(const std::string& shaderPath)
 	{
 		m_Shader.reset(DBG_NEW Shader(shaderPath));
 		

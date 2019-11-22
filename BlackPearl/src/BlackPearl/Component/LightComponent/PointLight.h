@@ -1,7 +1,7 @@
 #pragma once
 #include "Light.h"
 #include <glm/glm.hpp>
-#include "BlackPearl/Renderer/Shader.h"
+#include "BlackPearl/Renderer/Shader/Shader.h"
 #include "BlackPearl/Renderer/Mesh/Mesh.h"
 namespace BlackPearl {
 

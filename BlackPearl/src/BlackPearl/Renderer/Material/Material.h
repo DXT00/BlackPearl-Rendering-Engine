@@ -1,6 +1,6 @@
 #pragma once
 #include "Texture.h"
-#include "BlackPearl/Renderer/Shader.h"
+#include "BlackPearl/Renderer/Shader/Shader.h"
 #include "MaterialColor.h"
 namespace BlackPearl {
 	class Material
@@ -54,11 +54,11 @@ namespace BlackPearl {
 		MaterialColor                GetMaterialColor()const { return m_MaterialColors; }
 		Props                        GetProps() const { return m_Props; }
 
-		void SetShader(std::string shaderPath);
+		void SetShader(const std::string& shaderPath);
 		void SetShader(const std::shared_ptr<Shader> &shader);
-		void SetMaterialColor(MaterialColor::Color color);
 		void SetTexture(const std::shared_ptr<Texture> texture);
 		void SetTexture(const Texture::Type type, const std::string& image);
+		void SetMaterialColor(MaterialColor::Color color);
 
 		void SetProps(const Props& props);
 		void SetShininess(float shininess);

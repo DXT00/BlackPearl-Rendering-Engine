@@ -62,7 +62,7 @@ struct SpotLight{
 };
 
 
-struct Material{
+uniform struct Material{
 	vec3 ambientColor;
 	vec3 diffuseColor;
 	vec3 specularColor;
@@ -77,7 +77,7 @@ struct Material{
 	bool isBlinnLight;
 	int  isTextureSample;//判断是否使用texture,或者只有color
 
-};
+}u_Material;
 
 out vec4 FragColor;
 
@@ -88,7 +88,7 @@ in vec3 v_FragPos;
 
 uniform int u_PointLightNums;
 
-uniform Material u_Material;
+//uniform Material u_Material;
 uniform ParallelLight u_ParallelLight;
 uniform PointLight u_PointLights[100];
 uniform SpotLight u_SpotLight;
@@ -118,8 +118,6 @@ void main()
 
 	FragColor = vec4(outColor,1.0);
 }
-
-
 
 
 vec3 CalcParallelLight(ParallelLight light,vec3 normal,vec3 viewDir){
@@ -160,7 +158,7 @@ vec3 CalcPointLight(PointLight light,vec3 normal,vec3 viewDir){
 	vec3 diffuse = light.diffuse * diff *  u_Material.diffuseColor *(1-u_Material.isTextureSample)
 					+ texture(u_Material.diffuse,v_TexCoord).rgb*u_Material.isTextureSample;//texture(u_Material.diffuse,v_TexCoord).rgb;// u_Material.diffuse);u_LightColor
 	
-	//specular
+
 //specular
 	vec3 specular;
 	float spec;

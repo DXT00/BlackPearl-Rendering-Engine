@@ -225,9 +225,6 @@
     <ClInclude Include="src\BlackPearl\Renderer\Renderer.h">
       <Filter>src\BlackPearl\Renderer</Filter>
     </ClInclude>
-    <ClInclude Include="src\BlackPearl\Renderer\Shader.h">
-      <Filter>src\BlackPearl\Renderer</Filter>
-    </ClInclude>
     <ClInclude Include="src\BlackPearl\Renderer\VertexArray.h">
       <Filter>src\BlackPearl\Renderer</Filter>
     </ClInclude>
@@ -1354,6 +1351,12 @@
       <Filter>vendor\stb</Filter>
     </ClInclude>
     <ClInclude Include="src\BlackPearl\Renderer\Material\DepthTexture.h" />
+    <ClInclude Include="src\BlackPearl\Renderer\Shader\Shader.h">
+      <Filter>src\BlackPearl\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BlackPearl\Renderer\MasterRenderer\ShadowMapRenderer.h" />
+    <ClInclude Include="src\BlackPearl\Renderer\MasterRenderer\BasicRenderer.h" />
+    <ClInclude Include="src\BlackPearl\Renderer\MasterRenderer\MasterRenderer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\BlackPearl\Application.cpp">
@@ -1473,9 +1476,6 @@
     <ClCompile Include="src\BlackPearl\Renderer\Renderer.cpp">
       <Filter>src\BlackPearl\Renderer</Filter>
     </ClCompile>
-    <ClCompile Include="src\BlackPearl\Renderer\Shader.cpp">
-      <Filter>src\BlackPearl\Renderer</Filter>
-    </ClCompile>
     <ClCompile Include="src\BlackPearl\Renderer\VertexArray.cpp">
       <Filter>src\BlackPearl\Renderer</Filter>
     </ClCompile>
@@ -1492,5 +1492,11 @@
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="src\BlackPearl\Renderer\Material\DepthTexture.cpp" />
+    <ClCompile Include="src\BlackPearl\Renderer\Shader\Shader.cpp">
+      <Filter>src\BlackPearl\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BlackPearl\Renderer\MasterRenderer\ShadowMapRenderer.cpp" />
+    <ClCompile Include="src\BlackPearl\Renderer\MasterRenderer\BasicRenderer.cpp" />
+    <ClCompile Include="src\BlackPearl\Renderer\MasterRenderer\MasterRenderer.cpp" />
   </ItemGroup>
 </Project>

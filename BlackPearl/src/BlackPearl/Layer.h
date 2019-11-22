@@ -28,6 +28,8 @@ namespace BlackPearl {
 		virtual ~Layer() {
 			delete m_LightSources;
 			delete m_ObjectManager;
+			for (Object* obj : m_ObjectsList)
+				delete obj;
 		};
 		virtual void OnAttach() {}
 		virtual void OnDetach() {}
@@ -58,9 +60,9 @@ namespace BlackPearl {
 		std::vector<Object*> GetObjects();
 		std::vector<std::string> GetObjectsName();
 		void DrawObjects();
-		void DrawObject(Object* obj);
+		/*void DrawObject(Object* obj);
 		void DrawObjectsExcept(std::vector<Object *>objs);
-		void DrawObjectsExcept(Object * obj);
+		void DrawObjectsExcept(Object * obj);*/
 
 		void DestroyObjects();
 
@@ -69,6 +71,8 @@ namespace BlackPearl {
 		std::string      m_DebugName;
 
 		ObjectManager*   m_ObjectManager;
+		//每层Layer都有一个ObjectsList
+		std::vector<Object*>          m_ObjectsList;
 		LightSources*    m_LightSources;
 		ImGui::FileBrowser m_fileDialog;
 

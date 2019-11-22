@@ -93,55 +93,59 @@ namespace BlackPearl {
 		}
 		return objs;
 	}
-	void ObjectManager::DrawObjects()
+	/*void ObjectManager::DrawShadowMap(std::vector<Object*> objs)
 	{
-		for (auto pair : m_EntityToObjects) {
-			Object* obj = pair.second;
-			DrawObject(obj);
-		}
-	}
-	void ObjectManager::DrawObject(Object * obj)
-	{
-		if (obj != nullptr &&obj->HasComponent<MeshRenderer>()) {
-			auto transformMatrix = obj->GetComponent<Transform>()->GetTransformMatrix();
-			obj->GetComponent<MeshRenderer>()->UpdateTransformMatrix(transformMatrix);
+		
+	}*/
+	//void ObjectManager::DrawObjects()
+	//{
+	//	for (auto pair : m_EntityToObjects) {
+	//		Object* obj = pair.second;
+	//		DrawObject(obj);
+	//	}
+	//}
+	//void ObjectManager::DrawObject(Object * obj)
+	//{
+	//	if (obj != nullptr &&obj->HasComponent<MeshRenderer>()) {
+	//		auto transformMatrix = obj->GetComponent<Transform>()->GetTransformMatrix();
+	//		obj->GetComponent<MeshRenderer>()->UpdateTransformMatrix(transformMatrix);
 
-			//灯光单独处理
-			if (obj->HasComponent<PointLight>() || obj->HasComponent<ParallelLight>() || obj->HasComponent<SpotLight>()) {
-				obj->GetComponent<MeshRenderer>()->DrawLight();
-			}
-			else {
-				obj->GetComponent<MeshRenderer>()->DrawMeshes();
-			//	obj->GetComponent<MeshRenderer>()->DrawModel();
-			}
+	//		//灯光单独处理 //ParallelLight只有方向所以不需要Draw()
+	//		if (obj->HasComponent<PointLight>()  || obj->HasComponent<SpotLight>()) {
+	//			obj->GetComponent<MeshRenderer>()->DrawLight();
+	//		}
+	//		else {
+	//			obj->GetComponent<MeshRenderer>()->DrawMeshes();
+	//		//	obj->GetComponent<MeshRenderer>()->DrawModel();
+	//		}
 
-		}
-	}
-	void ObjectManager::DrawObjectsExcept(std::vector<Object *>objs)
-	{
+	//	}
+	//}
+	//void ObjectManager::DrawObjectsExcept(std::vector<Object *>objs)
+	//{
 
-		for (auto pair : m_EntityToObjects) {
-			Object* Obj = pair.second;
+	//	for (auto pair : m_EntityToObjects) {
+	//		Object* Obj = pair.second;
 
-			bool canDraw = true;
-			for (auto obj : objs) {
-				if (Obj->GetId().id == obj->GetId().id) {
-					canDraw = false;
-				}
-			}
-			if(canDraw)
-				DrawObject(Obj);
-				
-		}
-	}
-	void ObjectManager::DrawObjectsExcept(Object * obj)
-	{
-		for (auto pair : m_EntityToObjects) {
-			Object* Obj = pair.second;		
-			if (Obj->GetId().id != obj->GetId().id)
-				DrawObject(Obj);
-		}
-	}
+	//		bool canDraw = true;
+	//		for (auto obj : objs) {
+	//			if (Obj->GetId().id == obj->GetId().id) {
+	//				canDraw = false;
+	//			}
+	//		}
+	//		if(canDraw)
+	//			DrawObject(Obj);
+	//			
+	//	}
+	//}
+	//void ObjectManager::DrawObjectsExcept(Object * obj)
+	//{
+	//	for (auto pair : m_EntityToObjects) {
+	//		Object* Obj = pair.second;		
+	//		if (Obj->GetId().id != obj->GetId().id)
+	//			DrawObject(Obj);
+	//	}
+	//}
 	void ObjectManager::DestroyObjects()
 	{
 		for (auto pair : m_EntityToObjects) {

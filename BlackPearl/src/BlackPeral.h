@@ -5,11 +5,12 @@
 #include "BlackPearl/Log.h"
 #include "BlackPearl/Layer.h"
 
-#include "BlackPearl/Renderer/Shader.h"
+#include "BlackPearl/Renderer/Shader/Shader.h"
 #include "BlackPearl/Renderer/Buffer.h"
 #include "BlackPearl/Renderer/Material/CubeMapTexture.h"
 #include "BlackPearl/Renderer/Renderer.h"
 #include "BlackPearl/Renderer/RenderCommand.h"
+#include "BlackPearl/Renderer/MasterRenderer/MasterRenderer.h"
 
 #include "BlackPearl/Component/TransformComponent/Transform.h"
 #include "BlackPearl/Component/MeshRendererComponent/MeshRenderer.h"

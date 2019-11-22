@@ -39,10 +39,40 @@ in vec2 v_TexCoords;
 in vec4 v_FragPosLightSpace;
 
 
-
-
 uniform vec3 u_LightPos;
 uniform vec3 u_CameraViewPos;
+
+struct PointLight{
+	vec3 ambient;
+	vec3 diffuse;
+	vec3 specular;
+
+	vec3 position;
+	float constant;
+	float linear;
+	float quadratic;
+
+};
+struct ParallelLight{
+	vec3 ambient;
+	vec3 diffuse;
+	vec3 specular;
+	vec3 direction;
+};
+struct SpotLight{
+	vec3 ambient;
+	vec3 diffuse;
+	vec3 specular;
+
+	vec3 direction;
+	vec3 position;
+	float cutOff;
+	float outerCutOff;
+
+	float constant;
+	float linear;
+	float quadratic;
+};
 
 uniform struct Material{
 	vec3 ambientColor;
@@ -63,9 +93,85 @@ uniform struct Material{
 
 }u_Material;
 
+uniform int u_PointLightNums;
 
-uniform sampler2D diffuseTexture;
-uniform sampler2D shadowMap;
+uniform ParallelLight u_ParallelLight;
+uniform PointLight u_PointLights[100];
+uniform SpotLight u_SpotLight;
+
+
+float ShadowCalculation(vec4 fragPosLightSpace,vec3 normal,vec3 lightDir);
+
+
+
+void main()
+{           
+
+
+//	vec3 viewDir = normalize(u_CameraViewPos-v_FragPos);
+//	vec3 outColor ;//=vec3(0.2,0.3,0.9);
+//	//outColor = CalcParallelLight(u_ParallelLight,v_Normal,viewDir);
+//	//outColor += CalcSpotLight(u_SpotLight, v_Normal,viewDir);
+//
+//	for(int i=0;i<u_PointLightNums;i++){
+//
+//	outColor += CalcPointLight(u_PointLights[i], v_Normal,viewDir);
+//
+//	}
+//
+//	FragColor = vec4(outColor,1.0);
+ 
+// vec3 color =texture(u_Material.diffuse, v_TexCoords).rgb;
+// vec3 normal = normalize(v_Normal);
+//    vec3 lightColor = vec3(1.0);
+//    // Ambient
+//    vec3 ambient = 0.5* color;
+//    // Diffuse
+// vec3 lightDir = normalize(u_LightPos - v_FragPos);
+//    float diff = max(dot(lightDir, normal), 0.0);
+//    vec3 diffuse = diff * lightColor;
+//    // Specular
+//    vec3 viewDir = normalize(u_CameraViewPos - v_FragPos);
+//    vec3 reflectDir = reflect(-lightDir, normal);
+//    float spec = 0.0;
+//    vec3 halfwayDir = normalize(lightDir + viewDir);  
+//    spec = pow(max(dot(normal, halfwayDir), 0.0),u_Material.shininess);
+//    vec3 specular = spec * lightColor;    
+//    // 计算阴影
+//  
+//	float shadow = ShadowCalculation(v_FragPosLightSpace,normal,lightDir);       
+//  //shadow = min(shadow, 0.75);
+//  vec3 lighting =  ambient +( (1.0 - shadow) * (diffuse + specular)) * color;  ;// *(1-shadow )* color;//==1.0?vec3(1.0,0.0,0.0):vec3(0.0,0.0,1.0);//(ambient + (1.0 - 0.5) * (diffuse + specular)) * color;   // * (diffuse + specular)
+//   FragColor = vec4(lighting, 1.0);
+
+	vec3 color =texture(u_Material.diffuse, v_TexCoords).rgb;
+	vec3 normal = normalize(v_Normal);
+    vec3 lightColor = vec3(1.0);
+    // Ambient
+    vec3 ambient =   0.5* lightColor*( u_Material.ambientColor * (1-u_Material.isTextureSample) + texture(u_Material.diffuse,v_TexCoords).rgb * u_Material.isTextureSample);//texture(u_Material.diffuse,v_TexCoord).rgb;//u_LightColor * u_Material.ambient
+	
+    // Diffuse
+	vec3 lightDir = normalize(u_LightPos - v_FragPos);
+    float diff = max(dot(lightDir, normal), 0.0);
+    vec3 diffuse =  lightColor * diff * ( u_Material.diffuseColor *(1-u_Material.isTextureSample) + texture(u_Material.diffuse,v_TexCoords).rgb*u_Material.isTextureSample);
+    // Specular
+    vec3 viewDir = normalize(u_CameraViewPos - v_FragPos);
+    vec3 reflectDir = reflect(-lightDir, normal);
+    float spec = 0.0;
+    vec3 halfwayDir = normalize(lightDir + viewDir);  
+    spec = pow(max(dot(normal, halfwayDir), 0.0),u_Material.shininess);
+    vec3 specular = spec * lightColor * u_Material.specularColor;    
+    // 计算阴影
+  
+	float shadow = ShadowCalculation(v_FragPosLightSpace,normal,lightDir);       
+  //shadow = min(shadow, 0.75);
+  vec3 lighting =  ambient +( (1.0 - shadow) * (diffuse + specular)) * color;  ;// *(1-shadow )* color;//==1.0?vec3(1.0,0.0,0.0):vec3(0.0,0.0,1.0);//(ambient + (1.0 - 0.5) * (diffuse + specular)) * color;   // * (diffuse + specular)
+   FragColor = vec4(lighting, 1.0);
+}
+
+
+
+
 float ShadowCalculation(vec4 fragPosLightSpace,vec3 normal,vec3 lightDir)
 {
    vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;//透视除法，变换到[-1.0,1.0]
@@ -91,37 +197,9 @@ float ShadowCalculation(vec4 fragPosLightSpace,vec3 normal,vec3 lightDir)
 //    shadow /= 9.0;
 //
 //    //比较当前深度和最近采样点深度
-    float shadow = (currentDepth-bias) > closestDepth? 1.0 : 0.5;
+    float shadow = (currentDepth-bias) > closestDepth? 1.0 : 0.1;
 //    //超出深度图区域的修正
 //    if (projCoords.z > 1.0)
 //        shadow = 0.0;
    return shadow;
-}
-
-
-
-void main()
-{           
- vec3 color =texture(u_Material.diffuse, v_TexCoords).rgb;
- vec3 normal = normalize(v_Normal);
-    vec3 lightColor = vec3(1.0);
-    // Ambient
-    vec3 ambient = 0.5* color;
-    // Diffuse
- vec3 lightDir = normalize(u_LightPos - v_FragPos);
-    float diff = max(dot(lightDir, normal), 0.0);
-    vec3 diffuse = diff * lightColor;
-    // Specular
-    vec3 viewDir = normalize(u_CameraViewPos - v_FragPos);
-    vec3 reflectDir = reflect(-lightDir, normal);
-    float spec = 0.0;
-    vec3 halfwayDir = normalize(lightDir + viewDir);  
-    spec = pow(max(dot(normal, halfwayDir), 0.0),u_Material.shininess);
-    vec3 specular = spec * lightColor;    
-    // 计算阴影
-  
-	float shadow = ShadowCalculation(v_FragPosLightSpace,normal,lightDir);       
-  //shadow = min(shadow, 0.75);
-  vec3 lighting =  ambient +( (1.0 - shadow) * (diffuse + specular)) * color;  ;// *(1-shadow )* color;//==1.0?vec3(1.0,0.0,0.0):vec3(0.0,0.0,1.0);//(ambient + (1.0 - 0.5) * (diffuse + specular)) * color;   // * (diffuse + specular)
-   FragColor = vec4(lighting, 1.0);
 }

@@ -7,7 +7,7 @@
 #include "BlackPearl/Component/LightComponent/PointLight.h"
 #include "BlackPearl/Component/LightComponent/SpotLight.h"
 #include "BlackPearl/Component/LightComponent/Light.h"
-#include "Renderer.h"
+#include "BlackPearl/Renderer/Renderer.h"
 #include "BlackPearl/Component/LightComponent/LightSources.h"
 #include "BlackPearl/Component/TransformComponent/Transform.h"
 namespace BlackPearl {
