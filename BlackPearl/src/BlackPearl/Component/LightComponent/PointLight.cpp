@@ -13,52 +13,53 @@ namespace BlackPearl {
 		//data
 		std::vector<float> lightVertices = {
 			-0.5f, -0.5f, -0.5f,
+			 0.5f,  0.5f, -0.5f,
 			 0.5f, -0.5f, -0.5f,
 			 0.5f,  0.5f, -0.5f,
-			 0.5f,  0.5f, -0.5f,
-			-0.5f,  0.5f, -0.5f,
 			-0.5f, -0.5f, -0.5f,
-
+			-0.5f,  0.5f, -0.5f,
+			//Front face
 			-0.5f, -0.5f,  0.5f,
 			 0.5f, -0.5f,  0.5f,
 			 0.5f,  0.5f,  0.5f,
 			 0.5f,  0.5f,  0.5f,
 			-0.5f,  0.5f,  0.5f,
 			-0.5f, -0.5f,  0.5f,
-
+			//Left face
 			-0.5f,  0.5f,  0.5f,
 			-0.5f,  0.5f, -0.5f,
 			-0.5f, -0.5f, -0.5f,
 			-0.5f, -0.5f, -0.5f,
 			-0.5f, -0.5f,  0.5f,
 			-0.5f,  0.5f,  0.5f,
-
+			//Right face
 			 0.5f,  0.5f,  0.5f,
+			 0.5f, -0.5f, -0.5f,
 			 0.5f,  0.5f, -0.5f,
 			 0.5f, -0.5f, -0.5f,
-			 0.5f, -0.5f, -0.5f,
-			 0.5f, -0.5f,  0.5f,
 			 0.5f,  0.5f,  0.5f,
-
+			 0.5f, -0.5f,  0.5f,
+			 //Bottom face
 			-0.5f, -0.5f, -0.5f,
 			 0.5f, -0.5f, -0.5f,
 			 0.5f, -0.5f,  0.5f,
 			 0.5f, -0.5f,  0.5f,
 			-0.5f, -0.5f,  0.5f,
 			-0.5f, -0.5f, -0.5f,
-
+			//Top face
 			-0.5f,  0.5f, -0.5f,
+			 0.5f,  0.5f,  0.5f,
 			 0.5f,  0.5f, -0.5f,
 			 0.5f,  0.5f,  0.5f,
-			 0.5f,  0.5f,  0.5f,
-			-0.5f,  0.5f,  0.5f,
 			-0.5f,  0.5f, -0.5f,
+			-0.5f,  0.5f,  0.5f,
 		};
 
 		
 		std::shared_ptr<Material> lightMaterial;
-	
-		lightMaterial.reset(DBG_NEW Material("assets/shaders/PointLight.glsl",nullptr, {}, this->GetLightProps().diffuse, {}, {}));
+		std::shared_ptr<Material::TextureMaps> texture(DBG_NEW Material::TextureMaps());
+
+		lightMaterial.reset(DBG_NEW Material("assets/shaders/PointLight.glsl", texture, {}, this->GetLightProps().diffuse, {}, {}));
 		VertexBufferLayout layout = {
 			{ElementDataType::Float3,"aPos",false}
 		};

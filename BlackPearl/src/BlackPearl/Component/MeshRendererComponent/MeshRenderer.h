@@ -41,12 +41,14 @@ namespace BlackPearl {
 		void SetShaders(const std::string& image);
 		void SetShaders(const std::shared_ptr<Shader> &shader);
 
+		void SetEnableCullFace(bool isEnable) { m_EnableCullFace = isEnable; }
+		bool GetEnableCullFace()const { return m_EnableCullFace; }
 	private:
 		std::vector<Mesh> m_Meshes;
 		std::shared_ptr<Model> m_Model = nullptr;
 		glm::mat4 m_TransformMatrix;
 		
-
+		bool m_EnableCullFace = true;
 
 	};
 

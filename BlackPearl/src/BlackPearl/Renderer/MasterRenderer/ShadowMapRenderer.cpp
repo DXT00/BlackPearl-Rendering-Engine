@@ -10,7 +10,8 @@ namespace BlackPearl {
 
 	float ShadowMapRenderer::s_NearPlane = 1.0f;
 	float ShadowMapRenderer::s_FarPlane = 7.5f;
-	int   ShadowMapRenderer::s_ShadowMapSize = 1024;
+	int   ShadowMapRenderer::s_ShadowMapWidth = 1024;
+	int   ShadowMapRenderer::s_ShadowMapHeight = 1024;
 
 	ShadowMapRenderer::~ShadowMapRenderer()
 	{
@@ -23,7 +24,7 @@ namespace BlackPearl {
 		m_LightProjectionViewMatrix = lightProjection * lightView;
 		m_LightPos = sun->GetDirection();
 
-		glViewport(0, 0, s_ShadowMapSize, s_ShadowMapSize);
+		glViewport(0, 0, s_ShadowMapWidth, s_ShadowMapHeight);
 		m_FrameBuffer->Bind();
 		glClear(GL_DEPTH_BUFFER_BIT);
 

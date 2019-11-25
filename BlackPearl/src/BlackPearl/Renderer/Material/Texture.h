@@ -33,8 +33,8 @@ namespace BlackPearl {
 
 
 		void LoadTexture(const std::string &image);
-		 void Bind();
-		 void UnBind();
+		virtual void Bind();
+		virtual void UnBind();
 		inline Type GetType() { return m_Type; }
 		unsigned int GetRendererID() { return m_TextureID; }
 		std::vector<std::string> GetFacesPath() { return m_FacesPath; }

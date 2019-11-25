@@ -34,7 +34,7 @@ namespace BlackPearl {
 		std::string GetPath() { return m_ShaderPath; }
 
 	private:
-		Shader(const std::string& vertexSrc, const std::string& fragmentSrc);
+		Shader(const std::string& vertexSrc, const std::string& fragmentSrc, const std::string& geometrySrc);
 		uint32_t m_RendererID;
 		std::string m_ShaderPath;
 

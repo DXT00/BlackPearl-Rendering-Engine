@@ -202,7 +202,7 @@ namespace BlackPearl {
 		if (itemIndex != -1) {
 			if (m_fileDialog.HasSelected()) {
 		
-				imGuiMeshes[itemIndex].GetMaterial()->SetShader("assets/shaders/" + m_fileDialog.GetSelected().string());
+				imGuiMeshes[itemIndex].GetMaterial()->SetShader( m_fileDialog.GetSelected().string());
 				m_fileDialog.ClearSelected();
 				itemIndex = -1;
 			}
@@ -265,25 +265,25 @@ namespace BlackPearl {
 
 					switch (type) {
 					case Texture::DiffuseMap:
-						imGuiMeshes[itemIndexTexture].GetMaterial()->SetTexture(Texture::DiffuseMap,"assets/texture/" + m_fileDialog.GetSelected().string());
+						imGuiMeshes[itemIndexTexture].GetMaterial()->SetTexture(Texture::DiffuseMap,m_fileDialog.GetSelected().string());//"assets/texture/" + 
 						break;
 					case Texture::SpecularMap:
-						imGuiMeshes[itemIndexTexture].GetMaterial()->SetTexture(Texture::SpecularMap,"assets/texture/" + m_fileDialog.GetSelected().string());
+						imGuiMeshes[itemIndexTexture].GetMaterial()->SetTexture(Texture::SpecularMap, m_fileDialog.GetSelected().string());//"assets/texture/" +
 						break;
 					case Texture::EmissionMap:
-						imGuiMeshes[itemIndexTexture].GetMaterial()->SetTexture(Texture::EmissionMap,"assets/texture/" + m_fileDialog.GetSelected().string());
+						imGuiMeshes[itemIndexTexture].GetMaterial()->SetTexture(Texture::EmissionMap, m_fileDialog.GetSelected().string());
 						break;
 					case Texture::NormalMap:
-						imGuiMeshes[itemIndexTexture].GetMaterial()->SetTexture(Texture::NormalMap,"assets/texture/" + m_fileDialog.GetSelected().string());
+						imGuiMeshes[itemIndexTexture].GetMaterial()->SetTexture(Texture::NormalMap,m_fileDialog.GetSelected().string());
 						break;
 					case Texture::CubeMap:
-						imGuiMeshes[itemIndexTexture].GetMaterial()->SetTexture(Texture::CubeMap,"assets/texture/" + m_fileDialog.GetSelected().string());
+						imGuiMeshes[itemIndexTexture].GetMaterial()->SetTexture(Texture::CubeMap, m_fileDialog.GetSelected().string());
 						break;
 					case Texture::HeightMap:
-						imGuiMeshes[itemIndexTexture].GetMaterial()->SetTexture(Texture::HeightMap,"assets/texture/" + m_fileDialog.GetSelected().string());
+						imGuiMeshes[itemIndexTexture].GetMaterial()->SetTexture(Texture::HeightMap, m_fileDialog.GetSelected().string());
 						break;
 					case Texture::DepthMap:
-						imGuiMeshes[itemIndexTexture].GetMaterial()->SetTexture(Texture::DepthMap, "assets/texture/" + m_fileDialog.GetSelected().string());
+						imGuiMeshes[itemIndexTexture].GetMaterial()->SetTexture(Texture::DepthMap,  m_fileDialog.GetSelected().string());
 						break;
 					defalut:
 						GE_CORE_ERROR("Unknown texture type");
@@ -352,16 +352,16 @@ namespace BlackPearl {
 	{
 		if (comp->GetType() == LightType::PointLight) {
 			auto pointLight = std::dynamic_pointer_cast<PointLight>(comp);
-			Light::Props props = pointLight->GetLightProps();
+			auto &color = pointLight->GetMeshes().GetMaterial()->GetMaterialColor().Get();
 			static  int attenuation = (int)pointLight->GetAttenuation().maxDistance;
-			ImGui::ColorEdit3("ambient Color", glm::value_ptr(props.ambient));
-			ImGui::ColorEdit3("diffuse Color", glm::value_ptr(props.diffuse));
-			ImGui::ColorEdit3("specular Color", glm::value_ptr(props.specular));
-			ImGui::ColorEdit3("emission Color", glm::value_ptr(props.emission));
+			ImGui::ColorEdit3("ambient Color", glm::value_ptr(color.ambientColor));
+			ImGui::ColorEdit3("diffuse Color", glm::value_ptr(color.diffuseColor));
+			ImGui::ColorEdit3("specular Color", glm::value_ptr(color.specularColor));
+			ImGui::ColorEdit3("emission Color", glm::value_ptr(color.emissionColor));
 			ImGui::DragInt("attenuation", &attenuation,0.5f,7,3250);
 
 			pointLight->SetAttenuation(attenuation);
-			pointLight->UpdateMesh(props);
+			pointLight->UpdateMesh({ color.ambientColor ,color.diffuseColor,color.specularColor,color.emissionColor });
 		}
 		else if (comp->GetType() == LightType::ParallelLight) {
 

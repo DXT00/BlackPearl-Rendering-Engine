@@ -27,6 +27,20 @@ namespace BlackPearl {
 
 	}
 
+	void BasicRenderer::RenderConfigure(Object * obj)
+	{
+		if (obj->HasComponent<MeshRenderer>()) {
+			auto meshRenderer = obj->GetComponent<MeshRenderer>();
+			if (meshRenderer->GetEnableCullFace()) {
+				//glEnable(GL_CULL_FACE);
+			}
+			else {
+				//glDisable(GL_CULL_FACE);
+
+			}
+		}
+	}
+
 	void BasicRenderer::DrawObjectsExcept(const std::vector<Object*>& objs, const std::vector<Object*>& exceptObjs)
 	{
 
@@ -70,7 +84,7 @@ namespace BlackPearl {
 		glm::mat4 transformMatrix = obj->GetComponent<Transform>()->GetTransformMatrix();
 		std::vector<Mesh>& meshes = obj->GetComponent<MeshRenderer>()->GetMeshes();
 
-		//			std::vector<Mesh>& meshes = obj->GetComponent<MeshRenderer>()->GetMeshes();
+		RenderConfigure(obj);
 
 		for (int i = 0; i < meshes.size(); i++) {
 

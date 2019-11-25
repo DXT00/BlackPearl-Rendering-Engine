@@ -20,7 +20,7 @@ void main()
 #version 330 core
 out vec4 FragColor;
 
-struct Material{
+uniform struct Material{
 	vec3 ambientColor;
 	vec3 diffuseColor;
 	vec3 specularColor;
@@ -33,8 +33,8 @@ struct Material{
 
 	float shininess;
 
-};
-uniform Material u_Material;
+}u_Material;
+//uniform Material u_Material;
 
 void main(){
 	FragColor = vec4(u_Material.diffuseColor,1.0);

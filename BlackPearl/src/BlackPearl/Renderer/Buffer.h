@@ -3,6 +3,7 @@
 #include "BlackPearl/Core.h"
 #include "BlackPearl/Renderer/Material/Texture.h"
 #include "BlackPearl/Renderer/Material/DepthTexture.h"
+#include "BlackPearl/Renderer/Material/CubeMapTexture.h"
 namespace BlackPearl {
 
 	enum class ElementDataType {
@@ -158,12 +159,14 @@ namespace BlackPearl {
 		enum Attachment{
 			ColorTexture,
 			DepthTexture,
+			CubeMapDepthTexture,
 			RenderBuffer
 
 		};
 		FrameBuffer(const int width, const int height,std::initializer_list<Attachment> attachment,bool disableColor);
 		void AttachColorTexture();
 		void AttachDepthTexture();
+		void AttachCubeMapDepthTexture();//use for point light shadow map
 		void AttachRenderBuffer();
 		void DisableColorBuffer();
 		void Bind();
@@ -176,7 +179,7 @@ namespace BlackPearl {
 
 		std::shared_ptr<Texture> GetColorTexture() { return m_TextureColorBuffer; }
 		std::shared_ptr<BlackPearl::DepthTexture> GetDepthTexture() { return m_TextureDepthBuffer; }
-
+		std::shared_ptr<CubeMapTexture> GetCubeMapDepthTexture() { return m_CubeMapDepthBuffer; }
 
 	private:
 		unsigned int m_Width, m_Height;
@@ -185,7 +188,7 @@ namespace BlackPearl {
 		//unsigned int m_TextureDepthBufferID;
 		std::shared_ptr<Texture> m_TextureColorBuffer;
 		std::shared_ptr<BlackPearl::DepthTexture> m_TextureDepthBuffer;
-
+		std::shared_ptr<CubeMapTexture> m_CubeMapDepthBuffer;
 		unsigned int m_RenderBufferID;
 
 

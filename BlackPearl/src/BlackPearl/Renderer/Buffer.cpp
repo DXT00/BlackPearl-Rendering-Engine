@@ -78,10 +78,12 @@ namespace BlackPearl {
 		}
 		for (Attachment attach:attachment)
 		{
-			if(attach==Attachment::ColorTexture)
+			if (attach == Attachment::ColorTexture)
 				AttachColorTexture();
 			else if (attach == Attachment::DepthTexture)
 				AttachDepthTexture();
+			else if (attach == Attachment::CubeMapDepthTexture)
+				AttachCubeMapDepthTexture();
 			else if (attach == Attachment::RenderBuffer)
 				AttachRenderBuffer();
 
@@ -109,6 +111,13 @@ namespace BlackPearl {
 		Bind();
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, m_TextureDepthBuffer->GetRendererID(), 0);
 
+	}
+
+	void FrameBuffer::AttachCubeMapDepthTexture()
+	{
+		m_CubeMapDepthBuffer.reset(DBG_NEW CubeMapTexture(Texture::Type::CubeMap, m_Width, m_Height));
+		Bind();
+		glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, m_CubeMapDepthBuffer->GetRendererID(), 0);
 	}
 
 	void FrameBuffer::AttachRenderBuffer()

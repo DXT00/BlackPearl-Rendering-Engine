@@ -17,8 +17,8 @@ namespace BlackPearl {
 	}
 	void CubeMapTexture::LoadCubeMap(std::vector<std::string> faces)
 	{
-		unsigned int textureID;
-		glGenTextures(1, &textureID);
+		
+	//	glGenTextures(1, &m_TextureID);
 		glBindTexture(GL_TEXTURE_CUBE_MAP, m_TextureID);
 
 		int width, height, nrChannels;
@@ -43,6 +43,20 @@ namespace BlackPearl {
 		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 
 		
+	}
+	void CubeMapTexture::LoadCubeMap(const int width, const int height)
+	{
+	//	glGenTextures(1, &m_TextureID);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, m_TextureID);
+		for (unsigned int i = 0; i < 6; i++)
+			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_DEPTH_COMPONENT, width, height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+
+
 	}
 	void CubeMapTexture::Bind()
 	{

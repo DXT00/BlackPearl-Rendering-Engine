@@ -10,7 +10,8 @@ namespace BlackPearl {
 	public:
 		ShadowMapRenderer() {
 			
-			m_FrameBuffer.reset(DBG_NEW BlackPearl::FrameBuffer(s_ShadowMapSize, s_ShadowMapSize, { FrameBuffer::Attachment::DepthTexture }, true));
+			m_FrameBuffer.reset(DBG_NEW FrameBuffer(s_ShadowMapWidth, s_ShadowMapHeight,
+				{ FrameBuffer::Attachment::DepthTexture }, true));
 
 		};
 		~ShadowMapRenderer();
@@ -25,7 +26,8 @@ namespace BlackPearl {
 		std::shared_ptr<FrameBuffer> m_FrameBuffer;
 		glm::mat4 m_LightProjectionViewMatrix;
 		glm::vec3 m_LightPos;
-		static int s_ShadowMapSize;
+		static int s_ShadowMapWidth;
+		static int s_ShadowMapHeight;
 		
 	};
 }

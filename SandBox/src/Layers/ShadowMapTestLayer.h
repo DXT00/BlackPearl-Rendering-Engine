@@ -39,15 +39,11 @@ public:
 		glEnable(GL_DEPTH_TEST); // ¿ªÆôÉî¶È²âÊÔ
 
 			//Shader reset
-		m_Shader.reset(DBG_NEW BlackPearl::Shader("assets/shaders/ShadowMaping_ShadowMapLayer.glsl"));
-		m_SimpleDepthShader.reset(DBG_NEW BlackPearl::Shader("assets/shaders/DepthShader_ShadowMapLayer.glsl"));
-		m_QuadDepthShader.reset(DBG_NEW BlackPearl::Shader("assets/shaders/Quad_ShadowMapLayer.glsl"));
+		m_Shader.reset(DBG_NEW BlackPearl::Shader("assets/shaders/shadowMap/directLight/ShadowMaping_ShadowMapLayer.glsl"));
+		m_SimpleDepthShader.reset(DBG_NEW BlackPearl::Shader("assets/shaders/shadowMap/directLight/DepthShader_ShadowMapLayer.glsl"));
+		m_QuadDepthShader.reset(DBG_NEW BlackPearl::Shader("assets/shaders/shadowMap/directLight/Quad_ShadowMapLayer.glsl"));
 
-	/*	m_Shader->Bind();
-		m_Shader->SetUniform1i("u_Material.diffuse", 0);
-		m_Shader->SetUniform1i("u_Material.depth", 1);
-		m_Shader->SetUniform1f("u_Material.shininess",128.0f);
-*/
+
 		m_Sun = CreateLight(BlackPearl::LightType::ParallelLight);
 		
 

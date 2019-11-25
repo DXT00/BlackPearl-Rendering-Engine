@@ -8,11 +8,17 @@ namespace BlackPearl {
 			:Texture(type, faces) {
 			LoadCubeMap(faces);
 		};
+		//empty CubeMap,use in CubeShadowMap
+		CubeMapTexture(Type type, const int width, const int height)
+			:Texture(type, std::vector<std::string>()) {
+			LoadCubeMap(width,height);
+		};
 		virtual ~CubeMapTexture();
 		void LoadCubeMap(std::vector<std::string> faces);
+		void LoadCubeMap(const int width, const int height);
 
-		void Bind();
-		void UnBind();
+		virtual void Bind() override ;
+		virtual void UnBind()override;
 	};
 
 }

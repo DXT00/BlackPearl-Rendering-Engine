@@ -18,14 +18,17 @@ namespace BlackPearl {
 			return GL_VERTEX_SHADER;
 		if (type == "fragment" || type == "pixel")
 			return GL_FRAGMENT_SHADER;
+		if (type == "geometry")
+			return GL_GEOMETRY_SHADER;
 		GE_ASSERT(false, "Unknown shader type!");
 		return 0;
 	}
-	Shader::Shader(const std::string& vertexSrc, const std::string& fragmentSrc)
+	Shader::Shader(const std::string& vertexSrc, const std::string& fragmentSrc,const std::string& geometrySrc)
 	{
 		std::unordered_map<GLenum, std::string> shaderSources;
 		shaderSources[GL_VERTEX_SHADER] = vertexSrc;
 		shaderSources[GL_FRAGMENT_SHADER] = fragmentSrc;
+		shaderSources[GL_GEOMETRY_SHADER] = geometrySrc;
 		Compile(shaderSources);
 
 	}

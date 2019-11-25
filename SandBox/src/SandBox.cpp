@@ -7,6 +7,7 @@
 #include "Layers/FrameBufferTestLayer.h"
 #include "Layers/AdvanceLightTestLayer.h"
 #include "Layers/ShadowMapTestLayer.h"
+#include "Layers/ShadowMapPointLightLayer.h"
 #include "Layers/SkyBoxTestLayer.h"
 #include "BlackPearl/Application.h"
 
@@ -19,8 +20,10 @@ public:
 
 	//	BlackPearl::Layer* layer = DBG_NEW FrameBufferTestLayer("FrameBufferTest Layer", objectManager);
 		//BlackPearl::Layer* layer = DBG_NEW SkyBoxTestLayer("SkyBoxTest Layer", objectManager);
+		BlackPearl::Layer* layer = DBG_NEW ShadowMapPointLightLayer("ShadowMapPointLight Layer", objectManager);
+
 		//BlackPearl::Layer* layer = DBG_NEW AdvanceLightTestLayer("AdvanceLight Layer", objectManager);
-		BlackPearl::Layer* layer = DBG_NEW ShadowMapTestLayer("ShadowMapTest Layer", objectManager);
+		//BlackPearl::Layer* layer = DBG_NEW ShadowMapTestLayer("ShadowMapTest Layer", objectManager);
 
 		GetScene()->PushLayer(layer);
 	}

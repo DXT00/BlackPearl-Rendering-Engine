@@ -9,6 +9,7 @@ namespace BlackPearl {
 		~BasicRenderer();
 		void RenderScene(const std::vector<Object *>&objs, const LightSources* lightSources);
 
+		void RenderConfigure(Object * obj);//每个Object在render前的设置
 		void DrawObjectsExcept(const std::vector<Object*>& objs, const std::vector<Object*>& exceptObjs);
 		void DrawObjectsExcept(const std::vector<Object*>& objs, const Object* exceptObj);
 

@@ -125,7 +125,7 @@ namespace BlackPearl {
 		Object *Obj = CreateEmpty("Light");
 		Transform *TransformComponent = Obj->GetComponent<Transform>();
 		TransformComponent->SetScale({ 0.2f,0.2f,0.2f });
-		TransformComponent->SetPosition({ 0.0f,2.0f,0.0f });
+		TransformComponent->SetPosition({ 0.0f,0.0f,0.0f });
 		switch (type)
 		{
 		case LightType::ParallelLight: {
