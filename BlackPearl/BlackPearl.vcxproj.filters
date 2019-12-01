@@ -1358,6 +1358,7 @@
     <ClInclude Include="src\BlackPearl\Renderer\MasterRenderer\BasicRenderer.h" />
     <ClInclude Include="src\BlackPearl\Renderer\MasterRenderer\MasterRenderer.h" />
     <ClInclude Include="src\BlackPearl\Renderer\MasterRenderer\ShadowMapPointLightRenderer.h" />
+    <ClInclude Include="src\BlackPearl\Renderer\ShadowBox\ShadowBox.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\BlackPearl\Application.cpp">
@@ -1500,5 +1501,6 @@
     <ClCompile Include="src\BlackPearl\Renderer\MasterRenderer\BasicRenderer.cpp" />
     <ClCompile Include="src\BlackPearl\Renderer\MasterRenderer\MasterRenderer.cpp" />
     <ClCompile Include="src\BlackPearl\Renderer\MasterRenderer\ShadowMapPointLightRenderer.cpp" />
+    <ClCompile Include="src\BlackPearl\Renderer\ShadowBox\ShadowBox.cpp" />
   </ItemGroup>
 </Project>

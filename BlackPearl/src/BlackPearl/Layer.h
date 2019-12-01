@@ -34,7 +34,7 @@ namespace BlackPearl {
 		virtual void OnAttach() {}
 		virtual void OnDetach() {}
 		virtual void OnUpdate(Timestep ts) {}
-		virtual void OnImguiRender() {}
+		virtual void OnImguiRender();
 
 		inline std::string GetString() { return m_DebugName; }
 		
@@ -46,7 +46,7 @@ namespace BlackPearl {
 
 		virtual Object* CreateModel(const std::string& modelPath, const std::string& shaderPath);
 		virtual Object* CreateCube(const std::string& shaderPath = "assets/shaders/Cube.glsl", const std::string& texturePath = "assets/texture/wood.png");
-		virtual Object* CreatePlane(const std::string& shaderPath = "assets/shaders/Plane.glsl", const std::string& texturePath = "assets/texture/container.jpg");
+		virtual Object* CreatePlane(const std::string& shaderPath = "assets/shaders/Plane.glsl", const std::string& texturePath = "assets/texture/wood.png");
 		virtual Object* CreateSkyBox(const std::vector<std::string>& textureFaces);
 		virtual Object* CreateQuad(const std::string& shaderPath = "assets/shaders/Quad.glsl", const std::string& texturePath = "assets/texture/1.jpg");
 
@@ -59,10 +59,8 @@ namespace BlackPearl {
 		void ShowMaterialProps(Material::Props& imGuiProps);
 		std::vector<Object*> GetObjects();
 		std::vector<std::string> GetObjectsName();
-		void DrawObjects();
-		/*void DrawObject(Object* obj);
-		void DrawObjectsExcept(std::vector<Object *>objs);
-		void DrawObjectsExcept(Object * obj);*/
+		//void DrawObjects();
+	
 
 		void DestroyObjects();
 
@@ -75,6 +73,7 @@ namespace BlackPearl {
 		std::vector<Object*>          m_ObjectsList;
 		LightSources*    m_LightSources;
 		ImGui::FileBrowser m_fileDialog;
+		glm::vec4 m_BackgroundColor = { 0.0f,0.0f,0.0f,0.0f };
 
 	};
 

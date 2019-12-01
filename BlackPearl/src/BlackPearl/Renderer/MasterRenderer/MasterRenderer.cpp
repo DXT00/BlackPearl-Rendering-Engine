@@ -38,7 +38,7 @@ namespace BlackPearl {
 	}
 	void MasterRenderer::RenderShadowMap(const std::vector<Object*>& objs, ParallelLight*sun, const std::vector<Object*>&exceptObjs)
 	{
-		m_ShadowMapRenderer.Render(objs, sun, exceptObjs);
+		m_ShadowMapRenderer->Render(objs, sun, exceptObjs);
 	}
 	void MasterRenderer::RenderPointLightShadowMap(const std::vector<Object*>& objs, Object* pointLight, const std::vector<Object*>& exceptObjs) {
 		m_ShadowMapPointLightRenderer.Render(objs, pointLight, exceptObjs);

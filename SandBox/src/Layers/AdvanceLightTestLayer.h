@@ -21,6 +21,7 @@ public:
 		m_CameraRotation.Yaw = cameraComponent->Yaw();
 		m_CameraRotation.Pitch = cameraComponent->Pitch();
 
+		m_MasterRenderer = DBG_NEW BlackPearl::MasterRenderer(m_CameraObj);
 		//m_FrameBuffer.reset(DBG_NEW BlackPearl::FrameBuffer(BlackPearl::Configuration::WindowWidth, BlackPearl::Configuration::WindowHeight));
 
 		BlackPearl::Renderer::Init();
@@ -74,7 +75,7 @@ public:
 		//objs.push_back(m_SkyBoxObj);
 		//	objs.push_back(m_CubeObj);
 		//DrawObjects();
-		m_MasterRenderer.RenderScene(m_ObjectsList, GetLightSources());
+		m_MasterRenderer->RenderScene(m_ObjectsList, GetLightSources());
 
 		//DrawObjectsExcept(objs);
 		//小于等于当前深度缓冲的fragment才被绘制
@@ -87,127 +88,127 @@ public:
 
 	}
 
-	void OnImguiRender() override {
+	//void OnImguiRender() override {
 
 
-		ImGui::Begin("Settings");
-		ImGui::ColorEdit3("Suqare Color", glm::value_ptr(m_BackgroundColor));
-		ImGui::End();
+	//	ImGui::Begin("Settings");
+	//	ImGui::ColorEdit3("Suqare Color", glm::value_ptr(m_BackgroundColor));
+	//	ImGui::End();
 
-		static BlackPearl::Object* currentObj = nullptr;//TODO::注意内存泄漏
+	//	static BlackPearl::Object* currentObj = nullptr;//TODO::注意内存泄漏
 
-		if (ImGui::CollapsingHeader("Create")) {
+	//	if (ImGui::CollapsingHeader("Create")) {
 
-			const char* const entityItems[] = { "Empty","ParallelLight","PointLight","SpotLight","IronMan","Cube","Plane" };
-			static int entityIdx = -1;
-			if (ImGui::Combo("CreateEntity", &entityIdx, entityItems, 7))
-			{
-				switch (entityIdx)
-				{
-				case 0:
-					GE_CORE_INFO("Creating Empty...");
-					Layer::CreateEmpty();
-					break;
-				case 1:
-					GE_CORE_INFO("Creating PointLight...");
-					Layer::CreateLight(BlackPearl::LightType::ParallelLight);
-					break;
-				case 2:
-					GE_CORE_INFO("Creating PointLight...");
-					Layer::CreateLight(BlackPearl::LightType::PointLight);
-					break;
-				case 3:
-					GE_CORE_INFO("Creating SpotLight ...");
-					Layer::CreateLight(BlackPearl::LightType::SpotLight);
-					break;
-				case 4:
-					GE_CORE_INFO("Creating IronMan ...");
-					Layer::CreateModel("assets/models/IronMan/IronMan.obj", "assets/shaders/IronMan.glsl");
-					break;
-				case 5:
-					GE_CORE_INFO("Creating Cube ...");
-					Layer::CreateCube();
-					break;
-				case 6:
-					GE_CORE_INFO("Creating Plane ...");
-					Layer::CreatePlane();
-					break;
-				}
-			}
-		}
-		if (ImGui::BeginTabBar("TabBar 0", ImGuiTabBarFlags_None))
-		{
-			if (ImGui::BeginTabItem("Scene")) {
-				std::vector<BlackPearl::Object*> objsList = GetObjects();		//TODO::
-				ImGui::ListBoxHeader("CurrentEntities", (int)objsList.size(), 7);
+	//		const char* const entityItems[] = { "Empty","ParallelLight","PointLight","SpotLight","IronMan","Cube","Plane" };
+	//		static int entityIdx = -1;
+	//		if (ImGui::Combo("CreateEntity", &entityIdx, entityItems, 7))
+	//		{
+	//			switch (entityIdx)
+	//			{
+	//			case 0:
+	//				GE_CORE_INFO("Creating Empty...");
+	//				Layer::CreateEmpty();
+	//				break;
+	//			case 1:
+	//				GE_CORE_INFO("Creating PointLight...");
+	//				Layer::CreateLight(BlackPearl::LightType::ParallelLight);
+	//				break;
+	//			case 2:
+	//				GE_CORE_INFO("Creating PointLight...");
+	//				Layer::CreateLight(BlackPearl::LightType::PointLight);
+	//				break;
+	//			case 3:
+	//				GE_CORE_INFO("Creating SpotLight ...");
+	//				Layer::CreateLight(BlackPearl::LightType::SpotLight);
+	//				break;
+	//			case 4:
+	//				GE_CORE_INFO("Creating IronMan ...");
+	//				Layer::CreateModel("assets/models/IronMan/IronMan.obj", "assets/shaders/IronMan.glsl");
+	//				break;
+	//			case 5:
+	//				GE_CORE_INFO("Creating Cube ...");
+	//				Layer::CreateCube();
+	//				break;
+	//			case 6:
+	//				GE_CORE_INFO("Creating Plane ...");
+	//				Layer::CreatePlane();
+	//				break;
+	//			}
+	//		}
+	//	}
+	//	if (ImGui::BeginTabBar("TabBar 0", ImGuiTabBarFlags_None))
+	//	{
+	//		if (ImGui::BeginTabItem("Scene")) {
+	//			std::vector<BlackPearl::Object*> objsList = GetObjects();		//TODO::
+	//			ImGui::ListBoxHeader("CurrentEntities", (int)objsList.size(), 7);
 
-				for (int n = 0; n < objsList.size(); n++) {
-					//ImGui::Text("%s", objsList[n].c_str());
-					bool is_selected = (currentObj != nullptr && currentObj->ToString() == objsList[n]->ToString());
-					if (ImGui::Selectable(objsList[n]->ToString().c_str(), is_selected)) {
-						currentObj = objsList[n];
-						GE_CORE_INFO(objsList[n]->ToString() + "is selected")
-					}
+	//			for (int n = 0; n < objsList.size(); n++) {
+	//				//ImGui::Text("%s", objsList[n].c_str());
+	//				bool is_selected = (currentObj != nullptr && currentObj->ToString() == objsList[n]->ToString());
+	//				if (ImGui::Selectable(objsList[n]->ToString().c_str(), is_selected)) {
+	//					currentObj = objsList[n];
+	//					GE_CORE_INFO(objsList[n]->ToString() + "is selected")
+	//				}
 
-					if (is_selected)
-						ImGui::SetItemDefaultFocus();
-				}
-				ImGui::ListBoxFooter();
-				ImGui::EndTabItem();
-			}
-			//}
-		}
-		ImGui::EndTabBar();
+	//				if (is_selected)
+	//					ImGui::SetItemDefaultFocus();
+	//			}
+	//			ImGui::ListBoxFooter();
+	//			ImGui::EndTabItem();
+	//		}
+	//		//}
+	//	}
+	//	ImGui::EndTabBar();
 
-		////////////////////Inspector/////////////////////////
-		ImGui::Begin("Inspector");
-
-
-
-		if (currentObj != nullptr) {
-
-			std::unordered_map<BlackPearl::BaseComponent::Family, std::shared_ptr<BlackPearl::BaseComponent>> componentList = currentObj->GetComponentList();
-
-			for (auto pair : componentList) {
-				auto component = pair.second;
-				if (component != nullptr) {
-
-					switch (component->GetType()) {
-					case BlackPearl::BaseComponent::Type::MeshRenderer: {
-						std::shared_ptr<BlackPearl::MeshRenderer> comp = std::dynamic_pointer_cast<BlackPearl::MeshRenderer>(component);
-						ShowMeshRenderer(comp);
-						break;
-					}
-					case BlackPearl::BaseComponent::Type::Transform: {
-						std::shared_ptr<BlackPearl::Transform> comp = std::dynamic_pointer_cast<BlackPearl::Transform>(component);
-						ShowTransform(comp);
-						break;
-					}
-					case BlackPearl::BaseComponent::Type::Light: {
-
-						std::shared_ptr<BlackPearl::Light> comp = std::dynamic_pointer_cast<BlackPearl::Light>(component);
-						ShowLight(comp);
-						break;
-					}
-					default:
-						break;
-					}
-
-				}
-
-			}
-		}
-
-		ImGui::End();
+	//	////////////////////Inspector/////////////////////////
+	//	ImGui::Begin("Inspector");
 
 
 
-		m_fileDialog.Display();
+	//	if (currentObj != nullptr) {
+
+	//		std::unordered_map<BlackPearl::BaseComponent::Family, std::shared_ptr<BlackPearl::BaseComponent>> componentList = currentObj->GetComponentList();
+
+	//		for (auto pair : componentList) {
+	//			auto component = pair.second;
+	//			if (component != nullptr) {
+
+	//				switch (component->GetType()) {
+	//				case BlackPearl::BaseComponent::Type::MeshRenderer: {
+	//					std::shared_ptr<BlackPearl::MeshRenderer> comp = std::dynamic_pointer_cast<BlackPearl::MeshRenderer>(component);
+	//					ShowMeshRenderer(comp);
+	//					break;
+	//				}
+	//				case BlackPearl::BaseComponent::Type::Transform: {
+	//					std::shared_ptr<BlackPearl::Transform> comp = std::dynamic_pointer_cast<BlackPearl::Transform>(component);
+	//					ShowTransform(comp);
+	//					break;
+	//				}
+	//				case BlackPearl::BaseComponent::Type::Light: {
+
+	//					std::shared_ptr<BlackPearl::Light> comp = std::dynamic_pointer_cast<BlackPearl::Light>(component);
+	//					ShowLight(comp);
+	//					break;
+	//				}
+	//				default:
+	//					break;
+	//				}
+
+	//			}
+
+	//		}
+	//	}
+
+	//	ImGui::End();
+
+
+
+	//	m_fileDialog.Display();
 
 
 
 
-	}
+	//}
 	void OnAttach() override {
 
 
@@ -294,7 +295,7 @@ private:
 	glm::vec4 m_BackgroundColor = { 0.0f,0.0f,0.0f,0.0f };
 
 
-	BlackPearl::MasterRenderer m_MasterRenderer;
+	BlackPearl::MasterRenderer *m_MasterRenderer;
 
 
 	//std::shared_ptr<BlackPearl::FrameBuffer> m_FrameBuffer;

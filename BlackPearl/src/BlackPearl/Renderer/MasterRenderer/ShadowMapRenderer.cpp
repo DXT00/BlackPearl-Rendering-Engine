@@ -18,11 +18,17 @@ namespace BlackPearl {
 	}
 	void ShadowMapRenderer::Render(const std::vector<Object*>& objs,  ParallelLight* sun, const std::vector<Object*>&exceptObjs)
 	{
-		glm::mat4 lightProjection, lightView;
-		lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f,s_NearPlane,s_FarPlane);
-		lightView = glm::lookAt(sun->GetDirection(), glm::vec3(0.0f), glm::vec3(0.0, 1.0, 0.0));
-		m_LightProjectionViewMatrix = lightProjection * lightView;
+
+		//glm::mat4 lightProjection, lightView;
+
+		//m_LightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f,s_NearPlane,s_FarPlane);
+		//m_LightView = glm::lookAt(sun->GetDirection(), glm::vec3(0.0f), glm::vec3(0.0, 1.0, 0.0));
+		//m_LightProjectionViewMatrix = m_LightProjection * m_LightView;
 		m_LightPos = sun->GetDirection();
+		m_ShadowBox->Update();
+		UpdateLightOrthoProjectionMatrix(m_ShadowBox->GetWidth(), m_ShadowBox->GetHeight(), m_ShadowBox->GetLength());
+		UpdateLightViewMatrix(sun->GetDirection(), m_ShadowBox->GetCenter());
+		m_LightProjectionViewMatrix = m_LightProjection * m_LightView;
 
 		glViewport(0, 0, s_ShadowMapWidth, s_ShadowMapHeight);
 		m_FrameBuffer->Bind();
@@ -38,13 +44,28 @@ namespace BlackPearl {
 	void ShadowMapRenderer::PrepareShaderParameters(Mesh &mesh, glm::mat4 transformMatrix, bool isLight ) //RenderScene 会调用该虚函数
 	{
 		PrepareBasicShaderParameters(mesh, transformMatrix,isLight);
-		//std::vector<Mesh>& meshes = obj->GetComponent<MeshRenderer>()->GetMeshes();
-		//for (int i = 0; i < meshes.size(); i++) {
-		//	// Set light uniforms
+	
 			std::shared_ptr<Shader> shader = mesh.GetMaterial()->GetShader();
 			shader->SetUniformVec3f("u_LightPos", m_LightPos);
 			shader->SetUniformMat4f("u_LightProjectionViewMatrix", m_LightProjectionViewMatrix);
-		//}
+	
+	}
+
+	void ShadowMapRenderer::UpdateLightOrthoProjectionMatrix(float boxWidth, float boxHeight, float boxLength)
+	{
+		//orthographic matrix definition: http://learnwebgl.brown37.net/08_projections/projections_ortho.html
+		glm::mat4 orthoProjectionMatrix(1.0f);
+		orthoProjectionMatrix[0][0] = 2.0f/ boxWidth;
+		orthoProjectionMatrix[1][1] = 2.0f / boxHeight;
+		orthoProjectionMatrix[2][2] = -2.0f / boxLength;
+		orthoProjectionMatrix[3][3] = 1.0f;
+		m_LightProjection = orthoProjectionMatrix;
+	}
+
+	void ShadowMapRenderer::UpdateLightViewMatrix(glm::vec3 lightDirection, glm::vec3 boxCenter)
+	{
+		m_LightView= glm::lookAt(lightDirection, boxCenter, glm::vec3(0.0, 1.0, 0.0));
+
 	}
 
 }

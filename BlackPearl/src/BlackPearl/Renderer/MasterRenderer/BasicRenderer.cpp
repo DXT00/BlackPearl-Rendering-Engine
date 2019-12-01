@@ -9,6 +9,7 @@
 #include "BlackPearl/Component/TransformComponent/Transform.h"
 #include "BlackPearl/Renderer/Shader/Shader.h"
 #include "BlackPearl/Renderer/Renderer.h"
+#include "BlackPearl/Renderer/MasterRenderer/ShadowMapPointLightRenderer.h"
 namespace BlackPearl {
 
 	BasicRenderer::BasicRenderer()
@@ -129,11 +130,12 @@ namespace BlackPearl {
 	}
 	void BasicRenderer::PrepareBasicShaderParameters(Mesh &mesh, glm::mat4 transformMatrix, bool isLight)
 	{
+
 		std::shared_ptr<Shader> shader = mesh.GetMaterial()->GetShader();
 		shader->Bind();
+
 		std::shared_ptr<Material> material = mesh.GetMaterial();
 		std::shared_ptr<Material::TextureMaps> textures = material->GetTextureMaps();
-
 		unsigned int k = 0;
 		if (textures != nullptr) {
 			if (textures->diffuseTextureMap != nullptr) {

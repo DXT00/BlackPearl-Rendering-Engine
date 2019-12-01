@@ -10,7 +10,7 @@ namespace BlackPearl {
 		ShadowMapPointLightRenderer() {
 			m_FrameBuffer.reset(DBG_NEW FrameBuffer(s_ShadowMapPointLightWidth, s_ShadowMapPointLightHeight,
 				{ FrameBuffer::Attachment::CubeMapDepthTexture }, true));
-		
+			m_LightProjectionViewMatries.assign(6, glm::mat4(1.0));
 		};
 		~ShadowMapPointLightRenderer();
 		void Render(const std::vector<Object*>&objs, Object* pointLight, const std::vector<Object*>&exceptObjs);

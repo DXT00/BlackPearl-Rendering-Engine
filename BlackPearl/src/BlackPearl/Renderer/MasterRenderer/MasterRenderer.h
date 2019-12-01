@@ -13,7 +13,9 @@ namespace BlackPearl {
 	class MasterRenderer
 	{
 	public:
-		MasterRenderer() {};
+		MasterRenderer(Object *camera) {
+			m_ShadowMapRenderer = DBG_NEW ShadowMapRenderer(camera);
+		};
 		~MasterRenderer();
 		void RenderScene(const std::vector<Object*>&objs, const LightSources*lightSources);
 		void RenderSceneExcept(const std::vector<Object*>& objs, const std::vector<Object*>& exceptObjs, const LightSources* lightSources);
@@ -27,12 +29,12 @@ namespace BlackPearl {
 		void RenderObjectsExcept(const std::vector<Object*>& objs, const Object* exceptObj);
 
 
-		ShadowMapRenderer GetShadowMapRenderer()const { return m_ShadowMapRenderer; }
-		glm::mat4 GetShadowMapLightProjectionMatrx() const { return m_ShadowMapRenderer.GetLightProjectionViewMatrix(); }
+		ShadowMapRenderer GetShadowMapRenderer()const { return *m_ShadowMapRenderer; }
+		glm::mat4 GetShadowMapLightProjectionMatrx() const { return m_ShadowMapRenderer->GetLightProjectionViewMatrix(); }
 		
 		ShadowMapPointLightRenderer GetShadowMapPointLightRenderer() const { return m_ShadowMapPointLightRenderer; }
 	private:
-		ShadowMapRenderer m_ShadowMapRenderer;
+		ShadowMapRenderer *m_ShadowMapRenderer;
 		BasicRenderer m_BasicRenderer;
 		ShadowMapPointLightRenderer m_ShadowMapPointLightRenderer;
 		//ParallelLight *m_Sun;

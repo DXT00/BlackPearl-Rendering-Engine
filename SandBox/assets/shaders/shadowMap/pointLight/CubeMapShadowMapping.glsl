@@ -96,45 +96,18 @@ void main(){
 	FragColor = vec4(outColor,1.0);
 
 
-//	vec3 color =texture(u_Material.diffuse, v_TexCoords).rgb;
-//	vec3 normal = normalize(v_Normal);
-//	vec3 lightColor = vec3(1.0);
-//	// Ambient
-//	vec3 ambient =   0.5* lightColor*( u_Material.ambientColor * (1-u_Material.isTextureSample) + texture(u_Material.diffuse,v_TexCoords).rgb * u_Material.isTextureSample);//texture(u_Material.diffuse,v_TexCoord).rgb;//u_LightColor * u_Material.ambient
-//	
-//	// Diffuse
-//	vec3 lightDir = normalize(u_LightPos - v_FragPos);
-//	float diff = max(dot(lightDir, normal), 0.0);
-//	vec3 diffuse =  lightColor * diff * ( u_Material.diffuseColor *(1-u_Material.isTextureSample) + texture(u_Material.diffuse,v_TexCoords).rgb*u_Material.isTextureSample);
-//	// Specular
-//	vec3 viewDir = normalize(u_CameraViewPos - v_FragPos);
-//	vec3 reflectDir = reflect(-lightDir, normal);
-//	float spec = 0.0;
-//	vec3 halfwayDir = normalize(lightDir + viewDir);  
-//	spec = pow(max(dot(normal, halfwayDir), 0.0),u_Material.shininess);
-//	vec3 specular = spec * lightColor * u_Material.specularColor;    
-//	// ¼ÆËãÒõÓ°
-//	
-//	float shadow = ShadowCalculation(v_FragPos);       
-//
-//
-//    //return shadow;
-//	//shadow = min(shadow, 0.75);
-//	vec3 lighting = ambient +( (1.0 - shadow) * (diffuse + specular)) * color; // currentDepth/25.0 >=1.0?vec3(1.0,0.0,0.0):vec3(0.0,0.0,1.0);//(ambient + (1.0 - 0.5) * (diffuse + specular)) * color;   // * (diffuse + specular)
-//	FragColor = vec4(lighting, 1.0);//ambient +( (1.0 - shadow) * (diffuse + specular)) * color; 
-//	//ambient +( (1.0 - shadow) * (diffuse + specular)) * color;// *
 }
 vec3 CalcPointLight(PointLight light,vec3 normal,vec3 viewDir){
 	vec3 fragColor;
 
-	float distance = length(light.position-v_FragPos);
+	float distance = length(u_LightPos-v_FragPos);
 	float attenuation = 1.0f/(light.constant+light.linear * distance+light.quadratic*distance*distance);
 	//ambient
 	vec3 ambient = light.ambient*(  u_Material.ambientColor * (1-u_Material.isTextureSample)
 					   + texture(u_Material.diffuse,v_TexCoords).rgb * u_Material.isTextureSample);//texture(u_Material.diffuse,v_TexCoord).rgb;//u_LightColor * u_Material.ambient
 	
 	//diffuse
-	vec3 lightDir = normalize(light.position-v_FragPos);
+	vec3 lightDir = normalize(u_LightPos-v_FragPos);
 	vec3 norm = normalize(normal);
 	float diff = max(dot(lightDir,norm),0.0f);
 	vec3 diffuse = light.diffuse * diff * ( u_Material.diffuseColor *(1-u_Material.isTextureSample)
@@ -148,28 +121,23 @@ vec3 CalcPointLight(PointLight light,vec3 normal,vec3 viewDir){
 
 		vec3 halfwayDir = normalize(lightDir+viewDir);
 		spec = pow(max(dot(norm,halfwayDir),0.0),u_Material.shininess);
-		specular =  light.specular * spec  *  u_Material.specularColor;
+		specular =  light.specular * spec  * ( u_Material.specularColor*(1-u_Material.isTextureSample)+texture(u_Material.specular,v_TexCoords).rgb*u_Material.isTextureSample);
 	}
 	else{
 
 		vec3 reflectDir = normalize(reflect(-lightDir,norm));
 		spec = pow(max(dot(reflectDir,viewDir),0.0),u_Material.shininess);
-		specular =  light.specular * spec  *  u_Material.specularColor;//texture(u_Material.specular,v_TexCoord).rgb;
+		specular =  light.specular * spec  * ( u_Material.specularColor*(1-u_Material.isTextureSample)+ texture(u_Material.specular,v_TexCoords).rgb*u_Material.isTextureSample);//texture(u_Material.specular,v_TexCoord).rgb;
 	}
 
 	ambient  *= attenuation;
 	diffuse  *= attenuation;
 	specular *= attenuation;
-	float shadow = ShadowCalculation(v_FragPos,light.position);       
+	float shadow = ShadowCalculation(v_FragPos,u_LightPos);       
+
 
 	fragColor = ambient+ (1.0 - shadow) *(diffuse + specular);// * mix(texture(u_Texture1, v_TexCoord), texture(u_Texture2, vec2(1.0 - v_TexCoord.x, v_TexCoord.y)), u_MixValue);
 
-
-    //return shadow;
-	//shadow = min(shadow, 0.75);
-	//vec3 lighting = ambient +( (1.0 - shadow) * (diffuse + specular)) * color; // currentDepth/25.0 >=1.0?vec3(1.0,0.0,0.0):vec3(0.0,0.0,1.0);//(ambient + (1.0 - 0.5) * (diffuse + specular)) * color;   // * (diffuse + specular)
-//	FragColor = vec4(lighting, 1.0);//ambient +( (1.0 - shadow) * (diffuse + specular)) * color; 
-	//ambient +( (1.0 - shadow) * (diffuse + specular)) * color;// *
 	return fragColor;
 }
 
@@ -183,25 +151,33 @@ float ShadowCalculation(vec3 fragPos,vec3 lightPos){
     // Now get current linear depth as the length between the fragment and light position
     float currentDepth = length(fragToLight);
     // Now test for shadows
-   // float bias = 0.05; 
-  //  float shadow = currentDepth -bias > closestDepth ? 1.0 : 0.0;
+  
 	float shadow = 0.0;
-	float bias = 0.05; 
+	float bias = 0.01; 
 	float samples = 4.0;
 	float offset = 0.1;
-for(float x = -offset; x < offset; x += offset / (samples * 0.5))
-{
-    for(float y = -offset; y < offset; y += offset / (samples * 0.5))
-    {
-        for(float z = -offset; z < offset; z += offset / (samples * 0.5))
-        {
-            float closestDepth = texture(u_Material.cube, fragToLight + vec3(x, y, z)).r; 
-            closestDepth *= u_FarPlane;   // Undo mapping [0;1]
-            if(currentDepth - bias > closestDepth)
-                shadow += 1.0;
-        }
-    }
-}
-shadow /= (samples * samples * samples);
+	for(float x = -offset; x < offset; x += offset / (samples * 0.5))
+	{
+	    for(float y = -offset; y < offset; y += offset / (samples * 0.5))
+	    {
+	        for(float z = -offset; z < offset; z += offset / (samples * 0.5))
+	        {
+	            float closestDepth = texture(u_Material.cube, fragToLight + vec3(x, y, z)).r; 
+	            closestDepth *= u_FarPlane;   // Undo mapping [0;1]
+	            if(currentDepth - bias > closestDepth)
+	                shadow += 1.0;
+	        }
+	    }
+	}
+	shadow /= (samples * samples * samples);
 	return shadow;
+//vec3 fragToLight = fragPos.xyz - lightPos; 
+//float SampledDistance = texture(u_Material.cube,  fragToLight).r;
+//
+//    float Distance = length(fragToLight);
+//
+//    if (Distance < SampledDistance*u_FarPlane + bias)
+//        return 0.5; // Inside the light
+//    else
+//        return 1.0; // Inside the shadow
 }

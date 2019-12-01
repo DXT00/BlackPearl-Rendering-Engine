@@ -20,7 +20,7 @@ namespace BlackPearl {
 			glm::vec3 specular;
 			glm::vec3 emission;
 
-			Props() : ambient({ 1.0f,1.0f,1.0f }), diffuse({ 1.0f,1.0f,1.0f }), specular({ 1.0f,1.0f,1.0f }), emission({0.0f,0.0f,0.0f}) {}
+			Props() : ambient({ 0.3f,0.3f,0.3f }), diffuse({ 1.0f,1.0f,1.0f }), specular({ 1.0f,1.0f,1.0f }), emission({0.0f,0.0f,0.0f}) {}
 			Props(glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular, glm::vec3 emission)
 				: ambient(ambient), diffuse(diffuse), specular(specular),emission(emission) {}
 

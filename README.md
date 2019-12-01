@@ -1,242 +1,98 @@
-### 添加PointLight shadow map
+### 添加ShadowBox
 
-* 以PointLight为视角，用CubeMap获取深度贴图,通过几何着色器把一个frangment映射到CubeMap的六个面,计算光源到六个fragment的深度，存入CubeMap
+优化渲染范围，找到Camera的frustum,计算ShadowBox（AABB）
+阴影范围半径可通过	float ShadowBox::s_ShadowDistance = 30.0f修改
 
-Shader Code:
-CubeMapDepthShader.glsl
-
+ShadowMapRenderer.cpp
 ```
-#type vertex
-#version 330 core
-layout (location =0) in vec3 aPos;
-
-uniform mat4 u_Model;
-void main(){
-	gl_Position = u_Model * vec4(aPos,1.0);
-}
-
-#type geometry
-#version 330 core
-layout (triangles) in;
-layout (triangle_strip,max_vertices=18) out;
-
-uniform mat4 shadowMatrices[6];
-
-out vec4 FragPos;
-
-void main(){
-
-	for(int face = 0;face<6;++face){
-		gl_Layer = face;
-		for(int i=0;i<3;++i){
-			FragPos = gl_in[i].gl_Position;
-			gl_Position = shadowMatrices[face]*FragPos;
-			EmitVertex();
-		}
-		EndPrimitive();
-	}
-}
-
-//计算每个Fragment到光源的深度
-#type fragment
-#version 330 core
-in vec4 FragPos;
-
-uniform vec3 u_LightPos;
-uniform float u_FarPlane;
-
-void main(){
-    // get distance between fragment and light source
-	float lightDistance = length(FragPos.xyz-u_LightPos);
-	
-	//map to [0:1] range by dividing by farPlane;
-	lightDistance = lightDistance/u_FarPlane;
-
-	gl_FragDepth = lightDistance;
-	
-}
-
-```
-
-### 创建Shadow
-
-* 和 Direct Light ShadowMap 一样，计算PointLight与fragment的距离，并和CubeMap对比。
-CubeMapShadowMapping.glsl
-```
-
-#type vertex
-#version 330 core
-layout (location = 0) in vec3 aPos;
-layout (location = 1) in vec3 aNormal;
-layout (location = 2) in vec2 aTexCoords;
-
-out vec3 v_FragPos;
-out vec3 v_Normal;
-out vec2 v_TexCoords;
-
-uniform mat4 u_ProjectionView;
-uniform mat4 u_Model;
-uniform mat4 u_TranInverseModel;//transpose(inverse(u_Model))-->最好在cpu运算完再传进来!
-uniform bool u_ReverseNormals;
-
-/*
-	这里由于使用的是CubeMap,
-	可以直接使用一个方向向量采样深度值
-	所以，不需要把vertex坐标转换到光空间下了
-*/
-
-void main(){
-	gl_Position = u_ProjectionView* u_Model * vec4(aPos, 1.0);
-	v_FragPos = vec3(u_Model * vec4(aPos, 1.0));
-	if(u_ReverseNormals)
-		v_Normal = transpose(inverse(mat3(u_Model))) * (-1.0*aNormal);
-	else
-		v_Normal =  transpose(inverse(mat3(u_Model))) * aNormal;
-
-	v_TexCoords = aTexCoords;
-}
-
-
-#type fragment
-#version 330 core
-
-out vec4 FragColor;
-
-
-in vec3 v_FragPos;
-in vec3 v_Normal;
-in vec2 v_TexCoords;
-
-uniform struct Material{
-	vec3 ambientColor;
-	vec3 diffuseColor;
-	vec3 specularColor;
-	vec3 emissionColor;
-	sampler2D diffuse;
-	sampler2D specular;
-	sampler2D emission;
-	sampler2D normal;
-	sampler2D height;
-	sampler2D depth;
-	samplerCube cube;
-
-	float shininess;
-	bool isBlinnLight;
-	int  isTextureSample;//判断是否使用texture,或者只有color
-
-
-}u_Material;
-
-struct PointLight{
-	vec3 ambient;
-	vec3 diffuse;
-	vec3 specular;
-
-	vec3 position;
-	float constant;
-	float linear;
-	float quadratic;
-
-};
-uniform int u_PointLightNums;
-
-uniform PointLight u_PointLights[100];
-uniform vec3 u_LightPos;
-uniform vec3 u_CameraViewPos;
-uniform float u_FarPlane ;
-uniform samplerCube u_CubeMap;
-float ShadowCalculation(vec3 fragPos,vec3 lightPos);
-vec3 CalcPointLight(PointLight light,vec3 normal,vec3 viewDir);
-void main(){
-	vec3 viewDir = normalize(u_CameraViewPos-v_FragPos);
-	vec3 outColor ;//=vec3(0.2,0.3,0.9);
-	//outColor = CalcParallelLight(u_ParallelLight,v_Normal,viewDir);
-	//outColor += CalcSpotLight(u_SpotLight, v_Normal,viewDir);
-
-	for(int i=0;i<u_PointLightNums;i++){
-
-		outColor += CalcPointLight(u_PointLights[i], v_Normal,viewDir);
-
-	}
-
-	FragColor = vec4(outColor,1.0);
-
-
-}
-vec3 CalcPointLight(PointLight light,vec3 normal,vec3 viewDir){
-	vec3 fragColor;
-
-	float distance = length(light.position-v_FragPos);
-	float attenuation = 1.0f/(light.constant+light.linear * distance+light.quadratic*distance*distance);
-	//ambient
-	vec3 ambient = light.ambient*(  u_Material.ambientColor * (1-u_Material.isTextureSample)
-					   + texture(u_Material.diffuse,v_TexCoords).rgb * u_Material.isTextureSample);//texture(u_Material.diffuse,v_TexCoord).rgb;//u_LightColor * u_Material.ambient
-	
-	//diffuse
-	vec3 lightDir = normalize(light.position-v_FragPos);
-	vec3 norm = normalize(normal);
-	float diff = max(dot(lightDir,norm),0.0f);
-	vec3 diffuse = light.diffuse * diff * ( u_Material.diffuseColor *(1-u_Material.isTextureSample)
-					+ texture(u_Material.diffuse,v_TexCoords).rgb*u_Material.isTextureSample);//texture(u_Material.diffuse,v_TexCoord).rgb;// u_Material.diffuse);u_LightColor
-	
-
-//specular
-	vec3 specular;
-	float spec;
-	if(u_Material.isBlinnLight){
-
-		vec3 halfwayDir = normalize(lightDir+viewDir);
-		spec = pow(max(dot(norm,halfwayDir),0.0),u_Material.shininess);
-		specular =  light.specular * spec  *  u_Material.specularColor;
-	}
-	else{
-
-		vec3 reflectDir = normalize(reflect(-lightDir,norm));
-		spec = pow(max(dot(reflectDir,viewDir),0.0),u_Material.shininess);
-		specular =  light.specular * spec  *  u_Material.specularColor;//texture(u_Material.specular,v_TexCoord).rgb;
-	}
-
-	ambient  *= attenuation;
-	diffuse  *= attenuation;
-	specular *= attenuation;
-	float shadow = ShadowCalculation(v_FragPos,light.position);       
-
-	fragColor = ambient+ (1.0 - shadow) *(diffuse + specular);// * mix(texture(u_Texture1, v_TexCoord), texture(u_Texture2, vec2(1.0 - v_TexCoord.x, v_TexCoord.y)), u_MixValue);
-
-	return fragColor;
-}
-
-float ShadowCalculation(vec3 fragPos,vec3 lightPos){
-
-		vec3 fragToLight = fragPos.xyz - lightPos; 
-
-	 float closestDepth = texture(u_Material.cube, fragToLight).r;
-	// It is currently in linear range between [0,1]. Re-transform back to original value
-    closestDepth = closestDepth*u_FarPlane;
-    // Now get current linear depth as the length between the fragment and light position
-    float currentDepth = length(fragToLight);
-    // Now test for shadows
-  
-	float shadow = 0.0;
-	float bias = 0.05; 
-	float samples = 4.0;
-	float offset = 0.1;
-	for(float x = -offset; x < offset; x += offset / (samples * 0.5))
+void ShadowMapRenderer::Render(const std::vector<Object*>& objs,  ParallelLight* sun, const std::vector<Object*>&exceptObjs)
 	{
-	    for(float y = -offset; y < offset; y += offset / (samples * 0.5))
-	    {
-	        for(float z = -offset; z < offset; z += offset / (samples * 0.5))
-	        {
-	            float closestDepth = texture(u_Material.cube, fragToLight + vec3(x, y, z)).r; 
-	            closestDepth *= u_FarPlane;   // Undo mapping [0;1]
-	            if(currentDepth - bias > closestDepth)
-	                shadow += 1.0;
-	        }
-	    }
+		m_LightPos = sun->GetDirection();
+		m_ShadowBox->Update();
+		UpdateLightOrthoProjectionMatrix(m_ShadowBox->GetWidth(), m_ShadowBox->GetHeight(), m_ShadowBox->GetLength());
+		UpdateLightViewMatrix(sun->GetDirection(), m_ShadowBox->GetCenter());
+		m_LightProjectionViewMatrix = m_LightProjection * m_LightView;
+
+		glViewport(0, 0, s_ShadowMapWidth, s_ShadowMapHeight);
+		m_FrameBuffer->Bind();
+		glClear(GL_DEPTH_BUFFER_BIT);
+
+		if (exceptObjs.empty())
+			DrawObjects(objs);
+		else
+			DrawObjectsExcept(objs, exceptObjs);
+		m_FrameBuffer->UnBind();
+
 	}
-	shadow /= (samples * samples * samples);
-	return shadow;
+```
+
+### 改善阴影
+
+对ShadowMap采用时取周围的9个Texel的平均：
+directLight/ShadowMaping_ShadowMapLayer.glsl
+```
+float ShadowCalculation(vec4 fragPosLightSpace,vec3 normal,vec3 lightDir)
+{
+   vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;//透视除法，变换到[-1.0,1.0]
+   projCoords = projCoords * 0.5 + 0.5;//变换到[0,1]坐标
+
+   float closestDepth = texture(u_Material.depth,projCoords.xy).r;//从shadowMap 取最小的z值
+
+   float currentDepth = projCoords.z;
+   float bias = max(0.05 * (1.0 - dot(normal, lightDir)), 0.005);
+
+   ///////////////////////////////////////////////////////////////////
+   ////////////////////从纹理像素四周对深度贴图采样，然后把结果平均起来///////////////////
+   float shadow = 0.0;
+   vec2 texelSize = 1.0/textureSize(u_Material.depth,0);
+   for(int x = -1;x<=1;x++){
+	for(int y= -1;y<=1;y++){
+		float pcfDepth = texture(u_Material.depth,projCoords.xy+vec2(x,y)*texelSize).r;
+		shadow +=currentDepth-bias>pcfDepth?1.0:0.0;
+	}
+   }
+   shadow = shadow/9.0;
+   ///////////////////////////////////////////////////////////////////////////////////
+
+
+//    //比较当前深度和最近采样点深度
+ //   float shadow = (currentDepth-bias) > closestDepth? 1.0 : 0.1;
+
+   return shadow;
 }
 
+
 ```
-![Alt text](/results/ImageNew1.PNG)
+###修改 PointLight ShadowMap 的Bug
+
+-->没更新LightProjectionViewMatrix
+```
+void ShadowMapPointLightRenderer::Render(const std::vector<Object*>& objs, Object* pointLight,const std::vector<Object*>& exceptObjs)
+	{
+		float aspect = (float)s_ShadowMapPointLightWidth / (float)s_ShadowMapPointLightHeight;
+		glm::mat4 pointLightProjection = glm::perspective(glm::radians(s_FOV), aspect, s_NearPlane, s_FarPlane);
+		
+		GE_ASSERT(pointLight->HasComponent<PointLight>(), "this object is not a pointlight!");
+		m_LightPos = pointLight->GetComponent<Transform>()->GetPosition();
+		
+		m_LightProjectionViewMatries[0]=(pointLightProjection * glm::lookAt(m_LightPos, m_LightPos + glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0, -1.0f, 0.0)));
+		m_LightProjectionViewMatries[1]=(pointLightProjection * glm::lookAt(m_LightPos, m_LightPos + glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec3(0.0, -1.0f, 0.0)));
+		m_LightProjectionViewMatries[2]=(pointLightProjection * glm::lookAt(m_LightPos, m_LightPos + glm::vec3(0.0, 1.0f, 0.0), glm::vec3(0.0, 0.0, 1.0f)));
+		m_LightProjectionViewMatries[3]=(pointLightProjection * glm::lookAt(m_LightPos, m_LightPos + glm::vec3(0.0, -1.0f, 0.0), glm::vec3(0.0, 0.0, -1.0f)));
+		m_LightProjectionViewMatries[4]=(pointLightProjection * glm::lookAt(m_LightPos, m_LightPos + glm::vec3(0.0, 0.0, 1.0f), glm::vec3(0.0, -1.0f, 0.0)));
+		m_LightProjectionViewMatries[5]=(pointLightProjection * glm::lookAt(m_LightPos, m_LightPos + glm::vec3(0.0, 0.0, -1.0f), glm::vec3(0.0, -1.0f, 0.0)));
+		
+		glViewport(0, 0, s_ShadowMapPointLightWidth, s_ShadowMapPointLightHeight);
+		m_FrameBuffer->Bind();
+		glClear(GL_DEPTH_BUFFER_BIT);
+		if (exceptObjs.empty())
+			DrawObjects(objs);
+		else
+			DrawObjectsExcept(objs, exceptObjs);
+		m_FrameBuffer->UnBind();
+
+	}
+```
+![DynamicLight](/results/DynamicLight.png)
+![shadowAverage9](/results/shadowAverage9.png)
+![shadowMap3](/results/shadowMap3.png)

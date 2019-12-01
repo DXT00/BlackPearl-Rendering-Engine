@@ -85,7 +85,8 @@ in vec2 v_TexCoord;
 in vec3 v_Normal;		
 in vec3 v_FragPos;	
 
-
+uniform bool u_HasSpotLight;
+uniform bool u_HasParallelLight;
 uniform int u_PointLightNums;
 
 //uniform Material u_Material;
@@ -100,20 +101,16 @@ vec3 CalcSpotLight(SpotLight light,vec3 normal,vec3 viewDir);
 
 void main()
 {    
-//    FragColor = texture(u_Material.diffuse,v_TexCoord)
-//	+ texture(u_Material.specular,v_TexCoord)
-//	+texture(u_Material.normal,v_TexCoord);
-//
 
 	vec3 viewDir = normalize(u_CameraViewPos-v_FragPos);
-	vec3 outColor ;//=vec3(0.2,0.3,0.9);
-	//outColor = CalcParallelLight(u_ParallelLight,v_Normal,viewDir);
-	//outColor += CalcSpotLight(u_SpotLight, v_Normal,viewDir);
+	vec3 outColor =vec3(0.0,0.0,0.0);
+	if(u_HasParallelLight)
+		outColor += CalcParallelLight(u_ParallelLight,v_Normal,viewDir);
+	if(u_HasSpotLight)
+		outColor += CalcSpotLight(u_SpotLight, v_Normal,viewDir);
 
 	for(int i=0;i<u_PointLightNums;i++){
-
-	outColor += CalcPointLight(u_PointLights[i], v_Normal,viewDir);
-
+		outColor += CalcPointLight(u_PointLights[i], v_Normal,viewDir);
 	}
 
 	FragColor = vec4(outColor,1.0);
@@ -123,13 +120,14 @@ void main()
 vec3 CalcParallelLight(ParallelLight light,vec3 normal,vec3 viewDir){
 	vec3 fragColor;
 	//ambient
-	vec3 ambient = light.ambient *  u_Material.ambientColor;//texture(u_Material.diffuse,v_TexCoord).rgb;//u_LightColor * u_Material.ambient
+	vec3 ambient = light.ambient *  (u_Material.ambientColor * (1-u_Material.isTextureSample)+ texture(u_Material.diffuse,v_TexCoord).rgb * u_Material.isTextureSample);//texture(u_Material.diffuse,v_TexCoord).rgb;//u_LightColor * u_Material.ambient
 	
 	//diffuse
 	vec3 lightDir = normalize(-light.direction);
 	vec3 norm = normalize(normal);
 	float diff = max(dot(lightDir,norm),0.0f);
-	vec3 diffuse = light.diffuse * diff * u_Material.diffuseColor;//texture(u_Material.diffuse,v_TexCoord).rgb;// u_Material.diffuse);u_LightColor
+	vec3 diffuse = light.diffuse * diff *( u_Material.diffuseColor *(1-u_Material.isTextureSample)
+					+ texture(u_Material.diffuse,v_TexCoord).rgb*u_Material.isTextureSample);//texture(u_Material.diffuse,v_TexCoord).rgb;// u_Material.diffuse);u_LightColor
 	
 	//specular
 	vec3 reflectDir = normalize(reflect(-lightDir,norm));
@@ -148,16 +146,17 @@ vec3 CalcPointLight(PointLight light,vec3 normal,vec3 viewDir){
 	float distance = length(light.position-v_FragPos);
 	float attenuation = 1.0f/(light.constant+light.linear * distance+light.quadratic*distance*distance);
 	//ambient
-	vec3 ambient = light.ambient * u_Material.ambientColor * (1-u_Material.isTextureSample)
-					   + texture(u_Material.diffuse,v_TexCoord).rgb * u_Material.isTextureSample;//texture(u_Material.diffuse,v_TexCoord).rgb;//u_LightColor * u_Material.ambient
+	vec3 ambient = light.ambient * (u_Material.ambientColor * (1-u_Material.isTextureSample)+ texture(u_Material.diffuse,v_TexCoord).rgb * u_Material.isTextureSample);
+//	vec3 ambient = light.ambient * u_Material.ambientColor 
+//					   *texture(u_Material.diffuse,v_TexCoord).rgb;
 	
 	//diffuse
 	vec3 lightDir = normalize(light.position-v_FragPos);
 	vec3 norm = normalize(normal);
 	float diff = max(dot(lightDir,norm),0.0f);
-	vec3 diffuse = light.diffuse * diff *  u_Material.diffuseColor *(1-u_Material.isTextureSample)
-					+ texture(u_Material.diffuse,v_TexCoord).rgb*u_Material.isTextureSample;//texture(u_Material.diffuse,v_TexCoord).rgb;// u_Material.diffuse);u_LightColor
-	
+	vec3 diffuse = light.diffuse * diff * ( u_Material.diffuseColor *(1-u_Material.isTextureSample)
+					+ texture(u_Material.diffuse,v_TexCoord).rgb*u_Material.isTextureSample);//texture(u_Material.diffuse,v_TexCoord).rgb;// u_Material.diffuse);u_LightColor
+//	vec3 diffuse = light.diffuse * diff *  u_Material.diffuseColor *texture(u_Material.diffuse,v_TexCoord).rgb;
 
 //specular
 	vec3 specular;
@@ -174,12 +173,13 @@ vec3 CalcPointLight(PointLight light,vec3 normal,vec3 viewDir){
 		spec = pow(max(dot(reflectDir,viewDir),0.0),u_Material.shininess);
 		specular =  light.specular * spec  *  u_Material.specularColor;//texture(u_Material.specular,v_TexCoord).rgb;
 	}
-
+	 vec3 emission = texture(u_Material.emission, v_TexCoord).rgb;
 	ambient  *= attenuation;
 	diffuse  *= attenuation;
 	specular *= attenuation;
+	emission *= attenuation;
 
-	fragColor = diffuse + ambient + specular;// * mix(texture(u_Texture1, v_TexCoord), texture(u_Texture2, vec2(1.0 - v_TexCoord.x, v_TexCoord.y)), u_MixValue);
+	fragColor = diffuse + ambient + specular+emission;// * mix(texture(u_Texture1, v_TexCoord), texture(u_Texture2, vec2(1.0 - v_TexCoord.x, v_TexCoord.y)), u_MixValue);
 	
 	return fragColor;
 }
@@ -198,13 +198,13 @@ vec3 CalcSpotLight(SpotLight light,vec3 normal,vec3 viewDir){
 	float distance = length(light.position-v_FragPos);
 	float attenuation = 1.0f/(light.constant+light.linear * distance+light.quadratic*distance*distance);
 	//ambient
-	vec3 ambient = light.ambient *  u_Material.ambientColor;// texture(u_Material.diffuse,v_TexCoord).rgb;//u_LightColor * u_Material.ambient
+	vec3 ambient = vec3(0.2f) * ( u_Material.ambientColor* (1-u_Material.isTextureSample)+texture(u_Material.diffuse,v_TexCoord).rgb * u_Material.isTextureSample);// texture(u_Material.diffuse,v_TexCoord).rgb;//u_LightColor * u_Material.ambient
 	
 	//diffuse
 	
 	vec3 norm = normalize(normal);
 	float diff = max(dot(lightDir,norm),0.0f);
-	vec3 diffuse = light.diffuse * diff *  u_Material.diffuseColor;//texture(u_Material.diffuse,v_TexCoord).rgb;// u_Material.diffuse);u_LightColor
+	vec3 diffuse = light.diffuse * diff *  (u_Material.diffuseColor* (1-u_Material.isTextureSample)+texture(u_Material.diffuse,v_TexCoord).rgb*u_Material.isTextureSample);//texture(u_Material.diffuse,v_TexCoord).rgb;// u_Material.diffuse);u_LightColor
 	
 	//specular
 	vec3 reflectDir = normalize(reflect(-lightDir,norm));
@@ -220,6 +220,7 @@ vec3 CalcSpotLight(SpotLight light,vec3 normal,vec3 viewDir){
 	
 	diffuse  *= intensity;
 	specular *= intensity;
+	//ambient *= intensity;
 	fragColor = diffuse + ambient + specular;// * mix(texture(u_Texture1, v_TexCoord), texture(u_Texture2, vec2(1.0 - v_TexCoord.x, v_TexCoord.y)), u_MixValue);
 		
 		

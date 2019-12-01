@@ -23,12 +23,13 @@ namespace BlackPearl {
 		
 		GE_ASSERT(pointLight->HasComponent<PointLight>(), "this object is not a pointlight!");
 		m_LightPos = pointLight->GetComponent<Transform>()->GetPosition();
-		m_LightProjectionViewMatries.push_back(pointLightProjection * glm::lookAt(m_LightPos, m_LightPos + glm::vec3(1.0, 0.0, 0.0), glm::vec3(0.0, -1.0, 0.0)));
-		m_LightProjectionViewMatries.push_back(pointLightProjection * glm::lookAt(m_LightPos, m_LightPos + glm::vec3(-1.0, 0.0, 0.0), glm::vec3(0.0, -1.0, 0.0)));
-		m_LightProjectionViewMatries.push_back(pointLightProjection * glm::lookAt(m_LightPos, m_LightPos + glm::vec3(0.0, 1.0, 0.0), glm::vec3(0.0, 0.0, 1.0)));
-		m_LightProjectionViewMatries.push_back(pointLightProjection * glm::lookAt(m_LightPos, m_LightPos + glm::vec3(0.0, -1.0, 0.0), glm::vec3(0.0, 0.0, -1.0)));
-		m_LightProjectionViewMatries.push_back(pointLightProjection * glm::lookAt(m_LightPos, m_LightPos + glm::vec3(0.0, 0.0, 1.0), glm::vec3(0.0, -1.0, 0.0)));
-		m_LightProjectionViewMatries.push_back(pointLightProjection * glm::lookAt(m_LightPos, m_LightPos + glm::vec3(0.0, 0.0, -1.0), glm::vec3(0.0, -1.0, 0.0)));
+		
+		m_LightProjectionViewMatries[0]=(pointLightProjection * glm::lookAt(m_LightPos, m_LightPos + glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0, -1.0f, 0.0)));
+		m_LightProjectionViewMatries[1]=(pointLightProjection * glm::lookAt(m_LightPos, m_LightPos + glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec3(0.0, -1.0f, 0.0)));
+		m_LightProjectionViewMatries[2]=(pointLightProjection * glm::lookAt(m_LightPos, m_LightPos + glm::vec3(0.0, 1.0f, 0.0), glm::vec3(0.0, 0.0, 1.0f)));
+		m_LightProjectionViewMatries[3]=(pointLightProjection * glm::lookAt(m_LightPos, m_LightPos + glm::vec3(0.0, -1.0f, 0.0), glm::vec3(0.0, 0.0, -1.0f)));
+		m_LightProjectionViewMatries[4]=(pointLightProjection * glm::lookAt(m_LightPos, m_LightPos + glm::vec3(0.0, 0.0, 1.0f), glm::vec3(0.0, -1.0f, 0.0)));
+		m_LightProjectionViewMatries[5]=(pointLightProjection * glm::lookAt(m_LightPos, m_LightPos + glm::vec3(0.0, 0.0, -1.0f), glm::vec3(0.0, -1.0f, 0.0)));
 		
 		glViewport(0, 0, s_ShadowMapPointLightWidth, s_ShadowMapPointLightHeight);
 		m_FrameBuffer->Bind();

@@ -143,6 +143,7 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\BlackPearl\Renderer\ShadowBox\ShadowBox.h" />
     <ClInclude Include="src\BlackPearl\Renderer\MasterRenderer\ShadowMapPointLightRenderer.h" />
     <ClInclude Include="src\BlackPearl\Renderer\MasterRenderer\MasterRenderer.h" />
     <ClInclude Include="src\BlackPearl\Renderer\MasterRenderer\BasicRenderer.h" />
@@ -571,6 +572,7 @@
     <ClInclude Include="vendor\stb\stb_image.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\BlackPearl\Renderer\ShadowBox\ShadowBox.cpp" />
     <ClCompile Include="src\BlackPearl\Renderer\MasterRenderer\ShadowMapPointLightRenderer.cpp" />
     <ClCompile Include="src\BlackPearl\Renderer\MasterRenderer\MasterRenderer.cpp" />
     <ClCompile Include="src\BlackPearl\Renderer\MasterRenderer\BasicRenderer.cpp" />

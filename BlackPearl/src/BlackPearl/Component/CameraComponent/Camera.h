@@ -54,7 +54,7 @@ namespace BlackPearl {
 		inline void SetPosition(const glm::vec3& position) { m_Position = position; RecalculateViewMatrix(); }
 		inline void SetRotation(float yaw, float pitch) {
 			m_ViewMatrixProps.Yaw = yaw,
-				m_ViewMatrixProps.Pitch = pitch;
+			m_ViewMatrixProps.Pitch = pitch;
 			RecalculateViewMatrix(yaw, pitch);
 		}
 
@@ -66,6 +66,8 @@ namespace BlackPearl {
 		Component(entityManager,id,Component::Type::Camera){}//TODO::
 		static Camera * Create(EntityManager* entityManager, Entity::Id id,unsigned int type
 			);
+
+		ViewMatrixProps GetViewMatrixProps() const { return m_ViewMatrixProps; }
 	protected:
 		glm::vec3 m_Position = { 0.0f,0.0f,0.0f };
 		glm::mat4 m_ViewMatrix;

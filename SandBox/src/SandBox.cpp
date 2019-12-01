@@ -14,11 +14,10 @@
 class SandBox :public BlackPearl::Application {
 public:
 	SandBox() {
-		//PushLayer(new ExampleLayer("ExampleLayer"));
 		BlackPearl::EntityManager * entityManager = DBG_NEW BlackPearl::EntityManager();
 		BlackPearl::ObjectManager *objectManager = DBG_NEW BlackPearl::ObjectManager(entityManager);
 
-	//	BlackPearl::Layer* layer = DBG_NEW FrameBufferTestLayer("FrameBufferTest Layer", objectManager);
+		//BlackPearl::Layer* layer = DBG_NEW FrameBufferTestLayer("FrameBufferTest Layer", objectManager);
 		//BlackPearl::Layer* layer = DBG_NEW SkyBoxTestLayer("SkyBoxTest Layer", objectManager);
 		BlackPearl::Layer* layer = DBG_NEW ShadowMapPointLightLayer("ShadowMapPointLight Layer", objectManager);
 

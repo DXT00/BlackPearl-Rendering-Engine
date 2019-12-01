@@ -142,6 +142,7 @@ namespace BlackPearl {
 			LoadMaterialTextures(material, aiTextureType_SPECULAR, Texture::Type::SpecularMap, textures);
 			LoadMaterialTextures(material, aiTextureType_NORMALS, Texture::Type::NormalMap, textures);
 			LoadMaterialTextures(material, aiTextureType_HEIGHT, Texture::Type::HeightMap, textures);
+			//LoadMaterialTextures(material, aiTextureType_DISPLACEMENT, Texture::Type::DiffuseMap, textures);//TODO
 
 			LoadMaterialColors(material, colors);
 		}
@@ -168,14 +169,15 @@ namespace BlackPearl {
 
 	void Model::LoadMaterialTextures(aiMaterial * material, aiTextureType type, Texture::Type typeName, std::shared_ptr<Material::TextureMaps> &textures)
 	{
-
+		aiString name;
+		material->Get(AI_MATKEY_NAME, name);
 		for (unsigned int i = 0; i < material->GetTextureCount(type); i++)
 		{
 			std::shared_ptr<Texture> texture;
 			aiString path;
 			material->GetTexture(type, i, &path);
 
-			std::string path_str = m_Directory + "/" + std::string(path.C_Str());
+			std::string path_str = m_Directory + "/" + std::string(path.C_Str());//
 			if (typeName == Texture::Type::DiffuseMap)
 				textures->diffuseTextureMap.reset(DBG_NEW Texture(typeName, path_str.c_str()));
 			if (typeName == Texture::Type::SpecularMap)
@@ -184,9 +186,9 @@ namespace BlackPearl {
 				textures->emissionTextureMap.reset(DBG_NEW Texture(typeName, path_str.c_str()));
 			if (typeName == Texture::Type::NormalMap)
 				textures->normalTextureMap.reset(DBG_NEW Texture(typeName, path_str.c_str()));
-			if (typeName == Texture::Type::HeightMap)
+			/*if (typeName == Texture::Type::HeightMap)
 				textures->heightTextureMap.reset(DBG_NEW Texture(typeName, path_str.c_str()));
-			
+			*/
 
 
 		}

@@ -178,13 +178,14 @@ namespace BlackPearl {
 			if (lightObj->HasComponent<ParallelLight>()) {
 				auto lightSource = lightObj->GetComponent<ParallelLight>();
 				this->SetUniform1ui("u_LightType", (unsigned int)LightType::ParallelLight);
-
+				this->SetUniform1i("u_HasParallelLight", 1);
 				this->SetUniformVec3f("u_ParallelLight.ambient", lightSource->GetLightProps().ambient);
 				this->SetUniformVec3f("u_ParallelLight.diffuse", lightSource->GetLightProps().diffuse);
 				this->SetUniformVec3f("u_ParallelLight.specular", lightSource->GetLightProps().specular);
 				this->SetUniformVec3f("u_ParallelLight.direction", lightSource->GetDirection());
 			}
 			if (lightObj->HasComponent<PointLight>()) {
+
 				auto lightSource = lightObj->GetComponent<PointLight>();
 				this->SetUniform1ui("u_LightType", (unsigned int)LightType::PointLight);
 
@@ -205,6 +206,7 @@ namespace BlackPearl {
 				lightSource->UpdatePositionAndDirection(Renderer::GetSceneData()->CameraPosition, Renderer::GetSceneData()->CameraFront);//SpotLight的时候记得更新Camera
 
 				this->SetUniform1ui("u_LightType", (unsigned int)LightType::SpotLight);
+				this->SetUniform1i("u_HasSpotLight", 1);
 
 				this->SetUniformVec3f("u_SpotLight.ambient", lightSource->GetLightProps().ambient);
 				this->SetUniformVec3f("u_SpotLight.diffuse", lightSource->GetLightProps().diffuse);

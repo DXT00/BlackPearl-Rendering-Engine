@@ -102,21 +102,28 @@ void main()
 {    
 
 //
-//	vec3 viewDir = normalize(u_CameraViewPos-v_FragPos);
-//	vec3 outColor ;//=vec3(0.2,0.3,0.9);
+	vec3 viewDir = normalize(u_CameraViewPos-v_FragPos);
+	vec3 outColor ;//=vec3(0.2,0.3,0.9);
 //	//outColor = CalcParallelLight(u_ParallelLight,v_Normal,viewDir);
-//	//outColor += CalcSpotLight(u_SpotLight, v_Normal,viewDir);
-//
-//	for(int i=0;i<u_PointLightNums;i++){
-//
-//	outColor += CalcPointLight(u_PointLights[i], v_Normal,viewDir);
-//
-//	}
-//
-//	FragColor = vec4(outColor,1.0);
+
+
+
 	vec3 I = normalize(v_FragPos - u_CameraViewPos);
     vec3 R = reflect(I, normalize(v_Normal));
-    FragColor = vec4(texture(u_Material.cube, R).rgb, 1.0);
+    outColor = texture(u_Material.cube, R).rgb;
+
+//outColor += CalcSpotLight(u_SpotLight, v_Normal,viewDir);
+//
+	for(int i=0;i<u_PointLightNums;i++){
+
+	outColor += CalcPointLight(u_PointLights[i], v_Normal,viewDir);
+
+	}
+
+	FragColor = vec4(outColor,1.0);
+//	vec3 I = normalize(v_FragPos - u_CameraViewPos);
+//    vec3 R = reflect(I, normalize(v_Normal));
+//    FragColor = vec4(texture(u_Material.cube, R).rgb, 1.0);
 }
 
 

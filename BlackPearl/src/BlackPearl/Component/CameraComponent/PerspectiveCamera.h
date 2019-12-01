@@ -17,7 +17,9 @@ namespace BlackPearl {
 		inline void SetHeight(float height) { m_Height = height; RecalculateProjectionMatrix(); }
 		inline void SetWidth(float width) { m_Width = width; RecalculateProjectionMatrix(); }
 
-
+		float GetFov() const{ return m_Fov; }
+		float GetZnear()const { return m_zNear; }
+		float GetAspectRadio()const { return m_Width / m_Height; }
 	private:
 		float m_Fov;
 		float m_Width, m_Height;

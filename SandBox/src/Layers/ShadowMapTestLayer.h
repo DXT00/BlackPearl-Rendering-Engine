@@ -29,6 +29,8 @@ public:
 		m_CameraRotation.Yaw = cameraComponent->Yaw();
 		m_CameraRotation.Pitch = cameraComponent->Pitch();
 
+		m_MasterRenderer = DBG_NEW BlackPearl::MasterRenderer(m_CameraObj);
+
 		BlackPearl::Renderer::Init();
 
 		//	m_FrameBuffer.reset(DBG_NEW BlackPearl::FrameBuffer(960, 540, {BlackPearl::FrameBuffer::Attachment::DepthTexture },false));
@@ -65,14 +67,14 @@ public:
 		Cube2->GetComponent<BlackPearl::Transform>()->SetPosition({ -1.0f, 0.0f, 2.0 });
 
 		Quad = CreateQuad();
-		Quad->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(m_MasterRenderer.GetShadowMapRenderer().GetFrameBuffer()->GetDepthTexture());
+		Quad->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(m_MasterRenderer->GetShadowMapRenderer().GetFrameBuffer()->GetDepthTexture());
 		Quad->GetComponent<BlackPearl::MeshRenderer>()->SetShaders(m_QuadDepthShader);
 		
 	
 
 		for (BlackPearl::Object* obj : m_ObjectsList) {
 			if(obj->HasComponent<BlackPearl::MeshRenderer>())
-			obj->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(m_MasterRenderer.GetShadowMapRenderer().GetFrameBuffer()->GetDepthTexture());
+			obj->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(m_MasterRenderer->GetShadowMapRenderer().GetFrameBuffer()->GetDepthTexture());
 		}
 	
 		
@@ -103,6 +105,10 @@ public:
 		BlackPearl::RenderCommand::SetClearColor(m_BackgroundColor);
 		BlackPearl::Renderer::BeginScene(*(m_CameraObj->GetComponent<BlackPearl::PerspectiveCamera>()), *GetLightSources());
 
+		for (BlackPearl::Object* obj : m_ObjectsList) {
+			if (obj->HasComponent<BlackPearl::MeshRenderer>())
+				obj->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(m_MasterRenderer->GetShadowMapRenderer().GetFrameBuffer()->GetDepthTexture());
+		}
 
 		for (BlackPearl::Object* obj : m_ObjectsList) {
 			if (obj!=Quad&&obj->HasComponent<BlackPearl::MeshRenderer>())
@@ -110,28 +116,28 @@ public:
 		}
 
 
-		m_MasterRenderer.RenderShadowMap(m_ObjectsList, m_Sun->GetComponent<BlackPearl::ParallelLight>(), {Quad});
+		m_MasterRenderer->RenderShadowMap(m_ObjectsList, m_Sun->GetComponent<BlackPearl::ParallelLight>(), {Quad});
 		// 2. Render scene as normal 
 		glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		m_Shader->Bind();
 		m_Shader->SetUniformVec3f("u_LightPos", m_Sun->GetComponent<BlackPearl::ParallelLight>()->GetDirection());
-		m_Shader->SetUniformMat4f("u_LightProjectionViewMatrix", m_MasterRenderer.GetShadowMapLightProjectionMatrx());
+		m_Shader->SetUniformMat4f("u_LightProjectionViewMatrix", m_MasterRenderer->GetShadowMapLightProjectionMatrx());
 		for (BlackPearl::Object* obj : m_ObjectsList) {
 			if (obj != Quad && obj->HasComponent<BlackPearl::MeshRenderer>())
 			obj->GetComponent<BlackPearl::MeshRenderer>()->SetShaders(m_Shader);
 		}
 		
-		m_MasterRenderer.RenderSceneExcept(m_ObjectsList, Quad, GetLightSources() );
+		m_MasterRenderer->RenderSceneExcept(m_ObjectsList, Quad, GetLightSources() );
 
 		glViewport(0, 0, 240, 135);
 		Quad->GetComponent<BlackPearl::MeshRenderer>()->GetMeshes()[0].GetMaterial()->GetShader()->Bind();
 		Quad->GetComponent<BlackPearl::MeshRenderer>()->GetMeshes()[0].GetMaterial()->GetShader()->SetUniformVec3f("u_LightPos", m_Sun->GetComponent<BlackPearl::ParallelLight>()->GetDirection());
-		Quad->GetComponent<BlackPearl::MeshRenderer>()->GetMeshes()[0].GetMaterial()->GetShader()->SetUniformMat4f("u_LightProjectionViewMatrix", m_MasterRenderer.GetShadowMapLightProjectionMatrx());
+		Quad->GetComponent<BlackPearl::MeshRenderer>()->GetMeshes()[0].GetMaterial()->GetShader()->SetUniformMat4f("u_LightProjectionViewMatrix", m_MasterRenderer->GetShadowMapLightProjectionMatrx());
 
 
-		m_MasterRenderer.RenderObject(Quad);
+		m_MasterRenderer->RenderObject(Quad);
 
 
 	}
@@ -149,9 +155,9 @@ public:
 
 		if (ImGui::CollapsingHeader("Create")) {
 
-			const char* const entityItems[] = { "Empty","ParallelLight","PointLight","SpotLight","IronMan","Cube","Plane" };
+			const char* const entityItems[] = { "Empty","ParallelLight","PointLight","SpotLight","IronMan","BB8","Cube","Plane" };
 			static int entityIdx = -1;
-			if (ImGui::Combo("CreateEntity", &entityIdx, entityItems, 7))
+			if (ImGui::Combo("CreateEntity", &entityIdx, entityItems, 8))
 			{
 				switch (entityIdx)
 				{
@@ -176,10 +182,14 @@ public:
 					Layer::CreateModel("assets/models/IronMan/IronMan.obj", "assets/shaders/IronMan.glsl");
 					break;
 				case 5:
+					GE_CORE_INFO("Creating BB8 ...");
+					Layer::CreateModel("assets/models/u2k69vpbqpds-newbb8/BB8 New/bb8.obj", "assets/shaders/IronMan.glsl");
+					break;
+				case 6:
 					GE_CORE_INFO("Creating Cube ...");
 					Layer::CreateCube();
 					break;
-				case 6:
+				case 7:
 					GE_CORE_INFO("Creating Plane ...");
 					Layer::CreatePlane();
 					break;
@@ -190,7 +200,7 @@ public:
 		{
 			if (ImGui::BeginTabItem("Scene")) {
 				std::vector<BlackPearl::Object*> objsList = GetObjects();		//TODO::
-				ImGui::ListBoxHeader("CurrentEntities", (int)objsList.size(), 7);
+				ImGui::ListBoxHeader("CurrentEntities", (int)objsList.size(), 8);
 
 				for (int n = 0; n < objsList.size(); n++) {
 					//ImGui::Text("%s", objsList[n].c_str());
@@ -219,8 +229,9 @@ public:
 		m_Sun->GetComponent<BlackPearl::ParallelLight>()->SetDirection({ pos[0],pos[1],pos[2] });
 
 		
-		ImGui::DragFloat("near_plane", &BlackPearl::ShadowMapRenderer::s_NearPlane, 0.5f, -50.0f, 100.0f, "%.3f ");
-		ImGui::DragFloat("far_plane", &BlackPearl::ShadowMapRenderer::s_FarPlane, 0.5f, -50.0f, 100.0f, "%.3f ");
+		/*ImGui::DragFloat("near_plane", &BlackPearl::ShadowMapRenderer::s_NearPlane, 0.5f, -50.0f, 100.0f, "%.3f ");
+		ImGui::DragFloat("far_plane", &BlackPearl::ShadowMapRenderer::s_FarPlane, 0.5f, -50.0f, 100.0f, "%.3f ");*/
+		ImGui::DragFloat("ShadowDistance", &BlackPearl::ShadowBox::s_ShadowDistance, 0.5f, 0.0f, 120.0f, "%.3f "); 
 
 		if (currentObj != nullptr) {
 
@@ -242,7 +253,6 @@ public:
 						break;
 					}
 					case BlackPearl::BaseComponent::Type::Light: {
-
 						std::shared_ptr<BlackPearl::Light> comp = std::dynamic_pointer_cast<BlackPearl::Light>(component);
 						ShowLight(comp);
 						break;
@@ -335,7 +345,7 @@ private:
 	BlackPearl::Object* m_Sun;
 
 	BlackPearl::Object* Quad;
-	BlackPearl::MasterRenderer m_MasterRenderer;
+	BlackPearl::MasterRenderer *m_MasterRenderer;
 
 	BlackPearl::Object* m_SkyBox;
 

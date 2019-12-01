@@ -3,7 +3,6 @@
 #include <BlackPeral.h>
 #include "glm/glm.hpp"
 #include "glm/ext/matrix_transform.hpp"
-
 #include "imgui/imgui.h"
 #include "imgui/imfilebrowser.h"
 #include <glm/gtc/matrix_transform.hpp>
@@ -24,6 +23,8 @@ public:
 		m_CameraRotation.Yaw = cameraComponent->Yaw();
 		m_CameraRotation.Pitch = cameraComponent->Pitch();
 
+		m_MasterRenderer = DBG_NEW BlackPearl::MasterRenderer(m_CameraObj);
+
 		BlackPearl::Renderer::Init();
 
 		//	m_FrameBuffer.reset(DBG_NEW BlackPearl::FrameBuffer(960, 540, {BlackPearl::FrameBuffer::Attachment::DepthTexture },false));
@@ -43,44 +44,59 @@ public:
 
 		Room = CreateCube();
 		std::shared_ptr<BlackPearl::Texture> RoomTexture;
-		RoomTexture.reset(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::DiffuseMap, "assets/texture/2.jpg"));
+		RoomTexture.reset(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::DiffuseMap, "assets/texture/wood.png"));
 		Room->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(RoomTexture);
 		Room->GetComponent<BlackPearl::MeshRenderer>()->SetShaders(m_SimpleDepthShader);
 		Room->GetComponent<BlackPearl::MeshRenderer>()->SetEnableCullFace(false);
 		Room->GetComponent<BlackPearl::Transform>()->SetScale({ 50.0f,50.0f,50.0f });
 
-		/*BlackPearl::Object* Plane = CreatePlane();
-		Plane->GetComponent<BlackPearl::MeshRenderer>()->SetShaders(m_SimpleDepthShader);
-		Plane->GetComponent<BlackPearl::Transform>()->SetScale({ 25.0f, 0.5f, 25.0f });*/
+		
+		std::shared_ptr<BlackPearl::Texture> CubeTexture;
+		CubeTexture.reset(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::DiffuseMap, "assets/texture/wood.png"));
+
+		std::shared_ptr<BlackPearl::Texture> CubeTexture1;
+		CubeTexture1.reset(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::DiffuseMap, "assets/texture/wall4.jpg"));
 
 		BlackPearl::Object* Cube = CreateCube();
 		Cube->GetComponent<BlackPearl::MeshRenderer>()->SetShaders(m_SimpleDepthShader);
 		Cube->GetComponent<BlackPearl::Transform>()->SetPosition({ 2.0f, -3.5f, -4.0f });
 		Cube->GetComponent<BlackPearl::Transform>()->SetRotation({ 10.0f, 70.0f, 6.0f });
+		Cube->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(CubeTexture);
 
-
-		BlackPearl::Object* Cube5 = CreateCube();
+		/*BlackPearl::Object* Cube5 = CreateCube();
 		Cube5->GetComponent<BlackPearl::MeshRenderer>()->SetShaders(m_SimpleDepthShader);
 		Cube5->GetComponent<BlackPearl::Transform>()->SetPosition({ -2.0f, -3.5f, 3.0f });
+		Cube5->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(CubeTexture1);*/
 
 		BlackPearl::Object* Cube1 = CreateCube();
 		Cube1->GetComponent<BlackPearl::MeshRenderer>()->SetShaders(m_SimpleDepthShader);
 		Cube1->GetComponent<BlackPearl::Transform>()->SetPosition({ 2.0f, 0.0f, 6.0f });
+		Cube1->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(CubeTexture);
 
 
 		BlackPearl::Object* Cube2 = CreateCube();
 		Cube2->GetComponent<BlackPearl::MeshRenderer>()->SetShaders(m_SimpleDepthShader);
 		Cube2->GetComponent<BlackPearl::Transform>()->SetPosition({ -2.0f, 0.0f, 6.0f });
 		Cube2->GetComponent<BlackPearl::Transform>()->SetRotation({ 30.0f, 0.0f, 6.0f });
+		Cube2->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(CubeTexture1);
 
 		BlackPearl::Object* Cube3 = CreateCube();
 		Cube3->GetComponent<BlackPearl::MeshRenderer>()->SetShaders(m_SimpleDepthShader);
 		Cube3->GetComponent<BlackPearl::Transform>()->SetPosition({ 4.0f, 0.0f, -2.0f });
 		Cube3->GetComponent<BlackPearl::Transform>()->SetRotation({ 0.0f, 50.0f, 60.0f });
+		Cube3->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(CubeTexture);
 
 		BlackPearl::Object* Cube4 = CreateCube();
 		Cube4->GetComponent<BlackPearl::MeshRenderer>()->SetShaders(m_SimpleDepthShader);
 		Cube4->GetComponent<BlackPearl::Transform>()->SetPosition({ -4.0f, 0.0f, -6.0f });
+
+		/*BlackPearl::Object* Cube6 = CreateCube();
+		Cube6->GetComponent<BlackPearl::MeshRenderer>()->SetShaders(m_SimpleDepthShader);
+		Cube6->GetComponent<BlackPearl::Transform>()->SetPosition({ -4.0f, -18.0f, -6.0f });
+		Cube6->GetComponent<BlackPearl::Transform>()->SetScale({ 2.0f,2.0f,2.0f });
+		Cube2->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(CubeTexture1);*/
+
+		Deer=Layer::CreateModel("assets/models/deer/Deer.obj", "assets/shaders/IronMan.glsl");
 		Quad = CreateQuad();
 	/*	Quad->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(m_MasterRenderer.GetShadowMapPointLightRenderer().GetFrameBuffer()->GetCubeMapDepthTexture());
 		Quad->GetComponent<BlackPearl::MeshRenderer>()->SetShaders("assets/shaders/shadowMap/pointLight/QuadCubeMap.glsl");
@@ -89,8 +105,8 @@ public:
 
 		for (BlackPearl::Object* obj : m_ObjectsList) {
 			if (obj->HasComponent<BlackPearl::MeshRenderer>()) {
-				auto cubeMapBuffer = m_MasterRenderer.GetShadowMapPointLightRenderer().GetFrameBuffer();
-				obj->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(m_MasterRenderer.GetShadowMapPointLightRenderer().GetFrameBuffer()->GetCubeMapDepthTexture());
+				auto cubeMapBuffer = m_MasterRenderer->GetShadowMapPointLightRenderer().GetFrameBuffer();
+				obj->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(m_MasterRenderer->GetShadowMapPointLightRenderer().GetFrameBuffer()->GetCubeMapDepthTexture());
 			}
 				
 		}
@@ -125,10 +141,10 @@ public:
 			 sin(glfwGetTime() * 0.5) * 3.0
 			});*/
 		for (BlackPearl::Object* obj : m_ObjectsList) {
-			if (obj != Quad && obj != Room && obj != m_PointLight && obj->HasComponent<BlackPearl::MeshRenderer>())
+			if (obj != Quad &&obj!=Deer&& obj != Room && obj != m_PointLight && obj->HasComponent<BlackPearl::MeshRenderer>())
 				obj->GetComponent<BlackPearl::Transform>()->SetRotation({
 				obj->GetComponent<BlackPearl::Transform>()->GetRotation().x,
-				 sin(glfwGetTime() * 0.5) * 50.0f,
+				 sin(glfwGetTime() * 0.5) * 90.0f,
 				 obj->GetComponent<BlackPearl::Transform>()->GetRotation().z,
 			
 					});
@@ -136,32 +152,36 @@ public:
 		BlackPearl::RenderCommand::SetClearColor(m_BackgroundColor);
 		BlackPearl::Renderer::BeginScene(*(m_CameraObj->GetComponent<BlackPearl::PerspectiveCamera>()), *GetLightSources());
 
+		
 
 		for (BlackPearl::Object* obj : m_ObjectsList) {
-			if (obj != Quad && obj->HasComponent<BlackPearl::MeshRenderer>())
+			if (obj != Quad && obj!= m_PointLight&&obj->HasComponent<BlackPearl::MeshRenderer>())
 				obj->GetComponent<BlackPearl::MeshRenderer>()->SetShaders(m_SimpleDepthShader);
 		}
 
-		m_MasterRenderer.RenderPointLightShadowMap(m_ObjectsList, m_PointLight, { Quad,m_PointLight });
+		m_MasterRenderer->RenderPointLightShadowMap(m_ObjectsList, m_PointLight, { Quad,m_PointLight });
 		// 2. Render scene as normal 
 		glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		m_Shader->Bind();
-		
+		m_Shader->SetUniformVec3f("u_LightPos", m_PointLight->GetComponent<BlackPearl::Transform>()->GetPosition());
+
 		m_Shader->SetUniform1f("u_FarPlane", BlackPearl::ShadowMapPointLightRenderer::s_FarPlane);
 		for (BlackPearl::Object* obj : m_ObjectsList) {
 			if (obj != Quad &&obj!=m_PointLight&& obj->HasComponent<BlackPearl::MeshRenderer>()) {
 				obj->GetComponent<BlackPearl::MeshRenderer>()->SetShaders(m_Shader);
-				obj->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(m_MasterRenderer.GetShadowMapPointLightRenderer().GetFrameBuffer()->GetCubeMapDepthTexture());
+				obj->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(m_MasterRenderer->GetShadowMapPointLightRenderer().GetFrameBuffer()->GetCubeMapDepthTexture());
 			}
 
 		}
 		m_PointLight->GetComponent<BlackPearl::MeshRenderer>()->SetShaders("assets/shaders/PointLight.glsl");
 		
 		glDisable(GL_CULL_FACE);
+		m_Shader->SetUniformVec3f("u_LightPos", m_PointLight->GetComponent<BlackPearl::Transform>()->GetPosition());
+
 		m_Shader->SetUniform1i("u_ReverseNormals", 1);
-		m_MasterRenderer.RenderObject(Room);
+		m_MasterRenderer->RenderObject(Room);
 		m_Shader->SetUniform1i("u_ReverseNormals", 0);
 
 		glEnable(GL_CULL_FACE);
@@ -169,7 +189,7 @@ public:
 
 	
 		m_Shader->SetUniform1f("u_FarPlane", BlackPearl::ShadowMapPointLightRenderer::s_FarPlane);
-		m_MasterRenderer.RenderSceneExcept(m_ObjectsList, { Quad,m_PointLight }, GetLightSources());
+		m_MasterRenderer->RenderSceneExcept(m_ObjectsList, { Quad,m_PointLight }, GetLightSources());
 		
 		
 
@@ -198,9 +218,9 @@ public:
 
 		if (ImGui::CollapsingHeader("Create")) {
 
-			const char* const entityItems[] = { "Empty","ParallelLight","PointLight","SpotLight","IronMan","Cube","Plane" };
+			const char* const entityItems[] = { "Empty","ParallelLight","PointLight","SpotLight","IronMan","Deer","Cube","Plane" };
 			static int entityIdx = -1;
-			if (ImGui::Combo("CreateEntity", &entityIdx, entityItems, 7))
+			if (ImGui::Combo("CreateEntity", &entityIdx, entityItems, 8))
 			{
 				switch (entityIdx)
 				{
@@ -222,13 +242,25 @@ public:
 					break;
 				case 4:
 					GE_CORE_INFO("Creating IronMan ...");
-					Layer::CreateModel("assets/models/IronMan/IronMan.obj", "assets/shaders/IronMan.glsl");
+					//Layer::CreateModel("assets/models/u2k69vpbqpds-newbb8/BB8 New/bb8.obj", "assets/shaders/IronMan.glsl");
+					//Layer::CreateModel("assets/models/99-intergalactic_spaceship-obj/Intergalactic_Spaceship-(Wavefront).obj", "assets/shaders/IronMan.glsl");
+					//Layer::CreateModel("assets/models/rc8c1qtjiygw-O/Organodron City/Organodron City.obj", "assets/shaders/IronMan.glsl");
+					Layer::CreateModel("assets/models/OldHouse/Gost House/3D models/Gost House (5).obj", "assets/shaders/IronMan.glsl");
+
 					break;
 				case 5:
+					GE_CORE_INFO("Creating Deer ...");
+					//Layer::CreateModel("assets/models/u2k69vpbqpds-newbb8/BB8 New/bb8.obj", "assets/shaders/IronMan.glsl");
+					//Layer::CreateModel("assets/models/99-intergalactic_spaceship-obj/Intergalactic_Spaceship-(Wavefront).obj", "assets/shaders/IronMan.glsl");
+					//Layer::CreateModel("assets/models/rc8c1qtjiygw-O/Organodron City/Organodron City.obj", "assets/shaders/IronMan.glsl");
+					Layer::CreateModel("assets/models/deer/Deer.obj", "assets/shaders/IronMan.glsl");
+
+					break;
+				case 6:
 					GE_CORE_INFO("Creating Cube ...");
 					Layer::CreateCube();
 					break;
-				case 6:
+				case 7:
 					GE_CORE_INFO("Creating Plane ...");
 					Layer::CreatePlane();
 					break;
@@ -239,7 +271,7 @@ public:
 		{
 			if (ImGui::BeginTabItem("Scene")) {
 				std::vector<BlackPearl::Object*> objsList = GetObjects();		//TODO::
-				ImGui::ListBoxHeader("CurrentEntities", (int)objsList.size(), 7);
+				ImGui::ListBoxHeader("CurrentEntities", (int)objsList.size(), 8);
 
 				for (int n = 0; n < objsList.size(); n++) {
 					//ImGui::Text("%s", objsList[n].c_str());
@@ -263,12 +295,6 @@ public:
 		ImGui::Begin("Inspector");
 
 
-		/*float pos[] = { m_Sun->GetComponent<BlackPearl::ParallelLight>()->GetDirection().x, m_Sun->GetComponent<BlackPearl::ParallelLight>()->GetDirection().y, m_Sun->GetComponent<BlackPearl::ParallelLight>()->GetDirection().z };
-		ImGui::DragFloat3("m_LightPos", pos, 0.1f, -100.0f, 100.0f, "%.3f ");
-		m_Sun->GetComponent<BlackPearl::ParallelLight>()->SetDirection({ pos[0],pos[1],pos[2] });
-*/
-
-	//	ImGui::DragFloat("near_plane", &BlackPearl::ShadowMapRenderer::s_NearPlane, 0.5f, -50.0f, 100.0f, "%.3f ");
 		ImGui::DragFloat("far_plane", &BlackPearl::ShadowMapPointLightRenderer::s_FarPlane, 0.5f, -50.0f, 100.0f, "%.3f ");
 		ImGui::DragFloat("pointLight_FOV", &BlackPearl::ShadowMapPointLightRenderer::s_FOV, 0.5f,  0.0f, 180.0f, "%.3f ");
 
@@ -386,7 +412,8 @@ private:
 
 	BlackPearl::Object* Quad;
 	BlackPearl::Object* Room;
-	BlackPearl::MasterRenderer m_MasterRenderer;
+	BlackPearl::Object* Deer;
+	BlackPearl::MasterRenderer *m_MasterRenderer;
 
 	BlackPearl::Object* m_SkyBox;
 
