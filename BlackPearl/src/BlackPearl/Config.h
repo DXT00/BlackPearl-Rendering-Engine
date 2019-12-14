@@ -10,6 +10,9 @@ namespace BlackPearl {
 		static const unsigned int WindowWidth = 960;
 		static const unsigned int WindowHeight = 540;
 
+		//多重采样
+		static const unsigned int MSAA_SAMPLES = 0;
+
 	};
 
 

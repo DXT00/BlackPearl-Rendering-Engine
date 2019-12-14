@@ -74,7 +74,7 @@ namespace BlackPearl {
 		VertexBufferLayout layout = {
 			{ElementDataType::Float3,"aPos",false},
 			{ElementDataType::Float3,"aNormal",false},
-			{ElementDataType::Float2,"aTexCoord",false}
+			{ElementDataType::Float2,"aTexCoords",false}
 			//	{ElementDataType::Float3,"aTangent",false},
 			//	{ElementDataType::Float3,"aBitTangent",false},
 

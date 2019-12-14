@@ -2,6 +2,9 @@
 #include "Window.h"
 #include "BlackPearl/Core.h"
 #include "Event/MouseEvent.h"
+#include "BlackPearl/Config.h"
+#define GLEW_STATIC
+#include "GL/glew.h"
 namespace BlackPearl {
 
 	static bool s_GLFWInitialized = false;
@@ -15,14 +18,28 @@ namespace BlackPearl {
 			});
 			s_GLFWInitialized = true;
 		}
-		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+		glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+		glfwWindowHint(GLFW_SAMPLES, BlackPearl::Configuration::MSAA_SAMPLES);
+
 
 		m_Window = glfwCreateWindow(GetWidth(), GetHeight(), GetTitle().c_str(), NULL, NULL);
-		GE_ASSERT(m_Window, "fail to create window!")
+		GE_ASSERT(m_Window, "fail to create window!");
 
-			glfwSetInputMode(m_Window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+		glfwSetInputMode(m_Window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+		glfwMakeContextCurrent(m_Window);//must be called before glewInit()
+		// -------------------------------------
+		// Initialize GLEW.
+		// -------------------------------------
+		glewExperimental = GL_TRUE;
+		if (glewInit() == GLEW_OK) {
+			GE_CORE_INFO(" GLEW initialized.");
+		}
+		else {
+			GE_CORE_ERROR("GLEW failed to initialize (glewExperimental might not be supported).");
+		}
 
 		m_Context.reset(DBG_NEW Context(m_Window));
 		m_Context->Init();

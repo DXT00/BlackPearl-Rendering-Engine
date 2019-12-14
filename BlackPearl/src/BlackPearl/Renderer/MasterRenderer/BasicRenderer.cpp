@@ -78,7 +78,10 @@ namespace BlackPearl {
 	{
 		GE_ASSERT(obj, "obj is empty!");
 		if (!obj->HasComponent<MeshRenderer>()) {
-			GE_CORE_WARN(obj->ToString() + "obj has no meshes! nothing to draw!");
+			//GE_CORE_WARN(obj->ToString() + "obj has no meshes! nothing to draw!");
+			return;
+		}
+		if (!obj->GetComponent<MeshRenderer>()->GetEnableRender()) {
 			return;
 		}
 
@@ -132,11 +135,13 @@ namespace BlackPearl {
 	{
 
 		std::shared_ptr<Shader> shader = mesh.GetMaterial()->GetShader();
-		shader->Bind();
+		//shader->Bind();
+		//TODO::
+		
 
 		std::shared_ptr<Material> material = mesh.GetMaterial();
 		std::shared_ptr<Material::TextureMaps> textures = material->GetTextureMaps();
-		unsigned int k = 0;
+		unsigned int k = 4;
 		if (textures != nullptr) {
 			if (textures->diffuseTextureMap != nullptr) {
 				glActiveTexture(GL_TEXTURE0 + k);

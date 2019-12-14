@@ -43,7 +43,12 @@ namespace BlackPearl {
 
 		void SetEnableCullFace(bool isEnable) { m_EnableCullFace = isEnable; }
 		bool GetEnableCullFace()const { return m_EnableCullFace; }
+
+		void SetEnableRender(bool enable) { m_EnableRender = enable; }
+		bool GetEnableRender()const { return m_EnableRender; }
 	private:
+		//¿ªÆôºÍ½ûÖ¹äÖÈ¾
+		bool m_EnableRender = true;
 		std::vector<Mesh> m_Meshes;
 		std::shared_ptr<Model> m_Model = nullptr;
 		glm::mat4 m_TransformMatrix;

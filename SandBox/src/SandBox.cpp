@@ -9,6 +9,7 @@
 #include "Layers/ShadowMapTestLayer.h"
 #include "Layers/ShadowMapPointLightLayer.h"
 #include "Layers/SkyBoxTestLayer.h"
+#include "Layers/VoxelConeTracingLayer.h"
 #include "BlackPearl/Application.h"
 
 class SandBox :public BlackPearl::Application {
@@ -19,7 +20,8 @@ public:
 
 		//BlackPearl::Layer* layer = DBG_NEW FrameBufferTestLayer("FrameBufferTest Layer", objectManager);
 		//BlackPearl::Layer* layer = DBG_NEW SkyBoxTestLayer("SkyBoxTest Layer", objectManager);
-		BlackPearl::Layer* layer = DBG_NEW ShadowMapPointLightLayer("ShadowMapPointLight Layer", objectManager);
+		//BlackPearl::Layer* layer = DBG_NEW ShadowMapPointLightLayer("ShadowMapPointLight Layer", objectManager);
+		BlackPearl::Layer* layer = DBG_NEW VoxelConeTracingLayer("VoxelConeTracing Layer", objectManager);
 
 		//BlackPearl::Layer* layer = DBG_NEW AdvanceLightTestLayer("AdvanceLight Layer", objectManager);
 		//BlackPearl::Layer* layer = DBG_NEW ShadowMapTestLayer("ShadowMapTest Layer", objectManager);

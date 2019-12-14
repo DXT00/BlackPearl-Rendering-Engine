@@ -19,10 +19,12 @@ IncludeDir["ImGui"] = "BlackPearl/vendor/imgui"
 IncludeDir["glm"] = "BlackPearl/vendor/glm"
 IncludeDir["stb"] = "BlackPearl/vendor/stb"
 IncludeDir["assimp"] = "BlackPearl/vendor/assimp/include"
+IncludeDir["GLEW"] = "BlackPearl/vendor/GLEW/include"
 
 include "BlackPearl/vendor/GLFW"
 include "BlackPearl/vendor/Glad"
 include "BlackPearl/vendor/imgui"
+include "BlackPearl/vendor/GLEW"
 --include "BlackPearl/vendor/assimp"
 
 project "BlackPearl"
@@ -48,7 +50,7 @@ project "BlackPearl"
 		"%{prj.name}/vendor/glm/glm/**.inl",
 		"%{prj.name}/vendor/stb/**.h",
 		
-		--"%{prj.name}/vendor/assimp/include/assimp/**.hpp",
+		--"%{prj.name}/vendor/GLEW/**.h",
 		--"%{prj.name}/vendor/assimp/include/assimp/**.h",
 		--"%{prj.name}/vendor/assimp/include/assimp/**.inl",
 		--"%{prj.name}/vendor/assimp/include/assimp/**.cpp",
@@ -72,8 +74,10 @@ project "BlackPearl"
 		"%{IncludeDir.glm}",
 		"%{IncludeDir.stb}",
 		"%{IncludeDir.assimp}",
-		"BlackPearl/vendor"
+		"%{IncludeDir.GLEW}",
 
+		"BlackPearl/vendor",
+		"BlackPearl/vendor/GLEW"
 	}
 	libdirs{
 	"%{prj.name}/vendor/assimp_build/code/Debug"
@@ -81,6 +85,7 @@ project "BlackPearl"
 	links 
 	{ 
 		"GLFW",
+		"GLEW",
 		"Glad",
 		"ImGui",
 		--"assimp",

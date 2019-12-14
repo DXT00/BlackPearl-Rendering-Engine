@@ -49,6 +49,9 @@
     <Filter Include="src\BlackPearl\Renderer">
       <UniqueIdentifier>{B3FA019A-1F32-4A31-283C-AE5494F2702A}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\BlackPearl\Renderer\MasterRenderer">
+      <UniqueIdentifier>{057916C6-F1CA-EDB5-DAE9-2AC6C6DA069F}</UniqueIdentifier>
+    </Filter>
     <Filter Include="src\BlackPearl\Renderer\Material">
       <UniqueIdentifier>{B1E2AF43-9D33-9B85-C697-8947B2472EEF}</UniqueIdentifier>
     </Filter>
@@ -57,6 +60,12 @@
     </Filter>
     <Filter Include="src\BlackPearl\Renderer\Model">
       <UniqueIdentifier>{335E60FC-9F76-4726-6823-D7BFD4FADBBF}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\BlackPearl\Renderer\Shader">
+      <UniqueIdentifier>{F9C2EA95-E5E8-B4FC-CE2E-3AC8BAF3D9C8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\BlackPearl\Renderer\ShadowBox">
+      <UniqueIdentifier>{D1E64C31-3D55-A2B0-863E-5DB0F2EB974C}</UniqueIdentifier>
     </Filter>
     <Filter Include="src\BlackPearl\Scene">
       <UniqueIdentifier>{4AB7C252-3646-4C1C-DF64-6017CBD25CC2}</UniqueIdentifier>
@@ -201,7 +210,25 @@
     <ClInclude Include="src\BlackPearl\Renderer\Context.h">
       <Filter>src\BlackPearl\Renderer</Filter>
     </ClInclude>
+    <ClInclude Include="src\BlackPearl\Renderer\MasterRenderer\BasicRenderer.h">
+      <Filter>src\BlackPearl\Renderer\MasterRenderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BlackPearl\Renderer\MasterRenderer\MasterRenderer.h">
+      <Filter>src\BlackPearl\Renderer\MasterRenderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BlackPearl\Renderer\MasterRenderer\ShadowMapPointLightRenderer.h">
+      <Filter>src\BlackPearl\Renderer\MasterRenderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BlackPearl\Renderer\MasterRenderer\ShadowMapRenderer.h">
+      <Filter>src\BlackPearl\Renderer\MasterRenderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BlackPearl\Renderer\MasterRenderer\VoxelConeTracingRenderer.h">
+      <Filter>src\BlackPearl\Renderer\MasterRenderer</Filter>
+    </ClInclude>
     <ClInclude Include="src\BlackPearl\Renderer\Material\CubeMapTexture.h">
+      <Filter>src\BlackPearl\Renderer\Material</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BlackPearl\Renderer\Material\DepthTexture.h">
       <Filter>src\BlackPearl\Renderer\Material</Filter>
     </ClInclude>
     <ClInclude Include="src\BlackPearl\Renderer\Material\Material.h">
@@ -211,6 +238,9 @@
       <Filter>src\BlackPearl\Renderer\Material</Filter>
     </ClInclude>
     <ClInclude Include="src\BlackPearl\Renderer\Material\Texture.h">
+      <Filter>src\BlackPearl\Renderer\Material</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BlackPearl\Renderer\Material\Texture3D.h">
       <Filter>src\BlackPearl\Renderer\Material</Filter>
     </ClInclude>
     <ClInclude Include="src\BlackPearl\Renderer\Mesh\Mesh.h">
@@ -224,6 +254,12 @@
     </ClInclude>
     <ClInclude Include="src\BlackPearl\Renderer\Renderer.h">
       <Filter>src\BlackPearl\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BlackPearl\Renderer\Shader\Shader.h">
+      <Filter>src\BlackPearl\Renderer\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BlackPearl\Renderer\ShadowBox\ShadowBox.h">
+      <Filter>src\BlackPearl\Renderer\ShadowBox</Filter>
     </ClInclude>
     <ClInclude Include="src\BlackPearl\Renderer\VertexArray.h">
       <Filter>src\BlackPearl\Renderer</Filter>
@@ -1350,15 +1386,6 @@
     <ClInclude Include="vendor\stb\stb_image.h">
       <Filter>vendor\stb</Filter>
     </ClInclude>
-    <ClInclude Include="src\BlackPearl\Renderer\Material\DepthTexture.h" />
-    <ClInclude Include="src\BlackPearl\Renderer\Shader\Shader.h">
-      <Filter>src\BlackPearl\Renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="src\BlackPearl\Renderer\MasterRenderer\ShadowMapRenderer.h" />
-    <ClInclude Include="src\BlackPearl\Renderer\MasterRenderer\BasicRenderer.h" />
-    <ClInclude Include="src\BlackPearl\Renderer\MasterRenderer\MasterRenderer.h" />
-    <ClInclude Include="src\BlackPearl\Renderer\MasterRenderer\ShadowMapPointLightRenderer.h" />
-    <ClInclude Include="src\BlackPearl\Renderer\ShadowBox\ShadowBox.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\BlackPearl\Application.cpp">
@@ -1454,7 +1481,25 @@
     <ClCompile Include="src\BlackPearl\Renderer\Context.cpp">
       <Filter>src\BlackPearl\Renderer</Filter>
     </ClCompile>
+    <ClCompile Include="src\BlackPearl\Renderer\MasterRenderer\BasicRenderer.cpp">
+      <Filter>src\BlackPearl\Renderer\MasterRenderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BlackPearl\Renderer\MasterRenderer\MasterRenderer.cpp">
+      <Filter>src\BlackPearl\Renderer\MasterRenderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BlackPearl\Renderer\MasterRenderer\ShadowMapPointLightRenderer.cpp">
+      <Filter>src\BlackPearl\Renderer\MasterRenderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BlackPearl\Renderer\MasterRenderer\ShadowMapRenderer.cpp">
+      <Filter>src\BlackPearl\Renderer\MasterRenderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BlackPearl\Renderer\MasterRenderer\VoxelConeTracingRenderer.cpp">
+      <Filter>src\BlackPearl\Renderer\MasterRenderer</Filter>
+    </ClCompile>
     <ClCompile Include="src\BlackPearl\Renderer\Material\CubeMapTexture.cpp">
+      <Filter>src\BlackPearl\Renderer\Material</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BlackPearl\Renderer\Material\DepthTexture.cpp">
       <Filter>src\BlackPearl\Renderer\Material</Filter>
     </ClCompile>
     <ClCompile Include="src\BlackPearl\Renderer\Material\Material.cpp">
@@ -1464,6 +1509,9 @@
       <Filter>src\BlackPearl\Renderer\Material</Filter>
     </ClCompile>
     <ClCompile Include="src\BlackPearl\Renderer\Material\Texture.cpp">
+      <Filter>src\BlackPearl\Renderer\Material</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BlackPearl\Renderer\Material\Texture3D.cpp">
       <Filter>src\BlackPearl\Renderer\Material</Filter>
     </ClCompile>
     <ClCompile Include="src\BlackPearl\Renderer\Mesh\Mesh.cpp">
@@ -1477,6 +1525,12 @@
     </ClCompile>
     <ClCompile Include="src\BlackPearl\Renderer\Renderer.cpp">
       <Filter>src\BlackPearl\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BlackPearl\Renderer\Shader\Shader.cpp">
+      <Filter>src\BlackPearl\Renderer\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BlackPearl\Renderer\ShadowBox\ShadowBox.cpp">
+      <Filter>src\BlackPearl\Renderer\ShadowBox</Filter>
     </ClCompile>
     <ClCompile Include="src\BlackPearl\Renderer\VertexArray.cpp">
       <Filter>src\BlackPearl\Renderer</Filter>
@@ -1493,14 +1547,5 @@
     <ClCompile Include="src\pch.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\BlackPearl\Renderer\Material\DepthTexture.cpp" />
-    <ClCompile Include="src\BlackPearl\Renderer\Shader\Shader.cpp">
-      <Filter>src\BlackPearl\Renderer</Filter>
-    </ClCompile>
-    <ClCompile Include="src\BlackPearl\Renderer\MasterRenderer\ShadowMapRenderer.cpp" />
-    <ClCompile Include="src\BlackPearl\Renderer\MasterRenderer\BasicRenderer.cpp" />
-    <ClCompile Include="src\BlackPearl\Renderer\MasterRenderer\MasterRenderer.cpp" />
-    <ClCompile Include="src\BlackPearl\Renderer\MasterRenderer\ShadowMapPointLightRenderer.cpp" />
-    <ClCompile Include="src\BlackPearl\Renderer\ShadowBox\ShadowBox.cpp" />
   </ItemGroup>
 </Project>

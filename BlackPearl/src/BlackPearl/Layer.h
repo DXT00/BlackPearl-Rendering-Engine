@@ -45,7 +45,7 @@ namespace BlackPearl {
 		virtual Object* CreateCamera();
 
 		virtual Object* CreateModel(const std::string& modelPath, const std::string& shaderPath);
-		virtual Object* CreateCube(const std::string& shaderPath = "assets/shaders/Cube.glsl", const std::string& texturePath = "assets/texture/wood.png");
+		virtual Object* CreateCube(const std::string& shaderPath = "assets/shaders/Cube.glsl", const std::string& texturePath = "");
 		virtual Object* CreatePlane(const std::string& shaderPath = "assets/shaders/Plane.glsl", const std::string& texturePath = "assets/texture/wood.png");
 		virtual Object* CreateSkyBox(const std::vector<std::string>& textureFaces);
 		virtual Object* CreateQuad(const std::string& shaderPath = "assets/shaders/Quad.glsl", const std::string& texturePath = "assets/texture/1.jpg");

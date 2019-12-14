@@ -6,11 +6,24 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\Layers\ShadowMapTestLayer.h" />
-    <ClInclude Include="src\Layers\SkyBoxTestLayer.h" />
-    <ClInclude Include="src\Layers\AdvanceLightTestLayer.h" />
-    <ClInclude Include="src\Layers\FrameBufferTestLayer.h" />
-    <ClInclude Include="src\Layers\ShadowMapPointLightLayer.h" />
+    <ClInclude Include="src\Layers\AdvanceLightTestLayer.h">
+      <Filter>Layers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Layers\FrameBufferTestLayer.h">
+      <Filter>Layers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Layers\ShadowMapPointLightLayer.h">
+      <Filter>Layers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Layers\ShadowMapTestLayer.h">
+      <Filter>Layers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Layers\SkyBoxTestLayer.h">
+      <Filter>Layers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Layers\VoxelConeTracingLayer.h">
+      <Filter>Layers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\SandBox.cpp" />

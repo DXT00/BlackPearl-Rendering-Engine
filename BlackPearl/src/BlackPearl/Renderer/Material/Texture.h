@@ -1,7 +1,7 @@
 #pragma once
 #include <string>
 #include <vector>
-
+#include<glad/glad.h>
 
 
 namespace BlackPearl {
@@ -10,17 +10,32 @@ namespace BlackPearl {
 	{
 	public:
 		enum Type {
+			None,
 			DiffuseMap,
 			SpecularMap,
 			EmissionMap,
 			NormalMap,
 			HeightMap,
 			CubeMap,
-			DepthMap
+			DepthMap,
+			texture3D,
+			textureFront,
+			textureBack
 		};
 		Texture(Type type, const std::string &image);
 		//没有Image的texture
-		Texture(Type type, const int width,const int height, bool isDepth = false);
+		//internalFormat: Specifies the number of color components in the texture
+		//format:Specifies the format of the pixel data
+		Texture(
+			Type type, const int width,const int height,
+			bool isDepth = false,
+			unsigned int minFilter= GL_LINEAR,
+			unsigned int maxFilter= GL_LINEAR,
+			int internalFormat= GL_RGBA8,
+			int format= GL_RGBA,
+			int wrap = GL_CLAMP_TO_EDGE,
+			unsigned int dataType= GL_UNSIGNED_BYTE
+			);
 
 		//用于CubeMap初始化
 		Texture(Type type, std::vector<std::string> faces);
@@ -29,7 +44,10 @@ namespace BlackPearl {
 		virtual ~Texture() = default;
 
 		 void Init(const std::string &image);
-		 void Init(const int width, const int height);
+		 void Init(const int width, const int height,
+			 unsigned int minFilter, unsigned int maxFilter,
+			 int internalFormat, int format,
+			 int wrap,unsigned int dataType);
 
 
 		void LoadTexture(const std::string &image);

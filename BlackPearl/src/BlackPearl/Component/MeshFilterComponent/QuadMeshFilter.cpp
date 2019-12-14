@@ -11,14 +11,15 @@ namespace BlackPearl {
 	void QuadMeshFilter::Init() {
 		std::vector<float> vertices = {
 
-		   // positions         // texCoords
-		   -1.0f,  1.0f, 0.0f,  0.0f, 1.0f,
-		   -1.0f, -1.0f, 0.0f,  0.0f, 0.0f,
-			1.0f, -1.0f, 0.0f,  1.0f, 0.0f,
-						 
-		   -1.0f,  1.0f, 0.0f,  0.0f, 1.0f,
-			1.0f, -1.0f, 0.0f,  1.0f, 0.0f,
-			1.0f,  1.0f, 0.0f,  1.0f, 1.0f
+		   // positions          //normal             // texCoords
+		   -1.0f,  1.0f, 1.0f,  0.0f, 0.0f, 1.0f,	  0.0f, 1.0f,
+		   -1.0f, -1.0f, 1.0f,  0.0f, 0.0f, 1.0f,	  0.0f, 0.0f,
+			1.0f, -1.0f, 1.0f,  0.0f, 0.0f, 1.0f,	  1.0f, 0.0f,
+								  	  
+		   -1.0f,  1.0f, 1.0f,  0.0f, 0.0f, 1.0f,	  0.0f, 1.0f,
+			1.0f, -1.0f, 1.0f,  0.0f, 0.0f, 1.0f,	  1.0f, 0.0f,
+			1.0f,  1.0f, 1.0f,  0.0f, 0.0f, 1.0f,	  1.0f, 1.0f,
+
 
 		};
 		SetVertices(vertices);

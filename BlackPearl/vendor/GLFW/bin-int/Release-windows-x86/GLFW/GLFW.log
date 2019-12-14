@@ -1,4 +1,4 @@
-﻿生成启动时间为 2019/10/24 14:44:53。
+﻿生成启动时间为 2019/12/11 19:11:50。
      1>项目“F:\OpenGL\LearnOpenGL\BlackPearl\vendor\GLFW\GLFW.vcxproj”在节点 2 上(Build 个目标)。
      1>PrepareForBuild:
          正在创建目录“bin\Release-windows-x86\GLFW\”。
@@ -49,4 +49,4 @@
     0 个警告
     0 个错误
 
-已用时间 00:00:14.82
+已用时间 00:00:07.17

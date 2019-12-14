@@ -7,27 +7,32 @@ namespace BlackPearl {
 	{
 		m_Props = Props();
 		m_TextureMaps = textureMaps;
-		m_Shader.reset(DBG_NEW Shader(shaderPath));
-		m_Shader->Bind();
-		if (ambientColor.length() != 0) {
-			m_MaterialColors.SetAmbientColor(ambientColor);// .push_back(MaterialColor(MaterialColor::Type::AmbientColor, ambientColor));
-			m_Shader->SetUniformVec3f("u_Material.ambientColor", ambientColor);
+		if (shaderPath != "") {
 
-		}
-		if (diffuseColor.length() != 0) {
-			m_MaterialColors.SetDiffuseColor(diffuseColor);
-			m_Shader->SetUniformVec3f("u_Material.diffuseColor", diffuseColor);
 
-		}
-		if (specularColor.length() != 0) {
-			m_MaterialColors.SetSpecularColor(specularColor);
+			m_Shader.reset(DBG_NEW Shader(shaderPath));
+			m_Shader->Bind();
+			if (ambientColor.length() != 0) {
+				m_MaterialColors.SetAmbientColor(ambientColor);// .push_back(MaterialColor(MaterialColor::Type::AmbientColor, ambientColor));
+				m_Shader->SetUniformVec3f("u_Material.ambientColor", ambientColor);
 
-			m_Shader->SetUniformVec3f("u_Material.specularColor", specularColor);
+			}
+			if (diffuseColor.length() != 0) {
+				m_MaterialColors.SetDiffuseColor(diffuseColor);
+				m_Shader->SetUniformVec3f("u_Material.diffuseColor", diffuseColor);
 
-		}
-		if (emissionColor.length() != 0) {
-			m_MaterialColors.SetEmissionColor(emissionColor);
-			m_Shader->SetUniformVec3f("u_Material.emissionColor", emissionColor);
+			}
+			if (specularColor.length() != 0) {
+				m_MaterialColors.SetSpecularColor(specularColor);
+
+				m_Shader->SetUniformVec3f("u_Material.specularColor", specularColor);
+
+			}
+			if (emissionColor.length() != 0) {
+				m_MaterialColors.SetEmissionColor(emissionColor);
+				m_Shader->SetUniformVec3f("u_Material.emissionColor", emissionColor);
+
+			}
 
 		}
 	}
@@ -41,7 +46,7 @@ namespace BlackPearl {
 	void Material::SetShader(const std::string& shaderPath)
 	{
 		m_Shader.reset(DBG_NEW Shader(shaderPath));
-		
+
 	}
 	void Material::SetShader(const std::shared_ptr<Shader> &shader)
 	{
@@ -50,7 +55,7 @@ namespace BlackPearl {
 	}
 	void Material::SetMaterialColor(MaterialColor::Color color)
 	{
-		m_MaterialColors.SetColor(color); 
+		m_MaterialColors.SetColor(color);
 	}
 
 	void Material::SetTexture(const std::shared_ptr<Texture> texture)
@@ -73,7 +78,7 @@ namespace BlackPearl {
 			m_TextureMaps->normalTextureMap = texture;
 			break;
 		case Texture::Type::CubeMap:
-			m_TextureMaps->cubeTextureMap= texture;
+			m_TextureMaps->cubeTextureMap = texture;
 			break;
 		case Texture::Type::DepthMap:
 			m_TextureMaps->depthTextureMap = texture;
@@ -83,7 +88,7 @@ namespace BlackPearl {
 		}
 	}
 
-	void Material::SetTexture(const Texture::Type type,const std::string& image)
+	void Material::SetTexture(const Texture::Type type, const std::string& image)
 	{
 		std::shared_ptr<Texture>texture(DBG_NEW Texture(type, image));
 		SetTexture(texture);
@@ -110,6 +115,6 @@ namespace BlackPearl {
 		m_Props.isTextureSample = isTextureSample;
 	}
 
-	
+
 
 }

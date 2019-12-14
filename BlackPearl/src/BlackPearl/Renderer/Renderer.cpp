@@ -27,6 +27,8 @@ namespace BlackPearl {
 	void Renderer::Init()
 	{
 		glEnable(GL_DEPTH_TEST);
+		//多重采样，抗锯齿 // MSAA. Set MSAA level using GLFW (see Config.h).
+		glEnable(GL_MULTISAMPLE);
 	//	glEnable(GL_BLEND);
 		//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	}

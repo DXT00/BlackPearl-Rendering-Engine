@@ -2,7 +2,6 @@
 #include "pch.h"
 #include "Texture.h"
 #include "BlackPearl/Core.h"
-#include <glad/glad.h>
 #include "BlackPearl/Config.h"
 
 
@@ -21,14 +20,19 @@ namespace BlackPearl {
 
 	}
 	//Use in ShadowMap (DepthMap) or FrameBuffer's empty ColorMap
-	Texture::Texture(Type type, const int width, const int height,bool isDepth)
+	Texture::Texture(Type type, const int width, const int height,bool isDepth,
+		unsigned int minFilter, unsigned int maxFilter,
+		int internalFormat, int format,
+		int wrap,
+		unsigned int dataType
+		)
 	{
 		m_Path = "";
 		m_Type = type;
 		glGenTextures(1, &m_TextureID);
 		glBindTexture(GL_TEXTURE_2D, m_TextureID);
 		if(isDepth==false)
-			Init(width, height);
+			Init(width, height,minFilter,maxFilter,internalFormat, format, wrap, dataType);
 		
 
 
@@ -50,12 +54,22 @@ namespace BlackPearl {
 
 	}
 
-	void Texture::Init(const int width, const int height)
+	void Texture::Init(const int width, const int height,unsigned int minFilter, unsigned int maxFilter,
+		int internalFormat, int format,
+		int wrap,
+		unsigned int dataType)
 	{
+	/*	FBO(
+			GLuint w, GLuint h, GLenum magFilter = GL_NEAREST, GLenum minFilter = GL_NEAREST,
+			GLint internalFormat = GL_RGB16F, GLint format = GL_FLOAT, GLint wrap = GL_REPEAT);*/
 		//纹理过滤---邻近过滤和线性过滤
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);//纹理缩小时用邻近过滤
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);//纹理放大时也用邻近过滤
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, minFilter);//纹理缩小时用邻近过滤
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, maxFilter);//纹理放大时也用邻近过滤
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrap);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrap);
+
+		glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, format, dataType, NULL);
+
 	}
 
 	

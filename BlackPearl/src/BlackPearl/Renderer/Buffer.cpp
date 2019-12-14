@@ -67,10 +67,14 @@ namespace BlackPearl {
 
 	//------------------------FrameBuffer-----------------//
 
-	FrameBuffer::FrameBuffer(const int width,int height,std::initializer_list<Attachment> attachment, bool disableColor)
+	FrameBuffer::FrameBuffer(const int width,int height,std::initializer_list<Attachment> attachment, bool disableColor, Texture::Type colorTextureType)
 	{
 		m_Width = width;
 		m_Height = height;
+
+		GLint previousFrameBuffer;
+		glGetIntegerv(GL_FRAMEBUFFER_BINDING, &previousFrameBuffer);//获取之前绑定的Framebuffer
+
 		glGenFramebuffers(1, &m_RendererID);
 		Bind();
 		if (disableColor) {
@@ -79,7 +83,7 @@ namespace BlackPearl {
 		for (Attachment attach:attachment)
 		{
 			if (attach == Attachment::ColorTexture)
-				AttachColorTexture();
+				AttachColorTexture(colorTextureType);
 			else if (attach == Attachment::DepthTexture)
 				AttachDepthTexture();
 			else if (attach == Attachment::CubeMapDepthTexture)
@@ -92,13 +96,16 @@ namespace BlackPearl {
 		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
 			GE_CORE_ERROR("Framebuffer is not complete!");
 		UnBind();
+		//绑定回原来的FrameBuffer
+		glBindFramebuffer(GL_FRAMEBUFFER, previousFrameBuffer);
+
 	}
 
-	void FrameBuffer::AttachColorTexture()
+	void FrameBuffer::AttachColorTexture(Texture::Type textureType)
 	{
 		// create a color attachment texture
 		// The texture we're going to render to
-		m_TextureColorBuffer.reset(DBG_NEW Texture(Texture::Type::DiffuseMap, m_Width,m_Height));
+		m_TextureColorBuffer.reset(DBG_NEW Texture(textureType, m_Width,m_Height,false, GL_NEAREST, GL_NEAREST, GL_RGB16F, GL_RGBA, GL_REPEAT,GL_FLOAT));
 		m_TextureColorBuffer->UnBind();
 		//将它附加到当前绑定的帧缓冲对象
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_TextureColorBuffer->GetRendererID(), 0);
@@ -127,9 +134,14 @@ namespace BlackPearl {
 		// The depth buffer
 		glGenRenderbuffers(1, &m_RenderBufferID);
 		glBindRenderbuffer(GL_RENDERBUFFER, m_RenderBufferID);
-		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, Configuration::WindowWidth, Configuration::WindowHeight);
+		//glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, m_Width, m_Height);
+
+		// Use a single rbo for both depth and stencil buffer.
+		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, m_Width, m_Height);
+		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, m_RenderBufferID);
+
 		glBindRenderbuffer(GL_RENDERBUFFER, 0);
-		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, m_RenderBufferID);
+		//glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, m_RenderBufferID);
 
 	}
 
@@ -152,7 +164,7 @@ namespace BlackPearl {
 		glViewport(0, 0, Configuration::WindowWidth, Configuration::WindowHeight);
 
 	}
-	void FrameBuffer::BindTexture()
+	void FrameBuffer::BindColorTexture()
 	{
 		m_TextureColorBuffer->Bind();
 

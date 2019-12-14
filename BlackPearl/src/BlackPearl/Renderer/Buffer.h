@@ -163,8 +163,8 @@ namespace BlackPearl {
 			RenderBuffer
 
 		};
-		FrameBuffer(const int width, const int height,std::initializer_list<Attachment> attachment,bool disableColor);
-		void AttachColorTexture();
+		FrameBuffer(const int width, const int height,std::initializer_list<Attachment> attachment,bool disableColor, Texture::Type colorTextureType=Texture::Type::DiffuseMap);
+		void AttachColorTexture(Texture::Type textureType);
 		void AttachDepthTexture();
 		void AttachCubeMapDepthTexture();//use for point light shadow map
 		void AttachRenderBuffer();
@@ -173,13 +173,15 @@ namespace BlackPearl {
 		//switch back to default framebuffer
 		void UnBind();
 
-		void BindTexture();
+		void BindColorTexture();
 		void UnBindTexture();
 		void CleanUp();
 
 		std::shared_ptr<Texture> GetColorTexture() { return m_TextureColorBuffer; }
 		std::shared_ptr<BlackPearl::DepthTexture> GetDepthTexture() { return m_TextureDepthBuffer; }
 		std::shared_ptr<CubeMapTexture> GetCubeMapDepthTexture() { return m_CubeMapDepthBuffer; }
+		unsigned int GetWidth()const { return m_Width; }
+		unsigned int GetHeight()const { return m_Height; }
 
 	private:
 		unsigned int m_Width, m_Height;

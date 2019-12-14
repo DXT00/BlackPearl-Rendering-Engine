@@ -373,7 +373,7 @@ namespace BlackPearl {
 			static  int itemIndexTexture = -1;
 			static Texture::Type type;
 			//std::cout << "itemIndexTexture" << itemIndexTexture << std::endl;
-			GE_CORE_TRACE("itemIndexTexture:"+std::to_string(itemIndexTexture) );
+			//GE_CORE_TRACE("itemIndexTexture:"+std::to_string(itemIndexTexture) );
 			for (int i = 0; i < imGuiMeshes.size(); i++)
 			{
 				std::string text = "Mesh" + std::to_string(i);
@@ -522,24 +522,6 @@ namespace BlackPearl {
 
 
 
-	/*void Layer::DrawObjects()
-	{
-		m_ObjectManager->DrawObjects();
-	}
-	void Layer::DrawObject(Object * obj)
-	{
-		m_ObjectManager->DrawObject(obj);
-	}
-	void Layer::DrawObjectsExcept(std::vector<Object *>objs)
-	{
-		m_ObjectManager->DrawObjectsExcept(objs);
-
-	}
-	void Layer::DrawObjectsExcept(Object * obj)
-	{
-		m_ObjectManager->DrawObjectsExcept(obj);
-
-	}*/
 	std::vector<Object*> Layer::GetObjects()
 	{
 		return m_ObjectManager->GetObjects();
