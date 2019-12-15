@@ -28,14 +28,13 @@ namespace BlackPearl {
 			RenderingMode reneringMode = RenderingMode::VOXELIZATION_VISUALIZATION
 		);
 		void RenderVoxelVisualization(const std::vector<Object*>&objs, Object * m_QuadObj, Object * m_CubeObj, unsigned int viewportWidth, unsigned int viewportHeight);
+		void RenderScene(const std::vector<Object*>&objs, unsigned int viewportWidth, unsigned int viewportHeight);
 
-
-		/*void DrawCube(Object * m_CubeObj, std::shared_ptr<Shader> shader);
-		void DrawQuad(Object * m_QuadObj, std::shared_ptr<Shader> shader);*/
+	
 
 	private:
 		Texture3D* m_VoxelTexture = nullptr;
-		unsigned int m_VoxelTextureSize = 64;
+		unsigned int m_VoxelTextureSize = 128;// 64;
 
 
 		// ----------------
@@ -50,12 +49,21 @@ namespace BlackPearl {
 		// (voxelization sparsity gives unstable framerates, so not sure if it's worth it in interactive applications.)
 		int m_TicksSinceLastVoxelization = m_VoxelizationSparsity;
 
-
+		// ----------------
+		// Rendering.
+		// ----------------
+		bool m_Shadows = true;
+		bool m_IndirectDiffuseLight = true;
+		bool m_IndirectSpecularLight = true;
+		bool m_DirectLight = true;
 
 
 		std::shared_ptr<Shader> m_VoxelizationShader;
 		std::shared_ptr<Shader> m_WorldPositionShader;
 		std::shared_ptr<Shader> m_VoxelVisualizationShader;
+		std::shared_ptr<Shader> m_VoxelConeTracingShader;
+
+
 		std::shared_ptr<FrameBuffer> m_FrameBuffer1;
 		std::shared_ptr<FrameBuffer> m_FrameBuffer2;
 

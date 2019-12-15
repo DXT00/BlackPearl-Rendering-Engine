@@ -52,12 +52,10 @@ public:
 		InputCheck(ts);
 
 		// render
-
 		BlackPearl::RenderCommand::SetClearColor(m_BackgroundColor);
 		BlackPearl::Renderer::BeginScene(*(m_CameraObj->GetComponent<BlackPearl::PerspectiveCamera>()), *GetLightSources());
 
-		m_VoxelConeTracingRenderer->Render(m_ObjectsList, m_QuadObj, m_CubeObj, GetLightSources(), BlackPearl::Configuration::WindowWidth, BlackPearl::Configuration::WindowHeight);
-		//		m_MasterRenderer->RenderScene(m_ObjectsList, GetLightSources());
+		m_VoxelConeTracingRenderer->Render(m_ObjectsList, m_QuadObj, m_CubeObj, GetLightSources(), BlackPearl::Configuration::WindowWidth, BlackPearl::Configuration::WindowHeight, m_CurrentRenderingMode);
 
 	
 
@@ -145,12 +143,12 @@ private:
 	CameraRotation m_CameraRotation;
 	float m_LastMouseX;
 	float m_LastMouseY;
-	float m_CameraMoveSpeed = 5.0f;
-	float m_CameraRotateSpeed = 9.0f;
+	float m_CameraMoveSpeed = 0.5f;
+	float m_CameraRotateSpeed = 0.5f;
 
 	glm::vec4 m_BackgroundColor = { 0.0f,0.0f,0.0f,0.0f };
 
 
 	BlackPearl::VoxelConeTracingRenderer* m_VoxelConeTracingRenderer;
-	BlackPearl::VoxelConeTracingRenderer::RenderingMode m_CurrentRenderingMode = BlackPearl::VoxelConeTracingRenderer::RenderingMode::VOXELIZATION_VISUALIZATION;
+	BlackPearl::VoxelConeTracingRenderer::RenderingMode m_CurrentRenderingMode = BlackPearl::VoxelConeTracingRenderer::RenderingMode::VOXEL_CONE_TRACING;
 };

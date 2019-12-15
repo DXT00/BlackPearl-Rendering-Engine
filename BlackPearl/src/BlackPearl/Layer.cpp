@@ -483,15 +483,15 @@ namespace BlackPearl {
 		ImGui::Text("Transform");
 
 		float pos[] = { comp->GetPosition().x,comp->GetPosition().y,comp->GetPosition().z };
-		ImGui::DragFloat3("position", pos, 0.1f, -100.0f, 100.0f, "%.3f ");
+		ImGui::DragFloat3("position", pos, 0.05f, -100.0f, 100.0f, "%.3f ");
 		comp->SetPosition({ pos[0],pos[1],pos[2] });
 
 		float scale[] = { comp->GetScale().x,comp->GetScale().y,comp->GetScale().z };
-		ImGui::DragFloat3("scale", scale, 0.5f, 0.001f, 100.0f, "%.3f ");
+		ImGui::DragFloat3("scale", scale, 0.05f, 0.001f, 100.0f, "%.3f ");
 		comp->SetScale({ scale[0],scale[1],scale[2] });
 
 		float rotate[] = { comp->GetRotation().x,comp->GetRotation().y,comp->GetRotation().z };
-		ImGui::DragFloat3("rotation", rotate, 0.5f, -360.0f, 360.0f, "%.3f ");
+		ImGui::DragFloat3("rotation", rotate, 0.05f, -360.0f, 360.0f, "%.3f ");
 		comp->SetRotation({ rotate[0],rotate[1],rotate[2] });
 
 	}

@@ -30,16 +30,16 @@ namespace BlackPearl {
 
 	void BasicRenderer::RenderConfigure(Object * obj)
 	{
-		if (obj->HasComponent<MeshRenderer>()) {
-			auto meshRenderer = obj->GetComponent<MeshRenderer>();
-			if (meshRenderer->GetEnableCullFace()) {
-				//glEnable(GL_CULL_FACE);
-			}
-			else {
-				//glDisable(GL_CULL_FACE);
+		//if (obj->HasComponent<MeshRenderer>()) {
+		//	auto meshRenderer = obj->GetComponent<MeshRenderer>();
+		//	if (meshRenderer->GetEnableCullFace()) {
+		//		//glEnable(GL_CULL_FACE);
+		//	}
+		//	else {
+		//		//glDisable(GL_CULL_FACE);
 
-			}
-		}
+		//	}
+		//}
 	}
 
 	void BasicRenderer::DrawObjectsExcept(const std::vector<Object*>& objs, const std::vector<Object*>& exceptObjs)

@@ -1,5 +1,6 @@
 #pragma once
 #include<bitset>
+
 namespace BlackPearl {
 	//一个Entity最多32个Component
 	class Configuration {
@@ -12,6 +13,14 @@ namespace BlackPearl {
 
 		//多重采样
 		static const unsigned int MSAA_SAMPLES = 0;
+
+		// ------------------------------------------
+		// Voxel Cone Tracing
+		// ------------------------------------------
+		//Voxel Cone Tracing's mipmap level
+		static const int State = 0;
+
+		//static const VoxelConeTracingRenderer::RenderingMode RenderingMode; 
 
 	};
 

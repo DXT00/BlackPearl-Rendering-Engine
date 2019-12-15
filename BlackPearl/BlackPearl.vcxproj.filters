@@ -1547,5 +1547,6 @@
     <ClCompile Include="src\pch.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\BlackPearl\Config.cpp" />
   </ItemGroup>
 </Project>

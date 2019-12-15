@@ -1,16 +1,20 @@
-### Voxelization
+### Voxel Cone Tracing
 
-1.Add VoxelConeTracingRenderer for voxel rendering
+1.use Voxel Cone Tracing implement dynamic global illumination
 
-2.Store the scene voxel in the 3D Texture
+2.Code reference: https://github.com/Friduric/voxel-cone-tracing
 
-3.Code reference: https://github.com/Friduric/voxel-cone-tracing
+analysis tracing algorithm later ....
 
 
-添加VoxelConeTracingRenderer 用于体素化渲染
-把场景体素化后存储到3D Texture 中
+体素化后使用 Voxel Cone Tracing
+
+具体算法后续分析
+
 代码参考：https://github.com/Friduric/voxel-cone-tracing
 
-![voxelization1](/results/voxelization1.png)
-![voxelization2](/results/voxelization2.png)
+
+
+![voxelConeTracing1](/results/voxelConeTracing1.png)
+
 

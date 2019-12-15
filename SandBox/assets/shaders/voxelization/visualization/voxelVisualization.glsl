@@ -31,7 +31,7 @@ uniform sampler2D textureBack; // Unit cube back FBO.
 uniform sampler2D textureFront; // Unit cube front FBO.
 uniform sampler3D texture3D; // Texture in which voxelization is stored.
 uniform vec3 u_CameraViewPos; // World camera position.
-uniform int state = 0; // Decides mipmap sample level.
+uniform int u_State; // Decides mipmap sample level.
 
 in vec2 textureCoordinateFrag; 
 out vec4 color;
@@ -43,7 +43,7 @@ vec3 scaleAndBias(vec3 p) { return 0.5f * p + vec3(0.5f); }
 bool isInsideCube(vec3 p, float e) { return abs(p.x) < 1 + e && abs(p.y) < 1 + e && abs(p.z) < 1 + e; }
 
 void main() {
-	const float mipmapLevel = state;
+	const float mipmapLevel = u_State;
 
 	// Initialize ray.
 	const vec3 origin = isInsideCube(u_CameraViewPos, 0.2f) ? 
@@ -58,6 +58,7 @@ void main() {
 		const vec3 currentPoint = origin + STEP_LENGTH * step_ * direction;
 		vec3 coordinate = scaleAndBias(currentPoint);
 		vec4 currentSample = textureLod(texture3D, scaleAndBias(currentPoint), mipmapLevel);
+		//textureLod:perform a texture lookup with explicit level-of-detail
 		color += (1.0f - color.a) * currentSample;
 	} 
 	color.rgb = pow(color.rgb, vec3(1.0 / 2.2));

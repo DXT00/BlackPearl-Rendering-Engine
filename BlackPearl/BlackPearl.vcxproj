@@ -592,6 +592,7 @@
     <ClCompile Include="src\BlackPearl\Component\MeshFilterComponent\SkyBoxMeshFilter.cpp" />
     <ClCompile Include="src\BlackPearl\Component\MeshRendererComponent\MeshRenderer.cpp" />
     <ClCompile Include="src\BlackPearl\Component\TransformComponent\Transform.cpp" />
+    <ClCompile Include="src\BlackPearl\Config.cpp" />
     <ClCompile Include="src\BlackPearl\Entity\Entity.cpp" />
     <ClCompile Include="src\BlackPearl\ImGui\ImGuiBuild.cpp" />
     <ClCompile Include="src\BlackPearl\ImGui\ImGuiLayer.cpp" />
