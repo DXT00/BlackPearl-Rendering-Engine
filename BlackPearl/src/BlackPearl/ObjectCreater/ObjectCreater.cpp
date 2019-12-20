@@ -5,6 +5,7 @@
 #include "BlackPearl/Component/LightComponent/SpotLight.h"
 #include "BlackPearl/Component/MeshRendererComponent/MeshRenderer.h"
 #include "BlackPearl/Component/MeshFilterComponent/CubeMeshFilter.h"
+#include "BlackPearl/Component/MeshFilterComponent/SphereMeshFilter.h"
 #include "BlackPearl/Component/MeshFilterComponent/PlaneMeshFilter.h"
 #include "BlackPearl/Component/MeshFilterComponent/QuadMeshFilter.h"
 #include "BlackPearl/Component/MeshFilterComponent/SkyBoxMeshFilter.h"
@@ -69,9 +70,27 @@ namespace BlackPearl {
 		obj->AddComponent<MeshRenderer>(mesh, transformComponent->GetTransformMatrix());
 		return obj;
 	}
-	Object * Object3DCreater::CreateSphere(const std::string& shaderPath, const std::string& texturePath)
+	Object * Object3DCreater::CreateSphere(const float radius, const unsigned int stackCount, const unsigned int sectorCount, const std::string& shaderPath, const std::string& texturePath)
 	{
-		return nullptr;
+		Object* obj = CreateEmpty("Sphere");
+		std::shared_ptr<SphereMeshFilter> meshFilter = obj->AddComponent<SphereMeshFilter>(radius,stackCount,sectorCount);
+		Transform *transformComponent = obj->GetComponent<Transform>();
+
+		std::shared_ptr<Material> material;
+		std::shared_ptr<Material::TextureMaps> texture(DBG_NEW Material::TextureMaps());
+		if (texturePath != "")
+			texture->diffuseTextureMap.reset(DBG_NEW Texture(Texture::Type::DiffuseMap, texturePath));
+
+		material.reset(DBG_NEW Material(shaderPath, texture, { 1.0,0.2,0.2 }, { 1.0,0.2,0.2 }, { 1.0,0.2,0.2 }, {}));
+		VertexBufferLayout layout = {
+		{ElementDataType::Float3,"aPos",false},
+		{ElementDataType::Float3,"aNormal",false},
+		{ElementDataType::Float2,"aTexCoords",false}
+		};
+		Mesh mesh(meshFilter->GetVertices(), meshFilter->GetIndices(), material, layout);
+		obj->AddComponent<MeshRenderer>(mesh, transformComponent->GetTransformMatrix());
+
+		return obj;
 	}
 
 	Object * Object3DCreater::CreateModel(std::string modelPath, std::string shaderPath)

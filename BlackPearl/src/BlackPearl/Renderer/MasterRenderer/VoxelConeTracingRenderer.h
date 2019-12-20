@@ -14,27 +14,25 @@ namespace BlackPearl {
 		VoxelConeTracingRenderer();
 		~VoxelConeTracingRenderer();
 
-		void Init(unsigned int viewportWidth,unsigned int viewportHeight);
+		void Init(unsigned int viewportWidth,unsigned int viewportHeight, Object * quadObj, Object * cubeObj);
 		void InitVoxelization();
 		void InitVoxelVisualization(unsigned int viewportWidth, unsigned int viewportHeight);
-		void Voxilize(const std::vector<Object*>&objs, Object * m_QuadObj, Object * m_CubeObj, bool clearVoxelizationFirst = true);
+		void Voxilize(const std::vector<Object*>&objs, bool clearVoxelizationFirst = true);
 		void Render(
 			const std::vector<Object*>&objs, 
-			Object * m_QuadObj,
-			Object * m_CubeObj,
 			const LightSources* lightSources,
 			unsigned int viewportWidth,
 			unsigned int viewportHeight,
 			RenderingMode reneringMode = RenderingMode::VOXELIZATION_VISUALIZATION
 		);
-		void RenderVoxelVisualization(const std::vector<Object*>&objs, Object * m_QuadObj, Object * m_CubeObj, unsigned int viewportWidth, unsigned int viewportHeight);
+		void RenderVoxelVisualization(const std::vector<Object*>&objs,  unsigned int viewportWidth, unsigned int viewportHeight);
 		void RenderScene(const std::vector<Object*>&objs, unsigned int viewportWidth, unsigned int viewportHeight);
 
 	
 
 	private:
 		Texture3D* m_VoxelTexture = nullptr;
-		unsigned int m_VoxelTextureSize = 128;// 64;
+		unsigned int m_VoxelTextureSize = 256;// 64;
 
 
 		// ----------------
@@ -67,9 +65,10 @@ namespace BlackPearl {
 		std::shared_ptr<FrameBuffer> m_FrameBuffer1;
 		std::shared_ptr<FrameBuffer> m_FrameBuffer2;
 
-		
+		Object * m_QuadObj = nullptr;//用于显示体素化结果 ： voxel Visualization
+		Object * m_CubeObj = nullptr; //控制体素化渲染范围
 
-
+		bool m_IsInitialize = false;
 	};
 
 }

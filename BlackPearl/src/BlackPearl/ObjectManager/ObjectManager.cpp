@@ -49,6 +49,13 @@ namespace BlackPearl {
 
 	}
 
+	Object * ObjectManager::CreateSphere(const float radius, const unsigned int stackCount, const unsigned int sectorCount, const std::string & shaderPath, const std::string & texturePath)
+	{
+		Object *obj = m_Object3DCreater->CreateSphere(radius, stackCount, sectorCount,shaderPath, texturePath);
+		m_EntityToObjects.insert(std::make_pair(obj->GetId().index(), obj));
+		return obj;
+	}
+
 	Object * ObjectManager::CreatePlane(const std::string& shaderPath, const std::string& texturePath)
 	{
 		Object* obj = m_Object3DCreater->CreatePlane(shaderPath, texturePath);

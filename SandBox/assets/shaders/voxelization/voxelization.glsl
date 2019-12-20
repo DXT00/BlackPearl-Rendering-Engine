@@ -113,7 +113,7 @@ uniform PointLight u_PointLights[MAX_LIGHTS];
 uniform int u_PointLightNums;
 uniform vec3 u_CameraViewPos;
 layout(rgba8, binding = 0) uniform image3D texture3D;
-
+uniform vec3 u_CubeSize;
 in vec3 worldPositionFrag;//=v_FragPos
 in vec3 normalFrag;
 in vec2 g_TexCoord;
@@ -160,7 +160,7 @@ vec3 CalcPointLight(PointLight light,vec3 normal,vec3 viewDir){
 
 vec3 scaleAndBias(vec3 p) { return 0.5f * p + vec3(0.5f); }
 
-bool isInsideCube(const vec3 p, float e) { return abs(p.x) < 1 + e && abs(p.y) < 1 + e && abs(p.z) < 1 + e; }
+bool isInsideCube(const vec3 p, float e) { return abs(p.x) < u_CubeSize.x + e && abs(p.y) < u_CubeSize.y + e && abs(p.z) < u_CubeSize.z + e; }
 out vec4 color;
 void main(){
 	vec3 viewDir = normalize(u_CameraViewPos-worldPositionFrag);

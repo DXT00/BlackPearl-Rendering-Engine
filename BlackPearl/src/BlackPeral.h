@@ -12,6 +12,7 @@
 #include "BlackPearl/Renderer/RenderCommand.h"
 #include "BlackPearl/Renderer/MasterRenderer/MasterRenderer.h"
 #include "BlackPearl/Renderer/MasterRenderer/VoxelConeTracingRenderer.h"
+#include "BlackPearl/Renderer/MasterRenderer/PBRRenderer.h"
 
 
 #include "BlackPearl/Component/TransformComponent/Transform.h"

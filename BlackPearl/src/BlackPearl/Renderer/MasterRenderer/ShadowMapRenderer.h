@@ -18,7 +18,7 @@ namespace BlackPearl {
 		};
 		~ShadowMapRenderer();
 		void Render(const std::vector<Object*>&objs,  ParallelLight* sun,const std::vector<Object*>&exceptObjs);
-		virtual void PrepareShaderParameters(Mesh &mesh, glm::mat4 transformMatrix, bool isLight = false)override;
+		virtual void PrepareShaderParameters(Mesh &mesh, glm::mat4 transformMatrix , std::shared_ptr<Shader> shader,bool isLight = false)override;
 		
 		
 		void UpdateLightOrthoProjectionMatrix(float boxWidth,float boxHeight,float boxLength);

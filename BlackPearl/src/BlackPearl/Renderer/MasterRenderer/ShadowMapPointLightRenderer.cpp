@@ -41,10 +41,10 @@ namespace BlackPearl {
 		m_FrameBuffer->UnBind();
 
 	}
-	void ShadowMapPointLightRenderer::PrepareShaderParameters(Mesh & mesh, glm::mat4 transformMatrix, bool isLight)
+	void ShadowMapPointLightRenderer::PrepareShaderParameters(Mesh & mesh, glm::mat4 transformMatrix,std::shared_ptr<Shader>shader, bool isLight)
 	{
-		PrepareBasicShaderParameters(mesh, transformMatrix, isLight);
-		std::shared_ptr<Shader> shader = mesh.GetMaterial()->GetShader();
+		PrepareBasicShaderParameters(mesh, transformMatrix, shader,isLight);
+		//std::shared_ptr<Shader> shader = mesh.GetMaterial()->GetShader();
 		for (int i = 0; i < 6; i++)
 			shader->SetUniformMat4f("shadowMatrices[" + std::to_string(i) + "]", m_LightProjectionViewMatries[i]);
 		shader->SetUniform1f("u_FarPlane", s_FarPlane);

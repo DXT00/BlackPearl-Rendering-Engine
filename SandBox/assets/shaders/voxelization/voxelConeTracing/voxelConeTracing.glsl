@@ -26,7 +26,7 @@ void main(){
 // Light (voxel) cone tracing settings.
 // --------------------------------------
 #define MIPMAP_HARDCAP 5.4f /* Too high mipmap levels => glitchiness, too low mipmap levels => sharpness. */
-#define VOXEL_SIZE (1/64.0) /* Size of a voxel. 128x128x128 => 1/128 = 0.0078125. */
+#define VOXEL_SIZE (1/256.0) /* Size of a voxel. 128x128x128 => 1/128 = 0.0078125. */
 #define SHADOWS 1 /* Shadow cone tracing. */
 #define DIFFUSE_INDIRECT_FACTOR 0.52f /* Just changes intensity of diffuse indirect lighting. */
 // --------------------------------------
@@ -97,6 +97,7 @@ uniform int u_PointLightNums;
 uniform PointLight u_PointLights[MAX_LIGHTS];
 uniform int u_State;
 uniform sampler3D texture3D;
+uniform vec3 u_CubeSize; //m_CubeObj的大小，控制体素化范围
 
 in vec3 worldPositionFrag;
 
@@ -122,7 +123,7 @@ vec3 scaleAndBias(vec3 p){
 }
 
 // Returns true if the point p is inside the unity cube. 
-bool isInsideCube(const vec3 p, float e) { return abs(p.x) < 1 + e && abs(p.y) < 1 + e && abs(p.z) < 1 + e; }
+bool isInsideCube(const vec3 p, float e) { return abs(p.x) < u_CubeSize.x + e && abs(p.y) < u_CubeSize.y + e && abs(p.z) < u_CubeSize.z + e; }
 
 
 // Returns a soft shadow blend by using shadow cone tracing.

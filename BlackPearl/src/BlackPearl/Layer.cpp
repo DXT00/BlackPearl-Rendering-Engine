@@ -26,7 +26,7 @@ namespace BlackPearl {
 
 		if (ImGui::CollapsingHeader("Create")) {
 
-			const char* const entityItems[] = { "Empty","ParallelLight","PointLight","SpotLight","IronMan","Deer","OldHouse","Tree","Cube","Plane" };
+			const char* const entityItems[] = { "Empty","ParallelLight","PointLight","SpotLight","IronMan","Deer","OldHouse","Bunny","Cube","Plane" };
 			static int entityIdx = -1;
 			if (ImGui::Combo("CreateEntity", &entityIdx, entityItems, 10))
 			{
@@ -69,11 +69,11 @@ namespace BlackPearl {
 
 					break;
 				case 7:
-					GE_CORE_INFO("Creating Tree ...");
+					GE_CORE_INFO("Creating Bunny ...");
 					//Layer::CreateModel("assets/models/u2k69vpbqpds-newbb8/BB8 New/bb8.obj", "assets/shaders/IronMan.glsl");
 					//Layer::CreateModel("assets/models/99-intergalactic_spaceship-obj/Intergalactic_Spaceship-(Wavefront).obj", "assets/shaders/IronMan.glsl");
 					//Layer::CreateModel("assets/models/rc8c1qtjiygw-O/Organodron City/Organodron City.obj", "assets/shaders/IronMan.glsl");
-					Layer::CreateModel("assets/models/Tree/tree.obj", "assets/shaders/IronMan.glsl");
+					Layer::CreateModel("assets/models/bunny/bunny.obj", "assets/shaders/IronMan.glsl");
 				case 8:
 					GE_CORE_INFO("Creating Cube ...");
 					Layer::CreateCube();
@@ -179,6 +179,12 @@ namespace BlackPearl {
 	Object * Layer::CreateCube(const std::string& shaderPath, const std::string& texturePath) //TODO:
 	{
 		Object* obj= m_ObjectManager->CreateCube(shaderPath, texturePath);
+		m_ObjectsList.push_back(obj);
+		return obj;
+	}
+	Object * Layer::CreateSphere(const float radius, const unsigned int stackCount, const unsigned int sectorCount, const std::string & shaderPath, const std::string & texturePath)
+	{
+		Object* obj = m_ObjectManager->CreateSphere( radius,stackCount,sectorCount, shaderPath, texturePath);
 		m_ObjectsList.push_back(obj);
 		return obj;
 	}

@@ -22,13 +22,14 @@ public:
 		m_CameraRotation.Pitch = cameraComponent->Pitch();
 
 		m_VoxelConeTracingRenderer = DBG_NEW BlackPearl::VoxelConeTracingRenderer();
-		m_VoxelConeTracingRenderer->Init(BlackPearl::Configuration::WindowWidth, BlackPearl::Configuration::WindowHeight);
+		m_CubeObj = CreateCube("", "");
+		m_CubeObj->GetComponent<BlackPearl::Transform>()->SetScale(glm::vec3(3.0));
+		m_QuadObj = CreateQuad();
+		m_VoxelConeTracingRenderer->Init(BlackPearl::Configuration::WindowWidth, BlackPearl::Configuration::WindowHeight,m_QuadObj,m_CubeObj);
 
 
 		BlackPearl::Renderer::Init();
-		m_CubeObj = CreateCube("", ""); ;// CreateModel("assets/models/Cube/cube.obj", "assets/shaders/Cube.glsl");// CreateCube("", "");
-		m_CubeObj->GetComponent<BlackPearl::Transform>()->SetScale(glm::vec3(2.0));
-		m_QuadObj = CreateQuad();// ("", "");
+	
 		//CreateCube();
 		/*BlackPearl::Object *deer=  CreateModel("assets/models/deer/Deer.obj", "assets/shaders/IronMan.glsl");
 		deer->GetComponent<BlackPearl::Transform>()->SetScale(glm::vec3(0.005));
@@ -55,7 +56,7 @@ public:
 		BlackPearl::RenderCommand::SetClearColor(m_BackgroundColor);
 		BlackPearl::Renderer::BeginScene(*(m_CameraObj->GetComponent<BlackPearl::PerspectiveCamera>()), *GetLightSources());
 
-		m_VoxelConeTracingRenderer->Render(m_ObjectsList, m_QuadObj, m_CubeObj, GetLightSources(), BlackPearl::Configuration::WindowWidth, BlackPearl::Configuration::WindowHeight, m_CurrentRenderingMode);
+		m_VoxelConeTracingRenderer->Render(m_ObjectsList, GetLightSources(), BlackPearl::Configuration::WindowWidth, BlackPearl::Configuration::WindowHeight, m_CurrentRenderingMode);
 
 	
 

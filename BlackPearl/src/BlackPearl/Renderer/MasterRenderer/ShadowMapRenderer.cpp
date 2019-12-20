@@ -16,7 +16,7 @@ namespace BlackPearl {
 	ShadowMapRenderer::~ShadowMapRenderer()
 	{
 	}
-	void ShadowMapRenderer::Render(const std::vector<Object*>& objs,  ParallelLight* sun, const std::vector<Object*>&exceptObjs)
+	void ShadowMapRenderer::Render(const std::vector<Object*>& objs, ParallelLight* sun, const std::vector<Object*>&exceptObjs)
 	{
 
 		//glm::mat4 lightProjection, lightView;
@@ -41,21 +41,20 @@ namespace BlackPearl {
 		m_FrameBuffer->UnBind();
 
 	}
-	void ShadowMapRenderer::PrepareShaderParameters(Mesh &mesh, glm::mat4 transformMatrix, bool isLight ) //RenderScene 会调用该虚函数
+	void ShadowMapRenderer::PrepareShaderParameters(Mesh &mesh, glm::mat4 transformMatrix, std::shared_ptr<Shader> shader, bool isLight) //RenderScene 会调用该虚函数
 	{
-		PrepareBasicShaderParameters(mesh, transformMatrix,isLight);
-	
-			std::shared_ptr<Shader> shader = mesh.GetMaterial()->GetShader();
-			shader->SetUniformVec3f("u_LightPos", m_LightPos);
-			shader->SetUniformMat4f("u_LightProjectionViewMatrix", m_LightProjectionViewMatrix);
-	
+		PrepareBasicShaderParameters(mesh, transformMatrix, shader, isLight);
+
+		shader->SetUniformVec3f("u_LightPos", m_LightPos);
+		shader->SetUniformMat4f("u_LightProjectionViewMatrix", m_LightProjectionViewMatrix);
+
 	}
 
 	void ShadowMapRenderer::UpdateLightOrthoProjectionMatrix(float boxWidth, float boxHeight, float boxLength)
 	{
 		//orthographic matrix definition: http://learnwebgl.brown37.net/08_projections/projections_ortho.html
 		glm::mat4 orthoProjectionMatrix(1.0f);
-		orthoProjectionMatrix[0][0] = 2.0f/ boxWidth;
+		orthoProjectionMatrix[0][0] = 2.0f / boxWidth;
 		orthoProjectionMatrix[1][1] = 2.0f / boxHeight;
 		orthoProjectionMatrix[2][2] = -2.0f / boxLength;
 		orthoProjectionMatrix[3][3] = 1.0f;
@@ -64,7 +63,7 @@ namespace BlackPearl {
 
 	void ShadowMapRenderer::UpdateLightViewMatrix(glm::vec3 lightDirection, glm::vec3 boxCenter)
 	{
-		m_LightView= glm::lookAt(lightDirection, boxCenter, glm::vec3(0.0, 1.0, 0.0));
+		m_LightView = glm::lookAt(lightDirection, boxCenter, glm::vec3(0.0, 1.0, 0.0));
 
 	}
 

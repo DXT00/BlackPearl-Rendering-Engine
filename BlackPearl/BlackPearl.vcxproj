@@ -143,6 +143,7 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\BlackPearl\Component\MeshFilterComponent\SphereMeshFilter.h" />
     <ClInclude Include="src\BlackPearl\Application.h" />
     <ClInclude Include="src\BlackPearl\Component\BaseComponent.h" />
     <ClInclude Include="src\BlackPearl\Component\CameraComponent\Camera.h" />
@@ -182,6 +183,7 @@
     <ClInclude Include="src\BlackPearl\Renderer\Context.h" />
     <ClInclude Include="src\BlackPearl\Renderer\MasterRenderer\BasicRenderer.h" />
     <ClInclude Include="src\BlackPearl\Renderer\MasterRenderer\MasterRenderer.h" />
+    <ClInclude Include="src\BlackPearl\Renderer\MasterRenderer\PBRRenderer.h" />
     <ClInclude Include="src\BlackPearl\Renderer\MasterRenderer\ShadowMapPointLightRenderer.h" />
     <ClInclude Include="src\BlackPearl\Renderer\MasterRenderer\ShadowMapRenderer.h" />
     <ClInclude Include="src\BlackPearl\Renderer\MasterRenderer\VoxelConeTracingRenderer.h" />
@@ -574,6 +576,7 @@
     <ClInclude Include="vendor\stb\stb_image.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\BlackPearl\Component\MeshFilterComponent\SphereMeshFilter.cpp" />
     <ClCompile Include="src\BlackPearl\Application.cpp" />
     <ClCompile Include="src\BlackPearl\Component\BaseComponent.cpp" />
     <ClCompile Include="src\BlackPearl\Component\CameraComponent\Camera.cpp" />
@@ -608,6 +611,7 @@
     <ClCompile Include="src\BlackPearl\Renderer\Context.cpp" />
     <ClCompile Include="src\BlackPearl\Renderer\MasterRenderer\BasicRenderer.cpp" />
     <ClCompile Include="src\BlackPearl\Renderer\MasterRenderer\MasterRenderer.cpp" />
+    <ClCompile Include="src\BlackPearl\Renderer\MasterRenderer\PBRRenderer.cpp" />
     <ClCompile Include="src\BlackPearl\Renderer\MasterRenderer\ShadowMapPointLightRenderer.cpp" />
     <ClCompile Include="src\BlackPearl\Renderer\MasterRenderer\ShadowMapRenderer.cpp" />
     <ClCompile Include="src\BlackPearl\Renderer\MasterRenderer\VoxelConeTracingRenderer.cpp" />

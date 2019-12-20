@@ -11,16 +11,26 @@ namespace BlackPearl {
 	}
 	VoxelConeTracingRenderer::~VoxelConeTracingRenderer()
 	{
+		if (!m_CubeObj)delete m_CubeObj;
+		if (!m_QuadObj)delete m_QuadObj;
+		if(!m_VoxelTexture) delete m_VoxelTexture;
 	}
 
 
-	void VoxelConeTracingRenderer::Init(unsigned int viewportWidth, unsigned int viewportHeight)
+	void VoxelConeTracingRenderer::Init(unsigned int viewportWidth, unsigned int viewportHeight, Object * quadObj, Object * cubeObj)
 	{
+		GE_ASSERT(quadObj, "m_QuadObj is nullptr!");
+		GE_ASSERT(cubeObj, "m_CubeObj is nullptr!");
+
+		m_QuadObj = quadObj;
+		m_CubeObj = cubeObj;
+
 		//glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
 		glEnable(GL_MULTISAMPLE);
 		m_VoxelConeTracingShader.reset(DBG_NEW Shader("assets/shaders/voxelization/voxelConeTracing/voxelConeTracing.glsl"));
 		InitVoxelization();
 		InitVoxelVisualization(viewportWidth, viewportHeight);
+		m_IsInitialize = true;
 	}
 
 	void VoxelConeTracingRenderer::InitVoxelization()
@@ -43,7 +53,7 @@ namespace BlackPearl {
 
 
 
-	void VoxelConeTracingRenderer::Voxilize(const std::vector<Object*>& objs, Object * m_QuadObj, Object * m_CubeObj, bool clearVoxelizationFirst)
+	void VoxelConeTracingRenderer::Voxilize(const std::vector<Object*>& objs, bool clearVoxelizationFirst)
 	{
 		if (clearVoxelizationFirst) {
 			float clearColor[4] = { 0.0,0.0,0.0,0.0 };
@@ -69,6 +79,8 @@ namespace BlackPearl {
 		glActiveTexture(GL_TEXTURE0 + 0);
 		m_VoxelTexture->Bind();
 		m_VoxelizationShader->SetUniform1i("texture3D", 0);
+		m_VoxelizationShader->SetUniformVec3f("u_CubeSize", m_CubeObj->GetComponent<Transform>()->GetScale());
+
 		glBindImageTexture(0, m_VoxelTexture->GetRendererID(), 0, GL_TRUE, 0, GL_WRITE_ONLY, GL_RGBA8);
 
 
@@ -79,8 +91,6 @@ namespace BlackPearl {
 		//Render
 		DrawObjects(objs);
 
-
-
 		if (m_AutomaticallyRegenerateMipmap || m_RegenerateMipmapQueued) {
 			glGenerateMipmap(GL_TEXTURE_3D);
 			m_RegenerateMipmapQueued = false;
@@ -89,17 +99,18 @@ namespace BlackPearl {
 
 	}
 
-	void VoxelConeTracingRenderer::Render(const std::vector<Object*>& objs, Object * m_QuadObj, Object * m_CubeObj, const LightSources * lightSources, unsigned int viewportWidth, unsigned int viewportHeight, RenderingMode reneringMode)
+	void VoxelConeTracingRenderer::Render(const std::vector<Object*>& objs, const LightSources * lightSources, unsigned int viewportWidth, unsigned int viewportHeight, RenderingMode reneringMode)
 	{
+		GE_ASSERT(m_IsInitialize, "Please Call VoxelConeTracingRenderer::Init() first!");
 		bool voxelizeNow = m_VoxelizationQueued || (m_AutomaticallyVoxelize &&m_VoxelizationSparsity > 0 && ++m_TicksSinceLastVoxelization >= m_VoxelizationSparsity);
 		if (voxelizeNow) {
-			Voxilize(objs, m_QuadObj, m_CubeObj, true);
+			Voxilize(objs, true);
 			m_TicksSinceLastVoxelization = 0;
 			m_VoxelizationQueued = false;
 		}
 		switch (reneringMode) {
 		case RenderingMode::VOXELIZATION_VISUALIZATION:
-			RenderVoxelVisualization(objs, m_QuadObj, m_CubeObj, viewportWidth, viewportHeight);
+			RenderVoxelVisualization(objs,  viewportWidth, viewportHeight);
 			break;
 		case RenderingMode::VOXEL_CONE_TRACING:
 			m_QuadObj->GetComponent<MeshRenderer>()->SetEnableRender(false);
@@ -109,7 +120,7 @@ namespace BlackPearl {
 		}
 	}
 
-	void VoxelConeTracingRenderer::RenderVoxelVisualization(const std::vector<Object*>& objs, Object * m_QuadObj, Object * m_CubeObj, unsigned int viewportWidth, unsigned int viewportHeight)
+	void VoxelConeTracingRenderer::RenderVoxelVisualization(const std::vector<Object*>& objs,  unsigned int viewportWidth, unsigned int viewportHeight)
 	{
 		m_CubeObj->GetComponent<MeshRenderer>()->SetShaders(m_WorldPositionShader);
 
@@ -162,6 +173,7 @@ namespace BlackPearl {
 		m_VoxelVisualizationShader->SetUniform1i("texture3D", 2);
 
 		m_VoxelVisualizationShader->SetUniform1i("u_State", Configuration::State);
+		m_VoxelVisualizationShader->SetUniformVec3f("u_CubeSize", m_CubeObj->GetComponent<Transform>()->GetScale());
 
 		// Render.
 		glViewport(0, 0, viewportWidth, viewportHeight);
@@ -202,7 +214,7 @@ namespace BlackPearl {
 		//uploadRenderingSettings(program);
 		
 		//TODO::
-		float specularReflectivity = 0.2f, diffuseReflectivity = 1.0f, emissivity =0.1f, specularDiffusion = 2.0f;
+		float specularReflectivity = 0.0f, diffuseReflectivity = 1.0f, emissivity =0.1f, specularDiffusion = 0.0f;
 		float transparency = 0.0f, refractiveIndex = 1.4f;
 
 
@@ -220,6 +232,7 @@ namespace BlackPearl {
 		m_VoxelConeTracingShader->SetUniform1f("u_Material.specularDiffusion", specularDiffusion);
 		m_VoxelConeTracingShader->SetUniform1f("u_Material.transparency", transparency);
 		m_VoxelConeTracingShader->SetUniform1f("u_Material.refractiveIndex", refractiveIndex);
+		m_VoxelConeTracingShader->SetUniformVec3f("u_CubeSize", m_CubeObj->GetComponent<Transform>()->GetScale());
 
 
 		glActiveTexture(GL_TEXTURE0 + 0);

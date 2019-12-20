@@ -32,7 +32,7 @@ uniform sampler2D textureFront; // Unit cube front FBO.
 uniform sampler3D texture3D; // Texture in which voxelization is stored.
 uniform vec3 u_CameraViewPos; // World camera position.
 uniform int u_State; // Decides mipmap sample level.
-
+uniform vec3 u_CubeSize;
 in vec2 textureCoordinateFrag; 
 out vec4 color;
 
@@ -40,7 +40,7 @@ out vec4 color;
 vec3 scaleAndBias(vec3 p) { return 0.5f * p + vec3(0.5f); }
 
 // Returns true if p is inside the unity cube (+ e) centered on (0, 0, 0).
-bool isInsideCube(vec3 p, float e) { return abs(p.x) < 1 + e && abs(p.y) < 1 + e && abs(p.z) < 1 + e; }
+bool isInsideCube(vec3 p, float e) { return abs(p.x) < u_CubeSize.x + e && abs(p.y) <u_CubeSize.y + e && abs(p.z) < u_CubeSize.z + e; }
 
 void main() {
 	const float mipmapLevel = u_State;

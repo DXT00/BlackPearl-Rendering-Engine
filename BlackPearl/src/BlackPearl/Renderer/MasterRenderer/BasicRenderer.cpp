@@ -16,10 +16,10 @@ namespace BlackPearl {
 	{
 	}
 
-
 	BasicRenderer::~BasicRenderer()
 	{
 	}
+
 	void BasicRenderer::RenderScene(const std::vector<Object*> &objs, const LightSources* lightSources)
 	{
 
@@ -67,6 +67,7 @@ namespace BlackPearl {
 		}
 
 	}
+	//objs中可以包含Light
 	void BasicRenderer::DrawObjects(std::vector<Object *>objs)
 	{
 		for (auto obj : objs) {
@@ -74,27 +75,60 @@ namespace BlackPearl {
 		}
 
 	}
+	void BasicRenderer::DrawObjects(std::vector<Object*> objs, std::shared_ptr<Shader> shader)
+	{
+		for (auto obj : objs) {
+			DrawObject(obj, shader);
+		}
+	}
+	//每个Mesh一个shader
 	void BasicRenderer::DrawObject(Object * obj)
 	{
 		GE_ASSERT(obj, "obj is empty!");
-		if (!obj->HasComponent<MeshRenderer>()) {
-			//GE_CORE_WARN(obj->ToString() + "obj has no meshes! nothing to draw!");
+		if (!obj->HasComponent<MeshRenderer>() || !obj->GetComponent<MeshRenderer>()->GetEnableRender())
 			return;
-		}
-		if (!obj->GetComponent<MeshRenderer>()->GetEnableRender()) {
-			return;
-		}
 
 		glm::mat4 transformMatrix = obj->GetComponent<Transform>()->GetTransformMatrix();
 		std::vector<Mesh>& meshes = obj->GetComponent<MeshRenderer>()->GetMeshes();
 
-		RenderConfigure(obj);
+		//RenderConfigure(obj);
 
 		for (int i = 0; i < meshes.size(); i++) {
-
-			PrepareShaderParameters(meshes[i], transformMatrix);
+			std::shared_ptr<Shader> shader = meshes[i].GetMaterial()->GetShader();
+			//shader->Bind();
+			if (obj->HasComponent<PointLight>() || obj->HasComponent<ParallelLight>() || obj->HasComponent<SpotLight>()) {
+				PrepareShaderParameters(meshes[i], transformMatrix, shader, true);
+			}
+			else
+				PrepareShaderParameters(meshes[i], transformMatrix, shader);
 
 			Renderer::Submit(meshes[i].GetVertexArray(), meshes[i].GetMaterial()->GetShader(), transformMatrix);
+			if (meshes[i].GetIndicesSize() > 0)
+				glDrawElements(GL_TRIANGLES, meshes[i].GetIndicesSize() / sizeof(unsigned int), GL_UNSIGNED_INT, 0);
+			else
+				glDrawArrays(GL_TRIANGLES, 0, meshes[i].GetVerticesSize() / meshes[i].GetVertexBufferLayout().GetStride());
+
+		}
+	}
+	void BasicRenderer::DrawObject(Object * obj, std::shared_ptr<Shader> shader)
+	{
+		GE_ASSERT(obj, "obj is empty!");
+		if (!obj->HasComponent<MeshRenderer>() || !obj->GetComponent<MeshRenderer>()->GetEnableRender())
+			return;
+
+		glm::mat4 transformMatrix = obj->GetComponent<Transform>()->GetTransformMatrix();
+		std::vector<Mesh>& meshes = obj->GetComponent<MeshRenderer>()->GetMeshes();
+
+		//RenderConfigure(obj);
+
+
+		for (int i = 0; i < meshes.size(); i++) {
+			if (obj->HasComponent<PointLight>() || obj->HasComponent<ParallelLight>() || obj->HasComponent<SpotLight>()) 
+				PrepareShaderParameters(meshes[i], transformMatrix, shader, true);
+			else
+				PrepareShaderParameters(meshes[i], transformMatrix, shader);
+
+			Renderer::Submit(meshes[i].GetVertexArray(), shader, transformMatrix);
 			if (meshes[i].GetIndicesSize() > 0)
 				glDrawElements(GL_TRIANGLES, meshes[i].GetIndicesSize() / sizeof(unsigned int), GL_UNSIGNED_INT, 0);
 			else
@@ -107,11 +141,12 @@ namespace BlackPearl {
 		GE_ASSERT(obj->HasComponent<PointLight>(), "obj has no pointlight component!");
 		glm::mat4 transformMatrix = obj->GetComponent<Transform>()->GetTransformMatrix();
 		std::vector<Mesh>& meshes = obj->GetComponent<MeshRenderer>()->GetMeshes();
-	
+
 
 		for (int i = 0; i < meshes.size(); i++) {
-			PrepareShaderParameters(meshes[i], transformMatrix, true);
-			Renderer::Submit(meshes[i].GetVertexArray(), meshes[i].GetMaterial()->GetShader(), transformMatrix);
+			std::shared_ptr<Shader> shader = meshes[i].GetMaterial()->GetShader();
+			PrepareShaderParameters(meshes[i], transformMatrix, shader, true);
+			Renderer::Submit(meshes[i].GetVertexArray(), shader, transformMatrix);
 			if (meshes[i].GetIndicesSize() > 0)
 				glDrawElements(GL_TRIANGLES, meshes[i].GetIndicesSize() / sizeof(unsigned int), GL_UNSIGNED_INT, 0);
 			else
@@ -127,17 +162,12 @@ namespace BlackPearl {
 				DrawPointLight(lightObj);
 		}
 	}
-	void BasicRenderer::PrepareShaderParameters(Mesh &mesh, glm::mat4 transformMatrix, bool isLight)
+	void BasicRenderer::PrepareShaderParameters(Mesh &mesh, glm::mat4 transformMatrix, std::shared_ptr<Shader> shader, bool isLight)
 	{
-		PrepareBasicShaderParameters(mesh, transformMatrix, isLight);
+		PrepareBasicShaderParameters(mesh, transformMatrix, shader, isLight);
 	}
-	void BasicRenderer::PrepareBasicShaderParameters(Mesh &mesh, glm::mat4 transformMatrix, bool isLight)
+	void BasicRenderer::PrepareBasicShaderParameters(Mesh &mesh, glm::mat4 transformMatrix, std::shared_ptr<Shader> shader, bool isLight)
 	{
-
-		std::shared_ptr<Shader> shader = mesh.GetMaterial()->GetShader();
-		//shader->Bind();
-		//TODO::
-		
 
 		std::shared_ptr<Material> material = mesh.GetMaterial();
 		std::shared_ptr<Material::TextureMaps> textures = material->GetTextureMaps();
@@ -203,8 +233,15 @@ namespace BlackPearl {
 		shader->SetUniform1i("u_Material.isTextureSample", material->GetProps().isTextureSample);
 
 		shader->SetExtraUniform();
-		if (!isLight)
+		if (!isLight) {
+			shader->SetUniform1i("u_Settings.shadows", 1);
+
 			shader->SetLightUniform(Renderer::GetSceneData()->LightSources);
+		}
+		else {
+			shader->SetUniform1i("u_Settings.shadows", 0);
+
+		}
 	}
 
 }

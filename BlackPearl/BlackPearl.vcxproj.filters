@@ -1386,6 +1386,8 @@
     <ClInclude Include="vendor\stb\stb_image.h">
       <Filter>vendor\stb</Filter>
     </ClInclude>
+    <ClInclude Include="src\BlackPearl\Renderer\MasterRenderer\PBRRenderer.h" />
+    <ClInclude Include="src\BlackPearl\Component\MeshFilterComponent\SphereMeshFilter.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\BlackPearl\Application.cpp">
@@ -1548,5 +1550,7 @@
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="src\BlackPearl\Config.cpp" />
+    <ClCompile Include="src\BlackPearl\Renderer\MasterRenderer\PBRRenderer.cpp" />
+    <ClCompile Include="src\BlackPearl\Component\MeshFilterComponent\SphereMeshFilter.cpp" />
   </ItemGroup>
 </Project>
