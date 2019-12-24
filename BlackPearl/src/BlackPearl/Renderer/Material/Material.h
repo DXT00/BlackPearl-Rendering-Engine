@@ -21,9 +21,9 @@ namespace BlackPearl {
 			std::shared_ptr<Texture> heightTextureMap;
 			std::shared_ptr<Texture> cubeTextureMap;
 			std::shared_ptr<Texture> depthTextureMap;
-			std::shared_ptr<Texture> texture3D;
-			std::shared_ptr<Texture> textureBack;
-			std::shared_ptr<Texture> textureFront;
+			std::shared_ptr<Texture> aoMap;
+			std::shared_ptr<Texture> roughnessMap;
+			std::shared_ptr<Texture> mentallicMap;
 
 			TextureMaps() {
 				diffuseTextureMap
@@ -33,6 +33,9 @@ namespace BlackPearl {
 				= heightTextureMap
 				= cubeTextureMap
 				= depthTextureMap
+				= aoMap
+				= roughnessMap
+				= mentallicMap
 				= nullptr;
 			}
 		};

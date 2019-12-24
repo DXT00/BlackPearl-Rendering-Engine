@@ -18,9 +18,14 @@ namespace BlackPearl {
 			HeightMap,
 			CubeMap,
 			DepthMap,
-			texture3D,
+			AoMap,
+			RoughnessMap,
+			MentallicMap
+
+
+		/*	texture3D,
 			textureFront,
-			textureBack
+			textureBack*/
 		};
 		Texture(Type type, const std::string &image);
 		//Ã»ÓÐImageµÄtexture

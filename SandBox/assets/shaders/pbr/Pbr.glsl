@@ -41,11 +41,15 @@ uniform struct Material{
 	vec3 diffuseColor;
 	vec3 specularColor;
 	vec3 emissionColor;
-	sampler2D diffuse;
+	sampler2D diffuse; //or call it albedo
 	sampler2D specular;
 	sampler2D emission;
 	sampler2D normal;
 	sampler2D height;
+	sampler2D ao;
+	sampler2D roughness;
+	sampler2D mentallic;
+
 
 	float shininess;
 	bool isBlinnLight;
@@ -107,8 +111,8 @@ vec3 FrehNel(float NdotV,vec3 F0){
 
 vec3 BRDF(vec3 Kd,vec3 Ks,vec3 specular){
 	
-	vec3 fLambert = u_Material.diffuseColor/PI;
-	return Kd * fLambert+ Ks * specular;
+	vec3 fLambert = u_Material.diffuseColor/PI;//diffuseColor 相当于 albedo
+	return Kd * fLambert+  specular;//specular 中已经有Ks(Ks=F)了，不需要再乘以Ks *
 }
 vec3 LightRadiance(vec3 fragPos,PointLight light){
 	float attenuation = calculateAttenuation(light,fragPos);
@@ -123,7 +127,7 @@ void main(){
 	vec3 V = normalize(u_CameraViewPos-v_FragPos);
 
 	vec3 F0 = vec3(0.04);
-	F0 = mix(F0,u_albedo,u_metallic);
+	F0 = mix(F0,u_Material.diffuseColor,u_metallic);
 
 	//reflection equation
 	vec3 Lo = vec3(0.0);
@@ -149,7 +153,7 @@ void main(){
 		float NdotL = max(dot(N,L),0.0);
 		Lo+= BRDF(Kd,Ks,specular)*LightRadiance(v_FragPos,u_PointLights[i])*NdotL;
 	}
-	vec3 ambient = vec3(0.03) * u_albedo * u_ao;
+	vec3 ambient = vec3(0.03) * u_Material.diffuseColor * u_ao;
     vec3 color = ambient + Lo;
 
     color = color / (color + vec3(1.0));

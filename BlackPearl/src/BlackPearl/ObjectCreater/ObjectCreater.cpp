@@ -81,7 +81,7 @@ namespace BlackPearl {
 		if (texturePath != "")
 			texture->diffuseTextureMap.reset(DBG_NEW Texture(Texture::Type::DiffuseMap, texturePath));
 
-		material.reset(DBG_NEW Material(shaderPath, texture, { 1.0,0.2,0.2 }, { 1.0,0.2,0.2 }, { 1.0,0.2,0.2 }, {}));
+		material.reset(DBG_NEW Material(shaderPath, texture, { 1.0,0.0,0.0 }, { 1.0,0.0,0.0 }, { 1.0,0.0,0.0 }, {}));
 		VertexBufferLayout layout = {
 		{ElementDataType::Float3,"aPos",false},
 		{ElementDataType::Float3,"aNormal",false},

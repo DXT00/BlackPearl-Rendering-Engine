@@ -294,6 +294,19 @@ namespace BlackPearl {
 			buttonName += "depthMap";
 			inputTextName += "depthMap";
 			break;
+		case Texture::Type::AoMap:
+			buttonName += "aoMap";
+			inputTextName += "aoMap";
+			break;
+		case Texture::Type::RoughnessMap:
+			buttonName += "roughnessMap";
+			inputTextName += "roughnessMap";
+			break;
+		case Texture::Type::MentallicMap:
+			buttonName += "mentallicMap";
+			inputTextName += "mentallicMap";
+			break;
+		
 		}
 			
 	
@@ -413,6 +426,20 @@ namespace BlackPearl {
 				if (imGuiMeshes[i].GetMaterial()->GetTextureMaps()->depthTextureMap != nullptr)
 					imguiDepthTextures[i] = imGuiMeshes[i].GetMaterial()->GetTextureMaps()->depthTextureMap->GetPath();
 				ShowTextures(imguiDepthTextures[i], i, itemIndexTexture, Texture::DepthMap, type, imGuiMeshes.size() * 2);
+
+				if (imGuiMeshes[i].GetMaterial()->GetTextureMaps()->aoMap != nullptr)
+					imguiDepthTextures[i] = imGuiMeshes[i].GetMaterial()->GetTextureMaps()->aoMap->GetPath();
+				ShowTextures(imguiDepthTextures[i], i, itemIndexTexture, Texture::AoMap, type, imGuiMeshes.size() * 2);
+
+
+				if (imGuiMeshes[i].GetMaterial()->GetTextureMaps()->roughnessMap != nullptr)
+					imguiDepthTextures[i] = imGuiMeshes[i].GetMaterial()->GetTextureMaps()->roughnessMap->GetPath();
+				ShowTextures(imguiDepthTextures[i], i, itemIndexTexture, Texture::RoughnessMap, type, imGuiMeshes.size() * 2);
+
+
+				if (imGuiMeshes[i].GetMaterial()->GetTextureMaps()->mentallicMap != nullptr)
+					imguiDepthTextures[i] = imGuiMeshes[i].GetMaterial()->GetTextureMaps()->mentallicMap->GetPath();
+				ShowTextures(imguiDepthTextures[i], i, itemIndexTexture, Texture::MentallicMap, type, imGuiMeshes.size() * 2);
 			}
 			if (itemIndexTexture != -1) {
 				if (m_fileDialog.HasSelected()) {
@@ -438,6 +465,18 @@ namespace BlackPearl {
 						break;
 					case Texture::DepthMap:
 						imGuiMeshes[itemIndexTexture].GetMaterial()->SetTexture(Texture::DepthMap,  m_fileDialog.GetSelected().string());
+						break;
+
+					case Texture::AoMap:
+						imGuiMeshes[itemIndexTexture].GetMaterial()->SetTexture(Texture::AoMap, m_fileDialog.GetSelected().string());
+						break;
+
+					case Texture::RoughnessMap:
+						imGuiMeshes[itemIndexTexture].GetMaterial()->SetTexture(Texture::RoughnessMap, m_fileDialog.GetSelected().string());
+						break;
+
+					case Texture::MentallicMap:
+						imGuiMeshes[itemIndexTexture].GetMaterial()->SetTexture(Texture::MentallicMap, m_fileDialog.GetSelected().string());
 						break;
 					defalut:
 						GE_CORE_ERROR("Unknown texture type");

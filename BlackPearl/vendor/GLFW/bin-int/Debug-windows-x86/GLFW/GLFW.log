@@ -1,4 +1,4 @@
-﻿生成启动时间为 2019/12/15 19:23:05。
+﻿生成启动时间为 2019/12/23 19:37:28。
      1>项目“F:\OpenGL\LearnOpenGL\BlackPearl\vendor\GLFW\GLFW.vcxproj”在节点 3 上(Rebuild 个目标)。
      1>_PrepareForClean:
          正在删除文件“bin-int\Debug-windows-x86\GLFW\GLFW.tlog\GLFW.lastbuildstate”。
@@ -50,4 +50,4 @@
     0 个警告
     0 个错误
 
-已用时间 00:00:15.45
+已用时间 00:00:14.25

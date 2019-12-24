@@ -147,6 +147,9 @@
       <Project>{B6CF16AE-A287-58FB-0B8F-3157F765F3EB}</Project>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="assets\shaders\pbr\PbrTexture.glsl" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

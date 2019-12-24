@@ -219,6 +219,27 @@ namespace BlackPearl {
 				textures->depthTextureMap->Bind();
 				k++;
 			}
+			if (textures->aoMap != nullptr) {
+				glActiveTexture(GL_TEXTURE0 + k);
+				shader->SetUniform1i("u_Material.ao", k);
+
+				textures->aoMap->Bind();
+				k++;
+			}
+			if (textures->roughnessMap != nullptr) {
+				glActiveTexture(GL_TEXTURE0 + k);
+				shader->SetUniform1i("u_Material.roughness", k);
+
+				textures->roughnessMap->Bind();
+				k++;
+			}
+			if (textures->mentallicMap != nullptr) {
+				glActiveTexture(GL_TEXTURE0 + k);
+				shader->SetUniform1i("u_Material.mentallic", k);
+
+				textures->mentallicMap->Bind();
+				k++;
+			}
 		}
 		MaterialColor::Color materialColor = mesh.GetMaterial()->GetMaterialColor().Get();
 

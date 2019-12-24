@@ -29,4 +29,7 @@
   <ItemGroup>
     <ClCompile Include="src\SandBox.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="assets\shaders\pbr\PbrTexture.glsl" />
+  </ItemGroup>
 </Project>

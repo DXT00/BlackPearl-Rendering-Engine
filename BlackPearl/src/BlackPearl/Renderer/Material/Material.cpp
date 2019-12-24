@@ -83,6 +83,16 @@ namespace BlackPearl {
 		case Texture::Type::DepthMap:
 			m_TextureMaps->depthTextureMap = texture;
 			break;
+
+		case Texture::Type::AoMap:
+			m_TextureMaps->aoMap = texture;
+			break;
+		case Texture::Type::RoughnessMap:
+			m_TextureMaps->roughnessMap = texture;
+			break;
+		case Texture::Type::MentallicMap:
+			m_TextureMaps->mentallicMap = texture;
+			break;
 		default:
 			break;
 		}

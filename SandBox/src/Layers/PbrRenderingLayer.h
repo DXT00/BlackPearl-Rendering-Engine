@@ -25,7 +25,25 @@ public:
 		m_PBRRenderer = DBG_NEW BlackPearl::PBRRenderer();
 		
 		m_SphereObj->GetComponent<BlackPearl::MeshRenderer>()->SetShaders(m_PBRRenderer->GetShader());
-		
+		//std::shared_ptr<BlackPearl::Texture> albedoTexture(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::DiffuseMap, "assets/texture/pbr/rustSphere/rustediron2_basecolor.png"));
+		//std::shared_ptr<BlackPearl::Texture> aoTexture(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::AoMap, "assets/texture/pbr/rustSphere/rustediron2_ao.png"));
+		//std::shared_ptr<BlackPearl::Texture> roughnessTexture(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::RoughnessMap, "assets/texture/pbr/rustSphere/rustediron2_roughness.png"));
+		//std::shared_ptr<BlackPearl::Texture> mentallicTexture(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::MentallicMap, "assets/texture/pbr/rustSphere/rustediron2_metallic.png"));
+		//std::shared_ptr<BlackPearl::Texture> normalTexture(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::NormalMap, "assets/texture/pbr/rustSphere/rustediron2_normal.png"));
+
+		std::shared_ptr<BlackPearl::Texture> albedoTexture(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::DiffuseMap, "assets/texture/pbr/cobblestone/cobblestone-curved_2_albedo.png"));
+		std::shared_ptr<BlackPearl::Texture> aoTexture(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::AoMap, "assets/texture/pbr/cobblestone/cobblestone-curved_2_ao.png"));
+		std::shared_ptr<BlackPearl::Texture> roughnessTexture(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::RoughnessMap, "assets/texture/pbr/cobblestone/cobblestone-curved_2_roughness.png"));
+		std::shared_ptr<BlackPearl::Texture> mentallicTexture(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::MentallicMap, "assets/texture/pbr/cobblestone/cobblestone-curved_2_metallic.png"));
+		std::shared_ptr<BlackPearl::Texture> normalTexture(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::NormalMap, "assets/texture/pbr/cobblestone/cobblestone-curved_2_normal-dx.png"));
+
+		m_SphereObj->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(normalTexture);
+
+		m_SphereObj->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(albedoTexture);
+		m_SphereObj->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(aoTexture);
+		m_SphereObj->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(roughnessTexture);
+		m_SphereObj->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(mentallicTexture);
+
 		BlackPearl::Renderer::Init();
 	}
 
@@ -43,9 +61,8 @@ public:
 		BlackPearl::RenderCommand::SetClearColor(m_BackgroundColor);
 		BlackPearl::Renderer::BeginScene(*(m_CameraObj->GetComponent<BlackPearl::PerspectiveCamera>()), *GetLightSources());
 
-	//	m_VoxelConeTracingRenderer->Render(m_ObjectsList, GetLightSources(), BlackPearl::Configuration::WindowWidth, BlackPearl::Configuration::WindowHeight, m_CurrentRenderingMode);
-		m_PBRRenderer->GetShader()->SetUniformVec3f("u_albedo", { 0.5f, 0.0f, 0.0f });
-		m_PBRRenderer->GetShader()->SetUniform1f("u_ao", 1.0f);
+		//m_PBRRenderer->GetShader()->SetUniformVec3f("u_albedo", { 0.5f, 0.0f, 0.0f });
+	//	m_PBRRenderer->GetShader()->SetUniform1f("u_ao", 1.0f);
 
 		for (int row = 0; row < m_Rows; row++) {
 			for (int col = 0; col < m_Colums; col++) {
@@ -54,8 +71,8 @@ public:
 					(col - (m_Colums / 2)) * m_Spacing,
 					(row - (m_Rows / 2)) * m_Spacing,
 					0.0f });
-				m_PBRRenderer->GetShader()->SetUniform1f("u_metallic", 2.0*(float)row / (float)m_Rows);
-				m_PBRRenderer->GetShader()->SetUniform1f("u_roughness", glm::clamp((float)col / (float)m_Colums, 0.05f, 1.0f));
+				//m_PBRRenderer->GetShader()->SetUniform1f("u_metallic", 2.0*(float)row / (float)m_Rows);
+				//m_PBRRenderer->GetShader()->SetUniform1f("u_roughness", glm::clamp((float)col / (float)m_Colums, 0.05f, 1.0f));
 				m_PBRRenderer->Render(m_SphereObj);
 			}
 		}
@@ -135,9 +152,9 @@ private:
 	BlackPearl::Object* m_CubeObj;
 	BlackPearl::Object* m_SphereObj;
 
-	int m_Rows = 7;
-	int m_Colums = 7;
-	float m_Spacing = 2.5;
+	int m_Rows = 4;
+	int m_Colums = 4;
+	float m_Spacing = 1.5;
 
 	//Camera
 	glm::vec3 m_CameraPosition = { 0.0f,0.0f,0.0f };
@@ -152,8 +169,7 @@ private:
 	float m_CameraMoveSpeed = 3.0f;
 	float m_CameraRotateSpeed = 3.0f;
 
-	//BackGround Color
-	glm::vec4 m_BackgroundColor = { 0.0f,0.0f,0.0f,0.0f };
+
 
 	//Renderer
 	BlackPearl::PBRRenderer* m_PBRRenderer;
