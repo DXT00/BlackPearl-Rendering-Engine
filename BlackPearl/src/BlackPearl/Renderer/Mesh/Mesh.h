@@ -66,7 +66,7 @@ namespace BlackPearl {
 		void SetTexture(const std::shared_ptr<Texture>& texture) { m_Material->SetTexture(texture); }
 		void SetShader(const std::string& image) { m_Material->SetShader(image);};
 		void SetShader(const std::shared_ptr<Shader> &shader) { m_Material->SetShader(shader);};
-
+		void SetMaterialColor(MaterialColor::Color color) { m_Material->SetMaterialColor(color); }
 
 
 	private:

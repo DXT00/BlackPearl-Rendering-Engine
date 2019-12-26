@@ -122,8 +122,20 @@ namespace BlackPearl {
 				ImGui::DragFloat("far_plane", &BlackPearl::ShadowMapRenderer::s_FarPlane, 0.5f, -50.0f, 100.0f, "%.3f ");*/
 
 		if (currentObj != nullptr) {
+			
+		
+			if (currentObj->HasComponent< BlackPearl::Transform>()) {
+				ShowTransform(currentObj->GetComponent<BlackPearl::Transform>());
 
-			std::unordered_map<BlackPearl::BaseComponent::Family, std::shared_ptr<BlackPearl::BaseComponent>> componentList = currentObj->GetComponentList();
+			}	
+			if (currentObj->HasComponent< BlackPearl::MeshRenderer>()) {
+				ShowMeshRenderer(currentObj->GetComponent<BlackPearl::MeshRenderer>());
+
+			}
+			if (currentObj->HasComponent < BlackPearl::PointLight>()) {
+				ShowPointLight(currentObj->GetComponent<BlackPearl::PointLight>());
+			}
+		/*	std::unordered_map<BlackPearl::BaseComponent::Family, std::shared_ptr<BlackPearl::BaseComponent>> componentList = currentObj->GetComponentList();
 
 			for (auto pair : componentList) {
 				auto component = pair.second;
@@ -143,7 +155,8 @@ namespace BlackPearl {
 					case BlackPearl::BaseComponent::Type::Light: {
 
 						std::shared_ptr<BlackPearl::Light> comp = std::dynamic_pointer_cast<BlackPearl::Light>(component);
-						ShowLight(comp);
+						if (comp->GetType() == BlackPearl::LightType::PointLight)
+							ShowPointLight(comp);
 						break;
 					}
 					default:
@@ -152,7 +165,7 @@ namespace BlackPearl {
 
 				}
 
-			}
+			}*/
 		}
 
 		ImGui::End();
@@ -346,7 +359,7 @@ namespace BlackPearl {
 	{
 	}
 
-	void Layer::ShowMeshRenderer(std::shared_ptr<BlackPearl::MeshRenderer> comp)
+	void Layer::ShowMeshRenderer(MeshRenderer* comp)
 	{
 		
 
@@ -523,7 +536,7 @@ namespace BlackPearl {
 
 
 
-	void Layer::ShowTransform(std::shared_ptr<BlackPearl::Transform> comp)
+	void Layer::ShowTransform(Transform* comp)
 	{
 		ImGui::Text("Transform");
 
@@ -541,11 +554,11 @@ namespace BlackPearl {
 
 	}
 
-	void Layer::ShowLight(std::shared_ptr<BlackPearl::Light> comp)
+	void Layer::ShowPointLight(PointLight *pointLight)
 	{
-		if (comp->GetType() == LightType::PointLight) {
-			auto pointLight = std::dynamic_pointer_cast<PointLight>(comp);
-			auto &color = pointLight->GetMeshes().GetMaterial()->GetMaterialColor().Get();
+		//if (comp->GetType() == LightType::PointLight) {
+			//auto pointLight = std::dynamic_pointer_cast<PointLight>(comp);
+			auto color = pointLight->GetMeshes().GetMaterial()->GetMaterialColor().Get();
 			static  int attenuation = (int)pointLight->GetAttenuation().maxDistance;
 			ImGui::ColorEdit3("ambient Color", glm::value_ptr(color.ambientColor));
 			ImGui::ColorEdit3("diffuse Color", glm::value_ptr(color.diffuseColor));
@@ -554,15 +567,16 @@ namespace BlackPearl {
 			ImGui::DragInt("attenuation", &attenuation,0.5f,7,3250);
 
 			pointLight->SetAttenuation(attenuation);
+			
 			pointLight->UpdateMesh({ color.ambientColor ,color.diffuseColor,color.specularColor,color.emissionColor });
-		}
-		else if (comp->GetType() == LightType::ParallelLight) {
+	//	}
+	/*	else if (comp->GetType() == LightType::ParallelLight) {
 
 		}
 		else if (comp->GetType() == LightType::SpotLight) {
 
 
-		}
+		}*/
 	}
 
 

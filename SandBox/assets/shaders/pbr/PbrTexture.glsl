@@ -122,6 +122,7 @@ vec3 LightRadiance(vec3 fragPos,PointLight light){
 	return radiance;
 }
 
+//TODO::·¨ÏßÌùÍ¼
 vec3 getNormalFromMap()
 {
     vec3 tangentNormal =  2.0* texture(u_Material.normal, v_TexCoord).xyz- vec3(1.0);

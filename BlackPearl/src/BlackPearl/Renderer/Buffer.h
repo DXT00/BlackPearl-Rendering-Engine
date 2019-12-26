@@ -160,6 +160,7 @@ namespace BlackPearl {
 			ColorTexture,
 			DepthTexture,
 			CubeMapDepthTexture,
+			CubeMapColorTexture,
 			RenderBuffer
 
 		};
@@ -167,6 +168,8 @@ namespace BlackPearl {
 		void AttachColorTexture(Texture::Type textureType);
 		void AttachDepthTexture();
 		void AttachCubeMapDepthTexture();//use for point light shadow map
+		void AttachCubeMapColorTexture();//use for point light shadow map
+
 		void AttachRenderBuffer();
 		void DisableColorBuffer();
 		void Bind();
@@ -180,6 +183,8 @@ namespace BlackPearl {
 		std::shared_ptr<Texture> GetColorTexture() { return m_TextureColorBuffer; }
 		std::shared_ptr<BlackPearl::DepthTexture> GetDepthTexture() { return m_TextureDepthBuffer; }
 		std::shared_ptr<CubeMapTexture> GetCubeMapDepthTexture() { return m_CubeMapDepthBuffer; }
+		std::shared_ptr<CubeMapTexture> GetCubeMapColorTexture() { return m_CubeMapColorBuffer; }
+
 		unsigned int GetWidth()const { return m_Width; }
 		unsigned int GetHeight()const { return m_Height; }
 
@@ -191,6 +196,8 @@ namespace BlackPearl {
 		std::shared_ptr<Texture> m_TextureColorBuffer;
 		std::shared_ptr<BlackPearl::DepthTexture> m_TextureDepthBuffer;
 		std::shared_ptr<CubeMapTexture> m_CubeMapDepthBuffer;
+		std::shared_ptr<CubeMapTexture> m_CubeMapColorBuffer;
+
 		unsigned int m_RenderBufferID;
 
 

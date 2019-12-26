@@ -88,6 +88,8 @@ namespace BlackPearl {
 				AttachDepthTexture();
 			else if (attach == Attachment::CubeMapDepthTexture)
 				AttachCubeMapDepthTexture();
+			else if (attach == Attachment::CubeMapColorTexture)
+				AttachCubeMapColorTexture();
 			else if (attach == Attachment::RenderBuffer)
 				AttachRenderBuffer();
 
@@ -122,11 +124,16 @@ namespace BlackPearl {
 
 	void FrameBuffer::AttachCubeMapDepthTexture()
 	{
-		m_CubeMapDepthBuffer.reset(DBG_NEW CubeMapTexture(Texture::Type::CubeMap, m_Width, m_Height));
+		m_CubeMapDepthBuffer.reset(DBG_NEW CubeMapTexture(Texture::Type::CubeMap, m_Width, m_Height, GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT, GL_FLOAT));
 		Bind();
 		glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, m_CubeMapDepthBuffer->GetRendererID(), 0);
 	}
 
+	void FrameBuffer::AttachCubeMapColorTexture() {
+		m_CubeMapColorBuffer.reset(DBG_NEW CubeMapTexture(Texture::Type::CubeMap, m_Width, m_Height, GL_RGB16F, GL_RGB, GL_FLOAT));
+		Bind();
+
+	}
 	void FrameBuffer::AttachRenderBuffer()
 	{
 		//  create a renderbuffer object for depth and stencil attachment (we won't be sampling these)

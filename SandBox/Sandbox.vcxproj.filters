@@ -25,11 +25,9 @@
       <Filter>Layers</Filter>
     </ClInclude>
     <ClInclude Include="src\Layers\PbrRenderingLayer.h" />
+    <ClInclude Include="src\Layers\IBLRenderingLayer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\SandBox.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="assets\shaders\pbr\PbrTexture.glsl" />
   </ItemGroup>
 </Project>

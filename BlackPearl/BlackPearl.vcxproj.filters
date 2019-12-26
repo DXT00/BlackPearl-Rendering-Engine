@@ -1388,6 +1388,8 @@
     </ClInclude>
     <ClInclude Include="src\BlackPearl\Renderer\MasterRenderer\PBRRenderer.h" />
     <ClInclude Include="src\BlackPearl\Component\MeshFilterComponent\SphereMeshFilter.h" />
+    <ClInclude Include="src\BlackPearl\Renderer\Material\HDRTexture.h" />
+    <ClInclude Include="src\BlackPearl\Renderer\MasterRenderer\IBLRenderer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\BlackPearl\Application.cpp">
@@ -1552,5 +1554,7 @@
     <ClCompile Include="src\BlackPearl\Config.cpp" />
     <ClCompile Include="src\BlackPearl\Renderer\MasterRenderer\PBRRenderer.cpp" />
     <ClCompile Include="src\BlackPearl\Component\MeshFilterComponent\SphereMeshFilter.cpp" />
+    <ClCompile Include="src\BlackPearl\Renderer\Material\HDRTexture.cpp" />
+    <ClCompile Include="src\BlackPearl\Renderer\MasterRenderer\IBLRenderer.cpp" />
   </ItemGroup>
 </Project>

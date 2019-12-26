@@ -1,5 +1,5 @@
 #pragma once
-#pragma once
+
 #include <BlackPeral.h>
 #include "glm/glm.hpp"
 #include "glm/ext/matrix_transform.hpp"
@@ -7,6 +7,7 @@
 #include "imgui/imfilebrowser.h"
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include "BlackPearl/Component/LightComponent/Light.h"
 
 class ShadowMapPointLightLayer :public BlackPearl::Layer {
 
@@ -300,35 +301,51 @@ public:
 
 		if (currentObj != nullptr) {
 
-			std::unordered_map<BlackPearl::BaseComponent::Family, std::shared_ptr<BlackPearl::BaseComponent>> componentList = currentObj->GetComponentList();
+			//std::unordered_map<BlackPearl::BaseComponent::Family, std::shared_ptr<BlackPearl::BaseComponent>> componentList = currentObj->GetComponentList();
 
-			for (auto pair : componentList) {
-				auto component = pair.second;
-				if (component != nullptr) {
+			//for (auto pair : componentList) {
+			//	auto component = pair.second;
+			//	if (component != nullptr) {
 
-					switch (component->GetType()) {
-					case BlackPearl::BaseComponent::Type::MeshRenderer: {
-						std::shared_ptr<BlackPearl::MeshRenderer> comp = std::dynamic_pointer_cast<BlackPearl::MeshRenderer>(component);
-						ShowMeshRenderer(comp);
-						break;
-					}
-					case BlackPearl::BaseComponent::Type::Transform: {
-						std::shared_ptr<BlackPearl::Transform> comp = std::dynamic_pointer_cast<BlackPearl::Transform>(component);
-						ShowTransform(comp);
-						break;
-					}
-					case BlackPearl::BaseComponent::Type::Light: {
+			//		switch (component->GetType()) {
+			//		case BlackPearl::BaseComponent::Type::MeshRenderer: {
+			//			std::shared_ptr<BlackPearl::MeshRenderer> comp = std::dynamic_pointer_cast<BlackPearl::MeshRenderer>(component);
+			//			ShowMeshRenderer(comp);
+			//			break;
+			//		}
+			//		case BlackPearl::BaseComponent::Type::Transform: {
+			//			std::shared_ptr<BlackPearl::Transform> comp = std::dynamic_pointer_cast<BlackPearl::Transform>(component);
+			//			ShowTransform(comp);
+			//			break;
+			//		}
+			//		case BlackPearl::BaseComponent::Type::Light: {
 
-						std::shared_ptr<BlackPearl::Light> comp = std::dynamic_pointer_cast<BlackPearl::Light>(component);
-						ShowLight(comp);
-						break;
-					}
-					default:
-						break;
-					}
 
-				}
+			//			std::shared_ptr<BlackPearl::Light> comp = std::dynamic_pointer_cast<BlackPearl::Light>(component);
+			//			if (comp->GetType() == BlackPearl::LightType::PointLight) {
+			//			//	std::shared_ptr<BlackPearl::PointLight> pointlight = std::dynamic_pointer_cast<BlackPearl::PointLight>(comp);
+			//				ShowPointLight(comp);
 
+			//			}
+			//			break;
+			//		}
+			//		default:
+			//			break;
+			//		}
+
+			//	}
+
+			//}
+			if (currentObj->HasComponent< BlackPearl::Transform>()) {
+				ShowTransform(currentObj->GetComponent<BlackPearl::Transform>());
+
+			}
+			if (currentObj->HasComponent< BlackPearl::MeshRenderer>()) {
+				ShowMeshRenderer(currentObj->GetComponent<BlackPearl::MeshRenderer>());
+
+			}
+			if (currentObj->HasComponent < BlackPearl::PointLight>()) {
+				ShowPointLight(currentObj->GetComponent<BlackPearl::PointLight>());
 			}
 		}
 

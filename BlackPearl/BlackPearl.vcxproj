@@ -143,6 +143,8 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\BlackPearl\Renderer\MasterRenderer\IBLRenderer.h" />
+    <ClInclude Include="src\BlackPearl\Renderer\Material\HDRTexture.h" />
     <ClInclude Include="src\BlackPearl\Component\MeshFilterComponent\SphereMeshFilter.h" />
     <ClInclude Include="src\BlackPearl\Application.h" />
     <ClInclude Include="src\BlackPearl\Component\BaseComponent.h" />
@@ -576,6 +578,8 @@
     <ClInclude Include="vendor\stb\stb_image.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\BlackPearl\Renderer\MasterRenderer\IBLRenderer.cpp" />
+    <ClCompile Include="src\BlackPearl\Renderer\Material\HDRTexture.cpp" />
     <ClCompile Include="src\BlackPearl\Component\MeshFilterComponent\SphereMeshFilter.cpp" />
     <ClCompile Include="src\BlackPearl\Application.cpp" />
     <ClCompile Include="src\BlackPearl\Component\BaseComponent.cpp" />

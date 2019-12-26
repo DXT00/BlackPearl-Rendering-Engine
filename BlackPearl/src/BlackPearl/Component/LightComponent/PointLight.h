@@ -73,8 +73,9 @@ namespace BlackPearl {
 
 		void UpdateMesh(Props props) {
 			SetProps(props);
-			std::shared_ptr<Material> lightMaterial = m_Mesh.GetMaterial();
-			lightMaterial->SetMaterialColor({ m_LightProp.ambient,m_LightProp.diffuse,m_LightProp.specular ,m_LightProp .emission});
+			m_Mesh.SetMaterialColor({ props.ambient,props.diffuse,props.specular ,props.emission });
+	/*		std::shared_ptr<Material> lightMaterial = m_Mesh.GetMaterial();
+			lightMaterial->SetMaterialColor({ props.ambient,props.diffuse,props.specular ,props.emission});*/
 
 
 		}

@@ -72,7 +72,7 @@ uniform struct Material{
 	sampler2D emission;
 	sampler2D normal;
 	sampler2D height;
-
+	
 	float shininess;
 	bool isBlinnLight;
 	int  isTextureSample;//判断是否使用texture,或者只有color

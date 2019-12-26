@@ -5,6 +5,7 @@
 #include "Object/Object.h"
 #include "ObjectManager/ObjectManager.h"
 #include "Component/LightComponent/Light.h"
+#include "Component/LightComponent/PointLight.h"
 #include "Component/LightComponent/LightSources.h"
 #include "Timestep/Timestep.h"
 #include "Component/TransformComponent/Transform.h"
@@ -51,9 +52,9 @@ namespace BlackPearl {
 		virtual Object* CreateSkyBox(const std::vector<std::string>& textureFaces);
 		virtual Object* CreateQuad(const std::string& shaderPath = "assets/shaders/Quad.glsl", const std::string& texturePath = "assets/texture/1.jpg");
 
-		void ShowMeshRenderer(std::shared_ptr<BlackPearl::MeshRenderer> comp);
-		void ShowTransform(std::shared_ptr<BlackPearl::Transform> comp);
-		void ShowLight(std::shared_ptr<BlackPearl::Light>comp);
+		void ShowMeshRenderer(MeshRenderer *comp);
+		void ShowTransform(Transform *comp);
+		void ShowPointLight(PointLight *pointLight);
 
 		void ShowShader( std::string imguiShaders, int meshIndex, static int &itemIndex, int offset);
 		void ShowTextures( std::string imguiShaders, int meshIndex, static  int &itemIndex, Texture::Type textureType, static Texture::Type &type,int offset);

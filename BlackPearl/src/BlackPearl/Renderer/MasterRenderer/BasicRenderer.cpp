@@ -117,7 +117,7 @@ namespace BlackPearl {
 			return;
 
 		glm::mat4 transformMatrix = obj->GetComponent<Transform>()->GetTransformMatrix();
-		std::vector<Mesh>& meshes = obj->GetComponent<MeshRenderer>()->GetMeshes();
+		std::vector<Mesh> meshes = obj->GetComponent<MeshRenderer>()->GetMeshes();
 
 		//RenderConfigure(obj);
 
@@ -140,7 +140,7 @@ namespace BlackPearl {
 	{
 		GE_ASSERT(obj->HasComponent<PointLight>(), "obj has no pointlight component!");
 		glm::mat4 transformMatrix = obj->GetComponent<Transform>()->GetTransformMatrix();
-		std::vector<Mesh>& meshes = obj->GetComponent<MeshRenderer>()->GetMeshes();
+		std::vector<Mesh> meshes = obj->GetComponent<MeshRenderer>()->GetMeshes();
 
 
 		for (int i = 0; i < meshes.size(); i++) {
@@ -171,6 +171,8 @@ namespace BlackPearl {
 
 		std::shared_ptr<Material> material = mesh.GetMaterial();
 		std::shared_ptr<Material::TextureMaps> textures = material->GetTextureMaps();
+
+		//k从4开始，0，1，2，3号texture用于自定义texture
 		unsigned int k = 4;
 		if (textures != nullptr) {
 			if (textures->diffuseTextureMap != nullptr) {
@@ -209,6 +211,7 @@ namespace BlackPearl {
 			if (textures->cubeTextureMap != nullptr) {
 				glActiveTexture(GL_TEXTURE0 + k);
 				shader->SetUniform1i("u_Material.cube", k);
+				//shader->SetUniform1i("u_cubeMap", k);
 				textures->cubeTextureMap->Bind();
 				k++;
 			}

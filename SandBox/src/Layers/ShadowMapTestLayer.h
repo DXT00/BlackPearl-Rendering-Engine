@@ -234,8 +234,18 @@ public:
 		ImGui::DragFloat("ShadowDistance", &BlackPearl::ShadowBox::s_ShadowDistance, 0.5f, 0.0f, 120.0f, "%.3f "); 
 
 		if (currentObj != nullptr) {
+			if (currentObj->HasComponent< BlackPearl::Transform>()) {
+				ShowTransform(currentObj->GetComponent<BlackPearl::Transform>());
 
-			std::unordered_map<BlackPearl::BaseComponent::Family, std::shared_ptr<BlackPearl::BaseComponent>> componentList = currentObj->GetComponentList();
+			}
+			if (currentObj->HasComponent< BlackPearl::MeshRenderer>()) {
+				ShowMeshRenderer(currentObj->GetComponent<BlackPearl::MeshRenderer>());
+
+			}
+			if (currentObj->HasComponent < BlackPearl::PointLight>()) {
+				ShowPointLight(currentObj->GetComponent<BlackPearl::PointLight>());
+			}
+	/*		std::unordered_map<BlackPearl::BaseComponent::Family, std::shared_ptr<BlackPearl::BaseComponent>> componentList = currentObj->GetComponentList();
 
 			for (auto pair : componentList) {
 				auto component = pair.second;
@@ -254,7 +264,8 @@ public:
 					}
 					case BlackPearl::BaseComponent::Type::Light: {
 						std::shared_ptr<BlackPearl::Light> comp = std::dynamic_pointer_cast<BlackPearl::Light>(component);
-						ShowLight(comp);
+						if (comp->GetType() == BlackPearl::LightType::PointLight)
+							ShowPointLight(comp);
 						break;
 					}
 					default:
@@ -263,7 +274,7 @@ public:
 
 				}
 
-			}
+			}*/
 		}
 
 		ImGui::End();

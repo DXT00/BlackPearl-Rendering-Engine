@@ -125,7 +125,7 @@ namespace BlackPearl {
 		Transform *transformComponent = obj->GetComponent<Transform>();
 		std::shared_ptr<Material> material;
 		std::shared_ptr<Material::TextureMaps> texture(DBG_NEW Material::TextureMaps());
-		std::shared_ptr<Texture> cubeMapTexture(DBG_NEW CubeMapTexture(Texture::Type::CubeMap, textureFaces));
+		std::shared_ptr<Texture> cubeMapTexture(DBG_NEW CubeMapTexture(Texture::Type::CubeMap, textureFaces, GL_RGB, GL_RGB, GL_UNSIGNED_BYTE));
 		texture->cubeTextureMap = cubeMapTexture;
 		material.reset(DBG_NEW Material("assets/shaders/SkyBox.glsl", texture, {}, { 0.2,0.2,0.0 }, {}, {}));
 
