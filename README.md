@@ -1,96 +1,110 @@
-### IBL
-1.assimp 加载.hdr文件
+### IBL irradiance convolution
 
-2.修改CubeMapTexture API
+#### 1.Convolving the incident light of the hemispheres of each fragment  and generates IrradianceCubeMap according to BRDF
 
+irradianceConvolution.glsl  fragment shader
 ```
 
-CubeMapTexture(Type type, std::vector<std::string> faces, int internalFormat, int format, int dataType)
-	:Texture(type, faces) {
-	LoadCubeMap(faces,internalFormat,format,dataType);
-};
-//empty CubeMap,use in CubeShadowMap
-CubeMapTexture(Type type, const int width, const int height,int internalFormat,int format,int dataType)
-	:Texture(type, std::vector<std::string>()) {
-	LoadCubeMap(width,height, internalFormat, format, dataType);
-};
-
-```
-3.把 HDRTexture 映射到 CubeMap,CubeMap Attach到FrameBuffer中
-
-hdrMapToCube.glsl
-
-```
-#type vertex
-#version 430 core
-
-layout(location = 0) in vec3 aPos;
-
-uniform mat4 u_Model;
-uniform mat4 u_CubeMapProjectionView;
-
-out vec3 v_LocalPos;
-void main()
-{
-	v_LocalPos = aPos;
-	gl_Position = u_CubeMapProjectionView*vec4(aPos,1.0);
-
-}
-
-#type fragment
-#version 430 core
-
-uniform sampler2D hdrTexture;
+in vec3 v_FragPos;
 out vec4 FragColor;
-in vec3 v_LocalPos;
-const vec2 invAtan = vec2(0.1591, 0.3183);
 
-//TODO::还没搞清楚
-vec2 SampleSphericalMap(vec3 v)
-{
-    vec2 uv = vec2(atan(v.z, v.x), asin(v.y));
-    uv *= invAtan;
-    uv += 0.5;
-    return uv;
+uniform samplerCube u_EnvironmentMap;
+
+const float PI = 3.14159265359;
+
+void main(){
+	//采样的方向等于半球的方向
+	vec3 worldup = vec3(0.0,1.0,0.0);
+		vec3 irradiance = vec3(0.0);
+	vec3 N = normalize(v_FragPos);//TODO::
+	vec3 right = cross(worldup,N);
+	vec3 up = cross(N,right);
+
+
+	float sampleStep=0.025;
+	float nrSamples = 0.0;
+	//convolution 
+	for(float phi=0.0; phi< 2.0*PI;phi+=sampleStep){
+		for(float theta=0.0;theta<0.5*PI;theta+=sampleStep){
+			
+			//spherical to catesian coordinate
+			vec3 sphereCoords = vec3(sin(theta)*cos(phi),sin(theta)*sin(phi),cos(theta));
+			// tangent space to world
+			vec3 direction = sphereCoords.x*right+sphereCoords.y*up+sphereCoords.z*N;
+			irradiance += texture(u_EnvironmentMap,direction).rgb*sin(theta)*cos(theta);
+
+			nrSamples++;
+
+		}
+	}
+	irradiance = PI * irradiance * (1.0 / float(nrSamples));
+	FragColor =vec4(irradiance, 1.0);
+
 }
 
-void main()
-{       
-    vec2 uv = SampleSphericalMap(normalize(v_LocalPos)); // make sure to normalize localPos
-    vec3 color = texture(hdrTexture, uv).rgb;
+```
+
+
+
+#### 2. Sample from the irradianceCubeMap as the ambient
+
+ibl.glsl  fragment shader
+
+```
+//...
+void main(){
+	vec3 N = normalize(v_Normal);
+	vec3 V = normalize(u_CameraViewPos-v_FragPos);
+
+	vec3 F0 = vec3(0.04);
+	F0 = mix(F0,u_Material.diffuseColor,u_metallic);
+
+	//reflection equation
+	vec3 Lo = vec3(0.0);
+	for(int i=0;i<u_PointLightNums;i++){
+		vec3 L = normalize(u_PointLights[i].position-v_FragPos);
+		vec3 H = normalize(V+L);
+		float attenuation = calculateAttenuation(u_PointLights[i],v_FragPos);
+		vec3 radiance = u_PointLights[i].diffuse * attenuation;
+
+		float NDF = NoemalDistribution_TrowbridgeReitz_GGX(N,H,u_roughness);
+		float G = GeometrySmith(N, V,L,u_roughness);
+		vec3 F = FrehNel(max(dot(N, V), 0.0), F0, u_roughness);
+
+		vec3 Ks = F;
+		vec3 Kd = vec3(1.0)-Ks;
+		Kd *= (1.0 - u_metallic);
+
+		//CookTorrance
+		vec3 nominator    = NDF * G * F;
+        float denominator = 4.0 * max(dot(N, V), 0.0) * max(dot(N, L), 0.0) + 0.001; 
+        vec3 specular     = nominator / denominator;
+		
+		float NdotL = max(dot(N,L),0.0);
+		Lo+= BRDF(Kd,Ks,specular)*LightRadiance(v_FragPos,u_PointLights[i])*NdotL;
+	}
+
+	//ambient lightings (we now use IBL as the ambient term)!
+	vec3 Ks = FrehNel(max(dot(N, V), 0.0), F0, u_roughness);
+	vec3 Kd = vec3(1.0)-Ks;
+	Kd *= (1.0 - u_metallic);
+	vec3 environmentIrradiance = texture(u_IrradianceMap,N).rgb;
+	vec3 diffuse = environmentIrradiance*u_Material.diffuseColor;
+	vec3 ambient = (Kd*diffuse) * u_ao;
+    vec3 color = ambient + Lo;
+
+    color = color / (color + vec3(1.0));
+    color = pow(color, vec3(1.0/2.2));  
 
     FragColor = vec4(color, 1.0);
 }
 
 ```
 
-
-IBLRenderer.cpp
-
-```
-void IBLRenderer::Init(Object * cubeObj)
-{
-	//....
-	glViewport(0, 0, s_Width, s_Height);
-	m_FrameBuffer->Bind();
-	for (unsigned int i = 0; i < 6; i++)
-	{
-			m_HdrMapToCubeShader->SetUniformMat4f("u_CubeMapProjectionView", captureProjectionViews[i]);
-			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,m_FrameBuffer->GetCubeMapColorTexture()->GetRendererID(), 0);
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-			m_CubeObj->GetComponent<MeshRenderer>()->SetShaders(m_HdrMapToCubeShader);
-
-			DrawObject(m_CubeObj, m_HdrMapToCubeShader);
-	}
-	m_FrameBuffer->UnBind();
-
-		// initialize static shader uniforms before rendering
-	m_IsInitialize = true;
-	}
-```
+#### 3. IBLRenderer class
 
 
-Hdr file's link: http://www.hdrlabs.com/sibl/archive.html
-![Texture HdrLoad](/results/HdrLoad.png)
+
+![Texture HdrLoad](/results/IBLDiffuse.jpg)
 
 

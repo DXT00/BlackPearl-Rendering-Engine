@@ -38,13 +38,13 @@ uniform struct Material{
 	float shininess;
 
 }u_Material;
-
+uniform samplerCube cubeMap;
 in vec3 v_FragPos;
 out vec4 FragColor;
 
 void main(){
 	
-	vec3 color = texture(u_Material.cube,v_FragPos).rgb;
+	vec3 color = texture(cubeMap,v_FragPos).rgb;
 	//HDR toneMap and gamma correct
 	color = color/(color+vec3(1.0));
 	color = pow(color,vec3(1.0/2.2));

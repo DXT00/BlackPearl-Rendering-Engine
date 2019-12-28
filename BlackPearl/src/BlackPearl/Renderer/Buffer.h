@@ -4,6 +4,7 @@
 #include "BlackPearl/Renderer/Material/Texture.h"
 #include "BlackPearl/Renderer/Material/DepthTexture.h"
 #include "BlackPearl/Renderer/Material/CubeMapTexture.h"
+#include <unordered_map>
 namespace BlackPearl {
 
 	enum class ElementDataType {
@@ -76,24 +77,7 @@ namespace BlackPearl {
 				return 0;
 		}
 
-		//uint32_t GetType() {
 
-		//	switch (Type) {
-		//	case ElementDataType::Int:      return GL_INT;
-		//	case ElementDataType::Int2:     return GL_INT;
-		//	case ElementDataType::Int3:     return GL_INT;
-		//	case ElementDataType::Int4:     return GL_INT;
-		//	case ElementDataType::Float:    return GL_FLOAT;
-		//	case ElementDataType::Float2:   return GL_FLOAT;
-		//	case ElementDataType::Float3:   return GL_FLOAT;
-		//	case ElementDataType::Float4:   return GL_FLOAT;
-		//	case ElementDataType::Mat3:		return GL_FLOAT;
-		//	case ElementDataType::Mat4:		return GL_FLOAT;
-		//	case ElementDataType::False:	return GL_FALSE;
-		//	case ElementDataType::True:		return GL_TRUE;
-		//	}
-
-		//}
 
 
 	};
@@ -155,8 +139,8 @@ namespace BlackPearl {
 
 	class FrameBuffer {
 	public:
-		
-		enum Attachment{
+
+		enum Attachment {
 			ColorTexture,
 			DepthTexture,
 			CubeMapDepthTexture,
@@ -164,36 +148,48 @@ namespace BlackPearl {
 			RenderBuffer
 
 		};
-		FrameBuffer(const int width, const int height,std::initializer_list<Attachment> attachment,bool disableColor, Texture::Type colorTextureType=Texture::Type::DiffuseMap);
-		void AttachColorTexture(Texture::Type textureType);
-		void AttachDepthTexture();
-		void AttachCubeMapDepthTexture();//use for point light shadow map
-		void AttachCubeMapColorTexture();//use for point light shadow map
+		FrameBuffer(const int imageWidth, const int imageHeight, std::initializer_list<Attachment> attachment,  unsigned int colorAttachmentPoint,bool disableColor,Texture::Type colorTextureType = Texture::Type::DiffuseMap);
+		void AttachColorTexture(Texture::Type textureType, unsigned int attachmentPoints, unsigned int imageWidth, unsigned int imageHeight);
+		void AttachColorTexture(std::shared_ptr<Texture> texture, unsigned int attachmentPoints);
 
-		void AttachRenderBuffer();
+		void AttachDepthTexture(const int imageWidth, int imageHeight);
+		void AttachCubeMapDepthTexture(const int imageWidth, int imageHeight);//use for point light shadow map
+		void AttachCubeMapColorTexture(unsigned int attachmentPoints,const int imageWidth, int imageHeight);//use for point light shadow map
+
+		void AttachRenderBuffer(const int imageWidth, int imageHeight);
 		void DisableColorBuffer();
 		void Bind();
-		//switch back to default framebuffer
 		void UnBind();
 
-		void BindColorTexture();
-		void UnBindTexture();
+		void BindColorTexture(unsigned int attachmentPoints);
+		void UnBindTexture(unsigned int attachmentPoints);
 		void CleanUp();
 
-		std::shared_ptr<Texture> GetColorTexture() { return m_TextureColorBuffer; }
+		std::shared_ptr<Texture> GetColorTexture(unsigned int attachmentPoint) { 
+			GE_ASSERT(m_TextureColorBuffers[attachmentPoint], "attachmentPoint "+ std::to_string( attachmentPoint) +"has no ColorTexture")
+			return m_TextureColorBuffers[attachmentPoint]; 
+		}
 		std::shared_ptr<BlackPearl::DepthTexture> GetDepthTexture() { return m_TextureDepthBuffer; }
 		std::shared_ptr<CubeMapTexture> GetCubeMapDepthTexture() { return m_CubeMapDepthBuffer; }
-		std::shared_ptr<CubeMapTexture> GetCubeMapColorTexture() { return m_CubeMapColorBuffer; }
+		std::shared_ptr<CubeMapTexture> GetCubeMapColorTexture(unsigned int attachmentPoint) { return std::dynamic_pointer_cast<CubeMapTexture>(m_TextureColorBuffers[attachmentPoint]); }
+
 
 		unsigned int GetWidth()const { return m_Width; }
 		unsigned int GetHeight()const { return m_Height; }
-
+		unsigned int GetRenderBufferID() {
+			return m_RenderBufferID;		
+		}
+		void SetViewPort(int width, int height);
 	private:
 		unsigned int m_Width, m_Height;
 		unsigned int m_RendererID;
 		//unsigned int m_TextureColorBufferID;
 		//unsigned int m_TextureDepthBufferID;
-		std::shared_ptr<Texture> m_TextureColorBuffer;
+
+
+		//GL_COLOR_ATTACHMENTi µ½ TextureµÄÓ³Éä
+		std::unordered_map<unsigned int,std::shared_ptr<Texture> > m_TextureColorBuffers;
+		//std::shared_ptr<Texture> m_TextureColorBuffer;
 		std::shared_ptr<BlackPearl::DepthTexture> m_TextureDepthBuffer;
 		std::shared_ptr<CubeMapTexture> m_CubeMapDepthBuffer;
 		std::shared_ptr<CubeMapTexture> m_CubeMapColorBuffer;

@@ -29,6 +29,8 @@ namespace BlackPearl {
 
 	EntityManager::~EntityManager()
 	{
+		for (Entity* entity : m_EntityList)
+			delete entity;
 	}
 
 	Entity *EntityManager::CreateEntity() {

@@ -23,9 +23,6 @@ namespace BlackPearl {
 			MentallicMap
 
 
-		/*	texture3D,
-			textureFront,
-			textureBack*/
 		};
 		Texture(Type type, const std::string &image);
 		//Ã»ÓÐImageµÄtexture

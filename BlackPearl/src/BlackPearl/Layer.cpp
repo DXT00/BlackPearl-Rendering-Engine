@@ -135,37 +135,7 @@ namespace BlackPearl {
 			if (currentObj->HasComponent < BlackPearl::PointLight>()) {
 				ShowPointLight(currentObj->GetComponent<BlackPearl::PointLight>());
 			}
-		/*	std::unordered_map<BlackPearl::BaseComponent::Family, std::shared_ptr<BlackPearl::BaseComponent>> componentList = currentObj->GetComponentList();
-
-			for (auto pair : componentList) {
-				auto component = pair.second;
-				if (component != nullptr) {
-
-					switch (component->GetType()) {
-					case BlackPearl::BaseComponent::Type::MeshRenderer: {
-						std::shared_ptr<BlackPearl::MeshRenderer> comp = std::dynamic_pointer_cast<BlackPearl::MeshRenderer>(component);
-						ShowMeshRenderer(comp);
-						break;
-					}
-					case BlackPearl::BaseComponent::Type::Transform: {
-						std::shared_ptr<BlackPearl::Transform> comp = std::dynamic_pointer_cast<BlackPearl::Transform>(component);
-						ShowTransform(comp);
-						break;
-					}
-					case BlackPearl::BaseComponent::Type::Light: {
-
-						std::shared_ptr<BlackPearl::Light> comp = std::dynamic_pointer_cast<BlackPearl::Light>(component);
-						if (comp->GetType() == BlackPearl::LightType::PointLight)
-							ShowPointLight(comp);
-						break;
-					}
-					default:
-						break;
-					}
-
-				}
-
-			}*/
+		
 		}
 
 		ImGui::End();
@@ -367,7 +337,7 @@ namespace BlackPearl {
 		std::vector<Mesh> &imGuiMeshes = comp->GetMeshes();
 		if (imGuiMeshes.empty()) return;
 
-		int offset = 0;;
+		int offset = 0;
 
 		ImGui::TextColored({ 1.0,0.64,0.0,1.0 }, "Shader");
 		std::vector<std::string> imguiShaders; 
@@ -507,6 +477,10 @@ namespace BlackPearl {
 		}
 		
 
+
+
+
+
 		ImGui::TextColored({ 1.0,0.64,0.0,1.0 }, "Material Properties");
 		Material::Props& imGuiProps = imGuiMeshes[0].GetMaterial()->GetProps();//TODO::默认所有mesh 的Material::Props 是一样的
 		float imGuiShininess = imGuiProps.shininess;
@@ -527,7 +501,12 @@ namespace BlackPearl {
 			mesh.GetMaterial()->SetTextureSample((int)imGUiIsTextureSample);
 
 
+		for (auto mesh : imGuiMeshes) {
+			MaterialColor::Color color = mesh.GetMaterial()->GetMaterialColor().Get();
+			ImGui::ColorEdit3("diffuseColor", glm::value_ptr(color.diffuseColor));
+			mesh.GetMaterial()->SetMaterialColorDiffuseColor(color.diffuseColor);
 
+		}
 
 
 	}

@@ -22,7 +22,7 @@ namespace BlackPearl {
 		}
 		~ObjectManager() {
 			delete m_EntityManager;//TODO::×¢Òâ½âÎöË³Ğò
-
+			m_EntityManager = nullptr;
 			delete m_ObjectCreater;
 			delete m_Object3DCreater;
 			delete m_Object2DCreater;

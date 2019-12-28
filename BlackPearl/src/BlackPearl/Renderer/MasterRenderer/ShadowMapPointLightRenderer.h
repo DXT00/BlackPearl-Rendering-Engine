@@ -9,7 +9,7 @@ namespace BlackPearl {
 	public:
 		ShadowMapPointLightRenderer() {
 			m_FrameBuffer.reset(DBG_NEW FrameBuffer(s_ShadowMapPointLightWidth, s_ShadowMapPointLightHeight,
-				{ FrameBuffer::Attachment::CubeMapDepthTexture }, true));
+				{ FrameBuffer::Attachment::CubeMapDepthTexture },0, true));
 			m_LightProjectionViewMatries.assign(6, glm::mat4(1.0));
 		};
 		~ShadowMapPointLightRenderer();

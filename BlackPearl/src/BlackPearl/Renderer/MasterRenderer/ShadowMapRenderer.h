@@ -13,7 +13,7 @@ namespace BlackPearl {
 		ShadowMapRenderer(Object *CameraObj) {
 			m_ShadowBox.reset(DBG_NEW ShadowBox(glm::mat4(1.0f), CameraObj->GetComponent<PerspectiveCamera>()));
 			m_FrameBuffer.reset(DBG_NEW FrameBuffer(s_ShadowMapWidth, s_ShadowMapHeight,
-				{ FrameBuffer::Attachment::DepthTexture }, true));
+				{ FrameBuffer::Attachment::DepthTexture },0, true));
 
 		};
 		~ShadowMapRenderer();

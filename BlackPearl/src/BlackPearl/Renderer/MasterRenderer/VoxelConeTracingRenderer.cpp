@@ -46,8 +46,8 @@ namespace BlackPearl {
 		m_VoxelVisualizationShader.reset(DBG_NEW Shader("assets/shaders/voxelization/visualization/voxelVisualization.glsl"));
 
 		//FBOs
-		m_FrameBuffer1.reset(DBG_NEW FrameBuffer(viewportWidth, viewportHeight, { FrameBuffer::Attachment::ColorTexture,FrameBuffer::Attachment::RenderBuffer }, false, Texture::Type::None));
-		m_FrameBuffer2.reset(DBG_NEW FrameBuffer(viewportWidth, viewportHeight, { FrameBuffer::Attachment::ColorTexture,FrameBuffer::Attachment::RenderBuffer }, false, Texture::Type::None));
+		m_FrameBuffer1.reset(DBG_NEW FrameBuffer(viewportWidth, viewportHeight, { FrameBuffer::Attachment::ColorTexture,FrameBuffer::Attachment::RenderBuffer }, 0,false, Texture::Type::None));
+		m_FrameBuffer2.reset(DBG_NEW FrameBuffer(viewportWidth, viewportHeight, { FrameBuffer::Attachment::ColorTexture,FrameBuffer::Attachment::RenderBuffer }, 0,false, Texture::Type::None));
 
 	}
 
@@ -161,11 +161,11 @@ namespace BlackPearl {
 		glEnable(GL_CULL_FACE);
 
 		glActiveTexture(GL_TEXTURE0 + 0);
-		m_FrameBuffer1->BindColorTexture();
+		m_FrameBuffer1->BindColorTexture(0);
 		m_VoxelVisualizationShader->SetUniform1i("textureBack", 0);
 
 		glActiveTexture(GL_TEXTURE0 + 1);
-		m_FrameBuffer2->BindColorTexture();
+		m_FrameBuffer2->BindColorTexture(0);
 		m_VoxelVisualizationShader->SetUniform1i("textureFront", 1);
 
 		glActiveTexture(GL_TEXTURE0 + 2);

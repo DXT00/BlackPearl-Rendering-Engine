@@ -28,6 +28,8 @@ public:
 		//Scene
 		m_SphereObj = CreateSphere(0.5, 64, 64);
 		m_CubeObj = CreateCube();
+		m_CubeObj1 = CreateCube();
+
 		//m_CubeObj->GetComponent<BlackPearl::Transform>()->SetScale({ 2.0f,2.0f,2.0f });
 
 
@@ -62,7 +64,8 @@ public:
 		m_SphereObj->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(mentallicTexture);
 */
 
-//Draw CubeMap from hdrMap
+		//Draw CubeMap from hdrMap
+		//and Create environment IrrdianceMap
 		m_IBLRenderer->Init(m_CubeObj);
 
 		glViewport(0, 0, BlackPearl::Configuration::WindowWidth, BlackPearl::Configuration::WindowHeight);
@@ -87,27 +90,20 @@ public:
 		BlackPearl::Renderer::BeginScene(*(m_CameraObj->GetComponent<BlackPearl::PerspectiveCamera>()), *GetLightSources());
 
 
-		m_PBRRenderer->GetShader()->SetUniform1f("u_ao", 1.0f);
-		for (int row = 0; row < m_Rows; row++) {
-			for (int col = 0; col < m_Colums; col++) {
-
-				m_SphereObj->GetComponent<BlackPearl::Transform>()->SetPosition({
-					(col - (m_Colums / 2)) * m_Spacing,
-					(row - (m_Rows / 2)) * m_Spacing,
-					0.0f });
-				m_PBRRenderer->GetShader()->SetUniform1f("u_metallic", 2.0*(float)row / (float)m_Rows);
-				m_PBRRenderer->GetShader()->SetUniform1f("u_roughness", glm::clamp((float)col / (float)m_Colums, 0.05f, 1.0f));
-				m_PBRRenderer->Render(m_SphereObj);
-
-			}
-		}
+		glViewport(0, 0, BlackPearl::Configuration::WindowWidth, BlackPearl::Configuration::WindowHeight);
+		m_IBLRenderer->RenderSpheres(m_SphereObj);
 		//Draw Lights
 		m_BasicRenderer->DrawLightSources(GetLightSources());
 
 		//Draw SkyBox
 		m_BackGroundShader->Bind();
-		m_CubeObj->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(m_IBLRenderer->GetFrameBuffer()->GetCubeMapColorTexture());
-		m_CubeObj->GetComponent<BlackPearl::MeshRenderer>()->SetShaders(m_BackGroundShader);
+		m_BackGroundShader->SetUniform1i("cubeMap", 0);
+		//m_CubeObj->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(m_IBLRenderer->GetFrameBuffer()->GetCubeMapColorTexture());
+		glActiveTexture(GL_TEXTURE0);
+		//glBindTexture(GL_TEXTURE_CUBE_MAP, m_IBLRenderer->GetIrradianceCubeMap());
+		glBindTexture(GL_TEXTURE_CUBE_MAP, m_IBLRenderer->GetHdrCubeMapID());
+		
+		//m_CubeObj->GetComponent<BlackPearl::MeshRenderer>()->SetShaders(m_BackGroundShader);
 		m_BasicRenderer->DrawObject(m_CubeObj, m_BackGroundShader);
 
 	}
@@ -180,6 +176,8 @@ private:
 	BlackPearl::Object* m_CameraObj = nullptr;
 
 	BlackPearl::Object* m_CubeObj = nullptr;
+	BlackPearl::Object* m_CubeObj1 = nullptr;
+
 	BlackPearl::Object* m_SphereObj = nullptr;
 
 	int m_Rows = 4;

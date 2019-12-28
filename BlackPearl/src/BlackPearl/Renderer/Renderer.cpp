@@ -10,7 +10,7 @@
 #include "Mesh/Mesh.h"
 namespace BlackPearl {
 
-	Renderer::SceneData * Renderer::m_SceneData = DBG_NEW Renderer::SceneData;
+	Renderer::SceneData * Renderer::s_SceneData = DBG_NEW Renderer::SceneData;
 
 	Renderer::Renderer()
 	{
@@ -20,8 +20,8 @@ namespace BlackPearl {
 
 	Renderer::~Renderer()
 	{
-		/*	delete m_SceneData;
-			m_SceneData = nullptr;*/
+		//delete s_SceneData;
+		
 	}
 
 	void Renderer::Init()
@@ -35,12 +35,12 @@ namespace BlackPearl {
 
 	void Renderer::BeginScene(const Camera & camera, const LightSources& lightSources)
 	{
-		m_SceneData->LightSources = lightSources;
-		m_SceneData->ViewProjectionMatrix = camera.GetViewProjectionMatrix();
-		m_SceneData->CameraPosition = camera.GetPosition();
-		m_SceneData->CameraFront = camera.Front();
-		m_SceneData->ViewMatrix = camera.GetViewMatrix();
-		m_SceneData->ProjectionMatrix = camera.GetProjectionMatrix();
+		s_SceneData->LightSources = lightSources;
+		s_SceneData->ViewProjectionMatrix = camera.GetViewProjectionMatrix();
+		s_SceneData->CameraPosition = camera.GetPosition();
+		s_SceneData->CameraFront = camera.Front();
+		s_SceneData->ViewMatrix = camera.GetViewMatrix();
+		s_SceneData->ProjectionMatrix = camera.GetProjectionMatrix();
 		for (Object* lightObj : lightSources.Get()) {
 			//std::shared_ptr<Light> lightSource(lightObj->GetComponent<Light>());
 			if (lightObj->HasComponent<ParallelLight>()) {
@@ -72,12 +72,12 @@ namespace BlackPearl {
 	void Renderer::Submit(const std::shared_ptr<VertexArray>& vertexArray, const std::shared_ptr<Shader>& shader, const glm::mat4 & model)
 	{
 		shader->Bind();
-		shader->SetUniformMat4f("u_ProjectionView", m_SceneData->ViewProjectionMatrix);
-		shader->SetUniformMat4f("u_Projection", m_SceneData->ProjectionMatrix);
-		shader->SetUniformMat4f("u_View", m_SceneData->ViewMatrix);
+		shader->SetUniformMat4f("u_ProjectionView", s_SceneData->ViewProjectionMatrix);
+		shader->SetUniformMat4f("u_Projection", s_SceneData->ProjectionMatrix);
+		shader->SetUniformMat4f("u_View", s_SceneData->ViewMatrix);
 
 		shader->SetUniformMat4f("u_Model", model);
-		shader->SetUniformVec3f("u_CameraViewPos", m_SceneData->CameraPosition);
+		shader->SetUniformVec3f("u_CameraViewPos", s_SceneData->CameraPosition);
 
 		vertexArray->Bind();
 

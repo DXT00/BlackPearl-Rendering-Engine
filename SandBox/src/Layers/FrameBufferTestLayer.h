@@ -25,7 +25,7 @@ public:
 			BlackPearl::Configuration::WindowWidth, 
 			BlackPearl::Configuration::WindowHeight, 
 			{BlackPearl::FrameBuffer::Attachment::ColorTexture,  BlackPearl::FrameBuffer::Attachment::RenderBuffer},
-			false
+			0,false
 		));
 
 		BlackPearl::Renderer::Init();
@@ -35,11 +35,11 @@ public:
 		m_CubeObj = Layer::CreateCube();
 		//m_IronManObj = Layer::CreateModel("assets/models/IronMan/IronMan.obj", "assets/shaders/IronMan.glsl");
 		auto meshComponent = m_QuadObj->GetComponent<BlackPearl::MeshRenderer>();
-		meshComponent->SetTexture(0, m_FrameBuffer->GetColorTexture());
+		meshComponent->SetTexture(0, m_FrameBuffer->GetColorTexture(0));
 
 		//把FrameBuffer中的texture作为贴图，贴到m_CubeObj上
 		auto CubemeshComponent = m_CubeObj->GetComponent<BlackPearl::MeshRenderer>();
-		CubemeshComponent->SetTexture(0, m_FrameBuffer->GetColorTexture());
+		CubemeshComponent->SetTexture(0, m_FrameBuffer->GetColorTexture(0));
 		//	Layer::CreateLight(BlackPearl::LightType::PointLight);
 	}
 

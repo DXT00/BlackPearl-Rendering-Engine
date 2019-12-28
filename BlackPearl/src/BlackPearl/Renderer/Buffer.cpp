@@ -66,12 +66,10 @@ namespace BlackPearl {
 
 
 	//------------------------FrameBuffer-----------------//
-
-	FrameBuffer::FrameBuffer(const int width,int height,std::initializer_list<Attachment> attachment, bool disableColor, Texture::Type colorTextureType)
+	//note: framebuffer has no memory, imageWidth, imageHeight is the width and height of the attachment! 不同attachment有不同的width和height
+	FrameBuffer::FrameBuffer(const int imageWidth,int imageHeight,std::initializer_list<Attachment> attachment, unsigned int colorAttachmentPoint,bool disableColor, Texture::Type colorTextureType)
 	{
-		m_Width = width;
-		m_Height = height;
-
+		
 		GLint previousFrameBuffer;
 		glGetIntegerv(GL_FRAMEBUFFER_BINDING, &previousFrameBuffer);//获取之前绑定的Framebuffer
 
@@ -83,15 +81,15 @@ namespace BlackPearl {
 		for (Attachment attach:attachment)
 		{
 			if (attach == Attachment::ColorTexture)
-				AttachColorTexture(colorTextureType);
+				AttachColorTexture(colorTextureType, colorAttachmentPoint,imageWidth,imageHeight);
 			else if (attach == Attachment::DepthTexture)
-				AttachDepthTexture();
+				AttachDepthTexture(imageWidth, imageHeight);
 			else if (attach == Attachment::CubeMapDepthTexture)
-				AttachCubeMapDepthTexture();
+				AttachCubeMapDepthTexture(imageWidth, imageHeight);
 			else if (attach == Attachment::CubeMapColorTexture)
-				AttachCubeMapColorTexture();
+				AttachCubeMapColorTexture(colorAttachmentPoint,imageWidth, imageHeight);
 			else if (attach == Attachment::RenderBuffer)
-				AttachRenderBuffer();
+				AttachRenderBuffer(imageWidth, imageHeight);
 
 		}
 		
@@ -103,38 +101,44 @@ namespace BlackPearl {
 
 	}
 
-	void FrameBuffer::AttachColorTexture(Texture::Type textureType)
+	void FrameBuffer::AttachColorTexture(Texture::Type textureType,unsigned int attachmentPoints,unsigned int imageWidth,unsigned int imageHeight)
 	{
-		// create a color attachment texture
-		// The texture we're going to render to
-		m_TextureColorBuffer.reset(DBG_NEW Texture(textureType, m_Width,m_Height,false, GL_NEAREST, GL_NEAREST, GL_RGB16F, GL_RGBA, GL_REPEAT,GL_FLOAT));
-		m_TextureColorBuffer->UnBind();
+		m_TextureColorBuffers[attachmentPoints].reset(DBG_NEW Texture(textureType, imageWidth, imageHeight,false, GL_NEAREST, GL_NEAREST, GL_RGB16F, GL_RGBA, GL_REPEAT,GL_FLOAT));
+		
 		//将它附加到当前绑定的帧缓冲对象
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_TextureColorBuffer->GetRendererID(), 0);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0+attachmentPoints, GL_TEXTURE_2D, m_TextureColorBuffers[attachmentPoints]->GetRendererID(), 0);
 	}
 
-	void FrameBuffer::AttachDepthTexture()
+	void FrameBuffer::AttachColorTexture(std::shared_ptr<Texture> texture, unsigned int attachmentPoints)
+	{
+		//将它附加到当前绑定的帧缓冲对象
+		m_TextureColorBuffers[attachmentPoints] = texture;
+		Bind();
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + attachmentPoints, GL_TEXTURE_2D, texture->GetRendererID(), 0);
+	}
+
+	void FrameBuffer::AttachDepthTexture(const int imageWidth, int imageHeight)
 	{	
 		m_TextureDepthBuffer.reset(DBG_NEW BlackPearl::DepthTexture(Texture::Type::DepthMap, m_Width, m_Height));
-	//	m_TextureDepthBuffer->UnBind();
 		Bind();
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, m_TextureDepthBuffer->GetRendererID(), 0);
-
 	}
 
-	void FrameBuffer::AttachCubeMapDepthTexture()
+	void FrameBuffer::AttachCubeMapDepthTexture(const int imageWidth, int imageHeight)
 	{
-		m_CubeMapDepthBuffer.reset(DBG_NEW CubeMapTexture(Texture::Type::CubeMap, m_Width, m_Height, GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT, GL_FLOAT));
+		m_CubeMapDepthBuffer.reset(DBG_NEW CubeMapTexture(Texture::Type::CubeMap, imageWidth, imageHeight, GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT, GL_FLOAT));
 		Bind();
 		glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, m_CubeMapDepthBuffer->GetRendererID(), 0);
 	}
+	//TODO::这个接口有问题
+	void FrameBuffer::AttachCubeMapColorTexture(unsigned int attachmentPoints,const int imageWidth, int imageHeight) {
+		//GE_CORE_ERROR("不能调用，后续完善!");
 
-	void FrameBuffer::AttachCubeMapColorTexture() {
-		m_CubeMapColorBuffer.reset(DBG_NEW CubeMapTexture(Texture::Type::CubeMap, m_Width, m_Height, GL_RGB16F, GL_RGB, GL_FLOAT));
-		Bind();
+		m_TextureColorBuffers[attachmentPoints].reset(DBG_NEW CubeMapTexture(Texture::Type::CubeMap, imageWidth, imageHeight, GL_RGB16F, GL_RGB, GL_FLOAT));
+		//Bind();
 
 	}
-	void FrameBuffer::AttachRenderBuffer()
+	void FrameBuffer::AttachRenderBuffer(const int imageWidth, int imageHeight)
 	{
 		//  create a renderbuffer object for depth and stencil attachment (we won't be sampling these)
 		//	unsigned int renderBuffer;
@@ -144,7 +148,7 @@ namespace BlackPearl {
 		//glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, m_Width, m_Height);
 
 		// Use a single rbo for both depth and stencil buffer.
-		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, m_Width, m_Height);
+		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, imageWidth, imageHeight);
 		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, m_RenderBufferID);
 
 		glBindRenderbuffer(GL_RENDERBUFFER, 0);
@@ -171,19 +175,27 @@ namespace BlackPearl {
 		glViewport(0, 0, Configuration::WindowWidth, Configuration::WindowHeight);
 
 	}
-	void FrameBuffer::BindColorTexture()
+	
+	void FrameBuffer::BindColorTexture(unsigned int attachmentPoints)
 	{
-		m_TextureColorBuffer->Bind();
+		m_TextureColorBuffers[attachmentPoints]->Bind();
 
 	}
-	void FrameBuffer::UnBindTexture()
+	void FrameBuffer::UnBindTexture(unsigned int attachmentPoints)
 	{
-		m_TextureColorBuffer->UnBind();
+		GE_ASSERT(m_TextureColorBuffers[attachmentPoints], "m_TextureColorBuffers[" + std::to_string(attachmentPoints)+"] is nullptr!");
+		m_TextureColorBuffers[attachmentPoints]->UnBind();
 
 	}
 	void FrameBuffer::CleanUp()
 	{
 	/*	glDeleteFramebuffers(1,m_RendererID);*/
 
+	}
+	void FrameBuffer::SetViewPort(int width, int height)
+	{
+		m_Width = width;
+		m_Height = height;
+		glViewport(0, 0, m_Width, m_Height);
 	}
 }

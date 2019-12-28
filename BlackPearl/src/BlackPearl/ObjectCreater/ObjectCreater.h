@@ -16,8 +16,10 @@ namespace BlackPearl {
 		ObjectCreater(EntityManager *entityManager)
 			:m_EntityManager(entityManager) {}
 		virtual ~ObjectCreater() {
-			if(m_EntityManager !=nullptr)//TODO::多个Creater共享一个m_EntityManager，所以有可能被删除多次
-				delete m_EntityManager;
+			//if (m_EntityManager != nullptr) {//TODO::多个Creater共享一个m_EntityManager，所以有可能被删除多次
+			//	delete m_EntityManager;
+			//	m_EntityManager = nullptr;
+			//}
 		};
 		Object* CreateEmpty(std::string name = "");
 

@@ -58,6 +58,11 @@ namespace BlackPearl {
 		m_MaterialColors.SetColor(color);
 	}
 
+	void Material::SetMaterialColorDiffuseColor(glm::vec3 color)
+	{
+		m_MaterialColors.SetDiffuseColor(color);
+	}
+
 	void Material::SetTexture(const std::shared_ptr<Texture> texture)
 	{
 		switch (texture->GetType())
