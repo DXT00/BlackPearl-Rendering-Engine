@@ -74,5 +74,7 @@ void main(){
 //        col += sampleTex[i] * kernel[i];
 //
 //    FragColor = vec4(col, 1.0);
-FragColor = vec4(vec3(1.0 - texture(u_Material.diffuse, TexCoords)), 1.0);
+FragColor = vec4(texture(u_Material.diffuse, TexCoords).rgb, 1.0);
+
+//FragColor = vec4(vec3(1.0 - texture(u_Material.diffuse, TexCoords)), 1.0);
 }

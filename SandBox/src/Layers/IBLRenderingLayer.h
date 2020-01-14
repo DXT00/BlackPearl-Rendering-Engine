@@ -23,15 +23,15 @@ public:
 
 		//Shader
 		m_BackGroundShader.reset(DBG_NEW BlackPearl::Shader("assets/shaders/ibl/background.glsl"));
-
-
+		m_DebugQuadShader.reset(DBG_NEW BlackPearl::Shader("assets/shaders/QuadDebug.glsl"));
 		//Scene
 		m_SphereObj = CreateSphere(0.5, 64, 64);
 		m_CubeObj = CreateCube();
-		m_CubeObj1 = CreateCube();
+		//m_CubeObj1 = CreateCube();
+		m_BrdfLUTQuadObj = CreateQuad();
+		m_DebugQuad = CreateQuad();
 
 		//m_CubeObj->GetComponent<BlackPearl::Transform>()->SetScale({ 2.0f,2.0f,2.0f });
-
 
 		BlackPearl::Renderer::Init();
 		glDepthFunc(GL_LEQUAL);
@@ -64,10 +64,11 @@ public:
 		m_SphereObj->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(mentallicTexture);
 */
 
-		//Draw CubeMap from hdrMap
-		//and Create environment IrrdianceMap
-		m_IBLRenderer->Init(m_CubeObj);
+//Draw CubeMap from hdrMap
+//and Create environment IrrdianceMap
+		m_IBLRenderer->Init(m_CubeObj, m_BrdfLUTQuadObj);
 
+		//m_DebugQuad->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(m_IBLRenderer->GetQuadTexture());
 		glViewport(0, 0, BlackPearl::Configuration::WindowWidth, BlackPearl::Configuration::WindowHeight);
 
 	}
@@ -91,20 +92,30 @@ public:
 
 
 		glViewport(0, 0, BlackPearl::Configuration::WindowWidth, BlackPearl::Configuration::WindowHeight);
-		m_IBLRenderer->RenderSpheres(m_SphereObj);
 		//Draw Lights
 		m_BasicRenderer->DrawLightSources(GetLightSources());
+
+		m_IBLRenderer->RenderSpheres(m_SphereObj);
 
 		//Draw SkyBox
 		m_BackGroundShader->Bind();
 		m_BackGroundShader->SetUniform1i("cubeMap", 0);
-		//m_CubeObj->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(m_IBLRenderer->GetFrameBuffer()->GetCubeMapColorTexture());
 		glActiveTexture(GL_TEXTURE0);
 		//glBindTexture(GL_TEXTURE_CUBE_MAP, m_IBLRenderer->GetIrradianceCubeMap());
 		glBindTexture(GL_TEXTURE_CUBE_MAP, m_IBLRenderer->GetHdrCubeMapID());
-		
-		//m_CubeObj->GetComponent<BlackPearl::MeshRenderer>()->SetShaders(m_BackGroundShader);
+		//glBindTexture(GL_TEXTURE_CUBE_MAP, m_IBLRenderer->GetPrefilterMapID());
 		m_BasicRenderer->DrawObject(m_CubeObj, m_BackGroundShader);
+	
+		//draw BRDFLUTTextureID in a quad
+		glViewport(0, 0, 120, 120);
+		m_DebugQuadShader->Bind();
+		m_DebugQuadShader->SetUniform1i("u_BRDFLUTMap",5);
+		glActiveTexture(GL_TEXTURE0 + 5);
+		glBindTexture(GL_TEXTURE_2D, m_IBLRenderer->GetBRDFLUTTextureID());
+		m_BasicRenderer->DrawObject(m_DebugQuad, m_DebugQuadShader);
+
+
+		//m_IBLRenderer->DrawBRDFLUTMap();
 
 	}
 
@@ -172,14 +183,15 @@ public:
 	}
 private:
 	//Scene
-	
+
 	BlackPearl::Object* m_CameraObj = nullptr;
 
 	BlackPearl::Object* m_CubeObj = nullptr;
-	BlackPearl::Object* m_CubeObj1 = nullptr;
-
+	//BlackPearl::Object* m_CubeObj1 = nullptr;
+	BlackPearl::Object* m_DebugQuad = nullptr;
 	BlackPearl::Object* m_SphereObj = nullptr;
 
+	BlackPearl::Object* m_BrdfLUTQuadObj = nullptr;
 	int m_Rows = 4;
 	int m_Colums = 4;
 	float m_Spacing = 1.5;
@@ -199,7 +211,7 @@ private:
 
 	//Shader
 	std::shared_ptr<BlackPearl::Shader> m_BackGroundShader;
-
+	std::shared_ptr<BlackPearl::Shader> m_DebugQuadShader;
 	//Renderer
 	BlackPearl::PBRRenderer* m_PBRRenderer;
 	BlackPearl::IBLRenderer* m_IBLRenderer;

@@ -30,15 +30,28 @@ namespace BlackPearl {
 		//format:Specifies the format of the pixel data
 		Texture(
 			Type type, const int width,const int height,
-			bool isDepth = false,
+			bool isDepth ,
+			unsigned int minFilter,
+			unsigned int maxFilter,
+			int internalFormat,
+			int format,
+			int wrap ,
+			unsigned int dataType
+			);
+
+		/*
+		防止出错不要用默认值
+		false,GL_LINEAR,GL_LINEAR,GL_RGBA8,GL_RGBA,GL_CLAMP_TO_EDGE,GL_UNSIGNED_BYTE
+		bool isDepth = false,
 			unsigned int minFilter= GL_LINEAR,
 			unsigned int maxFilter= GL_LINEAR,
 			int internalFormat= GL_RGBA8,
 			int format= GL_RGBA,
 			int wrap = GL_CLAMP_TO_EDGE,
 			unsigned int dataType= GL_UNSIGNED_BYTE
-			);
-
+		
+		
+		*/
 		//用于CubeMap初始化
 		Texture(Type type, std::vector<std::string> faces);
 

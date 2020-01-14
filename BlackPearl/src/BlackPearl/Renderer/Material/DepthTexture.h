@@ -6,7 +6,7 @@ namespace BlackPearl {
 	{
 	public:
 		DepthTexture(Type type, const int width, const int height)
-			:Texture(type,width,height, true){
+			:Texture(type,width,height, true, GL_LINEAR, GL_LINEAR, GL_RGBA8, GL_RGBA, GL_CLAMP_TO_EDGE, GL_UNSIGNED_BYTE){
 			glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT16, width, height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);

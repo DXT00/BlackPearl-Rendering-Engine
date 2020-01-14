@@ -160,6 +160,7 @@ namespace BlackPearl {
 		void DisableColorBuffer();
 		void Bind();
 		void UnBind();
+		void BindRenderBuffer();
 
 		void BindColorTexture(unsigned int attachmentPoints);
 		void UnBindTexture(unsigned int attachmentPoints);
@@ -183,9 +184,7 @@ namespace BlackPearl {
 	private:
 		unsigned int m_Width, m_Height;
 		unsigned int m_RendererID;
-		//unsigned int m_TextureColorBufferID;
-		//unsigned int m_TextureDepthBufferID;
-
+		
 
 		//GL_COLOR_ATTACHMENTi µ½ TextureµÄÓ³Éä
 		std::unordered_map<unsigned int,std::shared_ptr<Texture> > m_TextureColorBuffers;

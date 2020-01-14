@@ -26,6 +26,7 @@ namespace BlackPearl {
 		unsigned int dataType
 		)
 	{
+		
 		m_Path = "";
 		m_Type = type;
 		glGenTextures(1, &m_TextureID);

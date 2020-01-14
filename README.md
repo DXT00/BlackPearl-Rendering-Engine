@@ -1,110 +1,144 @@
-### IBL irradiance convolution
+### IBL specular part
 
-#### 1.Convolving the incident light of the hemispheres of each fragment  and generates IrradianceCubeMap according to BRDF
+#### 1.计算specular irradiance --> PrefilterMAp --RenderPrefilterMap()
 
-irradianceConvolution.glsl  fragment shader
+prefilterMap.glsl fragment shader
+
 ```
-
-in vec3 v_FragPos;
-out vec4 FragColor;
-
-uniform samplerCube u_EnvironmentMap;
-
-const float PI = 3.14159265359;
-
 void main(){
-	//采样的方向等于半球的方向
-	vec3 worldup = vec3(0.0,1.0,0.0);
-		vec3 irradiance = vec3(0.0);
-	vec3 N = normalize(v_FragPos);//TODO::
-	vec3 right = cross(worldup,N);
-	vec3 up = cross(N,right);
 
+	vec3 N = normalize(WorldPos);
+	//make the simplyfying assumption that view = reflection = normal direction
+	vec3 R=N;
+	vec3 V=R;
 
-	float sampleStep=0.025;
-	float nrSamples = 0.0;
-	//convolution 
-	for(float phi=0.0; phi< 2.0*PI;phi+=sampleStep){
-		for(float theta=0.0;theta<0.5*PI;theta+=sampleStep){
-			
-			//spherical to catesian coordinate
-			vec3 sphereCoords = vec3(sin(theta)*cos(phi),sin(theta)*sin(phi),cos(theta));
-			// tangent space to world
-			vec3 direction = sphereCoords.x*right+sphereCoords.y*up+sphereCoords.z*N;
-			irradiance += texture(u_EnvironmentMap,direction).rgb*sin(theta)*cos(theta);
+	//蒙特卡洛采样
+	const uint SAMPLE_COUNT=1024u;
+	vec3 prefilterColor = vec3(0.0);
+	float totalWeight = 0.0;
 
-			nrSamples++;
+	for(uint i=0u;i<SAMPLE_COUNT;i++){
+		
+		vec2 Xi = HammersleyNoBitOps(i,SAMPLE_COUNT);
+		vec3 H = ImportanceSampleGGX(Xi,N,u_roughness);
+		//计算反射光线方向
+		vec3 L = normalize(2.0* dot(V,H)*H-V);
+
+		float NdotL = max(dot(N,L),0.0);
+
+		if(NdotL>0.0){
+			float D = NoemalDistribution_TrowbridgeReitz_GGX(N,H,u_roughness);
+			float NdotH = max(dot(N,H),0.0);
+			float HdotV = max(dot(N,V),0.0);
+			float pdf = D*NdotH/(4.0*HdotV)+0.0001;
+
+			float resolution = 512.0;// resolution of source cubemap (per face)
+			float  saTexel = 4.0*PI/(6.0*resolution*resolution);
+			float saSample= 1.0/(float(SAMPLE_COUNT)*pdf +0.0001);
+
+			float mipLevel = (u_roughness == 0.0)? 0.0:0.5*log2(saSample / saTexel); 
+
+			prefilterColor += textureLod(u_EnvironmentMap,L,mipLevel).rgb*NdotL;
+			totalWeight+= NdotL;
 
 		}
+
 	}
-	irradiance = PI * irradiance * (1.0 / float(nrSamples));
-	FragColor =vec4(irradiance, 1.0);
+	prefilterColor = prefilterColor/totalWeight;
+	FragColor = vec4(prefilterColor,1.0);
 
 }
 
 ```
 
+#### 2.计算 BEDF look up table -->BRDFLUTMap --RenderBRDFLUTMap()
 
-
-#### 2. Sample from the irradianceCubeMap as the ambient
-
-ibl.glsl  fragment shader
+brdl.glsl fragment shader
 
 ```
-//...
-void main(){
-	vec3 N = normalize(v_Normal);
-	vec3 V = normalize(u_CameraViewPos-v_FragPos);
+vec2 InterateBRDF(float NdotV,float roughness){
+	
+	vec3 V;
+	V.x = sqrt(1.0-NdotV*NdotV);
+	V.y = 0.0;
+	V.z = NdotV;
 
-	vec3 F0 = vec3(0.04);
-	F0 = mix(F0,u_Material.diffuseColor,u_metallic);
+	float A = 0.0;
+	float B = 0.0;
 
-	//reflection equation
-	vec3 Lo = vec3(0.0);
-	for(int i=0;i<u_PointLightNums;i++){
-		vec3 L = normalize(u_PointLights[i].position-v_FragPos);
-		vec3 H = normalize(V+L);
-		float attenuation = calculateAttenuation(u_PointLights[i],v_FragPos);
-		vec3 radiance = u_PointLights[i].diffuse * attenuation;
+	vec3 N = vec3(0.0,0.0,1.0);
 
-		float NDF = NoemalDistribution_TrowbridgeReitz_GGX(N,H,u_roughness);
-		float G = GeometrySmith(N, V,L,u_roughness);
-		vec3 F = FrehNel(max(dot(N, V), 0.0), F0, u_roughness);
-
-		vec3 Ks = F;
-		vec3 Kd = vec3(1.0)-Ks;
-		Kd *= (1.0 - u_metallic);
-
-		//CookTorrance
-		vec3 nominator    = NDF * G * F;
-        float denominator = 4.0 * max(dot(N, V), 0.0) * max(dot(N, L), 0.0) + 0.001; 
-        vec3 specular     = nominator / denominator;
+	const uint SAMPLE_COUNT = 1024u;
+	for(uint i=0u;i<SAMPLE_COUNT;++i){
 		
-		float NdotL = max(dot(N,L),0.0);
-		Lo+= BRDF(Kd,Ks,specular)*LightRadiance(v_FragPos,u_PointLights[i])*NdotL;
-	}
+		vec2 Xi= HammersleyNoBitOps(i,SAMPLE_COUNT);
+		vec3 H = ImportanceSampleGGX(Xi,N,roughness);
 
+		vec3 L = normalize(2.0 * dot(V, H) * H - V);
+		float NdotL = max(L.z,0.0);
+		float NdotH = max(H.z,0.0);
+		float VdotH = max(dot(V,H),0.0);
+
+		if(NdotL>0.0){
+			float G = GeometrySmith(N,V,L,roughness);
+			float G_Vis = (G*VdotH)/(NdotH* NdotV);
+			float Fc = pow(1.0-VdotH,5.0);
+			A +=(1.0-Fc)*G_Vis;
+			B += Fc*G_Vis;
+		}
+	}
+	A/=float(SAMPLE_COUNT);
+	B/=float(SAMPLE_COUNT);
+
+	return vec2(A,B);
+
+
+
+}
+void main(){
+
+	vec2 integratedBRDF = InterateBRDF(v_TexCoord.x,v_TexCoord.y);
+	FragColor = vec3(integratedBRDF.x,integratedBRDF.y,0.0);
+	//FragColor = vec2(integratedBRDF.x,integratedBRDF.y);
+}
+
+
+```
+#### 3.叠加 Diffuse 和 Specular ambient light
+
+ibs.glsl fragment shader
+
+```
 	//ambient lightings (we now use IBL as the ambient term)!
-	vec3 Ks = FrehNel(max(dot(N, V), 0.0), F0, u_roughness);
+	vec3 F =  FresnelSchlickRoughness(max(dot(N, V), 0.0), F0, u_roughness);
+	vec3 Ks = F;
 	vec3 Kd = vec3(1.0)-Ks;
 	Kd *= (1.0 - u_metallic);
 	vec3 environmentIrradiance = texture(u_IrradianceMap,N).rgb;
 	vec3 diffuse = environmentIrradiance*u_Material.diffuseColor;
-	vec3 ambient = (Kd*diffuse) * u_ao;
-    vec3 color = ambient + Lo;
 
+	//sample both the prefilter map and the BRDF lut and combine them together as per the Split-Sum approximation to get the IBL specular part
+	const float MAX_REFLECTION_LOD = 4.0;
+	vec3 prefileredColor = textureLod(u_PrefilterMap,R,u_roughness*MAX_REFLECTION_LOD).rgb;
+	vec2 brdf = texture(u_BrdfLUTMap,vec2(max(dot(N,V),0.0),u_roughness)).rg;
+	//vec3 brdf = texture(u_BrdfLUTMap,vec2(max(dot(N,V),0.0),u_roughness)).rgb;
+
+	vec3 specular = prefileredColor * (F*brdf.x+brdf.y);
+	vec3 ambient = (Kd*diffuse+specular) * u_ao;
+    vec3 color =ambient + Lo;
+
+	//HDR tonemapping
     color = color / (color + vec3(1.0));
+	//gamma correction
     color = pow(color, vec3(1.0/2.2));  
 
     FragColor = vec4(color, 1.0);
-}
-
 ```
 
-#### 3. IBLRenderer class
+![BRDFLUPMap](/results/BRDFLUPMap.jpg)
+![BRDFLUPMap1](/results/BRDFLUPMap1.jpg)
+![IBLDiffuseSpecular](/results/IBLDiffuseSpecular.png)
 
 
-
-![Texture HdrLoad](/results/IBLDiffuse.jpg)
 
 

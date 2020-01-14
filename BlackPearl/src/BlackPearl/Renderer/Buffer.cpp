@@ -175,6 +175,11 @@ namespace BlackPearl {
 		glViewport(0, 0, Configuration::WindowWidth, Configuration::WindowHeight);
 
 	}
+
+	void FrameBuffer::BindRenderBuffer()
+	{	
+		glBindRenderbuffer(GL_RENDERBUFFER, m_RenderBufferID);
+	}
 	
 	void FrameBuffer::BindColorTexture(unsigned int attachmentPoints)
 	{
