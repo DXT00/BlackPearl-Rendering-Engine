@@ -14,9 +14,12 @@ namespace BlackPearl {
 
 		//Load Hdr environment map
 		m_HdrMapToCubeShader.reset(DBG_NEW Shader("assets/shaders/ibl/hdrMapToCube.glsl"));
-		m_IBLShader.reset(DBG_NEW Shader("assets/shaders/ibl/ibl.glsl"));
+		//m_IBLShader.reset(DBG_NEW Shader("assets/shaders/ibl/ibl.glsl"));
+		m_IBLShader.reset(DBG_NEW Shader("assets/shaders/ibl/iblTexture.glsl"));
+
+
 		//m_HdrTexture.reset(DBG_NEW HDRTexture("assets/texture/hdrEnvironmentMap/sIBL-Collection/sIBL_Collection/backlot/Diffuse10.hdr")); 
-		m_HdrTexture.reset(DBG_NEW HDRTexture("assets/texture/hdrEnvironmentMap/sIBL-Collection/sIBL_Collection/OfficeEden/Eden_REF.hdr")); :																																  //m_HdrTexture.reset(DBG_NEW HDRTexture("assets/texture/hdrEnvironmentMap/sIBL-Collection/sIBL_Collection/apartment/Apartment_Reflection.hdr")); //TODO::
+		m_HdrTexture.reset(DBG_NEW HDRTexture("assets/texture/hdrEnvironmentMap/sIBL-Collection/sIBL_Collection/OfficeEden/Eden_REF.hdr")); 																														  //m_HdrTexture.reset(DBG_NEW HDRTexture("assets/texture/hdrEnvironmentMap/sIBL-Collection/sIBL_Collection/apartment/Apartment_Reflection.hdr")); //TODO::
 		//m_HdrTexture.reset(DBG_NEW HDRTexture("assets/texture/hdrEnvironmentMap/Desert_Highway/Road_to_MonumentValley_Ref.hdr")); 
 		m_IrradianceShader.reset(DBG_NEW Shader("assets/shaders/ibl/irradianceConvolution.glsl"));
 
@@ -173,8 +176,6 @@ namespace BlackPearl {
 				DrawObject(m_CubeObj, m_PrefilterShader);
 
 			}
-
-
 		}
 
 
@@ -238,6 +239,45 @@ namespace BlackPearl {
 
 
 
+	}
+
+	void IBLRenderer::RenderTextureSphere(Object* sphere)
+	{
+		int rows = 7;
+		int cols = 7;
+		int spacing = 2;
+
+		m_IBLShader->Bind();
+		m_IBLShader->SetUniform1i("u_IrradianceMap", 0);
+		m_IBLShader->SetUniform1i("u_PrefilterMap", 1);
+		m_IBLShader->SetUniform1i("u_BrdfLUTMap", 2);
+
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, m_IrradianceCubeMapID);
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, m_PrefilterCubeMapID);
+		glActiveTexture(GL_TEXTURE2);
+		glBindTexture(GL_TEXTURE_2D, m_BRDFLUTTextureID);
+
+
+
+	//	m_IBLShader->SetUniform1f("u_ao", 1.0f);
+		//for (int row = 0; row < rows; row++) {
+		////	m_IBLShader->SetUniform1f("u_metallic", (float)row / (float)rows);
+
+		//	for (int col = 0; col < cols; col++) {
+
+		//		sphere->GetComponent<Transform>()->SetPosition({
+		//			(col - (cols / 2)) * spacing,
+		//			(row - (rows / 2)) * spacing,
+		//			0.0f });
+		//	//	m_IBLShader->SetUniform1f("u_roughness", glm::clamp((float)col / (float)cols, 0.05f, 1.0f));
+		//		sphere->GetComponent<MeshRenderer>()->SetShaders(m_IBLShader);
+		//		DrawObject(sphere, m_IBLShader);
+
+		//	}
+		//}
+		DrawObject(sphere, m_IBLShader);
 	}
 
 

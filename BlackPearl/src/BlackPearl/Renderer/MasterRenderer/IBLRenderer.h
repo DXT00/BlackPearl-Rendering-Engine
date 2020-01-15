@@ -14,13 +14,15 @@ namespace BlackPearl {
 		~IBLRenderer();
 		void RenderHdrMapToEnvironmentCubeMap();
 		void RenderIrradianceMap();
-		void RenderSpheres(Object* sphere);
+
 		//将预先计算好的BRDF对粗糙度和入射角的组合的影响结
 		//果存储在一张2D查找纹理(LUT)上-->BRDF积分贴图
 		//2D查找纹理存储的是菲涅尔响应的系数(R通道）和偏差值(G通道)
 		void RenderPrefilterMap();
 		//restore the result of BRDF convolution
 		void RenderBRDFLUTMap();
+		void RenderSpheres(Object* sphere);
+		void RenderTextureSphere(Object* sphere);
 
 		//draw brdfLUT quad (just for debug)
 		void DrawBRDFLUTMap();

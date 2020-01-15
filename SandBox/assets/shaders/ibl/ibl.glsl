@@ -181,9 +181,9 @@ void main(){
 
 	//sample both the prefilter map and the BRDF lut and combine them together as per the Split-Sum approximation to get the IBL specular part
 	const float MAX_REFLECTION_LOD = 4.0;
+	//sample MAX_REFLECTION_LOD level mipmap everytime !
 	vec3 prefileredColor = textureLod(u_PrefilterMap,R,u_roughness*MAX_REFLECTION_LOD).rgb;
 	vec2 brdf = texture(u_BrdfLUTMap,vec2(max(dot(N,V),0.0),u_roughness)).rg;
-	//vec3 brdf = texture(u_BrdfLUTMap,vec2(max(dot(N,V),0.0),u_roughness)).rgb;
 
 	vec3 specular = prefileredColor * (F*brdf.x+brdf.y);
 	vec3 ambient = (Kd*diffuse+specular) * u_ao;
@@ -193,6 +193,5 @@ void main(){
     color = color / (color + vec3(1.0));
 	//gamma correction
     color = pow(color, vec3(1.0/2.2));  
-
     FragColor = vec4(color, 1.0);
 }

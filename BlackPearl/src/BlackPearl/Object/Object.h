@@ -51,7 +51,7 @@ namespace BlackPearl {
 		template<typename C>
 		C* GetComponent() 
 		{
-			//GE_ASSERT(Valid(), "invalid entity" + m_Id);
+			GE_ASSERT(this!=nullptr, "this object is nullptr!");
 			std::unordered_map<BaseComponent::Family, std::shared_ptr<BaseComponent>>::const_iterator it = m_Components.find(C::Famliy());
 			GE_ASSERT(HasComponent<C>() && it != m_Components.end(), "Entity dose not have component C!")
 				//	return ComponentHandle<C>(m_EntityManager, m_Id, m_Components[C::Famliy()]);
