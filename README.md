@@ -1,8 +1,8 @@
 ### IBL specular part for pbr textures
 
-#### 1.添加有材质的sphere
+#### 1.Add texture spheres
 
-#### 2.修改shader : iblTexture.glsl
+#### 2.add textures shader : iblTexture.glsl
 
 ```
 void main(){
@@ -79,8 +79,7 @@ void main(){
 
 ```
 
-
-!IBLTextureSpheres(/results/IBLTextureSpheres.png)
+![IBLTextureSpheres](/results/IBLTextureSpheres.png)
 
 
 
