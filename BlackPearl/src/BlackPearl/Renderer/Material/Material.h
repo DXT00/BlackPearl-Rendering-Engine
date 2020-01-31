@@ -10,7 +10,7 @@ namespace BlackPearl {
 			float shininess;
 			bool  isBinnLight;
 			int  isTextureSample;//是否使用纹理
-			Props():shininess(64.0f),isBinnLight(false),isTextureSample(1){}
+			Props():shininess(64.0f),isBinnLight(false),isTextureSample(0){}
 
 		};
 		struct TextureMaps {

@@ -21,7 +21,7 @@ void main()
 out vec4 FragColor;
 in vec2 TexCoords;
 
-struct Material{
+uniform struct Material{
 	vec3 ambientColor;
 	vec3 diffuseColor;
 	vec3 specularColor;
@@ -34,8 +34,7 @@ struct Material{
 
 	float shininess;
 
-};
-uniform Material u_Material;
+}u_Material;
 float near = 0.1; 
 float far  = 100.0; 
 float LinearizeDepth(float depth){
@@ -44,8 +43,8 @@ float LinearizeDepth(float depth){
 
 }
 void main(){
-	//FragColor = vec4(u_Material.diffuseColor,1.0);
-	FragColor = texture(u_Material.diffuse,TexCoords);//*vec4(u_Material.diffuseColor,1.0);
+	FragColor = vec4(u_Material.diffuseColor,1.0);
+//	FragColor =  vec4(1.0,0.0,0.0,1.0);//texture(u_Material.diffuse,TexCoords);//*vec4(u_Material.diffuseColor,1.0);
 //	float depth = LinearizeDepth(gl_FragCoord.z)/far;
 //	FragColor=vec4(vec3(depth),1.0);
 }

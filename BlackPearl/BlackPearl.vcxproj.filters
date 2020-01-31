@@ -1390,6 +1390,8 @@
     <ClInclude Include="src\BlackPearl\Component\MeshFilterComponent\SphereMeshFilter.h" />
     <ClInclude Include="src\BlackPearl\Renderer\Material\HDRTexture.h" />
     <ClInclude Include="src\BlackPearl\Renderer\MasterRenderer\IBLRenderer.h" />
+    <ClInclude Include="src\BlackPearl\LightProbes\LightProbes.h" />
+    <ClInclude Include="src\BlackPearl\Renderer\MasterRenderer\IBLProbesRenderer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\BlackPearl\Application.cpp">
@@ -1556,5 +1558,7 @@
     <ClCompile Include="src\BlackPearl\Component\MeshFilterComponent\SphereMeshFilter.cpp" />
     <ClCompile Include="src\BlackPearl\Renderer\Material\HDRTexture.cpp" />
     <ClCompile Include="src\BlackPearl\Renderer\MasterRenderer\IBLRenderer.cpp" />
+    <ClCompile Include="src\BlackPearl\LightProbes\LightProbes.cpp" />
+    <ClCompile Include="src\BlackPearl\Renderer\MasterRenderer\IBLProbesRenderer.cpp" />
   </ItemGroup>
 </Project>

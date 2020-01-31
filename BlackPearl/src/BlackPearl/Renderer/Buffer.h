@@ -148,6 +148,9 @@ namespace BlackPearl {
 			RenderBuffer
 
 		};
+		/*no attachment*/
+		FrameBuffer();
+		/*initial with attachment*/
 		FrameBuffer(const int imageWidth, const int imageHeight, std::initializer_list<Attachment> attachment,  unsigned int colorAttachmentPoint,bool disableColor,Texture::Type colorTextureType = Texture::Type::DiffuseMap);
 		void AttachColorTexture(Texture::Type textureType, unsigned int attachmentPoints, unsigned int imageWidth, unsigned int imageHeight);
 		void AttachColorTexture(std::shared_ptr<Texture> texture, unsigned int attachmentPoints);
@@ -155,6 +158,7 @@ namespace BlackPearl {
 		void AttachDepthTexture(const int imageWidth, int imageHeight);
 		void AttachCubeMapDepthTexture(const int imageWidth, int imageHeight);//use for point light shadow map
 		void AttachCubeMapColorTexture(unsigned int attachmentPoints,const int imageWidth, int imageHeight);//use for point light shadow map
+		void AttachCubeMapColorTexture(unsigned int attachmentPoints, std::shared_ptr<CubeMapTexture> cubeMap);
 
 		void AttachRenderBuffer(const int imageWidth, int imageHeight);
 		void DisableColorBuffer();

@@ -49,8 +49,10 @@ namespace BlackPearl {
 		virtual Object* CreateCube(const std::string& shaderPath = "assets/shaders/Cube.glsl", const std::string& texturePath = "");
 		virtual Object* CreateSphere(const float radius,const unsigned int stackCount,const unsigned int sectorCount, const std::string& shaderPath = "assets/shaders/Sphere.glsl", const std::string& texturePath = "");
 		virtual Object* CreatePlane(const std::string& shaderPath = "assets/shaders/Plane.glsl", const std::string& texturePath = "assets/texture/wood.png");
-		virtual Object* CreateSkyBox(const std::vector<std::string>& textureFaces);
+		virtual Object* CreateSkyBox( const std::vector<std::string>& textureFaces,const std::string& shaderPath= "assets/shaders/SkyBox.glsl");
 		virtual Object* CreateQuad(const std::string& shaderPath = "assets/shaders/Quad.glsl", const std::string& texturePath = "assets/texture/1.jpg");
+
+		virtual LightProbe* CreateLightProbe(const std::string& shaderPath="assets/shaders/lightProbes/lightProbe.glsl", const std::string& texturePath="");
 
 		void ShowMeshRenderer(MeshRenderer *comp);
 		void ShowTransform(Transform *comp);

@@ -65,6 +65,12 @@ namespace BlackPearl {
 	}
 
 
+	FrameBuffer::FrameBuffer()
+	{
+
+		glGenFramebuffers(1, &m_RendererID);
+	}
+
 	//------------------------FrameBuffer-----------------//
 	//note: framebuffer has no memory, imageWidth, imageHeight is the width and height of the attachment! 不同attachment有不同的width和height
 	FrameBuffer::FrameBuffer(const int imageWidth,int imageHeight,std::initializer_list<Attachment> attachment, unsigned int colorAttachmentPoint,bool disableColor, Texture::Type colorTextureType)
@@ -123,10 +129,10 @@ namespace BlackPearl {
 		Bind();
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, m_TextureDepthBuffer->GetRendererID(), 0);
 	}
-
+	//TODO::改接口
 	void FrameBuffer::AttachCubeMapDepthTexture(const int imageWidth, int imageHeight)
 	{
-		m_CubeMapDepthBuffer.reset(DBG_NEW CubeMapTexture(Texture::Type::CubeMap, imageWidth, imageHeight, GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT, GL_FLOAT));
+		m_CubeMapDepthBuffer.reset(DBG_NEW CubeMapTexture(Texture::Type::CubeMap, imageWidth, imageHeight, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR,GL_CLAMP_TO_EDGE, GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT, GL_FLOAT));
 		Bind();
 		glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, m_CubeMapDepthBuffer->GetRendererID(), 0);
 	}
@@ -134,9 +140,13 @@ namespace BlackPearl {
 	void FrameBuffer::AttachCubeMapColorTexture(unsigned int attachmentPoints,const int imageWidth, int imageHeight) {
 		//GE_CORE_ERROR("不能调用，后续完善!");
 
-		m_TextureColorBuffers[attachmentPoints].reset(DBG_NEW CubeMapTexture(Texture::Type::CubeMap, imageWidth, imageHeight, GL_RGB16F, GL_RGB, GL_FLOAT));
+		m_TextureColorBuffers[attachmentPoints].reset(DBG_NEW CubeMapTexture(Texture::Type::CubeMap, imageWidth, imageHeight, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR, GL_CLAMP_TO_EDGE, GL_RGB16F, GL_RGB, GL_FLOAT));
 		//Bind();
 
+	}
+	void FrameBuffer::AttachCubeMapColorTexture(unsigned int attachmentPoints, std::shared_ptr<CubeMapTexture> cubeMap)
+	{
+		m_TextureColorBuffers[attachmentPoints] = cubeMap;
 	}
 	void FrameBuffer::AttachRenderBuffer(const int imageWidth, int imageHeight)
 	{

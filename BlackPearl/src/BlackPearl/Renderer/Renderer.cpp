@@ -69,15 +69,15 @@ namespace BlackPearl {
 
 	}
 
-	void Renderer::Submit(const std::shared_ptr<VertexArray>& vertexArray, const std::shared_ptr<Shader>& shader, const glm::mat4 & model)
+	void Renderer::Submit(const std::shared_ptr<VertexArray>& vertexArray, const std::shared_ptr<Shader>& shader, const glm::mat4 & model, SceneData* sceneData)
 	{
 		shader->Bind();
-		shader->SetUniformMat4f("u_ProjectionView", s_SceneData->ViewProjectionMatrix);
-		shader->SetUniformMat4f("u_Projection", s_SceneData->ProjectionMatrix);
-		shader->SetUniformMat4f("u_View", s_SceneData->ViewMatrix);
+		shader->SetUniformMat4f("u_ProjectionView", sceneData->ViewProjectionMatrix);
+		shader->SetUniformMat4f("u_Projection", sceneData->ProjectionMatrix);
+		shader->SetUniformMat4f("u_View", sceneData->ViewMatrix);
 
 		shader->SetUniformMat4f("u_Model", model);
-		shader->SetUniformVec3f("u_CameraViewPos", s_SceneData->CameraPosition);
+		shader->SetUniformVec3f("u_CameraViewPos", sceneData->CameraPosition);
 
 		vertexArray->Bind();
 

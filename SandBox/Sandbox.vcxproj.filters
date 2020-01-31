@@ -26,6 +26,7 @@
     </ClInclude>
     <ClInclude Include="src\Layers\PbrRenderingLayer.h" />
     <ClInclude Include="src\Layers\IBLRenderingLayer.h" />
+    <ClInclude Include="src\Layers\IBLProbesRenderingLayer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\SandBox.cpp" />

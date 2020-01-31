@@ -20,7 +20,9 @@ namespace BlackPearl {
 		~Renderer();
 		static void Init();
 		static void BeginScene(const Camera& camera, const LightSources& lightSources);//每次Update都要调用BeginScene一次，因为Camera的ViewProjection Matrix会改变
-		static void Submit(const std::shared_ptr<VertexArray>& vertexArray, const std::shared_ptr<Shader>& shader, const glm::mat4 &model = glm::mat4(1.0f));//Submmit前记得调用 BeginScene()!
+		/*默认 scene 是 default camera*/
+		static void Submit(const std::shared_ptr<VertexArray>& vertexArray, const std::shared_ptr<Shader>& shader, const glm::mat4& model = glm::mat4(1.0f), SceneData* sceneData= GetSceneData());//Submmit前记得调用 BeginScene()!
+
 		static SceneData* GetSceneData() { return s_SceneData; }
 	private:
 

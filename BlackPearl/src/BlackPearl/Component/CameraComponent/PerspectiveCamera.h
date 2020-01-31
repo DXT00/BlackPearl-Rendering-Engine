@@ -19,11 +19,13 @@ namespace BlackPearl {
 
 		float GetFov() const{ return m_Fov; }
 		float GetZnear()const { return m_zNear; }
+		float GetZfar()const { return m_zFar; }
 		float GetAspectRadio()const { return m_Width / m_Height; }
 	private:
 		float m_Fov;
 		float m_Width, m_Height;
 		float m_zNear, m_zFar;
+		
 
 
 	};

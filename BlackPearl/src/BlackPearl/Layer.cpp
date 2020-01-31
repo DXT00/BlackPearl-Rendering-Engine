@@ -177,9 +177,9 @@ namespace BlackPearl {
 		m_ObjectsList.push_back(obj);
 		return obj;
 	}
-	Object * Layer::CreateSkyBox(const std::vector<std::string>& textureFaces)
+	Object * Layer::CreateSkyBox( const std::vector<std::string>& textureFaces,const std::string& shaderPath)
 	{
-		Object* obj= m_ObjectManager->CreateSkyBox(textureFaces);
+		Object* obj= m_ObjectManager->CreateSkyBox(textureFaces,shaderPath);
 		m_ObjectsList.push_back(obj);
 		return obj;
 	}
@@ -188,6 +188,12 @@ namespace BlackPearl {
 		Object* obj= m_ObjectManager->CreateQuad(shaderPath, texturePath);
 		m_ObjectsList.push_back(obj);
 		return obj;
+	}
+	LightProbe* Layer::CreateLightProbe(const std::string& shaderPath, const std::string& texturePath)
+	{
+		LightProbe* probe = m_ObjectManager->CreateLightProbe(shaderPath, texturePath);
+		m_ObjectsList.push_back(probe->GetCubeObj());
+		return probe;
 	}
 	Object* Layer::CreateModel(const std::string& modelPath, const std::string& shaderPath)
 	{

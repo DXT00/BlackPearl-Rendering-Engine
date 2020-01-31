@@ -15,6 +15,7 @@
 #include "BlackPearl/Renderer/MasterRenderer/PBRRenderer.h"
 #include "BlackPearl/Renderer/MasterRenderer/IBLRenderer.h"
 #include "BlackPearl/Renderer/MasterRenderer/BasicRenderer.h"
+#include "BlackPearl/Renderer/MasterRenderer/IBLProbesRenderer.h"
 
 #include "BlackPearl/Component/TransformComponent/Transform.h"
 #include "BlackPearl/Component/MeshRendererComponent/MeshRenderer.h"
@@ -26,6 +27,7 @@
 #include "BlackPearl/Component/LightComponent/SpotLight.h"
 #include "BlackPearl/Component/BaseComponent.h"
 
+#include "BlackPearl/LightProbes/LightProbes.h"
 #include "BlackPearl/Object/Object.h"
 #include "BlackPearl/ObjectManager/ObjectManager.h"
 

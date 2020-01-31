@@ -12,6 +12,7 @@
 #include "Layers/IBLRenderingLayer.h"
 #include "Layers/SkyBoxTestLayer.h"
 #include "Layers/VoxelConeTracingLayer.h"
+#include "Layers/IBLProbesRenderingLayer.h"
 #include "BlackPearl/Application.h"
 
 class SandBox :public BlackPearl::Application {
@@ -25,7 +26,10 @@ public:
 		//BlackPearl::Layer* layer = DBG_NEW ShadowMapPointLightLayer("ShadowMapPointLight Layer", objectManager);
 		//BlackPearl::Layer* layer = DBG_NEW VoxelConeTracingLayer("VoxelConeTracing Layer", objectManager);
 		//BlackPearl::Layer* layer = DBG_NEW PbrRenderingLayer("PbrRendering Layer", objectManager);
-		BlackPearl::Layer* layer = DBG_NEW IBLRenderingLayer("IBLRenderingLayer", objectManager);
+	//	BlackPearl::Layer* layer = DBG_NEW IBLRenderingLayer("IBLRenderingLayer", objectManager);
+		BlackPearl::Layer* layer = DBG_NEW IBLProbesRenderingLayer("IBLProbesRenderingLayer", objectManager);
+
+		
 		//BlackPearl::Layer* layer = DBG_NEW AdvanceLightTestLayer("AdvanceLight Layer", objectManager);
 		//BlackPearl::Layer* layer = DBG_NEW ShadowMapTestLayer("ShadowMapTest Layer", objectManager);
 

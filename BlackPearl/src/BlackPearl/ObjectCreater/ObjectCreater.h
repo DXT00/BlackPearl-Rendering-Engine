@@ -4,7 +4,7 @@
 #include "BlackPearl/Component/LightComponent/Light.h"
 #include "BlackPearl/Component/LightComponent/LightSources.h"
 #include "BlackPearl/Component/TransformComponent/Transform.h"
-
+#include "BlackPearl/LightProbes/LightProbes.h"
 
 namespace BlackPearl {
 	////////////////////////ObjectCreater////////////////////////////////
@@ -37,12 +37,12 @@ namespace BlackPearl {
 			m_EntityManager = entityManager;
 		}
 
-		Object* CreateCube(const std::string& shaderPath, const std::string& texturePath);
+		Object* CreateCube(const std::string& shaderPath, const std::string& texturePath,const std::string name = "Cube");
 		Object* CreatePlane(const std::string& shaderPath, const std::string& texturePath);
 		Object* CreateSphere(const float radius, const unsigned int stackCount, const unsigned int sectorCount, const std::string& shaderPath, const std::string& texturePath);
 		Object* CreateModel(std::string modelPath,std::string shaderPath);
-		Object* CreateSkyBox(const std::vector<std::string>& textureFaces);
-
+		Object* CreateSkyBox( const std::vector<std::string>& textureFaces,const std::string& shaderPath);
+		LightProbe* CreateLightProbe(const std::string& shaderPath, const std::string& texturePath);
 	};
 
 	////////////////////////Object2DCreater////////////////////////////////

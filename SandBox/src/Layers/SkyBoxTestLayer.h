@@ -47,7 +47,7 @@ public:
 			 "assets/skybox/skybox/bottom.jpg",
 			 "assets/skybox/skybox/front.jpg",
 			 "assets/skybox/skybox/back.jpg",
-			}, GL_RGB, GL_RGB, GL_UNSIGNED_BYTE));
+			},GL_LINEAR,GL_LINEAR,GL_CLAMP_TO_EDGE, GL_RGB, GL_RGB, GL_UNSIGNED_BYTE));
 		meshComponent->SetTexture(0, cubeMapTexture);
 	//	m_ObjectsList.push_back(m_CubeObj);
 
@@ -88,12 +88,9 @@ public:
 
 		BlackPearl::RenderCommand::SetClearColor(m_BackgroundColor);
 		BlackPearl::Renderer::BeginScene(*(m_CameraObj->GetComponent<BlackPearl::PerspectiveCamera>()), *GetLightSources());
-		// Set Drawing buffers
-		/*GLuint attachments[1] = { GL_COLOR_ATTACHMENT0 };
-		glDrawBuffers(1, attachments);*/
-		std::vector<BlackPearl::Object*> objs;
-		objs.push_back(m_SkyBoxObj);
-	//	objs.push_back(m_CubeObj);
+	
+		//std::vector<BlackPearl::Object*> objs;
+		//objs.push_back(m_SkyBoxObj);
 
 		m_MasterRenderer->RenderSceneExcept(m_ObjectsList, m_SkyBoxObj, GetLightSources());
 		//DrawObjectsExcept(objs);

@@ -63,9 +63,9 @@ namespace BlackPearl {
 		return obj;
 	}
 
-	Object * ObjectManager::CreateSkyBox(const std::vector<std::string>& textureFaces)
+	Object * ObjectManager::CreateSkyBox(const std::vector<std::string>& textureFaces, const std::string& shaderPath)
 	{
-		Object* obj = m_Object3DCreater->CreateSkyBox(textureFaces);
+		Object* obj = m_Object3DCreater->CreateSkyBox(textureFaces,shaderPath);
 		m_EntityToObjects.insert(std::make_pair(obj->GetId().index(), obj));
 		return obj;
 	}
@@ -76,6 +76,14 @@ namespace BlackPearl {
 		Object* obj = m_Object2DCreater->CreateQuad(shaderPath, texturePath);
 		m_EntityToObjects.insert(std::make_pair(obj->GetId().index(), obj));
 		return obj;
+	}
+
+	LightProbe* ObjectManager::CreateLightProbe(const std::string& shaderPath, const std::string& texturePath)
+	{
+		LightProbe* lightProbe = m_Object3DCreater->CreateLightProbe(shaderPath, texturePath);
+		
+		m_EntityToObjects.insert(std::make_pair(lightProbe->GetCubeObj()->GetId().index(), lightProbe->GetCubeObj()));
+		return lightProbe;
 	}
 
 	std::vector<Object*> ObjectManager::GetObjects()

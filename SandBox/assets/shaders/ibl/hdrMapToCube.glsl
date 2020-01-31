@@ -4,13 +4,13 @@
 layout(location = 0) in vec3 aPos;
 
 uniform mat4 u_Model;
-uniform mat4 u_CubeMapProjectionView;
+uniform mat4 u_ProjectionView;
 
 out vec3 v_LocalPos;
 void main()
 {
 	v_LocalPos = aPos;
-	gl_Position = u_CubeMapProjectionView*vec4(aPos,1.0);
+	gl_Position = u_ProjectionView*vec4(aPos,1.0);
 
 }
 

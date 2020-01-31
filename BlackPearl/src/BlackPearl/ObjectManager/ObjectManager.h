@@ -6,7 +6,7 @@
 #include "BlackPearl/ObjectCreater/ObjectCreater.h"
 #include "BlackPearl/Component/LightComponent/Light.h"
 #include "BlackPearl/Component/LightComponent/LightSources.h"
-
+#include "BlackPearl/LightProbes/LightProbes.h"
 namespace BlackPearl {
 	class ObjectManager
 	{
@@ -37,10 +37,10 @@ namespace BlackPearl {
 		Object* CreateCube(const std::string& shaderPath,const std::string& texturePath);
 		Object* CreateSphere(const float radius, const unsigned int stackCount, const unsigned int sectorCount, const std::string& shaderPath, const std::string& texturePath);
 		Object* CreatePlane(const std::string& shaderPath, const std::string& texturePath);
-		Object* CreateSkyBox(const std::vector<std::string>& textureFaces);
+		Object* CreateSkyBox(const std::vector<std::string>& textureFaces, const std::string& shaderPath);
 
 		Object* CreateQuad(const std::string& shaderPath , const std::string& texturePath);
-
+		LightProbe* CreateLightProbe(const std::string& shaderPath, const std::string& texturePath);
 
 
 		std::vector<Object*> GetObjects();

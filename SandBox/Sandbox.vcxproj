@@ -133,6 +133,7 @@
   <ItemGroup>
     <ClInclude Include="src\Layers\AdvanceLightTestLayer.h" />
     <ClInclude Include="src\Layers\FrameBufferTestLayer.h" />
+    <ClInclude Include="src\Layers\IBLProbesRenderingLayer.h" />
     <ClInclude Include="src\Layers\IBLRenderingLayer.h" />
     <ClInclude Include="src\Layers\PbrRenderingLayer.h" />
     <ClInclude Include="src\Layers\ShadowMapPointLightLayer.h" />
