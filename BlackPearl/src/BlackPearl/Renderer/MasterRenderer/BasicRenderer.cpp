@@ -166,7 +166,8 @@ namespace BlackPearl {
 		PrepareBasicShaderParameters(mesh, transformMatrix, shader, isLight);
 	}
 	void BasicRenderer::PrepareBasicShaderParameters(Mesh &mesh, glm::mat4 transformMatrix, std::shared_ptr<Shader> shader, bool isLight)
-	{
+	{	//TODO::shader在渲染前Bind()!不在这！
+		//shader->Bind();
 
 		std::shared_ptr<Material> material = mesh.GetMaterial();
 		std::shared_ptr<Material::TextureMaps> textures = material->GetTextureMaps();

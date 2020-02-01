@@ -1,6 +1,7 @@
 #pragma once
 #include "glm/glm.hpp"
 #include "BlackPearl/Renderer/Material/CubeMapTexture.h"
+#include "BlackPearl/Component/TransformComponent/Transform.h"
 #include "BlackPearl/Object/Object.h"
 namespace BlackPearl {
 
@@ -29,10 +30,11 @@ namespace BlackPearl {
 
 		/* */
 		unsigned int GetMaxMipMapLevel() const{ return m_MaxMipmapLevel; }
-		glm::vec3	 GetPosition()const { return m_Center; }
+		glm::vec3	 GetPosition()const { return m_CubeObj->GetComponent<Transform>()->GetPosition(); }
 
 		/*set*/
 		void SetPosition(glm::vec3 pos);
+		void SetScale(glm::vec3 size);
 		/*cubeObj*/
 		Object* GetCubeObj()const { return m_CubeObj; }
 
@@ -50,11 +52,11 @@ namespace BlackPearl {
 
 		unsigned int					m_SampleCounts = 1024;
 		unsigned int					m_EnvironmentCubeMapResolution = 512;
-		unsigned int					m_DiffuseCubeMapResolution = 32;
+		unsigned int					m_DiffuseCubeMapResolution = 128;
 		unsigned int					m_SpecularCubeMapResolution = 128;
 
-		glm::vec3 m_Center;
-		
+		//glm::vec3 m_Center;
+		glm::vec3 m_Size;
 		Object* m_CubeObj;
 	};
 

@@ -47,6 +47,8 @@ public:
 
 		/* create probes */
 		BlackPearl::LightProbe *probe1 = CreateLightProbe();
+		probe1->SetPosition({ 0.0,0.0,-3.0 });
+
 		BlackPearl::LightProbe* probe2 = CreateLightProbe();
 		probe2->SetPosition({3.0,0.0,0.0});
 		BlackPearl::LightProbe* probe3 = CreateLightProbe();
@@ -73,7 +75,7 @@ public:
 			 "assets/skybox/skybox/back.jpg"
 			});
 
-		m_BackGroundObjsList.push_back(m_SkyBoxObj);
+		//m_BackGroundObjsList.push_back(m_SkyBoxObj);
 		/*create model*/
 		BlackPearl::Object *deer=  CreateModel("assets/models/deer/Deer.obj", "assets/shaders/IronMan.glsl");
 		deer->GetComponent<BlackPearl::Transform>()->SetScale(glm::vec3(0.005));
@@ -157,7 +159,7 @@ public:
 		
 		/*Draw CubeMap from hdrMap and Create environment IrrdianceMap*/
 		m_IBLProbesRenderer->Init(m_ProbesCamera,m_BrdfLUTQuadObj,  *GetLightSources(), m_BackGroundObjsList, m_LightProbes);
-
+		//m_IBLProbesRenderer->Render(m_ProbesCamera, *GetLightSources(), m_BackGroundObjsList, m_LightProbes);
 		glViewport(0, 0, BlackPearl::Configuration::WindowWidth, BlackPearl::Configuration::WindowHeight);
 
 	}
@@ -179,7 +181,8 @@ public:
 		BlackPearl::RenderCommand::SetClearColor(m_BackgroundColor);
 		BlackPearl::Renderer::BeginScene(*(m_CameraObj->GetComponent<BlackPearl::PerspectiveCamera>()), *GetLightSources());
 
-		glViewport(0, 0, BlackPearl::Configuration::WindowWidth, BlackPearl::Configuration::WindowHeight);
+		//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
 		/*Draw Lights*/
 		//m_BasicRenderer->DrawLightSources(GetLightSources());
 
@@ -192,33 +195,27 @@ public:
 		m_IBLRenderer->RenderTextureSphere(m_SphereObjPlastic);*/
 	
 		
-		m_BasicRenderer->RenderScene(m_BackGroundObjsList, GetLightSources());
 
+		//m_BasicRenderer->DrawObject(m_SkyBoxObj);
 
 
 		/*IBLProbes rendering*/
-		m_IBLProbesRenderer->Render(m_ProbesCamera, *GetLightSources(), m_BackGroundObjsList, m_LightProbes);
+		//m_IBLProbesRenderer->Render(m_ProbesCamera, *GetLightSources(), m_BackGroundObjsList, m_LightProbes);
+
+		if (BlackPearl::Input::IsKeyPressed(BP_KEY_U)) {
+
+			/*IBLProbes rendering*/
+			m_IBLProbesRenderer->Render(m_ProbesCamera, *GetLightSources(), m_BackGroundObjsList, m_LightProbes);
+		}
+		
+
+		glViewport(0, 0, BlackPearl::Configuration::WindowWidth, BlackPearl::Configuration::WindowHeight);
+		m_BasicRenderer->RenderScene(m_BackGroundObjsList, GetLightSources());
 
 
-
-		/*Draw SkyBox*/
-	/*	m_BackGroundShader->Bind();
-		m_BackGroundShader->SetUniform1i("cubeMap", 0);
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_CUBE_MAP, m_IBLRenderer->GetHdrCubeMapID());
-		m_BasicRenderer->DrawObject(m_CubeObj, m_BackGroundShader);*/
-
-		/*draw BRDFLUTTextureID in a quad*/
-		//glViewport(0, 0, 120, 120);
-		//m_DebugQuadShader->Bind();
-		//m_DebugQuadShader->SetUniform1i("u_BRDFLUTMap", 5);
-		//glActiveTexture(GL_TEXTURE0 + 5);
-		//m_IBLProbesRenderer->GetSpecularBrdfLUTTexture()->Bind();
-		////glBindTexture(GL_TEXTURE_2D, m_IBLRenderer->GetBRDFLUTTextureID());
-		//m_BasicRenderer->DrawObject(m_DebugQuad, m_DebugQuadShader);
+		m_IBLProbesRenderer->RenderProbes(m_LightProbes);
 
 
-		//m_IBLRenderer->DrawBRDFLUTMap();
 
 	}
 
@@ -228,6 +225,7 @@ public:
 	}
 	void InputCheck(float ts)
 	{
+		
 		auto cameraComponent = m_CameraObj->GetComponent<BlackPearl::PerspectiveCamera>();
 		if (BlackPearl::Input::IsKeyPressed(BP_KEY_W)) {
 			m_CameraPosition += cameraComponent->Front() * m_CameraMoveSpeed * ts;
@@ -317,8 +315,8 @@ private:
 	CameraRotation m_CameraRotation;
 	float m_LastMouseX;
 	float m_LastMouseY;
-	float m_CameraMoveSpeed = 1.0f;
-	float m_CameraRotateSpeed = 1.0f;
+	float m_CameraMoveSpeed =0.5f;
+	float m_CameraRotateSpeed =0.5f;
 
 	//Shader
 	std::shared_ptr<BlackPearl::Shader> m_BackGroundShader;

@@ -204,7 +204,9 @@ namespace BlackPearl {
 	}
 	void FrameBuffer::CleanUp()
 	{
-	/*	glDeleteFramebuffers(1,m_RendererID);*/
+		
+		glDeleteRenderbuffers(1, &m_RenderBufferID);
+		glDeleteFramebuffers(1,&m_RendererID);
 
 	}
 	void FrameBuffer::SetViewPort(int width, int height)

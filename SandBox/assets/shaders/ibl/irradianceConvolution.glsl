@@ -11,7 +11,7 @@ out vec3 v_FragPos;
 void main()
 {
 	v_FragPos = aPos;
-	gl_Position = u_ProjectionView*vec4(aPos,1.0);
+	gl_Position = u_ProjectionView*u_Model*vec4(aPos,1.0);
 
 }
 
@@ -53,6 +53,6 @@ void main(){
 		}
 	}
 	irradiance = PI * irradiance * (1.0 / float(nrSamples));
-	FragColor =vec4(irradiance, 1.0);
+	FragColor = vec4(irradiance, 1.0);
 
 }

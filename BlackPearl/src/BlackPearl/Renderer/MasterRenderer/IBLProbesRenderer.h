@@ -10,6 +10,7 @@ namespace BlackPearl {
 		IBLProbesRenderer();
 		virtual ~IBLProbesRenderer();
 		void Render(Object* ProbesCamera, const LightSources& lightSources, const std::vector<Object*> objects, const std::vector<LightProbe*> probes);
+		void RenderProbes(const std::vector<LightProbe*> probes);
 		void Init(Object* ProbesCamera, Object* brdfLUTQuadObj, const LightSources& lightSources, const std::vector<Object*> objects, const std::vector<LightProbe*> probes);
 		std::shared_ptr<Texture> GetSpecularBrdfLUTTexture() const { return m_SpecularBrdfLUTTexture; }
 
