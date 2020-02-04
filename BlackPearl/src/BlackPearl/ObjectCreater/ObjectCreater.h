@@ -36,13 +36,13 @@ namespace BlackPearl {
 		{
 			m_EntityManager = entityManager;
 		}
-
+		Object* CreateCamera();
 		Object* CreateCube(const std::string& shaderPath, const std::string& texturePath,const std::string name = "Cube");
 		Object* CreatePlane(const std::string& shaderPath, const std::string& texturePath);
 		Object* CreateSphere(const float radius, const unsigned int stackCount, const unsigned int sectorCount, const std::string& shaderPath, const std::string& texturePath);
 		Object* CreateModel(std::string modelPath,std::string shaderPath);
 		Object* CreateSkyBox( const std::vector<std::string>& textureFaces,const std::string& shaderPath);
-		LightProbe* CreateLightProbe(const std::string& shaderPath, const std::string& texturePath);
+		Object* CreateLightProbe(const std::string& shaderPath, const std::string& texturePath);
 	};
 
 	////////////////////////Object2DCreater////////////////////////////////
@@ -67,15 +67,15 @@ namespace BlackPearl {
 		Object* CreateLight(LightType type, LightSources* lightSources);
 
 	};
-	////////////////////////CameraCreater//////////////////////////////////
-	/////////////////////////////////////////////////////////////////////
-	class CameraCreater :public ObjectCreater {
+	//////////////////////////CameraCreater//////////////////////////////////
+	///////////////////////////////////////////////////////////////////////
+	//class CameraCreater :public ObjectCreater {
 
-	public:
-		CameraCreater(EntityManager *entityManager)
-			:ObjectCreater(entityManager) {}
+	//public:
+	//	CameraCreater(EntityManager *entityManager)
+	//		:ObjectCreater(entityManager) {}
 
-		Object* CreateCamera();
+	//
 
-	};
+	//};
 }

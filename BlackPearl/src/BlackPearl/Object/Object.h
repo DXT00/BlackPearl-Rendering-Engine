@@ -2,6 +2,7 @@
 #include "BlackPearl/Entity/Entity.h"
 #include "BlackPearl/Component/BaseComponent.h"
 #include "BlackPearl/Component/Component.h"
+
 #include <string>
 namespace BlackPearl {
 
@@ -91,10 +92,15 @@ namespace BlackPearl {
 
 		virtual void Destroy() override;
 
+		/*Child Objs*/
+		void AddChildObj(Object* obj);
+		std::vector<Object*> GetChildObjs()const { return m_ChildObjs; }
 	private:
 		std::unordered_map<BaseComponent::Family, std::shared_ptr<BaseComponent>> m_Components;
 		Configuration::ComponentMask m_ComponentMask;
 		std::string m_Name;
+
+		std::vector<Object*> m_ChildObjs;
 	};
 
 

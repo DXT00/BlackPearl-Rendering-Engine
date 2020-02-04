@@ -14,19 +14,14 @@ public:
 		: Layer(name, objectManager)
 	{
 
-		m_CameraObj = CreateCamera();
-		auto cameraComponent = m_CameraObj->GetComponent<BlackPearl::PerspectiveCamera>();
-		cameraComponent->SetPosition(glm::vec3(0.0f, 0.0f, 8.0f));
-		m_CameraPosition = cameraComponent->GetPosition();
-		m_CameraRotation.Yaw = cameraComponent->Yaw();
-		m_CameraRotation.Pitch = cameraComponent->Pitch();
+		
 
-		/*ProbesCamera is used to render probes'environmentMap*/
-		m_ProbesCamera = CreateCamera();
-		m_ProbesCamera->GetComponent<BlackPearl::PerspectiveCamera>()->SetFov(90.0f);
-		/* make sure aspectRadio = 1 */
-		m_ProbesCamera->GetComponent<BlackPearl::PerspectiveCamera>()->SetWidth(512);
-		m_ProbesCamera->GetComponent<BlackPearl::PerspectiveCamera>()->SetHeight(512);
+		///*ProbesCamera is used to render probes'environmentMap*/
+		//m_ProbesCamera = CreateCamera();
+		//m_ProbesCamera->GetComponent<BlackPearl::PerspectiveCamera>()->SetFov(90.0f);
+		///* make sure aspectRadio = 1 */
+		//m_ProbesCamera->GetComponent<BlackPearl::PerspectiveCamera>()->SetWidth(512);
+		//m_ProbesCamera->GetComponent<BlackPearl::PerspectiveCamera>()->SetHeight(512);
 
 		
 
@@ -75,7 +70,7 @@ public:
 			 "assets/skybox/skybox/back.jpg"
 			});
 
-		//m_BackGroundObjsList.push_back(m_SkyBoxObj);
+		m_BackGroundObjsList.push_back(m_SkyBoxObj);
 		/*create model*/
 		BlackPearl::Object *deer=  CreateModel("assets/models/deer/Deer.obj", "assets/shaders/IronMan.glsl");
 		deer->GetComponent<BlackPearl::Transform>()->SetScale(glm::vec3(0.005));
@@ -87,7 +82,9 @@ public:
 		ironMan->GetComponent<BlackPearl::Transform>()->SetPosition({ 0.0f,-1.0f,0.0f });
 		
 		m_BackGroundObjsList.push_back(ironMan);
-
+		BlackPearl::Object* cube = CreateCube();
+		cube->GetComponent<BlackPearl::Transform>()->SetPosition({ 0.0f,-3.0f,0.0f });
+		m_BackGroundObjsList.push_back(cube);
 
 		/*create pointlights*/
 		BlackPearl::Object* light = CreateLight(BlackPearl::LightType::PointLight);
@@ -95,7 +92,7 @@ public:
 		m_SphereObj->GetComponent<BlackPearl::MeshRenderer>()->SetShaders(m_PBRRenderer->GetShader());
 
 		//textures spheres
-		std::shared_ptr<BlackPearl::Texture> RustalbedoTexture(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::DiffuseMap, "assets/texture/pbr/rustSphere/rustediron2_basecolor.png"));
+		/*std::shared_ptr<BlackPearl::Texture> RustalbedoTexture(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::DiffuseMap, "assets/texture/pbr/rustSphere/rustediron2_basecolor.png"));
 		std::shared_ptr<BlackPearl::Texture> RustaoTexture(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::AoMap, "assets/texture/pbr/rustSphere/rustediron2_ao.png"));
 		std::shared_ptr<BlackPearl::Texture> RustroughnessTexture(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::RoughnessMap, "assets/texture/pbr/rustSphere/rustediron2_roughness.png"));
 		std::shared_ptr<BlackPearl::Texture> RustmentallicTexture(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::MentallicMap, "assets/texture/pbr/rustSphere/rustediron2_metallic.png"));
@@ -153,12 +150,12 @@ public:
 		m_SphereObjsList.push_back(m_SphereObjIron);
 		m_SphereObjsList.push_back(m_SphereObjStone);
 		m_SphereObjsList.push_back(m_SphereObjPlastic);
-		m_SphereObjsList.push_back(m_SphereObjRust);
+		m_SphereObjsList.push_back(m_SphereObjRust);*/
 
 
 		
 		/*Draw CubeMap from hdrMap and Create environment IrrdianceMap*/
-		m_IBLProbesRenderer->Init(m_ProbesCamera,m_BrdfLUTQuadObj,  *GetLightSources(), m_BackGroundObjsList, m_LightProbes);
+		m_IBLProbesRenderer->Init(m_BrdfLUTQuadObj,  *GetLightSources(), m_BackGroundObjsList, m_LightProbes);
 		//m_IBLProbesRenderer->Render(m_ProbesCamera, *GetLightSources(), m_BackGroundObjsList, m_LightProbes);
 		glViewport(0, 0, BlackPearl::Configuration::WindowWidth, BlackPearl::Configuration::WindowHeight);
 
@@ -179,7 +176,7 @@ public:
 
 		/*render scene*/
 		BlackPearl::RenderCommand::SetClearColor(m_BackgroundColor);
-		BlackPearl::Renderer::BeginScene(*(m_CameraObj->GetComponent<BlackPearl::PerspectiveCamera>()), *GetLightSources());
+		BlackPearl::Renderer::BeginScene(*(m_MainCamera->GetObj()->GetComponent<BlackPearl::PerspectiveCamera>()), *GetLightSources());
 
 		//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -205,7 +202,7 @@ public:
 		if (BlackPearl::Input::IsKeyPressed(BP_KEY_U)) {
 
 			/*IBLProbes rendering*/
-			m_IBLProbesRenderer->Render(m_ProbesCamera, *GetLightSources(), m_BackGroundObjsList, m_LightProbes);
+			m_IBLProbesRenderer->Render(*GetLightSources(), m_BackGroundObjsList, m_LightProbes);
 		}
 		
 
@@ -223,71 +220,9 @@ public:
 
 
 	}
-	void InputCheck(float ts)
-	{
-		
-		auto cameraComponent = m_CameraObj->GetComponent<BlackPearl::PerspectiveCamera>();
-		if (BlackPearl::Input::IsKeyPressed(BP_KEY_W)) {
-			m_CameraPosition += cameraComponent->Front() * m_CameraMoveSpeed * ts;
-		}
-		else if (BlackPearl::Input::IsKeyPressed(BP_KEY_S)) {
-			m_CameraPosition -= cameraComponent->Front() * m_CameraMoveSpeed * ts;
-		}
-		if (BlackPearl::Input::IsKeyPressed(BP_KEY_A)) {
-			m_CameraPosition -= cameraComponent->Right() * m_CameraMoveSpeed * ts;
-		}
-		else if (BlackPearl::Input::IsKeyPressed(BP_KEY_D)) {
-			m_CameraPosition += cameraComponent->Right() * m_CameraMoveSpeed * ts;
-		}
-		if (BlackPearl::Input::IsKeyPressed(BP_KEY_E)) {
-			m_CameraPosition += cameraComponent->Up() * m_CameraMoveSpeed * ts;
-		}
-		else if (BlackPearl::Input::IsKeyPressed(BP_KEY_Q)) {
-			m_CameraPosition -= cameraComponent->Up() * m_CameraMoveSpeed * ts;
-		}
-		// ---------------------Rotation--------------------------------------
-
-		float posx = BlackPearl::Input::GetMouseX();
-		float posy = BlackPearl::Input::GetMouseY();
-		if (BlackPearl::Input::IsMouseButtonPressed(BP_MOUSE_BUTTON_RIGHT)) {
-
-
-			if (BlackPearl::Input::IsFirstMouse()) {
-				BlackPearl::Input::SetFirstMouse(false);
-				m_LastMouseX = posx;
-				m_LastMouseY = posy;
-			}
-			float diffx = posx - m_LastMouseX;
-			float diffy = -posy + m_LastMouseY;
-
-			m_LastMouseX = posx;
-			m_LastMouseY = posy;
-			m_CameraRotation.Yaw += diffx * m_CameraRotateSpeed * ts;
-			m_CameraRotation.Pitch += diffy * m_CameraRotateSpeed * ts;
-
-			if (m_CameraRotation.Pitch > 89.0f)
-				m_CameraRotation.Pitch = 89.0f;
-			if (m_CameraRotation.Pitch < -89.0f)
-				m_CameraRotation.Pitch = -89.0f;
-
-			cameraComponent->SetRotation(m_CameraRotation.Yaw, m_CameraRotation.Pitch);
-
-		}
-		else {
-
-			m_LastMouseX = posx;//lastMouse时刻记录当前坐标位置，防止再次点击右键时，发生抖动！
-			m_LastMouseY = posy;
-		}
-
-
-		cameraComponent->SetPosition(m_CameraPosition);
-	}
+	
 private:
 	//Scene
-
-	BlackPearl::Object* m_CameraObj = nullptr;
-	BlackPearl::Object* m_ProbesCamera = nullptr;
-
 	
 	BlackPearl::Object* m_DebugQuad = nullptr;
 
@@ -305,18 +240,7 @@ private:
 	int m_Colums = 4;
 	float m_Spacing = 1.5;
 
-	//Camera
-	glm::vec3 m_CameraPosition = { 0.0f,0.0f,0.0f };
-	struct CameraRotation {
-		float Yaw;
-		float Pitch;
-
-	};
-	CameraRotation m_CameraRotation;
-	float m_LastMouseX;
-	float m_LastMouseY;
-	float m_CameraMoveSpeed =0.5f;
-	float m_CameraRotateSpeed =0.5f;
+	
 
 	//Shader
 	std::shared_ptr<BlackPearl::Shader> m_BackGroundShader;

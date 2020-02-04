@@ -51,10 +51,13 @@ namespace BlackPearl {
 		void RecalculateViewMatrix();
 		void RecalculateViewMatrix(float yaw, float pitch);
 
-		inline void SetPosition(const glm::vec3& position) { m_Position = position; RecalculateViewMatrix(); }
+		/*for cubeMap 6 face rendering:positiveX,negativeX,positiveY,negativeY,positiveZ,negativeZ*/
+		void SwitchToFace(unsigned int i);
+
+		inline void SetPositionAndUpdateMatrix(const glm::vec3& position) { m_Position = position; RecalculateViewMatrix(); }
 		//TODO::
 		inline void SetPositionOnly(const glm::vec3& position) { m_Position = position; }
-		inline void SetRotation(float yaw, float pitch) {
+		inline void SetRotationAndUpdateMatrix(float yaw, float pitch) {
 			m_ViewMatrixProps.Yaw = yaw,
 			m_ViewMatrixProps.Pitch = pitch;
 			RecalculateViewMatrix(yaw, pitch);

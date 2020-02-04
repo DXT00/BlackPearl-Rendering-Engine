@@ -16,15 +16,6 @@ namespace BlackPearl {
 		return obj;
 	}
 
-	Object * ObjectManager::CreateCamera()
-	{
-		Object* obj = m_CameraCreater->CreateCamera();
-		m_EntityToObjects.insert(std::make_pair(obj->GetId().index(), obj));
-
-		return obj;
-
-	}
-
 	Object * ObjectManager::CreateLight(LightType type, LightSources* lightSources)
 	{
 		Object *obj = m_LightCreater->CreateLight(type, lightSources);
@@ -69,6 +60,31 @@ namespace BlackPearl {
 		m_EntityToObjects.insert(std::make_pair(obj->GetId().index(), obj));
 		return obj;
 	}
+	///////////////////////Blending Object///////////////////////////////
+
+	LightProbe* ObjectManager::CreateLightProbe(const std::string& shaderPath, const std::string& texturePath)
+	{
+		Object* obj = m_Object3DCreater->CreateLightProbe(shaderPath, texturePath);
+		Object* cameraObj = m_Object3DCreater->CreateCamera();
+
+		LightProbe* lightProbe = DBG_NEW LightProbe(obj, cameraObj);
+		m_EntityToObjects.insert(std::make_pair(lightProbe->GetObj()->GetId().index(), lightProbe->GetObj()));
+		m_EntityToObjects.insert(std::make_pair(cameraObj->GetId().index(), cameraObj));
+
+		//note:dosen't put cameraObj to m_EntityToObjects!
+		return lightProbe;
+	}
+
+	MainCamera* ObjectManager::CreateCamera()
+	{
+		Object* obj = m_Object3DCreater->CreateCamera();
+		MainCamera* mainCamera = DBG_NEW MainCamera(obj);
+		m_EntityToObjects.insert(std::make_pair(mainCamera->GetObj()->GetId().index(), mainCamera->GetObj()));
+
+		return mainCamera;
+
+	}
+
 
 	///////////////////////2D///////////////////////////////
 	Object * ObjectManager::CreateQuad(const std::string & shaderPath, const std::string & texturePath)
@@ -78,13 +94,6 @@ namespace BlackPearl {
 		return obj;
 	}
 
-	LightProbe* ObjectManager::CreateLightProbe(const std::string& shaderPath, const std::string& texturePath)
-	{
-		LightProbe* lightProbe = m_Object3DCreater->CreateLightProbe(shaderPath, texturePath);
-		
-		m_EntityToObjects.insert(std::make_pair(lightProbe->GetCubeObj()->GetId().index(), lightProbe->GetCubeObj()));
-		return lightProbe;
-	}
 
 	std::vector<Object*> ObjectManager::GetObjects()
 	{

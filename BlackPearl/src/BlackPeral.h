@@ -28,6 +28,7 @@
 #include "BlackPearl/Component/BaseComponent.h"
 
 #include "BlackPearl/LightProbes/LightProbes.h"
+#include "BlackPearl/MainCamera/MainCamera.h"
 #include "BlackPearl/Object/Object.h"
 #include "BlackPearl/ObjectManager/ObjectManager.h"
 

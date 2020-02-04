@@ -1392,6 +1392,7 @@
     <ClInclude Include="src\BlackPearl\Renderer\MasterRenderer\IBLRenderer.h" />
     <ClInclude Include="src\BlackPearl\LightProbes\LightProbes.h" />
     <ClInclude Include="src\BlackPearl\Renderer\MasterRenderer\IBLProbesRenderer.h" />
+    <ClInclude Include="src\BlackPearl\MainCamera\MainCamera.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\BlackPearl\Application.cpp">
@@ -1560,5 +1561,6 @@
     <ClCompile Include="src\BlackPearl\Renderer\MasterRenderer\IBLRenderer.cpp" />
     <ClCompile Include="src\BlackPearl\LightProbes\LightProbes.cpp" />
     <ClCompile Include="src\BlackPearl\Renderer\MasterRenderer\IBLProbesRenderer.cpp" />
+    <ClCompile Include="src\BlackPearl\MainCamera\MainCamera.cpp" />
   </ItemGroup>
 </Project>

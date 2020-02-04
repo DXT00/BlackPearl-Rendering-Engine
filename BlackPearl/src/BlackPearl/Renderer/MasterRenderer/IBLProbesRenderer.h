@@ -9,16 +9,16 @@ namespace BlackPearl {
 	public:
 		IBLProbesRenderer();
 		virtual ~IBLProbesRenderer();
-		void Render(Object* ProbesCamera, const LightSources& lightSources, const std::vector<Object*> objects, const std::vector<LightProbe*> probes);
+		void Render(const LightSources& lightSources, const std::vector<Object*> objects, const std::vector<LightProbe*> probes);
 		void RenderProbes(const std::vector<LightProbe*> probes);
-		void Init(Object* ProbesCamera, Object* brdfLUTQuadObj, const LightSources& lightSources, const std::vector<Object*> objects, const std::vector<LightProbe*> probes);
+		void Init( Object* brdfLUTQuadObj, const LightSources& lightSources, const std::vector<Object*> objects, const std::vector<LightProbe*> probes);
 		std::shared_ptr<Texture> GetSpecularBrdfLUTTexture() const { return m_SpecularBrdfLUTTexture; }
 
 	private:
 		/*render environment CubeMap of each probe */
-		void RenderEnvironmerntCubeMaps(Object* ProbesCamera, const LightSources& lightSources, std::vector<Object*> objects, LightProbe* probes);
-		void RenderDiffuseIrradianceMap(Object* ProbesCamera, const LightSources& lightSources, std::vector<Object*> objects, LightProbe *probe);
-		void RenderSpecularPrefilterMap(Object* ProbesCamera, const LightSources& lightSources, std::vector<Object*> objects, LightProbe *probe);
+		void RenderEnvironmerntCubeMaps(const LightSources& lightSources, std::vector<Object*> objects, LightProbe* probes);
+		void RenderDiffuseIrradianceMap(const LightSources& lightSources, std::vector<Object*> objects, LightProbe *probe);
+		void RenderSpecularPrefilterMap(const LightSources& lightSources, std::vector<Object*> objects, LightProbe *probe);
 
 		void RenderSpecularBRDFLUTMap();
 

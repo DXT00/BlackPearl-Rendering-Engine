@@ -5,13 +5,17 @@ layout (location = 0) in vec3 aPos;
 
 
 uniform mat4 u_ProjectionView;
+uniform mat4 u_Model;
 
+uniform mat4 u_CubeMapProjectionView;
 out vec3 WorldPos;
 
 void main(){
 
 	WorldPos = aPos;
-	gl_Position = u_ProjectionView*vec4(WorldPos,1.0);
+	//这里注意：渲染Skybox时不需要u_Model,LightProbes时需要
+	gl_Position = u_ProjectionView*u_Model*vec4(WorldPos,1.0);
+	//gl_Position = u_CubeMapProjectionView*u_Model*vec4(WorldPos,1.0);
 
 }
 
@@ -129,6 +133,6 @@ void main(){
 
 	}
 	prefilterColor = prefilterColor/totalWeight;
-	FragColor = vec4(prefilterColor,1.0);
+	FragColor = vec4(prefilterColor,1.0);//vec4(1.0,0.0,0.0,1.0);//
 
 }

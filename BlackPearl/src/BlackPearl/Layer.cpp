@@ -2,6 +2,7 @@
 
 #include"BlackPearl/Layer.h"
 #include "BlackPearl/Component/LightComponent/PointLight.h"
+#include "BlackPearl/Component/CameraComponent/PerspectiveCamera.h"
 #include "Renderer/Model/Model.h"
 #include "Renderer/Shader/Shader.h"
 #include "imgui.h"
@@ -135,7 +136,10 @@ namespace BlackPearl {
 			if (currentObj->HasComponent < BlackPearl::PointLight>()) {
 				ShowPointLight(currentObj->GetComponent<BlackPearl::PointLight>());
 			}
-		
+			if (currentObj->HasComponent< BlackPearl::PerspectiveCamera>()) {
+				ShowCamera(currentObj->GetComponent<BlackPearl::PerspectiveCamera>());
+
+			}
 		}
 
 		ImGui::End();
@@ -192,7 +196,9 @@ namespace BlackPearl {
 	LightProbe* Layer::CreateLightProbe(const std::string& shaderPath, const std::string& texturePath)
 	{
 		LightProbe* probe = m_ObjectManager->CreateLightProbe(shaderPath, texturePath);
-		m_ObjectsList.push_back(probe->GetCubeObj());
+		m_ObjectsList.push_back(probe->GetObj());
+		m_ObjectsList.push_back(probe->GetCamera()->GetObj());
+
 		return probe;
 	}
 	Object* Layer::CreateModel(const std::string& modelPath, const std::string& shaderPath)
@@ -201,11 +207,11 @@ namespace BlackPearl {
 		m_ObjectsList.push_back(obj);
 		return obj;
 	}
-	Object* Layer::CreateCamera() {
+	MainCamera* Layer::CreateCamera() {
 
-		Object* obj= m_ObjectManager->CreateCamera();
-		m_ObjectsList.push_back(obj);
-		return obj;
+		MainCamera* mainCamera= m_ObjectManager->CreateCamera();
+		m_ObjectsList.push_back(mainCamera->GetObj());
+		return mainCamera;
 	}
 
 	//void Layer::ShowShader(static std::string &imguiShaders, static char* shader, Mesh & mesh, int meshIndex, static  int &itemIndex)
@@ -225,6 +231,20 @@ namespace BlackPearl {
 
 
 	//}
+	void Layer::ShowCamera(PerspectiveCamera* perspectiveCamera)
+	{
+		ImGui::Text("Yaw = %f,Pitch= %f", perspectiveCamera->Yaw(),perspectiveCamera->Pitch());
+		ImGui::Text("ProjectionViewMatrix[0].x = %f,ProjectionViewMatrix[1].x = %f", perspectiveCamera->GetViewProjectionMatrix()[0].x
+		, perspectiveCamera->GetViewProjectionMatrix()[1].x);
+		ImGui::Text("ProjectionViewMatrix[2].x = %f,ProjectionViewMatrix[3].x = %f",  perspectiveCamera->GetViewProjectionMatrix()[2].x, perspectiveCamera->GetViewProjectionMatrix()[3].x);
+		ImGui::Text("Position.x = %f,Position.y = %f,Position.z = %f", perspectiveCamera->GetPosition().x, perspectiveCamera->GetPosition().y, perspectiveCamera->GetPosition().z);
+		ImGui::Text("Front.x = %f,Front.y = %f,Front.z = %f", perspectiveCamera->Front().x, perspectiveCamera->Front().y, perspectiveCamera->Front().z);
+		ImGui::Text("Up.x = %f,Up.y = %f,Up.z = %f", perspectiveCamera->Up().x, perspectiveCamera->Up().y, perspectiveCamera->Up().z);
+		ImGui::Text("Znear = %f,Zfar = %f,Fov = %f", perspectiveCamera->GetZnear(), perspectiveCamera->GetZfar(), perspectiveCamera->GetFov());
+
+
+	}
+
 	void Layer::ShowShader(std::string imguiShaders,  int meshIndex, static  int &itemIndex,int offset)
 	{
 
@@ -563,6 +583,7 @@ namespace BlackPearl {
 
 		}*/
 	}
+
 
 
 

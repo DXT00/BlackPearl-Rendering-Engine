@@ -51,4 +51,31 @@ namespace BlackPearl {
 
 	}
 
+	void Camera::SwitchToFace(unsigned int i)
+	{	//服从右手坐标系（食指指向front，大拇指指向up）
+		switch (i)
+		{
+		case 0://+x yaw pitch
+			SetRotationAndUpdateMatrix(0.0f, 0.0f);
+			break;
+		case 1://-x
+			SetRotationAndUpdateMatrix(-180.0f, 0.0f);
+			break;
+		case 2://+y
+			SetRotationAndUpdateMatrix(0.0f, 90.0f);
+			break;
+		case 3://-y
+			SetRotationAndUpdateMatrix(90.0f, -90.0f);
+			break;
+		case 4://+z
+			SetRotationAndUpdateMatrix(90.0f, 0.0f);
+			break;
+		case 5://-z
+			SetRotationAndUpdateMatrix(-90.0f, 0.0f);
+			break;
+		default:
+			break;
+		}
+	}
+
 }

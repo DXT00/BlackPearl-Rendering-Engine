@@ -14,12 +14,12 @@ public:
 		: Layer(name, objectManager)
 	{
 
-		m_CameraObj = CreateCamera();
-		auto cameraComponent = m_CameraObj->GetComponent<BlackPearl::PerspectiveCamera>();
-		cameraComponent->SetPosition(glm::vec3(0.0f, 0.0f, 8.0f));
-		m_CameraPosition = cameraComponent->GetPosition();
-		m_CameraRotation.Yaw = cameraComponent->Yaw();
-		m_CameraRotation.Pitch = cameraComponent->Pitch();
+		//m_CameraObj = CreateCamera();
+		//auto cameraComponent = m_CameraObj->GetComponent<BlackPearl::PerspectiveCamera>();
+		//cameraComponent->SetPosition(glm::vec3(0.0f, 0.0f, 8.0f));
+		//m_CameraPosition = cameraComponent->GetPosition();
+		//m_CameraRotation.Yaw = cameraComponent->Yaw();
+		//m_CameraRotation.Pitch = cameraComponent->Pitch();
 		m_SphereObj = CreateSphere(0.5, 64, 64);
 		//Scene
 		m_PBRRenderer = DBG_NEW BlackPearl::PBRRenderer();
@@ -59,7 +59,7 @@ public:
 
 		// render
 		BlackPearl::RenderCommand::SetClearColor(m_BackgroundColor);
-		BlackPearl::Renderer::BeginScene(*(m_CameraObj->GetComponent<BlackPearl::PerspectiveCamera>()), *GetLightSources());
+		BlackPearl::Renderer::BeginScene(*(m_MainCamera->GetObj()->GetComponent<BlackPearl::PerspectiveCamera>()), *GetLightSources());
 
 		//m_PBRRenderer->GetShader()->SetUniformVec3f("u_albedo", { 0.5f, 0.0f, 0.0f });
 	//	m_PBRRenderer->GetShader()->SetUniform1f("u_ao", 1.0f);
@@ -84,68 +84,11 @@ public:
 
 
 	}
-	void InputCheck(float ts)
-	{
-		auto cameraComponent = m_CameraObj->GetComponent<BlackPearl::PerspectiveCamera>();
-		if (BlackPearl::Input::IsKeyPressed(BP_KEY_W)) {
-			m_CameraPosition += cameraComponent->Front() * m_CameraMoveSpeed * ts;
-		}
-		else if (BlackPearl::Input::IsKeyPressed(BP_KEY_S)) {
-			m_CameraPosition -= cameraComponent->Front()* m_CameraMoveSpeed * ts;
-		}
-		if (BlackPearl::Input::IsKeyPressed(BP_KEY_A)) {
-			m_CameraPosition -= cameraComponent->Right() * m_CameraMoveSpeed * ts;
-		}
-		else if (BlackPearl::Input::IsKeyPressed(BP_KEY_D)) {
-			m_CameraPosition += cameraComponent->Right() * m_CameraMoveSpeed * ts;
-		}
-		if (BlackPearl::Input::IsKeyPressed(BP_KEY_E)) {
-			m_CameraPosition += cameraComponent->Up() * m_CameraMoveSpeed * ts;
-		}
-		else if (BlackPearl::Input::IsKeyPressed(BP_KEY_Q)) {
-			m_CameraPosition -= cameraComponent->Up() * m_CameraMoveSpeed * ts;
-		}
-		// ---------------------Rotation--------------------------------------
-
-		float posx = BlackPearl::Input::GetMouseX();
-		float posy = BlackPearl::Input::GetMouseY();
-		if (BlackPearl::Input::IsMouseButtonPressed(BP_MOUSE_BUTTON_RIGHT)) {
-
-
-			if (BlackPearl::Input::IsFirstMouse()) {
-				BlackPearl::Input::SetFirstMouse(false);
-				m_LastMouseX = posx;
-				m_LastMouseY = posy;
-			}
-			float diffx = posx - m_LastMouseX;
-			float diffy = -posy + m_LastMouseY;
-
-			m_LastMouseX = posx;
-			m_LastMouseY = posy;
-			m_CameraRotation.Yaw += diffx * m_CameraRotateSpeed * ts;
-			m_CameraRotation.Pitch += diffy * m_CameraRotateSpeed * ts;
-
-			if (m_CameraRotation.Pitch > 89.0f)
-				m_CameraRotation.Pitch = 89.0f;
-			if (m_CameraRotation.Pitch < -89.0f)
-				m_CameraRotation.Pitch = -89.0f;
-
-			cameraComponent->SetRotation(m_CameraRotation.Yaw, m_CameraRotation.Pitch);
-
-		}
-		else {
-
-			m_LastMouseX = posx;//lastMouse时刻记录当前坐标位置，防止再次点击右键时，发生抖动！
-			m_LastMouseY = posy;
-		}
-
-
-		cameraComponent->SetPosition(m_CameraPosition);
-	}
+	
 private:
 	//Scene
 	std::vector<BlackPearl::Object*> m_LightObjs;
-	BlackPearl::Object* m_CameraObj;
+
 	BlackPearl::Object* m_IronManObj;
 	BlackPearl::Object* m_QuadObj;
 	BlackPearl::Object* m_PlaneObj;

@@ -94,14 +94,14 @@ namespace BlackPearl {
 
 		for (int i = 0; i < meshes.size(); i++) {
 			std::shared_ptr<Shader> shader = meshes[i].GetMaterial()->GetShader();
-			//shader->Bind();
+			shader->Bind();
 			if (obj->HasComponent<PointLight>() || obj->HasComponent<ParallelLight>() || obj->HasComponent<SpotLight>()) {
 				PrepareShaderParameters(meshes[i], transformMatrix, shader, true);
 			}
 			else
 				PrepareShaderParameters(meshes[i], transformMatrix, shader);
 
-			Renderer::Submit(meshes[i].GetVertexArray(), meshes[i].GetMaterial()->GetShader(), transformMatrix, scene);
+			Renderer::Submit(meshes[i].GetVertexArray(), shader, transformMatrix, scene);
 			if (meshes[i].GetIndicesSize() > 0)
 				glDrawElements(GL_TRIANGLES, meshes[i].GetIndicesSize() / sizeof(unsigned int), GL_UNSIGNED_INT, 0);
 			else
@@ -144,6 +144,7 @@ namespace BlackPearl {
 
 		for (int i = 0; i < meshes.size(); i++) {
 			std::shared_ptr<Shader> shader = meshes[i].GetMaterial()->GetShader();
+			shader->Bind();
 			PrepareShaderParameters(meshes[i], transformMatrix, shader, true);
 			Renderer::Submit(meshes[i].GetVertexArray(), shader, transformMatrix, scene);
 			if (meshes[i].GetIndicesSize() > 0)

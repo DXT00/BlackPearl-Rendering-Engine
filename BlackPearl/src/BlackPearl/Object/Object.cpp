@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Object.h"
 #include "BlackPearl/Component/CameraComponent/PerspectiveCamera.h"
+#include "BlackPearl/Component/TransformComponent/Transform.h"
 #include <utility>
 namespace BlackPearl {
 
@@ -23,6 +24,17 @@ namespace BlackPearl {
 		m_ComponentMask.reset();
 		m_EntityManager->DestroyEntity(m_Id);	
 		m_Components.clear();
+	}
+
+	void Object::AddChildObj(Object* obj)
+	{
+		//TODO::Add other components...
+		m_ChildObjs.push_back(obj);
+		if (this->HasComponent<Transform>()) {
+			this->GetComponent<Transform>()->AddChild(obj->GetComponent<Transform>());
+		}
+
+
 	}
 
 }

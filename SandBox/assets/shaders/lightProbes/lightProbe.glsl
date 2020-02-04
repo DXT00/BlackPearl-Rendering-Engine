@@ -1,5 +1,5 @@
 #type vertex
-#version 330 core
+#version 430 core
 layout(location = 0) in vec3 aPos;
 
 out vec3 TexCoords;
@@ -31,7 +31,7 @@ void main()
 
 
 #type fragment
-#version 330 core
+#version 430 core
 out vec4 FragColor;
 in vec3 TexCoords;
 
@@ -61,12 +61,13 @@ float LinearizeDepth(float depth){
 void main(){
 	//FragColor = vec4(u_Material.diffuseColor,1.0);
 	//FragColor = vec4(1.0,1.0,0.1,1.0);//texture(u_Material.cube,TexCoords);//*vec4(u_Material.diffuseColor,1.0);
-	//vec3 color =texture(u_Material.cube,TexCoords).rgb;
-//	vec3 color =texture(u_Material.cube,TexCoords).rgb;//vec4(color,1.0);
-//	color = color/(color+vec3(1.0));
-//	color = pow(color,vec3(1.0/2.2));
+	vec3 color =texture(u_Material.cube,TexCoords).rgb;
+	//vec3 color =textureLod(u_Material.cube,TexCoords,1).rgb;//vec4(color,1.0);
+	color = color/(color+vec3(1.0));
+	color = pow(color,vec3(1.0/2.2));
 
-	FragColor = texture(u_Material.cube,TexCoords);//vec4(color,1.0);
+	//FragColor = texture(u_Material.cube,TexCoords);
+	FragColor = vec4(color,1.0);
 		//FragColor = texture(cubeMap,TexCoords);//vec4(color,1.0);
 
 //	float depth = LinearizeDepth(gl_FragCoord.z)/far;

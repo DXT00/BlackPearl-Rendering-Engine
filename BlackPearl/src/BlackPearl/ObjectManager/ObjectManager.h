@@ -7,6 +7,7 @@
 #include "BlackPearl/Component/LightComponent/Light.h"
 #include "BlackPearl/Component/LightComponent/LightSources.h"
 #include "BlackPearl/LightProbes/LightProbes.h"
+#include "BlackPearl/MainCamera/MainCamera.h"
 namespace BlackPearl {
 	class ObjectManager
 	{
@@ -17,7 +18,7 @@ namespace BlackPearl {
 			m_Object3DCreater = new Object3DCreater(entityManager);
 			m_Object2DCreater = new Object2DCreater(entityManager);
 			m_LightCreater    = new LightCreater(entityManager);
-			m_CameraCreater   = new CameraCreater(entityManager);
+			//m_CameraCreater   = new CameraCreater(entityManager);
 		
 		}
 		~ObjectManager() {
@@ -31,7 +32,6 @@ namespace BlackPearl {
 		};
 
 		Object* CreateEmpty(std::string name = "");
-		Object* CreateCamera();
 		Object* CreateLight(LightType type,LightSources* lightSources);
 		Object* CreateModel(const std::string& modelPath, const std::string& shaderPath);
 		Object* CreateCube(const std::string& shaderPath,const std::string& texturePath);
@@ -40,7 +40,9 @@ namespace BlackPearl {
 		Object* CreateSkyBox(const std::vector<std::string>& textureFaces, const std::string& shaderPath);
 
 		Object* CreateQuad(const std::string& shaderPath , const std::string& texturePath);
+		/*Blending Object, include logical and actual properties*/
 		LightProbe* CreateLightProbe(const std::string& shaderPath, const std::string& texturePath);
+		MainCamera* CreateCamera();
 
 
 		std::vector<Object*> GetObjects();
@@ -63,7 +65,7 @@ namespace BlackPearl {
 		Object3DCreater* m_Object3DCreater;
 		Object2DCreater* m_Object2DCreater;
 		LightCreater*    m_LightCreater;
-		CameraCreater*   m_CameraCreater;
+	//	CameraCreater*   m_CameraCreater;
 
 	};
 }

@@ -3,17 +3,18 @@
 #include "BlackPearl/Renderer/Material/CubeMapTexture.h"
 #include "BlackPearl/Component/TransformComponent/Transform.h"
 #include "BlackPearl/Object/Object.h"
+#include "BlackPearl/MainCamera/MainCamera.h"
 namespace BlackPearl {
-
+	/*Logical LightProbe*/
 	/*每个probe 都由一个 CubeObj 代表*/
 	class LightProbe
 	{
 	public:
-		LightProbe(Object* cubeObj);
+		LightProbe(Object* cubeObj,Object* camera);
 		virtual ~LightProbe() {
 
-			delete m_CubeObj;
-			m_CubeObj = nullptr;
+			delete m_LightProbeObj;
+			m_LightProbeObj = nullptr;
 		}
 		
 		/* probe's view matrix */
@@ -30,14 +31,23 @@ namespace BlackPearl {
 
 		/* */
 		unsigned int GetMaxMipMapLevel() const{ return m_MaxMipmapLevel; }
-		glm::vec3	 GetPosition()const { return m_CubeObj->GetComponent<Transform>()->GetPosition(); }
+		glm::vec3	 GetPosition()const { return m_LightProbeObj->GetComponent<Transform>()->GetPosition(); }
+		glm::vec3	 GetRotation()const { return m_LightProbeObj->GetComponent<Transform>()->GetRotation(); }
 
 		/*set*/
 		void SetPosition(glm::vec3 pos);
 		void SetScale(glm::vec3 size);
 		/*cubeObj*/
-		Object* GetCubeObj()const { return m_CubeObj; }
+		Object* GetObj()const { return m_LightProbeObj; }
 
+		/*每次Probe使用前都要Update Camera!!*/
+		void UpdateCamera() {
+			glm::vec3 objPos = m_LightProbeObj->GetComponent<Transform>()->GetPosition();
+			glm::vec3 objRot = m_LightProbeObj->GetComponent<Transform>()->GetRotation();
+			m_Camera->SetPosition(objPos);
+			m_Camera->SetRotation(objRot);
+		}
+		MainCamera* GetCamera()const { return m_Camera; }
 	private:
 
 		/* probe's view matrix */
@@ -52,12 +62,13 @@ namespace BlackPearl {
 
 		unsigned int					m_SampleCounts = 1024;
 		unsigned int					m_EnvironmentCubeMapResolution = 512;
-		unsigned int					m_DiffuseCubeMapResolution = 128;
-		unsigned int					m_SpecularCubeMapResolution = 128;
+		unsigned int					m_DiffuseCubeMapResolution = 32;
+		unsigned int					m_SpecularCubeMapResolution = 512;
 
 		//glm::vec3 m_Center;
 		glm::vec3 m_Size;
-		Object* m_CubeObj;
+		Object* m_LightProbeObj;
+		MainCamera* m_Camera;
 	};
 
 

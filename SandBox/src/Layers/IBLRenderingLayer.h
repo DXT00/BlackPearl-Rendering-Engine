@@ -14,16 +14,18 @@ public:
 		: Layer(name, objectManager)
 	{
 
-		m_CameraObj = CreateCamera();
+		/*m_CameraObj = CreateCamera();
 		auto cameraComponent = m_CameraObj->GetComponent<BlackPearl::PerspectiveCamera>();
 		cameraComponent->SetPosition(glm::vec3(0.0f, 0.0f, 8.0f));
 		m_CameraPosition = cameraComponent->GetPosition();
 		m_CameraRotation.Yaw = cameraComponent->Yaw();
-		m_CameraRotation.Pitch = cameraComponent->Pitch();
+		m_CameraRotation.Pitch = cameraComponent->Pitch();*/
 
 		//Shader
 		m_BackGroundShader.reset(DBG_NEW BlackPearl::Shader("assets/shaders/ibl/background.glsl"));
 		m_DebugQuadShader.reset(DBG_NEW BlackPearl::Shader("assets/shaders/QuadDebug.glsl"));
+		m_LightProbeShader.reset(DBG_NEW BlackPearl::Shader("assets/shaders/lightProbes/lightProbe.glsl"));
+
 		//Scene
 		m_SphereObj = CreateSphere(0.5, 64, 64);
 		m_SphereObjIron = CreateSphere(0.5, 64, 64);
@@ -125,7 +127,7 @@ public:
 
 		/*render scene*/
 		BlackPearl::RenderCommand::SetClearColor(m_BackgroundColor);
-		BlackPearl::Renderer::BeginScene(*(m_CameraObj->GetComponent<BlackPearl::PerspectiveCamera>()), *GetLightSources());
+		BlackPearl::Renderer::BeginScene(*(m_MainCamera->GetObj()->GetComponent<BlackPearl::PerspectiveCamera>()), *GetLightSources());
 
 		glViewport(0, 0, BlackPearl::Configuration::WindowWidth, BlackPearl::Configuration::WindowHeight);
 		/*Draw Lights*/
@@ -147,6 +149,13 @@ public:
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_CUBE_MAP, m_IBLRenderer->GetHdrCubeMapID());
 		m_BasicRenderer->DrawObject(m_CubeObj, m_BackGroundShader);
+
+		m_LightProbeShader->Bind();
+		BlackPearl::Object* cube = CreateCube();
+		m_LightProbeShader->SetUniform1i("u_Material.cube", 2);
+		glActiveTexture(GL_TEXTURE2);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, m_IBLRenderer->GetPrefilterMapID());
+		m_BasicRenderer->DrawObject(cube, m_LightProbeShader);
 	
 		/*draw BRDFLUTTextureID in a quad*/
 		glViewport(0, 0, 120, 120);
@@ -165,69 +174,9 @@ public:
 
 
 	}
-	void InputCheck(float ts)
-	{
-		auto cameraComponent = m_CameraObj->GetComponent<BlackPearl::PerspectiveCamera>();
-		if (BlackPearl::Input::IsKeyPressed(BP_KEY_W)) {
-			m_CameraPosition += cameraComponent->Front() * m_CameraMoveSpeed * ts;
-		}
-		else if (BlackPearl::Input::IsKeyPressed(BP_KEY_S)) {
-			m_CameraPosition -= cameraComponent->Front()* m_CameraMoveSpeed * ts;
-		}
-		if (BlackPearl::Input::IsKeyPressed(BP_KEY_A)) {
-			m_CameraPosition -= cameraComponent->Right() * m_CameraMoveSpeed * ts;
-		}
-		else if (BlackPearl::Input::IsKeyPressed(BP_KEY_D)) {
-			m_CameraPosition += cameraComponent->Right() * m_CameraMoveSpeed * ts;
-		}
-		if (BlackPearl::Input::IsKeyPressed(BP_KEY_E)) {
-			m_CameraPosition += cameraComponent->Up() * m_CameraMoveSpeed * ts;
-		}
-		else if (BlackPearl::Input::IsKeyPressed(BP_KEY_Q)) {
-			m_CameraPosition -= cameraComponent->Up() * m_CameraMoveSpeed * ts;
-		}
-		// ---------------------Rotation--------------------------------------
 
-		float posx = BlackPearl::Input::GetMouseX();
-		float posy = BlackPearl::Input::GetMouseY();
-		if (BlackPearl::Input::IsMouseButtonPressed(BP_MOUSE_BUTTON_RIGHT)) {
-
-
-			if (BlackPearl::Input::IsFirstMouse()) {
-				BlackPearl::Input::SetFirstMouse(false);
-				m_LastMouseX = posx;
-				m_LastMouseY = posy;
-			}
-			float diffx = posx - m_LastMouseX;
-			float diffy = -posy + m_LastMouseY;
-
-			m_LastMouseX = posx;
-			m_LastMouseY = posy;
-			m_CameraRotation.Yaw += diffx * m_CameraRotateSpeed * ts;
-			m_CameraRotation.Pitch += diffy * m_CameraRotateSpeed * ts;
-
-			if (m_CameraRotation.Pitch > 89.0f)
-				m_CameraRotation.Pitch = 89.0f;
-			if (m_CameraRotation.Pitch < -89.0f)
-				m_CameraRotation.Pitch = -89.0f;
-
-			cameraComponent->SetRotation(m_CameraRotation.Yaw, m_CameraRotation.Pitch);
-
-		}
-		else {
-
-			m_LastMouseX = posx;//lastMouse时刻记录当前坐标位置，防止再次点击右键时，发生抖动！
-			m_LastMouseY = posy;
-		}
-
-
-		cameraComponent->SetPosition(m_CameraPosition);
-	}
 private:
 	//Scene
-
-	BlackPearl::Object* m_CameraObj = nullptr;
-
 	BlackPearl::Object* m_CubeObj = nullptr;
 	BlackPearl::Object* m_DebugQuad = nullptr;
 	BlackPearl::Object* m_SphereObj = nullptr;
@@ -241,22 +190,11 @@ private:
 	int m_Colums = 4;
 	float m_Spacing = 1.5;
 
-	//Camera
-	glm::vec3 m_CameraPosition = { 0.0f,0.0f,0.0f };
-	struct CameraRotation {
-		float Yaw;
-		float Pitch;
-
-	};
-	CameraRotation m_CameraRotation;
-	float m_LastMouseX;
-	float m_LastMouseY;
-	float m_CameraMoveSpeed = 3.0f;
-	float m_CameraRotateSpeed = 3.0f;
-
 	//Shader
 	std::shared_ptr<BlackPearl::Shader> m_BackGroundShader;
 	std::shared_ptr<BlackPearl::Shader> m_DebugQuadShader;
+	std::shared_ptr<BlackPearl::Shader> m_LightProbeShader = nullptr;
+
 	//Renderer
 	BlackPearl::PBRRenderer* m_PBRRenderer;
 	BlackPearl::IBLRenderer* m_IBLRenderer;

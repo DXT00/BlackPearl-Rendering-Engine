@@ -136,12 +136,13 @@ namespace BlackPearl {
 		obj->AddComponent<MeshRenderer>(mesh, transformComponent->GetTransformMatrix());
 		return obj;
 	}
-
-	LightProbe* Object3DCreater::CreateLightProbe(const std::string& shaderPath, const std::string& texturePath)
+	/*注意：Cube的Transform会导致Camera的Transform*/
+	Object* Object3DCreater::CreateLightProbe(const std::string& shaderPath, const std::string& texturePath)
 	{
-		Object* CubeObj = CreateCube(shaderPath, texturePath, "LightProbe");
-		//CubeObj->GetComponent<Transform>()->SetScale({ 0.4f, 0.4f, 0.4f });
-		return new LightProbe(CubeObj);
+		Object* obj = CreateCube(shaderPath, texturePath, "LightProbe");
+		
+
+		return obj;		
 	}
 
 
@@ -185,7 +186,7 @@ namespace BlackPearl {
 	}
 	////////////////////////CameraCreater//////////////////////////////////
 	/////////////////////////////////////////////////////////////////////
-	Object* CameraCreater::CreateCamera()
+	Object* Object3DCreater::CreateCamera()
 	{
 		Object* obj = CreateEmpty("Camera");
 		std::shared_ptr<PerspectiveCamera> cameraComponent = obj->AddComponent<PerspectiveCamera>();
