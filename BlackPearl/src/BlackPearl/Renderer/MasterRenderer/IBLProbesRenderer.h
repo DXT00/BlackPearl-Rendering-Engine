@@ -4,13 +4,15 @@
 #include "BlackPearl/Object/Object.h"
 namespace BlackPearl {
 	
-	class IBLProbesRenderer:public IBLRenderer
+	class IBLProbesRenderer:public BasicRenderer
 	{
 	public:
 		IBLProbesRenderer();
 		virtual ~IBLProbesRenderer();
 		void Render(const LightSources& lightSources, const std::vector<Object*> objects, const std::vector<LightProbe*> probes);
 		void RenderProbes(const std::vector<LightProbe*> probes);
+		void RenderSpecularObjects(const LightSources& lightSources, const std::vector<Object*> objects, const std::vector<LightProbe*> probes);
+		
 		void Init( Object* brdfLUTQuadObj, const LightSources& lightSources, const std::vector<Object*> objects, const std::vector<LightProbe*> probes);
 		std::shared_ptr<Texture> GetSpecularBrdfLUTTexture() const { return m_SpecularBrdfLUTTexture; }
 
@@ -22,9 +24,11 @@ namespace BlackPearl {
 
 		void RenderSpecularBRDFLUTMap();
 
-	
+		std::vector<LightProbe*> FindKnearProbes(glm::vec3 objPos,const std::vector<LightProbe*> probes);
 
 	private:
+		/*只计算一次*/
+		bool m_IsRenderSpecularBRDFLUTMap = false;
 		std::shared_ptr<FrameBuffer> m_FrameBuffer;
 
 		glm::mat4 m_ProbeProjection;
@@ -38,6 +42,14 @@ namespace BlackPearl {
 
 		/*draw lighprobes shader*/
 		std::shared_ptr<Shader> m_LightProbeShader = nullptr;
+		/*shader*/
+		std::shared_ptr<Shader>		m_IBLShader = nullptr; //scene renderer
+		std::shared_ptr<Shader>		m_IrradianceShader = nullptr; //create diffuse irradianceCubeMap
+		std::shared_ptr<Shader>		m_SpecularPrefilterShader = nullptr; //specular prefilter shader
+		std::shared_ptr<Shader>		m_SpecularBRDFLutShader = nullptr;  // brdf LUT shader
+
+		/* m_K near probes for specular objs rendering */
+		unsigned int m_K = 2;
 	};
 
 }

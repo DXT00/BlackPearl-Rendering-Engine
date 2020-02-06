@@ -25,6 +25,7 @@ public:
 		//m_FrameBuffer.reset(DBG_NEW BlackPearl::FrameBuffer(BlackPearl::Configuration::WindowWidth, BlackPearl::Configuration::WindowHeight));
 
 		BlackPearl::Renderer::Init();
+		m_BasicRenderer = DBG_NEW BlackPearl::BasicRenderer();
 
 		m_SkyBoxObj = CreateSkyBox(
 			{"assets/skybox/skybox/right.jpg",
@@ -86,38 +87,21 @@ public:
 		//m_FrameBuffer->Bind(960, 540);
 		//glEnable(GL_DEPTH_TEST);
 
+
 		BlackPearl::RenderCommand::SetClearColor(m_BackgroundColor);
 		BlackPearl::Renderer::BeginScene(*(m_MainCamera->GetObj()->GetComponent<BlackPearl::PerspectiveCamera>()), *GetLightSources());
-	
-		//std::vector<BlackPearl::Object*> objs;
-		//objs.push_back(m_SkyBoxObj);
 
-		m_MasterRenderer->RenderSceneExcept(m_ObjectsList, m_SkyBoxObj, GetLightSources());
-		//DrawObjectsExcept(objs);
+
+	//	m_MasterRenderer->RenderSceneExcept(m_ObjectsList, m_SkyBoxObj, GetLightSources());
+
 		//小于等于当前深度缓冲的fragment才被绘制
 		glDepthFunc(GL_LEQUAL);
-		m_MasterRenderer->RenderObject(m_SkyBoxObj);
+		m_BasicRenderer->DrawObject(m_SkyBoxObj);
+	//	m_MasterRenderer->RenderObject(m_SkyBoxObj);
 
 		glDepthFunc(GL_LESS);
 
-		//DrawObjectsExcept(objs);
 		
-
-
-		//m_FrameBuffer->UnBind();
-	
-
-		/*glClearColor(0.0f, 0.1f, 0.1f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		glViewport(0, 0, 960, 540);
-		
-		objs.pop_back();
-		DrawObjectsExcept(objs);
-
-		
-		glViewport(0, 0, 240, 135);
-		
-		DrawObject(m_QuadObj);*/
 		
 	}
 
@@ -139,6 +123,7 @@ private:
 
 	glm::vec4 m_BackgroundColor = { 0.0f,0.0f,0.0f,0.0f };
 	BlackPearl::MasterRenderer* m_MasterRenderer;
+	BlackPearl::BasicRenderer* m_BasicRenderer;
 
 	
 

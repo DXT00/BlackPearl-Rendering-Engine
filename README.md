@@ -1,192 +1,221 @@
-### LightProbes --Render SpecularPrefilterMap
-
-#### 1.更新SpecularPrefilterMap，每次按下U键更新所有lightProbes的SpecularMap（不需要每帧都更新，否则会卡死。。）
+### LightProbes -- 融合多个lightProbes渲染
 
 
-#### 2.更新SpecularPrefilterMap,采用mipmap存储
+#### 1.对于每个要渲染的物体，采集离它最近的k个probes,混合k个probes的DiffuseMap和SpecularMap进行渲染
 
-IBLProbesRenderer class:
+IBLProbesRenderer.cpp RenderSpecularObjects:
 
 ```
-		void IBLProbesRenderer::RenderSpecularPrefilterMap(const LightSources& lightSources, std::vector<Object*> objects, LightProbe* probe)
+		void IBLProbesRenderer::RenderSpecularObjects(const LightSources& lightSources, const std::vector<Object*> objects, const std::vector<LightProbe*> probes)
 	{
-		glm::vec3 center = probe->GetPosition();
-		probe->UpdateCamera();
-		auto camera = probe->GetCamera();
-		auto cameraComponent = camera->GetObj()->GetComponent<PerspectiveCamera>();
 
-		auto projection = cameraComponent->GetProjectionMatrix();
-		std::vector<glm::mat4> ProbeView = {
-			glm::lookAt(center, center - camera->Front(),-camera->Up()),
-			glm::lookAt(center, center + camera->Front(),-camera->Up()),
-			glm::lookAt(center, center + camera->Up(),-camera->Right()),//-camera->Front()
-			glm::lookAt(center, center - camera->Up(),camera->Right()),//camera->Front()
-			glm::lookAt(center, center - camera->Right(), -camera->Up()),
-			glm::lookAt(center, center + camera->Right(), -camera->Up())
+		for (Object* obj : objects) {
 
-		};
-		std::vector<glm::mat4> ProbeProjectionViews = {
-			projection * ProbeView[0],
-			projection * ProbeView[1],
-			projection * ProbeView[2],
-			projection * ProbeView[3],
-			projection * ProbeView[4],
-			projection * ProbeView[5]
-		};
-		auto specularIrradianceMap = probe->GetSpecularPrefilterCubeMap();
-		m_SpecularPrefilterShader->Bind();
-		m_SpecularPrefilterShader->SetUniform1i("u_EnvironmentMap", 0);
-		glActiveTexture(GL_TEXTURE0);
-		probe->GetHdrEnvironmentCubeMap()->Bind();
+			glm::vec3 pos = obj->GetComponent<Transform>()->GetPosition();
 
-		std::shared_ptr<FrameBuffer> frameBuffer(new FrameBuffer());
+			std::vector<LightProbe*> kProbes = FindKnearProbes(pos, probes);
 
-		
-		frameBuffer->AttachCubeMapColorTexture(0, specularIrradianceMap);
-		frameBuffer->AttachRenderBuffer(specularIrradianceMap->GetWidth(), specularIrradianceMap->GetHeight());
-		frameBuffer->Bind();
-		unsigned int maxMipMapLevels = 5;
-		for (unsigned int mip = 0; mip < maxMipMapLevels; mip++)
-		{
-			//resize framebuffer according to mipmap-level size;
-			unsigned int mipWidth = specularIrradianceMap->GetWidth() * std::pow(0.5, mip);
-			unsigned int mipHeight = specularIrradianceMap->GetHeight() * std::pow(0.5, mip);
-			frameBuffer->BindRenderBuffer();
-			glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, mipWidth, mipHeight);
-			glViewport(0, 0, mipWidth, mipHeight);
-
-			float roughness = (float)mip / (float)(maxMipMapLevels - 1);
-			m_SpecularPrefilterShader->SetUniform1f("u_roughness", roughness);
-
-
-			for (unsigned int i = 0; i < 6; i++)
+			unsigned int k = m_K;
+			std::vector<unsigned int> distances;
+			unsigned int distancesSum = 0;
+			for (auto probe : kProbes)
 			{
-				
-				Renderer::SceneData* scene = DBG_NEW Renderer::SceneData({ ProbeProjectionViews[i] ,ProbeView[i],projection,probe->GetPosition(),cameraComponent->Front(),lightSources });
-				glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, specularIrradianceMap->GetRendererID(), mip);
-				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-				probe->GetObj()->GetComponent<MeshRenderer>()->SetShaders(m_SpecularPrefilterShader);
-
-				DrawObject(probe->GetObj(), m_SpecularPrefilterShader, scene);
-				delete scene;
-				scene = nullptr;
-
+				distances.push_back(glm::length(probe->GetPosition() - pos));
+				distancesSum += glm::length(probe->GetPosition() - pos);
 			}
+			m_IBLShader->Bind();
+			m_IBLShader->SetUniform1i("u_Kprobes", k);
+			unsigned int textureK = 0;
+			for (int i = 0; i < k; i++)
+			{
+				m_IBLShader->SetUniform1f("u_ProbeWeight["+std::to_string(i)+"]", (float)distances[i]/distancesSum);
+				
+				m_IBLShader->SetUniform1i("u_IrradianceMap[" + std::to_string(i) + "]", textureK);
+				glActiveTexture(GL_TEXTURE0+ textureK);
+				kProbes[i]->GetDiffuseIrradianceCubeMap()->Bind();
+				textureK++;
+				m_IBLShader->SetUniform1i("u_PrefilterMap[" + std::to_string(i) + "]", textureK);
+				glActiveTexture(GL_TEXTURE0 + textureK);
+				kProbes[i]->GetSpecularPrefilterCubeMap()->Bind();
+				textureK++;
+			
+			}
+
+
+			m_IBLShader->SetUniform1i("u_BrdfLUTMap", textureK);
+			glActiveTexture(GL_TEXTURE0 + textureK);
+			m_SpecularBrdfLUTTexture->Bind();
+
+
+
+			DrawObject(obj, m_IBLShader);
+
+
 		}
-
-
-		frameBuffer->UnBind();
-		frameBuffer->CleanUp();
 
 	}
-
 ```
 
-#### 3.修改LightProbe结构-->每个lightProbe有一个Camera来采集6个面图像
-
-注意Camera的初始化 ：Yaw=-90,Pitch = 0
-
-```
-		m_Camera->GetObj()->GetComponent<BlackPearl::PerspectiveCamera>()->SetFov(90.0f);
-		m_Camera->GetObj()->GetComponent<BlackPearl::PerspectiveCamera>()->SetWidth(512);
-		m_Camera->GetObj()->GetComponent<BlackPearl::PerspectiveCamera>()->SetHeight(512);
+#### 2.在lightProbes/iblTexture.glsl中对多个probes的 Map进行融合，权重为当前object里每个probe的距离的归一化
 
 
 ```
-注意：Camera的Transform和LightProbe Object的Transsform一致，每次采集
-ProjectionView Matrix时要 UpdateCamera,使得Camera的位置、旋转和lightProbe
-Object同步！
-
-```
-
-glm::vec3 center = probe->GetPosition();
-		probe->UpdateCamera();
-		auto camera = probe->GetCamera();
-		auto cameraComponent = camera->GetObj()->GetComponent<PerspectiveCamera>();
-
-		auto projection = cameraComponent->GetProjectionMatrix();
-		std::vector<glm::mat4> ProbeView = {
-			glm::lookAt(center, center - camera->Front(),-camera->Up()),
-			glm::lookAt(center, center + camera->Front(),-camera->Up()),
-			glm::lookAt(center, center + camera->Up(),-camera->Right()),//-camera->Front()
-			glm::lookAt(center, center - camera->Up(),camera->Right()),//camera->Front()
-			glm::lookAt(center, center - camera->Right(), -camera->Up()),
-			glm::lookAt(center, center + camera->Right(), -camera->Up())
-
-		};
-		std::vector<glm::mat4> ProbeProjectionViews = {
-			projection * ProbeView[0],
-			projection * ProbeView[1],
-			projection * ProbeView[2],
-			projection * ProbeView[3],
-			projection * ProbeView[4],
-			projection * ProbeView[5]
-		};
-
-```
-
-#### 4.增加MainCamera class，用于统一Camera Object的 PerspectiveCamera Component和TransForm Component
-
-
-```
-class MainCamera
-	{
-	public:
-		MainCamera(Object* cameraObj) {
-			m_CameraObj = cameraObj;
-		}
-		glm::vec3 GetPosition() const;
-		float Yaw() const;
-		float Pitch() const;
-		glm::vec3 Front() const;
-		glm::vec3 Up() const;
-		glm::vec3 Right() const;
-
-		void SetPosition(glm::vec3 pos);
-		void SetRotation(glm::vec3 rotation);
-		Object* GetObj() const { return m_CameraObj; }
-	private:
-		Object* m_CameraObj = nullptr;
-
-
-	};
-
-```
-
-#### 5.修改 SpecularPrefilterMap的vertex shader prefilterMap.glsl :添加 u_Model。
-
-注意：在IBLRenderer 中prefilterMap.glsl 是用来渲染天空盒子的
-而在 IBLProbeRenderer中prefilterMap.glsl 是用来渲染 lightProbes的，所以必须加上u_Model！
-
-```
-#type vertex
+#type fragment
 #version 430 core
 
-layout (location = 0) in vec3 aPos;
+const float PI=3.14159265359;
+struct PointLight{
+	vec3 ambient;
+	vec3 diffuse;
+	vec3 specular;
+
+	vec3 position;
+	float constant;
+	float linear;
+	float quadratic;
+
+};
+uniform struct Material{
+	vec3 ambientColor;
+	vec3 diffuseColor;
+	vec3 specularColor;
+	vec3 emissionColor;
+	sampler2D diffuse; //or call it albedo
+	sampler2D specular;
+	sampler2D emission;
+	sampler2D normal;
+	sampler2D height;
+	sampler2D ao;
+	sampler2D roughness;
+	sampler2D mentallic;
 
 
-uniform mat4 u_ProjectionView;
-uniform mat4 u_Model;
+	float shininess;
+	bool isBlinnLight;
+	int  isTextureSample;//判断是否使用texture,或者只有color
 
-uniform mat4 u_CubeMapProjectionView;
-out vec3 WorldPos;
+}u_Material;
 
+
+in vec3 v_Normal;
+in vec3 v_FragPos;
+in vec2 v_TexCoord;
+
+out vec4 FragColor;
+//Light
+uniform PointLight u_PointLights[100];
+uniform int u_PointLightNums;
+//Camera
+uniform vec3 u_CameraViewPos;
+
+//IBL probes
+//目前最多10个probes
+uniform samplerCube u_IrradianceMap[10];
+uniform samplerCube u_PrefilterMap[10];
+uniform sampler2D u_BrdfLUTMap;
+
+uniform int u_Kprobes = 0;
+
+uniform float u_ProbeWeight[10];
+
+
+
+
+int step = 100;
+vec3 sum  = vec3(0.0);
+float dw = 1.0/step;
+float kd=0.1;
+float ks=0.1;
+
+
+//......
+
+//......
 void main(){
+	//material properties
+	vec3 albedo = pow(texture(u_Material.diffuse,v_TexCoord).rgb,vec3(2.2));
+	float metallic = texture(u_Material.mentallic, v_TexCoord).r;
+    float roughness = texture(u_Material.roughness, v_TexCoord).r;
+    float ao = texture(u_Material.ao, v_TexCoord).r;
+       
+	vec3 N = getNormalFromMap();
+	vec3 V = normalize(u_CameraViewPos-v_FragPos);
+	vec3 R = reflect(-V,N);
 
-	WorldPos = aPos;
-	//这里注意：渲染Skybox时不需要u_Model,LightProbes时需要
-	gl_Position = u_ProjectionView*u_Model*vec4(WorldPos,1.0);
-	//gl_Position = u_ProjectionView*vec4(WorldPos,1.0);
+	vec3 F0 = vec3(0.04);
+	F0 = mix(F0,albedo,metallic);
 
+	//reflection equation
+	vec3 Lo = vec3(0.0);
+	for(int i=0;i<u_PointLightNums;i++){
+		vec3 L = normalize(u_PointLights[i].position-v_FragPos);
+		vec3 H = normalize(V+L);
+		float attenuation = calculateAttenuation(u_PointLights[i],v_FragPos);
+		vec3 radiance = u_PointLights[i].diffuse * attenuation;
+
+		float NDF = NoemalDistribution_TrowbridgeReitz_GGX(N,H,roughness);
+		float G = GeometrySmith(N, V,L,roughness);
+		vec3 F = FresnelSchlick(max(dot(H, V), 0.0), F0);
+		
+		//CookTorrance
+		vec3 nominator    = NDF * G * F;
+        float denominator = 4.0 * max(dot(N, V), 0.0) * max(dot(N, L), 0.0) + 0.001; 
+        vec3 specular     = nominator / denominator;
+		
+		// kS is equal to Fresnel
+		vec3 Ks = F;
+		// for energy conservation, the diffuse and specular light can't
+        // be above 1.0 (unless the surface emits light); to preserve this
+        // relationship the diffuse component (kD) should equal 1.0 - kS.
+		vec3 Kd = vec3(1.0)-Ks;
+		 // multiply kD by the inverse metalness such that only non-metals 
+        // have diffuse lighting, or a linear blend if partly metal (pure metals
+        // have no diffuse light).
+		Kd *= (1.0 - metallic);
+
+		
+		float NdotL = max(dot(N,L),0.0);
+		Lo+= BRDF(Kd,Ks,specular)*LightRadiance(v_FragPos,u_PointLights[i])*NdotL;
+	}
+
+	//ambient lightings (we now use IBL as the ambient term)!
+	vec3 F =  FresnelSchlickRoughness(max(dot(N, V), 0.0), F0, roughness);
+	vec3 Ks = F;
+	vec3 Kd = vec3(1.0)-Ks;
+	Kd *= (1.0 - metallic);
+	vec3 environmentIrradiance ;
+	for(int i=0;i<u_Kprobes;i++){
+		environmentIrradiance+= u_ProbeWeight[i]*texture(u_IrradianceMap[i],N).rgb;
+	}
+	vec3 diffuse = environmentIrradiance*u_Material.diffuseColor;
+
+	//sample both the prefilter map and the BRDF lut and combine them together as per the Split-Sum approximation to get the IBL specular part
+	const float MAX_REFLECTION_LOD = 4.0;
+	//sample MAX_REFLECTION_LOD level mipmap everytime !
+	vec3 prefileredColor;
+	for(int i=0;i<u_Kprobes;i++){
+		prefileredColor+= u_ProbeWeight[i]*textureLod(u_PrefilterMap[i],R,roughness*MAX_REFLECTION_LOD).rgb;
+	}
+	vec2 brdf = texture(u_BrdfLUTMap,vec2(max(dot(N,V),0.0),roughness)).rg;
+
+	vec3 specular = prefileredColor * (F*brdf.x+brdf.y);
+	vec3 ambient = (Kd*diffuse+specular) * ao;
+    vec3 color =ambient + Lo;
+
+	//HDR tonemapping
+    color = color / (color + vec3(1.0));
+	//gamma correction
+    color = pow(color, vec3(1.0/2.2));  
+    FragColor = vec4(color, 1.0);
 }
-
+	
 ```
 
 
 
-![UpdateSpecularIrradianceMap](/results/lightProbesSpecularMapUpdate1.png)
-![UpdateSpecularIrradianceMap](/results/lightProbesSpecularMapUpdate2.png)
-![UpdateSpecularIrradianceMap](/results/lightProbesSpecularMapUpdate3.png)
+![lightProbesBlending](/results/lightProbesBlending1.png)
+![lightProbesBlending](/results/lightProbesBlending2.png)
+![lightProbesBlending](/results/lightProbesBlending3.png)
 
 
 
