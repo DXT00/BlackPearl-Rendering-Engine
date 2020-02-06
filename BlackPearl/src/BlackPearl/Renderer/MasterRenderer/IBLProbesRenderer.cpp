@@ -28,7 +28,7 @@ namespace BlackPearl {
 		m_IsInitial = true;
 
 	}
-	void IBLProbesRenderer::Render(const LightSources& lightSources, const std::vector<Object*> objects, const std::vector<LightProbe*> probes)
+	void IBLProbesRenderer::Render(const LightSources& lightSources, const std::vector<Object*> objects, const std::vector<LightProbe*> probes,Object* skyBox)
 	{
 		GE_ASSERT(m_IsInitial, "please initial IBLProbesRenderer first! IBLProbesRenderer::init()");
 		/*只渲染一次即可*/
@@ -66,7 +66,7 @@ namespace BlackPearl {
 			   m_ProbeProjection * m_ProbeView[4],
 			   m_ProbeProjection * m_ProbeView[5]
 			};
-			RenderEnvironmerntCubeMaps(lightSources, objects, probe);
+			RenderEnvironmerntCubeMaps(lightSources, objects, probe,skyBox);
 			RenderDiffuseIrradianceMap(lightSources, objects, probe);
 			RenderSpecularPrefilterMap(lightSources, objects, probe);
 			//RenderSpecularBRDFLUTMap();
@@ -155,7 +155,7 @@ namespace BlackPearl {
 
 	}
 
-	void IBLProbesRenderer::RenderEnvironmerntCubeMaps(const LightSources& lightSources, std::vector<Object*> objects, LightProbe* probe)
+	void IBLProbesRenderer::RenderEnvironmerntCubeMaps(const LightSources& lightSources, std::vector<Object*> objects, LightProbe* probe, Object* skyBox)
 	{
 		glm::vec3 center = probe->GetPosition();
 		probe->UpdateCamera();
@@ -215,6 +215,9 @@ namespace BlackPearl {
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 			//BasicRenderer::DrawLightSources(lightSources, scene);
+			glDepthFunc(GL_LEQUAL);
+			DrawObject(skyBox, scene);
+			glDepthFunc(GL_LESS);
 
 			DrawObjects(objects, scene);
 			delete scene;

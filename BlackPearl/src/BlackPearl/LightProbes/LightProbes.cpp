@@ -16,6 +16,8 @@ namespace BlackPearl {
 		m_Camera->GetObj()->GetComponent<BlackPearl::PerspectiveCamera>()->SetWidth(512);
 		m_Camera->GetObj()->GetComponent<BlackPearl::PerspectiveCamera>()->SetHeight(512);
 
+		SetScale({ 0.5,0.5,0.5 });
+
 
 		m_HdrEnvironmentCubeMap.reset(DBG_NEW CubeMapTexture(Texture::Type::CubeMap, m_EnvironmentCubeMapResolution, m_EnvironmentCubeMapResolution, GL_LINEAR, GL_LINEAR, GL_CLAMP_TO_EDGE, GL_RGB16F, GL_RGB, GL_UNSIGNED_BYTE));
 		m_DiffuseIrradianceCubeMap.reset(DBG_NEW CubeMapTexture(Texture::CubeMap, m_DiffuseCubeMapResolution, m_DiffuseCubeMapResolution, GL_LINEAR, GL_LINEAR, GL_CLAMP_TO_EDGE, GL_RGB16F, GL_RGB, GL_FLOAT, true));

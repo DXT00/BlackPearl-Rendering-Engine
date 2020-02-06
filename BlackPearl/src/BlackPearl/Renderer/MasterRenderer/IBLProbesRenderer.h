@@ -9,7 +9,7 @@ namespace BlackPearl {
 	public:
 		IBLProbesRenderer();
 		virtual ~IBLProbesRenderer();
-		void Render(const LightSources& lightSources, const std::vector<Object*> objects, const std::vector<LightProbe*> probes);
+		void Render(const LightSources& lightSources, const std::vector<Object*> objects, const std::vector<LightProbe*> probes, Object* skyBox);
 		void RenderProbes(const std::vector<LightProbe*> probes);
 		void RenderSpecularObjects(const LightSources& lightSources, const std::vector<Object*> objects, const std::vector<LightProbe*> probes);
 		
@@ -18,7 +18,7 @@ namespace BlackPearl {
 
 	private:
 		/*render environment CubeMap of each probe */
-		void RenderEnvironmerntCubeMaps(const LightSources& lightSources, std::vector<Object*> objects, LightProbe* probes);
+		void RenderEnvironmerntCubeMaps(const LightSources& lightSources, std::vector<Object*> objects, LightProbe* probes, Object* skyBox);
 		void RenderDiffuseIrradianceMap(const LightSources& lightSources, std::vector<Object*> objects, LightProbe *probe);
 		void RenderSpecularPrefilterMap(const LightSources& lightSources, std::vector<Object*> objects, LightProbe *probe);
 

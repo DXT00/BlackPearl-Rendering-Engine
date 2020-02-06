@@ -44,38 +44,38 @@ public:
 		BlackPearl::LightProbe* probe2 = CreateLightProbe();
 		probe2->SetPosition({3.0,0.0,0.0});
 		BlackPearl::LightProbe* probe3 = CreateLightProbe();
-		probe3->SetPosition({ -3.0,0.0,0.0 });
+		probe3->SetPosition({ -5.0,0.0,0.0 });
 
 		m_LightProbes.push_back(probe1);
 		m_LightProbes.push_back(probe2);
 		m_LightProbes.push_back(probe3);
 
 		BlackPearl::Renderer::Init();
-		//glDepthFunc(GL_LEQUAL);
+	//	glDepthFunc(GL_LEQUAL);
 		/*Renderer*/
 		m_BasicRenderer = DBG_NEW BlackPearl::BasicRenderer();
 		m_IBLProbesRenderer = DBG_NEW BlackPearl::IBLProbesRenderer();
 		/*create skybox */
 		/*notice: draw skybox before anything else!*/
-		//m_SkyBoxObj1 = CreateSkyBox(
-		//	{ "assets/skybox/skybox/right.jpg",
-		//	 "assets/skybox/skybox/left.jpg",
-		//	 "assets/skybox/skybox/top.jpg",
-		//	 "assets/skybox/skybox/bottom.jpg",
-		//	 "assets/skybox/skybox/front.jpg",
-		//	 "assets/skybox/skybox/back.jpg",
-		//	});
+		m_SkyBoxObj1 = CreateSkyBox(
+			{ "assets/skybox/skybox/right.jpg",
+			 "assets/skybox/skybox/left.jpg",
+			 "assets/skybox/skybox/top.jpg",
+			 "assets/skybox/skybox/bottom.jpg",
+			 "assets/skybox/skybox/front.jpg",
+			 "assets/skybox/skybox/back.jpg",
+			});
 
 		//m_BackGroundObjsList.push_back(m_SkyBoxObj1);
 		/*create model*/
 		BlackPearl::Object *deer=  CreateModel("assets/models/deer/Deer.obj", "assets/shaders/IronMan.glsl");
 		deer->GetComponent<BlackPearl::Transform>()->SetScale(glm::vec3(0.005));
-		deer->GetComponent<BlackPearl::Transform>()->SetPosition({0.0f,-1.0f,0.0f});
+		deer->GetComponent<BlackPearl::Transform>()->SetPosition({0.0f,-1.5f,1.0f});
 		m_BackGroundObjsList.push_back(deer);
 
 		BlackPearl::Object* ironMan = CreateModel("assets/models/IronMan/IronMan.obj", "assets/shaders/IronMan.glsl");
-		ironMan->GetComponent<BlackPearl::Transform>()->SetScale(glm::vec3(0.005));
-		ironMan->GetComponent<BlackPearl::Transform>()->SetPosition({ 1.5f,-1.0f,0.0f });
+		ironMan->GetComponent<BlackPearl::Transform>()->SetScale(glm::vec3(0.010));
+		ironMan->GetComponent<BlackPearl::Transform>()->SetPosition({ 1.5f,-1.0f,1.0f });
 		m_BackGroundObjsList.push_back(ironMan);
 
 
@@ -156,7 +156,7 @@ public:
 		
 		/*Draw CubeMap from hdrMap and Create environment IrrdianceMap*/
 		m_IBLProbesRenderer->Init(m_BrdfLUTQuadObj,  *GetLightSources(), m_BackGroundObjsList, m_LightProbes);
-		m_IBLProbesRenderer->Render(*GetLightSources(), m_BackGroundObjsList, m_LightProbes);
+		m_IBLProbesRenderer->Render(*GetLightSources(), m_BackGroundObjsList, m_LightProbes, m_SkyBoxObj1);
 
 		//glViewport(0, 0, BlackPearl::Configuration::WindowWidth, BlackPearl::Configuration::WindowHeight);
 
@@ -182,7 +182,7 @@ public:
 		if (BlackPearl::Input::IsKeyPressed(BP_KEY_U)) {
 
 			/*IBLProbes rendering*/
-			m_IBLProbesRenderer->Render(*GetLightSources(), m_BackGroundObjsList, m_LightProbes);
+			m_IBLProbesRenderer->Render(*GetLightSources(), m_BackGroundObjsList, m_LightProbes, m_SkyBoxObj1);
 		}
 		
 
@@ -190,11 +190,11 @@ public:
 		//glDepthMask(GL_FALSE);
 		m_BasicRenderer->RenderScene(m_BackGroundObjsList, GetLightSources());
 		m_IBLProbesRenderer->RenderProbes(m_LightProbes);
-		//glDepthFunc(GL_LEQUAL);
+		glDepthFunc(GL_LEQUAL);
 
-		//m_IBLProbesRenderer->DrawObject(m_SkyBoxObj1);
+		m_IBLProbesRenderer->DrawObject(m_SkyBoxObj1);
 		////glDepthMask(GL_TRUE);
-		//glDepthFunc(GL_LESS);
+		glDepthFunc(GL_LESS);
 
 
 		

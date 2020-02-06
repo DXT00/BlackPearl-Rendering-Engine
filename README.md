@@ -1,4 +1,4 @@
-### LightProbes -- 融合多个lightProbes渲染
+### LightProbes -- 融合多个lightProbes渲染,背景为SkyBox
 
 
 #### 1.对于每个要渲染的物体，采集离它最近的k个probes,混合k个probes的DiffuseMap和SpecularMap进行渲染
@@ -210,12 +210,86 @@ void main(){
 }
 	
 ```
+#### 3.注意SkyBox在EnvironmentMap中的渲染顺序
+
+```
+
+void IBLProbesRenderer::RenderEnvironmerntCubeMaps(const LightSources& lightSources, std::vector<Object*> objects, LightProbe* probe, Object* skyBox)
+	{
+		glm::vec3 center = probe->GetPosition();
+		probe->UpdateCamera();
+		auto camera = probe->GetCamera();
+		auto cameraComponent = camera->GetObj()->GetComponent<PerspectiveCamera>();
+
+		auto projection = cameraComponent->GetProjectionMatrix();
+		//	cameraComponent->SetPosition(probe->GetPosition());
+
+		std::vector<glm::mat4> ProbeView = {
+		   glm::lookAt(center, center - camera->Front(),-camera->Up()),
+		   glm::lookAt(center, center + camera->Front(),-camera->Up()),
+		   glm::lookAt(center, center + camera->Up(),-camera->Right()),//-camera->Front()
+		   glm::lookAt(center, center - camera->Up(),camera->Right()),//camera->Front()
+
+		   glm::lookAt(center, center - camera->Right(), -camera->Up()),
+		   glm::lookAt(center, center + camera->Right(), -camera->Up()),
+
+		};
+		std::vector<glm::mat4> ProbeProjectionViews = {
+			projection * ProbeView[0],
+			projection * ProbeView[1],
+			projection * ProbeView[2],
+			projection * ProbeView[3],
+			projection * ProbeView[4],
+			projection * ProbeView[5]
+		};
 
 
+		std::shared_ptr<CubeMapTexture> environmentCubeMap = probe->GetHdrEnvironmentCubeMap();
+		//glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
+
+		glm::vec2 mipMapSize = { environmentCubeMap->GetWidth(),environmentCubeMap->GetHeight() };
+		std::shared_ptr<FrameBuffer> frameBuffer(new FrameBuffer());
+
+		frameBuffer->Bind();
+		frameBuffer->AttachCubeMapColorTexture(0, environmentCubeMap);
+		
+		frameBuffer->AttachRenderBuffer(environmentCubeMap->GetWidth(), environmentCubeMap->GetHeight());
+	
+		frameBuffer->BindRenderBuffer();
+		
+		glViewport(0, 0, mipMapSize.x, mipMapSize.y);
+		
+		for (unsigned int i = 0; i < 6; i++)
+		{
+			Renderer::SceneData* scene = DBG_NEW Renderer::SceneData({ ProbeProjectionViews[i] ,ProbeView[i],projection,probe->GetPosition(),cameraComponent->Front(),lightSources });
+			
+			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, environmentCubeMap->GetRendererID(), 0);
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+			//BasicRenderer::DrawLightSources(lightSources, scene);
+			glDepthFunc(GL_LEQUAL);
+			DrawObject(skyBox, scene);
+			glDepthFunc(GL_LESS);
+
+			DrawObjects(objects, scene);
+			delete scene;
+			scene = nullptr;
+
+		}
+
+		
+	}
+		frameBuffer->UnBind();
+		frameBuffer->CleanUp();
+
+
+	}
+```
 
 ![lightProbesBlending](/results/lightProbesBlending1.png)
 ![lightProbesBlending](/results/lightProbesBlending2.png)
 ![lightProbesBlending](/results/lightProbesBlending3.png)
+![lightProbesBlending](/results/lightProbesBlending4.png)
 
 
 

@@ -12,7 +12,7 @@ namespace BlackPearl {
 		static const unsigned int WindowHeight = 540;
 
 		//多重采样
-		static const unsigned int MSAA_SAMPLES = 0;
+		static const unsigned int MSAA_SAMPLES = 4;
 
 		// ------------------------------------------
 		// Voxel Cone Tracing
