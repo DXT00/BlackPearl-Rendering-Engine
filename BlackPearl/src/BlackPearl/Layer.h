@@ -146,6 +146,10 @@ namespace BlackPearl {
 		ObjectManager* m_ObjectManager;
 		//每层Layer都有一个ObjectsList
 		std::vector<Object*>          m_ObjectsList;
+		/*用于lightProbes 作为背景的Objects*/
+		std::vector<BlackPearl::Object*> m_BackGroundObjsList;
+
+
 		LightSources* m_LightSources;
 		ImGui::FileBrowser m_fileDialog;
 		glm::vec4 m_BackgroundColor = { 0.0f,0.0f,0.0f,0.0f };

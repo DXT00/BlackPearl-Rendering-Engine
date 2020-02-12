@@ -4,31 +4,33 @@
 #include "BlackPearl/Renderer/Renderer.h"
 #include "BlackPearl/Component/CameraComponent/PerspectiveCamera.h"
 #include "BlackPearl/Component/MeshRendererComponent/MeshRenderer.h"
+#include "BlackPearl/LightProbes/SphericalHarmonics.h"
 #include <glm/gtc/matrix_transform.hpp>
 
 namespace BlackPearl {
 	IBLProbesRenderer::IBLProbesRenderer()
 	{
-	//	m_FrameBuffer.reset(DBG_NEW FrameBuffer());
+		//	m_FrameBuffer.reset(DBG_NEW FrameBuffer());
 		m_LightProbeShader.reset(DBG_NEW Shader("assets/shaders/lightProbes/lightProbe.glsl"));
-		m_IBLShader.reset(DBG_NEW Shader("assets/shaders/lightProbes/iblTexture.glsl"));
+		m_IBLShader.reset(DBG_NEW Shader("assets/shaders/lightProbes/iblSHTexture.glsl"));
 		m_IrradianceShader.reset(DBG_NEW Shader("assets/shaders/ibl/irradianceConvolution.glsl"));
 		m_SpecularPrefilterShader.reset(DBG_NEW Shader("assets/shaders/ibl/prefilterMap.glsl"));
 		m_SpecularBRDFLutShader.reset(DBG_NEW Shader("assets/shaders/ibl/brdf.glsl"));
-
+		m_SHShader.reset(DBG_NEW Shader("assets/shaders/lightProbes/SH.glsl"));
 	}
 	IBLProbesRenderer::~IBLProbesRenderer()
 	{
 	}
-	void IBLProbesRenderer::Init(Object* brdfLUTQuadObj, const LightSources& lightSources, const std::vector<Object*> objects, const std::vector<LightProbe*> probes)
+	void IBLProbesRenderer::Init(Object* SHQuadObj,Object* brdfLUTQuadObj, const LightSources& lightSources, const std::vector<Object*> objects, const std::vector<LightProbe*> probes)
 	{
 		GE_ASSERT(brdfLUTQuadObj, "brdfLUTQuadObj is nullptr!");
 		m_BrdfLUTQuadObj = brdfLUTQuadObj;
+		m_SHQuadObj = SHQuadObj;
 
 		m_IsInitial = true;
 
 	}
-	void IBLProbesRenderer::Render(const LightSources& lightSources, const std::vector<Object*> objects, const std::vector<LightProbe*> probes,Object* skyBox)
+	void IBLProbesRenderer::Render(const LightSources& lightSources, const std::vector<Object*> objects, const std::vector<LightProbe*> probes, Object* skyBox)
 	{
 		GE_ASSERT(m_IsInitial, "please initial IBLProbesRenderer first! IBLProbesRenderer::init()");
 		/*只渲染一次即可*/
@@ -66,10 +68,10 @@ namespace BlackPearl {
 			   m_ProbeProjection * m_ProbeView[4],
 			   m_ProbeProjection * m_ProbeView[5]
 			};
-			RenderEnvironmerntCubeMaps(lightSources, objects, probe,skyBox);
-			RenderDiffuseIrradianceMap(lightSources, objects, probe);
+			RenderEnvironmerntCubeMaps(lightSources, objects, probe, skyBox);
+			//RenderDiffuseIrradianceMap(lightSources, objects, probe);
+			RenderSHImage(probe);
 			RenderSpecularPrefilterMap(lightSources, objects, probe);
-			//RenderSpecularBRDFLUTMap();
 
 
 
@@ -94,14 +96,25 @@ namespace BlackPearl {
 			LightProbe* probe = *it;
 
 			m_LightProbeShader->Bind();
-			probe->GetObj()->GetComponent<MeshRenderer>()->SetTextures(probe->GetSpecularPrefilterCubeMap());
+		/*	m_LightProbeShader->SetUniform1i("u_Image", 0);
+			probe->GetSHImage()->Bind(0);*/
+			
+			for (int i = 0; i < 9; i++)
+			{
+				m_LightProbeShader->SetUniformVec3f("u_SHCoeffs["+std::to_string(i)+"]", glm::vec3(probe->GetCoeffis()[i][0], probe->GetCoeffis()[i][1],probe->GetCoeffis()[i][2]));
+			}
+
+
+
+
+			//probe->GetObj()->GetComponent<MeshRenderer>()->SetTextures(probe->GetSpecularPrefilterCubeMap());
 
 			//probe->GetObj()->GetComponent<MeshRenderer>()->SetTextures(probe->GetDiffuseIrradianceCubeMap());
 			//probe->GetObj()->GetComponent<MeshRenderer>()->SetTextures(probe->GetHdrEnvironmentCubeMap());
 
 			probe->GetObj()->GetComponent<MeshRenderer>()->SetShaders(m_LightProbeShader);
 			DrawObject(probe->GetObj(), m_LightProbeShader);
-
+			probe->GetSHImage()->UnBind();
 		}
 
 	}
@@ -116,8 +129,8 @@ namespace BlackPearl {
 			std::vector<LightProbe*> kProbes = FindKnearProbes(pos, probes);
 
 			unsigned int k = m_K;
-			std::vector<unsigned int> distances;
-			unsigned int distancesSum = 0;
+			std::vector<float> distances;
+			float distancesSum = 0.0;
 			for (auto probe : kProbes)
 			{
 				distances.push_back(glm::length(probe->GetPosition() - pos));
@@ -128,17 +141,24 @@ namespace BlackPearl {
 			unsigned int textureK = 0;
 			for (int i = 0; i < k; i++)
 			{
-				m_IBLShader->SetUniform1f("u_ProbeWeight["+std::to_string(i)+"]", (float)distances[i]/distancesSum);
-				
-				m_IBLShader->SetUniform1i("u_IrradianceMap[" + std::to_string(i) + "]", textureK);
-				glActiveTexture(GL_TEXTURE0+ textureK);
-				kProbes[i]->GetDiffuseIrradianceCubeMap()->Bind();
-				textureK++;
+				m_IBLShader->SetUniform1f("u_ProbeWeight[" + std::to_string(i) + "]", (float)distances[i] / distancesSum);
+
+				//m_IBLShader->SetUniform1i("u_IrradianceMap[" + std::to_string(i) + "]", textureK);
+				//m_IBLShader->SetUniform1i("u_Image", textureK);
+				for (int sh = 0; sh < 9; sh++)
+				{
+					m_IBLShader->SetUniformVec3f("u_SHCoeffs[" + std::to_string(sh) + "]", glm::vec3(kProbes[i]->GetCoeffis()[sh][0], kProbes[i]->GetCoeffis()[sh][1], kProbes[i]->GetCoeffis()[sh][2]));
+				}
+
+				//glActiveTexture(GL_TEXTURE0 + textureK);
+				//kProbes[i]->GetDiffuseIrradianceCubeMap()->Bind();
+				//kProbes[i]->GetSHImage()->Bind(textureK);
+				//textureK++;
 				m_IBLShader->SetUniform1i("u_PrefilterMap[" + std::to_string(i) + "]", textureK);
 				glActiveTexture(GL_TEXTURE0 + textureK);
 				kProbes[i]->GetSpecularPrefilterCubeMap()->Bind();
 				textureK++;
-			
+
 			}
 
 
@@ -195,40 +215,40 @@ namespace BlackPearl {
 		frameBuffer->AttachCubeMapColorTexture(0, environmentCubeMap);
 		//TODO::
 		frameBuffer->AttachRenderBuffer(environmentCubeMap->GetWidth(), environmentCubeMap->GetHeight());
-		//for (unsigned int mip = 0; mip < environmentCubeMap->GetMipMapLevel(); mip++)
-		//{
-
-		frameBuffer->BindRenderBuffer();
-		/*glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, mipMapSize.x, mipMapSize.y);
-		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, frameBuffer->GetRenderBufferID());*/
-
-		glViewport(0, 0, mipMapSize.x, mipMapSize.y);
-		//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		// Render the scene to environment cubemap (single pass).
-
-
-		for (unsigned int i = 0; i < 6; i++)
+		for (unsigned int mip = 0; mip < environmentCubeMap->GetMipMapLevel(); mip++)
 		{
-			Renderer::SceneData* scene = DBG_NEW Renderer::SceneData({ ProbeProjectionViews[i] ,ProbeView[i],projection,probe->GetPosition(),cameraComponent->Front(),lightSources });
-			
-			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, environmentCubeMap->GetRendererID(), 0);
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-			//BasicRenderer::DrawLightSources(lightSources, scene);
-			glDepthFunc(GL_LEQUAL);
-			DrawObject(skyBox, scene);
-			glDepthFunc(GL_LESS);
+			frameBuffer->BindRenderBuffer();
+			/*glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, mipMapSize.x, mipMapSize.y);
+			glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, frameBuffer->GetRenderBufferID());*/
 
-			DrawObjects(objects, scene);
-			delete scene;
-			scene = nullptr;
+			glViewport(0, 0, mipMapSize.x, mipMapSize.y);
+			//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			// Render the scene to environment cubemap (single pass).
+
+
+			for (unsigned int i = 0; i < 6; i++)
+			{
+				Renderer::SceneData* scene = DBG_NEW Renderer::SceneData({ ProbeProjectionViews[i] ,ProbeView[i],projection,probe->GetPosition(),cameraComponent->Front(),lightSources });
+
+				glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, environmentCubeMap->GetRendererID(), mip);
+				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+				//BasicRenderer::DrawLightSources(lightSources, scene);
+				glDepthFunc(GL_LEQUAL);
+				DrawObject(skyBox, scene);
+				glDepthFunc(GL_LESS);
+
+				DrawObjects(objects, scene);
+				delete scene;
+				scene = nullptr;
+
+			}
+
+			mipMapSize.x /= 2.0f;
+			mipMapSize.y /= 2.0f;
 
 		}
-
-		//	mipMapSize.x /= 2.0f;
-		//mipMapSize.y /= 2.0f;
-
-			//	}
 		frameBuffer->UnBind();
 		frameBuffer->CleanUp();
 
@@ -239,7 +259,7 @@ namespace BlackPearl {
 	{
 		glBindTexture(GL_TEXTURE_CUBE_MAP, probe->GetHdrEnvironmentCubeMap()->GetRendererID());
 		glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
-		
+
 		glm::vec3 center = probe->GetPosition();
 		probe->UpdateCamera();
 		auto camera = probe->GetCamera();
@@ -330,7 +350,7 @@ namespace BlackPearl {
 
 		std::shared_ptr<FrameBuffer> frameBuffer(new FrameBuffer());
 
-		
+
 		frameBuffer->AttachCubeMapColorTexture(0, specularIrradianceMap);
 		frameBuffer->AttachRenderBuffer(specularIrradianceMap->GetWidth(), specularIrradianceMap->GetHeight());
 		frameBuffer->Bind();
@@ -350,7 +370,7 @@ namespace BlackPearl {
 
 			for (unsigned int i = 0; i < 6; i++)
 			{
-				
+
 				Renderer::SceneData* scene = DBG_NEW Renderer::SceneData({ ProbeProjectionViews[i] ,ProbeView[i],projection,probe->GetPosition(),cameraComponent->Front(),lightSources });
 				glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, specularIrradianceMap->GetRendererID(), mip);
 				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -388,6 +408,50 @@ namespace BlackPearl {
 		DrawObject(m_BrdfLUTQuadObj, m_SpecularBRDFLutShader);
 		frameBuffer->UnBind();
 		frameBuffer->CleanUp();
+
+	}
+
+	void IBLProbesRenderer::RenderSHImage(LightProbe* probe)
+	{
+
+		std::shared_ptr<CubeMapTexture> environmentMap = probe->GetHdrEnvironmentCubeMap();
+		auto coeffs = SphericalHarmonics::UpdateCoeffs(environmentMap);
+		probe->SetSHCoeffs(coeffs);
+	/*		m_SHShader->Bind();
+			m_SHShader->SetUniform1f("u_FaceIdx", i);
+			m_SHShader->SetUniform1f("u_MapSize", probe->GetHdrEnvironmentCubeMap()->GetWidth());
+			m_SHShader->SetUniform1i("u_EnvironmentMap", 0);
+			m_SHShader->SetUniform1i("u_image", 1);
+			*/
+
+			//glActiveTexture(GL_TEXTURE0);
+			//probe->GetHdrEnvironmentCubeMap()->Bind();
+			////glActiveTexture(GL_TEXTURE1);
+			//probe->GetSHImage()->Bind(1);
+			////glViewport(0, 0, 512, 512);
+			//DrawObject(m_SHQuadObj, m_SHShader);
+			//glViewport(0, 0, BlackPearl::Configuration::WindowWidth, BlackPearl::Configuration::WindowHeight);
+
+		//for (int i = 0; i < 6; i++) {
+		//	m_SHShader->Bind();
+		//	m_SHShader->SetUniform1f("u_FaceIdx", i);
+		//	m_SHShader->SetUniform1f("u_MapSize", probe->GetHdrEnvironmentCubeMap()->GetWidth());
+		//	m_SHShader->SetUniform1i("u_EnvironmentMap", 0);
+		//	m_SHShader->SetUniform1i("u_image", 1);
+		//	
+
+		//	glActiveTexture(GL_TEXTURE0);
+		//	probe->GetHdrEnvironmentCubeMap()->Bind();
+		//	//glActiveTexture(GL_TEXTURE1);
+		//	probe->GetSHImage()->Bind(1);
+		//	//glViewport(0, 0, 512, 512);
+		//	DrawObject(m_SHQuadObj, m_SHShader);
+		//	//glViewport(0, 0, BlackPearl::Configuration::WindowWidth, BlackPearl::Configuration::WindowHeight);
+
+
+
+		//}
+		
 
 	}
 

@@ -28,27 +28,40 @@ public:
 		//Shader
 		m_BackGroundShader.reset(DBG_NEW BlackPearl::Shader("assets/shaders/ibl/background.glsl"));
 		//Scene
-		m_SphereObj = CreateSphere(0.5, 64, 64);
-		m_SphereObjIron = CreateSphere(0.5, 64, 64);
-		m_SphereObjRust = CreateSphere(0.5, 64, 64);
-		m_SphereObjStone = CreateSphere(0.5, 64, 64);
-		m_SphereObjPlastic = CreateSphere(0.5, 64, 64);
+		//m_SphereObj = CreateSphere(1.5, 64, 64);
+		m_SphereObjIron = CreateSphere(1.5, 64, 64);
+		m_SphereObjRust = CreateSphere(1.5, 64, 64);
+		m_SphereObjStone = CreateSphere(1.5, 64, 64);
+		m_SphereObjPlastic = CreateSphere(1.5, 64, 64);
 
 		/* probe's CubeObj and quad for BrdfLUTMap */
 		m_BrdfLUTQuadObj = CreateQuad("assets/shaders/ibl/brdf.glsl","");
-
+		m_SHImageQuadObj = CreateQuad("assets/shaders/lightProbes/SH.glsl", "");
 		/* create probes */
-		BlackPearl::LightProbe *probe1 = CreateLightProbe();
-		probe1->SetPosition({ 0.0,0.0,-3.0 });
+		unsigned int xlen = 1, ylen = 2,zlen = 1,space = 9;
+		for (unsigned int x = 0; x < xlen; x++)
+		{
+			for (unsigned int y = 0; y < ylen; y++)
+			{
+				for (unsigned int  z = 0; z < zlen; z++)
+				{
+					BlackPearl::LightProbe* probe = CreateLightProbe();
+					int xx = (x - xlen / 2) * space, yy = (y - ylen / 2) * space, zz = (z - zlen / 2) * space;
+					
+					probe->SetPosition({xx,yy,zz});
+					m_LightProbes.push_back(probe);
+					//delete probe;
 
-		BlackPearl::LightProbe* probe2 = CreateLightProbe();
-		probe2->SetPosition({3.0,0.0,0.0});
-		BlackPearl::LightProbe* probe3 = CreateLightProbe();
-		probe3->SetPosition({ -5.0,0.0,0.0 });
+				}
+				
+			}
 
-		m_LightProbes.push_back(probe1);
-		m_LightProbes.push_back(probe2);
-		m_LightProbes.push_back(probe3);
+		}
+
+
+
+
+		
 
 		BlackPearl::Renderer::Init();
 	//	glDepthFunc(GL_LEQUAL);
@@ -129,7 +142,7 @@ public:
 		m_SphereObjRust->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(RustroughnessTexture);
 		m_SphereObjRust->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(RustmentallicTexture);
 
-		m_SphereObjRust->GetComponent<BlackPearl::Transform>()->SetPosition({ 1.5,0,0 });
+		m_SphereObjRust->GetComponent<BlackPearl::Transform>()->SetPosition({ 3,0,0 });
 
 		m_SphereObjStone->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(StonenormalTexture);
 		m_SphereObjStone->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(StonealbedoTexture);
@@ -137,7 +150,7 @@ public:
 		m_SphereObjStone->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(StoneroughnessTexture);
 		m_SphereObjStone->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(StonementallicTexture);
 
-		m_SphereObjStone->GetComponent<BlackPearl::Transform>()->SetPosition({ -1.5,0,0 });
+		m_SphereObjStone->GetComponent<BlackPearl::Transform>()->SetPosition({ -3,0,0 });
 
 		m_SphereObjPlastic->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(PlasticnormalTexture);
 		m_SphereObjPlastic->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(PlasticalbedoTexture);
@@ -145,7 +158,7 @@ public:
 		m_SphereObjPlastic->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(PlasticroughnessTexture);
 		m_SphereObjPlastic->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(PlasticmentallicTexture);
 
-		m_SphereObjPlastic->GetComponent<BlackPearl::Transform>()->SetPosition({ -3.0,0,0 });
+		m_SphereObjPlastic->GetComponent<BlackPearl::Transform>()->SetPosition({ -6.0,0,0 });
 		
 		m_SphereObjsList.push_back(m_SphereObjIron);
 		m_SphereObjsList.push_back(m_SphereObjStone);
@@ -155,7 +168,7 @@ public:
 
 		
 		/*Draw CubeMap from hdrMap and Create environment IrrdianceMap*/
-		m_IBLProbesRenderer->Init(m_BrdfLUTQuadObj,  *GetLightSources(), m_BackGroundObjsList, m_LightProbes);
+		m_IBLProbesRenderer->Init(m_SHImageQuadObj,m_BrdfLUTQuadObj,  *GetLightSources(), m_BackGroundObjsList, m_LightProbes);
 		m_IBLProbesRenderer->Render(*GetLightSources(), m_BackGroundObjsList, m_LightProbes, m_SkyBoxObj1);
 
 		//glViewport(0, 0, BlackPearl::Configuration::WindowWidth, BlackPearl::Configuration::WindowHeight);
@@ -220,10 +233,11 @@ private:
 	BlackPearl::Object* m_SphereObjStone = nullptr;
 	BlackPearl::Object* m_SphereObjPlastic = nullptr;
 	std::vector<BlackPearl::Object*> m_SphereObjsList;
-	std::vector<BlackPearl::Object*> m_BackGroundObjsList;
 	BlackPearl::Object* m_SkyBoxObj1 = nullptr;
 
 	BlackPearl::Object* m_BrdfLUTQuadObj = nullptr;
+	BlackPearl::Object* m_SHImageQuadObj = nullptr;
+
 	int m_Rows = 4;
 	int m_Colums = 4;
 	float m_Spacing = 1.5;

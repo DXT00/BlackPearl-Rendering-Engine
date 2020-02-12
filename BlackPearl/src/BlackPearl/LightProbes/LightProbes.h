@@ -4,6 +4,7 @@
 #include "BlackPearl/Component/TransformComponent/Transform.h"
 #include "BlackPearl/Object/Object.h"
 #include "BlackPearl/MainCamera/MainCamera.h"
+#include "BlackPearl/Renderer/Material/TextureImage2D.h"
 namespace BlackPearl {
 	/*Logical LightProbe*/
 	/*每个probe 都由一个 CubeObj 代表*/
@@ -25,6 +26,8 @@ namespace BlackPearl {
 		std::shared_ptr<CubeMapTexture> GetSpecularPrefilterCubeMap()const { return m_SpecularPrefilterCubeMap; }
 		std::shared_ptr<CubeMapTexture> GetDiffuseIrradianceCubeMap()const { return m_DiffuseIrradianceCubeMap; }
 		std::shared_ptr<Texture> GetSpecularBrdfLutMap()const       { return m_SpecularBrdfLutMap; }
+		std::shared_ptr<TextureImage2D> GetSHImage() const { return m_SHImage; }
+		
 		/* resolution */
 		unsigned int GetDiffuseCubeMapResolution() const { return m_DiffuseCubeMapResolution; }
 		unsigned int GetSpecularCubeMapResolution() const { return m_SpecularCubeMapResolution; }
@@ -37,6 +40,12 @@ namespace BlackPearl {
 		/*set*/
 		void SetPosition(glm::vec3 pos);
 		void SetScale(glm::vec3 size);
+
+		/*SH Coefficients set*/
+		void SetSHCoeffs(std::vector<std::vector<float>>& SHCoeffs) { m_SHCoeffs = SHCoeffs; }
+		std::vector<std::vector<float>> GetCoeffis()const {return m_SHCoeffs;}
+
+
 		/*cubeObj*/
 		Object* GetObj()const { return m_LightProbeObj; }
 
@@ -57,7 +66,7 @@ namespace BlackPearl {
 		std::shared_ptr<CubeMapTexture> m_SpecularPrefilterCubeMap = nullptr;
 		std::shared_ptr<CubeMapTexture> m_DiffuseIrradianceCubeMap = nullptr;
 		std::shared_ptr<Texture>		m_SpecularBrdfLutMap = nullptr;
-
+		std::shared_ptr<TextureImage2D>		m_SHImage = nullptr;
 		unsigned int m_MaxMipmapLevel = 5;
 
 		unsigned int					m_SampleCounts = 1024;
@@ -69,6 +78,8 @@ namespace BlackPearl {
 		glm::vec3 m_Size;
 		Object* m_LightProbeObj;
 		MainCamera* m_Camera;
+
+		std::vector<std::vector<float>> m_SHCoeffs;
 	};
 
 

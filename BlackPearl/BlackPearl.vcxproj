@@ -143,6 +143,7 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\BlackPearl\LightProbes\SphericalHarmonics.h" />
     <ClInclude Include="src\BlackPearl\MainCamera\MainCamera.h" />
     <ClInclude Include="src\BlackPearl\Renderer\MasterRenderer\IBLProbesRenderer.h" />
     <ClInclude Include="src\BlackPearl\LightProbes\LightProbes.h" />
@@ -210,6 +211,7 @@
     <ClInclude Include="src\BlackPearl\Window.h" />
     <ClInclude Include="src\BlackPeral.h" />
     <ClInclude Include="src\pch.h" />
+    <ClInclude Include="src\BlackPearl\Renderer\Material\TextureImage2D.h" />
     <ClInclude Include="vendor\glm\glm\common.hpp" />
     <ClInclude Include="vendor\glm\glm\detail\_features.hpp" />
     <ClInclude Include="vendor\glm\glm\detail\_fixes.hpp" />
@@ -581,6 +583,7 @@
     <ClInclude Include="vendor\stb\stb_image.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\BlackPearl\LightProbes\SphericalHarmonics.cpp" />
     <ClCompile Include="src\BlackPearl\MainCamera\MainCamera.cpp" />
     <ClCompile Include="src\BlackPearl\Renderer\MasterRenderer\IBLProbesRenderer.cpp" />
     <ClCompile Include="src\BlackPearl\LightProbes\LightProbes.cpp" />
@@ -644,6 +647,7 @@
     <ClCompile Include="src\pch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="src\BlackPearl\Renderer\Material\TextureImage2D.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="vendor\GLFW\GLFW.vcxproj">

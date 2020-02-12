@@ -29,3 +29,8 @@
 #ifdef GE_STENCIL_TEST
 #define GE_ENABLE_STENCIL_TEST
 #endif // GE_STENCIL_TEST
+
+
+/*LightProbes*/
+/*use spherical harmonics to calculate diffuse IrradianceMap*/
+#define _SH

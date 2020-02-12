@@ -207,18 +207,22 @@ void main(){
 	vec3 Ks = F;
 	vec3 Kd = vec3(1.0)-Ks;
 	Kd *= (1.0 - metallic);
-	vec3 environmentIrradiance ;
+	vec3 environmentIrradiance=vec3(0.0);//= vec3(1.0,1.0,1.0);
 	for(int i=0;i<u_Kprobes;i++){
 		environmentIrradiance+= u_ProbeWeight[i]*texture(u_IrradianceMap[i],N).rgb;
+		//environmentIrradiance*= texture(u_IrradianceMap[i],N).rgb;
+
 	}
 	vec3 diffuse = environmentIrradiance*u_Material.diffuseColor;
 
 	//sample both the prefilter map and the BRDF lut and combine them together as per the Split-Sum approximation to get the IBL specular part
-	const float MAX_REFLECTION_LOD = 4.0;
+	const float MAX_REFLECTION_LOD = 5.0;
 	//sample MAX_REFLECTION_LOD level mipmap everytime !
-	vec3 prefileredColor;
+	vec3 prefileredColor = vec3(0.0) ;//= vec3(1.0,1.0,1.0);
 	for(int i=0;i<u_Kprobes;i++){
 		prefileredColor+= u_ProbeWeight[i]*textureLod(u_PrefilterMap[i],R,roughness*MAX_REFLECTION_LOD).rgb;
+		//prefileredColor*= textureLod(u_PrefilterMap[i],R,roughness*MAX_REFLECTION_LOD).rgb;
+
 	}
 	vec2 brdf = texture(u_BrdfLUTMap,vec2(max(dot(N,V),0.0),roughness)).rg;
 

@@ -1393,6 +1393,8 @@
     <ClInclude Include="src\BlackPearl\LightProbes\LightProbes.h" />
     <ClInclude Include="src\BlackPearl\Renderer\MasterRenderer\IBLProbesRenderer.h" />
     <ClInclude Include="src\BlackPearl\MainCamera\MainCamera.h" />
+    <ClInclude Include="src\BlackPearl\LightProbes\SphericalHarmonics.h" />
+    <ClInclude Include="src\BlackPearl\Renderer\Material\TextureImage2D.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\BlackPearl\Application.cpp">
@@ -1562,5 +1564,7 @@
     <ClCompile Include="src\BlackPearl\LightProbes\LightProbes.cpp" />
     <ClCompile Include="src\BlackPearl\Renderer\MasterRenderer\IBLProbesRenderer.cpp" />
     <ClCompile Include="src\BlackPearl\MainCamera\MainCamera.cpp" />
+    <ClCompile Include="src\BlackPearl\LightProbes\SphericalHarmonics.cpp" />
+    <ClCompile Include="src\BlackPearl\Renderer\Material\TextureImage2D.cpp" />
   </ItemGroup>
 </Project>

@@ -45,6 +45,9 @@ namespace BlackPearl {
 		bool GetEnableCullFace()const { return m_EnableCullFace; }
 
 		void SetEnableRender(bool enable) { m_EnableRender = enable; }
+		void SetIsBackGroundObjects(bool isBackGroundObject)  {  m_IsBackGroundObjects = isBackGroundObject; }
+
+		bool GetIsBackGroundObjects() const{ return m_IsBackGroundObjects; }
 		bool GetEnableRender()const { return m_EnableRender; }
 	private:
 		//¿ªÆôºÍ½ûÖ¹äÖÈ¾
@@ -54,6 +57,7 @@ namespace BlackPearl {
 		glm::mat4 m_TransformMatrix;
 		
 		bool m_EnableCullFace = true;
+		bool m_IsBackGroundObjects = false;
 
 	};
 

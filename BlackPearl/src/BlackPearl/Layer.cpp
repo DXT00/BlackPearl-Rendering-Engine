@@ -13,7 +13,7 @@ namespace BlackPearl {
 
 	static int buttonNum = 0;
 
-
+	//bool isBackGroundObj=false;
 
 
 
@@ -123,14 +123,36 @@ namespace BlackPearl {
 				ImGui::DragFloat("far_plane", &BlackPearl::ShadowMapRenderer::s_FarPlane, 0.5f, -50.0f, 100.0f, "%.3f ");*/
 
 		if (currentObj != nullptr) {
-			
-		
+
+
 			if (currentObj->HasComponent< BlackPearl::Transform>()) {
 				ShowTransform(currentObj->GetComponent<BlackPearl::Transform>());
 
-			}	
+			}
 			if (currentObj->HasComponent< BlackPearl::MeshRenderer>()) {
 				ShowMeshRenderer(currentObj->GetComponent<BlackPearl::MeshRenderer>());
+				bool isBackGroundObj = currentObj->GetComponent<BlackPearl::MeshRenderer>()->GetIsBackGroundObjects();
+				ImGui::Checkbox("isBackGroundObj", &isBackGroundObj);
+				//TODO:: 可以采用 bitset
+				if (isBackGroundObj) {
+					std::vector<Object*>::const_iterator it = std::find(m_BackGroundObjsList.begin(), m_BackGroundObjsList.end(), currentObj);
+					if (it == m_BackGroundObjsList.end()) {
+						m_BackGroundObjsList.push_back(currentObj);
+						currentObj->GetComponent<BlackPearl::MeshRenderer>()->SetIsBackGroundObjects(true);
+					}
+
+				}
+				else {
+					std::vector<Object*>::const_iterator it;// = m_BackGroundObjsList.begin();
+					for (it = m_BackGroundObjsList.begin(); it != m_BackGroundObjsList.end(); it++) {
+						if ((*it)->GetId() == currentObj->GetId()) {
+							m_BackGroundObjsList.erase(it);
+							currentObj->GetComponent<BlackPearl::MeshRenderer>()->SetIsBackGroundObjects(false);
+
+							break;
+						}
+					}
+				}
 
 			}
 			if (currentObj->HasComponent < BlackPearl::PointLight>()) {
@@ -140,6 +162,9 @@ namespace BlackPearl {
 				ShowCamera(currentObj->GetComponent<BlackPearl::PerspectiveCamera>());
 
 			}
+
+
+
 		}
 
 		ImGui::End();
@@ -153,43 +178,43 @@ namespace BlackPearl {
 
 	Object* Layer::CreateEmpty(std::string name) {
 
-		Object* obj= m_ObjectManager->CreateEmpty(name);
+		Object* obj = m_ObjectManager->CreateEmpty(name);
 		m_ObjectsList.push_back(obj);
 		return obj;
 	}
 	Object* Layer::CreateLight(LightType type)
 	{
-		Object* obj= m_ObjectManager->CreateLight(type, m_LightSources);
+		Object* obj = m_ObjectManager->CreateLight(type, m_LightSources);
 		m_ObjectsList.push_back(obj);
 		return obj;
 	}
-	Object * Layer::CreateCube(const std::string& shaderPath, const std::string& texturePath) //TODO:
+	Object* Layer::CreateCube(const std::string& shaderPath, const std::string& texturePath) //TODO:
 	{
-		Object* obj= m_ObjectManager->CreateCube(shaderPath, texturePath);
+		Object* obj = m_ObjectManager->CreateCube(shaderPath, texturePath);
 		m_ObjectsList.push_back(obj);
 		return obj;
 	}
-	Object * Layer::CreateSphere(const float radius, const unsigned int stackCount, const unsigned int sectorCount, const std::string & shaderPath, const std::string & texturePath)
+	Object* Layer::CreateSphere(const float radius, const unsigned int stackCount, const unsigned int sectorCount, const std::string& shaderPath, const std::string& texturePath)
 	{
-		Object* obj = m_ObjectManager->CreateSphere( radius,stackCount,sectorCount, shaderPath, texturePath);
+		Object* obj = m_ObjectManager->CreateSphere(radius, stackCount, sectorCount, shaderPath, texturePath);
 		m_ObjectsList.push_back(obj);
 		return obj;
 	}
-	Object * Layer::CreatePlane(const std::string& shaderPath, const std::string& texturePath)
+	Object* Layer::CreatePlane(const std::string& shaderPath, const std::string& texturePath)
 	{
-		Object* obj= m_ObjectManager->CreatePlane(shaderPath, texturePath);
+		Object* obj = m_ObjectManager->CreatePlane(shaderPath, texturePath);
 		m_ObjectsList.push_back(obj);
 		return obj;
 	}
-	Object * Layer::CreateSkyBox( const std::vector<std::string>& textureFaces,const std::string& shaderPath)
+	Object* Layer::CreateSkyBox(const std::vector<std::string>& textureFaces, const std::string& shaderPath)
 	{
-		Object* obj= m_ObjectManager->CreateSkyBox(textureFaces,shaderPath);
+		Object* obj = m_ObjectManager->CreateSkyBox(textureFaces, shaderPath);
 		m_ObjectsList.push_back(obj);
 		return obj;
 	}
-	Object * Layer::CreateQuad(const std::string& shaderPath, const std::string& texturePath)
+	Object* Layer::CreateQuad(const std::string& shaderPath, const std::string& texturePath)
 	{
-		Object* obj= m_ObjectManager->CreateQuad(shaderPath, texturePath);
+		Object* obj = m_ObjectManager->CreateQuad(shaderPath, texturePath);
 		m_ObjectsList.push_back(obj);
 		return obj;
 	}
@@ -203,13 +228,13 @@ namespace BlackPearl {
 	}
 	Object* Layer::CreateModel(const std::string& modelPath, const std::string& shaderPath)
 	{
-		Object* obj= m_ObjectManager->CreateModel(modelPath, shaderPath);
+		Object* obj = m_ObjectManager->CreateModel(modelPath, shaderPath);
 		m_ObjectsList.push_back(obj);
 		return obj;
 	}
 	MainCamera* Layer::CreateCamera() {
 
-		MainCamera* mainCamera= m_ObjectManager->CreateCamera();
+		MainCamera* mainCamera = m_ObjectManager->CreateCamera();
 		m_ObjectsList.push_back(mainCamera->GetObj());
 		return mainCamera;
 	}
@@ -233,10 +258,10 @@ namespace BlackPearl {
 	//}
 	void Layer::ShowCamera(PerspectiveCamera* perspectiveCamera)
 	{
-		ImGui::Text("Yaw = %f,Pitch= %f", perspectiveCamera->Yaw(),perspectiveCamera->Pitch());
+		ImGui::Text("Yaw = %f,Pitch= %f", perspectiveCamera->Yaw(), perspectiveCamera->Pitch());
 		ImGui::Text("ProjectionViewMatrix[0].x = %f,ProjectionViewMatrix[1].x = %f", perspectiveCamera->GetViewProjectionMatrix()[0].x
-		, perspectiveCamera->GetViewProjectionMatrix()[1].x);
-		ImGui::Text("ProjectionViewMatrix[2].x = %f,ProjectionViewMatrix[3].x = %f",  perspectiveCamera->GetViewProjectionMatrix()[2].x, perspectiveCamera->GetViewProjectionMatrix()[3].x);
+			, perspectiveCamera->GetViewProjectionMatrix()[1].x);
+		ImGui::Text("ProjectionViewMatrix[2].x = %f,ProjectionViewMatrix[3].x = %f", perspectiveCamera->GetViewProjectionMatrix()[2].x, perspectiveCamera->GetViewProjectionMatrix()[3].x);
 		ImGui::Text("Position.x = %f,Position.y = %f,Position.z = %f", perspectiveCamera->GetPosition().x, perspectiveCamera->GetPosition().y, perspectiveCamera->GetPosition().z);
 		ImGui::Text("Front.x = %f,Front.y = %f,Front.z = %f", perspectiveCamera->Front().x, perspectiveCamera->Front().y, perspectiveCamera->Front().z);
 		ImGui::Text("Up.x = %f,Up.y = %f,Up.z = %f", perspectiveCamera->Up().x, perspectiveCamera->Up().y, perspectiveCamera->Up().z);
@@ -245,11 +270,11 @@ namespace BlackPearl {
 
 	}
 
-	void Layer::ShowShader(std::string imguiShaders,  int meshIndex, static  int &itemIndex,int offset)
+	void Layer::ShowShader(std::string imguiShaders, int meshIndex, static  int& itemIndex, int offset)
 	{
 
-		std::string buttonName = "select file##" + std::to_string(meshIndex+offset);
-		std::string inputTextName = "mesh" + std::to_string(meshIndex+ offset);
+		std::string buttonName = "select file##" + std::to_string(meshIndex + offset);
+		std::string inputTextName = "mesh" + std::to_string(meshIndex + offset);
 
 		//imguiShaders = mesh.GetMaterial()->GetShader()->GetPath();
 	//	ImGui::PushID(meshIndex);
@@ -261,18 +286,18 @@ namespace BlackPearl {
 			itemIndex = meshIndex;
 			m_fileDialog.Open();
 		}
-		
-	//	ImGui::PopID();
+
+		//	ImGui::PopID();
 
 
 	}
 
 
-	void Layer::ShowTextures( std::string imguiShaders,  int meshIndex, static  int &itemIndex,  Texture::Type textureType,static Texture::Type &type, int offset)
+	void Layer::ShowTextures(std::string imguiShaders, int meshIndex, static  int& itemIndex, Texture::Type textureType, static Texture::Type& type, int offset)
 	{
 
-		 std::string buttonName = ""; //+std::to_string(meshIndex + offset);
-		 std::string inputTextName = "";// +std::to_string(meshIndex + offset);
+		std::string buttonName = ""; //+std::to_string(meshIndex + offset);
+		std::string inputTextName = "";// +std::to_string(meshIndex + offset);
 
 		switch (textureType) {
 		case Texture::Type::DiffuseMap:
@@ -315,24 +340,24 @@ namespace BlackPearl {
 			buttonName += "mentallicMap";
 			inputTextName += "mentallicMap";
 			break;
-		
+
 		}
-			
-	
+
+
 		//imguiShaders = mesh.GetMaterial()->GetShader()->GetPath();
 		//ImGui::PushID(meshIndex);
-		
 
-		inputTextName += "##"+std::to_string(meshIndex);
+
+		inputTextName += "##" + std::to_string(meshIndex);
 		buttonName += "##" + std::to_string(meshIndex);
 
-		if(imguiShaders.size()==0)
-		ImGui::Text("                    ");
+		if (imguiShaders.size() == 0)
+			ImGui::Text("                    ");
 		else
 			ImGui::Text(imguiShaders.c_str());
 
 
-	
+
 		ImGui::SameLine();
 
 		if (ImGui::Button(buttonName.c_str())) {
@@ -341,9 +366,9 @@ namespace BlackPearl {
 			m_fileDialog.Open();
 		}
 
-		
-		
-	
+
+
+
 		//ImGui::PopID();
 
 	}
@@ -351,22 +376,22 @@ namespace BlackPearl {
 
 
 
-	void Layer::ShowMaterialProps(Material::Props & imGuiProps)
+	void Layer::ShowMaterialProps(Material::Props& imGuiProps)
 	{
 	}
 
 	void Layer::ShowMeshRenderer(MeshRenderer* comp)
 	{
-		
+
 
 		ImGui::Text("MeshRenderer");
-		std::vector<Mesh> &imGuiMeshes = comp->GetMeshes();
+		std::vector<Mesh>& imGuiMeshes = comp->GetMeshes();
 		if (imGuiMeshes.empty()) return;
 
 		int offset = 0;
 
 		ImGui::TextColored({ 1.0,0.64,0.0,1.0 }, "Shader");
-		std::vector<std::string> imguiShaders; 
+		std::vector<std::string> imguiShaders;
 		static int itemIndex = -1;
 		//std::cout << "itemIndex" << itemIndex <<std::endl;
 		imguiShaders.resize(imGuiMeshes.size());
@@ -377,17 +402,17 @@ namespace BlackPearl {
 		}
 		if (itemIndex != -1) {
 			if (m_fileDialog.HasSelected()) {
-		
-				imGuiMeshes[itemIndex].GetMaterial()->SetShader( m_fileDialog.GetSelected().string());
+
+				imGuiMeshes[itemIndex].GetMaterial()->SetShader(m_fileDialog.GetSelected().string());
 				m_fileDialog.ClearSelected();
 				itemIndex = -1;
 			}
-			
+
 
 		}
 
 		if (imGuiMeshes[0].GetMaterial()->GetTextureMaps() != nullptr) {
-			
+
 			ImGui::TextColored({ 1.0,0.64,0.0,1.0 }, "TextureMaps");
 			std::vector<std::string> imguiDiffuseTextures(imGuiMeshes.size());
 			std::vector<std::string> imguiSpecularTextures(imGuiMeshes.size());
@@ -405,32 +430,32 @@ namespace BlackPearl {
 			for (int i = 0; i < imGuiMeshes.size(); i++)
 			{
 				std::string text = "Mesh" + std::to_string(i);
-				ImGui::TextColored({ 1.0,0.64,0.0,1.0 },text.c_str() );
+				ImGui::TextColored({ 1.0,0.64,0.0,1.0 }, text.c_str());
 				if (imGuiMeshes[i].GetMaterial()->GetTextureMaps()->diffuseTextureMap != nullptr) {
 					imguiDiffuseTextures[i] = imGuiMeshes[i].GetMaterial()->GetTextureMaps()->diffuseTextureMap->GetPath();
 				}
-				ShowTextures(imguiDiffuseTextures[i],  i, itemIndexTexture, Texture::DiffuseMap, type, imGuiMeshes.size()*2);
+				ShowTextures(imguiDiffuseTextures[i], i, itemIndexTexture, Texture::DiffuseMap, type, imGuiMeshes.size() * 2);
 
-				
-				if (imGuiMeshes[i].GetMaterial()->GetTextureMaps()->specularTextureMap != nullptr) 
+
+				if (imGuiMeshes[i].GetMaterial()->GetTextureMaps()->specularTextureMap != nullptr)
 					imguiSpecularTextures[i] = imGuiMeshes[i].GetMaterial()->GetTextureMaps()->specularTextureMap->GetPath();
-				ShowTextures(imguiSpecularTextures[i], i, itemIndexTexture, Texture::SpecularMap, type, imGuiMeshes.size()*2);
+				ShowTextures(imguiSpecularTextures[i], i, itemIndexTexture, Texture::SpecularMap, type, imGuiMeshes.size() * 2);
 
-				if (imGuiMeshes[i].GetMaterial()->GetTextureMaps()->emissionTextureMap != nullptr) 
+				if (imGuiMeshes[i].GetMaterial()->GetTextureMaps()->emissionTextureMap != nullptr)
 					imguiEmissionTextures[i] = imGuiMeshes[i].GetMaterial()->GetTextureMaps()->emissionTextureMap->GetPath();
-				ShowTextures(imguiEmissionTextures[i],i, itemIndexTexture, Texture::EmissionMap, type, imGuiMeshes.size()*2);
+				ShowTextures(imguiEmissionTextures[i], i, itemIndexTexture, Texture::EmissionMap, type, imGuiMeshes.size() * 2);
 
 				if (imGuiMeshes[i].GetMaterial()->GetTextureMaps()->normalTextureMap != nullptr)
 					imguiNormalTextures[i] = imGuiMeshes[i].GetMaterial()->GetTextureMaps()->normalTextureMap->GetPath();
-				ShowTextures(imguiNormalTextures[i],  i, itemIndexTexture, Texture::NormalMap, type, imGuiMeshes.size()*2);
+				ShowTextures(imguiNormalTextures[i], i, itemIndexTexture, Texture::NormalMap, type, imGuiMeshes.size() * 2);
 
 				if (imGuiMeshes[i].GetMaterial()->GetTextureMaps()->cubeTextureMap != nullptr)
 					imguiCubeTextures[i] = imGuiMeshes[i].GetMaterial()->GetTextureMaps()->cubeTextureMap->GetPath();
-				ShowTextures(imguiCubeTextures[i], i, itemIndexTexture, Texture::CubeMap, type, imGuiMeshes.size()*2);
+				ShowTextures(imguiCubeTextures[i], i, itemIndexTexture, Texture::CubeMap, type, imGuiMeshes.size() * 2);
 
 				if (imGuiMeshes[i].GetMaterial()->GetTextureMaps()->heightTextureMap != nullptr)
 					imguiHeightTextures[i] = imGuiMeshes[i].GetMaterial()->GetTextureMaps()->heightTextureMap->GetPath();
-				ShowTextures(imguiHeightTextures[i], i, itemIndexTexture, Texture::HeightMap, type, imGuiMeshes.size()*2);
+				ShowTextures(imguiHeightTextures[i], i, itemIndexTexture, Texture::HeightMap, type, imGuiMeshes.size() * 2);
 
 				if (imGuiMeshes[i].GetMaterial()->GetTextureMaps()->depthTextureMap != nullptr)
 					imguiDepthTextures[i] = imGuiMeshes[i].GetMaterial()->GetTextureMaps()->depthTextureMap->GetPath();
@@ -455,7 +480,7 @@ namespace BlackPearl {
 
 					switch (type) {
 					case Texture::DiffuseMap:
-						imGuiMeshes[itemIndexTexture].GetMaterial()->SetTexture(Texture::DiffuseMap,m_fileDialog.GetSelected().string());//"assets/texture/" + 
+						imGuiMeshes[itemIndexTexture].GetMaterial()->SetTexture(Texture::DiffuseMap, m_fileDialog.GetSelected().string());//"assets/texture/" + 
 						break;
 					case Texture::SpecularMap:
 						imGuiMeshes[itemIndexTexture].GetMaterial()->SetTexture(Texture::SpecularMap, m_fileDialog.GetSelected().string());//"assets/texture/" +
@@ -464,7 +489,7 @@ namespace BlackPearl {
 						imGuiMeshes[itemIndexTexture].GetMaterial()->SetTexture(Texture::EmissionMap, m_fileDialog.GetSelected().string());
 						break;
 					case Texture::NormalMap:
-						imGuiMeshes[itemIndexTexture].GetMaterial()->SetTexture(Texture::NormalMap,m_fileDialog.GetSelected().string());
+						imGuiMeshes[itemIndexTexture].GetMaterial()->SetTexture(Texture::NormalMap, m_fileDialog.GetSelected().string());
 						break;
 					case Texture::CubeMap:
 						imGuiMeshes[itemIndexTexture].GetMaterial()->SetTexture(Texture::CubeMap, m_fileDialog.GetSelected().string());
@@ -473,7 +498,7 @@ namespace BlackPearl {
 						imGuiMeshes[itemIndexTexture].GetMaterial()->SetTexture(Texture::HeightMap, m_fileDialog.GetSelected().string());
 						break;
 					case Texture::DepthMap:
-						imGuiMeshes[itemIndexTexture].GetMaterial()->SetTexture(Texture::DepthMap,  m_fileDialog.GetSelected().string());
+						imGuiMeshes[itemIndexTexture].GetMaterial()->SetTexture(Texture::DepthMap, m_fileDialog.GetSelected().string());
 						break;
 
 					case Texture::AoMap:
@@ -501,7 +526,6 @@ namespace BlackPearl {
 
 			}
 		}
-		
 
 
 
@@ -511,10 +535,10 @@ namespace BlackPearl {
 		Material::Props& imGuiProps = imGuiMeshes[0].GetMaterial()->GetProps();//TODO::默认所有mesh 的Material::Props 是一样的
 		float imGuiShininess = imGuiProps.shininess;
 		bool  imGUiBlinnLight = imGuiProps.isBinnLight;
-		bool  imGUiIsTextureSample =(bool)imGuiProps.isTextureSample;
+		bool  imGUiIsTextureSample = (bool)imGuiProps.isTextureSample;
 
 		ImGui::Checkbox("blinnlight", &imGUiBlinnLight);
-		for(auto mesh:imGuiMeshes)
+		for (auto mesh : imGuiMeshes)
 			mesh.GetMaterial()->SetBinnLight(imGUiBlinnLight);
 
 		ImGui::DragFloat("shininess", &imGuiShininess, 0.5f, 0.0f, 1024.0f, "%.3f ");
@@ -559,29 +583,29 @@ namespace BlackPearl {
 
 	}
 
-	void Layer::ShowPointLight(PointLight *pointLight)
+	void Layer::ShowPointLight(PointLight* pointLight)
 	{
 		//if (comp->GetType() == LightType::PointLight) {
 			//auto pointLight = std::dynamic_pointer_cast<PointLight>(comp);
-			auto color = pointLight->GetMeshes().GetMaterial()->GetMaterialColor().Get();
-			static  int attenuation = (int)pointLight->GetAttenuation().maxDistance;
-			ImGui::ColorEdit3("ambient Color", glm::value_ptr(color.ambientColor));
-			ImGui::ColorEdit3("diffuse Color", glm::value_ptr(color.diffuseColor));
-			ImGui::ColorEdit3("specular Color", glm::value_ptr(color.specularColor));
-			ImGui::ColorEdit3("emission Color", glm::value_ptr(color.emissionColor));
-			ImGui::DragInt("attenuation", &attenuation,0.5f,7,3250);
+		auto color = pointLight->GetMeshes().GetMaterial()->GetMaterialColor().Get();
+		static  int attenuation = (int)pointLight->GetAttenuation().maxDistance;
+		ImGui::ColorEdit3("ambient Color", glm::value_ptr(color.ambientColor));
+		ImGui::ColorEdit3("diffuse Color", glm::value_ptr(color.diffuseColor));
+		ImGui::ColorEdit3("specular Color", glm::value_ptr(color.specularColor));
+		ImGui::ColorEdit3("emission Color", glm::value_ptr(color.emissionColor));
+		ImGui::DragInt("attenuation", &attenuation, 0.5f, 7, 3250);
 
-			pointLight->SetAttenuation(attenuation);
-			
-			pointLight->UpdateMesh({ color.ambientColor ,color.diffuseColor,color.specularColor,color.emissionColor });
-	//	}
-	/*	else if (comp->GetType() == LightType::ParallelLight) {
+		pointLight->SetAttenuation(attenuation);
 
-		}
-		else if (comp->GetType() == LightType::SpotLight) {
+		pointLight->UpdateMesh({ color.ambientColor ,color.diffuseColor,color.specularColor,color.emissionColor });
+		//	}
+		/*	else if (comp->GetType() == LightType::ParallelLight) {
+
+			}
+			else if (comp->GetType() == LightType::SpotLight) {
 
 
-		}*/
+			}*/
 	}
 
 
