@@ -6,6 +6,8 @@
 
 #include "imgui/imgui.h"
 #include "imgui/imfilebrowser.h"
+#include <thread>
+#include <iostream>
 #include <glm/gtc/type_ptr.hpp>
 class IBLProbesRenderingLayer :public BlackPearl::Layer {
 public:
@@ -38,7 +40,7 @@ public:
 		m_BrdfLUTQuadObj = CreateQuad("assets/shaders/ibl/brdf.glsl","");
 		m_SHImageQuadObj = CreateQuad("assets/shaders/lightProbes/SH.glsl", "");
 		/* create probes */
-		unsigned int xlen = 1, ylen = 2,zlen = 1,space = 9;
+		unsigned int xlen = 2, ylen = 2,zlen = 2,space = 9;
 		for (unsigned int x = 0; x < xlen; x++)
 		{
 			for (unsigned int y = 0; y < ylen; y++)
@@ -81,7 +83,7 @@ public:
 
 		//m_BackGroundObjsList.push_back(m_SkyBoxObj1);
 		/*create model*/
-		BlackPearl::Object *deer=  CreateModel("assets/models/deer/Deer.obj", "assets/shaders/IronMan.glsl");
+		/*BlackPearl::Object *deer=  CreateModel("assets/models/deer/Deer.obj", "assets/shaders/IronMan.glsl");
 		deer->GetComponent<BlackPearl::Transform>()->SetScale(glm::vec3(0.005));
 		deer->GetComponent<BlackPearl::Transform>()->SetPosition({0.0f,-1.5f,1.0f});
 		m_BackGroundObjsList.push_back(deer);
@@ -89,7 +91,7 @@ public:
 		BlackPearl::Object* ironMan = CreateModel("assets/models/IronMan/IronMan.obj", "assets/shaders/IronMan.glsl");
 		ironMan->GetComponent<BlackPearl::Transform>()->SetScale(glm::vec3(0.010));
 		ironMan->GetComponent<BlackPearl::Transform>()->SetPosition({ 1.5f,-1.0f,1.0f });
-		m_BackGroundObjsList.push_back(ironMan);
+		m_BackGroundObjsList.push_back(ironMan);*/
 
 
 		BlackPearl::Object* cube = CreateCube();
@@ -142,7 +144,7 @@ public:
 		m_SphereObjRust->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(RustroughnessTexture);
 		m_SphereObjRust->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(RustmentallicTexture);
 
-		m_SphereObjRust->GetComponent<BlackPearl::Transform>()->SetPosition({ 3,0,0 });
+		m_SphereObjRust->GetComponent<BlackPearl::Transform>()->SetPosition({ 5,0,0 });
 
 		m_SphereObjStone->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(StonenormalTexture);
 		m_SphereObjStone->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(StonealbedoTexture);
@@ -150,7 +152,7 @@ public:
 		m_SphereObjStone->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(StoneroughnessTexture);
 		m_SphereObjStone->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(StonementallicTexture);
 
-		m_SphereObjStone->GetComponent<BlackPearl::Transform>()->SetPosition({ -3,0,0 });
+		m_SphereObjStone->GetComponent<BlackPearl::Transform>()->SetPosition({ -5,0,0 });
 
 		m_SphereObjPlastic->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(PlasticnormalTexture);
 		m_SphereObjPlastic->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(PlasticalbedoTexture);
@@ -158,7 +160,7 @@ public:
 		m_SphereObjPlastic->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(PlasticroughnessTexture);
 		m_SphereObjPlastic->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(PlasticmentallicTexture);
 
-		m_SphereObjPlastic->GetComponent<BlackPearl::Transform>()->SetPosition({ -6.0,0,0 });
+		m_SphereObjPlastic->GetComponent<BlackPearl::Transform>()->SetPosition({ -10.0,0,0 });
 		
 		m_SphereObjsList.push_back(m_SphereObjIron);
 		m_SphereObjsList.push_back(m_SphereObjStone);
@@ -169,7 +171,7 @@ public:
 		
 		/*Draw CubeMap from hdrMap and Create environment IrrdianceMap*/
 		m_IBLProbesRenderer->Init(m_SHImageQuadObj,m_BrdfLUTQuadObj,  *GetLightSources(), m_BackGroundObjsList, m_LightProbes);
-		m_IBLProbesRenderer->Render(*GetLightSources(), m_BackGroundObjsList, m_LightProbes, m_SkyBoxObj1);
+		//m_IBLProbesRenderer->Render(GetLightSources(), m_BackGroundObjsList, m_LightProbes, m_SkyBoxObj1);
 
 		//glViewport(0, 0, BlackPearl::Configuration::WindowWidth, BlackPearl::Configuration::WindowHeight);
 
@@ -181,6 +183,9 @@ public:
 		delete m_BasicRenderer;
 		delete m_IBLProbesRenderer;
 
+	}
+	void Hello() {
+		GE_CORE_INFO("Hello");
 	}
 	void OnUpdate(BlackPearl::Timestep ts) override {
 
@@ -195,9 +200,16 @@ public:
 		if (BlackPearl::Input::IsKeyPressed(BP_KEY_U)) {
 
 			/*IBLProbes rendering*/
-			m_IBLProbesRenderer->Render(*GetLightSources(), m_BackGroundObjsList, m_LightProbes, m_SkyBoxObj1);
+
+			//std::vector<std::thread>probeThreads;
+			//	for (auto it = probes.begin(); it != probes.end(); it++)
+			m_IBLProbesRenderer->ReUpdateProbes();
+
+		
+
 		}
 		
+		m_IBLProbesRenderer->Render(GetLightSources(), m_BackGroundObjsList, m_LightProbes, m_SkyBoxObj1);
 
 		//glViewport(0, 0, BlackPearl::Configuration::WindowWidth, BlackPearl::Configuration::WindowHeight);
 		//glDepthMask(GL_FALSE);
@@ -211,7 +223,7 @@ public:
 
 
 		
-		m_IBLProbesRenderer->RenderSpecularObjects(*GetLightSources(), m_SphereObjsList, m_LightProbes);
+		m_IBLProbesRenderer->RenderSpecularObjects(GetLightSources(), m_SphereObjsList, m_LightProbes);
 
 
 
@@ -252,5 +264,5 @@ private:
 	BlackPearl::BasicRenderer* m_BasicRenderer;
 	/* Probes */
 	std::vector<BlackPearl::LightProbe*> m_LightProbes;
-
+	std::thread m_Threads[10];
 };

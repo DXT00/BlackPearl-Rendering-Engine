@@ -152,25 +152,25 @@ vec3 LightRadiance(vec3 fragPos,PointLight light){
 }
 
 
-uniform vec3 u_SHCoeffs[9];
+uniform vec3 u_SHCoeffs[10*9];//×î¶à10¸öprobe
 
-vec3 SHDiffuse(const vec3 normal){
+vec3 SHDiffuse(const int probeIndex,const vec3 normal){
 	float x = normal.x;
 	float y = normal.y;
 	float z = normal.z;
 
 	vec3 result = (
-		u_SHCoeffs[0] +
+		u_SHCoeffs[0+probeIndex*9] +
 		
-		u_SHCoeffs[1] * x +
-		u_SHCoeffs[2] * y +
-		u_SHCoeffs[3] * z +
+		u_SHCoeffs[1+probeIndex*9] * x +
+		u_SHCoeffs[2+probeIndex*9] * y +
+		u_SHCoeffs[3+probeIndex*9] * z +
 		
-		u_SHCoeffs[4] * z * x +
-		u_SHCoeffs[5] * y * z +
-		u_SHCoeffs[6] * y * x +
-		u_SHCoeffs[7] * (3.0 * z * z - 1.0) +
-		u_SHCoeffs[8] * (x*x - y*y)
+		u_SHCoeffs[4+probeIndex*9] * z * x +
+		u_SHCoeffs[5+probeIndex*9] * y * z +
+		u_SHCoeffs[6+probeIndex*9] * y * x +
+		u_SHCoeffs[7+probeIndex*9] * (3.0 * z * z - 1.0) +
+		u_SHCoeffs[8+probeIndex*9] * (x*x - y*y)
   );
 
   return max(result, vec3(0.0));
@@ -243,7 +243,7 @@ void main(){
 	Kd *= (1.0 - metallic);
 	vec3 environmentIrradiance=vec3(0.0);//= vec3(1.0,1.0,1.0);
 	for(int i=0;i<u_Kprobes;i++){
-		environmentIrradiance+=SHDiffuse(N);// u_ProbeWeight[i]*texture(u_IrradianceMap[i],N).rgb;
+		environmentIrradiance+=u_ProbeWeight[i]*SHDiffuse(i,N);// u_ProbeWeight[i]*texture(u_IrradianceMap[i],N).rgb;
 		//environmentIrradiance*= texture(u_IrradianceMap[i],N).rgb;
 
 	}
@@ -261,7 +261,7 @@ void main(){
 	vec2 brdf = texture(u_BrdfLUTMap,vec2(max(dot(N,V),0.0),roughness)).rg;
 
 	vec3 specular = prefileredColor * (F*brdf.x+brdf.y);
-	vec3 ambient = (Kd*diffuse+specular) * ao;
+	vec3 ambient =  (specular) * ao;;//(Kd*diffuse+specular) * ao;
     vec3 color =ambient + Lo;
 
 	//HDR tonemapping

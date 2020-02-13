@@ -14,11 +14,39 @@ namespace BlackPearl {
 		{{-1, 0, 0},{0, -1, 0},{0, 0, -1}}  // negz
 
 	};
-
-
+	std::vector<std::vector<glm::vec3> > SphericalHarmonics::cubeMapVecs;
+	bool initialCubeMapVector = false;
 
 	float SphericalHarmonics::areaElement(float x, float y) {
 		return atan2(x * y, sqrt(x * x + y * y + 1.0));
+	}
+	void SphericalHarmonics::InitialCubeMapVector(unsigned int cubeMapWidth)
+	{
+		unsigned int width = cubeMapWidth;
+		// generate cube map vectors
+		for (int index = 0; index < 6; index++)
+		{
+			std::vector<glm::vec3> faceVec;
+
+			for (int v = 0; v < width; v++)
+			{
+				for (int u = 0; u < width; u++)
+				{
+					float fu = (2.0 * u / (width - 1.0)) - 1.0;
+					float fv = (2.0 * v / (width - 1.0)) - 1.0;
+					glm::vec3 vecX = cubeMapFaceNormal[index][0] * fu;
+					glm::vec3 vecY = cubeMapFaceNormal[index][1] * fv;
+					glm::vec3 vecZ = cubeMapFaceNormal[index][2];
+
+					glm::vec3 res = glm::normalize(vecX + vecY + vecZ);
+					faceVec.push_back(res);
+				}
+			}
+
+			SphericalHarmonics::cubeMapVecs.push_back(faceVec);
+		}
+
+		initialCubeMapVector = true;
 	}
 	// give me a cubemap, its size and number of channels
 	// and i'll give you spherical harmonics
@@ -45,32 +73,9 @@ namespace BlackPearl {
 		environmentCubeMap->UnBind();
 
 
-
-		std::vector<std::vector<glm::vec3> > cubeMapVecs;
 		unsigned int width = environmentCubeMap->GetWidth();
-		// generate cube map vectors
-		for (int index = 0; index < 6; index++)
-		{
-			std::vector<glm::vec3> faceVec;
-			
-			for (int v = 0; v < width; v++)
-			{
-				for (int u = 0; u < width; u++)
-				{
-					float fu = (2.0 * u / (width - 1.0)) - 1.0;
-					float fv = (2.0 * v / (width - 1.0)) - 1.0;
-					glm::vec3 vecX = cubeMapFaceNormal[index][0] * fu;
-					glm::vec3 vecY = cubeMapFaceNormal[index][1] * fv;
-					glm::vec3 vecZ = cubeMapFaceNormal[index][2];
-
-					glm::vec3 res = glm::normalize(vecX + vecY + vecZ);
-					faceVec.push_back(res);
-				}
-			}
-
-			cubeMapVecs.push_back(faceVec);
-		}
-
+		if (!initialCubeMapVector)
+			InitialCubeMapVector(width);
 
 		float weightAccum = 0.0f;
 		for (int index = 0; index < 6; index++) {
@@ -80,7 +85,7 @@ namespace BlackPearl {
 			{
 				for (int x = 0; x < width; x++)
 				{
-					glm::vec3 texelVect = cubeMapVecs[index][y * width + x];
+					glm::vec3 texelVect = SphericalHarmonics::cubeMapVecs[index][y * width + x];
 					float weight = texelSolidAngle(x, y, width, width);
 					// forsyths weights
 					float weight1 = weight * 4.0f / 17.0f;
@@ -150,12 +155,5 @@ namespace BlackPearl {
 		return angle;
 	}
 
-	void SphericalHarmonics::Prefilter()
-	{
-	}
-
-	void SphericalHarmonics::ToMatrix()
-	{
-	}
 
 }

@@ -20,10 +20,13 @@ namespace BlackPearl {
 		static std::vector<std::vector<float>> UpdateCoeffs(std::shared_ptr<CubeMapTexture> environmentCubeMap);
 		static float texelSolidAngle(int x,int y,unsigned int width,unsigned int height);
 		static float areaElement(float x, float y);
+		static void InitialCubeMapVector(unsigned int cubeMapWidth);
 
 
-		void Prefilter();
-		void ToMatrix();
+	//private:
+		//bool s_InitialCubeMapVector;
+		static std::vector<std::vector<glm::vec3> > cubeMapVecs;
+
 
 	};
 

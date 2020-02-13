@@ -207,7 +207,7 @@ void main(){
 	//vec3 color=LoadSHCoeffs(SHCoeffs,N);
 	vec3 color =SHDiffuse(N);//imageLoad(u_Image,ivec2(4,0)).rgb;//
 	
-	//vec3 color =texture(u_Material.cube,TexCoords).rgb;
+//	vec3 color =texture(u_Material.cube,TexCoords).rgb;
 //	color = color/(color+vec3(1.0));
 //	color = pow(color,vec3(1.0/2.2));
 //

@@ -9,22 +9,28 @@ namespace BlackPearl {
 	public:
 		IBLProbesRenderer();
 		virtual ~IBLProbesRenderer();
-		void Render(const LightSources& lightSources, const std::vector<Object*> objects, const std::vector<LightProbe*> probes, Object* skyBox);
+		void Render(const LightSources* lightSources, const std::vector<Object*> objects, const std::vector<LightProbe*> probes, Object* skyBox);
 		void RenderProbes(const std::vector<LightProbe*> probes);
-		void RenderSpecularObjects(const LightSources& lightSources, const std::vector<Object*> objects, const std::vector<LightProbe*> probes);
+		void RenderSpecularObjects(const LightSources* lightSources, const std::vector<Object*> objects, const std::vector<LightProbe*> probes);
 		
 		void Init(Object * SHQuadObj,Object* brdfLUTQuadObj, const LightSources& lightSources, const std::vector<Object*> objects, const std::vector<LightProbe*> probes);
 		std::shared_ptr<Texture> GetSpecularBrdfLUTTexture() const { return m_SpecularBrdfLUTTexture; }
-
+		void UpdateProbesMaps(const LightSources* lightSources, std::vector<Object*> objects, Object* skyBox, LightProbe* probe);
+		void ReUpdateProbes() {
+			m_CurrentProbeIndex = 0;
+			m_UpdateFinished = false;
+		}
 	private:
 		/*render environment CubeMap of each probe */
-		void RenderEnvironmerntCubeMaps(const LightSources& lightSources, std::vector<Object*> objects, LightProbe* probes, Object* skyBox);
-		void RenderDiffuseIrradianceMap(const LightSources& lightSources, std::vector<Object*> objects, LightProbe *probe);
-		void RenderSpecularPrefilterMap(const LightSources& lightSources, std::vector<Object*> objects, LightProbe *probe);
+		void RenderEnvironmerntCubeMaps(const LightSources* lightSources, std::vector<Object*> objects, LightProbe* probes, Object* skyBox);
+		void RenderDiffuseIrradianceMap(const LightSources* lightSources, std::vector<Object*> objects, LightProbe *probe);
+		void RenderSpecularPrefilterMap(const LightSources* lightSources,  LightProbe *probe);
 
 		void RenderSpecularBRDFLUTMap();
 		void RenderSHImage(LightProbe* probe);
 		std::vector<LightProbe*> FindKnearProbes(glm::vec3 objPos,const std::vector<LightProbe*> probes);
+
+		
 
 	private:
 		/*只计算一次*/
@@ -50,7 +56,13 @@ namespace BlackPearl {
 		std::shared_ptr<Shader>		m_SpecularBRDFLutShader = nullptr;  // brdf LUT shader
 		std::shared_ptr<Shader>		m_SHShader = nullptr;//render SHImage for each probe
 		/* m_K near probes for specular objs rendering */
-		unsigned int m_K = 1;
+		unsigned int m_K = 2;
+
+		/*light probes update queue,update m_KperFrame pre frame*/
+		unsigned m_KperFrame = 1;
+		unsigned int m_CurrentProbeIndex = 0;
+		bool m_UpdateFinished = false;
+
 	};
 
 }

@@ -39,4 +39,15 @@ namespace BlackPearl {
 		m_LightProbeObj->GetComponent<Transform>()->SetScale(size);
 	}
 
+	//void LightProbe::StartThread(void(IBLProbesRenderer::*UpdateProbeMaps)(const LightSources&, const std::vector<Object*>, Object*, LightProbe*),
+	//	const LightSources& lightSources, const std::vector<Object*> objects, Object* skyBox)
+	//{
+	//	m_Thread = std::thread(UpdateProbeMaps,this, lightSources, objects,  skyBox, this);
+	//}
+
+	//void LightProbe::JoinThread()
+	//{
+	//	m_Thread.join();
+	//}
+
 }

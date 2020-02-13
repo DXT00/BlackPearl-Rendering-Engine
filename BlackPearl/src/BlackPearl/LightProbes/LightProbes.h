@@ -5,7 +5,12 @@
 #include "BlackPearl/Object/Object.h"
 #include "BlackPearl/MainCamera/MainCamera.h"
 #include "BlackPearl/Renderer/Material/TextureImage2D.h"
+#include "BlackPearl/Component/LightComponent/LightSources.h"
+#include <thread>
+
 namespace BlackPearl {
+	class IBLProbesRenderer;
+
 	/*Logical LightProbe*/
 	/*每个probe 都由一个 CubeObj 代表*/
 	class LightProbe
@@ -32,7 +37,7 @@ namespace BlackPearl {
 		unsigned int GetDiffuseCubeMapResolution() const { return m_DiffuseCubeMapResolution; }
 		unsigned int GetSpecularCubeMapResolution() const { return m_SpecularCubeMapResolution; }
 
-		/* */
+		/* get */
 		unsigned int GetMaxMipMapLevel() const{ return m_MaxMipmapLevel; }
 		glm::vec3	 GetPosition()const { return m_LightProbeObj->GetComponent<Transform>()->GetPosition(); }
 		glm::vec3	 GetRotation()const { return m_LightProbeObj->GetComponent<Transform>()->GetRotation(); }
@@ -57,6 +62,11 @@ namespace BlackPearl {
 			m_Camera->SetRotation(objRot);
 		}
 		MainCamera* GetCamera()const { return m_Camera; }
+
+		/*threads*/
+		//void StartThread(void(IBLProbesRenderer::*UpdateProbeMaps)(const LightSources& , const std::vector<Object*> , Object* , LightProbe* ),
+			//const LightSources& lightSources, const std::vector<Object*> objects, Object* skyBox);
+		//void JoinThread();
 	private:
 
 		/* probe's view matrix */
@@ -70,9 +80,9 @@ namespace BlackPearl {
 		unsigned int m_MaxMipmapLevel = 5;
 
 		unsigned int					m_SampleCounts = 1024;
-		unsigned int					m_EnvironmentCubeMapResolution = 512;
+		unsigned int					m_EnvironmentCubeMapResolution = 128;
 		unsigned int					m_DiffuseCubeMapResolution = 32;
-		unsigned int					m_SpecularCubeMapResolution = 512;
+		unsigned int					m_SpecularCubeMapResolution = 128;
 
 		//glm::vec3 m_Center;
 		glm::vec3 m_Size;
@@ -80,6 +90,10 @@ namespace BlackPearl {
 		MainCamera* m_Camera;
 
 		std::vector<std::vector<float>> m_SHCoeffs;
+
+		/*thread*/
+		//std::thread m_Thread;
+
 	};
 
 

@@ -1,69 +1,95 @@
-### LightProbes -- Use Spherical Harmonics Coefficients to render diffuse probes
-
-reference paper : "An Efficient Representation for Irradiance Environment Maps"http://graphics.stanford.edu/papers/envmap/envmap.pdf"
+### LightProbes -- Use Spherical Harmonics Coefficients to render diffuse probes--Multiple probes Blending
 
 
-reference code :"cubemap-sh" https://github.com/nicknikolov/cubemap-sh
+#### 1.Blending Multiple probes SH coefficients
 
-#### 1.输入：获取每个Probe的EnvironmentCubeMap的6个面的pixels
-	输出：9个Spherical Harmonics系数
+iblSHTexture.glsl:
 
 ```
-SphericalHarmonics::UpdateCoeffs(std::shared_ptr<CubeMapTexture> environmentCubeMap)
+uniform vec3 u_SHCoeffs[10*9];//最多10个probe
 
-```
-
-#### 2.使用SH Coefficients draw diffuseIrradiance
-
-lightProbes.glsl:
-```
-
-#type fragment
-#version 430 core
-out vec4 FragColor;
-in vec3 TexCoords;
-in vec3 v_Normal;
-
-
-uniform vec3 u_SHCoeffs[9];
-
-vec3 SHDiffuse(const vec3 normal){
+vec3 SHDiffuse(const int probeIndex,const vec3 normal){
 	float x = normal.x;
 	float y = normal.y;
 	float z = normal.z;
 
 	vec3 result = (
-		u_SHCoeffs[0] +
+		u_SHCoeffs[0+probeIndex*9] +
 		
-		u_SHCoeffs[1] * x +
-		u_SHCoeffs[2] * y +
-		u_SHCoeffs[3] * z +
+		u_SHCoeffs[1+probeIndex*9] * x +
+		u_SHCoeffs[2+probeIndex*9] * y +
+		u_SHCoeffs[3+probeIndex*9] * z +
 		
-		u_SHCoeffs[4] * z * x +
-		u_SHCoeffs[5] * y * z +
-		u_SHCoeffs[6] * y * x +
-		u_SHCoeffs[7] * (3.0 * z * z - 1.0) +
-		u_SHCoeffs[8] * (x*x - y*y)
+		u_SHCoeffs[4+probeIndex*9] * z * x +
+		u_SHCoeffs[5+probeIndex*9] * y * z +
+		u_SHCoeffs[6+probeIndex*9] * y * x +
+		u_SHCoeffs[7+probeIndex*9] * (3.0 * z * z - 1.0) +
+		u_SHCoeffs[8+probeIndex*9] * (x*x - y*y)
   );
 
   return max(result, vec3(0.0));
 
-}
-void main(){
-	
-    	vec3 N   = normalize(v_Normal);
-	vec3 color =SHDiffuse(N);
-	color = pow(color,vec3(1.0/2.2));
 
-	FragColor = vec4(color,1.0);
+
+
 }
+
+//....
+	for(int i=0;i<u_Kprobes;i++){
+		environmentIrradiance+=u_ProbeWeight[i]*SHDiffuse(i,N);// 
+	}
+```
+
+#### 2.Update 1 probe per frame
+
+为防止卡顿，不需要每帧更新所有的probe,每帧只更新m_KperFrame个probe
+
+并把environmentMap分辨率改为128
+
+```
+
+void IBLProbesRenderer::Render(const LightSources* lightSources, const std::vector<Object*> objects, const std::vector<LightProbe*> probes, Object* skyBox)
+	{
+		GE_ASSERT(m_IsInitial, "please initial IBLProbesRenderer first! IBLProbesRenderer::init()");
+		/*只渲染一次即可*/
+		if (!m_IsRenderSpecularBRDFLUTMap) {
+			RenderSpecularBRDFLUTMap();
+			m_IsRenderSpecularBRDFLUTMap = true;
+		}
+		
+				
+		if (!m_UpdateFinished) {
+			//int id = m_CurrentProbeIndex;
+			for (int i = 0; i < m_KperFrame; i++)
+			{
+				UpdateProbesMaps(lightSources, objects, skyBox, probes[m_CurrentProbeIndex++]);
+				if (m_CurrentProbeIndex >= probes.size()) {
+					m_UpdateFinished = true;
+					m_CurrentProbeIndex = 0;
+					break;
+				}
+
+			}
+
+		}
+
+
+		
+		
+
+	}
 	
 ```
-#### bug: 1.probe的SH coefficeints 更新时间太长--》后期需采用thread
-	todo: 多个probe的diffuseIrradiance融合
 
-![SHdiffuselightProbes1](/results/SHdiffuselightProbes1.png)
-![SHdiffuselightProbes2](/results/SHdiffuselightProbes2.png)
+```
+		unsigned int					m_SampleCounts = 1024;
+		unsigned int					m_EnvironmentCubeMapResolution = 128;
+		unsigned int					m_DiffuseCubeMapResolution = 32;
+		unsigned int					m_SpecularCubeMapResolution = 128;
+
+```
+
+![SHdiffuselightProbesBlending3(/results/SHdiffuselightProbesBlending3.png)
 
 
 
