@@ -89,7 +89,7 @@ void IBLProbesRenderer::Render(const LightSources* lightSources, const std::vect
 
 ```
 
-![SHdiffuselightProbesBlending3(/results/SHdiffuselightProbesBlending3.png)
+![SHdiffuselightProbesBlending3](/results/SHdiffuselightProbesBlending3.png)
 
 
 
