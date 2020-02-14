@@ -59,7 +59,7 @@ namespace BlackPearl {
 		unsigned int m_K = 2;
 
 		/*light probes update queue,update m_KperFrame pre frame*/
-		unsigned m_KperFrame = 1;
+		unsigned m_KperFrame = 2;
 		unsigned int m_CurrentProbeIndex = 0;
 		bool m_UpdateFinished = false;
 

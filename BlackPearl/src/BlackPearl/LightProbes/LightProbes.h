@@ -80,9 +80,9 @@ namespace BlackPearl {
 		unsigned int m_MaxMipmapLevel = 5;
 
 		unsigned int					m_SampleCounts = 1024;
-		unsigned int					m_EnvironmentCubeMapResolution = 128;
+		unsigned int					m_EnvironmentCubeMapResolution = 512;// 128;
 		unsigned int					m_DiffuseCubeMapResolution = 32;
-		unsigned int					m_SpecularCubeMapResolution = 128;
+		unsigned int					m_SpecularCubeMapResolution = 512;// 128;
 
 		//glm::vec3 m_Center;
 		glm::vec3 m_Size;

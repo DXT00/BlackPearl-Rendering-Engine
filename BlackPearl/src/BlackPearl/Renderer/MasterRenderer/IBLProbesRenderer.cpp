@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "BlackPearl/Core.h"
 #include "IBLProbesRenderer.h"
 #include "BlackPearl/Renderer/Renderer.h"
@@ -11,6 +11,7 @@ namespace BlackPearl {
 	IBLProbesRenderer::IBLProbesRenderer()
 	{
 		//	m_FrameBuffer.reset(DBG_NEW FrameBuffer());
+		
 		m_LightProbeShader.reset(DBG_NEW Shader("assets/shaders/lightProbes/lightProbe.glsl"));
 		m_IBLShader.reset(DBG_NEW Shader("assets/shaders/lightProbes/iblSHTexture.glsl"));
 		m_IrradianceShader.reset(DBG_NEW Shader("assets/shaders/ibl/irradianceConvolution.glsl"));
@@ -26,7 +27,7 @@ namespace BlackPearl {
 		GE_ASSERT(brdfLUTQuadObj, "brdfLUTQuadObj is nullptr!");
 		m_BrdfLUTQuadObj = brdfLUTQuadObj;
 		m_SHQuadObj = SHQuadObj;
-
+		RenderSpecularBRDFLUTMap();
 		m_IsInitial = true;
 
 	}
@@ -41,35 +42,37 @@ namespace BlackPearl {
 	void IBLProbesRenderer::Render(const LightSources* lightSources, const std::vector<Object*> objects, const std::vector<LightProbe*> probes, Object* skyBox)
 	{
 		GE_ASSERT(m_IsInitial, "please initial IBLProbesRenderer first! IBLProbesRenderer::init()");
-		/*Ö»äÖÈ¾Ò»´Î¼´¿É*/
-		if (!m_IsRenderSpecularBRDFLUTMap) {
+		//RenderSpecularBRDFLUTMap();
+
+		/*åªæ¸²æŸ“ä¸€æ¬¡å³å¯*/
+		/*if (!m_IsRenderSpecularBRDFLUTMap) {
 			RenderSpecularBRDFLUTMap();
 			m_IsRenderSpecularBRDFLUTMap = true;
-		}
+		}*/
 		
 		//SphericalHarmonics::InitialCubeMapVector(probes[0]->GetHdrEnvironmentCubeMap()->GetWidth());
 	
-	/*	for (auto it = probes.begin(); it != probes.end(); it++) {
+		for (auto it = probes.begin(); it != probes.end(); it++) {
 
 			LightProbe* probe = *it;
 			UpdateProbesMaps(lightSources, objects, skyBox, probe);
 
-		}*/
-		
-		if (!m_UpdateFinished) {
-			//int id = m_CurrentProbeIndex;
-			for (int i = 0; i < m_KperFrame; i++)
-			{
-				UpdateProbesMaps(lightSources, objects, skyBox, probes[m_CurrentProbeIndex++]);
-				if (m_CurrentProbeIndex >= probes.size()) {
-					m_UpdateFinished = true;
-					m_CurrentProbeIndex = 0;
-					break;
-				}
-
-			}
-
 		}
+		
+		//if (!m_UpdateFinished) {
+		//	//int id = m_CurrentProbeIndex;
+		//	for (int i = 0; i < m_KperFrame; i++)
+		//	{
+		//		UpdateProbesMaps(lightSources, objects, skyBox, probes[m_CurrentProbeIndex++]);
+		//		if (m_CurrentProbeIndex >= probes.size()) {
+		//			m_UpdateFinished = true;
+		//			m_CurrentProbeIndex = 0;
+		//			break;
+		//		}
+
+		//	}
+
+		//}
 
 
 		
@@ -95,7 +98,8 @@ namespace BlackPearl {
 
 
 
-			//probe->GetObj()->GetComponent<MeshRenderer>()->SetTextures(probe->GetSpecularPrefilterCubeMap());
+			probe->GetObj()->GetComponent<MeshRenderer>()->SetTextures(probe->GetSpecularPrefilterCubeMap());
+			//probe->GetObj()->GetComponent<MeshRenderer>()->SetTextures(m_SpecularBrdfLUTTexture);
 
 			//probe->GetObj()->GetComponent<MeshRenderer>()->SetTextures(probe->GetDiffuseIrradianceCubeMap());
 		//	probe->GetObj()->GetComponent<MeshRenderer>()->SetTextures(probe->GetHdrEnvironmentCubeMap());
@@ -127,6 +131,10 @@ namespace BlackPearl {
 			m_IBLShader->Bind();
 			m_IBLShader->SetUniform1i("u_Kprobes", k);
 			unsigned int textureK = 0;
+			m_IBLShader->SetUniform1i("u_BrdfLUTMap", textureK);
+			glActiveTexture(GL_TEXTURE0 + textureK);
+			m_SpecularBrdfLUTTexture->Bind();
+			textureK++;
 			for (int i = 0; i < k; i++)
 			{
 				m_IBLShader->SetUniform1f("u_ProbeWeight[" + std::to_string(i) + "]", (float)distances[i] / distancesSum);
@@ -151,9 +159,7 @@ namespace BlackPearl {
 			}
 
 
-			m_IBLShader->SetUniform1i("u_BrdfLUTMap", textureK);
-			glActiveTexture(GL_TEXTURE0 + textureK);
-			m_SpecularBrdfLUTTexture->Bind();
+			
 
 
 
@@ -386,7 +392,7 @@ namespace BlackPearl {
 
 		//m_FrameBuffer->Bind();
 		//m_FrameBuffer->BindRenderBuffer();
-		frameBuffer->AttachColorTexture(m_SpecularBrdfLUTTexture, 0);//±ØÐëattach 0 
+		frameBuffer->AttachColorTexture(m_SpecularBrdfLUTTexture, 0);
 		frameBuffer->BindRenderBuffer();
 		//glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, 512, 512);
 
@@ -397,6 +403,7 @@ namespace BlackPearl {
 		DrawObject(m_BrdfLUTQuadObj, m_SpecularBRDFLutShader);
 		frameBuffer->UnBind();
 		frameBuffer->CleanUp();
+
 
 	}
 

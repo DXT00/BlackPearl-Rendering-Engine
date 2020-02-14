@@ -16,8 +16,9 @@ public:
 		: Layer(name, objectManager)
 	{
 
-		
+		m_MainCamera->SetPosition(glm::vec3(-2.0f, 0.0f, 14.0f));
 
+		
 		///*ProbesCamera is used to render probes'environmentMap*/
 		//m_ProbesCamera = CreateCamera();
 		//m_ProbesCamera->GetComponent<BlackPearl::PerspectiveCamera>()->SetFov(90.0f);
@@ -31,16 +32,19 @@ public:
 		m_BackGroundShader.reset(DBG_NEW BlackPearl::Shader("assets/shaders/ibl/background.glsl"));
 		//Scene
 		//m_SphereObj = CreateSphere(1.5, 64, 64);
-		m_SphereObjIron = CreateSphere(1.5, 64, 64);
-		m_SphereObjRust = CreateSphere(1.5, 64, 64);
-		m_SphereObjStone = CreateSphere(1.5, 64, 64);
-		m_SphereObjPlastic = CreateSphere(1.5, 64, 64);
+		m_SphereObjIron = CreateSphere(0.5, 64, 64);
+		m_SphereObjRust = CreateSphere(0.5, 64, 64);
+		m_SphereObjStone = CreateSphere(0.5, 64, 64);
+		m_SphereObjPlastic = CreateSphere(0.5, 64, 64);
+		m_DebugQuadShader.reset(DBG_NEW BlackPearl::Shader("assets/shaders/QuadDebug.glsl"));
 
 		/* probe's CubeObj and quad for BrdfLUTMap */
 		m_BrdfLUTQuadObj = CreateQuad("assets/shaders/ibl/brdf.glsl","");
 		m_SHImageQuadObj = CreateQuad("assets/shaders/lightProbes/SH.glsl", "");
+		m_DebugQuad = CreateQuad("assets/shaders/QuadDebug.glsl","");
+
 		/* create probes */
-		unsigned int xlen = 2, ylen = 2,zlen = 2,space = 9;
+		unsigned int xlen = 1, ylen = 3,zlen = 1,space = 3;
 		for (unsigned int x = 0; x < xlen; x++)
 		{
 			for (unsigned int y = 0; y < ylen; y++)
@@ -137,6 +141,7 @@ public:
 		m_SphereObjIron->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(IronaoTexture);
 		m_SphereObjIron->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(IronroughnessTexture);
 		m_SphereObjIron->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(IronmentallicTexture);
+		m_SphereObjIron->GetComponent<BlackPearl::Transform>()->SetPosition({ 2,0,0 });
 
 		m_SphereObjRust->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(RustnormalTexture);
 		m_SphereObjRust->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(RustalbedoTexture);
@@ -203,28 +208,38 @@ public:
 
 			//std::vector<std::thread>probeThreads;
 			//	for (auto it = probes.begin(); it != probes.end(); it++)
-			m_IBLProbesRenderer->ReUpdateProbes();
+			//m_IBLProbesRenderer->ReUpdateProbes();
 
-		
+			m_IBLProbesRenderer->Render(GetLightSources(), m_BackGroundObjsList, m_LightProbes, m_SkyBoxObj1);
+
 
 		}
 		
-		m_IBLProbesRenderer->Render(GetLightSources(), m_BackGroundObjsList, m_LightProbes, m_SkyBoxObj1);
+		glViewport(0, 0, BlackPearl::Configuration::WindowWidth, BlackPearl::Configuration::WindowHeight);
 
-		//glViewport(0, 0, BlackPearl::Configuration::WindowWidth, BlackPearl::Configuration::WindowHeight);
-		//glDepthMask(GL_FALSE);
+		
 		m_BasicRenderer->RenderScene(m_BackGroundObjsList, GetLightSources());
 		m_IBLProbesRenderer->RenderProbes(m_LightProbes);
 		glDepthFunc(GL_LEQUAL);
 
 		m_IBLProbesRenderer->DrawObject(m_SkyBoxObj1);
-		////glDepthMask(GL_TRUE);
 		glDepthFunc(GL_LESS);
 
 
 		
 		m_IBLProbesRenderer->RenderSpecularObjects(GetLightSources(), m_SphereObjsList, m_LightProbes);
 
+		/*draw BRDFLUTTextureID in a quad*/
+		glViewport(0, 0, 120, 120);
+		m_DebugQuadShader->Bind();
+		m_DebugQuad->GetComponent<BlackPearl::MeshRenderer>()->SetShaders(m_DebugQuadShader);
+		m_DebugQuadShader->SetUniform1i("u_BRDFLUTMap", 6);
+		glActiveTexture(GL_TEXTURE0 + 6);
+		glBindTexture(GL_TEXTURE_2D, m_IBLProbesRenderer->GetSpecularBrdfLUTTexture()->GetRendererID());
+		m_BasicRenderer->DrawObject(m_DebugQuad, m_DebugQuadShader);
+
+
+	//	glViewport(0, 0, BlackPearl::Configuration::WindowWidth, BlackPearl::Configuration::WindowHeight);
 
 
 	}
@@ -249,6 +264,7 @@ private:
 
 	BlackPearl::Object* m_BrdfLUTQuadObj = nullptr;
 	BlackPearl::Object* m_SHImageQuadObj = nullptr;
+	BlackPearl::Object* m_DebugQuad = nullptr;
 
 	int m_Rows = 4;
 	int m_Colums = 4;
@@ -258,7 +274,7 @@ private:
 
 	//Shader
 	std::shared_ptr<BlackPearl::Shader> m_BackGroundShader;
-	//std::shared_ptr<BlackPearl::Shader> m_DebugQuadShader;
+	std::shared_ptr<BlackPearl::Shader> m_DebugQuadShader;
 	//Renderer
 	BlackPearl::IBLProbesRenderer* m_IBLProbesRenderer;
 	BlackPearl::BasicRenderer* m_BasicRenderer;
