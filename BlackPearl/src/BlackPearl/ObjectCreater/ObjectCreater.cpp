@@ -40,9 +40,9 @@ namespace BlackPearl {
 
 		material.reset(DBG_NEW Material(shaderPath, texture, { 1.0,1.0,1.0 }, { 1.0,1.0,1.0 }, { 1.0,1.0,1.0 }, {}));
 		VertexBufferLayout layout = {
-		{ElementDataType::Float3,"aPos",false},
-		{ElementDataType::Float3,"aNormal",false},
-		{ElementDataType::Float2,"aTexCoords",false}
+		{ElementDataType::Float3,"aPos",false,0},
+		{ElementDataType::Float3,"aNormal",false,1},
+		{ElementDataType::Float2,"aTexCoords",false,2}
 		};
 		Mesh mesh(meshFilter->GetVertices(), meshFilter->GetIndices(), material, layout);
 		obj->AddComponent<MeshRenderer>(mesh, transformComponent->GetTransformMatrix());
@@ -62,9 +62,9 @@ namespace BlackPearl {
 
 		material.reset(DBG_NEW Material(shaderPath, texture, {}, { 0.2,0.2,0.0 }, {}, {}));
 		VertexBufferLayout layout = {
-		{ElementDataType::Float3,"aPos",false},
-		{ElementDataType::Float3,"aNormal",false},
-		{ElementDataType::Float2,"aTexCoords",false}
+		{ElementDataType::Float3,"aPos",false,0},
+		{ElementDataType::Float3,"aNormal",false,1},
+		{ElementDataType::Float2,"aTexCoords",false,2}
 		};
 		Mesh mesh(meshFilter->GetVertices(), meshFilter->GetIndices(), material, layout);
 		obj->AddComponent<MeshRenderer>(mesh, transformComponent->GetTransformMatrix());
@@ -83,9 +83,9 @@ namespace BlackPearl {
 
 		material.reset(DBG_NEW Material(shaderPath, texture, { 1.0,1.0,1.0 }, { 1.0,1.0,1.0 }, { 1.0,1.0,1.0 }, {}));
 		VertexBufferLayout layout = {
-		{ElementDataType::Float3,"aPos",false},
-		{ElementDataType::Float3,"aNormal",false},
-		{ElementDataType::Float2,"aTexCoords",false}
+		{ElementDataType::Float3,"aPos",false,0},
+		{ElementDataType::Float3,"aNormal",false,1},
+		{ElementDataType::Float2,"aTexCoords",false,2}
 		};
 		Mesh mesh(meshFilter->GetVertices(), meshFilter->GetIndices(), material, layout);
 		obj->AddComponent<MeshRenderer>(mesh, transformComponent->GetTransformMatrix());
@@ -93,17 +93,17 @@ namespace BlackPearl {
 		return obj;
 	}
 
-	Object* Object3DCreater::CreateModel(std::string modelPath, std::string shaderPath)
+	Object* Object3DCreater::CreateModel(std::string modelPath, std::string shaderPath, const bool isAnimated)
 	{
 		std::shared_ptr<Shader>shader(new Shader(shaderPath));
 		shader->Bind();
-		std::shared_ptr<Model> model(new Model(modelPath, shader));
+		std::shared_ptr<Model> model(new Model(modelPath, shader, isAnimated));
 		Object* obj = CreateEmpty("Model");
 
 		Transform* transformComponent = obj->GetComponent<Transform>();
 		transformComponent->SetPosition({ 0.0f, 0.0f, 0.0f });
 		transformComponent->SetRotation({ 0.0,180.0,0.0 });
-		//	transformComponent->SetScale({ 0.01f, 0.01f, 0.01f });
+			//transformComponent->SetScale({ 0.0001f, 0.0001f, 0.0001f });
 
 		obj->AddComponent<MeshRenderer>(model, transformComponent->GetTransformMatrix());
 		//std::shared_ptr<BlackPearl::Texture> cubeMapTexture(DBG_NEW BlackPearl::CubeMapTexture(Texture::Type::CubeMap,
@@ -130,7 +130,7 @@ namespace BlackPearl {
 		material.reset(DBG_NEW Material(shaderPath, texture, {}, { 0.2,0.2,0.0 }, {}, {}));
 
 		VertexBufferLayout layout = {
-		{ElementDataType::Float3,"aPos",false},
+		{ElementDataType::Float3,"aPos",false,0},
 		};
 		Mesh mesh(meshFilter->GetVertices(), meshFilter->GetIndices(), material, layout);
 		obj->AddComponent<MeshRenderer>(mesh, transformComponent->GetTransformMatrix());
@@ -212,9 +212,9 @@ namespace BlackPearl {
 		material.reset(DBG_NEW Material(shaderPath, texture, {}, { 0.2,0.5,0.6 }, {}, {}));
 
 		VertexBufferLayout layout = {
-		{ElementDataType::Float3,"aPos",false},
-		{ElementDataType::Float3,"aNormal",false},
-		{ElementDataType::Float2,"aTexCoords",false}
+		{ElementDataType::Float3,"aPos",false,0},
+		{ElementDataType::Float3,"aNormal",false,1},
+		{ElementDataType::Float2,"aTexCoords",false,2}
 
 		};
 		Mesh mesh(meshFilter->GetVertices(), meshFilter->GetIndices(), material, layout);

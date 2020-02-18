@@ -6,6 +6,7 @@
 #include"BlackPearl/Component/LightComponent/LightSources.h"
 #include"BlackPearl/Renderer/Material/MaterialColor.h"
 #include "BlackPearl/Renderer/Material/Material.h"
+#include <initializer_list>
 namespace BlackPearl {
 
 	struct Vertex {
@@ -21,6 +22,7 @@ namespace BlackPearl {
 	{
 	public:
 		Mesh() {};
+		/*one vertexBuffer*/
 		Mesh(
 			float* vertices,
 			uint32_t verticesSize,
@@ -29,18 +31,32 @@ namespace BlackPearl {
 			std::shared_ptr<Material> material,
 			const VertexBufferLayout& layout
 		)
-			:m_Vertices(vertices), m_VerticesSize(verticesSize), m_Indices(indices), m_IndicesSize(indicesSize),
+			:m_Vertices(vertices),m_Indices(indices), m_IndicesSize(indicesSize),
 			m_Material(material), m_VertexBufferLayout(layout) {
-			Init();
+			Init( verticesSize);
 		};
-
+		/*multiple vertexBuffers*/
+		Mesh(std::shared_ptr<Material>& material,
+			std::shared_ptr<IndexBuffer> indexBuffer,
+			std::vector< std::shared_ptr<VertexBuffer>> vertexBuffers) {
+			m_VertexArray.reset(DBG_NEW VertexArray());
+			m_IndicesSize = indexBuffer->GetIndicesSize();
+			m_Material = material;
+			m_VertexArray->SetIndexBuffer(indexBuffer);
+			
+			for (auto vertexBuffer : vertexBuffers) {
+				m_VertexBufferLayout = vertexBuffer->GetBufferLayout();
+				m_VertexArray->AddVertexBuffer(vertexBuffer);
+			}
+		}
+		/*one vertexBuffer*/
 		Mesh(
 			std::vector<float>vertices,
 			std::vector<unsigned int>indices,
 			std::shared_ptr<Material> material,
 			const VertexBufferLayout& layout
 		)
-			:m_VerticesSize(vertices.size() * sizeof(float)), m_IndicesSize(indices.size() * sizeof(unsigned int)),
+			: m_IndicesSize(indices.size() * sizeof(unsigned int)),
 			m_Material(material), m_VertexBufferLayout(layout) {
 
 			m_Vertices = DBG_NEW float[vertices.size()];
@@ -50,13 +66,20 @@ namespace BlackPearl {
 			m_Indices = DBG_NEW unsigned int[indices.size()];
 			if (indices.size() > 0)
 				memcpy(m_Indices, &indices[0], indices.size() * sizeof(unsigned int));
-			Init();
+			Init(vertices.size() * sizeof(float));
 		};
 		~Mesh();
 	
 		std::shared_ptr<VertexArray> GetVertexArray() const { return m_VertexArray; }
 		uint32_t GetIndicesSize()const { return m_IndicesSize; }
-		uint32_t GetVerticesSize()const { return m_VerticesSize; }
+		unsigned int* GetIndicesAddress()const {
+			return m_Indices;
+		}
+		/*vertices size = vertices.size()*sizeof(type)*/
+		unsigned int GetVerticesSize(unsigned int vertexBufferId)const { 
+			return m_VertexArray->GetVertexBuffers()[vertexBufferId]->GetVertexSize();
+		
+		}
 		std::shared_ptr<Material> GetMaterial()const { return m_Material; }
 		VertexBufferLayout GetVertexBufferLayout() const { return m_VertexBufferLayout; }
 		////Draw Light
@@ -70,12 +93,11 @@ namespace BlackPearl {
 
 
 	private:
-		void Init();
+		void Init(uint32_t verticesSize);
 		std::shared_ptr<VertexArray> m_VertexArray;
 		VertexBufferLayout           m_VertexBufferLayout;
 		float*                       m_Vertices = nullptr;
 		unsigned int*                m_Indices = nullptr;
-		uint32_t                     m_VerticesSize = 0;
 		uint32_t                     m_IndicesSize = 0;
 		std::shared_ptr<Material>    m_Material;
 

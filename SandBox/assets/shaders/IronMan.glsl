@@ -11,6 +11,7 @@ uniform mat4 u_ProjectionView;
 out vec2 v_TexCoord;
 out vec3 v_Normal;
 out vec3 v_FragPos;
+
 void main()
 {
 	gl_Position = u_ProjectionView * u_Model * vec4(aPos,1.0);

@@ -54,9 +54,15 @@ namespace BlackPearl {
 		bool Normalized;
 		uint32_t Offset;
 		uint32_t ElementSize;
+		uint32_t Location;
 
-		BufferElement(ElementDataType type, std::string name, bool normalized)
-			:Type(type), Name(name), Normalized(normalized), Offset(0), ElementSize(GetDataSize(type)) {}
+		BufferElement(ElementDataType type, std::string name, bool normalized, uint32_t location)
+			:Type(type), 
+			Name(name), 
+			Normalized(normalized),
+			Offset(0), 
+			ElementSize(GetDataSize(type)),
+			Location(location){}
 
 		uint32_t GetElementCount() {
 			switch (Type) {
@@ -92,6 +98,9 @@ namespace BlackPearl {
 		void CalculateStrideAndOffset();
 
 		inline std::vector<BufferElement> GetElements() const { return m_Elememts; }
+		void AddElement(const BufferElement& element) {
+			m_Elememts.push_back(element);
+		}
 		inline uint32_t GetStride() { return m_Stride; }
 	private:
 		std::vector<BufferElement> m_Elememts;
@@ -108,15 +117,17 @@ namespace BlackPearl {
 
 		VertexBuffer(const std::vector<float>&vertices);
 		VertexBuffer(float*vertices, uint32_t size);
+		VertexBuffer(unsigned int* vertices, uint32_t size);
 		void Bind();
 		void UnBind();
 		void CleanUp();
 
 		void SetBufferLayout(const VertexBufferLayout& layout) { m_BufferLayout = layout; }
 		VertexBufferLayout &GetBufferLayout() { return m_BufferLayout; }
-
+		unsigned int GetVertexSize()const { return m_VertexSize; }
 	private:
 		unsigned int m_RendererID;
+		unsigned int m_VertexSize;
 		VertexBufferLayout m_BufferLayout;//这里需要默认构造函数
 
 	};
@@ -125,15 +136,15 @@ namespace BlackPearl {
 	class IndexBuffer {
 	public:
 		IndexBuffer(const std::vector<unsigned int>& indices);
-		IndexBuffer(unsigned int *indices, uint32_t size);
-
+		IndexBuffer(unsigned int *indices, unsigned int size);
+		unsigned int GetIndicesSize()const { return m_IndiciesSize; }
 		void Bind();
 		void UnBind();
 		void CleanUp();
 
 	private:
 		unsigned int m_RendererID;
-
+		unsigned int m_IndiciesSize;
 
 	};
 

@@ -22,6 +22,11 @@ namespace BlackPearl {
 
 		//static const VoxelConeTracingRenderer::RenderingMode RenderingMode; 
 
+		// ------------------------------------------
+		// Animaition Joints conut
+		// ------------------------------------------
+		static const int MaxJointsCount = 50;
+
 	};
 
 

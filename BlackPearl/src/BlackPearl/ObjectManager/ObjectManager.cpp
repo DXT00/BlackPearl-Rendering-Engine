@@ -24,9 +24,9 @@ namespace BlackPearl {
 
 	}
 
-	Object * ObjectManager::CreateModel(const std::string & modelPath, const std::string & shaderPath)
+	Object * ObjectManager::CreateModel(const std::string & modelPath, const std::string & shaderPath,const bool isAnimated)
 	{
-		Object *obj = m_Object3DCreater->CreateModel(modelPath, shaderPath);
+		Object *obj = m_Object3DCreater->CreateModel(modelPath, shaderPath,isAnimated);
 		m_EntityToObjects.insert(std::make_pair(obj->GetId().index(), obj));
 		return obj;
 

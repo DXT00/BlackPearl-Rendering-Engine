@@ -13,12 +13,12 @@ namespace BlackPearl {
 
 		};
 		struct Color {
-			glm::vec3 ambientColor;
-			glm::vec3 diffuseColor;
-			glm::vec3 specularColor;
-			glm::vec3 emissionColor;
+			glm::vec3 ambientColor = glm::vec3(0.0);
+			glm::vec3 diffuseColor = glm::vec3(0.0);
+			glm::vec3 specularColor = glm::vec3(0.0);
+			glm::vec3 emissionColor = glm::vec3(0.0);
 			
-
+			
 		};
 		MaterialColor(){}
 		MaterialColor(Type type, Color & color)

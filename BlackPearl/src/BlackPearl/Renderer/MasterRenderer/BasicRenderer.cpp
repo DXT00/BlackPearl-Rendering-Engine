@@ -102,10 +102,27 @@ namespace BlackPearl {
 				PrepareShaderParameters(meshes[i], transformMatrix, shader);
 
 			Renderer::Submit(meshes[i].GetVertexArray(), shader, transformMatrix, scene);
-			if (meshes[i].GetIndicesSize() > 0)
-				glDrawElements(GL_TRIANGLES, meshes[i].GetIndicesSize() / sizeof(unsigned int), GL_UNSIGNED_INT, 0);
-			else
-				glDrawArrays(GL_TRIANGLES, 0, meshes[i].GetVerticesSize() / meshes[i].GetVertexBufferLayout().GetStride());
+			if (meshes[i].GetIndicesSize() > 0) {
+				unsigned int indicesNum = meshes[i].GetIndicesSize() / sizeof(unsigned int);
+				meshes[i].GetVertexArray()->GetIndexBuffer()->Bind();
+				glDrawElements(GL_TRIANGLES, indicesNum, GL_UNSIGNED_INT, 0);//0
+
+			}
+			else 
+			{
+				meshes[i].GetVertexArray()->UpdateVertexBuffer();
+				for (int j = 0; j < meshes[i].GetVertexArray()->GetVertexBuffers().size(); j++)
+				{
+					auto vertexBuffer = meshes[i].GetVertexArray()->GetVertexBuffers()[j];
+					//vertexBuffer->Bind();
+					unsigned int vertexNum = vertexBuffer->GetVertexSize() / vertexBuffer->GetBufferLayout().GetStride();
+					glDrawArrays(GL_TRIANGLES, 0, vertexNum);
+
+				}
+			//	glDrawArrays(GL_TRIANGLES, 0, meshes[i].GetVerticesSize() / meshes[i].GetVertexBufferLayout().GetStride());
+
+			}
+				//glDrawArrays(GL_TRIANGLES, 0, meshes[i].GetVerticesSize() / meshes[i].GetVertexBufferLayout().GetStride());
 
 		}
 	}
@@ -128,10 +145,25 @@ namespace BlackPearl {
 				PrepareShaderParameters(meshes[i], transformMatrix, shader);
 
 			Renderer::Submit(meshes[i].GetVertexArray(), shader, transformMatrix, scene);
-			if (meshes[i].GetIndicesSize() > 0)
-				glDrawElements(GL_TRIANGLES, meshes[i].GetIndicesSize() / sizeof(unsigned int), GL_UNSIGNED_INT, 0);
-			else
-				glDrawArrays(GL_TRIANGLES, 0, meshes[i].GetVerticesSize() / meshes[i].GetVertexBufferLayout().GetStride());
+			if (meshes[i].GetIndicesSize() > 0) {
+				unsigned int indicesNum = meshes[i].GetIndicesSize() / sizeof(unsigned int);
+				meshes[i].GetVertexArray()->GetIndexBuffer()->Bind();
+				glDrawElements(GL_TRIANGLES, indicesNum, GL_UNSIGNED_INT, 0);//0
+
+			}
+			else 
+			{
+				meshes[i].GetVertexArray()->UpdateVertexBuffer();
+				for (int j = 0; j < meshes[i].GetVertexArray()->GetVertexBuffers().size(); j++)
+				{
+					auto vertexBuffer = meshes[i].GetVertexArray()->GetVertexBuffers()[j];
+					unsigned int vertexNum = vertexBuffer->GetVertexSize() / vertexBuffer->GetBufferLayout().GetStride();
+					glDrawArrays(GL_TRIANGLES, 0, vertexNum);
+
+				}
+				//glDrawArrays(GL_TRIANGLES, 0, meshes[i].GetVerticesSize() / meshes[i].GetVertexBufferLayout().GetStride());
+
+			}
 
 		}
 	}
@@ -147,10 +179,24 @@ namespace BlackPearl {
 			shader->Bind();
 			PrepareShaderParameters(meshes[i], transformMatrix, shader, true);
 			Renderer::Submit(meshes[i].GetVertexArray(), shader, transformMatrix, scene);
-			if (meshes[i].GetIndicesSize() > 0)
-				glDrawElements(GL_TRIANGLES, meshes[i].GetIndicesSize() / sizeof(unsigned int), GL_UNSIGNED_INT, 0);
-			else
-				glDrawArrays(GL_TRIANGLES, 0, meshes[i].GetVerticesSize() / meshes[i].GetVertexBufferLayout().GetStride());
+			if (meshes[i].GetIndicesSize() > 0) {
+				unsigned int indicesNum = meshes[i].GetIndicesSize() / sizeof(unsigned int);
+				meshes[i].GetVertexArray()->GetIndexBuffer()->Bind();
+				glDrawElements(GL_TRIANGLES, indicesNum, GL_UNSIGNED_INT, 0);
+
+			}
+			else {
+				meshes[i].GetVertexArray()->UpdateVertexBuffer();
+
+				for (int j = 0; j < meshes[i].GetVertexArray()->GetVertexBuffers().size(); j++)
+				{
+					auto vertexBuffer = meshes[i].GetVertexArray()->GetVertexBuffers()[j];
+					glDrawArrays(GL_TRIANGLES, 0, vertexBuffer->GetVertexSize() / vertexBuffer->GetBufferLayout().GetStride());
+
+				}
+				//glDrawArrays(GL_TRIANGLES, 0, meshes[i].GetVerticesSize() / meshes[i].GetVertexBufferLayout().GetStride());
+
+			}
 
 		}
 
@@ -174,7 +220,7 @@ namespace BlackPearl {
 		std::shared_ptr<Material::TextureMaps> textures = material->GetTextureMaps();
 
 		//k从4开始，0，1，2，3号texture用于自定义texture
-		unsigned int k = 4;
+		unsigned int k = 5;
 		if (textures != nullptr) {
 			if (textures->diffuseTextureMap != nullptr) {
 				glActiveTexture(GL_TEXTURE0 + k);

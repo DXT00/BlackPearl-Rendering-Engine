@@ -11,7 +11,11 @@ namespace BlackPearl {
 		void UnBind();
 
 		void AddVertexBuffer(const std::shared_ptr<VertexBuffer>& vertexBuffer);
+		void UpdateVertexBuffer();
+
 		void SetIndexBuffer(const std::shared_ptr<IndexBuffer>& indexBuffer);
+		std::shared_ptr<IndexBuffer> GetIndexBuffer()const { return m_IndexBuffer; }
+		std::vector<std::shared_ptr<VertexBuffer>> GetVertexBuffers() const { return m_VertexBuffers; }
 
 	private:
 		unsigned int m_RendererID;

@@ -30,7 +30,7 @@ public:
 		deer->GetComponent<BlackPearl::Transform>()->SetScale(glm::vec3(0.005));
 		deer->GetComponent<BlackPearl::Transform>()->SetPosition({0.0f,-1.0f,0.0f});*/
 
-		BlackPearl::Object *ironMan = CreateModel("assets/models/IronMan/IronMan.obj", "assets/shaders/IronMan.glsl");
+		BlackPearl::Object *ironMan = CreateModel("assets/models/IronMan/IronMan.obj", "assets/shaders/IronMan.glsl",false);
 		ironMan->GetComponent<BlackPearl::Transform>()->SetScale(glm::vec3(0.005));
 		ironMan->GetComponent<BlackPearl::Transform>()->SetPosition({ 0.0f,-1.0f,0.0f });
 

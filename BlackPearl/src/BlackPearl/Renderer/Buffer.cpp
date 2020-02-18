@@ -10,12 +10,22 @@ namespace BlackPearl {
 		glGenBuffers(1, &m_RendererID);
 		glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);
 		glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), &vertices[0], GL_STATIC_DRAW);
+		m_VertexSize = vertices.size() * sizeof(float);
 	}
 	VertexBuffer::VertexBuffer(float*vertices, uint32_t size)
 	{
 		glGenBuffers(1, &m_RendererID);
 		glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);
 		glBufferData(GL_ARRAY_BUFFER, size, vertices, GL_STATIC_DRAW);
+		m_VertexSize = size;
+	}
+	VertexBuffer::VertexBuffer(unsigned int* vertices, uint32_t size)
+	{
+		glGenBuffers(1, &m_RendererID);
+		glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);
+		glBufferData(GL_ARRAY_BUFFER, size, vertices, GL_STATIC_DRAW);
+		m_VertexSize = size;
+
 	}
 	void VertexBuffer::Bind() {
 
@@ -34,13 +44,14 @@ namespace BlackPearl {
 		glGenBuffers(1, &m_RendererID);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_RendererID);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), &indices[0], GL_STATIC_DRAW);
-
+		m_IndiciesSize = indices.size() * sizeof(unsigned int);
 	}
-	IndexBuffer::IndexBuffer(unsigned int * indices, uint32_t size)
+	IndexBuffer::IndexBuffer(unsigned int * indices, unsigned int size)
 	{
 		glGenBuffers(1, &m_RendererID);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_RendererID);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, size, indices, GL_STATIC_DRAW);
+		m_IndiciesSize = size;
 
 	}
 	void IndexBuffer::Bind()

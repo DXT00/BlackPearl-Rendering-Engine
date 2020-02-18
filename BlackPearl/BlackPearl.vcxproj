@@ -143,6 +143,9 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\BlackPearl\Renderer\MasterRenderer\AnimatedModelRenderer.h" />
+    <ClInclude Include="src\BlackPearl\Math\Quaternion.h" />
+    <ClInclude Include="src\BlackPearl\Animation\Bone.h" />
     <ClInclude Include="src\BlackPearl\LightProbes\SphericalHarmonics.h" />
     <ClInclude Include="src\BlackPearl\MainCamera\MainCamera.h" />
     <ClInclude Include="src\BlackPearl\Renderer\MasterRenderer\IBLProbesRenderer.h" />
@@ -583,6 +586,9 @@
     <ClInclude Include="vendor\stb\stb_image.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\BlackPearl\Renderer\MasterRenderer\AnimatedModelRenderer.cpp" />
+    <ClCompile Include="src\BlackPearl\Math\Quaternion.cpp" />
+    <ClCompile Include="src\BlackPearl\Animation\Bone.cpp" />
     <ClCompile Include="src\BlackPearl\LightProbes\SphericalHarmonics.cpp" />
     <ClCompile Include="src\BlackPearl\MainCamera\MainCamera.cpp" />
     <ClCompile Include="src\BlackPearl\Renderer\MasterRenderer\IBLProbesRenderer.cpp" />

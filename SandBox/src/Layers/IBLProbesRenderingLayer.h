@@ -9,6 +9,9 @@
 #include <thread>
 #include <iostream>
 #include <glm/gtc/type_ptr.hpp>
+#include <chrono>
+using namespace std::chrono;
+
 class IBLProbesRenderingLayer :public BlackPearl::Layer {
 public:
 
@@ -16,6 +19,7 @@ public:
 		: Layer(name, objectManager)
 	{
 
+		m_StartTimeMs = duration_cast<milliseconds>(system_clock::now().time_since_epoch());
 		m_MainCamera->SetPosition(glm::vec3(-2.0f, 0.0f, 14.0f));
 
 		
@@ -74,6 +78,7 @@ public:
 		/*Renderer*/
 		m_BasicRenderer = DBG_NEW BlackPearl::BasicRenderer();
 		m_IBLProbesRenderer = DBG_NEW BlackPearl::IBLProbesRenderer();
+		m_AnimatedModelRenderer = DBG_NEW BlackPearl::AnimatedModelRenderer();
 		/*create skybox */
 		/*notice: draw skybox before anything else!*/
 		m_SkyBoxObj1 = CreateSkyBox(
@@ -84,18 +89,27 @@ public:
 			 "assets/skybox/skybox/front.jpg",
 			 "assets/skybox/skybox/back.jpg",
 			});
+		  
+		/*model animation*/
+		m_AnimatedModel = CreateModel("assets/models-animation/boblampclean.md5mesh", "assets/shaders/animatedModel/animatedModel.glsl",true);
+		m_AnimatedModel->GetComponent<BlackPearl::Transform>()->SetScale({ 0.05f,0.05f,0.05f });
+		m_AnimatedModel->GetComponent<BlackPearl::Transform>()->SetRotation({ 90.0f,180.0f,180.0f });
+		m_AnimatedModel->GetComponent<BlackPearl::Transform>()->SetPosition({ 0.0f,-1.6f,0.0f });
 
+	//	m_AnimatedModel->GetComponent<BlackPearl::MeshRenderer>()
 		//m_BackGroundObjsList.push_back(m_SkyBoxObj1);
 		/*create model*/
 		/*BlackPearl::Object *deer=  CreateModel("assets/models/deer/Deer.obj", "assets/shaders/IronMan.glsl");
 		deer->GetComponent<BlackPearl::Transform>()->SetScale(glm::vec3(0.005));
 		deer->GetComponent<BlackPearl::Transform>()->SetPosition({0.0f,-1.5f,1.0f});
-		m_BackGroundObjsList.push_back(deer);
+		m_BackGroundObjsList.push_back(deer);*/
 
-		BlackPearl::Object* ironMan = CreateModel("assets/models/IronMan/IronMan.obj", "assets/shaders/IronMan.glsl");
+		BlackPearl::Object* ironMan = CreateModel("assets/models/IronMan/IronMan.obj", "assets/shaders/IronMan.glsl",false);
 		ironMan->GetComponent<BlackPearl::Transform>()->SetScale(glm::vec3(0.010));
 		ironMan->GetComponent<BlackPearl::Transform>()->SetPosition({ 1.5f,-1.0f,1.0f });
-		m_BackGroundObjsList.push_back(ironMan);*/
+		ironMan->GetComponent<BlackPearl::Transform>()->SetRotation({ 0.0f,0.0f,0.0f });
+
+		m_BackGroundObjsList.push_back(ironMan);
 
 
 		BlackPearl::Object* cube = CreateCube();
@@ -201,7 +215,7 @@ public:
 		BlackPearl::RenderCommand::SetClearColor(m_BackgroundColor);
 		BlackPearl::Renderer::BeginScene(*(m_MainCamera->GetObj()->GetComponent<BlackPearl::PerspectiveCamera>()), *GetLightSources());
 
-		//
+
 		if (BlackPearl::Input::IsKeyPressed(BP_KEY_U)) {
 
 			/*IBLProbes rendering*/
@@ -214,10 +228,19 @@ public:
 
 
 		}
+
+		milliseconds currentTimeMs = duration_cast<milliseconds>(system_clock::now().time_since_epoch());
+		double runtime = currentTimeMs.count()-m_StartTimeMs.count();
 		
-		glViewport(0, 0, BlackPearl::Configuration::WindowWidth, BlackPearl::Configuration::WindowHeight);
+
 
 		
+		
+		glViewport(0, 0, BlackPearl::Configuration::WindowWidth, BlackPearl::Configuration::WindowHeight);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		m_AnimatedModelRenderer->Render(m_AnimatedModel, runtime / 1000.0f);
+
 		m_BasicRenderer->RenderScene(m_BackGroundObjsList, GetLightSources());
 		m_IBLProbesRenderer->RenderProbes(m_LightProbes);
 		glDepthFunc(GL_LEQUAL);
@@ -230,14 +253,14 @@ public:
 		m_IBLProbesRenderer->RenderSpecularObjects(GetLightSources(), m_SphereObjsList, m_LightProbes);
 
 		/*draw BRDFLUTTextureID in a quad*/
-		glViewport(0, 0, 120, 120);
+		/*glViewport(0, 0, 120, 120);
 		m_DebugQuadShader->Bind();
 		m_DebugQuad->GetComponent<BlackPearl::MeshRenderer>()->SetShaders(m_DebugQuadShader);
 		m_DebugQuadShader->SetUniform1i("u_BRDFLUTMap", 6);
 		glActiveTexture(GL_TEXTURE0 + 6);
 		glBindTexture(GL_TEXTURE_2D, m_IBLProbesRenderer->GetSpecularBrdfLUTTexture()->GetRendererID());
 		m_BasicRenderer->DrawObject(m_DebugQuad, m_DebugQuadShader);
-
+		m_IBLProbesRenderer->GetSpecularBrdfLUTTexture()->UnBind();*/
 
 	//	glViewport(0, 0, BlackPearl::Configuration::WindowWidth, BlackPearl::Configuration::WindowHeight);
 
@@ -266,6 +289,8 @@ private:
 	BlackPearl::Object* m_SHImageQuadObj = nullptr;
 	BlackPearl::Object* m_DebugQuad = nullptr;
 
+	/*Animation model*/
+	BlackPearl::Object* m_AnimatedModel = nullptr;
 	int m_Rows = 4;
 	int m_Colums = 4;
 	float m_Spacing = 1.5;
@@ -278,7 +303,13 @@ private:
 	//Renderer
 	BlackPearl::IBLProbesRenderer* m_IBLProbesRenderer;
 	BlackPearl::BasicRenderer* m_BasicRenderer;
+	BlackPearl::AnimatedModelRenderer* m_AnimatedModelRenderer;
+
+
 	/* Probes */
 	std::vector<BlackPearl::LightProbe*> m_LightProbes;
 	std::thread m_Threads[10];
+
+	/*Time*/
+	std::chrono::milliseconds m_StartTimeMs;
 };

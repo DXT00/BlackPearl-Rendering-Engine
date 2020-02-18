@@ -19,8 +19,11 @@ namespace BlackPearl {
 		
 			m_Meshes.push_back(mesh);
 		}
-		MeshRenderer(EntityManager* entityManager, Entity::Id id, const std::shared_ptr<Model>& model, glm::mat4 transformMatrix)
+		/*MeshRenderer(EntityManager* entityManager, Entity::Id id, const std::shared_ptr<Model>& model, glm::mat4 transformMatrix)
 			:Component(entityManager, id, Component::Type::MeshRenderer),m_Model(model), m_TransformMatrix(transformMatrix) {
+		}*/
+		MeshRenderer(EntityManager* entityManager, Entity::Id id, const std::shared_ptr<Model>& model, glm::mat4 transformMatrix)
+			:Component(entityManager, id, Component::Type::MeshRenderer), m_Model(model), m_TransformMatrix(transformMatrix) {
 		}
 		~MeshRenderer() {};
 

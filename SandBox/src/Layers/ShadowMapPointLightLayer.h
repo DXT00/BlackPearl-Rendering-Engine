@@ -97,7 +97,7 @@ public:
 		Cube6->GetComponent<BlackPearl::Transform>()->SetScale({ 2.0f,2.0f,2.0f });
 		Cube2->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(CubeTexture1);*/
 
-		Deer=Layer::CreateModel("assets/models/deer/Deer.obj", "assets/shaders/IronMan.glsl");
+		Deer=Layer::CreateModel("assets/models/deer/Deer.obj", "assets/shaders/IronMan.glsl",false);
 		Quad = CreateQuad();
 	/*	Quad->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(m_MasterRenderer.GetShadowMapPointLightRenderer().GetFrameBuffer()->GetCubeMapDepthTexture());
 		Quad->GetComponent<BlackPearl::MeshRenderer>()->SetShaders("assets/shaders/shadowMap/pointLight/QuadCubeMap.glsl");
@@ -246,7 +246,7 @@ public:
 					//Layer::CreateModel("assets/models/u2k69vpbqpds-newbb8/BB8 New/bb8.obj", "assets/shaders/IronMan.glsl");
 					//Layer::CreateModel("assets/models/99-intergalactic_spaceship-obj/Intergalactic_Spaceship-(Wavefront).obj", "assets/shaders/IronMan.glsl");
 					//Layer::CreateModel("assets/models/rc8c1qtjiygw-O/Organodron City/Organodron City.obj", "assets/shaders/IronMan.glsl");
-					Layer::CreateModel("assets/models/OldHouse/Gost House/3D models/Gost House (5).obj", "assets/shaders/IronMan.glsl");
+					Layer::CreateModel("assets/models/OldHouse/Gost House/3D models/Gost House (5).obj", "assets/shaders/IronMan.glsl",false);
 
 					break;
 				case 5:
@@ -254,7 +254,7 @@ public:
 					//Layer::CreateModel("assets/models/u2k69vpbqpds-newbb8/BB8 New/bb8.obj", "assets/shaders/IronMan.glsl");
 					//Layer::CreateModel("assets/models/99-intergalactic_spaceship-obj/Intergalactic_Spaceship-(Wavefront).obj", "assets/shaders/IronMan.glsl");
 					//Layer::CreateModel("assets/models/rc8c1qtjiygw-O/Organodron City/Organodron City.obj", "assets/shaders/IronMan.glsl");
-					Layer::CreateModel("assets/models/deer/Deer.obj", "assets/shaders/IronMan.glsl");
+					Layer::CreateModel("assets/models/deer/Deer.obj", "assets/shaders/IronMan.glsl",false);
 
 					break;
 				case 6:

@@ -4,7 +4,7 @@
 #include "Buffer.h"
 #include "BlackPearl/Core.h"
 namespace BlackPearl {
-	static uint32_t ShaderDataTypeToBufferType(const ElementDataType & type) {
+	static uint32_t ShaderDataTypeToBufferType(const ElementDataType& type) {
 
 		switch (type) {
 		case ElementDataType::Int:      return GL_INT;
@@ -44,6 +44,42 @@ namespace BlackPearl {
 		GE_ASSERT(vertexBuffer->GetBufferLayout().GetElements().size(), "Vertex Buffer has no layout!!");
 		glBindVertexArray(m_RendererID);
 		vertexBuffer->Bind();
+		//	uint32_t index = 0;
+		auto layout = vertexBuffer->GetBufferLayout();
+		for (BufferElement element : layout.GetElements()) {
+			if (ShaderDataTypeToBufferType(element.Type) == GL_INT)
+				glVertexAttribIPointer(element.Location, element.GetElementCount(), ShaderDataTypeToBufferType(element.Type), layout.GetStride(), (void*)element.Offset);
+			else //GL_FLOAT
+				glVertexAttribPointer(element.Location, element.GetElementCount(), ShaderDataTypeToBufferType(element.Type), element.Normalized == true ? GL_TRUE : GL_FALSE, layout.GetStride(), (void*)element.Offset);
+			glEnableVertexAttribArray(element.Location);
+			//index++;
+		}
+		m_VertexBuffers.push_back(vertexBuffer);
+	}
+	void VertexArray::UpdateVertexBuffer()
+	{
+		for (auto vertexBuffer : m_VertexBuffers) {
+			GE_ASSERT(vertexBuffer->GetBufferLayout().GetElements().size(), "Vertex Buffer has no layout!!");
+			glBindVertexArray(m_RendererID);
+			vertexBuffer->Bind();
+			//	uint32_t index = 0;
+			auto layout = vertexBuffer->GetBufferLayout();
+			for (BufferElement element : layout.GetElements()) {
+				if (ShaderDataTypeToBufferType(element.Type) == GL_INT)
+					glVertexAttribIPointer(element.Location, element.GetElementCount(), ShaderDataTypeToBufferType(element.Type), layout.GetStride(), (void*)element.Offset);
+				else //GL_FLOAT
+					glVertexAttribPointer(element.Location, element.GetElementCount(), ShaderDataTypeToBufferType(element.Type), element.Normalized == true ? GL_TRUE : GL_FALSE, layout.GetStride(), (void*)element.Offset);
+				glEnableVertexAttribArray(element.Location);
+				//index++;
+			}
+		}
+
+	}
+	/*void VertexArray::AddVertexBuffer(const std::shared_ptr<VertexBuffer>& vertexBuffer)
+	{
+		GE_ASSERT(vertexBuffer->GetBufferLayout().GetElements().size(), "Vertex Buffer has no layout!!");
+		glBindVertexArray(m_RendererID);
+		vertexBuffer->Bind();
 		uint32_t index = 0;
 		auto layout = vertexBuffer->GetBufferLayout();
 		for (BufferElement element : layout.GetElements()) {
@@ -52,8 +88,7 @@ namespace BlackPearl {
 			index++;
 		}
 		m_VertexBuffers.push_back(vertexBuffer);
-	}
-
+	}*/
 	void VertexArray::SetIndexBuffer(const std::shared_ptr<IndexBuffer>& indexBuffer)
 	{
 		glBindVertexArray(m_RendererID);

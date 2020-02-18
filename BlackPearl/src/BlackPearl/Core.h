@@ -34,3 +34,6 @@
 /*LightProbes*/
 /*use spherical harmonics to calculate diffuse IrradianceMap*/
 #define _SH
+
+
+#define GE_SAVE_DELETE(p) {if(p){delete p;p = nullptr;}}

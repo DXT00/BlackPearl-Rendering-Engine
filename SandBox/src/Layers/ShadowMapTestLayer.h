@@ -179,11 +179,11 @@ public:
 					break;
 				case 4:
 					GE_CORE_INFO("Creating IronMan ...");
-					Layer::CreateModel("assets/models/IronMan/IronMan.obj", "assets/shaders/IronMan.glsl");
+					Layer::CreateModel("assets/models/IronMan/IronMan.obj", "assets/shaders/IronMan.glsl",false);
 					break;
 				case 5:
 					GE_CORE_INFO("Creating BB8 ...");
-					Layer::CreateModel("assets/models/u2k69vpbqpds-newbb8/BB8 New/bb8.obj", "assets/shaders/IronMan.glsl");
+					Layer::CreateModel("assets/models/u2k69vpbqpds-newbb8/BB8 New/bb8.obj", "assets/shaders/IronMan.glsl",false);
 					break;
 				case 6:
 					GE_CORE_INFO("Creating Cube ...");

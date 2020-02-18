@@ -61,7 +61,7 @@ namespace BlackPearl {
 
 		lightMaterial.reset(DBG_NEW Material("assets/shaders/PointLight.glsl", texture, {}, this->GetLightProps().diffuse, {}, {}));
 		VertexBufferLayout layout = {
-			{ElementDataType::Float3,"aPos",false}
+			{ElementDataType::Float3,"aPos",false,0}
 		};
 		m_Mesh =Mesh(lightVertices, std::vector<unsigned int>(), lightMaterial, layout);//这里没有indices!
 

@@ -55,7 +55,7 @@ namespace BlackPearl {
 		virtual Object* CreateEmpty(std::string name = "");
 		virtual Object* CreateLight(LightType type);
 
-		virtual Object* CreateModel(const std::string& modelPath, const std::string& shaderPath);
+		virtual Object* CreateModel(const std::string& modelPath, const std::string& shaderPath,const bool isAnimated);
 		virtual Object* CreateCube(const std::string& shaderPath = "assets/shaders/Cube.glsl", const std::string& texturePath = "");
 		virtual Object* CreateSphere(const float radius, const unsigned int stackCount, const unsigned int sectorCount, const std::string& shaderPath = "assets/shaders/Sphere.glsl", const std::string& texturePath = "");
 		virtual Object* CreatePlane(const std::string& shaderPath = "assets/shaders/Plane.glsl", const std::string& texturePath = "assets/texture/wood.png");
@@ -166,8 +166,8 @@ namespace BlackPearl {
 		CameraRotation m_CameraRotation;
 		float m_LastMouseX;
 		float m_LastMouseY;
-		float m_CameraMoveSpeed = 1.5f;
-		float m_CameraRotateSpeed = 1.5f;
+		float m_CameraMoveSpeed = 5.0f;
+		float m_CameraRotateSpeed = 5.0f;
 
 	};
 

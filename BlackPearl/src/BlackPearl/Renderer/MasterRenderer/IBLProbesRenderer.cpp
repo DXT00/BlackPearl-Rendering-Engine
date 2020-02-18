@@ -159,11 +159,11 @@ namespace BlackPearl {
 			}
 
 
-			
-
-
-
 			DrawObject(obj, m_IBLShader);
+
+			m_SpecularBrdfLUTTexture->UnBind();
+			for (int i = 0; i < k; i++)
+				kProbes[i]->GetSpecularPrefilterCubeMap()->UnBind();
 
 
 		}
@@ -303,6 +303,8 @@ namespace BlackPearl {
 			probe->GetHdrEnvironmentCubeMap()->Bind();
 
 			DrawObject(probe->GetObj(), m_IrradianceShader, scene);
+			probe->GetHdrEnvironmentCubeMap()->UnBind();
+
 			delete scene;
 			scene = nullptr;
 
@@ -377,6 +379,7 @@ namespace BlackPearl {
 
 			}
 		}
+		probe->GetHdrEnvironmentCubeMap()->UnBind();
 
 		frameBuffer->UnBind();
 		frameBuffer->CleanUp();

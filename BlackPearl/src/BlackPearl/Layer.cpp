@@ -51,14 +51,14 @@ namespace BlackPearl {
 					break;
 				case 4:
 					GE_CORE_INFO("Creating IronMan ...");
-					Layer::CreateModel("assets/models/IronMan/IronMan.obj", "assets/shaders/IronMan.glsl");
+					Layer::CreateModel("assets/models/IronMan/IronMan.obj", "assets/shaders/IronMan.glsl",false);
 					break;
 				case 5:
 					GE_CORE_INFO("Creating Deer ...");
 					//Layer::CreateModel("assets/models/u2k69vpbqpds-newbb8/BB8 New/bb8.obj", "assets/shaders/IronMan.glsl");
 					//Layer::CreateModel("assets/models/99-intergalactic_spaceship-obj/Intergalactic_Spaceship-(Wavefront).obj", "assets/shaders/IronMan.glsl");
 					//Layer::CreateModel("assets/models/rc8c1qtjiygw-O/Organodron City/Organodron City.obj", "assets/shaders/IronMan.glsl");
-					Layer::CreateModel("assets/models/deer/Deer.obj", "assets/shaders/IronMan.glsl");
+					Layer::CreateModel("assets/models/deer/Deer.obj", "assets/shaders/IronMan.glsl",false);
 
 					break;
 				case 6:
@@ -66,7 +66,7 @@ namespace BlackPearl {
 					//Layer::CreateModel("assets/models/u2k69vpbqpds-newbb8/BB8 New/bb8.obj", "assets/shaders/IronMan.glsl");
 					//Layer::CreateModel("assets/models/99-intergalactic_spaceship-obj/Intergalactic_Spaceship-(Wavefront).obj", "assets/shaders/IronMan.glsl");
 					//Layer::CreateModel("assets/models/rc8c1qtjiygw-O/Organodron City/Organodron City.obj", "assets/shaders/IronMan.glsl");
-					Layer::CreateModel("assets/models/OldHouse/Gost House/3D models/Gost House (5).obj", "assets/shaders/IronMan.glsl");
+					Layer::CreateModel("assets/models/OldHouse/Gost House/3D models/Gost House (5).obj", "assets/shaders/IronMan.glsl",false);
 
 					break;
 				case 7:
@@ -74,7 +74,7 @@ namespace BlackPearl {
 					//Layer::CreateModel("assets/models/u2k69vpbqpds-newbb8/BB8 New/bb8.obj", "assets/shaders/IronMan.glsl");
 					//Layer::CreateModel("assets/models/99-intergalactic_spaceship-obj/Intergalactic_Spaceship-(Wavefront).obj", "assets/shaders/IronMan.glsl");
 					//Layer::CreateModel("assets/models/rc8c1qtjiygw-O/Organodron City/Organodron City.obj", "assets/shaders/IronMan.glsl");
-					Layer::CreateModel("assets/models/bunny/bunny.obj", "assets/shaders/IronMan.glsl");
+					Layer::CreateModel("assets/models/bunny/bunny.obj", "assets/shaders/IronMan.glsl",false);
 				case 8:
 					GE_CORE_INFO("Creating Cube ...");
 					Layer::CreateCube();
@@ -226,9 +226,9 @@ namespace BlackPearl {
 
 		return probe;
 	}
-	Object* Layer::CreateModel(const std::string& modelPath, const std::string& shaderPath)
+	Object* Layer::CreateModel(const std::string& modelPath, const std::string& shaderPath,const bool isAnimated)
 	{
-		Object* obj = m_ObjectManager->CreateModel(modelPath, shaderPath);
+		Object* obj = m_ObjectManager->CreateModel(modelPath, shaderPath, isAnimated);
 		m_ObjectsList.push_back(obj);
 		return obj;
 	}
