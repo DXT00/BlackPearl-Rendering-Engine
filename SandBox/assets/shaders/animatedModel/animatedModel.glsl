@@ -5,37 +5,43 @@ layout(location = 0) in vec3 aPos;
 layout(location = 1) in vec3 aNormal;
 layout(location = 2) in vec2 aTexCoords;
 layout(location = 3) in ivec4 aJointIndices;/*与当前fragment相关的3个Joint  {1,2,4}*/
-layout(location = 4) in vec4 aWeights;/*每个Joint的权重*/
+layout(location = 4) in ivec4 aJointIndices1;/*与当前fragment相关的3个Joint  {1,2,4}*/
+layout(location = 5) in vec4 aWeights;/*每个Joint的权重*/
+layout(location = 6) in vec4 aWeights1;/*每个Joint的权重*/
 
 out vec2 v_TexCoord;
 out vec3 v_Normal;
 out vec3 v_FragPos;
 
 const int MAX_JOINTS = 50;//max joints allowed in a skeleton
-const int MAX_WEIGHT = 4;//max number of joints that can affect a vertex
+const int MAX_WEIGHT = 8;//max number of joints that can affect a vertex
 
 uniform mat4 u_ProjectionView;
 uniform mat4 u_Model;
 uniform mat4 u_TranInverseModel;
 uniform mat4 u_JointModel[MAX_JOINTS];
-
 void main(){
 	vec4 totalLocalPos = vec4(0.0);
 	vec4 totalLocalNormal = vec4(0.0);
 
 	mat4 model = mat4(0.0);
-	for(int i=0;i<MAX_WEIGHT;i++){
+	for(int i=0;i<MAX_WEIGHT/2;i++){
 		
 		model+=aWeights[i]*u_JointModel[aJointIndices[i]];
+
+	}
+		for(int i=0;i<MAX_WEIGHT/2;i++){
+		
+		model+=aWeights1[i]*u_JointModel[aJointIndices1[i]];
 
 	}
 
 	vec4 newPos = model*vec4(aPos,1.0);
 	gl_Position = u_ProjectionView*u_Model*vec4(newPos.xyz,1.0);
-	v_FragPos = vec3(u_Model*vec4(newPos.xyz,1.0));
+	v_FragPos = vec3(u_Model*newPos);//vec3(u_Model*vec4(newPos.xyz,1.0));
 
 	vec4 newNormal = model*vec4(aNormal,0.0);
-	v_Normal = vec3(u_Model*newNormal);
+	v_Normal =  mat3(u_TranInverseModel)*newNormal.xyz;//vec3(u_Model*newNormal);
 	v_TexCoord = aTexCoords;
 
 }
@@ -215,13 +221,13 @@ vec3 CalcSpotLight(SpotLight light,vec3 normal,vec3 viewDir){
 	float distance = length(light.position-v_FragPos);
 	float attenuation = 1.0f/(light.constant+light.linear * distance+light.quadratic*distance*distance);
 	//ambient
-	vec3 ambient = vec3(0.2f) * ( u_Material.ambientColor* (1-u_Material.isTextureSample)+texture(u_Material.diffuse,v_TexCoord).rgb * u_Material.isTextureSample);// texture(u_Material.diffuse,v_TexCoord).rgb;//u_LightColor * u_Material.ambient
+	vec3 ambient = vec3(0.2f) * ( u_Material.ambientColor* (1-u_Material.isTextureSample)+texture(u_Material.diffuse,v_TexCoord.xy).rgb * u_Material.isTextureSample);// texture(u_Material.diffuse,v_TexCoord).rgb;//u_LightColor * u_Material.ambient
 	
 	//diffuse
 	
 	vec3 norm = normalize(normal);
 	float diff = max(dot(lightDir,norm),0.0f);
-	vec3 diffuse = light.diffuse * diff *  (u_Material.diffuseColor* (1-u_Material.isTextureSample)+texture(u_Material.diffuse,v_TexCoord).rgb*u_Material.isTextureSample);//texture(u_Material.diffuse,v_TexCoord).rgb;// u_Material.diffuse);u_LightColor
+	vec3 diffuse = light.diffuse * diff *  (u_Material.diffuseColor* (1-u_Material.isTextureSample)+texture(u_Material.diffuse,v_TexCoord.xy).rgb*u_Material.isTextureSample);//texture(u_Material.diffuse,v_TexCoord).rgb;// u_Material.diffuse);u_LightColor
 	
 	//specular
 	vec3 reflectDir = normalize(reflect(-lightDir,norm));

@@ -103,10 +103,14 @@ Model.cpp:
 
 
 ```
-#### 2.bug:颜色还有问题，可能是texture没有unbind()
+
+#### 2.修复Model颜色问题-->和多个object activateTexture(）顺序有关系
+
+#### 3.还存在bug:texture贴图不对 = =，后期再修复了。。
 
 
-![Animation](/results/Animation.png)
+
+![Animation](/results/Animation1.png)
 
 
 

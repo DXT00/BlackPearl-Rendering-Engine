@@ -3,6 +3,8 @@
 #include "BlackPearl/Renderer/Material/Texture.h"
 #include "BlackPearl/Renderer/Material/Material.h"
 #include <glm/gtc/matrix_transform.hpp>
+#include "glm/fwd.hpp"
+#include "glm/gtx/quaternion.hpp"
 //#include "BlackPearl/Renderer/Renderer.h"
 namespace BlackPearl {
 
@@ -31,6 +33,26 @@ namespace BlackPearl {
 		vec.push_back(v.w);
 
 	}
+	static glm::mat4 ConvertMatrix(const aiMatrix4x4& aiMat)
+	{
+		return {
+		aiMat.a1, aiMat.b1, aiMat.c1, aiMat.d1,
+		aiMat.a2, aiMat.b2, aiMat.c2, aiMat.d2,
+		aiMat.a3, aiMat.b3, aiMat.c3, aiMat.d3,
+		aiMat.a4, aiMat.b4, aiMat.c4, aiMat.d4
+		};
+	}
+
+	glm::mat3 aiMatrix3x3ToGlm(const aiMatrix3x3& from)
+	{
+		glm::mat3 to;
+		//the a,b,c,d in assimp is the row ; the 1,2,3,4 is the column
+		to[0][0] = from.a1; to[1][0] = from.a2;	to[2][0] = from.a3;
+		to[0][1] = from.b1; to[1][1] = from.b2;	to[2][1] = from.b3;
+		to[0][2] = from.c1; to[1][2] = from.c2;	to[2][2] = from.c3;
+
+		return to;
+	}
 	void Model::LoadModel(const std::string& path)
 	{
 		m_Path = path;
@@ -38,8 +60,8 @@ namespace BlackPearl {
 		m_Scene = m_Importer.ReadFile(path,
 				aiProcess_Triangulate |
 				aiProcess_GenSmoothNormals |
-				aiProcess_FlipUVs |
-				aiProcess_JoinIdenticalVertices);
+				aiProcess_FlipUVs );
+				//aiProcess_JoinIdenticalVertices
 			/*aiProcess_MakeLeftHanded |
 			aiProcess_FlipWindingOrder |
 			aiProcess_FlipUVs |
@@ -71,8 +93,8 @@ namespace BlackPearl {
 		{
 			m_VerticesNum += m_Scene->mMeshes[i]->mNumVertices;
 		}
-		m_GlobalInverseTransform = m_Scene->mRootNode->mTransformation;
-		m_GlobalInverseTransform.Inverse();
+		m_GlobalInverseTransform = glm::inverse(ConvertMatrix( m_Scene->mRootNode->mTransformation));
+		//m_GlobalInverseTransform.Inverse();
 		
 
 		m_BoneDatas.resize(m_VerticesNum);
@@ -88,20 +110,20 @@ namespace BlackPearl {
 	}
 
 
-	void Model::ProcessNode(aiNode* node)
-	{
-		GE_CORE_INFO("node name"+std::string(node->mName.data));
-		for (unsigned int i = 0; i < node->mNumMeshes; i++)
-		{
-			aiMesh* mesh = m_Scene->mMeshes[node->mMeshes[i]];
+	//void Model::ProcessNode(aiNode* node)
+	//{
+	//	GE_CORE_INFO("node name"+std::string(node->mName.data));
+	//	for (unsigned int i = 0; i < node->mNumMeshes; i++)
+	//	{
+	//		aiMesh* mesh = m_Scene->mMeshes[node->mMeshes[i]];
 
-			m_Meshes.push_back(ProcessMesh(mesh));
-		}
-		for (unsigned int i = 0; i < node->mNumChildren; i++)
-		{
-			ProcessNode(node->mChildren[i]);
-		}
-	}
+	//		m_Meshes.push_back(ProcessMesh(mesh));
+	//	}
+	//	for (unsigned int i = 0; i < node->mNumChildren; i++)
+	//	{
+	//		ProcessNode(node->mChildren[i]);
+	//	}
+	//}
 	void Model::LoadBones(aiMesh* aimesh)
 	{
 
@@ -110,11 +132,11 @@ namespace BlackPearl {
 			unsigned int boneIdx;
 			aiBone* bone = aimesh->mBones[i];
 			std::string name(bone->mName.data);
-			aiMatrix4x4 meshToBoneTranform = bone->mOffsetMatrix;
+			glm::mat4 meshToBoneTranform = ConvertMatrix(bone->mOffsetMatrix);
 
 			if (m_BoneNameToIdex.find(name) != m_BoneNameToIdex.end()) {
 				boneIdx = m_BoneNameToIdex[name];
-				m_Bones[boneIdx].meshToBoneTranform = (meshToBoneTranform);
+				//m_Bones[boneIdx].meshToBoneTranform = (meshToBoneTranform);
 			}
 			else {
 				m_BoneNameToIdex.insert(std::pair(name, m_BoneCount));
@@ -132,9 +154,14 @@ namespace BlackPearl {
 				float boneWeight = bone->mWeights[i].mWeight;
 
 				GE_ASSERT(m_BoneDatas[m_VerticesIdx + vertexIdx].currentPos < MAX_WEIGHT, "related bone's number larger than MAX_WEIGHT");
-				m_BoneDatas[m_VerticesIdx + vertexIdx].jointIdx[m_BoneDatas[m_VerticesIdx + vertexIdx].currentPos] = boneIdx;
-				m_BoneDatas[m_VerticesIdx + vertexIdx].weights[m_BoneDatas[m_VerticesIdx + vertexIdx].currentPos] = boneWeight;
-				m_BoneDatas[m_VerticesIdx + vertexIdx].currentPos++;
+				if (m_BoneDatas[m_VerticesIdx + vertexIdx].currentPos < MAX_WEIGHT) {
+					unsigned int row = m_BoneDatas[m_VerticesIdx + vertexIdx].currentPos / 4;
+					unsigned int col = m_BoneDatas[m_VerticesIdx + vertexIdx].currentPos % 4;
+					m_BoneDatas[m_VerticesIdx + vertexIdx].jointIdx[row][col] = boneIdx;
+					m_BoneDatas[m_VerticesIdx + vertexIdx].weights[row][col] = boneWeight;
+					m_BoneDatas[m_VerticesIdx + vertexIdx].currentPos++;
+				}
+				
 			}
 
 
@@ -161,8 +188,10 @@ namespace BlackPearl {
 
 		};
 		if (m_HasAnimation) {
-			layout1 = { { ElementDataType::Int4,"aJointIndices",false,3 } };
-			layout2 = { { ElementDataType::Float4,"aWeights",false,4} };
+			layout1 = { { ElementDataType::Int4,"aJointIndices",false,3 },
+						{ ElementDataType::Int4,"aJointIndices1",false,4 } };
+			layout2 = { { ElementDataType::Float4,"aWeights",false,5},
+						{ ElementDataType::Float4,"aWeights1",false,6} };
 		}
 
 		if (m_HasAnimation && aimesh->mNumBones >= 0)
@@ -193,10 +222,13 @@ namespace BlackPearl {
 
 			if (m_HasAnimation && m_BoneDatas.size() >= 0) {
 				unsigned int vertexIdx = m_VerticesIdx + i;
-				glmInsertVector(glm::u32vec4(m_BoneDatas[vertexIdx].jointIdx[0], m_BoneDatas[vertexIdx].jointIdx[1], m_BoneDatas[vertexIdx].jointIdx[2], m_BoneDatas[vertexIdx].jointIdx[3]), verticesIntjointIdx);
-				glmInsertVector(glm::vec4(m_BoneDatas[vertexIdx].weights[0], m_BoneDatas[vertexIdx].weights[1], m_BoneDatas[vertexIdx].weights[2], m_BoneDatas[vertexIdx].weights[3]), verticesfloatWeight);
+				glmInsertVector(glm::u32vec4(m_BoneDatas[vertexIdx].jointIdx[0][0], m_BoneDatas[vertexIdx].jointIdx[0][1], m_BoneDatas[vertexIdx].jointIdx[0][2], m_BoneDatas[vertexIdx].jointIdx[0][3]), verticesIntjointIdx);
+				glmInsertVector(glm::u32vec4(m_BoneDatas[vertexIdx].jointIdx[1][0], m_BoneDatas[vertexIdx].jointIdx[1][1], m_BoneDatas[vertexIdx].jointIdx[1][2], m_BoneDatas[vertexIdx].jointIdx[1][3]), verticesIntjointIdx);
 
-				GE_ASSERT(m_BoneDatas[vertexIdx].weights[0] + m_BoneDatas[vertexIdx].weights[1] + m_BoneDatas[vertexIdx].weights[2] + m_BoneDatas[vertexIdx].weights[3] == 1.0f, "total weight!=1");
+				glmInsertVector(glm::vec4(m_BoneDatas[vertexIdx].weights[0][0], m_BoneDatas[vertexIdx].weights[0][1], m_BoneDatas[vertexIdx].weights[0][2], m_BoneDatas[vertexIdx].weights[0][3]), verticesfloatWeight);
+				glmInsertVector(glm::vec4(m_BoneDatas[vertexIdx].weights[1][0], m_BoneDatas[vertexIdx].weights[1][1], m_BoneDatas[vertexIdx].weights[1][2], m_BoneDatas[vertexIdx].weights[1][3]), verticesfloatWeight);
+
+			//	GE_ASSERT(m_BoneDatas[vertexIdx].weights[0] + m_BoneDatas[vertexIdx].weights[1] + m_BoneDatas[vertexIdx].weights[2] + m_BoneDatas[vertexIdx].weights[3] == 1.0f, "total weight!=1");
 			}
 			//tangent
 			//glm::vec3 tangent = glm::vec3(0.0f);
@@ -272,8 +304,6 @@ namespace BlackPearl {
 		}
 
 
-
-
 		/*	return Mesh(
 				vertices_, vertices.size() * sizeof(float),
 				indices_, indices.size() * sizeof(unsigned int),
@@ -297,13 +327,13 @@ namespace BlackPearl {
 
 			std::string path_str = m_Directory + "/" + std::string(path.C_Str());//
 			if (typeName == Texture::Type::DiffuseMap)
-				textures->diffuseTextureMap.reset(DBG_NEW Texture(typeName, path_str.c_str()));
+				textures->diffuseTextureMap.reset(DBG_NEW Texture(typeName, path_str.c_str(),GL_LINEAR, GL_LINEAR,GL_RGBA,GL_CLAMP_TO_EDGE,GL_UNSIGNED_BYTE));
 			if (typeName == Texture::Type::SpecularMap)
-				textures->specularTextureMap.reset(DBG_NEW Texture(typeName, path_str.c_str()));
+				textures->specularTextureMap.reset(DBG_NEW Texture(typeName, path_str.c_str(),GL_LINEAR, GL_LINEAR, GL_RGBA, GL_CLAMP_TO_EDGE, GL_UNSIGNED_BYTE));
 			if (typeName == Texture::Type::EmissionMap)
-				textures->emissionTextureMap.reset(DBG_NEW Texture(typeName, path_str.c_str()));
+				textures->emissionTextureMap.reset(DBG_NEW Texture(typeName, path_str.c_str(),GL_LINEAR, GL_LINEAR, GL_RGBA, GL_CLAMP_TO_EDGE, GL_UNSIGNED_BYTE));
 			if (typeName == Texture::Type::NormalMap)
-				textures->normalTextureMap.reset(DBG_NEW Texture(typeName, path_str.c_str()));
+				textures->normalTextureMap.reset(DBG_NEW Texture(typeName, path_str.c_str(),GL_LINEAR, GL_LINEAR, GL_RGBA, GL_CLAMP_TO_EDGE, GL_UNSIGNED_BYTE));
 			/*if (typeName == Texture::Type::HeightMap)
 				textures->heightTextureMap.reset(DBG_NEW Texture(typeName, path_str.c_str()));
 			*/
@@ -343,11 +373,7 @@ namespace BlackPearl {
 	std::vector<glm::mat4> Model::CalculateBoneTransform(float timeInSecond)
 	{
 
-		/*m_Scene = importer.ReadFile(m_Path,
-			aiProcess_Triangulate |
-			aiProcess_GenSmoothNormals |
-			aiProcess_FlipUVs |
-			aiProcess_JoinIdenticalVertices);*/
+
 		unsigned int animationNum = m_Scene->mNumAnimations;
 		aiAnimation* animation = m_Scene->mAnimations[0];// &m_Animation;
 		float durationTick = (float)animation->mDuration;
@@ -359,12 +385,13 @@ namespace BlackPearl {
 		//double durationSecond = durationTick / tickPerSecond;
 		//double timeInDurationSecond = fmod(timeInSecond, durationSecond);
 		float timeInDurationSecond = fmod(timeInTick, durationTick);
-		aiMatrix4x4 indentity{
+		glm::mat4 indentity(1.0f);
+	/*	{
 		1.0,0.0,0.0,0.0,
 		0.0,1.0,0.0,0.0,
 		0.0,0.0,1.0,0.0,
 		0.0,0.0,0.0,1.0	
-		};
+		};*/
 		ReadHierarchy(timeInDurationSecond, m_Scene->mRootNode, indentity);
 
 		std::vector<glm::mat4> boneFinalTransforms;
@@ -376,13 +403,13 @@ namespace BlackPearl {
 		return boneFinalTransforms;
 
 	}
-	void Model::ReadHierarchy(float timeInDurationSecond, aiNode* node, aiMatrix4x4 parentTransform)
+	void Model::ReadHierarchy(float timeInDurationSecond, aiNode* node, glm::mat4 parentTransform)
 	{
 		std::string nodeName(node->mName.data);
 		aiAnimation* animation = m_Scene->mAnimations[0];
 		aiNodeAnim* nodeAnim = FindNode(nodeName, animation);
-		aiMatrix4x4 transform = (node->mTransformation);
-		
+		glm::mat4 transform = ConvertMatrix(node->mTransformation);
+
 
 		if (nodeAnim) {
 
@@ -390,33 +417,31 @@ namespace BlackPearl {
 			unsigned int rotationNum = nodeAnim->mNumRotationKeys;
 			unsigned int scaleNum = nodeAnim->mNumScalingKeys;
 			glm::vec3 position = CalculateInterpolatePosition(timeInDurationSecond, nodeAnim);
+			glm::mat4 translateM = glm::translate(glm::mat4(1.0f), position);
+
 			aiQuaternion quaternion = CalculateInterpolateRotation(timeInDurationSecond, nodeAnim);
+			/*aiMatrix3x3 tp = quaternion.GetMatrix();
+			glm::mat4 rotateM = aiMatrix3x3ToGlm(tp);*/
+			glm::quat rotation(quaternion.w,quaternion.x,quaternion.y,quaternion.z);
+			glm::mat4 rotateM = glm::toMat4(rotation);
+
 			glm::vec3 scale = CalculateInterpolateScale(timeInDurationSecond, nodeAnim);
+			glm::mat4 scaleM = glm::scale(glm::mat4(1.0f), scale);
 
 
-			
-			aiMatrix3x3 rotateM = (quaternion.GetMatrix());
-		//	rotateM = glm::transpose(rotateM);
-			//glm::mat4 scaleM = glm::scale(glm::mat4(1.0f), scale);
 
-			transform = aiMatrix4x4(rotateM);
-			transform.a4 = position.x; transform.b4 = position.y; transform.c4 = position.z; transform.d4 = 1.0f;
+			transform = translateM * rotateM *scaleM;
 
 
 		}
-		aiMatrix4x4 globalTransform = parentTransform * transform  ;
+		glm::mat4 globalTransform = parentTransform * transform;
 		if (m_BoneNameToIdex.find(nodeName) != m_BoneNameToIdex.end()) {
 			int boneIdex = m_BoneNameToIdex[nodeName];
-			aiMatrix4x4 aiFinalTransform = m_GlobalInverseTransform * globalTransform * m_Bones[boneIdex].meshToBoneTranform;
+			glm::mat4 aiFinalTransform = m_GlobalInverseTransform * globalTransform * m_Bones[boneIdex].meshToBoneTranform;
+			m_Bones[boneIdex].finalTransform = aiFinalTransform;
 			//m_Bones[boneIdex].finalTransform = m_GlobalInverseTransform * globalTransform * m_Bones[boneIdex].meshToBoneTranform;
-			m_Bones[boneIdex].finalTransform = glm::transpose(AiMatrix4ToMat4(aiFinalTransform));
-			glm::mat4 temp = glm::mat4(
-				glm::vec4(aiFinalTransform.a1,aiFinalTransform.a2, aiFinalTransform.a3, aiFinalTransform.a4),
-				glm::vec4(aiFinalTransform.b1, aiFinalTransform.b2, aiFinalTransform.b3, aiFinalTransform.b4),
-				glm::vec4(aiFinalTransform.c1, aiFinalTransform.c2, aiFinalTransform.c3, aiFinalTransform.c4),
-				glm::vec4(aiFinalTransform.d1, aiFinalTransform.d2, aiFinalTransform.d3, aiFinalTransform.d4)
-			);
-			glm::mat4 a(1.0f);
+			//m_Bones[boneIdex].finalTransform = ConvertMatrix(aiFinalTransform);// glm::transpose(AiMatrix4ToMat4(aiFinalTransform));
+
 		}
 		else {
 			GE_CORE_ERROR("no such bone" + nodeName);
@@ -430,6 +455,54 @@ namespace BlackPearl {
 
 
 	}
+	//void Model::ReadHierarchy(float timeInDurationSecond, aiNode* node, aiMatrix4x4 parentTransform)
+	//{
+	//	std::string nodeName(node->mName.data);
+	//	aiAnimation* animation = m_Scene->mAnimations[0];
+	//	aiNodeAnim* nodeAnim = FindNode(nodeName, animation);
+	//	aiMatrix4x4 transform = (node->mTransformation);
+	//	
+
+	//	if (nodeAnim) {
+
+	//		unsigned int positionNum = nodeAnim->mNumPositionKeys;
+	//		unsigned int rotationNum = nodeAnim->mNumRotationKeys;
+	//		unsigned int scaleNum = nodeAnim->mNumScalingKeys;
+	//		glm::vec3 position = CalculateInterpolatePosition(timeInDurationSecond, nodeAnim);
+	//		aiQuaternion quaternion = CalculateInterpolateRotation(timeInDurationSecond, nodeAnim);
+	//		glm::vec3 scale = CalculateInterpolateScale(timeInDurationSecond, nodeAnim);
+
+
+	//		
+	//		aiMatrix3x3 rotateM = (quaternion.GetMatrix());
+	//		transform = aiMatrix4x4(rotateM);
+	//		transform.a4 = position.x; transform.b4 = position.y; transform.c4 = position.z; transform.d4 = 1.0f;
+	//		transform.a1 *= scale.x;   transform.a2 *= scale.y;   transform.a3 *= scale.z;   
+	//		transform.b1 *= scale.y;   transform.b2 *= scale.y;   transform.b3 *= scale.y;   
+	//		transform.c1 *= scale.x;   transform.c2 *= scale.y;   transform.c3 *= scale.z;
+
+
+	//	}
+	//	aiMatrix4x4 globalTransform = parentTransform * transform  ;
+	//	if (m_BoneNameToIdex.find(nodeName) != m_BoneNameToIdex.end()) {
+	//		int boneIdex = m_BoneNameToIdex[nodeName];
+	//		aiMatrix4x4 aiFinalTransform = m_GlobalInverseTransform * globalTransform * m_Bones[boneIdex].meshToBoneTranform;
+	//		//m_Bones[boneIdex].finalTransform = m_GlobalInverseTransform * globalTransform * m_Bones[boneIdex].meshToBoneTranform;
+	//		m_Bones[boneIdex].finalTransform = ConvertMatrix(aiFinalTransform);// glm::transpose(AiMatrix4ToMat4(aiFinalTransform));
+	//	
+	//	}
+	//	else {
+	//		GE_CORE_ERROR("no such bone" + nodeName);
+	//	}
+
+	//	for (int i = 0; i < node->mNumChildren; i++)
+	//	{
+	//		ReadHierarchy(timeInDurationSecond, node->mChildren[i], globalTransform);
+	//	}
+
+
+
+	//}
 
 	glm::vec3 Model::CalculateInterpolatePosition(float timeInDurationSecond, aiNodeAnim* nodeAnim)
 	{
@@ -450,9 +523,13 @@ namespace BlackPearl {
 		}
 		double durationOfTwoKey = nextKey.mTime - currentKey.mTime;
 		double ratioToCurrentKey = (timeInDurationSecond - currentKey.mTime) / durationOfTwoKey;
-		double ratioToNextKey = nextKey.mTime - timeInDurationSecond / durationOfTwoKey;
-		pos = (float)ratioToCurrentKey * glm::vec3(currentKey.mValue.x, currentKey.mValue.y, currentKey.mValue.z)
-			+ (float)ratioToNextKey * glm::vec3(nextKey.mValue.x, nextKey.mValue.y, nextKey.mValue.z);
+		GE_ASSERT(ratioToCurrentKey>=0.0f, "ratioToCurrentKey<0.0f!");
+
+		double ratioToNextKey = (nextKey.mTime - timeInDurationSecond) / durationOfTwoKey;
+		GE_ASSERT(ratioToNextKey >= 0.0f, "ratioToNextKey<0.0f!");
+
+		pos = (float)ratioToNextKey * glm::vec3(currentKey.mValue.x, currentKey.mValue.y, currentKey.mValue.z)
+			+ (float)ratioToCurrentKey * glm::vec3(nextKey.mValue.x, nextKey.mValue.y, nextKey.mValue.z);
 
 		return pos;
 	}
@@ -488,10 +565,12 @@ namespace BlackPearl {
 
 		unsigned int RotationIndex = FindRotation(timeInDurationSecond, nodeAnim);
 		unsigned int  NextRotationIndex = (RotationIndex + 1);
-		GE_ASSERT(NextRotationIndex < nodeAnim->mNumRotationKeys,"NextRotationIndex >=pNodeAnim->mNumRotationKeys");
+		GE_ASSERT(NextRotationIndex < nodeAnim->mNumRotationKeys,"NextRotationIndex >=nodeAnim->mNumRotationKeys");
 		float DeltaTime = nodeAnim->mRotationKeys[NextRotationIndex].mTime - nodeAnim->mRotationKeys[RotationIndex].mTime;
 		float Factor = (timeInDurationSecond - (float)nodeAnim->mRotationKeys[RotationIndex].mTime) / DeltaTime;
-		assert(Factor >= 0.0f && Factor <= 1.0f);
+		if (Factor < 0)Factor = 0.0f;
+		
+		GE_ASSERT(Factor >= 0.0f && Factor <= 1.0f,"Factor error!");
 		const aiQuaternion& StartRotationQ = nodeAnim->mRotationKeys[RotationIndex].mValue;
 		const aiQuaternion& EndRotationQ = nodeAnim->mRotationKeys[NextRotationIndex].mValue;
 		aiQuaternion::Interpolate(out, StartRotationQ, EndRotationQ, Factor);
@@ -500,7 +579,7 @@ namespace BlackPearl {
 	}
 	glm::vec3 Model::CalculateInterpolateScale(float timeInDurationSecond, aiNodeAnim* nodeAnim)
 	{
-		glm::vec3 scale;
+	/*	aiVector3D scale;
 		aiVectorKey currentKey;
 		aiVectorKey nextKey;
 		if (nodeAnim->mNumScalingKeys == 1)
@@ -518,10 +597,30 @@ namespace BlackPearl {
 		double durationOfTwoKey = nextKey.mTime - currentKey.mTime;
 		double ratioToCurrentKey = (timeInDurationSecond - currentKey.mTime) / durationOfTwoKey;
 		double ratioToNextKey = nextKey.mTime - timeInDurationSecond / durationOfTwoKey;
-		scale = (float)ratioToCurrentKey * glm::vec3(currentKey.mValue.x, currentKey.mValue.y, currentKey.mValue.z)
-			+ (float)ratioToNextKey * glm::vec3(nextKey.mValue.x, nextKey.mValue.y, nextKey.mValue.z);
+		scale = (float)ratioToNextKey * currentKey.mValue
+			+ (float)ratioToCurrentKey * nextKey.mValue;
 
-		return scale;
+		return glm::vec3(scale.x,scale.y,scale.z);*/
+		aiVector3D out;
+		if (nodeAnim->mNumScalingKeys == 1) {
+			out = nodeAnim->mScalingKeys[0].mValue;
+			return glm::vec3(out.x, out.y, out.z);;
+		}
+
+		unsigned int ScalingIndex = FindScaling(timeInDurationSecond, nodeAnim);
+		unsigned int NextScalingIndex = (ScalingIndex + 1);
+		assert(NextScalingIndex < nodeAnim->mNumScalingKeys);
+		float DeltaTime = (float)(nodeAnim->mScalingKeys[NextScalingIndex].mTime - nodeAnim->mScalingKeys[ScalingIndex].mTime);
+		float Factor = (timeInDurationSecond - (float)nodeAnim->mScalingKeys[ScalingIndex].mTime) / DeltaTime;
+		if (Factor < 0)Factor = 0.0f;
+
+		GE_ASSERT(Factor >= 0.0f && Factor <= 1.0f, "Factor error!");
+		const aiVector3D& Start = nodeAnim->mScalingKeys[ScalingIndex].mValue;
+		const aiVector3D& End = nodeAnim->mScalingKeys[NextScalingIndex].mValue;
+		aiVector3D Delta = End - Start;
+		out = Start + Factor * Delta;
+
+		return glm::vec3(out.x, out.y, out.z);
 	}
 
 
@@ -566,16 +665,32 @@ namespace BlackPearl {
 
 
 
-	unsigned int Model::FindRotation(float AnimationTime, const aiNodeAnim* pNodeAnim)
+	unsigned int Model::FindRotation(float AnimationTime, const aiNodeAnim* nodeAnim)
 	{
-		assert(pNodeAnim->mNumRotationKeys > 0);
+		assert(nodeAnim->mNumRotationKeys > 0);
 
-		for (unsigned int  i = 0; i < pNodeAnim->mNumRotationKeys - 1; i++) {
-			if (AnimationTime < (float)pNodeAnim->mRotationKeys[i + 1].mTime) {
+		for (unsigned int  i = 0; i < nodeAnim->mNumRotationKeys - 1; i++) {
+			if (AnimationTime < (float)nodeAnim->mRotationKeys[i + 1].mTime) {
 				return i;
 			}
 		}
 
 		assert(0);
 	}
+
+	unsigned int Model::FindScaling(float AnimationTime, const aiNodeAnim* nodeAnim)
+	{
+		assert(nodeAnim->mNumScalingKeys > 0);
+
+		for (unsigned int i = 0; i < nodeAnim->mNumScalingKeys - 1; i++) {
+			if (AnimationTime < (float)nodeAnim->mScalingKeys[i + 1].mTime) {
+				return i;
+			}
+		}
+
+		assert(0);
+
+		return 0;
+	}
+
 }

@@ -74,6 +74,7 @@ public:
 		
 
 		BlackPearl::Renderer::Init();
+		glEnable(GL_DEPTH_TEST);
 	//	glDepthFunc(GL_LEQUAL);
 		/*Renderer*/
 		m_BasicRenderer = DBG_NEW BlackPearl::BasicRenderer();
@@ -91,10 +92,28 @@ public:
 			});
 		  
 		/*model animation*/
-		m_AnimatedModel = CreateModel("assets/models-animation/boblampclean.md5mesh", "assets/shaders/animatedModel/animatedModel.glsl",true);
-		m_AnimatedModel->GetComponent<BlackPearl::Transform>()->SetScale({ 0.05f,0.05f,0.05f });
-		m_AnimatedModel->GetComponent<BlackPearl::Transform>()->SetRotation({ 90.0f,180.0f,180.0f });
-		m_AnimatedModel->GetComponent<BlackPearl::Transform>()->SetPosition({ 0.0f,-1.6f,0.0f });
+	//	m_AnimatedModelFrog = CreateModel("assets/models-animation/frog/frog.dae.txt", "assets/shaders/animatedModel/animatedModel.glsl", true);
+		
+		m_AnimatedModelCleaner = CreateModel("assets/models-animation/boblampclean.md5mesh", "assets/shaders/animatedModel/animatedModel.glsl",true);
+	
+		m_AnimatedModelBoy = CreateModel("assets/models-animation/people/character Texture.dae", "assets/shaders/animatedModel/animatedModel.glsl", true);
+
+
+		m_AnimatedModelBoy->GetComponent<BlackPearl::Transform>()->SetScale({ 0.2f,0.2f,0.2f });
+		m_AnimatedModelBoy->GetComponent<BlackPearl::Transform>()->SetRotation({ -90.0f,0.0f,0.0f });
+		m_AnimatedModelBoy->GetComponent<BlackPearl::Transform>()->SetPosition({ 0.0f,-1.6f,0.0f });
+
+
+		m_AnimatedModelCleaner->GetComponent<BlackPearl::Transform>()->SetScale({ 0.05f,0.05f,0.05f });
+		m_AnimatedModelCleaner->GetComponent<BlackPearl::Transform>()->SetRotation({ 90.0f,180.0f,180.0f });
+		m_AnimatedModelCleaner->GetComponent<BlackPearl::Transform>()->SetPosition({ 0.0f,-1.6f,0.0f });
+
+
+		/*m_AnimatedModelFrog->GetComponent<BlackPearl::Transform>()->SetScale({ 0.5f,0.5f,0.5f });
+		m_AnimatedModelFrog->GetComponent<BlackPearl::Transform>()->SetRotation({ 90.0f,180.0f,0.0f });
+		m_AnimatedModelFrog->GetComponent<BlackPearl::Transform>()->SetPosition({ -3.0f,-1.6f,0.0f });*/
+
+
 
 	//	m_AnimatedModel->GetComponent<BlackPearl::MeshRenderer>()
 		//m_BackGroundObjsList.push_back(m_SkyBoxObj1);
@@ -238,29 +257,36 @@ public:
 		
 		glViewport(0, 0, BlackPearl::Configuration::WindowWidth, BlackPearl::Configuration::WindowHeight);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		m_IBLProbesRenderer->RenderProbes(m_LightProbes);
 
-		m_AnimatedModelRenderer->Render(m_AnimatedModel, runtime / 1000.0f);
+		m_AnimatedModelRenderer->Render(m_AnimatedModelBoy, runtime / 1000.0f);
+		m_AnimatedModelRenderer->Render(m_AnimatedModelCleaner, runtime / 1000.0f);
+		//m_AnimatedModelRenderer->Render(m_AnimatedModelFrog, runtime / 1000.0f);
 
 		m_BasicRenderer->RenderScene(m_BackGroundObjsList, GetLightSources());
-		m_IBLProbesRenderer->RenderProbes(m_LightProbes);
 		glDepthFunc(GL_LEQUAL);
 
 		m_IBLProbesRenderer->DrawObject(m_SkyBoxObj1);
 		glDepthFunc(GL_LESS);
 
+		m_IBLProbesRenderer->RenderSpecularObjects(GetLightSources(), m_SphereObjsList, m_LightProbes);
 
 		
-		m_IBLProbesRenderer->RenderSpecularObjects(GetLightSources(), m_SphereObjsList, m_LightProbes);
+
+
+
+	//	
 
 		/*draw BRDFLUTTextureID in a quad*/
 		/*glViewport(0, 0, 120, 120);
+
 		m_DebugQuadShader->Bind();
 		m_DebugQuad->GetComponent<BlackPearl::MeshRenderer>()->SetShaders(m_DebugQuadShader);
 		m_DebugQuadShader->SetUniform1i("u_BRDFLUTMap", 6);
 		glActiveTexture(GL_TEXTURE0 + 6);
 		glBindTexture(GL_TEXTURE_2D, m_IBLProbesRenderer->GetSpecularBrdfLUTTexture()->GetRendererID());
 		m_BasicRenderer->DrawObject(m_DebugQuad, m_DebugQuadShader);
-		m_IBLProbesRenderer->GetSpecularBrdfLUTTexture()->UnBind();*/
+		m_IBLProbesRenderer->GetSpecularBrdfLUTTexture()->UnBind()*/;
 
 	//	glViewport(0, 0, BlackPearl::Configuration::WindowWidth, BlackPearl::Configuration::WindowHeight);
 
@@ -290,7 +316,10 @@ private:
 	BlackPearl::Object* m_DebugQuad = nullptr;
 
 	/*Animation model*/
-	BlackPearl::Object* m_AnimatedModel = nullptr;
+	BlackPearl::Object* m_AnimatedModelBoy = nullptr;
+	BlackPearl::Object* m_AnimatedModelCleaner = nullptr;
+	BlackPearl::Object* m_AnimatedModelFrog = nullptr;
+
 	int m_Rows = 4;
 	int m_Colums = 4;
 	float m_Spacing = 1.5;

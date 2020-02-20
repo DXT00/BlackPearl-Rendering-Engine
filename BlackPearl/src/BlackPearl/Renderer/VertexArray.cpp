@@ -58,9 +58,10 @@ namespace BlackPearl {
 	}
 	void VertexArray::UpdateVertexBuffer()
 	{
+		glBindVertexArray(m_RendererID);
+
 		for (auto vertexBuffer : m_VertexBuffers) {
 			GE_ASSERT(vertexBuffer->GetBufferLayout().GetElements().size(), "Vertex Buffer has no layout!!");
-			glBindVertexArray(m_RendererID);
 			vertexBuffer->Bind();
 			//	uint32_t index = 0;
 			auto layout = vertexBuffer->GetBufferLayout();

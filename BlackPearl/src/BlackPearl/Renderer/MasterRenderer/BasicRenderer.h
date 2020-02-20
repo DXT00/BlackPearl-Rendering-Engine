@@ -27,9 +27,9 @@ namespace BlackPearl {
 
 		void DrawPointLight(Object *obj, Renderer::SceneData* scene = Renderer::GetSceneData());
 		void DrawLightSources(const LightSources* lightSources, Renderer::SceneData* scene = Renderer::GetSceneData());
-		void PrepareBasicShaderParameters(Mesh &mesh, glm::mat4 transformMatrix,std::shared_ptr<Shader> shader, bool isLight = false);
+		void PrepareBasicShaderParameters(Mesh mesh, glm::mat4 transformMatrix,std::shared_ptr<Shader> shader, bool isLight = false);
 
-		virtual void PrepareShaderParameters(Mesh &mesh, glm::mat4 transformMatrix, std::shared_ptr<Shader> shader, bool isLight = false);
+		virtual void PrepareShaderParameters(Mesh mesh, glm::mat4 transformMatrix, std::shared_ptr<Shader> shader, bool isLight = false);
 
 	};
 

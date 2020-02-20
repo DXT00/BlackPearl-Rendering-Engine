@@ -106,6 +106,7 @@ namespace BlackPearl {
 				unsigned int indicesNum = meshes[i].GetIndicesSize() / sizeof(unsigned int);
 				meshes[i].GetVertexArray()->GetIndexBuffer()->Bind();
 				glDrawElements(GL_TRIANGLES, indicesNum, GL_UNSIGNED_INT, 0);//0
+				meshes[i].GetVertexArray()->GetIndexBuffer()->UnBind();
 
 			}
 			else 
@@ -117,12 +118,17 @@ namespace BlackPearl {
 					//vertexBuffer->Bind();
 					unsigned int vertexNum = vertexBuffer->GetVertexSize() / vertexBuffer->GetBufferLayout().GetStride();
 					glDrawArrays(GL_TRIANGLES, 0, vertexNum);
-
+					for (int index = 0; index < vertexBuffer->GetBufferLayout().GetElements().size(); index++)
+					{
+						glDisableVertexAttribArray(vertexBuffer->GetBufferLayout().GetElements()[index].Location);
+					}
+					vertexBuffer->UnBind();
 				}
-			//	glDrawArrays(GL_TRIANGLES, 0, meshes[i].GetVerticesSize() / meshes[i].GetVertexBufferLayout().GetStride());
 
 			}
-				//glDrawArrays(GL_TRIANGLES, 0, meshes[i].GetVerticesSize() / meshes[i].GetVertexBufferLayout().GetStride());
+			meshes[i].GetVertexArray()->UnBind();
+			meshes[i].GetMaterial()->Unbind();
+
 
 		}
 	}
@@ -148,7 +154,9 @@ namespace BlackPearl {
 			if (meshes[i].GetIndicesSize() > 0) {
 				unsigned int indicesNum = meshes[i].GetIndicesSize() / sizeof(unsigned int);
 				meshes[i].GetVertexArray()->GetIndexBuffer()->Bind();
-				glDrawElements(GL_TRIANGLES, indicesNum, GL_UNSIGNED_INT, 0);//0
+				glDrawElements(GL_TRIANGLES, indicesNum, GL_UNSIGNED_INT, 0);
+				meshes[i].GetVertexArray()->GetIndexBuffer()->UnBind();
+
 
 			}
 			else 
@@ -159,11 +167,18 @@ namespace BlackPearl {
 					auto vertexBuffer = meshes[i].GetVertexArray()->GetVertexBuffers()[j];
 					unsigned int vertexNum = vertexBuffer->GetVertexSize() / vertexBuffer->GetBufferLayout().GetStride();
 					glDrawArrays(GL_TRIANGLES, 0, vertexNum);
-
+					
+					for (int index = 0; index < vertexBuffer->GetBufferLayout().GetElements().size(); index++)
+					{
+						glDisableVertexAttribArray(vertexBuffer->GetBufferLayout().GetElements()[index].Location);
+					}
+					vertexBuffer->UnBind();
 				}
 				//glDrawArrays(GL_TRIANGLES, 0, meshes[i].GetVerticesSize() / meshes[i].GetVertexBufferLayout().GetStride());
 
 			}
+			meshes[i].GetVertexArray()->UnBind();
+			meshes[i].GetMaterial()->Unbind();
 
 		}
 	}
@@ -183,6 +198,7 @@ namespace BlackPearl {
 				unsigned int indicesNum = meshes[i].GetIndicesSize() / sizeof(unsigned int);
 				meshes[i].GetVertexArray()->GetIndexBuffer()->Bind();
 				glDrawElements(GL_TRIANGLES, indicesNum, GL_UNSIGNED_INT, 0);
+				meshes[i].GetVertexArray()->GetIndexBuffer()->UnBind();
 
 			}
 			else {
@@ -193,11 +209,19 @@ namespace BlackPearl {
 					auto vertexBuffer = meshes[i].GetVertexArray()->GetVertexBuffers()[j];
 					glDrawArrays(GL_TRIANGLES, 0, vertexBuffer->GetVertexSize() / vertexBuffer->GetBufferLayout().GetStride());
 
+					for (int index = 0; index < vertexBuffer->GetBufferLayout().GetElements().size(); index++)
+					{
+						glDisableVertexAttribArray(vertexBuffer->GetBufferLayout().GetElements()[index].Location);
+					}
+					vertexBuffer->UnBind();
 				}
 				//glDrawArrays(GL_TRIANGLES, 0, meshes[i].GetVerticesSize() / meshes[i].GetVertexBufferLayout().GetStride());
 
 			}
+			meshes[i].GetVertexArray()->UnBind();
 
+			meshes[i].GetMaterial()->Unbind();
+			
 		}
 
 	}
@@ -208,19 +232,20 @@ namespace BlackPearl {
 				DrawPointLight(lightObj, scene);
 		}
 	}
-	void BasicRenderer::PrepareShaderParameters(Mesh &mesh, glm::mat4 transformMatrix, std::shared_ptr<Shader> shader, bool isLight)
+	void BasicRenderer::PrepareShaderParameters(Mesh mesh, glm::mat4 transformMatrix, std::shared_ptr<Shader> shader, bool isLight)
 	{
 		PrepareBasicShaderParameters(mesh, transformMatrix, shader, isLight);
 	}
-	void BasicRenderer::PrepareBasicShaderParameters(Mesh &mesh, glm::mat4 transformMatrix, std::shared_ptr<Shader> shader, bool isLight)
+	void BasicRenderer::PrepareBasicShaderParameters(Mesh mesh, glm::mat4 transformMatrix, std::shared_ptr<Shader> shader, bool isLight)
 	{	//TODO::shader在渲染前Bind()!不在这！
+		//还是需要shader->Bind()的！表示使用这个shader!
 		//shader->Bind();
 
 		std::shared_ptr<Material> material = mesh.GetMaterial();
 		std::shared_ptr<Material::TextureMaps> textures = material->GetTextureMaps();
 
 		//k从4开始，0，1，2，3号texture用于自定义texture
-		unsigned int k = 5;
+		unsigned int k = 0;
 		if (textures != nullptr) {
 			if (textures->diffuseTextureMap != nullptr) {
 				glActiveTexture(GL_TEXTURE0 + k);

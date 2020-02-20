@@ -120,7 +120,7 @@ namespace BlackPearl {
 		~Model() = default;
 		void LoadModel(const std::string& path);
 
-		void ProcessNode(aiNode* node);
+		//void ProcessNode(aiNode* node);
 		Mesh ProcessMesh(aiMesh* mesh);
 		void LoadMaterialTextures(
 			aiMaterial* material,
@@ -135,7 +135,9 @@ namespace BlackPearl {
 		/*Bones*/
 		void LoadBones(aiMesh* aimesh);
 		std::vector<glm::mat4>  CalculateBoneTransform(float timeInSecond);
-		void ReadHierarchy(float timeInDurationSecond, aiNode* node, aiMatrix4x4 parentTransform);
+	//	void ReadHierarchy(float timeInDurationSecond, aiNode* node, aiMatrix4x4 parentTransform);
+		void ReadHierarchy(float timeInDurationSecond, aiNode* node, glm::mat4 parentTransform);
+
 		aiNodeAnim* FindNode(std::string nodeName, aiAnimation* animation);
 		glm::mat4 AiMatrix4ToMat4(aiMatrix4x4 aiMatrix);
 		glm::mat4 AiMatrix4ToMat4(aiMatrix3x3 aiMatrix);
@@ -149,7 +151,8 @@ namespace BlackPearl {
 		std::shared_ptr<Shader> GetShader()const { return m_Shader; }
 
 
-		unsigned int FindRotation(float AnimationTime, const aiNodeAnim* pNodeAnim);
+		unsigned int FindRotation(float AnimationTime, const aiNodeAnim* nodeAnim);
+		unsigned int FindScaling(float AnimationTime, const aiNodeAnim* nodeAnim);
 	private:
 		std::shared_ptr<Shader> m_Shader;
 		std::vector<Mesh> m_Meshes;
@@ -168,7 +171,8 @@ namespace BlackPearl {
 		std::vector<Bone> m_Bones;
 		const aiScene* m_Scene;
 		std::string m_Path;
-		aiMatrix4x4 m_GlobalInverseTransform;
+		//aiMatrix4x4 m_GlobalInverseTransform;
+		glm::mat4 m_GlobalInverseTransform;
 
 		/*Vertices Num,Indices Num*/
 		unsigned int m_VerticesNum = 0;

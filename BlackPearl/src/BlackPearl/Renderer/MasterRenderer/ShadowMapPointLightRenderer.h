@@ -14,7 +14,7 @@ namespace BlackPearl {
 		};
 		~ShadowMapPointLightRenderer();
 		void Render(const std::vector<Object*>&objs, Object* pointLight, const std::vector<Object*>&exceptObjs);
-		virtual void PrepareShaderParameters(Mesh &mesh, glm::mat4 transformMatrix, std::shared_ptr<Shader> shader,bool isLight = false)override;
+		virtual void PrepareShaderParameters(Mesh mesh, glm::mat4 transformMatrix, std::shared_ptr<Shader> shader,bool isLight = false)override;
 		std::shared_ptr<FrameBuffer> GetFrameBuffer() const { return m_FrameBuffer; }
 
 		

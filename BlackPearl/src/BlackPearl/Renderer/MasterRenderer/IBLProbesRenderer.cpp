@@ -45,7 +45,7 @@ namespace BlackPearl {
 		//RenderSpecularBRDFLUTMap();
 
 		/*只渲染一次即可*/
-		/*if (!m_IsRenderSpecularBRDFLUTMap) {
+	/*	if (!m_IsRenderSpecularBRDFLUTMap) {
 			RenderSpecularBRDFLUTMap();
 			m_IsRenderSpecularBRDFLUTMap = true;
 		}*/
@@ -106,13 +106,15 @@ namespace BlackPearl {
 
 			probe->GetObj()->GetComponent<MeshRenderer>()->SetShaders(m_LightProbeShader);
 			DrawObject(probe->GetObj(), m_LightProbeShader);
-			probe->GetSHImage()->UnBind();
+			//probe->GetSpecularPrefilterCubeMap()->UnBind();
+			//probe->GetSHImage()->UnBind();
 		}
 
 	}
 
 	void IBLProbesRenderer::RenderSpecularObjects(const LightSources* lightSources, const std::vector<Object*> objects, const std::vector<LightProbe*> probes)
 	{
+		 
 
 		for (Object* obj : objects) {
 
@@ -158,12 +160,12 @@ namespace BlackPearl {
 
 			}
 
-
+			obj->GetComponent<MeshRenderer>()->SetShaders(m_IBLShader);
 			DrawObject(obj, m_IBLShader);
 
-			m_SpecularBrdfLUTTexture->UnBind();
+			/*m_SpecularBrdfLUTTexture->UnBind();
 			for (int i = 0; i < k; i++)
-				kProbes[i]->GetSpecularPrefilterCubeMap()->UnBind();
+				kProbes[i]->GetSpecularPrefilterCubeMap()->UnBind();*/
 
 
 		}
@@ -205,6 +207,7 @@ namespace BlackPearl {
 
 		glm::vec2 mipMapSize = { environmentCubeMap->GetWidth(),environmentCubeMap->GetHeight() };
 		std::shared_ptr<FrameBuffer> frameBuffer(new FrameBuffer());
+	//	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		frameBuffer->Bind();
 		frameBuffer->AttachCubeMapColorTexture(0, environmentCubeMap);
@@ -283,6 +286,7 @@ namespace BlackPearl {
 		std::shared_ptr<CubeMapTexture> diffuseIrradianceCubeMap = probe->GetDiffuseIrradianceCubeMap();
 
 		std::shared_ptr<FrameBuffer> frameBuffer(new FrameBuffer());
+	//	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		frameBuffer->Bind();
 		frameBuffer->AttachRenderBuffer(diffuseIrradianceCubeMap->GetWidth(), diffuseIrradianceCubeMap->GetHeight());
 
@@ -341,8 +345,8 @@ namespace BlackPearl {
 		};
 		auto specularIrradianceMap = probe->GetSpecularPrefilterCubeMap();
 		m_SpecularPrefilterShader->Bind();
-		m_SpecularPrefilterShader->SetUniform1i("u_EnvironmentMap", 0);
-		glActiveTexture(GL_TEXTURE0);
+		m_SpecularPrefilterShader->SetUniform1i("u_EnvironmentMap", 3);
+		glActiveTexture(GL_TEXTURE3);
 		probe->GetHdrEnvironmentCubeMap()->Bind();
 
 		std::shared_ptr<FrameBuffer> frameBuffer(new FrameBuffer());
@@ -350,6 +354,8 @@ namespace BlackPearl {
 
 		frameBuffer->AttachCubeMapColorTexture(0, specularIrradianceMap);
 		frameBuffer->AttachRenderBuffer(specularIrradianceMap->GetWidth(), specularIrradianceMap->GetHeight());
+		//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
 		frameBuffer->Bind();
 		unsigned int maxMipMapLevels = 5;
 		for (unsigned int mip = 0; mip < maxMipMapLevels; mip++)
@@ -390,6 +396,8 @@ namespace BlackPearl {
 		m_SpecularBrdfLUTTexture.reset(DBG_NEW Texture(Texture::DiffuseMap, 512, 512, false, GL_LINEAR, GL_LINEAR, GL_RG16F, GL_RG, GL_CLAMP_TO_EDGE, GL_FLOAT));
 		//std::shared_ptr<Texture> brdfLUTTexture(new Texture(Texture::None, 512, 512, GL_LINEAR, GL_LINEAR, GL_RG16F, GL_RG, GL_CLAMP_TO_EDGE, GL_FLOAT));
 		std::shared_ptr<FrameBuffer> frameBuffer(new FrameBuffer());
+	//	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
 		frameBuffer->Bind();
 		frameBuffer->AttachRenderBuffer(512, 512);
 

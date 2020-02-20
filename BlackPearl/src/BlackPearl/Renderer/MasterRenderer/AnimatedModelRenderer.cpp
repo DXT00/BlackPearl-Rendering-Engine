@@ -18,7 +18,7 @@ namespace BlackPearl {
 			m_AnimatedShader->SetUniformMat4f("u_JointModel[" + std::to_string(i) + "]", boneFinalTransforms[i]);
 		}
 
-
+		animatedModel->GetComponent<MeshRenderer>()->SetShaders(m_AnimatedShader);
 		DrawObject(animatedModel, m_AnimatedShader);
 
 	}

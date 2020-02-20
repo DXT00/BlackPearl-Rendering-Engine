@@ -24,7 +24,17 @@ namespace BlackPearl {
 
 
 		};
-		Texture(Type type, const std::string &image);
+		/*默认值
+		,GL_LINEAR, GL_LINEAR, GL_RGBA, GL_CLAMP_TO_EDGE, GL_UNSIGNED_BYTE
+		*/
+		Texture(Type type, 
+			const std::string &image, 
+			unsigned int minFilter= GL_LINEAR,
+			unsigned int maxFilter= GL_LINEAR,
+			int internalFormat= GL_RGBA,
+			int wrap= GL_CLAMP_TO_EDGE,
+			unsigned int dataType= GL_UNSIGNED_BYTE,
+			bool generateMipmap=false);
 		//没有Image的texture
 		//internalFormat: Specifies the number of color components in the texture
 		//format:Specifies the format of the pixel data
@@ -36,7 +46,8 @@ namespace BlackPearl {
 			int internalFormat,
 			int format,
 			int wrap ,
-			unsigned int dataType
+			unsigned int dataType,
+			bool generateMipmap = false
 			);
 
 		/*
@@ -55,17 +66,28 @@ namespace BlackPearl {
 		//用于CubeMap初始化
 		Texture(Type type, std::vector<std::string> faces);
 
-
 		virtual ~Texture() = default;
 
-		 void Init(const std::string &image);
-		 void Init(const int width, const int height,
-			 unsigned int minFilter, unsigned int maxFilter,
-			 int internalFormat, int format,
-			 int wrap,unsigned int dataType);
+		 void Init(
+			 const std::string &image,
+			 unsigned int minFilter,
+			 unsigned int maxFilter,
+			 int internalFormat,
+			 int wrap,
+			 unsigned int dataType,
+			 bool generateMipmap
+		 );
+		 void Init(
+			 const int width,
+			 const int height,
+			 unsigned int minFilter, 
+			 unsigned int maxFilter,
+			 int internalFormat, 
+			 int format,
+			 int wrap,
+			 unsigned int dataType, 
+			 bool generateMipmap);
 
-
-		void LoadTexture(const std::string &image);
 		virtual void Bind();
 		virtual void UnBind();
 		inline Type GetType() { return m_Type; }

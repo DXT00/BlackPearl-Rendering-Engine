@@ -45,7 +45,7 @@ public:
 
 		Room = CreateCube();
 		std::shared_ptr<BlackPearl::Texture> RoomTexture;
-		RoomTexture.reset(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::DiffuseMap, "assets/texture/wood.png"));
+		RoomTexture.reset(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::DiffuseMap, "assets/texture/wood.png", GL_LINEAR, GL_LINEAR, GL_RGBA, GL_CLAMP_TO_EDGE, GL_UNSIGNED_BYTE));
 		Room->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(RoomTexture);
 		Room->GetComponent<BlackPearl::MeshRenderer>()->SetShaders(m_SimpleDepthShader);
 		Room->GetComponent<BlackPearl::MeshRenderer>()->SetEnableCullFace(false);
@@ -53,10 +53,10 @@ public:
 
 		
 		std::shared_ptr<BlackPearl::Texture> CubeTexture;
-		CubeTexture.reset(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::DiffuseMap, "assets/texture/wood.png"));
+		CubeTexture.reset(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::DiffuseMap, "assets/texture/wood.png", GL_LINEAR, GL_LINEAR, GL_RGBA, GL_CLAMP_TO_EDGE, GL_UNSIGNED_BYTE));
 
 		std::shared_ptr<BlackPearl::Texture> CubeTexture1;
-		CubeTexture1.reset(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::DiffuseMap, "assets/texture/wall4.jpg"));
+		CubeTexture1.reset(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::DiffuseMap, "assets/texture/wall4.jpg", GL_LINEAR, GL_LINEAR, GL_RGBA, GL_CLAMP_TO_EDGE, GL_UNSIGNED_BYTE));
 
 		BlackPearl::Object* Cube = CreateCube();
 		Cube->GetComponent<BlackPearl::MeshRenderer>()->SetShaders(m_SimpleDepthShader);

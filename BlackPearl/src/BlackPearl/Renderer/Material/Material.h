@@ -10,7 +10,7 @@ namespace BlackPearl {
 			float shininess;
 			bool  isBinnLight;
 			int  isTextureSample;//是否使用纹理
-			Props():shininess(64.0f),isBinnLight(false),isTextureSample(0){}
+			Props() :shininess(64.0f), isBinnLight(false), isTextureSample(0) {}
 
 		};
 		struct TextureMaps {
@@ -27,41 +27,41 @@ namespace BlackPearl {
 
 			TextureMaps() {
 				diffuseTextureMap
-				= specularTextureMap
-				= emissionTextureMap
-				= normalTextureMap
-				= heightTextureMap
-				= cubeTextureMap
-				= depthTextureMap
-				= aoMap
-				= roughnessMap
-				= mentallicMap
-				= nullptr;
+					= specularTextureMap
+					= emissionTextureMap
+					= normalTextureMap
+					= heightTextureMap
+					= cubeTextureMap
+					= depthTextureMap
+					= aoMap
+					= roughnessMap
+					= mentallicMap
+					= nullptr;
 			}
 		};
 
 		Material(
-			const std::shared_ptr<Shader>&shader,
-			const std::shared_ptr<TextureMaps> &textureMaps,
-			const MaterialColor &materialColors
+			const std::shared_ptr<Shader>& shader,
+			const std::shared_ptr<TextureMaps>& textureMaps,
+			const MaterialColor& materialColors
 		)
-			:m_Shader(shader), m_TextureMaps(textureMaps), m_MaterialColors(materialColors), m_Props(Props()){}
+			:m_Shader(shader), m_TextureMaps(textureMaps), m_MaterialColors(materialColors), m_Props(Props()) {}
 
 		Material(
 			const std::string shaderPath,
-			const std::shared_ptr<TextureMaps> &textureMaps,
+			const std::shared_ptr<TextureMaps>& textureMaps,
 			glm::vec3 ambientColor, glm::vec3 diffuseColor, glm::vec3 specularColor, glm::vec3 emissionColor
 		);
 
 		~Material();
-		
-		std::shared_ptr<Shader>      GetShader()const        { return m_Shader; }
-		std::shared_ptr<TextureMaps> GetTextureMaps()const   { return m_TextureMaps; }
+
+		std::shared_ptr<Shader>      GetShader()const { return m_Shader; }
+		std::shared_ptr<TextureMaps> GetTextureMaps()const { return m_TextureMaps; }
 		MaterialColor                GetMaterialColor()const { return m_MaterialColors; }
 		Props                        GetProps() const { return m_Props; }
 
 		void SetShader(const std::string& shaderPath);
-		void SetShader(const std::shared_ptr<Shader> &shader);
+		void SetShader(const std::shared_ptr<Shader>& shader);
 		void SetTexture(const std::shared_ptr<Texture> texture);
 		void SetTexture(const Texture::Type type, const std::string& image);
 		void SetMaterialColor(MaterialColor::Color color);
@@ -72,6 +72,18 @@ namespace BlackPearl {
 		void SetBinnLight(bool isBinnLight);
 		void SetTextureSample(int isTextureSample);
 
+		void Unbind() {
+			if (m_TextureMaps->diffuseTextureMap != nullptr)   m_TextureMaps->diffuseTextureMap->UnBind();
+			if (m_TextureMaps->specularTextureMap != nullptr)	  m_TextureMaps->specularTextureMap->UnBind();
+			if (m_TextureMaps->emissionTextureMap != nullptr)	  m_TextureMaps->emissionTextureMap->UnBind();
+			if (m_TextureMaps->normalTextureMap != nullptr)	  m_TextureMaps->normalTextureMap->UnBind();
+			if (m_TextureMaps->heightTextureMap != nullptr)	  m_TextureMaps->heightTextureMap->UnBind();
+			if (m_TextureMaps->cubeTextureMap != nullptr)  m_TextureMaps->cubeTextureMap->UnBind();
+			if (m_TextureMaps->depthTextureMap != nullptr)  m_TextureMaps->depthTextureMap->UnBind();
+			if (m_TextureMaps->aoMap != nullptr)  m_TextureMaps->aoMap->UnBind();
+			if (m_TextureMaps->roughnessMap != nullptr)	  m_TextureMaps->roughnessMap->UnBind();
+			if (m_TextureMaps->mentallicMap != nullptr)	  m_TextureMaps->mentallicMap->UnBind();
+		}
 	private:
 		std::shared_ptr<Shader>		 m_Shader;
 		std::shared_ptr<TextureMaps> m_TextureMaps;

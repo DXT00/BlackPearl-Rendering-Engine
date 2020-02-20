@@ -41,7 +41,7 @@ namespace BlackPearl {
 		m_FrameBuffer->UnBind();
 
 	}
-	void ShadowMapRenderer::PrepareShaderParameters(Mesh &mesh, glm::mat4 transformMatrix, std::shared_ptr<Shader> shader, bool isLight) //RenderScene 会调用该虚函数
+	void ShadowMapRenderer::PrepareShaderParameters(Mesh mesh, glm::mat4 transformMatrix, std::shared_ptr<Shader> shader, bool isLight) //RenderScene 会调用该虚函数
 	{
 		PrepareBasicShaderParameters(mesh, transformMatrix, shader, isLight);
 
