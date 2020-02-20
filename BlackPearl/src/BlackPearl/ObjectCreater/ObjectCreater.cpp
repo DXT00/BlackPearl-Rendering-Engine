@@ -49,9 +49,9 @@ namespace BlackPearl {
 
 		return obj;
 	}
-	Object* Object3DCreater::CreatePlane(const std::string& shaderPath, const std::string& texturePath)
+	Object* Object3DCreater::CreatePlane(const std::string& shaderPath, const std::string& texturePath, const std::string name)
 	{
-		Object* obj = CreateEmpty("Plane");
+		Object* obj = CreateEmpty(name);
 		std::shared_ptr<PlaneMeshFilter> meshFilter = obj->AddComponent<PlaneMeshFilter>();
 		Transform* transformComponent = obj->GetComponent<Transform>();
 
@@ -70,9 +70,9 @@ namespace BlackPearl {
 		obj->AddComponent<MeshRenderer>(mesh, transformComponent->GetTransformMatrix());
 		return obj;
 	}
-	Object* Object3DCreater::CreateSphere(const float radius, const unsigned int stackCount, const unsigned int sectorCount, const std::string& shaderPath, const std::string& texturePath)
+	Object* Object3DCreater::CreateSphere(const float radius, const unsigned int stackCount, const unsigned int sectorCount, const std::string& shaderPath, const std::string& texturePath, const std::string name)
 	{
-		Object* obj = CreateEmpty("Sphere");
+		Object* obj = CreateEmpty(name);
 		std::shared_ptr<SphereMeshFilter> meshFilter = obj->AddComponent<SphereMeshFilter>(radius, stackCount, sectorCount);
 		Transform* transformComponent = obj->GetComponent<Transform>();
 
@@ -93,12 +93,12 @@ namespace BlackPearl {
 		return obj;
 	}
 
-	Object* Object3DCreater::CreateModel(std::string modelPath, std::string shaderPath, const bool isAnimated)
+	Object* Object3DCreater::CreateModel(std::string modelPath, std::string shaderPath,const bool isAnimated, const std::string name)
 	{
 		std::shared_ptr<Shader>shader(new Shader(shaderPath));
 		shader->Bind();
 		std::shared_ptr<Model> model(new Model(modelPath, shader, isAnimated));
-		Object* obj = CreateEmpty("Model");
+		Object* obj = CreateEmpty(name);
 
 		Transform* transformComponent = obj->GetComponent<Transform>();
 		transformComponent->SetPosition({ 0.0f, 0.0f, 0.0f });
@@ -118,9 +118,9 @@ namespace BlackPearl {
 		return obj;
 	}
 
-	Object* Object3DCreater::CreateSkyBox( const std::vector<std::string>& textureFaces,const std::string& shaderPath)
+	Object* Object3DCreater::CreateSkyBox( const std::vector<std::string>& textureFaces,const std::string& shaderPath, const std::string name)
 	{
-		Object* obj = CreateEmpty("SkyBox");
+		Object* obj = CreateEmpty(name);
 		std::shared_ptr<SkyBoxMeshFilter> meshFilter = obj->AddComponent<SkyBoxMeshFilter>();
 		Transform* transformComponent = obj->GetComponent<Transform>();
 		std::shared_ptr<Material> material;
@@ -137,9 +137,9 @@ namespace BlackPearl {
 		return obj;
 	}
 	/*注意：Cube的Transform会导致Camera的Transform*/
-	Object* Object3DCreater::CreateLightProbe(const std::string& shaderPath, const std::string& texturePath)
+	Object* Object3DCreater::CreateLightProbe(const std::string& shaderPath, const std::string& texturePath, const std::string name)
 	{
-		Object* obj = CreateCube(shaderPath, texturePath, "LightProbe");
+		Object* obj = CreateCube(shaderPath, texturePath, name);
 		
 
 		return obj;		
@@ -150,9 +150,9 @@ namespace BlackPearl {
 
 	////////////////////////LightCreater//////////////////////////////////
 	/////////////////////////////////////////////////////////////////////
-	Object* LightCreater::CreateLight(LightType type, LightSources* lightSources)
+	Object* LightCreater::CreateLight(LightType type, LightSources* lightSources, const std::string name)
 	{
-		Object* Obj = CreateEmpty("Light");
+		Object* Obj = CreateEmpty(name);
 		Transform* TransformComponent = Obj->GetComponent<Transform>();
 		TransformComponent->SetScale({ 0.2f,0.2f,0.2f });
 		TransformComponent->SetPosition({ 0.0f,0.0f,0.0f });
@@ -186,19 +186,19 @@ namespace BlackPearl {
 	}
 	////////////////////////CameraCreater//////////////////////////////////
 	/////////////////////////////////////////////////////////////////////
-	Object* Object3DCreater::CreateCamera()
+	Object* Object3DCreater::CreateCamera(const std::string name)
 	{
-		Object* obj = CreateEmpty("Camera");
+		Object* obj = CreateEmpty(name);
 		std::shared_ptr<PerspectiveCamera> cameraComponent = obj->AddComponent<PerspectiveCamera>();
 
 		return obj;
 	}
 	////////////////////////Object2DCreater////////////////////////////////
 	/////////////////////////////////////////////////////////////////////
-	Object* Object2DCreater::CreateQuad(const std::string& shaderPath, const std::string& texturePath)
+	Object* Object2DCreater::CreateQuad(const std::string& shaderPath, const std::string& texturePath, const std::string name)
 	{
 
-		Object* obj = CreateEmpty("Quad");
+		Object* obj = CreateEmpty(name);
 
 		std::shared_ptr<QuadMeshFilter> meshFilter = obj->AddComponent<QuadMeshFilter>();
 		Transform* transformComponent = obj->GetComponent<Transform>();

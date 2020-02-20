@@ -104,13 +104,50 @@ Model.cpp:
 
 ```
 
-#### 2.修复Model颜色问题-->和多个object activateTexture(）顺序有关系
+#### 2.修复texture上下颠倒bug
 
-#### 3.还存在bug:texture贴图不对 = =，后期再修复了。。
+//aiProcess_FlipUVs将在处理的时候翻转y轴的纹理坐标（在OpenGL中大部分的图像的y轴都是反的，所以这个后期处理选项将会修复这个）
+
+这里的Animation Model 我们不需要aiProcess_FlipUVs！！
+
+```
+void Model::LoadModel(const std::string& path)
+	{
+		m_Path = path;
+		m_Scene = m_Importer.ReadFile(path,
+			aiProcess_Triangulate |
+			aiProcess_GenSmoothNormals);
+
+		//不要加aiProcess_FlipUVs！！！，否则纹理会反！！！
+			
+
+		if (!m_Scene || m_Scene->mFlags == AI_SCENE_FLAGS_INCOMPLETE || !m_Scene->mRootNode) {
+			GE_CORE_ERROR("ERROR::ASSIMP:: {0}", m_Importer.GetErrorString())
+				return;
+		}
+		m_Directory = path.substr(0, path.find_last_of('/'));
+
+		for (int i = 0; i < m_Scene->mNumMeshes; i++)
+		{
+			m_VerticesNum += m_Scene->mMeshes[i]->mNumVertices;
+		}
+		m_GlobalInverseTransform = glm::inverse(ConvertMatrix(m_Scene->mRootNode->mTransformation));
 
 
+		m_BoneDatas.resize(m_VerticesNum);
 
+		for (int i = 0; i < m_Scene->mNumMeshes; i++)
+		{
+			aiMesh* mesh = m_Scene->mMeshes[i];
+			m_Meshes.push_back(ProcessMesh(mesh));
+		}
+		
+	}
+
+
+```
 ![Animation](/results/Animation1.png)
+![Animation](/results/Animation2.png)
 
 
 

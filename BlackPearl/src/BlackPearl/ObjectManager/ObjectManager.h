@@ -32,17 +32,17 @@ namespace BlackPearl {
 		};
 
 		Object* CreateEmpty(std::string name = "");
-		Object* CreateLight(LightType type,LightSources* lightSources);
-		Object* CreateModel(const std::string& modelPath, const std::string& shaderPath, const bool isAnimated);
-		Object* CreateCube(const std::string& shaderPath,const std::string& texturePath);
-		Object* CreateSphere(const float radius, const unsigned int stackCount, const unsigned int sectorCount, const std::string& shaderPath, const std::string& texturePath);
-		Object* CreatePlane(const std::string& shaderPath, const std::string& texturePath);
-		Object* CreateSkyBox(const std::vector<std::string>& textureFaces, const std::string& shaderPath);
+		Object* CreateLight(LightType type,LightSources* lightSources, const std::string& name);
+		Object* CreateModel(const std::string& modelPath, const std::string& shaderPath, const bool isAnimated, const std::string& name);
+		Object* CreateCube(const std::string& shaderPath,const std::string& texturePath, const std::string& name);
+		Object* CreateSphere(const float radius, const unsigned int stackCount, const unsigned int sectorCount, const std::string& shaderPath, const std::string& texturePath, const std::string& name);
+		Object* CreatePlane(const std::string& shaderPath, const std::string& texturePath, const std::string& name);
+		Object* CreateSkyBox(const std::vector<std::string>& textureFaces, const std::string& shaderPath, const std::string& name);
 
-		Object* CreateQuad(const std::string& shaderPath , const std::string& texturePath);
+		Object* CreateQuad(const std::string& shaderPath , const std::string& texturePath, const std::string& name);
 		/*Blending Object, include logical and actual properties*/
-		LightProbe* CreateLightProbe(const std::string& shaderPath, const std::string& texturePath);
-		MainCamera* CreateCamera();
+		LightProbe* CreateLightProbe(const std::string& shaderPath, const std::string& texturePath, const std::string& name);
+		MainCamera* CreateCamera(const std::string& name);
 
 
 		std::vector<Object*> GetObjects();

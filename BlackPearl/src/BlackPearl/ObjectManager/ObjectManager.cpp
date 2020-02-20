@@ -16,56 +16,56 @@ namespace BlackPearl {
 		return obj;
 	}
 
-	Object * ObjectManager::CreateLight(LightType type, LightSources* lightSources)
+	Object * ObjectManager::CreateLight(LightType type, LightSources* lightSources, const std::string& name)
 	{
-		Object *obj = m_LightCreater->CreateLight(type, lightSources);
+		Object *obj = m_LightCreater->CreateLight(type, lightSources, name);
 		m_EntityToObjects.insert(std::make_pair(obj->GetId().index(), obj));
 		return obj;
 
 	}
 
-	Object * ObjectManager::CreateModel(const std::string & modelPath, const std::string & shaderPath,const bool isAnimated)
+	Object * ObjectManager::CreateModel(const std::string & modelPath, const std::string & shaderPath,const bool isAnimated, const std::string& name)
 	{
-		Object *obj = m_Object3DCreater->CreateModel(modelPath, shaderPath,isAnimated);
+		Object *obj = m_Object3DCreater->CreateModel(modelPath, shaderPath,isAnimated, name);
 		m_EntityToObjects.insert(std::make_pair(obj->GetId().index(), obj));
 		return obj;
 
 	}
 
-	Object * ObjectManager::CreateCube(const std::string& shaderPath, const std::string& texturePath)
+	Object * ObjectManager::CreateCube(const std::string& shaderPath, const std::string& texturePath, const std::string& name)
 	{
-		Object *obj = m_Object3DCreater->CreateCube(shaderPath, texturePath);
+		Object *obj = m_Object3DCreater->CreateCube(shaderPath, texturePath, name);
 		m_EntityToObjects.insert(std::make_pair(obj->GetId().index(), obj));
 		return obj;
 
 	}
 
-	Object * ObjectManager::CreateSphere(const float radius, const unsigned int stackCount, const unsigned int sectorCount, const std::string & shaderPath, const std::string & texturePath)
+	Object * ObjectManager::CreateSphere(const float radius, const unsigned int stackCount, const unsigned int sectorCount, const std::string & shaderPath, const std::string & texturePath, const std::string& name)
 	{
-		Object *obj = m_Object3DCreater->CreateSphere(radius, stackCount, sectorCount,shaderPath, texturePath);
+		Object *obj = m_Object3DCreater->CreateSphere(radius, stackCount, sectorCount,shaderPath, texturePath, name);
 		m_EntityToObjects.insert(std::make_pair(obj->GetId().index(), obj));
 		return obj;
 	}
 
-	Object * ObjectManager::CreatePlane(const std::string& shaderPath, const std::string& texturePath)
+	Object * ObjectManager::CreatePlane(const std::string& shaderPath, const std::string& texturePath, const std::string& name)
 	{
-		Object* obj = m_Object3DCreater->CreatePlane(shaderPath, texturePath);
+		Object* obj = m_Object3DCreater->CreatePlane(shaderPath, texturePath, name);
 		m_EntityToObjects.insert(std::make_pair(obj->GetId().index(), obj));
 		return obj;
 	}
 
-	Object * ObjectManager::CreateSkyBox(const std::vector<std::string>& textureFaces, const std::string& shaderPath)
+	Object * ObjectManager::CreateSkyBox(const std::vector<std::string>& textureFaces, const std::string& shaderPath, const std::string& name)
 	{
-		Object* obj = m_Object3DCreater->CreateSkyBox(textureFaces,shaderPath);
+		Object* obj = m_Object3DCreater->CreateSkyBox(textureFaces,shaderPath, name);
 		m_EntityToObjects.insert(std::make_pair(obj->GetId().index(), obj));
 		return obj;
 	}
 	///////////////////////Blending Object///////////////////////////////
 
-	LightProbe* ObjectManager::CreateLightProbe(const std::string& shaderPath, const std::string& texturePath)
+	LightProbe* ObjectManager::CreateLightProbe(const std::string& shaderPath, const std::string& texturePath, const std::string& name)
 	{
-		Object* obj = m_Object3DCreater->CreateLightProbe(shaderPath, texturePath);
-		Object* cameraObj = m_Object3DCreater->CreateCamera();
+		Object* obj = m_Object3DCreater->CreateLightProbe(shaderPath, texturePath, name);
+		Object* cameraObj = m_Object3DCreater->CreateCamera("Camera");
 
 		LightProbe* lightProbe = DBG_NEW LightProbe(obj, cameraObj);
 		m_EntityToObjects.insert(std::make_pair(lightProbe->GetObj()->GetId().index(), lightProbe->GetObj()));
@@ -75,9 +75,9 @@ namespace BlackPearl {
 		return lightProbe;
 	}
 
-	MainCamera* ObjectManager::CreateCamera()
+	MainCamera* ObjectManager::CreateCamera(const std::string& name)
 	{
-		Object* obj = m_Object3DCreater->CreateCamera();
+		Object* obj = m_Object3DCreater->CreateCamera(name);
 		MainCamera* mainCamera = DBG_NEW MainCamera(obj);
 		m_EntityToObjects.insert(std::make_pair(mainCamera->GetObj()->GetId().index(), mainCamera->GetObj()));
 
@@ -87,9 +87,9 @@ namespace BlackPearl {
 
 
 	///////////////////////2D///////////////////////////////
-	Object * ObjectManager::CreateQuad(const std::string & shaderPath, const std::string & texturePath)
+	Object * ObjectManager::CreateQuad(const std::string & shaderPath, const std::string & texturePath, const std::string& name)
 	{
-		Object* obj = m_Object2DCreater->CreateQuad(shaderPath, texturePath);
+		Object* obj = m_Object2DCreater->CreateQuad(shaderPath, texturePath, name);
 		m_EntityToObjects.insert(std::make_pair(obj->GetId().index(), obj));
 		return obj;
 	}

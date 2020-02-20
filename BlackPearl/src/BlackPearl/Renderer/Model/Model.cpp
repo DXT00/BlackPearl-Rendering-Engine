@@ -58,29 +58,32 @@ namespace BlackPearl {
 		m_Path = path;
 		//Assimp::Importer importer;
 		m_Scene = m_Importer.ReadFile(path,
-				aiProcess_Triangulate |
-				aiProcess_GenSmoothNormals |
-				aiProcess_FlipUVs );
-				//aiProcess_JoinIdenticalVertices
-			/*aiProcess_MakeLeftHanded |
-			aiProcess_FlipWindingOrder |
-			aiProcess_FlipUVs |
-			aiProcess_PreTransformVertices |
-			aiProcess_CalcTangentSpace |
-			aiProcess_GenSmoothNormals |
 			aiProcess_Triangulate |
-			aiProcess_FixInfacingNormals |
-			aiProcess_FindInvalidData |
-			aiProcess_JoinIdenticalVertices |
-			aiProcess_ValidateDataStructure | 0);*/
-		///*
-		//设定aiProcess_Triangulate，我们告诉Assimp，如果模型不是（全部）由三角形组成，
-		//它需要将模型所有的图元形状变换为三角形。
-		//
-		//aiProcess_FlipUVs将在处理的时候翻转y轴的纹理坐标（你可能还记得我们在纹理教程中说过，
-		//在OpenGL中大部分的图像的y轴都是反的，所以这个后期处理选项将会修复这个）
-		//
-		//*/
+			aiProcess_GenSmoothNormals);
+
+		//不要加aiProcess_FlipUVs！！！，否则纹理会反！！！
+		//|
+			//aiProcess_FlipUVs);
+		//aiProcess_JoinIdenticalVertices
+	/*aiProcess_MakeLeftHanded |
+	aiProcess_FlipWindingOrder |
+	aiProcess_FlipUVs |
+	aiProcess_PreTransformVertices |
+	aiProcess_CalcTangentSpace |
+	aiProcess_GenSmoothNormals |
+	aiProcess_Triangulate |
+	aiProcess_FixInfacingNormals |
+	aiProcess_FindInvalidData |
+	aiProcess_JoinIdenticalVertices |
+	aiProcess_ValidateDataStructure | 0);*/
+	///*
+	//设定aiProcess_Triangulate，我们告诉Assimp，如果模型不是（全部）由三角形组成，
+	//它需要将模型所有的图元形状变换为三角形。
+	//
+	//aiProcess_FlipUVs将在处理的时候翻转y轴的纹理坐标（你可能还记得我们在纹理教程中说过，
+	//在OpenGL中大部分的图像的y轴都是反的，所以这个后期处理选项将会修复这个）
+	//
+	//*/
 
 		if (!m_Scene || m_Scene->mFlags == AI_SCENE_FLAGS_INCOMPLETE || !m_Scene->mRootNode) {
 			GE_CORE_ERROR("ERROR::ASSIMP:: {0}", m_Importer.GetErrorString())
@@ -93,15 +96,15 @@ namespace BlackPearl {
 		{
 			m_VerticesNum += m_Scene->mMeshes[i]->mNumVertices;
 		}
-		m_GlobalInverseTransform = glm::inverse(ConvertMatrix( m_Scene->mRootNode->mTransformation));
+		m_GlobalInverseTransform = glm::inverse(ConvertMatrix(m_Scene->mRootNode->mTransformation));
 		//m_GlobalInverseTransform.Inverse();
-		
+
 
 		m_BoneDatas.resize(m_VerticesNum);
 		//m_Animation = *(m_Scene->mAnimations[0]);
 		for (int i = 0; i < m_Scene->mNumMeshes; i++)
 		{
-			aiMesh *mesh= m_Scene->mMeshes[i];
+			aiMesh* mesh = m_Scene->mMeshes[i];
 			/*LoadBones(m_Scene->mMeshes[i]);
 			m_VerticesIdx+= m_Scene->mMeshes[i]->mNumVertices;*/
 			m_Meshes.push_back(ProcessMesh(mesh));
@@ -161,7 +164,7 @@ namespace BlackPearl {
 					m_BoneDatas[m_VerticesIdx + vertexIdx].weights[row][col] = boneWeight;
 					m_BoneDatas[m_VerticesIdx + vertexIdx].currentPos++;
 				}
-				
+
 			}
 
 
@@ -228,7 +231,7 @@ namespace BlackPearl {
 				glmInsertVector(glm::vec4(m_BoneDatas[vertexIdx].weights[0][0], m_BoneDatas[vertexIdx].weights[0][1], m_BoneDatas[vertexIdx].weights[0][2], m_BoneDatas[vertexIdx].weights[0][3]), verticesfloatWeight);
 				glmInsertVector(glm::vec4(m_BoneDatas[vertexIdx].weights[1][0], m_BoneDatas[vertexIdx].weights[1][1], m_BoneDatas[vertexIdx].weights[1][2], m_BoneDatas[vertexIdx].weights[1][3]), verticesfloatWeight);
 
-			//	GE_ASSERT(m_BoneDatas[vertexIdx].weights[0] + m_BoneDatas[vertexIdx].weights[1] + m_BoneDatas[vertexIdx].weights[2] + m_BoneDatas[vertexIdx].weights[3] == 1.0f, "total weight!=1");
+				//	GE_ASSERT(m_BoneDatas[vertexIdx].weights[0] + m_BoneDatas[vertexIdx].weights[1] + m_BoneDatas[vertexIdx].weights[2] + m_BoneDatas[vertexIdx].weights[3] == 1.0f, "total weight!=1");
 			}
 			//tangent
 			//glm::vec3 tangent = glm::vec3(0.0f);
@@ -327,13 +330,13 @@ namespace BlackPearl {
 
 			std::string path_str = m_Directory + "/" + std::string(path.C_Str());//
 			if (typeName == Texture::Type::DiffuseMap)
-				textures->diffuseTextureMap.reset(DBG_NEW Texture(typeName, path_str.c_str(),GL_LINEAR, GL_LINEAR,GL_RGBA,GL_CLAMP_TO_EDGE,GL_UNSIGNED_BYTE));
+				textures->diffuseTextureMap.reset(DBG_NEW Texture(typeName, path_str.c_str(), GL_LINEAR, GL_LINEAR, GL_RGBA, GL_CLAMP_TO_EDGE, GL_UNSIGNED_BYTE));
 			if (typeName == Texture::Type::SpecularMap)
-				textures->specularTextureMap.reset(DBG_NEW Texture(typeName, path_str.c_str(),GL_LINEAR, GL_LINEAR, GL_RGBA, GL_CLAMP_TO_EDGE, GL_UNSIGNED_BYTE));
+				textures->specularTextureMap.reset(DBG_NEW Texture(typeName, path_str.c_str(), GL_LINEAR, GL_LINEAR, GL_RGBA, GL_CLAMP_TO_EDGE, GL_UNSIGNED_BYTE));
 			if (typeName == Texture::Type::EmissionMap)
-				textures->emissionTextureMap.reset(DBG_NEW Texture(typeName, path_str.c_str(),GL_LINEAR, GL_LINEAR, GL_RGBA, GL_CLAMP_TO_EDGE, GL_UNSIGNED_BYTE));
+				textures->emissionTextureMap.reset(DBG_NEW Texture(typeName, path_str.c_str(), GL_LINEAR, GL_LINEAR, GL_RGBA, GL_CLAMP_TO_EDGE, GL_UNSIGNED_BYTE));
 			if (typeName == Texture::Type::NormalMap)
-				textures->normalTextureMap.reset(DBG_NEW Texture(typeName, path_str.c_str(),GL_LINEAR, GL_LINEAR, GL_RGBA, GL_CLAMP_TO_EDGE, GL_UNSIGNED_BYTE));
+				textures->normalTextureMap.reset(DBG_NEW Texture(typeName, path_str.c_str(), GL_LINEAR, GL_LINEAR, GL_RGBA, GL_CLAMP_TO_EDGE, GL_UNSIGNED_BYTE));
 			/*if (typeName == Texture::Type::HeightMap)
 				textures->heightTextureMap.reset(DBG_NEW Texture(typeName, path_str.c_str()));
 			*/
@@ -386,12 +389,12 @@ namespace BlackPearl {
 		//double timeInDurationSecond = fmod(timeInSecond, durationSecond);
 		float timeInDurationSecond = fmod(timeInTick, durationTick);
 		glm::mat4 indentity(1.0f);
-	/*	{
-		1.0,0.0,0.0,0.0,
-		0.0,1.0,0.0,0.0,
-		0.0,0.0,1.0,0.0,
-		0.0,0.0,0.0,1.0	
-		};*/
+		/*	{
+			1.0,0.0,0.0,0.0,
+			0.0,1.0,0.0,0.0,
+			0.0,0.0,1.0,0.0,
+			0.0,0.0,0.0,1.0
+			};*/
 		ReadHierarchy(timeInDurationSecond, m_Scene->mRootNode, indentity);
 
 		std::vector<glm::mat4> boneFinalTransforms;
@@ -422,7 +425,7 @@ namespace BlackPearl {
 			aiQuaternion quaternion = CalculateInterpolateRotation(timeInDurationSecond, nodeAnim);
 			/*aiMatrix3x3 tp = quaternion.GetMatrix();
 			glm::mat4 rotateM = aiMatrix3x3ToGlm(tp);*/
-			glm::quat rotation(quaternion.w,quaternion.x,quaternion.y,quaternion.z);
+			glm::quat rotation(quaternion.w, quaternion.x, quaternion.y, quaternion.z);
 			glm::mat4 rotateM = glm::toMat4(rotation);
 
 			glm::vec3 scale = CalculateInterpolateScale(timeInDurationSecond, nodeAnim);
@@ -430,7 +433,7 @@ namespace BlackPearl {
 
 
 
-			transform = translateM * rotateM *scaleM;
+			transform = translateM * rotateM * scaleM;
 
 
 		}
@@ -523,7 +526,7 @@ namespace BlackPearl {
 		}
 		double durationOfTwoKey = nextKey.mTime - currentKey.mTime;
 		double ratioToCurrentKey = (timeInDurationSecond - currentKey.mTime) / durationOfTwoKey;
-		GE_ASSERT(ratioToCurrentKey>=0.0f, "ratioToCurrentKey<0.0f!");
+		GE_ASSERT(ratioToCurrentKey >= 0.0f, "ratioToCurrentKey<0.0f!");
 
 		double ratioToNextKey = (nextKey.mTime - timeInDurationSecond) / durationOfTwoKey;
 		GE_ASSERT(ratioToNextKey >= 0.0f, "ratioToNextKey<0.0f!");
@@ -561,16 +564,16 @@ namespace BlackPearl {
 		//return out;
 
 		// we need at least two values to interpolate...
-		
+
 
 		unsigned int RotationIndex = FindRotation(timeInDurationSecond, nodeAnim);
 		unsigned int  NextRotationIndex = (RotationIndex + 1);
-		GE_ASSERT(NextRotationIndex < nodeAnim->mNumRotationKeys,"NextRotationIndex >=nodeAnim->mNumRotationKeys");
+		GE_ASSERT(NextRotationIndex < nodeAnim->mNumRotationKeys, "NextRotationIndex >=nodeAnim->mNumRotationKeys");
 		float DeltaTime = nodeAnim->mRotationKeys[NextRotationIndex].mTime - nodeAnim->mRotationKeys[RotationIndex].mTime;
 		float Factor = (timeInDurationSecond - (float)nodeAnim->mRotationKeys[RotationIndex].mTime) / DeltaTime;
 		if (Factor < 0)Factor = 0.0f;
-		
-		GE_ASSERT(Factor >= 0.0f && Factor <= 1.0f,"Factor error!");
+
+		GE_ASSERT(Factor >= 0.0f && Factor <= 1.0f, "Factor error!");
 		const aiQuaternion& StartRotationQ = nodeAnim->mRotationKeys[RotationIndex].mValue;
 		const aiQuaternion& EndRotationQ = nodeAnim->mRotationKeys[NextRotationIndex].mValue;
 		aiQuaternion::Interpolate(out, StartRotationQ, EndRotationQ, Factor);
@@ -579,28 +582,28 @@ namespace BlackPearl {
 	}
 	glm::vec3 Model::CalculateInterpolateScale(float timeInDurationSecond, aiNodeAnim* nodeAnim)
 	{
-	/*	aiVector3D scale;
-		aiVectorKey currentKey;
-		aiVectorKey nextKey;
-		if (nodeAnim->mNumScalingKeys == 1)
-			return glm::vec3(nodeAnim->mScalingKeys[0].mValue.x, nodeAnim->mScalingKeys[0].mValue.y, nodeAnim->mScalingKeys[0].mValue.z);
-		for (int i = 0; i < nodeAnim->mNumScalingKeys; i++)
-		{
-			if (timeInDurationSecond >= nodeAnim->mScalingKeys[i].mTime) {
-				currentKey = nodeAnim->mScalingKeys[i];
+		/*	aiVector3D scale;
+			aiVectorKey currentKey;
+			aiVectorKey nextKey;
+			if (nodeAnim->mNumScalingKeys == 1)
+				return glm::vec3(nodeAnim->mScalingKeys[0].mValue.x, nodeAnim->mScalingKeys[0].mValue.y, nodeAnim->mScalingKeys[0].mValue.z);
+			for (int i = 0; i < nodeAnim->mNumScalingKeys; i++)
+			{
+				if (timeInDurationSecond >= nodeAnim->mScalingKeys[i].mTime) {
+					currentKey = nodeAnim->mScalingKeys[i];
+				}
+				else {
+					nextKey = nodeAnim->mScalingKeys[i];
+					break;
+				}
 			}
-			else {
-				nextKey = nodeAnim->mScalingKeys[i];
-				break;
-			}
-		}
-		double durationOfTwoKey = nextKey.mTime - currentKey.mTime;
-		double ratioToCurrentKey = (timeInDurationSecond - currentKey.mTime) / durationOfTwoKey;
-		double ratioToNextKey = nextKey.mTime - timeInDurationSecond / durationOfTwoKey;
-		scale = (float)ratioToNextKey * currentKey.mValue
-			+ (float)ratioToCurrentKey * nextKey.mValue;
+			double durationOfTwoKey = nextKey.mTime - currentKey.mTime;
+			double ratioToCurrentKey = (timeInDurationSecond - currentKey.mTime) / durationOfTwoKey;
+			double ratioToNextKey = nextKey.mTime - timeInDurationSecond / durationOfTwoKey;
+			scale = (float)ratioToNextKey * currentKey.mValue
+				+ (float)ratioToCurrentKey * nextKey.mValue;
 
-		return glm::vec3(scale.x,scale.y,scale.z);*/
+			return glm::vec3(scale.x,scale.y,scale.z);*/
 		aiVector3D out;
 		if (nodeAnim->mNumScalingKeys == 1) {
 			out = nodeAnim->mScalingKeys[0].mValue;
@@ -669,7 +672,7 @@ namespace BlackPearl {
 	{
 		assert(nodeAnim->mNumRotationKeys > 0);
 
-		for (unsigned int  i = 0; i < nodeAnim->mNumRotationKeys - 1; i++) {
+		for (unsigned int i = 0; i < nodeAnim->mNumRotationKeys - 1; i++) {
 			if (AnimationTime < (float)nodeAnim->mRotationKeys[i + 1].mTime) {
 				return i;
 			}

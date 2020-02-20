@@ -36,13 +36,13 @@ namespace BlackPearl {
 		{
 			m_EntityManager = entityManager;
 		}
-		Object* CreateCamera();
-		Object* CreateCube(const std::string& shaderPath, const std::string& texturePath,const std::string name = "Cube");
-		Object* CreatePlane(const std::string& shaderPath, const std::string& texturePath);
-		Object* CreateSphere(const float radius, const unsigned int stackCount, const unsigned int sectorCount, const std::string& shaderPath, const std::string& texturePath);
-		Object* CreateModel(std::string modelPath,std::string shaderPath, const bool isAnimated);
-		Object* CreateSkyBox( const std::vector<std::string>& textureFaces,const std::string& shaderPath);
-		Object* CreateLightProbe(const std::string& shaderPath, const std::string& texturePath);
+		Object* CreateCamera(const std::string name);
+		Object* CreateCube(const std::string& shaderPath, const std::string& texturePath,const std::string name);
+		Object* CreatePlane(const std::string& shaderPath, const std::string& texturePath, const std::string name);
+		Object* CreateSphere(const float radius, const unsigned int stackCount, const unsigned int sectorCount, const std::string& shaderPath, const std::string& texturePath, const std::string name);
+		Object* CreateModel(std::string modelPath,std::string shaderPath,const bool isAnimated, const std::string name);
+		Object* CreateSkyBox( const std::vector<std::string>& textureFaces,const std::string& shaderPath, const std::string name);
+		Object* CreateLightProbe(const std::string& shaderPath, const std::string& texturePath, const std::string name);
 	};
 
 	////////////////////////Object2DCreater////////////////////////////////
@@ -52,7 +52,7 @@ namespace BlackPearl {
 		Object2DCreater(EntityManager *entityManager)
 			:ObjectCreater(entityManager) {}
 
-		Object* CreateQuad(const std::string& shaderPath, const std::string& texturePath);
+		Object* CreateQuad(const std::string& shaderPath, const std::string& texturePath, const std::string name);
 
 
 	};
@@ -64,7 +64,7 @@ namespace BlackPearl {
 		LightCreater(EntityManager *entityManager)
 			:ObjectCreater(entityManager) {}
 
-		Object* CreateLight(LightType type, LightSources* lightSources);
+		Object* CreateLight(LightType type, LightSources* lightSources, const std::string name);
 
 	};
 	//////////////////////////CameraCreater//////////////////////////////////

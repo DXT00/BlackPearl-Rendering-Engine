@@ -182,59 +182,59 @@ namespace BlackPearl {
 		m_ObjectsList.push_back(obj);
 		return obj;
 	}
-	Object* Layer::CreateLight(LightType type)
+	Object* Layer::CreateLight(LightType type, const std::string& name)
 	{
-		Object* obj = m_ObjectManager->CreateLight(type, m_LightSources);
+		Object* obj = m_ObjectManager->CreateLight(type, m_LightSources, name);
 		m_ObjectsList.push_back(obj);
 		return obj;
 	}
-	Object* Layer::CreateCube(const std::string& shaderPath, const std::string& texturePath) //TODO:
+	Object* Layer::CreateCube(const std::string& shaderPath, const std::string& texturePath, const std::string& name) //TODO:
 	{
-		Object* obj = m_ObjectManager->CreateCube(shaderPath, texturePath);
+		Object* obj = m_ObjectManager->CreateCube(shaderPath, texturePath,name);
 		m_ObjectsList.push_back(obj);
 		return obj;
 	}
-	Object* Layer::CreateSphere(const float radius, const unsigned int stackCount, const unsigned int sectorCount, const std::string& shaderPath, const std::string& texturePath)
+	Object* Layer::CreateSphere(const float radius, const unsigned int stackCount, const unsigned int sectorCount, const std::string& shaderPath, const std::string& texturePath, const std::string& name)
 	{
-		Object* obj = m_ObjectManager->CreateSphere(radius, stackCount, sectorCount, shaderPath, texturePath);
+		Object* obj = m_ObjectManager->CreateSphere(radius, stackCount, sectorCount, shaderPath, texturePath, name);
 		m_ObjectsList.push_back(obj);
 		return obj;
 	}
-	Object* Layer::CreatePlane(const std::string& shaderPath, const std::string& texturePath)
+	Object* Layer::CreatePlane(const std::string& shaderPath, const std::string& texturePath, const std::string& name)
 	{
-		Object* obj = m_ObjectManager->CreatePlane(shaderPath, texturePath);
+		Object* obj = m_ObjectManager->CreatePlane(shaderPath, texturePath, name);
 		m_ObjectsList.push_back(obj);
 		return obj;
 	}
-	Object* Layer::CreateSkyBox(const std::vector<std::string>& textureFaces, const std::string& shaderPath)
+	Object* Layer::CreateSkyBox(const std::vector<std::string>& textureFaces, const std::string& shaderPath, const std::string& name)
 	{
-		Object* obj = m_ObjectManager->CreateSkyBox(textureFaces, shaderPath);
+		Object* obj = m_ObjectManager->CreateSkyBox(textureFaces, shaderPath, name);
 		m_ObjectsList.push_back(obj);
 		return obj;
 	}
-	Object* Layer::CreateQuad(const std::string& shaderPath, const std::string& texturePath)
+	Object* Layer::CreateQuad(const std::string& shaderPath, const std::string& texturePath, const std::string& name)
 	{
-		Object* obj = m_ObjectManager->CreateQuad(shaderPath, texturePath);
+		Object* obj = m_ObjectManager->CreateQuad(shaderPath, texturePath, name);
 		m_ObjectsList.push_back(obj);
 		return obj;
 	}
-	LightProbe* Layer::CreateLightProbe(const std::string& shaderPath, const std::string& texturePath)
+	LightProbe* Layer::CreateLightProbe(const std::string& shaderPath, const std::string& texturePath, const std::string& name)
 	{
-		LightProbe* probe = m_ObjectManager->CreateLightProbe(shaderPath, texturePath);
+		LightProbe* probe = m_ObjectManager->CreateLightProbe(shaderPath, texturePath, name);
 		m_ObjectsList.push_back(probe->GetObj());
 		m_ObjectsList.push_back(probe->GetCamera()->GetObj());
 
 		return probe;
 	}
-	Object* Layer::CreateModel(const std::string& modelPath, const std::string& shaderPath,const bool isAnimated)
+	Object* Layer::CreateModel(const std::string& modelPath, const std::string& shaderPath,const bool isAnimated ,const std::string& name)
 	{
-		Object* obj = m_ObjectManager->CreateModel(modelPath, shaderPath, isAnimated);
+		Object* obj = m_ObjectManager->CreateModel(modelPath, shaderPath, isAnimated,name);
 		m_ObjectsList.push_back(obj);
 		return obj;
 	}
-	MainCamera* Layer::CreateCamera() {
+	MainCamera* Layer::CreateCamera(const std::string& name) {
 
-		MainCamera* mainCamera = m_ObjectManager->CreateCamera();
+		MainCamera* mainCamera = m_ObjectManager->CreateCamera(name);
 		m_ObjectsList.push_back(mainCamera->GetObj());
 		return mainCamera;
 	}

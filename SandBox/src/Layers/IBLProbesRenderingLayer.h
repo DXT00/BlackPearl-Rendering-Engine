@@ -92,16 +92,16 @@ public:
 			});
 		  
 		/*model animation*/
-	//	m_AnimatedModelFrog = CreateModel("assets/models-animation/frog/frog.dae.txt", "assets/shaders/animatedModel/animatedModel.glsl", true);
+		m_AnimatedModelFrog = CreateModel("assets/models-animation/frog/frog.dae.txt", "assets/shaders/animatedModel/animatedModel.glsl", true,"Frog");
 		
-		m_AnimatedModelCleaner = CreateModel("assets/models-animation/boblampclean.md5mesh", "assets/shaders/animatedModel/animatedModel.glsl",true);
+		m_AnimatedModelCleaner = CreateModel("assets/models-animation/boblampclean.md5mesh", "assets/shaders/animatedModel/animatedModel.glsl",true,"Cleaner");
 	
-		m_AnimatedModelBoy = CreateModel("assets/models-animation/people/character Texture.dae", "assets/shaders/animatedModel/animatedModel.glsl", true);
+		m_AnimatedModelBoy = CreateModel("assets/models-animation/people/character Texture.dae", "assets/shaders/animatedModel/animatedModel.glsl", true,"Boy");
 
 
 		m_AnimatedModelBoy->GetComponent<BlackPearl::Transform>()->SetScale({ 0.2f,0.2f,0.2f });
 		m_AnimatedModelBoy->GetComponent<BlackPearl::Transform>()->SetRotation({ -90.0f,0.0f,0.0f });
-		m_AnimatedModelBoy->GetComponent<BlackPearl::Transform>()->SetPosition({ 0.0f,-1.6f,0.0f });
+		m_AnimatedModelBoy->GetComponent<BlackPearl::Transform>()->SetPosition({ 3.0f,-1.6f,0.0f });
 
 
 		m_AnimatedModelCleaner->GetComponent<BlackPearl::Transform>()->SetScale({ 0.05f,0.05f,0.05f });
@@ -109,9 +109,9 @@ public:
 		m_AnimatedModelCleaner->GetComponent<BlackPearl::Transform>()->SetPosition({ 0.0f,-1.6f,0.0f });
 
 
-		/*m_AnimatedModelFrog->GetComponent<BlackPearl::Transform>()->SetScale({ 0.5f,0.5f,0.5f });
+		m_AnimatedModelFrog->GetComponent<BlackPearl::Transform>()->SetScale({ 0.5f,0.5f,0.5f });
 		m_AnimatedModelFrog->GetComponent<BlackPearl::Transform>()->SetRotation({ 90.0f,180.0f,0.0f });
-		m_AnimatedModelFrog->GetComponent<BlackPearl::Transform>()->SetPosition({ -3.0f,-1.6f,0.0f });*/
+		m_AnimatedModelFrog->GetComponent<BlackPearl::Transform>()->SetPosition({ -3.0f,-1.6f,0.0f });
 
 
 
@@ -261,7 +261,7 @@ public:
 
 		m_AnimatedModelRenderer->Render(m_AnimatedModelBoy, runtime / 1000.0f);
 		m_AnimatedModelRenderer->Render(m_AnimatedModelCleaner, runtime / 1000.0f);
-		//m_AnimatedModelRenderer->Render(m_AnimatedModelFrog, runtime / 1000.0f);
+		m_AnimatedModelRenderer->Render(m_AnimatedModelFrog, runtime / 1000.0f);
 
 		m_BasicRenderer->RenderScene(m_BackGroundObjsList, GetLightSources());
 		glDepthFunc(GL_LEQUAL);
