@@ -212,4 +212,33 @@ namespace BlackPearl {
 
 
 	};
+
+	class GBuffer
+	{
+	public:
+		GBuffer(const unsigned int imageWidth,const unsigned int imageHeight);
+		void Bind();
+		void UnBind();
+		std::shared_ptr<Texture> GetPositionTexture()const { return m_PositionTexture; }
+		std::shared_ptr<Texture> GetNormalTexture()const { return m_NormalTexture; }
+		std::shared_ptr<Texture> GetAlbedoTexture()const { return m_AlbedoTexture; }
+		std::shared_ptr<Texture> GetSpecularTexture()const { return m_SpecularTexture; }
+
+		~GBuffer()=default;
+
+	private:
+		std::shared_ptr<Texture> m_PositionTexture;
+		std::shared_ptr<Texture> m_NormalTexture;
+		/*diffuse color + specular color buffer */
+		std::shared_ptr<Texture> m_AlbedoTexture;
+		std::shared_ptr<Texture> m_SpecularTexture;
+
+		unsigned int m_RendererID;
+		unsigned int m_RenderBufferID;
+		unsigned int m_Width, m_Height;
+
+
+	};
+
+
 }

@@ -210,6 +210,8 @@ namespace BlackPearl {
 	//	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		frameBuffer->Bind();
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
 		frameBuffer->AttachCubeMapColorTexture(0, environmentCubeMap);
 		//TODO::
 		frameBuffer->AttachRenderBuffer(environmentCubeMap->GetWidth(), environmentCubeMap->GetHeight());

@@ -1398,6 +1398,7 @@
     <ClInclude Include="src\BlackPearl\Math\Quaternion.h" />
     <ClInclude Include="src\BlackPearl\Animation\Bone.h" />
     <ClInclude Include="src\BlackPearl\Renderer\MasterRenderer\AnimatedModelRenderer.h" />
+    <ClInclude Include="src\BlackPearl\Renderer\MasterRenderer\GBufferRenderer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\BlackPearl\Application.cpp">
@@ -1572,5 +1573,6 @@
     <ClCompile Include="src\BlackPearl\Math\Quaternion.cpp" />
     <ClCompile Include="src\BlackPearl\Animation\Bone.cpp" />
     <ClCompile Include="src\BlackPearl\Renderer\MasterRenderer\AnimatedModelRenderer.cpp" />
+    <ClCompile Include="src\BlackPearl\Renderer\MasterRenderer\GBufferRenderer.cpp" />
   </ItemGroup>
 </Project>

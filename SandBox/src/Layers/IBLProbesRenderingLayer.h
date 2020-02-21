@@ -46,7 +46,8 @@ public:
 		m_BrdfLUTQuadObj = CreateQuad("assets/shaders/ibl/brdf.glsl","");
 		m_SHImageQuadObj = CreateQuad("assets/shaders/lightProbes/SH.glsl", "");
 		m_DebugQuad = CreateQuad("assets/shaders/QuadDebug.glsl","");
-
+		m_GBufferScreenQuad = CreateQuad("assets/shaders/gBuffer/gBufferLighting.glsl", "");
+		m_GBufferDebugQuad = CreateQuad();
 		/* create probes */
 		unsigned int xlen = 1, ylen = 3,zlen = 1,space = 3;
 		for (unsigned int x = 0; x < xlen; x++)
@@ -80,6 +81,8 @@ public:
 		m_BasicRenderer = DBG_NEW BlackPearl::BasicRenderer();
 		m_IBLProbesRenderer = DBG_NEW BlackPearl::IBLProbesRenderer();
 		m_AnimatedModelRenderer = DBG_NEW BlackPearl::AnimatedModelRenderer();
+		m_GBufferRenderer = DBG_NEW BlackPearl::GBufferRenderer();
+
 		/*create skybox */
 		/*notice: draw skybox before anything else!*/
 		m_SkyBoxObj1 = CreateSkyBox(
@@ -212,7 +215,7 @@ public:
 		//m_IBLProbesRenderer->Render(GetLightSources(), m_BackGroundObjsList, m_LightProbes, m_SkyBoxObj1);
 
 		//glViewport(0, 0, BlackPearl::Configuration::WindowWidth, BlackPearl::Configuration::WindowHeight);
-
+		m_GBufferRenderer->Init(m_GBufferScreenQuad);
 	}
 
 	virtual ~IBLProbesRenderingLayer() {
@@ -257,11 +260,17 @@ public:
 		
 		glViewport(0, 0, BlackPearl::Configuration::WindowWidth, BlackPearl::Configuration::WindowHeight);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		m_IBLProbesRenderer->RenderProbes(m_LightProbes);
+		/*m_IBLProbesRenderer->RenderProbes(m_LightProbes);
 
 		m_AnimatedModelRenderer->Render(m_AnimatedModelBoy, runtime / 1000.0f);
 		m_AnimatedModelRenderer->Render(m_AnimatedModelCleaner, runtime / 1000.0f);
 		m_AnimatedModelRenderer->Render(m_AnimatedModelFrog, runtime / 1000.0f);
+
+
+
+
+
+
 
 		m_BasicRenderer->RenderScene(m_BackGroundObjsList, GetLightSources());
 		glDepthFunc(GL_LEQUAL);
@@ -269,9 +278,9 @@ public:
 		m_IBLProbesRenderer->DrawObject(m_SkyBoxObj1);
 		glDepthFunc(GL_LESS);
 
-		m_IBLProbesRenderer->RenderSpecularObjects(GetLightSources(), m_SphereObjsList, m_LightProbes);
+		m_IBLProbesRenderer->RenderSpecularObjects(GetLightSources(), m_SphereObjsList, m_LightProbes);*/
 
-		
+		m_GBufferRenderer->Render(m_BackGroundObjsList,m_GBufferDebugQuad);
 
 
 
@@ -314,6 +323,8 @@ private:
 	BlackPearl::Object* m_BrdfLUTQuadObj = nullptr;
 	BlackPearl::Object* m_SHImageQuadObj = nullptr;
 	BlackPearl::Object* m_DebugQuad = nullptr;
+	BlackPearl::Object* m_GBufferScreenQuad = nullptr;
+	BlackPearl::Object* m_GBufferDebugQuad = nullptr;
 
 	/*Animation model*/
 	BlackPearl::Object* m_AnimatedModelBoy = nullptr;
@@ -333,7 +344,7 @@ private:
 	BlackPearl::IBLProbesRenderer* m_IBLProbesRenderer;
 	BlackPearl::BasicRenderer* m_BasicRenderer;
 	BlackPearl::AnimatedModelRenderer* m_AnimatedModelRenderer;
-
+	BlackPearl::GBufferRenderer* m_GBufferRenderer;
 
 	/* Probes */
 	std::vector<BlackPearl::LightProbe*> m_LightProbes;

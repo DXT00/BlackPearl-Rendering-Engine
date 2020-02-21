@@ -82,8 +82,8 @@ namespace BlackPearl {
 			 const int height,
 			 unsigned int minFilter, 
 			 unsigned int maxFilter,
-			 int internalFormat, 
-			 int format,
+			 GLint internalFormat,
+			 GLenum format,
 			 int wrap,
 			 unsigned int dataType, 
 			 bool generateMipmap);

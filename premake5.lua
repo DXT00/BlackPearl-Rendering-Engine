@@ -20,6 +20,8 @@ IncludeDir["glm"] = "BlackPearl/vendor/glm"
 IncludeDir["stb"] = "BlackPearl/vendor/stb"
 IncludeDir["assimp"] = "BlackPearl/vendor/assimp/include"
 IncludeDir["GLEW"] = "BlackPearl/vendor/GLEW/include"
+IncludeDir["glslShader"] = "Sandbox/assets/shaders"
+
 
 include "BlackPearl/vendor/GLFW"
 include "BlackPearl/vendor/Glad"
@@ -75,6 +77,7 @@ project "BlackPearl"
 		"%{IncludeDir.stb}",
 		"%{IncludeDir.assimp}",
 		"%{IncludeDir.GLEW}",
+		"%{IncludeDir.glslShader}",
 
 		"BlackPearl/vendor",
 		"BlackPearl/vendor/GLEW"
@@ -146,7 +149,8 @@ project "Sandbox"
 		"%{IncludeDir.GLFW}",
 		"%{IncludeDir.assimp}",
 		"%{IncludeDir.Glad}",
-	
+		"%{IncludeDir.glslShader}",
+
 	}
 
 	links

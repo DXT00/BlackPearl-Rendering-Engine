@@ -143,6 +143,7 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\BlackPearl\Renderer\MasterRenderer\GBufferRenderer.h" />
     <ClInclude Include="src\BlackPearl\Renderer\MasterRenderer\AnimatedModelRenderer.h" />
     <ClInclude Include="src\BlackPearl\Math\Quaternion.h" />
     <ClInclude Include="src\BlackPearl\Animation\Bone.h" />
@@ -586,6 +587,7 @@
     <ClInclude Include="vendor\stb\stb_image.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\BlackPearl\Renderer\MasterRenderer\GBufferRenderer.cpp" />
     <ClCompile Include="src\BlackPearl\Renderer\MasterRenderer\AnimatedModelRenderer.cpp" />
     <ClCompile Include="src\BlackPearl\Math\Quaternion.cpp" />
     <ClCompile Include="src\BlackPearl\Animation\Bone.cpp" />

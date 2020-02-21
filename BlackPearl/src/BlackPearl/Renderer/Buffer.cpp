@@ -226,4 +226,56 @@ namespace BlackPearl {
 		m_Height = height;
 		glViewport(0, 0, m_Width, m_Height);
 	}
+
+	/*----------------------------    GBuffer   --------------------------------*/
+	GBuffer::GBuffer(const unsigned int imageWidth, const unsigned int imageHeight)
+	{
+
+		m_Width  = imageWidth;
+		m_Height = imageHeight;
+
+
+		
+		glGenFramebuffers(1, &m_RendererID);
+		glBindFramebuffer(GL_FRAMEBUFFER, m_RendererID);
+
+
+		m_PositionTexture.reset(DBG_NEW Texture(Texture::Type::DiffuseMap, imageWidth, imageHeight, false, GL_NEAREST, GL_NEAREST, GL_RGB16F, GL_RGB, -1, GL_FLOAT));
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, (GLuint)m_PositionTexture->GetRendererID(), 0);
+
+		m_NormalTexture.reset(DBG_NEW Texture(Texture::Type::DiffuseMap, imageWidth, imageHeight, false, GL_NEAREST, GL_NEAREST, GL_RGB16F, GL_RGB, -1, GL_FLOAT));
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, (GLuint)m_NormalTexture->GetRendererID(), 0);
+
+		m_AlbedoTexture.reset(DBG_NEW Texture(Texture::Type::DiffuseMap, imageWidth, imageHeight, false, GL_NEAREST, GL_NEAREST, GL_RGBA, GL_RGBA, -1, GL_UNSIGNED_BYTE));
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, (GLuint)m_AlbedoTexture->GetRendererID(), 0);
+
+		m_SpecularTexture.reset(DBG_NEW Texture(Texture::Type::DiffuseMap, imageWidth, imageHeight, false, GL_NEAREST, GL_NEAREST, GL_RGBA, GL_RGBA, -1, GL_UNSIGNED_BYTE));
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT3, GL_TEXTURE_2D, (GLuint)m_SpecularTexture->GetRendererID(), 0);
+
+		// - Tell OpenGL which color attachments we'll use (of this framebuffer) for rendering 
+		GLuint attachments[4] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2 ,GL_COLOR_ATTACHMENT3 };
+		glDrawBuffers(4, attachments);
+		// - Create and attach depth buffer (renderbuffer)
+		//GLuint rboDepth;
+		// = rboDepth;
+		glGenRenderbuffers(1, &m_RenderBufferID);
+		glBindRenderbuffer(GL_RENDERBUFFER, m_RenderBufferID);
+		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, m_Width, m_Height);
+		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, m_RenderBufferID);
+		// - Finally check if framebuffer is complete
+		GE_ASSERT(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "Framebuffer not complete!");
+		
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	}
+	void GBuffer::Bind()
+	{
+		glBindFramebuffer(GL_FRAMEBUFFER, m_RendererID);
+
+	}
+	void GBuffer::UnBind()
+	{
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		glViewport(0, 0, Configuration::WindowWidth, Configuration::WindowHeight);
+
+	}
 }
