@@ -46,8 +46,13 @@ public:
 		m_BrdfLUTQuadObj = CreateQuad("assets/shaders/ibl/brdf.glsl","");
 		m_SHImageQuadObj = CreateQuad("assets/shaders/lightProbes/SH.glsl", "");
 		m_DebugQuad = CreateQuad("assets/shaders/QuadDebug.glsl","");
-		m_GBufferScreenQuad = CreateQuad("assets/shaders/gBuffer/gBufferLighting.glsl", "");
+
+
+		/*gBuffer*/
+		m_GBufferScreenQuad = CreateQuad();
 		m_GBufferDebugQuad = CreateQuad();
+		m_SurroundSphere = CreateSphere(1.0, 128, 128);
+
 		/* create probes */
 		unsigned int xlen = 1, ylen = 3,zlen = 1,space = 3;
 		for (unsigned int x = 0; x < xlen; x++)
@@ -127,7 +132,7 @@ public:
 		m_BackGroundObjsList.push_back(deer);*/
 
 		BlackPearl::Object* ironMan = CreateModel("assets/models/IronMan/IronMan.obj", "assets/shaders/IronMan.glsl",false);
-		ironMan->GetComponent<BlackPearl::Transform>()->SetScale(glm::vec3(0.010));
+		ironMan->GetComponent<BlackPearl::Transform>()->SetScale(glm::vec3(0.020));
 		ironMan->GetComponent<BlackPearl::Transform>()->SetPosition({ 1.5f,-1.0f,1.0f });
 		ironMan->GetComponent<BlackPearl::Transform>()->SetRotation({ 0.0f,0.0f,0.0f });
 
@@ -215,7 +220,7 @@ public:
 		//m_IBLProbesRenderer->Render(GetLightSources(), m_BackGroundObjsList, m_LightProbes, m_SkyBoxObj1);
 
 		//glViewport(0, 0, BlackPearl::Configuration::WindowWidth, BlackPearl::Configuration::WindowHeight);
-		m_GBufferRenderer->Init(m_GBufferScreenQuad);
+		m_GBufferRenderer->Init(m_GBufferScreenQuad, m_SurroundSphere);
 	}
 
 	virtual ~IBLProbesRenderingLayer() {
@@ -280,7 +285,7 @@ public:
 
 		m_IBLProbesRenderer->RenderSpecularObjects(GetLightSources(), m_SphereObjsList, m_LightProbes);*/
 
-		m_GBufferRenderer->Render(m_BackGroundObjsList,m_GBufferDebugQuad);
+		m_GBufferRenderer->Render(m_BackGroundObjsList,m_GBufferDebugQuad, GetLightSources());
 
 
 
@@ -323,9 +328,11 @@ private:
 	BlackPearl::Object* m_BrdfLUTQuadObj = nullptr;
 	BlackPearl::Object* m_SHImageQuadObj = nullptr;
 	BlackPearl::Object* m_DebugQuad = nullptr;
+
+	/*gBuffer*/
 	BlackPearl::Object* m_GBufferScreenQuad = nullptr;
 	BlackPearl::Object* m_GBufferDebugQuad = nullptr;
-
+	BlackPearl::Object* m_SurroundSphere = nullptr;
 	/*Animation model*/
 	BlackPearl::Object* m_AnimatedModelBoy = nullptr;
 	BlackPearl::Object* m_AnimatedModelCleaner = nullptr;

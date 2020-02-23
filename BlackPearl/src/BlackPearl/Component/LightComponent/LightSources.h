@@ -15,10 +15,24 @@ namespace BlackPearl {
 		void AddLight(Object* light);
 		inline unsigned int const GetPointLightNum()const { return m_PointLightNums; }
 		inline std::vector<Object*> Get()const { return m_LightSources; }
-	private:
+		std::vector<Object*> GetPointLights() const { return m_PontLights; }
+		std::vector<Object*> GetParallelLights() const { return m_ParallelLights; }
+		std::vector<Object*> GetSpotLights() const { return m_SpotLights; }
 
-		std::vector<Object*>m_LightSources;//TODO::注意内存泄漏
+	private:
+		void AddPointLight(Object* pointLight);
+		void AddParallelLight(Object* parallelLight);
+		void AddSpotLight(Object* spotLight);
+		/*所有类型的Light*/
+		std::vector<Object*> m_LightSources;
+		std::vector<Object*> m_PontLights;
+		std::vector<Object*> m_ParallelLights;
+		std::vector<Object*> m_SpotLights;
+							 
+
 		unsigned int m_PointLightNums;
+
+
 	};
 
 }

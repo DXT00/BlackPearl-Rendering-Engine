@@ -1,4 +1,4 @@
-//#include "pch.h"
+#include "pch.h"
 //#include "AnimatedModel.h"
 //#include "glm/glm.hpp"
 //#include "assimp/mesh.h"

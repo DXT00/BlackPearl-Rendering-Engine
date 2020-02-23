@@ -27,7 +27,6 @@ void main()
 #version 330 core
 
 
-
 //uniform sampler2D texture_diffuse1;
 
 struct PointLight{

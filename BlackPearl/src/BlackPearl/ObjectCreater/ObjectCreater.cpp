@@ -75,7 +75,7 @@ namespace BlackPearl {
 		Object* obj = CreateEmpty(name);
 		std::shared_ptr<SphereMeshFilter> meshFilter = obj->AddComponent<SphereMeshFilter>(radius, stackCount, sectorCount);
 		Transform* transformComponent = obj->GetComponent<Transform>();
-
+		transformComponent->SetScale({ radius,radius,radius });
 		std::shared_ptr<Material> material;
 		std::shared_ptr<Material::TextureMaps> texture(DBG_NEW Material::TextureMaps());
 		if (texturePath != "")

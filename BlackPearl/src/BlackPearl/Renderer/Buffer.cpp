@@ -237,7 +237,7 @@ namespace BlackPearl {
 
 		
 		glGenFramebuffers(1, &m_RendererID);
-		glBindFramebuffer(GL_FRAMEBUFFER, m_RendererID);
+		Bind();
 
 
 		m_PositionTexture.reset(DBG_NEW Texture(Texture::Type::DiffuseMap, imageWidth, imageHeight, false, GL_NEAREST, GL_NEAREST, GL_RGB16F, GL_RGB, -1, GL_FLOAT));
@@ -265,17 +265,20 @@ namespace BlackPearl {
 		// - Finally check if framebuffer is complete
 		GE_ASSERT(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "Framebuffer not complete!");
 		
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		UnBind();
 	}
 	void GBuffer::Bind()
 	{
+		//glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_RendererID);
 		glBindFramebuffer(GL_FRAMEBUFFER, m_RendererID);
 
 	}
 	void GBuffer::UnBind()
 	{
+		//glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-		glViewport(0, 0, Configuration::WindowWidth, Configuration::WindowHeight);
+
+		//glViewport(0, 0, Configuration::WindowWidth, Configuration::WindowHeight);
 
 	}
 }

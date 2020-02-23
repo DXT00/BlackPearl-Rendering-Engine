@@ -12,6 +12,15 @@
     <ClInclude Include="src\Layers\FrameBufferTestLayer.h">
       <Filter>Layers</Filter>
     </ClInclude>
+    <ClInclude Include="src\Layers\IBLProbesRenderingLayer.h">
+      <Filter>Layers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Layers\IBLRenderingLayer.h">
+      <Filter>Layers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Layers\PbrRenderingLayer.h">
+      <Filter>Layers</Filter>
+    </ClInclude>
     <ClInclude Include="src\Layers\ShadowMapPointLightLayer.h">
       <Filter>Layers</Filter>
     </ClInclude>
@@ -24,9 +33,6 @@
     <ClInclude Include="src\Layers\VoxelConeTracingLayer.h">
       <Filter>Layers</Filter>
     </ClInclude>
-    <ClInclude Include="src\Layers\PbrRenderingLayer.h" />
-    <ClInclude Include="src\Layers\IBLRenderingLayer.h" />
-    <ClInclude Include="src\Layers\IBLProbesRenderingLayer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\SandBox.cpp" />
