@@ -77,5 +77,5 @@ private:
 
 
 	BlackPearl::VoxelConeTracingRenderer* m_VoxelConeTracingRenderer;
-	BlackPearl::VoxelConeTracingRenderer::RenderingMode m_CurrentRenderingMode = BlackPearl::VoxelConeTracingRenderer::RenderingMode::VOXEL_CONE_TRACING;
+	BlackPearl::VoxelConeTracingRenderer::RenderingMode m_CurrentRenderingMode = BlackPearl::VoxelConeTracingRenderer::RenderingMode::VOXELIZATION_VISUALIZATION;// ::VOXEL_CONE_TRACING;
 };

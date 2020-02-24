@@ -2,7 +2,6 @@
 #include "Buffer.h"
 #include "glad/glad.h"
 #include "BlackPearl/Config.h"
-#include "BlackPearl/Renderer/Material/DepthTexture.h"
 namespace BlackPearl {
 	//------------------------VertexBuffer-----------------//
 	VertexBuffer::VertexBuffer(const std::vector<float>&vertices)
@@ -101,8 +100,8 @@ namespace BlackPearl {
 				AttachColorTexture(colorTextureType, colorAttachmentPoint,imageWidth,imageHeight);
 			else if (attach == Attachment::DepthTexture)
 				AttachDepthTexture(imageWidth, imageHeight);
-			else if (attach == Attachment::CubeMapDepthTexture)
-				AttachCubeMapDepthTexture(imageWidth, imageHeight);
+		/*	else if (attach == Attachment::CubeMapDepthTexture)
+				AttachCubeMapDepthTexture(imageWidth, imageHeight);*/
 			else if (attach == Attachment::CubeMapColorTexture)
 				AttachCubeMapColorTexture(colorAttachmentPoint,imageWidth, imageHeight);
 			else if (attach == Attachment::RenderBuffer)
@@ -110,8 +109,11 @@ namespace BlackPearl {
 
 		}
 		
-		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-			GE_CORE_ERROR("Framebuffer is not complete!");
+		/*if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+			GE_CORE_ERROR("Framebuffer is not complete!");*/
+
+		GE_ASSERT(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "Framebuffer not complete!");
+
 		UnBind();
 		//绑定回原来的FrameBuffer
 		glBindFramebuffer(GL_FRAMEBUFFER, previousFrameBuffer);
@@ -120,10 +122,13 @@ namespace BlackPearl {
 
 	void FrameBuffer::AttachColorTexture(Texture::Type textureType,unsigned int attachmentPoints,unsigned int imageWidth,unsigned int imageHeight)
 	{
+		GE_CORE_WARN(" 注意Texture是否是默认的格式！");
+
 		m_TextureColorBuffers[attachmentPoints].reset(DBG_NEW Texture(textureType, imageWidth, imageHeight,false, GL_NEAREST, GL_NEAREST, GL_RGB16F, GL_RGBA, GL_REPEAT,GL_FLOAT));
 		
 		//将它附加到当前绑定的帧缓冲对象
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0+attachmentPoints, GL_TEXTURE_2D, m_TextureColorBuffers[attachmentPoints]->GetRendererID(), 0);
+		GE_ASSERT(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "Framebuffer not complete!");
 	}
 
 	void FrameBuffer::AttachColorTexture(std::shared_ptr<Texture> texture, unsigned int attachmentPoints)
@@ -132,32 +137,43 @@ namespace BlackPearl {
 		m_TextureColorBuffers[attachmentPoints] = texture;
 		Bind();
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + attachmentPoints, GL_TEXTURE_2D, texture->GetRendererID(), 0);
+		GE_ASSERT(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "Framebuffer not complete!");
 	}
 
 	void FrameBuffer::AttachDepthTexture(const int imageWidth, int imageHeight)
 	{	
-		m_TextureDepthBuffer.reset(DBG_NEW BlackPearl::DepthTexture(Texture::Type::DepthMap, m_Width, m_Height));
+		GE_CORE_WARN(" 注意Texture是否是默认的格式！");
+
+		m_TextureDepthBuffer.reset(DBG_NEW BlackPearl::Texture(Texture::Type::DepthMap, imageWidth, imageHeight,false, GL_NEAREST, GL_NEAREST, GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT, GL_CLAMP_TO_EDGE, GL_FLOAT));
+
+		//m_TextureDepthBuffer.reset(DBG_NEW BlackPearl::DepthTexture(Texture::Type::DepthMap, m_Width, m_Height));
 		Bind();
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, m_TextureDepthBuffer->GetRendererID(), 0);
+		GE_ASSERT(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "Framebuffer not complete!");
 	}
-	//TODO::改接口
-	void FrameBuffer::AttachCubeMapDepthTexture(const int imageWidth, int imageHeight)
+	//TODO::注意CubeMap的格式
+	void FrameBuffer::AttachCubeMapDepthTexture(std::shared_ptr<CubeMapTexture> cubeMap)
 	{
-		m_CubeMapDepthBuffer.reset(DBG_NEW CubeMapTexture(Texture::Type::CubeMap, imageWidth, imageHeight, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR,GL_CLAMP_TO_EDGE, GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT, GL_FLOAT));
+
+		m_CubeMapDepthBuffer = cubeMap;// .reset(DBG_NEW CubeMapTexture(Texture::Type::CubeMap, imageWidth, imageHeight, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR, GL_CLAMP_TO_EDGE, GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT, GL_FLOAT));
 		Bind();
 		glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, m_CubeMapDepthBuffer->GetRendererID(), 0);
+		GE_ASSERT(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "Framebuffer not complete!");
 	}
 	//TODO::这个接口有问题
 	void FrameBuffer::AttachCubeMapColorTexture(unsigned int attachmentPoints,const int imageWidth, int imageHeight) {
-		//GE_CORE_ERROR("不能调用，后续完善!");
+		GE_CORE_ERROR("不能调用，后续完善!");
+		GE_CORE_WARN(" 注意Texture是否是默认的格式！");
 
 		m_TextureColorBuffers[attachmentPoints].reset(DBG_NEW CubeMapTexture(Texture::Type::CubeMap, imageWidth, imageHeight, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR, GL_CLAMP_TO_EDGE, GL_RGB16F, GL_RGB, GL_FLOAT));
+		GE_ASSERT(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "Framebuffer not complete!");
 		//Bind();
 
 	}
 	void FrameBuffer::AttachCubeMapColorTexture(unsigned int attachmentPoints, std::shared_ptr<CubeMapTexture> cubeMap)
 	{
 		m_TextureColorBuffers[attachmentPoints] = cubeMap;
+		GE_ASSERT(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "Framebuffer not complete!");
 	}
 	void FrameBuffer::AttachRenderBuffer(const int imageWidth, int imageHeight)
 	{
@@ -171,7 +187,7 @@ namespace BlackPearl {
 		// Use a single rbo for both depth and stencil buffer.
 		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, imageWidth, imageHeight);
 		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, m_RenderBufferID);
-
+		GE_ASSERT(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "Framebuffer not complete!");
 		glBindRenderbuffer(GL_RENDERBUFFER, 0);
 		//glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, m_RenderBufferID);
 

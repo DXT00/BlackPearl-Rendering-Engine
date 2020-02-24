@@ -1,5 +1,5 @@
 #type vertex
-#version 420 core
+#version 330 core
 layout (location = 0) in vec3 aPos;
 layout (location = 1) in vec3 aNormal;
 layout (location = 2) in vec2 aTexCoords;
@@ -32,7 +32,7 @@ void main(){
 
 
 #type fragment
-#version 420 core
+#version 330 core
 
 out vec4 FragColor;
 
@@ -74,13 +74,14 @@ struct PointLight{
 };
 uniform int u_PointLightNums;
 
-uniform PointLight u_PointLights[100];
-uniform vec3 u_LightPos;
+uniform PointLight u_PointLights[20];
+uniform samplerCube u_ShadowMap[20];
+//uniform vec3 u_LightPos;
 uniform vec3 u_CameraViewPos;
 uniform float u_FarPlane ;
-uniform samplerCube u_CubeMap;
-float ShadowCalculation(vec3 fragPos,vec3 lightPos);
-vec3 CalcPointLight(PointLight light,vec3 normal,vec3 viewDir);
+//uniform samplerCube u_CubeMap;
+float ShadowCalculation(vec3 fragPos,vec3 lightPos,samplerCube shadowMap);
+vec3 CalcPointLight(PointLight light,vec3 normal,vec3 viewDir,samplerCube shadowMap);
 void main(){
 	vec3 viewDir = normalize(u_CameraViewPos-v_FragPos);
 	vec3 outColor ;//=vec3(0.2,0.3,0.9);
@@ -89,25 +90,25 @@ void main(){
 
 	for(int i=0;i<u_PointLightNums;i++){
 
-		outColor += CalcPointLight(u_PointLights[i], v_Normal,viewDir);
+		outColor += CalcPointLight(u_PointLights[i], v_Normal,viewDir,u_ShadowMap[i]);
 
 	}
 
-	FragColor = vec4(outColor,1.0);
+	FragColor = vec4(outColor,1.0);//vec4(1.0,0.0,0.0,1.0);//
 
 
 }
-vec3 CalcPointLight(PointLight light,vec3 normal,vec3 viewDir){
+vec3 CalcPointLight(PointLight light,vec3 normal,vec3 viewDir,samplerCube shadowMap){
 	vec3 fragColor;
 
-	float distance = length(u_LightPos-v_FragPos);
+	float distance = length(light.position-v_FragPos);
 	float attenuation = 1.0f/(light.constant+light.linear * distance+light.quadratic*distance*distance);
 	//ambient
 	vec3 ambient = light.ambient*(  u_Material.ambientColor * (1-u_Material.isTextureSample)
 					   + texture(u_Material.diffuse,v_TexCoords).rgb * u_Material.isTextureSample);//texture(u_Material.diffuse,v_TexCoord).rgb;//u_LightColor * u_Material.ambient
 	
 	//diffuse
-	vec3 lightDir = normalize(u_LightPos-v_FragPos);
+	vec3 lightDir = normalize(light.position-v_FragPos);
 	vec3 norm = normalize(normal);
 	float diff = max(dot(lightDir,norm),0.0f);
 	vec3 diffuse = light.diffuse * diff * ( u_Material.diffuseColor *(1-u_Material.isTextureSample)
@@ -133,19 +134,19 @@ vec3 CalcPointLight(PointLight light,vec3 normal,vec3 viewDir){
 	ambient  *= attenuation;
 	diffuse  *= attenuation;
 	specular *= attenuation;
-	float shadow = ShadowCalculation(v_FragPos,u_LightPos);       
+	float shadow = ShadowCalculation(v_FragPos,light.position,shadowMap);       
 
 
 	fragColor = ambient+ (1.0 - shadow) *(diffuse + specular);// * mix(texture(u_Texture1, v_TexCoord), texture(u_Texture2, vec2(1.0 - v_TexCoord.x, v_TexCoord.y)), u_MixValue);
-
+		//fragColor = ambient+ (diffuse + specular);
 	return fragColor;
 }
 
-float ShadowCalculation(vec3 fragPos,vec3 lightPos){
+float ShadowCalculation(vec3 fragPos,vec3 lightPos,samplerCube shadowMap){
 
 		vec3 fragToLight = fragPos.xyz - lightPos; 
 
-	 float closestDepth = texture(u_Material.cube, fragToLight).r;
+	 float closestDepth = texture(shadowMap, fragToLight).r;
 	// It is currently in linear range between [0,1]. Re-transform back to original value
     closestDepth = closestDepth*u_FarPlane;
     // Now get current linear depth as the length between the fragment and light position
@@ -153,7 +154,7 @@ float ShadowCalculation(vec3 fragPos,vec3 lightPos){
     // Now test for shadows
   
 	float shadow = 0.0;
-	float bias = 0.01; 
+	float bias = 0.08; 
 	float samples = 4.0;
 	float offset = 0.1;
 	for(float x = -offset; x < offset; x += offset / (samples * 0.5))
@@ -162,7 +163,7 @@ float ShadowCalculation(vec3 fragPos,vec3 lightPos){
 	    {
 	        for(float z = -offset; z < offset; z += offset / (samples * 0.5))
 	        {
-	            float closestDepth = texture(u_Material.cube, fragToLight + vec3(x, y, z)).r; 
+	            float closestDepth = texture(shadowMap, fragToLight + vec3(x, y, z)).r; 
 	            closestDepth *= u_FarPlane;   // Undo mapping [0;1]
 	            if(currentDepth - bias > closestDepth)
 	                shadow += 1.0;
@@ -171,13 +172,14 @@ float ShadowCalculation(vec3 fragPos,vec3 lightPos){
 	}
 	shadow /= (samples * samples * samples);
 	return shadow;
+
 //vec3 fragToLight = fragPos.xyz - lightPos; 
-//float SampledDistance = texture(u_Material.cube,  fragToLight).r;
+//float SampledDistance = texture(u_CubeMap,fragToLight).r;
 //
 //    float Distance = length(fragToLight);
 //
 //    if (Distance < SampledDistance*u_FarPlane + bias)
-//        return 0.5; // Inside the light
+//        return 0.3; // Inside the light
 //    else
-//        return 1.0; // Inside the shadow
+//        return 0.8; // Inside the shadow
 }

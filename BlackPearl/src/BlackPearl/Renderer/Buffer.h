@@ -2,7 +2,6 @@
 #include <initializer_list>
 #include "BlackPearl/Core.h"
 #include "BlackPearl/Renderer/Material/Texture.h"
-#include "BlackPearl/Renderer/Material/DepthTexture.h"
 #include "BlackPearl/Renderer/Material/CubeMapTexture.h"
 #include <unordered_map>
 namespace BlackPearl {
@@ -167,7 +166,9 @@ namespace BlackPearl {
 		void AttachColorTexture(std::shared_ptr<Texture> texture, unsigned int attachmentPoints);
 
 		void AttachDepthTexture(const int imageWidth, int imageHeight);
-		void AttachCubeMapDepthTexture(const int imageWidth, int imageHeight);//use for point light shadow map
+		//void AttachCubeMapDepthTexture(const int imageWidth, int imageHeight);//use for point light shadow map
+		void AttachCubeMapDepthTexture(std::shared_ptr<CubeMapTexture> cubeMap);//use for point light shadow map
+
 		void AttachCubeMapColorTexture(unsigned int attachmentPoints,const int imageWidth, int imageHeight);//use for point light shadow map
 		void AttachCubeMapColorTexture(unsigned int attachmentPoints, std::shared_ptr<CubeMapTexture> cubeMap);
 
@@ -185,7 +186,7 @@ namespace BlackPearl {
 			GE_ASSERT(m_TextureColorBuffers[attachmentPoint], "attachmentPoint "+ std::to_string( attachmentPoint) +"has no ColorTexture")
 			return m_TextureColorBuffers[attachmentPoint]; 
 		}
-		std::shared_ptr<BlackPearl::DepthTexture> GetDepthTexture() { return m_TextureDepthBuffer; }
+		std::shared_ptr<Texture > GetDepthTexture() { return m_TextureDepthBuffer; }
 		std::shared_ptr<CubeMapTexture> GetCubeMapDepthTexture() { return m_CubeMapDepthBuffer; }
 		std::shared_ptr<CubeMapTexture> GetCubeMapColorTexture(unsigned int attachmentPoint) { return std::dynamic_pointer_cast<CubeMapTexture>(m_TextureColorBuffers[attachmentPoint]); }
 
@@ -204,7 +205,7 @@ namespace BlackPearl {
 		//GL_COLOR_ATTACHMENTi µ½ TextureµÄÓ³Éä
 		std::unordered_map<unsigned int,std::shared_ptr<Texture> > m_TextureColorBuffers;
 		//std::shared_ptr<Texture> m_TextureColorBuffer;
-		std::shared_ptr<BlackPearl::DepthTexture> m_TextureDepthBuffer;
+		std::shared_ptr<Texture> m_TextureDepthBuffer;
 		std::shared_ptr<CubeMapTexture> m_CubeMapDepthBuffer;
 		std::shared_ptr<CubeMapTexture> m_CubeMapColorBuffer;
 

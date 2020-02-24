@@ -1,5 +1,5 @@
 #type vertex
-#version 420 core
+#version 330 core
 layout (location =0) in vec3 aPos;
 
 uniform mat4 u_Model;
@@ -8,7 +8,7 @@ void main(){
 }
 
 #type geometry
-#version 420 core
+#version 430 core
 layout (triangles) in;
 layout (triangle_strip,max_vertices=18) out;
 
@@ -31,7 +31,7 @@ void main(){
 
 //计算每个Fragment到光源的深度
 #type fragment
-#version 420 core
+#version 330 core
 in vec4 FragPos;
 
 uniform vec3 u_LightPos;

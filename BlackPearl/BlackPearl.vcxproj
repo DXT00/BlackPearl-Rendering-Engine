@@ -201,7 +201,6 @@
     <ClInclude Include="src\BlackPearl\Renderer\MasterRenderer\ShadowMapRenderer.h" />
     <ClInclude Include="src\BlackPearl\Renderer\MasterRenderer\VoxelConeTracingRenderer.h" />
     <ClInclude Include="src\BlackPearl\Renderer\Material\CubeMapTexture.h" />
-    <ClInclude Include="src\BlackPearl\Renderer\Material\DepthTexture.h" />
     <ClInclude Include="src\BlackPearl\Renderer\Material\HDRTexture.h" />
     <ClInclude Include="src\BlackPearl\Renderer\Material\Material.h" />
     <ClInclude Include="src\BlackPearl\Renderer\Material\MaterialColor.h" />
@@ -644,7 +643,6 @@
     <ClCompile Include="src\BlackPearl\Renderer\MasterRenderer\ShadowMapRenderer.cpp" />
     <ClCompile Include="src\BlackPearl\Renderer\MasterRenderer\VoxelConeTracingRenderer.cpp" />
     <ClCompile Include="src\BlackPearl\Renderer\Material\CubeMapTexture.cpp" />
-    <ClCompile Include="src\BlackPearl\Renderer\Material\DepthTexture.cpp" />
     <ClCompile Include="src\BlackPearl\Renderer\Material\HDRTexture.cpp" />
     <ClCompile Include="src\BlackPearl\Renderer\Material\Material.cpp" />
     <ClCompile Include="src\BlackPearl\Renderer\Material\MaterialColor.cpp" />

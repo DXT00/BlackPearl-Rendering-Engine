@@ -27,6 +27,11 @@ namespace BlackPearl {
 		// ------------------------------------------
 		static const int MaxJointsCount = 50;
 
+
+		// ------------------------------------------
+		// Max pointLight Num
+		// ------------------------------------------
+		static const unsigned int MaxPointLightNum = 20;
 	};
 
 

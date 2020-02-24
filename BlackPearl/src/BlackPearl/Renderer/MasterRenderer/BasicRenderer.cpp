@@ -332,7 +332,7 @@ namespace BlackPearl {
 		if (!isLight) {
 			shader->SetUniform1i("u_Settings.shadows", 1);
 
-			//shader->SetLightUniform(Renderer::GetSceneData()->LightSources);
+			shader->SetLightUniform(Renderer::GetSceneData()->LightSources);
 		}
 		else {
 			shader->SetUniform1i("u_Settings.shadows", 0);

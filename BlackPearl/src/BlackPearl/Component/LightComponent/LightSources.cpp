@@ -3,12 +3,16 @@
 #include "PointLight.h"
 #include "ParallelLight.h"
 #include "SpotLight.h"
+#include "BlackPearl/Config.h"
+
 namespace BlackPearl {
 
 	void LightSources::AddLight(Object* light)
 	{
 		m_LightSources.push_back(light);
 		if (light->HasComponent<PointLight>()) {
+
+			GE_ASSERT(m_PointLightNums <= Configuration::MaxComponents, "m_PointLightNums > Configuration::MaxComponents !");
 			m_PointLightNums++;
 			AddPointLight(light);
 		}

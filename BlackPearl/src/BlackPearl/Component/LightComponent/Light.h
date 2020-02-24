@@ -51,6 +51,7 @@ namespace BlackPearl {
 			m_LightProp.emission = props.emission;
 
 		}
+	
 	protected:
 		Props m_LightProp;
 

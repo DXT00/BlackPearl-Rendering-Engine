@@ -24,7 +24,7 @@ namespace BlackPearl {
 
 		void RenderObject(Object* objs);
 		void RenderShadowMap(const std::vector<Object*>&objs, ParallelLight* sun, const std::vector<Object*>&exceptObjs = std::vector<Object*>());
-		void RenderPointLightShadowMap(const std::vector<Object*>& objs, Object* pointLight, const std::vector<Object*>& exceptObjs = std::vector<Object*>());
+		//void RenderPointLightShadowMap(const std::vector<Object*>& objs, Object* pointLight, const std::vector<Object*>& exceptObjs = std::vector<Object*>());
 		void RenderObjectsExcept(const std::vector<Object*>& objs, const std::vector<Object*>& exceptObjs);
 		void RenderObjectsExcept(const std::vector<Object*>& objs, const Object* exceptObj);
 

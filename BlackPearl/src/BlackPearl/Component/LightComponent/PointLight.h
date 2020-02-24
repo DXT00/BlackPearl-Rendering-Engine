@@ -3,6 +3,7 @@
 #include <glm/glm.hpp>
 #include "BlackPearl/Renderer/Shader/Shader.h"
 #include "BlackPearl/Renderer/Mesh/Mesh.h"
+#include "BlackPearl/Renderer/Material/CubeMapTexture.h"
 namespace BlackPearl {
 
 	class PointLight :public Light
@@ -63,19 +64,40 @@ namespace BlackPearl {
 			//默认距离3250constant(1.0f),linear(0.0014f),quadratic(0.000007)
 			//查表：https://learnopengl-cn.github.io/02%20Lighting/05%20Light%20casters/
 		};
-		PointLight(EntityManager * entityManager, Entity::Id id, Props props = Props())
-			:Light(entityManager,id) {
+		PointLight(EntityManager* entityManager, Entity::Id id, Props props = Props())
+			:Light(entityManager, id) {
 			SetProps(props);
 			Init();
 		}
 		virtual ~PointLight() = default;
 		virtual void Init() override;
 
+		inline void SetDiffuse(glm::vec3 diffuse) {
+			m_LightProp.diffuse = diffuse;
+			m_Mesh.SetMaterialColor({ m_LightProp.ambient,m_LightProp.diffuse,m_LightProp.specular ,m_LightProp.emission });
+
+		}
+		inline void SetAmbient(glm::vec3 ambient) {
+			m_LightProp.ambient = ambient;
+			m_Mesh.SetMaterialColor({ m_LightProp.ambient,m_LightProp.diffuse,m_LightProp.specular ,m_LightProp.emission });
+
+		}
+		inline void SetSpecular(glm::vec3 specular) {
+			m_LightProp.specular = specular;
+			m_Mesh.SetMaterialColor({ m_LightProp.ambient,m_LightProp.diffuse,m_LightProp.specular ,m_LightProp.emission });
+
+		}
+		inline void SetEmission(glm::vec3 emission) {
+			m_LightProp.emission = emission;
+			m_Mesh.SetMaterialColor({ m_LightProp.ambient,m_LightProp.diffuse,m_LightProp.specular ,m_LightProp.emission });
+
+		}
+
 		void UpdateMesh(Props props) {
 			SetProps(props);
 			m_Mesh.SetMaterialColor({ props.ambient,props.diffuse,props.specular ,props.emission });
-	/*		std::shared_ptr<Material> lightMaterial = m_Mesh.GetMaterial();
-			lightMaterial->SetMaterialColor({ props.ambient,props.diffuse,props.specular ,props.emission});*/
+			/*		std::shared_ptr<Material> lightMaterial = m_Mesh.GetMaterial();
+					lightMaterial->SetMaterialColor({ props.ambient,props.diffuse,props.specular ,props.emission});*/
 
 
 		}
@@ -85,12 +107,19 @@ namespace BlackPearl {
 		inline Attenuation GetAttenuation() const { return m_Attenuation; }
 		virtual inline LightType GetType() override { return LightType::PointLight; }
 
+		std::shared_ptr<CubeMapTexture> GetShadowMap()const { return m_ShadowMap; }
+		unsigned int GetShadowMapWidth() const{ return m_ShadowMapPointLightWidth; }
+		unsigned int GetShadowMapHeight() const { return m_ShadowMapPointLightHeight; }
 
 		inline Mesh GetMeshes()const { return m_Mesh; }
 
 	private:
 		Mesh m_Mesh;
 		Attenuation m_Attenuation;
+		/* 每个PointLight都有一个采集它周围深度的ShadowMap */
+		std::shared_ptr<CubeMapTexture> m_ShadowMap;
+		unsigned int m_ShadowMapPointLightWidth =1024.0f;
+		unsigned int m_ShadowMapPointLightHeight=1024.0f;
 	};
 
 }

@@ -285,9 +285,6 @@
     <ClInclude Include="src\BlackPearl\Renderer\Material\CubeMapTexture.h">
       <Filter>src\BlackPearl\Renderer\Material</Filter>
     </ClInclude>
-    <ClInclude Include="src\BlackPearl\Renderer\Material\DepthTexture.h">
-      <Filter>src\BlackPearl\Renderer\Material</Filter>
-    </ClInclude>
     <ClInclude Include="src\BlackPearl\Renderer\Material\HDRTexture.h">
       <Filter>src\BlackPearl\Renderer\Material</Filter>
     </ClInclude>
@@ -1608,9 +1605,6 @@
       <Filter>src\BlackPearl\Renderer\MasterRenderer</Filter>
     </ClCompile>
     <ClCompile Include="src\BlackPearl\Renderer\Material\CubeMapTexture.cpp">
-      <Filter>src\BlackPearl\Renderer\Material</Filter>
-    </ClCompile>
-    <ClCompile Include="src\BlackPearl\Renderer\Material\DepthTexture.cpp">
       <Filter>src\BlackPearl\Renderer\Material</Filter>
     </ClCompile>
     <ClCompile Include="src\BlackPearl\Renderer\Material\HDRTexture.cpp">
