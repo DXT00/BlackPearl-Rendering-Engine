@@ -81,18 +81,7 @@ namespace BlackPearl {
 
 			m_FrameBuffer->UnBind();
 
-
-
-
 		}
-		
-
-
-
-		//m_LightPos = lightSources->GetPointLights()[0]->GetComponent<Transform>()->GetPosition();
-
-	
-		
 		
 
 	}
@@ -101,8 +90,6 @@ namespace BlackPearl {
 		// 2. Render scene as normal 
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-
 
 		/*glDisable(GL_CULL_FACE);
 		m_Shader->SetUniformVec3f("u_LightPos", m_PointLight->GetComponent<BlackPearl::Transform>()->GetPosition());
@@ -137,8 +124,6 @@ namespace BlackPearl {
 		}
 		
 		DrawLightSources(lightSources);
-
-
 
 	}
 	

@@ -36,10 +36,10 @@ public:
 		m_BackGroundShader.reset(DBG_NEW BlackPearl::Shader("assets/shaders/ibl/background.glsl"));
 		//Scene
 		//m_SphereObj = CreateSphere(1.5, 64, 64);
-		m_SphereObjIron = CreateSphere(0.5, 64, 64);
-		m_SphereObjRust = CreateSphere(0.5, 64, 64);
-		m_SphereObjStone = CreateSphere(0.5, 64, 64);
-		m_SphereObjPlastic = CreateSphere(0.5, 64, 64);
+		m_SphereObjIron = CreateSphere(1.5, 64, 64);
+		m_SphereObjRust = CreateSphere(1.5, 64, 64);
+		m_SphereObjStone = CreateSphere(1.5, 64, 64);
+		m_SphereObjPlastic = CreateSphere(1.5, 64, 64);
 		m_DebugQuadShader.reset(DBG_NEW BlackPearl::Shader("assets/shaders/QuadDebug.glsl"));
 
 		/* probe's CubeObj and quad for BrdfLUTMap */
@@ -52,7 +52,7 @@ public:
 		m_GBufferScreenQuad = CreateQuad();
 		m_GBufferDebugQuad = CreateQuad();
 		m_SurroundSphere = CreateSphere(1.0, 128, 128);
-
+		m_GIQuad = CreateQuad();
 		/* create probes */
 		unsigned int xlen = 1, ylen = 3,zlen = 1,space = 3;
 		for (unsigned int x = 0; x < xlen; x++)
@@ -124,7 +124,7 @@ public:
 
 
 	//	m_AnimatedModel->GetComponent<BlackPearl::MeshRenderer>()
-		//m_BackGroundObjsList.push_back(m_SkyBoxObj1);
+	//	m_BackGroundObjsList.push_back(m_SkyBoxObj1);
 		/*create model*/
 		/*BlackPearl::Object *deer=  CreateModel("assets/models/deer/Deer.obj", "assets/shaders/IronMan.glsl");
 		deer->GetComponent<BlackPearl::Transform>()->SetScale(glm::vec3(0.005));
@@ -220,7 +220,7 @@ public:
 		//m_IBLProbesRenderer->Render(GetLightSources(), m_BackGroundObjsList, m_LightProbes, m_SkyBoxObj1);
 
 		//glViewport(0, 0, BlackPearl::Configuration::WindowWidth, BlackPearl::Configuration::WindowHeight);
-		m_GBufferRenderer->Init(m_GBufferScreenQuad, m_SurroundSphere);
+		m_GBufferRenderer->Init(m_GBufferScreenQuad, m_SurroundSphere, m_GIQuad);
 	}
 
 	virtual ~IBLProbesRenderingLayer() {
@@ -285,9 +285,9 @@ public:
 
 		m_IBLProbesRenderer->RenderSpecularObjects(GetLightSources(), m_SphereObjsList, m_LightProbes);*/
 
-		m_GBufferRenderer->Render(m_BackGroundObjsList,m_GBufferDebugQuad, GetLightSources());
-
-
+	//	m_GBufferRenderer->Render(m_SphereObjsList,m_GBufferDebugQuad, GetLightSources());//m_BackGroundObjsList
+		m_GBufferRenderer->RenderSceneWithGBufferAndProbes(m_SphereObjsList, m_BackGroundObjsList, m_GBufferDebugQuad, GetLightSources(), m_LightProbes, m_IBLProbesRenderer->GetSpecularBrdfLUTTexture(), m_SkyBoxObj1);
+		m_IBLProbesRenderer->RenderProbes(m_LightProbes);
 
 	//	
 
@@ -332,6 +332,7 @@ private:
 	/*gBuffer*/
 	BlackPearl::Object* m_GBufferScreenQuad = nullptr;
 	BlackPearl::Object* m_GBufferDebugQuad = nullptr;
+	BlackPearl::Object* m_GIQuad = nullptr;
 	BlackPearl::Object* m_SurroundSphere = nullptr;
 	/*Animation model*/
 	BlackPearl::Object* m_AnimatedModelBoy = nullptr;

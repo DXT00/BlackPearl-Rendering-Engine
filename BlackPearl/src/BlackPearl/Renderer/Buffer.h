@@ -222,17 +222,24 @@ namespace BlackPearl {
 		void UnBind();
 		std::shared_ptr<Texture> GetPositionTexture()const { return m_PositionTexture; }
 		std::shared_ptr<Texture> GetNormalTexture()const { return m_NormalTexture; }
-		std::shared_ptr<Texture> GetAlbedoTexture()const { return m_AlbedoTexture; }
-		std::shared_ptr<Texture> GetSpecularTexture()const { return m_SpecularTexture; }
+		std::shared_ptr<Texture> GetNormalMapTexture()const { return m_NormalMapTexture; }
+		std::shared_ptr<Texture> GetDiffuseRoughnessTexture()const { return m_DiffuseRoughnessTexture; }
+		std::shared_ptr<Texture> GetSpecularMentallicTexture()const { return m_SpecularMentallicTexture; }
+		std::shared_ptr<Texture> GetAmbientGIAOTexture()const { return m_AmbientGIAOTexture; }
 
 		~GBuffer()=default;
 
 	private:
 		std::shared_ptr<Texture> m_PositionTexture;
 		std::shared_ptr<Texture> m_NormalTexture;
-		/*diffuse color + specular color buffer */
-		std::shared_ptr<Texture> m_AlbedoTexture;
-		std::shared_ptr<Texture> m_SpecularTexture;
+		std::shared_ptr<Texture> m_NormalMapTexture;
+
+		/* u_Material.diffuse + u_Material.roughness */
+		std::shared_ptr<Texture> m_DiffuseRoughnessTexture;
+		/* u_Material.specular + u_Material.metallic */
+		std::shared_ptr<Texture> m_SpecularMentallicTexture;
+		/* 存储全局光照中的 diffuse 和specular (vec3 ambient =  (Kd*diffuse+specular) * ao;)的颜色*/
+		std::shared_ptr<Texture> m_AmbientGIAOTexture;
 
 		unsigned int m_RendererID;
 		unsigned int m_RenderBufferID;

@@ -139,9 +139,9 @@ vec3 FresnelSchlick(float cosTheta, vec3 F0){
 vec3 FresnelSchlickRoughness(float cosTheta, vec3 F0, float roughness){
 	return F0 + (max(vec3(1.0 - roughness), F0) - F0) * pow(1.0 - cosTheta, 5.0);
 }
-vec3 BRDF(vec3 Kd,vec3 Ks,vec3 specular){
+vec3 BRDF(vec3 Kd,vec3 Ks,vec3 specular,vec3 albedo){
 	
-	vec3 fLambert = u_Material.diffuseColor/PI;//diffuseColor 相当于 albedo
+	vec3 fLambert = albedo/PI;//diffuseColor 相当于 albedo
 	return Kd * fLambert+  specular;//specular 中已经有Ks(Ks=F)了，不需要再乘以Ks *
 }
 vec3 LightRadiance(vec3 fragPos,PointLight light){
@@ -233,7 +233,7 @@ void main(){
 
 		
 		float NdotL = max(dot(N,L),0.0);
-		Lo+= BRDF(Kd,Ks,specular)*LightRadiance(v_FragPos,u_PointLights[i])*NdotL;
+		Lo+= BRDF(Kd,Ks,specular,albedo)*LightRadiance(v_FragPos,u_PointLights[i])*NdotL;
 	}
 
 	//ambient lightings (we now use IBL as the ambient term)!
@@ -247,17 +247,20 @@ void main(){
 		//environmentIrradiance*= texture(u_IrradianceMap[i],N).rgb;
 
 	}
-	vec3 diffuse = environmentIrradiance*u_Material.diffuseColor;
+	vec3 diffuse = environmentIrradiance*albedo;//u_Material.diffuseColor;
 
 	//sample both the prefilter map and the BRDF lut and combine them together as per the Split-Sum approximation to get the IBL specular part
 	const float MAX_REFLECTION_LOD = 1.0;
 	//sample MAX_REFLECTION_LOD level mipmap everytime !
 	vec3 prefileredColor = vec3(0.0,0.0,0.0) ;//= vec3(1.0,1.0,1.0);
-	for(int i=0;i<u_Kprobes;i++){
-		prefileredColor+= u_ProbeWeight[i]*textureLod(u_PrefilterMap[i],R,roughness*MAX_REFLECTION_LOD).rgb;
-	//	prefileredColor*= textureLod(u_PrefilterMap[i],R,roughness*MAX_REFLECTION_LOD).rgb;
 
-	}
+	/*specular Map只取最近的一个*/
+	prefileredColor = textureLod(u_PrefilterMap[0],R,roughness*MAX_REFLECTION_LOD).rgb;
+//	for(int i=0;i<u_Kprobes;i++){
+//		prefileredColor+= u_ProbeWeight[i]*textureLod(u_PrefilterMap[i],R,roughness*MAX_REFLECTION_LOD).rgb;
+//	//	prefileredColor*= textureLod(u_PrefilterMap[i],R,roughness*MAX_REFLECTION_LOD).rgb;
+//
+//	}
 	vec2 brdf = texture(u_BrdfLUTMap,vec2(max(dot(N,V),0.0),roughness)).rg;
 
 	vec3 specular = prefileredColor * (F*brdf.x+brdf.y);

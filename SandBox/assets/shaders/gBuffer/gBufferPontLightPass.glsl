@@ -18,19 +18,22 @@ void main()
 
 }
 
+
 #type fragment
 #version 430 core
 
 in vec2 v_TexCoords;
+
+const float PI=3.14159265359;
+
 uniform sampler2D gPosition;
 uniform sampler2D gNormal;
-uniform sampler2D gAlbedoSpec;
-uniform sampler2D gSpecular;
+uniform sampler2D gDiffuse_Roughness;
+uniform sampler2D gSpecular_Mentallic;
+uniform sampler2D gAmbientGI_AO;
+uniform sampler2D gNormalMap;
+
 uniform vec2 gScreenSize;
-
-
-
-//uniform sampler2D texture_diffuse1;
 
 struct PointLight{
 	vec3 ambient;
@@ -42,26 +45,6 @@ struct PointLight{
 	float linear;
 	float quadratic;
 
-};
-struct ParallelLight{
-	vec3 ambient;
-	vec3 diffuse;
-	vec3 specular;
-	vec3 direction;
-};
-struct SpotLight{
-	vec3 ambient;
-	vec3 diffuse;
-	vec3 specular;
-
-	vec3 direction;
-	vec3 position;
-	float cutOff;
-	float outerCutOff;
-
-	float constant;
-	float linear;
-	float quadratic;
 };
 struct gBufferMaterial{
 	vec3 ambientColor;
@@ -75,20 +58,119 @@ struct gBufferMaterial{
 
 };
 
-uniform bool u_HasSpotLight;
-uniform bool u_HasParallelLight;
-uniform int u_PointLightNums;
-
 //uniform Material u_Material;
-uniform ParallelLight u_ParallelLight;
-uniform PointLight u_PointLights[100];
+//TODO::法线贴图
+//vec3 getNormalFromMap(vec3 normal,vec3 normalMap,vec3 fragPos)
+//{
+//    //vec3 tangentNormal =  2.0* texture(u_Material.normal, v_TexCoord).xyz- vec3(1.0);
+//	vec3 tangentNormal =  2.0* normalMap- vec3(1.0);
+//
+//    vec3 Q1  = dFdx(fragPos);
+//    vec3 Q2  = dFdy(fragPos);
+//    vec2 st1 = dFdx(texCoord);
+//    vec2 st2 = dFdy(texCoord);
+//
+//    vec3 N   = normalize(normal);
+//    vec3 T  = normalize(Q1*st2.t - Q2*st1.t);
+//    vec3 B  = -normalize(cross(N, T));
+//    mat3 TBN = mat3(T, B, N);
+//
+//    return normalize(TBN * tangentNormal);
+//}
+
+float calculateAttenuation(PointLight light,vec3 fragPos){
+	float distance = length(light.position-fragPos);
+	float attenuation = 1.0f/(light.constant+light.linear * distance+light.quadratic*distance*distance);
+	return attenuation;
+}
+float NoemalDistribution_TrowbridgeReitz_GGX(vec3 N,vec3 H,float roughness){
+	float roughness2 = roughness*roughness;
+	float NHDOT = max(abs(dot(N,H)),0.0);
+	float tmp= (NHDOT*NHDOT)*(roughness2-1.0)+1.0;
+	float NDF = roughness2/(PI*tmp*tmp);
+	return NDF;
+}
+float Geometry_SchlickGGX(float NdotV,float roughness){
+	return NdotV/(NdotV*(1.0-roughness)+roughness);
+}
+
+float GeometrySmith(vec3 N,vec3 V,vec3 L,float roughness){
+	float NdotV = max(dot(N,V),0.0);
+	float NdotL = max(dot(N,L),0.0);
+	float ggx1 = Geometry_SchlickGGX(NdotV,roughness);
+	float ggx2 = Geometry_SchlickGGX(NdotL,roughness);
+
+	return ggx1*ggx2;
+}
+vec3 FresnelSchlick(float cosTheta, vec3 F0){
+	return F0 + (1.0-F0)* pow(1.0 - cosTheta, 5.0);
+}
+vec3 BRDF(vec3 Kd,vec3 Ks,vec3 specular,vec3 albedo){
+	
+	vec3 fLambert = albedo/PI;//diffuseColor 相当于 albedo
+	return Kd * fLambert+  specular;//specular 中已经有Ks(Ks=F)了，不需要再乘以Ks *
+}
+vec3 LightRadiance(vec3 fragPos,PointLight light){
+	float attenuation = calculateAttenuation(light,fragPos);
+	//float cosTheta = max(dot(N,wi),0.0);
+	vec3 radiance = light.diffuse*attenuation;
+	return radiance;
+}
 uniform PointLight u_PointLight;
-uniform SpotLight u_SpotLight;
 uniform vec3 u_CameraViewPos;
 
 vec3 CalcPointLight(PointLight light,vec3 normal,vec3 viewDir,gBufferMaterial material,vec3 fragPos);
-//vec3 CalcParallelLight(ParallelLight light,vec3 normal,vec3 viewDir);
-//vec3 CalcSpotLight(SpotLight light,vec3 normal,vec3 viewDir);
+
+vec3 CalcPBRPointLight(PointLight light,vec3 getNormalFromMap,vec3 albedo,float metallic,float roughness,float ao,vec3 fragPos){
+	
+	//tangent normal 
+	vec3 N = getNormalFromMap;//getNormalFromMap(normal,normalMap,fragPos);
+	vec3 V = normalize(u_CameraViewPos-fragPos);
+	vec3 R = reflect(-V,N);
+
+	vec3 F0 = vec3(0.04);
+	F0 = mix(F0,albedo,metallic);
+
+	//reflection equation
+	vec3 Lo = vec3(0.0);
+	//for(int i=0;i<u_PointLightNums;i++){
+		vec3 L = normalize(light.position-fragPos);
+		vec3 H = normalize(V+L);
+		float attenuation = calculateAttenuation(light,fragPos);
+		vec3 radiance = light.diffuse * attenuation;
+
+		float NDF = NoemalDistribution_TrowbridgeReitz_GGX(N,H,roughness);
+		float G = GeometrySmith(N, V,L,roughness);
+		vec3 F = FresnelSchlick(max(dot(H, V), 0.0), F0);
+		
+		//CookTorrance
+		vec3 nominator    = NDF * G * F;
+        float denominator = 4.0 * max(dot(N, V), 0.0) * max(dot(N, L), 0.0) + 0.001; 
+        vec3 specular     = nominator / denominator;
+		
+		// kS is equal to Fresnel
+		vec3 Ks = F;
+		// for energy conservation, the diffuse and specular light can't
+        // be above 1.0 (unless the surface emits light); to preserve this
+        // relationship the diffuse component (kD) should equal 1.0 - kS.
+		vec3 Kd = vec3(1.0)-Ks;
+		 // multiply kD by the inverse metalness such that only non-metals 
+        // have diffuse lighting, or a linear blend if partly metal (pure metals
+        // have no diffuse light).
+		Kd *= (1.0 - metallic);
+
+		
+		float NdotL = max(dot(N,L),0.0);
+		Lo+= BRDF(Kd,Ks,specular,albedo)*LightRadiance(fragPos,light)*NdotL;
+	//}
+//
+//	//HDR tonemapping
+//	 Lo = Lo / (Lo + vec3(1.0));
+//	//gamma correction
+//    Lo = pow(Lo, vec3(1.0/2.2));  
+	return Lo;
+}
+
 vec2 CalcTexCoord()
 {
     return gl_FragCoord.xy / gScreenSize;
@@ -99,32 +181,30 @@ void main(){
 	gBufferMaterial material;
 
 	vec2 texCoords = CalcTexCoord();
-	vec3 v_FragPos = texture(gPosition,texCoords).rgb;
-	vec3 v_Normal = texture(gNormal,texCoords).rgb;
-	material.diffuseColor = texture(gAlbedoSpec,texCoords).rgb;
-	
-	
+	vec3 fragPos = texture(gPosition,texCoords).rgb;
+	vec3 normal = texture(gNormal,texCoords).xyz;
+	vec3 getNormalFromMap = texture(gNormalMap,texCoords).xyz;
 
+	material.diffuseColor = texture(gDiffuse_Roughness,texCoords).rgb;
 	material.isBlinnLight = false;
-	material.specularColor = texture(gSpecular,texCoords).rgb;
+	material.specularColor = texture(gSpecular_Mentallic,texCoords).rgb;
 
-	vec3 viewDir = normalize(u_CameraViewPos-v_FragPos);
+
+
+	vec3 albedo = material.diffuseColor;
+	float roughness = texture(gDiffuse_Roughness,texCoords).a;
+	float metallic = texture(gSpecular_Mentallic,texCoords).a;
+	float ao = texture(gAmbientGI_AO,texCoords).a;
+
+	
+
+	vec3 viewDir = normalize(u_CameraViewPos- fragPos);
 	vec3 outColor =vec3(0.0,0.0,0.0);
 
-	outColor = CalcPointLight(u_PointLight, v_Normal,viewDir,material,v_FragPos);
+	outColor =CalcPBRPointLight(u_PointLight,getNormalFromMap,albedo,metallic, roughness, ao,fragPos);// CalcPointLight(u_PointLight, normal,viewDir,material,fragPos);
 
 	FragColor =vec4(outColor,1.0);//vec4(1.0,0.0,0.0,1.0); //
 
-
-
-	//	if(u_HasParallelLight)
-//		outColor += CalcParallelLight(u_ParallelLight,v_Normal,viewDir);
-//	if(u_HasSpotLight)
-//		outColor += CalcSpotLight(u_SpotLight, v_Normal,viewDir);
-//
-//	for(int i=0;i<u_PointLightNums;i++){
-//		outColor += CalcPointLight(u_PointLights[i], v_Normal,viewDir,material,v_FragPos);
-//	}
 
 }
 

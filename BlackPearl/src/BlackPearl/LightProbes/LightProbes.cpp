@@ -17,6 +17,7 @@ namespace BlackPearl {
 		m_Camera->GetObj()->GetComponent<BlackPearl::PerspectiveCamera>()->SetFov(90.0f);
 		m_Camera->GetObj()->GetComponent<BlackPearl::PerspectiveCamera>()->SetWidth(512);
 		m_Camera->GetObj()->GetComponent<BlackPearl::PerspectiveCamera>()->SetHeight(512);
+		m_Camera->GetObj()->GetComponent<BlackPearl::PerspectiveCamera>()->SetZfar(50.0f);
 
 		SetScale({ 0.3,0.3,0.3 });
 

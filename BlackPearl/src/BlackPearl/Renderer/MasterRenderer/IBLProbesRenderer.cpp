@@ -118,6 +118,11 @@ namespace BlackPearl {
 
 		for (Object* obj : objects) {
 
+			/* render specular Map for each objects*/
+
+
+
+
 			glm::vec3 pos = obj->GetComponent<Transform>()->GetPosition();
 
 			std::vector<LightProbe*> kProbes = FindKnearProbes(pos, probes);
