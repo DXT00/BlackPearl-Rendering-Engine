@@ -447,7 +447,7 @@ namespace BlackPearl {
 
 		}
 		else {
-			GE_CORE_ERROR("no such bone" + nodeName);
+			GE_CORE_WARN("no such bone" + nodeName);
 		}
 
 		for (int i = 0; i < node->mNumChildren; i++)

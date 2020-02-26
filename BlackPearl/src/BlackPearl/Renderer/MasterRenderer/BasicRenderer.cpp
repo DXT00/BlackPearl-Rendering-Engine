@@ -328,6 +328,16 @@ namespace BlackPearl {
 		shader->SetUniform1i("u_Material.isBlinnLight", material->GetProps().isBinnLight);
 		shader->SetUniform1i("u_Material.isTextureSample", material->GetProps().isTextureSample);
 
+		if (!material->GetProps().isTextureSample) {
+
+			shader->SetUniform1f("u_Material.roughnessValue", 1.0f);
+			shader->SetUniform1f("u_Material.mentallicValue", 0.0f);
+			shader->SetUniform1f("u_Material.aoValue", 1.0f);
+
+
+		}
+
+
 		shader->SetExtraUniform();
 		if (!isLight) {
 			shader->SetUniform1i("u_Settings.shadows", 1);

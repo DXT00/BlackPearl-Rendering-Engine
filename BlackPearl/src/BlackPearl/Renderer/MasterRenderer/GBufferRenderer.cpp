@@ -20,6 +20,10 @@ namespace BlackPearl {
 		m_PointLightPassShader.reset(DBG_NEW Shader("assets/shaders/gBuffer/gBufferPontLightPass.glsl"));
 		m_SphereDeBugShader.reset(DBG_NEW Shader("assets/shaders/gBuffer/SurroundSphereDebug.glsl"));
 		m_FinalScreenShader.reset(DBG_NEW Shader("assets/shaders/gBuffer/FinalScreenQuad.glsl"));
+
+		m_AnimatedModelRenderer = new AnimatedModelRenderer();
+		std::shared_ptr<Shader> gBufferAnimatedShader(DBG_NEW Shader("assets/shaders/animatedModel/animatedGBufferModel.glsl"));
+		m_AnimatedModelRenderer->SetShader(gBufferAnimatedShader);
 	}
 
 	void GBufferRenderer::Init(Object* screenQuad, Object* surroundSphere, Object* GIQuad)
@@ -206,7 +210,7 @@ namespace BlackPearl {
 		return distance;
 	}
 
-	void GBufferRenderer::RenderSceneWithGBufferAndProbes(std::vector<Object*> objects, std::vector<Object*> backGroundObjs, Object* gBufferDebugQuad, LightSources* lightSources,
+	void GBufferRenderer::RenderSceneWithGBufferAndProbes(std::vector<Object*> staticObjects, std::vector<Object*> dynamicObjects, float timeInSecond, std::vector<Object*> backGroundObjs, Object* gBufferDebugQuad, LightSources* lightSources,
 		std::vector<LightProbe*> probes, std::shared_ptr<Texture> specularBrdfLUTTexture,Object* skyBox)
 	{
 
@@ -231,7 +235,7 @@ namespace BlackPearl {
 		/************************1.5 probes : find the k near probes for each objects *****************/
 		/***********************************************************************************************************/
 		/*  在 DrawObject同时，计算全局光照！ */
-		for (Object* obj:objects)
+		for (Object* obj:staticObjects)
 		{
 
 			glm::vec3 pos = obj->GetComponent<Transform>()->GetPosition();
@@ -281,13 +285,80 @@ namespace BlackPearl {
 		
 
 			}
+			if (obj->GetComponent<MeshRenderer>()->GetIsPBRObject())
+				m_GBufferShader->SetUniform1f("u_IsPBRObjects", 1.0f);
+			else
+				m_GBufferShader->SetUniform1f("u_IsPBRObjects", 0.0f);
+
 
 			obj->GetComponent<MeshRenderer>()->SetShaders(m_GBufferShader);
 			DrawObject(obj, m_GBufferShader);
 		}
 
 		
+		for (Object* obj : dynamicObjects)
+		{
 
+			std::shared_ptr<Shader> animatedShader = m_AnimatedModelRenderer->GetShader();
+
+			animatedShader->Bind();
+
+			glm::vec3 pos = obj->GetComponent<Transform>()->GetPosition();
+
+			std::vector<LightProbe*> kProbes = FindKnearProbes(pos, probes);
+
+			unsigned int k = m_K;
+			std::vector<float> distances;
+			float distancesSum = 0.0;
+			for (auto probe : kProbes)
+			{
+				distances.push_back(glm::length(probe->GetPosition() - pos));
+				distancesSum += glm::length(probe->GetPosition() - pos);
+			}
+
+
+			//m_GBufferShader->Bind();
+			animatedShader->SetUniform1i("u_Kprobes", k);
+
+			animatedShader->SetUniform1i("u_BrdfLUTMap", 0);
+			glActiveTexture(GL_TEXTURE0);
+			specularBrdfLUTTexture->Bind();
+
+			/*只需要最近的那个 probe 的 SpecularMap!*/
+			animatedShader->SetUniform1i("u_PrefilterMap", 1);
+			glActiveTexture(GL_TEXTURE1);
+			kProbes[0]->GetSpecularPrefilterCubeMap()->Bind();
+
+
+
+			for (int i = 0; i < k; i++)
+			{
+				animatedShader->SetUniform1f("u_ProbeWeight[" + std::to_string(i) + "]", (float)distances[i] / distancesSum);
+
+				//m_IBLShader->SetUniform1i("u_IrradianceMap[" + std::to_string(i) + "]", textureK);
+				//m_IBLShader->SetUniform1i("u_Image", textureK);
+				for (int sh = 0; sh < 9; sh++)
+				{
+					int index = sh + 9 * i;
+					animatedShader->SetUniformVec3f("u_SHCoeffs[" + std::to_string(index) + "]", glm::vec3(kProbes[i]->GetCoeffis()[sh][0], kProbes[i]->GetCoeffis()[sh][1], kProbes[i]->GetCoeffis()[sh][2]));
+				}
+
+				//glActiveTexture(GL_TEXTURE0 + textureK);
+				//kProbes[i]->GetDiffuseIrradianceCubeMap()->Bind();
+				//kProbes[i]->GetSHImage()->Bind(textureK);
+				//textureK++;
+
+
+			}
+			if (obj->GetComponent<MeshRenderer>()->GetIsPBRObject())
+				animatedShader->SetUniform1f("u_IsPBRObjects", 1.0f);
+			else
+				animatedShader->SetUniform1f("u_IsPBRObjects", 0.0f);
+
+			m_AnimatedModelRenderer->Render(obj, timeInSecond);
+		/*	obj->GetComponent<MeshRenderer>()->SetShaders(m_GBufferShader);
+			DrawObject(obj, m_GBufferShader);*/
+		}
 
 
 
@@ -455,9 +526,6 @@ namespace BlackPearl {
 
 
 		frameBuffer->CleanUp();
-
-
-
 
 
 

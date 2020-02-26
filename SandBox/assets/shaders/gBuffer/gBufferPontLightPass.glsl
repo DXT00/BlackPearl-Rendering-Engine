@@ -121,7 +121,7 @@ uniform vec3 u_CameraViewPos;
 
 vec3 CalcPointLight(PointLight light,vec3 normal,vec3 viewDir,gBufferMaterial material,vec3 fragPos);
 
-vec3 CalcPBRPointLight(PointLight light,vec3 getNormalFromMap,vec3 albedo,float metallic,float roughness,float ao,vec3 fragPos){
+vec3 CalcPBRPointLight(PointLight light,vec3 getNormalFromMap,vec3 albedo,float metallic,float roughness,vec3 fragPos){
 	
 	//tangent normal 
 	vec3 N = getNormalFromMap;//getNormalFromMap(normal,normalMap,fragPos);
@@ -194,14 +194,18 @@ void main(){
 	vec3 albedo = material.diffuseColor;
 	float roughness = texture(gDiffuse_Roughness,texCoords).a;
 	float metallic = texture(gSpecular_Mentallic,texCoords).a;
-	float ao = texture(gAmbientGI_AO,texCoords).a;
+	float isPBRObject = texture(gAmbientGI_AO,texCoords).a;
 
 	
 
 	vec3 viewDir = normalize(u_CameraViewPos- fragPos);
 	vec3 outColor =vec3(0.0,0.0,0.0);
 
-	outColor =CalcPBRPointLight(u_PointLight,getNormalFromMap,albedo,metallic, roughness, ao,fragPos);// CalcPointLight(u_PointLight, normal,viewDir,material,fragPos);
+	if(isPBRObject==0.0)
+		outColor = CalcPointLight(u_PointLight,normal,viewDir, material,fragPos);// CalcPointLight(u_PointLight, normal,viewDir,material,fragPos);
+
+	else
+		outColor =CalcPBRPointLight(u_PointLight,getNormalFromMap,albedo,metallic, roughness, fragPos);// CalcPointLight(u_PointLight, normal,viewDir,material,fragPos);
 
 	FragColor =vec4(outColor,1.0);//vec4(1.0,0.0,0.0,1.0); //
 

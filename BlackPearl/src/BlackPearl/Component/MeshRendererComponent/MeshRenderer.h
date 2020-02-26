@@ -47,14 +47,24 @@ namespace BlackPearl {
 		void SetEnableCullFace(bool isEnable) { m_EnableCullFace = isEnable; }
 		bool GetEnableCullFace()const { return m_EnableCullFace; }
 
+		void SetTextureSamples(bool isSampled) {
+			for (auto mesh : GetMeshes())
+				mesh.GetMaterial()->SetTextureSample((int)isSampled);
+		}
+
+
 		void SetEnableRender(bool enable) { m_EnableRender = enable; }
 		void SetIsBackGroundObjects(bool isBackGroundObject)  {  m_IsBackGroundObjects = isBackGroundObject; }
+		void SetIsPBRObject(bool isPBRObject) { m_IsPBRObject = isPBRObject; }
 
 		bool GetIsBackGroundObjects() const{ return m_IsBackGroundObjects; }
+		bool GetIsPBRObject() const { return m_IsPBRObject; }
+
 		bool GetEnableRender()const { return m_EnableRender; }
 	private:
 		//¿ªÆôºÍ½ûÖ¹äÖÈ¾
 		bool m_EnableRender = true;
+		bool m_IsPBRObject = false;
 		std::vector<Mesh> m_Meshes;
 		std::shared_ptr<Model> m_Model = nullptr;
 		glm::mat4 m_TransformMatrix;

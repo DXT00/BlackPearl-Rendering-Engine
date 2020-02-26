@@ -4,6 +4,8 @@
 #include "BlackPearl/Renderer/MasterRenderer/BasicRenderer.h"
 #include "BlackPearl/Config.h"
 #include "BlackPearl/LightProbes/LightProbes.h"
+#include "AnimatedModelRenderer.h"
+
 namespace BlackPearl {
 	class GBufferRenderer:public BasicRenderer
 	{
@@ -15,7 +17,7 @@ namespace BlackPearl {
 		void DrawGBuffer(Object* gBufferDebugQuad);
 		float CalculateSphereRadius(Object* pointLight);
 		/* probes for ambient light render (GI) */
-		void RenderSceneWithGBufferAndProbes(std::vector<Object*> objects, std::vector<Object*> backGroundObjs, Object* gBufferDebugQuad, LightSources* lightSources,
+		void RenderSceneWithGBufferAndProbes(std::vector<Object*> staticObjects, std::vector<Object*> dynamicObjects, float timeInSecond, std::vector<Object*> backGroundObjs, Object* gBufferDebugQuad, LightSources* lightSources,
 			std::vector<LightProbe*> probes, std::shared_ptr<Texture> specularBrdfLUTTexture, Object* skyBox);
 		std::vector<LightProbe*> FindKnearProbes(glm::vec3 objPos, std::vector<LightProbe*> probes);
 
@@ -62,6 +64,9 @@ namespace BlackPearl {
 		/* m_K near probes for specular objs rendering */
 		/*注意 物体blending 多个(m_K个) probes的diffuse SH,但只取最近的一个Probe的specular Map*/
 		unsigned int m_K = 2;
+
+		/*renderer for dynamic objects*/
+		AnimatedModelRenderer* m_AnimatedModelRenderer;
 
 	};
 
