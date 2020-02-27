@@ -11,6 +11,7 @@ namespace BlackPearl {
 			m_AnimatedShader.reset(DBG_NEW Shader("assets/shaders/animatedModel/animatedModel.glsl"));
 		}
 		void Render(Object* animatedModel,float timeInSecond);
+		void Render(Object* animatedModel, float timeInSecond,std::shared_ptr<Shader> shader);
 
 		void SetShader(std::shared_ptr<Shader> shader) {
 			m_AnimatedShader  = shader;

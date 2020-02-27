@@ -270,8 +270,14 @@ namespace BlackPearl {
 			aiMaterial* material = m_Scene->mMaterials[aimesh->mMaterialIndex];
 			LoadMaterialTextures(material, aiTextureType_DIFFUSE, Texture::Type::DiffuseMap, textures);
 			LoadMaterialTextures(material, aiTextureType_SPECULAR, Texture::Type::SpecularMap, textures);
-			LoadMaterialTextures(material, aiTextureType_NORMALS, Texture::Type::NormalMap, textures);
-			LoadMaterialTextures(material, aiTextureType_HEIGHT, Texture::Type::HeightMap, textures);
+			LoadMaterialTextures(material, aiTextureType_NORMALS, Texture::Type::NormalMap, textures);//
+		//	LoadMaterialTextures(material, aiTextureType_HEIGHT, Texture::Type::AoMap, textures);
+			LoadMaterialTextures(material, aiTextureType_SPECULAR, Texture::Type::MentallicMap, textures); //
+			//LoadMaterialTextures(material, aiTextureType_REFLECTION, Texture::Type::RoughnessMap, textures);
+			//LoadMaterialTextures(material, aiTextureType_AMBIENT, Texture::Type::RoughnessMap, textures);
+			//LoadMaterialTextures(material, aiTextureType_LIGHTMAP, Texture::Type::AoMap, textures);
+
+
 			//LoadMaterialTextures(material, aiTextureType_DISPLACEMENT, Texture::Type::DiffuseMap, textures);//TODO
 
 			LoadMaterialColors(material, colors);
@@ -337,6 +343,12 @@ namespace BlackPearl {
 				textures->emissionTextureMap.reset(DBG_NEW Texture(typeName, path_str.c_str(), GL_LINEAR, GL_LINEAR, GL_RGBA, GL_CLAMP_TO_EDGE, GL_UNSIGNED_BYTE));
 			if (typeName == Texture::Type::NormalMap)
 				textures->normalTextureMap.reset(DBG_NEW Texture(typeName, path_str.c_str(), GL_LINEAR, GL_LINEAR, GL_RGBA, GL_CLAMP_TO_EDGE, GL_UNSIGNED_BYTE));
+			if (typeName == Texture::Type::AoMap)
+				textures->aoMap.reset(DBG_NEW Texture(typeName, path_str.c_str(), GL_LINEAR, GL_LINEAR, GL_RGBA, GL_CLAMP_TO_EDGE, GL_UNSIGNED_BYTE));
+			if (typeName == Texture::Type::MentallicMap)
+				textures->mentallicMap.reset(DBG_NEW Texture(typeName, path_str.c_str(), GL_LINEAR, GL_LINEAR, GL_RGBA, GL_CLAMP_TO_EDGE, GL_UNSIGNED_BYTE));
+			if (typeName == Texture::Type::RoughnessMap)
+				textures->roughnessMap.reset(DBG_NEW Texture(typeName, path_str.c_str(), GL_LINEAR, GL_LINEAR, GL_RGBA, GL_CLAMP_TO_EDGE, GL_UNSIGNED_BYTE));
 			/*if (typeName == Texture::Type::HeightMap)
 				textures->heightTextureMap.reset(DBG_NEW Texture(typeName, path_str.c_str()));
 			*/

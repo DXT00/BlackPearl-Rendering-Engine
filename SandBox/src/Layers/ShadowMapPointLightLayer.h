@@ -8,6 +8,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include "BlackPearl/Component/LightComponent/Light.h"
+#include <chrono>
+using namespace std::chrono;
 
 class ShadowMapPointLightLayer :public BlackPearl::Layer {
 
@@ -18,6 +20,7 @@ public:
 	{
 
 		
+		m_StartTimeMs = duration_cast<milliseconds>(system_clock::now().time_since_epoch());
 
 		//m_MasterRenderer = DBG_NEW BlackPearl::MasterRenderer(m_MainCamera->GetObj());
 
@@ -55,7 +58,12 @@ public:
 		m_BackGroundObjsList.push_back(Room);
 		Room->GetComponent<BlackPearl::MeshRenderer>()->SetIsBackGroundObjects(true);
 
-
+		m_AnimatedModelBoy = CreateModel("assets/models-animation/people/character Texture.dae", "assets/shaders/animatedModel/animatedModel.glsl", true, "Boy");
+		m_AnimatedModelBoy->GetComponent<BlackPearl::Transform>()->SetScale({ 0.2f,0.2f,0.2f });
+		m_AnimatedModelBoy->GetComponent<BlackPearl::Transform>()->SetRotation({ -90.0f,0.0f,0.0f });
+		m_AnimatedModelBoy->GetComponent<BlackPearl::Transform>()->SetPosition({ 3.0f,-1.6f,0.0f });
+		
+		m_DynamicObjsList.push_back(m_AnimatedModelBoy);
 
 	/*	std::shared_ptr<BlackPearl::Texture> CubeTexture;
 		CubeTexture.reset(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::DiffuseMap, "assets/texture/wood.png", GL_LINEAR, GL_LINEAR, GL_RGBA, GL_CLAMP_TO_EDGE, GL_UNSIGNED_BYTE));
@@ -152,10 +160,11 @@ public:
 		BlackPearl::RenderCommand::SetClearColor(m_BackgroundColor);
 		BlackPearl::Renderer::BeginScene(*(m_MainCamera->GetObj()->GetComponent<BlackPearl::PerspectiveCamera>()), *GetLightSources());
 
-		
+		milliseconds currentTimeMs = duration_cast<milliseconds>(system_clock::now().time_since_epoch());
+		double runtime = currentTimeMs.count() - m_StartTimeMs.count();
 
 	
-		m_ShadowMapPointLightRenderer->RenderCubeMap(m_BackGroundObjsList, GetLightSources());
+		m_ShadowMapPointLightRenderer->RenderCubeMap(m_BackGroundObjsList, m_DynamicObjsList, runtime / 1000.0f,GetLightSources());
 
 		m_ShadowMapPointLightRenderer->Render(m_BackGroundObjsList, GetLightSources());
 
@@ -336,7 +345,10 @@ private:
 
 	BlackPearl::Object* m_SkyBox;
 
-
+	BlackPearl::Object* m_AnimatedModelBoy = nullptr;
+	std::vector<BlackPearl::Object*> m_DynamicObjsList;
+	/*Time*/
+	std::chrono::milliseconds m_StartTimeMs;
 
 	/*Renderer */
 	BlackPearl::BasicRenderer* m_BacisRender;

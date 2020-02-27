@@ -3,6 +3,8 @@
 #include "BlackPearl/Renderer/Buffer.h"
 #include "BlackPearl/Renderer/MasterRenderer/BasicRenderer.h"
 #include "BlackPearl/Renderer/Material/CubeMapTexture.h"
+#include "BlackPearl/Config.h"
+#include "BlackPearl/Renderer/MasterRenderer/AnimatedModelRenderer.h"
 namespace BlackPearl {
 	//need a CubeMap Attachment
 	class ShadowMapPointLightRenderer:public BasicRenderer
@@ -10,7 +12,7 @@ namespace BlackPearl {
 	public:
 		ShadowMapPointLightRenderer();
 		~ShadowMapPointLightRenderer();
-		void RenderCubeMap(const std::vector<Object*>&objs ,LightSources* lightSources );
+		void RenderCubeMap(const std::vector<Object*>& staticObjs , const std::vector<Object*>& dynamicObjs, float timeInSecond, LightSources* lightSources );
 		void Render(const std::vector<Object*> backgroundObjs , LightSources* lightSources);
 		//virtual void PrepareShaderParameters(Mesh mesh, glm::mat4 transformMatrix, std::shared_ptr<Shader> shader,bool isLight = false)override;
 		std::shared_ptr<FrameBuffer> GetFrameBuffer() const { return m_FrameBuffer; }
@@ -22,7 +24,11 @@ namespace BlackPearl {
 
 	private:
 
+		AnimatedModelRenderer* m_AnimatedModelRenderer;
+
 		std::shared_ptr<Shader> m_SimpleDepthShader;
+		std::shared_ptr<Shader> m_SimpleDepthAnimatedObjShader;
+
 		std::shared_ptr<Shader> m_ShadowMapShader;
 
 		std::shared_ptr<FrameBuffer> m_FrameBuffer;
@@ -31,6 +37,9 @@ namespace BlackPearl {
 
 		static int s_ShadowMapPointLightWidth;
 		static int s_ShadowMapPointLightHeight;
+
+		/*对于每个 PointLight 在 m_ShadowRaduis 球体范围内的物体才会画出shadow */
+		float m_ShadowRaduis = Configuration::ShadowMapPointLightRadius;
 		std::vector<glm::mat4> m_LightProjectionViewMatries;
 		//glm::vec3 m_LightPos;
 	};

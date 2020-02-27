@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "GBufferRenderer.h"
 #include "BlackPearl/Component/MeshRendererComponent/MeshRenderer.h"
+#include "ShadowMapPointLightRenderer.h"
+
 #include "BlackPearl/Component/TransformComponent/Transform.h"
 #include "BlackPearl/Component/LightComponent/ParallelLight.h"
 #include "BlackPearl/Component/LightComponent/PointLight.h"
@@ -453,6 +455,11 @@ namespace BlackPearl {
 			m_PointLightPassShader->SetUniform1f("u_PointLight.constant", pointLight->GetComponent<PointLight>()->GetAttenuation().constant);
 			m_PointLightPassShader->SetUniform1f("u_PointLight.linear", pointLight->GetComponent<PointLight>()->GetAttenuation().linear);
 			m_PointLightPassShader->SetUniform1f("u_PointLight.quadratic", pointLight->GetComponent<PointLight>()->GetAttenuation().quadratic);
+
+			m_PointLightPassShader->SetUniform1f("u_FarPlane", ShadowMapPointLightRenderer::s_FarPlane);
+			m_PointLightPassShader->SetUniform1i("u_ShadowMap",6);
+			glActiveTexture(GL_TEXTURE6);
+			pointLight->GetComponent<PointLight>()->GetShadowMap()->Bind();
 
 			m_SurroundSphere->GetComponent<MeshRenderer>()->SetShaders(m_PointLightPassShader);
 			DrawObject(m_SurroundSphere, m_PointLightPassShader);

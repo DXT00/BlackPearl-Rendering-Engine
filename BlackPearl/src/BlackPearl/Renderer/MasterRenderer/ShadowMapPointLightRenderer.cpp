@@ -23,9 +23,10 @@ namespace BlackPearl {
 		m_FrameBuffer.reset(DBG_NEW FrameBuffer());
 		//m_DepthCubeMap.reset(DBG_NEW CubeMapTexture(Texture::Type::CubeMap, s_ShadowMapPointLightWidth, s_ShadowMapPointLightWidth, GL_NEAREST, GL_NEAREST, GL_CLAMP_TO_EDGE, GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT, GL_FLOAT));
 		
-
+		m_AnimatedModelRenderer = DBG_NEW AnimatedModelRenderer();
 		m_LightProjectionViewMatries.assign(6, glm::mat4(1.0));
 		m_SimpleDepthShader.reset(DBG_NEW BlackPearl::Shader("assets/shaders/shadowMap/pointLight/CubeMapDepthShader.glsl"));
+		m_SimpleDepthAnimatedObjShader.reset(DBG_NEW BlackPearl::Shader("assets/shaders/animatedModel/animatedCubeMapDepthShader.glsl"));
 		m_ShadowMapShader.reset(DBG_NEW BlackPearl::Shader("assets/shaders/shadowMap/pointLight/CubeMapShadowMapping.glsl"));
 
 
@@ -34,7 +35,7 @@ namespace BlackPearl {
 	ShadowMapPointLightRenderer::~ShadowMapPointLightRenderer()
 	{
 	}
-	void ShadowMapPointLightRenderer::RenderCubeMap(const std::vector<Object*>& objs, LightSources* lightSources)
+	void ShadowMapPointLightRenderer::RenderCubeMap(const std::vector<Object*>& staticObjs, const std::vector<Object*>& dynamicObjs, float timeInSecond, LightSources* lightSources)
 	{
 		float aspect = (float)s_ShadowMapPointLightWidth / (float)s_ShadowMapPointLightHeight;
 		glm::mat4 pointLightProjection = glm::perspective(glm::radians(s_FOV), aspect, s_NearPlane, s_FarPlane);
@@ -65,20 +66,40 @@ namespace BlackPearl {
 			glClear(GL_DEPTH_BUFFER_BIT);
 
 
-			for (Object* obj : objs)
+			for (Object* obj : staticObjs)
 			{
-				m_SimpleDepthShader->Bind();
+				float distanceToPointLight = glm::length(obj->GetComponent<Transform>()->GetPosition() - lightPos);
+				if (distanceToPointLight <= m_ShadowRaduis) {
 
-				for (int i = 0; i < 6; i++)
-					m_SimpleDepthShader->SetUniformMat4f("shadowMatrices[" + std::to_string(i) + "]", m_LightProjectionViewMatries[i]);
-				m_SimpleDepthShader->SetUniform1f("u_FarPlane", s_FarPlane);
-				m_SimpleDepthShader->SetUniformVec3f("u_LightPos", lightPos);
+					m_SimpleDepthShader->Bind();
 
-				obj->GetComponent<MeshRenderer>()->SetShaders(m_ShadowMapShader);
-				DrawObject(obj, m_SimpleDepthShader);
+					for (int i = 0; i < 6; i++)
+						m_SimpleDepthShader->SetUniformMat4f("shadowMatrices[" + std::to_string(i) + "]", m_LightProjectionViewMatries[i]);
+					m_SimpleDepthShader->SetUniform1f("u_FarPlane", s_FarPlane);
+					m_SimpleDepthShader->SetUniformVec3f("u_LightPos", lightPos);
+
+					obj->GetComponent<MeshRenderer>()->SetShaders(m_ShadowMapShader);
+					DrawObject(obj, m_SimpleDepthShader);
+				}
+			}
+			for (Object* obj : dynamicObjs)
+			{
+				float distanceToPointLight = glm::length(obj->GetComponent<Transform>()->GetPosition() - lightPos);
+				if (distanceToPointLight <= m_ShadowRaduis) {
+
+					m_SimpleDepthAnimatedObjShader->Bind();
+
+					for (int i = 0; i < 6; i++)
+						m_SimpleDepthAnimatedObjShader->SetUniformMat4f("shadowMatrices[" + std::to_string(i) + "]", m_LightProjectionViewMatries[i]);
+					m_SimpleDepthAnimatedObjShader->SetUniform1f("u_FarPlane", s_FarPlane);
+					m_SimpleDepthAnimatedObjShader->SetUniformVec3f("u_LightPos", lightPos);
+
+
+					m_AnimatedModelRenderer->Render(obj, timeInSecond, m_SimpleDepthAnimatedObjShader);
+			
+				}
 
 			}
-
 			m_FrameBuffer->UnBind();
 
 		}

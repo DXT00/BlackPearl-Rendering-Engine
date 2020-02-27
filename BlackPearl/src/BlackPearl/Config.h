@@ -25,14 +25,25 @@ namespace BlackPearl {
 		// ------------------------------------------
 		// Animaition Joints conut
 		// ------------------------------------------
-		static const int MaxJointsCount = 50;
+		static const int MaxJointsCount = 70;
 
 
 		// ------------------------------------------
 		// Max pointLight Num
 		// ------------------------------------------
 		static const unsigned int MaxPointLightNum = 20;
-	};
 
+
+
+
+		// ------------------------------------------
+		// Shadow map
+		// ------------------------------------------
+		/*对于每个 PointLight 在 m_ShadowRaduis 球体范围内的物体才会画出shadow */
+		static const float ShadowMapPointLightRadius; 
+
+
+
+	};
 
 }

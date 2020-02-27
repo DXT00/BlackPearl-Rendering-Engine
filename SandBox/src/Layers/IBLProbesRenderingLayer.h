@@ -82,12 +82,13 @@ public:
 
 		BlackPearl::Renderer::Init();
 		glEnable(GL_DEPTH_TEST);
-	//	glDepthFunc(GL_LEQUAL);
+
 		/*Renderer*/
 		m_BasicRenderer = DBG_NEW BlackPearl::BasicRenderer();
 		m_IBLProbesRenderer = DBG_NEW BlackPearl::IBLProbesRenderer();
 		m_AnimatedModelRenderer = DBG_NEW BlackPearl::AnimatedModelRenderer();
 		m_GBufferRenderer = DBG_NEW BlackPearl::GBufferRenderer();
+		m_ShadowMapPointLightRenderer = DBG_NEW BlackPearl::ShadowMapPointLightRenderer();
 
 		/*create skybox */
 		/*notice: draw skybox before anything else!*/
@@ -101,17 +102,22 @@ public:
 			});
 		  
 		/*model animation*/
-		m_AnimatedModelFrog = CreateModel("assets/models-animation/frog/frog.dae.txt", "assets/shaders/animatedModel/animatedModel.glsl", true,"Frog");
+	//	m_AnimatedModelFrog = CreateModel("assets/models-animation/frog/frog.dae.txt", "assets/shaders/animatedModel/animatedModel.glsl", true,"Frog");
 		
-		m_AnimatedModelCleaner = CreateModel("assets/models-animation/boblampclean.md5mesh", "assets/shaders/animatedModel/animatedModel.glsl",true,"Cleaner");
+	//	m_AnimatedModelCleaner = CreateModel("assets/models-animation/boblampclean.md5mesh", "assets/shaders/animatedModel/animatedModel.glsl",true,"Cleaner");
 	
-		m_AnimatedModelBoy = CreateModel("assets/models-animation/people/character Texture.dae", "assets/shaders/animatedModel/animatedModel.glsl", true,"Boy");
-		//m_AnimatedModelRobot = CreateModel("assets/models-animation/sphereBot/Sphere_Bot_High_Poly.blend", "assets/shaders/animatedModel/animatedModel.glsl", true, "Robot");
+	//	m_AnimatedModelBoy = CreateModel("assets/models-animation/people/character Texture.dae", "assets/shaders/animatedModel/animatedModel.glsl", true,"Boy");
+		m_AnimatedModelRobot = CreateModel("assets/models-animation/56-sphere-bot-basic/Sphere-Bot Basic/Armature_001-(COLLADA_3 (COLLAborative Design Activity)).dae", "assets/shaders/animatedModel/animatedModel.glsl", true, "Robot");
+		std::shared_ptr<BlackPearl::Texture> RobotAoTexture(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::AoMap, "assets/models-animation/56-sphere-bot-basic/Sphere-Bot Basic/Sphere_Bot_ao.jpg"));
+		std::shared_ptr<BlackPearl::Texture> RobotRoughnessTexture(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::RoughnessMap, "assets/models-animation/56-sphere-bot-basic/Sphere-Bot Basic/Sphere_Bot_rough.jpg"));
+		m_AnimatedModelRobot->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(RobotAoTexture);
+		m_AnimatedModelRobot->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(RobotRoughnessTexture);
 
-		m_AnimatedModelBoy->GetComponent<BlackPearl::Transform>()->SetScale({ 0.2f,0.2f,0.2f });
+		m_DynamicObjsList.push_back(m_AnimatedModelRobot);
+
+	/*	m_AnimatedModelBoy->GetComponent<BlackPearl::Transform>()->SetScale({ 0.2f,0.2f,0.2f });
 		m_AnimatedModelBoy->GetComponent<BlackPearl::Transform>()->SetRotation({ -90.0f,0.0f,0.0f });
 		m_AnimatedModelBoy->GetComponent<BlackPearl::Transform>()->SetPosition({ 3.0f,-1.6f,0.0f });
-		m_DynamicObjsList.push_back(m_AnimatedModelBoy);
 
 		m_AnimatedModelCleaner->GetComponent<BlackPearl::Transform>()->SetScale({ 0.05f,0.05f,0.05f });
 		m_AnimatedModelCleaner->GetComponent<BlackPearl::Transform>()->SetRotation({ 90.0f,180.0f,180.0f });
@@ -121,7 +127,7 @@ public:
 		m_AnimatedModelFrog->GetComponent<BlackPearl::Transform>()->SetScale({ 0.5f,0.5f,0.5f });
 		m_AnimatedModelFrog->GetComponent<BlackPearl::Transform>()->SetRotation({ 90.0f,180.0f,0.0f });
 		m_AnimatedModelFrog->GetComponent<BlackPearl::Transform>()->SetPosition({ -3.0f,-1.6f,0.0f });
-
+*/
 
 
 	//	m_AnimatedModel->GetComponent<BlackPearl::MeshRenderer>()
@@ -149,7 +155,7 @@ public:
 
 		BlackPearl::Object* cube1 = CreateCube();
 		cube1->GetComponent<BlackPearl::Transform>()->SetPosition({ -2.0f,-3.0f,0.0f });
-		//m_BackGroundObjsList.push_back(cube1);
+		m_SphereObjsList.push_back(cube1);
 
 		/*create pointlights*/
 		BlackPearl::Object* light = CreateLight(BlackPearl::LightType::PointLight);
@@ -299,7 +305,7 @@ public:
 
 	//	m_GBufferRenderer->Render(m_SphereObjsList,m_GBufferDebugQuad, GetLightSources());//m_BackGroundObjsList
 
-
+		m_ShadowMapPointLightRenderer->RenderCubeMap(m_SphereObjsList,m_DynamicObjsList,runtime / 1000.0f,GetLightSources());
 		m_GBufferRenderer->RenderSceneWithGBufferAndProbes(m_SphereObjsList, m_DynamicObjsList, runtime / 1000.0f,m_BackGroundObjsList, m_GBufferDebugQuad, GetLightSources(), m_LightProbes, m_IBLProbesRenderer->GetSpecularBrdfLUTTexture(), m_SkyBoxObj1);
 		m_IBLProbesRenderer->RenderProbes(m_LightProbes);
 
@@ -374,6 +380,8 @@ private:
 	BlackPearl::BasicRenderer* m_BasicRenderer;
 	BlackPearl::AnimatedModelRenderer* m_AnimatedModelRenderer;
 	BlackPearl::GBufferRenderer* m_GBufferRenderer;
+	BlackPearl::ShadowMapPointLightRenderer* m_ShadowMapPointLightRenderer;
+
 
 	/* Probes */
 	std::vector<BlackPearl::LightProbe*> m_LightProbes;

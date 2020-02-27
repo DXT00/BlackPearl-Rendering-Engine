@@ -79,7 +79,9 @@ uniform struct Material{
 	float shininess;
 	bool isBlinnLight;
 	int  isTextureSample;//判断是否使用texture,或者只有color
-
+	int isDiffuseTextureSample;
+	int isSpecularTextureSample;
+	int isMetallicTextureSample;
 }u_Material;
 
 
@@ -236,16 +238,16 @@ void main(){
 	
 
 
-	vec3 diffuse = (u_Material.diffuseColor *(1-u_Material.isTextureSample)
-					+ texture(u_Material.diffuse,v_TexCoord).rgb*u_Material.isTextureSample);
+	vec3 diffuse = (u_Material.diffuseColor *(1-u_Material.isDiffuseTextureSample)
+					+ texture(u_Material.diffuse,v_TexCoord).rgb*u_Material.isDiffuseTextureSample);
 
 	vec3 albedo = pow(diffuse,vec3(2.2));
 
-	vec3 specular = (u_Material.specularColor *(1-u_Material.isTextureSample)
-					+ texture(u_Material.specular,v_TexCoord).rgb*u_Material.isTextureSample);
+	vec3 specular = (u_Material.specularColor *(1-u_Material.isSpecularTextureSample)
+					+ texture(u_Material.specular,v_TexCoord).rgb*u_Material.isSpecularTextureSample);
 
-	float metallic = u_Material.mentallicValue *(1-u_Material.isTextureSample)+
-					texture(u_Material.mentallic, v_TexCoord).r*u_Material.isTextureSample;
+	float metallic = u_Material.mentallicValue *(1-u_Material.isMetallicTextureSample)+
+					texture(u_Material.mentallic, v_TexCoord).r*u_Material.isMetallicTextureSample;
 
 
 	float roughness = u_Material.roughnessValue *(1-u_Material.isTextureSample)+

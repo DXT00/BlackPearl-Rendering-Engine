@@ -176,7 +176,54 @@ vec2 CalcTexCoord()
     return gl_FragCoord.xy / gScreenSize;
 }
 
+
 out vec4 FragColor;
+uniform samplerCube u_ShadowMap;
+uniform float u_FarPlane ;
+
+float ShadowCalculation(vec3 fragPos,vec3 lightPos,samplerCube shadowMap){
+
+		vec3 fragToLight = fragPos.xyz - lightPos; 
+
+	 float closestDepth = texture(shadowMap, fragToLight).r;
+	// It is currently in linear range between [0,1]. Re-transform back to original value
+    closestDepth = closestDepth*u_FarPlane;
+    // Now get current linear depth as the length between the fragment and light position
+    float currentDepth = length(fragToLight);
+    // Now test for shadows
+  
+	float shadow = 0.0;
+	float bias = 0.08; 
+	float samples = 4.0;
+	float offset = 0.1;
+	for(float x = -offset; x < offset; x += offset / (samples * 0.5))
+	{
+	    for(float y = -offset; y < offset; y += offset / (samples * 0.5))
+	    {
+	        for(float z = -offset; z < offset; z += offset / (samples * 0.5))
+	        {
+	            float closestDepth = texture(shadowMap, fragToLight + vec3(x, y, z)).r; 
+	            closestDepth *= u_FarPlane;   // Undo mapping [0;1]
+	            if(currentDepth - bias > closestDepth)
+	                shadow += 1.0;
+	        }
+	    }
+	}
+	shadow /= (samples * samples * samples);
+	return shadow;
+
+//vec3 fragToLight = fragPos.xyz - lightPos; 
+//float SampledDistance = texture(u_CubeMap,fragToLight).r;
+//
+//    float Distance = length(fragToLight);
+//
+//    if (Distance < SampledDistance*u_FarPlane + bias)
+//        return 0.3; // Inside the light
+//    else
+//        return 0.8; // Inside the shadow
+}
+
+
 void main(){
 	gBufferMaterial material;
 
@@ -201,11 +248,13 @@ void main(){
 	vec3 viewDir = normalize(u_CameraViewPos- fragPos);
 	vec3 outColor =vec3(0.0,0.0,0.0);
 
+	float shadow = ShadowCalculation(fragPos,u_PointLight.position,u_ShadowMap); 
+
 	if(isPBRObject==0.0)
-		outColor = CalcPointLight(u_PointLight,normal,viewDir, material,fragPos);// CalcPointLight(u_PointLight, normal,viewDir,material,fragPos);
+		outColor =(1.0 - shadow) * CalcPointLight(u_PointLight,normal,viewDir, material,fragPos);// CalcPointLight(u_PointLight, normal,viewDir,material,fragPos);
 
 	else
-		outColor =CalcPBRPointLight(u_PointLight,getNormalFromMap,albedo,metallic, roughness, fragPos);// CalcPointLight(u_PointLight, normal,viewDir,material,fragPos);
+		outColor =(1.0 - shadow) * CalcPBRPointLight(u_PointLight,getNormalFromMap,albedo,metallic, roughness, fragPos);// CalcPointLight(u_PointLight, normal,viewDir,material,fragPos);
 
 	FragColor =vec4(outColor,1.0);//vec4(1.0,0.0,0.0,1.0); //
 

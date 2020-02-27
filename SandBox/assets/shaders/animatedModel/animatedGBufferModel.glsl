@@ -13,7 +13,7 @@ out vec2 v_TexCoord;
 out vec3 v_Normal;
 out vec3 v_FragPos;
 
-const int MAX_JOINTS = 50;//max joints allowed in a skeleton
+const int MAX_JOINTS = 70;//max joints allowed in a skeleton
 const int MAX_WEIGHT = 8;//max number of joints that can affect a vertex
 
 uniform mat4 u_ProjectionView;
