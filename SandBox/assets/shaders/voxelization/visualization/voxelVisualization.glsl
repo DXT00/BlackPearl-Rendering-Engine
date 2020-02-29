@@ -56,7 +56,7 @@ void main() {
 	color = vec4(0.0f);
 	for(uint step_ = 0; step_ < numberOfSteps && color.a < 0.99f; ++step_) {
 		const vec3 currentPoint = origin + STEP_LENGTH * step_ * direction;
-		vec3 coordinate = scaleAndBias(currentPoint);
+		//vec3 coordinate = scaleAndBias(currentPoint);
 		vec4 currentSample = textureLod(texture3D, scaleAndBias(currentPoint), mipmapLevel);
 		//textureLod:perform a texture lookup with explicit level-of-detail
 		color += (1.0f - color.a) * currentSample;

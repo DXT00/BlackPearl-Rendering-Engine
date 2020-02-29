@@ -36,7 +36,7 @@ void main(){
 #define SPECULAR_FACTOR 4.0f /* Specular intensity tweaking factor. */
 #define SPECULAR_POWER 65.0f /* Specular power in Blinn-Phong. */
 #define DIRECT_LIGHT_INTENSITY 0.96f /* (direct) point light intensity factor. */
-#define MAX_LIGHTS 1 /* Maximum number of lights supported. */
+#define MAX_LIGHTS 5 /* Maximum number of lights supported. */
 
 // Lighting attenuation factors. See the function "attenuate" (below) for more information.
 #define DIST_FACTOR 1.1f /* Distance is multiplied by this when calculating attenuation. */
@@ -94,7 +94,7 @@ uniform Material u_Material;
 uniform Settings u_Settings;
 uniform vec3 u_CameraViewPos;
 uniform int u_PointLightNums;
-uniform PointLight u_PointLights[MAX_LIGHTS];
+uniform PointLight u_PointLights[5];
 uniform int u_State;
 uniform sampler3D texture3D;
 uniform vec3 u_CubeSize; //m_CubeObj的大小，控制体素化范围
@@ -135,7 +135,7 @@ float traceShadowCone(vec3 from, vec3 direction, float targetDistance){
 
 	float dist = 3 * VOXEL_SIZE;
 	// I'm using a pretty big margin here since I use an emissive light ball with a pretty big radius in my demo scenes.
-	const float STOP = targetDistance - 16 * VOXEL_SIZE;
+	const float STOP = targetDistance - 16 * VOXEL_SIZE;;
 
 	while(dist < STOP && acc < 1){	
 		vec3 c = from + dist * direction;
@@ -144,7 +144,9 @@ float traceShadowCone(vec3 from, vec3 direction, float targetDistance){
 		float l = pow(dist, 2); // Experimenting with inverse square falloff for shadows.
 		float s1 = 0.062 * textureLod(texture3D, c, 1 + 0.75 * l).a;
 		float s2 = 0.135 * textureLod(texture3D, c, 4.5 * l).a;
-		float s = s1 + s2;
+
+		float s = s1+ s2;
+		
 		acc += (1 - acc) * s;
 		dist += 0.9 * VOXEL_SIZE * (1 + 0.05 * l);
 	}
@@ -339,9 +341,10 @@ vec3 calculateDirectLight(const PointLight light, const vec3 viewDirection){
 
 // Sums up all direct light from point lights (both diffuse and specular).
 vec3 directLight(vec3 viewDirection){
-	vec3 direct = vec3(0.0f);
-	const uint maxLights = min(u_PointLightNums, MAX_LIGHTS);
-	for(uint i = 0; i < maxLights; ++i) direct += calculateDirectLight(u_PointLights[i], viewDirection);
+	vec3 direct = vec3(0.0);
+	//int maxLights = u_PointLightNums;// min(u_PointLightNums, MAX_LIGHTS);
+	for(int i = 0; i < u_PointLightNums; ++i)
+	{ direct += calculateDirectLight(u_PointLights[i], viewDirection);}
 	direct *= DIRECT_LIGHT_INTENSITY;
 	return direct;
 }

@@ -85,7 +85,9 @@ namespace BlackPearl {
 	//note: framebuffer has no memory, imageWidth, imageHeight is the width and height of the attachment! 不同attachment有不同的width和height
 	FrameBuffer::FrameBuffer(const int imageWidth,int imageHeight,std::initializer_list<Attachment> attachment, unsigned int colorAttachmentPoint,bool disableColor, Texture::Type colorTextureType)
 	{
-		
+		/* m_Width,m_Height for voxel cone tracing */
+		m_Width = imageWidth;
+		m_Height = imageHeight;
 		GLint previousFrameBuffer;
 		glGetIntegerv(GL_FRAMEBUFFER_BINDING, &previousFrameBuffer);//获取之前绑定的Framebuffer
 

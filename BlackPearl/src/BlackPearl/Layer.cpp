@@ -556,6 +556,12 @@ namespace BlackPearl {
 			ImGui::ColorEdit3("diffuseColor", glm::value_ptr(color.diffuseColor));
 			mesh.GetMaterial()->SetMaterialColorDiffuseColor(color.diffuseColor);
 
+			ImGui::ColorEdit3("specularColor", glm::value_ptr(color.specularColor));
+			mesh.GetMaterial()->SetMaterialColorSpecularColor(color.specularColor);
+
+			ImGui::ColorEdit3("emissionColor", glm::value_ptr(color.emissionColor));
+			mesh.GetMaterial()->SetMaterialColorEmissionColor(color.emissionColor);
+
 		}
 
 

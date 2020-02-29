@@ -25,11 +25,18 @@ namespace BlackPearl {
 		m_QuadObj = quadObj;
 		m_CubeObj = cubeObj;
 
+		//m_DebugQuadObj = debugQuadObj;
 		//glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
 		glEnable(GL_MULTISAMPLE);
 		m_VoxelConeTracingShader.reset(DBG_NEW Shader("assets/shaders/voxelization/voxelConeTracing/voxelConeTracing.glsl"));
 		InitVoxelization();
 		InitVoxelVisualization(viewportWidth, viewportHeight);
+
+
+		/*debug shader*/
+		m_VoxelizationTestShader.reset(DBG_NEW Shader("assets/shaders/voxelization/debug/voxelizeTest.glsl"));
+		m_FrontBackCubeTestShader.reset(DBG_NEW Shader("assets/shaders/voxelization/debug/quadTest.glsl"));
+
 		m_IsInitialize = true;
 	}
 
@@ -63,17 +70,20 @@ namespace BlackPearl {
 		m_CubeObj->GetComponent<MeshRenderer>()->SetEnableRender(false);
 
 
-		//Shader
-		m_VoxelizationShader->Bind();
+		
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 
 		// Settings.
 		glViewport(0, 0, m_VoxelTextureSize, m_VoxelTextureSize);
+		//  disable writing of frame buffer color components
 		glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
 		glDisable(GL_CULL_FACE);
 		glDisable(GL_DEPTH_TEST);
 		glDisable(GL_BLEND);
+
+		//Shader
+		m_VoxelizationShader->Bind();
 
 		//Voxel Texture
 		glActiveTexture(GL_TEXTURE0 + 0);
@@ -84,17 +94,18 @@ namespace BlackPearl {
 		glBindImageTexture(0, m_VoxelTexture->GetRendererID(), 0, GL_TRUE, 0, GL_WRITE_ONLY, GL_RGBA8);
 
 
-		for (auto obj : objs) {
+	/*	for (auto obj : objs) {
 			if (obj->HasComponent<MeshRenderer>())
 				obj->GetComponent<MeshRenderer>()->SetShaders(m_VoxelizationShader);
-		}
+		}*/
 		//Render
-		DrawObjects(objs);
+		DrawObjects(objs, m_VoxelizationShader);
 
 		if (m_AutomaticallyRegenerateMipmap || m_RegenerateMipmapQueued) {
 			glGenerateMipmap(GL_TEXTURE_3D);
 			m_RegenerateMipmapQueued = false;
 		}
+		//enable writing of frame buffer color components
 		glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
 
 	}
@@ -150,25 +161,26 @@ namespace BlackPearl {
 		// Render 3D texture to screen.
 		// -------------------------------------------------------
 
-		m_QuadObj->GetComponent<MeshRenderer>()->SetShaders(m_VoxelVisualizationShader);
+	//	m_QuadObj->GetComponent<MeshRenderer>()->SetShaders(m_VoxelVisualizationShader);
 
 		glBindRenderbuffer(GL_RENDERBUFFER, 0);
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-		m_VoxelVisualizationShader->Bind();
 
 
 		glDisable(GL_DEPTH_TEST);
 		glEnable(GL_CULL_FACE);
 
-		glActiveTexture(GL_TEXTURE0 + 0);
+		m_VoxelVisualizationShader->Bind();
+
+		glActiveTexture(GL_TEXTURE0 );
 		m_FrameBuffer1->BindColorTexture(0);
 		m_VoxelVisualizationShader->SetUniform1i("textureBack", 0);
 
-		glActiveTexture(GL_TEXTURE0 + 1);
+		glActiveTexture(GL_TEXTURE1);
 		m_FrameBuffer2->BindColorTexture(0);
 		m_VoxelVisualizationShader->SetUniform1i("textureFront", 1);
 
-		glActiveTexture(GL_TEXTURE0 + 2);
+		glActiveTexture(GL_TEXTURE2);
 		m_VoxelTexture->Bind();
 		m_VoxelVisualizationShader->SetUniform1i("texture3D", 2);
 
@@ -181,7 +193,27 @@ namespace BlackPearl {
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		m_QuadObj->GetComponent<MeshRenderer>()->SetEnableRender(true);
-		DrawObject(m_QuadObj);
+		DrawObject(m_QuadObj, m_VoxelVisualizationShader);
+
+
+
+		///* debug */
+		//m_DebugQuadObj->GetComponent<MeshRenderer>()->SetEnableRender(true);
+
+		//glViewport(0, 0, 120, 120);//draw back face
+		//m_FrontBackCubeTestShader->Bind();
+		//glActiveTexture(GL_TEXTURE0 + 3);
+		//m_FrameBuffer1->BindColorTexture(0);
+		//m_VoxelVisualizationShader->SetUniform1i("u_CubeFace", 3);
+		//DrawObject(m_DebugQuadObj,m_FrontBackCubeTestShader);
+
+		//glViewport(0, 120, 120, 120);//draw front face
+		//m_FrontBackCubeTestShader->Bind();
+		//glActiveTexture(GL_TEXTURE0 + 4);
+		//m_FrameBuffer2->BindColorTexture(0);
+		//m_VoxelVisualizationShader->SetUniform1i("u_CubeFace", 4);
+		//DrawObject(m_DebugQuadObj, m_FrontBackCubeTestShader);
+
 	}
 
 	void VoxelConeTracingRenderer::RenderScene(const std::vector<Object*>& objs, unsigned int viewportWidth, unsigned int viewportHeight)
@@ -214,7 +246,7 @@ namespace BlackPearl {
 		//uploadRenderingSettings(program);
 		
 		//TODO::
-		float specularReflectivity = 0.0f, diffuseReflectivity = 1.0f, emissivity =0.1f, specularDiffusion = 0.0f;
+		float specularReflectivity = 1.0f, diffuseReflectivity = 1.0f, emissivity =0.1f, specularDiffusion = 0.0f;
 		float transparency = 0.0f, refractiveIndex = 1.4f;
 
 
@@ -246,6 +278,65 @@ namespace BlackPearl {
 		}
 		// Render.
 		DrawObjects(objs);
+
+	}
+
+	void VoxelConeTracingRenderer::VoxelizeTest(const std::vector<Object*>& objs)
+	{
+		/*glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);*/
+
+		glViewport(0, 0, Configuration::WindowWidth, Configuration::WindowHeight);
+		glEnable(GL_CULL_FACE);
+		glEnable(GL_DEPTH_TEST);
+		glEnable(GL_BLEND);
+		DrawObjects(objs);
+
+		/*if (clearVoxelizationFirst) {
+			float clearColor[4] = { 0.0,0.0,0.0,0.0 };
+			m_VoxelTexture->Clear(clearColor);
+		}
+		m_QuadObj->GetComponent<MeshRenderer>()->SetEnableRender(false);
+		m_CubeObj->GetComponent<MeshRenderer>()->SetEnableRender(false);*/
+
+
+		//Shader
+		m_VoxelizationTestShader->Bind();
+
+
+		// Settings.
+		glViewport(120, 120, m_VoxelTextureSize, m_VoxelTextureSize);
+		//  disable writing of frame buffer color components
+		//glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
+		glDisable(GL_CULL_FACE);
+		glDisable(GL_DEPTH_TEST);
+		glDisable(GL_BLEND);
+
+		//Voxel Texture
+	/*	glActiveTexture(GL_TEXTURE0 + 0);
+		m_VoxelTexture->Bind();
+		m_VoxelizationShader->SetUniform1i("texture3D", 0);*/
+		m_VoxelizationTestShader->SetUniformVec3f("u_CubeSize", m_CubeObj->GetComponent<Transform>()->GetScale());
+
+		//glBindImageTexture(0, m_VoxelTexture->GetRendererID(), 0, GL_TRUE, 0, GL_WRITE_ONLY, GL_RGBA8);
+
+
+	/*	for (auto obj : objs) {
+			if (obj->HasComponent<MeshRenderer>())
+				obj->GetComponent<MeshRenderer>()->SetShaders(m_VoxelizationShader);
+		}*/
+		//Render
+		DrawObjects(objs, m_VoxelizationTestShader);
+
+		/*if (m_AutomaticallyRegenerateMipmap || m_RegenerateMipmapQueued) {
+			glGenerateMipmap(GL_TEXTURE_3D);
+			m_RegenerateMipmapQueued = false;
+		}*/
+		//enable writing of frame buffer color components
+		//glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+
+
+
 
 	}
 

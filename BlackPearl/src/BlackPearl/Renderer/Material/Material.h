@@ -66,6 +66,9 @@ namespace BlackPearl {
 		void SetTexture(const Texture::Type type, const std::string& image);
 		void SetMaterialColor(MaterialColor::Color color);
 		void SetMaterialColorDiffuseColor(glm::vec3 color);
+		void SetMaterialColorSpecularColor(glm::vec3 color);
+		void SetMaterialColorEmissionColor(glm::vec3 color);
+
 
 		void SetProps(const Props& props);
 		void SetShininess(float shininess);

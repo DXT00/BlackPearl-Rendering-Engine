@@ -14,7 +14,7 @@ namespace BlackPearl {
 		VoxelConeTracingRenderer();
 		~VoxelConeTracingRenderer();
 
-		void Init(unsigned int viewportWidth,unsigned int viewportHeight, Object * quadObj, Object * cubeObj);
+		void Init(unsigned int viewportWidth,unsigned int viewportHeight, Object * quadObj, Object * cubeObj);//, Object* debugQuadObj
 		void InitVoxelization();
 		void InitVoxelVisualization(unsigned int viewportWidth, unsigned int viewportHeight);
 		void Voxilize(const std::vector<Object*>&objs, bool clearVoxelizationFirst = true);
@@ -28,11 +28,11 @@ namespace BlackPearl {
 		void RenderVoxelVisualization(const std::vector<Object*>&objs,  unsigned int viewportWidth, unsigned int viewportHeight);
 		void RenderScene(const std::vector<Object*>&objs, unsigned int viewportWidth, unsigned int viewportHeight);
 
-	
-
+		/*Debug function*/
+		void VoxelizeTest(const std::vector<Object*>& objs);
 	private:
 		Texture3D* m_VoxelTexture = nullptr;
-		unsigned int m_VoxelTextureSize = 256;// 64;
+		unsigned int m_VoxelTextureSize = 256;// 256;// 64;
 
 
 		// ----------------
@@ -61,12 +61,19 @@ namespace BlackPearl {
 		std::shared_ptr<Shader> m_VoxelVisualizationShader;
 		std::shared_ptr<Shader> m_VoxelConeTracingShader;
 
+		/*Debug function*/
+		std::shared_ptr<Shader> m_VoxelizationTestShader;
+		std::shared_ptr<Shader> m_FrontBackCubeTestShader;
+
 
 		std::shared_ptr<FrameBuffer> m_FrameBuffer1;
 		std::shared_ptr<FrameBuffer> m_FrameBuffer2;
 
 		Object * m_QuadObj = nullptr;//用于显示体素化结果 ： voxel Visualization
 		Object * m_CubeObj = nullptr; //控制体素化渲染范围
+
+		Object* m_DebugQuadObj = nullptr; //darw front face and back face of cube
+
 
 		bool m_IsInitialize = false;
 	};

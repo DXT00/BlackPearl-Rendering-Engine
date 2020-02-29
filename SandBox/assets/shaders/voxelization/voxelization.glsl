@@ -1,6 +1,4 @@
-// Author:	Fredrik Pr‰ntare <prantare@gmail.com>
-// Date:	11/26/2016
-//#type vertex
+#type vertex
 #version 430 core
 
 layout(location = 0) in vec3 aPos;
@@ -14,11 +12,9 @@ uniform mat4 u_TranInverseModel;//transpose(inverse(u_Model))-->◊Ó∫√‘⁄cpu‘ÀÀ„ÕÍ‘
 
 out vec3 worldPositionGeom;
 out vec3 normalGeom;
-out vec2 v_TexCoord;
 
 void main(){
 	worldPositionGeom = vec3(u_Model * vec4(aPos,1.0));
-	v_TexCoord = vec2(aTexCoords.x,aTexCoords.y);
 
 	normalGeom = mat3(transpose(inverse(u_Model)))*aNormal;
 	normalGeom=normalize(normalGeom);
@@ -33,11 +29,9 @@ layout(triangle_strip,max_vertices = 3) out;
 
 in vec3 worldPositionGeom[];
 in vec3 normalGeom[];
-in vec2 v_TexCoord[];
 
 out vec3 worldPositionFrag;
 out vec3 normalFrag;
-out vec2 g_TexCoord;
 
 void main(){
 	vec3 p1 = worldPositionGeom[1] - worldPositionGeom[0];
@@ -46,8 +40,6 @@ void main(){
 	for(uint i = 0; i < 3; ++i){
 		worldPositionFrag = worldPositionGeom[i];
 		normalFrag = normalGeom[i];
-		g_TexCoord =  v_TexCoord[i];
-
 		if(p.z > p.x && p.z > p.y){
 			gl_Position = vec4(worldPositionFrag.x, worldPositionFrag.y, 0, 1);
 		} else if (p.x > p.y && p.x > p.z){
@@ -68,7 +60,7 @@ void main(){
 
 // Lighting settings.
 #define POINT_LIGHT_INTENSITY 1
-#define MAX_LIGHTS 1
+#define MAX_LIGHTS 5
 
 // Lighting attenuation factors.
 #define DIST_FACTOR 1.1f /* Distance is multiplied by this when calculating attenuation. */
@@ -109,29 +101,39 @@ uniform struct Material{
 
 }u_Material;
 
-uniform PointLight u_PointLights[MAX_LIGHTS];
+uniform PointLight u_PointLights[5];
 uniform int u_PointLightNums;
 uniform vec3 u_CameraViewPos;
-layout(rgba8, binding = 0) uniform image3D texture3D;
 uniform vec3 u_CubeSize;
+layout(rgba8, binding = 0) uniform image3D texture3D;
+
 in vec3 worldPositionFrag;//=v_FragPos
 in vec3 normalFrag;
-in vec2 g_TexCoord;
 
-
+//vec3 calculatePointLight(const PointLight light){
+//	const vec3 direction = normalize(light.position - worldPositionFrag);
+//	const float distanceToLight = distance(light.position, worldPositionFrag);
+//	const float attenuation = attenuate(distanceToLight);
+//	const float d = max(dot(normalize(normalFrag), direction), 0.0f);
+//	return d * POINT_LIGHT_INTENSITY * attenuation * light.color;
+//};
 vec3 CalcPointLight(PointLight light,vec3 normal,vec3 viewDir){
 	vec3 fragColor;
 
 	float distance = length(light.position-worldPositionFrag);
 	float attenuation = 1.0f/(light.constant+light.linear * distance+light.quadratic*distance*distance);
 	//ambient
-	vec3 ambient =  light.ambient *  (u_Material.ambientColor * (1-u_Material.isTextureSample)+ texture(u_Material.diffuse,g_TexCoord).rgb * u_Material.isTextureSample);//light.ambient * (u_Material.ambientColor );
+	vec3 ambient = light.ambient * (u_Material.ambientColor );
+//	vec3 ambient = light.ambient * u_Material.ambientColor 
+//					   *texture(u_Material.diffuse,v_TexCoord).rgb;
+	
 	//diffuse
 	vec3 lightDir = normalize(light.position-worldPositionFrag);
 	vec3 norm = normalize(normal);
 	float diff = max(dot(lightDir,norm),0.0f);
-	vec3 diffuse = light.diffuse * diff *( u_Material.diffuseColor *(1-u_Material.isTextureSample)
-					+ texture(u_Material.diffuse,g_TexCoord).rgb*u_Material.isTextureSample);//light.diffuse * diff * ( u_Material.diffuseColor );
+	vec3 diffuse = light.diffuse * diff * ( u_Material.diffuseColor );//texture(u_Material.diffuse,v_TexCoord).rgb;// u_Material.diffuse);u_LightColor
+//	vec3 diffuse = light.diffuse * diff *  u_Material.diffuseColor *texture(u_Material.diffuse,v_TexCoord).rgb;
+
 //specular
 	vec3 specular;
 	float spec;
@@ -160,23 +162,30 @@ vec3 CalcPointLight(PointLight light,vec3 normal,vec3 viewDir){
 
 vec3 scaleAndBias(vec3 p) { return 0.5f * p + vec3(0.5f); }
 
+//bool isInsideCube(const vec3 p, float e) { return abs(p.x) < 1 + e && abs(p.y) < 1 + e && abs(p.z) < 1 + e; }
 bool isInsideCube(const vec3 p, float e) { return abs(p.x) < u_CubeSize.x + e && abs(p.y) < u_CubeSize.y + e && abs(p.z) < u_CubeSize.z + e; }
-out vec4 color;
+
 void main(){
 	vec3 viewDir = normalize(u_CameraViewPos-worldPositionFrag);
 
-	vec3 color = vec3(0.0f);
+	vec3 color = vec3(0.0);
 	if(!isInsideCube(worldPositionFrag, 0)) return;
 
 	// Calculate diffuse lighting fragment contribution.
-	int maxLights = min(u_PointLightNums, MAX_LIGHTS);
-	for(int i = 0; i < maxLights; ++i) color += CalcPointLight(u_PointLights[i], normalFrag,viewDir);
+//	int maxLights = u_PointLightNums;// min(u_PointLightNums, MAX_LIGHTS);
+	for(int i = 0; i < u_PointLightNums; ++i) 
+	{
+	color += CalcPointLight(u_PointLights[i], normalFrag,viewDir);
+
+	}
+//	vec3 spec = material.specularReflectivity * material.specularColor;
+//	vec3 diff = material.diffuseReflectivity * material.diffuseColor;
+//	color = (diff + spec) * color + clamp(material.emissivity, 0, 1) * material.diffuseColor;
 
 	// Output lighting to 3D texture.
 	vec3 voxel = scaleAndBias(worldPositionFrag);
 	ivec3 dim = imageSize(texture3D);// retrieve the dimensions of an image
-	float alpha = pow(1 - 0, 4); // For soft shadows to work better with transparent materials.//TODO::Õ∏√˜∂»
+	float alpha = pow(1 - 0, 4); // For soft shadows to work better with transparent materials.
 	vec4 res = alpha * vec4(vec3(color), 1);
-    imageStore(texture3D, ivec3(dim * voxel), res);//write a single texel into an image; dim * voxel£∫64.0*([0,1.0])
-
+    imageStore(texture3D, ivec3(dim * voxel), res);//write a single texel into an image;
 }

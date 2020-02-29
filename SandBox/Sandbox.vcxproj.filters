@@ -33,6 +33,7 @@
     <ClInclude Include="src\Layers\VoxelConeTracingLayer.h">
       <Filter>Layers</Filter>
     </ClInclude>
+    <ClInclude Include="src\Layers\VoxelizationTestLayer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\SandBox.cpp" />
