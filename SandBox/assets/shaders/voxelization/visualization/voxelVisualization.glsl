@@ -26,13 +26,16 @@ void main(){
 
 #define INV_STEP_LENGTH (1.0f/STEP_LENGTH)
 #define STEP_LENGTH 0.005f
-
 uniform sampler2D textureBack; // Unit cube back FBO.
+
+uniform sampler2D u_Image; // Unit cube back FBO.
 uniform sampler2D textureFront; // Unit cube front FBO.
 uniform sampler3D texture3D; // Texture in which voxelization is stored.
 uniform vec3 u_CameraViewPos; // World camera position.
 uniform int u_State; // Decides mipmap sample level.
 uniform vec3 u_CubeSize;
+//uniform vec3 u_CubePos;
+
 in vec2 textureCoordinateFrag; 
 out vec4 color;
 
@@ -40,24 +43,41 @@ out vec4 color;
 vec3 scaleAndBias(vec3 p) { return 0.5f * p + vec3(0.5f); }
 
 // Returns true if p is inside the unity cube (+ e) centered on (0, 0, 0).
-bool isInsideCube(vec3 p, float e) { return abs(p.x) < u_CubeSize.x + e && abs(p.y) <u_CubeSize.y + e && abs(p.z) < u_CubeSize.z + e; }
+//bool isInsideCube(vec3 p, float e) { return abs(p.x) < u_CubeSize.x + e && abs(p.y) <u_CubeSize.y + e && abs(p.z) < u_CubeSize.z + e; }
+bool isInsideCube(const vec3 p, float e) 
+{
+	return	p.x < u_CameraViewPos.x + u_CubeSize.x && p.x > u_CameraViewPos.x - u_CubeSize.x &&
+			p.y < u_CameraViewPos.y + u_CubeSize.y && p.y > u_CameraViewPos.y - u_CubeSize.y &&
+			 p.z < u_CameraViewPos.z + u_CubeSize.z && p.z > u_CameraViewPos.z - u_CubeSize.z ;
+
+}
 
 void main() {
 	const float mipmapLevel = u_State;
 
 	// Initialize ray.
-	const vec3 origin = isInsideCube(u_CameraViewPos, 0.2f) ? 
-		u_CameraViewPos : texture(textureFront, textureCoordinateFrag).xyz;
+	 vec3 origin = u_CameraViewPos;
+	//isInsideCube(u_CameraViewPos, 0.2f) ? 
+		//u_CameraViewPos : texture(textureFront, textureCoordinateFrag).xyz;
 	vec3 direction = texture(textureBack, textureCoordinateFrag).xyz - origin;
-	uint numberOfSteps = uint(INV_STEP_LENGTH * length(direction));
+
+
+	direction = direction/u_CubeSize;
+	origin =(origin-u_CameraViewPos)/u_CubeSize;
+
+	uint numberOfSteps = uint(INV_STEP_LENGTH * length(direction));///u_CubeSize.x
 	direction = normalize(direction);
 
 	// Trace.
 	color = vec4(0.0f);
 	for(uint step_ = 0; step_ < numberOfSteps && color.a < 0.99f; ++step_) {
-		const vec3 currentPoint = origin + STEP_LENGTH * step_ * direction;
-		//vec3 coordinate = scaleAndBias(currentPoint);
-		vec4 currentSample = textureLod(texture3D, scaleAndBias(currentPoint), mipmapLevel);
+//		vec3 currentPoint = origin + STEP_LENGTH * step_ * direction;
+//		currentPoint = currentPoint-u_CubePos;
+		vec3 currentPoint = origin + STEP_LENGTH * step_ * direction;
+		//currentPoint = currentPoint-u_CubePos;
+		//float  dim = imageSize(texture3D);// retrieve the dimensions of an image
+
+	vec4 currentSample = textureLod(texture3D, scaleAndBias(currentPoint), mipmapLevel);///u_CubeSize.x
 		//textureLod:perform a texture lookup with explicit level-of-detail
 		color += (1.0f - color.a) * currentSample;
 	} 

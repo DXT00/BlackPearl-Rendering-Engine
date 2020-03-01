@@ -36,6 +36,8 @@ namespace BlackPearl {
 
 		virtual ~Camera() = default;
 		inline glm::vec3 GetPosition() const { return m_Position; }
+		inline glm::vec3 GetRotation() const { return glm::vec3(m_ViewMatrixProps.Pitch, m_ViewMatrixProps.Yaw,0.0f); }
+
 		inline glm::vec3 Front() const { return m_ViewMatrixProps.Front; }
 		inline glm::vec3 Up() const { return m_ViewMatrixProps.Up; }
 		inline glm::vec3 Right() const { return m_ViewMatrixProps.Right; }

@@ -26,7 +26,7 @@ void main(){
 // Light (voxel) cone tracing settings.
 // --------------------------------------
 #define MIPMAP_HARDCAP 5.4f /* Too high mipmap levels => glitchiness, too low mipmap levels => sharpness. */
-#define VOXEL_SIZE (1/256.0) /* Size of a voxel. 128x128x128 => 1/128 = 0.0078125. */
+#define VOXEL_SIZE (1/320.0) /* Size of a voxel. 128x128x128 => 1/128 = 0.0078125. */
 #define SHADOWS 1 /* Shadow cone tracing. */
 #define DIFFUSE_INDIRECT_FACTOR 0.52f /* Just changes intensity of diffuse indirect lighting. */
 // --------------------------------------
@@ -98,6 +98,7 @@ uniform PointLight u_PointLights[5];
 uniform int u_State;
 uniform sampler3D texture3D;
 uniform vec3 u_CubeSize; //m_CubeObj的大小，控制体素化范围
+//uniform vec3 u_CubePos; //m_CubeObj的大小，控制体素化范围
 
 in vec3 worldPositionFrag;
 
@@ -123,32 +124,44 @@ vec3 scaleAndBias(vec3 p){
 }
 
 // Returns true if the point p is inside the unity cube. 
-bool isInsideCube(const vec3 p, float e) { return abs(p.x) < u_CubeSize.x + e && abs(p.y) < u_CubeSize.y + e && abs(p.z) < u_CubeSize.z + e; }
+//bool isInsideCube(const vec3 p, float e) { return abs(p.x) < u_CubeSize.x + e && abs(p.y) < u_CubeSize.y + e && abs(p.z) < u_CubeSize.z + e; }
+bool isInsideCube(const vec3 p, float e) { return abs(p.x) < 1 + e && abs(p.y) < 1 + e && abs(p.z) < 1 + e; }
 
 
 // Returns a soft shadow blend by using shadow cone tracing.
 // Uses 2 samples per step, so it's pretty expensive.
-float traceShadowCone(vec3 from, vec3 direction, float targetDistance){
-	from += normal * 0.05f; // Removes artifacts but makes self shadowing for dense meshes meh.
+//		shadowBlend = traceShadowCone(worldPositionFrag, lightDirection, distanceToLight);
+
+float traceShadowCone(vec3 from, vec3 lightPos){
+	from = from-u_CameraViewPos;
+	lightPos = lightPos-u_CameraViewPos;
+	
+	vec3 fragPosToLight = lightPos-from;
+	vec3 direction = fragPosToLight/u_CubeSize;
+	from = from/u_CubeSize;
+	//targetDistance = targetDistance/u_CubeSize.x;
+
+//	from += normal * 0.005; // Removes artifacts but makes self shadowing for dense meshes meh.
 
 	float acc = 0;
 
 	float dist = 3 * VOXEL_SIZE;
 	// I'm using a pretty big margin here since I use an emissive light ball with a pretty big radius in my demo scenes.
-	const float STOP = targetDistance - 16 * VOXEL_SIZE;;
-
+	const float STOP = length(direction) - 3 * VOXEL_SIZE;//16
+	direction = normalize(direction);
 	while(dist < STOP && acc < 1){	
 		vec3 c = from + dist * direction;
 		if(!isInsideCube(c, 0)) break;
 		c = scaleAndBias(c);
 		float l = pow(dist, 2); // Experimenting with inverse square falloff for shadows.
-		float s1 = 0.062 * textureLod(texture3D, c, 1 + 0.75 * l).a;
-		float s2 = 0.135 * textureLod(texture3D, c, 4.5 * l).a;
-
+		float s1 = 0.062 * textureLod(texture3D, c,( 1 + 0.75 * l)).a;
+		float s2 = 0.135 * textureLod(texture3D, c, (2.5 * l)).a;
+//		float s1 = 0.062 * textureLod(texture3D, c, 1 + 0.75 * l).a;
+//		float s2 = 0.135 * textureLod(texture3D, c, 4.5 * l).a;
 		float s = s1+ s2;
 		
 		acc += (1 - acc) * s;
-		dist += 0.9 * VOXEL_SIZE * (1 + 0.05 * l);
+		dist += 0.9 * VOXEL_SIZE * (1 + 0.05 * l);//0.9 * VOXEL_SIZE * (1 + 0.05 * l);
 	}
 	return 1 - pow(smoothstep(0, 1, acc * 1.4), 1.0 / 1.4);
 }	
@@ -174,6 +187,7 @@ vec3 traceDiffuseVoxelCone(const vec3 from,vec3 direction){
 		float l = (1+ CONE_SPEEAD * dist/VOXEL_SIZE); //跨过了多少Voxel
 		float level = log2(l);
 		float ll = (level+1)*(level+1);
+		
 		vec4 voxel = textureLod(texture3D,c,min(MIPMAP_HARDCAP,level));
 		acc+=0.075*ll*voxel*pow(1-voxel.a,2);
 		dist+= ll*VOXEL_SIZE*2;
@@ -187,6 +201,7 @@ vec3 traceDiffuseVoxelCone(const vec3 from,vec3 direction){
 
 // Traces a specular voxel cone.
 vec3 traceSpecularVoxelCone(vec3 from, vec3 direction){
+	from = (from-u_CameraViewPos)/u_CubeSize;
 	direction = normalize(direction);
 
 	const float OFFSET = 8 * VOXEL_SIZE;
@@ -217,6 +232,9 @@ vec3 traceSpecularVoxelCone(vec3 from, vec3 direction){
 // The current implementation uses 9 cones. I think 5 cones should be enough, but it might generate
 // more aliasing and bad blur.
 vec3 indirectDiffuseLight(){
+	//MY
+	vec3 worldPositionFrag_=(worldPositionFrag-u_CameraViewPos)/u_CubeSize;
+
 	const float ANGLE_MIX = 0.5f; // Angle mix (1.0f => orthogonal direction, 0.0f => direction of normal).
 
 	const float w[3] = {1.0, 1.0, 1.0}; // Cone weights.
@@ -231,7 +249,7 @@ vec3 indirectDiffuseLight(){
 
 	// Find start position of trace (start with a bit of offset).
 	const vec3 N_OFFSET = normal * (1 + 4 * ISQRT2) * VOXEL_SIZE;
-	const vec3 C_ORIGIN = worldPositionFrag + N_OFFSET;
+	const vec3 C_ORIGIN = worldPositionFrag_ + N_OFFSET;
 
 	// Accumulate indirect diffuse light.
 	vec3 acc = vec3(0);
@@ -287,6 +305,10 @@ vec3 indirectRefractiveLight(vec3 viewDirection){
 // Uses shadow cone tracing for soft shadows.
 vec3 calculateDirectLight(const PointLight light, const vec3 viewDirection){
 	vec3 lightDirection = light.position - worldPositionFrag;
+	//MY 
+	vec3 ligtdir = lightDirection/u_CubeSize;
+	float distToLight = length(ligtdir);
+
 	const float distanceToLight = length(lightDirection);
 	lightDirection = lightDirection / distanceToLight;
 	const float lightAngle = dot(normal, lightDirection);
@@ -321,7 +343,7 @@ vec3 calculateDirectLight(const PointLight light, const vec3 viewDirection){
 	float shadowBlend = 1;
 #if (SHADOWS == 1)
 	if(diffuseAngle * (1.0f - u_Material.transparency) > 0 && u_Settings.shadows)
-		shadowBlend = traceShadowCone(worldPositionFrag, lightDirection, distanceToLight);
+		shadowBlend = traceShadowCone(worldPositionFrag,light.position);
 #endif
 
 	// --------------------
@@ -354,20 +376,20 @@ void main(){
 	const vec3 viewDirection = normalize(worldPositionFrag-u_CameraViewPos);
 
 	//Indirect diffuse light
-	if(u_Settings.indirectDiffuseLight && u_Material.diffuseReflectivity*(1.0f-u_Material.transparency)>0.01f)
+	if(u_Settings.indirectDiffuseLight && u_Material.diffuseReflectivity*(1.0-u_Material.transparency)>0.01)
 		color.rgb += indirectDiffuseLight();
 
-	//Indirect specular light (glossy reflection)
-	if(u_Settings.indirectSpecularLight && u_Material.specularReflectivity*(1.0f-u_Material.transparency)>0.01f)
-		color.rgb += indirectSpecularLight(viewDirection);
-
-	//Emissivity
-	color.rgb += u_Material.emissivity * u_Material.diffuseColor;
-
-	//Transparency
-	if(u_Material.transparency>0.01f)
-		color.rgb = color.rgb*(1-u_Material.transparency) + indirectRefractiveLight(viewDirection)*u_Material.transparency;
-
+//	//Indirect specular light (glossy reflection)
+//	if(u_Settings.indirectSpecularLight && u_Material.specularReflectivity*(1.0f-u_Material.transparency)>0.01f)
+//		color.rgb += indirectSpecularLight(viewDirection);
+//
+//	//Emissivity
+//	color.rgb += u_Material.emissivity * u_Material.diffuseColor;
+//
+//	//Transparency
+//	if(u_Material.transparency>0.01f)
+//		color.rgb = color.rgb*(1-u_Material.transparency) + indirectRefractiveLight(viewDirection)*u_Material.transparency;
+//
 	//Direct light
 	if(u_Settings.directLight)
 		color.rgb += directLight(viewDirection);

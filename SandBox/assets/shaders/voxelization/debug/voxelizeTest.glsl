@@ -163,24 +163,33 @@ vec3 scaleAndBias(vec3 p) { return 0.5f * p + vec3(0.5f); }
 bool isInsideCube(const vec3 p, float e) { return abs(p.x) < u_CubeSize.x + e && abs(p.y) < u_CubeSize.y + e && abs(p.z) < u_CubeSize.z + e; }
 out vec4 Fragcolor;
 void main(){
+	
+	
+
 	vec3 viewDir = normalize(u_CameraViewPos-worldPositionFrag);
 
-	vec3 color = vec3(0.0f);
+	vec3 color = vec3(0.0);
 	if(!isInsideCube(worldPositionFrag, 0)) return;
-
+	vec3 normalWorldPositionFrag = vec3(worldPositionFrag.x/u_CubeSize.x,worldPositionFrag.y/u_CubeSize.y,worldPositionFrag.z/u_CubeSize.z);
 	// Calculate diffuse lighting fragment contribution.
-	int maxLights = min(u_PointLightNums, MAX_LIGHTS);
-	for(int i = 0; i < maxLights; ++i) color += CalcPointLight(u_PointLights[i], normalFrag,viewDir);
+//	int maxLights = u_PointLightNums;// min(u_PointLightNums, MAX_LIGHTS);
+	for(int i = 0; i < u_PointLightNums; ++i) 
+	{
+	color += CalcPointLight(u_PointLights[i], normalFrag,viewDir);
 
+	}
+//	vec3 spec = material.specularReflectivity * material.specularColor;
+//	vec3 diff = material.diffuseReflectivity * material.diffuseColor;
+//	color = (diff + spec) * color + clamp(material.emissivity, 0, 1) * material.diffuseColor;
 
-	Fragcolor = vec4(color,1.0);
-
-
-
-
-
-
-
+	// Output lighting to 3D texture.
+	vec3 voxel = scaleAndBias(normalWorldPositionFrag);
+	ivec3 dim = imageSize(texture3D);// retrieve the dimensions of an image
+	float alpha = pow(1 - 0, 4); // For soft shadows to work better with transparent materials.
+	vec4 res = alpha * vec4(vec3(color), 1);
+    imageStore(texture3D, ivec3(dim * voxel), res);//write a single texel into an image;
+	
+	Fragcolor = res;
 
 	// Output lighting to 3D texture.
 //	vec3 voxel = scaleAndBias(worldPositionFrag);

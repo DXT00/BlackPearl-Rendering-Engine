@@ -3,6 +3,7 @@
 #include "BlackPearl/Renderer/Material/Texture3D.h"
 #include "BlackPearl/Renderer/Shader/Shader.h"
 #include "BlackPearl/Renderer/Buffer.h"
+#include "BlackPearl/Renderer/Material/TextureImage2D.h"
 namespace BlackPearl {
 	class VoxelConeTracingRenderer:public BasicRenderer
 	{
@@ -17,7 +18,8 @@ namespace BlackPearl {
 		void Init(unsigned int viewportWidth,unsigned int viewportHeight, Object * quadObj, Object * cubeObj);//, Object* debugQuadObj
 		void InitVoxelization();
 		void InitVoxelVisualization(unsigned int viewportWidth, unsigned int viewportHeight);
-		void Voxilize(const std::vector<Object*>&objs, bool clearVoxelizationFirst = true);
+		void Voxilize(const std::vector<Object*>&objs,
+			bool clearVoxelizationFirst = true);
 		void Render(
 			const std::vector<Object*>&objs, 
 			const LightSources* lightSources,
@@ -28,8 +30,25 @@ namespace BlackPearl {
 		void RenderVoxelVisualization(const std::vector<Object*>&objs,  unsigned int viewportWidth, unsigned int viewportHeight);
 		void RenderScene(const std::vector<Object*>&objs, unsigned int viewportWidth, unsigned int viewportHeight);
 
+
+		/* Öð¸öobjectÌåËØ»¯ */
+		/*void Voxilize( Object* obj,bool clearVoxelizationFirst = true);
+		void Render(
+			 Object* obj,
+			const LightSources* lightSources,
+			unsigned int viewportWidth,
+			unsigned int viewportHeight,
+			glm::vec3 cameraPos,
+			RenderingMode reneringMode = RenderingMode::VOXELIZATION_VISUALIZATION
+		);
+		void RenderVoxelVisualization( Object* obj, unsigned int viewportWidth, unsigned int viewportHeight);
+		void RenderScene( Object* obj, unsigned int viewportWidth, unsigned int viewportHeight);*/
+
+
+
 		/*Debug function*/
 		void VoxelizeTest(const std::vector<Object*>& objs);
+		void DrawFrontBackFaceOfCube(Object* debugQuadObj);
 	private:
 		Texture3D* m_VoxelTexture = nullptr;
 		unsigned int m_VoxelTextureSize = 256;// 256;// 64;
@@ -76,6 +95,14 @@ namespace BlackPearl {
 
 
 		bool m_IsInitialize = false;
+
+
+
+		/*u_CubeSize*/
+		//glm::vec3 m_CubeSize{ 10.0f };
+
+		std::shared_ptr< TextureImage2D> m_CubeBackPosTexture;
+
 	};
 
 }

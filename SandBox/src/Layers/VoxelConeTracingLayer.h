@@ -32,7 +32,8 @@ public:
 		//debugQuad->GetComponent<BlackPearl::MeshRenderer>()->SetEnableRender(false);
 		m_VoxelConeTracingRenderer->Init(BlackPearl::Configuration::WindowWidth, BlackPearl::Configuration::WindowHeight,m_QuadObj,m_CubeObj);
 		
-
+		m_DebugQuadObj = CreateQuad();
+		m_DebugQuadObj->GetComponent<BlackPearl::Transform>()->SetPosition({ 0.0f, 0.0f, 1.0f });
 
 		BlackPearl::Renderer::Init();
 	
@@ -41,7 +42,7 @@ public:
 		deer->GetComponent<BlackPearl::Transform>()->SetScale(glm::vec3(0.001));
 		deer->GetComponent<BlackPearl::Transform>()->SetRotation(glm::vec3(0.000));
 
-		deer->GetComponent<BlackPearl::Transform>()->SetPosition({0.0f,-1.0f,0.0f});
+		deer->GetComponent<BlackPearl::Transform>()->SetPosition({ 0.0,0.0,3.0f });
 		deer->GetComponent<BlackPearl::MeshRenderer>()->SetIsBackGroundObjects(true);
 		m_BackGroundObjsList.push_back(deer);
 
@@ -75,13 +76,30 @@ public:
 
 		InputCheck(ts);
 
+		//Switch mode
+		if (BlackPearl::Input::IsKeyPressed(BP_KEY_U)) {
+			m_Mode = (m_Mode + 1) % 2;
+			if(m_Mode==0)
+			m_CurrentRenderingMode = BlackPearl::VoxelConeTracingRenderer::RenderingMode::VOXELIZATION_VISUALIZATION;
+			else if(m_Mode==1)
+				m_CurrentRenderingMode = BlackPearl::VoxelConeTracingRenderer::RenderingMode::VOXEL_CONE_TRACING;
+
+		}
 		// render
+		//glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
 		BlackPearl::RenderCommand::SetClearColor(m_BackgroundColor);
 		BlackPearl::Renderer::BeginScene(*(m_MainCamera->GetObj()->GetComponent<BlackPearl::PerspectiveCamera>()), *GetLightSources());
 
-		m_VoxelConeTracingRenderer->Render(m_BackGroundObjsList, GetLightSources(), BlackPearl::Configuration::WindowWidth, BlackPearl::Configuration::WindowHeight, m_CurrentRenderingMode);
+	//	for (BlackPearl::Object* obj:m_BackGroundObjsList)
+	//	{
+			m_VoxelConeTracingRenderer->Render(m_BackGroundObjsList, GetLightSources(), BlackPearl::Configuration::WindowWidth, BlackPearl::Configuration::WindowHeight, m_CurrentRenderingMode);
 
-		m_BasicRenderer->DrawLightSources(GetLightSources());
+	//	}
+			m_BasicRenderer->DrawLightSources(GetLightSources());
+
+		//m_VoxelConeTracingRenderer->DrawFrontBackFaceOfCube(m_DebugQuadObj);
+
 
 
 
@@ -97,6 +115,7 @@ private:
 	std::vector<BlackPearl::Object*> m_LightObjs;
 	BlackPearl::Object* m_IronManObj;
 	BlackPearl::Object* m_QuadObj;
+	BlackPearl::Object* m_DebugQuadObj;
 	BlackPearl::Object* m_PlaneObj;
 	BlackPearl::Object* m_CubeObj;
 	BlackPearl::Object* m_SkyBoxObj;
@@ -106,6 +125,7 @@ private:
 
 	BlackPearl::VoxelConeTracingRenderer* m_VoxelConeTracingRenderer;
 	BlackPearl::BasicRenderer* m_BasicRenderer;
-
-	BlackPearl::VoxelConeTracingRenderer::RenderingMode m_CurrentRenderingMode = BlackPearl::VoxelConeTracingRenderer::RenderingMode::VOXEL_CONE_TRACING;//VOXELIZATION_VISUALIZATION
+	
+	unsigned int m_Mode = 0;
+	BlackPearl::VoxelConeTracingRenderer::RenderingMode m_CurrentRenderingMode = BlackPearl::VoxelConeTracingRenderer::RenderingMode::VOXELIZATION_VISUALIZATION;// VOXEL_CONE_TRACING;//VOXELIZATION_VISUALIZATION
 };

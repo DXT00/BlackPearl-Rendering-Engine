@@ -38,6 +38,8 @@ namespace BlackPearl {
 		s_SceneData->LightSources = lightSources;
 		s_SceneData->ViewProjectionMatrix = camera.GetViewProjectionMatrix();
 		s_SceneData->CameraPosition = camera.GetPosition();
+		s_SceneData->CameraRotation = camera.GetRotation();
+
 		s_SceneData->CameraFront = camera.Front();
 		s_SceneData->ViewMatrix = camera.GetViewMatrix();
 		s_SceneData->ProjectionMatrix = camera.GetProjectionMatrix();

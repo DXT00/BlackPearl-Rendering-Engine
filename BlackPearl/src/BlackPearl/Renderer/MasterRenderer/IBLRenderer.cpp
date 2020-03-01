@@ -86,7 +86,7 @@ namespace BlackPearl {
 		for (unsigned int i = 0; i < 6; i++)
 		{	
 			//TODO:: camera->Front有问题，不过Front只用于spotLight，这里暂且不管
-			Renderer::SceneData* scene = DBG_NEW Renderer::SceneData{ m_CaptureProjectionViews[i] ,m_CaptureViews[i],m_CaptureProjection,Renderer::GetSceneData()->CameraPosition,Renderer::GetSceneData()->CameraFront,Renderer::GetSceneData()->LightSources };
+			Renderer::SceneData* scene = DBG_NEW Renderer::SceneData{ m_CaptureProjectionViews[i] ,m_CaptureViews[i],m_CaptureProjection,Renderer::GetSceneData()->CameraPosition,Renderer::GetSceneData()->CameraRotation, Renderer::GetSceneData()->CameraFront,Renderer::GetSceneData()->LightSources };
 
 			//m_HdrMapToCubeShader->SetUniformMat4f("u_CubeMapProjectionView", m_CaptureProjectionViews[i]);
 			//将CubeMap的六个面附加到FrameBuffer的GL_COLOR_ATTACHMENT0中
@@ -124,7 +124,7 @@ namespace BlackPearl {
 
 		for (unsigned int i = 0; i < 6; ++i)
 		{
-			Renderer::SceneData* scene = DBG_NEW Renderer::SceneData{ m_CaptureProjectionViews[i] ,m_CaptureViews[i],m_CaptureProjection,Renderer::GetSceneData()->CameraPosition,Renderer::GetSceneData()->CameraFront,Renderer::GetSceneData()->LightSources };
+			Renderer::SceneData* scene = DBG_NEW Renderer::SceneData{ m_CaptureProjectionViews[i] ,m_CaptureViews[i],m_CaptureProjection,Renderer::GetSceneData()->CameraPosition,Renderer::GetSceneData()->CameraRotation,Renderer::GetSceneData()->CameraFront,Renderer::GetSceneData()->LightSources };
 
 			//m_IrradianceShader->SetUniformMat4f("u_CubeMapProjectionView", m_CaptureProjectionViews[i]);
 			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, m_IrradianceCubeMapID, 0);
@@ -163,7 +163,7 @@ namespace BlackPearl {
 			m_SpecularPrefilterShader->SetUniform1f("u_roughness", roughness);
 			for (unsigned int i = 0; i < 6; i++)
 			{
-				Renderer::SceneData* scene = DBG_NEW Renderer::SceneData{ m_CaptureProjectionViews[i] ,m_CaptureViews[i],m_CaptureProjection,Renderer::GetSceneData()->CameraPosition,Renderer::GetSceneData()->CameraFront,Renderer::GetSceneData()->LightSources };
+				Renderer::SceneData* scene = DBG_NEW Renderer::SceneData{ m_CaptureProjectionViews[i] ,m_CaptureViews[i],m_CaptureProjection,Renderer::GetSceneData()->CameraPosition,Renderer::GetSceneData()->CameraRotation,Renderer::GetSceneData()->CameraFront,Renderer::GetSceneData()->LightSources };
 
 				//m_SpecularPrefilterShader->SetUniformMat4f("u_CubeMapProjectionView", m_CaptureProjectionViews[i]);
 

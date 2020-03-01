@@ -25,10 +25,27 @@ void main(){
 
 
 in vec3 worldPosition;
+uniform vec3 u_CameraViewPos;
+uniform vec3 u_CubeSize;
+layout(rgba32f, binding=1) uniform image2D u_Image;
 
 out vec4 color;
 
 void main(){ 
-	//color.rgb = worldPosition; 
+//	
+
+	vec3 normalWorldPosition = (worldPosition-u_CameraViewPos)/u_CubeSize.x; //[-1,1.0]
+
+	normalWorldPosition = 0.5*normalWorldPosition+0.5; //[0,1]
 	color = vec4(worldPosition,1.0);
+
+
+	ivec2 dim = imageSize(u_Image);
+	imageStore(u_Image, ivec2(dim * vec2(normalWorldPosition)), vec4(worldPosition,1.0));//write a single texel into an image;
+
+//	if(normalWorldPosition.x<=1.0&&normalWorldPosition.x>=-1.0 && normalWorldPosition.y<=1.0&&normalWorldPosition.y>=-1.0 &&normalWorldPosition.z<=1.0&&normalWorldPosition.z>=-1.0 )
+//		color = vec4(0.0,1.0,0.0,1.0);
+//	else
+//		color = vec4(1.0,0.0,0.0,1.0);
+
 }

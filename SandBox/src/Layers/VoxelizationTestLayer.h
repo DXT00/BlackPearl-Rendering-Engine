@@ -23,6 +23,8 @@ public:
 		m_QuadObj->GetComponent<BlackPearl::Transform>()->SetPosition({ 0.0f, 0.0f, 1.0f });
 		m_VoxelConeTracingRenderer->Init(BlackPearl::Configuration::WindowWidth, BlackPearl::Configuration::WindowHeight, m_QuadObj, m_CubeObj);
 
+		m_DebugQuadObj = CreateQuad();
+		m_DebugQuadObj->GetComponent<BlackPearl::Transform>()->SetPosition({ 0.0f, 0.0f, 1.0f });
 
 		BlackPearl::Renderer::Init();
 
@@ -55,9 +57,10 @@ public:
 		BlackPearl::RenderCommand::SetClearColor(m_BackgroundColor);
 		BlackPearl::Renderer::BeginScene(*(m_MainCamera->GetObj()->GetComponent<BlackPearl::PerspectiveCamera>()), *GetLightSources());
 
-	/*	m_VoxelConeTracingRenderer->Render(m_ObjectsList, GetLightSources(), BlackPearl::Configuration::WindowWidth, BlackPearl::Configuration::WindowHeight, m_CurrentRenderingMode);
-	*/
-		m_VoxelConeTracingRenderer->VoxelizeTest(m_BackGroundObjsList);
+		m_VoxelConeTracingRenderer->Render(m_ObjectsList, GetLightSources(), BlackPearl::Configuration::WindowWidth, BlackPearl::Configuration::WindowHeight, m_CurrentRenderingMode);
+	
+		//m_VoxelConeTracingRenderer->VoxelizeTest(m_BackGroundObjsList);
+		m_VoxelConeTracingRenderer->DrawFrontBackFaceOfCube(m_DebugQuadObj);
 
 
 
@@ -73,6 +76,8 @@ private:
 	std::vector<BlackPearl::Object*> m_LightObjs;
 	BlackPearl::Object* m_IronManObj;
 	BlackPearl::Object* m_QuadObj;
+	BlackPearl::Object* m_DebugQuadObj;
+
 	BlackPearl::Object* m_PlaneObj;
 	BlackPearl::Object* m_CubeObj;
 	BlackPearl::Object* m_SkyBoxObj;

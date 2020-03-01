@@ -166,8 +166,8 @@ namespace BlackPearl {
 		CameraRotation m_CameraRotation;
 		float m_LastMouseX;
 		float m_LastMouseY;
-		float m_CameraMoveSpeed = 2.0f;
-		float m_CameraRotateSpeed = 2.0f;
+		float m_CameraMoveSpeed = 1.0f;
+		float m_CameraRotateSpeed = 1.0f;
 
 	};
 
