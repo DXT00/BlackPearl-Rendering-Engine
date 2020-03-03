@@ -21,13 +21,14 @@ namespace BlackPearl {
 		void Voxilize(const std::vector<Object*>&objs,
 			bool clearVoxelizationFirst = true);
 		void Render(
+			Camera* camera,
 			const std::vector<Object*>&objs, 
 			const LightSources* lightSources,
 			unsigned int viewportWidth,
 			unsigned int viewportHeight,
 			RenderingMode reneringMode = RenderingMode::VOXELIZATION_VISUALIZATION
 		);
-		void RenderVoxelVisualization(const std::vector<Object*>&objs,  unsigned int viewportWidth, unsigned int viewportHeight);
+		void RenderVoxelVisualization(Camera* camera,const std::vector<Object*>&objs,  unsigned int viewportWidth, unsigned int viewportHeight);
 		void RenderScene(const std::vector<Object*>&objs, unsigned int viewportWidth, unsigned int viewportHeight);
 
 
@@ -101,7 +102,7 @@ namespace BlackPearl {
 		/*u_CubeSize*/
 		//glm::vec3 m_CubeSize{ 10.0f };
 
-		std::shared_ptr< TextureImage2D> m_CubeBackPosTexture;
+	//	std::shared_ptr< TextureImage2D> m_CubeBackPosTexture;
 
 	};
 

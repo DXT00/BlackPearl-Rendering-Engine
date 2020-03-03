@@ -25,7 +25,7 @@ namespace BlackPearl {
 		m_HdrEnvironmentCubeMap.reset(DBG_NEW CubeMapTexture(Texture::Type::CubeMap, m_EnvironmentCubeMapResolution, m_EnvironmentCubeMapResolution, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR, GL_CLAMP_TO_EDGE, GL_RGB16F, GL_RGB, GL_FLOAT, true));
 		m_DiffuseIrradianceCubeMap.reset(DBG_NEW CubeMapTexture(Texture::CubeMap, m_DiffuseCubeMapResolution, m_DiffuseCubeMapResolution, GL_LINEAR, GL_LINEAR, GL_CLAMP_TO_EDGE, GL_RGB16F, GL_RGB, GL_FLOAT, true));
 		m_SpecularPrefilterCubeMap.reset(DBG_NEW CubeMapTexture(Texture::CubeMap, m_SpecularCubeMapResolution, m_SpecularCubeMapResolution, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR, GL_CLAMP_TO_EDGE, GL_RGB16F, GL_RGB, GL_FLOAT, true));
-		m_SHImage.reset(DBG_NEW TextureImage2D(9,1, GL_LINEAR, GL_LINEAR,GL_RGBA32F,GL_RGBA,GL_CLAMP_TO_EDGE,GL_UNSIGNED_BYTE,GL_READ_WRITE));
+		m_SHImage.reset(DBG_NEW TextureImage2D({}, 9, 1, GL_LINEAR, GL_LINEAR, GL_RGBA32F, GL_RGBA, GL_CLAMP_TO_EDGE, GL_UNSIGNED_BYTE, GL_READ_WRITE));
 	}
 
 	void LightProbe::SetPosition(glm::vec3 pos)

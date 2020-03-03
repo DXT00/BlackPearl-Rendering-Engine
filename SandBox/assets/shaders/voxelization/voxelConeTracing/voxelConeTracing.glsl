@@ -26,7 +26,7 @@ void main(){
 // Light (voxel) cone tracing settings.
 // --------------------------------------
 #define MIPMAP_HARDCAP 5.4f /* Too high mipmap levels => glitchiness, too low mipmap levels => sharpness. */
-#define VOXEL_SIZE (1/320.0) /* Size of a voxel. 128x128x128 => 1/128 = 0.0078125. */
+#define VOXEL_SIZE (1/256.0) /* Size of a voxel. 128x128x128 => 1/128 = 0.0078125. */
 #define SHADOWS 1 /* Shadow cone tracing. */
 #define DIFFUSE_INDIRECT_FACTOR 0.52f /* Just changes intensity of diffuse indirect lighting. */
 // --------------------------------------
@@ -141,13 +141,13 @@ float traceShadowCone(vec3 from, vec3 lightPos){
 	from = from/u_CubeSize;
 	//targetDistance = targetDistance/u_CubeSize.x;
 
-//	from += normal * 0.005; // Removes artifacts but makes self shadowing for dense meshes meh.
+	from += normal * 0.005; // Removes artifacts but makes self shadowing for dense meshes meh.
 
 	float acc = 0;
 
 	float dist = 3 * VOXEL_SIZE;
 	// I'm using a pretty big margin here since I use an emissive light ball with a pretty big radius in my demo scenes.
-	const float STOP = length(direction) - 3 * VOXEL_SIZE;//16
+	const float STOP = length(direction) - 16 * VOXEL_SIZE;//16
 	direction = normalize(direction);
 	while(dist < STOP && acc < 1){	
 		vec3 c = from + dist * direction;

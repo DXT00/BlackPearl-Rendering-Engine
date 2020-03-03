@@ -107,6 +107,9 @@ uniform vec3 u_CameraViewPos;
 uniform vec3 u_CubeSize;
 uniform vec3 u_CubePos;
 
+
+
+
 layout(rgba8, binding = 0) uniform image3D texture3D;
 
 in vec3 worldPositionFrag;//=v_FragPos
@@ -164,23 +167,27 @@ vec3 CalcPointLight(PointLight light,vec3 normal,vec3 viewDir){
 
 vec3 scaleAndBias(vec3 p) { return 0.5f * p + vec3(0.5f); }
 
-//bool isInsideCube(const vec3 p, float e) { return abs(p.x) < 1 + e && abs(p.y) < 1 + e && abs(p.z) < 1 + e; }
+bool isInsideCube(const vec3 p, float e) { return abs(p.x) < 1 + e && abs(p.y) < 1 + e && abs(p.z) < 1 + e; }
 //bool isInsideCube(const vec3 p, float e) { return abs(p.x) < u_CubeSize.x + e && abs(p.y) < u_CubeSize.y + e && abs(p.z) < u_CubeSize.z + e; }
-bool isInsideCube(const vec3 p, float e) 
-{
-	return	p.x < u_CameraViewPos.x + u_CubeSize.x && p.x > u_CameraViewPos.x - u_CubeSize.x &&
-			p.y < u_CameraViewPos.y + u_CubeSize.y && p.y > u_CameraViewPos.y - u_CubeSize.y &&
-			 p.z < u_CameraViewPos.z + u_CubeSize.z && p.z > u_CameraViewPos.z - u_CubeSize.z ;
-
-}
+//bool isInsideCube(const vec3 p, float e) 
+//{
+//	//u_CameraViewPos+u_CameraRight*u_CameraRight;
+//	return	p.x < u_CameraViewPos.x + u_CubeSize.x && p.x > u_CameraViewPos.x - u_CubeSize.x &&
+//			p.y < u_CameraViewPos.y + u_CubeSize.y && p.y > u_CameraViewPos.y - u_CubeSize.y &&
+//			 p.z < u_CameraViewPos.z + u_CubeSize.z && p.z > u_CameraViewPos.z - u_CubeSize.z ;
+//
+//}
 
 void main(){
 	vec3 viewDir = normalize(u_CameraViewPos-worldPositionFrag);
 
 	vec3 color = vec3(0.0);
-	if(!isInsideCube(worldPositionFrag, 0)) return;
+	//vec3 worldPositionFrag_=u_CubeSize*worldPositionFrag;
+
 	vec3 normalWorldPositionFrag =worldPositionFrag-u_CameraViewPos;// vec3(worldPositionFrag.x-u_CubePos.x,worldPositionFrag.y-u_CubePos.y,worldPositionFrag.z-u_CubePos.z);
 	normalWorldPositionFrag = normalWorldPositionFrag/u_CubeSize;
+		if(!isInsideCube(normalWorldPositionFrag, 0)) return;
+
 	//vec3 normalWorldPositionFrag =worldPositionFrag;
 	// Calculate diffuse lighting fragment contribution.
 	for(int i = 0; i < u_PointLightNums; ++i) 

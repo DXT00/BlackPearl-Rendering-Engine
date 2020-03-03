@@ -4,9 +4,9 @@
 
 #### 2.由于不再是对单位立方体voxelization了，因此需要坐标变化，把
 
-CubeSize * CubeSize *CubeSize的场景，体素化到 1*1*1的voxel内，
+CubeSize x CubeSize x CubeSize的场景，体素化到 1x1x1的voxel内，
 
-体素追踪时，再从 1*1*1 voxel放大还原为原场景。
+体素追踪时，再从 1x1x1 voxel放大还原为原场景。
 
 
 voxelization.glsl
@@ -35,22 +35,76 @@ void main(){
 }
 
 ```
-#### 3.存在的bug --> 1）随着 CubeSize增大体素化分辨率越低
-2）tracing还有问题。后续解决。。
+#### 3.修复的bug --> 1）判断是否在cube内出错了
+
+#### 4.修复 visualVoxelization.glsl
+
+不需要使用frameBuffer获取cube背面坐标了-->直接用 camera的 up,front,right计算即可
+
+```
+#type fragment
+#version 430 core
+// A simple fragment shader path tracer used to visualize 3D textures.
+// Author:	Fredrik Pr鋘tare <prantare@gmail.com>
+// Date:	11/26/2016
+
+#define INV_STEP_LENGTH (1.0f/STEP_LENGTH)
+#define STEP_LENGTH 0.005f
+uniform sampler2D textureBack; // Unit cube back FBO.
 
 
+uniform sampler3D texture3D; // Texture in which voxelization is stored.
+uniform vec3 u_CameraViewPos; // World camera position.
 
+uniform vec3 u_CameraFront;
+uniform vec3 u_CameraUp;
+uniform vec3 u_CameraRight;
+
+
+uniform int u_State; // Decides mipmap sample level.
+uniform vec3 u_CubeSize;
+
+in vec2 textureCoordinateFrag; 
+out vec4 color;
+
+// Scales and bias a given vector (i.e. from [-1, 1] to [0, 1]).
+vec3 scaleAndBias(vec3 p) { return 0.5f * p + vec3(0.5f); }
+
+void main() {
+	const float mipmapLevel = u_State;
+
+	// Initialize ray.
+	 vec3 origin = u_CameraViewPos;
+
+	vec3 stop = normalize(u_CameraFront)*u_CubeSize +
+				normalize(u_CameraRight)*textureCoordinateFrag.x*u_CubeSize +
+				normalize(u_CameraUp)*textureCoordinateFrag.y*u_CubeSize;
+
+		vec3 direction =stop- origin;
+
+
+	direction = direction/u_CubeSize;
+	origin =(origin-u_CameraViewPos)/u_CubeSize;
+
+	uint numberOfSteps = uint(INV_STEP_LENGTH * length(direction));///u_CubeSize.x
+	direction = normalize(direction);
+
+	// Trace.
+	color = vec4(0.0f);
+	for(uint step_ = 0; step_ < numberOfSteps && color.a < 0.99f; ++step_) {
+
+		vec3 currentPoint = origin + STEP_LENGTH * step_ * direction;
+		vec4 currentSample = textureLod(texture3D, scaleAndBias(currentPoint), mipmapLevel);///u_CubeSize.x
+		color += (1.0f - color.a) * currentSample;
+	} 
+	color.rgb = pow(color.rgb, vec3(1.0 / 2.2));
+}
+
+```
 ![voxelization](/results/voxelization2.png)
 
-voxelization-CubeSize=1
+voxelization when CubeSize=5
 
-![voxelization-CubeSize=1](/results/voxelization-CubeSize=1.png)
-![voxelization-CubeSize=1_tracing](/results/voxelization-CubeSize=1_tracing.png)
-
-voxelization-CubeSize=2
-![voxelization-CubeSize=2](/results/voxelization-CubeSize=2.png)
-![voxelization-CubeSize=2_tracing](/results/voxelization-CubeSize=2_tracing.png)
-
-voxelization-CubeSize=3
-![voxelization-CubeSize=3](/results/voxelization-CubeSize=3.png)
+![voxelization-CubeSize=5](/results/voxelization-CubeSize=5.png)
+![voxelization-CubeSize=5_tracing](/results/voxelization-CubeSize=5_tracing.png)
 

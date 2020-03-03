@@ -36,7 +36,9 @@ namespace BlackPearl {
 		/*debug shader*/
 		m_VoxelizationTestShader.reset(DBG_NEW Shader("assets/shaders/voxelization/debug/voxelizeTest.glsl"));
 		m_FrontBackCubeTestShader.reset(DBG_NEW Shader("assets/shaders/voxelization/debug/quadTest.glsl"));
-		m_CubeBackPosTexture.reset(DBG_NEW TextureImage2D(viewportWidth, viewportHeight, GL_LINEAR, GL_LINEAR, GL_RGBA32F, GL_RGBA, GL_CLAMP_TO_EDGE, GL_FLOAT, GL_READ_WRITE));
+		const std::vector<GLfloat> textureImage2D(4 * 256 * 256 , 0.0f);
+
+	//	m_CubeBackPosTexture.reset(DBG_NEW TextureImage2D(textureImage2D,256, 256, GL_LINEAR, GL_LINEAR, GL_RGBA32F, GL_RGBA, GL_CLAMP_TO_EDGE, GL_FLOAT, GL_READ_WRITE));
 
 		m_IsInitialize = true;
 	}
@@ -87,7 +89,7 @@ namespace BlackPearl {
 		m_VoxelizationShader->Bind();
 
 		//Voxel Texture
-		glActiveTexture(GL_TEXTURE0 + 0);
+		glActiveTexture(GL_TEXTURE0);
 		m_VoxelTexture->Bind();
 		m_VoxelizationShader->SetUniform1i("texture3D", 0);
 		m_VoxelizationShader->SetUniformVec3f("u_CubeSize", m_CubeObj->GetComponent<Transform>()->GetScale());
@@ -112,7 +114,7 @@ namespace BlackPearl {
 
 	}
 
-	void VoxelConeTracingRenderer::Render(const std::vector<Object*>& objs, const LightSources * lightSources, unsigned int viewportWidth, unsigned int viewportHeight,
+	void VoxelConeTracingRenderer::Render(Camera* camera,const std::vector<Object*>& objs, const LightSources * lightSources, unsigned int viewportWidth, unsigned int viewportHeight,
 		RenderingMode reneringMode)
 	{
 		GE_ASSERT(m_IsInitialize, "Please Call VoxelConeTracingRenderer::Init() first!");
@@ -124,7 +126,7 @@ namespace BlackPearl {
 		}
 		switch (reneringMode) {
 		case RenderingMode::VOXELIZATION_VISUALIZATION:
-			RenderVoxelVisualization(objs,  viewportWidth, viewportHeight);
+			RenderVoxelVisualization(camera,objs,  viewportWidth, viewportHeight);
 			break;
 		case RenderingMode::VOXEL_CONE_TRACING:
 			m_QuadObj->GetComponent<MeshRenderer>()->SetEnableRender(false);
@@ -134,74 +136,44 @@ namespace BlackPearl {
 		}
 	}
 
-	void VoxelConeTracingRenderer::RenderVoxelVisualization(const std::vector<Object*>& objs,  unsigned int viewportWidth, unsigned int viewportHeight)
+	void VoxelConeTracingRenderer::RenderVoxelVisualization(Camera* camera,const std::vector<Object*>& objs,  unsigned int viewportWidth, unsigned int viewportHeight)
 	{
 		m_CubeObj->GetComponent<MeshRenderer>()->SetShaders(m_WorldPositionShader);
 		m_CubeObj->GetComponent<Transform>()->SetPosition(Renderer::GetSceneData()->CameraPosition);
 		GE_CORE_INFO("Renderer::GetSceneData()->CameraPosition" + std::to_string(Renderer::GetSceneData()->CameraPosition.x) + "," + std::to_string(Renderer::GetSceneData()->CameraPosition.y) + "," + std::to_string(Renderer::GetSceneData()->CameraPosition.z));
 		m_CubeObj->GetComponent<Transform>()->SetRotation(Renderer::GetSceneData()->CameraRotation);
 
-		//Seting
-		//glClearColor(0.0, 0.0, 0.0, 1.0);
-		glEnable(GL_CULL_FACE);
+		/*glEnable(GL_CULL_FACE);
 		glEnable(GL_DEPTH_TEST);
-		//Backs
-		glCullFace(GL_FRONT);
-		m_FrameBuffer1->Bind();
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		glViewport(0, 0, m_FrameBuffer1->GetWidth(), m_FrameBuffer1->GetHeight());
-
-		//m_CubeObj->GetComponent<MeshRenderer>()->SetEnableRender(true);
-		m_WorldPositionShader->Bind();
-		m_CubeBackPosTexture->Bind(1);
-		m_WorldPositionShader->SetUniform1i("u_Image", 1);
-		m_WorldPositionShader->SetUniformVec3f("u_CubeSize", m_CubeObj->GetComponent<Transform>()->GetScale());
-		DrawObject(m_CubeObj, m_WorldPositionShader);
-
-		//Front
-		glCullFace(GL_BACK);
-		/*m_FrameBuffer2->Bind();
-		glViewport(0, 0, m_FrameBuffer2->GetWidth(), m_FrameBuffer2->GetHeight());
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		m_WorldPositionShader->Bind();
-		m_WorldPositionShader->SetUniformVec3f("u_CubeSize", m_CubeObj->GetComponent<Transform>()->GetScale());
-		DrawObject(m_CubeObj, m_WorldPositionShader);*/
-
-
+	
+		glCullFace(GL_BACK);*/
+		
 		// -------------------------------------------------------
 		// Render 3D texture to screen.
 		// -------------------------------------------------------
 
-	//	m_QuadObj->GetComponent<MeshRenderer>()->SetShaders(m_VoxelVisualizationShader);
+		m_FrameBuffer1->UnBind();
 
-		glBindRenderbuffer(GL_RENDERBUFFER, 0);
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		// Render.
 		glViewport(0, 0, viewportWidth, viewportHeight);
 
-		glDisable(GL_DEPTH_TEST);
-		glEnable(GL_CULL_FACE);
+		/*glDisable(GL_DEPTH_TEST);
+		glEnable(GL_CULL_FACE);*/
 
 		m_VoxelVisualizationShader->Bind();
 
 		glActiveTexture(GL_TEXTURE0);
 		m_VoxelTexture->Bind();
-	//	glBindImageTexture(0, m_VoxelTexture->GetRendererID(), 0, GL_TRUE, 0, GL_READ_WRITE, GL_RGBA8);
 		m_VoxelVisualizationShader->SetUniform1i("texture3D", 0);
 
 
-		glActiveTexture(GL_TEXTURE1);
-		//m_FrameBuffer1->BindColorTexture(0);
-		m_CubeBackPosTexture->Bind(1);
-		m_VoxelVisualizationShader->SetUniform1i("u_Image", 1);
+	
 
-		glActiveTexture(GL_TEXTURE2);
-		m_FrameBuffer1->BindColorTexture(0);
-		m_VoxelVisualizationShader->SetUniform1i("textureBack", 2);
-
-		
+		m_VoxelVisualizationShader->SetUniformVec3f("u_CameraFront", camera->Front());
+		m_VoxelVisualizationShader->SetUniformVec3f("u_CameraUp", camera->Up());
+		m_VoxelVisualizationShader->SetUniformVec3f("u_CameraRight", camera->Right());
 
 		m_VoxelVisualizationShader->SetUniform1i("u_State", Configuration::State);
 		m_VoxelVisualizationShader->SetUniformVec3f("u_CubeSize", m_CubeObj->GetComponent<Transform>()->GetScale());
@@ -227,6 +199,11 @@ namespace BlackPearl {
 		//const Material * material = voxelConeTracingMaterial;
 		//const GLuint program = material->program;
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+		m_CubeObj->GetComponent<Transform>()->SetPosition(Renderer::GetSceneData()->CameraPosition);
+		GE_CORE_INFO("Renderer::GetSceneData()->CameraPosition" + std::to_string(Renderer::GetSceneData()->CameraPosition.x) + "," + std::to_string(Renderer::GetSceneData()->CameraPosition.y) + "," + std::to_string(Renderer::GetSceneData()->CameraPosition.z));
+		m_CubeObj->GetComponent<Transform>()->SetRotation(Renderer::GetSceneData()->CameraRotation);
+
 		m_VoxelConeTracingShader->Bind();
 
 		

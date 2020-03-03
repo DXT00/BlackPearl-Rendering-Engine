@@ -600,6 +600,7 @@ namespace BlackPearl {
 		ImGui::ColorEdit3("specular Color", glm::value_ptr(color.specularColor));
 		ImGui::ColorEdit3("emission Color", glm::value_ptr(color.emissionColor));
 		ImGui::DragInt("attenuation", &attenuation, 0.5f, 7, 3250);
+		ImGui::DragFloat("intensity", &color.intensity, 0.5f, 1, 100);
 
 		pointLight->SetAttenuation(attenuation);
 

@@ -8,6 +8,7 @@ namespace BlackPearl {
 
 
 	TextureImage2D::TextureImage2D(
+		const std::vector<float>& textureBuffer,
 		const int width,
 		const int height,
 		unsigned int minFilter,
@@ -16,7 +17,8 @@ namespace BlackPearl {
 		int format,
 		int wrap,
 		unsigned int dataType,
-		unsigned int access)
+		unsigned int access
+		)
 	{
 		glGenTextures(1, &m_RendererID);
 		glBindTexture(GL_TEXTURE_2D, m_RendererID);
@@ -27,10 +29,18 @@ namespace BlackPearl {
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrap);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrap);
 
-		glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, format, dataType, NULL);
+		if(textureBuffer.empty())
+			glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, format, dataType, NULL);
+		else
+			glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, format, dataType, &textureBuffer[0]);
 		m_InternalFormat = internalFormat;
+		m_Format = format;
+		m_DataType = dataType;
 		m_Acess = access;
+		m_Width = width;
+		m_Height = height;
 		ShowProperties();
+		m_Initial = true;
 	}
 
 	void TextureImage2D::Bind(unsigned int textureID)
@@ -45,6 +55,24 @@ namespace BlackPearl {
 	void TextureImage2D::UnBind()
 	{
 		glBindTexture(GL_TEXTURE_2D, 0);
+
+	}
+
+	void TextureImage2D::Clear(float clearColor[4])
+	{
+		GE_ASSERT(m_Initial,"please Initial first!")
+		//GLint previousBoundTextureID;
+	//	glGetIntegerv(GL_TEXTURE_BINDING_2D, &previousBoundTextureID);
+		//glBindTexture(GL_TEXTURE_2D, m_RendererID);
+		//glClearTexImage(m_RendererID, 0, GL_RGBA, GL_FLOAT, &clearColor);
+		//glBindTexture(GL_TEXTURE_2D, previousBoundTextureID);
+		unsigned int fbo;
+		glGenFramebuffers(1, &fbo);
+		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo);
+		glFramebufferTexture(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, m_RendererID, 0); //Only need to do this once.
+		glDrawBuffer(GL_COLOR_ATTACHMENT0); //Only need to do this once.
+		glClearBufferfv(GL_COLOR, 0, clearColor);
+		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 
 	}
 

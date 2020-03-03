@@ -14,6 +14,7 @@ public:
 		: Layer(name, objectManager)
 	{
 
+		m_shader.reset(new BlackPearl::Shader("assets/shaders/voxelization/debug/cube.glsl"));
 		
 
 		m_VoxelConeTracingRenderer = DBG_NEW BlackPearl::VoxelConeTracingRenderer();
@@ -91,17 +92,22 @@ public:
 		BlackPearl::RenderCommand::SetClearColor(m_BackgroundColor);
 		BlackPearl::Renderer::BeginScene(*(m_MainCamera->GetObj()->GetComponent<BlackPearl::PerspectiveCamera>()), *GetLightSources());
 
-	//	for (BlackPearl::Object* obj:m_BackGroundObjsList)
-	//	{
-			m_VoxelConeTracingRenderer->Render(m_BackGroundObjsList, GetLightSources(), BlackPearl::Configuration::WindowWidth, BlackPearl::Configuration::WindowHeight, m_CurrentRenderingMode);
 
-	//	}
-			m_BasicRenderer->DrawLightSources(GetLightSources());
+	m_VoxelConeTracingRenderer->Render(m_MainCamera->GetObj()->GetComponent<BlackPearl::PerspectiveCamera>(),m_BackGroundObjsList, GetLightSources(), BlackPearl::Configuration::WindowWidth, BlackPearl::Configuration::WindowHeight, m_CurrentRenderingMode);
+
 
 		//m_VoxelConeTracingRenderer->DrawFrontBackFaceOfCube(m_DebugQuadObj);
+		/*
+		*/
+		//glDisable(GL_CULL_FACE);
+		/*m_BasicRenderer->DrawObjects(m_BackGroundObjsList);
+		m_shader->Bind();
+		m_CubeObj->GetComponent<BlackPearl::Transform>()->SetPosition(BlackPearl::Renderer::GetSceneData()->CameraPosition);
+		m_CubeObj->GetComponent<BlackPearl::Transform>()->SetRotation(BlackPearl::Renderer::GetSceneData()->CameraRotation);
+		m_BasicRenderer->DrawObject(m_CubeObj, m_shader);*/
 
 
-
+		m_BasicRenderer->DrawLightSources(GetLightSources());
 
 	}
 
@@ -120,6 +126,7 @@ private:
 	BlackPearl::Object* m_CubeObj;
 	BlackPearl::Object* m_SkyBoxObj;
 
+	std::shared_ptr<BlackPearl::Shader> m_shader;
 	glm::vec4 m_BackgroundColor = { 0.0f,0.0f,0.0f,0.0f };
 
 
