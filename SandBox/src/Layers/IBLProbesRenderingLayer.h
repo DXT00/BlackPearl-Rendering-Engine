@@ -19,7 +19,6 @@ public:
 		: Layer(name, objectManager)
 	{
 
-		m_StartTimeMs = duration_cast<milliseconds>(system_clock::now().time_since_epoch());
 		m_MainCamera->SetPosition(glm::vec3(-2.0f, 0.0f, 14.0f));
 
 		
@@ -387,6 +386,5 @@ private:
 	std::vector<BlackPearl::LightProbe*> m_LightProbes;
 	std::thread m_Threads[10];
 
-	/*Time*/
-	std::chrono::milliseconds m_StartTimeMs;
+	
 };

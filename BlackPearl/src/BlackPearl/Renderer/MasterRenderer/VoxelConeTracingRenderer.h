@@ -49,7 +49,6 @@ namespace BlackPearl {
 
 		/*Debug function*/
 		void VoxelizeTest(const std::vector<Object*>& objs);
-		void DrawFrontBackFaceOfCube(Object* debugQuadObj);
 	private:
 		Texture3D* m_VoxelTexture = nullptr;
 		unsigned int m_VoxelTextureSize = 256;// 256;// 64;
@@ -86,8 +85,8 @@ namespace BlackPearl {
 		std::shared_ptr<Shader> m_FrontBackCubeTestShader;
 
 
-		std::shared_ptr<FrameBuffer> m_FrameBuffer1;
-		std::shared_ptr<FrameBuffer> m_FrameBuffer2;
+		//std::shared_ptr<FrameBuffer> m_FrameBuffer1;
+	//	std::shared_ptr<FrameBuffer> m_FrameBuffer2;
 
 		Object * m_QuadObj = nullptr;//用于显示体素化结果 ： voxel Visualization
 		Object * m_CubeObj = nullptr; //控制体素化渲染范围
@@ -99,10 +98,7 @@ namespace BlackPearl {
 
 
 
-		/*u_CubeSize*/
-		//glm::vec3 m_CubeSize{ 10.0f };
-
-	//	std::shared_ptr< TextureImage2D> m_CubeBackPosTexture;
+	
 
 	};
 

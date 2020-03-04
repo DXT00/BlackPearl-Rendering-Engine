@@ -16,6 +16,9 @@
 #include "MainCamera/MainCamera.h"
 #include "Input.h"
 #include "KeyCodes.h"
+#include <chrono>
+using namespace std::chrono;
+
 namespace BlackPearl {
 
 	class Layer
@@ -35,6 +38,7 @@ namespace BlackPearl {
 			m_CameraRotation.Yaw = m_MainCamera->Yaw();
 			m_CameraRotation.Pitch = m_MainCamera->Pitch();
 
+			m_StartTimeMs = duration_cast<milliseconds>(system_clock::now().time_since_epoch());
 
 		}
 		virtual ~Layer() {
@@ -45,7 +49,10 @@ namespace BlackPearl {
 		};
 		virtual void OnAttach() {}
 		virtual void OnDetach() {}
-		virtual void OnUpdate(Timestep ts) {}
+		virtual void OnUpdate(Timestep ts) {
+		
+			
+		}
 		virtual void OnImguiRender();
 
 		inline std::string GetString() { return m_DebugName; }
@@ -168,6 +175,11 @@ namespace BlackPearl {
 		float m_LastMouseY;
 		float m_CameraMoveSpeed = 1.0f;
 		float m_CameraRotateSpeed = 1.0f;
+
+		/*Time*/
+		std::chrono::milliseconds m_StartTimeMs;
+		long long m_FrameNum = 0;
+		double m_FPS = 0;
 
 	};
 

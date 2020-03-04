@@ -154,13 +154,21 @@ float traceShadowCone(vec3 from, vec3 lightPos){
 		if(!isInsideCube(c, 0)) break;
 		c = scaleAndBias(c);
 		float l = pow(dist, 2); // Experimenting with inverse square falloff for shadows.
-		float s1 = 0.062 * textureLod(texture3D, c,( 1 + 0.75 * l)).a;
-		float s2 = 0.135 * textureLod(texture3D, c, (2.5 * l)).a;
-//		float s1 = 0.062 * textureLod(texture3D, c, 1 + 0.75 * l).a;
-//		float s2 = 0.135 * textureLod(texture3D, c, 4.5 * l).a;
-		float s = s1+ s2;
+
+		vec4 color1 = textureLod(texture3D, c,( 1 + 0.75 * l));
+		vec4 color2 = textureLod(texture3D, c, (2.5 * l));
+
+		if(color1.a>=0&&color2.a>=0){
+			float s1 = 0.062 * textureLod(texture3D, c,( 1 + 0.75 * l)).a;
+			float s2 = 0.135 * textureLod(texture3D, c, (4.5 * l)).a;
+			//		float s1 = 0.062 * textureLod(texture3D, c, 1 + 0.75 * l).a;
+			//		float s2 = 0.135 * textureLod(texture3D, c, 4.5 * l).a;
+			float s = s1+ s2;
 		
-		acc += (1 - acc) * s;
+			acc += (1 - acc) * s;
+
+		}
+		
 		dist += 0.9 * VOXEL_SIZE * (1 + 0.05 * l);//0.9 * VOXEL_SIZE * (1 + 0.05 * l);
 	}
 	return 1 - pow(smoothstep(0, 1, acc * 1.4), 1.0 / 1.4);
@@ -189,7 +197,8 @@ vec3 traceDiffuseVoxelCone(const vec3 from,vec3 direction){
 		float ll = (level+1)*(level+1);
 		
 		vec4 voxel = textureLod(texture3D,c,min(MIPMAP_HARDCAP,level));
-		acc+=0.075*ll*voxel*pow(1-voxel.a,2);
+		if(voxel.a>=0)
+			acc+=0.075*ll*voxel*pow(1-voxel.a,2);
 		dist+= ll*VOXEL_SIZE*2;
 
 	}
@@ -220,9 +229,13 @@ vec3 traceSpecularVoxelCone(vec3 from, vec3 direction){
 		
 		float level = 0.1 * u_Material.specularDiffusion * log2(1 + dist / VOXEL_SIZE);
 		vec4 voxel = textureLod(texture3D, c, min(level, MIPMAP_HARDCAP));
-		float f = 1 - acc.a;
-		acc.rgb += 0.25 * (1 + u_Material.specularDiffusion) * voxel.rgb * voxel.a * f;
-		acc.a += 0.25 * voxel.a * f;
+		if(voxel.a>=0){
+
+			float f = 1 - acc.a;
+			acc.rgb += 0.25 * (1 + u_Material.specularDiffusion) * voxel.rgb * voxel.a * f;
+			acc.a += 0.25 * voxel.a * f;
+		}
+		
 		dist += STEP * (1.0f + 0.125f * level);
 	}
 	return 1.0 * pow(u_Material.specularDiffusion + 1, 0.8) * acc.rgb;

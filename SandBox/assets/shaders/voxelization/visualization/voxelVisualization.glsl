@@ -66,7 +66,6 @@ void main() {
 				normalize(u_CameraRight)*textureCoordinateFrag.x*u_CubeSize +
 				normalize(u_CameraUp)*textureCoordinateFrag.y*u_CubeSize;
 
-//	vec3 direction = texture(u_Image, textureCoordinateFrag).xyz - origin;
 		vec3 direction =stop- origin;
 
 
@@ -82,7 +81,8 @@ void main() {
 
 		vec3 currentPoint = origin + STEP_LENGTH * step_ * direction;
 		vec4 currentSample = textureLod(texture3D, scaleAndBias(currentPoint), mipmapLevel);///u_CubeSize.x
-		color += (1.0f - color.a) * currentSample;
+		if(currentSample.a!=-1)//if voxel is not empty
+			color += (1.0f - color.a) * currentSample;
 	} 
 	color.rgb = pow(color.rgb, vec3(1.0 / 2.2));
 }

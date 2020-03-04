@@ -101,10 +101,52 @@ void main() {
 }
 
 ```
-![voxelization](/results/voxelization2.png)
 
+#### 4.修复 voxelization.glsl 的几何着色器 -->几何着色器的输出坐标必须在-1到1之间，再进行光栅化阶段
+
+```
+
+#type geometry
+#version 430 core
+
+layout(triangles) in;
+layout(triangle_strip,max_vertices = 3) out;
+
+in vec3 worldPositionGeom[];
+in vec3 normalGeom[];
+
+out vec3 worldPositionFrag;
+out vec3 normalFrag;
+uniform vec3 u_CameraViewPos;
+uniform vec3 u_CubeSize;
+out vec3 normal_worldPositionFrag;
+
+/*几何着色器后会进入光栅化阶段，因此需要把坐标转换的 [-1,1]的裁剪平面！！*/
+
+void main(){
+	vec3 p1 = worldPositionGeom[1] - worldPositionGeom[0];
+	vec3 p2 = worldPositionGeom[2] - worldPositionGeom[0];
+	vec3 p = abs(cross(p1, p2)); 
+	for(uint i = 0; i < 3; ++i){
+		worldPositionFrag =worldPositionGeom[i];//
+		normal_worldPositionFrag=(worldPositionGeom[i]-u_CameraViewPos)/u_CubeSize;
+		normalFrag = normalGeom[i];
+		if(p.z > p.x && p.z > p.y){
+			gl_Position = vec4(normal_worldPositionFrag.x, normal_worldPositionFrag.y, 0, 1);
+		} else if (p.x > p.y && p.x > p.z){
+			gl_Position = vec4(normal_worldPositionFrag.y, normal_worldPositionFrag.z, 0, 1);
+		} else {
+			gl_Position = vec4(normal_worldPositionFrag.x, normal_worldPositionFrag.z, 0, 1);
+		}
+		EmitVertex();
+	}
+    EndPrimitive();
+}
+
+```
 voxelization when CubeSize=5
 
-![voxelization-CubeSize=5](/results/voxelization-CubeSize=5.png)
-![voxelization-CubeSize=5_tracing](/results/voxelization-CubeSize=5_tracing.png)
+![voxelization-CubeSize=5_3](/results/voxelization-CubeSize=5_3.png)
+![voxelization-CubeSize=5_tracing3](/results/voxelization-CubeSize=5_tracing3.png)
+
 

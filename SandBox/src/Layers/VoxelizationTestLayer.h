@@ -60,7 +60,7 @@ public:
 		m_VoxelConeTracingRenderer->Render(m_MainCamera->GetObj()->GetComponent<BlackPearl::PerspectiveCamera>(),m_ObjectsList, GetLightSources(), BlackPearl::Configuration::WindowWidth, BlackPearl::Configuration::WindowHeight, m_CurrentRenderingMode);
 	
 		//m_VoxelConeTracingRenderer->VoxelizeTest(m_BackGroundObjsList);
-		m_VoxelConeTracingRenderer->DrawFrontBackFaceOfCube(m_DebugQuadObj);
+	//	m_VoxelConeTracingRenderer->DrawFrontBackFaceOfCube(m_DebugQuadObj);
 
 
 

@@ -9,6 +9,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <stdio.h>
 #include <stdlib.h>
+
 namespace BlackPearl {
 
 	static int buttonNum = 0;
@@ -21,6 +22,11 @@ namespace BlackPearl {
 	{
 		ImGui::Begin("Settings");
 		ImGui::ColorEdit3("Suqare Color", glm::value_ptr(m_BackgroundColor));
+		ImGui::End();
+		ImGui::Begin("FPS");
+		ImGui::Text("FPS = %.3lf", m_FPS);
+		ImGui::Text("Frame num = %d", m_FrameNum);
+
 		ImGui::End();
 
 		static BlackPearl::Object* currentObj = nullptr;//TODO::×¢ÒâÄÚ´æÐ¹Â©

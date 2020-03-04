@@ -16,7 +16,8 @@
 #include "BlackPearl/Event/Event.h"
 #include "BlackPearl/ImGui/ImGuiLayer.h"
 #include "BlackPearl/Scene/Scene.h"
-
+#include <chrono>
+using namespace std::chrono;
 namespace BlackPearl {
 
 	class Application
@@ -44,8 +45,13 @@ namespace BlackPearl {
 	private:
 		std::unique_ptr<Window> m_Window;
 
-
+		double m_StartTimeMs;
+		long long m_FrameNum = 0;
+		double m_FPS = 0;
 		Scene* m_CurrentScene;
+		long long m_TotalFrameNum = 0;
+		double m_TotalSecond = 0;
+
 
 	};
 	//To be define in a client

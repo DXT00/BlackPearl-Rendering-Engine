@@ -16,21 +16,11 @@ public:
 
 		m_shader.reset(new BlackPearl::Shader("assets/shaders/voxelization/debug/cube.glsl"));
 		
-
-		m_VoxelConeTracingRenderer = DBG_NEW BlackPearl::VoxelConeTracingRenderer();
 		m_BasicRenderer = DBG_NEW BlackPearl::BasicRenderer();
+		m_VoxelConeTracingRenderer = DBG_NEW BlackPearl::VoxelConeTracingRenderer();
 		m_CubeObj = CreateCube();
-		m_CubeObj->GetComponent<BlackPearl::Transform>()->SetScale(glm::vec3(1.0f));//必须是单位cube
+		m_CubeObj->GetComponent<BlackPearl::Transform>()->SetScale(glm::vec3(5.0f));//必须是单位cube
 		m_QuadObj = CreateQuad();
-		//m_QuadObj->GetComponent<BlackPearl::Transform>()->SetPosition({ 0.0f, 0.0f, 1.0f });
-		
-		/*BlackPearl::Object* debugQuad = CreateQuad();
-		debugQuad->GetComponent<BlackPearl::Transform>()->SetPosition({ 0.0f, 0.0f, 1.0f });*/
-
-		///*create pointlights*/
-		BlackPearl::Object* light = CreateLight(BlackPearl::LightType::PointLight);
-		light->GetComponent<BlackPearl::Transform>()->SetPosition({ 0.0,0.0,3.0 });
-		//debugQuad->GetComponent<BlackPearl::MeshRenderer>()->SetEnableRender(false);
 		m_VoxelConeTracingRenderer->Init(BlackPearl::Configuration::WindowWidth, BlackPearl::Configuration::WindowHeight,m_QuadObj,m_CubeObj);
 		
 		m_DebugQuadObj = CreateQuad();
@@ -38,7 +28,10 @@ public:
 
 		BlackPearl::Renderer::Init();
 	
-		//CreateCube();
+		/***************************************** Scene ********************************************************/
+		BlackPearl::Object* light = CreateLight(BlackPearl::LightType::PointLight);
+		light->GetComponent<BlackPearl::Transform>()->SetPosition({ 0.0,0.0,3.0 });
+
 		BlackPearl::Object *deer=  CreateModel("assets/models/deer/Deer.obj", "assets/shaders/IronMan.glsl",false);
 		deer->GetComponent<BlackPearl::Transform>()->SetScale(glm::vec3(0.001));
 		deer->GetComponent<BlackPearl::Transform>()->SetRotation(glm::vec3(0.000));
@@ -47,24 +40,35 @@ public:
 		deer->GetComponent<BlackPearl::MeshRenderer>()->SetIsBackGroundObjects(true);
 		m_BackGroundObjsList.push_back(deer);
 
-
-		/*BlackPearl::Object* ironMan = CreateModel("assets/models/IronMan/IronMan.obj", "assets/shaders/IronMan.glsl", false);
-		ironMan->GetComponent<BlackPearl::Transform>()->SetScale(glm::vec3(0.005));
-		ironMan->GetComponent<BlackPearl::Transform>()->SetPosition({ 1.5f,-1.0f,-5.0f });
-		ironMan->GetComponent<BlackPearl::Transform>()->SetRotation({ 0.0f,0.0f,0.0f });
-		m_BackGroundObjsList.push_back(ironMan);*/
+		BlackPearl::Object* bunny = Layer::CreateModel("assets/models/bunny/bunny.obj", "assets/shaders/IronMan.glsl", false);
+		bunny->GetComponent<BlackPearl::Transform>()->SetScale(glm::vec3(0.001));
+		bunny->GetComponent<BlackPearl::Transform>()->SetRotation(glm::vec3(0.000));
+		bunny->GetComponent<BlackPearl::Transform>()->SetPosition({ 3.0,0.0,3.0f });
+		bunny->GetComponent<BlackPearl::MeshRenderer>()->SetIsBackGroundObjects(true);
+		m_BackGroundObjsList.push_back(bunny);
 
 		auto cube = CreateCube();
 		cube->GetComponent<BlackPearl::MeshRenderer>()->SetIsBackGroundObjects(true);
 		m_BackGroundObjsList.push_back(cube);
 
-	/*	BlackPearl::Object *ironMan = CreateModel("assets/models/IronMan/IronMan.obj", "assets/shaders/IronMan.glsl",false);
-		ironMan->GetComponent<BlackPearl::Transform>()->SetScale(glm::vec3(0.005));
-		ironMan->GetComponent<BlackPearl::Transform>()->SetPosition({ 0.0f,-1.0f,0.0f });*/
+		auto cube1 = CreateCube();
+		cube1->GetComponent<BlackPearl::MeshRenderer>()->SetIsBackGroundObjects(true);
+		cube1->GetComponent<BlackPearl::Transform>()->SetPosition({ 0.0,0.0,3.0f });
 
-		//CreateCube();
+		m_BackGroundObjsList.push_back(cube1);
 
-		//CreateLight(BlackPearl::LightType::PointLight);
+		auto cube2 = CreateCube();
+		cube2->GetComponent<BlackPearl::MeshRenderer>()->SetIsBackGroundObjects(true);
+		m_BackGroundObjsList.push_back(cube2);
+
+
+		/*******************************************************************************************************/
+		/*******************************************************************************************************/
+
+	
+
+		
+
 	}
 
 	virtual ~VoxelConeTracingLayer() {
@@ -76,6 +80,11 @@ public:
 
 
 		InputCheck(ts);
+		milliseconds currentTimeMs = duration_cast<milliseconds>(system_clock::now().time_since_epoch());
+		double runtimeSecond = (currentTimeMs.count() - m_StartTimeMs.count()) / 1000.0f;
+		m_FrameNum++;
+		GE_ASSERT(m_FrameNum < MAXLONGLONG, "m_FrameNum out of range!");
+		m_FPS =(double) m_FrameNum / runtimeSecond;
 
 		//Switch mode
 		if (BlackPearl::Input::IsKeyPressed(BP_KEY_U)) {

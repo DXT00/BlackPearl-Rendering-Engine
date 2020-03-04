@@ -33,6 +33,7 @@ namespace BlackPearl {
 		m_Window->SetCallBack(std::bind(&Application::OnEvent, this, std::placeholders::_1));
 
 		m_CurrentScene = DBG_NEW Scene();
+		m_StartTimeMs = 0;// duration_cast<milliseconds>(system_clock::now().time_since_epoch());
 
 	}
 
@@ -44,6 +45,30 @@ namespace BlackPearl {
 	void Application::Run()
 	{
 		while (!glfwWindowShouldClose(m_Window->GetNativeWindow())) {
+
+			double currentTimeMs = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
+			double runtimeSecond = (currentTimeMs - m_StartTimeMs) / 1000.0f;
+
+			m_FrameNum++;
+
+			if (runtimeSecond > 1.0f) {
+
+				m_FPS = m_FrameNum;
+				GE_CORE_INFO("FPS = " + std::to_string(m_FPS) );
+				m_FrameNum = 0;
+				m_StartTimeMs = currentTimeMs;
+
+				m_TotalSecond++;
+				m_TotalFrameNum += m_FPS;
+				GE_CORE_INFO("AverageFPS = " + std::to_string((double)m_TotalFrameNum/m_TotalSecond));
+
+
+			}
+
+
+			//GE_ASSERT(m_FrameNum < MAXLONGLONG, "m_FrameNum out of range!");
+			//m_FPS = (double)m_FrameNum / runtimeSecond;
+
 			float time = (float)glfwGetTime();
 			Timestep ts = time - m_LastFrameTime;
 			m_LastFrameTime = time;
