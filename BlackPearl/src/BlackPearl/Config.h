@@ -40,10 +40,47 @@ namespace BlackPearl {
 		// Shadow map
 		// ------------------------------------------
 		/*对于每个 PointLight 在 m_ShadowRaduis 球体范围内的物体才会画出shadow */
-		static const float ShadowMapPointLightRadius; 
+		static const float ShadowMapPointLightRadius;
 
+		// ------------------------------------------
+		// light probe environment map	and specular map resolution
+		// ------------------------------------------
+		/* prefilterMap.glsl里的	float resolution =512.0;也要改 */
+		static const float EnvironmantMapResolution;
+		//static const float GICoeefs;
 
 
 	};
+	struct ShaderConfig {
+
+
+		static const char* AMBIENT_COLOR;
+		static const char* DIFFUSE_COLOR;
+		static const char* SPECULAR_COLOR;
+		static const char* EMISSION_COLOR;
+
+		static const char* METALLIC_VALUE;
+
+		static const char* DIFFUSE_TEXTURE2D;
+		static const char* SPECULAR_TEXTURE2D;
+		static const char* EMISSION_TEXTURE2D;
+		static const char* NORMAL_TEXTURE2D;
+		static const char* HEIGHT_TEXTURE2D;
+		static const char* AO_TEXTURE2D;
+		static const char* ROUGHNESS_TEXTURE2D;
+		static const char* METALLIC_TEXTURE2D;
+		static const char* DEPTH_TEXTURE2D;
+
+		static const char* CUBE_TEXTURECUBE;
+		static const char* SHININESS;
+
+		static const char* IS_BLINNLIGHT;
+		static const char* IS_TEXTURE_SAMPLE;
+		static const char* IS_DIFFUSE_TEXTURE_SAMPLE;
+		static const char* IS_SPECULAR_TEXTURE_SAMPLE;
+		static const char* IS_METALLIC_TEXTURE_SAMPLE;
+
+	};
+
 
 }

@@ -71,7 +71,7 @@ uniform float u_ProbeWeight[10];
 
 uniform vec3 u_CameraViewPos;
 uniform vec3 u_SHCoeffs[10*9];//最多10个probe
-uniform float u_IsPBRObjects;
+uniform int u_IsPBRObjects;
 
 
 
@@ -95,6 +95,9 @@ uniform struct Material{
 	float shininess;
 	bool isBlinnLight;
 	int  isTextureSample;//判断是否使用texture,或者只有color
+	int isDiffuseTextureSample;
+	int isSpecularTextureSample;
+	int isMetallicTextureSample;
 
 }u_Material;
 
@@ -143,7 +146,7 @@ vec3 FresnelSchlickRoughness(float cosTheta, vec3 F0, float roughness){
 	return F0 + (max(vec3(1.0 - roughness), F0) - F0) * pow(1.0 - cosTheta, 5.0);
 }
 vec3 CalculateAmbientGI(vec3 albedo,vec3 specularColor){
-	
+	vec3 emission =u_Material.emissionColor; //texture(u_Material.emission,v_TexCoord).rgb;
 	vec3 N = normalize(v_Normal);//getNormalFromMap(v_FragPos,v_TexCoord);
 
 	vec3 V = normalize(u_CameraViewPos-v_FragPos);
@@ -178,7 +181,7 @@ vec3 CalculateAmbientGI(vec3 albedo,vec3 specularColor){
 //	 ambient = ambient / (ambient + vec3(1.0));
 //	//gamma correction
 //    ambient = pow(ambient, vec3(1.0/2.2));  
-	return ambient;
+	return ambient+emission;
 
 
 }
@@ -195,6 +198,8 @@ vec3 CalculateAmbientGI(vec3 albedo,float metallic, float roughness,float ao){
 //    float ao = texture(u_Material.ao, v_TexCoord).r;
 	//vec3 normal = texture(u_Material.normal,v_TexCoord).xyz;
 	//normal = normalize(normal);
+	vec3 emission =u_Material.diffuseColor; //texture(u_Material.emission,v_TexCoord).rgb;
+
 	vec3 N = getNormalFromMap(v_FragPos,v_TexCoord);
 
 	vec3 V = normalize(u_CameraViewPos-v_FragPos);
@@ -236,7 +241,7 @@ vec3 CalculateAmbientGI(vec3 albedo,float metallic, float roughness,float ao){
 //	 ambient = ambient / (ambient + vec3(1.0));
 //	//gamma correction
 //    ambient = pow(ambient, vec3(1.0/2.2));  
-	return ambient;
+	return ambient+emission;
 
 }
 
@@ -252,16 +257,16 @@ void main(){
 	
 
 
-	vec3 diffuse = (u_Material.diffuseColor *(1-u_Material.isTextureSample)
-					+ texture(u_Material.diffuse,v_TexCoord).rgb*u_Material.isTextureSample);
+	vec3 diffuse = (u_Material.diffuseColor *(1-u_Material.isDiffuseTextureSample)
+					+ texture(u_Material.diffuse,v_TexCoord).rgb*u_Material.isDiffuseTextureSample);
 
 	vec3 albedo = pow(diffuse,vec3(2.2));
 
-	vec3 specular = (u_Material.specularColor *(1-u_Material.isTextureSample)
-					+ texture(u_Material.specular,v_TexCoord).rgb*u_Material.isTextureSample);
+	vec3 specular = (u_Material.specularColor *(1-u_Material.isSpecularTextureSample)
+					+ texture(u_Material.specular,v_TexCoord).rgb*u_Material.isSpecularTextureSample);
 
-	float metallic = u_Material.mentallicValue *(1-u_Material.isTextureSample)+
-					texture(u_Material.mentallic, v_TexCoord).r*u_Material.isTextureSample;
+	float metallic = u_Material.mentallicValue *(1-u_Material.isMetallicTextureSample)+
+					texture(u_Material.mentallic, v_TexCoord).r*u_Material.isMetallicTextureSample;
 
 
 	float roughness = u_Material.roughnessValue *(1-u_Material.isTextureSample)+
@@ -276,7 +281,7 @@ void main(){
 	gSpecular_Mentallic.a = metallic;
 
 
-	if(u_IsPBRObjects==1.0)
+	if(u_IsPBRObjects==1)
 		gAmbientGI_AO.rgb =	CalculateAmbientGI(albedo,metallic,roughness,ao);
 	else
 		gAmbientGI_AO.rgb =	CalculateAmbientGI(albedo,specular);

@@ -34,21 +34,31 @@ namespace BlackPearl {
 		m_FrameBuffer->Bind();
 		glClear(GL_DEPTH_BUFFER_BIT);
 
-		if (exceptObjs.empty())
-			DrawObjects(objs);
-		else
-			DrawObjectsExcept(objs, exceptObjs);
+		for (auto exceptObj : exceptObjs) {
+			exceptObj->GetComponent<MeshRenderer>()->SetEnableRender(false);
+		}
+		m_SimpleDepthShader->Bind();
+		m_SimpleDepthShader->SetUniformVec3f("u_LightPos", m_LightPos);
+		m_SimpleDepthShader->SetUniformMat4f("u_LightProjectionViewMatrix", m_LightProjectionViewMatrix);
+		DrawObjects(objs, m_SimpleDepthShader);
+
+
+		
 		m_FrameBuffer->UnBind();
 
-	}
-	void ShadowMapRenderer::PrepareShaderParameters(Mesh mesh, glm::mat4 transformMatrix, std::shared_ptr<Shader> shader, bool isLight) //RenderScene 会调用该虚函数
-	{
-		PrepareBasicShaderParameters(mesh, transformMatrix, shader, isLight);
-
-		shader->SetUniformVec3f("u_LightPos", m_LightPos);
-		shader->SetUniformMat4f("u_LightProjectionViewMatrix", m_LightProjectionViewMatrix);
+		for (auto exceptObj : exceptObjs) {
+			exceptObj->GetComponent<MeshRenderer>()->SetEnableRender(true);
+		}
 
 	}
+	//void ShadowMapRenderer::PrepareShaderParameters(Mesh mesh, glm::mat4 transformMatrix, std::shared_ptr<Shader> shader, bool isLight) //RenderScene 会调用该虚函数
+	//{
+	//	PrepareBasicShaderParameters(mesh, transformMatrix, shader, isLight);
+
+	//	shader->SetUniformVec3f("u_LightPos", m_LightPos);
+	//	shader->SetUniformMat4f("u_LightProjectionViewMatrix", m_LightProjectionViewMatrix);
+
+	//}
 
 	void ShadowMapRenderer::UpdateLightOrthoProjectionMatrix(float boxWidth, float boxHeight, float boxLength)
 	{

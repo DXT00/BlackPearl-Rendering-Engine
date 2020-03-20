@@ -14,11 +14,12 @@ namespace BlackPearl {
 			m_ShadowBox.reset(DBG_NEW ShadowBox(glm::mat4(1.0f), CameraObj->GetComponent<PerspectiveCamera>()));
 			m_FrameBuffer.reset(DBG_NEW FrameBuffer(s_ShadowMapWidth, s_ShadowMapHeight,
 				{ FrameBuffer::Attachment::DepthTexture },0, true));
+			m_SimpleDepthShader.reset(DBG_NEW BlackPearl::Shader("assets/shaders/shadowMap/directLight/DepthShader_ShadowMapLayer.glsl"));
 
 		};
 		~ShadowMapRenderer();
 		void Render(const std::vector<Object*>&objs,  ParallelLight* sun,const std::vector<Object*>&exceptObjs);
-		virtual void PrepareShaderParameters(Mesh mesh, glm::mat4 transformMatrix , std::shared_ptr<Shader> shader,bool isLight = false)override;
+		//virtual void PrepareShaderParameters(Mesh mesh, glm::mat4 transformMatrix , std::shared_ptr<Shader> shader,bool isLight = false)override;
 		
 		
 		void UpdateLightOrthoProjectionMatrix(float boxWidth,float boxHeight,float boxLength);
@@ -36,6 +37,9 @@ namespace BlackPearl {
 		glm::vec3 m_LightPos;
 		static int s_ShadowMapWidth;
 		static int s_ShadowMapHeight;
+
+
+		std::shared_ptr<BlackPearl::Shader> m_SimpleDepthShader;
 		
 	};
 }

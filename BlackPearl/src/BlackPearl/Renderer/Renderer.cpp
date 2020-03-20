@@ -74,6 +74,8 @@ namespace BlackPearl {
 	void Renderer::Submit(const std::shared_ptr<VertexArray>& vertexArray, const std::shared_ptr<Shader>& shader, const glm::mat4 & model, SceneData* sceneData)
 	{
 		//shader->Bind();
+		shader->SetUniformMat4f("u_TranInverseModel", glm::transpose(glm::inverse(model)));
+
 		shader->SetUniformMat4f("u_ProjectionView", sceneData->ViewProjectionMatrix);
 		shader->SetUniformMat4f("u_Projection", sceneData->ProjectionMatrix);
 		shader->SetUniformMat4f("u_View", sceneData->ViewMatrix);

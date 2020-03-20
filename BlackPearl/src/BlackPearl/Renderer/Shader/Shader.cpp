@@ -37,7 +37,9 @@ namespace BlackPearl {
 	{
 		m_ShaderPath = filepath;
 		std::string source = ReadFile(filepath);
-		std::unordered_map<GLenum, std::string> shaderSources = PreProcess(source);
+		std::string commonSource = ReadFile(m_CommonStructPath);
+
+		std::unordered_map<GLenum, std::string> shaderSources = PreProcess(source, commonSource);
 		Compile(shaderSources);
 
 	}
@@ -65,7 +67,7 @@ namespace BlackPearl {
 		}
 		return result;
 	}
-	std::unordered_map<GLenum, std::string> Shader::PreProcess(const std::string& source) {
+	std::unordered_map<GLenum, std::string> Shader::PreProcess(const std::string& source,const std::string& commonSource) {
 
 		std::unordered_map<unsigned int, std::string> shaderSources;
 		const char* typeToken = "#type";
@@ -83,6 +85,18 @@ namespace BlackPearl {
 			shaderSources[ShaderTypeFromString(type)] = source.substr(nextLinePos,
 				pos - (nextLinePos == std::string::npos ? source.size() - 1 : nextLinePos));//string::npos表示source的末尾位置
 
+		}
+		//add common struct source
+		if (shaderSources[GL_FRAGMENT_SHADER]!="") {
+			size_t pos = shaderSources[GL_FRAGMENT_SHADER].find("#version", 0);//find找不到会返回npos
+			GE_ASSERT(pos != std::string::npos, "Syntax error");
+
+			size_t eol = shaderSources[GL_FRAGMENT_SHADER].find_first_of("\r\n", pos);
+			GE_ASSERT(eol != std::string::npos, "Syntax error");
+
+			std::string front = shaderSources[GL_FRAGMENT_SHADER].substr(pos, eol - pos + 1);
+			std::string res = shaderSources[GL_FRAGMENT_SHADER].substr(eol);
+			shaderSources[GL_FRAGMENT_SHADER] = front + commonSource + res;
 		}
 		return shaderSources;
 
@@ -193,10 +207,12 @@ namespace BlackPearl {
 				this->SetUniformVec3f("u_PointLights[" + std::to_string(pointLightIndex) + "].diffuse", lightSource->GetLightProps().diffuse);
 				this->SetUniformVec3f("u_PointLights[" + std::to_string(pointLightIndex) + "].specular", lightSource->GetLightProps().specular);
 				this->SetUniformVec3f("u_PointLights[" + std::to_string(pointLightIndex) + "].position", lightObj->GetComponent<Transform>()->GetPosition());
+				this->SetUniform1f("u_PointLights[" + std::to_string(pointLightIndex) + "].intensity", lightSource->GetLightProps().intensity);
 
 				this->SetUniform1f("u_PointLights[" + std::to_string(pointLightIndex) + "].constant", lightSource->GetAttenuation().constant);
 				this->SetUniform1f("u_PointLights[" + std::to_string(pointLightIndex) + "].linear",lightSource->GetAttenuation().linear);
 				this->SetUniform1f("u_PointLights[" + std::to_string(pointLightIndex) + "].quadratic", lightSource->GetAttenuation().quadratic);
+
 				pointLightIndex++;
 			}
 			

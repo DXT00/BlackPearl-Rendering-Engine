@@ -17,7 +17,7 @@ namespace BlackPearl {
 			glm::vec3 diffuseColor = glm::vec3(0.0);
 			glm::vec3 specularColor = glm::vec3(0.0);
 			glm::vec3 emissionColor = glm::vec3(0.0);
-			float intensity = 1.0f;
+		//	float intensity = 1.0f;
 			
 		};
 		MaterialColor(){}
@@ -33,10 +33,11 @@ namespace BlackPearl {
 			m_Color.diffuseColor  = color.diffuseColor;
 			m_Color.specularColor = color.specularColor;
 			m_Color.emissionColor = color.emissionColor;
+		
 
 		}
-		float GetIntensity() const { return m_Color.intensity; }
-		void SetIntensity(float intensity) { m_Color.intensity = intensity; }
+		//float GetIntensity() const { return m_Color.intensity; }
+		//void SetIntensity(float intensity) { m_Color.intensity = intensity; }
 		void SetAmbientColor(const glm::vec3 color) {
 			m_Color.ambientColor = color;
 		}

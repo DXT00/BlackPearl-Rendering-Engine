@@ -29,38 +29,18 @@ public:
 		BlackPearl::Renderer::Init();
 	
 		/***************************************** Scene ********************************************************/
-		BlackPearl::Object* light = CreateLight(BlackPearl::LightType::PointLight);
-		light->GetComponent<BlackPearl::Transform>()->SetPosition({ 0.0,0.0,3.0 });
-
-		BlackPearl::Object *deer=  CreateModel("assets/models/deer/Deer.obj", "assets/shaders/IronMan.glsl",false);
-		deer->GetComponent<BlackPearl::Transform>()->SetScale(glm::vec3(0.001));
-		deer->GetComponent<BlackPearl::Transform>()->SetRotation(glm::vec3(0.000));
-
-		deer->GetComponent<BlackPearl::Transform>()->SetPosition({ 0.0,0.0,3.0f });
-		deer->GetComponent<BlackPearl::MeshRenderer>()->SetIsBackGroundObjects(true);
-		m_BackGroundObjsList.push_back(deer);
-
-		BlackPearl::Object* bunny = Layer::CreateModel("assets/models/bunny/bunny.obj", "assets/shaders/IronMan.glsl", false);
-		bunny->GetComponent<BlackPearl::Transform>()->SetScale(glm::vec3(0.001));
-		bunny->GetComponent<BlackPearl::Transform>()->SetRotation(glm::vec3(0.000));
-		bunny->GetComponent<BlackPearl::Transform>()->SetPosition({ 3.0,0.0,3.0f });
-		bunny->GetComponent<BlackPearl::MeshRenderer>()->SetIsBackGroundObjects(true);
-		m_BackGroundObjsList.push_back(bunny);
-
-		auto cube = CreateCube();
-		cube->GetComponent<BlackPearl::MeshRenderer>()->SetIsBackGroundObjects(true);
-		m_BackGroundObjsList.push_back(cube);
-
-		auto cube1 = CreateCube();
-		cube1->GetComponent<BlackPearl::MeshRenderer>()->SetIsBackGroundObjects(true);
-		cube1->GetComponent<BlackPearl::Transform>()->SetPosition({ 0.0,0.0,3.0f });
-
-		m_BackGroundObjsList.push_back(cube1);
-
-		auto cube2 = CreateCube();
-		cube2->GetComponent<BlackPearl::MeshRenderer>()->SetIsBackGroundObjects(true);
-		m_BackGroundObjsList.push_back(cube2);
-
+		m_SkyBoxObj = CreateSkyBox(
+			{ "assets/skybox/skybox/right.jpg",
+			 "assets/skybox/skybox/left.jpg",
+			 "assets/skybox/skybox/top.jpg",
+			 "assets/skybox/skybox/bottom.jpg",
+			 "assets/skybox/skybox/front.jpg",
+			 "assets/skybox/skybox/back.jpg",
+			});
+		//LoadStaticBackGroundObject("Sphere");
+		LoadScene("CornellScene");
+		LoadScene("SpheresScene");
+		
 
 		/*******************************************************************************************************/
 		/*******************************************************************************************************/
@@ -82,9 +62,9 @@ public:
 		InputCheck(ts);
 		milliseconds currentTimeMs = duration_cast<milliseconds>(system_clock::now().time_since_epoch());
 		double runtimeSecond = (currentTimeMs.count() - m_StartTimeMs.count()) / 1000.0f;
-		m_FrameNum++;
+		/*m_FrameNum++;
 		GE_ASSERT(m_FrameNum < MAXLONGLONG, "m_FrameNum out of range!");
-		m_FPS =(double) m_FrameNum / runtimeSecond;
+		m_FPS =(double) m_FrameNum / runtimeSecond;*/
 
 		//Switch mode
 		if (BlackPearl::Input::IsKeyPressed(BP_KEY_U)) {
@@ -102,7 +82,8 @@ public:
 		BlackPearl::Renderer::BeginScene(*(m_MainCamera->GetObj()->GetComponent<BlackPearl::PerspectiveCamera>()), *GetLightSources());
 
 
-	m_VoxelConeTracingRenderer->Render(m_MainCamera->GetObj()->GetComponent<BlackPearl::PerspectiveCamera>(),m_BackGroundObjsList, GetLightSources(), BlackPearl::Configuration::WindowWidth, BlackPearl::Configuration::WindowHeight, m_CurrentRenderingMode);
+	m_VoxelConeTracingRenderer->Render(m_MainCamera->GetObj()->GetComponent<BlackPearl::PerspectiveCamera>(),m_BackGroundObjsList, GetLightSources(), 
+		BlackPearl::Configuration::WindowWidth, BlackPearl::Configuration::WindowHeight,nullptr, m_CurrentRenderingMode);
 
 
 		//m_VoxelConeTracingRenderer->DrawFrontBackFaceOfCube(m_DebugQuadObj);

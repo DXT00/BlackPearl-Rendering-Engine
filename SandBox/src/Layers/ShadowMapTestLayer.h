@@ -42,7 +42,6 @@ public:
 
 			//Shader reset
 		m_Shader.reset(DBG_NEW BlackPearl::Shader("assets/shaders/shadowMap/directLight/ShadowMaping_ShadowMapLayer.glsl"));
-		m_SimpleDepthShader.reset(DBG_NEW BlackPearl::Shader("assets/shaders/shadowMap/directLight/DepthShader_ShadowMapLayer.glsl"));
 		m_QuadDepthShader.reset(DBG_NEW BlackPearl::Shader("assets/shaders/shadowMap/directLight/Quad_ShadowMapLayer.glsl"));
 
 
@@ -110,10 +109,10 @@ public:
 				obj->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(m_MasterRenderer->GetShadowMapRenderer().GetFrameBuffer()->GetDepthTexture());
 		}
 
-		for (BlackPearl::Object* obj : m_ObjectsList) {
+		/*for (BlackPearl::Object* obj : m_ObjectsList) {
 			if (obj!=Quad&&obj->HasComponent<BlackPearl::MeshRenderer>())
 				obj->GetComponent<BlackPearl::MeshRenderer>()->SetShaders(m_SimpleDepthShader);
-		}
+		}*/
 
 
 		m_MasterRenderer->RenderShadowMap(m_ObjectsList, m_Sun->GetComponent<BlackPearl::ParallelLight>(), {Quad});
@@ -319,10 +318,10 @@ private:
 
 
 	glm::vec3 m_LightPos = { 0.0f, 1.5f, 0.0f };
-	std::shared_ptr<BlackPearl::Shader> m_SimpleDepthShader;
 	std::shared_ptr<BlackPearl::Shader> m_Shader;
 	std::shared_ptr<BlackPearl::Shader> m_QuadDepthShader;
 
+	//std::shared_ptr<BlackPearl::Shader> m_SimpleDepthShader;
 
 	GLuint woodTexture;
 	GLuint planeVAO;

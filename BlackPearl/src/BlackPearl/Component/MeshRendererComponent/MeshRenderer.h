@@ -52,15 +52,19 @@ namespace BlackPearl {
 				mesh.GetMaterial()->SetTextureSample((int)isSampled);
 		}
 
-
+		bool GetEnableRender()const { return m_EnableRender; }
 		void SetEnableRender(bool enable) { m_EnableRender = enable; }
+
+		bool GetIsBackGroundObjects() const { return m_IsBackGroundObjects; }
 		void SetIsBackGroundObjects(bool isBackGroundObject)  {  m_IsBackGroundObjects = isBackGroundObject; }
+
+		bool GetIsShadowObjects() const { return m_HasShadow; }
+		void SetIsShadowObjects(bool isShadowObj) { m_HasShadow = isShadowObj; }
+
+		bool GetIsPBRObject() const { return m_IsPBRObject; }
 		void SetIsPBRObject(bool isPBRObject) { m_IsPBRObject = isPBRObject; }
 
-		bool GetIsBackGroundObjects() const{ return m_IsBackGroundObjects; }
-		bool GetIsPBRObject() const { return m_IsPBRObject; }
 
-		bool GetEnableRender()const { return m_EnableRender; }
 	private:
 		//¿ªÆôºÍ½ûÖ¹äÖÈ¾
 		bool m_EnableRender = true;
@@ -71,6 +75,7 @@ namespace BlackPearl {
 		
 		bool m_EnableCullFace = true;
 		bool m_IsBackGroundObjects = false;
+		bool m_HasShadow = true;
 
 	};
 

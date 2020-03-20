@@ -140,7 +140,11 @@ namespace BlackPearl {
 				textureId++;
 			}
 
-			
+			if (obj->GetComponent<MeshRenderer>()->GetIsPBRObject())
+				m_ShadowMapShader->SetUniform1i("u_IsPBRObject", 1);
+			else
+				m_ShadowMapShader->SetUniform1i("u_IsPBRObject", 0);
+
 			DrawObject(obj, m_ShadowMapShader);
 		}
 		

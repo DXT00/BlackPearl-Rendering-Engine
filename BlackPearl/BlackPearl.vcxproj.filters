@@ -213,9 +213,6 @@
     <ClInclude Include="src\BlackPearl\KeyCodes.h">
       <Filter>src\BlackPearl</Filter>
     </ClInclude>
-    <ClInclude Include="src\BlackPearl\Layer.h">
-      <Filter>src\BlackPearl</Filter>
-    </ClInclude>
     <ClInclude Include="src\BlackPearl\LayerStack.h">
       <Filter>src\BlackPearl</Filter>
     </ClInclude>
@@ -1446,6 +1443,9 @@
     <ClInclude Include="vendor\stb\stb_image.h">
       <Filter>vendor\stb</Filter>
     </ClInclude>
+    <ClInclude Include="src\BlackPearl\LayerScene\Layer.h">
+      <Filter>src\BlackPearl</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\BlackPearl\Animation\AnimatedModel.cpp">
@@ -1533,9 +1533,6 @@
       <Filter>src\BlackPearl\ImGui</Filter>
     </ClCompile>
     <ClCompile Include="src\BlackPearl\Input.cpp">
-      <Filter>src\BlackPearl</Filter>
-    </ClCompile>
-    <ClCompile Include="src\BlackPearl\Layer.cpp">
       <Filter>src\BlackPearl</Filter>
     </ClCompile>
     <ClCompile Include="src\BlackPearl\LayerStack.cpp">
@@ -1657,6 +1654,9 @@
     </ClCompile>
     <ClCompile Include="src\pch.cpp">
       <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BlackPearl\LayerScene\Layer.cpp">
+      <Filter>src\BlackPearl</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

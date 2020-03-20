@@ -177,7 +177,7 @@
     <ClInclude Include="src\BlackPearl\ImGui\ImGuiLayer.h" />
     <ClInclude Include="src\BlackPearl\Input.h" />
     <ClInclude Include="src\BlackPearl\KeyCodes.h" />
-    <ClInclude Include="src\BlackPearl\Layer.h" />
+    <ClInclude Include="src\BlackPearl\LayerScene\Layer.h" />
     <ClInclude Include="src\BlackPearl\LayerStack.h" />
     <ClInclude Include="src\BlackPearl\LightProbes\LightProbes.h" />
     <ClInclude Include="src\BlackPearl\LightProbes\SphericalHarmonics.h" />
@@ -619,7 +619,7 @@
     <ClCompile Include="src\BlackPearl\ImGui\ImGuiBuild.cpp" />
     <ClCompile Include="src\BlackPearl\ImGui\ImGuiLayer.cpp" />
     <ClCompile Include="src\BlackPearl\Input.cpp" />
-    <ClCompile Include="src\BlackPearl\Layer.cpp" />
+    <ClCompile Include="src\BlackPearl\LayerScene\Layer.cpp" />
     <ClCompile Include="src\BlackPearl\LayerStack.cpp" />
     <ClCompile Include="src\BlackPearl\LightProbes\LightProbes.cpp" />
     <ClCompile Include="src\BlackPearl\LightProbes\SphericalHarmonics.cpp" />

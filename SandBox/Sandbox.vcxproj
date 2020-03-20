@@ -140,6 +140,7 @@
     <ClInclude Include="src\Layers\ShadowMapTestLayer.h" />
     <ClInclude Include="src\Layers\SkyBoxTestLayer.h" />
     <ClInclude Include="src\Layers\VoxelConeTracingLayer.h" />
+    <ClInclude Include="src\Layers\VoxelizationTestLayer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\SandBox.cpp" />

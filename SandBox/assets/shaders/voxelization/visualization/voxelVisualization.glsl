@@ -1,6 +1,3 @@
-
-// Author:	Fredrik Präntare <prantare@gmail.com> 
-// Date:	11/26/2016
 #type vertex
 #version 430 core
 

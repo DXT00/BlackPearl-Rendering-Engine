@@ -12,12 +12,15 @@ namespace BlackPearl {
 
 		glm::vec3 GetPosition()const { return m_Position; }
 		glm::vec3 GetRotation()const { return m_Rotation; }
+		glm::vec3 GetLastPosition()const { return m_LastPosition; }
+
 		glm::vec3 GetScale()   const { return m_Scale;    }
 		glm::mat4 GetTransformMatrix()const { return m_TransformMatrix; }
 		std::vector<Transform*> GetChilds(){ return m_Childs; }
 		void UpdateTransformMatrix();
+		void SetLastPosition(const glm::vec3& position) { m_LastPosition = position; }
 
-		void SetPosition(const glm::vec3& position) { m_Position.x = position.x, m_Position.y = position.y, m_Position.z = position.z;UpdateTransformMatrix();}
+		void SetPosition(const glm::vec3& position) { m_LastPosition = m_Position; m_Position.x = position.x, m_Position.y = position.y, m_Position.z = position.z; UpdateTransformMatrix(); }
 		void SetRotation(const glm::vec3& rotation) { m_Rotation.x = rotation.x, m_Rotation.y = rotation.y, m_Rotation.z = rotation.z; UpdateTransformMatrix();}
 		void SetScale(const glm::vec3&scale)        { m_Scale.x    = scale.x,    m_Scale.y = scale.y,       m_Scale.z = scale.z; UpdateTransformMatrix();}
 		void AddChild(Transform* transform) { m_Childs.push_back(transform); }
@@ -25,6 +28,8 @@ namespace BlackPearl {
 
 	private:
 		glm::vec3 m_Position = { 0.0f,0.0f,0.0f };
+		glm::vec3 m_LastPosition = { 0.0f,0.0f,0.0f };
+
 		glm::vec3 m_Rotation = { 0.0f,0.0f,0.0f };//µ¥Î»£º½Ç¶È
 		glm::vec3 m_Scale    = { 1.0f,1.0f,1.0f };
 		glm::mat4 m_TransformMatrix = glm::mat4(1.0f);

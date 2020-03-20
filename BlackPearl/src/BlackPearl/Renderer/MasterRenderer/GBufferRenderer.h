@@ -7,8 +7,10 @@
 #include "AnimatedModelRenderer.h"
 
 namespace BlackPearl {
+
 	class GBufferRenderer:public BasicRenderer
 	{
+
 	public:
 		GBufferRenderer();
 		/* ScreenQuad render scene to the screen*/
@@ -20,6 +22,11 @@ namespace BlackPearl {
 		void RenderSceneWithGBufferAndProbes(std::vector<Object*> staticObjects, std::vector<Object*> dynamicObjects, float timeInSecond, std::vector<Object*> backGroundObjs, Object* gBufferDebugQuad, LightSources* lightSources,
 			std::vector<LightProbe*> probes, std::shared_ptr<Texture> specularBrdfLUTTexture, Object* skyBox);
 		std::vector<LightProbe*> FindKnearProbes(glm::vec3 objPos, std::vector<LightProbe*> probes);
+
+		//float GetGICoeffs()const { return m_GICoeffs; }
+		//void SetGICoeffs(float GICoeffs) { m_GICoeffs = GICoeffs; }
+		static float s_GICoeffs;
+		static bool s_HDR;
 
 	private:
 		bool m_IsInitialized = false;
@@ -59,11 +66,12 @@ namespace BlackPearl {
 		unsigned int m_TexxtureHeight = Configuration::WindowHeight;
 
 		/* 0.0f <m_AttenuationItensity< 256.0f ,m_AttenuationItensity越大，衰减越快，包围球m_SurroundSphere 半径越小 */
-		float m_AttenuationItensity = 100.0f;
+		float m_AttenuationItensity = 50.0f;// 100.0f;
 
 		/* m_K near probes for specular objs rendering */
 		/*注意 物体blending 多个(m_K个) probes的diffuse SH,但只取最近的一个Probe的specular Map*/
 		unsigned int m_K = 2;
+		//
 
 		/*renderer for dynamic objects*/
 		AnimatedModelRenderer* m_AnimatedModelRenderer;

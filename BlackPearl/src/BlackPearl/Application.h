@@ -11,7 +11,7 @@
 #include "Component/LightComponent/LightSources.h"
 #include "Renderer/Mesh/Mesh.h"
 #include "Renderer/Model/Model.h"
-#include "Layer.h"
+#include "LayerScene/Layer.h"
 #include "LayerStack.h"
 #include "BlackPearl/Event/Event.h"
 #include "BlackPearl/ImGui/ImGuiLayer.h"
@@ -31,8 +31,10 @@ namespace BlackPearl {
 		Scene* GetScene() { return m_CurrentScene; }
 		void Run();
 		void OnEvent(Event &event);
+		static double s_AppFPS;
 
-	
+		static double s_AppAverageFPS;
+
 
 	private:
 		bool OnCameraRotate(MouseMovedEvent&e);
@@ -47,11 +49,9 @@ namespace BlackPearl {
 
 		double m_StartTimeMs;
 		long long m_FrameNum = 0;
-		double m_FPS = 0;
 		Scene* m_CurrentScene;
 		long long m_TotalFrameNum = 0;
 		double m_TotalSecond = 0;
-
 
 	};
 	//To be define in a client

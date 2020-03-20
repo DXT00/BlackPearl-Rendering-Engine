@@ -29,21 +29,21 @@ out vec4 FragColor;
 in vec3 v_Normal;
 in vec3 v_FragPos;
 
-struct Material{
-	vec3 ambientColor;
-	vec3 diffuseColor;
-	vec3 specularColor;
-	vec3 emissionColor;
-	sampler2D diffuse;
-	sampler2D specular;
-	sampler2D emission;
-	sampler2D normal;
-	sampler2D height;
-	samplerCube cube;
-
-	float shininess;
-
-};
+//struct Material{
+//	vec3 ambientColor;
+//	vec3 diffuseColor;
+//	vec3 specularColor;
+//	vec3 emissionColor;
+//	sampler2D diffuse;
+//	sampler2D specular;
+//	sampler2D emission;
+//	sampler2D normal;
+//	sampler2D height;
+//	samplerCube cube;
+//
+//	float shininess;
+//
+//};
 uniform Material u_Material;
 uniform vec3 u_CameraViewPos;
 

@@ -18,18 +18,18 @@ namespace BlackPearl {
 		void Init(unsigned int viewportWidth,unsigned int viewportHeight, Object * quadObj, Object * cubeObj);//, Object* debugQuadObj
 		void InitVoxelization();
 		void InitVoxelVisualization(unsigned int viewportWidth, unsigned int viewportHeight);
-		void Voxilize(const std::vector<Object*>&objs,
+		void Voxilize(const std::vector<Object*>&objs, Object* skybox,
 			bool clearVoxelizationFirst = true);
 		void Render(
 			Camera* camera,
 			const std::vector<Object*>&objs, 
 			const LightSources* lightSources,
 			unsigned int viewportWidth,
-			unsigned int viewportHeight,
+			unsigned int viewportHeight, Object* skybox,
 			RenderingMode reneringMode = RenderingMode::VOXELIZATION_VISUALIZATION
 		);
 		void RenderVoxelVisualization(Camera* camera,const std::vector<Object*>&objs,  unsigned int viewportWidth, unsigned int viewportHeight);
-		void RenderScene(const std::vector<Object*>&objs, unsigned int viewportWidth, unsigned int viewportHeight);
+		void RenderScene(const std::vector<Object*>&objs, unsigned int viewportWidth, unsigned int viewportHeight, Object* skybox);
 
 
 		/* Öð¸öobjectÌåËØ»¯ */
@@ -49,6 +49,12 @@ namespace BlackPearl {
 
 		/*Debug function*/
 		void VoxelizeTest(const std::vector<Object*>& objs);
+		/* Settings */
+		static bool s_Shadows;
+		static bool s_IndirectDiffuseLight;
+		static bool s_IndirectSpecularLight;
+		static bool s_DirectLight;
+		static float s_GICoeffs;
 	private:
 		Texture3D* m_VoxelTexture = nullptr;
 		unsigned int m_VoxelTextureSize = 256;// 256;// 64;
@@ -69,10 +75,7 @@ namespace BlackPearl {
 		// ----------------
 		// Rendering.
 		// ----------------
-		bool m_Shadows = true;
-		bool m_IndirectDiffuseLight = true;
-		bool m_IndirectSpecularLight = true;
-		bool m_DirectLight = true;
+
 
 
 		std::shared_ptr<Shader> m_VoxelizationShader;

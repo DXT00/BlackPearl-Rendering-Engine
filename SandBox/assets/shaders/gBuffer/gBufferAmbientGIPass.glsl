@@ -31,7 +31,8 @@ uniform sampler2D gAmbientGI_AO;
 
 out vec4 FragColor;
 uniform vec2 gScreenSize;
-
+uniform float u_GICoeffs;
+uniform Settings u_Settings;
 vec2 CalcTexCoord()
 {
     return gl_FragCoord.xy / gScreenSize;
@@ -39,6 +40,6 @@ vec2 CalcTexCoord()
 
 void main(){
 	vec2 texCoords = CalcTexCoord();
-	vec3 outColor = texture(gAmbientGI_AO,texCoords).rgb;
+	vec3 outColor = u_Settings.GICoeffs*texture(gAmbientGI_AO,texCoords).rgb;
 	FragColor = vec4(outColor,1.0);
 }

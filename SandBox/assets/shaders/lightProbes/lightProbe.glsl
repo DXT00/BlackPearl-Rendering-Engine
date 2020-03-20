@@ -42,20 +42,21 @@ out vec4 FragColor;
 in vec3 TexCoords;
 in vec3 v_Normal;
 
-uniform struct Material{
-	vec3 ambientColor;
-	vec3 diffuseColor;
-	vec3 specularColor;
-	vec3 emissionColor;
-	sampler2D diffuse;
-	sampler2D specular;
-	sampler2D emission;
-	sampler2D normal;
-	sampler2D height;
-	samplerCube cube;
-	float shininess;
-
-}u_Material;
+//uniform struct Material{
+//	vec3 ambientColor;
+//	vec3 diffuseColor;
+//	vec3 specularColor;
+//	vec3 emissionColor;
+//	sampler2D diffuse;
+//	sampler2D specular;
+//	sampler2D emission;
+//	sampler2D normal;
+//	sampler2D height;
+//	samplerCube cube;
+//	float shininess;
+//
+//}u_Material;
+uniform Material u_Material;
 
 uniform samplerCube cubeMap;
 float near = 0.1; 
@@ -207,7 +208,7 @@ void main(){
 	//vec3 color=LoadSHCoeffs(SHCoeffs,N);
 	//vec3 color =SHDiffuse(N);//imageLoad(u_Image,ivec2(4,0)).rgb;//
 	
-	vec3 color =texture(u_Material.cube,TexCoords).rgb;
+	vec3 color =textureLod(u_Material.cube,TexCoords,0).rgb;
 		//vec3 color =texture(u_Material.diffuse,TexCoords.xy).rgb;
 
 //	color = color/(color+vec3(1.0));

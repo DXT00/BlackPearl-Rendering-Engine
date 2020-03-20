@@ -23,7 +23,9 @@
 #include "ImGui/ImGuiLayer.h"
 #include "BlackPearl/Entity/Entity.h"
 namespace BlackPearl {
+	 double Application::s_AppFPS=0.0f;
 
+	 double Application::s_AppAverageFPS=0.0f;
 	Application* Application::s_Instance = nullptr;
 	Application::Application()
 	{
@@ -53,14 +55,16 @@ namespace BlackPearl {
 
 			if (runtimeSecond > 1.0f) {
 
-				m_FPS = m_FrameNum;
-				GE_CORE_INFO("FPS = " + std::to_string(m_FPS) );
+				s_AppFPS = m_FrameNum;
+				GE_CORE_INFO("FPS = " + std::to_string(s_AppFPS) );
+				m_TotalFrameNum += m_FrameNum;
+
 				m_FrameNum = 0;
 				m_StartTimeMs = currentTimeMs;
 
 				m_TotalSecond++;
-				m_TotalFrameNum += m_FPS;
-				GE_CORE_INFO("AverageFPS = " + std::to_string((double)m_TotalFrameNum/m_TotalSecond));
+				s_AppAverageFPS = (double)m_TotalFrameNum / m_TotalSecond;
+				GE_CORE_INFO("AverageFPS = " + std::to_string(s_AppAverageFPS));
 
 
 			}

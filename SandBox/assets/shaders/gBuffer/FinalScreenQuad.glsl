@@ -19,34 +19,34 @@ void main()
 out vec4 FragColor;
 in vec2 TexCoords;
 
-struct Material{
-	vec3 ambientColor;
-	vec3 diffuseColor;
-	vec3 specularColor;
-	vec3 emissionColor;
-	sampler2D diffuse;
-	sampler2D specular;
-	sampler2D emission;
-	sampler2D normal;
-	sampler2D height;
-
-	float shininess;
-
-};
-uniform Material u_Material;
+//struct Material{
+//	vec3 ambientColor;
+//	vec3 diffuseColor;
+//	vec3 specularColor;
+//	vec3 emissionColor;
+//	sampler2D diffuse;
+//	sampler2D specular;
+//	sampler2D emission;
+//	sampler2D normal;
+//	sampler2D height;
+//
+//	float shininess;
+//
+//};
+//uniform Material u_Material;
 uniform sampler2D u_FinalScreenTexture;
-
+uniform bool u_HDR;
 const float offset = 1.0 / 300.0; 
 void main(){
 
 	vec3 color =texture(u_FinalScreenTexture, TexCoords).rgb;
 
-
+	if(u_HDR){
 	//HDR tonemapping
 	 color = color / (color + vec3(1.0));
 	//gamma correction
-    color = pow(color, vec3(1.0/2.2));  
-
+    color = pow(color, vec3(1.0/2.2));  //1.0/2.2
+	}
 	FragColor = vec4(color, 1.0);
 
 }

@@ -10,6 +10,9 @@
 #include "glm/gtc/random.hpp"
 
 namespace BlackPearl {
+	float GBufferRenderer::s_GICoeffs = 0.5f;
+	bool GBufferRenderer::s_HDR =true;
+
 	GBufferRenderer::GBufferRenderer()
 	{
 		m_GBffer.reset(DBG_NEW GBuffer(m_TextureWidth, m_TexxtureHeight));
@@ -147,6 +150,9 @@ namespace BlackPearl {
 		DrawLightSources(lightSources);
 
 		/* Debug ... 画出包围球看看 */
+		/*glEnable(GL_BLEND);
+		glDisable(GL_CULL_FACE);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);*/
 
 		//std::vector<glm::vec3> color = {
 		//	{1.0,0.0,0.0},
@@ -177,7 +183,7 @@ namespace BlackPearl {
 	void GBufferRenderer::DrawGBuffer(Object* gBufferDebugQuad)
 	{
 
-		glViewport(0, 270, 480, 270);
+		/*glViewport(0, 270, 480, 270);
 		gBufferDebugQuad->GetComponent<MeshRenderer>()->SetTextures(m_GBffer->GetPositionTexture());
 		DrawObject(gBufferDebugQuad);
 
@@ -191,7 +197,32 @@ namespace BlackPearl {
 
 		glViewport(480, 270, 480, 270);
 		gBufferDebugQuad->GetComponent<MeshRenderer>()->SetTextures(m_GBffer->GetSpecularMentallicTexture());
+		DrawObject(gBufferDebugQuad);*/
+	
+		glViewport(0, 0, 320, 270);
+		gBufferDebugQuad->GetComponent<MeshRenderer>()->SetTextures(m_GBffer->GetPositionTexture());
 		DrawObject(gBufferDebugQuad);
+
+		glViewport(0, 270, 320, 270);
+		gBufferDebugQuad->GetComponent<MeshRenderer>()->SetTextures(m_GBffer->GetNormalTexture());
+		DrawObject(gBufferDebugQuad);
+
+		glViewport(320, 0, 320, 270);
+		gBufferDebugQuad->GetComponent<MeshRenderer>()->SetTextures(m_GBffer->GetDiffuseRoughnessTexture());
+		DrawObject(gBufferDebugQuad);
+
+		glViewport(320, 270, 320, 270);
+		gBufferDebugQuad->GetComponent<MeshRenderer>()->SetTextures(m_GBffer->GetSpecularMentallicTexture());
+		DrawObject(gBufferDebugQuad);
+
+		glViewport(640, 0, 320, 270);
+		gBufferDebugQuad->GetComponent<MeshRenderer>()->SetTextures(m_GBffer->GetAmbientGIAOTexture());
+		DrawObject(gBufferDebugQuad);
+
+		glViewport(640, 270, 320, 270);
+		gBufferDebugQuad->GetComponent<MeshRenderer>()->SetTextures(m_GBffer->GetNormalMapTexture());
+		DrawObject(gBufferDebugQuad);
+	
 	}
 
 	float GBufferRenderer::CalculateSphereRadius(Object* pointLight)
@@ -288,9 +319,9 @@ namespace BlackPearl {
 
 			}
 			if (obj->GetComponent<MeshRenderer>()->GetIsPBRObject())
-				m_GBufferShader->SetUniform1f("u_IsPBRObjects", 1.0f);
+				m_GBufferShader->SetUniform1i("u_IsPBRObjects", 1);
 			else
-				m_GBufferShader->SetUniform1f("u_IsPBRObjects", 0.0f);
+				m_GBufferShader->SetUniform1i("u_IsPBRObjects", 0);
 
 
 			obj->GetComponent<MeshRenderer>()->SetShaders(m_GBufferShader);
@@ -353,11 +384,11 @@ namespace BlackPearl {
 
 			}
 			if (obj->GetComponent<MeshRenderer>()->GetIsPBRObject())
-				animatedShader->SetUniform1f("u_IsPBRObjects", 1.0f);
+				animatedShader->SetUniform1i("u_IsPBRObjects", 1);
 			else
-				animatedShader->SetUniform1f("u_IsPBRObjects", 0.0f);
+				animatedShader->SetUniform1i("u_IsPBRObjects", 0);
 
-			m_AnimatedModelRenderer->Render(obj, timeInSecond);
+			m_AnimatedModelRenderer->Render(obj,timeInSecond,animatedShader);
 		/*	obj->GetComponent<MeshRenderer>()->SetShaders(m_GBufferShader);
 			DrawObject(obj, m_GBufferShader);*/
 		}
@@ -392,14 +423,11 @@ namespace BlackPearl {
 
 
 		std::shared_ptr<FrameBuffer> frameBuffer(new FrameBuffer());
-		
 		frameBuffer->Bind();
 		frameBuffer->AttachRenderBuffer(m_TextureWidth, m_TexxtureHeight);
 		frameBuffer->AttachColorTexture(m_HDRPostProcessTexture, 0);
-
 		frameBuffer->BindRenderBuffer();
 		glViewport(0, 0, m_TextureWidth, m_TexxtureHeight);
-
 		glClear(GL_COLOR_BUFFER_BIT);
 
 
@@ -411,6 +439,7 @@ namespace BlackPearl {
 		m_GBffer->GetAmbientGIAOTexture()->Bind();
 
 		m_AmbientGIPassShader->SetUniformVec2f("gScreenSize", glm::vec2(m_TextureWidth, m_TexxtureHeight));
+		m_AmbientGIPassShader->SetUniform1f("u_Settings.GICoeffs", s_GICoeffs);
 
 		DrawObject(m_GIQuad, m_AmbientGIPassShader);
 
@@ -455,6 +484,7 @@ namespace BlackPearl {
 			m_PointLightPassShader->SetUniform1f("u_PointLight.constant", pointLight->GetComponent<PointLight>()->GetAttenuation().constant);
 			m_PointLightPassShader->SetUniform1f("u_PointLight.linear", pointLight->GetComponent<PointLight>()->GetAttenuation().linear);
 			m_PointLightPassShader->SetUniform1f("u_PointLight.quadratic", pointLight->GetComponent<PointLight>()->GetAttenuation().quadratic);
+			m_PointLightPassShader->SetUniform1f("u_PointLights.intensity", pointLight->GetComponent<PointLight>()->GetLightProps().intensity);
 
 			m_PointLightPassShader->SetUniform1f("u_FarPlane", ShadowMapPointLightRenderer::s_FarPlane);
 			m_PointLightPassShader->SetUniform1i("u_ShadowMap",6);
@@ -474,6 +504,7 @@ namespace BlackPearl {
 		glClear(GL_COLOR_BUFFER_BIT);
 		m_FinalScreenShader->Bind();
 		m_FinalScreenShader->SetUniform1i("u_FinalScreenTexture", 0);
+		m_FinalScreenShader->SetUniform1f("u_HDR", s_HDR);
 		glActiveTexture(GL_TEXTURE0);
 		m_HDRPostProcessTexture->Bind();
 		DrawObject(m_FinalScreenQuad, m_FinalScreenShader);
@@ -502,14 +533,16 @@ namespace BlackPearl {
 
 		glDepthFunc(GL_LEQUAL);
 
-		DrawObject(skyBox);
+		//DrawObject(skyBox);
 		glDepthFunc(GL_LESS);
-		DrawObjects(backGroundObjs);
+		//DrawObjects(backGroundObjs);
 
 		DrawLightSources(lightSources);
 
 		/* Debug ... 画出包围球看看 */
-
+		//glEnable(GL_BLEND);
+		//glDisable(GL_CULL_FACE);
+		//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		//std::vector<glm::vec3> color = {
 		//	{1.0,0.0,0.0},
 		//	{1.0,1.0,0.0},

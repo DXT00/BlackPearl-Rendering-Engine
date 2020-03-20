@@ -19,10 +19,10 @@ namespace BlackPearl {
 			glm::vec3 diffuse;
 			glm::vec3 specular;
 			glm::vec3 emission;
-
-			Props() : ambient({ 0.3f,0.3f,0.3f }), diffuse({ 1.0f,1.0f,1.0f }), specular({ 1.0f,1.0f,1.0f }), emission({0.0f,0.0f,0.0f}) {}
-			Props(glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular, glm::vec3 emission)
-				: ambient(ambient), diffuse(diffuse), specular(specular),emission(emission) {}
+			float intensity;
+			Props() : ambient({ 0.3f,0.3f,0.3f }), diffuse({ 1.0f,1.0f,1.0f }), specular({ 1.0f,1.0f,1.0f }), emission({0.0f,0.0f,0.0f}),intensity(1.0f) {}
+			Props(glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular, glm::vec3 emission,float intensity)
+				: ambient(ambient), diffuse(diffuse), specular(specular),emission(emission),intensity(intensity) {}
 
 		};
 		//position{2.2f,1.0f,2.0f}
@@ -49,7 +49,7 @@ namespace BlackPearl {
 			m_LightProp.diffuse = props.diffuse;
 			m_LightProp.specular = props.specular;
 			m_LightProp.emission = props.emission;
-
+			m_LightProp.intensity = props.intensity;
 		}
 	
 	protected:

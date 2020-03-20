@@ -10,6 +10,7 @@
 #include "BlackPearl/Renderer/Shader/Shader.h"
 #include "BlackPearl/Renderer/Renderer.h"
 #include "BlackPearl/Renderer/MasterRenderer/ShadowMapPointLightRenderer.h"
+#include "BlackPearl/Config.h"
 namespace BlackPearl {
 
 	BasicRenderer::BasicRenderer()
@@ -20,14 +21,14 @@ namespace BlackPearl {
 	{
 	}
 
-	void BasicRenderer::RenderScene(const std::vector<Object*> &objs, const LightSources* lightSources, Renderer::SceneData* scene)
+	void BasicRenderer::RenderScene(const std::vector<Object*>& objs, const LightSources* lightSources, Renderer::SceneData* scene)
 	{
 		DrawObjects(objs, scene);
 		DrawLightSources(lightSources, scene);
 
 	}
 
-	void BasicRenderer::RenderConfigure(Object * obj)
+	void BasicRenderer::RenderConfigure(Object* obj)
 	{
 		//if (obj->HasComponent<MeshRenderer>()) {
 		//	auto meshRenderer = obj->GetComponent<MeshRenderer>();
@@ -56,7 +57,7 @@ namespace BlackPearl {
 
 		}
 	}
-	void BasicRenderer::DrawObjectsExcept(const std::vector<Object*>& objs, const Object * exceptObj, Renderer::SceneData* scene)
+	void BasicRenderer::DrawObjectsExcept(const std::vector<Object*>& objs, const Object* exceptObj, Renderer::SceneData* scene)
 	{
 
 		for (auto obj : objs) {
@@ -67,7 +68,7 @@ namespace BlackPearl {
 
 	}
 	//objs中可以包含Light
-	void BasicRenderer::DrawObjects(std::vector<Object *>objs, Renderer::SceneData* scene)
+	void BasicRenderer::DrawObjects(std::vector<Object*>objs, Renderer::SceneData* scene)
 	{
 		for (auto obj : objs) {
 			DrawObject(obj, scene);
@@ -81,7 +82,7 @@ namespace BlackPearl {
 		}
 	}
 	//每个Mesh一个shader
-	void BasicRenderer::DrawObject(Object * obj, Renderer::SceneData* scene)
+	void BasicRenderer::DrawObject(Object* obj, Renderer::SceneData* scene)
 	{
 		GE_ASSERT(obj, "obj is empty!");
 		if (!obj->HasComponent<MeshRenderer>() || !obj->GetComponent<MeshRenderer>()->GetEnableRender())
@@ -95,11 +96,18 @@ namespace BlackPearl {
 		for (int i = 0; i < meshes.size(); i++) {
 			std::shared_ptr<Shader> shader = meshes[i].GetMaterial()->GetShader();
 			shader->Bind();
+			if (obj->GetComponent<MeshRenderer>()->GetIsPBRObject()) {
+				shader->SetUniform1i("u_IsPBRObjects",1);
+			}
+			else {
+				shader->SetUniform1i("u_IsPBRObjects", 0);
+
+			}
 			if (obj->HasComponent<PointLight>() || obj->HasComponent<ParallelLight>() || obj->HasComponent<SpotLight>()) {
-				PrepareShaderParameters(meshes[i], transformMatrix, shader, true);
+				PrepareBasicShaderParameters(meshes[i], shader, true);
 			}
 			else
-				PrepareShaderParameters(meshes[i], transformMatrix, shader);
+				PrepareBasicShaderParameters(meshes[i], shader);
 
 			Renderer::Submit(meshes[i].GetVertexArray(), shader, transformMatrix, scene);
 			if (meshes[i].GetIndicesSize() > 0) {
@@ -109,7 +117,7 @@ namespace BlackPearl {
 				meshes[i].GetVertexArray()->GetIndexBuffer()->UnBind();
 
 			}
-			else 
+			else
 			{
 				meshes[i].GetVertexArray()->UpdateVertexBuffer();
 				for (int j = 0; j < meshes[i].GetVertexArray()->GetVertexBuffers().size(); j++)
@@ -132,7 +140,7 @@ namespace BlackPearl {
 
 		}
 	}
-	void BasicRenderer::DrawObject(Object * obj, std::shared_ptr<Shader> shader, Renderer::SceneData* scene)
+	void BasicRenderer::DrawObject(Object* obj, std::shared_ptr<Shader> shader, Renderer::SceneData* scene)
 	{
 		GE_ASSERT(obj, "obj is empty!");
 		if (!obj->HasComponent<MeshRenderer>() || !obj->GetComponent<MeshRenderer>()->GetEnableRender())
@@ -143,12 +151,18 @@ namespace BlackPearl {
 
 		//RenderConfigure(obj);
 
+		if (obj->GetComponent<MeshRenderer>()->GetIsPBRObject()) {
+			shader->SetUniform1i("u_IsPBRObjects", 1);
+		}
+		else {
+			shader->SetUniform1i("u_IsPBRObjects", 0);
 
+		}
 		for (int i = 0; i < meshes.size(); i++) {
-			if (obj->HasComponent<PointLight>() || obj->HasComponent<ParallelLight>() || obj->HasComponent<SpotLight>()) 
-				PrepareShaderParameters(meshes[i], transformMatrix, shader, true);
+			if (obj->HasComponent<PointLight>() || obj->HasComponent<ParallelLight>() || obj->HasComponent<SpotLight>())
+				PrepareBasicShaderParameters(meshes[i], shader, true);
 			else
-				PrepareShaderParameters(meshes[i], transformMatrix, shader);
+				PrepareBasicShaderParameters(meshes[i], shader);
 
 			Renderer::Submit(meshes[i].GetVertexArray(), shader, transformMatrix, scene);
 			if (meshes[i].GetIndicesSize() > 0) {
@@ -159,7 +173,7 @@ namespace BlackPearl {
 
 
 			}
-			else 
+			else
 			{
 				meshes[i].GetVertexArray()->UpdateVertexBuffer();
 				for (int j = 0; j < meshes[i].GetVertexArray()->GetVertexBuffers().size(); j++)
@@ -167,7 +181,7 @@ namespace BlackPearl {
 					auto vertexBuffer = meshes[i].GetVertexArray()->GetVertexBuffers()[j];
 					unsigned int vertexNum = vertexBuffer->GetVertexSize() / vertexBuffer->GetBufferLayout().GetStride();
 					glDrawArrays(GL_TRIANGLES, 0, vertexNum);
-					
+
 					for (int index = 0; index < vertexBuffer->GetBufferLayout().GetElements().size(); index++)
 					{
 						glDisableVertexAttribArray(vertexBuffer->GetBufferLayout().GetElements()[index].Location);
@@ -182,7 +196,7 @@ namespace BlackPearl {
 
 		}
 	}
-	void BasicRenderer::DrawPointLight(Object * obj, Renderer::SceneData* scene)
+	void BasicRenderer::DrawPointLight(Object* obj, Renderer::SceneData* scene)
 	{
 		GE_ASSERT(obj->HasComponent<PointLight>(), "obj has no pointlight component!");
 		glm::mat4 transformMatrix = obj->GetComponent<Transform>()->GetTransformMatrix();
@@ -192,7 +206,7 @@ namespace BlackPearl {
 		for (int i = 0; i < meshes.size(); i++) {
 			std::shared_ptr<Shader> shader = meshes[i].GetMaterial()->GetShader();
 			shader->Bind();
-			PrepareShaderParameters(meshes[i], transformMatrix, shader, true);
+			PrepareBasicShaderParameters(meshes[i], shader, true);
 			Renderer::Submit(meshes[i].GetVertexArray(), shader, transformMatrix, scene);
 			if (meshes[i].GetIndicesSize() > 0) {
 				unsigned int indicesNum = meshes[i].GetIndicesSize() / sizeof(unsigned int);
@@ -221,98 +235,92 @@ namespace BlackPearl {
 			meshes[i].GetVertexArray()->UnBind();
 
 			meshes[i].GetMaterial()->Unbind();
-			
+
 		}
 
 	}
-	void BasicRenderer::DrawLightSources(const LightSources * lightSources, Renderer::SceneData* scene)
+	void BasicRenderer::DrawLightSources(const LightSources* lightSources, Renderer::SceneData* scene)
 	{
 		for (auto lightObj : lightSources->Get()) {
 			if (lightObj->HasComponent<PointLight>())
 				DrawPointLight(lightObj, scene);
 		}
 	}
-	void BasicRenderer::PrepareShaderParameters(Mesh mesh, glm::mat4 transformMatrix, std::shared_ptr<Shader> shader, bool isLight)
-	{
-		PrepareBasicShaderParameters(mesh, transformMatrix, shader, isLight);
-	}
-	void BasicRenderer::PrepareBasicShaderParameters(Mesh mesh, glm::mat4 transformMatrix, std::shared_ptr<Shader> shader, bool isLight)
+	//void BasicRenderer::PrepareShaderParameters(Mesh mesh, std::shared_ptr<Shader> shader, bool isLight)
+	//{
+	//	PrepareBasicShaderParameters(mesh, shader, isLight);
+	//}
+	void BasicRenderer::PrepareBasicShaderParameters(Mesh mesh, std::shared_ptr<Shader> shader, bool isLight)
 	{	//TODO::shader在渲染前Bind()!不在这！
 		//还是需要shader->Bind()的！表示使用这个shader!
 		//shader->Bind();
 
 		std::shared_ptr<Material> material = mesh.GetMaterial();
 		std::shared_ptr<Material::TextureMaps> textures = material->GetTextureMaps();
+		MaterialColor::Color materialColor = material->GetMaterialColor().Get();
 
 		//k从4开始，0，1，2，3号texture用于自定义texture
-		bool diffuseMap = false, specularMap = false, emissionMap = false, normalMap = false,mentallicMap=false;
-		unsigned int k = 0;
+		bool diffuseMap = false, specularMap = false, normalMap = false, mentallicMap = false, aoMap = false;
+		unsigned int k = 2;
 		if (textures != nullptr) {
 			if (textures->diffuseTextureMap != nullptr) {
 				diffuseMap = true;
 				glActiveTexture(GL_TEXTURE0 + k);
-				shader->SetUniform1i("u_Material.diffuse", k);
-				shader->SetUniform1i("u_Material.isDiffuseTextureSample", 1);
-
+				shader->SetUniform1i(ShaderConfig::DIFFUSE_TEXTURE2D, k);
+				shader->SetUniform1i(ShaderConfig::IS_DIFFUSE_TEXTURE_SAMPLE, 1);
 				textures->diffuseTextureMap->Bind();
 				k++;
 			}
 			if (textures->specularTextureMap != nullptr) {
 				specularMap = true;
 				glActiveTexture(GL_TEXTURE0 + k);
-				shader->SetUniform1i("u_Material.specular", k);
-				shader->SetUniform1i("u_Material.isSpecularTextureSample", 1);
-
+				shader->SetUniform1i(ShaderConfig::SPECULAR_TEXTURE2D, k);
+				shader->SetUniform1i(ShaderConfig::IS_SPECULAR_TEXTURE_SAMPLE, 1);
 				textures->specularTextureMap->Bind();
 				k++;
 			}
 			if (textures->emissionTextureMap != nullptr) {
-				emissionMap = true;
 				glActiveTexture(GL_TEXTURE0 + k);
-
-				shader->SetUniform1i("u_Material.emission", k);
+				shader->SetUniform1i(ShaderConfig::EMISSION_TEXTURE2D, k);
 				textures->emissionTextureMap->Bind();
 				k++;
 			}
 			if (textures->heightTextureMap != nullptr) {
 				glActiveTexture(GL_TEXTURE0 + k);
 
-				shader->SetUniform1i("u_Material.height", k);
+				shader->SetUniform1i(ShaderConfig::HEIGHT_TEXTURE2D, k);
 				textures->heightTextureMap->Bind();
 				k++;
 			}
 			if (textures->normalTextureMap != nullptr) {
 				normalMap = true;
 				glActiveTexture(GL_TEXTURE0 + k);
-
-				shader->SetUniform1i("u_Material.normal", k);
+				shader->SetUniform1i(ShaderConfig::NORMAL_TEXTURE2D, k);
 				textures->normalTextureMap->Bind();
 				k++;
 			}
 			if (textures->cubeTextureMap != nullptr) {
 				glActiveTexture(GL_TEXTURE0 + k);
-				shader->SetUniform1i("u_Material.cube", k);
-				//shader->SetUniform1i("u_cubeMap", k);
+				shader->SetUniform1i(ShaderConfig::CUBE_TEXTURECUBE, k);
 				textures->cubeTextureMap->Bind();
 				k++;
 			}
 			if (textures->depthTextureMap != nullptr) {
 				glActiveTexture(GL_TEXTURE0 + k);
-				shader->SetUniform1i("u_Material.depth", k);
-
+				shader->SetUniform1i(ShaderConfig::DEPTH_TEXTURE2D, k);
 				textures->depthTextureMap->Bind();
 				k++;
 			}
 			if (textures->aoMap != nullptr) {
+				aoMap = true;//TODO::
 				glActiveTexture(GL_TEXTURE0 + k);
-				shader->SetUniform1i("u_Material.ao", k);
-
+				shader->SetUniform1i(ShaderConfig::AO_TEXTURE2D, k);
 				textures->aoMap->Bind();
 				k++;
 			}
 			if (textures->roughnessMap != nullptr) {
 				glActiveTexture(GL_TEXTURE0 + k);
-				shader->SetUniform1i("u_Material.roughness", k);
+				shader->SetUniform1i(ShaderConfig::ROUGHNESS_TEXTURE2D, k);
 
 				textures->roughnessMap->Bind();
 				k++;
@@ -320,37 +328,32 @@ namespace BlackPearl {
 			if (textures->mentallicMap != nullptr) {
 				mentallicMap = true;
 				glActiveTexture(GL_TEXTURE0 + k);
-				shader->SetUniform1i("u_Material.mentallic", k);
-				shader->SetUniform1i("u_Material.isMetallicTextureSample", 1);
+				shader->SetUniform1i(ShaderConfig::METALLIC_TEXTURE2D, k);
+				shader->SetUniform1i(ShaderConfig::IS_METALLIC_TEXTURE_SAMPLE, 1);
 
 
 				textures->mentallicMap->Bind();
 				k++;
 			}
 		}
-		MaterialColor::Color materialColor = mesh.GetMaterial()->GetMaterialColor().Get();
-		if (diffuseMap==false) {
-			shader->SetUniformVec3f("u_Material.diffuseColor", materialColor.diffuseColor);
-			shader->SetUniform1i("u_Material.isDiffuseTextureSample", 0);
-
+		if (diffuseMap == false) {
+			shader->SetUniformVec3f(ShaderConfig::DIFFUSE_COLOR, materialColor.diffuseColor);
+			shader->SetUniform1i(ShaderConfig::IS_DIFFUSE_TEXTURE_SAMPLE, 0);
 		}
 		if (specularMap == false) {
-			shader->SetUniformVec3f("u_Material.specularColor", materialColor.specularColor);
-			shader->SetUniform1i("u_Material.isSpecularTextureSample", 0);
-
+			shader->SetUniformVec3f(ShaderConfig::SPECULAR_COLOR, materialColor.specularColor);
+			shader->SetUniform1i(ShaderConfig::IS_SPECULAR_TEXTURE_SAMPLE, 0);
 		}
-		if (mentallicMap == false){
-			shader->SetUniformVec3f("u_Material.mentallicValue", materialColor.specularColor);
-			shader->SetUniform1i("u_Material.isMetallicTextureSample", 0);
-
+		if (mentallicMap == false) {
+			shader->SetUniformVec3f(ShaderConfig::METALLIC_VALUE, materialColor.specularColor);
+			shader->SetUniform1i(ShaderConfig::IS_METALLIC_TEXTURE_SAMPLE, 0);
 		}
-		shader->SetUniformVec3f("u_Material.ambientColor", materialColor.ambientColor);
-		shader->SetUniformVec3f("u_Material.emissionColor", materialColor.emissionColor);
+		shader->SetUniformVec3f(ShaderConfig::AMBIENT_COLOR, materialColor.ambientColor);
+		shader->SetUniformVec3f(ShaderConfig::EMISSION_COLOR, materialColor.emissionColor);
 
-		shader->SetUniformMat4f("u_TranInverseModel", glm::transpose(glm::inverse(transformMatrix)));
-		shader->SetUniform1f("u_Material.shininess", material->GetProps().shininess);
-		shader->SetUniform1i("u_Material.isBlinnLight", material->GetProps().isBinnLight);
-		shader->SetUniform1i("u_Material.isTextureSample", material->GetProps().isTextureSample);
+		shader->SetUniform1f(ShaderConfig::SHININESS, material->GetProps().shininess);
+		shader->SetUniform1i(ShaderConfig::IS_BLINNLIGHT, material->GetProps().isBinnLight);
+		shader->SetUniform1i(ShaderConfig::IS_TEXTURE_SAMPLE, material->GetProps().isTextureSample);
 
 		if (!material->GetProps().isTextureSample) {
 

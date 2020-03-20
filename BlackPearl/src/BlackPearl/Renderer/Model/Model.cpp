@@ -272,8 +272,10 @@ namespace BlackPearl {
 			LoadMaterialTextures(material, aiTextureType_SPECULAR, Texture::Type::SpecularMap, textures);
 			LoadMaterialTextures(material, aiTextureType_NORMALS, Texture::Type::NormalMap, textures);//
 		//	LoadMaterialTextures(material, aiTextureType_HEIGHT, Texture::Type::AoMap, textures);
-			LoadMaterialTextures(material, aiTextureType_SPECULAR, Texture::Type::MentallicMap, textures); //
-			//LoadMaterialTextures(material, aiTextureType_REFLECTION, Texture::Type::RoughnessMap, textures);
+			//LoadMaterialTextures(material, aiTextureType_SPECULAR, Texture::Type::MentallicMap, textures); //
+		
+																										   
+																										   //LoadMaterialTextures(material, aiTextureType_REFLECTION, Texture::Type::RoughnessMap, textures);
 			//LoadMaterialTextures(material, aiTextureType_AMBIENT, Texture::Type::RoughnessMap, textures);
 			//LoadMaterialTextures(material, aiTextureType_LIGHTMAP, Texture::Type::AoMap, textures);
 
@@ -459,7 +461,7 @@ namespace BlackPearl {
 
 		}
 		else {
-			GE_CORE_WARN("no such bone" + nodeName);
+			//GE_CORE_WARN("no such bone" + nodeName);
 		}
 
 		for (int i = 0; i < node->mNumChildren; i++)

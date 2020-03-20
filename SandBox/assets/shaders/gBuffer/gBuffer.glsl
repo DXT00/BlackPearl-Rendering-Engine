@@ -55,34 +55,18 @@ uniform float u_ProbeWeight[10];
 
 uniform vec3 u_CameraViewPos;
 uniform vec3 u_SHCoeffs[10*9];//最多10个probe
-uniform float u_IsPBRObjects;
+uniform int u_IsPBRObjects;
 
 
+//struct Settings;
+//
+//
+//struct Material;
+//
 
-uniform struct Material{
-	vec3 ambientColor;
-	vec3 diffuseColor;
-	vec3 specularColor;
-	vec3 emissionColor;
-	float roughnessValue;
-	float mentallicValue;
-	float aoValue;
-	sampler2D diffuse; //or call it albedo
-	sampler2D specular;
-	sampler2D emission;
-	sampler2D normal;
-	sampler2D height;
-	sampler2D ao;
-	sampler2D roughness;
-	sampler2D mentallic;
-	
-	float shininess;
-	bool isBlinnLight;
-	int  isTextureSample;//判断是否使用texture,或者只有color
-	int isDiffuseTextureSample;
-	int isSpecularTextureSample;
-	int isMetallicTextureSample;
-}u_Material;
+uniform Material u_Material;
+uniform Settings u_Settings;
+
 
 
 
@@ -110,7 +94,7 @@ vec3 SHDiffuse(const int probeIndex,const vec3 normal){
 //TODO::法线贴图
 vec3 getNormalFromMap(vec3 fragPos,vec2 texCoord)
 {
-    vec3 tangentNormal =  2.0* texture(u_Material.normal, v_TexCoord).xyz- vec3(1.0);
+    vec3 tangentNormal =  2.0* texture(u_Material.normal, texCoord).xyz- vec3(1.0);
 	//vec3 tangentNormal =  2.0* normal- vec3(1.0);
 
     vec3 Q1  = dFdx(fragPos);
@@ -203,12 +187,12 @@ vec3 CalculateAmbientGI(vec3 albedo,float metallic, float roughness,float ao){
 	vec3 diffuse = environmentIrradiance*albedo;
 
 	//sample both the prefilter map and the BRDF lut and combine them together as per the Split-Sum approximation to get the IBL specular part
-	const float MAX_REFLECTION_LOD = 1.0;
+	const float MAX_REFLECTION_LOD = 4.0;//1.0;
 	//sample MAX_REFLECTION_LOD level mipmap everytime !
 	vec3 prefileredColor = vec3(0.0,0.0,0.0) ;//= vec3(1.0,1.0,1.0);
 
 	/*specular Map只取最近的一个*/
-	prefileredColor = textureLod(u_PrefilterMap,R,roughness*MAX_REFLECTION_LOD).rgb;
+	prefileredColor = textureLod(u_PrefilterMap,R,max(roughness,0.0)*MAX_REFLECTION_LOD).rgb;
 //	for(int i=0;i<u_Kprobes;i++){
 //		prefileredColor+= u_ProbeWeight[i]*textureLod(u_PrefilterMap[i],R,roughness*MAX_REFLECTION_LOD).rgb;
 //	//	prefileredColor*= textureLod(u_PrefilterMap[i],R,roughness*MAX_REFLECTION_LOD).rgb;
@@ -232,29 +216,26 @@ void main(){
 	// Also store the per-fragment normals into the gbuffer
 	gNormal         = v_Normal;
 
-
-	gNormalMap      =  v_Normal*(1-u_Material.isTextureSample) + getNormalFromMap(v_FragPos,v_TexCoord)*u_Material.isTextureSample;//texture(u_Material.normal, v_TexCoord).xyz;
+	int s = u_Settings.isTextureSample;
+	gNormalMap      =  v_Normal*(1-s) + getNormalFromMap(v_FragPos,v_TexCoord)*s;
+	float roughness =  u_Material.roughnessValue *(1-s)+texture(u_Material.roughness, v_TexCoord).r*s;
+	float ao        =  u_Material.aoValue *(1-s)+texture(u_Material.ao, v_TexCoord).r*s;
 	
-	
 
 
-	vec3 diffuse = (u_Material.diffuseColor *(1-u_Material.isDiffuseTextureSample)
-					+ texture(u_Material.diffuse,v_TexCoord).rgb*u_Material.isDiffuseTextureSample);
+	vec3 diffuse = (u_Material.diffuseColor *(1-u_Settings.isDiffuseTextureSample)
+					+ texture(u_Material.diffuse,v_TexCoord).rgb*u_Settings.isDiffuseTextureSample);
 
 	vec3 albedo = pow(diffuse,vec3(2.2));
 
-	vec3 specular = (u_Material.specularColor *(1-u_Material.isSpecularTextureSample)
-					+ texture(u_Material.specular,v_TexCoord).rgb*u_Material.isSpecularTextureSample);
+	vec3 specular = (u_Material.specularColor *(1-u_Settings.isSpecularTextureSample)
+					+ texture(u_Material.specular,v_TexCoord).rgb*u_Settings.isSpecularTextureSample);
 
-	float metallic = u_Material.mentallicValue *(1-u_Material.isMetallicTextureSample)+
-					texture(u_Material.mentallic, v_TexCoord).r*u_Material.isMetallicTextureSample;
+	float metallic = u_Material.mentallicValue *(1-u_Settings.isMetallicTextureSample)+
+					texture(u_Material.mentallic, v_TexCoord).r*u_Settings.isMetallicTextureSample;
 
 
-	float roughness = u_Material.roughnessValue *(1-u_Material.isTextureSample)+
-					texture(u_Material.roughness, v_TexCoord).r*u_Material.isTextureSample;
 
-	float ao = u_Material.aoValue *(1-u_Material.isTextureSample)+
-				texture(u_Material.ao, v_TexCoord).r*u_Material.isTextureSample;
 
 
 	gSpecular_Mentallic.rgb = specular;
@@ -262,7 +243,7 @@ void main(){
 	gSpecular_Mentallic.a = metallic;
 
 
-	if(u_IsPBRObjects==1.0)
+	if(u_IsPBRObjects==1)
 		gAmbientGI_AO.rgb =	CalculateAmbientGI(albedo,metallic,roughness,ao);
 	else
 		gAmbientGI_AO.rgb =	CalculateAmbientGI(albedo,specular);

@@ -18,8 +18,9 @@ namespace BlackPearl {
 	//}
 
 	void MeshRenderer::SetTexture(unsigned int meshIndex, const std::shared_ptr<Texture>& texture) {
-		if (meshIndex >= GetMeshes().size() - 1) {
-			GetMeshes()[meshIndex].SetTexture(texture);
+		auto meshes = GetMeshes();
+		if (meshIndex < GetMeshes().size()) {
+			meshes[meshIndex].SetTexture(texture);
 		}
 		else {
 			GE_CORE_ERROR("meshIndex out of m_Meshes range!")

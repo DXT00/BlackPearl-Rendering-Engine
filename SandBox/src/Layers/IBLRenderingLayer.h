@@ -27,13 +27,14 @@ public:
 		m_LightProbeShader.reset(DBG_NEW BlackPearl::Shader("assets/shaders/lightProbes/lightProbe.glsl"));
 
 		//Scene
-		m_SphereObj = CreateSphere(0.5, 64, 64);
+	/*	m_SphereObj = CreateSphere(0.5, 64, 64);
 		m_SphereObjIron = CreateSphere(0.5, 64, 64);
 		m_SphereObjRust = CreateSphere(0.5, 64, 64);
 		m_SphereObjStone = CreateSphere(0.5, 64, 64);
-		m_SphereObjPlastic = CreateSphere(0.5, 64, 64);
+		m_SphereObjPlastic = CreateSphere(0.5, 64, 64);*/
 		//skybox and quad for BrdfLUTMap
 		m_CubeObj = CreateCube();
+		m_CubeProbeObj = CreateCube();
 		m_BrdfLUTQuadObj = CreateQuad();
 		m_DebugQuad = CreateQuad();
 
@@ -48,10 +49,10 @@ public:
 
 
 
-		m_SphereObj->GetComponent<BlackPearl::MeshRenderer>()->SetShaders(m_PBRRenderer->GetShader());
+		//m_SphereObj->GetComponent<BlackPearl::MeshRenderer>()->SetShaders(m_PBRRenderer->GetShader());
 
 		//textures spheres
-		std::shared_ptr<BlackPearl::Texture> RustalbedoTexture(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::DiffuseMap, "assets/texture/pbr/rustSphere/rustediron2_basecolor.png"));
+		/*std::shared_ptr<BlackPearl::Texture> RustalbedoTexture(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::DiffuseMap, "assets/texture/pbr/rustSphere/rustediron2_basecolor.png"));
 		std::shared_ptr<BlackPearl::Texture> RustaoTexture(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::AoMap, "assets/texture/pbr/rustSphere/rustediron2_ao.png"));
 		std::shared_ptr<BlackPearl::Texture> RustroughnessTexture(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::RoughnessMap, "assets/texture/pbr/rustSphere/rustediron2_roughness.png"));
 		std::shared_ptr<BlackPearl::Texture> RustmentallicTexture(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::MentallicMap, "assets/texture/pbr/rustSphere/rustediron2_metallic.png"));
@@ -104,7 +105,29 @@ public:
 		m_SphereObjPlastic->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(PlasticroughnessTexture);
 		m_SphereObjPlastic->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(PlasticmentallicTexture);
 		
-		m_SphereObjPlastic->GetComponent<BlackPearl::Transform>()->SetPosition({ -3.0,0,0 });
+		m_SphereObjPlastic->GetComponent<BlackPearl::Transform>()->SetPosition({ -3.0,0,0 });*/
+
+
+
+		m_Sword = CreateModel("assets/models/sword/OBJ/Big_Sword_OBJ.obj", "assets/shaders/pbr/PbrTexture.glsl", false, "Sword");
+		std::shared_ptr<BlackPearl::Texture> SwordalbedoTexture(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::DiffuseMap, "assets/models/sword/textures/Big Sword_Base_Color_Map.jpg"));
+		std::shared_ptr<BlackPearl::Texture> SwordaoTexture(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::AoMap, "assets/models/sword/textures/Big Sword_AO_Map.jpg"));
+		std::shared_ptr<BlackPearl::Texture> SwordroughnessTexture(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::RoughnessMap, "assets/models/sword/textures/Big Sword_Roughness_Map.jpg"));
+		std::shared_ptr<BlackPearl::Texture> SwordmentallicTexture(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::MentallicMap, "assets/models/sword/textures/Big Sword_Metalness.jpg"));
+		std::shared_ptr<BlackPearl::Texture> SwordnormalTexture(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::NormalMap, "assets/models/sword/textures/Big Sword_Normal_Map.jpg"));
+		std::shared_ptr<BlackPearl::Texture> SwordemissionTexture(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::EmissionMap, "assets/models/sword/textures/Big Sword_Emission_Map.jpg"));
+
+		m_Sword->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(SwordalbedoTexture);
+		m_Sword->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(SwordaoTexture);
+		m_Sword->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(SwordroughnessTexture);
+		m_Sword->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(SwordmentallicTexture);
+		m_Sword->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(SwordnormalTexture);
+		m_Sword->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(SwordemissionTexture);
+
+		m_Sword->GetComponent<BlackPearl::MeshRenderer>()->SetTextureSamples(true);
+		m_Sword->GetComponent<BlackPearl::MeshRenderer>()->SetIsPBRObject(true);
+
+
 		/*Draw CubeMap from hdrMap and Create environment IrrdianceMap*/
 		m_IBLRenderer->Init(m_CubeObj, m_BrdfLUTQuadObj);
 
@@ -136,10 +159,11 @@ public:
 		/*IBL rendering*/
 		//m_IBLRenderer->RenderSpheres(m_SphereObj);
 
-		m_IBLRenderer->RenderTextureSphere(m_SphereObjIron);
+	/*	m_IBLRenderer->RenderTextureSphere(m_SphereObjIron);
 		m_IBLRenderer->RenderTextureSphere(m_SphereObjRust);
 		m_IBLRenderer->RenderTextureSphere(m_SphereObjStone);
-		m_IBLRenderer->RenderTextureSphere(m_SphereObjPlastic);
+		m_IBLRenderer->RenderTextureSphere(m_SphereObjPlastic);*/
+		m_IBLRenderer->RenderTextureSphere(m_Sword);
 
 
 
@@ -150,20 +174,20 @@ public:
 		glBindTexture(GL_TEXTURE_CUBE_MAP, m_IBLRenderer->GetHdrCubeMapID());
 		m_BasicRenderer->DrawObject(m_CubeObj, m_BackGroundShader);
 
-		m_LightProbeShader->Bind();
-		BlackPearl::Object* cube = CreateCube();
-		m_LightProbeShader->SetUniform1i("u_Material.cube", 2);
-		glActiveTexture(GL_TEXTURE2);
-		glBindTexture(GL_TEXTURE_CUBE_MAP, m_IBLRenderer->GetPrefilterMapID());
-		m_BasicRenderer->DrawObject(cube, m_LightProbeShader);
+		//m_LightProbeShader->Bind();
+		////BlackPearl::Object* cube = CreateCube();
+		//m_LightProbeShader->SetUniform1i("u_Material.cube", 2);
+		//glActiveTexture(GL_TEXTURE2);
+		//glBindTexture(GL_TEXTURE_CUBE_MAP, m_IBLRenderer->GetIrradianceCubeMap());
+		//m_BasicRenderer->DrawObject(m_CubeProbeObj, m_LightProbeShader);
 	
-		/*draw BRDFLUTTextureID in a quad*/
-		glViewport(0, 0, 120, 120);
-		m_DebugQuadShader->Bind();
-		m_DebugQuadShader->SetUniform1i("u_BRDFLUTMap",5);
-		glActiveTexture(GL_TEXTURE0 + 5);
-		glBindTexture(GL_TEXTURE_2D, m_IBLRenderer->GetBRDFLUTTextureID());
-		m_BasicRenderer->DrawObject(m_DebugQuad, m_DebugQuadShader);
+		///*draw BRDFLUTTextureID in a quad*/
+		//glViewport(0, 0, 240, 240);
+		//m_DebugQuadShader->Bind();
+		//m_DebugQuadShader->SetUniform1i("u_BRDFLUTMap",5);
+		//glActiveTexture(GL_TEXTURE0 + 5);
+		//glBindTexture(GL_TEXTURE_2D, m_IBLRenderer->GetBRDFLUTTextureID());
+		//m_BasicRenderer->DrawObject(m_DebugQuad, m_DebugQuadShader);
 
 
 		//m_IBLRenderer->DrawBRDFLUTMap();
@@ -184,6 +208,7 @@ private:
 	BlackPearl::Object* m_SphereObjRust = nullptr;
 	BlackPearl::Object* m_SphereObjStone = nullptr;
 	BlackPearl::Object* m_SphereObjPlastic = nullptr;
+	BlackPearl::Object* m_Sword=nullptr;
 
 	BlackPearl::Object* m_BrdfLUTQuadObj = nullptr;
 	int m_Rows = 4;
@@ -199,6 +224,9 @@ private:
 	BlackPearl::PBRRenderer* m_PBRRenderer;
 	BlackPearl::IBLRenderer* m_IBLRenderer;
 	BlackPearl::BasicRenderer* m_BasicRenderer;
+
+	//lightProbe
+	BlackPearl::Object* m_CubeProbeObj = nullptr;
 
 
 };

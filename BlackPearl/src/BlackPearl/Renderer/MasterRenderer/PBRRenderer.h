@@ -6,8 +6,8 @@ namespace BlackPearl {
 	{
 	public:
 		PBRRenderer() {
-			m_PbrShader.reset(DBG_NEW Shader("assets/shaders/pbr/Pbr.glsl"));
-			//m_PbrShader.reset(DBG_NEW Shader("assets/shaders/pbr/PbrTexture.glsl"));
+		//	m_PbrShader.reset(DBG_NEW Shader("assets/shaders/pbr/Pbr.glsl"));
+			m_PbrShader.reset(DBG_NEW Shader("assets/shaders/pbr/PbrTexture.glsl"));
 		};
 		void Render(const std::vector<Object*>& objs);
 		void Render(Object* obj);

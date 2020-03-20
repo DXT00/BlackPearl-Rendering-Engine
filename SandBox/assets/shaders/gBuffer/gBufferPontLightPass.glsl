@@ -44,7 +44,7 @@ struct PointLight{
 	float constant;
 	float linear;
 	float quadratic;
-
+	float intensity;
 };
 struct gBufferMaterial{
 	vec3 ambientColor;
@@ -106,13 +106,11 @@ vec3 FresnelSchlick(float cosTheta, vec3 F0){
 	return F0 + (1.0-F0)* pow(1.0 - cosTheta, 5.0);
 }
 vec3 BRDF(vec3 Kd,vec3 Ks,vec3 specular,vec3 albedo){
-	
 	vec3 fLambert = albedo/PI;//diffuseColor 相当于 albedo
 	return Kd * fLambert+  specular;//specular 中已经有Ks(Ks=F)了，不需要再乘以Ks *
 }
 vec3 LightRadiance(vec3 fragPos,PointLight light){
 	float attenuation = calculateAttenuation(light,fragPos);
-	//float cosTheta = max(dot(N,wi),0.0);
 	vec3 radiance = light.diffuse*attenuation;
 	return radiance;
 }

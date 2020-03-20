@@ -18,9 +18,12 @@ namespace BlackPearl {
 		m_IBLShader.reset(DBG_NEW Shader("assets/shaders/ibl/iblTexture.glsl"));
 
 		/*diffuse shader*/
-		//m_HdrTexture.reset(DBG_NEW HDRTexture("assets/texture/hdrEnvironmentMap/sIBL-Collection/sIBL_Collection/backlot/Diffuse10.hdr")); 
-		m_HdrTexture.reset(DBG_NEW HDRTexture("assets/texture/hdrEnvironmentMap/sIBL-Collection/sIBL_Collection/OfficeEden/Eden_REF.hdr")); 																														  //m_HdrTexture.reset(DBG_NEW HDRTexture("assets/texture/hdrEnvironmentMap/sIBL-Collection/sIBL_Collection/apartment/Apartment_Reflection.hdr")); //TODO::
-		//m_HdrTexture.reset(DBG_NEW HDRTexture("assets/texture/hdrEnvironmentMap/Desert_Highway/Road_to_MonumentValley_Ref.hdr")); 
+		////m_HdrTexture.reset(DBG_NEW HDRTexture("assets/texture/hdrEnvironmentMap/sIBL-Collection/sIBL_Collection/backlot/Diffuse10.hdr")); 
+		//m_HdrTexture.reset(DBG_NEW HDRTexture("assets/texture/hdrEnvironmentMap/sIBL-Collection/sIBL_Collection/OfficeEden/Eden_REF.hdr")); 																														  //m_HdrTexture.reset(DBG_NEW HDRTexture("assets/texture/hdrEnvironmentMap/sIBL-Collection/sIBL_Collection/apartment/Apartment_Reflection.hdr")); //TODO::
+		////m_HdrTexture.reset(DBG_NEW HDRTexture("assets/texture/hdrEnvironmentMap/Desert_Highway/Road_to_MonumentValley_Ref.hdr")); 
+		//m_HdrTexture.reset(DBG_NEW HDRTexture("assets/texture/hdrEnvironmentMap/Chiricahua_NarrowPath/NarrowPath_8k.jpg"));
+		m_HdrTexture.reset(DBG_NEW HDRTexture("assets/texture/hdrEnvironmentMap/Playa_Sunrise/Playa_Sunrise_8k.jpg"));
+
 		m_IrradianceShader.reset(DBG_NEW Shader("assets/shaders/ibl/irradianceConvolution.glsl"));
 
 		/*specular shader*/
@@ -116,6 +119,8 @@ namespace BlackPearl {
 		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, 32, 32);
 		m_IrradianceShader->Bind();
 		m_IrradianceShader->SetUniform1i("u_EnvironmentMap", 0);
+		m_IrradianceShader->SetUniformVec3f("u_CubePos", m_CubeObj->GetComponent<Transform>()->GetPosition());
+
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_CUBE_MAP, m_HdrCubeMapID);
 		// pbr: solve diffuse integral by convolution to create an irradiance (cube)map.
@@ -201,6 +206,7 @@ namespace BlackPearl {
 	void IBLRenderer::RenderSpheres(Object* sphere)
 	{
 		GE_ASSERT(m_IsInitialize, "please initial IBLRenderer first! IBLRenderer::init()");
+
 
 		int rows = 7;
 		int cols = 7;

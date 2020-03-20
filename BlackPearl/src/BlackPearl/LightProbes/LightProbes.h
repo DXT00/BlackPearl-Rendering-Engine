@@ -31,7 +31,7 @@ namespace BlackPearl {
 		std::shared_ptr<CubeMapTexture> GetSpecularPrefilterCubeMap()const { return m_SpecularPrefilterCubeMap; }
 		std::shared_ptr<CubeMapTexture> GetDiffuseIrradianceCubeMap()const { return m_DiffuseIrradianceCubeMap; }
 		std::shared_ptr<Texture> GetSpecularBrdfLutMap()const       { return m_SpecularBrdfLutMap; }
-		std::shared_ptr<TextureImage2D> GetSHImage() const { return m_SHImage; }
+	//	std::shared_ptr<TextureImage2D> GetSHImage() const { return m_SHImage; }
 		
 		/* resolution */
 		unsigned int GetDiffuseCubeMapResolution() const { return m_DiffuseCubeMapResolution; }
@@ -76,13 +76,13 @@ namespace BlackPearl {
 		std::shared_ptr<CubeMapTexture> m_SpecularPrefilterCubeMap = nullptr;
 		std::shared_ptr<CubeMapTexture> m_DiffuseIrradianceCubeMap = nullptr;
 		std::shared_ptr<Texture>		m_SpecularBrdfLutMap = nullptr;
-		std::shared_ptr<TextureImage2D>		m_SHImage = nullptr;
+		//std::shared_ptr<TextureImage2D>		m_SHImage = nullptr;
 		unsigned int m_MaxMipmapLevel = 5;
 
 		unsigned int					m_SampleCounts = 1024;
-		unsigned int					m_EnvironmentCubeMapResolution = 512;// 128;
+		unsigned int					m_EnvironmentCubeMapResolution = Configuration::EnvironmantMapResolution;// 512;// 128;
 		unsigned int					m_DiffuseCubeMapResolution = 32;
-		unsigned int					m_SpecularCubeMapResolution = 512;// 128;
+		unsigned int					m_SpecularCubeMapResolution = Configuration::EnvironmantMapResolution;// 512;// 128;
 
 		//glm::vec3 m_Center;
 		glm::vec3 m_Size;

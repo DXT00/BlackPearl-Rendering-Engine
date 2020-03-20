@@ -15,7 +15,7 @@ namespace BlackPearl {
 
 
 
-		void Init(Object * SHQuadObj,Object* brdfLUTQuadObj, const LightSources& lightSources, const std::vector<Object*> objects, const std::vector<LightProbe*> probes);
+		void Init(Object* brdfLUTQuadObj, const LightSources& lightSources, const std::vector<Object*> objects, const std::vector<LightProbe*> probes);
 		std::shared_ptr<Texture> GetSpecularBrdfLUTTexture() const { return m_SpecularBrdfLUTTexture; }
 		void UpdateProbesMaps(const LightSources* lightSources, std::vector<Object*> objects, Object* skyBox, LightProbe* probe);
 		void ReUpdateProbes() {
@@ -56,10 +56,12 @@ namespace BlackPearl {
 		std::shared_ptr<Shader>		m_IrradianceShader = nullptr; //create diffuse irradianceCubeMap
 		std::shared_ptr<Shader>		m_SpecularPrefilterShader = nullptr; //specular prefilter shader
 		std::shared_ptr<Shader>		m_SpecularBRDFLutShader = nullptr;  // brdf LUT shader
-		std::shared_ptr<Shader>		m_SHShader = nullptr;//render SHImage for each probe
+		std::shared_ptr<Shader>		m_PbrShader = nullptr;
+		std::shared_ptr<Shader>		m_NonPbrShader = nullptr;
+		//std::shared_ptr<Shader>		m_SHShader = nullptr;//render SHImage for each probe
 		/* m_K near probes for specular objs rendering */
 		/*注意 物体blending 多个(m_K个) probes的diffuse SH,但只取最近的一个Probe的specular Map*/
-		unsigned int m_K = 2;
+		unsigned int m_K = 1;
 
 		/*light probes update queue,update m_KperFrame pre frame*/
 		unsigned m_KperFrame = 2;

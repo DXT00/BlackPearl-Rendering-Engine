@@ -34,28 +34,12 @@ struct PointLight{
 	float constant;
 	float linear;
 	float quadratic;
+	float intensity;
 
 };
-uniform struct Material{
-	vec3 ambientColor;
-	vec3 diffuseColor;
-	vec3 specularColor;
-	vec3 emissionColor;
-	sampler2D diffuse; //or call it albedo
-	sampler2D specular;
-	sampler2D emission;
-	sampler2D normal;
-	sampler2D height;
-	sampler2D ao;
-	sampler2D roughness;
-	sampler2D mentallic;
 
-
-	float shininess;
-	bool isBlinnLight;
-	int  isTextureSample;//判断是否使用texture,或者只有color
-
-}u_Material;
+uniform Material u_Material;
+uniform Settings u_Settings;
 
 
 in vec3 v_Normal;
@@ -118,7 +102,7 @@ vec3 BRDF(vec3 Kd,vec3 Ks,vec3 specular){
 vec3 LightRadiance(vec3 fragPos,PointLight light){
 	float attenuation = calculateAttenuation(light,fragPos);
 	//float cosTheta = max(dot(N,wi),0.0);
-	vec3 radiance = light.diffuse*attenuation;
+	vec3 radiance =light.intensity* light.diffuse*attenuation;
 	return radiance;
 }
 
@@ -146,7 +130,7 @@ void main(){
 	float mentallic = texture(u_Material.mentallic,v_TexCoord).r;
 	float roughness  = texture(u_Material.roughness ,v_TexCoord).r;
 	float ao        = texture(u_Material.ao, v_TexCoord).r;
-
+	vec3 emission = texture(u_Material.emission,v_TexCoord).rgb;
 
 	vec3 N = getNormalFromMap();
 	vec3 V = normalize(u_CameraViewPos-v_FragPos);
@@ -179,7 +163,7 @@ void main(){
 		Lo+= BRDF(Kd,Ks,specular)*LightRadiance(v_FragPos,u_PointLights[i])*NdotL;
 	}
 	vec3 ambient = vec3(0.03) * albedo * ao;
-    vec3 color = ambient + Lo;
+    vec3 color = ambient + emission+ Lo;
 
     color = color / (color + vec3(1.0));
     color = pow(color, vec3(1.0/2.2));  

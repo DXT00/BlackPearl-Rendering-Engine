@@ -164,11 +164,11 @@ namespace BlackPearl {
 	}
 	//TODO::这个接口有问题
 	void FrameBuffer::AttachCubeMapColorTexture(unsigned int attachmentPoints,const int imageWidth, int imageHeight) {
-		GE_CORE_ERROR("不能调用，后续完善!");
+		//GE_CORE_ERROR("不能调用，后续完善!");
 		GE_CORE_WARN(" 注意Texture是否是默认的格式！");
 
 		m_TextureColorBuffers[attachmentPoints].reset(DBG_NEW CubeMapTexture(Texture::Type::CubeMap, imageWidth, imageHeight, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR, GL_CLAMP_TO_EDGE, GL_RGB16F, GL_RGB, GL_FLOAT));
-		GE_ASSERT(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "Framebuffer not complete!");
+	//	GE_ASSERT(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "Framebuffer not complete!");
 		//Bind();
 
 	}

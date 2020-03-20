@@ -24,14 +24,14 @@ in vec3 v_FragPos;
 out vec4 FragColor;
 
 uniform samplerCube u_EnvironmentMap;
-
+uniform vec3 u_CubePos;
 const float PI = 3.14159265359;
 
 void main(){
 	//采样的方向等于半球的方向
 	vec3 worldup = vec3(0.0,1.0,0.0);
 		vec3 irradiance = vec3(0.0);
-	vec3 N = normalize(v_FragPos);//TODO::
+	vec3 N = normalize(v_FragPos-u_CubePos);//半球的法向量是：v_FragPos-vec3(0.0)
 	vec3 right = cross(worldup,N);
 	vec3 up = cross(N,right);
 
@@ -52,7 +52,9 @@ void main(){
 
 		}
 	}
-	irradiance = PI * irradiance * (1.0 / float(nrSamples));
+	irradiance =  irradiance * (1.0 / float(nrSamples));
+	//	irradiance = PI * irradiance * (1.0 / float(nrSamples));
+
 	FragColor = vec4(irradiance, 1.0);
 
 }

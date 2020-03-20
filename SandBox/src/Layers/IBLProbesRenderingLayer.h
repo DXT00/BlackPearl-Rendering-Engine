@@ -21,29 +21,15 @@ public:
 
 		m_MainCamera->SetPosition(glm::vec3(-2.0f, 0.0f, 14.0f));
 
-		
-		///*ProbesCamera is used to render probes'environmentMap*/
-		//m_ProbesCamera = CreateCamera();
-		//m_ProbesCamera->GetComponent<BlackPearl::PerspectiveCamera>()->SetFov(90.0f);
-		///* make sure aspectRadio = 1 */
-		//m_ProbesCamera->GetComponent<BlackPearl::PerspectiveCamera>()->SetWidth(512);
-		//m_ProbesCamera->GetComponent<BlackPearl::PerspectiveCamera>()->SetHeight(512);
+	
 
-		
-
+	
 		//Shader
 		m_BackGroundShader.reset(DBG_NEW BlackPearl::Shader("assets/shaders/ibl/background.glsl"));
-		//Scene
-		//m_SphereObj = CreateSphere(1.5, 64, 64);
-		m_SphereObjIron = CreateSphere(1.5, 64, 64);
-		m_SphereObjRust = CreateSphere(1.5, 64, 64);
-		m_SphereObjStone = CreateSphere(1.5, 64, 64);
-		m_SphereObjPlastic = CreateSphere(1.5, 64, 64);
 		m_DebugQuadShader.reset(DBG_NEW BlackPearl::Shader("assets/shaders/QuadDebug.glsl"));
 
 		/* probe's CubeObj and quad for BrdfLUTMap */
 		m_BrdfLUTQuadObj = CreateQuad("assets/shaders/ibl/brdf.glsl","");
-		m_SHImageQuadObj = CreateQuad("assets/shaders/lightProbes/SH.glsl", "");
 		m_DebugQuad = CreateQuad("assets/shaders/QuadDebug.glsl","");
 
 
@@ -53,8 +39,8 @@ public:
 		m_SurroundSphere = CreateSphere(1.0, 128, 128);
 		m_GIQuad = CreateQuad();
 		/* create probes */
-		unsigned int xlen = 3, ylen = 1,zlen = 1,space = 3;
-		float offsetx = 0.0, offsety = 3.0f, offsetz = 3.0f;
+		unsigned int xlen = 2, ylen = 1,zlen = 1,space =8;
+		float offsetx = 0.0, offsety = 1.0f, offsetz = 3.0f;//offsetx = 0.0, offsety = 5.0f, offsetz = 1.0f;
 		for (unsigned int x = 0; x < xlen; x++)
 		{
 			for (unsigned int y = 0; y < ylen; y++)
@@ -74,10 +60,7 @@ public:
 
 		}
 
-
-
-
-		
+	
 
 		BlackPearl::Renderer::Init();
 		glEnable(GL_DEPTH_TEST);
@@ -100,137 +83,14 @@ public:
 			 "assets/skybox/skybox/back.jpg",
 			});
 		  
-		/*model animation*/
-	//	m_AnimatedModelFrog = CreateModel("assets/models-animation/frog/frog.dae.txt", "assets/shaders/animatedModel/animatedModel.glsl", true,"Frog");
-		
-	//	m_AnimatedModelCleaner = CreateModel("assets/models-animation/boblampclean.md5mesh", "assets/shaders/animatedModel/animatedModel.glsl",true,"Cleaner");
 	
-	//	m_AnimatedModelBoy = CreateModel("assets/models-animation/people/character Texture.dae", "assets/shaders/animatedModel/animatedModel.glsl", true,"Boy");
-		m_AnimatedModelRobot = CreateModel("assets/models-animation/56-sphere-bot-basic/Sphere-Bot Basic/Armature_001-(COLLADA_3 (COLLAborative Design Activity)).dae", "assets/shaders/animatedModel/animatedModel.glsl", true, "Robot");
-		std::shared_ptr<BlackPearl::Texture> RobotAoTexture(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::AoMap, "assets/models-animation/56-sphere-bot-basic/Sphere-Bot Basic/Sphere_Bot_ao.jpg"));
-		std::shared_ptr<BlackPearl::Texture> RobotRoughnessTexture(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::RoughnessMap, "assets/models-animation/56-sphere-bot-basic/Sphere-Bot Basic/Sphere_Bot_rough.jpg"));
-		m_AnimatedModelRobot->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(RobotAoTexture);
-		m_AnimatedModelRobot->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(RobotRoughnessTexture);
-
-		m_DynamicObjsList.push_back(m_AnimatedModelRobot);
-
-	/*	m_AnimatedModelBoy->GetComponent<BlackPearl::Transform>()->SetScale({ 0.2f,0.2f,0.2f });
-		m_AnimatedModelBoy->GetComponent<BlackPearl::Transform>()->SetRotation({ -90.0f,0.0f,0.0f });
-		m_AnimatedModelBoy->GetComponent<BlackPearl::Transform>()->SetPosition({ 3.0f,-1.6f,0.0f });
-
-		m_AnimatedModelCleaner->GetComponent<BlackPearl::Transform>()->SetScale({ 0.05f,0.05f,0.05f });
-		m_AnimatedModelCleaner->GetComponent<BlackPearl::Transform>()->SetRotation({ 90.0f,180.0f,180.0f });
-		m_AnimatedModelCleaner->GetComponent<BlackPearl::Transform>()->SetPosition({ 0.0f,-1.6f,0.0f });
-
-
-		m_AnimatedModelFrog->GetComponent<BlackPearl::Transform>()->SetScale({ 0.5f,0.5f,0.5f });
-		m_AnimatedModelFrog->GetComponent<BlackPearl::Transform>()->SetRotation({ 90.0f,180.0f,0.0f });
-		m_AnimatedModelFrog->GetComponent<BlackPearl::Transform>()->SetPosition({ -3.0f,-1.6f,0.0f });
-*/
-
-
-	//	m_AnimatedModel->GetComponent<BlackPearl::MeshRenderer>()
-	//	m_BackGroundObjsList.push_back(m_SkyBoxObj1);
-		/*create model*/
-		BlackPearl::Object *deer=  CreateModel("assets/models/deer/Deer.obj", "assets/shaders/IronMan.glsl",false);
-		deer->GetComponent<BlackPearl::Transform>()->SetScale(glm::vec3(0.005));
-		deer->GetComponent<BlackPearl::Transform>()->SetPosition({0.0f,-1.5f,1.0f});
-		//m_BackGroundObjsList.push_back(deer);
-
-		BlackPearl::Object* ironMan = CreateModel("assets/models/IronMan/IronMan.obj", "assets/shaders/IronMan.glsl",false);
-		ironMan->GetComponent<BlackPearl::Transform>()->SetScale(glm::vec3(0.020));
-		ironMan->GetComponent<BlackPearl::Transform>()->SetPosition({ 1.5f,-1.0f,-5.0f });
-		ironMan->GetComponent<BlackPearl::Transform>()->SetRotation({ 0.0f,0.0f,0.0f });
-
-
 		
-		//m_BackGroundObjsList.push_back(deer);
-	//	m_BackGroundObjsList.push_back(ironMan);
+		LoadScene("CornellScene");//SpheresScene
+	//	LoadDynamicObject("Robot");
 
 
-		BlackPearl::Object* cube = CreateCube();
-		cube->GetComponent<BlackPearl::Transform>()->SetPosition({ 0.0f,-3.0f,0.0f });
-		m_BackGroundObjsList.push_back(cube);
-
-		BlackPearl::Object* cube1 = CreateCube();
-		cube1->GetComponent<BlackPearl::Transform>()->SetPosition({ -2.0f,-3.0f,0.0f });
-		m_SphereObjsList.push_back(cube1);
-
-		/*create pointlights*/
-		BlackPearl::Object* light = CreateLight(BlackPearl::LightType::PointLight);
-		light->GetComponent<BlackPearl::Transform>()->SetPosition({ 0.0,0.0,3.0 });
-
-		//textures spheres
-		std::shared_ptr<BlackPearl::Texture> RustalbedoTexture(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::DiffuseMap, "assets/texture/pbr/rustSphere/rustediron2_basecolor.png"));
-		std::shared_ptr<BlackPearl::Texture> RustaoTexture(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::AoMap, "assets/texture/pbr/rustSphere/rustediron2_ao.png"));
-		std::shared_ptr<BlackPearl::Texture> RustroughnessTexture(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::RoughnessMap, "assets/texture/pbr/rustSphere/rustediron2_roughness.png"));
-		std::shared_ptr<BlackPearl::Texture> RustmentallicTexture(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::MentallicMap, "assets/texture/pbr/rustSphere/rustediron2_metallic.png"));
-		std::shared_ptr<BlackPearl::Texture> RustnormalTexture(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::NormalMap, "assets/texture/pbr/rustSphere/rustediron2_normal.png"));
-
-
-		std::shared_ptr<BlackPearl::Texture> IronalbedoTexture(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::DiffuseMap, "assets/texture/pbr/IronScuffed/Iron-Scuffed_basecolor.png"));
-		std::shared_ptr<BlackPearl::Texture> IronaoTexture(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::AoMap, "assets/texture/pbr/IronScuffed/Iron-Scuffed_ao.png"));
-		std::shared_ptr<BlackPearl::Texture> IronroughnessTexture(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::RoughnessMap, "assets/texture/pbr/IronScuffed/Iron-Scuffed_roughness.png"));
-		std::shared_ptr<BlackPearl::Texture> IronmentallicTexture(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::MentallicMap, "assets/texture/pbr/IronScuffed/Iron-Scuffed_metallic.png"));
-		std::shared_ptr<BlackPearl::Texture> IronnormalTexture(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::NormalMap, "assets/texture/pbr/IronScuffed/Iron-Scuffed_normal.png"));
-
-		std::shared_ptr<BlackPearl::Texture> StonealbedoTexture(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::DiffuseMap, "assets/texture/pbr/cobblestone/cobblestone-curved_2_albedo.png"));
-		std::shared_ptr<BlackPearl::Texture> StoneaoTexture(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::AoMap, "assets/texture/pbr/cobblestone/cobblestone-curved_2_ao.png"));
-		std::shared_ptr<BlackPearl::Texture> StoneroughnessTexture(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::RoughnessMap, "assets/texture/pbr/cobblestone/cobblestone-curved_2_roughness.png"));
-		std::shared_ptr<BlackPearl::Texture> StonementallicTexture(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::MentallicMap, "assets/texture/pbr/cobblestone/cobblestone-curved_2_metallic.png"));
-		std::shared_ptr<BlackPearl::Texture> StonenormalTexture(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::NormalMap, "assets/texture/pbr/cobblestone/cobblestone-curved_2_normal-dx.png"));
-
-		std::shared_ptr<BlackPearl::Texture> PlasticalbedoTexture(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::DiffuseMap, "assets/texture/pbr/plasticSphere/scuffed-plastic4-alb.png"));
-		std::shared_ptr<BlackPearl::Texture> PlasticaoTexture(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::AoMap, "assets/texture/pbr/plasticSphere/scuffed-plastic-ao.png"));
-		std::shared_ptr<BlackPearl::Texture> PlasticroughnessTexture(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::RoughnessMap, "assets/texture/pbr/plasticSphere/scuffed-plastic-rough.png"));
-		std::shared_ptr<BlackPearl::Texture> PlasticmentallicTexture(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::MentallicMap, "assets/texture/pbr/plasticSphere/scuffed-plastic-metal.png"));
-		std::shared_ptr<BlackPearl::Texture> PlasticnormalTexture(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::NormalMap, "assets/texture/pbr/plasticSphere/scuffed-plastic-normal.png"));
-
-		m_SphereObjIron->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(IronnormalTexture);
-		m_SphereObjIron->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(IronalbedoTexture);
-		m_SphereObjIron->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(IronaoTexture);
-		m_SphereObjIron->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(IronroughnessTexture);
-		m_SphereObjIron->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(IronmentallicTexture);
-		m_SphereObjIron->GetComponent<BlackPearl::MeshRenderer>()->SetTextureSamples(true);
-		m_SphereObjIron->GetComponent<BlackPearl::MeshRenderer>()->SetIsPBRObject(true);
-		m_SphereObjIron->GetComponent<BlackPearl::Transform>()->SetPosition({ 10,0,0 });
-
-		m_SphereObjRust->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(RustnormalTexture);
-		m_SphereObjRust->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(RustalbedoTexture);
-		m_SphereObjRust->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(RustaoTexture);
-		m_SphereObjRust->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(RustroughnessTexture);
-		m_SphereObjRust->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(RustmentallicTexture);
-		m_SphereObjRust->GetComponent<BlackPearl::MeshRenderer>()->SetTextureSamples(true);
-		m_SphereObjRust->GetComponent<BlackPearl::MeshRenderer>()->SetIsPBRObject(true);
-		m_SphereObjRust->GetComponent<BlackPearl::Transform>()->SetPosition({ 5,0,0 });
-
-		m_SphereObjStone->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(StonenormalTexture);
-		m_SphereObjStone->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(StonealbedoTexture);
-		m_SphereObjStone->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(StoneaoTexture);
-		m_SphereObjStone->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(StoneroughnessTexture);
-		m_SphereObjStone->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(StonementallicTexture);
-		m_SphereObjStone->GetComponent<BlackPearl::MeshRenderer>()->SetTextureSamples(true);
-		m_SphereObjStone->GetComponent<BlackPearl::MeshRenderer>()->SetIsPBRObject(true);
-		m_SphereObjStone->GetComponent<BlackPearl::Transform>()->SetPosition({ -5,0,0 });
-
-		m_SphereObjPlastic->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(PlasticnormalTexture);
-		m_SphereObjPlastic->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(PlasticalbedoTexture);
-		m_SphereObjPlastic->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(PlasticaoTexture);
-		m_SphereObjPlastic->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(PlasticroughnessTexture);
-		m_SphereObjPlastic->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(PlasticmentallicTexture);
-		m_SphereObjPlastic->GetComponent<BlackPearl::MeshRenderer>()->SetTextureSamples(true);
-		m_SphereObjPlastic->GetComponent<BlackPearl::MeshRenderer>()->SetIsPBRObject(true);
-		m_SphereObjPlastic->GetComponent<BlackPearl::Transform>()->SetPosition({ -10.0,0,0 });
-		
-		m_SphereObjsList.push_back(m_SphereObjIron);
-		m_SphereObjsList.push_back(m_SphereObjStone);
-		m_SphereObjsList.push_back(m_SphereObjPlastic);
-		m_SphereObjsList.push_back(m_SphereObjRust);
-		//m_SphereObjsList.push_back(deer);
-
-		
 		/*Draw CubeMap from hdrMap and Create environment IrrdianceMap*/
-		m_IBLProbesRenderer->Init(m_SHImageQuadObj,m_BrdfLUTQuadObj,  *GetLightSources(), m_BackGroundObjsList, m_LightProbes);
+		m_IBLProbesRenderer->Init(m_BrdfLUTQuadObj,  *GetLightSources(), m_BackGroundObjsList, m_LightProbes);
 		//m_IBLProbesRenderer->Render(GetLightSources(), m_BackGroundObjsList, m_LightProbes, m_SkyBoxObj1);
 
 		//glViewport(0, 0, BlackPearl::Configuration::WindowWidth, BlackPearl::Configuration::WindowHeight);
@@ -259,24 +119,19 @@ public:
 
 		if (BlackPearl::Input::IsKeyPressed(BP_KEY_U)) {
 
-			/*IBLProbes rendering*/
-
-			//std::vector<std::thread>probeThreads;
-			//	for (auto it = probes.begin(); it != probes.end(); it++)
-			//m_IBLProbesRenderer->ReUpdateProbes();
-
+			GE_CORE_INFO("light probe updating......")
 			m_IBLProbesRenderer->Render(GetLightSources(), m_BackGroundObjsList, m_LightProbes, m_SkyBoxObj1);
-
+			GE_CORE_INFO("light probe update finished!")
 
 		}
 
 		milliseconds currentTimeMs = duration_cast<milliseconds>(system_clock::now().time_since_epoch());
-		double runtime = currentTimeMs.count()-m_StartTimeMs.count();
-		
+		double runtime = currentTimeMs.count() - m_StartTimeMs.count();
 
 
-		
-		
+
+
+
 		glViewport(0, 0, BlackPearl::Configuration::WindowWidth, BlackPearl::Configuration::WindowHeight);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -302,10 +157,26 @@ public:
 
 		m_IBLProbesRenderer->RenderSpecularObjects(GetLightSources(), m_SphereObjsList, m_LightProbes);*/
 
-	//	m_GBufferRenderer->Render(m_SphereObjsList,m_GBufferDebugQuad, GetLightSources());//m_BackGroundObjsList
+		//	m_GBufferRenderer->Render(m_SphereObjsList,m_GBufferDebugQuad, GetLightSources());//m_BackGroundObjsList
+	/*	bool updateShadowMap = false;
 
-		m_ShadowMapPointLightRenderer->RenderCubeMap(m_SphereObjsList,m_DynamicObjsList,runtime / 1000.0f,GetLightSources());
-		m_GBufferRenderer->RenderSceneWithGBufferAndProbes(m_SphereObjsList, m_DynamicObjsList, runtime / 1000.0f,m_BackGroundObjsList, m_GBufferDebugQuad, GetLightSources(), m_LightProbes, m_IBLProbesRenderer->GetSpecularBrdfLUTTexture(), m_SkyBoxObj1);
+		for (auto pointlight : GetLightSources()->GetPointLights()) {
+			glm::vec3 position = pointlight->GetComponent<BlackPearl::Transform>()->GetPosition();
+			glm::vec3 lastPosition = pointlight->GetComponent<BlackPearl::Transform>()->GetLastPosition();
+			if (position != lastPosition) {
+				updateShadowMap = true;
+				break;
+			}
+		}
+		if (updateShadowMap == true || m_loopIndex == 0) {
+			m_ShadowMapPointLightRenderer->RenderCubeMap(m_ShadowObjsList, m_DynamicObjsList, runtime / 1000.0f, GetLightSources());
+			if (m_loopIndex == 0)
+				m_loopIndex++;
+		}*/
+
+		m_ShadowMapPointLightRenderer->RenderCubeMap(m_BackGroundObjsList, m_DynamicObjsList, runtime / 1000.0f, GetLightSources());
+
+		m_GBufferRenderer->RenderSceneWithGBufferAndProbes(m_BackGroundObjsList, m_DynamicObjsList, runtime / 1000.0f,m_BackGroundObjsList, m_GBufferDebugQuad, GetLightSources(), m_LightProbes, m_IBLProbesRenderer->GetSpecularBrdfLUTTexture(), m_SkyBoxObj1);
 		m_IBLProbesRenderer->RenderProbes(m_LightProbes);
 
 	//	
@@ -336,24 +207,23 @@ private:
 	
 	//BlackPearl::Object* m_DebugQuad = nullptr;
 	/* objects */
-	BlackPearl::Object* m_SphereObj = nullptr;
-	BlackPearl::Object* m_SphereObjIron = nullptr;
-	BlackPearl::Object* m_SphereObjRust = nullptr;
-	BlackPearl::Object* m_SphereObjStone = nullptr;
-	BlackPearl::Object* m_SphereObjPlastic = nullptr;
+	//BlackPearl::Object* m_SphereObj = nullptr;
+	//BlackPearl::Object* m_SphereObjIron = nullptr;
+	//BlackPearl::Object* m_SphereObjRust = nullptr;
+	//BlackPearl::Object* m_SphereObjStone = nullptr;
+	//BlackPearl::Object* m_SphereObjPlastic = nullptr;
 
-
+	int m_loopIndex = 0;
 	
 	BlackPearl::Object* m_SkyBoxObj1 = nullptr;
 
 	BlackPearl::Object* m_BrdfLUTQuadObj = nullptr;
-	BlackPearl::Object* m_SHImageQuadObj = nullptr;
+	//BlackPearl::Object* m_SHImageQuadObj = nullptr;
 	BlackPearl::Object* m_DebugQuad = nullptr;
 
 
 	/* objects list*/
 	std::vector<BlackPearl::Object*> m_SphereObjsList;
-	std::vector<BlackPearl::Object*> m_DynamicObjsList;
 
 	/*gBuffer*/
 	BlackPearl::Object* m_GBufferScreenQuad = nullptr;
@@ -361,10 +231,10 @@ private:
 	BlackPearl::Object* m_GIQuad = nullptr;
 	BlackPearl::Object* m_SurroundSphere = nullptr;
 	/*Animation model*/
-	BlackPearl::Object* m_AnimatedModelBoy = nullptr;
-	BlackPearl::Object* m_AnimatedModelCleaner = nullptr;
-	BlackPearl::Object* m_AnimatedModelFrog = nullptr;
-	BlackPearl::Object* m_AnimatedModelRobot = nullptr;
+	//BlackPearl::Object* m_AnimatedModelBoy = nullptr;
+	//BlackPearl::Object* m_AnimatedModelCleaner = nullptr;
+//	BlackPearl::Object* m_AnimatedModelFrog = nullptr;
+	//BlackPearl::Object* m_AnimatedModelRobot = nullptr;
 	int m_Rows = 4;
 	int m_Colums = 4;
 	float m_Spacing = 1.5;

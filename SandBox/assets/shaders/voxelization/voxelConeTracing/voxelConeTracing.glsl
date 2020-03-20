@@ -27,8 +27,8 @@ void main(){
 // --------------------------------------
 #define MIPMAP_HARDCAP 5.4f /* Too high mipmap levels => glitchiness, too low mipmap levels => sharpness. */
 #define VOXEL_SIZE (1/256.0) /* Size of a voxel. 128x128x128 => 1/128 = 0.0078125. */
-#define SHADOWS 1 /* Shadow cone tracing. */
-#define DIFFUSE_INDIRECT_FACTOR 0.52f /* Just changes intensity of diffuse indirect lighting. */
+//#define SHADOWS 1 /* Shadow cone tracing. */
+//#define DIFFUSE_INDIRECT_FACTOR 0.52f /* Just changes intensity of diffuse indirect lighting. */
 // --------------------------------------
 // Other lighting settings.
 // --------------------------------------
@@ -354,10 +354,10 @@ vec3 calculateDirectLight(const PointLight light, const vec3 viewDirection){
 	// Shadows.
 	// --------------------
 	float shadowBlend = 1;
-#if (SHADOWS == 1)
 	if(diffuseAngle * (1.0f - u_Material.transparency) > 0 && u_Settings.shadows)
 		shadowBlend = traceShadowCone(worldPositionFrag,light.position);
-#endif
+
+
 
 	// --------------------
 	// Add it all together.

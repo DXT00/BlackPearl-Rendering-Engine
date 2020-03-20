@@ -108,6 +108,7 @@ void main(){
 	for(uint i=0u;i<SAMPLE_COUNT;i++){
 		
 		vec2 Xi = HammersleyNoBitOps(i,SAMPLE_COUNT);
+		//计算入射光方向
 		vec3 H = ImportanceSampleGGX(Xi,N,u_roughness);
 		//计算反射光线方向
 		vec3 L = normalize(2.0* dot(V,H)*H-V);
@@ -120,7 +121,7 @@ void main(){
 			float HdotV = max(dot(N,V),0.0);
 			float pdf = D*NdotH/(4.0*HdotV)+0.0001;
 
-			float resolution = 512.0;// resolution of source cubemap (per face)
+			float resolution =32.0;//512.0;textureSize(u_EnvironmentMap,0).x;//512.0;// resolution of source cubemap (per face)
 			float  saTexel = 4.0*PI/(6.0*resolution*resolution);
 			float saSample= 1.0/(float(SAMPLE_COUNT)*pdf +0.0001);
 

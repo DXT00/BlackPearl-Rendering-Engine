@@ -17,7 +17,8 @@ namespace BlackPearl {
 		void Bind()const;
 		void Unbind() const;
 		std::string ReadFile(const std::string& filepath);
-		std::unordered_map<GLenum, std::string> Shader::PreProcess(const std::string& source);
+		
+		std::unordered_map<GLenum, std::string> Shader::PreProcess(const std::string& source, const std::string& commonSource);
 		void Compile(const std::unordered_map<GLenum, std::string>& shaderSources);
 
 		void SetLightUniform( LightSources lightSources);
@@ -37,6 +38,9 @@ namespace BlackPearl {
 		Shader(const std::string& vertexSrc, const std::string& fragmentSrc, const std::string& geometrySrc);
 		uint32_t m_RendererID;
 		std::string m_ShaderPath;
+		std::string m_FragmentCommonStruct;
+		std::string m_CommonStructPath="assets/shaders/common/CommonStruct.glsl";
+
 
 	};
 }
