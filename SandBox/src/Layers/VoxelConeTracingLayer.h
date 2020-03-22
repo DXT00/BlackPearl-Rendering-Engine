@@ -19,9 +19,10 @@ public:
 		m_BasicRenderer = DBG_NEW BlackPearl::BasicRenderer();
 		m_VoxelConeTracingRenderer = DBG_NEW BlackPearl::VoxelConeTracingRenderer();
 		m_CubeObj = CreateCube();
-		m_CubeObj->GetComponent<BlackPearl::Transform>()->SetScale(glm::vec3(5.0f));//必须是单位cube
+		m_CubeObj->GetComponent<BlackPearl::Transform>()->SetScale(glm::vec3(15.0f));//必须是单位cube
 		m_QuadObj = CreateQuad();
-		m_VoxelConeTracingRenderer->Init(BlackPearl::Configuration::WindowWidth, BlackPearl::Configuration::WindowHeight,m_QuadObj,m_CubeObj);
+		m_QuadBRDFLUTObj = CreateQuad();
+		m_VoxelConeTracingRenderer->Init(BlackPearl::Configuration::WindowWidth, BlackPearl::Configuration::WindowHeight,m_QuadObj, m_QuadBRDFLUTObj,m_CubeObj);
 		
 		m_DebugQuadObj = CreateQuad();
 		m_DebugQuadObj->GetComponent<BlackPearl::Transform>()->SetPosition({ 0.0f, 0.0f, 1.0f });
@@ -41,7 +42,7 @@ public:
 		LoadScene("CornellScene");
 		LoadScene("SpheresScene");
 		
-
+		m_skybox = m_SkyBoxObj;
 		/*******************************************************************************************************/
 		/*******************************************************************************************************/
 
@@ -80,10 +81,26 @@ public:
 
 		BlackPearl::RenderCommand::SetClearColor(m_BackgroundColor);
 		BlackPearl::Renderer::BeginScene(*(m_MainCamera->GetObj()->GetComponent<BlackPearl::PerspectiveCamera>()), *GetLightSources());
+		if (BlackPearl::Input::IsKeyPressed(BP_KEY_Y)) {
 
+			m_skybox = m_SkyBoxObj;
+			GE_CORE_INFO("m_skybox = m_SkyBoxObj");
+		}
+		if (BlackPearl::Input::IsKeyPressed(BP_KEY_N)) {
 
+			m_skybox = nullptr;
+			GE_CORE_INFO("m_skybox = nullptr");
+
+		}
+
+		/*if (BlackPearl::Input::IsKeyPressed(BP_KEY_V)) {
+
+			BlackPearl::VoxelConeTracingRenderer::s_VoxelizeNow = !BlackPearl::VoxelConeTracingRenderer::s_VoxelizeNow;
+			GE_CORE_INFO("vozelize = "+(BlackPearl::VoxelConeTracingRenderer::s_VoxelizeNow)?"true":"false");
+
+		}*/
 	m_VoxelConeTracingRenderer->Render(m_MainCamera->GetObj()->GetComponent<BlackPearl::PerspectiveCamera>(),m_BackGroundObjsList, GetLightSources(), 
-		BlackPearl::Configuration::WindowWidth, BlackPearl::Configuration::WindowHeight,nullptr, m_CurrentRenderingMode);
+		BlackPearl::Configuration::WindowWidth, BlackPearl::Configuration::WindowHeight, m_skybox, m_CurrentRenderingMode);
 
 
 		//m_VoxelConeTracingRenderer->DrawFrontBackFaceOfCube(m_DebugQuadObj);
@@ -95,8 +112,15 @@ public:
 		m_CubeObj->GetComponent<BlackPearl::Transform>()->SetPosition(BlackPearl::Renderer::GetSceneData()->CameraPosition);
 		m_CubeObj->GetComponent<BlackPearl::Transform>()->SetRotation(BlackPearl::Renderer::GetSceneData()->CameraRotation);
 		m_BasicRenderer->DrawObject(m_CubeObj, m_shader);*/
+		if (m_CurrentRenderingMode == BlackPearl::VoxelConeTracingRenderer::RenderingMode::VOXEL_CONE_TRACING) {
+			glEnable(GL_DEPTH_TEST);
+			glDepthFunc(GL_LEQUAL);
+		//m_VoxelizationShader->Bind();
 
-
+			m_BasicRenderer->DrawObject(m_SkyBoxObj);
+			
+		}
+		glDepthFunc(GL_LESS);
 		m_BasicRenderer->DrawLightSources(GetLightSources());
 
 	}
@@ -111,10 +135,13 @@ private:
 	std::vector<BlackPearl::Object*> m_LightObjs;
 	BlackPearl::Object* m_IronManObj;
 	BlackPearl::Object* m_QuadObj;
+	BlackPearl::Object* m_QuadBRDFLUTObj;
+
 	BlackPearl::Object* m_DebugQuadObj;
 	BlackPearl::Object* m_PlaneObj;
 	BlackPearl::Object* m_CubeObj;
 	BlackPearl::Object* m_SkyBoxObj;
+	BlackPearl::Object* m_skybox = nullptr;
 
 	std::shared_ptr<BlackPearl::Shader> m_shader;
 	glm::vec4 m_BackgroundColor = { 0.0f,0.0f,0.0f,0.0f };

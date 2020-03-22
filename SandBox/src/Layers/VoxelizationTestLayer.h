@@ -15,13 +15,14 @@ public:
 	{
 
 
+		m_QuadBRDFLUTObj = CreateQuad();
 
 		m_VoxelConeTracingRenderer = DBG_NEW BlackPearl::VoxelConeTracingRenderer();
 		m_CubeObj = CreateCube("", "");
 		m_CubeObj->GetComponent<BlackPearl::Transform>()->SetScale(glm::vec3(1.0f));
 		m_QuadObj = CreateQuad();
 		m_QuadObj->GetComponent<BlackPearl::Transform>()->SetPosition({ 0.0f, 0.0f, 1.0f });
-		m_VoxelConeTracingRenderer->Init(BlackPearl::Configuration::WindowWidth, BlackPearl::Configuration::WindowHeight, m_QuadObj, m_CubeObj);
+		m_VoxelConeTracingRenderer->Init(BlackPearl::Configuration::WindowWidth, BlackPearl::Configuration::WindowHeight, m_QuadObj, m_QuadBRDFLUTObj, m_CubeObj);
 
 		m_DebugQuadObj = CreateQuad();
 		m_DebugQuadObj->GetComponent<BlackPearl::Transform>()->SetPosition({ 0.0f, 0.0f, 1.0f });
@@ -76,6 +77,8 @@ private:
 	std::vector<BlackPearl::Object*> m_LightObjs;
 	BlackPearl::Object* m_IronManObj;
 	BlackPearl::Object* m_QuadObj;
+	BlackPearl::Object* m_QuadBRDFLUTObj;
+
 	BlackPearl::Object* m_DebugQuadObj;
 
 	BlackPearl::Object* m_PlaneObj;

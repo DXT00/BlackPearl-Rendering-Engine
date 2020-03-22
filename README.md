@@ -1,13 +1,14 @@
-###  Voxel Cone Tracing 添加PBR渲染
+###  Voxel Cone Tracing 添加PBR渲染 添加skybox
 
 glsl文件：
 voxelConeTracingPBR.glsl
 voxelizationPBR.glsl
 
 
-only indirect diffuse 
-![only diffuse GI](/results/only diffuse GI.png)
-indirect_directLight
-![indirect_directLight](/results/indirect_directLight.png)
+diffuse+specular+direct
+![diffuse+specular+direct1](/results/diffuse+specular+direct1.png)
+
+indirect diffuse+indirect specular
+![indirect diffuse+indirect specular](/results/diffuse_specular3_.png)
 
 

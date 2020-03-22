@@ -59,9 +59,9 @@ void main() {
 	// Initialize ray.
 	 vec3 origin = u_CameraViewPos;
 
-	vec3 stop = normalize(u_CameraFront)*u_CubeSize +
-				normalize(u_CameraRight)*textureCoordinateFrag.x*u_CubeSize +
-				normalize(u_CameraUp)*textureCoordinateFrag.y*u_CubeSize;
+	vec3 stop = normalize(u_CameraFront)*u_CubeSize.x +
+				normalize(u_CameraRight)*textureCoordinateFrag.x*u_CubeSize.x +
+				normalize(u_CameraUp)*textureCoordinateFrag.y*u_CubeSize.x;
 
 		vec3 direction =stop- origin;
 

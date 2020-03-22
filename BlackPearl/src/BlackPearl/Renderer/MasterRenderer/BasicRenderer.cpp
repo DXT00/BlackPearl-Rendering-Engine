@@ -96,13 +96,13 @@ namespace BlackPearl {
 		for (int i = 0; i < meshes.size(); i++) {
 			std::shared_ptr<Shader> shader = meshes[i].GetMaterial()->GetShader();
 			shader->Bind();
-			if (obj->GetComponent<MeshRenderer>()->GetIsPBRObject()) {
+			/*if (obj->GetComponent<MeshRenderer>()->GetIsPBRObject()) {
 				shader->SetUniform1i("u_IsPBRObjects",1);
 			}
 			else {
 				shader->SetUniform1i("u_IsPBRObjects", 0);
 
-			}
+			}*/
 			if (obj->HasComponent<PointLight>() || obj->HasComponent<ParallelLight>() || obj->HasComponent<SpotLight>()) {
 				PrepareBasicShaderParameters(meshes[i], shader, true);
 			}
@@ -151,13 +151,13 @@ namespace BlackPearl {
 
 		//RenderConfigure(obj);
 
-		if (obj->GetComponent<MeshRenderer>()->GetIsPBRObject()) {
+		/*if (obj->GetComponent<MeshRenderer>()->GetIsPBRObject()) {
 			shader->SetUniform1i("u_IsPBRObjects", 1);
 		}
 		else {
 			shader->SetUniform1i("u_IsPBRObjects", 0);
 
-		}
+		}*/
 		for (int i = 0; i < meshes.size(); i++) {
 			if (obj->HasComponent<PointLight>() || obj->HasComponent<ParallelLight>() || obj->HasComponent<SpotLight>())
 				PrepareBasicShaderParameters(meshes[i], shader, true);

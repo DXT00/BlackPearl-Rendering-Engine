@@ -15,7 +15,7 @@ namespace BlackPearl {
 		VoxelConeTracingRenderer();
 		~VoxelConeTracingRenderer();
 
-		void Init(unsigned int viewportWidth,unsigned int viewportHeight, Object * quadObj, Object * cubeObj);//, Object* debugQuadObj
+		void Init(unsigned int viewportWidth,unsigned int viewportHeight, Object * quadObj,Object* brdfLUTQuadObj, Object * cubeObj);//, Object* debugQuadObj
 		void InitVoxelization();
 		void InitVoxelVisualization(unsigned int viewportWidth, unsigned int viewportHeight);
 		void Voxilize(const std::vector<Object*>&objs, Object* skybox,
@@ -31,7 +31,7 @@ namespace BlackPearl {
 		void RenderVoxelVisualization(Camera* camera,const std::vector<Object*>&objs,  unsigned int viewportWidth, unsigned int viewportHeight);
 		void RenderScene(const std::vector<Object*>&objs, unsigned int viewportWidth, unsigned int viewportHeight, Object* skybox);
 
-
+		void RenderSpecularBRDFLUTMap();
 		/* 逐个object体素化 */
 		/*void Voxilize( Object* obj,bool clearVoxelizationFirst = true);
 		void Render(
@@ -55,6 +55,7 @@ namespace BlackPearl {
 		static bool s_IndirectSpecularLight;
 		static bool s_DirectLight;
 		static float s_GICoeffs;
+		static bool s_VoxelizeNow;
 	private:
 		Texture3D* m_VoxelTexture = nullptr;
 		unsigned int m_VoxelTextureSize = 256;// 256;// 64;
@@ -75,13 +76,18 @@ namespace BlackPearl {
 		// ----------------
 		// Rendering.
 		// ----------------
-
-
-
 		std::shared_ptr<Shader> m_VoxelizationShader;
 		std::shared_ptr<Shader> m_WorldPositionShader;
 		std::shared_ptr<Shader> m_VoxelVisualizationShader;
 		std::shared_ptr<Shader> m_VoxelConeTracingShader;
+
+		// ----------------
+		// PBR BRDF LUT render.
+		// ----------------
+		std::shared_ptr<Shader> m_SpecularBRDFLutShader;
+		/*只计算一次*/
+		std::shared_ptr<Texture> m_SpecularBrdfLUTTexture = nullptr;
+		Object* m_BrdfLUTQuadObj = nullptr;//pbr brdf LUT map render
 
 		/*Debug function*/
 		std::shared_ptr<Shader> m_VoxelizationTestShader;
@@ -93,7 +99,6 @@ namespace BlackPearl {
 
 		Object * m_QuadObj = nullptr;//用于显示体素化结果 ： voxel Visualization
 		Object * m_CubeObj = nullptr; //控制体素化渲染范围
-
 		Object* m_DebugQuadObj = nullptr; //darw front face and back face of cube
 
 

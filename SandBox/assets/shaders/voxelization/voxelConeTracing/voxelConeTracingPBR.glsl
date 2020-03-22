@@ -107,6 +107,7 @@ uniform sampler3D texture3D;
 uniform vec3 u_CubeSize; //m_CubeObj的大小，控制体素化范围
 //uniform vec3 u_CubePos; //m_CubeObj的大小，控制体素化范围
 uniform int u_IsPBRObjects;
+uniform sampler2D u_BrdfLUTMap;
 
 in vec3 v_FragPos;
 in vec3 v_Normal;
@@ -175,7 +176,9 @@ vec3 LightRadiance(vec3 fragPos,PointLight light){
 	vec3 radiance = light.diffuse*attenuation;
 	return radiance;
 }
-
+vec3 FresnelSchlickRoughness(float cosTheta, vec3 F0, float roughness){
+	return F0 + (max(vec3(1.0 - roughness), F0) - F0) * pow(1.0 - cosTheta, 5.0);
+}
 vec3 getNormalFromMap(vec3 normal,vec3 fragPos,vec2 texCoord)
 {
     vec3 tangentNormal =  2.0* texture(u_Material.normal,texCoord).xyz- vec3(1.0);
@@ -192,7 +195,45 @@ vec3 getNormalFromMap(vec3 normal,vec3 fragPos,vec2 texCoord)
 
     return normalize(TBN * tangentNormal);
 }
+vec3 CalcPBRIndirectLight(vec3 indirectSpecular,vec3 indirectDiffuse,vec3 getNormalFromMap,vec3 albedo,float metallic,float roughness,float ao,vec3 fragPos){
 
+	vec3 N = getNormalFromMap;
+	vec3 V = normalize(u_CameraViewPos-fragPos);
+	vec3 R = reflect(-V,N);
+
+	vec3 F0 = vec3(0.04);
+	F0 = mix(F0,albedo,metallic);
+//ambient lightings (we now use IBL as the ambient term)!
+	vec3 F =  FresnelSchlickRoughness(max(dot(N, V), 0.0), F0, roughness);
+	vec3 Ks = F;
+	vec3 Kd = vec3(1.0)-Ks;
+	Kd *= (1.0 - metallic);
+	vec3 environmentIrradiance;//= vec3(1.0,1.0,1.0);
+	
+	environmentIrradiance=indirectDiffuse;// u_ProbeWeight[i]*texture(u_IrradianceMap[i],N).rgb;
+		
+
+
+	vec3 diffuse = environmentIrradiance*albedo;//u_Material.diffuseColor;
+
+	//sample both the prefilter map and the BRDF lut and combine them together as per the Split-Sum approximation to get the IBL specular part
+	const float MAX_REFLECTION_LOD = 1.0;
+	//sample MAX_REFLECTION_LOD level mipmap everytime !
+	vec3 prefileredColor = vec3(0.0,0.0,0.0) ;//= vec3(1.0,1.0,1.0);
+
+	/*specular Map只取最近的一个*/
+	prefileredColor = indirectSpecular;//textureLod(u_PrefilterMap[0],R,roughness*MAX_REFLECTION_LOD).rgb;
+//	for(int i=0;i<u_Kprobes;i++){
+//		prefileredColor+= u_ProbeWeight[i]*textureLod(u_PrefilterMap[i],R,roughness*MAX_REFLECTION_LOD).rgb;
+//	//	prefileredColor*= textureLod(u_PrefilterMap[i],R,roughness*MAX_REFLECTION_LOD).rgb;
+//
+//	}
+	vec2 brdf = texture(u_BrdfLUTMap,vec2(max(dot(N,V),0.0),roughness)).rg;
+
+	vec3 specular = prefileredColor * (F*brdf.x+brdf.y);
+	vec3 ambient =  (Kd*diffuse+specular) * ao;
+	return ambient;
+}
 vec3 CalcPBRPointLight(PointLight light,vec3 getNormalFromMap,vec3 albedo,float metallic,float roughness,vec3 fragPos){
 	
 	//tangent normal 
@@ -410,7 +451,7 @@ vec3 indirectDiffuseLight(){
 	acc += w[2] * traceDiffuseVoxelCone(C_ORIGIN - CONE_OFFSET * corner2, c4);
 
 	// Return result.
-	vec3 diffuseColor;
+	vec3 diffuseColor=vec3(1,0,0);
 	if(u_IsPBRObjects==1)
 		diffuseColor=texture(u_Material.diffuse, v_TexCoord).rgb;//pow(texture(u_Material.diffuse, v_TexCoord).rgb, vec3(2.2));
 	else if(u_IsPBRObjects==0)
@@ -421,13 +462,13 @@ vec3 indirectDiffuseLight(){
 //	else
 //		return diffuseColor;
 	//return 3.0*acc * (diffuseColor);//DIFFUSE_INDIRECT_FACTOR * u_Material.diffuseReflectivity * acc * (diffuseColor + vec3(0.001));
-	return u_Settings.GICoeffs * u_Material.diffuseReflectivity * acc * (diffuseColor + vec3(0.001f));
+	return u_Settings.GICoeffs * u_Material.diffuseReflectivity* acc * (diffuseColor + vec3(0.001));//* acc * 
 }
 
 // Calculates indirect specular light using voxel cone tracing.
 vec3 indirectSpecularLight(vec3 viewDirection){
 	const vec3 reflection = normalize(reflect(viewDirection, normal));
-	return u_Settings.GICoeffs * u_Material.specularReflectivity *( u_Material.specularColor*(1-u_IsPBRObjects)+ u_IsPBRObjects*0.6)* traceSpecularVoxelCone(v_FragPos, reflection);
+	return u_Settings.GICoeffs * u_Material.specularReflectivity *( u_Material.specularColor*(1-u_IsPBRObjects)+ u_IsPBRObjects*texture(u_Material.diffuse, v_TexCoord).rgb)* traceSpecularVoxelCone(v_FragPos, reflection);
 }
 
 // Calculates refractive light using voxel cone tracing.
@@ -634,13 +675,43 @@ void main(){
 	color = vec4(0,0,0,1);
 	const vec3 viewDirection = normalize(v_FragPos-u_CameraViewPos);
 
-	//Indirect diffuse light
-	if(u_Settings.indirectDiffuseLight)
-		color.rgb += indirectDiffuseLight();
+	
 
+	vec3 indirectSpecular = vec3(0.0);
+	vec3 indirectDiffuse = vec3(0.0);
+	vec3 directLight = vec3(0.0);
+
+	//Indirect diffuse light
+	if(u_Settings.directLight)
+		directLight= directLight(viewDirection);
+
+
+	if(u_Settings.indirectDiffuseLight)
+		indirectDiffuse = indirectDiffuseLight();
+
+	if(u_Settings.indirectSpecularLight)
+		indirectSpecular = indirectSpecularLight(viewDirection);
+
+
+	if(u_IsPBRObjects==1){
+	/* pbr parametrs */
+		vec3  albedo	= pow(texture(u_Material.diffuse, v_TexCoord).rgb, vec3(2.2));
+		float metallic = texture(u_Material.mentallic,v_TexCoord).r;
+		float roughness = texture(u_Material.roughness ,v_TexCoord).r;
+		float ao        = texture(u_Material.ao, v_TexCoord).r;
+		vec3  emission	= texture(u_Material.emission,v_TexCoord).rgb;
+		vec3  normalMap = getNormalFromMap(v_Normal,v_FragPos,v_TexCoord);
+
+		color.rgb =directLight+CalcPBRIndirectLight(indirectSpecular,indirectDiffuse,normalMap,albedo,metallic,roughness,ao,v_FragPos);
+
+	}
+	else{
+		color.rgb = directLight+(indirectDiffuse+indirectSpecular);
+
+	}
 //	//Indirect specular light (glossy reflection)
-	if(u_Settings.indirectSpecularLight && u_Material.specularReflectivity*(1.0f-u_Material.transparency)>0.01f)
-		color.rgb += indirectSpecularLight(viewDirection);
+//	if(u_Settings.indirectSpecularLight && u_Material.specularReflectivity*(1.0f-u_Material.transparency)>0.01f)
+//		color.rgb += indirectSpecularLight(viewDirection);
 
 //	//Emissivity
 //	color.rgb += u_Material.emissivity * u_Material.diffuseColor;
@@ -650,9 +721,7 @@ void main(){
 //		color.rgb = color.rgb*(1-u_Material.transparency) + indirectRefractiveLight(viewDirection)*u_Material.transparency;
 //
 	//Direct light
-	if(u_Settings.directLight)
-		color.rgb += directLight(viewDirection);
-
+	
 	//HDR tonemapping
 #if (HDR == 1)
 	 color.rgb = color.rgb / (color.rgb + vec3(1.0));
