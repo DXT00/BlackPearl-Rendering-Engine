@@ -115,6 +115,7 @@ namespace BlackPearl {
 				meshes[i].GetVertexArray()->GetIndexBuffer()->Bind();
 				glDrawElements(GL_TRIANGLES, indicesNum, GL_UNSIGNED_INT, 0);//0
 				meshes[i].GetVertexArray()->GetIndexBuffer()->UnBind();
+				meshes[i].GetMaterial()->Unbind();
 
 			}
 			else
@@ -170,6 +171,7 @@ namespace BlackPearl {
 				meshes[i].GetVertexArray()->GetIndexBuffer()->Bind();
 				glDrawElements(GL_TRIANGLES, indicesNum, GL_UNSIGNED_INT, 0);
 				meshes[i].GetVertexArray()->GetIndexBuffer()->UnBind();
+				meshes[i].GetMaterial()->Unbind();
 
 
 			}
@@ -213,6 +215,7 @@ namespace BlackPearl {
 				meshes[i].GetVertexArray()->GetIndexBuffer()->Bind();
 				glDrawElements(GL_TRIANGLES, indicesNum, GL_UNSIGNED_INT, 0);
 				meshes[i].GetVertexArray()->GetIndexBuffer()->UnBind();
+				meshes[i].GetMaterial()->Unbind();
 
 			}
 			else {
@@ -261,7 +264,7 @@ namespace BlackPearl {
 
 		//k从4开始，0，1，2，3号texture用于自定义texture
 		bool diffuseMap = false, specularMap = false, normalMap = false, mentallicMap = false, aoMap = false;
-		unsigned int k = 2;
+		unsigned int k = 3;
 		if (textures != nullptr) {
 			if (textures->diffuseTextureMap != nullptr) {
 				diffuseMap = true;

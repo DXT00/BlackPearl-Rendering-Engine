@@ -11,6 +11,7 @@ namespace BlackPearl {
 	bool VoxelConeTracingRenderer::s_DirectLight = false;
 	float VoxelConeTracingRenderer::s_GICoeffs = 0.8f;
 	bool VoxelConeTracingRenderer::s_VoxelizeNow = true;
+	bool VoxelConeTracingRenderer::s_HDR = false;
 	VoxelConeTracingRenderer::VoxelConeTracingRenderer()
 	{
 
@@ -113,7 +114,6 @@ namespace BlackPearl {
 			glBindImageTexture(0, m_VoxelTexture->GetRendererID(), 0, GL_TRUE, 0, GL_WRITE_ONLY, GL_RGBA8);
 			skybox->GetComponent<Transform>()->SetScale(m_CubeObj->GetComponent<Transform>()->GetScale() - glm::vec3(3.0f));
 			skybox->GetComponent<Transform>()->SetPosition(Renderer::GetSceneData()->CameraPosition);
-			//skybox->GetComponent<Transform>()->SetRotation(Renderer::GetSceneData()->CameraRotation);
 
 			m_VoxelizationShader->SetUniform1i("u_IsSkybox", true);
 			m_VoxelizationShader->SetUniform1i("u_IsPBRObjects", 0);
@@ -280,6 +280,7 @@ namespace BlackPearl {
 			m_VoxelConeTracingShader->SetUniform1i("u_Settings.indirectSpecularLight", s_IndirectSpecularLight);
 			m_VoxelConeTracingShader->SetUniform1i("u_Settings.directLight", s_DirectLight);
 			m_VoxelConeTracingShader->SetUniform1f("u_Settings.GICoeffs", s_GICoeffs);
+			m_VoxelConeTracingShader->SetUniform1i("u_Settings.hdr", s_HDR);
 
 			m_VoxelConeTracingShader->SetUniform1i("u_State", Configuration::State);
 

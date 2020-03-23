@@ -34,6 +34,7 @@ namespace BlackPearl {
 		ImGui::Checkbox("voxel Indirect specular", &VoxelConeTracingRenderer::s_IndirectSpecularLight);
 		ImGui::Checkbox("voxel direct light", &VoxelConeTracingRenderer::s_DirectLight);
 		ImGui::DragFloat("voxel GICoeffs", &VoxelConeTracingRenderer::s_GICoeffs, 0.2f, 0.0f, 1.0f, "%.3f ");
+		ImGui::Checkbox("voxel HDR", &VoxelConeTracingRenderer::s_HDR);
 
 		//ImGui::Text("Frame num = %d", m_FrameNum);
 
@@ -238,7 +239,7 @@ namespace BlackPearl {
 		Object* light = CreateLight(LightType::PointLight);
 		light->GetComponent<Transform>()->SetPosition({ 0.0,0.0,5.0 });
 		light->GetComponent<Transform>()->SetLastPosition({ 0.0,-1.0,0.0 });//0.0,0.0,3.0
-
+		light->GetComponent<MeshRenderer>()->SetIsShadowObjects(false);
 
 		Object* deer = CreateModel("assets/models/deer/Deer.obj", "assets/shaders/IronMan.glsl", false, "Deer");
 		deer->GetComponent<Transform>()->SetScale(glm::vec3(0.003));
@@ -297,8 +298,19 @@ namespace BlackPearl {
 		Object* light = CreateLight(LightType::PointLight);
 		light->GetComponent<Transform>()->SetPosition({ 0.0,-1.0,0.0 });
 		light->GetComponent<Transform>()->SetLastPosition({ 0.0,-1.0,0.0 });//0.0,0.0,3.0
+		light->GetComponent<MeshRenderer>()->SetIsShadowObjects(false);
 
-		Object* sphereObjIron =  CreateSphere(1.5, 64, 64);//CreateCube();//
+		Object* cube = CreateCube();
+		cube->GetComponent<Transform>()->SetPosition({ 0.0f,-2.0f,0.0f });
+		cube->GetComponent<Transform>()->SetScale({ 16.0f,0.001f,16.0f });
+		std::shared_ptr<Texture> cubeTexture(DBG_NEW Texture(Texture::Type::DiffuseMap, "assets/texture/wood.png"));
+		cube->GetComponent<MeshRenderer>()->SetTextures(cubeTexture);
+		cube->GetComponent<MeshRenderer>()->SetTextureSamples(true);
+		cube->GetComponent<MeshRenderer>()->SetIsBackGroundObjects(true);
+		m_BackGroundObjsList.push_back(cube);
+
+
+		Object* sphereObjIron = CreateCube(); // CreateSphere(1.5, 64, 64);//CreateCube();//
 		Object* sphereObjRust = CreateSphere(1.5, 64, 64);
 		Object* sphereObjStone = CreateSphere(1.5, 64, 64);
 		Object* sphereObjPlastic = CreateSphere(1.5, 64, 64);

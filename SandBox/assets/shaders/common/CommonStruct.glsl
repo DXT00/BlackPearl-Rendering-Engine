@@ -37,4 +37,5 @@ struct Settings{
 	bool indirectSpecularLight;
 	bool shadows;
 	float GICoeffs;
+	bool hdr;
 };

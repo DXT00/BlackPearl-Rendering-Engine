@@ -504,7 +504,7 @@ namespace BlackPearl {
 		glClear(GL_COLOR_BUFFER_BIT);
 		m_FinalScreenShader->Bind();
 		m_FinalScreenShader->SetUniform1i("u_FinalScreenTexture", 0);
-		m_FinalScreenShader->SetUniform1f("u_HDR", s_HDR);
+		m_FinalScreenShader->SetUniform1f("u_Settings.hdr", s_HDR);
 		glActiveTexture(GL_TEXTURE0);
 		m_HDRPostProcessTexture->Bind();
 		DrawObject(m_FinalScreenQuad, m_FinalScreenShader);

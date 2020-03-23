@@ -179,9 +179,7 @@ void main(){
     EndPrimitive();
 }
 
-// Lit (diffuse) fragment voxelization shader.
-// Author:	Fredrik Pr鋘tare <prantare@gmail.com> 
-// Date:	11/26/2016
+
 #type fragment
 #version 430 core
 
@@ -199,42 +197,6 @@ struct PointLight{
 
 };
 
-//uniform struct Material{
-//	vec3 ambientColor;
-//	vec3 diffuseColor;
-//	vec3 specularColor;
-//	vec3 emissionColor;
-//	float roughnessValue;
-//	float mentallicValue;
-//	float aoValue;
-//	sampler2D diffuse; //or call it albedo
-//	sampler2D specular;
-//	sampler2D emission;
-//	sampler2D normal;
-//	sampler2D height;
-//	sampler2D depth;
-//	sampler2D ao;
-//	sampler2D roughness;
-//	sampler2D mentallic;
-//
-//	samplerCube cube;
-//	float shininess;
-//
-//	
-//}u_Material;
-//
-//uniform struct Settings{
-//	bool isBlinnLight;
-//	int  isTextureSample;//判断是否使用texture,或者只有color
-//	int isDiffuseTextureSample;
-//	int isSpecularTextureSample;
-//	int isMetallicTextureSample;
-//
-//}u_Settings;
-//
-//
-//
-
 uniform Material u_Material;
 uniform Settings u_Settings;
 
@@ -243,18 +205,18 @@ uniform int u_PointLightNums;
 uniform vec3 u_CameraViewPos;
 uniform vec3 u_CubeSize;
 uniform bool u_IsSkybox;
-
 uniform int u_IsPBRObjects;
 
-//flat in int axisIndex;
 
 
 layout(rgba8, binding = 0) uniform image3D texture3D;
 
-in vec3 worldPositionFrag;//=v_FragPos
+in vec3 worldPositionFrag;
 in vec3 normalFrag;
 in vec3 texCoordFrag;
 
+/************************************* PBR fuction ***************************************************/
+/*****************************************************************************************************/
 
 float calculateAttenuation(PointLight light,vec3 fragPos){
 	float distance = length(light.position-fragPos);
@@ -294,7 +256,6 @@ vec3 BRDF(vec3 Kd,vec3 Ks,vec3 specular){
 }
 vec3 LightRadiance(vec3 fragPos,PointLight light){
 	float attenuation = calculateAttenuation(light,fragPos);
-	//float cosTheta = max(dot(N,wi),0.0);
 	vec3 radiance =light.intensity* light.diffuse*attenuation;
 	return radiance;
 }
@@ -316,6 +277,8 @@ vec3 getNormalFromMap(vec3 normal,vec3 fragPos)
 
     return normalize(TBN * tangentNormal);
 }
+/*******************************************************************************************/
+
 vec3 CalcPointLight(PointLight light,vec3 normal,vec3 viewDir){
 	vec3 fragColor;
 
@@ -328,7 +291,7 @@ vec3 CalcPointLight(PointLight light,vec3 normal,vec3 viewDir){
 	vec3 lightDir = normalize(light.position-worldPositionFrag);
 	vec3 norm = normalize(normal);
 	float diff = max(dot(lightDir,norm),0.0f);
-	vec3 diffuse = light.diffuse * diff * (u_Material.diffuseColor*(1-u_Settings.isTextureSample)+texture(u_Material.diffuse,texCoordFrag.xy)*u_Settings.isTextureSample );
+	vec3 diffuse = light.diffuse * diff * (u_Material.diffuseColor*(1-u_Settings.isTextureSample)+texture(u_Material.diffuse,texCoordFrag.xy).rgb*u_Settings.isTextureSample );
 
 	//specular
 	vec3 specular;
@@ -361,16 +324,13 @@ bool isInsideCube(const vec3 p, float e) { return abs(p.x) < 1 + e && abs(p.y) <
 
 void main(){
 	vec3 viewDir = normalize(u_CameraViewPos-worldPositionFrag);
-
 	vec3 color = vec3(0.0);
-	//vec3 worldPositionFrag_=u_CubeSize*worldPositionFrag;
 
 	vec3 normalWorldPositionFrag =worldPositionFrag-u_CameraViewPos;// vec3(worldPositionFrag.x-u_CubePos.x,worldPositionFrag.y-u_CubePos.y,worldPositionFrag.z-u_CubePos.z);
 	normalWorldPositionFrag = normalWorldPositionFrag/u_CubeSize;
 	if(!isInsideCube(normalWorldPositionFrag, 0.2)) return;
 
-	//vec3 normalWorldPositionFrag =worldPositionFrag;
-	// Calculate diffuse lighting fragment contribution.
+
 	if(u_IsPBRObjects==0){
 		if(u_IsSkybox)
 			color=texture(u_Material.cube,texCoordFrag).rgb;
@@ -426,22 +386,9 @@ void main(){
 	}
 	
 
-	// Output lighting to 3D texture.
-//	if(axisIndex==0){
-//		normalWorldPositionFrag.xyz=normalWorldPositionFrag.xyz;
-//	}
-//	else if(axisIndex==1){
-//		normalWorldPositionFrag=vec3(normalWorldPositionFrag.y,normalWorldPositionFrag.z,normalWorldPositionFrag.x);
-//	}
-//	else if(axisIndex==2){
-//		normalWorldPositionFrag=vec3(normalWorldPositionFrag.z,normalWorldPositionFrag.x,normalWorldPositionFrag.y);
-//		//normalWorldPositionFrag=vec3(normalWorldPositionFrag.x,normalWorldPositionFrag.z,normalWorldPositionFrag.y);
-//
-//	}
 
 	vec3 voxel = scaleAndBias(normalWorldPositionFrag);
 	ivec3 dim = imageSize(texture3D);// retrieve the dimensions of an image
-	//float alpha = pow(1 - 0, 4); // For soft shadows to work better with transparent materials.
 	vec4 res = vec4(vec3(color), 1);
     imageStore(texture3D, ivec3(dim * voxel), res);//write a single texel into an image;
 }

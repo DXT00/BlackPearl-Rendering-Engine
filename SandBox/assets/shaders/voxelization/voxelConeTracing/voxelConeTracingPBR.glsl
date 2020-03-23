@@ -50,7 +50,8 @@ void main(){
 
 // Other settings.
 #define GAMMA_CORRECTION 1 /* Whether to use gamma correction or not. */
-#define HDR 0 /* Whether to use tone mapping or not. */
+//#define HDR 1 /* Whether to use tone mapping or not. */
+
 
 // Basic point light.
 struct PointLight {
@@ -66,36 +67,6 @@ struct PointLight {
 
 };
 
-//struct Material{
-//	vec3 ambientColor;
-//	vec3 diffuseColor;
-//	vec3 specularColor;
-//	vec3 emissionColor;
-//	sampler2D diffuse;
-//	sampler2D specular;
-//	sampler2D emission;
-//	sampler2D normal;
-//	sampler2D height;
-//
-//	float diffuseReflectivity;
-//	float specularReflectivity;
-//	float transparency;
-//	float emissivity;
-//	float refractiveIndex;
-//	float specularDiffusion;
-//
-//	float shininess;
-//	bool isBlinnLight;
-//	int  isTextureSample;//判断是否使用texture,或者只有color
-//
-//};
-//
-//struct Settings{
-//	bool indirectSpecularLight;
-//	bool indirectDiffuseLight;
-//	bool directLight;
-//	bool shadows;
-//};
 
 uniform Material u_Material;
 uniform Settings u_Settings;
@@ -302,7 +273,7 @@ float traceShadowCone(vec3 from, vec3 lightPos){
 
 	float dist = 3 * VOXEL_SIZE;
 	// I'm using a pretty big margin here since I use an emissive light ball with a pretty big radius in my demo scenes.
-	const float STOP = length(direction) - 16 * VOXEL_SIZE;//16
+	const float STOP = length(direction) - 16 * VOXEL_SIZE;
 	direction = normalize(direction);
 	while(dist < STOP && acc < 1){	
 		vec3 c = from + dist * direction;
@@ -380,7 +351,7 @@ vec3 traceSpecularVoxelCone(vec3 from, vec3 direction){
 		if(!isInsideCube(c, 0)) break;
 		c = scaleAndBias(c); 
 		
-		float level = 0.1 * u_Material.specularDiffusion * log2(1 + dist / VOXEL_SIZE);
+		float level = 0.1 *((1- u_IsPBRObjects)*u_Material.specularDiffusion+u_IsPBRObjects*texture(u_Material.roughness ,v_TexCoord).r)* log2(1 + dist / VOXEL_SIZE);//0.1
 		vec4 voxel = textureLod(texture3D, c, min(level, MIPMAP_HARDCAP));
 		if(voxel.a>=0){
 
@@ -556,7 +527,7 @@ vec3 calculateDirectLight(const PointLight light, const vec3 viewDir){
 
 	vec3 norm = normalize(normal);
 	float diff = max(dot(lightDir,norm),0.0f);
-	vec3 diffuse = light.diffuse * diff * (u_Material.diffuseColor);
+	vec3 diffuse = light.diffuse * diff * (u_Material.diffuseColor*(1-u_Settings.isTextureSample)+texture(u_Material.diffuse,v_TexCoord).rgb*u_Settings.isTextureSample);
 
 	/*specular*/
 	vec3 specular;
@@ -642,8 +613,13 @@ vec3 directLight(vec3 viewDirection){
 	vec3 direct = vec3(0.0);
 	if(u_IsPBRObjects==0){
 		for(int i = 0; i < u_PointLightNums; ++i){
-		
-			direct += u_PointLights[i].intensity * calculateDirectLight_orign(u_PointLights[i], viewDirection);
+			float shadowBlend = 1.0;
+			#if (SHADOWS == 1)
+			shadowBlend = traceShadowCone(v_FragPos,u_PointLights[i].position);
+			#endif
+			//direct += u_PointLights[i].intensity * calculateDirectLight_orign(u_PointLights[i], viewDirection);
+			
+			direct += shadowBlend*u_PointLights[i].intensity * calculateDirectLight_orign(u_PointLights[i], viewDirection);
 		}
 	}
 	else{
@@ -723,9 +699,9 @@ void main(){
 	//Direct light
 	
 	//HDR tonemapping
-#if (HDR == 1)
+	if (u_Settings.hdr)
 	 color.rgb = color.rgb / (color.rgb + vec3(1.0));
-#endif
+
 	//gamma correction
    //  direct = pow(direct, vec3(1.0/2.2));  
 #if (GAMMA_CORRECTION == 1)

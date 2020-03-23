@@ -19,7 +19,7 @@ public:
 		m_BasicRenderer = DBG_NEW BlackPearl::BasicRenderer();
 		m_VoxelConeTracingRenderer = DBG_NEW BlackPearl::VoxelConeTracingRenderer();
 		m_CubeObj = CreateCube();
-		m_CubeObj->GetComponent<BlackPearl::Transform>()->SetScale(glm::vec3(15.0f));//必须是单位cube
+		m_CubeObj->GetComponent<BlackPearl::Transform>()->SetScale(glm::vec3(25.0f));//必须是单位cube
 		m_QuadObj = CreateQuad();
 		m_QuadBRDFLUTObj = CreateQuad();
 		m_VoxelConeTracingRenderer->Init(BlackPearl::Configuration::WindowWidth, BlackPearl::Configuration::WindowHeight,m_QuadObj, m_QuadBRDFLUTObj,m_CubeObj);

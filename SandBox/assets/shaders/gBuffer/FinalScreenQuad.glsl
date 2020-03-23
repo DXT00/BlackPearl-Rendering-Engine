@@ -35,13 +35,13 @@ in vec2 TexCoords;
 //};
 //uniform Material u_Material;
 uniform sampler2D u_FinalScreenTexture;
-uniform bool u_HDR;
+uniform Settings u_Settings;
 const float offset = 1.0 / 300.0; 
 void main(){
 
 	vec3 color =texture(u_FinalScreenTexture, TexCoords).rgb;
 
-	if(u_HDR){
+	if(u_Settings.hdr){
 	//HDR tonemapping
 	 color = color / (color + vec3(1.0));
 	//gamma correction
