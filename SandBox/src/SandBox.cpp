@@ -13,6 +13,7 @@
 #include "Layers/SkyBoxTestLayer.h"
 #include "Layers/VoxelConeTracingLayer.h"
 #include "Layers/IBLProbesRenderingLayer.h"
+#include "Layers/VoxelConeTracingDeferredLayer.h"
 #include "BlackPearl/Application.h"
 #include "Layers/VoxelizationTestLayer.h"
 class SandBox :public BlackPearl::Application {
@@ -24,7 +25,7 @@ public:
 		//BlackPearl::Layer* layer = DBG_NEW FrameBufferTestLayer("FrameBufferTest Layer", objectManager);
 		//BlackPearl::Layer* layer = DBG_NEW SkyBoxTestLayer("SkyBoxTest Layer", objectManager);
 		//BlackPearl::Layer* layer = DBG_NEW ShadowMapPointLightLayer("ShadowMapPointLight Layer", objectManager);
-		BlackPearl::Layer* layer = DBG_NEW VoxelConeTracingLayer("VoxelConeTracing Layer", objectManager);
+	//	BlackPearl::Layer* layer = DBG_NEW VoxelConeTracingLayer("VoxelConeTracing Layer", objectManager);
 		//BlackPearl::Layer* layer = DBG_NEW VoxelizationTestLayer("VoxelizationTest Layer", objectManager);
 
 		
@@ -36,6 +37,7 @@ public:
 		
 		//BlackPearl::Layer* layer = DBG_NEW AdvanceLightTestLayer("AdvanceLight Layer", objectManager);
 		//BlackPearl::Layer* layer = DBG_NEW ShadowMapTestLayer("ShadowMapTest Layer", objectManager);
+		BlackPearl::Layer* layer = DBG_NEW VoxelConeTracingDeferredLayer("VoxelConeTracingDeferred Layer", objectManager);
 
 		GetScene()->PushLayer(layer);
 	}

@@ -215,6 +215,7 @@ in vec3 worldPositionFrag;
 in vec3 normalFrag;
 in vec3 texCoordFrag;
 
+
 /************************************* PBR fuction ***************************************************/
 /*****************************************************************************************************/
 
@@ -249,9 +250,9 @@ vec3 FrehNel(float NdotV,vec3 F0){
 	return F0+(1.0-F0)*pow(1.0-NdotV,5.0);
 }
 
-vec3 BRDF(vec3 Kd,vec3 Ks,vec3 specular){
+vec3 BRDF(vec3 Kd,vec3 Ks,vec3 specular,vec3 albedo){
 	
-	vec3 fLambert = u_Material.diffuseColor/PI;//diffuseColor 相当于 albedo
+	vec3 fLambert = albedo/PI;//texture(u_Material.diffuse, texCoordFrag.xy).rgb/PI;//u_Material.diffuseColor diffuseColor 相当于 albedo
 	return Kd * fLambert+  specular;//specular 中已经有Ks(Ks=F)了，不需要再乘以Ks *
 }
 vec3 LightRadiance(vec3 fragPos,PointLight light){
@@ -313,7 +314,7 @@ vec3 CalcPointLight(PointLight light,vec3 normal,vec3 viewDir){
 	specular *= attenuation;
 
 	fragColor = diffuse + ambient + specular;
-	
+
 	return fragColor;
 }
 
@@ -332,16 +333,20 @@ void main(){
 
 
 	if(u_IsPBRObjects==0){
-		if(u_IsSkybox)
+		if(u_IsSkybox){
 			color=texture(u_Material.cube,texCoordFrag).rgb;
-		else
+		}
+		else{
 			for(int i = 0; i < u_PointLightNums; ++i) 
 			{
 				color += CalcPointLight(u_PointLights[i], normalFrag,viewDir);
 			}
+			//color = vec3(1.0,0,0);
+
+		}
 	}
-	else{
-		vec3 albedo =pow(texture(u_Material.diffuse, texCoordFrag.xy).rgb, vec3(2.2));//vec3(pow( texture(u_Material.diffuse, v_TexCoord).r, (2.2)));
+	else if(u_IsPBRObjects==1){
+		vec3 albedo = pow(texture(u_Material.diffuse, texCoordFrag.xy).rgb, vec3(2.2));//vec3(pow( texture(u_Material.diffuse, v_TexCoord).r, (2.2)));
 
 		float mentallic = texture(u_Material.mentallic,texCoordFrag.xy).r;
 		float roughness  = texture(u_Material.roughness ,texCoordFrag.xy).r;
@@ -376,16 +381,15 @@ void main(){
 			vec3 specular     = nominator / denominator;
 			
 			float NdotL = max(dot(N,L),0.0);
-			Lo+= BRDF(Kd,Ks,specular)*LightRadiance(v_FragPos,u_PointLights[i])*NdotL;
+			Lo+= BRDF(Kd,Ks,specular,albedo)*LightRadiance(v_FragPos,u_PointLights[i])*NdotL;
 		}
-		vec3 ambient = vec3(0.03) * albedo * ao;
-		color = ambient + emission+ Lo;
-
-		color = color / (color + vec3(1.0));
-		color = pow(color, vec3(1.0/2.2));  
+		vec3 ambient = vec3(0.008) * albedo * ao;//vec3(0.03)
+		color = ambient +  Lo;
+		//color = Lo;
+//		color = color / (color + vec3(1.0));
+//		color = pow(color, vec3(1.0/2.2));  
 	}
 	
-
 
 	vec3 voxel = scaleAndBias(normalWorldPositionFrag);
 	ivec3 dim = imageSize(texture3D);// retrieve the dimensions of an image

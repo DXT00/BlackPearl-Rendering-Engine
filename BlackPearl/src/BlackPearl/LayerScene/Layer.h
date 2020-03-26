@@ -44,8 +44,11 @@ namespace BlackPearl {
 		virtual ~Layer() {
 			delete m_LightSources;
 			delete m_ObjectManager;
-			for (Object* obj : m_ObjectsList)
-				delete obj;
+			for (Object* obj : m_ObjectsList) {
+				if(obj!=nullptr)
+					delete obj;
+
+			}
 		};
 		virtual void OnAttach() {}
 		virtual void OnDetach() {}

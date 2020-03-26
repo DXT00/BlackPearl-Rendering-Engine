@@ -1,14 +1,11 @@
-###  Voxel Cone Tracing 添加PBR渲染 添加skybox
-
+###  Voxel Cone Tracing -deferred rendering and Guassian blur
 glsl文件：
-voxelConeTracingPBR.glsl
-voxelizationPBR.glsl
+gBuffer_ambientFilter_voxelConeTracingPBR.glsl
+gBuffer_pointLight_voxelConeTracingPBR.glsl
+GuassianFilter_horizontal.glsl
+GuassianFilter_vertical.glsl
 
-
-diffuse+specular+direct
-![diffuse+specular+direct1](/results/diffuse+specular+direct1.png)
-
-indirect diffuse+indirect specular
-![indirect diffuse+indirect specular](/results/diffuse_specular3_.png)
+diffuse+specular+direct+Guassian blur
+![guassian_Blur](/results/guassian_Blur.png)
 
 

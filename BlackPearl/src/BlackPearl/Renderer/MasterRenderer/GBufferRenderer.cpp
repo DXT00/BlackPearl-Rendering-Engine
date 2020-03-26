@@ -12,19 +12,19 @@
 namespace BlackPearl {
 	float GBufferRenderer::s_GICoeffs = 0.5f;
 	bool GBufferRenderer::s_HDR =true;
-
+	float GBufferRenderer::s_AttenuationItensity = 50.0f;
 	GBufferRenderer::GBufferRenderer()
 	{
-		m_GBffer.reset(DBG_NEW GBuffer(m_TextureWidth, m_TexxtureHeight));
+		m_GBuffer.reset(DBG_NEW GBuffer(m_TextureWidth, m_TexxtureHeight));
 
 		m_HDRPostProcessTexture.reset(DBG_NEW Texture(Texture::Type::None, m_TextureWidth, m_TexxtureHeight, false, GL_LINEAR, GL_LINEAR, GL_RGBA16F, GL_RGBA, GL_CLAMP_TO_EDGE, GL_FLOAT));
 
 
-		m_GBufferShader.reset(DBG_NEW Shader("assets/shaders/gBuffer/gBuffer.glsl"));
-		m_AmbientGIPassShader.reset(DBG_NEW Shader("assets/shaders/gBuffer/gBufferAmbientGIPass.glsl"));
-		m_PointLightPassShader.reset(DBG_NEW Shader("assets/shaders/gBuffer/gBufferPontLightPass.glsl"));
-		m_SphereDeBugShader.reset(DBG_NEW Shader("assets/shaders/gBuffer/SurroundSphereDebug.glsl"));
-		m_FinalScreenShader.reset(DBG_NEW Shader("assets/shaders/gBuffer/FinalScreenQuad.glsl"));
+		m_GBufferShader.reset(DBG_NEW Shader("assets/shaders/gBufferProbe/gBuffer.glsl"));
+		m_AmbientGIPassShader.reset(DBG_NEW Shader("assets/shaders/gBufferProbe/gBufferAmbientGIPass.glsl"));
+		m_PointLightPassShader.reset(DBG_NEW Shader("assets/shaders/gBufferProbe/gBufferPontLightPass.glsl"));
+		m_SphereDeBugShader.reset(DBG_NEW Shader("assets/shaders/gBufferProbe/SurroundSphereDebug.glsl"));
+		m_FinalScreenShader.reset(DBG_NEW Shader("assets/shaders/gBufferProbe/FinalScreenQuad.glsl"));
 
 		m_AnimatedModelRenderer = new AnimatedModelRenderer();
 		std::shared_ptr<Shader> gBufferAnimatedShader(DBG_NEW Shader("assets/shaders/animatedModel/animatedGBufferModel.glsl"));
@@ -53,7 +53,7 @@ namespace BlackPearl {
 
 		/************************1. Geometry Pass: render scene's geometry/color data into gbuffer *****************/
 		/***********************************************************************************************************/
-		m_GBffer->Bind();
+		m_GBuffer->Bind();
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		m_GBufferShader->Bind();
@@ -78,7 +78,7 @@ namespace BlackPearl {
 		glEnable(GL_BLEND);
 		glBlendEquation(GL_FUNC_ADD);
 		glBlendFunc(GL_ONE, GL_ONE);
-		m_GBffer->UnBind();
+		m_GBuffer->UnBind();
 		glClear(GL_COLOR_BUFFER_BIT);
 
 
@@ -101,15 +101,15 @@ namespace BlackPearl {
 			m_PointLightPassShader->SetUniformVec2f("gScreenSize", glm::vec2(m_TextureWidth, m_TexxtureHeight));
 
 			glActiveTexture(GL_TEXTURE0);
-			m_GBffer->GetPositionTexture()->Bind();
+			m_GBuffer->GetPositionTexture()->Bind();
 			glActiveTexture(GL_TEXTURE1);
-			m_GBffer->GetNormalTexture()->Bind();
+			m_GBuffer->GetNormalTexture()->Bind();
 			glActiveTexture(GL_TEXTURE2);
-			m_GBffer->GetDiffuseRoughnessTexture()->Bind();
+			m_GBuffer->GetDiffuseRoughnessTexture()->Bind();
 			glActiveTexture(GL_TEXTURE3);
-			m_GBffer->GetSpecularMentallicTexture()->Bind();
+			m_GBuffer->GetSpecularMentallicTexture()->Bind();
 			glActiveTexture(GL_TEXTURE4);
-			m_GBffer->GetAmbientGIAOTexture()->Bind();
+			m_GBuffer->GetAmbientGIAOTexture()->Bind();
 
 			m_PointLightPassShader->SetUniformVec3f("u_PointLight.ambient", pointLight->GetComponent<PointLight>()->GetLightProps().ambient);
 			m_PointLightPassShader->SetUniformVec3f("u_PointLight.diffuse", pointLight->GetComponent<PointLight>()->GetLightProps().diffuse);
@@ -139,7 +139,7 @@ namespace BlackPearl {
 		glDepthMask(GL_TRUE);
 		glEnable(GL_DEPTH_TEST);
 
-		m_GBffer->Bind();
+		m_GBuffer->Bind();
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0); // Write to default framebuffer
 		// blit to default framebuffer. Note that this may or may not work as the internal formats of both the FBO and default framebuffer have to match.
 		// the internal formats are implementation defined. This works on all of my systems, but if it doesn't on yours you'll likely have to write to the 		
@@ -184,43 +184,43 @@ namespace BlackPearl {
 	{
 
 		/*glViewport(0, 270, 480, 270);
-		gBufferDebugQuad->GetComponent<MeshRenderer>()->SetTextures(m_GBffer->GetPositionTexture());
+		gBufferDebugQuad->GetComponent<MeshRenderer>()->SetTextures(m_GBuffer->GetPositionTexture());
 		DrawObject(gBufferDebugQuad);
 
 		glViewport(0, 0, 480, 270);
-		gBufferDebugQuad->GetComponent<MeshRenderer>()->SetTextures(m_GBffer->GetAmbientGIAOTexture());
+		gBufferDebugQuad->GetComponent<MeshRenderer>()->SetTextures(m_GBuffer->GetAmbientGIAOTexture());
 		DrawObject(gBufferDebugQuad);
 
 		glViewport(480, 0, 480, 270);
-		gBufferDebugQuad->GetComponent<MeshRenderer>()->SetTextures(m_GBffer->GetDiffuseRoughnessTexture());
+		gBufferDebugQuad->GetComponent<MeshRenderer>()->SetTextures(m_GBuffer->GetDiffuseRoughnessTexture());
 		DrawObject(gBufferDebugQuad);
 
 		glViewport(480, 270, 480, 270);
-		gBufferDebugQuad->GetComponent<MeshRenderer>()->SetTextures(m_GBffer->GetSpecularMentallicTexture());
+		gBufferDebugQuad->GetComponent<MeshRenderer>()->SetTextures(m_GBuffer->GetSpecularMentallicTexture());
 		DrawObject(gBufferDebugQuad);*/
 	
 		glViewport(0, 0, 320, 270);
-		gBufferDebugQuad->GetComponent<MeshRenderer>()->SetTextures(m_GBffer->GetPositionTexture());
+		gBufferDebugQuad->GetComponent<MeshRenderer>()->SetTextures(m_GBuffer->GetPositionTexture());
 		DrawObject(gBufferDebugQuad);
 
 		glViewport(0, 270, 320, 270);
-		gBufferDebugQuad->GetComponent<MeshRenderer>()->SetTextures(m_GBffer->GetNormalTexture());
+		gBufferDebugQuad->GetComponent<MeshRenderer>()->SetTextures(m_GBuffer->GetNormalTexture());
 		DrawObject(gBufferDebugQuad);
 
 		glViewport(320, 0, 320, 270);
-		gBufferDebugQuad->GetComponent<MeshRenderer>()->SetTextures(m_GBffer->GetDiffuseRoughnessTexture());
+		gBufferDebugQuad->GetComponent<MeshRenderer>()->SetTextures(m_GBuffer->GetDiffuseRoughnessTexture());
 		DrawObject(gBufferDebugQuad);
 
 		glViewport(320, 270, 320, 270);
-		gBufferDebugQuad->GetComponent<MeshRenderer>()->SetTextures(m_GBffer->GetSpecularMentallicTexture());
+		gBufferDebugQuad->GetComponent<MeshRenderer>()->SetTextures(m_GBuffer->GetSpecularMentallicTexture());
 		DrawObject(gBufferDebugQuad);
 
 		glViewport(640, 0, 320, 270);
-		gBufferDebugQuad->GetComponent<MeshRenderer>()->SetTextures(m_GBffer->GetAmbientGIAOTexture());
+		gBufferDebugQuad->GetComponent<MeshRenderer>()->SetTextures(m_GBuffer->GetAmbientGIAOTexture());
 		DrawObject(gBufferDebugQuad);
 
 		glViewport(640, 270, 320, 270);
-		gBufferDebugQuad->GetComponent<MeshRenderer>()->SetTextures(m_GBffer->GetNormalMapTexture());
+		gBufferDebugQuad->GetComponent<MeshRenderer>()->SetTextures(m_GBuffer->GetNormalMapTexture());
 		DrawObject(gBufferDebugQuad);
 	
 	}
@@ -238,7 +238,7 @@ namespace BlackPearl {
 
 		float maxChannel = std::max(std::max(lightDiffuse.x, lightDiffuse.y), lightDiffuse.z);
 
-		float distance = (-linear + sqrtf(linear * linear - 4 * quadratic * (constant - 256.0f / m_AttenuationItensity * maxChannel))) / (2 * quadratic);
+		float distance = (-linear + sqrtf(linear * linear - 4 * quadratic * (constant - 256.0f / s_AttenuationItensity * maxChannel))) / (2 * quadratic);
 
 		return distance;
 	}
@@ -259,7 +259,7 @@ namespace BlackPearl {
 
 		/************************1. Geometry Pass: render scene's geometry/color data into gbuffer *****************/
 		/***********************************************************************************************************/
-		m_GBffer->Bind();
+		m_GBuffer->Bind();
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		
@@ -396,7 +396,7 @@ namespace BlackPearl {
 
 
 
-		//m_GBffer->UnBind();
+		//m_GBuffer->UnBind();
 
 		//DrawGBuffer(gBufferDebugQuad);
 
@@ -419,7 +419,7 @@ namespace BlackPearl {
 		glEnable(GL_BLEND);
 		glBlendEquation(GL_FUNC_ADD);
 		glBlendFunc(GL_ONE, GL_ONE);
-		m_GBffer->UnBind();
+		m_GBuffer->UnBind();
 
 
 		std::shared_ptr<FrameBuffer> frameBuffer(new FrameBuffer());
@@ -436,7 +436,7 @@ namespace BlackPearl {
 
 		m_AmbientGIPassShader->SetUniform1i("gAmbientGI_AO", 2);
 		glActiveTexture(GL_TEXTURE2);
-		m_GBffer->GetAmbientGIAOTexture()->Bind();
+		m_GBuffer->GetAmbientGIAOTexture()->Bind();
 
 		m_AmbientGIPassShader->SetUniformVec2f("gScreenSize", glm::vec2(m_TextureWidth, m_TexxtureHeight));
 		m_AmbientGIPassShader->SetUniform1f("u_Settings.GICoeffs", s_GICoeffs);
@@ -464,17 +464,17 @@ namespace BlackPearl {
 			m_PointLightPassShader->SetUniformVec2f("gScreenSize", glm::vec2(m_TextureWidth, m_TexxtureHeight));
 
 			glActiveTexture(GL_TEXTURE0);
-			m_GBffer->GetPositionTexture()->Bind();
+			m_GBuffer->GetPositionTexture()->Bind();
 			glActiveTexture(GL_TEXTURE1);
-			m_GBffer->GetNormalTexture()->Bind();
+			m_GBuffer->GetNormalTexture()->Bind();
 			glActiveTexture(GL_TEXTURE2);
-			m_GBffer->GetDiffuseRoughnessTexture()->Bind();
+			m_GBuffer->GetDiffuseRoughnessTexture()->Bind();
 			glActiveTexture(GL_TEXTURE3);
-			m_GBffer->GetSpecularMentallicTexture()->Bind();
+			m_GBuffer->GetSpecularMentallicTexture()->Bind();
 			glActiveTexture(GL_TEXTURE4);
-			m_GBffer->GetAmbientGIAOTexture()->Bind();
+			m_GBuffer->GetAmbientGIAOTexture()->Bind();
 			glActiveTexture(GL_TEXTURE5);
-			m_GBffer->GetNormalMapTexture()->Bind();
+			m_GBuffer->GetNormalMapTexture()->Bind();
 
 			m_PointLightPassShader->SetUniformVec3f("u_PointLight.ambient", pointLight->GetComponent<PointLight>()->GetLightProps().ambient);
 			m_PointLightPassShader->SetUniformVec3f("u_PointLight.diffuse", pointLight->GetComponent<PointLight>()->GetLightProps().diffuse);
@@ -484,7 +484,7 @@ namespace BlackPearl {
 			m_PointLightPassShader->SetUniform1f("u_PointLight.constant", pointLight->GetComponent<PointLight>()->GetAttenuation().constant);
 			m_PointLightPassShader->SetUniform1f("u_PointLight.linear", pointLight->GetComponent<PointLight>()->GetAttenuation().linear);
 			m_PointLightPassShader->SetUniform1f("u_PointLight.quadratic", pointLight->GetComponent<PointLight>()->GetAttenuation().quadratic);
-			m_PointLightPassShader->SetUniform1f("u_PointLights.intensity", pointLight->GetComponent<PointLight>()->GetLightProps().intensity);
+			m_PointLightPassShader->SetUniform1f("u_PointLight.intensity", pointLight->GetComponent<PointLight>()->GetLightProps().intensity);
 
 			m_PointLightPassShader->SetUniform1f("u_FarPlane", ShadowMapPointLightRenderer::s_FarPlane);
 			m_PointLightPassShader->SetUniform1i("u_ShadowMap",6);
@@ -520,7 +520,7 @@ namespace BlackPearl {
 		glDepthMask(GL_TRUE);
 		glEnable(GL_DEPTH_TEST);
 
-		m_GBffer->Bind();
+		m_GBuffer->Bind();
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0); // Write to default framebuffer
 		// blit to default framebuffer. Note that this may or may not work as the internal formats of both the FBO and default framebuffer have to match.
 		// the internal formats are implementation defined. This works on all of my systems, but if it doesn't on yours you'll likely have to write to the 		

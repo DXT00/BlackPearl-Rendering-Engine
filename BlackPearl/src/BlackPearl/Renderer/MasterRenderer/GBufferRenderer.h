@@ -17,7 +17,7 @@ namespace BlackPearl {
 		void Init(Object* ScreenQuad, Object* surroundSphere, Object* GIQuad);
 		void Render(std::vector<Object*> objects, Object* gBufferDebugQuad, LightSources* lightSources);
 		void DrawGBuffer(Object* gBufferDebugQuad);
-		float CalculateSphereRadius(Object* pointLight);
+		static float CalculateSphereRadius(Object* pointLight);
 		/* probes for ambient light render (GI) */
 		void RenderSceneWithGBufferAndProbes(std::vector<Object*> staticObjects, std::vector<Object*> dynamicObjects, float timeInSecond, std::vector<Object*> backGroundObjs, Object* gBufferDebugQuad, LightSources* lightSources,
 			std::vector<LightProbe*> probes, std::shared_ptr<Texture> specularBrdfLUTTexture, Object* skyBox);
@@ -27,6 +27,7 @@ namespace BlackPearl {
 		//void SetGICoeffs(float GICoeffs) { m_GICoeffs = GICoeffs; }
 		static float s_GICoeffs;
 		static bool s_HDR;
+		static float s_AttenuationItensity;// 100.0f;
 
 	private:
 		bool m_IsInitialized = false;
@@ -40,7 +41,7 @@ namespace BlackPearl {
 
 
 		/**** buffer ****/
-		std::shared_ptr<GBuffer> m_GBffer;
+		std::shared_ptr<GBuffer> m_GBuffer;
 		/* 用作 tone mapping 和 hdr 后期处理 */
 		std::shared_ptr<FrameBuffer> m_HDRFrameBuffer;
 		std::shared_ptr<Texture> m_HDRPostProcessTexture;
@@ -66,7 +67,6 @@ namespace BlackPearl {
 		unsigned int m_TexxtureHeight = Configuration::WindowHeight;
 
 		/* 0.0f <m_AttenuationItensity< 256.0f ,m_AttenuationItensity越大，衰减越快，包围球m_SurroundSphere 半径越小 */
-		float m_AttenuationItensity = 50.0f;// 100.0f;
 
 		/* m_K near probes for specular objs rendering */
 		/*注意 物体blending 多个(m_K个) probes的diffuse SH,但只取最近的一个Probe的specular Map*/

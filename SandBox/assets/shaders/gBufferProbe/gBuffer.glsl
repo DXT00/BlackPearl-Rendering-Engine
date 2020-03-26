@@ -36,8 +36,8 @@ void main(){
 
 /* MRT */
 /* render to gBuffer */
-layout (location = 0) out vec3 gPosition;
-layout (location = 1) out vec3 gNormal;
+layout (location = 0) out vec4 gPosition;
+layout (location = 1) out vec4 gNormal;
 layout (location = 2) out vec4 gDiffuse_Roughness; //u_Material.diffuse + u_Material.roughness
 layout (location = 3) out vec4 gSpecular_Mentallic; //u_Material.specular + u_Material.metallic
 
@@ -56,6 +56,7 @@ uniform float u_ProbeWeight[10];
 uniform vec3 u_CameraViewPos;
 uniform vec3 u_SHCoeffs[10*9];//×î¶à10¸öprobe
 uniform int u_IsPBRObjects;
+
 
 
 //struct Settings;
@@ -211,10 +212,11 @@ vec3 CalculateAmbientGI(vec3 albedo,float metallic, float roughness,float ao){
 }
 
 void main(){
-    // Store the fragment position vector in the first gbuffer texture
-	gPosition       = v_FragPos;
+
+	 // Store the fragment position vector in the first gbuffer texture
+	gPosition.rgb   = v_FragPos;
 	// Also store the per-fragment normals into the gbuffer
-	gNormal         = v_Normal;
+	gNormal.rgb     = v_Normal;
 
 	int s = u_Settings.isTextureSample;
 	gNormalMap      =  v_Normal*(1-s) + getNormalFromMap(v_FragPos,v_TexCoord)*s;
@@ -256,6 +258,10 @@ void main(){
 	gDiffuse_Roughness.a =  roughness;
 
 	
+
+
+
+
 
 }
 

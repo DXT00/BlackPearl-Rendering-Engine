@@ -18,6 +18,7 @@
 #include "BlackPearl/Renderer/MasterRenderer/IBLProbesRenderer.h"
 #include "BlackPearl/Renderer/MasterRenderer/AnimatedModelRenderer.h"
 #include "BlackPearl/Renderer/MasterRenderer/GBufferRenderer.h"
+#include "BlackPearl/Renderer/MasterRenderer/VoxelConeTracingDeferredRenderer.h"
 
 #include "BlackPearl/Component/TransformComponent/Transform.h"
 #include "BlackPearl/Component/MeshRendererComponent/MeshRenderer.h"

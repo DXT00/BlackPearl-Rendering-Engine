@@ -455,9 +455,9 @@ vec3 indirectSpecularLight(vec3 viewDirection){
 vec3 calculateDirectLight_orign(const PointLight light, const vec3 viewDirection){
 	vec3 lightDirection = light.position - v_FragPos;
 	//MY 
-	vec3 ligtdir = lightDirection/u_CubeSize;
-	float distToLight = length(ligtdir);
-
+//	vec3 ligtdir = lightDirection/u_CubeSize;
+//	float distToLight = length(ligtdir);
+//
 	const float distanceToLight = length(lightDirection);
 	lightDirection = lightDirection / distanceToLight;
 	const float lightAngle = dot(normal, lightDirection);
@@ -619,8 +619,8 @@ vec3 directLight(vec3 viewDirection){
 			#endif
 			//direct += u_PointLights[i].intensity * calculateDirectLight_orign(u_PointLights[i], viewDirection);
 			
-			direct += shadowBlend*u_PointLights[i].intensity * calculateDirectLight_orign(u_PointLights[i], viewDirection);
-		}
+			direct += u_PointLights[i].intensity * calculateDirectLight_orign(u_PointLights[i], viewDirection);
+		}//shadowBlend*
 	}
 	else{
 		vec3  albedo	= pow(texture(u_Material.diffuse, v_TexCoord).rgb, vec3(2.2));

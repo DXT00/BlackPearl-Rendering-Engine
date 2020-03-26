@@ -75,14 +75,14 @@ namespace BlackPearl {
 		}
 
 	}
-	void BasicRenderer::DrawObjects(std::vector<Object*> objs, std::shared_ptr<Shader> shader, Renderer::SceneData* scene)
+	void BasicRenderer::DrawObjects(std::vector<Object*> objs, std::shared_ptr<Shader> shader, Renderer::SceneData* scene,unsigned int textureBeginIdx)
 	{
 		for (auto obj : objs) {
 			DrawObject(obj, shader, scene);
 		}
 	}
 	//每个Mesh一个shader
-	void BasicRenderer::DrawObject(Object* obj, Renderer::SceneData* scene)
+	void BasicRenderer::DrawObject(Object* obj, Renderer::SceneData* scene, unsigned int textureBeginIdx)
 	{
 		GE_ASSERT(obj, "obj is empty!");
 		if (!obj->HasComponent<MeshRenderer>() || !obj->GetComponent<MeshRenderer>()->GetEnableRender())
@@ -96,18 +96,18 @@ namespace BlackPearl {
 		for (int i = 0; i < meshes.size(); i++) {
 			std::shared_ptr<Shader> shader = meshes[i].GetMaterial()->GetShader();
 			shader->Bind();
-			/*if (obj->GetComponent<MeshRenderer>()->GetIsPBRObject()) {
+			if (obj->GetComponent<MeshRenderer>()->GetIsPBRObject()) {
 				shader->SetUniform1i("u_IsPBRObjects",1);
 			}
 			else {
 				shader->SetUniform1i("u_IsPBRObjects", 0);
 
-			}*/
+			}
 			if (obj->HasComponent<PointLight>() || obj->HasComponent<ParallelLight>() || obj->HasComponent<SpotLight>()) {
-				PrepareBasicShaderParameters(meshes[i], shader, true);
+				PrepareBasicShaderParameters(meshes[i], shader, true,textureBeginIdx);
 			}
 			else
-				PrepareBasicShaderParameters(meshes[i], shader);
+				PrepareBasicShaderParameters(meshes[i], shader,false, textureBeginIdx);
 
 			Renderer::Submit(meshes[i].GetVertexArray(), shader, transformMatrix, scene);
 			if (meshes[i].GetIndicesSize() > 0) {
@@ -141,7 +141,7 @@ namespace BlackPearl {
 
 		}
 	}
-	void BasicRenderer::DrawObject(Object* obj, std::shared_ptr<Shader> shader, Renderer::SceneData* scene)
+	void BasicRenderer::DrawObject(Object* obj, std::shared_ptr<Shader> shader, Renderer::SceneData* scene, unsigned int textureBeginIdx)
 	{
 		GE_ASSERT(obj, "obj is empty!");
 		if (!obj->HasComponent<MeshRenderer>() || !obj->GetComponent<MeshRenderer>()->GetEnableRender())
@@ -152,18 +152,18 @@ namespace BlackPearl {
 
 		//RenderConfigure(obj);
 
-		/*if (obj->GetComponent<MeshRenderer>()->GetIsPBRObject()) {
+		if (obj->GetComponent<MeshRenderer>()->GetIsPBRObject()) {
 			shader->SetUniform1i("u_IsPBRObjects", 1);
 		}
 		else {
 			shader->SetUniform1i("u_IsPBRObjects", 0);
 
-		}*/
+		}
 		for (int i = 0; i < meshes.size(); i++) {
 			if (obj->HasComponent<PointLight>() || obj->HasComponent<ParallelLight>() || obj->HasComponent<SpotLight>())
-				PrepareBasicShaderParameters(meshes[i], shader, true);
+				PrepareBasicShaderParameters(meshes[i], shader, true,textureBeginIdx);
 			else
-				PrepareBasicShaderParameters(meshes[i], shader);
+				PrepareBasicShaderParameters(meshes[i], shader,false,textureBeginIdx);
 
 			Renderer::Submit(meshes[i].GetVertexArray(), shader, transformMatrix, scene);
 			if (meshes[i].GetIndicesSize() > 0) {
@@ -171,7 +171,7 @@ namespace BlackPearl {
 				meshes[i].GetVertexArray()->GetIndexBuffer()->Bind();
 				glDrawElements(GL_TRIANGLES, indicesNum, GL_UNSIGNED_INT, 0);
 				meshes[i].GetVertexArray()->GetIndexBuffer()->UnBind();
-				meshes[i].GetMaterial()->Unbind();
+				//meshes[i].GetMaterial()->Unbind();
 
 
 			}
@@ -198,7 +198,7 @@ namespace BlackPearl {
 
 		}
 	}
-	void BasicRenderer::DrawPointLight(Object* obj, Renderer::SceneData* scene)
+	void BasicRenderer::DrawPointLight(Object* obj, Renderer::SceneData* scene, unsigned int textureBeginIdx)
 	{
 		GE_ASSERT(obj->HasComponent<PointLight>(), "obj has no pointlight component!");
 		glm::mat4 transformMatrix = obj->GetComponent<Transform>()->GetTransformMatrix();
@@ -208,7 +208,7 @@ namespace BlackPearl {
 		for (int i = 0; i < meshes.size(); i++) {
 			std::shared_ptr<Shader> shader = meshes[i].GetMaterial()->GetShader();
 			shader->Bind();
-			PrepareBasicShaderParameters(meshes[i], shader, true);
+			PrepareBasicShaderParameters(meshes[i], shader, true,textureBeginIdx);
 			Renderer::Submit(meshes[i].GetVertexArray(), shader, transformMatrix, scene);
 			if (meshes[i].GetIndicesSize() > 0) {
 				unsigned int indicesNum = meshes[i].GetIndicesSize() / sizeof(unsigned int);
@@ -242,18 +242,18 @@ namespace BlackPearl {
 		}
 
 	}
-	void BasicRenderer::DrawLightSources(const LightSources* lightSources, Renderer::SceneData* scene)
+	void BasicRenderer::DrawLightSources(const LightSources* lightSources, Renderer::SceneData* scene, unsigned int textureBeginIdx)
 	{
 		for (auto lightObj : lightSources->Get()) {
 			if (lightObj->HasComponent<PointLight>())
-				DrawPointLight(lightObj, scene);
+				DrawPointLight(lightObj, scene, textureBeginIdx);
 		}
 	}
 	//void BasicRenderer::PrepareShaderParameters(Mesh mesh, std::shared_ptr<Shader> shader, bool isLight)
 	//{
 	//	PrepareBasicShaderParameters(mesh, shader, isLight);
 	//}
-	void BasicRenderer::PrepareBasicShaderParameters(Mesh mesh, std::shared_ptr<Shader> shader, bool isLight)
+	void BasicRenderer::PrepareBasicShaderParameters(Mesh mesh, std::shared_ptr<Shader> shader, bool isLight, unsigned int textureBeginIdx)
 	{	//TODO::shader在渲染前Bind()!不在这！
 		//还是需要shader->Bind()的！表示使用这个shader!
 		//shader->Bind();
@@ -264,7 +264,7 @@ namespace BlackPearl {
 
 		//k从4开始，0，1，2，3号texture用于自定义texture
 		bool diffuseMap = false, specularMap = false, normalMap = false, mentallicMap = false, aoMap = false;
-		unsigned int k = 3;
+		unsigned int k = textureBeginIdx;
 		if (textures != nullptr) {
 			if (textures->diffuseTextureMap != nullptr) {
 				diffuseMap = true;

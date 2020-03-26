@@ -19,15 +19,15 @@ namespace BlackPearl {
 		//不同object使用不同shader,使用前要先设置shader
 		void DrawObjects(std::vector<Object *>objs, Renderer::SceneData* scene = Renderer::GetSceneData());
 		//所有Objects使用同一个shader
-		void DrawObjects(std::vector<Object *>objs,std::shared_ptr<Shader> shader, Renderer::SceneData* scene = Renderer::GetSceneData());
+		void DrawObjects(std::vector<Object *>objs,std::shared_ptr<Shader> shader, Renderer::SceneData* scene = Renderer::GetSceneData(), unsigned int textureBeginIdx = 2);
 		//使用前要先设置shader,这个Object的不同Mesh可以有不同的shader
-		void DrawObject(Object *obj, Renderer::SceneData* scene = Renderer::GetSceneData());
+		void DrawObject(Object *obj, Renderer::SceneData* scene = Renderer::GetSceneData(),unsigned int textureBeginIdx=2);
 		//这个Object的所有Mesh使用同一个shader
-		void DrawObject(Object *obj, std::shared_ptr<Shader> shader, Renderer::SceneData* scene = Renderer::GetSceneData());
+		void DrawObject(Object *obj, std::shared_ptr<Shader> shader, Renderer::SceneData* scene = Renderer::GetSceneData(), unsigned int textureBeginIdx = 2);
 
-		void DrawPointLight(Object *obj, Renderer::SceneData* scene = Renderer::GetSceneData());
-		void DrawLightSources(const LightSources* lightSources, Renderer::SceneData* scene = Renderer::GetSceneData());
-		void PrepareBasicShaderParameters(Mesh mesh,std::shared_ptr<Shader> shader, bool isLight = false);
+		void DrawPointLight(Object *obj, Renderer::SceneData* scene = Renderer::GetSceneData(), unsigned int textureBeginIdx = 2);
+		void DrawLightSources(const LightSources* lightSources, Renderer::SceneData* scene = Renderer::GetSceneData(), unsigned int textureBeginIdx = 2);
+		void PrepareBasicShaderParameters(Mesh mesh,std::shared_ptr<Shader> shader, bool isLight = false, unsigned int textureBeginIdx = 2);
 
 		//virtual void PrepareShaderParameters(Mesh mesh, std::shared_ptr<Shader> shader, bool isLight = false);
 

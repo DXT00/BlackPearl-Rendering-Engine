@@ -1,4 +1,4 @@
-uniform struct Material{
+struct Material{
 	vec3 ambientColor;
 	vec3 diffuseColor;
 	vec3 specularColor;
@@ -38,4 +38,7 @@ struct Settings{
 	bool shadows;
 	float GICoeffs;
 	bool hdr;
+	bool guassian_horiziotal;
+	bool guassian_vertical;
+	bool showBlurArea;
 };

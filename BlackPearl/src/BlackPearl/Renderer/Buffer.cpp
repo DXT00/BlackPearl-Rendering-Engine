@@ -257,11 +257,11 @@ namespace BlackPearl {
 		glGenFramebuffers(1, &m_RendererID);
 		Bind();
 
-
-		m_PositionTexture.reset(DBG_NEW Texture(Texture::Type::DiffuseMap, imageWidth, imageHeight, false, GL_NEAREST, GL_NEAREST, GL_RGB16F, GL_RGB, -1, GL_FLOAT));
+		//m_PositionTexture RGB-position A--isPBRObject -->voxel cone tracing
+		m_PositionTexture.reset(DBG_NEW Texture(Texture::Type::DiffuseMap, imageWidth, imageHeight, false, GL_NEAREST, GL_NEAREST, GL_RGBA16F, GL_RGBA, -1, GL_FLOAT));
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, (GLuint)m_PositionTexture->GetRendererID(), 0);
-
-		m_NormalTexture.reset(DBG_NEW Texture(Texture::Type::DiffuseMap, imageWidth, imageHeight, false, GL_NEAREST, GL_NEAREST, GL_RGB16F, GL_RGB, -1, GL_FLOAT));
+		//m_NormalTexture RGB-normal A--isSkyBox -->voxel cone tracing
+		m_NormalTexture.reset(DBG_NEW Texture(Texture::Type::DiffuseMap, imageWidth, imageHeight, false, GL_NEAREST, GL_NEAREST, GL_RGBA16F, GL_RGBA, -1, GL_FLOAT));
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, (GLuint)m_NormalTexture->GetRendererID(), 0);
 
 		m_DiffuseRoughnessTexture.reset(DBG_NEW Texture(Texture::Type::DiffuseMap, imageWidth, imageHeight, false, GL_NEAREST, GL_NEAREST, GL_RGBA16F, GL_RGBA, -1, GL_FLOAT));
@@ -271,6 +271,7 @@ namespace BlackPearl {
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT3, GL_TEXTURE_2D, (GLuint)m_SpecularMentallicTexture->GetRendererID(), 0);
 
 		//TODO::注意这里的dataType: GL_UNSIGNED_BYTE vs GL_FLOAT
+		//m_AmbientGI RBG-ambienGI AO-isPBRObject -->lightprobe
 		m_AmbientGIAOTexture.reset(DBG_NEW Texture(Texture::Type::DiffuseMap, imageWidth, imageHeight, false, GL_NEAREST, GL_NEAREST, GL_RGBA16F, GL_RGBA, -1, GL_FLOAT));
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT4, GL_TEXTURE_2D, (GLuint)m_AmbientGIAOTexture->GetRendererID(), 0);
 

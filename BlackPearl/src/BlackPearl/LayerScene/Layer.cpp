@@ -11,6 +11,7 @@
 #include <stdlib.h>
 #include "BlackPearl/Renderer/MasterRenderer/GBufferRenderer.h"
 #include "BlackPearl/Renderer/MasterRenderer/VoxelConeTracingRenderer.h"
+#include "BlackPearl/Renderer/MasterRenderer/VoxelConeTracingDeferredRenderer.h"
 namespace BlackPearl {
 
 	static int buttonNum = 0;
@@ -28,6 +29,19 @@ namespace BlackPearl {
 		ImGui::Text("FPS = %.3lf", Application::s_AppFPS);
 		ImGui::Text("AvgFPS = %.3lf", Application::s_AppAverageFPS);
 
+		ImGui::Text("deferred voxel");
+		ImGui::Checkbox("voxel Indirect diffuse", &VoxelConeTracingDeferredRenderer::s_IndirectDiffuseLight);
+		ImGui::Checkbox("voxel Indirect specular", &VoxelConeTracingDeferredRenderer::s_IndirectSpecularLight);
+		ImGui::Checkbox("voxel direct light", &VoxelConeTracingDeferredRenderer::s_DirectLight);
+		ImGui::Checkbox("voxel shadows", &VoxelConeTracingDeferredRenderer::s_Shadows);
+
+		ImGui::Checkbox("voxel HDR", &VoxelConeTracingDeferredRenderer::s_HDR);
+		ImGui::Checkbox("voxel blur horizontal", &VoxelConeTracingDeferredRenderer::s_GuassianHorizontal);
+		ImGui::Checkbox("voxel blur vertical", &VoxelConeTracingDeferredRenderer::s_GuassianVertical);
+		ImGui::Checkbox("voxel blur showBlurArea", &VoxelConeTracingDeferredRenderer::s_ShowBlurArea);
+		ImGui::DragFloat("voxel specularBlurThreshold", &VoxelConeTracingDeferredRenderer::s_SpecularBlurThreshold, 0.2f, 0.0f, 1.0f, "%.4f ");
+
+
 		ImGui::DragFloat("lightprobe GICoeffs", &GBufferRenderer::s_GICoeffs, 0.2f, 0.0f, 1.0f, "%.3f ");
 		ImGui::Checkbox("lightprobe HDR", &GBufferRenderer::s_HDR);
 		ImGui::Checkbox("voxel Indirect diffuse", &VoxelConeTracingRenderer::s_IndirectDiffuseLight);
@@ -36,6 +50,8 @@ namespace BlackPearl {
 		ImGui::DragFloat("voxel GICoeffs", &VoxelConeTracingRenderer::s_GICoeffs, 0.2f, 0.0f, 1.0f, "%.3f ");
 		ImGui::Checkbox("voxel HDR", &VoxelConeTracingRenderer::s_HDR);
 
+		//ImGui::Text("deferred voxel renderer:");
+		
 		//ImGui::Text("Frame num = %d", m_FrameNum);
 
 		ImGui::End();
@@ -302,7 +318,7 @@ namespace BlackPearl {
 
 		Object* cube = CreateCube();
 		cube->GetComponent<Transform>()->SetPosition({ 0.0f,-2.0f,0.0f });
-		cube->GetComponent<Transform>()->SetScale({ 16.0f,0.001f,16.0f });
+		cube->GetComponent<Transform>()->SetScale({ 16.0f,0.2f,16.0f });
 		std::shared_ptr<Texture> cubeTexture(DBG_NEW Texture(Texture::Type::DiffuseMap, "assets/texture/wood.png"));
 		cube->GetComponent<MeshRenderer>()->SetTextures(cubeTexture);
 		cube->GetComponent<MeshRenderer>()->SetTextureSamples(true);
@@ -310,7 +326,7 @@ namespace BlackPearl {
 		m_BackGroundObjsList.push_back(cube);
 
 
-		Object* sphereObjIron = CreateCube(); // CreateSphere(1.5, 64, 64);//CreateCube();//
+		Object* sphereObjIron =  CreateSphere(1.5, 64, 64);//CreateCube();//
 		Object* sphereObjRust = CreateSphere(1.5, 64, 64);
 		Object* sphereObjStone = CreateSphere(1.5, 64, 64);
 		Object* sphereObjPlastic = CreateSphere(1.5, 64, 64);
@@ -429,6 +445,7 @@ namespace BlackPearl {
 
 
 		}
+
 		else if (modelName=="Church") {
 			staticModel =  CreateModel("assets/models/sponza_obj/sponza.obj", "assets/shaders/IronMan.glsl",false,"Church");
 			staticModel->GetComponent<BlackPearl::Transform>()->SetScale(glm::vec3(0.001f));
@@ -942,19 +959,20 @@ namespace BlackPearl {
 	{
 		//if (comp->GetType() == LightType::PointLight) {
 			//auto pointLight = std::dynamic_pointer_cast<PointLight>(comp);
-		auto color = pointLight->GetMeshes().GetMaterial()->GetMaterialColor().Get();
+		//auto color = pointLight->GetMeshes().GetMaterial()->GetMaterialColor().Get();
+		auto props = pointLight->GetLightProps();
 		static  int attenuation = (int)pointLight->GetAttenuation().maxDistance;
 		float intensity = pointLight->GetLightProps().intensity;
-		ImGui::ColorEdit3("ambient Color", glm::value_ptr(color.ambientColor));
-		ImGui::ColorEdit3("diffuse Color", glm::value_ptr(color.diffuseColor));
-		ImGui::ColorEdit3("specular Color", glm::value_ptr(color.specularColor));
-		ImGui::ColorEdit3("emission Color", glm::value_ptr(color.emissionColor));
+		ImGui::ColorEdit3("ambient Color", glm::value_ptr(props.ambient));
+		ImGui::ColorEdit3("diffuse Color", glm::value_ptr(props.diffuse));
+		ImGui::ColorEdit3("specular Color", glm::value_ptr(props.specular));
+		ImGui::ColorEdit3("emission Color", glm::value_ptr(props.emission));
 		ImGui::DragInt("attenuation", &attenuation, 0.5f, 7, 3250);
 		ImGui::DragFloat("intensity", &intensity, 0.5f, 1, 30);
 
 		pointLight->SetAttenuation(attenuation);
 
-		pointLight->UpdateMesh({ color.ambientColor ,color.diffuseColor,color.specularColor,color.emissionColor,intensity });
+		pointLight->UpdateMesh({ props.ambient ,props.diffuse,props.specular,props.emission,intensity });
 		//	}
 		/*	else if (comp->GetType() == LightType::ParallelLight) {
 

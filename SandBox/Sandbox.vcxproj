@@ -132,6 +132,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="src\Layers\AdvanceLightTestLayer.h" />
+    <ClInclude Include="src\Layers\VoxelConeTracingDeferredLayer.h" />
     <ClInclude Include="src\Layers\FrameBufferTestLayer.h" />
     <ClInclude Include="src\Layers\IBLProbesRenderingLayer.h" />
     <ClInclude Include="src\Layers\IBLRenderingLayer.h" />

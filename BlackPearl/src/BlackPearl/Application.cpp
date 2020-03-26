@@ -41,7 +41,8 @@ namespace BlackPearl {
 
 	Application::~Application()
 	{
-		//delete m_CurrentScene;
+		/*if(m_CurrentScene!=nullptr)
+		delete m_CurrentScene;*/
 	}
 
 	void Application::Run()

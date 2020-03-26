@@ -1446,6 +1446,7 @@
     <ClInclude Include="src\BlackPearl\LayerScene\Layer.h">
       <Filter>src\BlackPearl</Filter>
     </ClInclude>
+    <ClInclude Include="src\BlackPearl\Renderer\MasterRenderer\VoxelConeTracingDeferredRenderer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\BlackPearl\Animation\AnimatedModel.cpp">
@@ -1658,5 +1659,6 @@
     <ClCompile Include="src\BlackPearl\LayerScene\Layer.cpp">
       <Filter>src\BlackPearl</Filter>
     </ClCompile>
+    <ClCompile Include="src\BlackPearl\Renderer\MasterRenderer\VoxelConeTracingDeferredRenderer.cpp" />
   </ItemGroup>
 </Project>

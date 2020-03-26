@@ -588,6 +588,7 @@
     <ClInclude Include="vendor\glm\glm\vec4.hpp" />
     <ClInclude Include="vendor\glm\glm\vector_relational.hpp" />
     <ClInclude Include="vendor\stb\stb_image.h" />
+    <ClInclude Include="src\BlackPearl\Renderer\MasterRenderer\VoxelConeTracingDeferredRenderer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\BlackPearl\Animation\AnimatedModel.cpp" />
@@ -662,6 +663,7 @@
     <ClCompile Include="src\pch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="src\BlackPearl\Renderer\MasterRenderer\VoxelConeTracingDeferredRenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="vendor\GLFW\GLFW.vcxproj">

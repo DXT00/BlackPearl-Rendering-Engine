@@ -255,22 +255,6 @@ namespace BlackPearl {
 		float transparency = 0.0f, refractiveIndex = 1.4f;
 
 
-	//	m_VoxelConeTracingShader->Bind();
-
-
-
-		/*for (auto obj : objs) {
-			if (obj->HasComponent<MeshRenderer>())
-				obj->GetComponent<MeshRenderer>()->SetShaders(m_VoxelConeTracingShader);
-		}*/
-		// Render.
-		/*if (skybox != nullptr) {
-			glDepthFunc(GL_LEQUAL);
-			DrawObject(skybox, m_VoxelConeTracingShader);
-			glDepthFunc(GL_LESS);
-		}*/
-		//m_VoxelConeTracingShader->Bind();
-		
 		for (auto obj : objs) {
 			m_VoxelConeTracingShader->Bind();
 
