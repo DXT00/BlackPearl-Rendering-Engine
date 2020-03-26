@@ -276,7 +276,7 @@ void main(){
 	gBuffer.getNormalFromMap = texture(gNormalMap,texCoords).xyz;
 	gBuffer.diffuseColor = texture(gDiffuse_Roughness,texCoords).rgb;
 	gBuffer.specularColor = texture(gSpecular_Mentallic,texCoords).rgb;
-	gBuffer.isPBRObject = int(texture(gPosition,texCoords).a);
+	gBuffer.isPBRObject = int(texture(gPosition,texCoords).a/256.0);
 	//gBuffer.isSkyBox = (int)texture(gNormal,texCoords).a;
 	gBuffer.roughness = texture(gDiffuse_Roughness,texCoords).a;
 	gBuffer.metallic = texture(gSpecular_Mentallic,texCoords).a;

@@ -138,6 +138,21 @@ namespace BlackPearl {
 		m_Props.isTextureSample = isTextureSample;
 	}
 
+	void Material::SetTextureSampleDiffuse(int isTextureSampleDiffuse)
+	{
+		m_Props.isDiffuseTextureSample = isTextureSampleDiffuse;
+	}
+
+	void Material::SetTextureSampleSpecular(int isTextureSampleSpecular)
+	{
+		m_Props.isSpecularTextureSample = isTextureSampleSpecular;
+	}
+
+	void Material::SetTextureSampleMetallic(int isTextureSampleMetallic)
+	{
+		m_Props.isMetallicTextureSample = isTextureSampleMetallic;
+	}
+
 
 
 }

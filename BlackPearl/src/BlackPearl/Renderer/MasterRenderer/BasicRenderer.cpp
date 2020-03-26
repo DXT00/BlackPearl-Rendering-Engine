@@ -265,12 +265,12 @@ namespace BlackPearl {
 		//k从4开始，0，1，2，3号texture用于自定义texture
 		bool diffuseMap = false, specularMap = false, normalMap = false, mentallicMap = false, aoMap = false;
 		unsigned int k = textureBeginIdx;
+		//texture 和 color都传进去，用不用由useTexture标志决定！
 		if (textures != nullptr) {
 			if (textures->diffuseTextureMap != nullptr) {
 				diffuseMap = true;
 				glActiveTexture(GL_TEXTURE0 + k);
 				shader->SetUniform1i(ShaderConfig::DIFFUSE_TEXTURE2D, k);
-				shader->SetUniform1i(ShaderConfig::IS_DIFFUSE_TEXTURE_SAMPLE, 1);
 				textures->diffuseTextureMap->Bind();
 				k++;
 			}
@@ -278,7 +278,6 @@ namespace BlackPearl {
 				specularMap = true;
 				glActiveTexture(GL_TEXTURE0 + k);
 				shader->SetUniform1i(ShaderConfig::SPECULAR_TEXTURE2D, k);
-				shader->SetUniform1i(ShaderConfig::IS_SPECULAR_TEXTURE_SAMPLE, 1);
 				textures->specularTextureMap->Bind();
 				k++;
 			}
@@ -324,7 +323,6 @@ namespace BlackPearl {
 			if (textures->roughnessMap != nullptr) {
 				glActiveTexture(GL_TEXTURE0 + k);
 				shader->SetUniform1i(ShaderConfig::ROUGHNESS_TEXTURE2D, k);
-
 				textures->roughnessMap->Bind();
 				k++;
 			}
@@ -332,31 +330,35 @@ namespace BlackPearl {
 				mentallicMap = true;
 				glActiveTexture(GL_TEXTURE0 + k);
 				shader->SetUniform1i(ShaderConfig::METALLIC_TEXTURE2D, k);
-				shader->SetUniform1i(ShaderConfig::IS_METALLIC_TEXTURE_SAMPLE, 1);
 
 
 				textures->mentallicMap->Bind();
 				k++;
 			}
 		}
-		if (diffuseMap == false) {
+		//if (diffuseMap == false) {
 			shader->SetUniformVec3f(ShaderConfig::DIFFUSE_COLOR, materialColor.diffuseColor);
-			shader->SetUniform1i(ShaderConfig::IS_DIFFUSE_TEXTURE_SAMPLE, 0);
-		}
-		if (specularMap == false) {
+			//shader->SetUniform1i(ShaderConfig::IS_DIFFUSE_TEXTURE_SAMPLE, 0);
+		//}
+		//if (specularMap == false) {
 			shader->SetUniformVec3f(ShaderConfig::SPECULAR_COLOR, materialColor.specularColor);
-			shader->SetUniform1i(ShaderConfig::IS_SPECULAR_TEXTURE_SAMPLE, 0);
-		}
-		if (mentallicMap == false) {
+			//shader->SetUniform1i(ShaderConfig::IS_SPECULAR_TEXTURE_SAMPLE, 0);
+		//}
+	//	if (mentallicMap == false) {
 			shader->SetUniformVec3f(ShaderConfig::METALLIC_VALUE, materialColor.specularColor);
-			shader->SetUniform1i(ShaderConfig::IS_METALLIC_TEXTURE_SAMPLE, 0);
-		}
+			//shader->SetUniform1i(ShaderConfig::IS_METALLIC_TEXTURE_SAMPLE, 0);
+	//	}
+
+		shader->SetUniform1i(ShaderConfig::IS_TEXTURE_SAMPLE, material->GetProps().isTextureSample);
+		shader->SetUniform1i(ShaderConfig::IS_DIFFUSE_TEXTURE_SAMPLE, material->GetProps().isDiffuseTextureSample);
+		shader->SetUniform1i(ShaderConfig::IS_SPECULAR_TEXTURE_SAMPLE, material->GetProps().isSpecularTextureSample);
+		shader->SetUniform1i(ShaderConfig::IS_METALLIC_TEXTURE_SAMPLE, material->GetProps().isMetallicTextureSample);
+
 		shader->SetUniformVec3f(ShaderConfig::AMBIENT_COLOR, materialColor.ambientColor);
 		shader->SetUniformVec3f(ShaderConfig::EMISSION_COLOR, materialColor.emissionColor);
 
 		shader->SetUniform1f(ShaderConfig::SHININESS, material->GetProps().shininess);
 		shader->SetUniform1i(ShaderConfig::IS_BLINNLIGHT, material->GetProps().isBinnLight);
-		shader->SetUniform1i(ShaderConfig::IS_TEXTURE_SAMPLE, material->GetProps().isTextureSample);
 
 		if (!material->GetProps().isTextureSample) {
 

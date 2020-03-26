@@ -123,17 +123,21 @@ namespace BlackPearl {
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		m_GBufferShader->Bind();
+		for (Object* obj : objs) {
 
-		//if (skybox != nullptr) {
-		//	skybox->GetComponent<Transform>()->SetScale(m_CubeObj->GetComponent<Transform>()->GetScale() - glm::vec3(3.0f));
-		//	skybox->GetComponent<Transform>()->SetPosition(Renderer::GetSceneData()->CameraPosition);
-		//	m_GBufferShader->SetUniform1i("u_IsSkybox", true);
-		//	m_GBufferShader->SetUniform1i("u_IsPBRObjects", 0);
-		//	DrawObject(skybox, m_GBufferShader);
-		//}
-		m_GBufferShader->SetUniform1i("u_IsSkybox", false);
-		DrawObjects(objs, m_GBufferShader);
+			m_GBufferShader->Bind();
+
+	
+			m_GBufferShader->SetUniform1i("u_IsSkybox", false);
+			GE_ASSERT(obj->GetId().index() < 256, "GBuffer store max object number is:256");
+			m_GBufferShader->SetUniform1i("u_ObjectId", obj->GetId().index());
+
+			DrawObject(obj, m_GBufferShader);
+
+
+
+		}
+		
 		m_GBuffer->UnBind();
 
 
@@ -507,6 +511,12 @@ namespace BlackPearl {
 		m_GuassianFilterHorizontalShader->SetUniform1i("u_FinalScreenTexture", 1);
 		glActiveTexture(GL_TEXTURE1);
 		m_PostProcessTexture->Bind();
+
+
+		m_GuassianFilterHorizontalShader->SetUniform1i("gPosition", 2); //blur filter get object id from gPosition texture
+		glActiveTexture(GL_TEXTURE2);
+		m_GBuffer->GetPositionTexture()->Bind();
+
 		m_GuassianFilterHorizontalShader->SetUniform1i("u_Settings.hdr", s_HDR);
 		m_GuassianFilterHorizontalShader->SetUniform1i("u_Settings.showBlurArea", s_ShowBlurArea);
 
@@ -529,6 +539,12 @@ namespace BlackPearl {
 		m_GuassianFilterVerticalShader->SetUniform1i("u_BlurHTexture", 2);
 		glActiveTexture(GL_TEXTURE2);
 		m_BlurHTexture->Bind();
+
+		m_GuassianFilterVerticalShader->SetUniform1i("gPosition", 3); //blur filter get object id from gPosition texture
+		glActiveTexture(GL_TEXTURE3);
+		m_GBuffer->GetPositionTexture()->Bind();
+
+
 
 		m_GuassianFilterVerticalShader->SetUniform1i("u_Settings.hdr", s_HDR);
 		m_GuassianFilterVerticalShader->SetUniform1i("u_Settings.showBlurArea", s_ShowBlurArea);

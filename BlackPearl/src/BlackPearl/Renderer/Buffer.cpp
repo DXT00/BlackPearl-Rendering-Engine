@@ -257,7 +257,7 @@ namespace BlackPearl {
 		glGenFramebuffers(1, &m_RendererID);
 		Bind();
 
-		//m_PositionTexture RGB-position A--isPBRObject -->voxel cone tracing
+		//m_PositionTexture RGB-position A--isPBRObject+objectId -->voxel cone tracing
 		m_PositionTexture.reset(DBG_NEW Texture(Texture::Type::DiffuseMap, imageWidth, imageHeight, false, GL_NEAREST, GL_NEAREST, GL_RGBA16F, GL_RGBA, -1, GL_FLOAT));
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, (GLuint)m_PositionTexture->GetRendererID(), 0);
 		//m_NormalTexture RGB-normal A--isSkyBox -->voxel cone tracing

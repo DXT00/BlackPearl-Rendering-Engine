@@ -31,7 +31,7 @@ out vec4 FragColor;
 
 in vec2 blurTexCoords[CORE_SIZE];
 
-
+uniform sampler2D gPosition;
 uniform sampler2D u_FinalScreenTexture;
 uniform Settings u_Settings;
 const float offset = 1.0 / 300.0; 
@@ -158,15 +158,18 @@ void main(){
 
 	vec3 color =texture(u_FinalScreenTexture, blurTexCoords[CORE_SIZE/2]).rgb;
 	int Guassian_filter =int(texture(u_FinalScreenTexture, blurTexCoords[CORE_SIZE/2]).a);
+	int ObjectId = int(mod(texture(gPosition,blurTexCoords[CORE_SIZE/2]).a ,256));
+	int isPbrObj = int(texture(gPosition,blurTexCoords[CORE_SIZE/2]).a /256);
 
-	if(Guassian_filter==1 ){
+	if(Guassian_filter==1 && isPbrObj==0 ){
 		if(u_Settings.guassian_horiziotal){
 			if(u_Settings.showBlurArea)
 					color=vec3(1,0,0);
 			else{
 				color = vec3(0.0);
 				for(int i=0;i<CORE_SIZE;i++){
-					if(texture(u_FinalScreenTexture, blurTexCoords[i]).a == 1)
+					int i_objectId = int(mod(texture(gPosition,blurTexCoords[i]).a ,256));
+					if(texture(u_FinalScreenTexture, blurTexCoords[i]).a == 1&& i_objectId == ObjectId)
 						color+=texture(u_FinalScreenTexture, blurTexCoords[i]).rgb*kernel21[i];
 					else
 						color+=texture(u_FinalScreenTexture, blurTexCoords[CORE_SIZE/2]).rgb*kernel21[i];

@@ -83,16 +83,13 @@ uniform sampler2D gAmbientGI_AO;
 uniform sampler2D gNormalMap;
 
 uniform vec3 u_CameraViewPos;
-//uniform int u_PointLightNums;
-//uniform PointLight u_PointLights[5];
-//uniform int u_State;
+
 uniform vec3 u_CubeSize; //m_CubeObj的大小，控制体素化范围
 uniform sampler2D u_BrdfLUTMap;
 uniform vec2 gScreenSize;
 uniform float u_SpecularBlurThreshold;
-//in vec3 v_FragPos;
-//in vec3 v_Normal;
-//in vec2 v_TexCoord;
+
+
 
 out vec4 FragColor;
 
@@ -371,7 +368,7 @@ void main(){
 	gBuffer.getNormalFromMap = texture(gNormalMap,texCoords).xyz;
 	gBuffer.diffuseColor = texture(gDiffuse_Roughness,texCoords).rgb;
 	gBuffer.specularColor = texture(gSpecular_Mentallic,texCoords).rgb;
-	gBuffer.isPBRObject = int(texture(gPosition,texCoords).a);
+	gBuffer.isPBRObject = int(texture(gPosition,texCoords).a/256.0);
 	//gBuffer.isSkyBox = (int)texture(gNormal,texCoords).a;
 	gBuffer.roughness = texture(gDiffuse_Roughness,texCoords).a;
 	gBuffer.metallic = texture(gSpecular_Mentallic,texCoords).a;

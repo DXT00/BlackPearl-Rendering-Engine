@@ -10,7 +10,11 @@ namespace BlackPearl {
 			float shininess;
 			bool  isBinnLight;
 			int  isTextureSample;//是否使用纹理
-			Props() :shininess(64.0f), isBinnLight(false), isTextureSample(0) {}
+			int  isDiffuseTextureSample;//是否使用纹理
+			int  isSpecularTextureSample;//是否使用纹理
+			int  isMetallicTextureSample;//是否使用纹理
+
+			Props() :shininess(64.0f), isBinnLight(false), isTextureSample(0),isDiffuseTextureSample(0),isSpecularTextureSample(0){}
 
 		};
 		struct TextureMaps {
@@ -74,6 +78,9 @@ namespace BlackPearl {
 		void SetShininess(float shininess);
 		void SetBinnLight(bool isBinnLight);
 		void SetTextureSample(int isTextureSample);
+		void SetTextureSampleDiffuse(int isTextureSampleDiffuse);
+		void SetTextureSampleSpecular(int isTextureSampleSpecular);
+		void SetTextureSampleMetallic(int isTextureSampleMetallic);
 
 		void Unbind() {
 			if (m_TextureMaps->diffuseTextureMap != nullptr)   m_TextureMaps->diffuseTextureMap->UnBind();

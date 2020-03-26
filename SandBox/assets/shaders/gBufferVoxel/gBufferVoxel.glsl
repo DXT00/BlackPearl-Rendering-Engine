@@ -53,11 +53,10 @@ in vec3 v_Normal;
 
 uniform samplerCube u_PrefilterMap;
 uniform sampler2D u_BrdfLUTMap;
-uniform int u_Kprobes;
-uniform float u_ProbeWeight[10];
+
+uniform int u_ObjectId;
 
 uniform vec3 u_CameraViewPos;
-uniform vec3 u_SHCoeffs[10*9];//×î¶à10¸öprobe
 
 vec2 s_texCoordxy = v_TexCoord.xy;
 //struct Settings;
@@ -98,7 +97,7 @@ vec3 getNormalFromMap(vec3 fragPos,vec2 texCoord)
 void main(){
  
 	gPosition.rgb   = v_FragPos;
-	gPosition.a = u_IsPBRObjects;
+	gPosition.a = float(u_IsPBRObjects*256.0+u_ObjectId); //15-8bit:u_IsPBRObjects,7-0bit:u_ObjectId
 
 	gNormal.rgb     = v_Normal;
 	gNormal.a = (u_IsSkybox)?1.0:0.0;
@@ -112,11 +111,11 @@ void main(){
 //	if(u_IsSkybox)
 //		diffuse=texture(u_Material.cube,v_TexCoord).rgb;
 //	else
-		diffuse = u_Material.diffuseColor *(1-s)+ texture(u_Material.diffuse,s_texCoordxy).rgb*s;//_Settings.isDiffuseTextureSample
+		diffuse = u_Material.diffuseColor *(1-u_Settings.isDiffuseTextureSample)+ texture(u_Material.diffuse,s_texCoordxy).rgb*u_Settings.isDiffuseTextureSample;//u_Settings.isDiffuseTextureSample
 
 	//vec3 albedo = pow(diffuse,vec3(2.2));
 
-	vec3 specular = (u_Material.specularColor *(1-s)+ texture(u_Material.specular,s_texCoordxy).rgb*s);//u_Settings.isSpecularTextureSample
+	vec3 specular = (u_Material.specularColor *(1-u_Settings.isSpecularTextureSample)+ texture(u_Material.specular,s_texCoordxy).rgb*u_Settings.isSpecularTextureSample);//u_Settings.isSpecularTextureSample
 
 	float metallic = u_Material.mentallicValue *(1-u_Settings.isMetallicTextureSample)+
 					texture(u_Material.mentallic, s_texCoordxy).r*u_Settings.isMetallicTextureSample;

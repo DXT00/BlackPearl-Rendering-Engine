@@ -363,7 +363,11 @@ namespace BlackPearl {
 		sphereObjIron->GetComponent<MeshRenderer>()->SetTextures(IronaoTexture);
 		sphereObjIron->GetComponent<MeshRenderer>()->SetTextures(IronroughnessTexture);
 		sphereObjIron->GetComponent<MeshRenderer>()->SetTextures(IronmentallicTexture);
+
 		sphereObjIron->GetComponent<MeshRenderer>()->SetTextureSamples(true);
+		sphereObjIron->GetComponent<MeshRenderer>()->SetTextureDiffuseSamples(true);
+		sphereObjIron->GetComponent<MeshRenderer>()->SetTextureMetallicSamples(true);
+
 		sphereObjIron->GetComponent<MeshRenderer>()->SetIsPBRObject(true);
 		sphereObjIron->GetComponent<Transform>()->SetPosition({ 10,0,0 });
 
@@ -372,7 +376,11 @@ namespace BlackPearl {
 		sphereObjRust->GetComponent<MeshRenderer>()->SetTextures(RustaoTexture);
 		sphereObjRust->GetComponent<MeshRenderer>()->SetTextures(RustroughnessTexture);
 		sphereObjRust->GetComponent<MeshRenderer>()->SetTextures(RustmentallicTexture);
+
 		sphereObjRust->GetComponent<MeshRenderer>()->SetTextureSamples(true);
+		sphereObjRust->GetComponent<MeshRenderer>()->SetTextureDiffuseSamples(true);
+		sphereObjRust->GetComponent<MeshRenderer>()->SetTextureMetallicSamples(true);
+
 		sphereObjRust->GetComponent<MeshRenderer>()->SetIsPBRObject(true);
 		sphereObjRust->GetComponent<Transform>()->SetPosition({ 5,0,0 });
 
@@ -381,7 +389,11 @@ namespace BlackPearl {
 		sphereObjStone->GetComponent<MeshRenderer>()->SetTextures(StoneaoTexture);
 		sphereObjStone->GetComponent<MeshRenderer>()->SetTextures(StoneroughnessTexture);
 		sphereObjStone->GetComponent<MeshRenderer>()->SetTextures(StonementallicTexture);
+
 		sphereObjStone->GetComponent<MeshRenderer>()->SetTextureSamples(true);
+		sphereObjStone->GetComponent<MeshRenderer>()->SetTextureDiffuseSamples(true);
+		sphereObjStone->GetComponent<MeshRenderer>()->SetTextureMetallicSamples(true);
+
 		sphereObjStone->GetComponent<MeshRenderer>()->SetIsPBRObject(true);
 		sphereObjStone->GetComponent<Transform>()->SetPosition({ -5,0,0 });
 
@@ -393,6 +405,9 @@ namespace BlackPearl {
 
 
 		sphereObjPlastic->GetComponent<MeshRenderer>()->SetTextureSamples(true);
+		sphereObjPlastic->GetComponent<MeshRenderer>()->SetTextureDiffuseSamples(true);
+		sphereObjPlastic->GetComponent<MeshRenderer>()->SetTextureMetallicSamples(true);
+
 		sphereObjPlastic->GetComponent<MeshRenderer>()->SetIsPBRObject(true);
 		sphereObjPlastic->GetComponent<Transform>()->SetPosition({ -10.0,0,0 });
 
@@ -902,6 +917,9 @@ namespace BlackPearl {
 		float imGuiShininess = imGuiProps.shininess;
 		bool  imGUiBlinnLight = imGuiProps.isBinnLight;
 		bool  imGUiIsTextureSample = (bool)imGuiProps.isTextureSample;
+		bool  imGUiIsDifussTextureSample = (bool)imGuiProps.isDiffuseTextureSample;
+		bool  imGUiIsSpecularTextureSample = (bool)imGuiProps.isSpecularTextureSample;
+		bool  imGUiIsMetallicrTextureSample = (bool)imGuiProps.isMetallicTextureSample;
 
 		ImGui::Checkbox("blinnlight", &imGUiBlinnLight);
 		for (auto mesh : imGuiMeshes)
@@ -916,6 +934,17 @@ namespace BlackPearl {
 		for (auto mesh : imGuiMeshes)
 			mesh.GetMaterial()->SetTextureSample((int)imGUiIsTextureSample);
 
+		ImGui::Checkbox("useDiffuseTexture", &imGUiIsDifussTextureSample);
+		for (auto mesh : imGuiMeshes)
+			mesh.GetMaterial()->SetTextureSampleDiffuse((int)imGUiIsDifussTextureSample);
+
+		ImGui::Checkbox("useSpecularTexture", &imGUiIsSpecularTextureSample);
+		for (auto mesh : imGuiMeshes)
+			mesh.GetMaterial()->SetTextureSampleSpecular((int)imGUiIsSpecularTextureSample);
+
+		ImGui::Checkbox("useMetallicTexture", &imGUiIsMetallicrTextureSample);
+		for (auto mesh : imGuiMeshes)
+			mesh.GetMaterial()->SetTextureSampleMetallic((int)imGUiIsMetallicrTextureSample);
 
 		for (auto mesh : imGuiMeshes) {
 			MaterialColor::Color color = mesh.GetMaterial()->GetMaterialColor().Get();
