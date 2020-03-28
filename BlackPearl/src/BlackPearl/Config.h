@@ -14,11 +14,7 @@ namespace BlackPearl {
 		//多重采样
 		static const unsigned int MSAA_SAMPLES = 4;
 
-		// ------------------------------------------
-		// Voxel Cone Tracing
-		// ------------------------------------------
-		//Voxel Cone Tracing's mipmap level
-		static const int State = 0;
+	
 
 		//static const VoxelConeTracingRenderer::RenderingMode RenderingMode; 
 

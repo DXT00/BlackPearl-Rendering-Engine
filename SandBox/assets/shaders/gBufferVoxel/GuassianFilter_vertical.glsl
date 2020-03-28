@@ -4,7 +4,7 @@ layout(location = 0) in vec3 aPos;
 layout(location = 1) in vec3 aNormal;
 layout(location = 2) in vec2 aTexCoords;
 
-#define CORE_SIZE 21
+#define CORE_SIZE 31
 out vec2 TexCoords;
 out vec2 blurTexCoords[CORE_SIZE];
 uniform float u_ScreenWidth;
@@ -27,7 +27,7 @@ void main()
 out vec4 FragColor;
 //in vec2 TexCoords;
 //CORE_SIZE必须是奇数
-#define CORE_SIZE 21
+#define CORE_SIZE 31
 
 in vec2 blurTexCoords[CORE_SIZE];
 
@@ -178,9 +178,9 @@ void main(){
 					int i_objectId = int(mod(texture(gPosition,blurTexCoords[i]).a ,256));
 
 					if(texture(u_FinalScreenTexture, blurTexCoords[i]).a == 1 && i_objectId == ObjectId)//排除specular和diffuse边界模糊
-						color+=texture(u_BlurHTexture, blurTexCoords[i]).rgb*kernel21[i];
+						color+=texture(u_BlurHTexture, blurTexCoords[i]).rgb*kernel31[i];
 					else
-						color+=texture(u_BlurHTexture, blurTexCoords[CORE_SIZE/2]).rgb*kernel21[i];
+						color+=texture(u_BlurHTexture, blurTexCoords[CORE_SIZE/2]).rgb*kernel31[i];
 
 			}
 			}

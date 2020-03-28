@@ -33,7 +33,11 @@ namespace BlackPearl {
 
 			/*MainCamera Init*/
 			m_MainCamera = CreateCamera();
-			m_MainCamera->SetPosition(glm::vec3(0.0f, 0.0f, 8.0f));
+			m_MainCamera->SetPosition(glm::vec3(0.0f, 1.387f, 22.012f));
+			//m_MainCamera->SetRotation(glm::vec3(-26.5f,-60.8f,0.0f));
+
+			//m_MainCamera->SetPosition(glm::vec3(0.0f, 0.0f, 8.0f));
+
 			m_CameraPosition = m_MainCamera->GetPosition();//cameraComponent->GetPosition();
 			m_CameraRotation.Yaw = m_MainCamera->Yaw();
 			m_CameraRotation.Pitch = m_MainCamera->Pitch();
@@ -63,6 +67,7 @@ namespace BlackPearl {
 		void LoadCornellScene();
 		void LoadSpheresScene();
 		void LoadSwordScene();
+		void LoadCubesScene();
 		Object* LoadDynamicObject(const std::string modelName);
 		Object* LoadStaticBackGroundObject(const std::string modelName);
 

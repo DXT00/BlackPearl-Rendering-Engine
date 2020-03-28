@@ -16,8 +16,10 @@ namespace BlackPearl {
 	bool VoxelConeTracingDeferredRenderer::s_GuassianHorizontal = false;
 	bool VoxelConeTracingDeferredRenderer::s_GuassianVertical = false;
 	bool VoxelConeTracingDeferredRenderer::s_ShowBlurArea = false;
-	float VoxelConeTracingDeferredRenderer::s_SpecularBlurThreshold = 0.1f;
+	bool VoxelConeTracingDeferredRenderer::s_MipmapBlurSpecularTracing = false;
 
+	float VoxelConeTracingDeferredRenderer::s_SpecularBlurThreshold = 0.1f;
+	int VoxelConeTracingDeferredRenderer::s_VisualizeMipmapLevel = 0;
 	VoxelConeTracingDeferredRenderer::VoxelConeTracingDeferredRenderer()
 	{
 
@@ -192,7 +194,7 @@ namespace BlackPearl {
 	void VoxelConeTracingDeferredRenderer::Voxilize(const std::vector<Object*>& objs, Object* skybox, bool clearVoxelizationFirst)
 	{
 		if (clearVoxelizationFirst) {
-			float clearColor[4] = { 0.0,0.0,0.0,-1.0 };
+			float clearColor[4] = { 0.0,0.0,0.0,0.0 };//-1.0
 			m_VoxelTexture->Clear(clearColor);
 		}
 
@@ -326,7 +328,7 @@ namespace BlackPearl {
 		m_VoxelVisualizationShader->SetUniformVec3f("u_CameraUp", camera->Up());
 		m_VoxelVisualizationShader->SetUniformVec3f("u_CameraRight", camera->Right());
 
-		m_VoxelVisualizationShader->SetUniform1i("u_State", Configuration::State);
+		m_VoxelVisualizationShader->SetUniform1i("u_State",s_VisualizeMipmapLevel);
 		m_VoxelVisualizationShader->SetUniformVec3f("u_CubeSize", m_CubeObj->GetComponent<Transform>()->GetScale());
 
 
@@ -489,7 +491,7 @@ namespace BlackPearl {
 		m_VCTAmbientGIShader->SetUniform1i("u_Settings.indirectSpecularLight", VoxelConeTracingDeferredRenderer::s_IndirectSpecularLight);
 		m_VCTAmbientGIShader->SetUniform1f("u_Settings.GICoeffs", s_GICoeffs);
 		m_VCTAmbientGIShader->SetUniform1f("u_SpecularBlurThreshold", s_SpecularBlurThreshold);
-
+		m_VCTAmbientGIShader->SetUniform1i("u_Settings.guassian_mipmap", s_MipmapBlurSpecularTracing);
 		m_VCTAmbientGIShader->SetUniform1f("u_Material.specularDiffusion", specularDiffusion);
 
 		m_VCTAmbientGIShader->SetUniformVec3f("u_CubeSize", m_CubeObj->GetComponent<Transform>()->GetScale());

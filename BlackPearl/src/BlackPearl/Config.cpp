@@ -9,7 +9,7 @@ namespace BlackPearl {
 	/* 这里改了，prefilterMap.glsl里的	float resolution =512.0;也要改 */
 	const float Configuration::EnvironmantMapResolution = 32.0f;
 	//const float Configuration::GICoeefs = 0.5f;
-
+	
 
 	const char* ShaderConfig::AMBIENT_COLOR = "u_Material.ambientColor";
 	const char* ShaderConfig::DIFFUSE_COLOR = "u_Material.diffuseColor";

@@ -40,5 +40,6 @@ struct Settings{
 	bool hdr;
 	bool guassian_horiziotal;
 	bool guassian_vertical;
+	bool guassian_mipmap;
 	bool showBlurArea;
 };

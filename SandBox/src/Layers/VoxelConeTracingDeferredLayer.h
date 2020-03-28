@@ -29,7 +29,7 @@ public:
 		m_VoxelConeTracingDeferredRenderer->Init(BlackPearl::Configuration::WindowWidth, BlackPearl::Configuration::WindowHeight,
 			m_QuadObj, m_QuadGBufferObj,m_QuadBRDFLUTObj,m_QuadFinalScreenObj, m_SurroundSphereObj,m_CubeObj);
 
-	
+		glEnable(GL_MULTISAMPLE);
 
 		BlackPearl::Renderer::Init();
 
@@ -49,6 +49,7 @@ public:
 		//light->GetComponent<BlackPearl::MeshRenderer>()->SetIsShadowObjects(false);
 
 		LoadScene("CornellScene");
+
 		LoadScene("SpheresScene");
 
 		m_skybox = m_SkyBoxObj;

@@ -57,6 +57,7 @@ namespace BlackPearl {
 		static float s_GICoeffs;
 		static bool s_VoxelizeNow;
 		static bool s_HDR;
+		static int s_VisualizeMipmapLevel;
 	private:
 		Texture3D* m_VoxelTexture = nullptr;
 		unsigned int m_VoxelTextureSize = 256;// 256;// 64;

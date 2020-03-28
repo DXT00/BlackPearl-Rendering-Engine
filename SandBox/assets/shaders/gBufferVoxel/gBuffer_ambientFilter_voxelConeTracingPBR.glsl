@@ -47,14 +47,120 @@ void main(){
 
 // Lighting attenuation factors. See the function "attenuate" (below) for more information.
 #define DIST_FACTOR 1.1f /* Distance is multiplied by this when calculating attenuation. */
-//#define CONSTANT 1
-//#define LINEAR 0 /* Looks meh when using gamma correction. */
-//#define QUADRATIC 1
 
 // Other settings.
 #define GAMMA_CORRECTION 1 /* Whether to use gamma correction or not. */
-//#define HDR 1 /* Whether to use tone mapping or not. */
 
+#define CORE_SIZE 5
+//sigma = 2 ,kernel size = 11
+//Guassian calculator: http://dev.theomader.com/gaussian-kernel-calculator/
+float kernel11[11]={
+	0.0093,
+	0.028002,
+	0.065984,
+	0.121703,
+	0.175713,
+	0.198596,
+	0.175713,
+	0.121703,	
+	0.065984,
+	0.028002,
+	0.0093
+};
+float kernel3_single[9]={
+
+0.06292	,	0.124998,	0.06292 ,
+0.124998,	0.248326,	0.124998,
+0.06292	,	0.124998,	0.06292	
+
+
+};
+//sigma = 1
+float kernel5_single[25]={
+
+0.003765,	0.015019,	0.023792,	0.015019,	0.003765,
+0.015019,	0.059912,	0.094907,	0.059912,	0.015019,
+0.023792,	0.094907,	0.150342,	0.094907,	0.023792,
+0.015019,	0.059912,	0.094907,	0.059912,	0.015019,
+0.003765,	0.015019,	0.023792,	0.015019,	0.003765,
+
+};
+//sigma = 1.5
+float kernel7_single[49]={
+0.0015	,	0.00438	,	0.008328,	0.010317,	0.008328,	0.00438	,	0.0015  ,
+0.00438	,	0.012788,	0.024314,	0.03012	,	0.024314,	0.012788,	0.00438	,
+0.008328,	0.024314,	0.046228,	0.057266,	0.046228,	0.024314,	0.008328,
+0.010317,	0.03012	,	0.057266,	0.07094	,	0.057266,	0.03012	,	0.010317,
+0.008328,	0.024314,	0.046228,	0.057266,	0.046228,	0.024314,	0.008328,
+0.00438	,	0.012788,	0.024314,	0.03012	,	0.024314,	0.012788,	0.00438	,
+0.0015	,	0.00438	,	0.008328,	0.010317,	0.008328,	0.00438	,	0.0015	
+
+};
+
+
+float kernel11_single[121]={
+
+0.000086,	0.00026	,	0.000614,	0.001132,	0.001634,	0.001847,	0.001634,	0.001132,	0.000614,	0.00026	,	0.000086,
+0.00026	,	0.000784,	0.001848,	0.003408,	0.00492	,	0.005561,	0.00492	,	0.003408,	0.001848,	0.000784,	0.00026	,
+0.000614,	0.001848,	0.004354,	0.00803	,	0.011594,	0.013104,	0.011594,	0.00803	,	0.004354,	0.001848,	0.000614,
+0.001132,	0.003408,	0.00803	,	0.014812,	0.021385,	0.02417	,	0.021385,	0.014812,	0.00803	,	0.003408,	0.001132,
+0.001634,	0.00492	,	0.011594,	0.021385,	0.030875,	0.034896,	0.030875,	0.021385,	0.011594,	0.00492	,	0.001634,
+0.001847,	0.005561,	0.013104,	0.02417	,	0.034896,	0.03944	,	0.034896,	0.02417	,	0.013104,	0.005561,	0.001847,
+0.001634,	0.00492	,	0.011594,	0.021385,	0.030875,	0.034896,	0.030875,	0.021385,	0.011594,	0.00492	,	0.001634,
+0.001132,	0.003408,	0.00803	,	0.014812,	0.021385,	0.02417	,	0.021385,	0.014812,	0.00803	,	0.003408,	0.001132,
+0.000614,	0.001848,	0.004354,	0.00803	,	0.011594,	0.013104,	0.011594,	0.00803	,	0.004354,	0.001848,	0.000614,
+0.00026	,	0.000784,	0.001848,	0.003408,	0.00492	,	0.005561,	0.00492	,	0.003408,	0.001848,	0.000784,	0.00026	,
+0.000086,	0.00026	,	0.000614,	0.001132,	0.001634,	0.001847,	0.001634,	0.001132,	0.000614,	0.00026	,	0.000086
+
+
+
+};
+
+//float kernel7_single[49]={
+//0.0015	,	0.00438	,	0.008328,	0.010317,	0.008328,	0.00438	,	0.0015  ,
+//0.00438	,	0.012788,	0.024314,	0.03012	,	0.024314,	0.012788,	0.00438	,
+//0.008328,	0.024314,	0.046228,	0.057266,	0.046228,	0.024314,	0.008328,
+//0.010317,	0.03012	,	0.057266,	0.07094	,	0.057266,	0.03012	,	0.010317,
+//0.008328,	0.024314,	0.046228,	0.057266,	0.046228,	0.024314,	0.008328,
+//0.00438	,	0.012788,	0.024314,	0.03012	,	0.024314,	0.012788,	0.00438	,
+//0.0015	,	0.00438	,	0.008328,	0.010317,	0.008328,	0.00438	,	0.0015	
+//
+//
+//};
+//sigma =5 ,kernel size = 31
+float kernel31[31]={
+	0.0009,
+	0.001604,
+	0.002748,
+	0.004523,
+	0.007154,
+	0.010873,
+	0.01588,
+	0.022285,
+	0.030051,
+	0.038941,
+	0.048488,
+	0.058016,
+	0.066703,
+	0.073694,
+	0.078235,
+	0.07981,
+	0.078235,
+	0.073694,
+	0.066703,
+	0.058016,
+	0.048488,
+	0.038941,
+	0.030051,
+	0.022285,
+	0.01588,
+	0.010873,
+	0.007154,
+	0.004523,
+	0.002748,
+	0.001604,
+	0.0009	
+};
 
 // Basic point light.
 struct PointLight {
@@ -262,10 +368,56 @@ vec3 traceSpecularVoxelCone(vec3 from,vec3 normal,vec3 direction,int isPbr,float
 	while(dist < MAX_DISTANCE && acc.a < 1){ 
 		vec3 c = from + dist * direction;
 		if(!isInsideCube(c, 0)) break;
-		c = scaleAndBias(c); 
+//		c = scaleAndBias(c); 
 		
 		float level = 0.1 *( (1- isPbr)* u_Material.specularDiffusion + isPbr * roughnessPBR )* log2(1 + dist / VOXEL_SIZE);//0.1
-		vec4 voxel = textureLod(texture3D, c, min(level, MIPMAP_HARDCAP));
+		vec4 voxel;
+		if(u_Settings.guassian_mipmap){
+			voxel = vec4(0.0);
+			if(abs(c.x)>abs(c.z)&&abs(c.x)>abs(c.y)){//z方向采样
+				for(int j=-CORE_SIZE/2;j<=CORE_SIZE/2;j++){
+					for(int i=-CORE_SIZE/2;i<=CORE_SIZE/2;i++){
+						int x= i+CORE_SIZE/2,y = j+CORE_SIZE/2;
+
+						vec3 c_offset = vec3(c.x,c.y+j*VOXEL_SIZE,c.z+i*VOXEL_SIZE);
+						if(!isInsideCube(c_offset, 0)) continue;
+						c_offset = scaleAndBias(c_offset); 
+						voxel+=textureLod(texture3D, c_offset, min(level, MIPMAP_HARDCAP))*kernel5_single[x+CORE_SIZE*y];
+					}
+				}
+			}
+			else if (abs(c.z)>abs(c.x)&&abs(c.z)>abs(c.y)){
+				for(int j=-CORE_SIZE/2;j<=CORE_SIZE/2;j++){
+					for(int i=-CORE_SIZE/2;i<=CORE_SIZE/2;i++){
+						int x= i+CORE_SIZE/2,y = j+CORE_SIZE/2;
+
+						vec3 c_offset = vec3(c.x+i*VOXEL_SIZE,c.y+j*VOXEL_SIZE,c.z);
+						if(!isInsideCube(c_offset, 0)) continue;
+						c_offset = scaleAndBias(c_offset); 
+						voxel+=textureLod(texture3D, c_offset, min(level, MIPMAP_HARDCAP))*kernel5_single[x+CORE_SIZE*y];
+					}
+				}
+			}
+			else{
+				for(int j=-CORE_SIZE/2;j<=CORE_SIZE/2;j++){
+					for(int i=-CORE_SIZE/2;i<=CORE_SIZE/2;i++){
+						int x= i+CORE_SIZE/2,y = j+CORE_SIZE/2;
+
+						vec3 c_offset = vec3(c.x+i*VOXEL_SIZE,c.y,c.z+j*VOXEL_SIZE);
+						if(!isInsideCube(c_offset, 0)) continue;
+						c_offset = scaleAndBias(c_offset); 
+						voxel+=textureLod(texture3D, c_offset, min(level, MIPMAP_HARDCAP))*kernel5_single[x+CORE_SIZE*y];
+					}
+				}
+			}
+		}//if(u_Settings.guassian_mipmap)
+		else{
+			c = scaleAndBias(c); 
+			voxel = textureLod(texture3D, c, min(level, MIPMAP_HARDCAP));
+
+		}
+
+
 		if(voxel.a>=0){
 
 			float f = 1 - acc.a;

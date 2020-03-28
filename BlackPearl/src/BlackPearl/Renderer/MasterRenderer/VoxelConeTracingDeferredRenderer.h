@@ -69,6 +69,8 @@ namespace BlackPearl {
 		static bool s_GuassianVertical;
 		static bool s_ShowBlurArea;
 		static float s_SpecularBlurThreshold;
+		static int s_VisualizeMipmapLevel;
+		static bool s_MipmapBlurSpecularTracing;
 	private:
 
 		void SetgBufferTextureUniforms();

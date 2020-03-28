@@ -1,13 +1,10 @@
 ###  Voxel Cone Tracing -deferred rendering and Guassian blur
 
-blur all specular part:
+blur mipmap
 
-![guassian_Blur_specularObjects](/results/guassian_Blur_specularObjects.png)
+guassian_Blur_mipmap_3dTexture:
 
-
-except PBRObj:
-
-![guassian_Blur_specularObjects_expectPBRObjs](/results/guassian_Blur_specularObjects_expectPBRObjs.png)
+![guassian_Blur_mipmap_3dTexture](/results/guassian_Blur_mupmap_3dTexture.png)
 
 
 

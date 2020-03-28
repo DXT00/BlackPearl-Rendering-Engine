@@ -12,6 +12,8 @@ namespace BlackPearl {
 	float VoxelConeTracingRenderer::s_GICoeffs = 0.8f;
 	bool VoxelConeTracingRenderer::s_VoxelizeNow = true;
 	bool VoxelConeTracingRenderer::s_HDR = false;
+	int VoxelConeTracingRenderer::s_VisualizeMipmapLevel = 0;
+
 	VoxelConeTracingRenderer::VoxelConeTracingRenderer()
 	{
 
@@ -212,7 +214,7 @@ namespace BlackPearl {
 		m_VoxelVisualizationShader->SetUniformVec3f("u_CameraUp", camera->Up());
 		m_VoxelVisualizationShader->SetUniformVec3f("u_CameraRight", camera->Right());
 
-		m_VoxelVisualizationShader->SetUniform1i("u_State", Configuration::State);
+		m_VoxelVisualizationShader->SetUniform1i("u_State",s_VisualizeMipmapLevel);
 		m_VoxelVisualizationShader->SetUniformVec3f("u_CubeSize", m_CubeObj->GetComponent<Transform>()->GetScale());
 
 		
@@ -266,7 +268,7 @@ namespace BlackPearl {
 			m_VoxelConeTracingShader->SetUniform1f("u_Settings.GICoeffs", s_GICoeffs);
 			m_VoxelConeTracingShader->SetUniform1i("u_Settings.hdr", s_HDR);
 
-			m_VoxelConeTracingShader->SetUniform1i("u_State", Configuration::State);
+			m_VoxelConeTracingShader->SetUniform1i("u_State", s_VisualizeMipmapLevel);
 
 			m_VoxelConeTracingShader->SetUniform1f("u_Material.diffuseReflectivity", diffuseReflectivity);
 			m_VoxelConeTracingShader->SetUniform1f("u_Material.specularReflectivity", specularReflectivity);

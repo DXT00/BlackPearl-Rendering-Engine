@@ -54,7 +54,7 @@ vec3 scaleAndBias(vec3 p) { return 0.5f * p + vec3(0.5f); }
 //}
 
 void main() {
-	const float mipmapLevel = u_State;
+	const int mipmapLevel = u_State;
 
 	// Initialize ray.
 	 vec3 origin = u_CameraViewPos;

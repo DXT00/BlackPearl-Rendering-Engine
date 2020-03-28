@@ -19,7 +19,6 @@ namespace BlackPearl {
 	//bool isBackGroundObj=false;
 
 
-
 	void Layer::OnImguiRender()
 	{
 		ImGui::Begin("Settings");
@@ -29,7 +28,8 @@ namespace BlackPearl {
 		ImGui::Text("FPS = %.3lf", Application::s_AppFPS);
 		ImGui::Text("AvgFPS = %.3lf", Application::s_AppAverageFPS);
 
-		ImGui::Text("deferred voxel");
+
+		ImGui::Text("deferred voxel GI");
 		ImGui::Checkbox("voxel Indirect diffuse", &VoxelConeTracingDeferredRenderer::s_IndirectDiffuseLight);
 		ImGui::Checkbox("voxel Indirect specular", &VoxelConeTracingDeferredRenderer::s_IndirectSpecularLight);
 		ImGui::Checkbox("voxel direct light", &VoxelConeTracingDeferredRenderer::s_DirectLight);
@@ -39,20 +39,26 @@ namespace BlackPearl {
 		ImGui::Checkbox("voxel blur horizontal", &VoxelConeTracingDeferredRenderer::s_GuassianHorizontal);
 		ImGui::Checkbox("voxel blur vertical", &VoxelConeTracingDeferredRenderer::s_GuassianVertical);
 		ImGui::Checkbox("voxel blur showBlurArea", &VoxelConeTracingDeferredRenderer::s_ShowBlurArea);
+
+		ImGui::Checkbox("voxel blur mipmap", &VoxelConeTracingDeferredRenderer::s_MipmapBlurSpecularTracing);
+
 		ImGui::DragFloat("voxel specularBlurThreshold", &VoxelConeTracingDeferredRenderer::s_SpecularBlurThreshold, 0.2f, 0.0f, 1.0f, "%.4f ");
+		
+		ImGui::DragInt("voxel visualization \n mipmap level", &VoxelConeTracingDeferredRenderer::s_VisualizeMipmapLevel, 1.0f, 0, 5);
 
 
-		ImGui::DragFloat("lightprobe GICoeffs", &GBufferRenderer::s_GICoeffs, 0.2f, 0.0f, 1.0f, "%.3f ");
-		ImGui::Checkbox("lightprobe HDR", &GBufferRenderer::s_HDR);
+	
+		
+		ImGui::Text("forward voxel GI");
 		ImGui::Checkbox("voxel Indirect diffuse", &VoxelConeTracingRenderer::s_IndirectDiffuseLight);
 		ImGui::Checkbox("voxel Indirect specular", &VoxelConeTracingRenderer::s_IndirectSpecularLight);
 		ImGui::Checkbox("voxel direct light", &VoxelConeTracingRenderer::s_DirectLight);
 		ImGui::DragFloat("voxel GICoeffs", &VoxelConeTracingRenderer::s_GICoeffs, 0.2f, 0.0f, 1.0f, "%.3f ");
 		ImGui::Checkbox("voxel HDR", &VoxelConeTracingRenderer::s_HDR);
 
-		//ImGui::Text("deferred voxel renderer:");
-		
-		//ImGui::Text("Frame num = %d", m_FrameNum);
+		ImGui::Text("light probe GI");
+		ImGui::DragFloat("lightprobe GICoeffs", &GBufferRenderer::s_GICoeffs, 0.2f, 0.0f, 1.0f, "%.3f ");
+		ImGui::Checkbox("lightprobe HDR", &GBufferRenderer::s_HDR);
 
 		ImGui::End();
 
@@ -243,6 +249,8 @@ namespace BlackPearl {
 			LoadCornellScene();
 		else if (demoScene == "SpheresScene")
 			LoadSpheresScene();
+		else if (demoScene == "CubesScene")
+			LoadCubesScene();
 		else if (demoScene == "SwordScene") {
 			LoadSwordScene();
 		}
@@ -253,7 +261,7 @@ namespace BlackPearl {
 	{
 		/*create pointlights*/
 		Object* light = CreateLight(LightType::PointLight);
-		light->GetComponent<Transform>()->SetPosition({ 0.0,0.0,5.0 });
+		light->GetComponent<Transform>()->SetPosition({ 0.0,1.25,9.0 });
 		light->GetComponent<Transform>()->SetLastPosition({ 0.0,-1.0,0.0 });//0.0,0.0,3.0
 		light->GetComponent<MeshRenderer>()->SetIsShadowObjects(false);
 
@@ -317,8 +325,8 @@ namespace BlackPearl {
 		light->GetComponent<MeshRenderer>()->SetIsShadowObjects(false);
 
 		Object* cube = CreateCube();
-		cube->GetComponent<Transform>()->SetPosition({ 0.0f,-2.0f,0.0f });
-		cube->GetComponent<Transform>()->SetScale({ 16.0f,0.2f,16.0f });
+		cube->GetComponent<Transform>()->SetPosition({ -2.0f,-2.0f,0.0f });
+		cube->GetComponent<Transform>()->SetScale({ 16.0f,0.001f,16.0f });
 		std::shared_ptr<Texture> cubeTexture(DBG_NEW Texture(Texture::Type::DiffuseMap, "assets/texture/wood.png"));
 		cube->GetComponent<MeshRenderer>()->SetTextures(cubeTexture);
 		cube->GetComponent<MeshRenderer>()->SetTextureSamples(true);
@@ -431,6 +439,40 @@ namespace BlackPearl {
 
 	void Layer::LoadSwordScene()
 	{
+		
+		
+
+	}
+
+	void Layer::LoadCubesScene()
+	{
+		float width = 4;
+		float height = width;
+
+		float num = 16;
+
+		float cubeSize = width / num;
+		for (int i = 0; i < num; i++)
+		{
+			for (int j = 0; j < num; j++) {
+
+				for (int k = 0; k < num; k++) {
+					Object* cube = CreateCube();
+					cube->GetComponent<Transform>()->SetPosition({ cubeSize *i,cubeSize *j,cubeSize*k });
+					//cube->GetComponent<Transform>()->SetRotation({0.0f,45.0f, 0.0f});
+
+					cube->GetComponent<Transform>()->SetScale({ 0.5f*cubeSize, 0.5f * cubeSize, 0.5f * cubeSize });
+					//std::shared_ptr<Texture> cubeTexture(DBG_NEW Texture(Texture::Type::DiffuseMap, "assets/texture/wood.png"));
+					cube->GetComponent<MeshRenderer>()->GetMeshes()[0].GetMaterial()->SetMaterialColorDiffuseColor({ (1.0f/num)*i,(1.0f / num) *j,(1.0f / num)*k });
+					cube->GetComponent<MeshRenderer>()->GetMeshes()[0].GetMaterial()->SetMaterialColorSpecularColor({ 0.0f,0.0f,0.0f });
+
+					cube->GetComponent<MeshRenderer>()->SetTextureSamples(false);
+					cube->GetComponent<MeshRenderer>()->SetIsBackGroundObjects(true);
+					m_BackGroundObjsList.push_back(cube);
+				}
+			}
+
+		}
 	}
 
 	Object* Layer::LoadStaticBackGroundObject(const std::string modelName)
