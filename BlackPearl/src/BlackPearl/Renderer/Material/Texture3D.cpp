@@ -34,6 +34,7 @@ namespace BlackPearl {
 
 	Texture3D::~Texture3D()
 	{
+		glDeleteTextures(1, &m_TextureID);
 	}
 
 	void Texture3D::Clear(float clearColor[4])

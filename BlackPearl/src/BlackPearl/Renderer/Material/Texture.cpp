@@ -63,6 +63,11 @@ namespace BlackPearl {
 	
 	}
 
+	Texture::~Texture()
+	{
+		glDeleteTextures(1, &m_TextureID);
+	}
+
 	/*
 	dataType=GL_UNSIGNED_BYTE
 

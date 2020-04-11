@@ -16,7 +16,10 @@ namespace BlackPearl {
 			unsigned int access
 			
 		);
+		~TextureImage2D();
+		unsigned int GetRendererID() const { return m_RendererID; }
 		void Bind(unsigned int textureID);
+		void BindImage(unsigned int textureID);//do not need to activate
 		void UnBind();
 		void Clear(float clearColor[4]);
 		void ShowProperties();

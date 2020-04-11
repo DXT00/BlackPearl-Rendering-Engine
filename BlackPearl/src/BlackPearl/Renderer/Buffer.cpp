@@ -29,7 +29,6 @@ namespace BlackPearl {
 	void VertexBuffer::Bind() {
 
 		glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);
-
 	}
 
 	void VertexBuffer::UnBind() {
@@ -61,7 +60,6 @@ namespace BlackPearl {
 	void IndexBuffer::UnBind()
 	{
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-
 	}
 	//---------------------VertexBufferLayout----------------//
 	void VertexBufferLayout::CalculateStrideAndOffset()
@@ -296,16 +294,45 @@ namespace BlackPearl {
 	}
 	void GBuffer::Bind()
 	{
-		//glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_RendererID);
 		glBindFramebuffer(GL_FRAMEBUFFER, m_RendererID);
 
 	}
 	void GBuffer::UnBind()
 	{
-		//glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
 		//glViewport(0, 0, Configuration::WindowWidth, Configuration::WindowHeight);
 
+	}
+	/*----------------------------    AtomicBuffer   --------------------------------*/
+
+	AtomicBuffer::AtomicBuffer()
+	{
+		GLuint initVal = 0;
+		glGenBuffers(1, &m_RendererID);
+		glBindBuffer(GL_ATOMIC_COUNTER_BUFFER, m_RendererID);
+		glBufferData(GL_ATOMIC_COUNTER_BUFFER, sizeof(GLuint), &initVal, GL_STATIC_DRAW);
+		glBindBuffer(GL_ATOMIC_COUNTER_BUFFER, 0);
+
+	}
+	void AtomicBuffer::ResetValue(GLuint val) {
+		Bind();
+		glBufferSubData(GL_ATOMIC_COUNTER_BUFFER, 0, sizeof(GLuint), &val); //reset counter to zero
+		UnBind();
+	}
+	void AtomicBuffer::Bind()
+	{
+		glBindBuffer(GL_ATOMIC_COUNTER_BUFFER, m_RendererID);
+	}
+	void AtomicBuffer::BindIndex(unsigned int index)
+	{
+		glBindBufferBase(GL_ATOMIC_COUNTER_BUFFER, index, m_RendererID);
+	}
+	void AtomicBuffer::UnBind()
+	{
+		glBindBuffer(GL_ATOMIC_COUNTER_BUFFER, 0);
+	}
+	void AtomicBuffer::CleanUp()
+	{
+		glDeleteBuffers(1, &m_RendererID);
 	}
 }

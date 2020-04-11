@@ -143,6 +143,7 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\BlackPearl\Renderer\Material\BufferTexture.h" />
     <ClInclude Include="src\BlackPearl\Animation\AnimatedModel.h" />
     <ClInclude Include="src\BlackPearl\Animation\Animation.h" />
     <ClInclude Include="src\BlackPearl\Animation\Bone.h" />
@@ -589,8 +590,10 @@
     <ClInclude Include="vendor\glm\glm\vector_relational.hpp" />
     <ClInclude Include="vendor\stb\stb_image.h" />
     <ClInclude Include="src\BlackPearl\Renderer\MasterRenderer\VoxelConeTracingDeferredRenderer.h" />
+    <ClInclude Include="src\BlackPearl\Renderer\MasterRenderer\VoxelConeTracingSVORenderer.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\BlackPearl\Renderer\Material\BufferTexture.cpp" />
     <ClCompile Include="src\BlackPearl\Animation\AnimatedModel.cpp" />
     <ClCompile Include="src\BlackPearl\Animation\Animation.cpp" />
     <ClCompile Include="src\BlackPearl\Animation\Bone.cpp" />
@@ -664,6 +667,7 @@
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="src\BlackPearl\Renderer\MasterRenderer\VoxelConeTracingDeferredRenderer.cpp" />
+    <ClCompile Include="src\BlackPearl\Renderer\MasterRenderer\VoxelConeTracingSVORenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="vendor\GLFW\GLFW.vcxproj">

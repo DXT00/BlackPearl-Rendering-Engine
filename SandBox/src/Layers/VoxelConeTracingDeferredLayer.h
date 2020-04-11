@@ -19,7 +19,7 @@ public:
 		m_BasicRenderer = DBG_NEW BlackPearl::BasicRenderer();
 		m_VoxelConeTracingDeferredRenderer = DBG_NEW BlackPearl::VoxelConeTracingDeferredRenderer();
 		m_CubeObj = CreateCube();
-		m_CubeObj->GetComponent<BlackPearl::Transform>()->SetScale(glm::vec3(25.0f));//必须是单位cube
+		m_CubeObj->GetComponent<BlackPearl::Transform>()->SetScale(glm::vec3(20.0f));//必须是单位cube
 		m_QuadObj = CreateQuad();
 		m_QuadBRDFLUTObj = CreateQuad();
 		m_QuadGBufferObj = CreateQuad();
@@ -50,7 +50,7 @@ public:
 
 		LoadScene("CornellScene");
 
-		LoadScene("SpheresScene");
+		//LoadScene("SpheresScene");
 
 		m_skybox = m_SkyBoxObj;
 		/*******************************************************************************************************/
@@ -121,7 +121,7 @@ public:
 
 		//}
 		//glDepthFunc(GL_LESS);
-		//m_BasicRenderer->DrawLightSources(GetLightSources());
+		m_BasicRenderer->DrawLightSources(GetLightSources());
 
 	}
 

@@ -66,7 +66,7 @@ namespace BlackPearl {
 		//用于CubeMap初始化
 		Texture(Type type, std::vector<std::string> faces);
 
-		virtual ~Texture() = default;
+		virtual ~Texture();
 
 		 void Init(
 			 const std::string &image,

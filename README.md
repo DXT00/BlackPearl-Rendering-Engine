@@ -1,10 +1,11 @@
-###  Voxel Cone Tracing -deferred rendering and Guassian blur
+###  Voxel Cone Tracing - Sparse voxel octree 
 
-blur mipmap
+code rederence :
+otaku690/SparseVoxelOctree
+https://github.com/otaku690/SparseVoxelOctree
 
-guassian_Blur_mipmap_3dTexture:
 
-![guassian_Blur_mipmap_3dTexture](/results/guassian_Blur_mupmap_3dTexture.png)
+![SVO voxelization](/results/SVO voxelization.png)
 
 
 

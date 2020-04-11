@@ -193,7 +193,7 @@ namespace BlackPearl {
 
 		unsigned int GetWidth()const { return m_Width; }
 		unsigned int GetHeight()const { return m_Height; }
-		unsigned int GetRenderBufferID() {
+		unsigned int GetRenderBufferID() const {
 			return m_RenderBufferID;		
 		}
 		void SetViewPort(int width, int height);
@@ -247,6 +247,17 @@ namespace BlackPearl {
 
 
 	};
-
+	class AtomicBuffer {
+	public:
+		AtomicBuffer();
+		void Bind();
+		void BindIndex(unsigned int index);
+		void UnBind();
+		void ResetValue(GLuint val);
+		void CleanUp();
+	private:
+		unsigned int m_RendererID;
+		
+	};
 
 }

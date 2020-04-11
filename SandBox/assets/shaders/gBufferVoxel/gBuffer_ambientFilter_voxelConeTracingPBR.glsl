@@ -358,6 +358,8 @@ vec3 traceSpecularVoxelCone(vec3 from,vec3 normal,vec3 direction,int isPbr,float
 
 	const float OFFSET = 2 * VOXEL_SIZE;//8*
 	const float STEP = VOXEL_SIZE;
+	float specularFactor = abs(from.z)>0.6?((1.0-abs(from.z))/0.4):1.0; //±ß½çÄ£ºý
+
 
 	from += OFFSET * normal;
 	
@@ -427,7 +429,7 @@ vec3 traceSpecularVoxelCone(vec3 from,vec3 normal,vec3 direction,int isPbr,float
 		
 		dist += STEP * (1.0f + 0.125f * level);
 	}
-	return 1.0 * pow(u_Material.specularDiffusion + 1, 0.8) * acc.rgb;
+	return specularFactor* pow(u_Material.specularDiffusion + 1, 0.8) * acc.rgb;
 }
 
 // Calculates indirect diffuse light using voxel cone tracing.

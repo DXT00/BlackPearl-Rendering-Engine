@@ -43,13 +43,22 @@ namespace BlackPearl {
 		m_Initial = true;
 	}
 
+	TextureImage2D::~TextureImage2D()
+	{
+		glDeleteTextures(1, &m_RendererID);	
+	}
+
 	void TextureImage2D::Bind(unsigned int textureID)
 	{
-		//TODO;;
 		glActiveTexture(GL_TEXTURE0 + textureID);
 		glBindTexture(GL_TEXTURE_2D, m_RendererID);
 		glBindImageTexture(textureID, m_RendererID, 0, GL_FALSE, 0, m_Acess, m_InternalFormat);
 
+	}
+
+	void TextureImage2D::BindImage(unsigned int textureID)
+	{
+		glBindImageTexture(textureID, m_RendererID, 0, GL_FALSE, 0, m_Acess, m_InternalFormat);
 	}
 
 	void TextureImage2D::UnBind()

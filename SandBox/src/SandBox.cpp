@@ -14,6 +14,7 @@
 #include "Layers/VoxelConeTracingLayer.h"
 #include "Layers/IBLProbesRenderingLayer.h"
 #include "Layers/VoxelConeTracingDeferredLayer.h"
+#include "Layers/VoxelConeTracingSVOLayer.h"
 #include "BlackPearl/Application.h"
 #include "Layers/VoxelizationTestLayer.h"
 #include "Layers/CubeTestLayer.h"
@@ -39,9 +40,9 @@ public:
 		
 		//BlackPearl::Layer* layer = DBG_NEW AdvanceLightTestLayer("AdvanceLight Layer", objectManager);
 		//BlackPearl::Layer* layer = DBG_NEW ShadowMapTestLayer("ShadowMapTest Layer", objectManager);
-		BlackPearl::Layer* layer = DBG_NEW VoxelConeTracingDeferredLayer("VoxelConeTracingDeferred Layer", objectManager);
+		//BlackPearl::Layer* layer = DBG_NEW VoxelConeTracingDeferredLayer("VoxelConeTracingDeferred Layer", objectManager);
 		//BlackPearl::Layer* layer = DBG_NEW CubeTestLayer("CubeTest Layer", objectManager);
-
+		BlackPearl::Layer* layer = DBG_NEW VoxelConeTracingSVOLayer("VoxelConeTracingSVO Layer", objectManager);
 		GetScene()->PushLayer(layer);
 	}
 	virtual ~SandBox() = default;

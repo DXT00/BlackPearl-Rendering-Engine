@@ -142,6 +142,7 @@
     <ClInclude Include="src\Layers\SkyBoxTestLayer.h" />
     <ClInclude Include="src\Layers\VoxelConeTracingLayer.h" />
     <ClInclude Include="src\Layers\VoxelizationTestLayer.h" />
+    <ClInclude Include="src\Layers\VoxelConeTracingSVOLayer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\SandBox.cpp" />
@@ -150,6 +151,15 @@
     <ProjectReference Include="..\BlackPearl\BlackPearl.vcxproj">
       <Project>{B6CF16AE-A287-58FB-0B8F-3157F765F3EB}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="assets\shaders\gBufferVoxelSVO\buildTree\leafStore.glsl" />
+    <None Include="assets\shaders\gBufferVoxelSVO\buildTree\nodeAlloc.glsl" />
+    <None Include="assets\shaders\gBufferVoxelSVO\buildTree\nodeFlag.glsl" />
+    <None Include="assets\shaders\gBufferVoxelSVO\buildTree\nodeInit.glsl" />
+    <None Include="assets\shaders\gBufferVoxelSVO\renderVoxel.glsl" />
+    <None Include="assets\shaders\gBufferVoxelSVO\renderVoxel.vert.glsl" />
+    <None Include="assets\shaders\gBufferVoxelSVO\voxelizationSVO.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

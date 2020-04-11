@@ -1447,6 +1447,8 @@
       <Filter>src\BlackPearl</Filter>
     </ClInclude>
     <ClInclude Include="src\BlackPearl\Renderer\MasterRenderer\VoxelConeTracingDeferredRenderer.h" />
+    <ClInclude Include="src\BlackPearl\Renderer\MasterRenderer\VoxelConeTracingSVORenderer.h" />
+    <ClInclude Include="src\BlackPearl\Renderer\Material\BufferTexture.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\BlackPearl\Animation\AnimatedModel.cpp">
@@ -1660,5 +1662,7 @@
       <Filter>src\BlackPearl</Filter>
     </ClCompile>
     <ClCompile Include="src\BlackPearl\Renderer\MasterRenderer\VoxelConeTracingDeferredRenderer.cpp" />
+    <ClCompile Include="src\BlackPearl\Renderer\MasterRenderer\VoxelConeTracingSVORenderer.cpp" />
+    <ClCompile Include="src\BlackPearl\Renderer\Material\BufferTexture.cpp" />
   </ItemGroup>
 </Project>

@@ -14,6 +14,7 @@ namespace BlackPearl {
 
 	CubeMapTexture::~CubeMapTexture()
 	{
+
 	}
 	void CubeMapTexture::LoadCubeMap(std::vector<std::string> faces, unsigned int minFilter,unsigned int maxFilter, int wrap, int internalFormat, int format, int dataType,bool generateMipmap)
 	{

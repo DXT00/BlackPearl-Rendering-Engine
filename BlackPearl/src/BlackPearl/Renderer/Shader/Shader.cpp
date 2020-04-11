@@ -20,6 +20,8 @@ namespace BlackPearl {
 			return GL_FRAGMENT_SHADER;
 		if (type == "geometry")
 			return GL_GEOMETRY_SHADER;
+		if (type == "compute")
+			return GL_COMPUTE_SHADER;
 		GE_ASSERT(false, "Unknown shader type!");
 		return 0;
 	}
@@ -87,7 +89,7 @@ namespace BlackPearl {
 
 		}
 		//add common struct source
-		if (shaderSources[GL_FRAGMENT_SHADER]!="") {
+		if (shaderSources.find(GL_FRAGMENT_SHADER)!=shaderSources.end()) {
 			size_t pos = shaderSources[GL_FRAGMENT_SHADER].find("#version", 0);//find找不到会返回npos
 			GE_ASSERT(pos != std::string::npos, "Syntax error");
 
@@ -130,7 +132,15 @@ namespace BlackPearl {
 
 				glDeleteShader(shader);
 
-				GE_CORE_ERROR("{0}", infoLog.data());
+
+				std::string shaderType;
+				if (type == GL_VERTEX_SHADER)shaderType = "vertex shader";
+				else if (type == GL_FRAGMENT_SHADER)shaderType = "fragment shader";
+				else if (type == GL_GEOMETRY_SHADER)shaderType = "geometry shader";
+				else if (type == GL_COMPUTE_SHADER)shaderType = "compute shader";
+
+				
+				GE_CORE_ERROR("{0} compile failed :{1}", shaderType,infoLog.data());
 				GE_ASSERT(false, "Shader compliation failure!")
 
 					break;
