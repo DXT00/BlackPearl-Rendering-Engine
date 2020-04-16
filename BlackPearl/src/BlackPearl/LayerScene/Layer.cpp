@@ -285,6 +285,8 @@ namespace BlackPearl {
 		Object* cube4 = CreateCube();
 		Object* cube5 = CreateCube();
 
+		//cube1->GetComponent<Transform>()->SetScale({ 20.0f,20.0f,20.0f });
+
 		cube1->GetComponent<Transform>()->SetPosition({ 2.0f,1.0f,3.0f });
 		cube2->GetComponent<Transform>()->SetPosition({ 0.0f,1.0f,1.0f });
 		cube3->GetComponent<Transform>()->SetPosition({ -2.0f,1.0f,3.0f });
@@ -685,8 +687,8 @@ namespace BlackPearl {
 		ImGui::Text("Up.x = %f,Up.y = %f,Up.z = %f", perspectiveCamera->Up().x, perspectiveCamera->Up().y, perspectiveCamera->Up().z);
 		ImGui::Text("Znear = %f,Zfar = %f,Fov = %f", perspectiveCamera->GetZnear(), perspectiveCamera->GetZfar(), perspectiveCamera->GetFov());
 
-		ImGui::DragFloat("CameraMoveSpeed", &m_CameraMoveSpeed, 0.5f, 0.5, 30);
-		ImGui::DragFloat("CameraRotateSpeed", &m_CameraRotateSpeed, 0.5f, 0.5, 30);
+		ImGui::DragFloat("CameraMoveSpeed", &m_CameraMoveSpeed, 0.1f, 0.1, 30);
+		ImGui::DragFloat("CameraRotateSpeed", &m_CameraRotateSpeed, 0.1f, 0.1, 30);
 
 
 

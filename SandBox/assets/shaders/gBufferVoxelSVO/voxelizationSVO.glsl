@@ -403,7 +403,7 @@ void main(){
 	uint idx = atomicCounterIncrement(u_voxelFragCount);
 
 	vec3 voxel = scaleAndBias(normalWorldPositionFrag);
-	float dim = 128;//256;//imageSize(texture3D);// retrieve the dimensions of an image
+	float dim = 128;//128;//256;//imageSize(texture3D);// retrieve the dimensions of an image
 	vec4 res = vec4(vec3(color), 0);
 	if(u_StoreData){
 		imageStore(u_voxelPos, int(idx), uvec4(dim * voxel,1));

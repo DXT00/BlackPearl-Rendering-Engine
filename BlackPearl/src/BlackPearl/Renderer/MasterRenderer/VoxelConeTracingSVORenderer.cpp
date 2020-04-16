@@ -35,23 +35,17 @@ namespace BlackPearl {
 	}
 
 
-	void VoxelConeTracingSVORenderer::Init(unsigned int viewportWidth, unsigned int viewportHeight, Object* cubeObj, Object* brdfLUTQuadObj,
+	void VoxelConeTracingSVORenderer::Init(unsigned int viewportWidth, unsigned int viewportHeight, Object* cubeObj, Object* brdfLUTQuadObj,Object* quadFinalScreenObj,
 		std::vector<Object*> objs, Object* skybox)
 	{
-		//GE_ASSERT(quadVisualObj, "m_VisualizationQuadObj is nullptr!");
-		//GE_ASSERT(quadGbufferObj, "m_QuadGbufferObj is nullptr!");
+		
 		GE_ASSERT(brdfLUTQuadObj, "m_BrdfLUTQuadObj is nullptr!");
-		//GE_ASSERT(surroundSphere, "m_SurroundSphere is nullptr!");
 		GE_ASSERT(cubeObj, "m_CubeObj is nullptr!");
-
-		///* objects */
-		//m_VisualizationQuadObj = quadVisualObj;
+		GE_ASSERT(quadFinalScreenObj, "m_QuadFinalScreenObj is nullptr");
+		
 		m_CubeObj = cubeObj;
-		//m_QuadGbufferObj = quadGbufferObj;
 		m_BrdfLUTQuadObj = brdfLUTQuadObj;
-		//m_QuadFinalScreenObj = quadFinalScreenObj;
-		//m_SurroundSphere = surroundSphere;
-
+		m_QuadFinalScreenObj = quadFinalScreenObj;
 
 		glEnable(GL_MULTISAMPLE);
 
@@ -67,7 +61,8 @@ namespace BlackPearl {
 		m_NodeInitShader.reset(DBG_NEW Shader("assets/shaders/gBufferVoxelSVO/buildTree/nodeInit.glsl"));
 		m_LeafStoreShader.reset(DBG_NEW Shader("assets/shaders/gBufferVoxelSVO/buildTree/leafStore.glsl"));
 
-
+		/* SVO tracing shader*/
+		m_SVOTracingShader.reset(DBG_NEW Shader("assets/shaders/gBufferVoxelSVO/svoTracing_new.glsl"));
 
 		BuildFragmentList(objs, skybox);
 		BuildSVO();
@@ -119,8 +114,8 @@ namespace BlackPearl {
 		glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
 
 
-		ShowBufferTexture(m_VoxelPosBufTexture, m_NumVoxelFrag);
-		ShowBufferTexture(m_VoxelDiffuseBufTexture, m_NumVoxelFrag);
+		//ShowBufferTexture(m_VoxelPosBufTexture, m_NumVoxelFrag);
+		//ShowBufferTexture(m_VoxelDiffuseBufTexture, m_NumVoxelFrag);
 
 	}
 
@@ -155,6 +150,8 @@ namespace BlackPearl {
 			//flag node
 			m_NodeFlagShader->Bind();
 			m_NodeFlagShader->SetUniform1i("u_level", i);
+			m_NodeFlagShader->SetUniform1i("u_maxLevel", m_OctreeLevel);
+
 			m_NodeFlagShader->SetUniform1i("u_numVoxelFrag", m_NumVoxelFrag);
 			m_NodeFlagShader->SetUniform1i("u_voxelDim", m_VoxelTextureSize);
 			glBindImageTexture(0, m_VoxelPosBufTexture->GetTextureID(), 0, GL_FALSE, 0, GL_READ_ONLY, GL_RGB10_A2UI);
@@ -164,8 +161,8 @@ namespace BlackPearl {
 			glDispatchCompute(groupDimX, groupDimY, 1);
 			glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
 
-			ShowBufferTexture(m_OctreeNodeTex[0], m_TotalTreeNode);
-			ShowBufferTexture(m_DebugOctreeBufTexture, m_TotalTreeNode);
+			//ShowBufferTexture(m_OctreeNodeTex[0], m_TotalTreeNode);
+			//ShowBufferTexture(m_DebugOctreeBufTexture, m_TotalTreeNode);
 
 
 
@@ -182,7 +179,7 @@ namespace BlackPearl {
 
 			glDispatchCompute(allocGroupDimX, 1, 1);
 			glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT | GL_ATOMIC_COUNTER_BARRIER_BIT);
-			ShowBufferTexture(m_OctreeNodeTex[0], m_TotalTreeNode);
+			//ShowBufferTexture(m_OctreeNodeTex[0], m_TotalTreeNode);
 
 			//initial node
 			unsigned int allocNodeNum;
@@ -210,7 +207,7 @@ namespace BlackPearl {
 			glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
 
 
-			ShowBufferTexture(m_OctreeNodeTex[0], m_TotalTreeNode);
+			//ShowBufferTexture(m_OctreeNodeTex[0], m_TotalTreeNode);
 
 			// update offsets for next level
 			allocList.push_back(allocNodeNumTotal); //titleAllocated * 8 is the number of threads
@@ -225,6 +222,7 @@ namespace BlackPearl {
 		//flag nonempty leaf node
 		m_NodeFlagShader->Bind();
 		m_NodeFlagShader->SetUniform1i("u_level", m_OctreeLevel);
+		m_NodeFlagShader->SetUniform1i("u_maxLevel", m_OctreeLevel);
 		m_NodeFlagShader->SetUniform1i("u_numVoxelFrag", m_NumVoxelFrag);
 		m_NodeFlagShader->SetUniform1i("u_voxelDim", m_VoxelTextureSize);
 		glBindImageTexture(0, m_VoxelPosBufTexture->GetTextureID(), 0, GL_FALSE, 0, GL_READ_WRITE, GL_RGB10_A2UI);
@@ -237,14 +235,14 @@ namespace BlackPearl {
 		m_LeafStoreShader->SetUniform1i("u_numVoxelFrag", m_NumVoxelFrag);
 		m_LeafStoreShader->SetUniform1i("u_level", m_OctreeLevel);
 		m_LeafStoreShader->SetUniform1i("u_voxelDim", m_VoxelTextureSize);
-		glBindImageTexture(0, m_OctreeNodeTex[0]->GetTextureID(), 0, GL_FALSE, 0, GL_READ_ONLY, GL_R32UI);
+		glBindImageTexture(0, m_OctreeNodeTex[0]->GetTextureID(), 0, GL_FALSE, 0, GL_READ_WRITE, GL_R32UI);
 		glBindImageTexture(1, m_OctreeNodeTex[1]->GetTextureID(), 0, GL_FALSE, 0, GL_READ_WRITE, GL_R32UI);
 		glBindImageTexture(2, m_VoxelPosBufTexture->GetTextureID(), 0, GL_FALSE, 0, GL_READ_ONLY, GL_RGB10_A2UI);
 		glBindImageTexture(3, m_VoxelDiffuseBufTexture->GetTextureID(), 0, GL_FALSE, 0, GL_READ_ONLY, GL_RGBA8);
 		glDispatchCompute(groupDimX, groupDimY, 1);
 		glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
 
-
+		ShowBufferTexture(m_OctreeNodeTex[0], m_TotalTreeNode);
 
 		
 
@@ -306,7 +304,7 @@ namespace BlackPearl {
 			m_VoxelizationShader->Bind();
 			m_VoxelizationShader->SetUniformVec3f("u_CubeSize", m_CubeObj->GetComponent<Transform>()->GetScale());
 			skybox->GetComponent<Transform>()->SetScale(m_CubeObj->GetComponent<Transform>()->GetScale() - glm::vec3(2.0f));
-			skybox->GetComponent<Transform>()->SetPosition(Renderer::GetSceneData()->CameraPosition);
+			skybox->GetComponent<Transform>()->SetPosition({ 0,0,0 });
 			m_VoxelizationShader->SetUniform1i("u_IsSkybox", true);
 			m_VoxelizationShader->SetUniform1i("u_IsPBRObjects", 0);
 			DrawObject(skybox, m_VoxelizationShader);
@@ -355,9 +353,12 @@ namespace BlackPearl {
 
 		glm::mat4 viewMatrix = Renderer::GetSceneData()->ViewMatrix;
 		glm::mat4 normalMatrix = glm::transpose(glm::inverse(viewMatrix));
+		glm::mat4 cubeScale = glm::scale(glm::mat4(1.0), m_CubeObj->GetComponent<Transform>()->GetScale());
 		glm::mat4 projMatrix = Renderer::GetSceneData()->ProjectionMatrix;
 		m_VoxelVisualizationShader->Bind();
 		m_VoxelVisualizationShader->SetUniformMat4f("u_ModelView", viewMatrix);
+		m_VoxelVisualizationShader->SetUniformMat4f("u_Model", cubeScale);
+
 		m_VoxelVisualizationShader->SetUniformMat4f("u_Proj", projMatrix);
 		m_VoxelVisualizationShader->SetUniformMat4f("u_Normal", normalMatrix);
 
@@ -382,8 +383,25 @@ namespace BlackPearl {
 	void VoxelConeTracingSVORenderer::RenderScene(const std::vector<Object*>& objs, const LightSources* lightSources,
 		unsigned int viewportWidth, unsigned int viewportHeight, Object* skybox)
 	{
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glViewport(0, 0, m_ScreenWidth, m_ScreenHeight);
+		//glDisable(GL_CULL_FACE);
+		m_DebugOctreeBufTexture.reset(DBG_NEW BufferTexture(sizeof(GLuint) * m_ScreenWidth*m_ScreenHeight, GL_RG16UI, 0));
 
 
+		m_SVOTracingShader->Bind();
+		m_SVOTracingShader->SetUniform1i("u_ViewType", 0);
+		m_SVOTracingShader->SetUniform1i("u_ScreenWidth", m_ScreenWidth);
+		m_SVOTracingShader->SetUniform1i("u_ScreenHeight", m_ScreenHeight);
+
+		glBindImageTexture(0, m_OctreeNodeTex[0]->GetTextureID(), 0, GL_FALSE, 0, GL_READ_ONLY, GL_R32UI);
+		glBindImageTexture(1, m_OctreeNodeTex[1]->GetTextureID(), 0, GL_FALSE, 0, GL_READ_ONLY, GL_R32UI);
+		glBindImageTexture(2, m_DebugOctreeBufTexture->GetTextureID(), 0, GL_FALSE, 0, GL_READ_WRITE, GL_RG16UI);
+
+		DrawObject(m_QuadFinalScreenObj, m_SVOTracingShader);
+
+		ShowBufferTexture(m_DebugOctreeBufTexture, m_ScreenWidth * m_ScreenHeight);
 
 	}
 

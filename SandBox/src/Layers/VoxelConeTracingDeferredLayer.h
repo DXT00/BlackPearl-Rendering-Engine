@@ -23,7 +23,6 @@ public:
 		m_QuadObj = CreateQuad();
 		m_QuadBRDFLUTObj = CreateQuad();
 		m_QuadGBufferObj = CreateQuad();
-	//	m_QuadGBufferObj->GetComponent<BlackPearl::Transform>()->SetPosition({ 0.0f, 0.0f, 1.0f });
 		m_QuadFinalScreenObj = CreateQuad();
 		m_SurroundSphereObj = CreateSphere(1.0, 128, 128,"assets/shaders/Sphere.glsl","","SurroundSphere");
 		m_VoxelConeTracingDeferredRenderer->Init(BlackPearl::Configuration::WindowWidth, BlackPearl::Configuration::WindowHeight,

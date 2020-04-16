@@ -19,7 +19,7 @@ namespace BlackPearl{
 		~VoxelConeTracingSVORenderer();
 		
 
-		void Init(unsigned int viewportWidth, unsigned int viewportHeight, Object* cubeObj, Object* brdfLUTQuadObj,
+		void Init(unsigned int viewportWidth, unsigned int viewportHeight, Object* cubeObj, Object* brdfLUTQuadObj, Object* quadFinalScreenObj,
 			std::vector<Object*> objs, Object* skybox);
 		void InitVoxelization();
 		void InitVoxelVisualization(unsigned int viewportWidth, unsigned int viewportHeight);
@@ -70,7 +70,7 @@ namespace BlackPearl{
 	private:
 
 		//Texture3D* m_VoxelTexture = nullptr;
-		unsigned int m_VoxelTextureSize = 128;// 256;
+		unsigned int m_VoxelTextureSize = 128;// 128;// 256;
 
 		unsigned int m_ScreenWidth = Configuration::WindowWidth;
 		unsigned int m_ScreenHeight = Configuration::WindowHeight;
@@ -88,7 +88,9 @@ namespace BlackPearl{
 		// ----------------
 		std::shared_ptr<Shader> m_VoxelizationShader;//SVO
 		std::shared_ptr<Shader> m_VoxelVisualizationShader;
+		std::shared_ptr<Shader> m_SVOTracingShader;
 		std::shared_ptr<Shader> m_FinalScreenShader;
+
 
 		// ----------------
 		// PBR BRDF LUT render.
@@ -102,7 +104,7 @@ namespace BlackPearl{
 		//Object* m_VisualizationQuadObj = nullptr;//用于显示体素化结果 ： voxel Visualization
 		Object* m_CubeObj = nullptr; //控制体素化渲染范围
 		//Object* m_DebugQuadObj = nullptr; //darw front face and back face of cube
-		//Object* m_QuadFinalScreenObj = nullptr;
+		Object* m_QuadFinalScreenObj = nullptr;//show SVO tracing results
 		//Object* m_SurroundSphere = nullptr;
 		// ----------------
 		// GBuffer

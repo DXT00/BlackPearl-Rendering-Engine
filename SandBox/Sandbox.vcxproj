@@ -158,7 +158,8 @@
     <None Include="assets\shaders\gBufferVoxelSVO\buildTree\nodeFlag.glsl" />
     <None Include="assets\shaders\gBufferVoxelSVO\buildTree\nodeInit.glsl" />
     <None Include="assets\shaders\gBufferVoxelSVO\renderVoxel.glsl" />
-    <None Include="assets\shaders\gBufferVoxelSVO\renderVoxel.vert.glsl" />
+    <None Include="assets\shaders\gBufferVoxelSVO\svoTracing.glsl" />
+    <None Include="assets\shaders\gBufferVoxelSVO\svoTracing_new.glsl" />
     <None Include="assets\shaders\gBufferVoxelSVO\voxelizationSVO.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

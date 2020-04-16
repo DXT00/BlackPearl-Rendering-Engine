@@ -3,7 +3,7 @@
 
 layout(local_size_x = 8,local_size_y = 8,local_size_z=1) in;
 
-
+uniform int u_maxLevel;
 uniform int u_level;
 uniform int u_numVoxelFrag;
 uniform int u_voxelDim;
@@ -62,6 +62,9 @@ void main(){
 	}
 	if(flag){
 		node|=0x80000000u;
+		if(u_level==u_maxLevel)
+			node|=0x40000000u;
+
 		imageStore(u_octreeBuffer,int(childIdx),uvec4(node,0,0,0));
 		imageStore(u_debugBuffer,int(childIdx),uvec4(uint(childIdx),uint(subnode),0,0));
 

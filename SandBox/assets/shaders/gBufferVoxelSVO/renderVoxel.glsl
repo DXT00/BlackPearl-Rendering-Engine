@@ -37,7 +37,7 @@ void main(){
 
 	//v_texcoord.xyz /= u_voxelDim;
 	//v_vertex = vec4( v_texcoord*2-1, 1.0 );
-	v_vertex = vec4( v_texcoord/float(u_voxelDim)*2.0-1, 1.0 );
+	v_vertex = vec4( v_texcoord/float(u_voxelDim)*2.0-1, 1.0 ); //[0,1]-->[-1,1]
 	v_vertex.z += u_halfDim;
 	v_vertex.x -= u_halfDim;
 	//v_normal = mat3(u_Normal) * glNormal;
@@ -65,6 +65,8 @@ uniform float u_halfDim;
 uniform int u_voxelDim;
 
 uniform mat4 u_ModelView;
+uniform mat4 u_Model;
+
 uniform mat4 u_Proj;
 
 uniform int u_octreeLevel;
@@ -158,7 +160,8 @@ void main(){
 		//+Z front face
 	//f_color = vec4(0.5, 0.5, 0.5, 1 );
 	pos = vec4( v_vertex[0].x - u_halfDim, v_vertex[0].y - u_halfDim, v_vertex[0].z + u_halfDim, v_vertex[0].w );
-    gl_Position = u_Proj * u_ModelView * pos;
+    //gl_Position = u_Proj * u_ModelView * pos;
+	gl_Position = u_Proj * u_ModelView *u_Model* pos;
 	f_vertex = v_vertex[0];
 	f_leafIdx = vec3(leafIdx/255.0);
 
@@ -167,15 +170,19 @@ void main(){
 	EmitVertex();
 
 	pos = vec4( v_vertex[0].x + u_halfDim, v_vertex[0].y - u_halfDim, v_vertex[0].z + u_halfDim, v_vertex[0].w );
-    gl_Position = u_Proj * u_ModelView * pos;
+    //gl_Position = u_Proj * u_ModelView * pos;
+	gl_Position = u_Proj * u_ModelView *u_Model* pos;
+
 	EmitVertex();
 
     pos = vec4( v_vertex[0].x - u_halfDim, v_vertex[0].y + u_halfDim, v_vertex[0].z + u_halfDim, v_vertex[0].w );
-    gl_Position = u_Proj * u_ModelView * pos;
+    //gl_Position = u_Proj * u_ModelView * pos;
+	gl_Position = u_Proj * u_ModelView *u_Model* pos;
 	EmitVertex();
 
 	pos = vec4( v_vertex[0].x + u_halfDim, v_vertex[0].y + u_halfDim, v_vertex[0].z + u_halfDim, v_vertex[0].w );
-    gl_Position = u_Proj * u_ModelView * pos;
+    //gl_Position = u_Proj * u_ModelView * pos;
+	gl_Position = u_Proj * u_ModelView *u_Model* pos;
 	EmitVertex();
 
 	//+X
@@ -183,13 +190,16 @@ void main(){
 	EmitVertex();
 	//f_color = vec4( 0.2, 0.2, 0.2, 1 );
 	pos = vec4( v_vertex[0].x + u_halfDim, v_vertex[0].y - u_halfDim, v_vertex[0].z + u_halfDim, v_vertex[0].w );
-	gl_Position = u_Proj * u_ModelView * pos;
+	//gl_Position = u_Proj * u_ModelView * pos;
+	gl_Position = u_Proj * u_ModelView *u_Model* pos;
 	EmitVertex();
 	pos = vec4( v_vertex[0].x + u_halfDim, v_vertex[0].y + u_halfDim, v_vertex[0].z - u_halfDim, v_vertex[0].w );
-	gl_Position = u_Proj * u_ModelView * pos;
+	//gl_Position = u_Proj * u_ModelView * pos;
+	gl_Position = u_Proj * u_ModelView *u_Model* pos;
 	EmitVertex();
 	pos = vec4( v_vertex[0].x + u_halfDim, v_vertex[0].y - u_halfDim, v_vertex[0].z - u_halfDim, v_vertex[0].w );
-	gl_Position = u_Proj * u_ModelView * pos;
+	//gl_Position = u_Proj * u_ModelView * pos;
+	gl_Position = u_Proj * u_ModelView *u_Model* pos;
 	EmitVertex();
 	
 
@@ -197,57 +207,70 @@ void main(){
 	EmitVertex(); //for degenerate purpose
 
 	pos = vec4( v_vertex[0].x - u_halfDim, v_vertex[0].y - u_halfDim, v_vertex[0].z - u_halfDim, v_vertex[0].w );
-	gl_Position = u_Proj * u_ModelView * pos;
+	 //gl_Position = u_Proj * u_ModelView * pos;
+	gl_Position = u_Proj * u_ModelView *u_Model* pos;
 	EmitVertex();
 	pos = vec4( v_vertex[0].x + u_halfDim, v_vertex[0].y + u_halfDim, v_vertex[0].z - u_halfDim, v_vertex[0].w );
-	gl_Position = u_Proj * u_ModelView * pos;
+	 //gl_Position = u_Proj * u_ModelView * pos;
+	gl_Position = u_Proj * u_ModelView *u_Model* pos;
 	EmitVertex();
 	pos = vec4( v_vertex[0].x - u_halfDim, v_vertex[0].y + u_halfDim, v_vertex[0].z - u_halfDim, v_vertex[0].w );
-	gl_Position = u_Proj * u_ModelView * pos;
+	 //gl_Position = u_Proj * u_ModelView * pos;
+	gl_Position = u_Proj * u_ModelView *u_Model* pos;
 	EmitVertex();
 
 	//-X
 	EmitVertex(); //for degenerate purpose
 	//f_color = vec4( 0.5, 0.5, 0.5, 1 );
 	pos = vec4( v_vertex[0].x - u_halfDim, v_vertex[0].y - u_halfDim, v_vertex[0].z - u_halfDim, v_vertex[0].w );
-	gl_Position = u_Proj * u_ModelView * pos;
+	//gl_Position = u_Proj * u_ModelView * pos;
+	gl_Position = u_Proj * u_ModelView *u_Model* pos;
 	EmitVertex();
 	pos = vec4( v_vertex[0].x - u_halfDim, v_vertex[0].y + u_halfDim, v_vertex[0].z + u_halfDim, v_vertex[0].w );
-	gl_Position = u_Proj * u_ModelView * pos;
+	//gl_Position = u_Proj * u_ModelView * pos;
+	gl_Position = u_Proj * u_ModelView *u_Model* pos;
 	EmitVertex();
 	pos = vec4( v_vertex[0].x - u_halfDim, v_vertex[0].y - u_halfDim, v_vertex[0].z + u_halfDim, v_vertex[0].w );
-	gl_Position = u_Proj * u_ModelView * pos;
+	 //gl_Position = u_Proj * u_ModelView * pos;
+	gl_Position = u_Proj * u_ModelView *u_Model* pos;
 	EmitVertex();
 
 	//-Y
 	EmitVertex();
 
 	pos = vec4( v_vertex[0].x - u_halfDim, v_vertex[0].y - u_halfDim, v_vertex[0].z - u_halfDim, v_vertex[0].w );
-	gl_Position = u_Proj * u_ModelView * pos;
+	 //gl_Position = u_Proj * u_ModelView * pos;
+	gl_Position = u_Proj * u_ModelView *u_Model* pos;
 	EmitVertex();
 	pos = vec4( v_vertex[0].x + u_halfDim, v_vertex[0].y - u_halfDim, v_vertex[0].z + u_halfDim, v_vertex[0].w );
-	gl_Position = u_Proj * u_ModelView * pos;
+	 //gl_Position = u_Proj * u_ModelView * pos;
+	gl_Position = u_Proj * u_ModelView *u_Model* pos;
 	EmitVertex();
 	pos = vec4( v_vertex[0].x + u_halfDim, v_vertex[0].y - u_halfDim, v_vertex[0].z - u_halfDim, v_vertex[0].w );
-	gl_Position = u_Proj * u_ModelView * pos;
+	//gl_Position = u_Proj * u_ModelView * pos;
+	gl_Position = u_Proj * u_ModelView *u_Model* pos;
 	EmitVertex();
 
 	//+Y
 	EmitVertex();
 	//f_color = color;
 	pos = vec4( v_vertex[0].x + u_halfDim, v_vertex[0].y + u_halfDim, v_vertex[0].z - u_halfDim, v_vertex[0].w );
-	gl_Position = u_Proj * u_ModelView * pos;
+	//gl_Position = u_Proj * u_ModelView * pos;
+	gl_Position = u_Proj * u_ModelView *u_Model* pos;
 	EmitVertex();
 	EmitVertex();
 
 	pos = vec4( v_vertex[0].x - u_halfDim, v_vertex[0].y + u_halfDim, v_vertex[0].z - u_halfDim, v_vertex[0].w );
-	gl_Position = u_Proj * u_ModelView * pos;
+	 //gl_Position = u_Proj * u_ModelView * pos;
+	gl_Position = u_Proj * u_ModelView *u_Model* pos;
 	EmitVertex();
 	pos = vec4( v_vertex[0].x + u_halfDim, v_vertex[0].y + u_halfDim, v_vertex[0].z + u_halfDim, v_vertex[0].w );
-	gl_Position = u_Proj * u_ModelView * pos;
+	 //gl_Position = u_Proj * u_ModelView * pos;
+	gl_Position = u_Proj * u_ModelView *u_Model* pos;
 	EmitVertex();
 	pos = vec4( v_vertex[0].x - u_halfDim, v_vertex[0].y + u_halfDim, v_vertex[0].z + u_halfDim, v_vertex[0].w );
-	gl_Position = u_Proj * u_ModelView * pos;
+	 //gl_Position = u_Proj * u_ModelView * pos;
+	gl_Position = u_Proj * u_ModelView *u_Model* pos;
 	EmitVertex();
 
 	EmitVertex();

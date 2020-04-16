@@ -120,11 +120,16 @@ void main(){
 
 	}
 	vec4 color = imageLoad(u_voxelKd,int(thxId));
+	
+
 	//Use a atomic running average method to prevent buffer saturation
 	//From OpenGL Insight ch. 22
 	imageAtomicRGBA8Avg( color, childIdx, u_octreeKd );
 
-
+//	//标志为叶子节点
+//	uint leafnode = imageLoad(u_octreeIdx,childIdx).r;
+//	leafnode|=0x40000000u;
+//	imageStore(u_octreeIdx,int(childIdx),uvec4(leafnode,0,0,0));
 
 
 }

@@ -49,6 +49,7 @@
     <None Include="assets\shaders\gBufferVoxelSVO\buildTree\nodeFlag.glsl" />
     <None Include="assets\shaders\gBufferVoxelSVO\buildTree\nodeInit.glsl" />
     <None Include="assets\shaders\gBufferVoxelSVO\voxelizationSVO.glsl" />
-    <None Include="assets\shaders\gBufferVoxelSVO\renderVoxel.vert.glsl" />
+    <None Include="assets\shaders\gBufferVoxelSVO\svoTracing.glsl" />
+    <None Include="assets\shaders\gBufferVoxelSVO\svoTracing_new.glsl" />
   </ItemGroup>
 </Project>

@@ -17,6 +17,7 @@ public:
 		m_CubeObj->GetComponent<BlackPearl::Transform>()->SetScale(glm::vec3(25.0f));//必须是单位cube
 		m_QuadVisualObj = CreateQuad();
 		m_QuadBRDFLUTObj = CreateQuad();
+		m_QuadFinalScreenObj = CreateQuad();
 		m_SurroundSphere = CreateSphere(1, 64, 64);
 		m_BasicRenderer = DBG_NEW BlackPearl::BasicRenderer();
 		m_VoxelConeTracingSVORenderer = DBG_NEW BlackPearl::VoxelConeTracingSVORenderer();
@@ -38,18 +39,24 @@ public:
 			 "assets/skybox/skybox/back.jpg",
 			});
 		//LoadStaticBackGroundObject("Sphere");
-		LoadScene("CornellScene");
-		//BlackPearl::Object* cube1 = CreateCube();
-		//cube1->GetComponent<BlackPearl::MeshRenderer>()->SetIsBackGroundObjects(true);
-		//cube1->GetComponent<BlackPearl::MeshRenderer>()->GetMeshes()[0].GetMaterial()->SetMaterialColorSpecularColor({ 0,0,0 });
-		//cube1->GetComponent<BlackPearl::MeshRenderer>()->GetMeshes()[0].GetMaterial()->SetMaterialColorDiffuseColor({ 0,0.294f,1.0f });
-		//m_BackGroundObjsList.push_back(cube1);
+		/*LoadScene("CornellScene");
+		BlackPearl::Object* bunny = LoadStaticBackGroundObject("Bunny");
+		bunny->GetComponent<BlackPearl::Transform>()->SetScale({ 1.0,1.0,1.0 });
+		bunny->GetComponent<BlackPearl::Transform>()->SetPosition({ 1.0,0.0,5.0 });*/
 
-		//BlackPearl::Object* light = CreateLight(BlackPearl::LightType::PointLight);
-		//light->GetComponent<BlackPearl::Transform>()->SetPosition({ 0.0,1.25,3.0 });
-		//light->GetComponent<BlackPearl::Transform>()->SetLastPosition({ 0.0,-1.0,0.0 });//0.0,0.0,3.0
-		//light->GetComponent<BlackPearl::MeshRenderer>()->SetIsShadowObjects(false);
-		//LoadScene("SpheresScene");
+		BlackPearl::Object* cube1 = CreateCube();
+		cube1->GetComponent<BlackPearl::Transform>()->SetScale({ 26.0,26.0,26.0 });
+
+		cube1->GetComponent<BlackPearl::MeshRenderer>()->SetIsBackGroundObjects(true);
+		cube1->GetComponent<BlackPearl::MeshRenderer>()->GetMeshes()[0].GetMaterial()->SetMaterialColorSpecularColor({ 0,0,0 });
+		cube1->GetComponent<BlackPearl::MeshRenderer>()->GetMeshes()[0].GetMaterial()->SetMaterialColorDiffuseColor({ 0,0.294f,1.0f });
+		m_BackGroundObjsList.push_back(cube1);
+
+		BlackPearl::Object* light = CreateLight(BlackPearl::LightType::PointLight);
+		light->GetComponent<BlackPearl::Transform>()->SetPosition({ 0.0,1.25,3.0 });
+		light->GetComponent<BlackPearl::Transform>()->SetLastPosition({ 0.0,-1.0,0.0 });//0.0,0.0,3.0
+		light->GetComponent<BlackPearl::MeshRenderer>()->SetIsShadowObjects(false);
+		LoadScene("SpheresScene");
 
 		m_skybox = m_SkyBoxObj;
 		/*******************************************************************************************************/
@@ -57,7 +64,7 @@ public:
 		BlackPearl::Renderer::BeginScene(*(m_MainCamera->GetObj()->GetComponent<BlackPearl::PerspectiveCamera>()), *GetLightSources());
 
 		m_VoxelConeTracingSVORenderer->Init(BlackPearl::Configuration::WindowWidth, BlackPearl::Configuration::WindowHeight,
-			m_CubeObj, m_QuadBRDFLUTObj, m_BackGroundObjsList, m_SkyBoxObj);
+			m_CubeObj, m_QuadBRDFLUTObj,m_QuadFinalScreenObj, m_BackGroundObjsList, m_SkyBoxObj);
 	}
 
 	virtual ~VoxelConeTracingSVOLayer() {
@@ -148,5 +155,5 @@ private:
 	BlackPearl::BasicRenderer* m_BasicRenderer;
 
 	unsigned int m_Mode = 0;
-	BlackPearl::VoxelConeTracingSVORenderer::RenderingMode m_CurrentRenderingMode = BlackPearl::VoxelConeTracingSVORenderer::RenderingMode::VOXELIZATION_VISUALIZATION;// VOXEL_CONE_TRACING;//VOXELIZATION_VISUALIZATION
+	BlackPearl::VoxelConeTracingSVORenderer::RenderingMode m_CurrentRenderingMode = BlackPearl::VoxelConeTracingSVORenderer::RenderingMode::VOXEL_CONE_TRACING;// VOXELIZATION_VISUALIZATION;// ;// VOXEL_CONE_TRACING;// ;//VOXELIZATION_VISUALIZATION
 };
