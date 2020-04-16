@@ -13,10 +13,6 @@ NVIDIA Research
 https://research.nvidia.com/sites/default/files/pubs/2010-02_Efficient-Sparse-Voxel/laine2010i3d_paper.pdf
 
 
-SVO voxel tracing
-![SVO voxel tracing](/results/SVO voxel tracing.png)
-![SVO voxel tracing1](/results/SVO voxel tracing1.png)
 
-
-
-
+![SVOVoxelTracing1](/results/SVOVoxelTracing1.png)
+![SVOVoxelTracing](/results/SVOVoxelTracing.png)
