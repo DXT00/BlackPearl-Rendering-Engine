@@ -58,8 +58,8 @@ bool RayMarchLeaf(vec3 o,vec3 d,out float o_t,out vec4 o_color,out vec3 o_normal
 	
 	//Òª¸Ä
 	if(d.x>0.0f) oct_mask^=1u, t_bias.x = 3.0f * t_coef.x - t_bias.x;
-	if(d.y>0.0f) oct_mask^=2u, t_bias.z = 3.0f * t_coef.z - t_bias.z;
-	if(d.z>0.0f) oct_mask^=4u, t_bias.y = 3.0f * t_coef.y - t_bias.y; 
+	if(d.z>0.0f) oct_mask^=2u, t_bias.z = 3.0f * t_coef.z - t_bias.z;
+	if(d.y>0.0f) oct_mask^=4u, t_bias.y = 3.0f * t_coef.y - t_bias.y; 
 //	if(d.x>0.0f) oct_mask^=1u, t_bias.x = 1.0f * t_coef.x - t_bias.x;
 //	if(d.z>0.0f) oct_mask^=2u, t_bias.z = 1.0f * t_coef.z - t_bias.z;
 //	if(d.y>0.0f) oct_mask^=4u, t_bias.y = 1.0f * t_coef.y - t_bias.y; 
