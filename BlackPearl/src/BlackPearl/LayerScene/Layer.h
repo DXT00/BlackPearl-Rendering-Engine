@@ -34,7 +34,7 @@ namespace BlackPearl {
 			/*MainCamera Init*/
 			m_MainCamera = CreateCamera();
 			//m_MainCamera->SetPosition(glm::vec3(0.0f, 1.387f, 8.012f));
-			m_MainCamera->SetPosition(glm::vec3(0.0f, 1.387f, 13.012f));
+			m_MainCamera->SetPosition(glm::vec3(1.0f, 2.0f, 5.012f));
 
 			//m_MainCamera->SetRotation(glm::vec3(-26.5f,-60.8f,0.0f));
 

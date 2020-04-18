@@ -160,6 +160,7 @@ namespace BlackPearl {
 		};
 		/*no attachment*/
 		FrameBuffer();
+		
 		/*initial with attachment*/
 		FrameBuffer(const int imageWidth, const int imageHeight, std::initializer_list<Attachment> attachment,  unsigned int colorAttachmentPoint,bool disableColor,Texture::Type colorTextureType = Texture::Type::DiffuseMap);
 		void AttachColorTexture(Texture::Type textureType, unsigned int attachmentPoints, unsigned int imageWidth, unsigned int imageHeight);
@@ -250,6 +251,9 @@ namespace BlackPearl {
 	class AtomicBuffer {
 	public:
 		AtomicBuffer();
+		~AtomicBuffer() {
+			CleanUp();
+		}
 		void Bind();
 		void BindIndex(unsigned int index);
 		void UnBind();
@@ -259,5 +263,20 @@ namespace BlackPearl {
 		unsigned int m_RendererID;
 		
 	};
+	//SSBO
+	class ShaderStorageBuffer {
+	public:
+		ShaderStorageBuffer(GLsizeiptr bytes, GLbitfield mapFlags);
+		~ShaderStorageBuffer();
+		unsigned int GetRenderID() const {
+			return m_RendererID;
+		}
+		void Bind();
+		void BindIndex(unsigned int index);
+		void UnBind();
+		void CleanUp();
+	private:
+		unsigned int m_RendererID;
 
+	};
 }

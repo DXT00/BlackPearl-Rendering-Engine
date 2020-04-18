@@ -51,5 +51,6 @@
     <None Include="assets\shaders\gBufferVoxelSVO\voxelizationSVO.glsl" />
     <None Include="assets\shaders\gBufferVoxelSVO\svoTracing.glsl" />
     <None Include="assets\shaders\gBufferVoxelSVO\svoTracing_new.glsl" />
+    <None Include="assets\shaders\gBufferVoxelSVO\pathTracing.glsl" />
   </ItemGroup>
 </Project>

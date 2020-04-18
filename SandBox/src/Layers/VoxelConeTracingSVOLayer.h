@@ -18,15 +18,11 @@ public:
 		m_QuadVisualObj = CreateQuad();
 		m_QuadBRDFLUTObj = CreateQuad();
 		m_QuadFinalScreenObj = CreateQuad();
+		m_QuadPathTracingObj = CreateQuad();
 		m_SurroundSphere = CreateSphere(1, 64, 64);
 		m_BasicRenderer = DBG_NEW BlackPearl::BasicRenderer();
 		m_VoxelConeTracingSVORenderer = DBG_NEW BlackPearl::VoxelConeTracingSVORenderer();
-
-
-		
-
 	
-
 		BlackPearl::Renderer::Init();
 
 		/***************************************** Scene ********************************************************/
@@ -44,13 +40,13 @@ public:
 		bunny->GetComponent<BlackPearl::Transform>()->SetScale({ 1.0,1.0,1.0 });
 		bunny->GetComponent<BlackPearl::Transform>()->SetPosition({ 1.0,0.0,5.0 });*/
 
-		BlackPearl::Object* cube1 = CreateCube();
+		/*BlackPearl::Object* cube1 = CreateCube();
 		cube1->GetComponent<BlackPearl::Transform>()->SetScale({ 26.0,26.0,26.0 });
 
 		cube1->GetComponent<BlackPearl::MeshRenderer>()->SetIsBackGroundObjects(true);
 		cube1->GetComponent<BlackPearl::MeshRenderer>()->GetMeshes()[0].GetMaterial()->SetMaterialColorSpecularColor({ 0,0,0 });
 		cube1->GetComponent<BlackPearl::MeshRenderer>()->GetMeshes()[0].GetMaterial()->SetMaterialColorDiffuseColor({ 0,0.294f,1.0f });
-		m_BackGroundObjsList.push_back(cube1);
+		m_BackGroundObjsList.push_back(cube1);*/
 
 		BlackPearl::Object* light = CreateLight(BlackPearl::LightType::PointLight);
 		light->GetComponent<BlackPearl::Transform>()->SetPosition({ 0.0,1.25,3.0 });
@@ -62,9 +58,14 @@ public:
 		/*******************************************************************************************************/
 		/*******************************************************************************************************/
 		BlackPearl::Renderer::BeginScene(*(m_MainCamera->GetObj()->GetComponent<BlackPearl::PerspectiveCamera>()), *GetLightSources());
-
+		m_SkyBoxObj = nullptr;
 		m_VoxelConeTracingSVORenderer->Init(BlackPearl::Configuration::WindowWidth, BlackPearl::Configuration::WindowHeight,
-			m_CubeObj, m_QuadBRDFLUTObj,m_QuadFinalScreenObj, m_BackGroundObjsList, m_SkyBoxObj);
+			m_CubeObj,
+			m_QuadBRDFLUTObj,
+			m_QuadFinalScreenObj, 
+			m_QuadPathTracingObj,
+			m_BackGroundObjsList
+			, m_SkyBoxObj);
 	}
 
 	virtual ~VoxelConeTracingSVOLayer() {
@@ -81,11 +82,20 @@ public:
 
 		//Switch mode
 		if (BlackPearl::Input::IsKeyPressed(BP_KEY_U)) {
-			m_Mode = (m_Mode + 1) % 2;
-			if (m_Mode == 0)
+			m_Mode = (m_Mode + 1) % 3;
+			if (m_Mode == 0) {
 				m_CurrentRenderingMode = BlackPearl::VoxelConeTracingSVORenderer::RenderingMode::VOXELIZATION_VISUALIZATION;
-			else if (m_Mode == 1)
+				GE_CORE_INFO("voxel rendering ...");
+
+			}
+			else if (m_Mode == 1) {
 				m_CurrentRenderingMode = BlackPearl::VoxelConeTracingSVORenderer::RenderingMode::VOXEL_CONE_TRACING;
+				GE_CORE_INFO("voxel direct light tracing ...");
+			}
+			else if (m_Mode == 2) {
+				m_CurrentRenderingMode = BlackPearl::VoxelConeTracingSVORenderer::RenderingMode::SVO_PATH_TRACING;
+				GE_CORE_INFO("path tracing ...")
+			}
 
 		}
 
@@ -121,8 +131,8 @@ public:
 
 		//}
 		//glDepthFunc(GL_LESS);
-		m_BasicRenderer->DrawObject(m_CubeObj);
-		m_BasicRenderer->DrawLightSources(GetLightSources());
+		//m_BasicRenderer->DrawObject(m_CubeObj);
+		//m_BasicRenderer->DrawLightSources(GetLightSources());
 
 	}
 
@@ -139,6 +149,8 @@ private:
 	BlackPearl::Object* m_QuadVisualObj;
 	BlackPearl::Object* m_QuadGBufferObj;
 	BlackPearl::Object* m_QuadFinalScreenObj;
+	BlackPearl::Object* m_QuadPathTracingObj;
+
 	BlackPearl::Object* m_QuadBRDFLUTObj;
 	BlackPearl::Object* m_SurroundSphere;
 
@@ -155,5 +167,5 @@ private:
 	BlackPearl::BasicRenderer* m_BasicRenderer;
 
 	unsigned int m_Mode = 0;
-	BlackPearl::VoxelConeTracingSVORenderer::RenderingMode m_CurrentRenderingMode = BlackPearl::VoxelConeTracingSVORenderer::RenderingMode::VOXEL_CONE_TRACING;// VOXELIZATION_VISUALIZATION;// ;// VOXEL_CONE_TRACING;// ;//VOXELIZATION_VISUALIZATION
+	BlackPearl::VoxelConeTracingSVORenderer::RenderingMode m_CurrentRenderingMode = BlackPearl::VoxelConeTracingSVORenderer::RenderingMode::SVO_PATH_TRACING;// VOXEL_CONE_TRACING;// VOXELIZATION_VISUALIZATION;// ;// VOXEL_CONE_TRACING;// ;//VOXELIZATION_VISUALIZATION
 };

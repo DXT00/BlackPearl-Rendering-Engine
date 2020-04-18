@@ -12,6 +12,7 @@
 #include "BlackPearl/Renderer/MasterRenderer/GBufferRenderer.h"
 #include "BlackPearl/Renderer/MasterRenderer/VoxelConeTracingRenderer.h"
 #include "BlackPearl/Renderer/MasterRenderer/VoxelConeTracingDeferredRenderer.h"
+#include "BlackPearl/Renderer/MasterRenderer/VoxelConeTracingSVORenderer.h"
 namespace BlackPearl {
 
 	static int buttonNum = 0;
@@ -27,6 +28,9 @@ namespace BlackPearl {
 		ImGui::Begin("FPS");
 		ImGui::Text("FPS = %.3lf", Application::s_AppFPS);
 		ImGui::Text("AvgFPS = %.3lf", Application::s_AppAverageFPS);
+
+		ImGui::Text("SVO voxel GI");
+		ImGui::Checkbox("spp pause", &VoxelConeTracingSVORenderer::s_Pause);
 
 
 		ImGui::Text("deferred voxel GI");

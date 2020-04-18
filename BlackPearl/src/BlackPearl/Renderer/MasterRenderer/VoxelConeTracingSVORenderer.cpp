@@ -17,41 +17,49 @@ namespace BlackPearl {
 	bool  VoxelConeTracingSVORenderer::s_GuassianVertical = false;
 	bool  VoxelConeTracingSVORenderer::s_ShowBlurArea = false;
 	bool  VoxelConeTracingSVORenderer::s_MipmapBlurSpecularTracing = false;
-
+	int   VoxelConeTracingSVORenderer::s_MaxBounce = 16;
 	float VoxelConeTracingSVORenderer::s_SpecularBlurThreshold = 0.1f;
 	int   VoxelConeTracingSVORenderer::s_VisualizeMipmapLevel = 0;
+	bool  VoxelConeTracingSVORenderer::s_Pause = false;
 	VoxelConeTracingSVORenderer::VoxelConeTracingSVORenderer()
 	{
 
 	}
 	VoxelConeTracingSVORenderer::~VoxelConeTracingSVORenderer()
 	{
-		if (!m_CubeObj)delete m_CubeObj;
-		if (!m_BrdfLUTQuadObj)delete m_BrdfLUTQuadObj;
-
+		GE_SAVE_DELETE(m_CubeObj);
+		GE_SAVE_DELETE(m_BrdfLUTQuadObj);
+		GE_SAVE_DELETE(m_Sobol);
 		//if (!m_VisualizationQuadObj)delete m_VisualizationQuadObj;
 		//if (!m_VoxelTexture) delete m_VoxelTexture;
 		//m_FrameBuffer->CleanUp();
 	}
 
 
-	void VoxelConeTracingSVORenderer::Init(unsigned int viewportWidth, unsigned int viewportHeight, Object* cubeObj, Object* brdfLUTQuadObj,Object* quadFinalScreenObj,
-		std::vector<Object*> objs, Object* skybox)
+	void VoxelConeTracingSVORenderer::Init(
+		unsigned int viewportWidth, unsigned int viewportHeight,
+		Object* cubeObj,
+		Object* brdfLUTQuadObj,
+		Object* quadFinalScreenObj,
+		Object* quadPathTracing,
+		std::vector<Object*> objs,
+		Object* skybox)
 	{
 		
 		GE_ASSERT(brdfLUTQuadObj, "m_BrdfLUTQuadObj is nullptr!");
 		GE_ASSERT(cubeObj, "m_CubeObj is nullptr!");
 		GE_ASSERT(quadFinalScreenObj, "m_QuadFinalScreenObj is nullptr");
-		
+		GE_ASSERT(quadPathTracing, "m_QuadPathTracing is nullptr");
+
 		m_CubeObj = cubeObj;
 		m_BrdfLUTQuadObj = brdfLUTQuadObj;
 		m_QuadFinalScreenObj = quadFinalScreenObj;
-
+		m_QuadPathTracing = quadPathTracing;
 		glEnable(GL_MULTISAMPLE);
 
 		InitVoxelization();
 		InitVoxelVisualization(viewportWidth, viewportHeight);
-
+		InitPathTracing();
 		/* Automic Count Buffer*/
 		m_AtomicCountBuffer.reset(DBG_NEW AtomicBuffer());
 
@@ -63,9 +71,10 @@ namespace BlackPearl {
 
 		/* SVO tracing shader*/
 		m_SVOTracingShader.reset(DBG_NEW Shader("assets/shaders/gBufferVoxelSVO/svoTracing_new.glsl"));
-
 		BuildFragmentList(objs, skybox);
 		BuildSVO();
+
+		
 
 		m_IsInitialize = true;
 	}
@@ -80,6 +89,33 @@ namespace BlackPearl {
 		m_VoxelVisualizationShader.reset(DBG_NEW Shader("assets/shaders/gBufferVoxelSVO/renderVoxel.glsl"));
 		m_PointCubeVAO.reset(DBG_NEW VertexArray());
 		m_PointCubeVAO->UnBind();
+	}
+
+	void VoxelConeTracingSVORenderer::InitPathTracing()
+	{
+		/*SVO path tracer */
+		GLbitfield map_flags = (GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT | GL_MAP_READ_BIT | GL_MAP_WRITE_BIT);
+		m_SobolSSBO.reset(DBG_NEW ShaderStorageBuffer(sizeof(GLfloat) * 2 * s_MaxBounce,
+			map_flags));
+		m_Sobol = DBG_NEW Sobol(2 * s_MaxBounce);
+		m_SobolSSBO->Bind();
+		m_SobolPtr = (GLfloat*)glMapBufferRange(GL_SHADER_STORAGE_BUFFER, 0, sizeof(GLfloat) * 2 * s_MaxBounce, map_flags);
+		m_Sobol->Next(m_SobolPtr);
+		m_SobolSSBO->UnBind();
+		m_PathTracingShader.reset(DBG_NEW Shader("assets/shaders/gBufferVoxelSVO/pathTracing.glsl"));
+		
+		m_PathTracingColor.reset(DBG_NEW Texture(Texture::Type::None, m_ScreenWidth, m_ScreenHeight,false, GL_LINEAR, GL_LINEAR, GL_RGBA32F, GL_RGBA32F,GL_CLAMP_TO_EDGE,GL_FLOAT));
+		//m_PathTracingColor->Storage(m_ScreenWidth, m_ScreenHeight, GL_RGBA32F);
+
+		//m_PathTracingAlbedo.reset(DBG_NEW Texture(Texture::Type::None));
+		m_PathTracingAlbedo.reset(DBG_NEW Texture(Texture::Type::None, m_ScreenWidth, m_ScreenHeight, false, GL_LINEAR, GL_LINEAR, GL_RGBA8, GL_RGBA, GL_CLAMP_TO_EDGE, GL_FLOAT));
+
+		//m_PathTracingAlbedo->Storage(m_ScreenWidth, m_ScreenHeight, GL_RGBA8);
+
+	//	m_PathTracingNormal.reset(DBG_NEW Texture(Texture::Type::None));
+		//m_PathTracingNormal->Storage(m_ScreenWidth, m_ScreenHeight, GL_RGBA8_SNORM);
+		m_PathTracingNormal.reset(DBG_NEW Texture(Texture::Type::None, m_ScreenWidth, m_ScreenHeight, false, GL_LINEAR, GL_LINEAR, GL_RGBA8_SNORM, GL_RGBA8_SNORM, GL_CLAMP_TO_EDGE, GL_FLOAT));
+
 	}
 
 
@@ -338,6 +374,9 @@ namespace BlackPearl {
 		case RenderingMode::VOXEL_CONE_TRACING:
 			RenderScene(objs, lightSources, viewportWidth, viewportHeight, skybox);
 			break;
+		case RenderingMode::SVO_PATH_TRACING:
+			PathTracing(lightSources, viewportWidth, viewportHeight);
+			break;
 		}
 	}
 
@@ -402,6 +441,34 @@ namespace BlackPearl {
 		DrawObject(m_QuadFinalScreenObj, m_SVOTracingShader);
 
 		ShowBufferTexture(m_DebugOctreeBufTexture, m_ScreenWidth * m_ScreenHeight);
+
+	}
+
+	void VoxelConeTracingSVORenderer::PathTracing( const LightSources* lightSources, unsigned int viewportWidth, unsigned int viewportHeight)
+	{
+		//glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glViewport(0, 0, m_ScreenWidth, m_ScreenHeight);
+		m_PathTracingShader->Bind();
+		m_PathTracingShader->SetUniform1i("u_SPP",s_Pause ? -1 : (m_SPP++));
+		m_PathTracingShader->SetUniform1i("u_Bounce", s_MaxBounce);
+		m_PathTracingShader->SetUniform1i("u_ViewType",0);
+		m_PathTracingShader->SetUniform1i("u_ScreenWidth", m_ScreenWidth);
+		m_PathTracingShader->SetUniform1i("u_ScreenHeight", m_ScreenHeight);
+		m_PathTracingShader->SetUniform1i("u_octreeLevel", m_OctreeLevel);
+		m_PathTracingShader->SetUniformVec3f("u_SunRadiance", m_SunRadiance);
+		m_SobolSSBO->Bind();
+		m_SobolSSBO->BindIndex(5);
+		m_PathTracingColor->Bind();
+		glBindImageTexture(0, m_PathTracingColor->GetRendererID(), 0, GL_FALSE, 0, GL_READ_WRITE, GL_RGBA32F);
+		m_PathTracingAlbedo->Bind();
+		glBindImageTexture(1, m_PathTracingAlbedo->GetRendererID(), 0, GL_FALSE, 0, GL_READ_WRITE, GL_RGBA8);
+		m_PathTracingNormal->Bind();
+		glBindImageTexture(2, m_PathTracingNormal->GetRendererID(), 0, GL_FALSE, 0, GL_READ_WRITE, GL_RGBA8_SNORM);
+		glBindImageTexture(3, m_OctreeNodeTex[0]->GetTextureID(), 0, GL_FALSE, 0, GL_READ_ONLY, GL_R32UI);
+		glBindImageTexture(4, m_OctreeNodeTex[1]->GetTextureID(), 0, GL_FALSE, 0, GL_READ_ONLY, GL_R32UI);
+		DrawObject(m_QuadPathTracing,m_PathTracingShader);
+		glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
 
 	}
 

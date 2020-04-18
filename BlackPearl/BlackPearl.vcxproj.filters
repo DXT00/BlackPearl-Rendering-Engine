@@ -1449,6 +1449,7 @@
     <ClInclude Include="src\BlackPearl\Renderer\MasterRenderer\VoxelConeTracingDeferredRenderer.h" />
     <ClInclude Include="src\BlackPearl\Renderer\MasterRenderer\VoxelConeTracingSVORenderer.h" />
     <ClInclude Include="src\BlackPearl\Renderer\Material\BufferTexture.h" />
+    <ClInclude Include="src\BlackPearl\Sampler\Sobol.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\BlackPearl\Animation\AnimatedModel.cpp">
@@ -1664,5 +1665,9 @@
     <ClCompile Include="src\BlackPearl\Renderer\MasterRenderer\VoxelConeTracingDeferredRenderer.cpp" />
     <ClCompile Include="src\BlackPearl\Renderer\MasterRenderer\VoxelConeTracingSVORenderer.cpp" />
     <ClCompile Include="src\BlackPearl\Renderer\Material\BufferTexture.cpp" />
+    <ClCompile Include="src\BlackPearl\Sampler\Sobol.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="src\BlackPearl\Sampler\SobolSequence.h" />
   </ItemGroup>
 </Project>

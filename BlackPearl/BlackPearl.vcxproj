@@ -143,6 +143,7 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\BlackPearl\Sampler\Sobol.h" />
     <ClInclude Include="src\BlackPearl\Renderer\Material\BufferTexture.h" />
     <ClInclude Include="src\BlackPearl\Animation\AnimatedModel.h" />
     <ClInclude Include="src\BlackPearl\Animation\Animation.h" />
@@ -593,6 +594,7 @@
     <ClInclude Include="src\BlackPearl\Renderer\MasterRenderer\VoxelConeTracingSVORenderer.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\BlackPearl\Sampler\Sobol.cpp" />
     <ClCompile Include="src\BlackPearl\Renderer\Material\BufferTexture.cpp" />
     <ClCompile Include="src\BlackPearl\Animation\AnimatedModel.cpp" />
     <ClCompile Include="src\BlackPearl\Animation\Animation.cpp" />
@@ -682,6 +684,9 @@
     <ProjectReference Include="vendor\imgui\ImGui.vcxproj">
       <Project>{C0FF640D-2C14-8DBE-F595-301E616989EF}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="src\BlackPearl\Sampler\SobolSequence.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

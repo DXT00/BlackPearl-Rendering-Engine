@@ -335,4 +335,36 @@ namespace BlackPearl {
 	{
 		glDeleteBuffers(1, &m_RendererID);
 	}
+	/*----------------------------    SSBO   --------------------------------*/
+	ShaderStorageBuffer::ShaderStorageBuffer(GLsizeiptr bytes,GLbitfield mapFlags)
+	{
+		glGenBuffers(1, &m_RendererID);
+		glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_RendererID);
+		//glNamedBufferStorage(m_RendererID, bytes, nullptr, mapFlags);
+		glBufferData(GL_SHADER_STORAGE_BUFFER, bytes, nullptr, GL_DYNAMIC_DRAW);
+		glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+	}
+	ShaderStorageBuffer::~ShaderStorageBuffer()
+	{
+		CleanUp();
+	}
+	void ShaderStorageBuffer::Bind()
+	{
+		glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_RendererID);
+
+	}
+	void ShaderStorageBuffer::BindIndex(unsigned int index)
+	{
+		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, index, m_RendererID);
+	}
+	void ShaderStorageBuffer::UnBind()
+	{
+		glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+
+	}
+	void ShaderStorageBuffer::CleanUp()
+	{
+		glDeleteBuffers(1, &m_RendererID);
+
+	}
 }

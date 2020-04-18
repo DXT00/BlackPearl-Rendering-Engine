@@ -6,24 +6,31 @@
 #include "BlackPearl/Renderer/Material/TextureImage2D.h"
 #include "BlackPearl/Renderer/Buffer.h"
 #include "BlackPearl/Renderer/Material/BufferTexture.h"
+#include "BlackPearl/Sampler/Sobol.h"
 namespace BlackPearl{
 
 	class VoxelConeTracingSVORenderer:public BasicRenderer
 	{
 	public:
 		enum RenderingMode {
-			VOXELIZATION_VISUALIZATION = 0, // Voxelization visualization.
-			VOXEL_CONE_TRACING = 1			// Global illumination using voxel cone tracing.
+			VOXELIZATION_VISUALIZATION = 0, // Voxelization visualization.	RenderVoxelVisualization()
+			VOXEL_CONE_TRACING = 1,			// Global illumination using voxel cone tracing. RenderScene()
+			SVO_PATH_TRACING = 2			//PathTracing()
 		};
 		VoxelConeTracingSVORenderer();
 		~VoxelConeTracingSVORenderer();
 		
 
-		void Init(unsigned int viewportWidth, unsigned int viewportHeight, Object* cubeObj, Object* brdfLUTQuadObj, Object* quadFinalScreenObj,
-			std::vector<Object*> objs, Object* skybox);
+		void Init(unsigned int viewportWidth, unsigned int viewportHeight,
+			Object* cubeObj,
+			Object* brdfLUTQuadObj,
+			Object* quadFinalScreenObj,
+			Object* quadPathTracing,
+			std::vector<Object*> objs, 
+			Object* skybox);
 		void InitVoxelization();
 		void InitVoxelVisualization(unsigned int viewportWidth, unsigned int viewportHeight);
-		
+		void InitPathTracing();
 		/*void Voxilize(const std::vector<Object*>& objs, Object* skybox,
 			bool clearVoxelizationFirst = true);*/
 		void Voxelize(const std::vector<Object*>& objs, Object* skybox,bool storeData);
@@ -39,7 +46,7 @@ namespace BlackPearl{
 		void RenderVoxelVisualization(Camera* camera, const std::vector<Object*>& objs, unsigned int viewportWidth, unsigned int viewportHeight);
 		void RenderScene(const std::vector<Object*>& objs, const LightSources* lightSources,
 			unsigned int viewportWidth, unsigned int viewportHeight, Object* skybox);
-
+		void PathTracing(const LightSources* lightSources, unsigned int viewportWidth, unsigned int viewportHeight);
 		/* Debug */
 		void ShowBufferTexture(std::shared_ptr<BufferTexture> bufferTexture, int dataLength);
 
@@ -67,6 +74,9 @@ namespace BlackPearl{
 		static float s_SpecularBlurThreshold;
 		static int s_VisualizeMipmapLevel;
 		static bool s_MipmapBlurSpecularTracing;
+		static int s_MaxBounce;//path tracing max cone number
+		static bool s_Pause;
+
 	private:
 
 		//Texture3D* m_VoxelTexture = nullptr;
@@ -89,8 +99,8 @@ namespace BlackPearl{
 		std::shared_ptr<Shader> m_VoxelizationShader;//SVO
 		std::shared_ptr<Shader> m_VoxelVisualizationShader;
 		std::shared_ptr<Shader> m_SVOTracingShader;
+		std::shared_ptr<Shader> m_PathTracingShader;
 		std::shared_ptr<Shader> m_FinalScreenShader;
-
 
 		// ----------------
 		// PBR BRDF LUT render.
@@ -123,7 +133,6 @@ namespace BlackPearl{
 		// Image Texture
 		// ----------------
 		std::shared_ptr<BufferTexture> m_VoxelPosBufTexture;
-
 		std::shared_ptr<BufferTexture> m_VoxelDiffuseBufTexture;
 		std::shared_ptr<BufferTexture> m_VoxelNormBufTexture;
 
@@ -141,6 +150,23 @@ namespace BlackPearl{
 		std::shared_ptr<Shader> m_LeafStoreShader;
 
 		std::shared_ptr<VertexArray> m_PointCubeVAO;
+		
+		// ----------------
+		// PathTracing
+		// ----------------
+		//sobol sequnces for hemishoere sampling.
+		std::shared_ptr<ShaderStorageBuffer> m_SobolSSBO;
+		Sobol* m_Sobol = nullptr;
+		GLfloat* m_SobolPtr;
+		int m_SPP = 0;
+		std::shared_ptr<Texture> m_Noise;
+
+		std::shared_ptr<Texture> m_PathTracingColor;
+		std::shared_ptr<Texture> m_PathTracingAlbedo;
+		std::shared_ptr<Texture> m_PathTracingNormal;
+		glm::vec3 m_SunRadiance{ glm::vec3(2.0f) };
+		Object* m_QuadPathTracing = nullptr;//show path tracing results
+
 
 		bool m_IsInitialize = false;
 

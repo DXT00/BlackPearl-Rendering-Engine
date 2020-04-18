@@ -1,4 +1,4 @@
-###  Voxel Cone Tracing - Sparse voxel octree 
+###  Voxel Cone Tracing - Sparse voxel octree indirect light tracing
 
 code rederence :
 otaku690/SparseVoxelOctree
@@ -13,6 +13,12 @@ NVIDIA Research
 https://research.nvidia.com/sites/default/files/pubs/2010-02_Efficient-Sparse-Voxel/laine2010i3d_paper.pdf
 
 
+SVO indirect light tracing:
+![SVO_indirect_voxel_tracing1](/results/SVO_indirect_voxel_tracing1.png)
 
-![SVOVoxelTracing1](/results/SVOVoxelTracing1.png)
-![SVOVoxelTracing](/results/SVOVoxelTracing.png)
+SVO voxel rendering:
+![SVO_voxel_rendering](/results/SVO_voxel_rendering.png)
+
+
+
+
