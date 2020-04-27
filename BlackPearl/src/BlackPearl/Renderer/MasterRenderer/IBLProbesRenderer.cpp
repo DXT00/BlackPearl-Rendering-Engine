@@ -184,6 +184,7 @@ namespace BlackPearl {
 
 	void IBLProbesRenderer::RenderEnvironmerntCubeMaps(const LightSources* lightSources, std::vector<Object*> objects, LightProbe* probe, Object* skyBox)
 	{
+		GE_ERROR_JUDGE();
 		glm::vec3 center = probe->GetPosition();
 		probe->UpdateCamera();
 		auto camera = probe->GetCamera();
@@ -218,25 +219,27 @@ namespace BlackPearl {
 		glm::vec2 mipMapSize = { environmentCubeMap->GetWidth(),environmentCubeMap->GetHeight() };
 		std::shared_ptr<FrameBuffer> frameBuffer(new FrameBuffer());
 	//	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
+		GE_ERROR_JUDGE();
 		frameBuffer->Bind();
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
+		//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		GE_ERROR_JUDGE();
 		frameBuffer->AttachCubeMapColorTexture(0, environmentCubeMap);
+		GE_ERROR_JUDGE();
 		//TODO::
 		frameBuffer->AttachRenderBuffer(environmentCubeMap->GetWidth(), environmentCubeMap->GetHeight());
+		GE_ERROR_JUDGE();
 		for (unsigned int mip = 0; mip < environmentCubeMap->GetMipMapLevel(); mip++)
 		{
 
 			frameBuffer->BindRenderBuffer();
 			/*glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, mipMapSize.x, mipMapSize.y);
 			glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, frameBuffer->GetRenderBufferID());*/
-
+			GE_ERROR_JUDGE();
 			glViewport(0, 0, mipMapSize.x, mipMapSize.y);
 			//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			// Render the scene to environment cubemap (single pass).
 
-
+			GE_ERROR_JUDGE();
 			for (unsigned int i = 0; i < 6; i++)
 			{
 				Renderer::SceneData* scene = DBG_NEW Renderer::SceneData({ ProbeProjectionViews[i] ,ProbeView[i],projection,probe->GetPosition(),{},cameraComponent->Front(),*lightSources });
@@ -253,12 +256,12 @@ namespace BlackPearl {
 					if (obj->GetComponent<MeshRenderer>()->GetIsPBRObject()) {
 						m_PbrShader->Bind();
 						DrawObject(obj,m_PbrShader,scene);
-
+						GE_ERROR_JUDGE();
 					}
 					else {
 						m_NonPbrShader->Bind();
 						DrawObject(obj, m_NonPbrShader, scene);
-
+						GE_ERROR_JUDGE();
 					}
 
 				}
@@ -272,8 +275,9 @@ namespace BlackPearl {
 
 		}
 		frameBuffer->UnBind();
+		GE_ERROR_JUDGE();
 		frameBuffer->CleanUp();
-
+		GE_ERROR_JUDGE();
 
 	}
 
@@ -369,18 +373,27 @@ namespace BlackPearl {
 		};
 		auto specularIrradianceMap = probe->GetSpecularPrefilterCubeMap();
 		m_SpecularPrefilterShader->Bind();
+		GE_ERROR_JUDGE();
+
 		m_SpecularPrefilterShader->SetUniform1i("u_EnvironmentMap", 3);
 		glActiveTexture(GL_TEXTURE3);
+		GE_ERROR_JUDGE();
+
 		probe->GetHdrEnvironmentCubeMap()->Bind();
+		GE_ERROR_JUDGE();
 
 		std::shared_ptr<FrameBuffer> frameBuffer(new FrameBuffer());
+		GE_ERROR_JUDGE();
 
-
+		frameBuffer->Bind();
 		frameBuffer->AttachCubeMapColorTexture(0, specularIrradianceMap);
 		frameBuffer->AttachRenderBuffer(specularIrradianceMap->GetWidth(), specularIrradianceMap->GetHeight());
 		//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		GE_ERROR_JUDGE();
 
 		frameBuffer->Bind();
+		GE_ERROR_JUDGE();
+
 		unsigned int maxMipMapLevels = 5;
 		for (unsigned int mip = 0; mip < maxMipMapLevels; mip++)
 		{
@@ -390,9 +403,11 @@ namespace BlackPearl {
 			frameBuffer->BindRenderBuffer();
 			glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, mipWidth, mipHeight);
 			glViewport(0, 0, mipWidth, mipHeight);
+			GE_ERROR_JUDGE();
 
 			float roughness = (float)mip / (float)(maxMipMapLevels - 1);
 			m_SpecularPrefilterShader->SetUniform1f("u_roughness", roughness);
+			GE_ERROR_JUDGE();
 
 
 			for (unsigned int i = 0; i < 6; i++)
@@ -401,7 +416,10 @@ namespace BlackPearl {
 				Renderer::SceneData* scene = DBG_NEW Renderer::SceneData({ ProbeProjectionViews[i] ,ProbeView[i],projection,probe->GetPosition(),{},cameraComponent->Front(),*lightSources });
 				glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, specularIrradianceMap->GetRendererID(), mip);
 				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+				GE_ERROR_JUDGE();
+
 				probe->GetObj()->GetComponent<MeshRenderer>()->SetShaders(m_SpecularPrefilterShader);
+				GE_ERROR_JUDGE();
 
 				DrawObject(probe->GetObj(), m_SpecularPrefilterShader, scene);
 				delete scene;

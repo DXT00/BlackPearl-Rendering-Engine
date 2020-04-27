@@ -62,7 +62,7 @@ void main(){
 	}
 	if(flag){
 		node|=0x80000000u;
-		if(u_level==u_maxLevel)
+		if(u_level==u_maxLevel)//标志为叶子节点
 			node|=0x40000000u;
 
 		imageStore(u_octreeBuffer,int(childIdx),uvec4(node,0,0,0));

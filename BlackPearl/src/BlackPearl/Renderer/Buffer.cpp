@@ -254,7 +254,7 @@ namespace BlackPearl {
 		
 		glGenFramebuffers(1, &m_RendererID);
 		Bind();
-
+		
 		//m_PositionTexture RGB-position A--isPBRObject+objectId -->voxel cone tracing
 		m_PositionTexture.reset(DBG_NEW Texture(Texture::Type::DiffuseMap, imageWidth, imageHeight, false, GL_NEAREST, GL_NEAREST, GL_RGBA16F, GL_RGBA, -1, GL_FLOAT));
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, (GLuint)m_PositionTexture->GetRendererID(), 0);
@@ -310,7 +310,7 @@ namespace BlackPearl {
 		GLuint initVal = 0;
 		glGenBuffers(1, &m_RendererID);
 		glBindBuffer(GL_ATOMIC_COUNTER_BUFFER, m_RendererID);
-		glBufferData(GL_ATOMIC_COUNTER_BUFFER, sizeof(GLuint), &initVal, GL_STATIC_DRAW);
+		glBufferData(GL_ATOMIC_COUNTER_BUFFER, sizeof(GLuint), &initVal, GL_DYNAMIC_DRAW);
 		glBindBuffer(GL_ATOMIC_COUNTER_BUFFER, 0);
 
 	}
@@ -319,6 +319,8 @@ namespace BlackPearl {
 		glBufferSubData(GL_ATOMIC_COUNTER_BUFFER, 0, sizeof(GLuint), &val); //reset counter to zero
 		UnBind();
 	}
+
+	
 	void AtomicBuffer::Bind()
 	{
 		glBindBuffer(GL_ATOMIC_COUNTER_BUFFER, m_RendererID);
@@ -338,11 +340,14 @@ namespace BlackPearl {
 	/*----------------------------    SSBO   --------------------------------*/
 	ShaderStorageBuffer::ShaderStorageBuffer(GLsizeiptr bytes,GLbitfield mapFlags)
 	{
-		glGenBuffers(1, &m_RendererID);
-		glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_RendererID);
-		//glNamedBufferStorage(m_RendererID, bytes, nullptr, mapFlags);
-		glBufferData(GL_SHADER_STORAGE_BUFFER, bytes, nullptr, GL_DYNAMIC_DRAW);
-		glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+		GLuint initVal = 0;
+
+		//glGenBuffers(1, &m_RendererID);
+		glCreateBuffers(1, &m_RendererID);
+		//glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_RendererID);
+		glNamedBufferStorage(m_RendererID, bytes, nullptr, mapFlags);
+		//glBufferData(GL_SHADER_STORAGE_BUFFER, bytes, nullptr, GL_STATIC_COPY);
+		//glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 	}
 	ShaderStorageBuffer::~ShaderStorageBuffer()
 	{

@@ -1,3 +1,5 @@
+
+
 struct Material{
 	vec3 ambientColor;
 	vec3 diffuseColor;
@@ -15,16 +17,22 @@ struct Material{
 	sampler2D ao;
 	sampler2D roughness;
 	sampler2D mentallic;
-
+	
 	samplerCube cube;
 	float shininess;
 	float specularDiffusion;
 	float diffuseReflectivity;
 	float specularReflectivity;
 	float transparency;
+	bool isBlinnLight;
 	float emissivity;
+	int  isTextureSample;
+	int isDiffuseTextureSample;
+	int isSpecularTextureSample;
+	int isMetallicTextureSample;
 	float refractiveIndex;
 };
+
 
 struct Settings{
 	bool isBlinnLight;

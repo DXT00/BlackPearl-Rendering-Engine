@@ -19,26 +19,26 @@
     <IgnoreWarnCompileDuplicatedFilename>true</IgnoreWarnCompileDuplicatedFilename>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>Sandbox</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.18362.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Dist|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -132,7 +132,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="src\Layers\AdvanceLightTestLayer.h" />
-    <ClInclude Include="src\Layers\VoxelConeTracingDeferredLayer.h" />
+    <ClInclude Include="src\Layers\CubeTestLayer.h" />
     <ClInclude Include="src\Layers\FrameBufferTestLayer.h" />
     <ClInclude Include="src\Layers\IBLProbesRenderingLayer.h" />
     <ClInclude Include="src\Layers\IBLRenderingLayer.h" />
@@ -140,9 +140,10 @@
     <ClInclude Include="src\Layers\ShadowMapPointLightLayer.h" />
     <ClInclude Include="src\Layers\ShadowMapTestLayer.h" />
     <ClInclude Include="src\Layers\SkyBoxTestLayer.h" />
+    <ClInclude Include="src\Layers\VoxelConeTracingDeferredLayer.h" />
     <ClInclude Include="src\Layers\VoxelConeTracingLayer.h" />
-    <ClInclude Include="src\Layers\VoxelizationTestLayer.h" />
     <ClInclude Include="src\Layers\VoxelConeTracingSVOLayer.h" />
+    <ClInclude Include="src\Layers\VoxelizationTestLayer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\SandBox.cpp" />
@@ -157,11 +158,15 @@
     <None Include="assets\shaders\gBufferVoxelSVO\buildTree\nodeAlloc.glsl" />
     <None Include="assets\shaders\gBufferVoxelSVO\buildTree\nodeFlag.glsl" />
     <None Include="assets\shaders\gBufferVoxelSVO\buildTree\nodeInit.glsl" />
+    <None Include="assets\shaders\gBufferVoxelSVO\buildTree\renderNodeKd.glsl" />
+    <None Include="assets\shaders\gBufferVoxelSVO\gBufferVoxel.glsl" />
     <None Include="assets\shaders\gBufferVoxelSVO\pathTracing.glsl" />
+    <None Include="assets\shaders\gBufferVoxelSVO\pathTracingGBuffer.glsl" />
     <None Include="assets\shaders\gBufferVoxelSVO\renderVoxel.glsl" />
     <None Include="assets\shaders\gBufferVoxelSVO\svoTracing.glsl" />
     <None Include="assets\shaders\gBufferVoxelSVO\svoTracing_new.glsl" />
     <None Include="assets\shaders\gBufferVoxelSVO\voxelizationSVO.glsl" />
+    <None Include="assets\shaders\gBufferVoxelSVO\voxelizationSVO_new.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

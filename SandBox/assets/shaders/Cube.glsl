@@ -14,28 +14,14 @@ void main()
 	gl_Position = u_ProjectionView* u_Model * vec4(aPos,1.0);
 }
 
-
-
 #type fragment
 #version 430 core
 out vec4 FragColor;
 in vec2 TexCoords;
 
-//uniform struct Material{
-//	vec3 ambientColor;
-//	vec3 diffuseColor;
-//	vec3 specularColor;
-//	vec3 emissionColor;
-//	sampler2D diffuse;
-//	sampler2D specular;
-//	sampler2D emission;
-//	sampler2D normal;
-//	sampler2D height;
-//
-//	float shininess;
-//
-//}u_Material;
+
 uniform Material u_Material;
+
 float near = 0.1; 
 float far  = 100.0; 
 float LinearizeDepth(float depth){

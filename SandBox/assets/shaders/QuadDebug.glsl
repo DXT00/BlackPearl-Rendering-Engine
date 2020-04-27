@@ -19,20 +19,20 @@ void main()
 out vec4 FragColor;
 in vec2 TexCoords;
 
-struct Material{
-	vec3 ambientColor;
-	vec3 diffuseColor;
-	vec3 specularColor;
-	vec3 emissionColor;
-	sampler2D diffuse;
-	sampler2D specular;
-	sampler2D emission;
-	sampler2D normal;
-	sampler2D height;
-
-	float shininess;
-
-};
+//struct Material{
+//	vec3 ambientColor;
+//	vec3 diffuseColor;
+//	vec3 specularColor;
+//	vec3 emissionColor;
+//	sampler2D diffuse;
+//	sampler2D specular;
+//	sampler2D emission;
+//	sampler2D normal;
+//	sampler2D height;
+//
+//	float shininess;
+//
+//};
 uniform sampler2D u_BRDFLUTMap;
 uniform Material u_Material;
 const float offset = 1.0 / 300.0; 

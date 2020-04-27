@@ -37,6 +37,9 @@
     <Filter Include="src\BlackPearl\ImGui">
       <UniqueIdentifier>{57BF1252-434E-9C1B-EC6C-B016D8DAACC1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\BlackPearl\LayerScene">
+      <UniqueIdentifier>{278229C8-9344-5D52-DCF4-EBDE48F63530}</UniqueIdentifier>
+    </Filter>
     <Filter Include="src\BlackPearl\LightProbes">
       <UniqueIdentifier>{FF94BD15-EBA4-69E6-545E-CE04408D587F}</UniqueIdentifier>
     </Filter>
@@ -78,6 +81,9 @@
     </Filter>
     <Filter Include="src\BlackPearl\Renderer\ShadowBox">
       <UniqueIdentifier>{D1E64C31-3D55-A2B0-863E-5DB0F2EB974C}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\BlackPearl\Sampler">
+      <UniqueIdentifier>{9068350A-7C62-5E5C-65CF-F46C5168C4C8}</UniqueIdentifier>
     </Filter>
     <Filter Include="src\BlackPearl\Scene">
       <UniqueIdentifier>{4AB7C252-3646-4C1C-DF64-6017CBD25CC2}</UniqueIdentifier>
@@ -213,6 +219,9 @@
     <ClInclude Include="src\BlackPearl\KeyCodes.h">
       <Filter>src\BlackPearl</Filter>
     </ClInclude>
+    <ClInclude Include="src\BlackPearl\LayerScene\Layer.h">
+      <Filter>src\BlackPearl\LayerScene</Filter>
+    </ClInclude>
     <ClInclude Include="src\BlackPearl\LayerStack.h">
       <Filter>src\BlackPearl</Filter>
     </ClInclude>
@@ -276,8 +285,17 @@
     <ClInclude Include="src\BlackPearl\Renderer\MasterRenderer\ShadowMapRenderer.h">
       <Filter>src\BlackPearl\Renderer\MasterRenderer</Filter>
     </ClInclude>
+    <ClInclude Include="src\BlackPearl\Renderer\MasterRenderer\VoxelConeTracingDeferredRenderer.h">
+      <Filter>src\BlackPearl\Renderer\MasterRenderer</Filter>
+    </ClInclude>
     <ClInclude Include="src\BlackPearl\Renderer\MasterRenderer\VoxelConeTracingRenderer.h">
       <Filter>src\BlackPearl\Renderer\MasterRenderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BlackPearl\Renderer\MasterRenderer\VoxelConeTracingSVORenderer.h">
+      <Filter>src\BlackPearl\Renderer\MasterRenderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BlackPearl\Renderer\Material\BufferTexture.h">
+      <Filter>src\BlackPearl\Renderer\Material</Filter>
     </ClInclude>
     <ClInclude Include="src\BlackPearl\Renderer\Material\CubeMapTexture.h">
       <Filter>src\BlackPearl\Renderer\Material</Filter>
@@ -320,6 +338,12 @@
     </ClInclude>
     <ClInclude Include="src\BlackPearl\Renderer\VertexArray.h">
       <Filter>src\BlackPearl\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BlackPearl\Sampler\Sobol.h">
+      <Filter>src\BlackPearl\Sampler</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BlackPearl\Sampler\SobolSequence.h">
+      <Filter>src\BlackPearl\Sampler</Filter>
     </ClInclude>
     <ClInclude Include="src\BlackPearl\Scene\Scene.h">
       <Filter>src\BlackPearl\Scene</Filter>
@@ -1443,13 +1467,6 @@
     <ClInclude Include="vendor\stb\stb_image.h">
       <Filter>vendor\stb</Filter>
     </ClInclude>
-    <ClInclude Include="src\BlackPearl\LayerScene\Layer.h">
-      <Filter>src\BlackPearl</Filter>
-    </ClInclude>
-    <ClInclude Include="src\BlackPearl\Renderer\MasterRenderer\VoxelConeTracingDeferredRenderer.h" />
-    <ClInclude Include="src\BlackPearl\Renderer\MasterRenderer\VoxelConeTracingSVORenderer.h" />
-    <ClInclude Include="src\BlackPearl\Renderer\Material\BufferTexture.h" />
-    <ClInclude Include="src\BlackPearl\Sampler\Sobol.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\BlackPearl\Animation\AnimatedModel.cpp">
@@ -1539,6 +1556,9 @@
     <ClCompile Include="src\BlackPearl\Input.cpp">
       <Filter>src\BlackPearl</Filter>
     </ClCompile>
+    <ClCompile Include="src\BlackPearl\LayerScene\Layer.cpp">
+      <Filter>src\BlackPearl\LayerScene</Filter>
+    </ClCompile>
     <ClCompile Include="src\BlackPearl\LayerStack.cpp">
       <Filter>src\BlackPearl</Filter>
     </ClCompile>
@@ -1602,8 +1622,17 @@
     <ClCompile Include="src\BlackPearl\Renderer\MasterRenderer\ShadowMapRenderer.cpp">
       <Filter>src\BlackPearl\Renderer\MasterRenderer</Filter>
     </ClCompile>
+    <ClCompile Include="src\BlackPearl\Renderer\MasterRenderer\VoxelConeTracingDeferredRenderer.cpp">
+      <Filter>src\BlackPearl\Renderer\MasterRenderer</Filter>
+    </ClCompile>
     <ClCompile Include="src\BlackPearl\Renderer\MasterRenderer\VoxelConeTracingRenderer.cpp">
       <Filter>src\BlackPearl\Renderer\MasterRenderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BlackPearl\Renderer\MasterRenderer\VoxelConeTracingSVORenderer.cpp">
+      <Filter>src\BlackPearl\Renderer\MasterRenderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BlackPearl\Renderer\Material\BufferTexture.cpp">
+      <Filter>src\BlackPearl\Renderer\Material</Filter>
     </ClCompile>
     <ClCompile Include="src\BlackPearl\Renderer\Material\CubeMapTexture.cpp">
       <Filter>src\BlackPearl\Renderer\Material</Filter>
@@ -1647,6 +1676,9 @@
     <ClCompile Include="src\BlackPearl\Renderer\VertexArray.cpp">
       <Filter>src\BlackPearl\Renderer</Filter>
     </ClCompile>
+    <ClCompile Include="src\BlackPearl\Sampler\Sobol.cpp">
+      <Filter>src\BlackPearl\Sampler</Filter>
+    </ClCompile>
     <ClCompile Include="src\BlackPearl\Scene\Scene.cpp">
       <Filter>src\BlackPearl\Scene</Filter>
     </ClCompile>
@@ -1659,15 +1691,5 @@
     <ClCompile Include="src\pch.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\BlackPearl\LayerScene\Layer.cpp">
-      <Filter>src\BlackPearl</Filter>
-    </ClCompile>
-    <ClCompile Include="src\BlackPearl\Renderer\MasterRenderer\VoxelConeTracingDeferredRenderer.cpp" />
-    <ClCompile Include="src\BlackPearl\Renderer\MasterRenderer\VoxelConeTracingSVORenderer.cpp" />
-    <ClCompile Include="src\BlackPearl\Renderer\Material\BufferTexture.cpp" />
-    <ClCompile Include="src\BlackPearl\Sampler\Sobol.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="src\BlackPearl\Sampler\SobolSequence.h" />
   </ItemGroup>
 </Project>

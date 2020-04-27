@@ -31,7 +31,8 @@ namespace BlackPearl {
 
 		ImGui::Text("SVO voxel GI");
 		ImGui::Checkbox("spp pause", &VoxelConeTracingSVORenderer::s_Pause);
-
+		ImGui::Checkbox("svo direct light", &VoxelConeTracingSVORenderer::s_DirectLight);
+		ImGui::Checkbox("svo Indirect light", &VoxelConeTracingSVORenderer::s_IndirectDiffuseLight);
 
 		ImGui::Text("deferred voxel GI");
 		ImGui::Checkbox("voxel Indirect diffuse", &VoxelConeTracingDeferredRenderer::s_IndirectDiffuseLight);

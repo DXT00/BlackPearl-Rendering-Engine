@@ -24,13 +24,13 @@ public:
 		m_QuadBRDFLUTObj = CreateQuad();
 		m_QuadGBufferObj = CreateQuad();
 		m_QuadFinalScreenObj = CreateQuad();
-		m_SurroundSphereObj = CreateSphere(1.0, 128, 128,"assets/shaders/Sphere.glsl","","SurroundSphere");
-		m_VoxelConeTracingDeferredRenderer->Init(BlackPearl::Configuration::WindowWidth, BlackPearl::Configuration::WindowHeight,
-			m_QuadObj, m_QuadGBufferObj,m_QuadBRDFLUTObj,m_QuadFinalScreenObj, m_SurroundSphereObj,m_CubeObj);
+		m_SurroundSphereObj = CreateSphere(1.0, 128, 128, "assets/shaders/Sphere.glsl", "", "SurroundSphere");
 
-		glEnable(GL_MULTISAMPLE);
+		//glEnable(GL_MULTISAMPLE);
 
 		BlackPearl::Renderer::Init();
+		m_VoxelConeTracingDeferredRenderer->Init(BlackPearl::Configuration::WindowWidth, BlackPearl::Configuration::WindowHeight,
+			m_QuadObj, m_QuadGBufferObj, m_QuadBRDFLUTObj, m_QuadFinalScreenObj, m_SurroundSphereObj, m_CubeObj);
 
 		/***************************************** Scene ********************************************************/
 		m_SkyBoxObj = CreateSkyBox(
@@ -72,7 +72,7 @@ public:
 		InputCheck(ts);
 		milliseconds currentTimeMs = duration_cast<milliseconds>(system_clock::now().time_since_epoch());
 		double runtimeSecond = (currentTimeMs.count() - m_StartTimeMs.count()) / 1000.0f;
-		
+
 		//Switch mode
 		if (BlackPearl::Input::IsKeyPressed(BP_KEY_U)) {
 			m_Mode = (m_Mode + 1) % 2;
@@ -110,7 +110,7 @@ public:
 		/*m_VoxelConeTracingDeferredRenderer->RenderGBuffer(m_BackGroundObjsList, m_SkyBoxObj);
 		m_VoxelConeTracingDeferredRenderer->DrawGBuffer(m_QuadGBufferObj);*/
 
-	
+
 		//if (m_CurrentRenderingMode == BlackPearl::VoxelConeTracingDeferredRenderer::RenderingMode::VOXEL_CONE_TRACING) {
 		//	glEnable(GL_DEPTH_TEST);
 		//	glDepthFunc(GL_LEQUAL);

@@ -1,5 +1,5 @@
 #type vertex
-#version 430 core 
+#version 450 core 
 
 layout (location = 0) in vec4 glVertex;
 layout (location = 1) in vec4 glColor;
@@ -28,11 +28,11 @@ void main(){
 //	v_normal = u_Normal*glNormal;  //?
 //	v_color = glColor;  //?
  //v_texcoord = glVertex.xyz/u_voxelDim;
+	int voxelDim = u_voxelDim;
+	v_texcoord.x =  uint(mod(gl_VertexID,voxelDim));
 
-	v_texcoord.x =  uint(mod(gl_VertexID,u_voxelDim));
-
-	v_texcoord.z = uint(mod((gl_VertexID / u_voxelDim) , u_voxelDim));
-	v_texcoord.y = uint(gl_VertexID / (u_voxelDim*u_voxelDim));
+	v_texcoord.z = uint(mod((gl_VertexID / voxelDim) , voxelDim));
+	v_texcoord.y = uint(gl_VertexID / (voxelDim*voxelDim));
 	gl_Position = u_Proj * u_ModelView * vec4( v_texcoord, 1.0 );
 
 	//v_texcoord.xyz /= u_voxelDim;
@@ -45,7 +45,7 @@ void main(){
 }
 
 #type geometry
-#version 430 core
+#version 450 core
 
 layout (points) in;
 layout (triangle_strip,max_vertices = 26) out;
@@ -72,7 +72,7 @@ uniform mat4 u_Proj;
 uniform int u_octreeLevel;
 uniform layout(binding = 0,r32ui) uimageBuffer u_octreeBuffer;
 uniform layout(binding = 1,r32ui) uimageBuffer u_octreeKd;
-
+int uOctreeLevel = u_octreeLevel;
 ivec3 ClampVec3(ivec3 v){
 	ivec3 res = ivec3(0);
 	if(v.x>=1) res.x = 1;
@@ -96,19 +96,19 @@ bool nodeOccupied( uvec3 loc,out int leafIdx){
 	uint idx;
 	uvec3 umin = uvec3(0);
 	ivec3 offset;
-	for(int i=0;i<=u_octreeLevel;++i){
+	for(int i=0;i<=uOctreeLevel;++i){
 		leafIdx = int(idx);
 		idx = imageLoad(u_octreeBuffer,int(idx)).r;
-		if((idx&0x80000000) ==0){
+		if((idx&0x80000000u) ==0u){
 			occupied = false;
 			break;
 		}
-		else if( i == u_octreeLevel )
+		else if( i == uOctreeLevel )
 		{	    
 		    break;
 		}
-		idx &= 0x7FFFFFFF;
-		if( idx == 0)
+		idx &= 0x7FFFFFFFu;
+		if( idx == 0u)
 		{
 		    occupied =false;// false;
 		    break;
@@ -280,7 +280,7 @@ void main(){
 }
 
 #type fragment
-#version 430 core
+#version 450 core
 
 in vec4 f_color;
 in vec4 f_vertex;
@@ -289,7 +289,7 @@ layout(location = 0) out vec4 gl_FragColor;
 out vec4 fragColor;
 void main(){
 
-	gl_FragColor =f_color;
+	gl_FragColor =vec4(1.0,0.0,0.0,1.0);//f_color;//vec4(f_leafIdx,1.0);//vec4(1.0,0.0,0.0,1.0);//f_color;
 		//fragColor =vec4(f_leafIdx,1.0);//f_vertex;//vec4(1.0,0.0,0.0,1.0);// f_color;
 
 

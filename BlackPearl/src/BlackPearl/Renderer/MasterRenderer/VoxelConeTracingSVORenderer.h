@@ -46,7 +46,12 @@ namespace BlackPearl{
 		void RenderVoxelVisualization(Camera* camera, const std::vector<Object*>& objs, unsigned int viewportWidth, unsigned int viewportHeight);
 		void RenderScene(const std::vector<Object*>& objs, const LightSources* lightSources,
 			unsigned int viewportWidth, unsigned int viewportHeight, Object* skybox);
-		void PathTracing(const LightSources* lightSources, unsigned int viewportWidth, unsigned int viewportHeight);
+		void PathTracing(std::vector<Object*> objs, Object* skybox, const LightSources* lightSources, unsigned int viewportWidth, unsigned int viewportHeight);
+		void PathTracingGBuffer(std::vector<Object*> objs, Object* skybox, const LightSources* lightSources, unsigned int viewportWidth, unsigned int viewportHeight);
+
+		void RenderGBuffer(const std::vector<Object*>& objs, Object* skybox);
+		
+		
 		/* Debug */
 		void ShowBufferTexture(std::shared_ptr<BufferTexture> bufferTexture, int dataLength);
 
@@ -59,6 +64,9 @@ namespace BlackPearl{
 		void BuildFragmentList(const std::vector<Object*>& obj, Object* skybox);
 		void BuildSVO();
 		void RebuildSVO(const std::vector<Object*>& obj, Object* skybox);
+
+		/* brdf LUT*/
+		void RenderSpecularBRDFLUTMap();
 
 		/* Settings */
 		static bool s_Shadows;
@@ -100,6 +108,8 @@ namespace BlackPearl{
 		std::shared_ptr<Shader> m_VoxelVisualizationShader;
 		std::shared_ptr<Shader> m_SVOTracingShader;
 		std::shared_ptr<Shader> m_PathTracingShader;
+		std::shared_ptr<Shader> m_PathTracingGBufferShader;
+
 		std::shared_ptr<Shader> m_FinalScreenShader;
 
 		// ----------------
@@ -139,7 +149,7 @@ namespace BlackPearl{
 		// ----------------
 		// SVO
 		// ----------------
-		unsigned int m_OctreeLevel = 7;
+		unsigned int m_OctreeLevel =7;
 		unsigned int m_TotalTreeNode = 0;
 		std::shared_ptr<BufferTexture> m_OctreeNodeTex[2];
 		std::shared_ptr<BufferTexture> m_DebugOctreeBufTexture;
@@ -148,6 +158,7 @@ namespace BlackPearl{
 		std::shared_ptr<Shader> m_NodeAllocShader;
 		std::shared_ptr<Shader> m_NodeInitShader;
 		std::shared_ptr<Shader> m_LeafStoreShader;
+		std::shared_ptr<Shader> m_NodeRenderShader;
 
 		std::shared_ptr<VertexArray> m_PointCubeVAO;
 		
@@ -167,7 +178,11 @@ namespace BlackPearl{
 		glm::vec3 m_SunRadiance{ glm::vec3(2.0f) };
 		Object* m_QuadPathTracing = nullptr;//show path tracing results
 
-
+		// ----------------
+		// PBR BRDF LUT render.
+		// ----------------
+		std::shared_ptr<Shader> m_SpecularBRDFLutShader;
+		std::shared_ptr<Texture> m_SpecularBrdfLUTTexture = nullptr;
 		bool m_IsInitialize = false;
 
 	};

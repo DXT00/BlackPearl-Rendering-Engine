@@ -86,7 +86,7 @@ public:
 	
 		
 		LoadScene("CornellScene");//SpheresScene
-	//	LoadDynamicObject("Robot");
+		LoadDynamicObject("Robot");
 
 
 		/*Draw CubeMap from hdrMap and Create environment IrrdianceMap*/

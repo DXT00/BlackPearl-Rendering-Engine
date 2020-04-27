@@ -1,8 +1,9 @@
 #pragma once
 #include<bitset>
-
 namespace BlackPearl {
 	//一个Entity最多32个Component
+
+	//inline static void SyncGPU();
 	class Configuration {
 	public:
 		static const unsigned int MaxComponents = 32;
@@ -45,7 +46,7 @@ namespace BlackPearl {
 		static const float EnvironmantMapResolution;
 		//static const float GICoeefs;
 
-
+		static void SyncGPU();
 	};
 	struct ShaderConfig {
 

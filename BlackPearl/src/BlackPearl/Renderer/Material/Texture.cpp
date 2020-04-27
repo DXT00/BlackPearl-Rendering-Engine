@@ -7,6 +7,8 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 namespace BlackPearl {
+
+
 	Texture::Texture(Type type)
 	{
 		glGenTextures(1, &m_TextureID);
@@ -49,10 +51,13 @@ namespace BlackPearl {
 		m_Path = "";
 		m_Type = type;
 		glGenTextures(1, &m_TextureID);
+		GE_ERROR_JUDGE();//出现error的原因：很可能m_TextureID用在了别的target上，例如CUBEMAP,不行的话运行前加个断点 = = 
+
 		glBindTexture(GL_TEXTURE_2D, m_TextureID);
 		//if(isDepth==false)
+		GE_ERROR_JUDGE();
 		Init(width, height, minFilter, maxFilter, internalFormat, format, wrap, dataType, generateMipmap);
-
+		GE_ERROR_JUDGE();
 
 
 	}
@@ -68,6 +73,7 @@ namespace BlackPearl {
 
 	Texture::~Texture()
 	{
+		UnBind();
 		glDeleteTextures(1, &m_TextureID);
 	}
 

@@ -43,8 +43,8 @@ namespace BlackPearl {
 		InitVoxelVisualization(viewportWidth, viewportHeight);
 
 		/*debug shader*/
-		m_VoxelizationTestShader.reset(DBG_NEW Shader("assets/shaders/voxelization/debug/voxelizeTest.glsl"));
-		m_FrontBackCubeTestShader.reset(DBG_NEW Shader("assets/shaders/voxelization/debug/quadTest.glsl"));
+		//m_VoxelizationTestShader.reset(DBG_NEW Shader("assets/shaders/voxelization/debug/voxelizeTest.glsl"));
+		//m_FrontBackCubeTestShader.reset(DBG_NEW Shader("assets/shaders/voxelization/debug/quadTest.glsl"));
 
 		/*pbr BRDF LUT shader*/
 		m_SpecularBRDFLutShader.reset(DBG_NEW Shader("assets/shaders/ibl/brdf.glsl"));
@@ -332,40 +332,40 @@ namespace BlackPearl {
 
 
 
-	void VoxelConeTracingRenderer::VoxelizeTest(const std::vector<Object*>& objs)
-	{
+	//void VoxelConeTracingRenderer::VoxelizeTest(const std::vector<Object*>& objs)
+	//{
 
 
-		glViewport(0, 0, Configuration::WindowWidth, Configuration::WindowHeight);
-		glEnable(GL_CULL_FACE);
-		glEnable(GL_DEPTH_TEST);
-		glEnable(GL_BLEND);
-		DrawObjects(objs);
+	//	glViewport(0, 0, Configuration::WindowWidth, Configuration::WindowHeight);
+	//	glEnable(GL_CULL_FACE);
+	//	glEnable(GL_DEPTH_TEST);
+	//	glEnable(GL_BLEND);
+	//	DrawObjects(objs);
 
 
-		//Shader
-		m_VoxelizationTestShader->Bind();
+	//	//Shader
+	//	m_VoxelizationTestShader->Bind();
 
 
-		// Settings.
-		glViewport(120, 120, m_VoxelTextureSize, m_VoxelTextureSize);
+	//	// Settings.
+	//	glViewport(120, 120, m_VoxelTextureSize, m_VoxelTextureSize);
 
-		glDisable(GL_CULL_FACE);
-		glDisable(GL_DEPTH_TEST);
-		glDisable(GL_BLEND);
+	//	glDisable(GL_CULL_FACE);
+	//	glDisable(GL_DEPTH_TEST);
+	//	glDisable(GL_BLEND);
 
-	
-		m_VoxelizationTestShader->SetUniformVec3f("u_CubeSize", m_CubeObj->GetComponent<Transform>()->GetScale());
+	//
+	//	m_VoxelizationTestShader->SetUniformVec3f("u_CubeSize", m_CubeObj->GetComponent<Transform>()->GetScale());
 
-		
-		DrawObjects(objs, m_VoxelizationTestShader);
+	//	
+	//	DrawObjects(objs, m_VoxelizationTestShader);
 
-	
-
-
+	//
 
 
-	}
+
+
+	//}
 
 
 	

@@ -268,7 +268,7 @@ namespace BlackPearl {
 	public:
 		ShaderStorageBuffer(GLsizeiptr bytes, GLbitfield mapFlags);
 		~ShaderStorageBuffer();
-		unsigned int GetRenderID() const {
+		GLuint GetRenderID() const {
 			return m_RendererID;
 		}
 		void Bind();
@@ -276,7 +276,7 @@ namespace BlackPearl {
 		void UnBind();
 		void CleanUp();
 	private:
-		unsigned int m_RendererID;
+		GLuint m_RendererID;
 
 	};
 }

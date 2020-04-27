@@ -17,21 +17,21 @@ out vec4 FragColor;
 in  vec2 v_TexCoords;
 
 
-struct Material{
-	vec3 ambientColor;
-	vec3 diffuseColor;
-	vec3 specularColor;
-	vec3 emissionColor;
-	sampler2D diffuse;
-	sampler2D specular;
-	sampler2D emission;
-	sampler2D normal;
-	sampler2D height;
-	sampler2D depth;
-
-	float shininess;
-
-};
+//struct Material{
+//	vec3 ambientColor;
+//	vec3 diffuseColor;
+//	vec3 specularColor;
+//	vec3 emissionColor;
+//	sampler2D diffuse;
+//	sampler2D specular;
+//	sampler2D emission;
+//	sampler2D normal;
+//	sampler2D height;
+//	sampler2D depth;
+//
+//	float shininess;
+//
+//};
 uniform Material u_Material;
 void main(){
 	

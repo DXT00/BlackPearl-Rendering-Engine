@@ -20,6 +20,9 @@ layout(rgba8_snorm,binding = 2) uniform image2D u_Normal;
 
 uniform layout(binding = 3,r32ui) uimageBuffer u_octreeBuffer;
 uniform layout(binding = 4,r32ui) uimageBuffer u_octreeKd;
+//uniform layout(binding = 6,rgba16f) imageBuffer u_debugBuffer;
+uniform layout(binding = 6,rgba8ui) uimageBuffer u_debugBuffer;
+
 layout(std430,binding = 5) readonly buffer SobolSSBO{vec2 u_SobolSSBO[];};
 
 
@@ -290,6 +293,7 @@ void main(){
 			radiance += albedo;
 			direct_albedo = albedo;
 			direct_normal = normal;
+			//imageStore(u_debugBuffer,int(gl_FragCoord.x),uvec4(10*pos.x,10*pos.y,10*pos.z,0u));
 
 			//fract(x) 返回x的小数部分 
 			for(int cur=0;cur<u_Bounce;cur++){
@@ -311,7 +315,7 @@ void main(){
 
 		}
 		else{
-			radiance = u_SunRadiance;
+			//radiance = u_SunRadiance;
 		}
 		//acc_color+=indirect_color;
 		//acc_color = pow(acc_color, vec3(1.0f / 2.2f));

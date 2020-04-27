@@ -19,26 +19,26 @@
     <IgnoreWarnCompileDuplicatedFilename>true</IgnoreWarnCompileDuplicatedFilename>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>BlackPearl</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.18362.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Dist|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -143,8 +143,6 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="src\BlackPearl\Sampler\Sobol.h" />
-    <ClInclude Include="src\BlackPearl\Renderer\Material\BufferTexture.h" />
     <ClInclude Include="src\BlackPearl\Animation\AnimatedModel.h" />
     <ClInclude Include="src\BlackPearl\Animation\Animation.h" />
     <ClInclude Include="src\BlackPearl\Animation\Bone.h" />
@@ -201,7 +199,10 @@
     <ClInclude Include="src\BlackPearl\Renderer\MasterRenderer\PBRRenderer.h" />
     <ClInclude Include="src\BlackPearl\Renderer\MasterRenderer\ShadowMapPointLightRenderer.h" />
     <ClInclude Include="src\BlackPearl\Renderer\MasterRenderer\ShadowMapRenderer.h" />
+    <ClInclude Include="src\BlackPearl\Renderer\MasterRenderer\VoxelConeTracingDeferredRenderer.h" />
     <ClInclude Include="src\BlackPearl\Renderer\MasterRenderer\VoxelConeTracingRenderer.h" />
+    <ClInclude Include="src\BlackPearl\Renderer\MasterRenderer\VoxelConeTracingSVORenderer.h" />
+    <ClInclude Include="src\BlackPearl\Renderer\Material\BufferTexture.h" />
     <ClInclude Include="src\BlackPearl\Renderer\Material\CubeMapTexture.h" />
     <ClInclude Include="src\BlackPearl\Renderer\Material\HDRTexture.h" />
     <ClInclude Include="src\BlackPearl\Renderer\Material\Material.h" />
@@ -216,6 +217,8 @@
     <ClInclude Include="src\BlackPearl\Renderer\Shader\Shader.h" />
     <ClInclude Include="src\BlackPearl\Renderer\ShadowBox\ShadowBox.h" />
     <ClInclude Include="src\BlackPearl\Renderer\VertexArray.h" />
+    <ClInclude Include="src\BlackPearl\Sampler\Sobol.h" />
+    <ClInclude Include="src\BlackPearl\Sampler\SobolSequence.h" />
     <ClInclude Include="src\BlackPearl\Scene\Scene.h" />
     <ClInclude Include="src\BlackPearl\Timestep\Timestep.h" />
     <ClInclude Include="src\BlackPearl\Window.h" />
@@ -590,12 +593,8 @@
     <ClInclude Include="vendor\glm\glm\vec4.hpp" />
     <ClInclude Include="vendor\glm\glm\vector_relational.hpp" />
     <ClInclude Include="vendor\stb\stb_image.h" />
-    <ClInclude Include="src\BlackPearl\Renderer\MasterRenderer\VoxelConeTracingDeferredRenderer.h" />
-    <ClInclude Include="src\BlackPearl\Renderer\MasterRenderer\VoxelConeTracingSVORenderer.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\BlackPearl\Sampler\Sobol.cpp" />
-    <ClCompile Include="src\BlackPearl\Renderer\Material\BufferTexture.cpp" />
     <ClCompile Include="src\BlackPearl\Animation\AnimatedModel.cpp" />
     <ClCompile Include="src\BlackPearl\Animation\Animation.cpp" />
     <ClCompile Include="src\BlackPearl\Animation\Bone.cpp" />
@@ -647,7 +646,10 @@
     <ClCompile Include="src\BlackPearl\Renderer\MasterRenderer\PBRRenderer.cpp" />
     <ClCompile Include="src\BlackPearl\Renderer\MasterRenderer\ShadowMapPointLightRenderer.cpp" />
     <ClCompile Include="src\BlackPearl\Renderer\MasterRenderer\ShadowMapRenderer.cpp" />
+    <ClCompile Include="src\BlackPearl\Renderer\MasterRenderer\VoxelConeTracingDeferredRenderer.cpp" />
     <ClCompile Include="src\BlackPearl\Renderer\MasterRenderer\VoxelConeTracingRenderer.cpp" />
+    <ClCompile Include="src\BlackPearl\Renderer\MasterRenderer\VoxelConeTracingSVORenderer.cpp" />
+    <ClCompile Include="src\BlackPearl\Renderer\Material\BufferTexture.cpp" />
     <ClCompile Include="src\BlackPearl\Renderer\Material\CubeMapTexture.cpp" />
     <ClCompile Include="src\BlackPearl\Renderer\Material\HDRTexture.cpp" />
     <ClCompile Include="src\BlackPearl\Renderer\Material\Material.cpp" />
@@ -662,14 +664,13 @@
     <ClCompile Include="src\BlackPearl\Renderer\Shader\Shader.cpp" />
     <ClCompile Include="src\BlackPearl\Renderer\ShadowBox\ShadowBox.cpp" />
     <ClCompile Include="src\BlackPearl\Renderer\VertexArray.cpp" />
+    <ClCompile Include="src\BlackPearl\Sampler\Sobol.cpp" />
     <ClCompile Include="src\BlackPearl\Scene\Scene.cpp" />
     <ClCompile Include="src\BlackPearl\Timestep\Timestep.cpp" />
     <ClCompile Include="src\BlackPearl\Window.cpp" />
     <ClCompile Include="src\pch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="src\BlackPearl\Renderer\MasterRenderer\VoxelConeTracingDeferredRenderer.cpp" />
-    <ClCompile Include="src\BlackPearl\Renderer\MasterRenderer\VoxelConeTracingSVORenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="vendor\GLFW\GLFW.vcxproj">
@@ -684,9 +685,6 @@
     <ProjectReference Include="vendor\imgui\ImGui.vcxproj">
       <Project>{C0FF640D-2C14-8DBE-F595-301E616989EF}</Project>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="src\BlackPearl\Sampler\SobolSequence.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

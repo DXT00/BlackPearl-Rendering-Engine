@@ -114,12 +114,12 @@ namespace BlackPearl {
 		// ----------------
 		std::shared_ptr<Shader> m_SpecularBRDFLutShader;
 		/*只计算一次*/
-		std::shared_ptr<Texture> m_SpecularBrdfLUTTexture = nullptr;
+		std::shared_ptr<Texture> m_SpecularBrdfLUTTexture ;
 		Object* m_BrdfLUTQuadObj = nullptr;//pbr brdf LUT map render
 
 		/*Debug function*/
-		std::shared_ptr<Shader> m_VoxelizationTestShader;
-		std::shared_ptr<Shader> m_FrontBackCubeTestShader;
+		//std::shared_ptr<Shader> m_VoxelizationTestShader;
+		//std::shared_ptr<Shader> m_FrontBackCubeTestShader;
 
 
 		// ----------------

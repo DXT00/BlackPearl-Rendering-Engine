@@ -48,7 +48,7 @@ namespace BlackPearl {
 
 
 		/*Debug function*/
-		void VoxelizeTest(const std::vector<Object*>& objs);
+		//void VoxelizeTest(const std::vector<Object*>& objs);
 		/* Settings */
 		static bool s_Shadows;
 		static bool s_IndirectDiffuseLight;
@@ -92,8 +92,8 @@ namespace BlackPearl {
 		Object* m_BrdfLUTQuadObj = nullptr;//pbr brdf LUT map render
 
 		/*Debug function*/
-		std::shared_ptr<Shader> m_VoxelizationTestShader;
-		std::shared_ptr<Shader> m_FrontBackCubeTestShader;
+		//std::shared_ptr<Shader> m_VoxelizationTestShader;
+		//std::shared_ptr<Shader> m_FrontBackCubeTestShader;
 
 
 		//std::shared_ptr<FrameBuffer> m_FrameBuffer1;

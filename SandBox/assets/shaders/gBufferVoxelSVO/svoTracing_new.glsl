@@ -24,7 +24,7 @@ uniform int u_ViewType;
 uniform int u_octreeLevel;
 uniform layout(binding = 0,r32ui) uimageBuffer u_octreeBuffer;
 uniform layout(binding = 1,r32ui) uimageBuffer u_octreeKd;
-uniform layout(binding = 2,rg16ui) uimageBuffer u_debugBuffer;
+
 
 
 uniform int u_ScreenWidth;

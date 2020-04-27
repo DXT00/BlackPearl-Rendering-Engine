@@ -35,20 +35,7 @@ void main()
 out vec4 FragColor;
 in vec3 TexCoords;
 
-struct Material{
-	vec3 ambientColor;
-	vec3 diffuseColor;
-	vec3 specularColor;
-	vec3 emissionColor;
-	sampler2D diffuse;
-	sampler2D specular;
-	sampler2D emission;
-	sampler2D normal;
-	sampler2D height;
-	samplerCube cube;
-	float shininess;
 
-};
 uniform Material u_Material;
 
 float near = 0.1; 

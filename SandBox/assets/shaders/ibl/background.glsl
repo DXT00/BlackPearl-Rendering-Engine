@@ -24,20 +24,21 @@ void  main(){
 
 #type fragment
 #version 430 core
-uniform struct Material{
-	vec3 ambientColor;
-	vec3 diffuseColor;
-	vec3 specularColor;
-	vec3 emissionColor;
-	sampler2D diffuse;
-	sampler2D specular;
-	sampler2D emission;
-	sampler2D normal;
-	sampler2D height;
-	samplerCube cube;
-	float shininess;
-
-}u_Material;
+//uniform struct Material{
+//	vec3 ambientColor;
+//	vec3 diffuseColor;
+//	vec3 specularColor;
+//	vec3 emissionColor;
+//	sampler2D diffuse;
+//	sampler2D specular;
+//	sampler2D emission;
+//	sampler2D normal;
+//	sampler2D height;
+//	samplerCube cube;
+//	float shininess;
+//
+//}u_Material;
+uniform Material u_Material;
 uniform samplerCube cubeMap;
 in vec3 v_FragPos;
 out vec4 FragColor;

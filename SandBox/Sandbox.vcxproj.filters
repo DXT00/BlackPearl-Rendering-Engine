@@ -9,6 +9,9 @@
     <ClInclude Include="src\Layers\AdvanceLightTestLayer.h">
       <Filter>Layers</Filter>
     </ClInclude>
+    <ClInclude Include="src\Layers\CubeTestLayer.h">
+      <Filter>Layers</Filter>
+    </ClInclude>
     <ClInclude Include="src\Layers\FrameBufferTestLayer.h">
       <Filter>Layers</Filter>
     </ClInclude>
@@ -30,27 +33,35 @@
     <ClInclude Include="src\Layers\SkyBoxTestLayer.h">
       <Filter>Layers</Filter>
     </ClInclude>
+    <ClInclude Include="src\Layers\VoxelConeTracingDeferredLayer.h">
+      <Filter>Layers</Filter>
+    </ClInclude>
     <ClInclude Include="src\Layers\VoxelConeTracingLayer.h">
+      <Filter>Layers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Layers\VoxelConeTracingSVOLayer.h">
       <Filter>Layers</Filter>
     </ClInclude>
     <ClInclude Include="src\Layers\VoxelizationTestLayer.h">
       <Filter>Layers</Filter>
     </ClInclude>
-    <ClInclude Include="src\Layers\VoxelConeTracingDeferredLayer.h" />
-    <ClInclude Include="src\Layers\VoxelConeTracingSVOLayer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\SandBox.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="assets\shaders\gBufferVoxelSVO\renderVoxel.glsl" />
     <None Include="assets\shaders\gBufferVoxelSVO\buildTree\leafStore.glsl" />
-    <None Include="assets\shaders\gBufferVoxelSVO\buildTree\nodeAlloc.glsl" />
-    <None Include="assets\shaders\gBufferVoxelSVO\buildTree\nodeFlag.glsl" />
-    <None Include="assets\shaders\gBufferVoxelSVO\buildTree\nodeInit.glsl" />
     <None Include="assets\shaders\gBufferVoxelSVO\voxelizationSVO.glsl" />
-    <None Include="assets\shaders\gBufferVoxelSVO\svoTracing.glsl" />
     <None Include="assets\shaders\gBufferVoxelSVO\svoTracing_new.glsl" />
+    <None Include="assets\shaders\gBufferVoxelSVO\svoTracing.glsl" />
+    <None Include="assets\shaders\gBufferVoxelSVO\renderVoxel.glsl" />
+    <None Include="assets\shaders\gBufferVoxelSVO\pathTracingGBuffer.glsl" />
     <None Include="assets\shaders\gBufferVoxelSVO\pathTracing.glsl" />
+    <None Include="assets\shaders\gBufferVoxelSVO\gBufferVoxel.glsl" />
+    <None Include="assets\shaders\gBufferVoxelSVO\buildTree\nodeInit.glsl" />
+    <None Include="assets\shaders\gBufferVoxelSVO\buildTree\nodeFlag.glsl" />
+    <None Include="assets\shaders\gBufferVoxelSVO\buildTree\nodeAlloc.glsl" />
+    <None Include="assets\shaders\gBufferVoxelSVO\voxelizationSVO_new.glsl" />
+    <None Include="assets\shaders\gBufferVoxelSVO\buildTree\renderNodeKd.glsl" />
   </ItemGroup>
 </Project>

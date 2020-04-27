@@ -75,33 +75,33 @@ uniform int u_IsPBRObjects;
 
 
 
-uniform struct Material{
-	vec3 ambientColor;
-	vec3 diffuseColor;
-	vec3 specularColor;
-	vec3 emissionColor;
-	float roughnessValue;
-	float mentallicValue;
-	float aoValue;
-	sampler2D diffuse; //or call it albedo
-	sampler2D specular;
-	sampler2D emission;
-	sampler2D normal;
-	sampler2D height;
-	sampler2D ao;
-	sampler2D roughness;
-	sampler2D mentallic;
-	
-	float shininess;
-	bool isBlinnLight;
-	int  isTextureSample;//判断是否使用texture,或者只有color
-	int isDiffuseTextureSample;
-	int isSpecularTextureSample;
-	int isMetallicTextureSample;
-
-}u_Material;
-
-
+//uniform struct Material{
+//	vec3 ambientColor;
+//	vec3 diffuseColor;
+//	vec3 specularColor;
+//	vec3 emissionColor;
+//	float roughnessValue;
+//	float mentallicValue;
+//	float aoValue;
+//	sampler2D diffuse; //or call it albedo
+//	sampler2D specular;
+//	sampler2D emission;
+//	sampler2D normal;
+//	sampler2D height;
+//	sampler2D ao;
+//	sampler2D roughness;
+//	sampler2D mentallic;
+//	
+//	float shininess;
+//	bool isBlinnLight;
+//	int  isTextureSample;//判断是否使用texture,或者只有color
+//	int isDiffuseTextureSample;
+//	int isSpecularTextureSample;
+//	int isMetallicTextureSample;
+//
+//}u_Material;
+//
+uniform Material u_Material;
 
 vec3 SHDiffuse(const int probeIndex,const vec3 normal){
 	float x = normal.x;

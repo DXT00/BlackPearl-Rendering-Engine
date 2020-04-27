@@ -52,17 +52,18 @@ namespace BlackPearl {
 		glEnable(GL_MULTISAMPLE);
 		m_VCTAmbientGIShader.reset(DBG_NEW Shader("assets/shaders/gBufferVoxel/gBuffer_ambientFilter_voxelConeTracingPBR.glsl"));
 		m_VCTPointLightShader.reset(DBG_NEW Shader("assets/shaders/gBufferVoxel/gBuffer_pointLight_voxelConeTracingPBR.glsl"));
+		m_SpecularBRDFLutShader.reset(DBG_NEW Shader("assets/shaders/ibl/brdf.glsl"));
+		RenderSpecularBRDFLUTMap();
+
 		InitVoxelization();
 		InitVoxelVisualization(viewportWidth, viewportHeight);
 
 		/*debug shader*/
-		m_VoxelizationTestShader.reset(DBG_NEW Shader("assets/shaders/voxelization/debug/voxelizeTest.glsl"));
-		m_FrontBackCubeTestShader.reset(DBG_NEW Shader("assets/shaders/voxelization/debug/quadTest.glsl"));
+		//m_VoxelizationTestShader.reset(DBG_NEW Shader("assets/shaders/voxelization/debug/voxelizeTest.glsl"));
+		//m_FrontBackCubeTestShader.reset(DBG_NEW Shader("assets/shaders/voxelization/debug/quadTest.glsl"));
 
 		/*pbr BRDF LUT shader*/
-		m_SpecularBRDFLutShader.reset(DBG_NEW Shader("assets/shaders/ibl/brdf.glsl"));
 		//const std::vector<GLfloat> textureImage2D(4 * 256 * 256, 0.0f);
-		RenderSpecularBRDFLUTMap();
 
 		/* GBuffer */
 		m_GBuffer.reset(DBG_NEW GBuffer(m_ScreenWidth,m_ScreenHeight));
@@ -598,6 +599,7 @@ namespace BlackPearl {
 
 	void VoxelConeTracingDeferredRenderer::RenderSpecularBRDFLUTMap()
 	{
+	//	glEnable(GL_TEXTURE_2D);
 		m_SpecularBrdfLUTTexture.reset(DBG_NEW Texture(Texture::DiffuseMap, m_VoxelTextureSize, m_VoxelTextureSize, false, GL_LINEAR, GL_LINEAR, GL_RG16F, GL_RG, GL_CLAMP_TO_EDGE, GL_FLOAT));
 		//std::shared_ptr<Texture> brdfLUTTexture(new Texture(Texture::None, 512, 512, GL_LINEAR, GL_LINEAR, GL_RG16F, GL_RG, GL_CLAMP_TO_EDGE, GL_FLOAT));
 		std::shared_ptr<FrameBuffer> frameBuffer(new FrameBuffer());
@@ -617,6 +619,7 @@ namespace BlackPearl {
 		m_SpecularBRDFLutShader->Bind();
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		DrawObject(m_BrdfLUTQuadObj, m_SpecularBRDFLutShader);
+		m_SpecularBrdfLUTTexture->UnBind();
 		frameBuffer->UnBind();
 		frameBuffer->CleanUp();
 
@@ -625,42 +628,42 @@ namespace BlackPearl {
 
 
 
-	void VoxelConeTracingDeferredRenderer::VoxelizeTest(const std::vector<Object*>& objs)
-	{
+	//void VoxelConeTracingDeferredRenderer::VoxelizeTest(const std::vector<Object*>& objs)
+	//{
 
 
-		glViewport(0, 0, m_ScreenWidth,m_ScreenHeight);
-		glEnable(GL_CULL_FACE);
-		glEnable(GL_DEPTH_TEST);
-		glEnable(GL_BLEND);
-		DrawObjects(objs);
+	//	glViewport(0, 0, m_ScreenWidth,m_ScreenHeight);
+	//	glEnable(GL_CULL_FACE);
+	//	glEnable(GL_DEPTH_TEST);
+	//	glEnable(GL_BLEND);
+	//	DrawObjects(objs);
 
 
-		//Shader
-		m_VoxelizationTestShader->Bind();
+	//	//Shader
+	//	m_VoxelizationTestShader->Bind();
 
 
-		// Settings.
-		glViewport(120, 120, m_VoxelTextureSize, m_VoxelTextureSize);
+	//	// Settings.
+	//	glViewport(120, 120, m_VoxelTextureSize, m_VoxelTextureSize);
 
-		glDisable(GL_CULL_FACE);
-		glDisable(GL_DEPTH_TEST);
-		glDisable(GL_BLEND);
-
-
-		m_VoxelizationTestShader->SetUniformVec3f("u_CubeSize", m_CubeObj->GetComponent<Transform>()->GetScale());
+	//	glDisable(GL_CULL_FACE);
+	//	glDisable(GL_DEPTH_TEST);
+	//	glDisable(GL_BLEND);
 
 
-		DrawObjects(objs, m_VoxelizationTestShader);
+	//	m_VoxelizationTestShader->SetUniformVec3f("u_CubeSize", m_CubeObj->GetComponent<Transform>()->GetScale());
 
 
-
+	//	DrawObjects(objs, m_VoxelizationTestShader);
 
 
 
-	}
 
-	
+
+
+	//}
+
+	//
 
 
 

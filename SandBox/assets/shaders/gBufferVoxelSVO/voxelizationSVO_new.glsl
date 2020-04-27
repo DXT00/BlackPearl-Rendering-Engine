@@ -18,26 +18,17 @@ out vec3 normalGeom;
 out vec3 texCoordGeom;
 
 void main(){
-//	if(u_IsSkybox){
-//		worldPositionGeom=aPos;//*(u_CubeSize-vec3(0.1));
-//		normalGeom = normalize(aNormal);
-//		texCoordGeom=aPos;//*(u_CubeSize-vec3(0.1));
-//		vec4 pos = u_Projection*mat4(mat3(u_View))*vec4(worldPositionGeom,1.0);//vec4(aPos,1.0);
-//
-//		gl_Position =pos;// pos.xyww;
-//	}
-//	else{
 
 	worldPositionGeom = vec3(u_Model * vec4(aPos,1.0));
-	normalGeom = normalize(mat3(transpose(inverse(u_Model)))*aNormal);
-	//normalGeom=normalize(normalGeom);
-	if(u_IsSkybox)
+	normalGeom = aNormal;
+	bool isSkybox = u_IsSkybox;
+	if(isSkybox)
 		texCoordGeom=aPos;
 	else
-		texCoordGeom=vec3(aTexCoords.x,aTexCoords.y,1.0);
-	gl_Position = u_ProjectionView * u_Model * vec4(aPos,1.0);//vec4(worldPositionGeom, 1.0);
+	texCoordGeom=vec3(aTexCoords.xy,1);
+	gl_Position = vec4(aPos, 1.0f);//vec4(worldPositionGeom, 1.0);
 
-	//}
+
 }
 //
 #type geometry
@@ -50,54 +41,60 @@ in vec3 worldPositionGeom[];
 in vec3 normalGeom[];
 in vec3 texCoordGeom[];
 
+
 out vec3 worldPositionFrag;
 out vec3 normalFrag;
 out vec3 texCoordFrag;//v_TexCoord;
+out vec3 voxelPosFrag;
 //flat out int axisIndex;
 uniform vec3 u_CameraViewPos;
-uniform vec3 u_CubeSize;
+uniform int u_VoxelSize;
 //out vec3 normal_worldPositionFrag;
 
 /*几何着色器后会进入光栅化阶段，因此需要把坐标转换的 [-1,1]的裁剪平面！！*/
+vec2 Project(in vec3 v, in int axis) { return axis == 0 ? v.yz : (axis == 1 ? v.xz : v.xy); }
 
 void main(){
 
-	vec3 p1 = worldPositionGeom[1] - worldPositionGeom[0];
-	vec3 p2 = worldPositionGeom[2] - worldPositionGeom[0];
+	vec3 p1 = gl_in[1].gl_Position.xyz - gl_in[0].gl_Position.xyz ;
+	vec3 p2 = gl_in[2].gl_Position.xyz - gl_in[1].gl_Position.xyz ;
 	vec3 p = abs(cross(p1, p2)); 
+
+	int axis = 2;
+	if(p.x >= p.y && p.x > p.z) axis = 0;
+	else if(p.y >= p.z && p.y > p.x) axis = 1;
+
+
+	//project the positions
+	vec3 pos0 = gl_in[0].gl_Position.xyz;
+	vec3 pos1 = gl_in[1].gl_Position.xyz;
+	vec3 pos2 = gl_in[2].gl_Position.xyz;
+
+
 	vec3 cubePos =vec3(0.0);//u_CameraViewPos
 
-	for(uint i = 0; i < 3; ++i){
-		worldPositionFrag =worldPositionGeom[i];
-		vec3 normal_worldPositionFrag=(worldPositionGeom[i]-cubePos)/u_CubeSize;
-//		if(normal_worldPositionFrag.x>=1||normal_worldPositionFrag.x<=-1||
-//		normal_worldPositionFrag.y>=1||normal_worldPositionFrag.y<=-1||
-//		normal_worldPositionFrag.z>=1||normal_worldPositionFrag.z<=-1)
-//			return;
-		normalFrag = normalGeom[i];
-		texCoordFrag = vec3(texCoordGeom[i].x,texCoordGeom[i].y,texCoordGeom[i].z);
+	
+	texCoordFrag = texCoordGeom[0];
+	normalFrag = normalize(normalGeom[0]);
+	voxelPosFrag = (pos0 + 1.0f) * 0.5f * u_VoxelSize; //[-1,1]-->[0,1]-->[0,u_VoxelSize-1]
+	gl_Position = vec4(Project(pos0, axis), 1.0f, 1.0f);
+	EmitVertex();
 
-		if(p.z > p.x && p.z > p.y){
-			//axisIndex=0;
-		//	gl_Position =gl_in[i].gl_Position;// vec4(normal_worldPositionFrag,1.0);// vec4(normal_worldPositionFrag.x, normal_worldPositionFrag.y, 0, 1);
-			 gl_Position =vec4(normal_worldPositionFrag.x, normal_worldPositionFrag.y, normal_worldPositionFrag.z, 1);
-		} 
-		else if (p.x > p.y && p.x > p.z){
-		//	axisIndex=1;
-		//	gl_Position = gl_in[i].gl_Position;//vec4(normal_worldPositionFrag,1.0);//vec4(normal_worldPositionFrag.y, normal_worldPositionFrag.z, 0, 1);
-			gl_Position =vec4(normal_worldPositionFrag.y, normal_worldPositionFrag.z, normal_worldPositionFrag.x, 1);
-		} 
-		else {
-			//axisIndex=2;
-		//	gl_Position = gl_in[i].gl_Position;//vec4(normal_worldPositionFrag,1.0);//vec4(normal_worldPositionFrag.x, normal_worldPositionFrag.z, 0, 1);
-			gl_Position =vec4(normal_worldPositionFrag.x, normal_worldPositionFrag.z, normal_worldPositionFrag.y, 1);
-		}
-		EmitVertex();
-	}
-    EndPrimitive();
+	texCoordFrag = texCoordGeom[1];
+	normalFrag = normalize(normalGeom[1]);
+	voxelPosFrag = (pos1 + 1.0f) * 0.5f * u_VoxelSize;
+	gl_Position = vec4(Project(pos1, axis), 1.0f, 1.0f);
+	EmitVertex();
+
+	texCoordFrag = texCoordGeom[2];
+	normalFrag = normalize(normalGeom[2]);
+	voxelPosFrag = (pos2 + 1.0f) * 0.5f * u_VoxelSize;
+	gl_Position = vec4(Project(pos2, axis), 1.0f, 1.0f);
+	EmitVertex();
+
+	EndPrimitive();
+
 }
-
-
 #type fragment
 #version 450 core
 
@@ -114,7 +111,9 @@ void main(){
 
 in vec3 worldPositionFrag;
 in vec3 normalFrag;
-in vec3 texCoordFrag;
+in vec3 texCoordFrag;//v_TexCoord;
+in vec3 voxelPosFrag;
+
 const float PI=3.14159;
 
 struct PointLight{
@@ -141,13 +140,11 @@ uniform vec3 u_CubeSize;
 uniform bool u_IsSkybox;
 uniform int u_IsPBRObjects;
 uniform bool u_StoreData;
-
 uniform int u_VoxelSize;
 
-int ulightNum = u_PointLightNums;
-int uPBR = u_IsPBRObjects;
-bool uStoreData= u_StoreData;
-int uIsTextureSample = u_Settings.isTextureSample;
+
+
+
 
 /************************************* PBR fuction ***************************************************/
 /*****************************************************************************************************/
@@ -230,9 +227,18 @@ vec3 CalcPointLight(PointLight light,vec3 normal,vec3 viewDir,vec3 fragPos){
 	//specular
 	vec3 specular;
 	float spec;
-	vec3 reflectDir = normalize(reflect(-lightDir,norm));
-	spec = pow(max(dot(reflectDir,viewDir),0.0),u_Material.shininess);
-	specular =  light.specular * spec  *  u_Material.specularColor;
+//	if(u_Settings.isBlinnLight){
+//
+//		vec3 halfwayDir = normalize(lightDir+viewDir);
+//		spec = pow(max(dot(norm,halfwayDir),0.0),u_Material.shininess);
+//		specular =  light.specular * spec  *  u_Material.specularColor;
+//	}
+	//else{
+
+		vec3 reflectDir = normalize(reflect(-lightDir,norm));
+		spec = pow(max(dot(reflectDir,viewDir),0.0),u_Material.shininess);
+		specular =  light.specular * spec  *  u_Material.specularColor;
+	//}
 	ambient  *= attenuation;
 	diffuse  *= attenuation;
 	specular *= attenuation;
@@ -255,16 +261,16 @@ void main(){
 
 	//uint idx = atomicAdd(u_voxelFragCount,1u);
 	imageStore(u_debugBuffer,0,uvec4(2u,2u,2u,2u));
-	vec3 normalWorldPositionFrag =worldPositionFrag-cubePos;// vec3(worldPositionFrag.x-u_CubePos.x,worldPositionFrag.y-u_CubePos.y,worldPositionFrag.z-u_CubePos.z);
-	normalWorldPositionFrag = normalWorldPositionFrag/u_CubeSize;
-	if(!isInsideCube(normalWorldPositionFrag, 0.0)) return;
-
-	if(uPBR==0){
-//		if(u_IsSkybox){
-//			color=texture(u_Material.cube,texCoordFrag).rgb;
-//		}
-		//else{
-			for(int i = 0; i < ulightNum; ++i) 
+//	vec3 normalWorldPositionFrag =worldPositionFrag-cubePos;// vec3(worldPositionFrag.x-u_CubePos.x,worldPositionFrag.y-u_CubePos.y,worldPositionFrag.z-u_CubePos.z);
+//	normalWorldPositionFrag = normalWorldPositionFrag/u_CubeSize;
+//	if(!isInsideCube(normalWorldPositionFrag, 0.0)) return;
+	int pbr = u_IsPBRObjects;
+	if(pbr==0){
+		if(u_IsSkybox){
+			color=texture(u_Material.cube,texCoordFrag).rgb;
+		}
+		else{
+			for(int i = 0; i < u_PointLightNums; ++i) 
 			{
 
 				vec3 fragColor;
@@ -278,16 +284,14 @@ void main(){
 				vec3 lightDir = normalize(u_PointLights[i].position-worldPositionFrag);
 				vec3 norm = normalize(normalFrag);
 				float diff = max(dot(lightDir,norm),0.0f);
-				vec3 diffuse;
-
-				if(uIsTextureSample==1){
+				vec3 diffuse ;
+				//if(u_Settings.isTextureSample==0){
 					diffuse =  u_PointLights[i].diffuse * diff * (u_Material.diffuseColor );
-				}
-				else
-					diffuse =  u_PointLights[i].diffuse * diff *texture(u_Material.diffuse,texCoordFrag.xy).rgb;
-				//diffuse =  u_PointLights[i].diffuse * diff * ((u_Material.diffuseColor )*(1-uIsTextureSample)+ texture(u_Material.diffuse,texCoordFrag.xy).rgb*uIsTextureSample);
 
-			
+				//}
+//				else{
+//					diffuse = diff * texture(u_Material.diffuse,texCoordFrag.xy).rgb;
+//				}
 
 				//specular
 				vec3 specular;
@@ -307,7 +311,7 @@ void main(){
 
 				color +=fragColor;//CalcPointLight(u_PointLights[i], normalFrag,viewDir,worldPositionFrag);//vec3(1,0,0);// 
 			}//for
-		//}//else
+		}//else
 	}//if(u_IsPBRObjects==0)
 	else {
 		vec3 albedo = pow(texture(u_Material.diffuse, texCoordFrag.xy).rgb, vec3(2.2));//vec3(pow( texture(u_Material.diffuse, v_TexCoord).r, (2.2)));
@@ -325,7 +329,7 @@ void main(){
 		F0 = mix(F0,albedo,mentallic);
 		//reflection equation
 		vec3 Lo = vec3(0.0);
-		for(int i=0;i<ulightNum;i++){
+		for(int i=0;i<u_PointLightNums;i++){
 			vec3 L = normalize(u_PointLights[i].position-v_FragPos);
 			vec3 H = normalize(V+L);
 			float attenuation = calculateAttenuation(u_PointLights[i],v_FragPos);
@@ -347,19 +351,27 @@ void main(){
 			Lo= Lo+ BRDF(Kd,Ks,specular,albedo)*LightRadiance(v_FragPos,u_PointLights[i])*NdotL;
 		}
 		vec3 ambient =0.008 * albedo * ao;//vec3(0.03)
-		color=Lo+ambient;
-
+		PBRcolor=Lo+ambient;
+	//	color =vec3( 0);//ambient ;//+  Lo;
+//		color.x = PBRcolor.x;
+//		color.y = PBRcolor.y;
+//		color.z = PBRcolor.z;
 	}
 
 
 	//只有cubeSize里的fragment才会记录到u_voxelFragCount
 	uint idx = atomicCounterIncrement(u_voxelFragCount);
-	vec3 voxel = scaleAndBias(normalWorldPositionFrag);
-	vec4 res = vec4(color,1);
-	
-	if(uStoreData){
-			uvec3 uvoxel_pos = clamp(uvec3(u_VoxelSize * voxel), uvec3(0u), uvec3(u_VoxelSize - 1u));
+	//vec3 voxel = scaleAndBias(normalWorldPositionFrag);
+	//float dim = 128;//128;//256;//imageSize(texture3D);// retrieve the dimensions of an image
+	vec4 res ;
 
+	//if(pbr==0)
+		res = vec4(vec3(color), 0);
+	//else
+		//res = vec4(vec3(PBRcolor), 0);
+
+	if(u_StoreData){
+		uvec3 uvoxel_pos = clamp(uvec3(voxelPosFrag), uvec3(0u), uvec3(u_VoxelSize - 1u));
 		imageStore(u_voxelPos, int(idx), uvec4(uvoxel_pos,1));
 		imageStore(u_voxelKd,int(idx),res);
 		imageStore(u_voxelNrml,int(idx),vec4(normalFrag,0));
