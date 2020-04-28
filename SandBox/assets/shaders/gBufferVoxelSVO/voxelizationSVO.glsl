@@ -280,7 +280,7 @@ void main(){
 				float diff = max(dot(lightDir,norm),0.0f);
 				vec3 diffuse;
 
-				if(uIsTextureSample==1){
+				if(uIsTextureSample==0){
 					diffuse =  u_PointLights[i].diffuse * diff * (u_Material.diffuseColor );
 				}
 				else

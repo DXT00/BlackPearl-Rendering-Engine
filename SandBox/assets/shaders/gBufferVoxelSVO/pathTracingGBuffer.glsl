@@ -1,5 +1,5 @@
 #type vertex
-#version 430 core
+#version 450 core
 
 layout(location = 0) in vec3 aPos;
 void main(){
@@ -8,7 +8,7 @@ void main(){
 
 }
 #type fragment
-#version 430 core
+#version 450 core
 
 const uint STACK_SIZE = 23u;
 const float PI=3.14159265359;
@@ -53,7 +53,7 @@ int uSPP = u_SPP;
 bool uDirectLight = u_Settings.directLight;
 bool uIndirecLight = u_Settings.indirectDiffuseLight;
 
-const float SURFACE_OFFSET =(3.0/float(u_VoxelSize));
+const float SURFACE_OFFSET =(10.0/float(u_VoxelSize));
 
 //uniform int u_voxelDim;
 struct GBuffer{
@@ -274,7 +274,7 @@ bool findLeafPos(vec3 normalPos,out vec3 leafPos){
 	int subnode=0;
 
 	int childIdx = 0;
-	for(int i=0;i<uOctreeLevel;i++){
+	for(int i=0;i<uOctreeLevel-2;i++){
 		voxelSize*=0.5;
 		if((node & 0x80000000u)==0u){
 			//flag = false;
@@ -308,41 +308,44 @@ int Clamp1(int x){
 	else
 		return x;
 }
-//bool findLeafPos1(vec3 normalPos,out vec3 leafPos){
-//	uint voxelDim = uint(128.0);
-//	uvec3 umin = uvec3(0,0,0);
-//	uvec3 umax = uvec3( voxelDim, voxelDim, voxelDim );
-//	int subnode=0;
-//	int childIdx = 0;
-//
-//	uvec3 loc = uvec3(normalPos.x*voxelDim,normalPos.y*voxelDim,normalPos.z*voxelDim);
-//
-//	uint node = imageLoad(u_octreeBuffer,0).r;
-//
-//	for(int i=0;i<u_octreeLevel;i++){
-//		voxelDim/=2u;
-//		if((node & 0x80000000u)==0u){
+bool findLeafPos1(vec3 normalPos){
+	uint voxelDim = uint(u_VoxelSize);
+	uvec3 umin = uvec3(0,0,0);
+	uvec3 umax = uvec3( voxelDim, voxelDim, voxelDim );
+	int subnode=0;
+	int childIdx = 0;
+
+	uvec3 loc =uvec3(u_VoxelSize*normalPos);// uvec3(normalPos.x*voxelDim,normalPos.y*voxelDim,normalPos.z*voxelDim);
+
+	uint node = imageLoad(u_octreeBuffer,0).r;
+
+	for(int i=0;i<uOctreeLevel-1;i++){//避免匹配不精确，所以只要到u_octreeLevel-1层有节点即可！
+		voxelDim/=2u;
+		if((node & 0x80000000u)==0u){
+			return  false;
+			
+		}
+		childIdx =int(node & 0x3FFFFFFFu); 
+
+		subnode = Clamp1(1+int(loc.x)-int(umin.x)-int(voxelDim));
+		subnode += 4*Clamp1(1+int(loc.y)-int(umin.y)-int(voxelDim));
+		subnode += 2*Clamp1(1+int(loc.z)-int(umin.z)-int(voxelDim));
+
+		childIdx = childIdx+subnode;
+		umin.x += voxelDim * uint(Clamp1(1+int(loc.x)-int(umin.x)-int(voxelDim)));
+	    umin.y += voxelDim * uint(Clamp1(1+int(loc.y)-int(umin.y)-int(voxelDim)));
+	    umin.z += voxelDim * uint(Clamp1(1+int(loc.z)-int(umin.z)-int(voxelDim)));
+
+		node = imageLoad( u_octreeBuffer, childIdx).r;
+	}
+//	if((node & 0x80000000u)==0u){
 //			return  false;
 //			
 //		}
-//		childIdx =int(node & 0x7FFFFFFFu); 
-//
-//		subnode = Clamp1(1+int(loc.x)-int(umin.x)-int(voxelDim));
-//		subnode += 4*Clamp1(1+int(loc.y)-int(umin.y)-int(voxelDim));
-//		subnode += 2*Clamp1(1+int(loc.z)-int(umin.z)-int(voxelDim));
-//
-//		childIdx = childIdx+subnode;
-//		umin.x += voxelDim * uint(Clamp1(1+int(loc.x)-int(umin.x)-int(voxelDim)));
-//	    umin.y += voxelDim * uint(Clamp1(1+int(loc.y)-int(umin.y)-int(voxelDim)));
-//	    umin.z += voxelDim * uint(Clamp1(1+int(loc.z)-int(umin.z)-int(voxelDim)));
-//
-//		node = imageLoad( u_octreeBuffer, childIdx).r;
-//	}
-//	
-//	vec3 tmpPos = vec3(float(umin.x+0.5*float(voxelDim)),float(umin.y+0.5*float(voxelDim)),float(umin.z+0.5*float(voxelDim)));
-//	 leafPos = tmpPos*1.0/float(128.0);
-//	 return true;
-//}
+	//vec3 tmpPos = vec3(float(umin.x+0.5*float(voxelDim)),float(umin.y+0.5*float(voxelDim)),float(umin.z+0.5*float(voxelDim)));
+	// leafPos = tmpPos*1.0/float(u_VoxelSize);
+	 return true;
+}
 //vec3 AvgColor(uint curNode){
 //	if((curNode&0x4FFFFFFF)!=0u)
 //		return vec3(0);//孩子节点后面处理
@@ -366,7 +369,8 @@ int Clamp1(int x){
 //	return res;
 //}
 bool RayMarchLeaf(vec3 o,vec3 d,out vec3 o_pos,out vec3 o_color,out vec3 o_normal){
-	
+	//o_color = vec3(1,1,0);
+	//return true;
 	d.x = abs(d.x) >= OFFSET ? d.x : (d.x >= 0 ? OFFSET : -OFFSET);
 	d.y = abs(d.y) >= OFFSET ? d.y : (d.y >= 0 ? OFFSET : -OFFSET);
 	d.z = abs(d.z) >= OFFSET ? d.z : (d.z >= 0 ? OFFSET : -OFFSET);
@@ -392,6 +396,8 @@ bool RayMarchLeaf(vec3 o,vec3 d,out vec3 o_pos,out vec3 o_color,out vec3 o_norma
 	uint parent = imageLoad(u_octreeBuffer,0).r;//root = 0
 	if((parent & 0x80000000u) ==0u)return false;
 	parent &=0x3fffffffu;
+	resColor+=  1.0/float(u_VoxelSize)*convRGBA8ToVec4(imageLoad(u_octreeKd,int(parent)).r).rgb/255.0;//(1.0/float(u_VoxelSize))*
+
 	uint cur = 0u;
 	vec3 pos = vec3(1.0f);
 	uint idx = 0u;
@@ -419,7 +425,7 @@ bool RayMarchLeaf(vec3 o,vec3 d,out vec3 o_pos,out vec3 o_color,out vec3 o_norma
 			//INTERSECT
 
 			//resColor+=(1.0/scale_exp2/128.0* AvgColor(cur));
-		//	resColor+= (1.0/scale_exp2/128.0)* convRGBA8ToVec4(imageLoad(u_octreeKd,int(parent+(idx^oct_mask))).r).rgb/255.0;
+			resColor+= (1.0/scale_exp2/float(u_VoxelSize))* convRGBA8ToVec4(imageLoad(u_octreeKd,int(parent+(idx^oct_mask))).r).rgb/255.0;
 
 			float tv_max = min(t_max,tc_max);
 			float half_scale_exp2 = scale_exp2*0.5f;
@@ -537,7 +543,7 @@ bool RayMarchLeaf(vec3 o,vec3 d,out vec3 o_pos,out vec3 o_color,out vec3 o_norma
 
 vec2 CalcTexCoord()
 {
-    return gl_FragCoord.xy / vec2(u_ScreenWidth,u_ScreenHeight);
+    return vec2(gl_FragCoord.xy) / vec2(u_ScreenWidth,u_ScreenHeight);
 }
 vec3 GenRay(){
 	vec2 texcoord = vec2(gl_FragCoord.xy)/vec2(u_ScreenWidth,u_ScreenHeight);
@@ -676,7 +682,8 @@ void main(){
 		int hitNumber = 0;
 		vec3 d_color = vec3(0.0);
 		vec3 indirectSpecular = vec3(0.0);
-		if(findLeafPos(voxelPos,octreePos)){
+		if(findLeafPos1(voxelPos)){
+		//if(direct!=vec3(0)){
 			//octreePos+=vec3(1.0);
 			octreePos = voxelPos+vec3(1.0);
 
@@ -717,7 +724,7 @@ void main(){
 			// We offset forward in normal direction, and backward in cone direction.
 			// Backward in cone direction improves GI, and forward direction removes
 			// artifacts.
-			const float CONE_OFFSET = -SURFACE_OFFSET;//-0.01;
+			const float CONE_OFFSET = -SURFACE_OFFSET;//-0.01;//0;//
 
 			o= C_ORIGIN;
 			d = gBuffer.normal;
@@ -755,52 +762,57 @@ void main(){
 //			if(RayMarchLeaf(o8,d8,pos,albedo,normal)){								
 //				d_color+= (albedo* attenuation1);hitnumber++;}
 
-			RayMarchLeaf(o,d,pos,albedo,normal);
+			if(RayMarchLeaf(o,d,pos,albedo,normal))
+				d_color+= (albedo* attenuation1);
+
+			if(RayMarchLeaf(o1,d1,pos,albedo,normal))
 			d_color+= (albedo* attenuation1);
-			RayMarchLeaf(o1,d1,pos,albedo,normal);
+			if(RayMarchLeaf(o2,d2,pos,albedo,normal))					
 			d_color+= (albedo* attenuation1);
-			RayMarchLeaf(o2,d2,pos,albedo,normal);					
+			if(RayMarchLeaf(o3,d3,pos,albedo,normal))					
 			d_color+= (albedo* attenuation1);
-			RayMarchLeaf(o3,d3,pos,albedo,normal);					
+			if(RayMarchLeaf(o4,d4,pos,albedo,normal))						
 			d_color+= (albedo* attenuation1);
-			RayMarchLeaf(o4,d4,pos,albedo,normal);						
+			if(RayMarchLeaf(o5,d5,pos,albedo,normal))						
 			d_color+= (albedo* attenuation1);
-			RayMarchLeaf(o5,d5,pos,albedo,normal);						
+			if(RayMarchLeaf(o6,d6,pos,albedo,normal))						
 			d_color+= (albedo* attenuation1);
-			RayMarchLeaf(o6,d6,pos,albedo,normal);						
+			if(RayMarchLeaf(o7,d7,pos,albedo,normal))						
 			d_color+= (albedo* attenuation1);
-			RayMarchLeaf(o7,d7,pos,albedo,normal);						
-			d_color+= (albedo* attenuation1);
-			RayMarchLeaf(o8,d8,pos,albedo,normal);							
+			if(RayMarchLeaf(o8,d8,pos,albedo,normal))							
 			d_color+= (albedo* attenuation1);
 
+
+//
 				d_color/=8.0;
 			// trace indirect specular light
-//			vec3 viewDirection = normalize(gBuffer.fragPos-u_CameraViewPos);
-//			const vec3 reflection = normalize(reflect(viewDirection, gBuffer.normal));
-//			if(RayMarchLeaf(o,reflection,pos,albedo,normal))		
-//				indirectSpecular+=gBuffer.specularColor*(albedo* attenuation1);
-			
-			
+			vec3 viewDirection = normalize(gBuffer.fragPos-u_CameraViewPos);
+			const vec3 reflection = normalize(reflect(viewDirection, gBuffer.normal));
+			if(RayMarchLeaf(o,reflection,pos,albedo,normal)){
+				if(gBuffer.isPBRObject==0)
+					indirectSpecular+=gBuffer.specularColor*(albedo* attenuation1);
+				else
+					indirectSpecular+=gBuffer.diffuseColor*(albedo* attenuation1);
+
+			}
 			
 		}//if(findLeafPos(voxelPos,octreePos))
+		
+
 		if(uIndirecLight){
-			if(gBuffer.isPBRObject==0)
-					radiance+=0.5*(d_color);
-			else
-				radiance+= 0.5*CalcPBRIndirectLight(indirectSpecular,d_color,gBuffer.getNormalFromMap,gBuffer.diffuseColor,gBuffer.metallic,gBuffer.roughness,gBuffer.ao,gBuffer.fragPos);
+				if(gBuffer.isPBRObject==0)
+					radiance+=0.7*(d_color);
+				else
+				radiance+= 0.7*CalcPBRIndirectLight(indirectSpecular,d_color,gBuffer.getNormalFromMap,gBuffer.diffuseColor,gBuffer.metallic,gBuffer.roughness,gBuffer.ao,gBuffer.fragPos);
 
 
-		}
-
-
+			}
+			
 
 	
-		//vec3 update_indirect = (indirect*uSPP+radiance)/float(uSPP+1.0);
-		//imageStore(u_Color,pixelCoord,vec4(update_indirect,1));
-		//if(uViewType == 0) //color
-			FragColor = vec4(pow(radiance, vec3(1.0f / 2.2f)), 1);
 
+			FragColor = vec4(pow(radiance, vec3(1.0f / 2.2f)), 1);
+			//FragColor = vec4(pow(vec3(1,1,0), vec3(1.0f / 2.2f)), 1);
 	//}//else (uSPP==-1)
 	
 	

@@ -158,12 +158,12 @@ void main(){
 	gPosition.rgb   = v_FragPos;
 	gPosition.a = float(u_IsPBRObjects*256.0+u_ObjectId); //15-8bit:u_IsPBRObjects,7-0bit:u_ObjectId
 
-	gNormal.rgb     = v_Normal;
+	gNormal.rgb     = normalize(v_Normal);
 	bool isSkybox = u_IsSkybox;
 	gNormal.a = (isSkybox)?1.0:0.0;
 
 	int s = u_Settings.isTextureSample;
-	gNormalMap      =  (s==0)?v_Normal:getNormalFromMap(v_FragPos,s_texCoordxy);
+	gNormalMap      =  (s==0)?normalize(v_Normal):getNormalFromMap(v_FragPos,s_texCoordxy);
 	float roughness =  (s==0)?u_Material.roughnessValue :texture(u_Material.roughness, s_texCoordxy).r;
 	float ao        = (s==0)? u_Material.aoValue:texture(u_Material.ao, s_texCoordxy).r;
 	

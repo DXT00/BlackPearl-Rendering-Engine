@@ -9,8 +9,8 @@ NVIDIA Research
 https://research.nvidia.com/sites/default/files/pubs/2010-02_Efficient-Sparse-Voxel/laine2010i3d_paper.pdf
 
 
-SVO path tracing - only one bounce cubeSize = 7
-![SVO path tracing](/results/svo_pathTracing.png)
+SVO path tracing - only one bounce cubeSize = 15
+![SVO path tracing](/results/svo_pathTracing1.png)
 
 
 

@@ -14,7 +14,7 @@ public:
 		: Layer(name, objectManager)
 	{
 		m_CubeObj = CreateCube();
-		m_CubeObj->GetComponent<BlackPearl::Transform>()->SetScale(glm::vec3(7.0f));//必须是单位cube
+		m_CubeObj->GetComponent<BlackPearl::Transform>()->SetScale(glm::vec3(15.0f));//必须是单位cube
 		m_QuadVisualObj = CreateQuad();
 		m_QuadBRDFLUTObj = CreateQuad();
 		m_QuadFinalScreenObj = CreateQuad();

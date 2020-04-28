@@ -76,7 +76,7 @@ void main(){
 			
 			break;
 		}
-		childIdx = int(node& 0x7FFFFFFF);
+		childIdx = int(node& 0x3FFFFFFF);
 		if(i==uLevel-1){
 			//计算这一个node的平均颜色
 
