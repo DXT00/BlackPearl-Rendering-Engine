@@ -53,8 +53,8 @@ public:
 		light->GetComponent<BlackPearl::Transform>()->SetPosition({ 0.0,7,3.0 });
 		light->GetComponent<BlackPearl::Transform>()->SetLastPosition({ 0.0,-1.0,0.0 });//0.0,0.0,3.0
 		light->GetComponent<BlackPearl::MeshRenderer>()->SetIsShadowObjects(false);
-		LoadScene("SpheresScene");
-		//LoadChurchScene();
+		//LoadScene("SpheresScene");
+		LoadChurchScene();
 		//LoadScene("CornellScene");
 		m_skybox = m_SkyBoxObj;
 		/*******************************************************************************************************/

@@ -57,7 +57,7 @@ int uSPP = u_SPP;
 bool uDirectLight = u_Settings.directLight;
 bool uIndirecLight = u_Settings.indirectDiffuseLight;
 bool uIndirectSpecularLight = u_Settings.indirectSpecularLight;
-const float SURFACE_OFFSET =(1.0/float(u_VoxelDim));
+const float SURFACE_OFFSET =(10.0/float(u_VoxelDim));
 const float VOXEL_SIZE = 1.0/float(u_VoxelDim);
 //uniform int u_voxelDim;
 struct GBuffer{
@@ -745,7 +745,7 @@ void main(){
 			//imageStore(u_debugBuffer,int(gl_FragCoord.x),uvec4(10*octreePos.x,10*octreePos.y,10*octreePos.z,1u));
 			//vec3 direct_radiance = gBuffer.diffuseColor;//vec3(1);
 
-			float attenuation1 =(2.0*PI-2.0*PI*5.0/9.0)/8.0;// 0.3;//0.3;
+			float attenuation1 =(2.0*PI-2.0*PI*3.0/9.0)/8.0;// 0.3;//0.3;
 			float attenuation2 = 0.5*attenuation1;
 
 			/* calculate indirect diffuse light */
@@ -840,7 +840,7 @@ void main(){
 //				d_color+= (albedo* attenuation1);
 
 				
-				d_color+= (RayMarch(o,d)* 10.0*PI/9.0);
+				d_color+= (RayMarch(o,d)* 3.0*2.0*PI/9.0);
 				d_color+= (RayMarch(o1,d1)* attenuation1);
 				d_color+= (RayMarch(o2,d2)* attenuation1);
 				d_color+= (RayMarch(o3,d3)* attenuation1);
@@ -859,11 +859,11 @@ void main(){
 
 			if(uIndirectSpecularLight){
 				vec3 pos,albedo,normal;
-				vec3 o;
+				vec3 o=voxelPos+vec3(1.0);
 				vec3 d;
 				vec3 viewDirection = normalize(gBuffer.fragPos-u_CameraViewPos);
 				const vec3 reflection = normalize(reflect(viewDirection, gBuffer.normal));
-				if(RayMarchLeaf(o,reflection,pos,albedo,normal)){
+				if(RayMarchLeaf(o+gBuffer.normal* SURFACE_OFFSET,reflection,pos,albedo,normal)){
 				if(gBuffer.isPBRObject==0)
 					indirectSpecular+=gBuffer.specularColor*(albedo* attenuation1);
 				else
