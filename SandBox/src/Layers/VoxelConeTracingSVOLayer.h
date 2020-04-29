@@ -14,7 +14,7 @@ public:
 		: Layer(name, objectManager)
 	{
 		m_CubeObj = CreateCube();
-		m_CubeObj->GetComponent<BlackPearl::Transform>()->SetScale(glm::vec3(15.0f));//必须是单位cube
+		m_CubeObj->GetComponent<BlackPearl::Transform>()->SetScale(glm::vec3(40.0f));//必须是单位cube
 		m_QuadVisualObj = CreateQuad();
 		m_QuadBRDFLUTObj = CreateQuad();
 		m_QuadFinalScreenObj = CreateQuad();
@@ -54,6 +54,7 @@ public:
 		light->GetComponent<BlackPearl::Transform>()->SetLastPosition({ 0.0,-1.0,0.0 });//0.0,0.0,3.0
 		light->GetComponent<BlackPearl::MeshRenderer>()->SetIsShadowObjects(false);
 		LoadScene("SpheresScene");
+		//LoadChurchScene();
 		//LoadScene("CornellScene");
 		m_skybox = m_SkyBoxObj;
 		/*******************************************************************************************************/

@@ -32,7 +32,9 @@ namespace BlackPearl {
 		ImGui::Text("SVO voxel GI");
 		ImGui::Checkbox("spp pause", &VoxelConeTracingSVORenderer::s_Pause);
 		ImGui::Checkbox("svo direct light", &VoxelConeTracingSVORenderer::s_DirectLight);
-		ImGui::Checkbox("svo Indirect light", &VoxelConeTracingSVORenderer::s_IndirectDiffuseLight);
+		ImGui::Checkbox("svo Indirect diffuse light", &VoxelConeTracingSVORenderer::s_IndirectDiffuseLight);
+		ImGui::Checkbox("svo Indirect specular light", &VoxelConeTracingSVORenderer::s_IndirectSpecularLight);
+		ImGui::DragFloat("svo GICoeffs", &VoxelConeTracingSVORenderer::s_GICoeffs, 0.2f, 0.0f, 1.0f, "%.3f ");
 
 		ImGui::Text("deferred voxel GI");
 		ImGui::Checkbox("voxel Indirect diffuse", &VoxelConeTracingDeferredRenderer::s_IndirectDiffuseLight);
@@ -259,6 +261,9 @@ namespace BlackPearl {
 		else if (demoScene == "SwordScene") {
 			LoadSwordScene();
 		}
+		else if (demoScene == "Church") {
+			LoadChurchScene();
+		}
 
 	}
 
@@ -321,6 +326,56 @@ namespace BlackPearl {
 		m_BackGroundObjsList.push_back(cube4);
 		m_BackGroundObjsList.push_back(cube5);
 
+	}
+
+	void Layer::LoadChurchScene()
+	{
+		Object* church = CreateModel("assets/models/sponza_obj/sponza.obj", "assets/shaders/IronMan.glsl", false, "Church");
+		church->GetComponent<Transform>()->SetScale(glm::vec3(0.02));
+		church->GetComponent<Transform>()->SetPosition({ 0.0f,0.0f,0.0f });
+		church->GetComponent<Transform>()->SetRotation({ 0.0f,-90.0f,0.0f });
+		//church->GetComponent<Transform>()->SetScale({ 0.1f,0.1f,0.1f });
+
+		church->GetComponent<MeshRenderer>()->SetIsBackGroundObjects(true);
+		church->GetComponent<MeshRenderer>()->SetTextureSamples(true);
+		church->GetComponent<MeshRenderer>()->SetTextureDiffuseSamples(true);
+		church->GetComponent<MeshRenderer>()->SetTextureSpecularSamples(true);
+		m_BackGroundObjsList.push_back(church);
+
+
+		BlackPearl::Object* light = CreateLight(BlackPearl::LightType::PointLight);
+		light->GetComponent<BlackPearl::Transform>()->SetPosition({ 0.0,13,3.0 });
+		light->GetComponent<BlackPearl::Transform>()->SetLastPosition({ 0.0,-1.0,0.0 });//0.0,0.0,3.0
+		light->GetComponent<BlackPearl::MeshRenderer>()->SetIsShadowObjects(false);
+		light->GetComponent<PointLight>()->UpdateMesh({ {0,0,0} ,{1,1,1},{1,1,1},{0,0,0},13});
+
+		//for (int i = 0; i < 10; i++) {
+		//	Object* light = CreateLight(LightType::PointLight);
+		//	light->GetComponent<Transform>()->SetPosition({ -50+i*10,30,0.0 });
+		//	light->GetComponent<Transform>()->SetLastPosition({ 0.0,-1.0,0.0 });//0.0,0.0,3.0
+		//	light->GetComponent<MeshRenderer>()->SetIsShadowObjects(false);
+		//	light->GetComponent<PointLight>()->UpdateMesh({ {0,0,0} ,{1,1,1},{1,1,1},{0,0,0},40 });
+
+		//}
+
+		//for (int i = 0; i < 10; i++) {
+		//	Object* light = CreateLight(LightType::PointLight);
+		//	light->GetComponent<Transform>()->SetPosition({ -50 + i * 10,5,0.0 });
+		//	light->GetComponent<Transform>()->SetLastPosition({ 0.0,-1.0,0.0 });//0.0,0.0,3.0
+		//	light->GetComponent<MeshRenderer>()->SetIsShadowObjects(false);
+		//	light->GetComponent<PointLight>()->UpdateMesh({ {0,0,0} ,{1,1,1},{1,1,1},{0,0,0},40 });
+
+		//}
+
+		//for (int i = 0; i < 10; i++) {
+		//	Object* light = CreateLight(LightType::PointLight);
+		//	light->GetComponent<Transform>()->SetPosition({ -50 + i * 10,10,0.0 });
+		//	light->GetComponent<Transform>()->SetLastPosition({ 0.0,-1.0,0.0 });//0.0,0.0,3.0
+		//	light->GetComponent<MeshRenderer>()->SetIsShadowObjects(false);
+		//	light->GetComponent<PointLight>()->UpdateMesh({ {0,0,0} ,{1,1,1},{1,1,1},{0,0,0},40 });
+
+		//}
+	
 	}
 
 	void Layer::LoadSpheresScene()
@@ -1046,7 +1101,7 @@ namespace BlackPearl {
 		ImGui::ColorEdit3("specular Color", glm::value_ptr(props.specular));
 		ImGui::ColorEdit3("emission Color", glm::value_ptr(props.emission));
 		ImGui::DragInt("attenuation", &attenuation, 0.5f, 7, 3250);
-		ImGui::DragFloat("intensity", &intensity, 0.5f, 1, 30);
+		ImGui::DragFloat("intensity", &intensity, 1.0f, 1, 100);
 
 		pointLight->SetAttenuation(attenuation);
 

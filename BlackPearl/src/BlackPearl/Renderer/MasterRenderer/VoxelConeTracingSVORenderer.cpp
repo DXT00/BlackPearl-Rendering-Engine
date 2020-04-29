@@ -10,7 +10,7 @@ namespace BlackPearl {
 	bool  VoxelConeTracingSVORenderer::s_IndirectDiffuseLight = true;
 	bool  VoxelConeTracingSVORenderer::s_IndirectSpecularLight = true;
 	bool  VoxelConeTracingSVORenderer::s_DirectLight = true;
-	float VoxelConeTracingSVORenderer::s_GICoeffs = 0.8f;
+	float VoxelConeTracingSVORenderer::s_GICoeffs = 0.6f;
 	bool  VoxelConeTracingSVORenderer::s_VoxelizeNow = true;
 	bool  VoxelConeTracingSVORenderer::s_HDR = false;
 	bool  VoxelConeTracingSVORenderer::s_GuassianHorizontal = false;
@@ -414,8 +414,8 @@ namespace BlackPearl {
 			GE_ERROR_JUDGE();
 
 		}
-		ShowBufferTexture(m_OctreeNodeTex[0], m_TotalTreeNode);
-		ShowBufferTexture(m_OctreeNodeTex[1], m_TotalTreeNode);
+		///ShowBufferTexture(m_OctreeNodeTex[0], m_TotalTreeNode);
+		//ShowBufferTexture(m_OctreeNodeTex[1], m_TotalTreeNode);
 
 		
 
@@ -577,12 +577,13 @@ namespace BlackPearl {
 		m_PathTracingGBufferShader->SetUniform1i("u_ScreenWidth", m_ScreenWidth);
 		m_PathTracingGBufferShader->SetUniform1i("u_ScreenHeight", m_ScreenHeight);
 		m_PathTracingGBufferShader->SetUniform1i("u_octreeLevel", m_OctreeLevel);
-		m_PathTracingGBufferShader->SetUniform1i("u_VoxelSize", m_VoxelTextureSize);
+		m_PathTracingGBufferShader->SetUniform1i("u_VoxelDim", m_VoxelTextureSize);
 
 		m_PathTracingGBufferShader->SetUniformVec3f("u_SunRadiance", m_SunRadiance);
 		m_PathTracingGBufferShader->SetUniform1i("u_Settings.directLight", s_DirectLight);
 		m_PathTracingGBufferShader->SetUniform1i("u_Settings.indirectDiffuseLight", s_IndirectDiffuseLight);
-
+		m_PathTracingGBufferShader->SetUniform1i("u_Settings.indirectSpecularLight", s_IndirectSpecularLight);
+		m_PathTracingGBufferShader->SetUniform1f("u_Settings.GICoeffs", s_GICoeffs);
 		//m_SobolSSBO->Bind();
 		//m_Sobol->Next(m_SobolPtr);
 

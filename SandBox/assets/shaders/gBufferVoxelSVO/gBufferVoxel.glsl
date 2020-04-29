@@ -165,7 +165,7 @@ void main(){
 	int s = u_Settings.isTextureSample;
 	gNormalMap      =  (s==0)?normalize(v_Normal):getNormalFromMap(v_FragPos,s_texCoordxy);
 	float roughness =  (s==0)?u_Material.roughnessValue :texture(u_Material.roughness, s_texCoordxy).r;
-	float ao        = (s==0)? u_Material.aoValue:texture(u_Material.ao, s_texCoordxy).r;
+	float ao        =  (s==0)? u_Material.aoValue:texture(u_Material.ao, s_texCoordxy).r;
 	
 	vec3 diffuse;
 	int sampleDiffuseTexture = u_Settings.isDiffuseTextureSample;

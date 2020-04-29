@@ -67,6 +67,7 @@ namespace BlackPearl {
 
 		void LoadScene(const std::string demoScene);
 		void LoadCornellScene();
+		void LoadChurchScene();
 		void LoadSpheresScene();
 		void LoadSwordScene();
 		void LoadCubesScene();
@@ -192,7 +193,7 @@ namespace BlackPearl {
 		CameraRotation m_CameraRotation;
 		float m_LastMouseX;
 		float m_LastMouseY;
-		float m_CameraMoveSpeed = 1.0f;
+		float m_CameraMoveSpeed = 3.0f;
 		float m_CameraRotateSpeed = 1.0f;
 
 		/*Time*/

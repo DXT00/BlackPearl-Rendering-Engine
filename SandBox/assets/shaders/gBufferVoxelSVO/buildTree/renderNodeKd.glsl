@@ -91,8 +91,9 @@ void main(){
 				}
 				
 			}
-			if(flagNum!=0)
-				avgColor/=float(flagNum);
+			//if(flagNum!=0)
+				//avgColor/=float(flagNum);
+				avgColor/=8.0;
 			imageAtomicRGBA8Avg(avgColor,int(parent),u_octreeKd);
 			//imageStore(u_octreeKd,int(parent),uvec4(avgColor));
 			break;
