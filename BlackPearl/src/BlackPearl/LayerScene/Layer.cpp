@@ -798,7 +798,7 @@ namespace BlackPearl {
 	
 		LightProbe* probe = m_ObjectManager->CreateLightProbe(type,shaderPath, texturePath, name+(type == LightProbe::Type::DIFFUSE ? "_kd" : "_ks"));
 		m_ObjectsList.push_back(probe->GetObj());
-		m_ObjectsList.push_back(probe->GetCamera()->GetObj());
+		//m_ObjectsList.push_back(probe->GetCamera()->GetObj());
 
 		return probe;
 	}

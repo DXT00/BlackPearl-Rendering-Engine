@@ -65,11 +65,11 @@ namespace BlackPearl {
 	LightProbe* ObjectManager::CreateLightProbe(LightProbe::Type type, const std::string& shaderPath, const std::string& texturePath, const std::string& name)
 	{
 		Object* obj = m_Object3DCreater->CreateLightProbe(shaderPath, texturePath, name);
-		Object* cameraObj = m_Object3DCreater->CreateCamera("Camera");
+		//Object* cameraObj = m_Object3DCreater->CreateCamera("Camera");
 
-		LightProbe* lightProbe = DBG_NEW LightProbe(obj, cameraObj,type);
+		LightProbe* lightProbe = DBG_NEW LightProbe(obj, type);
 		m_EntityToObjects.insert(std::make_pair(lightProbe->GetObj()->GetId().index(), lightProbe->GetObj()));
-		m_EntityToObjects.insert(std::make_pair(cameraObj->GetId().index(), cameraObj));
+		//m_EntityToObjects.insert(std::make_pair(cameraObj->GetId().index(), cameraObj));
 
 		//note:dosen't put cameraObj to m_EntityToObjects!
 		return lightProbe;

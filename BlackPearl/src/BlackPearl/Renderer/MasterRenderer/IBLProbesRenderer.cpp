@@ -20,13 +20,21 @@ namespace BlackPearl {
 		m_PbrShader.reset(DBG_NEW BlackPearl::Shader("assets/shaders/pbr/PbrTexture.glsl"));
 		m_NonPbrShader.reset(DBG_NEW BlackPearl::Shader("assets/shaders/IronMan.glsl"));
 		//m_SHShader.reset(DBG_NEW Shader("assets/shaders/lightProbes/SH.glsl"));
+
+		
 	}
-	IBLProbesRenderer::~IBLProbesRenderer()
-	{
-	}
-	void IBLProbesRenderer::Init(Object* brdfLUTQuadObj, const LightSources& lightSources, const std::vector<Object*> objects, const std::vector<LightProbe*> probes)
+	
+	void IBLProbesRenderer::Init(MainCamera* camera, Object* brdfLUTQuadObj, const LightSources& lightSources, const std::vector<Object*> objects, const std::vector<LightProbe*> probes)
 	{
 		GE_ASSERT(brdfLUTQuadObj, "brdfLUTQuadObj is nullptr!");
+
+		//多个probe共用一个camera
+		m_ProbeCamera = camera;
+		m_ProbeCamera->GetObj()->GetComponent<BlackPearl::PerspectiveCamera>()->SetFov(90.0f);
+		m_ProbeCamera->GetObj()->GetComponent<BlackPearl::PerspectiveCamera>()->SetWidth(Configuration::EnvironmantMapResolution);
+		m_ProbeCamera->GetObj()->GetComponent<BlackPearl::PerspectiveCamera>()->SetHeight(Configuration::EnvironmantMapResolution);
+		m_ProbeCamera->GetObj()->GetComponent<BlackPearl::PerspectiveCamera>()->SetZfar(13.0f);
+
 		m_BrdfLUTQuadObj = brdfLUTQuadObj;
 		//m_SHQuadObj = SHQuadObj;
 		RenderSpecularBRDFLUTMap();
@@ -49,12 +57,15 @@ namespace BlackPearl {
 		std::shared_ptr<CubeMapTexture> environmentMap = RenderEnvironmerntCubeMaps(lightSources, objects, diffuseProbe, skyBox);
 		GE_CORE_INFO("calculating SH coeffs...");
 		RenderSHImage(diffuseProbe, environmentMap);
+		GE_CORE_INFO("finished");
+
 	}
 	void IBLProbesRenderer::UpdateReflectionProbesMap(const LightSources* lightSources, std::vector<Object*> objects, Object* skyBox, LightProbe* reflectionProbe)
 	{
 		std::shared_ptr<CubeMapTexture> environmentMap =RenderEnvironmerntCubeMaps(lightSources, objects, reflectionProbe, skyBox);
 		GE_CORE_INFO("calculating specular map...");
 		RenderSpecularPrefilterMap(lightSources, reflectionProbe, environmentMap);
+		GE_CORE_INFO("finished");
 
 	}
 	void IBLProbesRenderer::Render(const LightSources* lightSources, const std::vector<Object*> objects, const std::vector<LightProbe*> diffuseProbes, const std::vector<LightProbe*> reflectionProbes, Object* skyBox)
@@ -200,12 +211,22 @@ namespace BlackPearl {
 
 	}
 
+	void IBLProbesRenderer::UpdateProbeCamera(LightProbe* probe)
+	{
+		glm::vec3 objPos = probe->GetObj()->GetComponent<Transform>()->GetPosition();
+		glm::vec3 objRot = probe->GetObj()->GetComponent<Transform>()->GetRotation();
+		m_ProbeCamera->SetPosition(objPos);
+		m_ProbeCamera->SetRotation(objRot);
+
+	}
+
 	std::shared_ptr<CubeMapTexture> IBLProbesRenderer::RenderEnvironmerntCubeMaps(const LightSources* lightSources, std::vector<Object*> objects, LightProbe* probe, Object* skyBox)
 	{
 		GE_ERROR_JUDGE();
 		glm::vec3 center = probe->GetPosition();
-		probe->UpdateCamera();
-		auto camera = probe->GetCamera();
+		UpdateProbeCamera(probe);
+		//probe->UpdateCamera();
+		auto camera = m_ProbeCamera;// probe->GetCamera();
 		auto cameraComponent = camera->GetObj()->GetComponent<PerspectiveCamera>();
 
 		auto projection = cameraComponent->GetProjectionMatrix();
@@ -372,8 +393,9 @@ namespace BlackPearl {
 	void IBLProbesRenderer::RenderSpecularPrefilterMap(const LightSources* lightSources, LightProbe* probe, std::shared_ptr<CubeMapTexture> environmentMap)
 	{
 		glm::vec3 center = probe->GetPosition();
-		probe->UpdateCamera();
-		auto camera = probe->GetCamera();
+		UpdateProbeCamera(probe);
+		//probe->UpdateCamera();
+		auto camera = m_ProbeCamera;//probe->GetCamera();
 		auto cameraComponent = camera->GetObj()->GetComponent<PerspectiveCamera>();
 
 		auto projection = cameraComponent->GetProjectionMatrix();

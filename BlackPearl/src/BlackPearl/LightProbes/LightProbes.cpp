@@ -5,7 +5,7 @@
 #include "BlackPearl/Component/MeshRendererComponent/MeshRenderer.h"
 namespace BlackPearl {
 
-	LightProbe::LightProbe(Object* cubeObj, Object* camera,Type type)
+	LightProbe::LightProbe(Object* cubeObj,Type type)
 	{
 		GE_ASSERT(cubeObj, "cubeObj is nullptr");
 		m_Type = type;
@@ -15,11 +15,11 @@ namespace BlackPearl {
 		m_LightProbeObj->GetComponent<MeshRenderer>()->SetIsShadowObjects(false);
 		m_LightProbeObj->GetComponent<MeshRenderer>()->SetIsBackGroundObjects(false);
 
-		m_Camera = DBG_NEW MainCamera(camera);
+	/*	m_Camera = DBG_NEW MainCamera(camera);
 		m_Camera->GetObj()->GetComponent<BlackPearl::PerspectiveCamera>()->SetFov(90.0f);
 		m_Camera->GetObj()->GetComponent<BlackPearl::PerspectiveCamera>()->SetWidth(m_EnvironmentCubeMapResolution);
 		m_Camera->GetObj()->GetComponent<BlackPearl::PerspectiveCamera>()->SetHeight(m_EnvironmentCubeMapResolution);
-		m_Camera->GetObj()->GetComponent<BlackPearl::PerspectiveCamera>()->SetZfar(13.0f);
+		m_Camera->GetObj()->GetComponent<BlackPearl::PerspectiveCamera>()->SetZfar(13.0f);*/
 
 		SetScale({ 0.3,0.3,0.3 });
 

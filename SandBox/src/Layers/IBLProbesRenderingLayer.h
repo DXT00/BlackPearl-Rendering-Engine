@@ -104,13 +104,14 @@ public:
 		  
 		//LoadScene("Church");
 
-		LoadScene("SpheresScene");
+		//LoadScene("SpheresScene");
 		LoadScene("CornellScene");//SpheresScene
 		//LoadDynamicObject("Robot");
 
-
+		m_ProbeCamera = CreateCamera("ProbeCamera");
+		
 		/*Draw CubeMap from hdrMap and Create environment IrrdianceMap*/
-		m_IBLProbesRenderer->Init(m_BrdfLUTQuadObj,  *GetLightSources(), m_BackGroundObjsList, m_DiffuseLightProbes);
+		m_IBLProbesRenderer->Init(m_ProbeCamera,m_BrdfLUTQuadObj,  *GetLightSources(), m_BackGroundObjsList, m_DiffuseLightProbes);
 		//m_IBLProbesRenderer->Render(GetLightSources(), m_BackGroundObjsList, m_LightProbes, m_SkyBoxObj1);
 
 		//glViewport(0, 0, BlackPearl::Configuration::WindowWidth, BlackPearl::Configuration::WindowHeight);
@@ -122,7 +123,10 @@ public:
 		DestroyObjects();
 		delete m_BasicRenderer;
 		delete m_IBLProbesRenderer;
-
+		for (auto* probe : m_DiffuseLightProbes)
+			GE_SAVE_DELETE(probe);
+		for (auto* probe : m_ReflectionLightProbes)
+			GE_SAVE_DELETE(probe);
 	}
 	void Hello() {
 		GE_CORE_INFO("Hello");
@@ -288,6 +292,6 @@ private:
 	std::vector<BlackPearl::LightProbe*> m_ReflectionLightProbes;
 
 	std::thread m_Threads[10];
-
+	BlackPearl::MainCamera* m_ProbeCamera;
 	
 };

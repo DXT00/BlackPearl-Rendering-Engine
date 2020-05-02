@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "SphericalHarmonics.h"
 #include "glm/glm.hpp"
+#include "BlackPearl/Core.h"
 namespace BlackPearl {
 	const float PI = 3.14159265359f;
 	std::vector<std::vector<glm::vec3>> cubeMapFaceNormal = {
@@ -104,7 +105,7 @@ namespace BlackPearl {
 						float value = *(pixels + offset);
 					//	value /= 255.0f;
 
-						// indexed by coeffiecent + color
+						// indexeud by coeffiecent + color
 						SHCoeffs[0][c] += value * weight1;
 						SHCoeffs[1][c] += value * weight2 * dx;
 						SHCoeffs[2][c] += value * weight2 * dy;
@@ -121,6 +122,8 @@ namespace BlackPearl {
 					}
 				}
 			}
+			//delete pixels;
+			//pixels = nullptr;
 		}
 
 		for (int i = 0; i < 9; i++) {
@@ -128,7 +131,9 @@ namespace BlackPearl {
 			SHCoeffs[i][1] *= 4.0f * PI / weightAccum;
 			SHCoeffs[i][2] *= 4.0f * PI / weightAccum;
 		}
-
+		//for (int i=0;i<6;i++)
+		
+		delete[] faces[0];
 		return SHCoeffs;
 
 	}

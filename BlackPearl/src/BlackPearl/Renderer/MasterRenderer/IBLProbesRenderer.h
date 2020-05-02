@@ -8,14 +8,19 @@ namespace BlackPearl {
 	{
 	public:
 		IBLProbesRenderer();
-		virtual ~IBLProbesRenderer();
+		virtual ~IBLProbesRenderer() {
+			GE_SAVE_DELETE(m_BrdfLUTQuadObj);
+			GE_SAVE_DELETE(m_SHQuadObj);
+			GE_SAVE_DELETE(m_ProbeCamera);
+
+		}
 		void Render(const LightSources* lightSources, const std::vector<Object*> objects, const std::vector<LightProbe*> diffuseProbes, const std::vector<LightProbe*> reflectionProbes, Object* skyBox);
 		void RenderProbes(const std::vector<LightProbe*> probes,int probeType);
 		void RenderSpecularObjects(const LightSources* lightSources, const std::vector<Object*> objects, const std::vector<LightProbe*> probes);
 
 
 
-		void Init(Object* brdfLUTQuadObj, const LightSources& lightSources, const std::vector<Object*> objects, const std::vector<LightProbe*> probes);
+		void Init(MainCamera* camera, Object* brdfLUTQuadObj, const LightSources& lightSources, const std::vector<Object*> objects, const std::vector<LightProbe*> probes);
 		std::shared_ptr<Texture> GetSpecularBrdfLUTTexture() const { return m_SpecularBrdfLUTTexture; }
 		//void UpdateProbesMaps(const LightSources* lightSources, std::vector<Object*> objects, Object* skyBox, LightProbe* probe);
 		void UpdateDiffuseProbesMap(const LightSources* lightSources, std::vector<Object*> objects, Object* skyBox, LightProbe* diffuseProbe);
@@ -25,6 +30,7 @@ namespace BlackPearl {
 			m_CurrentProbeIndex = 0;
 			m_UpdateFinished = false;
 		}
+		void UpdateProbeCamera(LightProbe* probe);
 	private:
 		/*render environment CubeMap of each probe */
 		std::shared_ptr<CubeMapTexture> RenderEnvironmerntCubeMaps(const LightSources* lightSources, std::vector<Object*> objects, LightProbe* probes, Object* skyBox);
@@ -70,7 +76,7 @@ namespace BlackPearl {
 		unsigned m_KperFrame = 6;
 		unsigned int m_CurrentProbeIndex = 0;
 		bool m_UpdateFinished = false;
-
+		MainCamera* m_ProbeCamera;
 	};
 
 }

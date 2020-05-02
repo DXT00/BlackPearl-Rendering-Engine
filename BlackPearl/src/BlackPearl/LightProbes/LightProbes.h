@@ -21,12 +21,12 @@ namespace BlackPearl {
 			DIFFUSE,
 			REFLECTION
 		};
-		LightProbe(Object* cubeObj,Object* camera,Type type);
+		LightProbe(Object* cubeObj,Type type);
 		virtual ~LightProbe() {
 
 			
 			GE_SAVE_DELETE(m_LightProbeObj);
-			GE_SAVE_DELETE(m_Camera);
+			//GE_SAVE_DELETE(m_Camera);
 		}
 		
 		/* probe's view matrix */
@@ -62,13 +62,13 @@ namespace BlackPearl {
 		Object* GetObj()const { return m_LightProbeObj; }
 
 		/*每次Probe使用前都要Update Camera!!*/
-		void UpdateCamera() {
+	/*	void UpdateCamera() {
 			glm::vec3 objPos = m_LightProbeObj->GetComponent<Transform>()->GetPosition();
 			glm::vec3 objRot = m_LightProbeObj->GetComponent<Transform>()->GetRotation();
 			m_Camera->SetPosition(objPos);
 			m_Camera->SetRotation(objRot);
-		}
-		MainCamera* GetCamera()const { return m_Camera; }
+		}*/
+		//MainCamera* GetCamera()const { return m_Camera; }
 
 		/*threads*/
 		//void StartThread(void(IBLProbesRenderer::*UpdateProbeMaps)(const LightSources& , const std::vector<Object*> , Object* , LightProbe* ),
@@ -92,7 +92,7 @@ namespace BlackPearl {
 		//glm::vec3 m_Center;
 		glm::vec3 m_Size;
 		Object* m_LightProbeObj;
-		MainCamera* m_Camera;
+		//MainCamera* m_Camera;
 
 		std::vector<std::vector<float>> m_SHCoeffs;
 		Type m_Type;
