@@ -10,10 +10,11 @@ namespace BlackPearl {
 	{
 	public:
 		IBLRenderer();
-		void Init(Object* hdrCubeObj, Object * brdfLUTQuad);
+		void Init(Object* hdrCubeObj, Object* brdfLUTQuad, Object* skybox, std::vector<Object*>objs, const LightSources* lightSources);
 		~IBLRenderer();
 		void RenderHdrMapToEnvironmentCubeMap();
 		void RenderDiffuseIrradianceMap();
+		void RenderEnvironmerntCubeMaps(const LightSources* lightSources, std::vector<Object*> objects, Object* skyBox);
 
 		//将预先计算好的BRDF对粗糙度和入射角的组合的影响结
 		//果存储在一张2D查找纹理(LUT)上-->BRDF积分贴图
@@ -22,24 +23,21 @@ namespace BlackPearl {
 		//restore the result of BRDF convolution
 		void RenderSpecularBRDFLUTMap();
 		void RenderSpheres(Object* sphere);
-		void RenderTextureSphere(Object* sphere);
+		void RenderTextureSphere(std::vector<Object*> objs, LightSources* lightSources);
 
 		//draw brdfLUT quad (just for debug)
 		void DrawBRDFLUTMap();
 		void Render(std::vector<Object*>objs);
-		std::shared_ptr<FrameBuffer> GetFrameBuffer() { return m_FrameBuffer; }
-		unsigned int GetHdrCubeMapID() { return m_HdrCubeMapID; }
-		unsigned int GetIrradianceCubeMap() { return m_IrradianceCubeMapID; }
-		unsigned int GetPrefilterMapID() { return m_PrefilterCubeMapID; }
-		unsigned int GetBRDFLUTTextureID() { return m_BRDFLUTTextureID; }
-
-
+		std::shared_ptr<CubeMapTexture> GetHdrCubeMap() { return m_HdrCubeMap; }
+		std::shared_ptr<CubeMapTexture> GetSkyBoxCubeMap() { return m_SkyBoxCubeMap; }
+		std::shared_ptr<CubeMapTexture> GetSpecularCubeMap() { return m_PrefilterCubeMap; }
+		std::shared_ptr<CubeMapTexture> GetIrradianceCubeMap() { return m_IrradianceCubeMap; }
+		static float s_GICoeffs;
+		static bool s_HDR;
 	private:
-		std::shared_ptr<FrameBuffer> m_FrameBuffer;
 		
 	
-		static int s_Width;
-		static int s_Height;
+		
 		
 		//Hdr Texture
 		std::shared_ptr<HDRTexture>	m_HdrTexture;
@@ -65,10 +63,19 @@ namespace BlackPearl {
 		std::vector<glm::mat4>		m_CaptureViews;
 		std::vector<glm::mat4>		m_CaptureProjectionViews;
 		unsigned int				m_HdrCubeMapID;
-		unsigned int				m_IrradianceCubeMapID;
-		unsigned int				m_PrefilterCubeMapID;
-		unsigned int				m_BRDFLUTTextureID;
+		//unsigned int				m_IrradianceCubeMapID;
+		//unsigned int				m_PrefilterCubeMapID;
+		//unsigned int				m_BRDFLUTTextureID;
+		std::shared_ptr<Texture>	m_BRDFLUTTexture;
+		std::shared_ptr<CubeMapTexture> m_IrradianceCubeMap;
+		std::shared_ptr<CubeMapTexture> m_PrefilterCubeMap;
+		std::shared_ptr<CubeMapTexture> m_HdrCubeMap;
+		std::shared_ptr<CubeMapTexture> m_SkyBoxCubeMap;
 
+		unsigned int m_EnvironmentMapDim = 256;
+		unsigned int m_SpecularPrefilterMapDim = 256;
+		unsigned int m_IrradianceDiffuseMapDim = 256;
+		unsigned int m_BRDFLutDim = 256;
 		
 	};
 

@@ -25,7 +25,7 @@ void main(){
 const float PI = 3.14159;
 in vec3 WorldPos;
 out vec4 FragColor;
-
+uniform int u_EnvironmentCubeMapDim;
 uniform float u_roughness;
 uniform samplerCube u_EnvironmentMap;
 float VanDerCorpus(uint n, uint base)
@@ -121,13 +121,15 @@ void main(){
 			float HdotV = max(dot(N,V),0.0);
 			float pdf = D*NdotH/(4.0*HdotV)+0.0001;
 
-			float resolution =32.0;//512.0;textureSize(u_EnvironmentMap,0).x;//512.0;// resolution of source cubemap (per face)
+			float resolution = float(u_EnvironmentCubeMapDim);//32.0;//512.0;textureSize(u_EnvironmentMap,0).x;//512.0;// resolution of source cubemap (per face)
 			float  saTexel = 4.0*PI/(6.0*resolution*resolution);
 			float saSample= 1.0/(float(SAMPLE_COUNT)*pdf +0.0001);
 
 			float mipLevel = (u_roughness == 0.0)? 0.0:0.5*log2(saSample / saTexel); 
 
 			prefilterColor += textureLod(u_EnvironmentMap,L,mipLevel).rgb*NdotL;
+			//prefilterColor += textureLod(u_EnvironmentMap,L,0).rgb*NdotL;
+
 			totalWeight+= NdotL;
 
 		}

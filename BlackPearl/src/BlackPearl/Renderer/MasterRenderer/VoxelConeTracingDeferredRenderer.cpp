@@ -40,7 +40,6 @@ namespace BlackPearl {
 		GE_ASSERT(quadGbufferObj, "m_QuadGbufferObj is nullptr!");
 		GE_ASSERT(brdfLUTQuadObj, "m_BrdfLUTQuadObj is nullptr!");
 		GE_ASSERT(surroundSphere, "m_SurroundSphere is nullptr!");
-
 		GE_ASSERT(cubeObj, "m_CubeObj is nullptr!");
 
 		m_QuadObj = quadObj;
@@ -112,7 +111,6 @@ namespace BlackPearl {
 		//Shaders
 		m_WorldPositionShader.reset(DBG_NEW Shader("assets/shaders/voxelization/visualization/worldPosition.glsl"));
 		m_VoxelVisualizationShader.reset(DBG_NEW Shader("assets/shaders/voxelization/visualization/voxelVisualization.glsl"));
-
 	}
 
 	void VoxelConeTracingDeferredRenderer::RenderGBuffer(const std::vector<Object*>& objs, Object* skybox)
@@ -136,9 +134,6 @@ namespace BlackPearl {
 			m_GBufferShader->SetUniform1i("u_ObjectId", obj->GetId().index());
 
 			DrawObject(obj, m_GBufferShader);
-
-
-
 		}
 		
 		m_GBuffer->UnBind();
@@ -233,13 +228,7 @@ namespace BlackPearl {
 		}
 
 		for (auto obj : objs) {
-			//m_VoxelizationShader->Bind();
-			//glActiveTexture(GL_TEXTURE0);
-			//m_VoxelTexture->Bind();
-			//m_VoxelizationShader->SetUniform1i("texture3D", 0);
-			//m_VoxelizationShader->SetUniformVec3f("u_CubeSize", m_CubeObj->GetComponent<Transform>()->GetScale());
-			////m_VoxelizationShader->SetUniformVec3f("u_CubePos", m_CubeObj->GetComponent<Transform>()->GetPosition());
-			//glBindImageTexture(0, m_VoxelTexture->GetRendererID(), 0, GL_TRUE, 0, GL_WRITE_ONLY, GL_RGBA16);
+			
 			m_VoxelizationShader->Bind();
 			m_VoxelizationShader->SetUniformVec3f("u_CubeSize", m_CubeObj->GetComponent<Transform>()->GetScale());
 
@@ -563,7 +552,6 @@ namespace BlackPearl {
 		/********************************* postProcess pass ************************************************/
 
 		glViewport(0, 0, m_ScreenWidth, m_ScreenHeight);
-
 		glClear(GL_COLOR_BUFFER_BIT);
 		m_FinalScreenShader->Bind();
 		m_FinalScreenShader->SetUniform1i("u_FinalScreenTexture",1);

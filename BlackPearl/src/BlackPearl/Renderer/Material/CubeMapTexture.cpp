@@ -49,7 +49,8 @@ namespace BlackPearl {
 			glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
 
 
-		
+		glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
+
 	}
 	void CubeMapTexture::LoadCubeMap(const int width, const int height, unsigned int minFilter, unsigned int maxFilter, int wrap,int internalFormat,int format, int dataType,bool generateMipmap)
 	{
@@ -65,6 +66,7 @@ namespace BlackPearl {
 
 		if(generateMipmap)
 			glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 
 	}
 	void CubeMapTexture::Bind()

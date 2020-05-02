@@ -1,5 +1,6 @@
+  
 #type vertex
-#version 430 core
+#version 450 core
 
 layout(location = 0) in vec3 aPos;
 layout(location = 1) in vec3 aNormal;
@@ -23,7 +24,7 @@ void main()
 }
 
 #type fragment
-#version 430 core
+#version 450 core
 
 const float PI=3.14159265359;
 struct PointLight{
@@ -37,35 +38,16 @@ struct PointLight{
 	float quadratic;
 
 };
-//uniform struct Material{
-//	vec3 ambientColor;
-//	vec3 diffuseColor;
-//	vec3 specularColor;
-//	vec3 emissionColor;
-//	sampler2D diffuse; //or call it albedo
-//	sampler2D specular;
-//	sampler2D emission;
-//	sampler2D normal;
-//	sampler2D height;
-//	sampler2D ao;
-//	sampler2D roughness;
-//	sampler2D mentallic;
-//
-//
-//	float shininess;
-//	bool isBlinnLight;
-//	int  isTextureSample;//判断是否使用texture,或者只有color
-//
-//}u_Material;
-uniform Material u_Material;
 
+uniform Material u_Material;
+uniform Settings u_Settings;
 in vec3 v_Normal;
 in vec3 v_FragPos;
 in vec2 v_TexCoord;
 
 out vec4 FragColor;
 //Light
-uniform PointLight u_PointLights[100];
+uniform PointLight u_PointLights[10];
 uniform int u_PointLightNums;
 //Camera
 uniform vec3 u_CameraViewPos;
@@ -74,7 +56,9 @@ uniform vec3 u_CameraViewPos;
 uniform samplerCube u_IrradianceMap;
 uniform samplerCube u_PrefilterMap;
 uniform sampler2D u_BrdfLUTMap;
-
+uniform samplerCube u_ShadowMap[10];
+uniform int u_IsPBRObjects;
+uniform float u_FarPlane;
 int step = 100;
 vec3 sum  = vec3(0.0);
 float dw = 1.0/step;
@@ -133,9 +117,9 @@ vec3 FresnelSchlick(float cosTheta, vec3 F0){
 vec3 FresnelSchlickRoughness(float cosTheta, vec3 F0, float roughness){
 	return F0 + (max(vec3(1.0 - roughness), F0) - F0) * pow(1.0 - cosTheta, 5.0);
 }
-vec3 BRDF(vec3 Kd,vec3 Ks,vec3 specular){
+vec3 BRDF(vec3 Kd,vec3 Ks,vec3 specular,vec3 albedo){
 	
-	vec3 fLambert = u_Material.diffuseColor/PI;//diffuseColor 相当于 albedo
+	vec3 fLambert = albedo/PI;//diffuseColor 相当于 albedo
 	return Kd * fLambert+  specular;//specular 中已经有Ks(Ks=F)了，不需要再乘以Ks *
 }
 vec3 LightRadiance(vec3 fragPos,PointLight light){
@@ -145,14 +129,103 @@ vec3 LightRadiance(vec3 fragPos,PointLight light){
 	return radiance;
 }
 
+vec3 calculateDirectLight(vec3 fragPos,vec3 normal,const PointLight light, const vec3 viewDir,vec3 diffuseColor,vec3 specularColor){
+	vec3 direct = vec3(0.0);
+
+	vec3 lightDir = light.position - fragPos;
+//	//MY 
+//	vec3 ligtdir = lightDirection/u_CubeSize;
+//	float distToLight = length(ligtdir);
+
+	const float distanceToLight = length(lightDir);
+	lightDir =normalize(lightDir);// lightDir / distanceToLight;
+	float attenuation = 1.0f/(light.constant+light.linear * distanceToLight+light.quadratic*distanceToLight*distanceToLight);
+
+	vec3 norm = normalize(normal);
+	float diff = max(dot(lightDir,norm),0.0f);
+	vec3 diffuse = light.diffuse * diff* diffuseColor;
+
+	/*specular*/
+	vec3 specular;
+	float spec;
+	float shininess = 64.0;
+
+
+
+		vec3 reflectDir = normalize(reflect(-lightDir,norm));
+		spec = pow(max(dot(reflectDir,viewDir),0.0),64);
+		specular =  light.specular *spec* specularColor;//texture(material.specular,v_TexCoords).rgb;
+
+	// vec3 emission = texture(u_Material.emission, v_TexCoord).rgb;
+
+
+	//ambient  *= attenuation;
+	diffuse  *= attenuation;
+	specular *= attenuation;
+	//emission *= attenuation;
+
+	direct = diffuse + specular;//+ ambient +emission;// * mix(texture(u_Texture1, v_TexCoords), texture(u_Texture2, vec2(1.0 - v_TexCoords.x, v_TexCoords.y)), u_MixValue);
+	
+
+
+
+	return direct;
+	
+};
+float ShadowCalculation(vec3 fragPos,vec3 lightPos,samplerCube shadowMap){
+
+		vec3 fragToLight = fragPos.xyz - lightPos; 
+
+	 float closestDepth = texture(shadowMap, fragToLight).r;
+	// It is currently in linear range between [0,1]. Re-transform back to original value
+    closestDepth = closestDepth*u_FarPlane;
+    // Now get current linear depth as the length between the fragment and light position
+    float currentDepth = length(fragToLight);
+    // Now test for shadows
+  
+	float shadow = 0.0;
+	float bias = 0.08; 
+	float samples = 4.0;
+	float offset = 0.1;
+	for(float x = -offset; x < offset; x += offset / (samples * 0.5))
+	{
+	    for(float y = -offset; y < offset; y += offset / (samples * 0.5))
+	    {
+	        for(float z = -offset; z < offset; z += offset / (samples * 0.5))
+	        {
+	            float closestDepth = texture(shadowMap, fragToLight + vec3(x, y, z)).r; 
+	            closestDepth *= u_FarPlane;   // Undo mapping [0;1]
+	            if(currentDepth - bias > closestDepth)
+	                shadow += 1.0;
+	        }
+	    }
+	}
+	shadow /= (samples * samples * samples);
+	return shadow;
+
+//vec3 fragToLight = fragPos.xyz - lightPos; 
+//float SampledDistance = texture(u_CubeMap,fragToLight).r;
+//
+//    float Distance = length(fragToLight);
+//
+//    if (Distance < SampledDistance*u_FarPlane + bias)
+//        return 0.3; // Inside the light
+//    else
+//        return 0.8; // Inside the shadow
+}
 
 void main(){
 	//material properties
-	vec3 albedo = pow(texture(u_Material.diffuse,v_TexCoord).rgb,vec3(2.2));
+	 vec3 color;
+	 int pointLightNum = u_PointLightNums;
+	 int pbr = u_IsPBRObjects;
+	if(pbr==1){
+		vec3 albedo = pow(texture(u_Material.diffuse,v_TexCoord).rgb,vec3(2.2));
 	float metallic = texture(u_Material.mentallic, v_TexCoord).r;
     float roughness = texture(u_Material.roughness, v_TexCoord).r;
     float ao = texture(u_Material.ao, v_TexCoord).r;
-       vec3 emission = texture(u_Material.emission,v_TexCoord).rgb;
+	int emmisionSample = u_Settings.isEmissionTextureSample;
+    vec3 emission =vec3(0);// (emmisionSample==1)?texture(u_Material.emission,v_TexCoord).rgb:vec3(0);
 
 	vec3 N = getNormalFromMap();
 	vec3 V = normalize(u_CameraViewPos-v_FragPos);
@@ -163,7 +236,7 @@ void main(){
 
 	//reflection equation
 	vec3 Lo = vec3(0.0);
-	for(int i=0;i<u_PointLightNums;i++){
+	for(int i=0;i<pointLightNum;i++){
 		vec3 L = normalize(u_PointLights[i].position-v_FragPos);
 		vec3 H = normalize(V+L);
 		float attenuation = calculateAttenuation(u_PointLights[i],v_FragPos);
@@ -191,7 +264,9 @@ void main(){
 
 		
 		float NdotL = max(dot(N,L),0.0);
-		Lo+= BRDF(Kd,Ks,specular)*LightRadiance(v_FragPos,u_PointLights[i])*NdotL;
+		float shadow = ShadowCalculation(v_FragPos,u_PointLights[i].position,u_ShadowMap[i]); 
+
+		Lo+=(1.0 - shadow)* BRDF(Kd,Ks,specular,albedo)*LightRadiance(v_FragPos,u_PointLights[i])*NdotL;
 	}
 
 	//ambient lightings (we now use IBL as the ambient term)!
@@ -200,7 +275,7 @@ void main(){
 	vec3 Kd = vec3(1.0)-Ks;
 	Kd *= (1.0 - metallic);
 	vec3 environmentIrradiance = texture(u_IrradianceMap,N).rgb;
-	vec3 diffuse = environmentIrradiance*u_Material.diffuseColor;
+	vec3 diffuse = environmentIrradiance*albedo;
 
 	//sample both the prefilter map and the BRDF lut and combine them together as per the Split-Sum approximation to get the IBL specular part
 	const float MAX_REFLECTION_LOD = 4.0;
@@ -210,11 +285,69 @@ void main(){
 
 	vec3 specular = prefileredColor * (F*brdf.x+brdf.y);
 	vec3 ambient = (Kd*diffuse+specular) * ao;
-    vec3 color =ambient+emission+ Lo;
+    color = u_Settings.GICoeffs * ambient+emission+ Lo;
 
-	//HDR tonemapping
-    color = color / (color + vec3(1.0));
-	//gamma correction
-    color = pow(color, vec3(1.0/2.2));  
+
+
+	}
+	else{
+
+		vec3 N = normalize(v_Normal);//getNormalFromMap(v_FragPos,v_TexCoord);
+
+		vec3 V = normalize(u_CameraViewPos-v_FragPos);
+		vec3 R = reflect(-V,N);
+
+		
+
+
+		vec3 environmentIrradiance=texture(u_IrradianceMap,N).rgb;
+		
+		
+
+		
+		//vec3 diffuse = environmentIrradiance*(texture(u_Material.diffuse,v_TexCoord).rgb*u_Settings.isTextureSample+(1-u_Settings.isTextureSample)*u_Material.diffuseColor);
+		int s =u_Settings.isTextureSample;
+		vec3 MaterialDiffuse;
+		if(s==0)
+			MaterialDiffuse =(u_Material.diffuseColor);
+		else
+			MaterialDiffuse = (texture(u_Material.diffuse,v_TexCoord).rgb);
+
+		vec3 diffuse = environmentIrradiance*MaterialDiffuse;
+		
+		vec3 prefileredColor = vec3(0.0,0.0,0.0) ;//= vec3(1.0,1.0,1.0);
+
+		/*specular Map只取最近的一个*/
+		prefileredColor = textureLod(u_PrefilterMap,R,4).rgb;
+//		for(int i=0;i<u_Kprobes;i++){
+//			prefileredColor+= u_ProbeWeight[i]*textureLod(u_PrefilterMap[i],R,roughness*MAX_REFLECTION_LOD).rgb;
+//		//	prefileredColor*= textureLod(u_PrefilterMap[i],R,roughness*MAX_REFLECTION_LOD).rgb;
+//
+//		}
+		
+		vec3 specularColor = (u_Material.specularColor);
+		vec3 specular = prefileredColor*specularColor;
+		vec3 ambient =  diffuse+specular;
+
+//		 ambient = ambient / (ambient + vec3(1.0));
+//		//gamma correction
+//		  ambient = pow(ambient, vec3(1.0/2.2));  
+		vec3 directLight = vec3(0);
+		for(int i=0;i<pointLightNum;i++){
+			float shadow = ShadowCalculation(v_FragPos,u_PointLights[i].position,u_ShadowMap[i]); 
+			directLight+=(1.0 - shadow) * calculateDirectLight( v_FragPos,N,u_PointLights[i],V ,MaterialDiffuse,u_Material.specularColor);
+		
+		}
+		color=u_Settings.GICoeffs * ambient+directLight;
+
+	}
+	bool hdr = u_Settings.hdr;
+	if(hdr){
+		//HDR tonemapping
+		color = color / (color + vec3(1.0));
+		//gamma correction
+		color = pow(color, vec3(1.0/2.2));  
+
+	}
     FragColor = vec4(color, 1.0);
 }

@@ -25,7 +25,7 @@ namespace BlackPearl {
 		glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
 		//Upload texture buffer
-		 int levels = 7;
+		 int levels = 5;
 		glTexStorage3D(GL_TEXTURE_3D, levels, GL_RGBA8, m_Width, m_Height, m_Depth);
 		glTexImage3D(GL_TEXTURE_3D, 0, GL_RGBA8, m_Width, m_Height, m_Depth, 0, GL_RGBA, GL_FLOAT, &textureBuffer[0]);//Upload level0
 		if (generateMipmaps) glGenerateMipmap(GL_TEXTURE_3D);

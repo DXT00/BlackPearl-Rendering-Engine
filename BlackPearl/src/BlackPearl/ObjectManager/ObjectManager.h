@@ -41,7 +41,7 @@ namespace BlackPearl {
 
 		Object* CreateQuad(const std::string& shaderPath , const std::string& texturePath, const std::string& name);
 		/*Blending Object, include logical and actual properties*/
-		LightProbe* CreateLightProbe(const std::string& shaderPath, const std::string& texturePath, const std::string& name);
+		LightProbe* CreateLightProbe(LightProbe::Type type, const std::string& shaderPath, const std::string& texturePath, const std::string& name);
 		MainCamera* CreateCamera(const std::string& name);
 
 

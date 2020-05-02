@@ -33,8 +33,8 @@ namespace BlackPearl {
 
 			/*MainCamera Init*/
 			m_MainCamera = CreateCamera();
-			//m_MainCamera->SetPosition(glm::vec3(0.0f, 1.387f, 8.012f));
-			m_MainCamera->SetPosition(glm::vec3(0.0f, 0.0f, 19.0f));
+			m_MainCamera->SetPosition(glm::vec3(0,1.387f,22.012f));
+			//m_MainCamera->SetPosition(glm::vec3(0.0f, 0.0f, 19.0f));
 
 			//m_MainCamera->SetRotation(glm::vec3(-26.5f,-60.8f,0.0f));
 
@@ -67,6 +67,8 @@ namespace BlackPearl {
 
 		void LoadScene(const std::string demoScene);
 		void LoadCornellScene();
+		void LoadCornellScene1();
+
 		void LoadChurchScene();
 		void LoadSpheresScene();
 		void LoadSwordScene();
@@ -88,8 +90,8 @@ namespace BlackPearl {
 		virtual Object* CreateSkyBox(const std::vector<std::string>& textureFaces, const std::string& shaderPath = "assets/shaders/SkyBox.glsl", const std::string& name = "SkyBox");
 		//TODO::Quad 加TexturePath就会出bug...
 		virtual Object* CreateQuad(const std::string& shaderPath = "assets/shaders/Quad.glsl", const std::string& texturePath = "", const std::string& name = "Quad");
-
-		virtual LightProbe* CreateLightProbe(const std::string& shaderPath = "assets/shaders/lightProbes/lightProbe.glsl", const std::string& texturePath = "", const std::string& name = "LightProbe");
+		
+		virtual LightProbe* CreateLightProbe(LightProbe::Type type, const std::string& shaderPath = "assets/shaders/lightProbes/lightProbe.glsl", const std::string& texturePath = "", const std::string& name = "LightProbe");
 		virtual MainCamera* CreateCamera(const std::string& name="Camera");
 
 		void ShowMeshRenderer(MeshRenderer* comp);

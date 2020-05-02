@@ -59,6 +59,9 @@ in vec3 v_Normal;
 uniform Material u_Material;
 
 uniform samplerCube cubeMap;
+
+uniform int u_ProbeType;
+
 float near = 0.1; 
 float far  = 100.0; 
 float LinearizeDepth(float depth){
@@ -203,12 +206,17 @@ vec3 SHDiffuse(const vec3 normal){
 void main(){
 	
 	
-
+	int uProbeType = u_ProbeType;
     vec3 N   = normalize(v_Normal);
 	//vec3 color=LoadSHCoeffs(SHCoeffs,N);
+	vec3 color;
+	if(uProbeType==0)//diffuse Probe
+		color =SHDiffuse(N);
+	else
+		color =textureLod(u_Material.cube,TexCoords,0).rgb;
+
 	//vec3 color =SHDiffuse(N);//imageLoad(u_Image,ivec2(4,0)).rgb;//
 	
-	vec3 color =textureLod(u_Material.cube,TexCoords,0).rgb;
 		//vec3 color =texture(u_Material.diffuse,TexCoords.xy).rgb;
 
 //	color = color/(color+vec3(1.0));
@@ -218,7 +226,7 @@ void main(){
 //		FragColor = vec4(1.0,0.0,0.0,1.0);
 //		else
 //				FragColor = vec4(0.0,1.0,0.0,1.0);
-	 color = pow(color,vec3(1.0/2.2));
+	color = pow(color,vec3(1.0/2.2));
 
 	FragColor = vec4(color,1.0);
 

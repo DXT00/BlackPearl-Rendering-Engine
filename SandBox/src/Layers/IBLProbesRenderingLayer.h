@@ -39,19 +39,19 @@ public:
 		m_SurroundSphere = CreateSphere(1.0, 128, 128);
 		m_GIQuad = CreateQuad();
 		/* create probes */
-		unsigned int xlen = 2, ylen = 1,zlen = 1,space =8;
-		float offsetx = 0.0, offsety = 1.0f, offsetz = 3.0f;//offsetx = 0.0, offsety = 5.0f, offsetz = 1.0f;
+		unsigned int xlen = 4 ,ylen = 2,zlen = 4,space =5;//424
+		float offsetx =2.0f, offsety = 4.0f, offsetz = 6.7f;//offsetx = 0.0, offsety = 5.0f, offsetz = 1.0f;
 		for (unsigned int x = 0; x < xlen; x++)
 		{
 			for (unsigned int y = 0; y < ylen; y++)
 			{
 				for (unsigned int  z = 0; z < zlen; z++)
 				{
-					BlackPearl::LightProbe* probe = CreateLightProbe();
+					BlackPearl::LightProbe* probe = CreateLightProbe(BlackPearl::LightProbe::Type::DIFFUSE);
 					int xx = (x - xlen / 2) * space, yy = (y - ylen / 2) * space, zz = (z - zlen / 2) * space;
 					
 					probe->SetPosition({ offsetx+xx,offsety+yy,offsetz+zz});
-					m_LightProbes.push_back(probe);
+					m_DiffuseLightProbes.push_back(probe);
 					//delete probe;
 
 				}
@@ -59,7 +59,26 @@ public:
 			}
 
 		}
+		xlen = 2, ylen = 1, zlen = 1, space = 5;//424
+		offsetx = 2.0f, offsety = 4.0f, offsetz = 6.7f;//offsetx = 0.0, offsety = 5.0f, offsetz = 1.0f;
+		for (unsigned int x = 0; x < xlen; x++)
+		{
+			for (unsigned int y = 0; y < ylen; y++)
+			{
+				for (unsigned int z = 0; z < zlen; z++)
+				{
+					BlackPearl::LightProbe* probe = CreateLightProbe(BlackPearl::LightProbe::Type::REFLECTION);
+					int xx = (x - xlen / 2) * space, yy = (y - ylen / 2) * space, zz = (z - zlen / 2) * space;
 
+					probe->SetPosition({ offsetx + xx,offsety + yy,offsetz + zz });
+					m_ReflectionLightProbes.push_back(probe);
+					//delete probe;
+
+				}
+
+			}
+
+		}
 	
 
 		BlackPearl::Renderer::Init();
@@ -83,14 +102,15 @@ public:
 			 "assets/skybox/skybox/back.jpg",
 			});
 		  
-	
-		
+		//LoadScene("Church");
+
+		LoadScene("SpheresScene");
 		LoadScene("CornellScene");//SpheresScene
-		LoadDynamicObject("Robot");
+		//LoadDynamicObject("Robot");
 
 
 		/*Draw CubeMap from hdrMap and Create environment IrrdianceMap*/
-		m_IBLProbesRenderer->Init(m_BrdfLUTQuadObj,  *GetLightSources(), m_BackGroundObjsList, m_LightProbes);
+		m_IBLProbesRenderer->Init(m_BrdfLUTQuadObj,  *GetLightSources(), m_BackGroundObjsList, m_DiffuseLightProbes);
 		//m_IBLProbesRenderer->Render(GetLightSources(), m_BackGroundObjsList, m_LightProbes, m_SkyBoxObj1);
 
 		//glViewport(0, 0, BlackPearl::Configuration::WindowWidth, BlackPearl::Configuration::WindowHeight);
@@ -120,7 +140,7 @@ public:
 		if (BlackPearl::Input::IsKeyPressed(BP_KEY_U)) {
 
 			GE_CORE_INFO("light probe updating......")
-			m_IBLProbesRenderer->Render(GetLightSources(), m_BackGroundObjsList, m_LightProbes, m_SkyBoxObj1);
+			m_IBLProbesRenderer->Render(GetLightSources(), m_BackGroundObjsList, m_DiffuseLightProbes, m_ReflectionLightProbes,m_SkyBoxObj1);
 			GE_CORE_INFO("light probe update finished!")
 
 		}
@@ -176,8 +196,18 @@ public:
 
 		m_ShadowMapPointLightRenderer->RenderCubeMap(m_BackGroundObjsList, m_DynamicObjsList, runtime / 1000.0f, GetLightSources());
 
-		m_GBufferRenderer->RenderSceneWithGBufferAndProbes(m_BackGroundObjsList, m_DynamicObjsList, runtime / 1000.0f,m_BackGroundObjsList, m_GBufferDebugQuad, GetLightSources(), m_LightProbes, m_IBLProbesRenderer->GetSpecularBrdfLUTTexture(), m_SkyBoxObj1);
-		m_IBLProbesRenderer->RenderProbes(m_LightProbes);
+		m_GBufferRenderer->RenderSceneWithGBufferAndProbes(m_BackGroundObjsList, m_DynamicObjsList, runtime / 1000.0f,
+			m_BackGroundObjsList, m_GBufferDebugQuad, GetLightSources(), m_DiffuseLightProbes, m_ReflectionLightProbes,
+			m_IBLProbesRenderer->GetSpecularBrdfLUTTexture(), m_SkyBoxObj1);
+
+		if (BlackPearl::Input::IsKeyPressed(BP_KEY_L)) {
+			m_ShowLightProbe = !m_ShowLightProbe;
+		}
+		if (m_ShowLightProbe) {
+			m_IBLProbesRenderer->RenderProbes(m_DiffuseLightProbes,0);
+			m_IBLProbesRenderer->RenderProbes(m_ReflectionLightProbes,1);
+
+		}
 
 	//	
 
@@ -190,9 +220,9 @@ public:
 		glActiveTexture(GL_TEXTURE0 + 6);
 		glBindTexture(GL_TEXTURE_2D, m_IBLProbesRenderer->GetSpecularBrdfLUTTexture()->GetRendererID());
 		m_BasicRenderer->DrawObject(m_DebugQuad, m_DebugQuadShader);
-		m_IBLProbesRenderer->GetSpecularBrdfLUTTexture()->UnBind()*/;
+		m_IBLProbesRenderer->GetSpecularBrdfLUTTexture()->UnBind();
 
-	//	glViewport(0, 0, BlackPearl::Configuration::WindowWidth, BlackPearl::Configuration::WindowHeight);
+		glViewport(0, 0, BlackPearl::Configuration::WindowWidth, BlackPearl::Configuration::WindowHeight);*/
 
 
 	}
@@ -230,6 +260,7 @@ private:
 	BlackPearl::Object* m_GBufferDebugQuad = nullptr;
 	BlackPearl::Object* m_GIQuad = nullptr;
 	BlackPearl::Object* m_SurroundSphere = nullptr;
+	bool m_ShowLightProbe = true;
 	/*Animation model*/
 	//BlackPearl::Object* m_AnimatedModelBoy = nullptr;
 	//BlackPearl::Object* m_AnimatedModelCleaner = nullptr;
@@ -253,7 +284,9 @@ private:
 
 
 	/* Probes */
-	std::vector<BlackPearl::LightProbe*> m_LightProbes;
+	std::vector<BlackPearl::LightProbe*> m_DiffuseLightProbes;
+	std::vector<BlackPearl::LightProbe*> m_ReflectionLightProbes;
+
 	std::thread m_Threads[10];
 
 	

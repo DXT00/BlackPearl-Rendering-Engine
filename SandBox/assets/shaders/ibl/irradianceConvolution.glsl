@@ -31,7 +31,7 @@ void main(){
 	//采样的方向等于半球的方向
 	vec3 worldup = vec3(0.0,1.0,0.0);
 		vec3 irradiance = vec3(0.0);
-	vec3 N = normalize(v_FragPos-u_CubePos);//半球的法向量是：v_FragPos-vec3(0.0)
+	vec3 N = normalize(v_FragPos-vec3(0.0));//半球的法向量是：v_FragPos-vec3(0.0)
 	vec3 right = cross(worldup,N);
 	vec3 up = cross(N,right);
 

@@ -1,5 +1,5 @@
 #type vertex
-#version 430 core
+#version 450 core
 
 layout(location = 0) in vec3 aPos;
 layout(location = 1) in vec3 aNormal;
@@ -22,7 +22,7 @@ void main()
 }
 
 #type fragment
-#version 430 core
+#version 450 core
 
 #define PI 3.14159
 struct PointLight{
@@ -130,7 +130,9 @@ void main(){
 	float mentallic = texture(u_Material.mentallic,v_TexCoord).r;
 	float roughness  = texture(u_Material.roughness ,v_TexCoord).r;
 	float ao        = texture(u_Material.ao, v_TexCoord).r;
-	vec3 emission = texture(u_Material.emission,v_TexCoord).rgb;
+
+	int emissionSample = u_Settings.isEmissionTextureSample;
+	vec3 emission = (emissionSample==1)?texture(u_Material.emission, v_TexCoord).rgb:vec3(0);
 
 	vec3 N = getNormalFromMap();
 	vec3 V = normalize(u_CameraViewPos-v_FragPos);
@@ -140,7 +142,8 @@ void main(){
 
 	//reflection equation
 	vec3 Lo = vec3(0.0);
-	for(int i=0;i<u_PointLightNums;i++){
+	int uPointLightNum = u_PointLightNums;
+	for(int i=0;i<uPointLightNum;i++){
 		vec3 L = normalize(u_PointLights[i].position-v_FragPos);
 		vec3 H = normalize(V+L);
 		float attenuation = calculateAttenuation(u_PointLights[i],v_FragPos);

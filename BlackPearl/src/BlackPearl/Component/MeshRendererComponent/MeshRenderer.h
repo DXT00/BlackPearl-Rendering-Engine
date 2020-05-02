@@ -55,6 +55,11 @@ namespace BlackPearl {
 			for (auto mesh : GetMeshes())
 				mesh.GetMaterial()->SetTextureSampleDiffuse((int)isSampled);
 		}
+		void SetTexturEmissionSamples(bool isSampled) {
+			for (auto mesh : GetMeshes())
+				mesh.GetMaterial()->SetTextureSampleEmission((int)isSampled);
+		}
+
 		void SetTextureSpecularSamples(bool isSampled) {
 			for (auto mesh : GetMeshes())
 				mesh.GetMaterial()->SetTextureSampleSpecular((int)isSampled);

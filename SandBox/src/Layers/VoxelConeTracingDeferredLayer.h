@@ -48,8 +48,8 @@ public:
 		//light->GetComponent<BlackPearl::MeshRenderer>()->SetIsShadowObjects(false);
 
 		LoadScene("CornellScene");
-
-		//LoadScene("SpheresScene");
+		//LoadChurchScene();
+		LoadScene("SpheresScene");
 
 		m_skybox = m_SkyBoxObj;
 		/*******************************************************************************************************/

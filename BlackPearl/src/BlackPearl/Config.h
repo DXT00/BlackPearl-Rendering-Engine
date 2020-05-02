@@ -76,7 +76,7 @@ namespace BlackPearl {
 		static const char* IS_DIFFUSE_TEXTURE_SAMPLE;
 		static const char* IS_SPECULAR_TEXTURE_SAMPLE;
 		static const char* IS_METALLIC_TEXTURE_SAMPLE;
-
+		static const char*  IS_EMISSION_TEXTURE_SAMPLE;
 	};
 
 

@@ -1,5 +1,5 @@
 #type vertex
-#version 430 core
+#version 450 core
 
 layout(location = 0) in vec3 aPos;
 layout(location = 1) in vec3 aNormal;
@@ -32,7 +32,7 @@ void main(){
 
 
 #type fragment
-#version 430 core
+#version 450 core
 
 /* MRT */
 /* render to gBuffer */
@@ -123,11 +123,12 @@ vec3 CalculateAmbientGI(vec3 albedo,vec3 specularColor){
 	
 
 
-	vec3 environmentIrradiance=vec3(0.0);//= vec3(1.0,1.0,1.0);
-	for(int i=0;i<u_Kprobes;i++){
-		environmentIrradiance+=u_ProbeWeight[i]*SHDiffuse(i,N);// u_ProbeWeight[i]*texture(u_IrradianceMap[i],N).rgb;
-		//environmentIrradiance*= texture(u_IrradianceMap[i],N).rgb;
+	vec3 environmentIrradiance=vec3(0.0);
+	int kProbe = u_Kprobes;
 
+	for(int i=0;i<kProbe;i++){
+		environmentIrradiance+=u_ProbeWeight[i]*SHDiffuse(i,N);// u_ProbeWeight[i]*texture(u_IrradianceMap[i],N).rgb;
+	
 	}
 	vec3 diffuse = environmentIrradiance*albedo;
 
@@ -136,12 +137,7 @@ vec3 CalculateAmbientGI(vec3 albedo,vec3 specularColor){
 
 	/*specular Map只取最近的一个*/
 	prefileredColor = texture(u_PrefilterMap,R).rgb;
-//	for(int i=0;i<u_Kprobes;i++){
-//		prefileredColor+= u_ProbeWeight[i]*textureLod(u_PrefilterMap[i],R,roughness*MAX_REFLECTION_LOD).rgb;
-//	//	prefileredColor*= textureLod(u_PrefilterMap[i],R,roughness*MAX_REFLECTION_LOD).rgb;
-//
-//	}
-	
+
 
 	vec3 specular = prefileredColor*specularColor;
 	vec3 ambient =  diffuse+specular;
@@ -149,7 +145,7 @@ vec3 CalculateAmbientGI(vec3 albedo,vec3 specularColor){
 //	 ambient = ambient / (ambient + vec3(1.0));
 //	//gamma correction
 //    ambient = pow(ambient, vec3(1.0/2.2));  
-	return ambient;
+	return diffuse;//ambient;
 
 
 }
@@ -180,9 +176,9 @@ vec3 CalculateAmbientGI(vec3 albedo,float metallic, float roughness,float ao){
 	vec3 Kd = vec3(1.0)-Ks;
 	Kd *= (1.0 - metallic);
 	vec3 environmentIrradiance=vec3(0.0);//= vec3(1.0,1.0,1.0);
-	for(int i=0;i<u_Kprobes;i++){
+	int kProbe = u_Kprobes;
+	for(int i=0;i<kProbe;i++){
 		environmentIrradiance+=u_ProbeWeight[i]*SHDiffuse(i,N);// u_ProbeWeight[i]*texture(u_IrradianceMap[i],N).rgb;
-		//environmentIrradiance*= texture(u_IrradianceMap[i],N).rgb;
 
 	}
 	vec3 diffuse = environmentIrradiance*albedo;
@@ -190,10 +186,10 @@ vec3 CalculateAmbientGI(vec3 albedo,float metallic, float roughness,float ao){
 	//sample both the prefilter map and the BRDF lut and combine them together as per the Split-Sum approximation to get the IBL specular part
 	const float MAX_REFLECTION_LOD = 4.0;//1.0;
 	//sample MAX_REFLECTION_LOD level mipmap everytime !
-	vec3 prefileredColor = vec3(0.0,0.0,0.0) ;//= vec3(1.0,1.0,1.0);
-
 	/*specular Map只取最近的一个*/
-	prefileredColor = textureLod(u_PrefilterMap,R,max(roughness,0.0)*MAX_REFLECTION_LOD).rgb;
+	vec3 prefileredColor = textureLod(u_PrefilterMap,R,roughness*MAX_REFLECTION_LOD).rgb;//= vec3(1.0,1.0,1.0);
+
+
 //	for(int i=0;i<u_Kprobes;i++){
 //		prefileredColor+= u_ProbeWeight[i]*textureLod(u_PrefilterMap[i],R,roughness*MAX_REFLECTION_LOD).rgb;
 //	//	prefileredColor*= textureLod(u_PrefilterMap[i],R,roughness*MAX_REFLECTION_LOD).rgb;
@@ -219,36 +215,36 @@ void main(){
 	gNormal.rgb     = v_Normal;
 
 	int s = u_Settings.isTextureSample;
-	gNormalMap      =  v_Normal*(1-s) + getNormalFromMap(v_FragPos,v_TexCoord)*s;
-	float roughness =  u_Material.roughnessValue *(1-s)+texture(u_Material.roughness, v_TexCoord).r*s;
-	float ao        =  u_Material.aoValue *(1-s)+texture(u_Material.ao, v_TexCoord).r*s;
+	gNormalMap      =  (s==0)? normalize(v_Normal):getNormalFromMap(v_FragPos,v_TexCoord);
+	float roughness =  (s==0)?u_Material.roughnessValue :texture(u_Material.roughness, v_TexCoord).r;
+	float ao        =  (s==0)?u_Material.aoValue:texture(u_Material.ao, v_TexCoord).r;
 	
 
-
-	vec3 diffuse = (u_Material.diffuseColor *(1-u_Settings.isDiffuseTextureSample)
-					+ texture(u_Material.diffuse,v_TexCoord).rgb*u_Settings.isDiffuseTextureSample);
+	int diffuseSample = u_Settings.isDiffuseTextureSample;
+	vec3 diffuse = (diffuseSample==0)?u_Material.diffuseColor :texture(u_Material.diffuse,v_TexCoord).rgb;
 
 	vec3 albedo = pow(diffuse,vec3(2.2));
 
-	vec3 specular = (u_Material.specularColor *(1-u_Settings.isSpecularTextureSample)
-					+ texture(u_Material.specular,v_TexCoord).rgb*u_Settings.isSpecularTextureSample);
+	int specularSample = u_Settings.isSpecularTextureSample;
+	vec3 specular = (specularSample==0)?u_Material.specularColor:texture(u_Material.specular,v_TexCoord).rgb;
 
-	float metallic = u_Material.mentallicValue *(1-u_Settings.isMetallicTextureSample)+
-					texture(u_Material.mentallic, v_TexCoord).r*u_Settings.isMetallicTextureSample;
+	int metallicSample = u_Settings.isMetallicTextureSample;
+
+	float metallic = (metallicSample==0)?u_Material.mentallicValue:texture(u_Material.mentallic, v_TexCoord).r;
 
 
 
-
+	
 
 	gSpecular_Mentallic.rgb = specular;
 
 	gSpecular_Mentallic.a = metallic;
 
-
-	if(u_IsPBRObjects==1)
+	int pbr = u_IsPBRObjects;
+	if(pbr==1)
 		gAmbientGI_AO.rgb =	CalculateAmbientGI(albedo,metallic,roughness,ao);
 	else
-		gAmbientGI_AO.rgb =	CalculateAmbientGI(albedo,specular);
+		gAmbientGI_AO.rgb =	CalculateAmbientGI(diffuse,specular);
 
 	gAmbientGI_AO.a =u_IsPBRObjects;//	ao;
 

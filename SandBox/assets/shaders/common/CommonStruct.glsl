@@ -40,6 +40,7 @@ struct Settings{
 	int isDiffuseTextureSample;
 	int isSpecularTextureSample;
 	int isMetallicTextureSample;
+	int isEmissionTextureSample;
 	bool directLight;
 	bool indirectDiffuseLight;
 	bool indirectSpecularLight;

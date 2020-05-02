@@ -9,6 +9,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <stdio.h>
 #include <stdlib.h>
+#include "BlackPearl/Renderer/MasterRenderer/IBLRenderer.h"
 #include "BlackPearl/Renderer/MasterRenderer/GBufferRenderer.h"
 #include "BlackPearl/Renderer/MasterRenderer/VoxelConeTracingRenderer.h"
 #include "BlackPearl/Renderer/MasterRenderer/VoxelConeTracingDeferredRenderer.h"
@@ -66,6 +67,12 @@ namespace BlackPearl {
 		ImGui::Text("light probe GI");
 		ImGui::DragFloat("lightprobe GICoeffs", &GBufferRenderer::s_GICoeffs, 0.2f, 0.0f, 1.0f, "%.3f ");
 		ImGui::Checkbox("lightprobe HDR", &GBufferRenderer::s_HDR);
+
+		ImGui::Text("image based lighting  GI");
+		ImGui::DragFloat("IBL GICoeffs", &IBLRenderer::s_GICoeffs, 0.2f, 0.0f, 1.0f, "%.3f ");
+		ImGui::Checkbox("IBL HDR", &GBufferRenderer::s_HDR);
+
+
 
 		ImGui::End();
 
@@ -242,9 +249,6 @@ namespace BlackPearl {
 		}
 
 		ImGui::End();
-
-
-
 		m_fileDialog.Display();
 
 
@@ -271,7 +275,7 @@ namespace BlackPearl {
 	{
 		/*create pointlights*/
 		Object* light = CreateLight(LightType::PointLight);
-		light->GetComponent<Transform>()->SetPosition({ 0.0,1.25,9.0 });
+		light->GetComponent<Transform>()->SetPosition({ 0.0,0.6,3.6 });
 		light->GetComponent<Transform>()->SetLastPosition({ 0.0,-1.0,0.0 });//0.0,0.0,3.0
 		light->GetComponent<MeshRenderer>()->SetIsShadowObjects(false);
 
@@ -302,6 +306,7 @@ namespace BlackPearl {
 		cube3->GetComponent<Transform>()->SetPosition({ -2.0f,1.0f,3.0f });
 		cube4->GetComponent<Transform>()->SetPosition({ 0.0f,3.0f,3.0f });
 		cube5->GetComponent<Transform>()->SetPosition({ 0.0f,-1.0f,3.0f });
+		
 
 		cube1->GetComponent<MeshRenderer>()->SetIsBackGroundObjects(true);
 		cube2->GetComponent<MeshRenderer>()->SetIsBackGroundObjects(true);
@@ -327,7 +332,73 @@ namespace BlackPearl {
 		m_BackGroundObjsList.push_back(cube5);
 
 	}
+	void Layer::LoadCornellScene1()
+	{
+		/*create pointlights*/
+		Object* light = CreateLight(LightType::PointLight);
+		light->GetComponent<Transform>()->SetPosition({ 0.0,1.25,9.0 });
+		light->GetComponent<Transform>()->SetLastPosition({ 0.0,-1.0,0.0 });//0.0,0.0,3.0
+		light->GetComponent<MeshRenderer>()->SetIsShadowObjects(false);
 
+		Object* deer = CreateModel("assets/models/deer/Deer.obj", "assets/shaders/IronMan.glsl", false, "Deer");
+		deer->GetComponent<Transform>()->SetScale(glm::vec3(0.003));
+		//deer->GetComponent<Transform>()->SetPosition({ -0.5f,0.0f,2.5f });
+		deer->GetComponent<Transform>()->SetPosition({ -0.5f,-1.5f,-0.5f });
+		deer->GetComponent<Transform>()->SetRotation({ 0.0f,68.0f,0.0f });
+		deer->GetComponent<MeshRenderer>()->SetIsBackGroundObjects(true);
+		m_BackGroundObjsList.push_back(deer);
+
+		Object* bunny = CreateModel("assets/models/bunny/bunny.obj", "assets/shaders/IronMan.glsl", false, "Bunny");
+		bunny->GetComponent<Transform>()->SetScale(glm::vec3(0.5));
+		//bunny->GetComponent<Transform>()->SetPosition({ 0.6f,0.0f,3.0f });
+		bunny->GetComponent<Transform>()->SetPosition({ 0.6f,-1.5f,-0.0f });
+		bunny->GetComponent<Transform>()->SetRotation({ 0.0f,-30.0f,0.0f });
+		bunny->GetComponent<MeshRenderer>()->SetIsBackGroundObjects(true);
+		m_BackGroundObjsList.push_back(bunny);
+
+		Object* cube1 = CreateCube();
+		Object* cube2 = CreateCube();
+		Object* cube3 = CreateCube();
+		Object* cube4 = CreateCube();
+		Object* cube5 = CreateCube();
+
+		//cube1->GetComponent<Transform>()->SetScale({ 20.0f,20.0f,20.0f });
+
+		//cube1->GetComponent<Transform>()->SetPosition({ 2.0f,1.0f,3.0f });
+		//cube2->GetComponent<Transform>()->SetPosition({ 0.0f,1.0f,1.0f });
+		//cube3->GetComponent<Transform>()->SetPosition({ -2.0f,1.0f,3.0f });
+		//cube4->GetComponent<Transform>()->SetPosition({ 0.0f,3.0f,3.0f });
+		//cube5->GetComponent<Transform>()->SetPosition({ 0.0f,-1.0f,3.0f });
+		cube1->GetComponent<Transform>()->SetPosition({ 2.0f,-0.5f,-0.0f });
+		cube2->GetComponent<Transform>()->SetPosition({ 0.0f,-0.5f,-2.0f });
+		cube3->GetComponent<Transform>()->SetPosition({ -2.0f,-0.5f,-0.0f });
+		cube4->GetComponent<Transform>()->SetPosition({ 0.0f,1.5f,-0.0f });
+		cube5->GetComponent<Transform>()->SetPosition({ 0.0f,-2.5f,-0.0f });
+
+		cube1->GetComponent<MeshRenderer>()->SetIsBackGroundObjects(true);
+		cube2->GetComponent<MeshRenderer>()->SetIsBackGroundObjects(true);
+		cube3->GetComponent<MeshRenderer>()->SetIsBackGroundObjects(true);
+		cube4->GetComponent<MeshRenderer>()->SetIsBackGroundObjects(true);
+		cube5->GetComponent<MeshRenderer>()->SetIsBackGroundObjects(true);
+
+		cube1->GetComponent<MeshRenderer>()->GetMeshes()[0].GetMaterial()->SetMaterialColorSpecularColor({ 0,0,0 });
+		cube2->GetComponent<MeshRenderer>()->GetMeshes()[0].GetMaterial()->SetMaterialColorSpecularColor({ 0,0,0 });
+		cube3->GetComponent<MeshRenderer>()->GetMeshes()[0].GetMaterial()->SetMaterialColorSpecularColor({ 0,0,0 });
+		cube4->GetComponent<MeshRenderer>()->GetMeshes()[0].GetMaterial()->SetMaterialColorSpecularColor({ 0,0,0 });
+		cube5->GetComponent<MeshRenderer>()->GetMeshes()[0].GetMaterial()->SetMaterialColorSpecularColor({ 0,0,0 });
+
+		cube1->GetComponent<MeshRenderer>()->GetMeshes()[0].GetMaterial()->SetMaterialColorDiffuseColor({ 0,0.294f,1.0f });
+		cube2->GetComponent<MeshRenderer>()->GetMeshes()[0].GetMaterial()->SetMaterialColorDiffuseColor({ 1,0.267f,0 });
+		cube3->GetComponent<MeshRenderer>()->GetMeshes()[0].GetMaterial()->SetMaterialColorDiffuseColor({ 1,1,1 });
+		cube4->GetComponent<MeshRenderer>()->GetMeshes()[0].GetMaterial()->SetMaterialColorDiffuseColor({ 0.204f,0,1 });
+		cube5->GetComponent<MeshRenderer>()->GetMeshes()[0].GetMaterial()->SetMaterialColorDiffuseColor({ 1,0,0 });
+		m_BackGroundObjsList.push_back(cube1);
+		m_BackGroundObjsList.push_back(cube2);
+		m_BackGroundObjsList.push_back(cube3);
+		m_BackGroundObjsList.push_back(cube4);
+		m_BackGroundObjsList.push_back(cube5);
+
+	}
 	void Layer::LoadChurchScene()
 	{
 		Object* church = CreateModel("assets/models/sponza_obj/sponza.obj", "assets/shaders/IronMan.glsl", false, "Church");
@@ -386,14 +457,7 @@ namespace BlackPearl {
 		light->GetComponent<Transform>()->SetLastPosition({ 0.0,-1.0,0.0 });//0.0,0.0,3.0
 		light->GetComponent<MeshRenderer>()->SetIsShadowObjects(false);
 
-		Object* cube = CreateCube();
-		cube->GetComponent<Transform>()->SetPosition({ -2.0f,-2.0f,0.0f });
-		cube->GetComponent<Transform>()->SetScale({ 16.0f,0.001f,16.0f });
-		std::shared_ptr<Texture> cubeTexture(DBG_NEW Texture(Texture::Type::DiffuseMap, "assets/texture/wood.png"));
-		cube->GetComponent<MeshRenderer>()->SetTextures(cubeTexture);
-		cube->GetComponent<MeshRenderer>()->SetTextureSamples(true);
-		cube->GetComponent<MeshRenderer>()->SetIsBackGroundObjects(true);
-		m_BackGroundObjsList.push_back(cube);
+		
 
 
 		Object* sphereObjIron =  CreateSphere(1.5, 64, 64);//CreateCube();//
@@ -488,7 +552,13 @@ namespace BlackPearl {
 		sphereObjPlastic->GetComponent<MeshRenderer>()->SetIsBackGroundObjects(true);
 
 
-
+		Object* cube = CreateCube();
+		cube->GetComponent<Transform>()->SetPosition({ -2.0f,-2.0f,0.0f });
+		cube->GetComponent<Transform>()->SetScale({ 16.0f,0.001f,16.0f });
+		std::shared_ptr<Texture> cubeTexture(DBG_NEW Texture(Texture::Type::DiffuseMap, "assets/texture/wood.png"));
+		cube->GetComponent<MeshRenderer>()->SetTextures(cubeTexture);
+		cube->GetComponent<MeshRenderer>()->SetTextureSamples(true);
+		cube->GetComponent<MeshRenderer>()->SetIsBackGroundObjects(true);
 	
 
 
@@ -497,12 +567,37 @@ namespace BlackPearl {
 		m_BackGroundObjsList.push_back(sphereObjStone);
 		m_BackGroundObjsList.push_back(sphereObjPlastic);
 		m_BackGroundObjsList.push_back(sphereObjRust);
+		m_BackGroundObjsList.push_back(cube);
+
 	}
 
 	void Layer::LoadSwordScene()
 	{
-		
-		
+		Object* sword = CreateModel("assets/models/sword/OBJ/Big_Sword_OBJ.obj", "assets/shaders/pbr/PbrTexture.glsl", false, "Sword");
+		std::shared_ptr<Texture> SwordalbedoTexture(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::DiffuseMap, "assets/models/sword/textures/Big Sword_Base_Color_Map.jpg"));
+		std::shared_ptr<Texture> SwordaoTexture(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::AoMap, "assets/models/sword/textures/Big Sword_AO_Map.jpg"));
+		std::shared_ptr<Texture> SwordroughnessTexture(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::RoughnessMap, "assets/models/sword/textures/Big Sword_Roughness_Map.jpg"));
+		std::shared_ptr<Texture> SwordmentallicTexture(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::MentallicMap, "assets/models/sword/textures/Big Sword_Metalness.jpg"));
+		std::shared_ptr<Texture> SwordnormalTexture(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::NormalMap, "assets/models/sword/textures/Big Sword_Normal_Map.jpg"));
+		std::shared_ptr<Texture> SwordemissionTexture(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::EmissionMap, "assets/models/sword/textures/Big Sword_Emission_Map.jpg"));
+
+		sword->GetComponent<MeshRenderer>()->SetTextures(SwordalbedoTexture);
+		sword->GetComponent<MeshRenderer>()->SetTextures(SwordaoTexture);
+		sword->GetComponent<MeshRenderer>()->SetTextures(SwordroughnessTexture);
+		sword->GetComponent<MeshRenderer>()->SetTextures(SwordmentallicTexture);
+		sword->GetComponent<MeshRenderer>()->SetTextures(SwordnormalTexture);
+		sword->GetComponent<MeshRenderer>()->SetTextures(SwordemissionTexture);
+
+		sword->GetComponent<MeshRenderer>()->SetTextureSamples(true);
+		sword->GetComponent<MeshRenderer>()->SetIsPBRObject(true);
+		sword->GetComponent<MeshRenderer>()->SetTextureSamples(true);
+		sword->GetComponent<MeshRenderer>()->SetTextureDiffuseSamples(true);
+		sword->GetComponent<MeshRenderer>()->SetTextureMetallicSamples(true);
+		sword->GetComponent<MeshRenderer>()->SetTexturEmissionSamples(true);
+
+		sword->GetComponent<MeshRenderer>()->SetIsPBRObject(true);
+
+		m_BackGroundObjsList.push_back(sword);
 
 	}
 
@@ -698,9 +793,10 @@ namespace BlackPearl {
 		m_ObjectsList.push_back(obj);
 		return obj;
 	}
-	LightProbe* Layer::CreateLightProbe(const std::string& shaderPath, const std::string& texturePath, const std::string& name)
+	LightProbe* Layer::CreateLightProbe(LightProbe::Type type,const std::string& shaderPath, const std::string& texturePath,  const std::string& name)
 	{
-		LightProbe* probe = m_ObjectManager->CreateLightProbe(shaderPath, texturePath, name);
+	
+		LightProbe* probe = m_ObjectManager->CreateLightProbe(type,shaderPath, texturePath, name+(type == LightProbe::Type::DIFFUSE ? "_kd" : "_ks"));
 		m_ObjectsList.push_back(probe->GetObj());
 		m_ObjectsList.push_back(probe->GetCamera()->GetObj());
 

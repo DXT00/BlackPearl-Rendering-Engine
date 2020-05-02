@@ -175,10 +175,10 @@ namespace BlackPearl {
 			if (meshes[i].GetIndicesSize() > 0) {
 				unsigned int indicesNum = meshes[i].GetIndicesSize() / sizeof(unsigned int);
 				meshes[i].GetVertexArray()->GetIndexBuffer()->Bind();
-				
+				GE_ERROR_JUDGE();
 				int count; glGetBufferParameteriv(GL_ELEMENT_ARRAY_BUFFER, GL_BUFFER_SIZE, &count);
 				//GE_CORE_WARN("indicesNum = {0},count = {1}", indicesNum, count / sizeof(GLuint));
-				
+				GE_ERROR_JUDGE();
 				//glDrawElements(GL_TRIANGLES, count / sizeof(GLuint), GL_UNSIGNED_INT, 0);
 				glDrawElements(GL_TRIANGLES, indicesNum, GL_UNSIGNED_INT, 0);
 				//meshes[i].GetVertexArray()->GetIndexBuffer()->UnBind();
@@ -383,6 +383,9 @@ namespace BlackPearl {
 		GE_ERROR_JUDGE();
 
 		shader->SetUniform1i(ShaderConfig::IS_METALLIC_TEXTURE_SAMPLE, material->GetProps().isMetallicTextureSample);
+		GE_ERROR_JUDGE();
+
+		shader->SetUniform1i(ShaderConfig::IS_EMISSION_TEXTURE_SAMPLE, material->GetProps().isEmissionTextureSample);
 		GE_ERROR_JUDGE();
 
 		shader->SetUniformVec3f(ShaderConfig::AMBIENT_COLOR, materialColor.ambientColor);

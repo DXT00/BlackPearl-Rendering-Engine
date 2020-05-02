@@ -153,6 +153,12 @@ namespace BlackPearl {
 		m_Props.isMetallicTextureSample = isTextureSampleMetallic;
 	}
 
+	void Material::SetTextureSampleEmission(int isTextureSampleMetallic)
+	{
+		m_Props.isEmissionTextureSample = isTextureSampleMetallic;
+
+	}
+
 
 
 }

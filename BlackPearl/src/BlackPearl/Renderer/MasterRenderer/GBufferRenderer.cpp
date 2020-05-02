@@ -11,7 +11,7 @@
 
 namespace BlackPearl {
 	float GBufferRenderer::s_GICoeffs = 0.5f;
-	bool GBufferRenderer::s_HDR =true;
+	bool GBufferRenderer::s_HDR = true;
 	float GBufferRenderer::s_AttenuationItensity = 50.0f;
 	GBufferRenderer::GBufferRenderer()
 	{
@@ -198,7 +198,7 @@ namespace BlackPearl {
 		glViewport(480, 270, 480, 270);
 		gBufferDebugQuad->GetComponent<MeshRenderer>()->SetTextures(m_GBuffer->GetSpecularMentallicTexture());
 		DrawObject(gBufferDebugQuad);*/
-	
+
 		glViewport(0, 0, 320, 270);
 		gBufferDebugQuad->GetComponent<MeshRenderer>()->SetTextures(m_GBuffer->GetPositionTexture());
 		DrawObject(gBufferDebugQuad);
@@ -222,7 +222,7 @@ namespace BlackPearl {
 		glViewport(640, 270, 320, 270);
 		gBufferDebugQuad->GetComponent<MeshRenderer>()->SetTextures(m_GBuffer->GetNormalMapTexture());
 		DrawObject(gBufferDebugQuad);
-	
+
 	}
 
 	float GBufferRenderer::CalculateSphereRadius(Object* pointLight)
@@ -244,7 +244,7 @@ namespace BlackPearl {
 	}
 
 	void GBufferRenderer::RenderSceneWithGBufferAndProbes(std::vector<Object*> staticObjects, std::vector<Object*> dynamicObjects, float timeInSecond, std::vector<Object*> backGroundObjs, Object* gBufferDebugQuad, LightSources* lightSources,
-		std::vector<LightProbe*> probes, std::shared_ptr<Texture> specularBrdfLUTTexture,Object* skyBox)
+		std::vector<LightProbe*> diffuseProbes, std::vector<LightProbe*> reflectionProbes, std::shared_ptr<Texture> specularBrdfLUTTexture, Object* skyBox)
 	{
 
 		GE_ASSERT(m_IsInitialized, "GBufferRenderer have not been initialized! ");
@@ -262,23 +262,23 @@ namespace BlackPearl {
 		m_GBuffer->Bind();
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		
+
 
 
 		/************************1.5 probes : find the k near probes for each objects *****************/
 		/***********************************************************************************************************/
 		/*  在 DrawObject同时，计算全局光照！ */
-		for (Object* obj:staticObjects)
+		for (Object* obj : staticObjects)
 		{
 
 			glm::vec3 pos = obj->GetComponent<Transform>()->GetPosition();
 
-			std::vector<LightProbe*> kProbes = FindKnearProbes(pos, probes);
+			std::vector<LightProbe*> kDiffuseProbes = FindKnearProbes(pos, diffuseProbes,m_K);
 
 			unsigned int k = m_K;
 			std::vector<float> distances;
 			float distancesSum = 0.0;
-			for (auto probe : kProbes)
+			for (auto probe : kDiffuseProbes)
 			{
 				distances.push_back(glm::length(probe->GetPosition() - pos));
 				distancesSum += glm::length(probe->GetPosition() - pos);
@@ -287,16 +287,13 @@ namespace BlackPearl {
 
 			m_GBufferShader->Bind();
 			m_GBufferShader->SetUniform1i("u_Kprobes", k);
-			
+
 			m_GBufferShader->SetUniform1i("u_BrdfLUTMap", 0);
 			glActiveTexture(GL_TEXTURE0);
 			specularBrdfLUTTexture->Bind();
+
 			
-			/*只需要最近的那个 probe 的 SpecularMap!*/
-			m_GBufferShader->SetUniform1i("u_PrefilterMap", 1);
-			glActiveTexture(GL_TEXTURE1);
-			kProbes[0]->GetSpecularPrefilterCubeMap()->Bind();
-			
+
 
 
 			for (int i = 0; i < k; i++)
@@ -308,27 +305,33 @@ namespace BlackPearl {
 				for (int sh = 0; sh < 9; sh++)
 				{
 					int index = sh + 9 * i;
-					m_GBufferShader->SetUniformVec3f("u_SHCoeffs[" + std::to_string(index) + "]", glm::vec3(kProbes[i]->GetCoeffis()[sh][0], kProbes[i]->GetCoeffis()[sh][1], kProbes[i]->GetCoeffis()[sh][2]));
+					m_GBufferShader->SetUniformVec3f("u_SHCoeffs[" + std::to_string(index) + "]", glm::vec3(kDiffuseProbes[i]->GetCoeffis()[sh][0], kDiffuseProbes[i]->GetCoeffis()[sh][1], kDiffuseProbes[i]->GetCoeffis()[sh][2]));
 				}
 
 				//glActiveTexture(GL_TEXTURE0 + textureK);
 				//kProbes[i]->GetDiffuseIrradianceCubeMap()->Bind();
 				//kProbes[i]->GetSHImage()->Bind(textureK);
 				//textureK++;
-		
+
 
 			}
-			if (obj->GetComponent<MeshRenderer>()->GetIsPBRObject())
-				m_GBufferShader->SetUniform1i("u_IsPBRObjects", 1);
-			else
-				m_GBufferShader->SetUniform1i("u_IsPBRObjects", 0);
 
+			if (reflectionProbes.size() > 0) {
+				std::vector<LightProbe*> kReflectionProbes = FindKnearProbes(pos, reflectionProbes, 1);
+				/*只需要最近的那个 probe 的 SpecularMap!*/
+				m_GBufferShader->SetUniform1i("u_PrefilterMap", 1);
+				glActiveTexture(GL_TEXTURE1);
+				auto specularMap = kReflectionProbes[0]->GetSpecularPrefilterCubeMap();
+				kReflectionProbes[0]->GetSpecularPrefilterCubeMap()->Bind();
+			}
+			
 
-			obj->GetComponent<MeshRenderer>()->SetShaders(m_GBufferShader);
+		
+			m_GBufferShader->Bind();
 			DrawObject(obj, m_GBufferShader);
 		}
 
-		
+
 		for (Object* obj : dynamicObjects)
 		{
 
@@ -338,12 +341,12 @@ namespace BlackPearl {
 
 			glm::vec3 pos = obj->GetComponent<Transform>()->GetPosition();
 
-			std::vector<LightProbe*> kProbes = FindKnearProbes(pos, probes);
+			std::vector<LightProbe*> kDiffuseProbes = FindKnearProbes(pos, diffuseProbes,m_K);
 
 			unsigned int k = m_K;
 			std::vector<float> distances;
 			float distancesSum = 0.0;
-			for (auto probe : kProbes)
+			for (auto probe : kDiffuseProbes)
 			{
 				distances.push_back(glm::length(probe->GetPosition() - pos));
 				distancesSum += glm::length(probe->GetPosition() - pos);
@@ -357,12 +360,7 @@ namespace BlackPearl {
 			glActiveTexture(GL_TEXTURE0);
 			specularBrdfLUTTexture->Bind();
 
-			/*只需要最近的那个 probe 的 SpecularMap!*/
-			animatedShader->SetUniform1i("u_PrefilterMap", 1);
-			glActiveTexture(GL_TEXTURE1);
-			kProbes[0]->GetSpecularPrefilterCubeMap()->Bind();
-
-
+		
 
 			for (int i = 0; i < k; i++)
 			{
@@ -373,7 +371,7 @@ namespace BlackPearl {
 				for (int sh = 0; sh < 9; sh++)
 				{
 					int index = sh + 9 * i;
-					animatedShader->SetUniformVec3f("u_SHCoeffs[" + std::to_string(index) + "]", glm::vec3(kProbes[i]->GetCoeffis()[sh][0], kProbes[i]->GetCoeffis()[sh][1], kProbes[i]->GetCoeffis()[sh][2]));
+					animatedShader->SetUniformVec3f("u_SHCoeffs[" + std::to_string(index) + "]", glm::vec3(kDiffuseProbes[i]->GetCoeffis()[sh][0], kDiffuseProbes[i]->GetCoeffis()[sh][1], kDiffuseProbes[i]->GetCoeffis()[sh][2]));
 				}
 
 				//glActiveTexture(GL_TEXTURE0 + textureK);
@@ -383,14 +381,26 @@ namespace BlackPearl {
 
 
 			}
-			if (obj->GetComponent<MeshRenderer>()->GetIsPBRObject())
+
+			/*只需要最近的那个 probe 的 SpecularMap!*/
+			if (reflectionProbes.size() > 0) {
+				std::vector<LightProbe*> kReflectionProbes = FindKnearProbes(pos, reflectionProbes, 1);
+
+				animatedShader->SetUniform1i("u_PrefilterMap", 1);
+				glActiveTexture(GL_TEXTURE1);
+				kReflectionProbes[0]->GetSpecularPrefilterCubeMap()->Bind();
+			}
+			
+
+
+		/*	if (obj->GetComponent<MeshRenderer>()->GetIsPBRObject())
 				animatedShader->SetUniform1i("u_IsPBRObjects", 1);
 			else
-				animatedShader->SetUniform1i("u_IsPBRObjects", 0);
+				animatedShader->SetUniform1i("u_IsPBRObjects", 0);*/
 
-			m_AnimatedModelRenderer->Render(obj,timeInSecond,animatedShader);
-		/*	obj->GetComponent<MeshRenderer>()->SetShaders(m_GBufferShader);
-			DrawObject(obj, m_GBufferShader);*/
+			m_AnimatedModelRenderer->Render(obj, timeInSecond, animatedShader);
+			/*	obj->GetComponent<MeshRenderer>()->SetShaders(m_GBufferShader);
+				DrawObject(obj, m_GBufferShader);*/
 		}
 
 
@@ -404,7 +414,7 @@ namespace BlackPearl {
 		/*************************************************************************************************************************/
 
 
-		
+
 
 
 		/* When we get here the depth buffer is already populated and the stencil pass
@@ -487,7 +497,7 @@ namespace BlackPearl {
 			m_PointLightPassShader->SetUniform1f("u_PointLight.intensity", pointLight->GetComponent<PointLight>()->GetLightProps().intensity);
 
 			m_PointLightPassShader->SetUniform1f("u_FarPlane", ShadowMapPointLightRenderer::s_FarPlane);
-			m_PointLightPassShader->SetUniform1i("u_ShadowMap",6);
+			m_PointLightPassShader->SetUniform1i("u_ShadowMap", 6);
 			glActiveTexture(GL_TEXTURE6);
 			pointLight->GetComponent<PointLight>()->GetShadowMap()->Bind();
 
@@ -531,10 +541,13 @@ namespace BlackPearl {
 
 		glDisable(GL_BLEND);
 
-		glDepthFunc(GL_LEQUAL);
+		if (skyBox != nullptr) {
+			glDepthFunc(GL_LEQUAL);
 
-		//DrawObject(skyBox);
-		glDepthFunc(GL_LESS);
+			DrawObject(skyBox);
+			glDepthFunc(GL_LESS);
+		}
+
 		//DrawObjects(backGroundObjs);
 
 		DrawLightSources(lightSources);
@@ -571,16 +584,16 @@ namespace BlackPearl {
 
 	}
 
-	std::vector<LightProbe*> GBufferRenderer::FindKnearProbes(glm::vec3 objPos, std::vector<LightProbe*> probes)
+	std::vector<LightProbe*> GBufferRenderer::FindKnearProbes(glm::vec3 objPos, std::vector<LightProbe*> probes,unsigned int k)
 	{
 		glm::vec3 pos = objPos;
 		std::vector<LightProbe*> kProbes;
 		std::sort(probes.begin(), probes.end(), [=](LightProbe* pa, LightProbe* pb)
-			{return glm::length(pa->GetPosition() - pos) < glm::length(pb->GetPosition() - pos); });
+		{return glm::length(pa->GetPosition() - pos) < glm::length(pb->GetPosition() - pos); });
 
-		GE_ASSERT(m_K <= (int)probes.size(), "m_K larger than probes' number!");
+		GE_ASSERT(k <= (unsigned int)probes.size(), "m_K larger than probes' number!");
 
-		for (int i = 0; i < m_K; i++)
+		for (int i = 0; i < k; i++)
 		{
 			kProbes.push_back(probes[i]);
 		}
