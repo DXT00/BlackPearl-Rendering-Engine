@@ -23,8 +23,7 @@ namespace BlackPearl {
 			std::vector<LightProbe*> diffuseProbes, std::vector<LightProbe*> reflectionProbes, std::shared_ptr<Texture> specularBrdfLUTTexture, Object* skyBox);
 		std::vector<LightProbe*> FindKnearProbes(glm::vec3 objPos, std::vector<LightProbe*> probes,unsigned int k);
 
-		//float GetGICoeffs()const { return m_GICoeffs; }
-		//void SetGICoeffs(float GICoeffs) { m_GICoeffs = GICoeffs; }
+		
 		static float s_GICoeffs;
 		static bool s_HDR;
 		static float s_AttenuationItensity;// 100.0f;
@@ -70,7 +69,7 @@ namespace BlackPearl {
 
 		/* m_K near probes for specular objs rendering */
 		/*注意 物体blending 多个(m_K个) probes的diffuse SH,但只取最近的一个Probe的specular Map*/
-		unsigned int m_K = 5;// 2;
+		unsigned int m_K = 5;// 5;// 5;// 5;// 2;
 		//
 
 		/*renderer for dynamic objects*/

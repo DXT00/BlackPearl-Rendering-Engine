@@ -47,9 +47,9 @@ public:
 		//light->GetComponent<BlackPearl::Transform>()->SetLastPosition({ 0.0,-1.0,0.0 });//0.0,0.0,3.0
 		//light->GetComponent<BlackPearl::MeshRenderer>()->SetIsShadowObjects(false);
 
-		LoadScene("CornellScene");
-		//LoadChurchScene();
-		LoadScene("SpheresScene");
+		//LoadScene("CornellScene");
+		LoadChurchScene();
+		//LoadScene("SpheresScene");
 
 		m_skybox = m_SkyBoxObj;
 		/*******************************************************************************************************/
@@ -154,5 +154,5 @@ private:
 	BlackPearl::BasicRenderer* m_BasicRenderer;
 
 	unsigned int m_Mode = 0;
-	BlackPearl::VoxelConeTracingDeferredRenderer::RenderingMode m_CurrentRenderingMode = BlackPearl::VoxelConeTracingDeferredRenderer::RenderingMode::VOXELIZATION_VISUALIZATION;// VOXEL_CONE_TRACING;//VOXELIZATION_VISUALIZATION
+	BlackPearl::VoxelConeTracingDeferredRenderer::RenderingMode m_CurrentRenderingMode = BlackPearl::VoxelConeTracingDeferredRenderer::RenderingMode::VOXEL_CONE_TRACING;// VOXELIZATION_VISUALIZATION;// VOXEL_CONE_TRACING;//VOXELIZATION_VISUALIZATION
 };

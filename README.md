@@ -18,6 +18,10 @@ SVO path tracing - only one bounce cubeSize = 40
 ### Light probe GI --- separate diffuse probe and reflection probe
 ![lightprobe_diffuse+specular](/results/lightprobe_diffuse+specular.png)
 
+###  Voxel Cone Tracing - 3D texture cone tracing
 
+3D texture cone tracing- only one bounce cubeSize = 20
+![3Dtexture_coneTracing](/results/3Dtexture_coneTracing.png)
+![3Dtexture_coneTracing](/results/3Dtexture_coneTracing1.png)
 
 

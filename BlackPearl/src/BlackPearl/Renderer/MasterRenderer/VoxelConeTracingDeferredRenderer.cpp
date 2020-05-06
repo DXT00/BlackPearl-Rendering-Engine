@@ -34,7 +34,7 @@ namespace BlackPearl {
 
 
 	void VoxelConeTracingDeferredRenderer::Init(unsigned int viewportWidth, unsigned int viewportHeight,
-		Object* quadObj, Object* quadGbufferObj, Object* brdfLUTQuadObj, Object* quadFinalScreenObj , Object* surroundSphere,Object* cubeObj)
+		Object* quadObj, Object* quadGbufferObj, Object* brdfLUTQuadObj, Object* quadFinalScreenObj, Object* surroundSphere, Object* cubeObj)
 	{
 		GE_ASSERT(quadObj, "m_QuadObj is nullptr!");
 		GE_ASSERT(quadGbufferObj, "m_QuadGbufferObj is nullptr!");
@@ -52,11 +52,18 @@ namespace BlackPearl {
 		m_VCTAmbientGIShader.reset(DBG_NEW Shader("assets/shaders/gBufferVoxel/gBuffer_ambientFilter_voxelConeTracingPBR.glsl"));
 		m_VCTPointLightShader.reset(DBG_NEW Shader("assets/shaders/gBufferVoxel/gBuffer_pointLight_voxelConeTracingPBR.glsl"));
 		m_SpecularBRDFLutShader.reset(DBG_NEW Shader("assets/shaders/ibl/brdf.glsl"));
+		GE_ERROR_JUDGE();
+
+		/* GBuffer */
+		m_GBuffer.reset(DBG_NEW GBuffer(m_ScreenWidth, m_ScreenHeight));
+		m_GBufferShader.reset(DBG_NEW Shader("assets/shaders/gBufferVoxel/gBufferVoxel.glsl"));
+		GE_ERROR_JUDGE();
 		RenderSpecularBRDFLUTMap();
-
+		GE_ERROR_JUDGE();
 		InitVoxelization();
+		GE_ERROR_JUDGE();
 		InitVoxelVisualization(viewportWidth, viewportHeight);
-
+		GE_ERROR_JUDGE();
 		/*debug shader*/
 		//m_VoxelizationTestShader.reset(DBG_NEW Shader("assets/shaders/voxelization/debug/voxelizeTest.glsl"));
 		//m_FrontBackCubeTestShader.reset(DBG_NEW Shader("assets/shaders/voxelization/debug/quadTest.glsl"));
@@ -64,34 +71,36 @@ namespace BlackPearl {
 		/*pbr BRDF LUT shader*/
 		//const std::vector<GLfloat> textureImage2D(4 * 256 * 256, 0.0f);
 
-		/* GBuffer */
-		m_GBuffer.reset(DBG_NEW GBuffer(m_ScreenWidth,m_ScreenHeight));
-		m_GBufferShader.reset(DBG_NEW Shader("assets/shaders/gBufferVoxel/gBufferVoxel.glsl"));
 
 		m_GuassianFilterHorizontalShader.reset(DBG_NEW Shader("assets/shaders/gBufferVoxel/GuassianFilter_horizontal.glsl"));
+		GE_ERROR_JUDGE();
+
 		m_GuassianFilterVerticalShader.reset(DBG_NEW Shader("assets/shaders/gBufferVoxel/GuassianFilter_vertical.glsl"));
+		GE_ERROR_JUDGE();
+
 		m_FinalScreenShader.reset(DBG_NEW Shader("assets/shaders/gBufferVoxel/FinalScreenQuad.glsl"));
+		GE_ERROR_JUDGE();
 
 
 		/* FrameBuffer */
-		m_PostProcessTexture.reset(DBG_NEW Texture(Texture::Type::None, m_ScreenWidth,m_ScreenHeight, false, GL_LINEAR, GL_LINEAR, GL_RGBA16F, GL_RGBA, GL_CLAMP_TO_EDGE, GL_FLOAT));
+		m_PostProcessTexture.reset(DBG_NEW Texture(Texture::Type::None, m_ScreenWidth, m_ScreenHeight, false, GL_LINEAR, GL_LINEAR, GL_RGBA16F, GL_RGBA, GL_CLAMP_TO_EDGE, GL_FLOAT));
 		m_FrameBuffer.reset(DBG_NEW FrameBuffer());
 		m_FrameBuffer->Bind();
 		m_FrameBuffer->AttachRenderBuffer(m_ScreenWidth, m_ScreenHeight);
 		m_FrameBuffer->AttachColorTexture(m_PostProcessTexture, 0);
 		m_FrameBuffer->BindRenderBuffer();
-		
-		m_BlurHTexture.reset(DBG_NEW Texture(Texture::Type::None, m_ScreenWidth ,m_ScreenHeight , false, GL_LINEAR, GL_LINEAR, GL_RGBA16F, GL_RGBA, GL_CLAMP_TO_EDGE, GL_FLOAT));
+
+		m_BlurHTexture.reset(DBG_NEW Texture(Texture::Type::None, m_ScreenWidth, m_ScreenHeight, false, GL_LINEAR, GL_LINEAR, GL_RGBA16F, GL_RGBA, GL_CLAMP_TO_EDGE, GL_FLOAT));
 		m_BlurHoriFrameBuffer.reset(DBG_NEW FrameBuffer());
 		m_BlurHoriFrameBuffer->Bind();
-		m_BlurHoriFrameBuffer->AttachRenderBuffer(m_ScreenWidth , m_ScreenHeight );
+		m_BlurHoriFrameBuffer->AttachRenderBuffer(m_ScreenWidth, m_ScreenHeight);
 		m_BlurHoriFrameBuffer->AttachColorTexture(m_BlurHTexture, 0);
 		m_BlurHoriFrameBuffer->BindRenderBuffer();
 
-		m_BlurVTexture.reset(DBG_NEW Texture(Texture::Type::None, m_ScreenWidth ,m_ScreenHeight , false, GL_LINEAR, GL_LINEAR, GL_RGBA16F, GL_RGBA, GL_CLAMP_TO_EDGE, GL_FLOAT));
+		m_BlurVTexture.reset(DBG_NEW Texture(Texture::Type::None, m_ScreenWidth, m_ScreenHeight, false, GL_LINEAR, GL_LINEAR, GL_RGBA16F, GL_RGBA, GL_CLAMP_TO_EDGE, GL_FLOAT));
 		m_BlurVertFrameBuffer.reset(DBG_NEW FrameBuffer());
 		m_BlurVertFrameBuffer->Bind();
-		m_BlurVertFrameBuffer->AttachRenderBuffer(m_ScreenWidth , m_ScreenHeight );
+		m_BlurVertFrameBuffer->AttachRenderBuffer(m_ScreenWidth, m_ScreenHeight);
 		m_BlurVertFrameBuffer->AttachColorTexture(m_BlurVTexture, 0);
 		m_BlurVertFrameBuffer->BindRenderBuffer();
 
@@ -102,21 +111,26 @@ namespace BlackPearl {
 	{
 		m_VoxelizationShader.reset(DBG_NEW Shader("assets/shaders/voxelization/voxelizationPBR.glsl"));
 		//m_VoxelizationShader.reset(DBG_NEW Shader("assets/shaders/voxelization/voxelization.glsl"));
+		GE_ERROR_JUDGE();
 
 		const std::vector<GLfloat> texture3D(4 * m_VoxelTextureSize * m_VoxelTextureSize * m_VoxelTextureSize, 0.0f);
+		GE_ERROR_JUDGE();
+
 		m_VoxelTexture = DBG_NEW Texture3D(texture3D, m_VoxelTextureSize, m_VoxelTextureSize, m_VoxelTextureSize, true);
+		GE_ERROR_JUDGE();
+
 	}
 	void VoxelConeTracingDeferredRenderer::InitVoxelVisualization(unsigned int viewportWidth, unsigned int viewportHeight)
 	{
 		//Shaders
-		m_WorldPositionShader.reset(DBG_NEW Shader("assets/shaders/voxelization/visualization/worldPosition.glsl"));
+		//m_WorldPositionShader.reset(DBG_NEW Shader("assets/shaders/voxelization/visualization/worldPosition.glsl"));
 		m_VoxelVisualizationShader.reset(DBG_NEW Shader("assets/shaders/voxelization/visualization/voxelVisualization.glsl"));
 	}
 
 	void VoxelConeTracingDeferredRenderer::RenderGBuffer(const std::vector<Object*>& objs, Object* skybox)
 	{
-		
-		glViewport(0, 0, m_ScreenWidth,m_ScreenHeight);
+
+		glViewport(0, 0, m_ScreenWidth, m_ScreenHeight);
 		m_GBuffer->Bind();
 		glDepthMask(GL_TRUE);
 		glEnable(GL_DEPTH_TEST);
@@ -128,14 +142,14 @@ namespace BlackPearl {
 
 			m_GBufferShader->Bind();
 
-	
+
 			m_GBufferShader->SetUniform1i("u_IsSkybox", false);
 			GE_ASSERT(obj->GetId().index() < 256, "GBuffer store max object number is:256");
 			m_GBufferShader->SetUniform1i("u_ObjectId", obj->GetId().index());
 
 			DrawObject(obj, m_GBufferShader);
 		}
-		
+
 		m_GBuffer->UnBind();
 
 
@@ -172,7 +186,7 @@ namespace BlackPearl {
 
 	void VoxelConeTracingDeferredRenderer::SetgBufferTextureUniforms()
 	{
-		
+
 		glActiveTexture(GL_TEXTURE0);
 		m_VoxelTexture->Bind();
 		m_VCTAmbientGIShader->SetUniform1i("texture3D", 0);
@@ -208,50 +222,77 @@ namespace BlackPearl {
 		glDisable(GL_BLEND);
 
 
+
 		if (skybox != nullptr) {
+			m_VoxelizationShader->Bind();
+			GE_ERROR_JUDGE();
+
 
 			//glDepthFunc(GL_LEQUAL);
-			m_VoxelizationShader->Bind();
-			m_VoxelizationShader->SetUniformVec3f("u_CubeSize", m_CubeObj->GetComponent<Transform>()->GetScale());
+			//m_VoxelizationShader->Bind();
+			//m_VoxelizationShader->SetUniformVec3f("u_CubeSize", m_CubeObj->GetComponent<Transform>()->GetScale());
 
-			glActiveTexture(GL_TEXTURE0);
-			m_VoxelTexture->Bind();
-			m_VoxelizationShader->SetUniform1i("texture3D", 0);
-			glBindImageTexture(0, m_VoxelTexture->GetRendererID(), 0, GL_TRUE, 0, GL_WRITE_ONLY, GL_RGBA8);
+
 			skybox->GetComponent<Transform>()->SetScale(m_CubeObj->GetComponent<Transform>()->GetScale() - glm::vec3(3.0f));
 			skybox->GetComponent<Transform>()->SetPosition(Renderer::GetSceneData()->CameraPosition);
 
-			m_VoxelizationShader->SetUniform1i("u_IsSkybox", true);
+			m_VoxelizationShader->SetUniform1i("u_IsSkybox", 1);
+			GE_ERROR_JUDGE();
+			m_VoxelizationShader->SetUniformVec3f("u_CubeSize", m_CubeObj->GetComponent<Transform>()->GetScale());
+			GE_ERROR_JUDGE();
+
+			//	m_VoxelizationShader->SetUniform1i("texture3D", 0);
+				//glActiveTexture(GL_TEXTURE0);
+				//m_VoxelTexture->Bind();
+			glBindImageTexture(0, m_VoxelTexture->GetRendererID(), 0, GL_TRUE, 0, GL_WRITE_ONLY, GL_RGBA8);
+			GE_ERROR_JUDGE();
+
 			m_VoxelizationShader->SetUniform1i("u_IsPBRObjects", 0);
+			GE_ERROR_JUDGE();
+
 			DrawObject(skybox, m_VoxelizationShader);
+			m_VoxelizationShader->Unbind();
+
 			//glDepthFunc(GL_LESS);
 		}
 
-		for (auto obj : objs) {
-			
-			m_VoxelizationShader->Bind();
-			m_VoxelizationShader->SetUniformVec3f("u_CubeSize", m_CubeObj->GetComponent<Transform>()->GetScale());
+		GE_ERROR_JUDGE();
+		for (Object* obj : objs) {
 
-			glActiveTexture(GL_TEXTURE0);
+			m_VoxelizationShader->Bind();
+			GE_ERROR_JUDGE();
+
+			m_VoxelizationShader->SetUniformVec3f("u_CubeSize", m_CubeObj->GetComponent<Transform>()->GetScale());
+			GE_ERROR_JUDGE();
+
+			//	m_VoxelizationShader->SetUniform1i("texture3D", 0);
+				//glActiveTexture(GL_TEXTURE0);
+				//m_VoxelTexture->Bind();
+			glBindImageTexture(0, m_VoxelTexture->GetRendererID(), 0, GL_TRUE, 0, GL_WRITE_ONLY, GL_RGBA8);
+			GE_ERROR_JUDGE();
+			GE_ERROR_JUDGE();
+			m_VoxelizationShader->SetUniform1i("u_IsSkybox", 0);
+			GE_ERROR_JUDGE();
+			/*glActiveTexture(GL_TEXTURE0);
 			m_VoxelTexture->Bind();
 			m_VoxelizationShader->SetUniform1i("texture3D", 0);
-			glBindImageTexture(0, m_VoxelTexture->GetRendererID(), 0, GL_TRUE, 0, GL_WRITE_ONLY, GL_RGBA8);
+			glBindImageTexture(0, m_VoxelTexture->GetRendererID(), 0, GL_TRUE, 0, GL_WRITE_ONLY, GL_RGBA8);*/
+
+			//m_VoxelizationShader->Bind();
+			//GE_ERROR_JUDGE();
 
 
-			m_VoxelizationShader->SetUniform1i("u_IsSkybox", false);
-			if (obj->GetComponent<MeshRenderer>()->GetIsPBRObject()) {
-				m_VoxelizationShader->SetUniform1i("u_IsPBRObjects", 1);
-			}
-			else {
-				m_VoxelizationShader->SetUniform1i("u_IsPBRObjects", 0);
+		
+			//m_VoxelizationShader->Bind();
+			GE_ERROR_JUDGE();
 
-			}
-			DrawObject(obj, m_VoxelizationShader);
-
+			DrawObject(obj, m_VoxelizationShader, Renderer::GetSceneData(), 4);
+			m_VoxelizationShader->Unbind();
 		}
-		if (m_AutomaticallyRegenerateMipmap || m_RegenerateMipmapQueued) {
+		if (m_AutomaticallyRegenerateMipmap ) {
+			m_VoxelTexture->Bind();
 			glGenerateMipmap(GL_TEXTURE_3D);
-			m_RegenerateMipmapQueued = false;
+			m_VoxelTexture->UnBind();
 		}
 
 		//enable writing of frame buffer color components
@@ -260,7 +301,7 @@ namespace BlackPearl {
 	}
 
 	void VoxelConeTracingDeferredRenderer::Render(Camera* camera, const std::vector<Object*>& objs, const LightSources* lightSources,
-		unsigned int viewportWidth, unsigned int viewportHeight,  Object* skybox,RenderingMode reneringMode)
+		unsigned int viewportWidth, unsigned int viewportHeight, Object* skybox, RenderingMode reneringMode)
 	{
 		GE_ASSERT(m_IsInitialize, "Please Call VoxelConeTracingDeferredRenderer::Init() first!");
 		//bool voxelizeNow = m_VoxelizationQueued || (m_AutomaticallyVoxelize &&m_VoxelizationSparsity > 0 && ++m_TicksSinceLastVoxelization >= m_VoxelizationSparsity);
@@ -284,7 +325,7 @@ namespace BlackPearl {
 
 	void VoxelConeTracingDeferredRenderer::RenderVoxelVisualization(Camera* camera, const std::vector<Object*>& objs, unsigned int viewportWidth, unsigned int viewportHeight)
 	{
-		m_CubeObj->GetComponent<MeshRenderer>()->SetShaders(m_WorldPositionShader);
+		//m_CubeObj->GetComponent<MeshRenderer>()->SetShaders(m_WorldPositionShader);
 		m_CubeObj->GetComponent<Transform>()->SetPosition(Renderer::GetSceneData()->CameraPosition);
 		m_CubeObj->GetComponent<Transform>()->SetRotation(Renderer::GetSceneData()->CameraRotation);
 
@@ -293,16 +334,9 @@ namespace BlackPearl {
 		// -------------------------------------------------------
 
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-		//glViewport(0, 0, viewportWidth, viewportHeight);
 		glViewport(240, 0, viewportHeight, viewportHeight);
 
-		/*	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);*/
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	
-
-		// Render.
-
 
 
 		m_VoxelVisualizationShader->Bind();
@@ -318,21 +352,21 @@ namespace BlackPearl {
 		m_VoxelVisualizationShader->SetUniformVec3f("u_CameraUp", camera->Up());
 		m_VoxelVisualizationShader->SetUniformVec3f("u_CameraRight", camera->Right());
 
-		m_VoxelVisualizationShader->SetUniform1i("u_State",s_VisualizeMipmapLevel);
+		m_VoxelVisualizationShader->SetUniform1i("u_State", s_VisualizeMipmapLevel);
 		m_VoxelVisualizationShader->SetUniformVec3f("u_CubeSize", m_CubeObj->GetComponent<Transform>()->GetScale());
 
 
 		//m_QuadObj->GetComponent<MeshRenderer>()->SetEnableRender(true);
 		DrawObject(m_QuadObj, m_VoxelVisualizationShader);
 
-
+		m_VoxelTexture->UnBind();
 
 
 
 	}
 
-	void VoxelConeTracingDeferredRenderer::RenderScene(const std::vector<Object*>& objs, const LightSources* lightSources ,
-		unsigned int viewportWidth, unsigned int viewportHeight,Object* skybox)
+	void VoxelConeTracingDeferredRenderer::RenderScene(const std::vector<Object*>& objs, const LightSources* lightSources,
+		unsigned int viewportWidth, unsigned int viewportHeight, Object* skybox)
 	{
 
 
@@ -344,7 +378,7 @@ namespace BlackPearl {
 
 
 
-	
+
 
 
 
@@ -353,13 +387,13 @@ namespace BlackPearl {
 		float transparency = 0.0f, refractiveIndex = 1.4f;
 
 
-		
+
 		RenderGBuffer(objs, skybox);
 		//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	
 
-		
+
+
 		//glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
 
 
@@ -430,12 +464,18 @@ namespace BlackPearl {
 			m_VCTPointLightShader->SetUniform1i("u_Settings.directLight", VoxelConeTracingDeferredRenderer::s_DirectLight);
 			m_VCTPointLightShader->SetUniform1i("u_Settings.shadows", VoxelConeTracingDeferredRenderer::s_Shadows);
 
-		
+
 
 			m_SurroundSphere->GetComponent<MeshRenderer>()->SetShaders(m_VCTPointLightShader);
 			DrawObject(m_SurroundSphere, m_VCTPointLightShader);
 
-
+			m_VoxelTexture->UnBind();
+			m_GBuffer->GetPositionTexture()->UnBind();
+			m_GBuffer->GetNormalTexture()->UnBind();
+			m_GBuffer->GetDiffuseRoughnessTexture()->UnBind();
+			m_GBuffer->GetSpecularMentallicTexture()->UnBind();
+			m_GBuffer->GetAmbientGIAOTexture()->UnBind();
+			m_GBuffer->GetNormalMapTexture()->UnBind();
 
 
 
@@ -475,7 +515,7 @@ namespace BlackPearl {
 		glActiveTexture(GL_TEXTURE7);
 		m_SpecularBrdfLUTTexture->Bind();
 		m_VCTAmbientGIShader->SetUniform1i("u_BrdfLUTMap", 7);
-		
+
 		m_VCTAmbientGIShader->SetUniform1i("u_Settings.shadows", s_Shadows);
 		m_VCTAmbientGIShader->SetUniform1i("u_Settings.indirectDiffuseLight", VoxelConeTracingDeferredRenderer::s_IndirectDiffuseLight);
 		m_VCTAmbientGIShader->SetUniform1i("u_Settings.indirectSpecularLight", VoxelConeTracingDeferredRenderer::s_IndirectSpecularLight);
@@ -485,42 +525,46 @@ namespace BlackPearl {
 		m_VCTAmbientGIShader->SetUniform1f("u_Material.specularDiffusion", specularDiffusion);
 
 		m_VCTAmbientGIShader->SetUniformVec3f("u_CubeSize", m_CubeObj->GetComponent<Transform>()->GetScale());
-		m_VCTAmbientGIShader->SetUniformVec2f("gScreenSize", glm::vec2(m_ScreenWidth,m_ScreenHeight));
+		m_VCTAmbientGIShader->SetUniformVec2f("gScreenSize", glm::vec2(m_ScreenWidth, m_ScreenHeight));
 		DrawObject(m_QuadGbufferObj, m_VCTAmbientGIShader);
 
+		m_VoxelTexture->UnBind();
+		m_GBuffer->GetPositionTexture()->UnBind();
+		m_GBuffer->GetNormalTexture()->UnBind();
+		m_GBuffer->GetDiffuseRoughnessTexture()->UnBind();
+		m_GBuffer->GetSpecularMentallicTexture()->UnBind();
+		m_GBuffer->GetAmbientGIAOTexture()->UnBind();
+		m_GBuffer->GetNormalMapTexture()->UnBind();
 
-	
+
 
 
 		m_FrameBuffer->UnBind();
 		/********************************* Guassian filter pass ************************************************/
 		m_BlurHoriFrameBuffer->Bind();
-		
-		glViewport(0, 0, m_ScreenWidth, m_ScreenHeight );
+
+		glViewport(0, 0, m_ScreenWidth, m_ScreenHeight);
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		m_GuassianFilterHorizontalShader->Bind();
 		m_GuassianFilterHorizontalShader->SetUniform1i("u_FinalScreenTexture", 1);
 		glActiveTexture(GL_TEXTURE1);
 		m_PostProcessTexture->Bind();
-
-
 		m_GuassianFilterHorizontalShader->SetUniform1i("gPosition", 2); //blur filter get object id from gPosition texture
 		glActiveTexture(GL_TEXTURE2);
 		m_GBuffer->GetPositionTexture()->Bind();
-
 		m_GuassianFilterHorizontalShader->SetUniform1i("u_Settings.hdr", s_HDR);
 		m_GuassianFilterHorizontalShader->SetUniform1i("u_Settings.showBlurArea", s_ShowBlurArea);
-
 		m_GuassianFilterHorizontalShader->SetUniform1i("u_Settings.guassian_horiziotal", s_GuassianHorizontal);
-		m_GuassianFilterHorizontalShader->SetUniform1f("u_ScreenWidth", m_ScreenWidth );
+		m_GuassianFilterHorizontalShader->SetUniform1f("u_ScreenWidth", m_ScreenWidth);
 		DrawObject(m_QuadFinalScreenObj, m_GuassianFilterHorizontalShader);
 
+		m_PostProcessTexture->UnBind();
 		m_BlurHoriFrameBuffer->UnBind();
 
 
 		m_BlurVertFrameBuffer->Bind();
-		glViewport(0, 0, m_ScreenWidth , m_ScreenHeight );
+		glViewport(0, 0, m_ScreenWidth, m_ScreenHeight);
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		m_GuassianFilterVerticalShader->Bind();
@@ -542,19 +586,21 @@ namespace BlackPearl {
 		m_GuassianFilterVerticalShader->SetUniform1i("u_Settings.showBlurArea", s_ShowBlurArea);
 
 		m_GuassianFilterVerticalShader->SetUniform1i("u_Settings.guassian_vertical", s_GuassianVertical);
-		m_GuassianFilterVerticalShader->SetUniform1f("u_ScreenWidth", m_ScreenWidth );
+		m_GuassianFilterVerticalShader->SetUniform1f("u_ScreenWidth", m_ScreenWidth);
 
 		DrawObject(m_QuadFinalScreenObj, m_GuassianFilterVerticalShader);
+
+		m_BlurHTexture->UnBind();
 		m_BlurVertFrameBuffer->UnBind();
 
-		
+
 
 		/********************************* postProcess pass ************************************************/
 
 		glViewport(0, 0, m_ScreenWidth, m_ScreenHeight);
 		glClear(GL_COLOR_BUFFER_BIT);
 		m_FinalScreenShader->Bind();
-		m_FinalScreenShader->SetUniform1i("u_FinalScreenTexture",1);
+		m_FinalScreenShader->SetUniform1i("u_FinalScreenTexture", 1);
 		m_FinalScreenShader->SetUniform1f("u_Settings.hdr", s_HDR);
 		glActiveTexture(GL_TEXTURE1);
 		m_BlurVTexture->Bind();
@@ -567,9 +613,6 @@ namespace BlackPearl {
 		glEnable(GL_DEPTH_TEST);
 		m_GBuffer->Bind();
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0); // Write to default framebuffer
-		// blit to default framebuffer. Note that this may or may not work as the internal formats of both the FBO and default framebuffer have to match.
-		// the internal formats are implementation defined. This works on all of my systems, but if it doesn't on yours you'll likely have to write to the 		
-		// depth buffer in another shader stage (or somehow see to match the default framebuffer's internal format with the FBO's internal format).
 		glBlitFramebuffer(0, 0, m_ScreenWidth, m_ScreenHeight, 0, 0, m_ScreenWidth, m_ScreenHeight, GL_DEPTH_BUFFER_BIT, GL_NEAREST);
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
@@ -587,27 +630,20 @@ namespace BlackPearl {
 
 	void VoxelConeTracingDeferredRenderer::RenderSpecularBRDFLUTMap()
 	{
-	//	glEnable(GL_TEXTURE_2D);
 		m_SpecularBrdfLUTTexture.reset(DBG_NEW Texture(Texture::DiffuseMap, m_VoxelTextureSize, m_VoxelTextureSize, false, GL_LINEAR, GL_LINEAR, GL_RG16F, GL_RG, GL_CLAMP_TO_EDGE, GL_FLOAT));
-		//std::shared_ptr<Texture> brdfLUTTexture(new Texture(Texture::None, 512, 512, GL_LINEAR, GL_LINEAR, GL_RG16F, GL_RG, GL_CLAMP_TO_EDGE, GL_FLOAT));
 		std::shared_ptr<FrameBuffer> frameBuffer(new FrameBuffer());
-		//	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		frameBuffer->Bind();
 		frameBuffer->AttachRenderBuffer(m_VoxelTextureSize, m_VoxelTextureSize);
-
-		//m_FrameBuffer->Bind();
-		//m_FrameBuffer->BindRenderBuffer();
 		frameBuffer->AttachColorTexture(m_SpecularBrdfLUTTexture, 0);
 		frameBuffer->BindRenderBuffer();
-		//glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, 512, 512);
-
 
 		glViewport(0, 0, m_VoxelTextureSize, m_VoxelTextureSize);
 		m_SpecularBRDFLutShader->Bind();
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		DrawObject(m_BrdfLUTQuadObj, m_SpecularBRDFLutShader);
 		m_SpecularBrdfLUTTexture->UnBind();
+		m_SpecularBRDFLutShader->Unbind();
 		frameBuffer->UnBind();
 		frameBuffer->CleanUp();
 

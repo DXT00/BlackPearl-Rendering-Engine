@@ -438,9 +438,7 @@ namespace BlackPearl {
 
 	void IBLRenderer::RenderTextureSphere(std::vector<Object*> objs,LightSources* lightSources)
 	{
-		int rows = 7;
-		int cols = 7;
-		int spacing = 2;
+	
 
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

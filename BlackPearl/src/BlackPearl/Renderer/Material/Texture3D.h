@@ -23,7 +23,7 @@ namespace BlackPearl {
 	private:
 		unsigned int m_TextureID;
 		int m_Width, m_Height, m_Depth;
-		std::vector<float> m_ClearData;//TODO::
+		//std::vector<float> m_ClearData;//TODO::
 	};
 
 }

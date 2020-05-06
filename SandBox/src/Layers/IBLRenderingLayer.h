@@ -16,8 +16,8 @@ public:
 
 		
 		//Shader
-		m_BackGroundShader.reset(DBG_NEW BlackPearl::Shader("assets/shaders/ibl/background.glsl"));
-		m_DebugQuadShader.reset(DBG_NEW BlackPearl::Shader("assets/shaders/QuadDebug.glsl"));
+		//m_BackGroundShader.reset(DBG_NEW BlackPearl::Shader("assets/shaders/ibl/background.glsl"));
+	//	m_DebugQuadShader.reset(DBG_NEW BlackPearl::Shader("assets/shaders/QuadDebug.glsl"));
 		m_LightProbeShader.reset(DBG_NEW BlackPearl::Shader("assets/shaders/lightProbes/lightProbe.glsl"));
 
 		//Scene
@@ -25,9 +25,9 @@ public:
 		//skybox and quad for BrdfLUTMap
 		m_CubeObj = CreateCube();
 		m_CubeObj->GetComponent<BlackPearl::Transform>()->SetScale({ 0.2,0.2,0.2 });
-		m_CubeProbeObj = CreateCube();
+		//m_CubeProbeObj = CreateCube();
 		m_BrdfLUTQuadObj = CreateQuad();
-		m_DebugQuad = CreateQuad();
+		//m_DebugQuad = CreateQuad();
 
 
 		BlackPearl::Renderer::Init();
@@ -51,7 +51,8 @@ public:
 		LoadCornellScene();
 
 		
-		
+
+	//	LoadStaticBackGroundObject("Sphere");
 
 		/*Draw CubeMap from hdrMap and Create environment IrrdianceMap*/
 		m_IBLRenderer->Init(m_CubeObj, m_BrdfLUTQuadObj,m_SkyBoxObj,m_BackGroundObjsList , GetLightSources());
@@ -123,15 +124,15 @@ public:
 		m_BasicRenderer->DrawLightSources(GetLightSources());
 
 
-		m_LightProbeShader->Bind();
-		//BlackPearl::Object* cube = CreateCube();
-		m_LightProbeShader->SetUniform1i("u_Material.cube", 2);
-		m_LightProbeShader->SetUniform1i("uProbeType", 1);
+		//m_LightProbeShader->Bind();
+		////BlackPearl::Object* cube = CreateCube();
+		//m_LightProbeShader->SetUniform1i("u_Material.cube", 2);
+		//m_LightProbeShader->SetUniform1i("uProbeType", 1);
 
-		glActiveTexture(GL_TEXTURE2);
-		//m_IBLRenderer->GetSpecularCubeMap()->Bind();
-		m_IBLRenderer->GetIrradianceCubeMap()->Bind();
-		m_BasicRenderer->DrawObject(m_CubeProbeObj, m_LightProbeShader);
+		//glActiveTexture(GL_TEXTURE2);
+		////m_IBLRenderer->GetSpecularCubeMap()->Bind();
+		//m_IBLRenderer->GetIrradianceCubeMap()->Bind();
+		//m_BasicRenderer->DrawObject(m_CubeProbeObj, m_LightProbeShader);
 	
 
 
@@ -176,7 +177,7 @@ private:
 	std::shared_ptr<BlackPearl::Shader> m_DebugQuadShader;
 	std::shared_ptr<BlackPearl::Shader> m_LightProbeShader = nullptr;
 	//Renderer
-	BlackPearl::PBRRenderer* m_PBRRenderer;
+	//BlackPearl::PBRRenderer* m_PBRRenderer;
 	BlackPearl::IBLRenderer* m_IBLRenderer;
 	BlackPearl::BasicRenderer* m_BasicRenderer;
 	BlackPearl::ShadowMapPointLightRenderer* m_ShadowMapPointLightRenderer;

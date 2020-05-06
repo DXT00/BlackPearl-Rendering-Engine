@@ -1,5 +1,5 @@
 #type vertex
-#version 430 core
+#version 450 core
 layout(location = 0) in vec3 aPos;
 layout(location = 1) in vec3 aNormal;
 layout(location = 2) in vec2 aTexCoords;
@@ -22,7 +22,7 @@ void main(){
 }
 
 #type fragment
-#version 430 core
+#version 450 core
 
 
 #define TSQRT2 2.828427
@@ -31,7 +31,7 @@ void main(){
 // --------------------------------------
 // Light (voxel) cone tracing settings.
 // --------------------------------------
-#define MIPMAP_HARDCAP 5.4f /* Too high mipmap levels => glitchiness, too low mipmap levels => sharpness. */
+#define MIPMAP_HARDCAP 4.0 /* 4.0fToo high mipmap levels => glitchiness, too low mipmap levels => sharpness. */
 #define VOXEL_SIZE (1/256.0) /* Size of a voxel. 128x128x128 => 1/128 = 0.0078125. */
 #define SHADOWS 1 /* Shadow cone tracing. */
 #define DIFFUSE_INDIRECT_FACTOR 0.8f  
@@ -323,17 +323,17 @@ vec3 CalcPBRIndirectLight(vec3 indirectSpecular,vec3 indirectDiffuse,vec3 getNor
 
 vec3 traceDiffuseVoxelCone(const vec3 from,vec3 direction){
 	direction = normalize(direction);
-	const float CONE_SPEEAD = 0.325;
+	const float CONE_SPEEAD =0.325;// 0.1;
 
-	vec4 acc = vec4(0.0f);
-
+	vec4 acc = vec4(0.0);
 	
-	float dist = 0.1953125;
+	float dist = 0.1953125;//OFFSET;//0.1953125;
 
 	//Trace
-	while(dist<SQRT2 && acc.a<1){
+	while(dist<SQRT2 && acc.a<1){//dist<SQRT2 
 		
 		vec3 c = from + dist * direction;
+		if(!isInsideCube(c, 0)) break;
 		c = scaleAndBias(c);
 		float l = (1+ CONE_SPEEAD * dist/VOXEL_SIZE); //跨过了多少Voxel
 		float level = log2(l);
@@ -372,7 +372,7 @@ vec3 traceSpecularVoxelCone(vec3 from,vec3 normal,vec3 direction,int isPbr,float
 		if(!isInsideCube(c, 0)) break;
 //		c = scaleAndBias(c); 
 		
-		float level = 0.1 *( (1- isPbr)* u_Material.specularDiffusion + isPbr * roughnessPBR )* log2(1 + dist / VOXEL_SIZE);//0.1
+		float level =  ( (1- isPbr)* u_Material.specularDiffusion + isPbr * roughnessPBR )* log2(1 + dist / VOXEL_SIZE);//0.1
 		vec4 voxel;
 		if(u_Settings.guassian_mipmap){
 			voxel = vec4(0.0);
@@ -415,7 +415,7 @@ vec3 traceSpecularVoxelCone(vec3 from,vec3 normal,vec3 direction,int isPbr,float
 		}//if(u_Settings.guassian_mipmap)
 		else{
 			c = scaleAndBias(c); 
-			voxel = textureLod(texture3D, c, min(level, MIPMAP_HARDCAP));
+			voxel = textureLod(texture3D, c,min(level, MIPMAP_HARDCAP) );//min(level, MIPMAP_HARDCAP)
 
 		}
 
@@ -502,7 +502,7 @@ vec3 indirectDiffuseLight(vec3 fragPos,vec3 diffuseColor,vec3 normal){
 //	else
 //		return diffuseColor;
 	//return 3.0*acc * (diffuseColor);//DIFFUSE_INDIRECT_FACTOR * u_Material.diffuseReflectivity * acc * (diffuseColor + vec3(0.001));
-	return  acc * (diffuseColor + vec3(0.001));//* acc * 
+	return  acc * (diffuseColor + vec3(0.001));
 }
 
 // Calculates indirect specular light using voxel cone tracing.
@@ -560,7 +560,7 @@ void main(){
 		float ao        = gBuffer.ao;
 		vec3  normalMap = gBuffer.getNormalFromMap;
 		vec3  fragPos   = gBuffer.fragPos;
-		FragColor.rgb =u_Settings.GICoeffs *CalcPBRIndirectLight(indirectSpecular,indirectDiffuse,normalMap,albedo,metallic,roughness,ao,fragPos);
+		FragColor.rgb =u_Settings.GICoeffs*CalcPBRIndirectLight(indirectSpecular,indirectDiffuse,normalMap,albedo,metallic,roughness,ao,fragPos);
 		
 	}
 	else{

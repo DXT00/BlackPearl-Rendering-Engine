@@ -67,6 +67,10 @@ uniform sampler2D gNormalMap;
 
 uniform Settings u_Settings;
 uniform vec2 u_ScreenSize;
+bool uDirectLight = u_Settings.directLight;
+bool uShadow = u_Settings.shadows;
+bool uBlinLight = u_Settings.isBlinnLight;
+
 
 out vec4 FragColor;
 
@@ -236,7 +240,7 @@ vec3 calculateDirectLight(float shadow,vec3 fragPos,vec3 normal,const PointLight
 	vec3 specular;
 	float spec;
 	float shininess = 64.0;
-	if(u_Settings.isBlinnLight){
+	if(uBlinLight){
 
 		vec3 halfwayDir = normalize(lightDir+viewDir);
 		spec = pow(max(dot(norm,halfwayDir),0.0),shininess);
@@ -284,13 +288,13 @@ void main(){
 	const vec3 viewDirection = normalize(gBuffer.fragPos-u_CameraViewPos);
 
 	float shadowBlend = 1.0;
-	if(u_Settings.shadows)
+	if(uShadow)
 		shadowBlend = traceShadowCone(gBuffer.fragPos,u_PointLight.position,gBuffer.normal);
 	
 	
 	
 	vec3 direct = vec3(0.0);
-	if(u_Settings.directLight){
+	if(uDirectLight){
 		if(gBuffer.isPBRObject == 0){
 		
 			//direct += u_PointLights[i].intensity * calculateDirectLight_orign(u_PointLights[i], viewDirection);
@@ -311,9 +315,7 @@ void main(){
 			direct =  shadowBlend*u_PointLight.intensity * CalcPBRPointLight(u_PointLight,normalMap,albedo,metallic,roughness,fragPos);
 		
 		}
-//		direct = direct / (direct + vec3(1.0));
-//
-//		direct = pow(direct, vec3(1.0 / 2.2));
+
 	}
 	FragColor.rgb = direct;
 

@@ -1,5 +1,5 @@
 #type vertex
-#version 430 core
+#version 450 core
 
 layout(location = 0) in vec3 aPos;
 layout(location = 1) in vec3 aNormal;
@@ -8,10 +8,10 @@ layout(location = 2) in vec2 aTexCoords;
 uniform mat4 u_Model;
 uniform mat4 u_ProjectionView;
 uniform mat4 u_TranInverseModel;//transpose(inverse(u_Model))-->最好在cpu运算完再传进来!
-uniform bool u_IsSkybox;
+uniform int u_IsSkybox;
 uniform mat4 u_Projection;
 uniform mat4 u_View;
-uniform vec3 u_CubeSize;
+//uniform vec3 u_CubeSize;
 
 out vec3 worldPositionGeom;
 out vec3 normalGeom;
@@ -31,7 +31,8 @@ void main(){
 	worldPositionGeom = vec3(u_Model * vec4(aPos,1.0));
 	normalGeom = normalize(mat3(transpose(inverse(u_Model)))*aNormal);
 	//normalGeom=normalize(normalGeom);
-	if(u_IsSkybox)
+	int uSkyBox = u_IsSkybox;
+	if(uSkyBox==1)
 		texCoordGeom=aPos;
 	else
 		texCoordGeom=vec3(aTexCoords.x,aTexCoords.y,1.0);
@@ -41,7 +42,7 @@ void main(){
 }
 
 #type geometry
-#version 430 core
+#version 450 core
 
 layout(triangles) in;
 layout(triangle_strip,max_vertices = 3) out;
@@ -181,7 +182,7 @@ void main(){
 
 
 #type fragment
-#version 430 core
+#version 450 core
 
 const float PI=3.14159;
 
@@ -204,11 +205,11 @@ uniform PointLight u_PointLights[5];
 uniform int u_PointLightNums;
 uniform vec3 u_CameraViewPos;
 uniform vec3 u_CubeSize;
-uniform bool u_IsSkybox;
+uniform int u_IsSkybox;
 uniform int u_IsPBRObjects;
 
-
-
+int uPointLightsNum = u_PointLightNums;
+//int uTextureSample = u_Settings.isTextureSample;
 layout(rgba8, binding = 0) uniform image3D texture3D;
 
 in vec3 worldPositionFrag;
@@ -292,7 +293,13 @@ vec3 CalcPointLight(PointLight light,vec3 normal,vec3 viewDir){
 	vec3 lightDir = normalize(light.position-worldPositionFrag);
 	vec3 norm = normalize(normal);
 	float diff = max(dot(lightDir,norm),0.0f);
-	vec3 diffuse = light.diffuse * diff * (u_Material.diffuseColor*(1-u_Settings.isTextureSample)+texture(u_Material.diffuse,texCoordFrag.xy).rgb*u_Settings.isTextureSample );
+
+	vec3 diffuse;
+	
+	if(u_Settings.isTextureSample==0)
+		diffuse = light.diffuse * diff * (u_Material.diffuseColor);
+	else
+		diffuse = light.diffuse * diff *texture(u_Material.diffuse,texCoordFrag.xy).rgb;
 
 	//specular
 	vec3 specular;
@@ -331,13 +338,14 @@ void main(){
 	normalWorldPositionFrag = normalWorldPositionFrag/u_CubeSize;
 	if(!isInsideCube(normalWorldPositionFrag, 0.2)) return;
 
-
-	if(u_IsPBRObjects==0){
-		if(u_IsSkybox){
+	int uPbr = u_IsPBRObjects;
+	if(uPbr==0){
+	int uSkyBox = u_IsSkybox;
+		if(uSkyBox==1){
 			color=texture(u_Material.cube,texCoordFrag).rgb;
 		}
 		else{
-			for(int i = 0; i < u_PointLightNums; ++i) 
+			for(int i = 0; i < uPointLightsNum; ++i) 
 			{
 				color += CalcPointLight(u_PointLights[i], normalFrag,viewDir);
 			}
@@ -345,13 +353,15 @@ void main(){
 
 		}
 	}
-	else if(u_IsPBRObjects==1){
+	else if(uPbr==1){
 		vec3 albedo = pow(texture(u_Material.diffuse, texCoordFrag.xy).rgb, vec3(2.2));//vec3(pow( texture(u_Material.diffuse, v_TexCoord).r, (2.2)));
 
 		float mentallic = texture(u_Material.mentallic,texCoordFrag.xy).r;
 		float roughness  = texture(u_Material.roughness ,texCoordFrag.xy).r;
 		float ao        = texture(u_Material.ao, texCoordFrag.xy).r;
-		vec3 emission = texture(u_Material.emission,texCoordFrag.xy).rgb;
+		
+		int emissionSample = u_Settings.isEmissionTextureSample;
+		vec3 emission = (emissionSample==1)?texture(u_Material.emission,texCoordFrag.xy).rgb:vec3(0);
 //
 		vec3 N = getNormalFromMap(normalFrag,worldPositionFrag);
 		vec3 v_FragPos=worldPositionFrag;
@@ -361,7 +371,7 @@ void main(){
 		F0 = mix(F0,albedo,mentallic);
 		//reflection equation
 		vec3 Lo = vec3(0.0);
-		for(int i=0;i<u_PointLightNums;i++){
+		for(int i=0;i<uPointLightsNum;i++){
 			vec3 L = normalize(u_PointLights[i].position-v_FragPos);
 			vec3 H = normalize(V+L);
 			float attenuation = calculateAttenuation(u_PointLights[i],v_FragPos);
@@ -384,7 +394,7 @@ void main(){
 			Lo+= BRDF(Kd,Ks,specular,albedo)*LightRadiance(v_FragPos,u_PointLights[i])*NdotL;
 		}
 		vec3 ambient = vec3(0.008) * albedo * ao;//vec3(0.03)
-		color = ambient +  Lo;
+		color = emission+ambient +  Lo;
 		//color = Lo;
 //		color = color / (color + vec3(1.0));
 //		color = pow(color, vec3(1.0/2.2));  

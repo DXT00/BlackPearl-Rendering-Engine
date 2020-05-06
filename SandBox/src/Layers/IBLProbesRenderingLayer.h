@@ -25,12 +25,12 @@ public:
 
 	
 		//Shader
-		m_BackGroundShader.reset(DBG_NEW BlackPearl::Shader("assets/shaders/ibl/background.glsl"));
-		m_DebugQuadShader.reset(DBG_NEW BlackPearl::Shader("assets/shaders/QuadDebug.glsl"));
+		//m_BackGroundShader.reset(DBG_NEW BlackPearl::Shader("assets/shaders/ibl/background.glsl"));
+		//m_DebugQuadShader.reset(DBG_NEW BlackPearl::Shader("assets/shaders/QuadDebug.glsl"));
 
 		/* probe's CubeObj and quad for BrdfLUTMap */
 		m_BrdfLUTQuadObj = CreateQuad("assets/shaders/ibl/brdf.glsl","");
-		m_DebugQuad = CreateQuad("assets/shaders/QuadDebug.glsl","");
+		//m_DebugQuad = CreateQuad("assets/shaders/QuadDebug.glsl","");
 
 
 		/*gBuffer*/
@@ -104,7 +104,7 @@ public:
 		  
 		//LoadScene("Church");
 
-		//LoadScene("SpheresScene");
+		LoadScene("SpheresScene");
 		LoadScene("CornellScene");//SpheresScene
 		//LoadDynamicObject("Robot");
 
@@ -257,7 +257,7 @@ private:
 
 
 	/* objects list*/
-	std::vector<BlackPearl::Object*> m_SphereObjsList;
+	//std::vector<BlackPearl::Object*> m_SphereObjsList;
 
 	/*gBuffer*/
 	BlackPearl::Object* m_GBufferScreenQuad = nullptr;
