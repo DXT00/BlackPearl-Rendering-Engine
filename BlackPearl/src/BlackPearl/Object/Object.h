@@ -15,7 +15,11 @@ namespace BlackPearl {
 		};
 
 		virtual ~Object() {
-			Destroy();
+			m_ComponentMask.reset();
+			if (m_EntityManager != nullptr)
+				m_EntityManager->DestroyEntity(m_Id);
+			m_Components.clear();
+			
 		};
 
 		inline std::string ToString() { return m_Name; }

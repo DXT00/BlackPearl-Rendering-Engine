@@ -279,20 +279,6 @@ namespace BlackPearl {
 		light->GetComponent<Transform>()->SetLastPosition({ 0.0,-1.0,0.0 });//0.0,0.0,3.0
 		light->GetComponent<MeshRenderer>()->SetIsShadowObjects(false);
 
-		Object* deer = CreateModel("assets/models/deer/Deer.obj", "assets/shaders/IronMan.glsl", false, "Deer");
-		deer->GetComponent<Transform>()->SetScale(glm::vec3(0.003));
-		deer->GetComponent<Transform>()->SetPosition({ -0.5f,0.0f,2.5f });
-		deer->GetComponent<Transform>()->SetRotation({ 0.0f,68.0f,0.0f });
-		deer->GetComponent<MeshRenderer>()->SetIsBackGroundObjects(true);
-		m_BackGroundObjsList.push_back(deer);
-
-		Object* bunny = CreateModel("assets/models/bunny/bunny.obj", "assets/shaders/IronMan.glsl", false, "Bunny");
-		bunny->GetComponent<Transform>()->SetScale(glm::vec3(0.5));
-		bunny->GetComponent<Transform>()->SetPosition({ 0.6f,0.0f,3.0f });
-		bunny->GetComponent<Transform>()->SetRotation({ 0.0f,-30.0f,0.0f });
-		bunny->GetComponent<MeshRenderer>()->SetIsBackGroundObjects(true);
-		m_BackGroundObjsList.push_back(bunny);
-
 		Object* cube1 = CreateCube();
 		Object* cube2 = CreateCube();
 		Object* cube3 = CreateCube();
@@ -306,7 +292,7 @@ namespace BlackPearl {
 		cube3->GetComponent<Transform>()->SetPosition({ -2.0f,1.0f,3.0f });
 		cube4->GetComponent<Transform>()->SetPosition({ 0.0f,3.0f,3.0f });
 		cube5->GetComponent<Transform>()->SetPosition({ 0.0f,-1.0f,3.0f });
-		
+
 
 		cube1->GetComponent<MeshRenderer>()->SetIsBackGroundObjects(true);
 		cube2->GetComponent<MeshRenderer>()->SetIsBackGroundObjects(true);
@@ -330,6 +316,22 @@ namespace BlackPearl {
 		m_BackGroundObjsList.push_back(cube3);
 		m_BackGroundObjsList.push_back(cube4);
 		m_BackGroundObjsList.push_back(cube5);
+
+		Object* deer = CreateModel("assets/models/deer/Deer.obj", "assets/shaders/IronMan.glsl", false, "Deer");
+		deer->GetComponent<Transform>()->SetScale(glm::vec3(0.003));
+		deer->GetComponent<Transform>()->SetPosition({ -0.5f,0.0f,2.5f });
+		deer->GetComponent<Transform>()->SetRotation({ 0.0f,68.0f,0.0f });
+		deer->GetComponent<MeshRenderer>()->SetIsBackGroundObjects(true);
+		m_BackGroundObjsList.push_back(deer);
+
+		Object* bunny = CreateModel("assets/models/bunny/bunny.obj", "assets/shaders/IronMan.glsl", false, "Bunny");
+		bunny->GetComponent<Transform>()->SetScale(glm::vec3(0.5));
+		bunny->GetComponent<Transform>()->SetPosition({ 0.6f,0.0f,3.0f });
+		bunny->GetComponent<Transform>()->SetRotation({ 0.0f,-30.0f,0.0f });
+		bunny->GetComponent<MeshRenderer>()->SetIsBackGroundObjects(true);
+		m_BackGroundObjsList.push_back(bunny);
+
+	
 
 	}
 	void Layer::LoadCornellScene1()

@@ -73,7 +73,10 @@ namespace BlackPearl {
 	{
 	public:
 		EntityManager();
-		virtual ~EntityManager();
+		virtual ~EntityManager() {
+			for (auto& entity : m_EntityList)
+				GE_SAVE_DELETE(entity);
+		};
 	public:
 		inline bool Valid(BlackPearl::Entity::Id id) {
 			return id.index() < m_EntityVersion.size() && m_EntityVersion[id.index()] == id.version();

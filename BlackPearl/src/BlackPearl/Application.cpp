@@ -43,6 +43,7 @@ namespace BlackPearl {
 	{
 		/*if(m_CurrentScene!=nullptr)
 		delete m_CurrentScene;*/
+		GE_SAVE_DELETE(m_CurrentScene);
 	}
 
 	void Application::Run()

@@ -31,8 +31,9 @@ namespace BlackPearl {
 	}
 	VoxelConeTracingSVORenderer::~VoxelConeTracingSVORenderer()
 	{
-		GE_SAVE_DELETE(m_CubeObj);
-		GE_SAVE_DELETE(m_BrdfLUTQuadObj);
+		//object ÓÉlayerÉ¾³ý£¡
+		//GE_SAVE_DELETE(m_CubeObj);
+		//GE_SAVE_DELETE(m_BrdfLUTQuadObj);
 		GE_SAVE_DELETE(m_Sobol);
 		
 	}
@@ -180,7 +181,7 @@ namespace BlackPearl {
 		for (auto obj : objs) {
 			//m_VoxelizationShader->Bind();
 			
-			
+			m_VoxelizationShader->Bind();
 			m_VoxelizationShader->SetUniformVec3f("u_CubeSize", m_CubeObj->GetComponent<Transform>()->GetScale());
 
 			m_VoxelizationShader->SetUniform1i("u_IsSkybox", false);
@@ -442,11 +443,9 @@ namespace BlackPearl {
 		frameBuffer->Bind();
 		frameBuffer->AttachRenderBuffer(m_VoxelTextureSize, m_VoxelTextureSize);
 
-		//m_FrameBuffer->Bind();
-		//m_FrameBuffer->BindRenderBuffer();
+		
 		frameBuffer->AttachColorTexture(m_SpecularBrdfLUTTexture, 0);
 		frameBuffer->BindRenderBuffer();
-		//glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, 512, 512);
 
 
 		glViewport(0, 0, m_VoxelTextureSize, m_VoxelTextureSize);

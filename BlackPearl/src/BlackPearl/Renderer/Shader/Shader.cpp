@@ -269,7 +269,6 @@ namespace BlackPearl {
 	void Shader::SetUniform1i(const std::string & name, int val) const
 	{
 		GLint loc = glGetUniformLocation(m_RendererID, name.c_str());
-		GE_ERROR_JUDGE();
 		glUniform1i(loc, val);
 		GE_ERROR_JUDGE();
 
@@ -278,16 +277,22 @@ namespace BlackPearl {
 	void Shader::SetUniform1ui(const std::string & name, const unsigned int val) const
 	{
 		glUniform1ui(glGetUniformLocation(m_RendererID, name.c_str()), val);
+		GE_ERROR_JUDGE();
+
 	}
 	void Shader::SetUniform1f(const std::string & name, float val) const
 	{
 		glUniform1f(glGetUniformLocation(m_RendererID, name.c_str()), val);
+		GE_ERROR_JUDGE();
+
 	}
 
 	void Shader::SetUniformMat4f(const std::string &name, const glm::mat4 &mat) const
 	{
 		GLint location = glGetUniformLocation(m_RendererID, name.c_str());
 		glUniformMatrix4fv(location, 1, GL_FALSE, &mat[0][0]);
+		GE_ERROR_JUDGE();
+
 	}
 
 	void Shader::SetUniformVec3f(const std::string & name, const glm::vec3& value) const
@@ -299,5 +304,7 @@ namespace BlackPearl {
 	void Shader::SetUniformVec2f(const std::string& name, const glm::vec2& value) const
 	{
 		glUniform2fv(glGetUniformLocation(m_RendererID, name.c_str()), 1, &value[0]);
+		GE_ERROR_JUDGE();
+
 	}
 }

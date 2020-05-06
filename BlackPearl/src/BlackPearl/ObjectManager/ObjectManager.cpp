@@ -172,12 +172,13 @@ namespace BlackPearl {
 	//}
 	void ObjectManager::DestroyObjects()
 	{
-		for (auto pair : m_EntityToObjects) {
+		m_EntityToObjects.clear();
+		/*for (auto pair : m_EntityToObjects) {
 			Object* obj = pair.second;
 			if (obj != nullptr) {
 				delete obj;
 				obj = nullptr;
 			}
-		}
+		}*/
 	}
 }

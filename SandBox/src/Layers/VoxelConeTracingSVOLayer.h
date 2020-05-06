@@ -72,7 +72,8 @@ public:
 
 	virtual ~VoxelConeTracingSVOLayer() {
 
-		DestroyObjects();
+		GE_SAVE_DELETE(m_VoxelConeTracingSVORenderer);
+		GE_SAVE_DELETE(m_BasicRenderer);
 
 	}
 	void OnUpdate(BlackPearl::Timestep ts) override {

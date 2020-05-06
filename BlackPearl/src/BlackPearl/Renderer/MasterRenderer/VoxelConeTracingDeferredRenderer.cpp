@@ -26,8 +26,8 @@ namespace BlackPearl {
 	}
 	VoxelConeTracingDeferredRenderer::~VoxelConeTracingDeferredRenderer()
 	{
-		if (!m_CubeObj)delete m_CubeObj;
-		if (!m_QuadObj)delete m_QuadObj;
+		/*if (!m_CubeObj)delete m_CubeObj;
+		if (!m_QuadObj)delete m_QuadObj;*/
 		if (!m_VoxelTexture) delete m_VoxelTexture;
 		m_FrameBuffer->CleanUp();
 	}
@@ -64,12 +64,7 @@ namespace BlackPearl {
 		GE_ERROR_JUDGE();
 		InitVoxelVisualization(viewportWidth, viewportHeight);
 		GE_ERROR_JUDGE();
-		/*debug shader*/
-		//m_VoxelizationTestShader.reset(DBG_NEW Shader("assets/shaders/voxelization/debug/voxelizeTest.glsl"));
-		//m_FrontBackCubeTestShader.reset(DBG_NEW Shader("assets/shaders/voxelization/debug/quadTest.glsl"));
 
-		/*pbr BRDF LUT shader*/
-		//const std::vector<GLfloat> textureImage2D(4 * 256 * 256, 0.0f);
 
 
 		m_GuassianFilterHorizontalShader.reset(DBG_NEW Shader("assets/shaders/gBufferVoxel/GuassianFilter_horizontal.glsl"));
@@ -228,10 +223,6 @@ namespace BlackPearl {
 			GE_ERROR_JUDGE();
 
 
-			//glDepthFunc(GL_LEQUAL);
-			//m_VoxelizationShader->Bind();
-			//m_VoxelizationShader->SetUniformVec3f("u_CubeSize", m_CubeObj->GetComponent<Transform>()->GetScale());
-
 
 			skybox->GetComponent<Transform>()->SetScale(m_CubeObj->GetComponent<Transform>()->GetScale() - glm::vec3(3.0f));
 			skybox->GetComponent<Transform>()->SetPosition(Renderer::GetSceneData()->CameraPosition);
@@ -241,9 +232,6 @@ namespace BlackPearl {
 			m_VoxelizationShader->SetUniformVec3f("u_CubeSize", m_CubeObj->GetComponent<Transform>()->GetScale());
 			GE_ERROR_JUDGE();
 
-			//	m_VoxelizationShader->SetUniform1i("texture3D", 0);
-				//glActiveTexture(GL_TEXTURE0);
-				//m_VoxelTexture->Bind();
 			glBindImageTexture(0, m_VoxelTexture->GetRendererID(), 0, GL_TRUE, 0, GL_WRITE_ONLY, GL_RGBA8);
 			GE_ERROR_JUDGE();
 
@@ -253,7 +241,6 @@ namespace BlackPearl {
 			DrawObject(skybox, m_VoxelizationShader);
 			m_VoxelizationShader->Unbind();
 
-			//glDepthFunc(GL_LESS);
 		}
 
 		GE_ERROR_JUDGE();
@@ -265,31 +252,19 @@ namespace BlackPearl {
 			m_VoxelizationShader->SetUniformVec3f("u_CubeSize", m_CubeObj->GetComponent<Transform>()->GetScale());
 			GE_ERROR_JUDGE();
 
-			//	m_VoxelizationShader->SetUniform1i("texture3D", 0);
-				//glActiveTexture(GL_TEXTURE0);
-				//m_VoxelTexture->Bind();
+		
 			glBindImageTexture(0, m_VoxelTexture->GetRendererID(), 0, GL_TRUE, 0, GL_WRITE_ONLY, GL_RGBA8);
 			GE_ERROR_JUDGE();
 			GE_ERROR_JUDGE();
 			m_VoxelizationShader->SetUniform1i("u_IsSkybox", 0);
 			GE_ERROR_JUDGE();
-			/*glActiveTexture(GL_TEXTURE0);
-			m_VoxelTexture->Bind();
-			m_VoxelizationShader->SetUniform1i("texture3D", 0);
-			glBindImageTexture(0, m_VoxelTexture->GetRendererID(), 0, GL_TRUE, 0, GL_WRITE_ONLY, GL_RGBA8);*/
-
-			//m_VoxelizationShader->Bind();
-			//GE_ERROR_JUDGE();
-
-
-		
-			//m_VoxelizationShader->Bind();
+	
 			GE_ERROR_JUDGE();
 
 			DrawObject(obj, m_VoxelizationShader, Renderer::GetSceneData(), 4);
 			m_VoxelizationShader->Unbind();
 		}
-		if (m_AutomaticallyRegenerateMipmap ) {
+		if (m_AutomaticallyRegenerateMipmap) {
 			m_VoxelTexture->Bind();
 			glGenerateMipmap(GL_TEXTURE_3D);
 			m_VoxelTexture->UnBind();
@@ -375,13 +350,6 @@ namespace BlackPearl {
 		m_CubeObj->GetComponent<Transform>()->SetPosition(Renderer::GetSceneData()->CameraPosition);
 		m_CubeObj->GetComponent<Transform>()->SetRotation(Renderer::GetSceneData()->CameraRotation);
 
-
-
-
-
-
-
-
 		//TODO::
 		float specularReflectivity = 1.0f, diffuseReflectivity = 1.0f, emissivity = 0.1f, specularDiffusion = 0.0f;
 		float transparency = 0.0f, refractiveIndex = 1.4f;
@@ -389,18 +357,6 @@ namespace BlackPearl {
 
 
 		RenderGBuffer(objs, skybox);
-		//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-
-
-
-		//glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
-
-
-
-
-
-
 
 
 		/********************************* Point light pass ************************************************/
@@ -480,8 +436,6 @@ namespace BlackPearl {
 
 
 		}
-
-
 
 
 
@@ -651,43 +605,6 @@ namespace BlackPearl {
 	}
 
 
-
-	//void VoxelConeTracingDeferredRenderer::VoxelizeTest(const std::vector<Object*>& objs)
-	//{
-
-
-	//	glViewport(0, 0, m_ScreenWidth,m_ScreenHeight);
-	//	glEnable(GL_CULL_FACE);
-	//	glEnable(GL_DEPTH_TEST);
-	//	glEnable(GL_BLEND);
-	//	DrawObjects(objs);
-
-
-	//	//Shader
-	//	m_VoxelizationTestShader->Bind();
-
-
-	//	// Settings.
-	//	glViewport(120, 120, m_VoxelTextureSize, m_VoxelTextureSize);
-
-	//	glDisable(GL_CULL_FACE);
-	//	glDisable(GL_DEPTH_TEST);
-	//	glDisable(GL_BLEND);
-
-
-	//	m_VoxelizationTestShader->SetUniformVec3f("u_CubeSize", m_CubeObj->GetComponent<Transform>()->GetScale());
-
-
-	//	DrawObjects(objs, m_VoxelizationTestShader);
-
-
-
-
-
-
-	//}
-
-	//
 
 
 

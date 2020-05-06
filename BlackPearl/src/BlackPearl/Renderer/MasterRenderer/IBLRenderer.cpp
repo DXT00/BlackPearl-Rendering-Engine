@@ -331,6 +331,7 @@ namespace BlackPearl {
 			glViewport(0, 0, mipWidth, mipHeight);
 
 			float roughness = (float)mip / (float)(maxMipMapLevels - 1);
+			m_SpecularPrefilterShader->Bind();
 			m_SpecularPrefilterShader->SetUniform1f("u_roughness", roughness);
 			m_SpecularPrefilterShader->SetUniform1i("u_EnvironmentCubeMapDim", m_EnvironmentMapDim);
 
@@ -343,7 +344,6 @@ namespace BlackPearl {
 				glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, m_PrefilterCubeMap->GetRendererID(), mip);
 				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 				m_CubeObj->GetComponent<MeshRenderer>()->SetShaders(m_SpecularPrefilterShader);
-				//m_SpecularPrefilterShader->Bind();
 				DrawObject(m_CubeObj, m_SpecularPrefilterShader,scene,4);
 				delete scene;
 				scene = nullptr;
@@ -359,16 +359,13 @@ namespace BlackPearl {
 	void IBLRenderer::RenderSpecularBRDFLUTMap()
 	{
 		std::shared_ptr<FrameBuffer> frameBuffer(new FrameBuffer());
-		//	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		frameBuffer->Bind();
 		frameBuffer->AttachRenderBuffer(m_BRDFLutDim, m_BRDFLutDim);
 
-		//m_FrameBuffer->Bind();
-		//m_FrameBuffer->BindRenderBuffer();
+	
 		frameBuffer->AttachColorTexture(m_BRDFLUTTexture, 0);
 		frameBuffer->BindRenderBuffer();
-		//glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, 512, 512);
 
 
 		glViewport(0, 0, m_BRDFLutDim, m_BRDFLutDim);
@@ -379,19 +376,6 @@ namespace BlackPearl {
 		frameBuffer->CleanUp();
 
 
-		//std::shared_ptr<Texture> brdfLUTTexture(new Texture(Texture::None, 512, 512, GL_LINEAR, GL_LINEAR, GL_RG16F, GL_RG, GL_CLAMP_TO_EDGE, GL_FLOAT));
-		//m_FrameBuffer->Bind();
-		//m_FrameBuffer->BindRenderBuffer();
-		//m_FrameBuffer->AttachColorTexture(m_BRDFLUTTexture, 0);//±ØÐëattach 0 
-		//glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, 512, 512);
-
-		//
-
-		//glViewport(0, 0, 512, 512);
-		//m_SpecularBRDFLutShader->Bind();
-		//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		//DrawObject(m_LUTQuad, m_SpecularBRDFLutShader);
-		//m_FrameBuffer->UnBind();
 
 	}
 
@@ -444,9 +428,9 @@ namespace BlackPearl {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		GE_ERROR_JUDGE();
+		m_SkyBoxCubeMap->UnBind();
 		for (Object* obj:objs)
 		{
-			//m_IBLShader->SetUniform1i("u_IsPBRObjects",obj->GetComponent<MeshRenderer>()->GetIsPBRObject());
 			m_IBLShader->Bind();
 			m_IBLShader->SetUniform1i("u_IrradianceMap", 0);
 			m_IBLShader->SetUniform1i("u_PrefilterMap", 1);
@@ -454,9 +438,6 @@ namespace BlackPearl {
 
 			m_IBLShader->SetUniform1f("u_Settings.GICoeffs", s_GICoeffs);
 			m_IBLShader->SetUniform1i("u_Settings.hdr", s_HDR);
-
-			
-
 
 			GE_ERROR_JUDGE();
 			glActiveTexture(GL_TEXTURE0);
@@ -466,18 +447,18 @@ namespace BlackPearl {
 			glActiveTexture(GL_TEXTURE2);
 			m_BRDFLUTTexture->Bind();
 
-			int k = 0;
+			int k = 3;
 			m_IBLShader->SetUniform1f("u_FarPlane", ShadowMapPointLightRenderer::s_FarPlane);
 
 			for (Object* pointLight : lightSources->GetPointLights()) {
-				m_IBLShader->SetUniform1i("u_ShadowMap[" + std::to_string(k) + "]", k + 3);
-				glActiveTexture(GL_TEXTURE0+ (k + 3));
+				m_IBLShader->SetUniform1i("u_ShadowMap[" + std::to_string(k-3) + "]", k );
+				glActiveTexture(GL_TEXTURE0+ k);
 				pointLight->GetComponent<PointLight>()->GetShadowMap()->Bind();
 				k++;
 			}
 
-
-			DrawObject(obj, m_IBLShader, Renderer::GetSceneData(), 5);
+			m_IBLShader->Bind();
+			DrawObject(obj, m_IBLShader, Renderer::GetSceneData(), k);
 
 			m_IrradianceCubeMap->UnBind();
 			m_PrefilterCubeMap->UnBind();

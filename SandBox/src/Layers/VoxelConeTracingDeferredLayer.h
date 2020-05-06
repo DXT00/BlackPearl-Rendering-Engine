@@ -62,9 +62,8 @@ public:
 	}
 
 	virtual ~VoxelConeTracingDeferredLayer() {
-
-		DestroyObjects();
-
+		GE_SAVE_DELETE(m_VoxelConeTracingDeferredRenderer);
+		GE_SAVE_DELETE(m_BasicRenderer);
 	}
 	void OnUpdate(BlackPearl::Timestep ts) override {
 
@@ -83,7 +82,7 @@ public:
 
 		}
 		// render
-		//glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	
 
 		BlackPearl::RenderCommand::SetClearColor(m_BackgroundColor);
 		BlackPearl::Renderer::BeginScene(*(m_MainCamera->GetObj()->GetComponent<BlackPearl::PerspectiveCamera>()), *GetLightSources());
@@ -99,27 +98,10 @@ public:
 
 		}
 
-		/*if (BlackPearl::Input::IsKeyPressed(BP_KEY_V)) {
-
-			BlackPearl::VoxelConeTracingDeferredRenderer::s_VoxelizeNow = !BlackPearl::VoxelConeTracingDeferredRenderer::s_VoxelizeNow;
-			GE_CORE_INFO("vozelize = "+(BlackPearl::VoxelConeTracingDeferredRenderer::s_VoxelizeNow)?"true":"false");
-
-		}*/
+		
 		m_VoxelConeTracingDeferredRenderer->Render(m_MainCamera->GetObj()->GetComponent<BlackPearl::PerspectiveCamera>(), m_BackGroundObjsList, GetLightSources(),
 			BlackPearl::Configuration::WindowWidth, BlackPearl::Configuration::WindowHeight, m_skybox, m_CurrentRenderingMode);
-		/*m_VoxelConeTracingDeferredRenderer->RenderGBuffer(m_BackGroundObjsList, m_SkyBoxObj);
-		m_VoxelConeTracingDeferredRenderer->DrawGBuffer(m_QuadGBufferObj);*/
-
-
-		//if (m_CurrentRenderingMode == BlackPearl::VoxelConeTracingDeferredRenderer::RenderingMode::VOXEL_CONE_TRACING) {
-		//	glEnable(GL_DEPTH_TEST);
-		//	glDepthFunc(GL_LEQUAL);
-		//	//m_VoxelizationShader->Bind();
-
-		//	m_BasicRenderer->DrawObject(m_SkyBoxObj);
-
-		//}
-		//glDepthFunc(GL_LESS);
+	
 		m_BasicRenderer->DrawLightSources(GetLightSources());
 
 	}

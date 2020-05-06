@@ -21,9 +21,7 @@ namespace BlackPearl {
 		//	component.reset(nullptr);
 		//	
 		//}
-		m_ComponentMask.reset();
-		m_EntityManager->DestroyEntity(m_Id);	
-		m_Components.clear();
+		
 	}
 
 	void Object::AddChildObj(Object* obj)

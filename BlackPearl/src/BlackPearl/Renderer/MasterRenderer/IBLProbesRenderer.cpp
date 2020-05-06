@@ -451,6 +451,7 @@ namespace BlackPearl {
 			GE_ERROR_JUDGE();
 
 			float roughness = (float)mip / (float)(maxMipMapLevels - 1);
+			m_SpecularPrefilterShader->Bind();
 			m_SpecularPrefilterShader->SetUniform1f("u_roughness", roughness);
 			m_SpecularPrefilterShader->SetUniform1i("u_EnvironmentCubeMapDim", environmentMap->GetWidth());
 

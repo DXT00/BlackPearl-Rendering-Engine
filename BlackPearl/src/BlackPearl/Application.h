@@ -49,7 +49,7 @@ namespace BlackPearl {
 
 		double m_StartTimeMs;
 		long long m_FrameNum = 0;
-		Scene* m_CurrentScene;
+		Scene* m_CurrentScene = nullptr;
 		long long m_TotalFrameNum = 0;
 		double m_TotalSecond = 0;
 

@@ -11,7 +11,7 @@ namespace BlackPearl {
 	LayerStack::~LayerStack()
 	{
 		for (Layer* layer : m_Layers) {
-			delete layer;
+			GE_SAVE_DELETE(layer);
 		}
 	}
 

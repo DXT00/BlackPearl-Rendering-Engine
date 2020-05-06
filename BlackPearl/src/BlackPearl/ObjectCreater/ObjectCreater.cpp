@@ -20,8 +20,7 @@ namespace BlackPearl {
 	{
 		Entity* entity = m_EntityManager->CreateEntity();
 		Object* obj = new Object(entity->GetEntityManager(), entity->GetId(), name);
-
-		std::shared_ptr<Transform> TransformComponent(obj->AddComponent<Transform>());
+		obj->AddComponent<Transform>();
 		return obj;
 	}
 
@@ -103,18 +102,7 @@ namespace BlackPearl {
 		Transform* transformComponent = obj->GetComponent<Transform>();
 		transformComponent->SetPosition({ 0.0f, 0.0f, 0.0f });
 		transformComponent->SetRotation({ 0.0,180.0,0.0 });
-			//transformComponent->SetScale({ 0.0001f, 0.0001f, 0.0001f });
-
 		obj->AddComponent<MeshRenderer>(model, transformComponent->GetTransformMatrix());
-		//std::shared_ptr<BlackPearl::Texture> cubeMapTexture(DBG_NEW BlackPearl::CubeMapTexture(Texture::Type::CubeMap,
-		//	{ "assets/skybox/skybox/right.jpg",
-		//	 "assets/skybox/skybox/left.jpg",
-		//	 "assets/skybox/skybox/top.jpg",
-		//	 "assets/skybox/skybox/bottom.jpg",
-		//	 "assets/skybox/skybox/front.jpg",
-		//	 "assets/skybox/skybox/back.jpg",
-		//	}));
-		//obj->GetComponent<MeshRenderer>()->SetModelTextures(cubeMapTexture);
 		return obj;
 	}
 

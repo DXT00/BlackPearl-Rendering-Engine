@@ -152,7 +152,7 @@ namespace BlackPearl {
 		std::vector<Mesh> meshes = obj->GetComponent<MeshRenderer>()->GetMeshes();
 		GE_ERROR_JUDGE();
 
-
+		
 		if (obj->GetComponent<MeshRenderer>()->GetIsPBRObject()) {
 			shader->SetUniform1i("u_IsPBRObjects", 1);
 		}
@@ -179,6 +179,7 @@ namespace BlackPearl {
 				int count; glGetBufferParameteriv(GL_ELEMENT_ARRAY_BUFFER, GL_BUFFER_SIZE, &count);
 				//GE_CORE_WARN("indicesNum = {0},count = {1}", indicesNum, count / sizeof(GLuint));
 				GE_ERROR_JUDGE();
+				
 				//glDrawElements(GL_TRIANGLES, count / sizeof(GLuint), GL_UNSIGNED_INT, 0);
 				glDrawElements(GL_TRIANGLES, indicesNum, GL_UNSIGNED_INT, 0);
 				//meshes[i].GetVertexArray()->GetIndexBuffer()->UnBind();

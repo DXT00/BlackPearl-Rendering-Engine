@@ -49,7 +49,7 @@ public:
 
 		LoadSpheresScene();
 		LoadCornellScene();
-
+		//LoadChurchScene();
 		
 
 	//	LoadStaticBackGroundObject("Sphere");

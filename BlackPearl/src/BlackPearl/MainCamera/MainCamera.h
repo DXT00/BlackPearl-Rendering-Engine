@@ -9,6 +9,9 @@ namespace BlackPearl {
 		MainCamera(Object* cameraObj) {
 			m_CameraObj = cameraObj;
 		}
+		~MainCamera() {
+
+		}
 		glm::vec3 GetPosition() const;
 		float Yaw() const;
 		float Pitch() const;

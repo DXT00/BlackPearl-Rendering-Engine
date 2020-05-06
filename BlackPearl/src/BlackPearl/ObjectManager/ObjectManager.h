@@ -14,20 +14,27 @@ namespace BlackPearl {
 	public:
 		ObjectManager(EntityManager* entityManager)
 			:m_EntityManager(entityManager) {
-			m_ObjectCreater   = new ObjectCreater(entityManager);
-			m_Object3DCreater = new Object3DCreater(entityManager);
-			m_Object2DCreater = new Object2DCreater(entityManager);
-			m_LightCreater    = new LightCreater(entityManager);
+			m_ObjectCreater   = DBG_NEW ObjectCreater(entityManager);
+			m_Object3DCreater = DBG_NEW Object3DCreater(entityManager);
+			m_Object2DCreater = DBG_NEW Object2DCreater(entityManager);
+			m_LightCreater    = DBG_NEW LightCreater(entityManager);
 			//m_CameraCreater   = new CameraCreater(entityManager);
 		
 		}
 		~ObjectManager() {
-			delete m_EntityManager;//TODO::×¢Òâ½âÎöË³Ðò
-			m_EntityManager = nullptr;
-			delete m_ObjectCreater;
-			delete m_Object3DCreater;
-			delete m_Object2DCreater;
-			delete m_LightCreater;
+			DestroyObjects();
+			GE_SAVE_DELETE(m_EntityManager);
+			GE_SAVE_DELETE(m_ObjectCreater);
+			GE_SAVE_DELETE(m_Object3DCreater);
+			GE_SAVE_DELETE(m_Object2DCreater);
+			GE_SAVE_DELETE(m_LightCreater);
+			
+			/*for (auto& obj : m_EntityToObjects) {
+
+				if (obj.second != nullptr)
+					delete obj.second;
+			}*/
+
 
 		};
 
@@ -38,7 +45,6 @@ namespace BlackPearl {
 		Object* CreateSphere(const float radius, const unsigned int stackCount, const unsigned int sectorCount, const std::string& shaderPath, const std::string& texturePath, const std::string& name);
 		Object* CreatePlane(const std::string& shaderPath, const std::string& texturePath, const std::string& name);
 		Object* CreateSkyBox(const std::vector<std::string>& textureFaces, const std::string& shaderPath, const std::string& name);
-
 		Object* CreateQuad(const std::string& shaderPath , const std::string& texturePath, const std::string& name);
 		/*Blending Object, include logical and actual properties*/
 		LightProbe* CreateLightProbe(LightProbe::Type type, const std::string& shaderPath, const std::string& texturePath, const std::string& name);
@@ -48,11 +54,6 @@ namespace BlackPearl {
 		std::vector<Object*> GetObjects();
 		std::vector<std::string> GetObjectsName();
 
-	/*	void DrawShadowMap(std::vector<Object *>objs);
-		void DrawObjects();
-		void DrawObject(Object* obj);
-		void DrawObjectsExcept(std::vector<Object *>objs);
-		void DrawObjectsExcept(Object * obj);*/
 
 		void DestroyObjects();
 

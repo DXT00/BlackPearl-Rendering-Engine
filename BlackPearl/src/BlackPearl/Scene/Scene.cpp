@@ -4,10 +4,6 @@
 
 
 namespace BlackPearl {
-	Scene::~Scene() //TODO:
-	{
-		
-	}
 
 	void Scene::OnUpdateLayers(Timestep ts)
 	{

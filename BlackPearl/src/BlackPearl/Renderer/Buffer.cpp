@@ -17,6 +17,8 @@ namespace BlackPearl {
 		glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);
 		glBufferData(GL_ARRAY_BUFFER, size, vertices, GL_STATIC_DRAW);
 		m_VertexSize = size;
+		delete vertices;
+		vertices = nullptr;
 	}
 	VertexBuffer::VertexBuffer(unsigned int* vertices, uint32_t size)
 	{
@@ -24,6 +26,8 @@ namespace BlackPearl {
 		glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);
 		glBufferData(GL_ARRAY_BUFFER, size, vertices, GL_STATIC_DRAW);
 		m_VertexSize = size;
+		delete vertices;
+		vertices = nullptr;
 
 	}
 	void VertexBuffer::Bind() {
@@ -50,6 +54,8 @@ namespace BlackPearl {
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_RendererID);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, size, indices, GL_STATIC_DRAW);
 		m_IndiciesSize = size;
+		delete indices;
+		indices = nullptr;
 
 	}
 	void IndexBuffer::Bind()

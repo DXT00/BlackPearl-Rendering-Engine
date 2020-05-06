@@ -1,7 +1,5 @@
 #pragma once
-
 #include <string>
-
 #include "BlackPearl/Object/Object.h"
 #include "BlackPearl/ObjectManager/ObjectManager.h"
 #include "BlackPearl/Component/LightComponent/Light.h"
@@ -50,13 +48,29 @@ namespace BlackPearl {
 
 		}
 		virtual ~Layer() {
-			delete m_LightSources;
-			delete m_ObjectManager;
-			for (Object* obj : m_ObjectsList) {
-				if(obj!=nullptr)
+		
+			for (auto& obj : m_ObjectsList) {
+				if (obj != nullptr) {
 					delete obj;
-
+					obj = nullptr;
+				}
 			}
+				//GE_SAVE_DELETE(obj);
+			/*for (auto& obj : m_BackGroundObjsList) //不要m_BackGroundObjsList与m_ObjectsList重复删除！
+				GE_SAVE_DELETE(obj);
+			for (auto& obj : m_DynamicObjsList)
+				GE_SAVE_DELETE(obj);
+			for (auto& obj : m_ShadowObjsList)
+				GE_SAVE_DELETE(obj);*/
+
+			GE_SAVE_DELETE(m_LightSources);
+			GE_SAVE_DELETE(m_ObjectManager);
+			GE_SAVE_DELETE(m_MainCamera);
+			m_ObjectsList.clear();
+			m_BackGroundObjsList.clear();
+			m_DynamicObjsList.clear();
+			m_ShadowObjsList.clear();
+
 		};
 		virtual void OnAttach() {}
 		virtual void OnDetach() {}
