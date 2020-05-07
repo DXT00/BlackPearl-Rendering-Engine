@@ -10,6 +10,7 @@
 #include <iostream>
 #include <glm/gtc/type_ptr.hpp>
 #include <chrono>
+
 using namespace std::chrono;
 
 class IBLProbesRenderingLayer :public BlackPearl::Layer {
@@ -22,8 +23,10 @@ public:
 		m_MainCamera->SetPosition(glm::vec3(-2.0f, 0.0f, 14.0f));
 
 	
+		/* MapManager */
+		m_MapManager = DBG_NEW BlackPearl::MapManager(BlackPearl::Configuration::MapSize, BlackPearl::Configuration::AreaSize);
+		m_MapRenderer = DBG_NEW BlackPearl::MapRenderer(m_MapManager);
 
-	
 		//Shader
 		//m_BackGroundShader.reset(DBG_NEW BlackPearl::Shader("assets/shaders/ibl/background.glsl"));
 		//m_DebugQuadShader.reset(DBG_NEW BlackPearl::Shader("assets/shaders/QuadDebug.glsl"));
@@ -39,7 +42,7 @@ public:
 		m_SurroundSphere = CreateSphere(1.0, 128, 128);
 		m_GIQuad = CreateQuad();
 		/* create probes */
-		unsigned int xlen = 4 ,ylen = 2,zlen = 4,space =5;//424
+		unsigned int xlen = 4, ylen = 2, zlen = 4, space = 5, idx = 0;
 		float offsetx =2.0f, offsety = 4.0f, offsetz = 6.7f;//offsetx = 0.0, offsety = 5.0f, offsetz = 1.0f;
 		for (unsigned int x = 0; x < xlen; x++)
 		{
@@ -49,10 +52,11 @@ public:
 				{
 					BlackPearl::LightProbe* probe = CreateLightProbe(BlackPearl::LightProbe::Type::DIFFUSE);
 					int xx = (x - xlen / 2) * space, yy = (y - ylen / 2) * space, zz = (z - zlen / 2) * space;
-					
-					probe->SetPosition({ offsetx+xx,offsety+yy,offsetz+zz});
+					glm::vec3 probePos = { offsetx + xx,offsety + yy,offsetz + zz };
+					probe->SetPosition(probePos);
 					m_DiffuseLightProbes.push_back(probe);
-					//delete probe;
+					m_MapManager->AddProbeIdToArea(probePos, idx);
+					idx++;
 
 				}
 				
@@ -202,7 +206,7 @@ public:
 
 		m_GBufferRenderer->RenderSceneWithGBufferAndProbes(m_BackGroundObjsList, m_DynamicObjsList, runtime / 1000.0f,
 			m_BackGroundObjsList, m_GBufferDebugQuad, GetLightSources(), m_DiffuseLightProbes, m_ReflectionLightProbes,
-			m_IBLProbesRenderer->GetSpecularBrdfLUTTexture(), m_SkyBoxObj1);
+			m_IBLProbesRenderer->GetSpecularBrdfLUTTexture(), m_SkyBoxObj1,m_MapManager);
 
 		if (BlackPearl::Input::IsKeyPressed(BP_KEY_L)) {
 			m_ShowLightProbe = !m_ShowLightProbe;
@@ -212,6 +216,7 @@ public:
 			m_IBLProbesRenderer->RenderProbes(m_ReflectionLightProbes,1);
 
 		}
+		m_MapRenderer->Render(m_MapManager);
 
 	//	
 
@@ -285,7 +290,9 @@ private:
 	BlackPearl::AnimatedModelRenderer* m_AnimatedModelRenderer;
 	BlackPearl::GBufferRenderer* m_GBufferRenderer;
 	BlackPearl::ShadowMapPointLightRenderer* m_ShadowMapPointLightRenderer;
-
+	BlackPearl::MapRenderer* m_MapRenderer;
+	//Map
+	BlackPearl::MapManager* m_MapManager;
 
 	/* Probes */
 	std::vector<BlackPearl::LightProbe*> m_DiffuseLightProbes;

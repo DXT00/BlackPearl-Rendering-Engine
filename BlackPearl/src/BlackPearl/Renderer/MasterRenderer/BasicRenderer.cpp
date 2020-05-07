@@ -270,13 +270,10 @@ namespace BlackPearl {
 				DrawPointLight(lightObj, scene, textureBeginIdx);
 		}
 	}
-	//void BasicRenderer::PrepareShaderParameters(Mesh mesh, std::shared_ptr<Shader> shader, bool isLight)
-	//{
-	//	PrepareBasicShaderParameters(mesh, shader, isLight);
-	//}
+
 	void BasicRenderer::PrepareBasicShaderParameters(Mesh mesh, std::shared_ptr<Shader> shader, bool isLight, unsigned int textureBeginIdx)
-	{	//TODO::shader在渲染前Bind()!不在这！
-		//还是需要shader->Bind()的！表示使用这个shader!
+	{
+
 		shader->Bind();
 
 		std::shared_ptr<Material> material = mesh.GetMaterial();
@@ -323,9 +320,6 @@ namespace BlackPearl {
 		}
 
 		GE_ERROR_JUDGE();
-
-
-
 
 		//k从4开始，0，1，2，3号texture用于自定义texture
 		bool diffuseMap = false, specularMap = false, normalMap = false, mentallicMap = false, aoMap = false;

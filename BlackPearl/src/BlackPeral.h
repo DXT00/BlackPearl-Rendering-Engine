@@ -20,6 +20,7 @@
 #include "BlackPearl/Renderer/MasterRenderer/GBufferRenderer.h"
 #include "BlackPearl/Renderer/MasterRenderer/VoxelConeTracingDeferredRenderer.h"
 #include "BlackPearl/Renderer/MasterRenderer/VoxelConeTracingSVORenderer.h"
+#include "BlackPearl/Renderer/MasterRenderer/MapRenderer.h"
 
 #include "BlackPearl/Component/TransformComponent/Transform.h"
 #include "BlackPearl/Component/MeshRendererComponent/MeshRenderer.h"
@@ -43,4 +44,5 @@
 
 #include "BlackPearl/Scene/Scene.h"
 #include "BlackPearl/Entity/Entity.h"
+#include "BlackPearl/Map/MapManager.h"
 //#include "BlackPearl/Component/ComponentHandle.h"

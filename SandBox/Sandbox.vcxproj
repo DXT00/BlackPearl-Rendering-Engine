@@ -167,6 +167,7 @@
     <None Include="assets\shaders\gBufferVoxelSVO\svoTracing_new.glsl" />
     <None Include="assets\shaders\gBufferVoxelSVO\voxelizationSVO.glsl" />
     <None Include="assets\shaders\gBufferVoxelSVO\voxelizationSVO_new.glsl" />
+    <None Include="assets\shaders\map\map.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

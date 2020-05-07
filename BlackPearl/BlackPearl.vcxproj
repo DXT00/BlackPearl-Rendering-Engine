@@ -143,6 +143,9 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\BlackPearl\Renderer\MasterRenderer\MapRenderer.h" />
+    <ClInclude Include="src\BlackPearl\Map\Area.h" />
+    <ClInclude Include="src\BlackPearl\Map\MapManager.h" />
     <ClInclude Include="src\BlackPearl\Animation\AnimatedModel.h" />
     <ClInclude Include="src\BlackPearl\Animation\Animation.h" />
     <ClInclude Include="src\BlackPearl\Animation\Bone.h" />
@@ -595,6 +598,9 @@
     <ClInclude Include="vendor\stb\stb_image.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\BlackPearl\Renderer\MasterRenderer\MapRenderer.cpp" />
+    <ClCompile Include="src\BlackPearl\Map\Area.cpp" />
+    <ClCompile Include="src\BlackPearl\Map\MapManager.cpp" />
     <ClCompile Include="src\BlackPearl\Animation\AnimatedModel.cpp" />
     <ClCompile Include="src\BlackPearl\Animation\Animation.cpp" />
     <ClCompile Include="src\BlackPearl\Animation\Bone.cpp" />

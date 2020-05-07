@@ -8,6 +8,7 @@
 #include "BlackPearl/Component/LightComponent/PointLight.h"
 #include "BlackPearl/Component/LightComponent/SpotLight.h"
 #include "glm/gtc/random.hpp"
+#include <glm\ext\scalar_common.hpp>
 
 namespace BlackPearl {
 	float GBufferRenderer::s_GICoeffs = 0.5f;
@@ -244,7 +245,9 @@ namespace BlackPearl {
 	}
 
 	void GBufferRenderer::RenderSceneWithGBufferAndProbes(std::vector<Object*> staticObjects, std::vector<Object*> dynamicObjects, float timeInSecond, std::vector<Object*> backGroundObjs, Object* gBufferDebugQuad, LightSources* lightSources,
-		std::vector<LightProbe*> diffuseProbes, std::vector<LightProbe*> reflectionProbes, std::shared_ptr<Texture> specularBrdfLUTTexture, Object* skyBox)
+		std::vector<LightProbe*> diffuseProbes, std::vector<LightProbe*> reflectionProbes, 
+		std::shared_ptr<Texture> specularBrdfLUTTexture, Object* skyBox,
+		MapManager* mapManager)
 	{
 
 		GE_ASSERT(m_IsInitialized, "GBufferRenderer have not been initialized! ");
@@ -273,9 +276,9 @@ namespace BlackPearl {
 
 			glm::vec3 pos = obj->GetComponent<Transform>()->GetPosition();
 
-			std::vector<LightProbe*> kDiffuseProbes = FindKnearProbes(pos, diffuseProbes,m_K);
+			std::vector<LightProbe*> kDiffuseProbes = FindKnearAreaProbes(pos, diffuseProbes,m_K,mapManager);
 
-			unsigned int k = m_K;
+			unsigned int k = kDiffuseProbes.size();//kDiffuseProbes的个数有可能小于m_K
 			std::vector<float> distances;
 			float distancesSum = 0.0;
 			for (auto probe : kDiffuseProbes)
@@ -601,5 +604,41 @@ namespace BlackPearl {
 
 		return kProbes;
 	}
+	std::vector<LightProbe*> GBufferRenderer::FindKnearAreaProbes(glm::vec3 objPos, std::vector<LightProbe*> probes, unsigned int k,MapManager* mapManager)
+	{
+		glm::vec3 pos = objPos;
+		Area currentArea = mapManager->GetArea( mapManager->CalculateAreaId(pos));
+		std::set<unsigned int> nearByArea = mapManager->FindNearByArea(pos);
+	
+		std::vector<LightProbe*> nearByProbes;
+		std::set<unsigned int>::iterator it;
+		for (it = nearByArea.begin(); it != nearByArea.end(); it++) {
+			Area area = mapManager->GetArea(*it);
+			for (auto probeIdx:area.GetProbesId())
+			{
+				nearByProbes.push_back(probes[probeIdx]);
+			}
+		}
+		for (auto probeIdx : currentArea.GetProbesId())
+		{
+			nearByProbes.push_back(probes[probeIdx]);
+		}
+		std::vector<LightProbe*> kProbes;
+		std::sort(nearByProbes.begin(), nearByProbes.end(), [=](LightProbe* pa, LightProbe* pb)
+		{return glm::length(pa->GetPosition() - pos) < glm::length(pb->GetPosition() - pos); });
 
+		if(k >= (unsigned int)nearByProbes.size())
+			GE_CORE_WARN( "m_K {0} larger than nearby probes' number!", k);
+
+		int kMin = glm::min(k, nearByProbes.size());
+		GE_ASSERT(k >0, "no probe found near this object!");
+
+		for (int i = 0; i < kMin; i++)
+		{
+			kProbes.push_back(nearByProbes[i]);
+		}
+
+
+		return kProbes;
+	}
 }

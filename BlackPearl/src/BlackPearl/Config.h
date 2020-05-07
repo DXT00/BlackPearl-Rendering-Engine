@@ -47,6 +47,15 @@ namespace BlackPearl {
 		//static const float GICoeefs;
 
 		static void SyncGPU();
+
+		// ------------------------------------------
+		// Map config
+		// ------------------------------------------
+		static const unsigned int MapSize = 100;
+		static const unsigned int AreaSize = 10;
+
+
+
 	};
 	struct ShaderConfig {
 

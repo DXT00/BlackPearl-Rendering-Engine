@@ -14,7 +14,6 @@ public:
 		: Layer(name, objectManager)
 	{
 
-		m_shader.reset(new BlackPearl::Shader("assets/shaders/voxelization/debug/cube.glsl"));
 
 		m_BasicRenderer = DBG_NEW BlackPearl::BasicRenderer();
 		m_VoxelConeTracingDeferredRenderer = DBG_NEW BlackPearl::VoxelConeTracingDeferredRenderer();
@@ -98,7 +97,6 @@ public:
 
 		}
 
-		
 		m_VoxelConeTracingDeferredRenderer->Render(m_MainCamera->GetObj()->GetComponent<BlackPearl::PerspectiveCamera>(), m_BackGroundObjsList, GetLightSources(),
 			BlackPearl::Configuration::WindowWidth, BlackPearl::Configuration::WindowHeight, m_skybox, m_CurrentRenderingMode);
 	
@@ -128,7 +126,6 @@ private:
 	BlackPearl::Object* m_SkyBoxObj = nullptr;
 	BlackPearl::Object* m_skybox = nullptr;
 
-	std::shared_ptr<BlackPearl::Shader> m_shader;
 	glm::vec4 m_BackgroundColor = { 0.0f,0.0f,0.0f,0.0f };
 
 

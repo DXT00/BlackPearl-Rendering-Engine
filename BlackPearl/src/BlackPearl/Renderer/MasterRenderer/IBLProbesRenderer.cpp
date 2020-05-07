@@ -468,7 +468,7 @@ namespace BlackPearl {
 
 				probe->GetObj()->GetComponent<MeshRenderer>()->SetShaders(m_SpecularPrefilterShader);
 				//GE_ERROR_JUDGE();
-				//m_SpecularPrefilterShader->Bind();
+				m_SpecularPrefilterShader->Bind();
 				DrawObject(probe->GetObj(), m_SpecularPrefilterShader, scene);
 				delete scene;
 				scene = nullptr;

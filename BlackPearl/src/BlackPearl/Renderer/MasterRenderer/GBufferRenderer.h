@@ -5,7 +5,7 @@
 #include "BlackPearl/Config.h"
 #include "BlackPearl/LightProbes/LightProbes.h"
 #include "AnimatedModelRenderer.h"
-
+#include "BlackPearl/Map/MapManager.h"
 namespace BlackPearl {
 
 	class GBufferRenderer:public BasicRenderer
@@ -19,10 +19,15 @@ namespace BlackPearl {
 		void DrawGBuffer(Object* gBufferDebugQuad);
 		static float CalculateSphereRadius(Object* pointLight);
 		/* probes for ambient light render (GI) */
-		void RenderSceneWithGBufferAndProbes(std::vector<Object*> staticObjects, std::vector<Object*> dynamicObjects, float timeInSecond, std::vector<Object*> backGroundObjs, Object* gBufferDebugQuad, LightSources* lightSources,
-			std::vector<LightProbe*> diffuseProbes, std::vector<LightProbe*> reflectionProbes, std::shared_ptr<Texture> specularBrdfLUTTexture, Object* skyBox);
-		std::vector<LightProbe*> FindKnearProbes(glm::vec3 objPos, std::vector<LightProbe*> probes,unsigned int k);
+		void RenderSceneWithGBufferAndProbes(
+			std::vector<Object*> staticObjects, std::vector<Object*> dynamicObjects,
+			float timeInSecond, std::vector<Object*> backGroundObjs, 
+			Object* gBufferDebugQuad, LightSources* lightSources,
+			std::vector<LightProbe*> diffuseProbes, std::vector<LightProbe*> reflectionProbes, 
+			std::shared_ptr<Texture> specularBrdfLUTTexture, Object* skyBox, MapManager* mapManager);
 
+		std::vector<LightProbe*> FindKnearProbes(glm::vec3 objPos, std::vector<LightProbe*> probes,unsigned int k);
+		std::vector<LightProbe*> FindKnearAreaProbes(glm::vec3 objPos, std::vector<LightProbe*> probes, unsigned int k,MapManager* mapManager);
 		
 		static float s_GICoeffs;
 		static bool s_HDR;

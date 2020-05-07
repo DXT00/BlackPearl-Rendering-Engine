@@ -1467,6 +1467,9 @@
     <ClInclude Include="vendor\stb\stb_image.h">
       <Filter>vendor\stb</Filter>
     </ClInclude>
+    <ClInclude Include="src\BlackPearl\Map\Area.h" />
+    <ClInclude Include="src\BlackPearl\Map\MapManager.h" />
+    <ClInclude Include="src\BlackPearl\Renderer\MasterRenderer\MapRenderer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\BlackPearl\Animation\AnimatedModel.cpp">
@@ -1691,5 +1694,8 @@
     <ClCompile Include="src\pch.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\BlackPearl\Map\Area.cpp" />
+    <ClCompile Include="src\BlackPearl\Map\MapManager.cpp" />
+    <ClCompile Include="src\BlackPearl\Renderer\MasterRenderer\MapRenderer.cpp" />
   </ItemGroup>
 </Project>

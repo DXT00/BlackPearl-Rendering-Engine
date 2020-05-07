@@ -63,5 +63,6 @@
     <None Include="assets\shaders\gBufferVoxelSVO\buildTree\nodeAlloc.glsl" />
     <None Include="assets\shaders\gBufferVoxelSVO\voxelizationSVO_new.glsl" />
     <None Include="assets\shaders\gBufferVoxelSVO\buildTree\renderNodeKd.glsl" />
+    <None Include="assets\shaders\map\map.glsl" />
   </ItemGroup>
 </Project>
