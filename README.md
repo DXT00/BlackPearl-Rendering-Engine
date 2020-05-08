@@ -24,6 +24,10 @@ SVO path tracing - only one bounce cubeSize = 40
 ### -- cache object's nearyby diffuse probes, FPS:20frame/s
 ![lightprobe_Map_FPS](/results/lightprobe_Map_FPS.png)
 
+### -- cache object's nearyby diffuse probes,update shadowMap only when pointlight pos changes, FPS:11frame/s
+![lightprobe_Map_FPS2](/results/lightprobe_Map_FPS2.png)
+
+
 
 ###  Voxel Cone Tracing - 3D texture cone tracing
 

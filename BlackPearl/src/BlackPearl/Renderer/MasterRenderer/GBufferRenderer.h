@@ -15,6 +15,7 @@ namespace BlackPearl {
 		GBufferRenderer();
 		~GBufferRenderer() {
 			GE_SAVE_DELETE(m_AnimatedModelRenderer);
+			m_LightPassFrameBuffer->CleanUp();
 		};
 		/* ScreenQuad render scene to the screen*/
 		void Init(Object* ScreenQuad, Object* surroundSphere, Object* GIQuad);
@@ -51,6 +52,8 @@ namespace BlackPearl {
 
 		/**** buffer ****/
 		std::shared_ptr<GBuffer> m_GBuffer;
+		std::shared_ptr<FrameBuffer> m_LightPassFrameBuffer;
+
 		/* 用作 tone mapping 和 hdr 后期处理 */
 		std::shared_ptr<FrameBuffer> m_HDRFrameBuffer;
 		std::shared_ptr<Texture> m_HDRPostProcessTexture;

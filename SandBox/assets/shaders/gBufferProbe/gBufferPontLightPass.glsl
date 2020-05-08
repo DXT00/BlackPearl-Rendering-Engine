@@ -58,25 +58,6 @@ struct gBufferMaterial{
 
 };
 
-//uniform Material u_Material;
-//TODO::·¨ÏßÌùÍ¼
-//vec3 getNormalFromMap(vec3 normal,vec3 normalMap,vec3 fragPos)
-//{
-//    //vec3 tangentNormal =  2.0* texture(u_Material.normal, v_TexCoord).xyz- vec3(1.0);
-//	vec3 tangentNormal =  2.0* normalMap- vec3(1.0);
-//
-//    vec3 Q1  = dFdx(fragPos);
-//    vec3 Q2  = dFdy(fragPos);
-//    vec2 st1 = dFdx(texCoord);
-//    vec2 st2 = dFdy(texCoord);
-//
-//    vec3 N   = normalize(normal);
-//    vec3 T  = normalize(Q1*st2.t - Q2*st1.t);
-//    vec3 B  = -normalize(cross(N, T));
-//    mat3 TBN = mat3(T, B, N);
-//
-//    return normalize(TBN * tangentNormal);
-//}
 
 float calculateAttenuation(PointLight light,vec3 fragPos){
 	float distance = length(light.position-fragPos);

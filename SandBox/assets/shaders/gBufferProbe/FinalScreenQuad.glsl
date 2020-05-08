@@ -1,5 +1,5 @@
 #type vertex
-#version 430 core
+#version 450 core
 layout(location = 0) in vec3 aPos;
 layout(location = 1) in vec3 aNormal;
 layout(location = 2) in vec2 aTexCoords;
@@ -14,7 +14,7 @@ void main()
 }
 
 #type fragment
-#version 430 core
+#version 450 core
 
 out vec4 FragColor;
 in vec2 TexCoords;
@@ -41,7 +41,8 @@ void main(){
 
 	vec3 color =texture(u_FinalScreenTexture, TexCoords).rgb;
 
-	if(u_Settings.hdr){
+	bool hdr = u_Settings.hdr;
+	if(hdr){
 	//HDR tonemapping
 	 color = color / (color + vec3(1.0));
 	//gamma correction

@@ -117,11 +117,14 @@ namespace BlackPearl {
 
 		};
 
-		~Model() = default;
+		~Model() {
+			//GE_SAVE_DELETE(m_Scene);
+
+		};
 		void LoadModel(const std::string& path);
 
 		//void ProcessNode(aiNode* node);
-		Mesh ProcessMesh(aiMesh* mesh);
+		Mesh ProcessMesh(aiMesh* aimesh);
 		void LoadMaterialTextures(
 			aiMaterial* material,
 			aiTextureType type,

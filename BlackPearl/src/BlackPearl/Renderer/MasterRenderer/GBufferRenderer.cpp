@@ -9,6 +9,8 @@
 #include "BlackPearl/Component/LightComponent/SpotLight.h"
 #include "glm/gtc/random.hpp"
 #include <glm\ext\scalar_common.hpp>
+#include "BlackPearl/Timestep/TimeCounter.h"
+#include <chrono>
 
 namespace BlackPearl {
 	float GBufferRenderer::s_GICoeffs = 0.5f;
@@ -17,8 +19,14 @@ namespace BlackPearl {
 	GBufferRenderer::GBufferRenderer()
 	{
 		m_GBuffer.reset(DBG_NEW GBuffer(m_TextureWidth, m_TexxtureHeight));
-
+		
 		m_HDRPostProcessTexture.reset(DBG_NEW Texture(Texture::Type::None, m_TextureWidth, m_TexxtureHeight, false, GL_LINEAR, GL_LINEAR, GL_RGBA16F, GL_RGBA, GL_CLAMP_TO_EDGE, GL_FLOAT));
+		m_LightPassFrameBuffer.reset(DBG_NEW FrameBuffer());
+		m_LightPassFrameBuffer->Bind();
+		m_LightPassFrameBuffer->AttachRenderBuffer(m_TextureWidth, m_TexxtureHeight);
+		m_LightPassFrameBuffer->AttachColorTexture(m_HDRPostProcessTexture, 0);
+		//m_LightPassFrameBuffer->BindRenderBuffer();
+		m_LightPassFrameBuffer->UnBind();
 
 
 		m_GBufferShader.reset(DBG_NEW Shader("assets/shaders/gBufferProbe/gBuffer.glsl"));
@@ -30,6 +38,10 @@ namespace BlackPearl {
 		m_AnimatedModelRenderer = DBG_NEW AnimatedModelRenderer();
 		std::shared_ptr<Shader> gBufferAnimatedShader(DBG_NEW Shader("assets/shaders/animatedModel/animatedGBufferModel.glsl"));
 		m_AnimatedModelRenderer->SetShader(gBufferAnimatedShader);
+
+
+
+
 	}
 
 	void GBufferRenderer::Init(Object* screenQuad, Object* surroundSphere, Object* GIQuad)
@@ -54,6 +66,7 @@ namespace BlackPearl {
 
 		/************************1. Geometry Pass: render scene's geometry/color data into gbuffer *****************/
 		/***********************************************************************************************************/
+		TimeCounter::Start();
 		m_GBuffer->Bind();
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -81,9 +94,10 @@ namespace BlackPearl {
 		glBlendFunc(GL_ONE, GL_ONE);
 		m_GBuffer->UnBind();
 		glClear(GL_COLOR_BUFFER_BIT);
+		TimeCounter::End("Render GBuffer");
 
 
-
+		TimeCounter::Start();
 		/* PointLight pass */
 		for (Object* pointLight : lightSources->GetPointLights())
 		{
@@ -127,7 +141,7 @@ namespace BlackPearl {
 
 		}
 
-
+		TimeCounter::End("Draw PointLight");
 
 		/* DirectionLight pass */
 		//	DrawObject(m_ScreenQuad, m_DirectionLightPassShader);
@@ -136,6 +150,7 @@ namespace BlackPearl {
 
 		/*********************************正向渲染 light objects ******************************************************** /
 		/************ 2.5. Copy content of geometry's depth buffer to default framebuffer's depth buffer****************/
+		TimeCounter::Start();
 
 		glDepthMask(GL_TRUE);
 		glEnable(GL_DEPTH_TEST);
@@ -176,6 +191,7 @@ namespace BlackPearl {
 
 		//}
 
+		TimeCounter::End("Forward Rendering");
 
 
 
@@ -252,7 +268,7 @@ namespace BlackPearl {
 
 		GE_ASSERT(m_IsInitialized, "GBufferRenderer have not been initialized! ");
 
-
+		TimeCounter::Start();
 		// Only the geometry pass updates the depth buffer
 		glDepthMask(GL_TRUE);
 
@@ -265,12 +281,14 @@ namespace BlackPearl {
 		m_GBuffer->Bind();
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+		
 
 
 
 		/************************1.5 probes : find the k near probes for each objects *****************/
 		/***********************************************************************************************************/
 		/*  在 DrawObject同时，计算全局光照！ */
+		
 		for (Object* obj : staticObjects)
 		{
 
@@ -424,7 +442,7 @@ namespace BlackPearl {
 		//m_GBuffer->UnBind();
 
 		//DrawGBuffer(gBufferDebugQuad);
-
+		
 		/************************ 2. Lighting Pass: render lights according to gBuffer.********************************************/
 		/*************************************************************************************************************************/
 
@@ -446,12 +464,16 @@ namespace BlackPearl {
 		glBlendFunc(GL_ONE, GL_ONE);
 		m_GBuffer->UnBind();
 
-
-		std::shared_ptr<FrameBuffer> frameBuffer(new FrameBuffer());
+		TimeCounter::End("AmbientLight Rendering");
+		TimeCounter::Start();
+	/*	std::shared_ptr<FrameBuffer> frameBuffer(new FrameBuffer());
 		frameBuffer->Bind();
 		frameBuffer->AttachRenderBuffer(m_TextureWidth, m_TexxtureHeight);
 		frameBuffer->AttachColorTexture(m_HDRPostProcessTexture, 0);
-		frameBuffer->BindRenderBuffer();
+		frameBuffer->BindRenderBuffer();*/
+
+		m_LightPassFrameBuffer->Bind();
+		m_LightPassFrameBuffer->BindRenderBuffer();
 		glViewport(0, 0, m_TextureWidth, m_TexxtureHeight);
 		glClear(GL_COLOR_BUFFER_BIT);
 
@@ -477,6 +499,7 @@ namespace BlackPearl {
 			m_SurroundSphere->GetComponent<Transform>()->SetScale({ radius,radius,radius });
 			m_SurroundSphere->GetComponent<Transform>()->SetPosition(pointLight->GetComponent<Transform>()->GetPosition());
 
+			m_PointLightPassShader->Bind();
 
 			m_PointLightPassShader->Bind();
 			m_PointLightPassShader->SetUniform1i("gPosition", 0);
@@ -521,8 +544,9 @@ namespace BlackPearl {
 
 
 		}
+		TimeCounter::End("PointLight Rendering");
 
-		frameBuffer->UnBind();
+		m_LightPassFrameBuffer->UnBind();
 
 		glViewport(0, 0, m_TextureWidth, m_TexxtureHeight);
 
@@ -541,7 +565,7 @@ namespace BlackPearl {
 
 		/*********************************正向渲染 light objects ******************************************************** /
 		/************ 2.5. Copy content of geometry's depth buffer to default framebuffer's depth buffer****************/
-
+		TimeCounter::Start();
 		glDepthMask(GL_TRUE);
 		glEnable(GL_DEPTH_TEST);
 
@@ -593,7 +617,8 @@ namespace BlackPearl {
 		//}
 
 
-		frameBuffer->CleanUp();
+		//frameBuffer->CleanUp();
+		TimeCounter::End("Forward Rendering");
 
 
 

@@ -39,6 +39,7 @@
 
 #include "BlackPearl/Input.h"
 #include "BlackPearl/Timestep/Timestep.h"
+#include "BlackPearl/Timestep/TimeCounter.h"
 #include "BlackPearl/KeyCodes.h"
 //#include "BlackPearl/Application.h"
 

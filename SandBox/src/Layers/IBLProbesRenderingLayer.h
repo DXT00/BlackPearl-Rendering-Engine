@@ -42,7 +42,7 @@ public:
 		m_SurroundSphere = CreateSphere(1.0, 128, 128);
 		m_GIQuad = CreateQuad();
 		/* create probes */
-		unsigned int xlen = 4, ylen = 2, zlen = 4, space = 5, idx = 0;
+		unsigned int xlen = 4, ylen = 2, zlen = 4, space = 5, idx = 0;//space = 5,
 		float offsetx = 2.0f, offsety = 4.0f, offsetz = 6.7f;//offsetx = 0.0, offsety = 5.0f, offsetz = 1.0f;
 		for (unsigned int x = 0; x < xlen; x++)
 		{
@@ -107,18 +107,18 @@ public:
 			 "assets/skybox/skybox/back.jpg",
 			});
 
-		//LoadScene("Church");
+		
 
-		LoadScene("SpheresScene");
-		LoadScene("CornellScene");//SpheresScene
+		//LoadScene("SpheresScene");
+		LoadScene("Church");
+		//LoadScene("CornellScene");//SpheresScene
 		//LoadDynamicObject("Robot");
 
 		m_ProbeCamera = CreateCamera("ProbeCamera");
 
 		/*Draw CubeMap from hdrMap and Create environment IrrdianceMap*/
 		m_IBLProbesRenderer->Init(m_ProbeCamera, m_BrdfLUTQuadObj, *GetLightSources(), m_BackGroundObjsList, m_DiffuseLightProbes);
-		//m_IBLProbesRenderer->Render(GetLightSources(), m_BackGroundObjsList, m_LightProbes, m_SkyBoxObj1);
-
+		m_IBLProbesRenderer->Render(GetLightSources(), m_BackGroundObjsList, m_DiffuseLightProbes, m_ReflectionLightProbes, m_SkyBoxObj1);
 		//glViewport(0, 0, BlackPearl::Configuration::WindowWidth, BlackPearl::Configuration::WindowHeight);
 		m_GBufferRenderer->Init(m_GBufferScreenQuad, m_SurroundSphere, m_GIQuad);
 	}
@@ -188,7 +188,7 @@ public:
 		m_IBLProbesRenderer->RenderSpecularObjects(GetLightSources(), m_SphereObjsList, m_LightProbes);*/
 
 		//	m_GBufferRenderer->Render(m_SphereObjsList,m_GBufferDebugQuad, GetLightSources());//m_BackGroundObjsList
-	/*	bool updateShadowMap = false;
+		bool updateShadowMap = false;
 
 		for (auto pointlight : GetLightSources()->GetPointLights()) {
 			glm::vec3 position = pointlight->GetComponent<BlackPearl::Transform>()->GetPosition();
@@ -199,13 +199,21 @@ public:
 			}
 		}
 		if (updateShadowMap == true || m_loopIndex == 0) {
+			BlackPearl::TimeCounter::Start();
+
 			m_ShadowMapPointLightRenderer->RenderCubeMap(m_ShadowObjsList, m_DynamicObjsList, runtime / 1000.0f, GetLightSources());
 			if (m_loopIndex == 0)
 				m_loopIndex++;
+			BlackPearl::TimeCounter::End("Render ShadowMap");
+
+		}
+	/*	if (m_loopIndex == 0) {
+
+			BlackPearl::TimeCounter::Start();
+			m_ShadowMapPointLightRenderer->RenderCubeMap(m_BackGroundObjsList, m_DynamicObjsList, runtime / 1000.0f, GetLightSources());
+			m_loopIndex++;
+			BlackPearl::TimeCounter::End("Render ShadowMap");
 		}*/
-
-		m_ShadowMapPointLightRenderer->RenderCubeMap(m_BackGroundObjsList, m_DynamicObjsList, runtime / 1000.0f, GetLightSources());
-
 		m_GBufferRenderer->RenderSceneWithGBufferAndProbes(m_BackGroundObjsList, m_DynamicObjsList, runtime / 1000.0f,
 			m_BackGroundObjsList, m_GBufferDebugQuad, GetLightSources(), m_DiffuseLightProbes, m_ReflectionLightProbes,
 			m_IBLProbesRenderer->GetSpecularBrdfLUTTexture(), m_SkyBoxObj1, m_MapManager);
@@ -273,8 +281,8 @@ private:
 	BlackPearl::Object* m_GBufferDebugQuad = nullptr;
 	BlackPearl::Object* m_GIQuad = nullptr;
 	BlackPearl::Object* m_SurroundSphere = nullptr;
-	bool m_ShowLightProbe = false;
-	bool m_ShowMap = false;
+	bool m_ShowLightProbe = true;
+	bool m_ShowMap = true;
 
 	/*Animation model*/
 	//BlackPearl::Object* m_AnimatedModelBoy = nullptr;

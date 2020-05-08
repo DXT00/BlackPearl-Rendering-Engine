@@ -56,7 +56,6 @@ namespace BlackPearl {
 	void Model::LoadModel(const std::string& path)
 	{
 		m_Path = path;
-		//Assimp::Importer importer;
 		m_Scene = m_Importer.ReadFile(path,
 			aiProcess_Triangulate |
 			aiProcess_GenSmoothNormals);
@@ -108,8 +107,19 @@ namespace BlackPearl {
 			/*LoadBones(m_Scene->mMeshes[i]);
 			m_VerticesIdx+= m_Scene->mMeshes[i]->mNumVertices;*/
 			m_Meshes.push_back(ProcessMesh(mesh));
+			
+		//	GE_SAVE_DELETE(mesh);
 		}
 		//ProcessNode(m_Scene->mRootNode);
+		/*if (!m_HasAnimation) {
+			if (m_Scene != nullptr) {
+				delete m_Scene;
+				m_Scene = nullptr;
+			}
+				
+		}*/
+
+		//GE_SAVE_DELETE(m_Scene);
 	}
 
 
@@ -167,12 +177,13 @@ namespace BlackPearl {
 
 			}
 
-
+			
 		}
+		
 	}
 	Mesh Model::ProcessMesh(aiMesh* aimesh)
 	{
-		;
+		
 		std::vector<float> vertices;
 		std::vector<unsigned int> verticesIntjointIdx;
 		std::vector<float> verticesfloatWeight;

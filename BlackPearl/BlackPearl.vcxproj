@@ -227,6 +227,7 @@
     <ClInclude Include="src\BlackPearl\Window.h" />
     <ClInclude Include="src\BlackPeral.h" />
     <ClInclude Include="src\pch.h" />
+    <ClInclude Include="src\BlackPearl\Timestep\TimeCounter.h" />
     <ClInclude Include="vendor\glm\glm\common.hpp" />
     <ClInclude Include="vendor\glm\glm\detail\_features.hpp" />
     <ClInclude Include="vendor\glm\glm\detail\_fixes.hpp" />
@@ -677,6 +678,7 @@
     <ClCompile Include="src\pch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="src\BlackPearl\Timestep\TimeCounter.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="vendor\GLFW\GLFW.vcxproj">
