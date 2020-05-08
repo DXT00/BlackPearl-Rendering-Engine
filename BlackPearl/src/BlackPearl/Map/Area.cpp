@@ -10,6 +10,7 @@ namespace BlackPearl {
 
 	void Area::DeleteProbeId(unsigned int probeId)
 	{
+		m_ProbesId.erase(std::remove(m_ProbesId.begin(), m_ProbesId.end(), probeId), m_ProbesId.end());
 	}
 
 }

@@ -22,7 +22,7 @@ public:
 
 		m_MainCamera->SetPosition(glm::vec3(-2.0f, 0.0f, 14.0f));
 
-	
+
 		/* MapManager */
 		m_MapManager = DBG_NEW BlackPearl::MapManager(BlackPearl::Configuration::MapSize, BlackPearl::Configuration::AreaSize);
 		m_MapRenderer = DBG_NEW BlackPearl::MapRenderer(m_MapManager);
@@ -32,7 +32,7 @@ public:
 		//m_DebugQuadShader.reset(DBG_NEW BlackPearl::Shader("assets/shaders/QuadDebug.glsl"));
 
 		/* probe's CubeObj and quad for BrdfLUTMap */
-		m_BrdfLUTQuadObj = CreateQuad("assets/shaders/ibl/brdf.glsl","");
+		m_BrdfLUTQuadObj = CreateQuad("assets/shaders/ibl/brdf.glsl", "");
 		//m_DebugQuad = CreateQuad("assets/shaders/QuadDebug.glsl","");
 
 
@@ -43,23 +43,24 @@ public:
 		m_GIQuad = CreateQuad();
 		/* create probes */
 		unsigned int xlen = 4, ylen = 2, zlen = 4, space = 5, idx = 0;
-		float offsetx =2.0f, offsety = 4.0f, offsetz = 6.7f;//offsetx = 0.0, offsety = 5.0f, offsetz = 1.0f;
+		float offsetx = 2.0f, offsety = 4.0f, offsetz = 6.7f;//offsetx = 0.0, offsety = 5.0f, offsetz = 1.0f;
 		for (unsigned int x = 0; x < xlen; x++)
 		{
 			for (unsigned int y = 0; y < ylen; y++)
 			{
-				for (unsigned int  z = 0; z < zlen; z++)
+				for (unsigned int z = 0; z < zlen; z++)
 				{
 					BlackPearl::LightProbe* probe = CreateLightProbe(BlackPearl::LightProbe::Type::DIFFUSE);
 					int xx = (x - xlen / 2) * space, yy = (y - ylen / 2) * space, zz = (z - zlen / 2) * space;
 					glm::vec3 probePos = { offsetx + xx,offsety + yy,offsetz + zz };
 					probe->SetPosition(probePos);
 					m_DiffuseLightProbes.push_back(probe);
-					m_MapManager->AddProbeIdToArea(probePos, idx);
+					unsigned int areaId = m_MapManager->AddProbeIdToArea(probePos, idx);
+					probe->SetAreaId(areaId);
 					idx++;
 
 				}
-				
+
 			}
 
 		}
@@ -83,7 +84,7 @@ public:
 			}
 
 		}
-	
+
 
 		BlackPearl::Renderer::Init();
 		glEnable(GL_DEPTH_TEST);
@@ -105,7 +106,7 @@ public:
 			 "assets/skybox/skybox/front.jpg",
 			 "assets/skybox/skybox/back.jpg",
 			});
-		  
+
 		//LoadScene("Church");
 
 		LoadScene("SpheresScene");
@@ -113,9 +114,9 @@ public:
 		//LoadDynamicObject("Robot");
 
 		m_ProbeCamera = CreateCamera("ProbeCamera");
-		
+
 		/*Draw CubeMap from hdrMap and Create environment IrrdianceMap*/
-		m_IBLProbesRenderer->Init(m_ProbeCamera,m_BrdfLUTQuadObj,  *GetLightSources(), m_BackGroundObjsList, m_DiffuseLightProbes);
+		m_IBLProbesRenderer->Init(m_ProbeCamera, m_BrdfLUTQuadObj, *GetLightSources(), m_BackGroundObjsList, m_DiffuseLightProbes);
 		//m_IBLProbesRenderer->Render(GetLightSources(), m_BackGroundObjsList, m_LightProbes, m_SkyBoxObj1);
 
 		//glViewport(0, 0, BlackPearl::Configuration::WindowWidth, BlackPearl::Configuration::WindowHeight);
@@ -146,10 +147,11 @@ public:
 
 
 		if (BlackPearl::Input::IsKeyPressed(BP_KEY_U)) {
-
+			GE_CORE_INFO("updating diffuse probes' area...!")
+				m_MapManager->UpdateProbesArea(m_DiffuseLightProbes);
 			GE_CORE_INFO("light probe updating......")
-			m_IBLProbesRenderer->Render(GetLightSources(), m_BackGroundObjsList, m_DiffuseLightProbes, m_ReflectionLightProbes,m_SkyBoxObj1);
-			GE_CORE_INFO("light probe update finished!")
+				m_IBLProbesRenderer->Render(GetLightSources(), m_BackGroundObjsList, m_DiffuseLightProbes, m_ReflectionLightProbes, m_SkyBoxObj1);
+
 
 		}
 
@@ -206,32 +208,34 @@ public:
 
 		m_GBufferRenderer->RenderSceneWithGBufferAndProbes(m_BackGroundObjsList, m_DynamicObjsList, runtime / 1000.0f,
 			m_BackGroundObjsList, m_GBufferDebugQuad, GetLightSources(), m_DiffuseLightProbes, m_ReflectionLightProbes,
-			m_IBLProbesRenderer->GetSpecularBrdfLUTTexture(), m_SkyBoxObj1,m_MapManager);
+			m_IBLProbesRenderer->GetSpecularBrdfLUTTexture(), m_SkyBoxObj1, m_MapManager);
 
 		if (BlackPearl::Input::IsKeyPressed(BP_KEY_L)) {
 			m_ShowLightProbe = !m_ShowLightProbe;
+			m_ShowMap = !m_ShowMap;
 		}
 		if (m_ShowLightProbe) {
-			m_IBLProbesRenderer->RenderProbes(m_DiffuseLightProbes,0);
-			m_IBLProbesRenderer->RenderProbes(m_ReflectionLightProbes,1);
+			m_IBLProbesRenderer->RenderProbes(m_DiffuseLightProbes, 0);
+			m_IBLProbesRenderer->RenderProbes(m_ReflectionLightProbes, 1);
 
 		}
-		m_MapRenderer->Render(m_MapManager);
+		if (m_ShowMap)
+			m_MapRenderer->Render(m_MapManager);
 
-	//	
+		//	
 
-		/*draw BRDFLUTTextureID in a quad*/
-		/*glViewport(0, 0, 120, 120);
+			/*draw BRDFLUTTextureID in a quad*/
+			/*glViewport(0, 0, 120, 120);
 
-		m_DebugQuadShader->Bind();
-		m_DebugQuad->GetComponent<BlackPearl::MeshRenderer>()->SetShaders(m_DebugQuadShader);
-		m_DebugQuadShader->SetUniform1i("u_BRDFLUTMap", 6);
-		glActiveTexture(GL_TEXTURE0 + 6);
-		glBindTexture(GL_TEXTURE_2D, m_IBLProbesRenderer->GetSpecularBrdfLUTTexture()->GetRendererID());
-		m_BasicRenderer->DrawObject(m_DebugQuad, m_DebugQuadShader);
-		m_IBLProbesRenderer->GetSpecularBrdfLUTTexture()->UnBind();
+			m_DebugQuadShader->Bind();
+			m_DebugQuad->GetComponent<BlackPearl::MeshRenderer>()->SetShaders(m_DebugQuadShader);
+			m_DebugQuadShader->SetUniform1i("u_BRDFLUTMap", 6);
+			glActiveTexture(GL_TEXTURE0 + 6);
+			glBindTexture(GL_TEXTURE_2D, m_IBLProbesRenderer->GetSpecularBrdfLUTTexture()->GetRendererID());
+			m_BasicRenderer->DrawObject(m_DebugQuad, m_DebugQuadShader);
+			m_IBLProbesRenderer->GetSpecularBrdfLUTTexture()->UnBind();
 
-		glViewport(0, 0, BlackPearl::Configuration::WindowWidth, BlackPearl::Configuration::WindowHeight);*/
+			glViewport(0, 0, BlackPearl::Configuration::WindowWidth, BlackPearl::Configuration::WindowHeight);*/
 
 
 	}
@@ -240,10 +244,10 @@ public:
 
 
 	}
-	
+
 private:
 	//Scene
-	
+
 	//BlackPearl::Object* m_DebugQuad = nullptr;
 	/* objects */
 	//BlackPearl::Object* m_SphereObj = nullptr;
@@ -253,7 +257,7 @@ private:
 	//BlackPearl::Object* m_SphereObjPlastic = nullptr;
 
 	int m_loopIndex = 0;
-	
+
 	BlackPearl::Object* m_SkyBoxObj1 = nullptr;
 
 	BlackPearl::Object* m_BrdfLUTQuadObj = nullptr;
@@ -269,7 +273,9 @@ private:
 	BlackPearl::Object* m_GBufferDebugQuad = nullptr;
 	BlackPearl::Object* m_GIQuad = nullptr;
 	BlackPearl::Object* m_SurroundSphere = nullptr;
-	bool m_ShowLightProbe = true;
+	bool m_ShowLightProbe = false;
+	bool m_ShowMap = false;
+
 	/*Animation model*/
 	//BlackPearl::Object* m_AnimatedModelBoy = nullptr;
 	//BlackPearl::Object* m_AnimatedModelCleaner = nullptr;
@@ -279,7 +285,7 @@ private:
 	int m_Colums = 4;
 	float m_Spacing = 1.5;
 
-	
+
 
 	//Shader
 	std::shared_ptr<BlackPearl::Shader> m_BackGroundShader;
@@ -300,5 +306,5 @@ private:
 
 	std::thread m_Threads[10];
 	BlackPearl::MainCamera* m_ProbeCamera;
-	
+
 };

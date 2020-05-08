@@ -18,8 +18,11 @@ SVO path tracing - only one bounce cubeSize = 40
 ### Light probe GI --- separate diffuse probe and reflection probe
 ![lightprobe_diffuse+specular](/results/lightprobe_diffuse+specular.png)
 
--- sort diffuse probe based on Areas
+### -- sort diffuse probe based on Areas
 ![lightprobe_Map](/results/lightprobe_Map.png)
+
+### -- cache object's nearyby diffuse probes, FPS:20frame/s
+![lightprobe_Map_FPS](/results/lightprobe_Map_FPS.png)
 
 
 ###  Voxel Cone Tracing - 3D texture cone tracing

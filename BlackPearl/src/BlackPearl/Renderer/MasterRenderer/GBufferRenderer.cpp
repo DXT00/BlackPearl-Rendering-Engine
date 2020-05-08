@@ -27,7 +27,7 @@ namespace BlackPearl {
 		m_SphereDeBugShader.reset(DBG_NEW Shader("assets/shaders/gBufferProbe/SurroundSphereDebug.glsl"));
 		m_FinalScreenShader.reset(DBG_NEW Shader("assets/shaders/gBufferProbe/FinalScreenQuad.glsl"));
 
-		m_AnimatedModelRenderer = new AnimatedModelRenderer();
+		m_AnimatedModelRenderer = DBG_NEW AnimatedModelRenderer();
 		std::shared_ptr<Shader> gBufferAnimatedShader(DBG_NEW Shader("assets/shaders/animatedModel/animatedGBufferModel.glsl"));
 		m_AnimatedModelRenderer->SetShader(gBufferAnimatedShader);
 	}
@@ -275,16 +275,28 @@ namespace BlackPearl {
 		{
 
 			glm::vec3 pos = obj->GetComponent<Transform>()->GetPosition();
+			std::vector<unsigned int> kDiffuseProbesIdx;
+			//初始化时，obj移动了，probe移动了都要重新找kNearProbes!
+			if (!obj->GetComponent<MeshRenderer>()->GetIsDiffuseProbeCacheSet() ||
+				obj->GetComponent<Transform>()->GetPosition() != obj->GetComponent<Transform>()->GetLastPosition()||
+				mapManager->m_ProbeGridPosChanged)
+			{
+				kDiffuseProbesIdx = FindKnearAreaProbes(pos, diffuseProbes, m_K, mapManager);
+				obj->GetComponent<MeshRenderer>()->SetDiffuseProbeChache(kDiffuseProbesIdx);
+				obj->GetComponent<MeshRenderer>()->SetIsDiffuseProbeCacheSet(true);
+				mapManager->m_ProbeGridPosChanged = false;
+			}
+			else {
+				kDiffuseProbesIdx = obj->GetComponent<MeshRenderer>()->GetDiffuseProbeChache();
+			}
 
-			std::vector<LightProbe*> kDiffuseProbes = FindKnearAreaProbes(pos, diffuseProbes,m_K,mapManager);
-
-			unsigned int k = kDiffuseProbes.size();//kDiffuseProbes的个数有可能小于m_K
+			unsigned int k = kDiffuseProbesIdx.size();//kDiffuseProbes的个数有可能小于m_K
 			std::vector<float> distances;
 			float distancesSum = 0.0;
-			for (auto probe : kDiffuseProbes)
+			for (auto probeIdx : kDiffuseProbesIdx)
 			{
-				distances.push_back(glm::length(probe->GetPosition() - pos));
-				distancesSum += glm::length(probe->GetPosition() - pos);
+				distances.push_back(glm::length(diffuseProbes[probeIdx]->GetPosition() - pos));
+				distancesSum += glm::length(diffuseProbes[probeIdx]->GetPosition() - pos);
 			}
 
 
@@ -308,7 +320,7 @@ namespace BlackPearl {
 				for (int sh = 0; sh < 9; sh++)
 				{
 					int index = sh + 9 * i;
-					m_GBufferShader->SetUniformVec3f("u_SHCoeffs[" + std::to_string(index) + "]", glm::vec3(kDiffuseProbes[i]->GetCoeffis()[sh][0], kDiffuseProbes[i]->GetCoeffis()[sh][1], kDiffuseProbes[i]->GetCoeffis()[sh][2]));
+					m_GBufferShader->SetUniformVec3f("u_SHCoeffs[" + std::to_string(index) + "]", glm::vec3(diffuseProbes[kDiffuseProbesIdx[i]]->GetCoeffis()[sh][0], diffuseProbes[kDiffuseProbesIdx[i]]->GetCoeffis()[sh][1], diffuseProbes[kDiffuseProbesIdx[i]]->GetCoeffis()[sh][2]));
 				}
 
 				//glActiveTexture(GL_TEXTURE0 + textureK);
@@ -604,34 +616,70 @@ namespace BlackPearl {
 
 		return kProbes;
 	}
-	std::vector<LightProbe*> GBufferRenderer::FindKnearAreaProbes(glm::vec3 objPos, std::vector<LightProbe*> probes, unsigned int k,MapManager* mapManager)
+	std::vector<unsigned int> GBufferRenderer::FindKnearAreaProbes(glm::vec3 objPos, std::vector<LightProbe*> probes, unsigned int k,MapManager* mapManager)
 	{
-		glm::vec3 pos = objPos;
-		Area currentArea = mapManager->GetArea( mapManager->CalculateAreaId(pos));
-		std::set<unsigned int> nearByArea = mapManager->FindNearByArea(pos);
+		//glm::vec3 pos = objPos;
+		//Area currentArea = mapManager->GetArea( mapManager->CalculateAreaId(pos));
+		//std::set<unsigned int> nearByArea = mapManager->FindNearByArea(pos);
 	
-		std::vector<LightProbe*> nearByProbes;
+		//std::vector<LightProbe*> nearByProbes;
+		//std::set<unsigned int>::iterator it;
+		//for (it = nearByArea.begin(); it != nearByArea.end(); it++) {
+		//	Area area = mapManager->GetArea(*it);
+		//	for (auto probeIdx:area.GetProbesId())
+		//	{
+		//		nearByProbes.push_back(probes[probeIdx]);
+		//	}
+		//}
+		//for (auto probeIdx : currentArea.GetProbesId())
+		//{
+		//	nearByProbes.push_back(probes[probeIdx]);
+		//}
+		//std::vector<LightProbe*> kProbes;
+		//std::sort(nearByProbes.begin(), nearByProbes.end(), [=](LightProbe* pa, LightProbe* pb)
+		//{return glm::length(pa->GetPosition() - pos) < glm::length(pb->GetPosition() - pos); });
+
+		////if(k > (unsigned int)nearByProbes.size())
+		////	GE_CORE_WARN( "m_K {0} larger than nearby probes' number:{1}!", k, (unsigned int)nearByProbes.size());
+
+		//int kMin = glm::min(k, nearByProbes.size());
+		////if (k <=0)
+		////	GE_CORE_WARN("no probe found near this object!");
+
+		//for (int i = 0; i < kMin; i++)
+		//{
+		//	kProbes.push_back(nearByProbes[i]);
+		//}
+
+
+		//return kProbes;
+		glm::vec3 pos = objPos;
+		Area currentArea = mapManager->GetArea(mapManager->CalculateAreaId(pos));
+		std::set<unsigned int> nearByArea = mapManager->FindNearByArea(pos);
+
+		std::vector<unsigned int> nearByProbes;
 		std::set<unsigned int>::iterator it;
 		for (it = nearByArea.begin(); it != nearByArea.end(); it++) {
 			Area area = mapManager->GetArea(*it);
-			for (auto probeIdx:area.GetProbesId())
+			for (auto probeIdx : area.GetProbesId())
 			{
-				nearByProbes.push_back(probes[probeIdx]);
+				nearByProbes.push_back(probeIdx);
 			}
 		}
 		for (auto probeIdx : currentArea.GetProbesId())
 		{
-			nearByProbes.push_back(probes[probeIdx]);
+			nearByProbes.push_back(probeIdx);
 		}
-		std::vector<LightProbe*> kProbes;
-		std::sort(nearByProbes.begin(), nearByProbes.end(), [=](LightProbe* pa, LightProbe* pb)
-		{return glm::length(pa->GetPosition() - pos) < glm::length(pb->GetPosition() - pos); });
+		std::vector<unsigned int> kProbes;
+		std::sort(nearByProbes.begin(), nearByProbes.end(), [=](unsigned int a, unsigned int b)
+		{return glm::length(probes[a]->GetPosition() - pos) < glm::length(probes[b]->GetPosition() - pos); });
 
-		if(k >= (unsigned int)nearByProbes.size())
-			GE_CORE_WARN( "m_K {0} larger than nearby probes' number!", k);
+		//if(k > (unsigned int)nearByProbes.size())
+		//	GE_CORE_WARN( "m_K {0} larger than nearby probes' number:{1}!", k, (unsigned int)nearByProbes.size());
 
 		int kMin = glm::min(k, nearByProbes.size());
-		GE_ASSERT(k >0, "no probe found near this object!");
+		//if (k <=0)
+		//	GE_CORE_WARN("no probe found near this object!");
 
 		for (int i = 0; i < kMin; i++)
 		{

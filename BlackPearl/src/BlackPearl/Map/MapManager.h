@@ -2,6 +2,7 @@
 #include<vector>
 #include"Area.h"
 #include<glm/glm.hpp>
+#include"BlackPearl/LightProbes/LightProbes.h"
 namespace BlackPearl {
 	//Map is a Cube
 	class MapManager
@@ -32,8 +33,13 @@ namespace BlackPearl {
 		Area GetArea(unsigned int areaId);
 		int CalculateAreaId(glm::vec3 pos);
 		std::set<unsigned int> FindNearByArea(glm::vec3 pos);
-		void AddProbeIdToArea(glm::vec3 probePos,unsigned int probeId);
+		unsigned int AddProbeIdToArea(glm::vec3 probePos,unsigned int probeId);
+		//判断probe是否跨区
+		void UpdateProbesArea(std::vector<LightProbe*> probes);
 		std::vector<Area> GetAreasList()const { return m_AreasList; }
+		
+		//GBufferRender::RenderSceneWithGBufferAndProbes中设置为false
+		bool m_ProbeGridPosChanged = false;
 
 	private:
 		unsigned int m_AreaCount;//one dimemsion

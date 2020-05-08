@@ -197,11 +197,28 @@ namespace BlackPearl {
 		return nearByArea;
 	}
 
-	void MapManager::AddProbeIdToArea(glm::vec3 probePos,unsigned int probeId)
+	unsigned int MapManager::AddProbeIdToArea(glm::vec3 probePos,unsigned int probeId)
 	{
 		unsigned int areaId = CalculateAreaId(probePos);
 		GE_ASSERT(areaId != -1, "probe position out of Map range!");
 		m_AreasList[areaId].AddProbeId(probeId);
+		return areaId;
+	}
+
+	void MapManager::UpdateProbesArea(std::vector<LightProbe*> probes)
+	{
+		m_ProbeGridPosChanged = false;
+		for (int i = 0; i < probes.size();i++) {
+			unsigned int lastAreaId = probes[i]->GetAreaId();
+			unsigned int newAreaId = CalculateAreaId(probes[i]->GetObj()->GetComponent<Transform>()->GetPosition());
+			unsigned int probeId = i;
+			if (lastAreaId != newAreaId) {
+			
+				m_AreasList[lastAreaId].DeleteProbeId(i);
+				m_AreasList[newAreaId].AddProbeId(i);
+				m_ProbeGridPosChanged = true;
+			}
+		}
 	}
 
 

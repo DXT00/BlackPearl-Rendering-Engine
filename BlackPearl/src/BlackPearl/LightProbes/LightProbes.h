@@ -25,7 +25,7 @@ namespace BlackPearl {
 		virtual ~LightProbe() {
 
 			
-			GE_SAVE_DELETE(m_LightProbeObj);
+			//GE_SAVE_DELETE(m_LightProbeObj);
 			//GE_SAVE_DELETE(m_Camera);
 		}
 		
@@ -37,7 +37,6 @@ namespace BlackPearl {
 		std::shared_ptr<CubeMapTexture> GetSpecularPrefilterCubeMap()const { GE_ASSERT(m_Type == Type::REFLECTION, "is not a reflection probe") return m_SpecularPrefilterCubeMap; }
 		//std::shared_ptr<CubeMapTexture> GetDiffuseIrradianceCubeMap()const { return m_DiffuseIrradianceCubeMap; }
 		std::shared_ptr<Texture> GetSpecularBrdfLutMap()const       { return m_SpecularBrdfLutMap; }
-	//	std::shared_ptr<TextureImage2D> GetSHImage() const { return m_SHImage; }
 		
 		/* resolution */
 		//unsigned int GetDiffuseCubeMapResolution() const { return m_DiffuseCubeMapResolution; }
@@ -61,19 +60,8 @@ namespace BlackPearl {
 		/*cubeObj*/
 		Object* GetObj()const { return m_LightProbeObj; }
 
-		/*每次Probe使用前都要Update Camera!!*/
-	/*	void UpdateCamera() {
-			glm::vec3 objPos = m_LightProbeObj->GetComponent<Transform>()->GetPosition();
-			glm::vec3 objRot = m_LightProbeObj->GetComponent<Transform>()->GetRotation();
-			m_Camera->SetPosition(objPos);
-			m_Camera->SetRotation(objRot);
-		}*/
-		//MainCamera* GetCamera()const { return m_Camera; }
-
-		/*threads*/
-		//void StartThread(void(IBLProbesRenderer::*UpdateProbeMaps)(const LightSources& , const std::vector<Object*> , Object* , LightProbe* ),
-			//const LightSources& lightSources, const std::vector<Object*> objects, Object* skyBox);
-		//void JoinThread();
+		void SetAreaId(unsigned int areaId) { m_AreaId = areaId; }
+		unsigned int GetAreaId()const { return m_AreaId; }
 	private:
 
 		/* probe's view matrix */
@@ -82,23 +70,20 @@ namespace BlackPearl {
 		std::shared_ptr<CubeMapTexture> m_HdrEnvironmentCubeMap = nullptr;
 		std::shared_ptr<CubeMapTexture> m_SpecularPrefilterCubeMap = nullptr;
 		std::shared_ptr<Texture>		m_SpecularBrdfLutMap = nullptr;
-		//std::shared_ptr<TextureImage2D>		m_SHImage = nullptr;
 		unsigned int m_MaxMipmapLevel = 5;
 
 		unsigned int					m_SampleCounts = 1024;
 		unsigned int					m_EnvironmentCubeMapResolution = Configuration::EnvironmantMapResolution;// 512;// 128;
 		unsigned int					m_SpecularCubeMapResolution = Configuration::EnvironmantMapResolution;// 512;// 128;
 
-		//glm::vec3 m_Center;
 		glm::vec3 m_Size;
 		Object* m_LightProbeObj;
-		//MainCamera* m_Camera;
 
 		std::vector<std::vector<float>> m_SHCoeffs;
 		Type m_Type;
-		/*thread*/
-		//std::thread m_Thread;
-
+		
+		//记录这个probe在哪个区域,只有diffuse probe划分区域
+		unsigned int m_AreaId;
 	};
 
 

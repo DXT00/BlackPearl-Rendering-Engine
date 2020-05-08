@@ -9,9 +9,9 @@ namespace BlackPearl {
 	public:
 		IBLProbesRenderer();
 		virtual ~IBLProbesRenderer() {
-			GE_SAVE_DELETE(m_BrdfLUTQuadObj);
+			/*GE_SAVE_DELETE(m_BrdfLUTQuadObj);
 			GE_SAVE_DELETE(m_SHQuadObj);
-			GE_SAVE_DELETE(m_ProbeCamera);
+			GE_SAVE_DELETE(m_ProbeCamera);*/
 
 		}
 		void Render(const LightSources* lightSources, const std::vector<Object*> objects, const std::vector<LightProbe*> diffuseProbes, const std::vector<LightProbe*> reflectionProbes, Object* skyBox);

@@ -80,7 +80,17 @@ namespace BlackPearl {
 		bool GetIsPBRObject() const { return m_IsPBRObject; }
 		void SetIsPBRObject(bool isPBRObject) { m_IsPBRObject = isPBRObject; }
 
+		std::vector<unsigned int> GetDiffuseProbeChache() const { return m_diffuseProbeCaches; }
+		void SetDiffuseProbeChache(std::vector<unsigned int> probesIdx) { m_diffuseProbeCaches = probesIdx; }
 
+		std::vector<unsigned int> GetReflectionProbeChache() const { return m_reflectProbeCaches; }
+		void SetReflectionProbeChache(std::vector<unsigned int> probesIdx) { m_reflectProbeCaches = probesIdx; }
+
+		bool GetIsDiffuseProbeCacheSet()const { return m_SetDiffuseProbeCaches; }
+		void SetIsDiffuseProbeCacheSet(bool set) {  m_SetDiffuseProbeCaches=set; }
+
+		bool GetIsReflectProbeCacheSet()const { return m_SetReflectProbeCaches; }
+		void SetIsReflectProbeCacheSet(bool set) { m_SetReflectProbeCaches = set; }
 	private:
 		//¿ªÆôºÍ½ûÖ¹äÖÈ¾
 		bool m_EnableRender = true;
@@ -92,6 +102,12 @@ namespace BlackPearl {
 		bool m_EnableCullFace = true;
 		bool m_IsBackGroundObjects = false;
 		bool m_HasShadow = true;
+
+		bool m_SetDiffuseProbeCaches = false;
+		bool m_SetReflectProbeCaches = false;
+
+		std::vector<unsigned int> m_diffuseProbeCaches;
+		std::vector<unsigned int> m_reflectProbeCaches;
 
 	};
 

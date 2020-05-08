@@ -13,6 +13,9 @@ namespace BlackPearl {
 
 	public:
 		GBufferRenderer();
+		~GBufferRenderer() {
+			GE_SAVE_DELETE(m_AnimatedModelRenderer);
+		};
 		/* ScreenQuad render scene to the screen*/
 		void Init(Object* ScreenQuad, Object* surroundSphere, Object* GIQuad);
 		void Render(std::vector<Object*> objects, Object* gBufferDebugQuad, LightSources* lightSources);
@@ -27,7 +30,7 @@ namespace BlackPearl {
 			std::shared_ptr<Texture> specularBrdfLUTTexture, Object* skyBox, MapManager* mapManager);
 
 		std::vector<LightProbe*> FindKnearProbes(glm::vec3 objPos, std::vector<LightProbe*> probes,unsigned int k);
-		std::vector<LightProbe*> FindKnearAreaProbes(glm::vec3 objPos, std::vector<LightProbe*> probes, unsigned int k,MapManager* mapManager);
+		std::vector<unsigned int> FindKnearAreaProbes(glm::vec3 objPos, std::vector<LightProbe*> probes, unsigned int k,MapManager* mapManager);
 		
 		static float s_GICoeffs;
 		static bool s_HDR;
@@ -35,6 +38,8 @@ namespace BlackPearl {
 
 	private:
 		bool m_IsInitialized = false;
+		bool m_SortProbes = false;
+		bool m_ProsessGridChanged = false;
 
 		Object* m_FinalScreenQuad = nullptr;
 		/* 用于渲染环境全局光照 AmbientGI pass */
