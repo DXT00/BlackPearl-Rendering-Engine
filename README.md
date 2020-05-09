@@ -24,7 +24,7 @@ SVO path tracing - only one bounce cubeSize = 40
 ### -- cache object's nearyby diffuse probes, FPS:20frame/s
 ![lightprobe_Map_FPS](/results/lightprobe_Map_FPS.png)
 
-### -- cache object's nearyby diffuse probes,update shadowMap only when pointlight pos changes, FPS:11frame/s
+### -- cache object's nearyby diffuse probes,update shadowMap only when pointlight pos changes,4*4*4 probe grid FPS:8frame/s
 ![lightprobe_Map_FPS2_4_4_4](/results/lightprobe_Map_FPS2_4_4_4.png)
 
 
