@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "MapManager.h"
 #include "BlackPearl/Core.h"
+#include "BlackPearl/Component/LightProbeComponent/LightProbeComponent.h"
+#include "BlackPearl/Component/TransformComponent/Transform.h"
 namespace BlackPearl {
 	Area MapManager::GetArea(unsigned int areaId)
 	{
@@ -205,12 +207,12 @@ namespace BlackPearl {
 		return areaId;
 	}
 
-	void MapManager::UpdateProbesArea(std::vector<LightProbe*> probes)
+	void MapManager::UpdateProbesArea(std::vector<Object*> probes)
 	{
 		m_ProbeGridPosChanged = false;
 		for (int i = 0; i < probes.size();i++) {
-			unsigned int lastAreaId = probes[i]->GetAreaId();
-			unsigned int newAreaId = CalculateAreaId(probes[i]->GetObj()->GetComponent<Transform>()->GetPosition());
+			unsigned int lastAreaId = probes[i]->GetComponent<LightProbe>()->GetAreaId();
+			unsigned int newAreaId = CalculateAreaId(probes[i]->GetComponent<Transform>()->GetPosition());
 			unsigned int probeId = i;
 			if (lastAreaId != newAreaId) {
 			

@@ -3,6 +3,7 @@
 #include "BlackPearl/LayerScene/Layer.h"
 #include "BlackPearl/Component/LightComponent/PointLight.h"
 #include "BlackPearl/Component/CameraComponent/PerspectiveCamera.h"
+#include "BlackPearl/Component/LightProbeComponent/LightProbeComponent.h"
 #include "BlackPearl/Renderer/Model/Model.h"
 #include "BlackPearl/Renderer/Shader/Shader.h"
 #include "imgui.h"
@@ -10,6 +11,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "BlackPearl/Renderer/MasterRenderer/IBLRenderer.h"
+#include "BlackPearl/Renderer/MasterRenderer/IBLProbesRenderer.h"
 #include "BlackPearl/Renderer/MasterRenderer/GBufferRenderer.h"
 #include "BlackPearl/Renderer/MasterRenderer/VoxelConeTracingRenderer.h"
 #include "BlackPearl/Renderer/MasterRenderer/VoxelConeTracingDeferredRenderer.h"
@@ -67,6 +69,9 @@ namespace BlackPearl {
 		ImGui::Text("light probe GI");
 		ImGui::DragFloat("lightprobe GICoeffs", &GBufferRenderer::s_GICoeffs, 0.2f, 0.0f, 1.0f, "%.3f ");
 		ImGui::Checkbox("lightprobe HDR", &GBufferRenderer::s_HDR);
+
+
+
 
 		ImGui::Text("image based lighting  GI");
 		ImGui::DragFloat("IBL GICoeffs", &IBLRenderer::s_GICoeffs, 0.2f, 0.0f, 1.0f, "%.3f ");
@@ -180,7 +185,7 @@ namespace BlackPearl {
 
 
 			if (currentObj->HasComponent< Transform>()) {
-				ShowTransform(currentObj->GetComponent<Transform>());
+				ShowTransform(currentObj->GetComponent<Transform>(),currentObj);
 
 			}
 			if (currentObj->HasComponent< MeshRenderer>()) {
@@ -792,14 +797,42 @@ namespace BlackPearl {
 		m_ObjectsList.push_back(obj);
 		return obj;
 	}
-	LightProbe* Layer::CreateLightProbe(LightProbe::Type type,const std::string& shaderPath, const std::string& texturePath,  const std::string& name)
+	Object* Layer::CreateLightProbe(ProbeType type,const std::string& shaderPath, const std::string& texturePath,  const std::string& name)
 	{
 	
-		LightProbe* probe = m_ObjectManager->CreateLightProbe(type,shaderPath, texturePath, name+(type == LightProbe::Type::DIFFUSE ? "_kd" : "_ks"));
-		m_ObjectsList.push_back(probe->GetObj());
+		Object* probe = m_ObjectManager->CreateLightProbe(type,shaderPath, texturePath, name+(type == ProbeType::DIFFUSE_PROBE  ? "_kd" : "_ks"));
+		m_ObjectsList.push_back(probe);
 		//m_ObjectsList.push_back(probe->GetCamera()->GetObj());
 
 		return probe;
+	}
+	Object* Layer::CreateProbeGrid(MapManager* mapManager, ProbeType type, glm::vec3 probeNums, glm::vec3 offsets, float space)
+	{
+		std::string objName = (type == ProbeType::DIFFUSE_PROBE) ? "Kd ProbesGrid" : "Ks ProbeGrid";
+		Object* obj = CreateEmpty(objName);
+		unsigned int idx = 0; 
+		for (unsigned int x = 0; x < probeNums.x; x++)
+		{
+			for (unsigned int y = 0; y < probeNums.y; y++)
+			{
+				for (unsigned int z = 0; z < probeNums.z; z++)
+				{
+					Object* probe = CreateLightProbe(type);
+					int xx = (x - probeNums.x / 2) * space, yy = (y - probeNums.y / 2) * space, zz = (z - probeNums.z / 2) * space;
+					glm::vec3 probePos = { offsets.x + xx,offsets.y + yy,offsets.z + zz };
+					probe->GetComponent<Transform>()->SetInitPosition(probePos);
+					unsigned int areaId = mapManager->AddProbeIdToArea(probePos, idx);
+					probe->GetComponent<LightProbe>()->SetAreaId(areaId);
+					idx++;
+					(type == ProbeType::DIFFUSE_PROBE) ? m_DiffuseLightProbes.push_back(probe) : m_ReflectionLightProbes.push_back(probe);
+					obj->AddChildObj(probe);
+
+				}
+
+			}
+
+		}
+		return obj;
 	}
 	Object* Layer::CreateModel(const std::string& modelPath, const std::string& shaderPath, const bool isAnimated, const std::string& name)
 	{
@@ -1165,21 +1198,21 @@ namespace BlackPearl {
 
 
 
-	void Layer::ShowTransform(Transform* comp)
+	void Layer::ShowTransform(Transform* comp,Object* obj)
 	{
 		ImGui::Text("Transform");
 
 		float pos[] = { comp->GetPosition().x,comp->GetPosition().y,comp->GetPosition().z };
 		ImGui::DragFloat3("position", pos, 0.05f, -100.0f, 100.0f, "%.3f ");
-		comp->SetPosition({ pos[0],pos[1],pos[2] });
+		obj->SetPosition({ pos[0],pos[1],pos[2] });
 
 		float scale[] = { comp->GetScale().x,comp->GetScale().y,comp->GetScale().z };
 		ImGui::DragFloat3("scale", scale, 0.05f, 0.001f, 100.0f, "%.3f ");
-		comp->SetScale({ scale[0],scale[1],scale[2] });
+		obj->SetScale({ scale[0],scale[1],scale[2] });
 
 		float rotate[] = { comp->GetRotation().x,comp->GetRotation().y,comp->GetRotation().z };
 		ImGui::DragFloat3("rotation", rotate, 0.05f, -360.0f, 360.0f, "%.3f ");
-		comp->SetRotation({ rotate[0],rotate[1],rotate[2] });
+		obj->SetRotation({ rotate[0],rotate[1],rotate[2] });
 
 	}
 

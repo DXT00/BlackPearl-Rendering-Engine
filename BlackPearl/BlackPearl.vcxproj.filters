@@ -225,9 +225,6 @@
     <ClInclude Include="src\BlackPearl\LayerStack.h">
       <Filter>src\BlackPearl</Filter>
     </ClInclude>
-    <ClInclude Include="src\BlackPearl\LightProbes\LightProbes.h">
-      <Filter>src\BlackPearl\LightProbes</Filter>
-    </ClInclude>
     <ClInclude Include="src\BlackPearl\LightProbes\SphericalHarmonics.h">
       <Filter>src\BlackPearl\LightProbes</Filter>
     </ClInclude>
@@ -1471,6 +1468,7 @@
     <ClInclude Include="src\BlackPearl\Map\MapManager.h" />
     <ClInclude Include="src\BlackPearl\Renderer\MasterRenderer\MapRenderer.h" />
     <ClInclude Include="src\BlackPearl\Timestep\TimeCounter.h" />
+    <ClInclude Include="src\BlackPearl\Component\LightProbeComponent\LightProbeComponent.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\BlackPearl\Animation\AnimatedModel.cpp">
@@ -1565,9 +1563,6 @@
     </ClCompile>
     <ClCompile Include="src\BlackPearl\LayerStack.cpp">
       <Filter>src\BlackPearl</Filter>
-    </ClCompile>
-    <ClCompile Include="src\BlackPearl\LightProbes\LightProbes.cpp">
-      <Filter>src\BlackPearl\LightProbes</Filter>
     </ClCompile>
     <ClCompile Include="src\BlackPearl\LightProbes\SphericalHarmonics.cpp">
       <Filter>src\BlackPearl\LightProbes</Filter>
@@ -1699,5 +1694,6 @@
     <ClCompile Include="src\BlackPearl\Map\MapManager.cpp" />
     <ClCompile Include="src\BlackPearl\Renderer\MasterRenderer\MapRenderer.cpp" />
     <ClCompile Include="src\BlackPearl\Timestep\TimeCounter.cpp" />
+    <ClCompile Include="src\BlackPearl\Component\LightProbeComponent\LightProbeComponent.cpp" />
   </ItemGroup>
 </Project>

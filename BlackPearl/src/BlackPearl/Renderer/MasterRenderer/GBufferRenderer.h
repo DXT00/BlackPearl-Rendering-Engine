@@ -3,7 +3,6 @@
 #include "BlackPearl/Object/Object.h"
 #include "BlackPearl/Renderer/MasterRenderer/BasicRenderer.h"
 #include "BlackPearl/Config.h"
-#include "BlackPearl/LightProbes/LightProbes.h"
 #include "AnimatedModelRenderer.h"
 #include "BlackPearl/Map/MapManager.h"
 namespace BlackPearl {
@@ -17,21 +16,25 @@ namespace BlackPearl {
 			GE_SAVE_DELETE(m_AnimatedModelRenderer);
 			m_LightPassFrameBuffer->CleanUp();
 		};
-		/* ScreenQuad render scene to the screen*/
 		void Init(Object* ScreenQuad, Object* surroundSphere, Object* GIQuad);
 		void Render(std::vector<Object*> objects, Object* gBufferDebugQuad, LightSources* lightSources);
 		void DrawGBuffer(Object* gBufferDebugQuad);
 		static float CalculateSphereRadius(Object* pointLight);
-		/* probes for ambient light render (GI) */
 		void RenderSceneWithGBufferAndProbes(
-			std::vector<Object*> staticObjects, std::vector<Object*> dynamicObjects,
-			float timeInSecond, std::vector<Object*> backGroundObjs, 
-			Object* gBufferDebugQuad, LightSources* lightSources,
-			std::vector<LightProbe*> diffuseProbes, std::vector<LightProbe*> reflectionProbes, 
-			std::shared_ptr<Texture> specularBrdfLUTTexture, Object* skyBox, MapManager* mapManager);
+			std::vector<Object*> staticObjects, 
+			std::vector<Object*> dynamicObjects,
+			float timeInSecond, 
+			std::vector<Object*> backGroundObjs, 
+			Object* gBufferDebugQuad,
+			LightSources* lightSources,
+			std::vector<Object*>diffuseProbes,
+			std::vector<Object*>reflectionProbes,
+			std::shared_ptr<Texture>specularBrdfLUTTexture,
+			Object* skyBox, 
+			MapManager* mapManager);
 
-		std::vector<LightProbe*> FindKnearProbes(glm::vec3 objPos, std::vector<LightProbe*> probes,unsigned int k);
-		std::vector<unsigned int> FindKnearAreaProbes(glm::vec3 objPos, std::vector<LightProbe*> probes, unsigned int k,MapManager* mapManager);
+		std::vector<Object*> FindKnearProbes(glm::vec3 objPos, std::vector<Object*> probes,unsigned int k);
+		std::vector<unsigned int> FindKnearAreaProbes(glm::vec3 objPos, std::vector<Object*> probes, unsigned int k,MapManager* mapManager);
 		
 		static float s_GICoeffs;
 		static bool s_HDR;

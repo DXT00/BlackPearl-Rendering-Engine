@@ -12,6 +12,8 @@ namespace BlackPearl {
 		Object(EntityManager* manager, Entity::Id id, std::string name = "")
 			:Entity(manager, id) {
 			m_Name = (name == "") ? "EmptyObject(" + std::to_string(id.index()) + ")" : name+ "(" + std::to_string(id.index()) + ")";
+			m_TransformToParent = m_InvTransformToParent = glm::mat3(1.0);
+
 		};
 
 		virtual ~Object() {
@@ -96,6 +98,21 @@ namespace BlackPearl {
 
 		virtual void Destroy() override;
 
+
+		void SetPosition(glm::vec3 pos);
+		void SetRotation(glm::vec3 rotate);
+		void SetScale(glm::vec3 scale);
+
+		void SetParent(Object* parent) { m_ParentObj = parent; }
+		Object* GetParent()const { return m_ParentObj; }
+
+		void SetTransformToParent(glm::mat4 transformToParent) {
+			m_TransformToParent    = transformToParent; 
+			m_InvTransformToParent = glm::inverse(m_TransformToParent);
+		}
+		glm::mat4 GetTransformToParent()const { return m_TransformToParent; }
+		glm::mat4 GetInvTransformToParent()const { return m_InvTransformToParent; }
+
 		/*Child Objs*/
 		void AddChildObj(Object* obj);
 		std::vector<Object*> GetChildObjs()const { return m_ChildObjs; }
@@ -103,7 +120,9 @@ namespace BlackPearl {
 		std::unordered_map<BaseComponent::Family, std::shared_ptr<BaseComponent>> m_Components;
 		Configuration::ComponentMask m_ComponentMask;
 		std::string m_Name;
-
+		glm::mat4 m_TransformToParent;
+		glm::mat4 m_InvTransformToParent;
+		Object* m_ParentObj = nullptr;
 		std::vector<Object*> m_ChildObjs;
 	};
 

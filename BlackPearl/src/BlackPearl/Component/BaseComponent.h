@@ -15,7 +15,8 @@ namespace BlackPearl {
 			MeshRenderer,
 			MeshFilter,
 			Light,
-			Camera
+			Camera,
+			LightProbe
 
 		};
 		BaseComponent(Type type)

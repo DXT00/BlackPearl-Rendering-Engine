@@ -14,6 +14,7 @@
 #include "BlackPearl/MainCamera/MainCamera.h"
 #include "BlackPearl/Input.h"
 #include "BlackPearl/KeyCodes.h"
+#include "BlackPearl/Map/MapManager.h"
 #include <chrono>
 using namespace std::chrono;
 
@@ -55,7 +56,7 @@ namespace BlackPearl {
 					obj = nullptr;
 				}
 			}
-				//GE_SAVE_DELETE(obj);
+			//GE_SAVE_DELETE(obj);
 			/*for (auto& obj : m_BackGroundObjsList) //不要m_BackGroundObjsList与m_ObjectsList重复删除！
 				GE_SAVE_DELETE(obj);
 			for (auto& obj : m_DynamicObjsList)
@@ -96,7 +97,7 @@ namespace BlackPearl {
 
 		LightSources* GetLightSources() { return m_LightSources; }
 
-		virtual Object* CreateEmpty(std::string name = "");
+		Object* CreateEmpty(std::string name = "");
 		virtual Object* CreateLight(LightType type, const std::string& name = "Light");
 
 		virtual Object* CreateModel(const std::string& modelPath, const std::string& shaderPath,const bool isAnimated,const std::string& name = "Model");
@@ -107,11 +108,12 @@ namespace BlackPearl {
 		//TODO::Quad 加TexturePath就会出bug...
 		virtual Object* CreateQuad(const std::string& shaderPath = "assets/shaders/Quad.glsl", const std::string& texturePath = "", const std::string& name = "Quad");
 		
-		virtual LightProbe* CreateLightProbe(LightProbe::Type type, const std::string& shaderPath = "assets/shaders/lightProbes/lightProbe.glsl", const std::string& texturePath = "", const std::string& name = "LightProbe");
+		Object* CreateLightProbe(ProbeType type, const std::string& shaderPath = "assets/shaders/lightProbes/lightProbe.glsl", const std::string& texturePath = "", const std::string& name = "LightProbe");
+		Object* CreateProbeGrid(MapManager* mapManager, ProbeType type, glm::vec3 probeNums,glm::vec3 offsets,float space);
 		virtual MainCamera* CreateCamera(const std::string& name="Camera");
 
 		void ShowMeshRenderer(MeshRenderer* comp);
-		void ShowTransform(Transform* comp);
+		void ShowTransform(Transform* comp,Object* obj);
 		void ShowPointLight(PointLight* pointLight);
 		void ShowCamera(PerspectiveCamera* perspectiveCamera);
 		void ShowShader(std::string imguiShaders, int meshIndex, static int& itemIndex, int offset);
@@ -217,7 +219,9 @@ namespace BlackPearl {
 		/*Time*/
 		std::chrono::milliseconds m_StartTimeMs;
 	
-		
+		/* Probes */
+		std::vector<Object*> m_DiffuseLightProbes;
+		std::vector<Object*> m_ReflectionLightProbes;
 
 	};
 

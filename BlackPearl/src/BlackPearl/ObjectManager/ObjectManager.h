@@ -6,7 +6,6 @@
 #include "BlackPearl/ObjectCreater/ObjectCreater.h"
 #include "BlackPearl/Component/LightComponent/Light.h"
 #include "BlackPearl/Component/LightComponent/LightSources.h"
-#include "BlackPearl/LightProbes/LightProbes.h"
 #include "BlackPearl/MainCamera/MainCamera.h"
 namespace BlackPearl {
 	class ObjectManager
@@ -47,7 +46,7 @@ namespace BlackPearl {
 		Object* CreateSkyBox(const std::vector<std::string>& textureFaces, const std::string& shaderPath, const std::string& name);
 		Object* CreateQuad(const std::string& shaderPath , const std::string& texturePath, const std::string& name);
 		/*Blending Object, include logical and actual properties*/
-		LightProbe* CreateLightProbe(LightProbe::Type type, const std::string& shaderPath, const std::string& texturePath, const std::string& name);
+		Object* CreateLightProbe(ProbeType type, const std::string& shaderPath, const std::string& texturePath, const std::string& name);
 		MainCamera* CreateCamera(const std::string& name);
 
 

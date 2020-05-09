@@ -42,48 +42,54 @@ public:
 		m_SurroundSphere = CreateSphere(1.0, 128, 128);
 		m_GIQuad = CreateQuad();
 		/* create probes */
-		unsigned int xlen = 4, ylen = 2, zlen = 4, space = 5, idx = 0;//space = 5,
-		float offsetx = 2.0f, offsety = 4.0f, offsetz = 6.7f;//offsetx = 0.0, offsety = 5.0f, offsetz = 1.0f;
-		for (unsigned int x = 0; x < xlen; x++)
-		{
-			for (unsigned int y = 0; y < ylen; y++)
-			{
-				for (unsigned int z = 0; z < zlen; z++)
-				{
-					BlackPearl::LightProbe* probe = CreateLightProbe(BlackPearl::LightProbe::Type::DIFFUSE);
-					int xx = (x - xlen / 2) * space, yy = (y - ylen / 2) * space, zz = (z - zlen / 2) * space;
-					glm::vec3 probePos = { offsetx + xx,offsety + yy,offsetz + zz };
-					probe->SetPosition(probePos);
-					m_DiffuseLightProbes.push_back(probe);
-					unsigned int areaId = m_MapManager->AddProbeIdToArea(probePos, idx);
-					probe->SetAreaId(areaId);
-					idx++;
 
-				}
+		m_DiffuseLightProbeGrid = CreateProbeGrid(m_MapManager, BlackPearl::ProbeType::DIFFUSE_PROBE, 
+			glm::vec3(4, 4, 4), glm::vec3(2.0, 10.0, 6.7), 5);
+		m_ReflectLightProbeGrid = CreateProbeGrid(m_MapManager, BlackPearl::ProbeType::REFLECTION_PROBE,
+			glm::vec3(2, 1, 1), glm::vec3(2.0, 10.0, 6.7), 5);
 
-			}
+		//unsigned int xlen = 4, ylen = 4, zlen = 4, space = 5, idx = 0;//space = 5,
+		//float offsetx = 2.0f, offsety = 10.0f, offsetz = 6.7f;//offsetx = 0.0, offsety = 5.0f, offsetz = 1.0f;
+		//for (unsigned int x = 0; x < xlen; x++)
+		//{
+		//	for (unsigned int y = 0; y < ylen; y++)
+		//	{
+		//		for (unsigned int z = 0; z < zlen; z++)
+		//		{
+		//			BlackPearl::LightProbe* probe = CreateLightProbe(BlackPearl::LightProbe::Type::DIFFUSE);
+		//			int xx = (x - xlen / 2) * space, yy = (y - ylen / 2) * space, zz = (z - zlen / 2) * space;
+		//			glm::vec3 probePos = { offsetx + xx,offsety + yy,offsetz + zz };
+		//			probe->SetPosition(probePos);
+		//			m_DiffuseLightProbes.push_back(probe);
+		//			unsigned int areaId = m_MapManager->AddProbeIdToArea(probePos, idx);
+		//			probe->SetAreaId(areaId);
+		//			idx++;
 
-		}
-		xlen = 2, ylen = 1, zlen = 1, space = 5;//424
-		offsetx = 2.0f, offsety = 4.0f, offsetz = 6.7f;//offsetx = 0.0, offsety = 5.0f, offsetz = 1.0f;
-		for (unsigned int x = 0; x < xlen; x++)
-		{
-			for (unsigned int y = 0; y < ylen; y++)
-			{
-				for (unsigned int z = 0; z < zlen; z++)
-				{
-					BlackPearl::LightProbe* probe = CreateLightProbe(BlackPearl::LightProbe::Type::REFLECTION);
-					int xx = (x - xlen / 2) * space, yy = (y - ylen / 2) * space, zz = (z - zlen / 2) * space;
+		//		}
 
-					probe->SetPosition({ offsetx + xx,offsety + yy,offsetz + zz });
-					m_ReflectionLightProbes.push_back(probe);
-					//delete probe;
+		//	}
 
-				}
+		//}
+		//xlen = 2, ylen = 1, zlen = 1, space = 5;//424
+		//offsetx = 2.0f, offsety = 10.0f, offsetz = 6.7f;//offsetx = 0.0, offsety = 5.0f, offsetz = 1.0f;
+		//for (unsigned int x = 0; x < xlen; x++)
+		//{
+		//	for (unsigned int y = 0; y < ylen; y++)
+		//	{
+		//		for (unsigned int z = 0; z < zlen; z++)
+		//		{
+		//			BlackPearl::LightProbe* probe = CreateLightProbe(BlackPearl::LightProbe::Type::REFLECTION);
+		//			int xx = (x - xlen / 2) * space, yy = (y - ylen / 2) * space, zz = (z - zlen / 2) * space;
 
-			}
+		//			probe->SetPosition({ offsetx + xx,offsety + yy,offsetz + zz });
+		//			m_ReflectionLightProbes.push_back(probe);
+		//			//delete probe;
 
-		}
+		//		}
+
+		//	}
+
+		//}
 
 
 		BlackPearl::Renderer::Init();
@@ -98,15 +104,22 @@ public:
 
 		/*create skybox */
 		/*notice: draw skybox before anything else!*/
+		//m_SkyBoxObj1 = CreateSkyBox(
+		//	{ "assets/skybox/skybox/right.jpg",
+		//	 "assets/skybox/skybox/left.jpg",
+		//	 "assets/skybox/skybox/top.jpg",
+		//	 "assets/skybox/skybox/bottom.jpg",
+		//	 "assets/skybox/skybox/front.jpg",
+		//	 "assets/skybox/skybox/back.jpg",
+		//	});
 		m_SkyBoxObj1 = CreateSkyBox(
-			{ "assets/skybox/skybox/right.jpg",
-			 "assets/skybox/skybox/left.jpg",
-			 "assets/skybox/skybox/top.jpg",
-			 "assets/skybox/skybox/bottom.jpg",
-			 "assets/skybox/skybox/front.jpg",
-			 "assets/skybox/skybox/back.jpg",
+			{ "assets/skybox/skybox1/SkyAfterNoon_Right.png",
+			 "assets/skybox/skybox1/SkyAfterNoon_Left.png",
+			 "assets/skybox/skybox1/SkyAfterNoon_Top.png",
+			 "assets/skybox/skybox1/SkyBrightMorning_Bottom.png",
+			 "assets/skybox/skybox1/SkyAfterNoon_Front.png",
+			 "assets/skybox/skybox1/SkyAfterNoon_Back.png",
 			});
-
 		
 
 		//LoadScene("SpheresScene");
@@ -117,8 +130,8 @@ public:
 		m_ProbeCamera = CreateCamera("ProbeCamera");
 
 		/*Draw CubeMap from hdrMap and Create environment IrrdianceMap*/
-		m_IBLProbesRenderer->Init(m_ProbeCamera, m_BrdfLUTQuadObj, *GetLightSources(), m_BackGroundObjsList, m_DiffuseLightProbes);
-		m_IBLProbesRenderer->Render(GetLightSources(), m_BackGroundObjsList, m_DiffuseLightProbes, m_ReflectionLightProbes, m_SkyBoxObj1);
+		m_IBLProbesRenderer->Init(m_ProbeCamera, m_BrdfLUTQuadObj, *GetLightSources(), m_BackGroundObjsList);
+		//m_IBLProbesRenderer->Render(GetLightSources(), m_BackGroundObjsList, m_DiffuseLightProbes, m_ReflectionLightProbes, m_SkyBoxObj1);
 		//glViewport(0, 0, BlackPearl::Configuration::WindowWidth, BlackPearl::Configuration::WindowHeight);
 		m_GBufferRenderer->Init(m_GBufferScreenQuad, m_SurroundSphere, m_GIQuad);
 	}
@@ -150,7 +163,8 @@ public:
 			GE_CORE_INFO("updating diffuse probes' area...!")
 				m_MapManager->UpdateProbesArea(m_DiffuseLightProbes);
 			GE_CORE_INFO("light probe updating......")
-				m_IBLProbesRenderer->Render(GetLightSources(), m_BackGroundObjsList, m_DiffuseLightProbes, m_ReflectionLightProbes, m_SkyBoxObj1);
+				m_IBLProbesRenderer->Render(GetLightSources(), m_BackGroundObjsList, 
+					m_DiffuseLightProbes, m_ReflectionLightProbes, m_SkyBoxObj1);
 
 
 		}
@@ -178,14 +192,7 @@ public:
 
 
 
-
-		m_BasicRenderer->RenderScene(m_BackGroundObjsList, GetLightSources());
-		glDepthFunc(GL_LEQUAL);
-
-		m_IBLProbesRenderer->DrawObject(m_SkyBoxObj1);
-		glDepthFunc(GL_LESS);
-
-		m_IBLProbesRenderer->RenderSpecularObjects(GetLightSources(), m_SphereObjsList, m_LightProbes);*/
+;*/
 
 		//	m_GBufferRenderer->Render(m_SphereObjsList,m_GBufferDebugQuad, GetLightSources());//m_BackGroundObjsList
 		bool updateShadowMap = false;
@@ -308,9 +315,10 @@ private:
 	//Map
 	BlackPearl::MapManager* m_MapManager;
 
-	/* Probes */
-	std::vector<BlackPearl::LightProbe*> m_DiffuseLightProbes;
-	std::vector<BlackPearl::LightProbe*> m_ReflectionLightProbes;
+	//Light probe 
+	BlackPearl::Object* m_DiffuseLightProbeGrid;
+	BlackPearl::Object* m_ReflectLightProbeGrid;
+
 
 	std::thread m_Threads[10];
 	BlackPearl::MainCamera* m_ProbeCamera;

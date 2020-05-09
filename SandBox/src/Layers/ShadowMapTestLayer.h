@@ -234,7 +234,7 @@ public:
 
 		if (currentObj != nullptr) {
 			if (currentObj->HasComponent< BlackPearl::Transform>()) {
-				ShowTransform(currentObj->GetComponent<BlackPearl::Transform>());
+				ShowTransform(currentObj->GetComponent<BlackPearl::Transform>(), currentObj);
 
 			}
 			if (currentObj->HasComponent< BlackPearl::MeshRenderer>()) {

@@ -4,75 +4,75 @@
 #include "BlackPearl/Component/LightComponent/ParallelLight.h"
 #include "BlackPearl/Component/LightComponent/PointLight.h"
 #include "BlackPearl/Component/LightComponent/SpotLight.h"
-
+#include "BlackPearl/Component/LightProbeComponent/LightProbeComponent.h"
 #include "BlackPearl/Component/MeshRendererComponent/MeshRenderer.h"
 namespace BlackPearl {
 
-	
-	Object * ObjectManager::CreateEmpty(std::string name)
+
+	Object* ObjectManager::CreateEmpty(std::string name)
 	{
-		Object *obj= m_ObjectCreater->CreateEmpty(name);
+		Object* obj = m_ObjectCreater->CreateEmpty(name);
 		m_EntityToObjects.insert(std::make_pair(obj->GetId().index(), obj));
 		return obj;
 	}
 
-	Object * ObjectManager::CreateLight(LightType type, LightSources* lightSources, const std::string& name)
+	Object* ObjectManager::CreateLight(LightType type, LightSources* lightSources, const std::string& name)
 	{
-		Object *obj = m_LightCreater->CreateLight(type, lightSources, name);
-		m_EntityToObjects.insert(std::make_pair(obj->GetId().index(), obj));
-		return obj;
-
-	}
-
-	Object * ObjectManager::CreateModel(const std::string & modelPath, const std::string & shaderPath,const bool isAnimated, const std::string& name)
-	{
-		Object *obj = m_Object3DCreater->CreateModel(modelPath, shaderPath,isAnimated, name);
+		Object* obj = m_LightCreater->CreateLight(type, lightSources, name);
 		m_EntityToObjects.insert(std::make_pair(obj->GetId().index(), obj));
 		return obj;
 
 	}
 
-	Object * ObjectManager::CreateCube(const std::string& shaderPath, const std::string& texturePath, const std::string& name)
+	Object* ObjectManager::CreateModel(const std::string& modelPath, const std::string& shaderPath, const bool isAnimated, const std::string& name)
 	{
-		Object *obj = m_Object3DCreater->CreateCube(shaderPath, texturePath, name);
+		Object* obj = m_Object3DCreater->CreateModel(modelPath, shaderPath, isAnimated, name);
 		m_EntityToObjects.insert(std::make_pair(obj->GetId().index(), obj));
 		return obj;
 
 	}
 
-	Object * ObjectManager::CreateSphere(const float radius, const unsigned int stackCount, const unsigned int sectorCount, const std::string & shaderPath, const std::string & texturePath, const std::string& name)
+	Object* ObjectManager::CreateCube(const std::string& shaderPath, const std::string& texturePath, const std::string& name)
 	{
-		Object *obj = m_Object3DCreater->CreateSphere(radius, stackCount, sectorCount,shaderPath, texturePath, name);
+		Object* obj = m_Object3DCreater->CreateCube(shaderPath, texturePath, name);
+		m_EntityToObjects.insert(std::make_pair(obj->GetId().index(), obj));
+		return obj;
+
+	}
+
+	Object* ObjectManager::CreateSphere(const float radius, const unsigned int stackCount, const unsigned int sectorCount, const std::string& shaderPath, const std::string& texturePath, const std::string& name)
+	{
+		Object* obj = m_Object3DCreater->CreateSphere(radius, stackCount, sectorCount, shaderPath, texturePath, name);
 		m_EntityToObjects.insert(std::make_pair(obj->GetId().index(), obj));
 		return obj;
 	}
 
-	Object * ObjectManager::CreatePlane(const std::string& shaderPath, const std::string& texturePath, const std::string& name)
+	Object* ObjectManager::CreatePlane(const std::string& shaderPath, const std::string& texturePath, const std::string& name)
 	{
 		Object* obj = m_Object3DCreater->CreatePlane(shaderPath, texturePath, name);
 		m_EntityToObjects.insert(std::make_pair(obj->GetId().index(), obj));
 		return obj;
 	}
 
-	Object * ObjectManager::CreateSkyBox(const std::vector<std::string>& textureFaces, const std::string& shaderPath, const std::string& name)
+	Object* ObjectManager::CreateSkyBox(const std::vector<std::string>& textureFaces, const std::string& shaderPath, const std::string& name)
 	{
-		Object* obj = m_Object3DCreater->CreateSkyBox(textureFaces,shaderPath, name);
+		Object* obj = m_Object3DCreater->CreateSkyBox(textureFaces, shaderPath, name);
 		m_EntityToObjects.insert(std::make_pair(obj->GetId().index(), obj));
 		return obj;
 	}
 	///////////////////////Blending Object///////////////////////////////
 
-	LightProbe* ObjectManager::CreateLightProbe(LightProbe::Type type, const std::string& shaderPath, const std::string& texturePath, const std::string& name)
+	Object* ObjectManager::CreateLightProbe(ProbeType type, const std::string& shaderPath, const std::string& texturePath, const std::string& name)
 	{
-		Object* obj = m_Object3DCreater->CreateLightProbe(shaderPath, texturePath, name);
+		Object* obj = m_Object3DCreater->CreateLightProbe(type,shaderPath, texturePath, name);
 		//Object* cameraObj = m_Object3DCreater->CreateCamera("Camera");
 
-		LightProbe* lightProbe = DBG_NEW LightProbe(obj, type);
-		m_EntityToObjects.insert(std::make_pair(lightProbe->GetObj()->GetId().index(), lightProbe->GetObj()));
+		//LightProbe* lightProbe = DBG_NEW LightProbe(obj, type);
+		m_EntityToObjects.insert(std::make_pair(obj->GetId().index(), obj));
 		//m_EntityToObjects.insert(std::make_pair(cameraObj->GetId().index(), cameraObj));
 
 		//note:dosen't put cameraObj to m_EntityToObjects!
-		return lightProbe;
+		return obj;
 	}
 
 	MainCamera* ObjectManager::CreateCamera(const std::string& name)
@@ -87,7 +87,7 @@ namespace BlackPearl {
 
 
 	///////////////////////2D///////////////////////////////
-	Object * ObjectManager::CreateQuad(const std::string & shaderPath, const std::string & texturePath, const std::string& name)
+	Object* ObjectManager::CreateQuad(const std::string& shaderPath, const std::string& texturePath, const std::string& name)
 	{
 		Object* obj = m_Object2DCreater->CreateQuad(shaderPath, texturePath, name);
 		m_EntityToObjects.insert(std::make_pair(obj->GetId().index(), obj));
@@ -119,7 +119,7 @@ namespace BlackPearl {
 	}
 	/*void ObjectManager::DrawShadowMap(std::vector<Object*> objs)
 	{
-		
+
 	}*/
 	//void ObjectManager::DrawObjects()
 	//{

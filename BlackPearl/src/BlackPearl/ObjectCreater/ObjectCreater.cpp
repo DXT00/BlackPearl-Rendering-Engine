@@ -9,6 +9,7 @@
 #include "BlackPearl/Component/MeshFilterComponent/PlaneMeshFilter.h"
 #include "BlackPearl/Component/MeshFilterComponent/QuadMeshFilter.h"
 #include "BlackPearl/Component/MeshFilterComponent/SkyBoxMeshFilter.h"
+#include "BlackPearl/Component/LightProbeComponent/LightProbeComponent.h"
 #include "BlackPearl/Component/CameraComponent/PerspectiveCamera.h"
 #include "BlackPearl/Renderer/Material/CubeMapTexture.h"
 
@@ -125,11 +126,15 @@ namespace BlackPearl {
 		return obj;
 	}
 	/*注意：Cube的Transform会导致Camera的Transform*/
-	Object* Object3DCreater::CreateLightProbe(const std::string& shaderPath, const std::string& texturePath, const std::string name)
+	Object* Object3DCreater::CreateLightProbe(ProbeType type ,const std::string& shaderPath, const std::string& texturePath, const std::string name)
 	{
 		Object* obj = CreateCube(shaderPath, texturePath, name);
-		
+		obj->GetComponent<Transform>()->SetRotation({ 0.0f, -90.0f, 0.0f });
+		obj->GetComponent<Transform>()->SetScale({ 0.3f,0.3f,0.3f});
 
+		obj->GetComponent<MeshRenderer>()->SetIsShadowObjects(false);
+		obj->GetComponent<MeshRenderer>()->SetIsBackGroundObjects(false);
+		obj->AddComponent<LightProbe>(type);
 		return obj;		
 	}
 

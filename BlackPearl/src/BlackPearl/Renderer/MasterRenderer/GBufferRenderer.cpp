@@ -7,6 +7,7 @@
 #include "BlackPearl/Component/LightComponent/ParallelLight.h"
 #include "BlackPearl/Component/LightComponent/PointLight.h"
 #include "BlackPearl/Component/LightComponent/SpotLight.h"
+#include "BlackPearl/Component/LightProbeComponent/LightProbeComponent.h"
 #include "glm/gtc/random.hpp"
 #include <glm\ext\scalar_common.hpp>
 #include "BlackPearl/Timestep/TimeCounter.h"
@@ -261,7 +262,7 @@ namespace BlackPearl {
 	}
 
 	void GBufferRenderer::RenderSceneWithGBufferAndProbes(std::vector<Object*> staticObjects, std::vector<Object*> dynamicObjects, float timeInSecond, std::vector<Object*> backGroundObjs, Object* gBufferDebugQuad, LightSources* lightSources,
-		std::vector<LightProbe*> diffuseProbes, std::vector<LightProbe*> reflectionProbes, 
+		std::vector<Object*> diffuseProbes, std::vector<Object*> reflectionProbes,
 		std::shared_ptr<Texture> specularBrdfLUTTexture, Object* skyBox,
 		MapManager* mapManager)
 	{
@@ -313,8 +314,8 @@ namespace BlackPearl {
 			float distancesSum = 0.0;
 			for (auto probeIdx : kDiffuseProbesIdx)
 			{
-				distances.push_back(glm::length(diffuseProbes[probeIdx]->GetPosition() - pos));
-				distancesSum += glm::length(diffuseProbes[probeIdx]->GetPosition() - pos);
+				distances.push_back(glm::length(diffuseProbes[probeIdx]->GetComponent<Transform>()->GetPosition() - pos));
+				distancesSum += glm::length(diffuseProbes[probeIdx]->GetComponent<Transform>()->GetPosition() - pos);
 			}
 
 
@@ -338,7 +339,11 @@ namespace BlackPearl {
 				for (int sh = 0; sh < 9; sh++)
 				{
 					int index = sh + 9 * i;
-					m_GBufferShader->SetUniformVec3f("u_SHCoeffs[" + std::to_string(index) + "]", glm::vec3(diffuseProbes[kDiffuseProbesIdx[i]]->GetCoeffis()[sh][0], diffuseProbes[kDiffuseProbesIdx[i]]->GetCoeffis()[sh][1], diffuseProbes[kDiffuseProbesIdx[i]]->GetCoeffis()[sh][2]));
+					m_GBufferShader->SetUniformVec3f("u_SHCoeffs[" + std::to_string(index) + "]", glm::vec3(
+						diffuseProbes[kDiffuseProbesIdx[i]]->GetComponent<LightProbe>()->GetCoeffis()[sh][0],
+						diffuseProbes[kDiffuseProbesIdx[i]]->GetComponent<LightProbe>()->GetCoeffis()[sh][1],
+						diffuseProbes[kDiffuseProbesIdx[i]]->GetComponent<LightProbe>()->GetCoeffis()[sh][2])
+					);
 				}
 
 				//glActiveTexture(GL_TEXTURE0 + textureK);
@@ -350,12 +355,12 @@ namespace BlackPearl {
 			}
 
 			if (reflectionProbes.size() > 0) {
-				std::vector<LightProbe*> kReflectionProbes = FindKnearProbes(pos, reflectionProbes, 1);
+				std::vector<Object*> kReflectionProbes = FindKnearProbes(pos, reflectionProbes, 1);
 				/*只需要最近的那个 probe 的 SpecularMap!*/
 				m_GBufferShader->SetUniform1i("u_PrefilterMap", 1);
 				glActiveTexture(GL_TEXTURE1);
-				auto specularMap = kReflectionProbes[0]->GetSpecularPrefilterCubeMap();
-				kReflectionProbes[0]->GetSpecularPrefilterCubeMap()->Bind();
+				auto specularMap = kReflectionProbes[0]->GetComponent<LightProbe>()->GetSpecularPrefilterCubeMap();
+				kReflectionProbes[0]->GetComponent<LightProbe>()->GetSpecularPrefilterCubeMap()->Bind();
 			}
 			
 
@@ -374,15 +379,15 @@ namespace BlackPearl {
 
 			glm::vec3 pos = obj->GetComponent<Transform>()->GetPosition();
 
-			std::vector<LightProbe*> kDiffuseProbes = FindKnearProbes(pos, diffuseProbes,m_K);
+			std::vector<Object*> kDiffuseProbes = FindKnearProbes(pos, diffuseProbes,m_K);
 
 			unsigned int k = m_K;
 			std::vector<float> distances;
 			float distancesSum = 0.0;
 			for (auto probe : kDiffuseProbes)
 			{
-				distances.push_back(glm::length(probe->GetPosition() - pos));
-				distancesSum += glm::length(probe->GetPosition() - pos);
+				distances.push_back(glm::length(probe->GetComponent<Transform>()->GetPosition() - pos));
+				distancesSum += glm::length(probe->GetComponent<Transform>()->GetPosition() - pos);
 			}
 
 
@@ -404,7 +409,11 @@ namespace BlackPearl {
 				for (int sh = 0; sh < 9; sh++)
 				{
 					int index = sh + 9 * i;
-					animatedShader->SetUniformVec3f("u_SHCoeffs[" + std::to_string(index) + "]", glm::vec3(kDiffuseProbes[i]->GetCoeffis()[sh][0], kDiffuseProbes[i]->GetCoeffis()[sh][1], kDiffuseProbes[i]->GetCoeffis()[sh][2]));
+					animatedShader->SetUniformVec3f("u_SHCoeffs[" + std::to_string(index) + "]", glm::vec3(
+						kDiffuseProbes[i]->GetComponent<LightProbe>()->GetCoeffis()[sh][0],
+						kDiffuseProbes[i]->GetComponent<LightProbe>()->GetCoeffis()[sh][1],
+						kDiffuseProbes[i]->GetComponent<LightProbe>()->GetCoeffis()[sh][2])
+					);
 				}
 
 				//glActiveTexture(GL_TEXTURE0 + textureK);
@@ -417,11 +426,11 @@ namespace BlackPearl {
 
 			/*只需要最近的那个 probe 的 SpecularMap!*/
 			if (reflectionProbes.size() > 0) {
-				std::vector<LightProbe*> kReflectionProbes = FindKnearProbes(pos, reflectionProbes, 1);
+				std::vector<Object*> kReflectionProbes = FindKnearProbes(pos, reflectionProbes, 1);
 
 				animatedShader->SetUniform1i("u_PrefilterMap", 1);
 				glActiveTexture(GL_TEXTURE1);
-				kReflectionProbes[0]->GetSpecularPrefilterCubeMap()->Bind();
+				kReflectionProbes[0]->GetComponent<LightProbe>()->GetSpecularPrefilterCubeMap()->Bind();
 			}
 			
 
@@ -624,12 +633,12 @@ namespace BlackPearl {
 
 	}
 
-	std::vector<LightProbe*> GBufferRenderer::FindKnearProbes(glm::vec3 objPos, std::vector<LightProbe*> probes,unsigned int k)
+	std::vector<Object*> GBufferRenderer::FindKnearProbes(glm::vec3 objPos, std::vector<Object*> probes,unsigned int k)
 	{
 		glm::vec3 pos = objPos;
-		std::vector<LightProbe*> kProbes;
-		std::sort(probes.begin(), probes.end(), [=](LightProbe* pa, LightProbe* pb)
-		{return glm::length(pa->GetPosition() - pos) < glm::length(pb->GetPosition() - pos); });
+		std::vector<Object*> kProbes;
+		std::sort(probes.begin(), probes.end(), [=](Object* pa, Object* pb)
+		{return glm::length(pa->GetComponent<Transform>()->GetPosition() - pos) < glm::length(pb->GetComponent<Transform>()->GetPosition() - pos); });
 
 		GE_ASSERT(k <= (unsigned int)probes.size(), "m_K larger than probes' number!");
 
@@ -641,7 +650,7 @@ namespace BlackPearl {
 
 		return kProbes;
 	}
-	std::vector<unsigned int> GBufferRenderer::FindKnearAreaProbes(glm::vec3 objPos, std::vector<LightProbe*> probes, unsigned int k,MapManager* mapManager)
+	std::vector<unsigned int> GBufferRenderer::FindKnearAreaProbes(glm::vec3 objPos, std::vector<Object*> probes, unsigned int k,MapManager* mapManager)
 	{
 		//glm::vec3 pos = objPos;
 		//Area currentArea = mapManager->GetArea( mapManager->CalculateAreaId(pos));
@@ -697,7 +706,7 @@ namespace BlackPearl {
 		}
 		std::vector<unsigned int> kProbes;
 		std::sort(nearByProbes.begin(), nearByProbes.end(), [=](unsigned int a, unsigned int b)
-		{return glm::length(probes[a]->GetPosition() - pos) < glm::length(probes[b]->GetPosition() - pos); });
+		{return glm::length(probes[a]->GetComponent<Transform>()->GetPosition() - pos) < glm::length(probes[b]->GetComponent<Transform>()->GetPosition() - pos); });
 
 		//if(k > (unsigned int)nearByProbes.size())
 		//	GE_CORE_WARN( "m_K {0} larger than nearby probes' number:{1}!", k, (unsigned int)nearByProbes.size());

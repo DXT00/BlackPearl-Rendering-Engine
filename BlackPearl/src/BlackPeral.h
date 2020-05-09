@@ -31,8 +31,8 @@
 #include "BlackPearl/Component/LightComponent/ParallelLight.h"
 #include "BlackPearl/Component/LightComponent/SpotLight.h"
 #include "BlackPearl/Component/BaseComponent.h"
-
-#include "BlackPearl/LightProbes/LightProbes.h"
+#include "BlackPearl/Component/LightProbeComponent/LightProbeComponent.h"
+//#include "BlackPearl/LightProbes/LightProbes.h"
 #include "BlackPearl/MainCamera/MainCamera.h"
 #include "BlackPearl/Object/Object.h"
 #include "BlackPearl/ObjectManager/ObjectManager.h"

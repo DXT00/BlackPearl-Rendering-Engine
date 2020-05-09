@@ -143,6 +143,7 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\BlackPearl\Component\LightProbeComponent\LightProbeComponent.h" />
     <ClInclude Include="src\BlackPearl\Renderer\MasterRenderer\MapRenderer.h" />
     <ClInclude Include="src\BlackPearl\Map\Area.h" />
     <ClInclude Include="src\BlackPearl\Map\MapManager.h" />
@@ -182,7 +183,6 @@
     <ClInclude Include="src\BlackPearl\KeyCodes.h" />
     <ClInclude Include="src\BlackPearl\LayerScene\Layer.h" />
     <ClInclude Include="src\BlackPearl\LayerStack.h" />
-    <ClInclude Include="src\BlackPearl\LightProbes\LightProbes.h" />
     <ClInclude Include="src\BlackPearl\LightProbes\SphericalHarmonics.h" />
     <ClInclude Include="src\BlackPearl\Log.h" />
     <ClInclude Include="src\BlackPearl\MainCamera\MainCamera.h" />
@@ -599,6 +599,7 @@
     <ClInclude Include="vendor\stb\stb_image.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\BlackPearl\Component\LightProbeComponent\LightProbeComponent.cpp" />
     <ClCompile Include="src\BlackPearl\Renderer\MasterRenderer\MapRenderer.cpp" />
     <ClCompile Include="src\BlackPearl\Map\Area.cpp" />
     <ClCompile Include="src\BlackPearl\Map\MapManager.cpp" />
@@ -633,7 +634,6 @@
     <ClCompile Include="src\BlackPearl\Input.cpp" />
     <ClCompile Include="src\BlackPearl\LayerScene\Layer.cpp" />
     <ClCompile Include="src\BlackPearl\LayerStack.cpp" />
-    <ClCompile Include="src\BlackPearl\LightProbes\LightProbes.cpp" />
     <ClCompile Include="src\BlackPearl\LightProbes\SphericalHarmonics.cpp" />
     <ClCompile Include="src\BlackPearl\Log.cpp" />
     <ClCompile Include="src\BlackPearl\MainCamera\MainCamera.cpp" />
