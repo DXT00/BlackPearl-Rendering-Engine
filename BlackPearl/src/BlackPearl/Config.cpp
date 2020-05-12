@@ -18,7 +18,6 @@ namespace BlackPearl {
 
 	/* 这里改了，prefilterMap.glsl里的	float resolution =512.0;也要改 */
 	const float Configuration::EnvironmantMapResolution = 256.0f;
-	//const float Configuration::GICoeefs = 0.5f;
 	
 
 	const char* ShaderConfig::AMBIENT_COLOR = "u_Material.ambientColor";
@@ -26,6 +25,8 @@ namespace BlackPearl {
 	const char* ShaderConfig::SPECULAR_COLOR = "u_Material.specularColor";
 	const char* ShaderConfig::EMISSION_COLOR = "u_Material.emissionColor";
 	const char* ShaderConfig::METALLIC_VALUE = "u_Material.mentallicValue";
+	const char* ShaderConfig::ROUGHNESS_VALUE = "u_Material.roughnessValue";
+	const char* ShaderConfig::AO_VALUE = "u_Material.aoValue";
 
 	const char* ShaderConfig::DIFFUSE_TEXTURE2D = "u_Material.diffuse";
 	const char* ShaderConfig::SPECULAR_TEXTURE2D = "u_Material.specular";
@@ -41,7 +42,7 @@ namespace BlackPearl {
 	const char* ShaderConfig::SHININESS = "u_Material.shininess";
 
 	const char* ShaderConfig::IS_BLINNLIGHT = "u_Settings.isBlinnLight";
-	const char* ShaderConfig::IS_TEXTURE_SAMPLE = "u_Settings.isTextureSample";
+	const char* ShaderConfig::IS_PBR_TEXTURE_SAMPLE = "u_Settings.isPBRTextureSample";
 	const char* ShaderConfig::IS_DIFFUSE_TEXTURE_SAMPLE = "u_Settings.isDiffuseTextureSample";
 	const char* ShaderConfig::IS_SPECULAR_TEXTURE_SAMPLE = "u_Settings.isSpecularTextureSample";
 	const char* ShaderConfig::IS_METALLIC_TEXTURE_SAMPLE = "u_Settings.isMetallicTextureSample";

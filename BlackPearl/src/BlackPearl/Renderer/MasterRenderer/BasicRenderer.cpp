@@ -75,7 +75,7 @@ namespace BlackPearl {
 		}
 
 	}
-	void BasicRenderer::DrawObjects(std::vector<Object*> objs, std::shared_ptr<Shader> shader, Renderer::SceneData* scene,unsigned int textureBeginIdx)
+	void BasicRenderer::DrawObjects(std::vector<Object*> objs, std::shared_ptr<Shader> shader, Renderer::SceneData* scene, unsigned int textureBeginIdx)
 	{
 		for (auto obj : objs) {
 			DrawObject(obj, shader, scene);
@@ -97,17 +97,17 @@ namespace BlackPearl {
 			std::shared_ptr<Shader> shader = meshes[i].GetMaterial()->GetShader();
 			shader->Bind();
 			if (obj->GetComponent<MeshRenderer>()->GetIsPBRObject()) {
-				shader->SetUniform1i("u_IsPBRObjects",1);
+				shader->SetUniform1i("u_IsPBRObjects", 1);
 			}
 			else {
 				shader->SetUniform1i("u_IsPBRObjects", 0);
 
 			}
 			if (obj->HasComponent<PointLight>() || obj->HasComponent<ParallelLight>() || obj->HasComponent<SpotLight>()) {
-				PrepareBasicShaderParameters(meshes[i], shader, true,textureBeginIdx);
+				PrepareBasicShaderParameters(meshes[i], shader, true, textureBeginIdx);
 			}
 			else
-				PrepareBasicShaderParameters(meshes[i], shader,false, textureBeginIdx);
+				PrepareBasicShaderParameters(meshes[i], shader, false, textureBeginIdx);
 
 			Renderer::Submit(meshes[i].GetVertexArray(), shader, transformMatrix, scene);
 			if (meshes[i].GetIndicesSize() > 0) {
@@ -152,7 +152,7 @@ namespace BlackPearl {
 		std::vector<Mesh> meshes = obj->GetComponent<MeshRenderer>()->GetMeshes();
 		GE_ERROR_JUDGE();
 
-		
+
 		if (obj->GetComponent<MeshRenderer>()->GetIsPBRObject()) {
 			shader->SetUniform1i("u_IsPBRObjects", 1);
 		}
@@ -164,9 +164,9 @@ namespace BlackPearl {
 
 		for (int i = 0; i < meshes.size(); i++) {
 			if (obj->HasComponent<PointLight>() || obj->HasComponent<ParallelLight>() || obj->HasComponent<SpotLight>())
-				PrepareBasicShaderParameters(meshes[i], shader, true,textureBeginIdx);
+				PrepareBasicShaderParameters(meshes[i], shader, true, textureBeginIdx);
 			else
-				PrepareBasicShaderParameters(meshes[i], shader,false,textureBeginIdx);
+				PrepareBasicShaderParameters(meshes[i], shader, false, textureBeginIdx);
 			GE_ERROR_JUDGE();
 
 			Renderer::Submit(meshes[i].GetVertexArray(), shader, transformMatrix, scene);
@@ -179,7 +179,7 @@ namespace BlackPearl {
 				int count; glGetBufferParameteriv(GL_ELEMENT_ARRAY_BUFFER, GL_BUFFER_SIZE, &count);
 				//GE_CORE_WARN("indicesNum = {0},count = {1}", indicesNum, count / sizeof(GLuint));
 				GE_ERROR_JUDGE();
-				
+
 				//glDrawElements(GL_TRIANGLES, count / sizeof(GLuint), GL_UNSIGNED_INT, 0);
 				glDrawElements(GL_TRIANGLES, indicesNum, GL_UNSIGNED_INT, 0);
 				//meshes[i].GetVertexArray()->GetIndexBuffer()->UnBind();
@@ -229,7 +229,7 @@ namespace BlackPearl {
 		for (int i = 0; i < meshes.size(); i++) {
 			std::shared_ptr<Shader> shader = meshes[i].GetMaterial()->GetShader();
 			shader->Bind();
-			PrepareBasicShaderParameters(meshes[i], shader, true,textureBeginIdx);
+			PrepareBasicShaderParameters(meshes[i], shader, true, textureBeginIdx);
 			Renderer::Submit(meshes[i].GetVertexArray(), shader, transformMatrix, scene);
 			if (meshes[i].GetIndicesSize() > 0) {
 				unsigned int indicesNum = meshes[i].GetIndicesSize() / sizeof(unsigned int);
@@ -282,47 +282,10 @@ namespace BlackPearl {
 		GE_ERROR_JUDGE();
 
 
-		int samplle = material->GetProps().isTextureSample;
-		shader->SetUniform1i(ShaderConfig::IS_TEXTURE_SAMPLE, material->GetProps().isTextureSample);
-		GE_ERROR_JUDGE();
+		/************************************* Map settings *****************************************************/
 
-		shader->SetUniform1i(ShaderConfig::IS_DIFFUSE_TEXTURE_SAMPLE, material->GetProps().isDiffuseTextureSample);
-		GE_ERROR_JUDGE();
-
-		shader->SetUniform1i(ShaderConfig::IS_SPECULAR_TEXTURE_SAMPLE, material->GetProps().isSpecularTextureSample);
-		GE_ERROR_JUDGE();
-
-		shader->SetUniform1i(ShaderConfig::IS_METALLIC_TEXTURE_SAMPLE, material->GetProps().isMetallicTextureSample);
-		GE_ERROR_JUDGE();
-
-		shader->SetUniform1i(ShaderConfig::IS_EMISSION_TEXTURE_SAMPLE, material->GetProps().isEmissionTextureSample);
-		GE_ERROR_JUDGE();
-
-		shader->SetUniformVec3f(ShaderConfig::AMBIENT_COLOR, materialColor.ambientColor);
-		GE_ERROR_JUDGE();
-
-		shader->SetUniformVec3f(ShaderConfig::EMISSION_COLOR, materialColor.emissionColor);
-		GE_ERROR_JUDGE();
-
-		shader->SetUniform1f(ShaderConfig::SHININESS, material->GetProps().shininess);
-		GE_ERROR_JUDGE();
-
-		shader->SetUniform1i(ShaderConfig::IS_BLINNLIGHT, material->GetProps().isBinnLight);
-		GE_ERROR_JUDGE();
-
-		if (!material->GetProps().isTextureSample) {
-
-			shader->SetUniform1f("u_Material.roughnessValue", 1.0f);
-			shader->SetUniform1f("u_Material.mentallicValue", 0.0f);
-			shader->SetUniform1f("u_Material.aoValue", 1.0f);
-
-
-		}
-
-		GE_ERROR_JUDGE();
-
-		//k从4开始，0，1，2，3号texture用于自定义texture
-		bool diffuseMap = false, specularMap = false, normalMap = false, mentallicMap = false, aoMap = false;
+		//k从2开始，0，1号texture用于自定义 texture
+		bool diffuseMap = false, specularMap = false, normalMap = false, mentallicMap = false, aoMap = false, roughnessMap = false, emissionMap = false, cubeMap = false, depthMap = false;
 		unsigned int k = textureBeginIdx;
 		//texture 和 color都传进去，用不用由useTexture标志决定！
 		if (textures != nullptr) {
@@ -349,6 +312,7 @@ namespace BlackPearl {
 				GE_ERROR_JUDGE();
 			}
 			if (textures->emissionTextureMap != nullptr) {
+				emissionMap = true;
 				glActiveTexture(GL_TEXTURE0 + k);
 				shader->SetUniform1i(ShaderConfig::EMISSION_TEXTURE2D, k);
 				textures->emissionTextureMap->Bind();
@@ -356,7 +320,6 @@ namespace BlackPearl {
 			}
 			if (textures->heightTextureMap != nullptr) {
 				glActiveTexture(GL_TEXTURE0 + k);
-
 				shader->SetUniform1i(ShaderConfig::HEIGHT_TEXTURE2D, k);
 				textures->heightTextureMap->Bind();
 				k++;
@@ -369,12 +332,14 @@ namespace BlackPearl {
 				k++;
 			}
 			if (textures->cubeTextureMap != nullptr) {
+				cubeMap = true;
 				glActiveTexture(GL_TEXTURE0 + k);
 				shader->SetUniform1i(ShaderConfig::CUBE_TEXTURECUBE, k);
 				textures->cubeTextureMap->Bind();
 				k++;
 			}
 			if (textures->depthTextureMap != nullptr) {
+				depthMap = true;
 				glActiveTexture(GL_TEXTURE0 + k);
 				shader->SetUniform1i(ShaderConfig::DEPTH_TEXTURE2D, k);
 				textures->depthTextureMap->Bind();
@@ -388,6 +353,7 @@ namespace BlackPearl {
 				k++;
 			}
 			if (textures->roughnessMap != nullptr) {
+				roughnessMap = true;
 				glActiveTexture(GL_TEXTURE0 + k);
 				shader->SetUniform1i(ShaderConfig::ROUGHNESS_TEXTURE2D, k);
 				textures->roughnessMap->Bind();
@@ -397,27 +363,55 @@ namespace BlackPearl {
 				mentallicMap = true;
 				glActiveTexture(GL_TEXTURE0 + k);
 				shader->SetUniform1i(ShaderConfig::METALLIC_TEXTURE2D, k);
-
-
 				textures->mentallicMap->Bind();
 				k++;
 			}
 		}
 		GE_ERROR_JUDGE();
 
-		shader->SetUniformVec3f(ShaderConfig::DIFFUSE_COLOR, materialColor.diffuseColor);
-		GE_ERROR_JUDGE();
+		/************************************* Color settings *****************************************************/
+		{
+			shader->SetUniformVec3f(ShaderConfig::DIFFUSE_COLOR, materialColor.diffuseColor);
 
-		shader->SetUniformVec3f(ShaderConfig::SPECULAR_COLOR, materialColor.specularColor);
-		GE_ERROR_JUDGE();
+			shader->SetUniformVec3f(ShaderConfig::SPECULAR_COLOR, materialColor.specularColor);
 
-		if (mentallicMap == false) {
-			shader->SetUniform1f(ShaderConfig::METALLIC_VALUE,0);
+			shader->SetUniformVec3f(ShaderConfig::AMBIENT_COLOR, materialColor.ambientColor);
+
+			shader->SetUniformVec3f(ShaderConfig::EMISSION_COLOR, materialColor.emissionColor);
+
+			shader->SetUniformVec3f(ShaderConfig::EMISSION_COLOR, materialColor.emissionColor);
+
+			shader->SetUniform1f(ShaderConfig::ROUGHNESS_VALUE, 1.0f);
+
+			shader->SetUniform1f(ShaderConfig::METALLIC_VALUE, 1.0f);
+
+			shader->SetUniform1f(ShaderConfig::AO_VALUE, 1.0f);
+
+			GE_ERROR_JUDGE();
+
+
 		}
-		GE_ERROR_JUDGE();
+		/************************************* Textures Sample settings *****************************************************/
+		{	shader->SetUniform1i(ShaderConfig::IS_DIFFUSE_TEXTURE_SAMPLE, ((diffuseMap || cubeMap) && material->GetProps().isDiffuseTextureSample == 1) ? 1 : 0);
 
+			shader->SetUniform1i(ShaderConfig::IS_SPECULAR_TEXTURE_SAMPLE, (specularMap && material->GetProps().isSpecularTextureSample == 1) ? 1 : 0);
+	
+			shader->SetUniform1i(ShaderConfig::IS_PBR_TEXTURE_SAMPLE, (aoMap && roughnessMap && mentallicMap && normalMap && material->GetProps().isPBRTextureSample == 1) ? 1 : 0);
 
-		shader->SetExtraUniform();
+			shader->SetUniform1i(ShaderConfig::IS_EMISSION_TEXTURE_SAMPLE, (emissionMap == true && material->GetProps().isEmissionTextureSample == 1) ? 1 : 0);
+			GE_ERROR_JUDGE();
+
+		}
+		/************************************* Others settings *****************************************************/
+
+		{
+			shader->SetUniform1f(ShaderConfig::SHININESS, material->GetProps().shininess);
+			shader->SetUniform1i(ShaderConfig::IS_BLINNLIGHT, material->GetProps().isBinnLight);
+			GE_ERROR_JUDGE();
+		}
+		
+		/************************************* Lights settings *****************************************************/
+	
 		if (!isLight) {
 			shader->SetUniform1i("u_Settings.shadows", 1);
 

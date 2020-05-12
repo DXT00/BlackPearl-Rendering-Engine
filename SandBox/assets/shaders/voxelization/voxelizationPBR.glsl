@@ -296,7 +296,8 @@ vec3 CalcPointLight(PointLight light,vec3 normal,vec3 viewDir){
 
 	vec3 diffuse;
 	
-	if(u_Settings.isTextureSample==0)
+	int uDiffuseTextureSample = u_Settings.isDiffuseTextureSample;
+	if(uDiffuseTextureSample==0)
 		diffuse = light.diffuse * diff * (u_Material.diffuseColor);
 	else
 		diffuse = light.diffuse * diff *texture(u_Material.diffuse,texCoordFrag.xy).rgb;
@@ -304,18 +305,26 @@ vec3 CalcPointLight(PointLight light,vec3 normal,vec3 viewDir){
 	//specular
 	vec3 specular;
 	float spec;
-	if(u_Settings.isBlinnLight){
+	//if(u_Settings.isBlinnLight){
+	int uSpecularTextureSample = u_Settings.isSpecularTextureSample;
 
-		vec3 halfwayDir = normalize(lightDir+viewDir);
-		spec = pow(max(dot(norm,halfwayDir),0.0),u_Material.shininess);
+	vec3 halfwayDir = normalize(lightDir+viewDir);
+	spec = pow(max(dot(norm,halfwayDir),0.0),64);
+	if(uSpecularTextureSample==0)
 		specular =  light.specular * spec  *  u_Material.specularColor;
-	}
-	else{
+	else
+		specular =  light.specular * spec  *  texture(u_Material.specular,texCoordFrag.xy).rgb;
 
-		vec3 reflectDir = normalize(reflect(-lightDir,norm));
-		spec = pow(max(dot(reflectDir,viewDir),0.0),u_Material.shininess);
-		specular =  light.specular * spec  *  u_Material.specularColor;
-	}
+	//}
+//	else{
+//
+//		vec3 reflectDir = normalize(reflect(-lightDir,norm));
+//		spec = pow(max(dot(reflectDir,viewDir),0.0),64);
+//		if(u_Settings.isSpecularTextureSample==0)
+//			specular =  light.specular * spec  *  u_Material.specularColor;
+//		else
+//			specular =  light.specular * spec  *  texture(u_Material.specular,texCoordFrag.xy).rgb;	
+//			}
 	ambient  *= attenuation;
 	diffuse  *= attenuation;
 	specular *= attenuation;
@@ -336,7 +345,7 @@ void main(){
 
 	vec3 normalWorldPositionFrag =worldPositionFrag-u_CameraViewPos;// vec3(worldPositionFrag.x-u_CubePos.x,worldPositionFrag.y-u_CubePos.y,worldPositionFrag.z-u_CubePos.z);
 	normalWorldPositionFrag = normalWorldPositionFrag/u_CubeSize;
-	if(!isInsideCube(normalWorldPositionFrag, 0.2)) return;
+	if(!isInsideCube(normalWorldPositionFrag, 0.0)) return;
 
 	int uPbr = u_IsPBRObjects;
 	if(uPbr==0){
@@ -395,12 +404,12 @@ void main(){
 		}
 		vec3 ambient = vec3(0.008) * albedo * ao;//vec3(0.03)
 		color = emission+ambient +  Lo;
-		//color = Lo;
-//		color = color / (color + vec3(1.0));
-//		color = pow(color, vec3(1.0/2.2));  
+	
 	}
 	
-
+		
+		color = color / (color + vec3(1.0));
+		color = pow(color, vec3(1.0/2.2));  
 	vec3 voxel = scaleAndBias(normalWorldPositionFrag);
 	ivec3 dim = imageSize(texture3D);// retrieve the dimensions of an image
 	vec4 res = vec4(vec3(color), 1);

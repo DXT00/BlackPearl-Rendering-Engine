@@ -47,9 +47,9 @@ namespace BlackPearl {
 		void SetEnableCullFace(bool isEnable) { m_EnableCullFace = isEnable; }
 		bool GetEnableCullFace()const { return m_EnableCullFace; }
 
-		void SetTextureSamples(bool isSampled) {
+		void SetPBRTextureSamples(bool isSampled) {
 			for (auto mesh : GetMeshes())
-				mesh.GetMaterial()->SetTextureSample((int)isSampled);
+				mesh.GetMaterial()->SetPBRTextureSample((int)isSampled);
 		}
 		void SetTextureDiffuseSamples(bool isSampled) {
 			for (auto mesh : GetMeshes())
@@ -64,10 +64,10 @@ namespace BlackPearl {
 			for (auto mesh : GetMeshes())
 				mesh.GetMaterial()->SetTextureSampleSpecular((int)isSampled);
 		}
-		void SetTextureMetallicSamples(bool isSampled) {
+	/*	void SetTextureMetallicSamples(bool isSampled) {
 			for (auto mesh : GetMeshes())
 				mesh.GetMaterial()->SetTextureSampleMetallic((int)isSampled);
-		}
+		}*/
 		bool GetEnableRender()const { return m_EnableRender; }
 		void SetEnableRender(bool enable) { m_EnableRender = enable; }
 

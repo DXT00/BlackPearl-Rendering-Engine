@@ -30,7 +30,9 @@ namespace BlackPearl {
 			unsigned int viewportHeight, Object* skybox,
 			RenderingMode reneringMode = RenderingMode::VOXELIZATION_VISUALIZATION
 		);
-		void RenderVoxelVisualization(Camera* camera, const std::vector<Object*>& objs, unsigned int viewportWidth, unsigned int viewportHeight);
+		void RenderVoxelVisualization(Camera* camera, unsigned int viewportWidth, unsigned int viewportHeight);
+		void RenderVoxelVisualization(unsigned int viewportWidth, unsigned int viewportHeight);
+
 		void RenderScene(const std::vector<Object*>& objs, const LightSources* lightSources, 
 			unsigned int viewportWidth, unsigned int viewportHeight, Object* skybox);
 
@@ -71,6 +73,7 @@ namespace BlackPearl {
 		static float s_SpecularBlurThreshold;
 		static int s_VisualizeMipmapLevel;
 		static bool s_MipmapBlurSpecularTracing;
+		static float s_IndirectSpecularAngle;
 	private:
 
 		void SetgBufferTextureUniforms();
@@ -100,6 +103,8 @@ namespace BlackPearl {
 		std::shared_ptr<Shader> m_VoxelizationShader;
 		std::shared_ptr<Shader> m_WorldPositionShader;
 		std::shared_ptr<Shader> m_VoxelVisualizationShader;
+		std::shared_ptr<Shader> m_VoxelRenderShader;//use geometry shader render voxel
+		std::shared_ptr<VertexArray> m_PointCubeVAO;
 
 		std::shared_ptr<Shader> m_VCTAmbientGIShader;//deferred ambient GI pass
 		std::shared_ptr<Shader> m_VCTPointLightShader;//deferred pointlight pass

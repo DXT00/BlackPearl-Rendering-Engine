@@ -102,23 +102,31 @@ void main(){
 	gNormal.rgb     = v_Normal;
 	gNormal.a = (u_IsSkybox)?1.0:0.0;
 
-	int s = u_Settings.isTextureSample;
-	gNormalMap      =  v_Normal*(1-s) + getNormalFromMap(v_FragPos,s_texCoordxy)*s;
-	float roughness =  u_Material.roughnessValue *(1-s)+texture(u_Material.roughness, s_texCoordxy).r*s;
-	float ao        =  u_Material.aoValue *(1-s)+texture(u_Material.ao, s_texCoordxy).r*s;
-	
+	int s = u_Settings.isPBRTextureSample;
+	gNormalMap      =  (s==0)?v_Normal:getNormalFromMap(v_FragPos,s_texCoordxy);
+	float roughness =  (s==0)?u_Material.roughnessValue :texture(u_Material.roughness, s_texCoordxy).r;
+	float ao        =  (s==0)?u_Material.aoValue :texture(u_Material.ao, s_texCoordxy).r;
+	float metallic  =  (s==0)?u_Material.mentallicValue:texture(u_Material.mentallic, s_texCoordxy).r;
+
 	vec3 diffuse;
 //	if(u_IsSkybox)
 //		diffuse=texture(u_Material.cube,v_TexCoord).rgb;
 //	else
-		diffuse = u_Material.diffuseColor *(1-u_Settings.isDiffuseTextureSample)+ texture(u_Material.diffuse,s_texCoordxy).rgb*u_Settings.isDiffuseTextureSample;//u_Settings.isDiffuseTextureSample
+	diffuse = (u_Settings.isDiffuseTextureSample==0)?u_Material.diffuseColor :texture(u_Material.diffuse,s_texCoordxy).rgb;
 
 	//vec3 albedo = pow(diffuse,vec3(2.2));
 
-	vec3 specular = (u_Material.specularColor *(1-u_Settings.isSpecularTextureSample)+ texture(u_Material.specular,s_texCoordxy).rgb*u_Settings.isSpecularTextureSample);//u_Settings.isSpecularTextureSample
+	vec3 specular ;
+	if(u_Settings.isSpecularTextureSample==0)
+		specular= u_Material.specularColor ;
+	else
+		specular=texture(u_Material.specular,s_texCoordxy).rgb;//u_Settings.isSpecularTextureSample
 
-	float metallic = u_Material.mentallicValue *(1-u_Settings.isMetallicTextureSample)+
-					texture(u_Material.mentallic, s_texCoordxy).r*u_Settings.isMetallicTextureSample;
+//	float metallic;
+//	if(u_Settings.isMetallicTextureSample==0)
+//		metallic= u_Material.mentallicValue ;
+//	else
+//		metallic= texture(u_Material.mentallic, s_texCoordxy).r;
 
 
 

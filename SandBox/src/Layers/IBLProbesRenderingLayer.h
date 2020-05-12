@@ -44,54 +44,11 @@ public:
 		/* create probes */
 
 		m_DiffuseLightProbeGrid = CreateProbeGrid(m_MapManager, BlackPearl::ProbeType::DIFFUSE_PROBE, 
-			glm::vec3(4, 4, 4), glm::vec3(2.0, 10.0, 6.7), 5);
+			glm::vec3(2, 4, 2), glm::vec3(2.0, 10.0, 6.7), 5);
 		m_ReflectLightProbeGrid = CreateProbeGrid(m_MapManager, BlackPearl::ProbeType::REFLECTION_PROBE,
 			glm::vec3(2, 1, 1), glm::vec3(2.0, 10.0, 6.7), 5);
 
-		//unsigned int xlen = 4, ylen = 4, zlen = 4, space = 5, idx = 0;//space = 5,
-		//float offsetx = 2.0f, offsety = 10.0f, offsetz = 6.7f;//offsetx = 0.0, offsety = 5.0f, offsetz = 1.0f;
-		//for (unsigned int x = 0; x < xlen; x++)
-		//{
-		//	for (unsigned int y = 0; y < ylen; y++)
-		//	{
-		//		for (unsigned int z = 0; z < zlen; z++)
-		//		{
-		//			BlackPearl::LightProbe* probe = CreateLightProbe(BlackPearl::LightProbe::Type::DIFFUSE);
-		//			int xx = (x - xlen / 2) * space, yy = (y - ylen / 2) * space, zz = (z - zlen / 2) * space;
-		//			glm::vec3 probePos = { offsetx + xx,offsety + yy,offsetz + zz };
-		//			probe->SetPosition(probePos);
-		//			m_DiffuseLightProbes.push_back(probe);
-		//			unsigned int areaId = m_MapManager->AddProbeIdToArea(probePos, idx);
-		//			probe->SetAreaId(areaId);
-		//			idx++;
-
-		//		}
-
-		//	}
-
-		//}
-		//xlen = 2, ylen = 1, zlen = 1, space = 5;//424
-		//offsetx = 2.0f, offsety = 10.0f, offsetz = 6.7f;//offsetx = 0.0, offsety = 5.0f, offsetz = 1.0f;
-		//for (unsigned int x = 0; x < xlen; x++)
-		//{
-		//	for (unsigned int y = 0; y < ylen; y++)
-		//	{
-		//		for (unsigned int z = 0; z < zlen; z++)
-		//		{
-		//			BlackPearl::LightProbe* probe = CreateLightProbe(BlackPearl::LightProbe::Type::REFLECTION);
-		//			int xx = (x - xlen / 2) * space, yy = (y - ylen / 2) * space, zz = (z - zlen / 2) * space;
-
-		//			probe->SetPosition({ offsetx + xx,offsety + yy,offsetz + zz });
-		//			m_ReflectionLightProbes.push_back(probe);
-		//			//delete probe;
-
-		//		}
-
-		//	}
-
-		//}
-
-
+		
 		BlackPearl::Renderer::Init();
 		glEnable(GL_DEPTH_TEST);
 
@@ -104,23 +61,39 @@ public:
 
 		/*create skybox */
 		/*notice: draw skybox before anything else!*/
-		//m_SkyBoxObj1 = CreateSkyBox(
-		//	{ "assets/skybox/skybox/right.jpg",
-		//	 "assets/skybox/skybox/left.jpg",
-		//	 "assets/skybox/skybox/top.jpg",
-		//	 "assets/skybox/skybox/bottom.jpg",
-		//	 "assets/skybox/skybox/front.jpg",
-		//	 "assets/skybox/skybox/back.jpg",
-		//	});
 		m_SkyBoxObj1 = CreateSkyBox(
-			{ "assets/skybox/skybox1/SkyAfterNoon_Right.png",
-			 "assets/skybox/skybox1/SkyAfterNoon_Left.png",
-			 "assets/skybox/skybox1/SkyAfterNoon_Top.png",
-			 "assets/skybox/skybox1/SkyBrightMorning_Bottom.png",
-			 "assets/skybox/skybox1/SkyAfterNoon_Front.png",
-			 "assets/skybox/skybox1/SkyAfterNoon_Back.png",
+			{ "assets/skybox/skybox/right.jpg",
+			 "assets/skybox/skybox/left.jpg",
+			 "assets/skybox/skybox/top.jpg",
+			 "assets/skybox/skybox/bottom.jpg",
+			 "assets/skybox/skybox/front.jpg",
+			 "assets/skybox/skybox/back.jpg",
 			});
-		
+		/*m_SkyBoxObj1 = CreateSkyBox(
+			{ "assets/skybox/skybox1/SkyBrightMorning_Right.png",
+			 "assets/skybox/skybox1/SkyBrightMorning_Left.png",
+			 "assets/skybox/skybox1/SkyBrightMorning_Top.png",
+			 "assets/skybox/skybox1/SkyBrightMorning_Bottom.png",
+			 "assets/skybox/skybox1/SkyBrightMorning_Front.png",
+			 "assets/skybox/skybox1/SkyBrightMorning_Back.png",
+			});
+		*/
+	/*	m_SkyBoxObj1 = CreateSkyBox(
+			{ "assets/skybox/skybox1/SkyMorning_Right.png",
+			 "assets/skybox/skybox1/SkyMorning_Left.png",
+			 "assets/skybox/skybox1/SkyMorning_Top.png",
+			 "assets/skybox/skybox1/SkyMorning_Bottom.png",
+			 "assets/skybox/skybox1/SkyMorning_Front.png",
+			 "assets/skybox/skybox1/SkyMorning_Back.png",
+			});*/
+		//m_SkyBoxObj1 = CreateSkyBox(
+		//	{ "assets/skybox/skybox1/SkyNight_Right.png",
+		//	 "assets/skybox/skybox1/SkyNight_Left.png",
+		//	 "assets/skybox/skybox1/SkyNight_Top.png",
+		//	 "assets/skybox/skybox1/SkyNight_Bottom.png",
+		//	 "assets/skybox/skybox1/SkyNight_Front.png",
+		//	 "assets/skybox/skybox1/SkyNight_Back.png",
+		//	});
 
 		//LoadScene("SpheresScene");
 		LoadScene("Church");
@@ -141,10 +114,10 @@ public:
 		DestroyObjects();
 		delete m_BasicRenderer;
 		delete m_IBLProbesRenderer;
-		for (auto* probe : m_DiffuseLightProbes)
+		/*for (auto* probe : m_DiffuseLightProbes)
 			GE_SAVE_DELETE(probe);
 		for (auto* probe : m_ReflectionLightProbes)
-			GE_SAVE_DELETE(probe);
+			GE_SAVE_DELETE(probe);*/
 	}
 	void Hello() {
 		GE_CORE_INFO("Hello");
@@ -227,6 +200,8 @@ public:
 
 		if (BlackPearl::Input::IsKeyPressed(BP_KEY_L)) {
 			m_ShowLightProbe = !m_ShowLightProbe;
+		}
+		if (BlackPearl::Input::IsKeyPressed(BP_KEY_M)) {
 			m_ShowMap = !m_ShowMap;
 		}
 		if (m_ShowLightProbe) {

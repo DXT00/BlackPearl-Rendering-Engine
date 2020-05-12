@@ -4,7 +4,7 @@
 #include "BlackPearl/Renderer/Renderer.h"
 #include "BlackPearl/Component/CameraComponent/PerspectiveCamera.h"
 #include "BlackPearl/Component/TransformComponent/Transform.h"
-
+#include "BlackPearl/Timestep/TimeCounter.h"
 #include "BlackPearl/Component/MeshRendererComponent/MeshRenderer.h"
 #include "BlackPearl/Component/LightProbeComponent/LightProbeComponent.h"
 
@@ -447,10 +447,11 @@ namespace BlackPearl {
 
 	void IBLProbesRenderer::RenderSHImage(Object* probe, std::shared_ptr<CubeMapTexture> environmentMap)
 	{
-
+		TimeCounter::Start();
 		auto coeffs = SphericalHarmonics::UpdateCoeffs(environmentMap);
 		probe->GetComponent<LightProbe>()->SetSHCoeffs(coeffs);
-	
+		TimeCounter::End("update diffuse probe");
+
 
 
 	}

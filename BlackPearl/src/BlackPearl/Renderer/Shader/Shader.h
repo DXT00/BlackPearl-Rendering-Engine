@@ -30,7 +30,7 @@ namespace BlackPearl {
 		void SetUniformVec3f(const std::string & name, const glm::vec3& value) const;
 		void SetUniformVec2f(const std::string& name, const glm::vec2& value) const;
 
-		virtual void SetExtraUniform() {};
+		
 
 		std::string GetPath() { return m_ShaderPath; }
 

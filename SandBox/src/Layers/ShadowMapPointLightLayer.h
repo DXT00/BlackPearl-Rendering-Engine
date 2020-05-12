@@ -131,7 +131,7 @@ public:
 		m_Sword->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(SwordnormalTexture);
 		m_Sword->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(SwordemissionTexture);
 
-		m_Sword->GetComponent<BlackPearl::MeshRenderer>()->SetTextureSamples(true);
+		m_Sword->GetComponent<BlackPearl::MeshRenderer>()->SetPBRTextureSamples(true);
 		m_Sword->GetComponent<BlackPearl::MeshRenderer>()->SetIsPBRObject(true);
 		m_BackGroundObjsList.push_back(m_Sword);
 

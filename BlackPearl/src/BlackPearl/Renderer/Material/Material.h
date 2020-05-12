@@ -7,15 +7,16 @@ namespace BlackPearl {
 	{
 	public:
 		struct Props {
+			//Enable texture
 			float shininess;
 			bool  isBinnLight;
-			int  isTextureSample;//是否使用纹理
+			int  isPBRTextureSample;//是否使用纹理-->包括 ao,normal,metalllic,roughness
 			int  isDiffuseTextureSample;//是否使用纹理
 			int  isSpecularTextureSample;//是否使用纹理
-			int  isMetallicTextureSample;//是否使用纹理
+		//	int  isMetallicTextureSample;//是否使用纹理
 			int  isEmissionTextureSample;//是否使用纹理
 
-			Props() :shininess(64.0f), isBinnLight(false), isTextureSample(0),isDiffuseTextureSample(0),isSpecularTextureSample(0),isEmissionTextureSample(0){}
+			Props() :shininess(64.0f), isBinnLight(false), isPBRTextureSample(0),isDiffuseTextureSample(0),isSpecularTextureSample(0),isEmissionTextureSample(0){}
 
 		};
 		struct TextureMaps {
@@ -78,10 +79,10 @@ namespace BlackPearl {
 		void SetProps(const Props& props);
 		void SetShininess(float shininess);
 		void SetBinnLight(bool isBinnLight);
-		void SetTextureSample(int isTextureSample);
+		void SetPBRTextureSample(int isPBRTextureSample);
 		void SetTextureSampleDiffuse(int isTextureSampleDiffuse);
 		void SetTextureSampleSpecular(int isTextureSampleSpecular);
-		void SetTextureSampleMetallic(int isTextureSampleMetallic);
+		//void SetTextureSampleMetallic(int isTextureSampleMetallic);
 		void SetTextureSampleEmission(int isTextureSampleMetallic);
 
 		void Unbind() {

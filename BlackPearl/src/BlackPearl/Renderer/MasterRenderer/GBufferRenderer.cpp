@@ -41,7 +41,7 @@ namespace BlackPearl {
 		m_AnimatedModelRenderer->SetShader(gBufferAnimatedShader);
 
 
-
+		m_SkyboxRenderer = DBG_NEW SkyboxRenderer();
 
 	}
 
@@ -592,7 +592,8 @@ namespace BlackPearl {
 		if (skyBox != nullptr) {
 			glDepthFunc(GL_LEQUAL);
 
-			DrawObject(skyBox);
+			m_SkyboxRenderer->Render(skyBox);
+			//DrawObject(skyBox);
 			glDepthFunc(GL_LESS);
 		}
 

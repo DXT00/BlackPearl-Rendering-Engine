@@ -4,6 +4,7 @@
 #include "BlackPearl/Renderer/MasterRenderer/BasicRenderer.h"
 #include "BlackPearl/Config.h"
 #include "AnimatedModelRenderer.h"
+#include "SkyboxRenderer.h"
 #include "BlackPearl/Map/MapManager.h"
 namespace BlackPearl {
 
@@ -14,6 +15,8 @@ namespace BlackPearl {
 		GBufferRenderer();
 		~GBufferRenderer() {
 			GE_SAVE_DELETE(m_AnimatedModelRenderer);
+			GE_SAVE_DELETE(m_SkyboxRenderer);
+
 			m_LightPassFrameBuffer->CleanUp();
 		};
 		void Init(Object* ScreenQuad, Object* surroundSphere, Object* GIQuad);
@@ -90,6 +93,7 @@ namespace BlackPearl {
 
 		/*renderer for dynamic objects*/
 		AnimatedModelRenderer* m_AnimatedModelRenderer;
+		SkyboxRenderer* m_SkyboxRenderer;
 
 	};
 

@@ -82,7 +82,7 @@ public:
 		m_SphereObjIron->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(IronaoTexture);
 		m_SphereObjIron->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(IronroughnessTexture);
 		m_SphereObjIron->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(IronmentallicTexture);
-		m_SphereObjIron->GetComponent<BlackPearl::MeshRenderer>()->SetTextureSamples(true);
+		m_SphereObjIron->GetComponent<BlackPearl::MeshRenderer>()->SetPBRTextureSamples(true);
 		m_SphereObjIron->GetComponent<BlackPearl::MeshRenderer>()->SetIsPBRObject(true);
 		m_SphereObjIron->GetComponent<BlackPearl::Transform>()->SetPosition({ 10,0,0 });
 
@@ -91,7 +91,7 @@ public:
 		m_SphereObjRust->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(RustaoTexture);
 		m_SphereObjRust->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(RustroughnessTexture);
 		m_SphereObjRust->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(RustmentallicTexture);
-		m_SphereObjRust->GetComponent<BlackPearl::MeshRenderer>()->SetTextureSamples(true);
+		m_SphereObjRust->GetComponent<BlackPearl::MeshRenderer>()->SetPBRTextureSamples(true);
 		m_SphereObjRust->GetComponent<BlackPearl::MeshRenderer>()->SetIsPBRObject(true);
 		m_SphereObjRust->GetComponent<BlackPearl::Transform>()->SetPosition({ 5,0,0 });
 
@@ -100,7 +100,7 @@ public:
 		m_SphereObjStone->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(StoneaoTexture);
 		m_SphereObjStone->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(StoneroughnessTexture);
 		m_SphereObjStone->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(StonementallicTexture);
-		m_SphereObjStone->GetComponent<BlackPearl::MeshRenderer>()->SetTextureSamples(true);
+		m_SphereObjStone->GetComponent<BlackPearl::MeshRenderer>()->SetPBRTextureSamples(true);
 		m_SphereObjStone->GetComponent<BlackPearl::MeshRenderer>()->SetIsPBRObject(true);
 		m_SphereObjStone->GetComponent<BlackPearl::Transform>()->SetPosition({ -5,0,0 });
 
@@ -109,7 +109,7 @@ public:
 		m_SphereObjPlastic->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(PlasticaoTexture);
 		m_SphereObjPlastic->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(PlasticroughnessTexture);
 		m_SphereObjPlastic->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(PlasticmentallicTexture);
-		m_SphereObjPlastic->GetComponent<BlackPearl::MeshRenderer>()->SetTextureSamples(true);
+		m_SphereObjPlastic->GetComponent<BlackPearl::MeshRenderer>()->SetPBRTextureSamples(true);
 		m_SphereObjPlastic->GetComponent<BlackPearl::MeshRenderer>()->SetIsPBRObject(true);
 		m_SphereObjPlastic->GetComponent<BlackPearl::Transform>()->SetPosition({ -10.0,0,0 });
 
@@ -131,13 +131,10 @@ public:
 		m_Sword->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(SwordnormalTexture);
 		m_Sword->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(SwordemissionTexture);
 
-		m_Sword->GetComponent<BlackPearl::MeshRenderer>()->SetTextureSamples(true);
+		m_Sword->GetComponent<BlackPearl::MeshRenderer>()->SetPBRTextureSamples(true);
 		m_Sword->GetComponent<BlackPearl::MeshRenderer>()->SetIsPBRObject(true);
 
-	/*	m_SphereObjsList.push_back(m_SphereObjIron);
-		m_SphereObjsList.push_back(m_SphereObjStone);
-		m_SphereObjsList.push_back(m_SphereObjPlastic);
-		m_SphereObjsList.push_back(m_SphereObjRust);*/
+
 
 
 

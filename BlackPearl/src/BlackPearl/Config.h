@@ -66,6 +66,8 @@ namespace BlackPearl {
 		static const char* EMISSION_COLOR;
 
 		static const char* METALLIC_VALUE;
+		static const char* ROUGHNESS_VALUE;
+		static const char* AO_VALUE;
 
 		static const char* DIFFUSE_TEXTURE2D;
 		static const char* SPECULAR_TEXTURE2D;
@@ -81,7 +83,7 @@ namespace BlackPearl {
 		static const char* SHININESS;
 
 		static const char* IS_BLINNLIGHT;
-		static const char* IS_TEXTURE_SAMPLE;
+		static const char* IS_PBR_TEXTURE_SAMPLE;
 		static const char* IS_DIFFUSE_TEXTURE_SAMPLE;
 		static const char* IS_SPECULAR_TEXTURE_SAMPLE;
 		static const char* IS_METALLIC_TEXTURE_SAMPLE;

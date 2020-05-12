@@ -31,7 +31,8 @@ SVO path tracing - only one bounce cubeSize = 40
 
 ###  Voxel Cone Tracing - 3D texture cone tracing
 
-3D texture cone tracing- only one bounce cubeSize = 20
-![3Dtexture_coneTracing](/results/3Dtexture_coneTracing.png)
-![3Dtexture_coneTracing](/results/3Dtexture_coneTracing1.png)
+![3Dtexture_coneTracing](/results/3Dtexture_coneTracing3.png)
+![3Dtexture_coneTracing](/results/3Dtexture_coneTracing4.png)
+![3Dtexture_coneTracing](/results/3Dtexture_coneTracing5.png)
+
 

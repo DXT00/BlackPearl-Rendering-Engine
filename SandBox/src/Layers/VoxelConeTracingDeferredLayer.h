@@ -15,21 +15,24 @@ public:
 	{
 
 
-		m_BasicRenderer = DBG_NEW BlackPearl::BasicRenderer();
-		m_VoxelConeTracingDeferredRenderer = DBG_NEW BlackPearl::VoxelConeTracingDeferredRenderer();
 		m_CubeObj = CreateCube();
 		m_CubeObj->GetComponent<BlackPearl::Transform>()->SetScale(glm::vec3(20.0f));//必须是单位cube
 		m_QuadObj = CreateQuad();
 		m_QuadBRDFLUTObj = CreateQuad();
 		m_QuadGBufferObj = CreateQuad();
 		m_QuadFinalScreenObj = CreateQuad();
-		m_SurroundSphereObj = CreateSphere(1.0, 128, 128, "assets/shaders/Sphere.glsl", "", "SurroundSphere");
+		m_SurroundSphereObj = CreateSphere(1.0, 64, 64, "assets/shaders/Sphere.glsl", "", "SurroundSphere");
 
-		//glEnable(GL_MULTISAMPLE);
+		glEnable(GL_MULTISAMPLE);
 
-		BlackPearl::Renderer::Init();
-		m_VoxelConeTracingDeferredRenderer->Init(BlackPearl::Configuration::WindowWidth, BlackPearl::Configuration::WindowHeight,
-			m_QuadObj, m_QuadGBufferObj, m_QuadBRDFLUTObj, m_QuadFinalScreenObj, m_SurroundSphereObj, m_CubeObj);
+		// detect current settings
+		GLint iMultiSample = 0;
+		GLint iNumSamples = 0;
+		glGetIntegerv(GL_SAMPLE_BUFFERS, &iMultiSample);
+		glGetIntegerv(GL_SAMPLES, &iNumSamples);
+
+		GE_CORE_INFO("MSAA on, GL_SAMPLE_BUFFERS ={0}, GL_SAMPLES = {1}", iMultiSample, iNumSamples);
+	
 
 		/***************************************** Scene ********************************************************/
 		m_SkyBoxObj = CreateSkyBox(
@@ -40,21 +43,20 @@ public:
 			 "assets/skybox/skybox/front.jpg",
 			 "assets/skybox/skybox/back.jpg",
 			});
-		//LoadStaticBackGroundObject("Deer");
-		//BlackPearl::Object* light = CreateLight(BlackPearl::LightType::PointLight);
-		//light->GetComponent<BlackPearl::Transform>()->SetPosition({ 0.0,0.0,5.0 });
-		//light->GetComponent<BlackPearl::Transform>()->SetLastPosition({ 0.0,-1.0,0.0 });//0.0,0.0,3.0
-		//light->GetComponent<BlackPearl::MeshRenderer>()->SetIsShadowObjects(false);
+	
 
-		//LoadScene("CornellScene");
-		LoadChurchScene();
-		//LoadScene("SpheresScene");
+		LoadScene("CornellScene");
+		//LoadChurchScene();
+		LoadScene("SpheresScene");
 
 		m_skybox = m_SkyBoxObj;
-		/*******************************************************************************************************/
-		/*******************************************************************************************************/
+		/********************************************* Renderer **********************************************************/
 
-
+		m_BasicRenderer = DBG_NEW BlackPearl::BasicRenderer();
+		m_VoxelConeTracingDeferredRenderer = DBG_NEW BlackPearl::VoxelConeTracingDeferredRenderer();
+		BlackPearl::Renderer::Init();
+		m_VoxelConeTracingDeferredRenderer->Init(BlackPearl::Configuration::WindowWidth, BlackPearl::Configuration::WindowHeight,
+			m_QuadObj, m_QuadGBufferObj, m_QuadBRDFLUTObj, m_QuadFinalScreenObj, m_SurroundSphereObj, m_CubeObj);
 
 
 
