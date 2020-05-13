@@ -15,7 +15,7 @@ namespace BlackPearl {
 		VoxelConeTracingRenderer();
 		~VoxelConeTracingRenderer();
 
-		void Init(unsigned int viewportWidth,unsigned int viewportHeight, Object * quadObj,Object* brdfLUTQuadObj, Object * cubeObj);//, Object* debugQuadObj
+		void Init(unsigned int viewportWidth,unsigned int viewportHeight, Object * quadObj,Object* brdfLUTQuadObj, Object * cubeObj);
 		void InitVoxelization();
 		void InitVoxelVisualization(unsigned int viewportWidth, unsigned int viewportHeight);
 		void Voxilize(const std::vector<Object*>&objs, Object* skybox,
@@ -32,21 +32,7 @@ namespace BlackPearl {
 		void RenderScene(const std::vector<Object*>&objs, unsigned int viewportWidth, unsigned int viewportHeight, Object* skybox);
 
 		void RenderSpecularBRDFLUTMap();
-		/* 逐个object体素化 */
-		/*void Voxilize( Object* obj,bool clearVoxelizationFirst = true);
-		void Render(
-			 Object* obj,
-			const LightSources* lightSources,
-			unsigned int viewportWidth,
-			unsigned int viewportHeight,
-			glm::vec3 cameraPos,
-			RenderingMode reneringMode = RenderingMode::VOXELIZATION_VISUALIZATION
-		);
-		void RenderVoxelVisualization( Object* obj, unsigned int viewportWidth, unsigned int viewportHeight);
-		void RenderScene( Object* obj, unsigned int viewportWidth, unsigned int viewportHeight);*/
-
-
-
+		
 		/*Debug function*/
 		//void VoxelizeTest(const std::vector<Object*>& objs);
 		/* Settings */
@@ -72,7 +58,6 @@ namespace BlackPearl {
 		bool m_AutomaticallyVoxelize = true;
 		bool m_VoxelizationQueued = true;
 		int  m_VoxelizationSparsity = 1; // Number of ticks between mipmap generation. 
-		// (voxelization sparsity gives unstable framerates, so not sure if it's worth it in interactive applications.)
 		int m_TicksSinceLastVoxelization = m_VoxelizationSparsity;
 
 		// ----------------
@@ -96,8 +81,6 @@ namespace BlackPearl {
 		//std::shared_ptr<Shader> m_FrontBackCubeTestShader;
 
 
-		//std::shared_ptr<FrameBuffer> m_FrameBuffer1;
-	//	std::shared_ptr<FrameBuffer> m_FrameBuffer2;
 
 		Object * m_QuadObj = nullptr;//用于显示体素化结果 ： voxel Visualization
 		Object * m_CubeObj = nullptr; //控制体素化渲染范围

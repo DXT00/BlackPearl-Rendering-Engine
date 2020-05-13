@@ -39,7 +39,6 @@ public:
 		BlackPearl::Object* bunny = LoadStaticBackGroundObject("Bunny");
 		bunny->GetComponent<BlackPearl::Transform>()->SetScale({ 2,2,2 });
 		bunny->GetComponent<BlackPearl::Transform>()->SetPosition({ 1.0,-1.0,3.0 });
-		m_BackGroundObjsList.push_back(bunny); 
 
 		//BlackPearl::Object* cube1 = CreateCube();
 		//cube1->GetComponent<BlackPearl::Transform>()->SetScale({ 5.0,2.0,5.0 });
@@ -49,10 +48,10 @@ public:
 		//cube1->GetComponent<BlackPearl::MeshRenderer>()->GetMeshes()[0].GetMaterial()->SetMaterialColorDiffuseColor({ 0,0.294f,1.0f });
 		//m_BackGroundObjsList.push_back(cube1);
 
-		BlackPearl::Object* light = CreateLight(BlackPearl::LightType::PointLight);
-		light->GetComponent<BlackPearl::Transform>()->SetPosition({ 0.0,7,3.0 });
-		light->GetComponent<BlackPearl::Transform>()->SetLastPosition({ 0.0,-1.0,0.0 });//0.0,0.0,3.0
-		light->GetComponent<BlackPearl::MeshRenderer>()->SetIsShadowObjects(false);
+		//BlackPearl::Object* light = CreateLight(BlackPearl::LightType::PointLight);
+		//light->GetComponent<BlackPearl::Transform>()->SetPosition({ 0.0,7,3.0 });
+		//light->GetComponent<BlackPearl::Transform>()->SetLastPosition({ 0.0,-1.0,0.0 });//0.0,0.0,3.0
+		//light->GetComponent<BlackPearl::MeshRenderer>()->SetIsShadowObjects(false);
 		//LoadScene("SpheresScene");
 		LoadChurchScene();
 		//LoadScene("CornellScene");
@@ -60,7 +59,7 @@ public:
 		/*******************************************************************************************************/
 		/*******************************************************************************************************/
 		BlackPearl::Renderer::BeginScene(*(m_MainCamera->GetObj()->GetComponent<BlackPearl::PerspectiveCamera>()), *GetLightSources());
-		m_SkyBoxObj = nullptr;
+		//m_SkyBoxObj = nullptr;
 		m_VoxelConeTracingSVORenderer->Init(BlackPearl::Configuration::WindowWidth, BlackPearl::Configuration::WindowHeight,
 			m_CubeObj,
 			m_QuadBRDFLUTObj,
@@ -85,20 +84,22 @@ public:
 
 		//Switch mode
 		if (BlackPearl::Input::IsKeyPressed(BP_KEY_U)) {
-			m_Mode = (m_Mode + 1) % 3;
+			m_Mode = (m_Mode + 1) % 2;
 			if (m_Mode == 0) {
-				m_CurrentRenderingMode = BlackPearl::VoxelConeTracingSVORenderer::RenderingMode::VOXELIZATION_VISUALIZATION;
-				GE_CORE_INFO("voxel rendering ...");
+				m_CurrentRenderingMode = BlackPearl::VoxelConeTracingSVORenderer::RenderingMode::VOXEL_CONE_TRACING;
+				GE_CORE_INFO("voxel direct light tracing ...");
 
 			}
 			else if (m_Mode == 1) {
-				m_CurrentRenderingMode = BlackPearl::VoxelConeTracingSVORenderer::RenderingMode::VOXEL_CONE_TRACING;
-				GE_CORE_INFO("voxel direct light tracing ...");
-			}
-			else if (m_Mode == 2) {
+				/*m_CurrentRenderingMode = BlackPearl::VoxelConeTracingSVORenderer::RenderingMode::VOXELIZATION_VISUALIZATION;
+				GE_CORE_INFO("voxel rendering ...");*/
 				m_CurrentRenderingMode = BlackPearl::VoxelConeTracingSVORenderer::RenderingMode::SVO_PATH_TRACING;
 				GE_CORE_INFO("path tracing ...")
 			}
+			/*else if (m_Mode == 2) {
+				m_CurrentRenderingMode = BlackPearl::VoxelConeTracingSVORenderer::RenderingMode::SVO_PATH_TRACING;
+				GE_CORE_INFO("path tracing ...")
+			}*/
 
 		}
 
@@ -120,8 +121,10 @@ public:
 			m_VoxelConeTracingSVORenderer->RebuildSVO(m_BackGroundObjsList, m_SkyBoxObj);
 		}
 
-		m_VoxelConeTracingSVORenderer->Render(m_MainCamera->GetObj()->GetComponent<BlackPearl::PerspectiveCamera>(), m_BackGroundObjsList, GetLightSources(),
-			BlackPearl::Configuration::WindowWidth, BlackPearl::Configuration::WindowHeight, m_SkyBoxObj, m_CurrentRenderingMode);
+		m_VoxelConeTracingSVORenderer->Render(m_MainCamera->GetObj()->GetComponent<BlackPearl::PerspectiveCamera>(),
+			m_BackGroundObjsList, GetLightSources(),
+			BlackPearl::Configuration::WindowWidth, BlackPearl::Configuration::WindowHeight,
+			m_SkyBoxObj, m_CurrentRenderingMode);
 
 
 

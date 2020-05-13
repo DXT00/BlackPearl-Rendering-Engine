@@ -16,8 +16,7 @@ namespace BlackPearl {
 		VoxelConeTracingDeferredRenderer();
 		~VoxelConeTracingDeferredRenderer();
 
-		void Init(unsigned int viewportWidth, unsigned int viewportHeight, Object* quadObj, Object* quadGbufferObj, 
-			Object* brdfLUTQuadObj, Object* m_quadFinalScreenObj , Object* surroundSphere,Object* cubeObj);//, Object* debugQuadObj
+		void Init(unsigned int viewportWidth, unsigned int viewportHeight, Object* quadObj, Object* surroundSphere,Object* cubeObj);//, Object* debugQuadObj
 		void InitVoxelization();
 		void InitVoxelVisualization(unsigned int viewportWidth, unsigned int viewportHeight);
 		void Voxilize(const std::vector<Object*>& objs,  Object* skybox,
@@ -31,7 +30,6 @@ namespace BlackPearl {
 			RenderingMode reneringMode = RenderingMode::VOXELIZATION_VISUALIZATION
 		);
 		void RenderVoxelVisualization(Camera* camera, unsigned int viewportWidth, unsigned int viewportHeight);
-		void RenderVoxelVisualization(unsigned int viewportWidth, unsigned int viewportHeight);
 
 		void RenderScene(const std::vector<Object*>& objs, const LightSources* lightSources, 
 			unsigned int viewportWidth, unsigned int viewportHeight, Object* skybox);
@@ -103,14 +101,13 @@ namespace BlackPearl {
 		std::shared_ptr<Shader> m_VoxelizationShader;
 		std::shared_ptr<Shader> m_WorldPositionShader;
 		std::shared_ptr<Shader> m_VoxelVisualizationShader;
-		std::shared_ptr<Shader> m_VoxelRenderShader;//use geometry shader render voxel
-		std::shared_ptr<VertexArray> m_PointCubeVAO;
+		
 
 		std::shared_ptr<Shader> m_VCTAmbientGIShader;//deferred ambient GI pass
 		std::shared_ptr<Shader> m_VCTPointLightShader;//deferred pointlight pass
 
-		std::shared_ptr<Shader> m_GuassianFilterVerticalShader;
-		std::shared_ptr<Shader> m_GuassianFilterHorizontalShader;
+		//std::shared_ptr<Shader> m_GuassianFilterVerticalShader;
+		//std::shared_ptr<Shader> m_GuassianFilterHorizontalShader;
 
 		std::shared_ptr<Shader> m_FinalScreenShader;
 

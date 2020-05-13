@@ -1,5 +1,5 @@
 #type vertex
-#version 430 core
+#version 450 core
 
 layout(location = 0) in vec3 aPos;
 layout(location = 1) in vec3 aNormal;
@@ -35,7 +35,7 @@ void main(){
 
 
 #type fragment
-#version 430 core
+#version 450 core
 
 /* MRT */
 /* render to gBuffer */
@@ -64,23 +64,24 @@ vec2 s_texCoordxy = v_TexCoord.xy;
 //
 //struct Material;
 //
-uniform struct SettingsLocal{
-	int isBlinnLight;
-	int  isTextureSample;//判断是否使用texture,或者只有color
-	int isDiffuseTextureSample;
-	int isSpecularTextureSample;
-	int isMetallicTextureSample;
-	int directLight;
-	int indirectDiffuseLight;
-	int indirectSpecularLight;
-	int shadows;
-	float GICoeffs;
-	int hdr;
-	int guassian_horiziotal;
-	int guassian_vertical;
-	int guassian_mipmap;
-	int showBlurArea;
-}u_Settings;
+//uniform struct SettingsLocal{
+//	int isBlinnLight;
+//	int  isTextureSample;//判断是否使用texture,或者只有color
+//	int isDiffuseTextureSample;
+//	int isSpecularTextureSample;
+//	int isMetallicTextureSample;
+//	int directLight;
+//	int indirectDiffuseLight;
+//	int indirectSpecularLight;
+//	int shadows;
+//	float GICoeffs;
+//	int hdr;
+//	int guassian_horiziotal;
+//	int guassian_vertical;
+//	int guassian_mipmap;
+//	int showBlurArea;
+//}u_Settings;
+uniform Settings u_Settings;
 uniform Material u_Material;
 uniform int u_IsPBRObjects;
 uniform bool u_IsSkybox;
@@ -110,77 +111,39 @@ vec3 getNormalFromMap(vec3 fragPos,vec2 texCoord)
 
 
 void main(){
- 
-//	gPosition.rgb   = v_FragPos;
-//	gPosition.a = float(u_IsPBRObjects*256.0+u_ObjectId); //15-8bit:u_IsPBRObjects,7-0bit:u_ObjectId
-//
-//	gNormal.rgb     = v_Normal;
-//	gNormal.a = (u_IsSkybox)?1.0:0.0;
-//
-//	int s = u_Settings.isTextureSample;
-//	gNormalMap      =  (s==0)?v_Normal:getNormalFromMap(v_FragPos,s_texCoordxy);
-//	float roughness =  (s==0)?u_Material.roughnessValue :texture(u_Material.roughness, s_texCoordxy).r;
-//	float ao        = (s==0)? u_Material.aoValue:texture(u_Material.ao, s_texCoordxy).r;
-//	
-//	vec3 diffuse;
-////	if(u_IsSkybox)
-////		diffuse=texture(u_Material.cube,v_TexCoord).rgb;
-////	else
-//	if(u_Settings.isDiffuseTextureSample==0)
-//		diffuse = u_Material.diffuseColor ;//u_Settings.isDiffuseTextureSample
-//	else
-//		diffuse = texture(u_Material.diffuse,s_texCoordxy).rgb;
-//	//vec3 albedo = pow(diffuse,vec3(2.2));
-//
-//	vec3 specular = (u_Material.specularColor *(1-u_Settings.isSpecularTextureSample)+ texture(u_Material.specular,s_texCoordxy).rgb*u_Settings.isSpecularTextureSample);//u_Settings.isSpecularTextureSample
-//
-//	float metallic = u_Material.mentallicValue *(1-u_Settings.isMetallicTextureSample)+
-//					texture(u_Material.mentallic, s_texCoordxy).r*u_Settings.isMetallicTextureSample;
-//
-//
-//
-//
-//	gSpecular_Mentallic.rgb = specular;
-//	gSpecular_Mentallic.a = metallic;
-//
-//	gAmbientGI_AO.a =	ao;
-//	
-//
-//	//gAmbientGI_AO.a =u_IsPBRObjects;//	ao;
-//
-//
-//	gDiffuse_Roughness.rgb = diffuse;
-//
-//	gDiffuse_Roughness.a =  roughness;
+ 	int sampleDiffuseTexture = u_Settings.isDiffuseTextureSample;
+	int samplePBRTex = u_Settings.isPBRTextureSample;
+	int sampleSpecularTexture = u_Settings.isDiffuseTextureSample;
+	bool isSkybox = u_IsSkybox;
 
-	
 
 	gPosition.rgb   = v_FragPos;
 	gPosition.a = float(u_IsPBRObjects*256.0+u_ObjectId); //15-8bit:u_IsPBRObjects,7-0bit:u_ObjectId
 
 	gNormal.rgb     = normalize(v_Normal);
-	bool isSkybox = u_IsSkybox;
 	gNormal.a = (isSkybox)?1.0:0.0;
 
-	int s = u_Settings.isTextureSample;
-	gNormalMap      =  (s==0)?normalize(v_Normal):getNormalFromMap(v_FragPos,s_texCoordxy);
-	float roughness =  (s==0)?u_Material.roughnessValue :texture(u_Material.roughness, s_texCoordxy).r;
-	float ao        =  (s==0)? u_Material.aoValue:texture(u_Material.ao, s_texCoordxy).r;
-	
+	gNormalMap      =  (samplePBRTex==0)?normalize(v_Normal):getNormalFromMap(v_FragPos,s_texCoordxy);
+	float roughness =  (samplePBRTex==0)?u_Material.roughnessValue :texture(u_Material.roughness, s_texCoordxy).r;
+	float ao        =  (samplePBRTex==0)?u_Material.aoValue:texture(u_Material.ao, s_texCoordxy).r;
+	float metallic  =  (samplePBRTex==0)?u_Material.mentallicValue:texture(u_Material.mentallic,s_texCoordxy).r;//u_Material.mentallicValue *(1-u_Settings.isMetallicTextureSample)+
+
 	vec3 diffuse;
-	int sampleDiffuseTexture = u_Settings.isDiffuseTextureSample;
-//	if(u_IsSkybox)
-//		diffuse=texture(u_Material.cube,v_TexCoord).rgb;
-//	else
-	if(s==0)
+	//if(isSkybox)
+	//	diffuse=texture(u_Material.cube,v_TexCoord).rgb;
+	//else{
+
+	if(sampleDiffuseTexture==0)
 		diffuse = u_Material.diffuseColor ;//u_Settings.isDiffuseTextureSample
 	else
 		diffuse = texture(u_Material.diffuse,s_texCoordxy).rgb;
+	//}
 	//vec3 albedo = pow(diffuse,vec3(2.2));
-
-	vec3 specular = (u_Material.specularColor );//*(1-u_Settings.isSpecularTextureSample)+ texture(u_Material.specular,s_texCoordxy).rgb*u_Settings.isSpecularTextureSample);//u_Settings.isSpecularTextureSample
-
-	float metallic = texture(u_Material.mentallic, s_texCoordxy).r;//u_Material.mentallicValue *(1-u_Settings.isMetallicTextureSample)+
+	vec3 specular;
+	if(sampleSpecularTexture==0)
+		specular = (u_Material.specularColor );//*(1-u_Settings.isSpecularTextureSample)+ texture(u_Material.specular,s_texCoordxy).rgb*u_Settings.isSpecularTextureSample);//u_Settings.isSpecularTextureSample
+	else
+		specular = texture(u_Material.specular,s_texCoordxy).rgb;
 					//*u_Settings.isMetallicTextureSample;
 
 

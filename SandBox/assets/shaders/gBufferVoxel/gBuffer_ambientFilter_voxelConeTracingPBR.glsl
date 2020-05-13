@@ -33,10 +33,6 @@ void main(){
 // Light (voxel) cone tracing settings.
 // --------------------------------------
 #define MIPMAP_HARDCAP 4.0 /* 4.0fToo high mipmap levels => glitchiness, too low mipmap levels => sharpness. */
-#define VOXEL_SIZE (1/256.0) /* Size of a voxel. 128x128x128 => 1/128 = 0.0078125. */
-
-
-
 #define CORE_SIZE 5
 //sigma = 2 ,kernel size = 11
 //Guassian calculator: http://dev.theomader.com/gaussian-kernel-calculator/
@@ -166,6 +162,9 @@ struct PointLight {
 uniform Material u_Material;//material info from gBuffer
 uniform Settings u_Settings;
 
+uniform float u_VoxelDim;
+const float VOXEL_SIZE=1.0/u_VoxelDim; /* Size of a voxel. 128x128x128 => 1/128 = 0.0078125. */
+
 uniform sampler3D texture3D;
 uniform sampler2D gPosition;
 uniform sampler2D gNormal;
@@ -212,7 +211,7 @@ vec3 orthogonal(vec3 u){
 	return abs(dot(u, v)) > 0.99999f ? cross(u, vec3(0, 1, 0)) : cross(u, v);
 }
 vec3 scaleAndBias(vec3 p){
-	return 0.5f * p + vec3(0.5f)+vec3(VOXEL_SIZE,VOXEL_SIZE, 0);
+	return 0.5f * p + vec3(0.5f);
 }
 
 // Returns true if the point p is inside the unity cube. 
@@ -285,9 +284,7 @@ vec3 CalcPBRIndirectLight(vec3 indirectSpecular,vec3 indirectDiffuse,vec3 getNor
 		
 	vec3 diffuse = environmentIrradiance*albedo;
 
-	//sample both the prefilter map and the BRDF lut and combine them together as per the Split-Sum approximation to get the IBL specular part
 	const float MAX_REFLECTION_LOD = 1.0;
-	//sample MAX_REFLECTION_LOD level mipmap everytime !
 	vec3 prefileredColor = vec3(0.0,0.0,0.0) ;//= vec3(1.0,1.0,1.0);
 
 	/*specular Map只取最近的一个*/

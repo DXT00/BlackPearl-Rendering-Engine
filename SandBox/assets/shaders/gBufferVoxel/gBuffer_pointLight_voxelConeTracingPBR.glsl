@@ -1,5 +1,5 @@
 #type vertex
-#version 430 core
+#version 450 core
 
 layout(location = 0) in vec3 aPos;
 layout(location = 1) in vec3 aNormal;
@@ -19,9 +19,8 @@ void main()
 }
 
 #type fragment
-#version 430 core
+#version 450 core
 
-#define VOXEL_SIZE (1/256.0) /* Size of a voxel. 128x128x128 => 1/128 = 0.0078125. */
 
 #define DIST_FACTOR 1.1f /* Distance is multiplied by this when calculating attenuation. */
 #define CONSTANT 1
@@ -57,6 +56,8 @@ uniform PointLight u_PointLight;
 uniform vec3 u_CameraViewPos;
 uniform vec3 u_CubeSize; //m_CubeObj的大小，控制体素化范围
 uniform sampler3D texture3D;
+uniform float u_VoxelDim;
+const float VOXEL_SIZE=1.0/u_VoxelDim; /* Size of a voxel. 128x128x128 => 1/128 = 0.0078125. */
 
 uniform sampler2D gPosition;
 uniform sampler2D gNormal;

@@ -422,7 +422,7 @@ namespace BlackPearl {
 	void Layer::LoadChurchScene()
 	{
 		Object* church = CreateModel("assets/models/sponza_obj/sponza.obj", "assets/shaders/IronMan.glsl", false, "Church");
-		church->GetComponent<Transform>()->SetScale(glm::vec3(0.02));//0.02
+		church->GetComponent<Transform>()->SetScale(glm::vec3(0.015));//0.02
 		church->GetComponent<Transform>()->SetInitPosition({ 0.0f,0.0f,10.0f });
 		church->GetComponent<Transform>()->SetRotation({ 0.0f,-90.0f,0.0f });
 		//church->GetComponent<Transform>()->SetScale({ 0.1f,0.1f,0.1f });
@@ -577,7 +577,11 @@ namespace BlackPearl {
 		cube->GetComponent<Transform>()->SetInitPosition({ -2.0f,-2.5f,0.0f });
 		cube->GetComponent<Transform>()->SetScale({ 16.0f,0.8f,16.0f });
 		std::shared_ptr<Texture> cubeTexture(DBG_NEW Texture(Texture::Type::DiffuseMap, "assets/texture/wood.png", GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR, GL_RGBA, GL_CLAMP_TO_EDGE, GL_UNSIGNED_BYTE,true));
+		std::shared_ptr<Texture> cubeKsTexture(DBG_NEW Texture(Texture::Type::SpecularMap, "assets/texture/wood.png", GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR, GL_RGBA, GL_CLAMP_TO_EDGE, GL_UNSIGNED_BYTE, true));
+
 		cube->GetComponent<MeshRenderer>()->SetTextures(cubeTexture);
+		cube->GetComponent<MeshRenderer>()->SetTextures(cubeKsTexture);
+
 		cube->GetComponent<MeshRenderer>()->SetTextureDiffuseSamples(true);
 		cube->GetComponent<MeshRenderer>()->SetIsBackGroundObjects(true);
 	

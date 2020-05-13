@@ -163,6 +163,8 @@ namespace BlackPearl {
 
 		m_VoxelizationShader->SetUniform1i("u_StoreData", false);
 		m_VoxelizationShader->SetUniform1i("u_VoxelSize", m_VoxelTextureSize);
+		m_VoxelizationShader->SetUniformVec3f("u_CubeSize", m_CubeObj->GetComponent<Transform>()->GetScale());
+
 		//	m_AtomicCountBuffer->Bind();
 		GE_ERROR_JUDGE();
 		Configuration::SyncGPU();
@@ -176,40 +178,50 @@ namespace BlackPearl {
 			//m_VoxelizationShader->SetUniform1i("u_voxelPos", 0);
 			m_VoxelizationShader->SetUniform1i("u_StoreData", true);
 		}
-	
+		if (skybox != nullptr) {
 
+			m_VoxelizationShader->Bind();
+//			m_VoxelizationShader->SetUniformVec3f("u_CubeSize", m_CubeObj->GetComponent<Transform>()->GetScale());
+			GE_ERROR_JUDGE();
+
+			skybox->GetComponent<Transform>()->SetScale(m_CubeObj->GetComponent<Transform>()->GetScale() - glm::vec3(2.0f));
+			GE_ERROR_JUDGE();
+
+			skybox->GetComponent<Transform>()->SetPosition({ 0,0,0 });
+			GE_ERROR_JUDGE();
+
+			m_VoxelizationShader->SetUniform1i("u_IsSkybox", 1);
+			GE_ERROR_JUDGE();
+
+			//m_VoxelizationShader->SetUniform1i("u_IsPBRObjects", 0);
+			DrawObject(skybox, m_VoxelizationShader, Renderer::GetSceneData(), 5);
+			//m_VoxelizationShader->Unbind();
+		}
 		for (auto obj : objs) {
 			//m_VoxelizationShader->Bind();
 			
 			m_VoxelizationShader->Bind();
-			m_VoxelizationShader->SetUniformVec3f("u_CubeSize", m_CubeObj->GetComponent<Transform>()->GetScale());
+			//m_VoxelizationShader->SetUniformVec3f("u_CubeSize", m_CubeObj->GetComponent<Transform>()->GetScale());
 
-			m_VoxelizationShader->SetUniform1i("u_IsSkybox", false);
-			if (obj->GetComponent<MeshRenderer>()->GetIsPBRObject()) {
+			m_VoxelizationShader->SetUniform1i("u_IsSkybox", 0);
+			/*if (obj->GetComponent<MeshRenderer>()->GetIsPBRObject()) {
 				m_VoxelizationShader->SetUniform1i("u_IsPBRObjects", 1);
 			}
 			else {
 				m_VoxelizationShader->SetUniform1i("u_IsPBRObjects", 0);
-			}
+			}*/
 			//glBindImageTexture(4, m_DebugOctreeBufTexture->GetTextureID(), 0, GL_FALSE, 0, GL_READ_WRITE, GL_RGBA8UI);
 			GE_ERROR_JUDGE();
 
-			DrawObject(obj, m_VoxelizationShader);
+			DrawObject(obj, m_VoxelizationShader,Renderer::GetSceneData(), 6);
 			GE_ERROR_JUDGE();
 
 		}
+		//m_VoxelizationShader->Unbind();
+
 		GE_ERROR_JUDGE();
 
-		if (skybox != nullptr) {
-
-			//m_VoxelizationShader->Bind();
-			m_VoxelizationShader->SetUniformVec3f("u_CubeSize", m_CubeObj->GetComponent<Transform>()->GetScale());
-			skybox->GetComponent<Transform>()->SetScale(m_CubeObj->GetComponent<Transform>()->GetScale() - glm::vec3(2.0f));
-			skybox->GetComponent<Transform>()->SetPosition({ 0,0,0 });
-			m_VoxelizationShader->SetUniform1i("u_IsSkybox", true);
-			m_VoxelizationShader->SetUniform1i("u_IsPBRObjects", 0);
-			DrawObject(skybox, m_VoxelizationShader);
-		}
+		
 		//glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT | GL_ATOMIC_COUNTER_BARRIER_BIT);
 		//glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT | GL_ATOMIC_COUNTER_BARRIER_BIT);
 		//ShowBufferTexture(m_DebugOctreeBufTexture, 10);
@@ -567,6 +579,7 @@ namespace BlackPearl {
 		RenderGBuffer(objs, skybox);
 		//DrawGBuffer(m_QuadFinalScreenObj);
 		glViewport(0, 0, m_ScreenWidth, m_ScreenHeight);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		//m_DebugOctreeBufTexture.reset(DBG_NEW BufferTexture(sizeof(GLuint) * m_ScreenWidth*m_ScreenHeight, GL_RGBA8UI, 0));
 
 		m_PathTracingGBufferShader->Bind();
@@ -625,7 +638,38 @@ namespace BlackPearl {
 		DrawObject(m_QuadPathTracing, m_PathTracingGBufferShader);
 		//glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
 	//	ShowBufferTexture(m_DebugOctreeBufTexture, m_ScreenWidth * m_ScreenHeight);
+		m_GBuffer->GetPositionTexture()->UnBind();
+		m_GBuffer->GetNormalTexture()->UnBind();
+		m_GBuffer->GetDiffuseRoughnessTexture()->UnBind();
+		m_GBuffer->GetSpecularMentallicTexture()->UnBind();
+		m_GBuffer->GetAmbientGIAOTexture()->UnBind();
+		m_GBuffer->GetNormalMapTexture()->UnBind();
+		m_PathTracingGBufferShader->Unbind();
 
+
+
+
+
+
+
+		/*********************************ÕýÏòäÖÈ¾ light objects ********************************************************/
+
+		glDepthMask(GL_TRUE);
+		glEnable(GL_DEPTH_TEST);
+		m_GBuffer->Bind();
+		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0); // Write to default framebuffer
+		glBlitFramebuffer(0, 0, m_ScreenWidth, m_ScreenHeight, 0, 0, m_ScreenWidth, m_ScreenHeight, GL_DEPTH_BUFFER_BIT, GL_NEAREST);
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+
+		glDisable(GL_BLEND);
+		glDepthFunc(GL_LEQUAL);
+
+		DrawObject(skybox,Renderer::GetSceneData(),6);
+		glDepthFunc(GL_LESS);
+		//DrawObjects(backGroundObjs);
+
+		DrawLightSources(lightSources);
 	}
 	void VoxelConeTracingSVORenderer::PathTracing(std::vector<Object*> objs, Object* skybox, const LightSources* lightSources, unsigned int viewportWidth, unsigned int viewportHeight)
 	{

@@ -1,28 +1,22 @@
 #type vertex
-#version 430 core
+#version 450 core
 
 //uniform mat4 V;
 
 layout(location = 0) in vec3 aPos;
-out vec2 textureCoordinateFrag; 
-
-// Scales and bias a given vector (i.e. from [-1, 1] to [0, 1]).
-vec2 scaleAndBias(vec2 p) { return 0.5f * p + vec2(0.5f); }
 
 void main(){
-	textureCoordinateFrag = aPos.xy;//scaleAndBias(aPos.xy);
 	gl_Position = vec4(aPos, 1);
 }
 
 
 #type fragment
-#version 430 core
+#version 450 core
 
 
 #define INV_STEP_LENGTH (1.0f/STEP_LENGTH)
 #define STEP_LENGTH 0.005f
-#define VOXEL_SIZE (1.0/256.0)
-uniform sampler2D textureBack; // Unit cube back FBO.
+
 
 
 uniform sampler3D texture3D; // Texture in which voxelization is stored.
@@ -36,11 +30,12 @@ uniform mat4 u_Projection;
 uniform mat4 u_View;
 uniform float u_ScreenWidth;
 uniform float u_ScreenHeight;
+uniform float u_VoxelDim;
 
 uniform int u_State; // Decides mipmap sample level.
 uniform vec3 u_CubeSize;
 
-in vec2 textureCoordinateFrag; 
+//in vec2 textureCoordinateFrag; 
 out vec4 color;
 
 // Scales and bias a given vector (i.e. from [-1, 1] to [0, 1]).
@@ -99,16 +94,19 @@ void main() {
 	// Initialize ray.
 	 vec3 origin = u_CameraViewPos;
 
+	 vec2 textureCoordinateFrag= vec2(gl_FragCoord.xy)/vec2(u_ScreenWidth,u_ScreenHeight);
+	 textureCoordinateFrag = 2.0*textureCoordinateFrag - 1.0;
+
+
 	vec3 stop = normalize(u_CameraFront)*u_CubeSize.x +
 				normalize(u_CameraRight)*textureCoordinateFrag.x*u_CubeSize.x +
 				normalize(u_CameraUp)*textureCoordinateFrag.y*u_CubeSize.x;
-
 
 	float rayLength = length(stop-origin);
 	vec3 direction =GenRay();
 
 
-	float voxelSize = 2.0*u_CubeSize.x/256.0;
+	float voxelSize = 2.0*u_CubeSize.x/ u_VoxelDim;
 	uint numberOfSteps =uint(rayLength/voxelSize);
 
 
@@ -119,8 +117,8 @@ void main() {
 		vec3 currentPoint =  voxelSize *float( step_) * direction/u_CubeSize;
 		if(!isInsideCube(currentPoint,0))break;
 		vec4 currentSample = textureLod(texture3D, scaleAndBias(currentPoint), mipmapLevel);///u_CubeSize.x
-		if(currentSample.a!=-1)//if voxel is not empty
-			color += (1.0f - color.a) * currentSample;
+		//if(currentSample.a!=-1)//if voxel is not empty
+		color += (1.0f - color.a) * currentSample;
 	} 
 	color.rgb = pow(color.rgb, vec3(1.0 / 2.2));
 }

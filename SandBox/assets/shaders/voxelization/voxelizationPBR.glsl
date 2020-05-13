@@ -408,8 +408,8 @@ void main(){
 	}
 	
 		
-		color = color / (color + vec3(1.0));
-		color = pow(color, vec3(1.0/2.2));  
+	color = color / (color + vec3(1.0));
+	color = pow(color, vec3(1.0/2.2));  
 	vec3 voxel = scaleAndBias(normalWorldPositionFrag);
 	ivec3 dim = imageSize(texture3D);// retrieve the dimensions of an image
 	vec4 res = vec4(vec3(color), 1);

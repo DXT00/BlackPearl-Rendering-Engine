@@ -9,6 +9,7 @@ layout (location = 2) in vec3 glNormal;
 out vec4 v_vertex;
 out uvec3 v_texcoord;
 //out vec4 v_color;
+uniform mat4 u_Model;
 
 uniform mat4 u_ModelView;
 uniform mat4 u_Proj;
@@ -33,13 +34,14 @@ void main(){
 
 	v_texcoord.z = uint(mod((gl_VertexID / voxelDim) , voxelDim));
 	v_texcoord.y = uint(gl_VertexID / (voxelDim*voxelDim));
-	gl_Position = u_Proj * u_ModelView * vec4( v_texcoord, 1.0 );
-
-	//v_texcoord.xyz /= u_voxelDim;
-	//v_vertex = vec4( v_texcoord*2-1, 1.0 );
 	v_vertex = vec4( v_texcoord/float(u_voxelDim)*2.0-1, 1.0 ); //[0,1]-->[-1,1]
 	v_vertex.z += u_halfDim;
 	v_vertex.x -= u_halfDim;
+	gl_Position = v_vertex;//u_Proj * u_ModelView * u_Model * vec4( v_texcoord, 1.0 );
+
+	//v_texcoord.xyz /= u_voxelDim;
+	//v_vertex = vec4( v_texcoord*2-1, 1.0 );
+
 	//v_normal = mat3(u_Normal) * glNormal;
 	//v_color = glColor; 
 }
@@ -93,7 +95,7 @@ bool nodeOccupied( uvec3 loc,out int leafIdx){
 
 	bool occupied = true;
 	uint voxelDim =uint(u_voxelDim);
-	uint idx;
+	uint idx=0u;
 	uvec3 umin = uvec3(0);
 	ivec3 offset;
 	for(int i=0;i<=uOctreeLevel;++i){
@@ -289,7 +291,7 @@ layout(location = 0) out vec4 gl_FragColor;
 out vec4 fragColor;
 void main(){
 
-	gl_FragColor =vec4(1.0,0.0,0.0,1.0);//f_color;//vec4(f_leafIdx,1.0);//vec4(1.0,0.0,0.0,1.0);//f_color;
+	gl_FragColor =f_color;//vec4(f_leafIdx,1.0);//vec4(1.0,0.0,0.0,1.0);//f_color;
 		//fragColor =vec4(f_leafIdx,1.0);//f_vertex;//vec4(1.0,0.0,0.0,1.0);// f_color;
 
 

@@ -8,7 +8,7 @@ layout(location = 2) in vec2 aTexCoords;
 uniform mat4 u_Model;
 uniform mat4 u_ProjectionView;
 uniform mat4 u_TranInverseModel;//transpose(inverse(u_Model))-->最好在cpu运算完再传进来!
-uniform bool u_IsSkybox;
+uniform int u_IsSkybox;
 uniform mat4 u_Projection;
 uniform mat4 u_View;
 uniform vec3 u_CubeSize;
@@ -31,7 +31,7 @@ void main(){
 	worldPositionGeom = vec3(u_Model * vec4(aPos,1.0));
 	normalGeom = normalize(mat3(transpose(inverse(u_Model)))*aNormal);
 	//normalGeom=normalize(normalGeom);
-	if(u_IsSkybox)
+	if(u_IsSkybox==1)
 		texCoordGeom=aPos;
 	else
 		texCoordGeom=vec3(aTexCoords.x,aTexCoords.y,1.0);
@@ -138,7 +138,7 @@ uniform int u_PointLightNums;
 uniform vec3 u_CameraViewPos;
 //
 uniform vec3 u_CubeSize;
-uniform bool u_IsSkybox;
+uniform int u_IsSkybox;
 uniform int u_IsPBRObjects;
 uniform bool u_StoreData;
 
@@ -147,7 +147,8 @@ uniform int u_VoxelSize;
 int ulightNum = u_PointLightNums;
 int uPBR = u_IsPBRObjects;
 bool uStoreData= u_StoreData;
-int uIsTextureSample = u_Settings.isTextureSample;
+int uDiffuseTextureSample = u_Settings.isDiffuseTextureSample;
+int uSpecularTextureSample = u_Settings.isSpecularTextureSample;
 
 /************************************* PBR fuction ***************************************************/
 /*****************************************************************************************************/
@@ -225,14 +226,14 @@ vec3 CalcPointLight(PointLight light,vec3 normal,vec3 viewDir,vec3 fragPos){
 	vec3 lightDir = normalize(light.position-fragPos);
 	vec3 norm = normalize(normal);
 	float diff = max(dot(lightDir,norm),0.0f);
-	vec3 diffuse = light.diffuse * diff * (u_Material.diffuseColor*(1-u_Settings.isTextureSample)+texture(u_Material.diffuse,texCoordFrag.xy).rgb*u_Settings.isTextureSample );
+	vec3 diffuse = (uDiffuseTextureSample==0)?( light.diffuse * diff * u_Material.diffuseColor): (light.diffuse * diff *texture(u_Material.diffuse,texCoordFrag.xy).rgb);
 
 	//specular
 	vec3 specular;
 	float spec;
 	vec3 reflectDir = normalize(reflect(-lightDir,norm));
 	spec = pow(max(dot(reflectDir,viewDir),0.0),u_Material.shininess);
-	specular =  light.specular * spec  *  u_Material.specularColor;
+	specular = (uSpecularTextureSample==0)? (light.specular * spec  *  u_Material.specularColor):(light.specular * spec  * texture(u_Material.specular,texCoordFrag.xy).rgb);
 	ambient  *= attenuation;
 	diffuse  *= attenuation;
 	specular *= attenuation;
@@ -259,11 +260,12 @@ void main(){
 	normalWorldPositionFrag = normalWorldPositionFrag/u_CubeSize;
 	if(!isInsideCube(normalWorldPositionFrag, 0.0)) return;
 
+	int isSkybox = u_IsSkybox;
 	if(uPBR==0){
-//		if(u_IsSkybox){
-//			color=texture(u_Material.cube,texCoordFrag).rgb;
-//		}
-		//else{
+		if(isSkybox==1){
+			color=texture(u_Material.cube,texCoordFrag).rgb;
+		}
+		else{
 			for(int i = 0; i < ulightNum; ++i) 
 			{
 
@@ -280,7 +282,7 @@ void main(){
 				float diff = max(dot(lightDir,norm),0.0f);
 				vec3 diffuse;
 
-				if(uIsTextureSample==0){
+				if(uDiffuseTextureSample==0){
 					diffuse =  u_PointLights[i].diffuse * diff * (u_Material.diffuseColor );
 				}
 				else
@@ -296,7 +298,10 @@ void main(){
 
 				vec3 reflectDir = normalize(reflect(-lightDir,norm));
 				spec = pow(max(dot(reflectDir,viewDir),0.0),u_Material.shininess);
-				specular =  u_PointLights[i].specular * spec  *  u_Material.specularColor;
+				specular = (uSpecularTextureSample==0)? (u_PointLights[i].specular * spec  *  u_Material.specularColor):(u_PointLights[i].specular * spec  * texture(u_Material.specular,texCoordFrag.xy).rgb);
+
+
+//u_PointLights[i].specular * spec  *  u_Material.specularColor;
 			
 				ambient  *= attenuation;
 				diffuse  *= attenuation;
@@ -307,7 +312,7 @@ void main(){
 
 				color +=fragColor;//CalcPointLight(u_PointLights[i], normalFrag,viewDir,worldPositionFrag);//vec3(1,0,0);// 
 			}//for
-		//}//else
+		}//else
 	}//if(u_IsPBRObjects==0)
 	else {
 		vec3 albedo = pow(texture(u_Material.diffuse, texCoordFrag.xy).rgb, vec3(2.2));//vec3(pow( texture(u_Material.diffuse, v_TexCoord).r, (2.2)));

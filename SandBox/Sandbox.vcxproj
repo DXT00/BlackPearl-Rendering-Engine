@@ -167,7 +167,6 @@
     <None Include="assets\shaders\gBufferVoxelSVO\svoTracing_new.glsl" />
     <None Include="assets\shaders\gBufferVoxelSVO\voxelizationSVO.glsl" />
     <None Include="assets\shaders\gBufferVoxelSVO\voxelizationSVO_new.glsl" />
-    <None Include="assets\shaders\gBufferVoxel\renderVoxel.glsl" />
     <None Include="assets\shaders\map\map.glsl" />
     <None Include="assets\shaders\SkyBoxMultiTexture.glsl" />
   </ItemGroup>

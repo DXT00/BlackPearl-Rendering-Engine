@@ -18,9 +18,9 @@ public:
 		m_CubeObj = CreateCube();
 		m_CubeObj->GetComponent<BlackPearl::Transform>()->SetScale(glm::vec3(20.0f));//必须是单位cube
 		m_QuadObj = CreateQuad();
-		m_QuadBRDFLUTObj = CreateQuad();
+		/*m_QuadBRDFLUTObj = CreateQuad();
 		m_QuadGBufferObj = CreateQuad();
-		m_QuadFinalScreenObj = CreateQuad();
+		m_QuadFinalScreenObj = CreateQuad();*/
 		m_SurroundSphereObj = CreateSphere(1.0, 64, 64, "assets/shaders/Sphere.glsl", "", "SurroundSphere");
 
 		glEnable(GL_MULTISAMPLE);
@@ -45,9 +45,9 @@ public:
 			});
 	
 
-		LoadScene("CornellScene");
-		//LoadChurchScene();
-		LoadScene("SpheresScene");
+		//LoadScene("CornellScene");
+		LoadChurchScene();
+		//LoadScene("SpheresScene");
 
 		m_skybox = m_SkyBoxObj;
 		/********************************************* Renderer **********************************************************/
@@ -56,7 +56,7 @@ public:
 		m_VoxelConeTracingDeferredRenderer = DBG_NEW BlackPearl::VoxelConeTracingDeferredRenderer();
 		BlackPearl::Renderer::Init();
 		m_VoxelConeTracingDeferredRenderer->Init(BlackPearl::Configuration::WindowWidth, BlackPearl::Configuration::WindowHeight,
-			m_QuadObj, m_QuadGBufferObj, m_QuadBRDFLUTObj, m_QuadFinalScreenObj, m_SurroundSphereObj, m_CubeObj);
+			m_QuadObj,  m_SurroundSphereObj, m_CubeObj);
 
 
 
