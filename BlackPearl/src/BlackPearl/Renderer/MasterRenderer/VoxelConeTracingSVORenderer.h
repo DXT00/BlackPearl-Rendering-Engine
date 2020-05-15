@@ -84,7 +84,8 @@ namespace BlackPearl{
 		static bool s_MipmapBlurSpecularTracing;
 		static int s_MaxBounce;//path tracing max cone number
 		static bool s_Pause;
-
+		static float s_IndirestSpecularAngle;
+		static float s_Step;
 	private:
 
 		//Texture3D* m_VoxelTexture = nullptr;

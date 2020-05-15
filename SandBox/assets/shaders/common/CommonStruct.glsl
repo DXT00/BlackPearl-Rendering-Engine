@@ -16,40 +16,39 @@ struct Material{
 	sampler2D depth;
 	sampler2D ao;
 	sampler2D roughness;
-	sampler2D mentallic;
-	
+	sampler2D mentallic;	
 	samplerCube cube;
 	float shininess;
 	float specularDiffusion;
 	float diffuseReflectivity;
 	float specularReflectivity;
 	float transparency;
-	bool isBlinnLight;
+	bool  isBlinnLight;
 	float emissivity;
-	int  isTextureSample;
-	int isDiffuseTextureSample;
-	int isSpecularTextureSample;
-	int isMetallicTextureSample;
+//	int   isTextureSample;
+//	int   isDiffuseTextureSample;
+//	int   isSpecularTextureSample;
+//	int   isMetallicTextureSample;
 	float refractiveIndex;
 };
 
 
 struct Settings{
-	bool isBlinnLight;
-//	int  isTextureSample;//判断是否使用texture,或者只有color-->改为了isPBRTextureSample
-	int isDiffuseTextureSample;
-	int isSpecularTextureSample;
-//	int isMetallicTextureSample;
-	int isEmissionTextureSample;
-	int isPBRTextureSample;//normalMap,aoMap,metallicMap
-	bool directLight;
-	bool indirectDiffuseLight;
-	bool indirectSpecularLight;
-	bool shadows;
+	bool  isBlinnLight;
+	int   isAmbientTextureSample;
+	int   isDiffuseTextureSample;
+	int   isSpecularTextureSample;
+	int   isHeightTextureSample;
+	int   isEmissionTextureSample;
+	int   isPBRTextureSample;//normalMap,aoMap,metallicMap
+	bool  directLight;
+	bool  indirectDiffuseLight;
+	bool  indirectSpecularLight;
+	bool  shadows;
 	float GICoeffs;
-	bool hdr;
-	bool guassian_horiziotal;
-	bool guassian_vertical;
-	bool guassian_mipmap;
-	bool showBlurArea;
+	bool  hdr;
+	bool  guassian_horiziotal;
+	bool  guassian_vertical;
+	bool  guassian_mipmap;
+	bool  showBlurArea;
 };

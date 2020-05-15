@@ -148,10 +148,10 @@ namespace BlackPearl {
 		m_Props.isSpecularTextureSample = isTextureSampleSpecular;
 	}
 
-	/*void Material::SetTextureSampleMetallic(int isTextureSampleMetallic)
+	void Material::SetTextureSampleHeight(int isTextureSampleHeight)
 	{
-		m_Props.isMetallicTextureSample = isTextureSampleMetallic;
-	}*/
+		m_Props.isHeightTextureSample = isTextureSampleHeight;
+	}
 
 	void Material::SetTextureSampleEmission(int isTextureSampleMetallic)
 	{

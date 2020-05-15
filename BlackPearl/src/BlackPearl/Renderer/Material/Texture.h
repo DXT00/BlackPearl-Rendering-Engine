@@ -20,7 +20,8 @@ namespace BlackPearl {
 			DepthMap,
 			AoMap,
 			RoughnessMap,
-			MentallicMap
+			MentallicMap,
+			OpacityMap
 
 
 		};
@@ -98,10 +99,13 @@ namespace BlackPearl {
 		unsigned int GetRendererID() { return m_TextureID; }
 		//std::vector<std::string> GetFacesPath() { return m_FacesPath; }
 		std::string GetPath() { return m_Path; }
+		int GetWidth()const { return m_Width; }
+		int GetHeight()const { return m_Height; }
 
 	protected:
 		unsigned int m_TextureID;
-		//	std::vector<std::string> m_FacesPath;
+		int m_Width = 0;
+		int m_Height = 0;
 		std::string m_Path;
 		Type m_Type;
 	};

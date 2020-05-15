@@ -4,10 +4,10 @@
 layout(location = 0) in vec3 aPos;
 layout(location = 1) in vec3 aNormal;
 layout(location = 2) in vec2 aTexCoords;
-layout(location = 3) in ivec4 aJointIndices;/*与当前fragment相关的3个Joint  {1,2,4}*/
-layout(location = 4) in ivec4 aJointIndices1;/*与当前fragment相关的3个Joint  {1,2,4}*/
-layout(location = 5) in vec4 aWeights;/*每个Joint的权重*/
-layout(location = 6) in vec4 aWeights1;/*每个Joint的权重*/
+layout(location = 5) in ivec4 aJointIndices;/*与当前fragment相关的3个Joint  {1,2,4}*/
+layout(location = 6) in ivec4 aJointIndices1;/*与当前fragment相关的3个Joint  {1,2,4}*/
+layout(location = 7) in vec4 aWeights;/*每个Joint的权重*/
+layout(location = 8) in vec4 aWeights1;/*每个Joint的权重*/
 
 out vec2 v_TexCoord;
 out vec3 v_Normal;

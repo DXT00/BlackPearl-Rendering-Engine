@@ -58,7 +58,10 @@ namespace BlackPearl {
 		m_Path = path;
 		m_Scene = m_Importer.ReadFile(path,
 			aiProcess_Triangulate |
-			aiProcess_GenSmoothNormals);
+			aiProcess_GenSmoothNormals|
+			aiProcess_Triangulate |
+			aiProcess_CalcTangentSpace|
+			aiProcess_JoinIdenticalVertices);//
 
 		//不要加aiProcess_FlipUVs！！！，否则纹理会反！！！
 		//|
@@ -101,42 +104,30 @@ namespace BlackPearl {
 
 		m_BoneDatas.resize(m_VerticesNum);
 		//m_Animation = *(m_Scene->mAnimations[0]);
+		// Create a materials from the loaded assimp materials
+		
+		for (unsigned int m = 0; m < m_Scene->mNumMaterials; m++) {
+				
+			m_ModelMaterials[m] = LoadMaterial(m_Scene->mMaterials[m]);
+		}
+
+
 		for (int i = 0; i < m_Scene->mNumMeshes; i++)
 		{
 			aiMesh* mesh = m_Scene->mMeshes[i];
-			/*LoadBones(m_Scene->mMeshes[i]);
-			m_VerticesIdx+= m_Scene->mMeshes[i]->mNumVertices;*/
-			m_Meshes.push_back(ProcessMesh(mesh));
-			
-		//	GE_SAVE_DELETE(mesh);
-		}
-		//ProcessNode(m_Scene->mRootNode);
-		/*if (!m_HasAnimation) {
-			if (m_Scene != nullptr) {
-				delete m_Scene;
-				m_Scene = nullptr;
+	
+			if (i == 210) {
+				GE_CORE_INFO("210");
 			}
-				
-		}*/
+			m_Meshes.push_back(ProcessMesh(mesh));
 
-		//GE_SAVE_DELETE(m_Scene);
+			//	GE_SAVE_DELETE(mesh);
+		}
+		
 	}
 
 
-	//void Model::ProcessNode(aiNode* node)
-	//{
-	//	GE_CORE_INFO("node name"+std::string(node->mName.data));
-	//	for (unsigned int i = 0; i < node->mNumMeshes; i++)
-	//	{
-	//		aiMesh* mesh = m_Scene->mMeshes[node->mMeshes[i]];
 
-	//		m_Meshes.push_back(ProcessMesh(mesh));
-	//	}
-	//	for (unsigned int i = 0; i < node->mNumChildren; i++)
-	//	{
-	//		ProcessNode(node->mChildren[i]);
-	//	}
-	//}
 	void Model::LoadBones(aiMesh* aimesh)
 	{
 
@@ -177,21 +168,50 @@ namespace BlackPearl {
 
 			}
 
-			
+
 		}
+
+	}
+	std::shared_ptr<Material> Model::LoadMaterial(aiMaterial* material)
+	{
+		std::shared_ptr<Material> meshMaterial;
+
+
+		std::shared_ptr<Material::TextureMaps> textures(DBG_NEW Material::TextureMaps());
+		MaterialColor  colors;
+		float shininess;
+		material->Get(AI_MATKEY_SHININESS, shininess);
+
+		LoadMaterialTextures(material, aiTextureType_DIFFUSE, Texture::Type::DiffuseMap, textures);
+		LoadMaterialTextures(material, aiTextureType_SPECULAR, Texture::Type::SpecularMap, textures);
+		LoadMaterialTextures(material, aiTextureType_NORMALS, Texture::Type::NormalMap, textures);//
+		LoadMaterialTextures(material, aiTextureType_HEIGHT, Texture::Type::HeightMap, textures);
+		//	LoadMaterialTextures(material, aiTextureType_OPACITY, Texture::Type::OpacityMap, textures); //
+		LoadMaterialTextures(material, aiTextureType_AMBIENT, Texture::Type::SpecularMap, textures); //
+
+
+		//LoadMaterialTextures(material, aiTextureType_REFLECTION, Texture::Type::RoughnessMap, textures);
+		//LoadMaterialTextures(material, aiTextureType_AMBIENT, Texture::Type::RoughnessMap, textures);
+		//LoadMaterialTextures(material, aiTextureType_LIGHTMAP, Texture::Type::AoMap, textures);
+		//LoadMaterialTextures(material, aiTextureType_DISPLACEMENT, Texture::Type::DiffuseMap, textures);//TODO
+
+		LoadMaterialColors(material, colors);
 		
+		meshMaterial.reset(DBG_NEW Material(m_Shader, textures, colors));
+		meshMaterial->SetShininess(shininess);
+		return meshMaterial;
 	}
 	Mesh Model::ProcessMesh(aiMesh* aimesh)
 	{
-		
+
 		std::vector<float> vertices;
 		std::vector<unsigned int> verticesIntjointIdx;
 		std::vector<float> verticesfloatWeight;
 
 		std::vector<unsigned int> indices;
 		// maps
-		std::shared_ptr<Material::TextureMaps> textures(DBG_NEW Material::TextureMaps());
-		MaterialColor  colors;
+		//std::shared_ptr<Material::TextureMaps> textures(DBG_NEW Material::TextureMaps());
+		//MaterialColor  colors;
 		VertexBufferLayout layout1, layout2;
 		VertexBufferLayout layout = {
 			{ElementDataType::Float3,"aPos",false,0},
@@ -201,11 +221,16 @@ namespace BlackPearl {
 			//	{ElementDataType::Float3,"aBitTangent",false},
 
 		};
+		if (aimesh->HasTangentsAndBitangents()) {
+			layout.AddElement({ ElementDataType::Float3,"aTangent",false ,3 });
+			layout.AddElement({ ElementDataType::Float3,"aBitangent",false ,4 });
+
+		}
 		if (m_HasAnimation) {
-			layout1 = { { ElementDataType::Int4,"aJointIndices",false,3 },
-						{ ElementDataType::Int4,"aJointIndices1",false,4 } };
-			layout2 = { { ElementDataType::Float4,"aWeights",false,5},
-						{ ElementDataType::Float4,"aWeights1",false,6} };
+			layout1 = { { ElementDataType::Int4,"aJointIndices",false,5 },
+						{ ElementDataType::Int4,"aJointIndices1",false,6 } };
+			layout2 = { { ElementDataType::Float4,"aWeights",false,7},
+						{ ElementDataType::Float4,"aWeights1",false,8} };
 		}
 
 		if (m_HasAnimation && aimesh->mNumBones >= 0)
@@ -245,24 +270,25 @@ namespace BlackPearl {
 				//	GE_ASSERT(m_BoneDatas[vertexIdx].weights[0] + m_BoneDatas[vertexIdx].weights[1] + m_BoneDatas[vertexIdx].weights[2] + m_BoneDatas[vertexIdx].weights[3] == 1.0f, "total weight!=1");
 			}
 			//tangent
-			//glm::vec3 tangent = glm::vec3(0.0f);
-			//if (aimesh->mTangents != NULL) {
-			//	tangent.x = aimesh->mTangents[i].x;
-			//	tangent.y = aimesh->mTangents[i].y;
-			//	tangent.z = aimesh->mTangents[i].z;
+			glm::vec3 tangent = glm::vec3(0.0f);
+			glm::vec3 bitTangent = glm::vec3(0.0f);
 
-			//}
-			//glmInsertVector(tangent, vertices);
+			if (aimesh->HasTangentsAndBitangents()) {
 
-			////bittangent
-			//glm::vec3 bitTangent = glm::vec3(0.0f);
-			//if (aimesh->mBitangents != NULL) {
-			//	bitTangent.x = aimesh->mBitangents[i].x;
-			//	bitTangent.y = aimesh->mBitangents[i].y;
-			//	bitTangent.z = aimesh->mBitangents[i].z;
-			//}
+				tangent.x = aimesh->mTangents[i].x;
+				tangent.y = aimesh->mTangents[i].y;
+				tangent.z = aimesh->mTangents[i].z;
+				//bittangent
+			
+				bitTangent.x = aimesh->mBitangents[i].x;
+				bitTangent.y = aimesh->mBitangents[i].y;
+				bitTangent.z = aimesh->mBitangents[i].z;
+				glmInsertVector(tangent, vertices);
 
-			//glmInsertVector(bitTangent, vertices);
+				glmInsertVector(bitTangent, vertices);
+			}				
+	
+
 
 		}
 
@@ -277,24 +303,25 @@ namespace BlackPearl {
 
 			}
 		}
-		if (aimesh->mMaterialIndex >= 0) {
-			aiMaterial* material = m_Scene->mMaterials[aimesh->mMaterialIndex];
-			LoadMaterialTextures(material, aiTextureType_DIFFUSE, Texture::Type::DiffuseMap, textures);
-			LoadMaterialTextures(material, aiTextureType_SPECULAR, Texture::Type::SpecularMap, textures);
-			LoadMaterialTextures(material, aiTextureType_NORMALS, Texture::Type::NormalMap, textures);//
-		//	LoadMaterialTextures(material, aiTextureType_HEIGHT, Texture::Type::AoMap, textures);
-			//LoadMaterialTextures(material, aiTextureType_SPECULAR, Texture::Type::MentallicMap, textures); //
-		
-																										   
-																										   //LoadMaterialTextures(material, aiTextureType_REFLECTION, Texture::Type::RoughnessMap, textures);
-			//LoadMaterialTextures(material, aiTextureType_AMBIENT, Texture::Type::RoughnessMap, textures);
-			//LoadMaterialTextures(material, aiTextureType_LIGHTMAP, Texture::Type::AoMap, textures);
+		//if (aimesh->mMaterialIndex >= 0) {
+		//	aiMaterial* material = m_Scene->mMaterials[aimesh->mMaterialIndex];
+		//	LoadMaterialTextures(material, aiTextureType_DIFFUSE, Texture::Type::DiffuseMap, textures);
+		//	LoadMaterialTextures(material, aiTextureType_SPECULAR, Texture::Type::SpecularMap, textures);
+		//	LoadMaterialTextures(material, aiTextureType_NORMALS, Texture::Type::NormalMap, textures);//
+		//	LoadMaterialTextures(material, aiTextureType_HEIGHT, Texture::Type::HeightMap, textures);
+		////	LoadMaterialTextures(material, aiTextureType_OPACITY, Texture::Type::OpacityMap, textures); //
+		//	LoadMaterialTextures(material, aiTextureType_AMBIENT, Texture::Type::SpecularMap, textures); //
 
 
-			//LoadMaterialTextures(material, aiTextureType_DISPLACEMENT, Texture::Type::DiffuseMap, textures);//TODO
+		//																								   //LoadMaterialTextures(material, aiTextureType_REFLECTION, Texture::Type::RoughnessMap, textures);
+		//	//LoadMaterialTextures(material, aiTextureType_AMBIENT, Texture::Type::RoughnessMap, textures);
+		//	//LoadMaterialTextures(material, aiTextureType_LIGHTMAP, Texture::Type::AoMap, textures);
 
-			LoadMaterialColors(material, colors);
-		}
+
+		//	//LoadMaterialTextures(material, aiTextureType_DISPLACEMENT, Texture::Type::DiffuseMap, textures);//TODO
+
+		//	LoadMaterialColors(material, colors);
+		//}
 
 
 
@@ -307,7 +334,7 @@ namespace BlackPearl {
 		unsigned int* indices_ = DBG_NEW unsigned int[indices.size()];
 		memcpy(indices_, &indices[0], indices.size() * sizeof(unsigned int));
 		std::shared_ptr<IndexBuffer> indexBuffer(DBG_NEW IndexBuffer(indices_, indices.size() * sizeof(unsigned int)));
-		std::shared_ptr<Material> material(new Material(m_Shader, textures, colors));
+		//std::shared_ptr<Material> material(new Material(m_Shader, textures, colors));
 
 		m_VerticesIdx += aimesh->mNumVertices;
 
@@ -322,7 +349,7 @@ namespace BlackPearl {
 			memcpy(verticesfloatWeight_, &verticesfloatWeight[0], verticesfloatWeight.size() * sizeof(float));//注意memcpy最后一个参数是字节数!!!
 			std::shared_ptr<VertexBuffer> vertexBuffer2(DBG_NEW VertexBuffer(verticesfloatWeight_, verticesfloatWeight.size() * sizeof(float)));
 			vertexBuffer2->SetBufferLayout(layout2);
-			return Mesh(material, indexBuffer, { vertexBuffer,vertexBuffer1,vertexBuffer2 });
+			return Mesh(m_ModelMaterials[aimesh->mMaterialIndex], indexBuffer, { vertexBuffer,vertexBuffer1,vertexBuffer2 });
 		}
 
 
@@ -332,7 +359,7 @@ namespace BlackPearl {
 				material,
 				layout);*/
 
-		return Mesh(material, indexBuffer, { vertexBuffer });
+		return Mesh(m_ModelMaterials[aimesh->mMaterialIndex], indexBuffer, { vertexBuffer });
 
 
 	}
@@ -349,9 +376,9 @@ namespace BlackPearl {
 
 			std::string path_str = m_Directory + "/" + std::string(path.C_Str());//
 			if (typeName == Texture::Type::DiffuseMap)
-				textures->diffuseTextureMap.reset(DBG_NEW Texture(typeName, path_str.c_str(), GL_LINEAR, GL_LINEAR, GL_RGBA, GL_CLAMP_TO_EDGE, GL_UNSIGNED_BYTE));
+				textures->diffuseTextureMap.reset(DBG_NEW Texture(typeName, path_str.c_str(), GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR, GL_RGBA, GL_REPEAT, GL_UNSIGNED_BYTE, true));
 			if (typeName == Texture::Type::SpecularMap)
-				textures->specularTextureMap.reset(DBG_NEW Texture(typeName, path_str.c_str(), GL_LINEAR, GL_LINEAR, GL_RGBA, GL_CLAMP_TO_EDGE, GL_UNSIGNED_BYTE));
+				textures->specularTextureMap.reset(DBG_NEW Texture(typeName, path_str.c_str(), GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR, GL_RGBA, GL_REPEAT, GL_UNSIGNED_BYTE, true));
 			if (typeName == Texture::Type::EmissionMap)
 				textures->emissionTextureMap.reset(DBG_NEW Texture(typeName, path_str.c_str(), GL_LINEAR, GL_LINEAR, GL_RGBA, GL_CLAMP_TO_EDGE, GL_UNSIGNED_BYTE));
 			if (typeName == Texture::Type::NormalMap)
@@ -362,9 +389,10 @@ namespace BlackPearl {
 				textures->mentallicMap.reset(DBG_NEW Texture(typeName, path_str.c_str(), GL_LINEAR, GL_LINEAR, GL_RGBA, GL_CLAMP_TO_EDGE, GL_UNSIGNED_BYTE));
 			if (typeName == Texture::Type::RoughnessMap)
 				textures->roughnessMap.reset(DBG_NEW Texture(typeName, path_str.c_str(), GL_LINEAR, GL_LINEAR, GL_RGBA, GL_CLAMP_TO_EDGE, GL_UNSIGNED_BYTE));
-			/*if (typeName == Texture::Type::HeightMap)
-				textures->heightTextureMap.reset(DBG_NEW Texture(typeName, path_str.c_str()));
-			*/
+			if (typeName == Texture::Type::HeightMap)
+				textures->heightTextureMap.reset(DBG_NEW Texture(typeName, path_str.c_str(), GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR, GL_RED, GL_REPEAT, GL_UNSIGNED_BYTE,true));
+			if (typeName == Texture::Type::OpacityMap)
+				textures->heightTextureMap.reset(DBG_NEW Texture(typeName, path_str.c_str(), GL_LINEAR, GL_LINEAR, GL_RGBA, GL_CLAMP_TO_EDGE, GL_UNSIGNED_BYTE));
 
 
 		}
@@ -483,54 +511,6 @@ namespace BlackPearl {
 
 
 	}
-	//void Model::ReadHierarchy(float timeInDurationSecond, aiNode* node, aiMatrix4x4 parentTransform)
-	//{
-	//	std::string nodeName(node->mName.data);
-	//	aiAnimation* animation = m_Scene->mAnimations[0];
-	//	aiNodeAnim* nodeAnim = FindNode(nodeName, animation);
-	//	aiMatrix4x4 transform = (node->mTransformation);
-	//	
-
-	//	if (nodeAnim) {
-
-	//		unsigned int positionNum = nodeAnim->mNumPositionKeys;
-	//		unsigned int rotationNum = nodeAnim->mNumRotationKeys;
-	//		unsigned int scaleNum = nodeAnim->mNumScalingKeys;
-	//		glm::vec3 position = CalculateInterpolatePosition(timeInDurationSecond, nodeAnim);
-	//		aiQuaternion quaternion = CalculateInterpolateRotation(timeInDurationSecond, nodeAnim);
-	//		glm::vec3 scale = CalculateInterpolateScale(timeInDurationSecond, nodeAnim);
-
-
-	//		
-	//		aiMatrix3x3 rotateM = (quaternion.GetMatrix());
-	//		transform = aiMatrix4x4(rotateM);
-	//		transform.a4 = position.x; transform.b4 = position.y; transform.c4 = position.z; transform.d4 = 1.0f;
-	//		transform.a1 *= scale.x;   transform.a2 *= scale.y;   transform.a3 *= scale.z;   
-	//		transform.b1 *= scale.y;   transform.b2 *= scale.y;   transform.b3 *= scale.y;   
-	//		transform.c1 *= scale.x;   transform.c2 *= scale.y;   transform.c3 *= scale.z;
-
-
-	//	}
-	//	aiMatrix4x4 globalTransform = parentTransform * transform  ;
-	//	if (m_BoneNameToIdex.find(nodeName) != m_BoneNameToIdex.end()) {
-	//		int boneIdex = m_BoneNameToIdex[nodeName];
-	//		aiMatrix4x4 aiFinalTransform = m_GlobalInverseTransform * globalTransform * m_Bones[boneIdex].meshToBoneTranform;
-	//		//m_Bones[boneIdex].finalTransform = m_GlobalInverseTransform * globalTransform * m_Bones[boneIdex].meshToBoneTranform;
-	//		m_Bones[boneIdex].finalTransform = ConvertMatrix(aiFinalTransform);// glm::transpose(AiMatrix4ToMat4(aiFinalTransform));
-	//	
-	//	}
-	//	else {
-	//		GE_CORE_ERROR("no such bone" + nodeName);
-	//	}
-
-	//	for (int i = 0; i < node->mNumChildren; i++)
-	//	{
-	//		ReadHierarchy(timeInDurationSecond, node->mChildren[i], globalTransform);
-	//	}
-
-
-
-	//}
 
 	glm::vec3 Model::CalculateInterpolatePosition(float timeInDurationSecond, aiNodeAnim* nodeAnim)
 	{

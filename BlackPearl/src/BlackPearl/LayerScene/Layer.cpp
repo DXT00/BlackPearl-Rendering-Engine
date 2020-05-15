@@ -38,6 +38,9 @@ namespace BlackPearl {
 		ImGui::Checkbox("svo Indirect diffuse light", &VoxelConeTracingSVORenderer::s_IndirectDiffuseLight);
 		ImGui::Checkbox("svo Indirect specular light", &VoxelConeTracingSVORenderer::s_IndirectSpecularLight);
 		ImGui::DragFloat("svo GICoeffs", &VoxelConeTracingSVORenderer::s_GICoeffs, 0.2f, 0.0f, 1.0f, "%.3f ");
+		ImGui::DragFloat("specularAngle", &VoxelConeTracingSVORenderer::s_IndirestSpecularAngle, 0.2f, 0.01f, 45.0f, "%.4f ");
+		ImGui::DragFloat("specularStep", &VoxelConeTracingSVORenderer::s_Step, 0.01f, 0.01f, 45.0f, "%.4f ");
+
 
 		ImGui::Text("deferred voxel GI");
 		ImGui::Checkbox("voxel Indirect diffuse", &VoxelConeTracingDeferredRenderer::s_IndirectDiffuseLight);
@@ -421,26 +424,28 @@ namespace BlackPearl {
 	}
 	void Layer::LoadChurchScene()
 	{
-		Object* church = CreateModel("assets/models/sponza_obj/sponza.obj", "assets/shaders/IronMan.glsl", false, "Church");
-		church->GetComponent<Transform>()->SetScale(glm::vec3(0.015));//0.02
+		Object* church = CreateModel("assets/models/crytek-sponza/sponza.obj", "assets/shaders/IronMan.glsl", false, "Church");
+
+		//Object* church = CreateModel("assets/models/sponza_obj/sponza.obj", "assets/shaders/IronMan.glsl", false, "Church");
+		church->GetComponent<Transform>()->SetScale(glm::vec3(0.01));//0.02
 		church->GetComponent<Transform>()->SetInitPosition({ 0.0f,0.0f,10.0f });
 		church->GetComponent<Transform>()->SetRotation({ 0.0f,-90.0f,0.0f });
 		//church->GetComponent<Transform>()->SetScale({ 0.1f,0.1f,0.1f });
 
 		church->GetComponent<MeshRenderer>()->SetIsBackGroundObjects(true);
-		//church->GetComponent<MeshRenderer>()->SetPBRTextureSamples(true);
+		church->GetComponent<MeshRenderer>()->SetTextureHeightSamples(true);
 		church->GetComponent<MeshRenderer>()->SetTextureDiffuseSamples(true);
 		church->GetComponent<MeshRenderer>()->SetTextureSpecularSamples(true);
-		church->GetComponent<BlackPearl::MeshRenderer>()->SetIsShadowObjects(false);
+		church->GetComponent<MeshRenderer>()->SetIsShadowObjects(false);
 
 		m_BackGroundObjsList.push_back(church);
 		//m_ShadowObjsList.push_back(church);
 
 
-		BlackPearl::Object* light = CreateLight(BlackPearl::LightType::PointLight);
-		light->GetComponent<BlackPearl::Transform>()->SetInitPosition({ 0.0,13,6.0 });
-		light->GetComponent<BlackPearl::MeshRenderer>()->SetIsShadowObjects(false);
-		light->GetComponent<PointLight>()->UpdateMesh({ {0,0,0} ,{1,1,1},{1,1,1},{0,0,0},13});
+		BlackPearl::Object* light = CreateLight(LightType::PointLight);
+		light->GetComponent<Transform>()->SetInitPosition({ 0.0,4.0,10.0 });
+		light->GetComponent<MeshRenderer>()->SetIsShadowObjects(false);
+		light->GetComponent<PointLight>()->UpdateMesh({ {0,0,0} ,{1,1,1},{1,1,1},{0,0,0},1.0});
 
 		//for (int i = 0; i < 10; i++) {
 		//	Object* light = CreateLight(LightType::PointLight);

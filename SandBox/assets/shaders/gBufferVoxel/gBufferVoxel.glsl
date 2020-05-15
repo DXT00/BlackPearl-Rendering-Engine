@@ -4,16 +4,20 @@
 layout(location = 0) in vec3 aPos;
 layout(location = 1) in vec3 aNormal;
 layout(location = 2) in vec2 aTexCoords;
+layout(location = 3) in vec3 aTangent;
+layout(location = 4) in vec3 aBitangent;
 
 out vec3 v_TexCoord;
 out vec3 v_Normal;
 out vec3 v_FragPos;
+out vec3 v_Tangent;
+out vec3 v_Bitangent;
 
 uniform bool u_IsSkybox;
 uniform mat4 u_ProjectionView;
 uniform mat4 u_Model;
 uniform mat4 u_TranInverseModel;
-
+uniform int u_isHeightTextureSample;
 
 void main(){
 
@@ -23,9 +27,16 @@ void main(){
 		v_TexCoord = aPos;
 	else
 		v_TexCoord = vec3(aTexCoords.x,aTexCoords.y,1.0);
-	v_Normal   = mat3(u_TranInverseModel)*aNormal;
+	v_Normal   = normalize(mat3(u_TranInverseModel)*aNormal);
 	v_FragPos  = vec3(u_Model*vec4(aPos,1.0));
-
+	if(u_isHeightTextureSample==1){
+		v_Tangent    = normalize((u_Model*vec4(aTangent,0.0)).xyz);
+		v_Bitangent  = normalize((u_Model*vec4(aBitangent,0.0)).xyz);
+	}
+	else{
+		v_Tangent = vec3(0.0);
+		v_Bitangent = vec3(0.0);
+	}
 
 
 
@@ -50,7 +61,8 @@ layout (location = 5) out vec3 gNormalMap;
 in vec3 v_TexCoord;
 in vec3 v_FragPos;
 in vec3 v_Normal;
-
+in vec3 v_Tangent;
+in vec3 v_Bitangent;
 uniform samplerCube u_PrefilterMap;
 uniform sampler2D u_BrdfLUTMap;
 
@@ -70,7 +82,24 @@ uniform Settings u_Settings;
 uniform int u_IsPBRObjects;
 uniform bool u_IsSkybox;
 
+uniform vec2 u_HeightMapSize;
+uniform int u_isHeightTextureSample;
 
+vec3 getNormalFromHeightMap(vec2 texCoord){
+    mat3 tangentToWorld = inverse(transpose(mat3(v_Tangent, v_Normal, v_Bitangent)));
+
+	vec2 offset = vec2(1.0)/u_HeightMapSize;
+	float curHeight = texture(u_Material.height,texCoord).r;
+	
+	float diffX = texture(u_Material.height, texCoord + vec2(offset.x, 0.0)).r - curHeight;
+    float diffY = texture(u_Material.height, texCoord + vec2(0.0, offset.y)).r - curHeight;
+
+    // Tangent space bump normal
+    float bumpMult = -3.0;
+    vec3 bumpNormal_tangent = normalize(vec3(bumpMult*diffX, 1.0, bumpMult*diffY));
+
+	return normalize(tangentToWorld*bumpNormal_tangent);
+}
 
 
 //TODO::·¨ÏßÌùÍ¼
@@ -99,7 +128,7 @@ void main(){
 	gPosition.rgb   = v_FragPos;
 	gPosition.a = float(u_IsPBRObjects*256.0+u_ObjectId); //15-8bit:u_IsPBRObjects,7-0bit:u_ObjectId
 
-	gNormal.rgb     = v_Normal;
+	gNormal.rgb     = (u_isHeightTextureSample==0)?normalize(v_Normal):getNormalFromHeightMap(s_texCoordxy);//v_Normal;
 	gNormal.a = (u_IsSkybox)?1.0:0.0;
 
 	int s = u_Settings.isPBRTextureSample;

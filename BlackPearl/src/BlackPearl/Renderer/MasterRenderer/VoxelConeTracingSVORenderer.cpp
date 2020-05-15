@@ -21,8 +21,8 @@ namespace BlackPearl {
 	float VoxelConeTracingSVORenderer::s_SpecularBlurThreshold = 0.1f;
 	int   VoxelConeTracingSVORenderer::s_VisualizeMipmapLevel = 0;
 	bool  VoxelConeTracingSVORenderer::s_Pause = false;
-
-
+	float VoxelConeTracingSVORenderer::s_IndirestSpecularAngle = 2.0f;
+	float VoxelConeTracingSVORenderer::s_Step = 0.2f;
 
 
 	VoxelConeTracingSVORenderer::VoxelConeTracingSVORenderer()
@@ -35,7 +35,7 @@ namespace BlackPearl {
 		//GE_SAVE_DELETE(m_CubeObj);
 		//GE_SAVE_DELETE(m_BrdfLUTQuadObj);
 		GE_SAVE_DELETE(m_Sobol);
-		
+
 	}
 
 
@@ -68,9 +68,9 @@ namespace BlackPearl {
 		GE_ERROR_JUDGE();
 
 		InitPathTracing();
-	//	ErrorJudge(glGetError());
+		//	ErrorJudge(glGetError());
 
-		/* Automic Count Buffer*/
+			/* Automic Count Buffer*/
 		GLbitfield mapFlags = (GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT | GL_MAP_READ_BIT | GL_MAP_WRITE_BIT);
 		m_AtomicCountBuffer.reset(DBG_NEW AtomicBuffer());
 		GE_ERROR_JUDGE();
@@ -111,7 +111,7 @@ namespace BlackPearl {
 	{
 		/*SVO path tracer */
 		GLbitfield map_flags = (GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT | GL_MAP_READ_BIT | GL_MAP_WRITE_BIT);
-		m_SobolSSBO.reset(DBG_NEW ShaderStorageBuffer(sizeof(GLfloat) * 2 * s_MaxBounce,map_flags));
+		m_SobolSSBO.reset(DBG_NEW ShaderStorageBuffer(sizeof(GLfloat) * 2 * s_MaxBounce, map_flags));
 		GE_ERROR_JUDGE();
 
 		m_Sobol = DBG_NEW Sobol(2 * s_MaxBounce);
@@ -130,7 +130,7 @@ namespace BlackPearl {
 		m_PathTracingShader.reset(DBG_NEW Shader("assets/shaders/gBufferVoxelSVO/pathTracing.glsl"));
 		GE_ERROR_JUDGE();
 
-		m_PathTracingColor.reset(DBG_NEW Texture(Texture::Type::None, m_ScreenWidth, m_ScreenHeight,false, GL_LINEAR, GL_LINEAR, GL_RGBA32F, GL_RGBA,GL_CLAMP_TO_EDGE,GL_FLOAT));
+		m_PathTracingColor.reset(DBG_NEW Texture(Texture::Type::None, m_ScreenWidth, m_ScreenHeight, false, GL_LINEAR, GL_LINEAR, GL_RGBA32F, GL_RGBA, GL_CLAMP_TO_EDGE, GL_FLOAT));
 		GE_ERROR_JUDGE();
 
 		m_PathTracingAlbedo.reset(DBG_NEW Texture(Texture::Type::None, m_ScreenWidth, m_ScreenHeight, false, GL_LINEAR, GL_LINEAR, GL_RGBA8, GL_RGBA, GL_CLAMP_TO_EDGE, GL_FLOAT));
@@ -181,7 +181,7 @@ namespace BlackPearl {
 		if (skybox != nullptr) {
 
 			m_VoxelizationShader->Bind();
-//			m_VoxelizationShader->SetUniformVec3f("u_CubeSize", m_CubeObj->GetComponent<Transform>()->GetScale());
+			//			m_VoxelizationShader->SetUniformVec3f("u_CubeSize", m_CubeObj->GetComponent<Transform>()->GetScale());
 			GE_ERROR_JUDGE();
 
 			skybox->GetComponent<Transform>()->SetScale(m_CubeObj->GetComponent<Transform>()->GetScale() - glm::vec3(2.0f));
@@ -199,7 +199,7 @@ namespace BlackPearl {
 		}
 		for (auto obj : objs) {
 			//m_VoxelizationShader->Bind();
-			
+
 			m_VoxelizationShader->Bind();
 			//m_VoxelizationShader->SetUniformVec3f("u_CubeSize", m_CubeObj->GetComponent<Transform>()->GetScale());
 
@@ -213,7 +213,7 @@ namespace BlackPearl {
 			//glBindImageTexture(4, m_DebugOctreeBufTexture->GetTextureID(), 0, GL_FALSE, 0, GL_READ_WRITE, GL_RGBA8UI);
 			GE_ERROR_JUDGE();
 
-			DrawObject(obj, m_VoxelizationShader,Renderer::GetSceneData(), 6);
+			DrawObject(obj, m_VoxelizationShader, Renderer::GetSceneData(), 6);
 			GE_ERROR_JUDGE();
 
 		}
@@ -221,7 +221,7 @@ namespace BlackPearl {
 
 		GE_ERROR_JUDGE();
 
-		
+
 		//glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT | GL_ATOMIC_COUNTER_BARRIER_BIT);
 		//glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT | GL_ATOMIC_COUNTER_BARRIER_BIT);
 		//ShowBufferTexture(m_DebugOctreeBufTexture, 10);
@@ -239,10 +239,10 @@ namespace BlackPearl {
 	void VoxelConeTracingSVORenderer::BuildFragmentList(const std::vector<Object*>& objs, Object* skybox)
 	{
 		//统计fragment数量
-		
+
 		Voxelize(objs, skybox, false);
 		glMemoryBarrier(GL_ATOMIC_COUNTER_BARRIER_BIT);
-		GLenum err =  glGetError();
+		GLenum err = glGetError();
 		//ErrorJudge(err);
 		//glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT| GL_SHADER_STORAGE_BARRIER_BIT);
 		m_AtomicCountBuffer->Bind();
@@ -257,7 +257,7 @@ namespace BlackPearl {
 		err = glGetError();
 		//ErrorJudge(err);
 
-		m_NumVoxelFrag =  count[0];
+		m_NumVoxelFrag = count[0];
 		GE_CORE_INFO("voxel fragment list size : " + std::to_string(m_NumVoxelFrag));
 		//Create buffers for voxel fragment list
 		m_VoxelPosBufTexture.reset(DBG_NEW BufferTexture(sizeof(GLuint) * m_NumVoxelFrag, GL_R32UI, 0));
@@ -275,7 +275,7 @@ namespace BlackPearl {
 		glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
 		//glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
 
-		
+
 
 		//ShowBufferTexture(m_VoxelPosBufTexture, m_NumVoxelFrag);
 		//ShowBufferTexture(m_VoxelDiffuseBufTexture, m_NumVoxelFrag);
@@ -303,7 +303,7 @@ namespace BlackPearl {
 		//m_AtomicCountBuffer.reset(DBG_NEW AtomicBuffer());
 		GLbitfield mapFlags = (GL_MAP_COHERENT_BIT | GL_MAP_READ_BIT | GL_MAP_WRITE_BIT);
 		m_AtomicCountBuffer.reset(DBG_NEW AtomicBuffer());
-	//	m_AtomicCountBuffer->ResetValue(0);
+		//	m_AtomicCountBuffer->ResetValue(0);
 		int nodeOffset = 0;
 		int allcOffset = 1;
 		int dataWidth = 1024;
@@ -383,7 +383,7 @@ namespace BlackPearl {
 
 		}
 		GE_CORE_INFO("Total nodes consumed: {0}", allcOffset);
-		
+
 		//flag nonempty leaf node
 		m_NodeFlagShader->Bind();
 		m_NodeFlagShader->SetUniform1i("u_level", m_OctreeLevel);
@@ -410,7 +410,7 @@ namespace BlackPearl {
 		//calculate every node's diffuse color of the tree
 
 
-		for (int i = m_OctreeLevel;i>=1;i--)
+		for (int i = m_OctreeLevel; i >= 1; i--)
 		{
 			m_NodeRenderShader->Bind();
 			m_NodeRenderShader->SetUniform1i("u_numVoxelFrag", m_NumVoxelFrag);
@@ -430,7 +430,7 @@ namespace BlackPearl {
 		///ShowBufferTexture(m_OctreeNodeTex[0], m_TotalTreeNode);
 		//ShowBufferTexture(m_OctreeNodeTex[1], m_TotalTreeNode);
 
-		
+
 
 
 	}
@@ -455,7 +455,7 @@ namespace BlackPearl {
 		frameBuffer->Bind();
 		frameBuffer->AttachRenderBuffer(m_VoxelTextureSize, m_VoxelTextureSize);
 
-		
+
 		frameBuffer->AttachColorTexture(m_SpecularBrdfLUTTexture, 0);
 		frameBuffer->BindRenderBuffer();
 
@@ -474,12 +474,12 @@ namespace BlackPearl {
 
 
 
-	
+
 	void VoxelConeTracingSVORenderer::Render(Camera* camera, const std::vector<Object*>& objs, const LightSources* lightSources,
 		unsigned int viewportWidth, unsigned int viewportHeight, Object* skybox, RenderingMode reneringMode)
 	{
 		GE_ASSERT(m_IsInitialize, "Please Call VoxelConeTracingSVORenderer::Init() first!");
-		
+
 		//bool voxelizeNow = m_VoxelizationQueued || (m_AutomaticallyVoxelize &&m_VoxelizationSparsity > 0 && ++m_TicksSinceLastVoxelization >= m_VoxelizationSparsity);
 		//RenderGBuffer(objs, skybox);
 	/*	if (s_VoxelizeNow) {
@@ -496,7 +496,7 @@ namespace BlackPearl {
 			RenderScene(objs, lightSources, viewportWidth, viewportHeight, skybox);
 			break;
 		case RenderingMode::SVO_PATH_TRACING:
-			PathTracingGBuffer(objs,skybox,lightSources, viewportWidth, viewportHeight);
+			PathTracingGBuffer(objs, skybox, lightSources, viewportWidth, viewportHeight);
 			//PathTracing(objs, skybox, lightSources, viewportWidth, viewportHeight);
 
 			break;
@@ -543,7 +543,7 @@ namespace BlackPearl {
 		glBindVertexArray(0);
 		m_VoxelVisualizationShader->Unbind();
 		GE_ERROR_JUDGE();
-		
+
 	}
 
 	void VoxelConeTracingSVORenderer::RenderScene(const std::vector<Object*>& objs, const LightSources* lightSources,
@@ -571,7 +571,7 @@ namespace BlackPearl {
 
 	}
 
-	void VoxelConeTracingSVORenderer::PathTracingGBuffer(std::vector<Object*> objs,Object* skybox,const LightSources* lightSources, unsigned int viewportWidth, unsigned int viewportHeight)
+	void VoxelConeTracingSVORenderer::PathTracingGBuffer(std::vector<Object*> objs, Object* skybox, const LightSources* lightSources, unsigned int viewportWidth, unsigned int viewportHeight)
 	{
 		//glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -583,13 +583,14 @@ namespace BlackPearl {
 		//m_DebugOctreeBufTexture.reset(DBG_NEW BufferTexture(sizeof(GLuint) * m_ScreenWidth*m_ScreenHeight, GL_RGBA8UI, 0));
 
 		m_PathTracingGBufferShader->Bind();
-		m_PathTracingGBufferShader->SetUniform1i("u_SPP",s_Pause ? -1 : (m_SPP++));
+		m_PathTracingGBufferShader->SetUniform1i("u_SPP", s_Pause ? -1 : (m_SPP++));
 		m_PathTracingGBufferShader->SetUniform1i("u_Bounce", s_MaxBounce);
-		m_PathTracingGBufferShader->SetUniform1i("u_ViewType",0);
+		m_PathTracingGBufferShader->SetUniform1i("u_ViewType", 0);
 		m_PathTracingGBufferShader->SetUniform1i("u_ScreenWidth", m_ScreenWidth);
 		m_PathTracingGBufferShader->SetUniform1i("u_ScreenHeight", m_ScreenHeight);
 		m_PathTracingGBufferShader->SetUniform1i("u_octreeLevel", m_OctreeLevel);
 		m_PathTracingGBufferShader->SetUniform1i("u_VoxelDim", m_VoxelTextureSize);
+		m_PathTracingGBufferShader->SetUniform1f("u_Step", s_Step);
 
 		m_PathTracingGBufferShader->SetUniformVec3f("u_SunRadiance", m_SunRadiance);
 		m_PathTracingGBufferShader->SetUniform1i("u_Settings.directLight", s_DirectLight);
@@ -609,7 +610,7 @@ namespace BlackPearl {
 		glBindImageTexture(3, m_OctreeNodeTex[0]->GetTextureID(), 0, GL_FALSE, 0, GL_READ_ONLY, GL_R32UI);
 		glBindImageTexture(4, m_OctreeNodeTex[1]->GetTextureID(), 0, GL_FALSE, 0, GL_READ_ONLY, GL_R32UI);
 		//glBindImageTexture(6, m_DebugOctreeBufTexture->GetTextureID(), 0, GL_FALSE, 0, GL_READ_WRITE, GL_RGBA8UI);
-		
+
 		m_PathTracingGBufferShader->SetUniform1i("u_BrdfLUTMap", 14);
 		m_PathTracingGBufferShader->SetUniform1i("gPosition", 8);
 		m_PathTracingGBufferShader->SetUniform1i("gNormal", 9);
@@ -619,7 +620,8 @@ namespace BlackPearl {
 		m_PathTracingGBufferShader->SetUniform1i("gNormalMap", 13);
 
 		m_PathTracingGBufferShader->SetUniformVec3f("u_CubeSize", m_CubeObj->GetComponent<Transform>()->GetScale());
-		
+		m_PathTracingGBufferShader->SetUniform1f("u_IndirectSpecularAngle", s_IndirestSpecularAngle);
+
 		glActiveTexture(GL_TEXTURE14);
 		m_SpecularBrdfLUTTexture->Bind();
 		glActiveTexture(GL_TEXTURE8);
@@ -663,10 +665,13 @@ namespace BlackPearl {
 
 
 		glDisable(GL_BLEND);
-		glDepthFunc(GL_LEQUAL);
+		if (skybox != nullptr) {
+			glDepthFunc(GL_LEQUAL);
 
-		DrawObject(skybox,Renderer::GetSceneData(),6);
-		glDepthFunc(GL_LESS);
+			DrawObject(skybox, Renderer::GetSceneData(), 6);
+			glDepthFunc(GL_LESS);
+		}
+
 		//DrawObjects(backGroundObjs);
 
 		DrawLightSources(lightSources);
@@ -771,7 +776,7 @@ namespace BlackPearl {
 
 		GLuint* data = (GLuint*)glMapBuffer(GL_TEXTURE_BUFFER, GL_READ_ONLY);//存储顺序是 A_BGR
 		for (int j = 0; j < dataLength; ++j)
-			pos[j] = data[j];		
+			pos[j] = data[j];
 		data = nullptr;
 		glUnmapBuffer(GL_TEXTURE_BUFFER);
 		bufferTexture->Unbind();

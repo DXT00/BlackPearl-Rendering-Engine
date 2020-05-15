@@ -12,7 +12,6 @@ https://research.nvidia.com/sites/default/files/pubs/2010-02_Efficient-Sparse-Vo
 SVO path tracing - only one bounce cubeSize = 40
 ![SVO path tracing](/results/svo_pathTracing2.png)
 ![SVO path tracing](/results/svo_pathTracing3.png)
-![SVO path tracing](/results/svo_pathTracing5.png)
 ![SVO path tracing](/results/svo_pathTracing4.png)
 
 ### Light probe GI --- separate diffuse probe and reflection probe

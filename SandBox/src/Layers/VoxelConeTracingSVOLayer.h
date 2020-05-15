@@ -36,25 +36,14 @@ public:
 			});
 		//LoadStaticBackGroundObject("Sphere");
 	//	LoadScene("CornellScene");
-		BlackPearl::Object* bunny = LoadStaticBackGroundObject("Bunny");
+		
+	/*	BlackPearl::Object* bunny = LoadStaticBackGroundObject("Bunny");
 		bunny->GetComponent<BlackPearl::Transform>()->SetScale({ 2,2,2 });
-		bunny->GetComponent<BlackPearl::Transform>()->SetPosition({ 1.0,-1.0,3.0 });
+		bunny->GetComponent<BlackPearl::Transform>()->SetPosition({ 1.0,-1.0,3.0 });*/
 
-		//BlackPearl::Object* cube1 = CreateCube();
-		//cube1->GetComponent<BlackPearl::Transform>()->SetScale({ 5.0,2.0,5.0 });
-
-		//cube1->GetComponent<BlackPearl::MeshRenderer>()->SetIsBackGroundObjects(true);
-		//cube1->GetComponent<BlackPearl::MeshRenderer>()->GetMeshes()[0].GetMaterial()->SetMaterialColorSpecularColor({ 0,0,0 });
-		//cube1->GetComponent<BlackPearl::MeshRenderer>()->GetMeshes()[0].GetMaterial()->SetMaterialColorDiffuseColor({ 0,0.294f,1.0f });
-		//m_BackGroundObjsList.push_back(cube1);
-
-		//BlackPearl::Object* light = CreateLight(BlackPearl::LightType::PointLight);
-		//light->GetComponent<BlackPearl::Transform>()->SetPosition({ 0.0,7,3.0 });
-		//light->GetComponent<BlackPearl::Transform>()->SetLastPosition({ 0.0,-1.0,0.0 });//0.0,0.0,3.0
-		//light->GetComponent<BlackPearl::MeshRenderer>()->SetIsShadowObjects(false);
-		//LoadScene("SpheresScene");
-		LoadChurchScene();
-		//LoadScene("CornellScene");
+		LoadScene("SpheresScene");
+		//LoadChurchScene();
+		LoadScene("CornellScene");
 		m_skybox = m_SkyBoxObj;
 		/*******************************************************************************************************/
 		/*******************************************************************************************************/

@@ -4,35 +4,50 @@
 layout(location = 0) in vec3 aPos;
 layout(location = 1) in vec3 aNormal;
 layout(location = 2) in vec2 aTexCoords;
+layout(location = 3) in vec3 aTangent;
+layout(location = 4) in vec3 aBitangent;
 
 out vec3 v_TexCoord;
 out vec3 v_Normal;
 out vec3 v_FragPos;
+out vec3 v_Tangent;
+out vec3 v_Bitangent;
 
 uniform bool u_IsSkybox;
 uniform mat4 u_ProjectionView;
 uniform mat4 u_Model;
 uniform mat4 u_TranInverseModel;
+uniform int u_isHeightTextureSample;
+
 
 
 void main(){
 
-	gl_Position = u_ProjectionView*u_Model*vec4(aPos,1.0);
+	gl_Position   = u_ProjectionView*u_Model*vec4(aPos,1.0);
 	bool isSkybox = u_IsSkybox;
+	int sampleHeightTexture = u_isHeightTextureSample;
+
 	if(isSkybox)
 		v_TexCoord = aPos;
 	else
 		v_TexCoord = vec3(aTexCoords.x,aTexCoords.y,1.0);
-	v_Normal   = mat3(u_TranInverseModel)*aNormal;
-	v_FragPos  = vec3(u_Model*vec4(aPos,1.0));
+	v_FragPos    = vec3(u_Model*vec4(aPos,1.0));
+	v_Normal     = normalize(mat3(u_TranInverseModel)*aNormal);
+	if(sampleHeightTexture==1){
+		v_Normal     = normalize((u_Model*vec4(aNormal,0.0)).xyz);
 
+		v_Tangent    = normalize((u_Model*vec4(aTangent,0.0)).xyz);
+		v_Bitangent  = normalize((u_Model*vec4(aBitangent,0.0)).xyz);
+	}
+	else{
+		v_Tangent = vec3(0.0);
+		v_Bitangent = vec3(0.0);
+	}
+	
 
 
 
 }
-
-
-
 
 #type fragment
 #version 450 core
@@ -47,50 +62,56 @@ layout (location = 3) out vec4 gSpecular_Mentallic; //u_Material.specular + u_Ma
 /* 存储全局光照中的 diffuse 和specular (vec3 ambient =  (Kd*diffuse+specular) * ao;)的颜色*/
 layout (location = 4) out vec4 gAmbientGI_AO; //GIAmbient + u_Material.ao
 layout (location = 5) out vec3 gNormalMap;
+
 in vec3 v_TexCoord;
 in vec3 v_FragPos;
 in vec3 v_Normal;
+in vec3 v_Tangent;
+in vec3 v_Bitangent;
 
 uniform samplerCube u_PrefilterMap;
 uniform sampler2D u_BrdfLUTMap;
+uniform vec2 u_HeightMapSize;
 
 uniform int u_ObjectId;
-
 uniform vec3 u_CameraViewPos;
 
 vec2 s_texCoordxy = v_TexCoord.xy;
-//struct SettingsLocal;
-//
-//
-//struct Material;
-//
-//uniform struct SettingsLocal{
-//	int isBlinnLight;
-//	int  isTextureSample;//判断是否使用texture,或者只有color
-//	int isDiffuseTextureSample;
-//	int isSpecularTextureSample;
-//	int isMetallicTextureSample;
-//	int directLight;
-//	int indirectDiffuseLight;
-//	int indirectSpecularLight;
-//	int shadows;
-//	float GICoeffs;
-//	int hdr;
-//	int guassian_horiziotal;
-//	int guassian_vertical;
-//	int guassian_mipmap;
-//	int showBlurArea;
-//}u_Settings;
+
 uniform Settings u_Settings;
 uniform Material u_Material;
 uniform int u_IsPBRObjects;
 uniform bool u_IsSkybox;
 
+uniform int u_isHeightTextureSample;
 
+float GetHeight(vec2 texCoord){
+	if(texCoord.x<0||texCoord.y<0||texCoord.x>1||texCoord.y>1)return 0.0;
+	return texture(u_Material.height, texCoord).r;
+}
 
+vec3 getNormalFromHeightMap(vec2 texCoord){
+    mat3 tangentToWorld = inverse(transpose(mat3(v_Tangent, v_Normal, v_Bitangent)));
+
+	vec2 offset = vec2(1.0/u_HeightMapSize.x,1.0/u_HeightMapSize.y);
+	//float curHeight = texture(u_Material.height,texCoord).r;
+	
+	float heightL = GetHeight(texCoord + vec2(-offset.x, 0.0));
+	float heightR = GetHeight(texCoord + vec2(offset.x, 0.0));
+	float heightU = GetHeight(texCoord + vec2(0.0, offset.y));
+	float heightD = GetHeight(texCoord + vec2(0.0,-offset.y));
+//	float diffX = texture(u_Material.height, texCoord + vec2(offset.x, 0.0)).r - curHeight;
+//    float diffY = texture(u_Material.height, texCoord + vec2(0.0, offset.y)).r - curHeight;
+//
+//    // Tangent space bump normal
+//    float bumpMult =-1.0;// -3.0;
+    vec3 bumpNormal_tangent = normalize(vec3(heightL-heightR, 2.0,heightD-heightU));
+
+	return normalize(tangentToWorld*bumpNormal_tangent);
+}
 
 //TODO::法线贴图
-vec3 getNormalFromMap(vec3 fragPos,vec2 texCoord)
+vec3 getNormalFromNormalMap(vec3 fragPos,vec2 texCoord)
 {
     vec3 tangentNormal =  2.0* texture(u_Material.normal, texCoord).xyz- vec3(1.0);
 	//vec3 tangentNormal =  2.0* normal- vec3(1.0);
@@ -111,22 +132,26 @@ vec3 getNormalFromMap(vec3 fragPos,vec2 texCoord)
 
 
 void main(){
+
  	int sampleDiffuseTexture = u_Settings.isDiffuseTextureSample;
 	int samplePBRTex = u_Settings.isPBRTextureSample;
-	int sampleSpecularTexture = u_Settings.isDiffuseTextureSample;
+	int sampleSpecularTexture = u_Settings.isSpecularTextureSample;
+	int sampleHeightTexture = u_isHeightTextureSample;
 	bool isSkybox = u_IsSkybox;
 
 
 	gPosition.rgb   = v_FragPos;
-	gPosition.a = float(u_IsPBRObjects*256.0+u_ObjectId); //15-8bit:u_IsPBRObjects,7-0bit:u_ObjectId
+	gPosition.a     = float(u_IsPBRObjects*256.0+u_ObjectId); //15-8bit:u_IsPBRObjects,7-0bit:u_ObjectId
 
-	gNormal.rgb     = normalize(v_Normal);
-	gNormal.a = (isSkybox)?1.0:0.0;
+	gNormal.rgb   = (sampleHeightTexture==0)?normalize(v_Normal):getNormalFromHeightMap(s_texCoordxy);
+	//gNormal.rgb   = normalize(v_Normal);
 
-	gNormalMap      =  (samplePBRTex==0)?normalize(v_Normal):getNormalFromMap(v_FragPos,s_texCoordxy);
+	gNormal.a     = (isSkybox)?1.0:0.0;
+
+	gNormalMap      =  (samplePBRTex==0)?normalize(v_Normal):getNormalFromNormalMap(v_FragPos,s_texCoordxy);
 	float roughness =  (samplePBRTex==0)?u_Material.roughnessValue :texture(u_Material.roughness, s_texCoordxy).r;
 	float ao        =  (samplePBRTex==0)?u_Material.aoValue:texture(u_Material.ao, s_texCoordxy).r;
-	float metallic  =  (samplePBRTex==0)?u_Material.mentallicValue:texture(u_Material.mentallic,s_texCoordxy).r;//u_Material.mentallicValue *(1-u_Settings.isMetallicTextureSample)+
+	float metallic  =  (samplePBRTex==0)?u_Material.shininess:texture(u_Material.mentallic,s_texCoordxy).r;//u_Material.mentallicValue *(1-u_Settings.isMetallicTextureSample)+
 
 	vec3 diffuse;
 	//if(isSkybox)
@@ -141,10 +166,9 @@ void main(){
 	//vec3 albedo = pow(diffuse,vec3(2.2));
 	vec3 specular;
 	if(sampleSpecularTexture==0)
-		specular = (u_Material.specularColor );//*(1-u_Settings.isSpecularTextureSample)+ texture(u_Material.specular,s_texCoordxy).rgb*u_Settings.isSpecularTextureSample);//u_Settings.isSpecularTextureSample
+		specular = (u_Material.specularColor );
 	else
 		specular = texture(u_Material.specular,s_texCoordxy).rgb;
-					//*u_Settings.isMetallicTextureSample;
 
 
 
@@ -153,7 +177,7 @@ void main(){
 	gSpecular_Mentallic.a = metallic;
 
 	gAmbientGI_AO.a =	ao;
-	
+	gAmbientGI_AO.rgb = (sampleHeightTexture==0)?vec3(0,1,0):vec3(1,0,0);
 
 	//gAmbientGI_AO.a =u_IsPBRObjects;//	ao;
 

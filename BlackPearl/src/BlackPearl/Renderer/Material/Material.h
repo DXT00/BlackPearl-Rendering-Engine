@@ -13,10 +13,10 @@ namespace BlackPearl {
 			int  isPBRTextureSample;//是否使用纹理-->包括 ao,normal,metalllic,roughness
 			int  isDiffuseTextureSample;//是否使用纹理
 			int  isSpecularTextureSample;//是否使用纹理
-		//	int  isMetallicTextureSample;//是否使用纹理
+			int  isHeightTextureSample;//是否使用纹理
 			int  isEmissionTextureSample;//是否使用纹理
 
-			Props() :shininess(64.0f), isBinnLight(false), isPBRTextureSample(0),isDiffuseTextureSample(0),isSpecularTextureSample(0),isEmissionTextureSample(0){}
+			Props() :shininess(64.0f), isBinnLight(false), isPBRTextureSample(0),isDiffuseTextureSample(0),isSpecularTextureSample(0),isEmissionTextureSample(0),isHeightTextureSample(0){}
 
 		};
 		struct TextureMaps {
@@ -30,19 +30,21 @@ namespace BlackPearl {
 			std::shared_ptr<Texture> aoMap;
 			std::shared_ptr<Texture> roughnessMap;
 			std::shared_ptr<Texture> mentallicMap;
+			std::shared_ptr<Texture> opacityMap;
 
 			TextureMaps() {
 				diffuseTextureMap
-					= specularTextureMap
-					= emissionTextureMap
-					= normalTextureMap
-					= heightTextureMap
-					= cubeTextureMap
-					= depthTextureMap
-					= aoMap
-					= roughnessMap
-					= mentallicMap
-					= nullptr;
+				= specularTextureMap
+				= emissionTextureMap
+				= normalTextureMap
+				= heightTextureMap
+				= cubeTextureMap
+				= depthTextureMap
+				= aoMap
+				= roughnessMap
+				= mentallicMap
+				= opacityMap
+				= nullptr;
 			}
 		};
 
@@ -82,7 +84,7 @@ namespace BlackPearl {
 		void SetPBRTextureSample(int isPBRTextureSample);
 		void SetTextureSampleDiffuse(int isTextureSampleDiffuse);
 		void SetTextureSampleSpecular(int isTextureSampleSpecular);
-		//void SetTextureSampleMetallic(int isTextureSampleMetallic);
+		void SetTextureSampleHeight(int isTextureSampleHeight);
 		void SetTextureSampleEmission(int isTextureSampleMetallic);
 
 		void Unbind() {
@@ -96,6 +98,8 @@ namespace BlackPearl {
 			if (m_TextureMaps->aoMap != nullptr)  m_TextureMaps->aoMap->UnBind();
 			if (m_TextureMaps->roughnessMap != nullptr)	  m_TextureMaps->roughnessMap->UnBind();
 			if (m_TextureMaps->mentallicMap != nullptr)	  m_TextureMaps->mentallicMap->UnBind();
+			if (m_TextureMaps->opacityMap != nullptr)	  m_TextureMaps->opacityMap->UnBind();
+
 		}
 	private:
 		std::shared_ptr<Shader>		 m_Shader;

@@ -36,7 +36,7 @@ namespace BlackPearl {
 			Init( verticesSize);
 		};
 		/*multiple vertexBuffers*/
-		Mesh(std::shared_ptr<Material>& material,
+		Mesh(std::shared_ptr<Material> material,
 			std::shared_ptr<IndexBuffer> indexBuffer,
 			std::vector< std::shared_ptr<VertexBuffer>> vertexBuffers) {
 			m_VertexArray.reset(DBG_NEW VertexArray());
@@ -72,22 +72,16 @@ namespace BlackPearl {
 	
 		std::shared_ptr<VertexArray> GetVertexArray() const { return m_VertexArray; }
 		uint32_t GetIndicesSize()const { return m_IndicesSize; }
-		unsigned int* GetIndicesAddress()const {
-			return m_Indices;
-		}
 		/*vertices size = vertices.size()*sizeof(type)*/
 		unsigned int GetVerticesSize(unsigned int vertexBufferId)const { 
-			return m_VertexArray->GetVertexBuffers()[vertexBufferId]->GetVertexSize();
-		
+			return m_VertexArray->GetVertexBuffers()[vertexBufferId]->GetVertexSize();	
 		}
 		std::shared_ptr<Material> GetMaterial()const { return m_Material; }
 		VertexBufferLayout GetVertexBufferLayout() const { return m_VertexBufferLayout; }
-		////Draw Light
-		//void Draw(const glm::mat4 & model);
-		//void Draw(const glm::mat4 & model, const LightSources& lightSources);
+		
 
 		void SetTexture(const std::shared_ptr<Texture>& texture) { m_Material->SetTexture(texture); }
-		void SetShader(const std::string& image) { m_Material->SetShader(image);};
+		void SetShader(const std::string& path) { m_Material->SetShader(path);};
 		void SetShader(const std::shared_ptr<Shader> &shader) { m_Material->SetShader(shader);};
 		void SetMaterialColor(MaterialColor::Color color) { m_Material->SetMaterialColor(color); }
 

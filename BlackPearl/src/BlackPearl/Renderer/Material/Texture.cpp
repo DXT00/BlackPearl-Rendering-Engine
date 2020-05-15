@@ -22,7 +22,7 @@ namespace BlackPearl {
 		int wrap,
 		unsigned int dataType,
 		bool generateMipmap
-	)//TODO::构造函数里头不能有虚函数！
+	)
 	{
 		m_Path = image;
 		m_Type = type;
@@ -47,14 +47,14 @@ namespace BlackPearl {
 		bool generateMipmap
 	)
 	{
-
+		m_Width = width;
+		m_Height = height;
 		m_Path = "";
 		m_Type = type;
 		glGenTextures(1, &m_TextureID);
 		GE_ERROR_JUDGE();//出现error的原因：很可能m_TextureID用在了别的target上，例如CUBEMAP,不行的话运行前加个断点 = = 
 
 		glBindTexture(GL_TEXTURE_2D, m_TextureID);
-		//if(isDepth==false)
 		GE_ERROR_JUDGE();
 		Init(width, height, minFilter, maxFilter, internalFormat, format, wrap, dataType, generateMipmap);
 		GE_ERROR_JUDGE();
@@ -135,6 +135,7 @@ namespace BlackPearl {
 		unsigned int dataType,
 		bool generateMipmap)
 	{
+
 		//LoadTexture(image, minFilter, maxFilter, internalFormat, format, wrap, dataType);
 		GE_ASSERT(image.size() != 0, "texture image is empty!");
 
@@ -151,6 +152,9 @@ namespace BlackPearl {
 		case 1:
 			format = GL_RED;
 			break;
+		case 2:
+			format = GL_RG;
+			break;
 		case 3:
 			format = GL_RGB;
 			break;
@@ -161,6 +165,8 @@ namespace BlackPearl {
 			GE_CORE_ERROR("Channel {0} has unknown format!", nrChannels)
 				break;
 		}
+		m_Width = width;
+		m_Height = height;
 		//glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
 		//glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, format, GL_UNSIGNED_BYTE, data);
 		//glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, format, GL_UNSIGNED_BYTE, data);
@@ -186,6 +192,8 @@ namespace BlackPearl {
 		unsigned int dataType,
 		bool generateMipmap)
 	{
+		m_Width = width;
+		m_Height = height;
 		/*	FBO(
 				GLuint w, GLuint h, GLenum magFilter = GL_NEAREST, GLenum minFilter = GL_NEAREST,
 				GLint internalFormat = GL_RGB16F, GLint format = GL_FLOAT, GLint wrap = GL_REPEAT);*/

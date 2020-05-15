@@ -52,12 +52,13 @@ uniform vec3 u_SunRadiance;
 uniform vec3 u_CubeSize;
 uniform int  u_VoxelDim;
 uniform sampler2D u_BrdfLUTMap;
-
+uniform float u_IndirectSpecularAngle;
+uniform float u_Step;
 int uSPP = u_SPP;
 bool uDirectLight = u_Settings.directLight;
 bool uIndirecLight = u_Settings.indirectDiffuseLight;
 bool uIndirectSpecularLight = u_Settings.indirectSpecularLight;
-const float SURFACE_OFFSET =(1.5/float(u_VoxelDim));
+const float SURFACE_OFFSET =(1.0/float(u_VoxelDim));
 const float VOXEL_SIZE = 1.0/float(u_VoxelDim);
 //uniform int u_voxelDim;
 struct GBuffer{
@@ -187,7 +188,7 @@ vec3 CalcPBRPointLight(PointLight light,vec3 getNormalFromMap,vec3 albedo,float 
 	return Lo;
 }
 /***************************************************************************************************/
-vec3 calculateDirectLight(float shadow,vec3 fragPos,vec3 normal,const PointLight light, const vec3 viewDir,vec3 diffuseColor,vec3 specularColor){
+vec3 calculateDirectLight(float shadow,vec3 fragPos,vec3 normal,const PointLight light, const vec3 viewDir,vec3 diffuseColor,vec3 specularColor,float shininess){
 	vec3 direct = vec3(0.0);
 
 	vec3 lightDir = light.position - fragPos;
@@ -206,7 +207,6 @@ vec3 calculateDirectLight(float shadow,vec3 fragPos,vec3 normal,const PointLight
 	/*specular*/
 	vec3 specular;
 	float spec;
-	float shininess = 64.0;
 //	if(u_Settings.isBlinnLight){
 //
 //		vec3 halfwayDir = normalize(lightDir+viewDir);
@@ -266,20 +266,20 @@ float Clamp(float x){
 if(x<0)return 0;
 else if(x>=0)return 1;
 }
-bool findLeafPos(vec3 normalPos,out vec3 leafPos){
+vec4 findLeafColor(int level,vec3 normalPos){
 	vec3 fmin = vec3(0,0,0);
 	vec3 fmax = vec3(1,1,1);
-	leafPos = vec3(-1,-1,-1);
+	//leafPos = vec3(-1,-1,-1);
 	float voxelSize = 1;
 	uint node = imageLoad(u_octreeBuffer,0).r;
 	int subnode=0;
 
 	int childIdx = 0;
-	for(int i=0;i<uOctreeLevel-2;i++){
+	for(int i=0;i<level;i++){
 		voxelSize*=0.5;
 		if((node & 0x80000000u)==0u){
 			//flag = false;
-			return false;
+			return vec4(0);
 		}
 		childIdx =int(node & 0x3FFFFFFFu); 
 
@@ -297,11 +297,15 @@ bool findLeafPos(vec3 normalPos,out vec3 leafPos){
 
 		node = imageLoad(u_octreeBuffer, childIdx).r;
 	}
-	//directColor =convRGBA8ToVec4(imageLoad(u_octreeKd,childIdx).r).rgb/255.0;
+	vec4 leafColor ;
+	if((node &0x40000000)!=0)
+		leafColor =convRGBA8ToVec4(imageLoad(u_octreeKd,childIdx).r)/255.0;
+	else
+		leafColor = vec4(0);
 	//if((node & 0x40000000u) ==0u) return false;
 
-	leafPos = fmin+vec3(voxelSize*0.5);
-	return true;
+	//leafPos = fmin+vec3(voxelSize*0.5);
+	return leafColor;
 }
 int Clamp1(int x){
 	if(x>=1) return 1;
@@ -316,11 +320,11 @@ bool findLeafPos1(vec3 normalPos){
 	int subnode=0;
 	int childIdx = 0;
 
-	uvec3 loc =uvec3(u_VoxelDim*normalPos);// uvec3(normalPos.x*voxelDim,normalPos.y*voxelDim,normalPos.z*voxelDim);
+	uvec3 loc =uvec3(u_VoxelDim*normalPos);
 
 	uint node = imageLoad(u_octreeBuffer,0).r;
 
-	for(int i=0;i<uOctreeLevel-1;i++){//避免匹配不精确，所以只要到u_octreeLevel-1层有节点即可！
+	for(int i=0;i<uOctreeLevel;i++){
 		voxelDim/=2u;
 		if((node & 0x80000000u)==0u){
 			return  false;
@@ -359,7 +363,7 @@ vec4 findParentColor(int level,vec3 pos){
 
 	uint node = imageLoad(u_octreeBuffer,0).r;
 
-	for(int i=0;i<level;i++){//避免匹配不精确，所以只要到u_octreeLevel-1层有节点即可！
+	for(int i=0;i<level;i++){
 		voxelDim/=2u;
 		if((node & 0x80000000u)==0u){
 			return color;
@@ -382,32 +386,48 @@ vec4 findParentColor(int level,vec3 pos){
 		color = convRGBA8ToVec4(imageLoad(u_octreeKd,childIdx).r)/255.0;
 		return color;
 }
-//vec3 AvgColor(uint curNode){
-//	if((curNode&0x4FFFFFFF)!=0u)
-//		return vec3(0);//孩子节点后面处理
-//
-//	vec3 res = vec3(0);
-//	int flagNum = 0;
-//	uint childIdx =( curNode& 0x3fffffffu);//0
-//	
-//	for(int i=0;i<8;i++){
-//		uint node = imageLoad(u_octreeBuffer,int(childIdx+i)).r;
-//
-//		if((node&0x80000000u)!=0){
-//				res+=  convRGBA8ToVec4(imageLoad(u_octreeKd,int(childIdx)).r).rgb/255.0;
-//				flagNum++;
-//			}
-//
-//	}
-//	
-//	
-//	res = res/8.0;
-//	return res;
-//}
+vec4 findParentColorSpecular(int level,vec3 pos){
+	vec4 color=vec4(0);
+	uint voxelDim = uint(u_VoxelDim);
+	uvec3 umin = uvec3(0,0,0);
+	uvec3 umax = uvec3( voxelDim, voxelDim, voxelDim );
+	int subnode=0;
+	int childIdx = 0;
+
+	uvec3 loc =uvec3(u_VoxelDim*pos);// uvec3(normalPos.x*voxelDim,normalPos.y*voxelDim,normalPos.z*voxelDim);
+
+	uint node = imageLoad(u_octreeBuffer,0).r;
+
+	for(int i=0;i<level;i++){
+		voxelDim/=2u;
+		if((node & 0x80000000u)==0u){
+			return color;
+			
+		}
+		childIdx =int(node & 0x3FFFFFFFu); 
+
+		subnode = Clamp1(1+int(loc.x)-int(umin.x)-int(voxelDim));
+		subnode += 4*Clamp1(1+int(loc.y)-int(umin.y)-int(voxelDim));
+		subnode += 2*Clamp1(1+int(loc.z)-int(umin.z)-int(voxelDim));
+
+		childIdx = childIdx+subnode;
+		umin.x += voxelDim * uint(Clamp1(1+int(loc.x)-int(umin.x)-int(voxelDim)));
+	    umin.y += voxelDim * uint(Clamp1(1+int(loc.y)-int(umin.y)-int(voxelDim)));
+	    umin.z += voxelDim * uint(Clamp1(1+int(loc.z)-int(umin.z)-int(voxelDim)));
+
+		node = imageLoad( u_octreeBuffer, childIdx).r;
+
+	}
+	vec4 vecColor = convRGBA8ToVec4(imageLoad(u_octreeKd,childIdx).r);
+	color = vec4(vecColor.rgb/255.0,vecColor.a);
+	return color;
+}
+
 #define SQRT2 1.414213
 
 vec3 RayMarch(vec3 o,vec3 d,float coneAngle){
 	d = normalize(d);
+
 	vec4 accColor = vec4(0);
 	float dist = 1.0*VOXEL_SIZE;
 
@@ -416,9 +436,10 @@ vec3 RayMarch(vec3 o,vec3 d,float coneAngle){
 		float l = (1+ dist/VOXEL_SIZE); ////跨过了多少Voxel
 		int level = int(log2(l));
 		float ll = (level+1)*(level+1);
-		 
-		accColor+=findParentColor(uOctreeLevel-level,pos);
-
+		
+		//vec4 voxel = findParentColor(uOctreeLevel-level,pos);
+		accColor+=(1.0-accColor.a)*findParentColor(uOctreeLevel-level,pos);
+		//accColor+=0.075*ll*voxel*pow(1-voxel.a,2);
 		dist+= ll*VOXEL_SIZE*2;
 	}
 
@@ -435,13 +456,64 @@ vec3 RayMarch(vec3 o,vec3 d,float coneAngle){
 //		float l = (diameter/VOXEL_SIZE); ////跨过了多少Voxel
 //		int level = int(log2(l));
 //		float ll = (level+1)*(level+1);
-//		accColor+=findParentColor(uOctreeLevel-level,pos);
-//		dist+= ll*VOXEL_SIZE*2;
-//		//		dist+= 0.1* diameter;
+//		vec4 voxel = findParentColor(uOctreeLevel-level,pos);
+////		accColor.rgb+=voxel.rgb;
+////		accColor.a+=voxel.a;
+//		accColor+=(1.0-accColor.a)*voxel;
+//		//dist+= ll*VOXEL_SIZE*2;
+//		dist+=  diameter;
 //
+//	}
+
+	//return accColor.rgb;
+}
+
+vec3 RayMarchSpecular(vec3 o,vec3 d,float coneAngle){
+//	d = normalize(d);
+//	float tanHalfAngle = tan(radians(coneAngle/2.0));
+//
+//	vec4 accColor = vec4(0);
+//	float dist = 1.0*VOXEL_SIZE;
+//
+//	while(dist<SQRT2&& accColor.a<0.99){
+//		vec3 pos = o+dist*d;
+//		float l = (1+ dist/VOXEL_SIZE); ////跨过了多少Voxel
+//		int level = min(uOctreeLevel-1,int(tanHalfAngle *log2(l)));
+//		float ll = (level+1)*(level+1);
+//		
+//		vec4 voxel = findLeafPos(uOctreeLevel-level,pos);
+//		//accColor+=2.0 * (1.0-accColor.a)*voxel;
+//		accColor+=0.1*ll*voxel*pow(1-voxel.a,2);
+//		dist+= u_Step*VOXEL_SIZE*2;
 //	}
 //
 //	return accColor.rgb;
+
+	float tanHalfAngle = tan(radians(coneAngle/2.0));
+	d = normalize(d);
+	vec4 accColor = vec4(0);
+	float dist = 1.0*VOXEL_SIZE;
+
+	while(dist<1&& accColor.a<0.99){
+		vec3 pos = o+dist*d;
+		float diameter = max(VOXEL_SIZE,  2.0*tanHalfAngle*dist); 
+		float l = (diameter/VOXEL_SIZE);
+		int level = min(int(log2(l)),uOctreeLevel-1);
+		vec4 voxel = findParentColorSpecular(uOctreeLevel-level,pos);//findLeafColor(uOctreeLevel-level,pos);// findParentColorSpecular(uOctreeLevel-level,pos);
+//		accColor.rgb+=voxel.rgb;
+//		accColor.a+=voxel.a;
+		//accColor+=0.1*(1.0-accColor.a)*voxel;
+		//weightForLevel越大，混合的粗糙level越多，weightForLevel越小，混合的细节level越多
+		float weightForLevel = 0.03;
+		accColor.rgb+=weightForLevel*float(uOctreeLevel-level)/float(uOctreeLevel)*(1.0-accColor.a)*voxel.rgb;
+		accColor.a+=weightForLevel*float(uOctreeLevel-level)/float(uOctreeLevel)*(1.0-accColor.a)*voxel.a;
+
+		dist+=u_Step*diameter;
+		//u_Step越少，采集的细节level越多，u_Step越大，采集的粗糙level越多
+
+	}
+
+	return accColor.rgb;
 }
 bool RayMarchLeaf(vec3 o,vec3 d,out vec3 o_pos,out vec3 o_color,out vec3 o_normal){
 	//o_color = vec3(1,1,0);
@@ -611,7 +683,7 @@ bool RayMarchLeaf(vec3 o,vec3 d,out vec3 o_pos,out vec3 o_color,out vec3 o_norma
 	const float CONE_SPEEAD = 1.0;//0.325;
 	float dist = length(o_pos-o);
 	float voxelNum =(1+ CONE_SPEEAD*dist/VOXEL_SIZE);
-	int level = int(log2(voxelNum));
+	int level =min(uOctreeLevel-1, int(log2(voxelNum)));
 	level = uOctreeLevel-level;
 	if(level >=uOctreeLevel-1)
 		resColor+=convRGBA8ToVec4(color)/255.0;
@@ -647,7 +719,7 @@ vec3 CalcluateDirectLight(GBuffer gBuffer){
 	if(gBuffer.isPBRObject == 0){
 		
 		for(int i=0;i<uLightNums;i++)
-			direct += u_PointLights[i].intensity * calculateDirectLight(1,gBuffer.fragPos,gBuffer.normal,u_PointLights[i], viewDirection,gBuffer.diffuseColor,gBuffer.specularColor);
+			direct += u_PointLights[i].intensity * calculateDirectLight(1,gBuffer.fragPos,gBuffer.normal,u_PointLights[i], viewDirection,gBuffer.diffuseColor,gBuffer.specularColor,gBuffer.metallic);
 			//direct = vec3(1,0,0);
 	}
 	else{
@@ -875,9 +947,7 @@ void main(){
 
 				// trace indirect specular light
 
-				//d_color.rgb = d_color.rgb / (d_color.rgb + vec3(1.0));
-
-				//d_color.rgb = pow(d_color.rgb, vec3(1.0 / 2.2));
+				
 
 			}
 
@@ -887,10 +957,15 @@ void main(){
 				vec3 o=voxelPos+vec3(1.0);
 				vec3 d;
 				vec3 viewDirection = normalize(gBuffer.fragPos-u_CameraViewPos);
-				const vec3 reflection = normalize(reflect(viewDirection, gBuffer.normal));
-				if(RayMarchLeaf(o+gBuffer.normal* SURFACE_OFFSET,reflection,pos,albedo,normal))//
+				vec3 reflection = normalize(reflect(viewDirection, gBuffer.normal));
+				//if(RayMarchLeaf(o+normalize(gBuffer.normal)* SURFACE_OFFSET,reflection,pos,albedo,normal))//
 				{
-					//albedo = RayMarch(o+gBuffer.normal* SURFACE_OFFSET,reflection,2.0);
+					//albedo = RayMarchSpecular(voxelPos+gBuffer.normal* SURFACE_OFFSET,reflection,u_IndirectSpecularAngle);
+
+					albedo = RayMarchSpecular(voxelPos+reflection* SURFACE_OFFSET,reflection,u_IndirectSpecularAngle);
+					albedo.rgb = albedo.rgb / (d_color.rgb + vec3(1.0));
+
+					albedo.rgb = pow(albedo.rgb, vec3(1.0 / 2.2));
 					if(gBuffer.isPBRObject==0)
 					indirectSpecular+=gBuffer.specularColor*(albedo);//* attenuation1
 					else

@@ -86,7 +86,8 @@ void main(){
 				childNode=imageLoad(u_octreeIdx,(childIdx+idx)).r;
 				if((childNode & 0x80000000u)!=0u){
 					uint uintColor = imageLoad(u_octreeKd,(childIdx+idx)).r;
-					avgColor+= (convRGBA8ToVec4(uintColor)/255.0);
+					vec4 vecColor = convRGBA8ToVec4(uintColor);
+					avgColor+= vec4(vecColor.rgb/255.0,vecColor.a);
 					flagNum++;
 				}
 				

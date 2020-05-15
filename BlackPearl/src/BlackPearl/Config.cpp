@@ -20,32 +20,32 @@ namespace BlackPearl {
 	const float Configuration::EnvironmantMapResolution = 256.0f;
 	
 
-	const char* ShaderConfig::AMBIENT_COLOR = "u_Material.ambientColor";
-	const char* ShaderConfig::DIFFUSE_COLOR = "u_Material.diffuseColor";
-	const char* ShaderConfig::SPECULAR_COLOR = "u_Material.specularColor";
-	const char* ShaderConfig::EMISSION_COLOR = "u_Material.emissionColor";
-	const char* ShaderConfig::METALLIC_VALUE = "u_Material.mentallicValue";
+	const char* ShaderConfig::AMBIENT_COLOR   = "u_Material.ambientColor";
+	const char* ShaderConfig::DIFFUSE_COLOR   = "u_Material.diffuseColor";
+	const char* ShaderConfig::SPECULAR_COLOR  = "u_Material.specularColor";
+	const char* ShaderConfig::EMISSION_COLOR  = "u_Material.emissionColor";
+	const char* ShaderConfig::METALLIC_VALUE  = "u_Material.mentallicValue";
 	const char* ShaderConfig::ROUGHNESS_VALUE = "u_Material.roughnessValue";
-	const char* ShaderConfig::AO_VALUE = "u_Material.aoValue";
+	const char* ShaderConfig::AO_VALUE        = "u_Material.aoValue";
 
-	const char* ShaderConfig::DIFFUSE_TEXTURE2D = "u_Material.diffuse";
-	const char* ShaderConfig::SPECULAR_TEXTURE2D = "u_Material.specular";
-	const char* ShaderConfig::EMISSION_TEXTURE2D = "u_Material.emission";
-	const char* ShaderConfig::NORMAL_TEXTURE2D = "u_Material.normal";
-	const char* ShaderConfig::HEIGHT_TEXTURE2D = "u_Material.height";
-	const char* ShaderConfig::AO_TEXTURE2D = "u_Material.ao";
+	const char* ShaderConfig::DIFFUSE_TEXTURE2D   = "u_Material.diffuse";
+	const char* ShaderConfig::SPECULAR_TEXTURE2D  = "u_Material.specular";
+	const char* ShaderConfig::EMISSION_TEXTURE2D  = "u_Material.emission";
+	const char* ShaderConfig::NORMAL_TEXTURE2D    = "u_Material.normal";
+	const char* ShaderConfig::HEIGHT_TEXTURE2D    = "u_Material.height";
+	const char* ShaderConfig::AO_TEXTURE2D        = "u_Material.ao";
 	const char* ShaderConfig::ROUGHNESS_TEXTURE2D = "u_Material.roughness";
-	const char* ShaderConfig::METALLIC_TEXTURE2D = "u_Material.mentallic";
-	const char* ShaderConfig::DEPTH_TEXTURE2D = "u_Material.depth";
+	const char* ShaderConfig::METALLIC_TEXTURE2D  = "u_Material.mentallic";
+	const char* ShaderConfig::DEPTH_TEXTURE2D     = "u_Material.depth";
 
 	const char* ShaderConfig::CUBE_TEXTURECUBE = "u_Material.cube";
-	const char* ShaderConfig::SHININESS = "u_Material.shininess";
+	const char* ShaderConfig::SHININESS        = "u_Material.shininess";
 
-	const char* ShaderConfig::IS_BLINNLIGHT = "u_Settings.isBlinnLight";
-	const char* ShaderConfig::IS_PBR_TEXTURE_SAMPLE = "u_Settings.isPBRTextureSample";
-	const char* ShaderConfig::IS_DIFFUSE_TEXTURE_SAMPLE = "u_Settings.isDiffuseTextureSample";
+	const char* ShaderConfig::IS_BLINNLIGHT              = "u_Settings.isBlinnLight";
+	const char* ShaderConfig::IS_PBR_TEXTURE_SAMPLE      = "u_Settings.isPBRTextureSample";
+	const char* ShaderConfig::IS_DIFFUSE_TEXTURE_SAMPLE  = "u_Settings.isDiffuseTextureSample";
 	const char* ShaderConfig::IS_SPECULAR_TEXTURE_SAMPLE = "u_Settings.isSpecularTextureSample";
 	const char* ShaderConfig::IS_METALLIC_TEXTURE_SAMPLE = "u_Settings.isMetallicTextureSample";
 	const char* ShaderConfig::IS_EMISSION_TEXTURE_SAMPLE = "u_Settings.isEmissionTextureSample";
-
+	const char* ShaderConfig::IS_HEIGHT_TEXTURE_SAMPLE   = "u_isHeightTextureSample";
 }

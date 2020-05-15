@@ -4,6 +4,8 @@
 layout(location = 0) in vec3 aPos;
 layout(location = 1) in vec3 aNormal;
 layout(location = 2) in vec2 aTexCoords;
+layout(location = 3) in vec3 aTangent;
+layout(location = 4) in vec3 aBitangent;
 
 uniform mat4 u_Model;
 uniform mat4 u_ProjectionView;
@@ -13,9 +15,17 @@ uniform mat4 u_Projection;
 uniform mat4 u_View;
 uniform vec3 u_CubeSize;
 
+
+uniform int u_isHeightTextureSample;
+
+
 out vec3 worldPositionGeom;
 out vec3 normalGeom;
 out vec3 texCoordGeom;
+out vec3 tangentGeom;
+out vec3 bitangentGeom;
+int uSkybox = u_IsSkybox;
+//int uSampleHeightTexture = u_Settings.isHeightTextureSample;
 
 void main(){
 //	if(u_IsSkybox){
@@ -30,14 +40,18 @@ void main(){
 
 	worldPositionGeom = vec3(u_Model * vec4(aPos,1.0));
 	normalGeom = normalize(mat3(transpose(inverse(u_Model)))*aNormal);
-	//normalGeom=normalize(normalGeom);
-	if(u_IsSkybox==1)
+
+	if(uSkybox==1)
 		texCoordGeom=aPos;
 	else
 		texCoordGeom=vec3(aTexCoords.x,aTexCoords.y,1.0);
 	gl_Position = u_ProjectionView * u_Model * vec4(aPos,1.0);//vec4(worldPositionGeom, 1.0);
+	if(u_isHeightTextureSample==1){
+		normalGeom = normalize((u_Model*vec4(aNormal,0.0)).xyz);
+		tangentGeom    = normalize((u_Model*vec4(aTangent,0.0)).xyz);
+		bitangentGeom  = normalize((u_Model*vec4(aBitangent,0.0)).xyz);
+	}
 
-	//}
 }
 //
 #type geometry
@@ -45,17 +59,29 @@ void main(){
 
 layout(triangles) in;
 layout(triangle_strip,max_vertices = 3) out;
+uniform int u_isHeightTextureSample;
+
 
 in vec3 worldPositionGeom[];
 in vec3 normalGeom[];
 in vec3 texCoordGeom[];
+in vec3 tangentGeom[];
+in vec3 bitangentGeom[];
 
 out vec3 worldPositionFrag;
 out vec3 normalFrag;
-out vec3 texCoordFrag;//v_TexCoord;
-//flat out int axisIndex;
+out vec3 texCoordFrag;
+out vec3 tangentFrag;
+out vec3 bitangentFrag;
+
 uniform vec3 u_CameraViewPos;
 uniform vec3 u_CubeSize;
+
+
+//int  uSampleHeightTexture = u_Settings.isHeightTextureSample;
+
+
+
 //out vec3 normal_worldPositionFrag;
 
 /*几何着色器后会进入光栅化阶段，因此需要把坐标转换的 [-1,1]的裁剪平面！！*/
@@ -76,6 +102,11 @@ void main(){
 //			return;
 		normalFrag = normalGeom[i];
 		texCoordFrag = vec3(texCoordGeom[i].x,texCoordGeom[i].y,texCoordGeom[i].z);
+		if(u_isHeightTextureSample==1){
+			tangentFrag = tangentGeom[i];
+			bitangentFrag = bitangentGeom[i];
+		}
+	
 
 		if(p.z > p.x && p.z > p.y){
 			//axisIndex=0;
@@ -115,6 +146,9 @@ void main(){
 in vec3 worldPositionFrag;
 in vec3 normalFrag;
 in vec3 texCoordFrag;
+in vec3 tangentFrag;
+in vec3 bitangentFrag;
+
 const float PI=3.14159;
 
 struct PointLight{
@@ -130,25 +164,27 @@ struct PointLight{
 };
 
 uniform Material u_Material;
-
 uniform Settings u_Settings;
-//
+
 uniform PointLight u_PointLights[5];
 uniform int u_PointLightNums;
 uniform vec3 u_CameraViewPos;
-//
+
 uniform vec3 u_CubeSize;
 uniform int u_IsSkybox;
 uniform int u_IsPBRObjects;
 uniform bool u_StoreData;
 
+uniform vec2 u_HeightMapSize;
+
 uniform int u_VoxelSize;
 
-int ulightNum = u_PointLightNums;
-int uPBR = u_IsPBRObjects;
+int  ulightNum = u_PointLightNums;
+int  uPBR = u_IsPBRObjects;
 bool uStoreData= u_StoreData;
-int uDiffuseTextureSample = u_Settings.isDiffuseTextureSample;
-int uSpecularTextureSample = u_Settings.isSpecularTextureSample;
+int  uDiffuseTextureSample = u_Settings.isDiffuseTextureSample;
+int  uSpecularTextureSample = u_Settings.isSpecularTextureSample;
+int  uHeightTextureSample = u_Settings.isHeightTextureSample;
 
 /************************************* PBR fuction ***************************************************/
 /*****************************************************************************************************/
@@ -247,6 +283,21 @@ vec3 scaleAndBias(vec3 p) { return 0.5f * p + vec3(0.5f); }
 
 bool isInsideCube(const vec3 p, float e) { return abs(p.x) < 1 + e && abs(p.y) < 1 + e && abs(p.z) < 1 + e; }
 
+vec3 getNormalFromHeightMap(vec2 texCoord){
+    mat3 tangentToWorld = inverse(transpose(mat3(tangentFrag, normalFrag, bitangentFrag)));
+
+	vec2 offset = vec2(1.0)/u_HeightMapSize;
+	float curHeight = texture(u_Material.height,texCoord).r;
+	
+	float diffX = texture(u_Material.height, texCoord + vec2(offset.x, 0.0)).r - curHeight;
+    float diffY = texture(u_Material.height, texCoord + vec2(0.0, offset.y)).r - curHeight;
+
+    // Tangent space bump normal
+    float bumpMult = -3.0;
+    vec3 bumpNormal_tangent = normalize(vec3(bumpMult*diffX, 1.0, bumpMult*diffY));
+
+	return normalize(tangentToWorld*bumpNormal_tangent);
+}
 
 void main(){
 	vec3 cubePos = vec3(0.0);//u_CameraViewPos
@@ -255,7 +306,7 @@ void main(){
 	vec3 PBRcolor = vec3(0.0);
 
 	//uint idx = atomicAdd(u_voxelFragCount,1u);
-	imageStore(u_debugBuffer,0,uvec4(2u,2u,2u,2u));
+	//imageStore(u_debugBuffer,0,uvec4(2u,2u,2u,2u));
 	vec3 normalWorldPositionFrag =worldPositionFrag-cubePos;// vec3(worldPositionFrag.x-u_CubePos.x,worldPositionFrag.y-u_CubePos.y,worldPositionFrag.z-u_CubePos.z);
 	normalWorldPositionFrag = normalWorldPositionFrag/u_CubeSize;
 	if(!isInsideCube(normalWorldPositionFrag, 0.0)) return;
@@ -278,30 +329,27 @@ void main(){
 				
 				//diffuse
 				vec3 lightDir = normalize(u_PointLights[i].position-worldPositionFrag);
+				//vec3 norm = (uHeightTextureSample==0)?normalize(normalFrag):getNormalFromHeightMap(texCoordFrag.xy);
 				vec3 norm = normalize(normalFrag);
-				float diff = max(dot(lightDir,norm),0.0f);
-				vec3 diffuse;
 
+				vec3 diffuse;
+				float diff = max(dot(lightDir,norm),0.0f);
 				if(uDiffuseTextureSample==0){
 					diffuse =  u_PointLights[i].diffuse * diff * (u_Material.diffuseColor );
 				}
 				else
 					diffuse =  u_PointLights[i].diffuse * diff *texture(u_Material.diffuse,texCoordFrag.xy).rgb;
-				//diffuse =  u_PointLights[i].diffuse * diff * ((u_Material.diffuseColor )*(1-uIsTextureSample)+ texture(u_Material.diffuse,texCoordFrag.xy).rgb*uIsTextureSample);
 
 			
 
 				//specular
 				vec3 specular;
 				float spec;
-
-
 				vec3 reflectDir = normalize(reflect(-lightDir,norm));
 				spec = pow(max(dot(reflectDir,viewDir),0.0),u_Material.shininess);
 				specular = (uSpecularTextureSample==0)? (u_PointLights[i].specular * spec  *  u_Material.specularColor):(u_PointLights[i].specular * spec  * texture(u_Material.specular,texCoordFrag.xy).rgb);
 
 
-//u_PointLights[i].specular * spec  *  u_Material.specularColor;
 			
 				ambient  *= attenuation;
 				diffuse  *= attenuation;

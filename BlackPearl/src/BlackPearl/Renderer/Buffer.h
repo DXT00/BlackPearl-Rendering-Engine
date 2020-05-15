@@ -99,6 +99,7 @@ namespace BlackPearl {
 		inline std::vector<BufferElement> GetElements() const { return m_Elememts; }
 		void AddElement(const BufferElement& element) {
 			m_Elememts.push_back(element);
+			CalculateStrideAndOffset();
 		}
 		inline uint32_t GetStride() { return m_Stride; }
 	private:

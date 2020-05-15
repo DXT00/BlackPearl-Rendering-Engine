@@ -64,10 +64,10 @@ namespace BlackPearl {
 			for (auto mesh : GetMeshes())
 				mesh.GetMaterial()->SetTextureSampleSpecular((int)isSampled);
 		}
-	/*	void SetTextureMetallicSamples(bool isSampled) {
+		void SetTextureHeightSamples(bool isSampled) {
 			for (auto mesh : GetMeshes())
-				mesh.GetMaterial()->SetTextureSampleMetallic((int)isSampled);
-		}*/
+				mesh.GetMaterial()->SetTextureSampleHeight((int)isSampled);
+		}
 		bool GetEnableRender()const { return m_EnableRender; }
 		void SetEnableRender(bool enable) { m_EnableRender = enable; }
 

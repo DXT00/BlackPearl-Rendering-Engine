@@ -63,7 +63,6 @@ namespace BlackPearl {
 		for (auto vertexBuffer : m_VertexBuffers) {
 			GE_ASSERT(vertexBuffer->GetBufferLayout().GetElements().size(), "Vertex Buffer has no layout!!");
 			vertexBuffer->Bind();
-			//	uint32_t index = 0;
 			auto layout = vertexBuffer->GetBufferLayout();
 			for (BufferElement element : layout.GetElements()) {
 				if (ShaderDataTypeToBufferType(element.Type) == GL_INT)
@@ -71,7 +70,6 @@ namespace BlackPearl {
 				else //GL_FLOAT
 					glVertexAttribPointer(element.Location, element.GetElementCount(), ShaderDataTypeToBufferType(element.Type), element.Normalized == true ? GL_TRUE : GL_FALSE, layout.GetStride(), (void*)element.Offset);
 				glEnableVertexAttribArray(element.Location);
-				//index++;
 			}
 		}
 
