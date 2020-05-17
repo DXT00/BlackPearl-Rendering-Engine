@@ -3,6 +3,8 @@
 #include "BlackPearl/Object/Object.h"
 #include "BlackPearl/ObjectManager/ObjectManager.h"
 #include "BlackPearl/Component/LightComponent/Light.h"
+#include "BlackPearl/Component/LightComponent/ParallelLight.h"
+
 #include "BlackPearl/Component/LightComponent/PointLight.h"
 #include "BlackPearl/Component/LightComponent/LightSources.h"
 #include "BlackPearl/Timestep/Timestep.h"
@@ -115,6 +117,7 @@ namespace BlackPearl {
 		void ShowMeshRenderer(MeshRenderer* comp);
 		void ShowTransform(Transform* comp,Object* obj);
 		void ShowPointLight(PointLight* pointLight);
+		void ShowParallelLight(ParallelLight* parallelLight);
 		void ShowCamera(PerspectiveCamera* perspectiveCamera);
 		void ShowShader(std::string imguiShaders, int meshIndex, static int& itemIndex, int offset);
 		void ShowTextures(std::string imguiShaders, int meshIndex, static  int& itemIndex, Texture::Type textureType, static Texture::Type& type, int offset);

@@ -32,8 +32,8 @@ void main(){
 // --------------------------------------
 // Light (voxel) cone tracing settings.
 // --------------------------------------
-#define MIPMAP_HARDCAP 4.0 /* 4.0fToo high mipmap levels => glitchiness, too low mipmap levels => sharpness. */
-#define CORE_SIZE 5
+#define MIPMAP_HARDCAP 4/* 4.0 4.0fToo high mipmap levels => glitchiness, too low mipmap levels => sharpness. */
+#define CORE_SIZE 3
 //sigma = 2 ,kernel size = 11
 //Guassian calculator: http://dev.theomader.com/gaussian-kernel-calculator/
 float kernel11[11]={
@@ -310,20 +310,22 @@ vec3 traceDiffuseVoxelCone(const vec3 from,vec3 direction,float coneAngle,out fl
 
 	vec4 acc = vec4(0.0);
 	
-	float dist =VOXEL_SIZE;// 0.1953125;//OFFSET;//0.1953125;
+	float dist =20.0*VOXEL_SIZE;//提前走多几步，防止采集到高分辨率的体素（这些体素会闪烁），防止闪烁
 
 	//Trace
 	while(dist<SQRT2  && acc.a<1){//dist<SQRT2 
 		
 		vec3 c = from + dist * direction;
-		if(!isInsideCube(c, 0)) break;
+		if(!isInsideCube(c, -0.05)) break;
 		c = scaleAndBias(c);
 		float diameter = max(VOXEL_SIZE,  2.0*tanHalfAngle*dist); 
-		float level = log2(diameter/VOXEL_SIZE);
+		int level =int( log2(diameter/VOXEL_SIZE));
 		
 		vec4 voxel = textureLod(texture3D,c,min(MIPMAP_HARDCAP,level));
+		
 
 		float a = 1.0-acc.a;
+		
 		acc.rgb+=a*voxel.rgb;
 		acc.a+=a*voxel.a;
 		occlusion += (a * voxel.a) / (1.0 + 0.03 * diameter);
@@ -349,7 +351,7 @@ vec3 traceDiffuseVoxelCone(const vec3 from,vec3 direction){
 	while(dist<SQRT2 && acc.a<1){//dist<SQRT2 
 		
 		vec3 c = from + dist * direction;
-		if(!isInsideCube(c, 0)) break;
+		if(!isInsideCube(c, 0))  break;
 		c = scaleAndBias(c);
 		float l = (1+ CONE_SPEEAD * dist/VOXEL_SIZE); //跨过了多少Voxel
 		float level = log2(l);
@@ -374,7 +376,7 @@ vec3 traceSpecularVoxelCone(vec3 from,vec3 normal,vec3 direction,int isPbr,float
 	from = (from-u_CameraViewPos)/u_CubeSize;
 	direction = normalize(direction);
 
-	const float OFFSET = 2 * VOXEL_SIZE;//8*
+	const float OFFSET = 2 * VOXEL_SIZE;////提前走多几步，防止采集到高分辨率的体素（这些体素会闪烁），防止闪烁
 	const float STEP = VOXEL_SIZE;
 	float specularFactor = abs(from.z)>0.6?((1.0-abs(from.z))/0.4):1.0; //边界模糊
 
@@ -402,7 +404,7 @@ vec3 traceSpecularVoxelCone(vec3 from,vec3 normal,vec3 direction,int isPbr,float
 						vec3 c_offset = vec3(c.x,c.y+j*VOXEL_SIZE,c.z+i*VOXEL_SIZE);
 						if(!isInsideCube(c_offset, 0)) continue;
 						c_offset = scaleAndBias(c_offset); 
-						voxel+=textureLod(texture3D, c_offset, min(level, MIPMAP_HARDCAP))*kernel5_single[x+CORE_SIZE*y];
+						voxel+=textureLod(texture3D, c_offset, min(level, MIPMAP_HARDCAP))*kernel3_single[x+CORE_SIZE*y];
 					}
 				}
 			}
@@ -414,7 +416,7 @@ vec3 traceSpecularVoxelCone(vec3 from,vec3 normal,vec3 direction,int isPbr,float
 						vec3 c_offset = vec3(c.x+i*VOXEL_SIZE,c.y+j*VOXEL_SIZE,c.z);
 						if(!isInsideCube(c_offset, 0)) continue;
 						c_offset = scaleAndBias(c_offset); 
-						voxel+=textureLod(texture3D, c_offset, min(level, MIPMAP_HARDCAP))*kernel5_single[x+CORE_SIZE*y];
+						voxel+=textureLod(texture3D, c_offset, min(level, MIPMAP_HARDCAP))*kernel3_single[x+CORE_SIZE*y];
 					}
 				}
 			}
@@ -426,7 +428,7 @@ vec3 traceSpecularVoxelCone(vec3 from,vec3 normal,vec3 direction,int isPbr,float
 						vec3 c_offset = vec3(c.x+i*VOXEL_SIZE,c.y,c.z+j*VOXEL_SIZE);
 						if(!isInsideCube(c_offset, 0)) continue;
 						c_offset = scaleAndBias(c_offset); 
-						voxel+=textureLod(texture3D, c_offset, min(level, MIPMAP_HARDCAP))*kernel5_single[x+CORE_SIZE*y];
+						voxel+=textureLod(texture3D, c_offset, min(level, MIPMAP_HARDCAP))*kernel3_single[x+CORE_SIZE*y];
 					}
 				}
 			}
@@ -452,13 +454,12 @@ vec3 traceSpecularVoxelCone(vec3 from,vec3 normal,vec3 direction,int isPbr,float
 		//dist += STEP * (1.0f + 0.125f * level);
 	}
 	//return specularFactor* pow(u_Material.specularDiffusion + 1, 0.8) * acc.rgb;
-		return specularFactor* acc.rgb;
+		//return specularFactor* acc.rgb;
+				return acc.rgb;
 
 }
 
-// Calculates indirect diffuse light using voxel cone tracing.
-// The current implementation uses 9 cones. I think 5 cones should be enough, but it might generate
-// more aliasing and bad blur.
+
 vec3 indirectDiffuseLight(vec3 fragPos,vec3 diffuseColor,vec3 normal,out float occlusion){
 	//MY
 	vec3 worldPositionFrag_=(fragPos-u_CameraViewPos)/u_CubeSize;
@@ -500,28 +501,35 @@ vec3 indirectDiffuseLight(vec3 fragPos,vec3 diffuseColor,vec3 normal,out float o
 	const vec3 s4 = mix(normal, -ortho2, ANGLE_MIX);
 
 
-	acc += w[1] * traceDiffuseVoxelCone(C_ORIGIN + CONE_OFFSET * ortho, s1,45,occ);
+//	acc += w[1] * traceDiffuseVoxelCone(C_ORIGIN + CONE_OFFSET * ortho, s1,45,occ);
+//	occlusion+=w[1] *occ;
+//	acc += w[1] * traceDiffuseVoxelCone(C_ORIGIN - CONE_OFFSET * ortho, s2,45,occ);
+//	occlusion+=w[1] *occ;
+//	acc += w[1] * traceDiffuseVoxelCone(C_ORIGIN + CONE_OFFSET * ortho2, s3,45,occ);
+//	occlusion+=w[1] *occ;
+//	acc += w[1] * traceDiffuseVoxelCone(C_ORIGIN - CONE_OFFSET * ortho2, s4,45,occ);
+//	occlusion+=w[1] *occ;
+	acc += w[1] * traceDiffuseVoxelCone(C_ORIGIN + CONE_OFFSET * s1, s1,45,occ);
 	occlusion+=w[1] *occ;
-	acc += w[1] * traceDiffuseVoxelCone(C_ORIGIN - CONE_OFFSET * ortho, s2,45,occ);
+	acc += w[1] * traceDiffuseVoxelCone(C_ORIGIN - CONE_OFFSET * s2, s2,45,occ);
 	occlusion+=w[1] *occ;
-	acc += w[1] * traceDiffuseVoxelCone(C_ORIGIN + CONE_OFFSET * ortho2, s3,45,occ);
+	acc += w[1] * traceDiffuseVoxelCone(C_ORIGIN + CONE_OFFSET * s3, s3,45,occ);
 	occlusion+=w[1] *occ;
-	acc += w[1] * traceDiffuseVoxelCone(C_ORIGIN - CONE_OFFSET * ortho2, s4,45,occ);
+	acc += w[1] * traceDiffuseVoxelCone(C_ORIGIN - CONE_OFFSET * s4, s4,45,occ);
 	occlusion+=w[1] *occ;
-
 	// Trace 4 corner cones.
 	const vec3 c1 = mix(normal, corner, ANGLE_MIX);
 	const vec3 c2 = mix(normal, -corner, ANGLE_MIX);
 	const vec3 c3 = mix(normal, corner2, ANGLE_MIX);
 	const vec3 c4 = mix(normal, -corner2, ANGLE_MIX);
 
-	acc += w[2] * traceDiffuseVoxelCone(C_ORIGIN + CONE_OFFSET * corner, c1,45,occ);
+	acc += w[2] * traceDiffuseVoxelCone(C_ORIGIN + CONE_OFFSET * c1, c1,45,occ);
 	occlusion+= w[2] *occ;
-	acc += w[2] * traceDiffuseVoxelCone(C_ORIGIN - CONE_OFFSET * corner, c2,45,occ);
+	acc += w[2] * traceDiffuseVoxelCone(C_ORIGIN - CONE_OFFSET * c2, c2,45,occ);
 	occlusion+= w[2] *occ;
-	acc += w[2] * traceDiffuseVoxelCone(C_ORIGIN + CONE_OFFSET * corner2, c3,45,occ);
+	acc += w[2] * traceDiffuseVoxelCone(C_ORIGIN + CONE_OFFSET * c3, c3,45,occ);
 	occlusion+= w[2] *occ;
-	acc += w[2] * traceDiffuseVoxelCone(C_ORIGIN - CONE_OFFSET * corner2, c4,45,occ);
+	acc += w[2] * traceDiffuseVoxelCone(C_ORIGIN - CONE_OFFSET * c4, c4,45,occ);
 	occlusion+= w[2] *occ;
 
 	occlusion=1.0-occlusion;
@@ -596,11 +604,11 @@ void main(){
 
 	if(u_Settings.indirectSpecularLight)
 		indirectSpecular = indirectSpecularLight(viewDirection,normal,gBuffer.fragPos,gBuffer.isPBRObject,gBuffer.specularColor,gBuffer.diffuseColor,gBuffer.roughness);
-
-	if(indirectSpecular.r>u_SpecularBlurThreshold&&indirectSpecular.g>u_SpecularBlurThreshold&&indirectSpecular.b>u_SpecularBlurThreshold)
-			FragColor.a = 1;//表示需要filter
-		else
-			FragColor.a = 0;//表示不需要filter
+//
+//	if(indirectSpecular.r>u_SpecularBlurThreshold&&indirectSpecular.g>u_SpecularBlurThreshold&&indirectSpecular.b>u_SpecularBlurThreshold)
+//			FragColor.a = 1;//表示需要filter
+//		else
+//			FragColor.a = 0;//表示不需要filter
 
 
 	if(gBuffer.isPBRObject==1){

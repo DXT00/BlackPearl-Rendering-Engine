@@ -43,7 +43,7 @@ namespace BlackPearl {
 		GE_ERROR_JUDGE();
 
 	}
-
+	
 	Texture3D::~Texture3D()
 	{
 		glDeleteTextures(1, &m_TextureID);
@@ -57,7 +57,14 @@ namespace BlackPearl {
 		glClearTexImage(m_TextureID, 0, GL_RGBA, GL_FLOAT, &clearColor);
 		glBindTexture(GL_TEXTURE_3D, previousBoundTextureID);
 	}
-
+	//void Texture3D::Clear(GLuint clearColor[4])
+	//{
+	//	GLint previousBoundTextureID;
+	//	glGetIntegerv(GL_TEXTURE_BINDING_3D, &previousBoundTextureID);
+	//	glBindTexture(GL_TEXTURE_3D, m_TextureID);
+	//	glClearTexImage(m_TextureID, 0, GL_R, GL_UNSIGNED_BYTE, &clearColor);
+	//	glBindTexture(GL_TEXTURE_3D, previousBoundTextureID);
+	//}
 	void Texture3D::Bind()
 	{
 		glBindTexture(GL_TEXTURE_3D, m_TextureID);

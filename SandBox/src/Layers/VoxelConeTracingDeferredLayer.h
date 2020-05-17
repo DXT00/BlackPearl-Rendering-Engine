@@ -16,11 +16,9 @@ public:
 
 
 		m_CubeObj = CreateCube();
-		m_CubeObj->GetComponent<BlackPearl::Transform>()->SetScale(glm::vec3(20.0f));//必须是单位cube
+		m_CubeObj->GetComponent<BlackPearl::Transform>()->SetScale(glm::vec3(30.0f));//必须是单位cube
 		m_QuadObj = CreateQuad();
-		/*m_QuadBRDFLUTObj = CreateQuad();
-		m_QuadGBufferObj = CreateQuad();
-		m_QuadFinalScreenObj = CreateQuad();*/
+
 		m_SurroundSphereObj = CreateSphere(1.0, 64, 64, "assets/shaders/Sphere.glsl", "", "SurroundSphere");
 
 		glEnable(GL_MULTISAMPLE);
@@ -44,7 +42,7 @@ public:
 			 "assets/skybox/skybox/back.jpg",
 			});
 	
-
+		//LoadStaticBackGroundObject("SphereIron");
 		//LoadScene("CornellScene");
 		LoadChurchScene();
 		//LoadScene("SpheresScene");
@@ -98,7 +96,7 @@ public:
 			GE_CORE_INFO("m_skybox = nullptr");
 
 		}
-
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		m_VoxelConeTracingDeferredRenderer->Render(m_MainCamera->GetObj()->GetComponent<BlackPearl::PerspectiveCamera>(), m_BackGroundObjsList, GetLightSources(),
 			BlackPearl::Configuration::WindowWidth, BlackPearl::Configuration::WindowHeight, m_skybox, m_CurrentRenderingMode);
 	

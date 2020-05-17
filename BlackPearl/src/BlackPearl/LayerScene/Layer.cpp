@@ -43,6 +43,8 @@ namespace BlackPearl {
 
 
 		ImGui::Text("deferred voxel GI");
+		ImGui::Checkbox("voxelize", &VoxelConeTracingDeferredRenderer::s_VoxelizeNow);
+
 		ImGui::Checkbox("voxel Indirect diffuse", &VoxelConeTracingDeferredRenderer::s_IndirectDiffuseLight);
 		ImGui::Checkbox("voxel Indirect specular", &VoxelConeTracingDeferredRenderer::s_IndirectSpecularLight);
 		ImGui::Checkbox("voxel direct light", &VoxelConeTracingDeferredRenderer::s_DirectLight);
@@ -247,6 +249,9 @@ namespace BlackPearl {
 			if (currentObj->HasComponent < PointLight>()) {
 				ShowPointLight(currentObj->GetComponent<PointLight>());
 			}
+			if (currentObj->HasComponent < ParallelLight>()) {
+				ShowParallelLight(currentObj->GetComponent<ParallelLight>());
+			}
 			if (currentObj->HasComponent< PerspectiveCamera>()) {
 				ShowCamera(currentObj->GetComponent<PerspectiveCamera>());
 
@@ -427,7 +432,7 @@ namespace BlackPearl {
 		Object* church = CreateModel("assets/models/crytek-sponza/sponza.obj", "assets/shaders/IronMan.glsl", false, "Church");
 
 		//Object* church = CreateModel("assets/models/sponza_obj/sponza.obj", "assets/shaders/IronMan.glsl", false, "Church");
-		church->GetComponent<Transform>()->SetScale(glm::vec3(0.01));//0.02
+		church->GetComponent<Transform>()->SetScale(glm::vec3(0.02));//0.02
 		church->GetComponent<Transform>()->SetInitPosition({ 0.0f,0.0f,10.0f });
 		church->GetComponent<Transform>()->SetRotation({ 0.0f,-90.0f,0.0f });
 		//church->GetComponent<Transform>()->SetScale({ 0.1f,0.1f,0.1f });
@@ -738,6 +743,29 @@ namespace BlackPearl {
 
 			
 
+		}
+		else if (modelName == "SphereIron") {
+			staticModel = CreateSphere(1.5, 64, 64);
+
+			std::shared_ptr<Texture> IronalbedoTexture(DBG_NEW Texture(Texture::Type::DiffuseMap, "assets/texture/pbr/IronScuffed/Iron-Scuffed_basecolor.png"));
+			std::shared_ptr<Texture> IronaoTexture(DBG_NEW Texture(Texture::Type::AoMap, "assets/texture/pbr/IronScuffed/Iron-Scuffed_ao.png"));
+			std::shared_ptr<Texture> IronroughnessTexture(DBG_NEW Texture(Texture::Type::RoughnessMap, "assets/texture/pbr/IronScuffed/Iron-Scuffed_roughness.png"));
+			std::shared_ptr<Texture> IronmentallicTexture(DBG_NEW Texture(Texture::Type::MentallicMap, "assets/texture/pbr/IronScuffed/Iron-Scuffed_metallic.png"));
+			std::shared_ptr<Texture> IronnormalTexture(DBG_NEW Texture(Texture::Type::NormalMap, "assets/texture/pbr/IronScuffed/Iron-Scuffed_normal.png"));
+
+			staticModel->GetComponent<MeshRenderer>()->SetTextures(IronnormalTexture);
+			staticModel->GetComponent<MeshRenderer>()->SetTextures(IronalbedoTexture);
+			staticModel->GetComponent<MeshRenderer>()->SetTextures(IronaoTexture);
+			staticModel->GetComponent<MeshRenderer>()->SetTextures(IronroughnessTexture);
+			staticModel->GetComponent<MeshRenderer>()->SetTextures(IronmentallicTexture);
+
+			staticModel->GetComponent<MeshRenderer>()->SetPBRTextureSamples(true);
+			staticModel->GetComponent<MeshRenderer>()->SetTextureDiffuseSamples(true);
+			//	sphereObjIron->GetComponent<MeshRenderer>()->SetTextureMetallicSamples(true);
+			staticModel->GetComponent<MeshRenderer>()->SetIsBackGroundObjects(true);
+
+			staticModel->GetComponent<MeshRenderer>()->SetIsPBRObject(true);
+			staticModel->GetComponent<Transform>()->SetInitPosition({ 0,0,0 });
 		}
 		else {
 			GE_CORE_ERROR("no such name:" + modelName + "!")
@@ -1272,6 +1300,28 @@ namespace BlackPearl {
 
 
 			}*/
+	}
+
+	void Layer::ShowParallelLight(ParallelLight* parallelLight)
+	{
+		auto props = parallelLight->GetLightProps();
+		glm::vec3 direction = parallelLight->GetDirection();
+
+		float dir[] = { direction.x,direction.y,direction.z };
+		ImGui::DragFloat3("position", dir, 0.05f,0.0f, 1.0f, "%.3f ");
+		parallelLight->SetDirection({ dir[0],dir[1],dir[2] });
+
+		float intensity = parallelLight->GetLightProps().intensity;
+		ImGui::DragFloat3("direction", glm::value_ptr(props.emission));
+
+		ImGui::ColorEdit3("ambient Color", glm::value_ptr(props.ambient));
+		ImGui::ColorEdit3("diffuse Color", glm::value_ptr(props.diffuse));
+		ImGui::ColorEdit3("specular Color", glm::value_ptr(props.specular));
+		ImGui::ColorEdit3("emission Color", glm::value_ptr(props.emission));
+		ImGui::DragFloat("intensity", &intensity, 1.0f, 1, 100);
+
+
+		parallelLight->UpdateMesh({ props.ambient ,props.diffuse,props.specular,props.emission,intensity });
 	}
 
 

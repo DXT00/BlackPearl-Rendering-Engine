@@ -81,6 +81,9 @@ vec3 scaleAndBias(vec3 p){
 
 // Returns true if the point p is inside the unity cube. 
 //bool isInsideCube(const vec3 p, float e) { return abs(p.x) < u_CubeSize.x + e && abs(p.y) < u_CubeSize.y + e && abs(p.z) < u_CubeSize.z + e; }
+
+
+
 bool isInsideCube(const vec3 p, float e) {
 	return abs(p.x) < 1 + e && abs(p.y) < 1 + e && abs(p.z) < 1 + e; 
 }
@@ -289,13 +292,15 @@ void main(){
 	const vec3 viewDirection = normalize(gBuffer.fragPos-u_CameraViewPos);
 
 	float shadowBlend = 1.0;
-	if(uShadow)
-		shadowBlend = traceShadowCone(gBuffer.fragPos,u_PointLight.position,gBuffer.normal);
 	
+		
 	
 	
 	vec3 direct = vec3(0.0);
 	if(uDirectLight){
+		//if(uShadow)
+		shadowBlend = traceShadowCone(gBuffer.fragPos,u_PointLight.position,gBuffer.normal);
+	
 		if(gBuffer.isPBRObject == 0){
 		
 			//direct += u_PointLights[i].intensity * calculateDirectLight_orign(u_PointLights[i], viewDirection);

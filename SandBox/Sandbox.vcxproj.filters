@@ -65,5 +65,11 @@
     <None Include="assets\shaders\gBufferVoxelSVO\buildTree\renderNodeKd.glsl" />
     <None Include="assets\shaders\map\map.glsl" />
     <None Include="assets\shaders\SkyBoxMultiTexture.glsl" />
+    <None Include="assets\shaders\gBufferVoxel\gBufferVoxel.glsl" />
+    <None Include="assets\shaders\gBufferVoxel\gBuffer_pointLight_voxelConeTracingPBR.glsl" />
+    <None Include="assets\shaders\gBufferVoxel\gBuffer_ambientFilter_voxelConeTracingPBR.glsl" />
+    <None Include="assets\shaders\gBufferVoxel\FinalScreenQuad.glsl" />
+    <None Include="assets\shaders\gBufferVoxel\renderVoxel.glsl" />
+    <None Include="assets\shaders\gBufferVoxel\gBuffer_parallelLight_voxelConeTracingPBR.glsl" />
   </ItemGroup>
 </Project>

@@ -18,19 +18,9 @@ out vec3 normalGeom;
 out vec3 texCoordGeom;
 
 void main(){
-//	if(u_IsSkybox){
-//		worldPositionGeom=aPos;//*(u_CubeSize-vec3(0.1));
-//		normalGeom = normalize(aNormal);
-//		texCoordGeom=aPos;//*(u_CubeSize-vec3(0.1));
-//		vec4 pos = u_Projection*mat4(mat3(u_View))*vec4(worldPositionGeom,1.0);//vec4(aPos,1.0);
-//
-//		gl_Position =pos;// pos.xyww;
-//	}
-//	else{
 
 	worldPositionGeom = vec3(u_Model * vec4(aPos,1.0));
-	normalGeom = normalize(mat3(transpose(inverse(u_Model)))*aNormal);
-	//normalGeom=normalize(normalGeom);
+	normalGeom = normalize(mat3(u_TranInverseModel)*aNormal);
 	int uSkyBox = u_IsSkybox;
 	if(uSkyBox==1)
 		texCoordGeom=aPos;
@@ -202,21 +192,61 @@ uniform Material u_Material;
 uniform Settings u_Settings;
 
 uniform PointLight u_PointLights[5];
-uniform int u_PointLightNums;
-uniform vec3 u_CameraViewPos;
-uniform vec3 u_CubeSize;
-uniform int u_IsSkybox;
-uniform int u_IsPBRObjects;
+uniform int        u_PointLightNums;
+uniform vec3       u_CameraViewPos;
+uniform vec3       u_CubeSize;
+uniform int        u_IsSkybox;
+uniform int        u_IsPBRObjects;
 
 int uPointLightsNum = u_PointLightNums;
-//int uTextureSample = u_Settings.isTextureSample;
 layout(rgba8, binding = 0) uniform image3D texture3D;
+//layout(r32ui, binding = 0) volatile uniform uimage3D texture3D;
 
 in vec3 worldPositionFrag;
 in vec3 normalFrag;
 in vec3 texCoordFrag;
+uint convVec4ToRGBA8( in vec4 val )
+{
+    return ( uint(val.w)&0x000000FFu)<<24u | (uint(val.z)&0x000000FFu)<<16u | (uint(val.y)&0x000000FFu)<<8u | (uint(val.x)&0x000000FFu);
+}
+vec4 convRGBA8ToVec4( in uint val )
+{
+    return vec4( float( (val&0x000000FFu) ), float( (val&0x0000FF00u)>>8u),
+	             float( (val&0x00FF0000u)>>16u), float( (val&0xFF000000u)>>24u) );
+}
 
+void imageAtomicRGBA8Avg( vec4 val, ivec3 coord, layout(r32ui) uimage3D  buf )
+{
+    val.rgb *= 255.0;
+	val.a = 1;
 
+	uint newVal = convVec4ToRGBA8( val );
+	uint prev = 0u;
+	uint cur;
+	
+	
+//	uint imageAtomicCompSwap(gimage1D image,
+// 	int P,
+// 	uint compare,
+// 	uint data);
+//	
+
+	//imageAtomicCompSwap atomically compares the value of compare with that of the texel at coordinate
+	//P and sample (for multisampled forms) in the image bound to uint image. If the values are equal, 
+	//data is stored into the texel, otherwise it is discarded.
+	//It returns the original value of the texel regardless of the result of the comparison operation.
+	while( (cur = imageAtomicCompSwap( buf, coord, prev, newVal ) ) != prev )
+   {
+       prev = cur;
+	   vec4 rval = convRGBA8ToVec4( cur );
+	   rval.xyz = rval.xyz*rval.w;
+	   vec4 curVal = rval +  val;
+	   curVal.xyz /= curVal.w;
+	   newVal = convVec4ToRGBA8( curVal );
+   }
+
+     
+}
 /************************************* PBR fuction ***************************************************/
 /*****************************************************************************************************/
 
@@ -262,7 +292,7 @@ vec3 LightRadiance(vec3 fragPos,PointLight light){
 	return radiance;
 }
 
-//TODO::·¨ÏßÌùÍ¼
+
 vec3 getNormalFromMap(vec3 normal,vec3 fragPos)
 {
     vec3 tangentNormal =  2.0* texture(u_Material.normal,texCoordFrag.xy).xyz- vec3(1.0);
@@ -287,7 +317,7 @@ vec3 CalcPointLight(PointLight light,vec3 normal,vec3 viewDir){
 	float distance = length(light.position-worldPositionFrag);
 	float attenuation = 1.0f/(light.constant+light.linear * distance+light.quadratic*distance*distance);
 	//ambient
-	vec3 ambient = light.ambient * (u_Material.ambientColor );
+	vec3 ambient = light.ambient * (u_Material.ambientColor);
 	
 	//diffuse
 	vec3 lightDir = normalize(light.position-worldPositionFrag);
@@ -309,22 +339,12 @@ vec3 CalcPointLight(PointLight light,vec3 normal,vec3 viewDir){
 	int uSpecularTextureSample = u_Settings.isSpecularTextureSample;
 
 	vec3 halfwayDir = normalize(lightDir+viewDir);
-	spec = pow(max(dot(norm,halfwayDir),0.0),64);
+	spec = pow(max(dot(norm,halfwayDir),0.0),u_Material.shininess);
 	if(uSpecularTextureSample==0)
 		specular =  light.specular * spec  *  u_Material.specularColor;
 	else
 		specular =  light.specular * spec  *  texture(u_Material.specular,texCoordFrag.xy).rgb;
 
-	//}
-//	else{
-//
-//		vec3 reflectDir = normalize(reflect(-lightDir,norm));
-//		spec = pow(max(dot(reflectDir,viewDir),0.0),64);
-//		if(u_Settings.isSpecularTextureSample==0)
-//			specular =  light.specular * spec  *  u_Material.specularColor;
-//		else
-//			specular =  light.specular * spec  *  texture(u_Material.specular,texCoordFrag.xy).rgb;	
-//			}
 	ambient  *= attenuation;
 	diffuse  *= attenuation;
 	specular *= attenuation;
@@ -334,7 +354,7 @@ vec3 CalcPointLight(PointLight light,vec3 normal,vec3 viewDir){
 	return fragColor;
 }
 
-vec3 scaleAndBias(vec3 p) { return 0.5f * p + vec3(0.5f); }
+vec3 scaleAndBias(vec3 p) { return 0.5 * p + vec3(0.5); }
 
 bool isInsideCube(const vec3 p, float e) { return abs(p.x) < 1 + e && abs(p.y) < 1 + e && abs(p.z) < 1 + e; }
 
@@ -363,15 +383,15 @@ void main(){
 		}
 	}
 	else if(uPbr==1){
-		vec3 albedo = pow(texture(u_Material.diffuse, texCoordFrag.xy).rgb, vec3(2.2));//vec3(pow( texture(u_Material.diffuse, v_TexCoord).r, (2.2)));
+		vec3 albedo = pow(texture(u_Material.diffuse, texCoordFrag.xy).rgb, vec3(2.2));
 
 		float mentallic = texture(u_Material.mentallic,texCoordFrag.xy).r;
 		float roughness  = texture(u_Material.roughness ,texCoordFrag.xy).r;
 		float ao        = texture(u_Material.ao, texCoordFrag.xy).r;
 		
-		int emissionSample = u_Settings.isEmissionTextureSample;
-		vec3 emission = (emissionSample==1)?texture(u_Material.emission,texCoordFrag.xy).rgb:vec3(0);
-//
+		int  emissionSample = u_Settings.isEmissionTextureSample;
+		vec3 emission = vec3(0);//(emissionSample==1)?texture(u_Material.emission,texCoordFrag.xy).rgb:vec3(0);
+
 		vec3 N = getNormalFromMap(normalFrag,worldPositionFrag);
 		vec3 v_FragPos=worldPositionFrag;
 		vec3 V = viewDir;
@@ -408,10 +428,13 @@ void main(){
 	}
 	
 		
-	color = color / (color + vec3(1.0));
-	color = pow(color, vec3(1.0/2.2));  
+	//color = color / (color + vec3(1.0));
+	//color = pow(color, vec3(1.0/2.2));  
 	vec3 voxel = scaleAndBias(normalWorldPositionFrag);
 	ivec3 dim = imageSize(texture3D);// retrieve the dimensions of an image
 	vec4 res = vec4(vec3(color), 1);
-    imageStore(texture3D, ivec3(dim * voxel), res);//write a single texel into an image;
+	//vec3 pos = vec3(voxel.x*float(dim.x),voxel.y*float(dim.y),voxel.z*float(dim.z));
+	//vec4 pre = imageLoad(texture3D, ivec3(pos));//write a single texel into an image;
+	//res+=pre;
+	imageStore(texture3D, ivec3(dim * voxel),res);//write a single texel into an image;
 }

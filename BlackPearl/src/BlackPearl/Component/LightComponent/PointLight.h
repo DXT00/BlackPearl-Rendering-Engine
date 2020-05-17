@@ -101,7 +101,8 @@ namespace BlackPearl {
 
 
 		}
-		inline void SetAttenuation(const Attenuation& attenuation) { m_Attenuation = attenuation; }
+		inline void SetAttenuation(const Attenuation& attenuation) { m_Attenuation = attenuation;
+		}
 		inline void SetAttenuation(unsigned int maxdistance) { m_Attenuation.maxDistance = maxdistance; }
 
 		inline Attenuation GetAttenuation() const { return m_Attenuation; }

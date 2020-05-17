@@ -30,6 +30,7 @@ namespace BlackPearl {
 			RenderingMode reneringMode = RenderingMode::VOXELIZATION_VISUALIZATION
 		);
 		void RenderVoxelVisualization(Camera* camera, unsigned int viewportWidth, unsigned int viewportHeight);
+		void RenderVoxelVisualization( unsigned int viewportWidth, unsigned int viewportHeight);
 
 		void RenderScene(const std::vector<Object*>& objs, const LightSources* lightSources, 
 			unsigned int viewportWidth, unsigned int viewportHeight, Object* skybox);
@@ -79,7 +80,7 @@ namespace BlackPearl {
 		int m_BlurCoeffs = 8;
 
 		Texture3D* m_VoxelTexture = nullptr;
-		unsigned int m_VoxelTextureSize = 256;// 256;// 64;
+		unsigned int m_VoxelTextureSize =  256;// 64;
 
 		unsigned int m_ScreenWidth = Configuration::WindowWidth;
 		unsigned int m_ScreenHeight = Configuration::WindowHeight;
@@ -99,16 +100,10 @@ namespace BlackPearl {
 		// Rendering.
 		// ----------------
 		std::shared_ptr<Shader> m_VoxelizationShader;
-		std::shared_ptr<Shader> m_WorldPositionShader;
 		std::shared_ptr<Shader> m_VoxelVisualizationShader;
-		
-
 		std::shared_ptr<Shader> m_VCTAmbientGIShader;//deferred ambient GI pass
+		std::shared_ptr<Shader> m_VCTParallelLightShader;//deferred parallel light pass
 		std::shared_ptr<Shader> m_VCTPointLightShader;//deferred pointlight pass
-
-		//std::shared_ptr<Shader> m_GuassianFilterVerticalShader;
-		//std::shared_ptr<Shader> m_GuassianFilterHorizontalShader;
-
 		std::shared_ptr<Shader> m_FinalScreenShader;
 
 		// ----------------
@@ -119,25 +114,18 @@ namespace BlackPearl {
 		std::shared_ptr<Texture> m_SpecularBrdfLUTTexture ;
 		Object* m_BrdfLUTQuadObj = nullptr;//pbr brdf LUT map render
 
-		/*Debug function*/
-		//std::shared_ptr<Shader> m_VoxelizationTestShader;
-		//std::shared_ptr<Shader> m_FrontBackCubeTestShader;
-
 
 		// ----------------
 		// Object
 		// ----------------
 		Object* m_QuadObj = nullptr;//用于显示体素化结果 ： voxel Visualization
 		Object* m_CubeObj = nullptr; //控制体素化渲染范围
-		Object* m_DebugQuadObj = nullptr; //darw front face and back face of cube
-		Object* m_QuadFinalScreenObj = nullptr;
 		Object* m_SurroundSphere = nullptr;
 		// ----------------
 		// GBuffer
 		// ----------------
 		std::shared_ptr<GBuffer> m_GBuffer;
 		std::shared_ptr<Shader> m_GBufferShader;
-		Object* m_QuadGbufferObj = nullptr;//用于显示体素化结果 ： voxel Visualization
 
 		// ----------------
 		// FrameBuffer which render scene to 
@@ -145,12 +133,12 @@ namespace BlackPearl {
 		std::shared_ptr<FrameBuffer> m_FrameBuffer;
 		std::shared_ptr<Texture> m_PostProcessTexture;
 
-		std::shared_ptr<FrameBuffer> m_BlurHoriFrameBuffer;
-		std::shared_ptr<Texture> m_BlurHTexture;
+		// ----------------
+		// Render voxel
+		// ----------------
 
-		std::shared_ptr<FrameBuffer> m_BlurVertFrameBuffer;
-		std::shared_ptr<Texture> m_BlurVTexture;
-
+		std::shared_ptr<Shader> m_VoxelRenderShader;//use geometry shader render voxel
+		std::shared_ptr<VertexArray> m_PointCubeVAO;
 		bool m_IsInitialize = false;
 
 

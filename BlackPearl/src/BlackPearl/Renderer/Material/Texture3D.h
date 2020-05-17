@@ -10,12 +10,15 @@ namespace BlackPearl {
 			const std::vector<float>& textureBuffer,
 			const int width,const int height,const int depth,
 			const bool generateMipmaps = true);
-
+		/*Texture3D(
+			const std::vector<unsigned int>& textureBuffer,
+			const int width, const int height, const int depth,
+			const bool generateMipmaps = true);*/
 		~Texture3D();
 
 		//Clears this texture using a given clear color. //TODO::²»ÐèÒªUnbind?
 		void Clear(float clearColor[4]);
-
+	//	void Clear(GLuint clearColor[4]);
 		void Bind();
 		void UnBind();
 		unsigned int GetRendererID() { return m_TextureID; }

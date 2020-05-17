@@ -29,9 +29,12 @@ SVO path tracing - only one bounce cubeSize = 40
 
 
 ###  Voxel Cone Tracing - 3D texture cone tracing
+![3Dtexture_coneTracing](/results/3Dtexture_coneTracing1.png)
 
+### indirect specular light
+![3Dtexture_coneTracing](/results/3Dtexture_coneTracing2.png)
+
+### indirect diffuse light
 ![3Dtexture_coneTracing](/results/3Dtexture_coneTracing3.png)
-![3Dtexture_coneTracing](/results/3Dtexture_coneTracing4.png)
-![3Dtexture_coneTracing](/results/3Dtexture_coneTracing5.png)
 
 

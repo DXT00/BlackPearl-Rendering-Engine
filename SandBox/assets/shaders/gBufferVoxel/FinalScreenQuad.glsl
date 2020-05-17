@@ -22,12 +22,12 @@ in vec2 TexCoords;
 
 uniform sampler2D u_FinalScreenTexture;
 uniform Settings u_Settings;
-const float offset = 1.0 / 300.0; 
+bool hdr = u_Settings.hdr;
 void main(){
 
 	vec3 color =texture(u_FinalScreenTexture, TexCoords).rgb;
 
-	if(u_Settings.hdr){
+	if(hdr){
 	//HDR tonemapping
 	 color = color / (color + vec3(1.0));
 	//gamma correction

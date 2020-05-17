@@ -207,6 +207,8 @@ namespace BlackPearl {
 				this->SetUniformVec3f("u_ParallelLight.diffuse", lightSource->GetLightProps().diffuse);
 				this->SetUniformVec3f("u_ParallelLight.specular", lightSource->GetLightProps().specular);
 				this->SetUniformVec3f("u_ParallelLight.direction", lightSource->GetDirection());
+				this->SetUniform1f("u_ParallelLight.intensity", lightSource->GetLightProps().intensity);
+
 			}
 			if (lightObj->HasComponent<PointLight>()) {
 
