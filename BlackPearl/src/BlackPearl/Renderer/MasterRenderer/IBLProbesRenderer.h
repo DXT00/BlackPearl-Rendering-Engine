@@ -17,21 +17,26 @@ namespace BlackPearl {
 		void Render(const LightSources* lightSources, const std::vector<Object*> objects, 
 			const std::vector<Object*> diffuseProbes, 
 			const std::vector<Object*> reflectionProbes, Object* skyBox);
+		void RenderDiffuseProbeMap(const LightSources* lightSources, const std::vector<Object*> objects,
+			const std::vector<Object*> diffuseProbes, Object* skyBox);
+		void RenderSpecularProbeMap(const LightSources* lightSources, const std::vector<Object*> objects,
+			const std::vector<Object*> reflectionProbes, Object* skyBox);
 		void RenderProbes(const std::vector<Object*> probes,int probeType);
 	//	void RenderSpecularObjects(const LightSources* lightSources, const std::vector<Object*> objects, const std::vector<Object*> probes);
 
 		void Init(MainCamera* camera, Object* brdfLUTQuadObj, const LightSources& lightSources, const std::vector<Object*> objects);
 		std::shared_ptr<Texture> GetSpecularBrdfLUTTexture() const { return m_SpecularBrdfLUTTexture; }
 		//void UpdateProbesMaps(const LightSources* lightSources, std::vector<Object*> objects, Object* skyBox, Object* probe);
-		void UpdateDiffuseProbesMap(const LightSources* lightSources, std::vector<Object*> objects, Object* skyBox, Object* diffuseProbe);
-
-		void UpdateReflectionProbesMap(const LightSources* lightSources, std::vector<Object*> objects, Object* skyBox, Object* reflectionProbe);
+		
 		void ReUpdateProbes() {
 			m_CurrentProbeIndex = 0;
 			m_UpdateFinished = false;
 		}
 		void UpdateProbeCamera(Object* probe);
 	private:
+		void UpdateDiffuseProbesMap(const LightSources* lightSources, std::vector<Object*> objects, Object* skyBox, Object* diffuseProbe);
+
+		void UpdateReflectionProbesMap(const LightSources* lightSources, std::vector<Object*> objects, Object* skyBox, Object* reflectionProbe);
 		/*render environment CubeMap of each probe */
 		std::shared_ptr<CubeMapTexture> RenderEnvironmerntCubeMaps(const LightSources* lightSources, std::vector<Object*> objects, Object* probes, Object* skyBox);
 		//void RenderDiffuseIrradianceMap(const LightSources* lightSources, std::vector<Object*> objects, Object *probe);

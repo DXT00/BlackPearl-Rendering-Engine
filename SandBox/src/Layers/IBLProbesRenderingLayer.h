@@ -44,9 +44,9 @@ public:
 		/* create probes */
 
 		m_DiffuseLightProbeGrid = CreateProbeGrid(m_MapManager, BlackPearl::ProbeType::DIFFUSE_PROBE, 
-			glm::vec3(2, 4, 2), glm::vec3(2.0, 10.0, 6.7), 5);
-		m_ReflectLightProbeGrid = CreateProbeGrid(m_MapManager, BlackPearl::ProbeType::REFLECTION_PROBE,
-			glm::vec3(2, 1, 1), glm::vec3(2.0, 10.0, 6.7), 5);
+			glm::vec3(4, 2, 4), glm::vec3(2.0, 2.0, 6.7), 5);
+	/*	m_ReflectLightProbeGrid = CreateProbeGrid(m_MapManager, BlackPearl::ProbeType::REFLECTION_PROBE,
+			glm::vec3(2, 1, 1), glm::vec3(2.0, 6.0, 6.7), 6);*/
 
 		
 		BlackPearl::Renderer::Init();
@@ -94,11 +94,16 @@ public:
 		//	 "assets/skybox/skybox1/SkyNight_Front.png",
 		//	 "assets/skybox/skybox1/SkyNight_Back.png",
 		//	});
-
-		//LoadScene("SpheresScene");
-		LoadScene("Church");
+		//LoadStaticBackGroundObject("SphereIron");
+		LoadScene("SpheresScene");
+	//	LoadScene("Church");
 		//LoadScene("CornellScene");//SpheresScene
-		//LoadDynamicObject("Robot");
+
+		//BlackPearl::Object* bot = LoadDynamicObject("Robot");
+		//BlackPearl::Object* specularProbe = CreateLightProbe(BlackPearl::ProbeType::REFLECTION_PROBE);
+		//bot->AddChildObj(specularProbe);
+		//specularProbe->GetComponent<BlackPearl::LightProbe>()->AddExcludeObjectId(bot->GetId().id);
+		//LoadDynamicObject("Boy");
 
 		m_ProbeCamera = CreateCamera("ProbeCamera");
 
@@ -132,16 +137,34 @@ public:
 		BlackPearl::Renderer::BeginScene(*(m_MainCamera->GetObj()->GetComponent<BlackPearl::PerspectiveCamera>()), *GetLightSources());
 
 
+		//if (BlackPearl::Input::IsKeyPressed(BP_KEY_U)) {
+		//	GE_CORE_INFO("updating diffuse probes' area...!")
+		//		m_MapManager->UpdateProbesArea(m_DiffuseLightProbes);
+		//	GE_CORE_INFO("light probe updating......")
+		//		m_IBLProbesRenderer->Render(GetLightSources(), m_BackGroundObjsList, 
+		//			m_DiffuseLightProbes, m_ReflectionLightProbes, m_SkyBoxObj1);
+
+
+		//}
 		if (BlackPearl::Input::IsKeyPressed(BP_KEY_U)) {
 			GE_CORE_INFO("updating diffuse probes' area...!")
 				m_MapManager->UpdateProbesArea(m_DiffuseLightProbes);
 			GE_CORE_INFO("light probe updating......")
-				m_IBLProbesRenderer->Render(GetLightSources(), m_BackGroundObjsList, 
-					m_DiffuseLightProbes, m_ReflectionLightProbes, m_SkyBoxObj1);
-
-
+				m_IBLProbesRenderer->RenderDiffuseProbeMap(GetLightSources(), m_BackGroundObjsList,
+					m_DiffuseLightProbes, m_SkyBoxObj1);
 		}
+		m_IBLProbesRenderer->RenderSpecularProbeMap(GetLightSources(), m_BackGroundObjsList,
+			m_ReflectionLightProbes, m_SkyBoxObj1);
 
+	/*	if (BlackPearl::Input::IsKeyPressed(BP_KEY_O)) {
+			GE_CORE_INFO("updating diffuse probes' area...!")
+				m_MapManager->UpdateProbesArea(m_DiffuseLightProbes);
+			GE_CORE_INFO("light probe updating......")
+				m_IBLProbesRenderer->RenderSpecularProbeMap(GetLightSources(), m_BackGroundObjsList,
+					m_ReflectionLightProbes, m_SkyBoxObj1);
+
+
+		}*/
 		milliseconds currentTimeMs = duration_cast<milliseconds>(system_clock::now().time_since_epoch());
 		double runtime = currentTimeMs.count() - m_StartTimeMs.count();
 
@@ -179,13 +202,15 @@ public:
 			}
 		}
 		if (updateShadowMap == true || m_loopIndex == 0) {
+#ifdef TIME_DEBUG
 			BlackPearl::TimeCounter::Start();
-
+#endif
 			m_ShadowMapPointLightRenderer->RenderCubeMap(m_ShadowObjsList, m_DynamicObjsList, runtime / 1000.0f, GetLightSources());
-			if (m_loopIndex == 0)
-				m_loopIndex++;
+			/*if (m_loopIndex == 0)
+				m_loopIndex++;*/
+#ifdef TIME_DEBUG
 			BlackPearl::TimeCounter::End("Render ShadowMap");
-
+#endif
 		}
 	/*	if (m_loopIndex == 0) {
 

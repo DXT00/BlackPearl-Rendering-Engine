@@ -118,7 +118,7 @@ vec3 CalculateAmbientGI(vec3 albedo,vec3 specularColor){
 	vec3 N = normalize(v_Normal);//getNormalFromMap(v_FragPos,v_TexCoord);
 
 	vec3 V = normalize(u_CameraViewPos-v_FragPos);
-	vec3 R = reflect(-V,N);
+	vec3 R =normalize( reflect(-V,N));
 
 	
 
@@ -145,7 +145,7 @@ vec3 CalculateAmbientGI(vec3 albedo,vec3 specularColor){
 //	 ambient = ambient / (ambient + vec3(1.0));
 //	//gamma correction
 //    ambient = pow(ambient, vec3(1.0/2.2));  
-	return diffuse;//ambient;
+	return ambient;//ambient;
 
 
 }
@@ -214,23 +214,23 @@ void main(){
 	// Also store the per-fragment normals into the gbuffer
 	gNormal.rgb     = v_Normal;
 
-	int s = u_Settings.isTextureSample;
+	int s = u_Settings.isPBRTextureSample;
 	gNormalMap      =  (s==0)? normalize(v_Normal):getNormalFromMap(v_FragPos,v_TexCoord);
 	float roughness =  (s==0)?u_Material.roughnessValue :texture(u_Material.roughness, v_TexCoord).r;
 	float ao        =  (s==0)?u_Material.aoValue:texture(u_Material.ao, v_TexCoord).r;
-	
+	float metallic = (s==0)?u_Material.mentallicValue:texture(u_Material.mentallic, v_TexCoord).r;
+
 
 	int diffuseSample = u_Settings.isDiffuseTextureSample;
 	vec3 diffuse = (diffuseSample==0)?u_Material.diffuseColor :texture(u_Material.diffuse,v_TexCoord).rgb;
 
-	vec3 albedo = pow(diffuse,vec3(2.2));
+	vec3 albedo =diffuse;// pow(diffuse,vec3(2.2));
 
 	int specularSample = u_Settings.isSpecularTextureSample;
 	vec3 specular = (specularSample==0)?u_Material.specularColor:texture(u_Material.specular,v_TexCoord).rgb;
 
-	int metallicSample = u_Settings.isMetallicTextureSample;
+	//int metallicSample = u_Settings.isMetallicTextureSample;
 
-	float metallic = (metallicSample==0)?u_Material.mentallicValue:texture(u_Material.mentallic, v_TexCoord).r;
 
 
 

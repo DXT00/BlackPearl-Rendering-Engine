@@ -112,7 +112,7 @@ namespace BlackPearl {
 		for (auto pair : m_EntityToObjects) {
 			Object* obj = pair.second;
 			if (obj != nullptr) {
-				objs.push_back(obj->ToString());
+				objs.push_back(obj->GetName());
 			}
 		}
 		return objs;

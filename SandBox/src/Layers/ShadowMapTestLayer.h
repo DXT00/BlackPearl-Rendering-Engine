@@ -203,10 +203,10 @@ public:
 
 				for (int n = 0; n < objsList.size(); n++) {
 					//ImGui::Text("%s", objsList[n].c_str());
-					bool is_selected = (currentObj != nullptr && currentObj->ToString() == objsList[n]->ToString());
-					if (ImGui::Selectable(objsList[n]->ToString().c_str(), is_selected)) {
+					bool is_selected = (currentObj != nullptr && currentObj->GetName() == objsList[n]->GetName());
+					if (ImGui::Selectable(objsList[n]->GetName().c_str(), is_selected)) {
 						currentObj = objsList[n];
-						GE_CORE_INFO(objsList[n]->ToString() + "is selected")
+						GE_CORE_INFO(objsList[n]->GetName() + "is selected")
 					}
 
 					if (is_selected)

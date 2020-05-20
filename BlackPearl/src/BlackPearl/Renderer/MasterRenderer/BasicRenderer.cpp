@@ -329,7 +329,7 @@ namespace BlackPearl {
 				float width = textures->heightTextureMap->GetWidth();
 				float height = textures->heightTextureMap->GetHeight();
 
-				shader->SetUniformVec2f("u_HeightMapSize", glm::vec2(width,height));
+				shader->SetUniformVec2f("u_HeightMapSize", glm::vec2(width, height));
 
 				k++;
 			}
@@ -401,17 +401,20 @@ namespace BlackPearl {
 
 		}
 		/************************************* Textures Sample settings *****************************************************/
-		{	shader->SetUniform1i(ShaderConfig::IS_DIFFUSE_TEXTURE_SAMPLE, ((diffuseMap || cubeMap) && material->GetProps().isDiffuseTextureSample == 1) ? 1 : 0);
+		{	
+		shader->SetUniform1i(ShaderConfig::IS_AMBIENT_TEXTURE_SAMPLE, 0);//TODO::has not ambient map yet
 
-			shader->SetUniform1i(ShaderConfig::IS_SPECULAR_TEXTURE_SAMPLE, (specularMap && material->GetProps().isSpecularTextureSample == 1) ? 1 : 0);
+		shader->SetUniform1i(ShaderConfig::IS_DIFFUSE_TEXTURE_SAMPLE, ((diffuseMap || cubeMap) && material->GetProps().isDiffuseTextureSample == 1) ? 1 : 0);
 
-			shader->SetUniform1i(ShaderConfig::IS_PBR_TEXTURE_SAMPLE, (aoMap && roughnessMap && mentallicMap && normalMap && material->GetProps().isPBRTextureSample == 1) ? 1 : 0);
+		shader->SetUniform1i(ShaderConfig::IS_SPECULAR_TEXTURE_SAMPLE, (specularMap && material->GetProps().isSpecularTextureSample == 1) ? 1 : 0);
 
-			shader->SetUniform1i(ShaderConfig::IS_EMISSION_TEXTURE_SAMPLE, (emissionMap == true && material->GetProps().isEmissionTextureSample == 1) ? 1 : 0);
-			
-			shader->SetUniform1i(ShaderConfig::IS_HEIGHT_TEXTURE_SAMPLE, (heightMap == true && material->GetProps().isHeightTextureSample == 1) ? 1 : 0);
+		shader->SetUniform1i(ShaderConfig::IS_PBR_TEXTURE_SAMPLE, (aoMap && roughnessMap && mentallicMap && normalMap && material->GetProps().isPBRTextureSample == 1) ? 1 : 0);
 
-			GE_ERROR_JUDGE();
+		shader->SetUniform1i(ShaderConfig::IS_EMISSION_TEXTURE_SAMPLE, (emissionMap == true && material->GetProps().isEmissionTextureSample == 1) ? 1 : 0);
+
+		shader->SetUniform1i(ShaderConfig::IS_HEIGHT_TEXTURE_SAMPLE, (heightMap == true && material->GetProps().isHeightTextureSample == 1) ? 1 : 0);
+
+		GE_ERROR_JUDGE();
 
 		}
 		/************************************* Others settings *****************************************************/
@@ -434,6 +437,9 @@ namespace BlackPearl {
 		}
 		GE_ERROR_JUDGE();
 
+		
+
 	}
+
 
 }

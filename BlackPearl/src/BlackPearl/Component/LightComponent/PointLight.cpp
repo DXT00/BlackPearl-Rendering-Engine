@@ -85,4 +85,51 @@ namespace BlackPearl {
 
 
 	}
+	void PointLight::UpdateAttenuation(unsigned int maxdistance)
+	{
+		switch (maxdistance)
+				{
+				case 7:
+					m_Attenuation.constant = 1.0f, m_Attenuation.linear = 0.7f, m_Attenuation.quadratic = 1.8f;
+					break;
+				case 13:
+					m_Attenuation.constant = 1.0f, m_Attenuation.linear = 0.35f, m_Attenuation.quadratic = 0.44f;
+					break;
+				case 20:
+					m_Attenuation.constant = 1.0f, m_Attenuation.linear = 0.22f, m_Attenuation.quadratic = 0.20f;
+					break;
+				case 32:
+					m_Attenuation.constant = 1.0f, m_Attenuation.linear = 0.14f, m_Attenuation.quadratic = 0.07f;
+					break;
+				case 50:
+					m_Attenuation.constant = 1.0f, m_Attenuation.linear = 0.09f, m_Attenuation.quadratic = 0.032f;
+					break;
+				case 65:
+					m_Attenuation.constant = 1.0f, m_Attenuation.linear = 0.07f, m_Attenuation.quadratic = 0.017f;
+					break;
+				case 100:
+					m_Attenuation.constant = 1.0f, m_Attenuation.linear = 0.045f, m_Attenuation.quadratic = 0.0075f;
+					break;
+				case 160:
+					m_Attenuation.constant = 1.0f, m_Attenuation.linear = 0.0027f, m_Attenuation.quadratic = 0.0028f;
+					break;
+				case 200:
+					m_Attenuation.constant = 1.0f, m_Attenuation.linear = 0.022f, m_Attenuation.quadratic = 0.0019f;
+					break;
+				case 325:
+					m_Attenuation.constant = 1.0f, m_Attenuation.linear = 0.014f, m_Attenuation.quadratic = 0.0007f;
+					break;
+				case 600:
+					m_Attenuation.constant = 1.0f, m_Attenuation.linear = 0.007f, m_Attenuation.quadratic = 0.0002f;
+					break;
+				case 3250:
+					m_Attenuation.constant = 1.0f, m_Attenuation.linear = 0.0014f, m_Attenuation.quadratic = 0.000007f;
+					break;
+				default:
+					m_Attenuation.constant = 1.0f, m_Attenuation.linear = 0.022f, m_Attenuation.quadratic = 0.0019f;
+
+					GE_CORE_WARN("Undefined maxDistance! Failed to construct Attenuation! Attenuation=200")
+						break;
+				}
+	}
 }

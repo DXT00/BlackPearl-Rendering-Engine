@@ -80,7 +80,7 @@ namespace BlackPearl {
 		int m_BlurCoeffs = 8;
 
 		Texture3D* m_VoxelTexture = nullptr;
-		unsigned int m_VoxelTextureSize =  256;// 64;
+		unsigned int m_VoxelTextureSize =  128;// 64;
 
 		unsigned int m_ScreenWidth = Configuration::WindowWidth;
 		unsigned int m_ScreenHeight = Configuration::WindowHeight;

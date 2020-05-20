@@ -26,7 +26,8 @@ SVO path tracing - only one bounce cubeSize = 40
 ### -- cache object's nearyby diffuse probes,update shadowMap only when pointlight pos changes,4x4x4 probe grid FPS:8frame/s
 ![lightprobe_Map_FPS2_4_4_4](/results/lightprobe_Map_FPS2_4_4_4.png)
 
-
+### -- set reflection probe for each specular object,update specular probe every frame,accurate indirct specular light! probe grid 4x2x4,FPS:3frame/s
+![lightprobe_Map_update_specularProbe_every_frame_4_2_4](/results/lightprobe_Map_update_specularProbe_every_frame_4_2_4.png)
 
 ###  Voxel Cone Tracing - 3D texture cone tracing
 ![3Dtexture_coneTracing](/results/3Dtexture_coneTracing1.png)

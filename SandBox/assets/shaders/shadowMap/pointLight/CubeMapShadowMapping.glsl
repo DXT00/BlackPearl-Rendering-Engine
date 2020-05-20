@@ -44,28 +44,6 @@ in vec3 v_Normal;
 in vec2 v_TexCoords;
 
 const float PI=3.14159265359;
-//uniform struct Material{
-//	vec3 ambientColor;
-//	vec3 diffuseColor;
-//	vec3 specularColor;
-//	vec3 emissionColor;
-//	sampler2D diffuse;
-//	sampler2D specular;
-//	sampler2D emission;
-//	sampler2D normal;
-//	sampler2D height;
-//	sampler2D depth;
-//	samplerCube cube;
-//	sampler2D ao;
-//	sampler2D roughness;
-//	sampler2D mentallic;
-//
-//	float shininess;
-//	bool isBlinnLight;
-//	int  isTextureSample;//判断是否使用texture,或者只有color
-//
-//
-//}u_Material;
 
 struct PointLight{
 	vec3 ambient;
@@ -81,6 +59,7 @@ struct PointLight{
 };
 uniform int u_PointLightNums;
 uniform Material u_Material;
+uniform Settings u_Settings;
 uniform PointLight u_PointLights[20];
 uniform samplerCube u_ShadowMap[20];
 //uniform vec3 u_LightPos;
@@ -221,7 +200,7 @@ void main(){
 
 	}
 
-	FragColor = vec4(emission* u_Material.isTextureSample+outColor,1.0);//vec4(1.0,0.0,0.0,1.0);//
+	FragColor = vec4(emission* u_Settings.isEmissionTextureSample+outColor,1.0);//vec4(1.0,0.0,0.0,1.0);//
 
 
 }
@@ -231,15 +210,15 @@ vec3 CalcPointLight(PointLight light,vec3 normal,vec3 viewDir){
 	float distance = length(light.position-v_FragPos);
 	float attenuation = 1.0f/(light.constant+light.linear * distance+light.quadratic*distance*distance);
 	//ambient
-	vec3 ambient = light.ambient*(  u_Material.ambientColor * (1-u_Material.isTextureSample)
-					   + texture(u_Material.diffuse,v_TexCoords).rgb * u_Material.isTextureSample);//texture(u_Material.diffuse,v_TexCoord).rgb;//u_LightColor * u_Material.ambient
+	vec3 ambient = light.ambient*(  u_Material.ambientColor * (1-u_Settings.isAmbientTextureSample)
+					   + texture(u_Material.diffuse,v_TexCoords).rgb * u_Settings.isAmbientTextureSample);//texture(u_Material.diffuse,v_TexCoord).rgb;//u_LightColor * u_Material.ambient
 	
 	//diffuse
 	vec3 lightDir = normalize(light.position-v_FragPos);
 	vec3 norm = normalize(normal);
 	float diff = max(dot(lightDir,norm),0.0f);
-	vec3 diffuse =light.diffuse * diff * ( u_Material.diffuseColor *(1-u_Material.isTextureSample)
-					+ texture(u_Material.diffuse,v_TexCoords).rgb*u_Material.isTextureSample);//texture(u_Material.diffuse,v_TexCoord).rgb;// u_Material.diffuse);u_LightColor
+	vec3 diffuse =light.diffuse * diff * ( u_Material.diffuseColor *(1-u_Settings.isDiffuseTextureSample)
+					+ texture(u_Material.diffuse,v_TexCoords).rgb*u_Settings.isDiffuseTextureSample);//texture(u_Material.diffuse,v_TexCoord).rgb;// u_Material.diffuse);u_LightColor
 	
 
 //specular
@@ -249,13 +228,13 @@ vec3 CalcPointLight(PointLight light,vec3 normal,vec3 viewDir){
 
 		vec3 halfwayDir = normalize(lightDir+viewDir);
 		spec = pow(max(dot(norm,halfwayDir),0.0),u_Material.shininess);
-		specular =  light.specular * spec  * ( u_Material.specularColor*(1-u_Material.isTextureSample)+texture(u_Material.specular,v_TexCoords).rgb*u_Material.isTextureSample);
+		specular =  light.specular * spec  * ( u_Material.specularColor*(1-u_Settings.isSpecularTextureSample)+texture(u_Material.specular,v_TexCoords).rgb*u_Settings.isSpecularTextureSample);
 	}
 	else{
 
 		vec3 reflectDir = normalize(reflect(-lightDir,norm));
 		spec = pow(max(dot(reflectDir,viewDir),0.0),u_Material.shininess);
-		specular =  light.specular * spec  * ( u_Material.specularColor*(1-u_Material.isTextureSample)+ texture(u_Material.specular,v_TexCoords).rgb*u_Material.isTextureSample);//texture(u_Material.specular,v_TexCoord).rgb;
+		specular =  light.specular * spec  * ( u_Material.specularColor*(1-u_Settings.isSpecularTextureSample)+ texture(u_Material.specular,v_TexCoords).rgb*u_Settings.isSpecularTextureSample);//texture(u_Material.specular,v_TexCoord).rgb;
 	}
 
 	ambient  *= attenuation;

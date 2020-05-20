@@ -14,6 +14,7 @@ namespace BlackPearl {
 			:Component(entityManager,id, Component::Type::LightProbe){
 		
 			m_Type = type;
+			m_Zfar = 13.0f;
 			if (type == ProbeType::REFLECTION_PROBE)
 				m_SpecularPrefilterCubeMap.reset(DBG_NEW CubeMapTexture(Texture::CubeMap, m_SpecularCubeMapResolution, m_SpecularCubeMapResolution, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR, GL_CLAMP_TO_EDGE, GL_RGB16F, GL_RGB, GL_FLOAT, true));
 			if (type == ProbeType::DIFFUSE_PROBE)
@@ -48,6 +49,13 @@ namespace BlackPearl {
 
 		void SetAreaId(unsigned int areaId) { m_AreaId = areaId; }
 		unsigned int GetAreaId()const { return m_AreaId; }
+
+		float GetZfar()const { return m_Zfar; }
+		void SetZfar(float zfar) { m_Zfar = zfar; }
+		void AddExcludeObjectId(uint64_t id) {
+			m_ExcludeObjsId.push_back(id);
+		}
+		std::vector<uint64_t> GetExcludeObjectsId()const { return m_ExcludeObjsId; }
 	private:
 
 		/* probe's view matrix */
@@ -61,7 +69,7 @@ namespace BlackPearl {
 		unsigned int					m_SampleCounts = 1024;
 		unsigned int					m_EnvironmentCubeMapResolution = Configuration::EnvironmantMapResolution;// 512;// 128;
 		unsigned int					m_SpecularCubeMapResolution = Configuration::EnvironmantMapResolution;// 512;// 128;
-
+		float       					m_Zfar;//perspective cube range from 0 to zFar
 		//glm::vec3 m_Size;
 		//Object* m_LightProbeObj;
 
@@ -71,6 +79,8 @@ namespace BlackPearl {
 		//记录这个probe在哪个区域,只有diffuse probe划分区域
 		unsigned int m_AreaId;
 
+		// m_ExcludeObjsId 中的objects不会被渲染到environmentCubeMap上！
+		std::vector< uint64_t> m_ExcludeObjsId;
 	};
 }
 

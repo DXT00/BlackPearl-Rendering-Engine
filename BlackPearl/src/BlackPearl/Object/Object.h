@@ -11,6 +11,7 @@ namespace BlackPearl {
 	public:
 		Object(EntityManager* manager, Entity::Id id, std::string name = "")
 			:Entity(manager, id) {
+			m_FrontName = (name == "") ? "EmptyObject" : name;
 			m_Name = (name == "") ? "EmptyObject(" + std::to_string(id.index()) + ")" : name+ "(" + std::to_string(id.index()) + ")";
 			m_TransformToParent = m_InvTransformToParent = glm::mat3(1.0);
 
@@ -24,7 +25,9 @@ namespace BlackPearl {
 			
 		};
 
-		inline std::string ToString() { return m_Name; }
+		inline std::string GetName() { return m_Name; }
+		inline std::string GetFrontName() { return m_FrontName; }
+
 		inline void SetName(std::string name) { m_Name = name; }
 		inline bool Vaild() {
 			return m_EntityManager && m_EntityManager->Valid(m_Id);
@@ -116,10 +119,13 @@ namespace BlackPearl {
 		/*Child Objs*/
 		void AddChildObj(Object* obj);
 		std::vector<Object*> GetChildObjs()const { return m_ChildObjs; }
+		Object* GetChildByFrontName(std::string name)const;
 	private:
 		std::unordered_map<BaseComponent::Family, std::shared_ptr<BaseComponent>> m_Components;
 		Configuration::ComponentMask m_ComponentMask;
 		std::string m_Name;
+		std::string m_FrontName;
+
 		glm::mat4 m_TransformToParent;
 		glm::mat4 m_InvTransformToParent;
 		Object* m_ParentObj = nullptr;

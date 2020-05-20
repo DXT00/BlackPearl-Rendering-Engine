@@ -10,7 +10,7 @@ namespace BlackPearl {
 	bool VoxelConeTracingDeferredRenderer::s_Shadows = true;
 	bool VoxelConeTracingDeferredRenderer::s_IndirectDiffuseLight = true;
 	bool VoxelConeTracingDeferredRenderer::s_IndirectSpecularLight = true;
-	bool VoxelConeTracingDeferredRenderer::s_DirectLight = false;
+	bool VoxelConeTracingDeferredRenderer::s_DirectLight = true;
 	float VoxelConeTracingDeferredRenderer::s_GICoeffs = 0.8f;
 	bool VoxelConeTracingDeferredRenderer::s_VoxelizeNow = true;
 	bool VoxelConeTracingDeferredRenderer::s_HDR = false;

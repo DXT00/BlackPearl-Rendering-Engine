@@ -60,3 +60,5 @@
 	else{\
 		GE_CORE_ERROR("no such err type!"); }\
 }
+
+//#define TIME_DEBUG

@@ -102,6 +102,7 @@ uniform int u_IsPBRObjects;
 //}u_Material;
 //
 uniform Material u_Material;
+uniform Settings u_Settings;
 
 vec3 SHDiffuse(const int probeIndex,const vec3 normal){
 	float x = normal.x;
@@ -251,29 +252,24 @@ void main(){
 	// Also store the per-fragment normals into the gbuffer
 	gNormal         = v_Normal;
 
+	int s = u_Settings.isPBRTextureSample;
 
-	gNormalMap      =  v_Normal*(1-u_Material.isTextureSample) + getNormalFromMap(v_FragPos,v_TexCoord)*u_Material.isTextureSample;//texture(u_Material.normal, v_TexCoord).xyz;
+	gNormalMap      =  v_Normal*(1-s) + getNormalFromMap(v_FragPos,v_TexCoord)*s;//texture(u_Material.normal, v_TexCoord).xyz;
+	float metallic = u_Material.mentallicValue *(1-s)+texture(u_Material.mentallic, v_TexCoord).r*s;
+	float roughness = u_Material.roughnessValue *(1-s)+texture(u_Material.roughness, v_TexCoord).r*s;
+	float ao = u_Material.aoValue *(1-s)+texture(u_Material.ao, v_TexCoord).r*s;
 	
-	
 
 
-	vec3 diffuse = (u_Material.diffuseColor *(1-u_Material.isDiffuseTextureSample)
-					+ texture(u_Material.diffuse,v_TexCoord).rgb*u_Material.isDiffuseTextureSample);
+	vec3 diffuse = (u_Material.diffuseColor *(1-u_Settings.isDiffuseTextureSample)
+					+ texture(u_Material.diffuse,v_TexCoord).rgb*u_Settings.isDiffuseTextureSample);
 
 	vec3 albedo = pow(diffuse,vec3(2.2));
 
-	vec3 specular = (u_Material.specularColor *(1-u_Material.isSpecularTextureSample)
-					+ texture(u_Material.specular,v_TexCoord).rgb*u_Material.isSpecularTextureSample);
+	vec3 specular = (u_Material.specularColor *(1-u_Settings.isSpecularTextureSample)
+					+ texture(u_Material.specular,v_TexCoord).rgb*u_Settings.isSpecularTextureSample);
 
-	float metallic = u_Material.mentallicValue *(1-u_Material.isMetallicTextureSample)+
-					texture(u_Material.mentallic, v_TexCoord).r*u_Material.isMetallicTextureSample;
-
-
-	float roughness = u_Material.roughnessValue *(1-u_Material.isTextureSample)+
-					texture(u_Material.roughness, v_TexCoord).r*u_Material.isTextureSample;
-
-	float ao = u_Material.aoValue *(1-u_Material.isTextureSample)+
-				texture(u_Material.ao, v_TexCoord).r*u_Material.isTextureSample;
+	
 
 
 	gSpecular_Mentallic.rgb = specular;

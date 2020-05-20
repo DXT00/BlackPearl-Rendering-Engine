@@ -92,4 +92,15 @@ namespace BlackPearl {
 		obj->SetTransformToParent(transformToParent);*/
 	}
 
+	Object* Object::GetChildByFrontName(std::string name) const
+	{
+		for (Object* obj:m_ChildObjs)
+		{
+			if (obj->GetFrontName() == name) {
+				return obj;
+			}
+		}
+		return nullptr;
+	}
+
 }

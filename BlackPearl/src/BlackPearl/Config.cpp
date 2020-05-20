@@ -17,7 +17,7 @@ namespace BlackPearl {
 	const float Configuration::ShadowMapPointLightRadius = 30.0f;
 
 	/* 这里改了，prefilterMap.glsl里的	float resolution =512.0;也要改 */
-	const float Configuration::EnvironmantMapResolution = 256.0f;
+	const float Configuration::EnvironmantMapResolution = 128.0;// 256.0f;
 	
 
 	const char* ShaderConfig::AMBIENT_COLOR   = "u_Material.ambientColor";
@@ -42,6 +42,7 @@ namespace BlackPearl {
 	const char* ShaderConfig::SHININESS        = "u_Material.shininess";
 
 	const char* ShaderConfig::IS_BLINNLIGHT              = "u_Settings.isBlinnLight";
+	const char* ShaderConfig::IS_AMBIENT_TEXTURE_SAMPLE  = "u_Settings.isAmbientTextureSample";
 	const char* ShaderConfig::IS_PBR_TEXTURE_SAMPLE      = "u_Settings.isPBRTextureSample";
 	const char* ShaderConfig::IS_DIFFUSE_TEXTURE_SAMPLE  = "u_Settings.isDiffuseTextureSample";
 	const char* ShaderConfig::IS_SPECULAR_TEXTURE_SAMPLE = "u_Settings.isSpecularTextureSample";

@@ -88,7 +88,7 @@ namespace BlackPearl {
 
 		/* m_K near probes for specular objs rendering */
 		/*注意 物体blending 多个(m_K个) probes的diffuse SH,但只取最近的一个Probe的specular Map*/
-		unsigned int m_K = 5;// 5;// 5;// 5;// 2;
+		unsigned int m_K = 2;// 5;// 5;// 5;// 2;
 		//
 
 		/*renderer for dynamic objects*/

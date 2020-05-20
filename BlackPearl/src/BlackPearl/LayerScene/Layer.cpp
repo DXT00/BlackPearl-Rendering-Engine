@@ -158,10 +158,10 @@ namespace BlackPearl {
 
 				for (int n = 0; n < objsList.size(); n++) {
 					//ImGui::Text("%s", objsList[n].c_str());
-					bool is_selected = (currentObj != nullptr && currentObj->ToString() == objsList[n]->ToString());
-					if (ImGui::Selectable(objsList[n]->ToString().c_str(), is_selected)) {
+					bool is_selected = (currentObj != nullptr && currentObj->GetName() == objsList[n]->GetName());
+					if (ImGui::Selectable(objsList[n]->GetName().c_str(), is_selected)) {
 						currentObj = objsList[n];
-						GE_CORE_INFO(objsList[n]->ToString() + "is selected")
+						GE_CORE_INFO(objsList[n]->GetName() + "is selected")
 					}
 
 					if (is_selected)
@@ -191,6 +191,10 @@ namespace BlackPearl {
 
 			if (currentObj->HasComponent< Transform>()) {
 				ShowTransform(currentObj->GetComponent<Transform>(),currentObj);
+
+			}
+			if (currentObj->HasComponent< LightProbe>()) {
+				ShowLightProbe(currentObj->GetComponent<LightProbe>(), currentObj);
 
 			}
 			if (currentObj->HasComponent< MeshRenderer>()) {
@@ -450,7 +454,7 @@ namespace BlackPearl {
 		BlackPearl::Object* light = CreateLight(LightType::PointLight);
 		light->GetComponent<Transform>()->SetInitPosition({ 0.0,4.0,10.0 });
 		light->GetComponent<MeshRenderer>()->SetIsShadowObjects(false);
-		light->GetComponent<PointLight>()->UpdateMesh({ {0,0,0} ,{1,1,1},{1,1,1},{0,0,0},1.0});
+		light->GetComponent<PointLight>()->UpdateMesh({ {0,0,0} ,{1,1,1},{0,0,0},{0,0,0},1.0});
 
 		//for (int i = 0; i < 10; i++) {
 		//	Object* light = CreateLight(LightType::PointLight);
@@ -595,7 +599,29 @@ namespace BlackPearl {
 		cube->GetComponent<MeshRenderer>()->SetTextureDiffuseSamples(true);
 		cube->GetComponent<MeshRenderer>()->SetIsBackGroundObjects(true);
 	
+		BlackPearl::Object* specularProbe = CreateLightProbe(BlackPearl::ProbeType::REFLECTION_PROBE);
+		cube->AddChildObj(specularProbe);
+		specularProbe->GetComponent<Transform>()->SetInitPosition(cube->GetComponent<Transform>()->GetPosition());
+		specularProbe->GetComponent<BlackPearl::LightProbe>()->AddExcludeObjectId(cube->GetId().id);
 
+		BlackPearl::Object* specularProbe1 = CreateLightProbe(BlackPearl::ProbeType::REFLECTION_PROBE);
+		specularProbe1->GetComponent<Transform>()->SetInitPosition(sphereObjIron->GetComponent<Transform>()->GetPosition());
+		sphereObjIron->AddChildObj(specularProbe1);
+		specularProbe1->GetComponent<BlackPearl::LightProbe>()->AddExcludeObjectId(sphereObjIron->GetId().id);
+
+		BlackPearl::Object* specularProbe2 = CreateLightProbe(BlackPearl::ProbeType::REFLECTION_PROBE);
+		specularProbe2->GetComponent<Transform>()->SetInitPosition(sphereObjRust->GetComponent<Transform>()->GetPosition());
+		sphereObjRust->AddChildObj(specularProbe2);
+		specularProbe2->GetComponent<BlackPearl::LightProbe>()->AddExcludeObjectId(sphereObjRust->GetId().id);
+
+		BlackPearl::Object* specularProbe3 = CreateLightProbe(BlackPearl::ProbeType::REFLECTION_PROBE);
+		specularProbe3->GetComponent<Transform>()->SetInitPosition(sphereObjStone->GetComponent<Transform>()->GetPosition());
+		sphereObjStone->AddChildObj(specularProbe3);
+		specularProbe3->GetComponent<BlackPearl::LightProbe>()->AddExcludeObjectId(sphereObjStone->GetId().id);
+
+		/*BlackPearl::Object* specularProbe4 = CreateLightProbe(BlackPearl::ProbeType::REFLECTION_PROBE);
+		sphereObjPlastic->AddChildObj(specularProbe4);
+		specularProbe4->GetComponent<BlackPearl::LightProbe>()->AddExcludeObjectId(sphereObjPlastic->GetId().id);*/
 
 
 		m_BackGroundObjsList.push_back(sphereObjIron);
@@ -766,6 +792,10 @@ namespace BlackPearl {
 
 			staticModel->GetComponent<MeshRenderer>()->SetIsPBRObject(true);
 			staticModel->GetComponent<Transform>()->SetInitPosition({ 0,0,0 });
+
+			BlackPearl::Object* specularProbe = CreateLightProbe(BlackPearl::ProbeType::REFLECTION_PROBE);
+			staticModel->AddChildObj(specularProbe);
+			specularProbe->GetComponent<BlackPearl::LightProbe>()->AddExcludeObjectId(staticModel->GetId().id);
 		}
 		else {
 			GE_CORE_ERROR("no such name:" + modelName + "!")
@@ -788,9 +818,15 @@ namespace BlackPearl {
 			dynamicModel = CreateModel("assets/models-animation/56-sphere-bot-basic/Sphere-Bot Basic/Armature_001-(COLLADA_3 (COLLAborative Design Activity)).dae", "assets/shaders/animatedModel/animatedModel.glsl", true, "Robot");
 			std::shared_ptr<BlackPearl::Texture> RobotAoTexture(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::AoMap, "assets/models-animation/56-sphere-bot-basic/Sphere-Bot Basic/Sphere_Bot_ao.jpg"));
 			std::shared_ptr<BlackPearl::Texture> RobotRoughnessTexture(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::RoughnessMap, "assets/models-animation/56-sphere-bot-basic/Sphere-Bot Basic/Sphere_Bot_rough.jpg"));
-			dynamicModel->GetComponent<BlackPearl::MeshRenderer>()->SetTexture(1,RobotAoTexture);
-			dynamicModel->GetComponent<BlackPearl::MeshRenderer>()->SetTexture(1,RobotRoughnessTexture);
+			std::shared_ptr<BlackPearl::Texture> RobotMentallicTexture(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::MentallicMap, "assets/models-animation/56-sphere-bot-basic/Sphere-Bot Basic/Sphere_Bot_metalness.jpg"));
+			std::shared_ptr<BlackPearl::Texture> RobotNormalTexture(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::NormalMap, "assets/models-animation/56-sphere-bot-basic/Sphere-Bot Basic/Sphere_Bot_nmap_2.jpg"));
 
+			dynamicModel->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(RobotNormalTexture);
+			dynamicModel->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(RobotRoughnessTexture);
+			dynamicModel->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(RobotAoTexture);
+			dynamicModel->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(RobotMentallicTexture);
+
+			dynamicModel->GetComponent<MeshRenderer>()->SetIsPBRObject(true);
 		}
 		else if (modelName == "Frog") {
 			dynamicModel = CreateModel("assets/models-animation/frog/frog.dae.txt", "assets/shaders/animatedModel/animatedModel.glsl", true, "Frog");
@@ -861,7 +897,7 @@ namespace BlackPearl {
 		Object* probe = m_ObjectManager->CreateLightProbe(type,shaderPath, texturePath, name+(type == ProbeType::DIFFUSE_PROBE  ? "_kd" : "_ks"));
 		m_ObjectsList.push_back(probe);
 		//m_ObjectsList.push_back(probe->GetCamera()->GetObj());
-
+		(type == ProbeType::DIFFUSE_PROBE) ? m_DiffuseLightProbes.push_back(probe) : m_ReflectionLightProbes.push_back(probe);
 		return probe;
 	}
 	Object* Layer::CreateProbeGrid(MapManager* mapManager, ProbeType type, glm::vec3 probeNums, glm::vec3 offsets, float space)
@@ -879,8 +915,11 @@ namespace BlackPearl {
 					int xx = (x - probeNums.x / 2) * space, yy = (y - probeNums.y / 2) * space, zz = (z - probeNums.z / 2) * space;
 					glm::vec3 probePos = { offsets.x + xx,offsets.y + yy,offsets.z + zz };
 					probe->GetComponent<Transform>()->SetInitPosition(probePos);
-					unsigned int areaId = mapManager->AddProbeIdToArea(probePos, idx);
-					probe->GetComponent<LightProbe>()->SetAreaId(areaId);
+					if (type == ProbeType::DIFFUSE_PROBE) {
+						unsigned int areaId = mapManager->AddProbeIdToArea(probePos, idx);
+						probe->GetComponent<LightProbe>()->SetAreaId(areaId);
+					}
+					
 					idx++;
 					(type == ProbeType::DIFFUSE_PROBE) ? m_DiffuseLightProbes.push_back(probe) : m_ReflectionLightProbes.push_back(probe);
 					obj->AddChildObj(probe);
@@ -1203,7 +1242,7 @@ namespace BlackPearl {
 
 
 		ImGui::TextColored({ 1.0,0.64,0.0,1.0 }, "Material Properties");
-		Material::Props& imGuiProps = imGuiMeshes[0].GetMaterial()->GetProps();//TODO::默认所有mesh 的Material::Props 是一样的
+		Material::Props imGuiProps = imGuiMeshes[0].GetMaterial()->GetProps();//TODO::默认所有mesh 的Material::Props 是一样的
 		float imGuiShininess = imGuiProps.shininess;
 		bool  imGUiBlinnLight = imGuiProps.isBinnLight;
 		bool  imGUiIsPBRTextureSample = (bool)imGuiProps.isPBRTextureSample;
@@ -1236,16 +1275,17 @@ namespace BlackPearl {
 		for (auto mesh : imGuiMeshes)
 			mesh.GetMaterial()->SetTextureSampleMetallic((int)imGUiIsMetallicrTextureSample);*/
 
-		for (auto mesh : imGuiMeshes) {
-			MaterialColor::Color color = mesh.GetMaterial()->GetMaterialColor().Get();
+		for (int i = 0; i < imGuiMeshes.size();i++) {
+			MaterialColor::Color color = imGuiMeshes[i].GetMaterial()->GetMaterialColor().Get();
 			ImGui::ColorEdit3("diffuseColor", glm::value_ptr(color.diffuseColor));
-			mesh.GetMaterial()->SetMaterialColorDiffuseColor(color.diffuseColor);
+			//mesh.GetMaterial()->SetMaterialColorDiffuseColor(color.diffuseColor);
 
 			ImGui::ColorEdit3("specularColor", glm::value_ptr(color.specularColor));
-			mesh.GetMaterial()->SetMaterialColorSpecularColor(color.specularColor);
+			//mesh.GetMaterial()->SetMaterialColorSpecularColor(color.specularColor);
 
 			ImGui::ColorEdit3("emissionColor", glm::value_ptr(color.emissionColor));
-			mesh.GetMaterial()->SetMaterialColorEmissionColor(color.emissionColor);
+			//mesh.GetMaterial()->SetMaterialColorEmissionColor(color.emissionColor);
+			imGuiMeshes[i].SetMaterialColor(color);
 
 		}
 
@@ -1261,7 +1301,7 @@ namespace BlackPearl {
 		ImGui::Text("Transform");
 
 		float pos[] = { comp->GetPosition().x,comp->GetPosition().y,comp->GetPosition().z };
-		ImGui::DragFloat3("position", pos, 0.05f, -100.0f, 100.0f, "%.3f ");
+		ImGui::DragFloat3("position", pos, 0.2f, -100.0f, 100.0f, "%.3f ");
 		obj->SetPosition({ pos[0],pos[1],pos[2] });
 
 		float scale[] = { comp->GetScale().x,comp->GetScale().y,comp->GetScale().z };
@@ -1269,8 +1309,19 @@ namespace BlackPearl {
 		obj->SetScale({ scale[0],scale[1],scale[2] });
 
 		float rotate[] = { comp->GetRotation().x,comp->GetRotation().y,comp->GetRotation().z };
-		ImGui::DragFloat3("rotation", rotate, 0.05f, -360.0f, 360.0f, "%.3f ");
+		ImGui::DragFloat3("rotation", rotate, 1.0f, -360.0f, 360.0f, "%.3f ");
 		obj->SetRotation({ rotate[0],rotate[1],rotate[2] });
+
+	}
+
+	void Layer::ShowLightProbe(LightProbe* probe, Object* obj)
+	{
+		ImGui::Text("LightProbe");
+
+		float zFar = probe->GetZfar();
+		ImGui::DragFloat("zFar", &zFar, 0.5f, 1.0, 100.0);
+		probe->SetZfar(zFar);
+
 
 	}
 
@@ -1287,19 +1338,12 @@ namespace BlackPearl {
 		ImGui::ColorEdit3("specular Color", glm::value_ptr(props.specular));
 		ImGui::ColorEdit3("emission Color", glm::value_ptr(props.emission));
 		ImGui::DragInt("attenuation", &attenuation, 0.5f, 7, 3250);
-		ImGui::DragFloat("intensity", &intensity, 1.0f, 1, 100);
+		ImGui::DragFloat("intensity", &intensity, 0.1f,0.1, 100);
 
 		pointLight->SetAttenuation(attenuation);
 
 		pointLight->UpdateMesh({ props.ambient ,props.diffuse,props.specular,props.emission,intensity });
-		//	}
-		/*	else if (comp->GetType() == LightType::ParallelLight) {
-
-			}
-			else if (comp->GetType() == LightType::SpotLight) {
-
-
-			}*/
+		
 	}
 
 	void Layer::ShowParallelLight(ParallelLight* parallelLight)

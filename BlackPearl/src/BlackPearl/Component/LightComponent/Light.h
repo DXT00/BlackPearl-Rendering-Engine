@@ -30,7 +30,7 @@ namespace BlackPearl {
 			:Component(entityManager,id,Component::Type::Light) {};
 		virtual ~Light() = default;
 
-		inline Props GetLightProps() const { return  m_LightProp; }
+		Props GetLightProps() const { return  m_LightProp; }
 		//	virtual std::shared_ptr<VertexArray> GetVertexArray() = 0;
 			//virtual std::shared_ptr<Shader> GetShader() = 0;
 		virtual LightType GetType() = 0;

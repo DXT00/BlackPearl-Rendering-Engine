@@ -100,6 +100,28 @@ namespace BlackPearl {
 
 
 	}
+	void IBLProbesRenderer::RenderDiffuseProbeMap(const LightSources* lightSources, const std::vector<Object*> objects, const std::vector<Object*> diffuseProbes,  Object* skyBox)
+	{
+		GE_ASSERT(m_IsInitial, "please initial IBLProbesRenderer first! IBLProbesRenderer::init()");
+
+		for (auto it = diffuseProbes.begin(); it != diffuseProbes.end(); it++) {
+
+			Object* probe = *it;
+			UpdateDiffuseProbesMap(lightSources, objects, skyBox, probe);
+
+		}
+	}
+	void IBLProbesRenderer::RenderSpecularProbeMap(const LightSources* lightSources, const std::vector<Object*> objects,  const std::vector<Object*> reflectionProbes, Object* skyBox)
+	{
+		for (auto it = reflectionProbes.begin(); it != reflectionProbes.end(); it++) {
+
+			Object* probe = *it;
+			UpdateReflectionProbesMap(lightSources, objects, skyBox, probe);
+
+		}
+
+
+	}
 	//probeType:0--diffuseProbe ,1--reflectionProbe
 	void IBLProbesRenderer::RenderProbes(const std::vector<Object*> probes,int probeType)
 	{
@@ -157,10 +179,12 @@ namespace BlackPearl {
 		glm::vec3 objRot = probe->GetComponent<Transform>()->GetRotation();
 		m_ProbeCamera->SetPosition(objPos);
 		m_ProbeCamera->SetRotation(objRot);
+		m_ProbeCamera->GetObj()->GetComponent<PerspectiveCamera>()->SetZfar(probe->GetComponent<LightProbe>()->GetZfar());
 
 	}
 
-	std::shared_ptr<CubeMapTexture> IBLProbesRenderer::RenderEnvironmerntCubeMaps(const LightSources* lightSources, std::vector<Object*> objects, Object* probe, Object* skyBox)
+	std::shared_ptr<CubeMapTexture> IBLProbesRenderer::RenderEnvironmerntCubeMaps(const LightSources* lightSources, 
+		std::vector<Object*> objects, Object* probe, Object* skyBox)
 	{
 		GE_ERROR_JUDGE();
 		glm::vec3 center = probe->GetComponent<Transform>()->GetPosition();
@@ -238,16 +262,28 @@ namespace BlackPearl {
 
 
 				for (auto obj : objects) {
-					if (obj->GetComponent<MeshRenderer>()->GetIsPBRObject()) {
-						m_PbrShader->Bind();
-						DrawObject(obj, m_PbrShader, scene, 4);
-						GE_ERROR_JUDGE();
+
+					std::vector<uint64_t> excludeObjs = probe->GetComponent<LightProbe>()->GetExcludeObjectsId();
+					bool drawEnable = true;
+					for (uint64_t id : excludeObjs) {
+						if (obj->GetId().id == id) {
+							drawEnable = false;
+							break;
+						}
 					}
-					else {
-						m_NonPbrShader->Bind();
-						DrawObject(obj, m_NonPbrShader, scene, 4);
-						GE_ERROR_JUDGE();
-					}
+					if (drawEnable) {
+						if (obj->GetComponent<MeshRenderer>()->GetIsPBRObject()) {
+							m_PbrShader->Bind();
+							DrawObject(obj, m_PbrShader, scene, 4);
+							GE_ERROR_JUDGE();
+						}
+						else {
+							m_NonPbrShader->Bind();
+							DrawObject(obj, m_NonPbrShader, scene, 4);
+							GE_ERROR_JUDGE();
+						}
+
+					}		
 
 				}
 				delete scene;

@@ -101,7 +101,7 @@ namespace BlackPearl {
 		Object* obj = CreateEmpty(name);
 
 		Transform* transformComponent = obj->GetComponent<Transform>();
-		transformComponent->SetPosition({ 0.0f, 0.0f, 0.0f });
+		transformComponent->SetInitPosition({ 0.0f, 0.0f, 0.0f });
 		transformComponent->SetRotation({ 0.0,180.0,0.0 });
 		obj->AddComponent<MeshRenderer>(model, transformComponent->GetTransformMatrix());
 		return obj;
@@ -129,7 +129,7 @@ namespace BlackPearl {
 	Object* Object3DCreater::CreateLightProbe(ProbeType type ,const std::string& shaderPath, const std::string& texturePath, const std::string name)
 	{
 		Object* obj = CreateCube(shaderPath, texturePath, name);
-		obj->GetComponent<Transform>()->SetRotation({ 0.0f, -90.0f, 0.0f });
+		obj->GetComponent<Transform>()->SetRotation({ 0.0f, 0.0f, 0.0f });
 		obj->GetComponent<Transform>()->SetScale({ 0.3f,0.3f,0.3f});
 
 		obj->GetComponent<MeshRenderer>()->SetIsShadowObjects(false);

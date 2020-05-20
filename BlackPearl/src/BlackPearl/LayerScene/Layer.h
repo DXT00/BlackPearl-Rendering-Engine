@@ -116,6 +116,7 @@ namespace BlackPearl {
 
 		void ShowMeshRenderer(MeshRenderer* comp);
 		void ShowTransform(Transform* comp,Object* obj);
+		void ShowLightProbe(LightProbe* probe, Object* obj);
 		void ShowPointLight(PointLight* pointLight);
 		void ShowParallelLight(ParallelLight* parallelLight);
 		void ShowCamera(PerspectiveCamera* perspectiveCamera);

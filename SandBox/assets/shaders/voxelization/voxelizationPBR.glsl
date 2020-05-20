@@ -382,7 +382,7 @@ void main(){
 
 		}
 	}
-	else if(uPbr==1){
+	else{
 		vec3 albedo = pow(texture(u_Material.diffuse, texCoordFrag.xy).rgb, vec3(2.2));
 
 		float mentallic = texture(u_Material.mentallic,texCoordFrag.xy).r;
