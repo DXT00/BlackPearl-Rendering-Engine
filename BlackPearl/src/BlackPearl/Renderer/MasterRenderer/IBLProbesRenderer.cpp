@@ -14,7 +14,6 @@
 namespace BlackPearl {
 	glm::vec3 IBLProbesRenderer::s_ProbeGridOffset = glm::vec3(2.0f,10.0f,6.7f);
 	float IBLProbesRenderer::s_ProbeGridSpace = 5.0f;
-	
 	IBLProbesRenderer::IBLProbesRenderer()
 	{
 		//	m_FrameBuffer.reset(DBG_NEW FrameBuffer());
@@ -69,10 +68,13 @@ namespace BlackPearl {
 	}
 	void IBLProbesRenderer::UpdateReflectionProbesMap(const LightSources* lightSources, std::vector<Object*> objects, Object* skyBox, Object* reflectionProbe)
 	{
-		std::shared_ptr<CubeMapTexture> environmentMap =RenderEnvironmerntCubeMaps(lightSources, objects, reflectionProbe, skyBox);
-		GE_CORE_INFO("calculating specular map...");
-		RenderSpecularPrefilterMap(lightSources, reflectionProbe, environmentMap);
-		GE_CORE_INFO("finished");
+		if (reflectionProbe->GetComponent<LightProbe>()->GetDynamicSpecularMap()) {
+			std::shared_ptr<CubeMapTexture> environmentMap =RenderEnvironmerntCubeMaps(lightSources, objects, reflectionProbe, skyBox);
+			GE_CORE_INFO("calculating specular map...");
+			RenderSpecularPrefilterMap(lightSources, reflectionProbe, environmentMap);
+			GE_CORE_INFO("finished");
+		}
+	
 
 	}
 	void IBLProbesRenderer::Render(const LightSources* lightSources, const std::vector<Object*> objects, const std::vector<Object*> diffuseProbes,

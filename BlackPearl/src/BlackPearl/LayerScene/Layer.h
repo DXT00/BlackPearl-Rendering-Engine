@@ -90,6 +90,8 @@ namespace BlackPearl {
 
 		void LoadChurchScene();
 		void LoadSpheresScene();
+		void LoadSpheresSpecularProbeScene();
+
 		void LoadSwordScene();
 		void LoadCubesScene();
 		Object* LoadDynamicObject(const std::string modelName);

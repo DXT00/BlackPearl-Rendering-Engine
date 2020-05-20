@@ -46,8 +46,11 @@ namespace BlackPearl {
 		void RenderSHImage(Object* probe, std::shared_ptr<CubeMapTexture> environmentMap);
 		//std::vector<Object*> FindKnearProbes(glm::vec3 objPos,const std::vector<Object*> probes);
 
+
+		//TODO::
 		static glm::vec3 s_ProbeGridOffset;
 		static float s_ProbeGridSpace;
+		
 
 	private:
 		/*只计算一次*/

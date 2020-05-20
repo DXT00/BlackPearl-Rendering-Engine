@@ -56,6 +56,8 @@ namespace BlackPearl {
 			m_ExcludeObjsId.push_back(id);
 		}
 		std::vector<uint64_t> GetExcludeObjectsId()const { return m_ExcludeObjsId; }
+		bool GetDynamicSpecularMap() { return m_UpdateSpecularMapEveryFrame; }
+		void SetDynamicSpecularMap(bool dynamic) { m_UpdateSpecularMapEveryFrame = dynamic; }
 	private:
 
 		/* probe's view matrix */
@@ -81,6 +83,8 @@ namespace BlackPearl {
 
 		// m_ExcludeObjsId 中的objects不会被渲染到environmentCubeMap上！
 		std::vector< uint64_t> m_ExcludeObjsId;
+
+		bool m_UpdateSpecularMapEveryFrame = false;
 	};
 }
 

@@ -277,6 +277,8 @@ namespace BlackPearl {
 			LoadCornellScene();
 		else if (demoScene == "SpheresScene")
 			LoadSpheresScene();
+		else if (demoScene == "SpheresSpecularProbeScene")
+			LoadSpheresSpecularProbeScene();
 		else if (demoScene == "CubesScene")
 			LoadCubesScene();
 		else if (demoScene == "SwordScene") {
@@ -492,10 +494,10 @@ namespace BlackPearl {
 		light->GetComponent<Transform>()->SetInitPosition({ 0.0,-1.0,0.0 });
 		light->GetComponent<MeshRenderer>()->SetIsShadowObjects(false);
 
-		
 
 
-		Object* sphereObjIron =  CreateSphere(1.5, 64, 64);//CreateCube();//
+
+		Object* sphereObjIron = CreateSphere(1.5, 64, 64);//CreateCube();//
 		Object* sphereObjRust = CreateSphere(1.5, 64, 64);
 		Object* sphereObjStone = CreateSphere(1.5, 64, 64);
 		Object* sphereObjPlastic = CreateSphere(1.5, 64, 64);
@@ -535,7 +537,7 @@ namespace BlackPearl {
 
 		sphereObjIron->GetComponent<MeshRenderer>()->SetPBRTextureSamples(true);
 		sphereObjIron->GetComponent<MeshRenderer>()->SetTextureDiffuseSamples(true);
-	//	sphereObjIron->GetComponent<MeshRenderer>()->SetTextureMetallicSamples(true);
+		//	sphereObjIron->GetComponent<MeshRenderer>()->SetTextureMetallicSamples(true);
 
 		sphereObjIron->GetComponent<MeshRenderer>()->SetIsPBRObject(true);
 		sphereObjIron->GetComponent<Transform>()->SetInitPosition({ 10,0,0 });
@@ -561,7 +563,7 @@ namespace BlackPearl {
 
 		sphereObjStone->GetComponent<MeshRenderer>()->SetPBRTextureSamples(true);
 		sphereObjStone->GetComponent<MeshRenderer>()->SetTextureDiffuseSamples(true);
-	//	sphereObjStone->GetComponent<MeshRenderer>()->SetTextureMetallicSamples(true);
+		//	sphereObjStone->GetComponent<MeshRenderer>()->SetTextureMetallicSamples(true);
 
 		sphereObjStone->GetComponent<MeshRenderer>()->SetIsPBRObject(true);
 		sphereObjStone->GetComponent<Transform>()->SetInitPosition({ -5,0,0 });
@@ -575,7 +577,7 @@ namespace BlackPearl {
 
 		sphereObjPlastic->GetComponent<MeshRenderer>()->SetPBRTextureSamples(true);
 		sphereObjPlastic->GetComponent<MeshRenderer>()->SetTextureDiffuseSamples(true);
-	//	sphereObjPlastic->GetComponent<MeshRenderer>()->SetTextureMetallicSamples(true);
+		//	sphereObjPlastic->GetComponent<MeshRenderer>()->SetTextureMetallicSamples(true);
 
 		sphereObjPlastic->GetComponent<MeshRenderer>()->SetIsPBRObject(true);
 		sphereObjPlastic->GetComponent<Transform>()->SetInitPosition({ -10.0,0,0 });
@@ -590,7 +592,7 @@ namespace BlackPearl {
 		Object* cube = CreateCube();
 		cube->GetComponent<Transform>()->SetInitPosition({ -2.0f,-2.5f,0.0f });
 		cube->GetComponent<Transform>()->SetScale({ 16.0f,0.8f,16.0f });
-		std::shared_ptr<Texture> cubeTexture(DBG_NEW Texture(Texture::Type::DiffuseMap, "assets/texture/wood.png", GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR, GL_RGBA, GL_CLAMP_TO_EDGE, GL_UNSIGNED_BYTE,true));
+		std::shared_ptr<Texture> cubeTexture(DBG_NEW Texture(Texture::Type::DiffuseMap, "assets/texture/wood.png", GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR, GL_RGBA, GL_CLAMP_TO_EDGE, GL_UNSIGNED_BYTE, true));
 		std::shared_ptr<Texture> cubeKsTexture(DBG_NEW Texture(Texture::Type::SpecularMap, "assets/texture/wood.png", GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR, GL_RGBA, GL_CLAMP_TO_EDGE, GL_UNSIGNED_BYTE, true));
 
 		cube->GetComponent<MeshRenderer>()->SetTextures(cubeTexture);
@@ -598,7 +600,156 @@ namespace BlackPearl {
 
 		cube->GetComponent<MeshRenderer>()->SetTextureDiffuseSamples(true);
 		cube->GetComponent<MeshRenderer>()->SetIsBackGroundObjects(true);
+
+	/*	BlackPearl::Object* specularProbe = CreateLightProbe(BlackPearl::ProbeType::REFLECTION_PROBE);
+		cube->AddChildObj(specularProbe);
+		specularProbe->GetComponent<Transform>()->SetInitPosition(cube->GetComponent<Transform>()->GetPosition());
+		specularProbe->GetComponent<BlackPearl::LightProbe>()->AddExcludeObjectId(cube->GetId().id);
+
+		BlackPearl::Object* specularProbe1 = CreateLightProbe(BlackPearl::ProbeType::REFLECTION_PROBE);
+		specularProbe1->GetComponent<Transform>()->SetInitPosition(sphereObjIron->GetComponent<Transform>()->GetPosition());
+		sphereObjIron->AddChildObj(specularProbe1);
+		specularProbe1->GetComponent<BlackPearl::LightProbe>()->AddExcludeObjectId(sphereObjIron->GetId().id);
+
+		BlackPearl::Object* specularProbe2 = CreateLightProbe(BlackPearl::ProbeType::REFLECTION_PROBE);
+		specularProbe2->GetComponent<Transform>()->SetInitPosition(sphereObjRust->GetComponent<Transform>()->GetPosition());
+		sphereObjRust->AddChildObj(specularProbe2);
+		specularProbe2->GetComponent<BlackPearl::LightProbe>()->AddExcludeObjectId(sphereObjRust->GetId().id);
+
+		BlackPearl::Object* specularProbe3 = CreateLightProbe(BlackPearl::ProbeType::REFLECTION_PROBE);
+		specularProbe3->GetComponent<Transform>()->SetInitPosition(sphereObjStone->GetComponent<Transform>()->GetPosition());
+		sphereObjStone->AddChildObj(specularProbe3);
+		specularProbe3->GetComponent<BlackPearl::LightProbe>()->AddExcludeObjectId(sphereObjStone->GetId().id);*/
+
+
+
+		m_BackGroundObjsList.push_back(sphereObjIron);
+		m_BackGroundObjsList.push_back(sphereObjStone);
+		m_BackGroundObjsList.push_back(sphereObjPlastic);
+		m_BackGroundObjsList.push_back(sphereObjRust);
+		m_BackGroundObjsList.push_back(cube);
+		m_ShadowObjsList.push_back(sphereObjIron);
+		m_ShadowObjsList.push_back(sphereObjStone);
+		m_ShadowObjsList.push_back(sphereObjPlastic);
+		m_ShadowObjsList.push_back(sphereObjRust);
+		m_ShadowObjsList.push_back(cube);
 	
+	}
+
+	void Layer::LoadSpheresSpecularProbeScene()
+	{
+		//Scene
+		Object* light = CreateLight(LightType::PointLight);
+		light->GetComponent<Transform>()->SetInitPosition({ 0.0,-1.0,0.0 });
+		light->GetComponent<MeshRenderer>()->SetIsShadowObjects(false);
+
+
+
+
+		Object* sphereObjIron = CreateSphere(1.5, 64, 64);//CreateCube();//
+		Object* sphereObjRust = CreateSphere(1.5, 64, 64);
+		Object* sphereObjStone = CreateSphere(1.5, 64, 64);
+		Object* sphereObjPlastic = CreateSphere(1.5, 64, 64);
+		//textures spheres
+		std::shared_ptr<Texture> RustalbedoTexture(DBG_NEW Texture(Texture::Type::DiffuseMap, "assets/texture/pbr/rustSphere/rustediron2_basecolor.png"));
+		std::shared_ptr<Texture> RustaoTexture(DBG_NEW Texture(Texture::Type::AoMap, "assets/texture/pbr/rustSphere/rustediron2_ao.png"));
+		std::shared_ptr<Texture> RustroughnessTexture(DBG_NEW Texture(Texture::Type::RoughnessMap, "assets/texture/pbr/rustSphere/rustediron2_roughness.png"));
+		std::shared_ptr<Texture> RustmentallicTexture(DBG_NEW Texture(Texture::Type::MentallicMap, "assets/texture/pbr/rustSphere/rustediron2_metallic.png"));
+		std::shared_ptr<Texture> RustnormalTexture(DBG_NEW Texture(Texture::Type::NormalMap, "assets/texture/pbr/rustSphere/rustediron2_normal.png"));
+
+
+		std::shared_ptr<Texture> IronalbedoTexture(DBG_NEW Texture(Texture::Type::DiffuseMap, "assets/texture/pbr/IronScuffed/Iron-Scuffed_basecolor.png"));
+		std::shared_ptr<Texture> IronaoTexture(DBG_NEW Texture(Texture::Type::AoMap, "assets/texture/pbr/IronScuffed/Iron-Scuffed_ao.png"));
+		std::shared_ptr<Texture> IronroughnessTexture(DBG_NEW Texture(Texture::Type::RoughnessMap, "assets/texture/pbr/IronScuffed/Iron-Scuffed_roughness.png"));
+		std::shared_ptr<Texture> IronmentallicTexture(DBG_NEW Texture(Texture::Type::MentallicMap, "assets/texture/pbr/IronScuffed/Iron-Scuffed_metallic.png"));
+		std::shared_ptr<Texture> IronnormalTexture(DBG_NEW Texture(Texture::Type::NormalMap, "assets/texture/pbr/IronScuffed/Iron-Scuffed_normal.png"));
+
+		std::shared_ptr<Texture> StonealbedoTexture(DBG_NEW Texture(Texture::Type::DiffuseMap, "assets/texture/pbr/cobblestone/cobblestone-curved_2_albedo.png"));
+		std::shared_ptr<Texture> StoneaoTexture(DBG_NEW Texture(Texture::Type::AoMap, "assets/texture/pbr/cobblestone/cobblestone-curved_2_ao.png"));
+		std::shared_ptr<Texture> StoneroughnessTexture(DBG_NEW Texture(Texture::Type::RoughnessMap, "assets/texture/pbr/cobblestone/cobblestone-curved_2_roughness.png"));
+		std::shared_ptr<Texture> StonementallicTexture(DBG_NEW Texture(Texture::Type::MentallicMap, "assets/texture/pbr/cobblestone/cobblestone-curved_2_metallic.png"));
+		std::shared_ptr<Texture> StonenormalTexture(DBG_NEW Texture(Texture::Type::NormalMap, "assets/texture/pbr/cobblestone/cobblestone-curved_2_normal-dx.png"));
+
+		std::shared_ptr<Texture> PlasticalbedoTexture(DBG_NEW Texture(Texture::Type::DiffuseMap, "assets/texture/pbr/plasticSphere/scuffed-plastic4-alb.png"));
+		std::shared_ptr<Texture> PlasticaoTexture(DBG_NEW Texture(Texture::Type::AoMap, "assets/texture/pbr/plasticSphere/scuffed-plastic-ao.png"));
+		std::shared_ptr<Texture> PlasticroughnessTexture(DBG_NEW Texture(Texture::Type::RoughnessMap, "assets/texture/pbr/plasticSphere/scuffed-plastic-rough.png"));
+		std::shared_ptr<Texture> PlasticmentallicTexture(DBG_NEW Texture(Texture::Type::MentallicMap, "assets/texture/pbr/plasticSphere/scuffed-plastic-metal.png"));
+		std::shared_ptr<Texture> PlasticnormalTexture(DBG_NEW Texture(Texture::Type::NormalMap, "assets/texture/pbr/plasticSphere/scuffed-plastic-normal.png"));
+
+
+
+		sphereObjIron->GetComponent<MeshRenderer>()->SetTextures(IronnormalTexture);
+		sphereObjIron->GetComponent<MeshRenderer>()->SetTextures(IronalbedoTexture);
+		sphereObjIron->GetComponent<MeshRenderer>()->SetTextures(IronaoTexture);
+		sphereObjIron->GetComponent<MeshRenderer>()->SetTextures(IronroughnessTexture);
+		sphereObjIron->GetComponent<MeshRenderer>()->SetTextures(IronmentallicTexture);
+
+		sphereObjIron->GetComponent<MeshRenderer>()->SetPBRTextureSamples(true);
+		sphereObjIron->GetComponent<MeshRenderer>()->SetTextureDiffuseSamples(true);
+		//	sphereObjIron->GetComponent<MeshRenderer>()->SetTextureMetallicSamples(true);
+
+		sphereObjIron->GetComponent<MeshRenderer>()->SetIsPBRObject(true);
+		sphereObjIron->GetComponent<Transform>()->SetInitPosition({ 10,0,0 });
+
+		sphereObjRust->GetComponent<MeshRenderer>()->SetTextures(RustnormalTexture);
+		sphereObjRust->GetComponent<MeshRenderer>()->SetTextures(RustalbedoTexture);
+		sphereObjRust->GetComponent<MeshRenderer>()->SetTextures(RustaoTexture);
+		sphereObjRust->GetComponent<MeshRenderer>()->SetTextures(RustroughnessTexture);
+		sphereObjRust->GetComponent<MeshRenderer>()->SetTextures(RustmentallicTexture);
+
+		sphereObjRust->GetComponent<MeshRenderer>()->SetPBRTextureSamples(true);
+		sphereObjRust->GetComponent<MeshRenderer>()->SetTextureDiffuseSamples(true);
+		//sphereObjRust->GetComponent<MeshRenderer>()->SetTextureMetallicSamples(true);
+
+		sphereObjRust->GetComponent<MeshRenderer>()->SetIsPBRObject(true);
+		sphereObjRust->GetComponent<Transform>()->SetInitPosition({ 5,0,0 });
+
+		sphereObjStone->GetComponent<MeshRenderer>()->SetTextures(StonenormalTexture);
+		sphereObjStone->GetComponent<MeshRenderer>()->SetTextures(StonealbedoTexture);
+		sphereObjStone->GetComponent<MeshRenderer>()->SetTextures(StoneaoTexture);
+		sphereObjStone->GetComponent<MeshRenderer>()->SetTextures(StoneroughnessTexture);
+		sphereObjStone->GetComponent<MeshRenderer>()->SetTextures(StonementallicTexture);
+
+		sphereObjStone->GetComponent<MeshRenderer>()->SetPBRTextureSamples(true);
+		sphereObjStone->GetComponent<MeshRenderer>()->SetTextureDiffuseSamples(true);
+		//	sphereObjStone->GetComponent<MeshRenderer>()->SetTextureMetallicSamples(true);
+
+		sphereObjStone->GetComponent<MeshRenderer>()->SetIsPBRObject(true);
+		sphereObjStone->GetComponent<Transform>()->SetInitPosition({ -5,0,0 });
+
+		sphereObjPlastic->GetComponent<MeshRenderer>()->SetTextures(PlasticnormalTexture);
+		sphereObjPlastic->GetComponent<MeshRenderer>()->SetTextures(PlasticalbedoTexture);
+		sphereObjPlastic->GetComponent<MeshRenderer>()->SetTextures(PlasticaoTexture);
+		sphereObjPlastic->GetComponent<MeshRenderer>()->SetTextures(PlasticroughnessTexture);
+		sphereObjPlastic->GetComponent<MeshRenderer>()->SetTextures(PlasticmentallicTexture);
+
+
+		sphereObjPlastic->GetComponent<MeshRenderer>()->SetPBRTextureSamples(true);
+		sphereObjPlastic->GetComponent<MeshRenderer>()->SetTextureDiffuseSamples(true);
+		//	sphereObjPlastic->GetComponent<MeshRenderer>()->SetTextureMetallicSamples(true);
+
+		sphereObjPlastic->GetComponent<MeshRenderer>()->SetIsPBRObject(true);
+		sphereObjPlastic->GetComponent<Transform>()->SetInitPosition({ -10.0,0,0 });
+
+
+		sphereObjIron->GetComponent<MeshRenderer>()->SetIsBackGroundObjects(true);
+		sphereObjRust->GetComponent<MeshRenderer>()->SetIsBackGroundObjects(true);
+		sphereObjStone->GetComponent<MeshRenderer>()->SetIsBackGroundObjects(true);
+		sphereObjPlastic->GetComponent<MeshRenderer>()->SetIsBackGroundObjects(true);
+
+
+		Object* cube = CreateCube();
+		cube->GetComponent<Transform>()->SetInitPosition({ -2.0f,-2.5f,0.0f });
+		cube->GetComponent<Transform>()->SetScale({ 16.0f,0.8f,16.0f });
+		std::shared_ptr<Texture> cubeTexture(DBG_NEW Texture(Texture::Type::DiffuseMap, "assets/texture/wood.png", GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR, GL_RGBA, GL_CLAMP_TO_EDGE, GL_UNSIGNED_BYTE, true));
+		std::shared_ptr<Texture> cubeKsTexture(DBG_NEW Texture(Texture::Type::SpecularMap, "assets/texture/wood.png", GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR, GL_RGBA, GL_CLAMP_TO_EDGE, GL_UNSIGNED_BYTE, true));
+
+		cube->GetComponent<MeshRenderer>()->SetTextures(cubeTexture);
+		cube->GetComponent<MeshRenderer>()->SetTextures(cubeKsTexture);
+
+		cube->GetComponent<MeshRenderer>()->SetTextureDiffuseSamples(true);
+		cube->GetComponent<MeshRenderer>()->SetIsBackGroundObjects(true);
+
 		BlackPearl::Object* specularProbe = CreateLightProbe(BlackPearl::ProbeType::REFLECTION_PROBE);
 		cube->AddChildObj(specularProbe);
 		specularProbe->GetComponent<Transform>()->SetInitPosition(cube->GetComponent<Transform>()->GetPosition());
@@ -1321,6 +1472,10 @@ namespace BlackPearl {
 		float zFar = probe->GetZfar();
 		ImGui::DragFloat("zFar", &zFar, 0.5f, 1.0, 100.0);
 		probe->SetZfar(zFar);
+
+		bool dynamicSpecularMap = probe->GetDynamicSpecularMap();
+		ImGui::Checkbox("dynamicSpecularLight", &dynamicSpecularMap);
+		probe->SetDynamicSpecularMap(dynamicSpecularMap);
 
 
 	}
