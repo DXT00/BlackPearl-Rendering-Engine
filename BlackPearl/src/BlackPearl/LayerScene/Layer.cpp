@@ -31,7 +31,7 @@ namespace BlackPearl {
 		ImGui::Begin("FPS");
 		ImGui::Text("FPS = %.3lf", Application::s_AppFPS);
 		ImGui::Text("AvgFPS = %.3lf", Application::s_AppAverageFPS);
-
+		ImGui::Separator();
 		ImGui::Text("SVO voxel GI");
 		ImGui::Checkbox("spp pause", &VoxelConeTracingSVORenderer::s_Pause);
 		ImGui::Checkbox("svo direct light", &VoxelConeTracingSVORenderer::s_DirectLight);
@@ -40,41 +40,41 @@ namespace BlackPearl {
 		ImGui::DragFloat("svo GICoeffs", &VoxelConeTracingSVORenderer::s_GICoeffs, 0.2f, 0.0f, 1.0f, "%.3f ");
 		ImGui::DragFloat("specularAngle", &VoxelConeTracingSVORenderer::s_IndirestSpecularAngle, 0.2f, 0.01f, 45.0f, "%.4f ");
 		ImGui::DragFloat("specularStep", &VoxelConeTracingSVORenderer::s_Step, 0.01f, 0.01f, 45.0f, "%.4f ");
+		ImGui::Separator();
 
+		ImGui::Text("Deferred voxel GI");
+		ImGui::Checkbox("Voxelize", &VoxelConeTracingDeferredRenderer::s_VoxelizeNow);
 
-		ImGui::Text("deferred voxel GI");
-		ImGui::Checkbox("voxelize", &VoxelConeTracingDeferredRenderer::s_VoxelizeNow);
+		ImGui::Checkbox("Indirect diffuse", &VoxelConeTracingDeferredRenderer::s_IndirectDiffuseLight);
+		ImGui::Checkbox("Indirect specular", &VoxelConeTracingDeferredRenderer::s_IndirectSpecularLight);
+		ImGui::Checkbox("Direct light", &VoxelConeTracingDeferredRenderer::s_DirectLight);
+		ImGui::Checkbox("Shadows", &VoxelConeTracingDeferredRenderer::s_Shadows);
 
-		ImGui::Checkbox("voxel Indirect diffuse", &VoxelConeTracingDeferredRenderer::s_IndirectDiffuseLight);
-		ImGui::Checkbox("voxel Indirect specular", &VoxelConeTracingDeferredRenderer::s_IndirectSpecularLight);
-		ImGui::Checkbox("voxel direct light", &VoxelConeTracingDeferredRenderer::s_DirectLight);
-		ImGui::Checkbox("voxel shadows", &VoxelConeTracingDeferredRenderer::s_Shadows);
-
-		ImGui::Checkbox("voxel HDR", &VoxelConeTracingDeferredRenderer::s_HDR);
-		ImGui::Checkbox("voxel blur horizontal", &VoxelConeTracingDeferredRenderer::s_GuassianHorizontal);
+		ImGui::Checkbox("HDR", &VoxelConeTracingDeferredRenderer::s_HDR);
+		/*ImGui::Checkbox("voxel blur horizontal", &VoxelConeTracingDeferredRenderer::s_GuassianHorizontal);
 		ImGui::Checkbox("voxel blur vertical", &VoxelConeTracingDeferredRenderer::s_GuassianVertical);
-		ImGui::Checkbox("voxel blur showBlurArea", &VoxelConeTracingDeferredRenderer::s_ShowBlurArea);
-		ImGui::Checkbox("voxel blur mipmap", &VoxelConeTracingDeferredRenderer::s_MipmapBlurSpecularTracing);
-		ImGui::DragFloat("voxel specularBlurThreshold", &VoxelConeTracingDeferredRenderer::s_SpecularBlurThreshold, 0.2f, 0.0f, 1.0f, "%.4f ");
-		ImGui::DragFloat("voxel indirectSpecularAngle", &VoxelConeTracingDeferredRenderer::s_IndirectSpecularAngle, 0.2f, 1.0f, 45.0f, "%.4f ");
-		ImGui::DragFloat("voxel GICoeffs", &VoxelConeTracingDeferredRenderer::s_GICoeffs, 0.2f, 0.0f, 1.0f, "%.3f ");
-
-		ImGui::DragInt("voxel visualization \n mipmap level", &VoxelConeTracingDeferredRenderer::s_VisualizeMipmapLevel, 1.0f, 0, 5);
+		ImGui::Checkbox("voxel blur showBlurArea", &VoxelConeTracingDeferredRenderer::s_ShowBlurArea);*/
+		ImGui::Checkbox("Blur mipmap", &VoxelConeTracingDeferredRenderer::s_MipmapBlurSpecularTracing);
+		ImGui::DragFloat("Specular\nBlur\nThreshold", &VoxelConeTracingDeferredRenderer::s_SpecularBlurThreshold, 0.2f, 0.0f, 1.0f, "%.4f ");
+		ImGui::DragFloat("Indirect\nSpecular\nAngle", &VoxelConeTracingDeferredRenderer::s_IndirectSpecularAngle, 0.2f, 1.0f, 45.0f, "%.4f ");
+		ImGui::DragFloat("GICoeffs", &VoxelConeTracingDeferredRenderer::s_GICoeffs, 0.2f, 0.0f, 1.0f, "%.3f ");
+		ImGui::DragInt("Visualization \nmipmap\nlevel", &VoxelConeTracingDeferredRenderer::s_VisualizeMipmapLevel, 1.0f, 0, 5);
 
 
 	
-		
+		ImGui::Separator();
 		ImGui::Text("forward voxel GI");
 		ImGui::Checkbox("voxel Indirect diffuse", &VoxelConeTracingRenderer::s_IndirectDiffuseLight);
 		ImGui::Checkbox("voxel Indirect specular", &VoxelConeTracingRenderer::s_IndirectSpecularLight);
 		ImGui::Checkbox("voxel direct light", &VoxelConeTracingRenderer::s_DirectLight);
 		ImGui::DragFloat("voxel GICoeffs", &VoxelConeTracingRenderer::s_GICoeffs, 0.2f, 0.0f, 1.0f, "%.3f ");
 		ImGui::Checkbox("voxel HDR", &VoxelConeTracingRenderer::s_HDR);
-
+		ImGui::Separator();
 		ImGui::Text("light probe GI");
-		ImGui::DragFloat("lightprobe GICoeffs", &GBufferRenderer::s_GICoeffs, 0.2f, 0.0f, 1.0f, "%.3f ");
-		ImGui::Checkbox("lightprobe HDR", &GBufferRenderer::s_HDR);
+		ImGui::DragFloat("GICoeffs", &GBufferRenderer::s_GICoeffs, 0.2f, 0.0f, 1.0f, "%.3f ");
+		ImGui::Checkbox("HDR", &GBufferRenderer::s_HDR);
 
+		ImGui::Separator();
 
 
 
@@ -1072,7 +1072,7 @@ namespace BlackPearl {
 					}
 					
 					idx++;
-					(type == ProbeType::DIFFUSE_PROBE) ? m_DiffuseLightProbes.push_back(probe) : m_ReflectionLightProbes.push_back(probe);
+			//		(type == ProbeType::DIFFUSE_PROBE) ? m_DiffuseLightProbes.push_back(probe) : m_ReflectionLightProbes.push_back(probe);
 					obj->AddChildObj(probe);
 
 				}

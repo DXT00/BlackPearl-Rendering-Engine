@@ -43,8 +43,8 @@ public:
 			});
 	
 		//LoadStaticBackGroundObject("SphereIron");
-		LoadScene("CornellScene");
-		//LoadChurchScene();
+		//LoadScene("CornellScene");
+		LoadChurchScene();
 		//LoadScene("SpheresScene");
 
 		m_skybox = m_SkyBoxObj;

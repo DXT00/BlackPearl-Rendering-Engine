@@ -33,7 +33,7 @@ void main(){
 // Light (voxel) cone tracing settings.
 // --------------------------------------
 #define MIPMAP_HARDCAP 4/* 4.0 4.0fToo high mipmap levels => glitchiness, too low mipmap levels => sharpness. */
-#define CORE_SIZE 3
+#define CORE_SIZE 5
 //sigma = 2 ,kernel size = 11
 //Guassian calculator: http://dev.theomader.com/gaussian-kernel-calculator/
 float kernel11[11]={
@@ -404,7 +404,7 @@ vec3 traceSpecularVoxelCone(vec3 from,vec3 normal,vec3 direction,int isPbr,float
 						vec3 c_offset = vec3(c.x,c.y+j*VOXEL_SIZE,c.z+i*VOXEL_SIZE);
 						if(!isInsideCube(c_offset, 0)) continue;
 						c_offset = scaleAndBias(c_offset); 
-						voxel+=textureLod(texture3D, c_offset, min(level, MIPMAP_HARDCAP))*kernel3_single[x+CORE_SIZE*y];
+						voxel+=textureLod(texture3D, c_offset, min(level, MIPMAP_HARDCAP))*kernel5_single[x+CORE_SIZE*y];
 					}
 				}
 			}
@@ -416,7 +416,7 @@ vec3 traceSpecularVoxelCone(vec3 from,vec3 normal,vec3 direction,int isPbr,float
 						vec3 c_offset = vec3(c.x+i*VOXEL_SIZE,c.y+j*VOXEL_SIZE,c.z);
 						if(!isInsideCube(c_offset, 0)) continue;
 						c_offset = scaleAndBias(c_offset); 
-						voxel+=textureLod(texture3D, c_offset, min(level, MIPMAP_HARDCAP))*kernel3_single[x+CORE_SIZE*y];
+						voxel+=textureLod(texture3D, c_offset, min(level, MIPMAP_HARDCAP))*kernel5_single[x+CORE_SIZE*y];
 					}
 				}
 			}
@@ -428,7 +428,7 @@ vec3 traceSpecularVoxelCone(vec3 from,vec3 normal,vec3 direction,int isPbr,float
 						vec3 c_offset = vec3(c.x+i*VOXEL_SIZE,c.y,c.z+j*VOXEL_SIZE);
 						if(!isInsideCube(c_offset, 0)) continue;
 						c_offset = scaleAndBias(c_offset); 
-						voxel+=textureLod(texture3D, c_offset, min(level, MIPMAP_HARDCAP))*kernel3_single[x+CORE_SIZE*y];
+						voxel+=textureLod(texture3D, c_offset, min(level, MIPMAP_HARDCAP))*kernel5_single[x+CORE_SIZE*y];
 					}
 				}
 			}

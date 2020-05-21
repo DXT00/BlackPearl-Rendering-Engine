@@ -621,7 +621,7 @@ namespace BlackPearl {
 		if (skyBox != nullptr) {
 			glDepthFunc(GL_LEQUAL);
 
-			m_SkyboxRenderer->Render(skyBox);
+			m_SkyboxRenderer->Render(skyBox, timeInSecond);
 			//DrawObject(skyBox);
 			glDepthFunc(GL_LESS);
 		}

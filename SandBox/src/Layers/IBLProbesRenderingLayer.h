@@ -61,14 +61,14 @@ public:
 
 		/*create skybox */
 		/*notice: draw skybox before anything else!*/
-		m_SkyBoxObj1 = CreateSkyBox(
-			{ "assets/skybox/skybox/right.jpg",
-			 "assets/skybox/skybox/left.jpg",
-			 "assets/skybox/skybox/top.jpg",
-			 "assets/skybox/skybox/bottom.jpg",
-			 "assets/skybox/skybox/front.jpg",
-			 "assets/skybox/skybox/back.jpg",
-			});
+		//m_SkyBoxObj1 = CreateSkyBox(
+		//	{ "assets/skybox/skybox/right.jpg",
+		//	 "assets/skybox/skybox/left.jpg",
+		//	 "assets/skybox/skybox/top.jpg",
+		//	 "assets/skybox/skybox/bottom.jpg",
+		//	 "assets/skybox/skybox/front.jpg",
+		//	 "assets/skybox/skybox/back.jpg",
+		//	});
 		/*m_SkyBoxObj1 = CreateSkyBox(
 			{ "assets/skybox/skybox1/SkyBrightMorning_Right.png",
 			 "assets/skybox/skybox1/SkyBrightMorning_Left.png",
@@ -78,14 +78,14 @@ public:
 			 "assets/skybox/skybox1/SkyBrightMorning_Back.png",
 			});
 		*/
-	/*	m_SkyBoxObj1 = CreateSkyBox(
+		m_SkyBoxObj1 = CreateSkyBox(
 			{ "assets/skybox/skybox1/SkyMorning_Right.png",
 			 "assets/skybox/skybox1/SkyMorning_Left.png",
 			 "assets/skybox/skybox1/SkyMorning_Top.png",
 			 "assets/skybox/skybox1/SkyMorning_Bottom.png",
 			 "assets/skybox/skybox1/SkyMorning_Front.png",
 			 "assets/skybox/skybox1/SkyMorning_Back.png",
-			});*/
+			});
 		//m_SkyBoxObj1 = CreateSkyBox(
 		//	{ "assets/skybox/skybox1/SkyNight_Right.png",
 		//	 "assets/skybox/skybox1/SkyNight_Left.png",
@@ -100,11 +100,11 @@ public:
 	//	LoadScene("Church");
 		//LoadScene("CornellScene");//SpheresScene
 		
-		BlackPearl::Object* bot = LoadDynamicObject("Boy");
+		/*BlackPearl::Object* bot = LoadDynamicObject("Boy");
 		BlackPearl::Object* specularProbe = CreateLightProbe(BlackPearl::ProbeType::REFLECTION_PROBE);
 		specularProbe->GetComponent<BlackPearl::Transform>()->SetInitPosition(bot->GetComponent<BlackPearl::Transform>()->GetPosition());
 		bot->AddChildObj(specularProbe);
-		specularProbe->GetComponent<BlackPearl::LightProbe>()->AddExcludeObjectId(bot->GetId().id);
+		specularProbe->GetComponent<BlackPearl::LightProbe>()->AddExcludeObjectId(bot->GetId().id);*/
 		//LoadDynamicObject("Boy");
 
 		m_ProbeCamera = CreateCamera("ProbeCamera");
@@ -148,17 +148,7 @@ public:
 
 
 		//}
-		if (BlackPearl::Input::IsKeyPressed(BP_KEY_U)) {
-			GE_CORE_INFO("updating diffuse probes' area...!")
-				m_MapManager->UpdateProbesArea(m_DiffuseLightProbes);
-			GE_CORE_INFO("light probe updating......")
-				m_IBLProbesRenderer->RenderDiffuseProbeMap(GetLightSources(), m_BackGroundObjsList,
-					m_DiffuseLightProbes, m_SkyBoxObj1);
-			
 
-		}
-		m_IBLProbesRenderer->RenderSpecularProbeMap(GetLightSources(), m_BackGroundObjsList,
-			m_ReflectionLightProbes, m_SkyBoxObj1);
 
 
 	/*	if (BlackPearl::Input::IsKeyPressed(BP_KEY_O)) {
@@ -170,8 +160,23 @@ public:
 		}*/
 		milliseconds currentTimeMs = duration_cast<milliseconds>(system_clock::now().time_since_epoch());
 		double runtime = currentTimeMs.count() - m_StartTimeMs.count();
+		
+		if (BlackPearl::Input::IsKeyPressed(BP_KEY_U)) {
+			BlackPearl::TimeCounter::Start();
+			//GE_CORE_INFO("updating diffuse probes' area...!")
+				m_MapManager->UpdateProbesArea(m_DiffuseLightProbes);
+			//GE_CORE_INFO("light probe updating......")
+				BlackPearl::TimeCounter::End("update Probe area ");
 
+		}
+		m_IBLProbesRenderer->RenderDiffuseProbeMap(m_ProbeIdx, GetLightSources(), m_BackGroundObjsList, m_DynamicObjsList, runtime / 1000.0f,
+			m_DiffuseLightProbes, m_SkyBoxObj1);
+		m_ProbeIdx++;
+		if (m_ProbeIdx == m_DiffuseLightProbes.size())
+			m_ProbeIdx = 0;
 
+		m_IBLProbesRenderer->RenderSpecularProbeMap(GetLightSources(), m_BackGroundObjsList,m_DynamicObjsList, runtime / 1000.0f,
+			m_ReflectionLightProbes, m_SkyBoxObj1);
 
 
 
@@ -321,7 +326,7 @@ private:
 	//Light probe 
 	BlackPearl::Object* m_DiffuseLightProbeGrid;
 	BlackPearl::Object* m_ReflectLightProbeGrid;
-
+	int m_ProbeIdx = 0;
 
 	std::thread m_Threads[10];
 	BlackPearl::MainCamera* m_ProbeCamera;

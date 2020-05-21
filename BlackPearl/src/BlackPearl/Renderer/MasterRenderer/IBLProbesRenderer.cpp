@@ -7,7 +7,6 @@
 #include "BlackPearl/Timestep/TimeCounter.h"
 #include "BlackPearl/Component/MeshRendererComponent/MeshRenderer.h"
 #include "BlackPearl/Component/LightProbeComponent/LightProbeComponent.h"
-
 #include "BlackPearl/LightProbes/SphericalHarmonics.h"
 #include <glm/gtc/matrix_transform.hpp>
 #include <thread>
@@ -44,6 +43,12 @@ namespace BlackPearl {
 		m_BrdfLUTQuadObj = brdfLUTQuadObj;
 		//m_SHQuadObj = SHQuadObj;
 		RenderSpecularBRDFLUTMap();
+		
+		m_AnimatedModelRenderer = DBG_NEW AnimatedModelRenderer();
+	//	std::shared_ptr<Shader> gBufferAnimatedShader(DBG_NEW Shader("assets/shaders/animatedModel/animatedGBufferModel.glsl"));
+		//m_AnimatedModelRenderer->SetShader(gBufferAnimatedShader);
+		m_SkyboxRenderer = DBG_NEW SkyboxRenderer();
+
 		m_IsInitial = true;
 
 	}
@@ -58,18 +63,18 @@ namespace BlackPearl {
 	//	GE_CORE_INFO("calculating specular map...");
 	//	RenderSpecularPrefilterMap(lightSources, probe);
 	//}
-	void IBLProbesRenderer::UpdateDiffuseProbesMap(const LightSources* lightSources, std::vector<Object*> objects, Object* skyBox, Object* diffuseProbe)
+	void IBLProbesRenderer::UpdateDiffuseProbesMap(const LightSources* lightSources, std::vector<Object*> objects, const std::vector<Object*> dynamicObjs, float timeInSecond, Object* skyBox, Object* diffuseProbe)
 	{
-		std::shared_ptr<CubeMapTexture> environmentMap = RenderEnvironmerntCubeMaps(lightSources, objects, diffuseProbe, skyBox);
-		GE_CORE_INFO("calculating SH coeffs...");
+		std::shared_ptr<CubeMapTexture> environmentMap = RenderEnvironmerntCubeMaps(lightSources, objects, dynamicObjs,timeInSecond,diffuseProbe, skyBox);
+		//GE_CORE_INFO("calculating SH coeffs...");
 		RenderSHImage(diffuseProbe, environmentMap);
-		GE_CORE_INFO("finished");
+		//GE_CORE_INFO("finished");
 
 	}
-	void IBLProbesRenderer::UpdateReflectionProbesMap(const LightSources* lightSources, std::vector<Object*> objects, Object* skyBox, Object* reflectionProbe)
+	void IBLProbesRenderer::UpdateReflectionProbesMap(const LightSources* lightSources, const std::vector<Object*> objects, const std::vector<Object*> dynamicObjs, float timeInSecond, Object* skyBox, Object* reflectionProbe)
 	{
 		if (reflectionProbe->GetComponent<LightProbe>()->GetDynamicSpecularMap()) {
-			std::shared_ptr<CubeMapTexture> environmentMap =RenderEnvironmerntCubeMaps(lightSources, objects, reflectionProbe, skyBox);
+			std::shared_ptr<CubeMapTexture> environmentMap =RenderEnvironmerntCubeMaps(lightSources, objects, dynamicObjs,timeInSecond,reflectionProbe,skyBox);
 			GE_CORE_INFO("calculating specular map...");
 			RenderSpecularPrefilterMap(lightSources, reflectionProbe, environmentMap);
 			GE_CORE_INFO("finished");
@@ -77,7 +82,10 @@ namespace BlackPearl {
 	
 
 	}
-	void IBLProbesRenderer::Render(const LightSources* lightSources, const std::vector<Object*> objects, const std::vector<Object*> diffuseProbes,
+	void IBLProbesRenderer::Render(const LightSources* lightSources, const std::vector<Object*> objects, 
+		const std::vector<Object*> dynamicObjs,
+		float timeInSecond,
+		const std::vector<Object*> diffuseProbes,
 		const std::vector<Object*> reflectionProbes, Object* skyBox)
 	{
 		GE_ASSERT(m_IsInitial, "please initial IBLProbesRenderer first! IBLProbesRenderer::init()");
@@ -85,14 +93,14 @@ namespace BlackPearl {
 		for (auto it = diffuseProbes.begin(); it != diffuseProbes.end(); it++) {
 
 			Object* probe = *it;
-			UpdateDiffuseProbesMap(lightSources, objects, skyBox, probe);
+			UpdateDiffuseProbesMap(lightSources, objects, dynamicObjs, timeInSecond,skyBox, probe);
 
 		}
 
 		for (auto it = reflectionProbes.begin(); it != reflectionProbes.end(); it++) {
 
 			Object* probe = *it;
-			UpdateReflectionProbesMap(lightSources, objects, skyBox, probe);
+			UpdateReflectionProbesMap(lightSources, objects, dynamicObjs, timeInSecond, skyBox, probe);
 
 		}
 
@@ -102,23 +110,34 @@ namespace BlackPearl {
 
 
 	}
-	void IBLProbesRenderer::RenderDiffuseProbeMap(const LightSources* lightSources, const std::vector<Object*> objects, const std::vector<Object*> diffuseProbes,  Object* skyBox)
+	void IBLProbesRenderer::RenderDiffuseProbeMap(int idx,const LightSources* lightSources, const std::vector<Object*> objects, const std::vector<Object*> dynamicObjs, float timeInSecond, const std::vector<Object*> diffuseProbes, Object* skyBox)
+	{
+		GE_ASSERT(m_IsInitial, "please initial IBLProbesRenderer first! IBLProbesRenderer::init()");
+
+		//for (auto it = diffuseProbes.begin(); it != diffuseProbes.end(); it++) {
+
+		//	Object* probe = *it;
+			UpdateDiffuseProbesMap(lightSources, objects, dynamicObjs, timeInSecond, skyBox, diffuseProbes[idx]);
+
+		//}
+	}
+	void IBLProbesRenderer::RenderDiffuseProbeMap(const LightSources* lightSources, const std::vector<Object*> objects, const std::vector<Object*> dynamicObjs, float timeInSecond, const std::vector<Object*> diffuseProbes,  Object* skyBox)
 	{
 		GE_ASSERT(m_IsInitial, "please initial IBLProbesRenderer first! IBLProbesRenderer::init()");
 
 		for (auto it = diffuseProbes.begin(); it != diffuseProbes.end(); it++) {
 
 			Object* probe = *it;
-			UpdateDiffuseProbesMap(lightSources, objects, skyBox, probe);
+			UpdateDiffuseProbesMap(lightSources, objects, dynamicObjs, timeInSecond, skyBox, probe);
 
 		}
 	}
-	void IBLProbesRenderer::RenderSpecularProbeMap(const LightSources* lightSources, const std::vector<Object*> objects,  const std::vector<Object*> reflectionProbes, Object* skyBox)
+	void IBLProbesRenderer::RenderSpecularProbeMap(const LightSources* lightSources, const std::vector<Object*> objects, const std::vector<Object*> dynamicObjs, float timeInSecond, const std::vector<Object*> reflectionProbes, Object* skyBox)
 	{
 		for (auto it = reflectionProbes.begin(); it != reflectionProbes.end(); it++) {
 
 			Object* probe = *it;
-			UpdateReflectionProbesMap(lightSources, objects, skyBox, probe);
+			UpdateReflectionProbesMap(lightSources, objects, dynamicObjs, timeInSecond,skyBox, probe);
 
 		}
 
@@ -186,7 +205,7 @@ namespace BlackPearl {
 	}
 
 	std::shared_ptr<CubeMapTexture> IBLProbesRenderer::RenderEnvironmerntCubeMaps(const LightSources* lightSources, 
-		std::vector<Object*> objects, Object* probe, Object* skyBox)
+		std::vector<Object*> objects, std::vector<Object*> dynamicObjs, float timeInSecond, Object* probe, Object* skyBox)
 	{
 		GE_ERROR_JUDGE();
 		glm::vec3 center = probe->GetComponent<Transform>()->GetPosition();
@@ -258,7 +277,9 @@ namespace BlackPearl {
 				//BasicRenderer::DrawLightSources(lightSources, scene);
 				if (skyBox != nullptr) {
 					glDepthFunc(GL_LEQUAL);
-					DrawObject(skyBox, scene);
+					m_SkyboxRenderer->Render(skyBox, timeInSecond);
+
+//					DrawObject(skyBox, scene);
 					glDepthFunc(GL_LESS);
 				}
 
@@ -288,6 +309,33 @@ namespace BlackPearl {
 					}		
 
 				}
+
+				//for (auto obj : dynamicObjs) {
+
+				//	std::vector<uint64_t> excludeObjs = probe->GetComponent<LightProbe>()->GetExcludeObjectsId();
+				//	bool drawEnable = true;
+				//	for (uint64_t id : excludeObjs) {
+				//		if (obj->GetId().id == id) {
+				//			drawEnable = false;
+				//			break;
+				//		}
+				//	}
+				//	if (drawEnable) {
+				//		m_AnimatedModelRenderer->Render(obj, timeInSecond);
+				//		//if (obj->GetComponent<MeshRenderer>()->GetIsPBRObject()) {
+				//			//m_PbrShader->Bind();
+				//		//	DrawObject(obj, m_PbrShader, scene, 4);
+				//			GE_ERROR_JUDGE();
+				//		//}
+				//		//else {
+				//			//m_NonPbrShader->Bind();
+				//			//DrawObject(obj, m_NonPbrShader, scene, 4);
+				//			//GE_ERROR_JUDGE();
+				//		//}
+
+				//	}
+
+				//}
 				delete scene;
 				scene = nullptr;
 
@@ -485,10 +533,10 @@ namespace BlackPearl {
 
 	void IBLProbesRenderer::RenderSHImage(Object* probe, std::shared_ptr<CubeMapTexture> environmentMap)
 	{
-		TimeCounter::Start();
+		//TimeCounter::Start();
 		auto coeffs = SphericalHarmonics::UpdateCoeffs(environmentMap);
 		probe->GetComponent<LightProbe>()->SetSHCoeffs(coeffs);
-		TimeCounter::End("update diffuse probe");
+	//	TimeCounter::End("update diffuse probe");
 
 
 

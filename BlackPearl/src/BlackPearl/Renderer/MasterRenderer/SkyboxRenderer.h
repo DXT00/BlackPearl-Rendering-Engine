@@ -15,7 +15,7 @@ namespace BlackPearl {
 		std::shared_ptr<Shader> m_SkyboxShader;
 		std::shared_ptr<CubeMapTexture> m_SkyBoxTexture[3];
 
-		float m_TotalTimeIntervalS = 15.0f;//second
+		float m_TotalTimeIntervalS = 50.0f;//second
 		float m_StateIntervalS = m_TotalTimeIntervalS / 3.0f;
 
 

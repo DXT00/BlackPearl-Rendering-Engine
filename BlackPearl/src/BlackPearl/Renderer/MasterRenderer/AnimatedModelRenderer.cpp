@@ -19,7 +19,8 @@ namespace BlackPearl {
 		}
 
 		animatedModel->GetComponent<MeshRenderer>()->SetShaders(m_AnimatedShader);
-		DrawObject(animatedModel, m_AnimatedShader);
+		DrawObject(animatedModel, m_AnimatedShader,Renderer::GetSceneData(),5);
+		m_AnimatedShader->Unbind();
 
 	}
 

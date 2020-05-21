@@ -136,7 +136,7 @@ vec3 CalculateAmbientGI(vec3 albedo,vec3 specularColor){
 	vec3 prefileredColor = vec3(0.0,0.0,0.0) ;//= vec3(1.0,1.0,1.0);
 
 	/*specular Map只取最近的一个*/
-	prefileredColor = texture(u_PrefilterMap,R).rgb;
+	prefileredColor = textureLod(u_PrefilterMap,R,1).rgb;
 
 
 	vec3 specular = prefileredColor*specularColor;

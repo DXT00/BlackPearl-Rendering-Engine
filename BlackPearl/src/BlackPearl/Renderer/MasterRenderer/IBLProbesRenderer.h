@@ -1,7 +1,10 @@
 #pragma once
 #include "BlackPearl/Renderer/MasterRenderer/IBLRenderer.h"
+#include "BlackPearl/Renderer/MasterRenderer/SkyboxRenderer.h"
 #include "BlackPearl/Object/Object.h"
 #include "BlackPearl/MainCamera/MainCamera.h"
+#include "BlackPearl/Renderer/MasterRenderer/AnimatedModelRenderer.h"
+
 namespace BlackPearl {
 	
 	class IBLProbesRenderer:public BasicRenderer
@@ -14,12 +17,14 @@ namespace BlackPearl {
 			GE_SAVE_DELETE(m_ProbeCamera);*/
 
 		}
-		void Render(const LightSources* lightSources, const std::vector<Object*> objects, 
+		void Render(const LightSources* lightSources, const std::vector<Object*> objects, const std::vector<Object*> dynamicObjs, float timeInSecond,
 			const std::vector<Object*> diffuseProbes, 
 			const std::vector<Object*> reflectionProbes, Object* skyBox);
-		void RenderDiffuseProbeMap(const LightSources* lightSources, const std::vector<Object*> objects,
+		void RenderDiffuseProbeMap(const LightSources* lightSources, const std::vector<Object*> objects, const std::vector<Object*> dynamicObjs, float timeInSecond,
 			const std::vector<Object*> diffuseProbes, Object* skyBox);
-		void RenderSpecularProbeMap(const LightSources* lightSources, const std::vector<Object*> objects,
+		void RenderDiffuseProbeMap(int k,const LightSources* lightSources, const std::vector<Object*> objects, const std::vector<Object*> dynamicObjs, float timeInSecond,
+			const std::vector<Object*> diffuseProbes, Object* skyBox);
+		void RenderSpecularProbeMap(const LightSources* lightSources, const std::vector<Object*> objects, const std::vector<Object*> dynamicObjs, float timeInSecond,
 			const std::vector<Object*> reflectionProbes, Object* skyBox);
 		void RenderProbes(const std::vector<Object*> probes,int probeType);
 	//	void RenderSpecularObjects(const LightSources* lightSources, const std::vector<Object*> objects, const std::vector<Object*> probes);
@@ -34,11 +39,11 @@ namespace BlackPearl {
 		}
 		void UpdateProbeCamera(Object* probe);
 	private:
-		void UpdateDiffuseProbesMap(const LightSources* lightSources, std::vector<Object*> objects, Object* skyBox, Object* diffuseProbe);
+		void UpdateDiffuseProbesMap(const LightSources* lightSources, std::vector<Object*> objects, const std::vector<Object*> dynamicObjs, float timeInSecond, Object* skyBox, Object* diffuseProbe);
 
-		void UpdateReflectionProbesMap(const LightSources* lightSources, std::vector<Object*> objects, Object* skyBox, Object* reflectionProbe);
+		void UpdateReflectionProbesMap(const LightSources* lightSources, const std::vector<Object*> objects, const std::vector<Object*> dynamicObjs, float timeInSecond, Object* skyBox, Object* reflectionProbe);
 		/*render environment CubeMap of each probe */
-		std::shared_ptr<CubeMapTexture> RenderEnvironmerntCubeMaps(const LightSources* lightSources, std::vector<Object*> objects, Object* probes, Object* skyBox);
+		std::shared_ptr<CubeMapTexture> RenderEnvironmerntCubeMaps(const LightSources* lightSources, std::vector<Object*> objects, std::vector<Object*> dynamicObjs, float timeInSecond, Object* probes, Object* skyBox);
 		//void RenderDiffuseIrradianceMap(const LightSources* lightSources, std::vector<Object*> objects, Object *probe);
 		void RenderSpecularPrefilterMap(const LightSources* lightSources,  Object *probe, std::shared_ptr<CubeMapTexture> environmentMap);
 
@@ -86,6 +91,11 @@ namespace BlackPearl {
 		unsigned int m_CurrentProbeIndex = 0;
 		bool m_UpdateFinished = false;
 		MainCamera* m_ProbeCamera;
+
+		/*renderer environmentMap for dynamic objects*/
+		AnimatedModelRenderer* m_AnimatedModelRenderer;
+		SkyboxRenderer* m_SkyboxRenderer;
+
 	};
 
 }
