@@ -306,7 +306,7 @@ void main(){
 
 		
 		//vec3 diffuse = environmentIrradiance*(texture(u_Material.diffuse,v_TexCoord).rgb*u_Settings.isTextureSample+(1-u_Settings.isTextureSample)*u_Material.diffuseColor);
-		int s =u_Settings.isTextureSample;
+		int s =u_Settings.isDiffuseTextureSample;
 		vec3 MaterialDiffuse;
 		if(s==0)
 			MaterialDiffuse =(u_Material.diffuseColor);

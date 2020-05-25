@@ -9,8 +9,11 @@ namespace BlackPearl {
 	public:
 		SkyboxRenderer();
 
-		void Render(Object* obj);
-		void Render(Object* obj, float timeSecond);
+		void Render(Object* skybox);
+		void Render(Object* skybox, float timeSecond);
+		void Render(Object* skybox,Renderer::SceneData* scene);
+		void Render(Object* skybox, float timeSecond, Renderer::SceneData* scene);
+
 	private:
 		std::shared_ptr<Shader> m_SkyboxShader;
 		std::shared_ptr<CubeMapTexture> m_SkyBoxTexture[3];

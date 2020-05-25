@@ -41,9 +41,9 @@ public:
 		bunny->GetComponent<BlackPearl::Transform>()->SetScale({ 2,2,2 });
 		bunny->GetComponent<BlackPearl::Transform>()->SetPosition({ 1.0,-1.0,3.0 });*/
 
-		LoadScene("SpheresScene");
-		//LoadChurchScene();
-		LoadScene("CornellScene");
+		//LoadScene("SpheresScene");
+		LoadChurchScene();
+		//LoadScene("CornellScene");
 		m_skybox = m_SkyBoxObj;
 		/*******************************************************************************************************/
 		/*******************************************************************************************************/

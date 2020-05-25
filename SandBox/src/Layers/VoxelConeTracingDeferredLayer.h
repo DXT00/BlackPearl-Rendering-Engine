@@ -16,7 +16,7 @@ public:
 
 
 		m_CubeObj = CreateCube();
-		m_CubeObj->GetComponent<BlackPearl::Transform>()->SetScale(glm::vec3(10.0f));//必须是单位cube
+		m_CubeObj->GetComponent<BlackPearl::Transform>()->SetScale(glm::vec3(30.0f));//必须是单位cube
 		m_QuadObj = CreateQuad();
 
 		m_SurroundSphereObj = CreateSphere(1.0, 64, 64, "assets/shaders/Sphere.glsl", "", "SurroundSphere");
@@ -42,9 +42,9 @@ public:
 			 "assets/skybox/skybox/back.jpg",
 			});
 	
-		//LoadStaticBackGroundObject("SphereIron");
+		LoadStaticBackGroundObject("Deer");
 		//LoadScene("CornellScene");
-		LoadChurchScene();
+		//LoadChurchScene();
 		//LoadScene("SpheresScene");
 
 		m_skybox = m_SkyBoxObj;

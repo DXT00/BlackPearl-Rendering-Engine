@@ -244,7 +244,7 @@ namespace BlackPearl {
 		//glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
 
 		glm::vec2 mipMapSize = { environmentCubeMap->GetWidth(),environmentCubeMap->GetHeight() };
-		std::shared_ptr<FrameBuffer> frameBuffer(new FrameBuffer());
+		std::shared_ptr<FrameBuffer> frameBuffer(DBG_NEW FrameBuffer());
 		//	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		GE_ERROR_JUDGE();
 		frameBuffer->Bind();
@@ -257,6 +257,7 @@ namespace BlackPearl {
 		GE_ERROR_JUDGE();
 		for (unsigned int mip = 0; mip < environmentCubeMap->GetMipMapLevel(); mip++)
 		{
+			frameBuffer->Bind();
 
 			frameBuffer->BindRenderBuffer();
 			/*glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, mipMapSize.x, mipMapSize.y);
@@ -275,14 +276,7 @@ namespace BlackPearl {
 				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 				//BasicRenderer::DrawLightSources(lightSources, scene);
-				if (skyBox != nullptr) {
-					glDepthFunc(GL_LEQUAL);
-					m_SkyboxRenderer->Render(skyBox, timeInSecond);
-
-//					DrawObject(skyBox, scene);
-					glDepthFunc(GL_LESS);
-				}
-
+			
 
 				for (auto obj : objects) {
 
@@ -308,6 +302,14 @@ namespace BlackPearl {
 
 					}		
 
+				}
+				if (skyBox != nullptr) {
+					glDepthFunc(GL_LEQUAL);
+					//m_SkyboxRenderer->Render(skyBox, timeInSecond);
+					m_SkyboxRenderer->Render(skyBox,scene);
+
+					//					DrawObject(skyBox, scene);
+					glDepthFunc(GL_LESS);
 				}
 
 				//for (auto obj : dynamicObjs) {

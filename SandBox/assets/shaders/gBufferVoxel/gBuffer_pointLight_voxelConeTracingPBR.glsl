@@ -315,7 +315,7 @@ void main(){
 			float metallic  = gBuffer.metallic;
 			float roughness = gBuffer.roughness;
 			float ao        = gBuffer.ao;
-			vec3  normalMap = gBuffer.getNormalFromMap;
+			vec3  normalMap = normalize(gBuffer.getNormalFromMap);
 			vec3  fragPos   = gBuffer.fragPos;
 		
 			direct =  shadowBlend*u_PointLight.intensity * CalcPBRPointLight(u_PointLight,normalMap,albedo,metallic,roughness,fragPos);

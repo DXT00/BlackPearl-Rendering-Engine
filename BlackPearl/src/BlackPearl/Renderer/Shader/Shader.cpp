@@ -271,7 +271,8 @@ namespace BlackPearl {
 	void Shader::SetUniform1i(const std::string & name, int val) const
 	{
 		GLint loc = glGetUniformLocation(m_RendererID, name.c_str());
-		glUniform1i(loc, val);
+		if(loc!=-1)
+			glUniform1i(loc, val);
 		GE_ERROR_JUDGE();
 
 	}

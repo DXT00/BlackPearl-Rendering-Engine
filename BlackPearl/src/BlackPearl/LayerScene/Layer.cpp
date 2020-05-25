@@ -438,7 +438,7 @@ namespace BlackPearl {
 		Object* church = CreateModel("assets/models/crytek-sponza/sponza.obj", "assets/shaders/IronMan.glsl", false, "Church");
 
 		//Object* church = CreateModel("assets/models/sponza_obj/sponza.obj", "assets/shaders/IronMan.glsl", false, "Church");
-		church->GetComponent<Transform>()->SetScale(glm::vec3(0.02));//0.02
+		church->GetComponent<Transform>()->SetScale(glm::vec3(0.01));//0.02
 		church->GetComponent<Transform>()->SetInitPosition({ 0.0f,0.0f,10.0f });
 		church->GetComponent<Transform>()->SetRotation({ 0.0f,-90.0f,0.0f });
 		//church->GetComponent<Transform>()->SetScale({ 0.1f,0.1f,0.1f });

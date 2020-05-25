@@ -64,8 +64,41 @@ namespace BlackPearl {
 		DrawObject(skybox,m_SkyboxShader);
 
 	}
+	
 	void SkyboxRenderer::Render(Object* skybox)
 	{
 		DrawObject(skybox);
 	}
+	void SkyboxRenderer::Render(Object* skybox, Renderer::SceneData* scene)
+	{
+		DrawObject(skybox, scene);
+	}
+	void SkyboxRenderer::Render(Object* skybox, float timeSecond, Renderer::SceneData* scene)
+	{
+
+		float currentTimeS = fmod(timeSecond, m_TotalTimeIntervalS);
+		int state = int(currentTimeS / m_StateIntervalS);
+		int nextState = state + 1;
+		float stateFactor = nextState * m_StateIntervalS - currentTimeS;
+		float nextStateFactor = currentTimeS - state * m_StateIntervalS;
+		nextState %= 3;
+		state %= 3;
+		m_SkyboxShader->Bind();
+
+		m_SkyboxShader->SetUniform1f("u_Factor" + std::to_string(state), stateFactor / m_StateIntervalS);
+		m_SkyboxShader->SetUniform1f("u_Factor" + std::to_string(nextState), nextStateFactor / m_StateIntervalS);
+		m_SkyboxShader->SetUniform1f("u_Factor" + std::to_string(3 - state - nextState), 0);
+
+		m_SkyboxShader->SetUniform1i("u_Skybox" + std::to_string(state), state);
+		m_SkyboxShader->SetUniform1i("u_Skybox" + std::to_string(nextState), nextState);
+		m_SkyboxShader->SetUniform1i("u_Skybox" + std::to_string(3 - state - nextState), 3 - state - nextState);
+		glActiveTexture(GL_TEXTURE0 + state);
+		m_SkyBoxTexture[state]->Bind();
+		glActiveTexture(GL_TEXTURE0 + nextState);
+		m_SkyBoxTexture[nextState]->Bind();
+		glActiveTexture(GL_TEXTURE0 + 3 - state - nextState);
+		m_SkyBoxTexture[3 - state - nextState]->Bind();
+		DrawObject(skybox, m_SkyboxShader,scene);
+	}
+
 }

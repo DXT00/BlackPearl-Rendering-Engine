@@ -394,7 +394,7 @@ namespace BlackPearl {
 
 
 		RenderGBuffer(objs, skybox);
-
+		//DrawGBuffer(m_QuadObj);
 		//TimeCounter::Start();
 		/********************************* Point light pass ************************************************/
 
