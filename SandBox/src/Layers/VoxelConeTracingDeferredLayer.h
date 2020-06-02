@@ -42,10 +42,10 @@ public:
 			 "assets/skybox/skybox/back.jpg",
 			});
 	
-		LoadStaticBackGroundObject("Deer");
-		//LoadScene("CornellScene");
+		//LoadStaticBackGroundObject("Deer");
+		LoadScene("CornellScene");
 		//LoadChurchScene();
-		//LoadScene("SpheresScene");
+		LoadScene("SpheresScene");
 
 		m_skybox = m_SkyBoxObj;
 		/********************************************* Renderer **********************************************************/

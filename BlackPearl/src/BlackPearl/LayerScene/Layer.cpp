@@ -336,16 +336,16 @@ namespace BlackPearl {
 		m_BackGroundObjsList.push_back(cube5);
 
 		Object* deer = CreateModel("assets/models/deer/Deer.obj", "assets/shaders/IronMan.glsl", false, "Deer");
-		deer->GetComponent<Transform>()->SetScale(glm::vec3(0.003));
+		deer->GetComponent<Transform>()->SetInitScale(glm::vec3(0.003));
 		deer->GetComponent<Transform>()->SetInitPosition({ -0.5f,0.0f,2.5f });
-		deer->GetComponent<Transform>()->SetRotation({ 0.0f,68.0f,0.0f });
+		deer->GetComponent<Transform>()->SetInitRotation({ 0.0f,68.0f,0.0f });
 		deer->GetComponent<MeshRenderer>()->SetIsBackGroundObjects(true);
 		m_BackGroundObjsList.push_back(deer);
 
 		Object* bunny = CreateModel("assets/models/bunny/bunny.obj", "assets/shaders/IronMan.glsl", false, "Bunny");
-		bunny->GetComponent<Transform>()->SetScale(glm::vec3(0.5));
+		bunny->GetComponent<Transform>()->SetInitScale(glm::vec3(0.5));
 		bunny->GetComponent<Transform>()->SetInitPosition({ 0.6f,0.0f,3.0f });
-		bunny->GetComponent<Transform>()->SetRotation({ 0.0f,-30.0f,0.0f });
+		bunny->GetComponent<Transform>()->SetInitRotation({ 0.0f,-30.0f,0.0f });
 		bunny->GetComponent<MeshRenderer>()->SetIsBackGroundObjects(true);
 		m_BackGroundObjsList.push_back(bunny);
 
@@ -366,19 +366,19 @@ namespace BlackPearl {
 		light->GetComponent<MeshRenderer>()->SetIsShadowObjects(false);
 
 		Object* deer = CreateModel("assets/models/deer/Deer.obj", "assets/shaders/IronMan.glsl", false, "Deer");
-		deer->GetComponent<Transform>()->SetScale(glm::vec3(0.003));
+		deer->GetComponent<Transform>()->SetInitScale(glm::vec3(0.003));
 		//deer->GetComponent<Transform>()->SetPosition({ -0.5f,0.0f,2.5f });
 		deer->GetComponent<Transform>()->SetInitPosition({ -0.5f,-1.5f,-0.5f });
-		deer->GetComponent<Transform>()->SetRotation({ 0.0f,68.0f,0.0f });
+		deer->GetComponent<Transform>()->SetInitRotation({ 0.0f,68.0f,0.0f });
 		deer->GetComponent<MeshRenderer>()->SetIsBackGroundObjects(true);
 		m_BackGroundObjsList.push_back(deer);
 		m_ShadowObjsList.push_back(deer);
 
 		Object* bunny = CreateModel("assets/models/bunny/bunny.obj", "assets/shaders/IronMan.glsl", false, "Bunny");
-		bunny->GetComponent<Transform>()->SetScale(glm::vec3(0.5));
+		bunny->GetComponent<Transform>()->SetInitScale(glm::vec3(0.5));
 		//bunny->GetComponent<Transform>()->SetPosition({ 0.6f,0.0f,3.0f });
 		bunny->GetComponent<Transform>()->SetInitPosition({ 0.6f,-1.5f,-0.0f });
-		bunny->GetComponent<Transform>()->SetRotation({ 0.0f,-30.0f,0.0f });
+		bunny->GetComponent<Transform>()->SetInitRotation({ 0.0f,-30.0f,0.0f });
 		bunny->GetComponent<MeshRenderer>()->SetIsBackGroundObjects(true);
 		m_BackGroundObjsList.push_back(bunny);
 		m_ShadowObjsList.push_back(bunny);
@@ -438,9 +438,9 @@ namespace BlackPearl {
 		Object* church = CreateModel("assets/models/crytek-sponza/sponza.obj", "assets/shaders/IronMan.glsl", false, "Church");
 
 		//Object* church = CreateModel("assets/models/sponza_obj/sponza.obj", "assets/shaders/IronMan.glsl", false, "Church");
-		church->GetComponent<Transform>()->SetScale(glm::vec3(0.01));//0.02
+		church->GetComponent<Transform>()->SetInitScale(glm::vec3(0.006));//0.02
 		church->GetComponent<Transform>()->SetInitPosition({ 0.0f,0.0f,10.0f });
-		church->GetComponent<Transform>()->SetRotation({ 0.0f,-90.0f,0.0f });
+		church->GetComponent<Transform>()->SetInitRotation({ 0.0f,-90.0f,0.0f });
 		//church->GetComponent<Transform>()->SetScale({ 0.1f,0.1f,0.1f });
 
 		church->GetComponent<MeshRenderer>()->SetIsBackGroundObjects(true);
@@ -591,7 +591,7 @@ namespace BlackPearl {
 
 		Object* cube = CreateCube();
 		cube->GetComponent<Transform>()->SetInitPosition({ -2.0f,-2.5f,0.0f });
-		cube->GetComponent<Transform>()->SetScale({ 16.0f,0.8f,16.0f });
+		cube->GetComponent<Transform>()->SetInitScale({ 16.0f,0.5f,16.0f });
 		std::shared_ptr<Texture> cubeTexture(DBG_NEW Texture(Texture::Type::DiffuseMap, "assets/texture/wood.png", GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR, GL_RGBA, GL_CLAMP_TO_EDGE, GL_UNSIGNED_BYTE, true));
 		std::shared_ptr<Texture> cubeKsTexture(DBG_NEW Texture(Texture::Type::SpecularMap, "assets/texture/wood.png", GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR, GL_RGBA, GL_CLAMP_TO_EDGE, GL_UNSIGNED_BYTE, true));
 
@@ -740,7 +740,7 @@ namespace BlackPearl {
 
 		Object* cube = CreateCube();
 		cube->GetComponent<Transform>()->SetInitPosition({ -2.0f,-2.5f,0.0f });
-		cube->GetComponent<Transform>()->SetScale({ 16.0f,0.8f,16.0f });
+		cube->GetComponent<Transform>()->SetInitScale({ 16.0f,0.5f,16.0f });
 		std::shared_ptr<Texture> cubeTexture(DBG_NEW Texture(Texture::Type::DiffuseMap, "assets/texture/wood.png", GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR, GL_RGBA, GL_CLAMP_TO_EDGE, GL_UNSIGNED_BYTE, true));
 		std::shared_ptr<Texture> cubeKsTexture(DBG_NEW Texture(Texture::Type::SpecularMap, "assets/texture/wood.png", GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR, GL_RGBA, GL_CLAMP_TO_EDGE, GL_UNSIGNED_BYTE, true));
 
@@ -834,7 +834,7 @@ namespace BlackPearl {
 					cube->GetComponent<Transform>()->SetInitPosition({ cubeSize *i,cubeSize *j,cubeSize*k });
 					//cube->GetComponent<Transform>()->SetRotation({0.0f,45.0f, 0.0f});
 
-					cube->GetComponent<Transform>()->SetScale({ 0.5f*cubeSize, 0.5f * cubeSize, 0.5f * cubeSize });
+					cube->GetComponent<Transform>()->SetInitScale({ 0.5f*cubeSize, 0.5f * cubeSize, 0.5f * cubeSize });
 					//std::shared_ptr<Texture> cubeTexture(DBG_NEW Texture(Texture::Type::DiffuseMap, "assets/texture/wood.png"));
 					cube->GetComponent<MeshRenderer>()->GetMeshes()[0].GetMaterial()->SetMaterialColorDiffuseColor({ (1.0f/num)*i,(1.0f / num) *j,(1.0f / num)*k });
 					cube->GetComponent<MeshRenderer>()->GetMeshes()[0].GetMaterial()->SetMaterialColorSpecularColor({ 0.0f,0.0f,0.0f });
@@ -868,7 +868,7 @@ namespace BlackPearl {
 			staticModel->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(houseaoTexture);
 
 
-			staticModel->GetComponent<BlackPearl::Transform>()->SetScale(glm::vec3(2.0f));
+			staticModel->GetComponent<BlackPearl::Transform>()->SetInitScale(glm::vec3(2.0f));
 			staticModel->GetComponent<BlackPearl::Transform>()->SetInitPosition({ 0.0f,-1.5f,1.0f });
 			staticModel->GetComponent<BlackPearl::MeshRenderer>()->SetIsPBRObject(true);
 			staticModel->GetComponent<BlackPearl::MeshRenderer>()->SetIsBackGroundObjects(true);
@@ -878,29 +878,29 @@ namespace BlackPearl {
 
 		else if (modelName=="Church") {
 			staticModel =  CreateModel("assets/models/sponza_obj/sponza.obj", "assets/shaders/IronMan.glsl",false,"Church");
-			staticModel->GetComponent<BlackPearl::Transform>()->SetScale(glm::vec3(0.001f));
+			staticModel->GetComponent<BlackPearl::Transform>()->SetInitScale(glm::vec3(0.001f));
 			staticModel->GetComponent<BlackPearl::MeshRenderer>()->SetIsBackGroundObjects(true);
 		}
 		else if (modelName == "Bunny") {
 			staticModel=CreateModel("assets/models/bunny/bunny.obj", "assets/shaders/IronMan.glsl", false, "Bunny");
-			staticModel->GetComponent<Transform>()->SetScale(glm::vec3(0.5));
+			staticModel->GetComponent<Transform>()->SetInitScale(glm::vec3(0.5));
 			staticModel->GetComponent<Transform>()->SetInitPosition({ 0.6f,0.0f,3.0f });
-			staticModel->GetComponent<Transform>()->SetRotation({ 0.0f,-30.0f,0.0f });
+			staticModel->GetComponent<Transform>()->SetInitRotation({ 0.0f,-30.0f,0.0f });
 			staticModel->GetComponent<MeshRenderer>()->SetIsBackGroundObjects(true);
 		}
 		else if (modelName == "Deer") {
 			staticModel=CreateModel("assets/models/deer/Deer.obj", "assets/shaders/IronMan.glsl", false, "Deer");
-			staticModel->GetComponent<Transform>()->SetScale(glm::vec3(0.003));
+			staticModel->GetComponent<Transform>()->SetInitScale(glm::vec3(0.003));
 			staticModel->GetComponent<Transform>()->SetInitPosition({ -0.5f,0.0f,2.5f });
-			staticModel->GetComponent<Transform>()->SetRotation({ 0.0f,68.0f,0.0f });
+			staticModel->GetComponent<Transform>()->SetInitRotation({ 0.0f,68.0f,0.0f });
 			staticModel->GetComponent<MeshRenderer>()->SetIsBackGroundObjects(true);
 
 		}
 		else if (modelName == "Sphere") {
 			staticModel = CreateSphere(1.5, 64, 64);
-			staticModel->GetComponent<Transform>()->SetScale(glm::vec3(0.003));
+			staticModel->GetComponent<Transform>()->SetInitScale(glm::vec3(0.003));
 			staticModel->GetComponent<Transform>()->SetInitPosition({ -0.5f,0.0f,2.5f });
-			staticModel->GetComponent<Transform>()->SetRotation({ 0.0f,68.0f,0.0f });
+			staticModel->GetComponent<Transform>()->SetInitRotation({ 0.0f,68.0f,0.0f });
 			staticModel->GetComponent<MeshRenderer>()->SetIsBackGroundObjects(true);
 			std::shared_ptr<Texture> PlasticalbedoTexture(DBG_NEW Texture(Texture::Type::DiffuseMap, "assets/texture/pbr/plasticSphere/scuffed-plastic4-alb.png"));
 			std::shared_ptr<Texture> PlasticaoTexture(DBG_NEW Texture(Texture::Type::AoMap, "assets/texture/pbr/plasticSphere/scuffed-plastic-ao.png"));
@@ -960,8 +960,8 @@ namespace BlackPearl {
 		Object* dynamicModel = nullptr;
 		if (modelName == "Boy") {
 			dynamicModel = CreateModel("assets/models-animation/people/character Texture.dae", "assets/shaders/animatedModel/animatedModel.glsl", true,"Boy");
-			dynamicModel->GetComponent<BlackPearl::Transform>()->SetScale({ 0.2f,0.2f,0.2f });
-			dynamicModel->GetComponent<BlackPearl::Transform>()->SetRotation({ -90.0f,0.0f,0.0f });
+			dynamicModel->GetComponent<BlackPearl::Transform>()->SetInitScale({ 0.2f,0.2f,0.2f });
+			dynamicModel->GetComponent<BlackPearl::Transform>()->SetInitRotation({ -90.0f,0.0f,0.0f });
 			dynamicModel->GetComponent<BlackPearl::Transform>()->SetInitPosition({ 3.0f,-1.6f,0.0f });
 
 		}
@@ -981,14 +981,14 @@ namespace BlackPearl {
 		}
 		else if (modelName == "Frog") {
 			dynamicModel = CreateModel("assets/models-animation/frog/frog.dae.txt", "assets/shaders/animatedModel/animatedModel.glsl", true, "Frog");
-			dynamicModel->GetComponent<BlackPearl::Transform>()->SetScale({ 0.5f,0.5f,0.5f });
-			dynamicModel->GetComponent<BlackPearl::Transform>()->SetRotation({ 90.0f,180.0f,0.0f });
+			dynamicModel->GetComponent<BlackPearl::Transform>()->SetInitScale({ 0.5f,0.5f,0.5f });
+			dynamicModel->GetComponent<BlackPearl::Transform>()->SetInitRotation({ 90.0f,180.0f,0.0f });
 			dynamicModel->GetComponent<BlackPearl::Transform>()->SetInitPosition({ -3.0f,-1.6f,0.0f });
 		}
 		else if (modelName == "Cleaner") {
 			dynamicModel = CreateModel("assets/models-animation/boblampclean.md5mesh", "assets/shaders/animatedModel/animatedModel.glsl", true, "Cleaner");
-			dynamicModel->GetComponent<BlackPearl::Transform>()->SetScale({ 0.05f,0.05f,0.05f });
-			dynamicModel->GetComponent<BlackPearl::Transform>()->SetRotation({ 90.0f,180.0f,180.0f });
+			dynamicModel->GetComponent<BlackPearl::Transform>()->SetInitScale({ 0.05f,0.05f,0.05f });
+			dynamicModel->GetComponent<BlackPearl::Transform>()->SetInitRotation({ 90.0f,180.0f,180.0f });
 			dynamicModel->GetComponent<BlackPearl::Transform>()->SetInitPosition({ 0.0f,-1.6f,0.0f });
 		}
 		else {

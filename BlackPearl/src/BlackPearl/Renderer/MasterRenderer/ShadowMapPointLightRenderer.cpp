@@ -13,6 +13,8 @@ namespace BlackPearl {
 	//NearPlane 不可改必须保证是1 ，shader中要转换到[0,1]坐标系
 	//CubeMapDepthShader.glsl
 	const float ShadowMapPointLightRenderer::s_NearPlane = 1.0f;
+	//只有当场景中有物体位置发生变化时（light or dynamic objs)才会重新更新shadow map
+	static bool  s_UpdateShadowMap = false;
 
 	ShadowMapPointLightRenderer::ShadowMapPointLightRenderer()
 	{
@@ -151,6 +153,32 @@ namespace BlackPearl {
 		DrawLightSources(lightSources);
 
 	}
+
+	bool ShadowMapPointLightRenderer::JudgeUpdate(const LightSources* lightSources, std::vector<Object*> staticObjs, std::vector<Object*> dynamicObjs) {
+
+		if (!dynamicObjs.empty()) { return true; }
+		for (Object* obj : staticObjs) {
+			if (obj->GetComponent<MeshRenderer>()->GetIsShadowObjects()) {
+				if (obj->GetComponent<Transform>()->GetLastPosition() != obj->GetComponent<Transform>()->GetPosition() ||
+					obj->GetComponent<Transform>()->GetLastRotation() != obj->GetComponent<Transform>()->GetRotation() ||
+					obj->GetComponent<Transform>()->GetLastScale() != obj->GetComponent<Transform>()->GetScale()
+					)
+					return true;
+			}
+		}
+		for (auto pointlight : lightSources->GetPointLights()) {
+			glm::vec3 position = pointlight->GetComponent<Transform>()->GetPosition();
+			glm::vec3 lastPosition = pointlight->GetComponent<Transform>()->GetLastPosition();
+			if (position != lastPosition) {
+				return true;
+			}
+		}
+
+
+		return false;
+
+	}
+
 	
 }
 

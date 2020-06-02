@@ -75,7 +75,7 @@ namespace BlackPearl {
 		Object* obj = CreateEmpty(name);
 		std::shared_ptr<SphereMeshFilter> meshFilter = obj->AddComponent<SphereMeshFilter>(radius, stackCount, sectorCount);
 		Transform* transformComponent = obj->GetComponent<Transform>();
-		transformComponent->SetScale({ radius,radius,radius });
+		transformComponent->SetInitScale({ radius,radius,radius });
 		std::shared_ptr<Material> material;
 		std::shared_ptr<Material::TextureMaps> texture(DBG_NEW Material::TextureMaps());
 		if (texturePath != "")
@@ -102,7 +102,7 @@ namespace BlackPearl {
 
 		Transform* transformComponent = obj->GetComponent<Transform>();
 		transformComponent->SetInitPosition({ 0.0f, 0.0f, 0.0f });
-		transformComponent->SetRotation({ 0.0,180.0,0.0 });
+		transformComponent->SetInitRotation({ 0.0,180.0,0.0 });
 		obj->AddComponent<MeshRenderer>(model, transformComponent->GetTransformMatrix());
 		return obj;
 	}
@@ -129,8 +129,8 @@ namespace BlackPearl {
 	Object* Object3DCreater::CreateLightProbe(ProbeType type ,const std::string& shaderPath, const std::string& texturePath, const std::string name)
 	{
 		Object* obj = CreateCube(shaderPath, texturePath, name);
-		obj->GetComponent<Transform>()->SetRotation({ 0.0f, 0.0f, 0.0f });
-		obj->GetComponent<Transform>()->SetScale({ 0.3f,0.3f,0.3f});
+		obj->GetComponent<Transform>()->SetInitRotation({ 0.0f, 0.0f, 0.0f });
+		obj->GetComponent<Transform>()->SetInitScale({ 0.3f,0.3f,0.3f});
 
 		obj->GetComponent<MeshRenderer>()->SetIsShadowObjects(false);
 		obj->GetComponent<MeshRenderer>()->SetIsBackGroundObjects(false);
@@ -147,8 +147,8 @@ namespace BlackPearl {
 	{
 		Object* Obj = CreateEmpty(name);
 		Transform* TransformComponent = Obj->GetComponent<Transform>();
-		TransformComponent->SetScale({ 0.2f,0.2f,0.2f });
-		TransformComponent->SetPosition({ 0.0f,0.0f,0.0f });
+		TransformComponent->SetInitScale({ 0.2f,0.2f,0.2f });
+		TransformComponent->SetInitPosition({ 0.0f,0.0f,0.0f });
 		switch (type)
 		{
 		case LightType::ParallelLight: {

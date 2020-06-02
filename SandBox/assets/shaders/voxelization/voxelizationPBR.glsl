@@ -349,7 +349,7 @@ vec3 CalcPointLight(PointLight light,vec3 normal,vec3 viewDir){
 	diffuse  *= attenuation;
 	specular *= attenuation;
 
-	fragColor = diffuse + ambient + specular;
+	fragColor = light.intensity*(diffuse + ambient + specular);
 
 	return fragColor;
 }
@@ -434,7 +434,8 @@ void main(){
 	ivec3 dim = imageSize(texture3D);// retrieve the dimensions of an image
 	vec4 res = vec4(vec3(color), 1);
 	//vec3 pos = vec3(voxel.x*float(dim.x),voxel.y*float(dim.y),voxel.z*float(dim.z));
-	//vec4 pre = imageLoad(texture3D, ivec3(pos));//write a single texel into an image;
+	//vec4 pre = imageLoad(texture3D, ivec3(dim * voxel));//write a single texel into an image;
 	//res+=pre;
+	//if(pre.r+pre.g+pre.b<res.r+res.g+res.b)
 	imageStore(texture3D, ivec3(dim * voxel),res);//write a single texel into an image;
 }

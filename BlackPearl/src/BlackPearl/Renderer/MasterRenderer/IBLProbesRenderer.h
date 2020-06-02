@@ -24,7 +24,9 @@ namespace BlackPearl {
 			const std::vector<Object*> diffuseProbes, Object* skyBox);
 		void RenderDiffuseProbeMap(int k,const LightSources* lightSources, const std::vector<Object*> objects, const std::vector<Object*> dynamicObjs, float timeInSecond,
 			const std::vector<Object*> diffuseProbes, Object* skyBox);
-		void RenderSpecularProbeMap(const LightSources* lightSources, const std::vector<Object*> objects, const std::vector<Object*> dynamicObjs, float timeInSecond,
+		void RenderSpecularProbeMap(bool sceneChanged, const LightSources* lightSources, const std::vector<Object*> objects, const std::vector<Object*> dynamicObjs, float timeInSecond,
+			const std::vector<Object*> reflectionProbes, Object* skyBox);
+		void RenderSpecularProbeMap( const LightSources* lightSources, const std::vector<Object*> objects, const std::vector<Object*> dynamicObjs, float timeInSecond,
 			const std::vector<Object*> reflectionProbes, Object* skyBox);
 		void RenderProbes(const std::vector<Object*> probes,int probeType);
 	//	void RenderSpecularObjects(const LightSources* lightSources, const std::vector<Object*> objects, const std::vector<Object*> probes);

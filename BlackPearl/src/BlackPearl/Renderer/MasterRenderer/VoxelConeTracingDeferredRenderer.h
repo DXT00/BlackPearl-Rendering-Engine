@@ -21,6 +21,7 @@ namespace BlackPearl {
 		void InitVoxelVisualization(unsigned int viewportWidth, unsigned int viewportHeight);
 		void Voxilize(const std::vector<Object*>& objs,  Object* skybox,
 			bool clearVoxelizationFirst = true);
+		bool JudgeVoxelUpdate(const std::vector<Object*>& objs, const LightSources* lightSources);
 		void Render(
 			Camera* camera,
 			const std::vector<Object*>& objs,
@@ -74,6 +75,7 @@ namespace BlackPearl {
 		static bool s_MipmapBlurSpecularTracing;
 		static float s_IndirectSpecularAngle;
 	private:
+		glm::vec3 m_CameraLastPos = glm::vec3(0);//use to judge whether need to revoxelize scene
 
 		void SetgBufferTextureUniforms();
 

@@ -61,6 +61,8 @@ namespace BlackPearl {
 		m_SkyBoxTexture[nextState]->Bind();
 		glActiveTexture(GL_TEXTURE0 + 3 - state - nextState);
 		m_SkyBoxTexture[3 - state - nextState]->Bind();
+		m_SkyboxShader->Bind();
+
 		DrawObject(skybox,m_SkyboxShader);
 
 	}
@@ -98,6 +100,8 @@ namespace BlackPearl {
 		m_SkyBoxTexture[nextState]->Bind();
 		glActiveTexture(GL_TEXTURE0 + 3 - state - nextState);
 		m_SkyBoxTexture[3 - state - nextState]->Bind();
+
+		m_SkyboxShader->Bind();
 		DrawObject(skybox, m_SkyboxShader,scene);
 	}
 

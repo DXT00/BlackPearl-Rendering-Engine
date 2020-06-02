@@ -16,12 +16,12 @@ namespace BlackPearl {
 		void Render(const std::vector<Object*> backgroundObjs , LightSources* lightSources);
 		//virtual void PrepareShaderParameters(Mesh mesh, glm::mat4 transformMatrix, std::shared_ptr<Shader> shader,bool isLight = false)override;
 		std::shared_ptr<FrameBuffer> GetFrameBuffer() const { return m_FrameBuffer; }
-
+		bool JudgeUpdate(const LightSources* lightSources, std::vector<Object*> staticObjs,std::vector<Object*> dynamicObjs);
 		
 		static const float s_NearPlane;
 		static float s_FarPlane;
 		static float s_FOV;
-
+		static bool  s_UpdateShadowMap;
 	private:
 
 		AnimatedModelRenderer* m_AnimatedModelRenderer;

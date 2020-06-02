@@ -310,7 +310,7 @@ vec3 traceDiffuseVoxelCone(const vec3 from,vec3 direction,float coneAngle,out fl
 
 	vec4 acc = vec4(0.0);
 	
-	float dist =20.0*VOXEL_SIZE;//提前走多几步，防止采集到高分辨率的体素（这些体素会闪烁），防止闪烁
+	float dist =15.0*VOXEL_SIZE;//提前走多几步，防止采集到高分辨率的体素（这些体素会闪烁），防止闪烁
 
 	//Trace
 	while(dist<SQRT2  && acc.a<1){//dist<SQRT2 
@@ -412,7 +412,6 @@ vec3 traceSpecularVoxelCone(vec3 from,vec3 normal,vec3 direction,int isPbr,float
 				for(int j=-CORE_SIZE/2;j<=CORE_SIZE/2;j++){
 					for(int i=-CORE_SIZE/2;i<=CORE_SIZE/2;i++){
 						int x= i+CORE_SIZE/2,y = j+CORE_SIZE/2;
-
 						vec3 c_offset = vec3(c.x+i*VOXEL_SIZE,c.y+j*VOXEL_SIZE,c.z);
 						if(!isInsideCube(c_offset, 0)) continue;
 						c_offset = scaleAndBias(c_offset); 
@@ -604,11 +603,7 @@ void main(){
 
 	if(u_Settings.indirectSpecularLight)
 		indirectSpecular = indirectSpecularLight(viewDirection,normal,gBuffer.fragPos,gBuffer.isPBRObject,gBuffer.specularColor,gBuffer.diffuseColor,gBuffer.roughness);
-//
-//	if(indirectSpecular.r>u_SpecularBlurThreshold&&indirectSpecular.g>u_SpecularBlurThreshold&&indirectSpecular.b>u_SpecularBlurThreshold)
-//			FragColor.a = 1;//表示需要filter
-//		else
-//			FragColor.a = 0;//表示不需要filter
+
 
 
 	if(gBuffer.isPBRObject==1){

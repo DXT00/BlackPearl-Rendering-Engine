@@ -75,9 +75,9 @@ namespace BlackPearl {
 	{
 		if (reflectionProbe->GetComponent<LightProbe>()->GetDynamicSpecularMap()) {
 			std::shared_ptr<CubeMapTexture> environmentMap =RenderEnvironmerntCubeMaps(lightSources, objects, dynamicObjs,timeInSecond,reflectionProbe,skyBox);
-			GE_CORE_INFO("calculating specular map...");
+			//GE_CORE_INFO("calculating specular map...");
 			RenderSpecularPrefilterMap(lightSources, reflectionProbe, environmentMap);
-			GE_CORE_INFO("finished");
+			//GE_CORE_INFO("finished");
 		}
 	
 
@@ -132,15 +132,31 @@ namespace BlackPearl {
 
 		}
 	}
+	void IBLProbesRenderer::RenderSpecularProbeMap(bool sceneChanged ,const LightSources* lightSources, const std::vector<Object*> objects, const std::vector<Object*> dynamicObjs, float timeInSecond, const std::vector<Object*> reflectionProbes, Object* skyBox)
+	{
+		//场景中的物体移动或者light变化时才更新 reflectionProbes!
+		if (sceneChanged) {
+			for (auto it = reflectionProbes.begin(); it != reflectionProbes.end(); it++) {
+
+				Object* probe = *it;
+				UpdateReflectionProbesMap(lightSources, objects, dynamicObjs, timeInSecond, skyBox, probe);
+
+			}
+		}
+
+	}
+
 	void IBLProbesRenderer::RenderSpecularProbeMap(const LightSources* lightSources, const std::vector<Object*> objects, const std::vector<Object*> dynamicObjs, float timeInSecond, const std::vector<Object*> reflectionProbes, Object* skyBox)
 	{
+		//场景中的物体移动或者light变化时才更新 reflectionProbes!
+		//if (sceneChanged) {
 		for (auto it = reflectionProbes.begin(); it != reflectionProbes.end(); it++) {
 
 			Object* probe = *it;
-			UpdateReflectionProbesMap(lightSources, objects, dynamicObjs, timeInSecond,skyBox, probe);
+			UpdateReflectionProbesMap(lightSources, objects, dynamicObjs, timeInSecond, skyBox, probe);
 
 		}
-
+		//}
 
 	}
 	//probeType:0--diffuseProbe ,1--reflectionProbe
@@ -305,8 +321,8 @@ namespace BlackPearl {
 				}
 				if (skyBox != nullptr) {
 					glDepthFunc(GL_LEQUAL);
-					//m_SkyboxRenderer->Render(skyBox, timeInSecond);
-					m_SkyboxRenderer->Render(skyBox,scene);
+					m_SkyboxRenderer->Render(skyBox, timeInSecond, scene);
+					//m_SkyboxRenderer->Render(skyBox,scene);
 
 					//					DrawObject(skyBox, scene);
 					glDepthFunc(GL_LESS);
@@ -323,7 +339,7 @@ namespace BlackPearl {
 				//		}
 				//	}
 				//	if (drawEnable) {
-				//		m_AnimatedModelRenderer->Render(obj, timeInSecond);
+				//		m_AnimatedModelRenderer->Render(obj, timeInSecond,scene);
 				//		//if (obj->GetComponent<MeshRenderer>()->GetIsPBRObject()) {
 				//			//m_PbrShader->Bind();
 				//		//	DrawObject(obj, m_PbrShader, scene, 4);
