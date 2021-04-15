@@ -12,3 +12,9 @@ BlackPearl.sln
 SandBox/assets/models
 SandBox/assets/models-animation
 SandBox/assets/texture
+*.tlog
+*.1.tlog
+*.obj
+*.idb
+*.pdb
+*.lastbuildstate

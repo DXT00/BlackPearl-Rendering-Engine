@@ -15,6 +15,7 @@
 #include "Layers/IBLProbesRenderingLayer.h"
 #include "Layers/VoxelConeTracingDeferredLayer.h"
 #include "Layers/VoxelConeTracingSVOLayer.h"
+#include "Layers/RayTracingLayer.h"
 #include "BlackPearl/Application.h"
 #include "Layers/VoxelizationTestLayer.h"
 #include "Layers/CubeTestLayer.h"
@@ -29,10 +30,13 @@ public:
 
 		//BlackPearl::Layer* layer = DBG_NEW PbrRenderingLayer("PbrRendering Layer", objectManager);
 		//BlackPearl::Layer* layer = DBG_NEW IBLRenderingLayer("IBLRenderingLayer", objectManager);
-		BlackPearl::Layer* layer = DBG_NEW IBLProbesRenderingLayer("IBLProbesRenderingLayer", objectManager);
+		//BlackPearl::Layer* layer = DBG_NEW IBLProbesRenderingLayer("IBLProbesRenderingLayer", objectManager);
 		
 		//BlackPearl::Layer* layer = DBG_NEW VoxelConeTracingDeferredLayer("VoxelConeTracingDeferred Layer", objectManager);
 		//BlackPearl::Layer* layer = DBG_NEW VoxelConeTracingSVOLayer("VoxelConeTracingSVO Layer", objectManager);
+
+		BlackPearl::Layer* layer = DBG_NEW RayTracingLayer("RayTracing Layer", objectManager);
+
 		GetScene()->PushLayer(layer);
 	}
 	virtual ~SandBox() = default;

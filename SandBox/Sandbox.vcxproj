@@ -137,6 +137,7 @@
     <ClInclude Include="src\Layers\IBLProbesRenderingLayer.h" />
     <ClInclude Include="src\Layers\IBLRenderingLayer.h" />
     <ClInclude Include="src\Layers\PbrRenderingLayer.h" />
+    <ClInclude Include="src\Layers\RayTracingLayer.h" />
     <ClInclude Include="src\Layers\ShadowMapPointLightLayer.h" />
     <ClInclude Include="src\Layers\ShadowMapTestLayer.h" />
     <ClInclude Include="src\Layers\SkyBoxTestLayer.h" />
@@ -174,6 +175,10 @@
     <None Include="assets\shaders\gBufferVoxel\gBuffer_pointLight_voxelConeTracingPBR.glsl" />
     <None Include="assets\shaders\gBufferVoxel\renderVoxel.glsl" />
     <None Include="assets\shaders\map\map.glsl" />
+    <None Include="assets\shaders\raytracing\rayTracingBasic.glsl" />
+    <None Include="assets\shaders\raytracing\rayTracingBasicSystem.glsl" />
+    <None Include="assets\shaders\raytracing\rayTracingSystemT.glsl" />
+    <None Include="assets\shaders\raytracing\ScreenQuad.glsl" />
     <None Include="assets\shaders\SkyBoxMultiTexture.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

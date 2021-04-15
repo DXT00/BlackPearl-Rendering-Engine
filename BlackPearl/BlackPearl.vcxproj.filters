@@ -115,6 +115,9 @@
     <Filter Include="vendor\stb">
       <UniqueIdentifier>{8BD3C5A8-778B-07F6-E092-E051CC69A2E6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\BlackPearl\Common">
+      <UniqueIdentifier>{82250d49-cf95-4298-bd07-229d072904a6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\BlackPearl\Animation\AnimatedModel.h">
@@ -1470,6 +1473,11 @@
     <ClInclude Include="src\BlackPearl\Timestep\TimeCounter.h" />
     <ClInclude Include="src\BlackPearl\Component\LightProbeComponent\LightProbeComponent.h" />
     <ClInclude Include="src\BlackPearl\Renderer\MasterRenderer\SkyboxRenderer.h" />
+    <ClInclude Include="src\BlackPearl\Renderer\MasterRenderer\RayTracingRenderer.h" />
+    <ClInclude Include="src\BlackPearl\Common\CommonFunc.h">
+      <Filter>src\BlackPearl\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BlackPearl\Math\Math.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\BlackPearl\Animation\AnimatedModel.cpp">
@@ -1697,5 +1705,11 @@
     <ClCompile Include="src\BlackPearl\Timestep\TimeCounter.cpp" />
     <ClCompile Include="src\BlackPearl\Component\LightProbeComponent\LightProbeComponent.cpp" />
     <ClCompile Include="src\BlackPearl\Renderer\MasterRenderer\SkyboxRenderer.cpp" />
+    <ClCompile Include="src\BlackPearl\Renderer\MasterRenderer\RayTracingRenderer.cpp" />
+    <ClCompile Include="src\BlackPearl\Common\CommonFunc.cpp">
+      <Filter>src\BlackPearl\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BlackPearl\Math\Math.cpp" />
+    <ClCompile Include="MATH.CPP" />
   </ItemGroup>
 </Project>

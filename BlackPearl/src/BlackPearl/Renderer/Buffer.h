@@ -219,19 +219,32 @@ namespace BlackPearl {
 	class GBuffer
 	{
 	public:
-		GBuffer(const unsigned int imageWidth,const unsigned int imageHeight);
+		enum  Type {
+			GI,
+			RayTracing
+		};
+		GBuffer(const unsigned int imageWidth,const unsigned int imageHeight,Type type = Type::GI);
 		void Bind();
 		void UnBind();
-		std::shared_ptr<Texture> GetPositionTexture()const { return m_PositionTexture; }
-		std::shared_ptr<Texture> GetNormalTexture()const { return m_NormalTexture; }
-		std::shared_ptr<Texture> GetNormalMapTexture()const { return m_NormalMapTexture; }
-		std::shared_ptr<Texture> GetDiffuseRoughnessTexture()const { return m_DiffuseRoughnessTexture; }
-		std::shared_ptr<Texture> GetSpecularMentallicTexture()const { return m_SpecularMentallicTexture; }
-		std::shared_ptr<Texture> GetAmbientGIAOTexture()const { return m_AmbientGIAOTexture; }
+		/************************ GI Texture (voxel cone tracing and light probe)*********/
 
+		std::shared_ptr<Texture> GetPositionTexture()const { GE_ASSERT(m_Type == Type::GI, "is not GI Gbuffer!"); return m_PositionTexture; }
+		std::shared_ptr<Texture> GetNormalTexture()const { GE_ASSERT(m_Type == Type::GI, "is not GI Gbuffer!"); return m_NormalTexture; }
+		std::shared_ptr<Texture> GetNormalMapTexture()const { GE_ASSERT(m_Type == Type::GI, "is not GI Gbuffer!"); return m_NormalMapTexture; }
+		std::shared_ptr<Texture> GetDiffuseRoughnessTexture()const { GE_ASSERT(m_Type == Type::GI, "is not GI Gbuffer!"); return m_DiffuseRoughnessTexture; }
+		std::shared_ptr<Texture> GetSpecularMentallicTexture()const { GE_ASSERT(m_Type == Type::GI, "is not GI Gbuffer!"); return m_SpecularMentallicTexture; }
+		std::shared_ptr<Texture> GetAmbientGIAOTexture()const { GE_ASSERT(m_Type == Type::GI, "is not GI Gbuffer!"); return m_AmbientGIAOTexture; }
+		void InitGITextures();
+
+		/************************ Raytracing Texture ************************************/
+		std::shared_ptr<Texture> GetColorTexture(unsigned int idx);
+		std::vector<std::shared_ptr<Texture>> GetColorTextures() { return m_ColorTextures; }
+
+		void InitRayTracingTextures();
 		~GBuffer()=default;
 
 	private:
+		/************************ GI Texture (voxel cone tracing and light probe)*********/
 		std::shared_ptr<Texture> m_PositionTexture;
 		std::shared_ptr<Texture> m_NormalTexture;
 		std::shared_ptr<Texture> m_NormalMapTexture;
@@ -243,9 +256,13 @@ namespace BlackPearl {
 		/* 存储全局光照中的 diffuse 和specular (vec3 ambient =  (Kd*diffuse+specular) * ao;)的颜色*/
 		std::shared_ptr<Texture> m_AmbientGIAOTexture;
 
+		/************************ Raytracing Texture ************************************/
+		std::vector<std::shared_ptr<Texture>>m_ColorTextures;
+
 		unsigned int m_RendererID;
 		unsigned int m_RenderBufferID;
 		unsigned int m_Width, m_Height;
+		Type m_Type;
 
 
 	};

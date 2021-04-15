@@ -45,6 +45,7 @@
     <ClInclude Include="src\Layers\VoxelizationTestLayer.h">
       <Filter>Layers</Filter>
     </ClInclude>
+    <ClInclude Include="src\Layers\RayTracingLayer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\SandBox.cpp" />
@@ -71,5 +72,9 @@
     <None Include="assets\shaders\gBufferVoxel\FinalScreenQuad.glsl" />
     <None Include="assets\shaders\gBufferVoxel\renderVoxel.glsl" />
     <None Include="assets\shaders\gBufferVoxel\gBuffer_parallelLight_voxelConeTracingPBR.glsl" />
+    <None Include="assets\shaders\raytracing\rayTracingBasic.glsl" />
+    <None Include="assets\shaders\raytracing\ScreenQuad.glsl" />
+    <None Include="assets\shaders\raytracing\rayTracingBasicSystem.glsl" />
+    <None Include="assets\shaders\raytracing\rayTracingSystemT.glsl" />
   </ItemGroup>
 </Project>

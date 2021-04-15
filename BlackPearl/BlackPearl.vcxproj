@@ -143,6 +143,9 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\BlackPearl\Math\Math.h" />
+    <ClInclude Include="src\BlackPearl\Common\CommonFunc.h" />
+    <ClInclude Include="src\BlackPearl\Renderer\MasterRenderer\RayTracingRenderer.h" />
     <ClInclude Include="src\BlackPearl\Renderer\MasterRenderer\SkyboxRenderer.h" />
     <ClInclude Include="src\BlackPearl\Component\LightProbeComponent\LightProbeComponent.h" />
     <ClInclude Include="src\BlackPearl\Renderer\MasterRenderer\MapRenderer.h" />
@@ -600,6 +603,10 @@
     <ClInclude Include="vendor\stb\stb_image.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="MATH.CPP" />
+    <ClCompile Include="src\BlackPearl\Math\Math.cpp" />
+    <ClCompile Include="src\BlackPearl\Common\CommonFunc.cpp" />
+    <ClCompile Include="src\BlackPearl\Renderer\MasterRenderer\RayTracingRenderer.cpp" />
     <ClCompile Include="src\BlackPearl\Renderer\MasterRenderer\SkyboxRenderer.cpp" />
     <ClCompile Include="src\BlackPearl\Component\LightProbeComponent\LightProbeComponent.cpp" />
     <ClCompile Include="src\BlackPearl\Renderer\MasterRenderer\MapRenderer.cpp" />

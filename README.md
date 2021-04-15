@@ -70,4 +70,6 @@ SVO path tracing - only one bounce cubeSize = 40
 ### indirect diffuse light
 ![3Dtexture_coneTracing](/results/3Dtexture_coneTracing3.png)
 
+### GPU Raytracing 01
+![3Dtexture_coneTracing](/results/gpu_raytracing.png)
 
