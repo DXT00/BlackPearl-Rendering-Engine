@@ -70,9 +70,12 @@ SVO path tracing - only one bounce cubeSize = 40
 ### indirect diffuse light
 ![3Dtexture_coneTracing](/results/3Dtexture_coneTracing3.png)
 
+## GPU Raytracing
 ### GPU Raytracing 01
 ![gpu_raytracing](/results/gpu_raytracing.png)
 
 ### GPU Raytracing 02 -- spheres
-![3Dtexture_coneTracing](/results/gpu_raytracing_spheres.png)
+![gpu_raytracing_spheres](/results/gpu_raytracing_spheres.png)
 
+### GPU Raytracing 03 -- material spheres
+![gpu_raytracing_material_spheres](/results/gpu_raytracing_material_spheres.png)

@@ -5,7 +5,6 @@ bin-int/
 
 #Files
 *.user
-vendor/
 entityx-master/
 BlackPearl.sln
 ./LearnOpenGL_study

@@ -11,9 +11,12 @@ namespace BlackPearl {
 		void Init(Object* quad);
 		void Render();
 		void RenderSpheres(MainCamera* mainCamera);
+		void RenderMaterialSpheres(MainCamera* mainCamera);
+
 	private:
 		std::shared_ptr<Shader> m_BasicShader;
 		std::shared_ptr<Shader> m_BasicSystemShader;
+		std::shared_ptr<Shader> m_MaterialShader;
 
 		std::shared_ptr<Shader> m_ScreenShader;
 		std::shared_ptr<GBuffer> m_GBuffers[2];

@@ -79,8 +79,9 @@ public:
 
 		}
 
-		m_RayTracingRenderer->RenderSpheres(m_MainCamera);
+		//m_RayTracingRenderer->RenderSpheres(m_MainCamera);
 	//	m_RayTracingRenderer->Render();
+		m_RayTracingRenderer->RenderMaterialSpheres(m_MainCamera);
 
 
 	
