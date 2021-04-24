@@ -22,7 +22,9 @@ public:
 		m_RayTracingRenderer->Init( m_QuadObj);
 
 		
-
+		m_MainCamera->SetFov(90.0f);
+		m_MainCamera->SetPosition(glm::vec3(0, 0, 0));//glm::vec3(0,1.387f,22.012f)
+		m_CameraPosition = m_MainCamera->GetPosition();
 		BlackPearl::Renderer::Init();
 
 		/***************************************** Scene ********************************************************/
@@ -34,10 +36,6 @@ public:
 			 "assets/skybox/skybox/front.jpg",
 			 "assets/skybox/skybox/back.jpg",
 			});
-		//LoadStaticBackGroundObject("Sphere");
-		//LoadScene("CornellScene");
-		//LoadScene("SpheresScene");
-
 		m_skybox = m_SkyBoxObj;
 		/*******************************************************************************************************/
 		/*******************************************************************************************************/
@@ -65,6 +63,10 @@ public:
 
 		BlackPearl::RenderCommand::SetClearColor(m_BackgroundColor);
 		BlackPearl::Renderer::BeginScene(*(m_MainCamera->GetObj()->GetComponent<BlackPearl::PerspectiveCamera>()), *GetLightSources());
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		glViewport(0, 0, BlackPearl::Configuration::WindowWidth, BlackPearl::Configuration::WindowHeight);
+
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		if (BlackPearl::Input::IsKeyPressed(BP_KEY_Y)) {
 
 			m_skybox = m_SkyBoxObj;
@@ -77,8 +79,8 @@ public:
 
 		}
 
-	//	m_RayTracingRenderer->RenderSpheres(m_MainCamera);
-		m_RayTracingRenderer->Render();
+		m_RayTracingRenderer->RenderSpheres(m_MainCamera);
+	//	m_RayTracingRenderer->Render();
 
 
 	

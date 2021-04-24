@@ -21,7 +21,7 @@ namespace BlackPearl {
 		bool m_WriteBuffer = true;
 
 		int m_LoopNum = 1;
-		float m_RayNumMax = 3000.0f;
+		float m_RayNumMax = 10000.0f;
 
 
 		/* Object */

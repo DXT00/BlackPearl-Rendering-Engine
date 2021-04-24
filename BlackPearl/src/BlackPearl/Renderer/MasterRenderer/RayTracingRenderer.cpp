@@ -75,9 +75,12 @@ namespace BlackPearl {
 		m_BasicSystemShader->SetUniformVec3f("u_CameraUp", mainCamera->Up());
 		m_BasicSystemShader->SetUniformVec3f("u_CameraFront", mainCamera->Front());
 		m_BasicSystemShader->SetUniformVec3f("u_CameraRight", mainCamera->Right());
+		m_BasicSystemShader->SetUniform1f("u_CameraFov", mainCamera->Fov());
 
 		for (int i = 0; i < m_LoopNum; i++)
-		{
+		{			
+			m_GBuffers[m_WriteBuffer]->Bind();
+
 			glActiveTexture(GL_TEXTURE0);
 			m_GBuffers[m_ReadBuffer]->GetColorTexture(0)->Bind();
 			glActiveTexture(GL_TEXTURE1);
@@ -87,15 +90,15 @@ namespace BlackPearl {
 			glActiveTexture(GL_TEXTURE3);
 			m_GBuffers[m_ReadBuffer]->GetColorTexture(3)->Bind();
 
-			m_GBuffers[m_WriteBuffer]->Bind();
 			
-			m_BasicSystemShader->Bind();
+			
 
 			m_BasicSystemShader->SetUniform1f("u_rdSeed[0]", Math::Rand_F());
 			m_BasicSystemShader->SetUniform1f("u_rdSeed[1]", Math::Rand_F());
 			m_BasicSystemShader->SetUniform1f("u_rdSeed[2]", Math::Rand_F());
 			m_BasicSystemShader->SetUniform1f("u_rdSeed[3]", Math::Rand_F());
 
+			m_BasicSystemShader->Bind();
 			DrawObject(m_Quad, m_BasicSystemShader);
 			m_ReadBuffer = m_WriteBuffer;
 			m_WriteBuffer = !m_ReadBuffer;

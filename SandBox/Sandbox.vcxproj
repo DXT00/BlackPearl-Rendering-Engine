@@ -154,33 +154,6 @@
       <Project>{B6CF16AE-A287-58FB-0B8F-3157F765F3EB}</Project>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <None Include="assets\shaders\gBufferVoxelSVO\buildTree\leafStore.glsl" />
-    <None Include="assets\shaders\gBufferVoxelSVO\buildTree\nodeAlloc.glsl" />
-    <None Include="assets\shaders\gBufferVoxelSVO\buildTree\nodeFlag.glsl" />
-    <None Include="assets\shaders\gBufferVoxelSVO\buildTree\nodeInit.glsl" />
-    <None Include="assets\shaders\gBufferVoxelSVO\buildTree\renderNodeKd.glsl" />
-    <None Include="assets\shaders\gBufferVoxelSVO\gBufferVoxel.glsl" />
-    <None Include="assets\shaders\gBufferVoxelSVO\pathTracing.glsl" />
-    <None Include="assets\shaders\gBufferVoxelSVO\pathTracingGBuffer.glsl" />
-    <None Include="assets\shaders\gBufferVoxelSVO\renderVoxel.glsl" />
-    <None Include="assets\shaders\gBufferVoxelSVO\svoTracing.glsl" />
-    <None Include="assets\shaders\gBufferVoxelSVO\svoTracing_new.glsl" />
-    <None Include="assets\shaders\gBufferVoxelSVO\voxelizationSVO.glsl" />
-    <None Include="assets\shaders\gBufferVoxelSVO\voxelizationSVO_new.glsl" />
-    <None Include="assets\shaders\gBufferVoxel\FinalScreenQuad.glsl" />
-    <None Include="assets\shaders\gBufferVoxel\gBufferVoxel.glsl" />
-    <None Include="assets\shaders\gBufferVoxel\gBuffer_ambientFilter_voxelConeTracingPBR.glsl" />
-    <None Include="assets\shaders\gBufferVoxel\gBuffer_parallelLight_voxelConeTracingPBR.glsl" />
-    <None Include="assets\shaders\gBufferVoxel\gBuffer_pointLight_voxelConeTracingPBR.glsl" />
-    <None Include="assets\shaders\gBufferVoxel\renderVoxel.glsl" />
-    <None Include="assets\shaders\map\map.glsl" />
-    <None Include="assets\shaders\raytracing\rayTracingBasic.glsl" />
-    <None Include="assets\shaders\raytracing\rayTracingBasicSystem.glsl" />
-    <None Include="assets\shaders\raytracing\rayTracingSystemT.glsl" />
-    <None Include="assets\shaders\raytracing\ScreenQuad.glsl" />
-    <None Include="assets\shaders\SkyBoxMultiTexture.glsl" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

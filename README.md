@@ -71,5 +71,8 @@ SVO path tracing - only one bounce cubeSize = 40
 ![3Dtexture_coneTracing](/results/3Dtexture_coneTracing3.png)
 
 ### GPU Raytracing 01
-![3Dtexture_coneTracing](/results/gpu_raytracing.png)
+![gpu_raytracing](/results/gpu_raytracing.png)
+
+### GPU Raytracing 02 -- spheres
+![3Dtexture_coneTracing](/results/gpu_raytracing_spheres.png)
 

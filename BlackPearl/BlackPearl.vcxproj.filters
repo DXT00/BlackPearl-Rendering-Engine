@@ -10,6 +10,9 @@
     <Filter Include="src\BlackPearl\Animation">
       <UniqueIdentifier>{9C512200-8876-7180-B1C1-56109D45709E}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\BlackPearl\Common">
+      <UniqueIdentifier>{059DA486-7109-6081-3AFD-F7DEA62882E9}</UniqueIdentifier>
+    </Filter>
     <Filter Include="src\BlackPearl\Component">
       <UniqueIdentifier>{0F713F11-FB95-8E91-24E1-732110658DAF}</UniqueIdentifier>
     </Filter>
@@ -18,6 +21,9 @@
     </Filter>
     <Filter Include="src\BlackPearl\Component\LightComponent">
       <UniqueIdentifier>{09DCBC04-756B-7EEF-7E67-5F07EA75B9FB}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\BlackPearl\Component\LightProbeComponent">
+      <UniqueIdentifier>{811D63D8-6D30-6331-161A-401E020C007F}</UniqueIdentifier>
     </Filter>
     <Filter Include="src\BlackPearl\Component\MeshFilterComponent">
       <UniqueIdentifier>{A493B102-90A6-B15B-3990-8E4825824EA9}</UniqueIdentifier>
@@ -45,6 +51,9 @@
     </Filter>
     <Filter Include="src\BlackPearl\MainCamera">
       <UniqueIdentifier>{CA454350-3608-77DA-7FB8-0567EBB94FB8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\BlackPearl\Map">
+      <UniqueIdentifier>{3AF5C2D5-26D9-832B-8F39-7E7E7B3C6EAD}</UniqueIdentifier>
     </Filter>
     <Filter Include="src\BlackPearl\Math">
       <UniqueIdentifier>{669D218E-D2FE-FE9B-5B6C-454EC7CC355B}</UniqueIdentifier>
@@ -115,9 +124,6 @@
     <Filter Include="vendor\stb">
       <UniqueIdentifier>{8BD3C5A8-778B-07F6-E092-E051CC69A2E6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\BlackPearl\Common">
-      <UniqueIdentifier>{82250d49-cf95-4298-bd07-229d072904a6}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\BlackPearl\Animation\AnimatedModel.h">
@@ -137,6 +143,9 @@
     </ClInclude>
     <ClInclude Include="src\BlackPearl\Application.h">
       <Filter>src\BlackPearl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BlackPearl\Common\CommonFunc.h">
+      <Filter>src\BlackPearl\Common</Filter>
     </ClInclude>
     <ClInclude Include="src\BlackPearl\Component\BaseComponent.h">
       <Filter>src\BlackPearl\Component</Filter>
@@ -167,6 +176,9 @@
     </ClInclude>
     <ClInclude Include="src\BlackPearl\Component\LightComponent\SpotLight.h">
       <Filter>src\BlackPearl\Component\LightComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BlackPearl\Component\LightProbeComponent\LightProbeComponent.h">
+      <Filter>src\BlackPearl\Component\LightProbeComponent</Filter>
     </ClInclude>
     <ClInclude Include="src\BlackPearl\Component\MeshFilterComponent\CubeMeshFilter.h">
       <Filter>src\BlackPearl\Component\MeshFilterComponent</Filter>
@@ -228,6 +240,9 @@
     <ClInclude Include="src\BlackPearl\LayerStack.h">
       <Filter>src\BlackPearl</Filter>
     </ClInclude>
+    <ClInclude Include="src\BlackPearl\LightProbes\LightProbes.h">
+      <Filter>src\BlackPearl\LightProbes</Filter>
+    </ClInclude>
     <ClInclude Include="src\BlackPearl\LightProbes\SphericalHarmonics.h">
       <Filter>src\BlackPearl\LightProbes</Filter>
     </ClInclude>
@@ -236,6 +251,15 @@
     </ClInclude>
     <ClInclude Include="src\BlackPearl\MainCamera\MainCamera.h">
       <Filter>src\BlackPearl\MainCamera</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BlackPearl\Map\Area.h">
+      <Filter>src\BlackPearl\Map</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BlackPearl\Map\MapManager.h">
+      <Filter>src\BlackPearl\Map</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BlackPearl\Math\Math.h">
+      <Filter>src\BlackPearl\Math</Filter>
     </ClInclude>
     <ClInclude Include="src\BlackPearl\Math\Quaternion.h">
       <Filter>src\BlackPearl\Math</Filter>
@@ -273,16 +297,25 @@
     <ClInclude Include="src\BlackPearl\Renderer\MasterRenderer\IBLRenderer.h">
       <Filter>src\BlackPearl\Renderer\MasterRenderer</Filter>
     </ClInclude>
+    <ClInclude Include="src\BlackPearl\Renderer\MasterRenderer\MapRenderer.h">
+      <Filter>src\BlackPearl\Renderer\MasterRenderer</Filter>
+    </ClInclude>
     <ClInclude Include="src\BlackPearl\Renderer\MasterRenderer\MasterRenderer.h">
       <Filter>src\BlackPearl\Renderer\MasterRenderer</Filter>
     </ClInclude>
     <ClInclude Include="src\BlackPearl\Renderer\MasterRenderer\PBRRenderer.h">
       <Filter>src\BlackPearl\Renderer\MasterRenderer</Filter>
     </ClInclude>
+    <ClInclude Include="src\BlackPearl\Renderer\MasterRenderer\RayTracingRenderer.h">
+      <Filter>src\BlackPearl\Renderer\MasterRenderer</Filter>
+    </ClInclude>
     <ClInclude Include="src\BlackPearl\Renderer\MasterRenderer\ShadowMapPointLightRenderer.h">
       <Filter>src\BlackPearl\Renderer\MasterRenderer</Filter>
     </ClInclude>
     <ClInclude Include="src\BlackPearl\Renderer\MasterRenderer\ShadowMapRenderer.h">
+      <Filter>src\BlackPearl\Renderer\MasterRenderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BlackPearl\Renderer\MasterRenderer\SkyboxRenderer.h">
       <Filter>src\BlackPearl\Renderer\MasterRenderer</Filter>
     </ClInclude>
     <ClInclude Include="src\BlackPearl\Renderer\MasterRenderer\VoxelConeTracingDeferredRenderer.h">
@@ -347,6 +380,9 @@
     </ClInclude>
     <ClInclude Include="src\BlackPearl\Scene\Scene.h">
       <Filter>src\BlackPearl\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BlackPearl\Timestep\TimeCounter.h">
+      <Filter>src\BlackPearl\Timestep</Filter>
     </ClInclude>
     <ClInclude Include="src\BlackPearl\Timestep\Timestep.h">
       <Filter>src\BlackPearl\Timestep</Filter>
@@ -1467,17 +1503,6 @@
     <ClInclude Include="vendor\stb\stb_image.h">
       <Filter>vendor\stb</Filter>
     </ClInclude>
-    <ClInclude Include="src\BlackPearl\Map\Area.h" />
-    <ClInclude Include="src\BlackPearl\Map\MapManager.h" />
-    <ClInclude Include="src\BlackPearl\Renderer\MasterRenderer\MapRenderer.h" />
-    <ClInclude Include="src\BlackPearl\Timestep\TimeCounter.h" />
-    <ClInclude Include="src\BlackPearl\Component\LightProbeComponent\LightProbeComponent.h" />
-    <ClInclude Include="src\BlackPearl\Renderer\MasterRenderer\SkyboxRenderer.h" />
-    <ClInclude Include="src\BlackPearl\Renderer\MasterRenderer\RayTracingRenderer.h" />
-    <ClInclude Include="src\BlackPearl\Common\CommonFunc.h">
-      <Filter>src\BlackPearl\Common</Filter>
-    </ClInclude>
-    <ClInclude Include="src\BlackPearl\Math\Math.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\BlackPearl\Animation\AnimatedModel.cpp">
@@ -1497,6 +1522,9 @@
     </ClCompile>
     <ClCompile Include="src\BlackPearl\Application.cpp">
       <Filter>src\BlackPearl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BlackPearl\Common\CommonFunc.cpp">
+      <Filter>src\BlackPearl\Common</Filter>
     </ClCompile>
     <ClCompile Include="src\BlackPearl\Component\BaseComponent.cpp">
       <Filter>src\BlackPearl\Component</Filter>
@@ -1527,6 +1555,9 @@
     </ClCompile>
     <ClCompile Include="src\BlackPearl\Component\LightComponent\SpotLight.cpp">
       <Filter>src\BlackPearl\Component\LightComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BlackPearl\Component\LightProbeComponent\LightProbeComponent.cpp">
+      <Filter>src\BlackPearl\Component\LightProbeComponent</Filter>
     </ClCompile>
     <ClCompile Include="src\BlackPearl\Component\MeshFilterComponent\CubeMeshFilter.cpp">
       <Filter>src\BlackPearl\Component\MeshFilterComponent</Filter>
@@ -1573,6 +1604,9 @@
     <ClCompile Include="src\BlackPearl\LayerStack.cpp">
       <Filter>src\BlackPearl</Filter>
     </ClCompile>
+    <ClCompile Include="src\BlackPearl\LightProbes\LightProbes.cpp">
+      <Filter>src\BlackPearl\LightProbes</Filter>
+    </ClCompile>
     <ClCompile Include="src\BlackPearl\LightProbes\SphericalHarmonics.cpp">
       <Filter>src\BlackPearl\LightProbes</Filter>
     </ClCompile>
@@ -1581,6 +1615,15 @@
     </ClCompile>
     <ClCompile Include="src\BlackPearl\MainCamera\MainCamera.cpp">
       <Filter>src\BlackPearl\MainCamera</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BlackPearl\Map\Area.cpp">
+      <Filter>src\BlackPearl\Map</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BlackPearl\Map\MapManager.cpp">
+      <Filter>src\BlackPearl\Map</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BlackPearl\Math\Math.cpp">
+      <Filter>src\BlackPearl\Math</Filter>
     </ClCompile>
     <ClCompile Include="src\BlackPearl\Math\Quaternion.cpp">
       <Filter>src\BlackPearl\Math</Filter>
@@ -1618,16 +1661,25 @@
     <ClCompile Include="src\BlackPearl\Renderer\MasterRenderer\IBLRenderer.cpp">
       <Filter>src\BlackPearl\Renderer\MasterRenderer</Filter>
     </ClCompile>
+    <ClCompile Include="src\BlackPearl\Renderer\MasterRenderer\MapRenderer.cpp">
+      <Filter>src\BlackPearl\Renderer\MasterRenderer</Filter>
+    </ClCompile>
     <ClCompile Include="src\BlackPearl\Renderer\MasterRenderer\MasterRenderer.cpp">
       <Filter>src\BlackPearl\Renderer\MasterRenderer</Filter>
     </ClCompile>
     <ClCompile Include="src\BlackPearl\Renderer\MasterRenderer\PBRRenderer.cpp">
       <Filter>src\BlackPearl\Renderer\MasterRenderer</Filter>
     </ClCompile>
+    <ClCompile Include="src\BlackPearl\Renderer\MasterRenderer\RayTracingRenderer.cpp">
+      <Filter>src\BlackPearl\Renderer\MasterRenderer</Filter>
+    </ClCompile>
     <ClCompile Include="src\BlackPearl\Renderer\MasterRenderer\ShadowMapPointLightRenderer.cpp">
       <Filter>src\BlackPearl\Renderer\MasterRenderer</Filter>
     </ClCompile>
     <ClCompile Include="src\BlackPearl\Renderer\MasterRenderer\ShadowMapRenderer.cpp">
+      <Filter>src\BlackPearl\Renderer\MasterRenderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BlackPearl\Renderer\MasterRenderer\SkyboxRenderer.cpp">
       <Filter>src\BlackPearl\Renderer\MasterRenderer</Filter>
     </ClCompile>
     <ClCompile Include="src\BlackPearl\Renderer\MasterRenderer\VoxelConeTracingDeferredRenderer.cpp">
@@ -1690,6 +1742,9 @@
     <ClCompile Include="src\BlackPearl\Scene\Scene.cpp">
       <Filter>src\BlackPearl\Scene</Filter>
     </ClCompile>
+    <ClCompile Include="src\BlackPearl\Timestep\TimeCounter.cpp">
+      <Filter>src\BlackPearl\Timestep</Filter>
+    </ClCompile>
     <ClCompile Include="src\BlackPearl\Timestep\Timestep.cpp">
       <Filter>src\BlackPearl\Timestep</Filter>
     </ClCompile>
@@ -1699,17 +1754,5 @@
     <ClCompile Include="src\pch.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\BlackPearl\Map\Area.cpp" />
-    <ClCompile Include="src\BlackPearl\Map\MapManager.cpp" />
-    <ClCompile Include="src\BlackPearl\Renderer\MasterRenderer\MapRenderer.cpp" />
-    <ClCompile Include="src\BlackPearl\Timestep\TimeCounter.cpp" />
-    <ClCompile Include="src\BlackPearl\Component\LightProbeComponent\LightProbeComponent.cpp" />
-    <ClCompile Include="src\BlackPearl\Renderer\MasterRenderer\SkyboxRenderer.cpp" />
-    <ClCompile Include="src\BlackPearl\Renderer\MasterRenderer\RayTracingRenderer.cpp" />
-    <ClCompile Include="src\BlackPearl\Common\CommonFunc.cpp">
-      <Filter>src\BlackPearl\Common</Filter>
-    </ClCompile>
-    <ClCompile Include="src\BlackPearl\Math\Math.cpp" />
-    <ClCompile Include="MATH.CPP" />
   </ItemGroup>
 </Project>

@@ -1,7 +1,8 @@
 #type vertex
 #version 430 core
 layout(location = 0) in vec3 aPos;
-layout(location = 1) in vec2 aTexCoords;
+layout(location = 1) in vec3 aNormal;
+layout(location = 2) in vec2 aTexCoords;
 
 out vec2 TexCoords;
 
@@ -27,7 +28,7 @@ uniform sampler2D color_time;
 uniform sampler2D RTXRst;
 const float rayP = 50.0/51.0;// depth = p/(1-p) --> p = depth/(depth+1)
 const float tMin = 0.001;
-
+const float PI=3.14159;
 const float FLTMAX = 99999999999999999999999999999999999999.0;
 in vec2 TexCoords;
 struct Ray{
@@ -57,12 +58,14 @@ float Materials[2*3]={
 };
 float Scene[ObjectNum*6] = {
 	//type  //matId   //pos          //radius
-	0,      0,        0,0,-5.0,       20.0,
-	0,      0,        1.0,0, -20.0,     30.0
+	0,      0,        -1.0,0,-6.0,       1.0,
+	0,      1,         1.0,0,-6.0,       1.0
 };
+
 uniform vec3 u_CameraUp;
 uniform vec3 u_CameraFront;
 uniform vec3 u_CameraRight;
+uniform float u_CameraFov;
 
 uniform vec3 u_CameraViewPos;
 uniform vec2 u_Screen;
@@ -82,7 +85,9 @@ float Rand(){
 
     return f;
 }
-
+vec2 RandInSquare(){
+	return vec2(Rand(), Rand());
+}
 vec3 RandInSphere(){
 	vec3 rst;
 	do {
@@ -107,7 +112,9 @@ void WriteRay(int mode){
 	else if(mode ==3){
 		gRay.curRayNum = u_rayNumMax+100;
 	}
-	else;
+	else{
+		;
+	}
 	//out_color_time.xyz = gRay.color;
 	out_origin_curRayNum = vec4(gRay.origin, gRay.curRayNum);
 	out_dir_tMax = vec4(gRay.dir, gRay.tMax);
@@ -117,20 +124,28 @@ void WriteRay(int mode){
 }
 
 void GenRay(){
+	vec2 st = TexCoords + RandInSquare() / textureSize(origin_curRayNum, 0);
 	gRay.origin = u_CameraViewPos;
-	gRay.dir = u_CameraViewPos+1.0*(u_CameraFront)+TexCoords.y*u_Screen.y*0.5*(u_CameraUp)+TexCoords.x*u_Screen.x*0.5*(u_CameraRight)-gRay.origin;
+	
+	float focus_dist=1.0;
+	float height = 2.0 * focus_dist * tan(u_CameraFov/180.0*PI*0.5);
+	float radio = u_Screen.x / u_Screen.y;
+	float width = radio * height;
+	vec3 BL_Corner = focus_dist*(normalize(u_CameraFront)) - height*0.5*normalize(u_CameraUp) - width*0.5*normalize(u_CameraRight);
+
+	gRay.dir = u_CameraViewPos + BL_Corner + st.s*width*(normalize(u_CameraRight)) + st.t*height*normalize(u_CameraUp) - gRay.origin;
+	gRay.dir=normalize(gRay.dir);
 	gRay.tMax = FLTMAX;
 	gRay.color = vec3(1);
 }
 
 void SetRay(){
-	float curRayNum = texture(origin_curRayNum,TexCoords).w;
-	if(curRayNum>=u_rayNumMax) return;
+	gRay.curRayNum = texture(origin_curRayNum,TexCoords).w;
+	if(gRay.curRayNum >=u_rayNumMax) return;
 	vec4 val_dir_tMax = texture(dir_tMax,TexCoords);
 	if(val_dir_tMax.w == 0) GenRay();
 	else{
 		gRay.origin    = texture(origin_curRayNum,TexCoords).xyz;
-		gRay.curRayNum = texture(origin_curRayNum,TexCoords).w;
 		gRay.dir       = texture(dir_tMax,TexCoords).xyz;
 		gRay.tMax      = texture(dir_tMax,TexCoords).w;
 		gRay.color     = texture(color_time,TexCoords).xyz;
@@ -138,7 +153,10 @@ void SetRay(){
 	}
 
 }
- void  JudgeHit(out struct Hitable hitable,int objId){
+struct Hitable JudgeHit(int objId){
+	struct Hitable hitRst;
+	hitRst.hit = false;
+
 	int matIdx = int(Scene[objId*6+1]);
 	int objType = int(Scene[objId*6]);
 	float radius = Scene[objId*6+5];
@@ -146,46 +164,47 @@ void SetRay(){
 		vec3 center = vec3(Scene[objId*6+2],Scene[objId*6+3],Scene[objId*6+4]);
 		vec3 oc = gRay.origin-center;
 		float c = dot(oc,oc)-radius*radius;
-		float b =2.0* dot(oc,gRay.dir);
+		float b =dot(oc,gRay.dir);
 		float a = dot(gRay.dir,gRay.dir);
-		float delta = b*b-4.0*a*c;
-		if(delta<0){
-			hitable.hit = false;
+		float delta = b*b-a*c;
+		if(delta<=0){
+			return hitRst;
 		}
-		else if(delta >=0){
-			float t = (-b-sqrt(delta))/(2.0*a);
+		else{
+			float t = (-b-sqrt(delta))/a;
 
-			if(t<0||t>gRay.tMax)return;
-			t = (-b+sqrt(delta))/(2.0*a);
-			if(t<0||t>gRay.tMax)return;
-			hitable.hit = true;
+			if(t < tMin || t> gRay.tMax){
+				t = (-b + sqrt(delta)) /a;
+				if(t < tMin || t>gRay.tMax)
+					return hitRst;
 
-			//float t0 = (-b+sqrt(delta))/(2.0*a);
-			//float t1 = (-b-sqrt(delta))/(2.0*a);
+			}
+			
+			hitRst.hit = true;
 
 			gRay.tMax = t;
-			hitable.pos = gRay.origin+hitable.dist*gRay.dir;
-			hitable.objId = objId;
-			hitable.normal = (hitable.pos-center)/radius;
-
-			hitable.matIdx = matIdx;
+			hitRst.pos = gRay.origin+t*gRay.dir;
+			hitRst.objId = objId;
+			hitRst.normal = (hitRst.pos-center)/radius;
+			hitRst.matIdx = matIdx;
+			return hitRst;
 		}
 		
 	}
 	
 }
 bool Scatter_Lambertian(struct Hitable hitable, int matIdx){
-	vec3 albedo = vec3(Materials[matIdx*3+1], Materials[matIdx*3+2], Materials[matIdx*3+3]);
+	vec3 albedo = vec3(Materials[matIdx*3], Materials[matIdx*3+1], Materials[matIdx*3+2]);
 
 	gRay.dir = hitable.normal + RandInSphere();
 	gRay.origin = hitable.pos;
-	gRay.color = albedo;
+	gRay.color *= albedo;
 	gRay.tMax = FLTMAX;
 	return true;
 }
 void RayTrace(){
 	SetRay();
-	if(gRay.curRayNum>=u_rayNumMax) {
+	if(gRay.curRayNum >= u_rayNumMax) {
 		WriteRay(3);
 		return;
 	}
@@ -199,24 +218,16 @@ void RayTrace(){
 	for(int i=0;i<ObjectNum;i++){
 		struct Hitable hitable;
 		hitable.hit = false;
-		JudgeHit(hitable,i);
+		hitable = JudgeHit(i);
 		if(hitable.hit){
-			//if(hitable.dist<finalHitable.dist)
-				finalHitable = hitable;
+			finalHitable = hitable;
 		}
-		
-
-
 	}//for
-	int hitMatId;
-	vec3 hitColor;
+	int hitMatId=0;
 	if(finalHitable.hit){
 		hitMatId = finalHitable.matIdx;
-		hitColor = vec3(Materials[hitMatId*3],Materials[hitMatId*3+1],Materials[hitMatId*3+2]);
-		
 		Scatter_Lambertian(finalHitable,hitMatId);
 		WriteRay(2);
-
 	}
 	else{//sky
 		float t = 0.5f * (normalize(gRay.dir).y + 1.0f);
