@@ -22,21 +22,35 @@
 
 class SandBox :public BlackPearl::Application {
 public:
-	SandBox() {
+
+	SandBox(const std::string &renderer) {
 		BlackPearl::EntityManager * entityManager = DBG_NEW BlackPearl::EntityManager();
 		BlackPearl::ObjectManager * objectManager = DBG_NEW BlackPearl::ObjectManager(entityManager);
-		//BlackPearl::Layer* layer = DBG_NEW ShadowMapPointLightLayer("ShadowMapPointLight Layer", objectManager);
-		//BlackPearl::Layer* layer = DBG_NEW VoxelConeTracingLayer("VoxelConeTracing Layer", objectManager);
-
-		//BlackPearl::Layer* layer = DBG_NEW PbrRenderingLayer("PbrRendering Layer", objectManager);
-		//BlackPearl::Layer* layer = DBG_NEW IBLRenderingLayer("IBLRenderingLayer", objectManager);
-		//BlackPearl::Layer* layer = DBG_NEW IBLProbesRenderingLayer("IBLProbesRenderingLayer", objectManager);
-		
-		//BlackPearl::Layer* layer = DBG_NEW VoxelConeTracingDeferredLayer("VoxelConeTracingDeferred Layer", objectManager);
-		//BlackPearl::Layer* layer = DBG_NEW VoxelConeTracingSVOLayer("VoxelConeTracingSVO Layer", objectManager);
-
-		BlackPearl::Layer* layer = DBG_NEW RayTracingLayer("RayTracing Layer", objectManager);
-
+		BlackPearl::Layer* layer = NULL;
+		if (renderer == "ShadowMapPointLight") {
+			layer = DBG_NEW ShadowMapPointLightLayer(renderer + "Layer", objectManager);
+		}
+		else if(renderer == "VoxelConeTracing"){
+			layer = DBG_NEW VoxelConeTracingLayer(renderer + "Layer", objectManager);
+		}
+		else if (renderer == "PbrRendering") {
+			layer = DBG_NEW PbrRenderingLayer(renderer + "Layer", objectManager);
+		}
+		else if (renderer == "IBLRendering") {
+			layer = DBG_NEW IBLRenderingLayer(renderer + "Layer", objectManager);
+		}
+		else if (renderer == "IBLProbesRendering") {
+			layer = DBG_NEW IBLProbesRenderingLayer(renderer + "Layer", objectManager);
+		}
+		else if (renderer == "VoxelConeTracingDeferred") {
+			layer = DBG_NEW VoxelConeTracingDeferredLayer(renderer + "Layer", objectManager);
+		}
+		else if (renderer == "VoxelConeTracingSVO") {
+			layer = DBG_NEW VoxelConeTracingSVOLayer(renderer + "Layer", objectManager);
+		}
+		else if (renderer == "RayTracing") {
+			layer = DBG_NEW RayTracingLayer(renderer + "Layer", objectManager);
+		}
 		GetScene()->PushLayer(layer);
 	}
 	virtual ~SandBox() = default;
@@ -45,7 +59,7 @@ public:
 
 BlackPearl::Application* BlackPearl::CreateApplication() {
 
-	return DBG_NEW SandBox();
+	return DBG_NEW SandBox("RayTracing");
 
 }
 
