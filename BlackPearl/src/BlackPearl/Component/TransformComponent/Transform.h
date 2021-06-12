@@ -1,5 +1,6 @@
 #pragma once
 #include "BlackPearl/Component/Component.h"
+#include "BlackPearl/Component/BasicInfoComponent/BasicInfo.h"
 #include "glm/glm.hpp"
 #include "glm/ext/matrix_transform.hpp"
 namespace BlackPearl {

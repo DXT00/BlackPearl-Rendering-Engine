@@ -16,6 +16,12 @@ namespace BlackPearl {
 		return obj;
 	}
 
+	Object* ObjectManager::CreateGroup(const std::string name)
+	{
+		Object* obj = m_Object3DCreater->CreateGroup(name);
+		m_EntityToObjects.insert(std::make_pair(obj->GetId().index(), obj));
+		return obj;
+	}
 	Object* ObjectManager::CreateLight(LightType type, LightSources* lightSources, const std::string& name)
 	{
 		Object* obj = m_LightCreater->CreateLight(type, lightSources, name);

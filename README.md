@@ -71,6 +71,10 @@ SVO path tracing - only one bounce cubeSize = 40
 ![3Dtexture_coneTracing](/results/3Dtexture_coneTracing3.png)
 
 ## GPU Raytracing
+
+reference: ToyRTX
+https://github.com/Ubpa/ToyRTX
+
 ### GPU Raytracing 01
 ![gpu_raytracing](/results/gpu_raytracing.png)
 
@@ -79,3 +83,6 @@ SVO path tracing - only one bounce cubeSize = 40
 
 ### GPU Raytracing 03 -- material spheres
 ![gpu_raytracing_material_spheres](/results/gpu_raytracing_material_spheres.png)
+
+### GPU Raytracing 04 -- gendata
+![gpu_raytracing_group_rendering](/results/gpu_raytracing_group_rendering.png)

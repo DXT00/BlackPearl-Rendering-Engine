@@ -13,6 +13,7 @@ namespace BlackPearl {
 			Init();
 		}
 		void Init();
+		float GetRadius() const { return m_Radius; }
 		~SphereMeshFilter();
 	private:
 		float m_Radius;

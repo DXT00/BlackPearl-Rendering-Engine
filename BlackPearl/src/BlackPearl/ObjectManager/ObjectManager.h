@@ -48,6 +48,7 @@ namespace BlackPearl {
 		/*Blending Object, include logical and actual properties*/
 		Object* CreateLightProbe(ProbeType type, const std::string& shaderPath, const std::string& texturePath, const std::string& name);
 		MainCamera* CreateCamera(const std::string& name);
+		Object* CreateGroup(const std::string name);
 
 
 		std::vector<Object*> GetObjects();

@@ -102,6 +102,8 @@ namespace BlackPearl {
 		LightSources* GetLightSources() { return m_LightSources; }
 
 		Object* CreateEmpty(std::string name = "");
+		Object* CreateGroup(const std::string name = "Group");
+
 		virtual Object* CreateLight(LightType type, const std::string& name = "Light");
 
 		virtual Object* CreateModel(const std::string& modelPath, const std::string& shaderPath,const bool isAnimated,const std::string& name = "Model");
@@ -115,6 +117,7 @@ namespace BlackPearl {
 		Object* CreateLightProbe(ProbeType type, const std::string& shaderPath = "assets/shaders/lightProbes/lightProbe.glsl", const std::string& texturePath = "", const std::string& name = "LightProbe");
 		Object* CreateProbeGrid(MapManager* mapManager, ProbeType type, glm::vec3 probeNums,glm::vec3 offsets,float space);
 		virtual MainCamera* CreateCamera(const std::string& name="Camera");
+
 
 		void ShowMeshRenderer(MeshRenderer* comp);
 		void ShowTransform(Transform* comp,Object* obj);

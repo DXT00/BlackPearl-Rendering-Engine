@@ -61,14 +61,19 @@ namespace BlackPearl {
 	void Material::SetMaterialColorDiffuseColor(glm::vec3 color)
 	{
 		m_MaterialColors.SetDiffuseColor(color);
+		m_Type = Type::DIFFUSE;
+
 	}
 	void Material::SetMaterialColorSpecularColor(glm::vec3 color)
 	{
 		m_MaterialColors.SetSpecularColor(color);
+		m_Type = Type::SPECULAR;
 	}
 	void Material::SetMaterialColorEmissionColor(glm::vec3 color)
 	{
 		m_MaterialColors.SetEmissionColor(color);
+		m_Type = Type::EMISSION;
+
 
 	}
 	void Material::SetTexture(const std::shared_ptr<Texture> texture)
@@ -121,6 +126,8 @@ namespace BlackPearl {
 	{
 		m_Props.isBinnLight = props.isBinnLight;
 		m_Props.shininess = props.shininess;
+		m_Props.refractIndex = props.refractIndex;
+
 	}
 
 	void Material::SetShininess(float shininess)
@@ -157,6 +164,11 @@ namespace BlackPearl {
 	{
 		m_Props.isEmissionTextureSample = isTextureSampleMetallic;
 
+	}
+
+	void Material::SetType(Material::Type materialType)
+	{
+		m_Type = materialType;
 	}
 
 

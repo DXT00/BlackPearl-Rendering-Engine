@@ -1006,6 +1006,12 @@ namespace BlackPearl {
 		m_ObjectsList.push_back(obj);
 		return obj;
 	}
+	Object* Layer::CreateGroup(const std::string name)
+	{
+		Object* obj = m_ObjectManager->CreateGroup(name);
+		m_ObjectsList.push_back(obj);
+		return obj;
+	}
 	Object* Layer::CreateLight(LightType type, const std::string& name)
 	{
 		Object* obj = m_ObjectManager->CreateLight(type, m_LightSources, name);

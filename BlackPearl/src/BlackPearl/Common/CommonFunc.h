@@ -4,6 +4,7 @@
 #include "BlackPearl/Renderer/Material/Texture.h"
 #include "BlackPearl/Renderer/Buffer.h"
 #include "BlackPearl/Object/Object.h"
+#include "glm/glm.hpp"
 namespace BlackPearl {
 	class CommonFunc
 	{

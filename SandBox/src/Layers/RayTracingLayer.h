@@ -1,11 +1,12 @@
 #pragma once
 #pragma once
-#include <BlackPeral.h>
+#include <BlackPearl.h>
 #include "glm/glm.hpp"
 #include "glm/ext/matrix_transform.hpp"
 
 #include "imgui/imgui.h"
 #include "imgui/imfilebrowser.h"
+#include "BlackPearl/Math/Math.h"
 #include <glm/gtc/type_ptr.hpp>
 class RayTracingLayer :public BlackPearl::Layer {
 public:
@@ -19,11 +20,40 @@ public:
 		m_RayTracingRenderer = DBG_NEW BlackPearl::RayTracingRenderer();
 		
 		m_QuadObj = CreateQuad();
-		m_RayTracingRenderer->Init( m_QuadObj);
+		m_RayTracingRenderer->Init(m_QuadObj);
 
-		
+
+		m_Sphere1 = CreateSphere(1.0f,64,64);
+		m_Sphere2 = CreateSphere(1.0f,64,64);
+		m_Sphere3 = CreateSphere(1.0f, 64, 64);
+		m_Sphere4 = CreateSphere(1.0f, 64, 64);
+		m_Sphere5 = CreateSphere(8.0f, 64, 64);
+
+		m_Sphere1->GetComponent<BlackPearl::MeshRenderer>()->GetMeshes()[0].GetMaterial()->SetMaterialColorSpecularColor({0.6,0.7,BlackPearl::Math::Rand_F() });
+		m_Sphere2->GetComponent<BlackPearl::MeshRenderer>()->GetMeshes()[0].GetMaterial()->SetMaterialColorSpecularColor({ 0.9,0.9,0 });
+		m_Sphere3->GetComponent<BlackPearl::MeshRenderer>()->GetMeshes()[0].GetMaterial()->SetMaterialColorSpecularColor({ BlackPearl::Math::Rand_F(),BlackPearl::Math::Rand_F(),BlackPearl::Math::Rand_F() });
+		m_Sphere4->GetComponent<BlackPearl::MeshRenderer>()->GetMeshes()[0].GetMaterial()->SetMaterialColorSpecularColor({ 0.9,0,0.26 });
+		m_Sphere5->GetComponent<BlackPearl::MeshRenderer>()->GetMeshes()[0].GetMaterial()->SetMaterialColorSpecularColor({ BlackPearl::Math::Rand_F(),BlackPearl::Math::Rand_F(),0.8 });
+
+		m_Sphere1->GetComponent<BlackPearl::Transform>()->SetInitPosition({ 1.0,0.0,0.0 });
+		m_Sphere2->GetComponent<BlackPearl::Transform>()->SetInitPosition({ -1.0,0.0,0.0 });
+		m_Sphere3->GetComponent<BlackPearl::Transform>()->SetInitPosition({ 3.0,0.0,0.0 });
+		m_Sphere4->GetComponent<BlackPearl::Transform>()->SetInitPosition({ -3.0,0.0,0.0 });
+		m_Sphere5->GetComponent<BlackPearl::Transform>()->SetInitPosition({ 0.0,-9.0,0.0 });
+
+		group_obj =BlackPearl::Layer::CreateGroup("group");
+		m_Group = DBG_NEW BlackPearl::Group(group_obj);
+
+		m_Group->PushBack(m_Sphere1);
+		m_Group->PushBack(m_Sphere2);
+		m_Group->PushBack(m_Sphere3);
+		m_Group->PushBack(m_Sphere4);
+		m_Group->PushBack(m_Sphere5);
+
+		m_RayTracingRenderer->InitGroupData(m_Group);
+
 		m_MainCamera->SetFov(90.0f);
-		m_MainCamera->SetPosition(glm::vec3(0, 0, 0));//glm::vec3(0,1.387f,22.012f)
+		m_MainCamera->SetPosition(glm::vec3(0, 0, 5));//glm::vec3(0,1.387f,22.012f)
 		m_CameraPosition = m_MainCamera->GetPosition();
 		BlackPearl::Renderer::Init();
 
@@ -81,7 +111,8 @@ public:
 
 		//m_RayTracingRenderer->RenderSpheres(m_MainCamera);
 	//	m_RayTracingRenderer->Render();
-		m_RayTracingRenderer->RenderMaterialSpheres(m_MainCamera);
+	//	m_RayTracingRenderer->RenderMaterialSpheres(m_MainCamera);
+		m_RayTracingRenderer->RenderGroup(m_MainCamera, m_Group->GetRoot());
 
 
 	
@@ -97,10 +128,16 @@ private:
 
 	std::vector<BlackPearl::Object*> m_LightObjs;
 	BlackPearl::Object* m_QuadObj;
+	BlackPearl::Group* m_Group;
+	BlackPearl::Object* m_Sphere1;
+	BlackPearl::Object* m_Sphere2;
+	BlackPearl::Object* m_Sphere3;
+	BlackPearl::Object* m_Sphere4;
+	BlackPearl::Object* m_Sphere5;
 
 	BlackPearl::Object* m_SkyBoxObj;
 	BlackPearl::Object* m_skybox = nullptr;
-
+	BlackPearl::Object* group_obj;
 	glm::vec4 m_BackgroundColor = { 0.0f,0.0f,0.0f,0.0f };
 
 

@@ -6,9 +6,22 @@ namespace BlackPearl {
 	class Material
 	{
 	public:
+		//用于Raytracing材质判断
+		enum Type
+		{
+			AMBIENT,
+			METALLIC,
+			DIELECTRIC,
+			DIFFUSE,
+			SPECULAR,
+			EMISSION,
+			ROUGHNESS,
+			AO
+		};
 		struct Props {
 			//Enable texture
 			float shininess;
+			float refractIndex; //电解质系数
 			bool  isBinnLight;
 			int  isPBRTextureSample;//是否使用纹理-->包括 ao,normal,metalllic,roughness
 			int  isDiffuseTextureSample;//是否使用纹理
@@ -16,7 +29,7 @@ namespace BlackPearl {
 			int  isHeightTextureSample;//是否使用纹理
 			int  isEmissionTextureSample;//是否使用纹理
 
-			Props() :shininess(64.0f), isBinnLight(false), isPBRTextureSample(0),isDiffuseTextureSample(0),isSpecularTextureSample(0),isEmissionTextureSample(0),isHeightTextureSample(0){}
+			Props() :shininess(64.0f), refractIndex(1.5), isBinnLight(false), isPBRTextureSample(0),isDiffuseTextureSample(0),isSpecularTextureSample(0),isEmissionTextureSample(0),isHeightTextureSample(0){}
 
 		};
 		struct TextureMaps {
@@ -67,6 +80,7 @@ namespace BlackPearl {
 		std::shared_ptr<TextureMaps> GetTextureMaps()const { return m_TextureMaps; }
 		MaterialColor                GetMaterialColor()const { return m_MaterialColors; }
 		Props                        GetProps() const { return m_Props; }
+		Type						 GetType() const { return m_Type; }
 
 		void SetShader(const std::string& shaderPath);
 		void SetShader(const std::shared_ptr<Shader>& shader);
@@ -86,6 +100,7 @@ namespace BlackPearl {
 		void SetTextureSampleSpecular(int isTextureSampleSpecular);
 		void SetTextureSampleHeight(int isTextureSampleHeight);
 		void SetTextureSampleEmission(int isTextureSampleMetallic);
+		void SetType(Material::Type materialType);
 
 		void Unbind() {
 			if (m_TextureMaps->diffuseTextureMap != nullptr)   m_TextureMaps->diffuseTextureMap->UnBind();
@@ -106,6 +121,7 @@ namespace BlackPearl {
 		std::shared_ptr<TextureMaps> m_TextureMaps;
 		MaterialColor				 m_MaterialColors;
 		Props                        m_Props;
+		Type						 m_Type;
 	};
 
 }

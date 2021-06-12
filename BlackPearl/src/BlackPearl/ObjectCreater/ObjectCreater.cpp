@@ -12,7 +12,7 @@
 #include "BlackPearl/Component/LightProbeComponent/LightProbeComponent.h"
 #include "BlackPearl/Component/CameraComponent/PerspectiveCamera.h"
 #include "BlackPearl/Renderer/Material/CubeMapTexture.h"
-
+#include "BlackPearl/Component/BasicInfoComponent/BasicInfo.h"
 namespace BlackPearl {
 
 	////////////////////////ObjectCreater////////////////////////////////
@@ -30,6 +30,8 @@ namespace BlackPearl {
 	Object* Object3DCreater::CreateCube(const std::string& shaderPath, const std::string& texturePath, const std::string name)
 	{
 		Object* obj = CreateEmpty(name);
+		auto info = obj->AddComponent<BasicInfo>();
+		info->SetObjectType(ObjectType::OT_Cube);
 		std::shared_ptr<CubeMeshFilter> meshFilter = obj->AddComponent<CubeMeshFilter>();
 		Transform* transformComponent = obj->GetComponent<Transform>();
 
@@ -52,6 +54,8 @@ namespace BlackPearl {
 	Object* Object3DCreater::CreatePlane(const std::string& shaderPath, const std::string& texturePath, const std::string name)
 	{
 		Object* obj = CreateEmpty(name);
+		auto info = obj->AddComponent<BasicInfo>();
+		info->SetObjectType(ObjectType::OT_Plane);
 		std::shared_ptr<PlaneMeshFilter> meshFilter = obj->AddComponent<PlaneMeshFilter>();
 		Transform* transformComponent = obj->GetComponent<Transform>();
 
@@ -73,6 +77,8 @@ namespace BlackPearl {
 	Object* Object3DCreater::CreateSphere(const float radius, const unsigned int stackCount, const unsigned int sectorCount, const std::string& shaderPath, const std::string& texturePath, const std::string name)
 	{
 		Object* obj = CreateEmpty(name);
+		auto info = obj->AddComponent<BasicInfo>();
+		info->SetObjectType(ObjectType::OT_Sphere);
 		std::shared_ptr<SphereMeshFilter> meshFilter = obj->AddComponent<SphereMeshFilter>(radius, stackCount, sectorCount);
 		Transform* transformComponent = obj->GetComponent<Transform>();
 		transformComponent->SetInitScale({ radius,radius,radius });
@@ -99,7 +105,8 @@ namespace BlackPearl {
 		shader->Bind();
 		std::shared_ptr<Model> model(new Model(modelPath, shader, isAnimated));
 		Object* obj = CreateEmpty(name);
-
+		auto info = obj->AddComponent<BasicInfo>();
+		info->SetObjectType(ObjectType::OT_Model);
 		Transform* transformComponent = obj->GetComponent<Transform>();
 		transformComponent->SetInitPosition({ 0.0f, 0.0f, 0.0f });
 		transformComponent->SetInitRotation({ 0.0,180.0,0.0 });
@@ -110,6 +117,8 @@ namespace BlackPearl {
 	Object* Object3DCreater::CreateSkyBox( const std::vector<std::string>& textureFaces,const std::string& shaderPath, const std::string name)
 	{
 		Object* obj = CreateEmpty(name);
+		auto info = obj->AddComponent<BasicInfo>();
+		info->SetObjectType(ObjectType::OT_SkyBox);
 		std::shared_ptr<SkyBoxMeshFilter> meshFilter = obj->AddComponent<SkyBoxMeshFilter>();
 		Transform* transformComponent = obj->GetComponent<Transform>();
 		std::shared_ptr<Material> material;
@@ -129,6 +138,8 @@ namespace BlackPearl {
 	Object* Object3DCreater::CreateLightProbe(ProbeType type ,const std::string& shaderPath, const std::string& texturePath, const std::string name)
 	{
 		Object* obj = CreateCube(shaderPath, texturePath, name);
+		auto info = obj->AddComponent<BasicInfo>();
+		info->SetObjectType(ObjectType::OT_LightProbe);
 		obj->GetComponent<Transform>()->SetInitRotation({ 0.0f, 0.0f, 0.0f });
 		obj->GetComponent<Transform>()->SetInitScale({ 0.3f,0.3f,0.3f});
 
@@ -136,6 +147,14 @@ namespace BlackPearl {
 		obj->GetComponent<MeshRenderer>()->SetIsBackGroundObjects(false);
 		obj->AddComponent<LightProbe>(type);
 		return obj;		
+	}
+
+	Object* Object3DCreater::CreateGroup(const std::string name)
+	{
+		Object* obj = CreateEmpty(name);
+		std::shared_ptr<BasicInfo> info = obj->AddComponent<BasicInfo>();
+		info->SetObjectType(ObjectType::OT_Group);
+		return obj;
 	}
 
 
@@ -149,6 +168,8 @@ namespace BlackPearl {
 		Transform* TransformComponent = Obj->GetComponent<Transform>();
 		TransformComponent->SetInitScale({ 0.2f,0.2f,0.2f });
 		TransformComponent->SetInitPosition({ 0.0f,0.0f,0.0f });
+		auto info = Obj->AddComponent<BasicInfo>();
+		info->SetObjectType(ObjectType::OT_Light);
 		switch (type)
 		{
 		case LightType::ParallelLight: {
@@ -183,7 +204,8 @@ namespace BlackPearl {
 	{
 		Object* obj = CreateEmpty(name);
 		std::shared_ptr<PerspectiveCamera> cameraComponent = obj->AddComponent<PerspectiveCamera>();
-
+		auto info = obj->AddComponent<BasicInfo>();
+		info->SetObjectType(ObjectType::OT_Camera);
 		return obj;
 	}
 	////////////////////////Object2DCreater////////////////////////////////
@@ -192,7 +214,8 @@ namespace BlackPearl {
 	{
 
 		Object* obj = CreateEmpty(name);
-
+		auto info = obj->AddComponent<BasicInfo>();
+		info->SetObjectType(ObjectType::OT_Quad);
 		std::shared_ptr<QuadMeshFilter> meshFilter = obj->AddComponent<QuadMeshFilter>();
 		Transform* transformComponent = obj->GetComponent<Transform>();
 		std::shared_ptr<Material> material;

@@ -43,6 +43,7 @@ namespace BlackPearl {
 		Object* CreateModel(std::string modelPath,std::string shaderPath,const bool isAnimated, const std::string name);
 		Object* CreateSkyBox( const std::vector<std::string>& textureFaces,const std::string& shaderPath, const std::string name);
 		Object* CreateLightProbe(ProbeType type, const std::string& shaderPath, const std::string& texturePath, const std::string name);
+		Object* CreateGroup(const std::string name);
 	};
 
 	////////////////////////Object2DCreater////////////////////////////////
