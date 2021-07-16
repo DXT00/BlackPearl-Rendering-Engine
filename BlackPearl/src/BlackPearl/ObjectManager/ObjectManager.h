@@ -27,14 +27,7 @@ namespace BlackPearl {
 			GE_SAVE_DELETE(m_Object3DCreater);
 			GE_SAVE_DELETE(m_Object2DCreater);
 			GE_SAVE_DELETE(m_LightCreater);
-			
-			/*for (auto& obj : m_EntityToObjects) {
-
-				if (obj.second != nullptr)
-					delete obj.second;
-			}*/
-
-
+		
 		};
 
 		Object* CreateEmpty(std::string name = "");
@@ -49,18 +42,19 @@ namespace BlackPearl {
 		Object* CreateLightProbe(ProbeType type, const std::string& shaderPath, const std::string& texturePath, const std::string& name);
 		MainCamera* CreateCamera(const std::string& name);
 		Object* CreateGroup(const std::string name);
+		Object* CreateBVHNode(const std::vector<Object*>& objs, const std::string name="BVHNode");
+		Object* CreateBVHNode(const std::vector<Vertex>& mesh_vertex, const std::string name = "BVHNode");
 
 
 		std::vector<Object*> GetObjects();
-		std::vector<std::string> GetObjectsName();
+		//std::vector<std::string> GetObjectsName();
 
 
 		void DestroyObjects();
 
 	private:
 		EntityManager* m_EntityManager;
-		std::unordered_map<std::uint32_t, Object*> m_EntityToObjects;
-
+		std::vector<Object*> m_Objs;
 
 		ObjectCreater*   m_ObjectCreater;
 		Object3DCreater* m_Object3DCreater;

@@ -17,8 +17,9 @@ namespace BlackPearl {
 			Light,
 			Camera,
 			LightProbe,
-			Hitable,
-			BasicInfo
+			BoundingBox,
+			BasicInfo,
+			BVHNode
 
 		};
 		BaseComponent(Type type)

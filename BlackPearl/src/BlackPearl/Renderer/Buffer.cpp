@@ -2,33 +2,41 @@
 #include "Buffer.h"
 #include "glad/glad.h"
 #include "BlackPearl/Config.h"
+#include <memory>
 namespace BlackPearl {
 	//------------------------VertexBuffer-----------------//
-	VertexBuffer::VertexBuffer(const std::vector<float>&vertices)
+	VertexBuffer::VertexBuffer(const std::vector<float>& vertices)
 	{
+		m_VerticesFloat = (&vertices[0]);
 		glGenBuffers(1, &m_RendererID);
 		glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);
 		glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), &vertices[0], GL_STATIC_DRAW);
 		m_VertexSize = vertices.size() * sizeof(float);
 	}
-	VertexBuffer::VertexBuffer(float*vertices, uint32_t size)
+	VertexBuffer::VertexBuffer(const float* vertices, uint32_t size)
 	{
+		m_VerticesFloat = vertices;
 		glGenBuffers(1, &m_RendererID);
 		glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);
 		glBufferData(GL_ARRAY_BUFFER, size, vertices, GL_STATIC_DRAW);
 		m_VertexSize = size;
-		delete vertices;
-		vertices = nullptr;
-	}
-	VertexBuffer::VertexBuffer(unsigned int* vertices, uint32_t size)
-	{
-		glGenBuffers(1, &m_RendererID);
-		glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);
-		glBufferData(GL_ARRAY_BUFFER, size, vertices, GL_STATIC_DRAW);
-		m_VertexSize = size;
-		delete vertices;
-		vertices = nullptr;
 
+	}
+	VertexBuffer::VertexBuffer(const unsigned int* vertices, uint32_t size)
+	{
+		m_VerticesUint = vertices;
+		glGenBuffers(1, &m_RendererID);
+		glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);
+		glBufferData(GL_ARRAY_BUFFER, size, vertices, GL_STATIC_DRAW);
+		m_VertexSize = size;
+		
+
+	}
+	VertexBuffer::~VertexBuffer()
+	{	
+		GE_SAVE_DELETE(m_VerticesFloat);
+		GE_SAVE_DELETE(m_VerticesUint);
+		CleanUp();
 	}
 	void VertexBuffer::Bind() {
 
@@ -39,6 +47,10 @@ namespace BlackPearl {
 
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 
+	}
+	void VertexBuffer::CleanUp()
+	{
+		glDeleteBuffers(1, &m_RendererID);
 	}
 	//------------------------IndexBuffer-----------------//
 	IndexBuffer::IndexBuffer(const std::vector<unsigned int>& indices)

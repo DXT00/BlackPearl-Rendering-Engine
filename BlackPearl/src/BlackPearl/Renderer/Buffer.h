@@ -81,10 +81,6 @@ namespace BlackPearl {
 			GE_ASSERT(false, "Unknown ElementDataType!")
 				return 0;
 		}
-
-
-
-
 	};
 
 	class VertexBufferLayout {
@@ -107,31 +103,29 @@ namespace BlackPearl {
 		uint32_t m_Stride = 0;
 	};
 
-
-
-
-
-
 	class VertexBuffer {
 	public:
 
 		VertexBuffer(const std::vector<float>&vertices);
-		VertexBuffer(float*vertices, uint32_t size);
-		VertexBuffer(unsigned int* vertices, uint32_t size);
+		VertexBuffer(const float* vertices, uint32_t size);
+		VertexBuffer(const unsigned int* vertices, uint32_t size);
+		~VertexBuffer();
 		void Bind();
 		void UnBind();
 		void CleanUp();
-
+		const float* GetVerticesFloat() const { return m_VerticesFloat; }
+		const unsigned int* GetVerticesUInt() const { return m_VerticesUint; }
 		void SetBufferLayout(const VertexBufferLayout& layout) { m_BufferLayout = layout; }
-		VertexBufferLayout &GetBufferLayout() { return m_BufferLayout; }
+		VertexBufferLayout GetBufferLayout() const { return m_BufferLayout; }
 		unsigned int GetVertexSize()const { return m_VertexSize; }
 	private:
 		unsigned int m_RendererID;
 		unsigned int m_VertexSize;
+		const float* m_VerticesFloat = nullptr;
+		const unsigned int* m_VerticesUint = nullptr;
 		VertexBufferLayout m_BufferLayout;//这里需要默认构造函数
 
 	};
-
 
 	class IndexBuffer {
 	public:
@@ -212,8 +206,6 @@ namespace BlackPearl {
 		std::shared_ptr<CubeMapTexture> m_CubeMapColorBuffer;
 
 		unsigned int m_RenderBufferID;
-
-
 	};
 
 	class GBuffer

@@ -4,13 +4,13 @@
 namespace BlackPearl {
 
 
-	GenData::GenData(Object* group)
+	GenData::GenData(Object* obj)
 	{
 		m_HitableVisitor.reset(DBG_NEW GenData_HV());
 		m_MaterialVisitor.reset(DBG_NEW GenData_MV());
 		m_TextureVisitor.reset(DBG_NEW GenData_TV());
 
-		m_HitableVisitor->ParseSceneData(group,m_PackData);
+		m_HitableVisitor->ParseSceneData(obj,m_PackData);
 
 		m_MaterialVisitor->ParseMatData(m_HitableVisitor->GetMat2Vec());
 		m_HitableVisitor->SetMat(m_MaterialVisitor->GetMat2IdxMap());

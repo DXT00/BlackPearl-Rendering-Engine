@@ -25,8 +25,8 @@ namespace BlackPearl {
 	class Layer
 	{
 	public:
-		Layer(const std::string& name, ObjectManager* objectManager)
-			:m_DebugName(name), m_ObjectManager(objectManager) {
+		Layer(const std::string& name)
+			:m_DebugName(name) {
 
 			m_LightSources = new LightSources();
 			m_fileDialog.SetTitle("file selector");
@@ -67,7 +67,6 @@ namespace BlackPearl {
 				GE_SAVE_DELETE(obj);*/
 
 			GE_SAVE_DELETE(m_LightSources);
-			GE_SAVE_DELETE(m_ObjectManager);
 			GE_SAVE_DELETE(m_MainCamera);
 			m_ObjectsList.clear();
 			m_BackGroundObjsList.clear();
@@ -103,6 +102,8 @@ namespace BlackPearl {
 
 		Object* CreateEmpty(std::string name = "");
 		Object* CreateGroup(const std::string name = "Group");
+		Object* CreateBVHNode(const std::string name = "BVHNode");
+
 
 		virtual Object* CreateLight(LightType type, const std::string& name = "Light");
 
@@ -129,7 +130,7 @@ namespace BlackPearl {
 		void ShowTextures(std::string imguiShaders, int meshIndex, static  int& itemIndex, Texture::Type textureType, static Texture::Type& type, int offset);
 		void ShowMaterialProps(Material::Props& imGuiProps);
 		std::vector<Object*> GetObjects();
-		std::vector<std::string> GetObjectsName();
+		//std::vector<std::string> GetObjectsName();
 
 
 		void DestroyObjects();
@@ -197,7 +198,6 @@ namespace BlackPearl {
 	protected:
 		std::string      m_DebugName;
 
-		ObjectManager* m_ObjectManager;
 		//每层Layer都有一个ObjectsList
 		std::vector<Object*>          m_ObjectsList;
 		/*用于lightProbes 作为背景的Objects*/

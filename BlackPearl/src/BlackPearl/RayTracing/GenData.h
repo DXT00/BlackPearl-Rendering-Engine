@@ -9,7 +9,7 @@ namespace BlackPearl {
 	class GenData
 	{
 	public:
-		GenData(Object* group);
+		GenData(Object* obj);
 		std::vector<float> GetSceneData() const { return m_HitableVisitor->GetSceneData(); }
 		std::vector<float> GetMatData() const { return m_MaterialVisitor->GetMatData(); }
 		std::vector<float> GetTexData() const { return m_TextureVisitor->GetTextureData(); }

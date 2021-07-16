@@ -16,8 +16,8 @@ using namespace std::chrono;
 class IBLProbesRenderingLayer :public BlackPearl::Layer {
 public:
 
-	IBLProbesRenderingLayer(const std::string& name, BlackPearl::ObjectManager* objectManager)
-		: Layer(name, objectManager)
+	IBLProbesRenderingLayer(const std::string& name)
+		: Layer(name)
 	{
 
 		m_MainCamera->SetPosition(glm::vec3(-2.0f, 0.0f, 14.0f));

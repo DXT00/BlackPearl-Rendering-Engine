@@ -22,8 +22,12 @@
 #include "Component/LightComponent/SpotLight.h"
 #include "ImGui/ImGuiLayer.h"
 #include "BlackPearl/Entity/Entity.h"
+
 namespace BlackPearl {
-	 double Application::s_AppFPS=0.0f;
+	EntityManager* Application::g_entityManager = DBG_NEW EntityManager();
+	ObjectManager* Application::g_objectManager = DBG_NEW ObjectManager(g_entityManager);
+
+	double Application::s_AppFPS=0.0f;
 
 	 double Application::s_AppAverageFPS=0.0f;
 	Application* Application::s_Instance = nullptr;

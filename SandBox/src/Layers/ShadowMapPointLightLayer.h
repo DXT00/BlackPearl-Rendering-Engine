@@ -15,8 +15,8 @@ class ShadowMapPointLightLayer :public BlackPearl::Layer {
 
 public:
 
-	ShadowMapPointLightLayer(const std::string& name, BlackPearl::ObjectManager *objectManager)
-		: Layer(name, objectManager)
+	ShadowMapPointLightLayer(const std::string& name)
+		: Layer(name)
 	{
 
 		

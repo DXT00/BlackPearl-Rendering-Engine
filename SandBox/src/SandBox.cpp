@@ -24,32 +24,32 @@ class SandBox :public BlackPearl::Application {
 public:
 
 	SandBox(const std::string &renderer) {
-		BlackPearl::EntityManager * entityManager = DBG_NEW BlackPearl::EntityManager();
-		BlackPearl::ObjectManager * objectManager = DBG_NEW BlackPearl::ObjectManager(entityManager);
+		
 		BlackPearl::Layer* layer = NULL;
+		const std::string layer_name = renderer+"Layer";
 		if (renderer == "ShadowMapPointLight") {
-			layer = DBG_NEW ShadowMapPointLightLayer(renderer + "Layer", objectManager);
+			layer = DBG_NEW ShadowMapPointLightLayer(layer_name);
 		}
 		else if(renderer == "VoxelConeTracing"){
-			layer = DBG_NEW VoxelConeTracingLayer(renderer + "Layer", objectManager);
+			layer = DBG_NEW VoxelConeTracingLayer(layer_name);
 		}
 		else if (renderer == "PbrRendering") {
-			layer = DBG_NEW PbrRenderingLayer(renderer + "Layer", objectManager);
+			layer = DBG_NEW PbrRenderingLayer(layer_name);
 		}
 		else if (renderer == "IBLRendering") {
-			layer = DBG_NEW IBLRenderingLayer(renderer + "Layer", objectManager);
+			layer = DBG_NEW IBLRenderingLayer(layer_name);
 		}
 		else if (renderer == "IBLProbesRendering") {
-			layer = DBG_NEW IBLProbesRenderingLayer(renderer + "Layer", objectManager);
+			layer = DBG_NEW IBLProbesRenderingLayer(layer_name);
 		}
 		else if (renderer == "VoxelConeTracingDeferred") {
-			layer = DBG_NEW VoxelConeTracingDeferredLayer(renderer + "Layer", objectManager);
+			layer = DBG_NEW VoxelConeTracingDeferredLayer(layer_name);
 		}
 		else if (renderer == "VoxelConeTracingSVO") {
-			layer = DBG_NEW VoxelConeTracingSVOLayer(renderer + "Layer", objectManager);
+			layer = DBG_NEW VoxelConeTracingSVOLayer(layer_name);
 		}
 		else if (renderer == "RayTracing") {
-			layer = DBG_NEW RayTracingLayer(renderer + "Layer", objectManager);
+			layer = DBG_NEW RayTracingLayer(layer_name);
 		}
 		GetScene()->PushLayer(layer);
 	}

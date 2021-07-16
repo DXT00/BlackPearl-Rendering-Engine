@@ -10,8 +10,8 @@
 class IBLRenderingLayer :public BlackPearl::Layer {
 public:
 
-	IBLRenderingLayer(const std::string& name, BlackPearl::ObjectManager *objectManager)
-		: Layer(name, objectManager)
+	IBLRenderingLayer(const std::string& name)
+		: Layer(name)
 	{
 
 		

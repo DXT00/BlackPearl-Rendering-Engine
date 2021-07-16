@@ -19,8 +19,12 @@ namespace BlackPearl {
 		static const AABB InValid;
 		void SetP(const glm::vec3& minP, const glm::vec3& maxP);
 		const AABB operator +(const AABB & aabb) const;
+		const std::shared_ptr<AABB> operator +(const std::shared_ptr<AABB>& aabb) const;
+
 		bool Hit(std::shared_ptr<Ray> ray);
 		bool Hit(std::shared_ptr<Ray> ray,float& tMin,float& tMax);
+		float GetSurfaceArea() const;
+		void Expand(const AABB& aabb);
 
 	private:
 		bool m_IsValid;

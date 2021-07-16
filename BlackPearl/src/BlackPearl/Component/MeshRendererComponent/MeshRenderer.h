@@ -11,26 +11,22 @@ namespace BlackPearl {
 	{
 	public:
 		//get transformMatrix from Object's Transform Component!
-		MeshRenderer(EntityManager* entityManager, Entity::Id id,const std::vector<Mesh> &meshes,glm::mat4 transformMatrix)
-			:Component(entityManager, id,Component::Type::MeshRenderer),m_Meshes(meshes),m_TransformMatrix(transformMatrix){}
+		MeshRenderer(EntityManager* entityManager, Entity::Id id, const std::vector<Mesh> &meshes, glm::mat4 transformMatrix)
+			:Component(entityManager,id,Component::Type::MeshRenderer), m_Meshes(meshes), m_TransformMatrix(transformMatrix){}
 
 		MeshRenderer(EntityManager* entityManager, Entity::Id id,const Mesh &mesh,glm::mat4 transformMatrix)
 			:Component(entityManager, id, Component::Type::MeshRenderer), m_TransformMatrix(transformMatrix) {
 		
 			m_Meshes.push_back(mesh);
 		}
-		/*MeshRenderer(EntityManager* entityManager, Entity::Id id, const std::shared_ptr<Model>& model, glm::mat4 transformMatrix)
-			:Component(entityManager, id, Component::Type::MeshRenderer),m_Model(model), m_TransformMatrix(transformMatrix) {
-		}*/
+
 		MeshRenderer(EntityManager* entityManager, Entity::Id id, const std::shared_ptr<Model>& model, glm::mat4 transformMatrix)
 			:Component(entityManager, id, Component::Type::MeshRenderer), m_Model(model), m_TransformMatrix(transformMatrix) {
 		}
 		~MeshRenderer() {};
 
 		void UpdateTransformMatrix(glm::mat4 transformMatrix);
-	/*	void DrawMeshes();
-		void DrawLight();
-*/
+
 		inline std::shared_ptr<Model>GetModel()  const { return m_Model; }
 		inline std::vector<Mesh>     GetMeshes() const {
 			return m_Model != nullptr ? m_Model->GetMeshes() : m_Meshes;

@@ -1,44 +1,6 @@
 ## BlackPearl  Engine
 BlackPearl  Engine is a dynamic GI rendering engine to simulate different dynamic GI algorithm,such as light probe based GI,voxel cone tracing GI,image based lighting, sparse voxel octree cone tracing.You can select the algorithm you want to simulate in SandBox.
 
-```
-class SandBox :public BlackPearl::Application {
-public:
-
-	SandBox(const std::string &renderer) {
-		BlackPearl::EntityManager * entityManager = DBG_NEW BlackPearl::EntityManager();
-		BlackPearl::ObjectManager * objectManager = DBG_NEW BlackPearl::ObjectManager(entityManager);
-		BlackPearl::Layer* layer = NULL;
-		if (renderer == "ShadowMapPointLight") {
-			layer = DBG_NEW ShadowMapPointLightLayer(renderer + "Layer", objectManager);
-		}
-		else if(renderer == "VoxelConeTracing"){
-			layer = DBG_NEW VoxelConeTracingLayer(renderer + "Layer", objectManager);
-		}
-		else if (renderer == "PbrRendering") {
-			layer = DBG_NEW PbrRenderingLayer(renderer + "Layer", objectManager);
-		}
-		else if (renderer == "IBLRendering") {
-			layer = DBG_NEW IBLRenderingLayer(renderer + "Layer", objectManager);
-		}
-		else if (renderer == "IBLProbesRendering") {
-			layer = DBG_NEW IBLProbesRenderingLayer(renderer + "Layer", objectManager);
-		}
-		else if (renderer == "VoxelConeTracingDeferred") {
-			layer = DBG_NEW VoxelConeTracingDeferredLayer(renderer + "Layer", objectManager);
-		}
-		else if (renderer == "VoxelConeTracingSVO") {
-			layer = DBG_NEW VoxelConeTracingSVOLayer(renderer + "Layer", objectManager);
-		}
-		else if (renderer == "RayTracing") {
-			layer = DBG_NEW RayTracingLayer(renderer + "Layer", objectManager);
-		}
-		GetScene()->PushLayer(layer);
-	}
-	virtual ~SandBox() = default;
-};
-
-```
 ## Get start
 
 run GenerateProject.bat to set up visual studio project,it is only for Windows now.

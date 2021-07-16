@@ -4,6 +4,7 @@
 #include "BlackPearl/Renderer/Material/TextureImage2D.h"
 #include "BlackPearl/RayTracing/GenData.h"
 #include "BlackPearl/RayTracing/Group.h"
+#include "BlackPearl/SceneBuilder/SceneBuilder.h"
 
 namespace BlackPearl {
 	class RayTracingRenderer:public BasicRenderer
@@ -17,14 +18,18 @@ namespace BlackPearl {
 		void RenderMaterialSpheres(MainCamera* mainCamera);
 
 		void InitGroupData(Group* group);
+		void InitScene(std::shared_ptr<GenData> scene);
 		void RenderGroup(MainCamera* mainCamera, Object* group);
-		
+		void RenderBVHNode(MainCamera* mainCamera, Object* bvh_node);
+
 
 	private:
 		std::shared_ptr<Shader> m_BasicShader;
 		std::shared_ptr<Shader> m_BasicSystemShader;
 		std::shared_ptr<Shader> m_MaterialShader;
 		std::shared_ptr<Shader> m_GroupShader;
+		std::shared_ptr<Shader> m_BVHNodeShader;
+
 
 		std::shared_ptr<Shader> m_ScreenShader;
 		std::shared_ptr<GBuffer> m_GBuffers[2];
@@ -46,7 +51,6 @@ namespace BlackPearl {
 		std::shared_ptr<TextureImage2D> m_PackDataTex;
 
 		std::shared_ptr<GenData> m_GenData;
-
 
 
 		/* Object */

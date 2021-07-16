@@ -3,6 +3,7 @@
 #include "glm/glm.hpp"
 #include "BlackPearl/Config.h"
 #include "BlackPearl/Core.h"
+#include "BlackPearl/Application.h"
 #include <unordered_map>
 namespace BlackPearl {
 	//template<typename C>
@@ -34,11 +35,12 @@ namespace BlackPearl {
 		};
 		static const Id s_INVALID;
 
-		Entity(EntityManager* manager, Entity::Id id)
-			:m_EntityManager(manager), m_Id(id) {}
+		Entity(Id id)
+			: m_Id(id) {
+		}
 
 		bool operator == (const Entity &other)const {
-			return m_Id == other.GetId() && m_EntityManager == other.GetEntityManager();
+			return m_Id == other.GetId();
 		}
 
 		//Entity Instantiate(Entity original, glm::vec3 position) { s_InstanceID++; };
@@ -46,8 +48,8 @@ namespace BlackPearl {
 
 
 	public:
-		Id GetId()const { return m_Id; }
-		EntityManager* GetEntityManager() const { return m_EntityManager; }
+		Id GetId() const { return m_Id; }
+		//EntityManager* GetEntityManager() const { return m_EntityManager; }
 	public:
 		bool Vaild();
 		virtual void Destroy() {
@@ -58,7 +60,7 @@ namespace BlackPearl {
 
 	protected:
 		Id m_Id = Entity::s_INVALID;
-		EntityManager* m_EntityManager = nullptr;
+		//EntityManager* m_EntityManager = nullptr;
 
 
 

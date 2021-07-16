@@ -13,14 +13,17 @@
 #include "BlackPearl/Component/CameraComponent/PerspectiveCamera.h"
 #include "BlackPearl/Renderer/Material/CubeMapTexture.h"
 #include "BlackPearl/Component/BasicInfoComponent/BasicInfo.h"
+#include "BlackPearl/Component/BoundingBoxComponent/BoundingBox.h"
+#include "BlackPearl/Component/BVHNodeComponent/BVHNode.h"
 namespace BlackPearl {
 
 	////////////////////////ObjectCreater////////////////////////////////
 	/////////////////////////////////////////////////////////////////////
 	Object* ObjectCreater::CreateEmpty(std::string name)
 	{
-		Entity* entity = m_EntityManager->CreateEntity();
-		Object* obj = new Object(entity->GetEntityManager(), entity->GetId(), name);
+		//Entity* entity = m_EntityManager->CreateEntity();
+		//Entity::Id id= entity->GetId();
+		Object* obj = new Object(name);
 		obj->AddComponent<Transform>();
 		return obj;
 	}
@@ -99,7 +102,7 @@ namespace BlackPearl {
 		return obj;
 	}
 
-	Object* Object3DCreater::CreateModel(std::string modelPath, std::string shaderPath,const bool isAnimated, const std::string name)
+	Object* Object3DCreater::CreateModel(std::string modelPath, std::string shaderPath, const bool isAnimated, const bool addBondingBox, const std::string name)
 	{
 		std::shared_ptr<Shader>shader(new Shader(shaderPath));
 		shader->Bind();
@@ -111,6 +114,9 @@ namespace BlackPearl {
 		transformComponent->SetInitPosition({ 0.0f, 0.0f, 0.0f });
 		transformComponent->SetInitRotation({ 0.0,180.0,0.0 });
 		obj->AddComponent<MeshRenderer>(model, transformComponent->GetTransformMatrix());
+		if (addBondingBox) {
+			obj->AddComponent<BoundingBox>(model->GetMeshes());
+		}
 		return obj;
 	}
 
@@ -154,6 +160,23 @@ namespace BlackPearl {
 		Object* obj = CreateEmpty(name);
 		std::shared_ptr<BasicInfo> info = obj->AddComponent<BasicInfo>();
 		info->SetObjectType(ObjectType::OT_Group);
+		return obj;
+	}
+
+	Object* Object3DCreater::CreateBVHNode(const std::vector<Object*>& objs,const std::string name)
+	{
+		Object* obj = CreateEmpty(name);
+		std::shared_ptr<BasicInfo> info = obj->AddComponent<BasicInfo>();
+		info->SetObjectType(ObjectType::OT_BVH_Node);
+		obj->AddComponent<BVHNode>(objs);
+		return obj;
+	}
+
+	Object* Object3DCreater::CreateBVHNode(const std::vector<Vertex>& mesh_vertex, const std::string name) {
+		Object* obj = CreateEmpty(name);
+		std::shared_ptr<BasicInfo> info = obj->AddComponent<BasicInfo>();
+		info->SetObjectType(ObjectType::OT_BVH_Node);
+		obj->AddComponent<BVHNode>(mesh_vertex);
 		return obj;
 	}
 

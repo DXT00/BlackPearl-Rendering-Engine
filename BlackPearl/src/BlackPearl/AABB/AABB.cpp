@@ -43,6 +43,7 @@ namespace BlackPearl {
 		}
 	}
 
+
 	bool AABB::Hit(std::shared_ptr<Ray> ray)
 	{	
 		float tMin,tMax;
@@ -84,6 +85,29 @@ namespace BlackPearl {
 			return false;
 
 		return true;
+	}
+
+	float AABB::GetSurfaceArea() const
+	{
+		glm::vec3 extends = GetExtent();
+		return 2.0f * (extends.x * extends.y + extends.y * extends.z + extends.z * extends.x);
+	}
+
+	void AABB::Expand(const AABB& aabb)
+	{
+		if (aabb.IsValid()) {
+			if (m_IsValid) {
+				m_MinP = glm::min(m_MinP, aabb.GetMinP());
+				m_MaxP = glm::max(m_MaxP, aabb.GetMaxP());	
+			}
+			else {
+				m_MinP = aabb.GetMinP();
+				m_MaxP = aabb.GetMaxP();
+			}
+			m_IsValid = true;
+		}
+		
+		
 	}
 
 }

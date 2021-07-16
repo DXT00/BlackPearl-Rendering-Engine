@@ -10,8 +10,8 @@
 class VoxelConeTracingDeferredLayer :public BlackPearl::Layer {
 public:
 
-	VoxelConeTracingDeferredLayer(const std::string& name, BlackPearl::ObjectManager* objectManager)
-		: Layer(name, objectManager)
+	VoxelConeTracingDeferredLayer(const std::string& name)
+		: Layer(name)
 	{
 
 

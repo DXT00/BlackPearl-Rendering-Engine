@@ -8,6 +8,7 @@ namespace BlackPearl {
 		OT_BVH_Node,
 		OT_Volume,
 		OT_Sphere,
+		OT_TriMesh,
 		OT_Model,
 		OT_Cube,
 		OT_Plane,

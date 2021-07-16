@@ -115,11 +115,8 @@ namespace BlackPearl {
 		for (int i = 0; i < m_Scene->mNumMeshes; i++)
 		{
 			aiMesh* mesh = m_Scene->mMeshes[i];
-	
-			if (i == 210) {
-				GE_CORE_INFO("210");
-			}
-			m_Meshes.push_back(ProcessMesh(mesh));
+
+			m_Meshes.push_back(ProcessMesh(mesh,m_Vertices));
 
 			//	GE_SAVE_DELETE(mesh);
 		}
@@ -201,30 +198,26 @@ namespace BlackPearl {
 		meshMaterial->SetShininess(shininess);
 		return meshMaterial;
 	}
-	Mesh Model::ProcessMesh(aiMesh* aimesh)
-	{
 
+	//TODO:: Animation Model Vertex未处理
+	Mesh Model::ProcessMesh(aiMesh* aimesh, std::vector<Vertex>& v_vertex)
+	{
+		Vertex vertex;
 		std::vector<float> vertices;
 		std::vector<unsigned int> verticesIntjointIdx;
 		std::vector<float> verticesfloatWeight;
 
 		std::vector<unsigned int> indices;
-		// maps
-		//std::shared_ptr<Material::TextureMaps> textures(DBG_NEW Material::TextureMaps());
-		//MaterialColor  colors;
+
 		VertexBufferLayout layout1, layout2;
 		VertexBufferLayout layout = {
 			{ElementDataType::Float3,"aPos",false,0},
 			{ElementDataType::Float3,"aNormal",false,1},
 			{ElementDataType::Float2,"aTexCoords",false,2}
-			//	{ElementDataType::Float3,"aTangent",false},
-			//	{ElementDataType::Float3,"aBitTangent",false},
-
 		};
 		if (aimesh->HasTangentsAndBitangents()) {
-			layout.AddElement({ ElementDataType::Float3,"aTangent",false ,3 });
-			layout.AddElement({ ElementDataType::Float3,"aBitangent",false ,4 });
-
+			layout.AddElement({ ElementDataType::Float3,"aTangent",false,3 });
+			layout.AddElement({ ElementDataType::Float3,"aBitangent",false,4 });
 		}
 		if (m_HasAnimation) {
 			layout1 = { { ElementDataType::Int4,"aJointIndices",false,5 },
@@ -238,18 +231,19 @@ namespace BlackPearl {
 
 		for (unsigned int i = 0; i < aimesh->mNumVertices; i++)
 		{
-
 			glm::vec3 pos;
 			pos.x = aimesh->mVertices[i].x;
 			pos.y = aimesh->mVertices[i].y;
 			pos.z = aimesh->mVertices[i].z;
 			glmInsertVector(pos, vertices);
+			vertex.position = pos;
 
 			glm::vec3 normal;
 			normal.x = aimesh->mNormals[i].x;
 			normal.y = aimesh->mNormals[i].y;
 			normal.z = aimesh->mNormals[i].z;
 			glmInsertVector(normal, vertices);
+			vertex.normal = normal;
 
 			glm::vec2 textCords = glm::vec2(0.0f, 0.0f);
 			if (aimesh->mTextureCoords[0]) {//判断顶点是否有材质属性
@@ -258,6 +252,7 @@ namespace BlackPearl {
 				textCords.y = aimesh->mTextureCoords[0][i].y;
 			}
 			glmInsertVector(textCords, vertices);
+			vertex.texCoords = textCords;
 
 			if (m_HasAnimation && m_BoneDatas.size() >= 0) {
 				unsigned int vertexIdx = m_VerticesIdx + i;
@@ -274,7 +269,6 @@ namespace BlackPearl {
 			glm::vec3 bitTangent = glm::vec3(0.0f);
 
 			if (aimesh->HasTangentsAndBitangents()) {
-
 				tangent.x = aimesh->mTangents[i].x;
 				tangent.y = aimesh->mTangents[i].y;
 				tangent.z = aimesh->mTangents[i].z;
@@ -284,12 +278,10 @@ namespace BlackPearl {
 				bitTangent.y = aimesh->mBitangents[i].y;
 				bitTangent.z = aimesh->mBitangents[i].z;
 				glmInsertVector(tangent, vertices);
-
 				glmInsertVector(bitTangent, vertices);
+				vertex.tangent = tangent;
+				vertex.bitTangent = bitTangent;
 			}				
-	
-
-
 		}
 
 
@@ -300,7 +292,6 @@ namespace BlackPearl {
 			for (unsigned int i = 0; i < face.mNumIndices; i++)
 			{
 				indices.push_back(face.mIndices[i]);
-
 			}
 		}
 		//if (aimesh->mMaterialIndex >= 0) {
@@ -326,7 +317,6 @@ namespace BlackPearl {
 
 
 		float* vertices_ = DBG_NEW float[vertices.size()];
-		//if (vertices.size() > 0)
 		memcpy(vertices_, &vertices[0], vertices.size() * sizeof(float));//注意memcpy最后一个参数是字节数!!!
 		std::shared_ptr<VertexBuffer> vertexBuffer(DBG_NEW VertexBuffer(vertices_, vertices.size() * sizeof(float)));
 		vertexBuffer->SetBufferLayout(layout);
@@ -334,7 +324,6 @@ namespace BlackPearl {
 		unsigned int* indices_ = DBG_NEW unsigned int[indices.size()];
 		memcpy(indices_, &indices[0], indices.size() * sizeof(unsigned int));
 		std::shared_ptr<IndexBuffer> indexBuffer(DBG_NEW IndexBuffer(indices_, indices.size() * sizeof(unsigned int)));
-		//std::shared_ptr<Material> material(new Material(m_Shader, textures, colors));
 
 		m_VerticesIdx += aimesh->mNumVertices;
 
@@ -352,13 +341,7 @@ namespace BlackPearl {
 			return Mesh(m_ModelMaterials[aimesh->mMaterialIndex], indexBuffer, { vertexBuffer,vertexBuffer1,vertexBuffer2 });
 		}
 
-
-		/*	return Mesh(
-				vertices_, vertices.size() * sizeof(float),
-				indices_, indices.size() * sizeof(unsigned int),
-				material,
-				layout);*/
-
+		v_vertex.push_back(vertex);
 		return Mesh(m_ModelMaterials[aimesh->mMaterialIndex], indexBuffer, { vertexBuffer });
 
 

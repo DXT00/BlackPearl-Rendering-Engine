@@ -1,23 +1,16 @@
 #pragma once
-#include<vector>
-#include<string>
-#include"BlackPearl/Renderer/Shader/Shader.h"
-#include"BlackPearl/Renderer/Buffer.h"
-#include"BlackPearl/Component/LightComponent/LightSources.h"
-#include"BlackPearl/Renderer/Material/MaterialColor.h"
+#include <vector>
+#include <string>
+#include "BlackPearl/Renderer/Shader/Shader.h"
+#include "BlackPearl/Renderer/Buffer.h"
+#include "BlackPearl/Component/LightComponent/LightSources.h"
+#include "BlackPearl/Renderer/Material/MaterialColor.h"
 #include "BlackPearl/Renderer/Material/Material.h"
+#include "BlackPearl/RayTracing/Vertex.h"
 #include <initializer_list>
+
 namespace BlackPearl {
 
-	struct Vertex {
-
-		glm::vec3 position;
-		glm::vec3 normal;
-		glm::vec2 texCoords;
-		glm::vec3 tangent;
-		glm::vec3 bitTangent;
-
-	};
 	class Mesh
 	{
 	public:
@@ -33,12 +26,12 @@ namespace BlackPearl {
 		)
 			:m_Vertices(vertices),m_Indices(indices), m_IndicesSize(indicesSize),
 			m_Material(material), m_VertexBufferLayout(layout) {
-			Init( verticesSize);
+			Init(verticesSize);
 		};
 		/*multiple vertexBuffers*/
 		Mesh(std::shared_ptr<Material> material,
 			std::shared_ptr<IndexBuffer> indexBuffer,
-			std::vector< std::shared_ptr<VertexBuffer>> vertexBuffers) {
+			std::vector<std::shared_ptr<VertexBuffer>> vertexBuffers) {
 			m_VertexArray.reset(DBG_NEW VertexArray());
 			m_IndicesSize = indexBuffer->GetIndicesSize();
 			m_Material = material;
@@ -72,8 +65,7 @@ namespace BlackPearl {
 	
 		std::shared_ptr<VertexArray> GetVertexArray() const { return m_VertexArray; }
 		uint32_t GetIndicesSize()const { return m_IndicesSize; }
-		/*vertices size = vertices.size()*sizeof(type)*/
-		unsigned int GetVerticesSize(unsigned int vertexBufferId)const { 
+		unsigned int GetVerticesSize(unsigned int vertexBufferId) const { 
 			return m_VertexArray->GetVertexBuffers()[vertexBufferId]->GetVertexSize();	
 		}
 		std::shared_ptr<Material> GetMaterial()const { return m_Material; }

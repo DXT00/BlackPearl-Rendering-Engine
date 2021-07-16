@@ -40,10 +40,14 @@ namespace BlackPearl {
 		Object* CreateCube(const std::string& shaderPath, const std::string& texturePath,const std::string name);
 		Object* CreatePlane(const std::string& shaderPath, const std::string& texturePath, const std::string name);
 		Object* CreateSphere(const float radius, const unsigned int stackCount, const unsigned int sectorCount, const std::string& shaderPath, const std::string& texturePath, const std::string name);
-		Object* CreateModel(std::string modelPath,std::string shaderPath,const bool isAnimated, const std::string name);
+		Object* CreateModel(std::string modelPath, std::string shaderPath, const bool isAnimated, const bool addBondingBox, const std::string name);
 		Object* CreateSkyBox( const std::vector<std::string>& textureFaces,const std::string& shaderPath, const std::string name);
 		Object* CreateLightProbe(ProbeType type, const std::string& shaderPath, const std::string& texturePath, const std::string name);
 		Object* CreateGroup(const std::string name);
+		Object* CreateBVHNode(const std::vector<Object*>& objs,const std::string name);
+		Object* CreateBVHNode(const std::vector<Vertex>& mesh_vertex, const std::string name);
+
+
 	};
 
 	////////////////////////Object2DCreater////////////////////////////////

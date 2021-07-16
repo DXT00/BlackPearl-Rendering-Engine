@@ -16,9 +16,12 @@
 #include "BlackPearl/Event/Event.h"
 #include "BlackPearl/ImGui/ImGuiLayer.h"
 #include "BlackPearl/Scene/Scene.h"
+#include "BlackPearl/ObjectManager/ObjectManager.h"
 #include <chrono>
 using namespace std::chrono;
 namespace BlackPearl {
+	static EntityManager* g_entityManager;
+	static ObjectManager* g_objectManager;
 
 	class Application
 	{
@@ -34,6 +37,8 @@ namespace BlackPearl {
 		static double s_AppFPS;
 
 		static double s_AppAverageFPS;
+
+
 
 
 	private:

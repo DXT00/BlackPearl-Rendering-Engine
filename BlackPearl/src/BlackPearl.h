@@ -48,3 +48,4 @@
 #include "BlackPearl/Entity/Entity.h"
 #include "BlackPearl/Map/MapManager.h"
 //#include "BlackPearl/Component/ComponentHandle.h"
+#include "BlackPearl/SceneBuilder/SceneBuilder.h"

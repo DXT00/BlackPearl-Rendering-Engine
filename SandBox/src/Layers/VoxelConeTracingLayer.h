@@ -10,8 +10,8 @@
 class VoxelConeTracingLayer :public BlackPearl::Layer {
 public:
 
-	VoxelConeTracingLayer(const std::string& name, BlackPearl::ObjectManager *objectManager)
-		: Layer(name, objectManager)
+	VoxelConeTracingLayer(const std::string& name)
+		: Layer(name)
 	{
 
 		m_shader.reset(new BlackPearl::Shader("assets/shaders/voxelization/debug/cube.glsl"));

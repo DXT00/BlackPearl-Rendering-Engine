@@ -10,8 +10,8 @@
 class VoxelConeTracingSVOLayer :public BlackPearl::Layer {
 public:
 
-	VoxelConeTracingSVOLayer(const std::string& name, BlackPearl::ObjectManager* objectManager)
-		: Layer(name, objectManager)
+	VoxelConeTracingSVOLayer(const std::string& name)
+		: Layer(name)
 	{
 		m_CubeObj = CreateCube();
 		m_CubeObj->GetComponent<BlackPearl::Transform>()->SetScale(glm::vec3(40.0f));//必须是单位cube

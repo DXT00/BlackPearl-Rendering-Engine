@@ -7,8 +7,14 @@
     <Filter Include="src\BlackPearl">
       <UniqueIdentifier>{6D6C1DE5-593A-11EB-42CE-81112E3BED4F}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\BlackPearl\AABB">
+      <UniqueIdentifier>{227A1A8E-8EDB-F79B-1749-3E4E83A92E5B}</UniqueIdentifier>
+    </Filter>
     <Filter Include="src\BlackPearl\Animation">
       <UniqueIdentifier>{9C512200-8876-7180-B1C1-56109D45709E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\BlackPearl\BVHNode">
+      <UniqueIdentifier>{E27D3ED1-CE77-6723-B7E4-FD33A37DCD8F}</UniqueIdentifier>
     </Filter>
     <Filter Include="src\BlackPearl\Common">
       <UniqueIdentifier>{059DA486-7109-6081-3AFD-F7DEA62882E9}</UniqueIdentifier>
@@ -16,8 +22,14 @@
     <Filter Include="src\BlackPearl\Component">
       <UniqueIdentifier>{0F713F11-FB95-8E91-24E1-732110658DAF}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\BlackPearl\Component\BasicInfoComponent">
+      <UniqueIdentifier>{FF3C3448-6BA2-C7CE-F47A-69A760DFBC3D}</UniqueIdentifier>
+    </Filter>
     <Filter Include="src\BlackPearl\Component\CameraComponent">
       <UniqueIdentifier>{DAFD54AB-C67A-48EE-EFF7-4802DBD3E481}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\BlackPearl\Component\Hitable">
+      <UniqueIdentifier>{17E039A5-0331-25E7-2C95-13A91845B850}</UniqueIdentifier>
     </Filter>
     <Filter Include="src\BlackPearl\Component\LightComponent">
       <UniqueIdentifier>{09DCBC04-756B-7EEF-7E67-5F07EA75B9FB}</UniqueIdentifier>
@@ -69,6 +81,9 @@
     </Filter>
     <Filter Include="src\BlackPearl\ObjectManager">
       <UniqueIdentifier>{CE08E5D3-BAC3-D47F-637B-4DCA4F151F10}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\BlackPearl\RayTracing">
+      <UniqueIdentifier>{3048C8C4-9C0A-FC4E-E5BA-8ADB51BCD42C}</UniqueIdentifier>
     </Filter>
     <Filter Include="src\BlackPearl\Renderer">
       <UniqueIdentifier>{B3FA019A-1F32-4A31-283C-AE5494F2702A}</UniqueIdentifier>
@@ -126,6 +141,12 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\BlackPearl.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BlackPearl\AABB\AABB.h">
+      <Filter>src\BlackPearl\AABB</Filter>
+    </ClInclude>
     <ClInclude Include="src\BlackPearl\Animation\AnimatedModel.h">
       <Filter>src\BlackPearl\Animation</Filter>
     </ClInclude>
@@ -149,6 +170,9 @@
     </ClInclude>
     <ClInclude Include="src\BlackPearl\Component\BaseComponent.h">
       <Filter>src\BlackPearl\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BlackPearl\Component\BasicInfoComponent\BasicInfo.h">
+      <Filter>src\BlackPearl\Component\BasicInfoComponent</Filter>
     </ClInclude>
     <ClInclude Include="src\BlackPearl\Component\CameraComponent\Camera.h">
       <Filter>src\BlackPearl\Component\CameraComponent</Filter>
@@ -276,6 +300,30 @@
     <ClInclude Include="src\BlackPearl\ObjectManager\ObjectManager.h">
       <Filter>src\BlackPearl\ObjectManager</Filter>
     </ClInclude>
+    <ClInclude Include="src\BlackPearl\RayTracing\GenData.h">
+      <Filter>src\BlackPearl\RayTracing</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BlackPearl\RayTracing\GenData_HV.h">
+      <Filter>src\BlackPearl\RayTracing</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BlackPearl\RayTracing\GenData_MV.h">
+      <Filter>src\BlackPearl\RayTracing</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BlackPearl\RayTracing\GenData_TV.h">
+      <Filter>src\BlackPearl\RayTracing</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BlackPearl\RayTracing\Group.h">
+      <Filter>src\BlackPearl\RayTracing</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BlackPearl\RayTracing\HitRst.h">
+      <Filter>src\BlackPearl\RayTracing</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BlackPearl\RayTracing\Ray.h">
+      <Filter>src\BlackPearl\RayTracing</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BlackPearl\RayTracing\RayCastFunction.h">
+      <Filter>src\BlackPearl\RayTracing</Filter>
+    </ClInclude>
     <ClInclude Include="src\BlackPearl\Renderer\Buffer.h">
       <Filter>src\BlackPearl\Renderer</Filter>
     </ClInclude>
@@ -389,9 +437,6 @@
     </ClInclude>
     <ClInclude Include="src\BlackPearl\Window.h">
       <Filter>src\BlackPearl</Filter>
-    </ClInclude>
-    <ClInclude Include="src\BlackPeral.h">
-      <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="src\pch.h">
       <Filter>src</Filter>
@@ -1503,8 +1548,20 @@
     <ClInclude Include="vendor\stb\stb_image.h">
       <Filter>vendor\stb</Filter>
     </ClInclude>
+    <ClInclude Include="src\BlackPearl\Component\BoundingBoxComponent\BoundingBox.h">
+      <Filter>src\BlackPearl\Component\Hitable</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BlackPearl\SceneBuilder\BoundingBoxBuilder.h" />
+    <ClInclude Include="src\BlackPearl\RayTracing\Hitable.h" />
+    <ClInclude Include="src\BlackPearl\Component\BVHNodeComponent\BVHNode.h" />
+    <ClInclude Include="src\BlackPearl\RayTracing\Triangle.h" />
+    <ClInclude Include="src\BlackPearl\RayTracing\Vertex.h" />
+    <ClInclude Include="src\BlackPearl\SceneBuilder\SceneBuilder.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\BlackPearl\AABB\AABB.cpp">
+      <Filter>src\BlackPearl\AABB</Filter>
+    </ClCompile>
     <ClCompile Include="src\BlackPearl\Animation\AnimatedModel.cpp">
       <Filter>src\BlackPearl\Animation</Filter>
     </ClCompile>
@@ -1528,6 +1585,9 @@
     </ClCompile>
     <ClCompile Include="src\BlackPearl\Component\BaseComponent.cpp">
       <Filter>src\BlackPearl\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BlackPearl\Component\BasicInfoComponent\BasicInfo.cpp">
+      <Filter>src\BlackPearl\Component\BasicInfoComponent</Filter>
     </ClCompile>
     <ClCompile Include="src\BlackPearl\Component\CameraComponent\Camera.cpp">
       <Filter>src\BlackPearl\Component\CameraComponent</Filter>
@@ -1639,6 +1699,30 @@
     </ClCompile>
     <ClCompile Include="src\BlackPearl\ObjectManager\ObjectManager.cpp">
       <Filter>src\BlackPearl\ObjectManager</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BlackPearl\RayTracing\GenData.cpp">
+      <Filter>src\BlackPearl\RayTracing</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BlackPearl\RayTracing\GenData_HV.cpp">
+      <Filter>src\BlackPearl\RayTracing</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BlackPearl\RayTracing\GenData_MV.cpp">
+      <Filter>src\BlackPearl\RayTracing</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BlackPearl\RayTracing\GenData_TV.cpp">
+      <Filter>src\BlackPearl\RayTracing</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BlackPearl\RayTracing\Group.cpp">
+      <Filter>src\BlackPearl\RayTracing</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BlackPearl\RayTracing\HitRst.cpp">
+      <Filter>src\BlackPearl\RayTracing</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BlackPearl\RayTracing\Ray.cpp">
+      <Filter>src\BlackPearl\RayTracing</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BlackPearl\RayTracing\RayCastFunction.cpp">
+      <Filter>src\BlackPearl\RayTracing</Filter>
     </ClCompile>
     <ClCompile Include="src\BlackPearl\Renderer\Buffer.cpp">
       <Filter>src\BlackPearl\Renderer</Filter>
@@ -1754,5 +1838,12 @@
     <ClCompile Include="src\pch.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\BlackPearl\Component\BoundingBoxComponent\BoundingBox.cpp" />
+    <ClCompile Include="src\BlackPearl\SceneBuilder\BoundingBoxBuilder.cpp" />
+    <ClCompile Include="src\BlackPearl\RayTracing\Hitable.cpp" />
+    <ClCompile Include="src\BlackPearl\Component\BVHNodeComponent\BVHNode.cpp" />
+    <ClCompile Include="src\BlackPearl\RayTracing\Triangle.cpp" />
+    <ClCompile Include="src\BlackPearl\RayTracing\Vertex.cpp" />
+    <ClCompile Include="src\BlackPearl\SceneBuilder\SceneBuilder.cpp" />
   </ItemGroup>
 </Project>

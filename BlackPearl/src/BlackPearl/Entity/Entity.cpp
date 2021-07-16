@@ -9,7 +9,7 @@ namespace BlackPearl {
 
 	inline bool Entity::Vaild()
 	{
-		return m_EntityManager && m_EntityManager->Valid(m_Id);
+		return g_entityManager && g_entityManager->Valid(m_Id);
 	}
 
 
@@ -43,7 +43,7 @@ namespace BlackPearl {
 			version = m_EntityVersion[index];
 
 		}
-		Entity *entity = DBG_NEW Entity(this, Entity::Id(index, version));
+		Entity *entity = DBG_NEW Entity(Entity::Id(index, version));
 		m_EntityList[index] = entity;
 		return entity;
 	}
@@ -65,7 +65,7 @@ namespace BlackPearl {
 	Entity EntityManager::GetEntity(Entity::Id id)
 	{
 		AssertValid(id);
-		return Entity(this, id);
+		return Entity(id);
 	}
 
 	void EntityManager::ResizeEntityStorage(std::uint32_t index)
