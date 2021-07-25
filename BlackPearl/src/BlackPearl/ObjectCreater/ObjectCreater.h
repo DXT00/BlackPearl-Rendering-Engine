@@ -46,8 +46,8 @@ namespace BlackPearl {
 		Object* CreateGroup(const std::string name);
 		Object* CreateBVHNode(const std::vector<Object*>& objs,const std::string name);
 		Object* CreateBVHNode(const std::vector<Vertex>& mesh_vertex, const std::string name);
-
-
+		Object* CreateTriangle(const std::vector<Vertex>& points, const std::string name);
+		Object* CreateRTXTransformNode(const glm::mat4& transform_mat, Object* bvh_node, const std::string name);
 	};
 
 	////////////////////////Object2DCreater////////////////////////////////

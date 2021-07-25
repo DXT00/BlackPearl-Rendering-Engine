@@ -11,17 +11,17 @@ namespace BlackPearl {
 	{
 	public:
 		//get transformMatrix from Object's Transform Component!
-		MeshRenderer(EntityManager* entityManager, Entity::Id id, const std::vector<Mesh> &meshes, glm::mat4 transformMatrix)
-			:Component(entityManager,id,Component::Type::MeshRenderer), m_Meshes(meshes), m_TransformMatrix(transformMatrix){}
+		MeshRenderer(const std::vector<Mesh> &meshes, glm::mat4 transformMatrix)
+			:Component(Component::Type::MeshRenderer), m_Meshes(meshes), m_TransformMatrix(transformMatrix){}
 
-		MeshRenderer(EntityManager* entityManager, Entity::Id id,const Mesh &mesh,glm::mat4 transformMatrix)
-			:Component(entityManager, id, Component::Type::MeshRenderer), m_TransformMatrix(transformMatrix) {
+		MeshRenderer(const Mesh &mesh,glm::mat4 transformMatrix)
+			:Component(Component::Type::MeshRenderer), m_TransformMatrix(transformMatrix) {
 		
 			m_Meshes.push_back(mesh);
 		}
 
-		MeshRenderer(EntityManager* entityManager, Entity::Id id, const std::shared_ptr<Model>& model, glm::mat4 transformMatrix)
-			:Component(entityManager, id, Component::Type::MeshRenderer), m_Model(model), m_TransformMatrix(transformMatrix) {
+		MeshRenderer(const std::shared_ptr<Model>& model, glm::mat4 transformMatrix)
+			:Component(Component::Type::MeshRenderer), m_Model(model), m_TransformMatrix(transformMatrix) {
 		}
 		~MeshRenderer() {};
 

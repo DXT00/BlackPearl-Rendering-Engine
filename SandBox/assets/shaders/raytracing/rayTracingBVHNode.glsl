@@ -37,6 +37,7 @@ const float HitableType_BVH = 1.0;
 const float HitableType_Volume = 2.0;
 const float HitableType_Sphere = 3.0;
 const float HitableType_TriMesh = 4.0;
+const float HitableType_Triangle = 5.0;
 
 
 const float MatType_Lambertian = 0.0;
@@ -71,28 +72,14 @@ struct HitRst{
 	bool hit;
 	struct Vertex vertex;
 	float matIdx;
+	float isMatCoverable;
 };
-
 
 uniform sampler2D u_SceneData;
 uniform sampler2D u_MatData;
 uniform sampler2D u_TexData;
 
-//const float Materials[15] = {
-//	MatType_Lambertian,	0.5, 0.5, 0.5,//0
-//	MatType_Lambertian,	0.8, 0.8, 0.0,//4
-//	MatType_Metal,		0.1, 0.2, 0.5, 0.0,//8
-//	MatType_Dielectric,	1.5//13
-//};
-//
-//const float Scene[30] = {
-//	//type                  //matId   //pos          //radius
-//	HitableType_Sphere,	13, -1,      0, -1,   0.5,
-//	HitableType_Sphere,	13, -1,      0, -1, -0.45,
-//	HitableType_Sphere,	 4,  0,      0, -1,   0.5,
-//	HitableType_Sphere,  8,  1,      0, -1,   0.5,
-//	HitableType_Sphere,  0,  0, -100.5, -1,   100
-//};
+
 
 uniform vec3 u_CameraUp;
 uniform vec3 u_CameraFront;
@@ -144,28 +131,39 @@ float Stack_Pop();
 void Stack_Acc();
 
 
-struct HitRst RayIn_Triangle(float idx){
+void Vertex_Load(float idx, out struct Vertex vertex){
+	
+	
+
+}
+
+
+void RayIn_Triangle(float idx, inout struct Ray ray,inout struct HitRst hitRst){
+	struct Vertex A, B, C;
+	float vertexABC_pack4_idx = At(SceneData, idx+3);
+	Vertex_Load(vertexABC_pack4_idx  , A);
+	Vertex_Load(vertexABC_pack4_idx+2, B);
+	Vertex_Load(vertexABC_pack4_idx+4, C);
+
+	vec4 abgt = Intersect_RayTri(ray.origin, ray.dir, A.pos, B.pos, C.pos);
+	if (abgt == vec4(0) ||
+		any(lessThan(abgt,vec4(0,0,0,tMin))) ||
+		any(greaterThan(abgt,vec4(1,1,1,ray.tMax)))
+		//|| abgt[0] < 0 || abgt[0] > 1
+		//|| abgt[1] < 0 || abgt[1] > 1
+		//|| abgt[2] < 0 || abgt[2] > 1
+		//|| abgt[3] < tMin || abgt[3] > ray.tMax
+		)
+		return;
+
+	hitRst.hit = true;
+	Vertex_Interpolate(abgt.xyz, A, B, C, hitRst.vertex);
 	float matIdx = At(SceneData, idx+1);
 	float isMatCoverable = At(SceneData, idx+2);
-	struct Vertex A = Vertex_Load(idx+ 9);
-	struct Vertex B = Vertex_Load(idx+17);
-	struct Vertex C = Vertex_Load(idx+25);
-
-	vec4 abgt = Intersect_RayTri(gRay.origin, gRay.dir, A.pos, B.pos, C.pos);
-	if (abgt == vec4(0)
-		|| abgt[0] < 0 || abgt[0] > 1
-		|| abgt[1] < 0 || abgt[1] > 1
-		|| abgt[2] < 0 || abgt[2] > 1
-		|| abgt[3] < tMin || abgt[3] > gRay.tMax)
-		return HitRst_InValid;
-
-	struct HitRst hitRst;
-	hitRst.hit = true;
-	hitRst.vertex = Vertex_Interpolate(abgt.xyz, A, B, C);
 	hitRst.matIdx = matIdx;
 	hitRst.isMatCoverable = isMatCoverable;
-	gRay.tMax = abgt[3];
-	return hitRst;
+	ray.tMax = abgt[3];
+	
 }
 
 
@@ -347,14 +345,14 @@ float At(sampler2D data, float idx){
     return texture2D(data, texCoords).x;
 }
 
-struct HitRst JudgeHitSphere(float idx){
+//struct HitRst JudgeHitSphere(float idx){
+void RayIn_Sphere(float idx, inout struct Ray ray, inout struct HitRst hisRst) {
 	float has_material = At(SceneData, idx+2);
 	float matIdx = At(SceneData, idx+1);
 	float packIdx = At(SceneData, idx+3) * 4.0;
     vec3 center = vec3(At(PackData, packIdx), At(PackData, packIdx+1), At(PackData, packIdx+2));
     float radius = At(PackData, packIdx+3);
     
-    struct HitRst hitRst;
     hitRst.hit = false;
     
     vec3 oc = gRay.origin - center;
@@ -390,31 +388,90 @@ void Ray_Update(vec3 origin, vec3 dir, vec3 attenuation){
 	gRay.color *= attenuation;
 	gRay.tMax = FLTMAX;
 }
-struct HitRst TraceScene(){
-	struct HitRst finalHit = Hitrst_InVaild;
+
+vec3 GetPackData(float idx){
+	vec3 packData;
+	packData.x = At(PackData,idx*4);
+	packData.y = At(PackData,idx*4+1);
+	packData.z = At(PackData,idx*4+2);
+	return packData;
+}
+
+bool AABB_Hit(struct Ray ray,int idx){
+	
+	vec3 minP = GetPackData(idx);
+	vec3 maxP = GetPackData(idx+1);
+	
+	vec3 dir = ray.dir;
+	vec3 org = ray.origin;
+	
+	float min_ = tMin;
+	float max_ = ray.tMax;
+	for(int i = 0; i < 3; i++){
+		if (dir[i] == 0) {
+			if (org[i] != minP[i] && org[i] != maxP[i])
+				return false;
+		}
+		else {
+			t0= (m_MinP[i] - org[i]) / dir[i];
+			t1= (m_MaxP[i] - org[i]) / dir[i];
+ 
+			if (dir[i] < 0.0f)
+				swap(t0, t1);
+
+				min_ = max(tMin,t0);
+				max_ = min(tMax,t1);
+			}
+	}
+	return min_<max_;
+}
+
+struct HitRst TraceScene(inout struct Ray ray,out struct HitRst finalHit){
+	finalHit = Hitrst_InVaild;
 	Stack_Push(3);
 	while(!Stack_Empty()){
-		float s_val = Stack_Top();
-		float obj_idx = At(SceneData,s_val);
-		if(obj_idx == 0){
-			Stack_Pop();
+		float pIdx = Stack_Top();
+		float idx = At(SceneData, pIdx);
+		if(idx <= 0.0){
+			idx = -idx;
+			float type = At(SceneData, idx);
+			if(type == HitableType_Group || type == HitableType_BVH || type == HitableType_TriMesh){
+				if(matIdx == -1.0)
+					continue;
+
+				float in_tMax = Stack_Pop();
+				if (ray.tMax < in_tMax && finalHit.isMatCoverable == 1.0){
+					finalHit.matIdx = matIdx;
+					finalHit.isMatCoverable = At(SceneData, idx+2);
+				}
+			}
 			continue;
 		}
-		float type = At(SceneData,obj_idx);
-		if(type == HitableType_Sphere){
-			HitRst cur_hit = JudgeHitSphere(obj_idx);
-			if(cur_hit.hit){
-				finalHit = cur_hit;
-			}
-			Stack_Acc();
-		}
-		else if(type == HitableType_Group){
-			Stack_Push(obj_idx + 3);
-		}
-		else if(type == HitableType_BVH || type == HitableType_TriMesh) {
 
+		Stack_Push(pIdx+1.0);
+		float type = At(SceneData,idx);
+		if(type == HitableType_Sphere)
+			RayIn_Sphere(idx, ray, finalHit);
+		else if(type == HitableType_Group){
+			float matIdx = At(SceneData,idx+1.0);
+			if(matIdx != -1.0)
+				Stack_Push(ray.tMax);
+			Stack_Push(idx+3.0);
 		}
-	}
+		else if(type == HitableType_BVH || type == HitableType_TriMesh){
+			if(AABB_Hit(ray,idx+3)){
+				float matIdx = At(SceneData,idx+1);
+				if(matIdx != -1)
+					Stack_Push(ray.tMax);
+				Stack_Push(idx+4);
+			}
+		}
+		else if(type == HitableType_Triangle){
+			RayIn_Triangle(idx, ray, finalHit);
+		}
+		else if(type == HitableType_Volume){
+			//RayIn_Volume(idx, ray, finalHit);
+		}
 
 	return finalHit;
 }
@@ -452,13 +509,12 @@ void RayTrace(){
 	}
 	//judge hit
 	struct HitRst finalHitable;
+	TraceScene(gRay,finalHitable);
+	int hitMatId = 0;
 
-	finalHitable = TraceScene();
-	int hitMatId=0;
 	if(finalHitable.hit){
 		hitMatId = int(finalHitable.matIdx);
 		Scatter_Material(finalHitable,hitMatId);
-
 		WriteRay(2);
 	}
 	else{//sky
@@ -468,7 +524,6 @@ void RayTrace(){
 		vec3 lightColor = (1 - t) * white + t * blue;
 		gRay.color *= lightColor;
 		WriteRay(1);
-		
 	}
 
 }

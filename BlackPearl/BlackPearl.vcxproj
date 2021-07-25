@@ -143,6 +143,7 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\BlackPearl\Component\TransformComponent\RayTracingTransform.h" />
     <ClInclude Include="src\BlackPearl\SceneBuilder\SceneBuilder.h" />
     <ClInclude Include="src\BlackPearl\Component\BVHNodeComponent\BVHNode.h" />
     <ClInclude Include="src\BlackPearl\RayTracing\Hitable.h" />
@@ -621,6 +622,7 @@
     <ClInclude Include="src\BlackPearl\RayTracing\Vertex.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\BlackPearl\Component\TransformComponent\RayTracingTransform.cpp" />
     <ClCompile Include="src\BlackPearl\SceneBuilder\SceneBuilder.cpp" />
     <ClCompile Include="src\BlackPearl\Component\BVHNodeComponent\BVHNode.cpp" />
     <ClCompile Include="src\BlackPearl\RayTracing\Hitable.cpp" />

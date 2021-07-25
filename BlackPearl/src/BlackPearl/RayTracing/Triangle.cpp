@@ -4,6 +4,7 @@
 namespace BlackPearl {
 
 	Triangle::Triangle(const std::vector<Vertex>& points)
+		:Component(Component::Type::Triangle)
 	{
 		GE_ASSERT(points.size()==3,"points size error");
 
@@ -11,13 +12,16 @@ namespace BlackPearl {
 		{
 			m_Points.push_back(points[i]);
 		}
+		BuildBox();
 	}
 
 	Triangle::Triangle(const Vertex& p0, const Vertex& p1, const Vertex& p2)
+		:Component(Component::Type::Triangle)
 	{
 		m_Points.push_back(p0);
 		m_Points.push_back(p1);
 		m_Points.push_back(p2);
+		BuildBox();
 	}
 
 	Triangle::~Triangle()

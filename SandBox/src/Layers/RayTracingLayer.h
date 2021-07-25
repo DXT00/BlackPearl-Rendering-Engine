@@ -60,14 +60,17 @@ public:
 
 		//BVHNode
 		{
-			m_Bunny = CreateModel("assets/models/bunny/bunny.obj", "assets/shaders/IronMan.glsl", false, "Bunny");
-			m_Bunny->GetComponent<BlackPearl::Transform>()->SetInitScale(glm::vec3(0.5));
-			m_Bunny->GetComponent<BlackPearl::Transform>()->SetInitPosition({ 0.6f,0.0f,3.0f });
-			m_Bunny->GetComponent<BlackPearl::Transform>()->SetInitRotation({ 0.0f,-30.0f,0.0f });
-			m_Bunny->GetComponent<BlackPearl::MeshRenderer>()->SetIsBackGroundObjects(true);
+			BlackPearl::Object* bunny = CreateModel("assets/models/bunny/bunny.obj", "assets/shaders/IronMan.glsl", false, "Bunny");
+			bunny->GetComponent<BlackPearl::Transform>()->SetInitScale(glm::vec3(0.5));
+			bunny->GetComponent<BlackPearl::Transform>()->SetInitPosition({ 0.6f,0.0f,3.0f });
+			bunny->GetComponent<BlackPearl::Transform>()->SetInitRotation({ 0.0f,-30.0f,0.0f });
+			bunny->GetComponent<BlackPearl::MeshRenderer>()->SetIsBackGroundObjects(true);
 
-			m_BVHNode = BlackPearl::g_objectManager->CreateBVHNode(m_Bunny->GetComponent<BlackPearl::MeshRenderer>()->GetModel()->GetMeshVertex());
-			m_SceneBuilder->CreateSceneData(m_BVHNode);
+			BlackPearl::Object*  bunny_bvh_node = BlackPearl::g_objectManager->CreateBVHNode(\
+				bunny->GetComponent<BlackPearl::MeshRenderer>()->GetModel()->GetMeshVertex());
+			m_BunnyRTXTransformNode = BlackPearl::g_objectManager->CreateRTXTransformNode(bunny->GetComponent<BlackPearl::Transform>()->GetTransformMatrix(),bunny_bvh_node);
+
+			m_SceneBuilder->CreateSceneData(m_BunnyRTXTransformNode);
 			m_RayTracingRenderer->InitScene(m_SceneBuilder->GetScene());
 		}
 		m_MainCamera->SetFov(90.0f);
@@ -153,8 +156,7 @@ private:
 	BlackPearl::Object* m_Sphere4;
 	BlackPearl::Object* m_Sphere5;
 
-	BlackPearl::Object* m_Bunny;
-	BlackPearl::Object* m_BVHNode;
+	BlackPearl::Object* m_BunnyRTXTransformNode;
 
 	BlackPearl::Object* m_SkyBoxObj;
 	BlackPearl::Object* m_skybox = nullptr;

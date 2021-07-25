@@ -12,10 +12,10 @@ namespace BlackPearl {
 			
 		BVHNode(const std::vector<Vertex>& mesh_vertex);
 			
-		BVHNode(const std::vector<Triangle*>& trimesh) 
-			:Component(Component::Type::BVHNode) {
-			m_Box = Build(trimesh);
-		}
+		//BVHNode(const std::vector<Triangle*>& trimesh) 
+		//	:Component(Component::Type::BVHNode) {
+		//	m_Box = Build(trimesh);
+		//}
 
 
 		AABB GetRootBox() const;
@@ -26,8 +26,8 @@ namespace BlackPearl {
 
 	private:
 		AABB Build(std::vector<Object*> objs);
-		AABB Build(const std::vector<Triangle*>& triMesh);
-		std::vector<Triangle*> BuildTriMesh(const std::vector<Vertex>& mesh_vertex);
+		//AABB Build(const std::vector<Triangle*>& triMesh);
+		std::vector<Object*> BuildTriMesh(const std::vector<Vertex>& mesh_vertex);
 
 		AABB Build(const std::vector<Hitable*>::const_iterator begin,
 			const std::vector<Hitable*>::const_iterator end);

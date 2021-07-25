@@ -16,24 +16,7 @@ namespace BlackPearl {
 		return obj;
 	}
 
-	Object* ObjectManager::CreateGroup(const std::string name)
-	{
-		Object* obj = m_Object3DCreater->CreateGroup(name);
-		m_Objs.push_back(obj);
-		return obj;
-	}
-	Object* ObjectManager::CreateBVHNode(const std::vector<Object*>& objs, const std::string name)
-	{
-		Object* obj = m_Object3DCreater->CreateBVHNode(objs, name);
-		m_Objs.push_back(obj);
-		return obj;
-	}
-	Object* ObjectManager::CreateBVHNode(const std::vector<Vertex>& mesh_vertex, const std::string name = "BVHNode") {
-		Object* obj = m_Object3DCreater->CreateBVHNode(mesh_vertex, name);
-		m_Objs.push_back(obj);
-		return obj;
 
-	}
 
 	Object* ObjectManager::CreateLight(LightType type, LightSources* lightSources, const std::string& name)
 	{
@@ -43,9 +26,9 @@ namespace BlackPearl {
 
 	}
 
-	Object* ObjectManager::CreateModel(const std::string& modelPath, const std::string& shaderPath, const bool isAnimated, const std::string& name)
+	Object* ObjectManager::CreateModel(const std::string& modelPath, const std::string& shaderPath, const bool isAnimated, const bool addBondingBox, const std::string& name)
 	{
-		Object* obj = m_Object3DCreater->CreateModel(modelPath, shaderPath, isAnimated, name);
+		Object* obj = m_Object3DCreater->CreateModel(modelPath, shaderPath, isAnimated, addBondingBox, name);
 		m_Objs.push_back(obj);
 		return obj;
 
@@ -98,6 +81,40 @@ namespace BlackPearl {
 
 	}
 
+	Object* ObjectManager::CreateGroup(const std::string name)
+	{
+		Object* obj = m_Object3DCreater->CreateGroup(name);
+		m_Objs.push_back(obj);
+		return obj;
+	}
+	Object* ObjectManager::CreateBVHNode(const std::vector<Object*>& objs, const std::string name)
+	{
+		Object* obj = m_Object3DCreater->CreateBVHNode(objs, name);
+		m_Objs.push_back(obj);
+		return obj;
+	}
+	Object* ObjectManager::CreateBVHNode(const std::vector<Vertex>& mesh_vertex, const std::string name = "BVHNode") {
+		Object* obj = m_Object3DCreater->CreateBVHNode(mesh_vertex, name);
+		m_Objs.push_back(obj);
+		return obj;
+
+	}
+
+	Object* ObjectManager::CreateTriangle(const std::vector<Vertex>& points, const std::string name)
+	{
+		Object* obj = m_Object3DCreater->CreateTriangle(points, name);
+		m_Objs.push_back(obj);
+		return obj;
+	}
+
+	Object* ObjectManager::CreateRTXTransformNode(const glm::mat4 &transform_mat, Object* bvh_obj, const std::string name)
+	{
+		Object* obj = m_Object3DCreater->CreateRTXTransformNode(transform_mat, bvh_obj, name);
+		m_Objs.push_back(obj);
+		return obj;
+	}
+
+
 
 	///////////////////////2D///////////////////////////////
 	Object* ObjectManager::CreateQuad(const std::string& shaderPath, const std::string& texturePath, const std::string& name)
@@ -106,6 +123,8 @@ namespace BlackPearl {
 		m_Objs.push_back(obj);
 		return obj;
 	}
+
+
 
 
 	std::vector<Object*> ObjectManager::GetObjects()

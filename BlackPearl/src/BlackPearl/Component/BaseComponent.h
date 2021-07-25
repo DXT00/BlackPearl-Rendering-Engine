@@ -19,7 +19,9 @@ namespace BlackPearl {
 			LightProbe,
 			BoundingBox,
 			BasicInfo,
-			BVHNode
+			BVHNode,
+			Triangle,
+			RTXTransformNode
 
 		};
 		BaseComponent(Type type)

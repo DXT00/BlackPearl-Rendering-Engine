@@ -16,7 +16,6 @@ namespace BlackPearl {
 		for (auto pair:tex2vec)
 		{
 			std::shared_ptr<Texture> texture = pair.first;
-
 		}
 	}
 

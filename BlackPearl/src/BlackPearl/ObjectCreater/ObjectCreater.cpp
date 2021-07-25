@@ -15,6 +15,8 @@
 #include "BlackPearl/Component/BasicInfoComponent/BasicInfo.h"
 #include "BlackPearl/Component/BoundingBoxComponent/BoundingBox.h"
 #include "BlackPearl/Component/BVHNodeComponent/BVHNode.h"
+#include "BlackPearl/Component/TransformComponent/RayTracingTransform.h"
+
 namespace BlackPearl {
 
 	////////////////////////ObjectCreater////////////////////////////////
@@ -54,6 +56,7 @@ namespace BlackPearl {
 
 		return obj;
 	}
+
 	Object* Object3DCreater::CreatePlane(const std::string& shaderPath, const std::string& texturePath, const std::string name)
 	{
 		Object* obj = CreateEmpty(name);
@@ -77,6 +80,7 @@ namespace BlackPearl {
 		obj->AddComponent<MeshRenderer>(mesh, transformComponent->GetTransformMatrix());
 		return obj;
 	}
+
 	Object* Object3DCreater::CreateSphere(const float radius, const unsigned int stackCount, const unsigned int sectorCount, const std::string& shaderPath, const std::string& texturePath, const std::string name)
 	{
 		Object* obj = CreateEmpty(name);
@@ -172,7 +176,8 @@ namespace BlackPearl {
 		return obj;
 	}
 
-	Object* Object3DCreater::CreateBVHNode(const std::vector<Vertex>& mesh_vertex, const std::string name) {
+	Object* Object3DCreater::CreateBVHNode(const std::vector<Vertex>& mesh_vertex, const std::string name)
+	{
 		Object* obj = CreateEmpty(name);
 		std::shared_ptr<BasicInfo> info = obj->AddComponent<BasicInfo>();
 		info->SetObjectType(ObjectType::OT_BVH_Node);
@@ -180,8 +185,24 @@ namespace BlackPearl {
 		return obj;
 	}
 
+	Object* Object3DCreater::CreateTriangle(const std::vector<Vertex>& points, const std::string name)
+	{
+		Object* obj = CreateEmpty(name);
+		std::shared_ptr<BasicInfo> info = obj->AddComponent<BasicInfo>();
+		info->SetObjectType(ObjectType::OT_Triangle);
+		obj->AddComponent<Triangle>(points);
+		return obj;
+	}
 
-
+	Object* Object3DCreater::CreateRTXTransformNode(const glm::mat4& transform_mat, Object* bvh_node, const std::string name)
+	{
+		Object* obj = CreateEmpty(name);
+		
+		std::shared_ptr<BasicInfo> info = obj->AddComponent<BasicInfo>();
+		info->SetObjectType(ObjectType::OT_RTXTransformNode);
+		obj->AddComponent<RTXTransformNode>(transform_mat, bvh_node);
+		return obj;
+	}
 
 	////////////////////////LightCreater//////////////////////////////////
 	/////////////////////////////////////////////////////////////////////

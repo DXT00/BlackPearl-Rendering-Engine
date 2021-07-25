@@ -1557,6 +1557,7 @@
     <ClInclude Include="src\BlackPearl\RayTracing\Triangle.h" />
     <ClInclude Include="src\BlackPearl\RayTracing\Vertex.h" />
     <ClInclude Include="src\BlackPearl\SceneBuilder\SceneBuilder.h" />
+    <ClInclude Include="src\BlackPearl\Component\TransformComponent\RayTracingTransform.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\BlackPearl\AABB\AABB.cpp">
@@ -1845,5 +1846,6 @@
     <ClCompile Include="src\BlackPearl\RayTracing\Triangle.cpp" />
     <ClCompile Include="src\BlackPearl\RayTracing\Vertex.cpp" />
     <ClCompile Include="src\BlackPearl\SceneBuilder\SceneBuilder.cpp" />
+    <ClCompile Include="src\BlackPearl\Component\TransformComponent\RayTracingTransform.cpp" />
   </ItemGroup>
 </Project>

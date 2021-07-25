@@ -5,8 +5,8 @@ namespace BlackPearl {
 	class ParallelLight :public Light
 	{
 	public:
-		ParallelLight(EntityManager * entityManager, Entity::Id id, Props props = Props())
-			:Light(entityManager,id),m_Direction({ -0.2f, -1.0f, -0.3f }) {
+		ParallelLight(Props props = Props())
+			:Light(),m_Direction({ -0.2f, -1.0f, -0.3f }) {
 			SetProps(props);
 
 			Init();

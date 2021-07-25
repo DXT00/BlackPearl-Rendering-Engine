@@ -34,6 +34,7 @@ namespace BlackPearl {
 	void GenData_HV::ParseSceneData(Object* obj,std::vector<float>& packData) 
 	{
 		ObjectType type = obj->GetComponent<BasicInfo>()->GetObjectType();
+
 		if (type == OT_Group) {
 			ParseGroupData(obj, packData);
 		}
@@ -42,6 +43,12 @@ namespace BlackPearl {
 		}
 		else if (type == OT_BVH_Node) {
 			ParseBVHNodeData(obj, packData);
+		}
+		else if (type == OT_Triangle) {
+			ParseTriangleData(obj, packData);
+		}
+		else if (type == OT_RTXTransformNode) {
+			ParseRTXTransformNodeData(obj, packData);
 		}
 	}
 
@@ -151,11 +158,47 @@ namespace BlackPearl {
 			if (targetRightIdx == m_Hitable2Idx.end()) {
 				m_SceneData[curChildIt++] = m_SceneData.size();
 				ParseSceneData(bvh_node->GetComponent<BVHNode>()->GetRight(), packData);
-
 			}
 			else
 				m_SceneData[curChildIt++] = targetRightIdx->second;
 		}
+
+
+
+	}
+	void GenData_HV::ParseTriangleData(Object* triangle, std::vector<float>& packData)
+	{
+		if (triangle == NULL)
+			return;
+		if (m_Hitable2Idx.find(triangle) != m_Hitable2Idx.end())
+			return;
+		m_Hitable2Idx[triangle] = m_SceneData.size();
+
+		m_SceneData.push_back(OT_Triangle);
+		ParseMatData(triangle);
+
+		//size_t childSize = sphere->GetChildObjs().size();
+		m_SceneData.push_back(packData.size() / 4);
+
+		std::vector<Vertex>& points = triangle->GetComponent<Triangle>()->GetPoints();
+		for (size_t i = 0; i < 3; i++)
+		{
+			packData.push_back(points[i].position.x);
+			packData.push_back(points[i].position.y);
+			packData.push_back(points[i].position.z);
+			packData.push_back(points[i].texCoords.x);
+			packData.push_back(points[i].normal.x);
+			packData.push_back(points[i].normal.y);
+			packData.push_back(points[i].normal.z);
+			packData.push_back(points[i].texCoords.y);
+		}
+	
+	}
+	void GenData_HV::ParseRTXTransformNodeData(Object* rt_transform, std::vector<float>& packData)
+	{
+
+
+
 
 
 

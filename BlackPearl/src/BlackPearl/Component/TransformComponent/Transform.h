@@ -4,11 +4,11 @@
 #include "glm/glm.hpp"
 #include "glm/ext/matrix_transform.hpp"
 namespace BlackPearl {
-	class Transform :public Component<Transform>
+	class Transform : public Component<Transform>
 	{
 	public:
-		Transform(EntityManager* entityManager, Entity::Id id)
-			:Component(entityManager, id,Component::Type::Transform) {}
+		Transform()
+			:Component(Component::Type::Transform) {}
 		~Transform();
 
 		glm::vec3 GetPosition()const { return m_Position; }
