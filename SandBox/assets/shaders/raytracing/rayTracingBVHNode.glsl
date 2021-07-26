@@ -426,6 +426,12 @@ bool AABB_Hit(struct Ray ray,int idx){
 	return min_<max_;
 }
 
+void Ray_Transform(inout struct Ray ray, mat4 transform){
+	ray.dir = mat3(transform) * ray.dir;
+	vec4 originQ = transform * vec4(ray.origin, 1.0f);
+	ray.origin = originQ.xyz / originQ.w;
+}
+
 struct HitRst TraceScene(inout struct Ray ray,out struct HitRst finalHit){
 	finalHit = Hitrst_InVaild;
 	Stack_Push(3);
