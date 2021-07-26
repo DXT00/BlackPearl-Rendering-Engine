@@ -14,6 +14,8 @@ namespace BlackPearl {
 
 		Object* GetObj() const { return m_BVHObj; }
 		glm::mat4 GetTransformMatrix() const { return m_TransformMatrix; }
+		glm::mat4 GetInverseTransformMatrix() const { return m_InverseTransformMatrix; }
+		glm::mat4 GetNormalTransformMatrix() const { return m_NormalTransformMatrix; }
 
 	private:
 

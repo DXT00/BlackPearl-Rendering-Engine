@@ -485,7 +485,7 @@ bool Scatter_Lambertian(struct HitRst hitable, int matIdx){
 		float packDataIdx = At(TexData,texture_idx+1) *4.0;
 		albedo = vec3(At(PackData,packDataIdx),At(PackData,packDataIdx+1),At(PackData,packDataIdx+2));
 	}
-	else if(texture_type ==TexT_ImgTexture){
+	else if(texture_type == TexT_ImgTexture){
 
 	}
 	else{

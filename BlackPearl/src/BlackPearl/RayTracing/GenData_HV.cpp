@@ -6,6 +6,7 @@
 #include "BlackPearl/Component/MeshRendererComponent/MeshRenderer.h"
 #include "BlackPearl/Renderer/Mesh/Mesh.h"
 #include "BlackPearl/Component/BVHNodeComponent/BVHNode.h"
+#include "BlackPearl/Component/TransformComponent/RayTracingTransform.h"
 namespace BlackPearl {
 	GenData_HV::GenData_HV(){ }
 
@@ -196,12 +197,57 @@ namespace BlackPearl {
 	}
 	void GenData_HV::ParseRTXTransformNodeData(Object* rt_transform, std::vector<float>& packData)
 	{
+		if (rt_transform == NULL)
+			return;
+		if (m_Hitable2Idx.find(rt_transform) != m_Hitable2Idx.end())
+			return;
+
+		m_Hitable2Idx[rt_transform] = m_SceneData.size();
+		m_SceneData.push_back(OT_RTXTransformNode);
+		ParseMatData(rt_transform);
+
+		m_SceneData.push_back(packData.size() / 4);
 
 
+		glm::mat4 tfmMat4 = rt_transform->GetComponent<RTXTransformNode>()->GetTransformMatrix();
+		for (size_t col = 0; col < 4; col++) {
+			glm::vec4 colVec4 = tfmMat4[col];
+			for (size_t row = 0; row < 4; row++)
+				packData.push_back(colVec4[row]);
+		}
 
+		glm::mat4 invTfmMat4 = rt_transform->GetComponent<RTXTransformNode>()->GetInverseTransformMatrix();
+		for (size_t col = 0; col < 4; col++) {
+			glm::vec4 colVec4 = invTfmMat4[col];
+			for (size_t row = 0; row < 4; row++)
+				packData.push_back(colVec4[row]);
+		}
 
+		glm::mat3 normTfmMat3 = rt_transform->GetComponent<RTXTransformNode>()->GetNormalTransformMatrix();
+		for (size_t col = 0; col < 3; col++) {
+			glm::vec3 colVec3 = normTfmMat3[col];
+			for (size_t row = 0; row < 3; row++)
+				packData.push_back(colVec3[row]);
+			packData.push_back(0);
+		}
 
+		Object* bvh_obj = rt_transform->GetComponent<RTXTransformNode>()->GetObj();
+		if (bvh_obj == NULL) {
+			m_SceneData.push_back(-float(m_Hitable2Idx[rt_transform]));
+			return;
+		}
 
+		size_t childIt = m_SceneData.size();
+		m_SceneData.push_back(-1);
+		m_SceneData.push_back(-float(m_Hitable2Idx[rt_transform]));
+
+		auto targetChildIdx = m_Hitable2Idx.find(bvh_obj);
+		if (targetChildIdx == m_Hitable2Idx.end()) {
+			m_SceneData[childIt] = m_SceneData.size();
+			ParseSceneData(bvh_obj, packData);
+		}
+		else
+			m_SceneData[childIt] = targetChildIdx->second;
 	}
 	//°ÑMatData id Ìî³äµ½ m_SceneData
 	void GenData_HV::SetMat(std::map<std::shared_ptr<Material>, size_t> const mat2idx)
