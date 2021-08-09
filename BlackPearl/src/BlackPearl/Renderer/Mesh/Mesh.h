@@ -7,7 +7,9 @@
 #include "BlackPearl/Renderer/Material/MaterialColor.h"
 #include "BlackPearl/Renderer/Material/Material.h"
 #include "BlackPearl/RayTracing/Vertex.h"
+#include "BlackPearl/Renderer/VertexArray.h"
 #include <initializer_list>
+#include <memory>
 
 namespace BlackPearl {
 

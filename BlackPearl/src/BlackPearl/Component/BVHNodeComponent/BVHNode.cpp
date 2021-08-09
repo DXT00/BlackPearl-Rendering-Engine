@@ -6,6 +6,7 @@
 #include "BlackPearl/Core.h"
 
 namespace BlackPearl {
+	extern ObjectManager* g_objectManager;
 
 	BVHNode::BVHNode( const std::vector<Object*>& objs)
 		:Component(Component::Type::BVHNode)
@@ -17,6 +18,9 @@ namespace BlackPearl {
 		:Component(Component::Type::BVHNode) 
 	{
 		std::vector<Object*> trimesh = BuildTriMesh(mesh_vertex);
+		if (trimesh.size() == 0) {
+			return;
+		}
 		m_Box = Build(trimesh);
 	}
 
@@ -220,9 +224,9 @@ namespace BlackPearl {
 	std::vector<Object*> BVHNode::BuildTriMesh(const std::vector<Vertex>& mesh_vertex)
 	{
 		std::vector<Object*> triMesh;
-		std::shared_ptr<BVHNode> bvhNode;
 		if (mesh_vertex.size() % 3 != 0) {
-			m_Box.IsValid = false;
+			m_Box.SetInvalid();
+			GE_CORE_WARN("mesh_vertex.size() % 3 != 0, m_Box is invalid")
 			return std::vector<Object*>();
 		}
 		for (size_t i = 0; i < mesh_vertex.size(); i += 3)
@@ -234,93 +238,4 @@ namespace BlackPearl {
 		}
 		return triMesh;
 	}
-
-
-
-	AABB BVHNode::Build(const std::vector<Hitable*>::const_iterator begin, const std::vector<Hitable*>::const_iterator end)
-	{
-		size_t num = end - begin;
-		//计算场景的bounding box
-		size_t dim = 3;
-
-		if (num == 1) {
-			m_Left = (*begin)->GetBoundingBox();
-			m_Right = AABB::InValid;
-			m_Box = (*begin)->GetBoundingBox();
-			return m_Box;
-		}
-		else if (num == 2) {
-			m_Left = (*begin)->GetBoundingBox();
-			m_Right = (*end)->GetBoundingBox();
-			m_Box = m_Left + m_Right;
-			return m_Box;
-		}
-
-		for (auto hit = begin; hit != end; hit++)
-		{
-			m_Box.Expand((*hit)->GetBoundingBox());
-		}
-
-		for (int i = 0; i < dim; i++)
-		{
-			std::vector<std::vector<Hitable>> buckets(m_BucketsNum);
-			std::vector<AABB> boxOfBuckets(m_BucketsNum);
-			float boxLen = m_Box.GetExtent()[i];
-			float bucketLen = static_cast<float>(boxLen / num);
-
-			//分配场景中的物体到buckets中
-			for (auto hit = begin; hit != end; hit++)
-			{
-				AABB& obj_box = (*hit)->GetBoundingBox();
-				int bucketID = (obj_box.GetCenter().x - m_Box.GetMinP().x) / boxLen;
-				buckets[bucketID].push_back((*hit));
-				boxOfBuckets[bucketID].Expand(obj_box);
-
-			}
-
-			//计算最佳分割点
-			std::vector<AABB> leftBox(m_BucketsNum);
-			std::vector<AABB> rightBox(m_BucketsNum);
-			std::vector<size_t> leftAccNum(m_BucketsNum);
-			std::vector<size_t> rightAccNum(m_BucketsNum);
-
-			for (int i = 1; i <= m_BucketsNum; i++)
-			{
-				leftBox[i] = leftBox[i - 1] + boxOfBuckets[i - 1];
-				leftAccNum[i] = leftAccNum[i - 1] + buckets[i].size();
-				rightBox[i] = rightBox[i - 1] + boxOfBuckets[m_BucketsNum - i];
-				rightAccNum[i] = rightAccNum[i - 1] + buckets[m_BucketsNum - 1].size();
-
-
-			}
-			float minCost = FLT_MAX;
-			int partitionIdx = 0;
-			float curCost;
-			for (int i = 1; i <= m_BucketsNum; i++) {
-				curCost = leftBox[i].GetSurfaceArea() * leftAccNum[i] + rightBox[m_BucketsNum - i].GetSurfaceArea() * rightAccNum[m_BucketsNum - i];
-				if (curCost < minCost) {
-					minCost = curCost;
-					partitionIdx = i;
-				}
-			}
-
-			//递归分割BVH Node
-			std::vector<Hitable> leftNodes;
-			std::vector<Hitable> rightNodes;
-
-			for (int i = 0; i < m_BucketsNum; i++)
-			{
-
-				for (auto obj : buckets[i])
-				{
-					(i < partitionIdx) ? leftNodes.push_back(obj) : rightNodes.push_back(obj);
-
-				}
-			}
-			m_Left = Build(leftNodes);
-			m_Right = Build(rightNodes);
-
-		}
-	}
-
 }

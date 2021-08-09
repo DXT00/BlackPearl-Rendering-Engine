@@ -202,7 +202,6 @@ namespace BlackPearl {
 	//TODO:: Animation Model Vertex未处理
 	Mesh Model::ProcessMesh(aiMesh* aimesh, std::vector<Vertex>& v_vertex)
 	{
-		Vertex vertex;
 		std::vector<float> vertices;
 		std::vector<unsigned int> verticesIntjointIdx;
 		std::vector<float> verticesfloatWeight;
@@ -231,6 +230,8 @@ namespace BlackPearl {
 
 		for (unsigned int i = 0; i < aimesh->mNumVertices; i++)
 		{
+			Vertex vertex;
+
 			glm::vec3 pos;
 			pos.x = aimesh->mVertices[i].x;
 			pos.y = aimesh->mVertices[i].y;
@@ -281,7 +282,8 @@ namespace BlackPearl {
 				glmInsertVector(bitTangent, vertices);
 				vertex.tangent = tangent;
 				vertex.bitTangent = bitTangent;
-			}				
+			}	
+			v_vertex.push_back(vertex);
 		}
 
 
@@ -341,7 +343,6 @@ namespace BlackPearl {
 			return Mesh(m_ModelMaterials[aimesh->mMaterialIndex], indexBuffer, { vertexBuffer,vertexBuffer1,vertexBuffer2 });
 		}
 
-		v_vertex.push_back(vertex);
 		return Mesh(m_ModelMaterials[aimesh->mMaterialIndex], indexBuffer, { vertexBuffer });
 
 

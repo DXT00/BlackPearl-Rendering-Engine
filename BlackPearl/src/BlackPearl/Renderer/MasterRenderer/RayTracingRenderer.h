@@ -20,10 +20,11 @@ namespace BlackPearl {
 		void InitGroupData(Group* group);
 		void InitScene(std::shared_ptr<GenData> scene);
 		void RenderGroup(MainCamera* mainCamera, Object* group);
-		void RenderBVHNode(MainCamera* mainCamera, Object* bvh_node);
+		void RenderBVHNode(MainCamera* mainCamera);
 
 
 	private:
+		std::shared_ptr<SceneBuilder> m_SceneBuilder;
 		std::shared_ptr<Shader> m_BasicShader;
 		std::shared_ptr<Shader> m_BasicSystemShader;
 		std::shared_ptr<Shader> m_MaterialShader;

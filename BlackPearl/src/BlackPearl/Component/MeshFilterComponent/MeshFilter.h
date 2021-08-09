@@ -5,8 +5,8 @@ namespace BlackPearl {
 	class MeshFilter :public Component<MeshFilter>
 	{
 	public:
-		MeshFilter(EntityManager* entityManager, Entity::Id id)
-			:Component(entityManager, id, Component::Type::MeshFilter) {}
+		MeshFilter()
+			:Component(Component::Type::MeshFilter) {}
 		~MeshFilter();
 		std::vector<float>  GetVertices() { return m_Vertices; }
 		std::vector<unsigned int> GetIndices() { return m_Indices;}

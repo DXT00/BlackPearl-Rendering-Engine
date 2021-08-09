@@ -118,9 +118,9 @@ namespace BlackPearl {
 		transformComponent->SetInitPosition({ 0.0f, 0.0f, 0.0f });
 		transformComponent->SetInitRotation({ 0.0,180.0,0.0 });
 		obj->AddComponent<MeshRenderer>(model, transformComponent->GetTransformMatrix());
-		if (addBondingBox) {
+		/*if (addBondingBox) {
 			obj->AddComponent<BoundingBox>(model->GetMeshes());
-		}
+		}*/
 		return obj;
 	}
 
@@ -182,6 +182,8 @@ namespace BlackPearl {
 		std::shared_ptr<BasicInfo> info = obj->AddComponent<BasicInfo>();
 		info->SetObjectType(ObjectType::OT_BVH_Node);
 		obj->AddComponent<BVHNode>(mesh_vertex);
+		AABB box = obj->GetComponent<BVHNode>()->GetRootBox();
+		obj->AddComponent<BoundingBox>(box);
 		return obj;
 	}
 
@@ -191,6 +193,9 @@ namespace BlackPearl {
 		std::shared_ptr<BasicInfo> info = obj->AddComponent<BasicInfo>();
 		info->SetObjectType(ObjectType::OT_Triangle);
 		obj->AddComponent<Triangle>(points);
+		AABB box = obj->GetComponent<Triangle>()->GetBoundingBox();
+		obj->AddComponent<BoundingBox>(box);
+
 		return obj;
 	}
 

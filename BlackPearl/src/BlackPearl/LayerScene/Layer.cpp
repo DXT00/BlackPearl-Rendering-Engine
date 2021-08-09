@@ -20,10 +20,6 @@
 namespace BlackPearl {
 
 	static int buttonNum = 0;
-
-	//bool isBackGroundObj=false;
-
-
 	void Layer::OnImguiRender()
 	{
 		ImGui::Begin("Settings");
@@ -1015,7 +1011,7 @@ namespace BlackPearl {
 	}
 	Object* Layer::CreateBVHNode(const std::vector<Object*>& objs, const std::string name)
 	{
-		Object* obj = g_objectManager->CreateBVHNode(name);
+		Object* obj = g_objectManager->CreateBVHNode(objs,name);
 		m_ObjectsList.push_back(obj);
 		return obj;
 	}
@@ -1097,7 +1093,7 @@ namespace BlackPearl {
 	}
 	Object* Layer::CreateModel(const std::string& modelPath, const std::string& shaderPath, const bool isAnimated, const std::string& name)
 	{
-		Object* obj = g_objectManager->CreateModel(modelPath, shaderPath, isAnimated, name);
+		Object* obj = g_objectManager->CreateModel(modelPath, shaderPath, isAnimated, false, name);
 		m_ObjectsList.push_back(obj);
 		return obj;
 	}

@@ -6,9 +6,10 @@
 
 #include "imgui/imgui.h"
 #include "imgui/imfilebrowser.h"
-#include "BlackPearl/Math/Math.h"
 #include <glm/gtc/type_ptr.hpp>
+
 class RayTracingLayer :public BlackPearl::Layer {
+
 public:
 
 	RayTracingLayer(const std::string& name)
@@ -66,8 +67,8 @@ public:
 			bunny->GetComponent<BlackPearl::Transform>()->SetInitRotation({ 0.0f,-30.0f,0.0f });
 			bunny->GetComponent<BlackPearl::MeshRenderer>()->SetIsBackGroundObjects(true);
 
-			BlackPearl::Object*  bunny_bvh_node = BlackPearl::g_objectManager->CreateBVHNode(\
-				bunny->GetComponent<BlackPearl::MeshRenderer>()->GetModel()->GetMeshVertex());
+			std::vector<BlackPearl::Vertex> bunny_verteices = bunny->GetComponent<BlackPearl::MeshRenderer>()->GetModel()->GetMeshVertex();
+			BlackPearl::Object*  bunny_bvh_node = BlackPearl::g_objectManager->CreateBVHNode(bunny_verteices);
 			m_BunnyRTXTransformNode = BlackPearl::g_objectManager->CreateRTXTransformNode(bunny->GetComponent<BlackPearl::Transform>()->GetTransformMatrix(),bunny_bvh_node);
 
 			m_SceneBuilder->CreateSceneData(m_BunnyRTXTransformNode);
@@ -134,7 +135,7 @@ public:
 	//	m_RayTracingRenderer->Render();
 	//	m_RayTracingRenderer->RenderMaterialSpheres(m_MainCamera);
 		//m_RayTracingRenderer->RenderGroup(m_MainCamera, m_Group->GetRoot());
-		m_RayTracingRenderer->RenderBVHNode(m_MainCamera, m_BVHNode);
+		m_RayTracingRenderer->RenderBVHNode(m_MainCamera);
 
 	
 

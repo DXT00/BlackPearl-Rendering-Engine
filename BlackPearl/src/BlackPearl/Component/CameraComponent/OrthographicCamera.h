@@ -8,8 +8,8 @@ namespace BlackPearl {
 	class OrthographicCamera :public Camera
 	{
 	public:
-		OrthographicCamera(EntityManager * entityManager, Entity::Id id, const ViewMatrixProps &viewMatrixProps = ViewMatrixProps())
-			:Camera(entityManager,id),m_Left(-1.6f), m_Right(1.6f), m_Bottom(-0.9f), m_Top(0.9f) {
+		OrthographicCamera(const ViewMatrixProps &viewMatrixProps = ViewMatrixProps())
+			:Camera(),m_Left(-1.6f), m_Right(1.6f), m_Bottom(-0.9f), m_Top(0.9f) {
 		
 			m_ProjectionMatrix = glm::ortho(m_Left, m_Right, m_Bottom, m_Top, -1.0f, 1.0f);
 

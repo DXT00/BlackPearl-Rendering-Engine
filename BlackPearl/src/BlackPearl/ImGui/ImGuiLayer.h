@@ -6,8 +6,8 @@ namespace BlackPearl {
 	class ImGuiLayer :public Layer
 	{
 	public:
-		ImGuiLayer(const std::string& name, ObjectManager *objectManager)
-			:Layer(name, objectManager) {}
+		ImGuiLayer(const std::string& name)
+			:Layer(name) {}
 		virtual ~ImGuiLayer() = default;
 
 		virtual void OnAttach() override;

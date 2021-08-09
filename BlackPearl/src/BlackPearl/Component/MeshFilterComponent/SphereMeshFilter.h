@@ -5,8 +5,8 @@ namespace BlackPearl {
 	class SphereMeshFilter:public MeshFilter
 	{
 	public:
-		SphereMeshFilter(EntityManager * entityManager, Entity::Id id, float radius, unsigned int stackCount,unsigned int sectorCount)
-			:MeshFilter(entityManager, id) {
+		SphereMeshFilter(float radius, unsigned int stackCount,unsigned int sectorCount)
+			:MeshFilter() {
 			m_Radius = radius;
 			m_StackCount = stackCount;
 			m_SectorCount = sectorCount;

@@ -25,8 +25,8 @@ namespace BlackPearl {
 	{
 	public:
 
-		BasicInfo(EntityManager* entityManager, Entity::Id id)
-			:Component(entityManager, id, Component::Type::BasicInfo) {
+		BasicInfo()
+			:Component(Component::Type::BasicInfo) {
 
 			m_Type = Component::Type::BasicInfo;
 			m_ObjType = ObjectType::Init;

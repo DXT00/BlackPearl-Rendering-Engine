@@ -1,28 +1,27 @@
 #pragma once
 #include <unordered_map>
 #include <string>
-#include "BlackPearl/Entity/Entity.h"
 #include "BlackPearl/Object/Object.h"
 #include "BlackPearl/ObjectCreater/ObjectCreater.h"
 #include "BlackPearl/Component/LightComponent/Light.h"
 #include "BlackPearl/Component/LightComponent/LightSources.h"
 #include "BlackPearl/MainCamera/MainCamera.h"
+#include "BlackPearl/RayTracing/Vertex.h"
 namespace BlackPearl {
 	class ObjectManager
 	{
 	public:
-		ObjectManager(EntityManager* entityManager)
-			:m_EntityManager(entityManager) {
-			m_ObjectCreater   = DBG_NEW ObjectCreater(entityManager);
-			m_Object3DCreater = DBG_NEW Object3DCreater(entityManager);
-			m_Object2DCreater = DBG_NEW Object2DCreater(entityManager);
-			m_LightCreater    = DBG_NEW LightCreater(entityManager);
+		ObjectManager()
+		{
+			m_ObjectCreater   = DBG_NEW ObjectCreater();
+			m_Object3DCreater = DBG_NEW Object3DCreater();
+			m_Object2DCreater = DBG_NEW Object2DCreater();
+			m_LightCreater    = DBG_NEW LightCreater();
 			//m_CameraCreater   = new CameraCreater(entityManager);
 		
 		}
 		~ObjectManager() {
 			DestroyObjects();
-			GE_SAVE_DELETE(m_EntityManager);
 			GE_SAVE_DELETE(m_ObjectCreater);
 			GE_SAVE_DELETE(m_Object3DCreater);
 			GE_SAVE_DELETE(m_Object2DCreater);
@@ -56,7 +55,6 @@ namespace BlackPearl {
 		void DestroyObjects();
 
 	private:
-		EntityManager* m_EntityManager;
 		std::vector<Object*> m_Objs;
 
 		ObjectCreater*   m_ObjectCreater;

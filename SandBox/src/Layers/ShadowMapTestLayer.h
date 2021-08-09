@@ -18,8 +18,8 @@ class ShadowMapTestLayer :public BlackPearl::Layer {
 
 public:
 
-	ShadowMapTestLayer(const std::string& name, BlackPearl::ObjectManager *objectManager)
-		: Layer(name, objectManager)
+	ShadowMapTestLayer(const std::string& name)
+		: Layer(name)
 	{
 
 	/*	m_CameraObj = CreateCamera();

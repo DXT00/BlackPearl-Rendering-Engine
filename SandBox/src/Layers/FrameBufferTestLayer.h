@@ -8,8 +8,8 @@
 class FrameBufferTestLayer :public BlackPearl::Layer {
 public:
 
-	FrameBufferTestLayer(const std::string& name, BlackPearl::ObjectManager *objectManager)
-		: Layer(name, objectManager)
+	FrameBufferTestLayer(const std::string& name)
+		: Layer(name)
 	{
 		
 		

@@ -5,6 +5,8 @@
 #include "BlackPearl/Log.h"
 #include "BlackPearl/LayerScene/Layer.h"
 
+#include "BlackPearl/Math/Math.h"
+
 #include "BlackPearl/Renderer/Shader/Shader.h"
 #include "BlackPearl/Renderer/Buffer.h"
 #include "BlackPearl/Renderer/Material/CubeMapTexture.h"

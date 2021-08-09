@@ -4,8 +4,8 @@ namespace BlackPearl {
 	class SkyBoxMeshFilter :public MeshFilter
 	{
 	public:
-		SkyBoxMeshFilter(EntityManager * entityManager, Entity::Id id)
-			:MeshFilter(entityManager, id) {
+		SkyBoxMeshFilter()
+			:MeshFilter() {
 			Init();
 		}
 		void Init();

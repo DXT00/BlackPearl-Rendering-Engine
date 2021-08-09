@@ -18,6 +18,12 @@ namespace BlackPearl {
 
 	}
 
+	void AABB::SetInvalid()
+	{
+		m_IsValid = false;
+		*this = InValid;
+	}
+
 	void AABB::SetP(const glm::vec3& minP, const glm::vec3& maxP)
 	{
 	}

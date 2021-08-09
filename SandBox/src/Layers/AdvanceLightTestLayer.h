@@ -10,8 +10,8 @@
 class AdvanceLightTestLayer :public BlackPearl::Layer {
 public:
 
-	AdvanceLightTestLayer(const std::string& name, BlackPearl::ObjectManager *objectManager)
-		: Layer(name, objectManager)
+	AdvanceLightTestLayer(const std::string& name)
+		: Layer(name)
 	{
 
 		m_MasterRenderer = DBG_NEW BlackPearl::MasterRenderer(m_MainCamera->GetObj());

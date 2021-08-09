@@ -6,7 +6,7 @@ namespace BlackPearl {
 	
 	const Entity::Id Entity::s_INVALID;
 
-
+	extern EntityManager* g_entityManager;
 	inline bool Entity::Vaild()
 	{
 		return g_entityManager && g_entityManager->Valid(m_Id);

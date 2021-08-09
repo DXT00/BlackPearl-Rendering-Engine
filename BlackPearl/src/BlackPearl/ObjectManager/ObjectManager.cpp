@@ -93,7 +93,7 @@ namespace BlackPearl {
 		m_Objs.push_back(obj);
 		return obj;
 	}
-	Object* ObjectManager::CreateBVHNode(const std::vector<Vertex>& mesh_vertex, const std::string name = "BVHNode") {
+	Object* ObjectManager::CreateBVHNode(const std::vector<Vertex>& mesh_vertex, const std::string name) {
 		Object* obj = m_Object3DCreater->CreateBVHNode(mesh_vertex, name);
 		m_Objs.push_back(obj);
 		return obj;

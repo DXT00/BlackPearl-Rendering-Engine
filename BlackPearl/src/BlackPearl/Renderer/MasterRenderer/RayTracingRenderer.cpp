@@ -278,25 +278,25 @@ namespace BlackPearl {
 		DrawObject(m_Quad, m_ScreenShader);
 	}
 
-	void RayTracingRenderer::RenderBVHNode(MainCamera* mainCamera, Object* bvh_node) {
+	void RayTracingRenderer::RenderBVHNode(MainCamera* mainCamera) {
 
-		m_GroupShader->Bind();
-		m_GroupShader->SetUniform1i("origin_curRayNum", 0);
-		m_GroupShader->SetUniform1i("dir_tMax", 1);
-		m_GroupShader->SetUniform1i("color_time", 2);
-		m_GroupShader->SetUniform1i("RTXRst", 3);
-		m_GroupShader->SetUniform1f("u_rayNumMax", m_RayNumMax);
-		m_GroupShader->SetUniformVec2f("u_Screen", glm::vec2(Configuration::WindowWidth, Configuration::WindowHeight));
+		m_BVHNodeShader->Bind();
+		m_BVHNodeShader->SetUniform1i("origin_curRayNum", 0);
+		m_BVHNodeShader->SetUniform1i("dir_tMax", 1);
+		m_BVHNodeShader->SetUniform1i("color_time", 2);
+		m_BVHNodeShader->SetUniform1i("RTXRst", 3);
+		m_BVHNodeShader->SetUniform1f("u_rayNumMax", m_RayNumMax);
+		m_BVHNodeShader->SetUniformVec2f("u_Screen", glm::vec2(Configuration::WindowWidth, Configuration::WindowHeight));
 
-		m_GroupShader->SetUniformVec3f("u_CameraUp", mainCamera->Up());
-		m_GroupShader->SetUniformVec3f("u_CameraFront", mainCamera->Front());
-		m_GroupShader->SetUniformVec3f("u_CameraRight", mainCamera->Right());
-		m_GroupShader->SetUniform1f("u_CameraFov", mainCamera->Fov());
+		m_BVHNodeShader->SetUniformVec3f("u_CameraUp", mainCamera->Up());
+		m_BVHNodeShader->SetUniformVec3f("u_CameraFront", mainCamera->Front());
+		m_BVHNodeShader->SetUniformVec3f("u_CameraRight", mainCamera->Right());
+		m_BVHNodeShader->SetUniform1f("u_CameraFov", mainCamera->Fov());
 
-		m_GroupShader->SetUniform1i("SceneData", 4);
-		m_GroupShader->SetUniform1i("MatData", 5);
-		m_GroupShader->SetUniform1i("TexData", 6);
-		m_GroupShader->SetUniform1i("PackData", 7);
+		m_BVHNodeShader->SetUniform1i("SceneData", 4);
+		m_BVHNodeShader->SetUniform1i("MatData", 5);
+		m_BVHNodeShader->SetUniform1i("TexData", 6);
+		m_BVHNodeShader->SetUniform1i("PackData", 7);
 
 		for (int i = 0; i < m_LoopNum; i++)
 		{
@@ -316,17 +316,13 @@ namespace BlackPearl {
 			m_TexDataTex->Bind(6);
 			m_PackDataTex->Bind(7);
 
+			m_BVHNodeShader->SetUniform1f("u_rdSeed[0]", Math::Rand_F());
+			m_BVHNodeShader->SetUniform1f("u_rdSeed[1]", Math::Rand_F());
+			m_BVHNodeShader->SetUniform1f("u_rdSeed[2]", Math::Rand_F());
+			m_BVHNodeShader->SetUniform1f("u_rdSeed[3]", Math::Rand_F());
 
-
-
-
-			m_GroupShader->SetUniform1f("u_rdSeed[0]", Math::Rand_F());
-			m_GroupShader->SetUniform1f("u_rdSeed[1]", Math::Rand_F());
-			m_GroupShader->SetUniform1f("u_rdSeed[2]", Math::Rand_F());
-			m_GroupShader->SetUniform1f("u_rdSeed[3]", Math::Rand_F());
-
-			m_GroupShader->Bind();
-			DrawObject(m_Quad, m_GroupShader);
+			m_BVHNodeShader->Bind();
+			DrawObject(m_Quad, m_BVHNodeShader);
 			m_ReadBuffer = m_WriteBuffer;
 			m_WriteBuffer = !m_ReadBuffer;
 

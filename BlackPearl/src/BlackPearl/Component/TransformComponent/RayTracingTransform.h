@@ -1,10 +1,11 @@
 #pragma once
 #include "BlackPearl/Component/TransformComponent/Transform.h"
 namespace BlackPearl {
+	class Object;
 	class RTXTransformNode :public Component<RTXTransformNode>
 	{
 	public:
-		RTXTransformNode(glm::mat4 transform,Object* bvh_obj)
+		RTXTransformNode(glm::mat4 transform, Object* bvh_obj)
 			:Component(Component::Type::RTXTransformNode),
 			m_BVHObj(bvh_obj),
 			m_TransformMatrix(transform),

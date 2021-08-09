@@ -1,12 +1,9 @@
 #pragma once
+#include <string>
 #include "BlackPearl/Entity/Entity.h"
 #include "BlackPearl/Component/BaseComponent.h"
-#include "BlackPearl/Component/Component.h"
-#include "BlackPearl/Application.h"
-
-#include <string>
 namespace BlackPearl {
-
+	extern EntityManager* g_entityManager;
 	class Object 
 	{
 	public:
@@ -28,8 +25,9 @@ namespace BlackPearl {
 
 		inline std::string GetName() { return m_Name; }
 		inline std::string GetFrontName() { return m_FrontName; }
-
+		Entity::Id GetId() const { return m_Entity->GetId(); }
 		inline void SetName(std::string name) { m_Name = name; }
+
 		inline bool Vaild() {
 			return g_entityManager && g_entityManager->Valid(m_Entity->GetId());
 		}
@@ -70,7 +68,6 @@ namespace BlackPearl {
 		template<typename C>
 		bool HasComponent() const
 		{
-			//GE_ASSERT(Valid(), "invalid entity" + m_Id);
 			size_t famliy = GetComponentFamliy<C>();
 			if (m_ComponentMask[famliy])
 				return true;
@@ -86,7 +83,6 @@ namespace BlackPearl {
 			const BaseComponent::Family famliy = GetComponentFamliy<C>();
 			m_ComponentMask.reset(famliy);
 			m_Components[C::Famliy()] = nullptr;
-
 		}
 
 		template<typename C>

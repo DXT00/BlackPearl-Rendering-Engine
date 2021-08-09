@@ -1,5 +1,5 @@
 #type vertex
-#version 430 core
+#version 330 core
 layout(location = 0) in vec3 aPos;
 layout(location = 1) in vec3 aNormal;
 layout(location = 2) in vec2 aTexCoords;
@@ -13,7 +13,7 @@ void main(){
 }
 
 #type fragment
-#version 430 core
+#version 330 core
 
 #define ObjectNum 5
 const vec3 skyColor = vec3(0.5,0.5,1.0);
@@ -38,6 +38,7 @@ const float HitableType_Volume = 2.0;
 const float HitableType_Sphere = 3.0;
 const float HitableType_TriMesh = 4.0;
 const float HitableType_Triangle = 5.0;
+const float HitableType_Transform = 6.0;
 
 
 const float MatType_Lambertian = 0.0;
@@ -107,7 +108,7 @@ bool Scatter_Metal(struct HitRst hitable, int matIdx);
 float FresnelSchlick(vec3 viewDir, vec3 halfway, float ratioNtNi);
 void Ray_Update(vec3 origin, vec3 dir, vec3 attenuation);
 void RayTrace();
-
+void Vertex_Load(float idx, out struct Vertex vertex);
 void Camera_GenRay();
 
 
@@ -115,7 +116,7 @@ void Camera_GenRay();
 struct Vertex Vertex_InValid = struct Vertex(vec3(0),vec3(0),vec2(0));
 
 
-struct HitRst Hitrst_InVaild = struct HitRst(false,Vertex_InValid,-1);
+struct HitRst Hitrst_InVaild = struct HitRst(false,Vertex_InValid,-1,0);
 
 uniform sampler2D SceneData;
 uniform sampler2D MatData;
@@ -131,12 +132,27 @@ float Stack_Pop();
 void Stack_Acc();
 
 
-void Vertex_Load(float idx, out struct Vertex vertex){
-	
-	
 
+
+vec4 Intersect_RayTri(vec3 e, vec3 d, vec3 a, vec3 b, vec3 c){
+	mat3 equation_A = mat3(vec3(a-b), vec3(a-c), d);
+
+	//平行
+	if (abs(determinant(equation_A)) < 0.00001)
+		return vec4(0);
+
+	vec3 equation_b = a - e;
+	vec3 equation_X = inverse(equation_A) * equation_b;
+	float alpha = 1 - equation_X[0] - equation_X[1];
+	return vec4(alpha, equation_X);
 }
 
+void Vertex_Interpolate(vec3 abg, struct Vertex A, struct Vertex B, struct Vertex C, out struct Vertex vert){
+	vert.uv[0] = dot(abg, vec3(A.uv[0], B.uv[0], C.uv[0]));
+	vert.uv[1] = dot(abg, vec3(A.uv[1], B.uv[1], C.uv[1]));
+	vert.pos = abg[0] * A.pos + abg[1] * B.pos + abg[2] * C.pos;
+	vert.normal = abg[0] * A.normal + abg[1] * B.normal + abg[2] * C.normal;
+}
 
 void RayIn_Triangle(float idx, inout struct Ray ray,inout struct HitRst hitRst){
 	struct Vertex A, B, C;
@@ -346,7 +362,7 @@ float At(sampler2D data, float idx){
 }
 
 //struct HitRst JudgeHitSphere(float idx){
-void RayIn_Sphere(float idx, inout struct Ray ray, inout struct HitRst hisRst) {
+void RayIn_Sphere(float idx, inout struct Ray ray, inout struct HitRst hitRst) {
 	float has_material = At(SceneData, idx+2);
 	float matIdx = At(SceneData, idx+1);
 	float packIdx = At(SceneData, idx+3) * 4.0;
@@ -362,13 +378,13 @@ void RayIn_Sphere(float idx, inout struct Ray ray, inout struct HitRst hisRst) {
     float discriminant = b * b - a * c;
     
     if (discriminant <= 0 || a == 0 || radius == 0)
-        return hitRst;
+        return;
     
     float t = (-b - sqrt(discriminant)) / a;
     if (t > gRay.tMax || t < tMin) {
         t = (-b + sqrt(discriminant)) / a;
         if (t > gRay.tMax || t < tMin)
-            return hitRst;
+            return;
     } 
     gRay.tMax = t;
     hitRst.hit = true;
@@ -377,9 +393,6 @@ void RayIn_Sphere(float idx, inout struct Ray ray, inout struct HitRst hisRst) {
   //  hitRst.vertex.uv = Sphere2UV(hitRst.vertex.normal);
     hitRst.matIdx = matIdx;
     
-    return hitRst;
-
-
 
 }
 void Ray_Update(vec3 origin, vec3 dir, vec3 attenuation){
@@ -389,18 +402,42 @@ void Ray_Update(vec3 origin, vec3 dir, vec3 attenuation){
 	gRay.tMax = FLTMAX;
 }
 
-vec3 GetPackData(float idx){
-	vec3 packData;
-	packData.x = At(PackData,idx*4);
-	packData.y = At(PackData,idx*4+1);
-	packData.z = At(PackData,idx*4+2);
-	return packData;
+void GetPackData(float idx, out vec4 v4){
+	v4.x = At(PackData,idx);
+	v4.y = At(PackData,idx+1);
+	v4.z = At(PackData,idx+2);
+	v4.w = At(PackData,idx+3);
+
 }
 
-bool AABB_Hit(struct Ray ray,int idx){
+void GetPackData(float idx, out mat4 m){
+	GetPackData(idx,m[0]);
+	GetPackData(idx+4.0,m[1]);
+	GetPackData(idx+8.0,m[2]);
+	GetPackData(idx+12.0,m[3]);
+}
+
+
+void Vertex_Load(float idx, out struct Vertex vert){
+	vec4 pos_u, normal_v;
+	GetPackData(idx*4.0, pos_u);
+	GetPackData((idx+1)*4.0, normal_v);
+
+	vert.pos    = pos_u.xyz;
+	vert.normal = normal_v.xyz;
+	vert.uv     = vec2(pos_u[3], normal_v[3]);
+
+}
+
+bool AABB_Hit(struct Ray ray,float idx){
 	
-	vec3 minP = GetPackData(idx);
-	vec3 maxP = GetPackData(idx+1);
+	vec4 v4_min, v4_max;
+	vec3 minP, maxP;
+	GetPackData(idx*4.0,v4_min);
+	GetPackData((idx+1.0)*4.0,v4_max);
+
+	minP = v4_min.xyz;
+	maxP = v4_max.xyz;
 	
 	vec3 dir = ray.dir;
 	vec3 org = ray.origin;
@@ -413,42 +450,77 @@ bool AABB_Hit(struct Ray ray,int idx){
 				return false;
 		}
 		else {
-			t0= (m_MinP[i] - org[i]) / dir[i];
-			t1= (m_MaxP[i] - org[i]) / dir[i];
- 
-			if (dir[i] < 0.0f)
-				swap(t0, t1);
+			float t0= (minP[i] - org[i]) / dir[i];
+			float t1= (maxP[i] - org[i]) / dir[i];
+			
+			if (dir[i] < 0.0f){
+				float tmp = t0;
+				t0 = t1;
+				t1 = tmp;
 
-				min_ = max(tMin,t0);
-				max_ = min(tMax,t1);
 			}
+			min_ = max(min_,t0);
+			max_ = min(max_,t1);
+		}
 	}
 	return min_<max_;
 }
 
 void Ray_Transform(inout struct Ray ray, mat4 transform){
-	ray.dir = mat3(transform) * ray.dir;
+	ray.dir = mat3(transform[0].xyz,transform[1].xyz,transform[2].xyz) * ray.dir;
 	vec4 originQ = transform * vec4(ray.origin, 1.0f);
 	ray.origin = originQ.xyz / originQ.w;
 }
+//
+//void Vertex_Transform(inout struct Vertex vert, mat4 transform){
+//	vec4 posQ = transform * vec4(vert.pos, 1.0);
+//	vert.pos = posQ.xyz / posQ.w;
+//	mat3 mat=mat3(transform[0].xyz,transform[1].xyz,transform[2].xyz);
+//	vert.normal = normalize(transpose(inverse(mat)) * vert.normal);
+//}
+//
+void Vertex_Transform(inout struct Vertex vert, mat4 transform , mat3 normTfm){
+	vec4 posQ = transform * vec4(vert.pos, 1.0);
+	vert.pos = posQ.xyz / posQ.w;
+	vert.normal = normalize(normTfm * vert.normal);
+}
 
-struct HitRst TraceScene(inout struct Ray ray,out struct HitRst finalHit){
-	finalHit = Hitrst_InVaild;
+struct HitRst TraceScene(inout struct Ray ray,out struct HitRst finalHitRst){
+	finalHitRst = Hitrst_InVaild;
 	Stack_Push(3);
 	while(!Stack_Empty()){
 		float pIdx = Stack_Top();
 		float idx = At(SceneData, pIdx);
 		if(idx <= 0.0){
 			idx = -idx;
-			float type = At(SceneData, idx);
+			float type = At(SceneData,idx);
 			if(type == HitableType_Group || type == HitableType_BVH || type == HitableType_TriMesh){
+				float matIdx = At(SceneData,idx+1);
 				if(matIdx == -1.0)
 					continue;
 
 				float in_tMax = Stack_Pop();
-				if (ray.tMax < in_tMax && finalHit.isMatCoverable == 1.0){
-					finalHit.matIdx = matIdx;
-					finalHit.isMatCoverable = At(SceneData, idx+2);
+				if (ray.tMax < in_tMax && finalHitRst.isMatCoverable == 1.0){
+					finalHitRst.matIdx = matIdx;
+					finalHitRst.isMatCoverable = At(SceneData, idx+2);
+				}
+			}
+			else if (type == HitableType_Transform) {
+				float in_tMax = Stack_Pop();// 进入节点时的tMax
+				mat4 tfmMat4;
+				GetPackData(At(SceneData,idx+3)*4.0, tfmMat4);
+				Ray_Transform(ray, tfmMat4);
+				if(ray.tMax < in_tMax){
+					mat4 normTfmMat3;
+					GetPackData((At(SceneData,idx+3)+8.0)*4.0, normTfmMat3);
+					Vertex_Transform(finalHitRst.vertex, tfmMat4, mat3(normTfmMat3[0].xyz,normTfmMat3[1].xyz,normTfmMat3[2].xyz));
+					if(finalHitRst.isMatCoverable == 1.0){
+						float matIdx = At(SceneData, idx+1);
+						if(matIdx != -1.0){
+							finalHitRst.matIdx = matIdx;
+							finalHitRst.isMatCoverable = At(SceneData, idx+2);
+						}
+					}
 				}
 			}
 			continue;
@@ -457,7 +529,7 @@ struct HitRst TraceScene(inout struct Ray ray,out struct HitRst finalHit){
 		Stack_Push(pIdx+1.0);
 		float type = At(SceneData,idx);
 		if(type == HitableType_Sphere)
-			RayIn_Sphere(idx, ray, finalHit);
+			RayIn_Sphere(idx, ray, finalHitRst);
 		else if(type == HitableType_Group){
 			float matIdx = At(SceneData,idx+1.0);
 			if(matIdx != -1.0)
@@ -472,14 +544,22 @@ struct HitRst TraceScene(inout struct Ray ray,out struct HitRst finalHit){
 				Stack_Push(idx+4);
 			}
 		}
+		else if(type == HitableType_Transform){
+			mat4 invMat;
+			GetPackData((At(SceneData,idx+3)+4)*4,invMat);
+			Ray_Transform(ray,invMat);
+			Stack_Push(ray.tMax);
+			Stack_Push(idx+4);
+
+		}
 		else if(type == HitableType_Triangle){
-			RayIn_Triangle(idx, ray, finalHit);
+			RayIn_Triangle(idx, ray, finalHitRst);
 		}
 		else if(type == HitableType_Volume){
-			//RayIn_Volume(idx, ray, finalHit);
+			//RayIn_Volume(idx, ray, finalHitRst);
 		}
-
-	return finalHit;
+	}
+	return finalHitRst;
 }
 
 bool Scatter_Lambertian(struct HitRst hitable, int matIdx){
@@ -533,23 +613,28 @@ void RayTrace(){
 	}
 
 }
+
 bool Stack_Empty(){
 	return _Stack_mTop == -1;
 }
+
 float Stack_Top(){
 	return _Stack[_Stack_mTop];
 }
+
 void Stack_Push(float val){
 	if( _Stack_mTop == 99)
 		return;
 	_Stack_mTop++;
 	_Stack[_Stack_mTop] = val;
 }
+
 float Stack_Pop(){
 	float val =_Stack[_Stack_mTop];
 	_Stack_mTop--;
 	return val;
 }
+
 void Stack_Acc(){
 	_Stack[_Stack_mTop] += 1.0;
 }

@@ -15,6 +15,7 @@ namespace BlackPearl {
 		inline glm::vec3 GetExtent() const{ return m_MaxP - m_MinP; }
 		inline glm::vec3 GetCenter() const { return (m_MaxP + m_MinP) / 2.0f; }
 		inline float GetRadius() const { return length(m_MaxP - m_MinP) / 2.0f; }
+		void SetInvalid();
 		inline bool IsValid() const { return m_IsValid; }
 		static const AABB InValid;
 		void SetP(const glm::vec3& minP, const glm::vec3& maxP);

@@ -3,12 +3,10 @@
 #include "glm/glm.hpp"
 #include "BlackPearl/Config.h"
 #include "BlackPearl/Core.h"
-#include "BlackPearl/Application.h"
 #include <unordered_map>
 namespace BlackPearl {
 	//template<typename C>
 	//class ComponentHandle;
-	class EntityManager;
 	class Entity
 	{
 	public:
@@ -46,8 +44,6 @@ namespace BlackPearl {
 		//Entity Instantiate(Entity original, glm::vec3 position) { s_InstanceID++; };
 		virtual ~Entity() { Destroy(); };
 
-
-	public:
 		Id GetId() const { return m_Id; }
 		//EntityManager* GetEntityManager() const { return m_EntityManager; }
 	public:
@@ -58,7 +54,7 @@ namespace BlackPearl {
 		};
 
 
-	protected:
+	private:
 		Id m_Id = Entity::s_INVALID;
 		//EntityManager* m_EntityManager = nullptr;
 
@@ -101,22 +97,7 @@ namespace BlackPearl {
 		inline size_t GetEntitiesCapacity() const {
 			return m_EntityList.size();
 		}
-		//inline ComponentMask GetComponentMask(Entity::Id id) { return m_EntityComponentMasks[id.id]; }//TODO:异常处理
 
-		//template<typename C, typename ...Args>
-		//C* AddComponent(Entity::Id id, Args && ...args);
-
-		///*template<typename C>
-		//ComponentHandle<C> GetComponent(Entity::Id id);*/
-
-		//template<typename C>
-		//bool HasComponent(Entity::Id id);
-
-		//template<typename C>
-		//void RemoveComponent(Entity::Id id);
-
-		//template<typename C>
-		//BaseComponent::Family GetComponentFamliy();
 
 		Entity GetEntity(Entity::Id id);
 
@@ -126,8 +107,6 @@ namespace BlackPearl {
 
 
 	private:
-		// Bitmask of components associated with each entity. Index into the vector is the Entity::Id.
-		//std::vector<ComponentMask> m_EntityComponentMasks;
 		std::vector<Entity*> m_EntityList;  // Entity::id.index --->到 Entity::id的映射；
 		std::vector<unsigned int> m_FreeList;//记录无效的Entity
 		std::vector<std::uint32_t> m_EntityVersion;//记录同一个Entity的版本号（相当于prefab的多个实例),每次destroy一个Entity,Vertion号加一！

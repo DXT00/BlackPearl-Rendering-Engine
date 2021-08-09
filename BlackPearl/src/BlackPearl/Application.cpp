@@ -22,14 +22,14 @@
 #include "Component/LightComponent/SpotLight.h"
 #include "ImGui/ImGuiLayer.h"
 #include "BlackPearl/Entity/Entity.h"
-
+#include "BlackPearl/ObjectManager/ObjectManager.h"
 namespace BlackPearl {
-	EntityManager* Application::g_entityManager = DBG_NEW EntityManager();
-	ObjectManager* Application::g_objectManager = DBG_NEW ObjectManager(g_entityManager);
+	ObjectManager* g_objectManager = DBG_NEW ObjectManager();
+	EntityManager*  g_entityManager = DBG_NEW EntityManager();
 
-	double Application::s_AppFPS=0.0f;
+	double Application::s_AppFPS = 0.0f;
+	double Application::s_AppAverageFPS = 0.0f;
 
-	 double Application::s_AppAverageFPS=0.0f;
 	Application* Application::s_Instance = nullptr;
 	Application::Application()
 	{

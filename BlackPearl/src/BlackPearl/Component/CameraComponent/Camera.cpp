@@ -7,17 +7,17 @@
 #include "BlackPearl/Component/Component.h"
 namespace BlackPearl {
 
-	Camera * Camera::Create(EntityManager * entityManager, Entity::Id id, unsigned int type)
+	Camera * Camera::Create(unsigned int type)
 	
 	{
 		
 		switch (type)
 		{
 		case Orthographic:
-			return DBG_NEW OrthographicCamera(entityManager, id);
+			return DBG_NEW OrthographicCamera();
 			break;
 		case Perspective:
-			return DBG_NEW PerspectiveCamera(entityManager, id);
+			return DBG_NEW PerspectiveCamera();
 			break;
 		default:
 			GE_CORE_ERROR("non defined camera type!")
