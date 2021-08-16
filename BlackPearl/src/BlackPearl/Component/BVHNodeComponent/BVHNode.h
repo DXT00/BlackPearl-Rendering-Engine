@@ -25,13 +25,9 @@ namespace BlackPearl {
 		Object* GetRight() const;
 
 	private:
-		AABB Build(std::vector<Object*> objs);
+		void Build(std::vector<Object*> objs);
 		//AABB Build(const std::vector<Triangle*>& triMesh);
 		std::vector<Object*> BuildTriMesh(const std::vector<Vertex>& mesh_vertex);
-
-		AABB Build(const std::vector<Hitable*>::const_iterator begin,
-			const std::vector<Hitable*>::const_iterator end);
-
 		unsigned int m_BucketsNum = 8;
 		Object* m_Left = NULL;
 		Object* m_Right = NULL;

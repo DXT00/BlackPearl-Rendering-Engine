@@ -173,6 +173,8 @@ namespace BlackPearl {
 		std::shared_ptr<BasicInfo> info = obj->AddComponent<BasicInfo>();
 		info->SetObjectType(ObjectType::OT_BVH_Node);
 		obj->AddComponent<BVHNode>(objs);
+		AABB box = obj->GetComponent<BVHNode>()->GetRootBox();
+		obj->AddComponent<BoundingBox>(box);
 		return obj;
 	}
 

@@ -116,7 +116,7 @@ namespace BlackPearl {
 		{
 			aiMesh* mesh = m_Scene->mMeshes[i];
 
-			m_Meshes.push_back(ProcessMesh(mesh,m_Vertices));
+			m_Meshes.push_back(ProcessMesh(mesh,m_Vertices,true));
 
 			//	GE_SAVE_DELETE(mesh);
 		}
@@ -347,7 +347,129 @@ namespace BlackPearl {
 
 
 	}
+	Mesh Model::ProcessMesh(aiMesh* aimesh, std::vector<Vertex>& v_vertex, bool face)
+	{
+		std::vector<float> vertices;
+		std::vector<unsigned int> verticesIntjointIdx;
+		std::vector<float> verticesfloatWeight;
 
+		std::vector<unsigned int> indices;
+
+		VertexBufferLayout layout1, layout2;
+		VertexBufferLayout layout = {
+			{ElementDataType::Float3,"aPos",false,0},
+			{ElementDataType::Float3,"aNormal",false,1},
+			{ElementDataType::Float2,"aTexCoords",false,2}
+		};
+		if (aimesh->HasTangentsAndBitangents()) {
+			layout.AddElement({ ElementDataType::Float3,"aTangent",false,3 });
+			layout.AddElement({ ElementDataType::Float3,"aBitangent",false,4 });
+		}
+		if (m_HasAnimation) {
+			layout1 = { { ElementDataType::Int4,"aJointIndices",false,5 },
+						{ ElementDataType::Int4,"aJointIndices1",false,6 } };
+			layout2 = { { ElementDataType::Float4,"aWeights",false,7},
+						{ ElementDataType::Float4,"aWeights1",false,8} };
+		}
+
+		if (m_HasAnimation && aimesh->mNumBones >= 0)
+			LoadBones(aimesh);
+
+		for (size_t i = 0; i < aimesh->mNumFaces; i++)
+		{
+			aiFace face = aimesh->mFaces[i];
+
+			GE_ASSERT(face.mNumIndices == 3, "face.mNumIndices!=3");
+			
+
+			for (size_t j = 0; j <face.mNumIndices; j++)
+			{
+				indices.push_back(face.mIndices[j]);
+				size_t idx = face.mIndices[j];
+				Vertex vertex;
+				glm::vec3 pos;
+				pos.x = aimesh->mVertices[idx].x;
+				pos.y = aimesh->mVertices[idx].y;
+				pos.z = aimesh->mVertices[idx].z;
+				glmInsertVector(pos, vertices);
+				vertex.position = pos;
+
+				glm::vec3 normal;
+				normal.x = aimesh->mNormals[idx].x;
+				normal.y = aimesh->mNormals[idx].y;
+				normal.z = aimesh->mNormals[idx].z;
+				glmInsertVector(normal, vertices);
+				vertex.normal = normal;
+
+				glm::vec2 textCords = glm::vec2(0.0f, 0.0f);
+				if (aimesh->mTextureCoords[0]) {//判断顶点是否有材质属性
+
+					textCords.x = aimesh->mTextureCoords[0][idx].x;
+					textCords.y = aimesh->mTextureCoords[0][idx].y;
+				}
+				glmInsertVector(textCords, vertices);
+				vertex.texCoords = textCords;
+
+				if (m_HasAnimation && m_BoneDatas.size() >= 0) {
+					unsigned int vertexIdx = m_VerticesIdx + idx;
+					glmInsertVector(glm::u32vec4(m_BoneDatas[vertexIdx].jointIdx[0][0], m_BoneDatas[vertexIdx].jointIdx[0][1], m_BoneDatas[vertexIdx].jointIdx[0][2], m_BoneDatas[vertexIdx].jointIdx[0][3]), verticesIntjointIdx);
+					glmInsertVector(glm::u32vec4(m_BoneDatas[vertexIdx].jointIdx[1][0], m_BoneDatas[vertexIdx].jointIdx[1][1], m_BoneDatas[vertexIdx].jointIdx[1][2], m_BoneDatas[vertexIdx].jointIdx[1][3]), verticesIntjointIdx);
+
+					glmInsertVector(glm::vec4(m_BoneDatas[vertexIdx].weights[0][0], m_BoneDatas[vertexIdx].weights[0][1], m_BoneDatas[vertexIdx].weights[0][2], m_BoneDatas[vertexIdx].weights[0][3]), verticesfloatWeight);
+					glmInsertVector(glm::vec4(m_BoneDatas[vertexIdx].weights[1][0], m_BoneDatas[vertexIdx].weights[1][1], m_BoneDatas[vertexIdx].weights[1][2], m_BoneDatas[vertexIdx].weights[1][3]), verticesfloatWeight);
+
+					//	GE_ASSERT(m_BoneDatas[vertexIdx].weights[0] + m_BoneDatas[vertexIdx].weights[1] + m_BoneDatas[vertexIdx].weights[2] + m_BoneDatas[vertexIdx].weights[3] == 1.0f, "total weight!=1");
+				}
+				//tangent
+				glm::vec3 tangent = glm::vec3(0.0f);
+				glm::vec3 bitTangent = glm::vec3(0.0f);
+
+				if (aimesh->HasTangentsAndBitangents()) {
+					tangent.x = aimesh->mTangents[idx].x;
+					tangent.y = aimesh->mTangents[idx].y;
+					tangent.z = aimesh->mTangents[idx].z;
+					//bittangent
+
+					bitTangent.x = aimesh->mBitangents[idx].x;
+					bitTangent.y = aimesh->mBitangents[idx].y;
+					bitTangent.z = aimesh->mBitangents[idx].z;
+					glmInsertVector(tangent, vertices);
+					glmInsertVector(bitTangent, vertices);
+					vertex.tangent = tangent;
+					vertex.bitTangent = bitTangent;
+				}
+				v_vertex.push_back(vertex);
+			}
+		}
+		float* vertices_ = DBG_NEW float[vertices.size()];
+		memcpy(vertices_, &vertices[0], vertices.size() * sizeof(float));//注意memcpy最后一个参数是字节数!!!
+		std::shared_ptr<VertexBuffer> vertexBuffer(DBG_NEW VertexBuffer(vertices_, vertices.size() * sizeof(float)));
+		vertexBuffer->SetBufferLayout(layout);
+
+		unsigned int* indices_ = DBG_NEW unsigned int[indices.size()];
+		memcpy(indices_, &indices[0], indices.size() * sizeof(unsigned int));
+		std::shared_ptr<IndexBuffer> indexBuffer(DBG_NEW IndexBuffer(indices_, indices.size() * sizeof(unsigned int)));
+
+		m_VerticesIdx += aimesh->mNumVertices;
+
+
+		if (m_HasAnimation) {
+			unsigned int* verticesIntjointIdx_ = DBG_NEW unsigned int[verticesIntjointIdx.size()];
+			memcpy(verticesIntjointIdx_, &verticesIntjointIdx[0], verticesIntjointIdx.size() * sizeof(unsigned int));//注意memcpy最后一个参数是字节数!!!
+			std::shared_ptr<VertexBuffer> vertexBuffer1(DBG_NEW VertexBuffer(verticesIntjointIdx_, verticesIntjointIdx.size() * sizeof(unsigned int)));
+			vertexBuffer1->SetBufferLayout(layout1);
+
+			float* verticesfloatWeight_ = DBG_NEW float[verticesfloatWeight.size()];
+			memcpy(verticesfloatWeight_, &verticesfloatWeight[0], verticesfloatWeight.size() * sizeof(float));//注意memcpy最后一个参数是字节数!!!
+			std::shared_ptr<VertexBuffer> vertexBuffer2(DBG_NEW VertexBuffer(verticesfloatWeight_, verticesfloatWeight.size() * sizeof(float)));
+			vertexBuffer2->SetBufferLayout(layout2);
+			return Mesh(m_ModelMaterials[aimesh->mMaterialIndex], indexBuffer, { vertexBuffer,vertexBuffer1,vertexBuffer2 });
+		}
+
+		return Mesh(m_ModelMaterials[aimesh->mMaterialIndex], indexBuffer, { vertexBuffer });
+
+
+	}
 	void Model::LoadMaterialTextures(aiMaterial* material, aiTextureType type, Texture::Type typeName, std::shared_ptr<Material::TextureMaps>& textures)
 	{
 		aiString name;

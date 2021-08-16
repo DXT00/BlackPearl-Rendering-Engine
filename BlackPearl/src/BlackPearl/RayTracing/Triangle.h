@@ -4,7 +4,7 @@
 #include "BlackPearl/RayTracing/Vertex.h"
 #include "BlackPearl/Component/Component.h"
 namespace BlackPearl {
-	class Triangle : public Hitable,public Component<Triangle>
+	class Triangle : public Component<Triangle>
 	{
 	public:
 		Triangle(const std::vector<Vertex>& points);
@@ -12,9 +12,11 @@ namespace BlackPearl {
 
 		~Triangle();
 		std::vector<Vertex> GetPoints() const;
+		AABB GetBoundingBox() const { return m_Box; }
 	private:
-		void BuildBox() override;
+		void BuildBox();
 		std::vector<Vertex> m_Points;
+		AABB m_Box;
 	};
 
 

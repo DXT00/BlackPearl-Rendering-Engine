@@ -63,7 +63,7 @@ public:
 		{
 			BlackPearl::Object* bunny = CreateModel("assets/models/bunny/bunny.obj", "assets/shaders/IronMan.glsl", false, "Bunny");
 			bunny->GetComponent<BlackPearl::Transform>()->SetInitScale(glm::vec3(0.5));
-			bunny->GetComponent<BlackPearl::Transform>()->SetInitPosition({ 0.6f,0.0f,3.0f });
+			bunny->GetComponent<BlackPearl::Transform>()->SetInitPosition({ 0.6f,0.0f,30.0f });
 			bunny->GetComponent<BlackPearl::Transform>()->SetInitRotation({ 0.0f,-30.0f,0.0f });
 			bunny->GetComponent<BlackPearl::MeshRenderer>()->SetIsBackGroundObjects(true);
 
@@ -80,15 +80,15 @@ public:
 		BlackPearl::Renderer::Init();
 
 		/***************************************** Scene ********************************************************/
-		m_SkyBoxObj = CreateSkyBox(
-			{ "assets/skybox/skybox/right.jpg",
-			 "assets/skybox/skybox/left.jpg",
-			 "assets/skybox/skybox/top.jpg",
-			 "assets/skybox/skybox/bottom.jpg",
-			 "assets/skybox/skybox/front.jpg",
-			 "assets/skybox/skybox/back.jpg",
-			});
-		m_skybox = m_SkyBoxObj;
+		//m_SkyBoxObj = CreateSkyBox(
+		//	{ "assets/skybox/skybox/right.jpg",
+		//	 "assets/skybox/skybox/left.jpg",
+		//	 "assets/skybox/skybox/top.jpg",
+		//	 "assets/skybox/skybox/bottom.jpg",
+		//	 "assets/skybox/skybox/front.jpg",
+		//	 "assets/skybox/skybox/back.jpg",
+		//	});
+		//m_skybox = m_SkyBoxObj;
 		/*******************************************************************************************************/
 		/*******************************************************************************************************/
 
@@ -119,21 +119,21 @@ public:
 		glViewport(0, 0, BlackPearl::Configuration::WindowWidth, BlackPearl::Configuration::WindowHeight);
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		if (BlackPearl::Input::IsKeyPressed(BP_KEY_Y)) {
+		//if (BlackPearl::Input::IsKeyPressed(BP_KEY_Y)) {
 
-			m_skybox = m_SkyBoxObj;
-			GE_CORE_INFO("m_skybox = m_SkyBoxObj");
-		}
-		if (BlackPearl::Input::IsKeyPressed(BP_KEY_N)) {
+		//	m_skybox = m_SkyBoxObj;
+		//	GE_CORE_INFO("m_skybox = m_SkyBoxObj");
+		//}
+		//if (BlackPearl::Input::IsKeyPressed(BP_KEY_N)) {
 
-			m_skybox = nullptr;
-			GE_CORE_INFO("m_skybox = nullptr");
+		//	m_skybox = nullptr;
+		//	GE_CORE_INFO("m_skybox = nullptr");
 
-		}
+		//}
 
 		//m_RayTracingRenderer->RenderSpheres(m_MainCamera);
 	//	m_RayTracingRenderer->Render();
-	//	m_RayTracingRenderer->RenderMaterialSpheres(m_MainCamera);
+		//m_RayTracingRenderer->RenderMaterialSpheres(m_MainCamera);
 		//m_RayTracingRenderer->RenderGroup(m_MainCamera, m_Group->GetRoot());
 		m_RayTracingRenderer->RenderBVHNode(m_MainCamera);
 

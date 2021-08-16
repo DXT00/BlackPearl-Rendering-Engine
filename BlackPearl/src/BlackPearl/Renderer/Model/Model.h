@@ -27,6 +27,8 @@ namespace BlackPearl {
 		void LoadModel(const std::string& path);
 
 		Mesh ProcessMesh(aiMesh* aimesh, std::vector<Vertex>& v_vertex);
+		Mesh ProcessMesh(aiMesh* aimesh, std::vector<Vertex>& v_vertex, bool face);
+
 		void LoadMaterialTextures(
 			aiMaterial* material,
 			aiTextureType type,

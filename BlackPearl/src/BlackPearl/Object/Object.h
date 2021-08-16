@@ -35,7 +35,7 @@ namespace BlackPearl {
 		std::unordered_map<BaseComponent::Family, std::shared_ptr<BaseComponent>> GetComponentList() { return m_Components; }
 
 		template<typename C, typename ...Args>
-		std::shared_ptr<C> AddComponent(Args ...args)
+		std::shared_ptr<C> AddComponent(Args&& ...args)
 		{
 			//GE_ASSERT(Valid(), "invalid entity" + std::to_string(m_Id.index())); //TODO::https://bbs.csdn.net/topics/391862079
 			//C* component = m_EntityManager->AddComponent(m_Id, args);

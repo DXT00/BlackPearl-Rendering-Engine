@@ -8,14 +8,14 @@ namespace BlackPearl {
 
 		m_BasicShader.reset(DBG_NEW Shader("assets/shaders/raytracing/rayTracingBasic.glsl"));
 		m_BasicSystemShader.reset(DBG_NEW Shader("assets/shaders/raytracing/rayTracingSystemT.glsl"));
-		m_MaterialShader.reset(DBG_NEW Shader("assets/shaders/raytracing/rayTracingMaterial.glsl"));
-		m_GroupShader.reset(DBG_NEW Shader("assets/shaders/raytracing/rayTracingGenData_04.glsl"));
-
+	/*	m_MaterialShader.reset(DBG_NEW Shader("assets/shaders/raytracing/rayTracingMaterial.glsl"));
+		m_GroupShader.reset(DBG_NEW Shader("assets/shaders/raytracing/rayTracingGenData_04.glsl"));*/
+		m_BVHNodeShader.reset(DBG_NEW Shader("assets/shaders/raytracing/rayTracingBVHNode.glsl"));
+		m_BVHNodeShader->Bind();
 		m_ScreenShader.reset(DBG_NEW Shader("assets/shaders/raytracing/ScreenQuad.glsl"));
 		m_GBuffers[0].reset(DBG_NEW GBuffer(Configuration::WindowWidth, Configuration::WindowHeight, GBuffer::RayTracing));
 		m_GBuffers[1].reset(DBG_NEW GBuffer(Configuration::WindowWidth, Configuration::WindowHeight, GBuffer::RayTracing));
 
-		m_BVHNodeShader.reset(DBG_NEW Shader("assets/shaders/raytracing/rayTracingBVHNode.glsl"));
 		m_SceneBuilder.reset(DBG_NEW SceneBuilder());
 
 	}
@@ -276,13 +276,14 @@ namespace BlackPearl {
 		m_GBuffers[m_ReadBuffer]->GetColorTexture(3)->Bind();
 
 		DrawObject(m_Quad, m_ScreenShader);
+		m_GroupShader->Unbind();
 	}
 
 	void RayTracingRenderer::RenderBVHNode(MainCamera* mainCamera) {
 
 		m_BVHNodeShader->Bind();
-		m_BVHNodeShader->SetUniform1i("origin_curRayNum", 0);
-		m_BVHNodeShader->SetUniform1i("dir_tMax", 1);
+		m_BVHNodeShader->SetUniform1i("dir_tMax", 0);
+		m_BVHNodeShader->SetUniform1i("SumColor", 1);
 		m_BVHNodeShader->SetUniform1i("color_time", 2);
 		m_BVHNodeShader->SetUniform1i("RTXRst", 3);
 		m_BVHNodeShader->SetUniform1f("u_rayNumMax", m_RayNumMax);
@@ -302,7 +303,7 @@ namespace BlackPearl {
 		{
 			m_GBuffers[m_WriteBuffer]->Bind();
 
-			glActiveTexture(GL_TEXTURE0);
+			glActiveTexture(GL_TEXTURE1);
 			m_GBuffers[m_ReadBuffer]->GetColorTexture(0)->Bind();
 			glActiveTexture(GL_TEXTURE1);
 			m_GBuffers[m_ReadBuffer]->GetColorTexture(1)->Bind();
@@ -334,11 +335,11 @@ namespace BlackPearl {
 		m_ScreenShader->Bind();
 		m_ScreenShader->SetUniform1i("u_FinalScreenTexture", 5);
 		glActiveTexture(GL_TEXTURE5);
-		m_GBuffers[m_ReadBuffer]->GetColorTexture(3)->Bind();
+		m_GBuffers[m_ReadBuffer]->GetColorTexture(1)->Bind();
 
 		DrawObject(m_Quad, m_ScreenShader);
 
-
+		m_BVHNodeShader->Unbind();
 	}
 
 	

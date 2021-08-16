@@ -8,20 +8,20 @@
 namespace BlackPearl {
 	extern ObjectManager* g_objectManager;
 
-	BVHNode::BVHNode( const std::vector<Object*>& objs)
+	BVHNode::BVHNode(const std::vector<Object*>& objs)
 		:Component(Component::Type::BVHNode)
 	{
-		m_Box = Build(objs);
+		Build(objs);
 	}
 
 	BVHNode::BVHNode(const std::vector<Vertex>& mesh_vertex)
-		:Component(Component::Type::BVHNode) 
+		: Component(Component::Type::BVHNode)
 	{
 		std::vector<Object*> trimesh = BuildTriMesh(mesh_vertex);
 		if (trimesh.size() == 0) {
 			return;
 		}
-		m_Box = Build(trimesh);
+		Build(trimesh);
 	}
 
 	AABB BVHNode::GetRootBox() const
@@ -49,31 +49,33 @@ namespace BlackPearl {
 		return m_Right;
 	}
 
-	AABB BVHNode::Build(std::vector<Object*> objs)
+	void BVHNode::Build(std::vector<Object*> objs)
 	{
 		size_t num = objs.size();
 		//计算场景的bounding box
 		size_t dim = 3;
-
 		if (num == 1) {
-			m_Left = objs[0]; 
+			m_Left = objs[0];
 			m_IsLeaf == true;
 			m_Right = NULL;
 			m_Box = objs[0]->GetComponent<BlackPearl::BoundingBox>()->Get();
-			return m_Box;
+			return ;
 		}
 		else if (num == 2) {
 			m_Left = objs[0];
 			m_Right = objs[1];
-			m_Box = m_Left->GetComponent<BVHNode>()->GetRootBox() + m_Right->GetComponent<BVHNode>()->GetRootBox();
-			return m_Box;
+			m_Box = m_Left->GetComponent<BlackPearl::BoundingBox>()->Get() + m_Right->GetComponent<BlackPearl::BoundingBox>()->Get();
+			return ;
 		}
 
-		for (auto obj:objs)
+		for (auto obj : objs)
 		{
 			m_Box.Expand(obj->GetComponent<BlackPearl::BoundingBox>()->Get());
 		}
-
+		// get best partition
+		std::vector<Object*> leftNodes;
+		std::vector<Object*> rightNodes;
+		double minCost = DBL_MAX;
 		for (int i = 0; i < dim; i++)
 		{
 			std::vector<std::vector<Object*>> buckets(m_BucketsNum);
@@ -82,10 +84,10 @@ namespace BlackPearl {
 			float bucketLen = static_cast<float>(boxLen / num);
 
 			//分配场景中的物体到buckets中
-			for (auto obj:objs)
+			for (auto obj : objs)
 			{
-				AABB &obj_box = obj->GetComponent<BlackPearl::BoundingBox>()->Get();
-				int bucketID = (obj_box.GetCenter().x - m_Box.GetMinP().x) / boxLen;
+				AABB& obj_box = obj->GetComponent<BlackPearl::BoundingBox>()->Get();
+				int bucketID = (obj_box.GetCenter()[i] - m_Box.GetMinP()[i]) / boxLen;
 				buckets[bucketID].push_back(obj);
 				boxOfBuckets[bucketID].Expand(obj_box);
 			}
@@ -95,8 +97,9 @@ namespace BlackPearl {
 			std::vector<AABB> rightBox(m_BucketsNum);
 			std::vector<size_t> leftAccNum(m_BucketsNum);
 			std::vector<size_t> rightAccNum(m_BucketsNum);
-			
-			for (int i = 1; i <= m_BucketsNum; i++)
+			leftAccNum[0] = 0;
+			rightAccNum[0] = 0;
+			for (int i = 1; i < m_BucketsNum; i++)
 			{
 				leftBox[i] = leftBox[i - 1] + boxOfBuckets[i - 1];
 				leftAccNum[i] = leftAccNum[i - 1] + buckets[i].size();
@@ -105,37 +108,60 @@ namespace BlackPearl {
 
 
 			}
-			float minCost = FLT_MAX;
+			float minCostDim = FLT_MAX;
 			int partitionIdx = 0;
-			float curCost;
-			for (int i = 1; i <= m_BucketsNum; i++) {
-				curCost = leftBox[i].GetSurfaceArea() * leftAccNum[i] + rightBox[m_BucketsNum-i].GetSurfaceArea() * rightAccNum[m_BucketsNum - i];
-				if (curCost < minCost) {
-					minCost = curCost;
-					partitionIdx = i;
+			size_t bestLeftNum = 0;
+			float CostDim;
+			for (int i = 1; i < m_BucketsNum; i++) {
+				CostDim = leftBox[i].GetSurfaceArea() * leftAccNum[i] + rightBox[m_BucketsNum - i].GetSurfaceArea() * rightAccNum[m_BucketsNum - i];
+				if (CostDim < minCostDim) {
+					minCostDim = CostDim;
+					bestLeftNum = i;
 				}
 			}
 
-			//递归分割BVH Node
-			std::vector<Object*> leftNodes;
-			std::vector<Object*> rightNodes;
-
-			for (int i = 0; i < m_BucketsNum; i++)
-			{
-
-				for (auto obj:buckets[i])
+			if (minCostDim < minCost) {
+				leftNodes.clear();
+				rightNodes.clear();
+				minCost = minCostDim;
+				for (int i = 0; i < m_BucketsNum; i++)
 				{
-					(i < partitionIdx) ? leftNodes.push_back(obj) : rightNodes.push_back(obj);
 
+					for (auto obj : buckets[i])
+					{
+						(i < bestLeftNum) ? leftNodes.push_back(obj) : rightNodes.push_back(obj);
+
+					}
 				}
 			}
-			m_Left = g_objectManager->CreateBVHNode(leftNodes);
-			m_Right = g_objectManager->CreateBVHNode(leftNodes);
-	
+
 		}
+		//递归分割BVH Node
+		if (leftNodes.size() == num) {
+			size_t leftNum = num / 2;
+
+			for (size_t i = 0; i < leftNum; i++)
+			{
+				rightNodes.push_back(leftNodes.back());
+				leftNodes.pop_back();
+			}
+		}
+		else if (rightNodes.size() == num) {
+			size_t leftNum = num / 2;
+			for (size_t i = 0; i < leftNum; i++)
+			{
+				leftNodes.push_back(rightNodes.back());
+				rightNodes.pop_back();
+			}
+		}
+
+
+		m_Left = g_objectManager->CreateBVHNode(leftNodes);
+		m_Right = g_objectManager->CreateBVHNode(rightNodes);
+
 	}
-	
-	
+
+
 	//AABB BVHNode::Build(const std::vector<Triangle*>& triMesh) {
 
 	//	size_t num = triMesh.size();
@@ -227,7 +253,7 @@ namespace BlackPearl {
 		if (mesh_vertex.size() % 3 != 0) {
 			m_Box.SetInvalid();
 			GE_CORE_WARN("mesh_vertex.size() % 3 != 0, m_Box is invalid")
-			return std::vector<Object*>();
+				return std::vector<Object*>();
 		}
 		for (size_t i = 0; i < mesh_vertex.size(); i += 3)
 		{
