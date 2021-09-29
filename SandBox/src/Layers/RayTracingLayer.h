@@ -57,25 +57,52 @@ public:
 			m_SceneBuilder->CreateSceneData(m_Group);
 			m_RayTracingRenderer->InitScene(m_SceneBuilder->GetScene());
 		}
-#endif
 
+#endif
+#if 0
 		//BVHNode
 		{
+			m_Sphere1 = CreateSphere(5, 64, 64);
+			//	m_Sphere1->GetComponent<BlackPearl::MeshRenderer>()->GetMeshes()[0].GetMaterial()->SetMaterialColorSpecularColor({ 0.6,0.7,BlackPearl::Math::Rand_F() });
+			m_Sphere1->GetComponent<BlackPearl::Transform>()->SetInitPosition({ 0.0,0.0,0.0 });
+
+
+			group_obj = BlackPearl::Layer::CreateGroup();
+			m_Group = DBG_NEW BlackPearl::Group(group_obj);
+
+
+			//std::vector<BlackPearl::Vertex> bunny_verteices = m_Sphere1->GetComponent<BlackPearl::MeshRenderer>()->GetModel()->GetMeshVertex();
+			BlackPearl::Object* bunny_bvh_node = BlackPearl::g_objectManager->CreateBVHNode({ m_Sphere1 });
+			m_BunnyRTXTransformNode = BlackPearl::g_objectManager->CreateRTXTransformNode(m_Sphere1->GetComponent<BlackPearl::Transform>()->GetTransformMatrix(), bunny_bvh_node);
+
+			//m_Group->PushBack(m_BunnyRTXTransformNode);
+			m_Group->PushBack(bunny_bvh_node);
+
+			m_SceneBuilder->CreateSceneData(m_Group);
+			m_RayTracingRenderer->InitScene(m_SceneBuilder->GetScene());
+		}
+#endif
+		//BVHNode
+		{
+			group_obj = BlackPearl::Layer::CreateGroup();
+			m_Group = DBG_NEW BlackPearl::Group(group_obj);
 			BlackPearl::Object* bunny = CreateModel("assets/models/bunny/bunny.obj", "assets/shaders/IronMan.glsl", false, "Bunny");
-			bunny->GetComponent<BlackPearl::Transform>()->SetInitScale(glm::vec3(0.5));
-			bunny->GetComponent<BlackPearl::Transform>()->SetInitPosition({ 0.6f,0.0f,30.0f });
-			bunny->GetComponent<BlackPearl::Transform>()->SetInitRotation({ 0.0f,-30.0f,0.0f });
+			bunny->GetComponent<BlackPearl::Transform>()->SetInitScale(glm::vec3(1.0));
+			bunny->GetComponent<BlackPearl::Transform>()->SetInitPosition({ 0.6f,0.0f,-2.0f });
+			bunny->GetComponent<BlackPearl::Transform>()->SetInitRotation({ 0.0f,0.0f,0.0f });
 			bunny->GetComponent<BlackPearl::MeshRenderer>()->SetIsBackGroundObjects(true);
 
 			std::vector<BlackPearl::Vertex> bunny_verteices = bunny->GetComponent<BlackPearl::MeshRenderer>()->GetModel()->GetMeshVertex();
-			BlackPearl::Object*  bunny_bvh_node = BlackPearl::g_objectManager->CreateBVHNode(bunny_verteices);
-			m_BunnyRTXTransformNode = BlackPearl::g_objectManager->CreateRTXTransformNode(bunny->GetComponent<BlackPearl::Transform>()->GetTransformMatrix(),bunny_bvh_node);
+			BlackPearl::Object* bunny_bvh_node = BlackPearl::g_objectManager->CreateBVHNode(bunny_verteices);
+			m_BunnyRTXTransformNode = BlackPearl::g_objectManager->CreateRTXTransformNode(bunny->GetComponent<BlackPearl::Transform>()->GetTransformMatrix(), bunny_bvh_node);
 
-			m_SceneBuilder->CreateSceneData(m_BunnyRTXTransformNode);
+			m_Group->PushBack(m_BunnyRTXTransformNode);
+			m_SceneBuilder->CreateSceneData(m_Group);
 			m_RayTracingRenderer->InitScene(m_SceneBuilder->GetScene());
 		}
+
 		m_MainCamera->SetFov(90.0f);
-		m_MainCamera->SetPosition(glm::vec3(0, 0, 5));//glm::vec3(0,1.387f,22.012f)
+		m_MainCamera->SetPosition(glm::vec3(0, 0, 0));//glm::vec3(0,1.387f,22.012f)
 		m_CameraPosition = m_MainCamera->GetPosition();
 		BlackPearl::Renderer::Init();
 
@@ -109,7 +136,7 @@ public:
 		InputCheck(ts);
 		milliseconds currentTimeMs = duration_cast<milliseconds>(system_clock::now().time_since_epoch());
 		double runtimeSecond = (currentTimeMs.count() - m_StartTimeMs.count()) / 1000.0f;
-	
+
 
 
 
@@ -137,7 +164,7 @@ public:
 		//m_RayTracingRenderer->RenderGroup(m_MainCamera, m_Group->GetRoot());
 		m_RayTracingRenderer->RenderBVHNode(m_MainCamera);
 
-	
+
 
 	}
 

@@ -143,12 +143,6 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="src\BlackPearl\Component\TransformComponent\RayTracingTransform.h" />
-    <ClInclude Include="src\BlackPearl\SceneBuilder\SceneBuilder.h" />
-    <ClInclude Include="src\BlackPearl\Component\BVHNodeComponent\BVHNode.h" />
-    <ClInclude Include="src\BlackPearl\RayTracing\Hitable.h" />
-    <ClInclude Include="src\BlackPearl\RayTracing\Triangle.h" />
-    <ClInclude Include="src\BlackPearl\SceneBuilder\BoundingBoxBuilder.h" />
     <ClInclude Include="src\BlackPearl.h" />
     <ClInclude Include="src\BlackPearl\AABB\AABB.h" />
     <ClInclude Include="src\BlackPearl\Animation\AnimatedModel.h" />
@@ -158,13 +152,14 @@
     <ClInclude Include="src\BlackPearl\Animation\KeyFrame.h" />
     <ClInclude Include="src\BlackPearl\Application.h" />
     <ClInclude Include="src\BlackPearl\Common\CommonFunc.h" />
+    <ClInclude Include="src\BlackPearl\Component\BVHNodeComponent\BVHNode.h" />
     <ClInclude Include="src\BlackPearl\Component\BaseComponent.h" />
     <ClInclude Include="src\BlackPearl\Component\BasicInfoComponent\BasicInfo.h" />
+    <ClInclude Include="src\BlackPearl\Component\BoundingBoxComponent\BoundingBox.h" />
     <ClInclude Include="src\BlackPearl\Component\CameraComponent\Camera.h" />
     <ClInclude Include="src\BlackPearl\Component\CameraComponent\OrthographicCamera.h" />
     <ClInclude Include="src\BlackPearl\Component\CameraComponent\PerspectiveCamera.h" />
     <ClInclude Include="src\BlackPearl\Component\Component.h" />
-    <ClInclude Include="src\BlackPearl\Component\BoundingBoxComponent\BoundingBox.h" />
     <ClInclude Include="src\BlackPearl\Component\LightComponent\Light.h" />
     <ClInclude Include="src\BlackPearl\Component\LightComponent\LightSources.h" />
     <ClInclude Include="src\BlackPearl\Component\LightComponent\ParallelLight.h" />
@@ -178,6 +173,7 @@
     <ClInclude Include="src\BlackPearl\Component\MeshFilterComponent\SkyBoxMeshFilter.h" />
     <ClInclude Include="src\BlackPearl\Component\MeshFilterComponent\SphereMeshFilter.h" />
     <ClInclude Include="src\BlackPearl\Component\MeshRendererComponent\MeshRenderer.h" />
+    <ClInclude Include="src\BlackPearl\Component\TransformComponent\RayTracingTransform.h" />
     <ClInclude Include="src\BlackPearl\Component\TransformComponent\Transform.h" />
     <ClInclude Include="src\BlackPearl\Config.h" />
     <ClInclude Include="src\BlackPearl\Core.h" />
@@ -209,8 +205,11 @@
     <ClInclude Include="src\BlackPearl\RayTracing\GenData_TV.h" />
     <ClInclude Include="src\BlackPearl\RayTracing\Group.h" />
     <ClInclude Include="src\BlackPearl\RayTracing\HitRst.h" />
+    <ClInclude Include="src\BlackPearl\RayTracing\Hitable.h" />
     <ClInclude Include="src\BlackPearl\RayTracing\Ray.h" />
     <ClInclude Include="src\BlackPearl\RayTracing\RayCastFunction.h" />
+    <ClInclude Include="src\BlackPearl\RayTracing\Triangle.h" />
+    <ClInclude Include="src\BlackPearl\RayTracing\Vertex.h" />
     <ClInclude Include="src\BlackPearl\Renderer\Buffer.h" />
     <ClInclude Include="src\BlackPearl\Renderer\Context.h" />
     <ClInclude Include="src\BlackPearl\Renderer\MasterRenderer\AnimatedModelRenderer.h" />
@@ -246,6 +245,8 @@
     <ClInclude Include="src\BlackPearl\Sampler\Sobol.h" />
     <ClInclude Include="src\BlackPearl\Sampler\SobolSequence.h" />
     <ClInclude Include="src\BlackPearl\Scene\Scene.h" />
+    <ClInclude Include="src\BlackPearl\SceneBuilder\BoundingBoxBuilder.h" />
+    <ClInclude Include="src\BlackPearl\SceneBuilder\SceneBuilder.h" />
     <ClInclude Include="src\BlackPearl\Timestep\TimeCounter.h" />
     <ClInclude Include="src\BlackPearl\Timestep\Timestep.h" />
     <ClInclude Include="src\BlackPearl\Window.h" />
@@ -619,15 +620,8 @@
     <ClInclude Include="vendor\glm\glm\vec4.hpp" />
     <ClInclude Include="vendor\glm\glm\vector_relational.hpp" />
     <ClInclude Include="vendor\stb\stb_image.h" />
-    <ClInclude Include="src\BlackPearl\RayTracing\Vertex.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\BlackPearl\Component\TransformComponent\RayTracingTransform.cpp" />
-    <ClCompile Include="src\BlackPearl\SceneBuilder\SceneBuilder.cpp" />
-    <ClCompile Include="src\BlackPearl\Component\BVHNodeComponent\BVHNode.cpp" />
-    <ClCompile Include="src\BlackPearl\RayTracing\Hitable.cpp" />
-    <ClCompile Include="src\BlackPearl\RayTracing\Triangle.cpp" />
-    <ClCompile Include="src\BlackPearl\SceneBuilder\BoundingBoxBuilder.cpp" />
     <ClCompile Include="src\BlackPearl\AABB\AABB.cpp" />
     <ClCompile Include="src\BlackPearl\Animation\AnimatedModel.cpp" />
     <ClCompile Include="src\BlackPearl\Animation\Animation.cpp" />
@@ -636,6 +630,7 @@
     <ClCompile Include="src\BlackPearl\Animation\KeyFrame.cpp" />
     <ClCompile Include="src\BlackPearl\Application.cpp" />
     <ClCompile Include="src\BlackPearl\Common\CommonFunc.cpp" />
+    <ClCompile Include="src\BlackPearl\Component\BVHNodeComponent\BVHNode.cpp" />
     <ClCompile Include="src\BlackPearl\Component\BaseComponent.cpp" />
     <ClCompile Include="src\BlackPearl\Component\BasicInfoComponent\BasicInfo.cpp" />
     <ClCompile Include="src\BlackPearl\Component\BoundingBoxComponent\BoundingBox.cpp" />
@@ -656,6 +651,7 @@
     <ClCompile Include="src\BlackPearl\Component\MeshFilterComponent\SkyBoxMeshFilter.cpp" />
     <ClCompile Include="src\BlackPearl\Component\MeshFilterComponent\SphereMeshFilter.cpp" />
     <ClCompile Include="src\BlackPearl\Component\MeshRendererComponent\MeshRenderer.cpp" />
+    <ClCompile Include="src\BlackPearl\Component\TransformComponent\RayTracingTransform.cpp" />
     <ClCompile Include="src\BlackPearl\Component\TransformComponent\Transform.cpp" />
     <ClCompile Include="src\BlackPearl\Config.cpp" />
     <ClCompile Include="src\BlackPearl\Entity\Entity.cpp" />
@@ -682,8 +678,11 @@
     <ClCompile Include="src\BlackPearl\RayTracing\GenData_TV.cpp" />
     <ClCompile Include="src\BlackPearl\RayTracing\Group.cpp" />
     <ClCompile Include="src\BlackPearl\RayTracing\HitRst.cpp" />
+    <ClCompile Include="src\BlackPearl\RayTracing\Hitable.cpp" />
     <ClCompile Include="src\BlackPearl\RayTracing\Ray.cpp" />
     <ClCompile Include="src\BlackPearl\RayTracing\RayCastFunction.cpp" />
+    <ClCompile Include="src\BlackPearl\RayTracing\Triangle.cpp" />
+    <ClCompile Include="src\BlackPearl\RayTracing\Vertex.cpp" />
     <ClCompile Include="src\BlackPearl\Renderer\Buffer.cpp" />
     <ClCompile Include="src\BlackPearl\Renderer\Context.cpp" />
     <ClCompile Include="src\BlackPearl\Renderer\MasterRenderer\AnimatedModelRenderer.cpp" />
@@ -718,13 +717,14 @@
     <ClCompile Include="src\BlackPearl\Renderer\VertexArray.cpp" />
     <ClCompile Include="src\BlackPearl\Sampler\Sobol.cpp" />
     <ClCompile Include="src\BlackPearl\Scene\Scene.cpp" />
+    <ClCompile Include="src\BlackPearl\SceneBuilder\BoundingBoxBuilder.cpp" />
+    <ClCompile Include="src\BlackPearl\SceneBuilder\SceneBuilder.cpp" />
     <ClCompile Include="src\BlackPearl\Timestep\TimeCounter.cpp" />
     <ClCompile Include="src\BlackPearl\Timestep\Timestep.cpp" />
     <ClCompile Include="src\BlackPearl\Window.cpp" />
     <ClCompile Include="src\pch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="src\BlackPearl\RayTracing\Vertex.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="vendor\GLFW\GLFW.vcxproj">

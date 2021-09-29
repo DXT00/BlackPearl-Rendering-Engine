@@ -24,4 +24,11 @@ namespace BlackPearl {
 		return dMap(engine);
 	}
 
+	size_t Math::Fit2Square(size_t size) {
+		size_t n = static_cast<size_t>(sqrt(size));
+		if (n * n < size)
+			n++;
+		return n;
+	}
+
 }

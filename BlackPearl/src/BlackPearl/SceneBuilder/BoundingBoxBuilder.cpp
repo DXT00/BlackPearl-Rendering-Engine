@@ -6,6 +6,7 @@
 #include "BlackPearl/RayTracing/Hitable.h"
 //#include "BlackPearl/BVHNode/BVHNode.h"
 #include "BlackPearl/Component/BVHNodeComponent/BVHNode.h"
+#include "BlackPearl/Component/MeshFilterComponent/SphereMeshFilter.h"
 namespace BlackPearl {
 
 	/*struct Triangle :public Hitable {
@@ -14,6 +15,14 @@ namespace BlackPearl {
 	BoundingBoxBuilder::BoundingBoxBuilder()
 	{
 
+	}
+
+	AABB BoundingBoxBuilder::Build(Object* obj)
+	{
+		if (obj->GetComponent<BasicInfo>()->GetObjectType() == ObjectType::OT_Sphere)
+			return SphereBoundingBox(obj);
+		else if (obj->GetComponent<BasicInfo>()->GetObjectType() == ObjectType::OT_Sphere)
+			return TriangleBoundingBox(obj);
 	}
 
 	AABB BoundingBoxBuilder::Build(const std::vector<Vertex>& mesh_vertex) {
@@ -42,6 +51,20 @@ namespace BlackPearl {
 
 	void BoundingBoxBuilder::ChangeMeshToBVHNode(const std::vector<Vertex>& mesh_vertex)
 	{
+	}
+
+	AABB BoundingBoxBuilder::SphereBoundingBox(Object* obj)
+	{
+		glm::vec3 center = obj->GetComponent<Transform>()->GetPosition();
+		glm::vec3 radius =glm::vec3(obj->GetComponent<SphereMeshFilter>()->GetRadius());
+		glm::vec3 minP = center - radius;
+		glm::vec3 maxP = center + radius;
+		return AABB(minP,maxP);
+	}
+
+	AABB BoundingBoxBuilder::TriangleBoundingBox(Object* obj)
+	{
+		return AABB();
 	}
 
 	////暂时不支持AnimationModel(AnimationModel vertexBuffer有unsigned int 类型的)

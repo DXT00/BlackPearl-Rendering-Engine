@@ -64,3 +64,6 @@ https://github.com/Ubpa/ToyRTX
 
 ### GPU Raytracing 04 -- gendata
 ![gpu_raytracing_group_rendering](/results/gpu_raytracing_group_rendering.png)
+
+### GPU Raytracing 05 -- bvh_node
+![gpu_raytracing_bvh_node_rendering](/results/gpu_raytracing_bvh_node.png)

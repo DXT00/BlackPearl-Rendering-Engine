@@ -8,7 +8,7 @@
 #include "BlackPearl/Component/BVHNodeComponent/BVHNode.h"
 #include "BlackPearl/Component/TransformComponent/RayTracingTransform.h"
 namespace BlackPearl {
-	GenData_HV::GenData_HV(){ }
+	GenData_HV::GenData_HV() { }
 
 
 	void GenData_HV::ParseMatData(Object* obj)
@@ -17,22 +17,22 @@ namespace BlackPearl {
 		bool has_material = false;
 		if (obj == NULL) return;
 		if (obj->HasComponent<MeshRenderer>()) {
-			 std::vector<Mesh> meshes = obj->GetComponent<MeshRenderer>()->GetMeshes();
-			 if (!meshes.empty()) {
-				 //TODO:: RayTracing 暂时默认所有Meshes是同一种类型的材质
-				 std::shared_ptr<Material> material = meshes[0].GetMaterial();
-				 if (material != NULL) {
-					 m_Mat2Vec[material].push_back(m_SceneData.size());
-					 has_material = true;
-				 }
-			 }
+			std::vector<Mesh> meshes = obj->GetComponent<MeshRenderer>()->GetMeshes();
+			if (!meshes.empty()) {
+				//TODO:: RayTracing 暂时默认所有Meshes是同一种类型的材质
+				std::shared_ptr<Material> material = meshes[0].GetMaterial();
+				if (material != NULL) {
+					m_Mat2Vec[material].push_back(m_SceneData.size());
+					has_material = true;
+				}
+			}
 		}
 		m_SceneData.push_back(-1);
 		m_SceneData.push_back(has_material);
 
 	}
 
-	void GenData_HV::ParseSceneData(Object* obj,std::vector<float>& packData) 
+	void GenData_HV::ParseSceneData(Object* obj, std::vector<float>& packData)
 	{
 		ObjectType type = obj->GetComponent<BasicInfo>()->GetObjectType();
 
@@ -72,8 +72,8 @@ namespace BlackPearl {
 		for (size_t i = 0; i < childSize; i++) {
 			m_SceneData.push_back(-float(m_Hitable2Idx[group]));
 		}
-		//m_SceneData.push_back(-float(m_Hitable2Idx[group]));
-		m_SceneData.push_back(0);
+		m_SceneData.push_back(-float(m_Hitable2Idx[group]));
+		//m_SceneData.push_back(0);
 		for (size_t i = 0; i < childSize; i++)
 		{
 			Object* child = group->GetChildObjs()[i];
@@ -193,7 +193,7 @@ namespace BlackPearl {
 			packData.push_back(points[i].normal.z);
 			packData.push_back(points[i].texCoords.y);
 		}
-	
+
 	}
 	void GenData_HV::ParseRTXTransformNodeData(Object* rt_transform, std::vector<float>& packData)
 	{

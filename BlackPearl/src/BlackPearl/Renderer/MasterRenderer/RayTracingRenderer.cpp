@@ -183,15 +183,18 @@ namespace BlackPearl {
 		m_TextureData = m_GenData->GetTexData();
 		m_PackData = m_GenData->GetPackData();
 
-		m_SceneDataTex.reset(DBG_NEW TextureImage2D(m_SceneData, m_SceneData.size(), 1,\
+		m_SceneDataTex.reset(DBG_NEW TextureImage2D(m_SceneData, m_SceneData.size(), 1, \
 			GL_NEAREST, GL_NEAREST, GL_R32F, GL_RED, GL_CLAMP_TO_EDGE, GL_FLOAT, GL_READ_WRITE));
 		m_TexDataTex.reset(DBG_NEW TextureImage2D(m_TextureData, m_TextureData.size(), 1, \
 			GL_NEAREST, GL_NEAREST, GL_R32F, GL_RED, GL_CLAMP_TO_EDGE, GL_FLOAT, GL_READ_WRITE));
 		m_MaterialDataTex.reset(DBG_NEW TextureImage2D(m_MaterialData, m_MaterialData.size(), 1, \
-		GL_NEAREST, GL_NEAREST, GL_R32F, GL_RED, GL_CLAMP_TO_EDGE, GL_FLOAT, GL_READ_WRITE));
+			GL_NEAREST, GL_NEAREST, GL_R32F, GL_RED, GL_CLAMP_TO_EDGE, GL_FLOAT, GL_READ_WRITE));
 
 		m_PackDataTex.reset(DBG_NEW TextureImage2D(m_PackData, m_PackData.size(), 1, \
 			GL_NEAREST, GL_NEAREST, GL_R32F, GL_RED, GL_CLAMP_TO_EDGE, GL_FLOAT, GL_READ_WRITE));
+
+
+
 	
 	}
 
@@ -202,15 +205,17 @@ namespace BlackPearl {
 		m_TextureData = scene->GetTexData();
 		m_PackData = scene->GetPackData();
 
-		m_SceneDataTex.reset(DBG_NEW TextureImage2D(m_SceneData, m_SceneData.size(), 1, \
-			GL_NEAREST, GL_NEAREST, GL_R32F, GL_RED, GL_CLAMP_TO_EDGE, GL_FLOAT, GL_READ_WRITE));
-		m_TexDataTex.reset(DBG_NEW TextureImage2D(m_TextureData, m_TextureData.size(), 1, \
-			GL_NEAREST, GL_NEAREST, GL_R32F, GL_RED, GL_CLAMP_TO_EDGE, GL_FLOAT, GL_READ_WRITE));
-		m_MaterialDataTex.reset(DBG_NEW TextureImage2D(m_MaterialData, m_MaterialData.size(), 1, \
-			GL_NEAREST, GL_NEAREST, GL_R32F, GL_RED, GL_CLAMP_TO_EDGE, GL_FLOAT, GL_READ_WRITE));
+		size_t sceneDataSize = Math::Fit2Square(m_SceneData.size());
+		size_t texDataSize = Math::Fit2Square(m_TextureData.size());
+		size_t matDataSize = Math::Fit2Square(m_MaterialData.size());
+		size_t packDataSize = Math::Fit2Square(m_PackData.size());
 
-		m_PackDataTex.reset(DBG_NEW TextureImage2D(m_PackData, m_PackData.size(), 1, \
-			GL_NEAREST, GL_NEAREST, GL_R32F, GL_RED, GL_CLAMP_TO_EDGE, GL_FLOAT, GL_READ_WRITE));
+		m_SceneData.resize(sceneDataSize * sceneDataSize);
+		m_SceneDataTex.reset(DBG_NEW TextureImage2D(m_SceneData, sceneDataSize, sceneDataSize, GL_NEAREST, GL_NEAREST, GL_R32F, GL_RED, GL_CLAMP_TO_EDGE, GL_FLOAT, GL_READ_WRITE));
+		m_TexDataTex.reset(DBG_NEW TextureImage2D(m_TextureData, texDataSize, texDataSize, GL_NEAREST, GL_NEAREST, GL_R32F, GL_RED, GL_CLAMP_TO_EDGE, GL_FLOAT, GL_READ_WRITE));
+		m_MaterialDataTex.reset(DBG_NEW TextureImage2D(m_MaterialData, matDataSize, matDataSize, GL_NEAREST, GL_NEAREST, GL_R32F, GL_RED, GL_CLAMP_TO_EDGE, GL_FLOAT, GL_READ_WRITE));
+
+		m_PackDataTex.reset(DBG_NEW TextureImage2D(m_PackData, (packDataSize + 1) / 2, (packDataSize + 1) / 2, GL_NEAREST, GL_NEAREST, GL_RGBA32F, GL_RGBA, GL_CLAMP_TO_EDGE, GL_FLOAT, GL_READ_WRITE));
 	}
 
 	void RayTracingRenderer::RenderGroup(MainCamera* mainCamera, Object* group)
@@ -317,12 +322,13 @@ namespace BlackPearl {
 			m_TexDataTex->Bind(6);
 			m_PackDataTex->Bind(7);
 
+			m_BVHNodeShader->Bind();
 			m_BVHNodeShader->SetUniform1f("u_rdSeed[0]", Math::Rand_F());
 			m_BVHNodeShader->SetUniform1f("u_rdSeed[1]", Math::Rand_F());
 			m_BVHNodeShader->SetUniform1f("u_rdSeed[2]", Math::Rand_F());
 			m_BVHNodeShader->SetUniform1f("u_rdSeed[3]", Math::Rand_F());
 
-			m_BVHNodeShader->Bind();
+			
 			DrawObject(m_Quad, m_BVHNodeShader);
 			m_ReadBuffer = m_WriteBuffer;
 			m_WriteBuffer = !m_ReadBuffer;
@@ -339,7 +345,6 @@ namespace BlackPearl {
 
 		DrawObject(m_Quad, m_ScreenShader);
 
-		m_BVHNodeShader->Unbind();
 	}
 
 	

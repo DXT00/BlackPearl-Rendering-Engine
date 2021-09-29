@@ -3,9 +3,9 @@
 
 namespace BlackPearl {
 
-	void MeshRenderer::UpdateTransformMatrix(glm::mat4 transformMatrix) {
-		m_TransformMatrix = transformMatrix;
-	}
+	//void MeshRenderer::UpdateTransformMatrix(glm::mat4 transformMatrix) {
+	//	m_TransformMatrix = transformMatrix;
+	//}
 	//注意：Draw之前要UpdateTransformMatrix！
 	//void MeshRenderer::DrawMeshes() {
 	//	for (auto mesh : GetMeshes())

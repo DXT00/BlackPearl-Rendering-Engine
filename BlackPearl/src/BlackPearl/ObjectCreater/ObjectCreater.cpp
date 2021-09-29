@@ -16,6 +16,7 @@
 #include "BlackPearl/Component/BoundingBoxComponent/BoundingBox.h"
 #include "BlackPearl/Component/BVHNodeComponent/BVHNode.h"
 #include "BlackPearl/Component/TransformComponent/RayTracingTransform.h"
+#include "BlackPearl/SceneBuilder/SceneBuilder.h"
 
 namespace BlackPearl {
 
@@ -52,7 +53,7 @@ namespace BlackPearl {
 		{ElementDataType::Float2,"aTexCoords",false,2}
 		};
 		Mesh mesh(meshFilter->GetVertices(), meshFilter->GetIndices(), material, layout);
-		obj->AddComponent<MeshRenderer>(mesh, transformComponent->GetTransformMatrix());
+		obj->AddComponent<MeshRenderer>(mesh);
 
 		return obj;
 	}
@@ -77,7 +78,7 @@ namespace BlackPearl {
 		{ElementDataType::Float2,"aTexCoords",false,2}
 		};
 		Mesh mesh(meshFilter->GetVertices(), meshFilter->GetIndices(), material, layout);
-		obj->AddComponent<MeshRenderer>(mesh, transformComponent->GetTransformMatrix());
+		obj->AddComponent<MeshRenderer>(mesh);
 		return obj;
 	}
 
@@ -101,8 +102,10 @@ namespace BlackPearl {
 		{ElementDataType::Float2,"aTexCoords",false,2}
 		};
 		Mesh mesh(meshFilter->GetVertices(), meshFilter->GetIndices(), material, layout);
-		obj->AddComponent<MeshRenderer>(mesh, transformComponent->GetTransformMatrix());
+		//obj->AddComponent<MeshRenderer>(mesh);
 
+		AABB box = BoundingBoxBuilder::Build(obj);
+		obj->AddComponent<BoundingBox>(box);
 		return obj;
 	}
 
@@ -117,14 +120,14 @@ namespace BlackPearl {
 		Transform* transformComponent = obj->GetComponent<Transform>();
 		transformComponent->SetInitPosition({ 0.0f, 0.0f, 0.0f });
 		transformComponent->SetInitRotation({ 0.0,180.0,0.0 });
-		obj->AddComponent<MeshRenderer>(model, transformComponent->GetTransformMatrix());
+		obj->AddComponent<MeshRenderer>(model);
 		/*if (addBondingBox) {
 			obj->AddComponent<BoundingBox>(model->GetMeshes());
 		}*/
 		return obj;
 	}
 
-	Object* Object3DCreater::CreateSkyBox( const std::vector<std::string>& textureFaces,const std::string& shaderPath, const std::string name)
+	Object* Object3DCreater::CreateSkyBox(const std::vector<std::string>& textureFaces, const std::string& shaderPath, const std::string name)
 	{
 		Object* obj = CreateEmpty(name);
 		auto info = obj->AddComponent<BasicInfo>();
@@ -141,22 +144,22 @@ namespace BlackPearl {
 		{ElementDataType::Float3,"aPos",false,0},
 		};
 		Mesh mesh(meshFilter->GetVertices(), meshFilter->GetIndices(), material, layout);
-		obj->AddComponent<MeshRenderer>(mesh, transformComponent->GetTransformMatrix());
+		obj->AddComponent<MeshRenderer>(mesh);
 		return obj;
 	}
 	/*注意：Cube的Transform会导致Camera的Transform*/
-	Object* Object3DCreater::CreateLightProbe(ProbeType type ,const std::string& shaderPath, const std::string& texturePath, const std::string name)
+	Object* Object3DCreater::CreateLightProbe(ProbeType type, const std::string& shaderPath, const std::string& texturePath, const std::string name)
 	{
 		Object* obj = CreateCube(shaderPath, texturePath, name);
 		auto info = obj->AddComponent<BasicInfo>();
 		info->SetObjectType(ObjectType::OT_LightProbe);
 		obj->GetComponent<Transform>()->SetInitRotation({ 0.0f, 0.0f, 0.0f });
-		obj->GetComponent<Transform>()->SetInitScale({ 0.3f,0.3f,0.3f});
+		obj->GetComponent<Transform>()->SetInitScale({ 0.3f,0.3f,0.3f });
 
 		obj->GetComponent<MeshRenderer>()->SetIsShadowObjects(false);
 		obj->GetComponent<MeshRenderer>()->SetIsBackGroundObjects(false);
 		obj->AddComponent<LightProbe>(type);
-		return obj;		
+		return obj;
 	}
 
 	Object* Object3DCreater::CreateGroup(const std::string name)
@@ -167,7 +170,7 @@ namespace BlackPearl {
 		return obj;
 	}
 
-	Object* Object3DCreater::CreateBVHNode(const std::vector<Object*>& objs,const std::string name)
+	Object* Object3DCreater::CreateBVHNode(const std::vector<Object*>& objs, const std::string name)
 	{
 		Object* obj = CreateEmpty(name);
 		std::shared_ptr<BasicInfo> info = obj->AddComponent<BasicInfo>();
@@ -204,7 +207,7 @@ namespace BlackPearl {
 	Object* Object3DCreater::CreateRTXTransformNode(const glm::mat4& transform_mat, Object* bvh_node, const std::string name)
 	{
 		Object* obj = CreateEmpty(name);
-		
+
 		std::shared_ptr<BasicInfo> info = obj->AddComponent<BasicInfo>();
 		info->SetObjectType(ObjectType::OT_RTXTransformNode);
 		obj->AddComponent<RTXTransformNode>(transform_mat, bvh_node);
@@ -232,7 +235,7 @@ namespace BlackPearl {
 			std::shared_ptr<PointLight> lightComponent = Obj->AddComponent<PointLight>();
 			lightComponent->SetAttenuation(PointLight::Attenuation(200));
 			lightSources->AddLight(Obj);
-			Obj->AddComponent<MeshRenderer>(lightComponent->GetMeshes(), TransformComponent->GetTransformMatrix());
+			Obj->AddComponent<MeshRenderer>(lightComponent->GetMeshes());
 
 			break;
 		}
@@ -285,7 +288,7 @@ namespace BlackPearl {
 
 		};
 		Mesh mesh(meshFilter->GetVertices(), meshFilter->GetIndices(), material, layout);
-		obj->AddComponent<MeshRenderer>(mesh, transformComponent->GetTransformMatrix());
+		obj->AddComponent<MeshRenderer>(mesh);
 
 		return obj;
 	}

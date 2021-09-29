@@ -9,14 +9,8 @@ namespace BlackPearl {
 	{
 	public:
 		BVHNode(const std::vector<Object*>& objs);
-			
-		BVHNode(const std::vector<Vertex>& mesh_vertex);
-			
-		//BVHNode(const std::vector<Triangle*>& trimesh) 
-		//	:Component(Component::Type::BVHNode) {
-		//	m_Box = Build(trimesh);
-		//}
 
+		BVHNode(const std::vector<Vertex>& mesh_vertex);
 
 		AABB GetRootBox() const;
 		bool IsLeaf() const;

@@ -11,21 +11,21 @@ namespace BlackPearl {
 	{
 	public:
 		//get transformMatrix from Object's Transform Component!
-		MeshRenderer(const std::vector<Mesh> &meshes, glm::mat4 transformMatrix)
-			:Component(Component::Type::MeshRenderer), m_Meshes(meshes), m_TransformMatrix(transformMatrix){}
+		MeshRenderer(const std::vector<Mesh> &meshes)
+			:Component(Component::Type::MeshRenderer), m_Meshes(meshes){}
 
-		MeshRenderer(const Mesh &mesh,glm::mat4 transformMatrix)
-			:Component(Component::Type::MeshRenderer), m_TransformMatrix(transformMatrix) {
+		MeshRenderer(const Mesh &mesh)
+			:Component(Component::Type::MeshRenderer) {
 		
 			m_Meshes.push_back(mesh);
 		}
 
-		MeshRenderer(const std::shared_ptr<Model>& model, glm::mat4 transformMatrix)
-			:Component(Component::Type::MeshRenderer), m_Model(model), m_TransformMatrix(transformMatrix) {
+		MeshRenderer(const std::shared_ptr<Model>& model)
+			:Component(Component::Type::MeshRenderer), m_Model(model) {
 		}
 		~MeshRenderer() {};
 
-		void UpdateTransformMatrix(glm::mat4 transformMatrix);
+		//void UpdateTransformMatrix(glm::mat4 transformMatrix);
 
 		inline std::shared_ptr<Model>GetModel()  const { return m_Model; }
 		inline std::vector<Mesh>     GetMeshes() const {
@@ -93,7 +93,6 @@ namespace BlackPearl {
 		bool m_IsPBRObject = false;
 		std::vector<Mesh> m_Meshes;
 		std::shared_ptr<Model> m_Model = nullptr;
-		glm::mat4 m_TransformMatrix;
 		
 		bool m_EnableCullFace = true;
 		bool m_IsBackGroundObjects = false;

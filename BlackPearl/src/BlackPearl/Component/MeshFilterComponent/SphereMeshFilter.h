@@ -1,5 +1,6 @@
 #pragma once
 #include "MeshFilter.h"
+#include "BlackPearl/AABB/AABB.h"
 namespace BlackPearl {
 
 	class SphereMeshFilter:public MeshFilter
@@ -14,6 +15,7 @@ namespace BlackPearl {
 		}
 		void Init();
 		float GetRadius() const { return m_Radius; }
+
 		~SphereMeshFilter();
 	private:
 		float m_Radius;

@@ -65,11 +65,12 @@ namespace BlackPearl {
 
 		}
 		SetIndices(indices);
-
 	}
 
 	SphereMeshFilter::~SphereMeshFilter()
 	{
 	}
+
+
 
 }
