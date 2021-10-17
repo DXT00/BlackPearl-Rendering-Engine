@@ -204,13 +204,14 @@ namespace BlackPearl {
 		return obj;
 	}
 
-	Object* Object3DCreater::CreateRTXTransformNode(const glm::mat4& transform_mat, Object* bvh_node, const std::string name)
+	Object* Object3DCreater::CreateRTXTransformNode(const glm::mat4& transform_mat, Object* bvh_node, std::shared_ptr<Material> rtx_material,const std::string name)
 	{
 		Object* obj = CreateEmpty(name);
 
 		std::shared_ptr<BasicInfo> info = obj->AddComponent<BasicInfo>();
 		info->SetObjectType(ObjectType::OT_RTXTransformNode);
 		obj->AddComponent<RTXTransformNode>(transform_mat, bvh_node);
+		obj->AddComponent<MeshRenderer>(rtx_material);
 		return obj;
 	}
 

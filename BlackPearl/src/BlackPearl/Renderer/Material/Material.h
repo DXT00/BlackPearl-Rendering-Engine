@@ -7,16 +7,16 @@ namespace BlackPearl {
 	{
 	public:
 		//用于Raytracing材质判断
-		enum Type
+		enum RTXType
 		{
-			AMBIENT,
-			METALLIC,
-			DIELECTRIC,
-			DIFFUSE,
-			SPECULAR,
-			EMISSION,
-			ROUGHNESS,
-			AO
+			RTX_AMBIENT,
+			RTX_METALLIC,
+			RTX_DIELECTRIC,
+			RTX_DIFFUSE,
+			RTX_SPECULAR,
+			RTX_EMISSION,
+			RTX_ROUGHNESS,
+			RTX_AO
 		};
 		struct Props {
 			//Enable texture
@@ -28,8 +28,17 @@ namespace BlackPearl {
 			int  isSpecularTextureSample;//是否使用纹理
 			int  isHeightTextureSample;//是否使用纹理
 			int  isEmissionTextureSample;//是否使用纹理
+			int isRefractMaterial;
 
-			Props() :shininess(64.0f), refractIndex(1.5), isBinnLight(false), isPBRTextureSample(0),isDiffuseTextureSample(0),isSpecularTextureSample(0),isEmissionTextureSample(0),isHeightTextureSample(0){}
+			Props() :shininess(64.0f),
+				refractIndex(1.5),
+				isBinnLight(false), 
+				isPBRTextureSample(0),
+				isDiffuseTextureSample(0),
+				isSpecularTextureSample(0),
+				isEmissionTextureSample(0),
+				isHeightTextureSample(0),
+				isRefractMaterial(0){}
 
 		};
 		struct TextureMaps {
@@ -61,12 +70,17 @@ namespace BlackPearl {
 			}
 		};
 
+		//case: for virtual node ,such as RTXTransformNode
+		Material()
+			: m_Props(Props()) {
+		}
+
 		Material(
 			const std::shared_ptr<Shader>& shader,
 			const std::shared_ptr<TextureMaps>& textureMaps,
 			const MaterialColor& materialColors
 		)
-			:m_Shader(shader), m_TextureMaps(textureMaps), m_MaterialColors(materialColors), m_Props(Props()) {}
+			: m_Shader(shader), m_TextureMaps(textureMaps), m_MaterialColors(materialColors), m_Props(Props()) {}
 
 		Material(
 			const std::string shaderPath,
@@ -80,7 +94,7 @@ namespace BlackPearl {
 		std::shared_ptr<TextureMaps> GetTextureMaps()const { return m_TextureMaps; }
 		MaterialColor                GetMaterialColor()const { return m_MaterialColors; }
 		Props                        GetProps() const { return m_Props; }
-		Type						 GetType() const { return m_Type; }
+		RTXType						 GetRTXType() const { return m_RTXType; }
 
 		void SetShader(const std::string& shaderPath);
 		void SetShader(const std::shared_ptr<Shader>& shader);
@@ -100,7 +114,9 @@ namespace BlackPearl {
 		void SetTextureSampleSpecular(int isTextureSampleSpecular);
 		void SetTextureSampleHeight(int isTextureSampleHeight);
 		void SetTextureSampleEmission(int isTextureSampleMetallic);
-		void SetType(Material::Type materialType);
+		void SetRefractMaterial(int isRefractMaterial);
+		void SetRefractIdx(int idx);
+		void SetRTXType(Material::RTXType materialType);
 
 		void Unbind() {
 			if (m_TextureMaps->diffuseTextureMap != nullptr)   m_TextureMaps->diffuseTextureMap->UnBind();
@@ -121,7 +137,7 @@ namespace BlackPearl {
 		std::shared_ptr<TextureMaps> m_TextureMaps;
 		MaterialColor				 m_MaterialColors;
 		Props                        m_Props;
-		Type						 m_Type;
+		RTXType						 m_RTXType;
 	};
 
 }

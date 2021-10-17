@@ -1,9 +1,10 @@
 #pragma once
+#include "BlackPearl/RayTracing/Vertex.h"
 #include "BlackPearl/Component/LightComponent/Light.h"
 #include "BlackPearl/Component/LightComponent/LightSources.h"
 #include "BlackPearl/Component/TransformComponent/Transform.h"
+#include "BlackPearl/Renderer/Material/Material.h"
 #include "BlackPearl/Component/LightProbeComponent/LightProbeComponent.h"
-#include "BlackPearl/RayTracing/Vertex.h"
 
 namespace BlackPearl {
 	////////////////////////ObjectCreater////////////////////////////////
@@ -33,7 +34,7 @@ namespace BlackPearl {
 		Object* CreateBVHNode(const std::vector<Object*>& objs,const std::string name);
 		Object* CreateBVHNode(const std::vector<Vertex>& mesh_vertex, const std::string name);
 		Object* CreateTriangle(const std::vector<Vertex>& points, const std::string name);
-		Object* CreateRTXTransformNode(const glm::mat4& transform_mat, Object* bvh_node, const std::string name);
+		Object* CreateRTXTransformNode(const glm::mat4& transform_mat, Object* bvh_node, std::shared_ptr<Material> rtx_material, const std::string name);
 	};
 
 	////////////////////////Object2DCreater////////////////////////////////

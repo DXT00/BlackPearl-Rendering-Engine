@@ -21,7 +21,14 @@ namespace BlackPearl {
 			if (!meshes.empty()) {
 				//TODO:: RayTracing 暂时默认所有Meshes是同一种类型的材质
 				std::shared_ptr<Material> material = meshes[0].GetMaterial();
-				if (material != NULL) {
+				if (material != nullptr) {
+					m_Mat2Vec[material].push_back(m_SceneData.size());
+					has_material = true;
+				}
+			}
+			else { //case: for virtual node, such as RTXTransformNode
+				std::shared_ptr<Material> material = obj->GetComponent<MeshRenderer>()->GetSingleMaterial();
+				if (material != nullptr) {
 					m_Mat2Vec[material].push_back(m_SceneData.size());
 					has_material = true;
 				}

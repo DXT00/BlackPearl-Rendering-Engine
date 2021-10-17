@@ -8,12 +8,12 @@ namespace BlackPearl {
 	{
 
 		for (auto const& pair : mat2vec) {
-			Material::Type mat_type = pair.first->GetType();
-			if (mat_type == Material::Type::DIFFUSE)
+			Material::RTXType mat_type = pair.first->GetRTXType();
+			if (mat_type == Material::RTXType::RTX_DIFFUSE)
 				ParseDiffuseMat(pair.first);
-			else if (mat_type == Material::Type::SPECULAR || mat_type == Material::Type::METALLIC)
+			else if (mat_type == Material::RTXType::RTX_SPECULAR || mat_type == Material::RTXType::RTX_METALLIC)
 				ParseSpecularMat(pair.first);
-			else if (mat_type == Material::Type::DIELECTRIC) {
+			else if (mat_type == Material::RTXType::RTX_DIELECTRIC) {
 				ParseDielectricMat(pair.first);
 			}
 
@@ -38,7 +38,7 @@ namespace BlackPearl {
 			return;
 		}
 		m_Mat2Idx[material] = m_MatData.size();
-		m_MatData.push_back(float(material->GetType()));
+		m_MatData.push_back(float(material->GetRTXType()));
 
 
 		if (material->GetProps().isSpecularTextureSample && material->GetTextureMaps()->specularTextureMap != NULL) {
@@ -68,12 +68,12 @@ namespace BlackPearl {
 			return;
 		}
 		m_Mat2Idx[material] = m_MatData.size();
-		m_MatData.push_back(float(material->GetType()));
+		m_MatData.push_back(float(material->GetRTXType()));
 
 
 
 
-		m_MatData.push_back(-1);//´æ´¢texture idx»òcolor idx
+		//m_MatData.push_back(-1);//´æ´¢texture idx»òcolor idx
 		m_MatData.push_back(material->GetProps().refractIndex);
 	}
 

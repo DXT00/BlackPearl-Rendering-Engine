@@ -287,7 +287,7 @@ bool Scatter_Metal(inout struct Ray ray, struct HitRst hitable, int matIdx){
 }
 
 bool Scatter_Dielectric(inout struct Ray ray, struct HitRst hitable, int matIdx){
-	float refractIndex = At(MatData,matIdx+2);
+	float refractIndex = At(MatData,matIdx+1.0);
 	vec3 refractDir;
 	vec3 reflectDir = reflect(ray.dir, hitable.vertex.normal);
 

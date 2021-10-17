@@ -10,6 +10,9 @@ namespace BlackPearl {
 	class MeshRenderer:public Component<MeshRenderer>
 	{
 	public:
+		//virtual node, has no mesh(only material),such as RTXTransformNode
+		MeshRenderer(std::shared_ptr<Material> material)
+			:Component(Component::Type::MeshRenderer), m_Material(material){}
 		//get transformMatrix from Object's Transform Component!
 		MeshRenderer(const std::vector<Mesh> &meshes)
 			:Component(Component::Type::MeshRenderer), m_Meshes(meshes){}
@@ -87,12 +90,22 @@ namespace BlackPearl {
 
 		bool GetIsReflectProbeCacheSet()const { return m_SetReflectProbeCaches; }
 		void SetIsReflectProbeCacheSet(bool set) { m_SetReflectProbeCaches = set; }
+
+
+		std::shared_ptr<Material> GetSingleMaterial() const {
+			GE_ASSERT(m_Material != nullptr, "material is nullptr");
+			return m_Material;
+		}
+
 	private:
 		//¿ªÆôºÍ½ûÖ¹äÖÈ¾
 		bool m_EnableRender = true;
 		bool m_IsPBRObject = false;
 		std::vector<Mesh> m_Meshes;
 		std::shared_ptr<Model> m_Model = nullptr;
+
+		//case: all meshes has the same material
+		std::shared_ptr<Material> m_Material = nullptr;
 		
 		bool m_EnableCullFace = true;
 		bool m_IsBackGroundObjects = false;

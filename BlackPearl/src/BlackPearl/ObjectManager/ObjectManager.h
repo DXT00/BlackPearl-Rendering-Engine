@@ -2,6 +2,7 @@
 #include <unordered_map>
 #include <string>
 #include "BlackPearl/Object/Object.h"
+#include "BlackPearl/Renderer/Material/Material.h"
 #include "BlackPearl/ObjectCreater/ObjectCreater.h"
 #include "BlackPearl/Component/LightComponent/Light.h"
 #include "BlackPearl/Component/LightComponent/LightSources.h"
@@ -46,7 +47,7 @@ namespace BlackPearl {
 		Object* CreateBVHNode(const std::vector<Vertex>& mesh_vertex, const std::string name = "BVHNode");
 		Object* CreateTriangle(const std::vector<Vertex>& points, const std::string name = "Triangle");
 		//RayTracing ¹ÜÏßµÄTransform
-		Object* CreateRTXTransformNode(const glm::mat4& transform_mat, Object* bvh_node, const std::string name = "RayTracingTansform");
+		Object* CreateRTXTransformNode(const glm::mat4& transform_mat, Object* bvh_node, std::shared_ptr<Material> rtx_material = nullptr, const std::string name = "RayTracingTansform");
 		
 		std::vector<Object*> GetObjects();
 		//std::vector<std::string> GetObjectsName();

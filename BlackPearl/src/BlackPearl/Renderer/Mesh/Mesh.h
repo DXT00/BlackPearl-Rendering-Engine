@@ -87,7 +87,7 @@ namespace BlackPearl {
 		float*                       m_Vertices = nullptr;
 		unsigned int*                m_Indices = nullptr;
 		uint32_t                     m_IndicesSize = 0;
-		std::shared_ptr<Material>    m_Material;
+		std::shared_ptr<Material>    m_Material = nullptr;
 
 	};
 

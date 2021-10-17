@@ -91,10 +91,17 @@ public:
 			bunny->GetComponent<BlackPearl::Transform>()->SetInitPosition({ 0.6f,0.0f,-2.0f });
 			bunny->GetComponent<BlackPearl::Transform>()->SetInitRotation({ 0.0f,0.0f,0.0f });
 			bunny->GetComponent<BlackPearl::MeshRenderer>()->SetIsBackGroundObjects(true);
+			std::shared_ptr<BlackPearl::Material> bunny_mat;
+			bunny_mat.reset(DBG_NEW BlackPearl::Material());
+			bunny_mat->SetRTXType(BlackPearl::Material::RTXType::RTX_DIELECTRIC);
+			bunny_mat->SetRefractMaterial(1);
+			bunny_mat->SetRefractIdx(1.5f);
+
+
 
 			std::vector<BlackPearl::Vertex> bunny_verteices = bunny->GetComponent<BlackPearl::MeshRenderer>()->GetModel()->GetMeshVertex();
 			BlackPearl::Object* bunny_bvh_node = BlackPearl::g_objectManager->CreateBVHNode(bunny_verteices);
-			m_BunnyRTXTransformNode = BlackPearl::g_objectManager->CreateRTXTransformNode(bunny->GetComponent<BlackPearl::Transform>()->GetTransformMatrix(), bunny_bvh_node);
+			m_BunnyRTXTransformNode = BlackPearl::g_objectManager->CreateRTXTransformNode(bunny->GetComponent<BlackPearl::Transform>()->GetTransformMatrix(), bunny_bvh_node,bunny_mat);
 
 			m_Group->PushBack(m_BunnyRTXTransformNode);
 			m_SceneBuilder->CreateSceneData(m_Group);
