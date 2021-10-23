@@ -115,7 +115,7 @@ namespace BlackPearl {
 		void SetTextureSampleHeight(int isTextureSampleHeight);
 		void SetTextureSampleEmission(int isTextureSampleMetallic);
 		void SetRefractMaterial(int isRefractMaterial);
-		void SetRefractIdx(int idx);
+		void SetRefractIdx(float idx);
 		void SetRTXType(Material::RTXType materialType);
 
 		void Unbind() {

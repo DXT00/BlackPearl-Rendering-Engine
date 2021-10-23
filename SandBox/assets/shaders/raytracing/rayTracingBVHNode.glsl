@@ -507,13 +507,13 @@ struct HitRst TraceScene(inout struct Ray ray,inout struct HitRst finalHitRst){
 					GetPackData((At(SceneData,idx+3.0)+8.0), normTfmMat3);
 					Vertex_Transform(finalHitRst.vertex, tfmMat4, normTfmMat3);
 
-					if(finalHitRst.isMatCoverable == 1.0){
+					//if(finalHitRst.isMatCoverable == 1.0){
 						float matIdx = At(SceneData, idx+1);
 						if(matIdx != -1.0){
 							finalHitRst.matIdx = matIdx;
 							finalHitRst.isMatCoverable = At(SceneData, idx+2);
 						}
-					}
+					//}
 				}
 			}
 			continue;
@@ -646,7 +646,7 @@ void Stack_Acc(){
 }
 
 void main(){
-	vec3 color = RayTrace();// + texture(SumColor, TexCoords).xyz;
+	vec3 color = RayTrace() ;//+ texture(SumColor, TexCoords).xyz;
 	out_SumColor = vec4(color.x,color.y,color.z,0.0);
 
 }

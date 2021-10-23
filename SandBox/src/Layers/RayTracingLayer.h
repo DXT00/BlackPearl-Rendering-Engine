@@ -88,7 +88,7 @@ public:
 			m_Group = DBG_NEW BlackPearl::Group(group_obj);
 			BlackPearl::Object* bunny = CreateModel("assets/models/bunny/bunny.obj", "assets/shaders/IronMan.glsl", false, "Bunny");
 			bunny->GetComponent<BlackPearl::Transform>()->SetInitScale(glm::vec3(1.0));
-			bunny->GetComponent<BlackPearl::Transform>()->SetInitPosition({ 0.6f,0.0f,-2.0f });
+			bunny->GetComponent<BlackPearl::Transform>()->SetInitPosition({ -0.2f,-1.0f,-2.0f });
 			bunny->GetComponent<BlackPearl::Transform>()->SetInitRotation({ 0.0f,0.0f,0.0f });
 			bunny->GetComponent<BlackPearl::MeshRenderer>()->SetIsBackGroundObjects(true);
 			std::shared_ptr<BlackPearl::Material> bunny_mat;
@@ -101,7 +101,7 @@ public:
 
 			std::vector<BlackPearl::Vertex> bunny_verteices = bunny->GetComponent<BlackPearl::MeshRenderer>()->GetModel()->GetMeshVertex();
 			BlackPearl::Object* bunny_bvh_node = BlackPearl::g_objectManager->CreateBVHNode(bunny_verteices);
-			m_BunnyRTXTransformNode = BlackPearl::g_objectManager->CreateRTXTransformNode(bunny->GetComponent<BlackPearl::Transform>()->GetTransformMatrix(), bunny_bvh_node,bunny_mat);
+			m_BunnyRTXTransformNode = BlackPearl::g_objectManager->CreateRTXTransformNode(bunny->GetComponent<BlackPearl::Transform>()->GetTransformMatrix(), bunny_bvh_node, bunny_mat);
 
 			m_Group->PushBack(m_BunnyRTXTransformNode);
 			m_SceneBuilder->CreateSceneData(m_Group);

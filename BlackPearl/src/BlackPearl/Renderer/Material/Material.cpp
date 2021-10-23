@@ -135,7 +135,7 @@ namespace BlackPearl {
 		m_Props.shininess = shininess;
 	}
 
-	void Material::SetRefractIdx(int idx) 
+	void Material::SetRefractIdx(float idx) 
 	{
 		GE_ASSERT(m_Props.isRefractMaterial, "props.isRefractMaterial = 0");
 		m_Props.refractIndex = idx;
