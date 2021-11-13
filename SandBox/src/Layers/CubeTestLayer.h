@@ -1,6 +1,6 @@
 #pragma once
 #pragma once
-#include <BlackPeral.h>
+#include <BlackPearl.h>
 #include "glm/glm.hpp"
 #include "glm/ext/matrix_transform.hpp"
 
@@ -10,8 +10,8 @@
 class CubeTestLayer :public BlackPearl::Layer {
 public:
 
-	CubeTestLayer(const std::string& name, BlackPearl::ObjectManager* objectManager)
-		: Layer(name, objectManager)
+	CubeTestLayer(const std::string& name)
+		: Layer(name)
 	{
 
 		//m_MasterRenderer = DBG_NEW BlackPearl::MasterRenderer(m_MainCamera->GetObj());

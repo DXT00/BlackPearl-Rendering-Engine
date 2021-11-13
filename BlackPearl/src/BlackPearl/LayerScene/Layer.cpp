@@ -16,13 +16,10 @@
 #include "BlackPearl/Renderer/MasterRenderer/VoxelConeTracingRenderer.h"
 #include "BlackPearl/Renderer/MasterRenderer/VoxelConeTracingDeferredRenderer.h"
 #include "BlackPearl/Renderer/MasterRenderer/VoxelConeTracingSVORenderer.h"
+#include "BlackPearl/Application.h"
 namespace BlackPearl {
 
 	static int buttonNum = 0;
-
-	//bool isBackGroundObj=false;
-
-
 	void Layer::OnImguiRender()
 	{
 		ImGui::Begin("Settings");
@@ -1002,50 +999,62 @@ namespace BlackPearl {
 
 	Object* Layer::CreateEmpty(std::string name) {
 
-		Object* obj = m_ObjectManager->CreateEmpty(name);
+		Object* obj = g_objectManager->CreateEmpty(name);
+		m_ObjectsList.push_back(obj);
+		return obj;
+	}
+	Object* Layer::CreateGroup(const std::string name)
+	{
+		Object* obj = g_objectManager->CreateGroup(name);
+		m_ObjectsList.push_back(obj);
+		return obj;
+	}
+	Object* Layer::CreateBVHNode(const std::vector<Object*>& objs, const std::string name)
+	{
+		Object* obj = g_objectManager->CreateBVHNode(objs,name);
 		m_ObjectsList.push_back(obj);
 		return obj;
 	}
 	Object* Layer::CreateLight(LightType type, const std::string& name)
 	{
-		Object* obj = m_ObjectManager->CreateLight(type, m_LightSources, name);
+		Object* obj = g_objectManager->CreateLight(type, m_LightSources, name);
 		m_ObjectsList.push_back(obj);
 		return obj;
 	}
 	Object* Layer::CreateCube(const std::string& shaderPath, const std::string& texturePath, const std::string& name) //TODO:
 	{
-		Object* obj = m_ObjectManager->CreateCube(shaderPath, texturePath, name);
+		Object* obj = g_objectManager->CreateCube(shaderPath, texturePath, name);
 		m_ObjectsList.push_back(obj);
 		return obj;
 	}
 	Object* Layer::CreateSphere(const float radius, const unsigned int stackCount, const unsigned int sectorCount, const std::string& shaderPath, const std::string& texturePath, const std::string& name)
 	{
-		Object* obj = m_ObjectManager->CreateSphere(radius, stackCount, sectorCount, shaderPath, texturePath, name);
+		Object* obj = g_objectManager->CreateSphere(radius, stackCount, sectorCount, shaderPath, texturePath, name);
 		m_ObjectsList.push_back(obj);
 		return obj;
 	}
 	Object* Layer::CreatePlane(const std::string& shaderPath, const std::string& texturePath, const std::string& name)
 	{
-		Object* obj = m_ObjectManager->CreatePlane(shaderPath, texturePath, name);
+		Object* obj = g_objectManager->CreatePlane(shaderPath, texturePath, name);
 		m_ObjectsList.push_back(obj);
 		return obj;
 	}
 	Object* Layer::CreateSkyBox(const std::vector<std::string>& textureFaces, const std::string& shaderPath, const std::string& name)
 	{
-		Object* obj = m_ObjectManager->CreateSkyBox(textureFaces, shaderPath, name);
+		Object* obj = g_objectManager->CreateSkyBox(textureFaces, shaderPath, name);
 		m_ObjectsList.push_back(obj);
 		return obj;
 	}
 	Object* Layer::CreateQuad(const std::string& shaderPath, const std::string& texturePath, const std::string& name)
 	{
-		Object* obj = m_ObjectManager->CreateQuad(shaderPath, texturePath, name);
+		Object* obj = g_objectManager->CreateQuad(shaderPath, texturePath, name);
 		m_ObjectsList.push_back(obj);
 		return obj;
 	}
 	Object* Layer::CreateLightProbe(ProbeType type,const std::string& shaderPath, const std::string& texturePath,  const std::string& name)
 	{
 	
-		Object* probe = m_ObjectManager->CreateLightProbe(type,shaderPath, texturePath, name+(type == ProbeType::DIFFUSE_PROBE  ? "_kd" : "_ks"));
+		Object* probe = g_objectManager->CreateLightProbe(type,shaderPath, texturePath, name+(type == ProbeType::DIFFUSE_PROBE  ? "_kd" : "_ks"));
 		m_ObjectsList.push_back(probe);
 		//m_ObjectsList.push_back(probe->GetCamera()->GetObj());
 		(type == ProbeType::DIFFUSE_PROBE) ? m_DiffuseLightProbes.push_back(probe) : m_ReflectionLightProbes.push_back(probe);
@@ -1084,13 +1093,13 @@ namespace BlackPearl {
 	}
 	Object* Layer::CreateModel(const std::string& modelPath, const std::string& shaderPath, const bool isAnimated, const std::string& name)
 	{
-		Object* obj = m_ObjectManager->CreateModel(modelPath, shaderPath, isAnimated, name);
+		Object* obj = g_objectManager->CreateModel(modelPath, shaderPath, isAnimated, false, name);
 		m_ObjectsList.push_back(obj);
 		return obj;
 	}
 	MainCamera* Layer::CreateCamera(const std::string& name) {
 
-		MainCamera* mainCamera = m_ObjectManager->CreateCamera(name);
+		MainCamera* mainCamera = g_objectManager->CreateCamera(name);
 		m_ObjectsList.push_back(mainCamera->GetObj());
 		return mainCamera;
 	}
@@ -1528,14 +1537,14 @@ namespace BlackPearl {
 
 	std::vector<Object*> Layer::GetObjects()
 	{
-		return m_ObjectManager->GetObjects();
+		return g_objectManager->GetObjects();
 	}
-	std::vector<std::string> Layer::GetObjectsName()
-	{
-		return m_ObjectManager->GetObjectsName();
-	}
+	//std::vector<std::string> Layer::GetObjectsName()
+	//{
+	//	return g_objectManager->GetObjectsName();
+	//}
 	void Layer::DestroyObjects() //TODO:删除某一个Objects的情况还没处理--》重新考虑m_EntityToObjects数据结构
 	{
-		m_ObjectManager->DestroyObjects();
+		g_objectManager->DestroyObjects();
 	}
 }

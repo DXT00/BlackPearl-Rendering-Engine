@@ -5,8 +5,8 @@ namespace BlackPearl {
 	class QuadMeshFilter:public MeshFilter
 	{
 	public:
-		QuadMeshFilter(EntityManager * entityManager, Entity::Id id)
-			: MeshFilter(entityManager, id) {
+		QuadMeshFilter()
+			: MeshFilter() {
 			Init();
 		};
 		

@@ -12,9 +12,9 @@ namespace BlackPearl {
 	class Scene {
 	public:
 		Scene() {
-			m_ImGuiEntityMgr = DBG_NEW EntityManager();
-			m_ImGuiObjectMgr = DBG_NEW ObjectManager(m_ImGuiEntityMgr);
-			m_ImGuiLayer = DBG_NEW ImGuiLayer("ImGuiLayer", m_ImGuiObjectMgr);
+			//m_ImGuiEntityMgr = DBG_NEW EntityManager();
+			//m_ImGuiObjectMgr = DBG_NEW ObjectManager(m_ImGuiEntityMgr);
+			m_ImGuiLayer = DBG_NEW ImGuiLayer("ImGuiLayer");
 			PushOverLayer(m_ImGuiLayer);
 		}
 		~Scene() {
@@ -33,8 +33,8 @@ namespace BlackPearl {
 
 		LayerStack m_LayerStack;
 		ImGuiLayer* m_ImGuiLayer; //每个Scene都有一个ImGuiLayer
-		EntityManager* m_ImGuiEntityMgr;
-		ObjectManager* m_ImGuiObjectMgr;
+		//EntityManager* m_ImGuiEntityMgr;
+		//ObjectManager* m_ImGuiObjectMgr;
 	};
 
 

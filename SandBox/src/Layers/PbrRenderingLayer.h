@@ -1,6 +1,6 @@
 #pragma once
 #pragma once
-#include <BlackPeral.h>
+#include <BlackPearl.h>
 #include "glm/glm.hpp"
 #include "glm/ext/matrix_transform.hpp"
 
@@ -10,8 +10,8 @@
 class PbrRenderingLayer :public BlackPearl::Layer {
 public:
 
-	PbrRenderingLayer(const std::string& name, BlackPearl::ObjectManager *objectManager)
-		: Layer(name, objectManager)
+	PbrRenderingLayer(const std::string& name)
+		: Layer(name)
 	{
 
 		//m_CameraObj = CreateCamera();

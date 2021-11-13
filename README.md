@@ -1,28 +1,6 @@
 ## BlackPearl  Engine
 BlackPearl  Engine is a dynamic GI rendering engine to simulate different dynamic GI algorithm,such as light probe based GI,voxel cone tracing GI,image based lighting, sparse voxel octree cone tracing.You can select the algorithm you want to simulate in SandBox.
 
-```
-class SandBox :public BlackPearl::Application {
-public:
-	SandBox() {
-		BlackPearl::EntityManager * entityManager = DBG_NEW BlackPearl::EntityManager();
-		BlackPearl::ObjectManager * objectManager = DBG_NEW BlackPearl::ObjectManager(entityManager);
-		//BlackPearl::Layer* layer = DBG_NEW ShadowMapPointLightLayer("ShadowMapPointLight Layer", objectManager);
-		//BlackPearl::Layer* layer = DBG_NEW VoxelConeTracingLayer("VoxelConeTracing Layer", objectManager);
-
-		//BlackPearl::Layer* layer = DBG_NEW PbrRenderingLayer("PbrRendering Layer", objectManager);
-		//BlackPearl::Layer* layer = DBG_NEW IBLRenderingLayer("IBLRenderingLayer", objectManager);
-		BlackPearl::Layer* layer = DBG_NEW IBLProbesRenderingLayer("IBLProbesRenderingLayer", objectManager);
-		
-		//BlackPearl::Layer* layer = DBG_NEW VoxelConeTracingDeferredLayer("VoxelConeTracingDeferred Layer", objectManager);
-		//BlackPearl::Layer* layer = DBG_NEW VoxelConeTracingSVOLayer("VoxelConeTracingSVO Layer", objectManager);
-		GetScene()->PushLayer(layer);
-	}
-	virtual ~SandBox() = default;
-
-};
-
-```
 ## Get start
 
 run GenerateProject.bat to set up visual studio project,it is only for Windows now.
@@ -70,4 +48,25 @@ SVO path tracing - only one bounce cubeSize = 40
 ### indirect diffuse light
 ![3Dtexture_coneTracing](/results/3Dtexture_coneTracing3.png)
 
+## GPU Raytracing
 
+reference: ToyRTX
+https://github.com/Ubpa/ToyRTX
+
+### GPU Raytracing 01
+![gpu_raytracing](/results/gpu_raytracing.png)
+
+### GPU Raytracing 02 -- spheres
+![gpu_raytracing_spheres](/results/gpu_raytracing_spheres.png)
+
+### GPU Raytracing 03 -- material spheres
+![gpu_raytracing_material_spheres](/results/gpu_raytracing_material_spheres.png)
+
+### GPU Raytracing 04 -- gendata
+![gpu_raytracing_group_rendering](/results/gpu_raytracing_group_rendering.png)
+
+### GPU Raytracing 05 -- bvh_node
+![gpu_raytracing_bvh_node_rendering](/results/gpu_raytracing_bvh_node.png)
+
+### GPU Raytracing 06 -- material -Dielectric bunny
+![gpu_raytracing_bvh_node_MATERAIL1](/results/gpu_raytracing_bvh_node_MATERAIL1.png)

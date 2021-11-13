@@ -1,6 +1,8 @@
 #pragma once
 #include "BlackPearl/Component/Component.h"
 #include "BlackPearl/Renderer/Material/CubeMapTexture.h"
+#include "glm/glm.hpp"
+#include "BlackPearl/Core.h"
 namespace BlackPearl {
 	enum ProbeType {
 		DIFFUSE_PROBE,
@@ -10,8 +12,8 @@ namespace BlackPearl {
 	{
 	public:
 		
-		LightProbe(EntityManager* entityManager, Entity::Id id,ProbeType type)
-			:Component(entityManager,id, Component::Type::LightProbe){
+		LightProbe(ProbeType type)
+			:Component(Component::Type::LightProbe){
 		
 			m_Type = type;
 			m_Zfar = 13.0f;
@@ -27,12 +29,12 @@ namespace BlackPearl {
 
 		/* Textures */
 		//std::shared_ptr<CubeMapTexture> GetHdrEnvironmentCubeMap()const    { return m_HdrEnvironmentCubeMap; }
-		std::shared_ptr<CubeMapTexture> GetSpecularPrefilterCubeMap()const { GE_ASSERT(m_Type == ProbeType::REFLECTION_PROBE, "is not a reflection probe") return m_SpecularPrefilterCubeMap; }
+		std::shared_ptr<CubeMapTexture> GetSpecularPrefilterCubeMap()const { GE_ASSERT(m_Type == ProbeType::REFLECTION_PROBE, "is not a reflection probe"); return m_SpecularPrefilterCubeMap; }
 		//std::shared_ptr<CubeMapTexture> GetDiffuseIrradianceCubeMap()const { return m_DiffuseIrradianceCubeMap; }
 		std::shared_ptr<Texture> GetSpecularBrdfLutMap()const { return m_SpecularBrdfLutMap; }
 
 		/* resolution */
-		unsigned int GetSpecularCubeMapResolution() const { GE_ASSERT(m_Type == ProbeType::REFLECTION_PROBE, "is not a reflection probe") return m_SpecularCubeMapResolution; }
+		unsigned int GetSpecularCubeMapResolution() const { GE_ASSERT(m_Type == ProbeType::REFLECTION_PROBE, "is not a reflection probe"); return m_SpecularCubeMapResolution; }
 		unsigned int GetEnvironmentCubeMapResolution() const { return m_EnvironmentCubeMapResolution; }
 
 		/* get */

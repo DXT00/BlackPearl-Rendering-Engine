@@ -1,6 +1,6 @@
 
 #pragma once
-#include <BlackPeral.h>
+#include <BlackPearl.h>
 #include "glm/glm.hpp"
 #include "glm/ext/matrix_transform.hpp"
 
@@ -10,8 +10,8 @@
 class VoxelConeTracingSVOLayer :public BlackPearl::Layer {
 public:
 
-	VoxelConeTracingSVOLayer(const std::string& name, BlackPearl::ObjectManager* objectManager)
-		: Layer(name, objectManager)
+	VoxelConeTracingSVOLayer(const std::string& name)
+		: Layer(name)
 	{
 		m_CubeObj = CreateCube();
 		m_CubeObj->GetComponent<BlackPearl::Transform>()->SetScale(glm::vec3(40.0f));//必须是单位cube

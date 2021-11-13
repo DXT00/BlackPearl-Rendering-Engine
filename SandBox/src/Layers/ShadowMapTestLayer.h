@@ -1,6 +1,6 @@
 #pragma once
 #pragma once
-#include <BlackPeral.h>
+#include <BlackPearl.h>
 #include "glm/glm.hpp"
 #include "glm/ext/matrix_transform.hpp"
 
@@ -18,8 +18,8 @@ class ShadowMapTestLayer :public BlackPearl::Layer {
 
 public:
 
-	ShadowMapTestLayer(const std::string& name, BlackPearl::ObjectManager *objectManager)
-		: Layer(name, objectManager)
+	ShadowMapTestLayer(const std::string& name)
+		: Layer(name)
 	{
 
 	/*	m_CameraObj = CreateCamera();

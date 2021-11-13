@@ -1,5 +1,5 @@
 #pragma once
-#include <BlackPeral.h>
+#include <BlackPearl.h>
 #include "glm/glm.hpp"
 #include "glm/ext/matrix_transform.hpp"
 
@@ -8,8 +8,8 @@
 class FrameBufferTestLayer :public BlackPearl::Layer {
 public:
 
-	FrameBufferTestLayer(const std::string& name, BlackPearl::ObjectManager *objectManager)
-		: Layer(name, objectManager)
+	FrameBufferTestLayer(const std::string& name)
+		: Layer(name)
 	{
 		
 		

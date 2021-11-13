@@ -16,7 +16,12 @@ namespace BlackPearl {
 			MeshFilter,
 			Light,
 			Camera,
-			LightProbe
+			LightProbe,
+			BoundingBox,
+			BasicInfo,
+			BVHNode,
+			Triangle,
+			RTXTransformNode
 
 		};
 		BaseComponent(Type type)

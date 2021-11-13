@@ -5,8 +5,8 @@ namespace BlackPearl {
 	class CubeMeshFilter:public MeshFilter
 	{
 	public:
-		CubeMeshFilter(EntityManager * entityManager, Entity::Id id)
-			:MeshFilter(entityManager, id) {
+		CubeMeshFilter()
+			:MeshFilter() {
 			Init();
 		}
 		void Init();

@@ -69,10 +69,9 @@ namespace BlackPearl {
 		inline void SetProjectionMatrix(glm::mat4 projection) { m_ProjectionMatrix = projection; m_ViewProjectionMatrix = m_ProjectionMatrix * m_ViewMatrix; }
 		inline void SetViewProjectionMatrix(glm::mat4 viewProjection) { m_ViewProjectionMatrix = viewProjection; }
 		//static Camera* Create(unsigned int type, const std::initializer_list<float> &projectionMatrixProps, const ViewMatrixProps &viewMatrixProps = ViewMatrixProps());
-		Camera(EntityManager* entityManager, Entity::Id id):
-		Component(entityManager,id,Component::Type::Camera){}//TODO::
-		static Camera * Create(EntityManager* entityManager, Entity::Id id,unsigned int type
-			);
+		Camera():
+		Component(BaseComponent::Type::Camera){}//TODO::
+		static Camera * Create(unsigned int type);
 
 		ViewMatrixProps GetViewMatrixProps() const { return m_ViewMatrixProps; }
 	protected:

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <BlackPeral.h>
+#include <BlackPearl.h>
 #include "glm/glm.hpp"
 #include "glm/ext/matrix_transform.hpp"
 #include "imgui/imgui.h"
@@ -15,8 +15,8 @@ class ShadowMapPointLightLayer :public BlackPearl::Layer {
 
 public:
 
-	ShadowMapPointLightLayer(const std::string& name, BlackPearl::ObjectManager *objectManager)
-		: Layer(name, objectManager)
+	ShadowMapPointLightLayer(const std::string& name)
+		: Layer(name)
 	{
 
 		

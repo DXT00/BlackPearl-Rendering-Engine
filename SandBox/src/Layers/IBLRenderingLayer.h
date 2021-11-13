@@ -1,6 +1,6 @@
 #pragma once
 
-#include <BlackPeral.h>
+#include <BlackPearl.h>
 #include "glm/glm.hpp"
 #include "glm/ext/matrix_transform.hpp"
 
@@ -10,8 +10,8 @@
 class IBLRenderingLayer :public BlackPearl::Layer {
 public:
 
-	IBLRenderingLayer(const std::string& name, BlackPearl::ObjectManager *objectManager)
-		: Layer(name, objectManager)
+	IBLRenderingLayer(const std::string& name)
+		: Layer(name)
 	{
 
 		

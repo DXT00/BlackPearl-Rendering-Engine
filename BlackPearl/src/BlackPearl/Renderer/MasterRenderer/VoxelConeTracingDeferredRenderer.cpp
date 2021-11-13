@@ -6,6 +6,7 @@
 #include "BlackPearl/Renderer/MasterRenderer/GBufferRenderer.h"
 #include "BlackPearl/Config.h"
 #include "BlackPearl/Timestep/TimeCounter.h"
+#include "BlackPearl/Common/CommonFunc.h"
 namespace BlackPearl {
 	bool VoxelConeTracingDeferredRenderer::s_Shadows = true;
 	bool VoxelConeTracingDeferredRenderer::s_IndirectDiffuseLight = true;
@@ -134,8 +135,16 @@ namespace BlackPearl {
 
 	void VoxelConeTracingDeferredRenderer::DrawGBuffer(Object* gBufferDebugQuad)
 	{
-
-		glViewport(0, 0, 320, 270);
+		CommonFunc::ShowGBuffer(2, 3, gBufferDebugQuad, m_GBuffer, {
+			m_GBuffer->GetPositionTexture(),
+			m_GBuffer->GetNormalTexture(),
+			m_GBuffer->GetDiffuseRoughnessTexture(),
+			m_GBuffer->GetSpecularMentallicTexture(),
+			m_GBuffer->GetAmbientGIAOTexture(),
+			m_GBuffer->GetNormalMapTexture()
+			});
+		
+		/*glViewport(0, 0, 320, 270);
 		gBufferDebugQuad->GetComponent<MeshRenderer>()->SetTextures(m_GBuffer->GetPositionTexture());
 		DrawObject(gBufferDebugQuad);
 
@@ -157,7 +166,7 @@ namespace BlackPearl {
 
 		glViewport(640, 270, 320, 270);
 		gBufferDebugQuad->GetComponent<MeshRenderer>()->SetTextures(m_GBuffer->GetNormalMapTexture());
-		DrawObject(gBufferDebugQuad);
+		DrawObject(gBufferDebugQuad);*/
 
 	}
 

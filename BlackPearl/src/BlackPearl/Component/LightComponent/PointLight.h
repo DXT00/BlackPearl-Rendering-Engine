@@ -64,8 +64,8 @@ namespace BlackPearl {
 			//Ä¬ÈÏ¾àÀë3250constant(1.0f),linear(0.0014f),quadratic(0.000007)
 			//²é±í£ºhttps://learnopengl-cn.github.io/02%20Lighting/05%20Light%20casters/
 		};
-		PointLight(EntityManager* entityManager, Entity::Id id, Props props = Props())
-			:Light(entityManager, id) {
+		PointLight(Props props = Props())
+			:Light() {
 			SetProps(props);
 			Init();
 		}

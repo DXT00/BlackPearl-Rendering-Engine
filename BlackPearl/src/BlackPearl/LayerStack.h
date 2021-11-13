@@ -1,5 +1,6 @@
 #pragma once
 #include "LayerScene/Layer.h"
+#include <memory>
 namespace BlackPearl {
 
 	class  LayerStack

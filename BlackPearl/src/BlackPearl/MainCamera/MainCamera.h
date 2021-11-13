@@ -18,7 +18,9 @@ namespace BlackPearl {
 		glm::vec3 Front() const;
 		glm::vec3 Up() const;
 		glm::vec3 Right() const;
+		float Fov() const;
 
+		void SetFov(float fov);
 		void SetPosition(glm::vec3 pos);
 		void SetRotation(glm::vec3 rotation);
 		Object* GetObj() const { return m_CameraObj; }

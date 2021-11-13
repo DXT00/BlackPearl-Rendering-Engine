@@ -2,33 +2,41 @@
 #include "Buffer.h"
 #include "glad/glad.h"
 #include "BlackPearl/Config.h"
+#include <memory>
 namespace BlackPearl {
 	//------------------------VertexBuffer-----------------//
-	VertexBuffer::VertexBuffer(const std::vector<float>&vertices)
+	VertexBuffer::VertexBuffer(const std::vector<float>& vertices)
 	{
+		m_VerticesFloat = (&vertices[0]);
 		glGenBuffers(1, &m_RendererID);
 		glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);
 		glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), &vertices[0], GL_STATIC_DRAW);
 		m_VertexSize = vertices.size() * sizeof(float);
 	}
-	VertexBuffer::VertexBuffer(float*vertices, uint32_t size)
+	VertexBuffer::VertexBuffer(const float* vertices, uint32_t size)
 	{
+		m_VerticesFloat = vertices;
 		glGenBuffers(1, &m_RendererID);
 		glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);
 		glBufferData(GL_ARRAY_BUFFER, size, vertices, GL_STATIC_DRAW);
 		m_VertexSize = size;
-		delete vertices;
-		vertices = nullptr;
-	}
-	VertexBuffer::VertexBuffer(unsigned int* vertices, uint32_t size)
-	{
-		glGenBuffers(1, &m_RendererID);
-		glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);
-		glBufferData(GL_ARRAY_BUFFER, size, vertices, GL_STATIC_DRAW);
-		m_VertexSize = size;
-		delete vertices;
-		vertices = nullptr;
 
+	}
+	VertexBuffer::VertexBuffer(const unsigned int* vertices, uint32_t size)
+	{
+		m_VerticesUint = vertices;
+		glGenBuffers(1, &m_RendererID);
+		glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);
+		glBufferData(GL_ARRAY_BUFFER, size, vertices, GL_STATIC_DRAW);
+		m_VertexSize = size;
+		
+
+	}
+	VertexBuffer::~VertexBuffer()
+	{	
+		GE_SAVE_DELETE(m_VerticesFloat);
+		GE_SAVE_DELETE(m_VerticesUint);
+		CleanUp();
 	}
 	void VertexBuffer::Bind() {
 
@@ -39,6 +47,10 @@ namespace BlackPearl {
 
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 
+	}
+	void VertexBuffer::CleanUp()
+	{
+		glDeleteBuffers(1, &m_RendererID);
 	}
 	//------------------------IndexBuffer-----------------//
 	IndexBuffer::IndexBuffer(const std::vector<unsigned int>& indices)
@@ -250,52 +262,34 @@ namespace BlackPearl {
 	}
 
 	/*----------------------------    GBuffer   --------------------------------*/
-	GBuffer::GBuffer(const unsigned int imageWidth, const unsigned int imageHeight)
+	GBuffer::GBuffer(const unsigned int imageWidth, const unsigned int imageHeight, Type type)
 	{
 
 		m_Width  = imageWidth;
 		m_Height = imageHeight;
-
+		m_Type = type;
 
 		
 		glGenFramebuffers(1, &m_RendererID);
 		Bind();
 		
-		//m_PositionTexture RGB-position A--isPBRObject+objectId -->voxel cone tracing
-		m_PositionTexture.reset(DBG_NEW Texture(Texture::Type::DiffuseMap, imageWidth, imageHeight, false, GL_NEAREST, GL_NEAREST, GL_RGBA16F, GL_RGBA, -1, GL_FLOAT));
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, (GLuint)m_PositionTexture->GetRendererID(), 0);
-		//m_NormalTexture RGB-normal A--isSkyBox -->voxel cone tracing
-		m_NormalTexture.reset(DBG_NEW Texture(Texture::Type::DiffuseMap, imageWidth, imageHeight, false, GL_NEAREST, GL_NEAREST, GL_RGBA16F, GL_RGBA, -1, GL_FLOAT));
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, (GLuint)m_NormalTexture->GetRendererID(), 0);
+		switch (type) {
+		case Type::GI: {
+			InitGITextures();
+			break;
+		}
+		case Type::RayTracing: {
+			InitRayTracingTextures();
+			break;
+		}
+		default: {
+			GE_CORE_ERROR("No such GBuffer Type!");
+			break;
+		}
 
-		m_DiffuseRoughnessTexture.reset(DBG_NEW Texture(Texture::Type::DiffuseMap, imageWidth, imageHeight, false, GL_NEAREST, GL_NEAREST, GL_RGBA16F, GL_RGBA, -1, GL_FLOAT));
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, (GLuint)m_DiffuseRoughnessTexture->GetRendererID(), 0);
+		}
 
-		m_SpecularMentallicTexture.reset(DBG_NEW Texture(Texture::Type::DiffuseMap, imageWidth, imageHeight, false, GL_NEAREST, GL_NEAREST, GL_RGBA16F, GL_RGBA, -1, GL_FLOAT));
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT3, GL_TEXTURE_2D, (GLuint)m_SpecularMentallicTexture->GetRendererID(), 0);
-
-		//TODO::注意这里的dataType: GL_UNSIGNED_BYTE vs GL_FLOAT
-		//m_AmbientGI RBG-ambienGI AO-isPBRObject -->lightprobe
-		m_AmbientGIAOTexture.reset(DBG_NEW Texture(Texture::Type::DiffuseMap, imageWidth, imageHeight, false, GL_NEAREST, GL_NEAREST, GL_RGBA16F, GL_RGBA, -1, GL_FLOAT));
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT4, GL_TEXTURE_2D, (GLuint)m_AmbientGIAOTexture->GetRendererID(), 0);
-
-		m_NormalMapTexture.reset(DBG_NEW Texture(Texture::Type::DiffuseMap, imageWidth, imageHeight, false, GL_NEAREST, GL_NEAREST, GL_RGB16F, GL_RGB, -1, GL_FLOAT));
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT5, GL_TEXTURE_2D, (GLuint)m_NormalMapTexture->GetRendererID(), 0);
-		
-		
-		// - Tell OpenGL which color attachments we'll use (of this framebuffer) for rendering 
-		GLuint attachments[6] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2 ,GL_COLOR_ATTACHMENT3,GL_COLOR_ATTACHMENT4,GL_COLOR_ATTACHMENT5 };
-		glDrawBuffers(6, attachments);
-		// - Create and attach depth buffer (renderbuffer)
-		//GLuint rboDepth;
-		// = rboDepth;
-		glGenRenderbuffers(1, &m_RenderBufferID);
-		glBindRenderbuffer(GL_RENDERBUFFER, m_RenderBufferID);
-		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, m_Width, m_Height);
-		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, m_RenderBufferID);
-		// - Finally check if framebuffer is complete
-		GE_ASSERT(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "Framebuffer not complete!");
-		
+	
 		UnBind();
 	}
 	void GBuffer::Bind()
@@ -306,7 +300,67 @@ namespace BlackPearl {
 	void GBuffer::UnBind()
 	{
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-		//glViewport(0, 0, Configuration::WindowWidth, Configuration::WindowHeight);
+
+	}
+	void GBuffer::InitGITextures()
+	{
+		//m_PositionTexture RGB-position A--isPBRObject+objectId -->voxel cone tracing
+		m_PositionTexture.reset(DBG_NEW Texture(Texture::Type::DiffuseMap, m_Width, m_Height, false, GL_NEAREST, GL_NEAREST, GL_RGBA16F, GL_RGBA, -1, GL_FLOAT));
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, (GLuint)m_PositionTexture->GetRendererID(), 0);
+		//m_NormalTexture RGB-normal A--isSkyBox -->voxel cone tracing
+		m_NormalTexture.reset(DBG_NEW Texture(Texture::Type::DiffuseMap, m_Width, m_Height, false, GL_NEAREST, GL_NEAREST, GL_RGBA16F, GL_RGBA, -1, GL_FLOAT));
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, (GLuint)m_NormalTexture->GetRendererID(), 0);
+
+		m_DiffuseRoughnessTexture.reset(DBG_NEW Texture(Texture::Type::DiffuseMap, m_Width, m_Height, false, GL_NEAREST, GL_NEAREST, GL_RGBA16F, GL_RGBA, -1, GL_FLOAT));
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, (GLuint)m_DiffuseRoughnessTexture->GetRendererID(), 0);
+
+		m_SpecularMentallicTexture.reset(DBG_NEW Texture(Texture::Type::DiffuseMap, m_Width, m_Height, false, GL_NEAREST, GL_NEAREST, GL_RGBA16F, GL_RGBA, -1, GL_FLOAT));
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT3, GL_TEXTURE_2D, (GLuint)m_SpecularMentallicTexture->GetRendererID(), 0);
+
+		//m_AmbientGI RBG-ambienGI AO-isPBRObject -->lightprobe
+		m_AmbientGIAOTexture.reset(DBG_NEW Texture(Texture::Type::DiffuseMap, m_Width, m_Height, false, GL_NEAREST, GL_NEAREST, GL_RGBA16F, GL_RGBA, -1, GL_FLOAT));
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT4, GL_TEXTURE_2D, (GLuint)m_AmbientGIAOTexture->GetRendererID(), 0);
+
+		m_NormalMapTexture.reset(DBG_NEW Texture(Texture::Type::DiffuseMap, m_Width, m_Height, false, GL_NEAREST, GL_NEAREST, GL_RGB16F, GL_RGB, -1, GL_FLOAT));
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT5, GL_TEXTURE_2D, (GLuint)m_NormalMapTexture->GetRendererID(), 0);
+
+
+		GLuint attachments[6] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2 ,GL_COLOR_ATTACHMENT3,GL_COLOR_ATTACHMENT4,GL_COLOR_ATTACHMENT5 };
+		glDrawBuffers(6, attachments);
+		// - Create and attach depth buffer (renderbuffer)
+		glGenRenderbuffers(1, &m_RenderBufferID);
+		glBindRenderbuffer(GL_RENDERBUFFER, m_RenderBufferID);
+		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, m_Width, m_Height);
+		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, m_RenderBufferID);
+		// - Finally check if framebuffer is complete
+		GE_ASSERT(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "Framebuffer not complete!");
+
+	}
+	std::shared_ptr<Texture> GBuffer::GetColorTexture(unsigned int idx)
+	{
+		GE_ASSERT(idx<m_ColorTextures.size() && m_ColorTextures[idx],"fail to get texture")
+		return m_ColorTextures[idx];
+	}
+	void GBuffer::InitRayTracingTextures()
+	{
+
+		const size_t colorBufferNum = 4;
+		for (size_t i = 0; i < colorBufferNum; i++) {
+
+			std::shared_ptr<Texture> texture;
+			texture.reset(DBG_NEW Texture(Texture::Type::DiffuseMap, m_Width, m_Height, false, GL_NEAREST, GL_NEAREST, GL_RGBA32F, GL_RGBA, GL_CLAMP_TO_EDGE, GL_FLOAT));
+			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_TEXTURE_2D, (GLuint)texture->GetRendererID(), 0);
+			m_ColorTextures.push_back(texture);
+
+		}
+	
+		size_t attachments[colorBufferNum] = {
+			GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3
+		};
+		glDrawBuffers(colorBufferNum, attachments);
+		GE_ASSERT(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "Framebuffer not complete!");
+
+
 
 	}
 	/*----------------------------    AtomicBuffer   --------------------------------*/

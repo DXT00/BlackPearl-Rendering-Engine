@@ -1,42 +1,41 @@
 #pragma once
+#include <string>
 #include "BlackPearl/Entity/Entity.h"
 #include "BlackPearl/Component/BaseComponent.h"
-#include "BlackPearl/Component/Component.h"
-
-#include <string>
 namespace BlackPearl {
-
-	class Object :public Entity
+	extern EntityManager* g_entityManager;
+	class Object 
 	{
 	public:
-		Object(EntityManager* manager, Entity::Id id, std::string name = "")
-			:Entity(manager, id) {
+		Object(std::string name = ""){
+			m_Entity = g_entityManager->CreateEntity();
 			m_FrontName = (name == "") ? "EmptyObject" : name;
-			m_Name = (name == "") ? "EmptyObject(" + std::to_string(id.index()) + ")" : name+ "(" + std::to_string(id.index()) + ")";
+			m_Name = (name == "") ? "EmptyObject(" + std::to_string(m_Entity->GetId().index()) + ")" : name+ "(" + std::to_string(m_Entity->GetId().index()) + ")";
 			m_TransformToParent = m_InvTransformToParent = glm::mat3(1.0);
 
 		};
 
 		virtual ~Object() {
 			m_ComponentMask.reset();
-			if (m_EntityManager != nullptr)
-				m_EntityManager->DestroyEntity(m_Id);
+			if (g_entityManager != nullptr)
+				g_entityManager->DestroyEntity(m_Entity->GetId());
 			m_Components.clear();
 			
 		};
 
 		inline std::string GetName() { return m_Name; }
 		inline std::string GetFrontName() { return m_FrontName; }
-
+		Entity::Id GetId() const { return m_Entity->GetId(); }
 		inline void SetName(std::string name) { m_Name = name; }
+
 		inline bool Vaild() {
-			return m_EntityManager && m_EntityManager->Valid(m_Id);
+			return g_entityManager && g_entityManager->Valid(m_Entity->GetId());
 		}
 		Configuration::ComponentMask GetComponentMask()const;
 		std::unordered_map<BaseComponent::Family, std::shared_ptr<BaseComponent>> GetComponentList() { return m_Components; }
 
 		template<typename C, typename ...Args>
-		std::shared_ptr<C> AddComponent(Args ...args)
+		std::shared_ptr<C> AddComponent(Args&& ...args)
 		{
 			//GE_ASSERT(Valid(), "invalid entity" + std::to_string(m_Id.index())); //TODO::https://bbs.csdn.net/topics/391862079
 			//C* component = m_EntityManager->AddComponent(m_Id, args);
@@ -48,11 +47,9 @@ namespace BlackPearl {
 
 				m_ComponentMask.set(family);
 
-			//所有的component都用Create实例化-->方便子类继承！
-			//C* component = C::Create(m_EntityManager, m_Id, std::forward<Args>(args)...);
-			//C* component = DBG_NEW C(m_EntityManager, m_Id, std::forward<Args>(args)...);
+
 			std::shared_ptr<C> componentSharePtr;
-			componentSharePtr.reset(DBG_NEW C(m_EntityManager, m_Id, std::forward<Args>(args)...));
+			componentSharePtr.reset(DBG_NEW C(std::forward<Args>(args)...));
 			m_Components.insert(std::make_pair(C::Famliy(), componentSharePtr));
 			return componentSharePtr;
 
@@ -64,16 +61,13 @@ namespace BlackPearl {
 			GE_ASSERT(this!=nullptr, "this object is nullptr!");
 			std::unordered_map<BaseComponent::Family, std::shared_ptr<BaseComponent>>::const_iterator it = m_Components.find(C::Famliy());
 			GE_ASSERT(HasComponent<C>() && it != m_Components.end(), "Entity dose not have component C!")
-				//	return ComponentHandle<C>(m_EntityManager, m_Id, m_Components[C::Famliy()]);
-			//Component<C> * component = std::dynamic_pointer_cast<Component<C>>(it->second);
-			   // C* result = std::dynamic_cast<C*>(it->second);
-				return std::dynamic_pointer_cast<C>(it->second).get();
+			
+			return std::dynamic_pointer_cast<C>(it->second).get();
 		}
 
 		template<typename C>
 		bool HasComponent() const
 		{
-			//GE_ASSERT(Valid(), "invalid entity" + m_Id);
 			size_t famliy = GetComponentFamliy<C>();
 			if (m_ComponentMask[famliy])
 				return true;
@@ -84,22 +78,20 @@ namespace BlackPearl {
 		template<typename C>
 		void RemoveComponent()
 		{
-			GE_ASSERT(Valid(), "invalid entity" + m_Id);
+			GE_ASSERT(Valid(), "invalid entity" + m_Entity->GetId());
 			GE_ASSERT(HasComponent<C>(), "Entity does not has component C!");//TODO
 			const BaseComponent::Family famliy = GetComponentFamliy<C>();
 			m_ComponentMask.reset(famliy);
 			m_Components[C::Famliy()] = nullptr;
-
 		}
 
 		template<typename C>
 		static BaseComponent::Family  GetComponentFamliy()
 		{
 			return Component<typename std::remove_const<C>::type>::Famliy();
-			//return C::Famliy();
 		}
 
-		virtual void Destroy() override;
+		void Destroy();
 
 
 		void SetPosition(glm::vec3 pos);
@@ -130,6 +122,7 @@ namespace BlackPearl {
 		glm::mat4 m_InvTransformToParent;
 		Object* m_ParentObj = nullptr;
 		std::vector<Object*> m_ChildObjs;
+		Entity* m_Entity = nullptr;
 	};
 
 

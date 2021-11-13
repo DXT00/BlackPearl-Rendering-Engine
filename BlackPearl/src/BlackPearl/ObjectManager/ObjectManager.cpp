@@ -12,22 +12,24 @@ namespace BlackPearl {
 	Object* ObjectManager::CreateEmpty(std::string name)
 	{
 		Object* obj = m_ObjectCreater->CreateEmpty(name);
-		m_EntityToObjects.insert(std::make_pair(obj->GetId().index(), obj));
+		m_Objs.push_back(obj);
 		return obj;
 	}
+
+
 
 	Object* ObjectManager::CreateLight(LightType type, LightSources* lightSources, const std::string& name)
 	{
 		Object* obj = m_LightCreater->CreateLight(type, lightSources, name);
-		m_EntityToObjects.insert(std::make_pair(obj->GetId().index(), obj));
+		m_Objs.push_back(obj);
 		return obj;
 
 	}
 
-	Object* ObjectManager::CreateModel(const std::string& modelPath, const std::string& shaderPath, const bool isAnimated, const std::string& name)
+	Object* ObjectManager::CreateModel(const std::string& modelPath, const std::string& shaderPath, const bool isAnimated, const bool addBondingBox, const std::string& name)
 	{
-		Object* obj = m_Object3DCreater->CreateModel(modelPath, shaderPath, isAnimated, name);
-		m_EntityToObjects.insert(std::make_pair(obj->GetId().index(), obj));
+		Object* obj = m_Object3DCreater->CreateModel(modelPath, shaderPath, isAnimated, addBondingBox, name);
+		m_Objs.push_back(obj);
 		return obj;
 
 	}
@@ -35,7 +37,7 @@ namespace BlackPearl {
 	Object* ObjectManager::CreateCube(const std::string& shaderPath, const std::string& texturePath, const std::string& name)
 	{
 		Object* obj = m_Object3DCreater->CreateCube(shaderPath, texturePath, name);
-		m_EntityToObjects.insert(std::make_pair(obj->GetId().index(), obj));
+		m_Objs.push_back(obj);
 		return obj;
 
 	}
@@ -43,21 +45,21 @@ namespace BlackPearl {
 	Object* ObjectManager::CreateSphere(const float radius, const unsigned int stackCount, const unsigned int sectorCount, const std::string& shaderPath, const std::string& texturePath, const std::string& name)
 	{
 		Object* obj = m_Object3DCreater->CreateSphere(radius, stackCount, sectorCount, shaderPath, texturePath, name);
-		m_EntityToObjects.insert(std::make_pair(obj->GetId().index(), obj));
+		m_Objs.push_back(obj);
 		return obj;
 	}
 
 	Object* ObjectManager::CreatePlane(const std::string& shaderPath, const std::string& texturePath, const std::string& name)
 	{
 		Object* obj = m_Object3DCreater->CreatePlane(shaderPath, texturePath, name);
-		m_EntityToObjects.insert(std::make_pair(obj->GetId().index(), obj));
+		m_Objs.push_back(obj);
 		return obj;
 	}
 
 	Object* ObjectManager::CreateSkyBox(const std::vector<std::string>& textureFaces, const std::string& shaderPath, const std::string& name)
 	{
 		Object* obj = m_Object3DCreater->CreateSkyBox(textureFaces, shaderPath, name);
-		m_EntityToObjects.insert(std::make_pair(obj->GetId().index(), obj));
+		m_Objs.push_back(obj);
 		return obj;
 	}
 	///////////////////////Blending Object///////////////////////////////
@@ -65,13 +67,7 @@ namespace BlackPearl {
 	Object* ObjectManager::CreateLightProbe(ProbeType type, const std::string& shaderPath, const std::string& texturePath, const std::string& name)
 	{
 		Object* obj = m_Object3DCreater->CreateLightProbe(type,shaderPath, texturePath, name);
-		//Object* cameraObj = m_Object3DCreater->CreateCamera("Camera");
-
-		//LightProbe* lightProbe = DBG_NEW LightProbe(obj, type);
-		m_EntityToObjects.insert(std::make_pair(obj->GetId().index(), obj));
-		//m_EntityToObjects.insert(std::make_pair(cameraObj->GetId().index(), cameraObj));
-
-		//note:dosen't put cameraObj to m_EntityToObjects!
+		m_Objs.push_back(obj);
 		return obj;
 	}
 
@@ -79,44 +75,73 @@ namespace BlackPearl {
 	{
 		Object* obj = m_Object3DCreater->CreateCamera(name);
 		MainCamera* mainCamera = DBG_NEW MainCamera(obj);
-		m_EntityToObjects.insert(std::make_pair(mainCamera->GetObj()->GetId().index(), mainCamera->GetObj()));
+		m_Objs.push_back(obj);
 
 		return mainCamera;
 
 	}
+
+	Object* ObjectManager::CreateGroup(const std::string name)
+	{
+		Object* obj = m_Object3DCreater->CreateGroup(name);
+		m_Objs.push_back(obj);
+		return obj;
+	}
+	Object* ObjectManager::CreateBVHNode(const std::vector<Object*>& objs, const std::string name)
+	{
+		Object* obj = m_Object3DCreater->CreateBVHNode(objs, name);
+		m_Objs.push_back(obj);
+		return obj;
+	}
+	Object* ObjectManager::CreateBVHNode(const std::vector<Vertex>& mesh_vertex, const std::string name) {
+		Object* obj = m_Object3DCreater->CreateBVHNode(mesh_vertex, name);
+		m_Objs.push_back(obj);
+		return obj;
+
+	}
+
+	Object* ObjectManager::CreateTriangle(const std::vector<Vertex>& points, const std::string name)
+	{
+		Object* obj = m_Object3DCreater->CreateTriangle(points, name);
+		m_Objs.push_back(obj);
+		return obj;
+	}
+
+	Object* ObjectManager::CreateRTXTransformNode(const glm::mat4 &transform_mat, Object* bvh_obj, std::shared_ptr<Material> rtx_material, const std::string name)
+	{
+		Object* obj = m_Object3DCreater->CreateRTXTransformNode(transform_mat, bvh_obj, rtx_material,name);
+		m_Objs.push_back(obj);
+		return obj;
+	}
+
 
 
 	///////////////////////2D///////////////////////////////
 	Object* ObjectManager::CreateQuad(const std::string& shaderPath, const std::string& texturePath, const std::string& name)
 	{
 		Object* obj = m_Object2DCreater->CreateQuad(shaderPath, texturePath, name);
-		m_EntityToObjects.insert(std::make_pair(obj->GetId().index(), obj));
+		m_Objs.push_back(obj);
 		return obj;
 	}
 
 
+
+
 	std::vector<Object*> ObjectManager::GetObjects()
 	{
-		std::vector<Object*>objs;
-		for (auto pair : m_EntityToObjects) {
-			Object* obj = pair.second;
-			if (obj != nullptr) {
-				objs.push_back(obj);
-			}
-		}
-		return objs;
+		return m_Objs;
 	}
-	std::vector<std::string> ObjectManager::GetObjectsName()
-	{
-		std::vector<std::string>objs;
-		for (auto pair : m_EntityToObjects) {
-			Object* obj = pair.second;
-			if (obj != nullptr) {
-				objs.push_back(obj->GetName());
-			}
-		}
-		return objs;
-	}
+	//std::vector<std::string> ObjectManager::GetObjectsName()
+	//{
+	//	std::vector<std::string>objs;
+	//	for (auto pair : m_EntityToObjects) {
+	//		Object* obj = pair.second;
+	//		if (obj != nullptr) {
+	//			objs.push_back(obj->GetName());
+	//		}
+	//	}
+	//	return objs;
+	//}
 	/*void ObjectManager::DrawShadowMap(std::vector<Object*> objs)
 	{
 
@@ -172,7 +197,7 @@ namespace BlackPearl {
 	//}
 	void ObjectManager::DestroyObjects()
 	{
-		m_EntityToObjects.clear();
+		//m_EntityToObjects.clear();
 		/*for (auto pair : m_EntityToObjects) {
 			Object* obj = pair.second;
 			if (obj != nullptr) {

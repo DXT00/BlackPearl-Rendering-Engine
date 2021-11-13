@@ -60,8 +60,8 @@ namespace BlackPearl {
 			//Ä¬ÈÏ¾àÀë3250constant(1.0f),linear(0.0014f),quadratic(0.000007)
 			//²é±í£ºhttps://learnopengl-cn.github.io/02%20Lighting/05%20Light%20casters/
 		};
-		SpotLight(EntityManager * entityManager, Entity::Id id, Props props = Props())
-			:Light(entityManager,id),m_Position({ 2.2f,1.0f,2.0f }), m_Direction({ -0.2f, -1.0f, -0.3f }), m_CutOffAngle(glm::cos(glm::radians(10.0f))), m_OuterCutOffAngle(glm::cos(glm::radians(11.0f)))
+		SpotLight(Props props = Props())
+			:Light(),m_Position({ 2.2f,1.0f,2.0f }), m_Direction({ -0.2f, -1.0f, -0.3f }), m_CutOffAngle(glm::cos(glm::radians(10.0f))), m_OuterCutOffAngle(glm::cos(glm::radians(11.0f)))
 		{
 			SetProps(props);
 			Init();

@@ -18,7 +18,6 @@ namespace BlackPearl {
 			:m_Shader(shader) {
 			m_HasAnimation = isAnimated;
 			LoadModel(path);
-
 		};
 
 		~Model() {
@@ -27,8 +26,9 @@ namespace BlackPearl {
 		};
 		void LoadModel(const std::string& path);
 
-		//void ProcessNode(aiNode* node);
-		Mesh ProcessMesh(aiMesh* aimesh);
+		Mesh ProcessMesh(aiMesh* aimesh, std::vector<Vertex>& v_vertex);
+		Mesh ProcessMesh(aiMesh* aimesh, std::vector<Vertex>& v_vertex, bool face);
+
 		void LoadMaterialTextures(
 			aiMaterial* material,
 			aiTextureType type,
@@ -56,6 +56,7 @@ namespace BlackPearl {
 
 		std::vector<Mesh>       GetMeshes()const { return m_Meshes; }
 		std::shared_ptr<Shader> GetShader()const { return m_Shader; }
+		std::vector<Vertex>		GetMeshVertex() const { return m_Vertices; }
 
 
 		unsigned int FindRotation(float AnimationTime, const aiNodeAnim* nodeAnim);
@@ -85,6 +86,10 @@ namespace BlackPearl {
 		/*Vertices Num,Indices Num*/
 		unsigned int m_VerticesNum = 0;
 		unsigned int m_VerticesIdx = 0;
+
+		/*for raytracing, calculate bounding box*/
+		std::vector<Vertex> m_Vertices;
+
 	};
 
 }

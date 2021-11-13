@@ -1,4 +1,1 @@
-﻿  glad.c
-C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\shared\minwindef.h(130,1): warning C4005: “APIENTRY”: 宏重定义
-D:\LearnOpenGL\BlackPearl\vendor\Glad\include\glad\glad.h(32): message : 参见“APIENTRY”的前一个定义
-  Glad.vcxproj -> D:\LearnOpenGL\BlackPearl\vendor\Glad\bin\Debug-windows-x86\Glad\Glad.lib
+﻿  Glad.vcxproj -> D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\Glad\bin\Debug-windows-x86\Glad\Glad.lib

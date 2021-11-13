@@ -1,5 +1,4 @@
 #pragma once
-#include"Light.h"
 #include "BlackPearl/Object/Object.h"
 namespace BlackPearl {
 

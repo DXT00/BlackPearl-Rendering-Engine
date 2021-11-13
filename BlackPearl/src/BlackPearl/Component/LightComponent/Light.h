@@ -32,8 +32,8 @@ namespace BlackPearl {
 			
 		};
 		//position{2.2f,1.0f,2.0f}
-		Light(EntityManager* entityManager, Entity::Id id)
-			:Component(entityManager,id,Component::Type::Light) {};
+		Light()
+			:Component(Type::Light) {};
 		virtual ~Light() = default;
 
 		Props GetLightProps() const { return  m_LightProp; }
@@ -44,7 +44,6 @@ namespace BlackPearl {
 		virtual LightType GetType() = 0;
 		virtual void Init() = 0;
 		static Light* Create(
-			EntityManager * entityManager, Entity::Id id,
 			LightType type,
 			const glm::vec3& position = { 2.2f,1.0f,2.0f },
 			const glm::vec3& direction = { -0.2f, -1.0f, -0.3f },

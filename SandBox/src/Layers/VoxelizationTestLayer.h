@@ -1,6 +1,6 @@
 #pragma once
 
-#include <BlackPeral.h>
+#include <BlackPearl.h>
 #include "glm/glm.hpp"
 #include "glm/ext/matrix_transform.hpp"
 
@@ -10,8 +10,8 @@
 class VoxelizationTestLayer :public BlackPearl::Layer {
 public:
 
-	VoxelizationTestLayer(const std::string& name, BlackPearl::ObjectManager* objectManager)
-		: Layer(name, objectManager)
+	VoxelizationTestLayer(const std::string& name)
+		: Layer(name)
 	{
 
 

@@ -1,6 +1,7 @@
 #pragma once
+#include "BlackPearl/Renderer/Material/Texture.h"
 namespace BlackPearl {
-	class TextureImage2D
+	class TextureImage2D:public Texture
 	{
 	public:
 		TextureImage2D(

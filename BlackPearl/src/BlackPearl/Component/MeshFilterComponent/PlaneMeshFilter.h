@@ -5,8 +5,8 @@ namespace BlackPearl {
 	class PlaneMeshFilter : public MeshFilter
 	{
 	public:
-		PlaneMeshFilter(EntityManager * entityManager, Entity::Id id)
-			: MeshFilter(entityManager, id) {
+		PlaneMeshFilter()
+			: MeshFilter() {
 			Init();
 		};
 		

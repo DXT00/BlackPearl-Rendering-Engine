@@ -4,6 +4,8 @@
 #include "ParallelLight.h"
 #include "SpotLight.h"
 #include "BlackPearl/Config.h"
+#include"Light.h"
+
 
 namespace BlackPearl {
 
