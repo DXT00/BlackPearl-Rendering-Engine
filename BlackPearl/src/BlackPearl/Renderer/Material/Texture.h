@@ -21,7 +21,8 @@ namespace BlackPearl {
 			AoMap,
 			RoughnessMap,
 			MentallicMap,
-			OpacityMap
+			OpacityMap,
+			ImageMap
 
 
 		};

@@ -175,7 +175,7 @@ namespace BlackPearl {
 
 	void RayTracingRenderer::InitGroupData(Group* group)
 	{
-		GE_ASSERT(group, "group is null");
+		/*GE_ASSERT(group, "group is null");
 		
 		m_GenData.reset(DBG_NEW GenData(group->GetRoot()));
 		m_SceneData = m_GenData->GetSceneData();
@@ -191,11 +191,9 @@ namespace BlackPearl {
 			GL_NEAREST, GL_NEAREST, GL_R32F, GL_RED, GL_CLAMP_TO_EDGE, GL_FLOAT, GL_READ_WRITE));
 
 		m_PackDataTex.reset(DBG_NEW TextureImage2D(m_PackData, m_PackData.size(), 1, \
-			GL_NEAREST, GL_NEAREST, GL_R32F, GL_RED, GL_CLAMP_TO_EDGE, GL_FLOAT, GL_READ_WRITE));
+			GL_NEAREST, GL_NEAREST, GL_R32F, GL_RED, GL_CLAMP_TO_EDGE, GL_FLOAT, GL_READ_WRITE));*/
 
 
-
-	
 	}
 
 	void RayTracingRenderer::InitScene(std::shared_ptr<GenData> scene)
@@ -216,6 +214,8 @@ namespace BlackPearl {
 		m_MaterialDataTex.reset(DBG_NEW TextureImage2D(m_MaterialData, matDataSize, matDataSize, GL_NEAREST, GL_NEAREST, GL_R32F, GL_RED, GL_CLAMP_TO_EDGE, GL_FLOAT, GL_READ_WRITE));
 
 		m_PackDataTex.reset(DBG_NEW TextureImage2D(m_PackData, (packDataSize + 1) / 2, (packDataSize + 1) / 2, GL_NEAREST, GL_NEAREST, GL_RGBA32F, GL_RGBA, GL_CLAMP_TO_EDGE, GL_FLOAT, GL_READ_WRITE));
+		m_Tex2RenderIdMap = scene->GetImg2RenderIdMap();
+		m_CubeMap2RenderIdMap = scene->GetCubeMap2RenderIdMap();
 	}
 
 	void RayTracingRenderer::RenderGroup(MainCamera* mainCamera, Object* group)
@@ -255,10 +255,6 @@ namespace BlackPearl {
 			m_MaterialDataTex->Bind(5);
 			m_TexDataTex->Bind(6);
 			m_PackDataTex->Bind(7);
-
-		
-
-
 
 			m_GroupShader->SetUniform1f("u_rdSeed[0]", Math::Rand_F());
 			m_GroupShader->SetUniform1f("u_rdSeed[1]", Math::Rand_F());
@@ -303,6 +299,7 @@ namespace BlackPearl {
 		m_BVHNodeShader->SetUniform1i("MatData", 5);
 		m_BVHNodeShader->SetUniform1i("TexData", 6);
 		m_BVHNodeShader->SetUniform1i("PackData", 7);
+		//m_BVHNodeShader->SetUniform1i("skyBox", 8);
 
 		for (int i = 0; i < m_LoopNum; i++)
 		{
@@ -321,7 +318,27 @@ namespace BlackPearl {
 			m_MaterialDataTex->Bind(5);
 			m_TexDataTex->Bind(6);
 			m_PackDataTex->Bind(7);
+			size_t base_id = 9;
+			std::map<std::shared_ptr<Texture>, size_t>::iterator it = m_Tex2RenderIdMap.begin();
+			for (;it != m_Tex2RenderIdMap.end();it++)
+			{
+				std::shared_ptr<Texture> texture = it->first;
+				m_BVHNodeShader->SetUniform1i("u_texArray["+ std::to_string(it->second)+ "]", base_id);
+				glActiveTexture(GL_TEXTURE0 + base_id);
+				texture->Bind();
+				base_id++;
+			}
+			std::map<std::shared_ptr<CubeMapTexture>, size_t>::iterator it_cube = m_CubeMap2RenderIdMap.begin();
+			for (; it_cube != m_CubeMap2RenderIdMap.end(); it_cube++)
+			{
+				std::shared_ptr<CubeMapTexture> cube_tex = std::static_pointer_cast<CubeMapTexture>(it_cube->first);
+				
+				m_BVHNodeShader->SetUniform1i("u_cubeMaps[" + std::to_string(it_cube->second) + "]", base_id);
+				glActiveTexture(GL_TEXTURE0 + base_id);
+				cube_tex->Bind();
 
+				base_id++;
+			}
 			m_BVHNodeShader->Bind();
 			m_BVHNodeShader->SetUniform1f("u_rdSeed[0]", Math::Rand_F());
 			m_BVHNodeShader->SetUniform1f("u_rdSeed[1]", Math::Rand_F());
@@ -334,13 +351,21 @@ namespace BlackPearl {
 			m_WriteBuffer = !m_ReadBuffer;
 
 		}
+		m_AllLoopNum += m_LoopNum;
+		if (m_AllLoopNum > m_MaxLoopNum) {
+			m_AllLoopNum = 0;
+			m_GBuffers[0].reset(DBG_NEW GBuffer(Configuration::WindowWidth, Configuration::WindowHeight, GBuffer::RayTracing));
+			m_GBuffers[1].reset(DBG_NEW GBuffer(Configuration::WindowWidth, Configuration::WindowHeight, GBuffer::RayTracing));
+		}
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 		//	CommonFunc::ShowGBuffer(2, 2, m_Quad, m_GBuffers[m_ReadBuffer], m_GBuffers[m_ReadBuffer]->GetColorTextures());
 
 		m_ScreenShader->Bind();
-		m_ScreenShader->SetUniform1i("u_FinalScreenTexture", 5);
-		glActiveTexture(GL_TEXTURE5);
+		m_ScreenShader->SetUniform1i("u_FinalScreenTexture", 8);
+		m_ScreenShader->SetUniform1f("u_Num", m_AllLoopNum);
+
+		glActiveTexture(GL_TEXTURE8);
 		m_GBuffers[m_ReadBuffer]->GetColorTexture(1)->Bind();
 
 		DrawObject(m_Quad, m_ScreenShader);

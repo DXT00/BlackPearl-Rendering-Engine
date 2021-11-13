@@ -14,6 +14,7 @@ namespace BlackPearl {
 		void ParseBVHNodeData(Object* bvh_node, std::vector<float>& packData);
 		void ParseTriangleData(Object* triangle, std::vector<float>& packData);
 		void ParseRTXTransformNodeData(Object* rt_transform, std::vector<float>& packData);
+		void ParseSkyBoxData(Object* skybox, std::vector<float>& packData);
 
 		std::map<std::shared_ptr<Material>, std::vector<unsigned int>> GetMat2Vec() const { return m_Mat2Vec; }
 		std::vector<float> GetSceneData() { return m_SceneData; }

@@ -139,12 +139,14 @@ namespace BlackPearl {
 		std::shared_ptr<Texture> cubeMapTexture(DBG_NEW CubeMapTexture(Texture::Type::CubeMap, textureFaces, GL_LINEAR, GL_LINEAR, GL_CLAMP_TO_EDGE, GL_RGB, GL_RGB, GL_UNSIGNED_BYTE));
 		texture->cubeTextureMap = cubeMapTexture;
 		material.reset(DBG_NEW Material(shaderPath, texture, {}, { 0.2,0.2,0.0 }, {}, {}));
-
+		material->SetRTXType(Material::RTXType::RTX_DIFFUSE);
 		VertexBufferLayout layout = {
 		{ElementDataType::Float3,"aPos",false,0},
 		};
 		Mesh mesh(meshFilter->GetVertices(), meshFilter->GetIndices(), material, layout);
 		obj->AddComponent<MeshRenderer>(mesh);
+		AABB box(glm::vec3(10e-20f),glm::vec3(10e20f));
+		obj->AddComponent<BoundingBox>(box);
 		return obj;
 	}
 	/*注意：Cube的Transform会导致Camera的Transform*/
@@ -212,6 +214,9 @@ namespace BlackPearl {
 		info->SetObjectType(ObjectType::OT_RTXTransformNode);
 		obj->AddComponent<RTXTransformNode>(transform_mat, bvh_node);
 		obj->AddComponent<MeshRenderer>(rtx_material);
+		AABB box = obj->GetComponent<RTXTransformNode>()->GetBoundingBox();
+		obj->AddComponent<BoundingBox>(box);
+
 		return obj;
 	}
 

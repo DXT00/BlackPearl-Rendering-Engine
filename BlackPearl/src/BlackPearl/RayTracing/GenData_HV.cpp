@@ -58,6 +58,9 @@ namespace BlackPearl {
 		else if (type == OT_RTXTransformNode) {
 			ParseRTXTransformNodeData(obj, packData);
 		}
+		else if (type == OT_SkyBox) {
+			ParseSkyBoxData(obj, packData);
+		}
 	}
 
 	void GenData_HV::ParseGroupData(Object* group, std::vector<float>& packData)
@@ -255,6 +258,20 @@ namespace BlackPearl {
 		}
 		else
 			m_SceneData[childIt] = targetChildIdx->second;
+	}
+	void GenData_HV::ParseSkyBoxData(Object* skybox, std::vector<float>& packData)
+	{
+		if (skybox == NULL)
+			return;
+		if (m_Hitable2Idx.find(skybox) != m_Hitable2Idx.end())
+			return;
+
+		m_Hitable2Idx[skybox] = m_SceneData.size();
+		m_SceneData.push_back(OT_SkyBox);
+		ParseMatData(skybox);
+
+		//m_SceneData.push_back(-1);
+		//m_SceneData.push_back(-float(m_Hitable2Idx[skybox]));
 	}
 	//°ÑMatData id Ìî³äµ½ m_SceneData
 	void GenData_HV::SetMat(std::map<std::shared_ptr<Material>, size_t> const mat2idx)

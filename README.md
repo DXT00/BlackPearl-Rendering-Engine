@@ -69,4 +69,4 @@ https://github.com/Ubpa/ToyRTX
 ![gpu_raytracing_bvh_node_rendering](/results/gpu_raytracing_bvh_node.png)
 
 ### GPU Raytracing 06 -- material -Dielectric bunny
-![gpu_raytracing_bvh_node_MATERAIL](/results/gpu_raytracing_bvh_node_MATERAIL.png)
+![gpu_raytracing_bvh_node_MATERAIL1](/results/gpu_raytracing_bvh_node_MATERAIL1.png)

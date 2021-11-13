@@ -12,10 +12,7 @@ void main()
 {
 	TexCoords = aPos;
 	vec4 pos = u_Projection*mat4(mat3(u_View))*vec4(aPos,1.0);
-
-
 	gl_Position = pos.xyww;
-
 }
 
 
@@ -24,8 +21,6 @@ void main()
 #version 430 core
 out vec4 FragColor;
 in vec3 TexCoords;
-
-
 uniform Material u_Material;
 
 float near = 0.1; 
@@ -33,7 +28,6 @@ float far  = 100.0;
 float LinearizeDepth(float depth){
 	float z = depth*2.0-1.0;//Back to NDC coordinate
 	return 2.0*near*far /(far+near - z*(far - near));
-
 }
 void main(){
 	//FragColor = vec4(u_Material.diffuseColor,1.0);

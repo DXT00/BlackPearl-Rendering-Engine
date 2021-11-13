@@ -17,6 +17,10 @@ namespace BlackPearl {
 		
 		m_TextureVisitor->ParseColorData(m_MaterialVisitor->GetColor2Vec(), m_PackData);
 		m_MaterialVisitor->SetTex(m_TextureVisitor->GetColor2IdxMap());
+
+		m_TextureVisitor->ParseTextureData(m_MaterialVisitor->GetTex2Vec());
+		m_MaterialVisitor->SetTex(m_TextureVisitor->GetTex2IdxMap());
+
 	}
 
 }

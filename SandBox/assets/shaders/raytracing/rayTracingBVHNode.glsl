@@ -26,6 +26,8 @@ uniform sampler2D SumColor;
 uniform sampler2D dir_tMax;
 uniform sampler2D color_time;
 uniform sampler2D RTXRst;
+//uniform samplerCube skyBox;
+
 const float rayP = 20.0/21.0;// depth = p/(1-p) --> p = depth/(depth+1)
 const float tMin = 0.001;
 const float PI=3.14159;
@@ -39,6 +41,7 @@ const float HitableType_Sphere = 3.0;
 const float HitableType_TriMesh = 4.0;
 const float HitableType_Triangle = 5.0;
 const float HitableType_Transform = 6.0;
+const float HitableType_Sky = 7.0;
 
 
 const float MatType_Lambertian = 0.0;
@@ -51,9 +54,9 @@ const float MatType_roughness = 6.0;
 const float MatType_Ao = 7.0;
 
 
-const float TexT_ConstTexture = 0.0f;
-const float TexT_ImgTexture = 1.0f;
-const float TexT_Skybox = 2.0f;
+const float TexT_ConstTexture = 0.0f;//对应 Texture::Type::None
+const float TexT_ImgTexture = 12.0f;//对应 Texture::Type::ImageMap
+const float TexT_Skybox = 6.0f; //对应 Texture::Type::CubeMap
 
 struct Ray{
 	vec3 origin;
@@ -74,13 +77,12 @@ struct HitRst{
 	struct Vertex vertex;
 	float matIdx;
 	float isMatCoverable;
+	bool isSky;
 };
 
-uniform sampler2D u_SceneData;
-uniform sampler2D u_MatData;
-uniform sampler2D u_TexData;
-
-
+//uniform sampler2D u_SceneData;
+//uniform sampler2D u_MatData;
+//uniform sampler2D u_TexData;
 
 uniform vec3 u_CameraUp;
 uniform vec3 u_CameraFront;
@@ -90,6 +92,10 @@ uniform float u_CameraFov;
 uniform vec3 u_CameraViewPos;
 uniform vec2 u_Screen;
 uniform float u_rdSeed[4];
+//max image texture size = 20
+uniform sampler2D u_texArray[20];
+//max cubemap texture size = 5
+uniform samplerCube u_cubeMaps[5];
 int rdCnt = 0;
 
 float RandXY(float x, float y);// [0.0, 1.0)
@@ -108,13 +114,21 @@ void Ray_Update(inout struct Ray ray,vec3 origin, vec3 dir, vec3 attenuation);
 vec3 RayTrace();
 void Vertex_Load(float idx, out struct Vertex vertex);
 void Camera_GenRay();
+float atan2(float y, float x);
+
+void GetPackData(float idx, out vec3 pack);
+void GetPackData(float idx, out vec4 pack);
+void GetPackData(float idx, out mat4 m);
+void GetPackData(float idx, out mat3 m);
+vec3 GetTexture(vec2 uv, vec3 pos, float texId);
 
 
+vec3 Value_ConstTexture(float texId);
+vec3 Value_ImgTexture(float texId, vec2 uv);
+vec3 Value_SkyTexture(float texId, vec3 pos);
 
 struct Vertex Vertex_InValid = struct Vertex(vec3(0),vec3(0),vec2(0));
-
-
-struct HitRst Hitrst_InVaild = struct HitRst(false,Vertex_InValid,-1,0);
+struct HitRst Hitrst_InVaild = struct HitRst(false,Vertex_InValid, -1,0, false);
 
 uniform sampler2D SceneData;
 uniform sampler2D MatData;
@@ -129,9 +143,21 @@ void Stack_Push(float val);
 float Stack_Pop();
 void Stack_Acc();
 
-
-
-
+float atan2(float y, float x){
+    if(x>0){
+        return atan(y/x);
+    }
+    else if(x<0){
+        if(y>=0){
+            return atan(y/x) + PI;
+        }else{
+            return atan(y/x) - PI;
+        }
+    }
+    else{// x==0
+        return sign(y) * PI / 2;
+    }
+}
 vec4 Intersect_RayTri(vec3 e, vec3 d, vec3 a, vec3 b, vec3 c){
 	mat3 equation_A = mat3(vec3(a-b), vec3(a-c), d);
 
@@ -234,19 +260,51 @@ void GenRay(out struct Ray ray){
 	ray.color = vec3(1);
 
 }
+vec3 Value_ConstTexture(float texId) {
+	vec3 color;
+	float packDataIdx;
+	packDataIdx = At(TexData,texId+1);
+	GetPackData(packDataIdx,color);
+	return color;
+}
+vec3 Value_ImgTexture(float texId, vec2 uv){
+	int textureId = int(At(TexData,texId+1.0));
+	return texture(u_texArray[textureId],uv).rgb; 
+}
 
-bool Scatter_Material(inout struct Ray ray, struct HitRst hitable, int matIdx){
+vec3 Value_SkyTexture(float texId,vec3 pos){
+	int renderId = int(At(TexData,texId+1.0));
+	return texture(u_cubeMaps[int(renderId)], pos).rgb;
+}
+
+vec3 GetTexture(vec2 uv, vec3 pos, float texId) {
+
+	float texture_type = At(TexData,texId);
+	
+	if(texture_type == TexT_ConstTexture) {
+		return Value_ConstTexture(texId);
+	}
+	else if(texture_type == TexT_ImgTexture) {
+		return Value_ImgTexture(texId,uv);
+	}
+	else if(texture_type == TexT_Skybox) {
+		return Value_SkyTexture(texId,pos);
+	}
+
+}
+
+bool Scatter_Material(inout struct Ray ray, struct HitRst hitable, int matIdx) {
 	if(matIdx == -1){
 		ray.color = vec3(0,1.0,1);
 		return false;
 	}
 	float matType = At(MatData,matIdx);
 
-	if(matType == MatType_Lambertian)
+	if(matType == MatType_Lambertian || matType == MatType_Diffuse )
 		return Scatter_Lambertian(ray,hitable,matIdx);
 	else if (matType == MatType_Dielectric)
 		return Scatter_Dielectric(ray, hitable,matIdx);
-	else if(matType == MatType_Metal || matType ==MatType_Speculer)
+	else if(matType == MatType_Metal || matType == MatType_Speculer)
 		return Scatter_Metal(ray,hitable,matIdx);
 	else{
 		ray.color = vec3(1,0,0);//以此提示材质存在问题
@@ -315,6 +373,24 @@ bool Scatter_Dielectric(inout struct Ray ray, struct HitRst hitable, int matIdx)
 
 
 }
+
+bool Scatter_Lambertian(inout struct Ray ray, struct HitRst hitable, int matIdx){
+	
+	float texture_idx = At(MatData,matIdx+1.0);
+	if(texture_idx == -1){
+		return false;
+	}
+	vec3 albedo = GetTexture(hitable.vertex.uv,hitable.vertex.pos,texture_idx);
+
+	Ray_Update(ray, hitable.vertex.pos, hitable.vertex.normal, albedo);
+	//如果撞到了sky,不在遍历
+	if(hitable.isSky)
+		return false;
+	else
+		return true;
+}
+
+
 float At(sampler2D data, float idx){
 //	vec2 texCoords = vec2((idx+0.5)/textureSize(data, 0).x, 0.5);
 //    return texture2D(data, texCoords).x;
@@ -325,7 +401,6 @@ float At(sampler2D data, float idx){
     vec2 texCoords = vec2(x, y);
     return texture2D(data, texCoords).x;
 }
-
 
 void Ray_Update(inout struct Ray ray, vec3 origin, vec3 dir, vec3 attenuation){
 	ray.origin = origin;
@@ -351,23 +426,7 @@ void GetPackData(float idx, out vec3 pack){
 	pack = texture2D(PackData, texCoords).xyz;
 
 }
-//mat4 is column major
-//void GetPackData(float idx, out mat4 m){
-//	GetPackData(idx,m[0]);
-//	GetPackData(idx+4.0,m[1]);
-//	GetPackData(idx+8.0,m[2]);
-//	GetPackData(idx+12.0,m[3]);
-//}
-//void GetPackData(float idx, out mat3 m){
-//	vec4 v[3];
-//	GetPackData(idx,v[0]);
-//	GetPackData(idx+4.0,v[1]);
-//	GetPackData(idx+8.0,v[2]);
-//
-//	m[0] = v[0].xyz;
-//	m[1] = v[1].xyz;
-//	m[2] = v[2].xyz;
-//}
+
 void GetPackData(float idx, out mat4 m){
 	GetPackData(idx,m[0]);
 	GetPackData(idx+1.0,m[1]);
@@ -459,6 +518,31 @@ void RayIn_Sphere(float idx, inout struct Ray ray, inout struct HitRst hitRst) {
     
 
 }
+
+vec2 Sphere2UV(vec3 normal) {
+    vec2 uv;
+    float phi = atan2(normal.z, normal.x);
+    float theta = asin(normal.y);
+    uv[0] = 1 - (phi + PI) / (2 * PI);
+    uv[1] = (theta + PI/2) / PI;
+    return uv;
+}
+
+void RayIn_Sky(float idx, inout struct Ray ray, inout struct HitRst hitRst){
+	if(ray.tMax != FLTMAX)
+		return;
+
+	hitRst.hit = true;
+	hitRst.vertex.normal = normalize(ray.dir);
+	hitRst.vertex.pos = hitRst.vertex.normal;
+	hitRst.vertex.uv = Sphere2UV(hitRst.vertex.normal);
+	float matIdx = At(SceneData, idx+1.0);	
+	float isMatCoverable = At(SceneData, idx+2.0);
+	hitRst.matIdx = matIdx;
+	hitRst.isMatCoverable = isMatCoverable;
+	hitRst.isSky = true;
+}
+
 void Ray_Transform(inout struct Ray ray, mat4 transform){
 	ray.dir = mat3(transform) * ray.dir;
 
@@ -554,30 +638,15 @@ struct HitRst TraceScene(inout struct Ray ray,inout struct HitRst finalHitRst){
 		else if(type == HitableType_Volume){
 			//RayIn_Volume(idx, ray, finalHitRst);
 		}
+		else if(type == HitableType_Sky){
+			RayIn_Sky(idx, ray, finalHitRst);
+		
+		}
 	}
 	return finalHitRst;
 }
 
-bool Scatter_Lambertian(inout struct Ray ray, struct HitRst hitable, int matIdx){
-	float texture_idx = At(MatData,matIdx+1);
 
-	float texture_type = At(TexData,texture_idx);
-	vec3 albedo;
-	if(texture_type == TexT_ConstTexture){
-		float packDataIdx = At(TexData,texture_idx+1) *4.0;
-		albedo = vec3(At(PackData,packDataIdx),At(PackData,packDataIdx+1),At(PackData,packDataIdx+2));
-	}
-	else if(texture_type == TexT_ImgTexture){
-
-	}
-	else{
-
-
-	}
-	Ray_Update(ray, hitable.vertex.pos, hitable.vertex.normal + RandInSphere(),albedo);
-
-	return true;
-}
 
 vec3 RayTrace(){
 	struct Ray ray;
@@ -591,10 +660,7 @@ vec3 RayTrace(){
 		TraceScene(ray,finalHitable);
 		int hitMatId = 0;
 
-		
-
 		if(finalHitable.hit){
-			//return vec3(1,0,0);
 			hitMatId = int(finalHitable.matIdx);
 			bool rayOut = Scatter_Material(ray,finalHitable,hitMatId);
 			if(!rayOut)
@@ -646,7 +712,7 @@ void Stack_Acc(){
 }
 
 void main(){
-	vec3 color = RayTrace() ;//+ texture(SumColor, TexCoords).xyz;
+	vec3 color = RayTrace() + texture(SumColor, TexCoords).xyz;
 	out_SumColor = vec4(color.x,color.y,color.z,0.0);
 
 }

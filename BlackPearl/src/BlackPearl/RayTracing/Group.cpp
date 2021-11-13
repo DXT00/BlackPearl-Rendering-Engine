@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "Group.h"
-//#include "BlackPearl/Component/Hitable/Hitable.h"
+#include "BlackPearl/Component/BoundingBoxComponent/BoundingBox.h"
 namespace BlackPearl {
 
 	Group::Group(Object *obj)
@@ -11,8 +11,13 @@ namespace BlackPearl {
 	{
 		if (obj != NULL) {
 			m_RootObject->AddChildObj(obj);
-			//m_Box = m_Box + obj->GetComponent<Hitable>()->GetBoundingBox();
+			m_Box = m_Box + obj->GetComponent<BoundingBox>()->Get();
 		}
+	}
+	Group& Group::operator<<(Object* obj)
+	{
+		PushBack(obj);
+		return *this;
 	}
 }
 

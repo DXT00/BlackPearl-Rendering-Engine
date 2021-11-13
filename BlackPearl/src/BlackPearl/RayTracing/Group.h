@@ -11,6 +11,7 @@ namespace BlackPearl {
 		AABB GetBoundingBox() const { return m_Box; }
 		void PushBack(Object* obj);
 		Object* GetRoot() const { return m_RootObject; }
+		Group& operator << (Object* obj);
 	private:
 		//std::vector<Object*> m_Children;
 		AABB m_Box;

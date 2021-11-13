@@ -23,9 +23,11 @@ in vec2 TexCoords;
 uniform sampler2D u_FinalScreenTexture;
 uniform Settings u_Settings;
 bool hdr = u_Settings.hdr;
+uniform float u_Num;
+
 void main(){
 
-	vec3 color =texture(u_FinalScreenTexture, TexCoords).rgb;
+	vec3 color = texture(u_FinalScreenTexture, TexCoords).rgb/u_Num;
 
 //	if(hdr){
 //	//HDR tonemapping

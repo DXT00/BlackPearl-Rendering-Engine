@@ -38,6 +38,8 @@ namespace BlackPearl {
 		bool m_WriteBuffer = true;
 
 		int m_LoopNum = 1;
+		const size_t m_MaxLoopNum = 5000;
+		size_t m_AllLoopNum = 0;
 		float m_RayNumMax = 10000.0f;
 
 		//RenderGroup
@@ -50,9 +52,11 @@ namespace BlackPearl {
 		std::shared_ptr<TextureImage2D> m_TexDataTex;
 		std::shared_ptr<TextureImage2D> m_MaterialDataTex;
 		std::shared_ptr<TextureImage2D> m_PackDataTex;
+		std::shared_ptr<TextureImage2D> m_SkyBoxTex;
+		std::map<std::shared_ptr<Texture>, size_t> m_Tex2RenderIdMap;
+		std::map<std::shared_ptr<CubeMapTexture>, size_t> m_CubeMap2RenderIdMap;
 
 		std::shared_ptr<GenData> m_GenData;
-
 
 		/* Object */
 		Object* m_Quad;

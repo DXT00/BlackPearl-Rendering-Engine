@@ -24,6 +24,12 @@ public:
 		m_QuadObj = CreateQuad();
 		m_RayTracingRenderer->Init(m_QuadObj);
 
+
+
+
+
+		/***************************************** Scene ********************************************************/
+
 		//Group
 #if 0
 		{
@@ -84,8 +90,21 @@ public:
 #endif
 		//BVHNode
 		{
+
 			group_obj = BlackPearl::Layer::CreateGroup();
 			m_Group = DBG_NEW BlackPearl::Group(group_obj);
+			
+			
+			m_SkyBoxObj = CreateSkyBox(
+				{ "assets/skybox/skybox/right.jpg",
+				 "assets/skybox/skybox/left.jpg",
+				 "assets/skybox/skybox/top.jpg",
+				 "assets/skybox/skybox/bottom.jpg",
+				 "assets/skybox/skybox/front.jpg",
+				 "assets/skybox/skybox/back.jpg",
+			});
+			
+			
 			BlackPearl::Object* bunny = CreateModel("assets/models/bunny/bunny.obj", "assets/shaders/IronMan.glsl", false, "Bunny");
 			bunny->GetComponent<BlackPearl::Transform>()->SetInitScale(glm::vec3(1.0));
 			bunny->GetComponent<BlackPearl::Transform>()->SetInitPosition({ -0.2f,-1.0f,-2.0f });
@@ -97,13 +116,12 @@ public:
 			bunny_mat->SetRefractMaterial(1);
 			bunny_mat->SetRefractIdx(1.5f);
 
-
-
 			std::vector<BlackPearl::Vertex> bunny_verteices = bunny->GetComponent<BlackPearl::MeshRenderer>()->GetModel()->GetMeshVertex();
 			BlackPearl::Object* bunny_bvh_node = BlackPearl::g_objectManager->CreateBVHNode(bunny_verteices);
 			m_BunnyRTXTransformNode = BlackPearl::g_objectManager->CreateRTXTransformNode(bunny->GetComponent<BlackPearl::Transform>()->GetTransformMatrix(), bunny_bvh_node, bunny_mat);
 
 			m_Group->PushBack(m_BunnyRTXTransformNode);
+			m_Group->PushBack(m_SkyBoxObj);
 			m_SceneBuilder->CreateSceneData(m_Group);
 			m_RayTracingRenderer->InitScene(m_SceneBuilder->GetScene());
 		}
@@ -113,17 +131,8 @@ public:
 		m_CameraPosition = m_MainCamera->GetPosition();
 		BlackPearl::Renderer::Init();
 
-		/***************************************** Scene ********************************************************/
-		//m_SkyBoxObj = CreateSkyBox(
-		//	{ "assets/skybox/skybox/right.jpg",
-		//	 "assets/skybox/skybox/left.jpg",
-		//	 "assets/skybox/skybox/top.jpg",
-		//	 "assets/skybox/skybox/bottom.jpg",
-		//	 "assets/skybox/skybox/front.jpg",
-		//	 "assets/skybox/skybox/back.jpg",
-		//	});
-		//m_skybox = m_SkyBoxObj;
-		/*******************************************************************************************************/
+
+
 		/*******************************************************************************************************/
 
 
