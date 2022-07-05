@@ -17,12 +17,9 @@ namespace BlackPearl {
 		void RenderSpheres(MainCamera* mainCamera);
 		void RenderMaterialSpheres(MainCamera* mainCamera);
 
-		void InitGroupData(Group* group);
 		void InitScene(std::shared_ptr<GenData> scene);
 		void RenderGroup(MainCamera* mainCamera, Object* group);
 		void RenderBVHNode(MainCamera* mainCamera);
-
-
 	private:
 		std::shared_ptr<SceneBuilder> m_SceneBuilder;
 		std::shared_ptr<Shader> m_BasicShader;

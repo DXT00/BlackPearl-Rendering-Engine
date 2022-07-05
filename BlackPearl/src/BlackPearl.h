@@ -8,7 +8,7 @@
 #include "BlackPearl/Math/Math.h"
 
 #include "BlackPearl/Renderer/Shader/Shader.h"
-#include "BlackPearl/Renderer/Buffer.h"
+#include "BlackPearl/Renderer/Buffer/Buffer.h"
 #include "BlackPearl/Renderer/Material/CubeMapTexture.h"
 #include "BlackPearl/Renderer/Renderer.h"
 #include "BlackPearl/Renderer/RenderCommand.h"
@@ -24,11 +24,14 @@
 #include "BlackPearl/Renderer/MasterRenderer/VoxelConeTracingSVORenderer.h"
 #include "BlackPearl/Renderer/MasterRenderer/MapRenderer.h"
 #include "BlackPearl/Renderer/MasterRenderer/RayTracingRenderer.h"
+#include "BlackPearl/Renderer/MasterRenderer/D3D12RayTracingRenderer.h"
+#include "BlackPearl/Renderer/MasterRenderer/D3D12RayTracingCubeRenderer.h"
 
 #include "BlackPearl/Component/TransformComponent/Transform.h"
 #include "BlackPearl/Component/MeshRendererComponent/MeshRenderer.h"
 #include "BlackPearl/Component/CameraComponent/Camera.h"
 #include "BlackPearl/Component/CameraComponent/PerspectiveCamera.h"
+#include "BlackPearl/Component/LightComponent/Light.h"
 #include "BlackPearl/Component/LightComponent/LightSources.h"
 #include "BlackPearl/Component/LightComponent/PointLight.h"
 #include "BlackPearl/Component/LightComponent/ParallelLight.h"
@@ -51,3 +54,6 @@
 #include "BlackPearl/Map/MapManager.h"
 //#include "BlackPearl/Component/ComponentHandle.h"
 #include "BlackPearl/SceneBuilder/SceneBuilder.h"
+
+//D3D12 API
+#include "BlackPearl/RHI/D3D12RHI/D3D12DeviceResources.h"

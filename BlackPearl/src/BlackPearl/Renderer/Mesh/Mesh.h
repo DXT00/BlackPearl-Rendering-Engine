@@ -2,11 +2,10 @@
 #include <vector>
 #include <string>
 #include "BlackPearl/Renderer/Shader/Shader.h"
-#include "BlackPearl/Renderer/Buffer.h"
+#include "BlackPearl/Renderer/Buffer/Buffer.h"
 #include "BlackPearl/Component/LightComponent/LightSources.h"
 #include "BlackPearl/Renderer/Material/MaterialColor.h"
 #include "BlackPearl/Renderer/Material/Material.h"
-#include "BlackPearl/RayTracing/Vertex.h"
 #include "BlackPearl/Renderer/VertexArray.h"
 #include <initializer_list>
 #include <memory>

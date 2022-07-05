@@ -18,6 +18,7 @@
 #include "BlackPearl/Scene/Scene.h"
 #include "BlackPearl/ObjectManager/ObjectManager.h"
 #include "BlackPearl/Entity/Entity.h"
+#include "BlackPearl/RHI/DynamicRHI.h"
 #include <chrono>
 using namespace std::chrono;
 namespace BlackPearl {
@@ -26,23 +27,30 @@ namespace BlackPearl {
 	class Application
 	{
 	public:
-		Application();
+		struct AppConf {
+			HINSTANCE hInstance;
+			int nShowCmd;
+			std::string renderer;
+		};
+		Application(HINSTANCE hInstance, int nShowCmd, const std::string& renderer);
 		virtual ~Application();
 
 		inline static Application &Get() { return *s_Instance; }
 		inline Window& GetWindow() { return *m_Window; }
 		Scene* GetScene() { return m_CurrentScene; }
+		AppConf GetAppConf() const { return m_AppConf; }
+		void Init();
 		void Run();
 		void OnEvent(Event &event);
 		static double s_AppFPS;
-
 		static double s_AppAverageFPS;
-
-
-
+		static bool IsFullscreen();
+		static void SetWindowZorderToTopMost(bool setToTopMost);
 
 	private:
+		bool ShouldCloseWindow();
 		bool OnCameraRotate(MouseMovedEvent&e);
+		bool OnWindowClose();
 	
 	
 	private:
@@ -50,7 +58,9 @@ namespace BlackPearl {
 		float m_LastFrameTime = 0.0f;
 
 	private:
-		std::unique_ptr<Window> m_Window;
+		DynamicRHI* m_DynamicRHI;
+		Window* m_Window;
+		AppConf m_AppConf;
 
 		double m_StartTimeMs;
 		long long m_FrameNum = 0;
@@ -60,5 +70,5 @@ namespace BlackPearl {
 
 	};
 	//To be define in a client
-	Application * CreateApplication();
+	Application * CreateApplication(HINSTANCE hInstance, int nShowCmd);
 }

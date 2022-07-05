@@ -12,10 +12,10 @@ namespace BlackPearl {
 			layer->OnUpdate(ts);
 
 		}
-		m_ImGuiLayer->Begin();
-		for (Layer* layer : m_LayerStack)
-			layer->OnImguiRender();
-		m_ImGuiLayer->End();
+		//m_ImGuiLayer->Begin();
+		//for (Layer* layer : m_LayerStack)
+		//	layer->OnImguiRender();
+		//m_ImGuiLayer->End();
 	}
 
 	void Scene::PushLayer(Layer * layer)

@@ -1,5 +1,5 @@
 #pragma once
-#include"BlackPearl/Renderer/Buffer.h"
+#include"BlackPearl/Renderer/Buffer/Buffer.h"
 namespace BlackPearl {
 
 	class VertexArray

@@ -12,7 +12,7 @@
 #include "Renderer/Material/Texture.h"
 #include "Component/CameraComponent/PerspectiveCamera.h"
 #include "Renderer/Renderer.h"
-#include "Renderer/Buffer.h"
+#include "Renderer/Buffer/Buffer.h"
 #include "Core.h"
 #include "Input.h"
 #include "Event/Event.h"
@@ -23,6 +23,7 @@
 #include "ImGui/ImGuiLayer.h"
 #include "BlackPearl/Entity/Entity.h"
 #include "BlackPearl/ObjectManager/ObjectManager.h"
+#include <BlackPearl/Luanch/Luanch.h>
 namespace BlackPearl {
 	ObjectManager* g_objectManager = DBG_NEW ObjectManager();
 	EntityManager*  g_entityManager = DBG_NEW EntityManager();
@@ -31,16 +32,19 @@ namespace BlackPearl {
 	double Application::s_AppAverageFPS = 0.0f;
 
 	Application* Application::s_Instance = nullptr;
-	Application::Application()
+	extern bool g_shouldEngineExit;
+	extern DynamicRHI* g_DynamicRHI;
+
+	Application::Application(HINSTANCE hInstance, int nShowCmd, const std::string& renderer)
 	{
+
 		GE_ASSERT(!s_Instance, "Application's Instance already exist!")
 		s_Instance = this;
-		m_Window.reset(DBG_NEW Window());
-		m_Window->SetCallBack(std::bind(&Application::OnEvent, this, std::placeholders::_1));
+		m_AppConf.hInstance = hInstance;
+		m_AppConf.nShowCmd = nShowCmd;
+		m_AppConf.renderer = renderer;
 
-		m_CurrentScene = DBG_NEW Scene();
-		m_StartTimeMs = 0;// duration_cast<milliseconds>(system_clock::now().time_since_epoch());
-
+		Init();
 	}
 
 	Application::~Application()
@@ -50,9 +54,24 @@ namespace BlackPearl {
 		GE_SAVE_DELETE(m_CurrentScene);
 	}
 
+	void Application::Init()
+	{
+		g_shouldEngineExit = false;
+		if (!g_DynamicRHI) {
+			DynamicRHIInit();
+		}
+		m_Window = RHIInitWindow();
+
+		//m_Window.reset(DBG_NEW Window());
+		m_Window->SetAppCallBack(std::bind(&Application::OnEvent, this, std::placeholders::_1));
+
+		m_CurrentScene = DBG_NEW Scene();
+		m_StartTimeMs = 0;// duration_cast<milliseconds>(system_clock::now().time_since_epoch());
+	}
+
 	void Application::Run()
 	{
-		while (!glfwWindowShouldClose(m_Window->GetNativeWindow())) {
+		while (!ShouldEngineExit()) {
 
 			double currentTimeMs = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
 			double runtimeSecond = (currentTimeMs - m_StartTimeMs) / 1000.0f;
@@ -83,8 +102,7 @@ namespace BlackPearl {
 			Timestep ts = time - m_LastFrameTime;
 			m_LastFrameTime = time;
 
-			if (glfwGetKey(m_Window->GetNativeWindow(), GLFW_KEY_ESCAPE) == GLFW_PRESS)
-				glfwSetWindowShouldClose(m_Window->GetNativeWindow(), true);
+			ShouldCloseWindow();
 
 			m_CurrentScene->OnUpdateLayers(ts);
 
@@ -121,6 +139,15 @@ namespace BlackPearl {
 	}
 
 
+	bool Application::ShouldCloseWindow()
+	{
+		if (m_Window->ShouldClose()) {
+			RequestEngineExit();
+			return true;
+		}
+		return false;
+	}
+
 	bool Application::OnCameraRotate(MouseMovedEvent & e)
 	{
 		float posx = e.GetMouseX();
@@ -129,5 +156,18 @@ namespace BlackPearl {
 		return true;
 	}
 
-
+	bool Application::OnWindowClose()
+	{
+		return false;
+	}
+	// TODO::
+	bool Application::IsFullscreen()
+	{
+		return false;
+	}
+	//TODO::
+	void Application::SetWindowZorderToTopMost(bool setToTopMost)
+	{
+		return;
+	}
 }

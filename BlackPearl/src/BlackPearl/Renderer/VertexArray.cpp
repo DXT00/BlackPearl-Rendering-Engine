@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "VertexArray.h"
 #include <glad/glad.h>
-#include "Buffer.h"
+#include "Buffer/Buffer.h"
 #include "BlackPearl/Core.h"
 namespace BlackPearl {
 	static uint32_t ShaderDataTypeToBufferType(const ElementDataType& type) {

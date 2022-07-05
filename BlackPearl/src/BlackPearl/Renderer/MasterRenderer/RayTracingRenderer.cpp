@@ -173,29 +173,6 @@ namespace BlackPearl {
 		DrawObject(m_Quad, m_ScreenShader);
 	}
 
-	void RayTracingRenderer::InitGroupData(Group* group)
-	{
-		/*GE_ASSERT(group, "group is null");
-		
-		m_GenData.reset(DBG_NEW GenData(group->GetRoot()));
-		m_SceneData = m_GenData->GetSceneData();
-		m_MaterialData = m_GenData->GetMatData();
-		m_TextureData = m_GenData->GetTexData();
-		m_PackData = m_GenData->GetPackData();
-
-		m_SceneDataTex.reset(DBG_NEW TextureImage2D(m_SceneData, m_SceneData.size(), 1, \
-			GL_NEAREST, GL_NEAREST, GL_R32F, GL_RED, GL_CLAMP_TO_EDGE, GL_FLOAT, GL_READ_WRITE));
-		m_TexDataTex.reset(DBG_NEW TextureImage2D(m_TextureData, m_TextureData.size(), 1, \
-			GL_NEAREST, GL_NEAREST, GL_R32F, GL_RED, GL_CLAMP_TO_EDGE, GL_FLOAT, GL_READ_WRITE));
-		m_MaterialDataTex.reset(DBG_NEW TextureImage2D(m_MaterialData, m_MaterialData.size(), 1, \
-			GL_NEAREST, GL_NEAREST, GL_R32F, GL_RED, GL_CLAMP_TO_EDGE, GL_FLOAT, GL_READ_WRITE));
-
-		m_PackDataTex.reset(DBG_NEW TextureImage2D(m_PackData, m_PackData.size(), 1, \
-			GL_NEAREST, GL_NEAREST, GL_R32F, GL_RED, GL_CLAMP_TO_EDGE, GL_FLOAT, GL_READ_WRITE));*/
-
-
-	}
-
 	void RayTracingRenderer::InitScene(std::shared_ptr<GenData> scene)
 	{
 		m_SceneData = scene->GetSceneData();

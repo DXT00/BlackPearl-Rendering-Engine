@@ -6,6 +6,7 @@
 #include "assimp/postprocess.h"
 #include "assimp/scene.h"
 #include "BlackPearl/Animation/Bone.h"
+#include "BlackPearl/RayTracing/Vertex.h"
 //#include <assimp/material.h>
 
 //#include <assimp/cimport.h>

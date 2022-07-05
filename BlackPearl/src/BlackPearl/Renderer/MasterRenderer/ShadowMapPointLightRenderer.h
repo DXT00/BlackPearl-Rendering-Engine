@@ -1,6 +1,6 @@
 #pragma once
 #include "BlackPearl/Object/Object.h"
-#include "BlackPearl/Renderer/Buffer.h"
+#include "BlackPearl/Renderer/Buffer/Buffer.h"
 #include "BlackPearl/Renderer/MasterRenderer/BasicRenderer.h"
 #include "BlackPearl/Renderer/Material/CubeMapTexture.h"
 #include "BlackPearl/Config.h"

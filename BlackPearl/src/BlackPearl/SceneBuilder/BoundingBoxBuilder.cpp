@@ -25,33 +25,33 @@ namespace BlackPearl {
 			return TriangleBoundingBox(obj);
 	}
 
-	AABB BoundingBoxBuilder::Build(const std::vector<Vertex>& mesh_vertex) {
+	//AABB BoundingBoxBuilder::Build(const std::vector<Vertex>& mesh_vertex) {
 
-		/*std::vector<Triangle> triMesh;
-		std::shared_ptr<BVHNode> bvhNode;
-		if (mesh_vertex.size() % 3 != 0) {
-			m_Box.IsValid = false;
-			return AABB::InValid;
-		}
-		for (size_t i = 0; i < mesh_vertex.size(); i += 3)
-		{
-			Triangle tri;
-			tri.p[0] = mesh_vertex[i];
-			tri.p[1] = mesh_vertex[i+1];
-			tri.p[2] = mesh_vertex[i+2];
+	//	/*std::vector<Triangle> triMesh;
+	//	std::shared_ptr<BVHNode> bvhNode;
+	//	if (mesh_vertex.size() % 3 != 0) {
+	//		m_Box.IsValid = false;
+	//		return AABB::InValid;
+	//	}
+	//	for (size_t i = 0; i < mesh_vertex.size(); i += 3)
+	//	{
+	//		Triangle tri;
+	//		tri.p[0] = mesh_vertex[i];
+	//		tri.p[1] = mesh_vertex[i+1];
+	//		tri.p[2] = mesh_vertex[i+2];
 
-			tri.GetBoundingBox
+	//		tri.GetBoundingBox
 
-			triMesh.push_back(tri);
+	//		triMesh.push_back(tri);
 
-		}
-		bvhNode.reset(DBG_NEW BVHNode(triMesh)); */
-		return AABB();
-	}
+	//	}
+	//	bvhNode.reset(DBG_NEW BVHNode(triMesh)); */
+	//	return AABB();
+	//}
 
-	void BoundingBoxBuilder::ChangeMeshToBVHNode(const std::vector<Vertex>& mesh_vertex)
+	/*void BoundingBoxBuilder::ChangeMeshToBVHNode(const std::vector<Vertex>& mesh_vertex)
 	{
-	}
+	}*/
 
 	AABB BoundingBoxBuilder::SphereBoundingBox(Object* obj)
 	{
