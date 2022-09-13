@@ -6,11 +6,17 @@ namespace BlackPearl {
 	{
 	public:
 
+
 	public:
-		D3D12Renderer();
+		D3D12Renderer(int clientWidth,int clientHeight);
 		~D3D12Renderer();
 
-	private:
+	protected:
+		virtual void UpdateForSizeChange(int clientWidth, int clientHeight);
+
+		int m_Width;
+		int m_Height;
+		float m_AspectRatio;
 
 	};
 

@@ -82,14 +82,10 @@ namespace BlackPearl {
 
     inline void ThrowIfFailed(HRESULT hr, const wchar_t* msg)
     {
-        //std::wstring ws(msg);
-        // your new String
-       // std::string msg_str(ws.begin(), ws.end());
-
         if (FAILED(hr))
         {
             OutputDebugString(msg);
-            //GE_CORE_ERROR(msg_str.c_str());
+            throw HrException(hr);
         }
     }
 
@@ -103,6 +99,8 @@ namespace BlackPearl {
         ThrowIfFailed(value ? S_OK : E_FAIL, msg);
     }
 
+    inline const wchar_t* To_Wchar(const char * c) {
 
+    }
 }
 

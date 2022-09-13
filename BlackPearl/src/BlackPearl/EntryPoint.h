@@ -2,7 +2,6 @@
 //#include "pch.h"
 
 #include "BlackPearl/Application.h"
-#include "BlackPearl/Log.h"
 
 
 #ifdef _DEBUG
@@ -23,13 +22,19 @@
 
 extern BlackPearl::Application* BlackPearl::CreateApplication(HINSTANCE hInstance, int nShowCmd);
 
-int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine, _In_ int nShowCmd)
-//int main(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine, _In_ int nShowCmd)
-{
+#ifdef GE_D3D12RHI
+int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine, _In_ int nShowCmd) {
+	std::wstringstream wstr;
+	wstr << L"entry\n";
+	OutputDebugStringW(wstr.str().c_str());
+#else
+int main(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine, _In_ int nShowCmd) {
+#endif
+
 
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
-	BlackPearl::Log::Init();
-	GE_CORE_WARN("Initialized Log!");
+	//BlackPearl::Log::Init();
+	//GE_CORE_WARN("Initialized Log!");
 	BlackPearl::Application* app = BlackPearl::CreateApplication(hInstance, nShowCmd);
 	app->Run();
 	delete app;

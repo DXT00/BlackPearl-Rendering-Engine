@@ -1,35 +1,13 @@
 #include "pch.h"
 #include "Scene.h"
 
-
-
 namespace BlackPearl {
-
-	void Scene::OnUpdateLayers(Timestep ts)
+	Scene::Scene(DemoType type)
 	{
-		for (Layer* layer : m_LayerStack) {
-
-			layer->OnUpdate(ts);
-
-		}
-		//m_ImGuiLayer->Begin();
-		//for (Layer* layer : m_LayerStack)
-		//	layer->OnImguiRender();
-		//m_ImGuiLayer->End();
+		m_DemoType = type;
 	}
 
-	void Scene::PushLayer(Layer * layer)
+	Scene::~Scene()
 	{
-		m_LayerStack.PushLayer(layer);
-		layer->OnAttach();
 	}
-
-	void Scene::PushOverLayer(Layer * overlay)
-	{
-		m_LayerStack.PushOverLay(overlay);
-		overlay->OnAttach();
-	}
-
-	
 }
-

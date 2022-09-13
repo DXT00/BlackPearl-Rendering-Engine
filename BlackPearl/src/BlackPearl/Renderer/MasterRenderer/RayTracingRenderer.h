@@ -4,7 +4,7 @@
 #include "BlackPearl/Renderer/Material/TextureImage2D.h"
 #include "BlackPearl/RayTracing/GenData.h"
 #include "BlackPearl/RayTracing/Group.h"
-#include "BlackPearl/SceneBuilder/SceneBuilder.h"
+#include "BlackPearl/Scene/SceneBuilder.h"
 
 namespace BlackPearl {
 	class RayTracingRenderer:public BasicRenderer

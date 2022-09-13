@@ -4,7 +4,7 @@
 #include "BlackPearl/Config.h"
 #include "BlackPearl/Common/CommonFunc.h"
 #include "Raytracing.hlsl.h"
-
+#include "BlackPearl/Renderer/Shader/D3D12Shader/ShaderTable.h"
 
 namespace BlackPearl {
 	const wchar_t* D3D12RayTracingRenderer::c_hitGroupName = L"MyHitGroup";
@@ -14,11 +14,12 @@ namespace BlackPearl {
 
 
 	D3D12RayTracingRenderer::D3D12RayTracingRenderer():
+		D3D12Renderer(Application::Get().GetWindow().GetWidth(), Application::Get().GetWindow().GetHeight()),
 		m_adapterIDoverride(UINT_MAX),
 		m_raytracingOutputResourceUAVDescriptorHeapIndex(UINT_MAX)
 	{
 		m_rayGenCB.viewport = { -1.0f, -1.0f, 1.0f, 1.0f };
-		UpdateForSizeChange(Application::Get().GetWindow().GetWidth(), Application::Get().GetWindow().GetHeight());
+		
 		Init();
 	}
 	D3D12RayTracingRenderer::~D3D12RayTracingRenderer()
@@ -53,8 +54,8 @@ namespace BlackPearl {
 		m_deviceResources->RegisterDeviceNotify(this);
 		m_deviceResources->SetWindow(
 			(HWND)(Application::Get().GetWindow().GetNativeWindow()),
-			m_width,
-			m_height);
+			m_Width,
+			m_Height);
 		m_deviceResources->InitializeDXGIAdapter();
 
 		ThrowIfFalse(IsDirectXRaytracingSupported(m_deviceResources->GetAdapter()),
@@ -90,6 +91,31 @@ namespace BlackPearl {
 		// Let GPU finish before releasing D3D resources.
 		m_deviceResources->WaitForGpu();
 		OnDeviceLost();
+	}
+
+	void D3D12RayTracingRenderer::UpdateForSizeChange(int clientWidth, int clientHeight)
+	{
+		m_Width = clientWidth;
+		m_Height = clientHeight;
+		m_AspectRatio = static_cast<float>(clientWidth) / static_cast<float>(clientHeight);
+		float border = 0.1f;
+		if (m_Width <= m_Height)
+		{
+			m_rayGenCB.stencil =
+			{
+				-1 + border, -1 + border * m_AspectRatio,
+				1.0f - border, 1 - border * m_AspectRatio
+			};
+		}
+		else
+		{
+			m_rayGenCB.stencil =
+			{
+				-1 + border / m_AspectRatio, -1 + border,
+				 1 - border / m_AspectRatio, 1.0f - border
+			};
+
+		}
 	}
 
 	void D3D12RayTracingRenderer::RecreateD3D()
@@ -559,30 +585,7 @@ namespace BlackPearl {
 		}
 	}
 
-	void D3D12RayTracingRenderer::UpdateForSizeChange(UINT clientWidth, UINT clientHeight)
-	{
-		m_width = clientWidth;
-		m_height = clientHeight;
-		m_aspectRatio = static_cast<float>(clientWidth) / static_cast<float>(clientHeight);
-		float border = 0.1f;
-		if (m_width <= m_height)
-		{
-			m_rayGenCB.stencil =
-			{
-				-1 + border, -1 + border * m_aspectRatio,
-				1.0f - border, 1 - border * m_aspectRatio
-			};
-		}
-		else
-		{
-			m_rayGenCB.stencil =
-			{
-				-1 + border / m_aspectRatio, -1 + border,
-				 1 - border / m_aspectRatio, 1.0f - border
-			};
 
-		}
-	}
 
 	void D3D12RayTracingRenderer::CopyRaytracingOutputToBackbuffer()
 	{

@@ -35,8 +35,16 @@ namespace BlackPearl {
 	}
 	void MainCamera::SetFov(float fov)
 	{
-		return m_CameraObj->GetComponent<PerspectiveCamera>()->SetFov(fov);
+		m_CameraObj->GetComponent<PerspectiveCamera>()->SetFov(fov);
 	}
+	void MainCamera::SetZFar(float zFar) {
+		m_CameraObj->GetComponent<PerspectiveCamera>()->SetZfar(zFar);
+	}
+	void MainCamera::SetZNear(float zNear) {
+		m_CameraObj->GetComponent<PerspectiveCamera>()->SetZnear(zNear);
+
+	}
+
 	void MainCamera::SetPosition(glm::vec3 pos)
 	{
 		m_CameraObj->GetComponent<Transform>()->SetPosition(pos);

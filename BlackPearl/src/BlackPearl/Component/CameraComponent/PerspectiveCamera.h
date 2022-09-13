@@ -6,7 +6,7 @@ namespace BlackPearl {
 	{
 	public:
 		//float fov, float width, float height, float znear, float zfar,
-		PerspectiveCamera(const ViewMatrixProps &viewMatrixProps=ViewMatrixProps());
+		PerspectiveCamera(const ViewMatrixProps &viewMatrixProps = ViewMatrixProps());
 		virtual ~PerspectiveCamera() = default;
 
 		void RecalculateProjectionMatrix();

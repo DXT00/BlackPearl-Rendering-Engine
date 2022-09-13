@@ -127,3 +127,12 @@
 #define BP_KEY_MENU               348
 
 #define BP_MOUSE_BUTTON_RIGHT     1
+
+
+//DirectX
+
+#define VK_A 0x41
+#define VK_S 0x53
+#define VK_W 0x57
+#define VK_D 0x44
+#define VK_E 0x45

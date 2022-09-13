@@ -19,14 +19,12 @@
 #include "BlackPearl/Application.h"
 #include "Layers/VoxelizationTestLayer.h"
 #include "Layers/CubeTestLayer.h"
-#include "Layers/D3D12RayTracingLayer.h"
-#include "Layers/D3D12RayTracingCubeLayer.h"
 
 class SandBox :public BlackPearl::Application {
 public:
 
-	SandBox(HINSTANCE hInstance,int nShowCmd, const std::string &renderer)
-	:Application(hInstance, nShowCmd, renderer){
+	SandBox(HINSTANCE hInstance,int nShowCmd, BlackPearl::DynamicRHI::Type rhiType, const std::string &renderer)
+	:Application(hInstance, nShowCmd, rhiType, renderer){
 		
 		BlackPearl::Layer* layer = NULL;
 		const std::string layer_name = renderer+"Layer";
@@ -54,14 +52,8 @@ public:
 		else if (renderer == "RayTracing") {
 			layer = DBG_NEW RayTracingLayer(layer_name);
 		}
-		else if (renderer == "D3D12RayTracing") {
-			layer = DBG_NEW D3D12RayTracingLayer(layer_name);
-		}
-		else if (renderer == "D3D12RayTracingCube") {
-			layer = DBG_NEW D3D12RayTracingCubeLayer(layer_name);
-		}
 
-		GetScene()->PushLayer(layer);
+		GetLayerManager()->PushLayer(layer);
 	}
 	virtual ~SandBox() = default;
 
@@ -69,7 +61,7 @@ public:
 
 BlackPearl::Application* BlackPearl::CreateApplication(HINSTANCE hInstance, int nShowCmd) {
 
-	return DBG_NEW SandBox(hInstance, nShowCmd, "D3D12RayTracing");
+	return DBG_NEW SandBox(hInstance, nShowCmd, BlackPearl::DynamicRHI::Type::OpenGL, "VoxelConeTracingDeferred");
 
 }
 

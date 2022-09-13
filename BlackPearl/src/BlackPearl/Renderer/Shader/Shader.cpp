@@ -107,7 +107,7 @@ namespace BlackPearl {
 	void Shader::Compile(const std::unordered_map<GLenum, std::string>& shaderSources)
 	{
 		GLuint program = glCreateProgram();
-
+		GE_ERROR_JUDGE();
 
 		std::vector<GLuint> ShaderID;
 		for (auto& kv : shaderSources) {

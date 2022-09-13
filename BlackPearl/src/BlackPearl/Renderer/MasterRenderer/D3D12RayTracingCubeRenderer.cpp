@@ -3,6 +3,7 @@
 #include "BlackPearl/Application.h"
 #include "BlackPearl/Config.h"
 #include "BlackPearl/Common/CommonFunc.h"
+#include "BlackPearl/Renderer/Shader/D3D12Shader/ShaderTable.h"
 #include "RaytracingCube.hlsl.h"
 #include <DirectXMath.h>
 using namespace DirectX;
@@ -13,10 +14,10 @@ namespace BlackPearl {
 	const wchar_t* D3D12RayTracingCubeRenderer::c_closestHitShaderName = L"MyClosestHitShader";
 	const wchar_t* D3D12RayTracingCubeRenderer::c_missShaderName = L"MyMissShader";
 	D3D12RayTracingCubeRenderer::D3D12RayTracingCubeRenderer():
+		D3D12Renderer(Application::Get().GetWindow().GetWidth(), Application::Get().GetWindow().GetHeight()),
 		m_adapterIDoverride(UINT_MAX),
 		m_raytracingOutputResourceUAVDescriptorHeapIndex(UINT_MAX)
 	{
-		UpdateForSizeChange(Application::Get().GetWindow().GetWidth(), Application::Get().GetWindow().GetHeight());
 		Init();
 	}
 
@@ -53,8 +54,8 @@ namespace BlackPearl {
         m_deviceResources->RegisterDeviceNotify(this);
 		m_deviceResources->SetWindow(
 			(HWND)(Application::Get().GetWindow().GetNativeWindow()),
-			m_width,
-			m_height);       
+			m_Width,
+			m_Height);       
 		m_deviceResources->InitializeDXGIAdapter();
 
         ThrowIfFalse(IsDirectXRaytracingSupported(m_deviceResources->GetAdapter()),
@@ -110,7 +111,7 @@ namespace BlackPearl {
 			lightAmbientColor = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
 			m_sceneCB[frameIndex].lightAmbientColor = XMLoadFloat4(&lightAmbientColor);
 
-			lightDiffuseColor = XMFLOAT4(0.5f, 0.0f, 0.0f, 1.0f);
+			lightDiffuseColor = XMFLOAT4(0.5f, 0.5f, 0.0f, 1.0f);
 			m_sceneCB[frameIndex].lightDiffuseColor = XMLoadFloat4(&lightDiffuseColor);
 		}
 
@@ -209,8 +210,8 @@ namespace BlackPearl {
 			dispatchDesc->MissShaderTable.StrideInBytes = dispatchDesc->MissShaderTable.SizeInBytes;
 			dispatchDesc->RayGenerationShaderRecord.StartAddress = m_rayGenShaderTable->GetGPUVirtualAddress();
 			dispatchDesc->RayGenerationShaderRecord.SizeInBytes = m_rayGenShaderTable->GetDesc().Width;
-			dispatchDesc->Width = m_width;
-			dispatchDesc->Height = m_height;
+			dispatchDesc->Width = m_Width;
+			dispatchDesc->Height = m_Height;
 			dispatchDesc->Depth = 1;
 			commandList->SetPipelineState1(stateObject);
 			commandList->DispatchRays(dispatchDesc);
@@ -345,7 +346,23 @@ namespace BlackPearl {
 		// Shader config
 		// Defines the maximum sizes in bytes for the ray payload and attribute structure.
 		auto shaderConfig = raytracingPipeline.CreateSubobject<CD3DX12_RAYTRACING_SHADER_CONFIG_SUBOBJECT>();
+		
+		/*
+			The maximum payload size used by the shaders, which defines the amount of data a shader can exchange with other shaders.
+			A typical example is a payload containing a color value, 
+			so that the hit or miss shaders can return this value to the ray generation program, which will write that value to the output buffer. 
+			To achieve best performance the payload needs to be kept as small as possible. In our case the payload contains 4 floating-point values,
+			representing the output color and the distance of the hit from the ray origin.
+		*/
 		UINT payloadSize = sizeof(XMFLOAT4);    // float4 pixelColor
+
+		/*
+			The attributes size, which is set by the intersection shader.
+			We use the built-in triangle intersection shader that return 2
+			floating-point values corresponding to the barycentric coordinates 
+			of the hit point inside the triangle. Those values are accessed 
+			using the MyAttributes structure in RayTracingCube.hlsl
+		*/
 		UINT attributeSize = sizeof(XMFLOAT2);  // float2 barycentrics
 		shaderConfig->Config(payloadSize, attributeSize);
 
@@ -398,7 +415,7 @@ namespace BlackPearl {
 		auto backbufferFormat = m_deviceResources->GetBackBufferFormat();
 
 		// Create the output resource. The dimensions and format should match the swap-chain.
-		auto uavDesc = CD3DX12_RESOURCE_DESC::Tex2D(backbufferFormat, m_width, m_height, 1, 1, 1, 0, D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS);
+		auto uavDesc = CD3DX12_RESOURCE_DESC::Tex2D(backbufferFormat, m_Width, m_Height, 1, 1, 1, 0, D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS);
 
 		auto defaultHeapProperties = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT);
 		ThrowIfFailed(device->CreateCommittedResource(
@@ -532,7 +549,7 @@ namespace BlackPearl {
 		m_sceneCB[frameIndex].cameraPosition = m_eye;
 		float fovAngleY = 45.0f;
 		XMMATRIX view = XMMatrixLookAtLH(m_eye, m_at, m_up);
-		XMMATRIX proj = XMMatrixPerspectiveFovLH(XMConvertToRadians(fovAngleY), m_aspectRatio, 1.0f, 125.0f);
+		XMMATRIX proj = XMMatrixPerspectiveFovLH(XMConvertToRadians(fovAngleY), m_AspectRatio, 1.0f, 125.0f);
 		XMMATRIX viewProj = view * proj;
 
 		m_sceneCB[frameIndex].projectionToWorld = XMMatrixInverse(nullptr, viewProj);
@@ -704,12 +721,7 @@ namespace BlackPearl {
 
 	}
 
-	void D3D12RayTracingCubeRenderer::UpdateForSizeChange(UINT clientWidth, UINT clientHeight)
-	{
-		m_width = clientWidth;
-		m_height = clientHeight;
-		m_aspectRatio = static_cast<float>(clientWidth) / static_cast<float>(clientHeight);
-	}
+	
 
 	void D3D12RayTracingCubeRenderer::CopyRaytracingOutputToBackbuffer()
 	{
@@ -756,7 +768,7 @@ namespace BlackPearl {
 	// Rotate the camera around Y axis.
 		{
 			float secondsToRotateAround = 24.0f;
-			float angleToRotateBy = 1.5f;// 360.0f * m_rotate / 100;
+			float angleToRotateBy = 0.05f;// 360.0f * m_rotate / 100;
 			m_rotate += 1;
 			if (m_rotate == 100)
 				m_rotate = 10;
@@ -770,12 +782,17 @@ namespace BlackPearl {
 		// Rotate the second light around Y axis.
 		{
 			float secondsToRotateAround = 8.0f;
-			float angleToRotateBy = 0;
+			float angleToRotateBy = 0.05f;
 			XMMATRIX rotate = XMMatrixRotationY(XMConvertToRadians(angleToRotateBy));
 			const XMVECTOR& prevLightPosition = m_sceneCB[prevFrameIndex].lightPosition;
 			m_sceneCB[frameIndex].lightPosition = XMVector3Transform(prevLightPosition, rotate);
 		}
+
+
+
 		m_deviceResources->Prepare();
+		
+		
 		DoRaytracing();
 		CopyRaytracingOutputToBackbuffer();
 

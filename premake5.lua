@@ -21,7 +21,7 @@ IncludeDir["glm"] = "BlackPearl/vendor/glm"
 IncludeDir["stb"] = "BlackPearl/vendor/stb"
 IncludeDir["assimp"] = "BlackPearl/vendor/assimp/include"
 IncludeDir["GLEW"] = "BlackPearl/vendor/GLEW/include"
-IncludeDir["hlslShader"] = "Sandbox/assets/shaders_hlsl_h"
+IncludeDir["hlslShader"] = "SandboxDX/assets/shaders_hlsl_h"
 
 
 
@@ -116,7 +116,9 @@ project "BlackPearl"
 			--"HZ_PLATFORM_WINDOWS",
 			--"HZ_BUILD_DLL",
 			"GLFW_INCLUDE_NONE",
-			"D3D12RHI",
+			--"GE_D3D12RHI",
+
+
 		}
 
 	
@@ -138,8 +140,8 @@ project "BlackPearl"
 
 project "Sandbox"
 	location "Sandbox"
-	--kind "ConsoleApp"
-	kind "WindowedApp"
+	kind "ConsoleApp"
+	--kind "WindowedApp"
 	language "C++"
 	cppdialect "C++17"
 	staticruntime "on"
@@ -147,7 +149,7 @@ project "Sandbox"
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
 
---
+
 	files
 	{
 		"%{prj.name}/src/**.h",
@@ -160,8 +162,8 @@ project "Sandbox"
 	filter { "files:**.hlsl" }
 		flags("ExcludeFromBuild")
 		shadermodel("6.3")
-		shaderobjectfileoutput("bin/"..outputdir.."/%{file.basename}"..".cso")
-		shaderheaderfileoutput("%{prj.name}/assets/shaders_hlsl_h/%{file.basename}.hlsl.h")
+		shaderobjectfileoutput("bin/"..outputdir.."/%{prj.name}/%{file.basename}"..".cso")
+		shaderheaderfileoutput("./assets/shaders_hlsl_h/%{file.basename}.hlsl.h")
 		shadervariablename("g_p".."%{file.basename}")
 		shaderentry ""
 	filter {}
@@ -187,7 +189,7 @@ project "Sandbox"
 		"d3d12.lib",
 		"dxgi.lib",
 		"dxguid.lib",
-		"directxtex.lib",
+		--"directxtex.lib",
 	}
 
 
@@ -196,7 +198,7 @@ project "Sandbox"
 
 		defines
 		{
-		"GLFW_INCLUDE_NONE",
+			"GLFW_INCLUDE_NONE",
 			"GE_PLATFORM_WINDOWS"
 		}
 
@@ -216,3 +218,85 @@ project "Sandbox"
 		optimize "on"
 
 
+
+
+project "SandboxDX"
+	location "SandboxDX"
+	--kind "ConsoleApp"
+	kind "WindowedApp"
+	language "C++"
+	cppdialect "C++17"
+	staticruntime "on"
+
+	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
+	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
+
+
+	files
+	{
+		"%{prj.name}/src/**.h",
+		"%{prj.name}/src/**.cpp",
+		"%{prj.name}/assets/shaders_hlsl/**.hlsl",
+		
+	}
+
+	filter { "files:SandboxDX/assets/shaders_hlsl/**.hlsl" }
+	filter { "files:**.hlsl" }
+		flags("ExcludeFromBuild")
+		shadermodel("6.3")
+		shaderobjectfileoutput("bin/"..outputdir.."/%{prj.name}/%{file.basename}"..".cso")
+		shaderheaderfileoutput("./assets/shaders_hlsl_h/%{file.basename}.hlsl.h")
+		shadervariablename("g_p".."%{file.basename}")
+		shaderentry ""
+	filter {}
+	files { "%{prj.name}/assets/shaders_hlsl_h/**.hlsl.h"; }
+
+	includedirs
+	{
+		"BlackPearl/vendor/spdlog/include",
+		"BlackPearl/src",
+		"BlackPearl/vendor",
+		"%{IncludeDir.glm}",
+		"%{IncludeDir.GLFW}",
+		"%{IncludeDir.assimp}",
+		"%{IncludeDir.Glad}",
+		"%{IncludeDir.glslShader}",
+		--"packages/directxtex_uwp.2022.7.30.1/native/lib/x64/Debug"
+
+	}
+	
+	links
+	{
+		"BlackPearl",
+		"d3d12.lib",
+		"dxgi.lib",
+		"dxguid.lib",
+		--"directxtex.lib",
+	}
+
+
+	filter "system:windows"
+		systemversion "latest"
+
+		defines
+		{
+			"GLFW_INCLUDE_NONE",
+			"GE_PLATFORM_WINDOWS",
+			"GE_D3D12RHI",
+			"D3D12RHI",
+		}
+
+	filter "configurations:Debug"
+		defines "GE_DEBUG"
+		runtime "Debug"
+		symbols "on"
+
+	filter "configurations:Release"
+		defines "GE_RELEASE"
+		runtime "Release"
+		optimize "on"
+
+	filter "configurations:Dist"
+		defines "GE_DIST"
+		runtime "Release"
+		optimize "on"

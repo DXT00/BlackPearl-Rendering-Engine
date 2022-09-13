@@ -5,11 +5,12 @@
 #include "BlackPearl/RHI/D3D12RHI/DirectXRaytracingHelper.h"
 #include "BlackPearl/RHI/D3D12RHI/D3D12DeviceResources.h"
 #include "BlackPearl/RHI/D3D12RHI/d3dx12.h"
-#include "BlackPearl/Renderer/Buffer/D3D12Buffer.h"
+#include "BlackPearl/Renderer/Buffer/D3D12Buffer/D3D12Buffer.h"
 #include <DirectXMath.h>
 
-using namespace DirectX;
 using namespace DX;
+using namespace DirectX;
+using Microsoft::WRL::ComPtr;
 
 namespace BlackPearl {
 	class D3D12RayTracingCubeRenderer : public BasicRenderer, D3D12Renderer, IDeviceNotify
@@ -62,7 +63,6 @@ namespace BlackPearl {
         void BuildAccelerationStructures();
         void BuildShaderTables();
 
-        void UpdateForSizeChange(UINT clientWidth, UINT clientHeight);
         void CopyRaytracingOutputToBackbuffer();
         void CalculateFrameStats();
 
@@ -147,10 +147,6 @@ namespace BlackPearl {
         // Raytracing scene
         SceneConstantBuffer m_sceneCB[m_FrameCount];
         CubeConstantBuffer m_cubeCB;
-
-        UINT m_width;
-        UINT m_height;
-        float m_aspectRatio;
 
 	};
 }

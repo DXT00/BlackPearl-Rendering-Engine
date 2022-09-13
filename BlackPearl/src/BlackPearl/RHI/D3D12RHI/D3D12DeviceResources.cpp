@@ -27,8 +27,8 @@ DeviceResources::DeviceResources(DXGI_FORMAT backBufferFormat, DXGI_FORMAT depth
     m_adapterIDoverride(adapterIDoverride),
     m_adapterID(UINT_MAX)
 {
-    GE_ASSERT(backBufferCount <= MAX_BACK_BUFFER_COUNT, "backBufferCount too large");
-    GE_ASSERT(minFeatureLevel >= D3D_FEATURE_LEVEL_11_0, "minFeatureLevel too low");
+    ThrowIfFailed(backBufferCount <= MAX_BACK_BUFFER_COUNT, L"backBufferCount too large");
+    ThrowIfFailed(minFeatureLevel >= D3D_FEATURE_LEVEL_11_0, L"minFeatureLevel too low");
     if (m_options & c_RequireTearingSupport)
     {
         m_options |= c_AllowTearing;
@@ -188,7 +188,7 @@ void DeviceResources::InitializeDXGIAdapter()
             OutputDebugStringA("WARNING: Variable refresh rate displays are not supported.\n");
             if (m_options & c_RequireTearingSupport)
             {
-                GE_CORE_ERROR("Error: Sample must be run on an OS with tearing support.\n");
+                OutputDebugString(L"Error: Sample must be run on an OS with tearing support.\n");
             }
             m_options &= ~c_AllowTearing;
         }

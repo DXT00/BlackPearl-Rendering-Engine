@@ -17,6 +17,8 @@
 #include "BlackPearl/Renderer/MasterRenderer/VoxelConeTracingDeferredRenderer.h"
 #include "BlackPearl/Renderer/MasterRenderer/VoxelConeTracingSVORenderer.h"
 #include "BlackPearl/Application.h"
+#include "BlackPearl/Renderer/Buffer/D3D12Buffer/D3D12Buffer.h"
+
 namespace BlackPearl {
 
 	static int buttonNum = 0;
@@ -58,7 +60,7 @@ namespace BlackPearl {
 		ImGui::DragInt("Visualization \nmipmap\nlevel", &VoxelConeTracingDeferredRenderer::s_VisualizeMipmapLevel, 1.0f, 0, 5);
 
 
-	
+
 		ImGui::Separator();
 		ImGui::Text("forward voxel GI");
 		ImGui::Checkbox("voxel Indirect diffuse", &VoxelConeTracingRenderer::s_IndirectDiffuseLight);
@@ -187,7 +189,7 @@ namespace BlackPearl {
 
 
 			if (currentObj->HasComponent< Transform>()) {
-				ShowTransform(currentObj->GetComponent<Transform>(),currentObj);
+				ShowTransform(currentObj->GetComponent<Transform>(), currentObj);
 
 			}
 			if (currentObj->HasComponent< LightProbe>()) {
@@ -278,12 +280,13 @@ namespace BlackPearl {
 			LoadSpheresSpecularProbeScene();
 		else if (demoScene == "CubesScene")
 			LoadCubesScene();
-		else if (demoScene == "SwordScene") {
+		else if (demoScene == "SwordScene")
 			LoadSwordScene();
-		}
-		else if (demoScene == "Church") {
+		else if (demoScene == "Church")
 			LoadChurchScene();
-		}
+		else if (demoScene == "D3D12Models")
+			LoadD3D12ModelScene();
+		
 
 	}
 
@@ -453,7 +456,7 @@ namespace BlackPearl {
 		BlackPearl::Object* light = CreateLight(LightType::PointLight);
 		light->GetComponent<Transform>()->SetInitPosition({ 0.0,4.0,10.0 });
 		light->GetComponent<MeshRenderer>()->SetIsShadowObjects(false);
-		light->GetComponent<PointLight>()->UpdateMesh({ {0,0,0} ,{1,1,1},{0,0,0},{0,0,0},1.0});
+		light->GetComponent<PointLight>()->UpdateMesh({ {0,0,0} ,{1,1,1},{0,0,0},{0,0,0},1.0 });
 
 		//for (int i = 0; i < 10; i++) {
 		//	Object* light = CreateLight(LightType::PointLight);
@@ -481,7 +484,7 @@ namespace BlackPearl {
 		//	light->GetComponent<PointLight>()->UpdateMesh({ {0,0,0} ,{1,1,1},{1,1,1},{0,0,0},40 });
 
 		//}
-	
+
 	}
 
 	void Layer::LoadSpheresScene()
@@ -598,25 +601,25 @@ namespace BlackPearl {
 		cube->GetComponent<MeshRenderer>()->SetTextureDiffuseSamples(true);
 		cube->GetComponent<MeshRenderer>()->SetIsBackGroundObjects(true);
 
-	/*	BlackPearl::Object* specularProbe = CreateLightProbe(BlackPearl::ProbeType::REFLECTION_PROBE);
-		cube->AddChildObj(specularProbe);
-		specularProbe->GetComponent<Transform>()->SetInitPosition(cube->GetComponent<Transform>()->GetPosition());
-		specularProbe->GetComponent<BlackPearl::LightProbe>()->AddExcludeObjectId(cube->GetId().id);
+		/*	BlackPearl::Object* specularProbe = CreateLightProbe(BlackPearl::ProbeType::REFLECTION_PROBE);
+			cube->AddChildObj(specularProbe);
+			specularProbe->GetComponent<Transform>()->SetInitPosition(cube->GetComponent<Transform>()->GetPosition());
+			specularProbe->GetComponent<BlackPearl::LightProbe>()->AddExcludeObjectId(cube->GetId().id);
 
-		BlackPearl::Object* specularProbe1 = CreateLightProbe(BlackPearl::ProbeType::REFLECTION_PROBE);
-		specularProbe1->GetComponent<Transform>()->SetInitPosition(sphereObjIron->GetComponent<Transform>()->GetPosition());
-		sphereObjIron->AddChildObj(specularProbe1);
-		specularProbe1->GetComponent<BlackPearl::LightProbe>()->AddExcludeObjectId(sphereObjIron->GetId().id);
+			BlackPearl::Object* specularProbe1 = CreateLightProbe(BlackPearl::ProbeType::REFLECTION_PROBE);
+			specularProbe1->GetComponent<Transform>()->SetInitPosition(sphereObjIron->GetComponent<Transform>()->GetPosition());
+			sphereObjIron->AddChildObj(specularProbe1);
+			specularProbe1->GetComponent<BlackPearl::LightProbe>()->AddExcludeObjectId(sphereObjIron->GetId().id);
 
-		BlackPearl::Object* specularProbe2 = CreateLightProbe(BlackPearl::ProbeType::REFLECTION_PROBE);
-		specularProbe2->GetComponent<Transform>()->SetInitPosition(sphereObjRust->GetComponent<Transform>()->GetPosition());
-		sphereObjRust->AddChildObj(specularProbe2);
-		specularProbe2->GetComponent<BlackPearl::LightProbe>()->AddExcludeObjectId(sphereObjRust->GetId().id);
+			BlackPearl::Object* specularProbe2 = CreateLightProbe(BlackPearl::ProbeType::REFLECTION_PROBE);
+			specularProbe2->GetComponent<Transform>()->SetInitPosition(sphereObjRust->GetComponent<Transform>()->GetPosition());
+			sphereObjRust->AddChildObj(specularProbe2);
+			specularProbe2->GetComponent<BlackPearl::LightProbe>()->AddExcludeObjectId(sphereObjRust->GetId().id);
 
-		BlackPearl::Object* specularProbe3 = CreateLightProbe(BlackPearl::ProbeType::REFLECTION_PROBE);
-		specularProbe3->GetComponent<Transform>()->SetInitPosition(sphereObjStone->GetComponent<Transform>()->GetPosition());
-		sphereObjStone->AddChildObj(specularProbe3);
-		specularProbe3->GetComponent<BlackPearl::LightProbe>()->AddExcludeObjectId(sphereObjStone->GetId().id);*/
+			BlackPearl::Object* specularProbe3 = CreateLightProbe(BlackPearl::ProbeType::REFLECTION_PROBE);
+			specularProbe3->GetComponent<Transform>()->SetInitPosition(sphereObjStone->GetComponent<Transform>()->GetPosition());
+			sphereObjStone->AddChildObj(specularProbe3);
+			specularProbe3->GetComponent<BlackPearl::LightProbe>()->AddExcludeObjectId(sphereObjStone->GetId().id);*/
 
 
 
@@ -630,7 +633,7 @@ namespace BlackPearl {
 		m_ShadowObjsList.push_back(sphereObjPlastic);
 		m_ShadowObjsList.push_back(sphereObjRust);
 		m_ShadowObjsList.push_back(cube);
-	
+
 	}
 
 	void Layer::LoadSpheresSpecularProbeScene()
@@ -803,9 +806,9 @@ namespace BlackPearl {
 
 		sword->GetComponent<MeshRenderer>()->SetPBRTextureSamples(true);
 		sword->GetComponent<MeshRenderer>()->SetIsPBRObject(true);
-	//	sword->GetComponent<MeshRenderer>()->SetTextureSamples(true);//TODO::
+		//	sword->GetComponent<MeshRenderer>()->SetTextureSamples(true);//TODO::
 		sword->GetComponent<MeshRenderer>()->SetTextureDiffuseSamples(true);
-	//	sword->GetComponent<MeshRenderer>()->SetTextureMetallicSamples(true);
+		//	sword->GetComponent<MeshRenderer>()->SetTextureMetallicSamples(true);
 		sword->GetComponent<MeshRenderer>()->SetTexturEmissionSamples(true);
 
 		sword->GetComponent<MeshRenderer>()->SetIsPBRObject(true);
@@ -828,12 +831,12 @@ namespace BlackPearl {
 
 				for (int k = 0; k < num; k++) {
 					Object* cube = CreateCube();
-					cube->GetComponent<Transform>()->SetInitPosition({ cubeSize *i,cubeSize *j,cubeSize*k });
+					cube->GetComponent<Transform>()->SetInitPosition({ cubeSize * i,cubeSize * j,cubeSize * k });
 					//cube->GetComponent<Transform>()->SetRotation({0.0f,45.0f, 0.0f});
 
-					cube->GetComponent<Transform>()->SetInitScale({ 0.5f*cubeSize, 0.5f * cubeSize, 0.5f * cubeSize });
+					cube->GetComponent<Transform>()->SetInitScale({ 0.5f * cubeSize, 0.5f * cubeSize, 0.5f * cubeSize });
 					//std::shared_ptr<Texture> cubeTexture(DBG_NEW Texture(Texture::Type::DiffuseMap, "assets/texture/wood.png"));
-					cube->GetComponent<MeshRenderer>()->GetMeshes()[0].GetMaterial()->SetMaterialColorDiffuseColor({ (1.0f/num)*i,(1.0f / num) *j,(1.0f / num)*k });
+					cube->GetComponent<MeshRenderer>()->GetMeshes()[0].GetMaterial()->SetMaterialColorDiffuseColor({ (1.0f / num) * i,(1.0f / num) * j,(1.0f / num) * k });
 					cube->GetComponent<MeshRenderer>()->GetMeshes()[0].GetMaterial()->SetMaterialColorSpecularColor({ 0.0f,0.0f,0.0f });
 
 					//cube->GetComponent<MeshRenderer>()->SetTextureSamples(false);
@@ -843,6 +846,11 @@ namespace BlackPearl {
 			}
 
 		}
+	}
+
+	void Layer::LoadD3D12ModelScene()
+	{
+		
 	}
 
 	Object* Layer::LoadStaticBackGroundObject(const std::string modelName)
@@ -873,20 +881,20 @@ namespace BlackPearl {
 
 		}
 
-		else if (modelName=="Church") {
-			staticModel =  CreateModel("assets/models/sponza_obj/sponza.obj", "assets/shaders/IronMan.glsl",false,"Church");
+		else if (modelName == "Church") {
+			staticModel = CreateModel("assets/models/sponza_obj/sponza.obj", "assets/shaders/IronMan.glsl", false, "Church");
 			staticModel->GetComponent<BlackPearl::Transform>()->SetInitScale(glm::vec3(0.001f));
 			staticModel->GetComponent<BlackPearl::MeshRenderer>()->SetIsBackGroundObjects(true);
 		}
 		else if (modelName == "Bunny") {
-			staticModel=CreateModel("assets/models/bunny/bunny.obj", "assets/shaders/IronMan.glsl", false, "Bunny");
+			staticModel = CreateModel("assets/models/bunny/bunny.obj", "assets/shaders/IronMan.glsl", false, "Bunny");
 			staticModel->GetComponent<Transform>()->SetInitScale(glm::vec3(0.5));
 			staticModel->GetComponent<Transform>()->SetInitPosition({ 0.6f,0.0f,3.0f });
 			staticModel->GetComponent<Transform>()->SetInitRotation({ 0.0f,-30.0f,0.0f });
 			staticModel->GetComponent<MeshRenderer>()->SetIsBackGroundObjects(true);
 		}
 		else if (modelName == "Deer") {
-			staticModel=CreateModel("assets/models/deer/Deer.obj", "assets/shaders/IronMan.glsl", false, "Deer");
+			staticModel = CreateModel("assets/models/deer/Deer.obj", "assets/shaders/IronMan.glsl", false, "Deer");
 			staticModel->GetComponent<Transform>()->SetInitScale(glm::vec3(0.003));
 			staticModel->GetComponent<Transform>()->SetInitPosition({ -0.5f,0.0f,2.5f });
 			staticModel->GetComponent<Transform>()->SetInitRotation({ 0.0f,68.0f,0.0f });
@@ -909,13 +917,13 @@ namespace BlackPearl {
 			staticModel->GetComponent<MeshRenderer>()->SetTextures(PlasticaoTexture);
 			staticModel->GetComponent<MeshRenderer>()->SetTextures(PlasticroughnessTexture);
 			staticModel->GetComponent<MeshRenderer>()->SetTextures(PlasticmentallicTexture);
-		
+
 			staticModel->GetComponent<MeshRenderer>()->SetPBRTextureSamples(true);
 			staticModel->GetComponent<MeshRenderer>()->SetIsPBRObject(true);
 			staticModel->GetComponent<Transform>()->SetInitPosition({ -10.0,0,0 });
 			staticModel->GetComponent<MeshRenderer>()->SetIsBackGroundObjects(true);
 
-			
+
 
 		}
 		else if (modelName == "SphereIron") {
@@ -956,7 +964,7 @@ namespace BlackPearl {
 	{
 		Object* dynamicModel = nullptr;
 		if (modelName == "Boy") {
-			dynamicModel = CreateModel("assets/models-animation/people/character Texture.dae", "assets/shaders/animatedModel/animatedModel.glsl", true,"Boy");
+			dynamicModel = CreateModel("assets/models-animation/people/character Texture.dae", "assets/shaders/animatedModel/animatedModel.glsl", true, "Boy");
 			dynamicModel->GetComponent<BlackPearl::Transform>()->SetInitScale({ 0.2f,0.2f,0.2f });
 			dynamicModel->GetComponent<BlackPearl::Transform>()->SetInitRotation({ -90.0f,0.0f,0.0f });
 			dynamicModel->GetComponent<BlackPearl::Transform>()->SetInitPosition({ 3.0f,-1.6f,0.0f });
@@ -989,7 +997,7 @@ namespace BlackPearl {
 			dynamicModel->GetComponent<BlackPearl::Transform>()->SetInitPosition({ 0.0f,-1.6f,0.0f });
 		}
 		else {
-			GE_CORE_ERROR("no such name:"+modelName+"!")
+			GE_CORE_ERROR("no such name:" + modelName + "!")
 		}
 		m_DynamicObjsList.push_back(dynamicModel);
 		return dynamicModel;
@@ -1011,7 +1019,7 @@ namespace BlackPearl {
 	}
 	Object* Layer::CreateBVHNode(const std::vector<Object*>& objs, const std::string name)
 	{
-		Object* obj = g_objectManager->CreateBVHNode(objs,name);
+		Object* obj = g_objectManager->CreateBVHNode(objs, name);
 		m_ObjectsList.push_back(obj);
 		return obj;
 	}
@@ -1051,10 +1059,10 @@ namespace BlackPearl {
 		m_ObjectsList.push_back(obj);
 		return obj;
 	}
-	Object* Layer::CreateLightProbe(ProbeType type,const std::string& shaderPath, const std::string& texturePath,  const std::string& name)
+	Object* Layer::CreateLightProbe(ProbeType type, const std::string& shaderPath, const std::string& texturePath, const std::string& name)
 	{
-	
-		Object* probe = g_objectManager->CreateLightProbe(type,shaderPath, texturePath, name+(type == ProbeType::DIFFUSE_PROBE  ? "_kd" : "_ks"));
+
+		Object* probe = g_objectManager->CreateLightProbe(type, shaderPath, texturePath, name + (type == ProbeType::DIFFUSE_PROBE ? "_kd" : "_ks"));
 		m_ObjectsList.push_back(probe);
 		//m_ObjectsList.push_back(probe->GetCamera()->GetObj());
 		(type == ProbeType::DIFFUSE_PROBE) ? m_DiffuseLightProbes.push_back(probe) : m_ReflectionLightProbes.push_back(probe);
@@ -1064,7 +1072,7 @@ namespace BlackPearl {
 	{
 		std::string objName = (type == ProbeType::DIFFUSE_PROBE) ? "Kd ProbesGrid" : "Ks ProbeGrid";
 		Object* obj = CreateEmpty(objName);
-		unsigned int idx = 0; 
+		unsigned int idx = 0;
 		for (unsigned int x = 0; x < probeNums.x; x++)
 		{
 			for (unsigned int y = 0; y < probeNums.y; y++)
@@ -1079,9 +1087,9 @@ namespace BlackPearl {
 						unsigned int areaId = mapManager->AddProbeIdToArea(probePos, idx);
 						probe->GetComponent<LightProbe>()->SetAreaId(areaId);
 					}
-					
+
 					idx++;
-			//		(type == ProbeType::DIFFUSE_PROBE) ? m_DiffuseLightProbes.push_back(probe) : m_ReflectionLightProbes.push_back(probe);
+					//		(type == ProbeType::DIFFUSE_PROBE) ? m_DiffuseLightProbes.push_back(probe) : m_ReflectionLightProbes.push_back(probe);
 					obj->AddChildObj(probe);
 
 				}
@@ -1124,9 +1132,9 @@ namespace BlackPearl {
 	void Layer::ShowCamera(PerspectiveCamera* perspectiveCamera)
 	{
 		ImGui::Text("Yaw = %f,Pitch= %f", perspectiveCamera->Yaw(), perspectiveCamera->Pitch());
-		ImGui::Text("ProjectionViewMatrix[0].x = %f,ProjectionViewMatrix[1].x = %f", perspectiveCamera->GetViewProjectionMatrix()[0].x
-			, perspectiveCamera->GetViewProjectionMatrix()[1].x);
-		ImGui::Text("ProjectionViewMatrix[2].x = %f,ProjectionViewMatrix[3].x = %f", perspectiveCamera->GetViewProjectionMatrix()[2].x, perspectiveCamera->GetViewProjectionMatrix()[3].x);
+		ImGui::Text("ProjectionViewMatrix[0].x = %f,ProjectionViewMatrix[1].x = %f", perspectiveCamera->GetProjectionViewMatrix()[0].x
+			, perspectiveCamera->GetProjectionViewMatrix()[1].x);
+		ImGui::Text("ProjectionViewMatrix[2].x = %f,ProjectionViewMatrix[3].x = %f", perspectiveCamera->GetProjectionViewMatrix()[2].x, perspectiveCamera->GetProjectionViewMatrix()[3].x);
 		ImGui::Text("Position.x = %f,Position.y = %f,Position.z = %f", perspectiveCamera->GetPosition().x, perspectiveCamera->GetPosition().y, perspectiveCamera->GetPosition().z);
 		ImGui::Text("Front.x = %f,Front.y = %f,Front.z = %f", perspectiveCamera->Front().x, perspectiveCamera->Front().y, perspectiveCamera->Front().z);
 		ImGui::Text("Up.x = %f,Up.y = %f,Up.z = %f", perspectiveCamera->Up().x, perspectiveCamera->Up().y, perspectiveCamera->Up().z);
@@ -1435,7 +1443,7 @@ namespace BlackPearl {
 		for (auto mesh : imGuiMeshes)
 			mesh.GetMaterial()->SetTextureSampleMetallic((int)imGUiIsMetallicrTextureSample);*/
 
-		for (int i = 0; i < imGuiMeshes.size();i++) {
+		for (int i = 0; i < imGuiMeshes.size(); i++) {
 			MaterialColor::Color color = imGuiMeshes[i].GetMaterial()->GetMaterialColor().Get();
 			ImGui::ColorEdit3("diffuseColor", glm::value_ptr(color.diffuseColor));
 			//mesh.GetMaterial()->SetMaterialColorDiffuseColor(color.diffuseColor);
@@ -1456,7 +1464,7 @@ namespace BlackPearl {
 
 
 
-	void Layer::ShowTransform(Transform* comp,Object* obj)
+	void Layer::ShowTransform(Transform* comp, Object* obj)
 	{
 		ImGui::Text("Transform");
 
@@ -1502,12 +1510,12 @@ namespace BlackPearl {
 		ImGui::ColorEdit3("specular Color", glm::value_ptr(props.specular));
 		ImGui::ColorEdit3("emission Color", glm::value_ptr(props.emission));
 		ImGui::DragInt("attenuation", &attenuation, 0.5f, 7, 3250);
-		ImGui::DragFloat("intensity", &intensity, 0.1f,0.1, 100);
+		ImGui::DragFloat("intensity", &intensity, 0.1f, 0.1, 100);
 
 		pointLight->SetAttenuation(attenuation);
 
 		pointLight->UpdateMesh({ props.ambient ,props.diffuse,props.specular,props.emission,intensity });
-		
+
 	}
 
 	void Layer::ShowParallelLight(ParallelLight* parallelLight)
@@ -1516,7 +1524,7 @@ namespace BlackPearl {
 		glm::vec3 direction = parallelLight->GetDirection();
 
 		float dir[] = { direction.x,direction.y,direction.z };
-		ImGui::DragFloat3("position", dir, 0.05f,0.0f, 1.0f, "%.3f ");
+		ImGui::DragFloat3("position", dir, 0.05f, 0.0f, 1.0f, "%.3f ");
 		parallelLight->SetDirection({ dir[0],dir[1],dir[2] });
 
 		float intensity = parallelLight->GetLightProps().intensity;

@@ -15,7 +15,7 @@
 #include "LayerStack.h"
 #include "BlackPearl/Event/Event.h"
 #include "BlackPearl/ImGui/ImGuiLayer.h"
-#include "BlackPearl/Scene/Scene.h"
+#include "BlackPearl/LayerScene/LayerManager.h"
 #include "BlackPearl/ObjectManager/ObjectManager.h"
 #include "BlackPearl/Entity/Entity.h"
 #include "BlackPearl/RHI/DynamicRHI.h"
@@ -31,13 +31,14 @@ namespace BlackPearl {
 			HINSTANCE hInstance;
 			int nShowCmd;
 			std::string renderer;
+			DynamicRHI::Type rhiType;
 		};
-		Application(HINSTANCE hInstance, int nShowCmd, const std::string& renderer);
+		Application(HINSTANCE hInstance, int nShowCmd, DynamicRHI::Type rhiType, const std::string& renderer);
 		virtual ~Application();
 
 		inline static Application &Get() { return *s_Instance; }
 		inline Window& GetWindow() { return *m_Window; }
-		Scene* GetScene() { return m_CurrentScene; }
+		LayerManager* GetLayerManager() { return m_LayerManager; }
 		AppConf GetAppConf() const { return m_AppConf; }
 		void Init();
 		void Run();
@@ -51,20 +52,20 @@ namespace BlackPearl {
 		bool ShouldCloseWindow();
 		bool OnCameraRotate(MouseMovedEvent&e);
 		bool OnWindowClose();
+		void EngineExit();
 	
 	
 	private:
 		static Application* s_Instance; //TODO::可以不delete,或者改为 unique_ptr
-		float m_LastFrameTime = 0.0f;
+		double m_LastFrameTime = 0.0f;
 
 	private:
-		DynamicRHI* m_DynamicRHI;
 		Window* m_Window;
 		AppConf m_AppConf;
 
 		double m_StartTimeMs;
 		long long m_FrameNum = 0;
-		Scene* m_CurrentScene = nullptr;
+		LayerManager* m_LayerManager = nullptr;
 		long long m_TotalFrameNum = 0;
 		double m_TotalSecond = 0;
 

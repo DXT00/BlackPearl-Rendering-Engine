@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "Math.h"
-
 namespace BlackPearl {
+
 	static std::uniform_int_distribution<unsigned> uiMap;
 	static std::uniform_int_distribution<signed> iMap;
 	static std::uniform_real_distribution<float> fMap(0.0f, 1.0f);

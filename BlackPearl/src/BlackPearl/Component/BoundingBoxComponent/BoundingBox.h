@@ -3,7 +3,7 @@
 #include "BlackPearl/AABB/AABB.h"
 #include "BlackPearl/Renderer/Mesh/Mesh.h"
 #include "BlackPearl/RayTracing/Triangle.h"
-#include "BlackPearl/SceneBuilder/BoundingBoxBuilder.h"
+#include "BlackPearl/Scene/BoundingBoxBuilder.h"
 
 namespace BlackPearl {
 	class BoundingBox: public Component<BoundingBox>

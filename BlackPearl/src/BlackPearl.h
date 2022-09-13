@@ -4,6 +4,7 @@
 
 #include "BlackPearl/Log.h"
 #include "BlackPearl/LayerScene/Layer.h"
+#include "BlackPearl/LayerScene/LayerManager.h"
 
 #include "BlackPearl/Math/Math.h"
 
@@ -26,6 +27,7 @@
 #include "BlackPearl/Renderer/MasterRenderer/RayTracingRenderer.h"
 #include "BlackPearl/Renderer/MasterRenderer/D3D12RayTracingRenderer.h"
 #include "BlackPearl/Renderer/MasterRenderer/D3D12RayTracingCubeRenderer.h"
+#include "BlackPearl/Renderer/MasterRenderer/D3D12RayTracingModelRenderer.h"
 
 #include "BlackPearl/Component/TransformComponent/Transform.h"
 #include "BlackPearl/Component/MeshRendererComponent/MeshRenderer.h"
@@ -49,11 +51,12 @@
 #include "BlackPearl/KeyCodes.h"
 //#include "BlackPearl/Application.h"
 
-#include "BlackPearl/Scene/Scene.h"
 #include "BlackPearl/Entity/Entity.h"
 #include "BlackPearl/Map/MapManager.h"
-//#include "BlackPearl/Component/ComponentHandle.h"
-#include "BlackPearl/SceneBuilder/SceneBuilder.h"
+#include "BlackPearl/Scene/SceneBuilder.h"
+#include "BlackPearl/Scene/SDFScene.h"
+#include "BlackPearl/Scene/DemoScene/MetaBallSDFScene.h"
 
 //D3D12 API
 #include "BlackPearl/RHI/D3D12RHI/D3D12DeviceResources.h"
+#include "BlackPearl/RHI/DynamicRHI.h"

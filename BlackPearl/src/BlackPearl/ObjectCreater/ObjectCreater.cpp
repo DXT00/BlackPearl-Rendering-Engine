@@ -16,9 +16,11 @@
 #include "BlackPearl/Component/BoundingBoxComponent/BoundingBox.h"
 #include "BlackPearl/Component/BVHNodeComponent/BVHNode.h"
 #include "BlackPearl/Component/TransformComponent/RayTracingTransform.h"
-#include "BlackPearl/SceneBuilder/SceneBuilder.h"
+#include "BlackPearl/Scene/SceneBuilder.h"
+#include "BlackPearl/RHI/DynamicRHI.h"
 
 namespace BlackPearl {
+	extern  DynamicRHI::Type g_RHIType;
 
 	////////////////////////ObjectCreater////////////////////////////////
 	/////////////////////////////////////////////////////////////////////
@@ -102,7 +104,7 @@ namespace BlackPearl {
 		{ElementDataType::Float2,"aTexCoords",false,2}
 		};
 		Mesh mesh(meshFilter->GetVertices(), meshFilter->GetIndices(), material, layout);
-		//obj->AddComponent<MeshRenderer>(mesh);
+		obj->AddComponent<MeshRenderer>(mesh);
 
 		AABB box = BoundingBoxBuilder::Build(obj);
 		obj->AddComponent<BoundingBox>(box);
@@ -238,10 +240,14 @@ namespace BlackPearl {
 			break;
 		}
 		case LightType::PointLight: {
-			std::shared_ptr<PointLight> lightComponent = Obj->AddComponent<PointLight>();
-			lightComponent->SetAttenuation(PointLight::Attenuation(200));
+			//TODO:: Ìí¼ÓDirectXÖ§³Ö
+			if (g_RHIType == DynamicRHI::Type::OpenGL) {
+
+				std::shared_ptr<PointLight> lightComponent = Obj->AddComponent<PointLight>();
+				lightComponent->SetAttenuation(PointLight::Attenuation(200));
+				Obj->AddComponent<MeshRenderer>(lightComponent->GetMeshes());
+			}
 			lightSources->AddLight(Obj);
-			Obj->AddComponent<MeshRenderer>(lightComponent->GetMeshes());
 
 			break;
 		}

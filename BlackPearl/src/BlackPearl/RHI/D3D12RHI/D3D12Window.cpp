@@ -27,7 +27,7 @@ namespace BlackPearl {
 			NULL,
 			NULL,
 			windowClass.hInstance,
-			NULL);
+			this);
 		m_CloseWindow = false;
 		ShowWindow(m_hwnd, app.GetAppConf().nShowCmd);
 
@@ -89,7 +89,13 @@ namespace BlackPearl {
 				pWindow->m_PressKey = static_cast<int>(wParam);
 			}
 			return 0;
-
+		case WM_KEYUP:
+			//pWindow->m_PressKey = 0x00;
+			/*if (pSample)
+			{
+				pSample->OnKeyUp(static_cast<UINT8>(wParam));
+			}*/
+			return 0;
 		case WM_DESTROY: // x button on top right corner of window was pressed
 			pWindow->m_CloseWindow = true;
 			PostQuitMessage(0);

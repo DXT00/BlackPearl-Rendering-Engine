@@ -8,7 +8,7 @@ namespace BlackPearl {
 	{
 	public:
 		struct SceneData {
-			glm::mat4 ViewProjectionMatrix;
+			glm::mat4 ProjectionViewMatrix;
 			glm::mat4 ViewMatrix;
 			glm::mat4 ProjectionMatrix;
 			glm::vec3 CameraPosition;

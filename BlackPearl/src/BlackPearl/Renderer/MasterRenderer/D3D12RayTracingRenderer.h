@@ -4,7 +4,7 @@
 #include "BlackPearl/RHI/D3D12RHI/DirectXRaytracingHelper.h"
 #include "BlackPearl/RHI/D3D12RHI/D3D12DeviceResources.h"
 #include "BlackPearl/RHI/D3D12RHI/d3dx12.h"
-#include "BlackPearl/Renderer/Buffer/D3D12Buffer.h"
+#include "BlackPearl/Renderer/Buffer/D3D12Buffer/D3D12Buffer.h"
 #include "BlackPearl/Renderer/MasterRenderer/D3D12Renderer.h"
 using namespace DX;
 
@@ -23,6 +23,8 @@ namespace BlackPearl {
         virtual void OnSizeChanged(UINT width, UINT height, bool minimized);
         virtual void OnDestroy();
         virtual IDXGISwapChain* GetSwapchain() { return m_deviceResources->GetSwapChain(); }
+        virtual void UpdateForSizeChange(int clientWidth, int clientHeight) override;
+
     public:
         enum class GlobalRootSignatureParams {
             OutputViewSlot = 0,
@@ -56,7 +58,6 @@ namespace BlackPearl {
         void BuildAccelerationStructures();
         void BuildShaderTables();
 
-        void UpdateForSizeChange(UINT clientWidth, UINT clientHeight);
         void CopyRaytracingOutputToBackbuffer();
         void CalculateFrameStats();
         UINT AllocateDescriptor(D3D12_CPU_DESCRIPTOR_HANDLE* cpuDescriptor, UINT descriptorIndexToUse = UINT_MAX);
@@ -112,9 +113,7 @@ namespace BlackPearl {
         D3D12_GPU_DESCRIPTOR_HANDLE m_raytracingOutputResourceUAVGpuDescriptor;
         UINT m_raytracingOutputResourceUAVDescriptorHeapIndex;
 
-        UINT m_width;
-        UINT m_height;
-        float m_aspectRatio;
+      
 	};
 
 }

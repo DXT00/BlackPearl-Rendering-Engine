@@ -23,6 +23,9 @@ namespace BlackPearl {
 		void SetFov(float fov);
 		void SetPosition(glm::vec3 pos);
 		void SetRotation(glm::vec3 rotation);
+		void SetZNear(float nearZ);
+		void SetZFar(float farZ);
+
 		Object* GetObj() const { return m_CameraObj; }
 	private:
 		Object* m_CameraObj = nullptr;

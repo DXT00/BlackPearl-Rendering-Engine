@@ -1,9 +1,18 @@
 #pragma once
 #include "BlackPearl/Window.h"
 namespace BlackPearl{
-	void DynamicRHIInit();
-	Window* RHIInitWindow();
+	class Window;
 	class DynamicModule;
+
+	enum class RHIType {
+		D3D12,
+		OpenGL
+	};
+
+	//void    RHIInitLogger();
+	Window* RHIInitWindow();
+	void RHIEngineExit();
+
 	class DynamicRHI
 	{
 	public:
@@ -11,9 +20,14 @@ namespace BlackPearl{
 			D3D12,
 			OpenGL
 		};
-		static Type g_Type;
+		
 		virtual Window* InitWindow() = 0;
-
+		//virtual void InitLogger() = 0;
+		//virtual std::shared_ptr<Logger> GetCoreLogger() = 0;
+		virtual void InitMathLib() {};
+		virtual void EngineExit() {};
 	};
 
+	static DynamicRHI::Type g_RHIType;
+	void DynamicRHIInit(DynamicRHI::Type rhiType);
 }

@@ -54,8 +54,10 @@ namespace BlackPearl {
 		static const unsigned int MapSize = 100;
 		static const unsigned int AreaSize = 10;
 
-
-
+		//  ------------------------------------------
+		// Ray Tracing config
+		// ------------------------------------------
+		static const unsigned int MaxRayRecursionDepth = 3;
 	};
 	struct ShaderConfig {
 

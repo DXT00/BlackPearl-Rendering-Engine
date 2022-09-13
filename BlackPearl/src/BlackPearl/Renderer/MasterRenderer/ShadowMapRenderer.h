@@ -38,7 +38,6 @@ namespace BlackPearl {
 		static int s_ShadowMapWidth;
 		static int s_ShadowMapHeight;
 
-
 		std::shared_ptr<BlackPearl::Shader> m_SimpleDepthShader;
 		
 	};

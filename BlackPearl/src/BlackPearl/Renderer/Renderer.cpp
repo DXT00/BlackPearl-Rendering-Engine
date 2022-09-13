@@ -36,7 +36,7 @@ namespace BlackPearl {
 	void Renderer::BeginScene(const Camera & camera, const LightSources& lightSources)
 	{
 		s_SceneData->LightSources = lightSources;
-		s_SceneData->ViewProjectionMatrix = camera.GetViewProjectionMatrix();
+		s_SceneData->ProjectionViewMatrix = camera.GetProjectionViewMatrix();
 		s_SceneData->CameraPosition = camera.GetPosition();
 		s_SceneData->CameraRotation = camera.GetRotation();
 
@@ -76,7 +76,7 @@ namespace BlackPearl {
 		//shader->Bind();
 		shader->SetUniformMat4f("u_TranInverseModel", glm::transpose(glm::inverse(model)));
 
-		shader->SetUniformMat4f("u_ProjectionView", sceneData->ViewProjectionMatrix);
+		shader->SetUniformMat4f("u_ProjectionView", sceneData->ProjectionViewMatrix);
 		shader->SetUniformMat4f("u_Projection", sceneData->ProjectionMatrix);
 		shader->SetUniformMat4f("u_View", sceneData->ViewMatrix);
 

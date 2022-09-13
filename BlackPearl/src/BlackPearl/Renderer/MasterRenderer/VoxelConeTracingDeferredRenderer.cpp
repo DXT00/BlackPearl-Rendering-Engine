@@ -393,7 +393,7 @@ namespace BlackPearl {
 		glActiveTexture(GL_TEXTURE0);
 		m_VoxelTexture->Bind();
 		m_VoxelRenderShader->SetUniformVec3f("u_CameraViewPos", Renderer::GetSceneData()->CameraPosition);
-		m_VoxelRenderShader->SetUniformMat4f("u_ProjectionView", Renderer::GetSceneData()->ViewProjectionMatrix);
+		m_VoxelRenderShader->SetUniformMat4f("u_ProjectionView", Renderer::GetSceneData()->ProjectionViewMatrix);
 
 		m_VoxelRenderShader->SetUniformMat4f("u_ModelView", viewMatrix);
 		m_VoxelRenderShader->SetUniformMat4f("u_Model", m_CubeObj->GetComponent<Transform>()->GetTransformMatrix());
