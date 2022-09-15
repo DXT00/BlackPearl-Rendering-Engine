@@ -28,9 +28,9 @@
 #include <BlackPearl/Luanch/Luanch.h>
 
 namespace BlackPearl {
+	Log* g_Log;
 	ObjectManager* g_objectManager = DBG_NEW ObjectManager();
 	EntityManager* g_entityManager = DBG_NEW EntityManager();
-	Log* g_Log = DBG_NEW Log();
 	double Application::s_AppFPS = 0.0f;
 	double Application::s_AppAverageFPS = 0.0f;
 
@@ -40,9 +40,14 @@ namespace BlackPearl {
 
 	Application::Application(HINSTANCE hInstance, int nShowCmd, DynamicRHI::Type rhiType, const std::string& renderer)
 	{
+		if (!g_DynamicRHI) {
+			DynamicRHIInit(rhiType);
+		}
+		g_shouldEngineExit = false;
+		g_Log = DBG_NEW Log();
 
-		GE_ASSERT(!s_Instance, "Application's Instance already exist!")
-			s_Instance = this;
+		GE_ASSERT(!s_Instance, "Application's Instance already exist!");
+		s_Instance = this;
 		m_AppConf.hInstance = hInstance;
 		m_AppConf.nShowCmd = nShowCmd;
 		m_AppConf.renderer = renderer;
@@ -58,10 +63,6 @@ namespace BlackPearl {
 
 	void Application::Init()
 	{
-		g_shouldEngineExit = false;
-		if (!g_DynamicRHI) {
-			DynamicRHIInit(m_AppConf.rhiType);
-		}
 
 		m_Window = RHIInitWindow();
 		m_Window->SetAppCallBack(std::bind(&Application::OnEvent, this, std::placeholders::_1));

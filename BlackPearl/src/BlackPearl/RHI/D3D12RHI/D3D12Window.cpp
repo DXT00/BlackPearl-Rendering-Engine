@@ -90,7 +90,7 @@ namespace BlackPearl {
 			}
 			return 0;
 		case WM_KEYUP:
-			//pWindow->m_PressKey = 0x00;
+			pWindow->m_PressKey = 0x00;
 			/*if (pSample)
 			{
 				pSample->OnKeyUp(static_cast<UINT8>(wParam));

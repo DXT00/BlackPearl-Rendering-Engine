@@ -144,20 +144,10 @@ namespace BlackPearl {
 
 			//auto cameraComponent = m_MainCamera->GetObj()->GetComponent<BlackPearl::PerspectiveCamera>();
 			if (Input::IsKeyPressed(BP_KEY_W) || Input::IsKeyPressed(VK_W)) {
-				if (g_RHIType == DynamicRHI::Type::OpenGL) {
-					m_CameraPosition += m_MainCamera->Front() * m_CameraMoveSpeed * ts;
-				}
-				else if (g_RHIType == DynamicRHI::Type::D3D12) {
-					m_CameraPosition -= m_MainCamera->Front() * m_CameraMoveSpeed * ts;
-				}
+				m_CameraPosition += m_MainCamera->Front() * m_CameraMoveSpeed * ts;
 			}
 			else if (Input::IsKeyPressed(BP_KEY_S) || Input::IsKeyPressed(VK_S)) {
-				if (g_RHIType == DynamicRHI::Type::OpenGL) {
-					m_CameraPosition -= m_MainCamera->Front() * m_CameraMoveSpeed * ts;
-				}
-				else if (g_RHIType == DynamicRHI::Type::D3D12) {
-					m_CameraPosition += m_MainCamera->Front() * m_CameraMoveSpeed * ts;
-				}
+				m_CameraPosition -= m_MainCamera->Front() * m_CameraMoveSpeed * ts;		
 			}
 			if (Input::IsKeyPressed(BP_KEY_A) || Input::IsKeyPressed(VK_A)) {
 				m_CameraPosition -= m_MainCamera->Right() * m_CameraMoveSpeed * ts;

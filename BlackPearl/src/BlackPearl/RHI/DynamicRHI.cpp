@@ -10,7 +10,7 @@ namespace BlackPearl {
 
 	//global RHI
 	DynamicRHI* g_DynamicRHI = nullptr;
-	//extern DynamicRHI::Type g_RHIType;
+	DynamicRHI::Type g_RHIType;
 	void DynamicRHIInit(DynamicRHI::Type rhiType)
 	{
 		g_RHIType = rhiType;

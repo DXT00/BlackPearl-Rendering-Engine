@@ -28,6 +28,6 @@ namespace BlackPearl{
 		virtual void EngineExit() {};
 	};
 
-	static DynamicRHI::Type g_RHIType;
+	//DynamicRHI::Type g_RHIType;
 	void DynamicRHIInit(DynamicRHI::Type rhiType);
 }

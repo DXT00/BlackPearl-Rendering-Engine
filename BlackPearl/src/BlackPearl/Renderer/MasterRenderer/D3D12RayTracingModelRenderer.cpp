@@ -233,12 +233,16 @@ namespace BlackPearl {
 	{
 		auto frameIndex = m_deviceResources->GetCurrentFrameIndex();
 		m_gSceneCB->cameraPosition = { camera.GetPosition().x, camera.GetPosition().y, camera.GetPosition().z, 1.0f };
+		XMVECTOR front = { camera.Front().x, camera.Front().y, camera.Front().z, 0.0 };
+		XMVECTOR up = { camera.Up().x, camera.Up().y, camera.Up().z, 0.0 };
+
 		XMVECTOR m_at = { 0.0f, 0.0f, 0.0f, 1.0f };
 		XMVECTOR right = { 1.0f, 0.0f, 0.0f, 0.0f };
 		XMVECTOR direction = XMVector4Normalize(m_at - m_gSceneCB->cameraPosition);
 
 		XMVECTOR m_up = XMVector3Normalize(XMVector3Cross(direction, right));
-		XMMATRIX view = XMMatrixLookAtLH(m_gSceneCB->cameraPosition, m_at, m_up);
+		//XMMATRIX view = XMMatrixLookAtLH(m_gSceneCB->cameraPosition, m_at, m_up);
+		XMMATRIX view = XMMatrixLookAtLH(m_gSceneCB->cameraPosition, m_gSceneCB->cameraPosition + front, up);
 
 		//XMMATRIX view = XMMatrixLookAtLH(m_gSceneCB->cameraPosition, m_at, m_up);
 		XMMATRIX proj = XMMatrixPerspectiveFovLH(XMConvertToRadians(45.0), m_AspectRatio, 0.01f, 125.0f);

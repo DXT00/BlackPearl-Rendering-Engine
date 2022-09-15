@@ -29,6 +29,7 @@ namespace BlackPearl {
 				}
 				else if (g_RHIType == DynamicRHI::Type::D3D12) {
 					Front = glm::vec3(0.0f, 0.0f, 1.0f);
+					Yaw = 90.0f;
 
 				}
 				Front.x = cos(glm::radians(Yaw))*cos(glm::radians(Pitch));
@@ -38,6 +39,10 @@ namespace BlackPearl {
 
 				Right = glm::normalize(glm::cross(Front, WorldUp));
 				Up = glm::normalize(glm::cross(Right, Front));
+				//D3D12是左手坐标系
+				if (g_RHIType == DynamicRHI::Type::D3D12) {
+					Right = -Right;
+				}
 			}
 		};
 

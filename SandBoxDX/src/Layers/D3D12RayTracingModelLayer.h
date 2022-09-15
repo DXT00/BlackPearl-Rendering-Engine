@@ -92,7 +92,7 @@ public:
 		m_MainCamera->SetZFar(125.0f);
 		m_MainCamera->SetZNear(0.01f);
 		//m_MainCamera->SetPosition(glm::vec3(0.0f, 5.0f, -17.0f));//glm::vec3(0,1.387f,22.012f)
-		m_MainCamera->SetPosition(glm::vec3(0.0f, 5.3f, -17.0f));//glm::vec3(0,1.387f,22.012f)
+		m_MainCamera->SetPosition(glm::vec3(0.0f, 2.0f, -18.0f));//glm::vec3(0,1.387f,22.012f)
 
 		m_CameraPosition = m_MainCamera->GetPosition();
 		//BlackPearl::Renderer::Init();

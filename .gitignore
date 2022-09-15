@@ -2,15 +2,20 @@
 .vs/
 bin/
 bin-int/
+bakup/
 
 #Files
 *.user
 entityx-master/
 BlackPearl.sln
 ./LearnOpenGL_study
+BlackPearl/vender
 SandBox/assets/models
 SandBox/assets/models-animation
 SandBox/assets/texture
+SandBoxDX/assets/models
+SandBoxDX/assets/models-animation
+SandBoxDX/assets/texture
 *.tlog
 *.1.tlog
 *.obj
