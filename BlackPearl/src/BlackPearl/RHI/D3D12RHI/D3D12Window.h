@@ -1,5 +1,6 @@
 #pragma once
 #include "BlackPearl/Window.h"
+#include "dinput.h"
 namespace BlackPearl {
 	class D3D12Window: public Window
 	{
@@ -7,6 +8,11 @@ namespace BlackPearl {
 		D3D12Window()
 		:Window(){
 			Init();
+		}
+		~D3D12Window(){
+			if (m_DI) {
+				m_DI->Release();
+			}
 		}
 		void Init() override;
 		void OnUpdate() override;
@@ -22,6 +28,18 @@ namespace BlackPearl {
 		HWND m_hwnd;
 		bool m_CloseWindow;
 		unsigned int m_PressKey;
+		unsigned int m_PressMouseButton;
+
+
+#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
+		IDirectInputDevice8A* m_Mouse;
+#endif
+		DIMOUSESTATE2 m_MouseState;
+		bool m_MouseButtons[8];
+		IDirectInput8A* m_DI;
+
+
+
 	};
 
 }

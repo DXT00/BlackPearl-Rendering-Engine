@@ -40,9 +40,9 @@ namespace BlackPearl {
 				Right = glm::normalize(glm::cross(Front, WorldUp));
 				Up = glm::normalize(glm::cross(Right, Front));
 				//D3D12是左手坐标系
-				if (g_RHIType == DynamicRHI::Type::D3D12) {
+				/*if (g_RHIType == DynamicRHI::Type::D3D12) {
 					Right = -Right;
-				}
+				}*/
 			}
 		};
 

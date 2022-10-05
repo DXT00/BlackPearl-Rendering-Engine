@@ -26,6 +26,7 @@ namespace BlackPearl {
 		m_adapterIDoverride(UINT_MAX),
 		m_FrameCount(3),
 		m_DescriptorsAllocated(0)
+
 	{
 	}
 
@@ -132,9 +133,9 @@ namespace BlackPearl {
 		//	UpdateCameraMatrices(camera);
 			UpdateLightSources(lights);
 			//UpdateElapsedTime(elapsedTime);
-			UpdateElapsedTime(0.0);
+			UpdateElapsedTime(elapsedTime);
 
-			UpdateAABBPrimitiveAttributes(0.0f);
+			UpdateAABBPrimitiveAttributes(elapsedTime);
 
 		}
 		
@@ -236,11 +237,6 @@ namespace BlackPearl {
 		XMVECTOR front = { camera.Front().x, camera.Front().y, camera.Front().z, 0.0 };
 		XMVECTOR up = { camera.Up().x, camera.Up().y, camera.Up().z, 0.0 };
 
-		XMVECTOR m_at = { 0.0f, 0.0f, 0.0f, 1.0f };
-		XMVECTOR right = { 1.0f, 0.0f, 0.0f, 0.0f };
-		XMVECTOR direction = XMVector4Normalize(m_at - m_gSceneCB->cameraPosition);
-
-		XMVECTOR m_up = XMVector3Normalize(XMVector3Cross(direction, right));
 		//XMMATRIX view = XMMatrixLookAtLH(m_gSceneCB->cameraPosition, m_at, m_up);
 		XMMATRIX view = XMMatrixLookAtLH(m_gSceneCB->cameraPosition, m_gSceneCB->cameraPosition + front, up);
 
@@ -1052,7 +1048,7 @@ namespace BlackPearl {
 			XMMATRIX mTranslation = XMMatrixTranslationFromVector(vTranslation);
 
 			//XMMATRIX mTransform = mScale * mRotation * mTranslation;
-			XMMATRIX mTransform = mScale * mTranslation;
+			XMMATRIX mTransform = mScale * mRotation* mTranslation;
 
 			m_gAabbPrimitiveAttributeBuffer[primitiveIndex].localSpaceToBottomLevelAS = mTransform;
 			m_gAabbPrimitiveAttributeBuffer[primitiveIndex].bottomLevelASToLocalSpace = XMMatrixInverse(nullptr, mTransform);

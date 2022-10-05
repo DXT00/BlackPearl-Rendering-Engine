@@ -148,7 +148,6 @@ namespace BlackPearl {
 		ComPtr<ID3D12Resource> m_bottomLevelAS[BottomLevelASType::Count];
 		ComPtr<ID3D12Resource> m_topLevelAS;
 
-
 		SDFScene* m_Scene;
 
 

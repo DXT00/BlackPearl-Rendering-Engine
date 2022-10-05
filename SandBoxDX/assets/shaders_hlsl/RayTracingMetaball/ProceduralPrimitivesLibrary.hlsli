@@ -77,13 +77,14 @@ float GetDistanceFromSignedDistancePrimitive(in float3 position, in SignedDistan
         return sdTorus(opTwist(position), float2(0.6, 0.2));
 
     case SignedDistancePrimitive::Cog:
-        return opS(sdTorus82(position, float2(0.60, 0.3)),
-            sdCylinder(opRep(float3(atan2(position.z, position.x) / 6.2831,
-                1,
-                0.015 + 0.25 * length(position)) + 1,
-                float3(0.05, 1, 0.075)),
-                float2(0.02, 0.8)));
+        return sdSolidAngle(position, float2(3, 4)/5.0, 0.7);
 
+        //return opS(sdTorus82(position, float2(0.60, 0.3)),
+        //    sdCylinder(opRep(float3(atan2(position.z, position.x) / 6.2831,
+        //        1,
+        //        0.015 + 0.25 * length(position)) + 1,
+        //        float3(0.05, 1, 0.075)),
+        //        float2(0.02, 0.8)));
     case SignedDistancePrimitive::Cylinder:
         return opI(sdCylinder(opRep(position + float3(1, 1, 1), float3(1, 2, 1)), float2(0.3, 2)),
             sdBox(position + float3(1, 1, 1), float3(2, 2, 2)));

@@ -1,6 +1,10 @@
 #include "pch.h"
 #include "D3D12Window.h"
 #include "BlackPearl/Application.h"
+#include "BlackPearl/Common/CommonFunc.h"
+#include "dinput.h"
+#pragma comment(lib, "dinput8")
+
 namespace BlackPearl {
 	class Application;
 	void D3D12Window::Init()
@@ -30,6 +34,12 @@ namespace BlackPearl {
 			this);
 		m_CloseWindow = false;
 		ShowWindow(m_hwnd, app.GetAppConf().nShowCmd);
+		//DirectInput8Create(GetModuleHandle(nullptr), DIRECTINPUT_VERSION, IID_IDirectInput8, (void**)&m_DI, nullptr);
+		ThrowIfFailed(DirectInput8Create(GetModuleHandle(nullptr), DIRECTINPUT_VERSION, IID_IDirectInput8, (void**)&m_DI, nullptr),
+			L"DirectInput8 initialization failed.");
+		ThrowIfFailed(m_DI->CreateDevice(GUID_SysMouse, &m_Mouse, nullptr), L"Mouse CreateDevice failed.");
+		ThrowIfFailed(m_Mouse->SetDataFormat(&c_dfDIMouse2), L"Mouse SetDataFormat failed.");
+		memset(&m_MouseState, 0, sizeof(DIMOUSESTATE2));
 
 	}
 	void D3D12Window::OnUpdate()
@@ -44,6 +54,30 @@ namespace BlackPearl {
 			DispatchMessage(&msg);
 
 		}
+
+#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
+		HWND foreground = GetForegroundWindow();
+		bool visible = IsWindowVisible(foreground) != 0;
+
+		if (foreground != m_hwnd // wouldn't be able to acquire
+			|| !visible)
+		{
+			memset(&m_MouseState, 0, sizeof(DIMOUSESTATE2));
+		}
+		else
+		{
+			m_Mouse->Acquire();
+			m_Mouse->GetDeviceState(sizeof(DIMOUSESTATE2), &m_MouseState);
+
+		}
+
+		for (UINT i = 0; i < 8; ++i)
+		{
+			if (m_MouseState.rgbButtons[i] > 0)
+				m_MouseButtons[i] = true;
+		}
+#endif
+		
 	}
 	void D3D12Window::SetCursorCallBack()
 	{
@@ -58,11 +92,11 @@ namespace BlackPearl {
 	}
 	bool D3D12Window::IsMouseButtonPressed(int button)
 	{
-		return false;
+		return m_PressMouseButton == button;
 	}
 	std::pair<float, float> D3D12Window::GetMousePosition()
 	{
-		return std::pair<float, float>();
+		return { (float)m_MouseState.lX,(float)m_MouseState.lY};
 	}
 	LRESULT CALLBACK D3D12Window::WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) {
 		D3D12Window* pWindow = reinterpret_cast<D3D12Window*>(GetWindowLongPtr(hWnd, GWLP_USERDATA));
@@ -95,6 +129,26 @@ namespace BlackPearl {
 			{
 				pSample->OnKeyUp(static_cast<UINT8>(wParam));
 			}*/
+			return 0;
+		case WM_MOUSEMOVE:
+			if (static_cast<UINT8>(wParam) == MK_LBUTTON)
+			{
+				UINT x = LOWORD(lParam);
+				UINT y = HIWORD(lParam);
+				//pSample->OnMouseMove(x, y);
+			}
+			return 0;
+		case WM_RBUTTONDOWN:
+			pWindow->m_PressMouseButton = WM_RBUTTONDOWN;
+			return 0;
+		case WM_RBUTTONUP:
+			pWindow->m_PressMouseButton = WM_RBUTTONUP;
+			return 0;
+		case WM_LBUTTONDOWN:
+			pWindow->m_PressMouseButton = WM_LBUTTONDOWN;
+			return 0;
+		case WM_LBUTTONUP:
+			pWindow->m_PressMouseButton = WM_LBUTTONUP;
 			return 0;
 		case WM_DESTROY: // x button on top right corner of window was pressed
 			pWindow->m_CloseWindow = true;

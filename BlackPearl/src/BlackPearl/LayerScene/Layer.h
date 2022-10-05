@@ -39,6 +39,8 @@ namespace BlackPearl {
 			/*MainCamera Init*/
 			m_MainCamera = CreateCamera();
 			m_MainCamera->SetPosition(glm::vec3(0, 0, 0.0f));//glm::vec3(0,1.387f,22.012f)
+
+
 			//m_MainCamera->SetPosition(glm::vec3(0, 0.95f, 5.9f));
 
 			//m_MainCamera->SetPosition(glm::vec3(0.0f, 0.0f, 19.0f));
@@ -147,13 +149,23 @@ namespace BlackPearl {
 				m_CameraPosition += m_MainCamera->Front() * m_CameraMoveSpeed * ts;
 			}
 			else if (Input::IsKeyPressed(BP_KEY_S) || Input::IsKeyPressed(VK_S)) {
-				m_CameraPosition -= m_MainCamera->Front() * m_CameraMoveSpeed * ts;		
+				m_CameraPosition -= m_MainCamera->Front() * m_CameraMoveSpeed * ts;
 			}
 			if (Input::IsKeyPressed(BP_KEY_A) || Input::IsKeyPressed(VK_A)) {
-				m_CameraPosition -= m_MainCamera->Right() * m_CameraMoveSpeed * ts;
+				if (g_RHIType == DynamicRHI::Type::D3D12) {
+					m_CameraPosition -= (-m_MainCamera->Right()) * m_CameraMoveSpeed * ts;
+				}
+				else if (g_RHIType == DynamicRHI::Type::OpenGL) {
+					m_CameraPosition -= m_MainCamera->Right() * m_CameraMoveSpeed * ts;
+				}
 			}
 			else if (Input::IsKeyPressed(BP_KEY_D) || Input::IsKeyPressed(VK_D)) {
-				m_CameraPosition += m_MainCamera->Right() * m_CameraMoveSpeed * ts;
+				if (g_RHIType == DynamicRHI::Type::D3D12) {
+					m_CameraPosition += (-m_MainCamera->Right()) * m_CameraMoveSpeed * ts;
+				}
+				else if (g_RHIType == DynamicRHI::Type::OpenGL) {
+					m_CameraPosition += m_MainCamera->Right() * m_CameraMoveSpeed * ts;
+				}
 			}
 			if (Input::IsKeyPressed(BP_KEY_E) || Input::IsKeyPressed(VK_E)) {
 				m_CameraPosition += m_MainCamera->Up() * m_CameraMoveSpeed * ts;
@@ -165,7 +177,7 @@ namespace BlackPearl {
 
 			float posx = Input::GetMouseX();
 			float posy = Input::GetMouseY();
-			if (Input::IsMouseButtonPressed(BP_MOUSE_BUTTON_RIGHT)) {
+			if (Input::IsMouseButtonPressed(BP_MOUSE_BUTTON_RIGHT) || Input::IsMouseButtonPressed(WM_RBUTTONDOWN)) {
 
 
 				if (Input::IsFirstMouse()) {
@@ -175,6 +187,7 @@ namespace BlackPearl {
 				}
 				float diffx = posx - m_LastMouseX;
 				float diffy = -posy + m_LastMouseY;
+				//GE_CORE_INFO("posx =" + std::to_string(posx)+", posy = "+ std::to_string(posy)+",m_LastMouseX ="+ std::to_string(m_LastMouseX)+", m_LastMouseY ="+ std::to_string(m_LastMouseY));
 
 				m_LastMouseX = posx;
 				m_LastMouseY = posy;
@@ -190,7 +203,6 @@ namespace BlackPearl {
 
 			}
 			else {
-
 				m_LastMouseX = posx;//lastMouse时刻记录当前坐标位置，防止再次点击右键时，发生抖动！
 				m_LastMouseY = posy;
 			}

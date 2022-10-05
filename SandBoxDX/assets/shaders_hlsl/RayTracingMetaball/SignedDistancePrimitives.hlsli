@@ -204,6 +204,15 @@ float sdCone(in float3 p, in float3 c)
     return length(max(float2(d1, d2), 0.0)) + min(max(d1, d2), 0.);
 }
 
+float sdSolidAngle(in float3 p, in float2 c, float ra)
+{
+    // c is the sin/cos of the angle
+    float2 q = float2(length(p.xz), p.y);
+    float l = length(q) - ra;
+    float m = length(q - c * clamp(dot(q, c), 0.0, ra));
+    return max(l, m * sign(c.y * q.x - c.x * q.y));
+}
+
 float sdConeSection(in float3 p, in float h, in float r1, in float r2)
 {
     float d1 = -p.y - h;
