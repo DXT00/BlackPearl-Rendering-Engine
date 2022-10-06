@@ -3,7 +3,61 @@ BlackPearl  Engine is a dynamic GI rendering engine to simulate different dynami
 
 ## Get start
 
-run GenerateProject.bat to set up visual studio project,it is only for Windows now.
+1) run GenerateProject.bat to set up visual studio project,it is only for Windows now.
+2) select the GI algorithom in SandBox.cpp
+
+SandBox.cpp
+```
+class SandBox :public BlackPearl::Application {
+public:
+
+	SandBox(HINSTANCE hInstance,int nShowCmd, BlackPearl::DynamicRHI::Type rhiType, const std::string &renderer)
+	:Application(hInstance, nShowCmd, rhiType, renderer){
+		
+		BlackPearl::Layer* layer = NULL;
+		const std::string layer_name = renderer+"Layer";
+		if (renderer == "ShadowMapPointLight") {
+			layer = DBG_NEW ShadowMapPointLightLayer(layer_name);
+		}
+		else if(renderer == "VoxelConeTracing"){
+			layer = DBG_NEW VoxelConeTracingLayer(layer_name);
+		}
+		else if (renderer == "PbrRendering") {
+			layer = DBG_NEW PbrRenderingLayer(layer_name);
+		}
+		else if (renderer == "IBLRendering") {
+			layer = DBG_NEW IBLRenderingLayer(layer_name);
+		}
+		else if (renderer == "IBLProbesRendering") {
+			layer = DBG_NEW IBLProbesRenderingLayer(layer_name);
+		}
+		else if (renderer == "VoxelConeTracingDeferred") {
+			layer = DBG_NEW VoxelConeTracingDeferredLayer(layer_name);
+		}
+		else if (renderer == "VoxelConeTracingSVO") {
+			layer = DBG_NEW VoxelConeTracingSVOLayer(layer_name);
+		}
+		else if (renderer == "RayTracing") {
+			layer = DBG_NEW RayTracingLayer(layer_name);
+		}
+
+		GetLayerManager()->PushLayer(layer);
+	}
+	virtual ~SandBox() = default;
+
+};
+
+BlackPearl::Application* BlackPearl::CreateApplication(HINSTANCE hInstance, int nShowCmd) {
+
+	return DBG_NEW SandBox(hInstance, nShowCmd, BlackPearl::DynamicRHI::Type::OpenGL, "IBLProbesRendering");
+
+}
+```
+
+3) set the SandBox project as the start porject in visual studio
+
+4) play your games! ^-^
+
 
 ## Documentation
 Dynamic Global illumination PPT-DXT00 Master thesis
