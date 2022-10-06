@@ -426,7 +426,7 @@ vec3 indirectDiffuseLight(){
 	if(u_IsPBRObjects==1)
 		diffuseColor=texture(u_Material.diffuse, v_TexCoord).rgb;//pow(texture(u_Material.diffuse, v_TexCoord).rgb, vec3(2.2));
 	else if(u_IsPBRObjects==0)
-		diffuseColor= u_Material.diffuseColor*(1-u_Settings.isTextureSample)+texture(u_Material.diffuse, v_TexCoord).rgb*u_Settings.isTextureSample;
+		diffuseColor= u_Material.diffuseColor*(1-u_Settings.isDiffuseTextureSample)+texture(u_Material.diffuse, v_TexCoord).rgb*u_Settings.isDiffuseTextureSample;
 
 //	if(acc==vec3(0))
 //		return vec4(1,0,0,1);
@@ -527,7 +527,7 @@ vec3 calculateDirectLight(const PointLight light, const vec3 viewDir){
 
 	vec3 norm = normalize(normal);
 	float diff = max(dot(lightDir,norm),0.0f);
-	vec3 diffuse = light.diffuse * diff * (u_Material.diffuseColor*(1-u_Settings.isTextureSample)+texture(u_Material.diffuse,v_TexCoord).rgb*u_Settings.isTextureSample);
+	vec3 diffuse = light.diffuse * diff * (u_Material.diffuseColor*(1-u_Settings.isDiffuseTextureSample)+texture(u_Material.diffuse,v_TexCoord).rgb*u_Settings.isDiffuseTextureSample);
 
 	/*specular*/
 	vec3 specular;

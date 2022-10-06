@@ -72,7 +72,7 @@ public:
 		double runtimeSecond = (currentTimeMs.count() - m_StartTimeMs.count()) / 1000.0f;
 
 		//Switch mode
-		if (BlackPearl::Input::IsKeyPressed(BP_KEY_U)) {
+		if (BlackPearl::Input::IsKeyPressed(BlackPearl::KeyCodes::Get(BP_KEY_U))) {
 			m_Mode = (m_Mode + 1) % 2;
 			if (m_Mode == 0)
 				m_CurrentRenderingMode = BlackPearl::VoxelConeTracingDeferredRenderer::RenderingMode::VOXELIZATION_VISUALIZATION;
@@ -85,12 +85,12 @@ public:
 
 		BlackPearl::RenderCommand::SetClearColor(m_BackgroundColor);
 		BlackPearl::Renderer::BeginScene(*(m_MainCamera->GetObj()->GetComponent<BlackPearl::PerspectiveCamera>()), *GetLightSources());
-		if (BlackPearl::Input::IsKeyPressed(BP_KEY_Y)) {
+		if (BlackPearl::Input::IsKeyPressed(BlackPearl::KeyCodes::Get(BP_KEY_Y))) {
 
 			m_skybox = m_SkyBoxObj;
 			GE_CORE_INFO("m_skybox = m_SkyBoxObj");
 		}
-		if (BlackPearl::Input::IsKeyPressed(BP_KEY_N)) {
+		if (BlackPearl::Input::IsKeyPressed(BlackPearl::KeyCodes::Get(BP_KEY_N))) {
 
 			m_skybox = nullptr;
 			GE_CORE_INFO("m_skybox = nullptr");

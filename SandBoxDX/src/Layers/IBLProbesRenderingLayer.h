@@ -137,7 +137,7 @@ public:
 		milliseconds currentTimeMs = duration_cast<milliseconds>(system_clock::now().time_since_epoch());
 		double runtime = currentTimeMs.count() - m_StartTimeMs.count();
 		
-		if (BlackPearl::Input::IsKeyPressed(BP_KEY_U)) {
+		if (BlackPearl::Input::IsKeyPressed(BlackPearl::KeyCodes::Get(BP_KEY_U))) {
 			BlackPearl::TimeCounter::Start();
 			//GE_CORE_INFO("updating diffuse probes' area...!")
 				m_MapManager->UpdateProbesArea(m_DiffuseLightProbes);

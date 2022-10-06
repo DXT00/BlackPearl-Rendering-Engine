@@ -15,9 +15,10 @@ namespace BlackPearl {
 	class Model
 	{
 	public:
-		Model(const std::string& path, const std::shared_ptr<Shader>shader, const bool isAnimated)
+		Model(const std::string& path, const std::shared_ptr<Shader>shader, const bool isAnimated, const bool vertices_sorted)
 			:m_Shader(shader) {
 			m_HasAnimation = isAnimated;
+			m_SortVertices = vertices_sorted;
 			LoadModel(path);
 		};
 
@@ -27,8 +28,9 @@ namespace BlackPearl {
 		};
 		void LoadModel(const std::string& path);
 
+		void ProcessNode(aiNode* node, const aiScene* scene);
 		Mesh ProcessMesh(aiMesh* aimesh, std::vector<Vertex>& v_vertex);
-		Mesh ProcessMesh(aiMesh* aimesh, std::vector<Vertex>& v_vertex, bool face);
+		Mesh ProcessMesh(aiMesh* aimesh, std::vector<Vertex>& v_vertex, bool sort_vertices);
 
 		void LoadMaterialTextures(
 			aiMaterial* material,
@@ -69,6 +71,9 @@ namespace BlackPearl {
 
 		std::string m_Directory;
 		Assimp::Importer m_Importer;
+
+		/*need ordered vertices when building BVHNode or Triangle mesh*/
+		bool m_SortVertices = false;
 
 		/*Animation*/
 		bool m_HasAnimation = false;

@@ -114,8 +114,8 @@ public:
 		m_SphereObjPlastic->GetComponent<BlackPearl::Transform>()->SetPosition({ -10.0,0,0 });
 
 
-
-
+		BlackPearl::Object* light = CreateLight(BlackPearl::LightType::PointLight, "Light");
+		light->SetPosition({ 0.0,0.0,5.0 });
 		m_Sword = CreateModel("assets/models/sword/OBJ/Big_Sword_OBJ.obj", "assets/shaders/pbr/PbrTexture.glsl", false, "Sword");
 		std::shared_ptr<BlackPearl::Texture> SwordalbedoTexture(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::DiffuseMap, "assets/models/sword/textures/Big Sword_Base_Color_Map.jpg"));
 		std::shared_ptr<BlackPearl::Texture> SwordaoTexture(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::AoMap, "assets/models/sword/textures/Big Sword_AO_Map.jpg"));
@@ -133,7 +133,7 @@ public:
 
 		m_Sword->GetComponent<BlackPearl::MeshRenderer>()->SetPBRTextureSamples(true);
 		m_Sword->GetComponent<BlackPearl::MeshRenderer>()->SetIsPBRObject(true);
-
+		m_Sword->GetComponent<BlackPearl::MeshRenderer>()->SetTexturEmissionSamples(true);
 
 
 

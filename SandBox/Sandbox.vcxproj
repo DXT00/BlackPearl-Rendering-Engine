@@ -78,7 +78,7 @@
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>GLFW_INCLUDE_NONE;GE_PLATFORM_WINDOWS;GE_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>GLFW_INCLUDE_NONE;GE_PLATFORM_WINDOWS;OPENGL_API;GE_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>..\BlackPearl\vendor\spdlog\include;..\BlackPearl\src;..\BlackPearl\vendor;..\BlackPearl\vendor\glm;..\BlackPearl\vendor\GLFW\include;..\BlackPearl\vendor\assimp\include;..\BlackPearl\vendor\Glad\include;..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
@@ -95,7 +95,7 @@
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>GLFW_INCLUDE_NONE;GE_PLATFORM_WINDOWS;GE_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>GLFW_INCLUDE_NONE;GE_PLATFORM_WINDOWS;OPENGL_API;GE_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>..\BlackPearl\vendor\spdlog\include;..\BlackPearl\src;..\BlackPearl\vendor;..\BlackPearl\vendor\glm;..\BlackPearl\vendor\GLFW\include;..\BlackPearl\vendor\assimp\include;..\BlackPearl\vendor\Glad\include;..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -116,7 +116,7 @@
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>GLFW_INCLUDE_NONE;GE_PLATFORM_WINDOWS;GE_DIST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>GLFW_INCLUDE_NONE;GE_PLATFORM_WINDOWS;OPENGL_API;GE_DIST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>..\BlackPearl\vendor\spdlog\include;..\BlackPearl\src;..\BlackPearl\vendor;..\BlackPearl\vendor\glm;..\BlackPearl\vendor\GLFW\include;..\BlackPearl\vendor\assimp\include;..\BlackPearl\vendor\Glad\include;..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -158,21 +158,17 @@
     <FxCompile Include="assets\shaders_hlsl\RayTracingMetaball\RayTracingMetaball.hlsl">
       <ExcludedFromBuild>true</ExcludedFromBuild>
       <ShaderModel>6.3</ShaderModel>
-      <EntryPointName>
-      </EntryPointName>
+      <EntryPointName></EntryPointName>
       <VariableName>g_pRayTracingMetaball</VariableName>
       <HeaderFileOutput>./assets/shaders_hlsl_h/RayTracingMetaball.hlsl.h</HeaderFileOutput>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">bin/Debug-windows-x86_64/Sandbox/RayTracingMetaball.cso</ObjectFileOutput>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">bin/Release-windows-x86_64/Sandbox/RayTracingMetaball.cso</ObjectFileOutput>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Dist|x64'">bin/Dist-windows-x86_64/Sandbox/RayTracingMetaball.cso</ObjectFileOutput>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-      </ShaderType>
     </FxCompile>
     <FxCompile Include="assets\shaders_hlsl\Raytracing.hlsl">
       <ExcludedFromBuild>true</ExcludedFromBuild>
       <ShaderModel>6.3</ShaderModel>
-      <EntryPointName>
-      </EntryPointName>
+      <EntryPointName></EntryPointName>
       <VariableName>g_pRaytracing</VariableName>
       <HeaderFileOutput>./assets/shaders_hlsl_h/Raytracing.hlsl.h</HeaderFileOutput>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">bin/Debug-windows-x86_64/Sandbox/Raytracing.cso</ObjectFileOutput>
@@ -182,8 +178,7 @@
     <FxCompile Include="assets\shaders_hlsl\RaytracingCube.hlsl">
       <ExcludedFromBuild>true</ExcludedFromBuild>
       <ShaderModel>6.3</ShaderModel>
-      <EntryPointName>
-      </EntryPointName>
+      <EntryPointName></EntryPointName>
       <VariableName>g_pRaytracingCube</VariableName>
       <HeaderFileOutput>./assets/shaders_hlsl_h/RaytracingCube.hlsl.h</HeaderFileOutput>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">bin/Debug-windows-x86_64/Sandbox/RaytracingCube.cso</ObjectFileOutput>

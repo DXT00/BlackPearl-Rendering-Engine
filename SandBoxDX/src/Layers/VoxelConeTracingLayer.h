@@ -68,7 +68,7 @@ public:
 		m_FPS =(double) m_FrameNum / runtimeSecond;*/
 
 		//Switch mode
-		if (BlackPearl::Input::IsKeyPressed(BP_KEY_U)) {
+		if (BlackPearl::Input::IsKeyPressed(BlackPearl::KeyCodes::Get(BP_KEY_U))) {
 			m_Mode = (m_Mode + 1) % 2;
 			if(m_Mode==0)
 			m_CurrentRenderingMode = BlackPearl::VoxelConeTracingRenderer::RenderingMode::VOXELIZATION_VISUALIZATION;

@@ -78,8 +78,8 @@
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>GLFW_INCLUDE_NONE;GE_PLATFORM_WINDOWS;GE_D3D12RHI;D3D12RHI;GE_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\BlackPearl\vendor\spdlog\include;..\BlackPearl\src;..\BlackPearl\vendor;..\BlackPearl\vendor\glm;..\BlackPearl\vendor\GLFW\include;..\BlackPearl\vendor\assimp\include;..\BlackPearl\vendor\Glad\include;..;..\packages\directxtex_uwp.2022.7.30.1\native\lib\x64\Debug;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>GLFW_INCLUDE_NONE;GE_PLATFORM_WINDOWS;GE_D3D12RHI;D3D12RHI;DIRECTX_API;GE_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\BlackPearl\vendor\spdlog\include;..\BlackPearl\src;..\BlackPearl\vendor;..\BlackPearl\vendor\glm;..\BlackPearl\vendor\GLFW\include;..\BlackPearl\vendor\assimp\include;..\BlackPearl\vendor\Glad\include;..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -95,8 +95,8 @@
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>GLFW_INCLUDE_NONE;GE_PLATFORM_WINDOWS;GE_D3D12RHI;D3D12RHI;GE_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\BlackPearl\vendor\spdlog\include;..\BlackPearl\src;..\BlackPearl\vendor;..\BlackPearl\vendor\glm;..\BlackPearl\vendor\GLFW\include;..\BlackPearl\vendor\assimp\include;..\BlackPearl\vendor\Glad\include;..;..\packages\directxtex_uwp.2022.7.30.1\native\lib\x64\Debug;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>GLFW_INCLUDE_NONE;GE_PLATFORM_WINDOWS;GE_D3D12RHI;D3D12RHI;DIRECTX_API;GE_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\BlackPearl\vendor\spdlog\include;..\BlackPearl\src;..\BlackPearl\vendor;..\BlackPearl\vendor\glm;..\BlackPearl\vendor\GLFW\include;..\BlackPearl\vendor\assimp\include;..\BlackPearl\vendor\Glad\include;..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -116,8 +116,8 @@
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>GLFW_INCLUDE_NONE;GE_PLATFORM_WINDOWS;GE_D3D12RHI;D3D12RHI;GE_DIST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\BlackPearl\vendor\spdlog\include;..\BlackPearl\src;..\BlackPearl\vendor;..\BlackPearl\vendor\glm;..\BlackPearl\vendor\GLFW\include;..\BlackPearl\vendor\assimp\include;..\BlackPearl\vendor\Glad\include;..;..\packages\directxtex_uwp.2022.7.30.1\native\lib\x64\Debug;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>GLFW_INCLUDE_NONE;GE_PLATFORM_WINDOWS;GE_D3D12RHI;D3D12RHI;DIRECTX_API;GE_DIST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\BlackPearl\vendor\spdlog\include;..\BlackPearl\src;..\BlackPearl\vendor;..\BlackPearl\vendor\glm;..\BlackPearl\vendor\GLFW\include;..\BlackPearl\vendor\assimp\include;..\BlackPearl\vendor\Glad\include;..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -134,10 +134,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="assets\shaders_hlsl_h\RayTracingMetaball.hlsl.h" />
     <ClInclude Include="assets\shaders_hlsl_h\Raytracing.hlsl.h" />
     <ClInclude Include="assets\shaders_hlsl_h\RaytracingCube.hlsl.h" />
     <ClInclude Include="src\Layers\AdvanceLightTestLayer.h" />
     <ClInclude Include="src\Layers\CubeTestLayer.h" />
+    <ClInclude Include="src\Layers\D3D12BasicRenderLayer.h" />
     <ClInclude Include="src\Layers\D3D12RayTracingCubeLayer.h" />
     <ClInclude Include="src\Layers\D3D12RayTracingLayer.h" />
     <ClInclude Include="src\Layers\D3D12RayTracingModelLayer.h" />
@@ -158,53 +160,55 @@
     <ClCompile Include="src\SandBoxDX.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="assets\shaders_hlsl\BasicRenderer\triangle.hlsl">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+      <ShaderModel>6.3</ShaderModel>
+      <EntryPointName></EntryPointName>
+      <VariableName>g_ptriangle</VariableName>
+      <HeaderFileOutput>./assets/shaders_hlsl_h/triangle.hlsl.h</HeaderFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">bin/Debug-windows-x86_64/SandboxDX/triangle.cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">bin/Release-windows-x86_64/SandboxDX/triangle.cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Dist|x64'">bin/Dist-windows-x86_64/SandboxDX/triangle.cso</ObjectFileOutput>
+    </FxCompile>
     <FxCompile Include="assets\shaders_hlsl\RayTracingMetaball\RayTracingMetaball.hlsl">
-      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-      </EntryPointName>
-      <VariableName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">g_p%(Filename)</VariableName>
-      <HeaderFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)\%(Filename).hlsl.h</HeaderFileOutput>
-      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(OutDir)%(Filename).cso</ObjectFileOutput>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Library</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">6.3</ShaderModel>
-      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-      </EntryPointName>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Library</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">6.3</ShaderModel>
-      <VariableName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">g_pRayTracingMetaball</VariableName>
-      <HeaderFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">RayTracingMetaball.hlsl.h</HeaderFileOutput>
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+      <ShaderModel>6.3</ShaderModel>
+      <EntryPointName></EntryPointName>
+      <VariableName>g_pRayTracingMetaball</VariableName>
+      <HeaderFileOutput>./assets/shaders_hlsl_h/RayTracingMetaball.hlsl.h</HeaderFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">bin/Debug-windows-x86_64/SandboxDX/RayTracingMetaball.cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">bin/Release-windows-x86_64/SandboxDX/RayTracingMetaball.cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Dist|x64'">bin/Dist-windows-x86_64/SandboxDX/RayTracingMetaball.cso</ObjectFileOutput>
     </FxCompile>
     <FxCompile Include="assets\shaders_hlsl\RayTracingMetaball\test.hlsl">
       <ExcludedFromBuild>true</ExcludedFromBuild>
       <ShaderModel>6.3</ShaderModel>
-      <EntryPointName>
-      </EntryPointName>
+      <EntryPointName></EntryPointName>
       <VariableName>g_ptest</VariableName>
-      <HeaderFileOutput>SandboxDX/assets/shaders_hlsl_h/test.hlsl.h</HeaderFileOutput>
-      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">bin/Debug-windows-x86_64/test.cso</ObjectFileOutput>
-      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">bin/Release-windows-x86_64/test.cso</ObjectFileOutput>
-      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Dist|x64'">bin/Dist-windows-x86_64/test.cso</ObjectFileOutput>
+      <HeaderFileOutput>./assets/shaders_hlsl_h/test.hlsl.h</HeaderFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">bin/Debug-windows-x86_64/SandboxDX/test.cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">bin/Release-windows-x86_64/SandboxDX/test.cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Dist|x64'">bin/Dist-windows-x86_64/SandboxDX/test.cso</ObjectFileOutput>
     </FxCompile>
     <FxCompile Include="assets\shaders_hlsl\Raytracing.hlsl">
       <ExcludedFromBuild>true</ExcludedFromBuild>
       <ShaderModel>6.3</ShaderModel>
-      <EntryPointName>
-      </EntryPointName>
+      <EntryPointName></EntryPointName>
       <VariableName>g_pRaytracing</VariableName>
-      <HeaderFileOutput>SandboxDX/assets/shaders_hlsl_h/Raytracing.hlsl.h</HeaderFileOutput>
-      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">bin/Debug-windows-x86_64/Raytracing.cso</ObjectFileOutput>
-      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">bin/Release-windows-x86_64/Raytracing.cso</ObjectFileOutput>
-      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Dist|x64'">bin/Dist-windows-x86_64/Raytracing.cso</ObjectFileOutput>
+      <HeaderFileOutput>./assets/shaders_hlsl_h/Raytracing.hlsl.h</HeaderFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">bin/Debug-windows-x86_64/SandboxDX/Raytracing.cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">bin/Release-windows-x86_64/SandboxDX/Raytracing.cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Dist|x64'">bin/Dist-windows-x86_64/SandboxDX/Raytracing.cso</ObjectFileOutput>
     </FxCompile>
     <FxCompile Include="assets\shaders_hlsl\RaytracingCube.hlsl">
       <ExcludedFromBuild>true</ExcludedFromBuild>
       <ShaderModel>6.3</ShaderModel>
-      <EntryPointName>
-      </EntryPointName>
+      <EntryPointName></EntryPointName>
       <VariableName>g_pRaytracingCube</VariableName>
-      <HeaderFileOutput>SandboxDX/assets/shaders_hlsl_h/RaytracingCube.hlsl.h</HeaderFileOutput>
-      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">bin/Debug-windows-x86_64/RaytracingCube.cso</ObjectFileOutput>
-      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">bin/Release-windows-x86_64/RaytracingCube.cso</ObjectFileOutput>
-      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Dist|x64'">bin/Dist-windows-x86_64/RaytracingCube.cso</ObjectFileOutput>
+      <HeaderFileOutput>./assets/shaders_hlsl_h/RaytracingCube.hlsl.h</HeaderFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">bin/Debug-windows-x86_64/SandboxDX/RaytracingCube.cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">bin/Release-windows-x86_64/SandboxDX/RaytracingCube.cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Dist|x64'">bin/Dist-windows-x86_64/SandboxDX/RaytracingCube.cso</ObjectFileOutput>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

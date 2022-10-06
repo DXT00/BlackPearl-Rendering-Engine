@@ -113,7 +113,7 @@ namespace BlackPearl {
 
 		Object* CreateLight(LightType type, const std::string& name = "Light");
 
-		Object* CreateModel(const std::string& modelPath, const std::string& shaderPath, const bool isAnimated, const std::string& name = "Model");
+		Object* CreateModel(const std::string& modelPath, const std::string& shaderPath, const bool isAnimated, const std::string& name = "Model", const bool vertices_sorted = false);
 		Object* CreateCube(const std::string& shaderPath = "assets/shaders/Cube.glsl", const std::string& texturePath = "", const std::string& name = "Cube");
 		Object* CreateSphere(const float radius, const unsigned int stackCount, const unsigned int sectorCount, const std::string& shaderPath = "assets/shaders/Sphere.glsl", const std::string& texturePath = "", const std::string& name = "Sphere");
 		Object* CreatePlane(const std::string& shaderPath = "assets/shaders/Plane.glsl", const std::string& texturePath = "assets/texture/wood.png", const std::string& name = "Plane");
@@ -145,13 +145,13 @@ namespace BlackPearl {
 		{
 
 			//auto cameraComponent = m_MainCamera->GetObj()->GetComponent<BlackPearl::PerspectiveCamera>();
-			if (Input::IsKeyPressed(BP_KEY_W) || Input::IsKeyPressed(VK_W)) {
+			if (Input::IsKeyPressed(KeyCodes::Get(BP_KEY_W))) {
 				m_CameraPosition += m_MainCamera->Front() * m_CameraMoveSpeed * ts;
 			}
-			else if (Input::IsKeyPressed(BP_KEY_S) || Input::IsKeyPressed(VK_S)) {
+			else if (Input::IsKeyPressed(KeyCodes::Get(BP_KEY_S))) {
 				m_CameraPosition -= m_MainCamera->Front() * m_CameraMoveSpeed * ts;
 			}
-			if (Input::IsKeyPressed(BP_KEY_A) || Input::IsKeyPressed(VK_A)) {
+			if (Input::IsKeyPressed(KeyCodes::Get(BP_KEY_A))) {
 				if (g_RHIType == DynamicRHI::Type::D3D12) {
 					m_CameraPosition -= (-m_MainCamera->Right()) * m_CameraMoveSpeed * ts;
 				}
@@ -159,7 +159,7 @@ namespace BlackPearl {
 					m_CameraPosition -= m_MainCamera->Right() * m_CameraMoveSpeed * ts;
 				}
 			}
-			else if (Input::IsKeyPressed(BP_KEY_D) || Input::IsKeyPressed(VK_D)) {
+			else if (Input::IsKeyPressed(KeyCodes::Get(BP_KEY_D))) {
 				if (g_RHIType == DynamicRHI::Type::D3D12) {
 					m_CameraPosition += (-m_MainCamera->Right()) * m_CameraMoveSpeed * ts;
 				}
@@ -167,17 +167,17 @@ namespace BlackPearl {
 					m_CameraPosition += m_MainCamera->Right() * m_CameraMoveSpeed * ts;
 				}
 			}
-			if (Input::IsKeyPressed(BP_KEY_E) || Input::IsKeyPressed(VK_E)) {
+			if (Input::IsKeyPressed(KeyCodes::Get(BP_KEY_E))) {
 				m_CameraPosition += m_MainCamera->Up() * m_CameraMoveSpeed * ts;
 			}
-			else if (Input::IsKeyPressed(BP_KEY_Q)) {
+			else if (Input::IsKeyPressed(KeyCodes::Get(BP_KEY_Q))) {
 				m_CameraPosition -= m_MainCamera->Up() * m_CameraMoveSpeed * ts;
 			}
 			// ---------------------Rotation--------------------------------------
 
 			float posx = Input::GetMouseX();
 			float posy = Input::GetMouseY();
-			if (Input::IsMouseButtonPressed(BP_MOUSE_BUTTON_RIGHT) || Input::IsMouseButtonPressed(WM_RBUTTONDOWN)) {
+			if (Input::IsMouseButtonPressed(KeyCodes::Get(BP_MOUSE_BUTTON_RIGHT))) {
 
 
 				if (Input::IsFirstMouse()) {

@@ -435,13 +435,13 @@ void GetPackData(float idx, out mat3 m){
 	m[2] = v[2].xyz;
 }
 void Vertex_Load(float idx, out struct Vertex vert){
-	vec4 pos_u, normal_v;
-	GetPackData(idx, pos_u);
-	GetPackData((idx+1), normal_v);
+	vec4 pos, normal;
+	GetPackData(idx, pos);
+	GetPackData((idx+1), normal);
 
-	vert.pos    = pos_u.xyz;
-	vert.normal = normal_v.xyz;
-	vert.uv     = vec2(pos_u[3], normal_v[3]);
+	vert.pos    = pos.xyz;
+	vert.normal = normal.xyz;
+	vert.uv     = vec2(pos[3], normal[3]);
 
 }
 
@@ -705,7 +705,7 @@ void Stack_Acc(){
 	_Stack[_Stack_mTop] += 1.0;
 }
 
-55void main(){
+void main(){
 	vec3 color = RayTrace() + texture(SumColor, TexCoords).xyz;
 	out_SumColor = vec4(color.x,color.y,color.z,0.0);
 

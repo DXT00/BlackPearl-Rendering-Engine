@@ -57,41 +57,20 @@ namespace BlackPearl {
 	{
 		m_Path = path;
 		m_Scene = m_Importer.ReadFile(path,
-			aiProcess_Triangulate |
+			aiProcess_Triangulate |  //将非三角形构成的模型转换为由三角形构成的模型
 			aiProcess_GenSmoothNormals|
 			aiProcess_Triangulate |
 			aiProcess_CalcTangentSpace|
 			aiProcess_JoinIdenticalVertices);//
 
 		//不要加aiProcess_FlipUVs！！！，否则纹理会反！！！
-		//|
-			//aiProcess_FlipUVs);
-		//aiProcess_JoinIdenticalVertices
-	/*aiProcess_MakeLeftHanded |
-	aiProcess_FlipWindingOrder |
-	aiProcess_FlipUVs |
-	aiProcess_PreTransformVertices |
-	aiProcess_CalcTangentSpace |
-	aiProcess_GenSmoothNormals |
-	aiProcess_Triangulate |
-	aiProcess_FixInfacingNormals |
-	aiProcess_FindInvalidData |
-	aiProcess_JoinIdenticalVertices |
-	aiProcess_ValidateDataStructure | 0);*/
-	///*
-	//设定aiProcess_Triangulate，我们告诉Assimp，如果模型不是（全部）由三角形组成，
-	//它需要将模型所有的图元形状变换为三角形。
-	//
-	//aiProcess_FlipUVs将在处理的时候翻转y轴的纹理坐标（你可能还记得我们在纹理教程中说过，
-	//在OpenGL中大部分的图像的y轴都是反的，所以这个后期处理选项将会修复这个）
-	//
-	//*/
+	
 
 		if (!m_Scene || m_Scene->mFlags == AI_SCENE_FLAGS_INCOMPLETE || !m_Scene->mRootNode) {
 			GE_CORE_ERROR("ERROR::ASSIMP:: {0}", m_Importer.GetErrorString())
 				return;
 		}
-		//m_Scene = scene;
+		
 		m_Directory = path.substr(0, path.find_last_of('/'));
 
 		for (int i = 0; i < m_Scene->mNumMeshes; i++)
@@ -99,28 +78,17 @@ namespace BlackPearl {
 			m_VerticesNum += m_Scene->mMeshes[i]->mNumVertices;
 		}
 		m_GlobalInverseTransform = glm::inverse(ConvertMatrix(m_Scene->mRootNode->mTransformation));
-		//m_GlobalInverseTransform.Inverse();
 
 
 		m_BoneDatas.resize(m_VerticesNum);
-		//m_Animation = *(m_Scene->mAnimations[0]);
-		// Create a materials from the loaded assimp materials
 		
-		for (unsigned int m = 0; m < m_Scene->mNumMaterials; m++) {
+		
+		for (int m = 0; m < m_Scene->mNumMaterials; m++) {
 				
 			m_ModelMaterials[m] = LoadMaterial(m_Scene->mMaterials[m]);
 		}
 
-
-		for (int i = 0; i < m_Scene->mNumMeshes; i++)
-		{
-			aiMesh* mesh = m_Scene->mMeshes[i];
-
-			m_Meshes.push_back(ProcessMesh(mesh,m_Vertices,true));
-
-			//	GE_SAVE_DELETE(mesh);
-		}
-		
+		ProcessNode(m_Scene->mRootNode, m_Scene);
 	}
 
 
@@ -189,7 +157,9 @@ namespace BlackPearl {
 
 		//LoadMaterialTextures(material, aiTextureType_REFLECTION, Texture::Type::RoughnessMap, textures);
 		//LoadMaterialTextures(material, aiTextureType_AMBIENT, Texture::Type::RoughnessMap, textures);
-		//LoadMaterialTextures(material, aiTextureType_LIGHTMAP, Texture::Type::AoMap, textures);
+		LoadMaterialTextures(material, aiTextureType_LIGHTMAP, Texture::Type::AoMap, textures);
+		LoadMaterialTextures(material, aiTextureType_EMISSIVE, Texture::Type::EmissionMap, textures);
+
 		//LoadMaterialTextures(material, aiTextureType_DISPLACEMENT, Texture::Type::DiffuseMap, textures);//TODO
 
 		LoadMaterialColors(material, colors);
@@ -197,6 +167,21 @@ namespace BlackPearl {
 		meshMaterial.reset(DBG_NEW Material(m_Shader, textures, colors));
 		meshMaterial->SetShininess(shininess);
 		return meshMaterial;
+	}
+
+	void Model::ProcessNode(aiNode* node, const aiScene* scene)
+	{
+		for (int i = 0; i < node->mNumMeshes; i++)
+		{
+			aiMesh* mesh = m_Scene->mMeshes[i];
+
+			m_Meshes.push_back(ProcessMesh(mesh, m_Vertices, m_SortVertices));
+		}
+		
+		for (GLuint i = 0; i < node->mNumChildren; i++)
+		{
+			this->ProcessNode(node->mChildren[i], scene);
+		}
 	}
 
 	//TODO:: Animation Model Vertex未处理
@@ -291,9 +276,9 @@ namespace BlackPearl {
 		{
 			aiFace face = aimesh->mFaces[i];
 			GE_ASSERT(face.mNumIndices == 3, "face.mNumIndices!=3");
-			for (unsigned int i = 0; i < face.mNumIndices; i++)
+			for (unsigned int j = 0; j < face.mNumIndices; j++)
 			{
-				indices.push_back(face.mIndices[i]);
+				indices.push_back(face.mIndices[j]);
 			}
 		}
 		//if (aimesh->mMaterialIndex >= 0) {
@@ -347,8 +332,15 @@ namespace BlackPearl {
 
 
 	}
-	Mesh Model::ProcessMesh(aiMesh* aimesh, std::vector<Vertex>& v_vertex, bool face)
+
+	//v_vertex use for building BVH Node and Triangle Mesh, so vertices need to be sorted according to indices.
+	Mesh Model::ProcessMesh(aiMesh* aimesh, std::vector<Vertex>& v_vertex, bool sort_vertices)
 	{
+		if (!sort_vertices) {
+			return ProcessMesh(aimesh, v_vertex);
+		}
+
+
 		std::vector<float> vertices;
 		std::vector<unsigned int> verticesIntjointIdx;
 		std::vector<float> verticesfloatWeight;

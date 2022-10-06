@@ -287,11 +287,11 @@ void main(){
 in vec4 f_color;
 in vec4 f_vertex;
 in vec3 f_leafIdx;
-layout(location = 0) out vec4 gl_FragColor;
+layout(location = 0) out vec4 FragColor;
 out vec4 fragColor;
 void main(){
 
-	gl_FragColor =f_color;//vec4(f_leafIdx,1.0);//vec4(1.0,0.0,0.0,1.0);//f_color;
+	FragColor =f_color;//vec4(f_leafIdx,1.0);//vec4(1.0,0.0,0.0,1.0);//f_color;
 		//fragColor =vec4(f_leafIdx,1.0);//f_vertex;//vec4(1.0,0.0,0.0,1.0);// f_color;
 
 

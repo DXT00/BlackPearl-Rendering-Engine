@@ -3,6 +3,8 @@
 bin/
 bin-int/
 bakup/
+x64/
+BlackPearl/vendor/
 
 #Files
 *.user

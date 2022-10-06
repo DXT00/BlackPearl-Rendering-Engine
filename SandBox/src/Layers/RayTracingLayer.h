@@ -105,7 +105,7 @@ public:
 			});
 			
 			
-			BlackPearl::Object* bunny = CreateModel("assets/models/bunny/bunny.obj", "assets/shaders/IronMan.glsl", false, "Bunny");
+			BlackPearl::Object* bunny = CreateModel("assets/models/bunny/bunny.obj", "assets/shaders/IronMan.glsl", false/*isAnimated*/, "Bunny", true/*vertices sorted*/);
 			bunny->GetComponent<BlackPearl::Transform>()->SetInitScale(glm::vec3(1.0));
 			bunny->GetComponent<BlackPearl::Transform>()->SetInitPosition({ -0.2f,-1.0f,-2.0f });
 			bunny->GetComponent<BlackPearl::Transform>()->SetInitRotation({ 0.0f,0.0f,0.0f });

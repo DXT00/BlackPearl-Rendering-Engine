@@ -111,11 +111,11 @@ namespace BlackPearl {
 		return obj;
 	}
 
-	Object* Object3DCreater::CreateModel(std::string modelPath, std::string shaderPath, const bool isAnimated, const bool addBondingBox, const std::string name)
+	Object* Object3DCreater::CreateModel(std::string modelPath, std::string shaderPath, const bool isAnimated, const bool vertices_sorted, const bool addBondingBox, const std::string name)
 	{
-		std::shared_ptr<Shader>shader(new Shader(shaderPath));
+		std::shared_ptr<Shader>shader(DBG_NEW Shader(shaderPath));
 		shader->Bind();
-		std::shared_ptr<Model> model(new Model(modelPath, shader, isAnimated));
+		std::shared_ptr<Model> model(DBG_NEW Model(modelPath, shader, isAnimated, vertices_sorted));
 		Object* obj = CreateEmpty(name);
 		auto info = obj->AddComponent<BasicInfo>();
 		info->SetObjectType(ObjectType::OT_Model);
@@ -155,8 +155,10 @@ namespace BlackPearl {
 	Object* Object3DCreater::CreateLightProbe(ProbeType type, const std::string& shaderPath, const std::string& texturePath, const std::string name)
 	{
 		Object* obj = CreateCube(shaderPath, texturePath, name);
-		auto info = obj->AddComponent<BasicInfo>();
-		info->SetObjectType(ObjectType::OT_LightProbe);
+		if (!obj->HasComponent<BasicInfo>()) {
+			obj->AddComponent<BasicInfo>();
+		}
+		obj->GetComponent<BasicInfo>()->SetObjectType(ObjectType::OT_LightProbe);
 		obj->GetComponent<Transform>()->SetInitRotation({ 0.0f, 0.0f, 0.0f });
 		obj->GetComponent<Transform>()->SetInitScale({ 0.3f,0.3f,0.3f });
 

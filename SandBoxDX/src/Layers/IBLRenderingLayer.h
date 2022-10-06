@@ -80,7 +80,7 @@ public:
 
 		glViewport(0, 0, BlackPearl::Configuration::WindowWidth, BlackPearl::Configuration::WindowHeight);
 		/*Draw Lights*/
-		if (BlackPearl::Input::IsKeyPressed(BP_KEY_U)) {
+		if (BlackPearl::Input::IsKeyPressed(BlackPearl::KeyCodes::Get(BP_KEY_U))) {
 
 			GE_CORE_INFO("cube map updating......")
 			m_IBLRenderer->Init(m_CubeObj, m_BrdfLUTQuadObj, m_SkyBoxObj, m_BackGroundObjsList, GetLightSources());

@@ -72,7 +72,7 @@ public:
 		double runtimeSecond = (currentTimeMs.count() - m_StartTimeMs.count()) / 1000.0f;
 
 		//Switch mode
-		if (BlackPearl::Input::IsKeyPressed(BP_KEY_U)) {
+		if (BlackPearl::Input::IsKeyPressed(BlackPearl::KeyCodes::Get(BP_KEY_U))) {
 			m_Mode = (m_Mode + 1) % 2;
 			if (m_Mode == 0) {
 				m_CurrentRenderingMode = BlackPearl::VoxelConeTracingSVORenderer::RenderingMode::VOXEL_CONE_TRACING;
