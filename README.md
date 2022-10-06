@@ -58,6 +58,9 @@ BlackPearl::Application* BlackPearl::CreateApplication(HINSTANCE hInstance, int 
 
 4) play your games! ^-^
 
+## Branch
+1) master branch only support opengl api
+2) raytracing branch is under development, will be support DirectX12. and raytracing algorithm
 
 ## Documentation
 Dynamic Global illumination PPT-DXT00 Master thesis
