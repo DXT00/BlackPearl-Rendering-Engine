@@ -65,6 +65,8 @@ BlackPearl::Application* BlackPearl::CreateApplication(HINSTANCE hInstance, int 
 ## Documentation
 Dynamic Global illumination PPT-DXT00 Master thesis
 
+https://github.com/DXT00/BlackPearl-Rendering-Engine/blob/master/Dynamic%20Global%20illumination%20PPT-DXT00%20Master%20thesis.pdf
+
 
 ## Voxel Cone Tracing - Sparse voxel octree indirect light tracing
 
