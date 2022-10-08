@@ -13,8 +13,7 @@ namespace BlackPearl {
     m_ScissorRect(0, 0, static_cast<LONG>(m_Width), static_cast<LONG>(m_Height)),
     m_RtvDescriptorSize(0)
 	{
-        m_BasicShaderPath = L"assets/shaders_hlsl/";
-        
+        m_BasicShaderPath = L"assets/shaders_hlsl/";  
         Init();
 
 	}
