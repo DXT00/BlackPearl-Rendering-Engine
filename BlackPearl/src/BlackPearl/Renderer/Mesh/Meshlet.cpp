@@ -1,0 +1,4 @@
+namespace BlackPearl
+{
+    
+} // namespace BlackPearl

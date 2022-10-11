@@ -58,6 +58,12 @@ namespace BlackPearl {
 		// Ray Tracing config
 		// ------------------------------------------
 		static const unsigned int MaxRayRecursionDepth = 3;
+
+		//  ------------------------------------------
+		// Mesh shader && Meshlet config
+		// ------------------------------------------
+		static const unsigned int MaxVerts = 256;
+		static const unsigned int MaxPrims = 256;
 	};
 	struct ShaderConfig {
 

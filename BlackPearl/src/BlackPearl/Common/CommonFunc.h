@@ -74,9 +74,9 @@ namespace BlackPearl {
     {
         if (FAILED(hr))
         {
+            GE_CORE_ERROR("function throw error");
             throw HrException(hr);
             //OutputDebugString(msg);
-            //GE_CORE_ERROR("function throw error");
         }
     }
 
@@ -99,8 +99,19 @@ namespace BlackPearl {
         ThrowIfFailed(value ? S_OK : E_FAIL, msg);
     }
 
+    // be careful to use this function, you need to delete wc after function is called, or it will have a memery leak.
     inline const wchar_t* To_Wchar(const char * c) {
+        const size_t cSize = strlen(c)+1;
+        wchar_t* wc = new wchar_t[cSize];
+        mbstowcs(wc, c, cSize);
+        return wc;
+    }
 
+    inline std::wstring To_WString(const char * c) {
+        const size_t cSize = strlen(c)+1;
+        std::wstring wc( cSize, L'#' );
+        mbstowcs( &wc[0], c, cSize );
+        return wc;
     }
 }
 

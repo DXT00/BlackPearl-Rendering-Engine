@@ -7,6 +7,8 @@
 #include "assimp/scene.h"
 #include "BlackPearl/Animation/Bone.h"
 #include "BlackPearl/RayTracing/Vertex.h"
+#include "MeshletGenerator.h"
+#include "Meshlet.h"
 //#include <assimp/material.h>
 
 //#include <assimp/cimport.h>
@@ -15,11 +17,23 @@ namespace BlackPearl {
 	class Model
 	{
 	public:
-		Model(const std::string& path, const std::shared_ptr<Shader>shader, const bool isAnimated, const bool vertices_sorted)
-			:m_Shader(shader) {
+		Model(const std::string& path,
+				const std::shared_ptr<Shader>shader,
+				const bool isAnimated,
+				const bool verticesSorted,
+				const bool createMeshlet = false,
+				MeshletOption options = MeshletOption()
+				)
+			: m_Shader(shader) {
 			m_HasAnimation = isAnimated;
-			m_SortVertices = vertices_sorted;
+			m_SortVertices = verticesSorted;
+			m_CreateMeshlet = createMeshlet;
 			LoadModel(path);
+
+			if (m_CreateMeshlet) {
+				m_MeshletGenerator = std::make_shared<MeshletGenerator>();
+				m_MeshletGenerator->Process(m_Meshes, options);
+			}
 		};
 
 		~Model() {
@@ -95,6 +109,10 @@ namespace BlackPearl {
 
 		/*for raytracing, calculate bounding box*/
 		std::vector<Vertex> m_Vertices;
+
+		/*for mesh shader renderer, to create meshlet*/
+		bool m_CreateMeshlet = false;
+		std::shared_ptr<MeshletGenerator> m_MeshletGenerator;
 
 	};
 
