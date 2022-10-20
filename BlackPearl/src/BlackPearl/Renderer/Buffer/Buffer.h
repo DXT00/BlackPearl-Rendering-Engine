@@ -46,7 +46,6 @@ namespace BlackPearl {
 			return 0;
 	}
 
-
 	struct BufferElement {
 		ElementDataType Type;
 		std::string Name;
@@ -54,7 +53,9 @@ namespace BlackPearl {
 		uint32_t Offset;
 		uint32_t ElementSize;
 		uint32_t Location;
-
+		BufferElement() {
+			GE_CORE_INFO("BufferElement defalut constructor");
+		}
 		BufferElement(ElementDataType type, std::string name, bool normalized, uint32_t location)
 			:Type(type), 
 			Name(name), 
@@ -81,6 +82,15 @@ namespace BlackPearl {
 			GE_ASSERT(false, "Unknown ElementDataType!")
 				return 0;
 		}
+		void operator=(const BufferElement& rhs) {
+			Type = rhs.Type;
+			Name = rhs.Name;
+			Normalized = rhs.Normalized;
+			Offset = rhs.Offset;
+			ElementSize = rhs.ElementSize;
+			Location = rhs.Location;
+			//return *this;
+		}
 	};
 
 	class VertexBufferLayout {
@@ -89,16 +99,47 @@ namespace BlackPearl {
 		VertexBufferLayout(std::initializer_list<BufferElement> elements)
 			:m_Elememts(elements) {
 			CalculateStrideAndOffset();
+			UpdateDesc();
+
 		};
 		void CalculateStrideAndOffset();
 
 		inline std::vector<BufferElement> GetElements() const { return m_Elememts; }
+		inline BufferElement GetElement(uint32_t i) const { 
+			GE_ASSERT((i < ElementSize()), "i exceed max elements size");
+			return m_Elememts[i]; 
+		}
+
 		void AddElement(const BufferElement& element) {
 			m_Elememts.push_back(element);
 			CalculateStrideAndOffset();
+			UpdateDesc();
 		}
+		uint32_t ElementSize() const { return m_Elememts.size(); }
 		inline uint32_t GetStride() { return m_Stride; }
-	private:
+		//for directx
+		virtual void UpdateDesc() {}
+		
+		VertexBufferLayout(const VertexBufferLayout& rhs) {
+			m_Elememts.resize(rhs.ElementSize());
+			for (size_t i = 0; i < rhs.ElementSize(); i++)
+			{
+				m_Elememts[i] = rhs.m_Elememts[i];
+			}
+			m_Stride = rhs.m_Stride;
+
+		}
+		VertexBufferLayout& operator = (const VertexBufferLayout& rhs) {
+			this->m_Elememts.resize(rhs.ElementSize());
+			for (size_t i = 0; i < rhs.ElementSize(); i++)
+			{
+				this->m_Elememts[i] = rhs.m_Elememts[i];
+			}
+			this->m_Stride = rhs.m_Stride;
+			return *this;
+		}
+
+	protected:
 		std::vector<BufferElement> m_Elememts;
 		uint32_t m_Stride = 0;
 	};

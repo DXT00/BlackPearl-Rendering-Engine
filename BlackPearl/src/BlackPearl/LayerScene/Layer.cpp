@@ -1099,9 +1099,17 @@ namespace BlackPearl {
 		}
 		return obj;
 	}
-	Object* Layer::CreateModel(const std::string& modelPath, const std::string& shaderPath, const bool isAnimated, const std::string& name, const bool vertices_sorted)
+	Object* Layer::CreateModel(
+		const std::string& modelPath, 
+		const std::string& shaderPath,
+		const bool isAnimated,
+		const std::string& name,
+		const bool vertices_sorted,
+		const bool createMeshlet,
+		const bool isMeshletModel,
+		MeshletOption options)
 	{
-		Object* obj = g_objectManager->CreateModel(modelPath, shaderPath, isAnimated, vertices_sorted, false, name);
+		Object* obj = g_objectManager->CreateModel(modelPath, shaderPath, isAnimated, vertices_sorted, false, name, createMeshlet, isMeshletModel, options);
 		m_ObjectsList.push_back(obj);
 		return obj;
 	}

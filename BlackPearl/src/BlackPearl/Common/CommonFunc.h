@@ -10,6 +10,7 @@
 #include "BlackPearl/RHI/D3D12RHI/d3dx12.h"
 #include "BlackPearl/Log.h"
 namespace BlackPearl {
+    const char s_padding[4096] = {};
 	class CommonFunc
 	{
 	public:
@@ -64,6 +65,12 @@ namespace BlackPearl {
     {
         return (size + (alignment - 1)) & ~(alignment - 1);
     }
+   
+    inline void AddAlignUp(uint32_t& offset, uint32_t size, uint32_t align = 4096u) {
+        offset += size;
+        uint32_t pad = (align - offset % align);
+        offset += pad;
+    }
 
     inline UINT CalculateConstantBufferByteSize(UINT byteSize)
     {
@@ -112,6 +119,60 @@ namespace BlackPearl {
         std::wstring wc( cSize, L'#' );
         mbstowcs( &wc[0], c, cSize );
         return wc;
+    }
+
+    template< typename T>
+    class Span
+    {
+    public:
+        Span()
+            :m_Data(nullptr),
+            m_Count(0)
+        { }
+        Span(T* data, uint32_t size)
+        :m_Data(data),
+         m_Count(size)
+        { }
+        
+        T* data() { return m_Data; }
+        const T* data() const { return m_Data; }
+
+        T& back() { return *(m_Data + m_Count - 1); }
+        const T& back() const { return *(m_Data + m_Count - 1); }
+
+        size_t size() const { return m_Count; }
+
+        // Iterator interface
+        T* begin() { return m_Data; }
+        T* end() { return m_Data + m_Count; }
+
+        T* operator[](uint32_t i) { return *(m_Data + i); }
+        const T& operator[](uint32_t i) const { *(m_Data + i); }
+    private:
+        T* m_Data;
+        uint32_t m_Count;
+    };
+
+    template <typename T>
+    Span<T> MakeSpan(T* data, uint32_t size) { return Span<T>(data, size); }
+    
+
+    template <typename T>
+    inline void WriteAlignUp(std::ostream& stream, const T* data, uint32_t count, uint32_t& offset, uint32_t align = 4096u)
+    {
+        stream.write(reinterpret_cast<const char*>(data), sizeof(T) * count);
+        offset += sizeof(T) * count;
+
+        uint32_t pad = (align - offset % align);
+
+        stream.write(s_padding, pad);
+        offset += pad;
+    }
+
+    template <typename T, typename U>
+    constexpr T DivRoundUp(T num, U denom)
+    {
+        return (num + denom - 1) / denom;
     }
 }
 

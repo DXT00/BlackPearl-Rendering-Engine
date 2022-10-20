@@ -4,9 +4,13 @@
 #include "BlackPearl/Renderer/Shader/Shader.h"
 #include "BlackPearl/Renderer/Buffer/Buffer.h"
 #include "BlackPearl/Component/LightComponent/LightSources.h"
+#include "BlackPearl/Component/BoundingSphereComponent/BoundingSphere.h"
 #include "BlackPearl/Renderer/Material/MaterialColor.h"
 #include "BlackPearl/Renderer/Material/Material.h"
 #include "BlackPearl/Renderer/VertexArray.h"
+#include "BlackPearl/Common/CommonFunc.h"
+#include "BlackPearl/Renderer/Mesh/MeshletConfig.h"
+#include "BlackPearl/Renderer/Mesh/Meshlet.h"
 #include <initializer_list>
 #include <memory>
 
@@ -45,8 +49,8 @@ namespace BlackPearl {
 		}
 		/*one vertexBuffer*/
 		Mesh(
-			std::vector<float>vertices,
-			std::vector<unsigned int>indices,
+			std::vector<float> vertices,
+			std::vector<unsigned int> indices,
 			std::shared_ptr<Material> material,
 			const VertexBufferLayout& layout
 		)
@@ -71,7 +75,9 @@ namespace BlackPearl {
 		}
 		std::shared_ptr<Material> GetMaterial()const { return m_Material; }
 		VertexBufferLayout GetVertexBufferLayout() const { return m_VertexBufferLayout; }
-		
+		void SetVertexBufferLayout(const VertexBufferLayout& layout) {
+			m_VertexBufferLayout = layout;
+		}
 
 		void SetTexture(const std::shared_ptr<Texture>& texture) { m_Material->SetTexture(texture); }
 		void SetShader(const std::string& path) { m_Material->SetShader(path);};
@@ -88,6 +94,27 @@ namespace BlackPearl {
 		uint32_t                     m_IndicesSize = 0;
 		std::shared_ptr<Material>    m_Material = nullptr;
 
+	public:
+		//temp for directX TODO::¼æÈÝopengl ºÍd3d12 mesh½Ó¿Ú
+		std::vector<uint32_t>		VertexStrides;
+		std::vector<Span<uint8_t>>  Vertices; 
+		uint32_t					VertexCount;
+		Span<Subset>				MeshletSubsets;
+		Span<Meshlet>				Meshlets;
+		Span<uint8_t>				UniqueVertexIndices;
+		Span<PackedTriangle>		PrimitiveIndices;
+		Span<CullData>				CullingData;
+		BoundingSphere				BoundingSphere;
+		Span<uint8_t>				Indices;
+		Span<Subset>				IndexSubsets;
+		uint32_t					IndexSize;
+		std::vector<Microsoft::WRL::ComPtr<ID3D12Resource>> VertexResources;
+		Microsoft::WRL::ComPtr<ID3D12Resource>              IndexResource;
+		Microsoft::WRL::ComPtr<ID3D12Resource>              MeshletResource;
+		Microsoft::WRL::ComPtr<ID3D12Resource>              UniqueVertexIndexResource;
+		Microsoft::WRL::ComPtr<ID3D12Resource>              PrimitiveIndexResource;
+		Microsoft::WRL::ComPtr<ID3D12Resource>              CullDataResource;
+		Microsoft::WRL::ComPtr<ID3D12Resource>              MeshInfoResource;
 	};
 
 }

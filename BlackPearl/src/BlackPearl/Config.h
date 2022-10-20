@@ -64,6 +64,9 @@ namespace BlackPearl {
 		// ------------------------------------------
 		static const unsigned int MaxVerts = 256;
 		static const unsigned int MaxPrims = 256;
+
+		static const unsigned int DefaultVerts = 128;
+		static const unsigned int DefaultPrims = 128;
 	};
 	struct ShaderConfig {
 

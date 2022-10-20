@@ -5,6 +5,7 @@
 #include "BlackPearl/Component/TransformComponent/Transform.h"
 #include "BlackPearl/Renderer/Material/Material.h"
 #include "BlackPearl/Component/LightProbeComponent/LightProbeComponent.h"
+#include "BlackPearl/Renderer/Mesh/MeshletConfig.h"
 
 namespace BlackPearl {
 	////////////////////////ObjectCreater////////////////////////////////
@@ -27,7 +28,16 @@ namespace BlackPearl {
 		Object* CreateCube(const std::string& shaderPath, const std::string& texturePath,const std::string name);
 		Object* CreatePlane(const std::string& shaderPath, const std::string& texturePath, const std::string name);
 		Object* CreateSphere(const float radius, const unsigned int stackCount, const unsigned int sectorCount, const std::string& shaderPath, const std::string& texturePath, const std::string name);
-		Object* CreateModel(std::string modelPath, std::string shaderPath, const bool isAnimated, const bool vertices_sorted, const bool addBondingBox, const std::string name);
+		Object* CreateModel(
+			std::string modelPath, 
+			std::string shaderPath, 
+			const bool isAnimated, 
+			const bool vertices_sorted,
+			const bool addBondingBox, 
+			const std::string name,
+			const bool createMeshlet = false,
+			const bool isMeshletModel = false,
+			MeshletOption options = MeshletOption());
 		Object* CreateSkyBox( const std::vector<std::string>& textureFaces,const std::string& shaderPath, const std::string name);
 		Object* CreateLightProbe(ProbeType type, const std::string& shaderPath, const std::string& texturePath, const std::string name);
 		Object* CreateGroup(const std::string name);

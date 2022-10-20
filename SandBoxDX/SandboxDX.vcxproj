@@ -137,6 +137,7 @@
     <ClInclude Include="assets\shaders_hlsl_h\RayTracingMetaball.hlsl.h" />
     <ClInclude Include="assets\shaders_hlsl_h\Raytracing.hlsl.h" />
     <ClInclude Include="assets\shaders_hlsl_h\RaytracingCube.hlsl.h" />
+    <ClInclude Include="D3D12MeshShaderLayer.h" />
     <ClInclude Include="src\Layers\AdvanceLightTestLayer.h" />
     <ClInclude Include="src\Layers\CubeTestLayer.h" />
     <ClInclude Include="src\Layers\D3D12BasicRenderLayer.h" />
@@ -157,23 +158,28 @@
     <ClInclude Include="src\Layers\VoxelizationTestLayer.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="D3D12MeshShaderLayer.cpp" />
     <ClCompile Include="src\SandBoxDX.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="assets\shaders_hlsl\BasicRenderer\triangle.hlsl">
       <ExcludedFromBuild>true</ExcludedFromBuild>
       <ShaderModel>6.3</ShaderModel>
-      <EntryPointName></EntryPointName>
+      <EntryPointName>
+      </EntryPointName>
       <VariableName>g_ptriangle</VariableName>
       <HeaderFileOutput>./assets/shaders_hlsl_h/triangle.hlsl.h</HeaderFileOutput>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">bin/Debug-windows-x86_64/SandboxDX/triangle.cso</ObjectFileOutput>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">bin/Release-windows-x86_64/SandboxDX/triangle.cso</ObjectFileOutput>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Dist|x64'">bin/Dist-windows-x86_64/SandboxDX/triangle.cso</ObjectFileOutput>
     </FxCompile>
+    <FxCompile Include="assets\shaders_hlsl\MeshShader\MS.hlsl" />
+    <FxCompile Include="assets\shaders_hlsl\MeshShader\PS.hlsl" />
     <FxCompile Include="assets\shaders_hlsl\RayTracingMetaball\RayTracingMetaball.hlsl">
       <ExcludedFromBuild>true</ExcludedFromBuild>
       <ShaderModel>6.3</ShaderModel>
-      <EntryPointName></EntryPointName>
+      <EntryPointName>
+      </EntryPointName>
       <VariableName>g_pRayTracingMetaball</VariableName>
       <HeaderFileOutput>./assets/shaders_hlsl_h/RayTracingMetaball.hlsl.h</HeaderFileOutput>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">bin/Debug-windows-x86_64/SandboxDX/RayTracingMetaball.cso</ObjectFileOutput>
@@ -183,7 +189,8 @@
     <FxCompile Include="assets\shaders_hlsl\RayTracingMetaball\test.hlsl">
       <ExcludedFromBuild>true</ExcludedFromBuild>
       <ShaderModel>6.3</ShaderModel>
-      <EntryPointName></EntryPointName>
+      <EntryPointName>
+      </EntryPointName>
       <VariableName>g_ptest</VariableName>
       <HeaderFileOutput>./assets/shaders_hlsl_h/test.hlsl.h</HeaderFileOutput>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">bin/Debug-windows-x86_64/SandboxDX/test.cso</ObjectFileOutput>
@@ -193,7 +200,8 @@
     <FxCompile Include="assets\shaders_hlsl\Raytracing.hlsl">
       <ExcludedFromBuild>true</ExcludedFromBuild>
       <ShaderModel>6.3</ShaderModel>
-      <EntryPointName></EntryPointName>
+      <EntryPointName>
+      </EntryPointName>
       <VariableName>g_pRaytracing</VariableName>
       <HeaderFileOutput>./assets/shaders_hlsl_h/Raytracing.hlsl.h</HeaderFileOutput>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">bin/Debug-windows-x86_64/SandboxDX/Raytracing.cso</ObjectFileOutput>
@@ -203,7 +211,8 @@
     <FxCompile Include="assets\shaders_hlsl\RaytracingCube.hlsl">
       <ExcludedFromBuild>true</ExcludedFromBuild>
       <ShaderModel>6.3</ShaderModel>
-      <EntryPointName></EntryPointName>
+      <EntryPointName>
+      </EntryPointName>
       <VariableName>g_pRaytracingCube</VariableName>
       <HeaderFileOutput>./assets/shaders_hlsl_h/RaytracingCube.hlsl.h</HeaderFileOutput>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">bin/Debug-windows-x86_64/SandboxDX/RaytracingCube.cso</ObjectFileOutput>

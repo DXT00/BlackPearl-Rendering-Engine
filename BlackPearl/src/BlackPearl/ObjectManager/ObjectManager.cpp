@@ -26,9 +26,18 @@ namespace BlackPearl {
 
 	}
 
-	Object* ObjectManager::CreateModel(const std::string& modelPath, const std::string& shaderPath, const bool isAnimated, const bool vertices_sorted, const bool addBondingBox, const std::string& name)
+	Object* ObjectManager::CreateModel(
+		const std::string& modelPath, 
+		const std::string& shaderPath, 
+		const bool isAnimated, 
+		const bool vertices_sorted, 
+		const bool addBondingBox, 
+		const std::string& name,
+		const bool createMeshlet,
+		const bool isMeshletModel,
+		MeshletOption options)
 	{
-		Object* obj = m_Object3DCreater->CreateModel(modelPath, shaderPath, isAnimated, vertices_sorted, addBondingBox, name);
+		Object* obj = m_Object3DCreater->CreateModel(modelPath, shaderPath, isAnimated, vertices_sorted, addBondingBox, name, createMeshlet, isMeshletModel, options);
 		m_Objs.push_back(obj);
 		return obj;
 

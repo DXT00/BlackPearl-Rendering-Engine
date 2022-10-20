@@ -192,6 +192,10 @@ project "Sandbox"
 		--"directxtex.lib",
 	}
 
+	defines
+	{
+		"OPENGL_API"
+	}
 
 	filter "system:windows"
 		systemversion "latest"
@@ -199,7 +203,8 @@ project "Sandbox"
 		defines
 		{
 			"GLFW_INCLUDE_NONE",
-			"GE_PLATFORM_WINDOWS"
+			"GE_PLATFORM_WINDOWS",
+			"OPENGL_API"
 		}
 
 	filter "configurations:Debug"
@@ -273,6 +278,11 @@ project "SandboxDX"
 		"dxguid.lib",
 		--"directxtex.lib",
 	}
+	
+	defines
+	{
+		"DIRECTX_API"
+	}
 
 
 	filter "system:windows"
@@ -284,6 +294,7 @@ project "SandboxDX"
 			"GE_PLATFORM_WINDOWS",
 			"GE_D3D12RHI",
 			"D3D12RHI",
+			"DIRECTX_API"
 		}
 
 	filter "configurations:Debug"

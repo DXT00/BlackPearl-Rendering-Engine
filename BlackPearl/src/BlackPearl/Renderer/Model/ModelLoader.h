@@ -1,3 +1,5 @@
+#pragma once
+#include "BlackPearl/Renderer/Mesh/Mesh.h"
 namespace BlackPearl
 {
     class ModelLoader
@@ -7,7 +9,7 @@ namespace BlackPearl
     public:
         ModelLoader(/* args */);
         ~ModelLoader();
-        virtual void Load(const std::string& path) = 0;
+        virtual void Load(std::vector<Mesh>& output_meshes, BoundingSphere& bounding_sphere, const std::string& path) = 0;
     };
     
 

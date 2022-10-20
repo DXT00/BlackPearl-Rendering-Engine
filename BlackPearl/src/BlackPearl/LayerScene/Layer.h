@@ -113,7 +113,15 @@ namespace BlackPearl {
 
 		Object* CreateLight(LightType type, const std::string& name = "Light");
 
-		Object* CreateModel(const std::string& modelPath, const std::string& shaderPath, const bool isAnimated, const std::string& name = "Model", const bool vertices_sorted = false);
+		Object* CreateModel(
+			const std::string& modelPath,
+			const std::string& shaderPath,
+			const bool isAnimated,
+			const std::string& name = "Model",
+			const bool vertices_sorted = false,
+			const bool createMeshlet = false,
+			const bool isMeshletModel = false,
+			MeshletOption options = MeshletOption());
 		Object* CreateCube(const std::string& shaderPath = "assets/shaders/Cube.glsl", const std::string& texturePath = "", const std::string& name = "Cube");
 		Object* CreateSphere(const float radius, const unsigned int stackCount, const unsigned int sectorCount, const std::string& shaderPath = "assets/shaders/Sphere.glsl", const std::string& texturePath = "", const std::string& name = "Sphere");
 		Object* CreatePlane(const std::string& shaderPath = "assets/shaders/Plane.glsl", const std::string& texturePath = "assets/texture/wood.png", const std::string& name = "Plane");

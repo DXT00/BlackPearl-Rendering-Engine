@@ -111,11 +111,21 @@ namespace BlackPearl {
 		return obj;
 	}
 
-	Object* Object3DCreater::CreateModel(std::string modelPath, std::string shaderPath, const bool isAnimated, const bool vertices_sorted, const bool addBondingBox, const std::string name)
+	Object* Object3DCreater::CreateModel(
+		std::string modelPath, 
+		std::string shaderPath, 
+		const bool isAnimated, 
+		const bool vertices_sorted, 
+		const bool addBondingBox, 
+		const std::string name,
+		const bool createMeshlet,
+		const bool isMeshletModel,
+		MeshletOption options 
+		)
 	{
 		std::shared_ptr<Shader>shader(DBG_NEW Shader(shaderPath));
 		shader->Bind();
-		std::shared_ptr<Model> model(DBG_NEW Model(modelPath, shader, isAnimated, vertices_sorted));
+		std::shared_ptr<Model> model(DBG_NEW Model(modelPath, shader, isAnimated, vertices_sorted, createMeshlet, isMeshletModel,options));
 		Object* obj = CreateEmpty(name);
 		auto info = obj->AddComponent<BasicInfo>();
 		info->SetObjectType(ObjectType::OT_Model);

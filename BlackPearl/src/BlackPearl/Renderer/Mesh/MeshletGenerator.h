@@ -1,6 +1,5 @@
+#pragma once
 #include "Mesh.h"
-#include "Meshlet.h"
-#include "DirectXMesh.h"
 
 namespace BlackPearl {
     class MeshletGenerator
@@ -13,7 +12,8 @@ namespace BlackPearl {
     private:
         /* data */
         void ComputeMeshlet(const Mesh& mesh);
-        std::vector<Meshlet> m_Meshlets;
+        bool ExportMeshes(const char* filename, std::vector<ExportMesh>& exportMeshes);
+
     };
     
    

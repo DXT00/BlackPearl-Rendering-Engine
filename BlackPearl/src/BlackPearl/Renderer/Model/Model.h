@@ -7,13 +7,18 @@
 #include "assimp/scene.h"
 #include "BlackPearl/Animation/Bone.h"
 #include "BlackPearl/RayTracing/Vertex.h"
-#include "MeshletGenerator.h"
-#include "Meshlet.h"
+#include "BlackPearl/Renderer/Mesh/Meshlet.h"
+#include "BlackPearl/Component/BoundingSphereComponent/BoundingSphere.h"
+#include "ModelLoader.h"
+#include "BlackPearl/Renderer/Mesh/MeshletGenerator.h"
+#include "BlackPearl/RHI/DynamicRHI.h"
+#include "BlackPearl/RHI/D3D12RHI/D3D12ModelLoader.h"
 //#include <assimp/material.h>
 
 //#include <assimp/cimport.h>
 namespace BlackPearl {
 
+	extern DynamicRHI::Type g_RHIType;
 	class Model
 	{
 	public:
@@ -22,17 +27,29 @@ namespace BlackPearl {
 				const bool isAnimated,
 				const bool verticesSorted,
 				const bool createMeshlet = false,
+				const bool isMeshletModel = false,
 				MeshletOption options = MeshletOption()
 				)
 			: m_Shader(shader) {
 			m_HasAnimation = isAnimated;
 			m_SortVertices = verticesSorted;
-			m_CreateMeshlet = createMeshlet;
-			LoadModel(path);
 
-			if (m_CreateMeshlet) {
-				m_MeshletGenerator = std::make_shared<MeshletGenerator>();
-				m_MeshletGenerator->Process(m_Meshes, options);
+			if (g_RHIType == DynamicRHI::Type::D3D12) {
+				m_ModelLoader = DBG_NEW D3D12ModelLoader(isMeshletModel);
+				if (createMeshlet && !isMeshletModel) {
+					m_MeshletGenerator = std::make_shared<MeshletGenerator>();
+					m_MeshletGenerator->Process(m_Meshes, options);
+				}
+				m_ModelLoader->Load(m_Meshes, m_BoundingSphere, path);
+
+
+			}
+			else {
+				LoadModel(path);
+				//TODO::
+				//替换为				
+				//m_ModelLoader = std::make_shared<OpenGLModelLoader>(isMeshletModel, createMeshlet, options);
+
 			}
 		};
 
@@ -67,17 +84,17 @@ namespace BlackPearl {
 		glm::mat4 AiMatrix4ToMat4(aiMatrix3x3 aiMatrix);
 
 		/*Interpolate*/
-		glm::vec3 CalculateInterpolatePosition(float timeInDurationSecond, aiNodeAnim* nodeAnim);
+		glm::vec3    CalculateInterpolatePosition(float timeInDurationSecond, aiNodeAnim* nodeAnim);
 		aiQuaternion CalculateInterpolateRotation(float timeInDurationSecond, aiNodeAnim* nodeAnim);
-		glm::vec3 CalculateInterpolateScale(float timeInDurationSecond, aiNodeAnim* nodeAnim);
+		glm::vec3    CalculateInterpolateScale(float timeInDurationSecond, aiNodeAnim* nodeAnim);
 
 		std::vector<Mesh>       GetMeshes()const { return m_Meshes; }
 		std::shared_ptr<Shader> GetShader()const { return m_Shader; }
 		std::vector<Vertex>		GetMeshVertex() const { return m_Vertices; }
 
 
-		unsigned int FindRotation(float AnimationTime, const aiNodeAnim* nodeAnim);
-		unsigned int FindScaling(float AnimationTime, const aiNodeAnim* nodeAnim);
+		uint32_t FindRotation(float AnimationTime, const aiNodeAnim* nodeAnim);
+		uint32_t FindScaling(float AnimationTime, const aiNodeAnim* nodeAnim);
 	private:
 		std::shared_ptr<Shader> m_Shader;
 		std::vector<Mesh> m_Meshes;
@@ -92,7 +109,7 @@ namespace BlackPearl {
 		/*Animation*/
 		bool m_HasAnimation = false;
 		/*Bones*/
-		unsigned int m_BoneCount = 0;
+		uint32_t m_BoneCount = 0;
 		/*store every vertex's jointId and weight*/
 		std::vector<VertexBoneData> m_BoneDatas;
 
@@ -104,15 +121,17 @@ namespace BlackPearl {
 		glm::mat4 m_GlobalInverseTransform;
 
 		/*Vertices Num,Indices Num*/
-		unsigned int m_VerticesNum = 0;
-		unsigned int m_VerticesIdx = 0;
+		uint32_t m_VerticesNum = 0;
+		uint32_t m_VerticesIdx = 0;
 
 		/*for raytracing, calculate bounding box*/
 		std::vector<Vertex> m_Vertices;
-
-		/*for mesh shader renderer, to create meshlet*/
-		bool m_CreateMeshlet = false;
+		ModelLoader* m_ModelLoader;
+		
+		/* use for meshlet culling */
+		BoundingSphere m_BoundingSphere;
 		std::shared_ptr<MeshletGenerator> m_MeshletGenerator;
+
 
 	};
 

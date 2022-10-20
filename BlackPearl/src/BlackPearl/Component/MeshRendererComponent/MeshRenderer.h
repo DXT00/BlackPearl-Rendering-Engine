@@ -7,19 +7,19 @@
 
 //MeshRenderer÷ª∏∫‘‰÷»æ
 namespace BlackPearl {
-	class MeshRenderer:public Component<MeshRenderer>
+	class MeshRenderer :public Component<MeshRenderer>
 	{
 	public:
 		//virtual node, has no mesh(only material),such as RTXTransformNode
 		MeshRenderer(std::shared_ptr<Material> material)
-			:Component(Component::Type::MeshRenderer), m_Material(material){}
+			:Component(Component::Type::MeshRenderer), m_Material(material) {}
 		//get transformMatrix from Object's Transform Component!
-		MeshRenderer(const std::vector<Mesh> &meshes)
-			:Component(Component::Type::MeshRenderer), m_Meshes(meshes){}
+		MeshRenderer(const std::vector<Mesh>& meshes)
+			:Component(Component::Type::MeshRenderer), m_Meshes(meshes) {}
 
-		MeshRenderer(const Mesh &mesh)
+		MeshRenderer(const Mesh& mesh)
 			:Component(Component::Type::MeshRenderer) {
-		
+
 			m_Meshes.push_back(mesh);
 		}
 
@@ -38,10 +38,10 @@ namespace BlackPearl {
 		void SetTexture(unsigned int meshIndex, const std::shared_ptr<Texture>& texture);
 		void SetTextures(const std::shared_ptr<Texture>& texture);
 		void SetModelTexture(unsigned int meshIndex, const std::shared_ptr<Texture>& texture);
-		void SetModelTextures(const std::shared_ptr<Texture> &texture);
+		void SetModelTextures(const std::shared_ptr<Texture>& texture);
 
 		void SetShaders(const std::string& image);
-		void SetShaders(const std::shared_ptr<Shader> &shader);
+		void SetShaders(const std::shared_ptr<Shader>& shader);
 
 		void SetEnableCullFace(bool isEnable) { m_EnableCullFace = isEnable; }
 		bool GetEnableCullFace()const { return m_EnableCullFace; }
@@ -71,7 +71,7 @@ namespace BlackPearl {
 		void SetEnableRender(bool enable) { m_EnableRender = enable; }
 
 		bool GetIsBackGroundObjects() const { return m_IsBackGroundObjects; }
-		void SetIsBackGroundObjects(bool isBackGroundObject)  {  m_IsBackGroundObjects = isBackGroundObject; }
+		void SetIsBackGroundObjects(bool isBackGroundObject) { m_IsBackGroundObjects = isBackGroundObject; }
 
 		bool GetIsShadowObjects() const { return m_HasShadow; }
 		void SetIsShadowObjects(bool isShadowObj) { m_HasShadow = isShadowObj; }
@@ -85,10 +85,10 @@ namespace BlackPearl {
 		std::vector<unsigned int> GetReflectionProbeChache() const { return m_reflectProbeCaches; }
 		void SetReflectionProbeChache(std::vector<unsigned int> probesIdx) { m_reflectProbeCaches = probesIdx; }
 
-		bool GetIsDiffuseProbeCacheSet()const { return m_SetDiffuseProbeCaches; }
-		void SetIsDiffuseProbeCacheSet(bool set) {  m_SetDiffuseProbeCaches=set; }
+		bool GetIsDiffuseProbeCacheSet() const { return m_SetDiffuseProbeCaches; }
+		void SetIsDiffuseProbeCacheSet(bool set) { m_SetDiffuseProbeCaches = set; }
 
-		bool GetIsReflectProbeCacheSet()const { return m_SetReflectProbeCaches; }
+		bool GetIsReflectProbeCacheSet() const { return m_SetReflectProbeCaches; }
 		void SetIsReflectProbeCacheSet(bool set) { m_SetReflectProbeCaches = set; }
 
 
@@ -106,7 +106,7 @@ namespace BlackPearl {
 
 		//case: all meshes has the same material
 		std::shared_ptr<Material> m_Material = nullptr;
-		
+
 		bool m_EnableCullFace = true;
 		bool m_IsBackGroundObjects = false;
 		bool m_HasShadow = true;
