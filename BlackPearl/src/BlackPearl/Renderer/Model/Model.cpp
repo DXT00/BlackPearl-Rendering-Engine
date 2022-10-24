@@ -5,7 +5,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include "glm/fwd.hpp"
 #include "glm/gtx/quaternion.hpp"
-//#include "BlackPearl/Renderer/Renderer.h"
+#include "BlackPearl/Renderer/Mesh/MeshletConfig.h"
 namespace BlackPearl {
 
 	static void glmInsertVector(glm::vec2 v, std::vector<float>& vec) {
@@ -88,6 +88,242 @@ namespace BlackPearl {
 		}
 
 		ProcessNode(m_Scene->mRootNode, m_Scene);
+	}
+
+	void Model::LoadMeshletModel(BoundingSphere& bounding_sphere, const std::string& path)
+	{
+		std::ifstream stream(path, std::ios::binary);
+		if (!stream.is_open()) {
+			GE_CORE_ERROR("fail to load model" + path);
+			return;
+		}
+		std::vector<MeshHeader> meshes;
+		std::vector<BufferView> bufferViews;
+		std::vector<Accessor> accessors; // accessors store the indices of all meshes
+		//std::vector<uint8_t> buffer;
+		FileHeader header;
+		stream.read(reinterpret_cast<char*>(&header), sizeof(header));
+
+		if (header.Prolog != c_prolog)
+		{
+			GE_CORE_ERROR("Incorrect file format.");
+			return;
+		}
+
+		if (header.Version != CURRENT_FILE_VERSION)
+		{
+			GE_CORE_ERROR(" Version mismatch between export and import serialization code.");
+			return;
+		}
+
+		// Read mesh metdata
+		meshes.resize(header.MeshCount);
+		stream.read(reinterpret_cast<char*>(meshes.data()), meshes.size() * sizeof(meshes[0]));
+
+		accessors.resize(header.AccessorCount);
+		stream.read(reinterpret_cast<char*>(accessors.data()), accessors.size() * sizeof(accessors[0]));
+
+		bufferViews.resize(header.BufferViewCount);
+		stream.read(reinterpret_cast<char*>(bufferViews.data()), bufferViews.size() * sizeof(bufferViews[0]));
+
+		// buffer store all indices in this mesh, buffer must be a member variable,or it will become invalid after exit this function
+		m_Buffer.resize(header.BufferSize);
+		stream.read(reinterpret_cast<char*>(m_Buffer.data()), header.BufferSize);
+
+		char eofbyte;
+		stream.read(&eofbyte, 1); // Read last byte to hit the eof bit
+
+		assert(stream.eof()); // There's a problem if we didn't completely consume the file contents.
+
+		stream.close();
+
+		// Populate mesh data from binary data and metadata.
+		m_Meshes.resize(meshes.size());
+		for (uint32_t i = 0; i < static_cast<uint32_t>(meshes.size()); ++i)
+		{
+			auto& meshView = meshes[i];
+			auto& mesh = m_Meshes[i];
+			uint32_t indexSize; // sizeof(index)
+			uint32_t indexCount; //number of indices in this mesh
+			uint8_t* indices;
+			Span<Subset> indexSubsets;
+			VertexBufferLayout layouts = {
+				{ElementDataType::Float3,"POSITION", false, 0},
+				{ElementDataType::Float3,"NORMAL", false, 0},
+				{ElementDataType::Float2,"TEXCOORD", false, 0},
+				{ElementDataType::Float3,"TANGENT", false, 0},
+				{ElementDataType::Float3,"BITANGENT", false, 0}
+			};
+			// Index data
+			{
+				Accessor& accessor = accessors[meshView.Indices];
+				BufferView& bufferView = bufferViews[accessor.BufferView];
+
+				mesh.IndexSize = accessor.Size;
+				// mesh.IndexCount = accessor.Count;
+
+				mesh.Indices = MakeSpan(m_Buffer.data() + bufferView.Offset, bufferView.Size);
+			}
+
+			// Index Subset data
+			{
+				Accessor& accessor = accessors[meshView.IndexSubsets];
+				BufferView& bufferView = bufferViews[accessor.BufferView];
+
+				mesh.IndexSubsets = MakeSpan(reinterpret_cast<Subset*>(m_Buffer.data() + bufferView.Offset), accessor.Count);
+			}
+
+			// Vertex data & layout metadata
+
+			// Determine the number of unique Buffer Views associated with the vertex attributes & copy vertex buffers.
+			std::vector<uint32_t> vbMap;
+			uint32_t numElements = 0;
+
+			// vertices 存储结构
+			// v0.pos,v0.normal | v1.pos,v1.normal
+			for (uint32_t j = 0; j < Attribute::Count; ++j)
+			{
+				if (meshView.Attributes[j] == -1)
+					continue;
+
+				Accessor& accessor = accessors[meshView.Attributes[j]];
+
+				auto it = std::find(vbMap.begin(), vbMap.end(), accessor.BufferView);
+				if (it != vbMap.end())
+				{
+					continue; // Already added - continue.
+				}
+
+				// New buffer view encountered; add to list and copy vertex data
+				vbMap.push_back(accessor.BufferView);
+				BufferView& bufferView = bufferViews[accessor.BufferView];
+
+				Span<uint8_t> verts = MakeSpan(m_Buffer.data() + bufferView.Offset, bufferView.Size);
+
+				mesh.VertexStrides.push_back(accessor.Stride);
+				mesh.Vertices.push_back(verts); //这里和openGL不一样，每个attributes分开push到vertices
+				mesh.VertexCount = static_cast<uint32_t>(verts.size()) / accessor.Stride;
+			}
+
+			// Populate the vertex buffer metadata from accessors.
+			VertexBufferLayout mesh_layout;
+			for (uint32_t j = 0; j < Attribute::Count; ++j)
+			{
+				if (meshView.Attributes[j] == -1)
+					continue;
+
+				Accessor& accessor = accessors[meshView.Attributes[j]];
+
+				// Determine which vertex buffer index holds this attribute's data
+				auto it = std::find(vbMap.begin(), vbMap.end(), accessor.BufferView);
+
+				auto& element = layouts.GetElement(j);
+				element.Location = static_cast<uint32_t>(std::distance(vbMap.begin(), it));
+
+				mesh_layout.AddElement(element);
+			}
+			mesh.SetVertexBufferLayout(mesh_layout);
+
+
+			// Meshlet data
+			{
+				Accessor& accessor = accessors[meshView.Meshlets];
+				BufferView& bufferView = bufferViews[accessor.BufferView];
+
+				mesh.Meshlets = MakeSpan(reinterpret_cast<Meshlet*>(m_Buffer.data() + bufferView.Offset), accessor.Count);
+			}
+
+			// Meshlet Subset data
+			{
+				Accessor& accessor = accessors[meshView.MeshletSubsets];
+				BufferView& bufferView = bufferViews[accessor.BufferView];
+
+				mesh.MeshletSubsets = MakeSpan(reinterpret_cast<Subset*>(m_Buffer.data() + bufferView.Offset), accessor.Count);
+			}
+
+			// Unique Vertex Index data , UniqueVertexIndices is the indices buffer that is generated by sorting each triangular face 
+			// the method to create UniqueVertexIndices can refer to https://github.com/microsoft/DirectXMesh/wiki/OptimizeFacesLRU
+			//https://github.com/microsoft/DirectX-Graphics-Samples/blob/master/Samples/Desktop/D3D12MeshShaders/src/WavefrontConverter/MeshProcessor.cpp : MeshProcessor::Finalize
+			{
+				Accessor& accessor = accessors[meshView.UniqueVertexIndices];
+				BufferView& bufferView = bufferViews[accessor.BufferView];
+
+				mesh.UniqueVertexIndices = MakeSpan(m_Buffer.data() + bufferView.Offset, bufferView.Size);
+			}
+
+			// Primitive Index data
+			{
+				Accessor& accessor = accessors[meshView.PrimitiveIndices];
+				BufferView& bufferView = bufferViews[accessor.BufferView];
+
+				mesh.PrimitiveIndices = MakeSpan(reinterpret_cast<PackedTriangle*>(m_Buffer.data() + bufferView.Offset), accessor.Count);
+			}
+
+			// Cull data
+			{
+				Accessor& accessor = accessors[meshView.CullData];
+				BufferView& bufferView = bufferViews[accessor.BufferView];
+
+				mesh.CullingData = MakeSpan(reinterpret_cast<CullData*>(m_Buffer.data() + bufferView.Offset), accessor.Count);
+			}
+		}
+
+		// Build bounding spheres for each mesh
+		for (uint32_t i = 0; i < static_cast<uint32_t>(m_Meshes.size()); ++i)
+		{
+			auto& m = m_Meshes[i];
+
+			uint32_t vbIndexPos = 0;
+
+			// Find the index of the vertex buffer of the position attribute
+			for (uint32_t j = 1; j < m.GetVertexBufferLayout().ElementSize(); ++j)
+			{
+				//auto& desc = m.LayoutElems[j];
+				auto& element = m.GetVertexBufferLayout().GetElement(j);
+				if (strcmp(element.Name.c_str(), "POSITION") == 0)
+				{
+					vbIndexPos = j;
+					break;
+				}
+			}
+
+			// Find the byte offset of the position attribute with its vertex buffer
+			uint32_t positionOffset = 0;
+
+			for (uint32_t j = 0; j < m.GetVertexBufferLayout().ElementSize(); ++j)
+			{
+				auto& element = m.GetVertexBufferLayout().GetElement(j);
+				if (strcmp(element.Name.c_str(), "POSITION") == 0)
+				{
+					break;
+				}
+				//找到position的下一个attribute的位置
+				if (element.Location == vbIndexPos)
+				{
+					positionOffset += m.GetVertexBufferLayout().GetElement(j).GetElementCount();
+				}
+			}
+			// vertices 存储结构
+			// NORMAL  : v0.normal, v1.normal, v2.normal ...
+			// POSITION: v0.pos, v1.pos, v2.pos .....
+			//vbIndexPos = 1
+
+			XMFLOAT3* v0 = reinterpret_cast<XMFLOAT3*>(m.Vertices[vbIndexPos].data() + positionOffset);
+			uint32_t stride = m.VertexStrides[vbIndexPos];
+
+			BoundingSphere::CreateFromPoints(m.BoundingSphere, m.VertexCount, v0, stride);
+
+			if (i == 0)
+			{
+				bounding_sphere = m.BoundingSphere;
+			}
+			else
+			{
+				BoundingSphere::CreateMerged(bounding_sphere, bounding_sphere, m.BoundingSphere);
+			}
+		}
+
+		return;
 	}
 
 

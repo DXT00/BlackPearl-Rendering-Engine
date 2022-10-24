@@ -119,8 +119,8 @@ namespace BlackPearl {
 		Attenuation m_Attenuation;
 		/* 每个PointLight都有一个采集它周围深度的ShadowMap */
 		std::shared_ptr<CubeMapTexture> m_ShadowMap;
-		unsigned int m_ShadowMapPointLightWidth =1024.0f;
-		unsigned int m_ShadowMapPointLightHeight=1024.0f;
+		unsigned int m_ShadowMapPointLightWidth = 1024;
+		unsigned int m_ShadowMapPointLightHeight = 1024;
 	};
 
 }

@@ -95,6 +95,10 @@ namespace BlackPearl {
 
 		for (int i = 0; i < meshes.size(); i++) {
 			std::shared_ptr<Shader> shader = meshes[i].GetMaterial()->GetShader();
+			if (!shader) {
+				GE_CORE_ERROR(" no shader found!");
+				break;
+			}
 			shader->Bind();
 			GE_ERROR_JUDGE();
 

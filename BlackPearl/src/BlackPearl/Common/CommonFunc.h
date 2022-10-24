@@ -2,6 +2,7 @@
 #include <memory>
 #include <vector>
 #include <string>   
+#include <cstdint>
 #include "BlackPearl/Renderer/Material/Texture.h"
 #include "BlackPearl/Renderer/Buffer/Buffer.h"
 #include "BlackPearl/Object/Object.h"
@@ -121,7 +122,7 @@ namespace BlackPearl {
         return wc;
     }
 
-    template< typename T>
+    template<typename T>
     class Span
     {
     public:
@@ -146,7 +147,7 @@ namespace BlackPearl {
         T* begin() { return m_Data; }
         T* end() { return m_Data + m_Count; }
 
-        T* operator[](uint32_t i) { return *(m_Data + i); }
+        T& operator[](uint32_t i) { return *(m_Data + i); }
         const T& operator[](uint32_t i) const { *(m_Data + i); }
     private:
         T* m_Data;

@@ -38,6 +38,11 @@ namespace BlackPearl {
 
 	Shader::Shader(const std::string & filepath)
 	{
+		if (filepath.empty()) {
+
+			GE_CORE_WARN("no shader path found");
+			return ;
+		}
 		m_ShaderPath = filepath;
 		std::string source = ReadFile(filepath);
 		std::string commonSource = ReadFile(m_CommonStructPath);
@@ -49,7 +54,17 @@ namespace BlackPearl {
 
 	Shader::~Shader()
 	{
-		glDeleteProgram(m_RendererID);
+
+		if (m_RendererID == -1) {
+			return;
+		}
+		GLint has_deleted = 0;
+		glGetProgramiv(m_RendererID, GL_DELETE_STATUS, &has_deleted);
+		if (has_deleted != GL_TRUE)
+		{
+			glDeleteProgram(m_RendererID);
+		}
+		
 	}
 
 

@@ -31,10 +31,12 @@ namespace BlackPearl {
 		//void UpdateTransformMatrix(glm::mat4 transformMatrix);
 
 		inline std::shared_ptr<Model>GetModel()  const { return m_Model; }
-		inline std::vector<Mesh>     GetMeshes() const {
+		std::vector<Mesh> GetMeshes() const {
 			return m_Model != nullptr ? m_Model->GetMeshes() : m_Meshes;
 		}
-
+		std::vector<Mesh>& GetMeshlets() {
+			return m_Model != nullptr ? m_Model->GetMeshlets() : m_Meshes;
+		}
 		void SetTexture(unsigned int meshIndex, const std::shared_ptr<Texture>& texture);
 		void SetTextures(const std::shared_ptr<Texture>& texture);
 		void SetModelTexture(unsigned int meshIndex, const std::shared_ptr<Texture>& texture);

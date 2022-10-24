@@ -24,6 +24,7 @@
 #include "Layers/D3D12RayTracingCubeLayer.h"
 #include "Layers/D3D12RayTracingModelLayer.h"
 #include "Layers/D3D12BasicRenderLayer.h"
+#include "Layers/D3D12MeshShaderLayer.h"
 #include "BlackPearl/RHI/DynamicRHI.h"
 class SandBoxDX :public BlackPearl::Application {
 
@@ -47,6 +48,9 @@ public:
 		else if (renderer == "D3D12BasicRenderLayer") {
 			layer = DBG_NEW D3D12BasicRenderLayer(layer_name);
 		}
+		else if (renderer == "D3D12MeshShaderRender") {
+			layer = DBG_NEW D3D12MeshShaderLayer(layer_name);
+		}
 
 		GetLayerManager()->PushLayer(layer);
 	}
@@ -55,7 +59,7 @@ public:
 };
 
 BlackPearl::Application* BlackPearl::CreateApplication(HINSTANCE hInstance, int nShowCmd) {
-	return DBG_NEW SandBoxDX(hInstance, nShowCmd, BlackPearl::DynamicRHI::Type::D3D12, "D3D12BasicRenderLayer");
+	return DBG_NEW SandBoxDX(hInstance, nShowCmd, BlackPearl::DynamicRHI::Type::D3D12, "D3D12MeshShaderRender");
 
 }
 

@@ -1148,8 +1148,11 @@ namespace BlackPearl {
 		ImGui::Text("Up.x = %f,Up.y = %f,Up.z = %f", perspectiveCamera->Up().x, perspectiveCamera->Up().y, perspectiveCamera->Up().z);
 		ImGui::Text("Znear = %f,Zfar = %f,Fov = %f", perspectiveCamera->GetZnear(), perspectiveCamera->GetZfar(), perspectiveCamera->GetFov());
 
-		ImGui::DragFloat("CameraMoveSpeed", &m_CameraMoveSpeed, 0.1f, 0.1, 30);
-		ImGui::DragFloat("CameraRotateSpeed", &m_CameraRotateSpeed, 0.1f, 0.1, 30);
+		float moveSpeed, rotSpeed;
+		ImGui::DragFloat("CameraMoveSpeed", &moveSpeed, 0.1f, 0.1, 30);
+		perspectiveCamera->SetMoveSpeed(moveSpeed);
+		ImGui::DragFloat("CameraRotateSpeed", &rotSpeed, 0.1f, 0.1, 30);
+		perspectiveCamera->SetRotateSpeed(moveSpeed);
 
 
 

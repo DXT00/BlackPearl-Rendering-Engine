@@ -123,8 +123,15 @@ namespace BlackPearl {
 		MeshletOption options 
 		)
 	{
-		std::shared_ptr<Shader>shader(DBG_NEW Shader(shaderPath));
-		shader->Bind();
+		std::shared_ptr<Shader> shader;
+		if (shaderPath == "") {
+			shader.reset(DBG_NEW Shader(shaderPath));
+			GE_CORE_WARN("shaderPath is empty");
+		}
+		else {
+			shader.reset(DBG_NEW Shader(shaderPath));
+			shader->Bind();
+		}
 		std::shared_ptr<Model> model(DBG_NEW Model(modelPath, shader, isAnimated, vertices_sorted, createMeshlet, isMeshletModel,options));
 		Object* obj = CreateEmpty(name);
 		auto info = obj->AddComponent<BasicInfo>();
@@ -138,6 +145,8 @@ namespace BlackPearl {
 		}*/
 		return obj;
 	}
+
+
 
 	Object* Object3DCreater::CreateSkyBox(const std::vector<std::string>& textureFaces, const std::string& shaderPath, const std::string name)
 	{

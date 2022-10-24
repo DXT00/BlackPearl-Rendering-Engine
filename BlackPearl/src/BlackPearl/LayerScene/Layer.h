@@ -152,34 +152,33 @@ namespace BlackPearl {
 		void InputCheck(float ts)
 		{
 
-			//auto cameraComponent = m_MainCamera->GetObj()->GetComponent<BlackPearl::PerspectiveCamera>();
 			if (Input::IsKeyPressed(KeyCodes::Get(BP_KEY_W))) {
-				m_CameraPosition += m_MainCamera->Front() * m_CameraMoveSpeed * ts;
+				m_CameraPosition += m_MainCamera->Front() * m_MainCamera->GetMoveSpeed() * ts;
 			}
 			else if (Input::IsKeyPressed(KeyCodes::Get(BP_KEY_S))) {
-				m_CameraPosition -= m_MainCamera->Front() * m_CameraMoveSpeed * ts;
+				m_CameraPosition -= m_MainCamera->Front() * m_MainCamera->GetMoveSpeed() * ts;
 			}
 			if (Input::IsKeyPressed(KeyCodes::Get(BP_KEY_A))) {
 				if (g_RHIType == DynamicRHI::Type::D3D12) {
-					m_CameraPosition -= (-m_MainCamera->Right()) * m_CameraMoveSpeed * ts;
+					m_CameraPosition -= (-m_MainCamera->Right()) * m_MainCamera->GetMoveSpeed() * ts;
 				}
 				else if (g_RHIType == DynamicRHI::Type::OpenGL) {
-					m_CameraPosition -= m_MainCamera->Right() * m_CameraMoveSpeed * ts;
+					m_CameraPosition -= m_MainCamera->Right() * m_MainCamera->GetMoveSpeed() * ts;
 				}
 			}
 			else if (Input::IsKeyPressed(KeyCodes::Get(BP_KEY_D))) {
 				if (g_RHIType == DynamicRHI::Type::D3D12) {
-					m_CameraPosition += (-m_MainCamera->Right()) * m_CameraMoveSpeed * ts;
+					m_CameraPosition += (-m_MainCamera->Right()) * m_MainCamera->GetMoveSpeed() * ts;
 				}
 				else if (g_RHIType == DynamicRHI::Type::OpenGL) {
-					m_CameraPosition += m_MainCamera->Right() * m_CameraMoveSpeed * ts;
+					m_CameraPosition += m_MainCamera->Right() * m_MainCamera->GetMoveSpeed() * ts;
 				}
 			}
 			if (Input::IsKeyPressed(KeyCodes::Get(BP_KEY_E))) {
-				m_CameraPosition += m_MainCamera->Up() * m_CameraMoveSpeed * ts;
+				m_CameraPosition += m_MainCamera->Up() * m_MainCamera->GetMoveSpeed() * ts;
 			}
 			else if (Input::IsKeyPressed(KeyCodes::Get(BP_KEY_Q))) {
-				m_CameraPosition -= m_MainCamera->Up() * m_CameraMoveSpeed * ts;
+				m_CameraPosition -= m_MainCamera->Up() * m_MainCamera->GetMoveSpeed() * ts;
 			}
 			// ---------------------Rotation--------------------------------------
 
@@ -199,8 +198,8 @@ namespace BlackPearl {
 
 				m_LastMouseX = posx;
 				m_LastMouseY = posy;
-				m_CameraRotation.Yaw += diffx * m_CameraRotateSpeed * ts;
-				m_CameraRotation.Pitch += diffy * m_CameraRotateSpeed * ts;
+				m_CameraRotation.Yaw += diffx * m_MainCamera->GetRotateSpeed() * ts;
+				m_CameraRotation.Pitch += diffy * m_MainCamera->GetRotateSpeed() * ts;
 
 				if (m_CameraRotation.Pitch > 89.0f)
 					m_CameraRotation.Pitch = 89.0f;
@@ -246,8 +245,7 @@ namespace BlackPearl {
 		CameraRotation m_CameraRotation;
 		float m_LastMouseX;
 		float m_LastMouseY;
-		float m_CameraMoveSpeed = 3.0f;
-		float m_CameraRotateSpeed = 1.0f;
+
 
 		/*Time*/
 		std::chrono::milliseconds m_StartTimeMs;

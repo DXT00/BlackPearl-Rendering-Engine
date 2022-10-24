@@ -16,16 +16,22 @@ namespace BlackPearl {
 		inline void SetZfar(float zfar) { m_zFar = zfar; RecalculateProjectionMatrix(); }
 		inline void SetHeight(float height) { m_Height = height; RecalculateProjectionMatrix(); }
 		inline void SetWidth(float width) { m_Width = width; RecalculateProjectionMatrix(); }
+		void SetMoveSpeed(float speed) { m_CameraMoveSpeed = speed; }
+		void SetRotateSpeed(float speed) { m_CameraRotateSpeed = speed; }
 
 		float GetFov() const{ return m_Fov; }
 		float GetZnear()const { return m_zNear; }
 		float GetZfar()const { return m_zFar; }
 		float GetAspectRadio()const { return m_Width / m_Height; }
+		float GetMoveSpeed() const { return m_CameraMoveSpeed; }
+		float GetRotateSpeed() const { return m_CameraRotateSpeed; }
+
 	private:
 		float m_Fov;
 		float m_Width, m_Height;
 		float m_zNear, m_zFar;
-		
+		float m_CameraMoveSpeed = 10.0f;
+		float m_CameraRotateSpeed = 10.0f;
 
 
 	};

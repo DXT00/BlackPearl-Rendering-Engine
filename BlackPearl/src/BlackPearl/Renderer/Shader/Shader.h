@@ -36,7 +36,7 @@ namespace BlackPearl {
 
 	private:
 		Shader(const std::string& vertexSrc, const std::string& fragmentSrc, const std::string& geometrySrc);
-		uint32_t m_RendererID;
+		int32_t m_RendererID = -1;
 		std::string m_ShaderPath;
 		std::string m_FragmentCommonStruct;
 		std::string m_CommonStructPath="assets/shaders/common/CommonStruct.glsl";

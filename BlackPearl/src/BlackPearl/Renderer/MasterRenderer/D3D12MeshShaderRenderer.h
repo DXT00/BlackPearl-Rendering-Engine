@@ -13,6 +13,7 @@ namespace BlackPearl {
 	{
 	public:
 		D3D12MeshShaderRenderer();
+		void Init(Scene* scene);
 		~D3D12MeshShaderRenderer();
 		virtual void OnDeviceLost();
 		virtual void OnDeviceRestored();
@@ -20,12 +21,12 @@ namespace BlackPearl {
 		void Render(const Camera& camera);
 
 	private:
-		void Init(Scene* scene);
 		void LoadPipeline();
 		void LoadAssets();
 		void UploadObj(Object* obj);
 		void UploadModel(Object* model);
-		
+		void UploadModel(Model* model);
+
 		void WaitForGpu();
 		void LoadScene(Scene* scene);
 		void PreCheck();

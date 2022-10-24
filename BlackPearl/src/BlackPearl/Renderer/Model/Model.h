@@ -35,13 +35,26 @@ namespace BlackPearl {
 			m_SortVertices = verticesSorted;
 
 			if (g_RHIType == DynamicRHI::Type::D3D12) {
-				m_ModelLoader = DBG_NEW D3D12ModelLoader(isMeshletModel);
+				//m_ModelLoader = DBG_NEW D3D12ModelLoader(isMeshletModel);
 				if (createMeshlet && !isMeshletModel) {
 					m_MeshletGenerator = std::make_shared<MeshletGenerator>();
 					m_MeshletGenerator->Process(m_Meshes, options);
 				}
-				m_ModelLoader->Load(m_Meshes, m_BoundingSphere, path);
+				//m_ModelLoader->Load(m_Meshes, m_BoundingSphere, path);
+				LoadMeshletModel(m_BoundingSphere, path);
 
+				/*for (size_t i = 0; i < m_Meshes.size(); i++)
+				{
+					Mesh& m = m_Meshes[i];
+					for (size_t j = 0; j < m.Vertices.size(); j++)
+					{
+						for (size_t k = 0; k < m.Vertices[j].size(); k++)
+						{
+							GE_CORE_INFO((char)(m.Vertices[j].data()));
+						}
+						
+					}
+				}*/
 
 			}
 			else {
@@ -58,7 +71,7 @@ namespace BlackPearl {
 
 		};
 		void LoadModel(const std::string& path);
-
+		void LoadMeshletModel(BoundingSphere& bounding_sphere, const std::string& path);
 		void ProcessNode(aiNode* node, const aiScene* scene);
 		Mesh ProcessMesh(aiMesh* aimesh, std::vector<Vertex>& v_vertex);
 		Mesh ProcessMesh(aiMesh* aimesh, std::vector<Vertex>& v_vertex, bool sort_vertices);
@@ -88,17 +101,21 @@ namespace BlackPearl {
 		aiQuaternion CalculateInterpolateRotation(float timeInDurationSecond, aiNodeAnim* nodeAnim);
 		glm::vec3    CalculateInterpolateScale(float timeInDurationSecond, aiNodeAnim* nodeAnim);
 
-		std::vector<Mesh>       GetMeshes()const { return m_Meshes; }
+		std::vector<Mesh>       GetMeshes() const { return m_Meshes; }
+		std::vector<Mesh>&  GetMeshlets() { return m_Meshes; }
+
 		std::shared_ptr<Shader> GetShader()const { return m_Shader; }
 		std::vector<Vertex>		GetMeshVertex() const { return m_Vertices; }
 
 
 		uint32_t FindRotation(float AnimationTime, const aiNodeAnim* nodeAnim);
 		uint32_t FindScaling(float AnimationTime, const aiNodeAnim* nodeAnim);
-	private:
-		std::shared_ptr<Shader> m_Shader;
+	public:
 		std::vector<Mesh> m_Meshes;
+	private:
+		std::shared_ptr<Shader> m_Shader = nullptr;
 		std::map<int, std::shared_ptr<Material>> m_ModelMaterials;
+		//std::vector<Mesh> m_Meshes;
 
 		std::string m_Directory;
 		Assimp::Importer m_Importer;
@@ -131,6 +148,7 @@ namespace BlackPearl {
 		/* use for meshlet culling */
 		BoundingSphere m_BoundingSphere;
 		std::shared_ptr<MeshletGenerator> m_MeshletGenerator;
+		std::vector<uint8_t>  m_Buffer;
 
 
 	};

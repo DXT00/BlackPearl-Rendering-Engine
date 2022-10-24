@@ -154,6 +154,7 @@ namespace BlackPearl {
 #define VK_W 0x57
 #define VK_D 0x44
 #define VK_E 0x45
+#define VK_Q 0x51
 
 
 

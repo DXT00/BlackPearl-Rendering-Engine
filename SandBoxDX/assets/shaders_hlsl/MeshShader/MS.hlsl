@@ -12,11 +12,11 @@
 #define MAX_PRIMS 126
 #define MAX_VERTS 64
 #define ROOT_SIG "CBV(b0), \
-				  RootConstants(b1, num32bitconstants=2), \
-				  SRV(t0), \
-				  SRV(t1), \
-				  SRV(t2), \
-				  SRV(t3)"
+                  RootConstants(b1, num32bitconstants=2), \
+                  SRV(t0), \
+                  SRV(t1), \
+                  SRV(t2), \
+                  SRV(t3)"
 
 struct Constants
 {
@@ -119,7 +119,7 @@ VertexOut GetVertexAttributes(uint meshletIndex, uint vertexIndex)
 void main(uint gtid: SV_GroupThreadID, 
 		  uint gid : SV_GroupID,
 		  out indices uint3 tris[MAX_PRIMS],
-		  out vertices uint verts[MAX_VERTS]) 
+		  out vertices VertexOut verts[MAX_VERTS]) 
 {
     Meshlet m = Meshlets[MeshInfo.MeshletOffset + gid]; //a threadGroup process a meshlet
 

@@ -137,22 +137,22 @@ namespace BlackPearl {
                 {ElementDataType::Float3,"TANGENT", false, 0},
                 {ElementDataType::Float3,"BITANGENT", false, 0}
             };
-            std::vector<uint32_t> vertexStrides;
-            std::vector<Span<uint8_t>> vertices; //每个attribute对应一个Span<uint_8> ?
-            uint32_t vertexCount;
-            Span<Subset>               meshletSubsets;
-            Span<Meshlet>              meshlets;
-            Span<uint8_t>              uniqueVertexIndices;
-            Span<PackedTriangle>       primitiveIndices;
-            Span<CullData>             cullingData;
+            //std::vector<uint32_t> vertexStrides;
+            //std::vector<Span<uint8_t>> vertices; //每个attribute对应一个Span<uint_8> ?
+            //uint32_t vertexCount;
+            //Span<Subset>               meshletSubsets;
+            //Span<Meshlet>              meshlets;
+            //Span<uint8_t>              uniqueVertexIndices;
+            //Span<PackedTriangle>       primitiveIndices;
+            //Span<CullData>             cullingData;
 
             // Index data
             {
                 Accessor& accessor = accessors[meshView.Indices];
                 BufferView& bufferView = bufferViews[accessor.BufferView];
 
-                indexSize = accessor.Size;
-                indexCount = accessor.Count;
+                mesh.IndexSize = accessor.Size;
+               // mesh.IndexCount = accessor.Count;
 
                 mesh.Indices = MakeSpan(buffer.data() + bufferView.Offset, bufferView.Size);
             }
@@ -171,9 +171,8 @@ namespace BlackPearl {
             std::vector<uint32_t> vbMap;
             uint32_t numElements = 0;
            
-            //vertices 存储结构
-            // POSITION: v0.pos, v1.pos, v2.pos .....
-            // NORMAL  : v0.normal, v1.normal, v2.normal ...
+            // vertices 存储结构
+            // v0.pos,v0.normal | v1.pos,v1.normal
             for (uint32_t j = 0; j < Attribute::Count; ++j)
             {
                 if (meshView.Attributes[j] == -1)
@@ -215,7 +214,7 @@ namespace BlackPearl {
 
                 mesh_layout.AddElement(element);
             }
-            mesh.SetVertexBufferLayout(layouts);
+            mesh.SetVertexBufferLayout(mesh_layout);
 
 
             // Meshlet data

@@ -44,6 +44,23 @@ namespace BlackPearl {
 		m_CameraObj->GetComponent<PerspectiveCamera>()->SetZnear(zNear);
 
 	}
+	void MainCamera::SetMoveSpeed(float speed) {
+		m_CameraObj->GetComponent<PerspectiveCamera>()->SetMoveSpeed(speed);
+
+	}
+	void MainCamera::SetRotateSpeed(float speed) {
+		m_CameraObj->GetComponent<PerspectiveCamera>()->SetRotateSpeed(speed);
+	}
+
+	float MainCamera::GetMoveSpeed() const
+	{
+		return m_CameraObj->GetComponent<PerspectiveCamera>()->GetMoveSpeed();
+	}
+
+	float MainCamera::GetRotateSpeed() const
+	{
+		return m_CameraObj->GetComponent<PerspectiveCamera>()->GetRotateSpeed();
+	}
 
 	void MainCamera::SetPosition(glm::vec3 pos)
 	{

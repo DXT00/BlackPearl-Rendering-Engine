@@ -26,4 +26,9 @@ namespace BlackPearl {
 	{
 		m_ObjectList.push_back(obj);
 	}
+
+	void Scene::AddModel(Model* model) {
+		m_ModelList.push_back(model);
+	}
+
 }

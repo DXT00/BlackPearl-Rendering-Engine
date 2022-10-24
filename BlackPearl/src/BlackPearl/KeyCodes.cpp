@@ -133,6 +133,7 @@ namespace BlackPearl {
 		{BP_KEY_A      ,VK_A},
 		{BP_KEY_D      ,VK_D},
 		{BP_KEY_E      ,VK_E},
+		{BP_KEY_Q      ,VK_Q},
 		{BP_KEY_S      ,VK_S},
 		{BP_KEY_W      ,VK_W},
 		{BP_MOUSE_BUTTON_RIGHT,WM_RBUTTONDOWN}
