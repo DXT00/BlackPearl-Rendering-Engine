@@ -54,7 +54,7 @@ namespace BlackPearl {
 		uint32_t ElementSize;
 		uint32_t Location;
 		BufferElement() {
-			GE_CORE_INFO("BufferElement defalut constructor");
+			
 		}
 		BufferElement(ElementDataType type, std::string name, bool normalized, uint32_t location)
 			:Type(type), 

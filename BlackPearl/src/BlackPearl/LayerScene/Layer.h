@@ -185,8 +185,6 @@ namespace BlackPearl {
 			float posx = Input::GetMouseX();
 			float posy = Input::GetMouseY();
 			if (Input::IsMouseButtonPressed(KeyCodes::Get(BP_MOUSE_BUTTON_RIGHT))) {
-
-
 				if (Input::IsFirstMouse()) {
 					Input::SetFirstMouse(false);
 					m_LastMouseX = posx;
@@ -194,7 +192,6 @@ namespace BlackPearl {
 				}
 				float diffx = posx - m_LastMouseX;
 				float diffy = -posy + m_LastMouseY;
-				//GE_CORE_INFO("posx =" + std::to_string(posx)+", posy = "+ std::to_string(posy)+",m_LastMouseX ="+ std::to_string(m_LastMouseX)+", m_LastMouseY ="+ std::to_string(m_LastMouseY));
 
 				m_LastMouseX = posx;
 				m_LastMouseY = posy;
@@ -205,9 +202,7 @@ namespace BlackPearl {
 					m_CameraRotation.Pitch = 89.0f;
 				if (m_CameraRotation.Pitch < -89.0f)
 					m_CameraRotation.Pitch = -89.0f;
-
 				m_MainCamera->SetRotation({ m_CameraRotation.Pitch,m_CameraRotation.Yaw,0.0f });
-
 			}
 			else {
 				m_LastMouseX = posx;//lastMouse时刻记录当前坐标位置，防止再次点击右键时，发生抖动！

@@ -15,9 +15,9 @@ public:
 		m_pDragonModel = DBG_NEW BlackPearl::Model("assets/models/meshletModel/Dragon_LOD0.bin", shader, false/*isAnimated*/, false/*verticesSorted*/, false/*createMeshlet*/, true/*isMeshletModel*/);
 
 		m_MainCamera->SetPosition(glm::vec3(0, 0, 0));//glm::vec3(0,1.387f,22.012f)
-		m_MainCamera->SetRotation(glm::vec3(0, -180, 0));
+		m_MainCamera->SetRotation(glm::vec3(0, -90, 0));
 		m_MainCamera->SetMoveSpeed(50.0f);
-		m_MainCamera->SetRotateSpeed(5.0f);
+		m_MainCamera->SetRotateSpeed(1.0f);
 
 		m_MainCamera->SetZFar(1000.0f);
 		m_MainCamera->SetFov(60.0f);

@@ -105,6 +105,7 @@ namespace BlackPearl {
 
 			m_LayerManager->OnUpdateLayers(ts);
 			m_Window->OnUpdate();
+
 		}
 		//render loop
 		EngineExit();

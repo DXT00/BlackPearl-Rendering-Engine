@@ -29,7 +29,7 @@ namespace BlackPearl {
 		bool m_CloseWindow;
 		unsigned int m_PressKey;
 		unsigned int m_PressMouseButton;
-
+		std::pair<float, float> m_MousePosition;
 
 #if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
 		IDirectInputDevice8A* m_Mouse;

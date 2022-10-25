@@ -155,6 +155,10 @@ namespace BlackPearl {
 #define VK_D 0x44
 #define VK_E 0x45
 #define VK_Q 0x51
+#define VK_MOUSELEFT 0x00
+#define VK_MOUSERIGHT 0x01
+#define VK_MOUSECOUNT 0x08
+
 
 
 

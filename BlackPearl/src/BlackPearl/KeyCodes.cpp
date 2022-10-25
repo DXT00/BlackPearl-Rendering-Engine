@@ -136,7 +136,7 @@ namespace BlackPearl {
 		{BP_KEY_Q      ,VK_Q},
 		{BP_KEY_S      ,VK_S},
 		{BP_KEY_W      ,VK_W},
-		{BP_MOUSE_BUTTON_RIGHT,WM_RBUTTONDOWN}
+		{BP_MOUSE_BUTTON_RIGHT, VK_MOUSERIGHT}
 	};
 	int KeyCodes::Get(int key)
 	{

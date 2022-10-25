@@ -395,14 +395,6 @@ namespace BlackPearl {
 			auto meshletDesc = CD3DX12_RESOURCE_DESC::Buffer(m.Meshlets.size() * sizeof(m.Meshlets[0]));
 			auto cullDataDesc = CD3DX12_RESOURCE_DESC::Buffer(m.CullingData.size() * sizeof(m.CullingData[0]));
 			auto vertexIndexDesc = CD3DX12_RESOURCE_DESC::Buffer(DivRoundUp(m.UniqueVertexIndices.size(), 4) * 4);
-			std::string tmp = "m.PrimitiveIndices.size()= " + std::to_string(m.PrimitiveIndices.size()) + "\n";
-			OutputDebugStringA(tmp.c_str());
-			tmp = "sizeof(m.PrimitiveIndices[0])" + std::to_string(sizeof(m.PrimitiveIndices[0])) + "\n";
-			OutputDebugStringA(tmp.c_str());
-			tmp = "sizeof(PackedTriangle)" + std::to_string(sizeof(PackedTriangle)) + "\n";
-			OutputDebugStringA(tmp.c_str());
-			tmp = "sizeof(uint32_t)" + std::to_string(sizeof(uint32_t)) + "\n";
-			OutputDebugStringA(tmp.c_str());
 			auto primitiveDesc = CD3DX12_RESOURCE_DESC::Buffer(m.PrimitiveIndices.size() * sizeof(m.PrimitiveIndices[0]));
 			auto meshInfoDesc = CD3DX12_RESOURCE_DESC::Buffer(sizeof(MeshInfo));
 

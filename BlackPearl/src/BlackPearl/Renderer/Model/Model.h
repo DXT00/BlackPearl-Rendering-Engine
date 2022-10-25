@@ -42,20 +42,6 @@ namespace BlackPearl {
 				}
 				//m_ModelLoader->Load(m_Meshes, m_BoundingSphere, path);
 				LoadMeshletModel(m_BoundingSphere, path);
-
-				/*for (size_t i = 0; i < m_Meshes.size(); i++)
-				{
-					Mesh& m = m_Meshes[i];
-					for (size_t j = 0; j < m.Vertices.size(); j++)
-					{
-						for (size_t k = 0; k < m.Vertices[j].size(); k++)
-						{
-							GE_CORE_INFO((char)(m.Vertices[j].data()));
-						}
-						
-					}
-				}*/
-
 			}
 			else {
 				LoadModel(path);

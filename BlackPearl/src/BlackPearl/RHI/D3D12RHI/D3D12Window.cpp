@@ -2,6 +2,7 @@
 #include "D3D12Window.h"
 #include "BlackPearl/Application.h"
 #include "BlackPearl/Common/CommonFunc.h"
+#include "BlackPearl/KeyCodes.h"
 #include "dinput.h"
 #pragma comment(lib, "dinput8")
 
@@ -59,6 +60,11 @@ namespace BlackPearl {
 		HWND foreground = GetForegroundWindow();
 		bool visible = IsWindowVisible(foreground) != 0;
 
+		for (size_t i = 0; i < VK_MOUSECOUNT; i++)
+		{
+			m_MouseButtons[i] = false;
+		}
+
 		if (foreground != m_hwnd // wouldn't be able to acquire
 			|| !visible)
 		{
@@ -71,7 +77,7 @@ namespace BlackPearl {
 
 		}
 
-		for (UINT i = 0; i < 8; ++i)
+		for (UINT i = 0; i < VK_MOUSECOUNT; ++i)
 		{
 			if (m_MouseState.rgbButtons[i] > 0)
 				m_MouseButtons[i] = true;
@@ -92,11 +98,14 @@ namespace BlackPearl {
 	}
 	bool D3D12Window::IsMouseButtonPressed(int button)
 	{
-		return m_PressMouseButton == button;
+		GE_ASSERT(button < VK_MOUSECOUNT, "MOUSE BUTTON INVALID")
+		GE_ASSERT(button >= VK_MOUSELEFT, "MOUSE BUTTON INVALID")
+
+		return m_MouseButtons[button] == true;
 	}
 	std::pair<float, float> D3D12Window::GetMousePosition()
 	{
-		return { (float)m_MouseState.lX,(float)m_MouseState.lY};
+		return { m_MousePosition.first, m_MousePosition.second};
 	}
 	LRESULT CALLBACK D3D12Window::WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) {
 		D3D12Window* pWindow = reinterpret_cast<D3D12Window*>(GetWindowLongPtr(hWnd, GWLP_USERDATA));
@@ -125,17 +134,12 @@ namespace BlackPearl {
 			return 0;
 		case WM_KEYUP:
 			pWindow->m_PressKey = 0x00;
-			/*if (pSample)
-			{
-				pSample->OnKeyUp(static_cast<UINT8>(wParam));
-			}*/
 			return 0;
 		case WM_MOUSEMOVE:
-			if (static_cast<UINT8>(wParam) == MK_LBUTTON)
+			if (static_cast<UINT8>(wParam) == MK_RBUTTON)
 			{
-				UINT x = LOWORD(lParam);
-				UINT y = HIWORD(lParam);
-				//pSample->OnMouseMove(x, y);
+				pWindow->m_MousePosition.first = LOWORD(lParam);
+				pWindow->m_MousePosition.second = HIWORD(lParam);
 			}
 			return 0;
 		case WM_RBUTTONDOWN:
