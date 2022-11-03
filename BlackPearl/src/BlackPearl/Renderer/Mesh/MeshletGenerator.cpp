@@ -26,7 +26,7 @@ namespace BlackPearl
     {
     }
     
-    void MeshletGenerator::Process(const std::vector<Mesh>& meshes, const MeshletOption& options) {
+    void MeshletGenerator::Process(const std::vector<std::shared_ptr<Mesh>>& meshes, const MeshletOption& options) {
         for (size_t i = 0; i < meshes.size(); i++)
         {
             ComputeMeshlet(meshes[i]);
@@ -34,7 +34,7 @@ namespace BlackPearl
         
     }
 
-    void MeshletGenerator::ComputeMeshlet(const Mesh& mesh) {
+    void MeshletGenerator::ComputeMeshlet(const std::shared_ptr<Mesh>& mesh) {
 
     }
 

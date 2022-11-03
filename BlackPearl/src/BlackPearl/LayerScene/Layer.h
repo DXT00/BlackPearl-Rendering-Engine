@@ -96,7 +96,7 @@ namespace BlackPearl {
 
 		void LoadSwordScene();
 		void LoadCubesScene();
-
+		std::vector<Object*> Layer::LoadCubesScene1(int cubeNum, glm::vec3 pos);
 		void LoadD3D12ModelScene();
 
 		Object* LoadDynamicObject(const std::string modelName);
@@ -140,6 +140,8 @@ namespace BlackPearl {
 		void ShowPointLight(PointLight* pointLight);
 		void ShowParallelLight(ParallelLight* parallelLight);
 		void ShowCamera(PerspectiveCamera* perspectiveCamera);
+		void ShowCamera(MainCamera* mainCamera);
+
 		void ShowShader(std::string imguiShaders, int meshIndex, static int& itemIndex, int offset);
 		void ShowTextures(std::string imguiShaders, int meshIndex, static  int& itemIndex, Texture::Type textureType, static Texture::Type& type, int offset);
 		void ShowMaterialProps(Material::Props& imGuiProps);
@@ -249,6 +251,7 @@ namespace BlackPearl {
 		std::vector<Object*> m_DiffuseLightProbes;
 		std::vector<Object*> m_ReflectionLightProbes;
 
+	
 	};
 
 }

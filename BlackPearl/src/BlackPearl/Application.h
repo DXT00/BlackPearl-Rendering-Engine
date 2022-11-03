@@ -45,6 +45,8 @@ namespace BlackPearl {
 		void OnEvent(Event &event);
 		static double s_AppFPS;
 		static double s_AppAverageFPS;
+		static long long s_TotalFrameNum;
+
 		static bool IsFullscreen();
 		static void SetWindowZorderToTopMost(bool setToTopMost);
 
@@ -66,7 +68,6 @@ namespace BlackPearl {
 		double m_StartTimeMs;
 		long long m_FrameNum = 0;
 		LayerManager* m_LayerManager = nullptr;
-		long long m_TotalFrameNum = 0;
 		double m_TotalSecond = 0;
 
 	};

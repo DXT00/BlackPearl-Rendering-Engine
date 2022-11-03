@@ -131,9 +131,9 @@ public:
 		m_MasterRenderer->RenderSceneExcept(m_ObjectsList, Quad, GetLightSources() );
 
 		glViewport(0, 0, 240, 135);
-		Quad->GetComponent<BlackPearl::MeshRenderer>()->GetMeshes()[0].GetMaterial()->GetShader()->Bind();
-		Quad->GetComponent<BlackPearl::MeshRenderer>()->GetMeshes()[0].GetMaterial()->GetShader()->SetUniformVec3f("u_LightPos", m_Sun->GetComponent<BlackPearl::ParallelLight>()->GetDirection());
-		Quad->GetComponent<BlackPearl::MeshRenderer>()->GetMeshes()[0].GetMaterial()->GetShader()->SetUniformMat4f("u_LightProjectionViewMatrix", m_MasterRenderer->GetShadowMapLightProjectionMatrx());
+		Quad->GetComponent<BlackPearl::MeshRenderer>()->GetMeshes()[0]->GetMaterial()->GetShader()->Bind();
+		Quad->GetComponent<BlackPearl::MeshRenderer>()->GetMeshes()[0]->GetMaterial()->GetShader()->SetUniformVec3f("u_LightPos", m_Sun->GetComponent<BlackPearl::ParallelLight>()->GetDirection());
+		Quad->GetComponent<BlackPearl::MeshRenderer>()->GetMeshes()[0]->GetMaterial()->GetShader()->SetUniformMat4f("u_LightProjectionViewMatrix", m_MasterRenderer->GetShadowMapLightProjectionMatrx());
 
 
 		m_MasterRenderer->RenderObject(Quad);

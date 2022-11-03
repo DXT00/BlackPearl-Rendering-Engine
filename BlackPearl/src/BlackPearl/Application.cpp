@@ -24,6 +24,7 @@
 #include "BlackPearl/Entity/Entity.h"
 #include "BlackPearl/ObjectManager/ObjectManager.h"
 #include "BlackPearl/LayerScene/LayerManager.h"
+#include "BlackPearl/Renderer/MasterRenderer/BasicRenderer.h"
 #include "BlackPearl/Log.h"
 #include <BlackPearl/Luanch/Luanch.h>
 
@@ -37,7 +38,7 @@ namespace BlackPearl {
 	Application* Application::s_Instance = nullptr;
 	extern bool g_shouldEngineExit;
 	extern DynamicRHI* g_DynamicRHI;
-
+	long long Application::s_TotalFrameNum = 0;
 	Application::Application(HINSTANCE hInstance, int nShowCmd, DynamicRHI::Type rhiType, const std::string& renderer)
 	{
 		if (!g_DynamicRHI) {
@@ -84,12 +85,12 @@ namespace BlackPearl {
 
 				s_AppFPS = m_FrameNum;
 				//GE_CORE_INFO("FPS = " + std::to_string(s_AppFPS) );
-				m_TotalFrameNum += m_FrameNum;
+				s_TotalFrameNum += m_FrameNum;
 
 				m_FrameNum = 0;
 				m_StartTimeMs = currentTimeMs;
 				m_TotalSecond++;
-				s_AppAverageFPS = (double)m_TotalFrameNum / m_TotalSecond;
+				s_AppAverageFPS = (double)s_TotalFrameNum / m_TotalSecond;
 				GE_CORE_INFO("AverageFPS = " + std::to_string(s_AppAverageFPS));
 			}
 
@@ -103,6 +104,7 @@ namespace BlackPearl {
 			m_LastFrameTime = curFrameTime;
 			ShouldCloseWindow();
 
+			BasicRenderer::s_DrawCallCnt = 0;
 			m_LayerManager->OnUpdateLayers(ts);
 			m_Window->OnUpdate();
 

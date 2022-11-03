@@ -8,9 +8,9 @@ namespace BlackPearl {
 	public:
 		OpenGLModelLoader(bool createMeshlet, const MeshletOption& options);
 		~OpenGLModelLoader();
-		virtual void Load(std::vector<Mesh>& output_meshes, BoundingSphere& bounding_sphere, const std::string& path);
-		void LoadMeshletModel(std::vector<Mesh>& output_meshes, BoundingSphere& bounding_sphere, const std::string& path);
-		void LoadCommonModel(std::vector<Mesh>& output_meshes, const std::string& path);
+		virtual void Load(std::vector<std::shared_ptr<Mesh>>& output_meshes, BoundingSphere& bounding_sphere, const std::string& path);
+		void LoadMeshletModel(std::vector<std::shared_ptr<Mesh>>& output_meshes, BoundingSphere& bounding_sphere, const std::string& path);
+		void LoadCommonModel(std::vector<std::shared_ptr<Mesh>>& output_meshes, const std::string& path);
 
 	private:
 		/*for mesh shader renderer, to create meshlet*/

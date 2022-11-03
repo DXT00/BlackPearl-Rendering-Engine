@@ -2,6 +2,11 @@
 #include "BlackPearl/Component/LightComponent/LightSources.h"
 #include "BlackPearl/Renderer/Mesh/Mesh.h"
 #include "BlackPearl/Renderer/Renderer.h"
+#include "BlackPearl/Scene/Scene.h"
+#include "BlackPearl/Node/BatchNode.h"
+#include "BlackPearl/Node/InstanceNode.h"
+#include "BlackPearl/Node/SingleNode.h"
+#include "BlackPearl/Node/Node.h"
 
 namespace BlackPearl {
 	class BasicRenderer
@@ -26,12 +31,16 @@ namespace BlackPearl {
 		//这个Object的所有Mesh使用同一个shader
 		void DrawObject(Object *obj, std::shared_ptr<Shader> shader, Renderer::SceneData* scene = Renderer::GetSceneData(), unsigned int textureBeginIdx = 2);
 
+		void DrawBatchNode(BatchNode* node, std::shared_ptr<Shader> shader);
+		void DrawInstanceNode(InstanceNode* node, std::shared_ptr<Shader> shader);
+		void DrawSingleNode(SingleNode* node, std::shared_ptr<Shader> shader);
+
 		void DrawPointLight(Object *obj, Renderer::SceneData* scene = Renderer::GetSceneData(), unsigned int textureBeginIdx = 2);
 		void DrawLightSources(const LightSources* lightSources, Renderer::SceneData* scene = Renderer::GetSceneData(), unsigned int textureBeginIdx = 2);
-		void PrepareBasicShaderParameters(Mesh mesh,std::shared_ptr<Shader> shader, bool isLight = false, unsigned int textureBeginIdx = 2);
-
-		//virtual void PrepareShaderParameters(Mesh mesh, std::shared_ptr<Shader> shader, bool isLight = false);
-
+		void PrepareBasicShaderParameters(std::shared_ptr<Mesh> mesh,std::shared_ptr<Shader> shader, bool isLight = false, unsigned int textureBeginIdx = 2);
+	public:
+		static uint32_t s_DrawCallCnt;
+	
 	};
 
 

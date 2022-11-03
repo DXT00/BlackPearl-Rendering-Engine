@@ -28,86 +28,66 @@ namespace BlackPearl {
 			uint32_t indicesSize,
 			std::shared_ptr<Material> material,
 			const VertexBufferLayout& layout
-		)
-			:m_Vertices(vertices),m_Indices(indices), m_IndicesSize(indicesSize),
-			m_Material(material), m_VertexBufferLayout(layout) {
-			Init(verticesSize);
-		};
-		/*multiple vertexBuffers*/
-		Mesh(std::shared_ptr<Material> material,
-			std::shared_ptr<IndexBuffer> indexBuffer,
-			std::vector<std::shared_ptr<VertexBuffer>> vertexBuffers) {
-			m_VertexArray.reset(DBG_NEW VertexArray());
-			m_IndicesSize = indexBuffer->GetIndicesSize();
-			m_Material = material;
-			m_VertexArray->SetIndexBuffer(indexBuffer);
-			
-			for (auto vertexBuffer : vertexBuffers) {
-				m_VertexBufferLayout = vertexBuffer->GetBufferLayout();
-				m_VertexArray->AddVertexBuffer(vertexBuffer);
-			}
-		}
+		);
+
 		/*one vertexBuffer*/
 		Mesh(
 			std::vector<float> vertices,
 			std::vector<unsigned int> indices,
 			std::shared_ptr<Material> material,
 			const VertexBufferLayout& layout
-		)
-			: m_IndicesSize(indices.size() * sizeof(unsigned int)),
-			m_Material(material), m_VertexBufferLayout(layout) {
+		);
 
-			m_Vertices = DBG_NEW float[vertices.size()];
-			if (vertices.size() > 0)
-				memcpy(m_Vertices, &vertices[0], vertices.size() * sizeof(float));//注意memcpy最后一个参数是字节数!!!
-
-			m_Indices = DBG_NEW unsigned int[indices.size()];
-			if (indices.size() > 0)
-				memcpy(m_Indices, &indices[0], indices.size() * sizeof(unsigned int));
-			Init(vertices.size() * sizeof(float));
-		};
+		/*multiple vertexBuffers*/
+		Mesh(
+			std::shared_ptr<Material> material,
+			std::shared_ptr<IndexBuffer> indexBuffer,
+			std::vector<std::shared_ptr<VertexBuffer>> vertexBuffers
+		);
+		
 		~Mesh();
 	
 		std::shared_ptr<VertexArray> GetVertexArray() const { return m_VertexArray; }
-		uint32_t GetIndicesSize()const { return m_IndicesSize; }
-		unsigned int GetVerticesSize(unsigned int vertexBufferId) const { 
-			return m_VertexArray->GetVertexBuffers()[vertexBufferId]->GetVertexSize();	
-		}
-		std::shared_ptr<Material> GetMaterial()const { return m_Material; }
-		VertexBufferLayout GetVertexBufferLayout() const { return m_VertexBufferLayout; }
-		void SetVertexBufferLayout(const VertexBufferLayout& layout) {
-			m_VertexBufferLayout = layout;
-		}
+		uint32_t					 GetIndicesSize() const { return m_IndicesSize; }
+		uint32_t				     GetVerticesSize(unsigned int vertexBufferId);
+		std::shared_ptr<Material>    GetMaterial() const { return m_Material; }
+		VertexBufferLayout			 GetVertexBufferLayout() const { return m_VertexBufferLayout; }
+		uint32_t					 GetVertexCount() const { return m_VerticeCount; }
+		uint32_t					 GetIndicesCount() const { return m_IndicesCount; }
 
+		void SetShader(const std::string& path)				     { m_Material->SetShader(path); }
+		void SetShader(const std::shared_ptr<Shader> &shader)    { m_Material->SetShader(shader); }
 		void SetTexture(const std::shared_ptr<Texture>& texture) { m_Material->SetTexture(texture); }
-		void SetShader(const std::string& path) { m_Material->SetShader(path);};
-		void SetShader(const std::shared_ptr<Shader> &shader) { m_Material->SetShader(shader);};
-		void SetMaterialColor(MaterialColor::Color color) { m_Material->SetMaterialColor(color); }
+		void SetMaterialColor(MaterialColor::Color color)        { m_Material->SetMaterialColor(color); }
+		void SetVertexBufferLayout(const VertexBufferLayout& layout);
 
+		std::pair<float*, uint32_t> GetPositionBuffer() const { return { m_Positions, m_PositionsSize }; }
+		std::pair<float*, uint32_t> GetNormalBuffer() const   { return { m_Normals, m_NormalsSize }; }
+		std::pair<float*, uint32_t> GetTexCoordsBuffer() const { return { m_TexCoords, m_TexCoordsSize }; }
+		std::pair<float*, uint32_t> GetTangentBuffer() const { return { m_Tangents, m_TangentsSize }; }
+		std::pair<float*, uint32_t> GetBitangentBuffer() const { return { m_Bitangents, m_BitangentsSize }; }
+		std::pair<uint32_t*, uint32_t> GetJiontBuffer() const { return { m_JointIndices, m_JointIndicesSize }; }
+		std::pair<uint32_t*, uint32_t> GetJiont1Buffer() const { return { m_JointIndices, m_JointIndicesSize }; }
+		std::pair<float*, uint32_t> GetWeightBuffer() const { return { m_Weight, m_WeightSize }; }
+		std::pair<float*, uint32_t> GetWeight1Buffer() const { return { m_Weight1, m_Weight1Size }; }
 
-	private:
-		void Init(uint32_t verticesSize);
-		std::shared_ptr<VertexArray> m_VertexArray;
-		VertexBufferLayout           m_VertexBufferLayout;
-		float*                       m_Vertices = nullptr;
-		unsigned int*                m_Indices = nullptr;
-		uint32_t                     m_IndicesSize = 0;
-		std::shared_ptr<Material>    m_Material = nullptr;
+		std::pair<uint32_t*, uint32_t> GetIndicesBuffer() const { return { m_Indices, m_IndicesSize }; }
+		uint32_t GetIndicesConut() const { return m_IndicesCount; }
 
 	public:
-		//temp for directX TODO::兼容opengl 和d3d12 mesh接口
+		//temp for directX mseh shader TODO::兼容opengl 和d3d12 mesh接口
 		std::vector<uint32_t>		VertexStrides;
-		std::vector<Span<uint8_t>>  Vertices; 
-		uint32_t					VertexCount;
+		std::vector<Span<uint8_t>>  Vertices_ml;
+		uint32_t					VertexCount_ml;
 		Span<Subset>				MeshletSubsets;
 		Span<Meshlet>				Meshlets;
 		Span<uint8_t>				UniqueVertexIndices;
 		Span<PackedTriangle>		PrimitiveIndices;
 		Span<CullData>				CullingData;
 		BoundingSphere				BoundingSphere;
-		Span<uint8_t>				Indices;
+		Span<uint8_t>				Indices_ml;
 		Span<Subset>				IndexSubsets;
-		uint32_t					IndexSize;
+		uint32_t					IndexSize_ml;
 		std::vector<Microsoft::WRL::ComPtr<ID3D12Resource>> VertexResources;
 		Microsoft::WRL::ComPtr<ID3D12Resource>              IndexResource;
 		Microsoft::WRL::ComPtr<ID3D12Resource>              MeshletResource;
@@ -115,6 +95,43 @@ namespace BlackPearl {
 		Microsoft::WRL::ComPtr<ID3D12Resource>              PrimitiveIndexResource;
 		Microsoft::WRL::ComPtr<ID3D12Resource>              CullDataResource;
 		Microsoft::WRL::ComPtr<ID3D12Resource>              MeshInfoResource;
+
+
+	private:
+		void Init(uint32_t verticesSize);
+		void ParseAttributes(const VertexBufferLayout& layout);
+		std::shared_ptr<VertexArray> m_VertexArray;
+		VertexBufferLayout           m_VertexBufferLayout;
+		float*                       m_Vertices = nullptr;
+		uint32_t*                    m_Indices = nullptr;
+		uint32_t                     m_IndicesSize = 0; //m_IndicesSize = m_indicesCount* sizeof(uint32_t)
+		uint32_t					 m_IndicesCount = 0;
+		uint32_t					 m_VerticeSize = 0; //m_VerticeSize = m_VerticeArrayCount* sizeof(float)
+		uint32_t					 m_VerticeCount = 0; // one vertex has multiple attributes, a vertex = (pos.xyz, normal.xyz, tex.xy..), m_VerticeCount is the number of attribute vertex
+		uint32_t					 m_VerticeArrayCount = 0;
+
+		std::shared_ptr<Material>    m_Material = nullptr;
+
+		//for batch rendering and indirect drawcall
+		float* m_Positions		= nullptr;
+		float* m_Normals		= nullptr;
+		float* m_TexCoords		= nullptr;
+		float* m_Tangents		= nullptr;
+		float* m_Bitangents		= nullptr;
+		uint32_t* m_JointIndices	= nullptr;
+		uint32_t* m_JointIndices1	= nullptr;
+		float* m_Weight			= nullptr;
+		float* m_Weight1		= nullptr;
+		
+		uint32_t m_PositionsSize = 0;
+		uint32_t m_NormalsSize = 0;
+		uint32_t m_TexCoordsSize = 0;
+		uint32_t m_TangentsSize = 0;
+		uint32_t m_BitangentsSize = 0;
+		uint32_t m_JointIndicesSize = 0;
+		uint32_t m_JointIndices1Size = 0;
+		uint32_t m_WeightSize = 0;
+		uint32_t m_Weight1Size = 0;
 	};
 
 }

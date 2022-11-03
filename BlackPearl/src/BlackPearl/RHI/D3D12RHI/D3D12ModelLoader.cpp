@@ -37,7 +37,7 @@ namespace BlackPearl {
     {
     }
 
-    void D3D12ModelLoader::Load(std::vector<Mesh>& output_meshes, BoundingSphere& bounding_sphere, const std::string& path) {
+    void D3D12ModelLoader::Load(std::vector<std::shared_ptr<Mesh>>& output_meshes, BoundingSphere& bounding_sphere, const std::string& path) {
 
         if (m_IsMeshletModel) {
             LoadMeshletModel(output_meshes, bounding_sphere, path);
@@ -73,7 +73,7 @@ namespace BlackPearl {
     //this fuction reference from microsoft/DirectX-Graphics-Samples MeshShader example
     // deserialize meshlet model
     // serialize mesh model method is in MeshletGenerator.cpp : MeshletGenerator::ExportMeshes
-    void D3D12ModelLoader::LoadMeshletModel(std::vector<Mesh>& output_meshes, BoundingSphere& bounding_sphere, const std::string& path)
+    void D3D12ModelLoader::LoadMeshletModel(std::vector<std::shared_ptr<Mesh>>& output_meshes, BoundingSphere& bounding_sphere, const std::string& path)
     {
         std::ifstream stream(path, std::ios::binary);
         if (!stream.is_open()) {
@@ -83,7 +83,6 @@ namespace BlackPearl {
         std::vector<MeshHeader> meshes;
         std::vector<BufferView> bufferViews;
         std::vector<Accessor> accessors; // accessors store the indices of all meshes
-        std::vector<uint8_t> buffer;
         FileHeader header;
         stream.read(reinterpret_cast<char*>(&header), sizeof(header));
 
@@ -110,8 +109,8 @@ namespace BlackPearl {
         stream.read(reinterpret_cast<char*>(bufferViews.data()), bufferViews.size() * sizeof(bufferViews[0]));
 
         // buffer store all indices in this mesh
-        buffer.resize(header.BufferSize);
-        stream.read(reinterpret_cast<char*>(buffer.data()), header.BufferSize);
+        m_Buffer.resize(header.BufferSize);
+        stream.read(reinterpret_cast<char*>(m_Buffer.data()), header.BufferSize);
 
         char eofbyte;
         stream.read(&eofbyte, 1); // Read last byte to hit the eof bit
@@ -151,10 +150,10 @@ namespace BlackPearl {
                 Accessor& accessor = accessors[meshView.Indices];
                 BufferView& bufferView = bufferViews[accessor.BufferView];
 
-                mesh.IndexSize = accessor.Size;
+                mesh->IndexSize_ml = accessor.Size;
                // mesh.IndexCount = accessor.Count;
 
-                mesh.Indices = MakeSpan(buffer.data() + bufferView.Offset, bufferView.Size);
+                mesh->Indices_ml = MakeSpan(m_Buffer.data() + bufferView.Offset, bufferView.Size);
             }
 
             // Index Subset data
@@ -162,7 +161,7 @@ namespace BlackPearl {
                 Accessor& accessor = accessors[meshView.IndexSubsets];
                 BufferView& bufferView = bufferViews[accessor.BufferView];
 
-                mesh.IndexSubsets = MakeSpan(reinterpret_cast<Subset*>(buffer.data() + bufferView.Offset), accessor.Count);
+                mesh->IndexSubsets = MakeSpan(reinterpret_cast<Subset*>(m_Buffer.data() + bufferView.Offset), accessor.Count);
             }
 
             // Vertex data & layout metadata
@@ -186,15 +185,15 @@ namespace BlackPearl {
                     continue; // Already added - continue.
                 }
 
-                // New buffer view encountered; add to list and copy vertex data
+                // New m_Buffer view encountered; add to list and copy vertex data
                 vbMap.push_back(accessor.BufferView);
                 BufferView& bufferView = bufferViews[accessor.BufferView];
 
-                Span<uint8_t> verts = MakeSpan(buffer.data() + bufferView.Offset, bufferView.Size);
+                Span<uint8_t> verts = MakeSpan(m_Buffer.data() + bufferView.Offset, bufferView.Size);
 
-                mesh.VertexStrides.push_back(accessor.Stride);
-                mesh.Vertices.push_back(verts); //这里和openGL不一样，每个attributes分开push到vertices
-                mesh.VertexCount = static_cast<uint32_t>(verts.size()) / accessor.Stride;
+                mesh->VertexStrides.push_back(accessor.Stride);
+                mesh->Vertices_ml.push_back(verts); //这里和openGL不一样，每个attributes分开push到vertices
+                mesh->VertexCount_ml = static_cast<uint32_t>(verts.size()) / accessor.Stride;
             }
 
             // Populate the vertex buffer metadata from accessors.
@@ -214,7 +213,7 @@ namespace BlackPearl {
 
                 mesh_layout.AddElement(element);
             }
-            mesh.SetVertexBufferLayout(mesh_layout);
+            mesh->SetVertexBufferLayout(mesh_layout);
 
 
             // Meshlet data
@@ -222,7 +221,7 @@ namespace BlackPearl {
                 Accessor& accessor = accessors[meshView.Meshlets];
                 BufferView& bufferView = bufferViews[accessor.BufferView];
 
-                mesh.Meshlets = MakeSpan(reinterpret_cast<Meshlet*>(buffer.data() + bufferView.Offset), accessor.Count);
+                mesh->Meshlets = MakeSpan(reinterpret_cast<Meshlet*>(m_Buffer.data() + bufferView.Offset), accessor.Count);
             }
 
             // Meshlet Subset data
@@ -230,7 +229,7 @@ namespace BlackPearl {
                 Accessor& accessor = accessors[meshView.MeshletSubsets];
                 BufferView& bufferView = bufferViews[accessor.BufferView];
 
-                mesh.MeshletSubsets = MakeSpan(reinterpret_cast<Subset*>(buffer.data() + bufferView.Offset), accessor.Count);
+                mesh->MeshletSubsets = MakeSpan(reinterpret_cast<Subset*>(m_Buffer.data() + bufferView.Offset), accessor.Count);
             }
 
             // Unique Vertex Index data , UniqueVertexIndices is the indices buffer that is generated by sorting each triangular face 
@@ -240,7 +239,7 @@ namespace BlackPearl {
                 Accessor& accessor = accessors[meshView.UniqueVertexIndices];
                 BufferView& bufferView = bufferViews[accessor.BufferView];
 
-                mesh.UniqueVertexIndices = MakeSpan(buffer.data() + bufferView.Offset, bufferView.Size);
+                mesh->UniqueVertexIndices = MakeSpan(m_Buffer.data() + bufferView.Offset, bufferView.Size);
             }
 
             // Primitive Index data
@@ -248,7 +247,7 @@ namespace BlackPearl {
                 Accessor& accessor = accessors[meshView.PrimitiveIndices];
                 BufferView& bufferView = bufferViews[accessor.BufferView];
 
-                mesh.PrimitiveIndices = MakeSpan(reinterpret_cast<PackedTriangle*>(buffer.data() + bufferView.Offset), accessor.Count);
+                mesh->PrimitiveIndices = MakeSpan(reinterpret_cast<PackedTriangle*>(m_Buffer.data() + bufferView.Offset), accessor.Count);
             }
 
             // Cull data
@@ -256,7 +255,7 @@ namespace BlackPearl {
                 Accessor& accessor = accessors[meshView.CullData];
                 BufferView& bufferView = bufferViews[accessor.BufferView];
 
-                mesh.CullingData = MakeSpan(reinterpret_cast<CullData*>(buffer.data() + bufferView.Offset), accessor.Count);
+                mesh->CullingData = MakeSpan(reinterpret_cast<CullData*>(m_Buffer.data() + bufferView.Offset), accessor.Count);
             }
         }
 
@@ -268,10 +267,10 @@ namespace BlackPearl {
             uint32_t vbIndexPos = 0;
 
             // Find the index of the vertex buffer of the position attribute
-            for (uint32_t j = 1; j < m.GetVertexBufferLayout().ElementSize(); ++j)
+            for (uint32_t j = 1; j < m->GetVertexBufferLayout().ElementSize(); ++j)
             {
-                //auto& desc = m.LayoutElems[j];
-                auto& element = m.GetVertexBufferLayout().GetElement(j);
+                //auto& desc = m->LayoutElems[j];
+                auto& element = m->GetVertexBufferLayout().GetElement(j);
                 if (strcmp(element.Name.c_str(), "POSITION") == 0)
                 {
                     vbIndexPos = j;
@@ -282,9 +281,9 @@ namespace BlackPearl {
             // Find the byte offset of the position attribute with its vertex buffer
             uint32_t positionOffset = 0;
 
-            for (uint32_t j = 0; j < m.GetVertexBufferLayout().ElementSize(); ++j)
+            for (uint32_t j = 0; j < m->GetVertexBufferLayout().ElementSize(); ++j)
             {
-                auto& element =  m.GetVertexBufferLayout().GetElement(j);
+                auto& element =  m->GetVertexBufferLayout().GetElement(j);
                 if (strcmp(element.Name.c_str(), "POSITION") == 0)
                 {
                     break;
@@ -292,7 +291,7 @@ namespace BlackPearl {
                 //找到position的下一个attribute的位置
                 if (element.Location == vbIndexPos)
                 {
-                    positionOffset += m.GetVertexBufferLayout().GetElement(j).GetElementCount();
+                    positionOffset += m->GetVertexBufferLayout().GetElement(j).GetElementCount();
                 }
             }
             // vertices 存储结构
@@ -300,18 +299,18 @@ namespace BlackPearl {
             // POSITION: v0.pos, v1.pos, v2.pos .....
             //vbIndexPos = 1
             
-            XMFLOAT3* v0 = reinterpret_cast<XMFLOAT3*>(m.Vertices[vbIndexPos].data() + positionOffset);
-            uint32_t stride = m.VertexStrides[vbIndexPos];
+            XMFLOAT3* v0 = reinterpret_cast<XMFLOAT3*>(m->Vertices_ml[vbIndexPos].data() + positionOffset);
+            uint32_t stride = m->VertexStrides[vbIndexPos];
 
-            BoundingSphere::CreateFromPoints(m.BoundingSphere, m.VertexCount, v0, stride);
+            BoundingSphere::CreateFromPoints(m->BoundingSphere, m->VertexCount_ml, v0, stride);
 
             if (i == 0)
             {
-                bounding_sphere = m.BoundingSphere;
+                bounding_sphere = m->BoundingSphere;
             }
             else
             {
-                BoundingSphere::CreateMerged(bounding_sphere, bounding_sphere, m.BoundingSphere);
+                BoundingSphere::CreateMerged(bounding_sphere, bounding_sphere, m->BoundingSphere);
             }
         }
 

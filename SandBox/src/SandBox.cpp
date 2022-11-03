@@ -16,6 +16,7 @@
 #include "Layers/VoxelConeTracingDeferredLayer.h"
 #include "Layers/VoxelConeTracingSVOLayer.h"
 #include "Layers/RayTracingLayer.h"
+#include "Layers/BatchRenderingLayer.h"
 #include "BlackPearl/Application.h"
 #include "Layers/VoxelizationTestLayer.h"
 #include "Layers/CubeTestLayer.h"
@@ -52,7 +53,9 @@ public:
 		else if (renderer == "RayTracing") {
 			layer = DBG_NEW RayTracingLayer(layer_name);
 		}
-
+		else if (renderer == "BatchRendering") {
+			layer = DBG_NEW BatchRenderingLayer(layer_name);
+		}
 		GetLayerManager()->PushLayer(layer);
 	}
 	virtual ~SandBox() = default;
@@ -61,7 +64,7 @@ public:
 
 BlackPearl::Application* BlackPearl::CreateApplication(HINSTANCE hInstance, int nShowCmd) {
 
-	return DBG_NEW SandBox(hInstance, nShowCmd, BlackPearl::DynamicRHI::Type::OpenGL, "IBLRendering");
+	return DBG_NEW SandBox(hInstance, nShowCmd, BlackPearl::DynamicRHI::Type::OpenGL, "BatchRendering");
 
 }
 

@@ -37,6 +37,13 @@ namespace BlackPearl {
 	{
 		m_CameraObj->GetComponent<PerspectiveCamera>()->SetFov(fov);
 	}
+
+	float MainCamera::ZFar() const{
+		return m_CameraObj->GetComponent<PerspectiveCamera>()->GetZfar();
+	}
+	float MainCamera::ZNear() const {
+		 return m_CameraObj->GetComponent<PerspectiveCamera>()->GetZnear();
+	}
 	void MainCamera::SetZFar(float zFar) {
 		m_CameraObj->GetComponent<PerspectiveCamera>()->SetZfar(zFar);
 	}

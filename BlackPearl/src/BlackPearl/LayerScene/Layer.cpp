@@ -27,10 +27,10 @@ namespace BlackPearl {
 		ImGui::Begin("Settings");
 		ImGui::ColorEdit3("Suqare Color", glm::value_ptr(m_BackgroundColor));
 		ImGui::End();
-		ImGui::Begin("FPS");
-		ImGui::Text("FPS = %.3lf", Application::s_AppFPS);
-		ImGui::Text("AvgFPS = %.3lf", Application::s_AppAverageFPS);
-		ImGui::Separator();
+		ImGui::Begin("GI Settings");
+		//ImGui::Text("FPS = %.3lf", Application::s_AppFPS);
+		//ImGui::Text("AvgFPS = %.3lf", Application::s_AppAverageFPS);
+	//	ImGui::Separator();
 		ImGui::Text("SVO voxel GI");
 		ImGui::Checkbox("spp pause", &VoxelConeTracingSVORenderer::s_Pause);
 		ImGui::Checkbox("svo direct light", &VoxelConeTracingSVORenderer::s_DirectLight);
@@ -84,6 +84,20 @@ namespace BlackPearl {
 
 
 		ImGui::End();
+
+		ImGui::Begin("Performance");
+		ImGui::Text("FPS = %.3lf", Application::s_AppFPS);
+		ImGui::Text("AvgFPS = %.3lf", Application::s_AppAverageFPS);
+		ImGui::Separator();
+		ImGui::Text("s_TotalFrameNum = %d", Application::s_TotalFrameNum);
+		ImGui::Text("DrawCalls per frame = %.3lf", (double)BasicRenderer::s_DrawCallCnt);
+
+		//ImGui::Text("DrawCalls per frame = %.3lf", (double)Application::s_TotalFrameNum/BasicRenderer::s_DrawCallCnt);
+		ImGui::Text("Objs num = %d", (int)m_BackGroundObjsList.size());
+
+		ImGui::End();
+
+
 
 		static Object* currentObj = nullptr;//TODO::注意内存泄漏
 
@@ -255,8 +269,14 @@ namespace BlackPearl {
 			if (currentObj->HasComponent < ParallelLight>()) {
 				ShowParallelLight(currentObj->GetComponent<ParallelLight>());
 			}
-			if (currentObj->HasComponent< PerspectiveCamera>()) {
-				ShowCamera(currentObj->GetComponent<PerspectiveCamera>());
+			if (currentObj->HasComponent<PerspectiveCamera>()) {
+				if (currentObj == m_MainCamera->GetObj()) {
+					ShowCamera(m_MainCamera);
+				}
+				else {
+					ShowCamera(currentObj->GetComponent<PerspectiveCamera>());
+
+				}
 
 			}
 
@@ -318,17 +338,17 @@ namespace BlackPearl {
 		cube4->GetComponent<MeshRenderer>()->SetIsBackGroundObjects(true);
 		cube5->GetComponent<MeshRenderer>()->SetIsBackGroundObjects(true);
 
-		cube1->GetComponent<MeshRenderer>()->GetMeshes()[0].GetMaterial()->SetMaterialColorSpecularColor({ 0,0,0 });
-		cube2->GetComponent<MeshRenderer>()->GetMeshes()[0].GetMaterial()->SetMaterialColorSpecularColor({ 0,0,0 });
-		cube3->GetComponent<MeshRenderer>()->GetMeshes()[0].GetMaterial()->SetMaterialColorSpecularColor({ 0,0,0 });
-		cube4->GetComponent<MeshRenderer>()->GetMeshes()[0].GetMaterial()->SetMaterialColorSpecularColor({ 0,0,0 });
-		cube5->GetComponent<MeshRenderer>()->GetMeshes()[0].GetMaterial()->SetMaterialColorSpecularColor({ 0,0,0 });
+		cube1->GetComponent<MeshRenderer>()->GetMeshes()[0]->GetMaterial()->SetMaterialColorSpecularColor({ 0,0,0 });
+		cube2->GetComponent<MeshRenderer>()->GetMeshes()[0]->GetMaterial()->SetMaterialColorSpecularColor({ 0,0,0 });
+		cube3->GetComponent<MeshRenderer>()->GetMeshes()[0]->GetMaterial()->SetMaterialColorSpecularColor({ 0,0,0 });
+		cube4->GetComponent<MeshRenderer>()->GetMeshes()[0]->GetMaterial()->SetMaterialColorSpecularColor({ 0,0,0 });
+		cube5->GetComponent<MeshRenderer>()->GetMeshes()[0]->GetMaterial()->SetMaterialColorSpecularColor({ 0,0,0 });
 
-		cube1->GetComponent<MeshRenderer>()->GetMeshes()[0].GetMaterial()->SetMaterialColorDiffuseColor({ 0,0.294f,1.0f });
-		cube2->GetComponent<MeshRenderer>()->GetMeshes()[0].GetMaterial()->SetMaterialColorDiffuseColor({ 1,0.267f,0 });
-		cube3->GetComponent<MeshRenderer>()->GetMeshes()[0].GetMaterial()->SetMaterialColorDiffuseColor({ 1,1,1 });
-		cube4->GetComponent<MeshRenderer>()->GetMeshes()[0].GetMaterial()->SetMaterialColorDiffuseColor({ 0.204f,0,1 });
-		cube5->GetComponent<MeshRenderer>()->GetMeshes()[0].GetMaterial()->SetMaterialColorDiffuseColor({ 1,0,0 });
+		cube1->GetComponent<MeshRenderer>()->GetMeshes()[0]->GetMaterial()->SetMaterialColorDiffuseColor({ 0,0.294f,1.0f });
+		cube2->GetComponent<MeshRenderer>()->GetMeshes()[0]->GetMaterial()->SetMaterialColorDiffuseColor({ 1,0.267f,0 });
+		cube3->GetComponent<MeshRenderer>()->GetMeshes()[0]->GetMaterial()->SetMaterialColorDiffuseColor({ 1,1,1 });
+		cube4->GetComponent<MeshRenderer>()->GetMeshes()[0]->GetMaterial()->SetMaterialColorDiffuseColor({ 0.204f,0,1 });
+		cube5->GetComponent<MeshRenderer>()->GetMeshes()[0]->GetMaterial()->SetMaterialColorDiffuseColor({ 1,0,0 });
 		m_BackGroundObjsList.push_back(cube1);
 		m_BackGroundObjsList.push_back(cube2);
 		m_BackGroundObjsList.push_back(cube3);
@@ -408,17 +428,17 @@ namespace BlackPearl {
 		cube4->GetComponent<MeshRenderer>()->SetIsBackGroundObjects(true);
 		cube5->GetComponent<MeshRenderer>()->SetIsBackGroundObjects(true);
 
-		cube1->GetComponent<MeshRenderer>()->GetMeshes()[0].GetMaterial()->SetMaterialColorSpecularColor({ 0,0,0 });
-		cube2->GetComponent<MeshRenderer>()->GetMeshes()[0].GetMaterial()->SetMaterialColorSpecularColor({ 0,0,0 });
-		cube3->GetComponent<MeshRenderer>()->GetMeshes()[0].GetMaterial()->SetMaterialColorSpecularColor({ 0,0,0 });
-		cube4->GetComponent<MeshRenderer>()->GetMeshes()[0].GetMaterial()->SetMaterialColorSpecularColor({ 0,0,0 });
-		cube5->GetComponent<MeshRenderer>()->GetMeshes()[0].GetMaterial()->SetMaterialColorSpecularColor({ 0,0,0 });
+		cube1->GetComponent<MeshRenderer>()->GetMeshes()[0]->GetMaterial()->SetMaterialColorSpecularColor({ 0,0,0 });
+		cube2->GetComponent<MeshRenderer>()->GetMeshes()[0]->GetMaterial()->SetMaterialColorSpecularColor({ 0,0,0 });
+		cube3->GetComponent<MeshRenderer>()->GetMeshes()[0]->GetMaterial()->SetMaterialColorSpecularColor({ 0,0,0 });
+		cube4->GetComponent<MeshRenderer>()->GetMeshes()[0]->GetMaterial()->SetMaterialColorSpecularColor({ 0,0,0 });
+		cube5->GetComponent<MeshRenderer>()->GetMeshes()[0]->GetMaterial()->SetMaterialColorSpecularColor({ 0,0,0 });
 
-		cube1->GetComponent<MeshRenderer>()->GetMeshes()[0].GetMaterial()->SetMaterialColorDiffuseColor({ 0,0.294f,1.0f });
-		cube2->GetComponent<MeshRenderer>()->GetMeshes()[0].GetMaterial()->SetMaterialColorDiffuseColor({ 1,0.267f,0 });
-		cube3->GetComponent<MeshRenderer>()->GetMeshes()[0].GetMaterial()->SetMaterialColorDiffuseColor({ 1,1,1 });
-		cube4->GetComponent<MeshRenderer>()->GetMeshes()[0].GetMaterial()->SetMaterialColorDiffuseColor({ 0.204f,0,1 });
-		cube5->GetComponent<MeshRenderer>()->GetMeshes()[0].GetMaterial()->SetMaterialColorDiffuseColor({ 1,0,0 });
+		cube1->GetComponent<MeshRenderer>()->GetMeshes()[0]->GetMaterial()->SetMaterialColorDiffuseColor({ 0,0.294f,1.0f });
+		cube2->GetComponent<MeshRenderer>()->GetMeshes()[0]->GetMaterial()->SetMaterialColorDiffuseColor({ 1,0.267f,0 });
+		cube3->GetComponent<MeshRenderer>()->GetMeshes()[0]->GetMaterial()->SetMaterialColorDiffuseColor({ 1,1,1 });
+		cube4->GetComponent<MeshRenderer>()->GetMeshes()[0]->GetMaterial()->SetMaterialColorDiffuseColor({ 0.204f,0,1 });
+		cube5->GetComponent<MeshRenderer>()->GetMeshes()[0]->GetMaterial()->SetMaterialColorDiffuseColor({ 1,0,0 });
 		m_BackGroundObjsList.push_back(cube1);
 		m_BackGroundObjsList.push_back(cube2);
 		m_BackGroundObjsList.push_back(cube3);
@@ -819,10 +839,10 @@ namespace BlackPearl {
 
 	void Layer::LoadCubesScene()
 	{
-		float width = 4;
+		float width = 16;
 		float height = width;
 
-		float num = 16;
+		float num = 6;
 
 		float cubeSize = width / num;
 		for (int i = 0; i < num; i++)
@@ -836,8 +856,8 @@ namespace BlackPearl {
 
 					cube->GetComponent<Transform>()->SetInitScale({ 0.5f * cubeSize, 0.5f * cubeSize, 0.5f * cubeSize });
 					//std::shared_ptr<Texture> cubeTexture(DBG_NEW Texture(Texture::Type::DiffuseMap, "assets/texture/wood.png"));
-					cube->GetComponent<MeshRenderer>()->GetMeshes()[0].GetMaterial()->SetMaterialColorDiffuseColor({ (1.0f / num) * i,(1.0f / num) * j,(1.0f / num) * k });
-					cube->GetComponent<MeshRenderer>()->GetMeshes()[0].GetMaterial()->SetMaterialColorSpecularColor({ 0.0f,0.0f,0.0f });
+					cube->GetComponent<MeshRenderer>()->GetMeshes()[0]->GetMaterial()->SetMaterialColorDiffuseColor({ (1.0f / num) * i,(1.0f / num) * j,(1.0f / num) * k });
+					cube->GetComponent<MeshRenderer>()->GetMeshes()[0]->GetMaterial()->SetMaterialColorSpecularColor({ 0.0f,0.0f,0.0f });
 
 					//cube->GetComponent<MeshRenderer>()->SetTextureSamples(false);
 					cube->GetComponent<MeshRenderer>()->SetIsBackGroundObjects(true);
@@ -846,6 +866,40 @@ namespace BlackPearl {
 			}
 
 		}
+	}
+
+	std::vector<Object*> Layer::LoadCubesScene1(int cubeNum, glm::vec3 pos)
+	{
+		std::vector<Object*> objs;
+		float width = 16;
+		float height = width;
+
+		float num = cubeNum;
+
+		float cubeSize = width / num;
+		for (int i = 0; i < num; i++)
+		{
+			for (int j = 0; j < num; j++) {
+
+				for (int k = 0; k < num; k++) {
+					Object* cube = CreateCube();
+					cube->GetComponent<Transform>()->SetInitPosition(pos + glm::vec3(cubeSize * i,cubeSize * j,cubeSize * k ));
+					//cube->GetComponent<Transform>()->SetRotation({0.0f,45.0f, 0.0f});
+
+					cube->GetComponent<Transform>()->SetInitScale({ 0.5f * cubeSize, 0.5f * cubeSize, 0.5f * cubeSize });
+					//std::shared_ptr<Texture> cubeTexture(DBG_NEW Texture(Texture::Type::DiffuseMap, "assets/texture/wood.png"));
+					cube->GetComponent<MeshRenderer>()->GetMeshes()[0]->GetMaterial()->SetMaterialColorDiffuseColor({ (1.0f / num) * i,(1.0f / num) * j,(1.0f / num) * k });
+					cube->GetComponent<MeshRenderer>()->GetMeshes()[0]->GetMaterial()->SetMaterialColorSpecularColor({ 0.0f,0.0f,0.0f });
+
+					//cube->GetComponent<MeshRenderer>()->SetTextureSamples(false);
+					cube->GetComponent<MeshRenderer>()->SetIsBackGroundObjects(true);
+					objs.push_back(cube);
+					m_BackGroundObjsList.push_back(cube);
+
+				}
+			}
+		}
+		return objs;
 	}
 
 	void Layer::LoadD3D12ModelScene()
@@ -1126,7 +1180,7 @@ namespace BlackPearl {
 	//	std::string buttonName = "select file##" + std::to_string(meshIndex);
 	//	std::string inputTextName = "shader##" + std::to_string(meshIndex);
 
-	//	imguiShaders = mesh.GetMaterial()->GetShader()->GetPath();
+	//	imguiShaders = mesh->GetMaterial()->GetShader()->GetPath();
 	//	shader = const_cast<char*>(imguiShaders.c_str());
 	//	ImGui::InputText(inputTextName.c_str(), shader, IM_ARRAYSIZE(shader));
 	//	ImGui::SameLine();
@@ -1148,14 +1202,30 @@ namespace BlackPearl {
 		ImGui::Text("Up.x = %f,Up.y = %f,Up.z = %f", perspectiveCamera->Up().x, perspectiveCamera->Up().y, perspectiveCamera->Up().z);
 		ImGui::Text("Znear = %f,Zfar = %f,Fov = %f", perspectiveCamera->GetZnear(), perspectiveCamera->GetZfar(), perspectiveCamera->GetFov());
 
-		float moveSpeed, rotSpeed;
-		ImGui::DragFloat("CameraMoveSpeed", &moveSpeed, 0.1f, 0.1, 30);
+		float moveSpeed = perspectiveCamera->GetMoveSpeed(), rotSpeed = perspectiveCamera->GetRotateSpeed();
+		ImGui::DragFloat("CameraMoveSpeed", &moveSpeed, perspectiveCamera->GetMoveSpeed(), 0.1, 50, "%.3f ");
 		perspectiveCamera->SetMoveSpeed(moveSpeed);
-		ImGui::DragFloat("CameraRotateSpeed", &rotSpeed, 0.1f, 0.1, 30);
-		perspectiveCamera->SetRotateSpeed(moveSpeed);
+		ImGui::DragFloat("CameraRotateSpeed", &rotSpeed, perspectiveCamera->GetRotateSpeed(), 0.1, 50, "%.3f ");
+		perspectiveCamera->SetRotateSpeed(rotSpeed);
 
 
 
+
+	}
+
+	void Layer::ShowCamera(MainCamera* mainCamera)
+	{
+		ImGui::Text("Yaw = %f,Pitch= %f", mainCamera->Yaw(), mainCamera->Pitch());
+		ImGui::Text("Position.x = %f,Position.y = %f,Position.z = %f", mainCamera->GetPosition().x, mainCamera->GetPosition().y, mainCamera->GetPosition().z);
+		ImGui::Text("Front.x = %f,Front.y = %f,Front.z = %f", mainCamera->Front().x, mainCamera->Front().y, mainCamera->Front().z);
+		ImGui::Text("Up.x = %f,Up.y = %f,Up.z = %f", mainCamera->Up().x, mainCamera->Up().y, mainCamera->Up().z);
+		ImGui::Text("Znear = %f,Zfar = %f,Fov = %f", mainCamera->ZNear(), mainCamera->ZFar(), mainCamera->Fov());
+
+		float moveSpeed = mainCamera->GetMoveSpeed(), rotSpeed = mainCamera->GetRotateSpeed();
+		ImGui::DragFloat("CameraMoveSpeed", &moveSpeed, mainCamera->GetMoveSpeed(), 0.1, 50, "%.3f ");
+		mainCamera->SetMoveSpeed(moveSpeed);
+		ImGui::DragFloat("CameraRotateSpeed", &rotSpeed, mainCamera->GetRotateSpeed(), 0.1, 50, "%.3f ");
+		mainCamera->SetRotateSpeed(rotSpeed);
 
 	}
 
@@ -1165,7 +1235,7 @@ namespace BlackPearl {
 		std::string buttonName = "select file##" + std::to_string(meshIndex + offset);
 		std::string inputTextName = "mesh" + std::to_string(meshIndex + offset);
 
-		//imguiShaders = mesh.GetMaterial()->GetShader()->GetPath();
+		//imguiShaders = mesh->GetMaterial()->GetShader()->GetPath();
 	//	ImGui::PushID(meshIndex);
 
 		char* shader = const_cast<char*>(imguiShaders.c_str());
@@ -1233,7 +1303,7 @@ namespace BlackPearl {
 		}
 
 
-		//imguiShaders = mesh.GetMaterial()->GetShader()->GetPath();
+		//imguiShaders = mesh->GetMaterial()->GetShader()->GetPath();
 		//ImGui::PushID(meshIndex);
 
 
@@ -1274,7 +1344,7 @@ namespace BlackPearl {
 
 
 		ImGui::Text("MeshRenderer");
-		std::vector<Mesh>& imGuiMeshes = comp->GetMeshes();
+		std::vector<std::shared_ptr<Mesh>>& imGuiMeshes = comp->GetMeshes();
 		if (imGuiMeshes.empty()) return;
 
 		int offset = 0;
@@ -1286,13 +1356,13 @@ namespace BlackPearl {
 		imguiShaders.resize(imGuiMeshes.size());
 		for (int i = 0; i < imGuiMeshes.size(); i++)
 		{
-			imguiShaders[i] = imGuiMeshes[i].GetMaterial()->GetShader()->GetPath();
+			imguiShaders[i] = imGuiMeshes[i]->GetMaterial()->GetShader()->GetPath();
 			ShowShader(imguiShaders[i], i, itemIndex, offset);
 		}
 		if (itemIndex != -1) {
 			if (m_fileDialog.HasSelected()) {
 
-				imGuiMeshes[itemIndex].GetMaterial()->SetShader(m_fileDialog.GetSelected().string());
+				imGuiMeshes[itemIndex]->GetMaterial()->SetShader(m_fileDialog.GetSelected().string());
 				m_fileDialog.ClearSelected();
 				itemIndex = -1;
 			}
@@ -1300,7 +1370,7 @@ namespace BlackPearl {
 
 		}
 
-		if (imGuiMeshes[0].GetMaterial()->GetTextureMaps() != nullptr) {
+		if (imGuiMeshes[0]->GetMaterial()->GetTextureMaps() != nullptr) {
 
 			ImGui::TextColored({ 1.0,0.64,0.0,1.0 }, "TextureMaps");
 			std::vector<std::string> imguiDiffuseTextures(imGuiMeshes.size());
@@ -1320,48 +1390,48 @@ namespace BlackPearl {
 			{
 				std::string text = "Mesh" + std::to_string(i);
 				ImGui::TextColored({ 1.0,0.64,0.0,1.0 }, text.c_str());
-				if (imGuiMeshes[i].GetMaterial()->GetTextureMaps()->diffuseTextureMap != nullptr) {
-					imguiDiffuseTextures[i] = imGuiMeshes[i].GetMaterial()->GetTextureMaps()->diffuseTextureMap->GetPath();
+				if (imGuiMeshes[i]->GetMaterial()->GetTextureMaps()->diffuseTextureMap != nullptr) {
+					imguiDiffuseTextures[i] = imGuiMeshes[i]->GetMaterial()->GetTextureMaps()->diffuseTextureMap->GetPath();
 				}
 				ShowTextures(imguiDiffuseTextures[i], i, itemIndexTexture, Texture::DiffuseMap, type, imGuiMeshes.size() * 2);
 
 
-				if (imGuiMeshes[i].GetMaterial()->GetTextureMaps()->specularTextureMap != nullptr)
-					imguiSpecularTextures[i] = imGuiMeshes[i].GetMaterial()->GetTextureMaps()->specularTextureMap->GetPath();
+				if (imGuiMeshes[i]->GetMaterial()->GetTextureMaps()->specularTextureMap != nullptr)
+					imguiSpecularTextures[i] = imGuiMeshes[i]->GetMaterial()->GetTextureMaps()->specularTextureMap->GetPath();
 				ShowTextures(imguiSpecularTextures[i], i, itemIndexTexture, Texture::SpecularMap, type, imGuiMeshes.size() * 2);
 
-				if (imGuiMeshes[i].GetMaterial()->GetTextureMaps()->emissionTextureMap != nullptr)
-					imguiEmissionTextures[i] = imGuiMeshes[i].GetMaterial()->GetTextureMaps()->emissionTextureMap->GetPath();
+				if (imGuiMeshes[i]->GetMaterial()->GetTextureMaps()->emissionTextureMap != nullptr)
+					imguiEmissionTextures[i] = imGuiMeshes[i]->GetMaterial()->GetTextureMaps()->emissionTextureMap->GetPath();
 				ShowTextures(imguiEmissionTextures[i], i, itemIndexTexture, Texture::EmissionMap, type, imGuiMeshes.size() * 2);
 
-				if (imGuiMeshes[i].GetMaterial()->GetTextureMaps()->normalTextureMap != nullptr)
-					imguiNormalTextures[i] = imGuiMeshes[i].GetMaterial()->GetTextureMaps()->normalTextureMap->GetPath();
+				if (imGuiMeshes[i]->GetMaterial()->GetTextureMaps()->normalTextureMap != nullptr)
+					imguiNormalTextures[i] = imGuiMeshes[i]->GetMaterial()->GetTextureMaps()->normalTextureMap->GetPath();
 				ShowTextures(imguiNormalTextures[i], i, itemIndexTexture, Texture::NormalMap, type, imGuiMeshes.size() * 2);
 
-				if (imGuiMeshes[i].GetMaterial()->GetTextureMaps()->cubeTextureMap != nullptr)
-					imguiCubeTextures[i] = imGuiMeshes[i].GetMaterial()->GetTextureMaps()->cubeTextureMap->GetPath();
+				if (imGuiMeshes[i]->GetMaterial()->GetTextureMaps()->cubeTextureMap != nullptr)
+					imguiCubeTextures[i] = imGuiMeshes[i]->GetMaterial()->GetTextureMaps()->cubeTextureMap->GetPath();
 				ShowTextures(imguiCubeTextures[i], i, itemIndexTexture, Texture::CubeMap, type, imGuiMeshes.size() * 2);
 
-				if (imGuiMeshes[i].GetMaterial()->GetTextureMaps()->heightTextureMap != nullptr)
-					imguiHeightTextures[i] = imGuiMeshes[i].GetMaterial()->GetTextureMaps()->heightTextureMap->GetPath();
+				if (imGuiMeshes[i]->GetMaterial()->GetTextureMaps()->heightTextureMap != nullptr)
+					imguiHeightTextures[i] = imGuiMeshes[i]->GetMaterial()->GetTextureMaps()->heightTextureMap->GetPath();
 				ShowTextures(imguiHeightTextures[i], i, itemIndexTexture, Texture::HeightMap, type, imGuiMeshes.size() * 2);
 
-				if (imGuiMeshes[i].GetMaterial()->GetTextureMaps()->depthTextureMap != nullptr)
-					imguiDepthTextures[i] = imGuiMeshes[i].GetMaterial()->GetTextureMaps()->depthTextureMap->GetPath();
+				if (imGuiMeshes[i]->GetMaterial()->GetTextureMaps()->depthTextureMap != nullptr)
+					imguiDepthTextures[i] = imGuiMeshes[i]->GetMaterial()->GetTextureMaps()->depthTextureMap->GetPath();
 				ShowTextures(imguiDepthTextures[i], i, itemIndexTexture, Texture::DepthMap, type, imGuiMeshes.size() * 2);
 
-				if (imGuiMeshes[i].GetMaterial()->GetTextureMaps()->aoMap != nullptr)
-					imguiDepthTextures[i] = imGuiMeshes[i].GetMaterial()->GetTextureMaps()->aoMap->GetPath();
+				if (imGuiMeshes[i]->GetMaterial()->GetTextureMaps()->aoMap != nullptr)
+					imguiDepthTextures[i] = imGuiMeshes[i]->GetMaterial()->GetTextureMaps()->aoMap->GetPath();
 				ShowTextures(imguiDepthTextures[i], i, itemIndexTexture, Texture::AoMap, type, imGuiMeshes.size() * 2);
 
 
-				if (imGuiMeshes[i].GetMaterial()->GetTextureMaps()->roughnessMap != nullptr)
-					imguiDepthTextures[i] = imGuiMeshes[i].GetMaterial()->GetTextureMaps()->roughnessMap->GetPath();
+				if (imGuiMeshes[i]->GetMaterial()->GetTextureMaps()->roughnessMap != nullptr)
+					imguiDepthTextures[i] = imGuiMeshes[i]->GetMaterial()->GetTextureMaps()->roughnessMap->GetPath();
 				ShowTextures(imguiDepthTextures[i], i, itemIndexTexture, Texture::RoughnessMap, type, imGuiMeshes.size() * 2);
 
 
-				if (imGuiMeshes[i].GetMaterial()->GetTextureMaps()->mentallicMap != nullptr)
-					imguiDepthTextures[i] = imGuiMeshes[i].GetMaterial()->GetTextureMaps()->mentallicMap->GetPath();
+				if (imGuiMeshes[i]->GetMaterial()->GetTextureMaps()->mentallicMap != nullptr)
+					imguiDepthTextures[i] = imGuiMeshes[i]->GetMaterial()->GetTextureMaps()->mentallicMap->GetPath();
 				ShowTextures(imguiDepthTextures[i], i, itemIndexTexture, Texture::MentallicMap, type, imGuiMeshes.size() * 2);
 			}
 			if (itemIndexTexture != -1) {
@@ -1369,37 +1439,37 @@ namespace BlackPearl {
 
 					switch (type) {
 					case Texture::DiffuseMap:
-						imGuiMeshes[itemIndexTexture].GetMaterial()->SetTexture(Texture::DiffuseMap, m_fileDialog.GetSelected().string());//"assets/texture/" + 
+						imGuiMeshes[itemIndexTexture]->GetMaterial()->SetTexture(Texture::DiffuseMap, m_fileDialog.GetSelected().string());//"assets/texture/" + 
 						break;
 					case Texture::SpecularMap:
-						imGuiMeshes[itemIndexTexture].GetMaterial()->SetTexture(Texture::SpecularMap, m_fileDialog.GetSelected().string());//"assets/texture/" +
+						imGuiMeshes[itemIndexTexture]->GetMaterial()->SetTexture(Texture::SpecularMap, m_fileDialog.GetSelected().string());//"assets/texture/" +
 						break;
 					case Texture::EmissionMap:
-						imGuiMeshes[itemIndexTexture].GetMaterial()->SetTexture(Texture::EmissionMap, m_fileDialog.GetSelected().string());
+						imGuiMeshes[itemIndexTexture]->GetMaterial()->SetTexture(Texture::EmissionMap, m_fileDialog.GetSelected().string());
 						break;
 					case Texture::NormalMap:
-						imGuiMeshes[itemIndexTexture].GetMaterial()->SetTexture(Texture::NormalMap, m_fileDialog.GetSelected().string());
+						imGuiMeshes[itemIndexTexture]->GetMaterial()->SetTexture(Texture::NormalMap, m_fileDialog.GetSelected().string());
 						break;
 					case Texture::CubeMap:
-						imGuiMeshes[itemIndexTexture].GetMaterial()->SetTexture(Texture::CubeMap, m_fileDialog.GetSelected().string());
+						imGuiMeshes[itemIndexTexture]->GetMaterial()->SetTexture(Texture::CubeMap, m_fileDialog.GetSelected().string());
 						break;
 					case Texture::HeightMap:
-						imGuiMeshes[itemIndexTexture].GetMaterial()->SetTexture(Texture::HeightMap, m_fileDialog.GetSelected().string());
+						imGuiMeshes[itemIndexTexture]->GetMaterial()->SetTexture(Texture::HeightMap, m_fileDialog.GetSelected().string());
 						break;
 					case Texture::DepthMap:
-						imGuiMeshes[itemIndexTexture].GetMaterial()->SetTexture(Texture::DepthMap, m_fileDialog.GetSelected().string());
+						imGuiMeshes[itemIndexTexture]->GetMaterial()->SetTexture(Texture::DepthMap, m_fileDialog.GetSelected().string());
 						break;
 
 					case Texture::AoMap:
-						imGuiMeshes[itemIndexTexture].GetMaterial()->SetTexture(Texture::AoMap, m_fileDialog.GetSelected().string());
+						imGuiMeshes[itemIndexTexture]->GetMaterial()->SetTexture(Texture::AoMap, m_fileDialog.GetSelected().string());
 						break;
 
 					case Texture::RoughnessMap:
-						imGuiMeshes[itemIndexTexture].GetMaterial()->SetTexture(Texture::RoughnessMap, m_fileDialog.GetSelected().string());
+						imGuiMeshes[itemIndexTexture]->GetMaterial()->SetTexture(Texture::RoughnessMap, m_fileDialog.GetSelected().string());
 						break;
 
 					case Texture::MentallicMap:
-						imGuiMeshes[itemIndexTexture].GetMaterial()->SetTexture(Texture::MentallicMap, m_fileDialog.GetSelected().string());
+						imGuiMeshes[itemIndexTexture]->GetMaterial()->SetTexture(Texture::MentallicMap, m_fileDialog.GetSelected().string());
 						break;
 					defalut:
 						GE_CORE_ERROR("Unknown texture type");
@@ -1408,7 +1478,7 @@ namespace BlackPearl {
 					//imguiTextures[itemIndexTexture] = m_fileDialog.GetSelected().string();
 					////GE_CORE_INFO("Selected filename:" + m_fileDialog.GetSelected().string());
 					//textures[itemIndexTexture] = const_cast<char*>(imguiTextures[itemIndexTexture].c_str());// (m_fileDialog.GetSelected().string().c_str());
-					//imGuiMeshes[itemIndexTexture].GetMaterial()->SetShader("assets/texture/" + imguiTextures[itemIndexTexture]);
+					//imGuiMeshes[itemIndexTexture]->GetMaterial()->SetShader("assets/texture/" + imguiTextures[itemIndexTexture]);
 					m_fileDialog.ClearSelected();
 					itemIndexTexture = -1;
 				}
@@ -1421,7 +1491,7 @@ namespace BlackPearl {
 
 
 		ImGui::TextColored({ 1.0,0.64,0.0,1.0 }, "Material Properties");
-		Material::Props imGuiProps = imGuiMeshes[0].GetMaterial()->GetProps();//TODO::默认所有mesh 的Material::Props 是一样的
+		Material::Props imGuiProps = imGuiMeshes[0]->GetMaterial()->GetProps();//TODO::默认所有mesh 的Material::Props 是一样的
 		float imGuiShininess = imGuiProps.shininess;
 		bool  imGUiBlinnLight = imGuiProps.isBinnLight;
 		bool  imGUiIsPBRTextureSample = (bool)imGuiProps.isPBRTextureSample;
@@ -1431,40 +1501,40 @@ namespace BlackPearl {
 
 		ImGui::Checkbox("blinnlight", &imGUiBlinnLight);
 		for (auto mesh : imGuiMeshes)
-			mesh.GetMaterial()->SetBinnLight(imGUiBlinnLight);
+			mesh->GetMaterial()->SetBinnLight(imGUiBlinnLight);
 
 		ImGui::DragFloat("shininess", &imGuiShininess, 0.5f, 0.0f, 1024.0f, "%.3f ");
 		for (auto mesh : imGuiMeshes)
-			mesh.GetMaterial()->SetShininess(imGuiShininess);
+			mesh->GetMaterial()->SetShininess(imGuiShininess);
 
 
 		ImGui::Checkbox("usePPBRTexture", &imGUiIsPBRTextureSample);
 		for (auto mesh : imGuiMeshes)
-			mesh.GetMaterial()->SetPBRTextureSample((int)imGUiIsPBRTextureSample);
+			mesh->GetMaterial()->SetPBRTextureSample((int)imGUiIsPBRTextureSample);
 
 		ImGui::Checkbox("useDiffuseTexture", &imGUiIsDifussTextureSample);
 		for (auto mesh : imGuiMeshes)
-			mesh.GetMaterial()->SetTextureSampleDiffuse((int)imGUiIsDifussTextureSample);
+			mesh->GetMaterial()->SetTextureSampleDiffuse((int)imGUiIsDifussTextureSample);
 
 		ImGui::Checkbox("useSpecularTexture", &imGUiIsSpecularTextureSample);
 		for (auto mesh : imGuiMeshes)
-			mesh.GetMaterial()->SetTextureSampleSpecular((int)imGUiIsSpecularTextureSample);
+			mesh->GetMaterial()->SetTextureSampleSpecular((int)imGUiIsSpecularTextureSample);
 
 		/*ImGui::Checkbox("useMetallicTexture", &imGUiIsMetallicrTextureSample);
 		for (auto mesh : imGuiMeshes)
-			mesh.GetMaterial()->SetTextureSampleMetallic((int)imGUiIsMetallicrTextureSample);*/
+			mesh->GetMaterial()->SetTextureSampleMetallic((int)imGUiIsMetallicrTextureSample);*/
 
 		for (int i = 0; i < imGuiMeshes.size(); i++) {
-			MaterialColor::Color color = imGuiMeshes[i].GetMaterial()->GetMaterialColor().Get();
+			MaterialColor::Color color = imGuiMeshes[i]->GetMaterial()->GetMaterialColor().Get();
 			ImGui::ColorEdit3("diffuseColor", glm::value_ptr(color.diffuseColor));
-			//mesh.GetMaterial()->SetMaterialColorDiffuseColor(color.diffuseColor);
+			//mesh->GetMaterial()->SetMaterialColorDiffuseColor(color.diffuseColor);
 
 			ImGui::ColorEdit3("specularColor", glm::value_ptr(color.specularColor));
-			//mesh.GetMaterial()->SetMaterialColorSpecularColor(color.specularColor);
+			//mesh->GetMaterial()->SetMaterialColorSpecularColor(color.specularColor);
 
 			ImGui::ColorEdit3("emissionColor", glm::value_ptr(color.emissionColor));
-			//mesh.GetMaterial()->SetMaterialColorEmissionColor(color.emissionColor);
-			imGuiMeshes[i].SetMaterialColor(color);
+			//mesh->GetMaterial()->SetMaterialColorEmissionColor(color.emissionColor);
+			imGuiMeshes[i]->SetMaterialColor(color);
 
 		}
 
@@ -1512,7 +1582,7 @@ namespace BlackPearl {
 	{
 		//if (comp->GetType() == LightType::PointLight) {
 			//auto pointLight = std::dynamic_pointer_cast<PointLight>(comp);
-		//auto color = pointLight->GetMeshes().GetMaterial()->GetMaterialColor().Get();
+		//auto color = pointLight->GetMeshes()->GetMaterial()->GetMaterialColor().Get();
 		auto props = pointLight->GetLightProps();
 		static  int attenuation = (int)pointLight->GetAttenuation().maxDistance;
 		float intensity = pointLight->GetLightProps().intensity;

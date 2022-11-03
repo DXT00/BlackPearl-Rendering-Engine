@@ -19,6 +19,8 @@ namespace BlackPearl {
 		glm::vec3 Up() const;
 		glm::vec3 Right() const;
 		float Fov() const;
+		float ZFar() const;
+		float ZNear() const;
 
 		void SetFov(float fov);
 		void SetPosition(glm::vec3 pos);

@@ -40,8 +40,9 @@ namespace BlackPearl {
 					m_MeshletGenerator = std::make_shared<MeshletGenerator>();
 					m_MeshletGenerator->Process(m_Meshes, options);
 				}
-				//m_ModelLoader->Load(m_Meshes, m_BoundingSphere, path);
-				LoadMeshletModel(m_BoundingSphere, path);
+				m_ModelLoader = DBG_NEW D3D12ModelLoader(isMeshletModel);
+				m_ModelLoader->Load(m_Meshes, m_BoundingSphere, path);
+				//LoadMeshletModel(m_BoundingSphere, path);
 			}
 			else {
 				LoadModel(path);
@@ -53,14 +54,14 @@ namespace BlackPearl {
 		};
 
 		~Model() {
-			//GE_SAVE_DELETE(m_Scene);
+			GE_SAVE_DELETE(m_ModelLoader);
 
 		};
 		void LoadModel(const std::string& path);
 		void LoadMeshletModel(BoundingSphere& bounding_sphere, const std::string& path);
 		void ProcessNode(aiNode* node, const aiScene* scene);
-		Mesh ProcessMesh(aiMesh* aimesh, std::vector<Vertex>& v_vertex);
-		Mesh ProcessMesh(aiMesh* aimesh, std::vector<Vertex>& v_vertex, bool sort_vertices);
+		std::shared_ptr<Mesh> ProcessMesh(aiMesh* aimesh, std::vector<Vertex>& v_vertex);
+		std::shared_ptr<Mesh> ProcessMesh(aiMesh* aimesh, std::vector<Vertex>& v_vertex, bool sort_vertices);
 
 		void LoadMaterialTextures(
 			aiMaterial* material,
@@ -87,8 +88,8 @@ namespace BlackPearl {
 		aiQuaternion CalculateInterpolateRotation(float timeInDurationSecond, aiNodeAnim* nodeAnim);
 		glm::vec3    CalculateInterpolateScale(float timeInDurationSecond, aiNodeAnim* nodeAnim);
 
-		std::vector<Mesh>       GetMeshes() const { return m_Meshes; }
-		std::vector<Mesh>&  GetMeshlets() { return m_Meshes; }
+		std::vector<std::shared_ptr<Mesh>>       GetMeshes() const { return m_Meshes; }
+		std::vector<std::shared_ptr<Mesh>>&  GetMeshlets() { return m_Meshes; }
 
 		std::shared_ptr<Shader> GetShader()const { return m_Shader; }
 		std::vector<Vertex>		GetMeshVertex() const { return m_Vertices; }
@@ -97,7 +98,7 @@ namespace BlackPearl {
 		uint32_t FindRotation(float AnimationTime, const aiNodeAnim* nodeAnim);
 		uint32_t FindScaling(float AnimationTime, const aiNodeAnim* nodeAnim);
 	public:
-		std::vector<Mesh> m_Meshes;
+		std::vector<std::shared_ptr<Mesh>> m_Meshes;
 	private:
 		std::shared_ptr<Shader> m_Shader = nullptr;
 		std::map<int, std::shared_ptr<Material>> m_ModelMaterials;

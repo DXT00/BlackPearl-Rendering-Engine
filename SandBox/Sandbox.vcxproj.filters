@@ -69,6 +69,8 @@
     <ClInclude Include="src\Layers\VoxelizationTestLayer.h">
       <Filter>src\Layers</Filter>
     </ClInclude>
+    <ClInclude Include="src\Layers\TerrainRenderingLayer.h" />
+    <ClInclude Include="src\Layers\BatchRenderingLayer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\SandBox.cpp">

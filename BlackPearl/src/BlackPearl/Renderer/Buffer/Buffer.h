@@ -7,6 +7,8 @@
 namespace BlackPearl {
 
 	enum class ElementDataType {
+		Char,
+		Char3,
 		Int,
 		Int2,
 		Int3,
@@ -25,6 +27,8 @@ namespace BlackPearl {
 	static uint32_t GetDataSize(ElementDataType type) {
 
 		switch (type) {
+		case ElementDataType::Char:      return sizeof(char);
+		case ElementDataType::Char3:     return 3 * sizeof(char);
 		case ElementDataType::Int:      return sizeof(int);
 		case ElementDataType::Int2:     return 2 * sizeof(int);
 		case ElementDataType::Int3:     return 3 * sizeof(int);
@@ -95,7 +99,8 @@ namespace BlackPearl {
 
 	class VertexBufferLayout {
 	public:
-		VertexBufferLayout() { GE_CORE_INFO("VertexBufferLayout defult constructor!") }
+		VertexBufferLayout() { //GE_CORE_INFO("VertexBufferLayout defult constructor!")
+		}
 		VertexBufferLayout(std::initializer_list<BufferElement> elements)
 			:m_Elememts(elements) {
 			CalculateStrideAndOffset();
@@ -110,13 +115,18 @@ namespace BlackPearl {
 			return m_Elememts[i]; 
 		}
 
+		bool HasElement(uint32_t i) {
+			if (i < ElementSize())
+				return true;
+			return false;
+		}
 		void AddElement(const BufferElement& element) {
 			m_Elememts.push_back(element);
 			CalculateStrideAndOffset();
 			UpdateDesc();
 		}
 		uint32_t ElementSize() const { return m_Elememts.size(); }
-		inline uint32_t GetStride() { return m_Stride; }
+		uint32_t GetStride() const{ return m_Stride; }
 		//for directx
 		virtual void UpdateDesc() {}
 		
@@ -147,9 +157,9 @@ namespace BlackPearl {
 	class VertexBuffer {
 	public:
 
-		VertexBuffer(const std::vector<float>&vertices);
-		VertexBuffer(const float* vertices, uint32_t size);
-		VertexBuffer(const unsigned int* vertices, uint32_t size);
+		VertexBuffer(const std::vector<float>&vertices, uint32_t drawType = GL_STATIC_DRAW);
+		VertexBuffer(const float* vertices, uint32_t size, uint32_t drawType = GL_STATIC_DRAW);
+		VertexBuffer(const unsigned int* vertices, uint32_t size, uint32_t drawType = GL_STATIC_DRAW);
 		~VertexBuffer();
 		void Bind();
 		void UnBind();
@@ -170,8 +180,8 @@ namespace BlackPearl {
 
 	class IndexBuffer {
 	public:
-		IndexBuffer(const std::vector<unsigned int>& indices);
-		IndexBuffer(unsigned int *indices, unsigned int size);
+		IndexBuffer(const std::vector<unsigned int>& indices, uint32_t drawType = GL_STATIC_DRAW);
+		IndexBuffer(unsigned int *indices, unsigned int size, uint32_t drawType = GL_STATIC_DRAW);
 		unsigned int GetIndicesSize()const { return m_IndiciesSize; }
 		void Bind();
 		void UnBind();

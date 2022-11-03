@@ -37,8 +37,11 @@
 #define _SH
 
 
-#define GE_SAVE_DELETE(p) {if(p){delete p;p = nullptr;}}
+#define GE_SAVE_DELETE(p) {if(p!=nullptr){delete p;p = nullptr;}}
+#define GE_SAVE_DELETE_ARRAY(p) {if(p!=nullptr){delete [] p;p = nullptr;}}
 
+#define GE_SAVE_FREE(p) {if(p!=nullptr){free(p);p = nullptr;}}
+#define GE_SAVE_FREE_ARRAY(p) {if(p!=nullptr){free(p);p = nullptr;}}
 #define GE_ERROR_JUDGE()\
 {\
 	GLenum err = glGetError();\

@@ -216,33 +216,33 @@ namespace BlackPearl {
 
 	void D3D12MeshShaderRenderer::UploadModel(Object* model)
 	{
-		std::vector<Mesh>& meshes = model->GetComponent<MeshRenderer>()->GetModel()->m_Meshes;
+		std::vector<std::shared_ptr<Mesh>>& meshes = model->GetComponent<MeshRenderer>()->GetModel()->m_Meshes;
 		for (uint32_t i = 0; i < meshes.size(); ++i)
 		{
 			auto& m = meshes[i];
 			// Create committed D3D resources of proper sizes
-			auto indexDesc = CD3DX12_RESOURCE_DESC::Buffer(m.Indices.size());
-			auto meshletDesc = CD3DX12_RESOURCE_DESC::Buffer(m.Meshlets.size() * sizeof(m.Meshlets[0]));
-			auto cullDataDesc = CD3DX12_RESOURCE_DESC::Buffer(m.CullingData.size() * sizeof(m.CullingData[0]));
-			auto vertexIndexDesc = CD3DX12_RESOURCE_DESC::Buffer(DivRoundUp(m.UniqueVertexIndices.size(), 4) * 4);
+			auto indexDesc = CD3DX12_RESOURCE_DESC::Buffer(m->Indices_ml.size());
+			auto meshletDesc = CD3DX12_RESOURCE_DESC::Buffer(m->Meshlets.size() * sizeof(m->Meshlets[0]));
+			auto cullDataDesc = CD3DX12_RESOURCE_DESC::Buffer(m->CullingData.size() * sizeof(m->CullingData[0]));
+			auto vertexIndexDesc = CD3DX12_RESOURCE_DESC::Buffer(DivRoundUp(m->UniqueVertexIndices.size(), 4) * 4);
 
-			auto primitiveDesc = CD3DX12_RESOURCE_DESC::Buffer(m.PrimitiveIndices.size() * sizeof(m.PrimitiveIndices[0]));
+			auto primitiveDesc = CD3DX12_RESOURCE_DESC::Buffer(m->PrimitiveIndices.size() * sizeof(m->PrimitiveIndices[0]));
 			auto meshInfoDesc = CD3DX12_RESOURCE_DESC::Buffer(sizeof(MeshInfo));
 
 			auto defaultHeap = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT);
-			ThrowIfFailed(m_Device->CreateCommittedResource(&defaultHeap, D3D12_HEAP_FLAG_NONE, &indexDesc, D3D12_RESOURCE_STATE_COPY_DEST, nullptr, IID_PPV_ARGS(&m.IndexResource)));
-			ThrowIfFailed(m_Device->CreateCommittedResource(&defaultHeap, D3D12_HEAP_FLAG_NONE, &meshletDesc, D3D12_RESOURCE_STATE_COPY_DEST, nullptr, IID_PPV_ARGS(&m.MeshletResource)));
-			ThrowIfFailed(m_Device->CreateCommittedResource(&defaultHeap, D3D12_HEAP_FLAG_NONE, &cullDataDesc, D3D12_RESOURCE_STATE_COPY_DEST, nullptr, IID_PPV_ARGS(&m.CullDataResource)));
-			ThrowIfFailed(m_Device->CreateCommittedResource(&defaultHeap, D3D12_HEAP_FLAG_NONE, &vertexIndexDesc, D3D12_RESOURCE_STATE_COPY_DEST, nullptr, IID_PPV_ARGS(&m.UniqueVertexIndexResource)));
-			ThrowIfFailed(m_Device->CreateCommittedResource(&defaultHeap, D3D12_HEAP_FLAG_NONE, &primitiveDesc, D3D12_RESOURCE_STATE_COPY_DEST, nullptr, IID_PPV_ARGS(&m.PrimitiveIndexResource)));
-			ThrowIfFailed(m_Device->CreateCommittedResource(&defaultHeap, D3D12_HEAP_FLAG_NONE, &meshInfoDesc, D3D12_RESOURCE_STATE_COPY_DEST, nullptr, IID_PPV_ARGS(&m.MeshInfoResource)));
+			ThrowIfFailed(m_Device->CreateCommittedResource(&defaultHeap, D3D12_HEAP_FLAG_NONE, &indexDesc, D3D12_RESOURCE_STATE_COPY_DEST, nullptr, IID_PPV_ARGS(&m->IndexResource)));
+			ThrowIfFailed(m_Device->CreateCommittedResource(&defaultHeap, D3D12_HEAP_FLAG_NONE, &meshletDesc, D3D12_RESOURCE_STATE_COPY_DEST, nullptr, IID_PPV_ARGS(&m->MeshletResource)));
+			ThrowIfFailed(m_Device->CreateCommittedResource(&defaultHeap, D3D12_HEAP_FLAG_NONE, &cullDataDesc, D3D12_RESOURCE_STATE_COPY_DEST, nullptr, IID_PPV_ARGS(&m->CullDataResource)));
+			ThrowIfFailed(m_Device->CreateCommittedResource(&defaultHeap, D3D12_HEAP_FLAG_NONE, &vertexIndexDesc, D3D12_RESOURCE_STATE_COPY_DEST, nullptr, IID_PPV_ARGS(&m->UniqueVertexIndexResource)));
+			ThrowIfFailed(m_Device->CreateCommittedResource(&defaultHeap, D3D12_HEAP_FLAG_NONE, &primitiveDesc, D3D12_RESOURCE_STATE_COPY_DEST, nullptr, IID_PPV_ARGS(&m->PrimitiveIndexResource)));
+			ThrowIfFailed(m_Device->CreateCommittedResource(&defaultHeap, D3D12_HEAP_FLAG_NONE, &meshInfoDesc, D3D12_RESOURCE_STATE_COPY_DEST, nullptr, IID_PPV_ARGS(&m->MeshInfoResource)));
 
-			m.VertexResources.resize(m.Vertices.size());
+			m->VertexResources.resize(m->Vertices_ml.size());
 
-			for (uint32_t j = 0; j < m.Vertices.size(); ++j)
+			for (uint32_t j = 0; j < m->Vertices_ml.size(); ++j)
 			{
-				auto vertexDesc = CD3DX12_RESOURCE_DESC::Buffer(m.Vertices[j].size());
-				m_Device->CreateCommittedResource(&defaultHeap, D3D12_HEAP_FLAG_NONE, &vertexDesc, D3D12_RESOURCE_STATE_COPY_DEST, nullptr, IID_PPV_ARGS(&m.VertexResources[j]));
+				auto vertexDesc = CD3DX12_RESOURCE_DESC::Buffer(m->Vertices_ml[j].size());
+				m_Device->CreateCommittedResource(&defaultHeap, D3D12_HEAP_FLAG_NONE, &vertexDesc, D3D12_RESOURCE_STATE_COPY_DEST, nullptr, IID_PPV_ARGS(&m->VertexResources[j]));
 
 
 			}
@@ -265,62 +265,59 @@ namespace BlackPearl {
 			ThrowIfFailed(m_Device->CreateCommittedResource(&uploadHeap, D3D12_HEAP_FLAG_NONE, &meshInfoDesc, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr, IID_PPV_ARGS(&meshInfoUpload)));
 
 			// Map & copy memory to upload heap
-			vertexUploads.resize(m.Vertices.size());
-			for (uint32_t j = 0; j < m.Vertices.size(); ++j)
+			vertexUploads.resize(m->Vertices_ml.size());
+			for (uint32_t j = 0; j < m->Vertices_ml.size(); ++j)
 			{
-				auto vertexDesc = CD3DX12_RESOURCE_DESC::Buffer(m.Vertices[j].size());
+				auto vertexDesc = CD3DX12_RESOURCE_DESC::Buffer(m->Vertices_ml[j].size());
 				ThrowIfFailed(m_Device->CreateCommittedResource(&uploadHeap, D3D12_HEAP_FLAG_NONE, &vertexDesc, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr, IID_PPV_ARGS(&vertexUploads[j])));
 
 				uint8_t* memory = nullptr;
 				vertexUploads[j]->Map(0, nullptr, reinterpret_cast<void**>(&memory));
-				std::memcpy(memory, m.Vertices[j].data(), m.Vertices[j].size());
+				std::memcpy(memory, m->Vertices_ml[j].data(), m->Vertices_ml[j].size());
 				vertexUploads[j]->Unmap(0, nullptr);
 			}
 
 			{
 				uint8_t* memory = nullptr;
 				indexUpload->Map(0, nullptr, reinterpret_cast<void**>(&memory));
-				std::memcpy(memory, m.Indices.data(), m.Indices.size());
+				std::memcpy(memory, m->Indices_ml.data(), m->Indices_ml.size());
 				indexUpload->Unmap(0, nullptr);
 			}
-
-
-
 
 			{
 				uint8_t* memory = nullptr;
 				meshletUpload->Map(0, nullptr, reinterpret_cast<void**>(&memory));
-				std::memcpy(memory, m.Meshlets.data(), m.Meshlets.size() * sizeof(m.Meshlets[0]));
+				std::memcpy(memory, m->Meshlets.data(), m->Meshlets.size() * sizeof(m->Meshlets[0]));
 				meshletUpload->Unmap(0, nullptr);
 			}
 
 			{
 				uint8_t* memory = nullptr;
 				cullDataUpload->Map(0, nullptr, reinterpret_cast<void**>(&memory));
-				std::memcpy(memory, m.CullingData.data(), m.CullingData.size() * sizeof(m.CullingData[0]));
+				std::memcpy(memory, m->CullingData.data(), m->CullingData.size() * sizeof(m->CullingData[0]));
 				cullDataUpload->Unmap(0, nullptr);
 			}
 
 			{
 				uint8_t* memory = nullptr;
 				uniqueVertexIndexUpload->Map(0, nullptr, reinterpret_cast<void**>(&memory));
-				std::memcpy(memory, m.UniqueVertexIndices.data(), m.UniqueVertexIndices.size());
+				std::memcpy(memory, m->UniqueVertexIndices.data(), m->UniqueVertexIndices.size());
 				uniqueVertexIndexUpload->Unmap(0, nullptr);
 			}
 
 			{
 				uint8_t* memory = nullptr;
 				primitiveIndexUpload->Map(0, nullptr, reinterpret_cast<void**>(&memory));
-				std::memcpy(memory, m.PrimitiveIndices.data(), m.PrimitiveIndices.size() * sizeof(m.PrimitiveIndices[0]));
+				std::memcpy(memory, m->PrimitiveIndices.data(), m->PrimitiveIndices.size() * sizeof(m->PrimitiveIndices[0]));
 				primitiveIndexUpload->Unmap(0, nullptr);
 			}
 
 			{
 				MeshInfo info = {};
-				info.IndexSize = m.IndexSize;
-				info.MeshletCount = static_cast<uint32_t>(m.Meshlets.size());
-				info.LastMeshletVertCount = m.Meshlets.back().VertCount;
-				info.LastMeshletPrimCount = m.Meshlets.back().PrimCount;
+				info.IndexSize = m->IndexSize_ml;
+				info.MeshletCount = static_cast<uint32_t>(m->Meshlets.size());
+				info.LastMeshletVertCount = m->Meshlets.back().VertCount;
+				info.LastMeshletPrimCount = m->Meshlets.back().PrimCount;
 
 
 				uint8_t* memory = nullptr;
@@ -332,32 +329,32 @@ namespace BlackPearl {
 			// Populate our command list
 			m_CommandList->Reset(m_CommandAllocators[m_FrameIndex].Get(), nullptr);
 
-			for (uint32_t j = 0; j < m.Vertices.size(); ++j)
+			for (uint32_t j = 0; j < m->Vertices_ml.size(); ++j)
 			{
-				m_CommandList->CopyResource(m.VertexResources[j].Get(), vertexUploads[j].Get());
-				const auto barrier = CD3DX12_RESOURCE_BARRIER::Transition(m.VertexResources[j].Get(), D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+				m_CommandList->CopyResource(m->VertexResources[j].Get(), vertexUploads[j].Get());
+				const auto barrier = CD3DX12_RESOURCE_BARRIER::Transition(m->VertexResources[j].Get(), D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
 				m_CommandList->ResourceBarrier(1, &barrier);
 			}
 
 			D3D12_RESOURCE_BARRIER postCopyBarriers[6];
 
-			m_CommandList->CopyResource(m.IndexResource.Get(), indexUpload.Get());
-			postCopyBarriers[0] = CD3DX12_RESOURCE_BARRIER::Transition(m.IndexResource.Get(), D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+			m_CommandList->CopyResource(m->IndexResource.Get(), indexUpload.Get());
+			postCopyBarriers[0] = CD3DX12_RESOURCE_BARRIER::Transition(m->IndexResource.Get(), D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
 
-			m_CommandList->CopyResource(m.MeshletResource.Get(), meshletUpload.Get());
-			postCopyBarriers[1] = CD3DX12_RESOURCE_BARRIER::Transition(m.MeshletResource.Get(), D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+			m_CommandList->CopyResource(m->MeshletResource.Get(), meshletUpload.Get());
+			postCopyBarriers[1] = CD3DX12_RESOURCE_BARRIER::Transition(m->MeshletResource.Get(), D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
 
-			m_CommandList->CopyResource(m.CullDataResource.Get(), cullDataUpload.Get());
-			postCopyBarriers[2] = CD3DX12_RESOURCE_BARRIER::Transition(m.CullDataResource.Get(), D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+			m_CommandList->CopyResource(m->CullDataResource.Get(), cullDataUpload.Get());
+			postCopyBarriers[2] = CD3DX12_RESOURCE_BARRIER::Transition(m->CullDataResource.Get(), D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
 
-			m_CommandList->CopyResource(m.UniqueVertexIndexResource.Get(), uniqueVertexIndexUpload.Get());
-			postCopyBarriers[3] = CD3DX12_RESOURCE_BARRIER::Transition(m.UniqueVertexIndexResource.Get(), D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+			m_CommandList->CopyResource(m->UniqueVertexIndexResource.Get(), uniqueVertexIndexUpload.Get());
+			postCopyBarriers[3] = CD3DX12_RESOURCE_BARRIER::Transition(m->UniqueVertexIndexResource.Get(), D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
 
-			m_CommandList->CopyResource(m.PrimitiveIndexResource.Get(), primitiveIndexUpload.Get());
-			postCopyBarriers[4] = CD3DX12_RESOURCE_BARRIER::Transition(m.PrimitiveIndexResource.Get(), D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+			m_CommandList->CopyResource(m->PrimitiveIndexResource.Get(), primitiveIndexUpload.Get());
+			postCopyBarriers[4] = CD3DX12_RESOURCE_BARRIER::Transition(m->PrimitiveIndexResource.Get(), D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
 
-			m_CommandList->CopyResource(m.MeshInfoResource.Get(), meshInfoUpload.Get());
-			postCopyBarriers[5] = CD3DX12_RESOURCE_BARRIER::Transition(m.MeshInfoResource.Get(), D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER);
+			m_CommandList->CopyResource(m->MeshInfoResource.Get(), meshInfoUpload.Get());
+			postCopyBarriers[5] = CD3DX12_RESOURCE_BARRIER::Transition(m->MeshInfoResource.Get(), D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER);
 
 			m_CommandList->ResourceBarrier(ARRAYSIZE(postCopyBarriers), postCopyBarriers);
 
@@ -391,27 +388,27 @@ namespace BlackPearl {
 		{
 			auto& m = model->m_Meshes[i];
 			// Create committed D3D resources of proper sizes
-			auto indexDesc = CD3DX12_RESOURCE_DESC::Buffer(m.Indices.size());
-			auto meshletDesc = CD3DX12_RESOURCE_DESC::Buffer(m.Meshlets.size() * sizeof(m.Meshlets[0]));
-			auto cullDataDesc = CD3DX12_RESOURCE_DESC::Buffer(m.CullingData.size() * sizeof(m.CullingData[0]));
-			auto vertexIndexDesc = CD3DX12_RESOURCE_DESC::Buffer(DivRoundUp(m.UniqueVertexIndices.size(), 4) * 4);
-			auto primitiveDesc = CD3DX12_RESOURCE_DESC::Buffer(m.PrimitiveIndices.size() * sizeof(m.PrimitiveIndices[0]));
+			auto indexDesc = CD3DX12_RESOURCE_DESC::Buffer(m->Indices_ml.size());
+			auto meshletDesc = CD3DX12_RESOURCE_DESC::Buffer(m->Meshlets.size() * sizeof(m->Meshlets[0]));
+			auto cullDataDesc = CD3DX12_RESOURCE_DESC::Buffer(m->CullingData.size() * sizeof(m->CullingData[0]));
+			auto vertexIndexDesc = CD3DX12_RESOURCE_DESC::Buffer(DivRoundUp(m->UniqueVertexIndices.size(), 4) * 4);
+			auto primitiveDesc = CD3DX12_RESOURCE_DESC::Buffer(m->PrimitiveIndices.size() * sizeof(m->PrimitiveIndices[0]));
 			auto meshInfoDesc = CD3DX12_RESOURCE_DESC::Buffer(sizeof(MeshInfo));
 
 			auto defaultHeap = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT);
-			ThrowIfFailed(m_Device->CreateCommittedResource(&defaultHeap, D3D12_HEAP_FLAG_NONE, &indexDesc, D3D12_RESOURCE_STATE_COPY_DEST, nullptr, IID_PPV_ARGS(&m.IndexResource)));
-			ThrowIfFailed(m_Device->CreateCommittedResource(&defaultHeap, D3D12_HEAP_FLAG_NONE, &meshletDesc, D3D12_RESOURCE_STATE_COPY_DEST, nullptr, IID_PPV_ARGS(&m.MeshletResource)));
-			ThrowIfFailed(m_Device->CreateCommittedResource(&defaultHeap, D3D12_HEAP_FLAG_NONE, &cullDataDesc, D3D12_RESOURCE_STATE_COPY_DEST, nullptr, IID_PPV_ARGS(&m.CullDataResource)));
-			ThrowIfFailed(m_Device->CreateCommittedResource(&defaultHeap, D3D12_HEAP_FLAG_NONE, &vertexIndexDesc, D3D12_RESOURCE_STATE_COPY_DEST, nullptr, IID_PPV_ARGS(&m.UniqueVertexIndexResource)));
-			ThrowIfFailed(m_Device->CreateCommittedResource(&defaultHeap, D3D12_HEAP_FLAG_NONE, &primitiveDesc, D3D12_RESOURCE_STATE_COPY_DEST, nullptr, IID_PPV_ARGS(&m.PrimitiveIndexResource)));
-			ThrowIfFailed(m_Device->CreateCommittedResource(&defaultHeap, D3D12_HEAP_FLAG_NONE, &meshInfoDesc, D3D12_RESOURCE_STATE_COPY_DEST, nullptr, IID_PPV_ARGS(&m.MeshInfoResource)));
+			ThrowIfFailed(m_Device->CreateCommittedResource(&defaultHeap, D3D12_HEAP_FLAG_NONE, &indexDesc, D3D12_RESOURCE_STATE_COPY_DEST, nullptr, IID_PPV_ARGS(&m->IndexResource)));
+			ThrowIfFailed(m_Device->CreateCommittedResource(&defaultHeap, D3D12_HEAP_FLAG_NONE, &meshletDesc, D3D12_RESOURCE_STATE_COPY_DEST, nullptr, IID_PPV_ARGS(&m->MeshletResource)));
+			ThrowIfFailed(m_Device->CreateCommittedResource(&defaultHeap, D3D12_HEAP_FLAG_NONE, &cullDataDesc, D3D12_RESOURCE_STATE_COPY_DEST, nullptr, IID_PPV_ARGS(&m->CullDataResource)));
+			ThrowIfFailed(m_Device->CreateCommittedResource(&defaultHeap, D3D12_HEAP_FLAG_NONE, &vertexIndexDesc, D3D12_RESOURCE_STATE_COPY_DEST, nullptr, IID_PPV_ARGS(&m->UniqueVertexIndexResource)));
+			ThrowIfFailed(m_Device->CreateCommittedResource(&defaultHeap, D3D12_HEAP_FLAG_NONE, &primitiveDesc, D3D12_RESOURCE_STATE_COPY_DEST, nullptr, IID_PPV_ARGS(&m->PrimitiveIndexResource)));
+			ThrowIfFailed(m_Device->CreateCommittedResource(&defaultHeap, D3D12_HEAP_FLAG_NONE, &meshInfoDesc, D3D12_RESOURCE_STATE_COPY_DEST, nullptr, IID_PPV_ARGS(&m->MeshInfoResource)));
 
-			m.VertexResources.resize(m.Vertices.size());
+			m->VertexResources.resize(m->Vertices_ml.size());
 
-			for (uint32_t j = 0; j < m.Vertices.size(); ++j)
+			for (uint32_t j = 0; j < m->Vertices_ml.size(); ++j)
 			{
-				auto vertexDesc = CD3DX12_RESOURCE_DESC::Buffer(m.Vertices[j].size());
-				m_Device->CreateCommittedResource(&defaultHeap, D3D12_HEAP_FLAG_NONE, &vertexDesc, D3D12_RESOURCE_STATE_COPY_DEST, nullptr, IID_PPV_ARGS(&m.VertexResources[j]));
+				auto vertexDesc = CD3DX12_RESOURCE_DESC::Buffer(m->Vertices_ml[j].size());
+				m_Device->CreateCommittedResource(&defaultHeap, D3D12_HEAP_FLAG_NONE, &vertexDesc, D3D12_RESOURCE_STATE_COPY_DEST, nullptr, IID_PPV_ARGS(&m->VertexResources[j]));
 
 
 			}
@@ -434,22 +431,22 @@ namespace BlackPearl {
 			ThrowIfFailed(m_Device->CreateCommittedResource(&uploadHeap, D3D12_HEAP_FLAG_NONE, &meshInfoDesc, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr, IID_PPV_ARGS(&meshInfoUpload)));
 
 			// Map & copy memory to upload heap
-			vertexUploads.resize(m.Vertices.size());
-			for (uint32_t j = 0; j < m.Vertices.size(); ++j)
+			vertexUploads.resize(m->Vertices_ml.size());
+			for (uint32_t j = 0; j < m->Vertices_ml.size(); ++j)
 			{
-				auto vertexDesc = CD3DX12_RESOURCE_DESC::Buffer(m.Vertices[j].size());
+				auto vertexDesc = CD3DX12_RESOURCE_DESC::Buffer(m->Vertices_ml[j].size());
 				ThrowIfFailed(m_Device->CreateCommittedResource(&uploadHeap, D3D12_HEAP_FLAG_NONE, &vertexDesc, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr, IID_PPV_ARGS(&vertexUploads[j])));
 
 				uint8_t* memory = nullptr;
 				vertexUploads[j]->Map(0, nullptr, reinterpret_cast<void**>(&memory));
-				std::memcpy(memory, m.Vertices[j].data(), m.Vertices[j].size());
+				std::memcpy(memory, m->Vertices_ml[j].data(), m->Vertices_ml[j].size());
 				vertexUploads[j]->Unmap(0, nullptr);
 			}
 
 			{
 				uint8_t* memory = nullptr;
 				indexUpload->Map(0, nullptr, reinterpret_cast<void**>(&memory));
-				std::memcpy(memory, m.Indices.data(), m.Indices.size());
+				std::memcpy(memory, m->Indices_ml.data(), m->Indices_ml.size());
 				indexUpload->Unmap(0, nullptr);
 			}
 
@@ -457,37 +454,37 @@ namespace BlackPearl {
 			{
 				uint8_t* memory = nullptr;
 				meshletUpload->Map(0, nullptr, reinterpret_cast<void**>(&memory));
-				std::memcpy(memory, m.Meshlets.data(), m.Meshlets.size() * sizeof(m.Meshlets[0]));
+				std::memcpy(memory, m->Meshlets.data(), m->Meshlets.size() * sizeof(m->Meshlets[0]));
 				meshletUpload->Unmap(0, nullptr);
 			}
 
 			{
 				uint8_t* memory = nullptr;
 				cullDataUpload->Map(0, nullptr, reinterpret_cast<void**>(&memory));
-				std::memcpy(memory, m.CullingData.data(), m.CullingData.size() * sizeof(m.CullingData[0]));
+				std::memcpy(memory, m->CullingData.data(), m->CullingData.size() * sizeof(m->CullingData[0]));
 				cullDataUpload->Unmap(0, nullptr);
 			}
 
 			{
 				uint8_t* memory = nullptr;
 				uniqueVertexIndexUpload->Map(0, nullptr, reinterpret_cast<void**>(&memory));
-				std::memcpy(memory, m.UniqueVertexIndices.data(), m.UniqueVertexIndices.size());
+				std::memcpy(memory, m->UniqueVertexIndices.data(), m->UniqueVertexIndices.size());
 				uniqueVertexIndexUpload->Unmap(0, nullptr);
 			}
 
 			{
 				uint8_t* memory = nullptr;
 				primitiveIndexUpload->Map(0, nullptr, reinterpret_cast<void**>(&memory));
-				std::memcpy(memory, m.PrimitiveIndices.data(), m.PrimitiveIndices.size() * sizeof(m.PrimitiveIndices[0]));
+				std::memcpy(memory, m->PrimitiveIndices.data(), m->PrimitiveIndices.size() * sizeof(m->PrimitiveIndices[0]));
 				primitiveIndexUpload->Unmap(0, nullptr);
 			}
 
 			{
 				MeshInfo info = {};
-				info.IndexSize = m.IndexSize;
-				info.MeshletCount = static_cast<uint32_t>(m.Meshlets.size());
-				info.LastMeshletVertCount = m.Meshlets.back().VertCount;
-				info.LastMeshletPrimCount = m.Meshlets.back().PrimCount;
+				info.IndexSize = m->IndexSize_ml;
+				info.MeshletCount = static_cast<uint32_t>(m->Meshlets.size());
+				info.LastMeshletVertCount = m->Meshlets.back().VertCount;
+				info.LastMeshletPrimCount = m->Meshlets.back().PrimCount;
 
 
 				uint8_t* memory = nullptr;
@@ -499,32 +496,32 @@ namespace BlackPearl {
 			// Populate our command list
 			m_CommandList->Reset(m_CommandAllocators[m_FrameIndex].Get(), nullptr);
 
-			for (uint32_t j = 0; j < m.Vertices.size(); ++j)
+			for (uint32_t j = 0; j < m->Vertices_ml.size(); ++j)
 			{
-				m_CommandList->CopyResource(m.VertexResources[j].Get(), vertexUploads[j].Get());
-				const auto barrier = CD3DX12_RESOURCE_BARRIER::Transition(m.VertexResources[j].Get(), D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+				m_CommandList->CopyResource(m->VertexResources[j].Get(), vertexUploads[j].Get());
+				const auto barrier = CD3DX12_RESOURCE_BARRIER::Transition(m->VertexResources[j].Get(), D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
 				m_CommandList->ResourceBarrier(1, &barrier);
 			}
 
 			D3D12_RESOURCE_BARRIER postCopyBarriers[6];
 
-			m_CommandList->CopyResource(m.IndexResource.Get(), indexUpload.Get());
-			postCopyBarriers[0] = CD3DX12_RESOURCE_BARRIER::Transition(m.IndexResource.Get(), D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+			m_CommandList->CopyResource(m->IndexResource.Get(), indexUpload.Get());
+			postCopyBarriers[0] = CD3DX12_RESOURCE_BARRIER::Transition(m->IndexResource.Get(), D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
 
-			m_CommandList->CopyResource(m.MeshletResource.Get(), meshletUpload.Get());
-			postCopyBarriers[1] = CD3DX12_RESOURCE_BARRIER::Transition(m.MeshletResource.Get(), D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+			m_CommandList->CopyResource(m->MeshletResource.Get(), meshletUpload.Get());
+			postCopyBarriers[1] = CD3DX12_RESOURCE_BARRIER::Transition(m->MeshletResource.Get(), D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
 
-			m_CommandList->CopyResource(m.CullDataResource.Get(), cullDataUpload.Get());
-			postCopyBarriers[2] = CD3DX12_RESOURCE_BARRIER::Transition(m.CullDataResource.Get(), D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+			m_CommandList->CopyResource(m->CullDataResource.Get(), cullDataUpload.Get());
+			postCopyBarriers[2] = CD3DX12_RESOURCE_BARRIER::Transition(m->CullDataResource.Get(), D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
 
-			m_CommandList->CopyResource(m.UniqueVertexIndexResource.Get(), uniqueVertexIndexUpload.Get());
-			postCopyBarriers[3] = CD3DX12_RESOURCE_BARRIER::Transition(m.UniqueVertexIndexResource.Get(), D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+			m_CommandList->CopyResource(m->UniqueVertexIndexResource.Get(), uniqueVertexIndexUpload.Get());
+			postCopyBarriers[3] = CD3DX12_RESOURCE_BARRIER::Transition(m->UniqueVertexIndexResource.Get(), D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
 
-			m_CommandList->CopyResource(m.PrimitiveIndexResource.Get(), primitiveIndexUpload.Get());
-			postCopyBarriers[4] = CD3DX12_RESOURCE_BARRIER::Transition(m.PrimitiveIndexResource.Get(), D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+			m_CommandList->CopyResource(m->PrimitiveIndexResource.Get(), primitiveIndexUpload.Get());
+			postCopyBarriers[4] = CD3DX12_RESOURCE_BARRIER::Transition(m->PrimitiveIndexResource.Get(), D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
 
-			m_CommandList->CopyResource(m.MeshInfoResource.Get(), meshInfoUpload.Get());
-			postCopyBarriers[5] = CD3DX12_RESOURCE_BARRIER::Transition(m.MeshInfoResource.Get(), D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER);
+			m_CommandList->CopyResource(m->MeshInfoResource.Get(), meshInfoUpload.Get());
+			postCopyBarriers[5] = CD3DX12_RESOURCE_BARRIER::Transition(m->MeshInfoResource.Get(), D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER);
 
 			m_CommandList->ResourceBarrier(ARRAYSIZE(postCopyBarriers), postCopyBarriers);
 
@@ -862,7 +859,7 @@ namespace BlackPearl {
 		m_CommandList->OMSetRenderTargets(1, &rtvHandle, FALSE, &dsvHandle);
 
 		// Record commands.
-		const float clearColor[] = { 0.0f, 0.2f, 0.4f, 1.0f };
+		const float clearColor[] = { 0.0f, 0.8f, 0.7f, 0.2f };
 		m_CommandList->ClearRenderTargetView(rtvHandle, clearColor, 0, nullptr);
 		m_CommandList->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
 
@@ -870,13 +867,13 @@ namespace BlackPearl {
 
 		for (auto& model : m_Scene->GetModels()) {
 			for (auto& mesh : model->m_Meshes) {
-				m_CommandList->SetGraphicsRoot32BitConstant(1, mesh.IndexSize, 0);
-				m_CommandList->SetGraphicsRootShaderResourceView(2, mesh.VertexResources[0]->GetGPUVirtualAddress());
-				m_CommandList->SetGraphicsRootShaderResourceView(3, mesh.MeshletResource->GetGPUVirtualAddress());
-				m_CommandList->SetGraphicsRootShaderResourceView(4, mesh.UniqueVertexIndexResource->GetGPUVirtualAddress());
-				m_CommandList->SetGraphicsRootShaderResourceView(5, mesh.PrimitiveIndexResource->GetGPUVirtualAddress());
-
-				for (auto& subset : mesh.MeshletSubsets)
+				m_CommandList->SetGraphicsRoot32BitConstant(1, mesh->IndexSize_ml, 0);
+				m_CommandList->SetGraphicsRootShaderResourceView(2, mesh->VertexResources[0]->GetGPUVirtualAddress());
+				m_CommandList->SetGraphicsRootShaderResourceView(3, mesh->MeshletResource->GetGPUVirtualAddress());
+				m_CommandList->SetGraphicsRootShaderResourceView(4, mesh->UniqueVertexIndexResource->GetGPUVirtualAddress());
+				m_CommandList->SetGraphicsRootShaderResourceView(5, mesh->PrimitiveIndexResource->GetGPUVirtualAddress());
+																		
+				for (auto& subset : mesh->MeshletSubsets)
 				{
 					m_CommandList->SetGraphicsRoot32BitConstant(1, subset.Offset, 1);
 					m_CommandList->DispatchMesh(subset.Count, 1, 1);

@@ -5,29 +5,32 @@
 #include <memory>
 namespace BlackPearl {
 	//------------------------VertexBuffer-----------------//
-	VertexBuffer::VertexBuffer(const std::vector<float>& vertices)
+	/* 
+	darwType = GL_STATIC_DRAW / GL_DYNAMIC_DRAW (buffer can be read or written)
+	*/
+	VertexBuffer::VertexBuffer(const std::vector<float>& vertices, uint32_t drawType)
 	{
 		m_VerticesFloat = (&vertices[0]);
 		glGenBuffers(1, &m_RendererID);
 		glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);
-		glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), &vertices[0], GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), &vertices[0], drawType);
 		m_VertexSize = vertices.size() * sizeof(float);
 	}
-	VertexBuffer::VertexBuffer(const float* vertices, uint32_t size)
+	VertexBuffer::VertexBuffer(const float* vertices, uint32_t size, uint32_t drawType)
 	{
 		m_VerticesFloat = vertices;
 		glGenBuffers(1, &m_RendererID);
 		glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);
-		glBufferData(GL_ARRAY_BUFFER, size, vertices, GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, size, vertices, drawType);
 		m_VertexSize = size;
 
 	}
-	VertexBuffer::VertexBuffer(const unsigned int* vertices, uint32_t size)
+	VertexBuffer::VertexBuffer(const unsigned int* vertices, uint32_t size, uint32_t drawType)
 	{
 		m_VerticesUint = vertices;
 		glGenBuffers(1, &m_RendererID);
 		glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);
-		glBufferData(GL_ARRAY_BUFFER, size, vertices, GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, size, vertices, drawType);
 		m_VertexSize = size;
 		
 
@@ -53,22 +56,19 @@ namespace BlackPearl {
 		glDeleteBuffers(1, &m_RendererID);
 	}
 	//------------------------IndexBuffer-----------------//
-	IndexBuffer::IndexBuffer(const std::vector<unsigned int>& indices)
+	IndexBuffer::IndexBuffer(const std::vector<unsigned int>& indices, uint32_t drawType)
 	{
 		glGenBuffers(1, &m_RendererID);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_RendererID);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), &indices[0], GL_STATIC_DRAW);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), &indices[0], drawType);
 		m_IndiciesSize = indices.size() * sizeof(unsigned int);
 	}
-	IndexBuffer::IndexBuffer(unsigned int * indices, unsigned int size)
+	IndexBuffer::IndexBuffer(unsigned int * indices, unsigned int size, uint32_t drawType)
 	{
 		glGenBuffers(1, &m_RendererID);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_RendererID);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, size, indices, GL_STATIC_DRAW);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, size, indices, drawType);
 		m_IndiciesSize = size;
-		delete indices;
-		indices = nullptr;
-
 	}
 	void IndexBuffer::Bind()
 	{

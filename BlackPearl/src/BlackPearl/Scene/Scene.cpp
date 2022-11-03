@@ -5,6 +5,7 @@ namespace BlackPearl {
 	Scene::Scene(DemoType type)
 	{
 		m_DemoType = type;
+		m_MeshMgr = std::make_shared<MeshManager>();
 	}
 
 	Scene::~Scene()
@@ -26,6 +27,19 @@ namespace BlackPearl {
 	{
 		m_ObjectList.push_back(obj);
 	}
+
+	void Scene::AddNode(Node* node)
+	{
+		m_NodesList.push_back(node);
+		if (node->GetType() == Node::Type::Batch_Node) {
+			m_BatchNodesList.push_back(node);
+		}
+		else if (node->GetType() == Node::Type::Instance_Node) {
+			m_InstanceNodesList.push_back(node);
+		}
+	}
+
+
 
 	void Scene::AddModel(Model* model) {
 		m_ModelList.push_back(model);

@@ -1,12 +1,8 @@
 #pragma once
 namespace BlackPearl {
-
-	class Quad
+	class Terrain
 	{
-	public:
-		Quad();
-		~Quad();
 	};
-}
 
+}
 

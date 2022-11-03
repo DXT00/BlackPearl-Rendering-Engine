@@ -171,3 +171,11 @@ https://github.com/Ubpa/ToyRTX
 ## Mesh Shader
 ### Support meshlet rendering
 ![meshlet rendering](/results/meshShader.png)
+
+## batch rendering
+### per object rendering:
+![per object rendering](/results/non-batchRendering.png)
+### batch rendering:
+batch rendering only need 9 drawcalls,and maintain 60 fps. improve (objs num/batch num) performance
+![per object rendering](/results/batchRendering.png)
+

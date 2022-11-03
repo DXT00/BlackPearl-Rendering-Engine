@@ -22,7 +22,6 @@ public:
 		m_MainCamera->SetZFar(1000.0f);
 		m_MainCamera->SetFov(60.0f);
 		m_CameraPosition = m_MainCamera->GetPosition();
-		//BlackPearl::Renderer::Init();
 
 		m_Dragon = CreateModel("assets/models/meshletModel/Dragon_LOD0.bin", "", false, "Dragon", false, false, true);
 		m_Scene = DBG_NEW BlackPearl::Scene();

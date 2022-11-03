@@ -87,13 +87,12 @@
     <ClInclude Include="src\Layers\VoxelizationTestLayer.h">
       <Filter>src\Layers</Filter>
     </ClInclude>
-    <ClInclude Include="D3D12MeshShaderLayer.h" />
+    <ClInclude Include="src\Layers\D3D12MeshShaderLayer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\SandBoxDX.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="D3D12MeshShaderLayer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="assets\shaders_hlsl\BasicRenderer\triangle.hlsl">

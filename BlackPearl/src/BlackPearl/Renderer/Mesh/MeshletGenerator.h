@@ -7,11 +7,11 @@ namespace BlackPearl {
     public:
         MeshletGenerator(/* args */);
         ~MeshletGenerator();
-        void Process(const std::vector<Mesh>& meshes, const MeshletOption& options);
+        void Process(const std::vector<std::shared_ptr<Mesh>>& meshes, const MeshletOption& options);
     
     private:
         /* data */
-        void ComputeMeshlet(const Mesh& mesh);
+        void ComputeMeshlet(const std::shared_ptr<Mesh>& mesh);
         bool ExportMeshes(const char* filename, std::vector<ExportMesh>& exportMeshes);
 
     };

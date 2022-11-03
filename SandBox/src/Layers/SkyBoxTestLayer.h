@@ -50,18 +50,7 @@ public:
 			 "assets/skybox/skybox/back.jpg",
 			},GL_LINEAR,GL_LINEAR,GL_CLAMP_TO_EDGE, GL_RGB, GL_RGB, GL_UNSIGNED_BYTE));
 		meshComponent->SetTexture(0, cubeMapTexture);
-	//	m_ObjectsList.push_back(m_CubeObj);
 
-		//把FrameBuffer中的texture作为贴图，贴到m_CubeObj上
-	//	auto CubemeshComponent = m_CubeObj->GetComponent<BlackPearl::MeshRenderer>();
-		//CubemeshComponent->SetTexture(0, m_FrameBuffer->GetColorTexture());
-		//	Layer::CreateLight(BlackPearl::LightType::PointLight);
-
-		
-
-		// (optional) set browser properties
-		
-		//m_fileDialog.SetTypeFilters({ ".h", ".cpp" });
 	}
 
 	virtual ~SkyBoxTestLayer() {
@@ -73,36 +62,16 @@ public:
 
 
 		InputCheck(ts);
-		/*for (BlackPearl::Object* obj : m_ObjectsList) {
-			if (obj->HasComponent<BlackPearl::MeshRenderer>())
-				obj->GetComponent<BlackPearl::Transform>()->SetRotation({
-				obj->GetComponent<BlackPearl::Transform>()->GetRotation().x,
-				 sin(glfwGetTime() * 0.5) * 90.0f,
-				 obj->GetComponent<BlackPearl::Transform>()->GetRotation().z,
-
-					});
-		}*/
-		// render
-		// Render to our framebuffer
-		//m_FrameBuffer->Bind(960, 540);
-		//glEnable(GL_DEPTH_TEST);
-
 
 		BlackPearl::RenderCommand::SetClearColor(m_BackgroundColor);
 		BlackPearl::Renderer::BeginScene(*(m_MainCamera->GetObj()->GetComponent<BlackPearl::PerspectiveCamera>()), *GetLightSources());
-
-
-	//	m_MasterRenderer->RenderSceneExcept(m_ObjectsList, m_SkyBoxObj, GetLightSources());
 
 		//小于等于当前深度缓冲的fragment才被绘制
 		glDepthFunc(GL_LEQUAL);
 		m_BasicRenderer->DrawObject(m_SkyBoxObj);
 	//	m_MasterRenderer->RenderObject(m_SkyBoxObj);
 
-		glDepthFunc(GL_LESS);
-
-		
-		
+		glDepthFunc(GL_LESS);	
 	}
 
 
@@ -124,10 +93,5 @@ private:
 	glm::vec4 m_BackgroundColor = { 0.0f,0.0f,0.0f,0.0f };
 	BlackPearl::MasterRenderer* m_MasterRenderer;
 	BlackPearl::BasicRenderer* m_BasicRenderer;
-
-	
-
-
-	//std::shared_ptr<BlackPearl::FrameBuffer> m_FrameBuffer;
 
 };

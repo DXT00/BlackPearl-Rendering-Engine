@@ -17,10 +17,10 @@ namespace BlackPearl {
 		bool has_material = false;
 		if (obj == NULL) return;
 		if (obj->HasComponent<MeshRenderer>()) {
-			std::vector<Mesh> meshes = obj->GetComponent<MeshRenderer>()->GetMeshes();
+			std::vector<std::shared_ptr<Mesh>> meshes = obj->GetComponent<MeshRenderer>()->GetMeshes();
 			if (!meshes.empty()) {
 				//TODO:: RayTracing 暂时默认所有Meshes是同一种类型的材质
-				std::shared_ptr<Material> material = meshes[0].GetMaterial();
+				std::shared_ptr<Material> material = meshes[0]->GetMaterial();
 				if (material != nullptr) {
 					m_Mat2Vec[material].push_back(m_SceneData.size());
 					has_material = true;

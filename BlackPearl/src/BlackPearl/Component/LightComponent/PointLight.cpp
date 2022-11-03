@@ -63,7 +63,7 @@ namespace BlackPearl {
 		VertexBufferLayout layout = {
 			{ElementDataType::Float3,"aPos",false,0}
 		};
-		m_Mesh = Mesh(lightVertices, std::vector<unsigned int>(), lightMaterial, layout);//这里没有indices!
+		m_Mesh = std::make_shared<Mesh>(lightVertices, std::vector<unsigned int>(), lightMaterial, layout);//这里没有indices!
 
 		m_ShadowMap.reset(DBG_NEW CubeMapTexture(Texture::Type::CubeMap, m_ShadowMapPointLightWidth, m_ShadowMapPointLightWidth, GL_NEAREST, GL_NEAREST, GL_CLAMP_TO_EDGE, GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT, GL_FLOAT));
 		//m_Meshes.push_back(mesh);

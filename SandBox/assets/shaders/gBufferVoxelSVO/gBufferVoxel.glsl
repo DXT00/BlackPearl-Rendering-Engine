@@ -35,7 +35,6 @@ void main(){
 	v_Normal     = normalize(mat3(u_TranInverseModel)*aNormal);
 	if(sampleHeightTexture==1){
 		v_Normal     = normalize((u_Model*vec4(aNormal,0.0)).xyz);
-
 		v_Tangent    = normalize((u_Model*vec4(aTangent,0.0)).xyz);
 		v_Bitangent  = normalize((u_Model*vec4(aBitangent,0.0)).xyz);
 	}

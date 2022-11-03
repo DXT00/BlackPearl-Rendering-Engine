@@ -137,6 +137,7 @@
     <ClInclude Include="assets\shaders_hlsl_h\Raytracing.hlsl.h" />
     <ClInclude Include="assets\shaders_hlsl_h\RaytracingCube.hlsl.h" />
     <ClInclude Include="src\Layers\AdvanceLightTestLayer.h" />
+    <ClInclude Include="src\Layers\BatchRenderingLayer.h" />
     <ClInclude Include="src\Layers\CubeTestLayer.h" />
     <ClInclude Include="src\Layers\FrameBufferTestLayer.h" />
     <ClInclude Include="src\Layers\IBLProbesRenderingLayer.h" />
@@ -146,6 +147,7 @@
     <ClInclude Include="src\Layers\ShadowMapPointLightLayer.h" />
     <ClInclude Include="src\Layers\ShadowMapTestLayer.h" />
     <ClInclude Include="src\Layers\SkyBoxTestLayer.h" />
+    <ClInclude Include="src\Layers\TerrainRenderingLayer.h" />
     <ClInclude Include="src\Layers\VoxelConeTracingDeferredLayer.h" />
     <ClInclude Include="src\Layers\VoxelConeTracingLayer.h" />
     <ClInclude Include="src\Layers\VoxelConeTracingSVOLayer.h" />
@@ -158,7 +160,8 @@
     <FxCompile Include="assets\shaders_hlsl\RayTracingMetaball\RayTracingMetaball.hlsl">
       <ExcludedFromBuild>true</ExcludedFromBuild>
       <ShaderModel>6.3</ShaderModel>
-      <EntryPointName></EntryPointName>
+      <EntryPointName>
+      </EntryPointName>
       <VariableName>g_pRayTracingMetaball</VariableName>
       <HeaderFileOutput>./assets/shaders_hlsl_h/RayTracingMetaball.hlsl.h</HeaderFileOutput>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">bin/Debug-windows-x86_64/Sandbox/RayTracingMetaball.cso</ObjectFileOutput>
@@ -168,7 +171,8 @@
     <FxCompile Include="assets\shaders_hlsl\Raytracing.hlsl">
       <ExcludedFromBuild>true</ExcludedFromBuild>
       <ShaderModel>6.3</ShaderModel>
-      <EntryPointName></EntryPointName>
+      <EntryPointName>
+      </EntryPointName>
       <VariableName>g_pRaytracing</VariableName>
       <HeaderFileOutput>./assets/shaders_hlsl_h/Raytracing.hlsl.h</HeaderFileOutput>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">bin/Debug-windows-x86_64/Sandbox/Raytracing.cso</ObjectFileOutput>
@@ -178,7 +182,8 @@
     <FxCompile Include="assets\shaders_hlsl\RaytracingCube.hlsl">
       <ExcludedFromBuild>true</ExcludedFromBuild>
       <ShaderModel>6.3</ShaderModel>
-      <EntryPointName></EntryPointName>
+      <EntryPointName>
+      </EntryPointName>
       <VariableName>g_pRaytracingCube</VariableName>
       <HeaderFileOutput>./assets/shaders_hlsl_h/RaytracingCube.hlsl.h</HeaderFileOutput>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">bin/Debug-windows-x86_64/Sandbox/RaytracingCube.cso</ObjectFileOutput>

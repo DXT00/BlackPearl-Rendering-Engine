@@ -14,15 +14,20 @@ namespace BlackPearl {
 		MeshRenderer(std::shared_ptr<Material> material)
 			:Component(Component::Type::MeshRenderer), m_Material(material) {}
 		//get transformMatrix from Object's Transform Component!
-		MeshRenderer(const std::vector<Mesh>& meshes)
-			:Component(Component::Type::MeshRenderer), m_Meshes(meshes) {}
+		/*MeshRenderer(const std::vector<Mesh>& meshes)
+			:Component(Component::Type::MeshRenderer), m_Meshes(meshes) {}*/
 
-		MeshRenderer(const Mesh& mesh)
+		//MeshRenderer(const Mesh& mesh)
+		//	:Component(Component::Type::MeshRenderer) {
+
+		//	m_Meshes.push_back(mesh);
+		//}
+
+		MeshRenderer(const std::shared_ptr<Mesh>& mesh)
 			:Component(Component::Type::MeshRenderer) {
 
 			m_Meshes.push_back(mesh);
 		}
-
 		MeshRenderer(const std::shared_ptr<Model>& model)
 			:Component(Component::Type::MeshRenderer), m_Model(model) {
 		}
@@ -31,10 +36,10 @@ namespace BlackPearl {
 		//void UpdateTransformMatrix(glm::mat4 transformMatrix);
 
 		inline std::shared_ptr<Model>GetModel()  const { return m_Model; }
-		std::vector<Mesh> GetMeshes() const {
+		std::vector<std::shared_ptr<Mesh>>GetMeshes() const {
 			return m_Model != nullptr ? m_Model->GetMeshes() : m_Meshes;
 		}
-		std::vector<Mesh>& GetMeshlets() {
+		std::vector<std::shared_ptr<Mesh>>& GetMeshlets() {
 			return m_Model != nullptr ? m_Model->GetMeshlets() : m_Meshes;
 		}
 		void SetTexture(unsigned int meshIndex, const std::shared_ptr<Texture>& texture);
@@ -50,24 +55,24 @@ namespace BlackPearl {
 
 		void SetPBRTextureSamples(bool isSampled) {
 			for (auto mesh : GetMeshes())
-				mesh.GetMaterial()->SetPBRTextureSample((int)isSampled);
+				mesh->GetMaterial()->SetPBRTextureSample((int)isSampled);
 		}
 		void SetTextureDiffuseSamples(bool isSampled) {
 			for (auto mesh : GetMeshes())
-				mesh.GetMaterial()->SetTextureSampleDiffuse((int)isSampled);
+				mesh->GetMaterial()->SetTextureSampleDiffuse((int)isSampled);
 		}
 		void SetTexturEmissionSamples(bool isSampled) {
 			for (auto mesh : GetMeshes())
-				mesh.GetMaterial()->SetTextureSampleEmission((int)isSampled);
+				mesh->GetMaterial()->SetTextureSampleEmission((int)isSampled);
 		}
 
 		void SetTextureSpecularSamples(bool isSampled) {
 			for (auto mesh : GetMeshes())
-				mesh.GetMaterial()->SetTextureSampleSpecular((int)isSampled);
+				mesh->GetMaterial()->SetTextureSampleSpecular((int)isSampled);
 		}
 		void SetTextureHeightSamples(bool isSampled) {
 			for (auto mesh : GetMeshes())
-				mesh.GetMaterial()->SetTextureSampleHeight((int)isSampled);
+				mesh->GetMaterial()->SetTextureSampleHeight((int)isSampled);
 		}
 		bool GetEnableRender()const { return m_EnableRender; }
 		void SetEnableRender(bool enable) { m_EnableRender = enable; }
@@ -103,7 +108,7 @@ namespace BlackPearl {
 		//¿ªÆôºÍ½ûÖ¹äÖÈ¾
 		bool m_EnableRender = true;
 		bool m_IsPBRObject = false;
-		std::vector<Mesh> m_Meshes;
+		std::vector<std::shared_ptr<Mesh>> m_Meshes;
 		std::shared_ptr<Model> m_Model = nullptr;
 
 		//case: all meshes has the same material

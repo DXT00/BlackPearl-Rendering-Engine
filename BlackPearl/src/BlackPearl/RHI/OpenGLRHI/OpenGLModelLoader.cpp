@@ -11,7 +11,7 @@ namespace BlackPearl {
 	{
 	}
 
-	void OpenGLModelLoader::Load(std::vector<Mesh>& output_meshes, BoundingSphere& bounding_sphere, const std::string& path)
+	void OpenGLModelLoader::Load(std::vector<std::shared_ptr<Mesh>>& output_meshes, BoundingSphere& bounding_sphere, const std::string& path)
 	{
 		if (m_CreateMeshlet) {
 			LoadMeshletModel(output_meshes, bounding_sphere, path);
@@ -21,11 +21,11 @@ namespace BlackPearl {
 		}
 	}
 
-	void OpenGLModelLoader::LoadMeshletModel(std::vector<Mesh>& output_meshes, BoundingSphere& bounding_sphere, const std::string& path)
+	void OpenGLModelLoader::LoadMeshletModel(std::vector<std::shared_ptr<Mesh>>& output_meshes, BoundingSphere& bounding_sphere, const std::string& path)
 	{
 	}
 
-	void OpenGLModelLoader::LoadCommonModel(std::vector<Mesh>& output_meshes, const std::string& path)
+	void OpenGLModelLoader::LoadCommonModel(std::vector<std::shared_ptr<Mesh>>& output_meshes, const std::string& path)
 	{
 	}
 

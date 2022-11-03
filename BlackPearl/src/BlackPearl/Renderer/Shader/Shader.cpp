@@ -87,6 +87,7 @@ namespace BlackPearl {
 	}
 	std::unordered_map<GLenum, std::string> Shader::PreProcess(const std::string& source,const std::string& commonSource) {
 
+		GE_ASSERT((!source.empty()), "shader source code is empty");
 		std::unordered_map<unsigned int, std::string> shaderSources;
 		const char* typeToken = "#type";
 		size_t typeTockenLength = strlen(typeToken);
@@ -326,6 +327,20 @@ namespace BlackPearl {
 		glUniformMatrix4fv(location, 1, GL_FALSE, &mat[0][0]);
 		GE_ERROR_JUDGE();
 
+	}
+
+	void Shader::SetUniformMat3x4f(const std::string& name, const float* mat3x4, uint32_t count) const
+	{
+		GLint location = glGetUniformLocation(m_RendererID, name.c_str());
+		glProgramUniformMatrix3x4fv(m_RendererID, location, count, GL_FALSE, mat3x4);
+		GE_ERROR_JUDGE();
+
+	}
+
+	void Shader::SetUniformMat4f(const std::string& name, const float* mat4x4, uint32_t count) const
+	{
+		GLint location = glGetUniformLocation(m_RendererID, name.c_str());
+		glProgramUniformMatrix4fv(m_RendererID, location, count, GL_FALSE, mat4x4);
 	}
 
 	void Shader::SetUniformVec3f(const std::string & name, const glm::vec3& value) const

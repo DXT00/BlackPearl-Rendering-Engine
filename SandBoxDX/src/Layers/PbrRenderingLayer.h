@@ -44,7 +44,7 @@ public:
 		m_SphereObj->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(roughnessTexture);
 		m_SphereObj->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(mentallicTexture);
 
-		m_SphereObj->GetComponent<BlackPearl::MeshRenderer>()->GetMeshes()[0].GetMaterial()->SetMaterialColorDiffuseColor({ 1.0,0.0,0.0});
+		m_SphereObj->GetComponent<BlackPearl::MeshRenderer>()->GetMeshes()[0]->GetMaterial()->SetMaterialColorDiffuseColor({ 1.0,0.0,0.0});
 		m_SphereObjIron = CreateSphere(1.5, 64, 64);
 		m_SphereObjRust = CreateSphere(1.5, 64, 64);
 		m_SphereObjStone = CreateSphere(1.5, 64, 64);
