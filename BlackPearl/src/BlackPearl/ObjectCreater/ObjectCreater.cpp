@@ -16,6 +16,7 @@
 #include "BlackPearl/Component/BoundingBoxComponent/BoundingBox.h"
 #include "BlackPearl/Component/BVHNodeComponent/BVHNode.h"
 #include "BlackPearl/Component/TransformComponent/RayTracingTransform.h"
+#include "BlackPearl/Component/TerrainComponent/TerrainComponent.h"
 #include "BlackPearl/Scene/SceneBuilder.h"
 #include "BlackPearl/RHI/DynamicRHI.h"
 
@@ -243,6 +244,41 @@ namespace BlackPearl {
 		obj->AddComponent<BoundingBox>(box);
 
 		return obj;
+	}
+
+	Object* Object3DCreater::CreateTerrain(const std::string& shaderPath, const std::string& heightMapPath, const std::string& texturePath, uint32_t chunkCntX, uint32_t chunkCntZ, const std::string name)
+	{
+		Object* obj = CreateEmpty(name);
+		auto info = obj->AddComponent<BasicInfo>();
+		info->SetObjectType(ObjectType::OT_Terrain);
+
+
+		std::shared_ptr<Material> material;
+		std::shared_ptr<Material::TextureMaps> texture(DBG_NEW Material::TextureMaps());
+		if (!texturePath.empty())
+			texture->diffuseTextureMap.reset(DBG_NEW Texture(Texture::Type::DiffuseMap, texturePath, GL_LINEAR, GL_LINEAR, GL_RGBA, GL_CLAMP_TO_EDGE, GL_UNSIGNED_BYTE));
+		if (!heightMapPath.empty()) {
+			texture->heightTextureMap.reset(DBG_NEW Texture(Texture::Type::HeightMap, heightMapPath, GL_LINEAR, GL_LINEAR, GL_RGBA, GL_CLAMP_TO_EDGE, GL_UNSIGNED_BYTE));
+		}
+		else {
+			GE_CORE_ERROR("no heightmap found");
+		}
+		uint32_t width = texture->heightTextureMap->GetWidth();
+		uint32_t height = texture->heightTextureMap->GetHeight();
+
+		std::shared_ptr<TerrainComponent> terrain = obj->AddComponent<TerrainComponent>(width, height, chunkCntX, chunkCntZ);
+
+		material.reset(DBG_NEW Material(shaderPath, texture, { 1.0,1.0,1.0 }, { 1.0,1.0,1.0 }, { 1.0,1.0,1.0 }, {}));
+		VertexBufferLayout layout = {
+		{ElementDataType::Float3,"aPos",false,0},
+		{ElementDataType::Float2,"aTexCoords",false,1}
+		};
+
+		std::shared_ptr<Mesh> mesh = std::make_shared<Mesh>(terrain->GetVertices(),std::vector<uint32_t>(), material, layout, true/*tesselation*/, terrain->GetVertexPerChunk());
+		obj->AddComponent<MeshRenderer>(mesh);
+
+		return obj;
+
 	}
 
 	////////////////////////LightCreater//////////////////////////////////

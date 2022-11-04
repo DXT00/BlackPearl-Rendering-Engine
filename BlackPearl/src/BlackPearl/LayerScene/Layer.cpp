@@ -306,7 +306,7 @@ namespace BlackPearl {
 			LoadChurchScene();
 		else if (demoScene == "D3D12Models")
 			LoadD3D12ModelScene();
-		
+
 
 	}
 
@@ -883,7 +883,7 @@ namespace BlackPearl {
 
 				for (int k = 0; k < num; k++) {
 					Object* cube = CreateCube();
-					cube->GetComponent<Transform>()->SetInitPosition(pos + glm::vec3(cubeSize * i,cubeSize * j,cubeSize * k ));
+					cube->GetComponent<Transform>()->SetInitPosition(pos + glm::vec3(cubeSize * i, cubeSize * j, cubeSize * k));
 					//cube->GetComponent<Transform>()->SetRotation({0.0f,45.0f, 0.0f});
 
 					cube->GetComponent<Transform>()->SetInitScale({ 0.5f * cubeSize, 0.5f * cubeSize, 0.5f * cubeSize });
@@ -904,7 +904,7 @@ namespace BlackPearl {
 
 	void Layer::LoadD3D12ModelScene()
 	{
-		
+
 	}
 
 	Object* Layer::LoadStaticBackGroundObject(const std::string modelName)
@@ -1077,6 +1077,12 @@ namespace BlackPearl {
 		m_ObjectsList.push_back(obj);
 		return obj;
 	}
+	Object* Layer::CreateTerrain(const std::string& heightMapPath, const std::string& shaderPath, const std::string& texturePath, uint32_t chunkCntX, uint32_t chunkCntZ, const std::string name)
+	{
+		Object* obj = g_objectManager->CreateTerrain(shaderPath, heightMapPath, texturePath, chunkCntX, chunkCntZ, name);
+		m_ObjectsList.push_back(obj);
+		return obj;
+	}
 	Object* Layer::CreateLight(LightType type, const std::string& name)
 	{
 		Object* obj = g_objectManager->CreateLight(type, m_LightSources, name);
@@ -1154,7 +1160,7 @@ namespace BlackPearl {
 		return obj;
 	}
 	Object* Layer::CreateModel(
-		const std::string& modelPath, 
+		const std::string& modelPath,
 		const std::string& shaderPath,
 		const bool isAnimated,
 		const std::string& name,
@@ -1203,9 +1209,9 @@ namespace BlackPearl {
 		ImGui::Text("Znear = %f,Zfar = %f,Fov = %f", perspectiveCamera->GetZnear(), perspectiveCamera->GetZfar(), perspectiveCamera->GetFov());
 
 		float moveSpeed = perspectiveCamera->GetMoveSpeed(), rotSpeed = perspectiveCamera->GetRotateSpeed();
-		ImGui::DragFloat("CameraMoveSpeed", &moveSpeed, perspectiveCamera->GetMoveSpeed(), 0.1, 50, "%.3f ");
+		ImGui::DragFloat("CameraMoveSpeed", &moveSpeed, perspectiveCamera->GetMoveSpeed(), 0.1, 500, "%.3f ");
 		perspectiveCamera->SetMoveSpeed(moveSpeed);
-		ImGui::DragFloat("CameraRotateSpeed", &rotSpeed, perspectiveCamera->GetRotateSpeed(), 0.1, 50, "%.3f ");
+		ImGui::DragFloat("CameraRotateSpeed", &rotSpeed, perspectiveCamera->GetRotateSpeed(), 0.1, 500, "%.3f ");
 		perspectiveCamera->SetRotateSpeed(rotSpeed);
 
 
@@ -1356,6 +1362,8 @@ namespace BlackPearl {
 		imguiShaders.resize(imGuiMeshes.size());
 		for (int i = 0; i < imGuiMeshes.size(); i++)
 		{
+			if (imGuiMeshes[i]->GetMaterial()->GetShader() == nullptr)
+				continue;
 			imguiShaders[i] = imGuiMeshes[i]->GetMaterial()->GetShader()->GetPath();
 			ShowShader(imguiShaders[i], i, itemIndex, offset);
 		}

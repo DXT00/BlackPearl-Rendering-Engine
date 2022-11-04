@@ -109,6 +109,7 @@ namespace BlackPearl {
 		Object* CreateEmpty(std::string name = "");
 		Object* CreateGroup(const std::string name = "Group");
 		Object* CreateBVHNode(const std::vector<Object*>& objs, const std::string name = "BVHNode");
+		Object* CreateTerrain(const std::string& heightMapPath, const std::string& shaderPath = "", const std::string& texturePath = "", uint32_t chunkCntX = 8, uint32_t chunkCntZ = 8, const std::string name = "Terrain");
 
 
 		Object* CreateLight(LightType type, const std::string& name = "Light");

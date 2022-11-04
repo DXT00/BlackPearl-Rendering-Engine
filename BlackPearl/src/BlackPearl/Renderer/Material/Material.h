@@ -135,8 +135,8 @@ namespace BlackPearl {
 
 		}
 	private:
-		std::shared_ptr<Shader>		 m_Shader;
-		std::shared_ptr<TextureMaps> m_TextureMaps;
+		std::shared_ptr<Shader>		 m_Shader = nullptr;
+		std::shared_ptr<TextureMaps> m_TextureMaps = nullptr;
 		MaterialColor				 m_MaterialColors;
 		Props                        m_Props;
 		RTXType						 m_RTXType;

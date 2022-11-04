@@ -39,7 +39,13 @@ namespace BlackPearl {
 		std::string GetPath() { return m_ShaderPath; }
 
 	private:
-		Shader(const std::string& vertexSrc, const std::string& fragmentSrc, const std::string& geometrySrc);
+		Shader(
+			const std::string& vertexSrc, 
+			const std::string& fragmentSrc, 
+			const std::string& geometrySrc, 
+			const std::string& tessCtlSrc,
+			const std::string& tessEvlSrc);
+
 		int32_t m_RendererID = -1;
 		std::string m_ShaderPath;
 		std::string m_FragmentCommonStruct;

@@ -133,6 +133,13 @@ namespace BlackPearl {
 		return obj;
 	}
 
+	Object* ObjectManager::CreateTerrain(const std::string& shaderPath, const std::string& heightMapPath, const std::string& texturePath, uint32_t chunkCntX, uint32_t chunkCntZ, const std::string name)
+	{
+		Object* obj = m_Object3DCreater->CreateTerrain(shaderPath, heightMapPath, texturePath, chunkCntX, chunkCntZ, name);
+		m_Objs.push_back(obj);
+		return obj;
+	}
+
 
 
 

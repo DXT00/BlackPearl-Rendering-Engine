@@ -143,22 +143,8 @@ SVO path tracing - only one bounce cubeSize = 40
 reference: ToyRTX
 https://github.com/Ubpa/ToyRTX
 
-### GPU Raytracing 01
-![gpu_raytracing](/results/gpu_raytracing.png)
 
-### GPU Raytracing 02 -- spheres
-![gpu_raytracing_spheres](/results/gpu_raytracing_spheres.png)
-
-### GPU Raytracing 03 -- material spheres
-![gpu_raytracing_material_spheres](/results/gpu_raytracing_material_spheres.png)
-
-### GPU Raytracing 04 -- gendata
-![gpu_raytracing_group_rendering](/results/gpu_raytracing_group_rendering.png)
-
-### GPU Raytracing 05 -- bvh_node
-![gpu_raytracing_bvh_node_rendering](/results/gpu_raytracing_bvh_node.png)
-
-### GPU Raytracing 06 -- material -Dielectric bunny
+Dielectric bunny
 ![gpu_raytracing_bvh_node_MATERAIL1](/results/gpu_raytracing_bvh_node_MATERAIL1.png)
 
 ## DirectX Raytracing
@@ -178,4 +164,5 @@ https://github.com/Ubpa/ToyRTX
 ### batch rendering:
 batch rendering only need 9 drawcalls,and maintain 60 fps. improve (objs num/batch num) performance
 ![per object rendering](/results/batchRendering.png)
-
+## Terrain rendering
+![Terrain rendering](/results/TerrianTess.png)

@@ -48,7 +48,8 @@ namespace BlackPearl {
 		Object* CreatePlane(const std::string& shaderPath, const std::string& texturePath, const std::string& name);
 		Object* CreateSkyBox(const std::vector<std::string>& textureFaces, const std::string& shaderPath, const std::string& name);
 		Object* CreateQuad(const std::string& shaderPath , const std::string& texturePath, const std::string& name);
-		
+		Object* CreateTerrain(const std::string& shaderPath, const std::string& heightMapPath, const std::string& texturePath, uint32_t chunkCntX, uint32_t chunkCntZ, const std::string name);
+
 		/*Blending Object, include logical and actual properties*/
 		Object* CreateLightProbe(ProbeType type, const std::string& shaderPath, const std::string& texturePath, const std::string& name);
 		MainCamera* CreateCamera(const std::string& name);

@@ -7,6 +7,7 @@
 
 #include "BlackPearl/Component/MeshRendererComponent/MeshRenderer.h"
 #include "BlackPearl/Component/TransformComponent/Transform.h"
+#include "BlackPearl/Component/TerrainComponent/TerrainComponent.h"
 #include "BlackPearl/Renderer/Shader/Shader.h"
 #include "BlackPearl/Renderer/Renderer.h"
 #include "BlackPearl/Renderer/MasterRenderer/ShadowMapPointLightRenderer.h"
@@ -254,6 +255,24 @@ namespace BlackPearl {
 
 	void BasicRenderer::DrawSingleNode(SingleNode* node, std::shared_ptr<Shader> shader)
 	{
+	}
+
+	void BasicRenderer::DrawTerrain(Object* obj, std::shared_ptr<Shader> shader)
+	{
+		GE_ASSERT(obj->HasComponent<TerrainComponent>(), "obj has no terrain component");
+		glm::mat4 transformMatrix = obj->GetComponent<Transform>()->GetTransformMatrix();
+		std::vector<std::shared_ptr<Mesh>> meshes = obj->GetComponent<MeshRenderer>()->GetMeshes();
+
+		shader->Bind();
+		for (int i = 0; i < meshes.size(); i++) {
+			PrepareBasicShaderParameters(meshes[i], shader, false/* is light*/);
+			Renderer::Submit(meshes[i]->GetVertexArray(), shader, transformMatrix);
+			uint32_t vertexPerChunk = obj->GetComponent<TerrainComponent>()->GetVertexPerChunk();
+			uint32_t chunkCnt = obj->GetComponent<TerrainComponent>()->GetChunkCnt();
+			glDrawArrays(GL_PATCHES, 0, vertexPerChunk * chunkCnt);
+			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+			s_DrawCallCnt++;
+		}
 	}
 
 

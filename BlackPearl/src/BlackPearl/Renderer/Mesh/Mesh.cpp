@@ -41,6 +41,13 @@ namespace BlackPearl {
 		return m_VertexArray->GetVertexBuffers()[vertexBufferId]->GetVertexSize();
 	}
 
+	void Mesh::SetTessellation(uint32_t verticesPerTessPatch)
+	{
+		if (g_RHIType == DynamicRHI::Type::OpenGL)
+			glPatchParameteri(GL_PATCH_VERTICES, verticesPerTessPatch);
+
+	}
+
 	void Mesh::SetVertexBufferLayout(const VertexBufferLayout& layout)
 	{
 		m_VertexBufferLayout = layout;	
@@ -205,27 +212,35 @@ namespace BlackPearl {
 		unsigned int* indices,
 		uint32_t indicesSize,
 		std::shared_ptr<Material> material,
-		const VertexBufferLayout& layout)
+		const VertexBufferLayout& layout,
+		bool tessellation,
+		uint32_t verticesPerTessPatch)
 		: m_Vertices(vertices),
 		m_Indices(indices),
 		m_IndicesSize(indicesSize),
 		m_Material(material),
 		m_VertexBufferLayout(layout),
-		m_VerticeSize(verticesSize)
+		m_VerticeSize(verticesSize),
+		m_NeedTessellation(tessellation)
 	{
 		m_VerticeArrayCount = verticesSize / sizeof(float);
 		m_IndicesCount = indicesSize / sizeof(uint32_t);
 		Init(m_VerticeSize);
+		if (tessellation)
+			SetTessellation(verticesPerTessPatch);
 	};
 
 	/*one vertexBuffer*/
 	Mesh::Mesh(
 		std::vector<float> vertices,
-		std::vector<unsigned int> indices,
+		std::vector<uint32_t> indices,
 		std::shared_ptr<Material> material,
-		const VertexBufferLayout& layout) 
+		const VertexBufferLayout& layout,
+		bool tessellation,
+		uint32_t verticesPerTessPatch)
 		: m_Material(material),
-		m_VertexBufferLayout(layout)
+		m_VertexBufferLayout(layout),
+		m_NeedTessellation(tessellation)
 	{
 		
 		m_IndicesCount = indices.size();
@@ -246,15 +261,21 @@ namespace BlackPearl {
 		memcpy(m_Vertices, &vertices[0], m_VerticeSize);//注意memcpy最后一个参数是字节数!!!
 
 		Init(m_VerticeSize);
+		if (tessellation)
+			SetTessellation(verticesPerTessPatch);
 	};
 
 	/*multiple vertexBuffers*/
 	Mesh::Mesh(std::shared_ptr<Material> material,
 		std::shared_ptr<IndexBuffer> indexBuffer,
-		std::vector<std::shared_ptr<VertexBuffer>> vertexBuffers) {
+		std::vector<std::shared_ptr<VertexBuffer>> vertexBuffers,
+		bool tessellation,
+		uint32_t verticesPerTessPatch) {
 		m_VertexArray.reset(DBG_NEW VertexArray());
 		m_IndicesSize = indexBuffer->GetIndicesSize();
 		m_Material = material;
+		m_NeedTessellation = tessellation;
+
 		m_VertexArray->SetIndexBuffer(indexBuffer);
 
 		//TODO:: 解析m_VerticeCount
@@ -264,5 +285,8 @@ namespace BlackPearl {
 
 			ParseAttributes(m_VertexBufferLayout);
 		}
+
+		if (tessellation)
+			SetTessellation(verticesPerTessPatch);
 	}
 }

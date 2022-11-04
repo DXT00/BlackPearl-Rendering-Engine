@@ -27,22 +27,28 @@ namespace BlackPearl {
 			unsigned int* indices,
 			uint32_t indicesSize,
 			std::shared_ptr<Material> material,
-			const VertexBufferLayout& layout
+			const VertexBufferLayout& layout,
+			bool tessellation = false ,/* whether need to do tessellation */
+			uint32_t verticesPerTessPatch = 4
 		);
 
 		/*one vertexBuffer*/
 		Mesh(
 			std::vector<float> vertices,
-			std::vector<unsigned int> indices,
+			std::vector<uint32_t> indices,
 			std::shared_ptr<Material> material,
-			const VertexBufferLayout& layout
+			const VertexBufferLayout& layout,
+			bool tessellation = false,
+			uint32_t verticesPerTessPatch = 4
 		);
 
 		/*multiple vertexBuffers*/
 		Mesh(
 			std::shared_ptr<Material> material,
 			std::shared_ptr<IndexBuffer> indexBuffer,
-			std::vector<std::shared_ptr<VertexBuffer>> vertexBuffers
+			std::vector<std::shared_ptr<VertexBuffer>> vertexBuffers,
+			bool tessellation = false,
+			uint32_t verticesPerTessPatch = 4
 		);
 		
 		~Mesh();
@@ -59,6 +65,7 @@ namespace BlackPearl {
 		void SetShader(const std::shared_ptr<Shader> &shader)    { m_Material->SetShader(shader); }
 		void SetTexture(const std::shared_ptr<Texture>& texture) { m_Material->SetTexture(texture); }
 		void SetMaterialColor(MaterialColor::Color color)        { m_Material->SetMaterialColor(color); }
+		void SetTessellation(uint32_t verticesPerTessPatch);
 		void SetVertexBufferLayout(const VertexBufferLayout& layout);
 
 		std::pair<float*, uint32_t> GetPositionBuffer() const { return { m_Positions, m_PositionsSize }; }
@@ -111,7 +118,7 @@ namespace BlackPearl {
 		uint32_t					 m_VerticeArrayCount = 0;
 
 		std::shared_ptr<Material>    m_Material = nullptr;
-
+		bool m_NeedTessellation;
 		//for batch rendering and indirect drawcall
 		float* m_Positions		= nullptr;
 		float* m_Normals		= nullptr;

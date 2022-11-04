@@ -22,7 +22,8 @@ namespace BlackPearl {
 			BasicInfo,
 			BVHNode,
 			Triangle,
-			RTXTransformNode
+			RTXTransformNode,
+			Terrain
 
 		};
 		BaseComponent(Type type)

@@ -23,11 +23,11 @@ namespace BlackPearl {
 
 	void BatchNode::UpdateObjs()
 	{
-		/*for (size_t i = 0; i < m_ObjectsList.size(); i++)
-		{
-			auto obj = m_ObjectsList[i];
-			m_Batch->UpdateObjTransform(i, obj->GetComponent<Transform>()->GetTransformMatrix());
-		}*/
+		//for (size_t i = 0; i < m_ObjectsList.size(); i++)
+		//{
+		//	auto obj = m_ObjectsList[i];
+		//	m_Batch->UpdateObjTransform(i, obj->GetComponent<Transform>()->GetTransformMatrix());
+		//}
 	}
 
 	uint32_t BatchNode::GetIndexCount() const

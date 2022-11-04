@@ -18,6 +18,7 @@ public:
 
 		const std::string path = "assets/shaders/batch/Batch.glsl";
 		m_BatchShader.reset(DBG_NEW BlackPearl::Shader(path));
+		m_TerrainShader.reset(DBG_NEW BlackPearl::Shader("assets/shaders/Terrain/Terrain.glsl"));
 
 		objs = LoadCubesScene1(6, glm::vec3(40,0,0));
 		objs1 = LoadCubesScene1(6, glm::vec3(0, 0, -40));
@@ -38,6 +39,10 @@ public:
 		m_BatchNode6 = DBG_NEW BlackPearl::BatchNode(objs6, false);
 		m_BatchNode7 = DBG_NEW BlackPearl::BatchNode(objs7, false);
 		m_BatchNode8 = DBG_NEW BlackPearl::BatchNode(objs8, false);
+
+
+		m_Terrain = CreateTerrain("assets/texture/iceland_heightmap.png");
+
 
 		m_MainCamera->SetPosition({ 4.0,6.0,36.0 });
 		m_MainCamera->SetMoveSpeed(20.0f);
@@ -89,6 +94,8 @@ public:
 		m_BasicRenderer->DrawBatchNode(m_BatchNode7, m_BatchShader);
 		m_BasicRenderer->DrawBatchNode(m_BatchNode8, m_BatchShader);
 
+		m_BasicRenderer->DrawTerrain(m_Terrain, m_TerrainShader);
+
 
 	}
 
@@ -103,7 +110,12 @@ private:
 	std::vector<BlackPearl::Object*> m_LightObjs;
 
 	BlackPearl::Object* m_SkyBoxObj;
+	BlackPearl::Object* m_Terrain;
+
 	std::shared_ptr<BlackPearl::Shader> m_BatchShader;
+	std::shared_ptr<BlackPearl::Shader> m_TerrainShader;
+
+
 	BlackPearl::BatchNode* m_BatchNode;
 	BlackPearl::BatchNode* m_BatchNode1;
 	BlackPearl::BatchNode* m_BatchNode2;

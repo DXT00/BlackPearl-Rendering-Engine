@@ -45,6 +45,9 @@ namespace BlackPearl {
 		Object* CreateBVHNode(const std::vector<Vertex>& mesh_vertex, const std::string name);
 		Object* CreateTriangle(const std::vector<Vertex>& points, const std::string name);
 		Object* CreateRTXTransformNode(const glm::mat4& transform_mat, Object* bvh_node, std::shared_ptr<Material> rtx_material, const std::string name);
+		Object* CreateTerrain(const std::string& shaderPath, const std::string& heightMapPath, const std::string& texturePath, uint32_t chunkCntX, uint32_t chunkCntZ, const std::string name);
+	
+	
 	};
 
 	////////////////////////Object2DCreater////////////////////////////////
