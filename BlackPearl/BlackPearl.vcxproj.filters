@@ -55,6 +55,12 @@
     <Filter Include="src\BlackPearl\Component\TransformComponent">
       <UniqueIdentifier>{2D88E135-99ED-74BC-22C6-16958E2A6A2B}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\BlackPearl\Debugger">
+      <UniqueIdentifier>{61F99E93-CD30-E72A-D63A-4B4E42F10D24}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\BlackPearl\Debugger\D3D12Debugger">
+      <UniqueIdentifier>{3386B79E-9F4A-B68E-68B0-E658D43352C4}</UniqueIdentifier>
+    </Filter>
     <Filter Include="src\BlackPearl\Entity">
       <UniqueIdentifier>{199C408B-8508-FC85-4EFC-93E3BA271EEE}</UniqueIdentifier>
     </Filter>
@@ -288,6 +294,9 @@
     <ClInclude Include="src\BlackPearl\Core.h">
       <Filter>src\BlackPearl</Filter>
     </ClInclude>
+    <ClInclude Include="src\BlackPearl\Debugger\D3D12Debugger\HLSLPixDebugger.h">
+      <Filter>src\BlackPearl\Debugger\D3D12Debugger</Filter>
+    </ClInclude>
     <ClInclude Include="src\BlackPearl\Entity\Entity.h">
       <Filter>src\BlackPearl\Entity</Filter>
     </ClInclude>
@@ -348,9 +357,6 @@
     <ClInclude Include="src\BlackPearl\Math\Quaternion.h">
       <Filter>src\BlackPearl\Math</Filter>
     </ClInclude>
-    <ClInclude Include="src\BlackPearl\Object\2DObject\Quad.h">
-      <Filter>src\BlackPearl\Object\2DObject</Filter>
-    </ClInclude>
     <ClInclude Include="src\BlackPearl\Object\Object.h">
       <Filter>src\BlackPearl\Object</Filter>
     </ClInclude>
@@ -378,6 +384,9 @@
     <ClInclude Include="src\BlackPearl\RHI\D3D12RHI\D3D12LocalRootSignature.h">
       <Filter>src\BlackPearl\RHI\D3D12RHI</Filter>
     </ClInclude>
+    <ClInclude Include="src\BlackPearl\RHI\D3D12RHI\D3D12Logger.h">
+      <Filter>src\BlackPearl\RHI\D3D12RHI</Filter>
+    </ClInclude>
     <ClInclude Include="src\BlackPearl\RHI\D3D12RHI\D3D12RootSignature.h">
       <Filter>src\BlackPearl\RHI\D3D12RHI</Filter>
     </ClInclude>
@@ -400,6 +409,9 @@
       <Filter>src\BlackPearl\RHI\OpenGLRHI</Filter>
     </ClInclude>
     <ClInclude Include="src\BlackPearl\RHI\OpenGLRHI\OpenGLDynamicRHI.h">
+      <Filter>src\BlackPearl\RHI\OpenGLRHI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BlackPearl\RHI\OpenGLRHI\OpenGLLogger.h">
       <Filter>src\BlackPearl\RHI\OpenGLRHI</Filter>
     </ClInclude>
     <ClInclude Include="src\BlackPearl\RHI\OpenGLRHI\OpenGLWindow.h">
@@ -460,6 +472,9 @@
       <Filter>src\BlackPearl\Renderer\MasterRenderer</Filter>
     </ClInclude>
     <ClInclude Include="src\BlackPearl\Renderer\MasterRenderer\BasicRenderer.h">
+      <Filter>src\BlackPearl\Renderer\MasterRenderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BlackPearl\Renderer\MasterRenderer\D3D12BasicRenderer.h">
       <Filter>src\BlackPearl\Renderer\MasterRenderer</Filter>
     </ClInclude>
     <ClInclude Include="src\BlackPearl\Renderer\MasterRenderer\D3D12RayTracingCubeRenderer.h">
@@ -575,9 +590,6 @@
     </ClInclude>
     <ClInclude Include="src\BlackPearl\Scene\DemoScene\MetaBallSDFScene.h">
       <Filter>src\BlackPearl\Scene\DemoScene</Filter>
-    </ClInclude>
-    <ClInclude Include="src\BlackPearl\Scene\MeshScene.h">
-      <Filter>src\BlackPearl\Scene</Filter>
     </ClInclude>
     <ClInclude Include="src\BlackPearl\Scene\SDFScene.h">
       <Filter>src\BlackPearl\Scene</Filter>
@@ -1707,9 +1719,27 @@
     <ClInclude Include="vendor\stb\stb_image.h">
       <Filter>vendor\stb</Filter>
     </ClInclude>
-    <ClInclude Include="src\BlackPearl\Debugger\D3D12Debugger\HLSLPixDebugger.h" />
-    <ClInclude Include="src\BlackPearl\RHI\D3D12RHI\D3D12Logger.h" />
-    <ClInclude Include="src\BlackPearl\RHI\OpenGLRHI\OpenGLLogger.h" />
+    <ClInclude Include="src\BlackPearl\Renderer\MasterRenderer\D3D12MeshShaderRenderer.h" />
+    <ClInclude Include="src\BlackPearl\Renderer\Model\ModelLoader.h" />
+    <ClInclude Include="src\BlackPearl\Renderer\Mesh\Meshlet.h" />
+    <ClInclude Include="src\BlackPearl\Renderer\Mesh\MeshletGenerator.h" />
+    <ClInclude Include="src\BlackPearl\RHI\D3D12RHI\D3D12ModelLoader.h" />
+    <ClInclude Include="src\BlackPearl\Renderer\Mesh\MeshletConfig.h" />
+    <ClInclude Include="src\BlackPearl\Renderer\Mesh\MeshletLoader.h" />
+    <ClInclude Include="src\BlackPearl\RHI\D3D12RHI\D3D12VertexBuffer.h" />
+    <ClInclude Include="src\BlackPearl\Component\BoundingSphereComponent\BoundingSphere.h" />
+    <ClInclude Include="src\BlackPearl\RHI\OpenGLRHI\OpenGLModelLoader.h" />
+    <ClInclude Include="src\BlackPearl\Component\TerrainComponent\TerrainComponent.h" />
+    <ClInclude Include="src\BlackPearl\Renderer\Material\MaterialManager.h" />
+    <ClInclude Include="src\BlackPearl\Renderer\Mesh\MeshManager.h" />
+    <ClInclude Include="src\BlackPearl\Node\Node.h" />
+    <ClInclude Include="src\BlackPearl\Node\BatchNode.h" />
+    <ClInclude Include="src\BlackPearl\Node\InstanceNode.h" />
+    <ClInclude Include="src\BlackPearl\Renderer\Batch\Batch.h" />
+    <ClInclude Include="src\BlackPearl\Node\SingleNode.h" />
+    <ClInclude Include="src\BlackPearl\Renderer\MasterRenderer\BatchRenderer.h" />
+    <ClInclude Include="src\BlackPearl\Renderer\MasterRenderer\IndirectRenderer.h" />
+    <ClInclude Include="src\BlackPearl\Renderer\MasterRenderer\IndirectRendererTest.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\BlackPearl\AABB\AABB.cpp">
@@ -1808,6 +1838,9 @@
     <ClCompile Include="src\BlackPearl\Config.cpp">
       <Filter>src\BlackPearl</Filter>
     </ClCompile>
+    <ClCompile Include="src\BlackPearl\Debugger\D3D12Debugger\HLSLPixDebugger.cpp">
+      <Filter>src\BlackPearl\Debugger\D3D12Debugger</Filter>
+    </ClCompile>
     <ClCompile Include="src\BlackPearl\Entity\Entity.cpp">
       <Filter>src\BlackPearl\Entity</Filter>
     </ClCompile>
@@ -1859,9 +1892,6 @@
     <ClCompile Include="src\BlackPearl\Math\Quaternion.cpp">
       <Filter>src\BlackPearl\Math</Filter>
     </ClCompile>
-    <ClCompile Include="src\BlackPearl\Object\2DObject\Quad.cpp">
-      <Filter>src\BlackPearl\Object\2DObject</Filter>
-    </ClCompile>
     <ClCompile Include="src\BlackPearl\Object\Object.cpp">
       <Filter>src\BlackPearl\Object</Filter>
     </ClCompile>
@@ -1883,6 +1913,9 @@
     <ClCompile Include="src\BlackPearl\RHI\D3D12RHI\D3D12GlobalRootSignature.cpp">
       <Filter>src\BlackPearl\RHI\D3D12RHI</Filter>
     </ClCompile>
+    <ClCompile Include="src\BlackPearl\RHI\D3D12RHI\D3D12Logger.cpp">
+      <Filter>src\BlackPearl\RHI\D3D12RHI</Filter>
+    </ClCompile>
     <ClCompile Include="src\BlackPearl\RHI\D3D12RHI\D3D12RootSignature.cpp">
       <Filter>src\BlackPearl\RHI\D3D12RHI</Filter>
     </ClCompile>
@@ -1899,6 +1932,9 @@
       <Filter>src\BlackPearl\RHI\OpenGLRHI</Filter>
     </ClCompile>
     <ClCompile Include="src\BlackPearl\RHI\OpenGLRHI\OpenGLDynamicRHI.cpp">
+      <Filter>src\BlackPearl\RHI\OpenGLRHI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BlackPearl\RHI\OpenGLRHI\OpenGLLogger.cpp">
       <Filter>src\BlackPearl\RHI\OpenGLRHI</Filter>
     </ClCompile>
     <ClCompile Include="src\BlackPearl\RHI\OpenGLRHI\OpenGLWindow.cpp">
@@ -1950,6 +1986,9 @@
       <Filter>src\BlackPearl\Renderer\MasterRenderer</Filter>
     </ClCompile>
     <ClCompile Include="src\BlackPearl\Renderer\MasterRenderer\BasicRenderer.cpp">
+      <Filter>src\BlackPearl\Renderer\MasterRenderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BlackPearl\Renderer\MasterRenderer\D3D12BasicRenderer.cpp">
       <Filter>src\BlackPearl\Renderer\MasterRenderer</Filter>
     </ClCompile>
     <ClCompile Include="src\BlackPearl\Renderer\MasterRenderer\D3D12RayTracingCubeRenderer.cpp">
@@ -2060,9 +2099,6 @@
     <ClCompile Include="src\BlackPearl\Scene\DemoScene\MetaBallSDFScene.cpp">
       <Filter>src\BlackPearl\Scene\DemoScene</Filter>
     </ClCompile>
-    <ClCompile Include="src\BlackPearl\Scene\MeshScene.cpp">
-      <Filter>src\BlackPearl\Scene</Filter>
-    </ClCompile>
     <ClCompile Include="src\BlackPearl\Scene\SDFScene.cpp">
       <Filter>src\BlackPearl\Scene</Filter>
     </ClCompile>
@@ -2084,8 +2120,29 @@
     <ClCompile Include="src\pch.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\BlackPearl\Debugger\D3D12Debugger\HLSLPixDebugger.cpp" />
-    <ClCompile Include="src\BlackPearl\RHI\D3D12RHI\D3D12Logger.cpp" />
-    <ClCompile Include="src\BlackPearl\RHI\OpenGLRHI\OpenGLLogger.cpp" />
+    <ClCompile Include="src\BlackPearl\KeyCodes.cpp" />
+    <ClCompile Include="src\BlackPearl\Renderer\MasterRenderer\D3D12MeshShaderRenderer.cpp" />
+    <ClCompile Include="src\BlackPearl\Renderer\Model\ModelLoader.cpp" />
+    <ClCompile Include="src\BlackPearl\Renderer\Mesh\Meshlet.cpp" />
+    <ClCompile Include="src\BlackPearl\Renderer\Mesh\MeshletGenerator.cpp" />
+    <ClCompile Include="src\BlackPearl\RHI\D3D12RHI\D3D12ModelLoader.cpp" />
+    <ClCompile Include="src\BlackPearl\Renderer\Mesh\MeshletLoader.cpp" />
+    <ClCompile Include="src\BlackPearl\RHI\D3D12RHI\D3D12VertexBuffer.cpp" />
+    <ClCompile Include="src\BlackPearl\Component\BoundingSphereComponent\BoundingSphere.cpp" />
+    <ClCompile Include="src\BlackPearl\RHI\OpenGLRHI\OpenGLModelLoader.cpp" />
+    <ClCompile Include="src\BlackPearl\Component\TerrainComponent\TerrainComponent.cpp" />
+    <ClCompile Include="src\BlackPearl\Renderer\Material\MaterialManager.cpp" />
+    <ClCompile Include="src\BlackPearl\Renderer\Mesh\MeshManager.cpp" />
+    <ClCompile Include="src\BlackPearl\Node\Node.cpp" />
+    <ClCompile Include="src\BlackPearl\Node\BatchNode.cpp" />
+    <ClCompile Include="src\BlackPearl\Node\InstanceNode.cpp" />
+    <ClCompile Include="src\BlackPearl\Renderer\Batch\Batch.cpp" />
+    <ClCompile Include="src\BlackPearl\Node\SingleNode.cpp" />
+    <ClCompile Include="src\BlackPearl\Renderer\MasterRenderer\BatchRenderer.cpp" />
+    <ClCompile Include="src\BlackPearl\Renderer\MasterRenderer\IndirectRenderer.cpp" />
+    <ClCompile Include="src\BlackPearl\Renderer\MasterRenderer\IndirectRendererTest.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
 </Project>

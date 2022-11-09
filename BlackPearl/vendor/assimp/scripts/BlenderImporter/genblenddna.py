@@ -5,7 +5,7 @@
 # Open Asset Import Library (ASSIMP)
 # ---------------------------------------------------------------------------
 #
-# Copyright (c) 2006-2016, ASSIMP Development Team
+# Copyright (c) 2006-2020, ASSIMP Development Team
 #
 # All rights reserved.
 #
@@ -291,7 +291,9 @@ def main():
     #s += "#endif\n"
         
     output.write(templt.replace("<HERE>",s))
-        
+
+    # we got here, so no error
+    return 0
 
 if __name__ == "__main__":
     sys.exit(main())

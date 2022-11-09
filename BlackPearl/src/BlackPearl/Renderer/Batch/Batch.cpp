@@ -11,8 +11,8 @@ namespace BlackPearl {
 	{
 		if (objs.empty())
 			return;
-
 		m_IsDynamic = dynamic;
+		//m_InstanceCnt = instanceCnt;
 		m_ObjectsList = objs;
 		m_ObjsCnt = m_ObjectsList.size();
 		GE_ASSERT(m_ObjsCnt < Configuration::MaxObjsInABatch, "objs count exceed Configuration::MaxObjsInABatch ");
@@ -39,38 +39,47 @@ namespace BlackPearl {
 			}
 		}
 
-		m_VertexBuffer = (float*)malloc(m_VertexCnt * sizeof(float) * 3);
-		m_NormalBuffer = (float*)malloc(m_VertexCnt * sizeof(float) * 3);
-		m_TexCordBuffer = (float*)malloc(m_VertexCnt * sizeof(float) * 2);
-		m_TangentBuffer = (float*)malloc(m_VertexCnt * sizeof(float) * 3);
-		m_BitangentBuffer = (float*)malloc(m_VertexCnt * sizeof(float) * 3);
 
-		m_JointIndicesBuffer = (uint32_t*)malloc(m_VertexCnt * sizeof(uint32_t) * 4);
-		m_JointIndices1Buffer = (uint32_t*)malloc(m_VertexCnt * sizeof(uint32_t) * 4);
-		m_WeightBuffer = (float*)malloc(m_VertexCnt * sizeof(float) * 4);
-		m_Weight1Buffer = (float*)malloc(m_VertexCnt * sizeof(float) * 4);
+		m_PositionsSize    = m_NormalsSize = m_TangentsSize = m_BitangentsSize = m_ColorSize = m_VertexCnt * sizeof(float) * 3;
+		m_TexCoordsSize    = m_VertexCnt * sizeof(float) * 2;
+		m_JointIndicesSize = m_VertexCnt * sizeof(uint32_t) * 4;
+		m_WeightSize       = m_VertexCnt * sizeof(float) * 4;
+		m_IndexSize        = m_IndexCnt * sizeof(uint32_t);
+		m_ModelTransformBufferSize = m_ObjsCnt * sizeof(float) * 12;
+		m_ObjIdSize                = m_VertexCnt * sizeof(float);
 
-		m_IndexBuffer = (uint32_t*)malloc(m_IndexCnt * sizeof(uint32_t));
-		m_ObjIdBuffer = (float*)malloc(m_VertexCnt * sizeof(float));
+		m_PositionBuffer = (float*)malloc(m_PositionsSize);
+		m_NormalBuffer = (float*)malloc(m_NormalsSize);
+		m_TexCordBuffer = (float*)malloc(m_TexCoordsSize);
+		m_TangentBuffer = (float*)malloc(m_TangentsSize);
+		m_BitangentBuffer = (float*)malloc(m_BitangentsSize);
+
+		m_JointIndicesBuffer = (uint32_t*)malloc(m_JointIndicesSize);
+		m_JointIndices1Buffer = (uint32_t*)malloc(m_JointIndicesSize);
+		m_WeightBuffer = (float*)malloc(m_WeightSize);
+		m_Weight1Buffer = (float*)malloc(m_WeightSize);
+
+		m_IndexBuffer = (uint32_t*)malloc(m_IndexSize);
+		m_ObjIdBuffer = (float*)malloc(m_ObjIdSize);
 
 		// only diffuse color now.
-		m_ColorBuffer = (float*)malloc(m_VertexCnt * sizeof(float) * 3);
-		m_ModelTransformBuffer = (float*)malloc(m_ObjsCnt * sizeof(float) * 12);
+		m_ColorBuffer = (float*)malloc(m_ColorSize);
+		m_ModelTransformBuffer = (float*)malloc(m_ModelTransformBufferSize);
 
-		memset(m_VertexBuffer, 0, m_VertexCnt * sizeof(float) * 3);
-		memset(m_NormalBuffer, 0, m_VertexCnt * sizeof(float) * 3);
-		memset(m_TexCordBuffer, 0, m_VertexCnt * sizeof(float) * 2);
-		memset(m_TangentBuffer, 0, m_VertexCnt * sizeof(float) * 3);
-		memset(m_BitangentBuffer, 0, m_VertexCnt * sizeof(float) * 3);
-		memset(m_JointIndicesBuffer, 0, m_VertexCnt * sizeof(uint32_t) * 4);
-		memset(m_JointIndices1Buffer, 0, m_VertexCnt * sizeof(uint32_t) * 4);
-		memset(m_WeightBuffer, 0, m_VertexCnt * sizeof(float) * 4);
-		memset(m_Weight1Buffer, 0, m_VertexCnt * sizeof(float) * 4);
-		memset(m_IndexBuffer, 0, m_IndexCnt * sizeof(uint32_t));
-		memset(m_ObjIdBuffer, 0, m_VertexCnt * sizeof(float));
-		memset(m_ColorBuffer, 0, m_VertexCnt * sizeof(float) * 3);
+		memset(m_PositionBuffer, 0, m_PositionsSize);
+		memset(m_NormalBuffer, 0, m_NormalsSize);
+		memset(m_TexCordBuffer, 0,m_TexCoordsSize);
+		memset(m_TangentBuffer, 0, m_TangentsSize);
+		memset(m_BitangentBuffer, 0, m_BitangentsSize);
+		memset(m_JointIndicesBuffer, 0, m_JointIndicesSize);
+		memset(m_JointIndices1Buffer, 0, m_JointIndicesSize);
+		memset(m_WeightBuffer, 0, m_WeightSize);
+		memset(m_Weight1Buffer, 0, m_WeightSize);
+		memset(m_IndexBuffer, 0,m_IndexSize);
+		memset(m_ObjIdBuffer, 0, m_ObjIdSize);
+		memset(m_ColorBuffer, 0, m_ColorSize);
 		//memset(m_ModelTransformBuffer, 0.0, m_ObjsCnt * sizeof(float) * 12);
-		memset(m_ModelTransformBuffer, 0.0, m_ObjsCnt * sizeof(float) * 12);
+		memset(m_ModelTransformBuffer, 0.0, m_ModelTransformBufferSize);
 
 		SetAttributes();
 	}
@@ -89,17 +98,10 @@ namespace BlackPearl {
 		for (size_t i = 0; i < m_ObjectsList.size(); i++)
 		{
 			AddMeshToBuffer(i, m_ObjectsList[i]->GetComponent<MeshRenderer>()->GetMeshes(), baseVertexCnt, baseIndexCnt);
-			AddObjTransformToBuffer(i, m_ObjectsList[i]->GetComponent<Transform>()->GetTransformMatrix(), baseVertexCnt);
+			AddObjTransformToBuffer(i, m_ObjectsList[i]->GetComponent<Transform>()->GetTransformMatrix());
 		}
 
 		CreateVertexArray();
-	}
-
-	void Batch::UpdateObjTransform(uint32_t objId, glm::mat4 modelMat)
-	{
-
-
-
 	}
 
 	void Batch::AddMeshToBuffer(uint32_t objId, const std::vector<std::shared_ptr<Mesh>>& meshes, uint32_t& baseVertexCnt, uint32_t& baseIndexCnt)
@@ -108,7 +110,7 @@ namespace BlackPearl {
 			uint32_t meshVetCnt = mesh->GetVertexCount();
 			uint32_t meshIndexCnt = mesh->GetIndicesConut();
 
-			CopyMeshBufferToBatchBuffer(baseVertexCnt, m_VertexBuffer, mesh->GetPositionBuffer(), mesh, POS_SLOT, 3);
+			CopyMeshBufferToBatchBuffer(baseVertexCnt, m_PositionBuffer, mesh->GetPositionBuffer(), mesh, POS_SLOT, 3);
 			CopyMeshBufferToBatchBuffer(baseVertexCnt, m_NormalBuffer, mesh->GetNormalBuffer(), mesh, NORMAL_SLOT, 3);
 			CopyMeshBufferToBatchBuffer(baseVertexCnt, m_TexCordBuffer, mesh->GetTexCoordsBuffer(), mesh, TEXCOORD_SLOT,2);
 			CopyMeshBufferToBatchBuffer(baseVertexCnt, m_TangentBuffer, mesh->GetTangentBuffer(), mesh, TANGENT_SLOT, 3);
@@ -136,7 +138,7 @@ namespace BlackPearl {
 			}
 	/*		for (size_t i = 0; i < meshVetCnt*3; i++)
 			{
-				GE_CORE_INFO("obj_id={0},i = {1}, baseVertexCnt = {2}, m_VertexBuffer[{3}] = {4} ", objId, i, baseVertexCnt, (baseVertexCnt * 3 + i), m_VertexBuffer[baseVertexCnt*3 + i]);
+				GE_CORE_INFO("obj_id={0},i = {1}, baseVertexCnt = {2}, m_PositionBuffer[{3}] = {4} ", objId, i, baseVertexCnt, (baseVertexCnt * 3 + i), m_PositionBuffer[baseVertexCnt*3 + i]);
 
 			}*/
 			baseVertexCnt += mesh->GetVertexCount();
@@ -152,6 +154,45 @@ namespace BlackPearl {
 	{
 	}
 
+	void Batch::UpdateBatchPosition(glm::vec3 pos)
+	{
+		for (size_t i = 0; i < m_ObjectsList.size(); i++)
+		{
+			Object* obj = m_ObjectsList[i];
+			glm::vec3 objPos = obj->GetComponent<Transform>()->GetPosition();
+			obj->GetComponent<Transform>()->SetPosition(objPos + pos);
+			UpdateModelTransformBuffer(i, obj->GetComponent<Transform>()->GetTransformMatrix());
+		}
+	}
+
+	void Batch::UpdateBatchScale(glm::vec3 scale)
+	{
+		for (size_t i = 0; i < m_ObjectsList.size(); i++)
+		{
+			Object* obj = m_ObjectsList[i];
+			glm::vec3 objscale = obj->GetComponent<Transform>()->GetPosition();
+			obj->GetComponent<Transform>()->SetScale(objscale * scale);
+			//UpdateModelTransformBuffer(i, obj->GetComponent<Transform>()->GetTransformMatrix());
+			AddObjTransformToBuffer(i, m_ObjectsList[i]->GetComponent<Transform>()->GetTransformMatrix());
+
+		}
+	}
+
+	void Batch::UpdateObjsTransform()
+	{
+		for (size_t i = 0; i < m_ObjectsList.size(); i++)
+		{
+			AddObjTransformToBuffer(i, m_ObjectsList[i]->GetComponent<Transform>()->GetTransformMatrix());
+		}
+	}
+
+	void Batch::UpdateModelTransformBuffer(uint32_t objId, glm::mat4 modelMat)
+	{
+
+
+
+	}
+
 	void Batch::CreateVertexArray()
 	{
 
@@ -161,29 +202,29 @@ namespace BlackPearl {
 		m_VertexArray->SetIndexBuffer(indexBuffer);
 
 		//如果每个vertexbuffer 一种attribute,那么 stride = 0, offset 也 = 0
-		std::shared_ptr<VertexBuffer> vertexBuffer(DBG_NEW VertexBuffer(m_VertexBuffer, m_VertexCnt * sizeof(float) * 3));
+		std::shared_ptr<VertexBuffer> vertexBuffer(DBG_NEW VertexBuffer(m_PositionBuffer, m_PositionsSize));
 		vertexBuffer->SetBufferLayout({ {ElementDataType::Float3, "aPos", false, POS_SLOT} });
-		std::shared_ptr<VertexBuffer> normalBuffer(DBG_NEW VertexBuffer(m_NormalBuffer, m_VertexCnt * sizeof(float) * 3));
+		std::shared_ptr<VertexBuffer> normalBuffer(DBG_NEW VertexBuffer(m_NormalBuffer, m_NormalsSize));
 		normalBuffer->SetBufferLayout({{ ElementDataType::Float3,"aNormal",false,NORMAL_SLOT}});
-		std::shared_ptr<VertexBuffer> texcoordsBuffer(DBG_NEW VertexBuffer(m_TexCordBuffer, m_VertexCnt * sizeof(float) * 2));
+		std::shared_ptr<VertexBuffer> texcoordsBuffer(DBG_NEW VertexBuffer(m_TexCordBuffer, m_TexCoordsSize));
 		texcoordsBuffer->SetBufferLayout({ { ElementDataType::Float2,"aTexCoords",false,TEXCOORD_SLOT} });
-		std::shared_ptr<VertexBuffer> tangentBuffer(DBG_NEW VertexBuffer(m_TangentBuffer, m_VertexCnt * sizeof(float) * 3));
+		std::shared_ptr<VertexBuffer> tangentBuffer(DBG_NEW VertexBuffer(m_TangentBuffer, m_TangentsSize));
 		tangentBuffer->SetBufferLayout({ { ElementDataType::Float3,"aTangent",false,TANGENT_SLOT} });
-		std::shared_ptr<VertexBuffer> bitangentBuffer(DBG_NEW VertexBuffer(m_BitangentBuffer, m_VertexCnt * sizeof(float) * 3));
+		std::shared_ptr<VertexBuffer> bitangentBuffer(DBG_NEW VertexBuffer(m_BitangentBuffer, m_BitangentsSize));
 		bitangentBuffer->SetBufferLayout({ { ElementDataType::Float3,"aBitangent",false,BITANGENT_SLOT} });
 
-		std::shared_ptr<VertexBuffer> jointBuffer(DBG_NEW VertexBuffer(m_JointIndicesBuffer, m_VertexCnt * sizeof(uint32_t) * 4));
+		std::shared_ptr<VertexBuffer> jointBuffer(DBG_NEW VertexBuffer(m_JointIndicesBuffer, m_JointIndicesSize));
 		jointBuffer->SetBufferLayout({ { ElementDataType::Int4,"aJointIndices",false,JOINTINDICES_SLOT} });
-		std::shared_ptr<VertexBuffer> joint1Buffer(DBG_NEW VertexBuffer(m_JointIndices1Buffer, m_VertexCnt * sizeof(uint32_t) * 4));
+		std::shared_ptr<VertexBuffer> joint1Buffer(DBG_NEW VertexBuffer(m_JointIndices1Buffer, m_JointIndicesSize));
 		joint1Buffer->SetBufferLayout({ { ElementDataType::Int4,"aJointIndices1",false,JOINTINDICES1_SLOT} });
-		std::shared_ptr<VertexBuffer> weightBuffer(DBG_NEW VertexBuffer(m_WeightBuffer, m_VertexCnt * sizeof(float) * 4));
+		std::shared_ptr<VertexBuffer> weightBuffer(DBG_NEW VertexBuffer(m_WeightBuffer, m_WeightSize));
 		weightBuffer->SetBufferLayout({ { ElementDataType::Float4,"aWeights",false,WEIGHT_SLOT} });
-		std::shared_ptr<VertexBuffer> weight1Buffer(DBG_NEW VertexBuffer(m_Weight1Buffer, m_VertexCnt * sizeof(float) * 4));
+		std::shared_ptr<VertexBuffer> weight1Buffer(DBG_NEW VertexBuffer(m_Weight1Buffer, m_WeightSize));
 		weight1Buffer->SetBufferLayout({ { ElementDataType::Float4,"aWeights1",false,WEIGHT1_SLOT} });
 
-		std::shared_ptr<VertexBuffer> objIdBuffer(DBG_NEW VertexBuffer(m_ObjIdBuffer, m_VertexCnt * sizeof(float)));
+		std::shared_ptr<VertexBuffer> objIdBuffer(DBG_NEW VertexBuffer(m_ObjIdBuffer, m_ObjIdSize));
 		objIdBuffer->SetBufferLayout({ { ElementDataType::Float,"aObjId",false,OBJID_SLOT} });
-		std::shared_ptr<VertexBuffer> colorBuffer(DBG_NEW VertexBuffer(m_ColorBuffer, m_VertexCnt * sizeof(float) * 3));
+		std::shared_ptr<VertexBuffer> colorBuffer(DBG_NEW VertexBuffer(m_ColorBuffer, m_ColorSize));
 		colorBuffer->SetBufferLayout({ { ElementDataType::Float3,"aColor",false,COLOR_SLOT} });
 
 
@@ -221,15 +262,15 @@ namespace BlackPearl {
 	void Batch::CopyMeshBufferToBatchBuffer(uint32_t vertexCnt, uint32_t* batchBuffer, const std::pair<uint32_t*, uint32_t>& meshBuffer, const std::shared_ptr<Mesh>& mesh, int elementSlot, uint32_t itemCnt)
 	{
 
-		if (mesh->GetVertexBufferLayout().HasElement(elementSlot) && mesh->GetPositionBuffer().first) {
-			memcpy(batchBuffer + vertexCnt * itemCnt, mesh->GetPositionBuffer().first, mesh->GetPositionBuffer().second);
+		if (mesh->GetVertexBufferLayout().HasElement(elementSlot) && meshBuffer.first) {
+			memcpy(batchBuffer + vertexCnt * itemCnt, meshBuffer.first, meshBuffer.second);
 		}
 		else {
 			//GE_CORE_WARN("no attirbute buffer found in mesh");
 		}
 
 	}
-	void Batch::AddObjTransformToBuffer(uint32_t objId, glm::mat4 modelMat, uint32_t baseVertexCnt)
+	void Batch::AddObjTransformToBuffer(uint32_t objId, glm::mat4 modelMat)
 	{
 		glm::mat4 tmp = glm::transpose(modelMat);
 		/*

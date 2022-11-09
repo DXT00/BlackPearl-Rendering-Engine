@@ -115,18 +115,20 @@ SVO path tracing - only one bounce cubeSize = 40
 ![SVO path tracing](/results/svo_pathTracing3.png)
 ![SVO path tracing](/results/svo_pathTracing4.png)
 
-## Light probe GI --- separate diffuse probe and reflection probe
+## Light probe GI 
+### separate diffuse probe and reflection probe
 ![lightprobe_diffuse+specular](/results/lightprobe_diffuse+specular.png)
 
-### -- sort diffuse probe based on Areas
+### sort diffuse probe based on Areas
 ![lightprobe_Map](/results/lightprobe_Map.png)
 
-### -- cache object's nearyby diffuse probes, FPS:20frame/s
+### cache object's nearyby diffuse probes, FPS:20frame/s
 ![lightprobe_diffuse+specular](/results/lightprobe_diffuse+specular.png)
 
 
-### -- set reflection probe for each specular object,update specular probe every frame+ update a diffuse probe per frame,probe grid 4x2x4 
--- changing enviroment light ---> day and night shifting
+### set reflection probe for each specular object,update specular probe every frame+ update a diffuse probe per frame,probe grid 4x2x4 
+
+dynamic enviroment light ---> day and night shifting
 ![lightprobe_update_one_diffuse_probe_per_frame](/results/lightprobe_update_one_diffuse_probe_per_frame.png)
 
 ##  Voxel Cone Tracing - 3D texture cone tracing
@@ -147,10 +149,7 @@ https://github.com/Ubpa/ToyRTX
 Dielectric bunny
 ![gpu_raytracing_bvh_node_MATERAIL1](/results/gpu_raytracing_bvh_node_MATERAIL1.png)
 
-## DirectX Raytracing
-![DirectX_Raytracing](/results/DirectX_Raytracing.png)
-
-## RTX
+## DirectX Raytracing - RTX
 ### DXR pipline rendering
 ![DXR pipline rendering](/results/DXR.png)
 
@@ -166,3 +165,12 @@ batch rendering only need 9 drawcalls,and maintain 60 fps. improve (objs num/bat
 ![per object rendering](/results/batchRendering.png)
 ## Terrain rendering
 ![Terrain rendering](/results/TerrianTess.png)
+
+## MultiIndirect DrawCall rendering
+### rendering dynamic objs:  
+since the transform matrix needs to be updated every frame ,can only reach 20 fps
+![Terrain rendering](/results/muti_indirect_drawcall.png)
+
+### rendering static objs:  
+upload all data to gpu once, can reach 60 fps
+![Terrain rendering](/results/muti_indirect_drawcall_without_matrixUpdate.png)

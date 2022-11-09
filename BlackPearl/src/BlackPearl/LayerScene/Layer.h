@@ -19,6 +19,7 @@
 #include "BlackPearl/Input.h"
 #include "BlackPearl/KeyCodes.h"
 #include "BlackPearl/Map/MapManager.h"
+#include "BlackPearl/Node/BatchNode.h"
 #include <WinUser.h>
 
 using namespace std::chrono;
@@ -133,7 +134,7 @@ namespace BlackPearl {
 		Object* CreateLightProbe(ProbeType type, const std::string& shaderPath = "assets/shaders/lightProbes/lightProbe.glsl", const std::string& texturePath = "", const std::string& name = "LightProbe");
 		Object* CreateProbeGrid(MapManager* mapManager, ProbeType type, glm::vec3 probeNums, glm::vec3 offsets, float space);
 		MainCamera* CreateCamera(const std::string& name = "Camera");
-
+		BatchNode* CreateBatchNode(std::vector<Object*> objs, bool dynamic, const std::string& name = "BatchNode");
 
 		void ShowMeshRenderer(MeshRenderer* comp);
 		void ShowTransform(Transform* comp, Object* obj);
@@ -142,6 +143,7 @@ namespace BlackPearl {
 		void ShowParallelLight(ParallelLight* parallelLight);
 		void ShowCamera(PerspectiveCamera* perspectiveCamera);
 		void ShowCamera(MainCamera* mainCamera);
+		void ShowTerrian(Object* obj);
 
 		void ShowShader(std::string imguiShaders, int meshIndex, static int& itemIndex, int offset);
 		void ShowTextures(std::string imguiShaders, int meshIndex, static  int& itemIndex, Texture::Type textureType, static Texture::Type& type, int offset);

@@ -20,6 +20,7 @@
 #include "BlackPearl/Application.h"
 #include "Layers/VoxelizationTestLayer.h"
 #include "Layers/CubeTestLayer.h"
+#include "Layers/IndirectDrawLayer.h"
 
 class SandBox :public BlackPearl::Application {
 public:
@@ -56,6 +57,9 @@ public:
 		else if (renderer == "BatchRendering") {
 			layer = DBG_NEW BatchRenderingLayer(layer_name);
 		}
+		else if (renderer == "IndirectRendering") {
+			layer = DBG_NEW IndirectDrawLayer(layer_name);
+		}
 		GetLayerManager()->PushLayer(layer);
 	}
 	virtual ~SandBox() = default;
@@ -64,7 +68,7 @@ public:
 
 BlackPearl::Application* BlackPearl::CreateApplication(HINSTANCE hInstance, int nShowCmd) {
 
-	return DBG_NEW SandBox(hInstance, nShowCmd, BlackPearl::DynamicRHI::Type::OpenGL, "BatchRendering");
+	return DBG_NEW SandBox(hInstance, nShowCmd, BlackPearl::DynamicRHI::Type::OpenGL, "IndirectRendering");
 
 }
 

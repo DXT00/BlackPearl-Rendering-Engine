@@ -160,12 +160,17 @@ namespace BlackPearl {
 		VertexBuffer(const std::vector<float>&vertices, uint32_t drawType = GL_STATIC_DRAW);
 		VertexBuffer(const float* vertices, uint32_t size, uint32_t drawType = GL_STATIC_DRAW);
 		VertexBuffer(const unsigned int* vertices, uint32_t size, uint32_t drawType = GL_STATIC_DRAW);
+		VertexBuffer(void* vertices, uint32_t size, uint32_t drawType = GL_STATIC_DRAW);
+
 		~VertexBuffer();
 		void Bind();
+		void UpdateData(void* vertices, uint32_t size, uint32_t drawType = GL_STATIC_DRAW);
 		void UnBind();
 		void CleanUp();
 		const float* GetVerticesFloat() const { return m_VerticesFloat; }
 		const unsigned int* GetVerticesUInt() const { return m_VerticesUint; }
+		const void* GetVerticesVoid() const { return m_VerticesVoidData; }
+
 		void SetBufferLayout(const VertexBufferLayout& layout) { m_BufferLayout = layout; }
 		VertexBufferLayout GetBufferLayout() const { return m_BufferLayout; }
 		unsigned int GetVertexSize()const { return m_VertexSize; }
@@ -174,24 +179,49 @@ namespace BlackPearl {
 		unsigned int m_VertexSize;
 		const float* m_VerticesFloat = nullptr;
 		const unsigned int* m_VerticesUint = nullptr;
+		const void* m_VerticesVoidData = nullptr;
 		VertexBufferLayout m_BufferLayout;//这里需要默认构造函数
-
 	};
 
 	class IndexBuffer {
 	public:
 		IndexBuffer(const std::vector<unsigned int>& indices, uint32_t drawType = GL_STATIC_DRAW);
 		IndexBuffer(unsigned int *indices, unsigned int size, uint32_t drawType = GL_STATIC_DRAW);
+		~IndexBuffer();
 		unsigned int GetIndicesSize()const { return m_IndiciesSize; }
 		void Bind();
 		void UnBind();
-		void CleanUp();
 
 	private:
 		unsigned int m_RendererID;
 		unsigned int m_IndiciesSize;
 
 	};
+
+	struct IndirectCommand {
+		GLuint  count; //index or vertex cnt
+		GLuint  instanceCnt;
+		GLuint  firstIndex;
+		GLuint  startVertex;
+		GLuint  startInstance;
+	};
+
+	class IndirectBuffer {
+	public:
+		IndirectBuffer(const std::vector<IndirectCommand>& commands, uint32_t drawType = GL_DYNAMIC_DRAW);
+		~IndirectBuffer();
+		uint32_t GetID() const { return m_RendererID; }
+		void UpdateCommands(const std::vector<IndirectCommand>& cmds);
+		void Bind();
+		void UnBind();
+		const std::vector<IndirectCommand>& GetCommands() const { return m_Commands; }
+
+
+	private:
+		unsigned int m_RendererID;
+		std::vector<IndirectCommand> m_Commands;
+	};
+
 
 	class FrameBuffer {
 	public:

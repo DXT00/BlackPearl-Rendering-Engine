@@ -24,7 +24,11 @@ layout (vertices=4) out;
 in vec2 v_TexCoords[];
 // varying output to evaluation shader
 out vec2 TextureCoord[];
+uniform int u_DynamicTessLevel;
+uniform int u_TessLevel;
 
+uniform mat4 u_Model;           // the model matrix
+uniform mat4 u_View;            // the view matrix
 /*
 gl_in and gl_out which are both arrays of the following struct type:
 in gl_PerVertex
@@ -46,15 +50,60 @@ void main()
     // This will be result in 16x16 tessellated points to be generated.
     if (gl_InvocationID == 0)
     {
-        //four edges:
-        gl_TessLevelOuter[0] = 16;
-        gl_TessLevelOuter[1] = 16;
-        gl_TessLevelOuter[2] = 16;
-        gl_TessLevelOuter[3] = 16;
+        if (u_DynamicTessLevel == 1) {
+            // ----------------------------------------------------------------------
+            // Step 1: define constants to control tessellation parameters
+	        // set these as desired for your world scale
+            const int MIN_TESS_LEVEL = 4;
+            const int MAX_TESS_LEVEL = 64;
+            const float MIN_DISTANCE = 20;
+            const float MAX_DISTANCE = 800;
 
-        //two dimensions;
-        gl_TessLevelInner[0] = 16;
-        gl_TessLevelInner[1] = 16;
+            // ----------------------------------------------------------------------
+            // Step 2: transform each vertex into eye space
+            vec4 eyeSpacePos00 = u_View * u_Model * gl_in[0].gl_Position;
+            vec4 eyeSpacePos01 = u_View * u_Model * gl_in[1].gl_Position;
+            vec4 eyeSpacePos10 = u_View * u_Model * gl_in[2].gl_Position;
+            vec4 eyeSpacePos11 = u_View * u_Model * gl_in[3].gl_Position;
+
+            // ----------------------------------------------------------------------
+            // Step 3: "distance" from camera scaled between 0 and 1
+            float distance00 = clamp((abs(eyeSpacePos00.z)-MIN_DISTANCE) / (MAX_DISTANCE-MIN_DISTANCE), 0.0, 1.0);
+            float distance01 = clamp((abs(eyeSpacePos01.z)-MIN_DISTANCE) / (MAX_DISTANCE-MIN_DISTANCE), 0.0, 1.0);
+            float distance10 = clamp((abs(eyeSpacePos10.z)-MIN_DISTANCE) / (MAX_DISTANCE-MIN_DISTANCE), 0.0, 1.0);
+            float distance11 = clamp((abs(eyeSpacePos11.z)-MIN_DISTANCE) / (MAX_DISTANCE-MIN_DISTANCE), 0.0, 1.0);
+
+            // ----------------------------------------------------------------------
+            // Step 4: interpolate edge tessellation level based on closer vertex
+            float tessLevel0 = mix( MAX_TESS_LEVEL, MIN_TESS_LEVEL, min(distance10, distance00) );
+            float tessLevel1 = mix( MAX_TESS_LEVEL, MIN_TESS_LEVEL, min(distance00, distance01) );
+            float tessLevel2 = mix( MAX_TESS_LEVEL, MIN_TESS_LEVEL, min(distance01, distance11) );
+            float tessLevel3 = mix( MAX_TESS_LEVEL, MIN_TESS_LEVEL, min(distance11, distance10) );
+
+            // ----------------------------------------------------------------------
+            // Step 5: set the corresponding outer edge tessellation levels
+            gl_TessLevelOuter[0] = tessLevel0;
+            gl_TessLevelOuter[1] = tessLevel1;
+            gl_TessLevelOuter[2] = tessLevel2;
+            gl_TessLevelOuter[3] = tessLevel3;
+
+            // ----------------------------------------------------------------------
+            // Step 6: set the inner tessellation levels to the max of the two parallel edges
+            gl_TessLevelInner[0] = max(tessLevel1, tessLevel3);
+            gl_TessLevelInner[1] = max(tessLevel0, tessLevel2);
+        }
+        else {
+                //four edges:
+            gl_TessLevelOuter[0] = u_TessLevel;
+            gl_TessLevelOuter[1] = u_TessLevel;
+            gl_TessLevelOuter[2] = u_TessLevel;
+            gl_TessLevelOuter[3] = u_TessLevel;
+
+            //two dimensions;
+            gl_TessLevelInner[0] = u_TessLevel;
+            gl_TessLevelInner[1] = u_TessLevel;
+        }
+
     }
 }
 
@@ -69,7 +118,6 @@ struct Material{
 uniform Material u_Material;
 uniform mat4 u_Model;           // the model matrix
 uniform mat4 u_ProjectionView;            // the view matrix
-
 
 // received from Tessellation Control Shader - all texture coordinates for the patch vertices
 in vec2 TextureCoord[];

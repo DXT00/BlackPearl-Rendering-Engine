@@ -1,51 +1,57 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
-<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="16.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <PreferredToolArchitecture>x64</PreferredToolArchitecture>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ResolveNugetPackages>false</ResolveNugetPackages>
+  </PropertyGroup>
   <ItemGroup Label="ProjectConfigurations">
-    <ProjectConfiguration Include="Debug|Win32">
+    <ProjectConfiguration Include="Debug|x64">
       <Configuration>Debug</Configuration>
-      <Platform>Win32</Platform>
+      <Platform>x64</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="Release|Win32">
+    <ProjectConfiguration Include="Release|x64">
       <Configuration>Release</Configuration>
-      <Platform>Win32</Platform>
+      <Platform>x64</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="MinSizeRel|Win32">
+    <ProjectConfiguration Include="MinSizeRel|x64">
       <Configuration>MinSizeRel</Configuration>
-      <Platform>Win32</Platform>
+      <Platform>x64</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="RelWithDebInfo|Win32">
+    <ProjectConfiguration Include="RelWithDebInfo|x64">
       <Configuration>RelWithDebInfo</Configuration>
-      <Platform>Win32</Platform>
+      <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{BA5991DB-3249-33AC-BEF7-865137C3DAEE}</ProjectGuid>
-    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
+    <ProjectGuid>{A1556379-1623-352D-88BC-27CECAE3F399}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <Platform>Win32</Platform>
+    <WindowsTargetPlatformVersion>10.0.19041.0</WindowsTargetPlatformVersion>
+    <Platform>x64</Platform>
     <ProjectName>ALL_BUILD</ProjectName>
     <VCProjectUpgraderObjectName>NoUpgrade</VCProjectUpgraderObjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Utility</ConfigurationType>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Utility</ConfigurationType>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'" Label="Configuration">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'" Label="Configuration">
     <ConfigurationType>Utility</ConfigurationType>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'" Label="Configuration">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'" Label="Configuration">
     <ConfigurationType>Utility</ConfigurationType>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -56,14 +62,14 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
     <_ProjectFileVersion>10.0.20506.1</_ProjectFileVersion>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
   </PropertyGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <Midl>
-      <AdditionalIncludeDirectories>F:\OpenGL\assimp-4.1.0\.;F:\OpenGL\assimp-4.1.0\include;F:\OpenGL\assimp_build;F:\OpenGL\assimp_build\include;F:\OpenGL\assimp-4.1.0\contrib\zlib;F:\OpenGL\assimp_build\contrib\zlib;F:\OpenGL\assimp-4.1.0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp_build\include;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp_build;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\include;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\.;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\contrib\zlib;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp_build\contrib\zlib;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
       <HeaderFileName>%(Filename).h</HeaderFileName>
       <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
@@ -71,9 +77,9 @@
       <ProxyFileName>%(Filename)_p.c</ProxyFileName>
     </Midl>
   </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <Midl>
-      <AdditionalIncludeDirectories>F:\OpenGL\assimp-4.1.0\.;F:\OpenGL\assimp-4.1.0\include;F:\OpenGL\assimp_build;F:\OpenGL\assimp_build\include;F:\OpenGL\assimp-4.1.0\contrib\zlib;F:\OpenGL\assimp_build\contrib\zlib;F:\OpenGL\assimp-4.1.0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp_build\include;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp_build;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\include;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\.;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\contrib\zlib;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp_build\contrib\zlib;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
       <HeaderFileName>%(Filename).h</HeaderFileName>
       <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
@@ -81,9 +87,9 @@
       <ProxyFileName>%(Filename)_p.c</ProxyFileName>
     </Midl>
   </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">
     <Midl>
-      <AdditionalIncludeDirectories>F:\OpenGL\assimp-4.1.0\.;F:\OpenGL\assimp-4.1.0\include;F:\OpenGL\assimp_build;F:\OpenGL\assimp_build\include;F:\OpenGL\assimp-4.1.0\contrib\zlib;F:\OpenGL\assimp_build\contrib\zlib;F:\OpenGL\assimp-4.1.0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp_build\include;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp_build;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\include;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\.;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\contrib\zlib;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp_build\contrib\zlib;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
       <HeaderFileName>%(Filename).h</HeaderFileName>
       <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
@@ -91,9 +97,9 @@
       <ProxyFileName>%(Filename)_p.c</ProxyFileName>
     </Midl>
   </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">
     <Midl>
-      <AdditionalIncludeDirectories>F:\OpenGL\assimp-4.1.0\.;F:\OpenGL\assimp-4.1.0\include;F:\OpenGL\assimp_build;F:\OpenGL\assimp_build\include;F:\OpenGL\assimp-4.1.0\contrib\zlib;F:\OpenGL\assimp_build\contrib\zlib;F:\OpenGL\assimp-4.1.0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp_build\include;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp_build;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\include;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\.;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\contrib\zlib;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp_build\contrib\zlib;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
       <HeaderFileName>%(Filename).h</HeaderFileName>
       <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
@@ -102,10 +108,11 @@
     </Midl>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <CustomBuild Include="F:\OpenGL\assimp-4.1.0\contrib\zlib\CMakeLists.txt">
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Building Custom Rule F:/OpenGL/assimp-4.1.0/contrib/zlib/CMakeLists.txt</Message>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">setlocal
-E:\CMake\bin\cmake.exe -HF:/OpenGL/assimp-4.1.0 -BF:/OpenGL/assimp_build --check-stamp-file F:/OpenGL/assimp_build/contrib/zlib/CMakeFiles/generate.stamp
+    <CustomBuild Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\contrib\zlib\CMakeLists.txt">
+      <UseUtf8Encoding>Always</UseUtf8Encoding>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Building Custom Rule D:/AA_LEARN_CODING/LearnOpenGL/BlackPearl-Rendering-Engine/BlackPearl/vendor/assimp/contrib/zlib/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">setlocal
+D:\CMaake\bin\cmake.exe -SD:/AA_LEARN_CODING/LearnOpenGL/BlackPearl-Rendering-Engine/BlackPearl/vendor/assimp -BD:/AA_LEARN_CODING/LearnOpenGL/BlackPearl-Rendering-Engine/BlackPearl/vendor/assimp_build --check-stamp-file D:/AA_LEARN_CODING/LearnOpenGL/BlackPearl-Rendering-Engine/BlackPearl/vendor/assimp_build/contrib/zlib/CMakeFiles/generate.stamp
 if %errorlevel% neq 0 goto :cmEnd
 :cmEnd
 endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
@@ -113,12 +120,12 @@ endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
 exit /b %1
 :cmDone
 if %errorlevel% neq 0 goto :VCEnd</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">F:/OpenGL/assimp-4.1.0/contrib/zlib/CMakeLists.txt;F:\OpenGL\assimp-4.1.0\contrib\zlib\CMakeLists.txt;E:\CMake\share\cmake-3.9\Modules\CheckTypeSize.cmake;E:\CMake\share\cmake-3.9\Modules\CheckIncludeFile.cmake;E:\CMake\share\cmake-3.9\Modules\CheckIncludeFileCXX.cmake;E:\CMake\share\cmake-3.9\Modules\CheckFunctionExists.cmake;E:\CMake\share\cmake-3.9\Modules\CheckIncludeFile.cmake;E:\CMake\share\cmake-3.9\Modules\CheckCSourceCompiles.cmake;E:\CMake\share\cmake-3.9\Modules\CheckIncludeFile.c.in;E:\CMake\share\cmake-3.9\Modules\CheckIncludeFile.c.in;E:\CMake\share\cmake-3.9\Modules\CheckIncludeFile.c.in;E:\CMake\share\cmake-3.9\Modules\CheckTypeSize.c.in;F:\OpenGL\assimp_build\CMakeFiles\CheckTypeSize\OFF64_T.c;E:\CMake\share\cmake-3.9\Modules\CheckFunctionExists.c;E:\CMake\share\cmake-3.9\Modules\CheckIncludeFile.c.in;F:\OpenGL\assimp-4.1.0\contrib\zlib\zlib.pc.cmakein;F:\OpenGL\assimp-4.1.0\contrib\zlib\zconf.h.cmakein;F:\OpenGL\assimp-4.1.0\contrib\zlib\CMakeLists.txt;%(AdditionalInputs)</AdditionalInputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">F:\OpenGL\assimp_build\contrib\zlib\CMakeFiles\generate.stamp</Outputs>
-      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</LinkObjects>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Building Custom Rule F:/OpenGL/assimp-4.1.0/contrib/zlib/CMakeLists.txt</Message>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">setlocal
-E:\CMake\bin\cmake.exe -HF:/OpenGL/assimp-4.1.0 -BF:/OpenGL/assimp_build --check-stamp-file F:/OpenGL/assimp_build/contrib/zlib/CMakeFiles/generate.stamp
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\contrib\zlib\zconf.h.cmakein;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\contrib\zlib\zlib.pc.cmakein;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp_build\CMakeFiles\CheckTypeSize\OFF64_T.c;D:\CMaake\share\cmake-3.23\Modules\CheckCSourceCompiles.cmake;D:\CMaake\share\cmake-3.23\Modules\CheckFunctionExists.c;D:\CMaake\share\cmake-3.23\Modules\CheckFunctionExists.cmake;D:\CMaake\share\cmake-3.23\Modules\CheckIncludeFile.c.in;D:\CMaake\share\cmake-3.23\Modules\CheckIncludeFile.cmake;D:\CMaake\share\cmake-3.23\Modules\CheckIncludeFileCXX.cmake;D:\CMaake\share\cmake-3.23\Modules\CheckTypeSize.c.in;D:\CMaake\share\cmake-3.23\Modules\CheckTypeSize.cmake;D:\CMaake\share\cmake-3.23\Modules\Internal\CheckSourceCompiles.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp_build\contrib\zlib\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Building Custom Rule D:/AA_LEARN_CODING/LearnOpenGL/BlackPearl-Rendering-Engine/BlackPearl/vendor/assimp/contrib/zlib/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">setlocal
+D:\CMaake\bin\cmake.exe -SD:/AA_LEARN_CODING/LearnOpenGL/BlackPearl-Rendering-Engine/BlackPearl/vendor/assimp -BD:/AA_LEARN_CODING/LearnOpenGL/BlackPearl-Rendering-Engine/BlackPearl/vendor/assimp_build --check-stamp-file D:/AA_LEARN_CODING/LearnOpenGL/BlackPearl-Rendering-Engine/BlackPearl/vendor/assimp_build/contrib/zlib/CMakeFiles/generate.stamp
 if %errorlevel% neq 0 goto :cmEnd
 :cmEnd
 endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
@@ -126,12 +133,12 @@ endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
 exit /b %1
 :cmDone
 if %errorlevel% neq 0 goto :VCEnd</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">F:/OpenGL/assimp-4.1.0/contrib/zlib/CMakeLists.txt;F:\OpenGL\assimp-4.1.0\contrib\zlib\CMakeLists.txt;E:\CMake\share\cmake-3.9\Modules\CheckTypeSize.cmake;E:\CMake\share\cmake-3.9\Modules\CheckIncludeFile.cmake;E:\CMake\share\cmake-3.9\Modules\CheckIncludeFileCXX.cmake;E:\CMake\share\cmake-3.9\Modules\CheckFunctionExists.cmake;E:\CMake\share\cmake-3.9\Modules\CheckIncludeFile.cmake;E:\CMake\share\cmake-3.9\Modules\CheckCSourceCompiles.cmake;E:\CMake\share\cmake-3.9\Modules\CheckIncludeFile.c.in;E:\CMake\share\cmake-3.9\Modules\CheckIncludeFile.c.in;E:\CMake\share\cmake-3.9\Modules\CheckIncludeFile.c.in;E:\CMake\share\cmake-3.9\Modules\CheckTypeSize.c.in;F:\OpenGL\assimp_build\CMakeFiles\CheckTypeSize\OFF64_T.c;E:\CMake\share\cmake-3.9\Modules\CheckFunctionExists.c;E:\CMake\share\cmake-3.9\Modules\CheckIncludeFile.c.in;F:\OpenGL\assimp-4.1.0\contrib\zlib\zlib.pc.cmakein;F:\OpenGL\assimp-4.1.0\contrib\zlib\zconf.h.cmakein;F:\OpenGL\assimp-4.1.0\contrib\zlib\CMakeLists.txt;%(AdditionalInputs)</AdditionalInputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">F:\OpenGL\assimp_build\contrib\zlib\CMakeFiles\generate.stamp</Outputs>
-      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkObjects>
-      <Message Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">Building Custom Rule F:/OpenGL/assimp-4.1.0/contrib/zlib/CMakeLists.txt</Message>
-      <Command Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">setlocal
-E:\CMake\bin\cmake.exe -HF:/OpenGL/assimp-4.1.0 -BF:/OpenGL/assimp_build --check-stamp-file F:/OpenGL/assimp_build/contrib/zlib/CMakeFiles/generate.stamp
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\contrib\zlib\zconf.h.cmakein;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\contrib\zlib\zlib.pc.cmakein;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp_build\CMakeFiles\CheckTypeSize\OFF64_T.c;D:\CMaake\share\cmake-3.23\Modules\CheckCSourceCompiles.cmake;D:\CMaake\share\cmake-3.23\Modules\CheckFunctionExists.c;D:\CMaake\share\cmake-3.23\Modules\CheckFunctionExists.cmake;D:\CMaake\share\cmake-3.23\Modules\CheckIncludeFile.c.in;D:\CMaake\share\cmake-3.23\Modules\CheckIncludeFile.cmake;D:\CMaake\share\cmake-3.23\Modules\CheckIncludeFileCXX.cmake;D:\CMaake\share\cmake-3.23\Modules\CheckTypeSize.c.in;D:\CMaake\share\cmake-3.23\Modules\CheckTypeSize.cmake;D:\CMaake\share\cmake-3.23\Modules\Internal\CheckSourceCompiles.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp_build\contrib\zlib\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">Building Custom Rule D:/AA_LEARN_CODING/LearnOpenGL/BlackPearl-Rendering-Engine/BlackPearl/vendor/assimp/contrib/zlib/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">setlocal
+D:\CMaake\bin\cmake.exe -SD:/AA_LEARN_CODING/LearnOpenGL/BlackPearl-Rendering-Engine/BlackPearl/vendor/assimp -BD:/AA_LEARN_CODING/LearnOpenGL/BlackPearl-Rendering-Engine/BlackPearl/vendor/assimp_build --check-stamp-file D:/AA_LEARN_CODING/LearnOpenGL/BlackPearl-Rendering-Engine/BlackPearl/vendor/assimp_build/contrib/zlib/CMakeFiles/generate.stamp
 if %errorlevel% neq 0 goto :cmEnd
 :cmEnd
 endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
@@ -139,12 +146,12 @@ endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
 exit /b %1
 :cmDone
 if %errorlevel% neq 0 goto :VCEnd</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">F:/OpenGL/assimp-4.1.0/contrib/zlib/CMakeLists.txt;F:\OpenGL\assimp-4.1.0\contrib\zlib\CMakeLists.txt;E:\CMake\share\cmake-3.9\Modules\CheckTypeSize.cmake;E:\CMake\share\cmake-3.9\Modules\CheckIncludeFile.cmake;E:\CMake\share\cmake-3.9\Modules\CheckIncludeFileCXX.cmake;E:\CMake\share\cmake-3.9\Modules\CheckFunctionExists.cmake;E:\CMake\share\cmake-3.9\Modules\CheckIncludeFile.cmake;E:\CMake\share\cmake-3.9\Modules\CheckCSourceCompiles.cmake;E:\CMake\share\cmake-3.9\Modules\CheckIncludeFile.c.in;E:\CMake\share\cmake-3.9\Modules\CheckIncludeFile.c.in;E:\CMake\share\cmake-3.9\Modules\CheckIncludeFile.c.in;E:\CMake\share\cmake-3.9\Modules\CheckTypeSize.c.in;F:\OpenGL\assimp_build\CMakeFiles\CheckTypeSize\OFF64_T.c;E:\CMake\share\cmake-3.9\Modules\CheckFunctionExists.c;E:\CMake\share\cmake-3.9\Modules\CheckIncludeFile.c.in;F:\OpenGL\assimp-4.1.0\contrib\zlib\zlib.pc.cmakein;F:\OpenGL\assimp-4.1.0\contrib\zlib\zconf.h.cmakein;F:\OpenGL\assimp-4.1.0\contrib\zlib\CMakeLists.txt;%(AdditionalInputs)</AdditionalInputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">F:\OpenGL\assimp_build\contrib\zlib\CMakeFiles\generate.stamp</Outputs>
-      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">false</LinkObjects>
-      <Message Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">Building Custom Rule F:/OpenGL/assimp-4.1.0/contrib/zlib/CMakeLists.txt</Message>
-      <Command Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">setlocal
-E:\CMake\bin\cmake.exe -HF:/OpenGL/assimp-4.1.0 -BF:/OpenGL/assimp_build --check-stamp-file F:/OpenGL/assimp_build/contrib/zlib/CMakeFiles/generate.stamp
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\contrib\zlib\zconf.h.cmakein;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\contrib\zlib\zlib.pc.cmakein;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp_build\CMakeFiles\CheckTypeSize\OFF64_T.c;D:\CMaake\share\cmake-3.23\Modules\CheckCSourceCompiles.cmake;D:\CMaake\share\cmake-3.23\Modules\CheckFunctionExists.c;D:\CMaake\share\cmake-3.23\Modules\CheckFunctionExists.cmake;D:\CMaake\share\cmake-3.23\Modules\CheckIncludeFile.c.in;D:\CMaake\share\cmake-3.23\Modules\CheckIncludeFile.cmake;D:\CMaake\share\cmake-3.23\Modules\CheckIncludeFileCXX.cmake;D:\CMaake\share\cmake-3.23\Modules\CheckTypeSize.c.in;D:\CMaake\share\cmake-3.23\Modules\CheckTypeSize.cmake;D:\CMaake\share\cmake-3.23\Modules\Internal\CheckSourceCompiles.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp_build\contrib\zlib\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">Building Custom Rule D:/AA_LEARN_CODING/LearnOpenGL/BlackPearl-Rendering-Engine/BlackPearl/vendor/assimp/contrib/zlib/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">setlocal
+D:\CMaake\bin\cmake.exe -SD:/AA_LEARN_CODING/LearnOpenGL/BlackPearl-Rendering-Engine/BlackPearl/vendor/assimp -BD:/AA_LEARN_CODING/LearnOpenGL/BlackPearl-Rendering-Engine/BlackPearl/vendor/assimp_build --check-stamp-file D:/AA_LEARN_CODING/LearnOpenGL/BlackPearl-Rendering-Engine/BlackPearl/vendor/assimp_build/contrib/zlib/CMakeFiles/generate.stamp
 if %errorlevel% neq 0 goto :cmEnd
 :cmEnd
 endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
@@ -152,24 +159,22 @@ endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
 exit /b %1
 :cmDone
 if %errorlevel% neq 0 goto :VCEnd</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">F:/OpenGL/assimp-4.1.0/contrib/zlib/CMakeLists.txt;F:\OpenGL\assimp-4.1.0\contrib\zlib\CMakeLists.txt;E:\CMake\share\cmake-3.9\Modules\CheckTypeSize.cmake;E:\CMake\share\cmake-3.9\Modules\CheckIncludeFile.cmake;E:\CMake\share\cmake-3.9\Modules\CheckIncludeFileCXX.cmake;E:\CMake\share\cmake-3.9\Modules\CheckFunctionExists.cmake;E:\CMake\share\cmake-3.9\Modules\CheckIncludeFile.cmake;E:\CMake\share\cmake-3.9\Modules\CheckCSourceCompiles.cmake;E:\CMake\share\cmake-3.9\Modules\CheckIncludeFile.c.in;E:\CMake\share\cmake-3.9\Modules\CheckIncludeFile.c.in;E:\CMake\share\cmake-3.9\Modules\CheckIncludeFile.c.in;E:\CMake\share\cmake-3.9\Modules\CheckTypeSize.c.in;F:\OpenGL\assimp_build\CMakeFiles\CheckTypeSize\OFF64_T.c;E:\CMake\share\cmake-3.9\Modules\CheckFunctionExists.c;E:\CMake\share\cmake-3.9\Modules\CheckIncludeFile.c.in;F:\OpenGL\assimp-4.1.0\contrib\zlib\zlib.pc.cmakein;F:\OpenGL\assimp-4.1.0\contrib\zlib\zconf.h.cmakein;F:\OpenGL\assimp-4.1.0\contrib\zlib\CMakeLists.txt;%(AdditionalInputs)</AdditionalInputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">F:\OpenGL\assimp_build\contrib\zlib\CMakeFiles\generate.stamp</Outputs>
-      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">false</LinkObjects>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\contrib\zlib\zconf.h.cmakein;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\contrib\zlib\zlib.pc.cmakein;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp_build\CMakeFiles\CheckTypeSize\OFF64_T.c;D:\CMaake\share\cmake-3.23\Modules\CheckCSourceCompiles.cmake;D:\CMaake\share\cmake-3.23\Modules\CheckFunctionExists.c;D:\CMaake\share\cmake-3.23\Modules\CheckFunctionExists.cmake;D:\CMaake\share\cmake-3.23\Modules\CheckIncludeFile.c.in;D:\CMaake\share\cmake-3.23\Modules\CheckIncludeFile.cmake;D:\CMaake\share\cmake-3.23\Modules\CheckIncludeFileCXX.cmake;D:\CMaake\share\cmake-3.23\Modules\CheckTypeSize.c.in;D:\CMaake\share\cmake-3.23\Modules\CheckTypeSize.cmake;D:\CMaake\share\cmake-3.23\Modules\Internal\CheckSourceCompiles.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp_build\contrib\zlib\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">false</LinkObjects>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="F:\OpenGL\assimp_build\ZERO_CHECK.vcxproj">
-      <Project>{879655C1-50F0-352B-AE63-BC59151600C3}</Project>
+    <ProjectReference Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp_build\ZERO_CHECK.vcxproj">
+      <Project>{B8592203-8DA4-3B34-B044-59FFB4763D01}</Project>
       <Name>ZERO_CHECK</Name>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </ProjectReference>
-    <ProjectReference Include="F:\OpenGL\assimp_build\contrib\zlib\zlib.vcxproj">
-      <Project>{54DCFBEF-CA92-3910-A8EB-849D32492DB1}</Project>
-      <Name>zlib</Name>
-    </ProjectReference>
-    <ProjectReference Include="F:\OpenGL\assimp_build\contrib\zlib\zlibstatic.vcxproj">
-      <Project>{08DE4914-CF06-3AF6-8F3A-B8A32B04B078}</Project>
+    <ProjectReference Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp_build\contrib\zlib\zlibstatic.vcxproj">
+      <Project>{56B9EBD4-EC92-3485-BE59-3F4C5C4F1A17}</Project>
       <Name>zlibstatic</Name>
     </ProjectReference>
   </ItemGroup>

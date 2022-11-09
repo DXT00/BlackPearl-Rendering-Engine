@@ -300,15 +300,44 @@ namespace BlackPearl {
 	{
 		GE_ASSERT((glIsProgram(m_RendererID) == GL_TRUE), "glIsProgram(m_RendererID) != GL_TRUE");
 
+		GLint compileStat;
+		//glGetShaderiv(m_RendererID, GL_COMPILE_STATUS, &compileStat);
+	
+		GE_ERROR_JUDGE();
 
-		
+			//glGetShaderInfoLog(m_RendererID, 1024, length, infoLog);
 		glUseProgram(m_RendererID);
+
+		GLsizei bufLen = 0;        // length of buffer to allocate
+		GLsizei strLen = 0;        // strlen GL actually wrote to buffer
+
+		/*glGetProgramiv(m_RendererID, GL_INFO_LOG_LENGTH, &bufLen);
+		if (bufLen > 1)
+		{*/
+			GLchar* infoLog = new GLchar[1024];
+			glGetProgramInfoLog(m_RendererID, bufLen, &strLen, infoLog);
+			if (strLen > 0) {
+				std::string  result = reinterpret_cast<char*>(infoLog);
+				GE_CORE_INFO(result);
+
+			}
+			delete[] infoLog;
+		//}
+
+	
+	/*	std::vector<char> v(1024);
+		glGetProgramInfoLog(m_RendererID, 1024, NULL, v.data());
+		std::string s(begin(v), end(v));
+		GE_CORE_INFO(s);*/
+
 		GE_ERROR_JUDGE();
 	}
 
 	void Shader::Unbind() const
 	{
 		glUseProgram(0);
+		GE_ERROR_JUDGE();
+
 
 	}
 

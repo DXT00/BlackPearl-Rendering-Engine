@@ -10,13 +10,16 @@ namespace BlackPearl {
 		void Bind();
 		void UnBind();
 
-		void AddVertexBuffer(const std::shared_ptr<VertexBuffer>& vertexBuffer);
+		void AddVertexBuffer(const std::shared_ptr<VertexBuffer>& vertexBuffer, bool divisor = false, uint32_t perInstance = 1);
 		void AddAttributeVertexBuffer(const std::shared_ptr<VertexBuffer>& vertexBuffer);
+		void UpdateVertexBuffer(const std::shared_ptr<VertexBuffer>& vertexBuffer, bool divisor = false, uint32_t perInstance = 1);
+		void UpdateVertexBuffers();
 
-		void UpdateVertexBuffer();
+		void SetIndirectBuffer(uint32_t location, const std::shared_ptr<IndirectBuffer>& indirectBuffer);
 
 		void SetIndexBuffer(const std::shared_ptr<IndexBuffer>& indexBuffer);
 		std::shared_ptr<IndexBuffer> GetIndexBuffer()const { return m_IndexBuffer; }
+		std::shared_ptr<IndirectBuffer> GetIndirectBuffer() const { return m_IndirectBuffer; }
 		std::vector<std::shared_ptr<VertexBuffer>> GetVertexBuffers() const { return m_VertexBuffers; }
 
 	private:
@@ -34,6 +37,8 @@ namespace BlackPearl {
 		// vb2:(stst....)
 		std::vector<std::shared_ptr<VertexBuffer>> m_AttributeVertexBuffers;
 		std::shared_ptr<IndexBuffer> m_IndexBuffer;
+		std::shared_ptr<IndirectBuffer> m_IndirectBuffer;
+
 	};
 
 }

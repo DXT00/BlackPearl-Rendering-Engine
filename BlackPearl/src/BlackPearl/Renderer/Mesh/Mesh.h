@@ -52,7 +52,8 @@ namespace BlackPearl {
 		);
 		
 		~Mesh();
-	
+		float* GetVertices() const { return m_Vertices; }
+
 		std::shared_ptr<VertexArray> GetVertexArray() const { return m_VertexArray; }
 		uint32_t					 GetIndicesSize() const { return m_IndicesSize; }
 		uint32_t				     GetVerticesSize(unsigned int vertexBufferId);
@@ -80,6 +81,9 @@ namespace BlackPearl {
 
 		std::pair<uint32_t*, uint32_t> GetIndicesBuffer() const { return { m_Indices, m_IndicesSize }; }
 		uint32_t GetIndicesConut() const { return m_IndicesCount; }
+
+
+
 
 	public:
 		//temp for directX mseh shader TODO::¼æÈÝopengl ºÍd3d12 mesh½Ó¿Ú

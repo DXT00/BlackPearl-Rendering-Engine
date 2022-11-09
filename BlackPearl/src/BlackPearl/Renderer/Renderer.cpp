@@ -105,7 +105,9 @@ namespace BlackPearl {
 		shader->SetUniformMat4f("u_Projection", sceneData->ProjectionMatrix);
 		shader->SetUniformMat4f("u_View", sceneData->ViewMatrix);
 
-		shader->SetUniformMat3x4f("u_Model", model, objCnt);
+		if (model != nullptr && objCnt != 0) {
+			shader->SetUniformMat3x4f("u_Model", model, objCnt);
+		}
 		//shader->SetUniformMat4f("u_Model", model, objCnt);
 
 		shader->SetUniformVec3f("u_CameraViewPos", sceneData->CameraPosition);
@@ -113,5 +115,15 @@ namespace BlackPearl {
 		vertexArray->Bind();
 
 
+	}
+	void Renderer::Submit(const std::shared_ptr<VertexArray>& vertexArray, const std::shared_ptr<Shader>& shader, SceneData* sceneData)
+	{
+		shader->SetUniformMat4f("u_ProjectionView", sceneData->ProjectionViewMatrix);
+		shader->SetUniformMat4f("u_Projection", sceneData->ProjectionMatrix);
+		shader->SetUniformMat4f("u_View", sceneData->ViewMatrix);
+
+		shader->SetUniformVec3f("u_CameraViewPos", sceneData->CameraPosition);
+
+		vertexArray->Bind();
 	}
 }

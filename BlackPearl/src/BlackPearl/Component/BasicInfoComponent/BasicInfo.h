@@ -20,6 +20,7 @@ namespace BlackPearl {
 		OT_Camera,
 		OT_Quad,
 		OT_Terrain,
+		OT_BatchNode,
 		Init
 	};
 	class BasicInfo : public Component<BasicInfo>

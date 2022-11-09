@@ -25,6 +25,7 @@ namespace BlackPearl {
 		/*默认 scene 是 default camera*/
 		static void Submit(const std::shared_ptr<VertexArray>& vertexArray, const std::shared_ptr<Shader>& shader, const glm::mat4& model = glm::mat4(1.0f), SceneData* sceneData= GetSceneData());//Submmit前记得调用 BeginScene()!
 		static void Submit(const std::shared_ptr<VertexArray>& vertexArray, const std::shared_ptr<Shader>& shader, float* model, uint32_t objCnt, SceneData* sceneData = GetSceneData());//Submmit前记得调用 BeginScene()!
+		void Submit(const std::shared_ptr<VertexArray>& vertexArray, const std::shared_ptr<Shader>& shader, SceneData* sceneData);
 
 		static SceneData* GetSceneData() { return s_SceneData; }
 	private:

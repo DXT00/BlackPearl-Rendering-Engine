@@ -4,6 +4,7 @@
 #include "BlackPearl/Component/LightComponent/PointLight.h"
 #include "BlackPearl/Component/CameraComponent/PerspectiveCamera.h"
 #include "BlackPearl/Component/LightProbeComponent/LightProbeComponent.h"
+#include "BlackPearl/Component/TerrainComponent/TerrainComponent.h"
 #include "BlackPearl/Renderer/Model/Model.h"
 #include "BlackPearl/Renderer/Shader/Shader.h"
 #include "imgui.h"
@@ -93,7 +94,8 @@ namespace BlackPearl {
 		ImGui::Text("DrawCalls per frame = %.3lf", (double)BasicRenderer::s_DrawCallCnt);
 
 		//ImGui::Text("DrawCalls per frame = %.3lf", (double)Application::s_TotalFrameNum/BasicRenderer::s_DrawCallCnt);
-		ImGui::Text("Objs num = %d", (int)m_BackGroundObjsList.size());
+		ImGui::Text("Objs num = %d", (int)m_ObjectsList.size());
+		ImGui::Text("BackGround Objs num = %d", (int)m_BackGroundObjsList.size());
 
 		ImGui::End();
 
@@ -203,7 +205,13 @@ namespace BlackPearl {
 
 
 			if (currentObj->HasComponent< Transform>()) {
-				ShowTransform(currentObj->GetComponent<Transform>(), currentObj);
+				if (currentObj->GetComponent<BasicInfo>()->GetType() == OT_BatchNode) {
+
+				}
+				else {
+					ShowTransform(currentObj->GetComponent<Transform>(), currentObj);
+
+				}
 
 			}
 			if (currentObj->HasComponent< LightProbe>()) {
@@ -279,8 +287,10 @@ namespace BlackPearl {
 				}
 
 			}
+			if (currentObj->HasComponent<TerrainComponent>()) {
+				ShowTerrian(currentObj);
 
-
+			}
 
 		}
 
@@ -931,8 +941,6 @@ namespace BlackPearl {
 			staticModel->GetComponent<BlackPearl::Transform>()->SetInitPosition({ 0.0f,-1.5f,1.0f });
 			staticModel->GetComponent<BlackPearl::MeshRenderer>()->SetIsPBRObject(true);
 			staticModel->GetComponent<BlackPearl::MeshRenderer>()->SetIsBackGroundObjects(true);
-
-
 		}
 
 		else if (modelName == "Church") {
@@ -976,9 +984,6 @@ namespace BlackPearl {
 			staticModel->GetComponent<MeshRenderer>()->SetIsPBRObject(true);
 			staticModel->GetComponent<Transform>()->SetInitPosition({ -10.0,0,0 });
 			staticModel->GetComponent<MeshRenderer>()->SetIsBackGroundObjects(true);
-
-
-
 		}
 		else if (modelName == "SphereIron") {
 			staticModel = CreateSphere(1.5, 64, 64);
@@ -1149,13 +1154,11 @@ namespace BlackPearl {
 					}
 
 					idx++;
-					//		(type == ProbeType::DIFFUSE_PROBE) ? m_DiffuseLightProbes.push_back(probe) : m_ReflectionLightProbes.push_back(probe);
 					obj->AddChildObj(probe);
 
 				}
 
 			}
-
 		}
 		return obj;
 	}
@@ -1180,23 +1183,14 @@ namespace BlackPearl {
 		return mainCamera;
 	}
 
-	//void Layer::ShowShader(static std::string &imguiShaders, static char* shader, Mesh & mesh, int meshIndex, static  int &itemIndex)
-	//{
+	BatchNode* Layer::CreateBatchNode(std::vector<Object*> objs, bool dynamic, const std::string& name)
+	{
+		BatchNode* batchNode = g_objectManager->CreateBatchNode(objs, dynamic, name);
+		m_ObjectsList.push_back(batchNode->GetSelfObj());
 
-	//	std::string buttonName = "select file##" + std::to_string(meshIndex);
-	//	std::string inputTextName = "shader##" + std::to_string(meshIndex);
+		return batchNode;
+	}
 
-	//	imguiShaders = mesh->GetMaterial()->GetShader()->GetPath();
-	//	shader = const_cast<char*>(imguiShaders.c_str());
-	//	ImGui::InputText(inputTextName.c_str(), shader, IM_ARRAYSIZE(shader));
-	//	ImGui::SameLine();
-	//	if (ImGui::Button(buttonName.c_str())) {
-	//		itemIndex = meshIndex;
-	//		m_fileDialog.Open();
-	//	}
-
-
-	//}
 	void Layer::ShowCamera(PerspectiveCamera* perspectiveCamera)
 	{
 		ImGui::Text("Yaw = %f,Pitch= %f", perspectiveCamera->Yaw(), perspectiveCamera->Pitch());
@@ -1214,9 +1208,6 @@ namespace BlackPearl {
 		ImGui::DragFloat("CameraRotateSpeed", &rotSpeed, perspectiveCamera->GetRotateSpeed(), 0.1, 500, "%.3f ");
 		perspectiveCamera->SetRotateSpeed(rotSpeed);
 
-
-
-
 	}
 
 	void Layer::ShowCamera(MainCamera* mainCamera)
@@ -1228,16 +1219,30 @@ namespace BlackPearl {
 		ImGui::Text("Znear = %f,Zfar = %f,Fov = %f", mainCamera->ZNear(), mainCamera->ZFar(), mainCamera->Fov());
 
 		float moveSpeed = mainCamera->GetMoveSpeed(), rotSpeed = mainCamera->GetRotateSpeed();
-		ImGui::DragFloat("CameraMoveSpeed", &moveSpeed, mainCamera->GetMoveSpeed(), 0.1, 50, "%.3f ");
+		ImGui::DragFloat("CameraMoveSpeed", &moveSpeed, mainCamera->GetMoveSpeed(), 0.1, 500, "%.3f ");
 		mainCamera->SetMoveSpeed(moveSpeed);
-		ImGui::DragFloat("CameraRotateSpeed", &rotSpeed, mainCamera->GetRotateSpeed(), 0.1, 50, "%.3f ");
+		ImGui::DragFloat("CameraRotateSpeed", &rotSpeed, mainCamera->GetRotateSpeed(), 0.1, 500, "%.3f ");
 		mainCamera->SetRotateSpeed(rotSpeed);
+
+	}
+
+	void Layer::ShowTerrian(Object* obj)
+	{
+
+		ImGui::Text("Terrian");
+		bool dynamicTessLevel = obj->GetComponent<TerrainComponent>()->GetDynamicTess();
+		ImGui::Checkbox("dynamicTessLevel", &dynamicTessLevel);
+		obj->GetComponent<TerrainComponent>()->SetDynamicTess(dynamicTessLevel);
+	
+
+		float staticTessLevel = obj->GetComponent<TerrainComponent>()->GetStaticTessLevel();
+		ImGui::DragFloat("staticTessLevel", &staticTessLevel, obj->GetComponent<TerrainComponent>()->GetStaticTessLevel(), 8.0f, 200.0f, "%.3f ");
+		obj->GetComponent<TerrainComponent>()->SetTessLevel(staticTessLevel);
 
 	}
 
 	void Layer::ShowShader(std::string imguiShaders, int meshIndex, static  int& itemIndex, int offset)
 	{
-
 		std::string buttonName = "select file##" + std::to_string(meshIndex + offset);
 		std::string inputTextName = "mesh" + std::to_string(meshIndex + offset);
 
@@ -1251,12 +1256,9 @@ namespace BlackPearl {
 			itemIndex = meshIndex;
 			m_fileDialog.Open();
 		}
-
 		//	ImGui::PopID();
 
-
 	}
-
 
 	void Layer::ShowTextures(std::string imguiShaders, int meshIndex, static  int& itemIndex, Texture::Type textureType, static Texture::Type& type, int offset)
 	{
@@ -1307,12 +1309,6 @@ namespace BlackPearl {
 			break;
 
 		}
-
-
-		//imguiShaders = mesh->GetMaterial()->GetShader()->GetPath();
-		//ImGui::PushID(meshIndex);
-
-
 		inputTextName += "##" + std::to_string(meshIndex);
 		buttonName += "##" + std::to_string(meshIndex);
 
@@ -1320,8 +1316,6 @@ namespace BlackPearl {
 			ImGui::Text("                    ");
 		else
 			ImGui::Text(imguiShaders.c_str());
-
-
 
 		ImGui::SameLine();
 
@@ -1331,15 +1325,9 @@ namespace BlackPearl {
 			m_fileDialog.Open();
 		}
 
-
-
-
 		//ImGui::PopID();
 
 	}
-
-
-
 
 	void Layer::ShowMaterialProps(Material::Props& imGuiProps)
 	{
@@ -1347,7 +1335,6 @@ namespace BlackPearl {
 
 	void Layer::ShowMeshRenderer(MeshRenderer* comp)
 	{
-
 
 		ImGui::Text("MeshRenderer");
 		std::vector<std::shared_ptr<Mesh>>& imGuiMeshes = comp->GetMeshes();
@@ -1374,8 +1361,6 @@ namespace BlackPearl {
 				m_fileDialog.ClearSelected();
 				itemIndex = -1;
 			}
-
-
 		}
 
 		if (imGuiMeshes[0]->GetMaterial()->GetTextureMaps() != nullptr) {
@@ -1494,10 +1479,6 @@ namespace BlackPearl {
 			}
 		}
 
-
-
-
-
 		ImGui::TextColored({ 1.0,0.64,0.0,1.0 }, "Material Properties");
 		Material::Props imGuiProps = imGuiMeshes[0]->GetMaterial()->GetProps();//TODO::默认所有mesh 的Material::Props 是一样的
 		float imGuiShininess = imGuiProps.shininess;
@@ -1548,10 +1529,6 @@ namespace BlackPearl {
 
 
 	}
-
-
-
-
 
 	void Layer::ShowTransform(Transform* comp, Object* obj)
 	{
@@ -1628,9 +1605,6 @@ namespace BlackPearl {
 
 		parallelLight->UpdateMesh({ props.ambient ,props.diffuse,props.specular,props.emission,intensity });
 	}
-
-
-
 
 	std::vector<Object*> Layer::GetObjects()
 	{

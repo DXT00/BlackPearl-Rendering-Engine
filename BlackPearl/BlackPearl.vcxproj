@@ -147,9 +147,20 @@
     <ClInclude Include="..\Sandbox\assets\shaders_hlsl_h\Raytracing.hlsl.h" />
     <ClInclude Include="..\Sandbox\assets\shaders_hlsl_h\RaytracingCube.hlsl.h" />
     <ClInclude Include="..\Sandbox\assets\shaders_hlsl_h\RaytracingHlslCompat.h" />
-    <ClInclude Include="src\BlackPearl\RHI\OpenGLRHI\OpenGLLogger.h" />
-    <ClInclude Include="src\BlackPearl\RHI\D3D12RHI\D3D12Logger.h" />
-    <ClInclude Include="src\BlackPearl\Debugger\D3D12Debugger\HLSLPixDebugger.h" />
+    <ClInclude Include="src\BlackPearl\Renderer\MasterRenderer\IndirectRendererTest.h" />
+    <ClInclude Include="src\BlackPearl\Renderer\MasterRenderer\BatchRenderer.h" />
+    <ClInclude Include="src\BlackPearl\Renderer\MasterRenderer\IndirectRenderer.h" />
+    <ClInclude Include="src\BlackPearl\Node\SingleNode.h" />
+    <ClInclude Include="src\BlackPearl\Renderer\Batch\Batch.h" />
+    <ClInclude Include="src\BlackPearl\Node\BatchNode.h" />
+    <ClInclude Include="src\BlackPearl\Node\InstanceNode.h" />
+    <ClInclude Include="src\BlackPearl\Node\Node.h" />
+    <ClInclude Include="src\BlackPearl\Renderer\Material\MaterialManager.h" />
+    <ClInclude Include="src\BlackPearl\Renderer\Mesh\MeshManager.h" />
+    <ClInclude Include="src\BlackPearl\Component\BoundingSphereComponent\BoundingSphere.h" />
+    <ClInclude Include="src\BlackPearl\RHI\D3D12RHI\D3D12VertexBuffer.h" />
+    <ClInclude Include="src\BlackPearl\Renderer\Mesh\MeshletLoader.h" />
+    <ClInclude Include="src\BlackPearl\Renderer\MasterRenderer\D3D12MeshShaderRenderer.h" />
     <ClInclude Include="src\BlackPearl.h" />
     <ClInclude Include="src\BlackPearl\AABB\AABB.h" />
     <ClInclude Include="src\BlackPearl\Animation\AnimatedModel.h" />
@@ -184,6 +195,7 @@
     <ClInclude Include="src\BlackPearl\Component\TransformComponent\Transform.h" />
     <ClInclude Include="src\BlackPearl\Config.h" />
     <ClInclude Include="src\BlackPearl\Core.h" />
+    <ClInclude Include="src\BlackPearl\Debugger\D3D12Debugger\HLSLPixDebugger.h" />
     <ClInclude Include="src\BlackPearl\Entity\Entity.h" />
     <ClInclude Include="src\BlackPearl\EntryPoint.h" />
     <ClInclude Include="src\BlackPearl\Event\Event.h" />
@@ -204,16 +216,21 @@
     <ClInclude Include="src\BlackPearl\Map\MapManager.h" />
     <ClInclude Include="src\BlackPearl\Math\Math.h" />
     <ClInclude Include="src\BlackPearl\Math\Quaternion.h" />
-    <ClInclude Include="src\BlackPearl\Object\2DObject\Quad.h" />
     <ClInclude Include="src\BlackPearl\Object\Object.h" />
     <ClInclude Include="src\BlackPearl\ObjectCreater\ObjectCreater.h" />
     <ClInclude Include="src\BlackPearl\ObjectManager\ObjectManager.h" />
+    <ClInclude Include="src\BlackPearl\Renderer\Mesh\Meshlet.h" />
+    <ClInclude Include="src\BlackPearl\Renderer\Mesh\MeshletGenerator.h" />
+    <ClInclude Include="src\BlackPearl\Renderer\Mesh\MeshletConfig.h" />
+    <ClInclude Include="src\BlackPearl\Renderer\Model\ModelLoader.h" />
     <ClInclude Include="src\BlackPearl\RHI\D3D12Defines.h" />
     <ClInclude Include="src\BlackPearl\RHI\D3D12RHI\D3D12DeviceResources.h" />
     <ClInclude Include="src\BlackPearl\RHI\D3D12RHI\D3D12DynamicModule.h" />
     <ClInclude Include="src\BlackPearl\RHI\D3D12RHI\D3D12DynamicRHI.h" />
     <ClInclude Include="src\BlackPearl\RHI\D3D12RHI\D3D12GlobalRootSignature.h" />
     <ClInclude Include="src\BlackPearl\RHI\D3D12RHI\D3D12LocalRootSignature.h" />
+    <ClInclude Include="src\BlackPearl\RHI\D3D12RHI\D3D12Logger.h" />
+    <ClInclude Include="src\BlackPearl\RHI\D3D12RHI\D3D12ModelLoader.h" />
     <ClInclude Include="src\BlackPearl\RHI\D3D12RHI\D3D12RootSignature.h" />
     <ClInclude Include="src\BlackPearl\RHI\D3D12RHI\D3D12Window.h" />
     <ClInclude Include="src\BlackPearl\RHI\D3D12RHI\DirectXRaytracingHelper.h" />
@@ -222,6 +239,8 @@
     <ClInclude Include="src\BlackPearl\RHI\DynamicRHI.h" />
     <ClInclude Include="src\BlackPearl\RHI\OpenGLRHI\OpenGLDynamicModule.h" />
     <ClInclude Include="src\BlackPearl\RHI\OpenGLRHI\OpenGLDynamicRHI.h" />
+    <ClInclude Include="src\BlackPearl\RHI\OpenGLRHI\OpenGLLogger.h" />
+    <ClInclude Include="src\BlackPearl\RHI\OpenGLRHI\OpenGLModelLoader.h" />
     <ClInclude Include="src\BlackPearl\RHI\OpenGLRHI\OpenGLWindow.h" />
     <ClInclude Include="src\BlackPearl\RayTracing\GenData.h" />
     <ClInclude Include="src\BlackPearl\RayTracing\GenData_HV.h" />
@@ -242,6 +261,7 @@
     <ClInclude Include="src\BlackPearl\Renderer\Context.h" />
     <ClInclude Include="src\BlackPearl\Renderer\MasterRenderer\AnimatedModelRenderer.h" />
     <ClInclude Include="src\BlackPearl\Renderer\MasterRenderer\BasicRenderer.h" />
+    <ClInclude Include="src\BlackPearl\Renderer\MasterRenderer\D3D12BasicRenderer.h" />
     <ClInclude Include="src\BlackPearl\Renderer\MasterRenderer\D3D12RayTracingCubeRenderer.h" />
     <ClInclude Include="src\BlackPearl\Renderer\MasterRenderer\D3D12RayTracingModelRenderer.h" />
     <ClInclude Include="src\BlackPearl\Renderer\MasterRenderer\D3D12RayTracingRenderer.h" />
@@ -280,7 +300,6 @@
     <ClInclude Include="src\BlackPearl\Sampler\SobolSequence.h" />
     <ClInclude Include="src\BlackPearl\Scene\BoundingBoxBuilder.h" />
     <ClInclude Include="src\BlackPearl\Scene\DemoScene\MetaBallSDFScene.h" />
-    <ClInclude Include="src\BlackPearl\Scene\MeshScene.h" />
     <ClInclude Include="src\BlackPearl\Scene\SDFScene.h" />
     <ClInclude Include="src\BlackPearl\Scene\Scene.h" />
     <ClInclude Include="src\BlackPearl\Scene\SceneBuilder.h" />
@@ -288,6 +307,7 @@
     <ClInclude Include="src\BlackPearl\Timestep\Timestep.h" />
     <ClInclude Include="src\BlackPearl\Window.h" />
     <ClInclude Include="src\pch.h" />
+    <ClInclude Include="src\BlackPearl\Component\TerrainComponent\TerrainComponent.h" />
     <ClInclude Include="vendor\glm\glm\common.hpp" />
     <ClInclude Include="vendor\glm\glm\detail\_features.hpp" />
     <ClInclude Include="vendor\glm\glm\detail\_fixes.hpp" />
@@ -659,9 +679,20 @@
     <ClInclude Include="vendor\stb\stb_image.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\BlackPearl\RHI\OpenGLRHI\OpenGLLogger.cpp" />
-    <ClCompile Include="src\BlackPearl\RHI\D3D12RHI\D3D12Logger.cpp" />
-    <ClCompile Include="src\BlackPearl\Debugger\D3D12Debugger\HLSLPixDebugger.cpp" />
+    <ClCompile Include="src\BlackPearl\Renderer\MasterRenderer\IndirectRendererTest.cpp" />
+    <ClCompile Include="src\BlackPearl\Renderer\MasterRenderer\BatchRenderer.cpp" />
+    <ClCompile Include="src\BlackPearl\Renderer\MasterRenderer\IndirectRenderer.cpp" />
+    <ClCompile Include="src\BlackPearl\Node\SingleNode.cpp" />
+    <ClCompile Include="src\BlackPearl\Renderer\Batch\Batch.cpp" />
+    <ClCompile Include="src\BlackPearl\Node\BatchNode.cpp" />
+    <ClCompile Include="src\BlackPearl\Node\InstanceNode.cpp" />
+    <ClCompile Include="src\BlackPearl\Node\Node.cpp" />
+    <ClCompile Include="src\BlackPearl\Renderer\Material\MaterialManager.cpp" />
+    <ClCompile Include="src\BlackPearl\Renderer\Mesh\MeshManager.cpp" />
+    <ClCompile Include="src\BlackPearl\Component\BoundingSphereComponent\BoundingSphere.cpp" />
+    <ClCompile Include="src\BlackPearl\RHI\D3D12RHI\D3D12VertexBuffer.cpp" />
+    <ClCompile Include="src\BlackPearl\Renderer\Mesh\MeshletLoader.cpp" />
+    <ClCompile Include="src\BlackPearl\Renderer\MasterRenderer\D3D12MeshShaderRenderer.cpp" />
     <ClCompile Include="src\BlackPearl\AABB\AABB.cpp" />
     <ClCompile Include="src\BlackPearl\Animation\AnimatedModel.cpp" />
     <ClCompile Include="src\BlackPearl\Animation\Animation.cpp" />
@@ -694,10 +725,12 @@
     <ClCompile Include="src\BlackPearl\Component\TransformComponent\RayTracingTransform.cpp" />
     <ClCompile Include="src\BlackPearl\Component\TransformComponent\Transform.cpp" />
     <ClCompile Include="src\BlackPearl\Config.cpp" />
+    <ClCompile Include="src\BlackPearl\Debugger\D3D12Debugger\HLSLPixDebugger.cpp" />
     <ClCompile Include="src\BlackPearl\Entity\Entity.cpp" />
     <ClCompile Include="src\BlackPearl\ImGui\ImGuiBuild.cpp" />
     <ClCompile Include="src\BlackPearl\ImGui\ImGuiLayer.cpp" />
     <ClCompile Include="src\BlackPearl\Input.cpp" />
+    <ClCompile Include="src\BlackPearl\KeyCodes.cpp" />
     <ClCompile Include="src\BlackPearl\LayerScene\Layer.cpp" />
     <ClCompile Include="src\BlackPearl\LayerScene\LayerManager.cpp" />
     <ClCompile Include="src\BlackPearl\LayerStack.cpp" />
@@ -711,20 +744,26 @@
     <ClCompile Include="src\BlackPearl\Map\MapManager.cpp" />
     <ClCompile Include="src\BlackPearl\Math\Math.cpp" />
     <ClCompile Include="src\BlackPearl\Math\Quaternion.cpp" />
-    <ClCompile Include="src\BlackPearl\Object\2DObject\Quad.cpp" />
     <ClCompile Include="src\BlackPearl\Object\Object.cpp" />
     <ClCompile Include="src\BlackPearl\ObjectCreater\ObjectCreater.cpp" />
     <ClCompile Include="src\BlackPearl\ObjectManager\ObjectManager.cpp" />
+    <ClCompile Include="src\BlackPearl\Renderer\Mesh\Meshlet.cpp" />
+    <ClCompile Include="src\BlackPearl\Renderer\Mesh\MeshletGenerator.cpp" />
+    <ClCompile Include="src\BlackPearl\Renderer\Model\ModelLoader.cpp" />
     <ClCompile Include="src\BlackPearl\RHI\D3D12RHI\D3D12DeviceResources.cpp" />
     <ClCompile Include="src\BlackPearl\RHI\D3D12RHI\D3D12DynamicModule.cpp" />
     <ClCompile Include="src\BlackPearl\RHI\D3D12RHI\D3D12DynamicRHI.cpp" />
     <ClCompile Include="src\BlackPearl\RHI\D3D12RHI\D3D12GlobalRootSignature.cpp" />
+    <ClCompile Include="src\BlackPearl\RHI\D3D12RHI\D3D12Logger.cpp" />
+    <ClCompile Include="src\BlackPearl\RHI\D3D12RHI\D3D12ModelLoader.cpp" />
     <ClCompile Include="src\BlackPearl\RHI\D3D12RHI\D3D12RootSignature.cpp" />
     <ClCompile Include="src\BlackPearl\RHI\D3D12RHI\D3D12Window.cpp" />
     <ClCompile Include="src\BlackPearl\RHI\DynamicModule.cpp" />
     <ClCompile Include="src\BlackPearl\RHI\DynamicRHI.cpp" />
     <ClCompile Include="src\BlackPearl\RHI\OpenGLRHI\OpenGLDynamicModule.cpp" />
     <ClCompile Include="src\BlackPearl\RHI\OpenGLRHI\OpenGLDynamicRHI.cpp" />
+    <ClCompile Include="src\BlackPearl\RHI\OpenGLRHI\OpenGLLogger.cpp" />
+    <ClCompile Include="src\BlackPearl\RHI\OpenGLRHI\OpenGLModelLoader.cpp" />
     <ClCompile Include="src\BlackPearl\RHI\OpenGLRHI\OpenGLWindow.cpp" />
     <ClCompile Include="src\BlackPearl\RayTracing\GenData.cpp" />
     <ClCompile Include="src\BlackPearl\RayTracing\GenData_HV.cpp" />
@@ -742,6 +781,7 @@
     <ClCompile Include="src\BlackPearl\Renderer\Context.cpp" />
     <ClCompile Include="src\BlackPearl\Renderer\MasterRenderer\AnimatedModelRenderer.cpp" />
     <ClCompile Include="src\BlackPearl\Renderer\MasterRenderer\BasicRenderer.cpp" />
+    <ClCompile Include="src\BlackPearl\Renderer\MasterRenderer\D3D12BasicRenderer.cpp" />
     <ClCompile Include="src\BlackPearl\Renderer\MasterRenderer\D3D12RayTracingCubeRenderer.cpp" />
     <ClCompile Include="src\BlackPearl\Renderer\MasterRenderer\D3D12RayTracingModelRenderer.cpp" />
     <ClCompile Include="src\BlackPearl\Renderer\MasterRenderer\D3D12RayTracingRenderer.cpp" />
@@ -778,7 +818,6 @@
     <ClCompile Include="src\BlackPearl\Sampler\Sobol.cpp" />
     <ClCompile Include="src\BlackPearl\Scene\BoundingBoxBuilder.cpp" />
     <ClCompile Include="src\BlackPearl\Scene\DemoScene\MetaBallSDFScene.cpp" />
-    <ClCompile Include="src\BlackPearl\Scene\MeshScene.cpp" />
     <ClCompile Include="src\BlackPearl\Scene\SDFScene.cpp" />
     <ClCompile Include="src\BlackPearl\Scene\Scene.cpp" />
     <ClCompile Include="src\BlackPearl\Scene\SceneBuilder.cpp" />
@@ -788,6 +827,7 @@
     <ClCompile Include="src\pch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="src\BlackPearl\Component\TerrainComponent\TerrainComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="vendor\GLFW\GLFW.vcxproj">
@@ -803,7 +843,17 @@
       <Project>{C0FF640D-2C14-8DBE-F595-301E616989EF}</Project>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
+    <Import Project="..\packages\directxmesh_desktop_win10.2022.7.30.1\build\native\directxmesh_desktop_win10.targets" Condition="Exists('..\packages\directxmesh_desktop_win10.2022.7.30.1\build\native\directxmesh_desktop_win10.targets')" />
   </ImportGroup>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>这台计算机上缺少此项目引用的 NuGet 程序包。使用“NuGet 程序包还原”可下载这些程序包。有关更多信息，请参见 http://go.microsoft.com/fwlink/?LinkID=322105。缺少的文件是 {0}。</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\directxmesh_desktop_win10.2022.7.30.1\build\native\directxmesh_desktop_win10.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\directxmesh_desktop_win10.2022.7.30.1\build\native\directxmesh_desktop_win10.targets'))" />
+  </Target>
 </Project>

@@ -1,51 +1,54 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
-<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="16.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <PreferredToolArchitecture>x64</PreferredToolArchitecture>
+  </PropertyGroup>
   <ItemGroup Label="ProjectConfigurations">
-    <ProjectConfiguration Include="Debug|Win32">
+    <ProjectConfiguration Include="Debug|x64">
       <Configuration>Debug</Configuration>
-      <Platform>Win32</Platform>
+      <Platform>x64</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="Release|Win32">
+    <ProjectConfiguration Include="Release|x64">
       <Configuration>Release</Configuration>
-      <Platform>Win32</Platform>
+      <Platform>x64</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="MinSizeRel|Win32">
+    <ProjectConfiguration Include="MinSizeRel|x64">
       <Configuration>MinSizeRel</Configuration>
-      <Platform>Win32</Platform>
+      <Platform>x64</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="RelWithDebInfo|Win32">
+    <ProjectConfiguration Include="RelWithDebInfo|x64">
       <Configuration>RelWithDebInfo</Configuration>
-      <Platform>Win32</Platform>
+      <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{5401E050-51E2-338C-88FC-6411A02D8B80}</ProjectGuid>
-    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
+    <ProjectGuid>{63801181-C496-3807-B8BB-31F59EE69402}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <Platform>Win32</Platform>
+    <WindowsTargetPlatformVersion>10.0.19041.0</WindowsTargetPlatformVersion>
+    <Platform>x64</Platform>
     <ProjectName>assimp</ProjectName>
     <VCProjectUpgraderObjectName>NoUpgrade</VCProjectUpgraderObjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v141</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v141</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'" Label="Configuration">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v141</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'" Label="Configuration">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v141</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -56,38 +59,39 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
     <_ProjectFileVersion>10.0.20506.1</_ProjectFileVersion>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">F:\OpenGL\assimp_build\code\Debug\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">assimp.dir\Debug\</IntDir>
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">assimp-vc140-mt</TargetName>
-    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.dll</TargetExt>
-    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
-    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</GenerateManifest>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">F:\OpenGL\assimp_build\code\Release\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">assimp.dir\Release\</IntDir>
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">assimp-vc140-mt</TargetName>
-    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.dll</TargetExt>
-    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
-    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</GenerateManifest>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">F:\OpenGL\assimp_build\code\MinSizeRel\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">assimp.dir\MinSizeRel\</IntDir>
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">assimp-vc140-mt</TargetName>
-    <TargetExt Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">.dll</TargetExt>
-    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">false</LinkIncremental>
-    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">true</GenerateManifest>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">F:\OpenGL\assimp_build\code\RelWithDebInfo\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">assimp.dir\RelWithDebInfo\</IntDir>
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">assimp-vc140-mt</TargetName>
-    <TargetExt Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">.dll</TargetExt>
-    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">true</LinkIncremental>
-    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">true</GenerateManifest>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp_build\bin\Debug\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">assimp.dir\Debug\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">assimp-vc142-mtd</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.dll</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</GenerateManifest>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp_build\bin\Release\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">assimp.dir\Release\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">assimp-vc142-mt</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.dll</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</GenerateManifest>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp_build\bin\MinSizeRel\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">assimp.dir\MinSizeRel\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">assimp-vc142-mt</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">.dll</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">false</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">true</GenerateManifest>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp_build\bin\RelWithDebInfo\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">assimp.dir\RelWithDebInfo\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">assimp-vc142-mt</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">.dll</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">true</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">true</GenerateManifest>
   </PropertyGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>F:\OpenGL\assimp-4.1.0\.;F:\OpenGL\assimp-4.1.0\include;F:\OpenGL\assimp_build;F:\OpenGL\assimp_build\include;F:\OpenGL\assimp-4.1.0\contrib\zlib;F:\OpenGL\assimp_build\contrib\zlib;F:\OpenGL\assimp-4.1.0\code\..\contrib\rapidjson\include;F:\OpenGL\assimp-4.1.0\code\..\contrib;F:\OpenGL\assimp-4.1.0\code\..\contrib\unzip;F:\OpenGL\assimp-4.1.0\contrib\irrXML;F:\OpenGL\assimp-4.1.0\code\..\contrib\openddlparser\include;F:\OpenGL\assimp-4.1.0\code\..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <AssemblerListingLocation>Debug/</AssemblerListingLocation>
+      <AdditionalIncludeDirectories>D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp_build\include;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp_build;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\include;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\.;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\contrib\zlib;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp_build\contrib\zlib;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\..\contrib\pugixml\src;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\..\contrib\rapidjson\include;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\..\contrib;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\..\contrib\unzip;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\..\contrib\openddlparser\include;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\..\include;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp_build\code\..\include;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /bigobj</AdditionalOptions>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
-      <CompileAs>CompileAsCpp</CompileAs>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DisableSpecificWarnings>4244</DisableSpecificWarnings>
       <ExceptionHandling>Sync</ExceptionHandling>
       <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -95,16 +99,18 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
-      <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>WIN32;_WINDOWS;WIN32_LEAN_AND_MEAN;OPENDDL_NO_USE_CPP11;ASSIMP_BUILD_NO_C4D_IMPORTER;ASSIMP_IMPORTER_GLTF_USE_OPEN3DGC=1;ASSIMP_BUILD_DLL_EXPORT;_SCL_SECURE_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;OPENDDLPARSER_BUILD;CMAKE_INTDIR="Debug";assimp_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <TreatWarningAsError>true</TreatWarningAsError>
+      <UseFullPaths>false</UseFullPaths>
+      <WarningLevel>Level4</WarningLevel>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;_DEBUG;ASSIMP_BUILD_DLL_EXPORT;ASSIMP_BUILD_NO_M3D_IMPORTER;ASSIMP_BUILD_NO_M3D_EXPORTER;WIN32_LEAN_AND_MEAN;UNICODE;_UNICODE;ASSIMP_BUILD_NO_C4D_IMPORTER;MINIZ_USE_UNALIGNED_LOADS_AND_STORES=0;ASSIMP_IMPORTER_GLTF_USE_OPEN3DGC=1;RAPIDJSON_HAS_STDSTRING=1;RAPIDJSON_NOMEMBERITERATORCLASS;_SCL_SECURE_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;OPENDDLPARSER_BUILD;CMAKE_INTDIR="Debug";assimp_EXPORTS</PreprocessorDefinitions>
       <ObjectFileName>$(IntDir)</ObjectFileName>
     </ClCompile>
     <ResourceCompile>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;WIN32_LEAN_AND_MEAN;OPENDDL_NO_USE_CPP11;ASSIMP_BUILD_NO_C4D_IMPORTER;ASSIMP_IMPORTER_GLTF_USE_OPEN3DGC=1;ASSIMP_BUILD_DLL_EXPORT;_SCL_SECURE_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;OPENDDLPARSER_BUILD;CMAKE_INTDIR=\"Debug\";assimp_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>F:\OpenGL\assimp-4.1.0\.;F:\OpenGL\assimp-4.1.0\include;F:\OpenGL\assimp_build;F:\OpenGL\assimp_build\include;F:\OpenGL\assimp-4.1.0\contrib\zlib;F:\OpenGL\assimp_build\contrib\zlib;F:\OpenGL\assimp-4.1.0\code\..\contrib\rapidjson\include;F:\OpenGL\assimp-4.1.0\code\..\contrib;F:\OpenGL\assimp-4.1.0\code\..\contrib\unzip;F:\OpenGL\assimp-4.1.0\contrib\irrXML;F:\OpenGL\assimp-4.1.0\code\..\contrib\openddlparser\include;F:\OpenGL\assimp-4.1.0\code\..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_DEBUG;_WINDOWS;ASSIMP_BUILD_DLL_EXPORT;ASSIMP_BUILD_NO_M3D_IMPORTER;ASSIMP_BUILD_NO_M3D_EXPORTER;WIN32_LEAN_AND_MEAN;UNICODE;_UNICODE;ASSIMP_BUILD_NO_C4D_IMPORTER;MINIZ_USE_UNALIGNED_LOADS_AND_STORES=0;ASSIMP_IMPORTER_GLTF_USE_OPEN3DGC=1;RAPIDJSON_HAS_STDSTRING=1;RAPIDJSON_NOMEMBERITERATORCLASS;_SCL_SECURE_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;OPENDDLPARSER_BUILD;CMAKE_INTDIR=\"Debug\";assimp_EXPORTS</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp_build\include;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp_build;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\include;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\.;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\contrib\zlib;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp_build\contrib\zlib;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\..\contrib\pugixml\src;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\..\contrib\rapidjson\include;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\..\contrib;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\..\contrib\unzip;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\..\contrib\openddlparser\include;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\..\include;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp_build\code\..\include;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Midl>
-      <AdditionalIncludeDirectories>F:\OpenGL\assimp-4.1.0\.;F:\OpenGL\assimp-4.1.0\include;F:\OpenGL\assimp_build;F:\OpenGL\assimp_build\include;F:\OpenGL\assimp-4.1.0\contrib\zlib;F:\OpenGL\assimp_build\contrib\zlib;F:\OpenGL\assimp-4.1.0\code\..\contrib\rapidjson\include;F:\OpenGL\assimp-4.1.0\code\..\contrib;F:\OpenGL\assimp-4.1.0\code\..\contrib\unzip;F:\OpenGL\assimp-4.1.0\contrib\irrXML;F:\OpenGL\assimp-4.1.0\code\..\contrib\openddlparser\include;F:\OpenGL\assimp-4.1.0\code\..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp_build\include;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp_build;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\include;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\.;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\contrib\zlib;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp_build\contrib\zlib;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\..\contrib\pugixml\src;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\..\contrib\rapidjson\include;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\..\contrib;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\..\contrib\unzip;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\..\contrib\openddlparser\include;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\..\include;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp_build\code\..\include;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
       <HeaderFileName>%(Filename).h</HeaderFileName>
       <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
@@ -112,25 +118,26 @@
       <ProxyFileName>%(Filename)_p.c</ProxyFileName>
     </Midl>
     <Link>
-      <AdditionalDependencies>..\contrib\zlib\Debug\zlibstaticd.lib;..\contrib\irrXML\Debug\IrrXML.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalDependencies>..\contrib\zlib\Debug\zlibstaticd.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalOptions>%(AdditionalOptions) /machine:X86</AdditionalOptions>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
-      <ImportLibrary>F:/OpenGL/assimp_build/code/Debug/assimp-vc140-mt.lib</ImportLibrary>
-      <ProgramDataBaseFile>F:/OpenGL/assimp_build/code/Debug/assimp-vc140-mt.pdb</ProgramDataBaseFile>
+      <ImportLibrary>D:/AA_LEARN_CODING/LearnOpenGL/BlackPearl-Rendering-Engine/BlackPearl/vendor/assimp_build/lib/Debug/assimp-vc142-mtd.lib</ImportLibrary>
+      <ProgramDataBaseFile>D:/AA_LEARN_CODING/LearnOpenGL/BlackPearl-Rendering-Engine/BlackPearl/vendor/assimp_build/bin/Debug/assimp-vc142-mtd.pdb</ProgramDataBaseFile>
       <SubSystem>Console</SubSystem>
-      <Version></Version>
     </Link>
     <ProjectReference>
       <LinkLibraryDependencies>false</LinkLibraryDependencies>
     </ProjectReference>
   </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>F:\OpenGL\assimp-4.1.0\.;F:\OpenGL\assimp-4.1.0\include;F:\OpenGL\assimp_build;F:\OpenGL\assimp_build\include;F:\OpenGL\assimp-4.1.0\contrib\zlib;F:\OpenGL\assimp_build\contrib\zlib;F:\OpenGL\assimp-4.1.0\code\..\contrib\rapidjson\include;F:\OpenGL\assimp-4.1.0\code\..\contrib;F:\OpenGL\assimp-4.1.0\code\..\contrib\unzip;F:\OpenGL\assimp-4.1.0\contrib\irrXML;F:\OpenGL\assimp-4.1.0\code\..\contrib\openddlparser\include;F:\OpenGL\assimp-4.1.0\code\..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <AssemblerListingLocation>Release/</AssemblerListingLocation>
-      <CompileAs>CompileAsCpp</CompileAs>
+      <AdditionalIncludeDirectories>D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp_build\include;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp_build;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\include;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\.;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\contrib\zlib;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp_build\contrib\zlib;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\..\contrib\pugixml\src;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\..\contrib\rapidjson\include;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\..\contrib;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\..\contrib\unzip;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\..\contrib\openddlparser\include;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\..\include;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp_build\code\..\include;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /bigobj</AdditionalOptions>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DisableSpecificWarnings>4244</DisableSpecificWarnings>
       <ExceptionHandling>Sync</ExceptionHandling>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -138,17 +145,18 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
-      <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;WIN32_LEAN_AND_MEAN;OPENDDL_NO_USE_CPP11;ASSIMP_BUILD_NO_C4D_IMPORTER;ASSIMP_IMPORTER_GLTF_USE_OPEN3DGC=1;ASSIMP_BUILD_DLL_EXPORT;_SCL_SECURE_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;OPENDDLPARSER_BUILD;CMAKE_INTDIR="Release";assimp_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <TreatWarningAsError>true</TreatWarningAsError>
+      <UseFullPaths>false</UseFullPaths>
+      <WarningLevel>Level4</WarningLevel>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;ASSIMP_BUILD_DLL_EXPORT;ASSIMP_BUILD_NO_M3D_IMPORTER;ASSIMP_BUILD_NO_M3D_EXPORTER;WIN32_LEAN_AND_MEAN;UNICODE;_UNICODE;ASSIMP_BUILD_NO_C4D_IMPORTER;MINIZ_USE_UNALIGNED_LOADS_AND_STORES=0;ASSIMP_IMPORTER_GLTF_USE_OPEN3DGC=1;RAPIDJSON_HAS_STDSTRING=1;RAPIDJSON_NOMEMBERITERATORCLASS;_SCL_SECURE_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;OPENDDLPARSER_BUILD;CMAKE_INTDIR="Release";assimp_EXPORTS</PreprocessorDefinitions>
       <ObjectFileName>$(IntDir)</ObjectFileName>
-      <DebugInformationFormat></DebugInformationFormat>
     </ClCompile>
     <ResourceCompile>
-      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;WIN32_LEAN_AND_MEAN;OPENDDL_NO_USE_CPP11;ASSIMP_BUILD_NO_C4D_IMPORTER;ASSIMP_IMPORTER_GLTF_USE_OPEN3DGC=1;ASSIMP_BUILD_DLL_EXPORT;_SCL_SECURE_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;OPENDDLPARSER_BUILD;CMAKE_INTDIR=\"Release\";assimp_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>F:\OpenGL\assimp-4.1.0\.;F:\OpenGL\assimp-4.1.0\include;F:\OpenGL\assimp_build;F:\OpenGL\assimp_build\include;F:\OpenGL\assimp-4.1.0\contrib\zlib;F:\OpenGL\assimp_build\contrib\zlib;F:\OpenGL\assimp-4.1.0\code\..\contrib\rapidjson\include;F:\OpenGL\assimp-4.1.0\code\..\contrib;F:\OpenGL\assimp-4.1.0\code\..\contrib\unzip;F:\OpenGL\assimp-4.1.0\contrib\irrXML;F:\OpenGL\assimp-4.1.0\code\..\contrib\openddlparser\include;F:\OpenGL\assimp-4.1.0\code\..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;ASSIMP_BUILD_DLL_EXPORT;ASSIMP_BUILD_NO_M3D_IMPORTER;ASSIMP_BUILD_NO_M3D_EXPORTER;WIN32_LEAN_AND_MEAN;UNICODE;_UNICODE;ASSIMP_BUILD_NO_C4D_IMPORTER;MINIZ_USE_UNALIGNED_LOADS_AND_STORES=0;ASSIMP_IMPORTER_GLTF_USE_OPEN3DGC=1;RAPIDJSON_HAS_STDSTRING=1;RAPIDJSON_NOMEMBERITERATORCLASS;_SCL_SECURE_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;OPENDDLPARSER_BUILD;CMAKE_INTDIR=\"Release\";assimp_EXPORTS</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp_build\include;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp_build;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\include;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\.;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\contrib\zlib;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp_build\contrib\zlib;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\..\contrib\pugixml\src;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\..\contrib\rapidjson\include;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\..\contrib;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\..\contrib\unzip;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\..\contrib\openddlparser\include;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\..\include;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp_build\code\..\include;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Midl>
-      <AdditionalIncludeDirectories>F:\OpenGL\assimp-4.1.0\.;F:\OpenGL\assimp-4.1.0\include;F:\OpenGL\assimp_build;F:\OpenGL\assimp_build\include;F:\OpenGL\assimp-4.1.0\contrib\zlib;F:\OpenGL\assimp_build\contrib\zlib;F:\OpenGL\assimp-4.1.0\code\..\contrib\rapidjson\include;F:\OpenGL\assimp-4.1.0\code\..\contrib;F:\OpenGL\assimp-4.1.0\code\..\contrib\unzip;F:\OpenGL\assimp-4.1.0\contrib\irrXML;F:\OpenGL\assimp-4.1.0\code\..\contrib\openddlparser\include;F:\OpenGL\assimp-4.1.0\code\..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp_build\include;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp_build;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\include;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\.;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\contrib\zlib;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp_build\contrib\zlib;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\..\contrib\pugixml\src;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\..\contrib\rapidjson\include;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\..\contrib;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\..\contrib\unzip;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\..\contrib\openddlparser\include;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\..\include;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp_build\code\..\include;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
       <HeaderFileName>%(Filename).h</HeaderFileName>
       <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
@@ -156,25 +164,27 @@
       <ProxyFileName>%(Filename)_p.c</ProxyFileName>
     </Midl>
     <Link>
-      <AdditionalDependencies>..\contrib\zlib\Release\zlibstatic.lib;..\contrib\irrXML\Release\IrrXML.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalDependencies>..\contrib\zlib\Release\zlibstatic.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalOptions>%(AdditionalOptions) /machine:X86</AdditionalOptions>
-      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64 /PDBALTPATH:%%_PDB%%</AdditionalOptions>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
       <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
-      <ImportLibrary>F:/OpenGL/assimp_build/code/Release/assimp-vc140-mt.lib</ImportLibrary>
-      <ProgramDataBaseFile>F:/OpenGL/assimp_build/code/Release/assimp-vc140-mt.pdb</ProgramDataBaseFile>
+      <ImportLibrary>D:/AA_LEARN_CODING/LearnOpenGL/BlackPearl-Rendering-Engine/BlackPearl/vendor/assimp_build/lib/Release/assimp-vc142-mt.lib</ImportLibrary>
+      <OptimizeReferences>true</OptimizeReferences>
+      <ProgramDataBaseFile>D:/AA_LEARN_CODING/LearnOpenGL/BlackPearl-Rendering-Engine/BlackPearl/vendor/assimp_build/bin/Release/assimp-vc142-mt.pdb</ProgramDataBaseFile>
       <SubSystem>Console</SubSystem>
-      <Version></Version>
     </Link>
     <ProjectReference>
       <LinkLibraryDependencies>false</LinkLibraryDependencies>
     </ProjectReference>
   </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>F:\OpenGL\assimp-4.1.0\.;F:\OpenGL\assimp-4.1.0\include;F:\OpenGL\assimp_build;F:\OpenGL\assimp_build\include;F:\OpenGL\assimp-4.1.0\contrib\zlib;F:\OpenGL\assimp_build\contrib\zlib;F:\OpenGL\assimp-4.1.0\code\..\contrib\rapidjson\include;F:\OpenGL\assimp-4.1.0\code\..\contrib;F:\OpenGL\assimp-4.1.0\code\..\contrib\unzip;F:\OpenGL\assimp-4.1.0\contrib\irrXML;F:\OpenGL\assimp-4.1.0\code\..\contrib\openddlparser\include;F:\OpenGL\assimp-4.1.0\code\..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <AssemblerListingLocation>MinSizeRel/</AssemblerListingLocation>
-      <CompileAs>CompileAsCpp</CompileAs>
+      <AdditionalIncludeDirectories>D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp_build\include;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp_build;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\include;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\.;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\contrib\zlib;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp_build\contrib\zlib;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\..\contrib\pugixml\src;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\..\contrib\rapidjson\include;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\..\contrib;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\..\contrib\unzip;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\..\contrib\openddlparser\include;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\..\include;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp_build\code\..\include;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /bigobj</AdditionalOptions>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <DisableSpecificWarnings>4244</DisableSpecificWarnings>
       <ExceptionHandling>Sync</ExceptionHandling>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -182,17 +192,20 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
-      <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;WIN32_LEAN_AND_MEAN;OPENDDL_NO_USE_CPP11;ASSIMP_BUILD_NO_C4D_IMPORTER;ASSIMP_IMPORTER_GLTF_USE_OPEN3DGC=1;ASSIMP_BUILD_DLL_EXPORT;_SCL_SECURE_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;OPENDDLPARSER_BUILD;CMAKE_INTDIR="MinSizeRel";assimp_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <TreatWarningAsError>true</TreatWarningAsError>
+      <UseFullPaths>false</UseFullPaths>
+      <WarningLevel>Level4</WarningLevel>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;ASSIMP_BUILD_DLL_EXPORT;ASSIMP_BUILD_NO_M3D_IMPORTER;ASSIMP_BUILD_NO_M3D_EXPORTER;WIN32_LEAN_AND_MEAN;UNICODE;_UNICODE;ASSIMP_BUILD_NO_C4D_IMPORTER;MINIZ_USE_UNALIGNED_LOADS_AND_STORES=0;ASSIMP_IMPORTER_GLTF_USE_OPEN3DGC=1;RAPIDJSON_HAS_STDSTRING=1;RAPIDJSON_NOMEMBERITERATORCLASS;_SCL_SECURE_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;OPENDDLPARSER_BUILD;CMAKE_INTDIR="MinSizeRel";assimp_EXPORTS</PreprocessorDefinitions>
       <ObjectFileName>$(IntDir)</ObjectFileName>
-      <DebugInformationFormat></DebugInformationFormat>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
     </ClCompile>
     <ResourceCompile>
-      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;WIN32_LEAN_AND_MEAN;OPENDDL_NO_USE_CPP11;ASSIMP_BUILD_NO_C4D_IMPORTER;ASSIMP_IMPORTER_GLTF_USE_OPEN3DGC=1;ASSIMP_BUILD_DLL_EXPORT;_SCL_SECURE_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;OPENDDLPARSER_BUILD;CMAKE_INTDIR=\"MinSizeRel\";assimp_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>F:\OpenGL\assimp-4.1.0\.;F:\OpenGL\assimp-4.1.0\include;F:\OpenGL\assimp_build;F:\OpenGL\assimp_build\include;F:\OpenGL\assimp-4.1.0\contrib\zlib;F:\OpenGL\assimp_build\contrib\zlib;F:\OpenGL\assimp-4.1.0\code\..\contrib\rapidjson\include;F:\OpenGL\assimp-4.1.0\code\..\contrib;F:\OpenGL\assimp-4.1.0\code\..\contrib\unzip;F:\OpenGL\assimp-4.1.0\contrib\irrXML;F:\OpenGL\assimp-4.1.0\code\..\contrib\openddlparser\include;F:\OpenGL\assimp-4.1.0\code\..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;ASSIMP_BUILD_DLL_EXPORT;ASSIMP_BUILD_NO_M3D_IMPORTER;ASSIMP_BUILD_NO_M3D_EXPORTER;WIN32_LEAN_AND_MEAN;UNICODE;_UNICODE;ASSIMP_BUILD_NO_C4D_IMPORTER;MINIZ_USE_UNALIGNED_LOADS_AND_STORES=0;ASSIMP_IMPORTER_GLTF_USE_OPEN3DGC=1;RAPIDJSON_HAS_STDSTRING=1;RAPIDJSON_NOMEMBERITERATORCLASS;_SCL_SECURE_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;OPENDDLPARSER_BUILD;CMAKE_INTDIR=\"MinSizeRel\";assimp_EXPORTS</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp_build\include;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp_build;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\include;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\.;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\contrib\zlib;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp_build\contrib\zlib;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\..\contrib\pugixml\src;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\..\contrib\rapidjson\include;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\..\contrib;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\..\contrib\unzip;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\..\contrib\openddlparser\include;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\..\include;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp_build\code\..\include;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Midl>
-      <AdditionalIncludeDirectories>F:\OpenGL\assimp-4.1.0\.;F:\OpenGL\assimp-4.1.0\include;F:\OpenGL\assimp_build;F:\OpenGL\assimp_build\include;F:\OpenGL\assimp-4.1.0\contrib\zlib;F:\OpenGL\assimp_build\contrib\zlib;F:\OpenGL\assimp-4.1.0\code\..\contrib\rapidjson\include;F:\OpenGL\assimp-4.1.0\code\..\contrib;F:\OpenGL\assimp-4.1.0\code\..\contrib\unzip;F:\OpenGL\assimp-4.1.0\contrib\irrXML;F:\OpenGL\assimp-4.1.0\code\..\contrib\openddlparser\include;F:\OpenGL\assimp-4.1.0\code\..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp_build\include;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp_build;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\include;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\.;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\contrib\zlib;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp_build\contrib\zlib;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\..\contrib\pugixml\src;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\..\contrib\rapidjson\include;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\..\contrib;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\..\contrib\unzip;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\..\contrib\openddlparser\include;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\..\include;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp_build\code\..\include;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
       <HeaderFileName>%(Filename).h</HeaderFileName>
       <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
@@ -200,26 +213,26 @@
       <ProxyFileName>%(Filename)_p.c</ProxyFileName>
     </Midl>
     <Link>
-      <AdditionalDependencies>..\contrib\zlib\MinSizeRel\zlibstatic.lib;..\contrib\irrXML\MinSizeRel\IrrXML.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalDependencies>..\contrib\zlib\MinSizeRel\zlibstatic.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalOptions>%(AdditionalOptions) /machine:X86</AdditionalOptions>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
-      <ImportLibrary>F:/OpenGL/assimp_build/code/MinSizeRel/assimp-vc140-mt.lib</ImportLibrary>
-      <ProgramDataBaseFile>F:/OpenGL/assimp_build/code/MinSizeRel/assimp-vc140-mt.pdb</ProgramDataBaseFile>
+      <ImportLibrary>D:/AA_LEARN_CODING/LearnOpenGL/BlackPearl-Rendering-Engine/BlackPearl/vendor/assimp_build/lib/MinSizeRel/assimp-vc142-mt.lib</ImportLibrary>
+      <ProgramDataBaseFile>D:/AA_LEARN_CODING/LearnOpenGL/BlackPearl-Rendering-Engine/BlackPearl/vendor/assimp_build/bin/MinSizeRel/assimp-vc142-mt.pdb</ProgramDataBaseFile>
       <SubSystem>Console</SubSystem>
-      <Version></Version>
     </Link>
     <ProjectReference>
       <LinkLibraryDependencies>false</LinkLibraryDependencies>
     </ProjectReference>
   </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>F:\OpenGL\assimp-4.1.0\.;F:\OpenGL\assimp-4.1.0\include;F:\OpenGL\assimp_build;F:\OpenGL\assimp_build\include;F:\OpenGL\assimp-4.1.0\contrib\zlib;F:\OpenGL\assimp_build\contrib\zlib;F:\OpenGL\assimp-4.1.0\code\..\contrib\rapidjson\include;F:\OpenGL\assimp-4.1.0\code\..\contrib;F:\OpenGL\assimp-4.1.0\code\..\contrib\unzip;F:\OpenGL\assimp-4.1.0\contrib\irrXML;F:\OpenGL\assimp-4.1.0\code\..\contrib\openddlparser\include;F:\OpenGL\assimp-4.1.0\code\..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <AssemblerListingLocation>RelWithDebInfo/</AssemblerListingLocation>
-      <CompileAs>CompileAsCpp</CompileAs>
+      <AdditionalIncludeDirectories>D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp_build\include;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp_build;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\include;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\.;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\contrib\zlib;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp_build\contrib\zlib;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\..\contrib\pugixml\src;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\..\contrib\rapidjson\include;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\..\contrib;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\..\contrib\unzip;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\..\contrib\openddlparser\include;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\..\include;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp_build\code\..\include;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /bigobj</AdditionalOptions>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DisableSpecificWarnings>4244</DisableSpecificWarnings>
       <ExceptionHandling>Sync</ExceptionHandling>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -227,16 +240,18 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
-      <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;WIN32_LEAN_AND_MEAN;OPENDDL_NO_USE_CPP11;ASSIMP_BUILD_NO_C4D_IMPORTER;ASSIMP_IMPORTER_GLTF_USE_OPEN3DGC=1;ASSIMP_BUILD_DLL_EXPORT;_SCL_SECURE_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;OPENDDLPARSER_BUILD;CMAKE_INTDIR="RelWithDebInfo";assimp_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <TreatWarningAsError>true</TreatWarningAsError>
+      <UseFullPaths>false</UseFullPaths>
+      <WarningLevel>Level4</WarningLevel>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;ASSIMP_BUILD_DLL_EXPORT;ASSIMP_BUILD_NO_M3D_IMPORTER;ASSIMP_BUILD_NO_M3D_EXPORTER;WIN32_LEAN_AND_MEAN;UNICODE;_UNICODE;ASSIMP_BUILD_NO_C4D_IMPORTER;MINIZ_USE_UNALIGNED_LOADS_AND_STORES=0;ASSIMP_IMPORTER_GLTF_USE_OPEN3DGC=1;RAPIDJSON_HAS_STDSTRING=1;RAPIDJSON_NOMEMBERITERATORCLASS;_SCL_SECURE_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;OPENDDLPARSER_BUILD;CMAKE_INTDIR="RelWithDebInfo";assimp_EXPORTS</PreprocessorDefinitions>
       <ObjectFileName>$(IntDir)</ObjectFileName>
     </ClCompile>
     <ResourceCompile>
-      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;WIN32_LEAN_AND_MEAN;OPENDDL_NO_USE_CPP11;ASSIMP_BUILD_NO_C4D_IMPORTER;ASSIMP_IMPORTER_GLTF_USE_OPEN3DGC=1;ASSIMP_BUILD_DLL_EXPORT;_SCL_SECURE_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;OPENDDLPARSER_BUILD;CMAKE_INTDIR=\"RelWithDebInfo\";assimp_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>F:\OpenGL\assimp-4.1.0\.;F:\OpenGL\assimp-4.1.0\include;F:\OpenGL\assimp_build;F:\OpenGL\assimp_build\include;F:\OpenGL\assimp-4.1.0\contrib\zlib;F:\OpenGL\assimp_build\contrib\zlib;F:\OpenGL\assimp-4.1.0\code\..\contrib\rapidjson\include;F:\OpenGL\assimp-4.1.0\code\..\contrib;F:\OpenGL\assimp-4.1.0\code\..\contrib\unzip;F:\OpenGL\assimp-4.1.0\contrib\irrXML;F:\OpenGL\assimp-4.1.0\code\..\contrib\openddlparser\include;F:\OpenGL\assimp-4.1.0\code\..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;ASSIMP_BUILD_DLL_EXPORT;ASSIMP_BUILD_NO_M3D_IMPORTER;ASSIMP_BUILD_NO_M3D_EXPORTER;WIN32_LEAN_AND_MEAN;UNICODE;_UNICODE;ASSIMP_BUILD_NO_C4D_IMPORTER;MINIZ_USE_UNALIGNED_LOADS_AND_STORES=0;ASSIMP_IMPORTER_GLTF_USE_OPEN3DGC=1;RAPIDJSON_HAS_STDSTRING=1;RAPIDJSON_NOMEMBERITERATORCLASS;_SCL_SECURE_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;OPENDDLPARSER_BUILD;CMAKE_INTDIR=\"RelWithDebInfo\";assimp_EXPORTS</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp_build\include;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp_build;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\include;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\.;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\contrib\zlib;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp_build\contrib\zlib;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\..\contrib\pugixml\src;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\..\contrib\rapidjson\include;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\..\contrib;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\..\contrib\unzip;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\..\contrib\openddlparser\include;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\..\include;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp_build\code\..\include;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Midl>
-      <AdditionalIncludeDirectories>F:\OpenGL\assimp-4.1.0\.;F:\OpenGL\assimp-4.1.0\include;F:\OpenGL\assimp_build;F:\OpenGL\assimp_build\include;F:\OpenGL\assimp-4.1.0\contrib\zlib;F:\OpenGL\assimp_build\contrib\zlib;F:\OpenGL\assimp-4.1.0\code\..\contrib\rapidjson\include;F:\OpenGL\assimp-4.1.0\code\..\contrib;F:\OpenGL\assimp-4.1.0\code\..\contrib\unzip;F:\OpenGL\assimp-4.1.0\contrib\irrXML;F:\OpenGL\assimp-4.1.0\code\..\contrib\openddlparser\include;F:\OpenGL\assimp-4.1.0\code\..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp_build\include;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp_build;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\include;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\.;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\contrib\zlib;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp_build\contrib\zlib;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\..\contrib\pugixml\src;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\..\contrib\rapidjson\include;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\..\contrib;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\..\contrib\unzip;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\..\contrib\openddlparser\include;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\..\include;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp_build\code\..\include;D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
       <HeaderFileName>%(Filename).h</HeaderFileName>
       <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
@@ -244,25 +259,25 @@
       <ProxyFileName>%(Filename)_p.c</ProxyFileName>
     </Midl>
     <Link>
-      <AdditionalDependencies>..\contrib\zlib\RelWithDebInfo\zlibstatic.lib;..\contrib\irrXML\RelWithDebInfo\IrrXML.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalDependencies>..\contrib\zlib\RelWithDebInfo\zlibstatic.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalOptions>%(AdditionalOptions) /machine:X86</AdditionalOptions>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
-      <ImportLibrary>F:/OpenGL/assimp_build/code/RelWithDebInfo/assimp-vc140-mt.lib</ImportLibrary>
-      <ProgramDataBaseFile>F:/OpenGL/assimp_build/code/RelWithDebInfo/assimp-vc140-mt.pdb</ProgramDataBaseFile>
+      <ImportLibrary>D:/AA_LEARN_CODING/LearnOpenGL/BlackPearl-Rendering-Engine/BlackPearl/vendor/assimp_build/lib/RelWithDebInfo/assimp-vc142-mt.lib</ImportLibrary>
+      <ProgramDataBaseFile>D:/AA_LEARN_CODING/LearnOpenGL/BlackPearl-Rendering-Engine/BlackPearl/vendor/assimp_build/bin/RelWithDebInfo/assimp-vc142-mt.pdb</ProgramDataBaseFile>
       <SubSystem>Console</SubSystem>
-      <Version></Version>
     </Link>
     <ProjectReference>
       <LinkLibraryDependencies>false</LinkLibraryDependencies>
     </ProjectReference>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <CustomBuild Include="F:\OpenGL\assimp-4.1.0\code\CMakeLists.txt">
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Building Custom Rule F:/OpenGL/assimp-4.1.0/code/CMakeLists.txt</Message>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">setlocal
-E:\CMake\bin\cmake.exe -HF:/OpenGL/assimp-4.1.0 -BF:/OpenGL/assimp_build --check-stamp-file F:/OpenGL/assimp_build/code/CMakeFiles/generate.stamp
+    <CustomBuild Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\CMakeLists.txt">
+      <UseUtf8Encoding>Always</UseUtf8Encoding>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Building Custom Rule D:/AA_LEARN_CODING/LearnOpenGL/BlackPearl-Rendering-Engine/BlackPearl/vendor/assimp/code/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">setlocal
+D:\CMaake\bin\cmake.exe -SD:/AA_LEARN_CODING/LearnOpenGL/BlackPearl-Rendering-Engine/BlackPearl/vendor/assimp -BD:/AA_LEARN_CODING/LearnOpenGL/BlackPearl-Rendering-Engine/BlackPearl/vendor/assimp_build --check-stamp-file D:/AA_LEARN_CODING/LearnOpenGL/BlackPearl-Rendering-Engine/BlackPearl/vendor/assimp_build/code/CMakeFiles/generate.stamp
 if %errorlevel% neq 0 goto :cmEnd
 :cmEnd
 endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
@@ -270,12 +285,12 @@ endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
 exit /b %1
 :cmDone
 if %errorlevel% neq 0 goto :VCEnd</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">F:/OpenGL/assimp-4.1.0/code/CMakeLists.txt;F:\OpenGL\assimp-4.1.0\code\CMakeLists.txt;F:\OpenGL\assimp-4.1.0\cmake-modules\FindRT.cmake;E:\CMake\share\cmake-3.9\Modules\FindPackageHandleStandardArgs.cmake;E:\CMake\share\cmake-3.9\Modules\FindPackageMessage.cmake;F:\OpenGL\assimp-4.1.0\code\CMakeLists.txt;%(AdditionalInputs)</AdditionalInputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">F:\OpenGL\assimp_build\code\CMakeFiles\generate.stamp</Outputs>
-      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</LinkObjects>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Building Custom Rule F:/OpenGL/assimp-4.1.0/code/CMakeLists.txt</Message>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">setlocal
-E:\CMake\bin\cmake.exe -HF:/OpenGL/assimp-4.1.0 -BF:/OpenGL/assimp_build --check-stamp-file F:/OpenGL/assimp_build/code/CMakeFiles/generate.stamp
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp_build\code\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Building Custom Rule D:/AA_LEARN_CODING/LearnOpenGL/BlackPearl-Rendering-Engine/BlackPearl/vendor/assimp/code/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">setlocal
+D:\CMaake\bin\cmake.exe -SD:/AA_LEARN_CODING/LearnOpenGL/BlackPearl-Rendering-Engine/BlackPearl/vendor/assimp -BD:/AA_LEARN_CODING/LearnOpenGL/BlackPearl-Rendering-Engine/BlackPearl/vendor/assimp_build --check-stamp-file D:/AA_LEARN_CODING/LearnOpenGL/BlackPearl-Rendering-Engine/BlackPearl/vendor/assimp_build/code/CMakeFiles/generate.stamp
 if %errorlevel% neq 0 goto :cmEnd
 :cmEnd
 endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
@@ -283,12 +298,12 @@ endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
 exit /b %1
 :cmDone
 if %errorlevel% neq 0 goto :VCEnd</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">F:/OpenGL/assimp-4.1.0/code/CMakeLists.txt;F:\OpenGL\assimp-4.1.0\code\CMakeLists.txt;F:\OpenGL\assimp-4.1.0\cmake-modules\FindRT.cmake;E:\CMake\share\cmake-3.9\Modules\FindPackageHandleStandardArgs.cmake;E:\CMake\share\cmake-3.9\Modules\FindPackageMessage.cmake;F:\OpenGL\assimp-4.1.0\code\CMakeLists.txt;%(AdditionalInputs)</AdditionalInputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">F:\OpenGL\assimp_build\code\CMakeFiles\generate.stamp</Outputs>
-      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkObjects>
-      <Message Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">Building Custom Rule F:/OpenGL/assimp-4.1.0/code/CMakeLists.txt</Message>
-      <Command Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">setlocal
-E:\CMake\bin\cmake.exe -HF:/OpenGL/assimp-4.1.0 -BF:/OpenGL/assimp_build --check-stamp-file F:/OpenGL/assimp_build/code/CMakeFiles/generate.stamp
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp_build\code\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">Building Custom Rule D:/AA_LEARN_CODING/LearnOpenGL/BlackPearl-Rendering-Engine/BlackPearl/vendor/assimp/code/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">setlocal
+D:\CMaake\bin\cmake.exe -SD:/AA_LEARN_CODING/LearnOpenGL/BlackPearl-Rendering-Engine/BlackPearl/vendor/assimp -BD:/AA_LEARN_CODING/LearnOpenGL/BlackPearl-Rendering-Engine/BlackPearl/vendor/assimp_build --check-stamp-file D:/AA_LEARN_CODING/LearnOpenGL/BlackPearl-Rendering-Engine/BlackPearl/vendor/assimp_build/code/CMakeFiles/generate.stamp
 if %errorlevel% neq 0 goto :cmEnd
 :cmEnd
 endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
@@ -296,12 +311,12 @@ endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
 exit /b %1
 :cmDone
 if %errorlevel% neq 0 goto :VCEnd</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">F:/OpenGL/assimp-4.1.0/code/CMakeLists.txt;F:\OpenGL\assimp-4.1.0\code\CMakeLists.txt;F:\OpenGL\assimp-4.1.0\cmake-modules\FindRT.cmake;E:\CMake\share\cmake-3.9\Modules\FindPackageHandleStandardArgs.cmake;E:\CMake\share\cmake-3.9\Modules\FindPackageMessage.cmake;F:\OpenGL\assimp-4.1.0\code\CMakeLists.txt;%(AdditionalInputs)</AdditionalInputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">F:\OpenGL\assimp_build\code\CMakeFiles\generate.stamp</Outputs>
-      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">false</LinkObjects>
-      <Message Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">Building Custom Rule F:/OpenGL/assimp-4.1.0/code/CMakeLists.txt</Message>
-      <Command Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">setlocal
-E:\CMake\bin\cmake.exe -HF:/OpenGL/assimp-4.1.0 -BF:/OpenGL/assimp_build --check-stamp-file F:/OpenGL/assimp_build/code/CMakeFiles/generate.stamp
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp_build\code\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">Building Custom Rule D:/AA_LEARN_CODING/LearnOpenGL/BlackPearl-Rendering-Engine/BlackPearl/vendor/assimp/code/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">setlocal
+D:\CMaake\bin\cmake.exe -SD:/AA_LEARN_CODING/LearnOpenGL/BlackPearl-Rendering-Engine/BlackPearl/vendor/assimp -BD:/AA_LEARN_CODING/LearnOpenGL/BlackPearl-Rendering-Engine/BlackPearl/vendor/assimp_build --check-stamp-file D:/AA_LEARN_CODING/LearnOpenGL/BlackPearl-Rendering-Engine/BlackPearl/vendor/assimp_build/code/CMakeFiles/generate.stamp
 if %errorlevel% neq 0 goto :cmEnd
 :cmEnd
 endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
@@ -309,547 +324,600 @@ endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
 exit /b %1
 :cmDone
 if %errorlevel% neq 0 goto :VCEnd</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">F:/OpenGL/assimp-4.1.0/code/CMakeLists.txt;F:\OpenGL\assimp-4.1.0\code\CMakeLists.txt;F:\OpenGL\assimp-4.1.0\cmake-modules\FindRT.cmake;E:\CMake\share\cmake-3.9\Modules\FindPackageHandleStandardArgs.cmake;E:\CMake\share\cmake-3.9\Modules\FindPackageMessage.cmake;F:\OpenGL\assimp-4.1.0\code\CMakeLists.txt;%(AdditionalInputs)</AdditionalInputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">F:\OpenGL\assimp_build\code\CMakeFiles\generate.stamp</Outputs>
-      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">false</LinkObjects>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp_build\code\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">false</LinkObjects>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\Assimp.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\fast_atof.h" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\qnan.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\BaseImporter.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\BaseImporter.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\BaseProcess.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\BaseProcess.h" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\Importer.h" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\ScenePrivate.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\PostStepRegistry.cpp"  />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\ImporterRegistry.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\ByteSwapper.h" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\DefaultProgressHandler.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\DefaultIOStream.cpp"  />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\DefaultIOSystem.cpp"  />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\CInterfaceIOWrapper.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\CInterfaceIOWrapper.h" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\Hash.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\Importer.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\IFF.h" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\MemoryIOWrapper.h" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\ParsingUtils.h" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\StreamReader.h" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\StreamWriter.h" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\StringComparison.h" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\StringUtils.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\SGSpatialSort.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\SGSpatialSort.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\VertexTriangleAdjacency.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\VertexTriangleAdjacency.h" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\GenericProperty.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\SpatialSort.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\SpatialSort.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\SceneCombiner.cpp"  />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\ScenePreprocessor.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\ScenePreprocessor.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\SkeletonMeshBuilder.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\SkeletonMeshBuilder.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\SplitByBoneCountProcess.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\SplitByBoneCountProcess.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\ScaleProcess.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\ScaleProcess.h" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\SmoothingGroups.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\StandardShapes.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\StandardShapes.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\TargetAnimation.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\TargetAnimation.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\RemoveComments.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\RemoveComments.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\Subdivision.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\Subdivision.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\scene.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\Vertex.h" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\LineSplitter.h" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\TinyFormatter.h" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\Profiler.h" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\LogAux.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\Bitmap.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\Bitmap.h" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\XMLTools.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\Version.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\IOStreamBuffer.h" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\CreateAnimMesh.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\CreateAnimMesh.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\include\assimp\DefaultLogger.hpp" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\include\assimp\LogStream.hpp" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\include\assimp\Logger.hpp" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\include\assimp\NullLogger.hpp" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\Win32DebugLogStream.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\DefaultLogger.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\FileLogStream.h" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\StdOStreamLogStream.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\Exporter.cpp"  />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\AssimpCExport.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\BlobIOSystem.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\CalcTangentsProcess.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\CalcTangentsProcess.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\ComputeUVMappingProcess.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\ComputeUVMappingProcess.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\ConvertToLHProcess.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\ConvertToLHProcess.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\FindDegenerates.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\FindDegenerates.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\FindInstancesProcess.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\FindInstancesProcess.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\FindInvalidDataProcess.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\FindInvalidDataProcess.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\FixNormalsStep.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\FixNormalsStep.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\GenFaceNormalsProcess.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\GenFaceNormalsProcess.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\GenVertexNormalsProcess.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\GenVertexNormalsProcess.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\PretransformVertices.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\PretransformVertices.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\ImproveCacheLocality.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\ImproveCacheLocality.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\JoinVerticesProcess.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\JoinVerticesProcess.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\LimitBoneWeightsProcess.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\LimitBoneWeightsProcess.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\RemoveRedundantMaterials.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\RemoveRedundantMaterials.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\RemoveVCProcess.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\RemoveVCProcess.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\SortByPTypeProcess.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\SortByPTypeProcess.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\SplitLargeMeshes.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\SplitLargeMeshes.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\TextureTransform.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\TextureTransform.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\TriangulateProcess.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\TriangulateProcess.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\ValidateDataStructure.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\ValidateDataStructure.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\OptimizeGraph.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\OptimizeGraph.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\OptimizeMeshes.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\OptimizeMeshes.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\DeboneProcess.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\DeboneProcess.h" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\ProcessHelper.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\ProcessHelper.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\PolyTools.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\MakeVerboseFormat.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\MakeVerboseFormat.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\MaterialSystem.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\MaterialSystem.h" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\StepExporter.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\StepExporter.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\AMFImporter.hpp" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\AMFImporter_Macro.hpp" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\AMFImporter_Node.hpp" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\AMFImporter.cpp"  />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\AMFImporter_Geometry.cpp"  />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\AMFImporter_Material.cpp"  />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\AMFImporter_Postprocess.cpp"  />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\3DSConverter.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\3DSHelper.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\3DSLoader.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\3DSLoader.h" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\3DSExporter.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\3DSExporter.cpp"  />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\ACLoader.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\ACLoader.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\ASELoader.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\ASELoader.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\ASEParser.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\ASEParser.h" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\AssbinExporter.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\AssbinExporter.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\AssbinLoader.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\AssbinLoader.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\AssxmlExporter.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\AssxmlExporter.cpp"  />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\B3DImporter.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\B3DImporter.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\BVHLoader.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\BVHLoader.h" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\ColladaHelper.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\ColladaLoader.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\ColladaLoader.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\ColladaParser.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\ColladaParser.h" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\ColladaExporter.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\ColladaExporter.cpp"  />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\DXFLoader.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\DXFLoader.h" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\DXFHelper.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\CSMLoader.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\CSMLoader.h" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\HMPFileData.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\HMPLoader.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\HMPLoader.h" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\HalfLifeFileData.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\IRRMeshLoader.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\IRRMeshLoader.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\IRRShared.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\IRRShared.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\IRRLoader.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\IRRLoader.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\LWOAnimation.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\LWOAnimation.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\LWOBLoader.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\LWOFileData.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\LWOLoader.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\LWOLoader.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\LWOMaterial.cpp"  />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\LWSLoader.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\LWSLoader.h" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\MD2FileData.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\MD2Loader.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\MD2Loader.h" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\MD2NormalTable.h" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\MD3FileData.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\MD3Loader.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\MD3Loader.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\MD5Loader.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\MD5Loader.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\MD5Parser.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\MD5Parser.h" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\MDCFileData.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\MDCLoader.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\MDCLoader.h" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\MDCNormalTable.h" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\MDLDefaultColorMap.h" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\MDLFileData.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\MDLLoader.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\MDLLoader.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\MDLMaterialLoader.cpp"  />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\NFFLoader.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\NFFLoader.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\NDOLoader.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\NDOLoader.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\OFFLoader.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\OFFLoader.h" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\ObjFileData.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\ObjFileImporter.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\ObjFileImporter.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\ObjFileMtlImporter.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\ObjFileMtlImporter.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\ObjFileParser.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\ObjFileParser.h" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\ObjTools.h" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\ObjExporter.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\ObjExporter.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\OgreImporter.h" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\OgreStructs.h" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\OgreParsingUtils.h" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\OgreBinarySerializer.h" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\OgreXmlSerializer.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\OgreImporter.cpp"  />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\OgreStructs.cpp"  />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\OgreBinarySerializer.cpp"  />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\OgreXmlSerializer.cpp"  />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\OgreMaterial.cpp"  />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\OpenGEXExporter.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\OpenGEXExporter.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\OpenGEXImporter.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\OpenGEXImporter.h" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\OpenGEXStructs.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\PlyLoader.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\PlyLoader.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\PlyParser.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\PlyParser.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\PlyExporter.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\PlyExporter.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\MS3DLoader.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\MS3DLoader.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\COBLoader.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\COBLoader.h" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\COBScene.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\BlenderLoader.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\BlenderLoader.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\BlenderDNA.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\BlenderDNA.h" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\BlenderDNA.inl" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\BlenderScene.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\BlenderScene.h" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\BlenderSceneGen.h" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\BlenderIntermediate.h" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\BlenderModifier.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\BlenderModifier.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\BlenderBMesh.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\BlenderBMesh.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\BlenderTessellator.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\BlenderTessellator.cpp"  />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\IFCLoader.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\IFCLoader.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\IFCReaderGen1.cpp" >
-      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(AdditionalOptions) /bigobj</AdditionalOptions>
-      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(AdditionalOptions) /bigobj</AdditionalOptions>
-      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">%(AdditionalOptions) /bigobj</AdditionalOptions>
-      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">%(AdditionalOptions) /bigobj</AdditionalOptions>
-    </ClCompile>
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\IFCReaderGen2.cpp" >
-      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(AdditionalOptions) /bigobj</AdditionalOptions>
-      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(AdditionalOptions) /bigobj</AdditionalOptions>
-      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">%(AdditionalOptions) /bigobj</AdditionalOptions>
-      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">%(AdditionalOptions) /bigobj</AdditionalOptions>
-    </ClCompile>
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\IFCReaderGen.h" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\IFCUtil.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\IFCUtil.cpp"  />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\IFCGeometry.cpp"  />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\IFCMaterial.cpp"  />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\IFCProfile.cpp"  />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\IFCCurve.cpp"  />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\IFCBoolean.cpp"  />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\IFCOpenings.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\STEPFile.h" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\STEPFileReader.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\STEPFileReader.cpp"  />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\STEPFileEncoding.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\STEPFileEncoding.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\XGLLoader.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\XGLLoader.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\FBXImporter.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\FBXCompileConfig.h" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\FBXImporter.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\FBXParser.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\FBXParser.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\FBXTokenizer.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\FBXTokenizer.h" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\FBXImportSettings.h" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\FBXConverter.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\FBXConverter.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\FBXUtil.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\FBXUtil.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\FBXDocument.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\FBXDocument.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\FBXProperties.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\FBXProperties.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\FBXMeshGeometry.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\FBXMeshGeometry.cpp"  />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\FBXMaterial.cpp"  />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\FBXModel.cpp"  />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\FBXAnimation.cpp"  />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\FBXNodeAttribute.cpp"  />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\FBXDeformer.cpp"  />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\FBXBinaryTokenizer.cpp"  />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\FBXDocumentUtil.cpp"  />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\Q3DLoader.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\Q3DLoader.h" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\Q3BSPFileData.h" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\Q3BSPFileParser.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\Q3BSPFileParser.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\Q3BSPFileImporter.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\Q3BSPFileImporter.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\Q3BSPZipArchive.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\Q3BSPZipArchive.cpp"  />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\RawLoader.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\RawLoader.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\SIBImporter.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\SIBImporter.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\SMDLoader.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\SMDLoader.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\STLLoader.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\STLLoader.h" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\STLExporter.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\STLExporter.cpp"  />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\TerragenLoader.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\TerragenLoader.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\UnrealLoader.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\UnrealLoader.h" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\XFileHelper.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\XFileImporter.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\XFileImporter.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\XFileParser.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\XFileParser.h" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\XFileExporter.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\XFileExporter.cpp"  />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\X3DExporter.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\X3DExporter.hpp" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\X3DImporter.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\X3DImporter.hpp" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\X3DImporter_Geometry2D.cpp"  />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\X3DImporter_Geometry3D.cpp"  />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\X3DImporter_Group.cpp"  />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\X3DImporter_Light.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\X3DImporter_Macro.hpp" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\X3DImporter_Metadata.cpp"  />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\X3DImporter_Networking.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\X3DImporter_Node.hpp" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\X3DImporter_Postprocess.cpp"  />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\X3DImporter_Rendering.cpp"  />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\X3DImporter_Shape.cpp"  />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\X3DImporter_Texturing.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\FIReader.hpp" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\FIReader.cpp"  />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\X3DVocabulary.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\glTFAsset.h" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\glTFAsset.inl" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\glTFAssetWriter.h" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\glTFAssetWriter.inl" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\glTFImporter.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\glTFImporter.h" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\glTFExporter.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\glTFExporter.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\glTF2Asset.h" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\glTF2Asset.inl" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\glTF2AssetWriter.h" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\glTF2AssetWriter.inl" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\glTF2Importer.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\glTF2Importer.h" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\glTF2Exporter.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\glTF2Exporter.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\D3MFImporter.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\D3MFImporter.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\D3MFExporter.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\D3MFExporter.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\D3MFOpcPackage.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\D3MFOpcPackage.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\3MFXmlTags.h" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\MMDCpp14.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\MMDImporter.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\MMDImporter.h" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\MMDPmdParser.h" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\MMDPmxParser.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\MMDPmxParser.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\MMDVmdParser.h" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\code\irrXMLWrapper.h" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\contrib\unzip\crypt.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\contrib\unzip\ioapi.c" >
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsC</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CompileAsC</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">CompileAsC</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">CompileAsC</CompileAs>
-    </ClCompile>
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\contrib\unzip\ioapi.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\contrib\unzip\unzip.c" >
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsC</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CompileAsC</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">CompileAsC</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">CompileAsC</CompileAs>
-    </ClCompile>
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\contrib\unzip\unzip.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\contrib\poly2tri\poly2tri\common\shapes.cc"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\contrib\poly2tri\poly2tri\common\shapes.h" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\contrib\poly2tri\poly2tri\common\utils.h" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\contrib\poly2tri\poly2tri\sweep\advancing_front.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\contrib\poly2tri\poly2tri\sweep\advancing_front.cc"  />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\contrib\poly2tri\poly2tri\sweep\cdt.cc"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\contrib\poly2tri\poly2tri\sweep\cdt.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\contrib\poly2tri\poly2tri\sweep\sweep.cc"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\contrib\poly2tri\poly2tri\sweep\sweep.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\contrib\poly2tri\poly2tri\sweep\sweep_context.cc"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\contrib\poly2tri\poly2tri\sweep\sweep_context.h" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\contrib\clipper\clipper.hpp" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\contrib\clipper\clipper.cpp"  />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\contrib\openddlparser\code\OpenDDLParser.cpp"  />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\contrib\openddlparser\code\DDLNode.cpp"  />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\contrib\openddlparser\code\OpenDDLCommon.cpp"  />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\contrib\openddlparser\code\OpenDDLExport.cpp"  />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\contrib\openddlparser\code\Value.cpp"  />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\contrib\openddlparser\code\OpenDDLStream.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\contrib\openddlparser\include\openddlparser\OpenDDLParser.h" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\contrib\openddlparser\include\openddlparser\OpenDDLParserUtils.h" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\contrib\openddlparser\include\openddlparser\OpenDDLCommon.h" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\contrib\openddlparser\include\openddlparser\OpenDDLExport.h" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\contrib\openddlparser\include\openddlparser\OpenDDLStream.h" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\contrib\openddlparser\include\openddlparser\DDLNode.h" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\contrib\openddlparser\include\openddlparser\Value.h" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\contrib\Open3DGC\o3dgcAdjacencyInfo.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\contrib\Open3DGC\o3dgcArithmeticCodec.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\contrib\Open3DGC\o3dgcArithmeticCodec.h" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\contrib\Open3DGC\o3dgcBinaryStream.h" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\contrib\Open3DGC\o3dgcCommon.h" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\contrib\Open3DGC\o3dgcDVEncodeParams.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\contrib\Open3DGC\o3dgcDynamicVectorDecoder.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\contrib\Open3DGC\o3dgcDynamicVectorDecoder.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\contrib\Open3DGC\o3dgcDynamicVectorEncoder.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\contrib\Open3DGC\o3dgcDynamicVectorEncoder.h" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\contrib\Open3DGC\o3dgcDynamicVector.h" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\contrib\Open3DGC\o3dgcFIFO.h" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\contrib\Open3DGC\o3dgcIndexedFaceSet.h" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\contrib\Open3DGC\o3dgcIndexedFaceSet.inl" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\contrib\Open3DGC\o3dgcSC3DMCDecoder.h" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\contrib\Open3DGC\o3dgcSC3DMCDecoder.inl" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\contrib\Open3DGC\o3dgcSC3DMCEncodeParams.h" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\contrib\Open3DGC\o3dgcSC3DMCEncoder.h" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\contrib\Open3DGC\o3dgcSC3DMCEncoder.inl" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\contrib\Open3DGC\o3dgcTimer.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\contrib\Open3DGC\o3dgcTools.cpp"  />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\contrib\Open3DGC\o3dgcTriangleFans.cpp"  />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\contrib\Open3DGC\o3dgcTriangleFans.h" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\contrib\Open3DGC\o3dgcTriangleListDecoder.h" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\contrib\Open3DGC\o3dgcTriangleListDecoder.inl" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\contrib\Open3DGC\o3dgcTriangleListEncoder.h" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\contrib\Open3DGC\o3dgcTriangleListEncoder.inl" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\contrib\Open3DGC\o3dgcVector.h" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\contrib\Open3DGC\o3dgcVector.inl" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\contrib\zip\src\miniz.h" />
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\contrib\zip\src\zip.c" >
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsC</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CompileAsC</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">CompileAsC</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">CompileAsC</CompileAs>
-    </ClCompile>
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\contrib\zip\src\zip.h" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\include\assimp\anim.h" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\include\assimp\ai_assert.h" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\include\assimp\camera.h" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\include\assimp\color4.h" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\include\assimp\color4.inl" />
-    <ClInclude Include="F:\OpenGL\assimp_build\include\assimp\config.h" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\include\assimp\defs.h" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\include\assimp\Defines.h" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\include\assimp\cfileio.h" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\include\assimp\light.h" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\include\assimp\material.h" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\include\assimp\material.inl" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\include\assimp\matrix3x3.h" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\include\assimp\matrix3x3.inl" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\include\assimp\matrix4x4.h" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\include\assimp\matrix4x4.inl" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\include\assimp\mesh.h" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\include\assimp\postprocess.h" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\include\assimp\quaternion.h" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\include\assimp\quaternion.inl" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\include\assimp\scene.h" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\include\assimp\metadata.h" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\include\assimp\texture.h" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\include\assimp\types.h" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\include\assimp\vector2.h" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\include\assimp\vector2.inl" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\include\assimp\vector3.h" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\include\assimp\vector3.inl" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\include\assimp\version.h" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\include\assimp\cimport.h" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\include\assimp\importerdesc.h" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\include\assimp\Importer.hpp" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\include\assimp\ProgressHandler.hpp" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\include\assimp\IOStream.hpp" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\include\assimp\IOSystem.hpp" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\include\assimp\cexport.h" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\include\assimp\Exporter.hpp" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\include\assimp\DefaultIOStream.h" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\include\assimp\DefaultIOSystem.h" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\include\assimp\SceneCombiner.h" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\include\assimp\Compiler\pushpack1.h" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\include\assimp\Compiler\poppack1.h" />
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\include\assimp\Compiler\pstdint.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\Common\Assimp.cpp" />
+    <ResourceCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\res\assimp.rc" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\CApi\CInterfaceIOWrapper.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\CApi\CInterfaceIOWrapper.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\Common\StbCommon.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\Common\Compression.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\Common\Compression.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\Common\BaseImporter.cpp" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\Common\BaseProcess.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\Common\BaseProcess.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\Common\Importer.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\Common\ScenePrivate.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\Common\PostStepRegistry.cpp" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\Common\ImporterRegistry.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\Common\DefaultProgressHandler.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\Common\DefaultIOStream.cpp" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\Common\IOSystem.cpp" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\Common\DefaultIOSystem.cpp" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\Common\ZipArchiveIOSystem.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\Common\PolyTools.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\Common\Maybe.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\Common\Importer.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\Common\IFF.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\Common\SGSpatialSort.cpp" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\Common\VertexTriangleAdjacency.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\Common\VertexTriangleAdjacency.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\Common\SpatialSort.cpp" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\Common\SceneCombiner.cpp" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\Common\ScenePreprocessor.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\Common\ScenePreprocessor.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\Common\SkeletonMeshBuilder.cpp" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\Common\StandardShapes.cpp" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\Common\TargetAnimation.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\Common\TargetAnimation.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\Common\RemoveComments.cpp" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\Common\Subdivision.cpp" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\Common\scene.cpp" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\Common\Bitmap.cpp" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\Common\Version.cpp" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\Common\CreateAnimMesh.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\Common\simd.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\Common\simd.cpp" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\Common\material.cpp" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\Common\AssertHandler.cpp" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\Common\Exceptional.cpp" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\Common\Base64.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\include\assimp\DefaultLogger.hpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\include\assimp\LogStream.hpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\include\assimp\Logger.hpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\include\assimp\NullLogger.hpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\Common\Win32DebugLogStream.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\Common\DefaultLogger.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\Common\FileLogStream.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\Common\StdOStreamLogStream.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\Common\Exporter.cpp" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\CApi\AssimpCExport.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\include\assimp\BlobIOSystem.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\PostProcessing\CalcTangentsProcess.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\PostProcessing\CalcTangentsProcess.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\PostProcessing\ComputeUVMappingProcess.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\PostProcessing\ComputeUVMappingProcess.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\PostProcessing\ConvertToLHProcess.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\PostProcessing\ConvertToLHProcess.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\PostProcessing\EmbedTexturesProcess.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\PostProcessing\EmbedTexturesProcess.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\PostProcessing\FindDegenerates.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\PostProcessing\FindDegenerates.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\PostProcessing\FindInstancesProcess.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\PostProcessing\FindInstancesProcess.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\PostProcessing\FindInvalidDataProcess.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\PostProcessing\FindInvalidDataProcess.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\PostProcessing\FixNormalsStep.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\PostProcessing\FixNormalsStep.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\PostProcessing\DropFaceNormalsProcess.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\PostProcessing\DropFaceNormalsProcess.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\PostProcessing\GenFaceNormalsProcess.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\PostProcessing\GenFaceNormalsProcess.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\PostProcessing\GenVertexNormalsProcess.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\PostProcessing\GenVertexNormalsProcess.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\PostProcessing\PretransformVertices.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\PostProcessing\PretransformVertices.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\PostProcessing\ImproveCacheLocality.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\PostProcessing\ImproveCacheLocality.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\PostProcessing\JoinVerticesProcess.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\PostProcessing\JoinVerticesProcess.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\PostProcessing\LimitBoneWeightsProcess.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\PostProcessing\LimitBoneWeightsProcess.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\PostProcessing\RemoveRedundantMaterials.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\PostProcessing\RemoveRedundantMaterials.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\PostProcessing\RemoveVCProcess.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\PostProcessing\RemoveVCProcess.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\PostProcessing\SortByPTypeProcess.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\PostProcessing\SortByPTypeProcess.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\PostProcessing\SplitLargeMeshes.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\PostProcessing\SplitLargeMeshes.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\PostProcessing\TextureTransform.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\PostProcessing\TextureTransform.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\PostProcessing\TriangulateProcess.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\PostProcessing\TriangulateProcess.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\PostProcessing\ValidateDataStructure.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\PostProcessing\ValidateDataStructure.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\PostProcessing\OptimizeGraph.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\PostProcessing\OptimizeGraph.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\PostProcessing\OptimizeMeshes.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\PostProcessing\OptimizeMeshes.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\PostProcessing\DeboneProcess.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\PostProcessing\DeboneProcess.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\PostProcessing\ProcessHelper.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\PostProcessing\ProcessHelper.cpp" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\PostProcessing\MakeVerboseFormat.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\PostProcessing\MakeVerboseFormat.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\PostProcessing\ScaleProcess.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\PostProcessing\ScaleProcess.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\PostProcessing\ArmaturePopulate.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\PostProcessing\ArmaturePopulate.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\PostProcessing\GenBoundingBoxesProcess.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\PostProcessing\GenBoundingBoxesProcess.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\PostProcessing\SplitByBoneCountProcess.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\PostProcessing\SplitByBoneCountProcess.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\Material\MaterialSystem.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\Material\MaterialSystem.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\STEPParser\STEPFileReader.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\STEPParser\STEPFileReader.cpp" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\STEPParser\STEPFileEncoding.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\STEPParser\STEPFileEncoding.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\AMF\AMFImporter.hpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\AMF\AMFImporter_Node.hpp" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\AMF\AMFImporter.cpp" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\AMF\AMFImporter_Geometry.cpp" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\AMF\AMFImporter_Material.cpp" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\AMF\AMFImporter_Postprocess.cpp" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\3DS\3DSConverter.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\3DS\3DSHelper.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\3DS\3DSLoader.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\3DS\3DSLoader.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\AC\ACLoader.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\AC\ACLoader.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\ASE\ASELoader.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\ASE\ASELoader.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\ASE\ASEParser.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\ASE\ASEParser.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\Assbin\AssbinLoader.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\Assbin\AssbinLoader.cpp" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\B3D\B3DImporter.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\B3D\B3DImporter.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\BVH\BVHLoader.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\BVH\BVHLoader.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\Collada\ColladaHelper.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\Collada\ColladaHelper.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\Collada\ColladaLoader.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\Collada\ColladaLoader.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\Collada\ColladaParser.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\Collada\ColladaParser.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\DXF\DXFLoader.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\DXF\DXFLoader.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\DXF\DXFHelper.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\CSM\CSMLoader.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\CSM\CSMLoader.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\HMP\HMPFileData.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\HMP\HMPLoader.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\HMP\HMPLoader.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\HMP\HalfLifeFileData.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\Irr\IRRMeshLoader.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\Irr\IRRMeshLoader.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\Irr\IRRShared.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\Irr\IRRShared.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\IQM\IQMImporter.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\IQM\iqm.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\IQM\IQMImporter.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\Irr\IRRLoader.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\Irr\IRRLoader.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\LWO\LWOAnimation.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\LWO\LWOAnimation.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\LWO\LWOBLoader.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\LWO\LWOFileData.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\LWO\LWOLoader.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\LWO\LWOLoader.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\LWO\LWOMaterial.cpp" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\LWS\LWSLoader.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\LWS\LWSLoader.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\M3D\M3DMaterials.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\M3D\M3DImporter.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\M3D\M3DImporter.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\M3D\M3DWrapper.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\M3D\M3DWrapper.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\M3D\m3d.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\MD2\MD2FileData.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\MD2\MD2Loader.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\MD2\MD2Loader.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\MD2\MD2NormalTable.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\MD3\MD3FileData.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\MD3\MD3Loader.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\MD3\MD3Loader.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\MD5\MD5Loader.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\MD5\MD5Loader.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\MD5\MD5Parser.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\MD5\MD5Parser.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\MDC\MDCFileData.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\MDC\MDCLoader.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\MDC\MDCLoader.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\MDC\MDCNormalTable.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\MDL\MDLDefaultColorMap.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\MDL\MDLFileData.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\MDL\MDLLoader.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\MDL\MDLLoader.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\MDL\MDLMaterialLoader.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\MDL\HalfLife\HalfLifeMDLBaseHeader.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\MDL\HalfLife\HL1FileData.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\MDL\HalfLife\HL1MDLLoader.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\MDL\HalfLife\HL1MDLLoader.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\MDL\HalfLife\HL1ImportDefinitions.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\MDL\HalfLife\HL1ImportSettings.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\MDL\HalfLife\HL1MeshTrivert.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\MDL\HalfLife\LogFunctions.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\MDL\HalfLife\UniqueNameGenerator.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\MDL\HalfLife\UniqueNameGenerator.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\NFF\NFFLoader.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\NFF\NFFLoader.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\NDO\NDOLoader.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\NDO\NDOLoader.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\OFF\OFFLoader.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\OFF\OFFLoader.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\Obj\ObjFileData.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\Obj\ObjFileImporter.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\Obj\ObjFileImporter.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\Obj\ObjFileMtlImporter.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\Obj\ObjFileMtlImporter.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\Obj\ObjFileParser.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\Obj\ObjFileParser.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\Obj\ObjTools.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\Ogre\OgreImporter.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\Ogre\OgreStructs.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\Ogre\OgreParsingUtils.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\Ogre\OgreBinarySerializer.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\Ogre\OgreXmlSerializer.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\Ogre\OgreImporter.cpp" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\Ogre\OgreStructs.cpp" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\Ogre\OgreBinarySerializer.cpp" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\Ogre\OgreXmlSerializer.cpp" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\Ogre\OgreMaterial.cpp" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\OpenGEX\OpenGEXImporter.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\OpenGEX\OpenGEXImporter.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\OpenGEX\OpenGEXStructs.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\Ply\PlyLoader.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\Ply\PlyLoader.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\Ply\PlyParser.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\Ply\PlyParser.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\MS3D\MS3DLoader.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\MS3D\MS3DLoader.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\COB\COBLoader.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\COB\COBLoader.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\COB\COBScene.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\Blender\BlenderLoader.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\Blender\BlenderLoader.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\Blender\BlenderDNA.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\Blender\BlenderDNA.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\Blender\BlenderDNA.inl" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\Blender\BlenderScene.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\Blender\BlenderScene.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\Blender\BlenderSceneGen.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\Blender\BlenderIntermediate.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\Blender\BlenderModifier.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\Blender\BlenderModifier.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\Blender\BlenderBMesh.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\Blender\BlenderBMesh.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\Blender\BlenderTessellator.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\Blender\BlenderTessellator.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\Blender\BlenderCustomData.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\Blender\BlenderCustomData.cpp" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\IFC\IFCLoader.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\IFC\IFCLoader.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\IFC\IFCReaderGen1_2x3.cpp" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\IFC\IFCReaderGen2_2x3.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\IFC\IFCReaderGen_2x3.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\IFC\IFCUtil.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\IFC\IFCUtil.cpp" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\IFC\IFCGeometry.cpp" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\IFC\IFCMaterial.cpp" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\IFC\IFCProfile.cpp" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\IFC\IFCCurve.cpp" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\IFC\IFCBoolean.cpp" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\IFC\IFCOpenings.cpp" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\XGL\XGLLoader.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\XGL\XGLLoader.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\FBX\FBXImporter.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\FBX\FBXCompileConfig.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\FBX\FBXImporter.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\FBX\FBXParser.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\FBX\FBXParser.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\FBX\FBXTokenizer.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\FBX\FBXTokenizer.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\FBX\FBXImportSettings.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\FBX\FBXConverter.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\FBX\FBXConverter.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\FBX\FBXUtil.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\FBX\FBXUtil.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\FBX\FBXDocument.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\FBX\FBXDocument.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\FBX\FBXProperties.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\FBX\FBXProperties.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\FBX\FBXMeshGeometry.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\FBX\FBXMeshGeometry.cpp" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\FBX\FBXMaterial.cpp" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\FBX\FBXModel.cpp" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\FBX\FBXAnimation.cpp" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\FBX\FBXNodeAttribute.cpp" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\FBX\FBXDeformer.cpp" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\FBX\FBXBinaryTokenizer.cpp" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\FBX\FBXDocumentUtil.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\FBX\FBXCommon.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\Q3D\Q3DLoader.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\Q3D\Q3DLoader.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\Q3BSP\Q3BSPFileData.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\Q3BSP\Q3BSPFileParser.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\Q3BSP\Q3BSPFileParser.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\Q3BSP\Q3BSPFileImporter.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\Q3BSP\Q3BSPFileImporter.cpp" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\Raw\RawLoader.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\Raw\RawLoader.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\SIB\SIBImporter.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\SIB\SIBImporter.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\SMD\SMDLoader.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\SMD\SMDLoader.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\STL\STLLoader.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\STL\STLLoader.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\Terragen\TerragenLoader.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\Terragen\TerragenLoader.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\Unreal\UnrealLoader.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\Unreal\UnrealLoader.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\X\XFileHelper.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\X\XFileImporter.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\X\XFileImporter.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\X\XFileParser.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\X\XFileParser.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\X3D\X3DImporter.cpp" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\X3D\X3DImporter_Geometry2D.cpp" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\X3D\X3DImporter_Geometry3D.cpp" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\X3D\X3DImporter_Group.cpp" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\X3D\X3DImporter_Light.cpp" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\X3D\X3DImporter_Metadata.cpp" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\X3D\X3DImporter_Networking.cpp" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\X3D\X3DImporter_Postprocess.cpp" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\X3D\X3DImporter_Rendering.cpp" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\X3D\X3DImporter_Shape.cpp" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\X3D\X3DImporter_Texturing.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\X3D\X3DImporter.hpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\X3D\X3DImporter_Macro.hpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\X3D\X3DImporter_Node.hpp" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\X3D\X3DGeoHelper.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\X3D\X3DGeoHelper.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\X3D\X3DXmlHelper.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\X3D\X3DXmlHelper.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\glTF\glTFCommon.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\glTF\glTFCommon.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\glTF\glTFAsset.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\glTF\glTFAsset.inl" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\glTF\glTFAssetWriter.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\glTF\glTFAssetWriter.inl" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\glTF\glTFImporter.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\glTF\glTFImporter.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\glTF2\glTF2Asset.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\glTF2\glTF2Asset.inl" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\glTF2\glTF2AssetWriter.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\glTF2\glTF2AssetWriter.inl" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\glTF2\glTF2Importer.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\glTF2\glTF2Importer.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\3MF\3MFTypes.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\3MF\XmlSerializer.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\3MF\XmlSerializer.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\3MF\D3MFImporter.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\3MF\D3MFImporter.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\3MF\D3MFOpcPackage.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\3MF\D3MFOpcPackage.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\3MF\3MFXmlTags.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\MMD\MMDCpp14.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\MMD\MMDImporter.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\MMD\MMDImporter.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\MMD\MMDPmdParser.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\MMD\MMDPmxParser.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\MMD\MMDPmxParser.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\MMD\MMDVmdParser.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\Obj\ObjExporter.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\Obj\ObjExporter.cpp" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\OpenGEX\OpenGEXExporter.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\OpenGEX\OpenGEXExporter.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\Ply\PlyExporter.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\Ply\PlyExporter.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\3DS\3DSExporter.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\3DS\3DSExporter.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\Assbin\AssbinExporter.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\Assbin\AssbinExporter.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\Assbin\AssbinFileWriter.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\Assbin\AssbinFileWriter.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\Assxml\AssxmlExporter.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\Assxml\AssxmlExporter.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\Assxml\AssxmlFileWriter.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\Assxml\AssxmlFileWriter.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\M3D\M3DExporter.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\M3D\M3DExporter.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\Collada\ColladaExporter.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\Collada\ColladaExporter.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\FBX\FBXExporter.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\FBX\FBXExporter.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\FBX\FBXExportNode.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\FBX\FBXExportNode.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\FBX\FBXExportProperty.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\FBX\FBXExportProperty.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\STL\STLExporter.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\STL\STLExporter.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\X\XFileExporter.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\X\XFileExporter.cpp" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\X3D\X3DExporter.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\X3D\X3DExporter.hpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\glTF\glTFExporter.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\glTF\glTFExporter.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\glTF2\glTF2Exporter.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\glTF2\glTF2Exporter.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\3MF\D3MFExporter.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\3MF\D3MFExporter.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\Pbrt\PbrtExporter.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\Pbrt\PbrtExporter.cpp" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\Assjson\cencode.c" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\Assjson\cencode.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\Assjson\json_exporter.cpp" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\Assjson\mesh_splitter.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\Assjson\mesh_splitter.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\Step\StepExporter.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\AssetLib\Step\StepExporter.cpp" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\contrib\unzip\crypt.c" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\contrib\unzip\crypt.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\contrib\unzip\ioapi.c" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\contrib\unzip\ioapi.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\contrib\unzip\unzip.c" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\contrib\unzip\unzip.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\contrib\poly2tri\poly2tri\common\shapes.cc" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\contrib\poly2tri\poly2tri\common\shapes.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\contrib\poly2tri\poly2tri\common\utils.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\contrib\poly2tri\poly2tri\sweep\advancing_front.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\contrib\poly2tri\poly2tri\sweep\advancing_front.cc" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\contrib\poly2tri\poly2tri\sweep\cdt.cc" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\contrib\poly2tri\poly2tri\sweep\cdt.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\contrib\poly2tri\poly2tri\sweep\sweep.cc" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\contrib\poly2tri\poly2tri\sweep\sweep.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\contrib\poly2tri\poly2tri\sweep\sweep_context.cc" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\contrib\poly2tri\poly2tri\sweep\sweep_context.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\contrib\clipper\clipper.hpp" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\contrib\clipper\clipper.cpp" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\contrib\openddlparser\code\OpenDDLParser.cpp" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\contrib\openddlparser\code\DDLNode.cpp" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\contrib\openddlparser\code\OpenDDLCommon.cpp" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\contrib\openddlparser\code\OpenDDLExport.cpp" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\contrib\openddlparser\code\Value.cpp" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\contrib\openddlparser\code\OpenDDLStream.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\contrib\openddlparser\include\openddlparser\OpenDDLParser.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\contrib\openddlparser\include\openddlparser\OpenDDLParserUtils.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\contrib\openddlparser\include\openddlparser\OpenDDLCommon.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\contrib\openddlparser\include\openddlparser\OpenDDLExport.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\contrib\openddlparser\include\openddlparser\OpenDDLStream.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\contrib\openddlparser\include\openddlparser\DDLNode.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\contrib\openddlparser\include\openddlparser\Value.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\contrib\Open3DGC\o3dgcAdjacencyInfo.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\contrib\Open3DGC\o3dgcArithmeticCodec.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\contrib\Open3DGC\o3dgcArithmeticCodec.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\contrib\Open3DGC\o3dgcBinaryStream.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\contrib\Open3DGC\o3dgcCommon.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\contrib\Open3DGC\o3dgcDVEncodeParams.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\contrib\Open3DGC\o3dgcDynamicVectorDecoder.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\contrib\Open3DGC\o3dgcDynamicVectorDecoder.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\contrib\Open3DGC\o3dgcDynamicVectorEncoder.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\contrib\Open3DGC\o3dgcDynamicVectorEncoder.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\contrib\Open3DGC\o3dgcDynamicVector.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\contrib\Open3DGC\o3dgcFIFO.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\contrib\Open3DGC\o3dgcIndexedFaceSet.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\contrib\Open3DGC\o3dgcIndexedFaceSet.inl" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\contrib\Open3DGC\o3dgcSC3DMCDecoder.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\contrib\Open3DGC\o3dgcSC3DMCDecoder.inl" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\contrib\Open3DGC\o3dgcSC3DMCEncodeParams.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\contrib\Open3DGC\o3dgcSC3DMCEncoder.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\contrib\Open3DGC\o3dgcSC3DMCEncoder.inl" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\contrib\Open3DGC\o3dgcTimer.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\contrib\Open3DGC\o3dgcTools.cpp" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\contrib\Open3DGC\o3dgcTriangleFans.cpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\contrib\Open3DGC\o3dgcTriangleFans.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\contrib\Open3DGC\o3dgcTriangleListDecoder.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\contrib\Open3DGC\o3dgcTriangleListDecoder.inl" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\contrib\Open3DGC\o3dgcTriangleListEncoder.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\contrib\Open3DGC\o3dgcTriangleListEncoder.inl" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\contrib\Open3DGC\o3dgcVector.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\contrib\Open3DGC\o3dgcVector.inl" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\contrib\zip\src\miniz.h" />
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\contrib\zip\src\zip.c" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\contrib\zip\src\zip.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\contrib\pugixml\src\pugiconfig.hpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\contrib\pugixml\src\pugixml.hpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\contrib\stb\stb_image.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\include\assimp\anim.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\include\assimp\aabb.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\include\assimp\ai_assert.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\include\assimp\camera.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\include\assimp\color4.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\include\assimp\color4.inl" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp_build\include\assimp\config.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\include\assimp\ColladaMetaData.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\include\assimp\commonMetaData.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\include\assimp\defs.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\include\assimp\cfileio.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\include\assimp\light.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\include\assimp\material.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\include\assimp\material.inl" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\include\assimp\matrix3x3.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\include\assimp\matrix3x3.inl" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\include\assimp\matrix4x4.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\include\assimp\matrix4x4.inl" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\include\assimp\mesh.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\include\assimp\ObjMaterial.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\include\assimp\pbrmaterial.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\include\assimp\GltfMaterial.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\include\assimp\postprocess.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\include\assimp\quaternion.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\include\assimp\quaternion.inl" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\include\assimp\scene.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\include\assimp\metadata.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\include\assimp\texture.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\include\assimp\types.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\include\assimp\vector2.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\include\assimp\vector2.inl" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\include\assimp\vector3.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\include\assimp\vector3.inl" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\include\assimp\version.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\include\assimp\cimport.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\include\assimp\importerdesc.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\include\assimp\Importer.hpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\include\assimp\ProgressHandler.hpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\include\assimp\IOStream.hpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\include\assimp\IOSystem.hpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\include\assimp\cexport.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\include\assimp\Exporter.hpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\include\assimp\DefaultIOStream.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\include\assimp\DefaultIOSystem.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\include\assimp\ZipArchiveIOSystem.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\include\assimp\SceneCombiner.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\include\assimp\fast_atof.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\include\assimp\qnan.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\include\assimp\BaseImporter.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\include\assimp\Hash.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\include\assimp\MemoryIOWrapper.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\include\assimp\ParsingUtils.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\include\assimp\StreamReader.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\include\assimp\StreamWriter.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\include\assimp\StringComparison.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\include\assimp\StringUtils.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\include\assimp\SGSpatialSort.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\include\assimp\GenericProperty.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\include\assimp\SpatialSort.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\include\assimp\SkeletonMeshBuilder.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\include\assimp\SmallVector.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\include\assimp\SmoothingGroups.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\include\assimp\SmoothingGroups.inl" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\include\assimp\StandardShapes.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\include\assimp\RemoveComments.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\include\assimp\Subdivision.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\include\assimp\Vertex.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\include\assimp\LineSplitter.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\include\assimp\TinyFormatter.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\include\assimp\Profiler.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\include\assimp\LogAux.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\include\assimp\Bitmap.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\include\assimp\XMLTools.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\include\assimp\IOStreamBuffer.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\include\assimp\CreateAnimMesh.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\include\assimp\XmlParser.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\include\assimp\MathFunctions.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\include\assimp\Exceptional.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\include\assimp\ByteSwapper.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\include\assimp\Base64.hpp" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\include\assimp\Compiler\pushpack1.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\include\assimp\Compiler\poppack1.h" />
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\include\assimp\Compiler\pstdint.h" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="F:\OpenGL\assimp_build\ZERO_CHECK.vcxproj">
-      <Project>{879655C1-50F0-352B-AE63-BC59151600C3}</Project>
+    <ProjectReference Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp_build\ZERO_CHECK.vcxproj">
+      <Project>{B8592203-8DA4-3B34-B044-59FFB4763D01}</Project>
       <Name>ZERO_CHECK</Name>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </ProjectReference>
-    <ProjectReference Include="F:\OpenGL\assimp_build\contrib\irrXML\IrrXML.vcxproj">
-      <Project>{7EA13183-BB2C-3B50-8720-25DDE703E1B1}</Project>
-      <Name>IrrXML</Name>
-    </ProjectReference>
-    <ProjectReference Include="F:\OpenGL\assimp_build\contrib\zlib\zlibstatic.vcxproj">
-      <Project>{08DE4914-CF06-3AF6-8F3A-B8A32B04B078}</Project>
+    <ProjectReference Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp_build\contrib\zlib\zlibstatic.vcxproj">
+      <Project>{56B9EBD4-EC92-3485-BE59-3F4C5C4F1A17}</Project>
       <Name>zlibstatic</Name>
     </ProjectReference>
   </ItemGroup>

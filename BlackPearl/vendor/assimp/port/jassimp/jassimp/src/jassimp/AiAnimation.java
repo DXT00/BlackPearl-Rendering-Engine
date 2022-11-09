@@ -3,7 +3,7 @@
 Open Asset Import Library - Java Binding (jassimp)
 ---------------------------------------------------------------------------
 
-Copyright (c) 2006-2012, assimp team
+Copyright (c) 2006-2020, assimp team
 
 All rights reserved.
 
@@ -54,6 +54,26 @@ import java.util.List;
  * {@link AiMesh} for a description and comparison of these APIs.
  */
 public final class AiAnimation {
+    /**
+     * Name.
+     */
+    private final String m_name;
+    
+    /**
+     * Duration.
+     */
+    private final double m_duration;
+    
+    /**
+     * Ticks per second.
+     */
+    private final double m_ticksPerSecond;
+        
+    /**
+     * Bone animation channels.
+     */
+    private final List<AiNodeAnim> m_nodeAnims = new ArrayList<AiNodeAnim>();
+
     /**
      * Constructor.
      * 
@@ -151,29 +171,5 @@ public final class AiAnimation {
      */
     public List<AiMeshAnim> getMeshChannels() {
         throw new UnsupportedOperationException("not implemented yet");
-    }
-    
-    
-    /**
-     * Name.
-     */
-    private final String m_name;
-    
-    
-    /**
-     * Duration.
-     */
-    private final double m_duration;
-    
-    
-    /**
-     * Ticks per second.
-     */
-    private final double m_ticksPerSecond;
-    
-    
-    /**
-     * Bone animation channels.
-     */
-    private final List<AiNodeAnim> m_nodeAnims = new ArrayList<AiNodeAnim>();
+    }    
 }

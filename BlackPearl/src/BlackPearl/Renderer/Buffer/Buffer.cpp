@@ -35,6 +35,14 @@ namespace BlackPearl {
 		
 
 	}
+	VertexBuffer::VertexBuffer(void* vertices, uint32_t size, uint32_t drawType)
+	{
+		m_VerticesVoidData = vertices;
+		glGenBuffers(1, &m_RendererID);
+		glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);
+		glBufferData(GL_ARRAY_BUFFER, size, vertices, drawType);
+		m_VertexSize = size;
+	}
 	VertexBuffer::~VertexBuffer()
 	{	
 		GE_SAVE_DELETE(m_VerticesFloat);
@@ -44,6 +52,14 @@ namespace BlackPearl {
 	void VertexBuffer::Bind() {
 
 		glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);
+	}
+
+	void VertexBuffer::UpdateData(void* vertices, uint32_t size, uint32_t drawType)
+	{
+		m_VerticesVoidData = vertices;
+		glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);
+		glBufferData(GL_ARRAY_BUFFER, size, vertices, drawType);
+		m_VertexSize = size;
 	}
 
 	void VertexBuffer::UnBind() {
@@ -70,6 +86,11 @@ namespace BlackPearl {
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, size, indices, drawType);
 		m_IndiciesSize = size;
 	}
+	IndexBuffer::~IndexBuffer()
+	{
+		glDeleteBuffers(1, &m_RendererID);
+
+	}
 	void IndexBuffer::Bind()
 	{
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_RendererID);
@@ -79,6 +100,7 @@ namespace BlackPearl {
 	{
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	}
+	
 	//---------------------VertexBufferLayout----------------//
 	void VertexBufferLayout::CalculateStrideAndOffset()
 	{
@@ -430,6 +452,42 @@ namespace BlackPearl {
 	void ShaderStorageBuffer::CleanUp()
 	{
 		glDeleteBuffers(1, &m_RendererID);
+
+	}
+
+	/*----------------------------    IndirectBuffer   --------------------------------*/
+
+	IndirectBuffer::IndirectBuffer(const std::vector<IndirectCommand>& commands, uint32_t drawType)
+	{
+		//feed the draw command data to the gpu
+		glGenBuffers(1, &m_RendererID);
+
+		glBindBuffer(GL_DRAW_INDIRECT_BUFFER, m_RendererID);
+		glBufferData(GL_DRAW_INDIRECT_BUFFER, commands.size() * sizeof(IndirectCommand), &commands[0], drawType);
+		m_Commands = commands;
+	}
+	IndirectBuffer::~IndirectBuffer()
+	{
+		glDeleteBuffers(1, &m_RendererID);
+	}
+
+	void IndirectBuffer::UpdateCommands(const std::vector<IndirectCommand>& cmds)
+	{
+		m_Commands = cmds;
+		glBindBuffer(GL_DRAW_INDIRECT_BUFFER, m_RendererID);
+		glBufferData(GL_DRAW_INDIRECT_BUFFER, m_Commands.size() * sizeof(IndirectCommand), &m_Commands[0], GL_DYNAMIC_DRAW);
+
+	}
+
+	void IndirectBuffer::Bind()
+	{
+		glBindBuffer(GL_DRAW_INDIRECT_BUFFER, m_RendererID);
+		
+
+	}
+	void IndirectBuffer::UnBind()
+	{
+		glBindBuffer(GL_DRAW_INDIRECT_BUFFER, 0);
 
 	}
 }

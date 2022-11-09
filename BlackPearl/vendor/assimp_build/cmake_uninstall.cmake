@@ -1,13 +1,13 @@
-IF(NOT EXISTS "F:/OpenGL/assimp_build/install_manifest.txt")
-  MESSAGE(FATAL_ERROR "Cannot find install manifest: \"F:/OpenGL/assimp_build/install_manifest.txt\"")
-ENDIF(NOT EXISTS "F:/OpenGL/assimp_build/install_manifest.txt")
+IF(NOT EXISTS "D:/AA_LEARN_CODING/LearnOpenGL/BlackPearl-Rendering-Engine/BlackPearl/vendor/assimp_build/install_manifest.txt")
+  MESSAGE(FATAL_ERROR "Cannot find install manifest: \"D:/AA_LEARN_CODING/LearnOpenGL/BlackPearl-Rendering-Engine/BlackPearl/vendor/assimp_build/install_manifest.txt\"")
+ENDIF(NOT EXISTS "D:/AA_LEARN_CODING/LearnOpenGL/BlackPearl-Rendering-Engine/BlackPearl/vendor/assimp_build/install_manifest.txt")
 
-FILE(READ "F:/OpenGL/assimp_build/install_manifest.txt" files)
+FILE(READ "D:/AA_LEARN_CODING/LearnOpenGL/BlackPearl-Rendering-Engine/BlackPearl/vendor/assimp_build/install_manifest.txt" files)
 STRING(REGEX REPLACE "\n" ";" files "${files}")
 FOREACH(file ${files})
   MESSAGE(STATUS "Uninstalling \"$ENV{DESTDIR}${file}\"")
   EXEC_PROGRAM(
-    "E:/CMake/bin/cmake.exe" ARGS "-E remove \"$ENV{DESTDIR}${file}\""
+    "D:/CMaake/bin/cmake.exe" ARGS "-E remove \"$ENV{DESTDIR}${file}\""
     OUTPUT_VARIABLE rm_out
     RETURN_VALUE rm_retval
     )

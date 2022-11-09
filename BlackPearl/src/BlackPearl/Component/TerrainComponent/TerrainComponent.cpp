@@ -7,7 +7,9 @@ namespace BlackPearl {
 		m_Height(height), 
 		m_ChunckCntX(chunkCntX),
 		m_ChunckCntZ(chunkCntZ),
-		m_VertexPerChunk(vertexPerChunk)
+		m_VertexPerChunk(vertexPerChunk),
+		m_StaticTessLevel(16),
+		m_DynamicTess(false)
 	{
 		CreateVertices();
 	}

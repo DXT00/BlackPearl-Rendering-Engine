@@ -142,6 +142,7 @@
     <ClInclude Include="src\Layers\FrameBufferTestLayer.h" />
     <ClInclude Include="src\Layers\IBLProbesRenderingLayer.h" />
     <ClInclude Include="src\Layers\IBLRenderingLayer.h" />
+    <ClInclude Include="src\Layers\IndirectDrawLayer.h" />
     <ClInclude Include="src\Layers\PbrRenderingLayer.h" />
     <ClInclude Include="src\Layers\RayTracingLayer.h" />
     <ClInclude Include="src\Layers\ShadowMapPointLightLayer.h" />

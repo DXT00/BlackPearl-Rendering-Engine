@@ -15,7 +15,7 @@ public:
 
 		BlackPearl::Renderer::Init();
 		m_BasicRenderer = DBG_NEW BlackPearl::BasicRenderer();
-
+		m_BatchRenderer = DBG_NEW BlackPearl::BatchRenderer();
 		const std::string path = "assets/shaders/batch/Batch.glsl";
 		m_BatchShader.reset(DBG_NEW BlackPearl::Shader(path));
 		m_TerrainShader.reset(DBG_NEW BlackPearl::Shader("assets/shaders/Terrain/Terrain.glsl"));
@@ -30,15 +30,15 @@ public:
 		objs7 = LoadCubesScene1(6, glm::vec3(-40, 0, -80));
 		objs8 = LoadCubesScene1(6, glm::vec3(0, 0, -80));
 
-		m_BatchNode = DBG_NEW BlackPearl::BatchNode(objs, false);
-		m_BatchNode1 = DBG_NEW BlackPearl::BatchNode(objs1, false);
-		m_BatchNode2 = DBG_NEW BlackPearl::BatchNode(objs2, false);
-		m_BatchNode3 = DBG_NEW BlackPearl::BatchNode(objs3, false);
-		m_BatchNode4 = DBG_NEW BlackPearl::BatchNode(objs4, false);
-		m_BatchNode5 = DBG_NEW BlackPearl::BatchNode(objs5, false);
-		m_BatchNode6 = DBG_NEW BlackPearl::BatchNode(objs6, false);
-		m_BatchNode7 = DBG_NEW BlackPearl::BatchNode(objs7, false);
-		m_BatchNode8 = DBG_NEW BlackPearl::BatchNode(objs8, false);
+		m_BatchNode = CreateBatchNode(objs, false);
+		m_BatchNode1 = CreateBatchNode(objs1, false);
+		m_BatchNode2 = CreateBatchNode(objs2, false);
+		m_BatchNode3 = CreateBatchNode(objs3, false);
+		m_BatchNode4 = CreateBatchNode(objs4, false);
+		m_BatchNode5 = CreateBatchNode(objs5, false);
+		m_BatchNode6 = CreateBatchNode(objs6, false);
+		m_BatchNode7 = CreateBatchNode(objs7, false);
+		m_BatchNode8 = CreateBatchNode(objs8, false);
 
 
 		m_Terrain = CreateTerrain("assets/texture/iceland_heightmap.png");
@@ -83,18 +83,17 @@ public:
 		//m_BasicRenderer->DrawObjects(objs6);
 		//m_BasicRenderer->DrawObjects(objs7);
 		//m_BasicRenderer->DrawObjects(objs8);
+		m_BatchRenderer->Render(m_BatchNode, m_BatchShader);
+		m_BatchRenderer->Render(m_BatchNode1, m_BatchShader);
+		m_BatchRenderer->Render(m_BatchNode2, m_BatchShader);
+		m_BatchRenderer->Render(m_BatchNode3, m_BatchShader);
+		m_BatchRenderer->Render(m_BatchNode4, m_BatchShader);
+		m_BatchRenderer->Render(m_BatchNode5, m_BatchShader);
+		m_BatchRenderer->Render(m_BatchNode6, m_BatchShader);
+		m_BatchRenderer->Render(m_BatchNode7, m_BatchShader);
+		m_BatchRenderer->Render(m_BatchNode8, m_BatchShader);
 
-		m_BasicRenderer->DrawBatchNode(m_BatchNode, m_BatchShader);
-		m_BasicRenderer->DrawBatchNode(m_BatchNode1, m_BatchShader);
-		m_BasicRenderer->DrawBatchNode(m_BatchNode2, m_BatchShader);
-		m_BasicRenderer->DrawBatchNode(m_BatchNode3, m_BatchShader);
-		m_BasicRenderer->DrawBatchNode(m_BatchNode4, m_BatchShader);
-		m_BasicRenderer->DrawBatchNode(m_BatchNode5, m_BatchShader);
-		m_BasicRenderer->DrawBatchNode(m_BatchNode6, m_BatchShader);
-		m_BasicRenderer->DrawBatchNode(m_BatchNode7, m_BatchShader);
-		m_BasicRenderer->DrawBatchNode(m_BatchNode8, m_BatchShader);
-
-		m_BasicRenderer->DrawTerrain(m_Terrain, m_TerrainShader);
+		m_BasicRenderer->DrawTerrain(m_Terrain, m_TerrainShader, false);
 
 
 	}
@@ -137,6 +136,7 @@ private:
 	std::vector<BlackPearl::Object*> objs8;
 
 	BlackPearl::BasicRenderer* m_BasicRenderer;
+	BlackPearl::BatchRenderer* m_BatchRenderer;
 
 };
 #pragma once

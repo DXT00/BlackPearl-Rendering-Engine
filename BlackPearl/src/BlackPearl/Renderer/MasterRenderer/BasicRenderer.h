@@ -33,9 +33,9 @@ namespace BlackPearl {
 
 		void DrawBatchNode(BatchNode* node, std::shared_ptr<Shader> shader);
 		void DrawInstanceNode(InstanceNode* node, std::shared_ptr<Shader> shader);
-		void DrawSingleNode(SingleNode* node, std::shared_ptr<Shader> shader);
-
-		void DrawTerrain(Object* obj, std::shared_ptr<Shader> shader);
+		void DrawSingleNode(SingleNode* node, const std::shared_ptr<Shader>& shader);
+		void DrawMultiIndirect(std::shared_ptr<VertexArray> vertexArray, std::shared_ptr<Shader> shader, uint32_t cmdsCnt);
+		void DrawTerrain(Object* obj, std::shared_ptr<Shader> shader, bool drawPolygon = false);
 
 		void DrawPointLight(Object *obj, Renderer::SceneData* scene = Renderer::GetSceneData(), unsigned int textureBeginIdx = 2);
 		void DrawLightSources(const LightSources* lightSources, Renderer::SceneData* scene = Renderer::GetSceneData(), unsigned int textureBeginIdx = 2);

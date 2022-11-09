@@ -134,7 +134,7 @@ namespace BlackPearl {
 			}
 			else
 			{
-				meshes[i]->GetVertexArray()->UpdateVertexBuffer();
+				meshes[i]->GetVertexArray()->UpdateVertexBuffers();
 				for (int j = 0; j < meshes[i]->GetVertexArray()->GetVertexBuffers().size(); j++)
 				{
 					auto vertexBuffer = meshes[i]->GetVertexArray()->GetVertexBuffers()[j];
@@ -197,7 +197,7 @@ namespace BlackPearl {
 			}
 			else
 			{
-				meshes[i]->GetVertexArray()->UpdateVertexBuffer();
+				meshes[i]->GetVertexArray()->UpdateVertexBuffers();
 				for (int j = 0; j < meshes[i]->GetVertexArray()->GetVertexBuffers().size(); j++)
 				{
 					auto vertexBuffer = meshes[i]->GetVertexArray()->GetVertexBuffers()[j];
@@ -253,25 +253,45 @@ namespace BlackPearl {
 	{
 	}
 
-	void BasicRenderer::DrawSingleNode(SingleNode* node, std::shared_ptr<Shader> shader)
+	void BasicRenderer::DrawSingleNode(SingleNode* node,const std::shared_ptr<Shader>& shader)
 	{
 	}
 
-	void BasicRenderer::DrawTerrain(Object* obj, std::shared_ptr<Shader> shader)
+	void BasicRenderer::DrawMultiIndirect(std::shared_ptr<VertexArray> vertexArray, std::shared_ptr<Shader> shader, uint32_t cmdsCnt)
+	{
+		shader->Bind();
+		Renderer::Submit(vertexArray, shader, nullptr, 0);
+		glMultiDrawElementsIndirect(GL_TRIANGLES, GL_UNSIGNED_INT, (GLvoid*)0, cmdsCnt, 0);
+		s_DrawCallCnt++;
+	}
+
+	void BasicRenderer::DrawTerrain(Object* obj, std::shared_ptr<Shader> shader, bool drawPolygon)
 	{
 		GE_ASSERT(obj->HasComponent<TerrainComponent>(), "obj has no terrain component");
 		glm::mat4 transformMatrix = obj->GetComponent<Transform>()->GetTransformMatrix();
 		std::vector<std::shared_ptr<Mesh>> meshes = obj->GetComponent<MeshRenderer>()->GetMeshes();
 
 		shader->Bind();
+		auto comp = obj->GetComponent<TerrainComponent>();
+		if (comp->GetDynamicTess()) {
+			shader->SetUniform1i("u_DynamicTessLevel", 1);
+		}
+		else {
+			shader->SetUniform1i("u_DynamicTessLevel", 0);
+
+		}
+		shader->SetUniform1i("u_TessLevel", comp->GetStaticTessLevel());
+
 		for (int i = 0; i < meshes.size(); i++) {
 			PrepareBasicShaderParameters(meshes[i], shader, false/* is light*/);
 			Renderer::Submit(meshes[i]->GetVertexArray(), shader, transformMatrix);
-			uint32_t vertexPerChunk = obj->GetComponent<TerrainComponent>()->GetVertexPerChunk();
-			uint32_t chunkCnt = obj->GetComponent<TerrainComponent>()->GetChunkCnt();
+			uint32_t vertexPerChunk = comp->GetVertexPerChunk();
+			uint32_t chunkCnt = comp->GetChunkCnt();
 			glDrawArrays(GL_PATCHES, 0, vertexPerChunk * chunkCnt);
-			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 			s_DrawCallCnt++;
+
+			if (drawPolygon)
+				glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 		}
 	}
 
@@ -298,7 +318,7 @@ namespace BlackPearl {
 
 			}
 			else {
-				meshes[i]->GetVertexArray()->UpdateVertexBuffer();
+				meshes[i]->GetVertexArray()->UpdateVertexBuffers();
 
 				for (int j = 0; j < meshes[i]->GetVertexArray()->GetVertexBuffers().size(); j++)
 				{

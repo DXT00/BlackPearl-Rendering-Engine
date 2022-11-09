@@ -11,6 +11,11 @@ namespace BlackPearl {
 		uint32_t GetChunkCnt() const{ return m_ChunckCntX * m_ChunckCntZ; }
 		uint32_t GetVertexPerChunk() const { return m_VertexPerChunk; }
 		const std::vector<float>& GetVertices() const { return m_Vertices; }
+		void SetTessLevel(uint32_t level) { m_StaticTessLevel = level; }
+		uint32_t GetStaticTessLevel() const{ return m_StaticTessLevel; }
+
+		void SetDynamicTess(bool dynamic) { m_DynamicTess = dynamic; }
+		bool GetDynamicTess() const { return m_DynamicTess; }
 
 	private:
 		void CreateVertices();
@@ -24,6 +29,9 @@ namespace BlackPearl {
 
 		uint32_t m_VertexPerChunk;
 
+		// controls tessellation levels according to the distance from camera to patch/chunk
+		bool	 m_DynamicTess;
+		uint32_t m_StaticTessLevel;
 
 		std::vector<float> m_Vertices;
 	};

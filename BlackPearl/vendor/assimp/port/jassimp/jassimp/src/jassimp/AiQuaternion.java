@@ -3,7 +3,7 @@
 Open Asset Import Library - Java Binding (jassimp)
 ---------------------------------------------------------------------------
 
-Copyright (c) 2006-2012, assimp team
+Copyright (c) 2006-2020, assimp team
 
 All rights reserved.
 
@@ -50,6 +50,17 @@ import java.nio.ByteBuffer;
  * modify the underlying mesh/animation.
  */
 public final class AiQuaternion {
+    /**
+     * Wrapped buffer.
+     */
+    private final ByteBuffer m_buffer;
+    
+    
+    /**
+     * Offset into m_buffer.
+     */
+    private final int m_offset;
+
     /**
      * Constructor.
      * 
@@ -150,17 +161,5 @@ public final class AiQuaternion {
     public String toString() {
         return "[" + getX() + ", " + getY() + ", " + getZ() + ", " + 
                 getW() + "]";
-    }
-    
-    
-    /**
-     * Wrapped buffer.
-     */
-    private final ByteBuffer m_buffer;
-    
-    
-    /**
-     * Offset into m_buffer.
-     */
-    private final int m_offset;
+    }    
 }

@@ -30,6 +30,9 @@
 #include "BlackPearl/Renderer/MasterRenderer/D3D12RayTracingModelRenderer.h"
 #include "BlackPearl/Renderer/MasterRenderer/D3D12BasicRenderer.h"
 #include "BlackPearl/Renderer/MasterRenderer/D3D12MeshShaderRenderer.h"
+#include "BlackPearl/Renderer/MasterRenderer/BatchRenderer.h"
+#include "BlackPearl/Renderer/MasterRenderer/IndirectRenderer.h"
+#include "BlackPearl/Renderer/MasterRenderer/IndirectRendererTest.h"
 
 #include "BlackPearl/Component/TransformComponent/Transform.h"
 #include "BlackPearl/Component/MeshRendererComponent/MeshRenderer.h"
