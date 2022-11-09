@@ -12,6 +12,7 @@
 #include <glm\ext\scalar_common.hpp>
 #include "BlackPearl/Timestep/TimeCounter.h"
 #include <chrono>
+#include "glm/glm.hpp"
 
 namespace BlackPearl {
 	float GBufferRenderer::s_GICoeffs = 0.5f;
@@ -744,7 +745,7 @@ namespace BlackPearl {
 		//if(k > (unsigned int)nearByProbes.size())
 		//	GE_CORE_WARN( "m_K {0} larger than nearby probes' number:{1}!", k, (unsigned int)nearByProbes.size());
 
-		int kMin = glm::min(k, nearByProbes.size());
+		int kMin = std::min(k, (unsigned int)nearByProbes.size());
 		//if (k <=0)
 		//	GE_CORE_WARN("no probe found near this object!");
 

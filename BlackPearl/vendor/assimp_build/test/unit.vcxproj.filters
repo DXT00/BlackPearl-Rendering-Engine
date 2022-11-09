@@ -1,288 +1,414 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="16.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\contrib\gtest\src\gtest-all.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\test\unit\CCompilerTest.c">
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\test\unit\CCompilerTest.c">
       <Filter>UnitTests\Compiler</Filter>
     </ClCompile>
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\test\unit\Main.cpp">
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\test\unit\Main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\code\Version.cpp">
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\Common\Version.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\test\unit\utIOSystem.cpp">
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\code\Common\Base64.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\test\unit\utSimd.cpp">
       <Filter>UnitTests\Common</Filter>
     </ClCompile>
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\test\unit\utIOStreamBuffer.cpp">
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\test\unit\utIOSystem.cpp">
       <Filter>UnitTests\Common</Filter>
     </ClCompile>
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\test\unit\utIssues.cpp">
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\test\unit\utIOStreamBuffer.cpp">
       <Filter>UnitTests\Common</Filter>
     </ClCompile>
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\test\unit\utAnim.cpp">
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\test\unit\utIssues.cpp">
       <Filter>UnitTests\Common</Filter>
     </ClCompile>
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\test\unit\AssimpAPITest.cpp">
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\test\unit\utAnim.cpp">
       <Filter>UnitTests\Common</Filter>
     </ClCompile>
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\test\unit\utBatchLoader.cpp">
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\test\unit\AssimpAPITest.cpp">
       <Filter>UnitTests\Common</Filter>
     </ClCompile>
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\test\unit\utDefaultIOStream.cpp">
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\test\unit\AssimpAPITest_aiMatrix3x3.cpp">
       <Filter>UnitTests\Common</Filter>
     </ClCompile>
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\test\unit\utFastAtof.cpp">
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\test\unit\AssimpAPITest_aiMatrix4x4.cpp">
       <Filter>UnitTests\Common</Filter>
     </ClCompile>
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\test\unit\utMetadata.cpp">
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\test\unit\AssimpAPITest_aiQuaternion.cpp">
       <Filter>UnitTests\Common</Filter>
     </ClCompile>
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\test\unit\SceneDiffer.cpp">
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\test\unit\AssimpAPITest_aiVector2D.cpp">
       <Filter>UnitTests\Common</Filter>
     </ClCompile>
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\test\unit\AbstractImportExportBase.cpp">
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\test\unit\AssimpAPITest_aiVector3D.cpp">
       <Filter>UnitTests\Common</Filter>
     </ClCompile>
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\test\unit\utTypes.cpp">
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\test\unit\Common\utHash.cpp">
       <Filter>UnitTests\Common</Filter>
     </ClCompile>
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\test\unit\utVersion.cpp">
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\test\unit\MathTest.cpp">
       <Filter>UnitTests\Common</Filter>
     </ClCompile>
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\test\unit\utProfiler.cpp">
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\test\unit\utBatchLoader.cpp">
       <Filter>UnitTests\Common</Filter>
     </ClCompile>
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\test\unit\utSharedPPData.cpp">
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\test\unit\utDefaultIOStream.cpp">
       <Filter>UnitTests\Common</Filter>
     </ClCompile>
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\test\unit\utStringUtils.cpp">
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\test\unit\utFastAtof.cpp">
       <Filter>UnitTests\Common</Filter>
     </ClCompile>
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\test\unit\utLWSImportExport.cpp">
-      <Filter>UnitTests\Importers</Filter>
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\test\unit\utMetadata.cpp">
+      <Filter>UnitTests\Common</Filter>
     </ClCompile>
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\test\unit\utSMDImportExport.cpp">
-      <Filter>UnitTests\Importers</Filter>
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\test\unit\SceneDiffer.cpp">
+      <Filter>UnitTests\Common</Filter>
     </ClCompile>
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\test\unit\utglTFImportExport.cpp">
-      <Filter>UnitTests\Importers</Filter>
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\test\unit\AbstractImportExportBase.cpp">
+      <Filter>UnitTests\Common</Filter>
     </ClCompile>
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\test\unit\utglTF2ImportExport.cpp">
-      <Filter>UnitTests\Importers</Filter>
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\test\unit\utTypes.cpp">
+      <Filter>UnitTests\Common</Filter>
     </ClCompile>
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\test\unit\utHMPImportExport.cpp">
-      <Filter>UnitTests\Importers</Filter>
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\test\unit\utVersion.cpp">
+      <Filter>UnitTests\Common</Filter>
     </ClCompile>
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\test\unit\utIFCImportExport.cpp">
-      <Filter>UnitTests\Importers</Filter>
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\test\unit\utProfiler.cpp">
+      <Filter>UnitTests\Common</Filter>
     </ClCompile>
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\test\unit\utFBXImporterExporter.cpp">
-      <Filter>UnitTests\Importers</Filter>
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\test\unit\utSharedPPData.cpp">
+      <Filter>UnitTests\Common</Filter>
     </ClCompile>
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\test\unit\utImporter.cpp">
-      <Filter>UnitTests\Importers</Filter>
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\test\unit\utStringUtils.cpp">
+      <Filter>UnitTests\Common</Filter>
     </ClCompile>
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\test\unit\ut3DImportExport.cpp">
-      <Filter>UnitTests\Importers</Filter>
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\test\unit\Common\utMesh.cpp">
+      <Filter>UnitTests\Common</Filter>
     </ClCompile>
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\test\unit\ut3DSImportExport.cpp">
-      <Filter>UnitTests\Importers</Filter>
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\test\unit\Common\utStandardShapes.cpp">
+      <Filter>UnitTests\Common</Filter>
     </ClCompile>
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\test\unit\utACImportExport.cpp">
-      <Filter>UnitTests\Importers</Filter>
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\test\unit\Common\uiScene.cpp">
+      <Filter>UnitTests\Common</Filter>
     </ClCompile>
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\test\unit\utAMFImportExport.cpp">
-      <Filter>UnitTests\Importers</Filter>
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\test\unit\Common\utLineSplitter.cpp">
+      <Filter>UnitTests\Common</Filter>
     </ClCompile>
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\test\unit\utASEImportExport.cpp">
-      <Filter>UnitTests\Importers</Filter>
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\test\unit\Common\utSpatialSort.cpp">
+      <Filter>UnitTests\Common</Filter>
     </ClCompile>
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\test\unit\utD3MFImportExport.cpp">
-      <Filter>UnitTests\Importers</Filter>
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\test\unit\Common\utAssertHandler.cpp">
+      <Filter>UnitTests\Common</Filter>
     </ClCompile>
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\test\unit\utQ3DImportExport.cpp">
-      <Filter>UnitTests\Importers</Filter>
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\test\unit\Common\utXmlParser.cpp">
+      <Filter>UnitTests\Common</Filter>
     </ClCompile>
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\test\unit\utSTLImportExport.cpp">
-      <Filter>UnitTests\Importers</Filter>
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\test\unit\Common\utBase64.cpp">
+      <Filter>UnitTests\Common</Filter>
     </ClCompile>
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\test\unit\utXImporterExporter.cpp">
-      <Filter>UnitTests\Importers</Filter>
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\test\unit\ImportExport\Assxml\utAssxmlImportExport.cpp">
+      <Filter>UnitTests\ImportExport</Filter>
     </ClCompile>
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\test\unit\utX3DImportExport.cpp">
-      <Filter>UnitTests\Importers</Filter>
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\test\unit\utLWSImportExport.cpp">
+      <Filter>UnitTests\ImportExport</Filter>
     </ClCompile>
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\test\unit\utDXFImporterExporter.cpp">
-      <Filter>UnitTests\Importers</Filter>
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\test\unit\utLWOImportExport.cpp">
+      <Filter>UnitTests\ImportExport</Filter>
     </ClCompile>
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\test\unit\utPMXImporter.cpp">
-      <Filter>UnitTests\Importers</Filter>
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\test\unit\utSMDImportExport.cpp">
+      <Filter>UnitTests\ImportExport</Filter>
     </ClCompile>
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\test\unit\utPLYImportExport.cpp">
-      <Filter>UnitTests\Importers</Filter>
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\test\unit\utglTFImportExport.cpp">
+      <Filter>UnitTests\ImportExport</Filter>
     </ClCompile>
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\test\unit\utObjImportExport.cpp">
-      <Filter>UnitTests\Importers</Filter>
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\test\unit\utglTF2ImportExport.cpp">
+      <Filter>UnitTests\ImportExport</Filter>
     </ClCompile>
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\test\unit\utObjTools.cpp">
-      <Filter>UnitTests\Importers</Filter>
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\test\unit\utHMPImportExport.cpp">
+      <Filter>UnitTests\ImportExport</Filter>
     </ClCompile>
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\test\unit\utOpenGEXImportExport.cpp">
-      <Filter>UnitTests\Importers</Filter>
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\test\unit\utIFCImportExport.cpp">
+      <Filter>UnitTests\ImportExport</Filter>
     </ClCompile>
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\test\unit\utSIBImporter.cpp">
-      <Filter>UnitTests\Importers</Filter>
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\test\unit\utFBXImporterExporter.cpp">
+      <Filter>UnitTests\ImportExport</Filter>
     </ClCompile>
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\test\unit\utBlenderIntermediate.cpp">
-      <Filter>UnitTests\Importers</Filter>
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\test\unit\utImporter.cpp">
+      <Filter>UnitTests\ImportExport</Filter>
     </ClCompile>
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\test\unit\utBlendImportAreaLight.cpp">
-      <Filter>UnitTests\Importers</Filter>
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\test\unit\ImportExport\utExporter.cpp">
+      <Filter>UnitTests\ImportExport</Filter>
     </ClCompile>
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\test\unit\utBlenderImportExport.cpp">
-      <Filter>UnitTests\Importers</Filter>
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\test\unit\ut3DImportExport.cpp">
+      <Filter>UnitTests\ImportExport</Filter>
     </ClCompile>
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\test\unit\utBlendImportMaterials.cpp">
-      <Filter>UnitTests\Importers</Filter>
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\test\unit\ut3DSImportExport.cpp">
+      <Filter>UnitTests\ImportExport</Filter>
     </ClCompile>
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\test\unit\utBVHImportExport.cpp">
-      <Filter>UnitTests\Importers</Filter>
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\test\unit\utACImportExport.cpp">
+      <Filter>UnitTests\ImportExport</Filter>
     </ClCompile>
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\test\unit\utColladaExportCamera.cpp">
-      <Filter>UnitTests\Importers</Filter>
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\test\unit\utAMFImportExport.cpp">
+      <Filter>UnitTests\ImportExport</Filter>
     </ClCompile>
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\test\unit\utColladaExportLight.cpp">
-      <Filter>UnitTests\Importers</Filter>
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\test\unit\utASEImportExport.cpp">
+      <Filter>UnitTests\ImportExport</Filter>
     </ClCompile>
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\test\unit\utColladaImportExport.cpp">
-      <Filter>UnitTests\Importers</Filter>
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\test\unit\utD3MFImportExport.cpp">
+      <Filter>UnitTests\ImportExport</Filter>
     </ClCompile>
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\test\unit\utCSMImportExport.cpp">
-      <Filter>UnitTests\Importers</Filter>
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\test\unit\utQ3DImportExport.cpp">
+      <Filter>UnitTests\ImportExport</Filter>
     </ClCompile>
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\test\unit\utB3DImportExport.cpp">
-      <Filter>UnitTests\Importers</Filter>
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\test\unit\utSTLImportExport.cpp">
+      <Filter>UnitTests\ImportExport</Filter>
     </ClCompile>
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\test\unit\utMaterialSystem.cpp">
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\test\unit\utXImporterExporter.cpp">
+      <Filter>UnitTests\ImportExport</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\test\unit\utX3DImportExport.cpp">
+      <Filter>UnitTests\ImportExport</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\test\unit\utDXFImporterExporter.cpp">
+      <Filter>UnitTests\ImportExport</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\test\unit\utPMXImporter.cpp">
+      <Filter>UnitTests\ImportExport</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\test\unit\utPLYImportExport.cpp">
+      <Filter>UnitTests\ImportExport</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\test\unit\utObjImportExport.cpp">
+      <Filter>UnitTests\ImportExport</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\test\unit\utObjTools.cpp">
+      <Filter>UnitTests\ImportExport</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\test\unit\utOpenGEXImportExport.cpp">
+      <Filter>UnitTests\ImportExport</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\test\unit\utSIBImporter.cpp">
+      <Filter>UnitTests\ImportExport</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\test\unit\utBlenderIntermediate.cpp">
+      <Filter>UnitTests\ImportExport</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\test\unit\utBlendImportAreaLight.cpp">
+      <Filter>UnitTests\ImportExport</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\test\unit\utBlenderImportExport.cpp">
+      <Filter>UnitTests\ImportExport</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\test\unit\utBlendImportMaterials.cpp">
+      <Filter>UnitTests\ImportExport</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\test\unit\utBlenderWork.cpp">
+      <Filter>UnitTests\ImportExport</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\test\unit\utBVHImportExport.cpp">
+      <Filter>UnitTests\ImportExport</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\test\unit\utColladaExport.cpp">
+      <Filter>UnitTests\ImportExport</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\test\unit\utColladaImportExport.cpp">
+      <Filter>UnitTests\ImportExport</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\test\unit\utCSMImportExport.cpp">
+      <Filter>UnitTests\ImportExport</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\test\unit\utB3DImportExport.cpp">
+      <Filter>UnitTests\ImportExport</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\test\unit\utMDCImportExport.cpp">
+      <Filter>UnitTests\ImportExport</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\test\unit\utAssbinImportExport.cpp">
+      <Filter>UnitTests\ImportExport</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\test\unit\ImportExport\utAssjsonImportExport.cpp">
+      <Filter>UnitTests\ImportExport</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\test\unit\ImportExport\utCOBImportExport.cpp">
+      <Filter>UnitTests\ImportExport</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\test\unit\ImportExport\utOgreImportExport.cpp">
+      <Filter>UnitTests\ImportExport</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\test\unit\ImportExport\utQ3BSPFileImportExport.cpp">
+      <Filter>UnitTests\ImportExport</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\test\unit\ImportExport\utOFFImportExport.cpp">
+      <Filter>UnitTests\ImportExport</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\test\unit\ImportExport\utNFFImportExport.cpp">
+      <Filter>UnitTests\ImportExport</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\test\unit\ImportExport\utXGLImportExport.cpp">
+      <Filter>UnitTests\ImportExport</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\test\unit\ImportExport\utMD2Importer.cpp">
+      <Filter>UnitTests\ImportExport</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\test\unit\ImportExport\utMD5Importer.cpp">
+      <Filter>UnitTests\ImportExport</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\test\unit\ImportExport\utMDLImporter.cpp">
+      <Filter>UnitTests\ImportExport</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\test\unit\ImportExport\MDL\utMDLImporter_HL1_ImportSettings.cpp">
+      <Filter>UnitTests\ImportExport</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\test\unit\ImportExport\MDL\utMDLImporter_HL1_Materials.cpp">
+      <Filter>UnitTests\ImportExport</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\test\unit\ImportExport\MDL\utMDLImporter_HL1_Nodes.cpp">
+      <Filter>UnitTests\ImportExport</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\test\unit\ImportExport\RAW\utRAWImportExport.cpp">
+      <Filter>UnitTests\ImportExport</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\test\unit\ImportExport\Terragen\utTerragenImportExport.cpp">
+      <Filter>UnitTests\ImportExport</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\test\unit\utMaterialSystem.cpp">
       <Filter>UnitTests\Material</Filter>
     </ClCompile>
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\test\unit\utMatrix3x3.cpp">
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\test\unit\utMatrix3x3.cpp">
       <Filter>UnitTests\Math</Filter>
     </ClCompile>
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\test\unit\utMatrix4x4.cpp">
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\test\unit\utMatrix4x4.cpp">
       <Filter>UnitTests\Math</Filter>
     </ClCompile>
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\test\unit\utVector3.cpp">
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\test\unit\utVector3.cpp">
       <Filter>UnitTests\Math</Filter>
     </ClCompile>
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\test\unit\utImproveCacheLocality.cpp">
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\test\unit\utImproveCacheLocality.cpp">
       <Filter>UnitTests\PostProcess</Filter>
     </ClCompile>
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\test\unit\utFixInfacingNormals.cpp">
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\test\unit\utFixInfacingNormals.cpp">
       <Filter>UnitTests\PostProcess</Filter>
     </ClCompile>
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\test\unit\utGenNormals.cpp">
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\test\unit\utGenNormals.cpp">
       <Filter>UnitTests\PostProcess</Filter>
     </ClCompile>
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\test\unit\utTriangulate.cpp">
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\test\unit\utTriangulate.cpp">
       <Filter>UnitTests\PostProcess</Filter>
     </ClCompile>
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\test\unit\utTextureTransform.cpp">
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\test\unit\utTextureTransform.cpp">
       <Filter>UnitTests\PostProcess</Filter>
     </ClCompile>
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\test\unit\utRemoveRedundantMaterials.cpp">
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\test\unit\utRemoveRedundantMaterials.cpp">
       <Filter>UnitTests\PostProcess</Filter>
     </ClCompile>
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\test\unit\utRemoveVCProcess.cpp">
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\test\unit\utRemoveVCProcess.cpp">
       <Filter>UnitTests\PostProcess</Filter>
     </ClCompile>
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\test\unit\utScaleProcess.cpp">
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\test\unit\utScaleProcess.cpp">
       <Filter>UnitTests\PostProcess</Filter>
     </ClCompile>
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\test\unit\utJoinVertices.cpp">
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\test\unit\utArmaturePopulate.cpp">
       <Filter>UnitTests\PostProcess</Filter>
     </ClCompile>
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\test\unit\utRemoveComments.cpp">
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\test\unit\utJoinVertices.cpp">
       <Filter>UnitTests\PostProcess</Filter>
     </ClCompile>
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\test\unit\utRemoveComponent.cpp">
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\test\unit\utRemoveComments.cpp">
       <Filter>UnitTests\PostProcess</Filter>
     </ClCompile>
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\test\unit\utVertexTriangleAdjacency.cpp">
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\test\unit\utRemoveComponent.cpp">
       <Filter>UnitTests\PostProcess</Filter>
     </ClCompile>
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\test\unit\utSplitLargeMeshes.cpp">
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\test\unit\utVertexTriangleAdjacency.cpp">
       <Filter>UnitTests\PostProcess</Filter>
     </ClCompile>
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\test\unit\utFindDegenerates.cpp">
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\test\unit\utSplitLargeMeshes.cpp">
       <Filter>UnitTests\PostProcess</Filter>
     </ClCompile>
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\test\unit\utFindInvalidData.cpp">
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\test\unit\utFindDegenerates.cpp">
       <Filter>UnitTests\PostProcess</Filter>
     </ClCompile>
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\test\unit\utLimitBoneWeights.cpp">
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\test\unit\utFindInvalidData.cpp">
       <Filter>UnitTests\PostProcess</Filter>
     </ClCompile>
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\test\unit\utPretransformVertices.cpp">
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\test\unit\utLimitBoneWeights.cpp">
       <Filter>UnitTests\PostProcess</Filter>
     </ClCompile>
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\test\unit\utScenePreprocessor.cpp">
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\test\unit\utPretransformVertices.cpp">
       <Filter>UnitTests\PostProcess</Filter>
     </ClCompile>
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\test\unit\utTargetAnimation.cpp">
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\test\unit\utScenePreprocessor.cpp">
       <Filter>UnitTests\PostProcess</Filter>
     </ClCompile>
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\test\unit\utSortByPType.cpp">
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\test\unit\utTargetAnimation.cpp">
       <Filter>UnitTests\PostProcess</Filter>
     </ClCompile>
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\test\unit\utSceneCombiner.cpp">
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\test\unit\utSortByPType.cpp">
       <Filter>UnitTests\PostProcess</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\test\unit\utSceneCombiner.cpp">
+      <Filter>UnitTests\PostProcess</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\test\unit\utGenBoundingBoxesProcess.cpp">
+      <Filter>UnitTests\PostProcess</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\contrib\gtest\src\gtest-all.cc">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\test\unit\SceneDiffer.h">
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\test\unit\MathTest.h">
       <Filter>UnitTests\Common</Filter>
     </ClInclude>
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\test\unit\UTLogStream.h">
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\test\unit\RandomNumberGeneration.h">
       <Filter>UnitTests\Common</Filter>
     </ClInclude>
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\test\unit\TestIOSystem.h">
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\test\unit\SceneDiffer.h">
       <Filter>UnitTests\Common</Filter>
     </ClInclude>
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\test\unit\TestModelFactory.h">
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\test\unit\UTLogStream.h">
       <Filter>UnitTests\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\test\unit\TestIOSystem.h">
+      <Filter>UnitTests\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\test\unit\TestModelFactory.h">
+      <Filter>UnitTests\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\test\unit\ImportExport\MDL\MDLHL1TestFiles.h">
+      <Filter>UnitTests\ImportExport</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="F:\OpenGL\assimp-4.1.0\test\CMakeLists.txt" />
+    <CustomBuild Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\test\CMakeLists.txt" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Source Files">
-      <UniqueIdentifier>{FFBFDF1F-5254-3901-88E2-2E4006814B3D}</UniqueIdentifier>
+      <UniqueIdentifier>{FFFBDE15-D0E4-3D70-BF9A-89D69BA7C23D}</UniqueIdentifier>
     </Filter>
     <Filter Include="UnitTests">
-      <UniqueIdentifier>{37011F46-D89A-36CE-A1F8-1C2CC7B393C7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="UnitTests\Compiler">
-      <UniqueIdentifier>{D539C9EB-0EA4-3348-9DF2-78C816B177A1}</UniqueIdentifier>
+      <UniqueIdentifier>{FAECD94E-8A56-3A2C-BCE1-B1EAE95BAE77}</UniqueIdentifier>
     </Filter>
     <Filter Include="UnitTests\Common">
-      <UniqueIdentifier>{5FC1384E-BD3A-3CD3-805F-7EEF0F9DBF0E}</UniqueIdentifier>
+      <UniqueIdentifier>{70A88CC8-C8B2-3422-96BB-12B6F9F7AE95}</UniqueIdentifier>
     </Filter>
-    <Filter Include="UnitTests\Importers">
-      <UniqueIdentifier>{E2EEDBD5-6BEB-36CF-A16E-718B20FA65C7}</UniqueIdentifier>
+    <Filter Include="UnitTests\Compiler">
+      <UniqueIdentifier>{77233D15-7B7F-329C-8165-EE636E97D16E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UnitTests\ImportExport">
+      <UniqueIdentifier>{3363BC02-1AF9-3EC0-9A81-3B6D1F1793D0}</UniqueIdentifier>
     </Filter>
     <Filter Include="UnitTests\Material">
-      <UniqueIdentifier>{D7307AB7-3633-328B-89A4-BC78793A83C2}</UniqueIdentifier>
+      <UniqueIdentifier>{C973962E-5062-3CCC-8803-7FB7393E8AC4}</UniqueIdentifier>
     </Filter>
     <Filter Include="UnitTests\Math">
-      <UniqueIdentifier>{5B00A1F1-6377-3DD1-A46A-1A9B8483664A}</UniqueIdentifier>
+      <UniqueIdentifier>{092B618B-C19F-39E3-88E3-FB0AF1D360FB}</UniqueIdentifier>
     </Filter>
     <Filter Include="UnitTests\PostProcess">
-      <UniqueIdentifier>{6262CEE1-2395-314E-9036-109468095793}</UniqueIdentifier>
+      <UniqueIdentifier>{724B34AD-04B6-33D9-B206-0B83B534D25D}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

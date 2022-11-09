@@ -1,5 +1,5 @@
 #pragma once
-#include "BlackPearl/Renderer/Buffer.h"
+#include "BlackPearl/Renderer/Buffer/Buffer.h"
 #include "BlackPearl/Object/Object.h"
 #include "BlackPearl/Renderer/MasterRenderer/BasicRenderer.h"
 #include "BlackPearl/Config.h"

@@ -2,9 +2,9 @@
 #include "BlackPearl/Renderer/MasterRenderer/BasicRenderer.h"
 #include "BlackPearl/Renderer/Material/Texture3D.h"
 #include "BlackPearl/Renderer/Shader/Shader.h"
-#include "BlackPearl/Renderer/Buffer.h"
+#include "BlackPearl/Renderer/Buffer/Buffer.h"
 #include "BlackPearl/Renderer/Material/TextureImage2D.h"
-#include "BlackPearl/Renderer/Buffer.h"
+#include "BlackPearl/Renderer/Buffer/Buffer.h"
 #include "BlackPearl/Renderer/Material/BufferTexture.h"
 #include "BlackPearl/Sampler/Sobol.h"
 namespace BlackPearl{

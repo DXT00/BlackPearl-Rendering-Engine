@@ -3,7 +3,7 @@
 Open Asset Import Library (assimp)
 ---------------------------------------------------------------------------
 
-Copyright (c) 2006-2015, assimp team
+Copyright (c) 2006-2022, assimp team
 
 All rights reserved.
 
@@ -49,8 +49,7 @@ namespace AssimpView {
 CMeshRenderer CMeshRenderer::s_cInstance;
 
 //-------------------------------------------------------------------------------
-int CMeshRenderer::DrawUnsorted(unsigned int iIndex)
-{
+int CMeshRenderer::DrawUnsorted(unsigned int iIndex) {
     ai_assert(iIndex < g_pcAsset->pcScene->mNumMeshes);
 
     // set vertex and index buffer
@@ -62,11 +61,14 @@ int CMeshRenderer::DrawUnsorted(unsigned int iIndex)
     D3DPRIMITIVETYPE type = D3DPT_POINTLIST;
     switch (g_pcAsset->pcScene->mMeshes[iIndex]->mPrimitiveTypes) {
         case aiPrimitiveType_POINT:
-            type = D3DPT_POINTLIST;break;
+            type = D3DPT_POINTLIST;
+            break;
         case aiPrimitiveType_LINE:
-            type = D3DPT_LINELIST;break;
+            type = D3DPT_LINELIST;
+            break;
         case aiPrimitiveType_TRIANGLE:
-            type = D3DPT_TRIANGLELIST;break;
+            type = D3DPT_TRIANGLELIST;
+            break;
     }
     // and draw the mesh
     g_piDevice->DrawIndexedPrimitive(type,
@@ -77,8 +79,7 @@ int CMeshRenderer::DrawUnsorted(unsigned int iIndex)
     return 1;
 }
 //-------------------------------------------------------------------------------
-int CMeshRenderer::DrawSorted(unsigned int iIndex,const aiMatrix4x4& mWorld)
-{
+int CMeshRenderer::DrawSorted(unsigned int iIndex,const aiMatrix4x4& mWorld) {
     ai_assert(iIndex < g_pcAsset->pcScene->mNumMeshes);
 
     AssetHelper::MeshHelper* pcHelper = g_pcAsset->apcMeshes[iIndex];
@@ -163,4 +164,4 @@ int CMeshRenderer::DrawSorted(unsigned int iIndex,const aiMatrix4x4& mWorld)
 
     return 1;
 }
-};
+}

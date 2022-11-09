@@ -20,18 +20,20 @@ namespace BlackPearl {
 		};
 		Window(const WindowData& data = WindowData());
 		~Window();
-		void Init();
+		virtual void Init() = 0;
+		virtual void OnUpdate() = 0;
+		virtual bool ShouldClose() = 0;
+		virtual bool IsKeyPressed(int keycode) = 0;
+		virtual bool IsMouseButtonPressed(int button) = 0;
+		virtual std::pair<float, float> GetMousePosition() = 0;
+
 		inline unsigned int GetHeight() const { return m_Data.Height; }
 		inline unsigned int GetWidth() const { return m_Data.Width; }
 		inline std::string GetTitle() const { return m_Data.Title; }
-		inline GLFWwindow* GetNativeWindow() const { return m_Window; }
-		inline void SetCallBack(const std::function<void(Event&)>& callback) { m_Data.EventCallback = callback; }
-		void OnUpdate();
+		inline void SetAppCallBack(const std::function<void(Event&)>& callback) { m_Data.EventCallback = callback; }
+		virtual void* GetNativeWindow() const = 0;
 
-	private:
-
-		GLFWwindow* m_Window;
-		std::unique_ptr<Context> m_Context;
+	protected:
 		WindowData m_Data;
 	};
 

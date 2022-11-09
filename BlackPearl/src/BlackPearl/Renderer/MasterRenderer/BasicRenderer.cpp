@@ -7,14 +7,21 @@
 
 #include "BlackPearl/Component/MeshRendererComponent/MeshRenderer.h"
 #include "BlackPearl/Component/TransformComponent/Transform.h"
+#include "BlackPearl/Component/TerrainComponent/TerrainComponent.h"
 #include "BlackPearl/Renderer/Shader/Shader.h"
 #include "BlackPearl/Renderer/Renderer.h"
 #include "BlackPearl/Renderer/MasterRenderer/ShadowMapPointLightRenderer.h"
 #include "BlackPearl/Config.h"
+#include "BlackPearl/Debugger/D3D12Debugger/HLSLPixDebugger.h"
 namespace BlackPearl {
+	uint32_t BasicRenderer::s_DrawCallCnt = 0;
 
 	BasicRenderer::BasicRenderer()
 	{
+		if (GetModuleHandle(L"WinPixGpuCapturer.dll") == 0)
+		{
+			LoadLibrary(HLSLPixDebugger::GetLatestWinPixGpuCapturerPath_Cpp17().c_str());
+		}
 	}
 
 	BasicRenderer::~BasicRenderer()
@@ -89,12 +96,16 @@ namespace BlackPearl {
 			return;
 
 		glm::mat4 transformMatrix = obj->GetComponent<Transform>()->GetTransformMatrix();
-		std::vector<Mesh> meshes = obj->GetComponent<MeshRenderer>()->GetMeshes();
+		std::vector<std::shared_ptr<Mesh>> meshes = obj->GetComponent<MeshRenderer>()->GetMeshes();
 
 		//RenderConfigure(obj);
 
 		for (int i = 0; i < meshes.size(); i++) {
-			std::shared_ptr<Shader> shader = meshes[i].GetMaterial()->GetShader();
+			std::shared_ptr<Shader> shader = meshes[i]->GetMaterial()->GetShader();
+			if (!shader) {
+				GE_CORE_ERROR(" no shader found!");
+				break;
+			}
 			shader->Bind();
 			GE_ERROR_JUDGE();
 
@@ -111,24 +122,26 @@ namespace BlackPearl {
 			else
 				PrepareBasicShaderParameters(meshes[i], shader, false, textureBeginIdx);
 
-			Renderer::Submit(meshes[i].GetVertexArray(), shader, transformMatrix, scene);
-			if (meshes[i].GetIndicesSize() > 0) {
-				unsigned int indicesNum = meshes[i].GetIndicesSize() / sizeof(unsigned int);
-				meshes[i].GetVertexArray()->GetIndexBuffer()->Bind();
-				glDrawElements(GL_TRIANGLES, indicesNum, GL_UNSIGNED_INT, 0);//0
-				meshes[i].GetVertexArray()->GetIndexBuffer()->UnBind();
-				meshes[i].GetMaterial()->Unbind();
+			Renderer::Submit(meshes[i]->GetVertexArray(), shader, transformMatrix, scene);
+			if (meshes[i]->GetIndicesSize() > 0) {
+				unsigned int indicesNum = meshes[i]->GetIndicesSize() / sizeof(unsigned int);
+				meshes[i]->GetVertexArray()->GetIndexBuffer()->Bind();
+				glDrawElements(GL_TRIANGLES, indicesNum, GL_UNSIGNED_INT, 0);
+				s_DrawCallCnt++;
+				meshes[i]->GetVertexArray()->GetIndexBuffer()->UnBind();
+				meshes[i]->GetMaterial()->Unbind();
 
 			}
 			else
 			{
-				meshes[i].GetVertexArray()->UpdateVertexBuffer();
-				for (int j = 0; j < meshes[i].GetVertexArray()->GetVertexBuffers().size(); j++)
+				meshes[i]->GetVertexArray()->UpdateVertexBuffers();
+				for (int j = 0; j < meshes[i]->GetVertexArray()->GetVertexBuffers().size(); j++)
 				{
-					auto vertexBuffer = meshes[i].GetVertexArray()->GetVertexBuffers()[j];
+					auto vertexBuffer = meshes[i]->GetVertexArray()->GetVertexBuffers()[j];
 					//vertexBuffer->Bind();
 					unsigned int vertexNum = vertexBuffer->GetVertexSize() / vertexBuffer->GetBufferLayout().GetStride();
 					glDrawArrays(GL_TRIANGLES, 0, vertexNum);
+					s_DrawCallCnt++;
 					GE_ERROR_JUDGE();
 
 					for (int index = 0; index < vertexBuffer->GetBufferLayout().GetElements().size(); index++)
@@ -139,8 +152,8 @@ namespace BlackPearl {
 				}
 
 			}
-			meshes[i].GetVertexArray()->UnBind();
-			meshes[i].GetMaterial()->Unbind();
+			meshes[i]->GetVertexArray()->UnBind();
+			meshes[i]->GetMaterial()->Unbind();
 			shader->Unbind();
 
 		}
@@ -152,7 +165,7 @@ namespace BlackPearl {
 			return;
 
 		glm::mat4 transformMatrix = obj->GetComponent<Transform>()->GetTransformMatrix();
-		std::vector<Mesh> meshes = obj->GetComponent<MeshRenderer>()->GetMeshes();
+		std::vector<std::shared_ptr<Mesh>> meshes = obj->GetComponent<MeshRenderer>()->GetMeshes();
 		GE_ERROR_JUDGE();
 
 
@@ -161,7 +174,6 @@ namespace BlackPearl {
 		}
 		else {
 			shader->SetUniform1i("u_IsPBRObjects", 0);
-
 		}
 		GE_ERROR_JUDGE();
 
@@ -172,33 +184,26 @@ namespace BlackPearl {
 				PrepareBasicShaderParameters(meshes[i], shader, false, textureBeginIdx);
 			GE_ERROR_JUDGE();
 
-			Renderer::Submit(meshes[i].GetVertexArray(), shader, transformMatrix, scene);
+			Renderer::Submit(meshes[i]->GetVertexArray(), shader, transformMatrix, scene);
 			GE_ERROR_JUDGE();
 
-			if (meshes[i].GetIndicesSize() > 0) {
-				unsigned int indicesNum = meshes[i].GetIndicesSize() / sizeof(unsigned int);
-				meshes[i].GetVertexArray()->GetIndexBuffer()->Bind();
+			if (meshes[i]->GetIndicesSize() > 0) {
+				unsigned int indicesNum = meshes[i]->GetIndicesSize() / sizeof(unsigned int);
+				meshes[i]->GetVertexArray()->GetIndexBuffer()->Bind();
 				GE_ERROR_JUDGE();
-				//int count; glGetBufferParameteriv(GL_ELEMENT_ARRAY_BUFFER, GL_BUFFER_SIZE, &count);
-				//GE_CORE_WARN("indicesNum = {0},count = {1}", indicesNum, count / sizeof(GLuint));
-				//GE_ERROR_JUDGE();
-
-				//glDrawElements(GL_TRIANGLES, count / sizeof(GLuint), GL_UNSIGNED_INT, 0);
 				glDrawElements(GL_TRIANGLES, indicesNum, GL_UNSIGNED_INT, 0);
-				//meshes[i].GetVertexArray()->GetIndexBuffer()->UnBind();
-			//	meshes[i].GetMaterial()->Unbind();
-
+				s_DrawCallCnt++;
 				GE_ERROR_JUDGE();
-
 			}
 			else
 			{
-				meshes[i].GetVertexArray()->UpdateVertexBuffer();
-				for (int j = 0; j < meshes[i].GetVertexArray()->GetVertexBuffers().size(); j++)
+				meshes[i]->GetVertexArray()->UpdateVertexBuffers();
+				for (int j = 0; j < meshes[i]->GetVertexArray()->GetVertexBuffers().size(); j++)
 				{
-					auto vertexBuffer = meshes[i].GetVertexArray()->GetVertexBuffers()[j];
+					auto vertexBuffer = meshes[i]->GetVertexArray()->GetVertexBuffers()[j];
 					unsigned int vertexNum = vertexBuffer->GetVertexSize() / vertexBuffer->GetBufferLayout().GetStride();
 					glDrawArrays(GL_TRIANGLES, 0, vertexNum);
+					s_DrawCallCnt++;
 					GE_ERROR_JUDGE();
 
 					for (int index = 0; index < vertexBuffer->GetBufferLayout().GetElements().size(); index++)
@@ -211,9 +216,9 @@ namespace BlackPearl {
 				}
 
 			}
-			meshes[i].GetVertexArray()->UnBind();
+			meshes[i]->GetVertexArray()->UnBind();
 			GE_ERROR_JUDGE();
-			meshes[i].GetMaterial()->Unbind();
+			meshes[i]->GetMaterial()->Unbind();
 			GE_ERROR_JUDGE();
 
 			shader->Unbind();
@@ -221,33 +226,105 @@ namespace BlackPearl {
 
 		}
 	}
+
+	void BasicRenderer::DrawBatchNode(BatchNode* node, std::shared_ptr<Shader> shader)
+	{
+		
+		//node->SetRenderState();
+		uint32_t batchIndexCnt = node->GetIndexCount();
+		shader->Bind();
+		/*for (size_t i = 0; i < node->GetObjCnt(); i++)
+		{
+			shader->SetUniformMat4f("u_Model[" + std::to_string(i) + "]", node->GetObjs()[i]->GetComponent<Transform>()->GetTransformMatrix());
+		}*/
+		//shader->SetUniformMat3x4f("u_Model", node->GetModelMatrix(), node->GetObjCnt());
+		Renderer::Submit(node->GetVertexArray(), shader, node->GetModelMatrix(), node->GetObjCnt());
+
+		//glDrawElements
+		node->GetVertexArray()->Bind();
+		glDrawElements(GL_TRIANGLES, batchIndexCnt, GL_UNSIGNED_INT, 0);
+		s_DrawCallCnt++;
+		node->GetVertexArray()->UnBind();
+
+
+	}
+
+	void BasicRenderer::DrawInstanceNode(InstanceNode* node, std::shared_ptr<Shader> shader)
+	{
+	}
+
+	void BasicRenderer::DrawSingleNode(SingleNode* node,const std::shared_ptr<Shader>& shader)
+	{
+	}
+
+	void BasicRenderer::DrawMultiIndirect(std::shared_ptr<VertexArray> vertexArray, std::shared_ptr<Shader> shader, uint32_t cmdsCnt)
+	{
+		shader->Bind();
+		Renderer::Submit(vertexArray, shader, nullptr, 0);
+		glMultiDrawElementsIndirect(GL_TRIANGLES, GL_UNSIGNED_INT, (GLvoid*)0, cmdsCnt, 0);
+		s_DrawCallCnt++;
+	}
+
+	void BasicRenderer::DrawTerrain(Object* obj, std::shared_ptr<Shader> shader, bool drawPolygon)
+	{
+		GE_ASSERT(obj->HasComponent<TerrainComponent>(), "obj has no terrain component");
+		glm::mat4 transformMatrix = obj->GetComponent<Transform>()->GetTransformMatrix();
+		std::vector<std::shared_ptr<Mesh>> meshes = obj->GetComponent<MeshRenderer>()->GetMeshes();
+
+		shader->Bind();
+		auto comp = obj->GetComponent<TerrainComponent>();
+		if (comp->GetDynamicTess()) {
+			shader->SetUniform1i("u_DynamicTessLevel", 1);
+		}
+		else {
+			shader->SetUniform1i("u_DynamicTessLevel", 0);
+
+		}
+		shader->SetUniform1i("u_TessLevel", comp->GetStaticTessLevel());
+
+		for (int i = 0; i < meshes.size(); i++) {
+			PrepareBasicShaderParameters(meshes[i], shader, false/* is light*/);
+			Renderer::Submit(meshes[i]->GetVertexArray(), shader, transformMatrix);
+			uint32_t vertexPerChunk = comp->GetVertexPerChunk();
+			uint32_t chunkCnt = comp->GetChunkCnt();
+			glDrawArrays(GL_PATCHES, 0, vertexPerChunk * chunkCnt);
+			s_DrawCallCnt++;
+
+			if (drawPolygon)
+				glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		}
+	}
+
+
 	void BasicRenderer::DrawPointLight(Object* obj, Renderer::SceneData* scene, unsigned int textureBeginIdx)
 	{
 		GE_ASSERT(obj->HasComponent<PointLight>(), "obj has no pointlight component!");
 		glm::mat4 transformMatrix = obj->GetComponent<Transform>()->GetTransformMatrix();
-		std::vector<Mesh> meshes = obj->GetComponent<MeshRenderer>()->GetMeshes();
-
+		std::vector<std::shared_ptr<Mesh>> meshes = obj->GetComponent<MeshRenderer>()->GetMeshes();
 
 		for (int i = 0; i < meshes.size(); i++) {
-			std::shared_ptr<Shader> shader = meshes[i].GetMaterial()->GetShader();
+			std::shared_ptr<Shader> shader = meshes[i]->GetMaterial()->GetShader();
 			shader->Bind();
 			PrepareBasicShaderParameters(meshes[i], shader, true, textureBeginIdx);
-			Renderer::Submit(meshes[i].GetVertexArray(), shader, transformMatrix, scene);
-			if (meshes[i].GetIndicesSize() > 0) {
-				unsigned int indicesNum = meshes[i].GetIndicesSize() / sizeof(unsigned int);
-				meshes[i].GetVertexArray()->GetIndexBuffer()->Bind();
+			Renderer::Submit(meshes[i]->GetVertexArray(), shader, transformMatrix, scene);
+			if (meshes[i]->GetIndicesSize() > 0) {
+				unsigned int indicesNum = meshes[i]->GetIndicesSize() / sizeof(unsigned int);
+				meshes[i]->GetVertexArray()->GetIndexBuffer()->Bind();
 				glDrawElements(GL_TRIANGLES, indicesNum, GL_UNSIGNED_INT, 0);
-				meshes[i].GetVertexArray()->GetIndexBuffer()->UnBind();
-				meshes[i].GetMaterial()->Unbind();
+				s_DrawCallCnt++;
+
+				meshes[i]->GetVertexArray()->GetIndexBuffer()->UnBind();
+				meshes[i]->GetMaterial()->Unbind();
 
 			}
 			else {
-				meshes[i].GetVertexArray()->UpdateVertexBuffer();
+				meshes[i]->GetVertexArray()->UpdateVertexBuffers();
 
-				for (int j = 0; j < meshes[i].GetVertexArray()->GetVertexBuffers().size(); j++)
+				for (int j = 0; j < meshes[i]->GetVertexArray()->GetVertexBuffers().size(); j++)
 				{
-					auto vertexBuffer = meshes[i].GetVertexArray()->GetVertexBuffers()[j];
+					auto vertexBuffer = meshes[i]->GetVertexArray()->GetVertexBuffers()[j];
 					glDrawArrays(GL_TRIANGLES, 0, vertexBuffer->GetVertexSize() / vertexBuffer->GetBufferLayout().GetStride());
+					s_DrawCallCnt++;
 
 					for (int index = 0; index < vertexBuffer->GetBufferLayout().GetElements().size(); index++)
 					{
@@ -257,9 +334,9 @@ namespace BlackPearl {
 				}
 
 			}
-			meshes[i].GetVertexArray()->UnBind();
+			meshes[i]->GetVertexArray()->UnBind();
 
-			meshes[i].GetMaterial()->Unbind();
+			meshes[i]->GetMaterial()->Unbind();
 			GE_ERROR_JUDGE();
 
 		}
@@ -273,11 +350,11 @@ namespace BlackPearl {
 		}
 	}
 
-	void BasicRenderer::PrepareBasicShaderParameters(Mesh mesh, std::shared_ptr<Shader> shader, bool isLight, unsigned int textureBeginIdx)
+	void BasicRenderer::PrepareBasicShaderParameters(std::shared_ptr<Mesh> mesh, std::shared_ptr<Shader> shader, bool isLight, unsigned int textureBeginIdx)
 	{
 		shader->Bind();
 
-		std::shared_ptr<Material> material = mesh.GetMaterial();
+		std::shared_ptr<Material> material = mesh->GetMaterial();
 		std::shared_ptr<Material::TextureMaps> textures = material->GetTextureMaps();
 		MaterialColor::Color materialColor = material->GetMaterialColor().Get();
 		GE_ERROR_JUDGE();

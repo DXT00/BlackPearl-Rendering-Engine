@@ -7,6 +7,7 @@
 #include "BlackPearl/Component/LightComponent/Light.h"
 #include "BlackPearl/Component/LightComponent/LightSources.h"
 #include "BlackPearl/MainCamera/MainCamera.h"
+#include "BlackPearl/Node/BatchNode.h"
 #include "BlackPearl/RayTracing/Vertex.h"
 namespace BlackPearl {
 	class ObjectManager
@@ -32,13 +33,24 @@ namespace BlackPearl {
 
 		Object* CreateEmpty(std::string name = "");
 		Object* CreateLight(LightType type,LightSources* lightSources, const std::string& name);
-		Object* CreateModel(const std::string& modelPath, const std::string& shaderPath, const bool isAnimated, const bool addBondingBox, const std::string& name);
+		Object* CreateModel(
+			const std::string& modelPath,
+			const std::string& shaderPath,
+			const bool isAnimated,
+			const bool vertices_sorted,
+			const bool addBondingBox,
+			const std::string& name,
+			const bool createMeshlet = false,
+			const bool isMeshletModel = false,
+			MeshletOption options = MeshletOption());
+
 		Object* CreateCube(const std::string& shaderPath,const std::string& texturePath, const std::string& name);
 		Object* CreateSphere(const float radius, const unsigned int stackCount, const unsigned int sectorCount, const std::string& shaderPath, const std::string& texturePath, const std::string& name);
 		Object* CreatePlane(const std::string& shaderPath, const std::string& texturePath, const std::string& name);
 		Object* CreateSkyBox(const std::vector<std::string>& textureFaces, const std::string& shaderPath, const std::string& name);
 		Object* CreateQuad(const std::string& shaderPath , const std::string& texturePath, const std::string& name);
-		
+		Object* CreateTerrain(const std::string& shaderPath, const std::string& heightMapPath, const std::string& texturePath, uint32_t chunkCntX, uint32_t chunkCntZ, const std::string name);
+		BatchNode* CreateBatchNode(std::vector<Object*> objs, bool dynamic, const std::string& name);
 		/*Blending Object, include logical and actual properties*/
 		Object* CreateLightProbe(ProbeType type, const std::string& shaderPath, const std::string& texturePath, const std::string& name);
 		MainCamera* CreateCamera(const std::string& name);

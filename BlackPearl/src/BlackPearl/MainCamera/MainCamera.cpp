@@ -35,8 +35,40 @@ namespace BlackPearl {
 	}
 	void MainCamera::SetFov(float fov)
 	{
-		return m_CameraObj->GetComponent<PerspectiveCamera>()->SetFov(fov);
+		m_CameraObj->GetComponent<PerspectiveCamera>()->SetFov(fov);
 	}
+
+	float MainCamera::ZFar() const{
+		return m_CameraObj->GetComponent<PerspectiveCamera>()->GetZfar();
+	}
+	float MainCamera::ZNear() const {
+		 return m_CameraObj->GetComponent<PerspectiveCamera>()->GetZnear();
+	}
+	void MainCamera::SetZFar(float zFar) {
+		m_CameraObj->GetComponent<PerspectiveCamera>()->SetZfar(zFar);
+	}
+	void MainCamera::SetZNear(float zNear) {
+		m_CameraObj->GetComponent<PerspectiveCamera>()->SetZnear(zNear);
+
+	}
+	void MainCamera::SetMoveSpeed(float speed) {
+		m_CameraObj->GetComponent<PerspectiveCamera>()->SetMoveSpeed(speed);
+
+	}
+	void MainCamera::SetRotateSpeed(float speed) {
+		m_CameraObj->GetComponent<PerspectiveCamera>()->SetRotateSpeed(speed);
+	}
+
+	float MainCamera::GetMoveSpeed() const
+	{
+		return m_CameraObj->GetComponent<PerspectiveCamera>()->GetMoveSpeed();
+	}
+
+	float MainCamera::GetRotateSpeed() const
+	{
+		return m_CameraObj->GetComponent<PerspectiveCamera>()->GetRotateSpeed();
+	}
+
 	void MainCamera::SetPosition(glm::vec3 pos)
 	{
 		m_CameraObj->GetComponent<Transform>()->SetPosition(pos);

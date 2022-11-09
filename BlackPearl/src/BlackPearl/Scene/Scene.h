@@ -1,42 +1,50 @@
 #pragma once
-#include "BlackPearl/Component/LightComponent/Light.h"
-#include "BlackPearl/LayerScene/Layer.h"
-#include "BlackPearl/LayerStack.h"
-#include "BlackPearl/ImGui/ImGuiLayer.h"
-#include "BlackPearl/Timestep/Timestep.h"
-#include "BlackPearl/Entity/Entity.h"
-#include "BlackPearl/ObjectManager/ObjectManager.h"
-
+#include "BlackPearl/Object/Object.h"
+#include "BlackPearl/Renderer/Model/Model.h"
+#include "BlackPearl/Renderer/Mesh/MeshManager.h"
+#include "BlackPearl/Node/Node.h"
 namespace BlackPearl {
-
-	class Scene {
+	class Scene
+	{
 	public:
-		Scene() {
-			//m_ImGuiEntityMgr = DBG_NEW EntityManager();
-			//m_ImGuiObjectMgr = DBG_NEW ObjectManager(m_ImGuiEntityMgr);
-			m_ImGuiLayer = DBG_NEW ImGuiLayer("ImGuiLayer");
-			PushOverLayer(m_ImGuiLayer);
-		}
-		~Scene() {
-			//Layer通过m_LayerStack删除，不要重复删除！
-			//GE_SAVE_DELETE(m_ImGuiLayer);
-			//GE_SAVE_DELETE(m_ImGuiEntityMgr);
-			//GE_SAVE_DELETE(m_ImGuiObjectMgr);
-
+		enum DemoType {
+			Empty,
+			SDFScene,
+			MetaBallSDFScene,
+			MeshletScene
 		};
+		Scene(DemoType type = DemoType::Empty);
+		~Scene();
+		void AddCamera();
+		void GetCamera();
+		void AddLights();
+		void GetLights();
+		void AddObject(Object* obj);
+		void AddNode(Node* node);
 
-		void OnUpdateLayers(Timestep ts);
-		void PushLayer(Layer *layer);
-		void PushOverLayer(Layer *overlay);
+		void AddModel(Model* obj);
 
-	private:
+		std::vector<Object*> GetObjects() const { return m_ObjectList; }
+		std::vector<Model*> GetModels() const { return m_ModelList; }
+		std::vector<Node*> GetNodes() const { return m_NodesList; }
+		std::vector<Node*> GetBatchNodes() const { return m_BatchNodesList; }
+		std::vector<Node*> GetInstanceNodes() const { return m_InstanceNodesList; }
+		std::vector<Node*> GetSingleNodes() const { return m_SingleNodesList; }
+		uint32_t GetSingleNodesCnt() const { return m_SingleNodesList.size(); }
 
-		LayerStack m_LayerStack;
-		ImGuiLayer* m_ImGuiLayer; //每个Scene都有一个ImGuiLayer
-		//EntityManager* m_ImGuiEntityMgr;
-		//ObjectManager* m_ImGuiObjectMgr;
+		Node* GetSingleNodes(uint32_t i) const { return m_SingleNodesList[i]; }
+
+		DemoType GetDemoType() { return m_DemoType; }
+	protected:
+		DemoType m_DemoType;
+		std::vector<Object*> m_ObjectList;
+		std::vector<Node*>   m_NodesList;
+		std::vector<Node*>   m_BatchNodesList;
+		std::vector<Node*>   m_InstanceNodesList;
+		std::vector<Node*>   m_SingleNodesList;
+		std::vector<Model*>  m_ModelList;
+		std::shared_ptr<MeshManager> m_MeshMgr;
 	};
-
 
 
 }

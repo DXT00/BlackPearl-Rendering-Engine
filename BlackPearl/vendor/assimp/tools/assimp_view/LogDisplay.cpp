@@ -3,7 +3,7 @@
 Open Asset Import Library (assimp)
 ---------------------------------------------------------------------------
 
-Copyright (c) 2006-2015, assimp team
+Copyright (c) 2006-2022, assimp team
 
 All rights reserved.
 
@@ -46,32 +46,26 @@ namespace AssimpView {
 CLogDisplay CLogDisplay::s_cInstance;
 
 //-------------------------------------------------------------------------------
-void CLogDisplay::AddEntry(const std::string& szText,
-    const D3DCOLOR clrColor)
-    {
+void CLogDisplay::AddEntry(const std::string& szText, const D3DCOLOR clrColor) {
     SEntry sNew;
     sNew.clrColor = clrColor;
     sNew.szText = szText;
     sNew.dwStartTicks = (DWORD)GetTickCount();
 
     this->asEntries.push_back(sNew);
-    }
+}
 
 //-------------------------------------------------------------------------------
-void CLogDisplay::ReleaseNativeResource()
-    {
-    if (this->piFont)
-        {
+void CLogDisplay::ReleaseNativeResource() {
+    if (this->piFont) {
         this->piFont->Release();
-        this->piFont = NULL;
-        }
+        this->piFont = nullptr;
     }
+}
 
 //-------------------------------------------------------------------------------
-void CLogDisplay::RecreateNativeResource()
-    {
-    if (!this->piFont)
-        {
+void CLogDisplay::RecreateNativeResource() {
+    if (!this->piFont) {
         if (FAILED(D3DXCreateFont(g_piDevice,
                      16,                    //Font height
                      0,                     //Font width
@@ -84,20 +78,17 @@ void CLogDisplay::RecreateNativeResource()
                      5, //Quality
                      DEFAULT_PITCH|FF_DONTCARE, //PitchAndFamily
                      "Verdana",                 //pFacename,
-                     &this->piFont)))
-            {
+                     &this->piFont))) {
             CLogDisplay::Instance().AddEntry("Unable to load font",D3DCOLOR_ARGB(0xFF,0xFF,0,0));
 
-            this->piFont = NULL;
+            this->piFont = nullptr;
             return;
-            }
         }
-    return;
     }
+}
 
 //-------------------------------------------------------------------------------
-void CLogDisplay::OnRender()
-    {
+void CLogDisplay::OnRender() {
     DWORD dwTick = (DWORD) GetTickCount();
     DWORD dwLimit = dwTick - 8000;
     DWORD dwLimit2 = dwLimit + 3000;
@@ -117,9 +108,8 @@ void CLogDisplay::OnRender()
     sRect.bottom = sWndRect.bottom;
 
     // if no asset is loaded draw a "no asset loaded" text in the center
-    if (!g_pcAsset)
-        {
-            const char* szText = "Nothing to display ... \r\nTry [Viewer | Open asset] to load an asset";
+    if (!g_pcAsset) {
+        const char* szText = "Nothing to display ... \r\nTry [Viewer | Open asset] to load an asset";
 
         // shadow
         RECT sCopy;
@@ -127,62 +117,58 @@ void CLogDisplay::OnRender()
         sCopy.top       = sWndRect.top+1;
         sCopy.bottom    = sWndRect.bottom+1;
         sCopy.right     = sWndRect.right+1;
-        this->piFont->DrawText(NULL,szText ,
+        this->piFont->DrawText(nullptr,szText ,
             -1,&sCopy,DT_CENTER | DT_VCENTER,D3DCOLOR_ARGB(100,0x0,0x0,0x0));
         sCopy.left      = sWndRect.left+1;
         sCopy.top       = sWndRect.top+1;
         sCopy.bottom    = sWndRect.bottom-1;
         sCopy.right     = sWndRect.right-1;
-        this->piFont->DrawText(NULL,szText ,
+        this->piFont->DrawText(nullptr,szText ,
             -1,&sCopy,DT_CENTER | DT_VCENTER,D3DCOLOR_ARGB(100,0x0,0x0,0x0));
         sCopy.left      = sWndRect.left-1;
         sCopy.top       = sWndRect.top-1;
         sCopy.bottom    = sWndRect.bottom+1;
         sCopy.right     = sWndRect.right+1;
-        this->piFont->DrawText(NULL,szText ,
+        this->piFont->DrawText(nullptr,szText ,
             -1,&sCopy,DT_CENTER | DT_VCENTER,D3DCOLOR_ARGB(100,0x0,0x0,0x0));
         sCopy.left      = sWndRect.left-1;
         sCopy.top       = sWndRect.top-1;
         sCopy.bottom    = sWndRect.bottom-1;
         sCopy.right     = sWndRect.right-1;
-        this->piFont->DrawText(NULL,szText ,
+        this->piFont->DrawText(nullptr,szText ,
             -1,&sCopy,DT_CENTER | DT_VCENTER,D3DCOLOR_ARGB(100,0x0,0x0,0x0));
 
         // text
-        this->piFont->DrawText(NULL,szText ,
+        this->piFont->DrawText(nullptr,szText ,
             -1,&sWndRect,DT_CENTER | DT_VCENTER,D3DCOLOR_ARGB(0xFF,0xFF,0xFF,0xFF));
-        }
+    }
 
     // update all elements in the queue and render them
     for (std::list<SEntry>::iterator
-        i =  this->asEntries.begin();
-        i != this->asEntries.end();++i,++iCnt)
-        {
-        if ((*i).dwStartTicks < dwLimit)
-            {
+            i =  this->asEntries.begin();
+            i != this->asEntries.end();++i,++iCnt) {
+        if ((*i).dwStartTicks < dwLimit) {
             i = this->asEntries.erase(i);
 
-            if(i == this->asEntries.end())break;
+            if (i == this->asEntries.end()) {
+                break;
             }
-        else if (NULL != this->piFont)
-            {
+        } else if (nullptr != this->piFont) {
             float fAlpha = 1.0f;
-            if ((*i).dwStartTicks <= dwLimit2)
-                {
+            if ((*i).dwStartTicks <= dwLimit2) {
                 // linearly interpolate to create the fade out effect
                 fAlpha = 1.0f - (float)(dwLimit2 - (*i).dwStartTicks) / 3000.0f;
-                }
+            }
             D3DCOLOR& clrColor = (*i).clrColor;
             clrColor &= ~(0xFFu << 24);
             clrColor |= (((unsigned char)(fAlpha * 255.0f)) & 0xFFu) << 24;
 
             const char* szText = (*i).szText.c_str();
-            if (sRect.top + 30 > sWndRect.bottom)
-                {
+            if (sRect.top + 30 > sWndRect.bottom) {
                 // end of window. send a special message
                 szText = "... too many errors";
                 clrColor = D3DCOLOR_ARGB(0xFF,0xFF,100,0x0);
-                }
+            }
 
             // draw the black shadow
             RECT sCopy;
@@ -190,7 +176,7 @@ void CLogDisplay::OnRender()
             sCopy.top       = sRect.top+1;
             sCopy.bottom    = sRect.bottom+1;
             sCopy.right     = sRect.right+1;
-            this->piFont->DrawText(NULL,szText,
+            this->piFont->DrawText(nullptr,szText,
                 -1,&sCopy,DT_RIGHT | DT_TOP,D3DCOLOR_ARGB(
                 (unsigned char)(fAlpha * 100.0f),0x0,0x0,0x0));
 
@@ -198,7 +184,7 @@ void CLogDisplay::OnRender()
             sCopy.top       = sRect.top-1;
             sCopy.bottom    = sRect.bottom-1;
             sCopy.right     = sRect.right-1;
-            this->piFont->DrawText(NULL,szText,
+            this->piFont->DrawText(nullptr,szText,
                 -1,&sCopy,DT_RIGHT | DT_TOP,D3DCOLOR_ARGB(
                 (unsigned char)(fAlpha * 100.0f),0x0,0x0,0x0));
 
@@ -206,7 +192,7 @@ void CLogDisplay::OnRender()
             sCopy.top       = sRect.top-1;
             sCopy.bottom    = sRect.bottom+1;
             sCopy.right     = sRect.right+1;
-            this->piFont->DrawText(NULL,szText,
+            this->piFont->DrawText(nullptr,szText,
                 -1,&sCopy,DT_RIGHT | DT_TOP,D3DCOLOR_ARGB(
                 (unsigned char)(fAlpha * 100.0f),0x0,0x0,0x0));
 
@@ -214,20 +200,22 @@ void CLogDisplay::OnRender()
             sCopy.top       = sRect.top+1;
             sCopy.bottom    = sRect.bottom-1;
             sCopy.right     = sRect.right-1;
-            this->piFont->DrawText(NULL,szText,
+            this->piFont->DrawText(nullptr,szText,
                 -1,&sCopy,DT_RIGHT | DT_TOP,D3DCOLOR_ARGB(
                 (unsigned char)(fAlpha * 100.0f),0x0,0x0,0x0));
 
             // draw the text itself
-            int iPX = this->piFont->DrawText(NULL,szText,
+            int iPX = this->piFont->DrawText(nullptr,szText,
                 -1,&sRect,DT_RIGHT | DT_TOP,clrColor);
 
             sRect.top += iPX;
             sRect.bottom += iPX;
 
-            if (szText != (*i).szText.c_str())break;
+            if (szText != (*i).szText.c_str()) {
+                break;
             }
         }
-    return;
     }
-};
+}
+
+}

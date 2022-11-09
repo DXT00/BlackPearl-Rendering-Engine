@@ -1,50 +1,8 @@
-﻿生成启动时间为 2019/9/26 21:00:14。
-     1>项目“F:\OpenGL\assimp_build\tools\assimp_cmd\assimp_cmd.vcxproj”在节点 4 上(Build 个目标)。
-     1>PrepareForBuild:
-         正在创建目录“F:\OpenGL\assimp_build\tools\assimp_cmd\Debug\”。
-         正在创建目录“assimp_cmd.dir\Debug\assimp_cmd.tlog\”。
-       InitializeBuildStatus:
-         正在创建“assimp_cmd.dir\Debug\assimp_cmd.tlog\unsuccessfulbuild”，因为已指定“AlwaysCreate”。
-       PreBuildEvent:
-         setlocal
-         E:\CMake\bin\cmake.exe -E copy_if_different F:/OpenGL/assimp_build/code/Debug/assimp-vc140-mt.dll F:/OpenGL/assimp_build/tools/assimp_cmd/Debug
-         if %errorlevel% neq 0 goto :cmEnd
-         :cmEnd
-         endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
-         :cmErrorLevel
-         exit /b %1
-         :cmDone
-         if %errorlevel% neq 0 goto :VCEnd
-         :VCEnd
-       CustomBuild:
-         Building Custom Rule F:/OpenGL/assimp-4.1.0/tools/assimp_cmd/CMakeLists.txt
-         CMake does not need to re-run because F:/OpenGL/assimp_build/tools/assimp_cmd/CMakeFiles/generate.stamp is up-to-date.
-       ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\bin\HostX86\x86\CL.exe /c /I"F:\OpenGL\assimp-4.1.0\." /I"F:\OpenGL\assimp-4.1.0\include" /IF:\OpenGL\assimp_build /IF:\OpenGL\assimp_build\include /I"F:\OpenGL\assimp-4.1.0\contrib\zlib" /IF:\OpenGL\assimp_build\contrib\zlib /I"F:\OpenGL\assimp-4.1.0\code" /Zi /nologo /W3 /WX- /diagnostics:classic /MP /Od /Ob0 /Oy- /D WIN32 /D _WINDOWS /D WIN32_LEAN_AND_MEAN /D OPENDDL_NO_USE_CPP11 /D ASSIMP_BUILD_NO_C4D_IMPORTER /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /GR /Fo"assimp_cmd.dir\Debug\\" /Fd"assimp_cmd.dir\Debug\vc141.pdb" /Gd /TP /analyze- /FC /errorReport:prompt "F:\OpenGL\assimp-4.1.0\tools\assimp_cmd\CompareDump.cpp" "F:\OpenGL\assimp-4.1.0\tools\assimp_cmd\ImageExtractor.cpp" "F:\OpenGL\assimp-4.1.0\tools\assimp_cmd\Main.cpp" "F:\OpenGL\assimp-4.1.0\tools\assimp_cmd\WriteDumb.cpp" "F:\OpenGL\assimp-4.1.0\tools\assimp_cmd\Info.cpp" "F:\OpenGL\assimp-4.1.0\tools\assimp_cmd\Export.cpp"
-         CompareDump.cpp
-         ImageExtractor.cpp
-         Main.cpp
-         WriteDumb.cpp
-         Info.cpp
-         Export.cpp
-       ResourceCompile:
-         C:\Program Files (x86)\Windows Kits\10\bin\10.0.17763.0\x86\rc.exe /D WIN32 /D _DEBUG /D _WINDOWS /D WIN32_LEAN_AND_MEAN /D OPENDDL_NO_USE_CPP11 /D ASSIMP_BUILD_NO_C4D_IMPORTER /D "CMAKE_INTDIR=\\\"Debug\\\"" /l"0x0409" /I"F:\OpenGL\assimp-4.1.0\." /I"F:\OpenGL\assimp-4.1.0\include" /IF:\OpenGL\assimp_build /IF:\OpenGL\assimp_build\include /I"F:\OpenGL\assimp-4.1.0\contrib\zlib" /IF:\OpenGL\assimp_build\contrib\zlib /I"F:\OpenGL\assimp-4.1.0\code" /nologo /fo"assimp_cmd.dir\Debug\assimp_cmd.res" F:\OpenGL\assimp-4.1.0\tools\assimp_cmd\assimp_cmd.rc 
-       Link:
-         C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\bin\HostX86\x86\link.exe /ERRORREPORT:PROMPT /OUT:"F:\OpenGL\assimp_build\tools\assimp_cmd\Debug\assimp.exe" /INCREMENTAL /NOLOGO /LIBPATH:F:/OpenGL/assimp_build /LIBPATH:F:/OpenGL/assimp_build/Debug /LIBPATH:F:/OpenGL/assimp_build/lib /LIBPATH:F:/OpenGL/assimp_build/lib/Debug "..\..\code\Debug\assimp-vc140-mt.lib" ..\..\contrib\zlib\Debug\zlibstaticd.lib ..\..\contrib\irrXML\Debug\IrrXML.lib kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"F:/OpenGL/assimp_build/tools/assimp_cmd/Debug/assimp.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"F:/OpenGL/assimp_build/tools/assimp_cmd/Debug/assimp.lib" /MACHINE:X86 /SAFESEH  /machine:X86 assimp_cmd.dir\Debug\assimp_cmd.res
-         assimp_cmd.dir\Debug\CompareDump.obj
-         assimp_cmd.dir\Debug\ImageExtractor.obj
-         assimp_cmd.dir\Debug\Main.obj
-         assimp_cmd.dir\Debug\WriteDumb.obj
-         assimp_cmd.dir\Debug\Info.obj
-         assimp_cmd.dir\Debug\Export.obj
-         assimp_cmd.vcxproj -> F:\OpenGL\assimp_build\tools\assimp_cmd\Debug\assimp.exe
-       FinalizeBuildStatus:
-         正在删除文件“assimp_cmd.dir\Debug\assimp_cmd.tlog\unsuccessfulbuild”。
-         正在对“assimp_cmd.dir\Debug\assimp_cmd.tlog\assimp_cmd.lastbuildstate”执行 Touch 任务。
-     1>已完成生成项目“F:\OpenGL\assimp_build\tools\assimp_cmd\assimp_cmd.vcxproj”(Build 个目标)的操作。
-
-已成功生成。
-    0 个警告
-    0 个错误
-
-已用时间 00:00:22.03
+﻿  Building Custom Rule D:/AA_LEARN_CODING/LearnOpenGL/BlackPearl-Rendering-Engine/BlackPearl/vendor/assimp/tools/assimp_cmd/CMakeLists.txt
+  CompareDump.cpp
+  ImageExtractor.cpp
+  Main.cpp
+  WriteDump.cpp
+  Info.cpp
+  Export.cpp
+  assimp_cmd.vcxproj -> D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp_build\bin\Debug\assimpd.exe

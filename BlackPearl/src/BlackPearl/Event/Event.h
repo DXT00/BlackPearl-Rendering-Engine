@@ -5,7 +5,7 @@
 
 namespace BlackPearl {
 
-
+#define BIT(x) 1<<x
 	enum EventType {
 		KeyPressed, KeyReleased, KeyTyped,
 		MouseButtonPressed, MouseButtonReleased, MouseMoved, MouseScrolled

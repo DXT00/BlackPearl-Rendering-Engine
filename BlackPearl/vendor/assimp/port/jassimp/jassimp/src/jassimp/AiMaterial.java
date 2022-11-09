@@ -3,7 +3,7 @@
 Open Asset Import Library - Java Binding (jassimp)
 ---------------------------------------------------------------------------
 
-Copyright (c) 2006-2012, assimp team
+Copyright (c) 2006-2020, assimp team
 
 All rights reserved.
 
@@ -70,6 +70,17 @@ import java.util.Set;
  * properties (i.e., properties starting with <code>TEX_</code>).
  */
 public final class AiMaterial {
+    /**
+     * List of properties.
+     */
+    private final List<Property> m_properties = new ArrayList<Property>();
+       
+    /**
+     * Number of textures for each type.
+     */
+    private final Map<AiTextureType, Integer> m_numTextures = 
+            new EnumMap<AiTextureType, Integer>(AiTextureType.class);
+	
     /**
      * Enumerates all supported material properties.
      */
@@ -317,7 +328,36 @@ public final class AiMaterial {
      * properties easily. 
      */
     public static final class Property {
+		/**
+         * Key.
+         */
+        private final String m_key;
+        
+        
         /**
+         * Semantic.
+         */
+        private final int m_semantic;
+        
+        
+        /**
+         * Index.
+         */
+        private final int m_index;
+        
+        
+        /**
+         * Type.
+         */
+        private final PropertyType m_type;
+        
+        
+        /**
+         * Data.
+         */
+        private final Object m_data;
+
+		/**
          * Constructor.
          * 
          * @param key
@@ -417,39 +457,9 @@ public final class AiMaterial {
          * 
          * @return the data
          */
-        Object getData() {
+        public Object getData() {
             return m_data;
         }
-        
-        
-        /**
-         * Key.
-         */
-        private final String m_key;
-        
-        
-        /**
-         * Semantic.
-         */
-        private final int m_semantic;
-        
-        
-        /**
-         * Index.
-         */
-        private final int m_index;
-        
-        
-        /**
-         * Type.
-         */
-        private final PropertyType m_type;
-        
-        
-        /**
-         * Data.
-         */
-        private final Object m_data;
     }
     
     
@@ -1185,18 +1195,5 @@ public final class AiMaterial {
     @SuppressWarnings("unused")
     private void setTextureNumber(int type, int number) {
         m_numTextures.put(AiTextureType.fromRawValue(type), number);
-    }
-    
-    
-    /**
-     * List of properties.
-     */
-    private final List<Property> m_properties = new ArrayList<Property>();
-    
-    
-    /**
-     * Number of textures for each type.
-     */
-    private final Map<AiTextureType, Integer> m_numTextures = 
-            new EnumMap<AiTextureType, Integer>(AiTextureType.class);
+    }    
 }

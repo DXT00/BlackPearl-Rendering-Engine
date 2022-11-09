@@ -4,7 +4,7 @@
 #include"examples/imgui_impl_glfw.h"
 #include "examples/imgui_impl_opengl3.h"
 #include "BlackPearl/Application.h"
-
+#include "BlackPearl/RHI/OpenGLRHI/OpenGLWindow.h"
 namespace BlackPearl {
 
 	void ImGuiLayer::OnAttach()
@@ -34,7 +34,7 @@ namespace BlackPearl {
 		}
 
 		Application& app = Application::Get();
-		GLFWwindow* window = static_cast<GLFWwindow*>(app.GetWindow().GetNativeWindow());
+		GLFWwindow* window = static_cast<GLFWwindow*>(static_cast<OpenGLWindow*>(&app.GetWindow())->GetNativeWindow());
 
 		// Setup Platform/Renderer bindings
 		ImGui_ImplGlfw_InitForOpenGL(window, true);

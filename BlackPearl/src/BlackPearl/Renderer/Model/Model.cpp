@@ -5,7 +5,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include "glm/fwd.hpp"
 #include "glm/gtx/quaternion.hpp"
-//#include "BlackPearl/Renderer/Renderer.h"
+#include "BlackPearl/Renderer/Mesh/MeshletConfig.h"
 namespace BlackPearl {
 
 	static void glmInsertVector(glm::vec2 v, std::vector<float>& vec) {
@@ -26,7 +26,7 @@ namespace BlackPearl {
 
 	}
 
-	static void glmInsertVector(glm::u32vec4 v, std::vector<unsigned int>& vec) {
+	static void glmInsertVector(glm::u32vec4 v, std::vector<uint32_t>& vec) {
 		vec.push_back(v.x);
 		vec.push_back(v.y);
 		vec.push_back(v.z);
@@ -57,41 +57,19 @@ namespace BlackPearl {
 	{
 		m_Path = path;
 		m_Scene = m_Importer.ReadFile(path,
-			aiProcess_Triangulate |
+			aiProcess_Triangulate |  //将非三角形构成的模型转换为由三角形构成的模型
 			aiProcess_GenSmoothNormals|
-			aiProcess_Triangulate |
 			aiProcess_CalcTangentSpace|
 			aiProcess_JoinIdenticalVertices);//
 
 		//不要加aiProcess_FlipUVs！！！，否则纹理会反！！！
-		//|
-			//aiProcess_FlipUVs);
-		//aiProcess_JoinIdenticalVertices
-	/*aiProcess_MakeLeftHanded |
-	aiProcess_FlipWindingOrder |
-	aiProcess_FlipUVs |
-	aiProcess_PreTransformVertices |
-	aiProcess_CalcTangentSpace |
-	aiProcess_GenSmoothNormals |
-	aiProcess_Triangulate |
-	aiProcess_FixInfacingNormals |
-	aiProcess_FindInvalidData |
-	aiProcess_JoinIdenticalVertices |
-	aiProcess_ValidateDataStructure | 0);*/
-	///*
-	//设定aiProcess_Triangulate，我们告诉Assimp，如果模型不是（全部）由三角形组成，
-	//它需要将模型所有的图元形状变换为三角形。
-	//
-	//aiProcess_FlipUVs将在处理的时候翻转y轴的纹理坐标（你可能还记得我们在纹理教程中说过，
-	//在OpenGL中大部分的图像的y轴都是反的，所以这个后期处理选项将会修复这个）
-	//
-	//*/
+	
 
 		if (!m_Scene || m_Scene->mFlags == AI_SCENE_FLAGS_INCOMPLETE || !m_Scene->mRootNode) {
 			GE_CORE_ERROR("ERROR::ASSIMP:: {0}", m_Importer.GetErrorString())
 				return;
 		}
-		//m_Scene = scene;
+		
 		m_Directory = path.substr(0, path.find_last_of('/'));
 
 		for (int i = 0; i < m_Scene->mNumMeshes; i++)
@@ -99,28 +77,253 @@ namespace BlackPearl {
 			m_VerticesNum += m_Scene->mMeshes[i]->mNumVertices;
 		}
 		m_GlobalInverseTransform = glm::inverse(ConvertMatrix(m_Scene->mRootNode->mTransformation));
-		//m_GlobalInverseTransform.Inverse();
 
 
 		m_BoneDatas.resize(m_VerticesNum);
-		//m_Animation = *(m_Scene->mAnimations[0]);
-		// Create a materials from the loaded assimp materials
 		
-		for (unsigned int m = 0; m < m_Scene->mNumMaterials; m++) {
+		
+		for (int m = 0; m < m_Scene->mNumMaterials; m++) {
 				
 			m_ModelMaterials[m] = LoadMaterial(m_Scene->mMaterials[m]);
 		}
 
+		ProcessNode(m_Scene->mRootNode, m_Scene);
+	}
 
-		for (int i = 0; i < m_Scene->mNumMeshes; i++)
-		{
-			aiMesh* mesh = m_Scene->mMeshes[i];
-
-			m_Meshes.push_back(ProcessMesh(mesh,m_Vertices,true));
-
-			//	GE_SAVE_DELETE(mesh);
+	void Model::LoadMeshletModel(BoundingSphere& bounding_sphere, const std::string& path)
+	{
+		std::ifstream stream(path, std::ios::binary);
+		if (!stream.is_open()) {
+			GE_CORE_ERROR("fail to load model" + path);
+			return;
 		}
-		
+		std::vector<MeshHeader> meshes;
+		std::vector<BufferView> bufferViews;
+		std::vector<Accessor> accessors; // accessors store the indices of all meshes
+		//std::vector<uint8_t> buffer;
+		FileHeader header;
+		stream.read(reinterpret_cast<char*>(&header), sizeof(header));
+
+		if (header.Prolog != c_prolog)
+		{
+			GE_CORE_ERROR("Incorrect file format.");
+			return;
+		}
+
+		if (header.Version != CURRENT_FILE_VERSION)
+		{
+			GE_CORE_ERROR(" Version mismatch between export and import serialization code.");
+			return;
+		}
+
+		// Read mesh metdata
+		meshes.resize(header.MeshCount);
+		stream.read(reinterpret_cast<char*>(meshes.data()), meshes.size() * sizeof(meshes[0]));
+
+		accessors.resize(header.AccessorCount);
+		stream.read(reinterpret_cast<char*>(accessors.data()), accessors.size() * sizeof(accessors[0]));
+
+		bufferViews.resize(header.BufferViewCount);
+		stream.read(reinterpret_cast<char*>(bufferViews.data()), bufferViews.size() * sizeof(bufferViews[0]));
+
+		// buffer store all indices in this mesh, buffer must be a member variable,or it will become invalid after exit this function
+		m_Buffer.resize(header.BufferSize);
+		stream.read(reinterpret_cast<char*>(m_Buffer.data()), header.BufferSize);
+
+		char eofbyte;
+		stream.read(&eofbyte, 1); // Read last byte to hit the eof bit
+
+		assert(stream.eof()); // There's a problem if we didn't completely consume the file contents.
+
+		stream.close();
+
+		// Populate mesh data from binary data and metadata.
+		m_Meshes.resize(meshes.size());
+		for (uint32_t i = 0; i < static_cast<uint32_t>(meshes.size()); ++i)
+		{
+			auto& meshView = meshes[i];
+			auto& mesh = m_Meshes[i];
+			uint32_t indexSize; // sizeof(index)
+			uint32_t indexCount; //number of indices in this mesh
+			uint8_t* indices;
+			Span<Subset> indexSubsets;
+			VertexBufferLayout layouts = {
+				{ElementDataType::Float3,"POSITION", false, 0},
+				{ElementDataType::Float3,"NORMAL", false, 0},
+				{ElementDataType::Float2,"TEXCOORD", false, 0},
+				{ElementDataType::Float3,"TANGENT", false, 0},
+				{ElementDataType::Float3,"BITANGENT", false, 0}
+			};
+			// Index data
+			{
+				Accessor& accessor = accessors[meshView.Indices];
+				BufferView& bufferView = bufferViews[accessor.BufferView];
+
+				mesh->IndexSize_ml = accessor.Size;
+				// mesh->IndexCount = accessor.Count;
+
+				mesh->Indices_ml = MakeSpan(m_Buffer.data() + bufferView.Offset, bufferView.Size);
+			}
+
+			// Index Subset data
+			{
+				Accessor& accessor = accessors[meshView.IndexSubsets];
+				BufferView& bufferView = bufferViews[accessor.BufferView];
+
+				mesh->IndexSubsets = MakeSpan(reinterpret_cast<Subset*>(m_Buffer.data() + bufferView.Offset), accessor.Count);
+			}
+
+			// Vertex data & layout metadata
+
+			// Determine the number of unique Buffer Views associated with the vertex attributes & copy vertex buffers.
+			std::vector<uint32_t> vbMap;
+			uint32_t numElements = 0;
+
+			// vertices 存储结构
+			// v0.pos,v0.normal | v1.pos,v1.normal
+			for (uint32_t j = 0; j < Attribute::Count; ++j)
+			{
+				if (meshView.Attributes[j] == -1)
+					continue;
+
+				Accessor& accessor = accessors[meshView.Attributes[j]];
+
+				auto it = std::find(vbMap.begin(), vbMap.end(), accessor.BufferView);
+				if (it != vbMap.end())
+				{
+					continue; // Already added - continue.
+				}
+
+				// New buffer view encountered; add to list and copy vertex data
+				vbMap.push_back(accessor.BufferView);
+				BufferView& bufferView = bufferViews[accessor.BufferView];
+
+				Span<uint8_t> verts = MakeSpan(m_Buffer.data() + bufferView.Offset, bufferView.Size);
+
+				mesh->VertexStrides.push_back(accessor.Stride);
+				mesh->Vertices_ml.push_back(verts); //这里和openGL不一样，每个attributes分开push到vertices
+				mesh->VertexCount_ml = static_cast<uint32_t>(verts.size()) / accessor.Stride;
+			}
+
+			// Populate the vertex buffer metadata from accessors.
+			VertexBufferLayout mesh_layout;
+			for (uint32_t j = 0; j < Attribute::Count; ++j)
+			{
+				if (meshView.Attributes[j] == -1)
+					continue;
+
+				Accessor& accessor = accessors[meshView.Attributes[j]];
+
+				// Determine which vertex buffer index holds this attribute's data
+				auto it = std::find(vbMap.begin(), vbMap.end(), accessor.BufferView);
+
+				auto& element = layouts.GetElement(j);
+				element.Location = static_cast<uint32_t>(std::distance(vbMap.begin(), it));
+
+				mesh_layout.AddElement(element);
+			}
+			mesh->SetVertexBufferLayout(mesh_layout);
+
+
+			// Meshlet data
+			{
+				Accessor& accessor = accessors[meshView.Meshlets];
+				BufferView& bufferView = bufferViews[accessor.BufferView];
+
+				mesh->Meshlets = MakeSpan(reinterpret_cast<Meshlet*>(m_Buffer.data() + bufferView.Offset), accessor.Count);
+			}
+
+			// Meshlet Subset data
+			{
+				Accessor& accessor = accessors[meshView.MeshletSubsets];
+				BufferView& bufferView = bufferViews[accessor.BufferView];
+
+				mesh->MeshletSubsets = MakeSpan(reinterpret_cast<Subset*>(m_Buffer.data() + bufferView.Offset), accessor.Count);
+			}
+
+			// Unique Vertex Index data , UniqueVertexIndices is the indices buffer that is generated by sorting each triangular face 
+			// the method to create UniqueVertexIndices can refer to https://github.com/microsoft/DirectXMesh/wiki/OptimizeFacesLRU
+			//https://github.com/microsoft/DirectX-Graphics-Samples/blob/master/Samples/Desktop/D3D12MeshShaders/src/WavefrontConverter/MeshProcessor.cpp : MeshProcessor::Finalize
+			{
+				Accessor& accessor = accessors[meshView.UniqueVertexIndices];
+				BufferView& bufferView = bufferViews[accessor.BufferView];
+
+				mesh->UniqueVertexIndices = MakeSpan(m_Buffer.data() + bufferView.Offset, bufferView.Size);
+			}
+
+			// Primitive Index data
+			{
+				Accessor& accessor = accessors[meshView.PrimitiveIndices];
+				BufferView& bufferView = bufferViews[accessor.BufferView];
+
+				mesh->PrimitiveIndices = MakeSpan(reinterpret_cast<PackedTriangle*>(m_Buffer.data() + bufferView.Offset), accessor.Count);
+			}
+
+			// Cull data
+			{
+				Accessor& accessor = accessors[meshView.CullData];
+				BufferView& bufferView = bufferViews[accessor.BufferView];
+
+				mesh->CullingData = MakeSpan(reinterpret_cast<CullData*>(m_Buffer.data() + bufferView.Offset), accessor.Count);
+			}
+		}
+
+		// Build bounding spheres for each mesh
+		for (uint32_t i = 0; i < static_cast<uint32_t>(m_Meshes.size()); ++i)
+		{
+			auto& m = m_Meshes[i];
+
+			uint32_t vbIndexPos = 0;
+
+			// Find the index of the vertex buffer of the position attribute
+			for (uint32_t j = 1; j < m->GetVertexBufferLayout().ElementSize(); ++j)
+			{
+				//auto& desc = m->LayoutElems[j];
+				auto& element = m->GetVertexBufferLayout().GetElement(j);
+				if (strcmp(element.Name.c_str(), "POSITION") == 0)
+				{
+					vbIndexPos = j;
+					break;
+				}
+			}
+
+			// Find the byte offset of the position attribute with its vertex buffer
+			uint32_t positionOffset = 0;
+
+			for (uint32_t j = 0; j < m->GetVertexBufferLayout().ElementSize(); ++j)
+			{
+				auto& element = m->GetVertexBufferLayout().GetElement(j);
+				if (strcmp(element.Name.c_str(), "POSITION") == 0)
+				{
+					break;
+				}
+				//找到position的下一个attribute的位置
+				if (element.Location == vbIndexPos)
+				{
+					positionOffset += m->GetVertexBufferLayout().GetElement(j).GetElementCount();
+				}
+			}
+			// vertices 存储结构
+			// NORMAL  : v0.normal, v1.normal, v2.normal ...
+			// POSITION: v0.pos, v1.pos, v2.pos .....
+			//vbIndexPos = 1
+
+			XMFLOAT3* v0 = reinterpret_cast<XMFLOAT3*>(m->Vertices_ml[vbIndexPos].data() + positionOffset);
+			uint32_t stride = m->VertexStrides[vbIndexPos];
+
+			BoundingSphere::CreateFromPoints(m->BoundingSphere, m->VertexCount_ml, v0, stride);
+
+			if (i == 0)
+			{
+				bounding_sphere = m->BoundingSphere;
+			}
+			else
+			{
+				BoundingSphere::CreateMerged(bounding_sphere, bounding_sphere, m->BoundingSphere);
+			}
+		}
+
+		return;
 	}
 
 
@@ -128,9 +331,9 @@ namespace BlackPearl {
 	void Model::LoadBones(aiMesh* aimesh)
 	{
 
-		for (unsigned int i = 0; i < aimesh->mNumBones; i++)
+		for (uint32_t i = 0; i < aimesh->mNumBones; i++)
 		{
-			unsigned int boneIdx;
+			uint32_t boneIdx;
 			aiBone* bone = aimesh->mBones[i];
 			std::string name(bone->mName.data);
 			glm::mat4 meshToBoneTranform = ConvertMatrix(bone->mOffsetMatrix);
@@ -146,18 +349,18 @@ namespace BlackPearl {
 				m_BoneCount++;
 			}
 
-			unsigned int numberOfVertex = bone->mNumWeights;
+			uint32_t numberOfVertex = bone->mNumWeights;
 			for (int i = 0; i < numberOfVertex; i++)
 			{
 				/*index of vertex affect by this bone*/
-				unsigned int vertexIdx = bone->mWeights[i].mVertexId;
+				uint32_t vertexIdx = bone->mWeights[i].mVertexId;
 				/*weight of this bone to the vertex*/
 				float boneWeight = bone->mWeights[i].mWeight;
 
 				GE_ASSERT(m_BoneDatas[m_VerticesIdx + vertexIdx].currentPos < MAX_WEIGHT, "related bone's number larger than MAX_WEIGHT");
 				if (m_BoneDatas[m_VerticesIdx + vertexIdx].currentPos < MAX_WEIGHT) {
-					unsigned int row = m_BoneDatas[m_VerticesIdx + vertexIdx].currentPos / 4;
-					unsigned int col = m_BoneDatas[m_VerticesIdx + vertexIdx].currentPos % 4;
+					uint32_t row = m_BoneDatas[m_VerticesIdx + vertexIdx].currentPos / 4;
+					uint32_t col = m_BoneDatas[m_VerticesIdx + vertexIdx].currentPos % 4;
 					m_BoneDatas[m_VerticesIdx + vertexIdx].jointIdx[row][col] = boneIdx;
 					m_BoneDatas[m_VerticesIdx + vertexIdx].weights[row][col] = boneWeight;
 					m_BoneDatas[m_VerticesIdx + vertexIdx].currentPos++;
@@ -189,7 +392,9 @@ namespace BlackPearl {
 
 		//LoadMaterialTextures(material, aiTextureType_REFLECTION, Texture::Type::RoughnessMap, textures);
 		//LoadMaterialTextures(material, aiTextureType_AMBIENT, Texture::Type::RoughnessMap, textures);
-		//LoadMaterialTextures(material, aiTextureType_LIGHTMAP, Texture::Type::AoMap, textures);
+		LoadMaterialTextures(material, aiTextureType_LIGHTMAP, Texture::Type::AoMap, textures);
+		LoadMaterialTextures(material, aiTextureType_EMISSIVE, Texture::Type::EmissionMap, textures);
+
 		//LoadMaterialTextures(material, aiTextureType_DISPLACEMENT, Texture::Type::DiffuseMap, textures);//TODO
 
 		LoadMaterialColors(material, colors);
@@ -199,14 +404,29 @@ namespace BlackPearl {
 		return meshMaterial;
 	}
 
+	void Model::ProcessNode(aiNode* node, const aiScene* scene)
+	{
+		for (int i = 0; i < node->mNumMeshes; i++)
+		{
+			aiMesh* mesh = m_Scene->mMeshes[i];
+
+			m_Meshes.push_back(ProcessMesh(mesh, m_Vertices, m_SortVertices));
+		}
+		
+		for (GLuint i = 0; i < node->mNumChildren; i++)
+		{
+			this->ProcessNode(node->mChildren[i], scene);
+		}
+	}
+
 	//TODO:: Animation Model Vertex未处理
-	Mesh Model::ProcessMesh(aiMesh* aimesh, std::vector<Vertex>& v_vertex)
+	std::shared_ptr<Mesh> Model::ProcessMesh(aiMesh* aimesh, std::vector<Vertex>& v_vertex)
 	{
 		std::vector<float> vertices;
-		std::vector<unsigned int> verticesIntjointIdx;
+		std::vector<uint32_t> verticesIntjointIdx;
 		std::vector<float> verticesfloatWeight;
 
-		std::vector<unsigned int> indices;
+		std::vector<uint32_t> indices;
 
 		VertexBufferLayout layout1, layout2;
 		VertexBufferLayout layout = {
@@ -228,7 +448,7 @@ namespace BlackPearl {
 		if (m_HasAnimation && aimesh->mNumBones >= 0)
 			LoadBones(aimesh);
 
-		for (unsigned int i = 0; i < aimesh->mNumVertices; i++)
+		for (uint32_t i = 0; i < aimesh->mNumVertices; i++)
 		{
 			Vertex vertex;
 
@@ -256,7 +476,7 @@ namespace BlackPearl {
 			vertex.texCoords = textCords;
 
 			if (m_HasAnimation && m_BoneDatas.size() >= 0) {
-				unsigned int vertexIdx = m_VerticesIdx + i;
+				uint32_t vertexIdx = m_VerticesIdx + i;
 				glmInsertVector(glm::u32vec4(m_BoneDatas[vertexIdx].jointIdx[0][0], m_BoneDatas[vertexIdx].jointIdx[0][1], m_BoneDatas[vertexIdx].jointIdx[0][2], m_BoneDatas[vertexIdx].jointIdx[0][3]), verticesIntjointIdx);
 				glmInsertVector(glm::u32vec4(m_BoneDatas[vertexIdx].jointIdx[1][0], m_BoneDatas[vertexIdx].jointIdx[1][1], m_BoneDatas[vertexIdx].jointIdx[1][2], m_BoneDatas[vertexIdx].jointIdx[1][3]), verticesIntjointIdx);
 
@@ -287,13 +507,13 @@ namespace BlackPearl {
 		}
 
 
-		for (unsigned int i = 0; i < aimesh->mNumFaces; i++)
+		for (uint32_t i = 0; i < aimesh->mNumFaces; i++)
 		{
 			aiFace face = aimesh->mFaces[i];
 			GE_ASSERT(face.mNumIndices == 3, "face.mNumIndices!=3");
-			for (unsigned int i = 0; i < face.mNumIndices; i++)
+			for (uint32_t j = 0; j < face.mNumIndices; j++)
 			{
-				indices.push_back(face.mIndices[i]);
+				indices.push_back(face.mIndices[j]);
 			}
 		}
 		//if (aimesh->mMaterialIndex >= 0) {
@@ -323,37 +543,48 @@ namespace BlackPearl {
 		std::shared_ptr<VertexBuffer> vertexBuffer(DBG_NEW VertexBuffer(vertices_, vertices.size() * sizeof(float)));
 		vertexBuffer->SetBufferLayout(layout);
 
-		unsigned int* indices_ = DBG_NEW unsigned int[indices.size()];
-		memcpy(indices_, &indices[0], indices.size() * sizeof(unsigned int));
-		std::shared_ptr<IndexBuffer> indexBuffer(DBG_NEW IndexBuffer(indices_, indices.size() * sizeof(unsigned int)));
+		uint32_t* indices_ = DBG_NEW uint32_t[indices.size()];
+		memcpy(indices_, &indices[0], indices.size() * sizeof(uint32_t));
+		std::shared_ptr<IndexBuffer> indexBuffer(DBG_NEW IndexBuffer(indices_, indices.size() * sizeof(uint32_t)));
 
 		m_VerticesIdx += aimesh->mNumVertices;
 
-
+	//	std::shared_ptr<Mesh> mesh;
 		if (m_HasAnimation) {
-			unsigned int* verticesIntjointIdx_ = DBG_NEW unsigned int[verticesIntjointIdx.size()];
-			memcpy(verticesIntjointIdx_, &verticesIntjointIdx[0], verticesIntjointIdx.size() * sizeof(unsigned int));//注意memcpy最后一个参数是字节数!!!
-			std::shared_ptr<VertexBuffer> vertexBuffer1(DBG_NEW VertexBuffer(verticesIntjointIdx_, verticesIntjointIdx.size() * sizeof(unsigned int)));
+			uint32_t* verticesIntjointIdx_ = DBG_NEW uint32_t[verticesIntjointIdx.size()];
+			memcpy(verticesIntjointIdx_, &verticesIntjointIdx[0], verticesIntjointIdx.size() * sizeof(uint32_t));//注意memcpy最后一个参数是字节数!!!
+			std::shared_ptr<VertexBuffer> vertexBuffer1(DBG_NEW VertexBuffer(verticesIntjointIdx_, verticesIntjointIdx.size() * sizeof(uint32_t)));
 			vertexBuffer1->SetBufferLayout(layout1);
 
 			float* verticesfloatWeight_ = DBG_NEW float[verticesfloatWeight.size()];
 			memcpy(verticesfloatWeight_, &verticesfloatWeight[0], verticesfloatWeight.size() * sizeof(float));//注意memcpy最后一个参数是字节数!!!
 			std::shared_ptr<VertexBuffer> vertexBuffer2(DBG_NEW VertexBuffer(verticesfloatWeight_, verticesfloatWeight.size() * sizeof(float)));
 			vertexBuffer2->SetBufferLayout(layout2);
-			return Mesh(m_ModelMaterials[aimesh->mMaterialIndex], indexBuffer, { vertexBuffer,vertexBuffer1,vertexBuffer2 });
+			//std::vector<std::shared_ptr<VertexBuffer>> vbos = { vertexBuffer,vertexBuffer1,vertexBuffer2 };
+			//mesh.reset(DBG_NEW Mesh(m_ModelMaterials[aimesh->mMaterialIndex], indexBuffer, { vertexBuffer,vertexBuffer1,vertexBuffer2 }));
+			return std::make_shared<Mesh>(m_ModelMaterials[aimesh->mMaterialIndex], indexBuffer, std::vector<std::shared_ptr<VertexBuffer>>{ vertexBuffer,vertexBuffer1,vertexBuffer2 });
+			//return mesh;
 		}
-
-		return Mesh(m_ModelMaterials[aimesh->mMaterialIndex], indexBuffer, { vertexBuffer });
-
+		//std::vector<std::shared_ptr<VertexBuffer>> vbos = { vertexBuffer };
+		//mesh.reset(DBG_NEW Mesh(m_ModelMaterials[aimesh->mMaterialIndex], indexBuffer, { vertexBuffer }));
+		return std::make_shared<Mesh>(m_ModelMaterials[aimesh->mMaterialIndex], indexBuffer, std::vector<std::shared_ptr<VertexBuffer>>{ vertexBuffer });
+		//return mesh;
 
 	}
-	Mesh Model::ProcessMesh(aiMesh* aimesh, std::vector<Vertex>& v_vertex, bool face)
+
+	//v_vertex use for building BVH Node and Triangle Mesh, so vertices need to be sorted according to indices.
+	std::shared_ptr<Mesh> Model::ProcessMesh(aiMesh* aimesh, std::vector<Vertex>& v_vertex, bool sort_vertices)
 	{
+		if (!sort_vertices) {
+			return ProcessMesh(aimesh, v_vertex);
+		}
+
+
 		std::vector<float> vertices;
-		std::vector<unsigned int> verticesIntjointIdx;
+		std::vector<uint32_t> verticesIntjointIdx;
 		std::vector<float> verticesfloatWeight;
 
-		std::vector<unsigned int> indices;
+		std::vector<uint32_t> indices;
 
 		VertexBufferLayout layout1, layout2;
 		VertexBufferLayout layout = {
@@ -361,6 +592,7 @@ namespace BlackPearl {
 			{ElementDataType::Float3,"aNormal",false,1},
 			{ElementDataType::Float2,"aTexCoords",false,2}
 		};
+
 		if (aimesh->HasTangentsAndBitangents()) {
 			layout.AddElement({ ElementDataType::Float3,"aTangent",false,3 });
 			layout.AddElement({ ElementDataType::Float3,"aBitangent",false,4 });
@@ -411,7 +643,7 @@ namespace BlackPearl {
 				vertex.texCoords = textCords;
 
 				if (m_HasAnimation && m_BoneDatas.size() >= 0) {
-					unsigned int vertexIdx = m_VerticesIdx + idx;
+					uint32_t vertexIdx = m_VerticesIdx + idx;
 					glmInsertVector(glm::u32vec4(m_BoneDatas[vertexIdx].jointIdx[0][0], m_BoneDatas[vertexIdx].jointIdx[0][1], m_BoneDatas[vertexIdx].jointIdx[0][2], m_BoneDatas[vertexIdx].jointIdx[0][3]), verticesIntjointIdx);
 					glmInsertVector(glm::u32vec4(m_BoneDatas[vertexIdx].jointIdx[1][0], m_BoneDatas[vertexIdx].jointIdx[1][1], m_BoneDatas[vertexIdx].jointIdx[1][2], m_BoneDatas[vertexIdx].jointIdx[1][3]), verticesIntjointIdx);
 
@@ -446,27 +678,29 @@ namespace BlackPearl {
 		std::shared_ptr<VertexBuffer> vertexBuffer(DBG_NEW VertexBuffer(vertices_, vertices.size() * sizeof(float)));
 		vertexBuffer->SetBufferLayout(layout);
 
-		unsigned int* indices_ = DBG_NEW unsigned int[indices.size()];
-		memcpy(indices_, &indices[0], indices.size() * sizeof(unsigned int));
-		std::shared_ptr<IndexBuffer> indexBuffer(DBG_NEW IndexBuffer(indices_, indices.size() * sizeof(unsigned int)));
+		uint32_t* indices_ = DBG_NEW uint32_t[indices.size()];
+		memcpy(indices_, &indices[0], indices.size() * sizeof(uint32_t));
+		std::shared_ptr<IndexBuffer> indexBuffer(DBG_NEW IndexBuffer(indices_, indices.size() * sizeof(uint32_t)));
 
 		m_VerticesIdx += aimesh->mNumVertices;
 
 
 		if (m_HasAnimation) {
-			unsigned int* verticesIntjointIdx_ = DBG_NEW unsigned int[verticesIntjointIdx.size()];
-			memcpy(verticesIntjointIdx_, &verticesIntjointIdx[0], verticesIntjointIdx.size() * sizeof(unsigned int));//注意memcpy最后一个参数是字节数!!!
-			std::shared_ptr<VertexBuffer> vertexBuffer1(DBG_NEW VertexBuffer(verticesIntjointIdx_, verticesIntjointIdx.size() * sizeof(unsigned int)));
+			uint32_t* verticesIntjointIdx_ = DBG_NEW uint32_t[verticesIntjointIdx.size()];
+			memcpy(verticesIntjointIdx_, &verticesIntjointIdx[0], verticesIntjointIdx.size() * sizeof(uint32_t));//注意memcpy最后一个参数是字节数!!!
+			std::shared_ptr<VertexBuffer> vertexBuffer1(DBG_NEW VertexBuffer(verticesIntjointIdx_, verticesIntjointIdx.size() * sizeof(uint32_t)));
 			vertexBuffer1->SetBufferLayout(layout1);
 
 			float* verticesfloatWeight_ = DBG_NEW float[verticesfloatWeight.size()];
 			memcpy(verticesfloatWeight_, &verticesfloatWeight[0], verticesfloatWeight.size() * sizeof(float));//注意memcpy最后一个参数是字节数!!!
 			std::shared_ptr<VertexBuffer> vertexBuffer2(DBG_NEW VertexBuffer(verticesfloatWeight_, verticesfloatWeight.size() * sizeof(float)));
 			vertexBuffer2->SetBufferLayout(layout2);
-			return Mesh(m_ModelMaterials[aimesh->mMaterialIndex], indexBuffer, { vertexBuffer,vertexBuffer1,vertexBuffer2 });
+			//return std::make_shared<Mesh>(m_ModelMaterials[aimesh->mMaterialIndex], indexBuffer, { vertexBuffer,vertexBuffer1,vertexBuffer2 });
+			return std::shared_ptr<Mesh>(DBG_NEW Mesh(m_ModelMaterials[aimesh->mMaterialIndex], indexBuffer, { vertexBuffer,vertexBuffer1,vertexBuffer2 }));
+
 		}
 
-		return Mesh(m_ModelMaterials[aimesh->mMaterialIndex], indexBuffer, { vertexBuffer });
+		return std::shared_ptr<Mesh>(DBG_NEW Mesh(m_ModelMaterials[aimesh->mMaterialIndex], indexBuffer, { vertexBuffer }));
 
 
 	}
@@ -474,7 +708,7 @@ namespace BlackPearl {
 	{
 		aiString name;
 		material->Get(AI_MATKEY_NAME, name);
-		for (unsigned int i = 0; i < material->GetTextureCount(type); i++)
+		for (uint32_t i = 0; i < material->GetTextureCount(type); i++)
 		{
 			std::shared_ptr<Texture> texture;
 			aiString path;
@@ -536,7 +770,7 @@ namespace BlackPearl {
 	{
 
 
-		unsigned int animationNum = m_Scene->mNumAnimations;
+		uint32_t animationNum = m_Scene->mNumAnimations;
 		aiAnimation* animation = m_Scene->mAnimations[0];// &m_Animation;
 		float durationTick = (float)animation->mDuration;
 		float tickPerSecond = (float)animation->mTicksPerSecond;
@@ -575,9 +809,9 @@ namespace BlackPearl {
 
 		if (nodeAnim) {
 
-			unsigned int positionNum = nodeAnim->mNumPositionKeys;
-			unsigned int rotationNum = nodeAnim->mNumRotationKeys;
-			unsigned int scaleNum = nodeAnim->mNumScalingKeys;
+			uint32_t positionNum = nodeAnim->mNumPositionKeys;
+			uint32_t rotationNum = nodeAnim->mNumRotationKeys;
+			uint32_t scaleNum = nodeAnim->mNumScalingKeys;
 			glm::vec3 position = CalculateInterpolatePosition(timeInDurationSecond, nodeAnim);
 			glm::mat4 translateM = glm::translate(glm::mat4(1.0f), position);
 
@@ -677,8 +911,8 @@ namespace BlackPearl {
 		// we need at least two values to interpolate...
 
 
-		unsigned int RotationIndex = FindRotation(timeInDurationSecond, nodeAnim);
-		unsigned int  NextRotationIndex = (RotationIndex + 1);
+		uint32_t RotationIndex = FindRotation(timeInDurationSecond, nodeAnim);
+		uint32_t  NextRotationIndex = (RotationIndex + 1);
 		GE_ASSERT(NextRotationIndex < nodeAnim->mNumRotationKeys, "NextRotationIndex >=nodeAnim->mNumRotationKeys");
 		float DeltaTime = nodeAnim->mRotationKeys[NextRotationIndex].mTime - nodeAnim->mRotationKeys[RotationIndex].mTime;
 		float Factor = (timeInDurationSecond - (float)nodeAnim->mRotationKeys[RotationIndex].mTime) / DeltaTime;
@@ -721,8 +955,8 @@ namespace BlackPearl {
 			return glm::vec3(out.x, out.y, out.z);;
 		}
 
-		unsigned int ScalingIndex = FindScaling(timeInDurationSecond, nodeAnim);
-		unsigned int NextScalingIndex = (ScalingIndex + 1);
+		uint32_t ScalingIndex = FindScaling(timeInDurationSecond, nodeAnim);
+		uint32_t NextScalingIndex = (ScalingIndex + 1);
 		assert(NextScalingIndex < nodeAnim->mNumScalingKeys);
 		float DeltaTime = (float)(nodeAnim->mScalingKeys[NextScalingIndex].mTime - nodeAnim->mScalingKeys[ScalingIndex].mTime);
 		float Factor = (timeInDurationSecond - (float)nodeAnim->mScalingKeys[ScalingIndex].mTime) / DeltaTime;
@@ -779,11 +1013,11 @@ namespace BlackPearl {
 
 
 
-	unsigned int Model::FindRotation(float AnimationTime, const aiNodeAnim* nodeAnim)
+	uint32_t Model::FindRotation(float AnimationTime, const aiNodeAnim* nodeAnim)
 	{
 		assert(nodeAnim->mNumRotationKeys > 0);
 
-		for (unsigned int i = 0; i < nodeAnim->mNumRotationKeys - 1; i++) {
+		for (uint32_t i = 0; i < nodeAnim->mNumRotationKeys - 1; i++) {
 			if (AnimationTime < (float)nodeAnim->mRotationKeys[i + 1].mTime) {
 				return i;
 			}
@@ -792,11 +1026,11 @@ namespace BlackPearl {
 		assert(0);
 	}
 
-	unsigned int Model::FindScaling(float AnimationTime, const aiNodeAnim* nodeAnim)
+	uint32_t Model::FindScaling(float AnimationTime, const aiNodeAnim* nodeAnim)
 	{
 		assert(nodeAnim->mNumScalingKeys > 0);
 
-		for (unsigned int i = 0; i < nodeAnim->mNumScalingKeys - 1; i++) {
+		for (uint32_t i = 0; i < nodeAnim->mNumScalingKeys - 1; i++) {
 			if (AnimationTime < (float)nodeAnim->mScalingKeys[i + 1].mTime) {
 				return i;
 			}

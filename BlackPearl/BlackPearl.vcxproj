@@ -1,17 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
-    <ProjectConfiguration Include="Debug|Win32">
+    <ProjectConfiguration Include="Debug|x64">
       <Configuration>Debug</Configuration>
-      <Platform>Win32</Platform>
+      <Platform>x64</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="Release|Win32">
+    <ProjectConfiguration Include="Release|x64">
       <Configuration>Release</Configuration>
-      <Platform>Win32</Platform>
+      <Platform>x64</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="Dist|Win32">
+    <ProjectConfiguration Include="Dist|x64">
       <Configuration>Dist</Configuration>
-      <Platform>Win32</Platform>
+      <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
@@ -22,19 +22,19 @@
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
     <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
     <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Dist|Win32'" Label="Configuration">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Dist|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
@@ -43,41 +43,41 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
   </ImportGroup>
-  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
-  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
-  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Dist|Win32'">
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Dist|x64'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <OutDir>..\bin\Debug-windows-x86\BlackPearl\</OutDir>
-    <IntDir>..\bin-int\Debug-windows-x86\BlackPearl\</IntDir>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <OutDir>..\bin\Debug-windows-x86_64\BlackPearl\</OutDir>
+    <IntDir>..\bin-int\Debug-windows-x86_64\BlackPearl\</IntDir>
     <TargetName>BlackPearl</TargetName>
     <TargetExt>.lib</TargetExt>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <OutDir>..\bin\Release-windows-x86\BlackPearl\</OutDir>
-    <IntDir>..\bin-int\Release-windows-x86\BlackPearl\</IntDir>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <OutDir>..\bin\Release-windows-x86_64\BlackPearl\</OutDir>
+    <IntDir>..\bin-int\Release-windows-x86_64\BlackPearl\</IntDir>
     <TargetName>BlackPearl</TargetName>
     <TargetExt>.lib</TargetExt>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Dist|Win32'">
-    <OutDir>..\bin\Dist-windows-x86\BlackPearl\</OutDir>
-    <IntDir>..\bin-int\Dist-windows-x86\BlackPearl\</IntDir>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Dist|x64'">
+    <OutDir>..\bin\Dist-windows-x86_64\BlackPearl\</OutDir>
+    <IntDir>..\bin-int\Dist-windows-x86_64\BlackPearl\</IntDir>
     <TargetName>BlackPearl</TargetName>
     <TargetExt>.lib</TargetExt>
   </PropertyGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;GE_PLATFORM_WINDOWS;GLFW_INCLUDE_NONE;GE_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>src;vendor\spdlog\include;vendor\GLFW\include;vendor\Glad\include;vendor\imgui;vendor\glm;vendor\stb;vendor\assimp\include;vendor\GLEW\include;..\Sandbox\assets\shaders;vendor;vendor\GLEW;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;vendor\spdlog\include;vendor\GLFW\include;vendor\Glad\include;vendor\imgui;vendor\glm;vendor\stb;vendor\assimp\include;vendor\GLEW\include;..\SandboxDX\assets\shaders_hlsl_h;vendor;vendor\GLEW;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -88,17 +88,17 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Lib>
-      <AdditionalDependencies>opengl32.lib;assimp-vc140-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>vendor\assimp_build\code\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opengl32.lib;assimp-vc142-mtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>vendor\assimp_build\code\Debug;vendor\assimp_build\lib\Debug;vendor\assimp_build\lib\Release;vendor\assimp_build\bin\Debug;vendor\assimp_build\bin\Release;vendor\directxtex_uwp.2022.5.10.1\native\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;GE_PLATFORM_WINDOWS;GLFW_INCLUDE_NONE;GE_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>src;vendor\spdlog\include;vendor\GLFW\include;vendor\Glad\include;vendor\imgui;vendor\glm;vendor\stb;vendor\assimp\include;vendor\GLEW\include;..\Sandbox\assets\shaders;vendor;vendor\GLEW;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;vendor\spdlog\include;vendor\GLFW\include;vendor\Glad\include;vendor\imgui;vendor\glm;vendor\stb;vendor\assimp\include;vendor\GLEW\include;..\SandboxDX\assets\shaders_hlsl_h;vendor;vendor\GLEW;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -113,17 +113,17 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
     <Lib>
-      <AdditionalDependencies>opengl32.lib;assimp-vc140-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>vendor\assimp_build\code\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opengl32.lib;assimp-vc142-mtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>vendor\assimp_build\code\Debug;vendor\assimp_build\lib\Debug;vendor\assimp_build\lib\Release;vendor\assimp_build\bin\Debug;vendor\assimp_build\bin\Release;vendor\directxtex_uwp.2022.5.10.1\native\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Dist|Win32'">
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Dist|x64'">
     <ClCompile>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;GE_PLATFORM_WINDOWS;GLFW_INCLUDE_NONE;GE_DIST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>src;vendor\spdlog\include;vendor\GLFW\include;vendor\Glad\include;vendor\imgui;vendor\glm;vendor\stb;vendor\assimp\include;vendor\GLEW\include;..\Sandbox\assets\shaders;vendor;vendor\GLEW;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;vendor\spdlog\include;vendor\GLFW\include;vendor\Glad\include;vendor\imgui;vendor\glm;vendor\stb;vendor\assimp\include;vendor\GLEW\include;..\SandboxDX\assets\shaders_hlsl_h;vendor;vendor\GLEW;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -138,11 +138,29 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
     <Lib>
-      <AdditionalDependencies>opengl32.lib;assimp-vc140-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>vendor\assimp_build\code\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opengl32.lib;assimp-vc142-mtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>vendor\assimp_build\code\Debug;vendor\assimp_build\lib\Debug;vendor\assimp_build\lib\Release;vendor\assimp_build\bin\Debug;vendor\assimp_build\bin\Release;vendor\directxtex_uwp.2022.5.10.1\native\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\Sandbox\assets\shaders_hlsl_h\RayTracingMetaball.hlslbak.h" />
+    <ClInclude Include="..\Sandbox\assets\shaders_hlsl_h\Raytracing.hlsl.h" />
+    <ClInclude Include="..\Sandbox\assets\shaders_hlsl_h\RaytracingCube.hlsl.h" />
+    <ClInclude Include="..\Sandbox\assets\shaders_hlsl_h\RaytracingHlslCompat.h" />
+    <ClInclude Include="src\BlackPearl\Renderer\MasterRenderer\IndirectRendererTest.h" />
+    <ClInclude Include="src\BlackPearl\Renderer\MasterRenderer\BatchRenderer.h" />
+    <ClInclude Include="src\BlackPearl\Renderer\MasterRenderer\IndirectRenderer.h" />
+    <ClInclude Include="src\BlackPearl\Node\SingleNode.h" />
+    <ClInclude Include="src\BlackPearl\Renderer\Batch\Batch.h" />
+    <ClInclude Include="src\BlackPearl\Node\BatchNode.h" />
+    <ClInclude Include="src\BlackPearl\Node\InstanceNode.h" />
+    <ClInclude Include="src\BlackPearl\Node\Node.h" />
+    <ClInclude Include="src\BlackPearl\Renderer\Material\MaterialManager.h" />
+    <ClInclude Include="src\BlackPearl\Renderer\Mesh\MeshManager.h" />
+    <ClInclude Include="src\BlackPearl\Component\BoundingSphereComponent\BoundingSphere.h" />
+    <ClInclude Include="src\BlackPearl\RHI\D3D12RHI\D3D12VertexBuffer.h" />
+    <ClInclude Include="src\BlackPearl\Renderer\Mesh\MeshletLoader.h" />
+    <ClInclude Include="src\BlackPearl\Renderer\MasterRenderer\D3D12MeshShaderRenderer.h" />
     <ClInclude Include="src\BlackPearl.h" />
     <ClInclude Include="src\BlackPearl\AABB\AABB.h" />
     <ClInclude Include="src\BlackPearl\Animation\AnimatedModel.h" />
@@ -177,6 +195,7 @@
     <ClInclude Include="src\BlackPearl\Component\TransformComponent\Transform.h" />
     <ClInclude Include="src\BlackPearl\Config.h" />
     <ClInclude Include="src\BlackPearl\Core.h" />
+    <ClInclude Include="src\BlackPearl\Debugger\D3D12Debugger\HLSLPixDebugger.h" />
     <ClInclude Include="src\BlackPearl\Entity\Entity.h" />
     <ClInclude Include="src\BlackPearl\EntryPoint.h" />
     <ClInclude Include="src\BlackPearl\Event\Event.h" />
@@ -186,19 +205,43 @@
     <ClInclude Include="src\BlackPearl\Input.h" />
     <ClInclude Include="src\BlackPearl\KeyCodes.h" />
     <ClInclude Include="src\BlackPearl\LayerScene\Layer.h" />
+    <ClInclude Include="src\BlackPearl\LayerScene\LayerManager.h" />
     <ClInclude Include="src\BlackPearl\LayerStack.h" />
     <ClInclude Include="src\BlackPearl\LightProbes\LightProbes.h" />
     <ClInclude Include="src\BlackPearl\LightProbes\SphericalHarmonics.h" />
     <ClInclude Include="src\BlackPearl\Log.h" />
+    <ClInclude Include="src\BlackPearl\Luanch\Luanch.h" />
     <ClInclude Include="src\BlackPearl\MainCamera\MainCamera.h" />
     <ClInclude Include="src\BlackPearl\Map\Area.h" />
     <ClInclude Include="src\BlackPearl\Map\MapManager.h" />
     <ClInclude Include="src\BlackPearl\Math\Math.h" />
     <ClInclude Include="src\BlackPearl\Math\Quaternion.h" />
-    <ClInclude Include="src\BlackPearl\Object\2DObject\Quad.h" />
     <ClInclude Include="src\BlackPearl\Object\Object.h" />
     <ClInclude Include="src\BlackPearl\ObjectCreater\ObjectCreater.h" />
     <ClInclude Include="src\BlackPearl\ObjectManager\ObjectManager.h" />
+    <ClInclude Include="src\BlackPearl\Renderer\Mesh\Meshlet.h" />
+    <ClInclude Include="src\BlackPearl\Renderer\Mesh\MeshletGenerator.h" />
+    <ClInclude Include="src\BlackPearl\Renderer\Mesh\MeshletConfig.h" />
+    <ClInclude Include="src\BlackPearl\Renderer\Model\ModelLoader.h" />
+    <ClInclude Include="src\BlackPearl\RHI\D3D12Defines.h" />
+    <ClInclude Include="src\BlackPearl\RHI\D3D12RHI\D3D12DeviceResources.h" />
+    <ClInclude Include="src\BlackPearl\RHI\D3D12RHI\D3D12DynamicModule.h" />
+    <ClInclude Include="src\BlackPearl\RHI\D3D12RHI\D3D12DynamicRHI.h" />
+    <ClInclude Include="src\BlackPearl\RHI\D3D12RHI\D3D12GlobalRootSignature.h" />
+    <ClInclude Include="src\BlackPearl\RHI\D3D12RHI\D3D12LocalRootSignature.h" />
+    <ClInclude Include="src\BlackPearl\RHI\D3D12RHI\D3D12Logger.h" />
+    <ClInclude Include="src\BlackPearl\RHI\D3D12RHI\D3D12ModelLoader.h" />
+    <ClInclude Include="src\BlackPearl\RHI\D3D12RHI\D3D12RootSignature.h" />
+    <ClInclude Include="src\BlackPearl\RHI\D3D12RHI\D3D12Window.h" />
+    <ClInclude Include="src\BlackPearl\RHI\D3D12RHI\DirectXRaytracingHelper.h" />
+    <ClInclude Include="src\BlackPearl\RHI\D3D12RHI\d3dx12.h" />
+    <ClInclude Include="src\BlackPearl\RHI\DynamicModule.h" />
+    <ClInclude Include="src\BlackPearl\RHI\DynamicRHI.h" />
+    <ClInclude Include="src\BlackPearl\RHI\OpenGLRHI\OpenGLDynamicModule.h" />
+    <ClInclude Include="src\BlackPearl\RHI\OpenGLRHI\OpenGLDynamicRHI.h" />
+    <ClInclude Include="src\BlackPearl\RHI\OpenGLRHI\OpenGLLogger.h" />
+    <ClInclude Include="src\BlackPearl\RHI\OpenGLRHI\OpenGLModelLoader.h" />
+    <ClInclude Include="src\BlackPearl\RHI\OpenGLRHI\OpenGLWindow.h" />
     <ClInclude Include="src\BlackPearl\RayTracing\GenData.h" />
     <ClInclude Include="src\BlackPearl\RayTracing\GenData_HV.h" />
     <ClInclude Include="src\BlackPearl\RayTracing\GenData_MV.h" />
@@ -210,10 +253,19 @@
     <ClInclude Include="src\BlackPearl\RayTracing\RayCastFunction.h" />
     <ClInclude Include="src\BlackPearl\RayTracing\Triangle.h" />
     <ClInclude Include="src\BlackPearl\RayTracing\Vertex.h" />
-    <ClInclude Include="src\BlackPearl\Renderer\Buffer.h" />
+    <ClInclude Include="src\BlackPearl\Renderer\Buffer\Buffer.h" />
+    <ClInclude Include="src\BlackPearl\Renderer\Buffer\D3D12Buffer\ConstantBuffer.h" />
+    <ClInclude Include="src\BlackPearl\Renderer\Buffer\D3D12Buffer\D3D12Buffer.h" />
+    <ClInclude Include="src\BlackPearl\Renderer\Buffer\D3D12Buffer\GpuUploadBuffer.h" />
+    <ClInclude Include="src\BlackPearl\Renderer\Buffer\D3D12Buffer\StructuredBuffer.h" />
     <ClInclude Include="src\BlackPearl\Renderer\Context.h" />
     <ClInclude Include="src\BlackPearl\Renderer\MasterRenderer\AnimatedModelRenderer.h" />
     <ClInclude Include="src\BlackPearl\Renderer\MasterRenderer\BasicRenderer.h" />
+    <ClInclude Include="src\BlackPearl\Renderer\MasterRenderer\D3D12BasicRenderer.h" />
+    <ClInclude Include="src\BlackPearl\Renderer\MasterRenderer\D3D12RayTracingCubeRenderer.h" />
+    <ClInclude Include="src\BlackPearl\Renderer\MasterRenderer\D3D12RayTracingModelRenderer.h" />
+    <ClInclude Include="src\BlackPearl\Renderer\MasterRenderer\D3D12RayTracingRenderer.h" />
+    <ClInclude Include="src\BlackPearl\Renderer\MasterRenderer\D3D12Renderer.h" />
     <ClInclude Include="src\BlackPearl\Renderer\MasterRenderer\GBufferRenderer.h" />
     <ClInclude Include="src\BlackPearl\Renderer\MasterRenderer\IBLProbesRenderer.h" />
     <ClInclude Include="src\BlackPearl\Renderer\MasterRenderer\IBLRenderer.h" />
@@ -239,18 +291,23 @@
     <ClInclude Include="src\BlackPearl\Renderer\Model\Model.h" />
     <ClInclude Include="src\BlackPearl\Renderer\RenderCommand.h" />
     <ClInclude Include="src\BlackPearl\Renderer\Renderer.h" />
+    <ClInclude Include="src\BlackPearl\Renderer\Shader\D3D12Shader\ShaderRecord.h" />
+    <ClInclude Include="src\BlackPearl\Renderer\Shader\D3D12Shader\ShaderTable.h" />
     <ClInclude Include="src\BlackPearl\Renderer\Shader\Shader.h" />
     <ClInclude Include="src\BlackPearl\Renderer\ShadowBox\ShadowBox.h" />
     <ClInclude Include="src\BlackPearl\Renderer\VertexArray.h" />
     <ClInclude Include="src\BlackPearl\Sampler\Sobol.h" />
     <ClInclude Include="src\BlackPearl\Sampler\SobolSequence.h" />
+    <ClInclude Include="src\BlackPearl\Scene\BoundingBoxBuilder.h" />
+    <ClInclude Include="src\BlackPearl\Scene\DemoScene\MetaBallSDFScene.h" />
+    <ClInclude Include="src\BlackPearl\Scene\SDFScene.h" />
     <ClInclude Include="src\BlackPearl\Scene\Scene.h" />
-    <ClInclude Include="src\BlackPearl\SceneBuilder\BoundingBoxBuilder.h" />
-    <ClInclude Include="src\BlackPearl\SceneBuilder\SceneBuilder.h" />
+    <ClInclude Include="src\BlackPearl\Scene\SceneBuilder.h" />
     <ClInclude Include="src\BlackPearl\Timestep\TimeCounter.h" />
     <ClInclude Include="src\BlackPearl\Timestep\Timestep.h" />
     <ClInclude Include="src\BlackPearl\Window.h" />
     <ClInclude Include="src\pch.h" />
+    <ClInclude Include="src\BlackPearl\Component\TerrainComponent\TerrainComponent.h" />
     <ClInclude Include="vendor\glm\glm\common.hpp" />
     <ClInclude Include="vendor\glm\glm\detail\_features.hpp" />
     <ClInclude Include="vendor\glm\glm\detail\_fixes.hpp" />
@@ -622,6 +679,20 @@
     <ClInclude Include="vendor\stb\stb_image.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\BlackPearl\Renderer\MasterRenderer\IndirectRendererTest.cpp" />
+    <ClCompile Include="src\BlackPearl\Renderer\MasterRenderer\BatchRenderer.cpp" />
+    <ClCompile Include="src\BlackPearl\Renderer\MasterRenderer\IndirectRenderer.cpp" />
+    <ClCompile Include="src\BlackPearl\Node\SingleNode.cpp" />
+    <ClCompile Include="src\BlackPearl\Renderer\Batch\Batch.cpp" />
+    <ClCompile Include="src\BlackPearl\Node\BatchNode.cpp" />
+    <ClCompile Include="src\BlackPearl\Node\InstanceNode.cpp" />
+    <ClCompile Include="src\BlackPearl\Node\Node.cpp" />
+    <ClCompile Include="src\BlackPearl\Renderer\Material\MaterialManager.cpp" />
+    <ClCompile Include="src\BlackPearl\Renderer\Mesh\MeshManager.cpp" />
+    <ClCompile Include="src\BlackPearl\Component\BoundingSphereComponent\BoundingSphere.cpp" />
+    <ClCompile Include="src\BlackPearl\RHI\D3D12RHI\D3D12VertexBuffer.cpp" />
+    <ClCompile Include="src\BlackPearl\Renderer\Mesh\MeshletLoader.cpp" />
+    <ClCompile Include="src\BlackPearl\Renderer\MasterRenderer\D3D12MeshShaderRenderer.cpp" />
     <ClCompile Include="src\BlackPearl\AABB\AABB.cpp" />
     <ClCompile Include="src\BlackPearl\Animation\AnimatedModel.cpp" />
     <ClCompile Include="src\BlackPearl\Animation\Animation.cpp" />
@@ -654,24 +725,46 @@
     <ClCompile Include="src\BlackPearl\Component\TransformComponent\RayTracingTransform.cpp" />
     <ClCompile Include="src\BlackPearl\Component\TransformComponent\Transform.cpp" />
     <ClCompile Include="src\BlackPearl\Config.cpp" />
+    <ClCompile Include="src\BlackPearl\Debugger\D3D12Debugger\HLSLPixDebugger.cpp" />
     <ClCompile Include="src\BlackPearl\Entity\Entity.cpp" />
     <ClCompile Include="src\BlackPearl\ImGui\ImGuiBuild.cpp" />
     <ClCompile Include="src\BlackPearl\ImGui\ImGuiLayer.cpp" />
     <ClCompile Include="src\BlackPearl\Input.cpp" />
+    <ClCompile Include="src\BlackPearl\KeyCodes.cpp" />
     <ClCompile Include="src\BlackPearl\LayerScene\Layer.cpp" />
+    <ClCompile Include="src\BlackPearl\LayerScene\LayerManager.cpp" />
     <ClCompile Include="src\BlackPearl\LayerStack.cpp" />
     <ClCompile Include="src\BlackPearl\LightProbes\LightProbes.cpp" />
     <ClCompile Include="src\BlackPearl\LightProbes\SphericalHarmonics.cpp" />
     <ClCompile Include="src\BlackPearl\Log.cpp" />
+    <ClCompile Include="src\BlackPearl\Luanch\EngineLoop.cpp" />
+    <ClCompile Include="src\BlackPearl\Luanch\Luanch.cpp" />
     <ClCompile Include="src\BlackPearl\MainCamera\MainCamera.cpp" />
     <ClCompile Include="src\BlackPearl\Map\Area.cpp" />
     <ClCompile Include="src\BlackPearl\Map\MapManager.cpp" />
     <ClCompile Include="src\BlackPearl\Math\Math.cpp" />
     <ClCompile Include="src\BlackPearl\Math\Quaternion.cpp" />
-    <ClCompile Include="src\BlackPearl\Object\2DObject\Quad.cpp" />
     <ClCompile Include="src\BlackPearl\Object\Object.cpp" />
     <ClCompile Include="src\BlackPearl\ObjectCreater\ObjectCreater.cpp" />
     <ClCompile Include="src\BlackPearl\ObjectManager\ObjectManager.cpp" />
+    <ClCompile Include="src\BlackPearl\Renderer\Mesh\Meshlet.cpp" />
+    <ClCompile Include="src\BlackPearl\Renderer\Mesh\MeshletGenerator.cpp" />
+    <ClCompile Include="src\BlackPearl\Renderer\Model\ModelLoader.cpp" />
+    <ClCompile Include="src\BlackPearl\RHI\D3D12RHI\D3D12DeviceResources.cpp" />
+    <ClCompile Include="src\BlackPearl\RHI\D3D12RHI\D3D12DynamicModule.cpp" />
+    <ClCompile Include="src\BlackPearl\RHI\D3D12RHI\D3D12DynamicRHI.cpp" />
+    <ClCompile Include="src\BlackPearl\RHI\D3D12RHI\D3D12GlobalRootSignature.cpp" />
+    <ClCompile Include="src\BlackPearl\RHI\D3D12RHI\D3D12Logger.cpp" />
+    <ClCompile Include="src\BlackPearl\RHI\D3D12RHI\D3D12ModelLoader.cpp" />
+    <ClCompile Include="src\BlackPearl\RHI\D3D12RHI\D3D12RootSignature.cpp" />
+    <ClCompile Include="src\BlackPearl\RHI\D3D12RHI\D3D12Window.cpp" />
+    <ClCompile Include="src\BlackPearl\RHI\DynamicModule.cpp" />
+    <ClCompile Include="src\BlackPearl\RHI\DynamicRHI.cpp" />
+    <ClCompile Include="src\BlackPearl\RHI\OpenGLRHI\OpenGLDynamicModule.cpp" />
+    <ClCompile Include="src\BlackPearl\RHI\OpenGLRHI\OpenGLDynamicRHI.cpp" />
+    <ClCompile Include="src\BlackPearl\RHI\OpenGLRHI\OpenGLLogger.cpp" />
+    <ClCompile Include="src\BlackPearl\RHI\OpenGLRHI\OpenGLModelLoader.cpp" />
+    <ClCompile Include="src\BlackPearl\RHI\OpenGLRHI\OpenGLWindow.cpp" />
     <ClCompile Include="src\BlackPearl\RayTracing\GenData.cpp" />
     <ClCompile Include="src\BlackPearl\RayTracing\GenData_HV.cpp" />
     <ClCompile Include="src\BlackPearl\RayTracing\GenData_MV.cpp" />
@@ -683,10 +776,16 @@
     <ClCompile Include="src\BlackPearl\RayTracing\RayCastFunction.cpp" />
     <ClCompile Include="src\BlackPearl\RayTracing\Triangle.cpp" />
     <ClCompile Include="src\BlackPearl\RayTracing\Vertex.cpp" />
-    <ClCompile Include="src\BlackPearl\Renderer\Buffer.cpp" />
+    <ClCompile Include="src\BlackPearl\Renderer\Buffer\Buffer.cpp" />
+    <ClCompile Include="src\BlackPearl\Renderer\Buffer\D3D12Buffer\D3D12Buffer.cpp" />
     <ClCompile Include="src\BlackPearl\Renderer\Context.cpp" />
     <ClCompile Include="src\BlackPearl\Renderer\MasterRenderer\AnimatedModelRenderer.cpp" />
     <ClCompile Include="src\BlackPearl\Renderer\MasterRenderer\BasicRenderer.cpp" />
+    <ClCompile Include="src\BlackPearl\Renderer\MasterRenderer\D3D12BasicRenderer.cpp" />
+    <ClCompile Include="src\BlackPearl\Renderer\MasterRenderer\D3D12RayTracingCubeRenderer.cpp" />
+    <ClCompile Include="src\BlackPearl\Renderer\MasterRenderer\D3D12RayTracingModelRenderer.cpp" />
+    <ClCompile Include="src\BlackPearl\Renderer\MasterRenderer\D3D12RayTracingRenderer.cpp" />
+    <ClCompile Include="src\BlackPearl\Renderer\MasterRenderer\D3D12Renderer.cpp" />
     <ClCompile Include="src\BlackPearl\Renderer\MasterRenderer\GBufferRenderer.cpp" />
     <ClCompile Include="src\BlackPearl\Renderer\MasterRenderer\IBLProbesRenderer.cpp" />
     <ClCompile Include="src\BlackPearl\Renderer\MasterRenderer\IBLRenderer.cpp" />
@@ -712,19 +811,23 @@
     <ClCompile Include="src\BlackPearl\Renderer\Model\Model.cpp" />
     <ClCompile Include="src\BlackPearl\Renderer\RenderCommand.cpp" />
     <ClCompile Include="src\BlackPearl\Renderer\Renderer.cpp" />
+    <ClCompile Include="src\BlackPearl\Renderer\Shader\D3D12Shader\ShaderTable.cpp" />
     <ClCompile Include="src\BlackPearl\Renderer\Shader\Shader.cpp" />
     <ClCompile Include="src\BlackPearl\Renderer\ShadowBox\ShadowBox.cpp" />
     <ClCompile Include="src\BlackPearl\Renderer\VertexArray.cpp" />
     <ClCompile Include="src\BlackPearl\Sampler\Sobol.cpp" />
+    <ClCompile Include="src\BlackPearl\Scene\BoundingBoxBuilder.cpp" />
+    <ClCompile Include="src\BlackPearl\Scene\DemoScene\MetaBallSDFScene.cpp" />
+    <ClCompile Include="src\BlackPearl\Scene\SDFScene.cpp" />
     <ClCompile Include="src\BlackPearl\Scene\Scene.cpp" />
-    <ClCompile Include="src\BlackPearl\SceneBuilder\BoundingBoxBuilder.cpp" />
-    <ClCompile Include="src\BlackPearl\SceneBuilder\SceneBuilder.cpp" />
+    <ClCompile Include="src\BlackPearl\Scene\SceneBuilder.cpp" />
     <ClCompile Include="src\BlackPearl\Timestep\TimeCounter.cpp" />
     <ClCompile Include="src\BlackPearl\Timestep\Timestep.cpp" />
     <ClCompile Include="src\BlackPearl\Window.cpp" />
     <ClCompile Include="src\pch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="src\BlackPearl\Component\TerrainComponent\TerrainComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="vendor\GLFW\GLFW.vcxproj">
@@ -740,7 +843,17 @@
       <Project>{C0FF640D-2C14-8DBE-F595-301E616989EF}</Project>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
+    <Import Project="..\packages\directxmesh_desktop_win10.2022.7.30.1\build\native\directxmesh_desktop_win10.targets" Condition="Exists('..\packages\directxmesh_desktop_win10.2022.7.30.1\build\native\directxmesh_desktop_win10.targets')" />
   </ImportGroup>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>这台计算机上缺少此项目引用的 NuGet 程序包。使用“NuGet 程序包还原”可下载这些程序包。有关更多信息，请参见 http://go.microsoft.com/fwlink/?LinkID=322105。缺少的文件是 {0}。</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\directxmesh_desktop_win10.2022.7.30.1\build\native\directxmesh_desktop_win10.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\directxmesh_desktop_win10.2022.7.30.1\build\native\directxmesh_desktop_win10.targets'))" />
+  </Target>
 </Project>

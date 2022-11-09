@@ -16,9 +16,12 @@
 #include "BlackPearl/Component/BoundingBoxComponent/BoundingBox.h"
 #include "BlackPearl/Component/BVHNodeComponent/BVHNode.h"
 #include "BlackPearl/Component/TransformComponent/RayTracingTransform.h"
-#include "BlackPearl/SceneBuilder/SceneBuilder.h"
+#include "BlackPearl/Component/TerrainComponent/TerrainComponent.h"
+#include "BlackPearl/Scene/SceneBuilder.h"
+#include "BlackPearl/RHI/DynamicRHI.h"
 
 namespace BlackPearl {
+	extern  DynamicRHI::Type g_RHIType;
 
 	////////////////////////ObjectCreater////////////////////////////////
 	/////////////////////////////////////////////////////////////////////
@@ -40,7 +43,8 @@ namespace BlackPearl {
 		info->SetObjectType(ObjectType::OT_Cube);
 		std::shared_ptr<CubeMeshFilter> meshFilter = obj->AddComponent<CubeMeshFilter>();
 		Transform* transformComponent = obj->GetComponent<Transform>();
-
+	
+	
 		std::shared_ptr<Material> material;
 		std::shared_ptr<Material::TextureMaps> texture(DBG_NEW Material::TextureMaps());
 		if (texturePath != "")
@@ -52,9 +56,10 @@ namespace BlackPearl {
 		{ElementDataType::Float3,"aNormal",false,1},
 		{ElementDataType::Float2,"aTexCoords",false,2}
 		};
-		Mesh mesh(meshFilter->GetVertices(), meshFilter->GetIndices(), material, layout);
+		
+		std::shared_ptr<Mesh> mesh = std::make_shared<Mesh>(meshFilter->GetVertices(), meshFilter->GetIndices(), material, layout);
 		obj->AddComponent<MeshRenderer>(mesh);
-
+		
 		return obj;
 	}
 
@@ -77,7 +82,7 @@ namespace BlackPearl {
 		{ElementDataType::Float3,"aNormal",false,1},
 		{ElementDataType::Float2,"aTexCoords",false,2}
 		};
-		Mesh mesh(meshFilter->GetVertices(), meshFilter->GetIndices(), material, layout);
+		std::shared_ptr<Mesh> mesh = std::make_shared<Mesh>(meshFilter->GetVertices(), meshFilter->GetIndices(), material, layout);
 		obj->AddComponent<MeshRenderer>(mesh);
 		return obj;
 	}
@@ -101,19 +106,36 @@ namespace BlackPearl {
 		{ElementDataType::Float3,"aNormal",false,1},
 		{ElementDataType::Float2,"aTexCoords",false,2}
 		};
-		Mesh mesh(meshFilter->GetVertices(), meshFilter->GetIndices(), material, layout);
-		//obj->AddComponent<MeshRenderer>(mesh);
+		std::shared_ptr<Mesh> mesh = std::make_shared<Mesh>(meshFilter->GetVertices(), meshFilter->GetIndices(), material, layout);
+		obj->AddComponent<MeshRenderer>(mesh);
 
 		AABB box = BoundingBoxBuilder::Build(obj);
 		obj->AddComponent<BoundingBox>(box);
 		return obj;
 	}
 
-	Object* Object3DCreater::CreateModel(std::string modelPath, std::string shaderPath, const bool isAnimated, const bool addBondingBox, const std::string name)
+	Object* Object3DCreater::CreateModel(
+		std::string modelPath, 
+		std::string shaderPath, 
+		const bool isAnimated, 
+		const bool vertices_sorted, 
+		const bool addBondingBox, 
+		const std::string name,
+		const bool createMeshlet,
+		const bool isMeshletModel,
+		MeshletOption options 
+		)
 	{
-		std::shared_ptr<Shader>shader(new Shader(shaderPath));
-		shader->Bind();
-		std::shared_ptr<Model> model(new Model(modelPath, shader, isAnimated));
+		std::shared_ptr<Shader> shader;
+		if (shaderPath == "") {
+			shader.reset(DBG_NEW Shader(shaderPath));
+			GE_CORE_WARN("shaderPath is empty");
+		}
+		else {
+			shader.reset(DBG_NEW Shader(shaderPath));
+			shader->Bind();
+		}
+		std::shared_ptr<Model> model(DBG_NEW Model(modelPath, shader, isAnimated, vertices_sorted, createMeshlet, isMeshletModel,options));
 		Object* obj = CreateEmpty(name);
 		auto info = obj->AddComponent<BasicInfo>();
 		info->SetObjectType(ObjectType::OT_Model);
@@ -126,6 +148,8 @@ namespace BlackPearl {
 		}*/
 		return obj;
 	}
+
+
 
 	Object* Object3DCreater::CreateSkyBox(const std::vector<std::string>& textureFaces, const std::string& shaderPath, const std::string name)
 	{
@@ -143,7 +167,7 @@ namespace BlackPearl {
 		VertexBufferLayout layout = {
 		{ElementDataType::Float3,"aPos",false,0},
 		};
-		Mesh mesh(meshFilter->GetVertices(), meshFilter->GetIndices(), material, layout);
+		std::shared_ptr<Mesh> mesh = std::make_shared<Mesh>(meshFilter->GetVertices(), meshFilter->GetIndices(), material, layout);
 		obj->AddComponent<MeshRenderer>(mesh);
 		AABB box(glm::vec3(10e-20f),glm::vec3(10e20f));
 		obj->AddComponent<BoundingBox>(box);
@@ -153,8 +177,10 @@ namespace BlackPearl {
 	Object* Object3DCreater::CreateLightProbe(ProbeType type, const std::string& shaderPath, const std::string& texturePath, const std::string name)
 	{
 		Object* obj = CreateCube(shaderPath, texturePath, name);
-		auto info = obj->AddComponent<BasicInfo>();
-		info->SetObjectType(ObjectType::OT_LightProbe);
+		if (!obj->HasComponent<BasicInfo>()) {
+			obj->AddComponent<BasicInfo>();
+		}
+		obj->GetComponent<BasicInfo>()->SetObjectType(ObjectType::OT_LightProbe);
 		obj->GetComponent<Transform>()->SetInitRotation({ 0.0f, 0.0f, 0.0f });
 		obj->GetComponent<Transform>()->SetInitScale({ 0.3f,0.3f,0.3f });
 
@@ -220,6 +246,41 @@ namespace BlackPearl {
 		return obj;
 	}
 
+	Object* Object3DCreater::CreateTerrain(const std::string& shaderPath, const std::string& heightMapPath, const std::string& texturePath, uint32_t chunkCntX, uint32_t chunkCntZ, const std::string name)
+	{
+		Object* obj = CreateEmpty(name);
+		auto info = obj->AddComponent<BasicInfo>();
+		info->SetObjectType(ObjectType::OT_Terrain);
+
+
+		std::shared_ptr<Material> material;
+		std::shared_ptr<Material::TextureMaps> texture(DBG_NEW Material::TextureMaps());
+		if (!texturePath.empty())
+			texture->diffuseTextureMap.reset(DBG_NEW Texture(Texture::Type::DiffuseMap, texturePath, GL_LINEAR, GL_LINEAR, GL_RGBA, GL_CLAMP_TO_EDGE, GL_UNSIGNED_BYTE));
+		if (!heightMapPath.empty()) {
+			texture->heightTextureMap.reset(DBG_NEW Texture(Texture::Type::HeightMap, heightMapPath, GL_LINEAR, GL_LINEAR, GL_RGBA, GL_CLAMP_TO_EDGE, GL_UNSIGNED_BYTE));
+		}
+		else {
+			GE_CORE_ERROR("no heightmap found");
+		}
+		uint32_t width = texture->heightTextureMap->GetWidth();
+		uint32_t height = texture->heightTextureMap->GetHeight();
+
+		std::shared_ptr<TerrainComponent> terrain = obj->AddComponent<TerrainComponent>(width, height, chunkCntX, chunkCntZ);
+
+		material.reset(DBG_NEW Material(shaderPath, texture, { 1.0,1.0,1.0 }, { 1.0,1.0,1.0 }, { 1.0,1.0,1.0 }, {}));
+		VertexBufferLayout layout = {
+		{ElementDataType::Float3,"aPos",false,0},
+		{ElementDataType::Float2,"aTexCoords",false,1}
+		};
+
+		std::shared_ptr<Mesh> mesh = std::make_shared<Mesh>(terrain->GetVertices(),std::vector<uint32_t>(), material, layout, true/*tesselation*/, terrain->GetVertexPerChunk());
+		obj->AddComponent<MeshRenderer>(mesh);
+
+		return obj;
+
+	}
+
 	////////////////////////LightCreater//////////////////////////////////
 	/////////////////////////////////////////////////////////////////////
 	Object* LightCreater::CreateLight(LightType type, LightSources* lightSources, const std::string name)
@@ -238,10 +299,14 @@ namespace BlackPearl {
 			break;
 		}
 		case LightType::PointLight: {
-			std::shared_ptr<PointLight> lightComponent = Obj->AddComponent<PointLight>();
-			lightComponent->SetAttenuation(PointLight::Attenuation(200));
+			//TODO:: Ìí¼ÓDirectXÖ§³Ö
+			if (g_RHIType == DynamicRHI::Type::OpenGL) {
+
+				std::shared_ptr<PointLight> lightComponent = Obj->AddComponent<PointLight>();
+				lightComponent->SetAttenuation(PointLight::Attenuation(200));
+				Obj->AddComponent<MeshRenderer>(lightComponent->GetMeshes());
+			}
 			lightSources->AddLight(Obj);
-			Obj->AddComponent<MeshRenderer>(lightComponent->GetMeshes());
 
 			break;
 		}
@@ -293,7 +358,7 @@ namespace BlackPearl {
 		{ElementDataType::Float2,"aTexCoords",false,2}
 
 		};
-		Mesh mesh(meshFilter->GetVertices(), meshFilter->GetIndices(), material, layout);
+		std::shared_ptr<Mesh> mesh(DBG_NEW Mesh(meshFilter->GetVertices(), meshFilter->GetIndices(), material, layout));
 		obj->AddComponent<MeshRenderer>(mesh);
 
 		return obj;

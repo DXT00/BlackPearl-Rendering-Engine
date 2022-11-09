@@ -1,96 +1,96 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="16.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\contrib\zlib\adler32.c">
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\contrib\zlib\adler32.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\contrib\zlib\compress.c">
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\contrib\zlib\compress.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\contrib\zlib\crc32.c">
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\contrib\zlib\crc32.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\contrib\zlib\deflate.c">
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\contrib\zlib\deflate.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\contrib\zlib\gzclose.c">
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\contrib\zlib\gzclose.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\contrib\zlib\gzlib.c">
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\contrib\zlib\gzlib.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\contrib\zlib\gzread.c">
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\contrib\zlib\gzread.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\contrib\zlib\gzwrite.c">
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\contrib\zlib\gzwrite.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\contrib\zlib\inflate.c">
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\contrib\zlib\inflate.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\contrib\zlib\infback.c">
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\contrib\zlib\infback.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\contrib\zlib\inftrees.c">
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\contrib\zlib\inftrees.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\contrib\zlib\inffast.c">
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\contrib\zlib\inffast.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\contrib\zlib\trees.c">
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\contrib\zlib\trees.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\contrib\zlib\uncompr.c">
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\contrib\zlib\uncompr.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\contrib\zlib\zutil.c">
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\contrib\zlib\zutil.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="F:\OpenGL\assimp_build\contrib\zlib\zconf.h">
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp_build\contrib\zlib\zconf.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\contrib\zlib\zlib.h">
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\contrib\zlib\zlib.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\contrib\zlib\crc32.h">
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\contrib\zlib\crc32.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\contrib\zlib\deflate.h">
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\contrib\zlib\deflate.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\contrib\zlib\gzguts.h">
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\contrib\zlib\gzguts.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\contrib\zlib\inffast.h">
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\contrib\zlib\inffast.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\contrib\zlib\inffixed.h">
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\contrib\zlib\inffixed.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\contrib\zlib\inflate.h">
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\contrib\zlib\inflate.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\contrib\zlib\inftrees.h">
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\contrib\zlib\inftrees.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\contrib\zlib\trees.h">
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\contrib\zlib\trees.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\contrib\zlib\zutil.h">
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\contrib\zlib\zutil.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="F:\OpenGL\assimp-4.1.0\contrib\zlib\CMakeLists.txt" />
+    <CustomBuild Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\contrib\zlib\CMakeLists.txt" />
   </ItemGroup>
   <ItemGroup>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{FFBFDF1F-5254-3901-88E2-2E4006814B3D}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files">
-      <UniqueIdentifier>{2141B41F-F7D1-3FE8-B6A0-B942D09487C8}</UniqueIdentifier>
+      <UniqueIdentifier>{35454BF2-4286-35EC-980A-338160E441BA}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{FFFBDE15-D0E4-3D70-BF9A-89D69BA7C23D}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

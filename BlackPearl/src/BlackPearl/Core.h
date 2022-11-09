@@ -5,13 +5,14 @@
 #define GE_ENABLE_ASSERTS
 #endif
 
+
+
 #ifdef GE_ENABLE_ASSERTS
 #define GE_ASSERT(x,...) {if(!(x)){GE_CORE_ERROR("Assertion Failed:{0}",__VA_ARGS__);__debugbreak();}}
 #else
 #define GE_ASSERT(x,...) 
 #endif
 
-#define BIT(x) 1<<x
 
 
 
@@ -36,8 +37,11 @@
 #define _SH
 
 
-#define GE_SAVE_DELETE(p) {if(p){delete p;p = nullptr;}}
+#define GE_SAVE_DELETE(p) {if(p!=nullptr){delete p;p = nullptr;}}
+#define GE_SAVE_DELETE_ARRAY(p) {if(p!=nullptr){delete [] p;p = nullptr;}}
 
+#define GE_SAVE_FREE(p) {if(p!=nullptr){free(p);p = nullptr;}}
+#define GE_SAVE_FREE_ARRAY(p) {if(p!=nullptr){free(p);p = nullptr;}}
 #define GE_ERROR_JUDGE()\
 {\
 	GLenum err = glGetError();\

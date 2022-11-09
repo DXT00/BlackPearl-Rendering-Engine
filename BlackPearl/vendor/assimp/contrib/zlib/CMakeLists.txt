@@ -1,16 +1,21 @@
-cmake_minimum_required(VERSION 2.4.4)
+cmake_minimum_required(VERSION 3.10.0)
 set(CMAKE_ALLOW_LOOSE_LOOP_CONSTRUCTS ON)
 
 # CMake 3.0 changed the project command, setting policy CMP0048 reverts to the old behaviour.
 # See http://www.cmake.org/cmake/help/v3.0/policy/CMP0048.html
 cmake_policy(PUSH)
 if(CMAKE_MAJOR_VERSION GREATER 2)
-	cmake_policy(SET CMP0048 OLD)
+	cmake_policy(SET CMP0048 NEW)
 endif()
 project(zlib C)
+SET (ZLIB_VERSION_MAJOR 1)
+SET (ZLIB_VERSION_MINOR 2)
+SET (ZLIB_VERSION_PATCH 11)
+SET (ZLIB_VERSION ${ZLIB_VERSION_MAJOR}.${ZLIB_VERSION_MINOR}.${ZLIB_VERSION_PATCH})
+SET (ZLIB_SOVERSION 1)
+SET (PROJECT_VERSION "${ZLIB_VERSION}")
 cmake_policy(POP)
 
-set(VERSION "1.2.11.1")
 
 option(ASM686 "Enable building i686 assembly implementation")
 option(AMD64 "Enable building amd64 assembly implementation")
@@ -67,6 +72,7 @@ endif()
 check_include_file(unistd.h Z_HAVE_UNISTD_H)
 
 if(MSVC)
+    SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /wd4131 /wd4127 /wd4244")
     set(CMAKE_DEBUG_POSTFIX "d")
     add_definitions(-D_CRT_SECURE_NO_DEPRECATE)
     add_definitions(-D_CRT_NONSTDC_NO_DEPRECATE)
@@ -190,13 +196,11 @@ if(MINGW)
     set(ZLIB_DLL_SRCS ${CMAKE_CURRENT_BINARY_DIR}/zlib1rc.obj)
 endif(MINGW)
 
-add_library(zlib SHARED ${ZLIB_SRCS} ${ZLIB_ASMS} ${ZLIB_DLL_SRCS} ${ZLIB_PUBLIC_HDRS} ${ZLIB_PRIVATE_HDRS})
 add_library(zlibstatic STATIC ${ZLIB_SRCS} ${ZLIB_ASMS} ${ZLIB_PUBLIC_HDRS} ${ZLIB_PRIVATE_HDRS})
-set_target_properties(zlib PROPERTIES DEFINE_SYMBOL ZLIB_DLL)
-set_target_properties(zlib PROPERTIES SOVERSION 1)
 
 INSTALL( TARGETS zlibstatic
-         LIBRARY DESTINATION ${ASSIMP_LIB_INSTALL_DIR}
-         ARCHIVE DESTINATION ${ASSIMP_LIB_INSTALL_DIR}
-         RUNTIME DESTINATION ${ASSIMP_BIN_INSTALL_DIR}
-         COMPONENT ${LIBASSIMP_COMPONENT})
+     EXPORT "${TARGETS_EXPORT_NAME}"
+     LIBRARY DESTINATION ${ASSIMP_LIB_INSTALL_DIR}
+     ARCHIVE DESTINATION ${ASSIMP_LIB_INSTALL_DIR}
+     RUNTIME DESTINATION ${ASSIMP_BIN_INSTALL_DIR}
+     COMPONENT ${LIBASSIMP_COMPONENT})

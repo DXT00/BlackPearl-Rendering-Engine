@@ -74,28 +74,28 @@ namespace BlackPearl {
 
 		inline void SetDiffuse(glm::vec3 diffuse) {
 			m_LightProp.diffuse = diffuse;
-			m_Mesh.SetMaterialColor({ m_LightProp.ambient,m_LightProp.diffuse,m_LightProp.specular ,m_LightProp.emission });
+			m_Mesh->SetMaterialColor({ m_LightProp.ambient,m_LightProp.diffuse,m_LightProp.specular ,m_LightProp.emission });
 
 		}
 		inline void SetAmbient(glm::vec3 ambient) {
 			m_LightProp.ambient = ambient;
-			m_Mesh.SetMaterialColor({ m_LightProp.ambient,m_LightProp.diffuse,m_LightProp.specular ,m_LightProp.emission });
+			m_Mesh->SetMaterialColor({ m_LightProp.ambient,m_LightProp.diffuse,m_LightProp.specular ,m_LightProp.emission });
 
 		}
 		inline void SetSpecular(glm::vec3 specular) {
 			m_LightProp.specular = specular;
-			m_Mesh.SetMaterialColor({ m_LightProp.ambient,m_LightProp.diffuse,m_LightProp.specular ,m_LightProp.emission });
+			m_Mesh->SetMaterialColor({ m_LightProp.ambient,m_LightProp.diffuse,m_LightProp.specular ,m_LightProp.emission });
 
 		}
 		inline void SetEmission(glm::vec3 emission) {
 			m_LightProp.emission = emission;
-			m_Mesh.SetMaterialColor({ m_LightProp.ambient,m_LightProp.diffuse,m_LightProp.specular ,m_LightProp.emission });
+			m_Mesh->SetMaterialColor({ m_LightProp.ambient,m_LightProp.diffuse,m_LightProp.specular ,m_LightProp.emission });
 
 		}
 
 		void UpdateMesh(Props props) {
 			SetProps(props);
-			m_Mesh.SetMaterialColor({ props.ambient,props.diffuse,props.specular ,props.emission });
+			m_Mesh->SetMaterialColor({ props.ambient,props.diffuse,props.specular ,props.emission });
 			/*		std::shared_ptr<Material> lightMaterial = m_Mesh.GetMaterial();
 					lightMaterial->SetMaterialColor({ props.ambient,props.diffuse,props.specular ,props.emission});*/
 
@@ -112,15 +112,15 @@ namespace BlackPearl {
 		unsigned int GetShadowMapWidth() const{ return m_ShadowMapPointLightWidth; }
 		unsigned int GetShadowMapHeight() const { return m_ShadowMapPointLightHeight; }
 
-		inline Mesh GetMeshes()const { return m_Mesh; }
+		inline std::shared_ptr<Mesh> GetMeshes()const { return m_Mesh; }
 
 	private:
-		Mesh m_Mesh;
+		std::shared_ptr<Mesh> m_Mesh;
 		Attenuation m_Attenuation;
 		/* 每个PointLight都有一个采集它周围深度的ShadowMap */
 		std::shared_ptr<CubeMapTexture> m_ShadowMap;
-		unsigned int m_ShadowMapPointLightWidth =1024.0f;
-		unsigned int m_ShadowMapPointLightHeight=1024.0f;
+		unsigned int m_ShadowMapPointLightWidth = 1024;
+		unsigned int m_ShadowMapPointLightHeight = 1024;
 	};
 
 }

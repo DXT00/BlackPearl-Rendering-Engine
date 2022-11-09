@@ -3,6 +3,7 @@
 #include<string>
 #include<initializer_list>
 #include "BlackPearl/Component/Component.h"
+#include "BlackPearl/RHI/DynamicModule.h"
 namespace BlackPearl {
 
 	class Camera :public Component<Camera>
@@ -22,8 +23,15 @@ namespace BlackPearl {
 			float Yaw;
 			float Pitch;
 			ViewMatrixProps()
-				:Front(glm::vec3(0.0f, 0.0f, -1.0f)), WorldUp(glm::vec3(0.0f, 1.0f, 0.0f)), Yaw(-90.0f), Pitch(0.0f) {
+				: WorldUp(glm::vec3(0.0f, 1.0f, 0.0f)), Yaw(-90.0f), Pitch(0.0f) {
+				if (g_RHIType == DynamicRHI::Type::OpenGL) {
+					Front = glm::vec3(0.0f, 0.0f, -1.0f);
+				}
+				else if (g_RHIType == DynamicRHI::Type::D3D12) {
+					Front = glm::vec3(0.0f, 0.0f, 1.0f);
+					Yaw = 90.0f;
 
+				}
 				Front.x = cos(glm::radians(Yaw))*cos(glm::radians(Pitch));
 				Front.y = sin(glm::radians(Pitch));
 				Front.z = sin(glm::radians(Yaw)) * cos(glm::radians(Pitch));
@@ -31,6 +39,10 @@ namespace BlackPearl {
 
 				Right = glm::normalize(glm::cross(Front, WorldUp));
 				Up = glm::normalize(glm::cross(Right, Front));
+				//D3D12是左手坐标系
+				/*if (g_RHIType == DynamicRHI::Type::D3D12) {
+					Right = -Right;
+				}*/
 			}
 		};
 
@@ -48,7 +60,7 @@ namespace BlackPearl {
 
 		inline const glm::mat4& GetViewMatrix() const { return m_ViewMatrix; }
 		inline const glm::mat4& GetProjectionMatrix() const { return m_ProjectionMatrix; }
-		inline const glm::mat4& GetViewProjectionMatrix() const { return m_ViewProjectionMatrix; }
+		inline const glm::mat4& GetProjectionViewMatrix() const { return m_ViewProjectionMatrix; }
 
 		void RecalculateViewMatrix();
 		void RecalculateViewMatrix(float yaw, float pitch);

@@ -36,7 +36,7 @@ namespace BlackPearl {
 	void Renderer::BeginScene(const Camera & camera, const LightSources& lightSources)
 	{
 		s_SceneData->LightSources = lightSources;
-		s_SceneData->ViewProjectionMatrix = camera.GetViewProjectionMatrix();
+		s_SceneData->ProjectionViewMatrix = camera.GetProjectionViewMatrix();
 		s_SceneData->CameraPosition = camera.GetPosition();
 		s_SceneData->CameraRotation = camera.GetRotation();
 
@@ -76,7 +76,7 @@ namespace BlackPearl {
 		//shader->Bind();
 		shader->SetUniformMat4f("u_TranInverseModel", glm::transpose(glm::inverse(model)));
 
-		shader->SetUniformMat4f("u_ProjectionView", sceneData->ViewProjectionMatrix);
+		shader->SetUniformMat4f("u_ProjectionView", sceneData->ProjectionViewMatrix);
 		shader->SetUniformMat4f("u_Projection", sceneData->ProjectionMatrix);
 		shader->SetUniformMat4f("u_View", sceneData->ViewMatrix);
 
@@ -86,5 +86,44 @@ namespace BlackPearl {
 		vertexArray->Bind();
 
 
+	}
+	void Renderer::Submit(const std::shared_ptr<VertexArray>& vertexArray, const std::shared_ptr<Shader>& shader, float* model, uint32_t objCnt, SceneData* sceneData)
+	{
+
+		////shader->Bind();
+		//for (size_t id = 0; id < objCnt; id++)
+		//{
+		//	for (size_t i = 0; i < 12; i++)
+		//	{
+		//		GE_CORE_INFO("objid = " + std::to_string(id) + ", i=" + std::to_string(i) + ", m[i]=" + std::to_string(model[id * 12 + i]));
+
+		//	}
+		//}
+
+
+		shader->SetUniformMat4f("u_ProjectionView", sceneData->ProjectionViewMatrix);
+		shader->SetUniformMat4f("u_Projection", sceneData->ProjectionMatrix);
+		shader->SetUniformMat4f("u_View", sceneData->ViewMatrix);
+
+		if (model != nullptr && objCnt != 0) {
+			shader->SetUniformMat3x4f("u_Model", model, objCnt);
+		}
+		//shader->SetUniformMat4f("u_Model", model, objCnt);
+
+		shader->SetUniformVec3f("u_CameraViewPos", sceneData->CameraPosition);
+
+		vertexArray->Bind();
+
+
+	}
+	void Renderer::Submit(const std::shared_ptr<VertexArray>& vertexArray, const std::shared_ptr<Shader>& shader, SceneData* sceneData)
+	{
+		shader->SetUniformMat4f("u_ProjectionView", sceneData->ProjectionViewMatrix);
+		shader->SetUniformMat4f("u_Projection", sceneData->ProjectionMatrix);
+		shader->SetUniformMat4f("u_View", sceneData->ViewMatrix);
+
+		shader->SetUniformVec3f("u_CameraViewPos", sceneData->CameraPosition);
+
+		vertexArray->Bind();
 	}
 }

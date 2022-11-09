@@ -137,7 +137,7 @@ public:
 		milliseconds currentTimeMs = duration_cast<milliseconds>(system_clock::now().time_since_epoch());
 		double runtime = currentTimeMs.count() - m_StartTimeMs.count();
 		
-		if (BlackPearl::Input::IsKeyPressed(BP_KEY_U)) {
+		if (BlackPearl::Input::IsKeyPressed(BlackPearl::KeyCodes::Get(BP_KEY_U))) {
 			BlackPearl::TimeCounter::Start();
 			//GE_CORE_INFO("updating diffuse probes' area...!")
 				m_MapManager->UpdateProbesArea(m_DiffuseLightProbes);
@@ -221,10 +221,10 @@ public:
 			m_BackGroundObjsList, m_GBufferDebugQuad, GetLightSources(), m_DiffuseLightProbes, m_ReflectionLightProbes,
 			m_IBLProbesRenderer->GetSpecularBrdfLUTTexture(), m_SkyBoxObj1, m_MapManager);
 
-		if (BlackPearl::Input::IsKeyPressed(BP_KEY_L)) {
+		if (BlackPearl::Input::IsKeyPressed(BlackPearl::KeyCodes::Get(BP_KEY_L))) {
 			m_ShowLightProbe = !m_ShowLightProbe;
 		}
-		if (BlackPearl::Input::IsKeyPressed(BP_KEY_M)) {
+		if (BlackPearl::Input::IsKeyPressed(BlackPearl::KeyCodes::Get(BP_KEY_M))) {
 			m_ShowMap = !m_ShowMap;
 		}
 		if (m_ShowLightProbe) {

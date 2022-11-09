@@ -215,38 +215,38 @@ vec4 convRGBA8ToVec4( in uint val )
 	             float( (val&0x00FF0000u)>>16u), float( (val&0xFF000000u)>>24u) );
 }
 
-void imageAtomicRGBA8Avg( vec4 val, ivec3 coord, layout(r32ui) uimage3D  buf )
-{
-    val.rgb *= 255.0;
-	val.a = 1;
-
-	uint newVal = convVec4ToRGBA8( val );
-	uint prev = 0u;
-	uint cur;
-	
-	
-//	uint imageAtomicCompSwap(gimage1D image,
-// 	int P,
-// 	uint compare,
-// 	uint data);
+//void imageAtomicRGBA8Avg( vec4 val, ivec3 coord, layout(r32ui) uimage3D  buf )
+//{
+//    val.rgb *= 255.0;
+//	val.a = 1;
+//
+//	uint newVal = convVec4ToRGBA8( val );
+//	uint prev = 0u;
+//	uint cur;
 //	
-
-	//imageAtomicCompSwap atomically compares the value of compare with that of the texel at coordinate
-	//P and sample (for multisampled forms) in the image bound to uint image. If the values are equal, 
-	//data is stored into the texel, otherwise it is discarded.
-	//It returns the original value of the texel regardless of the result of the comparison operation.
-	while( (cur = imageAtomicCompSwap( buf, coord, prev, newVal ) ) != prev )
-   {
-       prev = cur;
-	   vec4 rval = convRGBA8ToVec4( cur );
-	   rval.xyz = rval.xyz*rval.w;
-	   vec4 curVal = rval +  val;
-	   curVal.xyz /= curVal.w;
-	   newVal = convVec4ToRGBA8( curVal );
-   }
-
-     
-}
+//	
+////	uint imageAtomicCompSwap(gimage1D image,
+//// 	int P,
+//// 	uint compare,
+//// 	uint data);
+////	
+//
+//	//imageAtomicCompSwap atomically compares the value of compare with that of the texel at coordinate
+//	//P and sample (for multisampled forms) in the image bound to uint image. If the values are equal, 
+//	//data is stored into the texel, otherwise it is discarded.
+//	//It returns the original value of the texel regardless of the result of the comparison operation.
+//	while( (cur = imageAtomicCompSwap( buf, coord, prev, newVal ) ) != prev )
+//   {
+//       prev = cur;
+//	   vec4 rval = convRGBA8ToVec4( cur );
+//	   rval.xyz = rval.xyz*rval.w;
+//	   vec4 curVal = rval +  val;
+//	   curVal.xyz /= curVal.w;
+//	   newVal = convVec4ToRGBA8( curVal );
+//   }
+//
+//     
+//}
 /************************************* PBR fuction ***************************************************/
 /*****************************************************************************************************/
 

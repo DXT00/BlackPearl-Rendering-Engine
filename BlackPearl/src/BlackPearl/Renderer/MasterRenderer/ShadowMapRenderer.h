@@ -1,6 +1,6 @@
 #pragma once
 #include "BlackPearl/Object/Object.h"
-#include "BlackPearl/Renderer/Buffer.h"
+#include "BlackPearl/Renderer/Buffer/Buffer.h"
 #include "BlackPearl/Component/LightComponent/ParallelLight.h"
 #include "BlackPearl/Renderer/MasterRenderer/BasicRenderer.h"
 #include "BlackPearl/Renderer/ShadowBox/ShadowBox.h"
@@ -37,7 +37,6 @@ namespace BlackPearl {
 		glm::vec3 m_LightPos;
 		static int s_ShadowMapWidth;
 		static int s_ShadowMapHeight;
-
 
 		std::shared_ptr<BlackPearl::Shader> m_SimpleDepthShader;
 		

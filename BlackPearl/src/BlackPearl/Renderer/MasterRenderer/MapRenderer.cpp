@@ -35,7 +35,7 @@ namespace BlackPearl {
 	{
 		m_MapShader->Bind();
 		m_MapShader->SetUniform1f("u_AreaSize", (float)mapManager->GetAreaSize());
-		m_MapShader->SetUniformMat4f("u_ProjectionView", Renderer::GetSceneData()->ViewProjectionMatrix);
+		m_MapShader->SetUniformMat4f("u_ProjectionView", Renderer::GetSceneData()->ProjectionViewMatrix);
 		m_MapShader->SetUniformMat4f("u_Projection", Renderer::GetSceneData()->ProjectionMatrix);
 		m_MapShader->SetUniformMat4f("u_View", Renderer::GetSceneData()->ViewMatrix);
 		m_PointCubeVAO->Bind();

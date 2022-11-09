@@ -3,7 +3,7 @@
 Open Asset Import Library - Java Binding (jassimp)
 ---------------------------------------------------------------------------
 
-Copyright (c) 2006-2012, assimp team
+Copyright (c) 2006-2020, assimp team
 
 All rights reserved.
 
@@ -55,6 +55,34 @@ import java.util.Map;
  * the imported scene consists of only a single root node without children.
  */
 public final class AiNode {
+    /**
+     * Parent node.
+     */
+    private final AiNode m_parent;
+    
+    
+    /**
+     * Mesh references.
+     */
+    private final int[] m_meshReferences;
+    
+    
+    /**
+     * List of children.
+     */
+    private final List<AiNode> m_children = new ArrayList<AiNode>();
+
+    /**
+     * List of metadata entries.
+     */
+     private final Map<String, AiMetadataEntry> m_metaData = new HashMap<String, AiMetadataEntry>();
+    
+    
+    /**
+     * Buffer for transformation matrix.
+     */
+    private final Object m_transformationMatrix;
+
     /**
      * Constructor.
      * 
@@ -214,34 +242,5 @@ public final class AiNode {
     /**
      * Name.
      */
-    private final String m_name;
-    
-    
-    /**
-     * Parent node.
-     */
-    private final AiNode m_parent;
-    
-    
-    /**
-     * Mesh references.
-     */
-    private final int[] m_meshReferences;
-    
-    
-    /**
-     * List of children.
-     */
-    private final List<AiNode> m_children = new ArrayList<AiNode>();
-
-    /**
-     * List of metadata entries.
-     */
-     private final Map<String, AiMetadataEntry> m_metaData = new HashMap<String, AiMetadataEntry>();
-    
-    
-    /**
-     * Buffer for transformation matrix.
-     */
-    private final Object m_transformationMatrix;
+    private final String m_name;    
 }

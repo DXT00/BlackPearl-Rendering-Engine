@@ -243,8 +243,6 @@ vec2 RandInCircle(){
     return rst;
 }
  
-
-
 void GenRay(out struct Ray ray){
 	vec2 st = TexCoords + RandInSquare() / textureSize(SumColor, 0);
 	ray.origin = u_CameraViewPos;
@@ -290,7 +288,6 @@ vec3 GetTexture(vec2 uv, vec3 pos, float texId) {
 	else if(texture_type == TexT_Skybox) {
 		return Value_SkyTexture(texId,pos);
 	}
-
 }
 
 bool Scatter_Material(inout struct Ray ray, struct HitRst hitable, int matIdx) {
@@ -299,7 +296,6 @@ bool Scatter_Material(inout struct Ray ray, struct HitRst hitable, int matIdx) {
 		return false;
 	}
 	float matType = At(MatData,matIdx);
-
 	if(matType == MatType_Lambertian || matType == MatType_Diffuse )
 		return Scatter_Lambertian(ray,hitable,matIdx);
 	else if (matType == MatType_Dielectric)
@@ -329,7 +325,6 @@ bool Scatter_Metal(inout struct Ray ray, struct HitRst hitable, int matIdx){
 	}
 	
 	float fuzz = At(MatData,matIdx+2);
-
 	vec3 dir = reflect(ray.dir, hitable.vertex.normal);
 	vec3 dirFuzz = dir + fuzz * RandInSphere();
 
@@ -338,10 +333,8 @@ bool Scatter_Metal(inout struct Ray ray, struct HitRst hitable, int matIdx){
 		ray.color = vec3(0);
 		return false;
 	}
-
 	Ray_Update(ray, hitable.vertex.pos, dirFuzz, specular);
 	return true;
-
 }
 
 bool Scatter_Dielectric(inout struct Ray ray, struct HitRst hitable, int matIdx){
@@ -362,10 +355,8 @@ bool Scatter_Dielectric(inout struct Ray ray, struct HitRst hitable, int matIdx)
 			Ray_Update(ray, hitable.vertex.pos, reflectDir, vec3(1));
 			return true;
 		}
-		
 		airViewDir = refractDir;
 	}
-	
 	float fresnelFactor = FresnelSchlick(airViewDir, un, refractIndex);
 	vec3 dir = Rand() > fresnelFactor ? refractDir : reflectDir;
 	Ray_Update(ray,hitable.vertex.pos, dir, vec3(1));
@@ -444,13 +435,13 @@ void GetPackData(float idx, out mat3 m){
 	m[2] = v[2].xyz;
 }
 void Vertex_Load(float idx, out struct Vertex vert){
-	vec4 pos_u, normal_v;
-	GetPackData(idx, pos_u);
-	GetPackData((idx+1), normal_v);
+	vec4 pos, normal;
+	GetPackData(idx, pos);
+	GetPackData((idx+1), normal);
 
-	vert.pos    = pos_u.xyz;
-	vert.normal = normal_v.xyz;
-	vert.uv     = vec2(pos_u[3], normal_v[3]);
+	vert.pos    = pos.xyz;
+	vert.normal = normal.xyz;
+	vert.uv     = vec2(pos[3], normal[3]);
 
 }
 
@@ -651,7 +642,8 @@ struct HitRst TraceScene(inout struct Ray ray,inout struct HitRst finalHitRst){
 vec3 RayTrace(){
 	struct Ray ray;
 	GenRay(ray);
-	while(true){
+	int cnt = 100;
+	while(cnt>0){
 		if( Rand() > rayP){
 			return vec3(0);
 		}
@@ -683,7 +675,9 @@ vec3 RayTrace(){
 			return ray.color;
 			
 		}
+		cnt--;
 	}
+	return vec3(0);
 }
 
 bool Stack_Empty(){

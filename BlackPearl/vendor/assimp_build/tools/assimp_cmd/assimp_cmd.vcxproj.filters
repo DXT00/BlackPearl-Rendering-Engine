@@ -1,47 +1,44 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="16.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\tools\assimp_cmd\CompareDump.cpp">
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\tools\assimp_cmd\CompareDump.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\tools\assimp_cmd\ImageExtractor.cpp">
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\tools\assimp_cmd\ImageExtractor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\tools\assimp_cmd\Main.cpp">
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\tools\assimp_cmd\Main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\tools\assimp_cmd\WriteDumb.cpp">
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\tools\assimp_cmd\WriteDump.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\tools\assimp_cmd\Info.cpp">
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\tools\assimp_cmd\Info.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="F:\OpenGL\assimp-4.1.0\tools\assimp_cmd\Export.cpp">
+    <ClCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\tools\assimp_cmd\Export.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\tools\assimp_cmd\Main.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="F:\OpenGL\assimp-4.1.0\tools\assimp_cmd\resource.h">
+    <ClInclude Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\tools\assimp_cmd\Main.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="F:\OpenGL\assimp-4.1.0\tools\assimp_cmd\CMakeLists.txt" />
+    <CustomBuild Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\tools\assimp_cmd\CMakeLists.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="F:\OpenGL\assimp-4.1.0\tools\assimp_cmd\assimp_cmd.rc">
+    <ResourceCompile Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp\tools\assimp_cmd\assimp_cmd.rc">
       <Filter>Source Files</Filter>
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{FFBFDF1F-5254-3901-88E2-2E4006814B3D}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files">
-      <UniqueIdentifier>{2141B41F-F7D1-3FE8-B6A0-B942D09487C8}</UniqueIdentifier>
+      <UniqueIdentifier>{35454BF2-4286-35EC-980A-338160E441BA}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{FFFBDE15-D0E4-3D70-BF9A-89D69BA7C23D}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

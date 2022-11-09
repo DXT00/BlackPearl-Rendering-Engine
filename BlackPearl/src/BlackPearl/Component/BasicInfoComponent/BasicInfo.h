@@ -19,6 +19,8 @@ namespace BlackPearl {
 		OT_LightProbe,
 		OT_Camera,
 		OT_Quad,
+		OT_Terrain,
+		OT_BatchNode,
 		Init
 	};
 	class BasicInfo : public Component<BasicInfo>

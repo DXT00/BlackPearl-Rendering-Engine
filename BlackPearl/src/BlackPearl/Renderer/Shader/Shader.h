@@ -27,6 +27,10 @@ namespace BlackPearl {
 		void SetUniform1ui(const std::string & name, const unsigned int val) const;
 		void SetUniform1f(const std::string &name, float val) const;
 		void SetUniformMat4f(const std::string &name, const glm::mat4 &mat) const;
+		void SetUniformMat4f(const std::string& name, const float* mat4x4, uint32_t count) const;
+
+		void SetUniformMat3x4f(const std::string& name, const float* mat3x4, uint32_t count = 1) const;
+
 		void SetUniformVec3f(const std::string & name, const glm::vec3& value) const;
 		void SetUniformVec2f(const std::string& name, const glm::vec2& value) const;
 
@@ -35,8 +39,14 @@ namespace BlackPearl {
 		std::string GetPath() { return m_ShaderPath; }
 
 	private:
-		Shader(const std::string& vertexSrc, const std::string& fragmentSrc, const std::string& geometrySrc);
-		uint32_t m_RendererID;
+		Shader(
+			const std::string& vertexSrc, 
+			const std::string& fragmentSrc, 
+			const std::string& geometrySrc, 
+			const std::string& tessCtlSrc,
+			const std::string& tessEvlSrc);
+
+		int32_t m_RendererID = -1;
 		std::string m_ShaderPath;
 		std::string m_FragmentCommonStruct;
 		std::string m_CommonStructPath="assets/shaders/common/CommonStruct.glsl";

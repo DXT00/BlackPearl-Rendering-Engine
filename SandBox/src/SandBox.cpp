@@ -16,14 +16,17 @@
 #include "Layers/VoxelConeTracingDeferredLayer.h"
 #include "Layers/VoxelConeTracingSVOLayer.h"
 #include "Layers/RayTracingLayer.h"
+#include "Layers/BatchRenderingLayer.h"
 #include "BlackPearl/Application.h"
 #include "Layers/VoxelizationTestLayer.h"
 #include "Layers/CubeTestLayer.h"
+#include "Layers/IndirectDrawLayer.h"
 
 class SandBox :public BlackPearl::Application {
 public:
 
-	SandBox(const std::string &renderer) {
+	SandBox(HINSTANCE hInstance,int nShowCmd, BlackPearl::DynamicRHI::Type rhiType, const std::string &renderer)
+	:Application(hInstance, nShowCmd, rhiType, renderer){
 		
 		BlackPearl::Layer* layer = NULL;
 		const std::string layer_name = renderer+"Layer";
@@ -51,15 +54,21 @@ public:
 		else if (renderer == "RayTracing") {
 			layer = DBG_NEW RayTracingLayer(layer_name);
 		}
-		GetScene()->PushLayer(layer);
+		else if (renderer == "BatchRendering") {
+			layer = DBG_NEW BatchRenderingLayer(layer_name);
+		}
+		else if (renderer == "IndirectRendering") {
+			layer = DBG_NEW IndirectDrawLayer(layer_name);
+		}
+		GetLayerManager()->PushLayer(layer);
 	}
 	virtual ~SandBox() = default;
 
 };
 
-BlackPearl::Application* BlackPearl::CreateApplication() {
+BlackPearl::Application* BlackPearl::CreateApplication(HINSTANCE hInstance, int nShowCmd) {
 
-	return DBG_NEW SandBox("RayTracing");
+	return DBG_NEW SandBox(hInstance, nShowCmd, BlackPearl::DynamicRHI::Type::OpenGL, "IndirectRendering");
 
 }
 

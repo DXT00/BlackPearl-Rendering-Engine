@@ -23,21 +23,39 @@ namespace BlackPearl {
 			return GL_GEOMETRY_SHADER;
 		if (type == "compute")
 			return GL_COMPUTE_SHADER;
+		if (type == "tessellation_control_shader")
+			return GL_TESS_CONTROL_SHADER;
+		if (type == "tessellation_evaluation_shader")
+			return GL_TESS_EVALUATION_SHADER;
 		GE_ASSERT(false, "Unknown shader type!");
 		return 0;
 	}
-	Shader::Shader(const std::string& vertexSrc, const std::string& fragmentSrc,const std::string& geometrySrc)
+	Shader::Shader(
+		const std::string& vertexSrc, 
+		const std::string& fragmentSrc, 
+		const std::string& geometrySrc,
+		const std::string& tessCtlSrc,
+		const std::string& tessEvlSrc
+	)
 	{
 		std::unordered_map<GLenum, std::string> shaderSources;
 		shaderSources[GL_VERTEX_SHADER] = vertexSrc;
 		shaderSources[GL_FRAGMENT_SHADER] = fragmentSrc;
 		shaderSources[GL_GEOMETRY_SHADER] = geometrySrc;
+		shaderSources[GL_TESS_CONTROL_SHADER] = tessCtlSrc;
+		shaderSources[GL_TESS_EVALUATION_SHADER] = tessEvlSrc;
+
 		Compile(shaderSources);
 
 	}
 
 	Shader::Shader(const std::string & filepath)
 	{
+		if (filepath.empty()) {
+
+			GE_CORE_WARN("no shader path found");
+			return ;
+		}
 		m_ShaderPath = filepath;
 		std::string source = ReadFile(filepath);
 		std::string commonSource = ReadFile(m_CommonStructPath);
@@ -49,7 +67,17 @@ namespace BlackPearl {
 
 	Shader::~Shader()
 	{
-		glDeleteProgram(m_RendererID);
+
+		if (m_RendererID == -1) {
+			return;
+		}
+		GLint has_deleted = 0;
+		glGetProgramiv(m_RendererID, GL_DELETE_STATUS, &has_deleted);
+		if (has_deleted != GL_TRUE)
+		{
+			glDeleteProgram(m_RendererID);
+		}
+		
 	}
 
 
@@ -72,6 +100,7 @@ namespace BlackPearl {
 	}
 	std::unordered_map<GLenum, std::string> Shader::PreProcess(const std::string& source,const std::string& commonSource) {
 
+		GE_ASSERT((!source.empty()), "shader source code is empty");
 		std::unordered_map<unsigned int, std::string> shaderSources;
 		const char* typeToken = "#type";
 		size_t typeTockenLength = strlen(typeToken);
@@ -107,7 +136,7 @@ namespace BlackPearl {
 	void Shader::Compile(const std::unordered_map<GLenum, std::string>& shaderSources)
 	{
 		GLuint program = glCreateProgram();
-
+		GE_ERROR_JUDGE();
 
 		std::vector<GLuint> ShaderID;
 		for (auto& kv : shaderSources) {
@@ -142,6 +171,8 @@ namespace BlackPearl {
 				else if (type == GL_FRAGMENT_SHADER)shaderType = "fragment shader";
 				else if (type == GL_GEOMETRY_SHADER)shaderType = "geometry shader";
 				else if (type == GL_COMPUTE_SHADER)shaderType = "compute shader";
+				else if (type == GL_TESS_CONTROL_SHADER)shaderType = "tessellation control shader";
+				else if (type == GL_TESS_EVALUATION_SHADER)shaderType = "tessellation evaluation shader";
 
 				
 				GE_CORE_ERROR("{0} compile failed :{1}", shaderType,infoLog.data());
@@ -269,15 +300,44 @@ namespace BlackPearl {
 	{
 		GE_ASSERT((glIsProgram(m_RendererID) == GL_TRUE), "glIsProgram(m_RendererID) != GL_TRUE");
 
+		GLint compileStat;
+		//glGetShaderiv(m_RendererID, GL_COMPILE_STATUS, &compileStat);
+	
+		GE_ERROR_JUDGE();
 
-		
+			//glGetShaderInfoLog(m_RendererID, 1024, length, infoLog);
 		glUseProgram(m_RendererID);
+
+		GLsizei bufLen = 0;        // length of buffer to allocate
+		GLsizei strLen = 0;        // strlen GL actually wrote to buffer
+
+		/*glGetProgramiv(m_RendererID, GL_INFO_LOG_LENGTH, &bufLen);
+		if (bufLen > 1)
+		{*/
+			GLchar* infoLog = new GLchar[1024];
+			glGetProgramInfoLog(m_RendererID, bufLen, &strLen, infoLog);
+			if (strLen > 0) {
+				std::string  result = reinterpret_cast<char*>(infoLog);
+				GE_CORE_INFO(result);
+
+			}
+			delete[] infoLog;
+		//}
+
+	
+	/*	std::vector<char> v(1024);
+		glGetProgramInfoLog(m_RendererID, 1024, NULL, v.data());
+		std::string s(begin(v), end(v));
+		GE_CORE_INFO(s);*/
+
 		GE_ERROR_JUDGE();
 	}
 
 	void Shader::Unbind() const
 	{
 		glUseProgram(0);
+		GE_ERROR_JUDGE();
+
 
 	}
 
@@ -311,6 +371,20 @@ namespace BlackPearl {
 		glUniformMatrix4fv(location, 1, GL_FALSE, &mat[0][0]);
 		GE_ERROR_JUDGE();
 
+	}
+
+	void Shader::SetUniformMat3x4f(const std::string& name, const float* mat3x4, uint32_t count) const
+	{
+		GLint location = glGetUniformLocation(m_RendererID, name.c_str());
+		glProgramUniformMatrix3x4fv(m_RendererID, location, count, GL_FALSE, mat3x4);
+		GE_ERROR_JUDGE();
+
+	}
+
+	void Shader::SetUniformMat4f(const std::string& name, const float* mat4x4, uint32_t count) const
+	{
+		GLint location = glGetUniformLocation(m_RendererID, name.c_str());
+		glProgramUniformMatrix4fv(m_RendererID, location, count, GL_FALSE, mat4x4);
 	}
 
 	void Shader::SetUniformVec3f(const std::string & name, const glm::vec3& value) const

@@ -18,10 +18,12 @@ namespace BlackPearl {
 			Camera,
 			LightProbe,
 			BoundingBox,
+			BoundingSphere,
 			BasicInfo,
 			BVHNode,
 			Triangle,
-			RTXTransformNode
+			RTXTransformNode,
+			Terrain
 
 		};
 		BaseComponent(Type type)

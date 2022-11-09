@@ -54,6 +54,28 @@ namespace BlackPearl {
 		static const unsigned int MapSize = 100;
 		static const unsigned int AreaSize = 10;
 
+		//  ------------------------------------------
+		// Ray Tracing config
+		// ------------------------------------------
+		static const unsigned int MaxRayRecursionDepth = 3;
+
+		//  ------------------------------------------
+		// Mesh shader && Meshlet config
+		// ------------------------------------------
+		static const unsigned int MaxVerts = 256;
+		static const unsigned int MaxPrims = 256;
+
+		static const unsigned int DefaultVerts = 128;
+		static const unsigned int DefaultPrims = 128;
+
+
+		//-----------------------------------------------
+		// Batch rendering limit
+		//-----------------------------------------------
+		//if exceed MaxObjsInABatch objs in one batch shader compiler will give an error:
+		//¡°offset for relative array access outside supported range¡±
+		// no sulution yet, details: https://forums.developer.nvidia.com/t/bug-compiler-issues-internal-error-offset-for-relative-array-access-outside-supported-range/46430
+		static const unsigned int MaxObjsInABatch = 300;
 
 
 	};

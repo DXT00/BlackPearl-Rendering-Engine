@@ -19,6 +19,8 @@
 #include "BlackPearl/Input.h"
 #include "BlackPearl/KeyCodes.h"
 #include "BlackPearl/Map/MapManager.h"
+#include "BlackPearl/Node/BatchNode.h"
+#include <WinUser.h>
 
 using namespace std::chrono;
 
@@ -37,7 +39,9 @@ namespace BlackPearl {
 
 			/*MainCamera Init*/
 			m_MainCamera = CreateCamera();
-			m_MainCamera->SetPosition(glm::vec3(0,0,0.0f));//glm::vec3(0,1.387f,22.012f)
+			m_MainCamera->SetPosition(glm::vec3(0, 0, 0.0f));//glm::vec3(0,1.387f,22.012f)
+
+
 			//m_MainCamera->SetPosition(glm::vec3(0, 0.95f, 5.9f));
 
 			//m_MainCamera->SetPosition(glm::vec3(0.0f, 0.0f, 19.0f));
@@ -54,12 +58,9 @@ namespace BlackPearl {
 
 		}
 		virtual ~Layer() {
-		
+
 			for (Object* obj : m_ObjectsList) {
-				if (obj != nullptr) {
-					delete obj;
-					obj = nullptr;
-				}
+				GE_SAVE_DELETE(obj);
 			}
 			//GE_SAVE_DELETE(obj);
 			/*for (auto& obj : m_BackGroundObjsList) //不要m_BackGroundObjsList与m_ObjectsList重复删除！
@@ -80,8 +81,8 @@ namespace BlackPearl {
 		virtual void OnAttach() {}
 		virtual void OnDetach() {}
 		virtual void OnUpdate(Timestep ts) {
-		
-			
+
+
 		}
 		virtual void OnImguiRender();
 
@@ -96,6 +97,9 @@ namespace BlackPearl {
 
 		void LoadSwordScene();
 		void LoadCubesScene();
+		std::vector<Object*> Layer::LoadCubesScene1(int cubeNum, glm::vec3 pos);
+		void LoadD3D12ModelScene();
+
 		Object* LoadDynamicObject(const std::string modelName);
 		Object* LoadStaticBackGroundObject(const std::string modelName);
 
@@ -106,29 +110,41 @@ namespace BlackPearl {
 		Object* CreateEmpty(std::string name = "");
 		Object* CreateGroup(const std::string name = "Group");
 		Object* CreateBVHNode(const std::vector<Object*>& objs, const std::string name = "BVHNode");
+		Object* CreateTerrain(const std::string& heightMapPath, const std::string& shaderPath = "", const std::string& texturePath = "", uint32_t chunkCntX = 8, uint32_t chunkCntZ = 8, const std::string name = "Terrain");
 
 
 		Object* CreateLight(LightType type, const std::string& name = "Light");
 
-		Object* CreateModel(const std::string& modelPath, const std::string& shaderPath,const bool isAnimated,const std::string& name = "Model");
+		Object* CreateModel(
+			const std::string& modelPath,
+			const std::string& shaderPath,
+			const bool isAnimated,
+			const std::string& name = "Model",
+			const bool vertices_sorted = false,
+			const bool createMeshlet = false,
+			const bool isMeshletModel = false,
+			MeshletOption options = MeshletOption());
 		Object* CreateCube(const std::string& shaderPath = "assets/shaders/Cube.glsl", const std::string& texturePath = "", const std::string& name = "Cube");
 		Object* CreateSphere(const float radius, const unsigned int stackCount, const unsigned int sectorCount, const std::string& shaderPath = "assets/shaders/Sphere.glsl", const std::string& texturePath = "", const std::string& name = "Sphere");
 		Object* CreatePlane(const std::string& shaderPath = "assets/shaders/Plane.glsl", const std::string& texturePath = "assets/texture/wood.png", const std::string& name = "Plane");
 		Object* CreateSkyBox(const std::vector<std::string>& textureFaces, const std::string& shaderPath = "assets/shaders/SkyBox.glsl", const std::string& name = "SkyBox");
 		//TODO::Quad 加TexturePath就会出bug...
 		Object* CreateQuad(const std::string& shaderPath = "assets/shaders/Quad.glsl", const std::string& texturePath = "", const std::string& name = "Quad");
-		
-		Object* CreateLightProbe(ProbeType type, const std::string& shaderPath = "assets/shaders/lightProbes/lightProbe.glsl", const std::string& texturePath = "", const std::string& name = "LightProbe");
-		Object* CreateProbeGrid(MapManager* mapManager, ProbeType type, glm::vec3 probeNums,glm::vec3 offsets,float space);
-		MainCamera* CreateCamera(const std::string& name="Camera");
 
+		Object* CreateLightProbe(ProbeType type, const std::string& shaderPath = "assets/shaders/lightProbes/lightProbe.glsl", const std::string& texturePath = "", const std::string& name = "LightProbe");
+		Object* CreateProbeGrid(MapManager* mapManager, ProbeType type, glm::vec3 probeNums, glm::vec3 offsets, float space);
+		MainCamera* CreateCamera(const std::string& name = "Camera");
+		BatchNode* CreateBatchNode(std::vector<Object*> objs, bool dynamic, const std::string& name = "BatchNode");
 
 		void ShowMeshRenderer(MeshRenderer* comp);
-		void ShowTransform(Transform* comp,Object* obj);
+		void ShowTransform(Transform* comp, Object* obj);
 		void ShowLightProbe(LightProbe* probe, Object* obj);
 		void ShowPointLight(PointLight* pointLight);
 		void ShowParallelLight(ParallelLight* parallelLight);
 		void ShowCamera(PerspectiveCamera* perspectiveCamera);
+		void ShowCamera(MainCamera* mainCamera);
+		void ShowTerrian(Object* obj);
+
 		void ShowShader(std::string imguiShaders, int meshIndex, static int& itemIndex, int offset);
 		void ShowTextures(std::string imguiShaders, int meshIndex, static  int& itemIndex, Texture::Type textureType, static Texture::Type& type, int offset);
 		void ShowMaterialProps(Material::Props& imGuiProps);
@@ -141,32 +157,39 @@ namespace BlackPearl {
 		void InputCheck(float ts)
 		{
 
-			//auto cameraComponent = m_MainCamera->GetObj()->GetComponent<BlackPearl::PerspectiveCamera>();
-			if (Input::IsKeyPressed(BP_KEY_W)) {
-				m_CameraPosition += m_MainCamera->Front() * m_CameraMoveSpeed * ts;
+			if (Input::IsKeyPressed(KeyCodes::Get(BP_KEY_W))) {
+				m_CameraPosition += m_MainCamera->Front() * m_MainCamera->GetMoveSpeed() * ts;
 			}
-			else if (Input::IsKeyPressed(BP_KEY_S)) {
-				m_CameraPosition -= m_MainCamera->Front() * m_CameraMoveSpeed * ts;
+			else if (Input::IsKeyPressed(KeyCodes::Get(BP_KEY_S))) {
+				m_CameraPosition -= m_MainCamera->Front() * m_MainCamera->GetMoveSpeed() * ts;
 			}
-			if (Input::IsKeyPressed(BP_KEY_A)) {
-				m_CameraPosition -= m_MainCamera->Right() * m_CameraMoveSpeed * ts;
+			if (Input::IsKeyPressed(KeyCodes::Get(BP_KEY_A))) {
+				if (g_RHIType == DynamicRHI::Type::D3D12) {
+					m_CameraPosition -= (-m_MainCamera->Right()) * m_MainCamera->GetMoveSpeed() * ts;
+				}
+				else if (g_RHIType == DynamicRHI::Type::OpenGL) {
+					m_CameraPosition -= m_MainCamera->Right() * m_MainCamera->GetMoveSpeed() * ts;
+				}
 			}
-			else if (Input::IsKeyPressed(BP_KEY_D)) {
-				m_CameraPosition += m_MainCamera->Right() * m_CameraMoveSpeed * ts;
+			else if (Input::IsKeyPressed(KeyCodes::Get(BP_KEY_D))) {
+				if (g_RHIType == DynamicRHI::Type::D3D12) {
+					m_CameraPosition += (-m_MainCamera->Right()) * m_MainCamera->GetMoveSpeed() * ts;
+				}
+				else if (g_RHIType == DynamicRHI::Type::OpenGL) {
+					m_CameraPosition += m_MainCamera->Right() * m_MainCamera->GetMoveSpeed() * ts;
+				}
 			}
-			if (Input::IsKeyPressed(BP_KEY_E)) {
-				m_CameraPosition += m_MainCamera->Up() * m_CameraMoveSpeed * ts;
+			if (Input::IsKeyPressed(KeyCodes::Get(BP_KEY_E))) {
+				m_CameraPosition += m_MainCamera->Up() * m_MainCamera->GetMoveSpeed() * ts;
 			}
-			else if (Input::IsKeyPressed(BP_KEY_Q)) {
-				m_CameraPosition -= m_MainCamera->Up() * m_CameraMoveSpeed * ts;
+			else if (Input::IsKeyPressed(KeyCodes::Get(BP_KEY_Q))) {
+				m_CameraPosition -= m_MainCamera->Up() * m_MainCamera->GetMoveSpeed() * ts;
 			}
 			// ---------------------Rotation--------------------------------------
 
 			float posx = Input::GetMouseX();
 			float posy = Input::GetMouseY();
-			if (Input::IsMouseButtonPressed(BP_MOUSE_BUTTON_RIGHT)) {
-
-
+			if (Input::IsMouseButtonPressed(KeyCodes::Get(BP_MOUSE_BUTTON_RIGHT))) {
 				if (Input::IsFirstMouse()) {
 					Input::SetFirstMouse(false);
 					m_LastMouseX = posx;
@@ -177,19 +200,16 @@ namespace BlackPearl {
 
 				m_LastMouseX = posx;
 				m_LastMouseY = posy;
-				m_CameraRotation.Yaw += diffx * m_CameraRotateSpeed * ts;
-				m_CameraRotation.Pitch += diffy * m_CameraRotateSpeed * ts;
+				m_CameraRotation.Yaw += diffx * m_MainCamera->GetRotateSpeed() * ts;
+				m_CameraRotation.Pitch += diffy * m_MainCamera->GetRotateSpeed() * ts;
 
 				if (m_CameraRotation.Pitch > 89.0f)
 					m_CameraRotation.Pitch = 89.0f;
 				if (m_CameraRotation.Pitch < -89.0f)
 					m_CameraRotation.Pitch = -89.0f;
-
 				m_MainCamera->SetRotation({ m_CameraRotation.Pitch,m_CameraRotation.Yaw,0.0f });
-
 			}
 			else {
-
 				m_LastMouseX = posx;//lastMouse时刻记录当前坐标位置，防止再次点击右键时，发生抖动！
 				m_LastMouseY = posy;
 			}
@@ -225,16 +245,16 @@ namespace BlackPearl {
 		CameraRotation m_CameraRotation;
 		float m_LastMouseX;
 		float m_LastMouseY;
-		float m_CameraMoveSpeed = 3.0f;
-		float m_CameraRotateSpeed = 1.0f;
+
 
 		/*Time*/
 		std::chrono::milliseconds m_StartTimeMs;
-	
+
 		/* Probes */
 		std::vector<Object*> m_DiffuseLightProbes;
 		std::vector<Object*> m_ReflectionLightProbes;
 
+	
 	};
 
 }

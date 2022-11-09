@@ -228,8 +228,8 @@ void main(){
 in vec3 worldPositionFrag;
 in vec4 f_color;
 in vec4 f_vertex;
-out vec4 gl_FragColor;
 out vec4 fragColor;
+//out vec4 fragColor;
 uniform sampler3D texture3D;
 uniform vec3  u_CameraViewPos;
 uniform vec3 u_CubeSize;
@@ -237,7 +237,7 @@ uniform vec3 u_CubeSize;
 void main(){
 
 //	vec3 pos = (worldPositionFrag-u_CameraViewPos)/u_CubeSize;
-	gl_FragColor =vec4(1.0,0.0,0.0,1.0);//f_color;// vec4(texture(texture3D,pos).rgb,1.0);//vec4(textureLod(texture3D,pos,0).rgb,1.0);
+	fragColor =vec4(1.0,0.0,0.0,1.0);//f_color;// vec4(texture(texture3D,pos).rgb,1.0);//vec4(textureLod(texture3D,pos,0).rgb,1.0);
 	
 	
 	//vec4(f_leafIdx,1.0);//vec4(1.0,0.0,0.0,1.0);//f_color;

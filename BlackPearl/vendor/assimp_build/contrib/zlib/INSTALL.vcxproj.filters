@@ -1,13 +1,13 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="16.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <CustomBuild Include="F:\OpenGL\assimp_build\CMakeFiles\30984e121adc8fd85155c391e252e238\INSTALL_force.rule">
+    <CustomBuild Include="D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\assimp_build\CMakeFiles\101958ef31076620d63fad538ddf13cc\INSTALL_force.rule">
       <Filter>CMake Rules</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="CMake Rules">
-      <UniqueIdentifier>{78BDCCE6-27C5-38A6-A1BF-9033A45B4E2D}</UniqueIdentifier>
+      <UniqueIdentifier>{CCBF76D0-D911-39E7-9853-F06F18741464}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

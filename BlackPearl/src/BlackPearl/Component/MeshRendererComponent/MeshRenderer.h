@@ -7,22 +7,27 @@
 
 //MeshRenderer只负责渲染
 namespace BlackPearl {
-	class MeshRenderer:public Component<MeshRenderer>
+	class MeshRenderer :public Component<MeshRenderer>
 	{
 	public:
 		//virtual node, has no mesh(only material),such as RTXTransformNode
 		MeshRenderer(std::shared_ptr<Material> material)
-			:Component(Component::Type::MeshRenderer), m_Material(material){}
+			:Component(Component::Type::MeshRenderer), m_Material(material) {}
 		//get transformMatrix from Object's Transform Component!
-		MeshRenderer(const std::vector<Mesh> &meshes)
-			:Component(Component::Type::MeshRenderer), m_Meshes(meshes){}
+		/*MeshRenderer(const std::vector<Mesh>& meshes)
+			:Component(Component::Type::MeshRenderer), m_Meshes(meshes) {}*/
 
-		MeshRenderer(const Mesh &mesh)
+		//MeshRenderer(const Mesh& mesh)
+		//	:Component(Component::Type::MeshRenderer) {
+
+		//	m_Meshes.push_back(mesh);
+		//}
+
+		MeshRenderer(const std::shared_ptr<Mesh>& mesh)
 			:Component(Component::Type::MeshRenderer) {
-		
+
 			m_Meshes.push_back(mesh);
 		}
-
 		MeshRenderer(const std::shared_ptr<Model>& model)
 			:Component(Component::Type::MeshRenderer), m_Model(model) {
 		}
@@ -31,47 +36,49 @@ namespace BlackPearl {
 		//void UpdateTransformMatrix(glm::mat4 transformMatrix);
 
 		inline std::shared_ptr<Model>GetModel()  const { return m_Model; }
-		inline std::vector<Mesh>     GetMeshes() const {
+		std::vector<std::shared_ptr<Mesh>>GetMeshes() const {
 			return m_Model != nullptr ? m_Model->GetMeshes() : m_Meshes;
 		}
-
+		std::vector<std::shared_ptr<Mesh>>& GetMeshlets() {
+			return m_Model != nullptr ? m_Model->GetMeshlets() : m_Meshes;
+		}
 		void SetTexture(unsigned int meshIndex, const std::shared_ptr<Texture>& texture);
 		void SetTextures(const std::shared_ptr<Texture>& texture);
 		void SetModelTexture(unsigned int meshIndex, const std::shared_ptr<Texture>& texture);
-		void SetModelTextures(const std::shared_ptr<Texture> &texture);
+		void SetModelTextures(const std::shared_ptr<Texture>& texture);
 
 		void SetShaders(const std::string& image);
-		void SetShaders(const std::shared_ptr<Shader> &shader);
+		void SetShaders(const std::shared_ptr<Shader>& shader);
 
 		void SetEnableCullFace(bool isEnable) { m_EnableCullFace = isEnable; }
 		bool GetEnableCullFace()const { return m_EnableCullFace; }
 
 		void SetPBRTextureSamples(bool isSampled) {
 			for (auto mesh : GetMeshes())
-				mesh.GetMaterial()->SetPBRTextureSample((int)isSampled);
+				mesh->GetMaterial()->SetPBRTextureSample((int)isSampled);
 		}
 		void SetTextureDiffuseSamples(bool isSampled) {
 			for (auto mesh : GetMeshes())
-				mesh.GetMaterial()->SetTextureSampleDiffuse((int)isSampled);
+				mesh->GetMaterial()->SetTextureSampleDiffuse((int)isSampled);
 		}
 		void SetTexturEmissionSamples(bool isSampled) {
 			for (auto mesh : GetMeshes())
-				mesh.GetMaterial()->SetTextureSampleEmission((int)isSampled);
+				mesh->GetMaterial()->SetTextureSampleEmission((int)isSampled);
 		}
 
 		void SetTextureSpecularSamples(bool isSampled) {
 			for (auto mesh : GetMeshes())
-				mesh.GetMaterial()->SetTextureSampleSpecular((int)isSampled);
+				mesh->GetMaterial()->SetTextureSampleSpecular((int)isSampled);
 		}
 		void SetTextureHeightSamples(bool isSampled) {
 			for (auto mesh : GetMeshes())
-				mesh.GetMaterial()->SetTextureSampleHeight((int)isSampled);
+				mesh->GetMaterial()->SetTextureSampleHeight((int)isSampled);
 		}
 		bool GetEnableRender()const { return m_EnableRender; }
 		void SetEnableRender(bool enable) { m_EnableRender = enable; }
 
 		bool GetIsBackGroundObjects() const { return m_IsBackGroundObjects; }
-		void SetIsBackGroundObjects(bool isBackGroundObject)  {  m_IsBackGroundObjects = isBackGroundObject; }
+		void SetIsBackGroundObjects(bool isBackGroundObject) { m_IsBackGroundObjects = isBackGroundObject; }
 
 		bool GetIsShadowObjects() const { return m_HasShadow; }
 		void SetIsShadowObjects(bool isShadowObj) { m_HasShadow = isShadowObj; }
@@ -85,10 +92,10 @@ namespace BlackPearl {
 		std::vector<unsigned int> GetReflectionProbeChache() const { return m_reflectProbeCaches; }
 		void SetReflectionProbeChache(std::vector<unsigned int> probesIdx) { m_reflectProbeCaches = probesIdx; }
 
-		bool GetIsDiffuseProbeCacheSet()const { return m_SetDiffuseProbeCaches; }
-		void SetIsDiffuseProbeCacheSet(bool set) {  m_SetDiffuseProbeCaches=set; }
+		bool GetIsDiffuseProbeCacheSet() const { return m_SetDiffuseProbeCaches; }
+		void SetIsDiffuseProbeCacheSet(bool set) { m_SetDiffuseProbeCaches = set; }
 
-		bool GetIsReflectProbeCacheSet()const { return m_SetReflectProbeCaches; }
+		bool GetIsReflectProbeCacheSet() const { return m_SetReflectProbeCaches; }
 		void SetIsReflectProbeCacheSet(bool set) { m_SetReflectProbeCaches = set; }
 
 
@@ -101,12 +108,12 @@ namespace BlackPearl {
 		//开启和禁止渲染
 		bool m_EnableRender = true;
 		bool m_IsPBRObject = false;
-		std::vector<Mesh> m_Meshes;
+		std::vector<std::shared_ptr<Mesh>> m_Meshes;
 		std::shared_ptr<Model> m_Model = nullptr;
 
 		//case: all meshes has the same material
 		std::shared_ptr<Material> m_Material = nullptr;
-		
+
 		bool m_EnableCullFace = true;
 		bool m_IsBackGroundObjects = false;
 		bool m_HasShadow = true;
