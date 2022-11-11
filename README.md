@@ -103,7 +103,7 @@ BlackPearl::Application* BlackPearl::CreateApplication(HINSTANCE hInstance, int 
 2) Windows 10  
 3) OpenGL Version :4.5.0  
 
-## Featrue
+## Featrues
 1) IBL
 2) voxel cone tracing
 3) light probe GI
