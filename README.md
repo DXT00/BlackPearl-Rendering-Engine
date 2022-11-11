@@ -98,9 +98,11 @@ BlackPearl::Application* BlackPearl::CreateApplication(HINSTANCE hInstance, int 
 4) play your games! ^-^
 
 
-## Branch
-1) master branch only support opengl api
-2) raytracing branch is under development, will be support DirectX12. and raytracing algorithm
+## Environment  
+1) NVIDIA GeForce RTX 2060/PCIe/SSE2  
+2) Windows 10  
+3) OpenGL Version :4.5.0  
+
 
 
 ## Documentation
@@ -132,7 +134,7 @@ SVO path tracing - only one bounce cubeSize = 40
 ### sort diffuse probe based on Areas
 ![lightprobe_Map](/results/lightprobe_Map.png)
 
-### cache object's nearyby diffuse probes, FPS:20frame/s
+### cache object's nearyby diffuse probes
 ![lightprobe_diffuse+specular](/results/lightprobe_diffuse+specular.png)
 
 
