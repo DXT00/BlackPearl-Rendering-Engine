@@ -103,7 +103,19 @@ BlackPearl::Application* BlackPearl::CreateApplication(HINSTANCE hInstance, int 
 2) Windows 10  
 3) OpenGL Version :4.5.0  
 
-
+## Featrue
+1) IBL
+2) voxel cone tracing
+3) light probe GI
+4) DXR 
+5) Mesh shader
+6) Batch rendering
+7) Indirect rendering
+8) Deffered rendering
+9) PBR material
+10) Simple Shadowmap
+11) Terrain
+12) ECS
 
 ## Documentation
 Dynamic Global illumination PPT-DXT00 Master thesis
