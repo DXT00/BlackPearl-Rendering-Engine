@@ -6,6 +6,7 @@ BlackPearl  Engine is a dynamic GI rendering engine to simulate different dynami
 1) run GenerateProject.bat to set up visual studio project,it is only for Windows now.
 2) select the GI algorithom in SandBox.cpp(openGL supported algorithm) or SandBoxDX.cpp (directX supported GI algorithm.such as DXR)
 
+
 SandBox.cpp
 ```
 class SandBox :public BlackPearl::Application {
@@ -53,6 +54,7 @@ BlackPearl::Application* BlackPearl::CreateApplication(HINSTANCE hInstance, int 
 
 }
 ```
+
 SandBoxDX.cpp
 
 ```
@@ -95,8 +97,16 @@ BlackPearl::Application* BlackPearl::CreateApplication(HINSTANCE hInstance, int 
 
 4) play your games! ^-^
 
+
+## Branch
+1) master branch only support opengl api
+2) raytracing branch is under development, will be support DirectX12. and raytracing algorithm
+
+
 ## Documentation
 Dynamic Global illumination PPT-DXT00 Master thesis
+
+https://github.com/DXT00/BlackPearl-Rendering-Engine/blob/master/Dynamic%20Global%20illumination%20PPT-DXT00%20Master%20thesis.pdf
 
 
 ## Voxel Cone Tracing - Sparse voxel octree indirect light tracing
