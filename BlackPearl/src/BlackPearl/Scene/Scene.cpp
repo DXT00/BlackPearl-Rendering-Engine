@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Scene.h"
 #include "BlackPearl/Node/SingleNode.h"
+#include "BlackPearl/Component/BoundingBoxComponent/BoundingBox.h"
 namespace BlackPearl {
 	Scene::Scene(DemoType type)
 	{
@@ -49,4 +50,15 @@ namespace BlackPearl {
 		m_ModelList.push_back(model);
 	}
 
+	void Scene::UpdateObjsAABB() {
+		for (auto node: m_SingleNodesList)
+		{
+			SingleNode* single = dynamic_cast<SingleNode*>(node);
+			if (single->GetObj()->HasComponent<BoundingBox>()) {
+				AABB box = single->GetObj()->GetComponent<BoundingBox>()->Get();
+				box.UpdateTransform(single->GetObj()->GetComponent<Transform>()->GetTransformMatrix());
+				single->GetObj()->GetComponent<BoundingBox>()->SetBox(box);
+			}
+		}
+	}
 }

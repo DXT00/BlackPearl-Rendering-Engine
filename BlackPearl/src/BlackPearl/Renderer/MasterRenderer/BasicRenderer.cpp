@@ -191,17 +191,30 @@ namespace BlackPearl {
 				unsigned int indicesNum = meshes[i]->GetIndicesSize() / sizeof(unsigned int);
 				meshes[i]->GetVertexArray()->GetIndexBuffer()->Bind();
 				GE_ERROR_JUDGE();
+				/*for (size_t v = 0; v < indicesNum; v++)
+				{
+					GE_CORE_INFO("indexBuffer{0} = {1}\n", v, meshes[i]->GetVertexArray()->GetIndexBuffer()->GetIndicies()[v]);
+
+				}*/
+
 				glDrawElements(GL_TRIANGLES, indicesNum, GL_UNSIGNED_INT, 0);
 				s_DrawCallCnt++;
 				GE_ERROR_JUDGE();
+				/*meshes[i]->GetVertexArray()->GetIndexBuffer()->UnBind();
+				GE_ERROR_JUDGE();*/
+
 			}
 			else
 			{
 				meshes[i]->GetVertexArray()->UpdateVertexBuffers();
+				GE_ERROR_JUDGE();
 				for (int j = 0; j < meshes[i]->GetVertexArray()->GetVertexBuffers().size(); j++)
 				{
 					auto vertexBuffer = meshes[i]->GetVertexArray()->GetVertexBuffers()[j];
 					unsigned int vertexNum = vertexBuffer->GetVertexSize() / vertexBuffer->GetBufferLayout().GetStride();
+			
+
+
 					glDrawArrays(GL_TRIANGLES, 0, vertexNum);
 					s_DrawCallCnt++;
 					GE_ERROR_JUDGE();
@@ -225,6 +238,95 @@ namespace BlackPearl {
 			GE_ERROR_JUDGE();
 
 		}
+	}
+
+	void BasicRenderer::DrawObjectVertex(Object* obj, std::shared_ptr<Shader> shader, Renderer::SceneData* scene, unsigned int textureBeginIdx)
+	{
+		GE_ASSERT(obj, "obj is empty!");
+		if (!obj->HasComponent<MeshRenderer>() || !obj->GetComponent<MeshRenderer>()->GetEnableRender())
+			return;
+
+		glm::mat4 transformMatrix = obj->GetComponent<Transform>()->GetTransformMatrix();
+		std::vector<std::shared_ptr<Mesh>> meshes = obj->GetComponent<MeshRenderer>()->GetMeshes();
+		GE_ERROR_JUDGE();
+
+
+		if (obj->GetComponent<MeshRenderer>()->GetIsPBRObject()) {
+			shader->SetUniform1i("u_IsPBRObjects", 1);
+		}
+		else {
+			shader->SetUniform1i("u_IsPBRObjects", 0);
+		}
+		GE_ERROR_JUDGE();
+
+		for (int i = 0; i < meshes.size(); i++) {
+			if (obj->HasComponent<PointLight>() || obj->HasComponent<ParallelLight>() || obj->HasComponent<SpotLight>())
+				PrepareBasicShaderParameters(meshes[i], shader, true, textureBeginIdx);
+			else
+				PrepareBasicShaderParameters(meshes[i], shader, false, textureBeginIdx);
+			GE_ERROR_JUDGE();
+
+			Renderer::Submit(meshes[i]->GetVertexArray(), shader, transformMatrix, scene);
+			GE_ERROR_JUDGE();
+
+			/*if (meshes[i]->GetIndicesSize() > 0) {
+				unsigned int indicesNum = meshes[i]->GetIndicesSize() / sizeof(unsigned int);
+				meshes[i]->GetVertexArray()->GetIndexBuffer()->Bind();
+				GE_ERROR_JUDGE();
+				for (size_t v = 0; v < indicesNum; v++)
+				{
+					GE_CORE_INFO("indexBuffer{0} = {1}\n", v, meshes[i]->GetVertexArray()->GetIndexBuffer()->GetIndicies()[v]);
+
+				}
+
+				glDrawElements(GL_TRIANGLES, indicesNum, GL_UNSIGNED_INT, 0);
+				s_DrawCallCnt++;
+				GE_ERROR_JUDGE();
+				meshes[i]->GetVertexArray()->GetIndexBuffer()->UnBind();
+				GE_ERROR_JUDGE();
+
+			}
+			else*/
+			{
+				meshes[i]->GetVertexArray()->UpdateVertexBuffers();
+				GE_ERROR_JUDGE();
+				for (int j = 0; j < meshes[i]->GetVertexArray()->GetVertexBuffers().size(); j++)
+				{
+					auto vertexBuffer = meshes[i]->GetVertexArray()->GetVertexBuffers()[j];
+					unsigned int vertexNum = vertexBuffer->GetVertexSize() / vertexBuffer->GetBufferLayout().GetStride();
+
+
+
+					glDrawArrays(GL_TRIANGLES, 0, vertexNum);
+					s_DrawCallCnt++;
+					GE_ERROR_JUDGE();
+
+					for (int index = 0; index < vertexBuffer->GetBufferLayout().GetElements().size(); index++)
+					{
+						glDisableVertexAttribArray(vertexBuffer->GetBufferLayout().GetElements()[index].Location);
+					}
+					vertexBuffer->UnBind();
+					GE_ERROR_JUDGE();
+
+				}
+
+			}
+			meshes[i]->GetVertexArray()->UnBind();
+			GE_ERROR_JUDGE();
+			meshes[i]->GetMaterial()->Unbind();
+			GE_ERROR_JUDGE();
+
+			shader->Unbind();
+			GE_ERROR_JUDGE();
+
+		}
+	}
+
+	void BasicRenderer::DiscpatchCompute(uint32_t x, uint32_t y, uint32_t z)
+	{
+		glDispatchCompute(x, y, z);
+		s_DrawCallCnt++;
+
 	}
 
 	void BasicRenderer::DrawBatchNode(BatchNode* node, std::shared_ptr<Shader> shader)
@@ -260,7 +362,11 @@ namespace BlackPearl {
 	void BasicRenderer::DrawMultiIndirect(std::shared_ptr<VertexArray> vertexArray, std::shared_ptr<Shader> shader, uint32_t cmdsCnt)
 	{
 		shader->Bind();
+		GE_ERROR_JUDGE();
+
 		Renderer::Submit(vertexArray, shader, nullptr, 0);
+		GE_ERROR_JUDGE();
+
 		glMultiDrawElementsIndirect(GL_TRIANGLES, GL_UNSIGNED_INT, (GLvoid*)0, cmdsCnt, 0);
 		s_DrawCallCnt++;
 	}

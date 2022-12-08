@@ -6,15 +6,18 @@ layout(location = 1) in vec3 aNormal;
 layout(location = 2) in vec2 aTexCoords;
 layout(location = 5) in ivec4 aJointIndices;/*与当前fragment相关的3个Joint  {1,2,4}*/
 layout(location = 6) in ivec4 aJointIndices1;/*与当前fragment相关的3个Joint  {1,2,4}*/
-layout(location = 7) in vec4 aWeights;/*每个Joint的权重*/
-layout(location = 8) in vec4 aWeights1;/*每个Joint的权重*/
+layout(location = 7) in ivec4 aJointIndices2;/*与当前fragment相关的3个Joint  {1,2,4}*/
+
+layout(location = 8) in vec4 aWeights;/*每个Joint的权重*/
+layout(location = 9) in vec4 aWeights1;/*每个Joint的权重*/
+layout(location = 10) in vec4 aWeights2;/*每个Joint的权重*/
 
 out vec2 v_TexCoord;
 out vec3 v_Normal;
 out vec3 v_FragPos;
 
 const int MAX_JOINTS = 70;//max joints allowed in a skeleton
-const int MAX_WEIGHT = 8;//max number of joints that can affect a vertex
+const int MAX_WEIGHT = 12;//max number of joints that can affect a vertex
 
 uniform mat4 u_ProjectionView;
 uniform mat4 u_Model;
@@ -25,18 +28,22 @@ void main(){
 	vec4 totalLocalNormal = vec4(0.0);
 
 	mat4 model = mat4(0.0);
-	for(int i=0;i<MAX_WEIGHT/2;i++){
-		
+	for(int i=0;i<4;i++){
+		if(aWeights[i] == 0.0) continue;
 		model+=aWeights[i]*u_JointModel[aJointIndices[i]];
 
 	}
-		for(int i=0;i<MAX_WEIGHT/2;i++){
-		
+	for(int i=0;i<4;i++){	
+		if(aWeights1[i] == 0.0) continue;
 		model+=aWeights1[i]*u_JointModel[aJointIndices1[i]];
-
+	}
+	for(int i=0;i<4;i++){
+		if(aWeights2[i] == 0.0) continue;
+		model+=aWeights2[i]*u_JointModel[aJointIndices2[i]];
 	}
 
 	vec4 newPos = model*vec4(aPos,1.0);
+
 	gl_Position = u_ProjectionView*u_Model*vec4(newPos.xyz,1.0);
 	v_FragPos = vec3(u_Model*newPos);//vec3(u_Model*vec4(newPos.xyz,1.0));
 

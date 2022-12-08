@@ -143,6 +143,7 @@
     <ClInclude Include="src\Layers\IBLProbesRenderingLayer.h" />
     <ClInclude Include="src\Layers\IBLRenderingLayer.h" />
     <ClInclude Include="src\Layers\IndirectDrawLayer.h" />
+    <ClInclude Include="src\Layers\IndirectOcclusionCullLayer.h" />
     <ClInclude Include="src\Layers\PbrRenderingLayer.h" />
     <ClInclude Include="src\Layers\RayTracingLayer.h" />
     <ClInclude Include="src\Layers\ShadowMapPointLightLayer.h" />
@@ -196,6 +197,15 @@
     <ProjectReference Include="..\BlackPearl\BlackPearl.vcxproj">
       <Project>{B6CF16AE-A287-58FB-0B8F-3157F765F3EB}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="assets\shaders\occlusionCulling.glsl" />
+    <None Include="assets\shaders\occlusionCulling\clear.glsl" />
+    <None Include="assets\shaders\occlusionCulling\cull.glsl" />
+    <None Include="assets\shaders\occlusionCulling\depthMap.glsl" />
+    <None Include="assets\shaders\occlusionCulling\fillCmds.glsl" />
+    <None Include="assets\shaders\occlusionCulling\hiz.glsl" />
+    <None Include="assets\shaders\occlusionCulling\indirectCull.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

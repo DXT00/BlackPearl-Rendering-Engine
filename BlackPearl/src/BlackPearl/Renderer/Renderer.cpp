@@ -121,7 +121,7 @@ namespace BlackPearl {
 		shader->SetUniformMat4f("u_ProjectionView", sceneData->ProjectionViewMatrix);
 		shader->SetUniformMat4f("u_Projection", sceneData->ProjectionMatrix);
 		shader->SetUniformMat4f("u_View", sceneData->ViewMatrix);
-
+		
 		shader->SetUniformVec3f("u_CameraViewPos", sceneData->CameraPosition);
 
 		vertexArray->Bind();

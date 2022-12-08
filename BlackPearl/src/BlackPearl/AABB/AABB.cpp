@@ -5,6 +5,7 @@
 
 
 namespace BlackPearl {
+
 	const AABB AABB::InValid(glm::vec3(-1), glm::vec3(-1), false);
 
 	AABB::AABB()
@@ -26,6 +27,8 @@ namespace BlackPearl {
 
 	void AABB::SetP(const glm::vec3& minP, const glm::vec3& maxP)
 	{
+		m_MinP = minP;
+		m_MaxP = maxP;
 	}
 
 	const AABB AABB::operator+(const AABB& aabb) const
@@ -114,6 +117,15 @@ namespace BlackPearl {
 		}
 		
 		
+	}
+
+	void AABB::UpdateTransform(glm::mat4 model)
+	{
+		glm::vec4 min = model * glm::vec4(m_MinP,1);
+		glm::vec4 max = model * glm::vec4(m_MaxP,1);
+
+		m_MinP = glm::vec3(min.r, min.b, min.g);
+		m_MaxP = glm::vec3(max.r, max.b, max.g);
 	}
 
 }

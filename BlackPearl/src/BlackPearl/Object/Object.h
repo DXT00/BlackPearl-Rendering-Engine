@@ -91,9 +91,8 @@ namespace BlackPearl {
 			return Component<typename std::remove_const<C>::type>::Famliy();
 		}
 
+
 		void Destroy();
-
-
 		void SetPosition(glm::vec3 pos);
 		void SetRotation(glm::vec3 rotate);
 		void SetScale(glm::vec3 scale);

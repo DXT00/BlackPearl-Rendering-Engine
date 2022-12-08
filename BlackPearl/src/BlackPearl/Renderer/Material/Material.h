@@ -81,8 +81,8 @@ namespace BlackPearl {
 			const std::shared_ptr<Shader>& shader,
 			const std::shared_ptr<TextureMaps>& textureMaps,
 			const MaterialColor& materialColors
-		)
-			: m_Shader(shader), m_TextureMaps(textureMaps), m_MaterialColors(materialColors), m_Props(Props()) {}
+		);
+			
 
 		Material(
 			const std::string shaderPath,
@@ -106,7 +106,8 @@ namespace BlackPearl {
 		void SetMaterialColorDiffuseColor(glm::vec3 color);
 		void SetMaterialColorSpecularColor(glm::vec3 color);
 		void SetMaterialColorEmissionColor(glm::vec3 color);
-
+		void SetId(uint32_t matId);
+		uint32_t GetId() const;
 
 		void SetProps(const Props& props);
 		void SetShininess(float shininess);
@@ -140,6 +141,7 @@ namespace BlackPearl {
 		MaterialColor				 m_MaterialColors;
 		Props                        m_Props;
 		RTXType						 m_RTXType;
+		uint32_t					 m_MatId;
 	};
 
 }

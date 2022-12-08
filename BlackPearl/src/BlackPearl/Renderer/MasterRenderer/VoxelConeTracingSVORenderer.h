@@ -9,7 +9,7 @@
 #include "BlackPearl/Sampler/Sobol.h"
 namespace BlackPearl{
 
-	class VoxelConeTracingSVORenderer:public BasicRenderer
+	class VoxelConeTracingSVORenderer: public BasicRenderer
 	{
 	public:
 		enum RenderingMode {

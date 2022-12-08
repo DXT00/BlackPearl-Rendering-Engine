@@ -766,32 +766,32 @@ namespace BlackPearl {
 		m_VertexArray->SetIndexBuffer(indexBuffer);
 
 		//如果每个vertexbuffer 一种attribute,那么 stride = 0, offset 也 = 0
-		std::shared_ptr<VertexBuffer> vertexBuffer(DBG_NEW VertexBuffer(m_PositionBuffer, m_VertexCnt * sizeof(float) * 3));
+		std::shared_ptr<VertexBuffer> vertexBuffer(DBG_NEW VertexBuffer(m_PositionBuffer, m_VertexCnt * sizeof(float) * 3, false));
 		vertexBuffer->SetBufferLayout({ {ElementDataType::Float3, "aPos", false, POS_SLOT} });
-		std::shared_ptr<VertexBuffer> normalBuffer(DBG_NEW VertexBuffer(m_NormalBuffer, m_VertexCnt * sizeof(float) * 3));
+		std::shared_ptr<VertexBuffer> normalBuffer(DBG_NEW VertexBuffer(m_NormalBuffer, m_VertexCnt * sizeof(float) * 3, false));
 		normalBuffer->SetBufferLayout({ { ElementDataType::Float3,"aNormal",false,NORMAL_SLOT} });
-		std::shared_ptr<VertexBuffer> texcoordsBuffer(DBG_NEW VertexBuffer(m_TexCordBuffer, m_VertexCnt * sizeof(float) * 2));
+		std::shared_ptr<VertexBuffer> texcoordsBuffer(DBG_NEW VertexBuffer(m_TexCordBuffer, m_VertexCnt * sizeof(float) * 2, false));
 		texcoordsBuffer->SetBufferLayout({ { ElementDataType::Float2,"aTexCoords",false,TEXCOORD_SLOT} });
-		std::shared_ptr<VertexBuffer> tangentBuffer(DBG_NEW VertexBuffer(m_TangentBuffer, m_VertexCnt * sizeof(float) * 3));
+		std::shared_ptr<VertexBuffer> tangentBuffer(DBG_NEW VertexBuffer(m_TangentBuffer, m_VertexCnt * sizeof(float) * 3, false));
 		tangentBuffer->SetBufferLayout({ { ElementDataType::Float3,"aTangent",false,TANGENT_SLOT} });
-		std::shared_ptr<VertexBuffer> bitangentBuffer(DBG_NEW VertexBuffer(m_BitangentBuffer, m_VertexCnt * sizeof(float) * 3));
+		std::shared_ptr<VertexBuffer> bitangentBuffer(DBG_NEW VertexBuffer(m_BitangentBuffer, m_VertexCnt * sizeof(float) * 3, false));
 		bitangentBuffer->SetBufferLayout({ { ElementDataType::Float3,"aBitangent",false,BITANGENT_SLOT} });
 
-		std::shared_ptr<VertexBuffer> jointBuffer(DBG_NEW VertexBuffer(m_JointIndicesBuffer, m_VertexCnt * sizeof(uint32_t) * 4));
+		std::shared_ptr<VertexBuffer> jointBuffer(DBG_NEW VertexBuffer(m_JointIndicesBuffer, m_VertexCnt * sizeof(uint32_t) * 4, false));
 		jointBuffer->SetBufferLayout({ { ElementDataType::Int4,"aJointIndices",false,JOINTINDICES_SLOT} });
-		std::shared_ptr<VertexBuffer> joint1Buffer(DBG_NEW VertexBuffer(m_JointIndices1Buffer, m_VertexCnt * sizeof(uint32_t) * 4));
+		std::shared_ptr<VertexBuffer> joint1Buffer(DBG_NEW VertexBuffer(m_JointIndices1Buffer, m_VertexCnt * sizeof(uint32_t) * 4, false));
 		joint1Buffer->SetBufferLayout({ { ElementDataType::Int4,"aJointIndices1",false,JOINTINDICES1_SLOT} });
-		std::shared_ptr<VertexBuffer> weightBuffer(DBG_NEW VertexBuffer(m_WeightBuffer, m_VertexCnt * sizeof(float) * 4));
+		std::shared_ptr<VertexBuffer> weightBuffer(DBG_NEW VertexBuffer(m_WeightBuffer, m_VertexCnt * sizeof(float) * 4, false));
 		weightBuffer->SetBufferLayout({ { ElementDataType::Float4,"aWeights",false,WEIGHT_SLOT} });
-		std::shared_ptr<VertexBuffer> weight1Buffer(DBG_NEW VertexBuffer(m_Weight1Buffer, m_VertexCnt * sizeof(float) * 4));
+		std::shared_ptr<VertexBuffer> weight1Buffer(DBG_NEW VertexBuffer(m_Weight1Buffer, m_VertexCnt * sizeof(float) * 4, false));
 		weight1Buffer->SetBufferLayout({ { ElementDataType::Float4,"aWeights1",false,WEIGHT1_SLOT} });
 
-		std::shared_ptr<VertexBuffer> objIdBuffer(DBG_NEW VertexBuffer(m_ObjIdBuffer, m_VertexCnt * sizeof(float)));
+		std::shared_ptr<VertexBuffer> objIdBuffer(DBG_NEW VertexBuffer(m_ObjIdBuffer, m_VertexCnt * sizeof(float), false));
 		objIdBuffer->SetBufferLayout({ { ElementDataType::Float,"aObjId",false,OBJID_SLOT} });
-		std::shared_ptr<VertexBuffer> colorBuffer(DBG_NEW VertexBuffer(m_ColorBuffer, m_VertexCnt * sizeof(float) * 3));
+		std::shared_ptr<VertexBuffer> colorBuffer(DBG_NEW VertexBuffer(m_ColorBuffer, m_VertexCnt * sizeof(float) * 3, false));
 		colorBuffer->SetBufferLayout({ { ElementDataType::Float3,"aColor",false,COLOR_SLOT} });
 
-		std::shared_ptr<VertexBuffer> matrixBuffer(DBG_NEW VertexBuffer(m_ObjsTransformBuffer, m_ObjsCnt * sizeof(float) * 16));
+		std::shared_ptr<VertexBuffer> matrixBuffer(DBG_NEW VertexBuffer(m_ObjsTransformBuffer, m_ObjsCnt * sizeof(float) * 16, true, true, 1));
 		matrixBuffer->SetBufferLayout({ { ElementDataType::Float4,"aModels",false,MODELS_SLOT},
 			{ ElementDataType::Float4,"aModels",false,MODELS_SLOT + 1} ,
 			{ ElementDataType::Float4,"aModels",false,MODELS_SLOT + 2} ,
@@ -804,9 +804,9 @@ namespace BlackPearl {
 		std::shared_ptr<VertexBuffer> matrixV2Buffer(DBG_NEW VertexBuffer(m_ObjsTransformV2Buffer, m_ObjsCnt * sizeof(float) * 4));
 		matrixV2Buffer->SetBufferLayout({ { ElementDataType::Float4,"aModelsVec2",false,MODELSV2_SLOT} });*/
 
-		m_VertexArray->AddAttributeVertexBuffer(vertexBuffer);
-		m_VertexArray->AddAttributeVertexBuffer(normalBuffer);
-		m_VertexArray->AddAttributeVertexBuffer(texcoordsBuffer);
+		m_VertexArray->AddVertexBuffer(vertexBuffer);
+		m_VertexArray->AddVertexBuffer(normalBuffer);
+		m_VertexArray->AddVertexBuffer(texcoordsBuffer);
 		//m_VertexArray->AddAttributeVertexBuffer(tangentBuffer);
 		//m_VertexArray->AddAttributeVertexBuffer(bitangentBuffer);
 		//m_VertexArray->AddAttributeVertexBuffer(jointBuffer);

@@ -4,7 +4,7 @@
 #include "BlackPearl/LayerScene/Layer.h"
 #include "glm/glm.hpp"
 #include "BlackPearl/RayTracing/Hitable.h"
-//#include "BlackPearl/BVHNode/BVHNode.h"
+#include "BlackPearl/Component/BoundingBoxComponent/BoundingBox.h"
 #include "BlackPearl/Component/BVHNodeComponent/BVHNode.h"
 #include "BlackPearl/Component/MeshFilterComponent/SphereMeshFilter.h"
 namespace BlackPearl {
@@ -12,6 +12,7 @@ namespace BlackPearl {
 	/*struct Triangle :public Hitable {
 		Vertex p[3];
 	};*/
+	extern ObjectManager* g_objectManager;
 	BoundingBoxBuilder::BoundingBoxBuilder()
 	{
 
@@ -23,6 +24,16 @@ namespace BlackPearl {
 			return SphereBoundingBox(obj);
 		else if (obj->GetComponent<BasicInfo>()->GetObjectType() == ObjectType::OT_Sphere)
 			return TriangleBoundingBox(obj);
+		else if (obj->GetComponent<BasicInfo>()->GetObjectType() == ObjectType::OT_Model) {
+			std::vector<BlackPearl::Vertex> verteices = obj->GetComponent<MeshRenderer>()->GetModel()->GetMeshVertex();
+			obj->AddComponent<BVHNode>(verteices);
+			AABB box = obj->GetComponent<BVHNode>()->GetRootBox();
+
+			box.UpdateTransform(obj->GetComponent<Transform>()->GetTransformMatrix());
+
+			obj->AddComponent<BoundingBox>(box);
+			return box;
+		}
 	}
 
 	//AABB BoundingBoxBuilder::Build(const std::vector<Vertex>& mesh_vertex) {

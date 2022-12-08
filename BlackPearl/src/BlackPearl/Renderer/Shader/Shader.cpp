@@ -399,4 +399,14 @@ namespace BlackPearl {
 		GE_ERROR_JUDGE();
 
 	}
+
+	void Shader::SetUniformVec2i(const std::string& name, const glm::ivec2& value) const
+	{
+		GLint location = glGetUniformLocation(m_RendererID, name.c_str());
+		GE_ERROR_JUDGE();
+
+		glUniform2iv(location, 1, &value[0]);
+		GE_ERROR_JUDGE();
+
+	}
 }

@@ -17,6 +17,7 @@ namespace BlackPearl {
 	BVHNode::BVHNode(const std::vector<Vertex>& mesh_vertex)
 		: Component(Component::Type::BVHNode)
 	{
+		GE_ASSERT(!mesh_vertex.empty(), "mesh_vertex is empty");
 		std::vector<Object*> trimesh = BuildTriMesh(mesh_vertex);
 		if (trimesh.size() == 0) {
 			return;

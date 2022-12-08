@@ -198,8 +198,7 @@ namespace BlackPearl {
 				GLuint w, GLuint h, GLenum magFilter = GL_NEAREST, GLenum minFilter = GL_NEAREST,
 				GLint internalFormat = GL_RGB16F, GLint format = GL_FLOAT, GLint wrap = GL_REPEAT);*/
 				//纹理过滤---邻近过滤和线性过滤
-		if (generateMipmap)
-			glGenerateMipmap(GL_TEXTURE_2D);//为当前绑定的纹理自动生成所有需要的多级渐远纹理
+		
 		glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, format, dataType, NULL);
 
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, minFilter);//纹理缩小时用邻近过滤
@@ -209,7 +208,8 @@ namespace BlackPearl {
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrap);
 		}
 
-
+		if (generateMipmap)
+			glGenerateMipmap(GL_TEXTURE_2D);//为当前绑定的纹理自动生成所有需要的多级渐远纹理
 		//	UnBind();
 	}
 

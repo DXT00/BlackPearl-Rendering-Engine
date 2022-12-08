@@ -13,6 +13,9 @@ namespace BlackPearl {
 			:Component(Component::Type::BoundingBox),m_Box(box){
 		};
 		AABB Get() const { return m_Box; }
+		void SetBox(const AABB& box) {
+			m_Box = box;
+		}
 	private:
 		AABB m_Box;
 

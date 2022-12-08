@@ -23,12 +23,28 @@ namespace BlackPearl {
 		GE_ASSERT(false, "Unknown ShaderDataType!")
 			return 0;
 	}
-	VertexArray::VertexArray()
+	VertexArray::VertexArray(bool interleaved, uint32_t target)
 	{
 		m_IndirectBuffer = nullptr;
 		m_IndexBuffer = nullptr;
+		m_InterleavedVAO = interleaved;
 		glGenVertexArrays(1, &m_RendererID);
 		glBindVertexArray(m_RendererID);
+	}
+
+	VertexArray::VertexArray(uint32_t vboNum, bool interleaved, uint32_t target)
+	{
+		m_IndirectBuffer = nullptr;
+		m_IndexBuffer = nullptr;
+		m_InterleavedVAO = interleaved;
+		glGenVertexArrays(1, &m_RendererID);
+		glBindVertexArray(m_RendererID);
+		if (target == GL_ARRAY_BUFFER) {
+			m_VertexBuffers.assign(vboNum, nullptr);
+		}
+		else {
+
+		}
 	}
 
 	void VertexArray::Bind()
@@ -41,62 +57,33 @@ namespace BlackPearl {
 		glBindVertexArray(0);
 	}
 
-	void VertexArray::AddVertexBuffer(const std::shared_ptr<VertexBuffer>& vertexBuffer, bool divisor, uint32_t perInstance)
+	void VertexArray::SetVertexBuffer(uint32_t location, const std::shared_ptr<VertexBuffer>& vertexBuffer)
+	{
+		GE_ASSERT(location < m_VertexBuffers.size(), "location {0} exceed vbos size", location);
+		//GE_ASSERT(m_InterleavedVAO == vertexBuffer->GetInterleaved(), "vbo interleave attribute is different from vao");
+
+		SetAttributes(vertexBuffer);
+		m_VertexBuffers[location] = vertexBuffer;	
+	}
+
+	void VertexArray::AddVertexBuffer(const std::shared_ptr<VertexBuffer>& vertexBuffer)
 	{
 		GE_ASSERT(vertexBuffer->GetBufferLayout().GetElements().size(), "Vertex Buffer has no layout!!");
+		//GE_ASSERT(m_InterleavedVAO == vertexBuffer->GetInterleaved(), "vbo interleave attribute is different from vao");
+
 		glBindVertexArray(m_RendererID);
-		vertexBuffer->Bind();
-		auto layout = vertexBuffer->GetBufferLayout();
-		for (BufferElement element : layout.GetElements()) {
-			if (ShaderDataTypeToBufferType(element.Type) == GL_INT)
-				glVertexAttribIPointer(element.Location, element.GetElementCount(), ShaderDataTypeToBufferType(element.Type), layout.GetStride(), (void*)element.Offset);
-			else 
-				glVertexAttribPointer(element.Location, element.GetElementCount(), ShaderDataTypeToBufferType(element.Type), element.Normalized == true ? GL_TRUE : GL_FALSE, layout.GetStride(), (void*)element.Offset);
-			glEnableVertexAttribArray(element.Location);
-			if (divisor) {
-				glVertexAttribDivisor(element.Location, perInstance);
-			}
-		}
-		
+		SetAttributes(vertexBuffer);
 		m_VertexBuffers.push_back(vertexBuffer);
 	}
 
-	void VertexArray::AddAttributeVertexBuffer(const std::shared_ptr<VertexBuffer>& vertexBuffer)
-	{
-		glBindVertexArray(m_RendererID);
-		vertexBuffer->Bind();
-		auto layout = vertexBuffer->GetBufferLayout();
-		GE_ASSERT(layout.GetElements().size() == 1, "element size  > 1 in attribute vbo");
-
-		for (BufferElement element : layout.GetElements()) {
-			if (ShaderDataTypeToBufferType(element.Type) == GL_INT)
-				glVertexAttribIPointer(element.Location, element.GetElementCount(), ShaderDataTypeToBufferType(element.Type), 0, (void*)0);
-			else //GL_FLOAT
-				glVertexAttribPointer(element.Location, element.GetElementCount(), ShaderDataTypeToBufferType(element.Type), element.Normalized == true ? GL_TRUE : GL_FALSE, 0, (void*)0);
-			glEnableVertexAttribArray(element.Location);
-			
-		}
-		m_AttributeVertexBuffers.push_back(vertexBuffer);
-	}
-
-	void VertexArray::UpdateVertexBuffer(const std::shared_ptr<VertexBuffer>& vertexBuffer, bool divisor, uint32_t perInstance)
+	void VertexArray::UpdateVertexBuffer(const std::shared_ptr<VertexBuffer>& vertexBuffer)
 	{
 		GE_ASSERT(std::find(m_VertexBuffers.begin(), m_VertexBuffers.end(), vertexBuffer) != m_VertexBuffers.end(), "cannot find vertexBuffer");
+		//GE_ASSERT(m_InterleavedVAO == vertexBuffer->GetInterleaved(), "vbo interleave attribute is different from vao");
+
 		glBindVertexArray(m_RendererID);
-		vertexBuffer->Bind();
-		auto layout = vertexBuffer->GetBufferLayout();
-		for (BufferElement element : layout.GetElements()) {
-			if (ShaderDataTypeToBufferType(element.Type) == GL_INT)
-				glVertexAttribIPointer(element.Location, element.GetElementCount(), ShaderDataTypeToBufferType(element.Type), layout.GetStride(), (void*)element.Offset);
-			else
-				glVertexAttribPointer(element.Location, element.GetElementCount(), ShaderDataTypeToBufferType(element.Type), element.Normalized == true ? GL_TRUE : GL_FALSE, layout.GetStride(), (void*)element.Offset);
-			glEnableVertexAttribArray(element.Location);
-			if (divisor) {
-				glVertexAttribDivisor(element.Location, perInstance);
-			}
-		}
-
-
+		SetAttributes(vertexBuffer);
+		
 	}
 
 
@@ -106,10 +93,17 @@ namespace BlackPearl {
 
 		glBindBuffer(GL_ARRAY_BUFFER, m_IndirectBuffer->GetID());
 		glEnableVertexAttribArray(location);
-
 		glVertexAttribIPointer(location, 1, GL_UNSIGNED_INT, sizeof(IndirectCommand), (void*)(offsetof(IndirectCommand, startInstance)));
-
 		glVertexAttribDivisor(location, 1); //only once per instance
+	}
+
+	void VertexArray::SetIndirectBuffer(uint32_t location, uint32_t indirectBufferID)
+	{
+		glBindBuffer(GL_ARRAY_BUFFER, indirectBufferID);
+		glEnableVertexAttribArray(location);
+		glVertexAttribIPointer(location, 1, GL_UNSIGNED_INT, sizeof(IndirectCommand), (void*)(offsetof(IndirectCommand, startInstance)));
+		glVertexAttribDivisor(location, 1); //only once per instance
+
 	}
 
 	void VertexArray::UpdateVertexBuffers()
@@ -117,17 +111,61 @@ namespace BlackPearl {
 		glBindVertexArray(m_RendererID);
 
 		for (auto vertexBuffer : m_VertexBuffers) {
-			GE_ASSERT(vertexBuffer->GetBufferLayout().GetElements().size(), "Vertex Buffer has no layout!!");
-			vertexBuffer->Bind();
-			auto layout = vertexBuffer->GetBufferLayout();
-			for (BufferElement element : layout.GetElements()) {
-				if (ShaderDataTypeToBufferType(element.Type) == GL_INT)
-					glVertexAttribIPointer(element.Location, element.GetElementCount(), ShaderDataTypeToBufferType(element.Type), layout.GetStride(), (void*)element.Offset);
-				else //GL_FLOAT
-					glVertexAttribPointer(element.Location, element.GetElementCount(), ShaderDataTypeToBufferType(element.Type), element.Normalized == true ? GL_TRUE : GL_FALSE, layout.GetStride(), (void*)element.Offset);
-				glEnableVertexAttribArray(element.Location);
+			if (!vertexBuffer)
+				continue;
+		//	GE_ASSERT(vertexBuffer->GetBufferLayout().GetElements().size(), "Vertex Buffer has no layout!!");
+			//GE_ASSERT(m_InterleavedVAO == vertexBuffer->GetInterleaved(), "vbo interleave attribute is different from vao");
+			glBindVertexArray(m_RendererID);
+			SetAttributes(vertexBuffer);
+		}
+	}
+
+	void VertexArray::SetAttributes(const std::shared_ptr<VertexBuffer>& vertexBuffer)
+	{
+		vertexBuffer->Bind();
+		auto layout = vertexBuffer->GetBufferLayout();
+		uint32_t stride = 0;
+		uint32_t offset = 0;
+
+		if(!vertexBuffer->GetInterleaved())
+			GE_ASSERT(layout.GetElements().size() == 1, "element size  != 1 in attribute vbo");
+			
+
+		for (BufferElement element : layout.GetElements()) {
+			if (vertexBuffer->GetInterleaved()) {
+				stride = layout.GetStride();
+				offset = element.Offset;
+			} 
+			if (ShaderDataTypeToBufferType(element.Type) == GL_INT)
+				glVertexAttribIPointer(element.Location, element.GetElementCount(), ShaderDataTypeToBufferType(element.Type), stride, (void*)offset);
+			else
+				glVertexAttribPointer(element.Location, element.GetElementCount(), ShaderDataTypeToBufferType(element.Type), element.Normalized == true ? GL_TRUE : GL_FALSE, stride, (void*)offset);
+			glEnableVertexAttribArray(element.Location);
+			if (vertexBuffer->GetDivisor()) {
+				glVertexAttribDivisor(element.Location, vertexBuffer->GetDivPerInstance());
 			}
 		}
+
+	}
+
+	void VertexArray::SetNonInterleavedAttributes(const std::shared_ptr<VertexBuffer>& vertexBuffer)
+	{
+
+		vertexBuffer->Bind();
+		auto layout = vertexBuffer->GetBufferLayout();
+		GE_ASSERT(layout.GetElements().size() == 1, "element size  > 1 in attribute vbo");
+
+		for (BufferElement element : layout.GetElements()) {
+			if (ShaderDataTypeToBufferType(element.Type) == GL_INT)
+				glVertexAttribIPointer(element.Location, element.GetElementCount(), ShaderDataTypeToBufferType(element.Type), 0, (void*)0);
+			else
+				glVertexAttribPointer(element.Location, element.GetElementCount(), ShaderDataTypeToBufferType(element.Type), element.Normalized == true ? GL_TRUE : GL_FALSE, 0, (void*)0);
+			glEnableVertexAttribArray(element.Location);
+			if (vertexBuffer->GetDivisor()) {
+				glVertexAttribDivisor(element.Location, vertexBuffer->GetDivPerInstance());
+			}
+		}
+
 
 	}
 

@@ -39,7 +39,7 @@ int main(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPSTR 
 	app->Run();
 	delete app;
 	
-	//_CrtDumpMemoryLeaks();
+	_CrtDumpMemoryLeaks();
 	return 0;
 }
 #endif

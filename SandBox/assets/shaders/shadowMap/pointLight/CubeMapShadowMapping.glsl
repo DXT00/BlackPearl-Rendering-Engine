@@ -5,6 +5,8 @@
 layout (location = 0) in vec3 aPos;
 layout (location = 1) in vec3 aNormal;
 layout (location = 2) in vec2 aTexCoords;
+layout(location = 3) in vec3 aTangent;
+layout(location = 4) in vec3 aBitangent;
 
 out vec3 v_FragPos;
 out vec3 v_Normal;
@@ -71,7 +73,7 @@ float ShadowCalculation(vec3 fragPos,vec3 lightPos,samplerCube shadowMap);
 vec3 CalcPointLight(PointLight light,vec3 normal,vec3 viewDir);
 vec3 getNormalFromMap()
 {
-    vec3 tangentNormal =  2.0* texture(u_Material.normal, v_TexCoords).xyz- vec3(1.0);
+    vec3 tangentNormal =  2.0 * texture(u_Material.normal, v_TexCoords).xyz- vec3(1.0);
 
     vec3 Q1  = dFdx(v_FragPos);
     vec3 Q2  = dFdy(v_FragPos);

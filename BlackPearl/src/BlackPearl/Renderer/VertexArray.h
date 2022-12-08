@@ -5,17 +5,23 @@ namespace BlackPearl {
 	class VertexArray
 	{
 	public:
-		VertexArray();
+		VertexArray(bool interleaved = true, uint32_t target = GL_ARRAY_BUFFER);
+		VertexArray(uint32_t vboNum, bool interleaved, uint32_t target = GL_ARRAY_BUFFER);
 		~VertexArray() = default;
 		void Bind();
 		void UnBind();
 
-		void AddVertexBuffer(const std::shared_ptr<VertexBuffer>& vertexBuffer, bool divisor = false, uint32_t perInstance = 1);
-		void AddAttributeVertexBuffer(const std::shared_ptr<VertexBuffer>& vertexBuffer);
-		void UpdateVertexBuffer(const std::shared_ptr<VertexBuffer>& vertexBuffer, bool divisor = false, uint32_t perInstance = 1);
+		void SetVertexBuffer(uint32_t location, const std::shared_ptr<VertexBuffer>& vertexBuffer);
+		void AddVertexBuffer(const std::shared_ptr<VertexBuffer>& vertexBuffer);
+		void UpdateVertexBuffer(const std::shared_ptr<VertexBuffer>& vertexBuffer);
 		void UpdateVertexBuffers();
 
+		void SetAttributes(const std::shared_ptr<VertexBuffer>& vertexBuffer);
+		void SetNonInterleavedAttributes(const std::shared_ptr<VertexBuffer>& vertexBuffer);
+
+
 		void SetIndirectBuffer(uint32_t location, const std::shared_ptr<IndirectBuffer>& indirectBuffer);
+		void SetIndirectBuffer(uint32_t location, uint32_t indirectBufferID);
 
 		void SetIndexBuffer(const std::shared_ptr<IndexBuffer>& indexBuffer);
 		std::shared_ptr<IndexBuffer> GetIndexBuffer()const { return m_IndexBuffer; }
@@ -25,17 +31,19 @@ namespace BlackPearl {
 	private:
 		unsigned int m_RendererID;
 
-		//m_VertexBuffers format like:
-		//(xyzrgb0,xyzrgb1...)
+	
 		std::vector<std::shared_ptr<VertexBuffer>> m_VertexBuffers;
 
+		//interleaved m_VertexBuffers format like:
+		//(xyzrgb0,xyzrgb1...)
 
+		// non interleaved m_VertexBuffers format like :
 		// stride and offset of attribute vbo is 0, this is a tightly packed attribute array which each attribute a VBO.
 		// m_AttributeVertexBuffers format like : 
 		// vb0:(xyzxyz...)
 		// vb1:(rgbrgb...)
 		// vb2:(stst....)
-		std::vector<std::shared_ptr<VertexBuffer>> m_AttributeVertexBuffers;
+		bool m_InterleavedVAO;
 		std::shared_ptr<IndexBuffer> m_IndexBuffer;
 		std::shared_ptr<IndirectBuffer> m_IndirectBuffer;
 

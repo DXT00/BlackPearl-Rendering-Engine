@@ -158,7 +158,7 @@ float traceShadowCone(vec3 from, vec3 lightPos){
 		vec4 color1 = textureLod(texture3D, c,( 1 + 0.75 * l));
 		vec4 color2 = textureLod(texture3D, c, (2.5 * l));
 
-		if(color1.a>=0&&color2.a>=0){
+		if(color1.a>=0 && color2.a>=0){
 			float s1 = 0.062 * textureLod(texture3D, c,( 1 + 0.75 * l)).a;
 			float s2 = 0.135 * textureLod(texture3D, c, (4.5 * l)).a;
 			//		float s1 = 0.062 * textureLod(texture3D, c, 1 + 0.75 * l).a;

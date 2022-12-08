@@ -8,40 +8,59 @@ namespace BlackPearl {
 	/* 
 	darwType = GL_STATIC_DRAW / GL_DYNAMIC_DRAW (buffer can be read or written)
 	*/
-	VertexBuffer::VertexBuffer(const std::vector<float>& vertices, uint32_t drawType)
+	VertexBuffer::VertexBuffer(const std::vector<float>& vertices, bool Interleaved, bool divisor, uint32_t perInstance , uint32_t drawType)
 	{
 		m_VerticesFloat = (&vertices[0]);
 		glGenBuffers(1, &m_RendererID);
 		glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);
 		glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), &vertices[0], drawType);
 		m_VertexSize = vertices.size() * sizeof(float);
+		m_Interleaved = Interleaved;
+		if (divisor) {
+			m_Divisor = true;
+			m_DivPerInstance = perInstance;
+		}
 	}
-	VertexBuffer::VertexBuffer(const float* vertices, uint32_t size, uint32_t drawType)
+	VertexBuffer::VertexBuffer(const float* vertices, uint32_t size, bool Interleaved , bool divisor, uint32_t perInstance, uint32_t drawType)
 	{
 		m_VerticesFloat = vertices;
 		glGenBuffers(1, &m_RendererID);
 		glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);
 		glBufferData(GL_ARRAY_BUFFER, size, vertices, drawType);
 		m_VertexSize = size;
-
+		m_Interleaved = Interleaved;
+		if (divisor) {
+			m_Divisor = true;
+			m_DivPerInstance = perInstance;
+		}
 	}
-	VertexBuffer::VertexBuffer(const unsigned int* vertices, uint32_t size, uint32_t drawType)
+	VertexBuffer::VertexBuffer(const unsigned int* vertices, uint32_t size, bool Interleaved, bool divisor, uint32_t perInstance, uint32_t drawType)
 	{
 		m_VerticesUint = vertices;
 		glGenBuffers(1, &m_RendererID);
 		glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);
 		glBufferData(GL_ARRAY_BUFFER, size, vertices, drawType);
 		m_VertexSize = size;
-		
+		m_Interleaved = Interleaved;
+		if (divisor) {
+			m_Divisor = true;
+			m_DivPerInstance = perInstance;
+		}
 
 	}
-	VertexBuffer::VertexBuffer(void* vertices, uint32_t size, uint32_t drawType)
+	VertexBuffer::VertexBuffer(void* vertices, uint32_t size, bool Interleaved, bool divisor, uint32_t perInstance, uint32_t drawType)
 	{
 		m_VerticesVoidData = vertices;
 		glGenBuffers(1, &m_RendererID);
 		glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);
 		glBufferData(GL_ARRAY_BUFFER, size, vertices, drawType);
 		m_VertexSize = size;
+		m_Interleaved = Interleaved;
+		if (divisor) {
+			m_Divisor = true;
+			m_DivPerInstance = perInstance;
+		}
+
 	}
 	VertexBuffer::~VertexBuffer()
 	{	
@@ -78,6 +97,7 @@ namespace BlackPearl {
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_RendererID);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), &indices[0], drawType);
 		m_IndiciesSize = indices.size() * sizeof(unsigned int);
+		m_Indicies = indices.data();
 	}
 	IndexBuffer::IndexBuffer(unsigned int * indices, unsigned int size, uint32_t drawType)
 	{
@@ -85,6 +105,7 @@ namespace BlackPearl {
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_RendererID);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, size, indices, drawType);
 		m_IndiciesSize = size;
+		m_Indicies = indices;
 	}
 	IndexBuffer::~IndexBuffer()
 	{
@@ -189,8 +210,20 @@ namespace BlackPearl {
 		//m_TextureDepthBuffer.reset(DBG_NEW BlackPearl::DepthTexture(Texture::Type::DepthMap, m_Width, m_Height));
 		Bind();
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, m_TextureDepthBuffer->GetRendererID(), 0);
+
 		GE_ASSERT(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "Framebuffer not complete!");
 	}
+
+	void FrameBuffer::AttachDepthTexture(std::shared_ptr<Texture> texture, int mipmapLevel) {
+		m_TextureDepthBuffer = texture;
+		//Bind();
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, m_TextureDepthBuffer->GetRendererID(), mipmapLevel);
+		GLenum statue = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+		GE_ASSERT(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "Framebuffer not complete!");
+	}
+
+
+
 	//TODO::注意CubeMap的格式
 	void FrameBuffer::AttachCubeMapDepthTexture(std::shared_ptr<CubeMapTexture> cubeMap)
 	{
@@ -200,6 +233,7 @@ namespace BlackPearl {
 		glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, m_CubeMapDepthBuffer->GetRendererID(), 0);
 		GE_ASSERT(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "Framebuffer not complete!");
 	}
+
 	//TODO::这个接口有问题
 	void FrameBuffer::AttachCubeMapColorTexture(unsigned int attachmentPoints,const int imageWidth, int imageHeight) {
 		//GE_CORE_ERROR("不能调用，后续完善!");
@@ -431,10 +465,21 @@ namespace BlackPearl {
 		//glBufferData(GL_SHADER_STORAGE_BUFFER, bytes, nullptr, GL_STATIC_COPY);
 		//glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 	}
+
+
+	ShaderStorageBuffer::ShaderStorageBuffer(uint32_t size, uint32_t drawType, void* data)
+	{
+		glGenBuffers(1, &m_RendererID);
+		glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_RendererID);
+		glBufferData(GL_SHADER_STORAGE_BUFFER, size, data, drawType);
+	}
+
 	ShaderStorageBuffer::~ShaderStorageBuffer()
 	{
 		CleanUp();
 	}
+
+	
 	void ShaderStorageBuffer::Bind()
 	{
 		glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_RendererID);

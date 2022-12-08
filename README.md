@@ -174,3 +174,6 @@ since the transform matrix needs to be updated every frame ,can only reach 20 fp
 ### rendering static objs:  
 upload all data to gpu once, can reach 60 fps
 ![Terrain rendering](/results/muti_indirect_drawcall_without_matrixUpdate.png)
+
+## GPU Driven hiz culling
+![hiz culling](/results/hiz-frustum-culling.png)

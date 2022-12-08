@@ -187,6 +187,7 @@ public:
 
 		m_ShadowMapPointLightRenderer->Render(m_BackGroundObjsList, GetLightSources());
 
+		m_ShadowMapPointLightRenderer->Render(m_DynamicObjsList, GetLightSources());
 
 
 

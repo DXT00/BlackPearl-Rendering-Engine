@@ -6,10 +6,10 @@
 #include "BlackPearl/Renderer/Renderer.h"
 #include <glm/gtc/type_ptr.hpp>
 #include "glm/ext/matrix_transform.hpp"
-
+#include "BlackPearl/Renderer/Material/MaterialManager.h"
 namespace BlackPearl {
 
-
+	extern MaterialManager* g_materialManager;
 	Mesh::~Mesh()
 	{
 		GE_SAVE_FREE(m_Indices);
@@ -228,6 +228,8 @@ namespace BlackPearl {
 		Init(m_VerticeSize);
 		if (tessellation)
 			SetTessellation(verticesPerTessPatch);
+		g_materialManager->AddMaterial(m_Material);
+
 	};
 
 	/*one vertexBuffer*/
@@ -263,9 +265,11 @@ namespace BlackPearl {
 		Init(m_VerticeSize);
 		if (tessellation)
 			SetTessellation(verticesPerTessPatch);
+		g_materialManager->AddMaterial(m_Material);
+
 	};
 
-	/*multiple vertexBuffers*/
+	/*multiple vertexBuffers, for model*/
 	Mesh::Mesh(std::shared_ptr<Material> material,
 		std::shared_ptr<IndexBuffer> indexBuffer,
 		std::vector<std::shared_ptr<VertexBuffer>> vertexBuffers,
@@ -273,20 +277,32 @@ namespace BlackPearl {
 		uint32_t verticesPerTessPatch) {
 		m_VertexArray.reset(DBG_NEW VertexArray());
 		m_IndicesSize = indexBuffer->GetIndicesSize();
+		m_IndicesCount = m_IndicesSize / sizeof(uint32_t);
 		m_Material = material;
 		m_NeedTessellation = tessellation;
-
+		m_Indices = const_cast<uint32_t*>(indexBuffer->GetIndicies());
 		m_VertexArray->SetIndexBuffer(indexBuffer);
-
-		//TODO:: 解析m_VerticeCount
 		for (auto vertexBuffer : vertexBuffers) {
 			m_VertexBufferLayout = vertexBuffer->GetBufferLayout();
 			m_VertexArray->AddVertexBuffer(vertexBuffer);
+			m_Vertices = const_cast<float*>(vertexBuffer->GetVerticesFloat());
 
-			ParseAttributes(m_VertexBufferLayout);
+			uint32_t attributeSizeofOneVertex = 0;
+
+			for (size_t i = 0; i < m_VertexBufferLayout.GetElements().size(); i++)
+			{
+				BufferElement& element = m_VertexBufferLayout.GetElement(i);
+				attributeSizeofOneVertex += element.ElementSize;
+			}
+			m_VerticeCount += vertexBuffer->GetVertexSize() / attributeSizeofOneVertex;
+
+			//TODO:: 分多个 vbo 解析
+			if(vertexBuffers.size() == 1)
+				ParseAttributes(m_VertexBufferLayout);
 		}
 
 		if (tessellation)
 			SetTessellation(verticesPerTessPatch);
+		g_materialManager->AddMaterial(m_Material);
 	}
 }

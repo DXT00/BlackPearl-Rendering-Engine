@@ -21,6 +21,7 @@
 #include "Layers/VoxelizationTestLayer.h"
 #include "Layers/CubeTestLayer.h"
 #include "Layers/IndirectDrawLayer.h"
+#include "Layers/IndirectOcclusionCullLayer.h"
 
 class SandBox :public BlackPearl::Application {
 public:
@@ -60,6 +61,9 @@ public:
 		else if (renderer == "IndirectRendering") {
 			layer = DBG_NEW IndirectDrawLayer(layer_name);
 		}
+		else if (renderer == "IndirectOcclusionCull") {
+			layer = DBG_NEW IndirectOcclusionCullLayer(layer_name);
+		}
 		GetLayerManager()->PushLayer(layer);
 	}
 	virtual ~SandBox() = default;
@@ -68,7 +72,7 @@ public:
 
 BlackPearl::Application* BlackPearl::CreateApplication(HINSTANCE hInstance, int nShowCmd) {
 
-	return DBG_NEW SandBox(hInstance, nShowCmd, BlackPearl::DynamicRHI::Type::OpenGL, "IndirectRendering");
+	return DBG_NEW SandBox(hInstance, nShowCmd, BlackPearl::DynamicRHI::Type::OpenGL, "IndirectOcclusionCull");
 
 }
 

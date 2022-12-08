@@ -16,8 +16,10 @@ namespace BlackPearl {
 
 		}
 		void AddMaterial(std::shared_ptr<Material> mat) {
+			mat->SetId(m_MatMaxId);
 			m_MaterialDB[m_MatMaxId] = mat;
 			m_MatMaxId++;
+
 		}
 
 	private:

@@ -1174,6 +1174,7 @@ namespace BlackPearl {
 	{
 		Object* obj = g_objectManager->CreateModel(modelPath, shaderPath, isAnimated, vertices_sorted, false, name, createMeshlet, isMeshletModel, options);
 		m_ObjectsList.push_back(obj);
+		m_BackGroundObjsList.push_back(obj);
 		return obj;
 	}
 	MainCamera* Layer::CreateCamera(const std::string& name) {

@@ -33,6 +33,7 @@
 #include "BlackPearl/Renderer/MasterRenderer/BatchRenderer.h"
 #include "BlackPearl/Renderer/MasterRenderer/IndirectRenderer.h"
 #include "BlackPearl/Renderer/MasterRenderer/IndirectRendererTest.h"
+#include "BlackPearl/Renderer/MasterRenderer/IndirectCullRenderer.h"
 
 #include "BlackPearl/Component/TransformComponent/Transform.h"
 #include "BlackPearl/Component/MeshRendererComponent/MeshRenderer.h"
@@ -61,7 +62,7 @@
 #include "BlackPearl/Scene/SceneBuilder.h"
 #include "BlackPearl/Scene/SDFScene.h"
 #include "BlackPearl/Scene/DemoScene/MetaBallSDFScene.h"
-
+#include "BlackPearl/Scene/BoundingBoxBuilder.h"
 //D3D12 API
 #include "BlackPearl/RHI/D3D12RHI/D3D12DeviceResources.h"
 #include "BlackPearl/RHI/DynamicRHI.h"

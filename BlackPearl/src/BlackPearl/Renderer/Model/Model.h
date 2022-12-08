@@ -13,6 +13,7 @@
 #include "BlackPearl/Renderer/Mesh/MeshletGenerator.h"
 #include "BlackPearl/RHI/DynamicRHI.h"
 #include "BlackPearl/RHI/D3D12RHI/D3D12ModelLoader.h"
+#include "BlackPearl/AABB/AABB.h"
 //#include <assimp/material.h>
 
 //#include <assimp/cimport.h>
@@ -33,7 +34,7 @@ namespace BlackPearl {
 			: m_Shader(shader) {
 			m_HasAnimation = isAnimated;
 			m_SortVertices = verticesSorted;
-
+			m_AABB = std::make_shared<AABB>(glm::vec3(FLT_MAX), glm::vec3(FLT_MIN),true);
 			if (g_RHIType == DynamicRHI::Type::D3D12) {
 				//m_ModelLoader = DBG_NEW D3D12ModelLoader(isMeshletModel);
 				if (createMeshlet && !isMeshletModel) {
@@ -60,7 +61,7 @@ namespace BlackPearl {
 		void LoadModel(const std::string& path);
 		void LoadMeshletModel(BoundingSphere& bounding_sphere, const std::string& path);
 		void ProcessNode(aiNode* node, const aiScene* scene);
-		std::shared_ptr<Mesh> ProcessMesh(aiMesh* aimesh, std::vector<Vertex>& v_vertex);
+		std::shared_ptr<Mesh> ProcessMesh(aiMesh* aimesh);
 		std::shared_ptr<Mesh> ProcessMesh(aiMesh* aimesh, std::vector<Vertex>& v_vertex, bool sort_vertices);
 
 		void LoadMaterialTextures(
@@ -97,9 +98,13 @@ namespace BlackPearl {
 
 		uint32_t FindRotation(float AnimationTime, const aiNodeAnim* nodeAnim);
 		uint32_t FindScaling(float AnimationTime, const aiNodeAnim* nodeAnim);
+		std::shared_ptr<AABB> GetAABB() const { return m_AABB; }
 	public:
 		std::vector<std::shared_ptr<Mesh>> m_Meshes;
 	private:
+
+		void UpdateAABB(const glm::vec3& pos);
+
 		std::shared_ptr<Shader> m_Shader = nullptr;
 		std::map<int, std::shared_ptr<Material>> m_ModelMaterials;
 		//std::vector<Mesh> m_Meshes;
@@ -137,7 +142,14 @@ namespace BlackPearl {
 		std::shared_ptr<MeshletGenerator> m_MeshletGenerator;
 		std::vector<uint8_t>  m_Buffer;
 
+		std::vector<float> m_ModelVertices;
+		std::vector<uint32_t> m_ModelVerticesIntJointIdx;
+		std::vector<float> m_ModelVerticesFloatWeight;
 
+		std::vector<uint32_t> m_ModelIndices;
+		std::shared_ptr<AABB> m_AABB = nullptr;
+		bool m_FirstVertex = true;
+		
 	};
 
 }

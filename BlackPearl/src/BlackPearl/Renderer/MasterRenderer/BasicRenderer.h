@@ -30,6 +30,8 @@ namespace BlackPearl {
 		void DrawObject(Object *obj, Renderer::SceneData* scene = Renderer::GetSceneData(),unsigned int textureBeginIdx=2);
 		//这个Object的所有Mesh使用同一个shader
 		void DrawObject(Object *obj, std::shared_ptr<Shader> shader, Renderer::SceneData* scene = Renderer::GetSceneData(), unsigned int textureBeginIdx = 2);
+		void DrawObjectVertex(Object* obj, std::shared_ptr<Shader> shader, Renderer::SceneData* scene = Renderer::GetSceneData(), unsigned int textureBeginIdx = 2);
+		void DiscpatchCompute(uint32_t x, uint32_t y, uint32_t z);
 
 		void DrawBatchNode(BatchNode* node, std::shared_ptr<Shader> shader);
 		void DrawInstanceNode(InstanceNode* node, std::shared_ptr<Shader> shader);

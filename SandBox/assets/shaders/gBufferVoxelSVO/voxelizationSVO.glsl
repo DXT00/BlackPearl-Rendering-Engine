@@ -91,18 +91,18 @@ void main(){
 	vec3 p1 = worldPositionGeom[1] - worldPositionGeom[0];
 	vec3 p2 = worldPositionGeom[2] - worldPositionGeom[0];
 	vec3 p = abs(cross(p1, p2)); 
-	vec3 cubePos =vec3(0.0);//u_CameraViewPos
+	vec3 cubePos = vec3(0.0);//u_CameraViewPos
 
 	for(uint i = 0; i < 3; ++i){
-		worldPositionFrag =worldPositionGeom[i];
-		vec3 normal_worldPositionFrag=(worldPositionGeom[i]-cubePos)/u_CubeSize;
+		worldPositionFrag = worldPositionGeom[i];
+		vec3 normal_worldPositionFrag = (worldPositionGeom[i] - cubePos) / u_CubeSize;
 //		if(normal_worldPositionFrag.x>=1||normal_worldPositionFrag.x<=-1||
 //		normal_worldPositionFrag.y>=1||normal_worldPositionFrag.y<=-1||
 //		normal_worldPositionFrag.z>=1||normal_worldPositionFrag.z<=-1)
 //			return;
 		normalFrag = normalGeom[i];
 		texCoordFrag = vec3(texCoordGeom[i].x,texCoordGeom[i].y,texCoordGeom[i].z);
-		if(u_isHeightTextureSample==1){
+		if(u_isHeightTextureSample == 1){
 			tangentFrag = tangentGeom[i];
 			bitangentFrag = bitangentGeom[i];
 		}

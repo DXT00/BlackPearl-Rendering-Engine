@@ -3,16 +3,18 @@
 
 layout (local_size_x = 8,local_size_y = 8,local_size_z = 1) in;
 
-uniform layout(binding = 0,r32ui) uimageBuffer u_octreeIdx;
-uniform layout(binding = 1,r32ui) uimageBuffer u_octreeKd;
+layout(binding = 0,r32ui) uniform uimageBuffer u_octreeIdx;
+layout(binding = 1,r32ui) uniform uimageBuffer u_octreeKd;
 
-uniform layout(binding = 2,rgb10_a2ui) uimageBuffer u_voxelPos;
-uniform layout(binding = 3,rgba8 ) imageBuffer u_voxelKd;
+layout(binding = 2,rgb10_a2ui) uniform  uimageBuffer u_voxelPos;
+layout(binding = 3,rgba8 ) uniform imageBuffer u_voxelKd;
 
 uniform int u_numVoxelFrag;
 uniform int u_level;
 uniform int u_voxelDim;
-void imageAtomicRGBA8Avg( vec4 val, int coord, layout(r32ui) uimageBuffer buf );
+//void imageAtomicRGBA8Avg( vec4 val, int coord, layout(r32ui) uimageBuffer buf );
+//void imageAtomicRGBA8Avg( vec4 val, int coord, layout (r32ui) uimageBuffer buf );
+
 uint convVec4ToRGBA8( vec4 val );
 vec4 convRGBA8ToVec4( uint val );
 void main(){
@@ -124,7 +126,41 @@ void main(){
 
 	//Use a atomic running average method to prevent buffer saturation
 	//From OpenGL Insight ch. 22
-	imageAtomicRGBA8Avg( color, childIdx, u_octreeKd );
+	//imageAtomicRGBA8Avg( color, childIdx, u_octreeKd );
+
+	 color.rgb *= 255.0;
+	 color.a = 1;
+
+	uint newVal = convVec4ToRGBA8( color );
+	uint prev = 0u;
+	uint cur;
+	
+	
+//	uint imageAtomicCompSwap(gimage1D image,
+// 	int P,
+// 	uint compare,
+// 	uint data);
+//	
+
+	//imageAtomicCompSwap atomically compares the value of compare with that of the texel at coordinate
+	//P and sample (for multisampled forms) in the image bound to uint image. If the values are equal, 
+	//data is stored into the texel, otherwise it is discarded.
+	//It returns the original value of the texel regardless of the result of the comparison operation.
+	while( (cur = imageAtomicCompSwap( u_octreeKd, childIdx, prev, newVal ) ) != prev )
+   {
+       prev = cur;
+	   vec4 rval = convRGBA8ToVec4( cur );
+	   rval.xyz = rval.xyz*rval.w;
+	   vec4 curVal = rval +  color;
+	   curVal.xyz /= curVal.w;
+	   newVal = convVec4ToRGBA8( curVal );
+   }
+
+
+
+
+
+
 
 //	//标志为叶子节点
 //	uint leafnode = imageLoad(u_octreeIdx,childIdx).r;
@@ -145,35 +181,35 @@ uint convVec4ToRGBA8( in vec4 val )
 {
     return ( uint(val.w)&0x000000FFu)<<24u | (uint(val.z)&0x000000FFu)<<16u | (uint(val.y)&0x000000FFu)<<8u | (uint(val.x)&0x000000FFu);
 }
-void imageAtomicRGBA8Avg( vec4 val, int coord, layout(r32ui) uimageBuffer buf )
-{
-    val.rgb *= 255.0;
-	val.a = 1;
-
-	uint newVal = convVec4ToRGBA8( val );
-	uint prev = 0u;
-	uint cur;
-	
-	
-//	uint imageAtomicCompSwap(gimage1D image,
-// 	int P,
-// 	uint compare,
-// 	uint data);
+//void imageAtomicRGBA8Avg( vec4 val, int coord, layout (r32ui) uimageBuffer buf )
+//{
+//    val.rgb *= 255.0;
+//	val.a = 1;
+//
+//	uint newVal = convVec4ToRGBA8( val );
+//	uint prev = 0u;
+//	uint cur;
 //	
-
-	//imageAtomicCompSwap atomically compares the value of compare with that of the texel at coordinate
-	//P and sample (for multisampled forms) in the image bound to uint image. If the values are equal, 
-	//data is stored into the texel, otherwise it is discarded.
-	//It returns the original value of the texel regardless of the result of the comparison operation.
-	while( (cur = imageAtomicCompSwap( buf, coord, prev, newVal ) ) != prev )
-   {
-       prev = cur;
-	   vec4 rval = convRGBA8ToVec4( cur );
-	   rval.xyz = rval.xyz*rval.w;
-	   vec4 curVal = rval +  val;
-	   curVal.xyz /= curVal.w;
-	   newVal = convVec4ToRGBA8( curVal );
-   }
-
-     
-}
+//	
+////	uint imageAtomicCompSwap(gimage1D image,
+//// 	int P,
+//// 	uint compare,
+//// 	uint data);
+////	
+//
+//	//imageAtomicCompSwap atomically compares the value of compare with that of the texel at coordinate
+//	//P and sample (for multisampled forms) in the image bound to uint image. If the values are equal, 
+//	//data is stored into the texel, otherwise it is discarded.
+//	//It returns the original value of the texel regardless of the result of the comparison operation.
+//	while( (cur = imageAtomicCompSwap( buf, coord, prev, newVal ) ) != prev )
+//   {
+//       prev = cur;
+//	   vec4 rval = convRGBA8ToVec4( cur );
+//	   rval.xyz = rval.xyz*rval.w;
+//	   vec4 curVal = rval +  val;
+//	   curVal.xyz /= curVal.w;
+//	   newVal = convVec4ToRGBA8( curVal );
+//   }
+//
+//     
+//}

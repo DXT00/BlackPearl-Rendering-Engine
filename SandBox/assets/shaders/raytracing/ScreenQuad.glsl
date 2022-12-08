@@ -24,10 +24,23 @@ uniform sampler2D u_FinalScreenTexture;
 uniform Settings u_Settings;
 bool hdr = u_Settings.hdr;
 uniform float u_Num;
+uniform int u_isDepth;
+uniform int u_isMipmap;
+
+uniform int u_Lod;
 
 void main(){
+	vec3 color;
 
-	vec3 color = texture(u_FinalScreenTexture, TexCoords).rgb/u_Num;
+	if(u_isDepth == 1){
+		if(u_isMipmap == 1)
+			color = vec3(textureLod(u_FinalScreenTexture, TexCoords, u_Lod).r);
+		else
+			color = vec3(texture(u_FinalScreenTexture, TexCoords).r);
+	} else{
+		color = texture(u_FinalScreenTexture, TexCoords).rgb/u_Num;
+	}
+	FragColor = vec4(color, 1.0);
 
 //	if(hdr){
 //	//HDR tonemapping
@@ -36,6 +49,5 @@ void main(){
 //   
 //	}
 //	color = pow(color, vec3(1.0/2.2));  //1.0/2.2
-	FragColor = vec4(color, 1.0);
 
 }

@@ -80,7 +80,7 @@ namespace BlackPearl {
 					m_SimpleDepthShader->SetUniform1f("u_FarPlane", s_FarPlane);
 					m_SimpleDepthShader->SetUniformVec3f("u_LightPos", lightPos);
 
-					obj->GetComponent<MeshRenderer>()->SetShaders(m_ShadowMapShader);
+					//obj->GetComponent<MeshRenderer>()->SetShaders(m_ShadowMapShader);
 					DrawObject(obj, m_SimpleDepthShader);
 				}
 			}

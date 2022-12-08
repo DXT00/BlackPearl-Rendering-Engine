@@ -100,15 +100,15 @@ namespace BlackPearl {
 		}
 		std::shared_ptr<Model> model(DBG_NEW Model(modelPath, shader, isAnimated, vertices_sorted, createMeshlet, isMeshletModel, options));
 		Object* obj = CreateEmpty(name);
-		auto info = obj->AddComponent<BasicInfo>();
+		std::shared_ptr<BasicInfo> info = obj->AddComponent<BasicInfo>();
 		info->SetObjectType(ObjectType::OT_Model);
 		Transform* transformComponent = obj->GetComponent<Transform>();
 		transformComponent->SetInitPosition({ 0.0f, 0.0f, 0.0f });
 		transformComponent->SetInitRotation({ 0.0,180.0,0.0 });
 		obj->AddComponent<MeshRenderer>(model);
-		/*if (addBondingBox) {
-			obj->AddComponent<BoundingBox>(model->GetMeshes());
-		}*/
+		if (model->GetAABB() && model->GetAABB()->IsValid()) {
+			obj->AddComponent<BoundingBox>(*(model->GetAABB()));
+		}
 		m_Objs.push_back(obj);
 		return obj;
 
@@ -458,13 +458,11 @@ namespace BlackPearl {
 	//}
 	void ObjectManager::DestroyObjects()
 	{
-		//m_EntityToObjects.clear();
-		/*for (auto pair : m_EntityToObjects) {
-			Object* obj = pair.second;
+		for (auto obj : m_Objs) {
 			if (obj != nullptr) {
 				delete obj;
 				obj = nullptr;
 			}
-		}*/
+		}
 	}
 }

@@ -42,11 +42,9 @@ public:
 		m_SurroundSphere = CreateSphere(1.0, 128, 128);
 		m_GIQuad = CreateQuad();
 		/* create probes */
-
 		m_DiffuseLightProbeGrid = CreateProbeGrid(m_MapManager, BlackPearl::ProbeType::DIFFUSE_PROBE, 
 			glm::vec3(4, 2, 4), glm::vec3(2.0, 2.0, 6.7), 5);
-	/*	m_ReflectLightProbeGrid = CreateProbeGrid(m_MapManager, BlackPearl::ProbeType::REFLECTION_PROBE,
-			glm::vec3(2, 1, 1), glm::vec3(2.0, 6.0, 6.7), 6);*/
+
 
 		
 		BlackPearl::Renderer::Init();
@@ -147,6 +145,7 @@ public:
 				BlackPearl::TimeCounter::End("update Probe area ");
 
 		}
+		//每帧更新一个probe
 		if (m_FrameIdx % 2 == 0) {
 			m_IBLProbesRenderer->RenderDiffuseProbeMap(m_ProbeIdx, GetLightSources(), m_BackGroundObjsList, m_DynamicObjsList, runtime / 1000.0f,
 						m_DiffuseLightProbes, m_SkyBoxObj1);

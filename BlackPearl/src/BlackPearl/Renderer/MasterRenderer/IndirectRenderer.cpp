@@ -46,6 +46,14 @@ namespace BlackPearl {
 
 	}
 
+	void IndirectRenderer::Cull(const std::shared_ptr<Shader>& cullingShader)
+	{
+
+
+		//glDispatchCompute(objectDB->inObjectCount, 1, 1);
+		//glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
+	}
+
 	void IndirectRenderer::Init(Scene* scene, const std::shared_ptr<Shader>& shader)
 	{
 		m_Scene = scene;
@@ -74,7 +82,7 @@ namespace BlackPearl {
 			baseInstance++;
 		}
 		m_MatrixVBO->UpdateData(m_ObjsTransformBuffer, m_ObjsCnt * sizeof(glm::mat4));
-		m_VertexArray->UpdateVertexBuffer(m_MatrixVBO, true/*divisor*/, 1);
+		m_VertexArray->UpdateVertexBuffer(m_MatrixVBO);
 
 	}
 	
@@ -202,14 +210,14 @@ namespace BlackPearl {
 		m_IndexIBO = std::make_shared<IndexBuffer>(m_IndexBuffer, m_IndexCnt * sizeof(uint32_t));
 		m_VertexArray->SetIndexBuffer(m_IndexIBO);
 
-		m_MatrixVBO = std::make_shared<VertexBuffer>(m_ObjsTransformBuffer, m_ObjsCnt * sizeof(glm::mat4));
+		m_MatrixVBO = std::make_shared<VertexBuffer>(m_ObjsTransformBuffer, m_ObjsCnt * sizeof(glm::mat4), true/*interleaved*/, true/*divisor*/, 1);
 		m_MatrixVBO->SetBufferLayout({
 			{ ElementDataType::Float4,"aModel",false,MODELS_SLOT},
 			{ ElementDataType::Float4,"aModelV1",false,MODELS_SLOT + 1} ,
 			{ ElementDataType::Float4,"aModelV2",false,MODELS_SLOT + 2},
 			{ ElementDataType::Float4,"aModelV3",false,MODELS_SLOT + 3}
 		});
-		m_VertexArray->AddVertexBuffer(m_MatrixVBO, true/*divisor*/, 1);
+		m_VertexArray->AddVertexBuffer(m_MatrixVBO);
 
 	}
 

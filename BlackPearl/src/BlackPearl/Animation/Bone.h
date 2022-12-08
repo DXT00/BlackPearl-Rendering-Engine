@@ -7,10 +7,10 @@
 #include "assimp/scene.h"
 namespace BlackPearl {
 	/*represent a joint in a skeleton*/
-#define MAX_WEIGHT 8
+#define MAX_WEIGHT 12
 	struct VertexBoneData {
-		unsigned int jointIdx[2][4];
-		float weights[2][4] ;
+		unsigned int jointIdx[3][4] = { 0 };
+		float weights[3][4] = { 0 };
 		unsigned int currentPos = 0;
 	};
 	struct Bone {
