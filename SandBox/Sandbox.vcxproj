@@ -78,8 +78,8 @@
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>GLFW_INCLUDE_NONE;GE_PLATFORM_WINDOWS;OPENGL_API;GE_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\BlackPearl\vendor\spdlog\include;..\BlackPearl\src;..\BlackPearl\vendor;..\BlackPearl\vendor\glm;..\BlackPearl\vendor\GLFW\include;..\BlackPearl\vendor\assimp\include;..\BlackPearl\vendor\Glad\include;..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>GLFW_INCLUDE_NONE;GE_PLATFORM_WINDOWS;GE_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\BlackPearl\vendor\spdlog\include;..\BlackPearl\src;..\BlackPearl\vendor;..\BlackPearl\vendor\glm;..\BlackPearl\vendor\GLFW\include;..\BlackPearl\vendor\assimp\include;..\BlackPearl\vendor\Glad\include;..;..\BlackPearl\vendor\VulkanSDK\1.3.236.0\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -95,8 +95,8 @@
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>GLFW_INCLUDE_NONE;GE_PLATFORM_WINDOWS;OPENGL_API;GE_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\BlackPearl\vendor\spdlog\include;..\BlackPearl\src;..\BlackPearl\vendor;..\BlackPearl\vendor\glm;..\BlackPearl\vendor\GLFW\include;..\BlackPearl\vendor\assimp\include;..\BlackPearl\vendor\Glad\include;..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>GLFW_INCLUDE_NONE;GE_PLATFORM_WINDOWS;GE_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\BlackPearl\vendor\spdlog\include;..\BlackPearl\src;..\BlackPearl\vendor;..\BlackPearl\vendor\glm;..\BlackPearl\vendor\GLFW\include;..\BlackPearl\vendor\assimp\include;..\BlackPearl\vendor\Glad\include;..;..\BlackPearl\vendor\VulkanSDK\1.3.236.0\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -116,8 +116,8 @@
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>GLFW_INCLUDE_NONE;GE_PLATFORM_WINDOWS;OPENGL_API;GE_DIST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\BlackPearl\vendor\spdlog\include;..\BlackPearl\src;..\BlackPearl\vendor;..\BlackPearl\vendor\glm;..\BlackPearl\vendor\GLFW\include;..\BlackPearl\vendor\assimp\include;..\BlackPearl\vendor\Glad\include;..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>GLFW_INCLUDE_NONE;GE_PLATFORM_WINDOWS;GE_DIST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\BlackPearl\vendor\spdlog\include;..\BlackPearl\src;..\BlackPearl\vendor;..\BlackPearl\vendor\glm;..\BlackPearl\vendor\GLFW\include;..\BlackPearl\vendor\assimp\include;..\BlackPearl\vendor\Glad\include;..;..\BlackPearl\vendor\VulkanSDK\1.3.236.0\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -162,8 +162,7 @@
     <FxCompile Include="assets\shaders_hlsl\RayTracingMetaball\RayTracingMetaball.hlsl">
       <ExcludedFromBuild>true</ExcludedFromBuild>
       <ShaderModel>6.3</ShaderModel>
-      <EntryPointName>
-      </EntryPointName>
+      <EntryPointName></EntryPointName>
       <VariableName>g_pRayTracingMetaball</VariableName>
       <HeaderFileOutput>./assets/shaders_hlsl_h/RayTracingMetaball.hlsl.h</HeaderFileOutput>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">bin/Debug-windows-x86_64/Sandbox/RayTracingMetaball.cso</ObjectFileOutput>
@@ -173,8 +172,7 @@
     <FxCompile Include="assets\shaders_hlsl\Raytracing.hlsl">
       <ExcludedFromBuild>true</ExcludedFromBuild>
       <ShaderModel>6.3</ShaderModel>
-      <EntryPointName>
-      </EntryPointName>
+      <EntryPointName></EntryPointName>
       <VariableName>g_pRaytracing</VariableName>
       <HeaderFileOutput>./assets/shaders_hlsl_h/Raytracing.hlsl.h</HeaderFileOutput>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">bin/Debug-windows-x86_64/Sandbox/Raytracing.cso</ObjectFileOutput>
@@ -184,8 +182,7 @@
     <FxCompile Include="assets\shaders_hlsl\RaytracingCube.hlsl">
       <ExcludedFromBuild>true</ExcludedFromBuild>
       <ShaderModel>6.3</ShaderModel>
-      <EntryPointName>
-      </EntryPointName>
+      <EntryPointName></EntryPointName>
       <VariableName>g_pRaytracingCube</VariableName>
       <HeaderFileOutput>./assets/shaders_hlsl_h/RaytracingCube.hlsl.h</HeaderFileOutput>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">bin/Debug-windows-x86_64/Sandbox/RaytracingCube.cso</ObjectFileOutput>
@@ -197,15 +194,6 @@
     <ProjectReference Include="..\BlackPearl\BlackPearl.vcxproj">
       <Project>{B6CF16AE-A287-58FB-0B8F-3157F765F3EB}</Project>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="assets\shaders\occlusionCulling.glsl" />
-    <None Include="assets\shaders\occlusionCulling\clear.glsl" />
-    <None Include="assets\shaders\occlusionCulling\cull.glsl" />
-    <None Include="assets\shaders\occlusionCulling\depthMap.glsl" />
-    <None Include="assets\shaders\occlusionCulling\fillCmds.glsl" />
-    <None Include="assets\shaders\occlusionCulling\hiz.glsl" />
-    <None Include="assets\shaders\occlusionCulling\indirectCull.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

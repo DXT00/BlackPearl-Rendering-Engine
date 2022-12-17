@@ -30,6 +30,9 @@
     <ClInclude Include="src\Layers\AdvanceLightTestLayer.h">
       <Filter>src\Layers</Filter>
     </ClInclude>
+    <ClInclude Include="src\Layers\BatchRenderingLayer.h">
+      <Filter>src\Layers</Filter>
+    </ClInclude>
     <ClInclude Include="src\Layers\CubeTestLayer.h">
       <Filter>src\Layers</Filter>
     </ClInclude>
@@ -40,6 +43,12 @@
       <Filter>src\Layers</Filter>
     </ClInclude>
     <ClInclude Include="src\Layers\IBLRenderingLayer.h">
+      <Filter>src\Layers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Layers\IndirectDrawLayer.h">
+      <Filter>src\Layers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Layers\IndirectOcclusionCullLayer.h">
       <Filter>src\Layers</Filter>
     </ClInclude>
     <ClInclude Include="src\Layers\PbrRenderingLayer.h">
@@ -57,6 +66,9 @@
     <ClInclude Include="src\Layers\SkyBoxTestLayer.h">
       <Filter>src\Layers</Filter>
     </ClInclude>
+    <ClInclude Include="src\Layers\TerrainRenderingLayer.h">
+      <Filter>src\Layers</Filter>
+    </ClInclude>
     <ClInclude Include="src\Layers\VoxelConeTracingDeferredLayer.h">
       <Filter>src\Layers</Filter>
     </ClInclude>
@@ -69,10 +81,6 @@
     <ClInclude Include="src\Layers\VoxelizationTestLayer.h">
       <Filter>src\Layers</Filter>
     </ClInclude>
-    <ClInclude Include="src\Layers\TerrainRenderingLayer.h" />
-    <ClInclude Include="src\Layers\BatchRenderingLayer.h" />
-    <ClInclude Include="src\Layers\IndirectDrawLayer.h" />
-    <ClInclude Include="src\Layers\IndirectOcclusionCullLayer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\SandBox.cpp">
@@ -89,14 +97,5 @@
     <FxCompile Include="assets\shaders_hlsl\RaytracingCube.hlsl">
       <Filter>assets\shaders_hlsl</Filter>
     </FxCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="assets\shaders\occlusionCulling.glsl" />
-    <None Include="assets\shaders\occlusionCulling\cull.glsl" />
-    <None Include="assets\shaders\occlusionCulling\clear.glsl" />
-    <None Include="assets\shaders\occlusionCulling\fillCmds.glsl" />
-    <None Include="assets\shaders\occlusionCulling\indirectCull.glsl" />
-    <None Include="assets\shaders\occlusionCulling\depthMap.glsl" />
-    <None Include="assets\shaders\occlusionCulling\hiz.glsl" />
   </ItemGroup>
 </Project>

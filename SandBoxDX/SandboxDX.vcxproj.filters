@@ -10,6 +10,9 @@
     <Filter Include="assets\shaders_hlsl\BasicRenderer">
       <UniqueIdentifier>{4B679EF5-B7D5-F374-00BF-AE746C6CE910}</UniqueIdentifier>
     </Filter>
+    <Filter Include="assets\shaders_hlsl\MeshShader">
+      <UniqueIdentifier>{F6C8004B-E2EE-CAB1-CB34-507DB7F9EF7D}</UniqueIdentifier>
+    </Filter>
     <Filter Include="assets\shaders_hlsl\RayTracingMetaball">
       <UniqueIdentifier>{A827A9FA-9479-80EA-7D98-BDFA698999D3}</UniqueIdentifier>
     </Filter>
@@ -40,6 +43,9 @@
       <Filter>src\Layers</Filter>
     </ClInclude>
     <ClInclude Include="src\Layers\D3D12BasicRenderLayer.h">
+      <Filter>src\Layers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Layers\D3D12MeshShaderLayer.h">
       <Filter>src\Layers</Filter>
     </ClInclude>
     <ClInclude Include="src\Layers\D3D12RayTracingCubeLayer.h">
@@ -87,7 +93,6 @@
     <ClInclude Include="src\Layers\VoxelizationTestLayer.h">
       <Filter>src\Layers</Filter>
     </ClInclude>
-    <ClInclude Include="src\Layers\D3D12MeshShaderLayer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\SandBoxDX.cpp">
@@ -97,6 +102,12 @@
   <ItemGroup>
     <FxCompile Include="assets\shaders_hlsl\BasicRenderer\triangle.hlsl">
       <Filter>assets\shaders_hlsl\BasicRenderer</Filter>
+    </FxCompile>
+    <FxCompile Include="assets\shaders_hlsl\MeshShader\MS.hlsl">
+      <Filter>assets\shaders_hlsl\MeshShader</Filter>
+    </FxCompile>
+    <FxCompile Include="assets\shaders_hlsl\MeshShader\PS.hlsl">
+      <Filter>assets\shaders_hlsl\MeshShader</Filter>
     </FxCompile>
     <FxCompile Include="assets\shaders_hlsl\RayTracingMetaball\RayTracingMetaball.hlsl">
       <Filter>assets\shaders_hlsl\RayTracingMetaball</Filter>
@@ -110,7 +121,5 @@
     <FxCompile Include="assets\shaders_hlsl\RaytracingCube.hlsl">
       <Filter>assets\shaders_hlsl</Filter>
     </FxCompile>
-    <FxCompile Include="assets\shaders_hlsl\MeshShader\MS.hlsl" />
-    <FxCompile Include="assets\shaders_hlsl\MeshShader\PS.hlsl" />
   </ItemGroup>
 </Project>
