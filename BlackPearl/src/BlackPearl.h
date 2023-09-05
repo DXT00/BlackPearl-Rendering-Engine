@@ -34,6 +34,8 @@
 #include "BlackPearl/Renderer/MasterRenderer/IndirectRenderer.h"
 #include "BlackPearl/Renderer/MasterRenderer/IndirectRendererTest.h"
 #include "BlackPearl/Renderer/MasterRenderer/IndirectCullRenderer.h"
+#include "BlackPearl/Renderer/MasterRenderer/CloudRenderer.h"
+#include "BlackPearl/Renderer/MasterRenderer/SkyboxRenderer.h"
 
 #include "BlackPearl/Component/TransformComponent/Transform.h"
 #include "BlackPearl/Component/MeshRendererComponent/MeshRenderer.h"

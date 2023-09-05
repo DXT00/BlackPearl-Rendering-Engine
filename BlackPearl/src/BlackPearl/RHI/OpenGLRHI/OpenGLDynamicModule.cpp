@@ -4,10 +4,6 @@
 #include "OpenGLDynamicRHI.h"
 
 namespace BlackPearl {
-	bool OpenGLDynamicModule::IsSupported()
-	{
-		return false;
-	}
 
 	DynamicRHI* OpenGLDynamicModule::CreateRHI()
 	{

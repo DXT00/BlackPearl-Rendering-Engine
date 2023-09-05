@@ -24,7 +24,6 @@
 #include "BlackPearl/Entity/Entity.h"
 #include "BlackPearl/ObjectManager/ObjectManager.h"
 #include "BlackPearl/LayerScene/LayerManager.h"
-#include "BlackPearl/Renderer/Material/MaterialManager.h"
 #include "BlackPearl/Renderer/MasterRenderer/BasicRenderer.h"
 #include "BlackPearl/Log.h"
 #include <BlackPearl/Luanch/Luanch.h>

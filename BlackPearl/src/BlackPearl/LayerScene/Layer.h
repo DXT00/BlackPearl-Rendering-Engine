@@ -236,7 +236,7 @@ namespace BlackPearl {
 		/*MainCamera and Input*/
 
 		MainCamera* m_MainCamera = nullptr;
-		glm::vec3 m_CameraPosition = { 0.0f,0.0f,0.0f };
+		glm::vec3 m_CameraPosition = { 0.0f,0.0f,5.0f };
 		struct CameraRotation {
 			float Yaw;
 			float Pitch;

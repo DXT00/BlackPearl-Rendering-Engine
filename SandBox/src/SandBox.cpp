@@ -22,6 +22,7 @@
 #include "Layers/CubeTestLayer.h"
 #include "Layers/IndirectDrawLayer.h"
 #include "Layers/IndirectOcclusionCullLayer.h"
+#include "Layers/CloudRenderLayer.h"
 
 class SandBox :public BlackPearl::Application {
 public:
@@ -64,6 +65,12 @@ public:
 		else if (renderer == "IndirectOcclusionCull") {
 			layer = DBG_NEW IndirectOcclusionCullLayer(layer_name);
 		}
+		else if (renderer == "CloudRender") {
+			layer = DBG_NEW CloudRenderLayer(layer_name);
+		}
+		/*else if (renderer == "LumenRenderingLayer") {
+			layer = DBG_NEW LumenRenderingLayer(layer_name);
+		}*/
 		GetLayerManager()->PushLayer(layer);
 	}
 	virtual ~SandBox() = default;
@@ -72,7 +79,7 @@ public:
 
 BlackPearl::Application* BlackPearl::CreateApplication(HINSTANCE hInstance, int nShowCmd) {
 
-	return DBG_NEW SandBox(hInstance, nShowCmd, BlackPearl::DynamicRHI::Type::OpenGL, "IndirectOcclusionCull");
-
+	return DBG_NEW SandBox(hInstance, nShowCmd, BlackPearl::DynamicRHI::Type::OpenGL, "CloudRender");
+	//return DBG_NEW SandBox(hInstance, nShowCmd, BlackPearl::DynamicRHI::Type::OpenGL, "PbrRendering");
 }
 

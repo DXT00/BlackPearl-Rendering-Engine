@@ -27,7 +27,7 @@ namespace BlackPearl {
 		bool Hit(std::shared_ptr<Ray> ray,float& tMin,float& tMax);
 		float GetSurfaceArea() const;
 		void Expand(const AABB& aabb);
-		void UpdateTransform(glm::mat4);
+		void UpdateTransform(glm::mat4 model);
 	private:
 		bool m_IsValid;
 		glm::vec3 m_MinP;

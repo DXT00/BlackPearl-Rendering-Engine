@@ -24,6 +24,8 @@ namespace BlackPearl{
 		};
 		
 		virtual Window* InitWindow() = 0;
+		virtual void InitRHI() = 0;
+
 		//virtual void InitLogger() = 0;
 		//virtual std::shared_ptr<Logger> GetCoreLogger() = 0;
 		virtual void InitMathLib() {};

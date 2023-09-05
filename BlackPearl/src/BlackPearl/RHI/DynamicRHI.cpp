@@ -3,7 +3,7 @@
 #include "DynamicRHI.h"
 #include "D3D12RHI/D3D12DynamicModule.h"
 #include "OpenGLRHI/OpenGLDynamicModule.h"
-
+#include "VulkanRHI/VkDynamicModule.h"
 
 
 namespace BlackPearl {
@@ -20,6 +20,9 @@ namespace BlackPearl {
 		}
 		else if (g_RHIType == DynamicRHI::Type::D3D12) {
 			dynamicModule = DBG_NEW D3D12DynamicModule();
+		}
+		else if (g_RHIType == DynamicRHI::Type::Vulkan) {
+			dynamicModule = DBG_NEW VkDynamicModule();
 		}
 		g_DynamicRHI = dynamicModule->CreateRHI();
 	}

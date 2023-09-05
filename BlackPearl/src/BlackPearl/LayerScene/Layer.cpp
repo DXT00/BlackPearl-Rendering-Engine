@@ -17,6 +17,7 @@
 #include "BlackPearl/Renderer/MasterRenderer/VoxelConeTracingRenderer.h"
 #include "BlackPearl/Renderer/MasterRenderer/VoxelConeTracingDeferredRenderer.h"
 #include "BlackPearl/Renderer/MasterRenderer/VoxelConeTracingSVORenderer.h"
+#include "BlackPearl/Renderer/MasterRenderer/CloudRenderer.h"
 #include "BlackPearl/Application.h"
 #include "BlackPearl/Renderer/Buffer/D3D12Buffer/D3D12Buffer.h"
 
@@ -85,6 +86,33 @@ namespace BlackPearl {
 
 
 		ImGui::End();
+
+		ImGui::Begin("Cloud Settings");
+		//ImGui::Text("FPS = %.3lf", Application::s_AppFPS);
+		//ImGui::Text("AvgFPS = %.3lf", Application::s_AppAverageFPS);
+	//	ImGui::Separator();
+	
+		ImGui::DragFloat("rayStep", &CloudRenderer::s_rayStep, 0.2f, 0.0f, 1.0f, "%.4f ");
+		ImGui::DragFloat("step", &CloudRenderer::s_step, 0.2f, 1.0f, 45.0f, "%.4f ");
+		ImGui::DragFloat("colorOffset1", &CloudRenderer::s_colorOffset1, 0.2f, 0.0f, 1.0f, "%.3f ");
+		ImGui::DragFloat("colorOffset2", &CloudRenderer::s_colorOffset2, 0.0f, 0, 1.0f, "%.3f ");
+		ImGui::DragFloat("s_densityOffset", &CloudRenderer::s_densityOffset, 0.0f, -1.0f, 1.0f, "%.3f ");
+		ImGui::DragFloat("s_lightAbsorptionTowardSun", &CloudRenderer::s_lightAbsorptionTowardSun, 1.0f, 0.0f, 100.0f, "%.3f ");
+		ImGui::DragFloat("s_densityMultiplier", &CloudRenderer::s_densityMultiplier, 1.0f, 0.0f, 100.0f, "%.3f ");
+
+		float boxMax[] = { CloudRenderer::s_boundsMax.x, CloudRenderer::s_boundsMax.y, CloudRenderer::s_boundsMax.z };
+		float boxMin[] = { CloudRenderer::s_boundsMin.x, CloudRenderer::s_boundsMin.y, CloudRenderer::s_boundsMin.z };
+
+		ImGui::DragFloat3("s_boundsMax", boxMax, 0.05f, 0.001f, 100.0f, "%.3f ");
+		CloudRenderer::s_boundsMax = glm::vec3(boxMax[0], boxMax[1], boxMax[2]);
+		CloudRenderer::s_boundsMin = glm::vec3(boxMin[0], boxMin[1], boxMin[2]);
+
+
+	
+
+		ImGui::End();
+
+
 
 		ImGui::Begin("Performance");
 		ImGui::Text("FPS = %.3lf", Application::s_AppFPS);
