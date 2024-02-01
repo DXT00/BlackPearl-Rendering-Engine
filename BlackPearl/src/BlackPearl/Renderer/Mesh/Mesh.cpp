@@ -1,7 +1,8 @@
 #include "pch.h"
+#include <glad/glad.h>
 #include "Mesh.h"
 #include "glm/glm.hpp"
-#include <glad/glad.h>
+
 #include <BlackPearl/Renderer/Shader/Shader.h>
 #include "BlackPearl/Renderer/Renderer.h"
 #include <glm/gtc/type_ptr.hpp>
@@ -43,7 +44,7 @@ namespace BlackPearl {
 
 	void Mesh::SetTessellation(uint32_t verticesPerTessPatch)
 	{
-		if (g_RHIType == DynamicRHI::Type::OpenGL)
+		if (DynamicRHI::g_RHIType == DynamicRHI::Type::OpenGL)
 			glPatchParameteri(GL_PATCH_VERTICES, verticesPerTessPatch);
 
 	}

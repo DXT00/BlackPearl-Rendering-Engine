@@ -1,7 +1,8 @@
 #pragma once
 #include "pch.h"
-#include "CubeMapTexture.h"
 #include <glad/glad.h>
+#include "CubeMapTexture.h"
+
 
 
 

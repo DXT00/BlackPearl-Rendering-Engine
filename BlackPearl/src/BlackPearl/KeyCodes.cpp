@@ -2,7 +2,7 @@
 #include "KeyCodes.h"
 #include "BlackPearl/RHI/DynamicRHI.h"
 namespace BlackPearl {
-	extern DynamicRHI::Type g_RHIType;
+	//extern DynamicRHI::Type g_RHIType;
 
 	std::map<int, int> KeyCodes::s_OpenGLKeyMap = {
 		{BP_KEY_SPACE              ,32},
@@ -140,7 +140,7 @@ namespace BlackPearl {
 	};
 	int KeyCodes::Get(int key)
 	{
-		if (g_RHIType == DynamicRHI::Type::OpenGL) {
+		if (DynamicRHI::g_RHIType == DynamicRHI::Type::OpenGL) {
 			if (s_OpenGLKeyMap.find(key) != s_OpenGLKeyMap.end()) {
 				return s_OpenGLKeyMap[key];
 
@@ -149,7 +149,7 @@ namespace BlackPearl {
 				return -1;
 			}
 	}
-		else if (g_RHIType == DynamicRHI::Type::D3D12) {
+		else if (DynamicRHI::g_RHIType == DynamicRHI::Type::D3D12) {
 			if (s_D3D12KeyMap.find(key) != s_D3D12KeyMap.end()) {
 				return s_D3D12KeyMap[key];
 			}

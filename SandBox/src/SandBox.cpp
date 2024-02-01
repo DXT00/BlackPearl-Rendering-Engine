@@ -23,6 +23,7 @@
 #include "Layers/IndirectDrawLayer.h"
 #include "Layers/IndirectOcclusionCullLayer.h"
 #include "Layers/CloudRenderLayer.h"
+#include "Layers/WaterRenderLayer.h"
 
 class SandBox :public BlackPearl::Application {
 public:
@@ -68,6 +69,9 @@ public:
 		else if (renderer == "CloudRender") {
 			layer = DBG_NEW CloudRenderLayer(layer_name);
 		}
+		else if (renderer == "WaterRender") {
+			layer = DBG_NEW WaterRenderLayer(layer_name);
+		}
 		/*else if (renderer == "LumenRenderingLayer") {
 			layer = DBG_NEW LumenRenderingLayer(layer_name);
 		}*/
@@ -79,7 +83,7 @@ public:
 
 BlackPearl::Application* BlackPearl::CreateApplication(HINSTANCE hInstance, int nShowCmd) {
 
-	return DBG_NEW SandBox(hInstance, nShowCmd, BlackPearl::DynamicRHI::Type::OpenGL, "CloudRender");
+	return DBG_NEW SandBox(hInstance, nShowCmd, BlackPearl::DynamicRHI::Type::OpenGL, "WaterRender");
 	//return DBG_NEW SandBox(hInstance, nShowCmd, BlackPearl::DynamicRHI::Type::OpenGL, "PbrRendering");
 }
 

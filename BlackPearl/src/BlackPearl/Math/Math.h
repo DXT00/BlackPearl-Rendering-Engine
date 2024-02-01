@@ -12,6 +12,7 @@ namespace BlackPearl {
 		static unsigned int Rand_UI();
 		static float Rand_F();
 		static double Rand_D();
+		static const float PI;
 		static size_t Fit2Square(size_t size);
 
 		template <typename T>

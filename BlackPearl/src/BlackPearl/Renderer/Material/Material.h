@@ -92,7 +92,7 @@ namespace BlackPearl {
 
 		~Material();
 		//TODO:: Çø·ÖopenglºÍdirectX shader
-		std::shared_ptr<Shader>      GetShader()const { GE_ASSERT(g_RHIType == DynamicRHI::Type::OpenGL,"Shader class only support opengl now"); return m_Shader; }
+		std::shared_ptr<Shader>      GetShader()const { GE_ASSERT(DynamicRHI::g_RHIType == DynamicRHI::Type::OpenGL,"Shader class only support opengl now"); return m_Shader; }
 		std::shared_ptr<TextureMaps> GetTextureMaps()const { return m_TextureMaps; }
 		MaterialColor                GetMaterialColor()const { return m_MaterialColors; }
 		Props                        GetProps() const { return m_Props; }

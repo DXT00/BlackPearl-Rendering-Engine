@@ -1,6 +1,6 @@
 #include "pch.h"
-#include "Buffer.h"
 #include "glad/glad.h"
+#include "Buffer.h"
 #include "BlackPearl/Config.h"
 #include <memory>
 namespace BlackPearl {

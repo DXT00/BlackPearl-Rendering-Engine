@@ -164,18 +164,18 @@ namespace BlackPearl {
 				m_CameraPosition -= m_MainCamera->Front() * m_MainCamera->GetMoveSpeed() * ts;
 			}
 			if (Input::IsKeyPressed(KeyCodes::Get(BP_KEY_A))) {
-				if (g_RHIType == DynamicRHI::Type::D3D12) {
+				if (DynamicRHI::g_RHIType == DynamicRHI::Type::D3D12) {
 					m_CameraPosition -= (-m_MainCamera->Right()) * m_MainCamera->GetMoveSpeed() * ts;
 				}
-				else if (g_RHIType == DynamicRHI::Type::OpenGL) {
+				else if (DynamicRHI::g_RHIType == DynamicRHI::Type::OpenGL) {
 					m_CameraPosition -= m_MainCamera->Right() * m_MainCamera->GetMoveSpeed() * ts;
 				}
 			}
 			else if (Input::IsKeyPressed(KeyCodes::Get(BP_KEY_D))) {
-				if (g_RHIType == DynamicRHI::Type::D3D12) {
+				if (DynamicRHI::g_RHIType == DynamicRHI::Type::D3D12) {
 					m_CameraPosition += (-m_MainCamera->Right()) * m_MainCamera->GetMoveSpeed() * ts;
 				}
-				else if (g_RHIType == DynamicRHI::Type::OpenGL) {
+				else if (DynamicRHI::g_RHIType == DynamicRHI::Type::OpenGL) {
 					m_CameraPosition += m_MainCamera->Right() * m_MainCamera->GetMoveSpeed() * ts;
 				}
 			}

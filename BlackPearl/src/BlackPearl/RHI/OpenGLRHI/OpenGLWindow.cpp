@@ -1,7 +1,8 @@
 #include "pch.h"
+#include "GL/glew.h"
+
 #include "OpenGLWindow.h"
 #define GLEW_STATIC
-#include "GL/glew.h"
 #include "BlackPearl/Event/MouseEvent.h"
 
 namespace BlackPearl {

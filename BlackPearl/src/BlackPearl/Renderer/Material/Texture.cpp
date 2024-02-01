@@ -44,7 +44,8 @@ namespace BlackPearl {
 		int format,
 		int wrap,
 		unsigned int dataType,
-		bool generateMipmap
+		bool generateMipmap,
+		float* data
 	)
 	{
 		m_Width = width;
@@ -56,7 +57,7 @@ namespace BlackPearl {
 
 		glBindTexture(GL_TEXTURE_2D, m_TextureID);
 		GE_ERROR_JUDGE();
-		Init(width, height, minFilter, maxFilter, internalFormat, format, wrap, dataType, generateMipmap);
+		Init(width, height, minFilter, maxFilter, internalFormat, format, wrap, dataType, generateMipmap, data);
 		GE_ERROR_JUDGE();
 
 
@@ -190,7 +191,7 @@ namespace BlackPearl {
 		GLenum format,
 		int wrap,
 		unsigned int dataType,
-		bool generateMipmap)
+		bool generateMipmap, float* data)
 	{
 		m_Width = width;
 		m_Height = height;
@@ -199,7 +200,7 @@ namespace BlackPearl {
 				GLint internalFormat = GL_RGB16F, GLint format = GL_FLOAT, GLint wrap = GL_REPEAT);*/
 				//纹理过滤---邻近过滤和线性过滤
 		
-		glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, format, dataType, NULL);
+		glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, format, dataType, data);
 
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, minFilter);//纹理缩小时用邻近过滤
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, maxFilter);//纹理放大时也用邻近过滤

@@ -1,8 +1,8 @@
 #include "pch.h"
+#include "glad/glad.h"
 #include "HDRTexture.h"
 
 #include "BlackPearl/Core.h"
-#include "glad/glad.h"
 
 #include "stb_image.h"
 

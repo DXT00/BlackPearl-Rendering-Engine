@@ -1,6 +1,6 @@
 #include "pch.h"
+#include <glad/glad.h>
 #include "Config.h"
-#include<glad/glad.h>
 
 namespace BlackPearl {
 

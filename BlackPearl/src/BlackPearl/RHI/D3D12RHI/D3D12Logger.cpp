@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "D3D12Logger.h"
+//#include <debugapi.h>
 
 namespace BlackPearl {
 
@@ -23,7 +24,7 @@ namespace BlackPearl {
 
 	void D3D12Logger::DebugPrint(level_enum level, std::string msg) {
 		std::string printStr = "[" + LevelToStr(level) + "] " + msg + "\n";
-		OutputDebugStringA(printStr.c_str());
+		//OutputDebugStringA(printStr.c_str());
 
 	}
 

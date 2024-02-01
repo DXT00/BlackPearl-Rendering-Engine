@@ -1,7 +1,7 @@
 #include "pch.h"
-#include "Application.h"
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include "Application.h"
 
 #include <iostream>
 

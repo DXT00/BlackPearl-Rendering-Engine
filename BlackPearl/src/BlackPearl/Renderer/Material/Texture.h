@@ -50,7 +50,8 @@ namespace BlackPearl {
 			int format,
 			int wrap,
 			unsigned int dataType,
-			bool generateMipmap = false
+			bool generateMipmap = false,
+			float* data = NULL
 		);
 
 		/*
@@ -89,7 +90,7 @@ namespace BlackPearl {
 			GLenum format,
 			int wrap,
 			unsigned int dataType,
-			bool generateMipmap);
+			bool generateMipmap, float* data = NULL);
 
 		virtual void Bind();
 		virtual void UnBind();

@@ -1,6 +1,6 @@
 #include "pch.h"
+#include <glad/glad.h>
 #include "TextureImage2D.h"
-#include<glad/glad.h>
 #include "BlackPearl/Core.h"
 namespace BlackPearl {
 

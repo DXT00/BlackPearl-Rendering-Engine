@@ -19,7 +19,7 @@
 //#include <assimp/cimport.h>
 namespace BlackPearl {
 
-	extern DynamicRHI::Type g_RHIType;
+	///extern DynamicRHI::Type g_RHIType;
 	class Model
 	{
 	public:
@@ -35,7 +35,7 @@ namespace BlackPearl {
 			m_HasAnimation = isAnimated;
 			m_SortVertices = verticesSorted;
 			m_AABB = std::make_shared<AABB>(glm::vec3(FLT_MAX), glm::vec3(FLT_MIN),true);
-			if (g_RHIType == DynamicRHI::Type::D3D12) {
+			if (DynamicRHI::g_RHIType == DynamicRHI::Type::D3D12) {
 				//m_ModelLoader = DBG_NEW D3D12ModelLoader(isMeshletModel);
 				if (createMeshlet && !isMeshletModel) {
 					m_MeshletGenerator = std::make_shared<MeshletGenerator>();

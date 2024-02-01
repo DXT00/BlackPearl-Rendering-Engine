@@ -59,7 +59,6 @@ namespace BlackPearl {
 
 		std::shared_ptr<VertexArray> m_VAO;
 		std::shared_ptr<IndexBuffer> m_IBO;
-		VertexBufferLayout  m_VertexBufferLayout;
 
 		//ObjInfo* m_ObjInfoBuffers;
 

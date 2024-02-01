@@ -36,7 +36,12 @@
 #include "BlackPearl/Renderer/MasterRenderer/IndirectCullRenderer.h"
 #include "BlackPearl/Renderer/MasterRenderer/CloudRenderer.h"
 #include "BlackPearl/Renderer/MasterRenderer/SkyboxRenderer.h"
+#include "BlackPearl/Renderer/MasterRenderer/WaterRenderer.h"
 
+#ifdef GE_API_VULKAN
+#include "BlackPearl/Renderer/MasterRenderer/VkBasicRender.h"
+
+#endif
 #include "BlackPearl/Component/TransformComponent/Transform.h"
 #include "BlackPearl/Component/MeshRendererComponent/MeshRenderer.h"
 #include "BlackPearl/Component/CameraComponent/Camera.h"

@@ -13,10 +13,10 @@ public:
 	VkTestLayer(const std::string& name)
 		: Layer(name)
 	{
-		m_BasicRenderer = DBG_NEW BlackPearl::BasicRenderer();
+		m_VkBasicRender = DBG_NEW BlackPearl::VkBasicRender();
 
-		BlackPearl::Renderer::Init();
-		LoadScene("CubesScene");
+		m_VkBasicRender->Init();
+		//LoadScene("CubesScene");
 	}
 
 	virtual ~VkTestLayer() {
@@ -25,11 +25,12 @@ public:
 
 	}
 	void OnUpdate(BlackPearl::Timestep ts) override {
-		InputCheck(ts);
+		//InputCheck(ts);
 
-		BlackPearl::RenderCommand::SetClearColor(m_BackgroundColor1);
+		//BlackPearl::RenderCommand::SetClearColor(m_BackgroundColor1);
 		BlackPearl::Renderer::BeginScene(*(m_MainCamera->GetObj()->GetComponent<BlackPearl::PerspectiveCamera>()), *GetLightSources());
-		m_BasicRenderer->DrawObjects(m_BackGroundObjsList);
+		m_VkBasicRender->Render();
+		//m_VkBasicRender->DrawObjects(m_BackGroundObjsList);
 
 	}
 
@@ -39,7 +40,7 @@ public:
 
 private:
 	glm::vec4 m_BackgroundColor1 = { 1.0f,1.0f,1.0f,1.0f };
-	BlackPearl::BasicRenderer* m_BasicRenderer;
+	BlackPearl::VkBasicRender* m_VkBasicRender;
 
 
 };

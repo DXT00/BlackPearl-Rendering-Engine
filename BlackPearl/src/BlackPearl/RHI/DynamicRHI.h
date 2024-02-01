@@ -30,6 +30,8 @@ namespace BlackPearl{
 		//virtual std::shared_ptr<Logger> GetCoreLogger() = 0;
 		virtual void InitMathLib() {};
 		virtual void EngineExit() {};
+
+		static Type g_RHIType;
 	};
 
 	//DynamicRHI::Type g_RHIType;

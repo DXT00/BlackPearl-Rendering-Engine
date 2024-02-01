@@ -54,7 +54,7 @@ namespace BlackPearl {
 		}
 		case LightType::PointLight: {
 			//TODO:: Ìí¼ÓDirectXÖ§³Ö
-			if (g_RHIType == DynamicRHI::Type::OpenGL) {
+			if (DynamicRHI::g_RHIType == DynamicRHI::Type::OpenGL) {
 
 				std::shared_ptr<PointLight> lightComponent = Obj->AddComponent<PointLight>();
 				lightComponent->SetAttenuation(PointLight::Attenuation(200));

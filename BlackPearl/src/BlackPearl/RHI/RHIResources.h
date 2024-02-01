@@ -52,7 +52,7 @@ namespace {
 	public:
 		RHIResource(ERHIResourceType type) :
 			ResourceType(type) {};
-		~RHIResource();
+		~RHIResource() = default;
 		const ERHIResourceType ResourceType;
 
 	};

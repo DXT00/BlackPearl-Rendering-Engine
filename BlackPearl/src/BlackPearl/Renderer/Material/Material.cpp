@@ -2,7 +2,7 @@
 #include "Material.h"
 #include "MaterialManager.h"
 namespace BlackPearl {
-	extern  DynamicRHI::Type g_RHIType;
+	//extern  DynamicRHI::Type g_RHIType;
 	Material::Material(const std::shared_ptr<Shader>& shader, const std::shared_ptr<TextureMaps>& textureMaps, const MaterialColor& materialColors)
 		:m_Shader(shader), m_TextureMaps(textureMaps), m_MaterialColors(materialColors), m_Props(Props())
 	{
@@ -24,7 +24,7 @@ namespace BlackPearl {
 				m_MaterialColors.SetEmissionColor(emissionColor);
 
 			//TODO:: 重构Shader，区分OpenGL和DirectX
-			if (g_RHIType == DynamicRHI::Type::OpenGL) {
+			if (DynamicRHI::g_RHIType == DynamicRHI::Type::OpenGL) {
 				m_Shader.reset(DBG_NEW Shader(shaderPath));
 				m_Shader->Bind();
 				if (ambientColor.length() != 0) {

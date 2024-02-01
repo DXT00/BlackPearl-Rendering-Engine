@@ -27,13 +27,6 @@ namespace BlackPearl {
 
 	void MeshGatherer::InitMeshBuffers()
 	{
-		m_VertexBufferLayout = {
-		{ElementDataType::Float3,"aPos",false,POS_SLOT},
-		{ElementDataType::Float3,"aNormal",false,NORMAL_SLOT},
-		{ElementDataType::Float2,"aTexCoords",false,TEXCOORD_SLOT},
-		{ElementDataType::Float3,"aTangent",false,TANGENT_SLOT},
-		{ElementDataType::Float3,"aBitangent",false,BITANGENT_SLOT}
-		};
 
 		m_PositionBuffer = (float*)malloc(m_VertexCnt * sizeof(float) * 3);
 		m_NormalBuffer = (float*)malloc(m_VertexCnt * sizeof(float) * 3);

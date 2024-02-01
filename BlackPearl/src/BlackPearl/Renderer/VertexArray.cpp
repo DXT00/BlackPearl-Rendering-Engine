@@ -1,6 +1,6 @@
 #include "pch.h"
-#include "VertexArray.h"
 #include <glad/glad.h>
+#include "VertexArray.h"
 #include "Buffer/Buffer.h"
 #include "BlackPearl/Core.h"
 namespace BlackPearl {
