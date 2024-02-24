@@ -7,6 +7,7 @@
 
 #include "BlackPearl/RHI/DynamicRHI.h"
 #include "Layers/VkTestLayer.h"
+#include "Layers/VkGpuParticlesLayer.h"
 class SandBoxVK :public BlackPearl::Application {
 
 public:
@@ -17,8 +18,11 @@ public:
 		BlackPearl::Layer* layer = NULL;
 		const std::string layer_name = renderer + "Layer";
 
-		if (renderer == "VkTest") {
+		/*if (renderer == "VkTest") {
 			layer = DBG_NEW VkTestLayer(layer_name);
+		}*/
+		if (renderer == "VkGpuParticles") {
+			layer = DBG_NEW VkGpuParticlesLayer(layer_name);
 		}
 		
 		GetLayerManager()->PushLayer(layer);
@@ -28,7 +32,7 @@ public:
 };
 
 BlackPearl::Application* BlackPearl::CreateApplication(HINSTANCE hInstance, int nShowCmd) {
-	return DBG_NEW SandBoxVK(hInstance, nShowCmd, BlackPearl::DynamicRHI::Type::Vulkan, "VkTest");
+	return DBG_NEW SandBoxVK(hInstance, nShowCmd, BlackPearl::DynamicRHI::Type::Vulkan, "VkGpuParticles");
 
 }
 

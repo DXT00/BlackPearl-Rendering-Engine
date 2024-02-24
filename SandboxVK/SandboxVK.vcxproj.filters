@@ -1,21 +1,65 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
+    <Filter Include="assets">
+      <UniqueIdentifier>{583885F2-44DA-AFC8-2D95-C31C19D63619}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="assets\shaders">
+      <UniqueIdentifier>{51CD2FD9-3D9B-23DF-262F-9405129CFF43}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="assets\shaders\spv">
+      <UniqueIdentifier>{B9CB235C-A5AF-E4B1-0E10-DF04FA12CF33}</UniqueIdentifier>
+    </Filter>
     <Filter Include="src">
-      <UniqueIdentifier>{05bc8e2d-1748-41d9-942f-2e46367b2ce0}</UniqueIdentifier>
+      <UniqueIdentifier>{2DAB880B-99B4-887C-2230-9F7C8E38947C}</UniqueIdentifier>
     </Filter>
     <Filter Include="src\Layers">
-      <UniqueIdentifier>{9e66ea0d-2a8c-4d51-989b-4acd65cb1b83}</UniqueIdentifier>
+      <UniqueIdentifier>{4C4DA51D-3805-E76A-A10C-C0C68DE3815B}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="SandBoxVK.cpp">
+    <ClInclude Include="src\Layers\VkTestLayer.h">
+      <Filter>src\Layers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Layers\VkGpuParticlesLayer.h">
+      <Filter>src\Layers</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\SandBoxVK.cpp">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="VkTestLayer.h">
-      <Filter>src\Layers</Filter>
-    </ClInclude>
+    <None Include="assets\shaders\spv\vkBasic_frag.spv">
+      <Filter>assets\shaders\spv</Filter>
+    </None>
+    <None Include="assets\shaders\spv\vkBasic_vert.spv">
+      <Filter>assets\shaders\spv</Filter>
+    </None>
+    <None Include="assets\shaders\vkBasic.frag">
+      <Filter>assets\shaders</Filter>
+    </None>
+    <None Include="assets\shaders\vkBasic.vert">
+      <Filter>assets\shaders</Filter>
+    </None>
+    <None Include="assets\shaders\particle.comp">
+      <Filter>assets\shaders</Filter>
+    </None>
+    <None Include="assets\shaders\particle.frag">
+      <Filter>assets\shaders</Filter>
+    </None>
+    <None Include="assets\shaders\particle.vert">
+      <Filter>assets\shaders</Filter>
+    </None>
+    <None Include="assets\shaders\spv\particle_comp.spv">
+      <Filter>assets\shaders\spv</Filter>
+    </None>
+    <None Include="assets\shaders\spv\particle_frag.spv">
+      <Filter>assets\shaders\spv</Filter>
+    </None>
+    <None Include="assets\shaders\spv\particle_vert.spv">
+      <Filter>assets\shaders\spv</Filter>
+    </None>
   </ItemGroup>
 </Project>

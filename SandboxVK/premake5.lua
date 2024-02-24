@@ -12,7 +12,9 @@ project "SandboxVK"
 	{
 		"src/**.h",
 		"src/**.cpp",
-		"assets/shaders/spv/**.spv"
+		"assets/shaders/spv/**.spv",
+        "assets/shaders/**.frag",
+        "assets/shaders/**.vert"
 	}
 
 

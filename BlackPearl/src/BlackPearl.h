@@ -40,6 +40,7 @@
 
 #ifdef GE_API_VULKAN
 #include "BlackPearl/Renderer/MasterRenderer/VkBasicRender.h"
+#include "BlackPearl/Renderer/MasterRenderer/VkComputeShaderRender.h"
 
 #endif
 #include "BlackPearl/Component/TransformComponent/Transform.h"
