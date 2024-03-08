@@ -5,6 +5,36 @@ struct onb {
     vec3 w;
 };
 
+struct material {
+    uint materialType;
+    vec3 albedo;
+};
+
+struct triangle {
+    vec3 v0;
+    vec3 v1;
+    vec3 v2;
+    uint materialIndex;
+};
+
+struct light {
+    uint triangleIndex;
+    float area;
+};
+
+struct sphere {
+    vec4 s;
+    uint materialIndex;
+};
+
+struct bvhNode {
+    vec3 min;
+    vec3 max;
+    int leftNodeIndex;
+    int rightNodeIndex;
+    int objectIndex;
+};
+
 /*
 #define LIGHT_MATERIAL 0
 #define LAMBERTIAN_MATERIAL 1

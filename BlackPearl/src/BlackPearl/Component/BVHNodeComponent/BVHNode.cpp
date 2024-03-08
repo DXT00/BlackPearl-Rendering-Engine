@@ -118,7 +118,9 @@ namespace BlackPearl {
 			for (auto obj : objs)
 			{
 				AABB& obj_box = obj->GetComponent<BlackPearl::BoundingBox>()->Get();
-				int bucketID = (obj_box.GetCenter()[i] - m_Box.GetMinP()[i]) / boxLen;
+				int bucketID = 0;
+				if(boxLen != 0)
+					bucketID = (obj_box.GetCenter()[i] - m_Box.GetMinP()[i]) / boxLen;
 				buckets[bucketID].push_back(obj);
 				boxOfBuckets[bucketID].Expand(obj_box);
 			}

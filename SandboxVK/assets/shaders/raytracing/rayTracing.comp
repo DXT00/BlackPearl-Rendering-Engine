@@ -2,35 +2,7 @@
 layout(local_size_x = 32, local_size_y = 32, local_size_z = 1) in;
 
 #include "definitions.glsl"
-struct material {
-    uint materialType;
-    vec3 albedo;
-};
 
-struct triangle {
-    vec3 v0;
-    vec3 v1;
-    vec3 v2;
-    uint materialIndex;
-};
-
-struct light {
-    uint triangleIndex;
-    float area;
-};
-
-struct sphere {
-    vec4 s;
-    uint materialIndex;
-};
-
-struct bvhNode {
-    vec3 min;
-    vec3 max;
-    int leftNodeIndex;
-    int rightNodeIndex;
-    int objectIndex;
-};
 
 layout(column_major, binding = 0) uniform UniformBufferObject {
     vec3 camPos;
@@ -68,6 +40,7 @@ layout(std430, binding = 6) readonly buffer LightsBufferObject {
  struct Ray{
     vec3 origin;
     vec3 dir;
+    float pdf;
  };
 
  vec3 ray_at(Ray r, float t) {
@@ -143,38 +116,52 @@ vec3 sampleGlass(vec3 I, hit_record rec, inout float pdf) {
 bool scatter(Ray r_in, inout hit_record rec, inout vec3 albedo, inout Ray scattered) {    
     albedo = materials[rec.materialIndex].albedo;
 
-    float materialSamplePdf;
-    vec3 materialSample;
+    //出射方向 ray的颜色占比
+    float outRayPdf;
+    vec3 outDir;
 
     if(materials[rec.materialIndex].materialType == RTX_DIFFUSE) {
-        materialSample = sampleLambertian(rec.normal, materialSamplePdf);
+        outDir = sampleLambertian(rec.normal, outRayPdf);
     }
     else if(materials[rec.materialIndex].materialType == RTX_METALLIC) {
-        materialSample = sampleMetal(r_in.dir, rec.normal, materialSamplePdf);
+        outDir = sampleMetal(r_in.dir, rec.normal, outRayPdf);
     }
     else if(materials[rec.materialIndex].materialType == RTX_DIELECTRIC) {
-        materialSample = sampleGlass(r_in.dir, rec, materialSamplePdf);
+        outDir = sampleGlass(r_in.dir, rec, outRayPdf);
         albedo = vec3(1.0);
     }
-    float lightSamplePdf = materialSamplePdf; 
-    vec3 finalSample = materialSample;
+    float lightPdf = outRayPdf; 
+    vec3 finalOutDir = outDir;
 
     if (random() < 0.5 && materials[rec.materialIndex].materialType == RTX_DIFFUSE) {
-        // sample light
+        // sample light, 0.5的概率射向光源
         float lightCosine;
-        finalSample = sampleLight(rec.p, lightSamplePdf, lightCosine);
+        finalOutDir = sampleLight(rec.p, lightPdf, lightCosine);
 
         if(abs(lightCosine) < 0.001) {
-            finalSample = materialSample;
-            lightSamplePdf = materialSamplePdf;
+            finalOutDir = outDir;
+            lightPdf = outRayPdf;
         }
+        scattered = Ray(rec.p, finalOutDir, lightPdf);
+
+    }else{
+        scattered = Ray(rec.p, finalOutDir, outRayPdf);
+
     }
 
-    scattered = Ray(rec.p, finalSample);
     
-    rec.samplePdf = 0.5 * materialSamplePdf + 0.5 *lightSamplePdf;
-    rec.scatterPdf = materialSamplePdf;
+    // rec.samplePdf = 0.5 * outRayPdf + 0.5 *lightSamplePdf;
+    // rec.scatterPdf = outRayPdf;
 
+    if(materials[rec.materialIndex].materialType == RTX_EMISSION)
+    {
+        albedo = materials[rec.materialIndex].albedo;
+
+        //albedo = r_in.pdf * materials[rec.materialIndex].albedo;
+
+    }else{
+       // albedo *= r_in.pdf;
+    }
     return materials[rec.materialIndex].materialType == RTX_EMISSION;
 }
 
@@ -388,9 +375,9 @@ vec3 TraceRay(Ray r){
     hit_record rec;
 
     vec3 final_color = vec3(1.0);
-    Ray current_ray = {r.origin, normalize(r.dir)};
+    Ray current_ray = {r.origin, normalize(r.dir), r.pdf};
     
-    for (int i = 0; i< NUM_BOUNCES; i++) {
+    for (int i = 0; i < NUM_BOUNCES; i++) {
         int nodeId;
         int triId;
         if (hit_bvh(current_ray, rec, nodeId, triId)) {
@@ -404,7 +391,7 @@ vec3 TraceRay(Ray r){
                 break;
             }            
         } else {
-            final_color *=  vec3(0,1,0);
+            final_color *=  vec3(0,0,0);
             break;
 
         }
@@ -424,13 +411,21 @@ void main(){
     vec4 end = (ubo.InvertProjectionView) * vec4(uv,1.0,1.0);
 
     vec3 dir = normalize(end.xyz-ubo.camPos.xyz);
-    Ray r = {ubo.camPos.xyz, dir};
+    Ray r = {ubo.camPos.xyz, dir, 1.0};
     
 
 
     vec3 color = TraceRay(r);
-    vec3 combineColor = (color + imageLoad(accumulationTex, ivec2(uv.x, uv.y)).rgb)/ubo.currentSample;
-    imageStore(targetTexture, ivec2(gl_GlobalInvocationID.xy), vec4(combineColor,1.0));
+
+    vec4 currentColor = imageLoad(accumulationTex, ivec2(gl_GlobalInvocationID.xy)).rgba * min(ubo.currentSample, 1.0);
+
+    vec4 to_write = (vec4(color, 1.0) + currentColor*(ubo.currentSample)) / (ubo.currentSample+1.0);
+
+    imageStore(targetTexture, ivec2(gl_GlobalInvocationID.xy), to_write);
+
+
+    //vec3 combineColor = (color + imageLoad(accumulationTex, ivec2(uv.x, uv.y)).rgb)/ubo.currentSample;
+   // imageStore(targetTexture, ivec2(gl_GlobalInvocationID.xy), vec4(combineColor,1.0));
 
 }
 

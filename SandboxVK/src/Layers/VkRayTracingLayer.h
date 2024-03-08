@@ -15,36 +15,27 @@ public:
 	{
 	
 		mScene = new BlackPearl::RayTraceScene();
+		m_MainCamera->SetRotateSpeed(0.1f);
+		m_MainCamera->SetMoveSpeed(0.3f);
+		m_MainCamera->SetPosition({0,0.0,0});
 
-		BlackPearl::Object* bunny = CreateModel("assets/models/bunny/bunny.obj", "", false/*isAnimated*/, "Bunny", true/*vertices sorted*/);
-		bunny->GetComponent<BlackPearl::Transform>()->SetInitScale(glm::vec3(1));
-		bunny->GetComponent<BlackPearl::Transform>()->SetInitPosition({ 0.0f,-2.0f,-2.0f });
-		bunny->GetComponent<BlackPearl::Transform>()->SetInitRotation({ 0.0f,0.0f,0.0f });
-		bunny->GetComponent<BlackPearl::MeshRenderer>()->SetIsBackGroundObjects(true);
-		std::shared_ptr<BlackPearl::Material> bunny_mat;
-		bunny_mat.reset(DBG_NEW BlackPearl::Material());
-		bunny_mat->SetRTXType(BlackPearl::Material::RTXType::RTX_DIFFUSE);
-		bunny_mat->SetId(0);
+		m_MainCamera->SetFov(30.0f);
 
-		std::vector<BlackPearl::Vertex> bunny_verteices = bunny->GetComponent<BlackPearl::MeshRenderer>()->GetModel()->GetMeshVertex();
-		std::vector<BlackPearl::Vertex> bunny_verteices_trans;
-		glm::mat4 transM = bunny->GetComponent<BlackPearl::Transform>()->GetTransformMatrix();
-		for (size_t i = 0; i < bunny_verteices.size(); i++)
-		{
-			BlackPearl::Vertex v = bunny_verteices[i];
-			
-			v.position = transM * glm::vec4(v.position,1.0);
-			bunny_verteices_trans.push_back(v);
-		}
 
-		BlackPearl::Object* bunny_bvh_node = BlackPearl::g_objectManager->CreateBVHNode(bunny_verteices_trans);
-	//	BlackPearl::Object* bunny_bvh_node = BlackPearl::g_objectManager->CreateBVHNode(bunny_verteices);
-		glm::vec3 extent = bunny_bvh_node->GetComponent<class BlackPearl::BVHNode>()->GetRootBox().GetExtent();
-		//BlackPearl::Object* bunnyRTXTransformNode = BlackPearl::g_objectManager->CreateRTXTransformNode(bunny->GetComponent<BlackPearl::Transform>()->GetTransformMatrix(), bunny_bvh_node, bunny_mat);
-		//LoadScene("CubesScene");
-		bunny_bvh_node->AddComponent<BlackPearl::MeshRenderer>(bunny_mat);
+		LoadModel("assets/models/bunny/bunny.obj", "bunny", 0, BlackPearl::Material::RTXType::RTX_DIFFUSE, 0.5, { -0.2f,0.0f,-3.0f });
 
-		mScene->AddObject(bunny_bvh_node);
+		LoadModel("assets/models/bunny/bunny.obj", "bunny1", 1, BlackPearl::Material::RTXType::RTX_DIFFUSE,0.5, { 0.2f,0.0f,-3.0f });
+
+		//LoadModel("assets/models/doge_scene/back.obj", "back", 0, BlackPearl::Material::RTXType::RTX_DIFFUSE, 1.0, { 0.0f,-1.0f,-2.0f });
+		//LoadModel("assets/models/doge_scene/box1.obj", "box1", 1, BlackPearl::Material::RTXType::RTX_DIFFUSE, 1.0);
+		//LoadModel("assets/models/doge_scene/box2.obj", "box2", 1, BlackPearl::Material::RTXType::RTX_DIFFUSE, 1.0);
+		//LoadModel("assets/models/doge_scene/cheems.obj", "cheems", 0, BlackPearl::Material::RTXType::RTX_DIFFUSE, 1.0, { 0.0f,-1.0f,-2.0f });
+		//LoadModel("assets/models/doge_scene/floor.obj", "floor", 0, BlackPearl::Material::RTXType::RTX_DIFFUSE, 1.0, { 0.0f,-1.0f,-2.0f });
+		//LoadModel("assets/models/doge_scene/left.obj", "left", 1, BlackPearl::Material::RTXType::RTX_DIFFUSE, 1.0, { 0.0f,-1.0f,-2.0f });
+		//LoadModel("assets/models/doge_scene/right.obj", "right", 1, BlackPearl::Material::RTXType::RTX_DIFFUSE, 1.0, { 0.0f,-1.0f,-2.0f });
+
+
+
 
 		BlackPearl::Object* areaLight = CreateModel("assets/models/light/light.obj", "", false/*isAnimated*/, "AreaLight", true/*vertices sorted*/);
 		areaLight->GetComponent<BlackPearl::Transform>()->SetInitScale(glm::vec3(1.0));
@@ -54,7 +45,7 @@ public:
 		std::shared_ptr<BlackPearl::Material> areaLight_mat;
 		areaLight_mat.reset(DBG_NEW BlackPearl::Material());
 		areaLight_mat->SetRTXType(BlackPearl::Material::RTXType::RTX_EMISSION);
-		areaLight_mat->SetId(1);
+		areaLight_mat->SetId(2);
 
 		std::vector<BlackPearl::Vertex> light_verteices = areaLight->GetComponent<BlackPearl::MeshRenderer>()->GetModel()->GetMeshVertex();
 		BlackPearl::Object* light_bvh_node = BlackPearl::g_objectManager->CreateBVHNode(light_verteices);
@@ -80,6 +71,34 @@ public:
 		BlackPearl::Renderer::BeginScene(*(m_MainCamera->GetObj()->GetComponent<BlackPearl::PerspectiveCamera>()), *GetLightSources());
 		m_VkRTRender->Render(m_MainCamera->GetObj()->GetComponent<BlackPearl::PerspectiveCamera>());
 		//m_VkBasicRender->DrawObjects(m_BackGroundObjsList);
+
+	}
+
+	void LoadModel(std::string objPath, std::string name, int matId, BlackPearl::Material::RTXType matType, float scale, glm::vec3 pos) {
+		BlackPearl::Object* doge = CreateModel(objPath, "", false/*isAnimated*/, name, true/*vertices sorted*/);
+		doge->GetComponent<BlackPearl::Transform>()->SetInitScale(glm::vec3(scale));
+		doge->GetComponent<BlackPearl::Transform>()->SetInitPosition(pos);
+
+		doge->GetComponent<BlackPearl::MeshRenderer>()->SetIsBackGroundObjects(true);
+		std::shared_ptr<BlackPearl::Material> doge_mat;
+		doge_mat.reset(DBG_NEW BlackPearl::Material());
+		doge_mat->SetRTXType(matType);
+		doge_mat->SetId(matId);
+
+		std::vector<BlackPearl::Vertex> doge_verteices = doge->GetComponent<BlackPearl::MeshRenderer>()->GetModel()->GetMeshVertex();
+		std::vector<BlackPearl::Vertex> doge_verteices_trans;
+		glm::mat4 transM = doge->GetComponent<BlackPearl::Transform>()->GetTransformMatrix();
+		for (size_t i = 0; i < doge_verteices.size(); i++)
+		{
+			BlackPearl::Vertex v = doge_verteices[i];
+
+			v.position = transM * glm::vec4(v.position, 1.0);
+			doge_verteices_trans.push_back(v);
+		}
+
+		BlackPearl::Object* doge_bvh_node = BlackPearl::g_objectManager->CreateBVHNode(doge_verteices_trans);
+		doge_bvh_node->AddComponent<BlackPearl::MeshRenderer>(doge_mat);
+		mScene->AddObject(doge_bvh_node);
 
 	}
 

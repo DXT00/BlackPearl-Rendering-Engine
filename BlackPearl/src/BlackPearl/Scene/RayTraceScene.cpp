@@ -45,16 +45,16 @@ namespace BlackPearl {
 		
 		_BuildSceneRayTraceBVHNode(m_Root);
 
-		RayTraceScene::material gray{ Material::RTXType::RTX_DIFFUSE, glm::vec3(0.3f, 0.3f, 0.8f) };
-		/*RayTraceScene::material red{ Material::RTXType::RTX_DIFFUSE, glm::vec3(0.9f, 0.1f, 0.1f) };
-		RayTraceScene::material green{ Material::RTXType::RTX_DIFFUSE, glm::vec3(0.1f, 0.9f, 0.1f) };*/
-		RayTraceScene::material whiteLight{ Material::RTXType::RTX_EMISSION, glm::vec3(2.0f, 0.0f, 0.0f) };
+		RayTraceScene::material gray{ Material::RTXType::RTX_DIFFUSE, glm::vec3(0.3f, 0.3f, 0.3f) };
+		RayTraceScene::material red{ Material::RTXType::RTX_DIFFUSE, glm::vec3(0.9f, 0.1f, 0.1f) };
+		/*RayTraceScene::material green{Material::RTXType::RTX_DIFFUSE, glm::vec3(0.1f, 0.9f, 0.1f)}; */
+		RayTraceScene::material whiteLight{ Material::RTXType::RTX_EMISSION, glm::vec3(3.0f, 3.0f, 3.0f) };
 		/*RayTraceScene::material metal{ Material::RTXType::RTX_METALLIC, glm::vec3(1.0f, 1.0f, 1.0f) };
 		RayTraceScene::material glass{ Material::RTXType::RTX_DIELECTRIC, glm::vec3(1.0f, 1.0f, 1.0f) };*/
 
 		materials.push_back(gray);
-		/*materials.push_back(red);
-		materials.push_back(green);*/
+		materials.push_back(red);
+		/*materials.push_back(green);*/
 		materials.push_back(whiteLight);
 		//materials.push_back(metal);
 		//materials.push_back(glass);

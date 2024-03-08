@@ -178,6 +178,8 @@ namespace BlackPearl {
 			}
 		};
 		glm::vec3 m_LastCamPos;
+		glm::vec3 m_LastCamRotate;
+
 		uint32_t m_CurSample = 0;
 		//const std::vector<QuadVertex> vertices = {
 		//	// positions			//normal				//uv

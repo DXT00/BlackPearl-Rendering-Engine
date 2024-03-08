@@ -156,46 +156,51 @@ namespace BlackPearl {
 
 		void InputCheck(float ts)
 		{
+			float maxMoveDelta = 5 * m_MainCamera->GetMoveSpeed();
+			float moveDelta = m_MainCamera->GetMoveSpeed() * ts;
+
+			if (moveDelta > maxMoveDelta)
+				moveDelta = maxMoveDelta;
 
 			if (Input::IsKeyPressed(KeyCodes::Get(BP_KEY_W))) {
 				if (DynamicRHI::g_RHIType == DynamicRHI::Type::Vulkan) {
-					m_CameraPosition -= m_MainCamera->Front() * m_MainCamera->GetMoveSpeed() * ts;
+					m_CameraPosition -= m_MainCamera->Front() * moveDelta;
 				}
 				else {
-					m_CameraPosition += m_MainCamera->Front() * m_MainCamera->GetMoveSpeed() * ts;
+					m_CameraPosition += m_MainCamera->Front() * moveDelta;
 				}
 			}
 			else if (Input::IsKeyPressed(KeyCodes::Get(BP_KEY_S))) {
 				if (DynamicRHI::g_RHIType == DynamicRHI::Type::Vulkan) {
-					m_CameraPosition += m_MainCamera->Front() * m_MainCamera->GetMoveSpeed() * ts;
+					m_CameraPosition += m_MainCamera->Front() * moveDelta;
 				}
 				else {
-					m_CameraPosition -= m_MainCamera->Front() * m_MainCamera->GetMoveSpeed() * ts;
+					m_CameraPosition -= m_MainCamera->Front() * moveDelta;
 				}
 			}
 			if (Input::IsKeyPressed(KeyCodes::Get(BP_KEY_A))) {
 				if (DynamicRHI::g_RHIType == DynamicRHI::Type::D3D12) {
-					m_CameraPosition -= (-m_MainCamera->Right()) * m_MainCamera->GetMoveSpeed() * ts;
+					m_CameraPosition -= (-m_MainCamera->Right()) * moveDelta;
 				}
 				else if (DynamicRHI::g_RHIType == DynamicRHI::Type::OpenGL ||
 					DynamicRHI::g_RHIType == DynamicRHI::Type::Vulkan) {
-					m_CameraPosition -= m_MainCamera->Right() * m_MainCamera->GetMoveSpeed() * ts;
+					m_CameraPosition -= m_MainCamera->Right() * moveDelta;
 				}
 			}
 			else if (Input::IsKeyPressed(KeyCodes::Get(BP_KEY_D))) {
 				if (DynamicRHI::g_RHIType == DynamicRHI::Type::D3D12) {
-					m_CameraPosition += (-m_MainCamera->Right()) * m_MainCamera->GetMoveSpeed() * ts;
+					m_CameraPosition += (-m_MainCamera->Right()) * moveDelta;
 				}
 				else if (DynamicRHI::g_RHIType == DynamicRHI::Type::OpenGL ||
 					DynamicRHI::g_RHIType == DynamicRHI::Type::Vulkan) {
-					m_CameraPosition += m_MainCamera->Right() * m_MainCamera->GetMoveSpeed() * ts;
+					m_CameraPosition += m_MainCamera->Right() * moveDelta;
 				}
 			}
 			if (Input::IsKeyPressed(KeyCodes::Get(BP_KEY_E))) {
-				m_CameraPosition += m_MainCamera->Up() * m_MainCamera->GetMoveSpeed() * ts;
+				m_CameraPosition += m_MainCamera->Up() * moveDelta;
 			}
 			else if (Input::IsKeyPressed(KeyCodes::Get(BP_KEY_Q))) {
-				m_CameraPosition -= m_MainCamera->Up() * m_MainCamera->GetMoveSpeed() * ts;
+				m_CameraPosition -= m_MainCamera->Up() * moveDelta;
 			}
 			// ---------------------Rotation--------------------------------------
 
@@ -212,16 +217,29 @@ namespace BlackPearl {
 
 				m_LastMouseX = posx;
 				m_LastMouseY = posy;
-				m_CameraRotation.Yaw += diffx * m_MainCamera->GetRotateSpeed() * ts;
-				m_CameraRotation.Pitch += diffy * m_MainCamera->GetRotateSpeed() * ts;
+
+				float deltaX = diffx * ts * m_MainCamera->GetRotateSpeed();
+				float deltaY = diffy * ts * m_MainCamera->GetRotateSpeed();
+
+				float maxRotDelta = 3 * m_MainCamera->GetRotateSpeed();
+				if (deltaX > maxRotDelta)
+					deltaX = maxRotDelta;
+				if (deltaY > maxRotDelta)
+					deltaY = maxRotDelta;
+
+				//GE_CORE_INFO("Cam deltaX = " + std::to_string(deltaX) + "Cam deltaY =" + std::to_string(deltaY));
+
+				float raoteSpeed = m_MainCamera->GetRotateSpeed();
+				m_CameraRotation.Yaw += deltaX ;
+				m_CameraRotation.Pitch += deltaY ;
 
 				if (m_CameraRotation.Pitch > 89.0f)
 					m_CameraRotation.Pitch = 89.0f;
 				if (m_CameraRotation.Pitch < -89.0f)
 					m_CameraRotation.Pitch = -89.0f;
 
-				if (m_CameraRotation.Yaw > 180.0f)
-					m_CameraRotation.Yaw = 180.0f;
+				if (m_CameraRotation.Yaw > 0.0f)
+					m_CameraRotation.Yaw = 0.0f;
 				if (m_CameraRotation.Yaw < -180.0f)
 					m_CameraRotation.Yaw = -180.0f;
 
@@ -232,7 +250,7 @@ namespace BlackPearl {
 				m_LastMouseY = posy;
 			}
 
-			GE_CORE_INFO("Cam Pitch = " + std::to_string(m_CameraRotation.Pitch) + "Cam Yaw =" + std::to_string(m_CameraRotation.Yaw));
+			//GE_CORE_INFO("Cam Pitch = " + std::to_string(m_CameraRotation.Pitch) + "Cam Yaw =" + std::to_string(m_CameraRotation.Yaw));
 			m_MainCamera->SetPosition(m_CameraPosition);
 		}
 

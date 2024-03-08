@@ -274,10 +274,11 @@ namespace BlackPearl {
       
 
         UniformBufferObject ubo{};
+        glm::vec3 camRot = camera->GetRotation();
         ubo.camPos = camera->GetPosition();
         GE_CORE_INFO("CamPos = " + std::to_string(ubo.camPos.x)+","+std::to_string(ubo.camPos.y) + ","+std::to_string(ubo.camPos.z));
 
-        if (ubo.camPos != m_LastCamPos) {
+        if (ubo.camPos != m_LastCamPos || camRot!= m_LastCamRotate) {
             m_CurSample = 1;
         }
         ubo.numTriangles = (uint32_t)mScene->GetSceneTriangles().size();
@@ -289,6 +290,7 @@ namespace BlackPearl {
         ubo.currentSample = m_CurSample;
 
         m_LastCamPos = ubo.camPos;
+        m_LastCamRotate = camRot;
         m_CurSample++;
         /*
         memcpy(uniformBuffersMapped[currentImage], &ubo, sizeof(ubo));
