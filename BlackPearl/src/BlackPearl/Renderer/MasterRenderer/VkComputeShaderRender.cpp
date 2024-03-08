@@ -979,7 +979,7 @@ namespace BlackPearl {
         vkUnmapMemory(m_Device, stagingBufferMemory);
 
         stbi_image_free(pixels);
-        createImage(m_PhysicalDevice, m_Device, texWidth, texHeight, 
+        ImageUtils::createImage(m_PhysicalDevice, m_Device, texWidth, texHeight,
             VK_FORMAT_R8G8B8A8_SRGB,
             VK_IMAGE_TILING_OPTIMAL, 
             VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT,
@@ -987,7 +987,7 @@ namespace BlackPearl {
             m_TextureImage,
             m_TextureImageMemory);
 
-        transitionImageLayout(m_Device, 
+        ImageUtils::transitionImageLayout(m_Device,
             m_GraphicsQueue, 
             m_CommandPool, 
             m_TextureImage, 
@@ -997,7 +997,7 @@ namespace BlackPearl {
 
         copyBufferToImage(m_Device, m_CommandPool, m_GraphicsQueue, stagingBuffer, m_TextureImage, static_cast<uint32_t>(texWidth), static_cast<uint32_t>(texHeight));
 
-        transitionImageLayout(m_Device,
+        ImageUtils::transitionImageLayout(m_Device,
             m_GraphicsQueue,
             m_CommandPool,
             m_TextureImage,
@@ -1012,7 +1012,7 @@ namespace BlackPearl {
 
     void VkComputeShaderRender::CreateTextureImageView()
     {
-        m_TextureImageView = createImageView(m_Device, m_TextureImage, VK_FORMAT_R8G8B8A8_SRGB);
+        m_TextureImageView = ImageUtils::createImageView(m_Device, m_TextureImage, VK_FORMAT_R8G8B8A8_SRGB);
 
     }
 

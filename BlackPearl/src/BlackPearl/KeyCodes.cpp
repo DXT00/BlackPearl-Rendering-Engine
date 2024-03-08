@@ -140,7 +140,7 @@ namespace BlackPearl {
 	};
 	int KeyCodes::Get(int key)
 	{
-		if (DynamicRHI::g_RHIType == DynamicRHI::Type::OpenGL) {
+		if (DynamicRHI::g_RHIType == DynamicRHI::Type::OpenGL || DynamicRHI::g_RHIType == DynamicRHI::Type::Vulkan) {
 			if (s_OpenGLKeyMap.find(key) != s_OpenGLKeyMap.end()) {
 				return s_OpenGLKeyMap[key];
 

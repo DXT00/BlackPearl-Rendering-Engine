@@ -41,9 +41,11 @@
 #ifdef GE_API_VULKAN
 #include "BlackPearl/Renderer/MasterRenderer/VkBasicRender.h"
 #include "BlackPearl/Renderer/MasterRenderer/VkComputeShaderRender.h"
+#include "BlackPearl/Renderer/MasterRenderer/VkRayTracingRenderer.h"
 
 #endif
 #include "BlackPearl/Component/TransformComponent/Transform.h"
+#include "BlackPearl/Component/BVHNodeComponent/BVHNode.h"
 #include "BlackPearl/Component/MeshRendererComponent/MeshRenderer.h"
 #include "BlackPearl/Component/CameraComponent/Camera.h"
 #include "BlackPearl/Component/CameraComponent/PerspectiveCamera.h"

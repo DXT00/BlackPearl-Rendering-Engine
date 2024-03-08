@@ -1,61 +1,51 @@
 #pragma once
-namespace {
+#include "RefCountPtr.h"
+namespace BlackPearl {
 	/** An enumeration of the different RHI reference types. */
-	enum ERHIResourceType
+	enum RHIResourceType : uint8_t
 	{
-		RRT_None,
+        RT_None,
+        RT_Texture_SRV,            // vk - SampledImage VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE
+        RT_Texture_UAV,            // vk - StorageImage VK_DESCRIPTOR_TYPE_STORAGE_IMAGE
+        RT_TypedBuffer_SRV,        // vk - UniformTexelBuffer VK_DESCRIPTOR_TYPE_UNIFORM_TEXEL_BUFFER
+        RT_TypedBuffer_UAV,        // vk - StorageTexelBuffer VK_DESCRIPTOR_TYPE_STORAGE_TEXEL_BUFFER
+        RT_StructuredBuffer_SRV,   // vk - StorageBuffer VK_DESCRIPTOR_TYPE_STORAGE_BUFFER
+        RT_StructuredBuffer_UAV,   // vk - StorageBuffer VK_DESCRIPTOR_TYPE_STORAGE_BUFFER
+        RT_RawBuffer_SRV,          // vk - StorageBuffer VK_DESCRIPTOR_TYPE_STORAGE_BUFFER
+        RT_RawBuffer_UAV,          // vk - StorageBuffer VK_DESCRIPTOR_TYPE_STORAGE_BUFFER
+        RT_ConstantBuffer,         // vk - Uniform buffer VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER
+        RT_VolatileConstantBuffer, // vk - UniformBufferDynamic VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC
 
-		RRT_SamplerState,
-		RRT_RasterizerState,
-		RRT_DepthStencilState,
-		RRT_BlendState,
-		RRT_VertexDeclaration,
-		RRT_VertexShader,
-		RRT_MeshShader,
-		RRT_AmplificationShader,
-		RRT_PixelShader,
-		RRT_GeometryShader,
-		RRT_RayTracingShader,
-		RRT_ComputeShader,
-		RRT_GraphicsPipelineState,
-		RRT_ComputePipelineState,
-		RRT_RayTracingPipelineState,
-		RRT_BoundShaderState,
-		RRT_UniformBufferLayout,
-		RRT_UniformBuffer,
-		RRT_Buffer,
-		RRT_Texture,
-		RRT_Texture2D,
-		RRT_Texture2DArray,
-		RRT_Texture3D,
-		RRT_TextureCube,
-		RRT_TextureReference,
-		RRT_TimestampCalibrationQuery,
-		RRT_GPUFence,
-		RRT_RenderQuery,
-		RRT_RenderQueryPool,
-		RRT_ComputeFence,
-		RRT_Viewport,
-		RRT_UnorderedAccessView,
-		RRT_ShaderResourceView,
-		RRT_RayTracingAccelerationStructure,
-		RRT_StagingBuffer,
-		RRT_CustomPresent,
-		RRT_ShaderLibrary,
-		RRT_PipelineBinaryLibrary,
+        RT_Sampler,                // vk - Sampler VK_DESCRIPTOR_TYPE_SAMPLER
+        RT_RayTracingAccelStruct,   // vk -AccelerationStructureKHR VK_DESCRIPTOR_TYPE_ACCELERATION_STRUCTURE_KHR
+        RT_PushConstants,
 
-		RRT_Num
+        RT_Count
 	};
 
-	class RHIResource
-	{
-	public:
-		RHIResource(ERHIResourceType type) :
-			ResourceType(type) {};
-		~RHIResource() = default;
-		const ERHIResourceType ResourceType;
 
-	};
+    class IResource
+    {
+    protected:
+        IResource() = default;
+        virtual ~IResource() = default;
+
+    public:
+        virtual unsigned long AddRef() = 0;
+        virtual unsigned long Release() = 0;
+
+        // Returns a native object or interface, for example ID3D11Device*, or nullptr if the requested interface is unavailable.
+        // Does *not* AddRef the returned interface.
+        //virtual Object getNativeObject(ObjectType objectType) { (void)objectType; return nullptr; }
+
+        // Non-copyable and non-movable
+        IResource(const IResource&) = delete;
+        IResource(const IResource&&) = delete;
+        IResource& operator=(const IResource&) = delete;
+        IResource& operator=(const IResource&&) = delete;
+    };
+    typedef RefCountPtr<IResource> ResourceHandle;
+
 
 }
 

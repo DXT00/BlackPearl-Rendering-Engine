@@ -90,7 +90,9 @@ namespace BlackPearl {
 		bool GetIsReflectProbeCacheSet() const { return m_SetReflectProbeCaches; }
 		void SetIsReflectProbeCacheSet(bool set) { m_SetReflectProbeCaches = set; }
 
-
+		void SetSingleMaterial(std::shared_ptr<Material> material) {
+			m_Material = material;
+		}
 		std::shared_ptr<Material> GetSingleMaterial() const {
 			GE_ASSERT(m_Material != nullptr, "material is nullptr");
 			return m_Material;

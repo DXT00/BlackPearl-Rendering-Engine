@@ -11,9 +11,12 @@ namespace BlackPearl {
 	VertexBuffer::VertexBuffer(const std::vector<float>& vertices, bool Interleaved, bool divisor, uint32_t perInstance , uint32_t drawType)
 	{
 		m_VerticesFloat = (&vertices[0]);
+#ifdef GE_API_OPENGL
 		glGenBuffers(1, &m_RendererID);
 		glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);
 		glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), &vertices[0], drawType);
+#endif
+
 		m_VertexSize = vertices.size() * sizeof(float);
 		m_Interleaved = Interleaved;
 		if (divisor) {
@@ -24,9 +27,12 @@ namespace BlackPearl {
 	VertexBuffer::VertexBuffer(const float* vertices, uint32_t size, bool Interleaved , bool divisor, uint32_t perInstance, uint32_t drawType)
 	{
 		m_VerticesFloat = vertices;
+		//TODO::  π”√RHIBuffer
+#ifdef GE_API_OPENGL
 		glGenBuffers(1, &m_RendererID);
 		glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);
 		glBufferData(GL_ARRAY_BUFFER, size, vertices, drawType);
+#endif
 		m_VertexSize = size;
 		m_Interleaved = Interleaved;
 		if (divisor) {
@@ -37,9 +43,11 @@ namespace BlackPearl {
 	VertexBuffer::VertexBuffer(const unsigned int* vertices, uint32_t size, bool Interleaved, bool divisor, uint32_t perInstance, uint32_t drawType)
 	{
 		m_VerticesUint = vertices;
+#ifdef GE_API_OPENGL
 		glGenBuffers(1, &m_RendererID);
 		glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);
 		glBufferData(GL_ARRAY_BUFFER, size, vertices, drawType);
+#endif
 		m_VertexSize = size;
 		m_Interleaved = Interleaved;
 		if (divisor) {
@@ -51,9 +59,11 @@ namespace BlackPearl {
 	VertexBuffer::VertexBuffer(void* vertices, uint32_t size, bool Interleaved, bool divisor, uint32_t perInstance, uint32_t drawType)
 	{
 		m_VerticesVoidData = vertices;
+#ifdef GE_API_OPENGL
 		glGenBuffers(1, &m_RendererID);
 		glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);
 		glBufferData(GL_ARRAY_BUFFER, size, vertices, drawType);
+#endif
 		m_VertexSize = size;
 		m_Interleaved = Interleaved;
 		if (divisor) {
@@ -70,56 +80,74 @@ namespace BlackPearl {
 	}
 	void VertexBuffer::Bind() {
 
+#ifdef GE_API_OPENGL
 		glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);
+#endif
 	}
 
 	void VertexBuffer::UpdateData(void* vertices, uint32_t size, uint32_t drawType)
 	{
 		m_VerticesVoidData = vertices;
+#ifdef GE_API_OPENGL
 		glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);
 		glBufferData(GL_ARRAY_BUFFER, size, vertices, drawType);
+#endif
 		m_VertexSize = size;
 	}
 
 	void VertexBuffer::UnBind() {
-
+#ifdef GE_API_OPENGL
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
+#endif
 
 	}
 	void VertexBuffer::CleanUp()
 	{
+#ifdef GE_API_OPENGL
 		glDeleteBuffers(1, &m_RendererID);
+#endif
 	}
 	//------------------------IndexBuffer-----------------//
 	IndexBuffer::IndexBuffer(const std::vector<unsigned int>& indices, uint32_t drawType)
 	{
+#ifdef GE_API_OPENGL
 		glGenBuffers(1, &m_RendererID);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_RendererID);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), &indices[0], drawType);
+#endif
 		m_IndiciesSize = indices.size() * sizeof(unsigned int);
 		m_Indicies = indices.data();
 	}
 	IndexBuffer::IndexBuffer(unsigned int * indices, unsigned int size, uint32_t drawType)
 	{
+#ifdef GE_API_OPENGL
 		glGenBuffers(1, &m_RendererID);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_RendererID);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, size, indices, drawType);
+#endif
 		m_IndiciesSize = size;
 		m_Indicies = indices;
 	}
 	IndexBuffer::~IndexBuffer()
 	{
+#ifdef GE_API_OPENGL
 		glDeleteBuffers(1, &m_RendererID);
-
+#endif
 	}
 	void IndexBuffer::Bind()
 	{
+#ifdef GE_API_OPENGL
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_RendererID);
+#endif
+
 	}
 
 	void IndexBuffer::UnBind()
 	{
+#ifdef GE_API_OPENGL
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+#endif
+
 	}
 	
 	//---------------------VertexBufferLayout----------------//

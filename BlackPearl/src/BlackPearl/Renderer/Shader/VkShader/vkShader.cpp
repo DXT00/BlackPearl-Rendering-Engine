@@ -10,6 +10,7 @@
 #include "BlackPearl/Component/LightComponent/LightSources.h"
 #include "BlackPearl/Component/TransformComponent/Transform.h"
 #include "BlackPearl/Core.h"
+#include "VkShader.h"
 namespace BlackPearl {
 
 	static GLenum ShaderTypeFromString(const std::string& type) {
@@ -95,34 +96,6 @@ namespace BlackPearl {
 
 		GE_ASSERT((!source.empty()), "shader source code is empty");
 		std::unordered_map<unsigned int, std::string> shaderSources;
-		//const char* typeToken = "#type";
-		//size_t typeTockenLength = strlen(typeToken);
-		//size_t pos = source.find(typeToken, 0);//find找不到会返回npos
-		//while (pos != std::string::npos) {
-		//	size_t eol = source.find_first_of("\r\n", pos);
-		//	GE_ASSERT(eol != std::string::npos, "Syntax error");
-		//	size_t begin = pos + typeTockenLength + 1;
-		//	std::string type = source.substr(begin, eol - begin);
-		//	GE_ASSERT(ShaderTypeFromString(type), "Invalid shader type specified");
-
-		//	size_t nextLinePos = source.find_first_not_of("\r\n", eol);
-		//	pos = source.find(typeToken, nextLinePos);
-		//	shaderSources[ShaderTypeFromString(type)] = source.substr(nextLinePos,
-		//		pos - (nextLinePos == std::string::npos ? source.size() - 1 : nextLinePos));//string::npos表示source的末尾位置
-
-		//}
-		////add common struct source
-		//if (shaderSources.find(GL_FRAGMENT_SHADER) != shaderSources.end()) {
-		//	size_t pos = shaderSources[GL_FRAGMENT_SHADER].find("#version", 0);//find找不到会返回npos
-		//	GE_ASSERT(pos != std::string::npos, "Syntax error");
-
-		//	size_t eol = shaderSources[GL_FRAGMENT_SHADER].find_first_of("\r\n", pos);
-		//	GE_ASSERT(eol != std::string::npos, "Syntax error");
-
-		//	std::string front = shaderSources[GL_FRAGMENT_SHADER].substr(pos, eol - pos + 1);
-		//	std::string res = shaderSources[GL_FRAGMENT_SHADER].substr(eol);
-		//	shaderSources[GL_FRAGMENT_SHADER] = front + commonSource + res;
-		//}
 		return shaderSources;
 
 	}
@@ -310,6 +283,7 @@ namespace BlackPearl {
 
 	//	glUniform2iv(location, 1, &value[0]);
 	//	GE_ERROR_JUDGE();
+
 
 	//}
 }

@@ -4,6 +4,8 @@
 
 namespace BlackPearl {
 
+
+
 	uint32_t findMemoryType(VkPhysicalDevice physicalDevice, uint32_t typeFilter, VkMemoryPropertyFlags properties)
 	{
 		VkPhysicalDeviceMemoryProperties memProperties;
@@ -50,7 +52,7 @@ namespace BlackPearl {
 		vkBindBufferMemory(device, buffer, bufferMemory, 0);
 	}
 
-	void copyBuffer(VkQueue graphicsQueue, VkDevice device, VkCommandPool commandPool,VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size)
+	void copyBuffer(VkQueue graphicsQueue, VkDevice device, VkCommandPool commandPool, VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size)
 	{
 		VkCommandBufferAllocateInfo allocInfo{};
 		allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
@@ -110,4 +112,5 @@ namespace BlackPearl {
 		endCommandBuffer(device,commandPool ,commandBuffer, graphicsQueue);
 	}
 
+	
 }

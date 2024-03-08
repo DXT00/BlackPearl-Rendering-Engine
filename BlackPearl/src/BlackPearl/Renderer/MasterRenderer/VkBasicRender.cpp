@@ -171,6 +171,12 @@ namespace BlackPearl {
         ubo.proj = glm::perspective(glm::radians(45.0f), m_SwapChainExtent.width / (float)m_SwapChainExtent.height, 0.1f, 10.0f);
         ubo.proj[1][1] *= -1;
 
+
+        ubo.model = glm::mat4(1.0f);// glm::rotate(glm::mat4(1.0f), time * glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+        ubo.view = glm::mat4(1.0f);// glm::lookAt(glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+        ubo.proj = glm::mat4(1.0f);//glm::perspective(glm::radians(45.0f), m_SwapChainExtent.width / (float)m_SwapChainExtent.height, 0.1f, 10.0f);
+        ubo.proj[1][1] *= -1;
+
         /*
         memcpy(uniformBuffersMapped[currentImage], &ubo, sizeof(ubo));
 
@@ -639,7 +645,7 @@ namespace BlackPearl {
         rasterizer.polygonMode = VK_POLYGON_MODE_FILL;
         rasterizer.lineWidth = 1.0f;
         rasterizer.cullMode = VK_CULL_MODE_BACK_BIT;
-        rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
+        rasterizer.frontFace = VK_FRONT_FACE_CLOCKWISE;// VK_FRONT_FACE_COUNTER_CLOCKWISE;
         rasterizer.depthBiasEnable = VK_FALSE;
 
         VkPipelineMultisampleStateCreateInfo multisampling{};
@@ -875,7 +881,7 @@ namespace BlackPearl {
         vkUnmapMemory(m_Device, stagingBufferMemory);
 
         stbi_image_free(pixels);
-        createImage(m_PhysicalDevice, m_Device, texWidth, texHeight, 
+        ImageUtils::createImage(m_PhysicalDevice, m_Device, texWidth, texHeight,
             VK_FORMAT_R8G8B8A8_SRGB,
             VK_IMAGE_TILING_OPTIMAL, 
             VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT,
@@ -883,7 +889,7 @@ namespace BlackPearl {
             m_TextureImage,
             m_TextureImageMemory);
 
-        transitionImageLayout(m_Device, 
+        ImageUtils::transitionImageLayout(m_Device,
             m_GraphicsQueue, 
             m_CommandPool, 
             m_TextureImage, 
@@ -893,7 +899,7 @@ namespace BlackPearl {
 
         copyBufferToImage(m_Device, m_CommandPool, m_GraphicsQueue, stagingBuffer, m_TextureImage, static_cast<uint32_t>(texWidth), static_cast<uint32_t>(texHeight));
 
-        transitionImageLayout(m_Device,
+        ImageUtils::transitionImageLayout(m_Device,
             m_GraphicsQueue,
             m_CommandPool,
             m_TextureImage,
@@ -908,7 +914,7 @@ namespace BlackPearl {
 
     void VkBasicRender::CreateTextureImageView()
     {
-        m_TextureImageView = createImageView(m_Device, m_TextureImage, VK_FORMAT_R8G8B8A8_SRGB);
+        m_TextureImageView = ImageUtils::createImageView(m_Device, m_TextureImage, VK_FORMAT_R8G8B8A8_SRGB);
 
     }
 
@@ -921,10 +927,10 @@ namespace BlackPearl {
         samplerInfo.addressModeU = VK_SAMPLER_ADDRESS_MODE_REPEAT;
         samplerInfo.addressModeV = VK_SAMPLER_ADDRESS_MODE_REPEAT;
         samplerInfo.addressModeW = VK_SAMPLER_ADDRESS_MODE_REPEAT;
-        samplerInfo.anisotropyEnable = VK_TRUE;
+        samplerInfo.anisotropyEnable = VK_FALSE;// VK_TRUE;
         VkPhysicalDeviceProperties properties{};
-        vkGetPhysicalDeviceProperties(m_PhysicalDevice, &properties);
-        samplerInfo.maxAnisotropy = properties.limits.maxSamplerAnisotropy;
+        //vkGetPhysicalDeviceProperties(m_PhysicalDevice, &properties);
+        //samplerInfo.maxAnisotropy = properties.limits.maxSamplerAnisotropy;
         samplerInfo.unnormalizedCoordinates = VK_FALSE;
         samplerInfo.compareEnable = VK_FALSE;
         samplerInfo.compareOp = VK_COMPARE_OP_ALWAYS;

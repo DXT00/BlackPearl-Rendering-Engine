@@ -7,6 +7,9 @@
     <Filter Include="assets\shaders">
       <UniqueIdentifier>{51CD2FD9-3D9B-23DF-262F-9405129CFF43}</UniqueIdentifier>
     </Filter>
+    <Filter Include="assets\shaders\raytracing">
+      <UniqueIdentifier>{D48EF7C5-4051-2B50-8901-BADCF502042E}</UniqueIdentifier>
+    </Filter>
     <Filter Include="assets\shaders\spv">
       <UniqueIdentifier>{B9CB235C-A5AF-E4B1-0E10-DF04FA12CF33}</UniqueIdentifier>
     </Filter>
@@ -18,10 +21,13 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\Layers\VkTestLayer.h">
+    <ClInclude Include="src\Layers\VkGpuParticlesLayer.h">
       <Filter>src\Layers</Filter>
     </ClInclude>
-    <ClInclude Include="src\Layers\VkGpuParticlesLayer.h">
+    <ClInclude Include="src\Layers\VkRayTracingLayer.h">
+      <Filter>src\Layers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Layers\VkTestLayer.h">
       <Filter>src\Layers</Filter>
     </ClInclude>
   </ItemGroup>
@@ -31,6 +37,36 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <None Include="assets\shaders\particle.frag">
+      <Filter>assets\shaders</Filter>
+    </None>
+    <None Include="assets\shaders\particle.vert">
+      <Filter>assets\shaders</Filter>
+    </None>
+    <None Include="assets\shaders\raytracing\postProcess.frag">
+      <Filter>assets\shaders\raytracing</Filter>
+    </None>
+    <None Include="assets\shaders\raytracing\postProcess.vert">
+      <Filter>assets\shaders\raytracing</Filter>
+    </None>
+    <None Include="assets\shaders\spv\particle_comp.spv">
+      <Filter>assets\shaders\spv</Filter>
+    </None>
+    <None Include="assets\shaders\spv\particle_frag.spv">
+      <Filter>assets\shaders\spv</Filter>
+    </None>
+    <None Include="assets\shaders\spv\particle_vert.spv">
+      <Filter>assets\shaders\spv</Filter>
+    </None>
+    <None Include="assets\shaders\spv\postProcess_frag.spv">
+      <Filter>assets\shaders\spv</Filter>
+    </None>
+    <None Include="assets\shaders\spv\postProcess_vert.spv">
+      <Filter>assets\shaders\spv</Filter>
+    </None>
+    <None Include="assets\shaders\spv\rayTracing_comp.spv">
+      <Filter>assets\shaders\spv</Filter>
+    </None>
     <None Include="assets\shaders\spv\vkBasic_frag.spv">
       <Filter>assets\shaders\spv</Filter>
     </None>
@@ -43,23 +79,11 @@
     <None Include="assets\shaders\vkBasic.vert">
       <Filter>assets\shaders</Filter>
     </None>
-    <None Include="assets\shaders\particle.comp">
-      <Filter>assets\shaders</Filter>
+    <None Include="assets\shaders\raytracing\rayTracing.comp">
+      <Filter>assets\shaders\raytracing</Filter>
     </None>
-    <None Include="assets\shaders\particle.frag">
-      <Filter>assets\shaders</Filter>
-    </None>
-    <None Include="assets\shaders\particle.vert">
-      <Filter>assets\shaders</Filter>
-    </None>
-    <None Include="assets\shaders\spv\particle_comp.spv">
-      <Filter>assets\shaders\spv</Filter>
-    </None>
-    <None Include="assets\shaders\spv\particle_frag.spv">
-      <Filter>assets\shaders\spv</Filter>
-    </None>
-    <None Include="assets\shaders\spv\particle_vert.spv">
-      <Filter>assets\shaders\spv</Filter>
+    <None Include="assets\shaders\raytracing\definitions.glsl">
+      <Filter>assets\shaders\raytracing</Filter>
     </None>
   </ItemGroup>
 </Project>

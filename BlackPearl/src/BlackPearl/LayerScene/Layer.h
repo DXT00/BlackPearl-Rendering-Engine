@@ -158,16 +158,27 @@ namespace BlackPearl {
 		{
 
 			if (Input::IsKeyPressed(KeyCodes::Get(BP_KEY_W))) {
-				m_CameraPosition += m_MainCamera->Front() * m_MainCamera->GetMoveSpeed() * ts;
+				if (DynamicRHI::g_RHIType == DynamicRHI::Type::Vulkan) {
+					m_CameraPosition -= m_MainCamera->Front() * m_MainCamera->GetMoveSpeed() * ts;
+				}
+				else {
+					m_CameraPosition += m_MainCamera->Front() * m_MainCamera->GetMoveSpeed() * ts;
+				}
 			}
 			else if (Input::IsKeyPressed(KeyCodes::Get(BP_KEY_S))) {
-				m_CameraPosition -= m_MainCamera->Front() * m_MainCamera->GetMoveSpeed() * ts;
+				if (DynamicRHI::g_RHIType == DynamicRHI::Type::Vulkan) {
+					m_CameraPosition += m_MainCamera->Front() * m_MainCamera->GetMoveSpeed() * ts;
+				}
+				else {
+					m_CameraPosition -= m_MainCamera->Front() * m_MainCamera->GetMoveSpeed() * ts;
+				}
 			}
 			if (Input::IsKeyPressed(KeyCodes::Get(BP_KEY_A))) {
 				if (DynamicRHI::g_RHIType == DynamicRHI::Type::D3D12) {
 					m_CameraPosition -= (-m_MainCamera->Right()) * m_MainCamera->GetMoveSpeed() * ts;
 				}
-				else if (DynamicRHI::g_RHIType == DynamicRHI::Type::OpenGL) {
+				else if (DynamicRHI::g_RHIType == DynamicRHI::Type::OpenGL ||
+					DynamicRHI::g_RHIType == DynamicRHI::Type::Vulkan) {
 					m_CameraPosition -= m_MainCamera->Right() * m_MainCamera->GetMoveSpeed() * ts;
 				}
 			}
@@ -175,7 +186,8 @@ namespace BlackPearl {
 				if (DynamicRHI::g_RHIType == DynamicRHI::Type::D3D12) {
 					m_CameraPosition += (-m_MainCamera->Right()) * m_MainCamera->GetMoveSpeed() * ts;
 				}
-				else if (DynamicRHI::g_RHIType == DynamicRHI::Type::OpenGL) {
+				else if (DynamicRHI::g_RHIType == DynamicRHI::Type::OpenGL ||
+					DynamicRHI::g_RHIType == DynamicRHI::Type::Vulkan) {
 					m_CameraPosition += m_MainCamera->Right() * m_MainCamera->GetMoveSpeed() * ts;
 				}
 			}
@@ -207,14 +219,20 @@ namespace BlackPearl {
 					m_CameraRotation.Pitch = 89.0f;
 				if (m_CameraRotation.Pitch < -89.0f)
 					m_CameraRotation.Pitch = -89.0f;
-				m_MainCamera->SetRotation({ m_CameraRotation.Pitch,m_CameraRotation.Yaw,0.0f });
+
+				if (m_CameraRotation.Yaw > 180.0f)
+					m_CameraRotation.Yaw = 180.0f;
+				if (m_CameraRotation.Yaw < -180.0f)
+					m_CameraRotation.Yaw = -180.0f;
+
+				m_MainCamera->SetRotation({ m_CameraRotation.Pitch, m_CameraRotation.Yaw, 0.0f });
 			}
 			else {
 				m_LastMouseX = posx;//lastMouse时刻记录当前坐标位置，防止再次点击右键时，发生抖动！
 				m_LastMouseY = posy;
 			}
 
-
+			GE_CORE_INFO("Cam Pitch = " + std::to_string(m_CameraRotation.Pitch) + "Cam Yaw =" + std::to_string(m_CameraRotation.Yaw));
 			m_MainCamera->SetPosition(m_CameraPosition);
 		}
 

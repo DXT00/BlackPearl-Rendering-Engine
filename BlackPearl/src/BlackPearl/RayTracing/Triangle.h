@@ -13,6 +13,9 @@ namespace BlackPearl {
 		~Triangle();
 		std::vector<Vertex> GetPoints() const;
 		AABB GetBoundingBox() const { return m_Box; }
+		// ÔÚmeshÖÐµÄid
+		int Id = -1;
+
 	private:
 		void BuildBox();
 		std::vector<Vertex> m_Points;

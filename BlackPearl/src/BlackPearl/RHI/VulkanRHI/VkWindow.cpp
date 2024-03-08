@@ -11,9 +11,9 @@ namespace BlackPearl {
 		if (!g_GLFWInitialized) {
 			int success = glfwInit();
 			GE_ASSERT(success, "Could not intialize GLFW!");
-			glfwSetErrorCallback([](int error, const char* description) {
+	/*		glfwSetErrorCallback([](int error, const char* description) {
 				GE_CORE_ERROR("GLFW Error ({0}): {1}", error, description);
-				});
+				});*/
 			g_GLFWInitialized = true;
 		}
 		glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);

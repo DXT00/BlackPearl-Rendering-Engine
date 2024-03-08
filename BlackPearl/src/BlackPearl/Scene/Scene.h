@@ -18,7 +18,7 @@ namespace BlackPearl {
 		~Scene();
 		void AddCamera();
 		void GetCamera();
-		void AddLights();
+		void AddLights(Object* obj);
 		void GetLights();
 		void AddObject(Object* obj);
 		void AddNode(Node* node);

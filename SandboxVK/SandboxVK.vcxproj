@@ -138,18 +138,25 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="src\Layers\VkGpuParticlesLayer.h" />
+    <ClInclude Include="src\Layers\VkRayTracingLayer.h" />
     <ClInclude Include="src\Layers\VkTestLayer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\SandBoxVK.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="assets\shaders\particle.comp" />
     <None Include="assets\shaders\particle.frag" />
     <None Include="assets\shaders\particle.vert" />
+    <None Include="assets\shaders\raytracing\definitions.glsl" />
+    <None Include="assets\shaders\raytracing\postProcess.frag" />
+    <None Include="assets\shaders\raytracing\postProcess.vert" />
+    <None Include="assets\shaders\raytracing\rayTracing.comp" />
     <None Include="assets\shaders\spv\particle_comp.spv" />
     <None Include="assets\shaders\spv\particle_frag.spv" />
     <None Include="assets\shaders\spv\particle_vert.spv" />
+    <None Include="assets\shaders\spv\postProcess_frag.spv" />
+    <None Include="assets\shaders\spv\postProcess_vert.spv" />
+    <None Include="assets\shaders\spv\rayTracing_comp.spv" />
     <None Include="assets\shaders\spv\vkBasic_frag.spv" />
     <None Include="assets\shaders\spv\vkBasic_vert.spv" />
     <None Include="assets\shaders\vkBasic.frag" />

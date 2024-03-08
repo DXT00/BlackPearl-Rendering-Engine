@@ -24,7 +24,7 @@ namespace BlackPearl {
 			float Pitch;
 			ViewMatrixProps()
 				: WorldUp(glm::vec3(0.0f, 1.0f, 0.0f)), Yaw(-90.0f), Pitch(0.0f) {
-				if (DynamicRHI::g_RHIType == DynamicRHI::Type::OpenGL) {
+				if (DynamicRHI::g_RHIType == DynamicRHI::Type::OpenGL || DynamicRHI::g_RHIType == DynamicRHI::Type::Vulkan) {
 					Front = glm::vec3(0.0f, 0.0f, -1.0f);
 				}
 				else if (DynamicRHI::g_RHIType == DynamicRHI::Type::D3D12) {

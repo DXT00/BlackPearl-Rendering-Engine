@@ -18,7 +18,7 @@ namespace BlackPearl {
 	void Scene::GetCamera()
 	{
 	}
-	void Scene::AddLights()
+	void Scene::AddLights(Object* obj)
 	{
 	}
 	void Scene::GetLights()
