@@ -1,5 +1,5 @@
 #pragma once
-#ifdef GE_API_VULKAN
+//#ifdef GE_API_VULKAN
 #include <vulkan/vulkan.h>
 namespace BlackPearl {
 
@@ -45,4 +45,4 @@ namespace BlackPearl {
 	
 }
 
-#endif
+//#endif

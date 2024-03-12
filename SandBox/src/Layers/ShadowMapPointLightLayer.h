@@ -42,7 +42,7 @@ public:
 
 		BlackPearl::Object* light1 = CreateLight(BlackPearl::LightType::PointLight);
 		BlackPearl::Object* light2 = CreateLight(BlackPearl::LightType::PointLight);
-		light2->GetComponent<BlackPearl::Transform>()->SetPosition({ 5.0f,0.0f,0.0f });
+		light2->GetComponent<BlackPearl::Transform>()->SetPosition({ 0.0f,0.0f,-2.4f });
 		light2->GetComponent<BlackPearl::PointLight>()->SetDiffuse({ 1.0f,0.0f,0.0f });
 
 
@@ -52,18 +52,18 @@ public:
 		//Room->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(RoomTexture);
 		//Room->GetComponent<BlackPearl::MeshRenderer>()->SetShaders(m_SimpleDepthShader);
 		Room->GetComponent<BlackPearl::MeshRenderer>()->SetEnableCullFace(false);
-		Room->GetComponent<BlackPearl::Transform>()->SetScale({ 10.0f,0.5f,10.0f });
+		Room->GetComponent<BlackPearl::Transform>()->SetScale({ 30.0f,0.5f,30.0f });
 		Room->GetComponent<BlackPearl::Transform>()->SetPosition({0.0f,-7.0f,0.0f });
 
 		m_BackGroundObjsList.push_back(Room);
 		Room->GetComponent<BlackPearl::MeshRenderer>()->SetIsBackGroundObjects(true);
 
-		m_AnimatedModelBoy = CreateModel("assets/models-animation/people/character Texture.dae", "assets/shaders/animatedModel/animatedModel.glsl", true, "Boy");
-		m_AnimatedModelBoy->GetComponent<BlackPearl::Transform>()->SetScale({ 0.2f,0.2f,0.2f });
-		m_AnimatedModelBoy->GetComponent<BlackPearl::Transform>()->SetRotation({ -90.0f,0.0f,0.0f });
-		m_AnimatedModelBoy->GetComponent<BlackPearl::Transform>()->SetPosition({ 3.0f,-1.6f,0.0f });
-		
-		m_DynamicObjsList.push_back(m_AnimatedModelBoy);
+		//m_AnimatedModelBoy = CreateModel("assets/models-animation/people/character Texture.dae", "assets/shaders/animatedModel/animatedModel.glsl", true, "Boy");
+		//m_AnimatedModelBoy->GetComponent<BlackPearl::Transform>()->SetScale({ 0.2f,0.2f,0.2f });
+		//m_AnimatedModelBoy->GetComponent<BlackPearl::Transform>()->SetRotation({ -90.0f,0.0f,0.0f });
+		//m_AnimatedModelBoy->GetComponent<BlackPearl::Transform>()->SetPosition({ 3.0f,-1.6f,0.0f });
+		//
+		//m_DynamicObjsList.push_back(m_AnimatedModelBoy);
 		m_MainCamera->SetPosition({ 0.0,0.0,50.0 });
 		m_CameraPosition = m_MainCamera->GetPosition();//cameraComponent->GetPosition();
 		m_MainCamera->SetMoveSpeed(20.0);
@@ -77,8 +77,8 @@ public:
 		
 
 		Deer = CreateModel("assets/models/deer/Deer.obj", "assets/shaders/IronMan.glsl",false, "Deer");
-		Deer->GetComponent<BlackPearl::Transform>()->SetInitScale(glm::vec3(0.003));
-		Deer->GetComponent<BlackPearl::Transform>()->SetInitPosition({ -0.5f,0.0f,2.5f });
+		Deer->GetComponent<BlackPearl::Transform>()->SetInitScale(glm::vec3(0.01));
+		Deer->GetComponent<BlackPearl::Transform>()->SetInitPosition({ -0.5f,-3.8f,4.5f });
 		Deer->GetComponent<BlackPearl::Transform>()->SetInitRotation({ 0.0f,68.0f,0.0f });
 
 		m_BackGroundObjsList.push_back(Deer);

@@ -13,6 +13,7 @@
 #include <stdlib.h>
 #include "BlackPearl/Renderer/MasterRenderer/IBLRenderer.h"
 #include "BlackPearl/Renderer/MasterRenderer/IBLProbesRenderer.h"
+#include "BlackPearl/Renderer/MasterRenderer/ShadowMapPointLightRenderer.h"
 #include "BlackPearl/Renderer/MasterRenderer/GBufferRenderer.h"
 #include "BlackPearl/Renderer/MasterRenderer/VoxelConeTracingRenderer.h"
 #include "BlackPearl/Renderer/MasterRenderer/VoxelConeTracingDeferredRenderer.h"
@@ -1600,16 +1601,25 @@ namespace BlackPearl {
 		auto props = pointLight->GetLightProps();
 		static  int attenuation = (int)pointLight->GetAttenuation().maxDistance;
 		float intensity = pointLight->GetLightProps().intensity;
+		float area = pointLight->GetLightProps().area;
+		float bias = pointLight->GetLightProps().shadowBias;
+
 		ImGui::ColorEdit3("ambient Color", glm::value_ptr(props.ambient));
 		ImGui::ColorEdit3("diffuse Color", glm::value_ptr(props.diffuse));
 		ImGui::ColorEdit3("specular Color", glm::value_ptr(props.specular));
 		ImGui::ColorEdit3("emission Color", glm::value_ptr(props.emission));
 		ImGui::DragInt("attenuation", &attenuation, 0.5f, 7, 3250);
 		ImGui::DragFloat("intensity", &intensity, 0.1f, 0.1, 100);
+		ImGui::DragFloat("lightSize", &area, 0.1f, 0.1, 100);
+		ImGui::DragFloat("shadowBias", &bias, 0.001f, 0.001, 100);
+		ImGui::DragInt("pcfSamplesCnt", &ShadowMapPointLightRenderer::s_PCFSamplesCnt, 1, 2, 60);
 
 		pointLight->SetAttenuation(attenuation);
+		Light::Props pros = { props.ambient ,props.diffuse,props.specular,props.emission,intensity };
+		pros.area = area;
+		pros.shadowBias = bias;
 
-		pointLight->UpdateMesh({ props.ambient ,props.diffuse,props.specular,props.emission,intensity });
+		pointLight->UpdateMesh(pros);
 
 	}
 

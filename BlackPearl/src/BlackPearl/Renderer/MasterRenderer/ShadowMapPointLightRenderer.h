@@ -10,6 +10,11 @@ namespace BlackPearl {
 	class ShadowMapPointLightRenderer:public BasicRenderer
 	{
 	public:
+		enum ShadowType {
+			PCF,
+			PCSS,
+			VSSM //Variance soft shadow mapping
+		};
 		ShadowMapPointLightRenderer();
 		~ShadowMapPointLightRenderer();
 		void RenderCubeMap(const std::vector<Object*>& staticObjs , const std::vector<Object*>& dynamicObjs, float timeInSecond, LightSources* lightSources );
@@ -21,6 +26,8 @@ namespace BlackPearl {
 		static const float s_NearPlane;
 		static float s_FarPlane;
 		static float s_FOV;
+		static int s_PCFSamplesCnt;
+
 		static bool  s_UpdateShadowMap;
 	private:
 
@@ -42,6 +49,8 @@ namespace BlackPearl {
 		float m_ShadowRaduis = Configuration::ShadowMapPointLightRadius;
 		std::vector<glm::mat4> m_LightProjectionViewMatries;
 		//glm::vec3 m_LightPos;
+
+		ShadowType m_ShadowType;
 	};
 }
 

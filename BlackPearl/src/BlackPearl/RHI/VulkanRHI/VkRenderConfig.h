@@ -1,6 +1,6 @@
 #pragma once
 #include<vector>
-#ifdef GE_API_VULKAN
+//#ifdef GE_API_VULKAN
 #include "vulkan/vulkan_core.h"
 
 const int MAX_FRAMES_IN_FLIGHT = 2;
@@ -23,4 +23,4 @@ const bool enableValidationLayers = true;
 std::vector<const char*> getRequiredExtensions();
 VkResult CreateDebugUtilsMessengerEXT(VkInstance instance, const VkDebugUtilsMessengerCreateInfoEXT* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkDebugUtilsMessengerEXT* pDebugMessenger);
 bool checkValidationLayerSupport();
-#endif
+//#endif

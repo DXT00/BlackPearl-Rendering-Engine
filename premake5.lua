@@ -1,7 +1,7 @@
 newoption {
 	trigger     = "RenderAPI",
 	description = "Choose a particular 3D API for rendering",
-	default     = "vulkan",
+	default     = "opengl",
 	category    = "Build Options",
 	allowed = {
 	   { "opengl",    "OpenGL" },

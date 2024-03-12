@@ -20,9 +20,11 @@ namespace BlackPearl {
 			glm::vec3 specular;
 			glm::vec3 emission;
 			float intensity;
-			Props() : ambient({ 0.0f,0.0f,0.0f }), diffuse({ 1.0f,1.0f,1.0f }), specular({ 0.0f,0.0f,0.0f }), emission({0.0f,0.0f,0.0f}),intensity(1.0f) {}
-			Props(glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular, glm::vec3 emission,float intensity)
-				: ambient(ambient), diffuse(diffuse), specular(specular),emission(emission),intensity(intensity) {}
+			float area;
+			float shadowBias;
+			Props() : ambient({ 0.0f,0.0f,0.0f }), diffuse({ 1.0f,1.0f,1.0f }), specular({ 0.0f,0.0f,0.0f }), emission({0.0f,0.0f,0.0f}),intensity(1.0f), area(1.0f), shadowBias(0.08) {}
+			Props(glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular, glm::vec3 emission,float intensity, float area = 1.0, float shadowBias = 0.08 )
+				: ambient(ambient), diffuse(diffuse), specular(specular),emission(emission),intensity(intensity), area(area), shadowBias(shadowBias){}
 			bool operator==(Props& rhs) const {
 				return (ambient == rhs.ambient &&
 					diffuse == rhs.diffuse &&
@@ -58,7 +60,8 @@ namespace BlackPearl {
 			m_LightProp.specular = props.specular;
 			m_LightProp.emission = props.emission;
 			m_LightProp.intensity = props.intensity;
-
+			m_LightProp.area = props.area;
+			m_LightProp.shadowBias = props.shadowBias;
 		}
 	
 	protected:

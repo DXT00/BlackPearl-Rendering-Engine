@@ -240,8 +240,8 @@ namespace BlackPearl {
 
 				if (m_CameraRotation.Yaw > 0.0f)
 					m_CameraRotation.Yaw = 0.0f;
-				if (m_CameraRotation.Yaw < -180.0f)
-					m_CameraRotation.Yaw = -180.0f;
+				if (m_CameraRotation.Yaw < -360.0f)
+					m_CameraRotation.Yaw = -360.0f;
 
 				m_MainCamera->SetRotation({ m_CameraRotation.Pitch, m_CameraRotation.Yaw, 0.0f });
 			}
