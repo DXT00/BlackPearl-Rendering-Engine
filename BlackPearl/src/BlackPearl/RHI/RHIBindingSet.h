@@ -229,6 +229,17 @@ namespace BlackPearl {
             result.unused = 0;
             return result;
         }
+        static BindingSetItem InputAttachment(uint32_t slot, ITexture* texture)
+        {
+            BindingSetItem result;
+            result.slot = slot;
+            result.type = RHIResourceType::RT_Texture_InputAttachment;
+            result.resourceHandle = texture;
+            result.format = Format::UNKNOWN;
+            result.dimension = TextureDimension::Texture2D;
+            result.unused = 0;
+            return result;
+        }
 
         BindingSetItem& setFormat(Format value) { format = value; return *this; }
         BindingSetItem& setDimension(TextureDimension value) { dimension = value; return *this; }

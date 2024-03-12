@@ -31,7 +31,10 @@ public:
 		
 		GetLayerManager()->PushLayer(layer);
 	}
-	virtual ~SandBoxVK() = default;
+	virtual ~SandBoxVK() {
+
+		int a;
+	}
 
 };
 

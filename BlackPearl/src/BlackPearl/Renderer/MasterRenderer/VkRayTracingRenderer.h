@@ -35,20 +35,12 @@ namespace BlackPearl {
 		void CreateLogicalDevice();
 		void CreateSwapChain();
 		void CreateImageViews();
+		void CreateDepthImageViews();
 
-
+		void CreateDescriptorPool();
 		void CreateRenderPass();
 
-		//graphic shader pipeline -->postprocess
-		void CreateVertexBuffer();
-		void CreateIndexBuffer();
-		void CreateGraphicsPipeline();
-		void CreateDescriptorPool();
-		void CreateDescriptorSetLayout();
-		void CreateDescriptorSets();
-		void CreateTextureSampler();
-
-		//compute shader pipeline
+		//compute shader pipeline -->rayTrace
 		void CreateComputePipeline();
 		void CreateComputeDescriptorSets();
 		void CreateShaderStorageBuffers();
@@ -57,6 +49,22 @@ namespace BlackPearl {
 		void CreateComputeTextureImage();
 		void CreateComputeTextureImageView();
 
+		//graphic shader pipeline -->denoise
+		void CreateVertexBuffer();
+		void CreateIndexBuffer();
+		void CreateGraphicsPipeline();
+		void CreateDescriptorSetLayout();
+		void CreateDescriptorSets();
+		void CreateTextureSampler();
+
+		//graphic shader pipeline -->postProcess
+
+		void CreatePostProcessGraphicsPipeline();
+		void CreatePostProcessDescriptorSetLayout();
+		void CreatePostProcessDescriptorSets();
+
+		
+		void CreateAttachment();
 		void CreateFrameBuffers();
 		void CreateCommandPool();
 
@@ -81,6 +89,11 @@ namespace BlackPearl {
 			alignas(4) uint32_t numSpheres;
 			alignas(8) glm::vec2 screenSize;
 			alignas(16) glm::mat4 InvertProjectionView;
+		};
+
+		struct DenoiseUniformBufferObject {
+			alignas(8) glm::vec2 screenSize;
+			alignas(16) glm::mat4 preProjectionView;
 		};
 
 		struct QuadVertex
@@ -227,8 +240,15 @@ namespace BlackPearl {
 		VkPresentModeKHR ChooseSwapPresentMode(const std::vector<VkPresentModeKHR>& present);
 		VkExtent2D ChooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities);
 		QueueFamilyIndices FindQueueFamilies(const VkPhysicalDevice& device);
-		void RecordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
+		
+		void BeginRenderPass(VkCommandBuffer commandBuffer, uint32_t imageIndex);
+
+		void RecordDenoiseCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
 		void RecordComputeCommandBuffer(VkCommandBuffer commandBuffer, unsigned int imageIndex);
+		void RecordPostProcessCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
+		void RecordLastFrameCommandBuffer( uint32_t imageIndex);
+
+		void EndRenderPass(VkCommandBuffer commandBuffer, uint32_t imageIndex);
 
 		uint32_t _FindMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
 
@@ -244,56 +264,113 @@ namespace BlackPearl {
 
 		VkSwapchainKHR m_SwapChain;
 		std::vector<VkImage> m_SwapChainImages;
+		std::vector <VkImage> m_DepthImage;
+		std::vector <VkImageView> m_DepthStencilView;
+		VkFormat m_DepthFormat = VK_FORMAT_D32_SFLOAT;
+		std::vector <VkDeviceMemory> m_DepthImageMemory;
+
 		VkFormat m_SwapChainImageFormat;
 		VkExtent2D m_SwapChainExtent;
 
 		// postProces -- grapghics pipline
 		std::vector<VkImageView> m_ImageViews;
+
 		std::vector<VkFramebuffer> m_FrameBuffers;
 		VkRenderPass m_RenderPass;
 
 		VkSampler m_TextureSampler;
-		VkPipeline m_GraphicsPipeline;
+
+		struct {
+			VkPipeline denoise;
+			VkPipeline computeRaytrace;
+			VkPipeline postprocess;
+		} m_Pipelines;
+
+		struct {
+			VkPipelineLayout denoise;
+			VkPipelineLayout computeRaytrace;
+			VkPipelineLayout postprocess;
+		} m_PipelineLayouts;
+
+		struct {
+			VkDescriptorSetLayout denoise;
+			VkDescriptorSetLayout computeRaytrace;
+			VkDescriptorSetLayout postprocess;
+		} m_DescriptorSetLayouts;
+
+		struct {
+			std::vector<VkDescriptorSet>  denoise;
+			std::vector<VkDescriptorSet>  computeRaytrace;
+			std::vector<VkDescriptorSet>  postprocess;
+		} m_DescriptorSets;
+
+		// Denoise pass framebuffer attachments
+		struct FrameBufferAttachment {
+			VkImage image = VK_NULL_HANDLE;
+			VkDeviceMemory mem = VK_NULL_HANDLE;
+			VkImageView view = VK_NULL_HANDLE;
+			VkFormat format;
+		};
+
+		struct Attachments {
+			FrameBufferAttachment denoiseColor;
+			int32_t width;
+			int32_t height;
+		} m_Attachments;
+
+
 		VkBuffer m_VertexBuffer;
 		VkBuffer m_IndexBuffer;
 
 		VkDeviceMemory m_VertexBufferMemory;
 		VkDeviceMemory m_IndexBufferMemory;
 
-		VkDescriptorPool m_DescriptorPool;
-		VkPipelineLayout m_PipelineLayout;
-		VkDescriptorSetLayout m_DescriptorSetLayout;
-		std::vector<VkDescriptorSet> m_DescriptorSets;
+		struct DescriptorPool {
+			VkDescriptorPool denoise, computeRaytrace, postprocess;
+		} m_DescriptorPools;
 
 		// raytracing -- compute pipline
 		//compute shader
-		VkDescriptorPool m_ComputeDescriptorPool;
-		VkPipelineLayout m_ComputePipelineLayout;
-		VkDescriptorSetLayout m_ComputeDescriptorSetLayout;
-		std::vector<VkDescriptorSet> m_ComputeDescriptorSets;
-
 		std::vector<VkBuffer> m_SSBOTriangles;
 		std::vector<VkBuffer> m_SSBOMaterials;
 		std::vector<VkBuffer> m_SSBOAABBs;
 		std::vector<VkBuffer> m_SSBOLights;
+		std::vector<VkBuffer> m_SSBOObjTransforms;
+
 		//std::vector<VkBuffer> m_SSBOSpheres;
 
 		std::vector<VkDeviceMemory> m_SSBOTrianglesMemory;
 		std::vector<VkDeviceMemory> m_SSBOMaterialsMemory;
 		std::vector<VkDeviceMemory> m_SSBOAABBsMemory;
 		std::vector<VkDeviceMemory> m_SSBOLightsMemory;
+		std::vector<VkDeviceMemory> m_SSBOObjTransformsMemory;
+
 		//std::vector<VkDeviceMemory> m_SSBOSpheresMemory;
 
+		VkImageView m_TargetTexturePosImageView;
+		VkImageView m_TargetTextureNormalImageView;
+		VkImageView m_TargetTextureDepthImageView;
 		VkImageView m_TargetTextureImageView;
 		VkImageView m_AccumulationTextureImageView;
+		VkImageView m_LastFrameImageView;
+		VkImageView m_DenoiseColorImageView;
+
 
 		VkImage m_TargetTexture;
+		VkImage m_TargetPosTexture;
+		VkImage m_TargetNormalTexture;
+		VkImage m_TargetDepthTexture;
 		VkImage m_AccumulationTexture;
+		VkImage m_LastFrameTexture;
+		VkImage m_DenoiseColorTexture;
 
 		VkDeviceMemory m_TargetTextureImageMemory;
+		VkDeviceMemory m_TargetPosImageMemory;
+		VkDeviceMemory m_TargetNormalImageMemory;
+		VkDeviceMemory m_TargetDepthImageMemory;
 		VkDeviceMemory m_AccumulationTextureImageMemory;
-
-		VkPipeline m_ComputePipeline;
+		VkDeviceMemory m_LastFrameTextureImageMemory;
+		VkDeviceMemory m_DenoiseColorTextureImageMemory;
 
 		//commandBuffer
 		VkCommandPool m_CommandPool;
@@ -312,6 +389,10 @@ namespace BlackPearl {
 
 		int m_CurrentFrame = 0;
 
+		std::vector<VkBuffer> m_DenoiseUniformBuffers;
+		std::vector<VkDeviceMemory> m_DenoiseUniformBuffersMemory;
+		std::vector<void*> m_DenoiseUniformBuffersMapped;
+
 
 		std::vector<VkBuffer> m_UniformBuffers;
 		std::vector<VkDeviceMemory> m_UniformBuffersMemory;
@@ -320,6 +401,8 @@ namespace BlackPearl {
 		// time
 		double m_LastTime = 0.0f;
 		double m_LastFrameTime;
+
+		glm::mat4 m_PreProjectionView = glm::mat4(1.0);
 
 		//scene
 		RayTraceScene* mScene;

@@ -1012,7 +1012,7 @@ namespace BlackPearl {
 
     void VkComputeShaderRender::CreateTextureImageView()
     {
-        m_TextureImageView = ImageUtils::createImageView(m_Device, m_TextureImage, VK_FORMAT_R8G8B8A8_SRGB);
+        m_TextureImageView = ImageUtils::createImageView(m_Device, m_TextureImage, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_ASPECT_COLOR_BIT);
 
     }
 

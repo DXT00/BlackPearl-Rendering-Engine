@@ -22,9 +22,9 @@ public:
 		m_MainCamera->SetFov(30.0f);
 
 
-		LoadModel("assets/models/bunny/bunny.obj", "bunny", 0, BlackPearl::Material::RTXType::RTX_DIFFUSE, 0.5, { -0.2f,0.0f,-3.0f });
+		LoadModel("assets/models/bunny/bunny.obj", "bunny", 0, BlackPearl::Material::RTXType::RTX_DIFFUSE, 0.5, { -0.2f,-0.5f,-3.0f });
 
-		LoadModel("assets/models/bunny/bunny.obj", "bunny1", 1, BlackPearl::Material::RTXType::RTX_DIFFUSE,0.5, { 0.2f,0.0f,-3.0f });
+		LoadModel("assets/models/bunny/bunny.obj", "bunny1", 1, BlackPearl::Material::RTXType::RTX_DIFFUSE,0.5, { 0.2f,-0.5f,-3.0f });
 
 		//LoadModel("assets/models/doge_scene/back.obj", "back", 0, BlackPearl::Material::RTXType::RTX_DIFFUSE, 1.0, { 0.0f,-1.0f,-2.0f });
 		//LoadModel("assets/models/doge_scene/box1.obj", "box1", 1, BlackPearl::Material::RTXType::RTX_DIFFUSE, 1.0);
@@ -39,7 +39,7 @@ public:
 
 		BlackPearl::Object* areaLight = CreateModel("assets/models/light/light.obj", "", false/*isAnimated*/, "AreaLight", true/*vertices sorted*/);
 		areaLight->GetComponent<BlackPearl::Transform>()->SetInitScale(glm::vec3(1.0));
-		areaLight->GetComponent<BlackPearl::Transform>()->SetInitPosition({ 0.0f,0.0f,-2.0f });
+		areaLight->GetComponent<BlackPearl::Transform>()->SetInitPosition({ -0.2f,0.0f,-4.0f });
 		areaLight->GetComponent<BlackPearl::Transform>()->SetInitRotation({ 0.0f,0.0f,0.0f });
 		areaLight->GetComponent<BlackPearl::MeshRenderer>()->SetIsBackGroundObjects(true);
 		std::shared_ptr<BlackPearl::Material> areaLight_mat;
@@ -62,6 +62,8 @@ public:
 	}
 
 	virtual ~VkRayTracingLayer() {
+		GE_SAVE_DELETE(m_VkRTRender);
+		GE_SAVE_DELETE(mScene);
 		DestroyObjects();
 	}
 	void OnUpdate(BlackPearl::Timestep ts) override {

@@ -15,21 +15,25 @@ layout(column_major, binding = 0) uniform UniformBufferObject {
 } ubo;
 
 layout(binding = 1, rgba8) uniform image2D targetTexture;
-layout(binding = 2, rgba8) uniform image2D accumulationTex;
+layout(binding = 2, rgba32f) uniform image2D targetPosTexture; //w = obj.Id
+layout(binding = 3, rgba32f) uniform image2D targetNormalTexture;
+layout(binding = 4, rgba32f) uniform image2D targetDepthTexture;
 
-layout(std430, binding = 3) readonly buffer TriangleBufferObject {
+layout(binding = 5, rgba8) uniform image2D accumulationTex;
+
+layout(std430, binding = 6) readonly buffer TriangleBufferObject {
     triangle[] triangles;
  };
 
- layout(std430, binding = 4) readonly buffer MaterialBufferObject {
+ layout(std430, binding = 7) readonly buffer MaterialBufferObject {
     material[] materials;
  };
 
-layout(std430, binding = 5) readonly buffer AabbBufferObject {
+layout(std430, binding = 8) readonly buffer AabbBufferObject {
     bvhNode[] bvh;
  };
 
-layout(std430, binding = 6) readonly buffer LightsBufferObject {
+layout(std430, binding = 9) readonly buffer LightsBufferObject {
     light[] lights;
  };
 
@@ -261,6 +265,9 @@ bool hit_triangle(int triangle_index, Ray r, float tMin, float tMax, inout hit_r
         rec.t = t;
         rec.materialIndex = tri.materialIndex;
         
+        imageStore(targetPosTexture, ivec2(gl_GlobalInvocationID.xy), vec4(rec.p,float(tri.objIndex)));
+        imageStore(targetNormalTexture, ivec2(gl_GlobalInvocationID.xy), vec4(rec.normal,1.0));
+
         return true;
     }
     return false;
@@ -376,7 +383,7 @@ vec3 TraceRay(Ray r){
 
     vec3 final_color = vec3(1.0);
     Ray current_ray = {r.origin, normalize(r.dir), r.pdf};
-    
+    bool bhit = false;
     for (int i = 0; i < NUM_BOUNCES; i++) {
         int nodeId;
         int triId;
@@ -384,17 +391,21 @@ vec3 TraceRay(Ray r){
             vec3 albedo;
             bool emits = scatter(current_ray, rec, albedo, current_ray);
             final_color *= albedo;
-            //float idColor = float(nodeId)/float(ubo.numTriangles);
-            //final_color = vec3(nodeId/256.0,0,0);//albedo;
-
+            bhit = true;
             if (emits) {
                 break;
             }            
         } else {
             final_color *=  vec3(0,0,0);
+            
             break;
 
         }
+    }
+
+    if(!bhit){
+        imageStore(targetPosTexture, ivec2(gl_GlobalInvocationID.xy), vec4(vec3(0),-1.0));
+        imageStore(targetNormalTexture, ivec2(gl_GlobalInvocationID.xy), vec4(0.0));
     }
     return final_color;
 }
@@ -419,13 +430,17 @@ void main(){
 
     vec4 currentColor = imageLoad(accumulationTex, ivec2(gl_GlobalInvocationID.xy)).rgba * min(ubo.currentSample, 1.0);
 
-    vec4 to_write = (vec4(color, 1.0) + currentColor*(ubo.currentSample)) / (ubo.currentSample+1.0);
-
+    vec4 to_write ;
+    //if (ubo.currentSample == 1) {
+    //    to_write = vec4(color, 1.0);
+    //}else{
+    //    to_write = (vec4(color, 1.0) + currentColor*(ubo.currentSample)) / (ubo.currentSample+1.0);
+    //}
+     to_write = (vec4(color, 1.0) + currentColor*(ubo.currentSample)) / (ubo.currentSample+1.0);
     imageStore(targetTexture, ivec2(gl_GlobalInvocationID.xy), to_write);
 
 
-    //vec3 combineColor = (color + imageLoad(accumulationTex, ivec2(uv.x, uv.y)).rgb)/ubo.currentSample;
-   // imageStore(targetTexture, ivec2(gl_GlobalInvocationID.xy), vec4(combineColor,1.0));
+
 
 }
 

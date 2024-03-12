@@ -2,16 +2,18 @@
 #include "RayTraceScene.h"
 #include "BlackPearl/Component/BVHNodeComponent/BVHNode.h"
 #include "BlackPearl/Component/MeshRendererComponent/MeshRenderer.h"
+#include "BlackPearl/Component/TransformComponent/Transform.h"
 #include <queue>
 namespace BlackPearl {
 	void RayTraceScene::BuildRayTraceData()
 	{
 		int matId = 0;
 		uint32_t triId = 0;
-		for (size_t i = 0; i < m_ObjectList.size(); i++)
+		for (size_t objid = 0; objid < m_ObjectList.size(); objid++)
 		{
-			Object* obj = m_ObjectList[i];
+			Object* obj = m_ObjectList[objid];
 			matId = obj->GetComponent<MeshRenderer>()->GetSingleMaterial()->GetId();
+			objTransforms.push_back(obj->GetComponent<Transform>()->GetTransformMatrix());
 			BVHNode* bvhNode = obj->GetComponent<BVHNode>();
 			if (bvhNode && !bvhNode->GetTriangleMesh().empty()) {
 				for (uint32_t i = 0; i < bvhNode->GetTriangleMesh().size(); i++)
@@ -24,6 +26,7 @@ namespace BlackPearl {
 						rtTri.v1 = tri->GetPoints()[1].position;
 						rtTri.v2 = tri->GetPoints()[2].position;
 						rtTri.materialIndex = matId;
+						rtTri.objIndex = objid;
 						triangles.push_back(rtTri);
 						triObj->GetComponent<class Triangle>()->Id = (int)Tris.size();
 						Tris.push_back(triObj);
@@ -48,7 +51,7 @@ namespace BlackPearl {
 		RayTraceScene::material gray{ Material::RTXType::RTX_DIFFUSE, glm::vec3(0.3f, 0.3f, 0.3f) };
 		RayTraceScene::material red{ Material::RTXType::RTX_DIFFUSE, glm::vec3(0.9f, 0.1f, 0.1f) };
 		/*RayTraceScene::material green{Material::RTXType::RTX_DIFFUSE, glm::vec3(0.1f, 0.9f, 0.1f)}; */
-		RayTraceScene::material whiteLight{ Material::RTXType::RTX_EMISSION, glm::vec3(3.0f, 3.0f, 3.0f) };
+		RayTraceScene::material whiteLight{ Material::RTXType::RTX_EMISSION, glm::vec3(2.0f, 2.0f, 5.0f) };
 		/*RayTraceScene::material metal{ Material::RTXType::RTX_METALLIC, glm::vec3(1.0f, 1.0f, 1.0f) };
 		RayTraceScene::material glass{ Material::RTXType::RTX_DIELECTRIC, glm::vec3(1.0f, 1.0f, 1.0f) };*/
 
@@ -80,6 +83,11 @@ namespace BlackPearl {
 	std::vector<RayTraceScene::light> RayTraceScene::GetSceneLight()
 	{
 		return lights;
+	}
+
+	std::vector<glm::mat4> RayTraceScene::GetObjTransforms()
+	{
+		return objTransforms;
 	}
 
 	void RayTraceScene::_BuildSceneRayTraceBVHNode(Object* root)

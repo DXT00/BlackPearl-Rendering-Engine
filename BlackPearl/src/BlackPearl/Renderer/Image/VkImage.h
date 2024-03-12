@@ -17,19 +17,26 @@ namespace BlackPearl {
 			VkImage& image,
 			VkDeviceMemory& imageMemory);
 
-		static VkImageView createImageView(VkDevice device, VkImage image, VkFormat format);
+		static VkImageView createImageView(VkDevice device, VkImage image, VkFormat format, VkImageAspectFlags aspectMask);
 
 		static void transitionImageLayout(VkDevice device, VkQueue graphicsQueue, VkCommandPool commandPool, VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout);
 	
-		static VkImageMemoryBarrier readOnlyToGeneralBarrier(const VkImage& image);
+		static VkImageMemoryBarrier readOnlyToGeneralBarrier(VkCommandBuffer commandBuffer, const VkImage& image, VkPipelineStageFlags srcStageMask, VkPipelineStageFlags dstStageMask);
 
-		static VkImageMemoryBarrier generalToTransferDstBarrier(const VkImage& image);
-		
-		static VkImageMemoryBarrier generalToTransferSrcBarrier(const VkImage& image);
+		static VkImageMemoryBarrier generalToTransferDstBarrier(VkCommandBuffer commandBuffer, const VkImage& image, VkPipelineStageFlags srcStageMask, VkPipelineStageFlags dstStageMask);
 
-		static VkImageMemoryBarrier transferDstToGeneralBarrier(const VkImage& image);
+		static VkImageMemoryBarrier generalToTransferSrcBarrier(VkCommandBuffer commandBuffer, const VkImage& image, VkPipelineStageFlags srcStageMask, VkPipelineStageFlags dstStageMask);
 
-		static VkImageMemoryBarrier transferSrcToReadOnlyBarrier(const VkImage& image);
+		static VkImageMemoryBarrier transferDstToGeneralBarrier(VkCommandBuffer commandBuffer, const VkImage& image, VkPipelineStageFlags srcStageMask, VkPipelineStageFlags dstStageMask);
+
+		static VkImageMemoryBarrier transferDstToReadOnlyBarrier(VkCommandBuffer commandBuffer, const VkImage& image, VkPipelineStageFlags srcStageMask, VkPipelineStageFlags dstStageMask);
+
+		static VkImageMemoryBarrier transferSrcToReadOnlyBarrier(VkCommandBuffer commandBuffer, const VkImage& image, VkPipelineStageFlags srcStageMask, VkPipelineStageFlags dstStageMask);
+
+		static VkImageMemoryBarrier generalToReadOnlyBarrier(VkCommandBuffer commandBuffer, const VkImage& image, VkPipelineStageFlags srcStageMask, VkPipelineStageFlags dstStageMask);
+
+		static VkImageMemoryBarrier colorAttachmentToTransferSrcBarrier(VkCommandBuffer commandBuffer, const VkImage& image, VkPipelineStageFlags srcStageMask, VkPipelineStageFlags dstStageMask);
+
 
 		static VkImageCopy imageCopyRegion(uint32_t width, uint32_t height);
 

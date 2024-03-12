@@ -19,7 +19,9 @@ namespace BlackPearl {
 			alignas(16) glm::vec3 v1;
 			alignas(16) glm::vec3 v2;
 			alignas(4) unsigned int materialIndex;
+			alignas(4) unsigned int objIndex;
 		};
+
 
 		struct light {
 			alignas(4) unsigned int triangleIndex;
@@ -59,6 +61,8 @@ namespace BlackPearl {
 		std::vector<bvhNode> GetSceneBVHNode();
 		std::vector<material> GetSceneMaterial();
 		std::vector<light> GetSceneLight();
+		std::vector<glm::mat4> GetObjTransforms();
+
 		int GetBVHLevel() const { return m_BVHLevel; }
 
 	private:
@@ -67,6 +71,7 @@ namespace BlackPearl {
 		std::vector<material> materials;
 		std::vector<light> lights;
 		std::vector<bvhNode> bvhNodes;
+		std::vector<glm::mat4> objTransforms;
 
 		std::vector<Object0> objects;
 

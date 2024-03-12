@@ -54,3 +54,4 @@ bool checkValidationLayerSupport()
 
     return true;
 }
+

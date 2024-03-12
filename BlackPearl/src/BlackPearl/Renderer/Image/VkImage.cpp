@@ -50,14 +50,14 @@ namespace BlackPearl {
 
 	}
 
-    VkImageView ImageUtils::createImageView(VkDevice device, VkImage image, VkFormat format)
+    VkImageView ImageUtils::createImageView(VkDevice device, VkImage image, VkFormat format, VkImageAspectFlags aspectMask)
     {
         VkImageViewCreateInfo viewInfo{};
         viewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
         viewInfo.image = image;
         viewInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
         viewInfo.format = format;
-        viewInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+        viewInfo.subresourceRange.aspectMask = aspectMask;
         viewInfo.subresourceRange.baseMipLevel = 0;
         viewInfo.subresourceRange.levelCount = 1;
         viewInfo.subresourceRange.baseArrayLayer = 0;
@@ -143,7 +143,7 @@ namespace BlackPearl {
     }
 
 
-    VkImageMemoryBarrier ImageUtils::readOnlyToGeneralBarrier(const VkImage& image)
+    VkImageMemoryBarrier ImageUtils::readOnlyToGeneralBarrier(VkCommandBuffer commandBuffer, const VkImage& image, VkPipelineStageFlags srcStageMask, VkPipelineStageFlags dstStageMask)
     {
         VkImageMemoryBarrier memoryBarrier = {};
         memoryBarrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
@@ -153,10 +153,20 @@ namespace BlackPearl {
         memoryBarrier.subresourceRange = { VK_IMAGE_ASPECT_COLOR_BIT, 0, 1, 0, 1 };
         memoryBarrier.srcAccessMask = 0;
         memoryBarrier.dstAccessMask = VK_ACCESS_SHADER_WRITE_BIT;
+
+        vkCmdPipelineBarrier(
+            commandBuffer,
+            srcStageMask,
+            dstStageMask,
+            0,
+            0, nullptr,
+            0, nullptr,
+            1, &memoryBarrier);
+
         return memoryBarrier;
     }
 
-    VkImageMemoryBarrier ImageUtils::generalToTransferDstBarrier(const VkImage& image)
+    VkImageMemoryBarrier ImageUtils::generalToTransferDstBarrier(VkCommandBuffer commandBuffer, const VkImage& image, VkPipelineStageFlags srcStageMask, VkPipelineStageFlags dstStageMask)
     {
         VkImageMemoryBarrier memoryBarrier = {};
         memoryBarrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
@@ -166,10 +176,19 @@ namespace BlackPearl {
         memoryBarrier.subresourceRange = { VK_IMAGE_ASPECT_COLOR_BIT, 0, 1, 0, 1 };
         memoryBarrier.srcAccessMask = VK_ACCESS_SHADER_READ_BIT;
         memoryBarrier.dstAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
+
+        vkCmdPipelineBarrier(
+            commandBuffer,
+            srcStageMask,
+            dstStageMask,
+            0,
+            0, nullptr,
+            0, nullptr,
+            1, &memoryBarrier);
         return memoryBarrier;
     }
 
-    VkImageMemoryBarrier ImageUtils::generalToTransferSrcBarrier(const VkImage& image)
+    VkImageMemoryBarrier ImageUtils::generalToTransferSrcBarrier(VkCommandBuffer commandBuffer, const VkImage& image, VkPipelineStageFlags srcStageMask, VkPipelineStageFlags dstStageMask)
     {
         VkImageMemoryBarrier memoryBarrier = {};
         memoryBarrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
@@ -179,10 +198,20 @@ namespace BlackPearl {
         memoryBarrier.subresourceRange = { VK_IMAGE_ASPECT_COLOR_BIT, 0, 1, 0, 1 };
         memoryBarrier.srcAccessMask = VK_ACCESS_SHADER_WRITE_BIT;
         memoryBarrier.dstAccessMask = VK_ACCESS_TRANSFER_READ_BIT;
+
+        vkCmdPipelineBarrier(
+            commandBuffer,
+            srcStageMask,
+            dstStageMask,
+            0,
+            0, nullptr,
+            0, nullptr,
+            1, &memoryBarrier);
+
         return memoryBarrier;
     }
 
-    VkImageMemoryBarrier ImageUtils::transferDstToGeneralBarrier(const VkImage& image)
+    VkImageMemoryBarrier ImageUtils::transferDstToGeneralBarrier(VkCommandBuffer commandBuffer, const VkImage& image, VkPipelineStageFlags srcStageMask, VkPipelineStageFlags dstStageMask)
     {
         VkImageMemoryBarrier memoryBarrier = {};
         memoryBarrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
@@ -192,10 +221,43 @@ namespace BlackPearl {
         memoryBarrier.subresourceRange = { VK_IMAGE_ASPECT_COLOR_BIT, 0, 1, 0, 1 };
         memoryBarrier.srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
         memoryBarrier.dstAccessMask = VK_ACCESS_SHADER_READ_BIT;
+
+        vkCmdPipelineBarrier(
+            commandBuffer,
+            srcStageMask,
+            dstStageMask,
+            0,
+            0, nullptr,
+            0, nullptr,
+            1, &memoryBarrier);
+
         return memoryBarrier;
     }
 
-    VkImageMemoryBarrier ImageUtils::transferSrcToReadOnlyBarrier(const VkImage& image)
+    VkImageMemoryBarrier ImageUtils::transferDstToReadOnlyBarrier(VkCommandBuffer commandBuffer, const VkImage& image, VkPipelineStageFlags srcStageMask, VkPipelineStageFlags dstStageMask)
+    {
+        VkImageMemoryBarrier memoryBarrier = {};
+        memoryBarrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+        memoryBarrier.oldLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
+        memoryBarrier.newLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+        memoryBarrier.image = image;
+        memoryBarrier.subresourceRange = { VK_IMAGE_ASPECT_COLOR_BIT, 0, 1, 0, 1 };
+        memoryBarrier.srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
+        memoryBarrier.dstAccessMask = VK_ACCESS_SHADER_READ_BIT;
+
+        vkCmdPipelineBarrier(
+            commandBuffer,
+            srcStageMask,
+            dstStageMask,
+            0,
+            0, nullptr,
+            0, nullptr,
+            1, &memoryBarrier);
+
+        return memoryBarrier;
+    }
+
+    VkImageMemoryBarrier ImageUtils::transferSrcToReadOnlyBarrier(VkCommandBuffer commandBuffer, const VkImage& image, VkPipelineStageFlags srcStageMask, VkPipelineStageFlags dstStageMask)
     {
         VkImageMemoryBarrier memoryBarrier = {};
         memoryBarrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
@@ -205,6 +267,62 @@ namespace BlackPearl {
         memoryBarrier.subresourceRange = { VK_IMAGE_ASPECT_COLOR_BIT, 0, 1, 0, 1 };
         memoryBarrier.srcAccessMask = VK_ACCESS_TRANSFER_READ_BIT;
         memoryBarrier.dstAccessMask = VK_ACCESS_SHADER_READ_BIT;
+
+        vkCmdPipelineBarrier(
+            commandBuffer,
+            srcStageMask,
+            dstStageMask,
+            0,
+            0, nullptr,
+            0, nullptr,
+            1, &memoryBarrier);
+
+        return memoryBarrier;
+    }
+
+    VkImageMemoryBarrier ImageUtils::generalToReadOnlyBarrier(VkCommandBuffer commandBuffer, const VkImage& image, VkPipelineStageFlags srcStageMask, VkPipelineStageFlags dstStageMask)
+    {
+        VkImageMemoryBarrier memoryBarrier = {};
+        memoryBarrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+        memoryBarrier.oldLayout = VK_IMAGE_LAYOUT_GENERAL;
+        memoryBarrier.newLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+        memoryBarrier.image = image;
+        memoryBarrier.subresourceRange = { VK_IMAGE_ASPECT_COLOR_BIT, 0, 1, 0, 1 };
+        memoryBarrier.srcAccessMask = VK_ACCESS_SHADER_WRITE_BIT;
+        memoryBarrier.dstAccessMask = VK_ACCESS_SHADER_READ_BIT;
+
+        vkCmdPipelineBarrier(
+            commandBuffer,
+            srcStageMask,
+            dstStageMask,
+            0,
+            0, nullptr,
+            0, nullptr,
+            1, &memoryBarrier);
+
+        return memoryBarrier;
+    }
+
+    VkImageMemoryBarrier ImageUtils::colorAttachmentToTransferSrcBarrier(VkCommandBuffer commandBuffer, const VkImage& image, VkPipelineStageFlags srcStageMask, VkPipelineStageFlags dstStageMask)
+    {
+        VkImageMemoryBarrier memoryBarrier = {};
+        memoryBarrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+        memoryBarrier.oldLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+        memoryBarrier.newLayout = VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL;
+        memoryBarrier.image = image;
+        memoryBarrier.subresourceRange = { VK_IMAGE_ASPECT_COLOR_BIT, 0, 1, 0, 1 };
+        memoryBarrier.srcAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
+        memoryBarrier.dstAccessMask = VK_ACCESS_TRANSFER_READ_BIT;
+
+        vkCmdPipelineBarrier(
+            commandBuffer,
+            srcStageMask,
+            dstStageMask,
+            0,
+            0, nullptr,
+            0, nullptr,
+            1, &memoryBarrier);
+
         return memoryBarrier;
     }
 

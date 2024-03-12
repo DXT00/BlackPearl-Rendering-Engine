@@ -15,6 +15,7 @@ struct triangle {
     vec3 v1;
     vec3 v2;
     uint materialIndex;
+    uint objIndex;
 };
 
 struct light {
