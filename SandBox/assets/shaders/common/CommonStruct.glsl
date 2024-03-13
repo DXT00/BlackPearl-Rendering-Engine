@@ -46,6 +46,7 @@ struct Settings{
 	bool  indirectSpecularLight;
 	bool  shadows;
 	float GICoeffs;
+	float SSRGICoeffs;
 	bool  hdr;
 	bool  guassian_horiziotal;
 	bool  guassian_vertical;

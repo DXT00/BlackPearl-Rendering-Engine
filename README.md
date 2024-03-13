@@ -193,3 +193,6 @@ upload all data to gpu once, can reach 60 fps
 
 ## Cloud rendering
 ![cloud](/results/Cloud.png)
+
+## SSR
+![cloud](/results/SSR.png)

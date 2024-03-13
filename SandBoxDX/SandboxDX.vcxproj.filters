@@ -10,14 +10,17 @@
     <Filter Include="assets\shaders_hlsl\BasicRenderer">
       <UniqueIdentifier>{4B679EF5-B7D5-F374-00BF-AE746C6CE910}</UniqueIdentifier>
     </Filter>
+    <Filter Include="assets\shaders_hlsl\ClusterLighting">
+      <UniqueIdentifier>{6AFA83C4-D6B3-EE6E-5F13-0949CBCBA4DE}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="assets\shaders_hlsl\LumenShader">
+      <UniqueIdentifier>{EA339BD4-5617-AA14-5F1A-D850CB7C7065}</UniqueIdentifier>
+    </Filter>
     <Filter Include="assets\shaders_hlsl\MeshShader">
       <UniqueIdentifier>{F6C8004B-E2EE-CAB1-CB34-507DB7F9EF7D}</UniqueIdentifier>
     </Filter>
     <Filter Include="assets\shaders_hlsl\RayTracingMetaball">
       <UniqueIdentifier>{A827A9FA-9479-80EA-7D98-BDFA698999D3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="assets\shaders_hlsl_h">
-      <UniqueIdentifier>{4AD3F3D1-B63F-AFCC-7F33-472AEB5ED134}</UniqueIdentifier>
     </Filter>
     <Filter Include="src">
       <UniqueIdentifier>{2DAB880B-99B4-887C-2230-9F7C8E38947C}</UniqueIdentifier>
@@ -27,19 +30,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="assets\shaders_hlsl_h\RayTracingMetaball.hlsl.h">
-      <Filter>assets\shaders_hlsl_h</Filter>
-    </ClInclude>
-    <ClInclude Include="assets\shaders_hlsl_h\Raytracing.hlsl.h">
-      <Filter>assets\shaders_hlsl_h</Filter>
-    </ClInclude>
-    <ClInclude Include="assets\shaders_hlsl_h\RaytracingCube.hlsl.h">
-      <Filter>assets\shaders_hlsl_h</Filter>
-    </ClInclude>
     <ClInclude Include="src\Layers\AdvanceLightTestLayer.h">
-      <Filter>src\Layers</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Layers\CubeTestLayer.h">
       <Filter>src\Layers</Filter>
     </ClInclude>
     <ClInclude Include="src\Layers\D3D12BasicRenderLayer.h">
@@ -57,42 +48,6 @@
     <ClInclude Include="src\Layers\D3D12RayTracingModelLayer.h">
       <Filter>src\Layers</Filter>
     </ClInclude>
-    <ClInclude Include="src\Layers\FrameBufferTestLayer.h">
-      <Filter>src\Layers</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Layers\IBLProbesRenderingLayer.h">
-      <Filter>src\Layers</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Layers\IBLRenderingLayer.h">
-      <Filter>src\Layers</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Layers\PbrRenderingLayer.h">
-      <Filter>src\Layers</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Layers\RayTracingLayer.h">
-      <Filter>src\Layers</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Layers\ShadowMapPointLightLayer.h">
-      <Filter>src\Layers</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Layers\ShadowMapTestLayer.h">
-      <Filter>src\Layers</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Layers\SkyBoxTestLayer.h">
-      <Filter>src\Layers</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Layers\VoxelConeTracingDeferredLayer.h">
-      <Filter>src\Layers</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Layers\VoxelConeTracingLayer.h">
-      <Filter>src\Layers</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Layers\VoxelConeTracingSVOLayer.h">
-      <Filter>src\Layers</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Layers\VoxelizationTestLayer.h">
-      <Filter>src\Layers</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\SandBoxDX.cpp">
@@ -102,6 +57,27 @@
   <ItemGroup>
     <FxCompile Include="assets\shaders_hlsl\BasicRenderer\triangle.hlsl">
       <Filter>assets\shaders_hlsl\BasicRenderer</Filter>
+    </FxCompile>
+    <FxCompile Include="assets\shaders_hlsl\ClusterLighting\ClusterLightingCulling.hlsl">
+      <Filter>assets\shaders_hlsl\ClusterLighting</Filter>
+    </FxCompile>
+    <FxCompile Include="assets\shaders_hlsl\LumenShader\GlobalDistancceFieldUtils.hlsl">
+      <Filter>assets\shaders_hlsl\LumenShader</Filter>
+    </FxCompile>
+    <FxCompile Include="assets\shaders_hlsl\LumenShader\LumenRadiosity.hlsl">
+      <Filter>assets\shaders_hlsl\LumenShader</Filter>
+    </FxCompile>
+    <FxCompile Include="assets\shaders_hlsl\LumenShader\LumenRadiosityCulling.hlsl">
+      <Filter>assets\shaders_hlsl\LumenShader</Filter>
+    </FxCompile>
+    <FxCompile Include="assets\shaders_hlsl\LumenShader\LumenSceneDirectLighting.hlsl">
+      <Filter>assets\shaders_hlsl\LumenShader</Filter>
+    </FxCompile>
+    <FxCompile Include="assets\shaders_hlsl\LumenShader\LumenSceneDirectLightingCulling.hlsl">
+      <Filter>assets\shaders_hlsl\LumenShader</Filter>
+    </FxCompile>
+    <FxCompile Include="assets\shaders_hlsl\LumenShader\LumenTracingCommon.hlsl">
+      <Filter>assets\shaders_hlsl\LumenShader</Filter>
     </FxCompile>
     <FxCompile Include="assets\shaders_hlsl\MeshShader\MS.hlsl">
       <Filter>assets\shaders_hlsl\MeshShader</Filter>

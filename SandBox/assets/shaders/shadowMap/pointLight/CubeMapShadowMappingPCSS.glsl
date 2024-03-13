@@ -204,6 +204,7 @@ float PCFShadow(vec3 fragPos,vec3 lightPos,samplerCube shadowMap, float biasC, f
 	float samples = u_PCFSamplesCnt;
 	float offset;
 	offset = filterRadiusUV;
+
 	for(float x = -offset; x < offset; x += offset / (samples * 0.5))
 	{
 	    for(float y = -offset; y < offset; y += offset / (samples * 0.5))
@@ -300,7 +301,7 @@ float PCSSShadow(vec3 fragPos,vec3 lightPos,samplerCube shadowMap,float lightSiz
  //	filterRadiusUV = 0.5;
  //
  //}
-   if(filterRadiusUV<0.0){
+   if(filterRadiusUV < 0.0){
 	  	filterRadiusUV = 0.0;
 	}
 

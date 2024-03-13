@@ -84,6 +84,8 @@ namespace BlackPearl {
 		ImGui::DragFloat("IBL GICoeffs", &IBLRenderer::s_GICoeffs, 0.2f, 0.0f, 1.0f, "%.3f ");
 		ImGui::Checkbox("IBL HDR", &GBufferRenderer::s_HDR);
 
+		ImGui::Text("SSR GI");
+		ImGui::DragFloat("SSRGICoeffs", &GBufferRenderer::s_SSRGICoeffs, 0.2f, 0.0f, 1.0f, "%.3f ");
 
 
 		ImGui::End();

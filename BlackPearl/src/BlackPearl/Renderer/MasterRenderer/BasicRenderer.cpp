@@ -168,7 +168,7 @@ namespace BlackPearl {
 		std::vector<std::shared_ptr<Mesh>> meshes = obj->GetComponent<MeshRenderer>()->GetMeshes();
 		GE_ERROR_JUDGE();
 
-
+		shader->Bind();
 		if (obj->GetComponent<MeshRenderer>()->GetIsPBRObject()) {
 			shader->SetUniform1i("u_IsPBRObjects", 1);
 		}

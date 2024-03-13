@@ -37,6 +37,7 @@
 #include "BlackPearl/Renderer/MasterRenderer/CloudRenderer.h"
 #include "BlackPearl/Renderer/MasterRenderer/SkyboxRenderer.h"
 #include "BlackPearl/Renderer/MasterRenderer/WaterRenderer.h"
+#include "BlackPearl/Renderer/MasterRenderer/DepthRenderer.h"
 
 #ifdef GE_API_VULKAN
 #include "BlackPearl/Renderer/MasterRenderer/VkBasicRender.h"
