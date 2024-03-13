@@ -31,9 +31,7 @@ namespace BlackPearl {
 	}
 	VoxelConeTracingSVORenderer::~VoxelConeTracingSVORenderer()
 	{
-		//object 由layer删除！
-		//GE_SAVE_DELETE(m_CubeObj);
-		//GE_SAVE_DELETE(m_BrdfLUTQuadObj);
+		
 		GE_SAVE_DELETE(m_Sobol);
 
 	}
@@ -86,7 +84,7 @@ namespace BlackPearl {
 		BuildFragmentList(objs, skybox);
 		BuildSVO();
 
-		/* bedf LUT use for gBuffer path tracing */
+		/* brdf LUT use for gBuffer path tracing */
 		m_SpecularBRDFLutShader.reset(DBG_NEW Shader("assets/shaders/ibl/brdf.glsl"));
 
 		RenderSpecularBRDFLUTMap();
@@ -243,19 +241,15 @@ namespace BlackPearl {
 		Voxelize(objs, skybox, false);
 		glMemoryBarrier(GL_ATOMIC_COUNTER_BARRIER_BIT);
 		GLenum err = glGetError();
-		//ErrorJudge(err);
-		//glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT| GL_SHADER_STORAGE_BARRIER_BIT);
+		
 		m_AtomicCountBuffer->Bind();
 		Configuration::SyncGPU();
-
-		//m_AtomicCountBuffer->BindIndex(3);
 
 		//glMapBufferRange() --map all or part of a buffer object's data store into the client's address space
 		//GL_MAP_READ_BIT indicates that the returned pointer may be used to read buffer object data.
 		//GL_MAP_WRITE_BIT indicates that the returned pointer may be used to modify buffer object data.
 		GLuint* count = (GLuint*)glMapBufferRange(GL_ATOMIC_COUNTER_BUFFER, 0, sizeof(GLuint), GL_MAP_READ_BIT | GL_MAP_WRITE_BIT);
 		err = glGetError();
-		//ErrorJudge(err);
 
 		m_NumVoxelFrag = count[0];
 		GE_CORE_INFO("voxel fragment list size : " + std::to_string(m_NumVoxelFrag));
@@ -270,7 +264,7 @@ namespace BlackPearl {
 		glUnmapBuffer(GL_ATOMIC_COUNTER_BUFFER);
 		m_AtomicCountBuffer->UnBind();
 
-		//存储fragmetn数据
+		//存储fragment数据
 		Voxelize(objs, skybox, true);
 		glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
 		//glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
@@ -468,11 +462,6 @@ namespace BlackPearl {
 		frameBuffer->CleanUp();
 
 	}
-
-
-
-
-
 
 
 	void VoxelConeTracingSVORenderer::Render(Camera* camera, const std::vector<Object*>& objs, const LightSources* lightSources,

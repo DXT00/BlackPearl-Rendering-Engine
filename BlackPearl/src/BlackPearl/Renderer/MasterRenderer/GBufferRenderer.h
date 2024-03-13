@@ -34,12 +34,16 @@ namespace BlackPearl {
 			std::vector<Object*>reflectionProbes,
 			std::shared_ptr<Texture>specularBrdfLUTTexture,
 			Object* skyBox, 
-			MapManager* mapManager);
+			MapManager* mapManager,
+			std::shared_ptr<Texture> depthTexture,
+			bool enableSSR);
 
 		std::vector<Object*> FindKnearProbes(glm::vec3 objPos, std::vector<Object*> probes,unsigned int k);
 		std::vector<unsigned int> FindKnearAreaProbes(glm::vec3 objPos, std::vector<Object*> probes, unsigned int k,MapManager* mapManager);
 		
 		static float s_GICoeffs;
+		static float s_SSRGICoeffs;
+
 		static bool s_HDR;
 		static float s_AttenuationItensity;// 100.0f;
 
@@ -64,6 +68,7 @@ namespace BlackPearl {
 		std::shared_ptr<FrameBuffer> m_HDRFrameBuffer;
 		std::shared_ptr<Texture> m_HDRPostProcessTexture;
 
+		std::shared_ptr<Texture> m_SSRTestTexture;
 
 		/**** shader ****/
 		/* write pos,normal,color to gBuffer */
@@ -74,6 +79,7 @@ namespace BlackPearl {
 
 		/* draw lights according to gBuffer data */
 		//分开多个pass来渲染-->去除if分支，GPU对if,for不友好
+		std::shared_ptr<Shader> m_SSRPassShader;
 		std::shared_ptr<Shader> m_AmbientGIPassShader;
 		std::shared_ptr<Shader> m_PointLightPassShader;
 		std::shared_ptr<Shader> m_DirectionLightPassShader;
@@ -94,6 +100,7 @@ namespace BlackPearl {
 		/*renderer for dynamic objects*/
 		AnimatedModelRenderer* m_AnimatedModelRenderer;
 		SkyboxRenderer* m_SkyboxRenderer;
+
 
 	};
 

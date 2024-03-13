@@ -7,13 +7,32 @@ namespace BlackPearl {
 	void CommonFunc::ShowGBuffer(unsigned int row, unsigned int col, Object* quad,std::shared_ptr<GBuffer> gBuffer, std::vector<std::shared_ptr<Texture>> textures)
 	{
 		gBuffer->UnBind();
-		int width  = Configuration::WindowWidth / col;
+		ShowTextures(row, col, quad, textures);
+
+		//gBuffer->UnBind();
+		//delete basicRenderer;
+	}
+	void CommonFunc::ShowFrameBuffer(unsigned int row, unsigned int col, Object* quad, std::shared_ptr<FrameBuffer> frameBuffer, std::vector<std::shared_ptr<Texture>> textures)
+	{
+		//frameBuffer->UnBind();
+		ShowTextures(row, col, quad, textures);
+	}
+
+	void CommonFunc::ShowFrameBuffer(glm::vec4 viewPort, Object* quad, std::shared_ptr<FrameBuffer> frameBuffer, std::shared_ptr<Texture> texture, bool isMipmap, int lod)
+	{
+		frameBuffer->UnBind();
+		ShowTexture(viewPort, quad, texture, isMipmap, lod);
+	}
+
+	void CommonFunc::ShowTextures(unsigned int row, unsigned int col, Object* quad, std::vector<std::shared_ptr<Texture>> textures)
+	{
+		int width = Configuration::WindowWidth / col;
 		int height = Configuration::WindowHeight / row;
 		std::shared_ptr<Shader> shader(DBG_NEW Shader("assets/shaders/raytracing/ScreenQuad.glsl"));
 		BasicRenderer* basicRenderer = new BasicRenderer();
-		
+
 		//gBuffer->Bind();
-		for (int j = 0; j < col;j++)
+		for (int j = 0; j < col; j++)
 		{
 			for (int i = 0; i < row; i++)
 			{
@@ -23,15 +42,46 @@ namespace BlackPearl {
 				glViewport(x, y, width, height);
 
 				shader->Bind();
+				shader->SetUniform1f("u_Num", 1.0);
 				shader->SetUniform1i("u_FinalScreenTexture", idx);
-				glActiveTexture(GL_TEXTURE0+ idx);
+				if (textures[idx]->GetType() == Texture::DepthMap) {
+					shader->SetUniform1i("u_isDepth", 1);
+				}
+				glActiveTexture(GL_TEXTURE0 + idx);
 				textures[idx]->Bind();
 
-				basicRenderer->DrawObject(quad,shader);
+				basicRenderer->DrawObject(quad, shader);
 			}
 		}
-		//gBuffer->UnBind();
-		//delete basicRenderer;
+	}
+	void CommonFunc::ShowTexture(glm::vec4 viewPort, Object* quad, std::shared_ptr<Texture> texture, bool isMipmap, int lod)
+	{
+		
+		std::shared_ptr<Shader> shader(DBG_NEW Shader("assets/shaders/raytracing/ScreenQuad.glsl"));
+		BasicRenderer* basicRenderer = new BasicRenderer();
+	
+		glViewport(viewPort.x, viewPort.y, viewPort.z, viewPort.w);
+
+		shader->Bind();
+		shader->SetUniform1f("u_Num", 1.0);
+		shader->SetUniform1i("u_FinalScreenTexture", lod);
+		if (texture->GetType() == Texture::DepthMap) {
+			shader->SetUniform1i("u_isDepth", 1);
+		}
+		if (isMipmap) {
+			shader->SetUniform1i("u_isMipmap", 1);
+			shader->SetUniform1i("u_Lod", lod);
+		}
+		else {
+			shader->SetUniform1i("u_isMipmap", 0);
+		}
+		glActiveTexture(GL_TEXTURE0 + lod);
+		texture->Bind();
+
+		basicRenderer->DrawObject(quad, shader);
+			
+		
+
 	}
 }
 

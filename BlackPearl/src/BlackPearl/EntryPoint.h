@@ -22,7 +22,7 @@
 
 extern BlackPearl::Application* BlackPearl::CreateApplication(HINSTANCE hInstance, int nShowCmd);
 
-#ifdef GE_D3D12RHI
+#ifdef GE_API_D3D12RHI
 int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine, _In_ int nShowCmd) {
 	std::wstringstream wstr;
 	wstr << L"entry\n";
@@ -38,8 +38,8 @@ int main(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPSTR 
 	BlackPearl::Application* app = BlackPearl::CreateApplication(hInstance, nShowCmd);
 	app->Run();
 	delete app;
-	
-	//_CrtDumpMemoryLeaks();
+
+	_CrtDumpMemoryLeaks();
 	return 0;
 }
 #endif

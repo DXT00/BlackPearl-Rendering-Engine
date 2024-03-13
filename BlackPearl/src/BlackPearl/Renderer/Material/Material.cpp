@@ -1,8 +1,13 @@
 #include "pch.h"
 #include "Material.h"
-
+#include "MaterialManager.h"
 namespace BlackPearl {
-	extern  DynamicRHI::Type g_RHIType;
+	//extern  DynamicRHI::Type g_RHIType;
+	Material::Material(const std::shared_ptr<Shader>& shader, const std::shared_ptr<TextureMaps>& textureMaps, const MaterialColor& materialColors)
+		:m_Shader(shader), m_TextureMaps(textureMaps), m_MaterialColors(materialColors), m_Props(Props())
+	{
+		
+	}
 	Material::Material(const std::string shaderPath, const std::shared_ptr<TextureMaps>& textureMaps, glm::vec3 ambientColor, glm::vec3 diffuseColor, glm::vec3 specularColor, glm::vec3 emissionColor)
 	{
 		m_Props = Props();
@@ -19,7 +24,7 @@ namespace BlackPearl {
 				m_MaterialColors.SetEmissionColor(emissionColor);
 
 			//TODO:: 重构Shader，区分OpenGL和DirectX
-			if (g_RHIType == DynamicRHI::Type::OpenGL) {
+			if (DynamicRHI::g_RHIType == DynamicRHI::Type::OpenGL) {
 				m_Shader.reset(DBG_NEW Shader(shaderPath));
 				m_Shader->Bind();
 				if (ambientColor.length() != 0) {
@@ -38,6 +43,8 @@ namespace BlackPearl {
 				}
 			}
 		}
+
+
 	}
 
 
@@ -78,6 +85,14 @@ namespace BlackPearl {
 		//m_Type = Type::EMISSION;
 
 
+	}
+	void Material::SetId(uint32_t matId)
+	{
+		m_MatId = matId;
+	}
+	uint32_t Material::GetId() const
+	{
+		return m_MatId;
 	}
 	void Material::SetTexture(const std::shared_ptr<Texture> texture)
 	{

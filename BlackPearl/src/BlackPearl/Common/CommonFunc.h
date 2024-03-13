@@ -16,8 +16,11 @@ namespace BlackPearl {
 	{
 	public:
 		static void ShowGBuffer(unsigned int row, unsigned int col, Object* quad, std::shared_ptr<GBuffer> gBuffer, std::vector<std::shared_ptr<Texture> >textures);
-
-	};
+        static void ShowFrameBuffer(unsigned int row, unsigned int col, Object* quad, std::shared_ptr<FrameBuffer> frameBuffer, std::vector<std::shared_ptr<Texture> >textures);
+        static void ShowFrameBuffer(glm::vec4 viewPort, Object* quad, std::shared_ptr<FrameBuffer> frameBuffer, std::shared_ptr<Texture> texture, bool isMipmap, int lod);
+        static void ShowTextures(unsigned int row, unsigned int col, Object* quad, std::vector<std::shared_ptr<Texture> >textures);
+        static void ShowTexture(glm::vec4 viewPort, Object* quad, std::shared_ptr<Texture> texture, bool isMipmap, int lod = 0);
+    };
     // Assign a name to the object to aid with debugging.
 #if defined(_DEBUG) || defined(DBG)
     inline void SetName(ID3D12Object* pObject, LPCWSTR name)

@@ -1,6 +1,6 @@
 #include "pch.h"
-#include "BufferTexture.h"
 #include "glad/glad.h"
+#include "BufferTexture.h"
 namespace BlackPearl {
 
 	BufferTexture::BufferTexture(unsigned int bufferSize, int internalFormat,const void* data)

@@ -3,6 +3,7 @@
 #include "BlackPearl/Renderer/Model/Model.h"
 #include "BlackPearl/Renderer/Mesh/MeshManager.h"
 #include "BlackPearl/Node/Node.h"
+#include "BlackPearl/Lumen/LumenSceneData.h"
 namespace BlackPearl {
 	class Scene
 	{
@@ -17,10 +18,12 @@ namespace BlackPearl {
 		~Scene();
 		void AddCamera();
 		void GetCamera();
-		void AddLights();
+		void AddLights(Object* obj);
 		void GetLights();
 		void AddObject(Object* obj);
 		void AddNode(Node* node);
+		// only single nodes now
+		void UpdateObjsAABB();
 
 		void AddModel(Model* obj);
 
@@ -35,6 +38,8 @@ namespace BlackPearl {
 		Node* GetSingleNodes(uint32_t i) const { return m_SingleNodesList[i]; }
 
 		DemoType GetDemoType() { return m_DemoType; }
+	public:
+		std::shared_ptr<LumenSceneData> LumenSceneData;
 	protected:
 		DemoType m_DemoType;
 		std::vector<Object*> m_ObjectList;

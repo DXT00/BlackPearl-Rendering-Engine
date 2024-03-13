@@ -12,8 +12,9 @@ namespace BlackPearl {
 
 		}
 
-		Window* InitWindow();
+		virtual Window* InitWindow() override;
 		void InitLogger();
+		void InitRHI() override;
 		std::shared_ptr<D3D12Logger> GetCoreLogger() const { return m_D3D12Logger; };
 
 	private:

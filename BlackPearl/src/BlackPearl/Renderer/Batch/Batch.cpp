@@ -196,49 +196,49 @@ namespace BlackPearl {
 	void Batch::CreateVertexArray()
 	{
 
-		m_VertexArray.reset(DBG_NEW VertexArray());
+		m_VertexArray.reset(DBG_NEW VertexArray(false/*interleaved*/));
 		std::shared_ptr<IndexBuffer> indexBuffer;
 		indexBuffer.reset(DBG_NEW IndexBuffer(m_IndexBuffer, m_IndexCnt * sizeof(uint32_t)));
 		m_VertexArray->SetIndexBuffer(indexBuffer);
 
 		//如果每个vertexbuffer 一种attribute,那么 stride = 0, offset 也 = 0
-		std::shared_ptr<VertexBuffer> vertexBuffer(DBG_NEW VertexBuffer(m_PositionBuffer, m_PositionsSize));
+		std::shared_ptr<VertexBuffer> vertexBuffer(DBG_NEW VertexBuffer(m_PositionBuffer, m_PositionsSize, false/*interleaved*/));
 		vertexBuffer->SetBufferLayout({ {ElementDataType::Float3, "aPos", false, POS_SLOT} });
-		std::shared_ptr<VertexBuffer> normalBuffer(DBG_NEW VertexBuffer(m_NormalBuffer, m_NormalsSize));
+		std::shared_ptr<VertexBuffer> normalBuffer(DBG_NEW VertexBuffer(m_NormalBuffer, m_NormalsSize, false/*interleaved*/));
 		normalBuffer->SetBufferLayout({{ ElementDataType::Float3,"aNormal",false,NORMAL_SLOT}});
-		std::shared_ptr<VertexBuffer> texcoordsBuffer(DBG_NEW VertexBuffer(m_TexCordBuffer, m_TexCoordsSize));
+		std::shared_ptr<VertexBuffer> texcoordsBuffer(DBG_NEW VertexBuffer(m_TexCordBuffer, m_TexCoordsSize, false/*interleaved*/));
 		texcoordsBuffer->SetBufferLayout({ { ElementDataType::Float2,"aTexCoords",false,TEXCOORD_SLOT} });
-		std::shared_ptr<VertexBuffer> tangentBuffer(DBG_NEW VertexBuffer(m_TangentBuffer, m_TangentsSize));
+		std::shared_ptr<VertexBuffer> tangentBuffer(DBG_NEW VertexBuffer(m_TangentBuffer, m_TangentsSize, false/*interleaved*/));
 		tangentBuffer->SetBufferLayout({ { ElementDataType::Float3,"aTangent",false,TANGENT_SLOT} });
-		std::shared_ptr<VertexBuffer> bitangentBuffer(DBG_NEW VertexBuffer(m_BitangentBuffer, m_BitangentsSize));
+		std::shared_ptr<VertexBuffer> bitangentBuffer(DBG_NEW VertexBuffer(m_BitangentBuffer, m_BitangentsSize, false/*interleaved*/));
 		bitangentBuffer->SetBufferLayout({ { ElementDataType::Float3,"aBitangent",false,BITANGENT_SLOT} });
 
-		std::shared_ptr<VertexBuffer> jointBuffer(DBG_NEW VertexBuffer(m_JointIndicesBuffer, m_JointIndicesSize));
+		std::shared_ptr<VertexBuffer> jointBuffer(DBG_NEW VertexBuffer(m_JointIndicesBuffer, m_JointIndicesSize, false/*interleaved*/));
 		jointBuffer->SetBufferLayout({ { ElementDataType::Int4,"aJointIndices",false,JOINTINDICES_SLOT} });
-		std::shared_ptr<VertexBuffer> joint1Buffer(DBG_NEW VertexBuffer(m_JointIndices1Buffer, m_JointIndicesSize));
+		std::shared_ptr<VertexBuffer> joint1Buffer(DBG_NEW VertexBuffer(m_JointIndices1Buffer, m_JointIndicesSize, false/*interleaved*/));
 		joint1Buffer->SetBufferLayout({ { ElementDataType::Int4,"aJointIndices1",false,JOINTINDICES1_SLOT} });
-		std::shared_ptr<VertexBuffer> weightBuffer(DBG_NEW VertexBuffer(m_WeightBuffer, m_WeightSize));
+		std::shared_ptr<VertexBuffer> weightBuffer(DBG_NEW VertexBuffer(m_WeightBuffer, m_WeightSize, false/*interleaved*/));
 		weightBuffer->SetBufferLayout({ { ElementDataType::Float4,"aWeights",false,WEIGHT_SLOT} });
-		std::shared_ptr<VertexBuffer> weight1Buffer(DBG_NEW VertexBuffer(m_Weight1Buffer, m_WeightSize));
+		std::shared_ptr<VertexBuffer> weight1Buffer(DBG_NEW VertexBuffer(m_Weight1Buffer, m_WeightSize, false/*interleaved*/));
 		weight1Buffer->SetBufferLayout({ { ElementDataType::Float4,"aWeights1",false,WEIGHT1_SLOT} });
 
-		std::shared_ptr<VertexBuffer> objIdBuffer(DBG_NEW VertexBuffer(m_ObjIdBuffer, m_ObjIdSize));
+		std::shared_ptr<VertexBuffer> objIdBuffer(DBG_NEW VertexBuffer(m_ObjIdBuffer, m_ObjIdSize, false/*interleaved*/));
 		objIdBuffer->SetBufferLayout({ { ElementDataType::Float,"aObjId",false,OBJID_SLOT} });
-		std::shared_ptr<VertexBuffer> colorBuffer(DBG_NEW VertexBuffer(m_ColorBuffer, m_ColorSize));
+		std::shared_ptr<VertexBuffer> colorBuffer(DBG_NEW VertexBuffer(m_ColorBuffer, m_ColorSize, false/*interleaved*/));
 		colorBuffer->SetBufferLayout({ { ElementDataType::Float3,"aColor",false,COLOR_SLOT} });
 
 
-		m_VertexArray->AddAttributeVertexBuffer(vertexBuffer);
-		m_VertexArray->AddAttributeVertexBuffer(normalBuffer);
-		m_VertexArray->AddAttributeVertexBuffer(texcoordsBuffer);
-		m_VertexArray->AddAttributeVertexBuffer(tangentBuffer);
-		m_VertexArray->AddAttributeVertexBuffer(bitangentBuffer);
-		m_VertexArray->AddAttributeVertexBuffer(jointBuffer);
-		m_VertexArray->AddAttributeVertexBuffer(joint1Buffer);
-		m_VertexArray->AddAttributeVertexBuffer(weightBuffer);
-		m_VertexArray->AddAttributeVertexBuffer(weight1Buffer);
-		m_VertexArray->AddAttributeVertexBuffer(colorBuffer);
-		m_VertexArray->AddAttributeVertexBuffer(objIdBuffer);
+		m_VertexArray->AddVertexBuffer(vertexBuffer);
+		m_VertexArray->AddVertexBuffer(normalBuffer);
+		m_VertexArray->AddVertexBuffer(texcoordsBuffer);
+		m_VertexArray->AddVertexBuffer(tangentBuffer);
+		m_VertexArray->AddVertexBuffer(bitangentBuffer);
+		m_VertexArray->AddVertexBuffer(jointBuffer);
+		m_VertexArray->AddVertexBuffer(joint1Buffer);
+		m_VertexArray->AddVertexBuffer(weightBuffer);
+		m_VertexArray->AddVertexBuffer(weight1Buffer);
+		m_VertexArray->AddVertexBuffer(colorBuffer);
+		m_VertexArray->AddVertexBuffer(objIdBuffer);
 
 
 		m_VertexArray->UnBind();

@@ -143,6 +143,8 @@ namespace BlackPearl {
 		transformComponent->SetInitPosition({ 0.0f, 0.0f, 0.0f });
 		transformComponent->SetInitRotation({ 0.0,180.0,0.0 });
 		obj->AddComponent<MeshRenderer>(model);
+		AABB box = BoundingBoxBuilder::Build(obj);
+		obj->AddComponent<BoundingBox>(box);
 		/*if (addBondingBox) {
 			obj->AddComponent<BoundingBox>(model->GetMeshes());
 		}*/

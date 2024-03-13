@@ -19,6 +19,8 @@
 #include "BlackPearl/ObjectManager/ObjectManager.h"
 #include "BlackPearl/Entity/Entity.h"
 #include "BlackPearl/RHI/DynamicRHI.h"
+#include "BlackPearl/Renderer/Material/MaterialManager.h"
+
 #include <chrono>
 using namespace std::chrono;
 namespace BlackPearl {

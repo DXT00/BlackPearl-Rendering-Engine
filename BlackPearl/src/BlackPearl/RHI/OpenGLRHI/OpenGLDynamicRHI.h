@@ -7,6 +7,8 @@ namespace BlackPearl {
 	{
 	public:
 		Window* InitWindow() override;
+		virtual void InitRHI() override;
+
 		void EngineExit() override;
 		//void InitLogger() override;
 		//std::shared_ptr<Logger> GetCoreLogger() override  { return m_OpenGLLogger;};

@@ -81,8 +81,8 @@ namespace BlackPearl {
 			const std::shared_ptr<Shader>& shader,
 			const std::shared_ptr<TextureMaps>& textureMaps,
 			const MaterialColor& materialColors
-		)
-			: m_Shader(shader), m_TextureMaps(textureMaps), m_MaterialColors(materialColors), m_Props(Props()) {}
+		);
+			
 
 		Material(
 			const std::string shaderPath,
@@ -92,7 +92,7 @@ namespace BlackPearl {
 
 		~Material();
 		//TODO:: Çø·ÖopenglºÍdirectX shader
-		std::shared_ptr<Shader>      GetShader()const { GE_ASSERT(g_RHIType == DynamicRHI::Type::OpenGL,"Shader class only support opengl now"); return m_Shader; }
+		std::shared_ptr<Shader>      GetShader()const { GE_ASSERT(DynamicRHI::g_RHIType == DynamicRHI::Type::OpenGL,"Shader class only support opengl now"); return m_Shader; }
 		std::shared_ptr<TextureMaps> GetTextureMaps()const { return m_TextureMaps; }
 		MaterialColor                GetMaterialColor()const { return m_MaterialColors; }
 		Props                        GetProps() const { return m_Props; }
@@ -106,7 +106,8 @@ namespace BlackPearl {
 		void SetMaterialColorDiffuseColor(glm::vec3 color);
 		void SetMaterialColorSpecularColor(glm::vec3 color);
 		void SetMaterialColorEmissionColor(glm::vec3 color);
-
+		void SetId(uint32_t matId);
+		uint32_t GetId() const;
 
 		void SetProps(const Props& props);
 		void SetShininess(float shininess);
@@ -140,6 +141,7 @@ namespace BlackPearl {
 		MaterialColor				 m_MaterialColors;
 		Props                        m_Props;
 		RTXType						 m_RTXType;
+		uint32_t					 m_MatId;
 	};
 
 }

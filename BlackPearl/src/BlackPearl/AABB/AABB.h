@@ -1,7 +1,7 @@
 #pragma once
 #include "glm/glm.hpp"
 #include "BlackPearl/RayTracing/Ray.h"
-
+#include "BlackPearl/Component/TransformComponent/Transform.h"
 namespace BlackPearl {
 
 	class AABB
@@ -17,6 +17,7 @@ namespace BlackPearl {
 		inline float GetRadius() const { return length(m_MaxP - m_MinP) / 2.0f; }
 		void SetInvalid();
 		inline bool IsValid() const { return m_IsValid; }
+		bool JudgeValid();
 		static const AABB InValid;
 		void SetP(const glm::vec3& minP, const glm::vec3& maxP);
 		const AABB operator +(const AABB & aabb) const;
@@ -26,7 +27,7 @@ namespace BlackPearl {
 		bool Hit(std::shared_ptr<Ray> ray,float& tMin,float& tMax);
 		float GetSurfaceArea() const;
 		void Expand(const AABB& aabb);
-
+		void UpdateTransform(glm::mat4 model);
 	private:
 		bool m_IsValid;
 		glm::vec3 m_MinP;

@@ -34,13 +34,7 @@ public:
 			 "assets/skybox/skybox/front.jpg",
 			 "assets/skybox/skybox/back.jpg",
 			});
-		//LoadStaticBackGroundObject("Sphere");
-	//	LoadScene("CornellScene");
 		
-	/*	BlackPearl::Object* bunny = LoadStaticBackGroundObject("Bunny");
-		bunny->GetComponent<BlackPearl::Transform>()->SetScale({ 2,2,2 });
-		bunny->GetComponent<BlackPearl::Transform>()->SetPosition({ 1.0,-1.0,3.0 });*/
-
 		//LoadScene("SpheresScene");
 		LoadChurchScene();
 		//LoadScene("CornellScene");
@@ -48,7 +42,6 @@ public:
 		/*******************************************************************************************************/
 		/*******************************************************************************************************/
 		BlackPearl::Renderer::BeginScene(*(m_MainCamera->GetObj()->GetComponent<BlackPearl::PerspectiveCamera>()), *GetLightSources());
-		//m_SkyBoxObj = nullptr;
 		m_VoxelConeTracingSVORenderer->Init(BlackPearl::Configuration::WindowWidth, BlackPearl::Configuration::WindowHeight,
 			m_CubeObj,
 			m_QuadBRDFLUTObj,

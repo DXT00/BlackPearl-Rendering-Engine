@@ -33,8 +33,20 @@
 #include "BlackPearl/Renderer/MasterRenderer/BatchRenderer.h"
 #include "BlackPearl/Renderer/MasterRenderer/IndirectRenderer.h"
 #include "BlackPearl/Renderer/MasterRenderer/IndirectRendererTest.h"
+#include "BlackPearl/Renderer/MasterRenderer/IndirectCullRenderer.h"
+#include "BlackPearl/Renderer/MasterRenderer/CloudRenderer.h"
+#include "BlackPearl/Renderer/MasterRenderer/SkyboxRenderer.h"
+#include "BlackPearl/Renderer/MasterRenderer/WaterRenderer.h"
+#include "BlackPearl/Renderer/MasterRenderer/DepthRenderer.h"
 
+#ifdef GE_API_VULKAN
+#include "BlackPearl/Renderer/MasterRenderer/VkBasicRender.h"
+#include "BlackPearl/Renderer/MasterRenderer/VkComputeShaderRender.h"
+#include "BlackPearl/Renderer/MasterRenderer/VkRayTracingRenderer.h"
+
+#endif
 #include "BlackPearl/Component/TransformComponent/Transform.h"
+#include "BlackPearl/Component/BVHNodeComponent/BVHNode.h"
 #include "BlackPearl/Component/MeshRendererComponent/MeshRenderer.h"
 #include "BlackPearl/Component/CameraComponent/Camera.h"
 #include "BlackPearl/Component/CameraComponent/PerspectiveCamera.h"
@@ -61,7 +73,7 @@
 #include "BlackPearl/Scene/SceneBuilder.h"
 #include "BlackPearl/Scene/SDFScene.h"
 #include "BlackPearl/Scene/DemoScene/MetaBallSDFScene.h"
-
+#include "BlackPearl/Scene/BoundingBoxBuilder.h"
 //D3D12 API
 #include "BlackPearl/RHI/D3D12RHI/D3D12DeviceResources.h"
 #include "BlackPearl/RHI/DynamicRHI.h"

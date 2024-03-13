@@ -8,6 +8,10 @@ namespace BlackPearl {
 		return DBG_NEW OpenGLWindow();
 	}
 
+	void OpenGLDynamicRHI::InitRHI()
+	{
+	}
+
 	void OpenGLDynamicRHI::EngineExit()
 	{
 		glfwTerminate();

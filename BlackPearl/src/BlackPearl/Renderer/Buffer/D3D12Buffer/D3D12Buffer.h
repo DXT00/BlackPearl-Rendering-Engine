@@ -15,6 +15,8 @@
 #include "BlackPearl/RHI/D3D12RHI/d3dx12.h"
 #include "BlackPearl/Common/CommonFunc.h"
 #include "glm/glm.hpp"
+#include "BlackPearl/RHI/RHIBuffer.h"
+#include "BlackPearl/RHI/RHIDefinitions.h"
 #include <DirectXMath.h>
 // Note that while ComPtr is used to manage the lifetime of resources on the CPU,
 // it has no understanding of the lifetime of resources on the GPU. Apps must account
@@ -46,7 +48,6 @@ namespace BlackPearl {
 		float bottom;
 	};
 
-	
 	struct RayGenConstantBuffer
 	{
 		Viewport viewport;
@@ -98,6 +99,23 @@ namespace BlackPearl {
 		D3D12_CPU_DESCRIPTOR_HANDLE cpuDescriptorHandle;
 		D3D12_GPU_DESCRIPTOR_HANDLE gpuDescriptorHandle;
 	};
+
+
+	//class D3D12Buffer : public RHIBuffer
+	//{
+	//	D3D12Buffer()
+	//		: RHIBuffer(0, EBufferUsageFlags::None, 0)
+	//		, LockedData(nullptr)
+	//	{
+	//	}
+	//	D3D12Buffer(D3D12Device* InParent, uint32_t InSize, EBufferUsageFlags InUsage, uint32_t InStride)
+	//		: RHIBuffer(InSize, InUsage, InStride)
+	//		, D3D12BaseShaderResource(InParent)
+	//		, LockedData(InParent)
+	//	{
+	//	}
+	//};
+
 
 
 	//// Allocate a descriptor and return its index. 

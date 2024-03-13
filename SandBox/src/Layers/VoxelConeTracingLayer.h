@@ -42,7 +42,7 @@ public:
 		LoadScene("CornellScene");
 		LoadScene("SpheresScene");
 		
-		m_skybox = m_SkyBoxObj;
+		m_skybox = nullptr;// m_SkyBoxObj;
 		/*******************************************************************************************************/
 		/*******************************************************************************************************/
 
@@ -63,9 +63,7 @@ public:
 		InputCheck(ts);
 		milliseconds currentTimeMs = duration_cast<milliseconds>(system_clock::now().time_since_epoch());
 		double runtimeSecond = (currentTimeMs.count() - m_StartTimeMs.count()) / 1000.0f;
-		/*m_FrameNum++;
-		GE_ASSERT(m_FrameNum < MAXLONGLONG, "m_FrameNum out of range!");
-		m_FPS =(double) m_FrameNum / runtimeSecond;*/
+
 
 		//Switch mode
 		if (BlackPearl::Input::IsKeyPressed(BlackPearl::KeyCodes::Get(BP_KEY_U))) {
@@ -116,7 +114,7 @@ public:
 			glEnable(GL_DEPTH_TEST);
 			glDepthFunc(GL_LEQUAL);
 		//m_VoxelizationShader->Bind();
-
+			if(m_skybox!= nullptr)
 			m_BasicRenderer->DrawObject(m_SkyBoxObj);
 			
 		}
@@ -151,5 +149,5 @@ private:
 	BlackPearl::BasicRenderer* m_BasicRenderer;
 	
 	unsigned int m_Mode = 0;
-	BlackPearl::VoxelConeTracingRenderer::RenderingMode m_CurrentRenderingMode = BlackPearl::VoxelConeTracingRenderer::RenderingMode::VOXELIZATION_VISUALIZATION;// VOXEL_CONE_TRACING;//VOXELIZATION_VISUALIZATION
+	BlackPearl::VoxelConeTracingRenderer::RenderingMode m_CurrentRenderingMode = BlackPearl::VoxelConeTracingRenderer::RenderingMode::VOXEL_CONE_TRACING;//VOXEL_CONE_TRACING
 };

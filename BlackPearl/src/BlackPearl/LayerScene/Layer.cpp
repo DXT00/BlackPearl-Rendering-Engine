@@ -13,10 +13,12 @@
 #include <stdlib.h>
 #include "BlackPearl/Renderer/MasterRenderer/IBLRenderer.h"
 #include "BlackPearl/Renderer/MasterRenderer/IBLProbesRenderer.h"
+#include "BlackPearl/Renderer/MasterRenderer/ShadowMapPointLightRenderer.h"
 #include "BlackPearl/Renderer/MasterRenderer/GBufferRenderer.h"
 #include "BlackPearl/Renderer/MasterRenderer/VoxelConeTracingRenderer.h"
 #include "BlackPearl/Renderer/MasterRenderer/VoxelConeTracingDeferredRenderer.h"
 #include "BlackPearl/Renderer/MasterRenderer/VoxelConeTracingSVORenderer.h"
+#include "BlackPearl/Renderer/MasterRenderer/CloudRenderer.h"
 #include "BlackPearl/Application.h"
 #include "BlackPearl/Renderer/Buffer/D3D12Buffer/D3D12Buffer.h"
 
@@ -82,9 +84,38 @@ namespace BlackPearl {
 		ImGui::DragFloat("IBL GICoeffs", &IBLRenderer::s_GICoeffs, 0.2f, 0.0f, 1.0f, "%.3f ");
 		ImGui::Checkbox("IBL HDR", &GBufferRenderer::s_HDR);
 
+		ImGui::Text("SSR GI");
+		ImGui::DragFloat("SSRGICoeffs", &GBufferRenderer::s_SSRGICoeffs, 0.2f, 0.0f, 1.0f, "%.3f ");
 
 
 		ImGui::End();
+
+		ImGui::Begin("Cloud Settings");
+		//ImGui::Text("FPS = %.3lf", Application::s_AppFPS);
+		//ImGui::Text("AvgFPS = %.3lf", Application::s_AppAverageFPS);
+	//	ImGui::Separator();
+	
+		ImGui::DragFloat("rayStep", &CloudRenderer::s_rayStep, 0.2f, 0.0f, 1.0f, "%.4f ");
+		ImGui::DragFloat("step", &CloudRenderer::s_step, 0.2f, 1.0f, 45.0f, "%.4f ");
+		ImGui::DragFloat("colorOffset1", &CloudRenderer::s_colorOffset1, 0.2f, 0.0f, 1.0f, "%.3f ");
+		ImGui::DragFloat("colorOffset2", &CloudRenderer::s_colorOffset2, 0.0f, 0, 1.0f, "%.3f ");
+		ImGui::DragFloat("s_densityOffset", &CloudRenderer::s_densityOffset, 0.0f, -1.0f, 1.0f, "%.3f ");
+		ImGui::DragFloat("s_lightAbsorptionTowardSun", &CloudRenderer::s_lightAbsorptionTowardSun, 1.0f, 0.0f, 100.0f, "%.3f ");
+		ImGui::DragFloat("s_densityMultiplier", &CloudRenderer::s_densityMultiplier, 1.0f, 0.0f, 100.0f, "%.3f ");
+
+		float boxMax[] = { CloudRenderer::s_boundsMax.x, CloudRenderer::s_boundsMax.y, CloudRenderer::s_boundsMax.z };
+		float boxMin[] = { CloudRenderer::s_boundsMin.x, CloudRenderer::s_boundsMin.y, CloudRenderer::s_boundsMin.z };
+
+		ImGui::DragFloat3("s_boundsMax", boxMax, 0.05f, 0.001f, 100.0f, "%.3f ");
+		CloudRenderer::s_boundsMax = glm::vec3(boxMax[0], boxMax[1], boxMax[2]);
+		CloudRenderer::s_boundsMin = glm::vec3(boxMin[0], boxMin[1], boxMin[2]);
+
+
+	
+
+		ImGui::End();
+
+
 
 		ImGui::Begin("Performance");
 		ImGui::Text("FPS = %.3lf", Application::s_AppFPS);
@@ -1174,6 +1205,7 @@ namespace BlackPearl {
 	{
 		Object* obj = g_objectManager->CreateModel(modelPath, shaderPath, isAnimated, vertices_sorted, false, name, createMeshlet, isMeshletModel, options);
 		m_ObjectsList.push_back(obj);
+		m_BackGroundObjsList.push_back(obj);
 		return obj;
 	}
 	MainCamera* Layer::CreateCamera(const std::string& name) {
@@ -1571,16 +1603,25 @@ namespace BlackPearl {
 		auto props = pointLight->GetLightProps();
 		static  int attenuation = (int)pointLight->GetAttenuation().maxDistance;
 		float intensity = pointLight->GetLightProps().intensity;
+		float area = pointLight->GetLightProps().area;
+		float bias = pointLight->GetLightProps().shadowBias;
+
 		ImGui::ColorEdit3("ambient Color", glm::value_ptr(props.ambient));
 		ImGui::ColorEdit3("diffuse Color", glm::value_ptr(props.diffuse));
 		ImGui::ColorEdit3("specular Color", glm::value_ptr(props.specular));
 		ImGui::ColorEdit3("emission Color", glm::value_ptr(props.emission));
 		ImGui::DragInt("attenuation", &attenuation, 0.5f, 7, 3250);
 		ImGui::DragFloat("intensity", &intensity, 0.1f, 0.1, 100);
+		ImGui::DragFloat("lightSize", &area, 0.1f, 0.1, 100);
+		ImGui::DragFloat("shadowBias", &bias, 0.001f, 0.001, 100);
+		ImGui::DragInt("pcfSamplesCnt", &ShadowMapPointLightRenderer::s_PCFSamplesCnt, 1, 2, 60);
 
 		pointLight->SetAttenuation(attenuation);
+		Light::Props pros = { props.ambient ,props.diffuse,props.specular,props.emission,intensity };
+		pros.area = area;
+		pros.shadowBias = bias;
 
-		pointLight->UpdateMesh({ props.ambient ,props.diffuse,props.specular,props.emission,intensity });
+		pointLight->UpdateMesh(pros);
 
 	}
 

@@ -12,8 +12,8 @@ namespace BlackPearl {
 		static unsigned int Rand_UI();
 		static float Rand_F();
 		static double Rand_D();
+		static const float PI;
 		static size_t Fit2Square(size_t size);
-
 
 		template <typename T>
 		static T Min(const std::vector<T>& v)
@@ -42,6 +42,11 @@ namespace BlackPearl {
 			}
 			return max_v;
 		}
+		template <typename T>
+		static T Max(T a, T b)
+		{
+			return (a > b) ? a : b;
+		}
 
 		static glm::vec3 Max(const std::vector<glm::vec3>& v)
 		{
@@ -55,6 +60,13 @@ namespace BlackPearl {
 			}
 			return max_v;
 		}
+
+		template <class T>
+		static constexpr T DivideAndRoundUp(T Dividend, T Divisor)
+		{
+			return (Dividend + Divisor - 1) / Divisor;
+		}
+
 
 	};
 

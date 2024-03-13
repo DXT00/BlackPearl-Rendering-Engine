@@ -3,9 +3,9 @@
 
 layout (local_size_x = 8,local_size_y = 8,local_size_z = 1) in;
 
-uniform layout(binding = 0,r32ui) uimageBuffer u_octreeIdx;
-uniform layout(binding = 1,r32ui) uimageBuffer u_octreeKd;
-uniform layout(binding = 2,rgb10_a2ui) uimageBuffer u_voxelPos;
+layout(binding = 0,r32ui) uniform uimageBuffer u_octreeIdx;
+layout(binding = 1,r32ui) uniform uimageBuffer u_octreeKd;
+layout(binding = 2,rgb10_a2ui) uniform uimageBuffer u_voxelPos;
 
 uniform int u_level;
 uniform int u_numVoxelFrag;
@@ -24,7 +24,7 @@ uint convVec4ToRGBA8( in vec4 val )
 }
 //Use a atomic running average method to prevent buffer saturation
 	//From OpenGL Insight ch. 22
-void imageAtomicRGBA8Avg( vec4 val, int coord, layout(r32ui) uimageBuffer buf )
+void imageAtomicRGBA8Avg( vec4 val, int coord )
 {
     val.rgb *= 255.0;
 	val.a = 1;
@@ -44,7 +44,7 @@ void imageAtomicRGBA8Avg( vec4 val, int coord, layout(r32ui) uimageBuffer buf )
 	//P and sample (for multisampled forms) in the image bound to uint image. If the values are equal, 
 	//data is stored into the texel, otherwise it is discarded.
 	//It returns the original value of the texel regardless of the result of the comparison operation.
-	while( (cur = imageAtomicCompSwap( buf, coord, prev, newVal ) ) != prev )
+	while( (cur = imageAtomicCompSwap( u_octreeKd, coord, prev, newVal ) ) != prev )
    {
        prev = cur;
 	   vec4 rval = convRGBA8ToVec4( cur );
@@ -82,12 +82,12 @@ void main(){
 
 			vec4 avgColor=vec4(0);
 			int flagNum = 0;
-			for(int idx = 0;idx<8;idx++){
+			for(int idx = 0; idx<8; idx++){
 				childNode=imageLoad(u_octreeIdx,(childIdx+idx)).r;
 				if((childNode & 0x80000000u)!=0u){
 					uint uintColor = imageLoad(u_octreeKd,(childIdx+idx)).r;
 					vec4 vecColor = convRGBA8ToVec4(uintColor);
-					avgColor+= vec4(vecColor.rgb/255.0,vecColor.a);
+					avgColor += vec4(vecColor.rgb/255.0,vecColor.a);
 					flagNum++;
 				}
 				
@@ -95,7 +95,7 @@ void main(){
 			//if(flagNum!=0)
 				//avgColor/=float(flagNum);
 				avgColor/=8.0;
-			imageAtomicRGBA8Avg(avgColor,int(parent),u_octreeKd);
+			imageAtomicRGBA8Avg(avgColor,int(parent));
 			//imageStore(u_octreeKd,int(parent),uvec4(avgColor));
 			break;
 		}

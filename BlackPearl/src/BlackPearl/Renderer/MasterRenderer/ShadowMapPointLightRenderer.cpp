@@ -10,6 +10,9 @@ namespace BlackPearl {
 	int ShadowMapPointLightRenderer::s_ShadowMapPointLightHeight =  1024;
 	float ShadowMapPointLightRenderer::s_FarPlane = 60.0f;
 	float ShadowMapPointLightRenderer::s_FOV = 90.0f;
+	int ShadowMapPointLightRenderer::s_PCFSamplesCnt = 10.0f;
+
+	//float ShadowMapPointLightRenderer::s_LightSize = 1.0f;
 	//NearPlane 不可改必须保证是1 ，shader中要转换到[0,1]坐标系
 	//CubeMapDepthShader.glsl
 	const float ShadowMapPointLightRenderer::s_NearPlane = 1.0f;
@@ -21,7 +24,7 @@ namespace BlackPearl {
 
 		/*m_FrameBuffer.reset(DBG_NEW FrameBuffer(s_ShadowMapPointLightWidth, s_ShadowMapPointLightHeight,
 			{ FrameBuffer::Attachment::CubeMapDepthTexture }, 0, true));*/
-
+		m_ShadowType = ShadowType::PCSS;
 		m_FrameBuffer.reset(DBG_NEW FrameBuffer());
 		//m_DepthCubeMap.reset(DBG_NEW CubeMapTexture(Texture::Type::CubeMap, s_ShadowMapPointLightWidth, s_ShadowMapPointLightWidth, GL_NEAREST, GL_NEAREST, GL_CLAMP_TO_EDGE, GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT, GL_FLOAT));
 		
@@ -29,7 +32,8 @@ namespace BlackPearl {
 		m_LightProjectionViewMatries.assign(6, glm::mat4(1.0));
 		m_SimpleDepthShader.reset(DBG_NEW BlackPearl::Shader("assets/shaders/shadowMap/pointLight/CubeMapDepthShader.glsl"));
 		m_SimpleDepthAnimatedObjShader.reset(DBG_NEW BlackPearl::Shader("assets/shaders/animatedModel/animatedCubeMapDepthShader.glsl"));
-		m_ShadowMapShader.reset(DBG_NEW BlackPearl::Shader("assets/shaders/shadowMap/pointLight/CubeMapShadowMapping.glsl"));
+		//m_ShadowMapShader.reset(DBG_NEW BlackPearl::Shader("assets/shaders/shadowMap/pointLight/CubeMapShadowMapping.glsl"));
+		m_ShadowMapShader.reset(DBG_NEW BlackPearl::Shader("assets/shaders/shadowMap/pointLight/CubeMapShadowMappingPCSS.glsl"));
 
 
 	}
@@ -80,7 +84,7 @@ namespace BlackPearl {
 					m_SimpleDepthShader->SetUniform1f("u_FarPlane", s_FarPlane);
 					m_SimpleDepthShader->SetUniformVec3f("u_LightPos", lightPos);
 
-					obj->GetComponent<MeshRenderer>()->SetShaders(m_ShadowMapShader);
+					//obj->GetComponent<MeshRenderer>()->SetShaders(m_ShadowMapShader);
 					DrawObject(obj, m_SimpleDepthShader);
 				}
 			}
@@ -132,6 +136,12 @@ namespace BlackPearl {
 			GE_ASSERT(lightSources->GetPointLights().size() >= 1, "no pointlight found!");
 		//	m_ShadowMapShader->SetUniformVec3f("u_LightPos", lightSources->GetPointLights()[0]->GetComponent<Transform>()->GetPosition());
 			m_ShadowMapShader->SetUniform1f("u_FarPlane", s_FarPlane);
+			m_ShadowMapShader->SetUniform1f("u_NearPlane", s_NearPlane);
+
+			
+			m_ShadowMapShader->SetUniform1i("u_ShadowType", m_ShadowType);
+			m_ShadowMapShader->SetUniform1i("u_PCFSamplesCnt", s_PCFSamplesCnt);
+
 
 			unsigned int textureId = 0;
 			for (Object* pointLight:lightSources->GetPointLights())
@@ -139,7 +149,11 @@ namespace BlackPearl {
 				m_ShadowMapShader->SetUniform1i("u_ShadowMap["+std::to_string(textureId)+"]", textureId);
 				glActiveTexture(GL_TEXTURE0+ textureId);
 				pointLight->GetComponent<PointLight>()->GetShadowMap()->Bind();
+				m_ShadowMapShader->SetUniform1f("u_LightSize[" + std::to_string(textureId) + "]", pointLight->GetComponent<PointLight>()->GetLightProps().area);
+				m_ShadowMapShader->SetUniform1f("u_Bias[" + std::to_string(textureId) + "]", pointLight->GetComponent<PointLight>()->GetLightProps().shadowBias);
+
 				textureId++;
+
 			}
 
 			if (obj->GetComponent<MeshRenderer>()->GetIsPBRObject())

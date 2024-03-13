@@ -30,6 +30,9 @@
     <ClInclude Include="src\Layers\AdvanceLightTestLayer.h">
       <Filter>src\Layers</Filter>
     </ClInclude>
+    <ClInclude Include="src\Layers\BatchRenderingLayer.h">
+      <Filter>src\Layers</Filter>
+    </ClInclude>
     <ClInclude Include="src\Layers\CubeTestLayer.h">
       <Filter>src\Layers</Filter>
     </ClInclude>
@@ -40,6 +43,12 @@
       <Filter>src\Layers</Filter>
     </ClInclude>
     <ClInclude Include="src\Layers\IBLRenderingLayer.h">
+      <Filter>src\Layers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Layers\IndirectDrawLayer.h">
+      <Filter>src\Layers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Layers\IndirectOcclusionCullLayer.h">
       <Filter>src\Layers</Filter>
     </ClInclude>
     <ClInclude Include="src\Layers\PbrRenderingLayer.h">
@@ -57,6 +66,9 @@
     <ClInclude Include="src\Layers\SkyBoxTestLayer.h">
       <Filter>src\Layers</Filter>
     </ClInclude>
+    <ClInclude Include="src\Layers\TerrainRenderingLayer.h">
+      <Filter>src\Layers</Filter>
+    </ClInclude>
     <ClInclude Include="src\Layers\VoxelConeTracingDeferredLayer.h">
       <Filter>src\Layers</Filter>
     </ClInclude>
@@ -69,8 +81,6 @@
     <ClInclude Include="src\Layers\VoxelizationTestLayer.h">
       <Filter>src\Layers</Filter>
     </ClInclude>
-    <ClInclude Include="src\Layers\TerrainRenderingLayer.h" />
-    <ClInclude Include="src\Layers\BatchRenderingLayer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\SandBox.cpp">

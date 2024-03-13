@@ -5,9 +5,10 @@
 #include "spdlog/sinks/stdout_color_sinks.h"
 #include "BlackPearl/RHI/DynamicRHI.h"
 
+
 namespace BlackPearl {
 	extern class Log* g_Log;
-	extern DynamicRHI::Type g_RHIType;
+	//extern DynamicRHI::Type g_RHIType;
 
 	//TODO::通过类区分OpenGL和DirectX,由于有模板，难以使用继承，还需考虑其他方法
 	class Log
@@ -49,7 +50,7 @@ namespace BlackPearl {
 	template<typename... Args>
 	void Log::Trace(const char* fmt, const Args &... args)
 	{
-		if (g_RHIType == DynamicRHI::Type::OpenGL) {
+		if (DynamicRHI::g_RHIType == DynamicRHI::Type::OpenGL || DynamicRHI::g_RHIType == DynamicRHI::Type::Vulkan) {
 			m_OpenGLCoreLogger->trace(fmt, args...);
 		}
 		else if (g_RHIType == DynamicRHI::Type::D3D12) {
@@ -60,10 +61,10 @@ namespace BlackPearl {
 	template<typename... Args>
 	void Log::Info(const char* fmt, const Args &... args)
 	{
-		if (g_RHIType == DynamicRHI::Type::OpenGL) {
+		if (DynamicRHI::g_RHIType == DynamicRHI::Type::OpenGL || DynamicRHI::g_RHIType == DynamicRHI::Type::Vulkan) {
 			m_OpenGLCoreLogger->info(fmt, args...);
 		}
-		else if (g_RHIType == DynamicRHI::Type::D3D12) {
+		else if (DynamicRHI::g_RHIType == DynamicRHI::Type::D3D12) {
 			m_D3D12CoreLogger->info(fmt, args...);
 		}
 	}
@@ -71,10 +72,10 @@ namespace BlackPearl {
 	template<typename... Args>
 	void Log::Warn(const char* fmt, const Args &... args)
 	{
-		if (g_RHIType == DynamicRHI::Type::OpenGL) {
+		if (DynamicRHI::g_RHIType == DynamicRHI::Type::OpenGL || DynamicRHI::g_RHIType == DynamicRHI::Type::Vulkan) {
 			m_OpenGLCoreLogger->warn(fmt, args...);
 		}
-		else if (g_RHIType == DynamicRHI::Type::D3D12) {
+		else if (DynamicRHI::g_RHIType == DynamicRHI::Type::D3D12) {
 			m_D3D12CoreLogger->warn(fmt, args...);
 		}
 
@@ -83,10 +84,10 @@ namespace BlackPearl {
 	template<typename... Args>
 	void Log::Error(const char* fmt, const Args &... args)
 	{
-		if (g_RHIType == DynamicRHI::Type::OpenGL) {
+		if (DynamicRHI::g_RHIType == DynamicRHI::Type::OpenGL || DynamicRHI::g_RHIType == DynamicRHI::Type::Vulkan) {
 			m_OpenGLCoreLogger->error(fmt, args...);
 		}
-		else if (g_RHIType == DynamicRHI::Type::D3D12) {
+		else if (DynamicRHI::g_RHIType == DynamicRHI::Type::D3D12) {
 			m_D3D12CoreLogger->error(fmt, args...);
 		}
 
@@ -95,10 +96,10 @@ namespace BlackPearl {
 	template<typename... Args>
 	void Log::Fatal(const char* fmt, const Args &... args)
 	{
-		if (g_RHIType == DynamicRHI::Type::OpenGL) {
+		if (DynamicRHI::g_RHIType == DynamicRHI::Type::OpenGL || DynamicRHI::g_RHIType == DynamicRHI::Type::Vulkan) {
 			m_OpenGLCoreLogger->fatal(fmt, args...);
 		}
-		else if (g_RHIType == DynamicRHI::Type::D3D12) {
+		else if (DynamicRHI::g_RHIType == DynamicRHI::Type::D3D12) {
 			m_D3D12CoreLogger->fatal(fmt, args...);
 		}
 
@@ -107,10 +108,10 @@ namespace BlackPearl {
 	template<typename ...Args>
 	void Log::Trace(const Args & ...args)
 	{
-		if (g_RHIType == DynamicRHI::Type::OpenGL) {
+		if (DynamicRHI::g_RHIType == DynamicRHI::Type::OpenGL || DynamicRHI::g_RHIType == DynamicRHI::Type::Vulkan) {
 			m_OpenGLCoreLogger->fatal(fmt, args...);
 		}
-		else if (g_RHIType == DynamicRHI::Type::D3D12) {
+		else if (DynamicRHI::g_RHIType == DynamicRHI::Type::D3D12) {
 			m_D3D12CoreLogger->fatal(fmt, args...);
 		}
 	}
@@ -118,10 +119,10 @@ namespace BlackPearl {
 	template<typename ...Args>
 	void Log::Info(const Args & ...args)
 	{
-		if (g_RHIType == DynamicRHI::Type::OpenGL) {
+		if (DynamicRHI::g_RHIType == DynamicRHI::Type::OpenGL || DynamicRHI::g_RHIType == DynamicRHI::Type::Vulkan) {
 			m_OpenGLCoreLogger->info(args...);
 		}
-		else if (g_RHIType == DynamicRHI::Type::D3D12) {
+		else if (DynamicRHI::g_RHIType == DynamicRHI::Type::D3D12) {
 			m_D3D12CoreLogger->info(args...);
 		}
 	}
@@ -129,10 +130,10 @@ namespace BlackPearl {
 	template<typename ...Args>
 	void Log::Warn(const Args & ...args)
 	{
-		if (g_RHIType == DynamicRHI::Type::OpenGL) {
+		if (DynamicRHI::g_RHIType == DynamicRHI::Type::OpenGL || DynamicRHI::g_RHIType == DynamicRHI::Type::Vulkan) {
 			m_OpenGLCoreLogger->warn(args...);
 		}
-		else if (g_RHIType == DynamicRHI::Type::D3D12) {
+		else if (DynamicRHI::g_RHIType == DynamicRHI::Type::D3D12) {
 			m_D3D12CoreLogger->warn(args...);
 		}
 	}
@@ -140,10 +141,10 @@ namespace BlackPearl {
 	template<typename ...Args>
 	void Log::Error(const Args & ...args)
 	{
-		if (g_RHIType == DynamicRHI::Type::OpenGL) {
+		if (DynamicRHI::g_RHIType == DynamicRHI::Type::OpenGL || DynamicRHI::g_RHIType == DynamicRHI::Type::Vulkan) {
 			m_OpenGLCoreLogger->error(args...);
 		}
-		else if (g_RHIType == DynamicRHI::Type::D3D12) {
+		else if (DynamicRHI::g_RHIType == DynamicRHI::Type::D3D12) {
 			m_D3D12CoreLogger->error(args...);
 		}
 	}
@@ -151,10 +152,10 @@ namespace BlackPearl {
 	template<typename ...Args>
 	void Log::Fatal(const Args & ...args)
 	{
-		if (g_RHIType == DynamicRHI::Type::OpenGL) {
+		if (DynamicRHI::g_RHIType == DynamicRHI::Type::OpenGL || DynamicRHI::g_RHIType == DynamicRHI::Type::Vulkan) {
 			m_OpenGLCoreLogger->fatal(args...);
 		}
-		else if (g_RHIType == DynamicRHI::Type::D3D12) {
+		else if (DynamicRHI::g_RHIType == DynamicRHI::Type::D3D12) {
 			m_D3D12CoreLogger->fatal(args...);
 		}
 	}

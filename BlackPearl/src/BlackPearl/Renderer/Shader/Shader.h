@@ -1,8 +1,8 @@
 #pragma once
+#include "glad/glad.h"
 #include<glm/glm.hpp>
 #include<string>
 #include<memory>
-#include "glad/glad.h"
 #include <unordered_map>
 #include "BlackPearl/Component/LightComponent/LightSources.h"
 namespace BlackPearl {
@@ -33,7 +33,7 @@ namespace BlackPearl {
 
 		void SetUniformVec3f(const std::string & name, const glm::vec3& value) const;
 		void SetUniformVec2f(const std::string& name, const glm::vec2& value) const;
-
+		void SetUniformVec2i(const std::string& name, const glm::ivec2& value) const;
 		
 
 		std::string GetPath() { return m_ShaderPath; }

@@ -50,7 +50,8 @@ namespace BlackPearl {
 			int format,
 			int wrap,
 			unsigned int dataType,
-			bool generateMipmap = false
+			bool generateMipmap = false,
+			float* data = NULL
 		);
 
 		/*
@@ -89,7 +90,7 @@ namespace BlackPearl {
 			GLenum format,
 			int wrap,
 			unsigned int dataType,
-			bool generateMipmap);
+			bool generateMipmap, float* data = NULL);
 
 		virtual void Bind();
 		virtual void UnBind();
@@ -102,11 +103,13 @@ namespace BlackPearl {
 		std::string GetPath() { return m_Path; }
 		int GetWidth()const { return m_Width; }
 		int GetHeight()const { return m_Height; }
+		int GetCurrentLod() const { return m_CurLod; }
 
 	protected:
 		unsigned int m_TextureID;
 		int m_Width = 0;
 		int m_Height = 0;
+		int m_CurLod = 0;
 		std::string m_Path;
 		Type m_Type;
 	};

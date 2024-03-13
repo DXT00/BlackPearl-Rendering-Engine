@@ -22,8 +22,8 @@ void main(){
 	worldPositionGeom = vec3(u_Model * vec4(aPos,1.0));
 	normalGeom = normalize(mat3(u_TranInverseModel)*aNormal);
 	int uSkyBox = u_IsSkybox;
-	if(uSkyBox==1)
-		texCoordGeom=aPos;
+	if(uSkyBox == 1)
+		texCoordGeom = aPos;
 	else
 		texCoordGeom=vec3(aTexCoords.x,aTexCoords.y,1.0);
 	gl_Position = u_ProjectionView * u_Model * vec4(aPos,1.0);//vec4(worldPositionGeom, 1.0);

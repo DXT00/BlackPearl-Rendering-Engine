@@ -7,8 +7,8 @@
 namespace BlackPearl {
 	//float fov, float width, float height, float znear, float zfar,
 	PerspectiveCamera::PerspectiveCamera(const ViewMatrixProps &viewMatrixProps)
-		:Camera(),m_Fov(45.0f), m_Width(Configuration::WindowWidth), m_Height(Configuration::WindowHeight), m_zNear(0.1f), m_zFar(100.0f),
-		m_CameraMoveSpeed(1.0f), m_CameraRotateSpeed(10.0f)
+		:Camera(),m_Fov(45.0f), m_Width(Configuration::WindowWidth), m_Height(Configuration::WindowHeight), m_zNear(0.1f), m_zFar(1000.0f),
+		m_CameraMoveSpeed(1.0f), m_CameraRotateSpeed(0.1f)
 	{
 
 		m_ProjectionMatrix = glm::perspective(glm::radians(m_Fov), m_Width / m_Height, m_zNear, m_zFar);
@@ -22,6 +22,7 @@ namespace BlackPearl {
 		m_ViewMatrixProps.Pitch = viewMatrixProps.Pitch;
 
 		RecalculateViewMatrix();
+
 
 	}
 

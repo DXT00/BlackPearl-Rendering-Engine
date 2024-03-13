@@ -43,6 +43,7 @@ namespace BlackPearl {
 		IndirectRenderer();
 		~IndirectRenderer();
 		void Render(const std::shared_ptr<Shader>& shader);
+		void Cull(const std::shared_ptr<Shader>& cullingShader);
 		void Init(Scene * scene, const std::shared_ptr<Shader>& shader);
 		void UpdateTransform();
 		void UpdateDrawCommands();

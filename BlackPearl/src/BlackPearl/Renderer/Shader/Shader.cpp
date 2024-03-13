@@ -1,7 +1,7 @@
 #pragma once
 #include"pch.h"
-#include "Shader.h"
 #include <glad/glad.h>
+#include "Shader.h"
 #include <BlackPearl/Core.h>
 #include "BlackPearl/Component/LightComponent/ParallelLight.h"
 #include "BlackPearl/Component/LightComponent/PointLight.h"
@@ -396,6 +396,16 @@ namespace BlackPearl {
 	void Shader::SetUniformVec2f(const std::string& name, const glm::vec2& value) const
 	{
 		glUniform2fv(glGetUniformLocation(m_RendererID, name.c_str()), 1, &value[0]);
+		GE_ERROR_JUDGE();
+
+	}
+
+	void Shader::SetUniformVec2i(const std::string& name, const glm::ivec2& value) const
+	{
+		GLint location = glGetUniformLocation(m_RendererID, name.c_str());
+		GE_ERROR_JUDGE();
+
+		glUniform2iv(location, 1, &value[0]);
 		GE_ERROR_JUDGE();
 
 	}

@@ -30,8 +30,8 @@ namespace BlackPearl {
 		float m_Fov;
 		float m_Width, m_Height;
 		float m_zNear, m_zFar;
-		float m_CameraMoveSpeed = 1.0f;
-		float m_CameraRotateSpeed = 10.0f;
+		float m_CameraMoveSpeed = 0.5f;
+		float m_CameraRotateSpeed = 0.1f;
 
 
 	};

@@ -43,7 +43,7 @@ void main(){
 	vec3 p2 = worldPositionGeom[2] - worldPositionGeom[0];
 	vec3 p = abs(cross(p1, p2)); 
 	for(uint i = 0; i < 3; ++i){
-		worldPositionFrag =worldPositionGeom[i];//
+		worldPositionFrag = worldPositionGeom[i];//
 		normal_worldPositionFrag=(worldPositionGeom[i]-u_CameraViewPos)/u_CubeSize;
 		normalFrag = normalGeom[i];
 		if(p.z > p.x && p.z > p.y){

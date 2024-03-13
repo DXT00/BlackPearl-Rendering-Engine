@@ -6,7 +6,8 @@ namespace BlackPearl{
 
 	enum class RHIType {
 		D3D12,
-		OpenGL
+		OpenGL,
+		Vulkan
 	};
 
 	//void    RHIInitLogger();
@@ -18,14 +19,19 @@ namespace BlackPearl{
 	public:
 		enum class Type {
 			D3D12,
-			OpenGL
+			OpenGL,
+			Vulkan
 		};
 		
 		virtual Window* InitWindow() = 0;
+		virtual void InitRHI() = 0;
+
 		//virtual void InitLogger() = 0;
 		//virtual std::shared_ptr<Logger> GetCoreLogger() = 0;
 		virtual void InitMathLib() {};
 		virtual void EngineExit() {};
+
+		static Type g_RHIType;
 	};
 
 	//DynamicRHI::Type g_RHIType;

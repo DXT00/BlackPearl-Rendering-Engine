@@ -8,20 +8,34 @@
 namespace BlackPearl {
 	extern ObjectManager* g_objectManager;
 
+	BVHNode::BVHNode(Object* obj)
+		:Component(Component::Type::BVHNode)
+	{
+		m_IsLeaf = true;
+		m_LeafObj = obj;
+
+		GE_ASSERT(obj->HasComponent<BlackPearl::Triangle>(), "not triagle");
+		m_Box = obj->GetComponent<BlackPearl::BoundingBox>()->Get();
+	}
+
 	BVHNode::BVHNode(const std::vector<Object*>& objs)
 		:Component(Component::Type::BVHNode)
 	{
+		m_IsLeaf = false;
+
 		Build(objs);
 	}
 
 	BVHNode::BVHNode(const std::vector<Vertex>& mesh_vertex)
 		: Component(Component::Type::BVHNode)
 	{
-		std::vector<Object*> trimesh = BuildTriMesh(mesh_vertex);
-		if (trimesh.size() == 0) {
+		GE_ASSERT(!mesh_vertex.empty(), "mesh_vertex is empty");
+		m_IsLeaf = false;
+		BuildTriMesh(mesh_vertex);
+		if (m_TriangleMesh.size() == 0) {
 			return;
 		}
-		Build(trimesh);
+		Build(m_TriangleMesh);
 	}
 
 	AABB BVHNode::GetRootBox() const
@@ -32,6 +46,11 @@ namespace BlackPearl {
 	bool BVHNode::IsLeaf() const
 	{
 		return m_IsLeaf;
+	}
+
+	Object* BVHNode::GetLeafObj() const
+	{
+		return m_LeafObj;
 	}
 
 	void BVHNode::SetLeaf(bool is_leaf)
@@ -49,21 +68,33 @@ namespace BlackPearl {
 		return m_Right;
 	}
 
+	std::vector<Object*> BVHNode::GetTriangleMesh() const
+	{
+		return m_TriangleMesh;
+	}
+
 	void BVHNode::Build(std::vector<Object*> objs)
 	{
 		size_t num = objs.size();
 		//¼ÆËã³¡¾°µÄbounding box
 		size_t dim = 3;
 		if (num == 1) {
-			m_Left = objs[0];
-			m_IsLeaf == true;
+			m_IsLeaf = true;
+			m_Left = NULL;
 			m_Right = NULL;
 			m_Box = objs[0]->GetComponent<BlackPearl::BoundingBox>()->Get();
+			m_LeafObj = objs[0];
+			GE_ASSERT(objs[0]->HasComponent<BlackPearl::Triangle>(), "not triagle");
 			return ;
 		}
 		else if (num == 2) {
 			m_Left = objs[0];
 			m_Right = objs[1];
+			if(!m_Left->HasComponent<BVHNode>())
+				m_Left->AddComponent<BVHNode>(objs[0]);
+			if (!m_Right->HasComponent<BVHNode>())
+				m_Right->AddComponent<BVHNode>(objs[1]);
+			m_IsLeaf = false;
 			m_Box = m_Left->GetComponent<BlackPearl::BoundingBox>()->Get() + m_Right->GetComponent<BlackPearl::BoundingBox>()->Get();
 			return ;
 		}
@@ -87,7 +118,9 @@ namespace BlackPearl {
 			for (auto obj : objs)
 			{
 				AABB& obj_box = obj->GetComponent<BlackPearl::BoundingBox>()->Get();
-				int bucketID = (obj_box.GetCenter()[i] - m_Box.GetMinP()[i]) / boxLen;
+				int bucketID = 0;
+				if(boxLen != 0)
+					bucketID = (obj_box.GetCenter()[i] - m_Box.GetMinP()[i]) / boxLen;
 				buckets[bucketID].push_back(obj);
 				boxOfBuckets[bucketID].Expand(obj_box);
 			}
@@ -249,7 +282,6 @@ namespace BlackPearl {
 
 	std::vector<Object*> BVHNode::BuildTriMesh(const std::vector<Vertex>& mesh_vertex)
 	{
-		std::vector<Object*> triMesh;
 		if (mesh_vertex.size() % 3 != 0) {
 			m_Box.SetInvalid();
 			GE_CORE_WARN("mesh_vertex.size() % 3 != 0, m_Box is invalid")
@@ -258,10 +290,9 @@ namespace BlackPearl {
 		for (size_t i = 0; i < mesh_vertex.size(); i += 3)
 		{
 			Object* tri = g_objectManager->CreateTriangle({ mesh_vertex[i],mesh_vertex[i + 1],mesh_vertex[i + 2] });
-
-			triMesh.push_back(tri);
+			m_TriangleMesh.push_back(tri);
 
 		}
-		return triMesh;
+		return m_TriangleMesh;
 	}
 }

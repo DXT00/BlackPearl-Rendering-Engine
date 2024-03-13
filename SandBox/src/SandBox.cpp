@@ -21,6 +21,10 @@
 #include "Layers/VoxelizationTestLayer.h"
 #include "Layers/CubeTestLayer.h"
 #include "Layers/IndirectDrawLayer.h"
+#include "Layers/IndirectOcclusionCullLayer.h"
+#include "Layers/CloudRenderLayer.h"
+#include "Layers/WaterRenderLayer.h"
+#include "Layers/SSRLayer.h"
 
 class SandBox :public BlackPearl::Application {
 public:
@@ -30,7 +34,7 @@ public:
 		
 		BlackPearl::Layer* layer = NULL;
 		const std::string layer_name = renderer+"Layer";
-		if (renderer == "ShadowMapPointLight") {
+		if (renderer == "ShadowMapPointLight") { //pcf, pcss
 			layer = DBG_NEW ShadowMapPointLightLayer(layer_name);
 		}
 		else if(renderer == "VoxelConeTracing"){
@@ -60,6 +64,21 @@ public:
 		else if (renderer == "IndirectRendering") {
 			layer = DBG_NEW IndirectDrawLayer(layer_name);
 		}
+		else if (renderer == "IndirectOcclusionCull") {
+			layer = DBG_NEW IndirectOcclusionCullLayer(layer_name);
+		}
+		else if (renderer == "CloudRender") {
+			layer = DBG_NEW CloudRenderLayer(layer_name);
+		}
+		else if (renderer == "WaterRender") {
+			layer = DBG_NEW WaterRenderLayer(layer_name);
+		}
+		else if (renderer == "SSR") {
+			layer = DBG_NEW SSRLayer(layer_name);
+		}
+		/*else if (renderer == "LumenRenderingLayer") {
+			layer = DBG_NEW LumenRenderingLayer(layer_name);
+		}*/
 		GetLayerManager()->PushLayer(layer);
 	}
 	virtual ~SandBox() = default;
@@ -68,7 +87,7 @@ public:
 
 BlackPearl::Application* BlackPearl::CreateApplication(HINSTANCE hInstance, int nShowCmd) {
 
-	return DBG_NEW SandBox(hInstance, nShowCmd, BlackPearl::DynamicRHI::Type::OpenGL, "IndirectRendering");
-
+	return DBG_NEW SandBox(hInstance, nShowCmd, BlackPearl::DynamicRHI::Type::OpenGL, "SSR");
+	//return DBG_NEW SandBox(hInstance, nShowCmd, BlackPearl::DynamicRHI::Type::OpenGL, "PbrRendering");
 }
 

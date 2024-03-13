@@ -219,7 +219,7 @@ public:
 		}*/
 		m_GBufferRenderer->RenderSceneWithGBufferAndProbes(m_BackGroundObjsList, m_DynamicObjsList, runtime / 1000.0f,
 			m_BackGroundObjsList, m_GBufferDebugQuad, GetLightSources(), m_DiffuseLightProbes, m_ReflectionLightProbes,
-			m_IBLProbesRenderer->GetSpecularBrdfLUTTexture(), m_SkyBoxObj1, m_MapManager);
+			m_IBLProbesRenderer->GetSpecularBrdfLUTTexture(), m_SkyBoxObj1, m_MapManager, nullptr, false);
 
 		if (BlackPearl::Input::IsKeyPressed(BlackPearl::KeyCodes::Get(BP_KEY_L))) {
 			m_ShowLightProbe = !m_ShowLightProbe;

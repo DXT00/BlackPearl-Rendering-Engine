@@ -1,8 +1,9 @@
 #pragma once
 #include<string>
-#include "BlackPearl/Renderer/Context.h"
 #include "BlackPearl/Config.h"
 #include "Event/Event.h"
+#include "BlackPearl/Renderer/Context.h"
+
 namespace BlackPearl {
 
 	class Window

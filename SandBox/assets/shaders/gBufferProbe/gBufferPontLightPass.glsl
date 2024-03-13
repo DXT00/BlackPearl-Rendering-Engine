@@ -34,6 +34,7 @@ uniform sampler2D gAmbientGI_AO;
 uniform sampler2D gNormalMap;
 
 uniform vec2 gScreenSize;
+uniform int u_IsPBRObjects;
 
 struct PointLight{
 	vec3 ambient;
@@ -116,7 +117,7 @@ vec3 CalcPBRPointLight(PointLight light,vec3 getNormalFromMap,vec3 albedo,float 
 		vec3 L = normalize(light.position-fragPos);
 		vec3 H = normalize(V+L);
 		float attenuation = calculateAttenuation(light,fragPos);
-		vec3 radiance = light.diffuse * attenuation;
+		vec3 radiance =  light.intensity * light.diffuse * attenuation;
 
 		float NDF = NoemalDistribution_TrowbridgeReitz_GGX(N,H,roughness);
 		float G = GeometrySmith(N, V,L,roughness);
@@ -227,11 +228,11 @@ void main(){
 	vec3 viewDir = normalize(u_CameraViewPos- fragPos);
 	vec3 outColor =vec3(0.0,0.0,0.0);
 
-	float shadow = ShadowCalculation(fragPos,u_PointLight.position,u_ShadowMap); 
-
+	float shadow = 0;//ShadowCalculation(fragPos,u_PointLight.position,u_ShadowMap); 
+	
 	if(isPBRObject==0.0)
 		outColor =(1.0 - shadow) * CalcPointLight(u_PointLight,normal,viewDir, material,fragPos);// CalcPointLight(u_PointLight, normal,viewDir,material,fragPos);
-
+	
 	else
 		outColor =(1.0 - shadow) * CalcPBRPointLight(u_PointLight,getNormalFromMap,albedo,metallic, roughness, fragPos);// CalcPointLight(u_PointLight, normal,viewDir,material,fragPos);
 
@@ -268,7 +269,7 @@ vec3 CalcPointLight(PointLight light,vec3 normal,vec3 viewDir,gBufferMaterial ma
 	vec3 fragColor;
 
 	float distance = length(light.position-fragPos);
-	float attenuation = 1.0f/(light.constant+light.linear * distance+light.quadratic*distance*distance);
+	float attenuation = light.intensity * 1.0f/(light.constant+light.linear * distance+light.quadratic*distance*distance);
 	/*ambient*/
 //	vec3 ambient = light.ambient * (material.ambientColor * (1-material.isTextureSample)+ texture(material.diffuse,v_TexCoords).rgb * material.isTextureSample);
 	

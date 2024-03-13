@@ -3,7 +3,6 @@
 #include "BlackPearl/Core.h"
 //#include <glad/glad.h>
 #define GLEW_STATIC
-
 #include"GLEW/include/GL/glew.h"
 #include "GLFW/glfw3.h"
 namespace BlackPearl {

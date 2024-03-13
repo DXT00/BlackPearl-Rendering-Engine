@@ -211,7 +211,7 @@ void main(){
 	//vec3 color=LoadSHCoeffs(SHCoeffs,N);
 	vec3 color;
 	if(uProbeType==0)//diffuse Probe
-		color =SHDiffuse(N);
+		color = SHDiffuse(N);
 	else
 		color =textureLod(u_Material.cube,TexCoords,0).rgb;
 

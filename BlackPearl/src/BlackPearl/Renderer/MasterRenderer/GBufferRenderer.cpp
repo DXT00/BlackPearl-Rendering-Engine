@@ -15,23 +15,28 @@
 #include "glm/glm.hpp"
 
 namespace BlackPearl {
-	float GBufferRenderer::s_GICoeffs = 0.5f;
+	float GBufferRenderer::s_GICoeffs = 0.2f;
+	float GBufferRenderer::s_SSRGICoeffs = 0.2f;
+
 	bool GBufferRenderer::s_HDR = true;
 	float GBufferRenderer::s_AttenuationItensity = 50.0f;
 	GBufferRenderer::GBufferRenderer()
 	{
 		m_GBuffer.reset(DBG_NEW GBuffer(m_TextureWidth, m_TexxtureHeight));
-		
+		m_SSRTestTexture.reset(DBG_NEW Texture(Texture::Type::None, m_TextureWidth, m_TexxtureHeight, false, GL_LINEAR, GL_LINEAR, GL_RGBA16F, GL_RGBA, GL_CLAMP_TO_EDGE, GL_FLOAT));
+
 		m_HDRPostProcessTexture.reset(DBG_NEW Texture(Texture::Type::None, m_TextureWidth, m_TexxtureHeight, false, GL_LINEAR, GL_LINEAR, GL_RGBA16F, GL_RGBA, GL_CLAMP_TO_EDGE, GL_FLOAT));
 		m_LightPassFrameBuffer.reset(DBG_NEW FrameBuffer());
 		m_LightPassFrameBuffer->Bind();
 		m_LightPassFrameBuffer->AttachRenderBuffer(m_TextureWidth, m_TexxtureHeight);
 		m_LightPassFrameBuffer->AttachColorTexture(m_HDRPostProcessTexture, 0);
+		m_LightPassFrameBuffer->AttachColorTexture(m_SSRTestTexture, 1);
 		//m_LightPassFrameBuffer->BindRenderBuffer();
 		m_LightPassFrameBuffer->UnBind();
 
 
 		m_GBufferShader.reset(DBG_NEW Shader("assets/shaders/gBufferProbe/gBuffer.glsl"));
+		m_SSRPassShader.reset(DBG_NEW Shader("assets/shaders/gBufferProbe/gBufferSSRGIPass.glsl"));
 		m_AmbientGIPassShader.reset(DBG_NEW Shader("assets/shaders/gBufferProbe/gBufferAmbientGIPass.glsl"));
 		m_PointLightPassShader.reset(DBG_NEW Shader("assets/shaders/gBufferProbe/gBufferPontLightPass.glsl"));
 		m_SphereDeBugShader.reset(DBG_NEW Shader("assets/shaders/gBufferProbe/SurroundSphereDebug.glsl"));
@@ -137,6 +142,7 @@ namespace BlackPearl {
 			m_PointLightPassShader->SetUniformVec3f("u_PointLight.diffuse", pointLight->GetComponent<PointLight>()->GetLightProps().diffuse);
 			m_PointLightPassShader->SetUniformVec3f("u_PointLight.specular", pointLight->GetComponent<PointLight>()->GetLightProps().specular);
 			m_PointLightPassShader->SetUniformVec3f("u_PointLight.position", pointLight->GetComponent<Transform>()->GetPosition());
+			m_PointLightPassShader->SetUniform1f("u_PointLight.intensity", pointLight->GetComponent<PointLight>()->GetLightProps().intensity);
 
 			m_PointLightPassShader->SetUniform1f("u_PointLight.constant", pointLight->GetComponent<PointLight>()->GetAttenuation().constant);
 			m_PointLightPassShader->SetUniform1f("u_PointLight.linear", pointLight->GetComponent<PointLight>()->GetAttenuation().linear);
@@ -273,7 +279,9 @@ namespace BlackPearl {
 	void GBufferRenderer::RenderSceneWithGBufferAndProbes(std::vector<Object*> staticObjects, std::vector<Object*> dynamicObjects, float timeInSecond, std::vector<Object*> backGroundObjs, Object* gBufferDebugQuad, LightSources* lightSources,
 		std::vector<Object*> diffuseProbes, std::vector<Object*> reflectionProbes,
 		std::shared_ptr<Texture> specularBrdfLUTTexture, Object* skyBox,
-		MapManager* mapManager)
+		MapManager* mapManager,
+		std::shared_ptr<Texture> depthTexture,
+		bool enableSSR)
 	{
 
 		GE_ASSERT(m_IsInitialized, "GBufferRenderer have not been initialized! ");
@@ -512,6 +520,42 @@ namespace BlackPearl {
 		m_LightPassFrameBuffer->BindRenderBuffer();
 		glViewport(0, 0, m_TextureWidth, m_TexxtureHeight);
 		glClear(GL_COLOR_BUFFER_BIT);
+
+
+		/* SSR pass*/
+		if (enableSSR) {
+			m_SSRPassShader->Bind();
+			m_SSRPassShader->SetUniform1i("gPosition", 0);
+			m_SSRPassShader->SetUniform1i("gNormal", 1);
+			m_SSRPassShader->SetUniform1i("gDiffuse_Roughness", 2);
+			m_SSRPassShader->SetUniform1i("gSpecular_Mentallic", 3);
+			m_SSRPassShader->SetUniform1i("gAmbientGI_AO", 4);
+			m_SSRPassShader->SetUniform1i("gNormalMap", 5);
+			m_SSRPassShader->SetUniform1i("depthTexture",6);
+
+
+			m_SSRPassShader->SetUniformVec2f("gScreenSize", glm::vec2(m_TextureWidth, m_TexxtureHeight));
+			m_SSRPassShader->SetUniform1f("u_Settings.SSRGICoeffs", s_SSRGICoeffs);
+
+			glActiveTexture(GL_TEXTURE0);
+			m_GBuffer->GetPositionTexture()->Bind();
+			glActiveTexture(GL_TEXTURE1);
+			m_GBuffer->GetNormalTexture()->Bind();
+			glActiveTexture(GL_TEXTURE2);
+			m_GBuffer->GetDiffuseRoughnessTexture()->Bind();
+			glActiveTexture(GL_TEXTURE3);
+			m_GBuffer->GetSpecularMentallicTexture()->Bind();
+			glActiveTexture(GL_TEXTURE4);
+			m_GBuffer->GetAmbientGIAOTexture()->Bind();
+			glActiveTexture(GL_TEXTURE5);
+			m_GBuffer->GetNormalMapTexture()->Bind();
+			glActiveTexture(GL_TEXTURE6);
+			depthTexture->Bind();
+
+			DrawObject(m_GIQuad, m_SSRPassShader);
+
+
+		}
 
 
 		/* AmbientGI pass */

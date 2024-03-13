@@ -157,10 +157,10 @@ namespace BlackPearl {
 	class VertexBuffer {
 	public:
 
-		VertexBuffer(const std::vector<float>&vertices, uint32_t drawType = GL_STATIC_DRAW);
-		VertexBuffer(const float* vertices, uint32_t size, uint32_t drawType = GL_STATIC_DRAW);
-		VertexBuffer(const unsigned int* vertices, uint32_t size, uint32_t drawType = GL_STATIC_DRAW);
-		VertexBuffer(void* vertices, uint32_t size, uint32_t drawType = GL_STATIC_DRAW);
+		VertexBuffer(const std::vector<float>&vertices, bool Interleaved = true, bool divisor = false, uint32_t perInstance = 0, uint32_t drawType = GL_STATIC_DRAW);
+		VertexBuffer(const float* vertices, uint32_t size, bool Interleaved = true, bool divisor = false, uint32_t perInstance = 0,uint32_t drawType = GL_STATIC_DRAW);
+		VertexBuffer(const unsigned int* vertices, uint32_t size, bool Interleaved = true, bool divisor = false, uint32_t perInstance = 0, uint32_t drawType = GL_STATIC_DRAW);
+		VertexBuffer(void* vertices, uint32_t size, bool Interleaved = true, bool divisor = false, uint32_t perInstance = 0, uint32_t drawType = GL_STATIC_DRAW);
 
 		~VertexBuffer();
 		void Bind();
@@ -168,18 +168,26 @@ namespace BlackPearl {
 		void UnBind();
 		void CleanUp();
 		const float* GetVerticesFloat() const { return m_VerticesFloat; }
-		const unsigned int* GetVerticesUInt() const { return m_VerticesUint; }
+		const uint32_t* GetVerticesUInt() const { return m_VerticesUint; }
 		const void* GetVerticesVoid() const { return m_VerticesVoidData; }
 
 		void SetBufferLayout(const VertexBufferLayout& layout) { m_BufferLayout = layout; }
 		VertexBufferLayout GetBufferLayout() const { return m_BufferLayout; }
-		unsigned int GetVertexSize()const { return m_VertexSize; }
+		uint32_t GetVertexSize()const { return m_VertexSize; }
+		bool GetDivisor() const { return m_Divisor; }
+		bool GetInterleaved() const { return m_Interleaved; }
+
+		uint32_t GetDivPerInstance() const { return m_DivPerInstance; }
 	private:
-		unsigned int m_RendererID;
-		unsigned int m_VertexSize;
+		uint32_t m_RendererID;
+		uint32_t m_VertexSize;
 		const float* m_VerticesFloat = nullptr;
-		const unsigned int* m_VerticesUint = nullptr;
+		const uint32_t* m_VerticesUint = nullptr;
 		const void* m_VerticesVoidData = nullptr;
+		bool m_Interleaved;
+
+		bool m_Divisor = false;
+		uint32_t m_DivPerInstance = 0;
 		VertexBufferLayout m_BufferLayout;//这里需要默认构造函数
 	};
 
@@ -188,13 +196,16 @@ namespace BlackPearl {
 		IndexBuffer(const std::vector<unsigned int>& indices, uint32_t drawType = GL_STATIC_DRAW);
 		IndexBuffer(unsigned int *indices, unsigned int size, uint32_t drawType = GL_STATIC_DRAW);
 		~IndexBuffer();
-		unsigned int GetIndicesSize()const { return m_IndiciesSize; }
+		uint32_t GetIndicesSize() const { return m_IndiciesSize; }
+		const unsigned int* GetIndicies()const { return m_Indicies; }
+
 		void Bind();
 		void UnBind();
 
 	private:
 		unsigned int m_RendererID;
 		unsigned int m_IndiciesSize;
+		const unsigned int* m_Indicies;
 
 	};
 
@@ -243,6 +254,8 @@ namespace BlackPearl {
 		void AttachColorTexture(std::shared_ptr<Texture> texture, unsigned int attachmentPoints);
 
 		void AttachDepthTexture(const int imageWidth, int imageHeight);
+		void AttachDepthTexture(std::shared_ptr<Texture> texture, int mipmapLevel);
+
 		//void AttachCubeMapDepthTexture(const int imageWidth, int imageHeight);//use for point light shadow map
 		void AttachCubeMapDepthTexture(std::shared_ptr<CubeMapTexture> cubeMap);//use for point light shadow map
 
@@ -358,6 +371,8 @@ namespace BlackPearl {
 	class ShaderStorageBuffer {
 	public:
 		ShaderStorageBuffer(GLsizeiptr bytes, GLbitfield mapFlags);
+		ShaderStorageBuffer(uint32_t size, uint32_t drawType, void* data);
+
 		~ShaderStorageBuffer();
 		GLuint GetRenderID() const {
 			return m_RendererID;
