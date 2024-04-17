@@ -23,59 +23,7 @@ namespace BlackPearl {
         bool operator !=(const Color& _b) const { return !(*this == _b); }
     };
 
-    struct RHIViewport
-    {
-        float minX, maxX;
-        float minY, maxY;
-        float minZ, maxZ;
-
-        RHIViewport() : minX(0.f), maxX(0.f), minY(0.f), maxY(0.f), minZ(0.f), maxZ(1.f) { }
-
-        RHIViewport(float width, float height) : minX(0.f), maxX(width), minY(0.f), maxY(height), minZ(0.f), maxZ(1.f) { }
-
-        RHIViewport(float _minX, float _maxX, float _minY, float _maxY, float _minZ, float _maxZ)
-            : minX(_minX), maxX(_maxX), minY(_minY), maxY(_maxY), minZ(_minZ), maxZ(_maxZ)
-        { }
-
-        bool operator ==(const RHIViewport& b) const
-        {
-            return minX == b.minX
-                && minY == b.minY
-                && minZ == b.minZ
-                && maxX == b.maxX
-                && maxY == b.maxY
-                && maxZ == b.maxZ;
-        }
-        bool operator !=(const RHIViewport& b) const { return !(*this == b); }
-
-        [[nodiscard]] float width() const { return maxX - minX; }
-        [[nodiscard]] float height() const { return maxY - minY; }
-    };
-
-    struct Rect
-    {
-        int minX, maxX;
-        int minY, maxY;
-
-        Rect() : minX(0), maxX(0), minY(0), maxY(0) { }
-        Rect(int width, int height) : minX(0), maxX(width), minY(0), maxY(height) { }
-        Rect(int _minX, int _maxX, int _minY, int _maxY) : minX(_minX), maxX(_maxX), minY(_minY), maxY(_maxY) { }
-        explicit Rect(const RHIViewport& viewport)
-            : minX(int(floorf(viewport.minX)))
-            , maxX(int(ceilf(viewport.maxX)))
-            , minY(int(floorf(viewport.minY)))
-            , maxY(int(ceilf(viewport.maxY)))
-        {
-        }
-
-        bool operator ==(const Rect& b) const {
-            return minX == b.minX && minY == b.minY && maxX == b.maxX && maxY == b.maxY;
-        }
-        bool operator !=(const Rect& b) const { return !(*this == b); }
-
-        [[nodiscard]] int width() const { return maxX - minX; }
-        [[nodiscard]] int height() const { return maxY - minY; }
-    };
+   
     enum class BlendFactor : uint8_t
     {
         Zero = 1,
@@ -673,6 +621,138 @@ namespace BlackPearl {
 		 // Helper bit-masks
 		 AnyDynamic = (Dynamic | Volatile),
 	};
+
+    enum class CommandQueue : uint8_t
+    {
+        Graphics = 0,
+        Compute,
+        Copy,
+
+        Count
+    };
+    //////////////////////////////////////////////////////////////////////////
+// Viewport State
+//////////////////////////////////////////////////////////////////////////
+    struct RHIViewport
+    {
+        float minX, maxX;
+        float minY, maxY;
+        float minZ, maxZ;
+
+        RHIViewport() : minX(0.f), maxX(0.f), minY(0.f), maxY(0.f), minZ(0.f), maxZ(1.f) { }
+
+        RHIViewport(float width, float height) : minX(0.f), maxX(width), minY(0.f), maxY(height), minZ(0.f), maxZ(1.f) { }
+
+        RHIViewport(float _minX, float _maxX, float _minY, float _maxY, float _minZ, float _maxZ)
+            : minX(_minX), maxX(_maxX), minY(_minY), maxY(_maxY), minZ(_minZ), maxZ(_maxZ)
+        { }
+
+        bool operator ==(const RHIViewport& b) const
+        {
+            return minX == b.minX
+                && minY == b.minY
+                && minZ == b.minZ
+                && maxX == b.maxX
+                && maxY == b.maxY
+                && maxZ == b.maxZ;
+        }
+        bool operator !=(const RHIViewport& b) const { return !(*this == b); }
+
+        [[nodiscard]] float width() const { return maxX - minX; }
+        [[nodiscard]] float height() const { return maxY - minY; }
+    };
+
+    struct RHIRect
+    {
+        int minX, maxX;
+        int minY, maxY;
+
+        RHIRect() : minX(0), maxX(0), minY(0), maxY(0) { }
+        RHIRect(int width, int height) : minX(0), maxX(width), minY(0), maxY(height) { }
+        RHIRect(int _minX, int _maxX, int _minY, int _maxY) : minX(_minX), maxX(_maxX), minY(_minY), maxY(_maxY) { }
+        explicit RHIRect(const RHIViewport& viewport)
+            : minX(int(floorf(viewport.minX)))
+            , maxX(int(ceilf(viewport.maxX)))
+            , minY(int(floorf(viewport.minY)))
+            , maxY(int(ceilf(viewport.maxY)))
+        {
+        }
+
+        bool operator ==(const RHIRect& b) const {
+            return minX == b.minX && minY == b.minY && maxX == b.maxX && maxY == b.maxY;
+        }
+        bool operator !=(const RHIRect& b) const { return !(*this == b); }
+
+        [[nodiscard]] int width() const { return maxX - minX; }
+        [[nodiscard]] int height() const { return maxY - minY; }
+    };
+
+
+    struct ViewportState
+    {
+        //These are in pixels
+        // note: you can only set each of these either in the PSO or per draw call in DrawArguments
+        // it is not legal to have the same state set in both the PSO and DrawArguments
+        // leaving these vectors empty means no state is set
+        std::vector<RHIViewport> viewports;
+        std::vector<RHIRect> scissorRects;
+
+        ViewportState& addViewport(const RHIViewport& v) { viewports.push_back(v); return *this; }
+        ViewportState& addScissorRect(const RHIRect& r) { scissorRects.push_back(r); return *this; }
+        ViewportState& addViewportAndScissorRect(const RHIViewport& v) { return addViewport(v).addScissorRect(RHIRect(v)); }
+    };
+
+    //////////////////////////////////////////////////////////////////////////
+    // Draw and Dispatch
+    //////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+    struct DrawArguments
+    {
+        uint32_t vertexCount = 0;
+        uint32_t instanceCount = 1;
+        uint32_t startIndexLocation = 0;
+        uint32_t startVertexLocation = 0;
+        uint32_t startInstanceLocation = 0;
+
+        constexpr DrawArguments& setVertexCount(uint32_t value) { vertexCount = value; return *this; }
+        constexpr DrawArguments& setInstanceCount(uint32_t value) { instanceCount = value; return *this; }
+        constexpr DrawArguments& setStartIndexLocation(uint32_t value) { startIndexLocation = value; return *this; }
+        constexpr DrawArguments& setStartVertexLocation(uint32_t value) { startVertexLocation = value; return *this; }
+        constexpr DrawArguments& setStartInstanceLocation(uint32_t value) { startInstanceLocation = value; return *this; }
+    };
+
+    struct DrawIndirectArguments
+    {
+        uint32_t vertexCount = 0;
+        uint32_t instanceCount = 1;
+        uint32_t startVertexLocation = 0;
+        uint32_t startInstanceLocation = 0;
+
+        constexpr DrawIndirectArguments& setVertexCount(uint32_t value) { vertexCount = value; return *this; }
+        constexpr DrawIndirectArguments& setInstanceCount(uint32_t value) { instanceCount = value; return *this; }
+        constexpr DrawIndirectArguments& setStartVertexLocation(uint32_t value) { startVertexLocation = value; return *this; }
+        constexpr DrawIndirectArguments& setStartInstanceLocation(uint32_t value) { startInstanceLocation = value; return *this; }
+    };
+
+    struct DrawIndexedIndirectArguments
+    {
+        uint32_t indexCount = 0;
+        uint32_t instanceCount = 1;
+        uint32_t startIndexLocation = 0;
+        int32_t  baseVertexLocation = 0;
+        uint32_t startInstanceLocation = 0;
+
+        constexpr DrawIndexedIndirectArguments& setIndexCount(uint32_t value) { indexCount = value; return *this; }
+        constexpr DrawIndexedIndirectArguments& setInstanceCount(uint32_t value) { instanceCount = value; return *this; }
+        constexpr DrawIndexedIndirectArguments& setStartIndexLocation(uint32_t value) { startIndexLocation = value; return *this; }
+        constexpr DrawIndexedIndirectArguments& setBaseVertexLocation(int32_t value) { baseVertexLocation = value; return *this; }
+        constexpr DrawIndexedIndirectArguments& setStartInstanceLocation(uint32_t value) { startInstanceLocation = value; return *this; }
+    };
+
 
 
 }

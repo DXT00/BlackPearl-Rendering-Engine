@@ -11,16 +11,7 @@
 
 namespace BlackPearl {
 
-
-    //typedef RefCountPtr<IBindingLayout> BindingLayoutHandle;
-
-    //typedef RefCountPtr<IRayTracingPipeline> RayTracingPipelineHandle;
-
-   // typedef RefCountPtr<IShader> ShaderHandle;
-
-    //typedef RefCountPtr<IShaderTable> ShaderTableHandle;
-
-   // typedef RefCountPtr<IFramebuffer> FramebufferHandle;
+    
 
 }
 

@@ -294,4 +294,46 @@ namespace BlackPearl {
     };
 
     typedef RefCountPtr<IBindingSet> BindingSetHandle;
+
+
+
+    struct VertexBufferBinding
+    {
+        IBuffer* buffer = nullptr;
+        uint32_t slot;
+        uint64_t offset;
+
+        bool operator ==(const VertexBufferBinding& b) const
+        {
+            return buffer == b.buffer
+                && slot == b.slot
+                && offset == b.offset;
+        }
+        bool operator !=(const VertexBufferBinding& b) const { return !(*this == b); }
+
+        VertexBufferBinding& setBuffer(IBuffer* value) { buffer = value; return *this; }
+        VertexBufferBinding& setSlot(uint32_t value) { slot = value; return *this; }
+        VertexBufferBinding& setOffset(uint64_t value) { offset = value; return *this; }
+    };
+
+    struct IndexBufferBinding
+    {
+        IBuffer* buffer = nullptr;
+        Format format;
+        uint32_t offset;
+
+        bool operator ==(const IndexBufferBinding& b) const
+        {
+            return buffer == b.buffer
+                && format == b.format
+                && offset == b.offset;
+        }
+        bool operator !=(const IndexBufferBinding& b) const { return !(*this == b); }
+
+        IndexBufferBinding& setBuffer(IBuffer* value) { buffer = value; return *this; }
+        IndexBufferBinding& setFormat(Format value) { format = value; return *this; }
+        IndexBufferBinding& setOffset(uint32_t value) { offset = value; return *this; }
+    };
+
+    typedef std::vector<IBindingSet*> BindingSetVector;
 }

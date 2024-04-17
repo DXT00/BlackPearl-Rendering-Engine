@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "RHITexture.h"
+#include <BlackPearl/Core.h>
 namespace BlackPearl {
 	TextureSubresourceSet TextureSubresourceSet::resolve(const TextureDesc& desc, bool singleMipLevel) const
 	{
@@ -54,6 +55,29 @@ namespace BlackPearl {
         default:
             return true;
         }
+    }
+
+    TextureSlice TextureSlice::resolve(const TextureDesc& desc) const
+    {
+        TextureSlice ret(*this);
+
+        GE_ASSERT(mipLevel < desc.mipLevels, "mipLevel invalid");
+
+        if (width == uint32_t(-1))
+            ret.width = std::max(desc.width >> mipLevel, 1u);
+
+        if (height == uint32_t(-1))
+            ret.height = std::max(desc.height >> mipLevel, 1u);
+
+        if (depth == uint32_t(-1))
+        {
+            if (desc.dimension == TextureDimension::Texture3D)
+                ret.depth = std::max(desc.depth >> mipLevel, 1u);
+            else
+                ret.depth = 1;
+        }
+
+        return ret;
     }
 
 }

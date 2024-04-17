@@ -7,7 +7,7 @@
 #include "BlackPearl/Scene/SceneBuilder.h"
 
 namespace BlackPearl {
-	class RayTracingRenderer:public BasicRenderer
+	class RayTracingRenderer: public BasicRenderer
 	{
 	public:
 		RayTracingRenderer();
