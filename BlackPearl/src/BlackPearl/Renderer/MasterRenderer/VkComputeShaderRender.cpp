@@ -219,7 +219,8 @@ namespace BlackPearl {
             details.presentModes.resize(presentModeCount);
             vkGetPhysicalDeviceSurfacePresentModesKHR(device, m_Surface, &presentModeCount, details.presentModes.data());
         }
-
+        uint32_t scWidth = details.capabilities.currentExtent.width;
+        uint32_t scHeight = details.capabilities.currentExtent.height;
         return details;
     }
 
@@ -483,7 +484,7 @@ namespace BlackPearl {
         vkGetSwapchainImagesKHR(m_Device, m_SwapChain, &imageCount, nullptr);
         m_SwapChainImages.resize(imageCount);
         vkGetSwapchainImagesKHR(m_Device, m_SwapChain, &imageCount, m_SwapChainImages.data());
-
+        
         m_SwapChainImageFormat = surfaceFormat.format;
         m_SwapChainExtent = extent;
 

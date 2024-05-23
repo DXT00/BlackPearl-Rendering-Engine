@@ -1,6 +1,140 @@
 #pragma once
+#include <functional>
+#include <iomanip>
+#include <cstdint>
+#include <cmath>
+#include <cstring>
+#include <string>
+#include <vector>
+#include "BlackPearl/RHI/Common/Containers.h"
 namespace BlackPearl {
+    /*
+Version words are used to track the usage of upload buffers, scratch buffers,
+and volatile constant buffers across multiple command lists and their instances.
+
+Versioned objects are initially allocated in the "pending" state, meaing they have
+the submitted flag set to zero, but the instance is nonzero. When the command list
+instance using the object is executed, the objects with a matching version are
+transitioned into the "submitted" state. Later, when the command list instance has
+finished executing, the objects are transitioned into the "available" state, i.e. 0.
+ */
+    namespace ObjectTypes
+    {
+        constexpr uint32_t SharedHandle = 0x00000001;
+
+        constexpr uint32_t D3D11_Device = 0x00010001;
+        constexpr uint32_t D3D11_DeviceContext = 0x00010002;
+        constexpr uint32_t D3D11_Resource = 0x00010003;
+        constexpr uint32_t D3D11_Buffer = 0x00010004;
+        constexpr uint32_t D3D11_RenderTargetView = 0x00010005;
+        constexpr uint32_t D3D11_DepthStencilView = 0x00010006;
+        constexpr uint32_t D3D11_ShaderResourceView = 0x00010007;
+        constexpr uint32_t D3D11_UnorderedAccessView = 0x00010008;
+
+        constexpr uint32_t D3D12_Device = 0x00020001;
+        constexpr uint32_t D3D12_CommandQueue = 0x00020002;
+        constexpr uint32_t D3D12_GraphicsCommandList = 0x00020003;
+        constexpr uint32_t D3D12_Resource = 0x00020004;
+        constexpr uint32_t D3D12_RenderTargetViewDescriptor = 0x00020005;
+        constexpr uint32_t D3D12_DepthStencilViewDescriptor = 0x00020006;
+        constexpr uint32_t D3D12_ShaderResourceViewGpuDescripror = 0x00020007;
+        constexpr uint32_t D3D12_UnorderedAccessViewGpuDescripror = 0x00020008;
+        constexpr uint32_t D3D12_RootSignature = 0x00020009;
+        constexpr uint32_t D3D12_PipelineState = 0x0002000a;
+        constexpr uint32_t D3D12_CommandAllocator = 0x0002000b;
+
+        constexpr uint32_t VK_Device = 0x00030001;
+        constexpr uint32_t VK_PhysicalDevice = 0x00030002;
+        constexpr uint32_t VK_Instance = 0x00030003;
+        constexpr uint32_t VK_Queue = 0x00030004;
+        constexpr uint32_t VK_CommandBuffer = 0x00030005;
+        constexpr uint32_t VK_DeviceMemory = 0x00030006;
+        constexpr uint32_t VK_Buffer = 0x00030007;
+        constexpr uint32_t VK_Image = 0x00030008;
+        constexpr uint32_t VK_ImageView = 0x00030009;
+        constexpr uint32_t VK_AccelerationStructureKHR = 0x0003000a;
+        constexpr uint32_t VK_Sampler = 0x0003000b;
+        constexpr uint32_t VK_ShaderModule = 0x0003000c;
+        constexpr uint32_t VK_RenderPass = 0x0003000d;
+        constexpr uint32_t VK_Framebuffer = 0x0003000e;
+        constexpr uint32_t VK_DescriptorPool = 0x0003000f;
+        constexpr uint32_t VK_DescriptorSetLayout = 0x00030010;
+        constexpr uint32_t VK_DescriptorSet = 0x00030011;
+        constexpr uint32_t VK_PipelineLayout = 0x00030012;
+        constexpr uint32_t VK_Pipeline = 0x00030013;
+        constexpr uint32_t VK_Micromap = 0x00030014;
+    };
+
+    struct RHIObject
+    {
+        union {
+            uint64_t integer;
+            void* pointer;
+        };
+
+        RHIObject(uint64_t i) : integer(i) { }  // NOLINT(cppcoreguidelines-pro-type-member-init)
+        RHIObject(void* p) : pointer(p) { }     // NOLINT(cppcoreguidelines-pro-type-member-init)
+
+        template<typename T> operator T* () const { return static_cast<T*>(pointer); }
+    };
+
+
+
+
+    enum class GraphicsAPI : uint8_t
+    {
+        D3D11,
+        D3D12,
+        VULKAN
+    };
+
+    constexpr uint64_t c_VersionSubmittedFlag = 0x8000000000000000;
+    constexpr uint32_t c_VersionQueueShift = 60;
+    constexpr uint32_t c_VersionQueueMask = 0x7;
+    constexpr uint64_t c_VersionIDMask = 0x0FFFFFFFFFFFFFFF;
+
+
+    enum class CommandQueue : uint8_t
+    {
+        Graphics = 0,
+        Compute,
+        Copy,
+
+        Count
+    };
+
+    constexpr uint64_t MakeVersion(uint64_t id, CommandQueue queue, bool submitted)
+    {
+        uint64_t result = (id & c_VersionIDMask) | (uint64_t(queue) << c_VersionQueueShift);
+        if (submitted) result |= c_VersionSubmittedFlag;
+        return result;
+    }
+
+    constexpr uint64_t VersionGetInstance(uint64_t version)
+    {
+        return version & c_VersionIDMask;
+    }
+
+  /*  constexpr CommandQueue VersionGetQueue(uint64_t version)
+    {
+        return CommandQueue((version >> c_VersionQueueShift) & c_VersionQueueMask);
+    }*/
+
+    constexpr bool VersionGetSubmitted(uint64_t version)
+    {
+        return (version & c_VersionSubmittedFlag) != 0;
+    }
+
     static constexpr uint32_t c_MaxRenderTargets = 8;
+    static constexpr uint32_t c_MaxViewports = 16;
+    static constexpr uint32_t c_MaxVertexAttributes = 16;
+    static constexpr uint32_t c_MaxBindingLayouts = 5;
+    static constexpr uint32_t c_MaxBindingsPerLayout = 128;
+    static constexpr uint32_t c_MaxVolatileConstantBuffersPerLayout = 6;
+    static constexpr uint32_t c_MaxVolatileConstantBuffers = 32;
+    static constexpr uint32_t c_MaxPushConstantSize = 128; // D3D12: root signature is 256 bytes max., Vulkan: 128 bytes of push constants guaranteed
+    static constexpr uint32_t c_ConstantBufferOffsetSizeAlignment = 256; // Partially bound constant buffers must have offsets aligned to this and sizes multiple of this
+
 
 #define NVRHI_ENUM_CLASS_FLAG_OPERATORS(T) \
     inline T operator | (T a, T b) { return T(uint32_t(a) | uint32_t(b)); } \
@@ -23,59 +157,7 @@ namespace BlackPearl {
         bool operator !=(const Color& _b) const { return !(*this == _b); }
     };
 
-    struct RHIViewport
-    {
-        float minX, maxX;
-        float minY, maxY;
-        float minZ, maxZ;
-
-        RHIViewport() : minX(0.f), maxX(0.f), minY(0.f), maxY(0.f), minZ(0.f), maxZ(1.f) { }
-
-        RHIViewport(float width, float height) : minX(0.f), maxX(width), minY(0.f), maxY(height), minZ(0.f), maxZ(1.f) { }
-
-        RHIViewport(float _minX, float _maxX, float _minY, float _maxY, float _minZ, float _maxZ)
-            : minX(_minX), maxX(_maxX), minY(_minY), maxY(_maxY), minZ(_minZ), maxZ(_maxZ)
-        { }
-
-        bool operator ==(const RHIViewport& b) const
-        {
-            return minX == b.minX
-                && minY == b.minY
-                && minZ == b.minZ
-                && maxX == b.maxX
-                && maxY == b.maxY
-                && maxZ == b.maxZ;
-        }
-        bool operator !=(const RHIViewport& b) const { return !(*this == b); }
-
-        [[nodiscard]] float width() const { return maxX - minX; }
-        [[nodiscard]] float height() const { return maxY - minY; }
-    };
-
-    struct Rect
-    {
-        int minX, maxX;
-        int minY, maxY;
-
-        Rect() : minX(0), maxX(0), minY(0), maxY(0) { }
-        Rect(int width, int height) : minX(0), maxX(width), minY(0), maxY(height) { }
-        Rect(int _minX, int _maxX, int _minY, int _maxY) : minX(_minX), maxX(_maxX), minY(_minY), maxY(_maxY) { }
-        explicit Rect(const RHIViewport& viewport)
-            : minX(int(floorf(viewport.minX)))
-            , maxX(int(ceilf(viewport.maxX)))
-            , minY(int(floorf(viewport.minY)))
-            , maxY(int(ceilf(viewport.maxY)))
-        {
-        }
-
-        bool operator ==(const Rect& b) const {
-            return minX == b.minX && minY == b.minY && maxX == b.maxX && maxY == b.maxY;
-        }
-        bool operator !=(const Rect& b) const { return !(*this == b); }
-
-        [[nodiscard]] int width() const { return maxX - minX; }
-        [[nodiscard]] int height() const { return maxY - minY; }
-    };
+   
     enum class BlendFactor : uint8_t
     {
         Zero = 1,
@@ -359,6 +441,8 @@ namespace BlackPearl {
 
         All = 0x3FFF,
     };
+    NVRHI_ENUM_CLASS_FLAG_OPERATORS(ShaderType)
+
     enum class VariableShadingRate : uint8_t
     {
         e1x1,
@@ -467,6 +551,7 @@ namespace BlackPearl {
         OpacityMicromapWrite = 0x00200000,
         OpacityMicromapBuildInput = 0x00400000,
     };
+    NVRHI_ENUM_CLASS_FLAG_OPERATORS(ResourceStates)
 	enum class PrimitiveType : uint8_t
 	{
 		PointList,
@@ -510,6 +595,8 @@ namespace BlackPearl {
         // D3D11, Vulkan: ignored
         Shared_CrossAdapter = 0x04,
     };
+    NVRHI_ENUM_CLASS_FLAG_OPERATORS(SharedResourceFlags)
+
     enum class Format : uint8_t
     {
         UNKNOWN,
@@ -595,6 +682,23 @@ namespace BlackPearl {
         DepthStencil
     };
 
+
+    struct FormatInfo
+    {
+        Format format;
+        const char* name;
+        uint8_t bytesPerBlock;
+        uint8_t blockSize;
+        FormatKind kind;
+        bool hasRed : 1;
+        bool hasGreen : 1;
+        bool hasBlue : 1;
+        bool hasAlpha : 1;
+        bool hasDepth : 1;
+        bool hasStencil : 1;
+        bool isSigned : 1;
+        bool isSRGB : 1;
+    };
 /**
  *	Resource usage flags - for vertex and index buffers.
  */
@@ -675,4 +779,134 @@ namespace BlackPearl {
 	};
 
 
+    //////////////////////////////////////////////////////////////////////////
+// Viewport State
+//////////////////////////////////////////////////////////////////////////
+    struct RHIViewport
+    {
+        float minX, maxX;
+        float minY, maxY;
+        float minZ, maxZ;
+
+        RHIViewport() : minX(0.f), maxX(0.f), minY(0.f), maxY(0.f), minZ(0.f), maxZ(1.f) { }
+
+        RHIViewport(float width, float height) : minX(0.f), maxX(width), minY(0.f), maxY(height), minZ(0.f), maxZ(1.f) { }
+
+        RHIViewport(float _minX, float _maxX, float _minY, float _maxY, float _minZ, float _maxZ)
+            : minX(_minX), maxX(_maxX), minY(_minY), maxY(_maxY), minZ(_minZ), maxZ(_maxZ)
+        { }
+
+        bool operator ==(const RHIViewport& b) const
+        {
+            return minX == b.minX
+                && minY == b.minY
+                && minZ == b.minZ
+                && maxX == b.maxX
+                && maxY == b.maxY
+                && maxZ == b.maxZ;
+        }
+        bool operator !=(const RHIViewport& b) const { return !(*this == b); }
+
+        [[nodiscard]] float width() const { return maxX - minX; }
+        [[nodiscard]] float height() const { return maxY - minY; }
+    };
+
+    struct RHIRect
+    {
+        int minX, maxX;
+        int minY, maxY;
+
+        RHIRect() : minX(0), maxX(0), minY(0), maxY(0) { }
+        RHIRect(int width, int height) : minX(0), maxX(width), minY(0), maxY(height) { }
+        RHIRect(int _minX, int _maxX, int _minY, int _maxY) : minX(_minX), maxX(_maxX), minY(_minY), maxY(_maxY) { }
+        explicit RHIRect(const RHIViewport& viewport)
+            : minX(int(floorf(viewport.minX)))
+            , maxX(int(ceilf(viewport.maxX)))
+            , minY(int(floorf(viewport.minY)))
+            , maxY(int(ceilf(viewport.maxY)))
+        {
+        }
+
+        bool operator ==(const RHIRect& b) const {
+            return minX == b.minX && minY == b.minY && maxX == b.maxX && maxY == b.maxY;
+        }
+        bool operator !=(const RHIRect& b) const { return !(*this == b); }
+
+        [[nodiscard]] int width() const { return maxX - minX; }
+        [[nodiscard]] int height() const { return maxY - minY; }
+    };
+
+
+    struct ViewportState
+    {
+        //These are in pixels
+        // note: you can only set each of these either in the PSO or per draw call in DrawArguments
+        // it is not legal to have the same state set in both the PSO and DrawArguments
+        // leaving these vectors empty means no state is set
+        std::vector<RHIViewport> viewports;
+        std::vector<RHIRect> scissorRects;
+
+        ViewportState& addViewport(const RHIViewport& v) { viewports.push_back(v); return *this; }
+        ViewportState& addScissorRect(const RHIRect& r) { scissorRects.push_back(r); return *this; }
+        ViewportState& addViewportAndScissorRect(const RHIViewport& v) { return addViewport(v).addScissorRect(RHIRect(v)); }
+    };
+
+    //////////////////////////////////////////////////////////////////////////
+    // Draw and Dispatch
+    //////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+    struct DrawArguments
+    {
+        uint32_t vertexCount = 0;
+        uint32_t instanceCount = 1;
+        uint32_t startIndexLocation = 0;
+        uint32_t startVertexLocation = 0;
+        uint32_t startInstanceLocation = 0;
+
+        constexpr DrawArguments& setVertexCount(uint32_t value) { vertexCount = value; return *this; }
+        constexpr DrawArguments& setInstanceCount(uint32_t value) { instanceCount = value; return *this; }
+        constexpr DrawArguments& setStartIndexLocation(uint32_t value) { startIndexLocation = value; return *this; }
+        constexpr DrawArguments& setStartVertexLocation(uint32_t value) { startVertexLocation = value; return *this; }
+        constexpr DrawArguments& setStartInstanceLocation(uint32_t value) { startInstanceLocation = value; return *this; }
+    };
+
+    struct DrawIndirectArguments
+    {
+        uint32_t vertexCount = 0;
+        uint32_t instanceCount = 1;
+        uint32_t startVertexLocation = 0;
+        uint32_t startInstanceLocation = 0;
+
+        constexpr DrawIndirectArguments& setVertexCount(uint32_t value) { vertexCount = value; return *this; }
+        constexpr DrawIndirectArguments& setInstanceCount(uint32_t value) { instanceCount = value; return *this; }
+        constexpr DrawIndirectArguments& setStartVertexLocation(uint32_t value) { startVertexLocation = value; return *this; }
+        constexpr DrawIndirectArguments& setStartInstanceLocation(uint32_t value) { startInstanceLocation = value; return *this; }
+    };
+
+    struct DrawIndexedIndirectArguments
+    {
+        uint32_t indexCount = 0;
+        uint32_t instanceCount = 1;
+        uint32_t startIndexLocation = 0;
+        int32_t  baseVertexLocation = 0;
+        uint32_t startInstanceLocation = 0;
+
+        constexpr DrawIndexedIndirectArguments& setIndexCount(uint32_t value) { indexCount = value; return *this; }
+        constexpr DrawIndexedIndirectArguments& setInstanceCount(uint32_t value) { instanceCount = value; return *this; }
+        constexpr DrawIndexedIndirectArguments& setStartIndexLocation(uint32_t value) { startIndexLocation = value; return *this; }
+        constexpr DrawIndexedIndirectArguments& setBaseVertexLocation(int32_t value) { baseVertexLocation = value; return *this; }
+        constexpr DrawIndexedIndirectArguments& setStartInstanceLocation(uint32_t value) { startInstanceLocation = value; return *this; }
+    };
+
+
+    template <class T>
+    void hash_combine(size_t& seed, const T& v)
+    {
+       /* std::hash<T> hasher;
+        seed ^= hasher(v) + 0x9e3779b9 + (seed << 6) + (seed >> 2);*/
+    }
 }

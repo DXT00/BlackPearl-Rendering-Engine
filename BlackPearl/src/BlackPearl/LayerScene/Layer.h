@@ -20,6 +20,7 @@
 #include "BlackPearl/KeyCodes.h"
 #include "BlackPearl/Map/MapManager.h"
 #include "BlackPearl/Node/BatchNode.h"
+#include "BlackPearl/Renderer/DeviceManager.h"
 #include <WinUser.h>
 
 using namespace std::chrono;
@@ -39,21 +40,15 @@ namespace BlackPearl {
 
 			/*MainCamera Init*/
 			m_MainCamera = CreateCamera();
-			m_MainCamera->SetPosition(glm::vec3(0, 0, 0.0f));//glm::vec3(0,1.387f,22.012f)
-
-
-			//m_MainCamera->SetPosition(glm::vec3(0, 0.95f, 5.9f));
-
-			//m_MainCamera->SetPosition(glm::vec3(0.0f, 0.0f, 19.0f));
-
-			//m_MainCamera->SetRotation(glm::vec3(-26.5f,-60.8f,0.0f));
-
-			//m_MainCamera->SetPosition(glm::vec3(0.0f, 0.0f, 8.0f));
-
-			m_CameraPosition = m_MainCamera->GetPosition();//cameraComponent->GetPosition();
+			m_MainCamera->SetPosition(glm::vec3(0, 0, 0.0f));
+			m_CameraPosition = m_MainCamera->GetPosition();
 			m_CameraRotation.Yaw = m_MainCamera->Yaw();
 			m_CameraRotation.Pitch = m_MainCamera->Pitch();
 
+			/*Render*/
+			m_DeviceManager = DeviceManager::Create(DynamicRHI::g_RHIType);
+
+			/*Status*/
 			m_StartTimeMs = duration_cast<milliseconds>(system_clock::now().time_since_epoch());
 
 		}
@@ -76,6 +71,7 @@ namespace BlackPearl {
 			m_BackGroundObjsList.clear();
 			m_DynamicObjsList.clear();
 			m_ShadowObjsList.clear();
+			GE_SAVE_DELETE(m_DeviceManager);
 
 		};
 		virtual void OnAttach() {}
@@ -290,7 +286,8 @@ namespace BlackPearl {
 		std::vector<Object*> m_DiffuseLightProbes;
 		std::vector<Object*> m_ReflectionLightProbes;
 
-	
+		/*Render */
+		DeviceManager* m_DeviceManager;
 	};
 
 }

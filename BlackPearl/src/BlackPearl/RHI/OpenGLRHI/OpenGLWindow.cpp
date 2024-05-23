@@ -87,5 +87,12 @@ namespace BlackPearl {
 		glfwGetCursorPos(m_Window, &xpos, &ypos);
 		return { (float)xpos,(float)ypos };
 	}
+	donut::math::vector<int, 2> OpenGLWindow::GetCurWindowSize()
+	{
+		int width;
+		int height;
+		glfwGetWindowSize(m_Window, &width, &height);
+		return donut::math::vector<int, 2>(width, height);
+	}
 }
 

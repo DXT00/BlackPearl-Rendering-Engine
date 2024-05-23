@@ -1,7 +1,7 @@
 newoption {
 	trigger     = "RenderAPI",
 	description = "Choose a particular 3D API for rendering",
-	default     = "opengl",
+	default     = "vulkan",
 	category    = "Build Options",
 	allowed = {
 	   { "opengl",    "OpenGL" },
@@ -36,6 +36,7 @@ IncludeDir["GLEW"] = "BlackPearl/vendor/GLEW/include"
 IncludeDir["vulkan"] = "BlackPearl/vendor/VulkanSDK/1.3.236.0/Include"
 IncludeDir["directxtex"] = "BlackPearl/vendor/directxtex_uwp.2022.7.30.1/include"
 IncludeDir["directxmesh"] = "BlackPearl/vendor/directxmesh_desktop_win10.2022.7.30.1/include"
+IncludeDir["ShaderMake"] = "BlackPearl/vendor/ShaderMake/include"
 
 IncludeDir["hlslShader"] = "SandboxDX/assets/shaders_hlsl_h"
 
@@ -45,11 +46,13 @@ include "BlackPearl/vendor/GLFW"
 include "BlackPearl/vendor/Glad"
 include "BlackPearl/vendor/imgui"
 include "BlackPearl/vendor/GLEW"
+--include "BlackPearl/vendor/ShaderMake"
 
 include "BlackPearl"
 include "SandBox"
 include "SandBoxVK"
 include "SandBoxDX"
+include "ShaderCompiler"
 
 --include "BlackPearl/vendor/assimp"
 -- dofile("BlackPearl/premake5.lua")

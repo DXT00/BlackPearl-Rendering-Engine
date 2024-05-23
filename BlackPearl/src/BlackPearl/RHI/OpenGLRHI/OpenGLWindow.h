@@ -17,6 +17,7 @@ namespace BlackPearl {
 		bool IsMouseButtonPressed(int button) override;
 		std::pair<float, float> GetMousePosition() override;
 		void* GetNativeWindow() const override { return m_Window; }
+		donut::math::vector<int, 2> GetCurWindowSize() override;
 
 	private:
 		GLFWwindow* m_Window;

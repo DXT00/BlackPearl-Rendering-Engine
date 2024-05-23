@@ -3,6 +3,7 @@
 #include "BlackPearl/EntryPoint.h"
 
 #include "BlackPearl/Log.h"
+#include "BlackPearl/Config.h"
 #include "BlackPearl/LayerScene/Layer.h"
 #include "BlackPearl/LayerScene/LayerManager.h"
 

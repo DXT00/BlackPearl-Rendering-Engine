@@ -62,7 +62,7 @@ namespace BlackPearl {
         NVRHI_BINDING_LAYOUT_ITEM_INITIALIZER(RT_Sampler)
         NVRHI_BINDING_LAYOUT_ITEM_INITIALIZER(RT_RayTracingAccelStruct)
 
-            static RHIBindingLayoutItem PushConstants(const uint32_t slot, const size_t size)
+            static RHIBindingLayoutItem RT_PushConstants(const uint32_t slot, const size_t size)
         {
             RHIBindingLayoutItem result{};
             result.slot = slot;
@@ -72,6 +72,11 @@ namespace BlackPearl {
         }
 #undef NVRHI_BINDING_LAYOUT_ITEM_INITIALIZER
     };
+    // verify the packing of BindingLayoutItem for good alignment
+    static_assert(sizeof(RHIBindingLayoutItem) == 8, "sizeof(BindingLayoutItem) is supposed to be 8 bytes");
+
+    typedef nvrhi::static_vector<RHIBindingLayoutItem, c_MaxBindingsPerLayout> BindingLayoutItemArray;
+
 
     struct VulkanBindingOffsets
     {

@@ -3,7 +3,7 @@
 #include "RHIDefinitions.h"
 #include "RHIResources.h"
 namespace BlackPearl {
-struct TextureDesc
+    struct TextureDesc
     {
         uint32_t width = 1;
         uint32_t height = 1;
@@ -59,6 +59,34 @@ struct TextureDesc
         constexpr TextureDesc& setKeepInitialState(bool value) { keepInitialState = value; return *this; }
     };
 
+
+    // describes a 2D section of a single mip level + single slice of a texture
+    struct TextureSlice
+    {
+        uint32_t x = 0;
+        uint32_t y = 0;
+        uint32_t z = 0;
+        // -1 means the entire dimension is part of the region
+        // resolve() below will translate these values into actual dimensions
+        uint32_t width = uint32_t(-1);
+        uint32_t height = uint32_t(-1);
+        uint32_t depth = uint32_t(-1);
+
+        uint32_t mipLevel = 0;
+        uint32_t arraySlice = 0;
+
+        [[nodiscard]] TextureSlice resolve(const TextureDesc& desc) const;
+
+        constexpr TextureSlice& setOrigin(uint32_t vx = 0, uint32_t vy = 0, uint32_t vz = 0) { x = vx; y = vy; z = vz; return *this; }
+        constexpr TextureSlice& setWidth(uint32_t value) { width = value; return *this; }
+        constexpr TextureSlice& setHeight(uint32_t value) { height = value; return *this; }
+        constexpr TextureSlice& setDepth(uint32_t value) { depth = value; return *this; }
+        constexpr TextureSlice& setSize(uint32_t vx = uint32_t(-1), uint32_t vy = uint32_t(-1), uint32_t vz = uint32_t(-1)) { width = vx; height = vy; depth = vz; return *this; }
+        constexpr TextureSlice& setMipLevel(uint32_t level) { mipLevel = level; return *this; }
+        constexpr TextureSlice& setArraySlice(uint32_t slice) { arraySlice = slice; return *this; }
+    };
+
+
     struct TextureSubresourceSet
     {
         static constexpr uint32_t AllMipLevels = uint32_t(-1);
@@ -113,6 +141,14 @@ static const TextureSubresourceSet AllSubresources = TextureSubresourceSet(0, Te
         //virtual Object getNativeView(ObjectType objectType, Format format = Format::UNKNOWN, TextureSubresourceSet subresources = AllSubresources, TextureDimension dimension = TextureDimension::Unknown, bool isReadOnlyDSV = false) = 0;
     };
     typedef RefCountPtr<ITexture> TextureHandle;
+
+
+    class IStagingTexture : public IResource
+    {
+    public:
+        [[nodiscard]] virtual const TextureDesc& getDesc() const = 0;
+    };
+    typedef RefCountPtr<IStagingTexture> StagingTextureHandle;
 
 }
 
