@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "VkCommandBuffer.h"
+#include "VkCommandBuffer.h"
 
 namespace BlackPearl {
 
@@ -36,5 +37,7 @@ namespace BlackPearl {
 
 		vkFreeCommandBuffers(device, commandPool, 1, &commandBuffer);
 	}
+
+
 
 }

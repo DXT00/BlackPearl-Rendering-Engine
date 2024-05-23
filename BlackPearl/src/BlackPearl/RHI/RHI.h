@@ -8,7 +8,7 @@
 #include "RHIPipeline.h"
 #include "RHIShader.h"
 #include "RHIFrameBuffer.h"
-
+#include "RHICommandList.h"
 namespace BlackPearl {
 
     

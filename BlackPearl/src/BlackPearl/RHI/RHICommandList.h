@@ -20,7 +20,6 @@
 * DEALINGS IN THE SOFTWARE.
 */
 #pragma once
-#include "RHI.h"
 #include "RHIResources.h"
 #include "RHITexture.h"
 #include "RHIBuffer.h"
@@ -28,6 +27,7 @@
 #include "RHIQuery.h"
 
 namespace BlackPearl {
+    class IDevice;
     struct CommandListParameters
     {
         // A command list with enableImmediateExecution = true maps to the immediate context on DX11.

@@ -4,11 +4,16 @@
 #include "VkContext.h"
 #include <vulkan/vulkan.h>
 namespace BlackPearl {
-	class InputBindingLayout :public RefCounter<IInputLayout>
+	class InputLayout :public RefCounter<IInputLayout>
 	{
     public:
-		virtual uint32_t getNumAttributes() const { return 0; };
-		virtual const VertexAttributeDesc* getAttributeDesc(uint32_t index) const { return nullptr; };
+        std::vector<VertexAttributeDesc> inputDesc;
+
+        std::vector<VkVertexInputBindingDescription> bindingDesc;
+        std::vector<VkVertexInputAttributeDescription> attributeDesc;
+
+        uint32_t getNumAttributes() const override;
+        const VertexAttributeDesc* getAttributeDesc(uint32_t index) const override;
 	};
 }
 

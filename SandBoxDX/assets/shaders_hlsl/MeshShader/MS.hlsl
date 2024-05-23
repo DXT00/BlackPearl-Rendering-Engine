@@ -121,13 +121,13 @@ void main(uint gtid: SV_GroupThreadID,
 		  out indices uint3 tris[MAX_PRIMS],
 		  out vertices VertexOut verts[MAX_VERTS]) 
 {
-    Meshlet m = Meshlets[MeshInfo.MeshletOffset + gid]; //a threadGroup process a meshlet
+    Meshlet m = Meshlets[MeshInfo.MeshletOffset + gid]; //a threadGroup process a meshlet, 
 
     SetMeshOutputCounts(m.VertCount, m.PrimCount);
 
     if (gtid < m.PrimCount)
     {
-        tris[gtid] = GetPrimitive(m, gtid);
+        tris[gtid] = GetPrimitive(m, gtid);  //一个meshlet最多126个三角形, 一个组的线程数128，每个对应一个三角形
     }
 
     if (gtid < m.VertCount)

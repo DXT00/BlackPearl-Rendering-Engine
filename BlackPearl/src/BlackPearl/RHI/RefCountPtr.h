@@ -23,6 +23,7 @@
 #include <atomic>
 #include <cstdint>
 #include <type_traits>
+#include <assert.h>
 
 namespace BlackPearl
 {

@@ -1,8 +1,10 @@
 #pragma once
 #include<vulkan/vulkan.h>
+#include<vulkan/vulkan_core.h>
+#include "BlackPearl/RHI/RHIMessageCallback.h"
 namespace BlackPearl {
 
-	class VulkanContext
+	struct VulkanContext
 	{
 	public:
 		VulkanContext(VkInstance instance,
@@ -35,6 +37,8 @@ namespace BlackPearl {
 			bool KHR_fragment_shading_rate = false;
 			bool EXT_conservative_rasterization = false;
 			bool EXT_opacity_micromap = false;
+			bool NV_ray_tracing_invocation_reorder = false;
+
 		} extensions;
 
 		VkPhysicalDeviceProperties physicalDeviceProperties{};
@@ -44,11 +48,12 @@ namespace BlackPearl {
 		VkPhysicalDeviceFragmentShadingRatePropertiesKHR shadingRateProperties{};
 		VkPhysicalDeviceOpacityMicromapPropertiesEXT opacityMicromapProperties{};
 		VkPhysicalDeviceFragmentShadingRateFeaturesKHR shadingRateFeatures{};
+		VkPhysicalDeviceRayTracingInvocationReorderPropertiesNV nvRayTracingInvocationReorderProperties{};
 
-
-		/*void nameVKObject(const void* handle, VkDebugReportObjectTypeEXT objtype, const char* name) const;
+		IMessageCallback* messageCallback = nullptr;
+		void nameVKObject(const void* handle, VkDebugReportObjectTypeEXT objtype, const char* name) const;
 		void error(const std::string& message) const;
-		void warning(const std::string& message) const;*/
+		void warning(const std::string& message) const;
 	};
 
 

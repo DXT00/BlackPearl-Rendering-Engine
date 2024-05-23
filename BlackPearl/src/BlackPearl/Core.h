@@ -65,4 +65,9 @@
 		GE_CORE_ERROR("no such err type!"); }\
 }
 
+#define GE_INVALID_ENUM() GE_ASSERT(0,"Invalid enum value")
+#define GE_INVALID_NOTSUPPORT() GE_ASSERT(0,"Not Supported")
+
+
+
 //#define TIME_DEBUG

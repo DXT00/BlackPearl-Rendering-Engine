@@ -42,6 +42,7 @@ project "BlackPearl"
 		"../%{IncludeDir.vulkan}",
 		"../%{IncludeDir.directxtex}",
 		"../%{IncludeDir.directxmesh}",
+		"../%{IncludeDir.ShaderMake}",
 
 		"./vendor",
 		"./vendor/GLEW"
@@ -59,6 +60,7 @@ project "BlackPearl"
 	"./vendor/directxmesh_desktop_win10.2022.7.30.1/native/lib/x64/Release",
     --"./vendor/imgui/bin/".. outputdir .. "/ImGui",
 	"./vendor/VulkanSDK/1.3.236.0/Lib",
+	"./vendor/ShaderMake/build/Debug",
 
 	}
 
@@ -69,6 +71,7 @@ project "BlackPearl"
 		"GLEW",
 		"Glad",
 		"ImGui",
+		--"ShaderMakeBlob",
 		--"assimp",
 		"opengl32.lib",
 		"assimp-vc142-mtd.lib", 
@@ -86,6 +89,8 @@ project "BlackPearl"
 		"GLEW",
 		"Glad",
 		"ImGui",
+		--"ShaderMakeBlob",
+
 		--"assimp",
 		"opengl32.lib",
 		"vulkan-1.lib",
@@ -105,6 +110,7 @@ project "BlackPearl"
 		"GLEW",
 		"Glad",
 		"ImGui",
+		--"ShaderMakeBlob",
 		--"assimp",
 		"opengl32.lib",
 		--"assimp-vc140-mt.lib"
@@ -114,6 +120,7 @@ project "BlackPearl"
 	defines
 	{
 		"GLFW_INCLUDE_NONE",
+		"GE_API_D3D12"
 	}
 
 	filter "system:windows"
@@ -124,7 +131,7 @@ project "BlackPearl"
 		    "GE_PLATFORM_WINDOWS",
 			--"HZ_PLATFORM_WINDOWS",
 			--"HZ_BUILD_DLL",
-			"GLFW_INCLUDE_VULKAN",
+			--"GLFW_INCLUDE_VULKAN",
 			--"GE_D3D12RHI",
 
 

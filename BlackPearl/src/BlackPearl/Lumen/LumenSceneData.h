@@ -1,5 +1,5 @@
 #pragma once
-#include "BlackPearl/Renderer/RenderTarget.h"
+#include "BlackPearl/Renderer/RenderTargets.h"
 #include "LumenCard.h"
 #include "LumenStruct.h"
 #include "BlackPearl/Common/CommonFunc.h"
@@ -20,24 +20,24 @@ namespace BlackPearl {
 		std::shared_ptr<ShaderStorageBuffer> m_CardBuffer;
 
 		// Captured from the triangle scene
-		std::shared_ptr<RenderTarget> m_AlbedoAtlas;
-		std::shared_ptr<RenderTarget> m_OpacityAtlas;
-		std::shared_ptr<RenderTarget> m_NormalAtlas;
-		std::shared_ptr<RenderTarget> m_EmissiveAtlas;
-		std::shared_ptr<RenderTarget> m_DepthAtlas;
+		//std::shared_ptr<RenderTarget> m_AlbedoAtlas;
+		//std::shared_ptr<RenderTarget> m_OpacityAtlas;
+		//std::shared_ptr<RenderTarget> m_NormalAtlas;
+		//std::shared_ptr<RenderTarget> m_EmissiveAtlas;
+		//std::shared_ptr<RenderTarget> m_DepthAtlas;
 
-		// Generated
-		std::shared_ptr<RenderTarget> m_DirectLightingAtlas;
-		std::shared_ptr<RenderTarget> m_IndirectLightingAtlas;
-		std::shared_ptr<RenderTarget> m_RadiosityNumFramesAccumulatedAtlas;
-		std::shared_ptr<RenderTarget> m_FinalLightingAtlas;
+		//// Generated
+		//std::shared_ptr<RenderTarget> m_DirectLightingAtlas;
+		//std::shared_ptr<RenderTarget> m_IndirectLightingAtlas;
+		//std::shared_ptr<RenderTarget> m_RadiosityNumFramesAccumulatedAtlas;
+		//std::shared_ptr<RenderTarget> m_FinalLightingAtlas;
 
-		// Radiosity probes
-		std::shared_ptr<RenderTarget> m_RadiosityTraceRadianceAtlas;
-		std::shared_ptr<RenderTarget> m_RadiosityTraceHitDistanceAtlas;
-		std::shared_ptr<RenderTarget> m_RadiosityProbeSHRedAtlas;
-		std::shared_ptr<RenderTarget> m_RadiosityProbeSHGreenAtlas;
-		std::shared_ptr<RenderTarget> m_RadiosityProbeSHBlueAtlas;
+		//// Radiosity probes
+		//std::shared_ptr<RenderTarget> m_RadiosityTraceRadianceAtlas;
+		//std::shared_ptr<RenderTarget> m_RadiosityTraceHitDistanceAtlas;
+		//std::shared_ptr<RenderTarget> m_RadiosityProbeSHRedAtlas;
+		//std::shared_ptr<RenderTarget> m_RadiosityProbeSHGreenAtlas;
+		//std::shared_ptr<RenderTarget> m_RadiosityProbeSHBlueAtlas;
 
 		//page table //TODO::
 		//std::vector<FLumenPageTableEntry> PageTable;

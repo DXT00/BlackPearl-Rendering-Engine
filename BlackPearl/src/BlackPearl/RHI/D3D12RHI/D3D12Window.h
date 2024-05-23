@@ -22,6 +22,7 @@ namespace BlackPearl {
 		bool IsMouseButtonPressed(int button) override;
 		std::pair<float, float> GetMousePosition() override;
 		void* GetNativeWindow() const override { return m_hwnd; }
+		donut::math::vector<int, 2> GetCurWindowSize() override;
 
 	private:
 		static LRESULT CALLBACK D3D12Window::WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);

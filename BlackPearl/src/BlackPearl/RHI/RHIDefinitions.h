@@ -1,6 +1,140 @@
 #pragma once
+#include <functional>
+#include <iomanip>
+#include <cstdint>
+#include <cmath>
+#include <cstring>
+#include <string>
+#include <vector>
+#include "BlackPearl/RHI/Common/Containers.h"
 namespace BlackPearl {
+    /*
+Version words are used to track the usage of upload buffers, scratch buffers,
+and volatile constant buffers across multiple command lists and their instances.
+
+Versioned objects are initially allocated in the "pending" state, meaing they have
+the submitted flag set to zero, but the instance is nonzero. When the command list
+instance using the object is executed, the objects with a matching version are
+transitioned into the "submitted" state. Later, when the command list instance has
+finished executing, the objects are transitioned into the "available" state, i.e. 0.
+ */
+    namespace ObjectTypes
+    {
+        constexpr uint32_t SharedHandle = 0x00000001;
+
+        constexpr uint32_t D3D11_Device = 0x00010001;
+        constexpr uint32_t D3D11_DeviceContext = 0x00010002;
+        constexpr uint32_t D3D11_Resource = 0x00010003;
+        constexpr uint32_t D3D11_Buffer = 0x00010004;
+        constexpr uint32_t D3D11_RenderTargetView = 0x00010005;
+        constexpr uint32_t D3D11_DepthStencilView = 0x00010006;
+        constexpr uint32_t D3D11_ShaderResourceView = 0x00010007;
+        constexpr uint32_t D3D11_UnorderedAccessView = 0x00010008;
+
+        constexpr uint32_t D3D12_Device = 0x00020001;
+        constexpr uint32_t D3D12_CommandQueue = 0x00020002;
+        constexpr uint32_t D3D12_GraphicsCommandList = 0x00020003;
+        constexpr uint32_t D3D12_Resource = 0x00020004;
+        constexpr uint32_t D3D12_RenderTargetViewDescriptor = 0x00020005;
+        constexpr uint32_t D3D12_DepthStencilViewDescriptor = 0x00020006;
+        constexpr uint32_t D3D12_ShaderResourceViewGpuDescripror = 0x00020007;
+        constexpr uint32_t D3D12_UnorderedAccessViewGpuDescripror = 0x00020008;
+        constexpr uint32_t D3D12_RootSignature = 0x00020009;
+        constexpr uint32_t D3D12_PipelineState = 0x0002000a;
+        constexpr uint32_t D3D12_CommandAllocator = 0x0002000b;
+
+        constexpr uint32_t VK_Device = 0x00030001;
+        constexpr uint32_t VK_PhysicalDevice = 0x00030002;
+        constexpr uint32_t VK_Instance = 0x00030003;
+        constexpr uint32_t VK_Queue = 0x00030004;
+        constexpr uint32_t VK_CommandBuffer = 0x00030005;
+        constexpr uint32_t VK_DeviceMemory = 0x00030006;
+        constexpr uint32_t VK_Buffer = 0x00030007;
+        constexpr uint32_t VK_Image = 0x00030008;
+        constexpr uint32_t VK_ImageView = 0x00030009;
+        constexpr uint32_t VK_AccelerationStructureKHR = 0x0003000a;
+        constexpr uint32_t VK_Sampler = 0x0003000b;
+        constexpr uint32_t VK_ShaderModule = 0x0003000c;
+        constexpr uint32_t VK_RenderPass = 0x0003000d;
+        constexpr uint32_t VK_Framebuffer = 0x0003000e;
+        constexpr uint32_t VK_DescriptorPool = 0x0003000f;
+        constexpr uint32_t VK_DescriptorSetLayout = 0x00030010;
+        constexpr uint32_t VK_DescriptorSet = 0x00030011;
+        constexpr uint32_t VK_PipelineLayout = 0x00030012;
+        constexpr uint32_t VK_Pipeline = 0x00030013;
+        constexpr uint32_t VK_Micromap = 0x00030014;
+    };
+
+    struct RHIObject
+    {
+        union {
+            uint64_t integer;
+            void* pointer;
+        };
+
+        RHIObject(uint64_t i) : integer(i) { }  // NOLINT(cppcoreguidelines-pro-type-member-init)
+        RHIObject(void* p) : pointer(p) { }     // NOLINT(cppcoreguidelines-pro-type-member-init)
+
+        template<typename T> operator T* () const { return static_cast<T*>(pointer); }
+    };
+
+
+
+
+    enum class GraphicsAPI : uint8_t
+    {
+        D3D11,
+        D3D12,
+        VULKAN
+    };
+
+    constexpr uint64_t c_VersionSubmittedFlag = 0x8000000000000000;
+    constexpr uint32_t c_VersionQueueShift = 60;
+    constexpr uint32_t c_VersionQueueMask = 0x7;
+    constexpr uint64_t c_VersionIDMask = 0x0FFFFFFFFFFFFFFF;
+
+
+    enum class CommandQueue : uint8_t
+    {
+        Graphics = 0,
+        Compute,
+        Copy,
+
+        Count
+    };
+
+    constexpr uint64_t MakeVersion(uint64_t id, CommandQueue queue, bool submitted)
+    {
+        uint64_t result = (id & c_VersionIDMask) | (uint64_t(queue) << c_VersionQueueShift);
+        if (submitted) result |= c_VersionSubmittedFlag;
+        return result;
+    }
+
+    constexpr uint64_t VersionGetInstance(uint64_t version)
+    {
+        return version & c_VersionIDMask;
+    }
+
+  /*  constexpr CommandQueue VersionGetQueue(uint64_t version)
+    {
+        return CommandQueue((version >> c_VersionQueueShift) & c_VersionQueueMask);
+    }*/
+
+    constexpr bool VersionGetSubmitted(uint64_t version)
+    {
+        return (version & c_VersionSubmittedFlag) != 0;
+    }
+
     static constexpr uint32_t c_MaxRenderTargets = 8;
+    static constexpr uint32_t c_MaxViewports = 16;
+    static constexpr uint32_t c_MaxVertexAttributes = 16;
+    static constexpr uint32_t c_MaxBindingLayouts = 5;
+    static constexpr uint32_t c_MaxBindingsPerLayout = 128;
+    static constexpr uint32_t c_MaxVolatileConstantBuffersPerLayout = 6;
+    static constexpr uint32_t c_MaxVolatileConstantBuffers = 32;
+    static constexpr uint32_t c_MaxPushConstantSize = 128; // D3D12: root signature is 256 bytes max., Vulkan: 128 bytes of push constants guaranteed
+    static constexpr uint32_t c_ConstantBufferOffsetSizeAlignment = 256; // Partially bound constant buffers must have offsets aligned to this and sizes multiple of this
+
 
 #define NVRHI_ENUM_CLASS_FLAG_OPERATORS(T) \
     inline T operator | (T a, T b) { return T(uint32_t(a) | uint32_t(b)); } \
@@ -307,6 +441,8 @@ namespace BlackPearl {
 
         All = 0x3FFF,
     };
+    NVRHI_ENUM_CLASS_FLAG_OPERATORS(ShaderType)
+
     enum class VariableShadingRate : uint8_t
     {
         e1x1,
@@ -415,6 +551,7 @@ namespace BlackPearl {
         OpacityMicromapWrite = 0x00200000,
         OpacityMicromapBuildInput = 0x00400000,
     };
+    NVRHI_ENUM_CLASS_FLAG_OPERATORS(ResourceStates)
 	enum class PrimitiveType : uint8_t
 	{
 		PointList,
@@ -458,6 +595,8 @@ namespace BlackPearl {
         // D3D11, Vulkan: ignored
         Shared_CrossAdapter = 0x04,
     };
+    NVRHI_ENUM_CLASS_FLAG_OPERATORS(SharedResourceFlags)
+
     enum class Format : uint8_t
     {
         UNKNOWN,
@@ -543,6 +682,23 @@ namespace BlackPearl {
         DepthStencil
     };
 
+
+    struct FormatInfo
+    {
+        Format format;
+        const char* name;
+        uint8_t bytesPerBlock;
+        uint8_t blockSize;
+        FormatKind kind;
+        bool hasRed : 1;
+        bool hasGreen : 1;
+        bool hasBlue : 1;
+        bool hasAlpha : 1;
+        bool hasDepth : 1;
+        bool hasStencil : 1;
+        bool isSigned : 1;
+        bool isSRGB : 1;
+    };
 /**
  *	Resource usage flags - for vertex and index buffers.
  */
@@ -622,14 +778,7 @@ namespace BlackPearl {
 		 AnyDynamic = (Dynamic | Volatile),
 	};
 
-    enum class CommandQueue : uint8_t
-    {
-        Graphics = 0,
-        Compute,
-        Copy,
 
-        Count
-    };
     //////////////////////////////////////////////////////////////////////////
 // Viewport State
 //////////////////////////////////////////////////////////////////////////
@@ -754,5 +903,10 @@ namespace BlackPearl {
     };
 
 
-
+    template <class T>
+    void hash_combine(size_t& seed, const T& v)
+    {
+       /* std::hash<T> hasher;
+        seed ^= hasher(v) + 0x9e3779b9 + (seed << 6) + (seed >> 2);*/
+    }
 }

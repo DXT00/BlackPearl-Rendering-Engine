@@ -107,6 +107,18 @@ namespace BlackPearl {
 	{
 		return { m_MousePosition.first, m_MousePosition.second};
 	}
+
+	donut::math::vector<int, 2> D3D12Window::GetCurWindowSize()
+	{
+		HWND foreground = GetForegroundWindow();
+		RECT rct;
+		GetWindowRect(foreground, &rct);
+		int width = rct.right - rct.left;   //窗口的宽度
+		int height = rct.bottom - rct.top;  //窗口的高度
+
+		return donut::math::vector<int, 2>(width, height);
+	}
+
 	LRESULT CALLBACK D3D12Window::WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) {
 		D3D12Window* pWindow = reinterpret_cast<D3D12Window*>(GetWindowLongPtr(hWnd, GWLP_USERDATA));
 
