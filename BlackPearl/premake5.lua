@@ -81,6 +81,10 @@ project "BlackPearl"
 		"GLFW_INCLUDE_NONE",
 		"GE_API_OPENGL"
 	}
+   	flags
+   	{
+		"MultiProcessorCompile"
+   	}
 
    filter { "options:RenderAPI=vulkan" }
    links 
@@ -102,6 +106,10 @@ project "BlackPearl"
 		"GLFW_INCLUDE_NONE",
 		"GE_API_VULKAN"
    }
+   	flags
+   	{
+		"MultiProcessorCompile"
+   	}
 
    filter { "options:RenderAPI=direct3d" }
 	links 
@@ -122,6 +130,10 @@ project "BlackPearl"
 		"GLFW_INCLUDE_NONE",
 		"GE_API_D3D12"
 	}
+	flags
+    {
+		"MultiProcessorCompile"
+    }
 
 	filter "system:windows"
 		systemversion "latest"
