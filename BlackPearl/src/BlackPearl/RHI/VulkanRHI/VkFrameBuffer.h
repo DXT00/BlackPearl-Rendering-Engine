@@ -1,4 +1,6 @@
 #pragma once
+#if GE_API_VULKAN
+
 #include "BlackPearl/RHI/RHIFrameBuffer.h"
 #include "VkContext.h"
 #include <vulkan/vulkan.h>
@@ -30,4 +32,4 @@ namespace BlackPearl {
     };
 
 }
-
+#endif

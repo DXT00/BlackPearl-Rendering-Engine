@@ -1,4 +1,6 @@
 #pragma once
+#if GE_API_VULKAN
+
 #include "BlackPearl/RHI/RHITexture.h"
 #include "BlackPearl/RHI/RHIHeap.h"
 #include "BlackPearl/RHI/RHIState.h"
@@ -112,3 +114,4 @@ namespace BlackPearl {
 
 }
 
+#endif

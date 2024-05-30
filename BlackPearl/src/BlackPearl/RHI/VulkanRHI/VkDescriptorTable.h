@@ -1,4 +1,6 @@
 #pragma once
+#if GE_API_VULKAN
+
 #include "../RHIDescriptorTable.h"
 #include "VkContext.h"
 namespace BlackPearl {
@@ -26,3 +28,4 @@ namespace BlackPearl {
         const VulkanContext& m_Context;
     };
 }
+#endif

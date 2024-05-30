@@ -1,4 +1,6 @@
 #pragma once
+#if GE_API_VULKAN
+
 #include "../RefCountPtr.h"
 #include "../RHIInputLayout.h"
 #include "VkContext.h"
@@ -18,3 +20,4 @@ namespace BlackPearl {
 }
 
 
+#endif

@@ -1,4 +1,6 @@
 #pragma once
+#if GE_API_VULKAN
+
 #include "BlackPearl/RHI/RHIQuery.h"
 #include "VkQueue.h"
 
@@ -33,3 +35,4 @@ namespace BlackPearl {
     //};
 
 }
+#endif

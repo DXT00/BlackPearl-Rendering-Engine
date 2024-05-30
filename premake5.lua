@@ -13,8 +13,23 @@ newoption {
 workspace "BlackPearl"
 	--architecture "x86"
 	architecture "x86_64"
-	startproject "SandboxVK"
-
+	
+	-- local renderApi = _OPTIONS["RenderAPI"]
+	print(_OPTIONS["RenderAPI"])
+	if _OPTIONS["RenderAPI"] == "opengl" then
+		startproject "Sandbox"
+		print("set startproject to Sandbox.")
+	elseif _OPTIONS["RenderAPI"] == "vulkan"  then
+		startproject "SandboxVK"
+		print("set startproject to SandboxVK.")
+	elseif _OPTIONS["RenderAPI"] == "direct3d" then
+		startproject "SandboxDX"
+		print("set startproject to SandboxDX.")
+	else
+		print("Invalid RenderAPI option. Defaulting to SandboxVK.")
+		startproject "SandboxVK"
+	end
+	
 	configurations
 	{
 		"Debug",
@@ -54,11 +69,3 @@ include "SandBoxVK"
 include "SandBoxDX"
 include "ShaderCompiler"
 
---include "BlackPearl/vendor/assimp"
--- dofile("BlackPearl/premake5.lua")
-
--- dofile("SandBox/premake5.lua")
-
--- dofile("SandBoxVK/premake5.lua")
-
--- dofile("SandBoxDX/premake5.lua")

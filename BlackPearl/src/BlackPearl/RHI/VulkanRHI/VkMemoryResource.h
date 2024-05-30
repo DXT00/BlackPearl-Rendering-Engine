@@ -1,4 +1,6 @@
 #pragma once
+#if GE_API_VULKAN
+
 #include<vulkan/vulkan.h>
 namespace BlackPearl {
     class MemoryResource
@@ -8,3 +10,4 @@ namespace BlackPearl {
         VkDeviceMemory memory;
     };
 }
+#endif

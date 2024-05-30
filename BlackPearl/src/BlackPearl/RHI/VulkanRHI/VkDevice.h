@@ -1,4 +1,6 @@
 #pragma once
+#if GE_API_VULKAN
+
 #include <array>
 #include "../RefCountPtr.h"
 #include "../RHIDevice.h"
@@ -128,3 +130,4 @@ namespace BlackPearl {
 
 
 }
+#endif

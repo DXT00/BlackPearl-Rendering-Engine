@@ -1,4 +1,6 @@
 #include "pch.h"
+#if GE_API_VULKAN
+
 #include "VkDynamicRHI.h"
 #include "VkWindow.h"
 #include "BlackPearl/Application.h"
@@ -20,3 +22,4 @@ namespace BlackPearl {
 
    
 }
+#endif

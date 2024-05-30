@@ -21,6 +21,8 @@
 */
 
 #pragma once
+#if GE_API_VULKAN
+
 #include "BlackPearl/RHI/RHI.h"
 #include "BlackPearl/RHI/RHICommandList.h"
 #include "BlackPearl/RHI/RHIState.h"
@@ -183,3 +185,4 @@ namespace BlackPearl {
 
 }
 
+#endif

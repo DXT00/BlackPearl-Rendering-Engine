@@ -1,4 +1,6 @@
 #pragma once
+#if GE_API_VULKAN
+
 #include <vulkan/vulkan.h>
 namespace BlackPearl {
     namespace vk {
@@ -261,3 +263,4 @@ namespace BlackPearl {
 
     }
 }
+#endif

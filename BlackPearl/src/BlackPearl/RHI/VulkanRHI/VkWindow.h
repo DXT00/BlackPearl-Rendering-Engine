@@ -1,4 +1,6 @@
 #pragma once
+#if GE_API_VULKAN
+
 #include "BlackPearl/Window.h"
 
 namespace BlackPearl {
@@ -24,3 +26,4 @@ namespace BlackPearl {
 		std::unique_ptr<Context> m_Context;
 	};
 }
+#endif

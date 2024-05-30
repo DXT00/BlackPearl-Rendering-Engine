@@ -1,0 +1,42 @@
+[Header]
+ICOfile = "Eden_ICON.jpg"
+Name = "EdenFX Office"
+Author = "Blochi"
+Location = "Hollywood"
+Comment = "The upstairs bullpen, kinda dark, stopped up a lot"
+GEOlat = 34.094801006833094
+GEOlong = -118.32122772932053
+Link = "http://www.hdrlabs.com/sibl/archive.html"
+Date = "2003:05:20"
+Time = "13:00:00"
+Height = 1.6
+
+[Background]
+; distortions all over the place, and blurry
+BGfile = "Eden_Pano.jpg"
+BGmap = 1
+BGu = 0.000000
+BGv = 0.000000
+BGheight = 1024
+
+[Enviroment]
+; with diffuse factor 8
+EVfile = "Eden_Diffuse8.hdr"
+EVmap = 1
+EVu = 0.000000
+EVv = 0.000000
+EVheight = 128
+EVmulti = 1.200000
+EVgamma = 1.300000
+
+[Reflection]
+; crisper, but still distorted
+REFfile = "Eden_REF.hdr"
+REFmap = 1
+REFu = 0.000000
+REFv = 0.000000
+REFheight = 512
+REFmulti = 1.000000
+REFgamma = 1.400000
+
+

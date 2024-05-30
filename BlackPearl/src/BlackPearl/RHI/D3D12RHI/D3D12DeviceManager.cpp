@@ -125,4 +125,10 @@ namespace BlackPearl {
     {
     }
 
+    DeviceManager* DeviceManager::CreateD3D12()
+    {
+        return nullptr;
+    }
+
+
 }

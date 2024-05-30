@@ -47,6 +47,8 @@ freely, subject to the following restrictions:
    distribution.
 */
 #include "pch.h"
+#if GE_API_VULKAN
+
 #include <string>
 #include <queue>
 #include <unordered_set>
@@ -1199,8 +1201,10 @@ namespace BlackPearl {
 		}
 	}
 
+
 	DeviceManager* DeviceManager::CreateVK()
 	{
 		return new VKDeviceManager();
 	}
 }
+#endif

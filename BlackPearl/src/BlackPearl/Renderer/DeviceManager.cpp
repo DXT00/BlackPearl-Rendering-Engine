@@ -19,8 +19,8 @@ namespace BlackPearl {
             return CreateVK();
 #endif
         default:
-            GE_CORE_ERROR("DeviceManager::Create: Unsupported Graphics API");
-            return nullptr;
+            //GE_CORE_ERROR("DeviceManager::Create: Unsupported Graphics API");
+            return CreateOpenGL();
         }
     }
     bool DeviceManager::CreateWindowDeviceAndSwapChain(const DeviceCreationParameters& params, const char* windowTitle)

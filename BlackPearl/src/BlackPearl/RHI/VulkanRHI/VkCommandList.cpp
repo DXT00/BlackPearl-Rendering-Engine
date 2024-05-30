@@ -1,4 +1,6 @@
 #include "pch.h"
+#if GE_API_VULKAN
+
 #include "BlackPearl/Core.h"
 #include "../Common/Misc.h"
 #include "VkCommandList.h"
@@ -904,3 +906,4 @@ namespace BlackPearl {
 		}
 	}
 }
+#endif
