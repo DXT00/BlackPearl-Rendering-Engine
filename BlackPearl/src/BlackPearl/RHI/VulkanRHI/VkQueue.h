@@ -1,5 +1,7 @@
 //#include "BlackPearl/RHI/RHI.h"
 #pragma once
+#if GE_API_VULKAN
+
 #include "BlackPearl/RHI/RHICommandList.h"
 #include "VkContext.h"
 #include "VkCommandBuffer.h"
@@ -63,3 +65,4 @@ namespace BlackPearl {
         std::list<TrackedCommandBufferPtr> m_CommandBuffersPool;
     };
 }
+#endif

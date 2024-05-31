@@ -31,6 +31,11 @@
 #include <vulkan/vulkan_core.h>
 #endif
 
+#if GE_API_D3D12
+#include <dxgi.h>
+#include <d3dcommon.h>
+#endif
+
 namespace BlackPearl {
     struct DeviceCreationParameters
     {
@@ -225,10 +230,10 @@ namespace BlackPearl {
         } m_callbacks;
 
     private:
-        static DeviceManager* CreateD3D11();
+
         static DeviceManager* CreateD3D12();
         static DeviceManager* CreateVK();
-
+        static DeviceManager* CreateOpenGL();
         std::string m_WindowTitle;
 	};
 

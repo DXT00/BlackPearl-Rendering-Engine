@@ -1,4 +1,6 @@
 #pragma once
+#if GE_API_VULKAN
+
 #include "glm/glm.hpp"
 #include "vulkan/vulkan.h"
 #include "../DynamicRHI.h"
@@ -22,3 +24,4 @@ namespace BlackPearl {
 
 }
 
+#endif

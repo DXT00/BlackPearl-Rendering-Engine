@@ -1,4 +1,6 @@
 #pragma once
+#if GE_API_VULKAN
+
 #include<vector>
 #include "../RefCountPtr.h"
 #include "../RHIShader.h"
@@ -36,4 +38,4 @@ namespace BlackPearl {
 	
 }
 
-
+#endif

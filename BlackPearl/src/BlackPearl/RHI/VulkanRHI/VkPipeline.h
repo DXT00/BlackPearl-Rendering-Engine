@@ -1,4 +1,6 @@
 #pragma once
+#if GE_API_VULKAN
+
 #include "../RefCountPtr.h"
 #include"../RHIPipeline.h"
 #include "../RHIBindingLayoutDesc.h"
@@ -105,5 +107,5 @@ namespace BlackPearl {
 
 	};
 }
-
+#endif
 

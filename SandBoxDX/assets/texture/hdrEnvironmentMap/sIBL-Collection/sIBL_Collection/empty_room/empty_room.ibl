@@ -1,0 +1,42 @@
+[Header]
+ICOfile = "sad_icon.jpg"
+Name = "Empty Room"
+Author = "Blochi"
+Location = "Halle/Saale"
+Comment = "shot with 120 deg fisheye, lots of clone stamp repair done..."
+GEOlat = 51.48341739347113
+GEOlong = 11.96662187576294
+Link = "http://www.hdrlabs.com/sibl/archive.html"
+Date = "2002:07:12"
+Time = "15:06:00"
+Height = 1.5
+
+[Background]
+; The Bgfile.. normally a hires LDRimage
+BGfile = "Hires_pano.jpg"
+BGmap = 1
+BGu = 0.000000
+BGv = 0.000000
+BGheight = 1600
+
+[Enviroment]
+; The Enviromentfile LowRes HDRI with Diffuse Blur
+EVfile = "diffuse.hdr"
+EVmap = 1
+EVu = 0.000000
+EVv = 0.000000
+EVheight = 128
+EVmulti = 1.400000
+EVgamma = 1.400000
+
+[Reflection]
+; some call THIS hires, but I don't
+REFfile = "medium_res.hdr"
+REFmap = 1
+REFu = 0.000000
+REFv = 0.000000
+REFheight = 512
+REFmulti = 1.000000
+REFgamma = 1.400000
+
+

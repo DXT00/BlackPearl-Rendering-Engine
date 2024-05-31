@@ -20,6 +20,8 @@
 * DEALINGS IN THE SOFTWARE.
 */
 #include "pch.h"
+#if GE_API_VULKAN
+
 #include "VkQueue.h"
 #include "VkCommandList.h"
 namespace BlackPearl {
@@ -276,3 +278,4 @@ namespace BlackPearl {
 	}
 
 }
+#endif

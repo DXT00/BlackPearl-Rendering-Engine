@@ -1,0 +1,47 @@
+[Header]
+ICOfile = "backlotICON.jpg"
+Name = "Studio Backlot"
+Author = "Blochi"
+Location = "Hollywood"
+Comment = "super-bright day at the Gower Studios Backlot, giant sunflare..."
+GEOlat = 34.094801006833094
+GEOlong = -118.32122772932053
+Link = "http://www.hdrlabs.com/sibl/archive.html"
+Date = "2003:05:19"
+Time = "16:00:00"
+Height = 1.7
+North = 0
+
+[Background]
+BGfile = "HiResLL.jpg"
+BGmap = 1
+BGu = 0.000000
+BGv = 0.000000
+BGheight = 1024
+
+[Enviroment]
+; Diffuse Blur factor10
+EVfile = "Diffuse10.hdr"
+EVmap = 1
+EVu = 0.000000
+EVv = 0.000000
+EVheight = 128
+EVmulti = 1.000000
+EVgamma = 1.800000
+
+[Reflection]
+; sorry for the giant Sunflare
+REFfile = "Refmap.hdr"
+REFmap = 1
+REFu = 0.000000
+REFv = 0.000000
+REFheight = 512
+REFmulti = 1.000000
+REFgamma = 1.600000
+
+[Sun]
+SUNcolor = 255,255,245
+SUNmulti = 0.800000
+SUNu = 0.737300
+SUNv = 0.257813
+

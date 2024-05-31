@@ -1,4 +1,6 @@
 #include "pch.h"
+#if GE_API_VULKAN
+
 #include "VkWindow.h"
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
@@ -94,3 +96,4 @@ namespace BlackPearl {
 	}
 	
 }
+#endif

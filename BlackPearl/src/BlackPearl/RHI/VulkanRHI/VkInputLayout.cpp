@@ -1,4 +1,6 @@
 #include "pch.h"
+#if GE_API_VULKAN
+
 #include "VkBindingLayout.h"
 #include "VkInputLayout.h"
 
@@ -15,3 +17,4 @@ namespace BlackPearl {
 			return nullptr;
 	}
 }
+#endif

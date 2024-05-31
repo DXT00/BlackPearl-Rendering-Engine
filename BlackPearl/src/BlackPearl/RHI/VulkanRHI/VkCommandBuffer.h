@@ -1,4 +1,6 @@
 #pragma once
+#if GE_API_VULKAN
+
 #include<vulkan/vulkan.h>
 #include "BlackPearl/RHI/RHIResources.h"
 #include "BlackPearl/RHI/VulkanRHI/VkBuffer.h"
@@ -44,3 +46,4 @@ namespace BlackPearl {
 
 }
 
+#endif

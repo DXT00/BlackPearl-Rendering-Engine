@@ -10,7 +10,16 @@ namespace BlackPearl {
 
 	//global RHI
 	DynamicRHI* g_DynamicRHI = nullptr;
+#if GE_API_D3D12
+	DynamicRHI::Type DynamicRHI::g_RHIType = DynamicRHI::Type::D3D12;
+
+#elif GE_API_VULKAN
 	DynamicRHI::Type DynamicRHI::g_RHIType = DynamicRHI::Type::Vulkan;
+
+#else
+	DynamicRHI::Type DynamicRHI::g_RHIType = DynamicRHI::Type::OpenGL;
+
+#endif
 	void DynamicRHIInit(DynamicRHI::Type rhiType)
 	{
 		DynamicRHI::g_RHIType = rhiType;
@@ -22,7 +31,9 @@ namespace BlackPearl {
 			dynamicModule = DBG_NEW D3D12DynamicModule();
 		}
 		else if (DynamicRHI::g_RHIType == DynamicRHI::Type::Vulkan) {
+#ifdef GE_API_VULKAN
 			dynamicModule = DBG_NEW VkDynamicModule();
+#endif
 		}
 		g_DynamicRHI = dynamicModule->CreateRHI();
 	}

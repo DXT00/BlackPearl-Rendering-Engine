@@ -1,4 +1,6 @@
 #include "pch.h"
+#if GE_API_VULKAN
+
 #include "VkPipeline.h"
 
 namespace BlackPearl {
@@ -25,3 +27,4 @@ namespace BlackPearl {
 		return 0;
 	}
 }
+#endif

@@ -20,6 +20,7 @@
 * DEALINGS IN THE SOFTWARE.
 */
 #include "pch.h"
+#if GE_API_VULKAN
 
 #include <array>
 #include <assert.h>
@@ -905,3 +906,4 @@ namespace BlackPearl
 	}
 
 } // namespace nvrhi::vulkan
+#endif

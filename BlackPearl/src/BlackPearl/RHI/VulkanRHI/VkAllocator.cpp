@@ -1,4 +1,5 @@
 #include "pch.h"
+#if GE_API_VULKAN
 #include "VkAllocator.h"
 #include "VkBuffer.h"
 #include "VkTexture.h"
@@ -35,3 +36,4 @@ namespace BlackPearl {
 
 
 }
+#endif

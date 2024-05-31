@@ -1,4 +1,6 @@
 #include "pch.h"
+#if GE_API_VULKAN
+
 #include "VkContext.h"
 
 namespace BlackPearl {
@@ -32,3 +34,4 @@ namespace BlackPearl {
 
     }
 }
+#endif

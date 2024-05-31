@@ -1,4 +1,6 @@
 #pragma once
+#if GE_API_VULKAN
+
 #include "VkContext.h"
 
 
@@ -35,3 +37,4 @@ namespace BlackPearl {
 	};
 
 }
+#endif

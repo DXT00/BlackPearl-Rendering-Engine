@@ -1,4 +1,6 @@
 #pragma once
+#if GE_API_VULKAN
+
 #include <atomic>
 #include "VkMemoryResource.h"
 #include "BlackPearl/RHI/RHIHeap.h"
@@ -66,3 +68,4 @@ namespace BlackPearl {
 
 
 }
+#endif

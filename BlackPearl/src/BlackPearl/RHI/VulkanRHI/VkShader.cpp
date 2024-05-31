@@ -1,4 +1,6 @@
 #include "pch.h"
+#if GE_API_VULKAN
+
 #include "VkShader.h"
 
 namespace BlackPearl {
@@ -17,3 +19,4 @@ namespace BlackPearl {
 	}
 
 }
+#endif

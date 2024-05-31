@@ -1,4 +1,6 @@
 #include "pch.h"
+#if GE_API_VULKAN
+
 #include <unordered_map>
 #include "VkBindingLayout.h"
 #include "VkUtil.h"
@@ -273,3 +275,4 @@ namespace BlackPearl {
 	}
 
 }
+#endif
