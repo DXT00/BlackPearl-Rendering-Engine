@@ -104,23 +104,15 @@ namespace BlackPearl {
 
 		}
 
-
-
-
-
-
 	}
 	void IBLProbesRenderer::RenderDiffuseProbeMap(int idx,const LightSources* lightSources, const std::vector<Object*> objects, const std::vector<Object*> dynamicObjs, float timeInSecond, const std::vector<Object*> diffuseProbes, Object* skyBox)
 	{
 		GE_ASSERT(m_IsInitial, "please initial IBLProbesRenderer first! IBLProbesRenderer::init()");
 
-		//for (auto it = diffuseProbes.begin(); it != diffuseProbes.end(); it++) {
+		UpdateDiffuseProbesMap(lightSources, objects, dynamicObjs, timeInSecond, skyBox, diffuseProbes[idx]);
 
-		//	Object* probe = *it;
-			UpdateDiffuseProbesMap(lightSources, objects, dynamicObjs, timeInSecond, skyBox, diffuseProbes[idx]);
-
-		//}
 	}
+
 	void IBLProbesRenderer::RenderDiffuseProbeMap(const LightSources* lightSources, const std::vector<Object*> objects, const std::vector<Object*> dynamicObjs, float timeInSecond, const std::vector<Object*> diffuseProbes,  Object* skyBox)
 	{
 		GE_ASSERT(m_IsInitial, "please initial IBLProbesRenderer first! IBLProbesRenderer::init()");

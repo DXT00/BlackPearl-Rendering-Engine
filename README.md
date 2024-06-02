@@ -2,9 +2,18 @@
 BlackPearl  Engine is a dynamic GI rendering engine to simulate different dynamic GI algorithm,such as light probe based GI,voxel cone tracing GI,image based lighting, sparse voxel octree cone tracing.You can select the algorithm you want to simulate in SandBox.
 
 ## Get start
+1) select render API, modify the RenderAPI Settings in GenerateProject.bat:
+```
+call vendor\bin\premake\premake5.exe vs2022 --RenderAPI=opengl
+PAUSE
+```
+You can choose RenderAPI from the following three options:  
+	   { "opengl",    "OpenGL" },  
+	   { "direct3d",  "Direct3D (Windows only)" },  
+	   { "vulkan",  "Vulkan" }  
 
-1) run GenerateProject.bat to set up visual studio project,it is only for Windows now.
-2) select the GI algorithom in SandBox.cpp(openGL supported algorithm) or SandBoxDX.cpp (directX supported GI algorithm.such as DXR)
+2) run GenerateProject.bat to set up visual studio project,it is only for Windows now.
+3) select the GI algorithom in SandBox.cpp(openGL supported algorithm) or SandBoxDX.cpp (directX supported GI algorithm.such as DXR) or SandBoxVK.cpp
 
 
 SandBox.cpp

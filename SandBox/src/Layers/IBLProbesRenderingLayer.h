@@ -27,9 +27,7 @@ public:
 		m_MapManager = DBG_NEW BlackPearl::MapManager(BlackPearl::Configuration::MapSize, BlackPearl::Configuration::AreaSize);
 		m_MapRenderer = DBG_NEW BlackPearl::MapRenderer(m_MapManager);
 
-		//Shader
-		//m_BackGroundShader.reset(DBG_NEW BlackPearl::Shader("assets/shaders/ibl/background.glsl"));
-		//m_DebugQuadShader.reset(DBG_NEW BlackPearl::Shader("assets/shaders/QuadDebug.glsl"));
+	
 
 		/* probe's CubeObj and quad for BrdfLUTMap */
 		m_BrdfLUTQuadObj = CreateQuad("assets/shaders/ibl/brdf.glsl", "");
