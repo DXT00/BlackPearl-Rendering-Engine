@@ -11,32 +11,18 @@
 #include "BlackPearl/Common/CommonFunc.h"
 #include "BlackPearl/Renderer/Mesh/MeshletConfig.h"
 #include "BlackPearl/Renderer/Mesh/Meshlet.h"
+#include "BlackPearl/Renderer/SceneType.h"
 #include <initializer_list>
 #include <memory>
 
 namespace BlackPearl {
 
-	struct MeshInfo
-	{
-		std::string name;
-		std::shared_ptr<BufferGroup> buffers;
-		std::shared_ptr<MeshInfo> skinPrototype;
-		//std::vector<std::shared_ptr<MeshGeometry>> geometries;
-		donut::math::box3 objectSpaceBounds;
-		uint32_t indexOffset = 0;
-		uint32_t vertexOffset = 0;
-		uint32_t totalIndices = 0;
-		uint32_t totalVertices = 0;
-		int globalMeshIndex = 0;
-		//rt::AccelStructHandle accelStruct; // for use by applications
-		//rt::AccelStructHandle accelStructOMM; // for use by application
-		//std::vector<rt::OpacityMicromapHandle> opacityMicroMaps; // for use by application
+	//struct MeshInfo
+	//{
+	//	
 
-		std::unique_ptr<MeshDebugData> debugData;
-		bool debugDataDirty = true; // set this to true to make Scene update the debug data
-
-		virtual ~MeshInfo() = default;
-	};
+	//	virtual ~MeshInfo() = default;
+	//};
 
 	class Mesh
 	{
@@ -105,7 +91,17 @@ namespace BlackPearl {
 		uint32_t GetIndicesConut() const { return m_IndicesCount; }
 
 
-
+	public:
+		std::string name;
+		std::shared_ptr<BufferGroup> buffers;
+		//std::shared_ptr<MeshInfo> skinPrototype;
+		//std::vector<std::shared_ptr<MeshGeometry>> geometries;
+		donut::math::box3 objectSpaceBounds;
+		uint32_t indexOffset = 0;
+		uint32_t vertexOffset = 0;
+		uint32_t totalIndices = 0;
+		uint32_t totalVertices = 0;
+		int globalMeshIndex = 0;
 
 	public:
 		//temp for directX mseh shader TODO::¼æÈÝopengl ºÍd3d12 mesh½Ó¿Ú
@@ -135,6 +131,16 @@ namespace BlackPearl {
 		void ParseAttributes(const VertexBufferLayout& layout);
 		std::shared_ptr<VertexArray> m_VertexArray;
 		VertexBufferLayout           m_VertexBufferLayout;
+
+		
+		//rt::AccelStructHandle accelStruct; // for use by applications
+		//rt::AccelStructHandle accelStructOMM; // for use by application
+		//std::vector<rt::OpacityMicromapHandle> opacityMicroMaps; // for use by application
+
+		std::unique_ptr<MeshDebugData> debugData;
+		bool debugDataDirty = true; // set this to true to make Scene update the debug data
+
+
 		float*                       m_Vertices = nullptr;
 		uint32_t*                    m_Indices = nullptr;
 		uint32_t                     m_IndicesSize = 0; //m_IndicesSize = m_indicesCount* sizeof(uint32_t)

@@ -27,6 +27,7 @@
 #include "BlackPearl/Renderer/CullingManager.h"
 #include "BlackPearl/Renderer/MasterRenderer/BasicRenderer.h"
 #include "BlackPearl/Log.h"
+#include "BlackPearl/Renderer/Model/ModelLoader.h"
 #include <BlackPearl/Luanch/Luanch.h>
 
 namespace BlackPearl {
@@ -37,6 +38,8 @@ namespace BlackPearl {
 	MaterialManager* g_materialManager = DBG_NEW MaterialManager();
 	DeviceManager*   g_deviceManager = nullptr;
 	CullingManager* g_cullingManager = DBG_NEW CullingManager();
+	ModelLoader* g_modelLoader = DBG_NEW ModelLoader();
+
 	double Application::s_AppFPS = 0.0f;
 	double Application::s_AppAverageFPS = 0.0f;
 
@@ -84,6 +87,7 @@ namespace BlackPearl {
 		g_deviceManager = DeviceManager::Create(DynamicRHI::g_RHIType);
 		g_deviceManager->Init(deviceParams);
 
+		g_modelLoader->RegisterDeviceManager(g_deviceManager);
 		m_LayerManager = DBG_NEW LayerManager();
 
 		m_StartTimeMs = 0;// duration_cast<milliseconds>(system_clock::now().time_since_epoch());

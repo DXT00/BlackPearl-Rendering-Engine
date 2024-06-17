@@ -14,12 +14,13 @@
 #include "BlackPearl/RHI/DynamicRHI.h"
 #include "BlackPearl/RHI/D3D12RHI/D3D12ModelLoader.h"
 #include "BlackPearl/AABB/AABB.h"
+#include "ModelLoader.h"
 //#include <assimp/material.h>
 
 //#include <assimp/cimport.h>
 namespace BlackPearl {
 
-	///extern DynamicRHI::Type g_RHIType;
+	extern ModelLoader* g_modelLoader;
 	class Model
 	{
 	public:
@@ -46,10 +47,10 @@ namespace BlackPearl {
 				//LoadMeshletModel(m_BoundingSphere, path);
 			}
 			else {
-				LoadModel(path);
+				g_modelLoader->LoadModel(path);
 				//TODO::
 				//替换为				
-				//m_ModelLoader = std::make_shared<OpenGLModelLoader>(isMeshletModel, createMeshlet, options);
+				//m_ModelLoader = DBG_NEW ModelLoader();
 
 			}
 		};
@@ -58,36 +59,7 @@ namespace BlackPearl {
 			GE_SAVE_DELETE(m_ModelLoader);
 
 		};
-		void LoadModel(const std::string& path);
-		void LoadMeshletModel(BoundingSphere& bounding_sphere, const std::string& path);
-		void ProcessNode(aiNode* node, const aiScene* scene);
-		std::shared_ptr<Mesh> ProcessMesh(aiMesh* aimesh);
-		std::shared_ptr<Mesh> ProcessMesh(aiMesh* aimesh, std::vector<Vertex>& v_vertex, bool sort_vertices);
-
-		void LoadMaterialTextures(
-			aiMaterial* material,
-			aiTextureType type,
-			Texture::Type typeName,
-			std::shared_ptr<Material::TextureMaps>& textures);
-
-		void LoadMaterialColors(
-			aiMaterial* material,
-			MaterialColor& colors);
-
-		/*Bones*/
-		void LoadBones(aiMesh* aimesh);
-		std::shared_ptr<Material> LoadMaterial(aiMaterial* aiMaterial);
-		std::vector<glm::mat4>  CalculateBoneTransform(float timeInSecond);
-		void ReadHierarchy(float timeInDurationSecond, aiNode* node, glm::mat4 parentTransform);
-
-		aiNodeAnim* FindNode(std::string nodeName, aiAnimation* animation);
-		glm::mat4 AiMatrix4ToMat4(aiMatrix4x4 aiMatrix);
-		glm::mat4 AiMatrix4ToMat4(aiMatrix3x3 aiMatrix);
-
-		/*Interpolate*/
-		glm::vec3    CalculateInterpolatePosition(float timeInDurationSecond, aiNodeAnim* nodeAnim);
-		aiQuaternion CalculateInterpolateRotation(float timeInDurationSecond, aiNodeAnim* nodeAnim);
-		glm::vec3    CalculateInterpolateScale(float timeInDurationSecond, aiNodeAnim* nodeAnim);
+		
 
 		std::vector<std::shared_ptr<Mesh>>       GetMeshes() const { return m_Meshes; }
 		std::vector<std::shared_ptr<Mesh>>&  GetMeshlets() { return m_Meshes; }
@@ -96,8 +68,7 @@ namespace BlackPearl {
 		std::vector<Vertex>		GetMeshVertex() const { return m_Vertices; }
 
 
-		uint32_t FindRotation(float AnimationTime, const aiNodeAnim* nodeAnim);
-		uint32_t FindScaling(float AnimationTime, const aiNodeAnim* nodeAnim);
+		
 		std::shared_ptr<AABB> GetAABB() const { return m_AABB; }
 	public:
 		std::vector<std::shared_ptr<Mesh>> m_Meshes;
@@ -117,17 +88,7 @@ namespace BlackPearl {
 
 		/*Animation*/
 		bool m_HasAnimation = false;
-		/*Bones*/
-		uint32_t m_BoneCount = 0;
-		/*store every vertex's jointId and weight*/
-		std::vector<VertexBoneData> m_BoneDatas;
-
-		std::unordered_map<std::string, int> m_BoneNameToIdex;
-		std::vector<Bone> m_Bones;
-		const aiScene* m_Scene;
-		std::string m_Path;
-		//aiMatrix4x4 m_GlobalInverseTransform;
-		glm::mat4 m_GlobalInverseTransform;
+	
 
 		/*Vertices Num,Indices Num*/
 		uint32_t m_VerticesNum = 0;
