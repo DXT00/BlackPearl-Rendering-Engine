@@ -1,0 +1,195 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"childIndexes" : 
+					[
+						1,
+						2,
+						3,
+						4
+					],
+					"jsonFile" : "directory-.-Debug-d0094a50bb2071803777.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.6.0"
+					},
+					"projectIndex" : 0,
+					"source" : "."
+				},
+				{
+					"build" : "BlackPearl",
+					"jsonFile" : "directory-BlackPearl-Debug-d6f6c93dc7a3966f8cc6.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.10"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 1,
+					"source" : "BlackPearl",
+					"targetIndexes" : 
+					[
+						0
+					]
+				},
+				{
+					"build" : "BlackPearl/vendor/imgui",
+					"jsonFile" : "directory-BlackPearl.vendor.imgui-Debug-9e748e4712499c7dbf64.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.10"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 2,
+					"source" : "BlackPearl/vendor/imgui",
+					"targetIndexes" : 
+					[
+						1
+					]
+				},
+				{
+					"build" : "BlackPearl/vendor/spdlog",
+					"jsonFile" : "directory-BlackPearl.vendor.spdlog-Debug-4149a5406bb08cebcd5d.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.10"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 3,
+					"source" : "BlackPearl/vendor/spdlog",
+					"targetIndexes" : 
+					[
+						3
+					]
+				},
+				{
+					"build" : "SandBoxAndriod",
+					"jsonFile" : "directory-SandBoxAndriod-Debug-943b2077e3330b5cb151.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.22.1"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 4,
+					"source" : "SandBoxAndriod",
+					"targetIndexes" : 
+					[
+						2
+					]
+				}
+			],
+			"name" : "Debug",
+			"projects" : 
+			[
+				{
+					"childIndexes" : 
+					[
+						1,
+						2,
+						3,
+						4
+					],
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "BlackPearl-Engine"
+				},
+				{
+					"directoryIndexes" : 
+					[
+						1
+					],
+					"name" : "BlackPearl",
+					"parentIndex" : 0,
+					"targetIndexes" : 
+					[
+						0
+					]
+				},
+				{
+					"directoryIndexes" : 
+					[
+						2
+					],
+					"name" : "ImGui",
+					"parentIndex" : 0,
+					"targetIndexes" : 
+					[
+						1
+					]
+				},
+				{
+					"directoryIndexes" : 
+					[
+						3
+					],
+					"name" : "spdlog",
+					"parentIndex" : 0,
+					"targetIndexes" : 
+					[
+						3
+					]
+				},
+				{
+					"directoryIndexes" : 
+					[
+						4
+					],
+					"name" : "SandBoxAndriod",
+					"parentIndex" : 0,
+					"targetIndexes" : 
+					[
+						2
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 1,
+					"id" : "BlackPearl::@0736906dea7636a4313b",
+					"jsonFile" : "target-BlackPearl-Debug-905646dde9056a1e2a66.json",
+					"name" : "BlackPearl",
+					"projectIndex" : 1
+				},
+				{
+					"directoryIndex" : 2,
+					"id" : "ImGui::@dbe4f5bb5fbf1758ddbb",
+					"jsonFile" : "target-ImGui-Debug-12821c949238359ade89.json",
+					"name" : "ImGui",
+					"projectIndex" : 2
+				},
+				{
+					"directoryIndex" : 4,
+					"id" : "SandBoxAndriod::@21c71f453f694d4ff091",
+					"jsonFile" : "target-SandBoxAndriod-Debug-3fa32ed312978e7361c9.json",
+					"name" : "SandBoxAndriod",
+					"projectIndex" : 4
+				},
+				{
+					"directoryIndex" : 3,
+					"id" : "spdlog::@a2ad132d4cf584f1a997",
+					"jsonFile" : "target-spdlog-Debug-b7e19662b1aa1bb92598.json",
+					"name" : "spdlog",
+					"projectIndex" : 3
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "G:/AA_AndriodLearn/BlackPearl/app/src/main/cpp/cmake-build-debug",
+		"source" : "G:/AA_AndriodLearn/BlackPearl/app/src/main/cpp"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 6
+	}
+}

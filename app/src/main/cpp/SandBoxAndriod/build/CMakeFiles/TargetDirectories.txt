@@ -1,0 +1,3 @@
+G:/AA_AndriodLearn/BlackPearl/app/src/main/cpp/SandBoxAndriod/build/CMakeFiles/SandBoxAndriod.dir
+G:/AA_AndriodLearn/BlackPearl/app/src/main/cpp/SandBoxAndriod/build/CMakeFiles/ALL_BUILD.dir
+G:/AA_AndriodLearn/BlackPearl/app/src/main/cpp/SandBoxAndriod/build/CMakeFiles/ZERO_CHECK.dir

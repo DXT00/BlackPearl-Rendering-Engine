@@ -1,0 +1,16 @@
+"G:\CLion 2023.3.4\bin\cmake\win\x64\bin\cmake.exe" -DCMAKE_BUILD_TYPE=Debug -G Ninja -DCMAKE_SYSTEM_NAME=Android -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_SYSTEM_VERSION=26 -DANDROID_PLATFORM=android-26 -DANDROID_ABI=arm64-v8a -DCMAKE_ANDROID_ARCH_ABI=arm64-v8a -DANDROID_NDK=G:\AndriodSDK\ndk\21.1.6352462 -DCMAKE_ANDROID_NDK=G:\AndriodSDK\ndk\21.1.6352462 -DCMAKE_TOOLCHAIN_FILE=G:\AndriodSDK\ndk\21.1.6352462\build\cmake\android.toolchain.cmake -DCMAKE_MAKE_PROGRAM=G:\AndriodSDK\cmake\3.10.2.4988404\bin\ninja.exe -DCMAKE_CXX_FLAGS=-std=c++11 -DCMAKE_LIBRARY_OUTPUT_DIRECTORY=G:\AA_AndriodLearn\NDK_OpenGLES_3_0\app\build\intermediates\cxx\Debug\output\obj\arm64-v8a -DCMAKE_RUNTIME_OUTPUT_DIRECTORY=G:\AA_AndriodLearn\NDK_OpenGLES_3_0\app\build\intermediates\cxx\Debug\output\obj\arm64-v8a -DRENDER_API=opengl -S G:\AA_AndriodLearn\BlackPearl\app\src\main\cpp -B G:\AA_AndriodLearn\BlackPearl\app\src\main\cpp\cmake-build-debug
+RENDER_API = opengl
+-- Building for Android
+-- Configuring for Debug build
+-- Configuring for Release build
+-- Configuring for MinSizeRel build
+-- Build spdlog: 1.4.0
+-- Build type: Debug
+-- Using X11 for window creation
+aaa BlackPearlLib = BlackPearlLib1-NOTFOUND
+-- Configuring done (0.3s)
+CMake Error at BlackPearl/vendor/GLFW/src/CMakeLists.txt:92 (add_library):
+  No SOURCES given to target: glfw
+
+
+CMake Generate step failed.  Build files cannot be regenerated correctly.

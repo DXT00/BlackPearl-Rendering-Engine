@@ -1,0 +1,14 @@
+G:/AA_AndriodLearn/BlackPearl/app/src/main/cpp/cmake-build-debug/CMakeFiles/edit_cache.dir
+G:/AA_AndriodLearn/BlackPearl/app/src/main/cpp/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+G:/AA_AndriodLearn/BlackPearl/app/src/main/cpp/cmake-build-debug/BlackPearl/CMakeFiles/BlackPearl.dir
+G:/AA_AndriodLearn/BlackPearl/app/src/main/cpp/cmake-build-debug/BlackPearl/CMakeFiles/edit_cache.dir
+G:/AA_AndriodLearn/BlackPearl/app/src/main/cpp/cmake-build-debug/BlackPearl/CMakeFiles/rebuild_cache.dir
+G:/AA_AndriodLearn/BlackPearl/app/src/main/cpp/cmake-build-debug/BlackPearl/vendor/imgui/CMakeFiles/ImGui.dir
+G:/AA_AndriodLearn/BlackPearl/app/src/main/cpp/cmake-build-debug/BlackPearl/vendor/imgui/CMakeFiles/edit_cache.dir
+G:/AA_AndriodLearn/BlackPearl/app/src/main/cpp/cmake-build-debug/BlackPearl/vendor/imgui/CMakeFiles/rebuild_cache.dir
+G:/AA_AndriodLearn/BlackPearl/app/src/main/cpp/cmake-build-debug/BlackPearl/vendor/spdlog/CMakeFiles/spdlog.dir
+G:/AA_AndriodLearn/BlackPearl/app/src/main/cpp/cmake-build-debug/BlackPearl/vendor/spdlog/CMakeFiles/edit_cache.dir
+G:/AA_AndriodLearn/BlackPearl/app/src/main/cpp/cmake-build-debug/BlackPearl/vendor/spdlog/CMakeFiles/rebuild_cache.dir
+G:/AA_AndriodLearn/BlackPearl/app/src/main/cpp/cmake-build-debug/SandBoxAndriod/CMakeFiles/SandBoxAndriod.dir
+G:/AA_AndriodLearn/BlackPearl/app/src/main/cpp/cmake-build-debug/SandBoxAndriod/CMakeFiles/edit_cache.dir
+G:/AA_AndriodLearn/BlackPearl/app/src/main/cpp/cmake-build-debug/SandBoxAndriod/CMakeFiles/rebuild_cache.dir

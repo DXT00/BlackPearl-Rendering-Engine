@@ -1,0 +1,25 @@
+# Directories
+.vs/
+bin/
+bin-int/
+bakup/
+x64/
+BlackPearl/vendor/
+
+#Files
+*.user
+entityx-master/
+BlackPearl.sln
+./LearnOpenGL_study
+SandBox/assets/models
+SandBox/assets/models-animation
+SandBox/assets/texture
+SandBoxDX/assets/models
+SandBoxDX/assets/models-animation
+SandBoxDX/assets/texture
+*.tlog
+*.1.tlog
+*.obj
+*.idb
+*.pdb
+*.lastbuildstate
