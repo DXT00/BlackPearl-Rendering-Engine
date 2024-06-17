@@ -28,7 +28,7 @@ namespace BlackPearl {
 	{
 	}
 
-	void BasicRenderer::RenderScene(const std::vector<Object*>& objs, const LightSources* lightSources, Renderer::SceneData* scene)
+	void BasicRenderer::RenderScene(const std::vector<Object*>& objs, const LightSources* lightSources, SceneData* scene)
 	{
 		DrawObjects(objs, scene);
 		DrawLightSources(lightSources, scene);
@@ -49,7 +49,7 @@ namespace BlackPearl {
 		//}
 	}
 
-	void BasicRenderer::DrawObjectsExcept(const std::vector<Object*>& objs, const std::vector<Object*>& exceptObjs, Renderer::SceneData* scene)
+	void BasicRenderer::DrawObjectsExcept(const std::vector<Object*>& objs, const std::vector<Object*>& exceptObjs, SceneData* scene)
 	{
 
 		for (auto Obj : objs) {
@@ -64,7 +64,7 @@ namespace BlackPearl {
 
 		}
 	}
-	void BasicRenderer::DrawObjectsExcept(const std::vector<Object*>& objs, const Object* exceptObj, Renderer::SceneData* scene)
+	void BasicRenderer::DrawObjectsExcept(const std::vector<Object*>& objs, const Object* exceptObj, SceneData* scene)
 	{
 
 		for (auto obj : objs) {
@@ -75,21 +75,21 @@ namespace BlackPearl {
 
 	}
 	//objs中可以包含Light
-	void BasicRenderer::DrawObjects(std::vector<Object*>objs, Renderer::SceneData* scene)
+	void BasicRenderer::DrawObjects(std::vector<Object*>objs, SceneData* scene)
 	{
 		for (auto obj : objs) {
 			DrawObject(obj, scene);
 		}
 
 	}
-	void BasicRenderer::DrawObjects(std::vector<Object*> objs, std::shared_ptr<Shader> shader, Renderer::SceneData* scene, unsigned int textureBeginIdx)
+	void BasicRenderer::DrawObjects(std::vector<Object*> objs, std::shared_ptr<Shader> shader, SceneData* scene, unsigned int textureBeginIdx)
 	{
 		for (auto obj : objs) {
 			DrawObject(obj, shader, scene);
 		}
 	}
 	//每个Mesh一个shader
-	void BasicRenderer::DrawObject(Object* obj, Renderer::SceneData* scene, unsigned int textureBeginIdx)
+	void BasicRenderer::DrawObject(Object* obj, SceneData* scene, unsigned int textureBeginIdx)
 	{
 		GE_ASSERT(obj, "obj is empty!");
 		if (!obj->HasComponent<MeshRenderer>() || !obj->GetComponent<MeshRenderer>()->GetEnableRender())
@@ -158,7 +158,7 @@ namespace BlackPearl {
 
 		}
 	}
-	void BasicRenderer::DrawObject(Object* obj, std::shared_ptr<Shader> shader, Renderer::SceneData* scene, unsigned int textureBeginIdx)
+	void BasicRenderer::DrawObject(Object* obj, std::shared_ptr<Shader> shader, SceneData* scene, unsigned int textureBeginIdx)
 	{
 		GE_ASSERT(obj, "obj is empty!");
 		if (!obj->HasComponent<MeshRenderer>() || !obj->GetComponent<MeshRenderer>()->GetEnableRender())
@@ -240,7 +240,7 @@ namespace BlackPearl {
 		}
 	}
 
-	void BasicRenderer::DrawObjectVertex(Object* obj, std::shared_ptr<Shader> shader, Renderer::SceneData* scene, unsigned int textureBeginIdx)
+	void BasicRenderer::DrawObjectVertex(Object* obj, std::shared_ptr<Shader> shader, SceneData* scene, unsigned int textureBeginIdx)
 	{
 		GE_ASSERT(obj, "obj is empty!");
 		if (!obj->HasComponent<MeshRenderer>() || !obj->GetComponent<MeshRenderer>()->GetEnableRender())
@@ -402,7 +402,7 @@ namespace BlackPearl {
 	}
 
 
-	void BasicRenderer::DrawPointLight(Object* obj, Renderer::SceneData* scene, unsigned int textureBeginIdx)
+	void BasicRenderer::DrawPointLight(Object* obj, SceneData* scene, unsigned int textureBeginIdx)
 	{
 		GE_ASSERT(obj->HasComponent<PointLight>(), "obj has no pointlight component!");
 		glm::mat4 transformMatrix = obj->GetComponent<Transform>()->GetTransformMatrix();
@@ -448,7 +448,7 @@ namespace BlackPearl {
 		}
 
 	}
-	void BasicRenderer::DrawLightSources(const LightSources* lightSources, Renderer::SceneData* scene, unsigned int textureBeginIdx)
+	void BasicRenderer::DrawLightSources(const LightSources* lightSources, SceneData* scene, unsigned int textureBeginIdx)
 	{
 		for (auto lightObj : lightSources->Get()) {
 			if (lightObj->HasComponent<PointLight>())

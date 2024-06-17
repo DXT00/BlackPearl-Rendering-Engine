@@ -2,11 +2,15 @@
 #include "Scene.h"
 #include "BlackPearl/Node/SingleNode.h"
 #include "BlackPearl/Component/BoundingBoxComponent/BoundingBox.h"
+#include "BlackPearl/LayerScene/Layer.h"
 namespace BlackPearl {
 	Scene::Scene(DemoType type)
 	{
 		m_DemoType = type;
 		m_MeshMgr = std::make_shared<MeshManager>();
+		m_RootObj = g_objectManager->CreateGroup("root object");
+		m_RootNode = DBG_NEW SingleNode(m_RootObj);
+		PrimitiveOctree = DBG_NEW ScenePrimitiveOctree();
 	}
 
 	Scene::~Scene()

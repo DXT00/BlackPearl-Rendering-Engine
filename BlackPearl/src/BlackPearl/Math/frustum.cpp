@@ -98,6 +98,27 @@ namespace donut::math
         return true;
     }
 
+
+    bool frustum::intersectsWith(const BlackPearl::AABB& box) const
+    {
+        for (int i = 0; i < PLANES_COUNT; ++i)
+        {
+            float x = planes[i].normal.x > 0 ? box.GetMinP().x : box.GetMaxP().x;
+            float y = planes[i].normal.y > 0 ? box.GetMinP().y : box.GetMaxP().y;
+            float z = planes[i].normal.z > 0 ? box.GetMinP().z : box.GetMaxP().z;
+
+            float distance =
+                planes[i].normal.x * x +
+                planes[i].normal.y * y +
+                planes[i].normal.z * z -
+                planes[i].distance;
+
+            if (distance > 0.f) return false;
+        }
+
+        return true;
+    }
+
     dm::float3 frustum::getCorner(int index) const
     {
         const plane& a = (index & 1) ? planes[RIGHT_PLANE] : planes[LEFT_PLANE];

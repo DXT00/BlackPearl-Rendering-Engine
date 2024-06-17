@@ -2,21 +2,47 @@
 #include"BlackPearl/Renderer/VertexArray.h"
 #include "BlackPearl/Renderer/Shader/Shader.h"
 #include "BlackPearl/Component/CameraComponent/Camera.h"
+#include "BlackPearl/RHI/RHIDefinitions.h"
+#include "BlackPearl/Math/frustum.h"
+
 namespace BlackPearl {
+
+	class IView {
+	public:
+		[[nodiscard]] virtual ViewportState GetViewportState() const = 0;
+		[[nodiscard]] virtual VariableRateShadingState GetVariableRateShadingState() const = 0;
+
+		[[nodiscard]] virtual donut::math::frustum GetViewFrustum() const = 0;
+		
+
+	};
+	class SceneData : public IView
+	{
+	public:
+		glm::mat4 ProjectionViewMatrix;
+		glm::mat4 ViewMatrix;
+		glm::mat4 ProjectionMatrix;
+		glm::vec3 CameraPosition;
+		glm::vec3 CameraRotation;
+
+		glm::vec3 CameraFront;
+		LightSources LightSources;
+
+		virtual ViewportState GetViewportState() const override;
+		virtual VariableRateShadingState GetVariableRateShadingState() const override;
+		virtual donut::math::frustum GetViewFrustum() const override;
+		RHIViewport m_Viewport;
+		RHIRect m_ScissorRect;
+		VariableRateShadingState m_ShadingRateState;
+
+		donut::math::frustum m_ViewFrustum = donut::math::frustum::empty();
+
+	};
 
 	class Renderer
 	{
 	public:
-		struct SceneData {
-			glm::mat4 ProjectionViewMatrix;
-			glm::mat4 ViewMatrix;
-			glm::mat4 ProjectionMatrix;
-			glm::vec3 CameraPosition;
-			glm::vec3 CameraRotation;
-
-			glm::vec3 CameraFront;
-			LightSources LightSources;
-		};
+		
 
 		Renderer();
 		~Renderer();
@@ -28,9 +54,12 @@ namespace BlackPearl {
 		void Submit(const std::shared_ptr<VertexArray>& vertexArray, const std::shared_ptr<Shader>& shader, SceneData* sceneData);
 
 		static SceneData* GetSceneData() { return s_SceneData; }
+		static SceneData* GetPreSceneData() { return s_PreSceneData; }
+
 	private:
 
 		static SceneData* s_SceneData;
+		static SceneData* s_PreSceneData;
 	};
 
 }

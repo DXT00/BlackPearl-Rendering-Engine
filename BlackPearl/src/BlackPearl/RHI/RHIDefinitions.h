@@ -343,6 +343,50 @@ finished executing, the objects are transitioned into the "available" state, i.e
         constexpr DepthStencilState& setFrontFaceStencil(const StencilOpDesc& value) { frontFaceStencil = value; return *this; }
         constexpr DepthStencilState& setBackFaceStencil(const StencilOpDesc& value) { backFaceStencil = value; return *this; }
     };
+
+
+    enum class FormatSupport : uint32_t
+    {
+        None = 0,
+
+        Buffer = 0x00000001,
+        IndexBuffer = 0x00000002,
+        VertexBuffer = 0x00000004,
+
+        Texture = 0x00000008,
+        DepthStencil = 0x00000010,
+        RenderTarget = 0x00000020,
+        Blendable = 0x00000040,
+
+        ShaderLoad = 0x00000080,
+        ShaderSample = 0x00000100,
+        ShaderUavLoad = 0x00000200,
+        ShaderUavStore = 0x00000400,
+        ShaderAtomic = 0x00000800,
+    };
+
+    NVRHI_ENUM_CLASS_FLAG_OPERATORS(FormatSupport)
+
+
+    enum class HeapType : uint8_t
+    {
+        DeviceLocal,
+        Upload,
+        Readback
+    };
+
+    struct HeapDesc
+    {
+        uint64_t capacity = 0;
+        HeapType type;
+        std::string debugName;
+
+        constexpr HeapDesc& setCapacity(uint64_t value) { capacity = value; return *this; }
+        constexpr HeapDesc& setType(HeapType value) { type = value; return *this; }
+        HeapDesc& setDebugName(const std::string& value) { debugName = value; return *this; }
+    };
+
+
     enum class RasterFillMode : uint8_t
     {
         Solid,

@@ -20,6 +20,7 @@
 #include "BlackPearl/Entity/Entity.h"
 #include "BlackPearl/RHI/DynamicRHI.h"
 #include "BlackPearl/Renderer/Material/MaterialManager.h"
+#include "BlackPearl/Renderer/DeviceManager.h"
 
 #include <chrono>
 using namespace std::chrono;
@@ -69,7 +70,10 @@ namespace BlackPearl {
 
 		double m_StartTimeMs;
 		long long m_FrameNum = 0;
+		/* for Sample, every sample is a renderGraph */
 		LayerManager* m_LayerManager = nullptr;
+		/* for Render */
+		DeviceManager* m_DeviceManager = nullptr;
 		double m_TotalSecond = 0;
 
 	};

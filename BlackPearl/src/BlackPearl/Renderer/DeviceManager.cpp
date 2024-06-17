@@ -5,6 +5,10 @@
 #include "BlackPearl/Math/vector.h"
 #include "BlackPearl/Application.h"
 namespace BlackPearl {
+    void DeviceManager::Init(const DeviceCreationParameters& params)
+    {
+        CreateDeviceAndSwapChain(params);
+    }
     DeviceManager* DeviceManager::Create(DynamicRHI::Type api)
     {
         switch (api)
@@ -22,6 +26,10 @@ namespace BlackPearl {
             //GE_CORE_ERROR("DeviceManager::Create: Unsupported Graphics API");
             return CreateOpenGL();
         }
+    }
+    IFramebuffer* DeviceManager::GetFrameBuffer()
+    {
+        return m_SwapChainFramebuffers[GetCurrentBackBufferIndex()];
     }
     bool DeviceManager::CreateWindowDeviceAndSwapChain(const DeviceCreationParameters& params, const char* windowTitle)
     {

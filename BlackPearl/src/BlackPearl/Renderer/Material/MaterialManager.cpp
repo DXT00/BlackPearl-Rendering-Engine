@@ -5,4 +5,7 @@ namespace BlackPearl {
 	MaterialManager::MaterialManager()
 	{
 	}
+	MaterialManager::~MaterialManager()
+	{
+	}
 }

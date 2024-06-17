@@ -16,6 +16,28 @@
 
 namespace BlackPearl {
 
+	struct MeshInfo
+	{
+		std::string name;
+		std::shared_ptr<BufferGroup> buffers;
+		std::shared_ptr<MeshInfo> skinPrototype;
+		//std::vector<std::shared_ptr<MeshGeometry>> geometries;
+		donut::math::box3 objectSpaceBounds;
+		uint32_t indexOffset = 0;
+		uint32_t vertexOffset = 0;
+		uint32_t totalIndices = 0;
+		uint32_t totalVertices = 0;
+		int globalMeshIndex = 0;
+		//rt::AccelStructHandle accelStruct; // for use by applications
+		//rt::AccelStructHandle accelStructOMM; // for use by application
+		//std::vector<rt::OpacityMicromapHandle> opacityMicroMaps; // for use by application
+
+		std::unique_ptr<MeshDebugData> debugData;
+		bool debugDataDirty = true; // set this to true to make Scene update the debug data
+
+		virtual ~MeshInfo() = default;
+	};
+
 	class Mesh
 	{
 	public:
@@ -143,6 +165,9 @@ namespace BlackPearl {
 		uint32_t m_JointIndices1Size = 0;
 		uint32_t m_WeightSize = 0;
 		uint32_t m_Weight1Size = 0;
+
+
+		MeshInfo m_MeshInfo;
 	};
 
 }

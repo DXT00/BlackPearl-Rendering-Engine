@@ -4,6 +4,7 @@
 #include "BlackPearl/Renderer/Mesh/MeshManager.h"
 #include "BlackPearl/Node/Node.h"
 #include "BlackPearl/Lumen/LumenSceneData.h"
+#include "SceneOctree.h"
 namespace BlackPearl {
 	class Scene
 	{
@@ -36,19 +37,34 @@ namespace BlackPearl {
 		uint32_t GetSingleNodesCnt() const { return m_SingleNodesList.size(); }
 
 		Node* GetSingleNodes(uint32_t i) const { return m_SingleNodesList[i]; }
-
+		//TODO:: Octree manager
+		Node* GetRootNode() const {
+			return m_RootNode;
+		}
 		DemoType GetDemoType() { return m_DemoType; }
+
+		/** An octree containing the primitives in the scene. */
+		ScenePrimitiveOctree *PrimitiveOctree;
+
+
 	public:
 		std::shared_ptr<LumenSceneData> LumenSceneData;
+		std::vector<AABB> m_ObjectBounds;
+		std::vector<uint32_t> m_ObjectOctreeIndex;
 	protected:
 		DemoType m_DemoType;
 		std::vector<Object*> m_ObjectList;
+
+
 		std::vector<Node*>   m_NodesList;
 		std::vector<Node*>   m_BatchNodesList;
 		std::vector<Node*>   m_InstanceNodesList;
 		std::vector<Node*>   m_SingleNodesList;
 		std::vector<Model*>  m_ModelList;
 		std::shared_ptr<MeshManager> m_MeshMgr;
+
+		Object* m_RootObj;
+		Node* m_RootNode;
 	};
 
 

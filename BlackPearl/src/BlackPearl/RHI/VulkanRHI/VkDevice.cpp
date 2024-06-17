@@ -15,6 +15,8 @@
 #include "VkQuery.h"
 #include "VkQueue.h"
 #include "VkTexture.h"
+#include "VkDescriptorTable.h"
+#include "BlackPearl/RHI/Common/RHIUtils.h"
 #include "BlackPearl/RHI/RHITexture.h"
 #include "BlackPearl/RHI/RHIDefinitions.h"
 #include "../Common/Containers.h"
@@ -1003,6 +1005,76 @@ namespace BlackPearl {
 		return ShaderLibraryHandle();
 	}
 
+	InputLayoutHandle Device::createInputLayout(const VertexAttributeDesc* attributeDesc, uint32_t attributeCount, IShader* vertexShader)
+	{
+		(void)vertexShader;
+
+		InputLayout* layout = new InputLayout();
+
+		int total_attribute_array_size = 0;
+
+		// collect all buffer bindings
+		std::unordered_map<uint32_t, VkVertexInputBindingDescription> bindingMap;
+		for (uint32_t i = 0; i < attributeCount; i++)
+		{
+			const VertexAttributeDesc& desc = attributeDesc[i];
+
+			assert(desc.arraySize > 0);
+
+			total_attribute_array_size += desc.arraySize;
+
+			if (bindingMap.find(desc.bufferIndex) == bindingMap.end())
+			{
+				VkVertexInputBindingDescription bindingDescription{};
+				bindingDescription.binding = desc.bufferIndex;
+				bindingDescription.stride = desc.elementStride;
+				bindingDescription.inputRate = desc.isInstanced ? VK_VERTEX_INPUT_RATE_INSTANCE : VK_VERTEX_INPUT_RATE_VERTEX;
+
+				bindingMap[desc.bufferIndex] = bindingDescription;
+				
+			}
+			else {
+				assert(bindingMap[desc.bufferIndex].stride == desc.elementStride);
+				assert(bindingMap[desc.bufferIndex].inputRate == (desc.isInstanced ? VK_VERTEX_INPUT_RATE_INSTANCE : VK_VERTEX_INPUT_RATE_VERTEX));
+			}
+		}
+
+		for (const auto& b : bindingMap)
+		{
+			layout->bindingDesc.push_back(b.second);
+		}
+
+		// build attribute descriptions
+		layout->inputDesc.resize(attributeCount);
+		layout->attributeDesc.resize(total_attribute_array_size);
+
+		uint32_t attributeLocation = 0;
+		for (uint32_t i = 0; i < attributeCount; i++)
+		{
+			const VertexAttributeDesc& in = attributeDesc[i];
+			layout->inputDesc[i] = in;
+
+			uint32_t element_size_bytes = getFormatInfo(in.format).bytesPerBlock;
+
+			uint32_t bufferOffset = 0;
+
+			for (uint32_t slot = 0; slot < in.arraySize; ++slot)
+			{
+				auto& outAttrib = layout->attributeDesc[attributeLocation];
+
+				outAttrib.location = attributeLocation;
+				outAttrib.binding = in.bufferIndex;
+				outAttrib.format = VkUtil::convertFormat(in.format);
+				outAttrib.offset = bufferOffset + in.offset;
+				bufferOffset += element_size_bytes;
+
+				++attributeLocation;
+			}
+		}
+
+		return InputLayoutHandle::Create(layout);
+	}
+
 	VkSemaphore Device::getQueueSemaphore(CommandQueue queueID)
 	{
 		Queue& queue = *m_Queues[uint32_t(queueID)];
@@ -1034,6 +1106,223 @@ namespace BlackPearl {
 	FramebufferHandle Device::createHandleForNativeFramebuffer(VkRenderPass renderPass, VkFramebuffer framebuffer, const FramebufferDesc& desc, bool transferOwnership)
 	{
 		return FramebufferHandle();
+	}
+
+	bool Device::writeDescriptorTable(IDescriptorTable* _descriptorTable, const BindingSetItem& binding)
+	{
+		DescriptorTable* descriptorTable = static_cast<DescriptorTable*>(_descriptorTable);
+		BindingLayout* layout = static_cast<BindingLayout*>(descriptorTable->layout.Get());
+
+		if (binding.slot >= descriptorTable->capacity)
+			return false;
+
+		VkResult res;
+
+		// collect all of the descriptor write data
+		nvrhi::static_vector<VkDescriptorImageInfo, c_MaxBindingsPerLayout> descriptorImageInfo;
+		nvrhi::static_vector<VkDescriptorBufferInfo, c_MaxBindingsPerLayout> descriptorBufferInfo;
+		nvrhi::static_vector<VkWriteDescriptorSet, c_MaxBindingsPerLayout> descriptorWriteInfo;
+
+		auto generateWriteDescriptorData =
+			// generates a vk::WriteDescriptorSet struct in descriptorWriteInfo
+			[&](uint32_t bindingLocation,
+				VkDescriptorType descriptorType,
+				VkDescriptorImageInfo* imageInfo,
+				VkDescriptorBufferInfo* bufferInfo,
+				VkBufferView* bufferView)
+			{
+				/*descriptorWriteInfo.push_back(
+					VkWriteDescriptorSet()
+					.setDstSet(descriptorTable->descriptorSet)
+					.setDstBinding(bindingLocation)
+					.setDstArrayElement(binding.slot)
+					.setDescriptorCount(1)
+					.setDescriptorType(descriptorType)
+					.setPImageInfo(imageInfo)
+					.setPBufferInfo(bufferInfo)
+					.setPTexelBufferView(bufferView)
+				);*/
+
+
+
+				VkWriteDescriptorSet descriptorWrite{};
+				descriptorWrite.dstSet = descriptorTable->descriptorSet;
+				descriptorWrite.dstBinding = bindingLocation;
+				descriptorWrite.dstArrayElement = binding.slot;
+				descriptorWrite.descriptorCount = 1;
+				descriptorWrite.descriptorType = descriptorType;
+				descriptorWrite.pImageInfo = imageInfo;
+				descriptorWrite.pBufferInfo = bufferInfo;
+				descriptorWrite.pTexelBufferView = bufferView;
+
+				descriptorWriteInfo.push_back(descriptorWrite);
+				
+			};
+
+		for (uint32_t bindingLocation = 0; bindingLocation < uint32_t(layout->bindlessDesc.registerSpaces.size()); bindingLocation++)
+		{
+			if (layout->bindlessDesc.registerSpaces[bindingLocation].type == binding.type)
+			{
+				const VkDescriptorSetLayoutBinding& layoutBinding = layout->vulkanLayoutBindings[bindingLocation];
+
+				switch (binding.type)
+				{
+				case RHIResourceType::RT_Texture_SRV:
+				{
+					const auto& texture = static_cast<ETexture*>(binding.resourceHandle);
+
+					const auto subresource = binding.subresources.resolve(texture->desc, false);
+					const auto textureViewType = getTextureViewType(binding.format, texture->desc.format);
+					auto& view = texture->getSubresourceView(subresource, binding.dimension, binding.format, textureViewType);
+
+					VkDescriptorImageInfo& imageInfo = descriptorImageInfo.emplace_back();
+
+
+					//VkDescriptorImageInfo imageInfo;
+					imageInfo.imageView = view.view;
+					imageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+			/*		imageInfo = VkDescriptorImageInfo()
+						.setImageView(view.view)
+						.setImageLayout(vk::ImageLayout::eShaderReadOnlyOptimal);*/
+
+					generateWriteDescriptorData(layoutBinding.binding,
+						layoutBinding.descriptorType,
+						&imageInfo, nullptr, nullptr);
+				}
+
+				break;
+
+				case RHIResourceType::RT_Texture_UAV:
+				{
+					const auto texture = static_cast<ETexture*>(binding.resourceHandle);
+
+					const auto subresource = binding.subresources.resolve(texture->desc, true);
+					const auto textureViewType = getTextureViewType(binding.format, texture->desc.format);
+					auto& view = texture->getSubresourceView(subresource, binding.dimension, binding.format, textureViewType);
+
+					VkDescriptorImageInfo& imageInfo = descriptorImageInfo.emplace_back();
+					//imageInfo = vk::DescriptorImageInfo()
+					//	.setImageView(view.view)
+					//	.setImageLayout(vk::ImageLayout::eGeneral);
+
+
+					//VkDescriptorImageInfo imageInfo;
+					imageInfo.imageView = view.view;
+					imageInfo.imageLayout = VK_IMAGE_LAYOUT_GENERAL;
+
+					generateWriteDescriptorData(layoutBinding.binding,
+						layoutBinding.descriptorType,
+						&imageInfo, nullptr, nullptr);
+				}
+
+				break;
+
+				case RHIResourceType::RT_TypedBuffer_SRV:
+				case RHIResourceType::RT_TypedBuffer_UAV:
+				{
+					const auto& buffer = static_cast<Buffer*>(binding.resourceHandle);
+
+					auto vkformat = VkUtil::convertFormat(binding.format);
+
+					const auto range = binding.range.resolve(buffer->desc);
+					uint64_t viewInfoHash = 0;
+					hash_combine(viewInfoHash, range.byteOffset);
+					hash_combine(viewInfoHash, range.byteSize);
+					hash_combine(viewInfoHash, (uint64_t)vkformat);
+
+					const auto& bufferViewFound = buffer->viewCache.find(viewInfoHash);
+					auto& bufferViewRef = (bufferViewFound != buffer->viewCache.end()) ? bufferViewFound->second : buffer->viewCache[viewInfoHash];
+					if (bufferViewFound == buffer->viewCache.end())
+					{
+						assert(binding.format != Format::UNKNOWN);
+
+						VkBufferViewCreateInfo bufferViewInfo;
+						bufferViewInfo.buffer = buffer->buffer;
+						bufferViewInfo.offset = range.byteOffset;
+						bufferViewInfo.range = range.byteSize;
+						bufferViewInfo.format = vkformat;
+
+						//vkCreateBufferView(m_Context.device, &bufferViewInfo, m_Context.allocationCallbacks, &bufferViewRef);
+						if (vkCreateBufferView(m_Context.device, &bufferViewInfo, m_Context.allocationCallbacks, &bufferViewRef) != VK_SUCCESS) {
+							throw std::runtime_error("failed to create buffer view!");
+						}
+					/*	 VkBufferViewCreateInfo bufferViewInfo{}
+							.setBuffer(buffer->buffer)
+							.setOffset(range.byteOffset)
+							.setRange(range.byteSize)
+							.setFormat(vk::Format(vkformat));
+
+						res = m_Context.device.createBufferView(&bufferViewInfo, m_Context.allocationCallbacks, &bufferViewRef);
+						ASSERT_VK_OK(res);*/
+					}
+
+					generateWriteDescriptorData(layoutBinding.binding,
+						layoutBinding.descriptorType,
+						nullptr, nullptr, &bufferViewRef);
+				}
+				break;
+
+				case RHIResourceType::RT_StructuredBuffer_SRV:
+				case RHIResourceType::RT_StructuredBuffer_UAV:
+				case RHIResourceType::RT_RawBuffer_SRV:
+				case RHIResourceType::RT_RawBuffer_UAV:
+				case RHIResourceType::RT_ConstantBuffer:
+				case RHIResourceType::RT_VolatileConstantBuffer:
+				{
+					const auto buffer = static_cast<Buffer*>(binding.resourceHandle);
+
+					const auto range = binding.range.resolve(buffer->desc);
+
+					auto& bufferInfo = descriptorBufferInfo.emplace_back();
+					VkDescriptorBufferInfo bufferInfo{};
+					
+					bufferInfo.buffer = buffer->buffer;
+					bufferInfo.offset = range.byteOffset;
+					bufferInfo.range = range.byteSize;
+
+					assert(buffer->buffer);
+					generateWriteDescriptorData(layoutBinding.binding,
+						layoutBinding.descriptorType,
+						nullptr, &bufferInfo, nullptr);
+				}
+
+				break;
+
+				case RHIResourceType::RT_Sampler:
+				{
+					const auto& sampler = static_cast<Sampler*>(binding.resourceHandle);
+
+					VkDescriptorImageInfo& imageInfo = descriptorImageInfo.emplace_back();
+					imageInfo.sampler = sampler->sampler;
+				/*	imageInfo = vk::DescriptorImageInfo()
+						.setSampler(sampler->sampler);*/
+
+					generateWriteDescriptorData(layoutBinding.binding,
+						layoutBinding.descriptorType,
+						&imageInfo, nullptr, nullptr);
+				}
+
+				break;
+
+				case RHIResourceType::RT_RayTracingAccelStruct:
+					RHIUtils::NotImplemented();
+					break;
+
+				case RHIResourceType::RT_PushConstants:
+					RHIUtils::NotSupported();
+					break;
+
+				case RHIResourceType::RT_None:
+				case RHIResourceType::RT_Count:
+				default:
+					RHIUtils::InvalidEnum();
+				}
+			}
+		}
+		vkUpdateDescriptorSets(m_Context.device, uint32_t(descriptorWriteInfo.size()), descriptorWriteInfo.data(), 0, nullptr);
+		//m_Context.device.updateDescriptorSets(uint32_t(descriptorWriteInfo.size()), descriptorWriteInfo.data(), 0, nullptr);
+
+		return true;
 	}
 
 	EventQueryHandle Device::createEventQuery()
@@ -1279,7 +1568,7 @@ namespace BlackPearl {
 					bufferViewInfo.range = range.byteSize;
 					bufferViewInfo.format = vkformat;
 
-					vkCreateBufferView(m_Context.device, &bufferViewInfo, m_Context.allocationCallbacks, &bufferViewRef);
+					//vkCreateBufferView(m_Context.device, &bufferViewInfo, m_Context.allocationCallbacks, &bufferViewRef);
 					if (vkCreateBufferView(m_Context.device, &bufferViewInfo, m_Context.allocationCallbacks, &bufferViewRef) != VK_SUCCESS) {
 						throw std::runtime_error("failed to create buffer view!");
 					}

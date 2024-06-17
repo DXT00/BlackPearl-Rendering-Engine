@@ -2,6 +2,7 @@
 #include "BlackPearl/RHI/RHIFrameBuffer.h"
 #include "BlackPearl/RHI/RHIDevice.h"
 #include "DeviceManager.h"
+#include "BlackPearl/Renderer/MasterRenderer/BasicRenderer.h"
 namespace BlackPearl {
     //class DeviceManager;
     class RenderGraph
@@ -11,7 +12,9 @@ namespace BlackPearl {
         explicit RenderGraph(DeviceManager* deviceManager)
             : m_DeviceManager(deviceManager)
         { }
-
+        virtual void Init() {}
+        void AddPass(BasicRenderer* renderer);
+       // void OnPreRender() {}
         virtual ~RenderGraph() = default;
 
         virtual void Render(IFramebuffer* framebuffer) { }
@@ -35,8 +38,10 @@ namespace BlackPearl {
         }
         [[nodiscard]] uint32_t GetFrameIndex() const { return m_DeviceManager->GetFrameIndex(); }
 
-    private:
+    protected:
         DeviceManager* m_DeviceManager = nullptr;
+
+        std::vector<BasicRenderer*> mRenderPasses;
 
     };
 }

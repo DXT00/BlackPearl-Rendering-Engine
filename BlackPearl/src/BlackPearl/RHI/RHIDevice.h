@@ -7,6 +7,7 @@
 #include "RHICommandList.h"
 #include "RHIQuery.h"
 #include "RHIMessageCallback.h"
+#include "RHIDescriptorTable.h"
 #ifdef GE_API_VULKAN
 #include <vulkan/vulkan.h>
 #endif
@@ -42,7 +43,9 @@ namespace BlackPearl {
 		virtual SamplerHandle createSampler(const SamplerDesc& d) = 0;
 
 		//// Note: vertexShader is only necessary on D3D11, otherwise it may be null
-		//virtual InputLayoutHandle createInputLayout(const VertexAttributeDesc* d, uint32_t attributeCount, IShader* vertexShader) = 0;
+		virtual InputLayoutHandle createInputLayout(const VertexAttributeDesc* d, uint32_t attributeCount, IShader* vertexShader) = 0;
+
+		virtual bool writeDescriptorTable(IDescriptorTable* descriptorTable, const BindingSetItem& item) = 0;
 
 		// Event queries
 		virtual EventQueryHandle createEventQuery() = 0;

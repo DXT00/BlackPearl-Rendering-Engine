@@ -24,15 +24,19 @@
 #include "BlackPearl/Entity/Entity.h"
 #include "BlackPearl/ObjectManager/ObjectManager.h"
 #include "BlackPearl/LayerScene/LayerManager.h"
+#include "BlackPearl/Renderer/CullingManager.h"
 #include "BlackPearl/Renderer/MasterRenderer/BasicRenderer.h"
 #include "BlackPearl/Log.h"
 #include <BlackPearl/Luanch/Luanch.h>
 
 namespace BlackPearl {
-	Log* g_Log;
-	ObjectManager* g_objectManager = DBG_NEW ObjectManager();
-	EntityManager* g_entityManager = DBG_NEW EntityManager();
+
+	Log* g_Log = nullptr;
+	ObjectManager*   g_objectManager = DBG_NEW ObjectManager();
+	EntityManager*   g_entityManager = DBG_NEW EntityManager();
 	MaterialManager* g_materialManager = DBG_NEW MaterialManager();
+	DeviceManager*   g_deviceManager = nullptr;
+	CullingManager* g_cullingManager = DBG_NEW CullingManager();
 	double Application::s_AppFPS = 0.0f;
 	double Application::s_AppAverageFPS = 0.0f;
 
@@ -69,7 +73,19 @@ namespace BlackPearl {
 		m_Window = RHIInitWindow();
 		m_Window->SetAppCallBack(std::bind(&Application::OnEvent, this, std::placeholders::_1));
 
+		/*Render*/
+		DeviceCreationParameters deviceParams;
+		deviceParams.backBufferWidth = Configuration::WindowWidth;
+		deviceParams.backBufferHeight = Configuration::WindowHeight;
+		deviceParams.vsyncEnabled = Configuration::Vsync;
+		deviceParams.swapChainBufferCount = Configuration::SwapchainCount;
+		deviceParams.maxFramesInFlight = deviceParams.swapChainBufferCount;
+
+		g_deviceManager = DeviceManager::Create(DynamicRHI::g_RHIType);
+		g_deviceManager->Init(deviceParams);
+
 		m_LayerManager = DBG_NEW LayerManager();
+
 		m_StartTimeMs = 0;// duration_cast<milliseconds>(system_clock::now().time_since_epoch());
 	}
 

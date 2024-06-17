@@ -6,6 +6,7 @@
 #include "BlackPearl/Timestep/Timestep.h"
 #include "BlackPearl/Entity/Entity.h"
 #include "BlackPearl/ObjectManager/ObjectManager.h"
+#include "BlackPearl/Renderer/DeviceManager.h"
 
 namespace BlackPearl {
 

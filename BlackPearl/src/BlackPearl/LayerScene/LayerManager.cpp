@@ -4,9 +4,11 @@
 
 
 namespace BlackPearl {
+	extern DeviceManager* g_deviceManager;
 	//extern DynamicRHI::Type g_RHIType;
 	void LayerManager::OnUpdateLayers(Timestep ts)
 	{
+		g_deviceManager->BeginFrame();
 		for (Layer* layer : m_LayerStack) {
 			layer->OnUpdate(ts);
 		}
@@ -17,13 +19,15 @@ namespace BlackPearl {
 				layer->OnImguiRender();
 			m_ImGuiLayer->End();
 		}
-
 	}
 
 	void LayerManager::PushLayer(Layer * layer)
 	{
 		m_LayerStack.PushLayer(layer);
+		layer->SetDeviceManager(g_deviceManager);
+		layer->OnSetup();
 		layer->OnAttach();
+	
 	}
 
 	void LayerManager::PushOverLayer(Layer * overlay)

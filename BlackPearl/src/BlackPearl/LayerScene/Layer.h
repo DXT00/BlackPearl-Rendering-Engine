@@ -45,9 +45,6 @@ namespace BlackPearl {
 			m_CameraRotation.Yaw = m_MainCamera->Yaw();
 			m_CameraRotation.Pitch = m_MainCamera->Pitch();
 
-			/*Render*/
-			m_DeviceManager = DeviceManager::Create(DynamicRHI::g_RHIType);
-
 			/*Status*/
 			m_StartTimeMs = duration_cast<milliseconds>(system_clock::now().time_since_epoch());
 
@@ -71,9 +68,10 @@ namespace BlackPearl {
 			m_BackGroundObjsList.clear();
 			m_DynamicObjsList.clear();
 			m_ShadowObjsList.clear();
-			GE_SAVE_DELETE(m_DeviceManager);
-
 		};
+
+		// 资源创建，包括RenderGraph，场景等
+		virtual void OnSetup() {}
 		virtual void OnAttach() {}
 		virtual void OnDetach() {}
 		virtual void OnUpdate(Timestep ts) {
@@ -82,6 +80,9 @@ namespace BlackPearl {
 		}
 		virtual void OnImguiRender();
 
+		void SetDeviceManager(DeviceManager* deviceMgr) {
+			m_DeviceManager = deviceMgr;
+		}
 
 		void LoadScene(const std::string demoScene);
 		void LoadCornellScene();
@@ -286,8 +287,8 @@ namespace BlackPearl {
 		std::vector<Object*> m_DiffuseLightProbes;
 		std::vector<Object*> m_ReflectionLightProbes;
 
-		/*Render */
-		DeviceManager* m_DeviceManager;
+		/*DeviceManager*/
+		DeviceManager* m_DeviceManager = nullptr;
 	};
 
 }

@@ -15,7 +15,8 @@ namespace BlackPearl {
 		//多重采样
 		static const unsigned int MSAA_SAMPLES = 4;
 
-	
+		//VSync
+		static const bool Vsync = true;
 
 		//static const VoxelConeTracingRenderer::RenderingMode RenderingMode; 
 
@@ -29,8 +30,6 @@ namespace BlackPearl {
 		// Max pointLight Num
 		// ------------------------------------------
 		static const unsigned int MaxPointLightNum = 20;
-
-
 
 
 		// ------------------------------------------

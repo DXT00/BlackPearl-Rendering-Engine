@@ -6,7 +6,7 @@
 #include "BlackPearl/Renderer/Shader/Shader.h"
 #include "BlackPearl/Renderer/MasterRenderer/BasicRenderer.h"
 namespace BlackPearl {
-	class IBLRenderer:public BasicRenderer
+	class IBLRenderer: public BasicRenderer
 	{
 	public:
 		IBLRenderer();

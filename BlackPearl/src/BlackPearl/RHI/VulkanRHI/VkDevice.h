@@ -9,6 +9,7 @@
 #include "../RHIDefinitions.h"
 #include "../RHICommandList.h"
 #include "../RHIQuery.h"
+#include "../RHIDescriptorTable.h"
 #include "VkAllocator.h"
 
 namespace BlackPearl {
@@ -93,7 +94,7 @@ namespace BlackPearl {
         ShaderHandle createShader(const ShaderDesc& d, const void* binary, size_t binarySize) override;
         virtual ShaderLibraryHandle createShaderLibrary(const void* binary, size_t binarySize) override;
 
-
+        InputLayoutHandle createInputLayout(const VertexAttributeDesc* d, uint32_t attributeCount, IShader* vertexShader);
         // vulkan::IDevice implementation
         VkSemaphore getQueueSemaphore(CommandQueue queueID) override;
         void queueWaitForSemaphore(CommandQueue waitQueue, VkSemaphore semaphore, uint64_t value) override;
@@ -101,6 +102,10 @@ namespace BlackPearl {
         uint64_t queueGetCompletedInstance(CommandQueue queue) override;
         FramebufferHandle createHandleForNativeFramebuffer(VkRenderPass renderPass, VkFramebuffer framebuffer,
             const FramebufferDesc& desc, bool transferOwnership) override;
+
+
+        bool writeDescriptorTable(IDescriptorTable* descriptorTable, const BindingSetItem& item) override;
+
 
         // event queries
         EventQueryHandle createEventQuery() override;

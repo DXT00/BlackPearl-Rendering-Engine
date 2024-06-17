@@ -23,6 +23,7 @@
 #pragma once
 
 #include <stdint.h>
+#include "BlackPearl/AABB/AABB.h"
 
 namespace donut::math
 {
@@ -76,6 +77,7 @@ namespace donut::math
 
         bool intersectsWith(const float3 &point) const;
         bool intersectsWith(const box3 &box) const;
+        bool intersectsWith(const BlackPearl::AABB& box) const;
 
         static constexpr uint32_t numCorners = 8;
         float3 getCorner(int index) const;

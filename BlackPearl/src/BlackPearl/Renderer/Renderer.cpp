@@ -10,7 +10,8 @@
 #include "Mesh/Mesh.h"
 namespace BlackPearl {
 
-	Renderer::SceneData * Renderer::s_SceneData = DBG_NEW Renderer::SceneData;
+	SceneData * Renderer::s_SceneData = DBG_NEW SceneData;
+	SceneData* Renderer::s_PreSceneData = DBG_NEW SceneData;
 
 	Renderer::Renderer()
 	{
@@ -35,6 +36,7 @@ namespace BlackPearl {
 
 	void Renderer::BeginScene(const Camera & camera, const LightSources& lightSources)
 	{
+		s_PreSceneData = s_SceneData;
 		s_SceneData->LightSources = lightSources;
 		s_SceneData->ProjectionViewMatrix = camera.GetProjectionViewMatrix();
 		s_SceneData->CameraPosition = camera.GetPosition();
@@ -43,6 +45,7 @@ namespace BlackPearl {
 		s_SceneData->CameraFront = camera.Front();
 		s_SceneData->ViewMatrix = camera.GetViewMatrix();
 		s_SceneData->ProjectionMatrix = camera.GetProjectionMatrix();
+		
 		for (Object* lightObj : lightSources.Get()) {
 			//std::shared_ptr<Light> lightSource(lightObj->GetComponent<Light>());
 			if (lightObj->HasComponent<ParallelLight>()) {
@@ -126,4 +129,21 @@ namespace BlackPearl {
 
 		vertexArray->Bind();
 	}
+
+	ViewportState SceneData::GetViewportState() const
+	{
+		ViewportState vs;
+		vs.addViewport(m_Viewport);
+		vs.addScissorRect(m_ScissorRect);
+		return vs;
+	}
+	VariableRateShadingState SceneData::GetVariableRateShadingState() const
+	{
+		return VariableRateShadingState();
+	}
+	donut::math::frustum SceneData::GetViewFrustum() const
+	{
+		return m_ViewFrustum;
+	}
+	
 }
