@@ -65,15 +65,15 @@ namespace BlackPearl {
 		std::shared_ptr<VertexArray> GetVertexArray() const { return m_VertexArray; }
 		uint32_t					 GetIndicesSize() const { return m_IndicesSize; }
 		uint32_t				     GetVerticesSize(unsigned int vertexBufferId);
-		std::shared_ptr<Material>    GetMaterial() const { return m_Material; }
+		std::shared_ptr<Material>    GetMaterial() const { return material; }
 		VertexBufferLayout			 GetVertexBufferLayout() const { return m_VertexBufferLayout; }
 		uint32_t					 GetVertexCount() const { return m_VerticeCount; }
 		uint32_t					 GetIndicesCount() const { return m_IndicesCount; }
 
-		void SetShader(const std::string& path)				     { m_Material->SetShader(path); }
-		void SetShader(const std::shared_ptr<Shader> &shader)    { m_Material->SetShader(shader); }
-		void SetTexture(const std::shared_ptr<Texture>& texture) { m_Material->SetTexture(texture); }
-		void SetMaterialColor(MaterialColor::Color color)        { m_Material->SetMaterialColor(color); }
+		void SetShader(const std::string& path)				     { material->SetShader(path); }
+		void SetShader(const std::shared_ptr<Shader> &shader)    { material->SetShader(shader); }
+		void SetTexture(const std::shared_ptr<Texture>& texture) { material->SetTexture(texture); }
+		void SetMaterialColor(MaterialColor::Color color)        { material->SetMaterialColor(color); }
 		void SetTessellation(uint32_t verticesPerTessPatch);
 		void SetVertexBufferLayout(const VertexBufferLayout& layout);
 
@@ -102,6 +102,9 @@ namespace BlackPearl {
 		uint32_t totalIndices = 0;
 		uint32_t totalVertices = 0;
 		int globalMeshIndex = 0;
+
+		std::shared_ptr<Material>    material= nullptr;
+
 
 	public:
 		//temp for directX mseh shader TODO::¼æÈÝopengl ºÍd3d12 mesh½Ó¿Ú
@@ -149,7 +152,6 @@ namespace BlackPearl {
 		uint32_t					 m_VerticeCount = 0; // one vertex has multiple attributes, a vertex = (pos.xyz, normal.xyz, tex.xy..), m_VerticeCount is the number of attribute vertex
 		uint32_t					 m_VerticeArrayCount = 0;
 
-		std::shared_ptr<Material>    m_Material = nullptr;
 		bool m_NeedTessellation;
 		//for batch rendering and indirect drawcall
 		float* m_Positions		= nullptr;

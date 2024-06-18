@@ -2,9 +2,11 @@
 #include "BlackPearl/Renderer/Mesh/Mesh.h"
 #include "BlackPearl/Renderer/DeviceManager.h"
 
-#include "assimp/Importer.hpp"	//OO version Header!
+#include "assimp/Importer.hpp"	
 #include "assimp/postprocess.h"
 #include "assimp/scene.h"
+
+#include "BlackPearl/Animation/Bone.h"
 namespace BlackPearl
 {
     class ModelLoader
@@ -19,7 +21,7 @@ namespace BlackPearl
 
         virtual void RegisterDeviceManager(DeviceManager* deviceManager);
         virtual void Load(std::vector<std::shared_ptr<Mesh>>& output_meshes, BoundingSphere& bounding_sphere, const std::string& path) {};
-		void LoadModel(const std::string& path);
+		Model* LoadModel(const std::string& path, const ModelDesc& desc);
 
     
     private:
@@ -56,7 +58,9 @@ namespace BlackPearl
 		uint32_t FindRotation(float AnimationTime, const aiNodeAnim* nodeAnim);
 		uint32_t FindScaling(float AnimationTime, const aiNodeAnim* nodeAnim);
     
-
+		void UpdateAABB(const glm::vec3& pos);
+		std::string m_Directory;
+		Assimp::Importer m_Importer;
 
 		/*Bones*/
 		uint32_t m_BoneCount = 0;
@@ -70,7 +74,19 @@ namespace BlackPearl
 		//aiMatrix4x4 m_GlobalInverseTransform;
 		glm::mat4 m_GlobalInverseTransform;
     
-    
+
+		/*Vertices Num,Indices Num*/
+		uint32_t m_VerticesNum = 0;
+		uint32_t m_VerticesIdx = 0;
+
+
+		/* Material */
+		std::map<int, std::shared_ptr<Material>> m_CurentModelMaterials;
+
+
+		Model* m_CurrentModel;
+
+		bool m_FirstVertex = true;
     };
     
 

@@ -1,5 +1,5 @@
 #pragma once
-#include "BlackPearl/RayTracing/Vertex.h"
+#include "BlackPearl/Renderer/Mesh/Vertex.h"
 #include "BlackPearl/Component/LightComponent/Light.h"
 #include "BlackPearl/Component/LightComponent/LightSources.h"
 #include "BlackPearl/Component/TransformComponent/Transform.h"

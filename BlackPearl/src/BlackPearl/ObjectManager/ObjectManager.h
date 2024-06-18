@@ -8,7 +8,7 @@
 #include "BlackPearl/Component/LightComponent/LightSources.h"
 #include "BlackPearl/MainCamera/MainCamera.h"
 #include "BlackPearl/Node/BatchNode.h"
-#include "BlackPearl/RayTracing/Vertex.h"
+#include "BlackPearl/Renderer/Mesh/Vertex.h"
 namespace BlackPearl {
 	class ObjectManager
 	{
