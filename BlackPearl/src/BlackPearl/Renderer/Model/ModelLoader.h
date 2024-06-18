@@ -25,7 +25,6 @@ namespace BlackPearl
 
     
     private:
-		void LoadMeshletModel(BoundingSphere& bounding_sphere, const std::string& path);
 		void ProcessNode(aiNode* node, const aiScene* scene);
 		std::shared_ptr<Mesh> ProcessMesh(aiMesh* aimesh);
 		std::shared_ptr<Mesh> ProcessMesh(aiMesh* aimesh, std::vector<Vertex>& v_vertex, bool sort_vertices);

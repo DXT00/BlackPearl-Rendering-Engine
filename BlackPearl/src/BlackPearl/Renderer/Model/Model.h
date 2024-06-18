@@ -14,7 +14,6 @@
 #include "BlackPearl/RHI/DynamicRHI.h"
 #include "BlackPearl/RHI/D3D12RHI/D3D12ModelLoader.h"
 #include "BlackPearl/AABB/AABB.h"
-#include "ModelLoader.h"
 //#include <assimp/material.h>
 
 //#include <assimp/cimport.h>
@@ -47,8 +46,6 @@ namespace BlackPearl {
 				)
 			: desc(desc),
 			shader(desc.shader) {
-			m_HasAnimation = desc.bIsAnimated;
-			m_SortVertices = desc.bSortVerticces;
 			boundingbox = std::make_shared<AABB>(glm::vec3(FLT_MAX), glm::vec3(FLT_MIN),true);
 			if (DynamicRHI::g_RHIType == DynamicRHI::Type::D3D12) {
 				//m_ModelLoader = DBG_NEW D3D12ModelLoader(isMeshletModel);
@@ -61,7 +58,7 @@ namespace BlackPearl {
 				//LoadMeshletModel(m_BoundingSphere, path);
 			}
 			else {
-				g_modelLoader->LoadModel(path);
+				//g_modelLoader->LoadModel(path);
 				//TODO::
 				//替换为				
 				//m_ModelLoader = DBG_NEW ModelLoader();
@@ -96,29 +93,13 @@ namespace BlackPearl {
 
 	private:
 
-
-
-
-		//std::vector<Mesh> m_Meshes;
-
-
-
-		/*need ordered vertices when building BVHNode or Triangle mesh*/
-		bool m_SortVertices = false;
-
-		/*Animation*/
-		bool m_HasAnimation = false;
-	
-
-
-
 	
 		ModelLoader* m_ModelLoader;
 		
 		/* use for meshlet culling */
 		BoundingSphere m_BoundingSphere;
 		std::shared_ptr<MeshletGenerator> m_MeshletGenerator;
-		std::vector<uint8_t>  m_Buffer;
+	
 
 	
 	

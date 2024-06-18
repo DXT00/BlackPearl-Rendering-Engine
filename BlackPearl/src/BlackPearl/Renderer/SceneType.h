@@ -34,6 +34,7 @@
 #include "BlackPearl/Math/frustum.h"
 #include "BlackPearl/RHI/RHITexture.h"
 #include "BlackPearl/Renderer/DescriptorTableManager.h"
+#include "BlackPearl/Renderer/Buffer/Buffer.h"
 struct MaterialConstants;
 struct LightConstants;
 struct LightProbeConstants;
@@ -213,14 +214,22 @@ namespace BlackPearl
         std::shared_ptr<DescriptorHandle> vertexBufferDescriptor;
         std::shared_ptr<DescriptorHandle> instnaceBufferDescriptor;
         std::array<BufferRange, size_t(VertexAttribute::Count)> vertexBufferRanges;
+
+        VertexBufferLayout vertexBufferLayout;
+
         std::vector<uint32_t> indexData;
+        std::vector<float> vertexData;
         std::vector<donut::math::float3> positionData;
         std::vector<donut::math::float2> texcoord1Data;
         std::vector<donut::math::float2> texcoord2Data;
         std::vector<uint32_t> normalData;
         std::vector<uint32_t> tangentData;
-        std::vector<donut::math::vector<uint16_t, 4>> jointData;
-        std::vector<donut::math::float4> weightData;
+
+        std::vector<uint32_t> jointIdData;
+        std::vector<float> jointWeightData;
+
+       // std::vector<donut::math::vector<uint16_t, 4>> jointData;
+        //std::vector<donut::math::float4> weightData;
 
         [[nodiscard]] bool hasAttribute(VertexAttribute attr) const { return vertexBufferRanges[int(attr)].byteSize != 0; }
         BufferRange& getVertexBufferRange(VertexAttribute attr) { return vertexBufferRanges[int(attr)]; }
