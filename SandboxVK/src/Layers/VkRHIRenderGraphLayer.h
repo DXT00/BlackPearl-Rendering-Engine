@@ -1,6 +1,9 @@
 #pragma once
-#pragma once
 #include <BlackPearl.h>
+#include "BlackPearl/Renderer/RenderTargets.h"
+#include "BlackPearl/Renderer/RenderGraph.h"
+#include "BlackPearl/Renderer/ForwardRenderGraph.h"
+
 
 class VkRHIRenderGraphLayer :public BlackPearl::Layer {
 public:
@@ -8,9 +11,7 @@ public:
 	VkRHIRenderGraphLayer(const std::string& name)
 		: Layer(name)
 	{
-		m_VkComputeRender = DBG_NEW BlackPearl::VkComputeShaderRender();
-
-		m_VkComputeRender->Init();
+		
 	}
 
 	virtual ~VkRHIRenderGraphLayer() {
@@ -18,19 +19,32 @@ public:
 		DestroyObjects();
 
 	}
+	void OnSetup() override {
+		m_RenderGraph = DBG_NEW BlackPearl::ForwardRenderGraph(m_DeviceManager);
+		m_Scene = DBG_NEW BlackPearl::Scene();
+		m_RenderGraph->Init(m_Scene);
+
+
+	}
+
 	void OnUpdate(BlackPearl::Timestep ts) override {
 
 		BlackPearl::Renderer::BeginScene(*(m_MainCamera->GetObj()->GetComponent<BlackPearl::PerspectiveCamera>()), *GetLightSources());
-		m_VkComputeRender->Render();
+		//Update Camera, Materials ..
+		m_RenderGraph->Render(m_DeviceManager->GetFrameBuffer());
+		
+		
 	}
 
 	void OnAttach() override {
-
 	}
 
 private:
-	glm::vec4 m_BackgroundColor1 = { 1.0f,1.0f,1.0f,1.0f };
-	BlackPearl::VkComputeShaderRender* m_VkComputeRender;
+
+
+
+	BlackPearl::Scene* m_Scene;
+	BlackPearl::ForwardRenderGraph* m_RenderGraph;
 
 
 };
