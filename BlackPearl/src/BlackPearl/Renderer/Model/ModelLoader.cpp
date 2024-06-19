@@ -4,8 +4,11 @@
 #include "BlackPearl/Renderer/Model/Model.h"
 #include "BlackPearl/RHI/RHIBindingSet.h"
 #include "BlackPearl/Common/CommonFunc.h"
+#include <glm/gtc/matrix_transform.hpp>
+#include "glm/fwd.hpp"
+#include "glm/gtx/quaternion.hpp"
 namespace BlackPearl {
-
+	using namespace donut::math;
 
     
     ModelLoader::ModelLoader()
@@ -22,12 +25,12 @@ namespace BlackPearl {
     }
 
 
-	static void glmInsertVector(glm::vec2 v, std::vector<float>& vec) {
+	static void glmInsertVector(float2 v, std::vector<float>& vec) {
 		vec.push_back(v.x);
 		vec.push_back(v.y);
 
 	}
-	static void glmInsertVector(glm::vec3 v, std::vector<float>& vec) {
+	static void glmInsertVector(float3 v, std::vector<float>& vec) {
 		vec.push_back(v.x);
 		vec.push_back(v.y);
 		vec.push_back(v.z);
@@ -203,10 +206,25 @@ namespace BlackPearl {
 	//TODO:: Animation ModelLoader Vertex未处理
 	std::shared_ptr<Mesh> ModelLoader::ProcessMesh(aiMesh* aimesh)
 	{
-		std::vector<float> vertexData;
-		std::vector<uint32_t> indicesData;
-		std::vector<uint32_t> jointIdData;
-		std::vector<float> jointWeightData;
+		std::shared_ptr<Mesh> mesh = std::make_shared<Mesh>();
+
+		auto buffers = mesh->buffers;
+
+		std::vector<float3>& positionData = buffers->positionData;
+		std::vector<float3>& normalData = buffers->normalData;
+		std::vector<float3>& tangentData = buffers->tangentData;
+		std::vector<float3>& bitangentData = buffers->bitangentData;
+		std::vector<float2>& texcoord1Data = buffers->texcoord1Data;
+
+		std::vector<uint32_t> &indicesData = buffers->indexData;
+		std::vector<uint32_t> &jointIdData = buffers->jointIdData;
+		std::vector<uint32_t> &jointIdData1 = buffers->jointId1Data;
+		std::vector<uint32_t> &jointIdData2 = buffers->jointId2Data;
+
+		std::vector<float> jointWeightData = buffers->jointWeightData;
+		std::vector<float> jointWeightData1 = buffers->jointWeight1Data;
+		std::vector<float> jointWeightData2 = buffers->jointWeight2Data;
+
 
 		bool hasAnimation = m_CurrentModel->desc.bIsAnimated;
 
@@ -221,12 +239,13 @@ namespace BlackPearl {
 			layout.AddElement({ ElementDataType::Float3,"aBitangent",false,4 });
 		}
 		if (hasAnimation) {
-			layout1 = { { ElementDataType::Int4,"aJointIndices",false,5 },
-						{ ElementDataType::Int4,"aJointIndices1",false,6 },
-						{ ElementDataType::Int4,"aJointIndices2",false,7 } };
-			layout2 = { { ElementDataType::Float4,"aWeights",false,8},
-						{ ElementDataType::Float4,"aWeights1",false,9},
-						{ ElementDataType::Float4,"aWeights2",false,10} };
+			layout.AddElement({ ElementDataType::Int4,"aJointIndices",false,5 });
+			layout.AddElement({ ElementDataType::Int4,"aJointIndices1",false,5 });
+			layout.AddElement({ ElementDataType::Int4,"aJointIndices2",false,7 });
+			layout.AddElement({ ElementDataType::Int4,"aWeights",false,8 });
+			layout.AddElement({ ElementDataType::Int4,"aWeights1",false,9 });
+			layout.AddElement({ ElementDataType::Int4,"aWeight2",false,10 });
+
 		}
 
 		if (hasAnimation && aimesh->mNumBones >= 0)
@@ -236,57 +255,58 @@ namespace BlackPearl {
 		{
 			Vertex vertex;
 
-			glm::vec3 pos;
+			float3 pos;
 			pos.x = aimesh->mVertices[i].x;
 			pos.y = aimesh->mVertices[i].y;
 			pos.z = aimesh->mVertices[i].z;
-			glmInsertVector(pos, vertexData);
+			positionData.push_back(pos);
 			vertex.position = pos;
 			UpdateAABB(pos);
 
-			glm::vec3 normal;
+			float3 normal;
 			normal.x = aimesh->mNormals[i].x;
 			normal.y = aimesh->mNormals[i].y;
 			normal.z = aimesh->mNormals[i].z;
-			glmInsertVector(normal, vertexData);
+			normalData.push_back(normal);
 			vertex.normal = normal;
 
-			glm::vec2 textCords = glm::vec2(0.0f, 0.0f);
+			float2 texCoords = float2(0.0f, 0.0f);
 			if (aimesh->mTextureCoords[0]) {//判断顶点是否有材质属性
 
-				textCords.x = aimesh->mTextureCoords[0][i].x;
-				textCords.y = aimesh->mTextureCoords[0][i].y;
+				texCoords.x = aimesh->mTextureCoords[0][i].x;
+				texCoords.y = aimesh->mTextureCoords[0][i].y;
 			}
-			glmInsertVector(textCords, vertexData);
-			vertex.texCoords = textCords;
+			texcoord1Data.push_back(texCoords);
+			vertex.texCoords = texCoords;
 
 			if (hasAnimation && m_BoneDatas.size() >= 0) {
 				uint32_t vertexIdx = m_VerticesIdx + i;
 				glmInsertVector(glm::u32vec4(m_BoneDatas[vertexIdx].jointIdx[0][0], m_BoneDatas[vertexIdx].jointIdx[0][1], m_BoneDatas[vertexIdx].jointIdx[0][2], m_BoneDatas[vertexIdx].jointIdx[0][3]), jointIdData);
-				glmInsertVector(glm::u32vec4(m_BoneDatas[vertexIdx].jointIdx[1][0], m_BoneDatas[vertexIdx].jointIdx[1][1], m_BoneDatas[vertexIdx].jointIdx[1][2], m_BoneDatas[vertexIdx].jointIdx[1][3]), jointIdData);
-				glmInsertVector(glm::u32vec4(m_BoneDatas[vertexIdx].jointIdx[2][0], m_BoneDatas[vertexIdx].jointIdx[2][1], m_BoneDatas[vertexIdx].jointIdx[2][2], m_BoneDatas[vertexIdx].jointIdx[2][3]), jointIdData);
+				glmInsertVector(glm::u32vec4(m_BoneDatas[vertexIdx].jointIdx[1][0], m_BoneDatas[vertexIdx].jointIdx[1][1], m_BoneDatas[vertexIdx].jointIdx[1][2], m_BoneDatas[vertexIdx].jointIdx[1][3]), jointIdData1);
+				glmInsertVector(glm::u32vec4(m_BoneDatas[vertexIdx].jointIdx[2][0], m_BoneDatas[vertexIdx].jointIdx[2][1], m_BoneDatas[vertexIdx].jointIdx[2][2], m_BoneDatas[vertexIdx].jointIdx[2][3]), jointIdData2);
 
 				glmInsertVector(glm::vec4(m_BoneDatas[vertexIdx].weights[0][0], m_BoneDatas[vertexIdx].weights[0][1], m_BoneDatas[vertexIdx].weights[0][2], m_BoneDatas[vertexIdx].weights[0][3]), jointWeightData);
-				glmInsertVector(glm::vec4(m_BoneDatas[vertexIdx].weights[1][0], m_BoneDatas[vertexIdx].weights[1][1], m_BoneDatas[vertexIdx].weights[1][2], m_BoneDatas[vertexIdx].weights[1][3]), jointWeightData);
-				glmInsertVector(glm::vec4(m_BoneDatas[vertexIdx].weights[2][0], m_BoneDatas[vertexIdx].weights[2][1], m_BoneDatas[vertexIdx].weights[2][2], m_BoneDatas[vertexIdx].weights[2][3]), jointWeightData);
-
+				glmInsertVector(glm::vec4(m_BoneDatas[vertexIdx].weights[1][0], m_BoneDatas[vertexIdx].weights[1][1], m_BoneDatas[vertexIdx].weights[1][2], m_BoneDatas[vertexIdx].weights[1][3]), jointWeightData1);
+				glmInsertVector(glm::vec4(m_BoneDatas[vertexIdx].weights[2][0], m_BoneDatas[vertexIdx].weights[2][1], m_BoneDatas[vertexIdx].weights[2][2], m_BoneDatas[vertexIdx].weights[2][3]), jointWeightData2);
 			}
 			//tangent
-			glm::vec3 tangent = glm::vec3(0.0f);
-			glm::vec3 bitTangent = glm::vec3(0.0f);
+			float3 tangent = float3(0.0f);
+			float3 biTangent = float3(0.0f);
 
 			if (aimesh->HasTangentsAndBitangents()) {
 				tangent.x = aimesh->mTangents[i].x;
 				tangent.y = aimesh->mTangents[i].y;
 				tangent.z = aimesh->mTangents[i].z;
 				//bittangent			
-				bitTangent.x = aimesh->mBitangents[i].x;
-				bitTangent.y = aimesh->mBitangents[i].y;
-				bitTangent.z = aimesh->mBitangents[i].z;
-				glmInsertVector(tangent, vertexData);
-				glmInsertVector(bitTangent, vertexData);
+				biTangent.x = aimesh->mBitangents[i].x;
+				biTangent.y = aimesh->mBitangents[i].y;
+				biTangent.z = aimesh->mBitangents[i].z;
+
 				vertex.tangent = tangent;
-				vertex.bitTangent = bitTangent;
+				vertex.bitTangent = biTangent;
+
+				tangentData.push_back(tangent);
+				bitangentData.push_back(biTangent);
 			}
 			//v_vertex.push_back(vertex);
 		}
@@ -302,64 +322,15 @@ namespace BlackPearl {
 			}
 		}
 
-
-		std::shared_ptr<VertexBuffer> vertexBuffer(DBG_NEW VertexBuffer(vertexData.data(), vertexData.size() * sizeof(float)));
-		vertexBuffer->SetBufferLayout(layout);
-
-
-		std::shared_ptr<IndexBuffer> indexBuffer(DBG_NEW IndexBuffer(indicesData.data(), indicesData.size() * sizeof(uint32_t)));
+		//std::shared_ptr<IndexBuffer> indexBuffer(DBG_NEW IndexBuffer(indicesData.data(), indicesData.size() * sizeof(uint32_t)));
 
 		m_VerticesIdx += aimesh->mNumVertices;
 
-
-		std::shared_ptr<Mesh> mesh = std::make_shared<Mesh>();
-
-		auto buffers = mesh->buffers;
-		BufferDesc indexBufferDesc;
-		indexBufferDesc.isIndexBuffer = true;
-		indexBufferDesc.byteSize = buffers->indexData.size() * sizeof(uint32_t);
-		indexBufferDesc.debugName = "IndexBuffer";
-		indexBufferDesc.canHaveTypedViews = true;
-		indexBufferDesc.canHaveRawViews = true;
-		indexBufferDesc.format = Format::R32_UINT;
-		indexBufferDesc.isAccelStructBuildInput = false;
-
-		buffers->indexBuffer = m_DeviceManager->GetDevice()->createBuffer(indexBufferDesc);
-		buffers->indexData = indicesData;
-
 		buffers->vertexBufferLayout = layout;
-
-		BufferDesc vertexBufferDesc;
-		vertexBufferDesc.isVertexBuffer = true;
-		vertexBufferDesc.byteSize = vertexData.size() * sizeof(float);
-		vertexBufferDesc.debugName = "VertexBuffer";
-		vertexBufferDesc.canHaveTypedViews = true;
-		vertexBufferDesc.canHaveRawViews = true;
-		vertexBufferDesc.isAccelStructBuildInput = false;
-
-		buffers->vertexBuffer = m_DeviceManager->GetDevice()->createBuffer(vertexBufferDesc);
-		buffers->vertexData = vertexData;
-
 
 		mesh->material = m_CurentModelMaterials[aimesh->mMaterialIndex];
 
-
-		if (hasAnimation) {
-
-			std::shared_ptr<VertexBuffer> vertexBuffer1(DBG_NEW VertexBuffer(jointIdData.data(), jointIdData.size() * sizeof(uint32_t)));
-			vertexBuffer1->SetBufferLayout(layout1);
-
-			std::shared_ptr<VertexBuffer> vertexBuffer2(DBG_NEW VertexBuffer(jointWeightData.data(), jointWeightData.size() * sizeof(float)));
-			vertexBuffer2->SetBufferLayout(layout2);
-
-			//TODO::
-			buffers->jointIdData = jointIdData;
-			buffers->jointWeightData = jointWeightData;
-
-			return std::make_shared<Mesh>(m_CurentModelMaterials[aimesh->mMaterialIndex], indexBuffer, std::vector<std::shared_ptr<VertexBuffer>>{ vertexBuffer, vertexBuffer1, vertexBuffer2 });
-		}
-
-		//return std::make_shared<Mesh>(m_CurentModelMaterials[aimesh->mMaterialIndex], indexBuffer, std::vector<std::shared_ptr<VertexBuffer>>{ vertexBuffer });
+		CreateMeshBuffers(mesh);
 		return mesh;
 	}
 
@@ -370,10 +341,24 @@ namespace BlackPearl {
 			return ProcessMesh(aimesh);
 		}
 
-		std::vector<float> vertexData;
-		std::vector<uint32_t> indicesData;
-		std::vector<uint32_t> jointIdData;
-		std::vector<float> jointWeightData;
+		std::shared_ptr<Mesh> mesh = std::make_shared<Mesh>();
+
+		auto buffers = mesh->buffers;
+
+		std::vector<float3>& positionData = buffers->positionData;
+		std::vector<float3>& normalData = buffers->normalData;
+		std::vector<float3>& tangentData = buffers->tangentData;
+		std::vector<float3>& bitangentData = buffers->bitangentData;
+		std::vector<float2>& texcoord1Data = buffers->texcoord1Data;
+
+		std::vector<uint32_t>& indicesData = buffers->indexData;
+		std::vector<uint32_t>& jointIdData = buffers->jointIdData;
+		std::vector<uint32_t>& jointIdData1 = buffers->jointId1Data;
+		std::vector<uint32_t>& jointIdData2 = buffers->jointId2Data;
+
+		std::vector<float> jointWeightData = buffers->jointWeightData;
+		std::vector<float> jointWeightData1 = buffers->jointWeight1Data;
+		std::vector<float> jointWeightData2 = buffers->jointWeight2Data;
 
 		bool hasAnimation = m_CurrentModel->desc.bIsAnimated;
 
@@ -389,12 +374,20 @@ namespace BlackPearl {
 			layout.AddElement({ ElementDataType::Float3,"aBitangent",false,4 });
 		}
 		if (hasAnimation) {
-			layout1 = { { ElementDataType::Int4,"aJointIndices",false,5 },
+
+			layout.AddElement({ ElementDataType::Int4,"aJointIndices",false,5 });
+			layout.AddElement({ ElementDataType::Int4,"aJointIndices1",false,5 });
+			layout.AddElement({ ElementDataType::Int4,"aJointIndices2",false,7 });
+			layout.AddElement({ ElementDataType::Int4,"aWeights",false,8 });
+			layout.AddElement({ ElementDataType::Int4,"aWeights1",false,9 });
+			layout.AddElement({ ElementDataType::Int4,"aWeight2",false,10 });
+
+			/*layout1 = { { ElementDataType::Int4,"aJointIndices",false,5 },
 						{ ElementDataType::Int4,"aJointIndices1",false,6 },
 						{ ElementDataType::Int4,"aJointIndices2",false,7 } };
 			layout2 = { { ElementDataType::Float4,"aWeights",false,8},
 						{ ElementDataType::Float4,"aWeights1",false,9},
-						{ ElementDataType::Float4,"aWeights2",false,10} };
+						{ ElementDataType::Float4,"aWeights2",false,10} };*/
 		}
 
 		if (hasAnimation && aimesh->mNumBones >= 0)
@@ -412,45 +405,49 @@ namespace BlackPearl {
 				indicesData.push_back(face.mIndices[j]);
 				size_t idx = face.mIndices[j];
 				Vertex vertex;
-				glm::vec3 pos;
+				float3 pos;
 				pos.x = aimesh->mVertices[idx].x;
 				pos.y = aimesh->mVertices[idx].y;
 				pos.z = aimesh->mVertices[idx].z;
-				glmInsertVector(pos, vertexData);
+				positionData.push_back(pos);
+				//glmInsertVector(pos, vertexData);
 				vertex.position = pos;
 				UpdateAABB(pos);
 
-				glm::vec3 normal;
+				float3 normal;
 				normal.x = aimesh->mNormals[idx].x;
 				normal.y = aimesh->mNormals[idx].y;
 				normal.z = aimesh->mNormals[idx].z;
-				glmInsertVector(normal, vertexData);
+				normalData.push_back(normal);
+
+				//glmInsertVector(normal, vertexData);
 				vertex.normal = normal;
 
-				glm::vec2 textCords = glm::vec2(0.0f, 0.0f);
+				float2 texCoords = float2(0.0f, 0.0f);
 				if (aimesh->mTextureCoords[0]) {//判断顶点是否有材质属性
 
-					textCords.x = aimesh->mTextureCoords[0][idx].x;
-					textCords.y = aimesh->mTextureCoords[0][idx].y;
+					texCoords.x = aimesh->mTextureCoords[0][idx].x;
+					texCoords.y = aimesh->mTextureCoords[0][idx].y;
 				}
-				glmInsertVector(textCords, vertexData);
-				vertex.texCoords = textCords;
+				texcoord1Data.push_back(texCoords);
+				//glmInsertVector(textCords, vertexData);
+				vertex.texCoords = texCoords;
 
 				if (hasAnimation && m_BoneDatas.size() >= 0) {
 					uint32_t vertexIdx = m_VerticesIdx + idx;
 					glmInsertVector(glm::u32vec4(m_BoneDatas[vertexIdx].jointIdx[0][0], m_BoneDatas[vertexIdx].jointIdx[0][1], m_BoneDatas[vertexIdx].jointIdx[0][2], m_BoneDatas[vertexIdx].jointIdx[0][3]), jointIdData);
-					glmInsertVector(glm::u32vec4(m_BoneDatas[vertexIdx].jointIdx[1][0], m_BoneDatas[vertexIdx].jointIdx[1][1], m_BoneDatas[vertexIdx].jointIdx[1][2], m_BoneDatas[vertexIdx].jointIdx[1][3]), jointIdData);
-					glmInsertVector(glm::u32vec4(m_BoneDatas[vertexIdx].jointIdx[2][0], m_BoneDatas[vertexIdx].jointIdx[2][1], m_BoneDatas[vertexIdx].jointIdx[2][2], m_BoneDatas[vertexIdx].jointIdx[2][3]), jointIdData);
+					glmInsertVector(glm::u32vec4(m_BoneDatas[vertexIdx].jointIdx[1][0], m_BoneDatas[vertexIdx].jointIdx[1][1], m_BoneDatas[vertexIdx].jointIdx[1][2], m_BoneDatas[vertexIdx].jointIdx[1][3]), jointIdData1);
+					glmInsertVector(glm::u32vec4(m_BoneDatas[vertexIdx].jointIdx[2][0], m_BoneDatas[vertexIdx].jointIdx[2][1], m_BoneDatas[vertexIdx].jointIdx[2][2], m_BoneDatas[vertexIdx].jointIdx[2][3]), jointIdData2);
 
 					glmInsertVector(glm::vec4(m_BoneDatas[vertexIdx].weights[0][0], m_BoneDatas[vertexIdx].weights[0][1], m_BoneDatas[vertexIdx].weights[0][2], m_BoneDatas[vertexIdx].weights[0][3]), jointWeightData);
-					glmInsertVector(glm::vec4(m_BoneDatas[vertexIdx].weights[1][0], m_BoneDatas[vertexIdx].weights[1][1], m_BoneDatas[vertexIdx].weights[1][2], m_BoneDatas[vertexIdx].weights[1][3]), jointWeightData);
-					glmInsertVector(glm::vec4(m_BoneDatas[vertexIdx].weights[2][0], m_BoneDatas[vertexIdx].weights[2][1], m_BoneDatas[vertexIdx].weights[2][2], m_BoneDatas[vertexIdx].weights[2][3]), jointWeightData);
+					glmInsertVector(glm::vec4(m_BoneDatas[vertexIdx].weights[1][0], m_BoneDatas[vertexIdx].weights[1][1], m_BoneDatas[vertexIdx].weights[1][2], m_BoneDatas[vertexIdx].weights[1][3]), jointWeightData1);
+					glmInsertVector(glm::vec4(m_BoneDatas[vertexIdx].weights[2][0], m_BoneDatas[vertexIdx].weights[2][1], m_BoneDatas[vertexIdx].weights[2][2], m_BoneDatas[vertexIdx].weights[2][3]), jointWeightData2);
 
 					//	GE_ASSERT(m_BoneDatas[vertexIdx].weights[0] + m_BoneDatas[vertexIdx].weights[1] + m_BoneDatas[vertexIdx].weights[2] + m_BoneDatas[vertexIdx].weights[3] == 1.0f, "total weight!=1");
 				}
 				//tangent
-				glm::vec3 tangent = glm::vec3(0.0f);
-				glm::vec3 bitTangent = glm::vec3(0.0f);
+				float3 tangent = float3(0.0f);
+				float3 biTangent = float3(0.0f);
 
 				if (aimesh->HasTangentsAndBitangents()) {
 					tangent.x = aimesh->mTangents[idx].x;
@@ -458,27 +455,29 @@ namespace BlackPearl {
 					tangent.z = aimesh->mTangents[idx].z;
 					//bittangent
 
-					bitTangent.x = aimesh->mBitangents[idx].x;
-					bitTangent.y = aimesh->mBitangents[idx].y;
-					bitTangent.z = aimesh->mBitangents[idx].z;
-					glmInsertVector(tangent, vertexData);
-					glmInsertVector(bitTangent, vertexData);
+					biTangent.x = aimesh->mBitangents[idx].x;
+					biTangent.y = aimesh->mBitangents[idx].y;
+					biTangent.z = aimesh->mBitangents[idx].z;
+					//glmInsertVector(tangent, vertexData);
+					//glmInsertVector(bitTangent, vertexData);
 					vertex.tangent = tangent;
-					vertex.bitTangent = bitTangent;
+					vertex.bitTangent = biTangent;
+					tangentData.push_back(tangent);
+					bitangentData.push_back(biTangent);
 				}
 				v_vertex.push_back(vertex);
 			}
 		}
 
-		std::shared_ptr<VertexBuffer> vertexBuffer(DBG_NEW VertexBuffer(vertexData.data(), vertexData.size() * sizeof(float)));
-		vertexBuffer->SetBufferLayout(layout);
+	/*	std::shared_ptr<VertexBuffer> vertexBuffer(DBG_NEW VertexBuffer(vertexData.data(), vertexData.size() * sizeof(float)));
+		vertexBuffer->SetBufferLayout(layout);*/
 
 		std::shared_ptr<IndexBuffer> indexBuffer(DBG_NEW IndexBuffer(indicesData.data(), indicesData.size() * sizeof(uint32_t)));
 
 		m_VerticesIdx += aimesh->mNumVertices;
 
 
-		if (hasAnimation) {
+	/*	if (hasAnimation) {
 
 			std::shared_ptr<VertexBuffer> vertexBuffer1(DBG_NEW VertexBuffer(jointIdData.data(), jointIdData.size() * sizeof(uint32_t)));
 			vertexBuffer1->SetBufferLayout(layout1);
@@ -487,9 +486,10 @@ namespace BlackPearl {
 			vertexBuffer2->SetBufferLayout(layout2);
 			return std::shared_ptr<Mesh>(DBG_NEW Mesh(m_CurentModelMaterials[aimesh->mMaterialIndex], indexBuffer, { vertexBuffer,vertexBuffer1,vertexBuffer2 }));
 
-		}
-
-		return std::shared_ptr<Mesh>(DBG_NEW Mesh(m_CurentModelMaterials[aimesh->mMaterialIndex], indexBuffer, { vertexBuffer }));
+		}*/
+		CreateMeshBuffers(mesh);
+		return mesh;
+		//return std::shared_ptr<Mesh>(DBG_NEW Mesh(m_CurentModelMaterials[aimesh->mMaterialIndex], indexBuffer, { vertexBuffer }));
 
 
 	}
@@ -825,10 +825,10 @@ namespace BlackPearl {
 		return 0;
 	}
 
-	void ModelLoader::UpdateAABB(const glm::vec3& pos)
+	void ModelLoader::UpdateAABB(const donut::math::float3& pos)
 	{
-		glm::vec3 min;
-		glm::vec3 max;
+		donut::math::float3 min;
+		donut::math::float3 max;
 		if (m_FirstVertex) {
 			m_FirstVertex = false;
 			min = pos;
@@ -858,6 +858,104 @@ namespace BlackPearl {
 		}
 
 		m_CurrentModel->boundingbox->SetP(min, max);
+	}
+
+	inline void AppendBufferRange(BufferRange& range, size_t size, uint64_t& currentBufferSize)
+	{
+		range.byteOffset = currentBufferSize;
+		range.byteSize = size;
+		currentBufferSize += range.byteSize;
+	}
+
+	void ModelLoader::CreateMeshBuffers(std::shared_ptr<Mesh>& mesh)
+	{
+		auto buffers = mesh->buffers;
+
+
+
+		BufferDesc bufferDescIndex;
+		bufferDescIndex.isIndexBuffer = true;
+		bufferDescIndex.byteSize = buffers->indexData.size() * sizeof(uint32_t);
+		bufferDescIndex.debugName = "IndexBuffer";
+		bufferDescIndex.canHaveTypedViews = true;
+		bufferDescIndex.canHaveRawViews = true;
+		bufferDescIndex.format = Format::R32_UINT;
+		bufferDescIndex.isAccelStructBuildInput = false;
+
+
+
+		BufferDesc bufferDesc;
+		bufferDesc.isVertexBuffer = true;
+		bufferDesc.byteSize = 0;
+		bufferDesc.debugName = "VertexBuffer";
+		bufferDesc.canHaveTypedViews = true;
+		bufferDesc.canHaveRawViews = true;
+		bufferDesc.isAccelStructBuildInput = false;
+
+		if (!buffers->positionData.empty())
+		{
+			AppendBufferRange(buffers->getVertexBufferRange(VertexAttribute::Position),
+				buffers->positionData.size() * sizeof(buffers->positionData[0]), bufferDesc.byteSize);
+		}
+
+		if (!buffers->normalData.empty())
+		{
+			AppendBufferRange(buffers->getVertexBufferRange(VertexAttribute::Normal),
+				buffers->normalData.size() * sizeof(buffers->normalData[0]), bufferDesc.byteSize);
+		}
+
+		if (!buffers->tangentData.empty())
+		{
+			AppendBufferRange(buffers->getVertexBufferRange(VertexAttribute::Tangent),
+				buffers->tangentData.size() * sizeof(buffers->tangentData[0]), bufferDesc.byteSize);
+		}
+
+		if (!buffers->texcoord1Data.empty())
+		{
+			AppendBufferRange(buffers->getVertexBufferRange(VertexAttribute::TexCoord1),
+				buffers->texcoord1Data.size() * sizeof(buffers->texcoord1Data[0]), bufferDesc.byteSize);
+		}
+
+		if (!buffers->texcoord2Data.empty())
+		{
+			AppendBufferRange(buffers->getVertexBufferRange(VertexAttribute::TexCoord2),
+				buffers->texcoord2Data.size() * sizeof(buffers->texcoord2Data[0]), bufferDesc.byteSize);
+		}
+
+		if (!buffers->jointIdData.empty())
+		{
+			AppendBufferRange(buffers->getVertexBufferRange(VertexAttribute::JointIndices),
+				buffers->jointIdData.size() * sizeof(buffers->jointIdData[0]), bufferDesc.byteSize);
+		}
+		if (!buffers->jointId1Data.empty())
+		{
+			AppendBufferRange(buffers->getVertexBufferRange(VertexAttribute::JointIndices),
+				buffers->jointId1Data.size() * sizeof(buffers->jointId1Data[0]), bufferDesc.byteSize);
+		}
+		if (!buffers->jointId2Data.empty())
+		{
+			AppendBufferRange(buffers->getVertexBufferRange(VertexAttribute::JointIndices),
+				buffers->jointId2Data.size() * sizeof(buffers->jointId2Data[0]), bufferDesc.byteSize);
+		}
+		if (!buffers->jointWeightData.empty())
+		{
+			AppendBufferRange(buffers->getVertexBufferRange(VertexAttribute::JointWeights),
+				buffers->jointWeightData.size() * sizeof(buffers->jointWeightData[0]), bufferDesc.byteSize);
+		}
+
+		if (!buffers->jointWeight1Data.empty())
+		{
+			AppendBufferRange(buffers->getVertexBufferRange(VertexAttribute::JointWeights),
+				buffers->jointWeight1Data.size() * sizeof(buffers->jointWeight1Data[0]), bufferDesc.byteSize);
+		}
+
+		if (!buffers->jointWeight2Data.empty())
+		{
+			AppendBufferRange(buffers->getVertexBufferRange(VertexAttribute::JointWeights),
+				buffers->jointWeight2Data.size() * sizeof(buffers->jointWeight2Data[0]), bufferDesc.byteSize);
+		}
+
+
 	}
    
 }

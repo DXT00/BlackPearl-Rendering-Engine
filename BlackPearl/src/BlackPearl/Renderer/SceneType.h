@@ -218,15 +218,22 @@ namespace BlackPearl
         VertexBufferLayout vertexBufferLayout;
 
         std::vector<uint32_t> indexData;
-        std::vector<float> vertexData;
+        //std::vector<float> vertexData; 不需要vertexData, 如果有骨骼的话 vector类型会不一样
+        //最后通过writeBuffer 来写
         std::vector<donut::math::float3> positionData;
         std::vector<donut::math::float2> texcoord1Data;
         std::vector<donut::math::float2> texcoord2Data;
-        std::vector<uint32_t> normalData;
-        std::vector<uint32_t> tangentData;
+        std::vector<donut::math::float3> normalData;
+        std::vector<donut::math::float3> tangentData;
+        std::vector<donut::math::float3> bitangentData;
 
         std::vector<uint32_t> jointIdData;
+        std::vector<uint32_t> jointId1Data;
+        std::vector<uint32_t> jointId2Data;
+
         std::vector<float> jointWeightData;
+        std::vector<float> jointWeight1Data;
+        std::vector<float> jointWeight2Data;
 
        // std::vector<donut::math::vector<uint16_t, 4>> jointData;
         //std::vector<donut::math::float4> weightData;

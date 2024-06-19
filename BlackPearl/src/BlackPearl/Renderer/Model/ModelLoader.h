@@ -1,7 +1,8 @@
 #pragma once
 #include "BlackPearl/Renderer/Mesh/Mesh.h"
 #include "BlackPearl/Renderer/DeviceManager.h"
-
+#include "BlackPearl/Math/vector.h"
+#include "glm/glm.hpp"
 #include "assimp/Importer.hpp"	
 #include "assimp/postprocess.h"
 #include "assimp/scene.h"
@@ -57,7 +58,12 @@ namespace BlackPearl
 		uint32_t FindRotation(float AnimationTime, const aiNodeAnim* nodeAnim);
 		uint32_t FindScaling(float AnimationTime, const aiNodeAnim* nodeAnim);
     
-		void UpdateAABB(const glm::vec3& pos);
+		void UpdateAABB(const donut::math::float3& pos);
+
+	private:
+		void CreateMeshBuffers(std::shared_ptr<Mesh>& mesh);
+
+	private:
 		std::string m_Directory;
 		Assimp::Importer m_Importer;
 

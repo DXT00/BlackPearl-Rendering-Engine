@@ -6,14 +6,14 @@
 
 namespace BlackPearl {
 
-	const AABB AABB::InValid(glm::vec3(-1), glm::vec3(-1), false);
+	const AABB AABB::InValid(donut::math::float3(-1), donut::math::float3(-1), false);
 
 	AABB::AABB()
 	{
 		*this = InValid;
 	}
 	
-	AABB::AABB(const glm::vec3& minP, const glm::vec3& maxP, bool isValid)
+	AABB::AABB(const donut::math::float3& minP, const donut::math::float3& maxP, bool isValid)
 		: m_MinP(minP),m_MaxP(maxP),m_IsValid(isValid)
 	{
 
@@ -25,7 +25,7 @@ namespace BlackPearl {
 		*this = InValid;
 	}
 
-	void AABB::SetP(const glm::vec3& minP, const glm::vec3& maxP)
+	void AABB::SetP(const donut::math::float3& minP, const donut::math::float3& maxP)
 	{
 		m_MinP = minP;
 		m_MaxP = maxP;
@@ -35,8 +35,8 @@ namespace BlackPearl {
 	{
 		if (m_IsValid) {
 			if (aabb.IsValid()) {
-				glm::vec3 minP = glm::min(aabb.GetMinP(), m_MinP);
-				glm::vec3 maxP = glm::max(aabb.GetMaxP(), m_MaxP);
+				donut::math::float3 minP = glm::min(aabb.GetMinP(), m_MinP);
+				donut::math::float3 maxP = glm::max(aabb.GetMaxP(), m_MaxP);
 				return { minP,maxP,true };
 			}
 			else {
@@ -66,8 +66,8 @@ namespace BlackPearl {
 
 		tMin = Ray::tMin;
 		tMax = ray->GetTMax();
-		glm::vec3& dir = ray->GetDir();
-		glm::vec3& org = ray->GetOrigin();
+		donut::math::float3& dir = ray->GetDir();
+		donut::math::float3& org = ray->GetOrigin();
 
 
 		for (int i = 0; i < 3; i++)
@@ -98,7 +98,7 @@ namespace BlackPearl {
 
 	float AABB::GetSurfaceArea() const
 	{
-		glm::vec3 extends = GetExtent();
+		donut::math::float3 extends = GetExtent();
 		return 2.0f * (extends.x * extends.y + extends.y * extends.z + extends.z * extends.x);
 	}
 
@@ -124,8 +124,8 @@ namespace BlackPearl {
 		glm::vec4 min = model * glm::vec4(m_MinP,1);
 		glm::vec4 max = model * glm::vec4(m_MaxP,1);
 
-		m_MinP = glm::vec3(min.r, min.b, min.g);
-		m_MaxP = glm::vec3(max.r, max.b, max.g);
+		m_MinP = donut::math::float3(min.r, min.b, min.g);
+		m_MaxP = donut::math::float3(max.r, max.b, max.g);
 	}
 
 }
