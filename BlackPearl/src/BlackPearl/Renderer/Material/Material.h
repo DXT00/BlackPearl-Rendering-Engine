@@ -1,6 +1,7 @@
 #pragma once
 #include "Texture.h"
 #include "BlackPearl/Renderer/Shader/Shader.h"
+#include "BlackPearl/Renderer/SceneType.h"
 #include "MaterialColor.h"
 #include "BlackPearl/RHI/DynamicRHI.h"
 
@@ -31,6 +32,7 @@ namespace BlackPearl {
 			int  isHeightTextureSample;//是否使用纹理
 			int  isEmissionTextureSample;//是否使用纹理
 			int isRefractMaterial;
+			int isDoubleSided;
 
 			Props() :shininess(64.0f),
 				refractIndex(1.5),
@@ -135,6 +137,9 @@ namespace BlackPearl {
 			if (m_TextureMaps->opacityMap != nullptr)	  m_TextureMaps->opacityMap->UnBind();
 
 		}
+	public:
+		std::string name;
+		MaterialDomain domain = MaterialDomain::Opaque;
 	private:
 		std::shared_ptr<Shader>		 m_Shader = nullptr;
 		std::shared_ptr<TextureMaps> m_TextureMaps = nullptr;

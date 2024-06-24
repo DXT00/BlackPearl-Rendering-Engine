@@ -28,14 +28,15 @@
 #include "BlackPearl/Renderer/Renderer.h"
 #include "BlackPearl/Scene/SceneGraph.h"
 #include "BlackPearl/Scene/Scene.h"
+#include "BlackPearl/RHI/RHIDefinitions.h"
 
 namespace BlackPearl {
     struct DrawItem
     {
         //TODO::
-        const MeshInstance* instance;
-        const MeshInfo* mesh;
-        const MeshGeometry* geometry;
+        //const MeshInstance* instance;
+        const Mesh* mesh;
+        //const MeshGeometry* geometry;
         const Material* material;
         const BufferGroup* buffers;
         float distanceToCamera;
@@ -51,6 +52,8 @@ namespace BlackPearl {
             const IView& view) = 0;
 
         virtual const DrawItem* GetNextItem() = 0;
+
+        virtual std::vector<DrawItem>  GetDrawItems() const = 0;
 
         virtual std::vector<Object*> GetDrawObjects() const = 0;
 
@@ -70,6 +73,7 @@ namespace BlackPearl {
             const IView& view) override { }
 
         const DrawItem* GetNextItem() override;
+        virtual std::vector<DrawItem>  GetDrawItems()const override { return std::vector<DrawItem>(); }
         std::vector<Object*> GetDrawObjects() const override { return m_VisibleObjs; }
 
         void SetData(const DrawItem* data, size_t count);
@@ -98,6 +102,8 @@ namespace BlackPearl {
             const IView& view) override;
 
         const DrawItem* GetNextItem() override;
+        std::vector<DrawItem>  GetDrawItems() const override  { return m_InstanceChunk; }
+
         void _PrepareDrawItems();
 
         std::vector<Object*> GetDrawObjects() const override { return m_VisibleObjs; }
@@ -122,6 +128,7 @@ namespace BlackPearl {
             const std::shared_ptr<Node>& rootNode,
             Scene* Scene,
             const IView& view) override;
+        virtual std::vector<DrawItem>  GetDrawItems()const override { return m_InstancesToDraw; }
 
         const DrawItem* GetNextItem() override;
     private:

@@ -37,8 +37,8 @@ namespace BlackPearl {
         m_ShadowSampler = m_Device->createSampler(samplerDesc);
 
         //TODO::
-       // m_ForwardViewCB = m_Device->createBuffer(RHIUtils::CreateVolatileConstantBufferDesc(sizeof(ForwardShadingViewConstants), "ForwardShadingViewConstants", params.numConstantBufferVersions));
-       // m_ForwardLightCB = m_Device->createBuffer(RHIUtils::CreateVolatileConstantBufferDesc(sizeof(ForwardShadingLightConstants), "ForwardShadingLightConstants", params.numConstantBufferVersions));
+        //m_ForwardViewCB = m_Device->createBuffer(RHIUtils::CreateVolatileConstantBufferDesc(sizeof(ForwardShadingViewConstants), "ForwardShadingViewConstants", params.numConstantBufferVersions));
+        //m_ForwardLightCB = m_Device->createBuffer(RHIUtils::CreateVolatileConstantBufferDesc(sizeof(ForwardShadingLightConstants), "ForwardShadingLightConstants", params.numConstantBufferVersions));
 
         m_ViewBindingLayout = CreateViewBindingLayout();
         m_ViewBindingSet = CreateViewBindingSet();
@@ -105,6 +105,16 @@ namespace BlackPearl {
     }
     void BasePassRenderer::SetupInputBuffers(const BufferGroup* buffers, GraphicsState& state)
     {
+        state.vertexBuffers = {
+        { buffers->vertexBuffer, 0, buffers->getVertexBufferRange(VertexAttribute::Position).byteOffset },
+        { buffers->vertexBuffer, 1, buffers->getVertexBufferRange(VertexAttribute::PrevPosition).byteOffset },
+        { buffers->vertexBuffer, 2, buffers->getVertexBufferRange(VertexAttribute::TexCoord1).byteOffset },
+        { buffers->vertexBuffer, 3, buffers->getVertexBufferRange(VertexAttribute::Normal).byteOffset },
+        { buffers->vertexBuffer, 4, buffers->getVertexBufferRange(VertexAttribute::Tangent).byteOffset },
+        { buffers->instanceBuffer, 5, 0 }
+        };
+
+        state.indexBuffer = { buffers->indexBuffer, Format::R32_UINT, 0 };
     }
 
 
@@ -164,7 +174,15 @@ namespace BlackPearl {
 
     BindingSetHandle BasePassRenderer::CreateViewBindingSet()
     {
-        return BindingSetHandle();
+       BindingSetDesc bindingSetDesc;
+        bindingSetDesc.bindings = {
+            BindingSetItem::ConstantBuffer(1, m_ForwardViewCB),
+            BindingSetItem::ConstantBuffer(2, m_ForwardLightCB),
+            BindingSetItem::Sampler(1, m_ShadowSampler)
+        };
+        bindingSetDesc.trackLiveness = m_TrackLiveness;
+
+        return m_Device->createBindingSet(bindingSetDesc, m_ViewBindingLayout);
     }
 
     BindingLayoutHandle BasePassRenderer::CreateLightBindingLayout()

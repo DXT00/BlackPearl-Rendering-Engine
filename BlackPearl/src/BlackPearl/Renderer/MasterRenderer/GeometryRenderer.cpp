@@ -51,22 +51,14 @@ namespace BlackPearl {
                 currentDraw.instanceCount = 0;
             };
 
-        for (size_t i = 0; i < drawStrategy->GetDrawObjects().size(); i++)
+        for (const auto& item: drawStrategy->GetDrawItems())
         {
-
-        }
-
-
-
-
-        while (const DrawItem* item = drawStrategy->GetNextItem())
-        {
-            if (item->material == nullptr)
+            if (item.material == nullptr)
                 continue;
 
 
-            bool newBuffers = item->buffers != lastBuffers;
-            bool newMaterial = item->material != lastMaterial || item->cullMode != lastCullMode;
+            bool newBuffers = item.buffers != lastBuffers;
+            bool newMaterial = item.material != lastMaterial || item.cullMode != lastCullMode;
 
             if (newBuffers || newMaterial)
             {
@@ -75,18 +67,18 @@ namespace BlackPearl {
 
             if (newBuffers)
             {
-                pass->SetupInputBuffers( item->buffers, graphicsState);
+                pass->SetupInputBuffers(item.buffers, graphicsState);
 
-                lastBuffers = item->buffers;
+                lastBuffers = item.buffers;
                 stateValid = false;
             }
 
             if (newMaterial)
             {
-                drawMaterial = pass->SetupMaterial(item->material, item->cullMode, graphicsState);
+                drawMaterial = pass->SetupMaterial(item.material, item.cullMode, graphicsState);
 
-                lastMaterial = item->material;
-                lastCullMode = item->cullMode;
+                lastMaterial = item.material;
+                lastCullMode = item.cullMode;
                 stateValid = false;
             }
 
@@ -99,11 +91,11 @@ namespace BlackPearl {
                 }
 
                 DrawArguments args;
-                args.vertexCount = item->geometry->numIndices;
+                args.vertexCount = item.mesh->totalIndices;// numIndices;
                 args.instanceCount = 1;
-                args.startVertexLocation = item->mesh->vertexOffset + item->geometry->vertexOffsetInMesh;
-                args.startIndexLocation = item->mesh->indexOffset + item->geometry->indexOffsetInMesh;
-                args.startInstanceLocation = item->instance->GetInstanceIndex();
+                args.startVertexLocation = item.mesh->vertexOffset;// +item.geometry.vertexOffsetInMesh;
+                args.startIndexLocation = item.mesh->indexOffset;// +item.geometry.indexOffsetInMesh;
+                args.startInstanceLocation = 0;// item.instance.GetInstanceIndex();
 
                 if (currentDraw.instanceCount > 0 &&
                     currentDraw.startIndexLocation == args.startIndexLocation &&
@@ -113,7 +105,7 @@ namespace BlackPearl {
                 }
                 else
                 {
-                    flushDraw(item->material);
+                    flushDraw(item.material);
 
                     currentDraw = args;
                 }
@@ -124,5 +116,8 @@ namespace BlackPearl {
 
         if (materialEvents && eventMaterial)
             commandList->endMarker();
+        
+
+           
     }
 }

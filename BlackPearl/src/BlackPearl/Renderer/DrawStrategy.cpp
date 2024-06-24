@@ -3,6 +3,7 @@
 #include "BlackPearl/Renderer/CullingManager.h"
 #include "BlackPearl/Component/MeshRendererComponent/MeshRenderer.h"
 
+
 namespace BlackPearl {
 	extern CullingManager* g_cullingManager;
 	const DrawItem* PassthroughDrawStrategy::GetNextItem()
@@ -43,12 +44,15 @@ namespace BlackPearl {
 			{
 				// 一个DrawItem 对应一个mesh
 				DrawItem item;
-				item.instance = meshInstance;
-				item.mesh = mesh;
-				item.geometry = geometry.get();
-				item.material = geometry->material.get();
+				//item.instance = meshInstance;
+				item.mesh = mesh.get();
+				//item.geometry = geometry.get();
+				item.material = mesh->material.get();
 				item.buffers = item.mesh->buffers.get();
-				item.cullMode = (item.material->doubleSided) ?
+				item.cullMode = (item.material->GetProps().isDoubleSided) ? RasterCullMode::None : RasterCullMode::Back;
+				item.distanceToCamera = 0;
+
+				m_InstanceChunk.push_back(item);
 			}
 
 

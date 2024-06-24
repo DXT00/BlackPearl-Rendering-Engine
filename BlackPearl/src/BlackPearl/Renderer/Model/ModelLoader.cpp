@@ -871,8 +871,6 @@ namespace BlackPearl {
 	{
 		auto buffers = mesh->buffers;
 
-
-
 		BufferDesc bufferDescIndex;
 		bufferDescIndex.isIndexBuffer = true;
 		bufferDescIndex.byteSize = buffers->indexData.size() * sizeof(uint32_t);
@@ -881,8 +879,6 @@ namespace BlackPearl {
 		bufferDescIndex.canHaveRawViews = true;
 		bufferDescIndex.format = Format::R32_UINT;
 		bufferDescIndex.isAccelStructBuildInput = false;
-
-
 
 		BufferDesc bufferDesc;
 		bufferDesc.isVertexBuffer = true;
@@ -927,16 +923,19 @@ namespace BlackPearl {
 			AppendBufferRange(buffers->getVertexBufferRange(VertexAttribute::JointIndices),
 				buffers->jointIdData.size() * sizeof(buffers->jointIdData[0]), bufferDesc.byteSize);
 		}
+
 		if (!buffers->jointId1Data.empty())
 		{
 			AppendBufferRange(buffers->getVertexBufferRange(VertexAttribute::JointIndices),
 				buffers->jointId1Data.size() * sizeof(buffers->jointId1Data[0]), bufferDesc.byteSize);
 		}
+
 		if (!buffers->jointId2Data.empty())
 		{
 			AppendBufferRange(buffers->getVertexBufferRange(VertexAttribute::JointIndices),
 				buffers->jointId2Data.size() * sizeof(buffers->jointId2Data[0]), bufferDesc.byteSize);
 		}
+
 		if (!buffers->jointWeightData.empty())
 		{
 			AppendBufferRange(buffers->getVertexBufferRange(VertexAttribute::JointWeights),
