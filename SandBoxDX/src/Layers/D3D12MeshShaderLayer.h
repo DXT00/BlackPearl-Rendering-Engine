@@ -14,7 +14,7 @@ public:
 		std::shared_ptr<BlackPearl::Shader> shader(DBG_NEW BlackPearl::Shader(""));
 		m_pDragonModel = DBG_NEW BlackPearl::Model("assets/models/meshletModel/Dragon_LOD0.bin", shader, false/*isAnimated*/, false/*verticesSorted*/, false/*createMeshlet*/, true/*isMeshletModel*/);
 
-		m_MainCamera->SetPosition(glm::vec3(0, 0, 0));//glm::vec3(0,1.387f,22.012f)
+		m_MainCamera->SetPosition(glm::vec3(0, 0, 0));//math::float3(0,1.387f,22.012f)
 		m_MainCamera->SetRotation(glm::vec3(0, -90, 0));
 		m_MainCamera->SetMoveSpeed(50.0f);
 		m_MainCamera->SetRotateSpeed(1.0f);

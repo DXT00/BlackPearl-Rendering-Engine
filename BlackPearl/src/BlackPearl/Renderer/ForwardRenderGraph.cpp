@@ -36,7 +36,7 @@ namespace BlackPearl {
 	void ForwardRenderGraph::_CreateRenderTagets()
 	{
 		m_RenderTargets = std::make_unique<RenderTargets>();
-		donut::math::int2 renderSize = donut::math::int2(Configuration::WindowWidth);
+		math::int2 renderSize = math::int2(Configuration::WindowWidth);
 		m_RenderTargets->Init(GetDevice(), renderSize, renderSize, true, true, Configuration::SwapchainCount);
 	}
 

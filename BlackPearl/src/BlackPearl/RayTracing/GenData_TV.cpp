@@ -23,7 +23,7 @@ namespace BlackPearl {
 		}
 	}
 
-	void GenData_TV::ParseColorData(std::map<std::shared_ptr<glm::vec3>, std::vector<size_t>> color2vec, std::vector<float>& packData)
+	void GenData_TV::ParseColorData(std::map<std::shared_ptr<math::float3>, std::vector<size_t>> color2vec, std::vector<float>& packData)
 	{
 		for (auto pair : color2vec)
 		{
@@ -32,7 +32,7 @@ namespace BlackPearl {
 		}
 	}
 
-	void GenData_TV::ParseColor(std::shared_ptr <glm::vec3>color, std::vector<float>& packData)
+	void GenData_TV::ParseColor(std::shared_ptr <math::float3>color, std::vector<float>& packData)
 	{
 		auto targetPair = m_Color2Idx.find(color);
 		if (targetPair != m_Color2Idx.end())
@@ -44,9 +44,9 @@ namespace BlackPearl {
 
 		m_TexData.push_back(packData.size() / 4);
 	
-		packData.push_back(color->r);
-		packData.push_back(color->g);
-		packData.push_back(color->b);
+		packData.push_back(color->x);
+		packData.push_back(color->y);
+		packData.push_back(color->z);
 		packData.push_back(0);
 	}
 

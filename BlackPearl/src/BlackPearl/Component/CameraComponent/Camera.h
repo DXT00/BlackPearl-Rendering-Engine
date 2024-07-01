@@ -1,7 +1,7 @@
 #pragma once
-#include "glm/glm.hpp"
 #include<string>
 #include<initializer_list>
+#include "BlackPearl/Math/Math.h"
 #include "BlackPearl/Component/Component.h"
 #include "BlackPearl/RHI/DynamicModule.h"
 namespace BlackPearl {
@@ -32,9 +32,9 @@ namespace BlackPearl {
 					Yaw = 90.0f;
 
 				}
-				Front.x = cos(glm::radians(Yaw))*cos(glm::radians(Pitch));
-				Front.y = sin(glm::radians(Pitch));
-				Front.z = sin(glm::radians(Yaw)) * cos(glm::radians(Pitch));
+				Front.x = cos(math::radians(Yaw))*cos(math::radians(Pitch));
+				Front.y = sin(math::radians(Pitch));
+				Front.z = sin(math::radians(Yaw)) * cos(math::radians(Pitch));
 				Front = glm::normalize(Front);
 
 				Right = glm::normalize(glm::cross(Front, WorldUp));

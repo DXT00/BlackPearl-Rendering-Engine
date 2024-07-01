@@ -22,7 +22,8 @@
 
 #include "pch.h"
 #include "BlackPearl/Math/dnoutMath.h"
-namespace donut::math
+#include "vector.h"
+namespace BlackPearl::math
 {
     plane plane::normalize() const
     {
@@ -37,7 +38,11 @@ namespace donut::math
 
     constexpr bool plane::isempty()
     {
-        return all(normal == 0.f);
+        vector<bool, 3> eql(normal.x == 0.0f, normal.y == 0.0f, normal.z == 0.0f);
+        /*eql.x = normal.x == 0.0f;
+        eql.y = normal.y == 0.0f;
+        eql.z = normal.z == 0.0f;*/
+        return all(eql);
     }
 
     frustum::frustum(const frustum &f)
@@ -99,7 +104,7 @@ namespace donut::math
     }
 
 
-    bool frustum::intersectsWith(const BlackPearl::AABB& box) const
+    bool frustum::intersectsWith(const AABB& box) const
     {
         for (int i = 0; i < PLANES_COUNT; ++i)
         {
@@ -119,7 +124,7 @@ namespace donut::math
         return true;
     }
 
-    dm::float3 frustum::getCorner(int index) const
+    float3 frustum::getCorner(int index) const
     {
         const plane& a = (index & 1) ? planes[RIGHT_PLANE] : planes[LEFT_PLANE];
         const plane& b = (index & 2) ? planes[TOP_PLANE] : planes[BOTTOM_PLANE];
@@ -159,7 +164,7 @@ namespace donut::math
 
         for (int i = 0; i < PLANES_COUNT; i++)
         {
-            if (all(planes[i].normal == 0.f) && planes[i].distance < 0.f)
+            if ((planes[i].normal == float3(0.f)) && planes[i].distance < 0.f)
                 return true;
         }
 
@@ -175,7 +180,7 @@ namespace donut::math
 
         for (int i = 0; i < PLANES_COUNT; i++)
         {
-            if (all(planes[i].normal == 0.f) && planes[i].distance >= 0.f)
+            if ((planes[i].normal == float3(0.f)) && planes[i].distance >= 0.f)
                 return true;
         }
 
@@ -188,7 +193,7 @@ namespace donut::math
 
         for (int i = 0; i < PLANES_COUNT; i++)
         {
-            if (!(all(planes[i].normal == 0.f) && planes[i].distance >= 0.f))
+            if (!((planes[i].normal == float3(0.f)) && planes[i].distance >= 0.f))
                 return false;
         }
 

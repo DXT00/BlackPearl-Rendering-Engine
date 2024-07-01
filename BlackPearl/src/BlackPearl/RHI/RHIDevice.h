@@ -77,7 +77,7 @@ namespace BlackPearl {
 		virtual BindingSetHandle createBindingSet(const BindingSetDesc& desc, IBindingLayout* layout) = 0;
 		// virtual DescriptorTableHandle createDescriptorTable(IBindingLayout* layout) = 0;
 
-		// virtual void resizeDescriptorTable(IDescriptorTable* descriptorTable, uint32_t newSize, bool keepContents = true) = 0;
+		virtual void resizeDescriptorTable(IDescriptorTable* descriptorTable, uint32_t newSize, bool keepContents = true) = 0;
 		// virtual bool writeDescriptorTable(IDescriptorTable* descriptorTable, const BindingSetItem& item) = 0;
 
 		// //virtual rt::OpacityMicromapHandle createOpacityMicromap(const rt::OpacityMicromapDesc& desc) = 0;
@@ -96,7 +96,7 @@ namespace BlackPearl {
 
 		// virtual bool queryFeatureSupport(Feature feature, void* pInfo = nullptr, size_t infoSize = 0) = 0;
 
-		// virtual FormatSupport queryFormatSupport(Format format) = 0;
+		virtual FormatSupport queryFormatSupport(Format format) = 0;
 
 		 // Front-end for executeCommandLists(..., 1) for compatibility and convenience
 		uint64_t executeCommandList(ICommandList* commandList, CommandQueue executionQueue = CommandQueue::Graphics)

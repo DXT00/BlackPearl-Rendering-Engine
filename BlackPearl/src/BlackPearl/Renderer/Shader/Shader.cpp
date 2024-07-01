@@ -400,6 +400,18 @@ namespace BlackPearl {
 
 	}
 
+	void Shader::SetUniformVec3f(const std::string& name, const math::float3& value) const
+	{
+		glUniform3fv(glGetUniformLocation(m_RendererID, name.c_str()), 1, &value[0]);
+		GE_ERROR_JUDGE();
+
+	}
+	void Shader::SetUniformVec2f(const std::string& name, const math::float2& value) const
+	{
+		glUniform2fv(glGetUniformLocation(m_RendererID, name.c_str()), 1, &value[0]);
+		GE_ERROR_JUDGE();
+
+	}
 	void Shader::SetUniformVec2i(const std::string& name, const glm::ivec2& value) const
 	{
 		GLint location = glGetUniformLocation(m_RendererID, name.c_str());

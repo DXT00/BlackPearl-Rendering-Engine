@@ -22,7 +22,7 @@
 
 #include "pch.h"
 #include "BlackPearl/Math/dnoutMath.h"
-namespace donut::math
+namespace BlackPearl::math
 {
 	// Projection matrix implementations
 

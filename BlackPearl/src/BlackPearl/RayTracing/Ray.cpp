@@ -7,12 +7,12 @@ namespace BlackPearl {
 
 	Ray::Ray()
 	{
-		m_Origin = glm::vec3(0);
-		m_Dir = glm::vec3(0, 0, -1);
+		m_Origin = math::float3(0.0f);
+		m_Dir = math::float3(0, 0, -1);
 		m_tMax =FLT_MAX;
 	}
 
-	Ray::Ray(const glm::vec3 origin, const glm::vec3 dir)
+	Ray::Ray(const math::float3 origin, const math::float3 dir)
 	{
 		m_Origin = origin;
 		m_Dir = dir;
@@ -20,12 +20,12 @@ namespace BlackPearl {
 
 	}
 
-	void Ray::SetOrigin(const glm::vec3 origin)
+	void Ray::SetOrigin(const math::float3 origin)
 	{
 		m_Origin = origin;
 	}
 
-	void Ray::SetDir(const glm::vec3 dir)
+	void Ray::SetDir(const math::float3 dir)
 	{
 		m_Dir = dir;
 	}

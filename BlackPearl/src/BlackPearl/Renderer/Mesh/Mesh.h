@@ -96,14 +96,14 @@ namespace BlackPearl {
 		std::shared_ptr<BufferGroup> buffers;
 		//std::shared_ptr<MeshInfo> skinPrototype;
 		//std::vector<std::shared_ptr<MeshGeometry>> geometries;
-		donut::math::box3 objectSpaceBounds;
+		math::box3 objectSpaceBounds;
 		uint32_t indexOffset = 0;
 		uint32_t vertexOffset = 0;
 		uint32_t totalIndices = 0;
 		uint32_t totalVertices = 0;
 		int globalMeshIndex = 0;
 
-		std::shared_ptr<Material>    material= nullptr;
+		std::shared_ptr<Material>    material = nullptr;
 
 
 	public:

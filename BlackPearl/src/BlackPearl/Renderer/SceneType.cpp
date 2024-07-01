@@ -334,12 +334,12 @@ VertexAttributeDesc GetVertexAttributeDesc(VertexAttribute attribute, const char
     case VertexAttribute::Position:
     case VertexAttribute::PrevPosition:
         result.format = Format::RGB32_FLOAT;
-        result.elementStride = sizeof(donut::math::float3);
+        result.elementStride = sizeof(math::float3);
         break;
     case VertexAttribute::TexCoord1:
     case VertexAttribute::TexCoord2:
         result.format = Format::RG32_FLOAT;
-        result.elementStride = sizeof(donut::math::float2);
+        result.elementStride = sizeof(math::float2);
         break;
     case VertexAttribute::Normal:
     case VertexAttribute::Tangent:
@@ -383,27 +383,27 @@ const char* MaterialDomainToString(MaterialDomain domain)
     }
 }
 
-bool LightProbe::IsActive() const
-{
-    if (!enabled)
-        return false;
-    if (bounds.isempty())
-        return false;
-    if ((diffuseScale == 0.f || !diffuseMap) && (specularScale == 0.f || !specularMap))
-        return false;
-
-    return true;
-}
-
-void LightProbe::FillLightProbeConstants(LightProbeConstants& lightProbeConstants) const
-{
-}
+//bool LightProbe::IsActive() const
+//{
+//    if (!enabled)
+//        return false;
+//    if (bounds.isempty())
+//        return false;
+//    if ((diffuseScale == 0.f || !diffuseMap) && (specularScale == 0.f || !specularMap))
+//        return false;
+//
+//    return true;
+//}
+//
+//void LightProbe::FillLightProbeConstants(LightProbeConstants& lightProbeConstants) const
+//{
+//}
 
 void EMaterial::FillConstantBuffer(MaterialConstants& constants) const
 {
 }
 
-bool EMaterial::SetProperty(const std::string& name, const dm::float4& value)
+bool EMaterial::SetProperty(const std::string& name, const math::float4& value)
 {
     return false;
 }

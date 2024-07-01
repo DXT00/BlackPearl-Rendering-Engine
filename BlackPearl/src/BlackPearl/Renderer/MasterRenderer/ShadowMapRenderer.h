@@ -34,7 +34,7 @@ namespace BlackPearl {
 		std::shared_ptr<FrameBuffer> m_FrameBuffer;
 		glm::mat4 m_LightProjectionViewMatrix;
 		glm::mat4 m_LightProjection, m_LightView;
-		glm::vec3 m_LightPos;
+		math::float3 m_LightPos;
 		static int s_ShadowMapWidth;
 		static int s_ShadowMapHeight;
 

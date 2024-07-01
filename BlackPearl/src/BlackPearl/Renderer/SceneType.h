@@ -49,17 +49,17 @@ namespace BlackPearl
 
     struct InstanceData
     {
-        donut::math::uint padding;
-        donut::math::uint firstGeometryInstanceIndex; // index into global list of geometry instances. 
+        math::uint padding;
+        math::uint firstGeometryInstanceIndex; // index into global list of geometry instances. 
         // foreach (Instance)
         //     foreach(Geo) index++
-        donut::math::uint firstGeometryIndex;         // index into global list of geometries. 
+        math::uint firstGeometryIndex;         // index into global list of geometries. 
         // foreach(Mesh)
         //     foreach(Geo) index++
-        donut::math::uint numGeometries;
+        math::uint numGeometries;
 
-        donut::math::float3x4 transform;
-        donut::math::float3x4 prevTransform;
+        math::float3x4 transform;
+        math::float3x4 prevTransform;
     };
 
 
@@ -142,9 +142,9 @@ namespace BlackPearl
         std::shared_ptr<LoadedTexture> transmissionTexture; // see KHR_materials_transmission; undefined on specular-gloss materials
         // std::shared_ptr<LoadedTexture> thicknessTexture; // see KHR_materials_volume (not implemented yet)
         BufferHandle materialConstants;
-        donut::math::float3 baseOrDiffuseColor = 1.f; // metal-rough: base color, spec-gloss: diffuse color (if no texture present)
-        donut::math::float3 specularColor = 0.f; // spec-gloss: specular color
-        donut::math::float3 emissiveColor = 0.f;
+        math::float3 baseOrDiffuseColor = 1.f; // metal-rough: base color, spec-gloss: diffuse color (if no texture present)
+        math::float3 specularColor = 0.f; // spec-gloss: specular color
+        math::float3 emissiveColor = 0.f;
         float emissiveIntensity = 1.f; // additional multiplier for emissiveColor
         float metalness = 0.f; // metal-rough only
         float roughness = 0.f; // both metal-rough and spec-gloss
@@ -183,7 +183,7 @@ namespace BlackPearl
         // KHR_materials_volume - see https://github.com/KhronosGroup/glTF/tree/main/extensions/2.0/Khronos/KHR_materials_volume#properties
         float volumeThicknessFactor = 0.0f; // in path tracing this is only used to set "thinSurface == thicknessFactor != 0" with value otherwise ignored (since we get exact thickness)
         float volumeAttenuationDistance = FLT_MAX;
-        donut::math::float3 volumeAttenuationColor = 1.f;
+        math::float3 volumeAttenuationColor = 1.f;
 
         // Low tessellation geometry often has triangle (flat) normals that differ significantly from shading normals. This causes shading vs shadow discrepancy that exposes triangle edges. 
         // One way to mitigate this (other than having more detailed mesh) is to add additional shadowing falloff to hide the seam. 
@@ -195,7 +195,7 @@ namespace BlackPearl
 
         virtual ~EMaterial() = default;
         void FillConstantBuffer(struct MaterialConstants& constants) const;
-        bool SetProperty(const std::string& name, const dm::float4& value);
+        bool SetProperty(const std::string& name, const math::float4& value);
     };
 
 
@@ -220,12 +220,12 @@ namespace BlackPearl
         std::vector<uint32_t> indexData;
         //std::vector<float> vertexData; 不需要vertexData, 如果有骨骼的话 vector类型会不一样
         //最后通过writeBuffer 来写
-        std::vector<donut::math::float3> positionData;
-        std::vector<donut::math::float2> texcoord1Data;
-        std::vector<donut::math::float2> texcoord2Data;
-        std::vector<donut::math::float3> normalData;
-        std::vector<donut::math::float3> tangentData;
-        std::vector<donut::math::float3> bitangentData;
+        std::vector<math::float3> positionData;
+        std::vector<math::float2> texcoord1Data;
+        std::vector<math::float2> texcoord2Data;
+        std::vector<math::float3> normalData;
+        std::vector<math::float3> tangentData;
+        std::vector<math::float3> bitangentData;
 
         std::vector<uint32_t> jointIdData;
         std::vector<uint32_t> jointId1Data;
@@ -235,8 +235,8 @@ namespace BlackPearl
         std::vector<float> jointWeight1Data;
         std::vector<float> jointWeight2Data;
 
-       // std::vector<donut::math::vector<uint16_t, 4>> jointData;
-        //std::vector<donut::math::float4> weightData;
+       // std::vector<math::vector<uint16_t, 4>> jointData;
+        //std::vector<math::float4> weightData;
 
         [[nodiscard]] bool hasAttribute(VertexAttribute attr) const { return vertexBufferRanges[int(attr)].byteSize != 0; }
         BufferRange& getVertexBufferRange(VertexAttribute attr) { return vertexBufferRanges[int(attr)]; }
@@ -263,63 +263,63 @@ namespace BlackPearl
         BufferHandle ommIndexBuffer; // for use by applications
     };
 
-    struct MeshGeometry
-    {
-        std::shared_ptr<Material> material;
-        donut::math::box3 objectSpaceBounds;
-        uint32_t indexOffsetInMesh = 0;
-        uint32_t vertexOffsetInMesh = 0;
-        uint32_t numIndices = 0;
-        uint32_t numVertices = 0;
-        int globalGeometryIndex = 0;
+    //struct MeshGeometry
+    //{
+    //    std::shared_ptr<Material> material;
+    //    math::box3 objectSpaceBounds;
+    //    uint32_t indexOffsetInMesh = 0;
+    //    uint32_t vertexOffsetInMesh = 0;
+    //    uint32_t numIndices = 0;
+    //    uint32_t numVertices = 0;
+    //    int globalGeometryIndex = 0;
 
-        // (Debug) OMM buffers.
-        MeshGeometryDebugData debugData;
-        virtual ~MeshGeometry() = default;
-    };
+    //    // (Debug) OMM buffers.
+    //    MeshGeometryDebugData debugData;
+    //    virtual ~MeshGeometry() = default;
+    //};
 
 
 
-    class MeshInstance 
-    {
-    private:
-       // friend class SceneGraph;
-        int m_InstanceIndex = -1;
-        int m_GeometryInstanceIndex = -1;
+    //class MeshInstance 
+    //{
+    //private:
+    //   // friend class SceneGraph;
+    //    int m_InstanceIndex = -1;
+    //    int m_GeometryInstanceIndex = -1;
 
-    protected:
-        std::shared_ptr<MeshInfo> m_Mesh;
+    //protected:
+    //    std::shared_ptr<MeshInfo> m_Mesh;
 
-    public:
-        explicit MeshInstance(std::shared_ptr<MeshInfo> mesh)
-            : m_Mesh(std::move(mesh))
-        { }
+    //public:
+    //    explicit MeshInstance(std::shared_ptr<MeshInfo> mesh)
+    //        : m_Mesh(std::move(mesh))
+    //    { }
 
-        [[nodiscard]] const std::shared_ptr<MeshInfo>& GetMesh() const { return m_Mesh; }
-        [[nodiscard]] int GetInstanceIndex() const { return m_InstanceIndex; }
-        [[nodiscard]] int GetGeometryInstanceIndex() const { return m_GeometryInstanceIndex; }
-        [[nodiscard]] donut::math::box3 GetLocalBoundingBox() { return m_Mesh->objectSpaceBounds; }
-     /*   [[nodiscard]] std::shared_ptr<SceneGraphLeaf> Clone() override;
-        [[nodiscard]] SceneContentFlags GetContentFlags() const override;
-        bool SetProperty(const std::string& name, const dm::float4& value) override;*/
-    };
+    //    [[nodiscard]] const std::shared_ptr<MeshInfo>& GetMesh() const { return m_Mesh; }
+    //    [[nodiscard]] int GetInstanceIndex() const { return m_InstanceIndex; }
+    //    [[nodiscard]] int GetGeometryInstanceIndex() const { return m_GeometryInstanceIndex; }
+    //    [[nodiscard]] math::box3 GetLocalBoundingBox() { return m_Mesh->objectSpaceBounds; }
+    // /*   [[nodiscard]] std::shared_ptr<SceneGraphLeaf> Clone() override;
+    //    [[nodiscard]] SceneContentFlags GetContentFlags() const override;
+    //    bool SetProperty(const std::string& name, const dm::float4& value) override;*/
+    //};
 
-    struct LightProbe
-    {
-        std::string name;
-        TextureHandle diffuseMap;
-        TextureHandle specularMap;
-        TextureHandle environmentBrdf;
-        uint32_t diffuseArrayIndex = 0;
-        uint32_t specularArrayIndex = 0;
-        float diffuseScale = 1.f;
-        float specularScale = 1.f;
-        bool enabled = true;
-        donut::math::frustum bounds = donut::math::frustum::infinite();
+    //struct LightProbe
+    //{
+    //    std::string name;
+    //    TextureHandle diffuseMap;
+    //    TextureHandle specularMap;
+    //    TextureHandle environmentBrdf;
+    //    uint32_t diffuseArrayIndex = 0;
+    //    uint32_t specularArrayIndex = 0;
+    //    float diffuseScale = 1.f;
+    //    float specularScale = 1.f;
+    //    bool enabled = true;
+    //    math::frustum bounds = math::frustum::infinite();
 
-        [[nodiscard]] bool IsActive() const;
-        void FillLightProbeConstants(LightProbeConstants& lightProbeConstants) const;
-    };
+    //    [[nodiscard]] bool IsActive() const;
+    //    void FillLightProbeConstants(LightProbeConstants& lightProbeConstants) const;
+    //};
 
     inline IBuffer* BufferOrFallback(IBuffer* primary, IBuffer* secondary)
     {

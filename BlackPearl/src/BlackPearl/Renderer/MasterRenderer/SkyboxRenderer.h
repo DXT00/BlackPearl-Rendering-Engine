@@ -3,6 +3,7 @@
 #include <BlackPearl/Renderer/Shader/Shader.h>
 #include <BlackPearl/Renderer/Material/CubeMapTexture.h>
 #include <BlackPearl/Renderer/MasterRenderer/BasicRenderer.h>
+#include "BlackPearl/Renderer/Renderer.h"
 namespace BlackPearl {
 	class SkyboxRenderer:public BasicRenderer
 	{
@@ -11,8 +12,8 @@ namespace BlackPearl {
 
 		void Render(Object* skybox);
 		void Render(Object* skybox, float timeSecond);
-		void Render(Object* skybox,Renderer::SceneData* scene);
-		void Render(Object* skybox, float timeSecond, Renderer::SceneData* scene);
+		void Render(Object* skybox, SceneData* scene);
+		void Render(Object* skybox, float timeSecond, SceneData* scene);
 
 	private:
 		std::shared_ptr<Shader> m_SkyboxShader;

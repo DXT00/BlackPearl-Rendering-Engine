@@ -23,6 +23,7 @@
 #include "../Common/FormatInfo.h"
 #include <vulkan/vulkan.h>
 #include "BlackPearl/Core.h"
+#include "vulkan/vulkan_core.h"
 
 namespace BlackPearl {
 	template <typename T>
@@ -54,6 +55,20 @@ namespace BlackPearl {
 		}
 
 		return dimension;
+	}
+
+	static ETexture::TextureSubresourceViewType getTextureViewType(Format bindingFormat, Format textureFormat)
+	{
+		Format format = (bindingFormat == Format::UNKNOWN) ? textureFormat : bindingFormat;
+
+		const FormatInfo& formatInfo = getFormatInfo(format);
+
+		if (formatInfo.hasDepth)
+			return ETexture::TextureSubresourceViewType::DepthOnly;
+		else if (formatInfo.hasStencil)
+			return ETexture::TextureSubresourceViewType::StencilOnly;
+		else
+			return ETexture::TextureSubresourceViewType::AllAspects;
 	}
 	Device::Device(const DeviceDesc& desc)
 		:m_Context(desc.instance, desc.physicalDevice, desc.device, reinterpret_cast<VkAllocationCallbacks*>(desc.allocationCallbacks))
@@ -1108,6 +1123,14 @@ namespace BlackPearl {
 		return FramebufferHandle();
 	}
 
+	void Device::resizeDescriptorTable(IDescriptorTable* _descriptorTable, uint32_t newSize, bool keepContents)
+	{
+		assert(newSize <= static_cast<DescriptorTable*>(_descriptorTable)->layout->getBindlessDesc()->maxCapacity);
+		(void)_descriptorTable;
+		(void)newSize;
+		(void)keepContents;
+	}
+
 	bool Device::writeDescriptorTable(IDescriptorTable* _descriptorTable, const BindingSetItem& binding)
 	{
 		DescriptorTable* descriptorTable = static_cast<DescriptorTable*>(_descriptorTable);
@@ -1274,7 +1297,7 @@ namespace BlackPearl {
 					const auto range = binding.range.resolve(buffer->desc);
 
 					auto& bufferInfo = descriptorBufferInfo.emplace_back();
-					VkDescriptorBufferInfo bufferInfo{};
+					//VkDescriptorBufferInfo bufferInfo{};
 					
 					bufferInfo.buffer = buffer->buffer;
 					bufferInfo.offset = range.byteOffset;
@@ -1325,6 +1348,63 @@ namespace BlackPearl {
 		return true;
 	}
 
+	FormatSupport Device::queryFormatSupport(Format format)
+	{
+		VkFormat vulkanFormat = VkUtil::convertFormat(format);
+
+		VkFormatProperties props;
+		//m_Context.physicalDevice.getFormatProperties(vk::Format(vulkanFormat), &props);
+		//TODO::
+		FormatSupport result = FormatSupport::None;
+
+		//if (props.bufferFeatures)
+		//	result = result | FormatSupport::Buffer;
+
+		//if (format == Format::R32_UINT || format == Format::R16_UINT) {
+		//	// There is no explicit bit in vk::FormatFeatureFlags for index buffers
+		//	result = result | FormatSupport::IndexBuffer;
+		//}
+
+		//if (props.bufferFeatures & vk::FormatFeatureFlagBits::eVertexBuffer)
+		//	result = result | FormatSupport::VertexBuffer;
+
+		//if (props.optimalTilingFeatures)
+		//	result = result | FormatSupport::Texture;
+
+		//if (props.optimalTilingFeatures & vk::FormatFeatureFlagBits::eDepthStencilAttachment)
+		//	result = result | FormatSupport::DepthStencil;
+
+		//if (props.optimalTilingFeatures & vk::FormatFeatureFlagBits::eColorAttachment)
+		//	result = result | FormatSupport::RenderTarget;
+
+		//if (props.optimalTilingFeatures & vk::FormatFeatureFlagBits::eColorAttachmentBlend)
+		//	result = result | FormatSupport::Blendable;
+
+		//if ((props.optimalTilingFeatures & vk::FormatFeatureFlagBits::eSampledImage) ||
+		//	(props.bufferFeatures & vk::FormatFeatureFlagBits::eUniformTexelBuffer))
+		//{
+		//	result = result | FormatSupport::ShaderLoad;
+		//}
+
+		//if (props.optimalTilingFeatures & vk::FormatFeatureFlagBits::eSampledImageFilterLinear)
+		//	result = result | FormatSupport::ShaderSample;
+
+		//if ((props.optimalTilingFeatures & vk::FormatFeatureFlagBits::eStorageImage) ||
+		//	(props.bufferFeatures & vk::FormatFeatureFlagBits::eStorageTexelBuffer))
+		//{
+		//	result = result | FormatSupport::ShaderUavLoad;
+		//	result = result | FormatSupport::ShaderUavStore;
+		//}
+
+		//if ((props.optimalTilingFeatures & vk::FormatFeatureFlagBits::eStorageImageAtomic) ||
+		//	(props.bufferFeatures & vk::FormatFeatureFlagBits::eStorageTexelBufferAtomic))
+		//{
+		//	result = result | FormatSupport::ShaderAtomic;
+		//}
+
+		return result;
+	}
+
 	EventQueryHandle Device::createEventQuery()
 	{
 		EventQuery* query = new EventQuery();
@@ -1372,19 +1452,7 @@ namespace BlackPearl {
 	}
 
 
-	static ETexture::TextureSubresourceViewType getTextureViewType(Format bindingFormat, Format textureFormat)
-	{
-		Format format = (bindingFormat == Format::UNKNOWN) ? textureFormat : bindingFormat;
-
-		const FormatInfo& formatInfo = getFormatInfo(format);
-
-		if (formatInfo.hasDepth)
-			return ETexture::TextureSubresourceViewType::DepthOnly;
-		else if (formatInfo.hasStencil)
-			return ETexture::TextureSubresourceViewType::StencilOnly;
-		else
-			return ETexture::TextureSubresourceViewType::AllAspects;
-	}
+	
 
 	BindingSetHandle Device::createBindingSet(const BindingSetDesc& desc, IBindingLayout* _layout)
 	{

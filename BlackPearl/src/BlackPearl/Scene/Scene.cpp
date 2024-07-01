@@ -33,7 +33,7 @@ namespace BlackPearl {
 		SingleNode* singleNode = DBG_NEW SingleNode(obj);
 		AddNode(singleNode);
 		m_ObjectList.push_back(obj);
-
+		PrimitiveOctree->AddElement(PrimitiveOctreeNode());
 	}
 
 	void Scene::AddNode(Node* node)

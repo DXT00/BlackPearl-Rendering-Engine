@@ -5,7 +5,6 @@
 #include "DirectXMesh.h"
 #include "BlackPearl/Renderer/Mesh/MeshletConfig.h"
 #include "BlackPearl/RHI/D3D12RHI/D3D12VertexBuffer.h"
-
 using namespace DirectX;
 namespace BlackPearl {
     
@@ -27,14 +26,29 @@ namespace BlackPearl {
         12, // Bitangent
     };
 
-    D3D12ModelLoader::D3D12ModelLoader(bool isMeshletModel)
+    D3D12ModelLoader::D3D12ModelLoader()
     {
-        m_IsMeshletModel = isMeshletModel;
+        //m_IsMeshletModel = isMeshletModel;
 
     }
     
     D3D12ModelLoader::~D3D12ModelLoader()
     {
+    }
+
+    Model* D3D12ModelLoader::LoadModel(const std::string& path, const ModelDesc& desc)
+    {
+        m_IsMeshletModel = desc.bIsMeshletModel;
+        Model* model = DBG_NEW Model(path, desc);
+        std::vector<std::shared_ptr<Mesh>> meshes;
+        if (desc.bCreateMeshlet && !desc.bIsMeshletModel) {
+            m_MeshletGenerator = std::make_shared<MeshletGenerator>();
+            m_MeshletGenerator->Process(meshes, desc.options);
+        }
+        //m_ModelLoader = DBG_NEW D3D12ModelLoader(desc.bIsMeshletModel);
+        Load(meshes, m_BoundingSphere, path);
+        model->meshes = meshes;
+        return model;
     }
 
     void D3D12ModelLoader::Load(std::vector<std::shared_ptr<Mesh>>& output_meshes, BoundingSphere& bounding_sphere, const std::string& path) {

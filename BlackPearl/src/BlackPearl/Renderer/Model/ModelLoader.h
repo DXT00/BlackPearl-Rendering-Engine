@@ -8,6 +8,8 @@
 #include "assimp/scene.h"
 
 #include "BlackPearl/Animation/Bone.h"
+#include "BlackPearl/Renderer/Model/Model.h"
+
 namespace BlackPearl
 {
     class ModelLoader
@@ -21,10 +23,10 @@ namespace BlackPearl
         virtual ~ModelLoader();
 
         virtual void RegisterDeviceManager(DeviceManager* deviceManager);
-        virtual void Load(std::vector<std::shared_ptr<Mesh>>& output_meshes, BoundingSphere& bounding_sphere, const std::string& path) {};
-		Model* LoadModel(const std::string& path, const ModelDesc& desc);
+		virtual Model* LoadModel(const std::string& path, const ModelDesc& desc);
 
-    
+		std::vector<glm::mat4>  CalculateBoneTransform(float timeInSecond, ModelDesc& desc);
+
     private:
 		void ProcessNode(aiNode* node, const aiScene* scene);
 		std::shared_ptr<Mesh> ProcessMesh(aiMesh* aimesh);
@@ -43,37 +45,32 @@ namespace BlackPearl
 		/*Bones*/
 		void LoadBones(aiMesh* aimesh);
 		std::shared_ptr<Material> LoadMaterial(aiMaterial* aiMaterial);
-		std::vector<glm::mat4>  CalculateBoneTransform(float timeInSecond);
-		void ReadHierarchy(float timeInDurationSecond, aiNode* node, glm::mat4 parentTransform);
+		void ReadHierarchy(float timeInDurationSecond, aiNode* node, glm::mat4 parentTransform,  ModelDesc& desc);
 
 		aiNodeAnim* FindNode(std::string nodeName, aiAnimation* animation);
 		glm::mat4 AiMatrix4ToMat4(aiMatrix4x4 aiMatrix);
 		glm::mat4 AiMatrix4ToMat4(aiMatrix3x3 aiMatrix);
 
 		/*Interpolate*/
-		glm::vec3    CalculateInterpolatePosition(float timeInDurationSecond, aiNodeAnim* nodeAnim);
+		math::float3    CalculateInterpolatePosition(float timeInDurationSecond, aiNodeAnim* nodeAnim);
 		aiQuaternion CalculateInterpolateRotation(float timeInDurationSecond, aiNodeAnim* nodeAnim);
-		glm::vec3    CalculateInterpolateScale(float timeInDurationSecond, aiNodeAnim* nodeAnim);
+		math::float3    CalculateInterpolateScale(float timeInDurationSecond, aiNodeAnim* nodeAnim);
     
 		uint32_t FindRotation(float AnimationTime, const aiNodeAnim* nodeAnim);
 		uint32_t FindScaling(float AnimationTime, const aiNodeAnim* nodeAnim);
     
-		void UpdateAABB(const donut::math::float3& pos);
+		void UpdateAABB(const math::float3& pos);
 
 	private:
 		void CreateMeshBuffers(std::shared_ptr<Mesh>& mesh);
+		void LoadAnimationInfo();
 
 	private:
 		std::string m_Directory;
 		Assimp::Importer m_Importer;
 
-		/*Bones*/
-		uint32_t m_BoneCount = 0;
-		/*store every vertex's jointId and weight*/
-		std::vector<VertexBoneData> m_BoneDatas;
 
-		std::unordered_map<std::string, int> m_BoneNameToIdex;
-		std::vector<Bone> m_Bones;
+		
 		const aiScene* m_Scene;
 		std::string m_Path;
 		//aiMatrix4x4 m_GlobalInverseTransform;

@@ -4,13 +4,16 @@
 #include "BlackPearl/Config.h"
 #include "glm/glm.hpp"
 #include "BlackPearl/Renderer/Model/Model.h"
+#include "BlackPearl/Renderer/Model/ModelLoader.h"
 
 namespace BlackPearl {
+	extern ModelLoader* g_modelLoader;
+
 	void AnimatedModelRenderer::Render(Object* animatedModel, float timeInSecond)
 	{
 
 		std::shared_ptr<Model> animatedMmodel = animatedModel->GetComponent<MeshRenderer>()->GetModel();
-		std::vector<glm::mat4> boneFinalTransforms = animatedMmodel->CalculateBoneTransform(timeInSecond);
+		std::vector<glm::mat4> boneFinalTransforms = g_modelLoader->CalculateBoneTransform(timeInSecond, animatedMmodel->desc);
 		m_AnimatedShader->Bind();
 		GE_ASSERT(boneFinalTransforms.size() <= Configuration::MaxJointsCount, "Joints conut larger than MaxJointCounts!");
 		for (int i = 0; i < boneFinalTransforms.size(); i++)
@@ -27,7 +30,7 @@ namespace BlackPearl {
 	void AnimatedModelRenderer::Render(Object* animatedModel, float timeInSecond, std::shared_ptr<Shader> shader)
 	{
 		std::shared_ptr<Model> animatedMmodel = animatedModel->GetComponent<MeshRenderer>()->GetModel();
-		std::vector<glm::mat4> boneFinalTransforms = animatedMmodel->CalculateBoneTransform(timeInSecond);
+		std::vector<glm::mat4> boneFinalTransforms = g_modelLoader->CalculateBoneTransform(timeInSecond, animatedMmodel->desc);
 		shader->Bind();
 		GE_ASSERT(boneFinalTransforms.size() <= Configuration::MaxJointsCount, "Joints conut larger than MaxJointCounts!");
 		for (int i = 0; i < boneFinalTransforms.size(); i++)
@@ -39,10 +42,10 @@ namespace BlackPearl {
 		DrawObject(animatedModel, shader);
 	}
 
-	void AnimatedModelRenderer::Render(Object* animatedModel, float timeInSecond, Renderer::SceneData* scene)
+	void AnimatedModelRenderer::Render(Object* animatedModel, float timeInSecond, SceneData* scene)
 	{
 		std::shared_ptr<Model> animatedMmodel = animatedModel->GetComponent<MeshRenderer>()->GetModel();
-		std::vector<glm::mat4> boneFinalTransforms = animatedMmodel->CalculateBoneTransform(timeInSecond);
+		std::vector<glm::mat4> boneFinalTransforms = g_modelLoader->CalculateBoneTransform(timeInSecond, animatedMmodel->desc);
 		m_AnimatedShader->Bind();
 		GE_ASSERT(boneFinalTransforms.size() <= Configuration::MaxJointsCount, "Joints conut larger than MaxJointCounts!");
 		for (int i = 0; i < boneFinalTransforms.size(); i++)
@@ -55,10 +58,10 @@ namespace BlackPearl {
 		m_AnimatedShader->Unbind();
 	}
 
-	void AnimatedModelRenderer::Render(Object* animatedModel, float timeInSecond, std::shared_ptr<Shader> shader, Renderer::SceneData* scene)
+	void AnimatedModelRenderer::Render(Object* animatedModel, float timeInSecond, std::shared_ptr<Shader> shader, SceneData* scene)
 	{
 		std::shared_ptr<Model> animatedMmodel = animatedModel->GetComponent<MeshRenderer>()->GetModel();
-		std::vector<glm::mat4> boneFinalTransforms = animatedMmodel->CalculateBoneTransform(timeInSecond);
+		std::vector<glm::mat4> boneFinalTransforms = g_modelLoader->CalculateBoneTransform(timeInSecond, animatedMmodel->desc);
 		shader->Bind();
 		GE_ASSERT(boneFinalTransforms.size() <= Configuration::MaxJointsCount, "Joints conut larger than MaxJointCounts!");
 		for (int i = 0; i < boneFinalTransforms.size(); i++)

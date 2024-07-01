@@ -21,6 +21,7 @@
 #include "BlackPearl/Map/MapManager.h"
 #include "BlackPearl/Node/BatchNode.h"
 #include "BlackPearl/Renderer/DeviceManager.h"
+#include "BlackPearl/Math/Math.h"
 #include <WinUser.h>
 
 using namespace std::chrono;
@@ -129,7 +130,7 @@ namespace BlackPearl {
 		Object* CreateQuad(const std::string& shaderPath = "assets/shaders/Quad.glsl", const std::string& texturePath = "", const std::string& name = "Quad");
 
 		Object* CreateLightProbe(ProbeType type, const std::string& shaderPath = "assets/shaders/lightProbes/lightProbe.glsl", const std::string& texturePath = "", const std::string& name = "LightProbe");
-		Object* CreateProbeGrid(MapManager* mapManager, ProbeType type, glm::vec3 probeNums, glm::vec3 offsets, float space);
+		Object* CreateProbeGrid(MapManager* mapManager, ProbeType type, math::float3 probeNums, math::float3 offsets, float space);
 		MainCamera* CreateCamera(const std::string& name = "Camera");
 		BatchNode* CreateBatchNode(std::vector<Object*> objs, bool dynamic, const std::string& name = "BatchNode");
 
@@ -264,7 +265,7 @@ namespace BlackPearl {
 
 		LightSources* m_LightSources;
 		ImGui::FileBrowser m_fileDialog;
-		glm::vec4 m_BackgroundColor = { 0.0f,0.0f,0.0f,0.0f };
+		math::float4 m_BackgroundColor = { 0.0f,0.0f,0.0f,0.0f };
 
 		/*MainCamera and Input*/
 

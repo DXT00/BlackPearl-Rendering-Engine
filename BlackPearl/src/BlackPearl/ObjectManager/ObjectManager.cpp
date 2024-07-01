@@ -25,9 +25,11 @@
 #include "BlackPearl/Component/TerrainComponent/TerrainComponent.h"
 #include "BlackPearl/Scene/SceneBuilder.h"
 #include "BlackPearl/RHI/DynamicRHI.h"
+#include "BlackPearl/Math/Math.h"
+#include "BlackPearl/Renderer/Model/ModelLoader.h"
 namespace BlackPearl {
 
-
+	extern ModelLoader* g_modelLoader;
 	Object* ObjectManager::CreateEmpty(std::string name)
 	{
 		Object* obj = new Object(name);
@@ -98,7 +100,15 @@ namespace BlackPearl {
 			shader.reset(DBG_NEW Shader(shaderPath));
 			shader->Bind();
 		}
-		std::shared_ptr<Model> model(DBG_NEW Model(modelPath, shader, isAnimated, vertices_sorted, createMeshlet, isMeshletModel, options));
+		ModelDesc desc;
+		desc.bIsAnimated = isAnimated;
+		desc.bSortVerticces = vertices_sorted;
+		desc.bCreateMeshlet = createMeshlet;
+		desc.options = options;
+		desc.shader = shader;
+
+		Model* pModel = g_modelLoader->LoadModel(modelPath, desc);
+		std::shared_ptr<Model> model(pModel);// = std::shared_ptr<Model>(pModel);
 		Object* obj = CreateEmpty(name);
 		std::shared_ptr<BasicInfo> info = obj->AddComponent<BasicInfo>();
 		info->SetObjectType(ObjectType::OT_Model);
@@ -214,7 +224,7 @@ namespace BlackPearl {
 		};
 		std::shared_ptr<Mesh> mesh = std::make_shared<Mesh>(meshFilter->GetVertices(), meshFilter->GetIndices(), material, layout);
 		obj->AddComponent<MeshRenderer>(mesh);
-		AABB box(glm::vec3(10e-20f), glm::vec3(10e20f));
+		AABB box(math::float3(10e-20f), math::float3(10e20f), true);
 		obj->AddComponent<BoundingBox>(box);		
 		m_Objs.push_back(obj);
 		return obj;

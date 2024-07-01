@@ -38,8 +38,8 @@ namespace BlackPearl {
 			std::shared_ptr<Texture> depthTexture,
 			bool enableSSR);
 
-		std::vector<Object*> FindKnearProbes(glm::vec3 objPos, std::vector<Object*> probes,unsigned int k);
-		std::vector<unsigned int> FindKnearAreaProbes(glm::vec3 objPos, std::vector<Object*> probes, unsigned int k,MapManager* mapManager);
+		std::vector<Object*> FindKnearProbes(math::float3 objPos, std::vector<Object*> probes,unsigned int k);
+		std::vector<unsigned int> FindKnearAreaProbes(math::float3 objPos, std::vector<Object*> probes, unsigned int k,MapManager* mapManager);
 		
 		static float s_GICoeffs;
 		static float s_SSRGICoeffs;

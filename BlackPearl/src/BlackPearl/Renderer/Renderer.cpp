@@ -10,8 +10,8 @@
 #include "Mesh/Mesh.h"
 namespace BlackPearl {
 
-	SceneData * Renderer::s_SceneData = DBG_NEW SceneData;
-	SceneData* Renderer::s_PreSceneData = DBG_NEW SceneData;
+	SceneData * Renderer::s_SceneData = DBG_NEW SceneData();
+	SceneData* Renderer::s_PreSceneData = DBG_NEW SceneData();
 
 	Renderer::Renderer()
 	{
@@ -141,7 +141,7 @@ namespace BlackPearl {
 	{
 		return VariableRateShadingState();
 	}
-	donut::math::frustum SceneData::GetViewFrustum() const
+	math::frustum SceneData::GetViewFrustum() const
 	{
 		return m_ViewFrustum;
 	}

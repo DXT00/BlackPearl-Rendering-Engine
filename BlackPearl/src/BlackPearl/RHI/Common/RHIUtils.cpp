@@ -81,7 +81,7 @@ namespace BlackPearl
             {
                 for (auto& item : setDesc)
                 {
-                    BindingLayoutItem layoutItem{};
+                    RHIBindingLayoutItem layoutItem{};
                     layoutItem.slot = item.slot;
                     layoutItem.type = item.type;
                     if (item.type == RHIResourceType::RT_PushConstants)
@@ -92,7 +92,7 @@ namespace BlackPearl
 
         if (!bindingLayout)
         {
-            BindingLayoutDesc bindingLayoutDesc;
+            RHIBindingLayoutDesc bindingLayoutDesc;
             bindingLayoutDesc.visibility = visibility;
             bindingLayoutDesc.registerSpace = registerSpace;
             convertSetToLayout(bindingSetDesc.bindings, bindingLayoutDesc.bindings);

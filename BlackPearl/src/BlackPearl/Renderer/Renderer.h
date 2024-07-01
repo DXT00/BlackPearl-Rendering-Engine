@@ -12,13 +12,44 @@ namespace BlackPearl {
 		[[nodiscard]] virtual ViewportState GetViewportState() const = 0;
 		[[nodiscard]] virtual VariableRateShadingState GetVariableRateShadingState() const = 0;
 
-		[[nodiscard]] virtual donut::math::frustum GetViewFrustum() const = 0;
+		[[nodiscard]] virtual math::frustum GetViewFrustum() const = 0;
 		
 
 	};
 	class SceneData : public IView
 	{
 	public:
+		SceneData()
+			: ProjectionViewMatrix(glm::mat4(1.0)),
+			ViewMatrix(glm::mat4(1.0)),
+			ProjectionMatrix(glm::mat4(1.0)),
+			CameraPosition(glm::vec3(0.0)),
+			CameraRotation(glm::vec3(0.0)),
+			CameraFront(glm::vec3(0.0))
+			{
+
+		    }
+
+		SceneData(const glm::mat4& pvMat,
+			const glm::mat4& vMat,
+			const glm::mat4& pMat,
+			const glm::vec3& camPos,
+			const glm::vec3& camRot,
+			const glm::vec3& camFront,
+			const LightSources& lightSource)
+			:ProjectionViewMatrix(pvMat),
+			ViewMatrix(vMat),
+			ProjectionMatrix(pMat),
+			CameraPosition(camPos),
+			CameraRotation(camRot),
+			CameraFront(camFront),
+			LightSources(lightSource)
+		{
+
+
+		}
+
+
 		glm::mat4 ProjectionViewMatrix;
 		glm::mat4 ViewMatrix;
 		glm::mat4 ProjectionMatrix;
@@ -30,12 +61,12 @@ namespace BlackPearl {
 
 		virtual ViewportState GetViewportState() const override;
 		virtual VariableRateShadingState GetVariableRateShadingState() const override;
-		virtual donut::math::frustum GetViewFrustum() const override;
+		virtual math::frustum GetViewFrustum() const override;
 		RHIViewport m_Viewport;
 		RHIRect m_ScissorRect;
 		VariableRateShadingState m_ShadingRateState;
 
-		donut::math::frustum m_ViewFrustum = donut::math::frustum::empty();
+		math::frustum m_ViewFrustum = math::frustum::empty();
 
 	};
 

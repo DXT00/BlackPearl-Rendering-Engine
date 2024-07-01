@@ -2,7 +2,6 @@
 #include "BasePassRenderer.h"
 #include "BlackPearl/RHI/RHIInputLayout.h"
 #include "BlackPearl/RHI/Common/RHIUtils.h"
-#include "BlackPearl/Renderer/SceneType.h"
 
 namespace BlackPearl {
     BasePassRenderer::BasePassRenderer()
@@ -54,7 +53,7 @@ namespace BlackPearl {
         SceneData* view = Renderer::GetSceneData();
         SceneData* preView = Renderer::GetPreSceneData();
 
-        m_DrawStrategy->PrepareForView(std::make_shared<Node>(scene->GetRootNode()), scene, *view);
+        m_DrawStrategy->PrepareForView(scene, *view);
         RenderView(commandList, targetFramebuffer, view, preView, m_DrawStrategy, this);
 
    

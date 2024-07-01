@@ -71,11 +71,11 @@ namespace BlackPearl {
 	{
 		DrawObject(skybox);
 	}
-	void SkyboxRenderer::Render(Object* skybox, Renderer::SceneData* scene)
+	void SkyboxRenderer::Render(Object* skybox, SceneData* scene)
 	{
 		DrawObject(skybox, scene);
 	}
-	void SkyboxRenderer::Render(Object* skybox, float timeSecond, Renderer::SceneData* scene)
+	void SkyboxRenderer::Render(Object* skybox, float timeSecond, SceneData* scene)
 	{
 
 		float currentTimeS = fmod(timeSecond, m_TotalTimeIntervalS);

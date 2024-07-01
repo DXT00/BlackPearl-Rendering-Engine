@@ -66,11 +66,11 @@ namespace BlackPearl {
 
 	AABB BoundingBoxBuilder::SphereBoundingBox(Object* obj)
 	{
-		glm::vec3 center = obj->GetComponent<Transform>()->GetPosition();
-		glm::vec3 radius =glm::vec3(obj->GetComponent<SphereMeshFilter>()->GetRadius());
-		glm::vec3 minP = center - radius;
-		glm::vec3 maxP = center + radius;
-		return AABB(minP,maxP);
+		math::float3 center = Math::ToFloat3(obj->GetComponent<Transform>()->GetPosition());
+		math::float3 radius =math::float3(obj->GetComponent<SphereMeshFilter>()->GetRadius());
+		math::float3 minP = center - radius;
+		math::float3 maxP = center + radius;
+		return AABB(minP,maxP,true);
 	}
 
 	AABB BoundingBoxBuilder::TriangleBoundingBox(Object* obj)

@@ -93,7 +93,7 @@ namespace BlackPearl {
     {
         int width;
         int height;
-        donut::math::vector<int, 2> windowSize = Application::Get().GetWindow().GetCurWindowSize();
+        math::vector<int, 2> windowSize = Application::Get().GetWindow().GetCurWindowSize();
 
         if (windowSize.x == 0 || windowSize.y == 0)
         {

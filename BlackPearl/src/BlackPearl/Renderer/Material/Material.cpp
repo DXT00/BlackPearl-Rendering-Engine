@@ -8,39 +8,43 @@ namespace BlackPearl {
 	{
 		
 	}
-	Material::Material(const std::string shaderPath, const std::shared_ptr<TextureMaps>& textureMaps, glm::vec3 ambientColor, glm::vec3 diffuseColor, glm::vec3 specularColor, glm::vec3 emissionColor)
+	Material::Material(const std::string shaderPath, const std::shared_ptr<TextureMaps>& textureMaps, 
+		math::float3 ambientColor, 
+		math::float3 diffuseColor, 
+		math::float3 specularColor, 
+		math::float3 emissionColor)
 	{
 		m_Props = Props();
 		m_TextureMaps = textureMaps;
 		if (shaderPath != "") {
 
-			if (ambientColor.length() != 0)
+			//if (ambientColor.length() != 0)
 				m_MaterialColors.SetAmbientColor(ambientColor);
-			if (diffuseColor.length() != 0)
+			//if (diffuseColor.length() != 0)
 				m_MaterialColors.SetDiffuseColor(diffuseColor);
-			if (specularColor.length() != 0)
+			//if (specularColor.length() != 0)
 				m_MaterialColors.SetSpecularColor(specularColor);
-			if (emissionColor.length() != 0)
+			//if (emissionColor.length() != 0)
 				m_MaterialColors.SetEmissionColor(emissionColor);
 
 			//TODO:: 重构Shader，区分OpenGL和DirectX
 			if (DynamicRHI::g_RHIType == DynamicRHI::Type::OpenGL) {
 				m_Shader.reset(DBG_NEW Shader(shaderPath));
 				m_Shader->Bind();
-				if (ambientColor.length() != 0) {
+				//if (ambientColor.length() != 0) {
 					// .push_back(MaterialColor(MaterialColor::Type::AmbientColor, ambientColor));
 					m_Shader->SetUniformVec3f("u_Material.ambientColor", ambientColor);
-				}
-				if (diffuseColor.length() != 0) {					
+				//}
+				//if (diffuseColor.length() != 0) {					
 					m_Shader->SetUniformVec3f("u_Material.diffuseColor", diffuseColor);
-				}
-				if (specularColor.length() != 0) {
+				//}
+				//if (specularColor.length() != 0) {
 					m_Shader->SetUniformVec3f("u_Material.specularColor", specularColor);
-				}
-				if (emissionColor.length() != 0) {
+				//}
+				//if (emissionColor.length() != 0) {
 					m_Shader->SetUniformVec3f("u_Material.emissionColor", emissionColor);
 
-				}
+				//}
 			}
 		}
 
@@ -68,18 +72,18 @@ namespace BlackPearl {
 		m_MaterialColors.SetColor(color);
 	}
 
-	void Material::SetMaterialColorDiffuseColor(glm::vec3 color)
+	void Material::SetMaterialColorDiffuseColor(const math::float3& color)
 	{
 		m_MaterialColors.SetDiffuseColor(color);
 		//m_Type = Type::DIFFUSE;
 
 	}
-	void Material::SetMaterialColorSpecularColor(glm::vec3 color)
+	void Material::SetMaterialColorSpecularColor(const math::float3& color)
 	{
 		m_MaterialColors.SetSpecularColor(color);
 		//m_Type = Type::SPECULAR;
 	}
-	void Material::SetMaterialColorEmissionColor(glm::vec3 color)
+	void Material::SetMaterialColorEmissionColor(const math::float3& color)
 	{
 		m_MaterialColors.SetEmissionColor(color);
 		//m_Type = Type::EMISSION;

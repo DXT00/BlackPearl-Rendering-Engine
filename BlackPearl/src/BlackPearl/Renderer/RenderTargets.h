@@ -45,11 +45,11 @@ namespace BlackPearl {
 	//	TextureHandle CombinedHistoryClampRelax;         // all DenoiserDisocclusionThresholdMix combined together - used to tell TAA where to relax disocclusion test to minimize aliasing
 	//	HeapHandle Heap;
 
-	//	donut::math::int2 m_RenderSize;// size of render targets pre-DLSS
-	//	donut::math::int2 m_DisplaySize; // size of render targets post-DLSS
+	//	math::int2 m_RenderSize;// size of render targets pre-DLSS
+	//	math::int2 m_DisplaySize; // size of render targets post-DLSS
 
-	void Init(IDevice* device, donut::math::int2 renderSize, donut::math::int2 displaySize, bool enableMotionVectors, bool useReverseProjection, int backbufferCount);// override;
-	[[nodiscard]] bool IsUpdateRequired(donut::math::int2 renderSize, donut::math::int2 displaySize, donut::math::uint sampleCount = 1) const;
+	void Init(IDevice* device, math::int2 renderSize, math::int2 displaySize, bool enableMotionVectors, bool useReverseProjection, int backbufferCount);// override;
+	[[nodiscard]] bool IsUpdateRequired(math::int2 renderSize, math::int2 displaySize, math::uint sampleCount = 1) const;
 	void Clear(ICommandList* commandList); // override;
 	};
 

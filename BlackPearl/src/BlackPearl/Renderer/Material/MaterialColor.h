@@ -1,5 +1,6 @@
 #pragma once
 #include <glm/glm.hpp>
+#include "BlackPearl/Math/Math.h"
 namespace BlackPearl {
 
 	class MaterialColor
@@ -13,10 +14,10 @@ namespace BlackPearl {
 
 		};
 		struct Color {
-			glm::vec3 ambientColor = glm::vec3(0.0);
-			glm::vec3 diffuseColor = glm::vec3(0.0);
-			glm::vec3 specularColor = glm::vec3(0.0);
-			glm::vec3 emissionColor = glm::vec3(0.0);
+			math::float3 ambientColor = math::float3(0.0);
+			math::float3 diffuseColor = math::float3(0.0);
+			math::float3 specularColor = math::float3(0.0);
+			math::float3 emissionColor = math::float3(0.0);
 		//	float intensity = 1.0f;
 			
 		};
@@ -38,16 +39,16 @@ namespace BlackPearl {
 		}
 		//float GetIntensity() const { return m_Color.intensity; }
 		//void SetIntensity(float intensity) { m_Color.intensity = intensity; }
-		void SetAmbientColor(const glm::vec3 color) {
+		void SetAmbientColor(const math::float3 color) {
 			m_Color.ambientColor = color;
 		}
-		void SetDiffuseColor(const glm::vec3 color) {
+		void SetDiffuseColor(const math::float3 color) {
 			m_Color.diffuseColor = color;
 		}	
-		void SetSpecularColor(const glm::vec3 color) {
+		void SetSpecularColor(const math::float3 color) {
 			m_Color.specularColor = color;
 		}
-		void SetEmissionColor(const glm::vec3 color) {
+		void SetEmissionColor(const math::float3 color) {
 			m_Color.emissionColor = color;
 		}
 	private:

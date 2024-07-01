@@ -216,7 +216,7 @@ namespace BlackPearl {
 
 	void D3D12MeshShaderRenderer::UploadModel(Object* model)
 	{
-		std::vector<std::shared_ptr<Mesh>>& meshes = model->GetComponent<MeshRenderer>()->GetModel()->m_Meshes;
+		std::vector<std::shared_ptr<Mesh>>& meshes = model->GetComponent<MeshRenderer>()->GetModel()->meshes;
 		for (uint32_t i = 0; i < meshes.size(); ++i)
 		{
 			auto& m = meshes[i];
@@ -383,10 +383,10 @@ namespace BlackPearl {
 
 	void D3D12MeshShaderRenderer::UploadModel(Model* model)
 	{
-		// std::vector<Mesh>& meshes = model->GetComponent<MeshRenderer>()->GetModel()->m_Meshes;
-		for (uint32_t i = 0; i < model->m_Meshes.size(); ++i)
+		// std::vector<Mesh>& meshes = model->GetComponent<MeshRenderer>()->GetModel()->meshes;
+		for (uint32_t i = 0; i < model->meshes.size(); ++i)
 		{
-			auto& m = model->m_Meshes[i];
+			auto& m = model->meshes[i];
 			// Create committed D3D resources of proper sizes
 			auto indexDesc = CD3DX12_RESOURCE_DESC::Buffer(m->Indices_ml.size());
 			auto meshletDesc = CD3DX12_RESOURCE_DESC::Buffer(m->Meshlets.size() * sizeof(m->Meshlets[0]));
@@ -866,7 +866,7 @@ namespace BlackPearl {
 		m_CommandList->SetGraphicsRootConstantBufferView(0, m_ConstantBuffer->GetGPUVirtualAddress() + sizeof(SceneConstantBuffer) * m_FrameIndex);
 
 		for (auto& model : m_Scene->GetModels()) {
-			for (auto& mesh : model->m_Meshes) {
+			for (auto& mesh : model->meshes) {
 				m_CommandList->SetGraphicsRoot32BitConstant(1, mesh->IndexSize_ml, 0);
 				m_CommandList->SetGraphicsRootShaderResourceView(2, mesh->VertexResources[0]->GetGPUVirtualAddress());
 				m_CommandList->SetGraphicsRootShaderResourceView(3, mesh->MeshletResource->GetGPUVirtualAddress());

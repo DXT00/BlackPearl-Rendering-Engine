@@ -10,10 +10,11 @@ namespace BlackPearl {
 			Batch_Node,
 			Instance_Node,
 		};
+
 		Node(Type type):
 			m_Type(type){}
-		virtual void AddObj(Object* obj) = 0;
-		virtual void UpdateObjs() = 0;
+		virtual void AddObj(Object* obj) {};
+		virtual void UpdateObjs() {};
 
 		//virtual void UpdateTransform(const Transform& trans) = 0;
 
@@ -28,15 +29,12 @@ namespace BlackPearl {
 		std::string m_Name;
 		bool m_Dirty = false;
 	protected:
-
-
-		Node* m_Parent = nullptr;
 		std::vector<Object*> m_ChildNodes;
 		Type m_Type;
 
 	private:
-		friend class SceneGraph;
-		std::weak_ptr<SceneGraph> m_Graph;
+		//friend class SceneGraph;
+		//std::weak_ptr<SceneGraph> m_Graph;
 
 		Node* m_Parent = nullptr;
 		std::shared_ptr<Node> m_FirstChild;

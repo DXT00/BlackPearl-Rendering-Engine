@@ -28,7 +28,7 @@ namespace BlackPearl {
 		virtual bool IsKeyPressed(int keycode) = 0;
 		virtual bool IsMouseButtonPressed(int button) = 0;
 		virtual std::pair<float, float> GetMousePosition() = 0;
-		virtual donut::math::vector<int, 2> GetCurWindowSize() = 0;
+		virtual math::vector<int, 2> GetCurWindowSize() = 0;
 
 		inline unsigned int GetHeight() const { return m_Data.Height; }
 		inline unsigned int GetWidth() const { return m_Data.Width; }

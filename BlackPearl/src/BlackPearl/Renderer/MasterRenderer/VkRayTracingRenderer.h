@@ -98,15 +98,15 @@ namespace BlackPearl {
 
 		struct QuadVertex
 		{
-			glm::vec3 position;
-			glm::vec3 normal;
+			math::float3 position;
+			math::float3 normal;
 			glm::vec2 color;
 
 
 		};
 		struct Vertex {
 			glm::vec2 pos;
-			glm::vec3 color;
+			math::float3 color;
 			glm::vec2 texCoord;
 
 			static VkVertexInputBindingDescription getBindingDescription() {
@@ -156,8 +156,8 @@ namespace BlackPearl {
 		//};
 
 		struct Quad {
-			glm::vec3 position;
-			glm::vec3 normal;
+			math::float3 position;
+			math::float3 normal;
 			glm::vec2 color;
 
 			static VkVertexInputBindingDescription getBindingDescription() {

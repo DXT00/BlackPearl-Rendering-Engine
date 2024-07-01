@@ -17,7 +17,7 @@ public:
 
 		//m_CameraObj = CreateCamera();
 		//auto cameraComponent = m_CameraObj->GetComponent<BlackPearl::PerspectiveCamera>();
-		//cameraComponent->SetPosition(glm::vec3(0.0f, 0.0f, 8.0f));
+		//cameraComponent->SetPosition(math::float3(0.0f, 0.0f, 8.0f));
 		//m_CameraPosition = cameraComponent->GetPosition();
 		//m_CameraRotation.Yaw = cameraComponent->Yaw();
 		//m_CameraRotation.Pitch = cameraComponent->Pitch();
@@ -293,7 +293,7 @@ private:
 	float m_Spacing = 1.5;
 
 	//Camera
-	glm::vec3 m_CameraPosition = { 0.0f,0.0f,0.0f };
+	math::float3 m_CameraPosition = { 0.0f,0.0f,0.0f };
 	struct CameraRotation {
 		float Yaw;
 		float Pitch;

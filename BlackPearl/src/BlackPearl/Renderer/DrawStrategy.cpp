@@ -18,7 +18,7 @@ namespace BlackPearl {
 		//ÊÓ×¶²Ã¼ô
 
 	}
-	void InstancedOpaqueDrawStrategy::PrepareForView(const std::shared_ptr<Node>& rootNode, Scene* Scene, const IView& view)
+	void InstancedOpaqueDrawStrategy::PrepareForView(Scene* Scene, const IView& view)
 	{
 		std::vector<bool> OutVisibleNodes;
 		m_VisibleObjs =  g_cullingManager->CullOctree(Scene, view, OutVisibleNodes);
@@ -67,7 +67,7 @@ namespace BlackPearl {
 
 
 	//}
-	void TransparentDrawStrategy::PrepareForView(const std::shared_ptr<Node>& rootNode, Scene* Scene, const IView& view)
+	void TransparentDrawStrategy::PrepareForView(Scene* Scene, const IView& view)
 	{
 	}
 	const DrawItem* TransparentDrawStrategy::GetNextItem()

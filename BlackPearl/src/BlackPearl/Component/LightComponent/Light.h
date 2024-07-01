@@ -15,15 +15,15 @@ namespace BlackPearl {
 	public:
 		struct Props {
 
-			glm::vec3 ambient;
-			glm::vec3 diffuse;
-			glm::vec3 specular;
-			glm::vec3 emission;
+			math::float3 ambient;
+			math::float3 diffuse;
+			math::float3 specular;
+			math::float3 emission;
 			float intensity;
 			float area;
 			float shadowBias;
 			Props() : ambient({ 0.0f,0.0f,0.0f }), diffuse({ 1.0f,1.0f,1.0f }), specular({ 0.0f,0.0f,0.0f }), emission({0.0f,0.0f,0.0f}),intensity(1.0f), area(1.0f), shadowBias(0.08) {}
-			Props(glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular, glm::vec3 emission,float intensity, float area = 1.0, float shadowBias = 0.08 )
+			Props(math::float3 ambient, math::float3 diffuse, math::float3 specular, math::float3 emission,float intensity, float area = 1.0, float shadowBias = 0.08 )
 				: ambient(ambient), diffuse(diffuse), specular(specular),emission(emission),intensity(intensity), area(area), shadowBias(shadowBias){}
 			bool operator==(Props& rhs) const {
 				return (ambient == rhs.ambient &&
@@ -47,8 +47,8 @@ namespace BlackPearl {
 		virtual void Init() = 0;
 		static Light* Create(
 			LightType type,
-			const glm::vec3& position = { 2.2f,1.0f,2.0f },
-			const glm::vec3& direction = { -0.2f, -1.0f, -0.3f },
+			const math::float3& position = { 2.2f,1.0f,2.0f },
+			const math::float3& direction = { -0.2f, -1.0f, -0.3f },
 			const float cutOffAngle = glm::cos(glm::radians(20.0f)),
 			const float outterCutOffAngle = glm::cos(glm::radians(30.0f)),
 			Props props = Props()

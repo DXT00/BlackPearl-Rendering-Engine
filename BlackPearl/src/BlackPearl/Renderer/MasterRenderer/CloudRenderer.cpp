@@ -2,6 +2,7 @@
 #include "CloudRenderer.h"
 #include "BlackPearl/Component/CameraComponent/PerspectiveCamera.h"
 #include "BlackPearl/Renderer/Material/Texture3D.h"
+#include "BlackPearl/Math/Math.h"
 
 
 namespace BlackPearl {
@@ -14,8 +15,8 @@ namespace BlackPearl {
 	float CloudRenderer::s_colorOffset2 = 1.0;
 	float CloudRenderer::s_NoiseTexture3DSize = 128.0;
 	float CloudRenderer::s_densityOffset = 0.0;
-	glm::vec3 CloudRenderer::s_boundsMin = glm::vec3(-10.0, 20.0, -10.0);// glm::vec3(-10.0);
-	glm::vec3 CloudRenderer::s_boundsMax = glm::vec3(23.0,23.0,23.0);//glm::vec3(10.0);
+	math::float3 CloudRenderer::s_boundsMin = math::float3(-10.0, 20.0, -10.0);// glm::vec3(-10.0);
+	math::float3 CloudRenderer::s_boundsMax = math::float3(23.0,23.0,23.0);//glm::vec3(10.0);
 	float CloudRenderer::s_lightAbsorptionTowardSun = 1.0;
 	float CloudRenderer::s_densityMultiplier = 53.0;
 	CloudRenderer::CloudRenderer()

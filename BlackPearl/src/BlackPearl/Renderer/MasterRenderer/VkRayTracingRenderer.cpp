@@ -13,6 +13,7 @@
 #include "BlackPearl/RHI/RHIBindingLayoutDesc.h"
 #include "BlackPearl/Log.h"
 #include "BlackPearl/RHI/RHIBindingSet.h"
+#include "BlackPearl/Math/Math.h"
 #define GLM_FORCE_RADIANS
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>

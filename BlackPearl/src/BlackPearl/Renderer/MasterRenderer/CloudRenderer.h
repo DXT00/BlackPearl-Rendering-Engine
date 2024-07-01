@@ -31,8 +31,8 @@ namespace BlackPearl {
 		static float s_colorOffset2;
 		static float s_NoiseTexture3DSize;
 		static float s_densityOffset;
-		static glm::vec3 s_boundsMin;
-		static glm::vec3 s_boundsMax;
+		static math::float3 s_boundsMin;
+		static math::float3 s_boundsMax;
 		static float s_lightAbsorptionTowardSun;
 		static float s_densityMultiplier;
 

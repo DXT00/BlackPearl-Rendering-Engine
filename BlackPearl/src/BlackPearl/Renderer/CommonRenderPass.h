@@ -20,12 +20,12 @@ namespace BlackPearl {
     {
         IFramebuffer* targetFramebuffer = nullptr;
         RHIViewport targetViewport;
-        dm::box2 targetBox = dm::box2(0.f, 1.f);
+        math::box2 targetBox = math::box2(0.f, 1.f);
 
         ITexture* sourceTexture = nullptr;
         uint32_t sourceArraySlice = 0;
         uint32_t sourceMip = 0;
-        dm::box2 sourceBox = dm::box2(0.f, 1.f);
+        math::box2 sourceBox = math::box2(0.f, 1.f);
 
         BlitSampler sampler = BlitSampler::Linear;
         BlendState::RenderTarget blendState;

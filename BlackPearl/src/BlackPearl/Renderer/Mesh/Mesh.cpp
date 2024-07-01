@@ -23,7 +23,7 @@ namespace BlackPearl {
 		GE_SAVE_FREE(m_JointIndices1);
 		GE_SAVE_FREE(m_Weight);
 		GE_SAVE_FREE(m_Weight1);
-		m_Material.reset();
+		material.reset();
 
 		IndexResource.Reset();
 		MeshletResource.Reset();
@@ -219,7 +219,7 @@ namespace BlackPearl {
 		: m_Vertices(vertices),
 		m_Indices(indices),
 		m_IndicesSize(indicesSize),
-		m_Material(material),
+		material(material),
 		m_VertexBufferLayout(layout),
 		m_VerticeSize(verticesSize),
 		m_NeedTessellation(tessellation)
@@ -229,7 +229,7 @@ namespace BlackPearl {
 		Init(m_VerticeSize);
 		if (tessellation)
 			SetTessellation(verticesPerTessPatch);
-		g_materialManager->AddMaterial(m_Material);
+		g_materialManager->AddMaterial(material);
 
 	};
 
@@ -241,7 +241,7 @@ namespace BlackPearl {
 		const VertexBufferLayout& layout,
 		bool tessellation,
 		uint32_t verticesPerTessPatch)
-		: m_Material(material),
+		: material(material),
 		m_VertexBufferLayout(layout),
 		m_NeedTessellation(tessellation)
 	{
@@ -266,7 +266,7 @@ namespace BlackPearl {
 		Init(m_VerticeSize);
 		if (tessellation)
 			SetTessellation(verticesPerTessPatch);
-		g_materialManager->AddMaterial(m_Material);
+		g_materialManager->AddMaterial(material);
 
 	};
 
@@ -279,7 +279,7 @@ namespace BlackPearl {
 		m_VertexArray.reset(DBG_NEW VertexArray());
 		m_IndicesSize = indexBuffer->GetIndicesSize();
 		m_IndicesCount = m_IndicesSize / sizeof(uint32_t);
-		m_Material = material;
+		material = material;
 		m_NeedTessellation = tessellation;
 		m_Indices = const_cast<uint32_t*>(indexBuffer->GetIndicies());
 		m_VertexArray->SetIndexBuffer(indexBuffer);
@@ -304,6 +304,6 @@ namespace BlackPearl {
 
 		if (tessellation)
 			SetTessellation(verticesPerTessPatch);
-		g_materialManager->AddMaterial(m_Material);
+		g_materialManager->AddMaterial(material);
 	}
 }

@@ -21,7 +21,7 @@
 */
 #include "pch.h"
 #include "BlackPearl/Math/dnoutMath.h"
-namespace donut::math
+namespace BlackPearl::math
 {
 
     float3 sphericalToCartesian(float azimuth, float elevation, float distance)

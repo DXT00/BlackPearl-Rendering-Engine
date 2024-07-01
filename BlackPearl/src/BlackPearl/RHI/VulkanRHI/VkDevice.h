@@ -103,10 +103,10 @@ namespace BlackPearl {
         FramebufferHandle createHandleForNativeFramebuffer(VkRenderPass renderPass, VkFramebuffer framebuffer,
             const FramebufferDesc& desc, bool transferOwnership) override;
 
-
+        void resizeDescriptorTable(IDescriptorTable* descriptorTable, uint32_t newSize, bool keepContents = true) override;
         bool writeDescriptorTable(IDescriptorTable* descriptorTable, const BindingSetItem& item) override;
 
-
+        FormatSupport queryFormatSupport(Format format);
         // event queries
         EventQueryHandle createEventQuery() override;
         void setEventQuery(IEventQuery* query, CommandQueue queue) override;

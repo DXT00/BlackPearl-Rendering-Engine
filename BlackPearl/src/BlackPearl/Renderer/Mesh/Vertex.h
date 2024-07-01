@@ -3,11 +3,11 @@
 namespace BlackPearl {
 	struct Vertex {
 
-		donut::math::float3 position;
-		donut::math::float3 normal;
-		donut::math::float2 texCoords;
-		donut::math::float3 tangent;
-		donut::math::float3 bitTangent;
+		math::float3 position;
+		math::float3 normal;
+		math::float2 texCoords;
+		math::float3 tangent;
+		math::float3 bitTangent;
 
 	};
 

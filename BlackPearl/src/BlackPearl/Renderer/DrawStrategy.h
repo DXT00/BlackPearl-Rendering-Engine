@@ -26,7 +26,6 @@
 #include "BlackPearl/Renderer/Material/Material.h"
 #include "BlackPearl/Renderer/SceneType.h"
 #include "BlackPearl/Renderer/Renderer.h"
-#include "BlackPearl/Scene/SceneGraph.h"
 #include "BlackPearl/Scene/Scene.h"
 #include "BlackPearl/RHI/RHIDefinitions.h"
 
@@ -47,7 +46,6 @@ namespace BlackPearl {
     {
     public:
         virtual void PrepareForView(
-            const std::shared_ptr<Node>& rootNode,
             Scene* Scene,
             const IView& view) = 0;
 
@@ -68,7 +66,6 @@ namespace BlackPearl {
 
     public:
         void PrepareForView(
-            const std::shared_ptr<Node>& rootNode,
             Scene* Scene,
             const IView& view) override { }
 
@@ -84,9 +81,9 @@ namespace BlackPearl {
     class InstancedOpaqueDrawStrategy : public IDrawStrategy
     {
     private:
-        donut::math::frustum m_ViewFrustum;
+        math::frustum m_ViewFrustum;
         //TODO::
-        SceneGraphWalker m_Walker;
+       // SceneGraphWalker m_Walker;
         std::vector<DrawItem> m_InstanceChunk;
         std::vector<const DrawItem*> m_InstancePtrChunk;
         size_t m_ReadPtr = 0;
@@ -97,7 +94,6 @@ namespace BlackPearl {
     public:
 
         void PrepareForView(
-            const std::shared_ptr<Node>& rootNode,
             Scene* Scene,
             const IView& view) override;
 
@@ -125,7 +121,6 @@ namespace BlackPearl {
         bool DrawDoubleSidedMaterialsSeparately = true;
 
         void PrepareForView(
-            const std::shared_ptr<Node>& rootNode,
             Scene* Scene,
             const IView& view) override;
         virtual std::vector<DrawItem>  GetDrawItems()const override { return m_InstancesToDraw; }

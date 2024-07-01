@@ -22,9 +22,9 @@ namespace BlackPearl {
 					Triangle* tri = triObj->GetComponent<Triangle>();
 					if (tri) {
 						RayTraceScene::triangle rtTri;
-						rtTri.v0 = tri->GetPoints()[0].position;
-						rtTri.v1 = tri->GetPoints()[1].position;
-						rtTri.v2 = tri->GetPoints()[2].position;
+						rtTri.v0 = Math::ToVec3(tri->GetPoints()[0].position);
+						rtTri.v1 = Math::ToVec3(tri->GetPoints()[1].position);
+						rtTri.v2 = Math::ToVec3(tri->GetPoints()[2].position);
 						rtTri.materialIndex = matId;
 						rtTri.objIndex = objid;
 						triangles.push_back(rtTri);
@@ -108,8 +108,8 @@ namespace BlackPearl {
 				queue.pop();
 				if (bvhNode) {
 					RayTraceScene::bvhNode node;
-					node.min = bvhNode->GetRootBox().GetMinP();
-					node.max = bvhNode->GetRootBox().GetMaxP();
+					node.min = Math::ToVec3(bvhNode->GetRootBox().GetMinP());
+					node.max = Math::ToVec3(bvhNode->GetRootBox().GetMaxP());
 					if (bvhNode->IsLeaf()) {
 						node.objectIndex = bvhNode->GetLeafObj()->GetComponent<Triangle>()->Id;
 					}

@@ -1,14 +1,13 @@
 #include "pch.h"
 #include "ModelLoader.h"
 #include "BlackPearl/Renderer/Mesh/Vertex.h"
-#include "BlackPearl/Renderer/Model/Model.h"
 #include "BlackPearl/RHI/RHIBindingSet.h"
 #include "BlackPearl/Common/CommonFunc.h"
 #include <glm/gtc/matrix_transform.hpp>
 #include "glm/fwd.hpp"
 #include "glm/gtx/quaternion.hpp"
 namespace BlackPearl {
-	using namespace donut::math;
+	using namespace math;
 
     
     ModelLoader::ModelLoader()
@@ -89,7 +88,7 @@ namespace BlackPearl {
 
 		if (!m_Scene || m_Scene->mFlags == AI_SCENE_FLAGS_INCOMPLETE || !m_Scene->mRootNode) {
 			GE_CORE_ERROR("ERROR::ASSIMP:: {0}", m_Importer.GetErrorString())
-				return;
+				return nullptr;
 		}
 
 		m_Directory = path.substr(0, path.find_last_of('/'));
@@ -101,7 +100,7 @@ namespace BlackPearl {
 		m_GlobalInverseTransform = glm::inverse(ConvertMatrix(m_Scene->mRootNode->mTransformation));
 
 
-		m_BoneDatas.resize(m_VerticesNum);
+		m_CurrentModel->desc.animationInfo.boneDatas.resize(m_VerticesNum);
 
 
 		for (int m = 0; m < m_Scene->mNumMaterials; m++) {
@@ -111,6 +110,9 @@ namespace BlackPearl {
 
 		ProcessNode(m_Scene->mRootNode, m_Scene);
 
+		if (desc.bIsAnimated) {
+			LoadAnimationInfo();
+		}
 		return model;
 	}
 
@@ -126,15 +128,15 @@ namespace BlackPearl {
 			std::string name(bone->mName.data);
 			glm::mat4 meshToBoneTranform = ConvertMatrix(bone->mOffsetMatrix);
 
-			if (m_BoneNameToIdex.find(name) != m_BoneNameToIdex.end()) {
-				boneIdx = m_BoneNameToIdex[name];
+			if (m_CurrentModel->desc.animationInfo.boneNameToIdex.find(name) != m_CurrentModel->desc.animationInfo.boneNameToIdex.end()) {
+				boneIdx = m_CurrentModel->desc.animationInfo.boneNameToIdex[name];
 				//m_Bones[boneIdx].meshToBoneTranform = (meshToBoneTranform);
 			}
 			else {
-				m_BoneNameToIdex.insert(std::pair(name, m_BoneCount));
-				boneIdx = m_BoneCount;
-				m_Bones.push_back({ boneIdx,(meshToBoneTranform),glm::mat4(1.0) });
-				m_BoneCount++;
+				m_CurrentModel->desc.animationInfo.boneNameToIdex.insert(std::pair(name, m_CurrentModel->desc.animationInfo.boneCount));
+				boneIdx = m_CurrentModel->desc.animationInfo.boneCount;
+				m_CurrentModel->desc.animationInfo.bones.push_back({ boneIdx,(meshToBoneTranform),glm::mat4(1.0) });
+				m_CurrentModel->desc.animationInfo.boneCount++;
 			}
 
 			uint32_t numberOfVertex = bone->mNumWeights;
@@ -145,13 +147,13 @@ namespace BlackPearl {
 				/*weight of this bone to the vertex*/
 				float boneWeight = bone->mWeights[i].mWeight;
 
-				GE_ASSERT(m_BoneDatas[m_VerticesIdx + vertexIdx].currentPos < MAX_WEIGHT, "related bone's number larger than MAX_WEIGHT");
-				if (m_BoneDatas[m_VerticesIdx + vertexIdx].currentPos < MAX_WEIGHT) {
-					uint32_t row = m_BoneDatas[m_VerticesIdx + vertexIdx].currentPos / 4;
-					uint32_t col = m_BoneDatas[m_VerticesIdx + vertexIdx].currentPos % 4;
-					m_BoneDatas[m_VerticesIdx + vertexIdx].jointIdx[row][col] = boneIdx;
-					m_BoneDatas[m_VerticesIdx + vertexIdx].weights[row][col] = boneWeight;
-					m_BoneDatas[m_VerticesIdx + vertexIdx].currentPos++;
+				GE_ASSERT(m_CurrentModel->desc.animationInfo.boneDatas[m_VerticesIdx + vertexIdx].currentPos < MAX_WEIGHT, "related bone's number larger than MAX_WEIGHT");
+				if (m_CurrentModel->desc.animationInfo.boneDatas[m_VerticesIdx + vertexIdx].currentPos < MAX_WEIGHT) {
+					uint32_t row = m_CurrentModel->desc.animationInfo.boneDatas[m_VerticesIdx + vertexIdx].currentPos / 4;
+					uint32_t col = m_CurrentModel->desc.animationInfo.boneDatas[m_VerticesIdx + vertexIdx].currentPos % 4;
+					m_CurrentModel->desc.animationInfo.boneDatas[m_VerticesIdx + vertexIdx].jointIdx[row][col] = boneIdx;
+					m_CurrentModel->desc.animationInfo.boneDatas[m_VerticesIdx + vertexIdx].weights[row][col] = boneWeight;
+					m_CurrentModel->desc.animationInfo.boneDatas[m_VerticesIdx + vertexIdx].currentPos++;
 				}
 			}
 		}
@@ -183,7 +185,7 @@ namespace BlackPearl {
 
 		LoadMaterialColors(material, colors);
 
-		meshMaterial.reset(DBG_NEW Material(m_CurrentModel->shader, textures, colors));
+		meshMaterial.reset(DBG_NEW Material(m_CurrentModel->desc.shader, textures, colors));
 		meshMaterial->SetShininess(shininess);
 		return meshMaterial;
 	}
@@ -279,15 +281,16 @@ namespace BlackPearl {
 			texcoord1Data.push_back(texCoords);
 			vertex.texCoords = texCoords;
 
-			if (hasAnimation && m_BoneDatas.size() >= 0) {
+			if (hasAnimation && m_CurrentModel->desc.animationInfo.boneDatas.size() >= 0) {
 				uint32_t vertexIdx = m_VerticesIdx + i;
-				glmInsertVector(glm::u32vec4(m_BoneDatas[vertexIdx].jointIdx[0][0], m_BoneDatas[vertexIdx].jointIdx[0][1], m_BoneDatas[vertexIdx].jointIdx[0][2], m_BoneDatas[vertexIdx].jointIdx[0][3]), jointIdData);
-				glmInsertVector(glm::u32vec4(m_BoneDatas[vertexIdx].jointIdx[1][0], m_BoneDatas[vertexIdx].jointIdx[1][1], m_BoneDatas[vertexIdx].jointIdx[1][2], m_BoneDatas[vertexIdx].jointIdx[1][3]), jointIdData1);
-				glmInsertVector(glm::u32vec4(m_BoneDatas[vertexIdx].jointIdx[2][0], m_BoneDatas[vertexIdx].jointIdx[2][1], m_BoneDatas[vertexIdx].jointIdx[2][2], m_BoneDatas[vertexIdx].jointIdx[2][3]), jointIdData2);
+				auto& boneDatas = m_CurrentModel->desc.animationInfo.boneDatas;
+				glmInsertVector(glm::u32vec4(boneDatas[vertexIdx].jointIdx[0][0], boneDatas[vertexIdx].jointIdx[0][1], boneDatas[vertexIdx].jointIdx[0][2], boneDatas[vertexIdx].jointIdx[0][3]), jointIdData);
+				glmInsertVector(glm::u32vec4(boneDatas[vertexIdx].jointIdx[1][0], boneDatas[vertexIdx].jointIdx[1][1], boneDatas[vertexIdx].jointIdx[1][2], boneDatas[vertexIdx].jointIdx[1][3]), jointIdData1);
+				glmInsertVector(glm::u32vec4(boneDatas[vertexIdx].jointIdx[2][0], boneDatas[vertexIdx].jointIdx[2][1], boneDatas[vertexIdx].jointIdx[2][2], boneDatas[vertexIdx].jointIdx[2][3]), jointIdData2);
 
-				glmInsertVector(glm::vec4(m_BoneDatas[vertexIdx].weights[0][0], m_BoneDatas[vertexIdx].weights[0][1], m_BoneDatas[vertexIdx].weights[0][2], m_BoneDatas[vertexIdx].weights[0][3]), jointWeightData);
-				glmInsertVector(glm::vec4(m_BoneDatas[vertexIdx].weights[1][0], m_BoneDatas[vertexIdx].weights[1][1], m_BoneDatas[vertexIdx].weights[1][2], m_BoneDatas[vertexIdx].weights[1][3]), jointWeightData1);
-				glmInsertVector(glm::vec4(m_BoneDatas[vertexIdx].weights[2][0], m_BoneDatas[vertexIdx].weights[2][1], m_BoneDatas[vertexIdx].weights[2][2], m_BoneDatas[vertexIdx].weights[2][3]), jointWeightData2);
+				glmInsertVector(glm::vec4(boneDatas[vertexIdx].weights[0][0], boneDatas[vertexIdx].weights[0][1], boneDatas[vertexIdx].weights[0][2], boneDatas[vertexIdx].weights[0][3]), jointWeightData);
+				glmInsertVector(glm::vec4(boneDatas[vertexIdx].weights[1][0], boneDatas[vertexIdx].weights[1][1], boneDatas[vertexIdx].weights[1][2], boneDatas[vertexIdx].weights[1][3]), jointWeightData1);
+				glmInsertVector(glm::vec4(boneDatas[vertexIdx].weights[2][0], boneDatas[vertexIdx].weights[2][1], boneDatas[vertexIdx].weights[2][2], boneDatas[vertexIdx].weights[2][3]), jointWeightData2);
 			}
 			//tangent
 			float3 tangent = float3(0.0f);
@@ -433,15 +436,17 @@ namespace BlackPearl {
 				//glmInsertVector(textCords, vertexData);
 				vertex.texCoords = texCoords;
 
-				if (hasAnimation && m_BoneDatas.size() >= 0) {
+				if (hasAnimation && m_CurrentModel->desc.animationInfo.boneDatas.size() >= 0) {
 					uint32_t vertexIdx = m_VerticesIdx + idx;
-					glmInsertVector(glm::u32vec4(m_BoneDatas[vertexIdx].jointIdx[0][0], m_BoneDatas[vertexIdx].jointIdx[0][1], m_BoneDatas[vertexIdx].jointIdx[0][2], m_BoneDatas[vertexIdx].jointIdx[0][3]), jointIdData);
-					glmInsertVector(glm::u32vec4(m_BoneDatas[vertexIdx].jointIdx[1][0], m_BoneDatas[vertexIdx].jointIdx[1][1], m_BoneDatas[vertexIdx].jointIdx[1][2], m_BoneDatas[vertexIdx].jointIdx[1][3]), jointIdData1);
-					glmInsertVector(glm::u32vec4(m_BoneDatas[vertexIdx].jointIdx[2][0], m_BoneDatas[vertexIdx].jointIdx[2][1], m_BoneDatas[vertexIdx].jointIdx[2][2], m_BoneDatas[vertexIdx].jointIdx[2][3]), jointIdData2);
+					auto& boneDatas = m_CurrentModel->desc.animationInfo.boneDatas;
 
-					glmInsertVector(glm::vec4(m_BoneDatas[vertexIdx].weights[0][0], m_BoneDatas[vertexIdx].weights[0][1], m_BoneDatas[vertexIdx].weights[0][2], m_BoneDatas[vertexIdx].weights[0][3]), jointWeightData);
-					glmInsertVector(glm::vec4(m_BoneDatas[vertexIdx].weights[1][0], m_BoneDatas[vertexIdx].weights[1][1], m_BoneDatas[vertexIdx].weights[1][2], m_BoneDatas[vertexIdx].weights[1][3]), jointWeightData1);
-					glmInsertVector(glm::vec4(m_BoneDatas[vertexIdx].weights[2][0], m_BoneDatas[vertexIdx].weights[2][1], m_BoneDatas[vertexIdx].weights[2][2], m_BoneDatas[vertexIdx].weights[2][3]), jointWeightData2);
+					glmInsertVector(glm::u32vec4(boneDatas[vertexIdx].jointIdx[0][0], boneDatas[vertexIdx].jointIdx[0][1], boneDatas[vertexIdx].jointIdx[0][2], boneDatas[vertexIdx].jointIdx[0][3]), jointIdData);
+					glmInsertVector(glm::u32vec4(boneDatas[vertexIdx].jointIdx[1][0], boneDatas[vertexIdx].jointIdx[1][1], boneDatas[vertexIdx].jointIdx[1][2], boneDatas[vertexIdx].jointIdx[1][3]), jointIdData1);
+					glmInsertVector(glm::u32vec4(boneDatas[vertexIdx].jointIdx[2][0], boneDatas[vertexIdx].jointIdx[2][1], boneDatas[vertexIdx].jointIdx[2][2], boneDatas[vertexIdx].jointIdx[2][3]), jointIdData2);
+
+					glmInsertVector(glm::vec4(boneDatas[vertexIdx].weights[0][0], boneDatas[vertexIdx].weights[0][1], boneDatas[vertexIdx].weights[0][2], boneDatas[vertexIdx].weights[0][3]), jointWeightData);
+					glmInsertVector(glm::vec4(boneDatas[vertexIdx].weights[1][0], boneDatas[vertexIdx].weights[1][1], boneDatas[vertexIdx].weights[1][2], boneDatas[vertexIdx].weights[1][3]), jointWeightData1);
+					glmInsertVector(glm::vec4(boneDatas[vertexIdx].weights[2][0], boneDatas[vertexIdx].weights[2][1], boneDatas[vertexIdx].weights[2][2], boneDatas[vertexIdx].weights[2][3]), jointWeightData2);
 
 					//	GE_ASSERT(m_BoneDatas[vertexIdx].weights[0] + m_BoneDatas[vertexIdx].weights[1] + m_BoneDatas[vertexIdx].weights[2] + m_BoneDatas[vertexIdx].weights[3] == 1.0f, "total weight!=1");
 				}
@@ -533,35 +538,35 @@ namespace BlackPearl {
 
 		aiColor3D color(0.f, 0.f, 0.f);
 		if (AI_SUCCESS == material->Get(AI_MATKEY_COLOR_DIFFUSE, color))
-			colors.SetDiffuseColor(glm::vec3(color.r, color.g, color.b));
+			colors.SetDiffuseColor(math::float3(color.r, color.g, color.b));
 		//colors.push_back(MaterialColor(MaterialColor::Type::DiffuseColor,));
 
 		color = { 0.f, 0.f, 0.f };
 		if (AI_SUCCESS == material->Get(AI_MATKEY_COLOR_AMBIENT, color))
-			colors.SetAmbientColor(glm::vec3(color.r, color.g, color.b));
+			colors.SetAmbientColor(math::float3(color.r, color.g, color.b));
 
-		//colors.push_back(MaterialColor(MaterialColor::Type::AmbientColor, glm::vec3(color.r, color.g, color.b)));
+		//colors.push_back(MaterialColor(MaterialColor::Type::AmbientColor, math::float3(color.r, color.g, color.b)));
 
 		color = { 0.f, 0.f, 0.f };
 
 		if (AI_SUCCESS == material->Get(AI_MATKEY_COLOR_SPECULAR, color))
-			colors.SetSpecularColor(glm::vec3(color.r, color.g, color.b));
+			colors.SetSpecularColor(math::float3(color.r, color.g, color.b));
 
 		color = { 0.f, 0.f, 0.f };
 
 		if (AI_SUCCESS == material->Get(AI_MATKEY_COLOR_EMISSIVE, color))
-			colors.SetEmissionColor(glm::vec3(color.r, color.g, color.b));
-		//colors.push_back(MaterialColor(MaterialColor::Type::SpecularColor, glm::vec3(color.r, color.g, color.b)));
+			colors.SetEmissionColor(math::float3(color.r, color.g, color.b));
+		//colors.push_back(MaterialColor(MaterialColor::Type::SpecularColor, math::float3(color.r, color.g, color.b)));
 
 	}
 
-	std::vector<glm::mat4> ModelLoader::CalculateBoneTransform(float timeInSecond)
+	std::vector<glm::mat4> ModelLoader::CalculateBoneTransform(float timeInSecond, ModelDesc& desc)
 	{
-
-		uint32_t animationNum = m_Scene->mNumAnimations;
-		aiAnimation* animation = m_Scene->mAnimations[0];// &m_Animation;
-		float durationTick = (float)animation->mDuration;
-		float tickPerSecond = (float)animation->mTicksPerSecond;
+		const aiScene* scene = desc.animationInfo.modelScene;
+		uint32_t animationNum = desc.animationInfo.animationNum;
+		aiAnimation* animation = desc.animationInfo.modelScene->mAnimations[0];// &m_Animation;
+		float durationTick = desc.animationInfo.animationDuration;
+		float tickPerSecond = desc.animationInfo.animationTickPerSecond;
 		if (tickPerSecond == 0.0) {
 			tickPerSecond = 25.0f;
 		}
@@ -576,21 +581,21 @@ namespace BlackPearl {
 			0.0,0.0,1.0,0.0,
 			0.0,0.0,0.0,1.0
 			};*/
-		ReadHierarchy(timeInDurationSecond, m_Scene->mRootNode, indentity);
+		ReadHierarchy(timeInDurationSecond, scene->mRootNode, indentity, desc);
 
 		std::vector<glm::mat4> boneFinalTransforms;
-		for (int i = 0; i < m_BoneCount; i++)
+		for (int i = 0; i < desc.animationInfo.boneCount; i++)
 		{
-			boneFinalTransforms.push_back(m_Bones[i].finalTransform);
+			boneFinalTransforms.push_back(desc.animationInfo.bones[i].finalTransform);
 		}
 
 		return boneFinalTransforms;
 
 	}
-	void ModelLoader::ReadHierarchy(float timeInDurationSecond, aiNode* node, glm::mat4 parentTransform)
+	void ModelLoader::ReadHierarchy(float timeInDurationSecond, aiNode* node, glm::mat4 parentTransform,  ModelDesc& desc)
 	{
 		std::string nodeName(node->mName.data);
-		aiAnimation* animation = m_Scene->mAnimations[0];
+		aiAnimation* animation = desc.animationInfo.modelScene->mAnimations[0];
 		aiNodeAnim* nodeAnim = FindNode(nodeName, animation);
 		glm::mat4 transform = ConvertMatrix(node->mTransformation);
 
@@ -600,15 +605,15 @@ namespace BlackPearl {
 			uint32_t positionNum = nodeAnim->mNumPositionKeys;
 			uint32_t rotationNum = nodeAnim->mNumRotationKeys;
 			uint32_t scaleNum = nodeAnim->mNumScalingKeys;
-			glm::vec3 position = CalculateInterpolatePosition(timeInDurationSecond, nodeAnim);
-			glm::mat4 translateM = glm::translate(glm::mat4(1.0f), position);
+			math::float3 position = CalculateInterpolatePosition(timeInDurationSecond, nodeAnim);
+			glm::mat4 translateM = glm::translate(glm::mat4(1.0f), Math::ToVec3(position));
 
 			aiQuaternion quaternion = CalculateInterpolateRotation(timeInDurationSecond, nodeAnim);
 			glm::quat rotation(quaternion.w, quaternion.x, quaternion.y, quaternion.z);
 			glm::mat4 rotateM = glm::toMat4(rotation);
 
-			glm::vec3 scale = CalculateInterpolateScale(timeInDurationSecond, nodeAnim);
-			glm::mat4 scaleM = glm::scale(glm::mat4(1.0f), scale);
+			math::float3 scale = CalculateInterpolateScale(timeInDurationSecond, nodeAnim);
+			glm::mat4 scaleM = glm::scale(glm::mat4(1.0f), Math::ToVec3(scale));
 
 
 
@@ -617,10 +622,10 @@ namespace BlackPearl {
 
 		}
 		glm::mat4 globalTransform = parentTransform * transform;
-		if (m_BoneNameToIdex.find(nodeName) != m_BoneNameToIdex.end()) {
-			int boneIdex = m_BoneNameToIdex[nodeName];
-			glm::mat4 aiFinalTransform = m_GlobalInverseTransform * globalTransform * m_Bones[boneIdex].meshToBoneTranform;
-			m_Bones[boneIdex].finalTransform = aiFinalTransform;
+		if (desc.animationInfo.boneNameToIdex.find(nodeName) != desc.animationInfo.boneNameToIdex.end()) {
+			int boneIdex = desc.animationInfo.boneNameToIdex[nodeName];
+			glm::mat4 aiFinalTransform = m_GlobalInverseTransform * globalTransform * desc.animationInfo.bones[boneIdex].meshToBoneTranform;
+			desc.animationInfo.bones[boneIdex].finalTransform = aiFinalTransform;
 
 		}
 		else {
@@ -629,20 +634,20 @@ namespace BlackPearl {
 
 		for (int i = 0; i < node->mNumChildren; i++)
 		{
-			ReadHierarchy(timeInDurationSecond, node->mChildren[i], globalTransform);
+			ReadHierarchy(timeInDurationSecond, node->mChildren[i], globalTransform, desc);
 		}
 
 
 
 	}
 
-	glm::vec3 ModelLoader::CalculateInterpolatePosition(float timeInDurationSecond, aiNodeAnim* nodeAnim)
+	math::float3 ModelLoader::CalculateInterpolatePosition(float timeInDurationSecond, aiNodeAnim* nodeAnim)
 	{
-		glm::vec3 pos;
+		math::float3 pos;
 		aiVectorKey currentKey;
 		aiVectorKey nextKey;
 		if (nodeAnim->mNumPositionKeys == 1)
-			return glm::vec3(nodeAnim->mPositionKeys[0].mValue.x, nodeAnim->mPositionKeys[0].mValue.y, nodeAnim->mPositionKeys[0].mValue.z);
+			return math::float3(nodeAnim->mPositionKeys[0].mValue.x, nodeAnim->mPositionKeys[0].mValue.y, nodeAnim->mPositionKeys[0].mValue.z);
 		for (int i = 0; i < nodeAnim->mNumPositionKeys; i++)
 		{
 			if (timeInDurationSecond >= nodeAnim->mPositionKeys[i].mTime) {
@@ -660,8 +665,8 @@ namespace BlackPearl {
 		double ratioToNextKey = (nextKey.mTime - timeInDurationSecond) / durationOfTwoKey;
 		GE_ASSERT(ratioToNextKey >= 0.0f, "ratioToNextKey<0.0f!");
 
-		pos = (float)ratioToNextKey * glm::vec3(currentKey.mValue.x, currentKey.mValue.y, currentKey.mValue.z)
-			+ (float)ratioToCurrentKey * glm::vec3(nextKey.mValue.x, nextKey.mValue.y, nextKey.mValue.z);
+		pos = (float)ratioToNextKey * math::float3(currentKey.mValue.x, currentKey.mValue.y, currentKey.mValue.z)
+			+ (float)ratioToCurrentKey * math::float3(nextKey.mValue.x, nextKey.mValue.y, nextKey.mValue.z);
 
 		return pos;
 	}
@@ -709,13 +714,13 @@ namespace BlackPearl {
 		out = out.Normalize();
 		return out;
 	}
-	glm::vec3 ModelLoader::CalculateInterpolateScale(float timeInDurationSecond, aiNodeAnim* nodeAnim)
+	math::float3 ModelLoader::CalculateInterpolateScale(float timeInDurationSecond, aiNodeAnim* nodeAnim)
 	{
 		/*	aiVector3D scale;
 			aiVectorKey currentKey;
 			aiVectorKey nextKey;
 			if (nodeAnim->mNumScalingKeys == 1)
-				return glm::vec3(nodeAnim->mScalingKeys[0].mValue.x, nodeAnim->mScalingKeys[0].mValue.y, nodeAnim->mScalingKeys[0].mValue.z);
+				return math::float3(nodeAnim->mScalingKeys[0].mValue.x, nodeAnim->mScalingKeys[0].mValue.y, nodeAnim->mScalingKeys[0].mValue.z);
 			for (int i = 0; i < nodeAnim->mNumScalingKeys; i++)
 			{
 				if (timeInDurationSecond >= nodeAnim->mScalingKeys[i].mTime) {
@@ -732,11 +737,11 @@ namespace BlackPearl {
 			scale = (float)ratioToNextKey * currentKey.mValue
 				+ (float)ratioToCurrentKey * nextKey.mValue;
 
-			return glm::vec3(scale.x,scale.y,scale.z);*/
+			return math::float3(scale.x,scale.y,scale.z);*/
 		aiVector3D out;
 		if (nodeAnim->mNumScalingKeys == 1) {
 			out = nodeAnim->mScalingKeys[0].mValue;
-			return glm::vec3(out.x, out.y, out.z);;
+			return math::float3(out.x, out.y, out.z);;
 		}
 
 		uint32_t ScalingIndex = FindScaling(timeInDurationSecond, nodeAnim);
@@ -752,7 +757,7 @@ namespace BlackPearl {
 		aiVector3D Delta = End - Start;
 		out = Start + Factor * Delta;
 
-		return glm::vec3(out.x, out.y, out.z);
+		return math::float3(out.x, out.y, out.z);
 	}
 
 
@@ -825,10 +830,10 @@ namespace BlackPearl {
 		return 0;
 	}
 
-	void ModelLoader::UpdateAABB(const donut::math::float3& pos)
+	void ModelLoader::UpdateAABB(const math::float3& pos)
 	{
-		donut::math::float3 min;
-		donut::math::float3 max;
+		math::float3 min;
+		math::float3 max;
 		if (m_FirstVertex) {
 			m_FirstVertex = false;
 			min = pos;
@@ -955,6 +960,18 @@ namespace BlackPearl {
 		}
 
 
+	}
+
+	void ModelLoader::LoadAnimationInfo()
+	{
+		aiAnimation* animation = m_Scene->mAnimations[0];// &m_Animation;
+
+		AnimationInfo&info = m_CurrentModel->desc.animationInfo;
+		info.animationNum = m_Scene->mNumAnimations;
+		info.animationDuration = (float)animation->mDuration;
+		info.animationTickPerSecond = (float)animation->mTicksPerSecond;
+
+		info.modelScene = m_Scene;
 	}
    
 }

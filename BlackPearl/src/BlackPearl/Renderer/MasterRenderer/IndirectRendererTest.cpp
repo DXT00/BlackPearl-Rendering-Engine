@@ -537,7 +537,7 @@ namespace BlackPearl {
 
 				std::shared_ptr<Material> material = mesh->GetMaterial();
 				MaterialColor::Color materialColor = material->GetMaterialColor().Get();
-				float diffuse[3] = { materialColor.diffuseColor.r,materialColor.diffuseColor.g,materialColor.diffuseColor.b };
+				float diffuse[3] = { materialColor.diffuseColor.x,materialColor.diffuseColor.y,materialColor.diffuseColor.z };
 				uint32_t floatsize = sizeof(float);
 
 				for (size_t i = 0; i < meshVetCnt; i++)
@@ -617,7 +617,7 @@ namespace BlackPearl {
 
 				std::shared_ptr<Material> material = mesh->GetMaterial();
 				MaterialColor::Color materialColor = material->GetMaterialColor().Get();
-				float diffuse[3] = { materialColor.diffuseColor.r,materialColor.diffuseColor.g,materialColor.diffuseColor.b };
+				float diffuse[3] = { materialColor.diffuseColor.x,materialColor.diffuseColor.y,materialColor.diffuseColor.z };
 				uint32_t floatsize = sizeof(float);
 
 				for (size_t i = 0; i < meshVetCnt; i++)

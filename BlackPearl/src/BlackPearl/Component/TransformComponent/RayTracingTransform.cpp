@@ -12,7 +12,7 @@ namespace BlackPearl {
 			m_Box = AABB::InValid;
 			return;
 		}
-		glm::vec3 srcP[2] = { child_box.GetMinP(), child_box.GetMaxP() };
+		math::float3 srcP[2] = { child_box.GetMinP(), child_box.GetMaxP() };
 		std::vector<glm::vec3> tfmCornerPs;
 		for (size_t i = 0; i < 8; i++) {
 			std::bitset<3> binVal(i); //000,001,010
@@ -23,7 +23,11 @@ namespace BlackPearl {
 
 		glm::vec3 minP = Math::Min(tfmCornerPs);
 		glm::vec3 maxP = Math::Max(tfmCornerPs);
-		m_Box = AABB(minP, maxP);
+
+		math::float3 minP_ = math::float3(minP.x, minP.y, minP.z);
+		math::float3 maxP_ = math::float3(maxP.x, maxP.y, maxP.z);
+
+		m_Box = AABB(minP_, maxP_, true);
 
 	}
 }

@@ -89,7 +89,7 @@ namespace BlackPearl {
 		Material(
 			const std::string shaderPath,
 			const std::shared_ptr<TextureMaps>& textureMaps,
-			glm::vec3 ambientColor, glm::vec3 diffuseColor, glm::vec3 specularColor, glm::vec3 emissionColor
+			math::float3 ambientColor, math::float3 diffuseColor, math::float3 specularColor, math::float3 emissionColor
 		);
 
 		~Material();
@@ -105,9 +105,9 @@ namespace BlackPearl {
 		void SetTexture(const std::shared_ptr<Texture> texture);
 		void SetTexture(const Texture::Type type, const std::string& image);
 		void SetMaterialColor(MaterialColor::Color color);
-		void SetMaterialColorDiffuseColor(glm::vec3 color);
-		void SetMaterialColorSpecularColor(glm::vec3 color);
-		void SetMaterialColorEmissionColor(glm::vec3 color);
+		void SetMaterialColorDiffuseColor(const math::float3& color);
+		void SetMaterialColorSpecularColor(const math::float3& color);
+		void SetMaterialColorEmissionColor(const math::float3& color);
 		void SetId(uint32_t matId);
 		uint32_t GetId() const;
 
@@ -139,7 +139,7 @@ namespace BlackPearl {
 		}
 	public:
 		std::string name;
-		MaterialDomain domain = MaterialDomain::Opaque;
+		MaterialDomain domain;// = MaterialDomain::Opaque;
 	private:
 		std::shared_ptr<Shader>		 m_Shader = nullptr;
 		std::shared_ptr<TextureMaps> m_TextureMaps = nullptr;

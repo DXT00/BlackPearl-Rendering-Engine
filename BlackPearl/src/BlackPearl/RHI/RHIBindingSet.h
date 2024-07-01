@@ -258,7 +258,7 @@ namespace BlackPearl {
     // (not all bindings need to be present in the set, but the set must be defined by a single BindingSetItem object)
     struct BindingSetDesc
     {
-         std::vector<BindingSetItem> bindings;
+        BindingSetItemArray bindings;
 
         // Enables automatic liveness tracking of this binding set by nvrhi command lists.
         // By setting trackLiveness to false, you take the responsibility of not releasing it 

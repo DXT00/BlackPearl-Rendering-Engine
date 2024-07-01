@@ -38,7 +38,7 @@ namespace BlackPearl {
 	MaterialManager* g_materialManager = DBG_NEW MaterialManager();
 	DeviceManager*   g_deviceManager = nullptr;
 	CullingManager* g_cullingManager = DBG_NEW CullingManager();
-	ModelLoader* g_modelLoader = DBG_NEW ModelLoader();
+	ModelLoader* g_modelLoader = nullptr;
 
 	double Application::s_AppFPS = 0.0f;
 	double Application::s_AppAverageFPS = 0.0f;
@@ -87,6 +87,12 @@ namespace BlackPearl {
 		g_deviceManager = DeviceManager::Create(DynamicRHI::g_RHIType);
 		g_deviceManager->Init(deviceParams);
 
+#ifdef	GE_API_D3D12
+		g_modelLoader = D3D12ModelLoader();
+#else
+		g_modelLoader = DBG_NEW ModelLoader();
+#endif
+		
 		g_modelLoader->RegisterDeviceManager(g_deviceManager);
 		m_LayerManager = DBG_NEW LayerManager();
 

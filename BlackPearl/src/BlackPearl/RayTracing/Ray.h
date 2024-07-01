@@ -1,21 +1,22 @@
 #pragma once
 #include "glm/glm.hpp"
+#include "BlackPearl/Math/vector.h"
 namespace BlackPearl {
 
 	class Ray
 	{
 	public:
 		Ray();
-		Ray(const glm::vec3 origin, const glm::vec3 dir);
-		glm::vec3 GetOrigin() const { return m_Origin; }
-		glm::vec3 GetDir() const { return m_Dir; }
+		Ray(const math::float3 origin, const math::float3 dir);
+		math::float3 GetOrigin() const { return m_Origin; }
+		math::float3 GetDir() const { return m_Dir; }
 		float GetTMax() const { return m_tMax; }
-		void SetOrigin(const glm::vec3 origin);
-		void SetDir(const glm::vec3 dir);
+		void SetOrigin(const math::float3 origin);
+		void SetDir(const math::float3 dir);
 		static const float tMin;
 	private:
-		glm::vec3 m_Origin;
-		glm::vec3 m_Dir;
+		math::float3 m_Origin;
+		math::float3 m_Dir;
 		float m_tMax;
 		
 	};

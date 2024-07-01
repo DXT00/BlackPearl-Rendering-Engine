@@ -108,7 +108,7 @@ namespace BlackPearl {
         //   The motivation for such validation is that DXC maps register spaces to Vulkan descriptor sets by default.
         bool registerSpaceIsDescriptorSet = false;
 
-        std::vector<RHIBindingLayoutItem> bindings;
+        BindingLayoutItemArray bindings;
         VulkanBindingOffsets bindingOffsets;
 
         RHIBindingLayoutDesc& setVisibility(ShaderType value) { visibility = value; return *this; }

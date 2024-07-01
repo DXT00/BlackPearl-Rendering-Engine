@@ -51,11 +51,11 @@ namespace BlackPearl {
 
 		void RenderSpecularBRDFLUTMap();
 		void RenderSHImage(Object* probe, std::shared_ptr<CubeMapTexture> environmentMap);
-		//std::vector<Object*> FindKnearProbes(glm::vec3 objPos,const std::vector<Object*> probes);
+		//std::vector<Object*> FindKnearProbes(math::float3 objPos,const std::vector<Object*> probes);
 
 
 		//TODO::
-		static glm::vec3 s_ProbeGridOffset;
+		static math::float3 s_ProbeGridOffset;
 		static float s_ProbeGridSpace;
 		
 

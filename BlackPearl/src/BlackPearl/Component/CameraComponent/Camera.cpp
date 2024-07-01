@@ -5,6 +5,8 @@
 #include "BlackPearl/Core.h"
 #include <glm/gtc/matrix_transform.hpp>
 #include "BlackPearl/Component/Component.h"
+#include "BlackPearl/Math/Math.h"
+
 namespace BlackPearl {
 
 	Camera * Camera::Create(unsigned int type)

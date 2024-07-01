@@ -72,22 +72,22 @@ namespace BlackPearl {
 		virtual ~PointLight() = default;
 		virtual void Init() override;
 
-		inline void SetDiffuse(glm::vec3 diffuse) {
+		inline void SetDiffuse(math::float3 diffuse) {
 			m_LightProp.diffuse = diffuse;
 			m_Mesh->SetMaterialColor({ m_LightProp.ambient,m_LightProp.diffuse,m_LightProp.specular ,m_LightProp.emission });
 
 		}
-		inline void SetAmbient(glm::vec3 ambient) {
+		inline void SetAmbient(math::float3 ambient) {
 			m_LightProp.ambient = ambient;
 			m_Mesh->SetMaterialColor({ m_LightProp.ambient,m_LightProp.diffuse,m_LightProp.specular ,m_LightProp.emission });
 
 		}
-		inline void SetSpecular(glm::vec3 specular) {
+		inline void SetSpecular(math::float3 specular) {
 			m_LightProp.specular = specular;
 			m_Mesh->SetMaterialColor({ m_LightProp.ambient,m_LightProp.diffuse,m_LightProp.specular ,m_LightProp.emission });
 
 		}
-		inline void SetEmission(glm::vec3 emission) {
+		inline void SetEmission(math::float3 emission) {
 			m_LightProp.emission = emission;
 			m_Mesh->SetMaterialColor({ m_LightProp.ambient,m_LightProp.diffuse,m_LightProp.specular ,m_LightProp.emission });
 

@@ -27,7 +27,7 @@ namespace BlackPearl {
 		m_LightPos = sun->GetDirection();
 		m_ShadowBox->Update();
 		UpdateLightOrthoProjectionMatrix(m_ShadowBox->GetWidth(), m_ShadowBox->GetHeight(), m_ShadowBox->GetLength());
-		UpdateLightViewMatrix(sun->GetDirection(), m_ShadowBox->GetCenter());
+		UpdateLightViewMatrix(Math::ToVec3(sun->GetDirection()), m_ShadowBox->GetCenter());
 		m_LightProjectionViewMatrix = m_LightProjection * m_LightView;
 
 		glViewport(0, 0, s_ShadowMapWidth, s_ShadowMapHeight);

@@ -86,13 +86,13 @@ namespace BlackPearl {
 		return { (float)xpos,(float)ypos };
 	}
 
-	donut::math::vector<int, 2> VkWindow::GetCurWindowSize()
+	math::vector<int, 2> VkWindow::GetCurWindowSize()
 	{
 		int width;
 		int height;
 		glfwGetWindowSize(m_Window, &width, &height);
 
-		return donut::math::vector<int, 2>(width, height);
+		return math::vector<int, 2>(width, height);
 	}
 	
 }

@@ -21,8 +21,9 @@
 */
 
 #pragma once
-
-namespace donut::math
+#include "matrix.h"
+#include "vector.h"
+namespace BlackPearl::math
 {
 	// Generic affine transform struct, with a matrix and translation vector
 
@@ -311,7 +312,7 @@ namespace donut::math
 	// !!! this doesn't match the behavior of isnear() for vectors and matrices -
 	// returns a single result rather than a componentwise result
 	template <typename T, int n>
-	bool isnear(affine<T, n> const & a, affine<T, n> const & b, T epsilon = dm::epsilon)
+	bool isnear(affine<T, n> const & a, affine<T, n> const & b, T epsilon = epsilon)
 	{
 		return all(isnear(a.m_linear, b.m_linear, epsilon)) &&
 			   all(isnear(a.m_translation, b.m_translation, epsilon));

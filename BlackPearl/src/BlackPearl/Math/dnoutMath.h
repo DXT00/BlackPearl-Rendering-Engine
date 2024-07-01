@@ -23,8 +23,8 @@
 
 #pragma once
 
-namespace donut::math {}
-namespace dm = donut::math;
+
+//namespace dm = BlackPearl::math;
 
 #include "basics.h"
 #include "vector.h"

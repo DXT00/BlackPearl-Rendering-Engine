@@ -20,7 +20,7 @@ public:
 		: Layer(name)
 	{
 
-		m_MainCamera->SetPosition(glm::vec3(-2.0f, 0.0f, 14.0f));
+		m_MainCamera->SetPosition(math::float3(-2.0f, 0.0f, 14.0f));
 
 
 		/* MapManager */
@@ -42,9 +42,9 @@ public:
 		/* create probes */
 
 		m_DiffuseLightProbeGrid = CreateProbeGrid(m_MapManager, BlackPearl::ProbeType::DIFFUSE_PROBE, 
-			glm::vec3(4, 2, 4), glm::vec3(2.0, 2.0, 6.7), 5);
+			math::float3(4, 2, 4), math::float3(2.0, 2.0, 6.7), 5);
 	/*	m_ReflectLightProbeGrid = CreateProbeGrid(m_MapManager, BlackPearl::ProbeType::REFLECTION_PROBE,
-			glm::vec3(2, 1, 1), glm::vec3(2.0, 6.0, 6.7), 6);*/
+			math::float3(2, 1, 1), math::float3(2.0, 6.0, 6.7), 6);*/
 
 		
 		BlackPearl::Renderer::Init();
@@ -198,8 +198,8 @@ public:
 		/*bool updateShadowMap = false;
 
 		for (auto pointlight : GetLightSources()->GetPointLights()) {
-			glm::vec3 position = pointlight->GetComponent<BlackPearl::Transform>()->GetPosition();
-			glm::vec3 lastPosition = pointlight->GetComponent<BlackPearl::Transform>()->GetLastPosition();
+			math::float3 position = pointlight->GetComponent<BlackPearl::Transform>()->GetPosition();
+			math::float3 lastPosition = pointlight->GetComponent<BlackPearl::Transform>()->GetLastPosition();
 			if (position != lastPosition) {
 				updateShadowMap = true;
 				break;

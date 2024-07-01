@@ -1,8 +1,10 @@
 #include "pch.h"
 #include "MeshGatherer.h"
 #include "BlackPearl/Node/SingleNode.h"
+#include "BlackPearl/Math/Math.h"
 #include "BlackPearl/Component/MeshRendererComponent/MeshRenderer.h"
 #include "BlackPearl/Component/BoundingBoxComponent/BoundingBox.h"
+
 
 namespace BlackPearl {
 	MeshGatherer::MeshGatherer(Scene* scene, GatherType type)
@@ -101,7 +103,7 @@ namespace BlackPearl {
 
 			AddObjTransformToBuffer(baseObj, singleNode->GetObj()->GetComponent<Transform>()->GetTransformMatrix());
 			
-			glm::vec3 bondingBox = glm::vec3{ obj->GetComponent<BoundingBox>()->Get().GetExtent() };
+			glm::vec3 bondingBox = Math::ToVec3(obj->GetComponent<BoundingBox>()->Get().GetExtent()) ;
 			ObjInfo info = {
 				glm::vec2(startMesh,meshes.size()),
 				bondingBox,

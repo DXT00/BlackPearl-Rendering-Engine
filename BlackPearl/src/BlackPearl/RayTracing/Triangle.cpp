@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Triangle.h"
 #include "BlackPearl/Core.h"
+#include "BlackPearl/Math/Math.h"
 namespace BlackPearl {
 
 	Triangle::Triangle(const std::vector<Vertex>& points)
@@ -31,9 +32,9 @@ namespace BlackPearl {
 
 	void Triangle::BuildBox()
 	{
-		glm::vec3 min = glm::min(glm::min(m_Points[0].position, m_Points[1].position), m_Points[2].position);
-		glm::vec3 max = glm::max(glm::max(m_Points[0].position, m_Points[1].position), m_Points[2].position);
-		m_Box = AABB(min, max);
+		math::float3 min = Math::Min(Math::Min(m_Points[0].position, m_Points[1].position), m_Points[2].position);
+		math::float3 max = Math::Max(Math::Max(m_Points[0].position, m_Points[1].position), m_Points[2].position);
+		m_Box = AABB(min, max, true);
 	}
 
 	std::vector<Vertex> Triangle::GetPoints() const

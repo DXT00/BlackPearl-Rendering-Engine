@@ -9,17 +9,36 @@
 #include "BlackPearl/Renderer/Mesh/Vertex.h"
 #include "BlackPearl/Renderer/Mesh/Meshlet.h"
 #include "BlackPearl/Component/BoundingSphereComponent/BoundingSphere.h"
-#include "ModelLoader.h"
-#include "BlackPearl/Renderer/Mesh/MeshletGenerator.h"
+//#include "ModelLoader.h"
+
 #include "BlackPearl/RHI/DynamicRHI.h"
-#include "BlackPearl/RHI/D3D12RHI/D3D12ModelLoader.h"
 #include "BlackPearl/AABB/AABB.h"
+#include "BlackPearl/Animation/Bone.h"
 //#include <assimp/material.h>
 
 //#include <assimp/cimport.h>
 namespace BlackPearl {
 
-	extern ModelLoader* g_modelLoader;
+	class Bone;
+	struct AnimationInfo {
+		AnimationInfo() {
+			animationNum = 0;
+			animationDuration = 0;
+			animationTickPerSecond = 0;
+		}
+		uint32_t animationNum;
+		float animationDuration;
+		float animationTickPerSecond;
+		const aiScene* modelScene;
+		std::vector<Bone> bones;
+
+		/*Bones*/
+		uint32_t boneCount = 0;
+		/*store every vertex's jointId and weight*/
+		std::vector<VertexBoneData> boneDatas;
+
+		std::unordered_map<std::string, int> boneNameToIdex;
+	};
 
 	struct ModelDesc {
 		bool bIsAnimated;
@@ -28,6 +47,7 @@ namespace BlackPearl {
 		bool bIsMeshletModel;
 		MeshletOption options;
 		std::shared_ptr<Shader>shader;
+		AnimationInfo animationInfo;
 
 		ModelDesc() 
 			:bIsAnimated(false),
@@ -35,6 +55,7 @@ namespace BlackPearl {
 			bCreateMeshlet(false),
 			bIsMeshletModel(false),
 			options(MeshletOption()),
+			animationInfo(AnimationInfo()),
 			shader(nullptr)
 		{}
 	};
@@ -44,17 +65,11 @@ namespace BlackPearl {
 		Model(const std::string& path,
 			 const ModelDesc& desc
 				)
-			: desc(desc),
-			shader(desc.shader) {
-			boundingbox = std::make_shared<AABB>(glm::vec3(FLT_MAX), glm::vec3(FLT_MIN),true);
+			: desc(desc)
+			{
+			boundingbox = std::make_shared<AABB>(math::float3(FLT_MAX), math::float3(FLT_MIN),true);
 			if (DynamicRHI::g_RHIType == DynamicRHI::Type::D3D12) {
-				//m_ModelLoader = DBG_NEW D3D12ModelLoader(isMeshletModel);
-				if (desc.bCreateMeshlet && !desc.bIsMeshletModel) {
-					m_MeshletGenerator = std::make_shared<MeshletGenerator>();
-					m_MeshletGenerator->Process(meshes, desc.options);
-				}
-				m_ModelLoader = DBG_NEW D3D12ModelLoader(desc.bIsMeshletModel);
-				m_ModelLoader->Load(meshes, m_BoundingSphere, path);
+				
 				//LoadMeshletModel(m_BoundingSphere, path);
 			}
 			else {
@@ -67,7 +82,7 @@ namespace BlackPearl {
 		};
 
 		~Model() {
-			GE_SAVE_DELETE(m_ModelLoader);
+			//GE_SAVE_DELETE(m_ModelLoader);
 
 		};
 		
@@ -75,7 +90,7 @@ namespace BlackPearl {
 		std::vector<std::shared_ptr<Mesh>>       GetMeshes() const { return meshes; }
 		std::vector<std::shared_ptr<Mesh>>&  GetMeshlets() { return meshes; }
 
-		std::shared_ptr<Shader> GetShader()const { return shader; }
+		std::shared_ptr<Shader> GetShader()const { return desc.shader; }
 		std::vector<Vertex>		GetMeshVertex() const { return vertices; }
 
 
@@ -84,21 +99,21 @@ namespace BlackPearl {
 	public:
 		std::vector<std::shared_ptr<Mesh>> meshes;
 		std::shared_ptr<AABB> boundingbox;
-		std::shared_ptr<Shader> shader = nullptr;
 		ModelDesc desc;
 
 		/*for raytracing, calculate bounding box*/
 		std::vector<Vertex> vertices;
 
 
+
 	private:
 
 	
-		ModelLoader* m_ModelLoader;
+		//ModelLoader* m_ModelLoader;
 		
 		/* use for meshlet culling */
-		BoundingSphere m_BoundingSphere;
-		std::shared_ptr<MeshletGenerator> m_MeshletGenerator;
+		//BoundingSphere m_BoundingSphere;
+
 	
 
 	

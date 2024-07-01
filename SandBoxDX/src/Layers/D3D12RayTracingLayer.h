@@ -26,7 +26,7 @@ public:
 
 	
 		m_MainCamera->SetFov(90.0f);
-		m_MainCamera->SetPosition(glm::vec3(0, 0, 0));//glm::vec3(0,1.387f,22.012f)
+		m_MainCamera->SetPosition(math::float3(0, 0, 0));//math::float3(0,1.387f,22.012f)
 		m_CameraPosition = m_MainCamera->GetPosition();
 		/*******************************************************************************************************/
 	}

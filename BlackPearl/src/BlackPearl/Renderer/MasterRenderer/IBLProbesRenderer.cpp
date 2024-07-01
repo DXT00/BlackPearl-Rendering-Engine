@@ -11,7 +11,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <thread>
 namespace BlackPearl {
-	glm::vec3 IBLProbesRenderer::s_ProbeGridOffset = glm::vec3(2.0f,10.0f,6.7f);
+	math::float3 IBLProbesRenderer::s_ProbeGridOffset = math::float3(2.0f,10.0f,6.7f);
 	float IBLProbesRenderer::s_ProbeGridSpace = 5.0f;
 	IBLProbesRenderer::IBLProbesRenderer()
 	{
@@ -179,7 +179,7 @@ namespace BlackPearl {
 				m_LightProbeShader->SetUniform1i("u_ProbeType", probeType);
 				for (int i = 0; i < 9; i++)
 				{
-					m_LightProbeShader->SetUniformVec3f("u_SHCoeffs[" + std::to_string(i) + "]", glm::vec3(
+					m_LightProbeShader->SetUniformVec3f("u_SHCoeffs[" + std::to_string(i) + "]", math::float3(
 						probe->GetComponent<LightProbe>()->GetCoeffis()[i][0], 
 						probe->GetComponent<LightProbe>()->GetCoeffis()[i][1],
 						probe->GetComponent<LightProbe>()->GetCoeffis()[i][2]
@@ -278,7 +278,7 @@ namespace BlackPearl {
 			GE_ERROR_JUDGE();
 			for (unsigned int i = 0; i < 6; i++)
 			{
-				Renderer::SceneData* scene = DBG_NEW Renderer::SceneData({ ProbeProjectionViews[i] ,ProbeView[i],projection,probe->GetComponent<Transform>()->GetPosition(),{},cameraComponent->Front(),*lightSources });
+				SceneData* scene = DBG_NEW SceneData({ ProbeProjectionViews[i] ,ProbeView[i],projection,probe->GetComponent<Transform>()->GetPosition(),{},cameraComponent->Front(),*lightSources });
 
 				glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, environmentCubeMap->GetRendererID(), mip);
 				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -367,7 +367,7 @@ namespace BlackPearl {
 	//	glBindTexture(GL_TEXTURE_CUBE_MAP, probe->GetHdrEnvironmentCubeMap()->GetRendererID());
 	//	glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
 
-	//	glm::vec3 center = probe->GetPosition();
+	//	math::float3 center = probe->GetPosition();
 	//	probe->UpdateCamera();
 	//	auto camera = probe->GetCamera();
 	//	auto cameraComponent = camera->GetObj()->GetComponent<PerspectiveCamera>();
@@ -405,7 +405,7 @@ namespace BlackPearl {
 	//	// pbr: solve diffuse integral by convolution to create an irradiance (cube)map.
 	//	for (unsigned int i = 0; i < 6; ++i)
 	//	{
-	//		Renderer::SceneData* scene = DBG_NEW Renderer::SceneData({ ProbeProjectionViews[i] ,ProbeView[i],projection,probe->GetPosition(),{},cameraComponent->Front(),*lightSources });
+	//		SceneData* scene = DBG_NEW SceneData({ ProbeProjectionViews[i] ,ProbeView[i],projection,probe->GetPosition(),{},cameraComponent->Front(),*lightSources });
 
 	//		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, diffuseIrradianceCubeMap->GetRendererID(), 0);
 	//		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -498,7 +498,7 @@ namespace BlackPearl {
 			for (unsigned int i = 0; i < 6; i++)
 			{
 
-				Renderer::SceneData* scene = DBG_NEW Renderer::SceneData({ ProbeProjectionViews[i] ,ProbeView[i],projection,probe->GetComponent<Transform>()->GetPosition(),{},cameraComponent->Front(),*lightSources });
+				SceneData* scene = DBG_NEW SceneData({ ProbeProjectionViews[i] ,ProbeView[i],projection,probe->GetComponent<Transform>()->GetPosition(),{},cameraComponent->Front(),*lightSources });
 				glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, specularIrradianceMap->GetRendererID(), mip);
 				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 				GE_ERROR_JUDGE();
@@ -553,10 +553,10 @@ namespace BlackPearl {
 	}
 
 
-	//std::vector<LightProbe*> IBLProbesRenderer::FindKnearProbes(glm::vec3 objPos, std::vector<LightProbe*> probes)
+	//std::vector<LightProbe*> IBLProbesRenderer::FindKnearProbes(math::float3 objPos, std::vector<LightProbe*> probes)
 	//{
 
-	//	glm::vec3 pos = objPos;
+	//	math::float3 pos = objPos;
 	//	std::vector<LightProbe*> kProbes;
 	//	std::sort(probes.begin(), probes.end(), [=](LightProbe* pa, LightProbe* pb)
 	//	{return glm::length(pa->GetPosition() - pos) < glm::length(pb->GetPosition() - pos); });

@@ -28,7 +28,7 @@ namespace BlackPearl {
 	void Layer::OnImguiRender()
 	{
 		ImGui::Begin("Settings");
-		ImGui::ColorEdit3("Suqare Color", glm::value_ptr(m_BackgroundColor));
+		ImGui::ColorEdit3("Suqare Color", (m_BackgroundColor));
 		ImGui::End();
 		ImGui::Begin("GI Settings");
 		//ImGui::Text("FPS = %.3lf", Application::s_AppFPS);
@@ -107,8 +107,8 @@ namespace BlackPearl {
 		float boxMin[] = { CloudRenderer::s_boundsMin.x, CloudRenderer::s_boundsMin.y, CloudRenderer::s_boundsMin.z };
 
 		ImGui::DragFloat3("s_boundsMax", boxMax, 0.05f, 0.001f, 100.0f, "%.3f ");
-		CloudRenderer::s_boundsMax = glm::vec3(boxMax[0], boxMax[1], boxMax[2]);
-		CloudRenderer::s_boundsMin = glm::vec3(boxMin[0], boxMin[1], boxMin[2]);
+		CloudRenderer::s_boundsMax = math::float3(boxMax[0], boxMax[1], boxMax[2]);
+		CloudRenderer::s_boundsMin = math::float3(boxMin[0], boxMin[1], boxMin[2]);
 
 
 	
@@ -1164,7 +1164,7 @@ namespace BlackPearl {
 		(type == ProbeType::DIFFUSE_PROBE) ? m_DiffuseLightProbes.push_back(probe) : m_ReflectionLightProbes.push_back(probe);
 		return probe;
 	}
-	Object* Layer::CreateProbeGrid(MapManager* mapManager, ProbeType type, glm::vec3 probeNums, glm::vec3 offsets, float space)
+	Object* Layer::CreateProbeGrid(MapManager* mapManager, ProbeType type, math::float3 probeNums, math::float3 offsets, float space)
 	{
 		std::string objName = (type == ProbeType::DIFFUSE_PROBE) ? "Kd ProbesGrid" : "Ks ProbeGrid";
 		Object* obj = CreateEmpty(objName);
@@ -1547,13 +1547,13 @@ namespace BlackPearl {
 
 		for (int i = 0; i < imGuiMeshes.size(); i++) {
 			MaterialColor::Color color = imGuiMeshes[i]->GetMaterial()->GetMaterialColor().Get();
-			ImGui::ColorEdit3("diffuseColor", glm::value_ptr(color.diffuseColor));
+			ImGui::ColorEdit3("diffuseColor", color.diffuseColor);
 			//mesh->GetMaterial()->SetMaterialColorDiffuseColor(color.diffuseColor);
 
-			ImGui::ColorEdit3("specularColor", glm::value_ptr(color.specularColor));
+			ImGui::ColorEdit3("specularColor", color.specularColor);
 			//mesh->GetMaterial()->SetMaterialColorSpecularColor(color.specularColor);
 
-			ImGui::ColorEdit3("emissionColor", glm::value_ptr(color.emissionColor));
+			ImGui::ColorEdit3("emissionColor", color.emissionColor);
 			//mesh->GetMaterial()->SetMaterialColorEmissionColor(color.emissionColor);
 			imGuiMeshes[i]->SetMaterialColor(color);
 
@@ -1606,10 +1606,10 @@ namespace BlackPearl {
 		float area = pointLight->GetLightProps().area;
 		float bias = pointLight->GetLightProps().shadowBias;
 
-		ImGui::ColorEdit3("ambient Color", glm::value_ptr(props.ambient));
-		ImGui::ColorEdit3("diffuse Color", glm::value_ptr(props.diffuse));
-		ImGui::ColorEdit3("specular Color", glm::value_ptr(props.specular));
-		ImGui::ColorEdit3("emission Color", glm::value_ptr(props.emission));
+		ImGui::ColorEdit3("ambient Color", props.ambient);
+		ImGui::ColorEdit3("diffuse Color", props.diffuse);
+		ImGui::ColorEdit3("specular Color", props.specular);
+		ImGui::ColorEdit3("emission Color", props.emission);
 		ImGui::DragInt("attenuation", &attenuation, 0.5f, 7, 3250);
 		ImGui::DragFloat("intensity", &intensity, 0.1f, 0.1, 100);
 		ImGui::DragFloat("lightSize", &area, 0.1f, 0.1, 100);
@@ -1628,19 +1628,19 @@ namespace BlackPearl {
 	void Layer::ShowParallelLight(ParallelLight* parallelLight)
 	{
 		auto props = parallelLight->GetLightProps();
-		glm::vec3 direction = parallelLight->GetDirection();
+		math::float3 direction = parallelLight->GetDirection();
 
 		float dir[] = { direction.x,direction.y,direction.z };
 		ImGui::DragFloat3("position", dir, 0.05f, 0.0f, 1.0f, "%.3f ");
 		parallelLight->SetDirection({ dir[0],dir[1],dir[2] });
 
 		float intensity = parallelLight->GetLightProps().intensity;
-		ImGui::DragFloat3("direction", glm::value_ptr(props.emission));
+		ImGui::DragFloat3("direction", (props.emission));
 
-		ImGui::ColorEdit3("ambient Color", glm::value_ptr(props.ambient));
-		ImGui::ColorEdit3("diffuse Color", glm::value_ptr(props.diffuse));
-		ImGui::ColorEdit3("specular Color", glm::value_ptr(props.specular));
-		ImGui::ColorEdit3("emission Color", glm::value_ptr(props.emission));
+		ImGui::ColorEdit3("ambient Color", (props.ambient));
+		ImGui::ColorEdit3("diffuse Color", (props.diffuse));
+		ImGui::ColorEdit3("specular Color", (props.specular));
+		ImGui::ColorEdit3("emission Color", (props.emission));
 		ImGui::DragFloat("intensity", &intensity, 1.0f, 1, 100);
 
 

@@ -41,7 +41,7 @@ namespace BlackPearl {
 			return m_Id == other.GetId();
 		}
 
-		//Entity Instantiate(Entity original, glm::vec3 position) { s_InstanceID++; };
+		//Entity Instantiate(Entity original, math::float3 position) { s_InstanceID++; };
 		virtual ~Entity() { Destroy(); };
 
 		Id GetId() const { return m_Id; }

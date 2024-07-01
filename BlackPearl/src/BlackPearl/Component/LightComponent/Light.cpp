@@ -5,7 +5,7 @@
 #include "SpotLight.h"
 namespace BlackPearl {
 
-	Light * Light::Create( LightType type, const glm::vec3 & position, const glm::vec3& direction, const float cutOffAngle, const float outterCutOffAngle, Props props)
+	Light * Light::Create(LightType type, const math::float3 & position, const math::float3& direction, const float cutOffAngle, const float outterCutOffAngle, Props props)
 	{
 		
 		switch (type)

@@ -21,8 +21,8 @@
 */
 
 #pragma once
-
-namespace donut::math
+#include "affine.h"
+namespace BlackPearl::math
 {
 	// Generic axis-aligned bounding box (AABB) struct, in mins/maxs form
 	// Note: min > max (on any axis) is an empty (null) box.  All empty boxes are the same.
@@ -238,7 +238,8 @@ namespace donut::math
 			typedef box<type, 2> name##2; \
 			typedef box<type, 3> name##3; \
 			typedef box<type, 2> const & name##2_arg; \
-			typedef box<type, 3> const & name##3_arg;
+			typedef box<type, 3> const & name##3_arg; \
+
 
 	DEFINE_CONCRETE_BOXES(float, box, float);
 	DEFINE_CONCRETE_BOXES(int, ibox, int);
@@ -275,7 +276,7 @@ namespace donut::math
 	// !!! this doesn't match the behavior of isnear() for vectors and matrices -
 	// returns a single result rather than a componentwise result
 	template <typename T, int n>
-	bool isnear(box<T, n> const & a, box<T, n> const & b, float epsilon = dm::epsilon)
+	bool isnear(box<T, n> const & a, box<T, n> const & b, float epsilon = epsilon)
 	{
 		return all(isnear(a.m_mins, b.m_mins, epsilon)) &&
 			   all(isnear(a.m_maxs, b.m_maxs, epsilon));

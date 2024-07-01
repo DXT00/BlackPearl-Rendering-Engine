@@ -24,8 +24,9 @@
 
 #include <stdint.h>
 #include "BlackPearl/AABB/AABB.h"
+#include "box.h"
 
-namespace donut::math
+namespace BlackPearl::math
 {
 
     // a plane equation, so that any point (v) for which (dot(normal, v) == distance) lies on the plane
@@ -77,7 +78,7 @@ namespace donut::math
 
         bool intersectsWith(const float3 &point) const;
         bool intersectsWith(const box3 &box) const;
-        bool intersectsWith(const BlackPearl::AABB& box) const;
+        bool intersectsWith(const AABB& box) const;
 
         static constexpr uint32_t numCorners = 8;
         float3 getCorner(int index) const;

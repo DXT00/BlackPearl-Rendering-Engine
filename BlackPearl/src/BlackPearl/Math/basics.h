@@ -24,7 +24,7 @@
 #include <float.h>
 #include <limits>
 #include <cmath>
-
+#include "vector.h"
 // Compile-time array size
 template <typename T, int N> char(&dim_helper(T(&)[N]))[N];
 #define dim(x) (sizeof(dim_helper(x)))
@@ -34,7 +34,7 @@ template <typename T, int N> char(&dim_helper(T(&)[N]))[N];
 // Compile-time assert
 #define cassert(x) static_assert(x, #x)
 
-namespace donut::math
+namespace BlackPearl::math
 {
 	// "uint" is a lot shorter than "unsigned int"
 	typedef unsigned int uint;
@@ -47,11 +47,37 @@ namespace donut::math
     constexpr float infinity = std::numeric_limits<float>::infinity();
     constexpr float NaN = std::numeric_limits<float>::quiet_NaN();
 
-    // Generic min/max/abs/clamp/saturate
+    
+	
+	// Generic min/max/abs/clamp/saturate
 	template <typename T>
 	constexpr T min(T a, T b) { return (a < b) ? a : b; }
+
+	constexpr float4 min(float4 a, float4 b) {
+		return float4(min(a.x, b.x), min(a.y, b.y), min(a.z, b.z), min(a.w, b.w));
+	};
+	constexpr float3 min(float3 a, float3 b) {
+		return float3(min(a.x, b.x), min(a.y, b.y), min(a.z, b.z));
+	};
+	constexpr float2 min(float2 a, float2 b) {
+		return float2(min(a.x, b.x), min(a.y, b.y));
+	};
+
+
     template <typename T>
     constexpr T max(T a, T b) { return (a < b) ? b : a; }
+
+	constexpr float4 max(float4 a, float4 b) {
+		return float4(max(a.x, b.x), max(a.y, b.y), max(a.z, b.z), max(a.w, b.w));
+	};
+	constexpr float3 max(float3 a, float3 b) {
+		return float3(max(a.x, b.x), max(a.y, b.y), max(a.z, b.z));
+	};
+	constexpr float2 max(float2 a, float2 b) {
+		return float2(max(a.x, b.x), max(a.y, b.y));
+	};
+
+
     template <typename T>
     constexpr T abs(T a) { return (a < T(0)) ? -a : a; }
 	template <typename T>

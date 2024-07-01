@@ -8,20 +8,22 @@
 #include "BlackPearl/Renderer/Mesh/Mesh.h"
 #include "BlackPearl/Scene/Scene.h"
 #include "BlackPearl/Renderer/Shader/ShaderFactory.h"
+#include "BlackPearl/Renderer/SceneType.h"
+namespace std
+{
+    template<>
+    struct hash<std::pair<BlackPearl::ITexture*, BlackPearl::ITexture*>>
+    {
+        size_t operator()(const std::pair<BlackPearl::ITexture*, BlackPearl::ITexture*>& v) const noexcept
+        {
+            auto h = hash<BlackPearl::ITexture*>();
+            return h(v.first) ^ (h(v.second) << 8);
+        }
+    };
+}
+
 namespace BlackPearl {
 
-
-    enum class MaterialDomain : uint8_t
-    {
-        Opaque,
-        AlphaTested,
-        AlphaBlended,
-        Transmissive,
-        TransmissiveAlphaTested,
-        TransmissiveAlphaBlended,
-
-        Count
-    };
 
 	class BasePassRenderer : public GeometryRenderer
 	{

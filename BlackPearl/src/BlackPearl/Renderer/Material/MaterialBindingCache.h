@@ -1,18 +1,10 @@
 #pragma once
 #include "BlackPearl/RHI/RHIDevice.h"
 #include "BlackPearl/Renderer/Material/Material.h"
+#include "BlackPearl/Renderer/SceneType.h"
+
 #include <mutex>
 namespace BlackPearl {
-
-    struct LoadedTexture
-    {
-        TextureHandle texture;
-       // TextureAlphaMode alphaMode = TextureAlphaMode::UNKNOWN;
-        uint32_t originalBitsPerPixel = 0;
-       // DescriptorHandle bindlessDescriptor;
-        std::string path;
-        std::string mimeType;
-    };
 
 
     enum class MaterialResource
