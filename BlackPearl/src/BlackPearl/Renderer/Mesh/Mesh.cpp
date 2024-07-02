@@ -168,6 +168,17 @@ namespace BlackPearl {
 			{
 				if (it->second == "aPos" || it->second == "POSITION") {
 					memcpy(m_Positions + i * pos_cnt, m_Vertices + i * attributeSizeofOneVertex + offset,  pos_cnt * sizeof(float));
+					math::float3 pos;
+					pos.x = m_Vertices[i * attributeSizeofOneVertex + offset];
+					pos.y = m_Vertices[i * attributeSizeofOneVertex + offset + 1];
+					pos.z = m_Vertices[i * attributeSizeofOneVertex + offset + 2];
+					m_MinLocalP.x = math::min(pos.x, m_MinLocalP.x);
+					m_MinLocalP.y = math::min(pos.y, m_MinLocalP.x);
+					m_MinLocalP.z = math::min(pos.z, m_MinLocalP.x);
+
+					m_MaxLocalP.x = math::max(pos.x, m_MaxLocalP.x);
+					m_MaxLocalP.y = math::max(pos.y, m_MaxLocalP.x);
+					m_MaxLocalP.z = math::max(pos.z, m_MaxLocalP.x);
 					offset += pos_cnt;
 				}
 				else if (it->second == "aNormal" || it->second == "NORMAL") {

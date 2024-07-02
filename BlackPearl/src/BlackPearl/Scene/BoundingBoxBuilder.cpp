@@ -22,9 +22,8 @@ namespace BlackPearl {
 	{
 		if (obj->GetComponent<BasicInfo>()->GetObjectType() == ObjectType::OT_Sphere)
 			return SphereBoundingBox(obj);
-		//else if (obj->GetComponent<BasicInfo>()->GetObjectType() == ObjectType::OT_Sphere)
-		//	return TriangleBoundingBox(obj);
 		else if (obj->GetComponent<BasicInfo>()->GetObjectType() == ObjectType::OT_Model) {
+
 			std::vector<BlackPearl::Vertex> verteices = obj->GetComponent<MeshRenderer>()->GetModel()->GetMeshVertex();
 			obj->AddComponent<BVHNode>(verteices);
 			AABB box = obj->GetComponent<BVHNode>()->GetRootBox();
@@ -35,13 +34,25 @@ namespace BlackPearl {
 			return box;
 		}
 		else { //Cube, Quad, Tiangle
-
+			const std::vector<std::shared_ptr<Mesh>>& meshes= obj->GetComponent<MeshRenderer>()->GetMeshes();
 			//Get positon, calculate aabb
-			
-			//Get transform
+			AABB objBox;
+			int idx = 0;
+			for (const auto& mesh : meshes) {
+				AABB box(mesh->GetMinPLocal(), mesh->GetMaxPLocal(), true);
+				glm::mat4 m = obj->GetComponent<Transform>()->GetTransformMatrix();
+				box.UpdateTransform(m);
+				if (idx == 0) {
+					objBox = box;
+				}
+				else {
+					objBox.Expand(box);
+				}
+				idx++;
 
-			//calculate transformed AABB
+			}
 
+			return objBox;
 
 		}
 	}

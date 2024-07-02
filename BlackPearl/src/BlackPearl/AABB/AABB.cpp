@@ -11,6 +11,8 @@ namespace BlackPearl {
 	AABB::AABB()
 	{
 		*this = InValid;
+		m_Center = math::float3(0.0);
+		m_Extent = math::float3(0.0);
 	}
 	
 	AABB::AABB(const math::float3& minPOrCenter, const math::float3& maxPOrExtent, bool setMinMax, bool IsValid)

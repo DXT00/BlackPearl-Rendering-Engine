@@ -83,6 +83,8 @@ namespace BlackPearl {
 		std::pair<uint32_t*, uint32_t> GetIndicesBuffer() const { return { m_Indices, m_IndicesSize }; }
 		uint32_t GetIndicesConut() const { return m_IndicesCount; }
 
+		math::float3 GetMinPLocal() const { return m_MinLocalP; }
+		math::float3 GetMaxPLocal() const { return m_MaxLocalP; }
 
 	public:
 		std::string name;
@@ -166,6 +168,10 @@ namespace BlackPearl {
 		uint32_t m_JointIndices1Size = 0;
 		uint32_t m_WeightSize = 0;
 		uint32_t m_Weight1Size = 0;
+
+		math::float3 m_MinLocalP = math::float3(FLT_MAX);
+		math::float3 m_MaxLocalP = math::float3(-FLT_MAX);;
+
 
 
 		MeshInfo m_MeshInfo;

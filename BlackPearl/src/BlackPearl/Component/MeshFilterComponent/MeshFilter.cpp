@@ -8,9 +8,6 @@ namespace BlackPearl{
 	{
 	}
 
-	std::vector<math::float3> MeshFilter::GetPosition() const
-	{
-		return std::vector<math::float3>();
-	}
+
 
 }

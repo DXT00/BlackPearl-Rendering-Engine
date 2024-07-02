@@ -13,7 +13,7 @@ namespace BlackPearl {
 
 		~CubeMeshFilter();
 
-		virtual std::vector<math::float3>  GetPosition() const override { return mPos; }
+		//virtual std::vector<math::float3>  GetPosition() const override { return mPos; }
 
 	private:
 		std::vector<math::float3> mPos;

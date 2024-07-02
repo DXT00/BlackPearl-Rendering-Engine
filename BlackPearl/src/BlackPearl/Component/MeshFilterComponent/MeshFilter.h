@@ -15,7 +15,7 @@ namespace BlackPearl {
 		void SetVertices(std::vector<float> vertices) { m_Vertices = vertices; }
 		void SetIndices(std::vector<unsigned int> indices) { m_Indices = indices; }
 
-		virtual std::vector<math::float3>  GetPosition() const;
+		//virtual std::vector<math::float3>  GetPosition() const;
 		
 	protected:
 		std::vector<float>        m_Vertices;
