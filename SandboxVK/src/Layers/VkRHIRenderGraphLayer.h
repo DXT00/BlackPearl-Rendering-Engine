@@ -21,9 +21,15 @@ public:
 	}
 	void OnSetup() override {
 		m_RenderGraph = DBG_NEW BlackPearl::ForwardRenderGraph(m_DeviceManager);
-		m_Scene = DBG_NEW BlackPearl::Scene();
 		m_RenderGraph->Init(m_Scene);
 
+		m_Scene = DBG_NEW BlackPearl::Scene();
+		m_SphereObj = CreateSphere(0.5, 64, 64);
+		m_CubeObj = CreateCube();
+		//m_CubeObj->GetComponent<BlackPearl::Transform>()->SetScale({ 0.2,0.2,0.2 });
+
+		m_Scene->AddObject(m_SphereObj);
+		m_Scene->AddObject(m_CubeObj);
 
 	}
 
@@ -41,10 +47,11 @@ public:
 
 private:
 
-
-
 	BlackPearl::Scene* m_Scene;
 	BlackPearl::ForwardRenderGraph* m_RenderGraph;
+
+	BlackPearl::Object* m_CubeObj;
+	BlackPearl::Object* m_SphereObj;
 
 
 };

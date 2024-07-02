@@ -31,12 +31,12 @@ namespace BlackPearl {
 	void Scene::AddObject(Object* obj)
 	{
 		SingleNode* singleNode = DBG_NEW SingleNode(obj);
-		AddNode(singleNode);
+		_AddNode(singleNode);
 		m_ObjectList.push_back(obj);
-		PrimitiveOctree->AddElement(PrimitiveOctreeNode());
+		PrimitiveOctree->AddElement(*singleNode);
 	}
 
-	void Scene::AddNode(Node* node)
+	void Scene::_AddNode(Node* node)
 	{
 		m_NodesList.push_back(node);
 		if (node->GetType() == Node::Type::Batch_Node) {

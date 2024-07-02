@@ -17,13 +17,6 @@
 
 namespace BlackPearl {
 
-	//struct MeshInfo
-	//{
-	//	
-
-	//	virtual ~MeshInfo() = default;
-	//};
-
 	class Mesh
 	{
 	public:

@@ -1,11 +1,13 @@
 #include "pch.h"
 #include "SingleNode.h"
 #include "BlackPearl/Component/MeshRendererComponent/MeshRenderer.h"
+#include "BlackPearl/Component/BoundingBoxComponent/BoundingBox.h"
 #include "BlackPearl/Object/Object.h"
 
 namespace BlackPearl {
 	SingleNode::SingleNode(Object* obj)
 		: Node(Node::Type::Single_Node),
+		
 		m_VertexCnt(0),
 		m_IndexCnt(0)
 	{
@@ -16,6 +18,13 @@ namespace BlackPearl {
 			m_VertexCnt += mesh->GetVertexCount();
 			m_IndexCnt += mesh->GetIndicesCount();
 		}
+
+
+		//PrimitiveOctreeNode Init
+		Bound = obj->GetComponent<BoundingBox>()->Get();
+		//TODO :: unused for now
+		ObjectId = 0;
+
 	}
 	SingleNode::~SingleNode()
 	{

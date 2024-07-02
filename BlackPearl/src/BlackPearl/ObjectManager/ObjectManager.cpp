@@ -147,7 +147,8 @@ namespace BlackPearl {
 
 		std::shared_ptr<Mesh> mesh = std::make_shared<Mesh>(meshFilter->GetVertices(), meshFilter->GetIndices(), material, layout);
 		obj->AddComponent<MeshRenderer>(mesh);
-
+		AABB box = BoundingBoxBuilder::Build(obj);
+		obj->AddComponent<BoundingBox>(box);
 		m_Objs.push_back(obj);
 		return obj;
 

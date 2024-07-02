@@ -55,7 +55,7 @@ namespace BlackPearl {
 
         m_DrawStrategy->PrepareForView(scene, *view);
         RenderView(commandList, targetFramebuffer, view, preView, m_DrawStrategy, this);
-
+        commandList->endMarker();
    
     }
     void BasePassRenderer::SetupView(ICommandList* commandList, const IView* view, const IView* viewPrev)

@@ -1,7 +1,8 @@
 #pragma once
 #include "Node.h"
+#include "BlackPearl/Scene/SceneOctree.h"
 namespace BlackPearl {
-	class SingleNode: public Node
+	class SingleNode: public Node, public PrimitiveOctreeNode
 	{
 	public:
 		SingleNode(Object* obj);

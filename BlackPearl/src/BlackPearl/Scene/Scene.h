@@ -22,7 +22,6 @@ namespace BlackPearl {
 		void AddLights(Object* obj);
 		void GetLights();
 		void AddObject(Object* obj);
-		void AddNode(Node* node);
 		// only single nodes now
 		void UpdateObjsAABB();
 
@@ -65,6 +64,11 @@ namespace BlackPearl {
 
 		Object* m_RootObj;
 		Node* m_RootNode;
+
+
+	private:
+		void _AddNode(Node* node);
+
 	};
 
 

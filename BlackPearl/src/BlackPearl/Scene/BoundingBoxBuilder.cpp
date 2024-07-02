@@ -22,8 +22,8 @@ namespace BlackPearl {
 	{
 		if (obj->GetComponent<BasicInfo>()->GetObjectType() == ObjectType::OT_Sphere)
 			return SphereBoundingBox(obj);
-		else if (obj->GetComponent<BasicInfo>()->GetObjectType() == ObjectType::OT_Sphere)
-			return TriangleBoundingBox(obj);
+		//else if (obj->GetComponent<BasicInfo>()->GetObjectType() == ObjectType::OT_Sphere)
+		//	return TriangleBoundingBox(obj);
 		else if (obj->GetComponent<BasicInfo>()->GetObjectType() == ObjectType::OT_Model) {
 			std::vector<BlackPearl::Vertex> verteices = obj->GetComponent<MeshRenderer>()->GetModel()->GetMeshVertex();
 			obj->AddComponent<BVHNode>(verteices);
@@ -33,6 +33,16 @@ namespace BlackPearl {
 
 			obj->AddComponent<BoundingBox>(box);
 			return box;
+		}
+		else { //Cube, Quad, Tiangle
+
+			//Get positon, calculate aabb
+			
+			//Get transform
+
+			//calculate transformed AABB
+
+
 		}
 	}
 
