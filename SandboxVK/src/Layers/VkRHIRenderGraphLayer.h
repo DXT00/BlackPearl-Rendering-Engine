@@ -37,7 +37,7 @@ public:
 
 		BlackPearl::Renderer::BeginScene(*(m_MainCamera->GetObj()->GetComponent<BlackPearl::PerspectiveCamera>()), *GetLightSources());
 		//Update Camera, Materials ..
-		m_RenderGraph->Render(m_DeviceManager->GetFrameBuffer());
+		m_RenderGraph->Render(m_DeviceManager->GetFrameBuffer(), BlackPearl::Renderer::GetSceneData());
 		
 		
 	}

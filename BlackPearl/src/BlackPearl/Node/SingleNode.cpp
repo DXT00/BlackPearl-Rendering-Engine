@@ -12,16 +12,19 @@ namespace BlackPearl {
 		m_IndexCnt(0)
 	{
 		m_Obj = obj;
-		std::vector<std::shared_ptr<Mesh>>& meshes = obj->GetComponent<MeshRenderer>()->GetMeshes();
-		for (auto mesh : meshes)
-		{
-			m_VertexCnt += mesh->GetVertexCount();
-			m_IndexCnt += mesh->GetIndicesCount();
+		if (obj->HasComponent<MeshRenderer>()) {
+			std::vector<std::shared_ptr<Mesh>>& meshes = obj->GetComponent<MeshRenderer>()->GetMeshes();
+			for (auto mesh : meshes)
+			{
+				m_VertexCnt += mesh->GetVertexCount();
+				m_IndexCnt += mesh->GetIndicesCount();
+			}
+
+
+			//PrimitiveOctreeNode Init
+			Bound = obj->GetComponent<BoundingBox>()->Get();
 		}
 
-
-		//PrimitiveOctreeNode Init
-		Bound = obj->GetComponent<BoundingBox>()->Get();
 		//TODO :: unused for now
 		ObjectId = 0;
 

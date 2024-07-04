@@ -26,7 +26,7 @@ namespace BlackPearl {
 		AddPass(m_PostProcessRenderer);
 	}
 
-	void ForwardRenderGraph::Render(IFramebuffer* framebuffer, IView& View)
+	void ForwardRenderGraph::Render(IFramebuffer* framebuffer, IView* View)
 	{
 		m_BasePassRenderer->Render(m_CommandList, framebuffer, m_Scene);
 		m_PostProcessRenderer->Render(m_CommandList, PostProcessRenderer::RenderPassType::Debug_BlendDebugViz,

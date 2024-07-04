@@ -20,7 +20,10 @@ namespace BlackPearl {
 	class Mesh
 	{
 	public:
-		Mesh() {};
+		Mesh() {
+			buffers = std::make_shared<BufferGroup>();
+		
+		};
 		/*one vertexBuffer*/
 		Mesh(
 			float* vertices,

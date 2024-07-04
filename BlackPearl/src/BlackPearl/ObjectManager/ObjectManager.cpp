@@ -267,7 +267,8 @@ namespace BlackPearl {
 	{
 		Object* obj = CreateEmpty(name);
 		std::shared_ptr<BasicInfo> info = obj->AddComponent<BasicInfo>();
-		info->SetObjectType(ObjectType::OT_Group);		m_Objs.push_back(obj);
+		info->SetObjectType(ObjectType::OT_Group);		
+		m_Objs.push_back(obj);
 		return obj;
 	}
 	Object* ObjectManager::CreateBVHNode(const std::vector<Object*>& objs, const std::string name)

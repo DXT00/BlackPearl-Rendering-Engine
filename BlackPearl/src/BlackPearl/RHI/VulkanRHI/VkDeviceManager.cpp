@@ -440,8 +440,15 @@ namespace BlackPearl {
 		auto instanceExtVec = stringSetToVector(enabledExtensions.instance);
 		auto layerVec = stringSetToVector(enabledExtensions.layers);
 
-		VkApplicationInfo applicationInfo;
-		applicationInfo.apiVersion = VK_MAKE_VERSION(1, 3, 0);
+		/*VkApplicationInfo applicationInfo;
+		applicationInfo.apiVersion = VK_MAKE_VERSION(1, 3, 0);*/
+		VkApplicationInfo applicationInfo{};
+		applicationInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
+		applicationInfo.pApplicationName = "BlackPearl VkSandBox";
+		applicationInfo.applicationVersion = VK_MAKE_VERSION(1, 0, 0);
+		applicationInfo.pEngineName = "BlackPearl";
+		applicationInfo.engineVersion = VK_MAKE_VERSION(1, 0, 0);
+		applicationInfo.apiVersion = VK_API_VERSION_1_0;
 
 		// create the vulkan instance
 		VkInstanceCreateInfo info;

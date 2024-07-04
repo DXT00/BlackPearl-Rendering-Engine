@@ -12,7 +12,7 @@ namespace BlackPearl {
 			: RenderGraph(deviceManager)
 		{ }
 		virtual void Init(Scene* scene);
-		virtual void Render(IFramebuffer* framebuffer, IView& View);
+		virtual void Render(IFramebuffer* framebuffer, IView* View);
 	private:
 
 		void _CreateRenderTagets();

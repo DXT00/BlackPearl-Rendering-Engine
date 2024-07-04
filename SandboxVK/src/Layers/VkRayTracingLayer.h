@@ -94,7 +94,7 @@ public:
 		{
 			BlackPearl::Vertex v = doge_verteices[i];
 
-			v.position = transM * glm::vec4(v.position, 1.0);
+			v.position = BlackPearl::Math::ToFloat3( transM * glm::vec4(BlackPearl::Math::ToVec3(v.position), 1.0));
 			doge_verteices_trans.push_back(v);
 		}
 
