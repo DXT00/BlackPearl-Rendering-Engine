@@ -186,7 +186,19 @@ namespace BlackPearl {
 		bool _checkDeviceExtensionSupport(VkPhysicalDevice device);
 		SwapChainSupportDetails _querySwapChainSupport(VkPhysicalDevice device);
 
+		static VKAPI_ATTR VkBool32 VKAPI_CALL _debugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity, VkDebugUtilsMessageTypeFlagsEXT messageType, const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData, void* pUserData) {
+			std::cerr << "validation layer: " << pCallbackData->pMessage << std::endl;
 
+			return VK_FALSE;
+		}
+
+		void _populateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT& createInfo) {
+			createInfo = {};
+			createInfo.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
+			createInfo.messageSeverity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;
+			createInfo.messageType = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;
+			createInfo.pfnUserCallback = _debugCallback;
+		}
 		struct VulkanExtensionSet
 		{
 			std::unordered_set<std::string> instance;
@@ -338,13 +350,23 @@ namespace BlackPearl {
 		}
 
 		// add any extensions required by GLFW
-		uint32_t glfwExtCount;
+		uint32_t glfwExtCount = 0;
 		const char** glfwExt = glfwGetRequiredInstanceExtensions(&glfwExtCount);
+
+		std::vector<const char*> exts(glfwExt, glfwExt + glfwExtCount);
+
 		assert(glfwExt);
 
 		for (uint32_t i = 0; i < glfwExtCount; i++)
 		{
+			auto a = glfwExt[i];
 			enabledExtensions.instance.insert(std::string(glfwExt[i]));
+		}
+
+		if (enableValidationLayers) {
+			enabledExtensions.instance.insert(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
+			enabledExtensions.layers.insert("VK_LAYER_KHRONOS_validation");
+
 		}
 
 		// add instance extensions requested by the user
@@ -352,6 +374,7 @@ namespace BlackPearl {
 		{
 			enabledExtensions.instance.insert(name);
 		}
+		
 		for (const std::string& name : m_DeviceParams.optionalVulkanInstanceExtensions)
 		{
 			optionalExtensions.instance.insert(name);
@@ -398,8 +421,9 @@ namespace BlackPearl {
 		GE_CORE_INFO("Enabled Vulkan instance extensions:");
 		for (const auto& ext : enabledExtensions.instance)
 		{
-			GE_CORE_INFO("%s", ext.c_str());
+			GE_CORE_INFO(ext.c_str());
 		}
+
 
 		std::unordered_set<std::string> requiredLayers = enabledExtensions.layers;
 
@@ -434,8 +458,9 @@ namespace BlackPearl {
 		GE_CORE_INFO( "Enabled Vulkan layers:");
 		for (const auto& layer : enabledExtensions.layers)
 		{
-			GE_CORE_INFO( "    %s", layer.c_str());
+			GE_CORE_INFO(layer.c_str());
 		}
+
 
 		auto instanceExtVec = stringSetToVector(enabledExtensions.instance);
 		auto layerVec = stringSetToVector(enabledExtensions.layers);
@@ -451,15 +476,24 @@ namespace BlackPearl {
 		applicationInfo.apiVersion = VK_API_VERSION_1_0;
 
 		// create the vulkan instance
-		VkInstanceCreateInfo info;
-		info.enabledLayerCount = uint32_t(layerVec.size());
-		info.ppEnabledLayerNames = layerVec.data();
-		info.enabledExtensionCount = uint32_t(instanceExtVec.size());
-		info.ppEnabledExtensionNames = instanceExtVec.data();
-		info.pApplicationInfo = &applicationInfo;
+		VkInstanceCreateInfo createInfo{};
+		createInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
+		createInfo.enabledLayerCount = uint32_t(layerVec.size());
+		createInfo.ppEnabledLayerNames = layerVec.data();
+		createInfo.enabledExtensionCount = uint32_t(instanceExtVec.size());
+		createInfo.ppEnabledExtensionNames = instanceExtVec.data();
+		createInfo.pApplicationInfo = &applicationInfo;
 
 
-		const VkResult res = vkCreateInstance(&info, nullptr, &m_Instance);
+		VkDebugUtilsMessengerCreateInfoEXT debugCreateInfo{};
+		if (enableValidationLayers) {
+			_populateDebugMessengerCreateInfo(debugCreateInfo);
+			createInfo.pNext = (VkDebugUtilsMessengerCreateInfoEXT*)&debugCreateInfo;
+		}
+		else {
+			createInfo.pNext = nullptr;
+		}
+		const VkResult res = vkCreateInstance(&createInfo, nullptr, &m_Instance);
 		if (res != VkResult::VK_SUCCESS)
 		{
 			GE_CORE_ERROR("Failed to create a Vulkan instance");
@@ -579,6 +613,8 @@ namespace BlackPearl {
 
 		std::vector<VkExtensionProperties> deviceExtensions(extensionCount);
 		vkEnumerateDeviceExtensionProperties(m_PhysicalDevice, nullptr, &extensionCount, deviceExtensions.data());
+		std::unordered_set<std::string> requiredDeviceExt = enabledExtensions.device;
+
 		for (const auto& ext : deviceExtensions)
 		{
 			const std::string name = ext.extensionName;
@@ -591,6 +627,18 @@ namespace BlackPearl {
 			{
 				enabledExtensions.device.insert(name);
 			}
+			requiredDeviceExt.erase(name);
+		}
+
+		if (!requiredDeviceExt.empty())
+		{
+			std::stringstream ss;
+			ss << "Cannot create a Vulkan device because the following required device(s) are not supported:";
+			for (const auto& ext : requiredDeviceExt)
+				ss << std::endl << "  - " << ext;
+
+			GE_CORE_ERROR(ss.str().c_str());
+			return false;
 		}
 
 		bool accelStructSupported = false;
@@ -605,7 +653,7 @@ namespace BlackPearl {
 		GE_CORE_INFO( "Enabled Vulkan device extensions:");
 		for (const auto& ext : enabledExtensions.device)
 		{
-			GE_CORE_INFO( "    %s", ext.c_str());
+			GE_CORE_INFO(ext.c_str());
 
 			if (ext == VK_KHR_ACCELERATION_STRUCTURE_EXTENSION_NAME)
 				accelStructSupported = true;
