@@ -749,9 +749,10 @@ namespace BlackPearl {
 			APPEND_EXTENSION(ommSupported, ommFeatures)
 #undef APPEND_EXTENSION
 
-			// Determine support for Buffer Device Address, the Vulkan 1.2 way
-		VkPhysicalDeviceFeatures2 physicalDeviceFeatures2;
-		VkPhysicalDeviceBufferDeviceAddressFeatures bufferDeviceAddressFeatures;
+		// Determine support for Buffer Device Address, the Vulkan 1.2 way
+		VkPhysicalDeviceFeatures2 physicalDeviceFeatures2{};
+		VkPhysicalDeviceBufferDeviceAddressFeatures bufferDeviceAddressFeatures{};
+		physicalDeviceFeatures2.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2;
 		physicalDeviceFeatures2.pNext = &bufferDeviceAddressFeatures;
 		vkGetPhysicalDeviceFeatures2(m_PhysicalDevice, &physicalDeviceFeatures2);
 

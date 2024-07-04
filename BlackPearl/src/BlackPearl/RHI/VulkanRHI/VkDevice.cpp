@@ -134,12 +134,12 @@ namespace BlackPearl {
 			m_Context.extensions.buffer_device_address = true;
 
 		void* pNext = nullptr;
-		VkPhysicalDeviceAccelerationStructurePropertiesKHR accelStructProperties;
-		VkPhysicalDeviceRayTracingPipelinePropertiesKHR rayTracingPipelineProperties;
-		VkPhysicalDeviceConservativeRasterizationPropertiesEXT conservativeRasterizationProperties;
-		VkPhysicalDeviceFragmentShadingRatePropertiesKHR shadingRateProperties;
-		VkPhysicalDeviceOpacityMicromapPropertiesEXT opacityMicromapProperties;
-		VkPhysicalDeviceRayTracingInvocationReorderPropertiesNV nvRayTracingInvocationReorderProperties;
+		VkPhysicalDeviceAccelerationStructurePropertiesKHR accelStructProperties{};
+		VkPhysicalDeviceRayTracingPipelinePropertiesKHR rayTracingPipelineProperties{};
+		VkPhysicalDeviceConservativeRasterizationPropertiesEXT conservativeRasterizationProperties{};
+		VkPhysicalDeviceFragmentShadingRatePropertiesKHR shadingRateProperties{};
+		VkPhysicalDeviceOpacityMicromapPropertiesEXT opacityMicromapProperties{};
+		VkPhysicalDeviceRayTracingInvocationReorderPropertiesNV nvRayTracingInvocationReorderProperties{};
 		
 		VkPhysicalDeviceProperties2 deviceProperties2;
 
@@ -201,8 +201,8 @@ namespace BlackPearl {
 
 		if (m_Context.extensions.KHR_fragment_shading_rate)
 		{
-			VkPhysicalDeviceFeatures2 deviceFeatures2;
-			VkPhysicalDeviceFragmentShadingRateFeaturesKHR shadingRateFeatures;
+			VkPhysicalDeviceFeatures2 deviceFeatures2{};
+			VkPhysicalDeviceFragmentShadingRateFeaturesKHR shadingRateFeatures{};
 			deviceFeatures2.pNext = &shadingRateFeatures;
 			vkGetPhysicalDeviceFeatures2(m_Context.physicalDevice, &deviceFeatures2);
 			//m_Context.physicalDevice.getFeatures2(&deviceFeatures2);
@@ -234,7 +234,7 @@ namespace BlackPearl {
 		//	m_Context.error("Failed to create the pipeline cache");
 		//}
 
-		VkPipelineCacheCreateInfo pipelineInfo;
+		VkPipelineCacheCreateInfo pipelineInfo{};
 		VkResult res =  vkCreatePipelineCache(m_Context.device, &pipelineInfo,
 				m_Context.allocationCallbacks,
 				&m_Context.pipelineCache);
