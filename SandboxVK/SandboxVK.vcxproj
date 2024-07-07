@@ -138,6 +138,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="src\Layers\VkGpuParticlesLayer.h" />
+    <ClInclude Include="src\Layers\VkRHIRenderGraphLayer.h" />
     <ClInclude Include="src\Layers\VkRayTracingLayer.h" />
     <ClInclude Include="src\Layers\VkTestLayer.h" />
   </ItemGroup>
@@ -147,10 +148,10 @@
   <ItemGroup>
     <None Include="assets\shaders\particle.frag" />
     <None Include="assets\shaders\particle.vert" />
-    <None Include="assets\shaders\raytracing\definitions.glsl" />
+    <None Include="assets\shaders\raytracing\Denoise.frag" />
     <None Include="assets\shaders\raytracing\postProcess.frag" />
     <None Include="assets\shaders\raytracing\postProcess.vert" />
-    <None Include="assets\shaders\raytracing\rayTracing.comp" />
+    <None Include="assets\shaders\spv\Denoise_frag.spv" />
     <None Include="assets\shaders\spv\particle_comp.spv" />
     <None Include="assets\shaders\spv\particle_frag.spv" />
     <None Include="assets\shaders\spv\particle_vert.spv" />

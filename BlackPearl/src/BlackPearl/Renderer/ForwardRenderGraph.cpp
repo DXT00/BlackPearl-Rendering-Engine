@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "BlackPearl/Renderer/ForwardRenderGraph.h"
 #include "BlackPearl/Renderer/CullingManager.h"
+#include "BlackPearl/Renderer/MasterRenderer/BasePassRenderer.h"
 namespace BlackPearl {
 	extern CullingManager* g_cullingManager;
 	void ForwardRenderGraph::Init(Scene* scene) {
@@ -9,21 +10,22 @@ namespace BlackPearl {
 		m_Scene = scene;
 		_CreateRenderTagets();
 		
-		//PrePass
-		m_IndirectCullRenderer = DBG_NEW IndirectCullRenderer();
-		m_IndirectCullRenderer->Init(scene);
+		////PrePass
+		//m_IndirectCullRenderer = DBG_NEW IndirectCullRenderer();
+		//m_IndirectCullRenderer->Init(scene);
 
 		//BasePass
 		m_BasePassRenderer = DBG_NEW BasePassRenderer();
-
+		BasePassRenderer::CreateParameters params;
+		m_BasePassRenderer->Init(m_DeviceManager->GetDevice(), m_ShaderFactory, params);
 		//PostProcessPass
-		m_PostProcessRenderer = DBG_NEW PostProcessRenderer();
-		m_PostProcessRenderer->Init(GetDevice(), m_ShaderFactory);
+		/*m_PostProcessRenderer = DBG_NEW PostProcessRenderer();
+		m_PostProcessRenderer->Init(GetDevice(), m_ShaderFactory);*/
 		
 
-		AddPass(m_IndirectCullRenderer);
+		//AddPass(m_IndirectCullRenderer);
 		AddPass(m_BasePassRenderer);
-		AddPass(m_PostProcessRenderer);
+		//AddPass(m_PostProcessRenderer);
 	}
 
 	void ForwardRenderGraph::Render(IFramebuffer* framebuffer, IView* View)

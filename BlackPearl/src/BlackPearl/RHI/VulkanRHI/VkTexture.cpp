@@ -328,7 +328,8 @@ namespace BlackPearl {
 
         VkImageViewType imageViewType = textureDimensionToImageViewType(dimension);
 
-        VkImageViewCreateInfo viewInfo;
+        VkImageViewCreateInfo viewInfo{};
+        viewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
         viewInfo.image = image;
         viewInfo.viewType = imageViewType;
         viewInfo.format = vkformat;
@@ -397,7 +398,7 @@ namespace BlackPearl {
         if (objectType != ObjectTypes::VK_Image)
             return nullptr;
 
-        VkImage image;
+        VkImage image = (VkImage)(_texture.pointer);
 
         ETexture* texture = new ETexture(m_Context, m_Allocator);
         fillTextureInfo(texture, desc);

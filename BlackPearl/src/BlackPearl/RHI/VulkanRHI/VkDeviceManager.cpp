@@ -238,7 +238,7 @@ namespace BlackPearl {
 				VK_NV_MESH_SHADER_EXTENSION_NAME,
 				VK_KHR_FRAGMENT_SHADING_RATE_EXTENSION_NAME,
 				VK_KHR_SYNCHRONIZATION_2_EXTENSION_NAME,
-				VK_EXT_OPACITY_MICROMAP_EXTENSION_NAME,
+				//VK_EXT_OPACITY_MICROMAP_EXTENSION_NAME,
 				VK_EXT_CONSERVATIVE_RASTERIZATION_EXTENSION_NAME
 			},
 		};
@@ -470,10 +470,10 @@ namespace BlackPearl {
 		VkApplicationInfo applicationInfo{};
 		applicationInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
 		applicationInfo.pApplicationName = "BlackPearl VkSandBox";
-		applicationInfo.applicationVersion = VK_MAKE_VERSION(1, 0, 0);
+		applicationInfo.applicationVersion = VK_MAKE_VERSION(1, 2, 0);
 		applicationInfo.pEngineName = "BlackPearl";
-		applicationInfo.engineVersion = VK_MAKE_VERSION(1, 0, 0);
-		applicationInfo.apiVersion = VK_API_VERSION_1_0;
+		applicationInfo.engineVersion = VK_MAKE_VERSION(1, 2, 0);
+		applicationInfo.apiVersion = VK_API_VERSION_1_2;
 
 		// create the vulkan instance
 		VkInstanceCreateInfo createInfo{};
@@ -701,64 +701,66 @@ namespace BlackPearl {
 			queueDesc.push_back(queueCreateInfo);
 		}
 
-
 		VkPhysicalDeviceAccelerationStructureFeaturesKHR accelStructFeatures{};
+		accelStructFeatures.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_ACCELERATION_STRUCTURE_FEATURES_KHR;
 		accelStructFeatures.accelerationStructure = true;
-		 VkPhysicalDeviceBufferAddressFeaturesEXT bufferAddressFeatures{};
-		 bufferAddressFeatures.bufferDeviceAddress = true;
-			//.setBufferDeviceAddress(true);
-		 VkPhysicalDeviceRayTracingPipelineFeaturesKHR rayPipelineFeatures{};
-		 rayPipelineFeatures.rayTracingPipeline = true;
-		 rayPipelineFeatures.rayTraversalPrimitiveCulling = true;
 
+		VkPhysicalDeviceBufferAddressFeaturesEXT bufferAddressFeatures{};
+		bufferAddressFeatures.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_BUFFER_DEVICE_ADDRESS_FEATURES_EXT;
+		bufferAddressFeatures.bufferDeviceAddress = true;
+		//.setBufferDeviceAddress(true);
+		VkPhysicalDeviceRayTracingPipelineFeaturesKHR rayPipelineFeatures{};
+		rayPipelineFeatures.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_RAY_TRACING_PIPELINE_FEATURES_KHR;
+		rayPipelineFeatures.rayTracingPipeline = true;
+		rayPipelineFeatures.rayTraversalPrimitiveCulling = true;
 
-	     VkPhysicalDeviceRayQueryFeaturesKHR rayQueryFeatures{};
-		 rayQueryFeatures.rayQuery = true;
-		 VkPhysicalDeviceMeshShaderFeaturesNV meshletFeatures{};
-		 meshletFeatures.taskShader = true;
-		 meshletFeatures.meshShader = true;
+		VkPhysicalDeviceRayQueryFeaturesKHR rayQueryFeatures{};
+		rayQueryFeatures.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_RAY_QUERY_FEATURES_KHR;
+		rayQueryFeatures.rayQuery = true;
 
-
+		VkPhysicalDeviceMeshShaderFeaturesNV meshletFeatures{};
+		meshletFeatures.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MESH_SHADER_FEATURES_NV;
+		meshletFeatures.taskShader = true;
+		meshletFeatures.meshShader = true;
 		
 		VkPhysicalDeviceFragmentShadingRateFeaturesKHR vrsFeatures{};
+		vrsFeatures.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FRAGMENT_SHADING_RATE_FEATURES_KHR;
 		vrsFeatures.pipelineFragmentShadingRate = true;
 		vrsFeatures.primitiveFragmentShadingRate = true;
 		vrsFeatures.attachmentFragmentShadingRate = true;
 
 
-
-
-			//.setPipelineFragmentShadingRate(true)
-			//.setPrimitiveFragmentShadingRate(true)
-			//.setAttachmentFragmentShadingRate(true);
-		 VkPhysicalDeviceSynchronization2Features s2Features{};
-		 s2Features.synchronization2 = true;
-		 VkPhysicalDeviceOpacityMicromapFeaturesEXT ommFeatures{};
-		 ommFeatures.micromap = true;
+		VkPhysicalDeviceSynchronization2Features s2Features{};
+		s2Features.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SYNCHRONIZATION_2_FEATURES;
+		s2Features.synchronization2 = true;
+		VkPhysicalDeviceOpacityMicromapFeaturesEXT ommFeatures{};
+		ommFeatures.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_OPACITY_MICROMAP_FEATURES_EXT;
+		ommFeatures.micromap = true;
 
 
 		void* pNext = nullptr;
 #define APPEND_EXTENSION(condition, desc) if (condition) { (desc).pNext = pNext; pNext = &(desc); }  // NOLINT(cppcoreguidelines-macro-usage)
 		APPEND_EXTENSION(accelStructSupported, accelStructFeatures)
-			APPEND_EXTENSION(bufferAddressSupported, bufferAddressFeatures)
-			APPEND_EXTENSION(rayPipelineSupported, rayPipelineFeatures)
-			APPEND_EXTENSION(rayQuerySupported, rayQueryFeatures)
-			APPEND_EXTENSION(meshletsSupported, meshletFeatures)
-			APPEND_EXTENSION(vrsSupported, vrsFeatures)
-			APPEND_EXTENSION(s2Supported, s2Features)
-			APPEND_EXTENSION(ommSupported, ommFeatures)
+		APPEND_EXTENSION(bufferAddressSupported, bufferAddressFeatures)
+		APPEND_EXTENSION(rayPipelineSupported, rayPipelineFeatures)
+		APPEND_EXTENSION(rayQuerySupported, rayQueryFeatures)
+		APPEND_EXTENSION(meshletsSupported, meshletFeatures)
+		APPEND_EXTENSION(vrsSupported, vrsFeatures)
+		APPEND_EXTENSION(s2Supported, s2Features)
+		APPEND_EXTENSION(ommSupported, ommFeatures)
 #undef APPEND_EXTENSION
 
 		// Determine support for Buffer Device Address, the Vulkan 1.2 way
 		VkPhysicalDeviceFeatures2 physicalDeviceFeatures2{};
-		VkPhysicalDeviceBufferDeviceAddressFeatures bufferDeviceAddressFeatures{};
 		physicalDeviceFeatures2.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2;
+		VkPhysicalDeviceBufferDeviceAddressFeatures bufferDeviceAddressFeatures{};
+		bufferDeviceAddressFeatures.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_BUFFER_DEVICE_ADDRESS_FEATURES;
+
 		physicalDeviceFeatures2.pNext = &bufferDeviceAddressFeatures;
 		vkGetPhysicalDeviceFeatures2(m_PhysicalDevice, &physicalDeviceFeatures2);
 
-		 VkPhysicalDeviceFeatures deviceFeatures{};
-
-
+		VkPhysicalDeviceFeatures deviceFeatures{};
+		
 		 //.setShaderImageGatherExtended(true)
 			// .setSamplerAnisotropy(true)
 			// .setTessellationShader(true)
@@ -788,6 +790,8 @@ namespace BlackPearl {
 			 .setPNext(pNext);*/
 
 		VkPhysicalDeviceVulkan12Features vulkan12features{};
+		vulkan12features.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_2_FEATURES;
+		vulkan12features.descriptorIndexing = VK_TRUE;
 		vulkan12features.runtimeDescriptorArray = true;
 		vulkan12features.descriptorBindingPartiallyBound = true;
 		vulkan12features.descriptorBindingVariableDescriptorCount = true;
@@ -830,7 +834,7 @@ namespace BlackPearl {
 		if (m_DeviceParams.deviceCreateInfoCallback)
 			m_DeviceParams.deviceCreateInfoCallback(deviceDesc);
 
-		if (vkCreateDevice(m_PhysicalDevice, &(VkDeviceCreateInfo)deviceDesc, nullptr, &m_Device) != VkResult::VK_SUCCESS) {
+		if (vkCreateDevice(m_PhysicalDevice, &deviceDesc, nullptr, &m_Device) != VkResult::VK_SUCCESS) {
 			GE_CORE_ERROR("failed to create device");
 			return false;
 		};
@@ -853,12 +857,12 @@ namespace BlackPearl {
 		//VULKAN_HPP_DEFAULT_DISPATCHER.init(m_Device);
 
 		// stash the renderer string
-		VkPhysicalDeviceProperties prop;
+		VkPhysicalDeviceProperties prop{};
 		vkGetPhysicalDeviceProperties(m_PhysicalDevice, &prop);
 		
 		//m_RendererString = std::string(prop.deviceName.data());
 
-		GE_CORE_INFO("Created Vulkan device: %s", prop.deviceName);
+		GE_CORE_INFO( prop.deviceName);
 
 		return true;
 	}
@@ -904,6 +908,12 @@ namespace BlackPearl {
 		extent.width = m_DeviceParams.backBufferWidth;
 		extent.height = m_DeviceParams.backBufferHeight;
 
+		SwapChainSupportDetails swapChainSupport = _querySwapChainSupport(m_PhysicalDevice);
+		uint32_t imageCount = swapChainSupport.capabilities.minImageCount + 1;
+		if (swapChainSupport.capabilities.maxImageCount > 0 && imageCount > swapChainSupport.capabilities.maxImageCount) {
+			imageCount = swapChainSupport.capabilities.maxImageCount;
+		}
+
 		std::unordered_set<uint32_t> uniqueQueues = {
 			uint32_t(m_GraphicsQueueFamily),
 			uint32_t(m_PresentQueueFamily) };
@@ -916,7 +926,7 @@ namespace BlackPearl {
 		createInfo.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
 		createInfo.surface = m_WindowSurface;
 
-		createInfo.minImageCount = m_DeviceParams.swapChainBufferCount;
+		createInfo.minImageCount = imageCount;// m_DeviceParams.swapChainBufferCount;
 		createInfo.imageFormat = m_SwapChainFormat.format;
 		createInfo.imageColorSpace = m_SwapChainFormat.colorSpace;
 		createInfo.imageExtent = extent;
@@ -938,37 +948,14 @@ namespace BlackPearl {
 			throw std::runtime_error("failed to create swap chain!");
 		}
 
-			/*.setSurface(m_WindowSurface)
-			.setMinImageCount(m_DeviceParams.swapChainBufferCount)
-			.setImageFormat(m_SwapChainFormat.format)
-			.setImageColorSpace(m_SwapChainFormat.colorSpace)
-			.setImageExtent(extent)
-			.setImageArrayLayers(1)
-			.setImageUsage(vk::ImageUsageFlagBits::eColorAttachment | vk::ImageUsageFlagBits::eTransferDst | vk::ImageUsageFlagBits::eSampled)
-			.setImageSharingMode(enableSwapChainSharing ? vk::SharingMode::eConcurrent : vk::SharingMode::eExclusive)
-			.setQueueFamilyIndexCount(enableSwapChainSharing ? uint32_t(queues.size()) : 0)
-			.setPQueueFamilyIndices(enableSwapChainSharing ? queues.data() : nullptr)
-			.setPreTransform(vk::SurfaceTransformFlagBitsKHR::eIdentity)
-			.setCompositeAlpha(vk::CompositeAlphaFlagBitsKHR::eOpaque)
-			.setPresentMode(m_DeviceParams.vsyncEnabled ? vk::PresentModeKHR::eFifo : vk::PresentModeKHR::eImmediate)
-			.setClipped(true)
-			.setOldSwapchain(nullptr);*/
 
-		//const vk::Result res = m_Device.createSwapchainKHR(&desc, nullptr, &m_SwapChain);
-		//if (res != vk::Result::eSuccess)
-		//{
-		//	GE_CORE_ERROR("Failed to create a Vulkan swap chain, error code = %s", VkUtil::resultToString(VkResult(res)));
-		//	return false;
 		//}
-		SwapChainSupportDetails swapChainSupport = _querySwapChainSupport(m_PhysicalDevice);
-		uint32_t imageCount = swapChainSupport.capabilities.minImageCount + 1;
-		if (swapChainSupport.capabilities.maxImageCount > 0 && imageCount > swapChainSupport.capabilities.maxImageCount) {
-			imageCount = swapChainSupport.capabilities.maxImageCount;
-		}
+		
 		// retrieve swap chain images
 		vkGetSwapchainImagesKHR(m_Device, m_SwapChain, &imageCount, nullptr);
-		m_SwapChainImages.resize(imageCount);
+		m_SwapChainImages.clear();
 		std::vector<VkImage> images;
+		images.resize(imageCount);
 		vkGetSwapchainImagesKHR(m_Device, m_SwapChain, &imageCount, images.data());
 
 		//auto images = m_Device.getSwapchainImagesKHR(m_SwapChain);

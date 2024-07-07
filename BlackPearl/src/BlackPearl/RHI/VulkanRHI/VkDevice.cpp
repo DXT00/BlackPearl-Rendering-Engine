@@ -135,13 +135,19 @@ namespace BlackPearl {
 
 		void* pNext = nullptr;
 		VkPhysicalDeviceAccelerationStructurePropertiesKHR accelStructProperties{};
+		accelStructProperties.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_ACCELERATION_STRUCTURE_PROPERTIES_KHR;
 		VkPhysicalDeviceRayTracingPipelinePropertiesKHR rayTracingPipelineProperties{};
+		rayTracingPipelineProperties.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_RAY_TRACING_PIPELINE_PROPERTIES_KHR;
 		VkPhysicalDeviceConservativeRasterizationPropertiesEXT conservativeRasterizationProperties{};
+		conservativeRasterizationProperties.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_CONSERVATIVE_RASTERIZATION_PROPERTIES_EXT;
 		VkPhysicalDeviceFragmentShadingRatePropertiesKHR shadingRateProperties{};
+		shadingRateProperties.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FRAGMENT_SHADING_RATE_PROPERTIES_KHR;
 		VkPhysicalDeviceOpacityMicromapPropertiesEXT opacityMicromapProperties{};
+		opacityMicromapProperties.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_OPACITY_MICROMAP_PROPERTIES_EXT;
 		VkPhysicalDeviceRayTracingInvocationReorderPropertiesNV nvRayTracingInvocationReorderProperties{};
-		
-		VkPhysicalDeviceProperties2 deviceProperties2;
+		nvRayTracingInvocationReorderProperties.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_RAY_TRACING_INVOCATION_REORDER_PROPERTIES_NV;
+		VkPhysicalDeviceProperties2 deviceProperties2{};
+		deviceProperties2.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PROPERTIES_2;
 
 		if (m_Context.extensions.KHR_acceleration_structure)
 		{
@@ -202,7 +208,9 @@ namespace BlackPearl {
 		if (m_Context.extensions.KHR_fragment_shading_rate)
 		{
 			VkPhysicalDeviceFeatures2 deviceFeatures2{};
+			deviceFeatures2.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2;
 			VkPhysicalDeviceFragmentShadingRateFeaturesKHR shadingRateFeatures{};
+			shadingRateFeatures.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FRAGMENT_SHADING_RATE_FEATURES_KHR;
 			deviceFeatures2.pNext = &shadingRateFeatures;
 			vkGetPhysicalDeviceFeatures2(m_Context.physicalDevice, &deviceFeatures2);
 			//m_Context.physicalDevice.getFeatures2(&deviceFeatures2);
@@ -235,6 +243,7 @@ namespace BlackPearl {
 		//}
 
 		VkPipelineCacheCreateInfo pipelineInfo{};
+		pipelineInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_CACHE_CREATE_INFO;
 		VkResult res =  vkCreatePipelineCache(m_Context.device, &pipelineInfo,
 				m_Context.allocationCallbacks,
 				&m_Context.pipelineCache);
@@ -300,7 +309,7 @@ namespace BlackPearl {
 
 		attachment_vector<VkAttachmentDescription2> attachmentDescs(desc.colorAttachments.size());
 		attachment_vector<VkAttachmentReference2> colorAttachmentRefs(desc.colorAttachments.size());
-		VkAttachmentReference2 depthAttachmentRef;
+		VkAttachmentReference2 depthAttachmentRef{};
 
 		nvrhi::static_vector<VkImageView, c_MaxRenderTargets + 1> attachmentViews;
 		attachmentViews.resize(desc.colorAttachments.size());
@@ -318,7 +327,7 @@ namespace BlackPearl {
 			const VkFormat attachmentFormat = (rt.format == Format::UNKNOWN ? t->imageInfo.format : VkFormat(VkUtil::convertFormat(rt.format)));
 
 			attachmentDescs[i] = VkAttachmentDescription2{};
-
+			attachmentDescs[i].sType = VK_STRUCTURE_TYPE_ATTACHMENT_DESCRIPTION_2;
 			attachmentDescs[i].format = attachmentFormat;
 			attachmentDescs[i].samples = t->imageInfo.samples;
 			attachmentDescs[i].loadOp = VK_ATTACHMENT_LOAD_OP_LOAD;
@@ -326,19 +335,10 @@ namespace BlackPearl {
 			attachmentDescs[i].initialLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
 			attachmentDescs[i].finalLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
 
-			//.setFormat(attachmentFormat)
-			//.setSamples(t->imageInfo.samples)
-			//.setLoadOp(VkAttachmentLoadOp::eLoad)
-			//.setStoreOp(VkAttachmentStoreOp::eStore)
-			//.setInitialLayout(VkImageLayout::eColorAttachmentOptimal)
-			//.setFinalLayout(VkImageLayout::eColorAttachmentOptimal);
-
 			colorAttachmentRefs[i] = VkAttachmentReference2{};
+			colorAttachmentRefs[i].sType = VK_STRUCTURE_TYPE_ATTACHMENT_REFERENCE_2;
 			colorAttachmentRefs[i].attachment = i;
 			colorAttachmentRefs[i].layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
-
-			/*.setAttachment(i)
-			.setLayout(VkImageLayout::eColorAttachmentOptimal);*/
 
 			TextureSubresourceSet subresources = rt.subresources.resolve(t->desc, true);
 
@@ -371,15 +371,9 @@ namespace BlackPearl {
 				depthLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_READ_ONLY_OPTIMAL;
 			}
 
-			/*	attachmentDescs.push_back(vk::AttachmentDescription2()
-					.setFormat(texture->imageInfo.format)
-					.setSamples(texture->imageInfo.samples)
-					.setLoadOp(vk::AttachmentLoadOp::eLoad)
-					.setStoreOp(vk::AttachmentStoreOp::eStore)
-					.setInitialLayout(depthLayout)
-					.setFinalLayout(depthLayout));*/
 
-			VkAttachmentDescription2 depthAttachment;
+			VkAttachmentDescription2 depthAttachment{};
+			depthAttachment.sType = VK_STRUCTURE_TYPE_ATTACHMENT_DESCRIPTION_2;
 			depthAttachment.format = texture->imageInfo.format;
 			depthAttachment.samples = texture->imageInfo.samples;
 			depthAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_LOAD;
@@ -391,6 +385,7 @@ namespace BlackPearl {
 
 
 			depthAttachmentRef = VkAttachmentReference2{};
+			depthAttachmentRef.sType = VK_STRUCTURE_TYPE_ATTACHMENT_REFERENCE_2;
 			depthAttachmentRef.attachment = uint32_t(attachmentDescs.size()) - 1;
 			depthAttachmentRef.layout = depthLayout;
 			/*.setAttachment(uint32_t(attachmentDescs.size()) - 1)
@@ -411,7 +406,8 @@ namespace BlackPearl {
 				numArraySlices = subresources.numArraySlices;
 		}
 
-		VkSubpassDescription2 subpass;
+		VkSubpassDescription2 subpass{};
+		subpass.sType = VK_STRUCTURE_TYPE_SUBPASS_DESCRIPTION_2;
 		/*auto subpass = VkSubpassDescription2()
 			.setPipelineBindPoint(vk::PipelineBindPoint::eGraphics)
 			.setColorAttachmentCount(uint32_t(desc.colorAttachments.size()))
@@ -427,8 +423,8 @@ namespace BlackPearl {
 
 		// add VRS attachment
 		// declare the structures here to avoid using pointers to out-of-scope objects in renderPassInfo further
-		VkAttachmentReference2 vrsAttachmentRef;
-		VkFragmentShadingRateAttachmentInfoKHR shadingRateAttachmentInfo;
+		VkAttachmentReference2 vrsAttachmentRef{};
+		VkFragmentShadingRateAttachmentInfoKHR shadingRateAttachmentInfo{};
 
 		if (desc.shadingRateAttachment.valid())
 		{
@@ -445,7 +441,8 @@ namespace BlackPearl {
 			//	.setFinalLayout(vk::ImageLayout::eFragmentShadingRateAttachmentOptimalKHR);
 
 
-			VkAttachmentDescription2 vrsAttachmentDesc;
+			VkAttachmentDescription2 vrsAttachmentDesc{};
+			vrsAttachmentDesc.sType = VK_STRUCTURE_TYPE_ATTACHMENT_DESCRIPTION_2;
 			vrsAttachmentDesc.format = VK_FORMAT_R8_UINT;
 			vrsAttachmentDesc.samples = VK_SAMPLE_COUNT_1_BIT;
 			vrsAttachmentDesc.loadOp = VK_ATTACHMENT_LOAD_OP_LOAD;
@@ -474,14 +471,14 @@ namespace BlackPearl {
 			vkGetPhysicalDeviceProperties2(m_Context.physicalDevice, &props);
 			/*m_Context.physicalDevice.getProperties2(&props);*/
 
-			VkAttachmentReference2 vrsAttachmentRef;
+			VkAttachmentReference2 vrsAttachmentRef{};
 			/*		.setAttachment(uint32_t(attachmentDescs.size()) - 1)
 					.setLayout(vk::ImageLayout::eFragmentShadingRateAttachmentOptimalKHR);*/
-
+			vrsAttachmentRef.sType = VK_STRUCTURE_TYPE_ATTACHMENT_REFERENCE_2;
 			vrsAttachmentRef.attachment = uint32_t(attachmentDescs.size()) - 1;
 			vrsAttachmentRef.layout = VK_IMAGE_LAYOUT_FRAGMENT_SHADING_RATE_ATTACHMENT_OPTIMAL_KHR;
 
-			VkFragmentShadingRateAttachmentInfoKHR shadingRateAttachmentInfo;
+			VkFragmentShadingRateAttachmentInfoKHR shadingRateAttachmentInfo{};
 			shadingRateAttachmentInfo.pFragmentShadingRateAttachment = &vrsAttachmentRef;
 			shadingRateAttachmentInfo.shadingRateAttachmentTexelSize = rateProps.minFragmentShadingRateAttachmentTexelSize;
 
@@ -490,12 +487,12 @@ namespace BlackPearl {
 			subpass.pNext = &shadingRateAttachmentInfo;
 		}
 
-		VkRenderPassCreateInfo2&& renderPassInfo = {};
+		VkRenderPassCreateInfo2&& renderPassInfo{};
 		//.setAttachmentCount(uint32_t(attachmentDescs.size()))
 		//.setPAttachments(attachmentDescs.data())
 		//.setSubpassCount(1)
 		//.setPSubpasses(&subpass);
-
+		renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO_2;
 		renderPassInfo.attachmentCount = uint32_t(attachmentDescs.size());
 		renderPassInfo.pAttachments = attachmentDescs.data();
 		renderPassInfo.subpassCount = 1;
@@ -521,7 +518,8 @@ namespace BlackPearl {
 			//.setHeight(fb->framebufferInfo.height)
 			//.setLayers(numArraySlices);
 
-		VkFramebufferCreateInfo framebufferInfo;
+		VkFramebufferCreateInfo framebufferInfo{};
+		framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
 		framebufferInfo.renderPass = fb->renderPass;
 		framebufferInfo.attachmentCount = uint32_t(attachmentViews.size());
 		framebufferInfo.pAttachments = attachmentViews.data();

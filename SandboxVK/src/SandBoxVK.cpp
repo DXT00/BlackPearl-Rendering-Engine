@@ -26,12 +26,12 @@ public:
 		if (renderer == "VkGpuParticles") {
 			layer = DBG_NEW VkGpuParticlesLayer(layer_name);
 		}*/
-		if (renderer == "VkRayTracing") {
-			layer = DBG_NEW VkRayTracingLayer(layer_name);
-		}
-		/*if (renderer == "VkRHIRenderGraphLayer") {
+		//if (renderer == "VkRayTracing") {
+		//	layer = DBG_NEW VkRayTracingLayer(layer_name);
+		//}
+		if (renderer == "VkRHIRenderGraphLayer") {
 			layer = DBG_NEW VkRHIRenderGraphLayer(layer_name);
-		}*/
+		}
 		GetLayerManager()->PushLayer(layer);
 	}
 	virtual ~SandBoxVK() {
@@ -42,7 +42,7 @@ public:
 };
 
 BlackPearl::Application* BlackPearl::CreateApplication(HINSTANCE hInstance, int nShowCmd) {
-	return DBG_NEW SandBoxVK(hInstance, nShowCmd, BlackPearl::DynamicRHI::Type::Vulkan, "VkRayTracing");
+	return DBG_NEW SandBoxVK(hInstance, nShowCmd, BlackPearl::DynamicRHI::Type::Vulkan, "VkRHIRenderGraphLayer");
 
 }
 
