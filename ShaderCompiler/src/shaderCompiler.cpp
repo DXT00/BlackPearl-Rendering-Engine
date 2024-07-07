@@ -31,8 +31,8 @@
 #include <thread>
 #include <mutex>
 #include <csignal>
-#include "Common/Misc.h"
-#include "Common/shader-blob.h"
+#include "BlackPearl/RHI/Common/Misc.h"
+#include "BlackPearl/RHI/Common/shader-blob.h"
 //#include <nvrhi/common/shader-blob.h>
 //#include <nvrhi/common/misc.h>
 
@@ -468,7 +468,7 @@ bool WriteShaderBlob(const string& compiledShaderName, const vector<BlobEntry>& 
 			fs::remove(inputFileName);
 		}
 		
-		BlackPearl::ShaderBlobEntry binaryEntry;
+		BlackPearl::ShaderMake::ShaderBlobEntry binaryEntry;
 		binaryEntry.permutationSize = (uint32_t)entry.permutation.size();
 		binaryEntry.dataSize = (uint32_t)fileSize;
 

@@ -18,7 +18,7 @@ project "ShaderCompiler"
 	includedirs
 	{
 		-- "../BlackPearl/vendor/spdlog/include",
-		"../BlackPearl/src/BlackPearl/RHI",
+		"../BlackPearl/src/",
 		-- "../BlackPearl/vendor",
 		-- "../%{IncludeDir.glm}",
 		-- "../%{IncludeDir.GLFW}",
