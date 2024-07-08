@@ -63,7 +63,7 @@ using namespace cxxopts;
 bool CommandLineOptions::parse(int argc, char** argv)
 {
 	Options options(argv[0], "Batch shader compiler for NVRHI");
-
+	
 	string platformName;
 
 	options.add_options()
@@ -126,8 +126,8 @@ bool CommandLineOptions::parse(int argc, char** argv)
 		else
 			throw std::runtime_error("Unrecognized platform: " + platformName);
 
-		if (argc > 1)
-			throw std::runtime_error("Unexpected positional arguments");
+		/*if (argc > 1)
+			throw std::runtime_error("Unexpected positional arguments");*/
 
 		return true;
 	}
