@@ -196,7 +196,6 @@ string buildCompilerCommandLine(const CompilerOptions& options, const fs::path& 
 	ss << "$COMPILER ";
 #endif
 	ss << path_string(shaderFile) << " ";
-	//ss << "-Fo " << path_string(outputFile) << " 
 	ss << "-Fo " << path_string(outputFile) << " ";
 	ss << "-T " << options.target << " ";
 	if (!options.entryPoint.empty())

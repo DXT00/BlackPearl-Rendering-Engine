@@ -167,8 +167,8 @@ bool CompilerOptions::parse(std::string line)
 		if (target.empty())
 			throw std::runtime_error("Shader target not specified");
 
-		if (argc > 1)
-			throw std::runtime_error("Unexpected positional arguments");
+		/*if (argc > 1)
+			throw std::runtime_error("Unexpected positional arguments");*/
 	}
 	catch (const std::runtime_error& e)
 	{
