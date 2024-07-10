@@ -1,4 +1,3 @@
-#pragma once
 /*
 * Copyright (c) 2014-2021, NVIDIA CORPORATION. All rights reserved.
 *
@@ -21,35 +20,11 @@
 * DEALINGS IN THE SOFTWARE.
 */
 
-#pragma pack_matrix(row_major)
-
-#include <donut/shaders/forward_cb.h>
-#include <donut/shaders/forward_vertex.hlsli>
-#include <donut/shaders/vulkan.hlsli>
-
-cbuffer c_ForwardView : register(b1VK_DESCRIPTOR_SET(1))
+struct SceneVertex
 {
-    ForwardShadingViewConstants g_ForwardView;
+    float3 pos : POS;
+    float3 prevPos : PREV_POS;
+    float2 texCoord : TEXCOORD;
+    centroid float3 normal : NORMAL;
+    centroid float4 tangent : TANGENT;
 };
-
-void main(
-	in SceneVertex i_vtx,
-    in float4 i_instanceMatrix0 : TRANSFORM0,
-    in float4 i_instanceMatrix1 : TRANSFORM1,
-    in float4 i_instanceMatrix2 : TRANSFORM2,
-	in uint i_instance : SV_InstanceID,
-    out float4 o_position : SV_Position,
-    out SceneVertex o_vtx
-)
-{
-    float3x4 instanceMatrix = float3x4(i_instanceMatrix0, i_instanceMatrix1, i_instanceMatrix2);
-
-    o_vtx = i_vtx;
-    o_vtx.pos = mul(instanceMatrix, float4(i_vtx.pos, 1.0)).xyz;
-    o_vtx.normal = mul(instanceMatrix, float4(i_vtx.normal, 0)).xyz;
-    o_vtx.tangent.xyz = mul(instanceMatrix, float4(i_vtx.tangent.xyz, 0)).xyz;
-    o_vtx.tangent.w = i_vtx.tangent.w;
-
-    float4 worldPos = float4(o_vtx.pos, 1.0);
-    o_position = mul(worldPos, g_ForwardView.view.matWorldToClip);
-}

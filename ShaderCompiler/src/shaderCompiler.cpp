@@ -208,6 +208,8 @@ string buildCompilerCommandLine(const CompilerOptions& options, const fs::path& 
 	for (const string& dir : g_Options.includePaths)
 		ss << "-I" << path_string(dir) << " ";
 
+
+
 	ss << g_SharedCompilerOptions;
 
 	for (const string& option : g_Options.additionalCompilerOptions)

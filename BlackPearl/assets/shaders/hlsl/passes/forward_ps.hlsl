@@ -22,32 +22,32 @@
 
 #pragma pack_matrix(row_major)
 
-//#include <donut/shaders/forward_cb.h>
-//#include <donut/shaders/scene_material.hlsli>
-//#include <donut/shaders/material_bindings.hlsli>
-//#include <donut/shaders/forward_vertex.hlsli>
-//#include <donut/shaders/lighting.hlsli>
-//#include <donut/shaders/shadows.hlsli>
-#include <vulkan.hlsli>
+#include <core/forward_cb.h>
+#include <core/scene_material.hlsli>
+#include <core/material_bindings.hlsli>
+#include <core/forward_vertex.hlsli>
+#include <core/lighting.hlsli>
+#include <core/shadows.hlsli>
+#include <core/vulkan.hlsli>
 
-cbuffer c_ForwardView : register(b1VK_DESCRIPTOR_SET(1))
+cbuffer c_ForwardView : register(b1 VK_DESCRIPTOR_SET(1))
 {
     ForwardShadingViewConstants g_ForwardView;
 };
 
-cbuffer c_ForwardLight : register(b2VK_DESCRIPTOR_SET(1))
+cbuffer c_ForwardLight : register(b2 VK_DESCRIPTOR_SET(1))
 {
     ForwardShadingLightConstants g_ForwardLight;
 };
 
-Texture2DArray t_ShadowMapArray : register(t10VK_DESCRIPTOR_SET(2));
-TextureCubeArray t_DiffuseLightProbe : register(t11VK_DESCRIPTOR_SET(2));
-TextureCubeArray t_SpecularLightProbe : register(t12VK_DESCRIPTOR_SET(2));
-Texture2D t_EnvironmentBrdf : register(t13VK_DESCRIPTOR_SET(2));
+Texture2DArray t_ShadowMapArray : register(t10 VK_DESCRIPTOR_SET(2));
+TextureCubeArray t_DiffuseLightProbe : register(t11 VK_DESCRIPTOR_SET(2));
+TextureCubeArray t_SpecularLightProbe : register(t12 VK_DESCRIPTOR_SET(2));
+Texture2D t_EnvironmentBrdf : register(t13 VK_DESCRIPTOR_SET(2));
 
-SamplerState s_ShadowSampler : register(s1VK_DESCRIPTOR_SET(1));
-SamplerState s_LightProbeSampler : register(s2VK_DESCRIPTOR_SET(2));
-SamplerState s_BrdfSampler : register(s3VK_DESCRIPTOR_SET(2));
+SamplerState s_ShadowSampler : register(s1 VK_DESCRIPTOR_SET(1));
+SamplerState s_LightProbeSampler : register(s2 VK_DESCRIPTOR_SET(2));
+SamplerState s_BrdfSampler : register(s3 VK_DESCRIPTOR_SET(2));
 
 float3 GetIncidentVector(float4 directionOrPosition, float3 surfacePos)
 {
@@ -85,7 +85,7 @@ void main(
     float3 specularTerm = 0;
 
     [loop]
-    for (uint nLight = 0; nLight < g_ForwardLight.numLights; nLight++)
+    for(uint nLight = 0; nLight < g_ForwardLight.numLights; nLight++)
     {
         LightConstants light = g_ForwardLight.lights[nLight];
 
@@ -130,7 +130,7 @@ void main(
 
     float NdotV = saturate(-dot(surfaceMaterial.shadingNormal, viewIncident));
 
-    if (g_ForwardLight.numLightProbes > 0)
+    if(g_ForwardLight.numLightProbes > 0)
     {
         float3 N = surfaceMaterial.shadingNormal;
         float3 R = reflect(viewIncident, N);

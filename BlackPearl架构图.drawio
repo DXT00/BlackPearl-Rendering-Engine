@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2024-07-08T14:02:30.813Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36 Edg/126.0.0.0" etag="vRxM7FpLoPNZu7ebtmG2" version="24.6.2" type="device">
+<mxfile host="app.diagrams.net" modified="2024-07-10T14:10:05.070Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36 Edg/126.0.0.0" etag="yrW384yNkrwyt-UEyOUm" version="24.6.2" type="device">
   <diagram name="第 1 页" id="sPAzHPQsa-k4dK7YGP5Q">
     <mxGraphModel dx="1370" dy="1911" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
@@ -381,6 +381,9 @@
         </mxCell>
         <mxCell id="6-FD1GlZugfx3W7xpsyo-17" value="cso" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
           <mxGeometry x="1640" y="900" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="6-FD1GlZugfx3W7xpsyo-20" value="所有shader 放到Blackperal\asser\shaders目录下" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="1770" y="1130" width="160" height="30" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>

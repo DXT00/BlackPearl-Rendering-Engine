@@ -59,7 +59,7 @@ namespace BlackPearl {
 		std::shared_ptr<Material> lightMaterial;
 		std::shared_ptr<Material::TextureMaps> texture(DBG_NEW Material::TextureMaps());
 
-		lightMaterial.reset(DBG_NEW Material("assets/shaders/PointLight.glsl", texture, m_LightProp.diffuse, m_LightProp.diffuse, m_LightProp.diffuse, m_LightProp.diffuse));
+		lightMaterial.reset(DBG_NEW Material("assets/shaders/glsl/PointLight.glsl", texture, m_LightProp.diffuse, m_LightProp.diffuse, m_LightProp.diffuse, m_LightProp.diffuse));
 		VertexBufferLayout layout = {
 			{ElementDataType::Float3,"aPos",false,0}
 		};

@@ -1,1 +1,2 @@
-D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\ShaderCompiler\bin\Debug-windows-x86_64\ShaderCompiler\ShaderCompiler.exe -i D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\SandboxVK\assets\shaders\shaders.cfg -o D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\SandboxVK\assets\shaders\spv --compiler D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\VulkanSDK\1.3.236.0\Bin\glslc.exe -P SPIRV
+.\ShaderCompiler\bin\Debug-windows-x86_64\ShaderCompiler\ShaderCompiler.exe -i .\BlackPearl\assets\shaders\shaders.cfg -o .\BlackPearl\assets\shaders\spv --compiler .\BlackPearl\vendor\VulkanSDK\1.3.236.0\Bin\dxc.exe -P SPIRV -I .\BlackPearl\assets\shaders\hlsl\
+PAUSE
