@@ -18,10 +18,10 @@ namespace BlackPearl {
 
 	BasicRenderer::BasicRenderer()
 	{
-		if (GetModuleHandle(L"WinPixGpuCapturer.dll") == 0)
+		/*if (GetModuleHandle(L"WinPixGpuCapturer.dll") == 0)
 		{
 			LoadLibrary(HLSLPixDebugger::GetLatestWinPixGpuCapturerPath_Cpp17().c_str());
-		}
+		}*/
 	}
 
 	BasicRenderer::~BasicRenderer()

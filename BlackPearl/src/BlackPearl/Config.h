@@ -2,7 +2,6 @@
 #include<bitset>
 namespace BlackPearl {
 	//一个Entity最多32个Component
-
 	//inline static void SyncGPU();
 	class Configuration {
 	public:
@@ -80,6 +79,8 @@ namespace BlackPearl {
 		/* Rendering Device Settings*/
 		static const unsigned int SwapchainCount = 2;
 	
+		/* shader path settings*/
+		static const char* GetShaderTypeName();
 	};
 	struct ShaderConfig {
 

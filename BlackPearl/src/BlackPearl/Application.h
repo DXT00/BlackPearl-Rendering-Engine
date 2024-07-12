@@ -21,6 +21,7 @@
 #include "BlackPearl/RHI/DynamicRHI.h"
 #include "BlackPearl/Renderer/Material/MaterialManager.h"
 #include "BlackPearl/Renderer/DeviceManager.h"
+#include "BlackPearl/FileSystem/FileSystem.h"
 
 #include <chrono>
 using namespace std::chrono;
@@ -58,6 +59,9 @@ namespace BlackPearl {
 		bool OnCameraRotate(MouseMovedEvent&e);
 		bool OnWindowClose();
 		void EngineExit();
+
+	private:
+		void _InitFileSystem();
 	
 	
 	private:
@@ -75,6 +79,7 @@ namespace BlackPearl {
 		/* for Render */
 		DeviceManager* m_DeviceManager = nullptr;
 		double m_TotalSecond = 0;
+
 
 	};
 	//To be define in a client

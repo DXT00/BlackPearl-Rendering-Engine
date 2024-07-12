@@ -5,8 +5,10 @@
 #include "BlackPearl/Core.h"
 
 namespace BlackPearl {
-	ShaderFactory::ShaderFactory(DeviceHandle rendererInterface, std::shared_ptr<IFileSystem> fs, const std::filesystem::path& basePath)
+	ShaderFactory::ShaderFactory(DeviceHandle rendererInterface, IFileSystem* fs, const std::filesystem::path& basePath)
 	{
+		//m_basePath  = assets/shaders
+		m_basePath = basePath;
 	}
 	void ShaderFactory::ClearCache()
 	{

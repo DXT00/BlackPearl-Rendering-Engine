@@ -29,6 +29,7 @@
 #include "BlackPearl/Log.h"
 #include "BlackPearl/Renderer/Model/ModelLoader.h"
 #include <BlackPearl/Luanch/Luanch.h>
+#include "BlackPearl/Config.h"
 
 namespace BlackPearl {
 
@@ -39,6 +40,7 @@ namespace BlackPearl {
 	DeviceManager*   g_deviceManager = nullptr;
 	CullingManager* g_cullingManager = DBG_NEW CullingManager();
 	ModelLoader* g_modelLoader = nullptr;
+	RootFileSystem* g_rootFileSystem = DBG_NEW RootFileSystem();
 
 	double Application::s_AppFPS = 0.0f;
 	double Application::s_AppAverageFPS = 0.0f;
@@ -76,6 +78,8 @@ namespace BlackPearl {
 		m_Window = RHIInitWindow();
 		m_Window->SetAppCallBack(std::bind(&Application::OnEvent, this, std::placeholders::_1));
 
+		/*file system*/
+		_InitFileSystem();
 		/*Render*/
 		DeviceCreationParameters deviceParams;
 		deviceParams.backBufferWidth = Configuration::WindowWidth;
@@ -162,6 +166,21 @@ namespace BlackPearl {
 
 	void Application::EngineExit() {
 		RHIEngineExit();
+	}
+
+	void Application::_InitFileSystem()
+	{
+		std::filesystem::path shaderPath = g_rootFileSystem->GetExeDir()/"assets/shaders"/Configuration::GetShaderTypeName();
+		//std::filesystem::path appShaderPath = g_rootFileSystem->GetExeDir()/"shaders/pt_sdk"/Configuration::GetShaderTypeName(DynamicRHI::g_RHIType);
+		//std::filesystem::path nrdShaderPath = g_rootFileSystem->GetExeDir()/"shaders/nrd"/Configuration::GetShaderTypeName(DynamicRHI::g_RHIType);
+		//std::filesystem::path ommShaderPath = g_rootFileSystem->GetExeDir()/"shaders/omm"/Configuration::GetShaderTypeName(DynamicRHI::g_RHIType);
+	
+		g_rootFileSystem->mount("/shaders/app", shaderPath);
+		//g_rootFileSystem->mount("/shaders/app", appShaderPath);
+		//g_rootFileSystem->mount("/shaders/nrd", nrdShaderPath);
+		//g_rootFileSystem->mount("/shaders/omm", ommShaderPath);
+
+
 	}
 
 	bool Application::OnCameraRotate(MouseMovedEvent& e)

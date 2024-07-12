@@ -1,12 +1,14 @@
 #include "pch.h"
 #include "BlackPearl/Renderer/ForwardRenderGraph.h"
 #include "BlackPearl/Renderer/CullingManager.h"
+#include "BlackPearl/FileSystem/FileSystem.h"
 #include "BlackPearl/Renderer/MasterRenderer/BasePassRenderer.h"
 namespace BlackPearl {
 	extern CullingManager* g_cullingManager;
+	extern RootFileSystem* g_rootFileSystem;
 	void ForwardRenderGraph::Init(Scene* scene) {
 		m_CommandList = GetDevice()->createCommandList();
-		m_ShaderFactory = std::make_shared<ShaderFactory>(m_DeviceManager->GetDevice(), nullptr, "/shaders");
+		m_ShaderFactory = std::make_shared<ShaderFactory>(m_DeviceManager->GetDevice(), g_rootFileSystem, "assets/shaders/spv");
 		m_Scene = scene;
 		_CreateRenderTagets();
 		

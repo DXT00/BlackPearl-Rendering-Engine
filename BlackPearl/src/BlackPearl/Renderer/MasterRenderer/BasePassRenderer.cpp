@@ -119,7 +119,7 @@ namespace BlackPearl {
 
     ShaderHandle BasePassRenderer::CreateVertexShader(const std::shared_ptr<ShaderFactory>& shaderFactory, const CreateParameters& params)
     {
-        return shaderFactory->CreateShader("assets/passes/forward_vs.hlsl", "main", nullptr, ShaderType::Vertex);
+        return shaderFactory->CreateShader("hlsl/passes/forward_vs.hlsl", "main", nullptr, ShaderType::Vertex);
     }
 
     ShaderHandle BasePassRenderer::CreateGeometryShader(const std::shared_ptr<ShaderFactory>& shaderFactory, const CreateParameters& params)

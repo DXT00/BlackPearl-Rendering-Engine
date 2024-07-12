@@ -36,7 +36,6 @@ extern "C" {
 #include <glob.h>
 }
 #endif // _WIN32
-
 //using namespace donut::vfs;
 namespace BlackPearl {
 
@@ -436,6 +435,33 @@ static void appendPatternToRegex(const std::string& pattern, std::stringstream& 
         default: regex << c;
         }
     }
+}
+
+std::filesystem::path IFileSystem::GetExeDir() const
+{
+    return m_ExeDir;
+}
+
+IFileSystem::IFileSystem()
+{
+    char path[MAX_PATH] = { 0 };
+#ifdef _WIN32
+    if (GetModuleFileNameA(nullptr, path, MAX_PATH) == 0)
+        return ;
+#else // _WIN32
+    // /proc/self/exe is mostly linux-only, but can't hurt to try it elsewhere
+    if (readlink("/proc/self/exe", path, std::size(path)) <= 0)
+    {
+        // portable but assumes executable dir == cwd
+        if (!getcwd(path, std::size(path)))
+            return ""; // failure
+    }
+#endif // _WIN32
+
+    std::filesystem::path result = path;
+    result = result.parent_path();
+    m_ExeDir = result;
+    
 }
 
 //std::string getFileSearchRegex(const std::filesystem::path& path, const std::vector<std::string>& extensions)
