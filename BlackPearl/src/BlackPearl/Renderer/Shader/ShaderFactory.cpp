@@ -8,6 +8,7 @@ namespace BlackPearl {
 	ShaderFactory::ShaderFactory(DeviceHandle rendererInterface, IFileSystem* fs, const std::filesystem::path& basePath)
 	{
 		//m_basePath  = assets/shaders
+		m_fs = fs;
 		m_basePath = basePath;
 	}
 	void ShaderFactory::ClearCache()

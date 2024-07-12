@@ -24,7 +24,7 @@ namespace BlackPearl {
     private:
         DeviceHandle m_Device;
         std::unordered_map<std::string, std::shared_ptr<IBlob>> m_BytecodeCache;
-        std::shared_ptr<IFileSystem> m_fs;
+        IFileSystem* m_fs;
         std::filesystem::path m_basePath;
 
         
