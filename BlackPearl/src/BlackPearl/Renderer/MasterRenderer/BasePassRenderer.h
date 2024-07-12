@@ -103,7 +103,7 @@ namespace BlackPearl {
         virtual BindingSetHandle CreateViewBindingSet();
         virtual BindingLayoutHandle CreateLightBindingLayout();
         virtual BindingSetHandle CreateLightBindingSet(ITexture* shadowMapTexture, ITexture* diffuse, ITexture* specular, ITexture* environmentBrdf);
-        //virtual std::shared_ptr<MaterialBindingCache> CreateMaterialBindingCache(CommonRenderPasses& commonPasses);
+        virtual std::shared_ptr<MaterialBindingCache> CreateMaterialBindingCache();
         virtual GraphicsPipelineHandle CreateGraphicsPipeline(PipelineKey key, IFramebuffer* framebuffer);
 
    

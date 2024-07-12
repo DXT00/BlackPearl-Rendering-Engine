@@ -8,6 +8,7 @@ namespace BlackPearl {
 	ShaderFactory::ShaderFactory(DeviceHandle rendererInterface, IFileSystem* fs, const std::filesystem::path& basePath)
 	{
 		//m_basePath  = assets/shaders
+		m_Device = rendererInterface;
 		m_fs = fs;
 		m_basePath = basePath;
 	}
@@ -68,7 +69,7 @@ namespace BlackPearl {
 				adjustedName += "_" + std::string(entryName);
 		}
 
-		std::filesystem::path shaderFilePath = m_basePath / (adjustedName + ".bin");
+		std::filesystem::path shaderFilePath = m_basePath /(adjustedName + ".bin");
 
 		std::shared_ptr<IBlob>& data = m_BytecodeCache[shaderFilePath.generic_string()];
 

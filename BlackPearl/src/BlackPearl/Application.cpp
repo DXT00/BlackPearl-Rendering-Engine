@@ -175,7 +175,7 @@ namespace BlackPearl {
 		//std::filesystem::path nrdShaderPath = g_rootFileSystem->GetExeDir()/"shaders/nrd"/Configuration::GetShaderTypeName(DynamicRHI::g_RHIType);
 		//std::filesystem::path ommShaderPath = g_rootFileSystem->GetExeDir()/"shaders/omm"/Configuration::GetShaderTypeName(DynamicRHI::g_RHIType);
 	
-		g_rootFileSystem->mount("/shaders/app", shaderPath);
+		g_rootFileSystem->mount("assets/shaders/spv", shaderPath);
 		//g_rootFileSystem->mount("/shaders/app", appShaderPath);
 		//g_rootFileSystem->mount("/shaders/nrd", nrdShaderPath);
 		//g_rootFileSystem->mount("/shaders/omm", ommShaderPath);

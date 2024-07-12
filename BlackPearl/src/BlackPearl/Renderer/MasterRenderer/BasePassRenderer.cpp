@@ -2,6 +2,7 @@
 #include "BasePassRenderer.h"
 #include "BlackPearl/RHI/RHIInputLayout.h"
 #include "BlackPearl/RHI/Common/RHIUtils.h"
+#include "BlackPearl/Renderer/Material/MaterialBindingCache.h"
 
 namespace BlackPearl {
     BasePassRenderer::BasePassRenderer()
@@ -25,8 +26,8 @@ namespace BlackPearl {
         else {
             //TODO::
 
-            //m_MaterialBindings = CreateMaterialBindingCache(*m_CommonPasses);
-            GE_ASSERT(0, "params.materialBindings = nullptr");
+            m_MaterialBindings = CreateMaterialBindingCache();
+            //GE_ASSERT(0, "params.materialBindings = nullptr");
 
         }
 
@@ -145,7 +146,7 @@ namespace BlackPearl {
         std::vector<ShaderMacro> Macros;
         Macros.push_back(ShaderMacro("TRANSMISSIVE_MATERIAL", transmissiveMaterial ? "1" : "0"));
 
-        return shaderFactory->CreateShader("assets/passes/forward_ps.hlsl", "main", &Macros, ShaderType::Pixel);
+        return shaderFactory->CreateShader("hlsl/passes/forward_ps.hlsl", "main", &Macros, ShaderType::Pixel);
     }
 
     InputLayoutHandle BasePassRenderer::CreateInputLayout(IShader* vertexShader, const CreateParameters& params)
@@ -168,7 +169,15 @@ namespace BlackPearl {
 
     BindingLayoutHandle BasePassRenderer::CreateViewBindingLayout()
     {
-        return BindingLayoutHandle();
+        RHIBindingLayoutDesc viewLayoutDesc;
+        viewLayoutDesc.visibility = ShaderType::All;
+        viewLayoutDesc.bindings = {
+            RHIBindingLayoutItem::RT_VolatileConstantBuffer(1),
+            RHIBindingLayoutItem::RT_VolatileConstantBuffer(2),
+            RHIBindingLayoutItem::RT_Sampler(1)
+        };                        
+
+        return m_Device->createBindingLayout(viewLayoutDesc);
     }
 
     BindingSetHandle BasePassRenderer::CreateViewBindingSet()
@@ -186,12 +195,47 @@ namespace BlackPearl {
 
     BindingLayoutHandle BasePassRenderer::CreateLightBindingLayout()
     {
-        return BindingLayoutHandle();
+        RHIBindingLayoutDesc lightProbeBindingDesc;
+        lightProbeBindingDesc.visibility = ShaderType::Pixel;
+        lightProbeBindingDesc.bindings = {
+            RHIBindingLayoutItem::RT_Texture_SRV(10),
+            RHIBindingLayoutItem::RT_Texture_SRV(11),
+            RHIBindingLayoutItem::RT_Texture_SRV(12),
+            RHIBindingLayoutItem::RT_Texture_SRV(13),
+            RHIBindingLayoutItem::RT_Sampler(2),
+            RHIBindingLayoutItem::RT_Sampler(3)
+        };
+
+        return m_Device->createBindingLayout(lightProbeBindingDesc);
     }
 
     BindingSetHandle BasePassRenderer::CreateLightBindingSet(ITexture* shadowMapTexture, ITexture* diffuse, ITexture* specular, ITexture* environmentBrdf)
     {
         return BindingSetHandle();
+    }
+
+    std::shared_ptr<MaterialBindingCache> BasePassRenderer::CreateMaterialBindingCache()
+    {
+        std::vector<MaterialResourceBinding> materialBindings = {
+               { MaterialResource::ConstantBuffer, 0 },
+               { MaterialResource::DiffuseTexture, 0 },
+               { MaterialResource::SpecularTexture, 1 },
+               { MaterialResource::NormalTexture, 2 },
+               { MaterialResource::EmissiveTexture, 3 },
+               { MaterialResource::OcclusionTexture, 4 },
+               { MaterialResource::TransmissionTexture, 5 },
+               { MaterialResource::Sampler, 0 },
+        };
+
+        return std::make_shared<MaterialBindingCache>(
+            m_Device,
+            ShaderType::Pixel,
+            /* registerSpace = */ 0,
+            materialBindings,
+            nullptr,//commonPasses.m_AnisotropicWrapSampler,
+            nullptr,//commonPasses.m_GrayTexture,
+            nullptr//commonPasses.m_BlackTexture
+        );
     }
 
     GraphicsPipelineHandle BasePassRenderer::CreateGraphicsPipeline(PipelineKey key, IFramebuffer* framebuffer)

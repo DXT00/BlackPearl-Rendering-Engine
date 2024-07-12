@@ -946,7 +946,8 @@ namespace BlackPearl {
 		//	.setMaxLod(std::numeric_limits<float>::max())
 		//	.setBorderColor(pickSamplerBorderColor(desc));
 
-		VkSamplerCreateInfo samplerInfo;
+		VkSamplerCreateInfo samplerInfo{};
+		samplerInfo.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
 		samplerInfo.magFilter = desc.magFilter ? VK_FILTER_LINEAR : VK_FILTER_NEAREST;
 		samplerInfo.minFilter = desc.minFilter ? VK_FILTER_LINEAR : VK_FILTER_NEAREST;
 		samplerInfo.mipmapMode = desc.mipFilter ? VK_SAMPLER_MIPMAP_MODE_LINEAR : VK_SAMPLER_MIPMAP_MODE_NEAREST;
@@ -988,7 +989,8 @@ namespace BlackPearl {
 		shader->desc = d;
 		shader->stageFlagBits = VkUtil::convertShaderTypeToShaderStageFlagBits(d.shaderType);
 
-		VkShaderModuleCreateInfo shaderInfo;
+		VkShaderModuleCreateInfo shaderInfo{};
+		shaderInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
 		shaderInfo.codeSize = binarySize;
 		shaderInfo.pCode = (const uint32_t*)binary;
 

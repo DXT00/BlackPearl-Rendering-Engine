@@ -211,7 +211,8 @@ namespace BlackPearl {
         //    .setBindingCount(uint32_t(vulkanLayoutBindings.size()))
         //    .setPBindings(vulkanLayoutBindings.data());
 
-        VkDescriptorSetLayoutCreateInfo descriptorSetLayoutInfo;
+        VkDescriptorSetLayoutCreateInfo descriptorSetLayoutInfo{};
+        descriptorSetLayoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
         descriptorSetLayoutInfo.bindingCount = vulkanLayoutBindings.size();
         descriptorSetLayoutInfo.pBindings = vulkanLayoutBindings.data();
 
