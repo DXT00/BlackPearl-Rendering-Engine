@@ -22,7 +22,8 @@
 
 #ifndef MATERIAL_CB_H
 #define MATERIAL_CB_H
-
+#include "BlackPearl/Math/Math.h"
+using namespace BlackPearl::math;
 static const int MaterialDomain_Opaque                   = 0;
 static const int MaterialDomain_AlphaTested              = 1;
 static const int MaterialDomain_AlphaBlended             = 2;

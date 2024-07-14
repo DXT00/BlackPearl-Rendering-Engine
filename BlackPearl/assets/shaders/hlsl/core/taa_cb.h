@@ -22,7 +22,8 @@
 
 #ifndef TAA_CB_H
 #define TAA_CB_H
-
+#include "BlackPearl/Math/Math.h"
+using namespace BlackPearl::math;
 struct TemporalAntiAliasingConstants
 {
     float4x4 reprojectionMatrix;

@@ -97,13 +97,13 @@ namespace BlackPearl {
 
             const auto bindingLocation = registerOffset + binding.slot;
 
-            VkDescriptorSetLayoutBinding descriptorSetLayoutBinding;
+            VkDescriptorSetLayoutBinding descriptorSetLayoutBinding{};
 
             descriptorSetLayoutBinding.binding = bindingLocation;
             descriptorSetLayoutBinding.descriptorCount = descriptorCount;
             descriptorSetLayoutBinding.descriptorType = (VkDescriptorType)descriptorType;
             descriptorSetLayoutBinding.stageFlags = shaderStageFlags;
-
+            descriptorSetLayoutBinding.pImmutableSamplers = nullptr;
               /*  .setBinding(bindingLocation)
                 .setDescriptorCount(descriptorCount)
                 .setDescriptorType(descriptorType)

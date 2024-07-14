@@ -24,7 +24,8 @@
 #define BINDLESS_H_
 
 #include "material_cb.h"
-
+#include "BlackPearl/Math/Math.h"
+using namespace BlackPearl::math;
 struct GeometryData
 {
     uint numIndices;

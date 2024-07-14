@@ -22,7 +22,8 @@
 
 #ifndef SKY_CB_H
 #define SKY_CB_H
-
+#include "BlackPearl/Math/Math.h"
+using namespace BlackPearl::math;
 struct ProceduralSkyShaderParameters
 {
     float3 directionToLight;

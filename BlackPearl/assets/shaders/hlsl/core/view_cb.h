@@ -22,7 +22,8 @@
 
 #ifndef VIEW_CB_H
 #define VIEW_CB_H
-
+#include "BlackPearl/Math/Math.h"
+using namespace BlackPearl::math;
 struct PlanarViewConstants
 {
     float4x4    matWorldToView;

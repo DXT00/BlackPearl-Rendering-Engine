@@ -24,7 +24,8 @@
 #define LIGHT_CB_H
 
 #include "light_types.h"
-
+#include "BlackPearl/Math/Math.h"
+using namespace BlackPearl::math;
 struct ShadowConstants
 {
     float4x4 matWorldToUvzwShadow;

@@ -19,9 +19,6 @@
     <Filter Include="src\Layers">
       <UniqueIdentifier>{4C4DA51D-3805-E76A-A10C-C0C68DE3815B}</UniqueIdentifier>
     </Filter>
-    <Filter Include="assets\shaders\passes">
-      <UniqueIdentifier>{10cac804-f8fe-4d61-a6a6-20492fb31955}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Layers\VkGpuParticlesLayer.h">

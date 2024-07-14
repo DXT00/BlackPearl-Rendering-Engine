@@ -3,7 +3,7 @@
 #include "BlackPearl/RHI/RHIInputLayout.h"
 #include "BlackPearl/RHI/Common/RHIUtils.h"
 #include "BlackPearl/Renderer/Material/MaterialBindingCache.h"
-
+#include "hlsl/core/forward_cb.h"
 namespace BlackPearl {
     BasePassRenderer::BasePassRenderer()
     {
@@ -37,8 +37,8 @@ namespace BlackPearl {
         m_ShadowSampler = m_Device->createSampler(samplerDesc);
 
         //TODO::
-        //m_ForwardViewCB = m_Device->createBuffer(RHIUtils::CreateVolatileConstantBufferDesc(sizeof(ForwardShadingViewConstants), "ForwardShadingViewConstants", params.numConstantBufferVersions));
-        //m_ForwardLightCB = m_Device->createBuffer(RHIUtils::CreateVolatileConstantBufferDesc(sizeof(ForwardShadingLightConstants), "ForwardShadingLightConstants", params.numConstantBufferVersions));
+        m_ForwardViewCB = m_Device->createBuffer(RHIUtils::CreateVolatileConstantBufferDesc(sizeof(ForwardShadingViewConstants), "ForwardShadingViewConstants", params.numConstantBufferVersions));
+        m_ForwardLightCB = m_Device->createBuffer(RHIUtils::CreateVolatileConstantBufferDesc(sizeof(ForwardShadingLightConstants), "ForwardShadingLightConstants", params.numConstantBufferVersions));
 
         m_ViewBindingLayout = CreateViewBindingLayout();
         m_ViewBindingSet = CreateViewBindingSet();

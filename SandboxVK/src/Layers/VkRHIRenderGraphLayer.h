@@ -21,7 +21,6 @@ public:
 	}
 	void OnSetup() override {
 		m_RenderGraph = DBG_NEW BlackPearl::ForwardRenderGraph(m_DeviceManager);
-		m_RenderGraph->Init(m_Scene);
 
 		m_Scene = DBG_NEW BlackPearl::Scene();
 		m_SphereObj = CreateSphere(0.5, 64, 64);
@@ -30,6 +29,9 @@ public:
 
 		m_Scene->AddObject(m_SphereObj);
 		m_Scene->AddObject(m_CubeObj);
+
+		m_RenderGraph->Init(m_Scene);
+
 
 	}
 

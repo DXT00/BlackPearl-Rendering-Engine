@@ -20,7 +20,8 @@ project "BlackPearl"
 		"./src/**.png",
 		"./vendor/glm/glm/**.hpp",
 		"./vendor/glm/glm/**.inl",
-		"./vendor/stb/**.h"
+		"./vendor/stb/**.h",
+		"./assets/shaders/hlsl/core/**.h"
 	}
 	defines
 	{
@@ -45,7 +46,8 @@ project "BlackPearl"
 		"../%{IncludeDir.ShaderMake}",
 
 		"./vendor",
-		"./vendor/GLEW"
+		"./vendor/GLEW",
+		"./assets/shaders/"
 	}
 
 	libdirs{

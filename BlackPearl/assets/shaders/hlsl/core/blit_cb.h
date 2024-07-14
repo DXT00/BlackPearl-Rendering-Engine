@@ -22,7 +22,8 @@
 
 #ifndef BLIT_CB_H
 #define BLIT_CB_H
-
+#include "BlackPearl/Math/Math.h"
+using namespace BlackPearl::math;
 struct BlitConstants
 {
     float2  sourceOrigin;

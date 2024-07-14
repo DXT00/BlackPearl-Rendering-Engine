@@ -22,8 +22,9 @@
 
 #ifndef SSAO_CB_H
 #define SSAO_CB_H
-
-#include <core/view_cb.h>
+#include "BlackPearl/Math/Math.h"
+using namespace BlackPearl::math;
+#include "view_cb.h"
 
 struct SsaoConstants
 {
