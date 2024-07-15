@@ -39,6 +39,7 @@ namespace BlackPearl {
 	void Scene::_AddNode(Node* node)
 	{
 		m_NodesList.push_back(node);
+		node->Scene = this;
 		if (node->GetType() == Node::Type::Batch_Node) {
 			m_BatchNodesList.push_back(node);
 		}
@@ -47,6 +48,9 @@ namespace BlackPearl {
 		}
 		else if (node->GetType() == Node::Type::Single_Node) {
 			m_SingleNodesList.push_back(node);
+		}
+		else {
+			GE_ASSERT(0, "unknown node type");
 		}
 	}
 

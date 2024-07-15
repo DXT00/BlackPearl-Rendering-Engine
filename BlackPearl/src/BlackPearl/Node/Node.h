@@ -1,8 +1,9 @@
 #pragma once
 #include "BlackPearl/Object/Object.h"
+#include "BlackPearl/Scene/SceneOctree.h"
 #include "BlackPearl/Component/TransformComponent/Transform.h"
 namespace BlackPearl {
-	class Node
+	class Node : public PrimitiveOctreeNode
 	{
 	public:
 		enum Type {
@@ -11,8 +12,8 @@ namespace BlackPearl {
 			Instance_Node,
 		};
 
-		Node(Type type):
-			m_Type(type){}
+		Node(Object* obj ,Type type):
+			PrimitiveOctreeNode(obj), m_Type(type){}
 		virtual void AddObj(Object* obj) {};
 		virtual void UpdateObjs() {};
 

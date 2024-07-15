@@ -4,7 +4,7 @@
 #include "BlackPearl/Component/TransformComponent/Transform.h"
 namespace BlackPearl {
 	BatchNode::BatchNode(Object* selfObj, const std::vector<Object*>& objs, bool dynamic)
-		: Node(Node::Type::Batch_Node)
+		: Node(selfObj, Node::Type::Batch_Node)
 	{
 		//m_ObjectsList = objs;
 		m_Batch = std::make_shared<Batch>(objs, dynamic);

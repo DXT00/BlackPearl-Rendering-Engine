@@ -1005,15 +1005,16 @@ namespace BlackPearl {
 		template <typename Semantics>
 		void SetOctreeSemanticsElementId(const ElementType& Element, FOctreeElementId2 Id)
 		{
-			//TODO::
-			/*if constexpr (TModels_V<COctreeSemanticsV2, Semantics>)
-			{
-				Semantics::SetElementId(static_cast<typename Semantics::FOctree&>(*this), Element, Id);
-			}
-			else
-			{
-				Semantics::SetElementId(Element, Id);
-			}*/
+			Semantics::SetElementId(Element, Id);
+			////TODO::
+			//if constexpr (TModels_V<COctreeSemanticsV2, Semantics>)
+			//{
+			//	Semantics::SetElementId(static_cast<typename Semantics::FOctree&>(*this), Element, Id);
+			//}
+			//else
+			//{
+				
+			//}
 		}
 
 	protected:

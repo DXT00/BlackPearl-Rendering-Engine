@@ -1,8 +1,7 @@
 #pragma once
 #include "Node.h"
-#include "BlackPearl/Scene/SceneOctree.h"
 namespace BlackPearl {
-	class SingleNode: public Node, public PrimitiveOctreeNode
+	class SingleNode: public Node
 	{
 	public:
 		SingleNode(Object* obj);
@@ -14,9 +13,8 @@ namespace BlackPearl {
 
 		uint32_t GetVertexCount() const;
 		uint32_t GetIndexCount() const;
-		Object* GetObj() const;
 	private:
-		Object* m_Obj;
+		//Object* m_Obj;
 		uint32_t m_VertexCnt;
 		uint32_t m_IndexCnt;
 	};
