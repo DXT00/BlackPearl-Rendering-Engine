@@ -2,6 +2,14 @@
 #include <string>
 #include "BlackPearl/Entity/Entity.h"
 #include "BlackPearl/Component/BaseComponent.h"
+//namespace std
+//{
+//	template<>
+//	struct hash<BlackPearl::Entity::Id>
+//	{
+//		size_t operator()(const BlackPearl::Entity::Id& Id) const { return std::hash<const void*>()((const void*)Id.id); }
+//	};
+//}
 namespace BlackPearl {
 	extern EntityManager* g_entityManager;
 	class Object 
@@ -22,7 +30,7 @@ namespace BlackPearl {
 			m_Components.clear();
 			
 		};
-
+		
 		inline std::string GetName() { return m_Name; }
 		inline std::string GetFrontName() { return m_FrontName; }
 		Entity::Id GetId() const { return m_Entity->GetId(); }

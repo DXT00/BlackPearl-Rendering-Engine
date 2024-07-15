@@ -46,7 +46,7 @@ namespace BlackPearl {
 		ScenePrimitiveOctree *PrimitiveOctree;
 
 		/**unordered_map of primitive octree node index**/
-		std::unordered_map<Entity::Id, int> PrimitiveOctreeIndex;
+		std::unordered_map<uint64_t, uint32_t> PrimitiveOctreeIndex;
 
 	public:
 		std::shared_ptr<LumenSceneData> LumenSceneData;

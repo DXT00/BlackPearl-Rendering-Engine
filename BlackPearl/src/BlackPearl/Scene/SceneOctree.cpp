@@ -8,7 +8,7 @@ namespace BlackPearl {
         // has a valid index.
         if (Element.Scene)
         {
-            Element.Scene->PrimitiveOctreeIndex[Element.GetObj()->GetId()] = Id.GetNodeIndex();
+            Element.Scene->PrimitiveOctreeIndex[Element.GetObj()->GetId().id] = Id.GetNodeIndex();
         }
 
     }
