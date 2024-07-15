@@ -60,7 +60,7 @@ namespace BlackPearl {
 
 		inline const glm::mat4& GetViewMatrix() const { return m_ViewMatrix; }
 		inline const glm::mat4& GetProjectionMatrix() const { return m_ProjectionMatrix; }
-		inline const glm::mat4& GetProjectionViewMatrix() const { return m_ViewProjectionMatrix; }
+		inline const glm::mat4& GetProjectionViewMatrix() const { return m_ProjectionViewMatrix; }
 
 		void RecalculateViewMatrix();
 		void RecalculateViewMatrix(float yaw, float pitch);
@@ -77,9 +77,9 @@ namespace BlackPearl {
 			RecalculateViewMatrix(yaw, pitch);
 		}
 
-		inline void SetViewMatrix(glm::mat4 view) { m_ViewMatrix = view; m_ViewProjectionMatrix = m_ProjectionMatrix * m_ViewMatrix; }
-		inline void SetProjectionMatrix(glm::mat4 projection) { m_ProjectionMatrix = projection; m_ViewProjectionMatrix = m_ProjectionMatrix * m_ViewMatrix; }
-		inline void SetViewProjectionMatrix(glm::mat4 viewProjection) { m_ViewProjectionMatrix = viewProjection; }
+		inline void SetViewMatrix(glm::mat4 view) { m_ViewMatrix = view; m_ProjectionViewMatrix = m_ProjectionMatrix * m_ViewMatrix; }
+		inline void SetProjectionMatrix(glm::mat4 projection) { m_ProjectionMatrix = projection; m_ProjectionViewMatrix = m_ProjectionMatrix * m_ViewMatrix; }
+		inline void SetViewProjectionMatrix(glm::mat4 viewProjection) { m_ProjectionViewMatrix = viewProjection; }
 		//static Camera* Create(unsigned int type, const std::initializer_list<float> &projectionMatrixProps, const ViewMatrixProps &viewMatrixProps = ViewMatrixProps());
 		Camera():
 		Component(BaseComponent::Type::Camera){}//TODO::
@@ -90,7 +90,7 @@ namespace BlackPearl {
 		glm::vec3 m_Position = { 0.0f,0.0f,0.0f };
 		glm::mat4 m_ViewMatrix;
 		glm::mat4 m_ProjectionMatrix;
-		glm::mat4 m_ViewProjectionMatrix;
+		glm::mat4 m_ProjectionViewMatrix;
 
 		ViewMatrixProps m_ViewMatrixProps;
 

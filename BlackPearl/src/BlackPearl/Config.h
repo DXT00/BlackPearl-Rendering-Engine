@@ -3,6 +3,8 @@
 namespace BlackPearl {
 	//一个Entity最多32个Component
 	//inline static void SyncGPU();
+#define GE_OLD_WORLD_MAX			2097152.0						/* UE4 maximum world size */
+#define GE_OLD_HALF_WORLD_MAX		(GE_OLD_WORLD_MAX * 0.5)		/* UE4 half maximum world size */
 	class Configuration {
 	public:
 		static const unsigned int MaxComponents = 32;

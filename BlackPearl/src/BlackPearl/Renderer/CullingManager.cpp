@@ -7,7 +7,7 @@ namespace BlackPearl {
 	{
 
 		// Two bits per octree node, 1st bit is Inside Frustum, 2nd bit is Outside Frustum
-		OutVisibleNodes.assign(false, Scene->PrimitiveOctree->GetNumNodes() * 2);
+		OutVisibleNodes.assign(Scene->PrimitiveOctree->GetNumNodes() * 2, false);
 
 		Scene->PrimitiveOctree->FindNodesWithPredicate(
 			[&View, &OutVisibleNodes](FNodeIndex ParentNodeIndex, FNodeIndex NodeIndex, const AABB& NodeBounds)
@@ -55,7 +55,7 @@ namespace BlackPearl {
 		std::vector<Object*> objs = Scene->GetObjects();
 		for (size_t i = 0; i < objs.size(); i++)
 		{
-			uint32_t OctreeNodeIndex = Scene->m_ObjectOctreeIndex[i];
+			uint32_t OctreeNodeIndex = Scene->PrimitiveOctreeIndex[objs[i]->GetId().id];
 
 			bool isVisible = OutVisibleNodes[OctreeNodeIndex * 2];
 			if (isVisible) {

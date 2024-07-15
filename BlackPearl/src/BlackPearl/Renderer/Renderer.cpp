@@ -46,6 +46,8 @@ namespace BlackPearl {
 		s_SceneData->ViewMatrix = camera.GetViewMatrix();
 		s_SceneData->ProjectionMatrix = camera.GetProjectionMatrix();
 		
+
+		s_SceneData->ViewFrustum = math::frustum(Math::ToFloat4x4(s_SceneData->ViewMatrix * s_SceneData->ProjectionMatrix), s_SceneData->ReverseZ);
 		for (Object* lightObj : lightSources.Get()) {
 			//std::shared_ptr<Light> lightSource(lightObj->GetComponent<Light>());
 			if (lightObj->HasComponent<ParallelLight>()) {
@@ -143,7 +145,7 @@ namespace BlackPearl {
 	}
 	math::frustum SceneData::GetViewFrustum() const
 	{
-		return m_ViewFrustum;
+		return ViewFrustum;
 	}
 	
 }

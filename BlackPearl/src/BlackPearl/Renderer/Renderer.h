@@ -4,7 +4,7 @@
 #include "BlackPearl/Component/CameraComponent/Camera.h"
 #include "BlackPearl/RHI/RHIDefinitions.h"
 #include "BlackPearl/Math/frustum.h"
-
+#include "BlackPearl/Math/Math.h"
 namespace BlackPearl {
 
 	class IView {
@@ -27,7 +27,7 @@ namespace BlackPearl {
 			CameraRotation(glm::vec3(0.0)),
 			CameraFront(glm::vec3(0.0))
 			{
-
+				ViewFrustum = math::frustum(Math::ToFloat4x4(ViewMatrix* ProjectionMatrix), ReverseZ);
 		    }
 
 		SceneData(const glm::mat4& pvMat,
@@ -45,7 +45,7 @@ namespace BlackPearl {
 			CameraFront(camFront),
 			LightSources(lightSource)
 		{
-
+			ViewFrustum = math::frustum(Math::ToFloat4x4(ViewMatrix * ProjectionMatrix), ReverseZ);
 
 		}
 
@@ -66,8 +66,9 @@ namespace BlackPearl {
 		RHIRect m_ScissorRect;
 		VariableRateShadingState m_ShadingRateState;
 
-		math::frustum m_ViewFrustum = math::frustum::empty();
-
+		math::frustum ViewFrustum = math::frustum::empty();
+		//TODO::
+		bool ReverseZ = false;
 	};
 
 	class Renderer

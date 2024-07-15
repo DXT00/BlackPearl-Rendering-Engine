@@ -3,6 +3,8 @@
 #include "BlackPearl/Node/SingleNode.h"
 #include "BlackPearl/Component/BoundingBoxComponent/BoundingBox.h"
 #include "BlackPearl/LayerScene/Layer.h"
+#include "BlackPearl/Config.h"
+
 namespace BlackPearl {
 	Scene::Scene(DemoType type)
 	{
@@ -10,7 +12,7 @@ namespace BlackPearl {
 		m_MeshMgr = std::make_shared<MeshManager>();
 		m_RootObj = g_objectManager->CreateGroup("root object");
 		m_RootNode = DBG_NEW SingleNode(m_RootObj);
-		PrimitiveOctree = DBG_NEW ScenePrimitiveOctree();
+		PrimitiveOctree = DBG_NEW ScenePrimitiveOctree(AABB(math::float3(0.0), math::float3(GE_OLD_HALF_WORLD_MAX)));
 	}
 
 	Scene::~Scene()

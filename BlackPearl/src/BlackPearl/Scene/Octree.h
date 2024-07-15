@@ -975,7 +975,7 @@ namespace BlackPearl {
 		/** Initialization constructor. */
 		Octree(const AABB& boundingbox)
 			: RootNodeContext(boundingbox, 0, 0)
-			, MinLeafExtent(boundingbox.GetExtent().x * math::pow((1.0f + 1.0f / (double)FOctreeNodeContext::LoosenessDenominator) / 2.0f, double(OctreeSemantics::MaxNodeDepth)))
+			, MinLeafExtent(boundingbox.GetExtent().x * std::pow((1.0f + 1.0f / (double)FOctreeNodeContext::LoosenessDenominator) / 2.0f, double(OctreeSemantics::MaxNodeDepth)))
 		{
 			TreeNodes.push_back(FNode());
 			TreeElements.push_back(std::vector<ElementType>());

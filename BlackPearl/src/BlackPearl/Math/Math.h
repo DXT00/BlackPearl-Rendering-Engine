@@ -126,7 +126,15 @@ namespace BlackPearl {
 			return glm::vec4(v.x, v.y, v.z, v.w);
 		}
 
-
+		static math::float4x4 ToFloat4x4(const glm::mat4& m) {
+			math::float4x4 ret;
+			for (size_t i = 0; i < 4; i++)
+			{
+				for (size_t j = 0; j < 4; j++)
+					ret[i][j] = m[i][j];
+			}
+			return ret;
+		}
 
 
 

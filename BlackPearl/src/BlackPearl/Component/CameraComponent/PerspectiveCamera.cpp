@@ -29,7 +29,7 @@ namespace BlackPearl {
 	void PerspectiveCamera::RecalculateProjectionMatrix()
 	{
 		m_ProjectionMatrix = glm::perspective(glm::radians(m_Fov), m_Width / m_Height, m_zNear, m_zFar);
-		m_ViewProjectionMatrix = m_ProjectionMatrix * m_ViewMatrix;
+		m_ProjectionViewMatrix = m_ProjectionMatrix * m_ViewMatrix;
 
 	}
 }
