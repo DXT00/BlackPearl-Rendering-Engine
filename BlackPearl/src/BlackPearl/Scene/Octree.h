@@ -476,7 +476,7 @@ namespace BlackPearl {
 			FreeList.Push((Index - 1) / 8);
 		}
 
-		void AddElementInternal(FNodeIndex CurrentNodeIndex, const FOctreeNodeContext& NodeContext, const AABB& ElementBounds, const ElementType& Element, std::vector<ElementType>& TempElementStorage)
+		void AddElementInternal(FNodeIndex CurrentNodeIndex, const FOctreeNodeContext& NodeContext, const AABB& ElementBounds, ElementType& Element, std::vector<ElementType>& TempElementStorage)
 		{
 			assert(CurrentNodeIndex != INDEX_NONE);
 			TreeNodes[CurrentNodeIndex].InclusiveNumElements++;
@@ -754,7 +754,7 @@ namespace BlackPearl {
 		 * Adds an element to the octree.
 		 * @param Element - The element to add.
 		 */
-		inline void AddElement(const ElementType& Element)
+		inline void AddElement(ElementType& Element)
 		{
 			ElementArrayType TempElementStorage;
 			const AABB ElementBounds(OctreeSemantics::GetBoundingBox(Element));
@@ -1003,7 +1003,7 @@ namespace BlackPearl {
 
 		// Function overload set which calls the V2 version if it's supported or the old version if it's not
 		template <typename Semantics>
-		void SetOctreeSemanticsElementId(const ElementType& Element, FOctreeElementId2 Id)
+		void SetOctreeSemanticsElementId(ElementType& Element, FOctreeElementId2 Id)
 		{
 			Semantics::SetElementId(Element, Id);
 			////TODO::
@@ -1019,7 +1019,7 @@ namespace BlackPearl {
 
 	protected:
 		// redirects SetElementId call to the proper implementation
-		void SetElementId(const ElementType& Element, FOctreeElementId2 Id)
+		void SetElementId(ElementType& Element, FOctreeElementId2 Id)
 		{
 			SetOctreeSemanticsElementId<OctreeSemantics>(Element, Id);
 		}
