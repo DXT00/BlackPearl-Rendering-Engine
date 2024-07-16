@@ -83,7 +83,7 @@ namespace BlackPearl {
 
         for (auto it : m_vRenderGraphs)
         {
-            it->Render(framebuffer);
+            it->Render(framebuffer, Renderer::GetSceneData());
         }
     }
     void DeviceManager::GetWindowDimensions(int& width, int& height)

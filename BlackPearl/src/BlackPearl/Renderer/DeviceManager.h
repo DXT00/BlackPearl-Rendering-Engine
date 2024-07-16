@@ -128,6 +128,7 @@ namespace BlackPearl {
         }
         virtual void BeginFrame() = 0;
         virtual void Present() = 0;
+        void UpdateWindowSize();
 
     protected:
         bool m_windowVisible = false;
@@ -159,7 +160,6 @@ namespace BlackPearl {
         bool CreateDeviceAndSwapChain(const DeviceCreationParameters& params);
 
 
-        void UpdateWindowSize();
 
         void BackBufferResizing();
         void BackBufferResized();

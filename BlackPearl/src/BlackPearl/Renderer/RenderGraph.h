@@ -3,6 +3,7 @@
 #include "BlackPearl/RHI/RHIDevice.h"
 #include "DeviceManager.h"
 #include "BlackPearl/Renderer/MasterRenderer/BasicRenderer.h"
+#include "BlackPearl/Renderer/Renderer.h"
 namespace BlackPearl {
     //class DeviceManager;
     class RenderGraph
@@ -17,7 +18,7 @@ namespace BlackPearl {
        // void OnPreRender() {}
         virtual ~RenderGraph() = default;
 
-        virtual void Render(IFramebuffer* framebuffer) { }
+        virtual void Render(IFramebuffer* framebuffer, IView* View) { }
         virtual void Animate(float fElapsedTimeSeconds) { }
         virtual void BackBufferResizing() { }
         virtual void BackBufferResized(const uint32_t width, const uint32_t height, const uint32_t sampleCount) { }
