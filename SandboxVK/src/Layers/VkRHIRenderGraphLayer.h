@@ -32,14 +32,19 @@ public:
 
 		m_RenderGraph->Init(m_Scene);
 
-
+		m_DeviceManager->AddRenderGraphToBack(m_RenderGraph);
 	}
 
 	void OnUpdate(BlackPearl::Timestep ts) override {
 
 		BlackPearl::Renderer::BeginScene(*(m_MainCamera->GetObj()->GetComponent<BlackPearl::PerspectiveCamera>()), *GetLightSources());
 		//Update Camera, Materials ..
-		m_RenderGraph->Render(m_DeviceManager->GetFrameBuffer(), BlackPearl::Renderer::GetSceneData());
+		m_DeviceManager->UpdateWindowSize();
+
+		m_DeviceManager->Run();
+
+		m_DeviceManager->Present();
+		//m_RenderGraph->Render(m_DeviceManager->GetFrameBuffer(), BlackPearl::Renderer::GetSceneData());
 		
 		
 	}

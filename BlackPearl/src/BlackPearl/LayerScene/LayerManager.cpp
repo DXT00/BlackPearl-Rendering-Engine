@@ -8,11 +8,11 @@ namespace BlackPearl {
 	//extern DynamicRHI::Type g_RHIType;
 	void LayerManager::OnUpdateLayers(Timestep ts)
 	{
-		g_deviceManager->BeginFrame();
+		//g_deviceManager->BeginFrame();
 		for (Layer* layer : m_LayerStack) {
 			layer->OnUpdate(ts);
 		}
-		g_deviceManager->Present();
+		//g_deviceManager->Present();
 		//TODO:: D3D12 support imgui
 		if (DynamicRHI::g_RHIType == DynamicRHI::Type::OpenGL) {
 			m_ImGuiLayer->Begin();
