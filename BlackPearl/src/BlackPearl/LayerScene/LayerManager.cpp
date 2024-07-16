@@ -12,6 +12,7 @@ namespace BlackPearl {
 		for (Layer* layer : m_LayerStack) {
 			layer->OnUpdate(ts);
 		}
+		g_deviceManager->Present();
 		//TODO:: D3D12 support imgui
 		if (DynamicRHI::g_RHIType == DynamicRHI::Type::OpenGL) {
 			m_ImGuiLayer->Begin();

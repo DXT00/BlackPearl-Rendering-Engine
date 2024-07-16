@@ -127,6 +127,8 @@ namespace BlackPearl {
             y = m_DPIScaleFactorY;
         }
         virtual void BeginFrame() = 0;
+        virtual void Present() = 0;
+
     protected:
         bool m_windowVisible = false;
 
@@ -171,7 +173,6 @@ namespace BlackPearl {
         virtual void DestroyDeviceAndSwapChain() = 0;
         virtual void ResizeSwapChain() = 0;
     
-        virtual void Present() = 0;
 
     public:
         [[nodiscard]] virtual IDevice* GetDevice() const = 0;

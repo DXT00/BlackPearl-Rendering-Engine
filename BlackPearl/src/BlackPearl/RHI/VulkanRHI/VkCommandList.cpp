@@ -65,8 +65,10 @@ namespace BlackPearl {
 	{
 		m_CurrentCmdBuf = m_Device->getQueue(m_CommandListParameters.queueType)->getOrCreateCommandBuffer();
 
-		VkCommandBufferBeginInfo beginInfo;
+		VkCommandBufferBeginInfo beginInfo{};
+		beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
 		beginInfo.flags = VkCommandBufferUsageFlagBits::VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
+		beginInfo.pNext = nullptr;
 		vkBeginCommandBuffer(m_CurrentCmdBuf->cmdBuf, &beginInfo);
 		m_CurrentCmdBuf->referencedResources.push_back(this); // prevent deletion of e.g. UploadManager
 

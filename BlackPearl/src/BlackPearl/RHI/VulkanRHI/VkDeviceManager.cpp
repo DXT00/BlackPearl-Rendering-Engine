@@ -1062,7 +1062,8 @@ namespace BlackPearl {
 
 		m_BarrierCommandList = m_NvrhiDevice->createCommandList();
 		VkSemaphoreCreateInfo semaphoreInfo{};
-		semaphoreInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;	vkCreateSemaphore(m_Device, &semaphoreInfo, nullptr, &m_PresentSemaphore);
+		semaphoreInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;	
+		vkCreateSemaphore(m_Device, &semaphoreInfo, nullptr, &m_PresentSemaphore);
 
 #undef CHECK
 
@@ -1191,7 +1192,8 @@ namespace BlackPearl {
 		m_NvrhiDevice->executeCommandList(m_BarrierCommandList);
 
 
-		VkPresentInfoKHR info;
+		VkPresentInfoKHR info{};
+		info.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
 		info.waitSemaphoreCount = 1;
 		info.pWaitSemaphores = &m_PresentSemaphore;
 		info.swapchainCount = 1;
