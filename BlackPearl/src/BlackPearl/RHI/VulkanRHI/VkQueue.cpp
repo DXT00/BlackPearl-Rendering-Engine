@@ -208,7 +208,6 @@ namespace BlackPearl {
 
 		if (!m_WaitSemaphoreValues.empty())
 		{
-
 			timelineSemaphoreInfo.waitSemaphoreValueCount = uint32_t(m_WaitSemaphoreValues.size());
 			timelineSemaphoreInfo.pWaitSemaphoreValues = m_WaitSemaphoreValues.data();
 		}

@@ -69,7 +69,12 @@ namespace BlackPearl {
     {
         return (size + (alignment - 1)) & ~(alignment - 1);
     }
-   
+
+    template<typename T> T Align(T size, T alignment)
+    {
+        return (size + alignment - 1) & ~(alignment - 1);
+    }
+
     inline void AddAlignUp(uint32_t& offset, uint32_t size, uint32_t align = 4096u) {
         offset += size;
         uint32_t pad = (align - offset % align);

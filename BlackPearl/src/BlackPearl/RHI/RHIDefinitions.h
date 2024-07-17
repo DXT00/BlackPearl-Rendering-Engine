@@ -94,6 +94,31 @@ finished executing, the objects are transitioned into the "available" state, i.e
     constexpr uint64_t c_VersionIDMask = 0x0FFFFFFFFFFFFFFF;
 
 
+    enum class Feature : uint8_t
+    {
+        DeferredCommandLists,
+        SinglePassStereo,
+        RayTracingAccelStruct,
+        RayTracingPipeline,
+        RayTracingOpacityMicromap,
+        RayQuery,
+        ShaderExecutionReordering,
+        FastGeometryShader,
+        Meshlets,
+        ConservativeRasterization,
+        VariableRateShading,
+        ShaderSpecializations,
+        VirtualResources,
+        ComputeQueue,
+        CopyQueue,
+        ConstantBufferRanges
+    };
+
+    struct VariableRateShadingFeatureInfo
+    {
+        uint32_t shadingRateImageTileSize;
+    };
+
     enum class CommandQueue : uint8_t
     {
         Graphics = 0,
@@ -115,10 +140,10 @@ finished executing, the objects are transitioned into the "available" state, i.e
         return version & c_VersionIDMask;
     }
 
-  /*  constexpr CommandQueue VersionGetQueue(uint64_t version)
+    constexpr CommandQueue VersionGetQueue(uint64_t version)
     {
         return CommandQueue((version >> c_VersionQueueShift) & c_VersionQueueMask);
-    }*/
+    }
 
     constexpr bool VersionGetSubmitted(uint64_t version)
     {

@@ -9,7 +9,9 @@
 #include "VkFrameBuffer.h"
 #include "VkBindingSet.h"
 #include "VkDescriptorTable.h"
-
+#include "VkTexture.h"
+#include "BlackPearl/RHI/Common/RHIUtils.h"
+#include "BlackPearl/RHI/Common/FormatInfo.h"
 namespace BlackPearl {
 
 	static VkViewport VKViewportWithDXCoords(const RHIViewport& v)
@@ -32,6 +34,8 @@ namespace BlackPearl {
 		, m_Context(context)
 		, m_CommandListParameters(parameters)
 		, m_StateTracker(context.messageCallback)
+		, m_UploadManager(std::make_unique<UploadManager>(device, parameters.uploadChunkSize, 0, false))
+		, m_ScratchManager(std::make_unique<UploadManager>(device, parameters.scratchChunkSize, parameters.scratchMaxMemory, true))
 	{
 
 
@@ -115,27 +119,42 @@ namespace BlackPearl {
 	
 	void CommandList::clearTextureFloat(ITexture* texture, TextureSubresourceSet subresources, const Color& clearColor)
 	{
+		assert(0);
+
 	}
 	void CommandList::clearDepthStencilTexture(ITexture* texture, TextureSubresourceSet subresources, bool clearDepth, float depth, bool clearStencil, uint8_t stencil)
 	{
+		assert(0);
+
 	}
 	void CommandList::clearTextureUInt(ITexture* texture, TextureSubresourceSet subresources, uint32_t clearColor)
 	{
+		assert(0);
+
 	}
 	void CommandList::copyTexture(ITexture* dest, const TextureSlice& destSlice, ITexture* src, const TextureSlice& srcSlice)
 	{
+		assert(0);
+
 	}
 	void CommandList::copyTexture(IStagingTexture* dest, const TextureSlice& dstSlice, ITexture* src, const TextureSlice& srcSlice)
 	{
+		assert(0);
+
 	}
 	void CommandList::copyTexture(ITexture* dest, const TextureSlice& dstSlice, IStagingTexture* src, const TextureSlice& srcSlice)
 	{
+		assert(0);
+
 	}
 	void CommandList::writeTexture(ITexture* dest, uint32_t arraySlice, uint32_t mipLevel, const void* data, size_t rowPitch, size_t depthPitch)
 	{
+		assert(0);
 	}
 	void CommandList::resolveTexture(ITexture* dest, const TextureSubresourceSet& dstSubresources, ITexture* src, const TextureSubresourceSet& srcSubresources)
 	{
+		assert(0);
+
 	}
 	void CommandList::writeBuffer(IBuffer* _buffer, const void* data, size_t dataSize, uint64_t destOffsetBytes)
 	{
@@ -506,6 +525,19 @@ namespace BlackPearl {
 	}
 	void CommandList::dispatchMesh(uint32_t groupsX, uint32_t groupsY, uint32_t groupsZ)
 	{
+		assert(m_CurrentCmdBuf);
+
+		if (groupsY > 1 || groupsZ > 1)
+		{
+			// only 1D dispatches are supported by Vulkan
+			RHIUtils::NotSupported();
+			return;
+		}
+
+		_updateMeshletVolatileBuffers();
+
+
+		//m_CurrentCmdBuf->cmdBuf.drawMeshTasksNV(groupsX, 0);
 	}
 	void CommandList::beginTimerQuery(ITimerQuery* query)
 	{
@@ -543,33 +575,102 @@ namespace BlackPearl {
 	}
 	void CommandList::setEnableAutomaticBarriers(bool enable)
 	{
+		m_EnableAutomaticBarriers = enable;
 	}
-	void CommandList::setResourceStatesForBindingSet(IBindingSet* bindingSet)
+	void CommandList::setResourceStatesForBindingSet(IBindingSet* _bindingSet)
 	{
+		if (_bindingSet->getDesc() == nullptr)
+			return; // is bindless
+
+		BindingSet* bindingSet = checked_cast<BindingSet*>(_bindingSet);
+
+		for (auto bindingIndex : bindingSet->bindingsThatNeedTransitions)
+		{
+			const BindingSetItem& binding = bindingSet->desc.bindings[bindingIndex];
+
+			switch (binding.type)  // NOLINT(clang-diagnostic-switch-enum)
+			{
+			case RHIResourceType::RT_Texture_SRV:
+				_requireTextureState(checked_cast<ITexture*>(binding.resourceHandle), binding.subresources, ResourceStates::ShaderResource);
+				break;
+
+			case RHIResourceType::RT_Texture_UAV:
+				_requireTextureState(checked_cast<ITexture*>(binding.resourceHandle), binding.subresources, ResourceStates::UnorderedAccess);
+				break;
+
+			case RHIResourceType::RT_TypedBuffer_SRV:
+			case RHIResourceType::RT_StructuredBuffer_SRV:
+			case RHIResourceType::RT_RawBuffer_SRV:
+				_requireBufferState(checked_cast<IBuffer*>(binding.resourceHandle), ResourceStates::ShaderResource);
+				break;
+
+			case RHIResourceType::RT_TypedBuffer_UAV:
+			case RHIResourceType::RT_StructuredBuffer_UAV:
+			case RHIResourceType::RT_RawBuffer_UAV:
+				_requireBufferState(checked_cast<IBuffer*>(binding.resourceHandle), ResourceStates::UnorderedAccess);
+				break;
+
+			case RHIResourceType::RT_ConstantBuffer:
+				_requireBufferState(checked_cast<IBuffer*>(binding.resourceHandle), ResourceStates::ConstantBuffer);
+				break;
+
+			case RHIResourceType::RT_RayTracingAccelStruct:
+				//TODO::
+				//_requireBufferState(checked_cast<AccelStruct*>(binding.resourceHandle)->dataBuffer, ResourceStates::AccelStructRead);
+				assert(0);
+			default:
+				// do nothing
+				break;
+			}
+		}
 	}
-	void CommandList::setEnableUavBarriersForTexture(ITexture* texture, bool enableBarriers)
+	void CommandList::setEnableUavBarriersForTexture(ITexture* _texture, bool enableBarriers)
 	{
+		ETexture* texture = checked_cast<ETexture*>(_texture);
+
+		m_StateTracker.setEnableUavBarriersForTexture(texture, enableBarriers);
 	}
-	void CommandList::setEnableUavBarriersForBuffer(IBuffer* buffer, bool enableBarriers)
+	void CommandList::setEnableUavBarriersForBuffer(IBuffer* _buffer, bool enableBarriers)
 	{
+		Buffer* buffer = checked_cast<Buffer*>(_buffer);
+
+		m_StateTracker.setEnableUavBarriersForBuffer(buffer, enableBarriers);
 	}
-	void CommandList::beginTrackingTextureState(ITexture* texture, TextureSubresourceSet subresources, ResourceStates stateBits)
+	void CommandList::beginTrackingTextureState(ITexture* _texture, TextureSubresourceSet subresources, ResourceStates stateBits)
 	{
+		ETexture* texture = checked_cast<ETexture*>(_texture);
+
+		m_StateTracker.beginTrackingTextureState(texture, subresources, stateBits);
 	}
-	void CommandList::beginTrackingBufferState(IBuffer* buffer, ResourceStates stateBits)
+	void CommandList::beginTrackingBufferState(IBuffer* _buffer, ResourceStates stateBits)
 	{
+		Buffer* buffer = checked_cast<Buffer*>(_buffer);
+
+		m_StateTracker.beginTrackingBufferState(buffer, stateBits);
 	}
-	void CommandList::setTextureState(ITexture* texture, TextureSubresourceSet subresources, ResourceStates stateBits)
+	void CommandList::setTextureState(ITexture* _texture, TextureSubresourceSet subresources, ResourceStates stateBits)
 	{
+		ETexture* texture = checked_cast<ETexture*>(_texture);
+
+		m_StateTracker.endTrackingTextureState(texture, subresources, stateBits, false);
 	}
-	void CommandList::setBufferState(IBuffer* buffer, ResourceStates stateBits)
+	void CommandList::setBufferState(IBuffer* _buffer, ResourceStates stateBits)
 	{
+		Buffer* buffer = checked_cast<Buffer*>(_buffer);
+
+		m_StateTracker.endTrackingBufferState(buffer, stateBits, false);
 	}
-	void CommandList::setPermanentTextureState(ITexture* texture, ResourceStates stateBits)
+	void CommandList::setPermanentTextureState(ITexture* _texture, ResourceStates stateBits)
 	{
+		ETexture* texture = checked_cast<ETexture*>(_texture);
+
+		m_StateTracker.endTrackingTextureState(texture, AllSubresources, stateBits, true);
 	}
-	void CommandList::setPermanentBufferState(IBuffer* buffer, ResourceStates stateBits)
+	void CommandList::setPermanentBufferState(IBuffer* _buffer, ResourceStates stateBits)
 	{
+		Buffer* buffer = checked_cast<Buffer*>(_buffer);
+
+		m_StateTracker.endTrackingBufferState(buffer, stateBits, true);
 	}
 	void CommandList::commitBarriers()
 	{
@@ -597,12 +698,36 @@ namespace BlackPearl {
 	}
 	void CommandList::_updateGraphicsVolatileBuffers()
 	{
+		if (m_AnyVolatileBufferWrites && m_CurrentGraphicsState.pipeline)
+		{
+			GraphicsPipeline* pso = checked_cast<GraphicsPipeline*>(m_CurrentGraphicsState.pipeline);
+
+			_bindBindingSets(VK_PIPELINE_BIND_POINT_GRAPHICS, pso->pipelineLayout, m_CurrentGraphicsState.bindings);
+
+			m_AnyVolatileBufferWrites = false;
+		}
 	}
 	void CommandList::_updateComputeVolatileBuffers()
 	{
+		if (m_AnyVolatileBufferWrites && m_CurrentComputeState.pipeline)
+		{
+			ComputePipeline* pso = checked_cast<ComputePipeline*>(m_CurrentComputeState.pipeline);
+
+			_bindBindingSets(VK_PIPELINE_BIND_POINT_COMPUTE, pso->pipelineLayout, m_CurrentComputeState.bindings);
+
+			m_AnyVolatileBufferWrites = false;
+		}
 	}
 	void CommandList::_updateMeshletVolatileBuffers()
 	{
+		if (m_AnyVolatileBufferWrites && m_CurrentMeshletState.pipeline)
+		{
+			MeshletPipeline* pso = checked_cast<MeshletPipeline*>(m_CurrentMeshletState.pipeline);
+
+			_bindBindingSets(VK_PIPELINE_BIND_POINT_GRAPHICS, pso->pipelineLayout, m_CurrentMeshletState.bindings);
+
+			m_AnyVolatileBufferWrites = false;
+		}
 	}
 	void CommandList::_updateRayTracingVolatileBuffers()
 	{
@@ -619,9 +744,279 @@ namespace BlackPearl {
 	}
 	void CommandList::_commitBarriersInternal()
 	{
+		std::vector<VkImageMemoryBarrier> imageBarriers;
+		std::vector<VkBufferMemoryBarrier> bufferBarriers;
+		VkPipelineStageFlags beforeStageFlags = 0;// vk::PipelineStageFlags(0);
+		VkPipelineStageFlags afterStageFlags = 0; //vk::PipelineStageFlags(0);
+
+		for (const TextureBarrier& barrier : m_StateTracker.getTextureBarriers())
+		{
+			ResourceStateMapping before = VkUtil::convertResourceState(barrier.stateBefore);
+			ResourceStateMapping after = VkUtil::convertResourceState(barrier.stateAfter);
+
+			if ((before.stageFlags != beforeStageFlags || after.stageFlags != afterStageFlags) && !imageBarriers.empty())
+			{
+				
+		/*		m_CurrentCmdBuf->cmdBuf.pipelineBarrier(beforeStageFlags, afterStageFlags,
+					VkDependencyFlags(), {}, {}, imageBarriers);*/
+
+				vkCmdPipelineBarrier(m_CurrentCmdBuf->cmdBuf, beforeStageFlags, afterStageFlags, 0,
+					0, nullptr,
+					0, nullptr,
+					imageBarriers.size(), imageBarriers.data());
+				imageBarriers.clear();
+			}
+
+			beforeStageFlags = before.stageFlags;
+			afterStageFlags = after.stageFlags;
+
+			assert(after.imageLayout != VK_IMAGE_LAYOUT_UNDEFINED);
+
+			ETexture* texture = static_cast<ETexture*>(barrier.texture);
+
+			const FormatInfo& formatInfo = getFormatInfo(texture->desc.format);
+
+			VkImageAspectFlags aspectMask = 0;
+			if (formatInfo.hasDepth) aspectMask |= VK_IMAGE_ASPECT_DEPTH_BIT;
+			if (formatInfo.hasStencil) aspectMask |= VK_IMAGE_ASPECT_STENCIL_BIT;
+			if (!aspectMask) aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+
+			//VkImageSubresourceRange subresourceRange{};
+
+				//.setBaseArrayLayer(barrier.entireTexture ? 0 : barrier.arraySlice)
+				//.setLayerCount(barrier.entireTexture ? texture->desc.arraySize : 1)
+				//.setBaseMipLevel(barrier.entireTexture ? 0 : barrier.mipLevel)
+				//.setLevelCount(barrier.entireTexture ? texture->desc.mipLevels : 1)
+				//.setAspectMask(aspectMask);
+
+			/*imageBarriers.push_back(VkImageMemoryBarrier()
+				.setSrcAccessMask(before.accessMask)
+				.setDstAccessMask(after.accessMask)
+				.setOldLayout(before.imageLayout)
+				.setNewLayout(after.imageLayout)
+				.setSrcQueueFamilyIndex(VK_QUEUE_FAMILY_IGNORED)
+				.setDstQueueFamilyIndex(VK_QUEUE_FAMILY_IGNORED)
+				.setImage(texture->image)
+				.setSubresourceRange(subresourceRange));*/
+
+			VkImageMemoryBarrier imageBarrier{};
+			imageBarrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+			imageBarrier.srcAccessMask = before.accessMask;
+			imageBarrier.dstAccessMask = after.accessMask;
+			imageBarrier.oldLayout = before.imageLayout;
+			imageBarrier.newLayout = after.imageLayout;
+			imageBarrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+			imageBarrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+			imageBarrier.image = texture->image;
+			imageBarrier.subresourceRange.aspectMask = aspectMask;
+			imageBarrier.subresourceRange.baseMipLevel = barrier.entireTexture ? 0 : barrier.mipLevel;
+			imageBarrier.subresourceRange.levelCount = barrier.entireTexture ? texture->desc.mipLevels : 1;
+			imageBarrier.subresourceRange.baseArrayLayer = barrier.entireTexture ? 0 : barrier.arraySlice;
+			imageBarrier.subresourceRange.layerCount = barrier.entireTexture ? texture->desc.arraySize : 1;
+
+			imageBarriers.push_back(imageBarrier);
+		}
+
+		if (!imageBarriers.empty())
+		{
+			vkCmdPipelineBarrier(m_CurrentCmdBuf->cmdBuf, beforeStageFlags, afterStageFlags, 0,
+				0, nullptr,
+				0, nullptr,
+				imageBarriers.size(), imageBarriers.data());
+	/*		m_CurrentCmdBuf->cmdBuf.pipelineBarrier(beforeStageFlags, afterStageFlags,
+				vk::DependencyFlags(), {}, {}, imageBarriers);*/
+		}
+
+		beforeStageFlags = 0;
+		afterStageFlags = 0;
+		imageBarriers.clear();
+
+		for (const BufferBarrier& barrier : m_StateTracker.getBufferBarriers())
+		{
+			ResourceStateMapping before = VkUtil::convertResourceState(barrier.stateBefore);
+			ResourceStateMapping after = VkUtil::convertResourceState(barrier.stateAfter);
+
+			if ((before.stageFlags != beforeStageFlags || after.stageFlags != afterStageFlags) && !bufferBarriers.empty())
+			{
+				/*m_CurrentCmdBuf->cmdBuf.pipelineBarrier(beforeStageFlags, afterStageFlags,
+					vk::DependencyFlags(), {}, bufferBarriers, {});*/
+
+
+				vkCmdPipelineBarrier(m_CurrentCmdBuf->cmdBuf, beforeStageFlags, afterStageFlags, 0,
+					0, nullptr,
+					bufferBarriers.size(), bufferBarriers.data(),
+					0, nullptr);
+
+				bufferBarriers.clear();
+			}
+
+			beforeStageFlags = before.stageFlags;
+			afterStageFlags = after.stageFlags;
+
+			Buffer* buffer = static_cast<Buffer*>(barrier.buffer);
+
+			/*bufferBarriers.push_back(VkBufferMemoryBarrier()
+				.setSrcAccessMask(before.accessMask)
+				.setDstAccessMask(after.accessMask)
+				.setSrcQueueFamilyIndex(VK_QUEUE_FAMILY_IGNORED)
+				.setDstQueueFamilyIndex(VK_QUEUE_FAMILY_IGNORED)
+				.setBuffer(buffer->buffer)
+				.setOffset(0)
+				.setSize(buffer->desc.byteSize));*/
+
+			VkBufferMemoryBarrier bufferBarrier{};
+			bufferBarrier.sType = VK_STRUCTURE_TYPE_MEMORY_BARRIER;
+			bufferBarrier.srcAccessMask = before.accessMask;
+			bufferBarrier.dstAccessMask = after.accessMask;
+			bufferBarrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+			bufferBarrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+			bufferBarrier.buffer = buffer->buffer;
+			bufferBarrier.offset = 0;
+			bufferBarrier.size = buffer->desc.byteSize;
+			bufferBarriers.push_back(bufferBarrier);
+		}
+
+		if (!bufferBarriers.empty())
+		{
+			//m_CurrentCmdBuf->cmdBuf.pipelineBarrier(beforeStageFlags, afterStageFlags,
+			//	VkDependencyFlags(), {}, bufferBarriers, {});
+
+			vkCmdPipelineBarrier(m_CurrentCmdBuf->cmdBuf, beforeStageFlags, afterStageFlags, 0,
+				0, nullptr,
+				bufferBarriers.size(), bufferBarriers.data(),
+				0, nullptr);
+		}
+		bufferBarriers.clear();
+
+		m_StateTracker.clearBarriers();
+
 	}
 	void CommandList::_commitBarriersInternal_synchronization2()
 	{
+		std::vector<VkImageMemoryBarrier2> imageBarriers;
+		std::vector<VkBufferMemoryBarrier2> bufferBarriers;
+
+		for (const TextureBarrier& barrier : m_StateTracker.getTextureBarriers())
+		{
+			ResourceStateMapping2 before = VkUtil::convertResourceState2(barrier.stateBefore);
+			ResourceStateMapping2 after = VkUtil::convertResourceState2(barrier.stateAfter);
+
+			assert(after.imageLayout != VK_IMAGE_LAYOUT_UNDEFINED);
+
+			ETexture* texture = static_cast<ETexture*>(barrier.texture);
+
+			const FormatInfo& formatInfo = getFormatInfo(texture->desc.format);
+
+			VkImageAspectFlags aspectMask = 0;
+			if (formatInfo.hasDepth) aspectMask |= VK_IMAGE_ASPECT_DEPTH_BIT;
+			if (formatInfo.hasStencil) aspectMask |= VK_IMAGE_ASPECT_STENCIL_BIT;
+			if (!aspectMask) aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+
+
+			/*vk::ImageSubresourceRange subresourceRange = vk::ImageSubresourceRange()
+				.setBaseArrayLayer(barrier.entireTexture ? 0 : barrier.arraySlice)
+				.setLayerCount(barrier.entireTexture ? texture->desc.arraySize : 1)
+				.setBaseMipLevel(barrier.entireTexture ? 0 : barrier.mipLevel)
+				.setLevelCount(barrier.entireTexture ? texture->desc.mipLevels : 1)
+				.setAspectMask(aspectMask);*/
+
+			//imageBarriers.push_back(vk::ImageMemoryBarrier2()
+			//	.setSrcAccessMask(before.accessMask)
+			//	.setDstAccessMask(after.accessMask)
+			//	.setSrcStageMask(before.stageFlags)
+			//	.setDstStageMask(after.stageFlags)
+			//	.setOldLayout(before.imageLayout)
+			//	.setNewLayout(after.imageLayout)
+			//	.setSrcQueueFamilyIndex(VK_QUEUE_FAMILY_IGNORED)
+			//	.setDstQueueFamilyIndex(VK_QUEUE_FAMILY_IGNORED)
+			//	.setImage(texture->image)
+			//	.setSubresourceRange(subresourceRange));
+
+
+
+			VkImageMemoryBarrier2 imageBarrier{};
+			imageBarrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+			imageBarrier.srcAccessMask = before.accessMask;
+			imageBarrier.dstAccessMask = after.accessMask;
+			imageBarrier.srcStageMask = before.stageFlags;
+			imageBarrier.dstStageMask = after.stageFlags;
+			imageBarrier.oldLayout = before.imageLayout;
+			imageBarrier.newLayout = after.imageLayout;
+			imageBarrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+			imageBarrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+			imageBarrier.image = texture->image;
+			imageBarrier.subresourceRange.aspectMask = aspectMask;
+			imageBarrier.subresourceRange.baseMipLevel = barrier.entireTexture ? 0 : barrier.mipLevel;
+			imageBarrier.subresourceRange.levelCount = barrier.entireTexture ? texture->desc.mipLevels : 1;
+			imageBarrier.subresourceRange.baseArrayLayer = barrier.entireTexture ? 0 : barrier.arraySlice;
+			imageBarrier.subresourceRange.layerCount = barrier.entireTexture ? texture->desc.arraySize : 1;
+
+			imageBarriers.push_back(imageBarrier);
+
+
+
+		}
+
+		if (!imageBarriers.empty())
+		{
+			VkDependencyInfo dep_info{};
+			dep_info.pImageMemoryBarriers = imageBarriers.data();
+
+			//m_CurrentCmdBuf->cmdBuf.pipelineBarrier2(dep_info);
+
+			vkCmdPipelineBarrier2(m_CurrentCmdBuf->cmdBuf, &dep_info);
+		}
+
+		imageBarriers.clear();
+
+		for (const BufferBarrier& barrier : m_StateTracker.getBufferBarriers())
+		{
+			ResourceStateMapping2 before = VkUtil::convertResourceState2(barrier.stateBefore);
+			ResourceStateMapping2 after = VkUtil::convertResourceState2(barrier.stateAfter);
+
+			Buffer* buffer = static_cast<Buffer*>(barrier.buffer);
+
+		/*	bufferBarriers.push_back(VkBufferMemoryBarrier2()
+				.setSrcAccessMask(before.accessMask)
+				.setDstAccessMask(after.accessMask)
+				.setSrcStageMask(before.stageFlags)
+				.setDstStageMask(after.stageFlags)
+				.setSrcQueueFamilyIndex(VK_QUEUE_FAMILY_IGNORED)
+				.setDstQueueFamilyIndex(VK_QUEUE_FAMILY_IGNORED)
+				.setBuffer(buffer->buffer)
+				.setOffset(0)
+				.setSize(buffer->desc.byteSize));
+*/
+
+
+			VkBufferMemoryBarrier2  bufferBarrier{};
+			bufferBarrier.sType = VK_STRUCTURE_TYPE_MEMORY_BARRIER_2;
+			bufferBarrier.srcAccessMask = before.accessMask;
+			bufferBarrier.dstAccessMask = after.accessMask;
+			bufferBarrier.srcStageMask = before.stageFlags;
+			bufferBarrier.dstAccessMask = after.stageFlags;
+			bufferBarrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+			bufferBarrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+			bufferBarrier.buffer = buffer->buffer;
+			bufferBarrier.offset = 0;
+			bufferBarrier.size = buffer->desc.byteSize;
+			bufferBarriers.push_back(bufferBarrier);
+
+		}
+
+		if (!bufferBarriers.empty())
+		{
+			VkDependencyInfo dep_info{};
+			dep_info.sType = VK_STRUCTURE_TYPE_DEPENDENCY_INFO;
+			dep_info.pBufferMemoryBarriers = bufferBarriers.data();
+			vkCmdPipelineBarrier2(m_CurrentCmdBuf->cmdBuf, &dep_info);
+
+			//m_CurrentCmdBuf->cmdBuf.pipelineBarrier2(dep_info);
+		}
+		bufferBarriers.clear();
+
+		m_StateTracker.clearBarriers();
+
 	}
 	void CommandList::_clearTexture(ITexture* texture, TextureSubresourceSet subresources, const VkClearColorValue& clearValue)
 	{

@@ -333,7 +333,7 @@ namespace BlackPearl {
 			attachmentDescs[i].loadOp = VK_ATTACHMENT_LOAD_OP_LOAD;
 			attachmentDescs[i].storeOp = VK_ATTACHMENT_STORE_OP_STORE;
 			attachmentDescs[i].initialLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
-			attachmentDescs[i].finalLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+			attachmentDescs[i].finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;// VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
 
 			colorAttachmentRefs[i] = VkAttachmentReference2{};
 			colorAttachmentRefs[i].sType = VK_STRUCTURE_TYPE_ATTACHMENT_REFERENCE_2;
@@ -537,6 +537,18 @@ namespace BlackPearl {
 
 
 		return FramebufferHandle::Create(fb);
+	}
+
+	void* Device::mapBuffer(IBuffer* b, CpuAccessMode mapFlags)
+	{
+		Buffer* buffer = static_cast<Buffer*>(b);
+
+		return mapBuffer(buffer, mapFlags, 0, buffer->desc.byteSize);
+
+	}
+
+	void Device::unmapBuffer(IBuffer* b)
+	{
 	}
 
 	GraphicsPipelineHandle Device::createGraphicsPipeline(const GraphicsPipelineDesc& desc, IFramebuffer* _fb)
@@ -1116,6 +1128,64 @@ namespace BlackPearl {
 		uint64_t value;
 		vkGetSemaphoreCounterValue(m_Context.device, getQueueSemaphore(queue), &value);
 		return value;//m_Context.device.getSemaphoreCounterValue(getQueueSemaphore(queue));
+	}
+
+	bool Device::queryFeatureSupport(Feature feature, void* pInfo, size_t infoSize)
+	{
+		switch (feature)  // NOLINT(clang-diagnostic-switch-enum)
+		{
+		case Feature::DeferredCommandLists:
+			return true;
+		case Feature::RayTracingAccelStruct:
+			return m_Context.extensions.KHR_acceleration_structure;
+		case Feature::RayTracingPipeline:
+			return m_Context.extensions.KHR_ray_tracing_pipeline;
+		case Feature::RayTracingOpacityMicromap:
+#ifdef NVRHI_WITH_RTXMU
+			return false; // RTXMU does not support OMMs
+#else
+			return m_Context.extensions.EXT_opacity_micromap && m_Context.extensions.KHR_synchronization2;
+#endif
+		case Feature::RayQuery:
+			return m_Context.extensions.KHR_ray_query;
+		case Feature::ShaderExecutionReordering:
+		{
+			if (m_Context.extensions.NV_ray_tracing_invocation_reorder)
+			{
+				return VK_RAY_TRACING_INVOCATION_REORDER_MODE_REORDER_NV == m_Context.nvRayTracingInvocationReorderProperties.rayTracingInvocationReorderReorderingHint;
+			}
+			return false;
+		}
+		case Feature::ShaderSpecializations:
+			return true;
+		case Feature::Meshlets:
+			return m_Context.extensions.NV_mesh_shader;
+		case Feature::VariableRateShading:
+			if (pInfo)
+			{
+				if (infoSize == sizeof(VariableRateShadingFeatureInfo))
+				{
+					auto* pVrsInfo = reinterpret_cast<VariableRateShadingFeatureInfo*>(pInfo);
+					const auto& tileExtent = m_Context.shadingRateProperties.minFragmentShadingRateAttachmentTexelSize;
+					pVrsInfo->shadingRateImageTileSize = std::max(tileExtent.width, tileExtent.height);
+				}
+				else
+					RHIUtils::NotSupported();
+			}
+			return m_Context.extensions.KHR_fragment_shading_rate && m_Context.shadingRateFeatures.attachmentFragmentShadingRate;
+		case Feature::ConservativeRasterization:
+			return m_Context.extensions.EXT_conservative_rasterization;
+		case Feature::VirtualResources:
+			return true;
+		case Feature::ComputeQueue:
+			return (m_Queues[uint32_t(CommandQueue::Compute)] != nullptr);
+		case Feature::CopyQueue:
+			return (m_Queues[uint32_t(CommandQueue::Copy)] != nullptr);
+		case Feature::ConstantBufferRanges:
+			return true;
+		default:
+			return false;
+		}
 	}
 
 	FramebufferHandle Device::createHandleForNativeFramebuffer(VkRenderPass renderPass, VkFramebuffer framebuffer, const FramebufferDesc& desc, bool transferOwnership)
@@ -1802,6 +1872,48 @@ namespace BlackPearl {
 
 		Device* device = new Device(desc);
 		return DeviceHandle::Create(device);
+	}
+
+	void* Device::mapBuffer(IBuffer* b, CpuAccessMode flags, uint64_t offset, size_t size) const
+	{
+		Buffer* buffer = static_cast<Buffer*>(b);
+
+		assert(flags != CpuAccessMode::None);
+
+		// If the buffer has been used in a command list before, wait for that CL to complete
+		if (buffer->lastUseCommandListID != 0)
+		{
+			auto& queue = m_Queues[uint32_t(buffer->lastUseQueue)];
+			queue->waitCommandList(buffer->lastUseCommandListID, ~0ull);
+		}
+
+		VkAccessFlags accessFlags;
+
+		switch (flags)
+		{
+		case CpuAccessMode::Read:
+			accessFlags = VK_ACCESS_HOST_READ_BIT;
+			break;
+
+		case CpuAccessMode::Write:
+			accessFlags = VK_ACCESS_MEMORY_WRITE_BIT;
+			break;
+
+		case CpuAccessMode::None:
+		default:
+			RHIUtils::InvalidEnum();
+			break;
+		}
+
+		// TODO: there should be a barrier... But there can't be a command list here
+		// buffer->barrier(cmd, vk::PipelineStageFlagBits::eHost, accessFlags);
+
+		void* ptr = nullptr;
+		VkResult res = vkMapMemory(m_Context.device, buffer->memory, 0, size, 0, &ptr);
+		//[[maybe_unused]] const VkResult res = m_Context.device.mapMemory(buffer->memory, offset, size, vk::MemoryMapFlags(), &ptr);
+		assert(res == VkResult::VK_SUCCESS);
+
+		return ptr;
 	}
 
 }

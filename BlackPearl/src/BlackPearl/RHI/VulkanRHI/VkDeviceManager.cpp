@@ -862,7 +862,7 @@ namespace BlackPearl {
 		
 		//m_RendererString = std::string(prop.deviceName.data());
 
-		GE_CORE_INFO( prop.deviceName);
+		GE_CORE_INFO(prop.deviceName);
 
 		return true;
 	}
@@ -909,7 +909,10 @@ namespace BlackPearl {
 		extent.height = m_DeviceParams.backBufferHeight;
 
 		SwapChainSupportDetails swapChainSupport = _querySwapChainSupport(m_PhysicalDevice);
-		uint32_t imageCount = swapChainSupport.capabilities.minImageCount + 1;
+		uint32_t imageCount = m_DeviceParams.swapChainBufferCount;// swapChainSupport.capabilities.minImageCount + 1;
+		if (imageCount < swapChainSupport.capabilities.minImageCount) {
+			imageCount = swapChainSupport.capabilities.minImageCount;
+		}
 		if (swapChainSupport.capabilities.maxImageCount > 0 && imageCount > swapChainSupport.capabilities.maxImageCount) {
 			imageCount = swapChainSupport.capabilities.maxImageCount;
 		}
