@@ -210,6 +210,11 @@ namespace BlackPearl
         BufferHandle indexBuffer;
         BufferHandle vertexBuffer;
         BufferHandle instanceBuffer;
+
+        BufferDesc indexBufferDesc;
+        BufferDesc vertexBufferDesc;
+        BufferDesc instanceBufferDesc;
+
         std::shared_ptr<DescriptorHandle> indexBufferDescriptor;
         std::shared_ptr<DescriptorHandle> vertexBufferDescriptor;
         std::shared_ptr<DescriptorHandle> instnaceBufferDescriptor;

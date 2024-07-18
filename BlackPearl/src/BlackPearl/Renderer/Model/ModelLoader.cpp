@@ -210,7 +210,7 @@ namespace BlackPearl {
 	{
 		std::shared_ptr<Mesh> mesh = std::make_shared<Mesh>();
 
-		auto buffers = mesh->buffers;
+		std::shared_ptr<BufferGroup>& buffers = mesh->buffers;
 
 		std::vector<float3>& positionData = buffers->positionData;
 		std::vector<float3>& normalData = buffers->normalData;
@@ -346,7 +346,7 @@ namespace BlackPearl {
 
 		std::shared_ptr<Mesh> mesh = std::make_shared<Mesh>();
 
-		auto buffers = mesh->buffers;
+		auto& buffers = mesh->buffers;
 
 		std::vector<float3>& positionData = buffers->positionData;
 		std::vector<float3>& normalData = buffers->normalData;
@@ -958,8 +958,9 @@ namespace BlackPearl {
 			AppendBufferRange(buffers->getVertexBufferRange(VertexAttribute::JointWeights),
 				buffers->jointWeight2Data.size() * sizeof(buffers->jointWeight2Data[0]), bufferDesc.byteSize);
 		}
+		buffers->vertexBufferDesc = bufferDesc;
 
-
+		buffers->indexBufferDesc = bufferDescIndex;
 	}
 
 	void ModelLoader::LoadAnimationInfo()

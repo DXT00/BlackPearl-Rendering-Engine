@@ -17,6 +17,7 @@ namespace BlackPearl {
 		float GetRadius() const { return m_Radius; }
 
 		~SphereMeshFilter();
+
 	private:
 		float m_Radius;
 		unsigned int m_StackCount;//经度分区个数

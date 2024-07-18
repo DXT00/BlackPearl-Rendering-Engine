@@ -66,7 +66,7 @@ namespace BlackPearl {
         void Render(ICommandList* commandList, IFramebuffer* targetFramebuffer, Scene* scene);
         void SetupView(ICommandList* commandList, const IView* view, const IView* viewPrev) override;
         bool SetupMaterial(const Material* material, RasterCullMode cullMode, GraphicsState& state) override;
-        void SetupInputBuffers(const BufferGroup* buffers, GraphicsState& state) override;
+        void SetupInputBuffers(BufferGroup* buffers, GraphicsState& state) override;
         void SetPushConstants(ICommandList* commandList, GraphicsState& state, DrawArguments& args) override { }
 
 

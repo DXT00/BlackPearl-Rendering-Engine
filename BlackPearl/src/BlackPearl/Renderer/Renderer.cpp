@@ -45,7 +45,7 @@ namespace BlackPearl {
 		s_SceneData->CameraFront = camera.Front();
 		s_SceneData->ViewMatrix = camera.GetViewMatrix();
 		s_SceneData->ProjectionMatrix = camera.GetProjectionMatrix();
-		
+		s_SceneData->SetViewport(RHIViewport(Configuration::WindowWidth, Configuration::WindowHeight));
 
 		s_SceneData->ViewFrustum = math::frustum(Math::ToFloat4x4(s_SceneData->ViewMatrix * s_SceneData->ProjectionMatrix), s_SceneData->ReverseZ);
 		for (Object* lightObj : lightSources.Get()) {
@@ -132,6 +132,14 @@ namespace BlackPearl {
 		vertexArray->Bind();
 	}
 
+	void SceneData::SetViewport(RHIViewport viewport)
+	{
+		if (viewport == m_Viewport)
+			return;
+		m_Viewport = viewport;
+		m_ScissorRect = RHIRect(viewport);
+	}
+
 	ViewportState SceneData::GetViewportState() const
 	{
 		ViewportState vs;
@@ -141,7 +149,7 @@ namespace BlackPearl {
 	}
 	VariableRateShadingState SceneData::GetVariableRateShadingState() const
 	{
-		return VariableRateShadingState();
+		return m_ShadingRateState;
 	}
 	math::frustum SceneData::GetViewFrustum() const
 	{

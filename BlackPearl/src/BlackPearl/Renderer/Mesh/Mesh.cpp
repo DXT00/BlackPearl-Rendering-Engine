@@ -54,6 +54,106 @@ namespace BlackPearl {
 		m_VertexBufferLayout = layout;	
 	}
 
+	void Mesh::_InitBufferGroup(const MeshFilter* filter)
+	{
+		buffers->indexData = filter->indexData;
+		buffers->positionData = filter->positionData;
+		buffers->texcoord1Data = filter->texcoord1Data;
+		buffers->normalData = filter->normalData;
+		buffers->tangentData = filter->tangentData;
+		buffers->bitangentData = filter->bitangentData;
+
+		BufferDesc bufferDesc;
+		bufferDesc.isVertexBuffer = true;
+		bufferDesc.byteSize = 0;
+		bufferDesc.debugName = "VertexBuffer";
+		bufferDesc.canHaveTypedViews = true;
+		bufferDesc.canHaveRawViews = true;
+		bufferDesc.isAccelStructBuildInput = false;
+
+		if (!buffers->positionData.empty())
+		{
+			_AppendBufferRange(buffers->getVertexBufferRange(VertexAttribute::Position),
+				buffers->positionData.size() * sizeof(buffers->positionData[0]), bufferDesc.byteSize);
+		}
+
+		if (!buffers->normalData.empty())
+		{
+			_AppendBufferRange(buffers->getVertexBufferRange(VertexAttribute::Normal),
+				buffers->normalData.size() * sizeof(buffers->normalData[0]), bufferDesc.byteSize);
+		}
+
+		if (!buffers->tangentData.empty())
+		{
+			_AppendBufferRange(buffers->getVertexBufferRange(VertexAttribute::Tangent),
+				buffers->tangentData.size() * sizeof(buffers->tangentData[0]), bufferDesc.byteSize);
+		}
+
+		if (!buffers->texcoord1Data.empty())
+		{
+			_AppendBufferRange(buffers->getVertexBufferRange(VertexAttribute::TexCoord1),
+				buffers->texcoord1Data.size() * sizeof(buffers->texcoord1Data[0]), bufferDesc.byteSize);
+		}
+
+		if (!buffers->texcoord2Data.empty())
+		{
+			_AppendBufferRange(buffers->getVertexBufferRange(VertexAttribute::TexCoord2),
+				buffers->texcoord2Data.size() * sizeof(buffers->texcoord2Data[0]), bufferDesc.byteSize);
+		}
+
+		if (!buffers->jointIdData.empty())
+		{
+			_AppendBufferRange(buffers->getVertexBufferRange(VertexAttribute::JointIndices),
+				buffers->jointIdData.size() * sizeof(buffers->jointIdData[0]), bufferDesc.byteSize);
+		}
+
+		if (!buffers->jointId1Data.empty())
+		{
+			_AppendBufferRange(buffers->getVertexBufferRange(VertexAttribute::JointIndices),
+				buffers->jointId1Data.size() * sizeof(buffers->jointId1Data[0]), bufferDesc.byteSize);
+		}
+
+		if (!buffers->jointId2Data.empty())
+		{
+			_AppendBufferRange(buffers->getVertexBufferRange(VertexAttribute::JointIndices),
+				buffers->jointId2Data.size() * sizeof(buffers->jointId2Data[0]), bufferDesc.byteSize);
+		}
+
+		if (!buffers->jointWeightData.empty())
+		{
+			_AppendBufferRange(buffers->getVertexBufferRange(VertexAttribute::JointWeights),
+				buffers->jointWeightData.size() * sizeof(buffers->jointWeightData[0]), bufferDesc.byteSize);
+		}
+
+		if (!buffers->jointWeight1Data.empty())
+		{
+			_AppendBufferRange(buffers->getVertexBufferRange(VertexAttribute::JointWeights),
+				buffers->jointWeight1Data.size() * sizeof(buffers->jointWeight1Data[0]), bufferDesc.byteSize);
+		}
+
+		if (!buffers->jointWeight2Data.empty())
+		{
+			_AppendBufferRange(buffers->getVertexBufferRange(VertexAttribute::JointWeights),
+				buffers->jointWeight2Data.size() * sizeof(buffers->jointWeight2Data[0]), bufferDesc.byteSize);
+		}
+
+		buffers->vertexBufferDesc = bufferDesc;
+
+
+
+		BufferDesc IndexbufferDesc;
+		IndexbufferDesc.isIndexBuffer = true;
+		IndexbufferDesc.byteSize = buffers->indexData.size() * sizeof(uint32_t);
+		IndexbufferDesc.debugName = "IndexBuffer";
+		IndexbufferDesc.canHaveTypedViews = true;
+		IndexbufferDesc.canHaveRawViews = true;
+		IndexbufferDesc.format = Format::R32_UINT;
+		IndexbufferDesc.isAccelStructBuildInput = false;
+
+
+		buffers->indexBufferDesc = IndexbufferDesc;
+	}
+
 	void Mesh::Init(uint32_t verticesSize)
 	{
 
@@ -235,6 +335,7 @@ namespace BlackPearl {
 		m_VerticeSize(verticesSize),
 		m_NeedTessellation(tessellation)
 	{
+		buffers = std::make_shared<BufferGroup>();
 		m_VerticeArrayCount = verticesSize / sizeof(float);
 		m_IndicesCount = indicesSize / sizeof(uint32_t);
 		Init(m_VerticeSize);
@@ -246,8 +347,7 @@ namespace BlackPearl {
 
 	/*one vertexBuffer*/
 	Mesh::Mesh(
-		std::vector<float> vertices,
-		std::vector<uint32_t> indices,
+		const MeshFilter* meshFilter,
 		std::shared_ptr<Material> material,
 		const VertexBufferLayout& layout,
 		bool tessellation,
@@ -256,7 +356,9 @@ namespace BlackPearl {
 		m_VertexBufferLayout(layout),
 		m_NeedTessellation(tessellation)
 	{
-		
+		buffers = std::make_shared<BufferGroup>();
+		std::vector<float> vertices = meshFilter->GetVertices();
+		std::vector<uint32_t> indices = meshFilter->GetIndices();
 		m_IndicesCount = indices.size();
 		m_IndicesSize = m_IndicesCount * sizeof(uint32_t);
 		m_VerticeArrayCount = vertices.size();
@@ -274,6 +376,7 @@ namespace BlackPearl {
 		m_Vertices = DBG_NEW float[m_VerticeArrayCount];
 		memcpy(m_Vertices, &vertices[0], m_VerticeSize);//注意memcpy最后一个参数是字节数!!!
 
+		_InitBufferGroup(meshFilter);
 		Init(m_VerticeSize);
 		if (tessellation)
 			SetTessellation(verticesPerTessPatch);
@@ -287,6 +390,7 @@ namespace BlackPearl {
 		std::vector<std::shared_ptr<VertexBuffer>> vertexBuffers,
 		bool tessellation,
 		uint32_t verticesPerTessPatch) {
+		buffers = std::make_shared<BufferGroup>();
 		m_VertexArray.reset(DBG_NEW VertexArray());
 		m_IndicesSize = indexBuffer->GetIndicesSize();
 		m_IndicesCount = m_IndicesSize / sizeof(uint32_t);
@@ -316,5 +420,12 @@ namespace BlackPearl {
 		if (tessellation)
 			SetTessellation(verticesPerTessPatch);
 		g_materialManager->AddMaterial(material);
+	}
+
+	void Mesh::_AppendBufferRange(BufferRange& range, size_t size, uint64_t& currentBufferSize)
+	{
+		range.byteOffset = currentBufferSize;
+		range.byteSize = size;
+		currentBufferSize += range.byteSize;
 	}
 }

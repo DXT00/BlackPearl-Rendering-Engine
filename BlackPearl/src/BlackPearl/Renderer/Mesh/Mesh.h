@@ -12,6 +12,8 @@
 #include "BlackPearl/Renderer/Mesh/MeshletConfig.h"
 #include "BlackPearl/Renderer/Mesh/Meshlet.h"
 #include "BlackPearl/Renderer/SceneType.h"
+#include "BlackPearl/Component/MeshFilterComponent/MeshFilter.h"
+#include "BlackPearl/RHI/RHIBuffer.h"
 #include <initializer_list>
 #include <memory>
 
@@ -38,8 +40,7 @@ namespace BlackPearl {
 
 		/*one vertexBuffer*/
 		Mesh(
-			std::vector<float> vertices,
-			std::vector<uint32_t> indices,
+			const MeshFilter* meshFilter,
 			std::shared_ptr<Material> material,
 			const VertexBufferLayout& layout,
 			bool tessellation = false,
@@ -97,8 +98,17 @@ namespace BlackPearl {
 		math::box3 objectSpaceBounds;
 		uint32_t indexOffset = 0;
 		uint32_t vertexOffset = 0;
-		uint32_t totalIndices = 0;
-		uint32_t totalVertices = 0;
+		//uint32_t totalIndices = 0;
+		//uint32_t totalVertices = 0;
+
+
+		uint32_t                     m_IndicesSize = 0; //m_IndicesSize = m_indicesCount* sizeof(uint32_t)
+		uint32_t					 m_IndicesCount = 0; //
+		uint32_t					 m_VerticeSize = 0; //m_VerticeSize = m_VerticeArrayCount* sizeof(float)
+		uint32_t					 m_VerticeCount = 0; // one vertex has multiple attributes, a vertex = (pos.xyz, normal.xyz, tex.xy..), m_VerticeCount is the number of attribute vertex
+		uint32_t					 m_VerticeArrayCount = 0;
+
+
 		int globalMeshIndex = 0;
 
 		std::shared_ptr<Material>    material = nullptr;
@@ -128,6 +138,10 @@ namespace BlackPearl {
 
 
 	private:
+
+		void _InitBufferGroup(const MeshFilter* filter);
+		void _AppendBufferRange(BufferRange& range, size_t size, uint64_t& currentBufferSize);
+
 		void Init(uint32_t verticesSize);
 		void ParseAttributes(const VertexBufferLayout& layout);
 		std::shared_ptr<VertexArray> m_VertexArray;
@@ -141,14 +155,9 @@ namespace BlackPearl {
 		std::unique_ptr<MeshDebugData> debugData;
 		bool debugDataDirty = true; // set this to true to make Scene update the debug data
 
-
-		float*                       m_Vertices = nullptr;
-		uint32_t*                    m_Indices = nullptr;
-		uint32_t                     m_IndicesSize = 0; //m_IndicesSize = m_indicesCount* sizeof(uint32_t)
-		uint32_t					 m_IndicesCount = 0;
-		uint32_t					 m_VerticeSize = 0; //m_VerticeSize = m_VerticeArrayCount* sizeof(float)
-		uint32_t					 m_VerticeCount = 0; // one vertex has multiple attributes, a vertex = (pos.xyz, normal.xyz, tex.xy..), m_VerticeCount is the number of attribute vertex
-		uint32_t					 m_VerticeArrayCount = 0;
+	    float* m_Vertices = nullptr;
+		uint32_t* m_Indices = nullptr;
+		
 
 		bool m_NeedTessellation;
 		//for batch rendering and indirect drawcall

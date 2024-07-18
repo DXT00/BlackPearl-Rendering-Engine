@@ -27,18 +27,22 @@ namespace BlackPearl {
 				vertices.push_back(x);
 				vertices.push_back(y);
 				vertices.push_back(z);
+				positionData.push_back({ x,y,z });
 				//normal
 				vertices.push_back(x / m_Radius);
 				vertices.push_back(y / m_Radius);
 				vertices.push_back(z / m_Radius);
+				normalData.push_back({ x / m_Radius, y / m_Radius, z / m_Radius });
 				//texture uv
 				vertices.push_back((float)j / m_SectorCount);
 				vertices.push_back((float)i / m_StackCount);
+
+				texcoord1Data.push_back({ (float)j / m_SectorCount ,(float)i / m_StackCount });
 			}
 		}
 
 		SetVertices(vertices); 
-		std::vector<unsigned int> indices;
+		std::vector<uint32_t> indices;
 		for (int i = 0; i < m_StackCount; i++)
 		{
 			int k1 = i * (m_StackCount + 1);
@@ -65,6 +69,8 @@ namespace BlackPearl {
 
 		}
 		SetIndices(indices);
+
+		indexData = indices;
 	}
 
 	SphereMeshFilter::~SphereMeshFilter()

@@ -24,6 +24,33 @@ namespace BlackPearl {
 		};
 		SetVertices(vertices);
 
+		positionData.push_back({ -1.0f,  1.0f, 0.0f });
+		positionData.push_back({ -1.0f, -1.0f, 0.0f });
+		positionData.push_back({ 1.0f, -1.0f, 0.0f });
+		positionData.push_back({ -1.0f,  1.0f, 0.0f });
+		positionData.push_back({ 1.0f, -1.0f, 0.0f });
+		positionData.push_back({ 1.0f,  1.0f, 0.0f });
+
+		normalData.push_back({ 0.0f, 0.0f, 1.0f });
+		normalData.push_back({ 0.0f, 0.0f, 1.0f });
+		normalData.push_back({ 0.0f, 0.0f, 1.0f });
+		normalData.push_back({ 0.0f, 0.0f, 1.0f });
+		normalData.push_back({ 0.0f, 0.0f, 1.0f });
+		normalData.push_back({ 0.0f, 0.0f, 1.0f });
+
+		texcoord1Data.push_back({ 0.0f, 1.0f });
+		texcoord1Data.push_back({ 0.0f, 0.0f });
+		texcoord1Data.push_back({ 1.0f, 0.0f });
+		texcoord1Data.push_back({ 0.0f, 1.0f });
+		texcoord1Data.push_back({ 1.0f, 0.0f });
+		texcoord1Data.push_back({ 1.0f, 1.0f });
+
+		std::vector<uint32_t> indices = {
+			0,1,2,
+			1,2,3
+		};
+		indexData = indices;
+
 	}
 }
 

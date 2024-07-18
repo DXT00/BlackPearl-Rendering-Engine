@@ -330,9 +330,9 @@ namespace BlackPearl {
 			attachmentDescs[i].sType = VK_STRUCTURE_TYPE_ATTACHMENT_DESCRIPTION_2;
 			attachmentDescs[i].format = attachmentFormat;
 			attachmentDescs[i].samples = t->imageInfo.samples;
-			attachmentDescs[i].loadOp = VK_ATTACHMENT_LOAD_OP_LOAD;
+			attachmentDescs[i].loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;// VK_ATTACHMENT_LOAD_OP_LOAD;
 			attachmentDescs[i].storeOp = VK_ATTACHMENT_STORE_OP_STORE;
-			attachmentDescs[i].initialLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+			attachmentDescs[i].initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;// VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
 			attachmentDescs[i].finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;// VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
 
 			colorAttachmentRefs[i] = VkAttachmentReference2{};

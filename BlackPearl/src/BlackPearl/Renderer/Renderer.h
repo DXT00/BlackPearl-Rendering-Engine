@@ -9,6 +9,8 @@ namespace BlackPearl {
 
 	class IView {
 	public:
+		virtual void SetViewport(RHIViewport viewport) = 0;
+
 		[[nodiscard]] virtual ViewportState GetViewportState() const = 0;
 		[[nodiscard]] virtual VariableRateShadingState GetVariableRateShadingState() const = 0;
 
@@ -59,6 +61,7 @@ namespace BlackPearl {
 		glm::vec3 CameraFront;
 		LightSources LightSources;
 
+		virtual void SetViewport(RHIViewport viewport) override;
 		virtual ViewportState GetViewportState() const override;
 		virtual VariableRateShadingState GetVariableRateShadingState() const override;
 		virtual math::frustum GetViewFrustum() const override;

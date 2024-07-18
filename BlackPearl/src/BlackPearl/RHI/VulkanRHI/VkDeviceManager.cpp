@@ -106,6 +106,7 @@ namespace BlackPearl {
 		}
 		ITexture* GetBackBuffer(uint32_t index) override
 		{
+			GE_CORE_INFO("backbufer id "+ std::to_string(index));
 			if (index < m_SwapChainImages.size())
 				return m_SwapChainImages[index].rhiHandle;
 			return nullptr;
@@ -1178,7 +1179,7 @@ namespace BlackPearl {
 		const VkResult res = vkAcquireNextImageKHR(m_Device,m_SwapChain,
 			std::numeric_limits<uint64_t>::max(), // timeout
 			m_PresentSemaphore,
-			VkFence(),
+			VK_NULL_HANDLE,
 			&m_SwapChainIndex);
 
 		assert(res == VK_SUCCESS);

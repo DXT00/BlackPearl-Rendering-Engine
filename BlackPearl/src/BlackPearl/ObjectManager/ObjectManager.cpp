@@ -145,7 +145,7 @@ namespace BlackPearl {
 		{ElementDataType::Float2,"aTexCoords",false,2}
 		};
 
-		std::shared_ptr<Mesh> mesh = std::make_shared<Mesh>(meshFilter->GetVertices(), meshFilter->GetIndices(), material, layout);
+		std::shared_ptr<Mesh> mesh = std::make_shared<Mesh>(meshFilter.get(), material, layout);
 		obj->AddComponent<MeshRenderer>(mesh);
 		AABB box = BoundingBoxBuilder::Build(obj);
 		obj->AddComponent<BoundingBox>(box);
@@ -173,7 +173,7 @@ namespace BlackPearl {
 		{ElementDataType::Float3,"aNormal",false,1},
 		{ElementDataType::Float2,"aTexCoords",false,2}
 		};
-		std::shared_ptr<Mesh> mesh = std::make_shared<Mesh>(meshFilter->GetVertices(), meshFilter->GetIndices(), material, layout);
+		std::shared_ptr<Mesh> mesh = std::make_shared<Mesh>(meshFilter.get(), material, layout);
 		obj->AddComponent<MeshRenderer>(mesh);
 
 		AABB box = BoundingBoxBuilder::Build(obj);
@@ -201,7 +201,7 @@ namespace BlackPearl {
 		{ElementDataType::Float3,"aNormal",false,1},
 		{ElementDataType::Float2,"aTexCoords",false,2}
 		};
-		std::shared_ptr<Mesh> mesh = std::make_shared<Mesh>(meshFilter->GetVertices(), meshFilter->GetIndices(), material, layout);
+		std::shared_ptr<Mesh> mesh = std::make_shared<Mesh>(meshFilter.get(), material, layout);
 		obj->AddComponent<MeshRenderer>(mesh);
 		m_Objs.push_back(obj);
 		return obj;
@@ -223,7 +223,7 @@ namespace BlackPearl {
 		VertexBufferLayout layout = {
 		{ElementDataType::Float3,"aPos",false,0},
 		};
-		std::shared_ptr<Mesh> mesh = std::make_shared<Mesh>(meshFilter->GetVertices(), meshFilter->GetIndices(), material, layout);
+		std::shared_ptr<Mesh> mesh = std::make_shared<Mesh>(meshFilter.get(), material, layout);
 		obj->AddComponent<MeshRenderer>(mesh);
 		AABB box(math::float3(10e-20f), math::float3(10e20f), true);
 		obj->AddComponent<BoundingBox>(box);		
@@ -344,7 +344,7 @@ namespace BlackPearl {
 		{ElementDataType::Float2,"aTexCoords",false,2}
 
 		};
-		std::shared_ptr<Mesh> mesh(DBG_NEW Mesh(meshFilter->GetVertices(), meshFilter->GetIndices(), material, layout));
+		std::shared_ptr<Mesh> mesh(DBG_NEW Mesh(meshFilter.get(), material, layout));
 		obj->AddComponent<MeshRenderer>(mesh);
 		m_Objs.push_back(obj);
 		return obj;
@@ -378,7 +378,7 @@ namespace BlackPearl {
 		{ElementDataType::Float2,"aTexCoords",false,1}
 		};
 
-		std::shared_ptr<Mesh> mesh = std::make_shared<Mesh>(terrain->GetVertices(), std::vector<uint32_t>(), material, layout, true/*tesselation*/, terrain->GetVertexPerChunk());
+		std::shared_ptr<Mesh> mesh = std::make_shared<Mesh>(const_cast<float*>(terrain->GetVertices().data()), terrain->GetVertices().size(), nullptr, 0, material, layout, true/*tesselation*/, terrain->GetVertexPerChunk());
 		obj->AddComponent<MeshRenderer>(mesh);
 		m_Objs.push_back(obj);
 		return obj;

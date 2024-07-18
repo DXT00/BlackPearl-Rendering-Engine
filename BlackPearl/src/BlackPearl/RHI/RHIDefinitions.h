@@ -935,6 +935,7 @@ finished executing, the objects are transitioned into the "available" state, i.e
         uint32_t startIndexLocation = 0;
         uint32_t startVertexLocation = 0;
         uint32_t startInstanceLocation = 0;
+        bool drawIndex = true;
 
         constexpr DrawArguments& setVertexCount(uint32_t value) { vertexCount = value; return *this; }
         constexpr DrawArguments& setInstanceCount(uint32_t value) { instanceCount = value; return *this; }

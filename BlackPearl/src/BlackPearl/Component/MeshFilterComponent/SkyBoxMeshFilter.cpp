@@ -95,6 +95,11 @@ namespace BlackPearl {
 			//-1.0f,  1.0f, -1.0f
 		};
 		SetVertices(vertices);
+		math::float3 pos;
+		for (size_t i = 0; i < (int)vertices.size()/3; i++)
+		{
+			positionData.push_back({ vertices[i*3], vertices[i * 3 + 1] ,vertices[i * 3 + 2] });
+		}
 
 	}
 	SkyBoxMeshFilter::~SkyBoxMeshFilter()

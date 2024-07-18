@@ -103,8 +103,12 @@ namespace BlackPearl {
 
         return true;
     }
-    void BasePassRenderer::SetupInputBuffers(const BufferGroup* buffers, GraphicsState& state)
+    void BasePassRenderer::SetupInputBuffers(BufferGroup* buffers, GraphicsState& state)
     {
+
+        buffers->indexBuffer = m_Device->createBuffer(buffers->indexBufferDesc);
+        buffers->vertexBuffer = m_Device->createBuffer(buffers->vertexBufferDesc);
+
         state.vertexBuffers = {
         { buffers->vertexBuffer, 0, buffers->getVertexBufferRange(VertexAttribute::Position).byteOffset },
         { buffers->vertexBuffer, 1, buffers->getVertexBufferRange(VertexAttribute::PrevPosition).byteOffset },

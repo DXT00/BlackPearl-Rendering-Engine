@@ -26,8 +26,7 @@ namespace BlackPearl {
 		_PrepareDrawItems();
 		//m_Walker = SceneGraphWalker(rootNode.get());
 		//m_ViewFrustum = view.GetViewFrustum();
-		m_InstanceChunk.clear();
-		m_ReadPtr = 0;
+		//m_ReadPtr = 0;
 	}
 	const DrawItem* InstancedOpaqueDrawStrategy::GetNextItem()
 	{

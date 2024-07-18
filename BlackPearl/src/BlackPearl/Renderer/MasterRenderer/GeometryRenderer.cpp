@@ -47,7 +47,11 @@ namespace BlackPearl {
 
                 pass->SetPushConstants(commandList, graphicsState, currentDraw);
 
-                commandList->drawIndexed(currentDraw);
+                if(currentDraw.drawIndex)
+                    commandList->drawIndexed(currentDraw);
+                else
+                    commandList->draw(currentDraw);
+
                 currentDraw.instanceCount = 0;
             };
 
@@ -67,7 +71,7 @@ namespace BlackPearl {
 
             if (newBuffers)
             {
-                pass->SetupInputBuffers(item.buffers, graphicsState);
+                pass->SetupInputBuffers(const_cast<BufferGroup*>(item.buffers), graphicsState);
 
                 lastBuffers = item.buffers;
                 stateValid = false;
@@ -91,7 +95,15 @@ namespace BlackPearl {
                 }
 
                 DrawArguments args;
-                args.vertexCount = item.mesh->totalIndices;// numIndices;
+                if (item.mesh->m_IndicesCount == 0) {
+                    args.drawIndex = false;
+                    args.vertexCount = item.mesh->m_VerticeCount;
+                }
+                else {
+                    args.drawIndex = true;
+                    args.vertexCount = item.mesh->m_IndicesCount;// numIndices;
+
+                }
                 args.instanceCount = 1;
                 args.startVertexLocation = item.mesh->vertexOffset;// +item.geometry.vertexOffsetInMesh;
                 args.startIndexLocation = item.mesh->indexOffset;// +item.geometry.indexOffsetInMesh;

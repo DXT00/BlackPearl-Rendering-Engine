@@ -4,7 +4,61 @@
 namespace BlackPearl {
 	BindingSetHandle MaterialBindingCache::CreateMaterialBindingSet(const Material* material)
 	{
-		return BindingSetHandle();
+        assert(0);
+    /*    nvrhi::BindingSetDesc bindingSetDesc;
+        bindingSetDesc.trackLiveness = m_TrackLiveness;
+
+        for (const auto& item : m_BindingDesc)
+        {
+            nvrhi::BindingSetItem setItem;
+
+            switch (item.resource)
+            {
+            case MaterialResource::ConstantBuffer:
+                setItem = nvrhi::BindingSetItem::ConstantBuffer(
+                    item.slot,
+                    material->materialConstants);
+                break;
+
+            case MaterialResource::Sampler:
+                setItem = nvrhi::BindingSetItem::Sampler(
+                    item.slot,
+                    m_Sampler);
+                break;
+
+            case MaterialResource::DiffuseTexture:
+                setItem = GetTextureBindingSetItem(item.slot, material->baseOrDiffuseTexture);
+                break;
+
+            case MaterialResource::SpecularTexture:
+                setItem = GetTextureBindingSetItem(item.slot, material->metalRoughOrSpecularTexture);
+                break;
+
+            case MaterialResource::NormalTexture:
+                setItem = GetTextureBindingSetItem(item.slot, material->normalTexture);
+                break;
+
+            case MaterialResource::EmissiveTexture:
+                setItem = GetTextureBindingSetItem(item.slot, material->emissiveTexture);
+                break;
+
+            case MaterialResource::OcclusionTexture:
+                setItem = GetTextureBindingSetItem(item.slot, material->occlusionTexture);
+                break;
+
+            case MaterialResource::TransmissionTexture:
+                setItem = GetTextureBindingSetItem(item.slot, material->transmissionTexture);
+                break;
+
+            default:
+                log::error("MaterialBindingCache: unknown MaterialResource value (%d)", item.resource);
+                return nullptr;
+            }
+
+            bindingSetDesc.bindings.push_back(setItem);
+        }*/
+
+        return m_Device->createBindingSet(bindingSetDesc, m_BindingLayout);
 	}
 
 	BindingSetItem MaterialBindingCache::GetTextureBindingSetItem(uint32_t slot, const std::shared_ptr<LoadedTexture>& texture) const
