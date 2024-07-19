@@ -1,27 +1,28 @@
 #include "pch.h"
 #include "MaterialBindingCache.h"
+#include "BlackPearl/RHI/RHIBindingSet.h"
 
 namespace BlackPearl {
 	BindingSetHandle MaterialBindingCache::CreateMaterialBindingSet(const Material* material)
 	{
         assert(0);
-    /*    nvrhi::BindingSetDesc bindingSetDesc;
+        BindingSetDesc bindingSetDesc;
         bindingSetDesc.trackLiveness = m_TrackLiveness;
 
         for (const auto& item : m_BindingDesc)
         {
-            nvrhi::BindingSetItem setItem;
+            BindingSetItem setItem;
 
             switch (item.resource)
             {
             case MaterialResource::ConstantBuffer:
-                setItem = nvrhi::BindingSetItem::ConstantBuffer(
+                setItem = BindingSetItem::ConstantBuffer(
                     item.slot,
                     material->materialConstants);
                 break;
 
             case MaterialResource::Sampler:
-                setItem = nvrhi::BindingSetItem::Sampler(
+                setItem = BindingSetItem::Sampler(
                     item.slot,
                     m_Sampler);
                 break;
@@ -51,12 +52,12 @@ namespace BlackPearl {
                 break;
 
             default:
-                log::error("MaterialBindingCache: unknown MaterialResource value (%d)", item.resource);
+                GE_CORE_INFO("MaterialBindingCache: unknown MaterialResource value (%d)", item.resource);
                 return nullptr;
             }
 
             bindingSetDesc.bindings.push_back(setItem);
-        }*/
+        }
 
         return m_Device->createBindingSet(bindingSetDesc, m_BindingLayout);
 	}

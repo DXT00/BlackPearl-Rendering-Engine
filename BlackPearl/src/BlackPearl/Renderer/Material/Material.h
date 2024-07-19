@@ -138,6 +138,18 @@ namespace BlackPearl {
 
 		}
 	public:
+
+		MaterialDomain domain = MaterialDomain::Opaque;
+		std::shared_ptr<LoadedTexture> baseOrDiffuseTexture; // metal-rough: base color; spec-gloss: diffuse color; .a = opacity (both modes)
+		std::shared_ptr<LoadedTexture> metalRoughOrSpecularTexture; // metal-rough: ORM map; spec-gloss: specular color, .a = glossiness
+		std::shared_ptr<LoadedTexture> normalTexture;
+		std::shared_ptr<LoadedTexture> emissiveTexture;
+		std::shared_ptr<LoadedTexture> occlusionTexture;
+		std::shared_ptr<LoadedTexture> transmissionTexture; // see KHR_materials_transmission; undefined on specular-gloss materials
+		// std::shared_ptr<LoadedTexture> thicknessTexture; // see KHR_materials_volume (not implemented yet)
+		BufferHandle materialConstants;
+
+	public:
 		std::string name;
 		MaterialDomain domain;// = MaterialDomain::Opaque;
 	private:
