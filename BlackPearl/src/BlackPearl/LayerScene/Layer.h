@@ -144,7 +144,7 @@ namespace BlackPearl {
 		void ShowTerrian(Object* obj);
 
 		void ShowShader(std::string imguiShaders, int meshIndex, static int& itemIndex, int offset);
-		void ShowTextures(std::string imguiShaders, int meshIndex, static  int& itemIndex, Texture::Type textureType, static Texture::Type& type, int offset);
+		void ShowTextures(std::string imguiShaders, int meshIndex, static  int& itemIndex, ITexture::Type textureType, static ITexture::Type& type, int offset);
 		void ShowMaterialProps(Material::Props& imGuiProps);
 		std::vector<Object*> GetObjects();
 		//std::vector<std::string> GetObjectsName();

@@ -390,6 +390,8 @@ namespace BlackPearl {
 	}
 
 
+
+
     TextureHandle Device::createHandleForNativeTexture(uint32_t objectType, RHIObject _texture, const TextureDesc& desc)
     {
         if (_texture.integer == 0)

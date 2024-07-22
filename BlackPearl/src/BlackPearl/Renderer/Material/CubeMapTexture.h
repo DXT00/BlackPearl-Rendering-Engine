@@ -1,7 +1,7 @@
 #pragma once
-#include "Texture.h"
+#include "BlackPearl/RHI/RHITexture.h"
 namespace BlackPearl {
-	class CubeMapTexture:public Texture
+	class CubeMapTexture: public ITexture
 	{
 	public:
 		CubeMapTexture(

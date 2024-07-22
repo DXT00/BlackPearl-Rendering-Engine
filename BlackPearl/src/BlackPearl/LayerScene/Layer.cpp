@@ -21,6 +21,7 @@
 #include "BlackPearl/Renderer/MasterRenderer/CloudRenderer.h"
 #include "BlackPearl/Application.h"
 #include "BlackPearl/Renderer/Buffer/D3D12Buffer/D3D12Buffer.h"
+#include "BlackPearl/RHI/RHIT"
 
 namespace BlackPearl {
 
@@ -1292,50 +1293,50 @@ namespace BlackPearl {
 
 	}
 
-	void Layer::ShowTextures(std::string imguiShaders, int meshIndex, static  int& itemIndex, Texture::Type textureType, static Texture::Type& type, int offset)
+	void Layer::ShowTextures(std::string imguiShaders, int meshIndex, static  int& itemIndex, ITexture::Type textureType, static ITexture::Type& type, int offset)
 	{
 
 		std::string buttonName = ""; //+std::to_string(meshIndex + offset);
 		std::string inputTextName = "";// +std::to_string(meshIndex + offset);
 
 		switch (textureType) {
-		case Texture::Type::DiffuseMap:
+		case ITexture::Type::DiffuseMap:
 			buttonName += "diffuseMap";
 			inputTextName += "diffuseMap";
 			break;
-		case Texture::Type::SpecularMap:
+		case ITexture::Type::SpecularMap:
 			buttonName += "specularMap";
 			inputTextName += "specularMap";
 			break;
-		case Texture::Type::EmissionMap:
+		case ITexture::Type::EmissionMap:
 			buttonName += "emissionMap";
 			inputTextName += "emissionMap";
 			break;
-		case Texture::Type::HeightMap:
+		case ITexture::Type::HeightMap:
 			buttonName += "heightMap";
 			inputTextName += "heightMap";
 			break;
-		case Texture::Type::NormalMap:
+		case ITexture::Type::NormalMap:
 			buttonName += "normalMap";
 			inputTextName += "normalMap";
 			break;
-		case Texture::Type::CubeMap:
+		case ITexture::Type::CubeMap:
 			buttonName += "cubeMap";
 			inputTextName += "cubeMap";
 			break;
-		case Texture::Type::DepthMap:
+		case ITexture::Type::DepthMap:
 			buttonName += "depthMap";
 			inputTextName += "depthMap";
 			break;
-		case Texture::Type::AoMap:
+		case ITexture::Type::AoMap:
 			buttonName += "aoMap";
 			inputTextName += "aoMap";
 			break;
-		case Texture::Type::RoughnessMap:
+		case ITexture::Type::RoughnessMap:
 			buttonName += "roughnessMap";
 			inputTextName += "roughnessMap";
 			break;
-		case Texture::Type::MentallicMap:
+		case ITexture::Type::MentallicMap:
 			buttonName += "mentallicMap";
 			inputTextName += "mentallicMap";
 			break;
@@ -1457,44 +1458,44 @@ namespace BlackPearl {
 
 				if (imGuiMeshes[i]->GetMaterial()->GetTextureMaps()->mentallicMap != nullptr)
 					imguiDepthTextures[i] = imGuiMeshes[i]->GetMaterial()->GetTextureMaps()->mentallicMap->GetPath();
-				ShowTextures(imguiDepthTextures[i], i, itemIndexTexture, Texture::MentallicMap, type, imGuiMeshes.size() * 2);
+				ShowTextures(imguiDepthTextures[i], i, itemIndexTexture, ITexture::MentallicMap, type, imGuiMeshes.size() * 2);
 			}
 			if (itemIndexTexture != -1) {
 				if (m_fileDialog.HasSelected()) {
 
 					switch (type) {
-					case Texture::DiffuseMap:
-						imGuiMeshes[itemIndexTexture]->GetMaterial()->SetTexture(Texture::DiffuseMap, m_fileDialog.GetSelected().string());//"assets/texture/" + 
+					case ITexture::DiffuseMap:
+						imGuiMeshes[itemIndexTexture]->GetMaterial()->SetTexture(ITexture::DiffuseMap, m_fileDialog.GetSelected().string());//"assets/texture/" + 
 						break;
-					case Texture::SpecularMap:
-						imGuiMeshes[itemIndexTexture]->GetMaterial()->SetTexture(Texture::SpecularMap, m_fileDialog.GetSelected().string());//"assets/texture/" +
+					case ITexture::SpecularMap:
+						imGuiMeshes[itemIndexTexture]->GetMaterial()->SetTexture(ITexture::SpecularMap, m_fileDialog.GetSelected().string());//"assets/texture/" +
 						break;
-					case Texture::EmissionMap:
-						imGuiMeshes[itemIndexTexture]->GetMaterial()->SetTexture(Texture::EmissionMap, m_fileDialog.GetSelected().string());
+					case ITexture::EmissionMap:
+						imGuiMeshes[itemIndexTexture]->GetMaterial()->SetTexture(ITexture::EmissionMap, m_fileDialog.GetSelected().string());
 						break;
-					case Texture::NormalMap:
-						imGuiMeshes[itemIndexTexture]->GetMaterial()->SetTexture(Texture::NormalMap, m_fileDialog.GetSelected().string());
+					case ITexture::NormalMap:
+						imGuiMeshes[itemIndexTexture]->GetMaterial()->SetTexture(ITexture::NormalMap, m_fileDialog.GetSelected().string());
 						break;
-					case Texture::CubeMap:
-						imGuiMeshes[itemIndexTexture]->GetMaterial()->SetTexture(Texture::CubeMap, m_fileDialog.GetSelected().string());
+					case ITexture::CubeMap:
+						imGuiMeshes[itemIndexTexture]->GetMaterial()->SetTexture(ITexture::CubeMap, m_fileDialog.GetSelected().string());
 						break;
-					case Texture::HeightMap:
-						imGuiMeshes[itemIndexTexture]->GetMaterial()->SetTexture(Texture::HeightMap, m_fileDialog.GetSelected().string());
+					case ITexture::HeightMap:
+						imGuiMeshes[itemIndexTexture]->GetMaterial()->SetTexture(ITexture::HeightMap, m_fileDialog.GetSelected().string());
 						break;
-					case Texture::DepthMap:
-						imGuiMeshes[itemIndexTexture]->GetMaterial()->SetTexture(Texture::DepthMap, m_fileDialog.GetSelected().string());
-						break;
-
-					case Texture::AoMap:
-						imGuiMeshes[itemIndexTexture]->GetMaterial()->SetTexture(Texture::AoMap, m_fileDialog.GetSelected().string());
+					case ITexture::DepthMap:
+						imGuiMeshes[itemIndexTexture]->GetMaterial()->SetTexture(ITexture::DepthMap, m_fileDialog.GetSelected().string());
 						break;
 
-					case Texture::RoughnessMap:
-						imGuiMeshes[itemIndexTexture]->GetMaterial()->SetTexture(Texture::RoughnessMap, m_fileDialog.GetSelected().string());
+					case ITexture::AoMap:
+						imGuiMeshes[itemIndexTexture]->GetMaterial()->SetTexture(ITexture::AoMap, m_fileDialog.GetSelected().string());
 						break;
 
-					case Texture::MentallicMap:
-						imGuiMeshes[itemIndexTexture]->GetMaterial()->SetTexture(Texture::MentallicMap, m_fileDialog.GetSelected().string());
+					case ITexture::RoughnessMap:
+						imGuiMeshes[itemIndexTexture]->GetMaterial()->SetTexture(ITexture::RoughnessMap, m_fileDialog.GetSelected().string());
+						break;
+
+					case ITexture::MentallicMap:
+						imGuiMeshes[itemIndexTexture]->GetMaterial()->SetTexture(ITexture::MentallicMap, m_fileDialog.GetSelected().string());
 						break;
 					defalut:
 						GE_CORE_ERROR("Unknown texture type");

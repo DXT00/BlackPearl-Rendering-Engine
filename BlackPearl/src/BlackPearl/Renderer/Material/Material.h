@@ -102,8 +102,8 @@ namespace BlackPearl {
 
 		void SetShader(const std::string& shaderPath);
 		void SetShader(const std::shared_ptr<Shader>& shader);
-		void SetTexture(const std::shared_ptr<Texture> texture);
-		void SetTexture(const Texture::Type type, const std::string& image);
+		void SetTexture(const std::shared_ptr<ITexture> texture);
+		void SetTexture(const ITexture::Type type, const std::string& image);
 		void SetMaterialColor(MaterialColor::Color color);
 		void SetMaterialColorDiffuseColor(const math::float3& color);
 		void SetMaterialColorSpecularColor(const math::float3& color);

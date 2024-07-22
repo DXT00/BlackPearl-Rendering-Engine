@@ -98,39 +98,39 @@ namespace BlackPearl {
 	{
 		return m_MatId;
 	}
-	void Material::SetTexture(const std::shared_ptr<Texture> texture)
+	void Material::SetTexture(const std::shared_ptr<ITexture> texture)
 	{
 		switch (texture->GetType())
 		{
-		case Texture::Type::DiffuseMap:
+		case ITexture::Type::DiffuseMap:
 			m_TextureMaps->diffuseTextureMap = texture;
 			break;
-		case Texture::Type::SpecularMap:
+		case ITexture::Type::SpecularMap:
 			m_TextureMaps->specularTextureMap = texture;
 			break;
-		case Texture::Type::EmissionMap:
+		case ITexture::Type::EmissionMap:
 			m_TextureMaps->emissionTextureMap = texture;
 			break;
-		case Texture::Type::HeightMap:
+		case ITexture::Type::HeightMap:
 			m_TextureMaps->heightTextureMap = texture;
 			break;
-		case Texture::Type::NormalMap:
+		case ITexture::Type::NormalMap:
 			m_TextureMaps->normalTextureMap = texture;
 			break;
-		case Texture::Type::CubeMap:
+		case ITexture::Type::CubeMap:
 			m_TextureMaps->cubeTextureMap = texture;
 			break;
-		case Texture::Type::DepthMap:
+		case ITexture::Type::DepthMap:
 			m_TextureMaps->depthTextureMap = texture;
 			break;
 
-		case Texture::Type::AoMap:
+		case ITexture::Type::AoMap:
 			m_TextureMaps->aoMap = texture;
 			break;
-		case Texture::Type::RoughnessMap:
+		case ITexture::Type::RoughnessMap:
 			m_TextureMaps->roughnessMap = texture;
 			break;
-		case Texture::Type::MentallicMap:
+		case ITexture::Type::MentallicMap:
 			m_TextureMaps->mentallicMap = texture;
 			break;
 		default:
@@ -138,7 +138,7 @@ namespace BlackPearl {
 		}
 	}
 
-	void Material::SetTexture(const Texture::Type type, const std::string& image)
+	void Material::SetTexture(const ITexture::Type type, const std::string& image)
 	{
 		std::shared_ptr<Texture>texture(DBG_NEW Texture(type, image, GL_LINEAR, GL_LINEAR, GL_RGBA, GL_CLAMP_TO_EDGE, GL_UNSIGNED_BYTE));
 		SetTexture(texture);

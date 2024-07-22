@@ -5,7 +5,7 @@
 namespace BlackPearl {
 	BindingSetHandle MaterialBindingCache::CreateMaterialBindingSet(const Material* material)
 	{
-        assert(0);
+       
         BindingSetDesc bindingSetDesc;
         bindingSetDesc.trackLiveness = m_TrackLiveness;
 

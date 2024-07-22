@@ -4,6 +4,7 @@
 #include "BlackPearl/Renderer/Mesh/Mesh.h"
 #include "BlackPearl/Renderer/Model/Model.h"
 #include "BlackPearl/Renderer/Renderer.h"
+#include "BlackPearl/RHI/RHITexture.h"
 
 //MeshRenderer÷ª∏∫‘‰÷»æ
 namespace BlackPearl {
@@ -34,10 +35,10 @@ namespace BlackPearl {
 		std::vector<std::shared_ptr<Mesh>>& GetMeshlets() {
 			return m_Model != nullptr ? m_Model->GetMeshlets() : m_Meshes;
 		}
-		void SetTexture(unsigned int meshIndex, const std::shared_ptr<Texture>& texture);
-		void SetTextures(const std::shared_ptr<Texture>& texture);
-		void SetModelTexture(unsigned int meshIndex, const std::shared_ptr<Texture>& texture);
-		void SetModelTextures(const std::shared_ptr<Texture>& texture);
+		void SetTexture(unsigned int meshIndex, const std::shared_ptr<ITexture>& texture);
+		void SetTextures(const std::shared_ptr<ITexture>& texture);
+		void SetModelTexture(unsigned int meshIndex, const std::shared_ptr<ITexture>& texture);
+		void SetModelTextures(const std::shared_ptr<ITexture>& texture);
 
 		void SetShaders(const std::string& image);
 		void SetShaders(const std::shared_ptr<Shader>& shader);
