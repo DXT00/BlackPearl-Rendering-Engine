@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "OpenGLTexture.h"
-ss#include "BlackPearl/Core.h"
+#include "BlackPearl/Core.h"
 #include "BlackPearl/Config.h"
 
 #define STB_IMAGE_IMPLEMENTATION
@@ -9,6 +9,7 @@ ss#include "BlackPearl/Core.h"
 namespace BlackPearl {
 
 	Texture::Texture(Type type)
+		:TextureStateExtension(desc)
 	{
 		glGenTextures(1, &m_TextureID);
 	}
@@ -21,7 +22,7 @@ namespace BlackPearl {
 		int wrap,
 		unsigned int dataType,
 		bool generateMipmap
-	)
+	) : TextureStateExtension(desc)
 	{
 		m_Path = image;
 		m_Type = type;
@@ -45,7 +46,7 @@ namespace BlackPearl {
 		unsigned int dataType,
 		bool generateMipmap,
 		float* data
-	)
+	) :TextureStateExtension(desc)
 	{
 		m_Width = width;
 		m_Height = height;
@@ -63,7 +64,7 @@ namespace BlackPearl {
 	}
 	//Use in CubeMap
 	Texture::Texture(Type type, std::vector<std::string> faces)
-	{
+		:TextureStateExtension(desc) {
 		m_Path = "";
 		//m_FacesPath = faces;
 		m_Type = type;
