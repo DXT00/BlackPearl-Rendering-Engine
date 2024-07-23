@@ -75,6 +75,11 @@ namespace BlackPearl {
         ~ETexture() override;
         const TextureDesc& getDesc() const override { return desc; }
         virtual const Type& GetType() const override { return desc.type; }
+
+		virtual void UnBind() override {};
+		virtual void Bind()override {};
+
+        static void fillTextureInfo(ETexture* texture, const TextureDesc& desc);
        // Object getNativeObject(ObjectType objectType) override;
        // Object getNativeView(ObjectType objectType, Format format, TextureSubresourceSet subresources, TextureDimension dimension, bool isReadOnlyDSV = false) override;
 

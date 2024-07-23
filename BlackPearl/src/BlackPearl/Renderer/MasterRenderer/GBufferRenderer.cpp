@@ -279,9 +279,9 @@ namespace BlackPearl {
 
 	void GBufferRenderer::RenderSceneWithGBufferAndProbes(std::vector<Object*> staticObjects, std::vector<Object*> dynamicObjects, float timeInSecond, std::vector<Object*> backGroundObjs, Object* gBufferDebugQuad, LightSources* lightSources,
 		std::vector<Object*> diffuseProbes, std::vector<Object*> reflectionProbes,
-		std::shared_ptr<Texture> specularBrdfLUTTexture, Object* skyBox,
+		std::shared_ptr<ITexture> specularBrdfLUTTexture, Object* skyBox,
 		MapManager* mapManager,
-		std::shared_ptr<Texture> depthTexture,
+		std::shared_ptr<ITexture> depthTexture,
 		bool enableSSR)
 	{
 

@@ -28,27 +28,27 @@ namespace BlackPearl {
                 break;
 
             case MaterialResource::DiffuseTexture:
-                setItem = GetTextureBindingSetItem(item.slot, material->baseOrDiffuseTexture);
+                setItem = GetTextureBindingSetItem(item.slot, material->GetTextureMaps()->diffuseTextureMap);
                 break;
 
             case MaterialResource::SpecularTexture:
-                setItem = GetTextureBindingSetItem(item.slot, material->metalRoughOrSpecularTexture);
+                setItem = GetTextureBindingSetItem(item.slot, material->GetTextureMaps()->specularTextureMap);
                 break;
 
             case MaterialResource::NormalTexture:
-                setItem = GetTextureBindingSetItem(item.slot, material->normalTexture);
+                setItem = GetTextureBindingSetItem(item.slot, material->GetTextureMaps()->normalTextureMap);
                 break;
 
             case MaterialResource::EmissiveTexture:
-                setItem = GetTextureBindingSetItem(item.slot, material->emissiveTexture);
+                setItem = GetTextureBindingSetItem(item.slot, material->GetTextureMaps()->emissionTextureMap);
                 break;
 
             case MaterialResource::OcclusionTexture:
-                setItem = GetTextureBindingSetItem(item.slot, material->occlusionTexture);
+                setItem = GetTextureBindingSetItem(item.slot, material->GetTextureMaps()->aoMap);
                 break;
 
             case MaterialResource::TransmissionTexture:
-                setItem = GetTextureBindingSetItem(item.slot, material->transmissionTexture);
+                setItem = GetTextureBindingSetItem(item.slot, material->GetTextureMaps()->transmissionTexture);
                 break;
 
             default:
@@ -62,10 +62,15 @@ namespace BlackPearl {
         return m_Device->createBindingSet(bindingSetDesc, m_BindingLayout);
 	}
 
-	BindingSetItem MaterialBindingCache::GetTextureBindingSetItem(uint32_t slot, const std::shared_ptr<LoadedTexture>& texture) const
-	{
-		return BindingSetItem::Texture_SRV(slot, texture && texture->texture ? texture->texture.Get() : m_FallbackTexture.Get());
-	}
+    BindingSetItem MaterialBindingCache::GetTextureBindingSetItem(uint32_t slot, const std::shared_ptr<ITexture>& texture) const
+    {
+        return BindingSetItem::Texture_SRV(slot, texture? texture.get() : m_FallbackTexture.Get());
+    }
+
+	//BindingSetItem MaterialBindingCache::GetTextureBindingSetItem(uint32_t slot, const std::shared_ptr<LoadedTexture>& texture) const
+	//{
+	//	return BindingSetItem::Texture_SRV(slot, texture && texture->texture ? texture->texture.Get() : m_FallbackTexture.Get());
+	//}
 
 	MaterialBindingCache::MaterialBindingCache(IDevice* device, ShaderType shaderType, uint32_t registerSpace, const std::vector<MaterialResourceBinding>& bindings, ISampler* sampler, ITexture* fallbackTexture, bool trackLiveness)
 	{

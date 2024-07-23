@@ -229,7 +229,7 @@ namespace BlackPearl {
         return flags;
     }
     // fills out all info fields in Texture based on a TextureDesc
-    static void fillTextureInfo(ETexture* texture, const TextureDesc& desc)
+    void ETexture::fillTextureInfo(ETexture* texture, const TextureDesc& desc)
     {
         texture->desc = desc;
 
@@ -410,6 +410,9 @@ namespace BlackPearl {
 
         return TextureHandle::Create(texture);
     }
+
+
+
 
 }
 

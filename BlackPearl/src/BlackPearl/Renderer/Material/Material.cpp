@@ -102,35 +102,35 @@ namespace BlackPearl {
 	{
 		switch (texture->GetType())
 		{
-		case ITexture::Type::DiffuseMap:
+		case TextureType::DiffuseMap:
 			m_TextureMaps->diffuseTextureMap = texture;
 			break;
-		case ITexture::Type::SpecularMap:
+		case TextureType::SpecularMap:
 			m_TextureMaps->specularTextureMap = texture;
 			break;
-		case ITexture::Type::EmissionMap:
+		case TextureType::EmissionMap:
 			m_TextureMaps->emissionTextureMap = texture;
 			break;
-		case ITexture::Type::HeightMap:
+		case TextureType::HeightMap:
 			m_TextureMaps->heightTextureMap = texture;
 			break;
-		case ITexture::Type::NormalMap:
+		case TextureType::NormalMap:
 			m_TextureMaps->normalTextureMap = texture;
 			break;
-		case ITexture::Type::CubeMap:
+		case TextureType::CubeMap:
 			m_TextureMaps->cubeTextureMap = texture;
 			break;
-		case ITexture::Type::DepthMap:
+		case TextureType::DepthMap:
 			m_TextureMaps->depthTextureMap = texture;
 			break;
 
-		case ITexture::Type::AoMap:
+		case TextureType::AoMap:
 			m_TextureMaps->aoMap = texture;
 			break;
-		case ITexture::Type::RoughnessMap:
+		case TextureType::RoughnessMap:
 			m_TextureMaps->roughnessMap = texture;
 			break;
-		case ITexture::Type::MentallicMap:
+		case TextureType::MentallicMap:
 			m_TextureMaps->mentallicMap = texture;
 			break;
 		default:
@@ -138,7 +138,7 @@ namespace BlackPearl {
 		}
 	}
 
-	void Material::SetTexture(const ITexture::Type type, const std::string& image)
+	void Material::SetTexture(const TextureType type, const std::string& image)
 	{
 		std::shared_ptr<Texture>texture(DBG_NEW Texture(type, image, GL_LINEAR, GL_LINEAR, GL_RGBA, GL_CLAMP_TO_EDGE, GL_UNSIGNED_BYTE));
 		SetTexture(texture);

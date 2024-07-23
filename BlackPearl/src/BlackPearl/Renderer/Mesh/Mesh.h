@@ -69,7 +69,7 @@ namespace BlackPearl {
 
 		void SetShader(const std::string& path)				     { material->SetShader(path); }
 		void SetShader(const std::shared_ptr<Shader> &shader)    { material->SetShader(shader); }
-		void SetTexture(const std::shared_ptr<Texture>& texture) { material->SetTexture(texture); }
+		void SetTexture(const std::shared_ptr<ITexture>& texture) { material->SetTexture(texture); }
 		void SetMaterialColor(MaterialColor::Color color)        { material->SetMaterialColor(color); }
 		void SetTessellation(uint32_t verticesPerTessPatch);
 		void SetVertexBufferLayout(const VertexBufferLayout& layout);

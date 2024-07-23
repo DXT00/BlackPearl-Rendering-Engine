@@ -262,38 +262,51 @@ namespace BlackPearl {
 		return m_Queues[int(queue)].get(); 
 	}
 
-	TextureHandle Device::createTexture(const TextureDesc& d)
+	TextureHandle Device::createTexture(const TextureDesc& desc)
 	{
-//		ETexture* texture = new ETexture(m_Context, m_Allocator);
-//		assert(texture);
-//		fillTextureInfo(texture, desc);
-//
-//		vk::Result res = m_Context.device.createImage(&texture->imageInfo, m_Context.allocationCallbacks, &texture->image);
-//		ASSERT_VK_OK(res);
-//		CHECK_VK_FAIL(res)
-//
-//			//m_Context.nameVKObject(texture->image, vk::DebugReportObjectTypeEXT::eImage, desc.debugName.c_str());
-//
-//		if (!desc.isVirtual)
-//		{
-//			res = m_Allocator.allocateTextureMemory(texture);
-//			ASSERT_VK_OK(res);
-//			CHECK_VK_FAIL(res)
-//
-//				if ((desc.sharedResourceFlags & SharedResourceFlags::Shared) != 0)
-//				{
+		ETexture* texture = new ETexture(m_Context, m_Allocator);
+		assert(texture);
+		ETexture::fillTextureInfo(texture, desc);
+
+		//VkResult res = m_Context.device.createImage(&texture->imageInfo, m_Context.allocationCallbacks, &texture->image);
+		VkResult res = vkCreateImage(m_Context.device, &texture->imageInfo, m_Context.allocationCallbacks, &texture->image);
+		assert(res == VkResult::VK_SUCCESS);
+		//CHECK_VK_FAIL(res)
+
+			//m_Context.nameVKObject(texture->image, vk::DebugReportObjectTypeEXT::eImage, desc.debugName.c_str());
+
+		if (!desc.isVirtual)
+		{
+			res = m_Allocator.allocateTextureMemory(texture);
+			assert(res == VkResult::VK_SUCCESS);
+
+			//ASSERT_VK_OK(res);
+			//CHECK_VK_FAIL(res)
+
+				if ((desc.sharedResourceFlags & SharedResourceFlags::Shared) != 0)
+				{
+
 //#ifdef _WIN32
-//					texture->sharedHandle = m_Context.device.getMemoryWin32HandleKHR({ texture->memory, vk::ExternalMemoryHandleTypeFlagBits::eOpaqueWin32 });
+					//vkGetMemoryWin32HandleKHR()
+					int fd;
+					vkGetMemoryFdKHR(m_Context.device, reinterpret_cast<const VkMemoryGetFdInfoKHR*>(texture->memory), &fd);
+					texture->sharedHandle = (void*)(size_t)fd;
+					//texture->sharedHandle = m_Context.device.getMemoryWin32HandleKHR({ texture->memory, vk::ExternalMemoryHandleTypeFlagBits::eOpaqueWin32 });
+
 //#else
-//					texture->sharedHandle = (void*)(size_t)m_Context.device.getMemoryFdKHR({ texture->memory, vk::ExternalMemoryHandleTypeFlagBits::eOpaqueFd });
+					
+					/*int fd;
+					vkGetMemoryFdKHR(m_Context.device, reinterpret_cast<const VkMemoryGetFdInfoKHR*>(texture->memory), &fd);
+					texture->sharedHandle = (void*)(size_t)fd;*/
+					//texture->sharedHandle = (void*)(size_t)m_Context.device.getMemoryFdKHR({ texture->memory, vk::ExternalMemoryHandleTypeFlagBits::eOpaqueFd });
 //#endif
-//				}
-//
-//			m_Context.nameVKObject(texture->memory, vk::DebugReportObjectTypeEXT::eDeviceMemory, desc.debugName.c_str());
-//		}
-//
-//		return TextureHandle::Create(texture);
-		return TextureHandle();
+				}
+
+			//m_Context.nameVKObject(texture->memory, vk::DebugReportObjectTypeEXT::eDeviceMemory, desc.debugName.c_str());
+		}
+
+		return TextureHandle::Create(texture);
+		//return TextureHandle();
 	}
 
 	BufferHandle Device::createBuffer(const BufferDesc& d)

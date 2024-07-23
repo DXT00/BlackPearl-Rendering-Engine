@@ -32,10 +32,10 @@ namespace BlackPearl {
 			LightSources* lightSources,
 			std::vector<Object*>diffuseProbes,
 			std::vector<Object*>reflectionProbes,
-			std::shared_ptr<Texture>specularBrdfLUTTexture,
+			std::shared_ptr<ITexture>specularBrdfLUTTexture,
 			Object* skyBox, 
 			MapManager* mapManager,
-			std::shared_ptr<Texture> depthTexture,
+			std::shared_ptr<ITexture> depthTexture,
 			bool enableSSR);
 
 		std::vector<Object*> FindKnearProbes(math::float3 objPos, std::vector<Object*> probes,unsigned int k);
@@ -66,9 +66,9 @@ namespace BlackPearl {
 
 		/* 用作 tone mapping 和 hdr 后期处理 */
 		std::shared_ptr<FrameBuffer> m_HDRFrameBuffer;
-		std::shared_ptr<Texture> m_HDRPostProcessTexture;
+		std::shared_ptr<ITexture> m_HDRPostProcessTexture;
 
-		std::shared_ptr<Texture> m_SSRTestTexture;
+		std::shared_ptr<ITexture> m_SSRTestTexture;
 
 		/**** shader ****/
 		/* write pos,normal,color to gBuffer */

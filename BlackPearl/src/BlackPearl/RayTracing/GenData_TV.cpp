@@ -8,13 +8,13 @@ namespace BlackPearl {
 	{
 		
 	}
-	void GenData_TV::ParseTextureData(std::map<std::shared_ptr<Texture>, std::vector<size_t>> tex2vec)
+	void GenData_TV::ParseTextureData(std::map<std::shared_ptr<ITexture>, std::vector<size_t>> tex2vec)
 	{
 		for (auto pair:tex2vec)
 		{
-			std::shared_ptr<Texture> texture = pair.first;
+			std::shared_ptr<ITexture> texture = pair.first;
 
-			if (texture->GetType() == Texture::Type::CubeMap) {
+			if (texture->GetType() == TextureType::CubeMap) {
 				ParseCubeMap(texture);
 			}
 			else {
@@ -40,7 +40,7 @@ namespace BlackPearl {
 
 		m_Color2Idx[color] = m_TexData.size();
 
-		m_TexData.push_back(Texture::Type::None);
+		m_TexData.push_back(TextureType::None);
 
 		m_TexData.push_back(packData.size() / 4);
 	
@@ -52,7 +52,7 @@ namespace BlackPearl {
 
 
 
-	void GenData_TV::ParseCubeMap(std::shared_ptr<Texture> texture)
+	void GenData_TV::ParseCubeMap(std::shared_ptr<ITexture> texture)
 	{
 		auto targetPair = m_Tex2Idx.find(texture);
 		if (targetPair != m_Tex2Idx.end())
@@ -69,7 +69,7 @@ namespace BlackPearl {
 		m_TexData.push_back(m_CubeMap2RenderId[cube_texture]);
 	}
 
-	void GenData_TV::ParseImgMap(std::shared_ptr<Texture> texture)
+	void GenData_TV::ParseImgMap(std::shared_ptr<ITexture> texture)
 	{
 		auto targetPair = m_Tex2Idx.find(texture);
 		if (targetPair != m_Tex2Idx.end())

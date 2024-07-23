@@ -1293,50 +1293,50 @@ namespace BlackPearl {
 
 	}
 
-	void Layer::ShowTextures(std::string imguiShaders, int meshIndex, static  int& itemIndex, ITexture::Type textureType, static ITexture::Type& type, int offset)
+	void Layer::ShowTextures(std::string imguiShaders, int meshIndex, static  int& itemIndex, TextureType textureType, static TextureType& type, int offset)
 	{
 
 		std::string buttonName = ""; //+std::to_string(meshIndex + offset);
 		std::string inputTextName = "";// +std::to_string(meshIndex + offset);
 
 		switch (textureType) {
-		case ITexture::Type::DiffuseMap:
+		case TextureType::DiffuseMap:
 			buttonName += "diffuseMap";
 			inputTextName += "diffuseMap";
 			break;
-		case ITexture::Type::SpecularMap:
+		case TextureType::SpecularMap:
 			buttonName += "specularMap";
 			inputTextName += "specularMap";
 			break;
-		case ITexture::Type::EmissionMap:
+		case TextureType::EmissionMap:
 			buttonName += "emissionMap";
 			inputTextName += "emissionMap";
 			break;
-		case ITexture::Type::HeightMap:
+		case TextureType::HeightMap:
 			buttonName += "heightMap";
 			inputTextName += "heightMap";
 			break;
-		case ITexture::Type::NormalMap:
+		case TextureType::NormalMap:
 			buttonName += "normalMap";
 			inputTextName += "normalMap";
 			break;
-		case ITexture::Type::CubeMap:
+		case TextureType::CubeMap:
 			buttonName += "cubeMap";
 			inputTextName += "cubeMap";
 			break;
-		case ITexture::Type::DepthMap:
+		case TextureType::DepthMap:
 			buttonName += "depthMap";
 			inputTextName += "depthMap";
 			break;
-		case ITexture::Type::AoMap:
+		case TextureType::AoMap:
 			buttonName += "aoMap";
 			inputTextName += "aoMap";
 			break;
-		case ITexture::Type::RoughnessMap:
+		case TextureType::RoughnessMap:
 			buttonName += "roughnessMap";
 			inputTextName += "roughnessMap";
 			break;
-		case ITexture::Type::MentallicMap:
+		case TextureType::MentallicMap:
 			buttonName += "mentallicMap";
 			inputTextName += "mentallicMap";
 			break;

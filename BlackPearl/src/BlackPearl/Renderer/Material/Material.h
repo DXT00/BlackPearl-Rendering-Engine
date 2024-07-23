@@ -46,17 +46,19 @@ namespace BlackPearl {
 
 		};
 		struct TextureMaps {
-			std::shared_ptr<Texture> diffuseTextureMap;
-			std::shared_ptr<Texture> specularTextureMap;
-			std::shared_ptr<Texture> emissionTextureMap;
-			std::shared_ptr<Texture> normalTextureMap;
-			std::shared_ptr<Texture> heightTextureMap;
-			std::shared_ptr<Texture> cubeTextureMap;
-			std::shared_ptr<Texture> depthTextureMap;
-			std::shared_ptr<Texture> aoMap;
-			std::shared_ptr<Texture> roughnessMap;
-			std::shared_ptr<Texture> mentallicMap;
-			std::shared_ptr<Texture> opacityMap;
+			std::shared_ptr<ITexture> diffuseTextureMap;
+			std::shared_ptr<ITexture> specularTextureMap;
+			std::shared_ptr<ITexture> emissionTextureMap;
+			std::shared_ptr<ITexture> normalTextureMap;
+			std::shared_ptr<ITexture> heightTextureMap;
+			std::shared_ptr<ITexture> cubeTextureMap;
+			std::shared_ptr<ITexture> depthTextureMap;
+			std::shared_ptr<ITexture> aoMap;
+			std::shared_ptr<ITexture> roughnessMap;
+			std::shared_ptr<ITexture> mentallicMap;
+			std::shared_ptr<ITexture> opacityMap;
+			std::shared_ptr<ITexture> transmissionTexture;
+
 
 			TextureMaps() {
 				diffuseTextureMap
@@ -70,6 +72,7 @@ namespace BlackPearl {
 				= roughnessMap
 				= mentallicMap
 				= opacityMap
+				= transmissionTexture
 				= nullptr;
 			}
 		};
@@ -103,7 +106,7 @@ namespace BlackPearl {
 		void SetShader(const std::string& shaderPath);
 		void SetShader(const std::shared_ptr<Shader>& shader);
 		void SetTexture(const std::shared_ptr<ITexture> texture);
-		void SetTexture(const ITexture::Type type, const std::string& image);
+		void SetTexture(const TextureType type, const std::string& image);
 		void SetMaterialColor(MaterialColor::Color color);
 		void SetMaterialColorDiffuseColor(const math::float3& color);
 		void SetMaterialColorSpecularColor(const math::float3& color);
@@ -135,6 +138,8 @@ namespace BlackPearl {
 			if (m_TextureMaps->roughnessMap != nullptr)	  m_TextureMaps->roughnessMap->UnBind();
 			if (m_TextureMaps->mentallicMap != nullptr)	  m_TextureMaps->mentallicMap->UnBind();
 			if (m_TextureMaps->opacityMap != nullptr)	  m_TextureMaps->opacityMap->UnBind();
+			if (m_TextureMaps->transmissionTexture != nullptr)	  m_TextureMaps->transmissionTexture->UnBind();
+
 
 		}
 	public:

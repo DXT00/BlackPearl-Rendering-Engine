@@ -4,6 +4,79 @@
 #include "RHIResources.h"
 namespace BlackPearl {
 
+
+	enum TextureType {
+		None,
+		DiffuseMap,
+		SpecularMap,
+		EmissionMap,
+		NormalMap,
+		HeightMap,
+		CubeMap,
+		DepthMap,
+		AoMap,
+		RoughnessMap,
+		MentallicMap,
+		OpacityMap,
+		ImageMap
+	};
+
+	struct TextureDesc
+	{
+		TextureType type;
+		uint32_t width = 1;
+		uint32_t height = 1;
+		uint32_t depth = 1;
+		uint32_t arraySize = 1;
+		uint32_t mipLevels = 1;
+		uint32_t sampleCount = 1;
+		uint32_t sampleQuality = 0;
+		Format format = Format::UNKNOWN;
+		TextureDimension dimension = TextureDimension::Texture2D;
+		std::string debugName;
+
+		bool isShaderResource = true; // Note: isShaderResource is initialized to 'true' for backward compatibility
+		bool isRenderTarget = false;
+		bool isUAV = false;
+		bool isTypeless = false;
+		bool isShadingRateSurface = false;
+
+		SharedResourceFlags sharedResourceFlags = SharedResourceFlags::None;
+
+		// Indicates that the texture is created with no backing memory,
+		// and memory is bound to the texture later using bindTextureMemory.
+		// On DX12, the texture resource is created at the time of memory binding.
+		bool isVirtual = false;
+
+		Color clearValue;
+		bool useClearValue = false;
+
+		ResourceStates initialState = ResourceStates::Unknown;
+
+		// If keepInitialState is true, command lists that use the texture will automatically
+		// begin tracking the texture from the initial state and transition it to the initial state 
+		// on command list close.
+		bool keepInitialState = false;
+
+		constexpr TextureDesc& setWidth(uint32_t value) { width = value; return *this; }
+		constexpr TextureDesc& setHeight(uint32_t value) { height = value; return *this; }
+		constexpr TextureDesc& setDepth(uint32_t value) { depth = value; return *this; }
+		constexpr TextureDesc& setArraySize(uint32_t value) { arraySize = value; return *this; }
+		constexpr TextureDesc& setMipLevels(uint32_t value) { mipLevels = value; return *this; }
+		constexpr TextureDesc& setSampleCount(uint32_t value) { sampleCount = value; return *this; }
+		constexpr TextureDesc& setSampleQuality(uint32_t value) { sampleQuality = value; return *this; }
+		constexpr TextureDesc& setFormat(Format value) { format = value; return *this; }
+		constexpr TextureDesc& setDimension(TextureDimension value) { dimension = value; return *this; }
+		TextureDesc& setDebugName(const std::string& value) { debugName = value; return *this; }
+		constexpr TextureDesc& setIsRenderTarget(bool value) { isRenderTarget = value; return *this; }
+		constexpr TextureDesc& setIsUAV(bool value) { isUAV = value; return *this; }
+		constexpr TextureDesc& setIsTypeless(bool value) { isTypeless = value; return *this; }
+		constexpr TextureDesc& setIsVirtual(bool value) { isVirtual = value; return *this; }
+		constexpr TextureDesc& setClearValue(const Color& value) { clearValue = value; useClearValue = true; return *this; }
+		constexpr TextureDesc& setUseClearValue(bool value) { useClearValue = value; return *this; }
+		constexpr TextureDesc& setInitialState(ResourceStates value) { initialState = value; return *this; }
+		constexpr TextureDesc& setKeepInitialState(bool value) { keepInitialState = value; return *this; }
+	};
 	// describes a 2D section of a single mip level + single slice of a texture
 	struct TextureSlice
 	{
@@ -75,85 +148,17 @@ namespace BlackPearl {
 
 	static const TextureSubresourceSet AllSubresources = TextureSubresourceSet(0, TextureSubresourceSet::AllMipLevels, 0, TextureSubresourceSet::AllArraySlices);
 
-	class ITexture;
-	struct TextureDesc
-	{
-		ITexture::Type type;
-		uint32_t width = 1;
-		uint32_t height = 1;
-		uint32_t depth = 1;
-		uint32_t arraySize = 1;
-		uint32_t mipLevels = 1;
-		uint32_t sampleCount = 1;
-		uint32_t sampleQuality = 0;
-		Format format = Format::UNKNOWN;
-		TextureDimension dimension = TextureDimension::Texture2D;
-		std::string debugName;
-
-		bool isShaderResource = true; // Note: isShaderResource is initialized to 'true' for backward compatibility
-		bool isRenderTarget = false;
-		bool isUAV = false;
-		bool isTypeless = false;
-		bool isShadingRateSurface = false;
-
-		SharedResourceFlags sharedResourceFlags = SharedResourceFlags::None;
-
-		// Indicates that the texture is created with no backing memory,
-		// and memory is bound to the texture later using bindTextureMemory.
-		// On DX12, the texture resource is created at the time of memory binding.
-		bool isVirtual = false;
-
-		Color clearValue;
-		bool useClearValue = false;
-
-		ResourceStates initialState = ResourceStates::Unknown;
-
-		// If keepInitialState is true, command lists that use the texture will automatically
-		// begin tracking the texture from the initial state and transition it to the initial state 
-		// on command list close.
-		bool keepInitialState = false;
-
-		constexpr TextureDesc& setWidth(uint32_t value) { width = value; return *this; }
-		constexpr TextureDesc& setHeight(uint32_t value) { height = value; return *this; }
-		constexpr TextureDesc& setDepth(uint32_t value) { depth = value; return *this; }
-		constexpr TextureDesc& setArraySize(uint32_t value) { arraySize = value; return *this; }
-		constexpr TextureDesc& setMipLevels(uint32_t value) { mipLevels = value; return *this; }
-		constexpr TextureDesc& setSampleCount(uint32_t value) { sampleCount = value; return *this; }
-		constexpr TextureDesc& setSampleQuality(uint32_t value) { sampleQuality = value; return *this; }
-		constexpr TextureDesc& setFormat(Format value) { format = value; return *this; }
-		constexpr TextureDesc& setDimension(TextureDimension value) { dimension = value; return *this; }
-		TextureDesc& setDebugName(const std::string& value) { debugName = value; return *this; }
-		constexpr TextureDesc& setIsRenderTarget(bool value) { isRenderTarget = value; return *this; }
-		constexpr TextureDesc& setIsUAV(bool value) { isUAV = value; return *this; }
-		constexpr TextureDesc& setIsTypeless(bool value) { isTypeless = value; return *this; }
-		constexpr TextureDesc& setIsVirtual(bool value) { isVirtual = value; return *this; }
-		constexpr TextureDesc& setClearValue(const Color& value) { clearValue = value; useClearValue = true; return *this; }
-		constexpr TextureDesc& setUseClearValue(bool value) { useClearValue = value; return *this; }
-		constexpr TextureDesc& setInitialState(ResourceStates value) { initialState = value; return *this; }
-		constexpr TextureDesc& setKeepInitialState(bool value) { keepInitialState = value; return *this; }
-	};
+	
 
 
 	class ITexture : public IResource
 	{
 	public:
-		enum Type {
-			None,
-			DiffuseMap,
-			SpecularMap,
-			EmissionMap,
-			NormalMap,
-			HeightMap,
-			CubeMap,
-			DepthMap,
-			AoMap,
-			RoughnessMap,
-			MentallicMap,
-			OpacityMap,
-			ImageMap
-		};
-		[[nodiscard]] virtual const Type& GetType() const = 0;
+		
+		[[nodiscard]] virtual const TextureType& GetType() const = 0;
 		[[nodiscard]] virtual const TextureDesc& getDesc() const = 0;
+		virtual void UnBind() = 0;
+		virtual void Bind() = 0;
 
 		// Similar to getNativeObject, returns a native view for a specified set of subresources. Returns nullptr if unavailable.
 		// TODO: on D3D12, the views might become invalid later if the view heap is grown/reallocated, we should do something about that.
