@@ -272,7 +272,8 @@ namespace BlackPearl {
 		{
 		case BlackPearl::FilterMode::Linear:
 			return GL_LINEAR;
-
+		case BlackPearl::FilterMode::Linear_Mip_Linear:
+			return GL_LINEAR_MIPMAP_LINEAR;
 		case BlackPearl::FilterMode::Nearest:
 			return GL_NEAREST;
 

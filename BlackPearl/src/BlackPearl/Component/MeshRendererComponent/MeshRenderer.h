@@ -35,8 +35,8 @@ namespace BlackPearl {
 		std::vector<std::shared_ptr<Mesh>>& GetMeshlets() {
 			return m_Model != nullptr ? m_Model->GetMeshlets() : m_Meshes;
 		}
-		void SetTexture(unsigned int meshIndex, const std::shared_ptr<ITexture>& texture);
-		void SetTextures(const std::shared_ptr<ITexture>& texture);
+		void SetTexture(unsigned int meshIndex, ITexture* texture);
+		void SetTextures(ITexture* texture);
 		void SetModelTexture(unsigned int meshIndex, const std::shared_ptr<ITexture>& texture);
 		void SetModelTextures(const std::shared_ptr<ITexture>& texture);
 

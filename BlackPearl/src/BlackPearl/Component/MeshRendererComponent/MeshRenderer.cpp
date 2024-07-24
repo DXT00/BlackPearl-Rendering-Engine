@@ -17,7 +17,7 @@ namespace BlackPearl {
 	//		mesh.Draw(m_TransformMatrix);
 	//}
 
-	void MeshRenderer::SetTexture(unsigned int meshIndex, const std::shared_ptr<ITexture>& texture) {
+	void MeshRenderer::SetTexture(unsigned int meshIndex, ITexture* texture) {
 		auto meshes = GetMeshes();
 		if (meshIndex < GetMeshes().size()) {
 			meshes[meshIndex]->SetTexture(texture);
@@ -26,7 +26,7 @@ namespace BlackPearl {
 			GE_CORE_ERROR("meshIndex out of m_Meshes range!")
 		}
 	}
-	void MeshRenderer::SetTextures(const std::shared_ptr<ITexture>& texture)
+	void MeshRenderer::SetTextures(ITexture* texture)
 	{
 		GE_ASSERT(!GetMeshes().empty(), "m_Meshes is empty,MeshRenderer::SetTextures doesn't work!");
 		for (auto mesh : GetMeshes()) {

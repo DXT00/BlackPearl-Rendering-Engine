@@ -18,7 +18,7 @@ namespace BlackPearl {
 	public:
 		//virtual HeapHandle createHeap(const HeapDesc& d) = 0;
 
-		virtual TextureHandle createTexture(TextureDesc* d) = 0;
+		virtual TextureHandle createTexture(const TextureDesc& d) = 0;
 		virtual SamplerHandle createSampler(const SamplerDesc& d) = 0;
 
 		//virtual MemoryRequirements getTextureMemoryRequirements(ITexture* texture) = 0;

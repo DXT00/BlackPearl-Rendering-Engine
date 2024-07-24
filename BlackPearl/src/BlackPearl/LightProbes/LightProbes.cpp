@@ -17,7 +17,7 @@ namespace BlackPearl {
 
 		SetScale({ 0.3,0.3,0.3 });
 		if(type == Type::REFLECTION)
-			m_SpecularPrefilterCubeMap.reset(DBG_NEW CubeMapTexture(Texture::CubeMap, m_SpecularCubeMapResolution, m_SpecularCubeMapResolution, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR, GL_CLAMP_TO_EDGE, GL_RGB16F, GL_RGB, GL_FLOAT, true));
+			m_SpecularPrefilterCubeMap.reset(DBG_NEW CubeMapTexture(TextureType::CubeMap, m_SpecularCubeMapResolution, m_SpecularCubeMapResolution, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR, GL_CLAMP_TO_EDGE, GL_RGB16F, GL_RGB, GL_FLOAT, true));
 		if (type == Type::DIFFUSE)
 			m_SHCoeffs.assign(9, std::vector<float>(3, 0.0f));
 	}

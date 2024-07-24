@@ -69,10 +69,10 @@ namespace BlackPearl {
 		// opengl 不需要sampler， filter在texture desc 里配置
 		FilterMode minFilter = FilterMode::Linear;
 		FilterMode magFilter = FilterMode::Linear;
-		int internalFormat = GL_RGBA;
-		int glformat = GL_RGBA;
+		//int internalFormat = GL_RGBA;
+		//int glformat = GL_RGBA;
 		SamplerAddressMode wrap = SamplerAddressMode::ClampToEdge;
-		unsigned int dataType = GL_UNSIGNED_BYTE;
+		//unsigned int dataType = GL_UNSIGNED_BYTE;
 		bool generateMipmap = false;
 		std::string path;
 //#endif

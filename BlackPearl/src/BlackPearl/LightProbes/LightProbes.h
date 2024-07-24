@@ -24,9 +24,6 @@ namespace BlackPearl {
 		LightProbe(Object* cubeObj,Type type);
 		virtual ~LightProbe() {
 
-			
-			//GE_SAVE_DELETE(m_LightProbeObj);
-			//GE_SAVE_DELETE(m_Camera);
 		}
 		
 		/* probe's view matrix */
@@ -36,7 +33,7 @@ namespace BlackPearl {
 		//std::shared_ptr<CubeMapTexture> GetHdrEnvironmentCubeMap()const    { return m_HdrEnvironmentCubeMap; }
 		std::shared_ptr<CubeMapTexture> GetSpecularPrefilterCubeMap()const { GE_ASSERT(m_Type == Type::REFLECTION, "is not a reflection probe") return m_SpecularPrefilterCubeMap; }
 		//std::shared_ptr<CubeMapTexture> GetDiffuseIrradianceCubeMap()const { return m_DiffuseIrradianceCubeMap; }
-		std::shared_ptr<Texture> GetSpecularBrdfLutMap()const       { return m_SpecularBrdfLutMap; }
+		std::shared_ptr<ITexture> GetSpecularBrdfLutMap()const       { return m_SpecularBrdfLutMap; }
 		
 		/* resolution */
 		//unsigned int GetDiffuseCubeMapResolution() const { return m_DiffuseCubeMapResolution; }
@@ -69,7 +66,7 @@ namespace BlackPearl {
 		/* Textures */
 		std::shared_ptr<CubeMapTexture> m_HdrEnvironmentCubeMap = nullptr;
 		std::shared_ptr<CubeMapTexture> m_SpecularPrefilterCubeMap = nullptr;
-		std::shared_ptr<Texture>		m_SpecularBrdfLutMap = nullptr;
+		std::shared_ptr<ITexture>		m_SpecularBrdfLutMap = nullptr;
 		unsigned int m_MaxMipmapLevel = 5;
 
 		unsigned int					m_SampleCounts = 1024;

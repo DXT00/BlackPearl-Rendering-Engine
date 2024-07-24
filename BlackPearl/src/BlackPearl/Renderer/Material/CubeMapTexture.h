@@ -5,7 +5,7 @@ namespace BlackPearl {
 	{
 	public:
 		CubeMapTexture(
-			Type type, 
+			TextureType type,
 			std::vector<std::string> faces,
 			unsigned int minFilter,
 			unsigned int maxFilter,
@@ -22,7 +22,7 @@ namespace BlackPearl {
 		};
 		//empty CubeMap,use in CubeShadowMap
 		CubeMapTexture(
-			Type type,
+			TextureType type,
 			const int width,
 			const int height,
 			unsigned int minFilter,

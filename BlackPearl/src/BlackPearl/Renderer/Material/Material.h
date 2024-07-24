@@ -46,18 +46,18 @@ namespace BlackPearl {
 
 		};
 		struct TextureMaps {
-			std::shared_ptr<ITexture> diffuseTextureMap;
-			std::shared_ptr<ITexture> specularTextureMap;
-			std::shared_ptr<ITexture> emissionTextureMap;
-			std::shared_ptr<ITexture> normalTextureMap;
-			std::shared_ptr<ITexture> heightTextureMap;
-			std::shared_ptr<ITexture> cubeTextureMap;
-			std::shared_ptr<ITexture> depthTextureMap;
-			std::shared_ptr<ITexture> aoMap;
-			std::shared_ptr<ITexture> roughnessMap;
-			std::shared_ptr<ITexture> mentallicMap;
-			std::shared_ptr<ITexture> opacityMap;
-			std::shared_ptr<ITexture> transmissionTexture;
+			TextureHandle diffuseTextureMap;
+			TextureHandle specularTextureMap;
+			TextureHandle emissionTextureMap;
+			TextureHandle normalTextureMap;
+			TextureHandle heightTextureMap;
+			TextureHandle cubeTextureMap;
+			TextureHandle depthTextureMap;
+			TextureHandle aoMap;
+			TextureHandle roughnessMap;
+			TextureHandle mentallicMap;
+			TextureHandle opacityMap;
+			TextureHandle transmissionTexture;
 
 
 			TextureMaps() {
@@ -105,7 +105,7 @@ namespace BlackPearl {
 
 		void SetShader(const std::string& shaderPath);
 		void SetShader(const std::shared_ptr<Shader>& shader);
-		void SetTexture(const std::shared_ptr<ITexture> texture);
+		void SetTexture(ITexture* texture);
 		void SetTexture(const TextureType type, const std::string& image);
 		void SetMaterialColor(MaterialColor::Color color);
 		void SetMaterialColorDiffuseColor(const math::float3& color);

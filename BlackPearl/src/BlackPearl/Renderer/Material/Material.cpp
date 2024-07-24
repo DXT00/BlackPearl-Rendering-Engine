@@ -98,7 +98,7 @@ namespace BlackPearl {
 	{
 		return m_MatId;
 	}
-	void Material::SetTexture(const std::shared_ptr<ITexture> texture)
+	void Material::SetTexture(ITexture* texture)
 	{
 		switch (texture->GetType())
 		{

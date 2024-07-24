@@ -10,6 +10,7 @@ namespace BlackPearl {
     enum class FilterMode: uint8_t {
         Linear,
         Nearest,
+        Linear_Mip_Linear
     };
 
     enum class SamplerAddressMode: uint8_t
