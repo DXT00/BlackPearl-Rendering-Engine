@@ -74,7 +74,7 @@ namespace BlackPearl {
 
         ~ETexture() override;
         const TextureDesc& getDesc() const override { return desc; }
-        virtual const Type& GetType() const override { return desc.type; }
+        virtual const TextureType& GetType() const override { return desc.type; }
 
 		virtual void UnBind() override {};
 		virtual void Bind()override {};

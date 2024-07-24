@@ -18,7 +18,9 @@ namespace BlackPearl {
 	public:
 		//virtual HeapHandle createHeap(const HeapDesc& d) = 0;
 
-		virtual TextureHandle createTexture(const TextureDesc& d) = 0;
+		virtual TextureHandle createTexture(TextureDesc* d) = 0;
+		virtual SamplerHandle createSampler(const SamplerDesc& d) = 0;
+
 		//virtual MemoryRequirements getTextureMemoryRequirements(ITexture* texture) = 0;
 		//virtual bool bindTextureMemory(ITexture* texture, IHeap* heap, uint64_t offset) = 0;
 
@@ -40,7 +42,6 @@ namespace BlackPearl {
 		//virtual ShaderHandle createShaderSpecialization(IShader* baseShader, const ShaderSpecialization* constants, uint32_t numConstants) = 0;
 		virtual ShaderLibraryHandle createShaderLibrary(const void* binary, size_t binarySize) = 0;
 
-		virtual SamplerHandle createSampler(const SamplerDesc& d) = 0;
 
 		//// Note: vertexShader is only necessary on D3D11, otherwise it may be null
 		virtual InputLayoutHandle createInputLayout(const VertexAttributeDesc* d, uint32_t attributeCount, IShader* vertexShader) = 0;

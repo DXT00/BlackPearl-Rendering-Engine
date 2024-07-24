@@ -82,9 +82,13 @@
 #include "BlackPearl/RHI/D3D12RHI/D3D12DeviceResources.h"
 #endif
 
+
+#include "BlackPearl/RHI/OpenGLRHI/OpenGLTexture.h"
+
 //RHI
 #include "BlackPearl/RHI/DynamicRHI.h"
 #include "BlackPearl/RHI/RHICommandList.h"
 #include "BlackPearl/RHI/RHIBuffer.h"
 #include "BlackPearl/Renderer/Shader/ShaderFactory.h"
+#include "BlackPearl/RHI/RHITexture.h"
 

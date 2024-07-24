@@ -34,8 +34,6 @@ namespace BlackPearl {
 			m_Color.diffuseColor  = color.diffuseColor;
 			m_Color.specularColor = color.specularColor;
 			m_Color.emissionColor = color.emissionColor;
-		
-
 		}
 		//float GetIntensity() const { return m_Color.intensity; }
 		//void SetIntensity(float intensity) { m_Color.intensity = intensity; }

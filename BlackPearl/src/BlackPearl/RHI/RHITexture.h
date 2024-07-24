@@ -23,7 +23,8 @@ namespace BlackPearl {
 
 	struct TextureDesc
 	{
-		TextureType type;
+		TextureDesc(){}
+		TextureType type = TextureType::None;
 		uint32_t width = 1;
 		uint32_t height = 1;
 		uint32_t depth = 1;
@@ -57,6 +58,26 @@ namespace BlackPearl {
 		// begin tracking the texture from the initial state and transition it to the initial state 
 		// on command list close.
 		bool keepInitialState = false;
+
+//TODO:: 放开宏
+//#ifdef GE_API_OPENGL
+		
+		TextureDesc(TextureType _type, const std::string& _path) {
+			type = _type;
+			path = _path;
+		}
+		// opengl 不需要sampler， filter在texture desc 里配置
+		FilterMode minFilter = FilterMode::Linear;
+		FilterMode magFilter = FilterMode::Linear;
+		int internalFormat = GL_RGBA;
+		int glformat = GL_RGBA;
+		SamplerAddressMode wrap = SamplerAddressMode::ClampToEdge;
+		unsigned int dataType = GL_UNSIGNED_BYTE;
+		bool generateMipmap = false;
+		std::string path;
+//#endif
+
+
 
 		constexpr TextureDesc& setWidth(uint32_t value) { width = value; return *this; }
 		constexpr TextureDesc& setHeight(uint32_t value) { height = value; return *this; }

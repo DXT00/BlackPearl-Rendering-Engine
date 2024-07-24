@@ -288,7 +288,9 @@ namespace BlackPearl {
 
 //#ifdef _WIN32
 					//vkGetMemoryWin32HandleKHR()
+					//PFN_vkGetMemoryWin32HandleKHR vkGetMemoryWin32HandleKHR = PFN_vkGetMemoryWin32HandleKHR(vkGetDeviceProcAddr(m_Context.device, "vkGetMemoryWin32HandleKHR"));
 					int fd;
+					//Get a POSIX file descriptor for a memory object
 					vkGetMemoryFdKHR(m_Context.device, reinterpret_cast<const VkMemoryGetFdInfoKHR*>(texture->memory), &fd);
 					texture->sharedHandle = (void*)(size_t)fd;
 					//texture->sharedHandle = m_Context.device.getMemoryWin32HandleKHR({ texture->memory, vk::ExternalMemoryHandleTypeFlagBits::eOpaqueWin32 });
@@ -501,10 +503,6 @@ namespace BlackPearl {
 		}
 
 		VkRenderPassCreateInfo2&& renderPassInfo{};
-		//.setAttachmentCount(uint32_t(attachmentDescs.size()))
-		//.setPAttachments(attachmentDescs.data())
-		//.setSubpassCount(1)
-		//.setPSubpasses(&subpass);
 		renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO_2;
 		renderPassInfo.attachmentCount = uint32_t(attachmentDescs.size());
 		renderPassInfo.pAttachments = attachmentDescs.data();
@@ -517,19 +515,6 @@ namespace BlackPearl {
 			throw std::runtime_error("failed to create render pass!");
 		}
 
-		//vk::Result res = m_Context.device.createRenderPass2(&renderPassInfo,
-		//	m_Context.allocationCallbacks,
-		//	&fb->renderPass);
-		//CHECK_VK_FAIL(res)
-
-			// set up the framebuffer object
-			//auto framebufferInfo = vk::FramebufferCreateInfo()
-			//.setRenderPass(fb->renderPass)
-			//.setAttachmentCount(uint32_t(attachmentViews.size()))
-			//.setPAttachments(attachmentViews.data())
-			//.setWidth(fb->framebufferInfo.width)
-			//.setHeight(fb->framebufferInfo.height)
-			//.setLayers(numArraySlices);
 
 		VkFramebufferCreateInfo framebufferInfo{};
 		framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
@@ -540,10 +525,6 @@ namespace BlackPearl {
 		framebufferInfo.height = fb->framebufferInfo.height;
 		framebufferInfo.layers = numArraySlices;
 
-
-		/*	res = m_Context.device.createFramebuffer(&framebufferInfo, m_Context.allocationCallbacks,
-				&fb->framebuffer);
-			CHECK_VK_FAIL(res)*/
 		if (vkCreateFramebuffer(m_Context.device, &framebufferInfo, m_Context.allocationCallbacks, &fb->framebuffer) != VK_SUCCESS) {
 			throw std::runtime_error("failed to create framebuffer!");
 		}

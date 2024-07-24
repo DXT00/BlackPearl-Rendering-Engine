@@ -564,30 +564,30 @@ namespace BlackPearl {
 		Object* sphereObjStone = CreateSphere(1.5, 64, 64);
 		Object* sphereObjPlastic = CreateSphere(1.5, 64, 64);
 		//textures spheres
-		std::shared_ptr<Texture> RustalbedoTexture(DBG_NEW Texture(Texture::Type::DiffuseMap, "assets/texture/pbr/rustSphere/rustediron2_basecolor.png"));
-		std::shared_ptr<Texture> RustaoTexture(DBG_NEW Texture(Texture::Type::AoMap, "assets/texture/pbr/rustSphere/rustediron2_ao.png"));
-		std::shared_ptr<Texture> RustroughnessTexture(DBG_NEW Texture(Texture::Type::RoughnessMap, "assets/texture/pbr/rustSphere/rustediron2_roughness.png"));
-		std::shared_ptr<Texture> RustmentallicTexture(DBG_NEW Texture(Texture::Type::MentallicMap, "assets/texture/pbr/rustSphere/rustediron2_metallic.png"));
-		std::shared_ptr<Texture> RustnormalTexture(DBG_NEW Texture(Texture::Type::NormalMap, "assets/texture/pbr/rustSphere/rustediron2_normal.png"));
+		std::shared_ptr<Texture> RustalbedoTexture(DBG_NEW Texture(TextureType::DiffuseMap, "assets/texture/pbr/rustSphere/rustediron2_basecolor.png"));
+		std::shared_ptr<Texture> RustaoTexture(DBG_NEW Texture(TextureType::AoMap, "assets/texture/pbr/rustSphere/rustediron2_ao.png"));
+		std::shared_ptr<Texture> RustroughnessTexture(DBG_NEW Texture(TextureType::RoughnessMap, "assets/texture/pbr/rustSphere/rustediron2_roughness.png"));
+		std::shared_ptr<Texture> RustmentallicTexture(DBG_NEW Texture(TextureType::MentallicMap, "assets/texture/pbr/rustSphere/rustediron2_metallic.png"));
+		std::shared_ptr<Texture> RustnormalTexture(DBG_NEW Texture(TextureType::NormalMap, "assets/texture/pbr/rustSphere/rustediron2_normal.png"));
 
 
-		std::shared_ptr<Texture> IronalbedoTexture(DBG_NEW Texture(Texture::Type::DiffuseMap, "assets/texture/pbr/IronScuffed/Iron-Scuffed_basecolor.png"));
-		std::shared_ptr<Texture> IronaoTexture(DBG_NEW Texture(Texture::Type::AoMap, "assets/texture/pbr/IronScuffed/Iron-Scuffed_ao.png"));
-		std::shared_ptr<Texture> IronroughnessTexture(DBG_NEW Texture(Texture::Type::RoughnessMap, "assets/texture/pbr/IronScuffed/Iron-Scuffed_roughness.png"));
-		std::shared_ptr<Texture> IronmentallicTexture(DBG_NEW Texture(Texture::Type::MentallicMap, "assets/texture/pbr/IronScuffed/Iron-Scuffed_metallic.png"));
-		std::shared_ptr<Texture> IronnormalTexture(DBG_NEW Texture(Texture::Type::NormalMap, "assets/texture/pbr/IronScuffed/Iron-Scuffed_normal.png"));
+		std::shared_ptr<Texture> IronalbedoTexture(DBG_NEW Texture(TextureType::DiffuseMap, "assets/texture/pbr/IronScuffed/Iron-Scuffed_basecolor.png"));
+		std::shared_ptr<Texture> IronaoTexture(DBG_NEW Texture(TextureType::AoMap, "assets/texture/pbr/IronScuffed/Iron-Scuffed_ao.png"));
+		std::shared_ptr<Texture> IronroughnessTexture(DBG_NEW Texture(TextureType::RoughnessMap, "assets/texture/pbr/IronScuffed/Iron-Scuffed_roughness.png"));
+		std::shared_ptr<Texture> IronmentallicTexture(DBG_NEW Texture(TextureType::MentallicMap, "assets/texture/pbr/IronScuffed/Iron-Scuffed_metallic.png"));
+		std::shared_ptr<Texture> IronnormalTexture(DBG_NEW Texture(TextureType::NormalMap, "assets/texture/pbr/IronScuffed/Iron-Scuffed_normal.png"));
 
-		std::shared_ptr<Texture> StonealbedoTexture(DBG_NEW Texture(Texture::Type::DiffuseMap, "assets/texture/pbr/cobblestone/cobblestone-curved_2_albedo.png"));
-		std::shared_ptr<Texture> StoneaoTexture(DBG_NEW Texture(Texture::Type::AoMap, "assets/texture/pbr/cobblestone/cobblestone-curved_2_ao.png"));
-		std::shared_ptr<Texture> StoneroughnessTexture(DBG_NEW Texture(Texture::Type::RoughnessMap, "assets/texture/pbr/cobblestone/cobblestone-curved_2_roughness.png"));
-		std::shared_ptr<Texture> StonementallicTexture(DBG_NEW Texture(Texture::Type::MentallicMap, "assets/texture/pbr/cobblestone/cobblestone-curved_2_metallic.png"));
-		std::shared_ptr<Texture> StonenormalTexture(DBG_NEW Texture(Texture::Type::NormalMap, "assets/texture/pbr/cobblestone/cobblestone-curved_2_normal-dx.png"));
+		std::shared_ptr<Texture> StonealbedoTexture(DBG_NEW Texture(TextureType::DiffuseMap, "assets/texture/pbr/cobblestone/cobblestone-curved_2_albedo.png"));
+		std::shared_ptr<Texture> StoneaoTexture(DBG_NEW Texture(TextureType::AoMap, "assets/texture/pbr/cobblestone/cobblestone-curved_2_ao.png"));
+		std::shared_ptr<Texture> StoneroughnessTexture(DBG_NEW Texture(TextureType::RoughnessMap, "assets/texture/pbr/cobblestone/cobblestone-curved_2_roughness.png"));
+		std::shared_ptr<Texture> StonementallicTexture(DBG_NEW Texture(TextureType::MentallicMap, "assets/texture/pbr/cobblestone/cobblestone-curved_2_metallic.png"));
+		std::shared_ptr<Texture> StonenormalTexture(DBG_NEW Texture(TextureType::NormalMap, "assets/texture/pbr/cobblestone/cobblestone-curved_2_normal-dx.png"));
 
-		std::shared_ptr<Texture> PlasticalbedoTexture(DBG_NEW Texture(Texture::Type::DiffuseMap, "assets/texture/pbr/plasticSphere/scuffed-plastic4-alb.png"));
-		std::shared_ptr<Texture> PlasticaoTexture(DBG_NEW Texture(Texture::Type::AoMap, "assets/texture/pbr/plasticSphere/scuffed-plastic-ao.png"));
-		std::shared_ptr<Texture> PlasticroughnessTexture(DBG_NEW Texture(Texture::Type::RoughnessMap, "assets/texture/pbr/plasticSphere/scuffed-plastic-rough.png"));
-		std::shared_ptr<Texture> PlasticmentallicTexture(DBG_NEW Texture(Texture::Type::MentallicMap, "assets/texture/pbr/plasticSphere/scuffed-plastic-metal.png"));
-		std::shared_ptr<Texture> PlasticnormalTexture(DBG_NEW Texture(Texture::Type::NormalMap, "assets/texture/pbr/plasticSphere/scuffed-plastic-normal.png"));
+		std::shared_ptr<Texture> PlasticalbedoTexture(DBG_NEW Texture(TextureType::DiffuseMap, "assets/texture/pbr/plasticSphere/scuffed-plastic4-alb.png"));
+		std::shared_ptr<Texture> PlasticaoTexture(DBG_NEW Texture(TextureType::AoMap, "assets/texture/pbr/plasticSphere/scuffed-plastic-ao.png"));
+		std::shared_ptr<Texture> PlasticroughnessTexture(DBG_NEW Texture(TextureType::RoughnessMap, "assets/texture/pbr/plasticSphere/scuffed-plastic-rough.png"));
+		std::shared_ptr<Texture> PlasticmentallicTexture(DBG_NEW Texture(TextureType::MentallicMap, "assets/texture/pbr/plasticSphere/scuffed-plastic-metal.png"));
+		std::shared_ptr<Texture> PlasticnormalTexture(DBG_NEW Texture(TextureType::NormalMap, "assets/texture/pbr/plasticSphere/scuffed-plastic-normal.png"));
 
 
 
@@ -654,8 +654,8 @@ namespace BlackPearl {
 		Object* cube = CreateCube();
 		cube->GetComponent<Transform>()->SetInitPosition({ -2.0f,-2.5f,0.0f });
 		cube->GetComponent<Transform>()->SetInitScale({ 16.0f,0.5f,16.0f });
-		std::shared_ptr<Texture> cubeTexture(DBG_NEW Texture(Texture::Type::DiffuseMap, "assets/texture/wood.png", GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR, GL_RGBA, GL_CLAMP_TO_EDGE, GL_UNSIGNED_BYTE, true));
-		std::shared_ptr<Texture> cubeKsTexture(DBG_NEW Texture(Texture::Type::SpecularMap, "assets/texture/wood.png", GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR, GL_RGBA, GL_CLAMP_TO_EDGE, GL_UNSIGNED_BYTE, true));
+		std::shared_ptr<Texture> cubeTexture(DBG_NEW Texture(TextureType::DiffuseMap, "assets/texture/wood.png", GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR, GL_RGBA, GL_CLAMP_TO_EDGE, GL_UNSIGNED_BYTE, true));
+		std::shared_ptr<Texture> cubeKsTexture(DBG_NEW Texture(TextureType::SpecularMap, "assets/texture/wood.png", GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR, GL_RGBA, GL_CLAMP_TO_EDGE, GL_UNSIGNED_BYTE, true));
 
 		cube->GetComponent<MeshRenderer>()->SetTextures(cubeTexture);
 		cube->GetComponent<MeshRenderer>()->SetTextures(cubeKsTexture);
@@ -713,30 +713,30 @@ namespace BlackPearl {
 		Object* sphereObjStone = CreateSphere(1.5, 64, 64);
 		Object* sphereObjPlastic = CreateSphere(1.5, 64, 64);
 		//textures spheres
-		std::shared_ptr<Texture> RustalbedoTexture(DBG_NEW Texture(Texture::Type::DiffuseMap, "assets/texture/pbr/rustSphere/rustediron2_basecolor.png"));
-		std::shared_ptr<Texture> RustaoTexture(DBG_NEW Texture(Texture::Type::AoMap, "assets/texture/pbr/rustSphere/rustediron2_ao.png"));
-		std::shared_ptr<Texture> RustroughnessTexture(DBG_NEW Texture(Texture::Type::RoughnessMap, "assets/texture/pbr/rustSphere/rustediron2_roughness.png"));
-		std::shared_ptr<Texture> RustmentallicTexture(DBG_NEW Texture(Texture::Type::MentallicMap, "assets/texture/pbr/rustSphere/rustediron2_metallic.png"));
-		std::shared_ptr<Texture> RustnormalTexture(DBG_NEW Texture(Texture::Type::NormalMap, "assets/texture/pbr/rustSphere/rustediron2_normal.png"));
+		std::shared_ptr<Texture> RustalbedoTexture(DBG_NEW Texture(TextureType::DiffuseMap, "assets/texture/pbr/rustSphere/rustediron2_basecolor.png"));
+		std::shared_ptr<Texture> RustaoTexture(DBG_NEW Texture(TextureType::AoMap, "assets/texture/pbr/rustSphere/rustediron2_ao.png"));
+		std::shared_ptr<Texture> RustroughnessTexture(DBG_NEW Texture(TextureType::RoughnessMap, "assets/texture/pbr/rustSphere/rustediron2_roughness.png"));
+		std::shared_ptr<Texture> RustmentallicTexture(DBG_NEW Texture(TextureType::MentallicMap, "assets/texture/pbr/rustSphere/rustediron2_metallic.png"));
+		std::shared_ptr<Texture> RustnormalTexture(DBG_NEW Texture(TextureType::NormalMap, "assets/texture/pbr/rustSphere/rustediron2_normal.png"));
 
 
-		std::shared_ptr<Texture> IronalbedoTexture(DBG_NEW Texture(Texture::Type::DiffuseMap, "assets/texture/pbr/IronScuffed/Iron-Scuffed_basecolor.png"));
-		std::shared_ptr<Texture> IronaoTexture(DBG_NEW Texture(Texture::Type::AoMap, "assets/texture/pbr/IronScuffed/Iron-Scuffed_ao.png"));
-		std::shared_ptr<Texture> IronroughnessTexture(DBG_NEW Texture(Texture::Type::RoughnessMap, "assets/texture/pbr/IronScuffed/Iron-Scuffed_roughness.png"));
-		std::shared_ptr<Texture> IronmentallicTexture(DBG_NEW Texture(Texture::Type::MentallicMap, "assets/texture/pbr/IronScuffed/Iron-Scuffed_metallic.png"));
-		std::shared_ptr<Texture> IronnormalTexture(DBG_NEW Texture(Texture::Type::NormalMap, "assets/texture/pbr/IronScuffed/Iron-Scuffed_normal.png"));
+		std::shared_ptr<Texture> IronalbedoTexture(DBG_NEW Texture(TextureType::DiffuseMap, "assets/texture/pbr/IronScuffed/Iron-Scuffed_basecolor.png"));
+		std::shared_ptr<Texture> IronaoTexture(DBG_NEW Texture(TextureType::AoMap, "assets/texture/pbr/IronScuffed/Iron-Scuffed_ao.png"));
+		std::shared_ptr<Texture> IronroughnessTexture(DBG_NEW Texture(TextureType::RoughnessMap, "assets/texture/pbr/IronScuffed/Iron-Scuffed_roughness.png"));
+		std::shared_ptr<Texture> IronmentallicTexture(DBG_NEW Texture(TextureType::MentallicMap, "assets/texture/pbr/IronScuffed/Iron-Scuffed_metallic.png"));
+		std::shared_ptr<Texture> IronnormalTexture(DBG_NEW Texture(TextureType::NormalMap, "assets/texture/pbr/IronScuffed/Iron-Scuffed_normal.png"));
 
-		std::shared_ptr<Texture> StonealbedoTexture(DBG_NEW Texture(Texture::Type::DiffuseMap, "assets/texture/pbr/cobblestone/cobblestone-curved_2_albedo.png"));
-		std::shared_ptr<Texture> StoneaoTexture(DBG_NEW Texture(Texture::Type::AoMap, "assets/texture/pbr/cobblestone/cobblestone-curved_2_ao.png"));
-		std::shared_ptr<Texture> StoneroughnessTexture(DBG_NEW Texture(Texture::Type::RoughnessMap, "assets/texture/pbr/cobblestone/cobblestone-curved_2_roughness.png"));
-		std::shared_ptr<Texture> StonementallicTexture(DBG_NEW Texture(Texture::Type::MentallicMap, "assets/texture/pbr/cobblestone/cobblestone-curved_2_metallic.png"));
-		std::shared_ptr<Texture> StonenormalTexture(DBG_NEW Texture(Texture::Type::NormalMap, "assets/texture/pbr/cobblestone/cobblestone-curved_2_normal-dx.png"));
+		std::shared_ptr<Texture> StonealbedoTexture(DBG_NEW Texture(TextureType::DiffuseMap, "assets/texture/pbr/cobblestone/cobblestone-curved_2_albedo.png"));
+		std::shared_ptr<Texture> StoneaoTexture(DBG_NEW Texture(TextureType::AoMap, "assets/texture/pbr/cobblestone/cobblestone-curved_2_ao.png"));
+		std::shared_ptr<Texture> StoneroughnessTexture(DBG_NEW Texture(TextureType::RoughnessMap, "assets/texture/pbr/cobblestone/cobblestone-curved_2_roughness.png"));
+		std::shared_ptr<Texture> StonementallicTexture(DBG_NEW Texture(TextureType::MentallicMap, "assets/texture/pbr/cobblestone/cobblestone-curved_2_metallic.png"));
+		std::shared_ptr<Texture> StonenormalTexture(DBG_NEW Texture(TextureType::NormalMap, "assets/texture/pbr/cobblestone/cobblestone-curved_2_normal-dx.png"));
 
-		std::shared_ptr<Texture> PlasticalbedoTexture(DBG_NEW Texture(Texture::Type::DiffuseMap, "assets/texture/pbr/plasticSphere/scuffed-plastic4-alb.png"));
-		std::shared_ptr<Texture> PlasticaoTexture(DBG_NEW Texture(Texture::Type::AoMap, "assets/texture/pbr/plasticSphere/scuffed-plastic-ao.png"));
-		std::shared_ptr<Texture> PlasticroughnessTexture(DBG_NEW Texture(Texture::Type::RoughnessMap, "assets/texture/pbr/plasticSphere/scuffed-plastic-rough.png"));
-		std::shared_ptr<Texture> PlasticmentallicTexture(DBG_NEW Texture(Texture::Type::MentallicMap, "assets/texture/pbr/plasticSphere/scuffed-plastic-metal.png"));
-		std::shared_ptr<Texture> PlasticnormalTexture(DBG_NEW Texture(Texture::Type::NormalMap, "assets/texture/pbr/plasticSphere/scuffed-plastic-normal.png"));
+		std::shared_ptr<Texture> PlasticalbedoTexture(DBG_NEW Texture(TextureType::DiffuseMap, "assets/texture/pbr/plasticSphere/scuffed-plastic4-alb.png"));
+		std::shared_ptr<Texture> PlasticaoTexture(DBG_NEW Texture(TextureType::AoMap, "assets/texture/pbr/plasticSphere/scuffed-plastic-ao.png"));
+		std::shared_ptr<Texture> PlasticroughnessTexture(DBG_NEW Texture(TextureType::RoughnessMap, "assets/texture/pbr/plasticSphere/scuffed-plastic-rough.png"));
+		std::shared_ptr<Texture> PlasticmentallicTexture(DBG_NEW Texture(TextureType::MentallicMap, "assets/texture/pbr/plasticSphere/scuffed-plastic-metal.png"));
+		std::shared_ptr<Texture> PlasticnormalTexture(DBG_NEW Texture(TextureType::NormalMap, "assets/texture/pbr/plasticSphere/scuffed-plastic-normal.png"));
 
 
 
@@ -803,8 +803,8 @@ namespace BlackPearl {
 		Object* cube = CreateCube();
 		cube->GetComponent<Transform>()->SetInitPosition({ -2.0f,-2.5f,0.0f });
 		cube->GetComponent<Transform>()->SetInitScale({ 16.0f,0.5f,16.0f });
-		std::shared_ptr<Texture> cubeTexture(DBG_NEW Texture(Texture::Type::DiffuseMap, "assets/texture/wood.png", GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR, GL_RGBA, GL_CLAMP_TO_EDGE, GL_UNSIGNED_BYTE, true));
-		std::shared_ptr<Texture> cubeKsTexture(DBG_NEW Texture(Texture::Type::SpecularMap, "assets/texture/wood.png", GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR, GL_RGBA, GL_CLAMP_TO_EDGE, GL_UNSIGNED_BYTE, true));
+		std::shared_ptr<Texture> cubeTexture(DBG_NEW Texture(TextureType::DiffuseMap, "assets/texture/wood.png", GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR, GL_RGBA, GL_CLAMP_TO_EDGE, GL_UNSIGNED_BYTE, true));
+		std::shared_ptr<Texture> cubeKsTexture(DBG_NEW Texture(TextureType::SpecularMap, "assets/texture/wood.png", GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR, GL_RGBA, GL_CLAMP_TO_EDGE, GL_UNSIGNED_BYTE, true));
 
 		cube->GetComponent<MeshRenderer>()->SetTextures(cubeTexture);
 		cube->GetComponent<MeshRenderer>()->SetTextures(cubeKsTexture);
@@ -852,12 +852,12 @@ namespace BlackPearl {
 	void Layer::LoadSwordScene()
 	{
 		Object* sword = CreateModel("assets/models/sword/OBJ/Big_Sword_OBJ.obj", "assets/shaders/pbr/PbrTexture.glsl", false, "Sword");
-		std::shared_ptr<Texture> SwordalbedoTexture(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::DiffuseMap, "assets/models/sword/textures/Big Sword_Base_Color_Map.jpg"));
-		std::shared_ptr<Texture> SwordaoTexture(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::AoMap, "assets/models/sword/textures/Big Sword_AO_Map.jpg"));
-		std::shared_ptr<Texture> SwordroughnessTexture(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::RoughnessMap, "assets/models/sword/textures/Big Sword_Roughness_Map.jpg"));
-		std::shared_ptr<Texture> SwordmentallicTexture(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::MentallicMap, "assets/models/sword/textures/Big Sword_Metalness.jpg"));
-		std::shared_ptr<Texture> SwordnormalTexture(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::NormalMap, "assets/models/sword/textures/Big Sword_Normal_Map.jpg"));
-		std::shared_ptr<Texture> SwordemissionTexture(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::EmissionMap, "assets/models/sword/textures/Big Sword_Emission_Map.jpg"));
+		std::shared_ptr<Texture> SwordalbedoTexture(DBG_NEW BlackPearl::Texture(BlackPearl::TextureType::DiffuseMap, "assets/models/sword/textures/Big Sword_Base_Color_Map.jpg"));
+		std::shared_ptr<Texture> SwordaoTexture(DBG_NEW BlackPearl::Texture(BlackPearl::TextureType::AoMap, "assets/models/sword/textures/Big Sword_AO_Map.jpg"));
+		std::shared_ptr<Texture> SwordroughnessTexture(DBG_NEW BlackPearl::Texture(BlackPearl::TextureType::RoughnessMap, "assets/models/sword/textures/Big Sword_Roughness_Map.jpg"));
+		std::shared_ptr<Texture> SwordmentallicTexture(DBG_NEW BlackPearl::Texture(BlackPearl::TextureType::MentallicMap, "assets/models/sword/textures/Big Sword_Metalness.jpg"));
+		std::shared_ptr<Texture> SwordnormalTexture(DBG_NEW BlackPearl::Texture(BlackPearl::TextureType::NormalMap, "assets/models/sword/textures/Big Sword_Normal_Map.jpg"));
+		std::shared_ptr<Texture> SwordemissionTexture(DBG_NEW BlackPearl::Texture(BlackPearl::TextureType::EmissionMap, "assets/models/sword/textures/Big Sword_Emission_Map.jpg"));
 
 		sword->GetComponent<MeshRenderer>()->SetTextures(SwordalbedoTexture);
 		sword->GetComponent<MeshRenderer>()->SetTextures(SwordaoTexture);
@@ -897,7 +897,7 @@ namespace BlackPearl {
 					//cube->GetComponent<Transform>()->SetRotation({0.0f,45.0f, 0.0f});
 
 					cube->GetComponent<Transform>()->SetInitScale({ 0.5f * cubeSize, 0.5f * cubeSize, 0.5f * cubeSize });
-					//std::shared_ptr<Texture> cubeTexture(DBG_NEW Texture(Texture::Type::DiffuseMap, "assets/texture/wood.png"));
+					//std::shared_ptr<Texture> cubeTexture(DBG_NEW Texture(TextureType::DiffuseMap, "assets/texture/wood.png"));
 					cube->GetComponent<MeshRenderer>()->GetMeshes()[0]->GetMaterial()->SetMaterialColorDiffuseColor({ (1.0f / num) * i,(1.0f / num) * j,(1.0f / num) * k });
 					cube->GetComponent<MeshRenderer>()->GetMeshes()[0]->GetMaterial()->SetMaterialColorSpecularColor({ 0.0f,0.0f,0.0f });
 
@@ -958,9 +958,9 @@ namespace BlackPearl {
 			staticModel = CreateModel("assets/models/Alpine/Alpine_chalet.obj", "assets/shaders/IronMan.glsl", false, "House");
 			std::shared_ptr<BlackPearl::Texture> housealbedoTexture(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::DiffuseMap, "assets/models/Alpine/Diffuse_map.png"));
 			std::shared_ptr<BlackPearl::Texture> houseroughnessTexture(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::RoughnessMap, "assets/models/Alpine/Roughness_map.png"));
-			std::shared_ptr<BlackPearl::Texture> housementallicTexture(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::MentallicMap, "assets/models/Alpine/Metallic_map.png"));
-			std::shared_ptr<BlackPearl::Texture> housenormalTexture(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::NormalMap, "assets/models/Alpine/Normal_map.png"));
-			std::shared_ptr<BlackPearl::Texture> houseaoTexture(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::AoMap, "assets/models/Alpine/Ao_map.png"));
+			std::shared_ptr<BlackPearl::Texture> housementallicTexture(DBG_NEW BlackPearl::Texture(BlackPearl::TextureType::MentallicMap, "assets/models/Alpine/Metallic_map.png"));
+			std::shared_ptr<BlackPearl::Texture> housenormalTexture(DBG_NEW BlackPearl::Texture(BlackPearl::TextureType::NormalMap, "assets/models/Alpine/Normal_map.png"));
+			std::shared_ptr<BlackPearl::Texture> houseaoTexture(DBG_NEW BlackPearl::Texture(BlackPearl::TextureType::AoMap, "assets/models/Alpine/Ao_map.png"));
 
 			staticModel->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(housealbedoTexture);
 			staticModel->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(houseroughnessTexture);
@@ -1001,11 +1001,11 @@ namespace BlackPearl {
 			staticModel->GetComponent<Transform>()->SetInitPosition({ -0.5f,0.0f,2.5f });
 			staticModel->GetComponent<Transform>()->SetInitRotation({ 0.0f,68.0f,0.0f });
 			staticModel->GetComponent<MeshRenderer>()->SetIsBackGroundObjects(true);
-			std::shared_ptr<Texture> PlasticalbedoTexture(DBG_NEW Texture(Texture::Type::DiffuseMap, "assets/texture/pbr/plasticSphere/scuffed-plastic4-alb.png"));
-			std::shared_ptr<Texture> PlasticaoTexture(DBG_NEW Texture(Texture::Type::AoMap, "assets/texture/pbr/plasticSphere/scuffed-plastic-ao.png"));
-			std::shared_ptr<Texture> PlasticroughnessTexture(DBG_NEW Texture(Texture::Type::RoughnessMap, "assets/texture/pbr/plasticSphere/scuffed-plastic-rough.png"));
-			std::shared_ptr<Texture> PlasticmentallicTexture(DBG_NEW Texture(Texture::Type::MentallicMap, "assets/texture/pbr/plasticSphere/scuffed-plastic-metal.png"));
-			std::shared_ptr<Texture> PlasticnormalTexture(DBG_NEW Texture(Texture::Type::NormalMap, "assets/texture/pbr/plasticSphere/scuffed-plastic-normal.png"));
+			std::shared_ptr<Texture> PlasticalbedoTexture(DBG_NEW Texture(TextureType::DiffuseMap, "assets/texture/pbr/plasticSphere/scuffed-plastic4-alb.png"));
+			std::shared_ptr<Texture> PlasticaoTexture(DBG_NEW Texture(TextureType::AoMap, "assets/texture/pbr/plasticSphere/scuffed-plastic-ao.png"));
+			std::shared_ptr<Texture> PlasticroughnessTexture(DBG_NEW Texture(TextureType::RoughnessMap, "assets/texture/pbr/plasticSphere/scuffed-plastic-rough.png"));
+			std::shared_ptr<Texture> PlasticmentallicTexture(DBG_NEW Texture(TextureType::MentallicMap, "assets/texture/pbr/plasticSphere/scuffed-plastic-metal.png"));
+			std::shared_ptr<Texture> PlasticnormalTexture(DBG_NEW Texture(TextureType::NormalMap, "assets/texture/pbr/plasticSphere/scuffed-plastic-normal.png"));
 			staticModel->GetComponent<MeshRenderer>()->SetTextures(PlasticnormalTexture);
 			staticModel->GetComponent<MeshRenderer>()->SetTextures(PlasticalbedoTexture);
 			staticModel->GetComponent<MeshRenderer>()->SetTextures(PlasticaoTexture);
@@ -1020,11 +1020,11 @@ namespace BlackPearl {
 		else if (modelName == "SphereIron") {
 			staticModel = CreateSphere(1.5, 64, 64);
 
-			std::shared_ptr<Texture> IronalbedoTexture(DBG_NEW Texture(Texture::Type::DiffuseMap, "assets/texture/pbr/IronScuffed/Iron-Scuffed_basecolor.png"));
-			std::shared_ptr<Texture> IronaoTexture(DBG_NEW Texture(Texture::Type::AoMap, "assets/texture/pbr/IronScuffed/Iron-Scuffed_ao.png"));
-			std::shared_ptr<Texture> IronroughnessTexture(DBG_NEW Texture(Texture::Type::RoughnessMap, "assets/texture/pbr/IronScuffed/Iron-Scuffed_roughness.png"));
-			std::shared_ptr<Texture> IronmentallicTexture(DBG_NEW Texture(Texture::Type::MentallicMap, "assets/texture/pbr/IronScuffed/Iron-Scuffed_metallic.png"));
-			std::shared_ptr<Texture> IronnormalTexture(DBG_NEW Texture(Texture::Type::NormalMap, "assets/texture/pbr/IronScuffed/Iron-Scuffed_normal.png"));
+			std::shared_ptr<Texture> IronalbedoTexture(DBG_NEW Texture(TextureType::DiffuseMap, "assets/texture/pbr/IronScuffed/Iron-Scuffed_basecolor.png"));
+			std::shared_ptr<Texture> IronaoTexture(DBG_NEW Texture(TextureType::AoMap, "assets/texture/pbr/IronScuffed/Iron-Scuffed_ao.png"));
+			std::shared_ptr<Texture> IronroughnessTexture(DBG_NEW Texture(TextureType::RoughnessMap, "assets/texture/pbr/IronScuffed/Iron-Scuffed_roughness.png"));
+			std::shared_ptr<Texture> IronmentallicTexture(DBG_NEW Texture(TextureType::MentallicMap, "assets/texture/pbr/IronScuffed/Iron-Scuffed_metallic.png"));
+			std::shared_ptr<Texture> IronnormalTexture(DBG_NEW Texture(TextureType::NormalMap, "assets/texture/pbr/IronScuffed/Iron-Scuffed_normal.png"));
 
 			staticModel->GetComponent<MeshRenderer>()->SetTextures(IronnormalTexture);
 			staticModel->GetComponent<MeshRenderer>()->SetTextures(IronalbedoTexture);
@@ -1063,10 +1063,10 @@ namespace BlackPearl {
 		}
 		else if (modelName == "Robot") {
 			dynamicModel = CreateModel("assets/models-animation/56-sphere-bot-basic/Sphere-Bot Basic/Armature_001-(COLLADA_3 (COLLAborative Design Activity)).dae", "assets/shaders/animatedModel/animatedModel.glsl", true, "Robot");
-			std::shared_ptr<BlackPearl::Texture> RobotAoTexture(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::AoMap, "assets/models-animation/56-sphere-bot-basic/Sphere-Bot Basic/Sphere_Bot_ao.jpg"));
-			std::shared_ptr<BlackPearl::Texture> RobotRoughnessTexture(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::RoughnessMap, "assets/models-animation/56-sphere-bot-basic/Sphere-Bot Basic/Sphere_Bot_rough.jpg"));
-			std::shared_ptr<BlackPearl::Texture> RobotMentallicTexture(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::MentallicMap, "assets/models-animation/56-sphere-bot-basic/Sphere-Bot Basic/Sphere_Bot_metalness.jpg"));
-			std::shared_ptr<BlackPearl::Texture> RobotNormalTexture(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::NormalMap, "assets/models-animation/56-sphere-bot-basic/Sphere-Bot Basic/Sphere_Bot_nmap_2.jpg"));
+			std::shared_ptr<BlackPearl::Texture> RobotAoTexture(DBG_NEW BlackPearl::Texture(BlackPearl::TextureType::AoMap, "assets/models-animation/56-sphere-bot-basic/Sphere-Bot Basic/Sphere_Bot_ao.jpg"));
+			std::shared_ptr<BlackPearl::Texture> RobotRoughnessTexture(DBG_NEW BlackPearl::Texture(BlackPearl::TextureType::RoughnessMap, "assets/models-animation/56-sphere-bot-basic/Sphere-Bot Basic/Sphere_Bot_rough.jpg"));
+			std::shared_ptr<BlackPearl::Texture> RobotMentallicTexture(DBG_NEW BlackPearl::Texture(BlackPearl::TextureType::MentallicMap, "assets/models-animation/56-sphere-bot-basic/Sphere-Bot Basic/Sphere_Bot_metalness.jpg"));
+			std::shared_ptr<BlackPearl::Texture> RobotNormalTexture(DBG_NEW BlackPearl::Texture(BlackPearl::TextureType::NormalMap, "assets/models-animation/56-sphere-bot-basic/Sphere-Bot Basic/Sphere_Bot_nmap_2.jpg"));
 
 			dynamicModel->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(RobotNormalTexture);
 			dynamicModel->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(RobotRoughnessTexture);
@@ -1409,7 +1409,7 @@ namespace BlackPearl {
 
 
 			static  int itemIndexTexture = -1;
-			static Texture::Type type;
+			static TextureType type;
 			//std::cout << "itemIndexTexture" << itemIndexTexture << std::endl;
 			//GE_CORE_TRACE("itemIndexTexture:"+std::to_string(itemIndexTexture) );
 			for (int i = 0; i < imGuiMeshes.size(); i++)

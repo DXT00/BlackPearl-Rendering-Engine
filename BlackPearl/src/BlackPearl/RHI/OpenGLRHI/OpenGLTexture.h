@@ -7,6 +7,29 @@
 #include "BlackPearl/RHI/RHIState.h"
 
 namespace BlackPearl {
+
+	// opengl 不需要sampler， filter在texture desc 里配置
+	//TODO:: 使用同样的名字 TextureDesc，cmake根据API选 .h
+	/*struct GLTextureDesc : public TextureDesc 
+	{
+		GLTextureDesc() {
+			minFilter = GL_LINEAR;
+			magFilter = GL_LINEAR;
+			internalFormat = GL_RGBA;
+			wrap = GL_CLAMP_TO_EDGE;
+			dataType = GL_UNSIGNED_BYTE;
+			generateMipmap = false;
+		}
+		unsigned int minFilter;
+		unsigned int magFilter;
+		int internalFormat;
+		int wrap;
+		unsigned int dataType;
+		bool generateMipmap;
+	};*/
+
+
+
 	class Texture :  public RefCounter<ITexture>, public TextureStateExtension
 	{
 	public:
@@ -17,76 +40,38 @@ namespace BlackPearl {
 		/*默认值
 		,GL_LINEAR, GL_LINEAR, GL_RGBA, GL_CLAMP_TO_EDGE, GL_UNSIGNED_BYTE
 		*/
-		Texture(Type type);
-		Texture(Type type,
-			const std::string& image,
-			unsigned int minFilter = GL_LINEAR,
-			unsigned int maxFilter = GL_LINEAR,
-			int internalFormat = GL_RGBA,
-			int wrap = GL_CLAMP_TO_EDGE,
-			unsigned int dataType = GL_UNSIGNED_BYTE,
-			bool generateMipmap = false);
+		//Texture(const TextureDesc& desc);
 		//没有Image的texture
 		//internalFormat: Specifies the number of color components in the texture
 		//format:Specifies the format of the pixel data
 		Texture(
-			Type type, const int width, const int height,
-			bool isDepth,
-			unsigned int minFilter,
-			unsigned int maxFilter,
-			int internalFormat,
-			int format,
-			int wrap,
-			unsigned int dataType,
-			bool generateMipmap = false,
+			const TextureDesc& desc,
 			float* data = NULL
 		);
 
-		/*
-		防止出错不要用默认值
-		false,GL_LINEAR,GL_LINEAR,GL_RGBA8,GL_RGBA,GL_CLAMP_TO_EDGE,GL_UNSIGNED_BYTE
-		bool isDepth = false,
-			unsigned int minFilter= GL_LINEAR,
-			unsigned int maxFilter= GL_LINEAR,
-			int internalFormat= GL_RGBA8,
-			int format= GL_RGBA,
-			int wrap = GL_CLAMP_TO_EDGE,
-			unsigned int dataType= GL_UNSIGNED_BYTE
-
-
-		*/
 		//用于CubeMap初始化
-		Texture(Type type, std::vector<std::string> faces);
+		Texture(TextureType type, std::vector<std::string> faces);
 
 		~Texture() override;
 		const TextureDesc& getDesc() const override { return desc; }
+		
+		const TextureType& GetType() const override {
+			return desc.type;
+		}
 
 		void Init(
-			const std::string& image,
-			unsigned int minFilter,
-			unsigned int maxFilter,
-			int internalFormat,
-			int wrap,
-			unsigned int dataType,
-			bool generateMipmap
+			const TextureDesc& desc
 		);
 		void Init(
-			const int width,
-			const int height,
-			unsigned int minFilter,
-			unsigned int maxFilter,
-			GLint internalFormat,
-			GLenum format,
-			int wrap,
-			unsigned int dataType,
-			bool generateMipmap, float* data = NULL);
+			const TextureDesc& desc,
+			float* data);
 
 		virtual void Bind();
 		virtual void UnBind();
 		void Storage(GLsizei width, GLsizei height, GLenum internal_format, GLsizei levels = 1);
 		void SetSizeFilter(GLenum min_filter, GLenum mag_filter);
 		void SetWrapFilter(GLenum filter);
-		inline Type GetType() { return m_Type; }
+		inline TextureType GetType() { return m_Type; }
 		unsigned int GetRendererID() { return m_TextureID; }
 		//std::vector<std::string> GetFacesPath() { return m_FacesPath; }
 		std::string GetPath() { return m_Path; }
@@ -100,7 +85,22 @@ namespace BlackPearl {
 		int m_Height = 0;
 		int m_CurLod = 0;
 		std::string m_Path;
-		Type m_Type;
+		TextureType m_Type;
+
+		GLint m_InnerFormat;
+		GLenum m_Format;
+		GLenum m_DataType;
+		GLint m_MinFilter;
+		GLint m_MagFilter;
+		GLint m_Warp = -1;
+
+	private:
+		std::pair<GLenum, GLenum> _ConvertFormat(Format format);
+		GLenum _ConvertInnerFormat(Format format);
+		GLint _ConvertFilter(FilterMode filter);
+		GLint _ConvertWarp(SamplerAddressMode warp);
+
+		void fillTextureInfo(const TextureDesc& desc);
 	};
 
 

@@ -713,6 +713,9 @@ finished executing, the objects are transitioned into the "available" state, i.e
         RG32_FLOAT,
         RGB32_UINT,
         RGB32_SINT,
+        RGB8_UNORM,
+
+        RGB16_FLOAT,
         RGB32_FLOAT,
         RGBA32_UINT,
         RGBA32_SINT,

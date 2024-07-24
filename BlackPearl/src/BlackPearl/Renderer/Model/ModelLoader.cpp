@@ -169,19 +169,19 @@ namespace BlackPearl {
 		float shininess;
 		material->Get(AI_MATKEY_SHININESS, shininess);
 
-		LoadMaterialTextures(material, aiTextureType_DIFFUSE, Texture::Type::DiffuseMap, textures);
-		LoadMaterialTextures(material, aiTextureType_SPECULAR, Texture::Type::SpecularMap, textures);
-		LoadMaterialTextures(material, aiTextureType_NORMALS, Texture::Type::NormalMap, textures);//
-		LoadMaterialTextures(material, aiTextureType_HEIGHT, Texture::Type::HeightMap, textures);
-		//	LoadMaterialTextures(material, aiTextureType_OPACITY, Texture::Type::OpacityMap, textures); //
-		LoadMaterialTextures(material, aiTextureType_AMBIENT, Texture::Type::SpecularMap, textures); //
+		LoadMaterialTextures(material, aiTextureType_DIFFUSE, TextureType::DiffuseMap, textures);
+		LoadMaterialTextures(material, aiTextureType_SPECULAR, TextureType::SpecularMap, textures);
+		LoadMaterialTextures(material, aiTextureType_NORMALS, TextureType::NormalMap, textures);//
+		LoadMaterialTextures(material, aiTextureType_HEIGHT, TextureType::HeightMap, textures);
+		//	LoadMaterialTextures(material, aiTextureType_OPACITY, TextureType::OpacityMap, textures); //
+		LoadMaterialTextures(material, aiTextureType_AMBIENT, TextureType::SpecularMap, textures); //
 
 
-		//LoadMaterialTextures(material, aiTextureType_REFLECTION, Texture::Type::RoughnessMap, textures);
-		LoadMaterialTextures(material, aiTextureType_LIGHTMAP, Texture::Type::AoMap, textures);
-		LoadMaterialTextures(material, aiTextureType_EMISSIVE, Texture::Type::EmissionMap, textures);
+		//LoadMaterialTextures(material, aiTextureType_REFLECTION, TextureType::RoughnessMap, textures);
+		LoadMaterialTextures(material, aiTextureType_LIGHTMAP, TextureType::AoMap, textures);
+		LoadMaterialTextures(material, aiTextureType_EMISSIVE, TextureType::EmissionMap, textures);
 
-		//LoadMaterialTextures(material, aiTextureType_DISPLACEMENT, Texture::Type::DiffuseMap, textures);//TODO
+		//LoadMaterialTextures(material, aiTextureType_DISPLACEMENT, TextureType::DiffuseMap, textures);//TODO
 
 		LoadMaterialColors(material, colors);
 
@@ -498,34 +498,42 @@ namespace BlackPearl {
 
 
 	}
-	void ModelLoader::LoadMaterialTextures(aiMaterial* material, aiTextureType type, Texture::Type typeName, std::shared_ptr<Material::TextureMaps>& textures)
+	void ModelLoader::LoadMaterialTextures(aiMaterial* material, aiTextureType type, TextureType typeName, std::shared_ptr<Material::TextureMaps>& textures)
 	{
 		aiString name;
 		material->Get(AI_MATKEY_NAME, name);
 		for (uint32_t i = 0; i < material->GetTextureCount(type); i++)
 		{
-			std::shared_ptr<Texture> texture;
+			//std::shared_ptr<Texture> texture;
 			aiString path;
 			material->GetTexture(type, i, &path);
 
 			std::string path_str = m_Directory + "/" + std::string(path.C_Str());//
-			if (typeName == Texture::Type::DiffuseMap)
+			
+			TextureDesc textureDesc;
+			textureDesc.type = typeName;
+			textureDesc.path = path_str;
+			textureDesc.height = 1;
+			textureDesc.mipLevels = 1;
+
+
+			if (typeName == TextureType::DiffuseMap)
 				textures->diffuseTextureMap.reset(DBG_NEW Texture(typeName, path_str.c_str(), GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR, GL_RGBA, GL_REPEAT, GL_UNSIGNED_BYTE, true));
-			if (typeName == Texture::Type::SpecularMap)
+			if (typeName == TextureType::SpecularMap)
 				textures->specularTextureMap.reset(DBG_NEW Texture(typeName, path_str.c_str(), GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR, GL_RGBA, GL_REPEAT, GL_UNSIGNED_BYTE, true));
-			if (typeName == Texture::Type::EmissionMap)
+			if (typeName == TextureType::EmissionMap)
 				textures->emissionTextureMap.reset(DBG_NEW Texture(typeName, path_str.c_str(), GL_LINEAR, GL_LINEAR, GL_RGBA, GL_CLAMP_TO_EDGE, GL_UNSIGNED_BYTE));
-			if (typeName == Texture::Type::NormalMap)
+			if (typeName == TextureType::NormalMap)
 				textures->normalTextureMap.reset(DBG_NEW Texture(typeName, path_str.c_str(), GL_LINEAR, GL_LINEAR, GL_RGBA, GL_CLAMP_TO_EDGE, GL_UNSIGNED_BYTE));
-			if (typeName == Texture::Type::AoMap)
+			if (typeName == TextureType::AoMap)
 				textures->aoMap.reset(DBG_NEW Texture(typeName, path_str.c_str(), GL_LINEAR, GL_LINEAR, GL_RGBA, GL_CLAMP_TO_EDGE, GL_UNSIGNED_BYTE));
-			if (typeName == Texture::Type::MentallicMap)
+			if (typeName == TextureType::MentallicMap)
 				textures->mentallicMap.reset(DBG_NEW Texture(typeName, path_str.c_str(), GL_LINEAR, GL_LINEAR, GL_RGBA, GL_CLAMP_TO_EDGE, GL_UNSIGNED_BYTE));
-			if (typeName == Texture::Type::RoughnessMap)
+			if (typeName == TextureType::RoughnessMap)
 				textures->roughnessMap.reset(DBG_NEW Texture(typeName, path_str.c_str(), GL_LINEAR, GL_LINEAR, GL_RGBA, GL_CLAMP_TO_EDGE, GL_UNSIGNED_BYTE));
-			if (typeName == Texture::Type::HeightMap)
+			if (typeName == TextureType::HeightMap)
 				textures->heightTextureMap.reset(DBG_NEW Texture(typeName, path_str.c_str(), GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR, GL_RED, GL_REPEAT, GL_UNSIGNED_BYTE, true));
-			if (typeName == Texture::Type::OpacityMap)
+			if (typeName == TextureType::OpacityMap)
 				textures->heightTextureMap.reset(DBG_NEW Texture(typeName, path_str.c_str(), GL_LINEAR, GL_LINEAR, GL_RGBA, GL_CLAMP_TO_EDGE, GL_UNSIGNED_BYTE));
 
 

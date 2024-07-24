@@ -403,7 +403,7 @@ namespace BlackPearl {
         VkImage image = (VkImage)(_texture.pointer);
 
         ETexture* texture = new ETexture(m_Context, m_Allocator);
-        fillTextureInfo(texture, desc);
+        ETexture::fillTextureInfo(texture, desc);
 
         texture->image = image;
         texture->managed = false;

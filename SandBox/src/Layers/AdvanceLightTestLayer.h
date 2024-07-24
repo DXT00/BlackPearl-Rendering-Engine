@@ -98,7 +98,7 @@ private:
 	BlackPearl::Object* m_SkyBoxObj;
 
 
-	glm::vec4 m_BackgroundColor = { 0.0f,0.0f,0.0f,0.0f };
+	BlackPearl::math::float4 m_BackgroundColor = { 0.0f,0.0f,0.0f,0.0f };
 
 
 	BlackPearl::MasterRenderer *m_MasterRenderer;

@@ -2,69 +2,87 @@
 #include "OpenGLTexture.h"
 #include "BlackPearl/Core.h"
 #include "BlackPearl/Config.h"
+#include "BlackPearl/RHI/RHIDefinitions.h"
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
 namespace BlackPearl {
 
-	Texture::Texture(Type type)
-		:TextureStateExtension(desc)
-	{
-		glGenTextures(1, &m_TextureID);
-	}
-	Texture::Texture(
-		Type type,
-		const std::string& image,
-		unsigned int minFilter,
-		unsigned int maxFilter,
-		int internalFormat,
-		int wrap,
-		unsigned int dataType,
-		bool generateMipmap
-	) : TextureStateExtension(desc)
-	{
-		m_Path = image;
-		m_Type = type;
-		glGenTextures(1, &m_TextureID);
-		glBindTexture(GL_TEXTURE_2D, m_TextureID);
-		Init(image, minFilter, maxFilter, internalFormat, wrap, dataType, generateMipmap);
+	//Texture::Texture(const TextureDesc& desc)
+	//	:TextureStateExtension(desc)
+	//{
+	//	glGenTextures(1, &m_TextureID);
+	//}
 
 
-	}
-	//Use in ShadowMap (DepthMap) or FrameBuffer's empty ColorMap
+
+	/*
+	internalforamt指的是纹理数据在OpenGL中是如何表示的，如GL_RGB就表示纹理的像素在OpenGL里面以红绿蓝三个分量表示，
+
+	format指的是载入纹理的格式，它告诉OpenGL外部数据是如何存储每个像素数据的。
+	
+	*/
 	Texture::Texture(
-		Type type,
-		const int width,
-		const int height,
-		bool isDepth,
-		unsigned int minFilter,
-		unsigned int maxFilter,
-		int internalFormat,
-		int format,
-		int wrap,
-		unsigned int dataType,
-		bool generateMipmap,
+		const TextureDesc& desc,
 		float* data
-	) :TextureStateExtension(desc)
+	) :desc(desc),
+		TextureStateExtension(desc)
 	{
-		m_Width = width;
-		m_Height = height;
-		m_Path = "";
-		m_Type = type;
+		m_Path = desc.path;
+		m_Type = desc.type;
+		m_Width = desc.width;
+		m_Height = desc.height;
 		glGenTextures(1, &m_TextureID);
 		GE_ERROR_JUDGE();//出现error的原因：很可能m_TextureID用在了别的target上，例如CUBEMAP,不行的话运行前加个断点 = = 
 
 		glBindTexture(GL_TEXTURE_2D, m_TextureID);
 		GE_ERROR_JUDGE();
-		Init(width, height, minFilter, maxFilter, internalFormat, format, wrap, dataType, generateMipmap, data);
+
+		if (data != nullptr) {
+			Init(desc, data);
+		}
+		else {
+			assert(!m_Path.empty());
+			Init(desc);
+		}
 		GE_ERROR_JUDGE();
 
 
 	}
+	//Use in ShadowMap (DepthMap) or FrameBuffer's empty ColorMap
+	//Texture::Texture(
+	//	Type type,
+	//	const int width,
+	//	const int height,
+	//	bool isDepth,
+	//	unsigned int minFilter,
+	//	unsigned int maxFilter,
+	//	int internalFormat,
+	//	int format,
+	//	int wrap,
+	//	unsigned int dataType,
+	//	bool generateMipmap,
+	//	float* data
+	//) :TextureStateExtension(desc)
+	//{
+	//	m_Width = width;
+	//	m_Height = height;
+	//	m_Path = "";
+	//	m_Type = type;
+	//	glGenTextures(1, &m_TextureID);
+
+	//	glBindTexture(GL_TEXTURE_2D, m_TextureID);
+	//	GE_ERROR_JUDGE();
+	//	Init(width, height, minFilter, magFilter, internalFormat, format, wrap, dataType, generateMipmap, data);
+	//	GE_ERROR_JUDGE();
+
+
+	//}
 	//Use in CubeMap
-	Texture::Texture(Type type, std::vector<std::string> faces)
-		:TextureStateExtension(desc) {
+	Texture::Texture(TextureType type, std::vector<std::string> faces)
+		:desc(desc),
+		TextureStateExtension(desc) {
 		m_Path = "";
 		//m_FacesPath = faces;
 		m_Type = type;
@@ -80,24 +98,18 @@ namespace BlackPearl {
 
 
 	void Texture::Init(
-		const std::string& image,
-		unsigned int minFilter,
-		unsigned int maxFilter,
-		int internalFormat,
-		int wrap,
-		unsigned int dataType,
-		bool generateMipmap)
+		const TextureDesc& desc)
 	{
 
-		//LoadTexture(image, minFilter, maxFilter, internalFormat, format, wrap, dataType);
-		GE_ASSERT(image.size() != 0, "texture image is empty!");
+		//LoadTexture(image, minFilter, magFilter, internalFormat, format, wrap, dataType);
+		GE_ASSERT(m_Path.size() != 0, "texture image is empty!");
 
 		int width, height, nrChannels;
 
 		stbi_set_flip_vertically_on_load(true);
 
 
-		unsigned char* data = stbi_load(image.c_str(), &width, &height, &nrChannels, 0);
+		unsigned char* data = stbi_load(m_Path.c_str(), &width, &height, &nrChannels, 0);
 		GE_ASSERT(data, "fail to load texture data!");
 		GLenum format;
 		switch (nrChannels) //注意不同图片有不同的通道数！
@@ -120,48 +132,41 @@ namespace BlackPearl {
 		}
 		m_Width = width;
 		m_Height = height;
+		fillTextureInfo(desc);
+
 		//glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
 		//glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, format, GL_UNSIGNED_BYTE, data);
 		//glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, format, GL_UNSIGNED_BYTE, data);
-		glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, format, dataType, data);
-		if (generateMipmap)
+		glTexImage2D(GL_TEXTURE_2D, 0, m_InnerFormat, width, height, 0, format, m_DataType, data);
+		if (desc.generateMipmap)
 			glGenerateMipmap(GL_TEXTURE_2D);//为当前绑定的纹理自动生成所有需要的多级渐远纹理
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrap);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrap);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, minFilter);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, maxFilter);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, m_Warp);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, m_Warp);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, m_MinFilter);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, m_MagFilter);
 		//UnBind();
 		stbi_image_free(data);
 	}
 
 	void Texture::Init(
-		const int width,
-		const int height,
-		unsigned int minFilter,
-		unsigned int maxFilter,
-		GLint internalFormat,
-		GLenum format,
-		int wrap,
-		unsigned int dataType,
-		bool generateMipmap, float* data)
+		const TextureDesc& desc, float* data)
 	{
-		m_Width = width;
-		m_Height = height;
+
 		/*	FBO(
 				GLuint w, GLuint h, GLenum magFilter = GL_NEAREST, GLenum minFilter = GL_NEAREST,
 				GLint internalFormat = GL_RGB16F, GLint format = GL_FLOAT, GLint wrap = GL_REPEAT);*/
 				//纹理过滤---邻近过滤和线性过滤
+		fillTextureInfo(desc);
+		glTexImage2D(GL_TEXTURE_2D, 0, m_InnerFormat, m_Width, m_Height, 0, m_Format, m_DataType, data);
 
-		glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, format, dataType, data);
-
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, minFilter);//纹理缩小时用邻近过滤
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, maxFilter);//纹理放大时也用邻近过滤
-		if (wrap != -1) {
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrap);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrap);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, m_MinFilter);//纹理缩小时用邻近过滤
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, m_MagFilter);//纹理放大时也用邻近过滤
+		if (m_Warp != -1) {
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, m_Warp);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, m_Warp);
 		}
 
-		if (generateMipmap)
+		if (desc.generateMipmap)
 			glGenerateMipmap(GL_TEXTURE_2D);//为当前绑定的纹理自动生成所有需要的多级渐远纹理
 		//	UnBind();
 	}
@@ -173,9 +178,135 @@ namespace BlackPearl {
 	}
 	void Texture::SetWrapFilter(GLenum filter) {
 
-		glTextureParameteri(m_TextureID, GL_TEXTURE_WRAP_S, filter);
-		glTextureParameteri(m_TextureID, GL_TEXTURE_WRAP_T, filter);
-		glTextureParameteri(m_TextureID, GL_TEXTURE_WRAP_R, filter);
+		glTextureParameteri(m_TextureID, GL_TEXTURE_WRAP_S, filter); //GL_REPEAT 表示纹理X方向循环使用纹理
+		glTextureParameteri(m_TextureID, GL_TEXTURE_WRAP_T, filter); //GL_REPEAT 表示纹理y方向循环使用纹理
+		glTextureParameteri(m_TextureID, GL_TEXTURE_WRAP_R, filter);  //GL_REPEAT 表示纹理z方向循环使用纹理
+	}
+
+	//return <format, dataType>
+	std::pair<GLenum, GLenum> Texture::_ConvertFormat(Format format)
+	{
+		//https://www.khronos.org/opengl/wiki/OpenGL_Type
+		//GL_UNSIGNED_BYTE --> 8 bit
+		//GL_BYTE --> 8 bit
+
+		//GL_UNSIGNED_INT --> 32bit
+		// GL_INT --> 32bit
+
+		//GL_UNSIGNED_SHORT -->16bit
+		//GL_SHORT --> 16bit
+
+		switch (format)
+		{
+
+		case Format::R32_FLOAT:
+			return std::make_pair<GLenum, GLenum>(GL_RED, GL_FLOAT);
+
+		case Format::RGB8_UNORM:
+			return std::make_pair<GLenum, GLenum>(GL_RGB, GL_UNSIGNED_BYTE);
+
+		case Format::RGB32_FLOAT:
+		case Format::RGB16_FLOAT:
+			return std::make_pair<GLenum, GLenum>(GL_RGB, GL_FLOAT);
+
+		case Format::RGBA8_UNORM:
+			return std::make_pair<GLenum, GLenum>(GL_RGBA, GL_UNSIGNED_BYTE);
+
+		case Format::RGBA32_FLOAT:
+		case Format::RGBA16_FLOAT:
+			return std::make_pair<GLenum, GLenum>(GL_RGBA, GL_FLOAT);
+
+		case Format::D16:
+		case Format::D32:
+			return std::make_pair<GLenum, GLenum>(GL_DEPTH_COMPONENT, GL_FLOAT);
+
+		default:
+			GE_ASSERT(0, "unsupport now");
+			break;
+		}
+		return std::make_pair<GLenum, GLenum>(GL_RGBA, GL_UNSIGNED_BYTE);
+
+	}
+
+	GLenum Texture::_ConvertInnerFormat(Format format)
+	{
+		switch (format)
+		{
+
+		case Format::R32_FLOAT:
+			return GL_R32F;
+
+		case Format::RGB8_UNORM:
+			return GL_RGB;
+
+		case Format::RGB32_FLOAT:
+			return GL_RGB32F;
+
+		case Format::RGB16_FLOAT:
+			return GL_RGB16F;
+
+		case Format::RGBA8_UNORM:
+			return GL_RGBA;
+
+		case Format::RGBA32_FLOAT:
+			return GL_RGBA32F;
+		case Format::RGBA16_FLOAT:
+			return GL_RGBA16F;
+
+			//return std::make_pair<GLenum, GLenum>(GL_RGBA, GL_FLOAT);
+		case Format::D16:
+			return GL_DEPTH_COMPONENT16;
+		case Format::D32:
+			return GL_DEPTH_COMPONENT32;
+
+		default:
+			GE_ASSERT(0, "unsupport now");
+			break;
+	}
+		return GL_RGBA;
+	}
+
+	GLint Texture::_ConvertFilter(FilterMode filter)
+	{
+		switch (filter)
+		{
+		case BlackPearl::FilterMode::Linear:
+			return GL_LINEAR;
+
+		case BlackPearl::FilterMode::Nearest:
+			return GL_NEAREST;
+
+		default:
+			assert(0);
+			break;
+		}
+		return GL_LINEAR;
+
+	}
+
+	GLint Texture::_ConvertWarp(SamplerAddressMode warp)
+	{
+		switch (warp) {
+		case SamplerAddressMode::ClampToEdge:
+			return GL_CLAMP_TO_EDGE;
+		default:
+			assert(0);
+		}
+
+		return GL_CLAMP_TO_EDGE;
+
+	}
+
+	void Texture::fillTextureInfo(const TextureDesc& desc)
+	{
+		auto fm = _ConvertFormat(desc.format);
+		m_Format = fm.first;
+		m_DataType = fm.second;
+		m_InnerFormat = _ConvertInnerFormat(desc.format);
+		m_MinFilter = _ConvertFilter(desc.minFilter);
+		m_MagFilter = _ConvertFilter(desc.magFilter);
+		m_Warp = _ConvertWarp(desc.wrap);
+
 	}
 
 	void Texture::Bind()
