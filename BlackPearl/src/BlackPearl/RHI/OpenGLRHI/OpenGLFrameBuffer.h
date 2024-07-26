@@ -21,7 +21,7 @@ namespace BlackPearl {
         virtual void Bind() override;
         virtual void Unbind() override;
 
-        void BindCubeMapColorAttachments(int face);
+        void BindCubeMapColorAttachments(int attachmentId, int face);
 
     private:
         unsigned int m_Fbo;

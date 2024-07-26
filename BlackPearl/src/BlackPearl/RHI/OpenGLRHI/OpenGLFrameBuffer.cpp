@@ -29,11 +29,11 @@ namespace BlackPearl {
         glViewport(0, 0, Configuration::WindowWidth, Configuration::WindowHeight);
     }
 
-    void OpenGLFramebuffer::BindCubeMapColorAttachments(int face)
+    void OpenGLFramebuffer::BindCubeMapColorAttachments(int attachmentId, int face)
     {
-        const auto& attach = desc.colorAttachments[i];
+        const auto& attach = desc.cubeMapAttachment;
         Texture* texture = static_cast<Texture*>(attach.texture);
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_TEXTURE_CUBE_MAP_POSITIVE_X + face, texture->GetRendererID(), 0);
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + attachmentId, GL_TEXTURE_CUBE_MAP_POSITIVE_X + face, texture->GetRendererID(), 0);
     }
 
 
