@@ -25,6 +25,11 @@ namespace BlackPearl {
         ~Framebuffer() override;
         const FramebufferDesc& getDesc() const override { return desc; }
         const FramebufferInfoEx& getFramebufferInfo() const override { return framebufferInfo; }
+
+        //for opengl: delete later 
+        virtual void Bind() override {};
+        virtual void Unbind() override {};
+       
        // Object getNativeObject(ObjectType objectType) override;
 
     private:

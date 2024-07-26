@@ -3,33 +3,27 @@
 #include <string>
 #include "BlackPearl/Object/Object.h"
 #include "BlackPearl/Renderer/Material/Material.h"
-#include "BlackPearl/ObjectCreater/ObjectCreater.h"
 #include "BlackPearl/Component/LightComponent/Light.h"
 #include "BlackPearl/Component/LightComponent/LightSources.h"
 #include "BlackPearl/MainCamera/MainCamera.h"
 #include "BlackPearl/Node/BatchNode.h"
 #include "BlackPearl/Renderer/Mesh/Vertex.h"
+#include "BlackPearl/Renderer/DeviceManager.h"
+#include "BlackPearl/RHI/RHIDevice.h"
+
 namespace BlackPearl {
 	class ObjectManager
 	{
 	public:
 		ObjectManager()
 		{
-			m_ObjectCreater   = DBG_NEW ObjectCreater();
-			m_Object3DCreater = DBG_NEW Object3DCreater();
-			m_Object2DCreater = DBG_NEW Object2DCreater();
-			m_LightCreater    = DBG_NEW LightCreater();
-			//m_CameraCreater   = new CameraCreater(entityManager);
-		
 		}
-		~ObjectManager() {
+
+		~ObjectManager() 
+		{
 			DestroyObjects();
-			GE_SAVE_DELETE(m_ObjectCreater);
-			GE_SAVE_DELETE(m_Object3DCreater);
-			GE_SAVE_DELETE(m_Object2DCreater);
-			GE_SAVE_DELETE(m_LightCreater);
-		
 		};
+		void RegisterDeviceManager(DeviceManager* deviceManager);
 
 		Object* CreateEmpty(std::string name = "");
 		Object* CreateLight(LightType type,LightSources* lightSources, const std::string& name);
@@ -62,19 +56,14 @@ namespace BlackPearl {
 		Object* CreateRTXTransformNode(const glm::mat4& transform_mat, Object* bvh_node, std::shared_ptr<Material> rtx_material = nullptr, const std::string name = "RayTracingTansform");
 		
 		std::vector<Object*> GetObjects();
-		//std::vector<std::string> GetObjectsName();
 
 
 		void DestroyObjects();
 
 	private:
 		std::vector<Object*> m_Objs;
-
-		ObjectCreater*   m_ObjectCreater;
-		Object3DCreater* m_Object3DCreater;
-		Object2DCreater* m_Object2DCreater;
-		LightCreater*    m_LightCreater;
-	//	CameraCreater*   m_CameraCreater;
+		DeviceManager* m_DeviceManager;
+		IDevice* m_Device;
 
 	};
 }

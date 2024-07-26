@@ -23,7 +23,6 @@
 #include "BlackPearl/Renderer/Buffer/D3D12Buffer/D3D12Buffer.h"
 
 namespace BlackPearl {
-	extern DeviceManager* g_deviceManager;
 	static int buttonNum = 0;
 	void Layer::OnImguiRender()
 	{
@@ -563,7 +562,7 @@ namespace BlackPearl {
 		Object* sphereObjStone = CreateSphere(1.5, 64, 64);
 		Object* sphereObjPlastic = CreateSphere(1.5, 64, 64);
 		//textures spheres
-		IDevice* device = g_deviceManager->GetDevice();
+		IDevice* device = m_DeviceManager->GetDevice();
 		TextureHandle RustalbedoTexture = device->createTexture({TextureType::DiffuseMap, "assets/texture/pbr/rustSphere/rustediron2_basecolor.png"});
 		TextureHandle RustaoTexture = device->createTexture({TextureType::AoMap, "assets/texture/pbr/rustSphere/rustediron2_ao.png"});
 		TextureHandle RustroughnessTexture = device->createTexture({TextureType::RoughnessMap, "assets/texture/pbr/rustSphere/rustediron2_roughness.png"});
@@ -717,7 +716,7 @@ namespace BlackPearl {
 		light->GetComponent<MeshRenderer>()->SetIsShadowObjects(false);
 
 
-		IDevice* device = g_deviceManager->GetDevice();
+		IDevice* device = m_DeviceManager->GetDevice();
 
 
 		Object* sphereObjIron = CreateSphere(1.5, 64, 64);//CreateCube();//
@@ -878,7 +877,7 @@ namespace BlackPearl {
 
 	void Layer::LoadSwordScene()
 	{
-		IDevice* device = g_deviceManager->GetDevice();
+		IDevice* device = m_DeviceManager->GetDevice();
 
 		Object* sword = CreateModel("assets/models/sword/OBJ/Big_Sword_OBJ.obj", "assets/shaders/pbr/PbrTexture.glsl", false, "Sword");
 		TextureHandle SwordalbedoTexture = device->createTexture({ TextureType::DiffuseMap, "assets/models/sword/textures/Big Sword_Base_Color_Map.jpg" });
@@ -981,7 +980,7 @@ namespace BlackPearl {
 	Object* Layer::LoadStaticBackGroundObject(const std::string modelName)
 	{
 		Object* staticModel = nullptr;
-		IDevice* device = g_deviceManager->GetDevice();
+		IDevice* device = m_DeviceManager->GetDevice();
 
 		if (modelName == "House") {
 			//house model
@@ -1049,7 +1048,7 @@ namespace BlackPearl {
 		}
 		else if (modelName == "SphereIron") {
 			staticModel = CreateSphere(1.5, 64, 64);
-			auto device = g_deviceManager->GetDevice();
+			auto device = m_DeviceManager->GetDevice();
 
 			TextureHandle IronalbedoTexture = device->createTexture({TextureType::DiffuseMap, "assets/texture/pbr/IronScuffed/Iron-Scuffed_basecolor.png"});
 			TextureHandle IronaoTexture = device->createTexture({ TextureType::AoMap, "assets/texture/pbr/IronScuffed/Iron-Scuffed_ao.png" });
@@ -1094,7 +1093,7 @@ namespace BlackPearl {
 		}
 		else if (modelName == "Robot") {
 
-			auto device = g_deviceManager->GetDevice();
+			auto device = m_DeviceManager->GetDevice();
 			dynamicModel = CreateModel("assets/models-animation/56-sphere-bot-basic/Sphere-Bot Basic/Armature_001-(COLLADA_3 (COLLAborative Design Activity)).dae", "assets/shaders/animatedModel/animatedModel.glsl", true, "Robot");
 			TextureHandle RobotAoTexture = device->createTexture({ TextureType::AoMap, "assets/models-animation/56-sphere-bot-basic/Sphere-Bot Basic/Sphere_Bot_ao.jpg" });
 			TextureHandle RobotRoughnessTexture = device->createTexture({ TextureType::RoughnessMap, "assets/models-animation/56-sphere-bot-basic/Sphere-Bot Basic/Sphere_Bot_rough.jpg" });
@@ -1498,7 +1497,7 @@ namespace BlackPearl {
 					TextureDesc desc;
 					desc.type = type;
 					desc.path = m_fileDialog.GetSelected().string();
-					TextureHandle texture = g_deviceManager->GetDevice()->createTexture(desc);
+					TextureHandle texture = m_DeviceManager->GetDevice()->createTexture(desc);
 
 					imGuiMeshes[itemIndexTexture]->GetMaterial()->SetTexture(texture);
 	

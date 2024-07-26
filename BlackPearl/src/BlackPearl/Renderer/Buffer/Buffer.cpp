@@ -2,8 +2,15 @@
 #include "glad/glad.h"
 #include "Buffer.h"
 #include "BlackPearl/Config.h"
+#include "BlackPearl/RHI/RHIDefinitions.h"
+#include "BlackPearl/RHI/RHISampler.h"
+#include "BlackPearl/Renderer/DeviceManager.h"
 #include <memory>
+
+
 namespace BlackPearl {
+	extern DeviceManager* g_deviceManager;
+
 	//------------------------VertexBuffer-----------------//
 	/* 
 	darwType = GL_STATIC_DRAW / GL_DYNAMIC_DRAW (buffer can be read or written)
@@ -228,22 +235,34 @@ namespace BlackPearl {
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + attachmentPoints, GL_TEXTURE_2D, (GLuint)texture->GetRendererID(), 0);
 		GE_ASSERT(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "Framebuffer not complete!");
 	}
-
+	//TODO:: 通过device->createFramebuffer(fboDesc);创建
 	void FrameBuffer::AttachDepthTexture(const int imageWidth, int imageHeight)
 	{	
 		GE_CORE_WARN(" 注意Texture是否是默认的格式！");
 
-		m_TextureDepthBuffer.reset(DBG_NEW BlackPearl::Texture(Texture::Type::DepthMap, imageWidth, imageHeight,false, GL_NEAREST, GL_NEAREST, GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT, GL_CLAMP_TO_EDGE, GL_FLOAT));
 
-		//m_TextureDepthBuffer.reset(DBG_NEW BlackPearl::DepthTexture(Texture::Type::DepthMap, m_Width, m_Height));
+		TextureDesc desc;
+		desc.type = TextureType::DepthMap;
+		desc.width = imageWidth;
+		desc.height = imageHeight;
+		desc.minFilter = FilterMode::Linear;
+		desc.magFilter = FilterMode::Linear;
+		desc.wrap = SamplerAddressMode::ClampToEdge;
+		desc.format = Format::D32;
+		desc.generateMipmap = true;
+		//texture->diffuseTextureMap = g_deviceManager->GetDevice()->createTexture(desc);
+		auto texture = g_deviceManager->GetDevice()->createTexture(desc);
+
+		//m_TextureDepthBuffer.reset(DBG_NEW BlackPearl::Texture(Texture::Type::DepthMap, imageWidth, imageHeight,false, GL_NEAREST, GL_NEAREST, GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT, GL_CLAMP_TO_EDGE, GL_FLOAT));
+		m_TextureDepthBuffer.reset(static_cast<Texture*>(texture.Get()));
 		Bind();
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, m_TextureDepthBuffer->GetRendererID(), 0);
 
 		GE_ASSERT(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "Framebuffer not complete!");
 	}
 
-	void FrameBuffer::AttachDepthTexture(std::shared_ptr<Texture> texture, int mipmapLevel) {
-		m_TextureDepthBuffer = texture;
+	void FrameBuffer::AttachDepthTexture(std::shared_ptr<ITexture> texture, int mipmapLevel) {
+		m_TextureDepthBuffer.reset(static_cast<Texture*>(texture.get()));
 		//Bind();
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, m_TextureDepthBuffer->GetRendererID(), mipmapLevel);
 		GLenum statue = glCheckFramebufferStatus(GL_FRAMEBUFFER);
@@ -320,17 +339,7 @@ namespace BlackPearl {
 		glBindRenderbuffer(GL_RENDERBUFFER, m_RenderBufferID);
 	}
 	
-	void FrameBuffer::BindColorTexture(unsigned int attachmentPoints)
-	{
-		m_TextureColorBuffers[attachmentPoints]->Bind();
 
-	}
-	void FrameBuffer::UnBindTexture(unsigned int attachmentPoints)
-	{
-		GE_ASSERT(m_TextureColorBuffers[attachmentPoints], "m_TextureColorBuffers[" + std::to_string(attachmentPoints)+"] is nullptr!");
-		m_TextureColorBuffers[attachmentPoints]->UnBind();
-
-	}
 	void FrameBuffer::CleanUp()
 	{
 		
@@ -386,8 +395,22 @@ namespace BlackPearl {
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 	}
+	// device->createTexture
 	void GBuffer::InitGITextures()
 	{
+
+		TextureDesc desc;
+		desc.type = TextureType::DepthMap;
+		desc.width = m_Width;
+		desc.height = m_Width;
+		desc.minFilter = FilterMode::Nearest;
+		desc.magFilter = FilterMode::Nearest;
+		desc.wrap = SamplerAddressMode::ClampToEdge;
+		desc.format = Format::RGBA16_FLOAT;
+		desc.generateMipmap = true;
+		//texture->diffuseTextureMap = g_deviceManager->GetDevice()->createTexture(desc);
+		m_PositionTexture = g_deviceManager->GetDevice()->createTexture(desc);
+
 		//m_PositionTexture RGB-position A--isPBRObject+objectId -->voxel cone tracing
 		m_PositionTexture.reset(DBG_NEW Texture(Texture::Type::DiffuseMap, m_Width, m_Height, false, GL_NEAREST, GL_NEAREST, GL_RGBA16F, GL_RGBA, -1, GL_FLOAT));
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, (GLuint)m_PositionTexture->GetRendererID(), 0);
@@ -420,7 +443,7 @@ namespace BlackPearl {
 		GE_ASSERT(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "Framebuffer not complete!");
 
 	}
-	std::shared_ptr<Texture> GBuffer::GetColorTexture(unsigned int idx)
+	TextureHandle GBuffer::GetColorTexture(unsigned int idx)
 	{
 		GE_ASSERT(idx<m_ColorTextures.size() && m_ColorTextures[idx],"fail to get texture")
 		return m_ColorTextures[idx];

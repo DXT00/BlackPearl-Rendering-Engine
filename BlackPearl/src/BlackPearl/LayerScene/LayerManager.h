@@ -27,11 +27,13 @@ namespace BlackPearl {
 		void OnUpdateLayers(Timestep ts);
 		void PushLayer(Layer *layer);
 		void PushOverLayer(Layer *overlay);
+		void RegisterDeviceManager(DeviceManager* deviceManager);
 
 	private:
 
 		LayerStack m_LayerStack;
 		ImGuiLayer* m_ImGuiLayer; //每个LayerManager都有一个ImGuiLayer
+		DeviceManager* m_DeviceManager;
 
 	};
 

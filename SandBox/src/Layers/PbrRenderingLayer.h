@@ -67,30 +67,29 @@ public:
 
 		//textures spheres
 
-		std::shared_ptr<Texture> RustalbedoTexture(DBG_NEW Texture({ TextureType::DiffuseMap, "assets/texture/pbr/rustSphere/rustediron2_basecolor.png" }));
-		std::shared_ptr<Texture> RustaoTexture(DBG_NEW Texture({ TextureType::AoMap, "assets/texture/pbr/rustSphere/rustediron2_ao.png" }));
-		std::shared_ptr<Texture> RustroughnessTexture(DBG_NEW Texture({ TextureType::RoughnessMap, "assets/texture/pbr/rustSphere/rustediron2_roughness.png" }));
-		std::shared_ptr<Texture> RustmentallicTexture(DBG_NEW Texture({ TextureType::MentallicMap, "assets/texture/pbr/rustSphere/rustediron2_metallic.png" }));
-		std::shared_ptr<Texture> RustnormalTexture(DBG_NEW Texture({ TextureType::NormalMap, "assets/texture/pbr/rustSphere/rustediron2_normal.png" }));
+		TextureHandle RustalbedoTexture(DBG_NEW Texture({ TextureType::DiffuseMap, "assets/texture/pbr/rustSphere/rustediron2_basecolor.png" }));
+		TextureHandle RustaoTexture(DBG_NEW Texture({ TextureType::AoMap, "assets/texture/pbr/rustSphere/rustediron2_ao.png" }));
+		TextureHandle RustroughnessTexture(DBG_NEW Texture({ TextureType::RoughnessMap, "assets/texture/pbr/rustSphere/rustediron2_roughness.png" }));
+		TextureHandle RustmentallicTexture(DBG_NEW Texture({ TextureType::MentallicMap, "assets/texture/pbr/rustSphere/rustediron2_metallic.png" }));
+		TextureHandle RustnormalTexture(DBG_NEW Texture({ TextureType::NormalMap, "assets/texture/pbr/rustSphere/rustediron2_normal.png" }));
 
+		TextureHandle IronalbedoTexture(DBG_NEW Texture({ TextureType::DiffuseMap, "assets/texture/pbr/IronScuffed/Iron-Scuffed_basecolor.png" }));
+		TextureHandle IronaoTexture(DBG_NEW Texture({ TextureType::AoMap, "assets/texture/pbr/IronScuffed/Iron-Scuffed_ao.png" }));
+		TextureHandle IronroughnessTexture(DBG_NEW Texture({ TextureType::RoughnessMap, "assets/texture/pbr/IronScuffed/Iron-Scuffed_roughness.png" }));
+		TextureHandle IronmentallicTexture(DBG_NEW Texture({ TextureType::MentallicMap, "assets/texture/pbr/IronScuffed/Iron-Scuffed_metallic.png" }));
+		TextureHandle IronnormalTexture(DBG_NEW Texture({ TextureType::NormalMap, "assets/texture/pbr/IronScuffed/Iron-Scuffed_normal.png" }));
 
-		std::shared_ptr<Texture> IronalbedoTexture(DBG_NEW Texture({ TextureType::DiffuseMap, "assets/texture/pbr/IronScuffed/Iron-Scuffed_basecolor.png" }));
-		std::shared_ptr<Texture> IronaoTexture(DBG_NEW Texture({ TextureType::AoMap, "assets/texture/pbr/IronScuffed/Iron-Scuffed_ao.png" }));
-		std::shared_ptr<Texture> IronroughnessTexture(DBG_NEW Texture({ TextureType::RoughnessMap, "assets/texture/pbr/IronScuffed/Iron-Scuffed_roughness.png" }));
-		std::shared_ptr<Texture> IronmentallicTexture(DBG_NEW Texture({ TextureType::MentallicMap, "assets/texture/pbr/IronScuffed/Iron-Scuffed_metallic.png" }));
-		std::shared_ptr<Texture> IronnormalTexture(DBG_NEW Texture({ TextureType::NormalMap, "assets/texture/pbr/IronScuffed/Iron-Scuffed_normal.png" }));
-
-		std::shared_ptr<Texture> StonealbedoTexture(DBG_NEW Texture({ TextureType::DiffuseMap, "assets/texture/pbr/cobblestone/cobblestone-curved_2_albedo.png" }));
-		std::shared_ptr<Texture> StoneaoTexture(DBG_NEW Texture({ TextureType::AoMap, "assets/texture/pbr/cobblestone/cobblestone-curved_2_ao.png" }));
-		std::shared_ptr<Texture> StoneroughnessTexture(DBG_NEW Texture({ TextureType::RoughnessMap, "assets/texture/pbr/cobblestone/cobblestone-curved_2_roughness.png" }));
-		std::shared_ptr<Texture> StonementallicTexture(DBG_NEW Texture({ TextureType::MentallicMap, "assets/texture/pbr/cobblestone/cobblestone-curved_2_metallic.png" }));
-		std::shared_ptr<Texture> StonenormalTexture(DBG_NEW Texture({ TextureType::NormalMap, "assets/texture/pbr/cobblestone/cobblestone-curved_2_normal-dx.png" }));
-
-		std::shared_ptr<Texture> PlasticalbedoTexture(DBG_NEW Texture({ TextureType::DiffuseMap, "assets/texture/pbr/plasticSphere/scuffed-plastic4-alb.png" }));
-		std::shared_ptr<Texture> PlasticaoTexture(DBG_NEW Texture({ TextureType::AoMap, "assets/texture/pbr/plasticSphere/scuffed-plastic-ao.png" }));
-		std::shared_ptr<Texture> PlasticroughnessTexture(DBG_NEW Texture({ TextureType::RoughnessMap, "assets/texture/pbr/plasticSphere/scuffed-plastic-rough.png" }));
-		std::shared_ptr<Texture> PlasticmentallicTexture(DBG_NEW Texture({ TextureType::MentallicMap, "assets/texture/pbr/plasticSphere/scuffed-plastic-metal.png" }));
-		std::shared_ptr<Texture> PlasticnormalTexture(DBG_NEW Texture({ TextureType::NormalMap, "assets/texture/pbr/plasticSphere/scuffed-plastic-normal.png" }));
+		TextureHandle StonealbedoTexture(DBG_NEW Texture({ TextureType::DiffuseMap, "assets/texture/pbr/cobblestone/cobblestone-curved_2_albedo.png" }));
+		TextureHandle StoneaoTexture(DBG_NEW Texture({ TextureType::AoMap, "assets/texture/pbr/cobblestone/cobblestone-curved_2_ao.png" }));
+		TextureHandle StoneroughnessTexture(DBG_NEW Texture({ TextureType::RoughnessMap, "assets/texture/pbr/cobblestone/cobblestone-curved_2_roughness.png" }));
+		TextureHandle StonementallicTexture(DBG_NEW Texture({ TextureType::MentallicMap, "assets/texture/pbr/cobblestone/cobblestone-curved_2_metallic.png" }));
+		TextureHandle StonenormalTexture(DBG_NEW Texture({ TextureType::NormalMap, "assets/texture/pbr/cobblestone/cobblestone-curved_2_normal-dx.png" }));
+		
+		TextureHandle PlasticalbedoTexture(DBG_NEW Texture({ TextureType::DiffuseMap, "assets/texture/pbr/plasticSphere/scuffed-plastic4-alb.png" }));
+		TextureHandle PlasticaoTexture(DBG_NEW Texture({ TextureType::AoMap, "assets/texture/pbr/plasticSphere/scuffed-plastic-ao.png" }));
+		TextureHandle PlasticroughnessTexture(DBG_NEW Texture({ TextureType::RoughnessMap, "assets/texture/pbr/plasticSphere/scuffed-plastic-rough.png" }));
+		TextureHandle PlasticmentallicTexture(DBG_NEW Texture({ TextureType::MentallicMap, "assets/texture/pbr/plasticSphere/scuffed-plastic-metal.png" }));
+		TextureHandle PlasticnormalTexture(DBG_NEW Texture({ TextureType::NormalMap, "assets/texture/pbr/plasticSphere/scuffed-plastic-normal.png" }));
 
 		m_SphereObjIron->GetComponent<MeshRenderer>()->SetTextures(IronnormalTexture);
 		m_SphereObjIron->GetComponent<MeshRenderer>()->SetTextures(IronalbedoTexture);

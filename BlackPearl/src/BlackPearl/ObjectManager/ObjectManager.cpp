@@ -30,14 +30,19 @@
 namespace BlackPearl {
 
 	extern ModelLoader* g_modelLoader;
+
+	void ObjectManager::RegisterDeviceManager(DeviceManager* deviceManager)
+	{
+		m_DeviceManager = deviceManager;
+		m_Device = m_DeviceManager->GetDevice();
+	}
+
 	Object* ObjectManager::CreateEmpty(std::string name)
 	{
 		Object* obj = new Object(name);
 		obj->AddComponent<Transform>();
 		return obj;
 	}
-
-
 
 	Object* ObjectManager::CreateLight(LightType type, LightSources* lightSources, const std::string& name)
 	{
@@ -135,8 +140,19 @@ namespace BlackPearl {
 
 		std::shared_ptr<Material> material;
 		std::shared_ptr<Material::TextureMaps> texture(DBG_NEW Material::TextureMaps());
-		if (texturePath != "")
-			texture->diffuseTextureMap.reset(DBG_NEW Texture(Texture::Type::DiffuseMap, texturePath, GL_LINEAR, GL_LINEAR, GL_RGBA, GL_CLAMP_TO_EDGE, GL_UNSIGNED_BYTE));
+
+		if (!texturePath.empty()) {
+			TextureDesc desc;
+			desc.type = TextureType::DiffuseMap;
+			desc.path = texturePath;
+			desc.minFilter = FilterMode::Linear;
+			desc.magFilter = FilterMode::Linear;
+			desc.wrap = SamplerAddressMode::ClampToEdge;
+			desc.format = Format::RGBA8_UNORM;
+			desc.generateMipmap = true;
+			texture->diffuseTextureMap = m_Device->createTexture(desc);
+
+		}
 
 		material.reset(DBG_NEW Material(shaderPath, texture, { 1.0,1.0,1.0 }, { 1.0,1.0,1.0 }, { 1.0,1.0,1.0 }, {}));
 		VertexBufferLayout layout = {
@@ -164,8 +180,18 @@ namespace BlackPearl {
 		transformComponent->SetInitScale({ radius,radius,radius });
 		std::shared_ptr<Material> material;
 		std::shared_ptr<Material::TextureMaps> texture(DBG_NEW Material::TextureMaps());
-		if (texturePath != "")
-			texture->diffuseTextureMap.reset(DBG_NEW Texture(Texture::Type::DiffuseMap, texturePath, GL_LINEAR, GL_LINEAR, GL_RGBA, GL_CLAMP_TO_EDGE, GL_UNSIGNED_BYTE));
+
+		if (!texturePath.empty()) {
+			TextureDesc desc;
+			desc.type = TextureType::DiffuseMap;
+			desc.path = texturePath;
+			desc.minFilter = FilterMode::Linear;
+			desc.magFilter = FilterMode::Linear;
+			desc.wrap = SamplerAddressMode::ClampToEdge;
+			desc.format = Format::RGBA8_UNORM;
+			desc.generateMipmap = true;
+			texture->diffuseTextureMap = m_Device->createTexture(desc);
+		}
 
 		material.reset(DBG_NEW Material(shaderPath, texture, { 1.0,1.0,1.0 }, { 1.0,1.0,1.0 }, { 1.0,1.0,1.0 }, {}));
 		VertexBufferLayout layout = {
@@ -192,8 +218,17 @@ namespace BlackPearl {
 
 		std::shared_ptr<Material> material;
 		std::shared_ptr<Material::TextureMaps> texture(DBG_NEW Material::TextureMaps());
-		if (texturePath != "")
-			texture->diffuseTextureMap.reset(DBG_NEW Texture(Texture::Type::DiffuseMap, texturePath, GL_LINEAR, GL_LINEAR, GL_RGBA, GL_CLAMP_TO_EDGE, GL_UNSIGNED_BYTE));
+		if (!texturePath.empty()) {
+			TextureDesc desc;
+			desc.type = TextureType::DiffuseMap;
+			desc.path = texturePath;
+			desc.minFilter = FilterMode::Linear;
+			desc.magFilter = FilterMode::Linear;
+			desc.wrap = SamplerAddressMode::ClampToEdge;
+			desc.format = Format::RGBA8_UNORM;
+			desc.generateMipmap = true;
+			texture->diffuseTextureMap = m_Device->createTexture(desc);
+		}
 
 		material.reset(DBG_NEW Material(shaderPath, texture, {}, { 0.2,0.2,0.0 }, {}, {}));
 		VertexBufferLayout layout = {
@@ -319,8 +354,6 @@ namespace BlackPearl {
 		return obj;
 	}
 
-
-
 	///////////////////////2D///////////////////////////////
 	Object* ObjectManager::CreateQuad(const std::string& shaderPath, const std::string& texturePath, const std::string& name)
 	{
@@ -332,10 +365,19 @@ namespace BlackPearl {
 		std::shared_ptr<Material> material;
 
 		std::shared_ptr<Material::TextureMaps> texture(DBG_NEW Material::TextureMaps());
-		if (texturePath != "") {
-			texture->diffuseTextureMap.reset(DBG_NEW Texture(Texture::Type::DiffuseMap, texturePath, GL_LINEAR, GL_LINEAR, GL_RGBA, GL_CLAMP_TO_EDGE, GL_UNSIGNED_BYTE));
 
+		if (!texturePath.empty()) {
+			TextureDesc desc;
+			desc.type = TextureType::DiffuseMap;
+			desc.path = texturePath;
+			desc.minFilter = FilterMode::Linear;
+			desc.magFilter = FilterMode::Linear;
+			desc.wrap = SamplerAddressMode::ClampToEdge;
+			desc.format = Format::RGBA8_UNORM;
+			desc.generateMipmap = true;
+			texture->diffuseTextureMap = m_Device->createTexture(desc);
 		}
+
 		material.reset(DBG_NEW Material(shaderPath, texture, {}, { 0.2,0.5,0.6 }, {}, {}));
 
 		VertexBufferLayout layout = {
@@ -359,16 +401,34 @@ namespace BlackPearl {
 
 		std::shared_ptr<Material> material;
 		std::shared_ptr<Material::TextureMaps> texture(DBG_NEW Material::TextureMaps());
-		if (!texturePath.empty())
-			texture->diffuseTextureMap.reset(DBG_NEW Texture(Texture::Type::DiffuseMap, texturePath, GL_LINEAR, GL_LINEAR, GL_RGBA, GL_CLAMP_TO_EDGE, GL_UNSIGNED_BYTE));
+		if (!texturePath.empty()) {
+			TextureDesc desc;
+			desc.type = TextureType::DiffuseMap;
+			desc.path = texturePath;
+			desc.minFilter = FilterMode::Linear;
+			desc.magFilter = FilterMode::Linear;
+			desc.wrap = SamplerAddressMode::ClampToEdge;
+			desc.format = Format::RGBA8_UNORM;
+			desc.generateMipmap = true;
+			texture->diffuseTextureMap = m_Device->createTexture(desc);
+		}
 		if (!heightMapPath.empty()) {
-			texture->heightTextureMap.reset(DBG_NEW Texture(Texture::Type::HeightMap, heightMapPath, GL_LINEAR, GL_LINEAR, GL_RGBA, GL_CLAMP_TO_EDGE, GL_UNSIGNED_BYTE));
+
+			TextureDesc desc;
+			desc.type = TextureType::HeightMap;
+			desc.path = heightMapPath;
+			desc.minFilter = FilterMode::Linear;
+			desc.magFilter = FilterMode::Linear;
+			desc.wrap = SamplerAddressMode::ClampToEdge;
+			desc.format = Format::RGBA8_UNORM;
+			desc.generateMipmap = true;
+			texture->heightTextureMap = m_Device->createTexture(desc);
 		}
 		else {
 			GE_CORE_ERROR("no heightmap found");
 		}
-		uint32_t width = texture->heightTextureMap->GetWidth();
-		uint32_t height = texture->heightTextureMap->GetHeight();
+		uint32_t width = texture->heightTextureMap->getDesc().width;
+		uint32_t height = texture->heightTextureMap->getDesc().height;
 
 		std::shared_ptr<TerrainComponent> terrain = obj->AddComponent<TerrainComponent>(width, height, chunkCntX, chunkCntZ);
 
@@ -397,77 +457,11 @@ namespace BlackPearl {
 		return batchNode;
 	}
 
-
-
-
 	std::vector<Object*> ObjectManager::GetObjects()
 	{
 		return m_Objs;
 	}
-	//std::vector<std::string> ObjectManager::GetObjectsName()
-	//{
-	//	std::vector<std::string>objs;
-	//	for (auto pair : m_EntityToObjects) {
-	//		Object* obj = pair.second;
-	//		if (obj != nullptr) {
-	//			objs.push_back(obj->GetName());
-	//		}
-	//	}
-	//	return objs;
-	//}
-	/*void ObjectManager::DrawShadowMap(std::vector<Object*> objs)
-	{
 
-	}*/
-	//void ObjectManager::DrawObjects()
-	//{
-	//	for (auto pair : m_EntityToObjects) {
-	//		Object* obj = pair.second;
-	//		DrawObject(obj);
-	//	}
-	//}
-	//void ObjectManager::DrawObject(Object * obj)
-	//{
-	//	if (obj != nullptr &&obj->HasComponent<MeshRenderer>()) {
-	//		auto transformMatrix = obj->GetComponent<Transform>()->GetTransformMatrix();
-	//		obj->GetComponent<MeshRenderer>()->UpdateTransformMatrix(transformMatrix);
-
-	//		//灯光单独处理 //ParallelLight只有方向所以不需要Draw()
-	//		if (obj->HasComponent<PointLight>()  || obj->HasComponent<SpotLight>()) {
-	//			obj->GetComponent<MeshRenderer>()->DrawLight();
-	//		}
-	//		else {
-	//			obj->GetComponent<MeshRenderer>()->DrawMeshes();
-	//		//	obj->GetComponent<MeshRenderer>()->DrawModel();
-	//		}
-
-	//	}
-	//}
-	//void ObjectManager::DrawObjectsExcept(std::vector<Object *>objs)
-	//{
-
-	//	for (auto pair : m_EntityToObjects) {
-	//		Object* Obj = pair.second;
-
-	//		bool canDraw = true;
-	//		for (auto obj : objs) {
-	//			if (Obj->GetId().id == obj->GetId().id) {
-	//				canDraw = false;
-	//			}
-	//		}
-	//		if(canDraw)
-	//			DrawObject(Obj);
-	//			
-	//	}
-	//}
-	//void ObjectManager::DrawObjectsExcept(Object * obj)
-	//{
-	//	for (auto pair : m_EntityToObjects) {
-	//		Object* Obj = pair.second;		
-	//		if (Obj->GetId().id != obj->GetId().id)
-	//			DrawObject(Obj);
-	//	}
-	//}
 	void ObjectManager::DestroyObjects()
 	{
 		for (auto obj : m_Objs) {

@@ -3,6 +3,7 @@
 #include "BlackPearl/Core.h"
 #include "BlackPearl/Renderer/Material/Texture.h"
 #include "BlackPearl/Renderer/Material/CubeMapTexture.h"
+#include "BlackPearl/RHI/OpenGLRHI/OpenGLTexture.h"
 #include <unordered_map>
 namespace BlackPearl {
 
@@ -251,10 +252,10 @@ namespace BlackPearl {
 		/*initial with attachment*/
 		FrameBuffer(const int imageWidth, const int imageHeight, std::initializer_list<Attachment> attachment,  unsigned int colorAttachmentPoint,bool disableColor, TextureType colorTextureType = TextureType::DiffuseMap);
 		void AttachColorTexture(TextureType textureType, unsigned int attachmentPoints, unsigned int imageWidth, unsigned int imageHeight);
-		void AttachColorTexture(std::shared_ptr<ITexture> texture, unsigned int attachmentPoints);
+		void AttachColorTexture(TextureHandle texture, unsigned int attachmentPoints);
 
 		void AttachDepthTexture(const int imageWidth, int imageHeight);
-		void AttachDepthTexture(std::shared_ptr<ITexture> texture, int mipmapLevel);
+		void AttachDepthTexture(TextureHandle texture, int mipmapLevel);
 
 		//void AttachCubeMapDepthTexture(const int imageWidth, int imageHeight);//use for point light shadow map
 		void AttachCubeMapDepthTexture(std::shared_ptr<CubeMapTexture> cubeMap);//use for point light shadow map
@@ -268,15 +269,14 @@ namespace BlackPearl {
 		void UnBind();
 		void BindRenderBuffer();
 
-		void BindColorTexture(unsigned int attachmentPoints);
-		void UnBindTexture(unsigned int attachmentPoints);
+		
 		void CleanUp();
 
-		std::shared_ptr<ITexture> GetColorTexture(unsigned int attachmentPoint) {
+		std::shared_ptr<Texture> GetColorTexture(unsigned int attachmentPoint) {
 			GE_ASSERT(m_TextureColorBuffers[attachmentPoint], "attachmentPoint "+ std::to_string( attachmentPoint) +"has no ColorTexture")
 			return m_TextureColorBuffers[attachmentPoint]; 
 		}
-		std::shared_ptr<ITexture > GetDepthTexture() { return m_TextureDepthBuffer; }
+		std::shared_ptr<Texture > GetDepthTexture() { return m_TextureDepthBuffer; }
 		std::shared_ptr<CubeMapTexture> GetCubeMapDepthTexture() { return m_CubeMapDepthBuffer; }
 		std::shared_ptr<CubeMapTexture> GetCubeMapColorTexture(unsigned int attachmentPoint) { return std::dynamic_pointer_cast<CubeMapTexture>(m_TextureColorBuffers[attachmentPoint]); }
 
@@ -293,9 +293,9 @@ namespace BlackPearl {
 		
 
 		//GL_COLOR_ATTACHMENTi 到 Texture的映射
-		std::unordered_map<unsigned int,std::shared_ptr<ITexture> > m_TextureColorBuffers;
+		std::unordered_map<unsigned int,std::shared_ptr<Texture> > m_TextureColorBuffers;
 		//std::shared_ptr<Texture> m_TextureColorBuffer;
-		std::shared_ptr<ITexture> m_TextureDepthBuffer;
+		std::shared_ptr<Texture> m_TextureDepthBuffer;
 		std::shared_ptr<CubeMapTexture> m_CubeMapDepthBuffer;
 		std::shared_ptr<CubeMapTexture> m_CubeMapColorBuffer;
 
@@ -314,36 +314,36 @@ namespace BlackPearl {
 		void UnBind();
 		/************************ GI Texture (voxel cone tracing and light probe)*********/
 
-		std::shared_ptr<ITexture> GetPositionTexture()const { GE_ASSERT(m_Type == Type::GI, "is not GI Gbuffer!"); return m_PositionTexture; }
-		std::shared_ptr<ITexture> GetNormalTexture()const { GE_ASSERT(m_Type == Type::GI, "is not GI Gbuffer!"); return m_NormalTexture; }
-		std::shared_ptr<ITexture> GetNormalMapTexture()const { GE_ASSERT(m_Type == Type::GI, "is not GI Gbuffer!"); return m_NormalMapTexture; }
-		std::shared_ptr<ITexture> GetDiffuseRoughnessTexture()const { GE_ASSERT(m_Type == Type::GI, "is not GI Gbuffer!"); return m_DiffuseRoughnessTexture; }
-		std::shared_ptr<ITexture> GetSpecularMentallicTexture()const { GE_ASSERT(m_Type == Type::GI, "is not GI Gbuffer!"); return m_SpecularMentallicTexture; }
-		std::shared_ptr<ITexture> GetAmbientGIAOTexture()const { GE_ASSERT(m_Type == Type::GI, "is not GI Gbuffer!"); return m_AmbientGIAOTexture; }
+		TextureHandle GetPositionTexture()const { GE_ASSERT(m_Type == Type::GI, "is not GI Gbuffer!"); return m_PositionTexture; }
+		TextureHandle GetNormalTexture()const { GE_ASSERT(m_Type == Type::GI, "is not GI Gbuffer!"); return m_NormalTexture; }
+		TextureHandle GetNormalMapTexture()const { GE_ASSERT(m_Type == Type::GI, "is not GI Gbuffer!"); return m_NormalMapTexture; }
+		TextureHandle GetDiffuseRoughnessTexture()const { GE_ASSERT(m_Type == Type::GI, "is not GI Gbuffer!"); return m_DiffuseRoughnessTexture; }
+		TextureHandle GetSpecularMentallicTexture()const { GE_ASSERT(m_Type == Type::GI, "is not GI Gbuffer!"); return m_SpecularMentallicTexture; }
+		TextureHandle GetAmbientGIAOTexture()const { GE_ASSERT(m_Type == Type::GI, "is not GI Gbuffer!"); return m_AmbientGIAOTexture; }
 		void InitGITextures();
 
 		/************************ Raytracing Texture ************************************/
-		std::shared_ptr<ITexture> GetColorTexture(unsigned int idx);
-		std::vector<std::shared_ptr<ITexture>> GetColorTextures() { return m_ColorTextures; }
+		TextureHandle GetColorTexture(unsigned int idx);
+		std::vector<TextureHandle> GetColorTextures() { return m_ColorTextures; }
 
 		void InitRayTracingTextures();
 		~GBuffer()=default;
 
 	private:
 		/************************ GI Texture (voxel cone tracing and light probe)*********/
-		std::shared_ptr<ITexture> m_PositionTexture;
-		std::shared_ptr<ITexture> m_NormalTexture;
-		std::shared_ptr<ITexture> m_NormalMapTexture;
+		TextureHandle m_PositionTexture;
+		TextureHandle m_NormalTexture;
+		TextureHandle m_NormalMapTexture;
 
 		/* u_Material.diffuse + u_Material.roughness */
-		std::shared_ptr<ITexture> m_DiffuseRoughnessTexture;
+		TextureHandle m_DiffuseRoughnessTexture;
 		/* u_Material.specular + u_Material.metallic */
-		std::shared_ptr<ITexture> m_SpecularMentallicTexture;
+		TextureHandle m_SpecularMentallicTexture;
 		/* 存储全局光照中的 diffuse 和specular (vec3 ambient =  (Kd*diffuse+specular) * ao;)的颜色*/
-		std::shared_ptr<ITexture> m_AmbientGIAOTexture;
+		TextureHandle m_AmbientGIAOTexture;
 
 		/************************ Raytracing Texture ************************************/
-		std::vector<std::shared_ptr<ITexture>>m_ColorTextures;
+		std::vector<TextureHandle>m_ColorTextures;
 
 		unsigned int m_RendererID;
 		unsigned int m_RenderBufferID;

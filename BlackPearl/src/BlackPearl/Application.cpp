@@ -96,9 +96,13 @@ namespace BlackPearl {
 #else
 		g_modelLoader = DBG_NEW ModelLoader();
 #endif
-		
 		g_modelLoader->RegisterDeviceManager(g_deviceManager);
+
 		m_LayerManager = DBG_NEW LayerManager();
+		m_LayerManager->RegisterDeviceManager(g_deviceManager);
+
+		g_objectManager->RegisterDeviceManager(g_deviceManager);
+
 
 		m_StartTimeMs = 0;// duration_cast<milliseconds>(system_clock::now().time_since_epoch());
 	}
