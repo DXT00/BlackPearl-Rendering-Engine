@@ -1,7 +1,7 @@
 #pragma once
 #include <string>
 #include <vector>
-#include<glad/glad.h>
+#include <glad/glad.h>
 
 #include "BlackPearl/RHI/RHITexture.h"
 #include "BlackPearl/RHI/RHIState.h"
@@ -30,7 +30,7 @@ namespace BlackPearl {
 
 
 
-	class Texture :  public RefCounter<ITexture>, public TextureStateExtension
+	class Texture :public RefCounter<ITexture>, public TextureStateExtension
 	{
 	public:
 
@@ -45,7 +45,7 @@ namespace BlackPearl {
 		//internalFormat: Specifies the number of color components in the texture
 		//format:Specifies the format of the pixel data
 		Texture(
-			const TextureDesc& desc,
+			TextureDesc& desc,
 			float* data = NULL
 		);
 
@@ -60,7 +60,7 @@ namespace BlackPearl {
 		}
 
 		void Init(
-			const TextureDesc& desc
+			TextureDesc& desc
 		);
 		void Init(
 			const TextureDesc& desc,
@@ -78,6 +78,7 @@ namespace BlackPearl {
 		int GetWidth()const { return m_Width; }
 		int GetHeight()const { return m_Height; }
 		int GetCurrentLod() const { return m_CurLod; }
+		unsigned int	GetMipMapLevel() const { return m_MipMapLevel; }
 
 	protected:
 		unsigned int m_TextureID;
@@ -92,14 +93,14 @@ namespace BlackPearl {
 		GLenum m_DataType;
 		GLint m_MinFilter;
 		GLint m_MagFilter;
-		GLint m_Warp = -1;
-
+		GLint m_Wrap = -1;
+		unsigned int m_MipMapLevel = 0;
 	private:
 		std::pair<GLenum, GLenum> _ConvertFormat(Format format);
 		GLenum _ConvertInnerFormat(Format format);
 		GLint _ConvertFilter(FilterMode filter);
 		GLint _ConvertWarp(SamplerAddressMode warp);
-
+	protected:
 		void fillTextureInfo(const TextureDesc& desc);
 	};
 

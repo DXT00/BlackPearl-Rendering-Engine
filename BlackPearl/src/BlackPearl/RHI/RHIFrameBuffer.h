@@ -1,6 +1,7 @@
 #pragma once
 #include "RHIDefinitions.h"
 #include "RHITexture.h"
+#include "RHIBuffer.h"
 namespace BlackPearl {
 
     struct FramebufferAttachment

@@ -66,9 +66,9 @@ namespace BlackPearl {
 
 		/* 用作 tone mapping 和 hdr 后期处理 */
 		std::shared_ptr<FrameBuffer> m_HDRFrameBuffer;
-		std::shared_ptr<ITexture> m_HDRPostProcessTexture;
+		TextureHandle m_HDRPostProcessTexture;
 
-		std::shared_ptr<ITexture> m_SSRTestTexture;
+		TextureHandle m_SSRTestTexture;
 
 		/**** shader ****/
 		/* write pos,normal,color to gBuffer */

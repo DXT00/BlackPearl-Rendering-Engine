@@ -3,7 +3,7 @@
 #include <glm/glm.hpp>
 #include "BlackPearl/Renderer/Shader/Shader.h"
 #include "BlackPearl/Renderer/Mesh/Mesh.h"
-#include "BlackPearl/Renderer/Material/CubeMapTexture.h"
+#include "BlackPearl/RHI/RHITexture.h"
 namespace BlackPearl {
 
 	class PointLight :public Light
@@ -107,7 +107,7 @@ namespace BlackPearl {
 		inline Attenuation GetAttenuation() const { return m_Attenuation; }
 		virtual inline LightType GetType() override { return LightType::PointLight; }
 
-		std::shared_ptr<CubeMapTexture> GetShadowMap()const { return m_ShadowMap; }
+		TextureHandle GetShadowMap()const { return m_ShadowMap; }
 		unsigned int GetShadowMapWidth() const{ return m_ShadowMapPointLightWidth; }
 		unsigned int GetShadowMapHeight() const { return m_ShadowMapPointLightHeight; }
 
@@ -117,7 +117,7 @@ namespace BlackPearl {
 		std::shared_ptr<Mesh> m_Mesh;
 		Attenuation m_Attenuation;
 		/* 每个PointLight都有一个采集它周围深度的ShadowMap */
-		std::shared_ptr<CubeMapTexture> m_ShadowMap;
+		TextureHandle m_ShadowMap;
 		unsigned int m_ShadowMapPointLightWidth = 1024;
 		unsigned int m_ShadowMapPointLightHeight = 1024;
 	};

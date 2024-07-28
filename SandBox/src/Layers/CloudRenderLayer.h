@@ -37,11 +37,11 @@ public:
 
 
 		m_SphereObj->GetComponent<BlackPearl::MeshRenderer>()->SetShaders(m_PBRRenderer->GetShader());
-		std::shared_ptr<BlackPearl::Texture> albedoTexture(DBG_NEW BlackPearl::Texture(BlackPearl::TextureType::DiffuseMap, "assets/texture/pbr/cobblestone/cobblestone-curved_2_albedo.png"));
-		std::shared_ptr<BlackPearl::Texture> aoTexture(DBG_NEW BlackPearl::Texture(BlackPearl::TextureType::AoMap, "assets/texture/pbr/cobblestone/cobblestone-curved_2_ao.png"));
-		std::shared_ptr<BlackPearl::Texture> roughnessTexture(DBG_NEW BlackPearl::Texture(BlackPearl::TextureType::RoughnessMap, "assets/texture/pbr/cobblestone/cobblestone-curved_2_roughness.png"));
-		std::shared_ptr<BlackPearl::Texture> mentallicTexture(DBG_NEW BlackPearl::Texture(BlackPearl::TextureType::MentallicMap, "assets/texture/pbr/cobblestone/cobblestone-curved_2_metallic.png"));
-		std::shared_ptr<BlackPearl::Texture> normalTexture(DBG_NEW BlackPearl::Texture(BlackPearl::TextureType::NormalMap, "assets/texture/pbr/cobblestone/cobblestone-curved_2_normal-dx.png"));
+		TextureHandle albedoTexture(DBG_NEW Texture({ TextureType::DiffuseMap, "assets/texture/pbr/cobblestone/cobblestone-curved_2_albedo.png" }));
+		TextureHandle aoTexture(DBG_NEW Texture({ TextureType::AoMap, "assets/texture/pbr/cobblestone/cobblestone-curved_2_ao.png" }));
+		TextureHandle roughnessTexture(DBG_NEW Texture({ TextureType::RoughnessMap, "assets/texture/pbr/cobblestone/cobblestone-curved_2_roughness.png" }));
+		TextureHandle mentallicTexture(DBG_NEW Texture({ TextureType::MentallicMap, "assets/texture/pbr/cobblestone/cobblestone-curved_2_metallic.png" }));
+		TextureHandle normalTexture(DBG_NEW Texture({ TextureType::NormalMap, "assets/texture/pbr/cobblestone/cobblestone-curved_2_normal-dx.png" }));
 
 		m_SphereObj->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(normalTexture);
 
@@ -77,120 +77,13 @@ public:
 		m_LightPassFrameBuffer->UnBind();
 
 
-		
-		//m_SphereObj->GetComponent<BlackPearl::MeshRenderer>()->SetShaders(m_PBRRenderer->GetShader());
-		//std::shared_ptr<BlackPearl::Texture> albedoTexture(DBG_NEW BlackPearl::Texture(BlackPearl::TextureType::DiffuseMap, "assets/texture/pbr/rustSphere/rustediron2_basecolor.png"));
-		//std::shared_ptr<BlackPearl::Texture> aoTexture(DBG_NEW BlackPearl::Texture(BlackPearl::TextureType::AoMap, "assets/texture/pbr/rustSphere/rustediron2_ao.png"));
-		//std::shared_ptr<BlackPearl::Texture> roughnessTexture(DBG_NEW BlackPearl::Texture(BlackPearl::TextureType::RoughnessMap, "assets/texture/pbr/rustSphere/rustediron2_roughness.png"));
-		//std::shared_ptr<BlackPearl::Texture> mentallicTexture(DBG_NEW BlackPearl::Texture(BlackPearl::TextureType::MentallicMap, "assets/texture/pbr/rustSphere/rustediron2_metallic.png"));
-		//std::shared_ptr<BlackPearl::Texture> normalTexture(DBG_NEW BlackPearl::Texture(BlackPearl::TextureType::NormalMap, "assets/texture/pbr/rustSphere/rustediron2_normal.png"));
-
-		//std::shared_ptr<BlackPearl::Texture> albedoTexture(DBG_NEW BlackPearl::Texture(BlackPearl::TextureType::DiffuseMap, "assets/texture/pbr/cobblestone/cobblestone-curved_2_albedo.png"));
-		//std::shared_ptr<BlackPearl::Texture> aoTexture(DBG_NEW BlackPearl::Texture(BlackPearl::TextureType::AoMap, "assets/texture/pbr/cobblestone/cobblestone-curved_2_ao.png"));
-		//std::shared_ptr<BlackPearl::Texture> roughnessTexture(DBG_NEW BlackPearl::Texture(BlackPearl::TextureType::RoughnessMap, "assets/texture/pbr/cobblestone/cobblestone-curved_2_roughness.png"));
-		//std::shared_ptr<BlackPearl::Texture> mentallicTexture(DBG_NEW BlackPearl::Texture(BlackPearl::TextureType::MentallicMap, "assets/texture/pbr/cobblestone/cobblestone-curved_2_metallic.png"));
-		//std::shared_ptr<BlackPearl::Texture> normalTexture(DBG_NEW BlackPearl::Texture(BlackPearl::TextureType::NormalMap, "assets/texture/pbr/cobblestone/cobblestone-curved_2_normal-dx.png"));
-
-		//m_SphereObj->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(normalTexture);
-
-		//m_SphereObj->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(albedoTexture);
-		//m_SphereObj->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(aoTexture);
-		//m_SphereObj->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(roughnessTexture);
-		//m_SphereObj->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(mentallicTexture);
-
-		//m_SphereObj->GetComponent<BlackPearl::MeshRenderer>()->GetMeshes()[0]->GetMaterial()->SetMaterialColorDiffuseColor({ 1.0,0.0,0.0 });
-		//m_SphereObjIron = CreateSphere(1.5, 64, 64);
-		//m_SphereObjRust = CreateSphere(1.5, 64, 64);
-		//m_SphereObjStone = CreateSphere(1.5, 64, 64);
-		//m_SphereObjPlastic = CreateSphere(1.5, 64, 64);
-
-
-		////textures spheres
-		//std::shared_ptr<BlackPearl::Texture> RustalbedoTexture(DBG_NEW BlackPearl::Texture(BlackPearl::TextureType::DiffuseMap, "assets/texture/pbr/rustSphere/rustediron2_basecolor.png"));
-		//std::shared_ptr<BlackPearl::Texture> RustaoTexture(DBG_NEW BlackPearl::Texture(BlackPearl::TextureType::AoMap, "assets/texture/pbr/rustSphere/rustediron2_ao.png"));
-		//std::shared_ptr<BlackPearl::Texture> RustroughnessTexture(DBG_NEW BlackPearl::Texture(BlackPearl::TextureType::RoughnessMap, "assets/texture/pbr/rustSphere/rustediron2_roughness.png"));
-		//std::shared_ptr<BlackPearl::Texture> RustmentallicTexture(DBG_NEW BlackPearl::Texture(BlackPearl::TextureType::MentallicMap, "assets/texture/pbr/rustSphere/rustediron2_metallic.png"));
-		//std::shared_ptr<BlackPearl::Texture> RustnormalTexture(DBG_NEW BlackPearl::Texture(BlackPearl::TextureType::NormalMap, "assets/texture/pbr/rustSphere/rustediron2_normal.png"));
-
-
-		//std::shared_ptr<BlackPearl::Texture> IronalbedoTexture(DBG_NEW BlackPearl::Texture(BlackPearl::TextureType::DiffuseMap, "assets/texture/pbr/IronScuffed/Iron-Scuffed_basecolor.png"));
-		//std::shared_ptr<BlackPearl::Texture> IronaoTexture(DBG_NEW BlackPearl::Texture(BlackPearl::TextureType::AoMap, "assets/texture/pbr/IronScuffed/Iron-Scuffed_ao.png"));
-		//std::shared_ptr<BlackPearl::Texture> IronroughnessTexture(DBG_NEW BlackPearl::Texture(BlackPearl::TextureType::RoughnessMap, "assets/texture/pbr/IronScuffed/Iron-Scuffed_roughness.png"));
-		//std::shared_ptr<BlackPearl::Texture> IronmentallicTexture(DBG_NEW BlackPearl::Texture(BlackPearl::TextureType::MentallicMap, "assets/texture/pbr/IronScuffed/Iron-Scuffed_metallic.png"));
-		//std::shared_ptr<BlackPearl::Texture> IronnormalTexture(DBG_NEW BlackPearl::Texture(BlackPearl::TextureType::NormalMap, "assets/texture/pbr/IronScuffed/Iron-Scuffed_normal.png"));
-
-		//std::shared_ptr<BlackPearl::Texture> StonealbedoTexture(DBG_NEW BlackPearl::Texture(BlackPearl::TextureType::DiffuseMap, "assets/texture/pbr/cobblestone/cobblestone-curved_2_albedo.png"));
-		//std::shared_ptr<BlackPearl::Texture> StoneaoTexture(DBG_NEW BlackPearl::Texture(BlackPearl::TextureType::AoMap, "assets/texture/pbr/cobblestone/cobblestone-curved_2_ao.png"));
-		//std::shared_ptr<BlackPearl::Texture> StoneroughnessTexture(DBG_NEW BlackPearl::Texture(BlackPearl::TextureType::RoughnessMap, "assets/texture/pbr/cobblestone/cobblestone-curved_2_roughness.png"));
-		//std::shared_ptr<BlackPearl::Texture> StonementallicTexture(DBG_NEW BlackPearl::Texture(BlackPearl::TextureType::MentallicMap, "assets/texture/pbr/cobblestone/cobblestone-curved_2_metallic.png"));
-		//std::shared_ptr<BlackPearl::Texture> StonenormalTexture(DBG_NEW BlackPearl::Texture(BlackPearl::TextureType::NormalMap, "assets/texture/pbr/cobblestone/cobblestone-curved_2_normal-dx.png"));
-
-		//std::shared_ptr<BlackPearl::Texture> PlasticalbedoTexture(DBG_NEW BlackPearl::Texture(BlackPearl::TextureType::DiffuseMap, "assets/texture/pbr/plasticSphere/scuffed-plastic4-alb.png"));
-		//std::shared_ptr<BlackPearl::Texture> PlasticaoTexture(DBG_NEW BlackPearl::Texture(BlackPearl::TextureType::AoMap, "assets/texture/pbr/plasticSphere/scuffed-plastic-ao.png"));
-		//std::shared_ptr<BlackPearl::Texture> PlasticroughnessTexture(DBG_NEW BlackPearl::Texture(BlackPearl::TextureType::RoughnessMap, "assets/texture/pbr/plasticSphere/scuffed-plastic-rough.png"));
-		//std::shared_ptr<BlackPearl::Texture> PlasticmentallicTexture(DBG_NEW BlackPearl::Texture(BlackPearl::TextureType::MentallicMap, "assets/texture/pbr/plasticSphere/scuffed-plastic-metal.png"));
-		//std::shared_ptr<BlackPearl::Texture> PlasticnormalTexture(DBG_NEW BlackPearl::Texture(BlackPearl::TextureType::NormalMap, "assets/texture/pbr/plasticSphere/scuffed-plastic-normal.png"));
-
-		//m_SphereObjIron->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(IronnormalTexture);
-		//m_SphereObjIron->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(IronalbedoTexture);
-		//m_SphereObjIron->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(IronaoTexture);
-		//m_SphereObjIron->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(IronroughnessTexture);
-		//m_SphereObjIron->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(IronmentallicTexture);
-		//m_SphereObjIron->GetComponent<BlackPearl::MeshRenderer>()->SetPBRTextureSamples(true);
-		//m_SphereObjIron->GetComponent<BlackPearl::MeshRenderer>()->SetIsPBRObject(true);
-		//m_SphereObjIron->GetComponent<BlackPearl::Transform>()->SetPosition({ 10,0,0 });
-
-		//m_SphereObjRust->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(RustnormalTexture);
-		//m_SphereObjRust->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(RustalbedoTexture);
-		//m_SphereObjRust->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(RustaoTexture);
-		//m_SphereObjRust->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(RustroughnessTexture);
-		//m_SphereObjRust->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(RustmentallicTexture);
-		//m_SphereObjRust->GetComponent<BlackPearl::MeshRenderer>()->SetPBRTextureSamples(true);
-		//m_SphereObjRust->GetComponent<BlackPearl::MeshRenderer>()->SetIsPBRObject(true);
-		//m_SphereObjRust->GetComponent<BlackPearl::Transform>()->SetPosition({ 5,0,0 });
-
-		//m_SphereObjStone->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(StonenormalTexture);
-		//m_SphereObjStone->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(StonealbedoTexture);
-		//m_SphereObjStone->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(StoneaoTexture);
-		//m_SphereObjStone->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(StoneroughnessTexture);
-		//m_SphereObjStone->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(StonementallicTexture);
-		//m_SphereObjStone->GetComponent<BlackPearl::MeshRenderer>()->SetPBRTextureSamples(true);
-		//m_SphereObjStone->GetComponent<BlackPearl::MeshRenderer>()->SetIsPBRObject(true);
-		//m_SphereObjStone->GetComponent<BlackPearl::Transform>()->SetPosition({ -5,0,0 });
-
-		//m_SphereObjPlastic->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(PlasticnormalTexture);
-		//m_SphereObjPlastic->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(PlasticalbedoTexture);
-		//m_SphereObjPlastic->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(PlasticaoTexture);
-		//m_SphereObjPlastic->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(PlasticroughnessTexture);
-		//m_SphereObjPlastic->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(PlasticmentallicTexture);
-		//m_SphereObjPlastic->GetComponent<BlackPearl::MeshRenderer>()->SetPBRTextureSamples(true);
-		//m_SphereObjPlastic->GetComponent<BlackPearl::MeshRenderer>()->SetIsPBRObject(true);
-		//m_SphereObjPlastic->GetComponent<BlackPearl::Transform>()->SetPosition({ -10.0,0,0 });
-
 		m_Bunny = CreateModel("assets/models/bunny/bunny.obj", "assets/shaders/IronMan.glsl", false, "Bunny", false);// CreateCube();
 		m_Bunny->SetScale({ 3.0,3.0,3.0 });
 		m_Bunny->GetComponent<BlackPearl::MeshRenderer>()->GetMeshes()[0]->GetMaterial()->SetMaterialColorDiffuseColor({ 1.0,1.0,1.0 });
 
 		BlackPearl::Object* light = CreateLight(BlackPearl::LightType::PointLight, "Light");
 		light->SetPosition({ 0.0,12.0,5.0 });
-		/*m_Sword = CreateModel("assets/models/sword/OBJ/Big_Sword_OBJ.obj", "assets/shaders/pbr/PbrTexture.glsl", false, "Sword");
-		std::shared_ptr<BlackPearl::Texture> SwordalbedoTexture(DBG_NEW BlackPearl::Texture(BlackPearl::TextureType::DiffuseMap, "assets/models/sword/textures/Big Sword_Base_Color_Map.jpg"));
-		std::shared_ptr<BlackPearl::Texture> SwordaoTexture(DBG_NEW BlackPearl::Texture(BlackPearl::TextureType::AoMap, "assets/models/sword/textures/Big Sword_AO_Map.jpg"));
-		std::shared_ptr<BlackPearl::Texture> SwordroughnessTexture(DBG_NEW BlackPearl::Texture(BlackPearl::TextureType::RoughnessMap, "assets/models/sword/textures/Big Sword_Roughness_Map.jpg"));
-		std::shared_ptr<BlackPearl::Texture> SwordmentallicTexture(DBG_NEW BlackPearl::Texture(BlackPearl::TextureType::MentallicMap, "assets/models/sword/textures/Big Sword_Metalness.jpg"));
-		std::shared_ptr<BlackPearl::Texture> SwordnormalTexture(DBG_NEW BlackPearl::Texture(BlackPearl::TextureType::NormalMap, "assets/models/sword/textures/Big Sword_Normal_Map.jpg"));
-		std::shared_ptr<BlackPearl::Texture> SwordemissionTexture(DBG_NEW BlackPearl::Texture(BlackPearl::TextureType::EmissionMap, "assets/models/sword/textures/Big Sword_Emission_Map.jpg"));
 
-		m_Sword->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(SwordalbedoTexture);
-		m_Sword->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(SwordaoTexture);
-		m_Sword->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(SwordroughnessTexture);
-		m_Sword->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(SwordmentallicTexture);
-		m_Sword->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(SwordnormalTexture);
-		m_Sword->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(SwordemissionTexture);
-
-		m_Sword->GetComponent<BlackPearl::MeshRenderer>()->SetPBRTextureSamples(true);
-		m_Sword->GetComponent<BlackPearl::MeshRenderer>()->SetIsPBRObject(true);
-		m_Sword->GetComponent<BlackPearl::MeshRenderer>()->SetTexturEmissionSamples(true);*/
 
 
 		m_Cloudenderer->Init(m_Scene);

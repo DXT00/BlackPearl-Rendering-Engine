@@ -7,7 +7,11 @@
 #include "BlackPearl/Config.h"
 #include "BlackPearl/Timestep/TimeCounter.h"
 #include "BlackPearl/Common/CommonFunc.h"
+#include "BlackPearl/Renderer/DeviceManager.h"
+
 namespace BlackPearl {
+	extern DeviceManager* g_deviceManager;
+
 	bool VoxelConeTracingDeferredRenderer::s_Shadows = true;
 	bool VoxelConeTracingDeferredRenderer::s_IndirectDiffuseLight = true;
 	bool VoxelConeTracingDeferredRenderer::s_IndirectSpecularLight = true;
@@ -42,9 +46,6 @@ namespace BlackPearl {
 		GE_ASSERT(surroundSphere, "m_SurroundSphere is nullptr!");
 		GE_ASSERT(cubeObj, "m_CubeObj is nullptr!");
 
-
-
-
 		m_QuadObj = quadObj;
 		m_CubeObj = cubeObj;
 
@@ -73,7 +74,18 @@ namespace BlackPearl {
 
 
 		/* FrameBuffer */
-		m_PostProcessTexture.reset(DBG_NEW Texture(Texture::Type::None, m_ScreenWidth, m_ScreenHeight, false, GL_LINEAR, GL_LINEAR, GL_RGBA16F, GL_RGBA, GL_CLAMP_TO_EDGE, GL_FLOAT));
+		IDevice* device = g_deviceManager->GetDevice();
+		TextureDesc desc;
+		desc.type = TextureType::None;
+		desc.width = m_ScreenWidth;
+		desc.height = m_ScreenHeight;
+		desc.minFilter = FilterMode::Linear;
+		desc.magFilter = FilterMode::Linear;
+		desc.wrap = SamplerAddressMode::ClampToEdge;
+		desc.format = Format::RGBA16_FLOAT;
+		desc.generateMipmap = false;
+		m_PostProcessTexture = device->createTexture(desc);
+		//m_PostProcessTexture.reset(DBG_NEW Texture(Texture::Type::None, m_ScreenWidth, m_ScreenHeight, false, GL_LINEAR, GL_LINEAR, GL_RGBA16F, GL_RGBA, GL_CLAMP_TO_EDGE, GL_FLOAT));
 		m_FrameBuffer.reset(DBG_NEW FrameBuffer());
 		m_FrameBuffer->Bind();
 		m_FrameBuffer->AttachRenderBuffer(m_ScreenWidth, m_ScreenHeight);
@@ -665,7 +677,19 @@ namespace BlackPearl {
 
 	void VoxelConeTracingDeferredRenderer::RenderSpecularBRDFLUTMap()
 	{
-		m_SpecularBrdfLUTTexture.reset(DBG_NEW Texture(Texture::DiffuseMap, m_VoxelTextureSize, m_VoxelTextureSize, false, GL_LINEAR, GL_LINEAR, GL_RG16F, GL_RG, GL_CLAMP_TO_EDGE, GL_FLOAT));
+		IDevice* device = g_deviceManager->GetDevice();
+		TextureDesc desc;
+		desc.type = TextureType::DiffuseMap;
+		desc.width = m_VoxelTextureSize;
+		desc.height = m_VoxelTextureSize;
+		desc.minFilter = FilterMode::Linear;
+		desc.magFilter = FilterMode::Linear;
+		desc.wrap = SamplerAddressMode::ClampToEdge;
+		desc.format = Format::RG16_FLOAT;
+		desc.generateMipmap = false;
+		m_SpecularBrdfLUTTexture = device->createTexture(desc);
+
+		//m_SpecularBrdfLUTTexture.reset(DBG_NEW Texture(Texture::DiffuseMap, m_VoxelTextureSize, m_VoxelTextureSize, false, GL_LINEAR, GL_LINEAR, GL_RG16F, GL_RG, GL_CLAMP_TO_EDGE, GL_FLOAT));
 		std::shared_ptr<FrameBuffer> frameBuffer(DBG_NEW FrameBuffer());
 
 		frameBuffer->Bind();

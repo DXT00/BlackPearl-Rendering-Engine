@@ -1,9 +1,9 @@
 #pragma once
-#include "Texture.h"
 #include "BlackPearl/Renderer/Shader/Shader.h"
 #include "BlackPearl/Renderer/SceneType.h"
 #include "MaterialColor.h"
 #include "BlackPearl/RHI/DynamicRHI.h"
+#include "BlackPearl/RHI/RHITexture.h"
 
 namespace BlackPearl {
 	class Material
@@ -106,7 +106,7 @@ namespace BlackPearl {
 		void SetShader(const std::string& shaderPath);
 		void SetShader(const std::shared_ptr<Shader>& shader);
 		void SetTexture(ITexture* texture);
-		void SetTexture(const TextureType type, const std::string& image);
+		//void SetTexture(const TextureType type, const std::string& image);
 		void SetMaterialColor(MaterialColor::Color color);
 		void SetMaterialColorDiffuseColor(const math::float3& color);
 		void SetMaterialColorSpecularColor(const math::float3& color);

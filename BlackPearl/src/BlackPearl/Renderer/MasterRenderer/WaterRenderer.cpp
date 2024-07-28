@@ -3,7 +3,11 @@
 #include "BlackPearl/Renderer/Buffer/Buffer.h"
 #include "BlackPearl/Math/Math.h"
 #include <random>
+#include "BlackPearl/Renderer/DeviceManager.h"
+
 namespace BlackPearl {
+    extern DeviceManager* g_deviceManager;
+
 	WaterRenderer::WaterRenderer()
 	{
 	}
@@ -67,8 +71,20 @@ namespace BlackPearl {
 
         m_OceanShader.reset(DBG_NEW Shader("assets/shaders/ocean/Ocean.glsl"));
 
+        IDevice* device = g_deviceManager->GetDevice();
+        TextureDesc desc;
+        desc.type = TextureType::DiffuseMap;
+        desc.width = mTextureResolution;
+        desc.height = mTextureResolution;
+        desc.minFilter = FilterMode::Nearest;
+        desc.magFilter = FilterMode::Nearest;
+        desc.wrap = SamplerAddressMode::ClampToBorder;
+        desc.format = Format::R32_FLOAT;
+        desc.generateMipmap = false;
+        m_InitialSpectrumTexture = device->createTexture(desc);
+
 		// Initial spectrum
-		m_InitialSpectrumTexture.reset(DBG_NEW Texture(Texture::Type::DiffuseMap, mTextureResolution, mTextureResolution, false, GL_NEAREST, GL_NEAREST, GL_R32F, GL_RED, -1, GL_FLOAT));
+		//m_InitialSpectrumTexture.reset(DBG_NEW Texture(Texture::Type::DiffuseMap, mTextureResolution, mTextureResolution, false, GL_NEAREST, GL_NEAREST, GL_R32F, GL_RED, -1, GL_FLOAT));
 		
 		//Phase
 		std::vector<float> ping_phase_array(mTextureResolution * mTextureResolution);
@@ -80,17 +96,49 @@ namespace BlackPearl {
 		for (size_t i = 0; i < mTextureResolution * mTextureResolution; ++i)
 			ping_phase_array[i] = dist(rng) * 2.f * Math::PI;
 
-		m_PingPhaseTexture.reset(DBG_NEW Texture(Texture::Type::DiffuseMap, mTextureResolution, mTextureResolution, false, GL_NEAREST, GL_NEAREST, GL_R32F, GL_RED, GL_CLAMP_TO_BORDER, GL_FLOAT,false, ping_phase_array.data()));
-		m_PongPhaseTexture.reset(DBG_NEW Texture(Texture::Type::DiffuseMap, mTextureResolution, mTextureResolution, false, GL_NEAREST, GL_NEAREST, GL_R32F, GL_RED, GL_CLAMP_TO_BORDER, GL_FLOAT));
-		// Time-varying spectrum
 
-		m_SpectrumTexture.reset(DBG_NEW Texture(Texture::Type::DiffuseMap, mTextureResolution, mTextureResolution, false, GL_LINEAR, GL_LINEAR, GL_RGBA32F, GL_RGBA, GL_REPEAT, GL_FLOAT));
-		m_TempTexture.reset(DBG_NEW Texture(Texture::Type::DiffuseMap, mTextureResolution, mTextureResolution, false, GL_NEAREST, GL_NEAREST, GL_RGBA32F, GL_RGBA, GL_CLAMP_TO_BORDER, GL_FLOAT));
+    
+        desc.type = TextureType::DiffuseMap;
+        desc.width = mTextureResolution;
+        desc.height = mTextureResolution;
+        desc.minFilter = FilterMode::Nearest;
+        desc.magFilter = FilterMode::Nearest;
+        desc.wrap = SamplerAddressMode::ClampToBorder;
+        desc.format = Format::R32_FLOAT;
+        desc.generateMipmap = false;
+        desc.data = ping_phase_array.data();
+        m_PingPhaseTexture = device->createTexture(desc);
+
+        desc.data = nullptr;
+        m_PongPhaseTexture = device->createTexture(desc);
+		//m_PingPhaseTexture.reset(DBG_NEW Texture(Texture::Type::DiffuseMap, mTextureResolution, mTextureResolution, false, GL_NEAREST, GL_NEAREST, GL_R32F, GL_RED, GL_CLAMP_TO_BORDER, GL_FLOAT,false, ping_phase_array.data()));
+		//m_PongPhaseTexture.reset(DBG_NEW Texture(Texture::Type::DiffuseMap, mTextureResolution, mTextureResolution, false, GL_NEAREST, GL_NEAREST, GL_R32F, GL_RED, GL_CLAMP_TO_BORDER, GL_FLOAT));
+		
+        
+        // Time-varying spectrum
+        desc.minFilter = FilterMode::Linear;
+        desc.magFilter = FilterMode::Linear;
+        desc.wrap = SamplerAddressMode::Repeat;
+        desc.format = Format::RGBA32_FLOAT;
+        m_SpectrumTexture = device->createTexture(desc);
+
+		//m_SpectrumTexture.reset(DBG_NEW Texture(Texture::Type::DiffuseMap, mTextureResolution, mTextureResolution, false, GL_LINEAR, GL_LINEAR, GL_RGBA32F, GL_RGBA, GL_REPEAT, GL_FLOAT));
+		// m_TempTexture(DBG_NEW Texture(Texture::Type::DiffuseMap, mTextureResolution, mTextureResolution, false, GL_NEAREST, GL_NEAREST, GL_RGBA32F, GL_RGBA, GL_CLAMP_TO_BORDER, GL_FLOAT));
+
+         desc.minFilter = FilterMode::Nearest;
+         desc.magFilter = FilterMode::Nearest;
+         desc.wrap = SamplerAddressMode::ClampToBorder;
+         desc.format = Format::RGBA32_FLOAT;
+         m_TempTexture = device->createTexture(desc);
 
 		// Normal map
-		m_NormalMapTexture.reset(DBG_NEW Texture(Texture::Type::DiffuseMap, mTextureResolution, mTextureResolution, false, GL_LINEAR, GL_LINEAR, GL_RGBA32F, GL_RGBA, GL_REPEAT, GL_FLOAT));
+		//m_NormalMapTexture.reset(DBG_NEW Texture(Texture::Type::DiffuseMap, mTextureResolution, mTextureResolution, false, GL_LINEAR, GL_LINEAR, GL_RGBA32F, GL_RGBA, GL_REPEAT, GL_FLOAT));
+        desc.minFilter = FilterMode::Linear;
+        desc.magFilter = FilterMode::Linear;
+        desc.wrap = SamplerAddressMode::Repeat;
+        desc.format = Format::RGBA32_FLOAT;
+        m_NormalMapTexture = device->createTexture(desc);
 
-		
 		glEnable(GL_DEPTH_TEST);
 		glEnable(GL_CULL_FACE);
 		glDisable(GL_BLEND);
@@ -122,7 +170,7 @@ namespace BlackPearl {
 
         float wind_angle_rad = glm::radians(m_wind_angle);
         m_CSInitialSpectrumShader->SetUniformVec2f("u_wind", glm::vec2(m_wind_magnitude * glm::cos(wind_angle_rad), m_wind_magnitude * glm::sin(wind_angle_rad)));
-        glBindImageTexture(0, m_InitialSpectrumTexture->GetRendererID(), 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_R32F);
+        glBindImageTexture(0, static_cast<Texture*>(m_InitialSpectrumTexture.Get())->GetRendererID(), 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_R32F);
 
         //->BindImage(0, GL_WRITE_ONLY, initial_spectrum_texture->internal_format);
 
@@ -135,16 +183,16 @@ namespace BlackPearl {
 
         if (m_is_ping_phase)
         {
-            glBindImageTexture(0, m_PingPhaseTexture->GetRendererID(), 0, GL_FALSE, 0, GL_READ_ONLY, GL_R32F);
-            glBindImageTexture(1, m_PongPhaseTexture->GetRendererID(), 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_R32F);
+            glBindImageTexture(0, static_cast<Texture*>(m_PingPhaseTexture.Get())->GetRendererID(), 0, GL_FALSE, 0, GL_READ_ONLY, GL_R32F);
+            glBindImageTexture(1, static_cast<Texture*>(m_PongPhaseTexture.Get())->GetRendererID(), 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_R32F);
 
             /*ping_phase_texture->BindImage(0, GL_READ_ONLY, ping_phase_texture->internal_format);
             pong_phase_texture->BindImage(1, GL_WRITE_ONLY, pong_phase_texture->internal_format);*/
         }
         else
         {
-            glBindImageTexture(1, m_PingPhaseTexture->GetRendererID(), 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_R32F);
-            glBindImageTexture(0, m_PongPhaseTexture->GetRendererID(), 0, GL_FALSE, 0, GL_READ_ONLY, GL_R32F);
+            glBindImageTexture(1, static_cast<Texture*>(m_PingPhaseTexture.Get())->GetRendererID(), 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_R32F);
+            glBindImageTexture(0, static_cast<Texture*>(m_PongPhaseTexture.Get())->GetRendererID(), 0, GL_FALSE, 0, GL_READ_ONLY, GL_R32F);
             //ping_phase_texture->BindImage(1, GL_WRITE_ONLY, ping_phase_texture->internal_format);
             //pong_phase_texture->BindImage(0, GL_READ_ONLY, pong_phase_texture->internal_format);
         }
@@ -161,15 +209,15 @@ namespace BlackPearl {
         //    : ping_phase_texture->BindImage(0, GL_READ_ONLY, ping_phase_texture->internal_format);
         //initial_spectrum_texture->BindImage(1, GL_READ_ONLY, initial_spectrum_texture->internal_format);
 
-        m_is_ping_phase ? glBindImageTexture(0, m_PongPhaseTexture->GetRendererID(), 0, GL_FALSE, 0, GL_READ_ONLY, GL_R32F)
-            : glBindImageTexture(0, m_PingPhaseTexture->GetRendererID(), 0, GL_FALSE, 0, GL_READ_ONLY, GL_R32F);
+        m_is_ping_phase ? glBindImageTexture(0, static_cast<Texture*>(m_PongPhaseTexture.Get())->GetRendererID(), 0, GL_FALSE, 0, GL_READ_ONLY, GL_R32F)
+            : glBindImageTexture(0, static_cast<Texture*>(m_PingPhaseTexture.Get())->GetRendererID(), 0, GL_FALSE, 0, GL_READ_ONLY, GL_R32F);
 
 
-        glBindImageTexture(1, m_InitialSpectrumTexture->GetRendererID(), 0, GL_FALSE, 0, GL_READ_ONLY, GL_R32F);
+        glBindImageTexture(1, static_cast<Texture*>(m_InitialSpectrumTexture.Get())->GetRendererID(), 0, GL_FALSE, 0, GL_READ_ONLY, GL_R32F);
 
         //initial_spectrum_texture->BindImage(1, GL_READ_ONLY, initial_spectrum_texture->internal_format);
 
-        glBindImageTexture(2, m_SpectrumTexture->GetRendererID(), 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA32F);
+        glBindImageTexture(2, static_cast<Texture*>(m_SpectrumTexture.Get())->GetRendererID(), 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA32F);
 
         //spectrum_texture->BindImage(2, GL_WRITE_ONLY, spectrum_texture->internal_format);
 
@@ -186,16 +234,16 @@ namespace BlackPearl {
         {
             if (temp_as_input)
             {
-                glBindImageTexture(0, m_TempTexture->GetRendererID(), 0, GL_FALSE, 0, GL_READ_ONLY, GL_RGBA32F);
-                glBindImageTexture(1, m_SpectrumTexture->GetRendererID(), 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA32F);
+                glBindImageTexture(0, static_cast<Texture*>(m_TempTexture.Get())->GetRendererID(), 0, GL_FALSE, 0, GL_READ_ONLY, GL_RGBA32F);
+                glBindImageTexture(1, static_cast<Texture*>(m_SpectrumTexture.Get())->GetRendererID(), 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA32F);
 
               /*  temp_texture->BindImage(0, GL_READ_ONLY, temp_texture->internal_format);
                 spectrum_texture->BindImage(1, GL_WRITE_ONLY, spectrum_texture->internal_format);*/
             }
             else
             {
-                glBindImageTexture(0, m_SpectrumTexture->GetRendererID(), 0, GL_FALSE, 0, GL_READ_ONLY, GL_RGBA32F);
-                glBindImageTexture(1, m_TempTexture->GetRendererID(), 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA32F);
+                glBindImageTexture(0, static_cast<Texture*>(m_SpectrumTexture.Get())->GetRendererID(), 0, GL_FALSE, 0, GL_READ_ONLY, GL_RGBA32F);
+                glBindImageTexture(1, static_cast<Texture*>(m_TempTexture.Get())->GetRendererID(), 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA32F);
                 /*spectrum_texture->BindImage(0, GL_READ_ONLY, spectrum_texture->internal_format);
                 temp_texture->BindImage(1, GL_WRITE_ONLY, temp_texture->internal_format);*/
             }
@@ -217,15 +265,15 @@ namespace BlackPearl {
         {
             if (temp_as_input)
             {
-                glBindImageTexture(0, m_TempTexture->GetRendererID(), 0, GL_FALSE, 0, GL_READ_ONLY, GL_RGBA32F);
-                glBindImageTexture(1, m_SpectrumTexture->GetRendererID(), 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA32F);
+                glBindImageTexture(0, static_cast<Texture*>(m_TempTexture.Get())->GetRendererID(), 0, GL_FALSE, 0, GL_READ_ONLY, GL_RGBA32F);
+                glBindImageTexture(1, static_cast<Texture*>(m_SpectrumTexture.Get())->GetRendererID(), 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA32F);
         /*        temp_texture->BindImage(0, GL_READ_ONLY, temp_texture->internal_format);
                 spectrum_texture->BindImage(1, GL_WRITE_ONLY, spectrum_texture->internal_format);*/
             }
             else
             {
-                glBindImageTexture(0, m_SpectrumTexture->GetRendererID(), 0, GL_FALSE, 0, GL_READ_ONLY, GL_RGBA32F);
-                glBindImageTexture(1, m_TempTexture->GetRendererID(), 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA32F);
+                glBindImageTexture(0, static_cast<Texture*>(m_SpectrumTexture.Get())->GetRendererID(), 0, GL_FALSE, 0, GL_READ_ONLY, GL_RGBA32F);
+                glBindImageTexture(1, static_cast<Texture*>(m_TempTexture.Get())->GetRendererID(), 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA32F);
                 /*spectrum_texture->BindImage(0, GL_READ_ONLY, spectrum_texture->internal_format);
                 temp_texture->BindImage(1, GL_WRITE_ONLY, temp_texture->internal_format);*/
             }
@@ -242,8 +290,8 @@ namespace BlackPearl {
         // Generate Normal Map
 
         m_CSNormalMapShader->Bind();
-        glBindImageTexture(0, m_SpectrumTexture->GetRendererID(), 0, GL_FALSE, 0, GL_READ_ONLY, GL_RGBA32F);
-        glBindImageTexture(1, m_NormalMapTexture->GetRendererID(), 0, GL_FALSE, 0, GL_READ_ONLY, GL_RGBA32F);
+        glBindImageTexture(0, static_cast<Texture*>(m_SpectrumTexture.Get())->GetRendererID(), 0, GL_FALSE, 0, GL_READ_ONLY, GL_RGBA32F);
+        glBindImageTexture(1, static_cast<Texture*>(m_NormalMapTexture.Get())->GetRendererID(), 0, GL_FALSE, 0, GL_READ_ONLY, GL_RGBA32F);
 
         //spectrum_texture->BindImage(0, GL_READ_ONLY, spectrum_texture->internal_format);
         //normal_map->BindImage(1, GL_WRITE_ONLY, normal_map->internal_format);

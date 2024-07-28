@@ -1,9 +1,9 @@
 #pragma once
 #include <initializer_list>
 #include "BlackPearl/Core.h"
-#include "BlackPearl/Renderer/Material/Texture.h"
-#include "BlackPearl/Renderer/Material/CubeMapTexture.h"
-#include "BlackPearl/RHI/OpenGLRHI/OpenGLTexture.h"
+//#include "BlackPearl/RHI/OpenGLRHI/OpenGLTexture.h"
+#include "BlackPearl/RHI/RHITexture.h"
+#include <glad/glad.h>
 #include <unordered_map>
 namespace BlackPearl {
 
@@ -250,18 +250,18 @@ namespace BlackPearl {
 		FrameBuffer();
 		
 		/*initial with attachment*/
-		FrameBuffer(const int imageWidth, const int imageHeight, std::initializer_list<Attachment> attachment,  unsigned int colorAttachmentPoint,bool disableColor, TextureType colorTextureType = TextureType::DiffuseMap);
-		void AttachColorTexture(TextureType textureType, unsigned int attachmentPoints, unsigned int imageWidth, unsigned int imageHeight);
+		//FrameBuffer(const int imageWidth, const int imageHeight, std::initializer_list<Attachment> attachment,  unsigned int colorAttachmentPoint,bool disableColor, TextureType colorTextureType = TextureType::DiffuseMap);
+		//void AttachColorTexture(TextureType textureType, unsigned int attachmentPoints, unsigned int imageWidth, unsigned int imageHeight);
 		void AttachColorTexture(TextureHandle texture, unsigned int attachmentPoints);
 
 		void AttachDepthTexture(const int imageWidth, int imageHeight);
 		void AttachDepthTexture(TextureHandle texture, int mipmapLevel);
 
 		//void AttachCubeMapDepthTexture(const int imageWidth, int imageHeight);//use for point light shadow map
-		void AttachCubeMapDepthTexture(std::shared_ptr<CubeMapTexture> cubeMap);//use for point light shadow map
+		void AttachCubeMapDepthTexture(TextureHandle cubeMap);//use for point light shadow map
 
 		void AttachCubeMapColorTexture(unsigned int attachmentPoints,const int imageWidth, int imageHeight);//use for point light shadow map
-		void AttachCubeMapColorTexture(unsigned int attachmentPoints, std::shared_ptr<CubeMapTexture> cubeMap);
+		void AttachCubeMapColorTexture(unsigned int attachmentPoints, TextureHandle cubeMap);
 
 		void AttachRenderBuffer(const int imageWidth, int imageHeight);
 		void DisableColorBuffer();
@@ -272,13 +272,13 @@ namespace BlackPearl {
 		
 		void CleanUp();
 
-		std::shared_ptr<Texture> GetColorTexture(unsigned int attachmentPoint) {
+		TextureHandle GetColorTexture(unsigned int attachmentPoint) {
 			GE_ASSERT(m_TextureColorBuffers[attachmentPoint], "attachmentPoint "+ std::to_string( attachmentPoint) +"has no ColorTexture")
 			return m_TextureColorBuffers[attachmentPoint]; 
 		}
-		std::shared_ptr<Texture > GetDepthTexture() { return m_TextureDepthBuffer; }
-		std::shared_ptr<CubeMapTexture> GetCubeMapDepthTexture() { return m_CubeMapDepthBuffer; }
-		std::shared_ptr<CubeMapTexture> GetCubeMapColorTexture(unsigned int attachmentPoint) { return std::dynamic_pointer_cast<CubeMapTexture>(m_TextureColorBuffers[attachmentPoint]); }
+		TextureHandle GetDepthTexture() { return m_TextureDepthBuffer; }
+		TextureHandle GetCubeMapDepthTexture() { return m_CubeMapDepthBuffer; }
+		TextureHandle GetCubeMapColorTexture(unsigned int attachmentPoint) { return m_TextureColorBuffers[attachmentPoint]); }
 
 
 		unsigned int GetWidth()const { return m_Width; }
@@ -293,11 +293,11 @@ namespace BlackPearl {
 		
 
 		//GL_COLOR_ATTACHMENTi µ½ TextureµÄÓ³Éä
-		std::unordered_map<unsigned int,std::shared_ptr<Texture> > m_TextureColorBuffers;
-		//std::shared_ptr<Texture> m_TextureColorBuffer;
-		std::shared_ptr<Texture> m_TextureDepthBuffer;
-		std::shared_ptr<CubeMapTexture> m_CubeMapDepthBuffer;
-		std::shared_ptr<CubeMapTexture> m_CubeMapColorBuffer;
+		std::unordered_map<unsigned int, TextureHandle> m_TextureColorBuffers;
+		//TextureHandlem_TextureColorBuffer;
+		TextureHandle m_TextureDepthBuffer;
+		TextureHandle m_CubeMapDepthBuffer;
+		TextureHandle m_CubeMapColorBuffer;
 
 		unsigned int m_RenderBufferID;
 	};
@@ -317,7 +317,7 @@ namespace BlackPearl {
 		TextureHandle GetPositionTexture()const { GE_ASSERT(m_Type == Type::GI, "is not GI Gbuffer!"); return m_PositionTexture; }
 		TextureHandle GetNormalTexture()const { GE_ASSERT(m_Type == Type::GI, "is not GI Gbuffer!"); return m_NormalTexture; }
 		TextureHandle GetNormalMapTexture()const { GE_ASSERT(m_Type == Type::GI, "is not GI Gbuffer!"); return m_NormalMapTexture; }
-		TextureHandle GetDiffuseRoughnessTexture()const { GE_ASSERT(m_Type == Type::GI, "is not GI Gbuffer!"); return m_DiffuseRoughnessTexture; }
+		TextureHandle GetDiffuseRoughnessTexture() const { GE_ASSERT(m_Type == Type::GI, "is not GI Gbuffer!"); return m_DiffuseRoughnessTexture; }
 		TextureHandle GetSpecularMentallicTexture()const { GE_ASSERT(m_Type == Type::GI, "is not GI Gbuffer!"); return m_SpecularMentallicTexture; }
 		TextureHandle GetAmbientGIAOTexture()const { GE_ASSERT(m_Type == Type::GI, "is not GI Gbuffer!"); return m_AmbientGIAOTexture; }
 		void InitGITextures();
@@ -343,7 +343,7 @@ namespace BlackPearl {
 		TextureHandle m_AmbientGIAOTexture;
 
 		/************************ Raytracing Texture ************************************/
-		std::vector<TextureHandle>m_ColorTextures;
+		std::vector<TextureHandle> m_ColorTextures;
 
 		unsigned int m_RendererID;
 		unsigned int m_RenderBufferID;

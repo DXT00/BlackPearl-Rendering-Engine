@@ -1,7 +1,12 @@
 #include "pch.h"
 
 #include "DepthRenderer.h"
+#include "BlackPearl/Renderer/DeviceManager.h"
+
 namespace BlackPearl {
+
+	extern DeviceManager* g_deviceManager;
+
 	DepthRenderer::DepthRenderer()
 	{
 	}
@@ -13,11 +18,27 @@ namespace BlackPearl {
 	void DepthRenderer::Init()
 	{
 		m_DepthShader = std::make_shared<Shader>("assets/shaders/occlusionCulling/depthMap.glsl");
-		m_DepthTexture.reset(DBG_NEW Texture(Texture::Type::DepthMap, Configuration::WindowWidth, Configuration::WindowHeight, true/*isDepth*/, GL_NEAREST_MIPMAP_NEAREST, GL_NEAREST, GL_DEPTH_COMPONENT32, GL_DEPTH_COMPONENT, GL_CLAMP_TO_EDGE, GL_FLOAT, true/*genmipmap*/));
 		m_HizShader = std::make_shared<Shader>("assets/shaders/occlusionCulling/hiz.glsl");
 
+
+
+
+
+		IDevice* device = g_deviceManager->GetDevice();
+		TextureDesc desc;
+		desc.type = TextureType::DepthMap;
+		desc.width = Configuration::WindowWidth;
+		desc.height = Configuration::WindowHeight;
+		desc.minFilter = FilterMode::Nearest_Mip_Nearnest;
+		desc.magFilter = FilterMode::Nearest;
+		desc.wrap = SamplerAddressMode::ClampToEdge;
+		desc.format = Format::D32;
+		desc.generateMipmap = true;
+
+
 		m_HizFrameBuffer.reset(DBG_NEW FrameBuffer());
-		m_DepthTexture.reset(DBG_NEW Texture(Texture::Type::DepthMap, Configuration::WindowWidth, Configuration::WindowHeight, true/*isDepth*/, GL_NEAREST_MIPMAP_NEAREST, GL_NEAREST, GL_DEPTH_COMPONENT32, GL_DEPTH_COMPONENT, GL_CLAMP_TO_EDGE, GL_FLOAT, true/*genmipmap*/));
+		m_DepthTexture = device->createTexture(desc);
+		//m_DepthTexture.reset(DBG_NEW Texture(Texture::Type::DepthMap, Configuration::WindowWidth, Configuration::WindowHeight, true/*isDepth*/, GL_NEAREST_MIPMAP_NEAREST, GL_NEAREST, GL_DEPTH_COMPONENT32, GL_DEPTH_COMPONENT, GL_CLAMP_TO_EDGE, GL_FLOAT, true/*genmipmap*/));
 		m_HizFrameBuffer->Bind();
 		m_HizFrameBuffer->AttachDepthTexture(m_DepthTexture, 0);
 		glDrawBuffer(GL_NONE); // No color buffer is drawn to.
@@ -82,7 +103,7 @@ namespace BlackPearl {
 			glViewport(0, 0, curWidth, curHeight);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, i - 1);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, i - 1);
-			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, m_DepthTexture->GetRendererID(), i);
+			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, static_cast<Texture*>(m_DepthTexture.Get())->GetRendererID(), i);
 			GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 			GE_ASSERT(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "Framebuffer not complete!");
 			m_HizShader->SetUniform1i("u_LastMipLevel", i - 1);
@@ -97,7 +118,7 @@ namespace BlackPearl {
 		//reset mipmap level range, and bind lod 0
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, m_MipmapLevel - 1);
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, m_DepthTexture->GetRendererID(), 0);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, static_cast<Texture*>(m_DepthTexture.Get())->GetRendererID(), 0);
 
 
 		glDepthFunc(GL_LEQUAL);

@@ -1,5 +1,7 @@
 #pragma once
 #include "BlackPearl/Renderer/Material/Material.h"
+#include "BlackPearl/RHI/OpenGLRHI/OpenGLTexture.h"
+#include "BlackPearl/Math/vector.h"
 namespace BlackPearl {
 	class GenData_MV
 	{

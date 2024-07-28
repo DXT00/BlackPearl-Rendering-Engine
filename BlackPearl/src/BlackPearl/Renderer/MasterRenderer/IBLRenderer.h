@@ -66,11 +66,11 @@ namespace BlackPearl {
 		//unsigned int				m_IrradianceCubeMapID;
 		//unsigned int				m_PrefilterCubeMapID;
 		//unsigned int				m_BRDFLUTTextureID;
-		std::shared_ptr<Texture>	m_BRDFLUTTexture;
-		std::shared_ptr<CubeMapTexture> m_IrradianceCubeMap;
-		std::shared_ptr<CubeMapTexture> m_PrefilterCubeMap;
-		std::shared_ptr<CubeMapTexture> m_HdrCubeMap;
-		std::shared_ptr<CubeMapTexture> m_SkyBoxCubeMap;
+		TextureHandle	m_BRDFLUTTexture;
+		TextureHandle m_IrradianceCubeMap;
+		TextureHandle m_PrefilterCubeMap;
+		TextureHandle m_HdrCubeMap;
+		TextureHandle m_SkyBoxCubeMap;
 
 		unsigned int m_EnvironmentMapDim = 256;
 		unsigned int m_SpecularPrefilterMapDim = 256;

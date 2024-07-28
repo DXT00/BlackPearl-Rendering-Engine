@@ -4,7 +4,7 @@
 #include "BlackPearl/Renderer/MasterRenderer/BasicRenderer.h"
 #include "BlackPearl/Component/MeshRendererComponent/MeshRenderer.h"
 namespace BlackPearl {
-	void CommonFunc::ShowGBuffer(unsigned int row, unsigned int col, Object* quad,std::shared_ptr<GBuffer> gBuffer, std::vector<std::shared_ptr<Texture>> textures)
+	void CommonFunc::ShowGBuffer(unsigned int row, unsigned int col, Object* quad,std::shared_ptr<GBuffer> gBuffer, std::vector<TextureHandle> textures)
 	{
 		gBuffer->UnBind();
 		ShowTextures(row, col, quad, textures);
@@ -12,19 +12,19 @@ namespace BlackPearl {
 		//gBuffer->UnBind();
 		//delete basicRenderer;
 	}
-	void CommonFunc::ShowFrameBuffer(unsigned int row, unsigned int col, Object* quad, std::shared_ptr<FrameBuffer> frameBuffer, std::vector<std::shared_ptr<Texture>> textures)
+	void CommonFunc::ShowFrameBuffer(unsigned int row, unsigned int col, Object* quad, std::shared_ptr<FrameBuffer> frameBuffer, std::vector<TextureHandle> textures)
 	{
 		//frameBuffer->UnBind();
 		ShowTextures(row, col, quad, textures);
 	}
 
-	void CommonFunc::ShowFrameBuffer(glm::vec4 viewPort, Object* quad, std::shared_ptr<FrameBuffer> frameBuffer, std::shared_ptr<Texture> texture, bool isMipmap, int lod)
+	void CommonFunc::ShowFrameBuffer(glm::vec4 viewPort, Object* quad, std::shared_ptr<FrameBuffer> frameBuffer, TextureHandle texture, bool isMipmap, int lod)
 	{
 		frameBuffer->UnBind();
 		ShowTexture(viewPort, quad, texture, isMipmap, lod);
 	}
 
-	void CommonFunc::ShowTextures(unsigned int row, unsigned int col, Object* quad, std::vector<std::shared_ptr<Texture>> textures)
+	void CommonFunc::ShowTextures(unsigned int row, unsigned int col, Object* quad, std::vector<TextureHandle> textures)
 	{
 		int width = Configuration::WindowWidth / col;
 		int height = Configuration::WindowHeight / row;
@@ -44,7 +44,7 @@ namespace BlackPearl {
 				shader->Bind();
 				shader->SetUniform1f("u_Num", 1.0);
 				shader->SetUniform1i("u_FinalScreenTexture", idx);
-				if (textures[idx]->GetType() == Texture::DepthMap) {
+				if (textures[idx]->GetType() == TextureType::DepthMap) {
 					shader->SetUniform1i("u_isDepth", 1);
 				}
 				glActiveTexture(GL_TEXTURE0 + idx);
@@ -54,7 +54,7 @@ namespace BlackPearl {
 			}
 		}
 	}
-	void CommonFunc::ShowTexture(glm::vec4 viewPort, Object* quad, std::shared_ptr<Texture> texture, bool isMipmap, int lod)
+	void CommonFunc::ShowTexture(glm::vec4 viewPort, Object* quad, TextureHandle texture, bool isMipmap, int lod)
 	{
 		
 		std::shared_ptr<Shader> shader(DBG_NEW Shader("assets/shaders/raytracing/ScreenQuad.glsl"));

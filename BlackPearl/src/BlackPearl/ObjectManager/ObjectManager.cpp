@@ -251,8 +251,18 @@ namespace BlackPearl {
 		Transform* transformComponent = obj->GetComponent<Transform>();
 		std::shared_ptr<Material> material;
 		std::shared_ptr<Material::TextureMaps> texture(DBG_NEW Material::TextureMaps());
-		std::shared_ptr<Texture> cubeMapTexture(DBG_NEW CubeMapTexture(Texture::Type::CubeMap, textureFaces, GL_LINEAR, GL_LINEAR, GL_CLAMP_TO_EDGE, GL_RGB, GL_RGB, GL_UNSIGNED_BYTE));
-		texture->cubeTextureMap = cubeMapTexture;
+
+		TextureDesc desc;
+		desc.type = TextureType::CubeMap;
+		desc.minFilter = FilterMode::Linear;
+		desc.magFilter = FilterMode::Linear;
+		desc.wrap = SamplerAddressMode::ClampToEdge;
+		desc.format = Format::RGB8_UNORM;
+		desc.faces = textureFaces;
+
+
+		//std::shared_ptr<Texture> cubeMapTexture(DBG_NEW CubeMapTexture(Texture::Type::CubeMap, textureFaces, GL_LINEAR, GL_LINEAR, GL_CLAMP_TO_EDGE, GL_RGB, GL_RGB, GL_UNSIGNED_BYTE));
+		texture->cubeTextureMap = m_Device->createTexture(desc);
 		material.reset(DBG_NEW Material(shaderPath, texture, {}, { 0.2,0.2,0.0 }, {}, {}));
 		material->SetRTXType(Material::RTXType::RTX_DIFFUSE);
 		VertexBufferLayout layout = {

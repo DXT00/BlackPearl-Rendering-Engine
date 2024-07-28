@@ -14,8 +14,10 @@
 #include "BlackPearl/Math/Math.h"
 #include <chrono>
 #include "glm/glm.hpp"
+#include "BlackPearl/Renderer/DeviceManager.h"
 
 namespace BlackPearl {
+	extern DeviceManager* g_deviceManager;
 	float GBufferRenderer::s_GICoeffs = 0.2f;
 	float GBufferRenderer::s_SSRGICoeffs = 0.2f;
 
@@ -24,9 +26,26 @@ namespace BlackPearl {
 	GBufferRenderer::GBufferRenderer()
 	{
 		m_GBuffer.reset(DBG_NEW GBuffer(m_TextureWidth, m_TexxtureHeight));
-		m_SSRTestTexture.reset(DBG_NEW Texture(Texture::Type::None, m_TextureWidth, m_TexxtureHeight, false, GL_LINEAR, GL_LINEAR, GL_RGBA16F, GL_RGBA, GL_CLAMP_TO_EDGE, GL_FLOAT));
+		IDevice* device = g_deviceManager->GetDevice();
+		TextureDesc desc;
+		desc.type = TextureType::None;
+		desc.width = m_TextureWidth;
+		desc.height = m_TexxtureHeight;
+		desc.minFilter = FilterMode::Linear;
+		desc.magFilter = FilterMode::Linear;
+		desc.wrap = SamplerAddressMode::ClampToEdge;
+		desc.format = Format::RGBA16_FLOAT;
+		desc.generateMipmap = true;
 
-		m_HDRPostProcessTexture.reset(DBG_NEW Texture(Texture::Type::None, m_TextureWidth, m_TexxtureHeight, false, GL_LINEAR, GL_LINEAR, GL_RGBA16F, GL_RGBA, GL_CLAMP_TO_EDGE, GL_FLOAT));
+		m_SSRTestTexture = device->createTexture(desc);
+		//m_SSRTestTexture.reset(DBG_NEW Texture(Texture::Type::None, m_TextureWidth, m_TexxtureHeight, false, GL_LINEAR, GL_LINEAR, GL_RGBA16F, GL_RGBA, GL_CLAMP_TO_EDGE, GL_FLOAT));
+
+
+	
+		//m_HDRPostProcessTexture.reset(DBG_NEW Texture(Texture::Type::None, m_TextureWidth, m_TexxtureHeight, false, GL_LINEAR, GL_LINEAR, GL_RGBA16F, GL_RGBA, GL_CLAMP_TO_EDGE, GL_FLOAT));
+		
+		m_HDRPostProcessTexture = device->createTexture(desc);
+		
 		m_LightPassFrameBuffer.reset(DBG_NEW FrameBuffer());
 		m_LightPassFrameBuffer->Bind();
 		m_LightPassFrameBuffer->AttachRenderBuffer(m_TextureWidth, m_TexxtureHeight);

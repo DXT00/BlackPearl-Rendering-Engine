@@ -45,12 +45,12 @@ namespace BlackPearl {
 
 		void UpdateReflectionProbesMap(const LightSources* lightSources, const std::vector<Object*> objects, const std::vector<Object*> dynamicObjs, float timeInSecond, Object* skyBox, Object* reflectionProbe);
 		/*render environment CubeMap of each probe */
-		std::shared_ptr<CubeMapTexture> RenderEnvironmerntCubeMaps(const LightSources* lightSources, std::vector<Object*> objects, std::vector<Object*> dynamicObjs, float timeInSecond, Object* probes, Object* skyBox);
+		TextureHandle RenderEnvironmerntCubeMaps(const LightSources* lightSources, std::vector<Object*> objects, std::vector<Object*> dynamicObjs, float timeInSecond, Object* probes, Object* skyBox);
 		//void RenderDiffuseIrradianceMap(const LightSources* lightSources, std::vector<Object*> objects, Object *probe);
-		void RenderSpecularPrefilterMap(const LightSources* lightSources,  Object *probe, std::shared_ptr<CubeMapTexture> environmentMap);
+		void RenderSpecularPrefilterMap(const LightSources* lightSources,  Object *probe, TextureHandle environmentMap);
 
 		void RenderSpecularBRDFLUTMap();
-		void RenderSHImage(Object* probe, std::shared_ptr<CubeMapTexture> environmentMap);
+		void RenderSHImage(Object* probe, TextureHandle environmentMap);
 		//std::vector<Object*> FindKnearProbes(math::float3 objPos,const std::vector<Object*> probes);
 
 
@@ -72,7 +72,7 @@ namespace BlackPearl {
 		Object* m_SHQuadObj = nullptr;
 		bool m_IsInitial = false;
 		/*只计算一次*/
-		std::shared_ptr<Texture> m_SpecularBrdfLUTTexture = nullptr;
+		TextureHandle m_SpecularBrdfLUTTexture = nullptr;
 
 		/*draw lighprobes shader*/
 		std::shared_ptr<Shader> m_LightProbeShader = nullptr;

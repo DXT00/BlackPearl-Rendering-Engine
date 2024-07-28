@@ -37,18 +37,34 @@ public:
 
 
 		m_SphereObj->GetComponent<BlackPearl::MeshRenderer>()->SetShaders(m_PBRRenderer->GetShader());
-		std::shared_ptr<BlackPearl::Texture> albedoTexture(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::DiffuseMap, "assets/texture/pbr/cobblestone/cobblestone-curved_2_albedo.png"));
-		std::shared_ptr<BlackPearl::Texture> aoTexture(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::AoMap, "assets/texture/pbr/cobblestone/cobblestone-curved_2_ao.png"));
-		std::shared_ptr<BlackPearl::Texture> roughnessTexture(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::RoughnessMap, "assets/texture/pbr/cobblestone/cobblestone-curved_2_roughness.png"));
-		std::shared_ptr<BlackPearl::Texture> mentallicTexture(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::MentallicMap, "assets/texture/pbr/cobblestone/cobblestone-curved_2_metallic.png"));
-		std::shared_ptr<BlackPearl::Texture> normalTexture(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::NormalMap, "assets/texture/pbr/cobblestone/cobblestone-curved_2_normal-dx.png"));
+		
+		BlackPearl::TextureDesc texDesc;
+		texDesc.type = BlackPearl::TextureType::DiffuseMap;
+		texDesc.path = "assets/texture/pbr/cobblestone/cobblestone-curved_2_albedo.png";
+		BlackPearl::TextureHandle albedoTexture = m_DeviceManager->GetDevice()->createTexture(texDesc);
 
-		m_SphereObj->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(normalTexture);
+		texDesc.type = BlackPearl::TextureType::AoMap;
+		texDesc.path = "assets/texture/pbr/cobblestone/cobblestone-curved_2_ao.png";
+		BlackPearl::TextureHandle aoTexture = m_DeviceManager->GetDevice()->createTexture(texDesc);
+
+		texDesc.type = BlackPearl::TextureType::RoughnessMap;
+		texDesc.path = "assets/texture/pbr/cobblestone/cobblestone-curved_2_roughness.png";
+		BlackPearl::TextureHandle roughnessTexture = m_DeviceManager->GetDevice()->createTexture(texDesc);
+
+		texDesc.type = BlackPearl::TextureType::MentallicMap;
+		texDesc.path = "assets/texture/pbr/cobblestone/cobblestone-curved_2_metallic.png";
+		BlackPearl::TextureHandle mentallicTexture = m_DeviceManager->GetDevice()->createTexture(texDesc);
+
+		texDesc.type = BlackPearl::TextureType::NormalMap;
+		texDesc.path = "assets/texture/pbr/cobblestone/cobblestone-curved_2_normal-dx.png";
+		BlackPearl::TextureHandle normalTexture = m_DeviceManager->GetDevice()->createTexture(texDesc);
 
 		m_SphereObj->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(albedoTexture);
+		m_SphereObj->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(normalTexture);
 		m_SphereObj->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(aoTexture);
 		m_SphereObj->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(roughnessTexture);
 		m_SphereObj->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(mentallicTexture);
+
 		m_SphereObj->GetComponent<BlackPearl::MeshRenderer>()->GetMeshes()[0]->GetMaterial()->SetMaterialColorDiffuseColor({ 1.0,0.0,0.0 });
 
 		m_SphereObj->GetComponent<BlackPearl::Transform>()->SetPosition({

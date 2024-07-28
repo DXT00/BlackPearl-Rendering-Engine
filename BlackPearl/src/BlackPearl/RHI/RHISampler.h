@@ -10,6 +10,7 @@ namespace BlackPearl {
     enum class FilterMode: uint8_t {
         Linear,
         Nearest,
+        Nearest_Mip_Nearnest,
         Linear_Mip_Linear
     };
 

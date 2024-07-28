@@ -138,11 +138,11 @@ namespace BlackPearl {
 		}
 	}
 
-	void Material::SetTexture(const TextureType type, const std::string& image)
+	/*void Material::SetTexture(const TextureType type, const std::string& image)
 	{
 		std::shared_ptr<Texture>texture(DBG_NEW Texture(type, image, GL_LINEAR, GL_LINEAR, GL_RGBA, GL_CLAMP_TO_EDGE, GL_UNSIGNED_BYTE));
 		SetTexture(texture);
-	}
+	}*/
 
 	void Material::SetProps(const Props & props)
 	{

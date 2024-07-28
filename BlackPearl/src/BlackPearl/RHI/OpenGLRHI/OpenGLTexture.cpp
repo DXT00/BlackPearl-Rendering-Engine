@@ -24,7 +24,7 @@ namespace BlackPearl {
 	
 	*/
 	Texture::Texture(
-		const TextureDesc& desc,
+		TextureDesc& desc,
 		float* data
 	) :desc(desc),
 		TextureStateExtension(desc)
@@ -98,7 +98,7 @@ namespace BlackPearl {
 
 
 	void Texture::Init(
-		const TextureDesc& desc)
+		TextureDesc& desc)
 	{
 
 		//LoadTexture(image, minFilter, magFilter, internalFormat, format, wrap, dataType);
@@ -132,6 +132,8 @@ namespace BlackPearl {
 		}
 		m_Width = width;
 		m_Height = height;
+		desc.width = m_Width;
+		desc.height = m_Height;
 		fillTextureInfo(desc);
 
 		//glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
@@ -140,8 +142,8 @@ namespace BlackPearl {
 		glTexImage2D(GL_TEXTURE_2D, 0, m_InnerFormat, width, height, 0, format, m_DataType, data);
 		if (desc.generateMipmap)
 			glGenerateMipmap(GL_TEXTURE_2D);//为当前绑定的纹理自动生成所有需要的多级渐远纹理
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, m_Warp);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, m_Warp);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, m_Wrap);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, m_Wrap);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, m_MinFilter);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, m_MagFilter);
 		//UnBind();
@@ -161,9 +163,10 @@ namespace BlackPearl {
 
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, m_MinFilter);//纹理缩小时用邻近过滤
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, m_MagFilter);//纹理放大时也用邻近过滤
-		if (m_Warp != -1) {
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, m_Warp);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, m_Warp);
+		//TODO:: 是不是可以删掉？
+		if (m_Wrap != -1) {
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, m_Wrap);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, m_Wrap);
 		}
 
 		if (desc.generateMipmap)
@@ -202,6 +205,9 @@ namespace BlackPearl {
 		case Format::R32_FLOAT:
 			return std::make_pair<GLenum, GLenum>(GL_RED, GL_FLOAT);
 
+		case Format::RG16_FLOAT:
+			return std::make_pair<GLenum, GLenum>(GL_RG, GL_FLOAT);
+
 		case Format::RGB8_UNORM:
 			return std::make_pair<GLenum, GLenum>(GL_RGB, GL_UNSIGNED_BYTE);
 
@@ -235,9 +241,14 @@ namespace BlackPearl {
 
 		case Format::R32_FLOAT:
 			return GL_R32F;
+		case Format::RG16_FLOAT:
+			return GL_RG16F;
 
 		case Format::RGB8_UNORM:
-			return GL_RGB;
+			return GL_RGB8;
+
+		case Format::RGB8_FLOAT:
+			return GL_RGB8;
 
 		case Format::RGB32_FLOAT:
 			return GL_RGB32F;
@@ -276,6 +287,8 @@ namespace BlackPearl {
 			return GL_LINEAR_MIPMAP_LINEAR;
 		case BlackPearl::FilterMode::Nearest:
 			return GL_NEAREST;
+		case BlackPearl::FilterMode::Nearest_Mip_Nearnest:
+			return GL_NEAREST_MIPMAP_NEAREST;
 
 		default:
 			assert(0);
@@ -290,6 +303,8 @@ namespace BlackPearl {
 		switch (warp) {
 		case SamplerAddressMode::ClampToEdge:
 			return GL_CLAMP_TO_EDGE;
+		case SamplerAddressMode::ClampToBorder:
+			return GL_CLAMP_TO_BORDER;
 		default:
 			assert(0);
 		}
@@ -306,7 +321,8 @@ namespace BlackPearl {
 		m_InnerFormat = _ConvertInnerFormat(desc.format);
 		m_MinFilter = _ConvertFilter(desc.minFilter);
 		m_MagFilter = _ConvertFilter(desc.magFilter);
-		m_Warp = _ConvertWarp(desc.wrap);
+		m_Wrap = _ConvertWarp(desc.wrap);
+		m_MipMapLevel = desc.mipLevels;
 
 	}
 

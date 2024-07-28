@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "SphericalHarmonics.h"
+#include "BlackPearl/RHI/OpenGLRHI/OpenGLCubeMapTexture.h"
 #include "glm/glm.hpp"
 #include "BlackPearl/Core.h"
 namespace BlackPearl {
@@ -51,10 +52,10 @@ namespace BlackPearl {
 	}
 	// give me a cubemap, its size and number of channels
 	// and i'll give you spherical harmonics
-	std::vector<std::vector<float>> SphericalHarmonics::UpdateCoeffs(std::shared_ptr<CubeMapTexture> environmentCubeMap)
+	std::vector<std::vector<float>> SphericalHarmonics::UpdateCoeffs(TextureHandle environmentCubeMap)
 	{
 		std::vector<std::vector<float>> SHCoeffs(9, std::vector<float>(3,0.0));
-		float size = environmentCubeMap->GetWidth() * environmentCubeMap->GetHeight() * 3;
+		float size = environmentCubeMap->getDesc().width * environmentCubeMap->getDesc().height * 3;
 		/*float* bufferPosX = new float[size];
 		float* bufferNegX = new float[size];
 		float* bufferPosY = new float[size];
@@ -74,7 +75,7 @@ namespace BlackPearl {
 		environmentCubeMap->UnBind();
 
 
-		unsigned int width = environmentCubeMap->GetWidth();
+		unsigned int width = environmentCubeMap->getDesc().width;
 		if (!initialCubeMapVector)
 			InitialCubeMapVector(width);
 

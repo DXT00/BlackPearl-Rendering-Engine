@@ -1,6 +1,5 @@
 #include "pch.h"
 #include "LightProbeComponent.h"
-#include "BlackPearl/Renderer/Material/CubeMapTexture.h"
 namespace BlackPearl {
 
 	//LightProbeComponent::LightProbeComponent(ProbeType type)

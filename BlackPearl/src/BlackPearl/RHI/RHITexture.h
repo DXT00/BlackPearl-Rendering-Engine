@@ -2,6 +2,7 @@
 #include "RefCountPtr.h"
 #include "RHIDefinitions.h"
 #include "RHIResources.h"
+#include "RHISampler.h"
 namespace BlackPearl {
 
 
@@ -75,6 +76,9 @@ namespace BlackPearl {
 		//unsigned int dataType = GL_UNSIGNED_BYTE;
 		bool generateMipmap = false;
 		std::string path;
+		//for cubemap
+		std::vector<std::string> faces;
+		float* data = nullptr;
 //#endif
 
 

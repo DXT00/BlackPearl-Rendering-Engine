@@ -69,7 +69,7 @@ namespace BlackPearl {
 		~Device() override;
 
 		Queue* getQueue(CommandQueue queue) const;
-		TextureHandle createTexture(const TextureDesc& d) override;
+		TextureHandle createTexture(TextureDesc& d) override;
 
 		TextureHandle createHandleForNativeTexture(uint32_t objectType, RHIObject texture, const TextureDesc& desc) override;
 

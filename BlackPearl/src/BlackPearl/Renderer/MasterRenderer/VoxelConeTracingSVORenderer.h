@@ -171,11 +171,11 @@ namespace BlackPearl{
 		Sobol* m_Sobol = nullptr;
 		GLfloat* m_SobolPtr;
 		int m_SPP = 0;
-		std::shared_ptr<Texture> m_Noise;
+		TextureHandle m_Noise;
 
-		std::shared_ptr<Texture> m_PathTracingColor;
-		std::shared_ptr<Texture> m_PathTracingAlbedo;
-		std::shared_ptr<Texture> m_PathTracingNormal;
+		TextureHandle m_PathTracingColor;
+		TextureHandle m_PathTracingAlbedo;
+		TextureHandle m_PathTracingNormal;
 		glm::vec3 m_SunRadiance{ glm::vec3(2.0f) };
 		Object* m_QuadPathTracing = nullptr;//show path tracing results
 
@@ -183,7 +183,7 @@ namespace BlackPearl{
 		// PBR BRDF LUT render.
 		// ----------------
 		std::shared_ptr<Shader> m_SpecularBRDFLutShader;
-		std::shared_ptr<Texture> m_SpecularBrdfLUTTexture = nullptr;
+		TextureHandle m_SpecularBrdfLUTTexture = nullptr;
 		bool m_IsInitialize = false;
 
 	};

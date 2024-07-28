@@ -262,7 +262,7 @@ namespace BlackPearl {
 		return m_Queues[int(queue)].get(); 
 	}
 
-	TextureHandle Device::createTexture(const TextureDesc& desc)
+	TextureHandle Device::createTexture(TextureDesc& desc)
 	{
 		ETexture* texture = new ETexture(m_Context, m_Allocator);
 		assert(texture);

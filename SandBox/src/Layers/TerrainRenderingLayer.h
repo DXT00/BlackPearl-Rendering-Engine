@@ -42,14 +42,31 @@ public:
 
 		m_CubeObj = CreateCube("assets/shaders/CubeRefraction.glsl", "");
 		auto meshComponent = m_CubeObj->GetComponent<BlackPearl::MeshRenderer>();
-		std::shared_ptr<BlackPearl::Texture> cubeMapTexture(DBG_NEW BlackPearl::CubeMapTexture(BlackPearl::Texture::Type::CubeMap,
+		/*std::shared_ptr<BlackPearl::Texture> cubeMapTexture(DBG_NEW BlackPearl::CubeMapTexture(BlackPearl::Texture::Type::CubeMap,
 			{ "assets/skybox/skybox/right.jpg",
 			 "assets/skybox/skybox/left.jpg",
 			 "assets/skybox/skybox/top.jpg",
 			 "assets/skybox/skybox/bottom.jpg",
 			 "assets/skybox/skybox/front.jpg",
 			 "assets/skybox/skybox/back.jpg",
-			}, GL_LINEAR, GL_LINEAR, GL_CLAMP_TO_EDGE, GL_RGB, GL_RGB, GL_UNSIGNED_BYTE));
+			}, GL_LINEAR, GL_LINEAR, GL_CLAMP_TO_EDGE, GL_RGB, GL_RGB, GL_UNSIGNED_BYTE));*/
+
+
+		BlackPearl::TextureDesc desc;
+		desc.type = BlackPearl::TextureType::CubeMap;
+		desc.minFilter = BlackPearl::FilterMode::Linear;
+		desc.magFilter = BlackPearl::FilterMode::Linear;
+		desc.wrap = BlackPearl::SamplerAddressMode::ClampToEdge;
+		desc.format = BlackPearl::Format::RGB8_UNORM;
+		desc.faces = { "assets/skybox/skybox/right.jpg",
+			 "assets/skybox/skybox/left.jpg",
+			 "assets/skybox/skybox/top.jpg",
+			 "assets/skybox/skybox/bottom.jpg",
+			 "assets/skybox/skybox/front.jpg",
+			 "assets/skybox/skybox/back.jpg",
+		};
+		BlackPearl::TextureHandle cubeMapTexture = m_DeviceManager->GetDevice()->createTexture(desc);
+
 		meshComponent->SetTexture(0, cubeMapTexture);
 		//	m_ObjectsList.push_back(m_CubeObj);
 
@@ -122,7 +139,7 @@ private:
 	BlackPearl::Object* m_SkyBoxObj;
 
 
-	glm::vec4 m_BackgroundColor = { 0.0f,0.0f,0.0f,0.0f };
+	BlackPearl::math::float4 m_BackgroundColor = { 0.0f,0.0f,0.0f,0.0f };
 	BlackPearl::MasterRenderer* m_MasterRenderer;
 	BlackPearl::BasicRenderer* m_BasicRenderer;
 

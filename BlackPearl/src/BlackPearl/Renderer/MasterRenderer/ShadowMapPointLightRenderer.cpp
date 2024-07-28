@@ -51,7 +51,7 @@ namespace BlackPearl {
 
 		for (Object* pointLight:lightSources->GetPointLights())
 		{
-			std::shared_ptr<CubeMapTexture> shadowMap = pointLight->GetComponent<PointLight>()->GetShadowMap();
+			TextureHandle shadowMap = pointLight->GetComponent<PointLight>()->GetShadowMap();
 			
 			m_FrameBuffer->Bind();
 			m_FrameBuffer->AttachCubeMapDepthTexture(shadowMap);
@@ -67,7 +67,7 @@ namespace BlackPearl {
 			m_LightProjectionViewMatries[5] = (pointLightProjection * glm::lookAt(lightPos, lightPos + glm::vec3(0.0, 0.0, -1.0f), glm::vec3(0.0, -1.0f, 0.0)));
 
 
-			glViewport(0, 0, shadowMap->GetWidth(), shadowMap->GetHeight());
+			glViewport(0, 0, shadowMap->getDesc().width, shadowMap->getDesc().height);
 			m_FrameBuffer->Bind();
 			glClear(GL_DEPTH_BUFFER_BIT);
 

@@ -177,62 +177,62 @@ namespace BlackPearl {
 
 	//------------------------FrameBuffer-----------------//
 	//note: framebuffer has no memory, imageWidth, imageHeight is the width and height of the attachment! 不同attachment有不同的width和height
-	FrameBuffer::FrameBuffer(const int imageWidth,int imageHeight,std::initializer_list<Attachment> attachment, unsigned int colorAttachmentPoint,bool disableColor, Texture::Type colorTextureType)
-	{
-		/* m_Width,m_Height for voxel cone tracing */
-		m_Width = imageWidth;
-		m_Height = imageHeight;
-		GLint previousFrameBuffer;
-		glGetIntegerv(GL_FRAMEBUFFER_BINDING, &previousFrameBuffer);//获取之前绑定的Framebuffer
+	//FrameBuffer::FrameBuffer(const int imageWidth,int imageHeight,std::initializer_list<Attachment> attachment, unsigned int colorAttachmentPoint,bool disableColor, TextureType colorTextureType)
+	//{
+	//	/* m_Width,m_Height for voxel cone tracing */
+	//	m_Width = imageWidth;
+	//	m_Height = imageHeight;
+	//	GLint previousFrameBuffer;
+	//	glGetIntegerv(GL_FRAMEBUFFER_BINDING, &previousFrameBuffer);//获取之前绑定的Framebuffer
 
-		glGenFramebuffers(1, &m_RendererID);
-		Bind();
-		if (disableColor) {
-			DisableColorBuffer();
-		}
-		for (Attachment attach:attachment)
-		{
-			if (attach == Attachment::ColorTexture)
-				AttachColorTexture(colorTextureType, colorAttachmentPoint,imageWidth,imageHeight);
-			else if (attach == Attachment::DepthTexture)
-				AttachDepthTexture(imageWidth, imageHeight);
-		/*	else if (attach == Attachment::CubeMapDepthTexture)
-				AttachCubeMapDepthTexture(imageWidth, imageHeight);*/
-			else if (attach == Attachment::CubeMapColorTexture)
-				AttachCubeMapColorTexture(colorAttachmentPoint,imageWidth, imageHeight);
-			else if (attach == Attachment::RenderBuffer)
-				AttachRenderBuffer(imageWidth, imageHeight);
+	//	glGenFramebuffers(1, &m_RendererID);
+	//	Bind();
+	//	if (disableColor) {
+	//		DisableColorBuffer();
+	//	}
+	//	for (Attachment attach:attachment)
+	//	{
+	//		if (attach == Attachment::ColorTexture)
+	//			AttachColorTexture(colorTextureType, colorAttachmentPoint,imageWidth,imageHeight);
+	//		else if (attach == Attachment::DepthTexture)
+	//			AttachDepthTexture(imageWidth, imageHeight);
+	//	/*	else if (attach == Attachment::CubeMapDepthTexture)
+	//			AttachCubeMapDepthTexture(imageWidth, imageHeight);*/
+	//		else if (attach == Attachment::CubeMapColorTexture)
+	//			AttachCubeMapColorTexture(colorAttachmentPoint,imageWidth, imageHeight);
+	//		else if (attach == Attachment::RenderBuffer)
+	//			AttachRenderBuffer(imageWidth, imageHeight);
 
-		}
-		
-		/*if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-			GE_CORE_ERROR("Framebuffer is not complete!");*/
+	//	}
+	//	
+	//	/*if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+	//		GE_CORE_ERROR("Framebuffer is not complete!");*/
 
-		GE_ASSERT(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "Framebuffer not complete!");
+	//	GE_ASSERT(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "Framebuffer not complete!");
 
-		UnBind();
-		//绑定回原来的FrameBuffer
-		glBindFramebuffer(GL_FRAMEBUFFER, previousFrameBuffer);
+	//	UnBind();
+	//	//绑定回原来的FrameBuffer
+	//	glBindFramebuffer(GL_FRAMEBUFFER, previousFrameBuffer);
 
-	}
+	//}
 
-	void FrameBuffer::AttachColorTexture(Texture::Type textureType,unsigned int attachmentPoints,unsigned int imageWidth,unsigned int imageHeight)
-	{
-		GE_CORE_WARN(" 注意Texture是否是默认的格式！");
+	//void FrameBuffer::AttachColorTexture(TextureType textureType,unsigned int attachmentPoints,unsigned int imageWidth,unsigned int imageHeight)
+	//{
+	//	GE_CORE_WARN(" 注意Texture是否是默认的格式！");
 
-		m_TextureColorBuffers[attachmentPoints].reset(DBG_NEW Texture(textureType, imageWidth, imageHeight,false, GL_NEAREST, GL_NEAREST, GL_RGB16F, GL_RGBA, GL_REPEAT,GL_FLOAT));
-		
-		//将它附加到当前绑定的帧缓冲对象
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0+attachmentPoints, GL_TEXTURE_2D, m_TextureColorBuffers[attachmentPoints]->GetRendererID(), 0);
-		GE_ASSERT(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "Framebuffer not complete!");
-	}
+	//	m_TextureColorBuffers[attachmentPoints].reset(DBG_NEW Texture(textureType, imageWidth, imageHeight,false, GL_NEAREST, GL_NEAREST, GL_RGB16F, GL_RGBA, GL_REPEAT,GL_FLOAT));
+	//	
+	//	//将它附加到当前绑定的帧缓冲对象
+	//	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0+attachmentPoints, GL_TEXTURE_2D, m_TextureColorBuffers[attachmentPoints]->GetRendererID(), 0);
+	//	GE_ASSERT(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "Framebuffer not complete!");
+	//}
 
-	void FrameBuffer::AttachColorTexture(std::shared_ptr<Texture> texture, unsigned int attachmentPoints)
+	void FrameBuffer::AttachColorTexture(TextureHandle texture, unsigned int attachmentPoints)
 	{
 		//将它附加到当前绑定的帧缓冲对象
 		m_TextureColorBuffers[attachmentPoints] = texture;
 		Bind();
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + attachmentPoints, GL_TEXTURE_2D, (GLuint)texture->GetRendererID(), 0);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + attachmentPoints, GL_TEXTURE_2D, (GLuint)static_cast<Texture*>(texture.Get())->GetRendererID(), 0);
 		GE_ASSERT(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "Framebuffer not complete!");
 	}
 	//TODO:: 通过device->createFramebuffer(fboDesc);创建
@@ -261,8 +261,8 @@ namespace BlackPearl {
 		GE_ASSERT(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "Framebuffer not complete!");
 	}
 
-	void FrameBuffer::AttachDepthTexture(std::shared_ptr<ITexture> texture, int mipmapLevel) {
-		m_TextureDepthBuffer.reset(static_cast<Texture*>(texture.get()));
+	void FrameBuffer::AttachDepthTexture(TextureHandle texture, int mipmapLevel) {
+		m_TextureDepthBuffer.reset(static_cast<Texture*>(texture.Get()));
 		//Bind();
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, m_TextureDepthBuffer->GetRendererID(), mipmapLevel);
 		GLenum statue = glCheckFramebufferStatus(GL_FRAMEBUFFER);
@@ -272,12 +272,12 @@ namespace BlackPearl {
 
 
 	//TODO::注意CubeMap的格式
-	void FrameBuffer::AttachCubeMapDepthTexture(std::shared_ptr<CubeMapTexture> cubeMap)
+	void FrameBuffer::AttachCubeMapDepthTexture(TextureHandle cubeMap)
 	{
 
 		m_CubeMapDepthBuffer = cubeMap;// .reset(DBG_NEW CubeMapTexture(Texture::Type::CubeMap, imageWidth, imageHeight, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR, GL_CLAMP_TO_EDGE, GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT, GL_FLOAT));
 		Bind();
-		glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, m_CubeMapDepthBuffer->GetRendererID(), 0);
+		glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, static_cast<Texture*>(m_CubeMapDepthBuffer.Get())->GetRendererID(), 0);
 		GE_ASSERT(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "Framebuffer not complete!");
 	}
 
@@ -285,13 +285,23 @@ namespace BlackPearl {
 	void FrameBuffer::AttachCubeMapColorTexture(unsigned int attachmentPoints,const int imageWidth, int imageHeight) {
 		//GE_CORE_ERROR("不能调用，后续完善!");
 		GE_CORE_WARN(" 注意Texture是否是默认的格式！");
-
-		m_TextureColorBuffers[attachmentPoints].reset(DBG_NEW CubeMapTexture(Texture::Type::CubeMap, imageWidth, imageHeight, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR, GL_CLAMP_TO_EDGE, GL_RGB16F, GL_RGB, GL_FLOAT));
+		TextureDesc desc;
+		desc.type = TextureType::CubeMap;
+		desc.width = imageWidth;
+		desc.height = imageHeight;
+		desc.minFilter = FilterMode::Linear_Mip_Linear;
+		desc.magFilter = FilterMode::Linear;
+		desc.wrap = SamplerAddressMode::ClampToEdge;
+		desc.format = Format::RGB16_FLOAT;
+		desc.generateMipmap = false;
+		//texture->diffuseTextureMap = g_deviceManager->GetDevice()->createTexture(desc);
+		m_TextureColorBuffers[attachmentPoints] = g_deviceManager->GetDevice()->createTexture(desc);
+		//m_TextureColorBuffers[attachmentPoints].reset(DBG_NEW CubeMapTexture(Texture::Type::CubeMap, imageWidth, imageHeight, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR, GL_CLAMP_TO_EDGE, GL_RGB16F, GL_RGB, GL_FLOAT));
 	//	GE_ASSERT(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "Framebuffer not complete!");
 		//Bind();
 
 	}
-	void FrameBuffer::AttachCubeMapColorTexture(unsigned int attachmentPoints, std::shared_ptr<CubeMapTexture> cubeMap)
+	void FrameBuffer::AttachCubeMapColorTexture(unsigned int attachmentPoints, TextureHandle cubeMap)
 	{
 		m_TextureColorBuffers[attachmentPoints] = cubeMap;
 		//GE_ASSERT(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "Framebuffer not complete!");
@@ -400,36 +410,43 @@ namespace BlackPearl {
 	{
 
 		TextureDesc desc;
-		desc.type = TextureType::DepthMap;
+		desc.type = TextureType::DiffuseMap;
 		desc.width = m_Width;
-		desc.height = m_Width;
+		desc.height = m_Height;
 		desc.minFilter = FilterMode::Nearest;
 		desc.magFilter = FilterMode::Nearest;
 		desc.wrap = SamplerAddressMode::ClampToEdge;
 		desc.format = Format::RGBA16_FLOAT;
-		desc.generateMipmap = true;
+		desc.generateMipmap = false;
 		//texture->diffuseTextureMap = g_deviceManager->GetDevice()->createTexture(desc);
 		m_PositionTexture = g_deviceManager->GetDevice()->createTexture(desc);
 
 		//m_PositionTexture RGB-position A--isPBRObject+objectId -->voxel cone tracing
-		m_PositionTexture.reset(DBG_NEW Texture(Texture::Type::DiffuseMap, m_Width, m_Height, false, GL_NEAREST, GL_NEAREST, GL_RGBA16F, GL_RGBA, -1, GL_FLOAT));
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, (GLuint)m_PositionTexture->GetRendererID(), 0);
+		//m_PositionTexture.reset(DBG_NEW Texture(TextureType::DiffuseMap, m_Width, m_Height, false, GL_NEAREST, GL_NEAREST, GL_RGBA16F, GL_RGBA, -1, GL_FLOAT));
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, (GLuint)static_cast<Texture*>(m_PositionTexture.Get())->GetRendererID(), 0);
 		//m_NormalTexture RGB-normal A--isSkyBox -->voxel cone tracing
-		m_NormalTexture.reset(DBG_NEW Texture(Texture::Type::DiffuseMap, m_Width, m_Height, false, GL_NEAREST, GL_NEAREST, GL_RGBA16F, GL_RGBA, -1, GL_FLOAT));
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, (GLuint)m_NormalTexture->GetRendererID(), 0);
+		//m_NormalTexture.reset(DBG_NEW Texture(Texture::Type::DiffuseMap, m_Width, m_Height, false, GL_NEAREST, GL_NEAREST, GL_RGBA16F, GL_RGBA, -1, GL_FLOAT));
+		m_NormalTexture = g_deviceManager->GetDevice()->createTexture(desc);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, (GLuint)static_cast<Texture*>(m_NormalTexture.Get())->GetRendererID(), 0);
 
-		m_DiffuseRoughnessTexture.reset(DBG_NEW Texture(Texture::Type::DiffuseMap, m_Width, m_Height, false, GL_NEAREST, GL_NEAREST, GL_RGBA16F, GL_RGBA, -1, GL_FLOAT));
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, (GLuint)m_DiffuseRoughnessTexture->GetRendererID(), 0);
+		m_DiffuseRoughnessTexture = g_deviceManager->GetDevice()->createTexture(desc);
+		//m_DiffuseRoughnessTexture.reset(DBG_NEW Texture(Texture::Type::DiffuseMap, m_Width, m_Height, false, GL_NEAREST, GL_NEAREST, GL_RGBA16F, GL_RGBA, -1, GL_FLOAT));
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, (GLuint)static_cast<Texture*>(m_DiffuseRoughnessTexture.Get())->GetRendererID(), 0);
 
-		m_SpecularMentallicTexture.reset(DBG_NEW Texture(Texture::Type::DiffuseMap, m_Width, m_Height, false, GL_NEAREST, GL_NEAREST, GL_RGBA16F, GL_RGBA, -1, GL_FLOAT));
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT3, GL_TEXTURE_2D, (GLuint)m_SpecularMentallicTexture->GetRendererID(), 0);
+
+		m_SpecularMentallicTexture = g_deviceManager->GetDevice()->createTexture(desc);
+		//m_SpecularMentallicTexture.reset(DBG_NEW Texture(Texture::Type::DiffuseMap, m_Width, m_Height, false, GL_NEAREST, GL_NEAREST, GL_RGBA16F, GL_RGBA, -1, GL_FLOAT));
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT3, GL_TEXTURE_2D, (GLuint)static_cast<Texture*>(m_SpecularMentallicTexture.Get())->GetRendererID(), 0);
 
 		//m_AmbientGI RBG-ambienGI AO-isPBRObject -->lightprobe
-		m_AmbientGIAOTexture.reset(DBG_NEW Texture(Texture::Type::DiffuseMap, m_Width, m_Height, false, GL_NEAREST, GL_NEAREST, GL_RGBA16F, GL_RGBA, -1, GL_FLOAT));
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT4, GL_TEXTURE_2D, (GLuint)m_AmbientGIAOTexture->GetRendererID(), 0);
+		m_AmbientGIAOTexture = g_deviceManager->GetDevice()->createTexture(desc);
+		//m_AmbientGIAOTexture.reset(DBG_NEW Texture(Texture::Type::DiffuseMap, m_Width, m_Height, false, GL_NEAREST, GL_NEAREST, GL_RGBA16F, GL_RGBA, -1, GL_FLOAT));
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT4, GL_TEXTURE_2D, (GLuint)static_cast<Texture*>(m_AmbientGIAOTexture.Get())->GetRendererID(), 0);
 
-		m_NormalMapTexture.reset(DBG_NEW Texture(Texture::Type::DiffuseMap, m_Width, m_Height, false, GL_NEAREST, GL_NEAREST, GL_RGB16F, GL_RGB, -1, GL_FLOAT));
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT5, GL_TEXTURE_2D, (GLuint)m_NormalMapTexture->GetRendererID(), 0);
+		desc.format = Format::RGB16_FLOAT;
+		m_NormalMapTexture = g_deviceManager->GetDevice()->createTexture(desc);
+		//m_NormalMapTexture.reset(DBG_NEW Texture(Texture::Type::DiffuseMap, m_Width, m_Height, false, GL_NEAREST, GL_NEAREST, GL_RGB16F, GL_RGB, -1, GL_FLOAT));
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT5, GL_TEXTURE_2D, (GLuint)static_cast<Texture*>(m_NormalMapTexture.Get())->GetRendererID(), 0);
 
 
 		GLuint attachments[6] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2 ,GL_COLOR_ATTACHMENT3,GL_COLOR_ATTACHMENT4,GL_COLOR_ATTACHMENT5 };
@@ -454,9 +471,22 @@ namespace BlackPearl {
 		const size_t colorBufferNum = 4;
 		for (size_t i = 0; i < colorBufferNum; i++) {
 
-			std::shared_ptr<Texture> texture;
-			texture.reset(DBG_NEW Texture(Texture::Type::DiffuseMap, m_Width, m_Height, false, GL_NEAREST, GL_NEAREST, GL_RGBA32F, GL_RGBA, GL_CLAMP_TO_EDGE, GL_FLOAT));
-			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_TEXTURE_2D, (GLuint)texture->GetRendererID(), 0);
+			TextureHandle texture;
+			TextureDesc desc;
+			desc.type = TextureType::DiffuseMap;
+			desc.width = m_Width;
+			desc.height = m_Height;
+			desc.minFilter = FilterMode::Nearest;
+			desc.magFilter = FilterMode::Nearest;
+			desc.wrap = SamplerAddressMode::ClampToEdge;
+			desc.format = Format::RGBA32_FLOAT;
+			desc.generateMipmap = false;
+			//texture->diffuseTextureMap = g_deviceManager->GetDevice()->createTexture(desc);
+			texture = g_deviceManager->GetDevice()->createTexture(desc);
+
+
+			//texture.reset(DBG_NEW Texture(Texture::Type::DiffuseMap, m_Width, m_Height, false, GL_NEAREST, GL_NEAREST, GL_RGBA32F, GL_RGBA, GL_CLAMP_TO_EDGE, GL_FLOAT));
+			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_TEXTURE_2D, (GLuint)static_cast<Texture*>(texture.Get())->GetRendererID(), 0);
 			m_ColorTextures.push_back(texture);
 
 		}

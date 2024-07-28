@@ -3,7 +3,7 @@
 #include <vector>
 #include <string>   
 #include <cstdint>
-#include "BlackPearl/Renderer/Material/Texture.h"
+#include "BlackPearl/RHI/RHITexture.h"
 #include "BlackPearl/Renderer/Buffer/Buffer.h"
 #include "BlackPearl/Object/Object.h"
 #include "glm/glm.hpp"
@@ -15,11 +15,11 @@ namespace BlackPearl {
 	class CommonFunc
 	{
 	public:
-		static void ShowGBuffer(unsigned int row, unsigned int col, Object* quad, std::shared_ptr<GBuffer> gBuffer, std::vector<std::shared_ptr<Texture> >textures);
-        static void ShowFrameBuffer(unsigned int row, unsigned int col, Object* quad, std::shared_ptr<FrameBuffer> frameBuffer, std::vector<std::shared_ptr<Texture> >textures);
-        static void ShowFrameBuffer(glm::vec4 viewPort, Object* quad, std::shared_ptr<FrameBuffer> frameBuffer, std::shared_ptr<Texture> texture, bool isMipmap, int lod);
-        static void ShowTextures(unsigned int row, unsigned int col, Object* quad, std::vector<std::shared_ptr<Texture> >textures);
-        static void ShowTexture(glm::vec4 viewPort, Object* quad, std::shared_ptr<Texture> texture, bool isMipmap, int lod = 0);
+		static void ShowGBuffer(unsigned int row, unsigned int col, Object* quad, std::shared_ptr<GBuffer> gBuffer, std::vector<TextureHandle>textures);
+        static void ShowFrameBuffer(unsigned int row, unsigned int col, Object* quad, std::shared_ptr<FrameBuffer> frameBuffer, std::vector<TextureHandle >textures);
+        static void ShowFrameBuffer(glm::vec4 viewPort, Object* quad, std::shared_ptr<FrameBuffer> frameBuffer, TextureHandle texture, bool isMipmap, int lod);
+        static void ShowTextures(unsigned int row, unsigned int col, Object* quad, std::vector<TextureHandle>textures);
+        static void ShowTexture(glm::vec4 viewPort, Object* quad, TextureHandle texture, bool isMipmap, int lod = 0);
     };
     // Assign a name to the object to aid with debugging.
 #if defined(_DEBUG) || defined(DBG)

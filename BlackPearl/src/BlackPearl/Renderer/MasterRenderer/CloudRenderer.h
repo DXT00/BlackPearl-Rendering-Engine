@@ -39,8 +39,8 @@ namespace BlackPearl {
 	private:
 		void _CreateNoise3DTexture();
 		Scene* m_Scene;
-		std::shared_ptr<Texture> m_DepthTexture;
-		std::shared_ptr<Texture> m_CloudTexture;
+		TextureHandle m_DepthTexture;
+		TextureHandle m_CloudTexture;
 
 		std::shared_ptr<Shader> m_CloudShader;
 		std::shared_ptr<Shader> m_DepthShader;
@@ -51,7 +51,7 @@ namespace BlackPearl {
 		std::shared_ptr<FrameBuffer> m_DepthFrameBuffer;
 		std::shared_ptr<FrameBuffer> m_CloudFrameBuffer;
 
-		std::shared_ptr<Texture> m_WeatherTexture;
+		TextureHandle m_WeatherTexture;
 
 		//************** noise ********************/
 		//float m_NoiseTexture3DSize = 32.0;
