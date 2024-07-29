@@ -11,7 +11,7 @@ namespace BlackPearl {
 		const std::vector<float>& textureBuffer,
 		const int width,
 		const int height,
-		unsigned int ,
+		unsigned int minFilter,
 		unsigned int maxFilter,
 		int internalFormat,
 		int format,
@@ -20,7 +20,6 @@ namespace BlackPearl {
 		unsigned int access
 	) :Texture(TextureType::ImageMap)
 	{
-		
 
 		glGenTextures(1, &m_RendererID);
 		glBindTexture(GL_TEXTURE_2D, m_RendererID);
