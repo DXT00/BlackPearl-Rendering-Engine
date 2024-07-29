@@ -66,9 +66,21 @@ public:
 			 "assets/skybox/skybox1/SkyMorning_Back.png",
 			});
 
+		BlackPearl::IDevice* device = m_DeviceManager->GetDevice();
 
+		BlackPearl::TextureDesc desc;
+		desc.type = TextureType::None;
+		desc.width = BlackPearl::Configuration::WindowWidth;
+		desc.height = BlackPearl::Configuration::WindowHeight;
+		desc.minFilter = FilterMode::Linear;
+		desc.magFilter = FilterMode::Linear;
+		desc.wrap = SamplerAddressMode::ClampToEdge;
+		desc.format = Format::RGBA16_FLOAT;
+		desc.generateMipmap = false;
 
-		m_HDRPostProcessTexture.reset(DBG_NEW BlackPearl::Texture(BlackPearl::TextureType::None, BlackPearl::Configuration::WindowWidth, BlackPearl::Configuration::WindowHeight, false, GL_LINEAR, GL_LINEAR, GL_RGBA16F, GL_RGBA, GL_CLAMP_TO_EDGE, GL_FLOAT));
+		m_HDRPostProcessTexture = device->createTexture(desc);
+
+		//m_HDRPostProcessTexture.reset(DBG_NEW BlackPearl::Texture(BlackPearl::TextureType::None, BlackPearl::Configuration::WindowWidth, BlackPearl::Configuration::WindowHeight, false, GL_LINEAR, GL_LINEAR, GL_RGBA16F, GL_RGBA, GL_CLAMP_TO_EDGE, GL_FLOAT));
 		m_LightPassFrameBuffer.reset(DBG_NEW BlackPearl::FrameBuffer());
 		m_LightPassFrameBuffer->Bind();
 		m_LightPassFrameBuffer->AttachRenderBuffer(BlackPearl::Configuration::WindowWidth, BlackPearl::Configuration::WindowHeight);
@@ -166,7 +178,7 @@ private:
 	BlackPearl::Scene* m_Scene;
 
 	std::vector<BlackPearl::Object*> m_LightObjs;
-	std::shared_ptr<BlackPearl::Texture> m_HDRPostProcessTexture;
+	BlackPearl::TextureHandle m_HDRPostProcessTexture;
 	std::shared_ptr<BlackPearl::FrameBuffer> m_LightPassFrameBuffer;
 
 
