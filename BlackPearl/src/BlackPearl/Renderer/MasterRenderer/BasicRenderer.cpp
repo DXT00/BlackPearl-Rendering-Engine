@@ -509,8 +509,8 @@ namespace BlackPearl {
 				glActiveTexture(GL_TEXTURE0 + k);
 				shader->SetUniform1i(ShaderConfig::HEIGHT_TEXTURE2D, k);
 				textures->heightTextureMap->Bind();
-				float width = textures->heightTextureMap->GetWidth();
-				float height = textures->heightTextureMap->GetHeight();
+				float width = textures->heightTextureMap->getDesc().height;
+				float height = textures->heightTextureMap->getDesc().width;
 
 				shader->SetUniformVec2f("u_HeightMapSize", glm::vec2(width, height));
 

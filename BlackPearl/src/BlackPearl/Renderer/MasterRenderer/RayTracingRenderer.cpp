@@ -296,19 +296,19 @@ namespace BlackPearl {
 			m_TexDataTex->Bind(6);
 			m_PackDataTex->Bind(7);
 			size_t base_id = 9;
-			std::map<std::shared_ptr<Texture>, size_t>::iterator it = m_Tex2RenderIdMap.begin();
+			std::map<TextureHandle, size_t>::iterator it = m_Tex2RenderIdMap.begin();
 			for (;it != m_Tex2RenderIdMap.end();it++)
 			{
-				std::shared_ptr<Texture> texture = it->first;
+				TextureHandle texture = it->first;
 				m_BVHNodeShader->SetUniform1i("u_texArray["+ std::to_string(it->second)+ "]", base_id);
 				glActiveTexture(GL_TEXTURE0 + base_id);
 				texture->Bind();
 				base_id++;
 			}
-			std::map<std::shared_ptr<CubeMapTexture>, size_t>::iterator it_cube = m_CubeMap2RenderIdMap.begin();
+			std::map<TextureHandle, size_t>::iterator it_cube = m_CubeMap2RenderIdMap.begin();
 			for (; it_cube != m_CubeMap2RenderIdMap.end(); it_cube++)
 			{
-				std::shared_ptr<CubeMapTexture> cube_tex = std::static_pointer_cast<CubeMapTexture>(it_cube->first);
+				TextureHandle cube_tex = it_cube->first;
 				
 				m_BVHNodeShader->SetUniform1i("u_cubeMaps[" + std::to_string(it_cube->second) + "]", base_id);
 				glActiveTexture(GL_TEXTURE0 + base_id);

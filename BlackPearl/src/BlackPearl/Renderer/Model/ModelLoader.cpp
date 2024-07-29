@@ -510,31 +510,90 @@ namespace BlackPearl {
 
 			std::string path_str = m_Directory + "/" + std::string(path.C_Str());//
 			
-			TextureDesc textureDesc;
-			textureDesc.type = typeName;
-			textureDesc.path = path_str;
-			textureDesc.height = 1;
-			textureDesc.mipLevels = 1;
-
+			TextureDesc desc;
+			desc.type = typeName;
+			desc.path = path_str.c_str();
+			desc.minFilter = FilterMode::Linear_Mip_Linear;
+			desc.magFilter = FilterMode::Linear;
+			desc.wrap = SamplerAddressMode::Repeat;
+			desc.format = Format::RGBA8_UNORM;
+			desc.generateMipmap = true;
 
 			if (typeName == TextureType::DiffuseMap)
-				textures->diffuseTextureMap.reset(DBG_NEW Texture(typeName, path_str.c_str(), GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR, GL_RGBA, GL_REPEAT, GL_UNSIGNED_BYTE, true));
+				textures->diffuseTextureMap = m_DeviceManager->GetDevice()->createTexture(desc);
+				//textures->diffuseTextureMap.reset(DBG_NEW Texture(typeName, path_str.c_str(), GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR, GL_RGBA, GL_REPEAT, GL_UNSIGNED_BYTE, true));
 			if (typeName == TextureType::SpecularMap)
-				textures->specularTextureMap.reset(DBG_NEW Texture(typeName, path_str.c_str(), GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR, GL_RGBA, GL_REPEAT, GL_UNSIGNED_BYTE, true));
-			if (typeName == TextureType::EmissionMap)
-				textures->emissionTextureMap.reset(DBG_NEW Texture(typeName, path_str.c_str(), GL_LINEAR, GL_LINEAR, GL_RGBA, GL_CLAMP_TO_EDGE, GL_UNSIGNED_BYTE));
-			if (typeName == TextureType::NormalMap)
-				textures->normalTextureMap.reset(DBG_NEW Texture(typeName, path_str.c_str(), GL_LINEAR, GL_LINEAR, GL_RGBA, GL_CLAMP_TO_EDGE, GL_UNSIGNED_BYTE));
-			if (typeName == TextureType::AoMap)
-				textures->aoMap.reset(DBG_NEW Texture(typeName, path_str.c_str(), GL_LINEAR, GL_LINEAR, GL_RGBA, GL_CLAMP_TO_EDGE, GL_UNSIGNED_BYTE));
-			if (typeName == TextureType::MentallicMap)
-				textures->mentallicMap.reset(DBG_NEW Texture(typeName, path_str.c_str(), GL_LINEAR, GL_LINEAR, GL_RGBA, GL_CLAMP_TO_EDGE, GL_UNSIGNED_BYTE));
-			if (typeName == TextureType::RoughnessMap)
-				textures->roughnessMap.reset(DBG_NEW Texture(typeName, path_str.c_str(), GL_LINEAR, GL_LINEAR, GL_RGBA, GL_CLAMP_TO_EDGE, GL_UNSIGNED_BYTE));
-			if (typeName == TextureType::HeightMap)
-				textures->heightTextureMap.reset(DBG_NEW Texture(typeName, path_str.c_str(), GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR, GL_RED, GL_REPEAT, GL_UNSIGNED_BYTE, true));
-			if (typeName == TextureType::OpacityMap)
-				textures->heightTextureMap.reset(DBG_NEW Texture(typeName, path_str.c_str(), GL_LINEAR, GL_LINEAR, GL_RGBA, GL_CLAMP_TO_EDGE, GL_UNSIGNED_BYTE));
+				textures->specularTextureMap = m_DeviceManager->GetDevice()->createTexture(desc);
+				//textures->specularTextureMap.reset(DBG_NEW Texture(typeName, path_str.c_str(), GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR, GL_RGBA, GL_REPEAT, GL_UNSIGNED_BYTE, true));
+			if (typeName == TextureType::EmissionMap) {
+				
+				desc.minFilter = FilterMode::Linear;
+				desc.magFilter = FilterMode::Linear;
+				desc.wrap = SamplerAddressMode::ClampToEdge;
+				desc.format = Format::RGBA8_UNORM;
+				desc.generateMipmap = false;
+				textures->emissionTextureMap = m_DeviceManager->GetDevice()->createTexture(desc);
+				//textures->emissionTextureMap.reset(DBG_NEW Texture(typeName, path_str.c_str(), GL_LINEAR, GL_LINEAR, GL_RGBA, GL_CLAMP_TO_EDGE, GL_UNSIGNED_BYTE));
+
+			}
+			if (typeName == TextureType::NormalMap) {
+				desc.minFilter = FilterMode::Linear;
+				desc.magFilter = FilterMode::Linear;
+				desc.wrap = SamplerAddressMode::ClampToEdge;
+				desc.format = Format::RGBA8_UNORM;
+				desc.generateMipmap = false;
+				textures->normalTextureMap = m_DeviceManager->GetDevice()->createTexture(desc);
+				//textures->normalTextureMap.reset(DBG_NEW Texture(typeName, path_str.c_str(), GL_LINEAR, GL_LINEAR, GL_RGBA, GL_CLAMP_TO_EDGE, GL_UNSIGNED_BYTE));
+			}
+			if (typeName == TextureType::AoMap) {
+				desc.minFilter = FilterMode::Linear;
+				desc.magFilter = FilterMode::Linear;
+				desc.wrap = SamplerAddressMode::ClampToEdge;
+				desc.format = Format::RGBA8_UNORM;
+				desc.generateMipmap = false;
+				textures->aoMap = m_DeviceManager->GetDevice()->createTexture(desc);
+				//				textures->aoMap.reset(DBG_NEW Texture(typeName, path_str.c_str(), GL_LINEAR, GL_LINEAR, GL_RGBA, GL_CLAMP_TO_EDGE, GL_UNSIGNED_BYTE));
+
+			}
+			if (typeName == TextureType::MentallicMap) {
+				desc.minFilter = FilterMode::Linear;
+				desc.magFilter = FilterMode::Linear;
+				desc.wrap = SamplerAddressMode::ClampToEdge;
+				desc.format = Format::RGBA8_UNORM;
+				desc.generateMipmap = false;
+				textures->mentallicMap = m_DeviceManager->GetDevice()->createTexture(desc);
+				//				textures->mentallicMap.reset(DBG_NEW Texture(typeName, path_str.c_str(), GL_LINEAR, GL_LINEAR, GL_RGBA, GL_CLAMP_TO_EDGE, GL_UNSIGNED_BYTE));
+
+			}
+			if (typeName == TextureType::RoughnessMap) {
+				desc.minFilter = FilterMode::Linear;
+				desc.magFilter = FilterMode::Linear;
+				desc.wrap = SamplerAddressMode::ClampToEdge;
+				desc.format = Format::RGBA8_UNORM;
+				desc.generateMipmap = false;
+				textures->roughnessMap = m_DeviceManager->GetDevice()->createTexture(desc);
+				//textures->roughnessMap.reset(DBG_NEW Texture(typeName, path_str.c_str(), GL_LINEAR, GL_LINEAR, GL_RGBA, GL_CLAMP_TO_EDGE, GL_UNSIGNED_BYTE));
+
+			}
+			if (typeName == TextureType::HeightMap) {
+				desc.minFilter = FilterMode::Linear_Mip_Linear;
+				desc.magFilter = FilterMode::Linear;
+				desc.wrap = SamplerAddressMode::Repeat;
+				desc.format = Format::R8_UNORM;
+				desc.generateMipmap = true;
+				textures->heightTextureMap = m_DeviceManager->GetDevice()->createTexture(desc);
+
+			}
+			if (typeName == TextureType::OpacityMap) {
+				desc.minFilter = FilterMode::Linear;
+				desc.magFilter = FilterMode::Linear;
+				desc.wrap = SamplerAddressMode::ClampToEdge;
+				desc.format = Format::RGBA8_UNORM;
+				desc.generateMipmap = false;
+				textures->opacityMap = m_DeviceManager->GetDevice()->createTexture(desc);
+				//				textures->opacityMap.reset(DBG_NEW Texture(typeName, path_str.c_str(), GL_LINEAR, GL_LINEAR, GL_RGBA, GL_CLAMP_TO_EDGE, GL_UNSIGNED_BYTE));
+
+			}
 
 
 		}

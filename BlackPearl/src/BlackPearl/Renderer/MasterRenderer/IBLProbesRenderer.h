@@ -32,7 +32,7 @@ namespace BlackPearl {
 	//	void RenderSpecularObjects(const LightSources* lightSources, const std::vector<Object*> objects, const std::vector<Object*> probes);
 
 		void Init(MainCamera* camera, Object* brdfLUTQuadObj, const LightSources& lightSources, const std::vector<Object*> objects);
-		std::shared_ptr<Texture> GetSpecularBrdfLUTTexture() const { return m_SpecularBrdfLUTTexture; }
+		TextureHandle GetSpecularBrdfLUTTexture() const { return m_SpecularBrdfLUTTexture; }
 		//void UpdateProbesMaps(const LightSources* lightSources, std::vector<Object*> objects, Object* skyBox, Object* probe);
 		
 		void ReUpdateProbes() {

@@ -4,7 +4,8 @@
 #include "BlackPearl/Math/Math.h"
 #include <random>
 #include "BlackPearl/Renderer/DeviceManager.h"
-
+#include "BlackPearl/RHI/OpenGLRHI/OpenGLTexture.h"
+#include "BlackPearl/RHI/RHITexture.h"
 namespace BlackPearl {
     extern DeviceManager* g_deviceManager;
 

@@ -65,7 +65,7 @@ namespace BlackPearl {
 		shader->Bind();
 		shader->SetUniform1f("u_Num", 1.0);
 		shader->SetUniform1i("u_FinalScreenTexture", lod);
-		if (texture->GetType() == Texture::DepthMap) {
+		if (texture->GetType() == TextureType::DepthMap) {
 			shader->SetUniform1i("u_isDepth", 1);
 		}
 		if (isMipmap) {

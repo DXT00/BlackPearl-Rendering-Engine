@@ -3,7 +3,7 @@
 #include "BlackPearl/Renderer/VertexArray.h"
 #include "BlackPearl/Renderer/MasterRenderer/BasicRenderer.h"
 #include "BlackPearl/Renderer/Mesh/MeshGatherer.h"
-#include "BlackPearl/Renderer/Material/Texture.h"
+#include "BlackPearl/RHI/RHITexture.h"
 #include "BlackPearl/MainCamera/MainCamera.h"
 
 namespace BlackPearl {
@@ -95,7 +95,7 @@ namespace BlackPearl {
 
 		std::vector<std::shared_ptr<ShaderStorageBuffer>> m_ComputeShaderSSBOs;
 		std::shared_ptr<FrameBuffer> m_HizFrameBuffer;
-		std::shared_ptr<Texture> m_DepthTexture;
+		TextureHandle m_DepthTexture;
 		std::shared_ptr<Shader> m_CullingShader;
 		std::shared_ptr<Shader> m_FillCmdsShader;
 		std::shared_ptr<Shader> m_CmdsClearShader;

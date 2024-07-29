@@ -62,9 +62,9 @@ namespace BlackPearl {
         return m_Device->createBindingSet(bindingSetDesc, m_BindingLayout);
 	}
 
-    BindingSetItem MaterialBindingCache::GetTextureBindingSetItem(uint32_t slot, const std::shared_ptr<ITexture>& texture) const
+    BindingSetItem MaterialBindingCache::GetTextureBindingSetItem(uint32_t slot, const TextureHandle& texture) const
     {
-        return BindingSetItem::Texture_SRV(slot, texture? texture.get() : m_FallbackTexture.Get());
+        return BindingSetItem::Texture_SRV(slot, texture? texture.Get() : m_FallbackTexture.Get());
     }
 
 	//BindingSetItem MaterialBindingCache::GetTextureBindingSetItem(uint32_t slot, const std::shared_ptr<LoadedTexture>& texture) const

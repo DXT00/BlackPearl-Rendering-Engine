@@ -90,7 +90,7 @@ namespace BlackPearl {
 
 	}
 
-	void CloudRenderer::Render(MainCamera* mainCamera,Object* obj, Object* BoundingBoxObj, const std::shared_ptr<Texture> postProcessTexture)
+	void CloudRenderer::Render(MainCamera* mainCamera,Object* obj, Object* BoundingBoxObj, const TextureHandle postProcessTexture)
 	{
 		//m_CloudFrameBuffer->Bind();
 
@@ -146,7 +146,7 @@ namespace BlackPearl {
 		//m_CloudFrameBuffer->UnBind();
 	}
 
-	void CloudRenderer::RenderCombineScene(MainCamera* mainCamera, Object* obj, const std::shared_ptr<Texture> postProcessTexture)
+	void CloudRenderer::RenderCombineScene(MainCamera* mainCamera, Object* obj, const TextureHandle postProcessTexture)
 	{
 		m_SceneRenderShader->Bind();
 		m_SceneRenderShader->SetUniform1i("u_CloudTexture", 8);
@@ -160,7 +160,7 @@ namespace BlackPearl {
 		m_SceneRenderShader->Unbind();
 	}
 
-	void CloudRenderer::RenderScene(MainCamera* mainCamera, Object* obj, const std::shared_ptr<Texture> postProcessTexture)
+	void CloudRenderer::RenderScene(MainCamera* mainCamera, Object* obj, const TextureHandle postProcessTexture)
 	{
 		m_SceneRenderShader->Bind();
 		m_SceneRenderShader->SetUniform1i("u_CloudTexture", 8);

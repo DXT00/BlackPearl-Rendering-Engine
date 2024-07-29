@@ -9,7 +9,7 @@
 
 #include "BlackPearl/Animation/Bone.h"
 #include "BlackPearl/Renderer/Model/Model.h"
-
+#include "BlackPearl/RHI/RHITexture.h"
 namespace BlackPearl
 {
     class ModelLoader
@@ -35,7 +35,7 @@ namespace BlackPearl
 		void LoadMaterialTextures(
 			aiMaterial* material,
 			aiTextureType type,
-			Texture::Type typeName,
+			TextureType typeName,
 			std::shared_ptr<Material::TextureMaps>& textures);
 
 		void LoadMaterialColors(

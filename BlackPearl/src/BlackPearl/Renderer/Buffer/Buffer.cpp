@@ -5,6 +5,7 @@
 #include "BlackPearl/RHI/RHIDefinitions.h"
 #include "BlackPearl/RHI/RHISampler.h"
 #include "BlackPearl/Renderer/DeviceManager.h"
+#include "BlackPearl/RHI/OpenGLRHI/OpenGLTexture.h"
 #include <memory>
 
 
@@ -254,17 +255,17 @@ namespace BlackPearl {
 		auto texture = g_deviceManager->GetDevice()->createTexture(desc);
 
 		//m_TextureDepthBuffer.reset(DBG_NEW BlackPearl::Texture(Texture::Type::DepthMap, imageWidth, imageHeight,false, GL_NEAREST, GL_NEAREST, GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT, GL_CLAMP_TO_EDGE, GL_FLOAT));
-		m_TextureDepthBuffer.reset(static_cast<Texture*>(texture.Get()));
+		m_TextureDepthBuffer = texture;
 		Bind();
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, m_TextureDepthBuffer->GetRendererID(), 0);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, static_cast<Texture*>(m_TextureDepthBuffer.Get())->GetRendererID(), 0);
 
 		GE_ASSERT(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "Framebuffer not complete!");
 	}
 
 	void FrameBuffer::AttachDepthTexture(TextureHandle texture, int mipmapLevel) {
-		m_TextureDepthBuffer.reset(static_cast<Texture*>(texture.Get()));
+		m_TextureDepthBuffer = texture;
 		//Bind();
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, m_TextureDepthBuffer->GetRendererID(), mipmapLevel);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, static_cast<Texture*>(m_TextureDepthBuffer.Get())->GetRendererID(), mipmapLevel);
 		GLenum statue = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 		GE_ASSERT(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "Framebuffer not complete!");
 	}

@@ -5,6 +5,7 @@
 #include "BlackPearl/RayTracing/GenData.h"
 #include "BlackPearl/RayTracing/Group.h"
 #include "BlackPearl/Scene/SceneBuilder.h"
+#include "BlackPearl/RHI/RHITexture.h"
 
 namespace BlackPearl {
 	class RayTracingRenderer: public BasicRenderer
@@ -50,8 +51,8 @@ namespace BlackPearl {
 		std::shared_ptr<TextureImage2D> m_MaterialDataTex;
 		std::shared_ptr<TextureImage2D> m_PackDataTex;
 		std::shared_ptr<TextureImage2D> m_SkyBoxTex;
-		std::map<std::shared_ptr<Texture>, size_t> m_Tex2RenderIdMap;
-		std::map<std::shared_ptr<CubeMapTexture>, size_t> m_CubeMap2RenderIdMap;
+		std::map<TextureHandle, size_t> m_Tex2RenderIdMap;
+		std::map<TextureHandle, size_t> m_CubeMap2RenderIdMap;
 
 		std::shared_ptr<GenData> m_GenData;
 

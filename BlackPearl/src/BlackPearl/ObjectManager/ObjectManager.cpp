@@ -17,7 +17,7 @@
 #include "BlackPearl/Component/MeshFilterComponent/SkyBoxMeshFilter.h"
 #include "BlackPearl/Component/LightProbeComponent/LightProbeComponent.h"
 #include "BlackPearl/Component/CameraComponent/PerspectiveCamera.h"
-#include "BlackPearl/Renderer/Material/CubeMapTexture.h"
+#include "BlackPearl/RHI/RHITexture.h"
 #include "BlackPearl/Component/BasicInfoComponent/BasicInfo.h"
 #include "BlackPearl/Component/BoundingBoxComponent/BoundingBox.h"
 #include "BlackPearl/Component/BVHNodeComponent/BVHNode.h"

@@ -11,6 +11,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <thread>
 #include "BlackPearl/Renderer/DeviceManager.h"
+#include "BlackPearl/RHI/OpenGLRHI/OpenGLTexture.h"
 namespace BlackPearl {
 	extern DeviceManager* g_deviceManager;
 	math::float3 IBLProbesRenderer::s_ProbeGridOffset = math::float3(2.0f,10.0f,6.7f);

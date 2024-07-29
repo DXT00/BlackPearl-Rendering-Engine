@@ -1,12 +1,11 @@
 #pragma once
 #include "glm/glm.hpp"
-#include "BlackPearl/Renderer/Material/CubeMapTexture.h"
 #include "BlackPearl/Component/TransformComponent/Transform.h"
 #include "BlackPearl/Object/Object.h"
 #include "BlackPearl/MainCamera/MainCamera.h"
 #include "BlackPearl/Renderer/Material/TextureImage2D.h"
 #include "BlackPearl/Component/LightComponent/LightSources.h"
-#include <thread>
+#include "BlackPearl/RHI/RHITexture.h"
 
 namespace BlackPearl {
 	class IBLProbesRenderer;
@@ -31,7 +30,7 @@ namespace BlackPearl {
 
 		/* Textures */
 		//std::shared_ptr<CubeMapTexture> GetHdrEnvironmentCubeMap()const    { return m_HdrEnvironmentCubeMap; }
-		std::shared_ptr<CubeMapTexture> GetSpecularPrefilterCubeMap()const { GE_ASSERT(m_Type == Type::REFLECTION, "is not a reflection probe") return m_SpecularPrefilterCubeMap; }
+		TextureHandle GetSpecularPrefilterCubeMap()const { GE_ASSERT(m_Type == Type::REFLECTION, "is not a reflection probe") return m_SpecularPrefilterCubeMap; }
 		//std::shared_ptr<CubeMapTexture> GetDiffuseIrradianceCubeMap()const { return m_DiffuseIrradianceCubeMap; }
 		std::shared_ptr<ITexture> GetSpecularBrdfLutMap()const       { return m_SpecularBrdfLutMap; }
 		
@@ -64,8 +63,8 @@ namespace BlackPearl {
 		/* probe's view matrix */
 		glm::mat4 m_ViewMatrix = glm::mat4(1.0f);
 		/* Textures */
-		std::shared_ptr<CubeMapTexture> m_HdrEnvironmentCubeMap = nullptr;
-		std::shared_ptr<CubeMapTexture> m_SpecularPrefilterCubeMap = nullptr;
+		TextureHandle m_HdrEnvironmentCubeMap = nullptr;
+		TextureHandle m_SpecularPrefilterCubeMap = nullptr;
 		std::shared_ptr<ITexture>		m_SpecularBrdfLutMap = nullptr;
 		unsigned int m_MaxMipmapLevel = 5;
 

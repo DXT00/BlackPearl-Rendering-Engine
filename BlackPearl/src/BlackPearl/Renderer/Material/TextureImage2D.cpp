@@ -18,7 +18,7 @@ namespace BlackPearl {
 		int wrap,
 		unsigned int dataType,
 		unsigned int access
-		):Texture(TextureType::ImageMap)
+	) :Texture(TextureType::ImageMap)
 	{
 		glGenTextures(1, &m_RendererID);
 		glBindTexture(GL_TEXTURE_2D, m_RendererID);

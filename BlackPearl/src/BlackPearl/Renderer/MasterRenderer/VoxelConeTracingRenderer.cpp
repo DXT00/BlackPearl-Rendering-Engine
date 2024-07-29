@@ -4,7 +4,12 @@
 #include "BlackPearl/Component/TransformComponent/Transform.h"
 #include "BlackPearl/Component/LightComponent/PointLight.h"
 #include "BlackPearl/Config.h"
+#include "BlackPearl/Renderer/DeviceManager.h"
+#include "BlackPearl/RHI/RHITexture.h"
+
 namespace BlackPearl {
+	extern DeviceManager* g_deviceManager;
+
 	bool VoxelConeTracingRenderer::s_Shadows = true;
 	bool VoxelConeTracingRenderer::s_IndirectDiffuseLight = true;
 	bool VoxelConeTracingRenderer::s_IndirectSpecularLight = true;
@@ -337,7 +342,17 @@ namespace BlackPearl {
 
 	void VoxelConeTracingRenderer::RenderSpecularBRDFLUTMap()
 	{
-		m_SpecularBrdfLUTTexture.reset(DBG_NEW Texture(Texture::DiffuseMap, m_VoxelTextureSize, m_VoxelTextureSize, false, GL_LINEAR, GL_LINEAR, GL_RG16F, GL_RG, GL_CLAMP_TO_EDGE, GL_FLOAT));
+		TextureDesc desc;
+		desc.type = TextureType::DiffuseMap;
+		desc.width = m_VoxelTextureSize;
+		desc.height = m_VoxelTextureSize;
+		desc.minFilter = FilterMode::Linear;
+		desc.magFilter = FilterMode::Linear;
+		desc.wrap = SamplerAddressMode::ClampToEdge;
+		desc.format = Format::RG16_FLOAT;
+		m_SpecularBrdfLUTTexture = g_deviceManager->GetDevice()->createTexture(desc);
+
+		//m_SpecularBrdfLUTTexture.reset(DBG_NEW Texture(Texture::DiffuseMap, m_VoxelTextureSize, m_VoxelTextureSize, false, GL_LINEAR, GL_LINEAR, GL_RG16F, GL_RG, GL_CLAMP_TO_EDGE, GL_FLOAT));
 		//std::shared_ptr<Texture> brdfLUTTexture(new Texture(Texture::None, 512, 512, GL_LINEAR, GL_LINEAR, GL_RG16F, GL_RG, GL_CLAMP_TO_EDGE, GL_FLOAT));
 		std::shared_ptr<FrameBuffer> frameBuffer(new FrameBuffer());
 		//	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

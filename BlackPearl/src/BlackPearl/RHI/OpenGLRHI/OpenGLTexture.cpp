@@ -201,7 +201,8 @@ namespace BlackPearl {
 
 		switch (format)
 		{
-
+		case Format::R8_UNORM:
+			return std::make_pair<GLenum, GLenum>(GL_RED, GL_UNSIGNED_BYTE);;
 		case Format::R32_FLOAT:
 			return std::make_pair<GLenum, GLenum>(GL_RED, GL_FLOAT);
 
@@ -239,6 +240,8 @@ namespace BlackPearl {
 		switch (format)
 		{
 
+		case Format::R8_UNORM:
+			return GL_RED;
 		case Format::R32_FLOAT:
 			return GL_R32F;
 		case Format::RG16_FLOAT:

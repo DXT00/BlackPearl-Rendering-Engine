@@ -10,6 +10,7 @@
 #include "BlackPearl/Renderer/Mesh/Vertex.h"
 #include "BlackPearl/Renderer/DeviceManager.h"
 #include "BlackPearl/RHI/RHIDevice.h"
+#include "BlackPearl/Component/LightProbeComponent/LightProbeComponent.h"
 
 namespace BlackPearl {
 	class ObjectManager

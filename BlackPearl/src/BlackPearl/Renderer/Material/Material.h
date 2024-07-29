@@ -156,7 +156,6 @@ namespace BlackPearl {
 
 	public:
 		std::string name;
-		MaterialDomain domain;// = MaterialDomain::Opaque;
 	private:
 		std::shared_ptr<Shader>		 m_Shader = nullptr;
 		std::shared_ptr<TextureMaps> m_TextureMaps = nullptr;

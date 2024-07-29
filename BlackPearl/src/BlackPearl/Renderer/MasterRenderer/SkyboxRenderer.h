@@ -1,9 +1,9 @@
 #pragma once
 #include <BlackPearl/Object/Object.h>
 #include <BlackPearl/Renderer/Shader/Shader.h>
-#include <BlackPearl/Renderer/Material/CubeMapTexture.h>
 #include <BlackPearl/Renderer/MasterRenderer/BasicRenderer.h>
 #include "BlackPearl/Renderer/Renderer.h"
+#include "BlackPearl/RHI/RHITexture.h"
 namespace BlackPearl {
 	class SkyboxRenderer:public BasicRenderer
 	{

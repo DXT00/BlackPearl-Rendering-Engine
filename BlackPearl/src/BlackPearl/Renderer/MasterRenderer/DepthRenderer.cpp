@@ -2,7 +2,7 @@
 
 #include "DepthRenderer.h"
 #include "BlackPearl/Renderer/DeviceManager.h"
-
+#include "BlackPearl/RHI/OpenGLRHI/OpenGLTexture.h"
 namespace BlackPearl {
 
 	extern DeviceManager* g_deviceManager;

@@ -22,6 +22,7 @@
 #include "BlackPearl/Node/BatchNode.h"
 #include "BlackPearl/Renderer/DeviceManager.h"
 #include "BlackPearl/Math/Math.h"
+#include "BlackPearl/Component/LightProbeComponent/LightProbeComponent.h"
 #include <WinUser.h>
 
 using namespace std::chrono;

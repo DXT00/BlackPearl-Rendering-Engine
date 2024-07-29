@@ -34,14 +34,14 @@ namespace BlackPearl {
 		}
 
 	}
-	void MeshRenderer::SetModelTexture(unsigned int meshIndex, const std::shared_ptr<ITexture>&texture)
+	void MeshRenderer::SetModelTexture(unsigned int meshIndex, const TextureHandle&texture)
 	{
 		GE_ASSERT(m_Model, "m_Model is nullptr");
 		GE_ASSERT(!m_Model->GetMeshes().empty(), "Model has no textures!");
 		GE_ASSERT(m_Model->GetMeshes().size() > meshIndex, "meshIndex out of m_Meshes range!");
 		m_Model->GetMeshes()[meshIndex]->SetTexture(texture);
 	}
-	void MeshRenderer::SetModelTextures(const std::shared_ptr<ITexture>& texture)
+	void MeshRenderer::SetModelTextures(const TextureHandle& texture)
 	{
 		GE_ASSERT(m_Model, "m_Model is nullptr");
 		GE_ASSERT(!m_Model->GetMeshes().empty(), "Model has no textures!");

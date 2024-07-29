@@ -4,6 +4,7 @@
 #include "BlackPearl/Renderer/Shader/Shader.h"
 #include "BlackPearl/Renderer/Buffer/Buffer.h"
 #include "BlackPearl/Renderer/Material/TextureImage2D.h"
+#include "BlackPearl/RHI/RHITexture.h"
 namespace BlackPearl {
 	class VoxelConeTracingRenderer:public BasicRenderer
 	{
@@ -73,7 +74,7 @@ namespace BlackPearl {
 		// ----------------
 		std::shared_ptr<Shader> m_SpecularBRDFLutShader;
 		/*只计算一次*/
-		std::shared_ptr<Texture> m_SpecularBrdfLUTTexture = nullptr;
+		TextureHandle m_SpecularBrdfLUTTexture = nullptr;
 		Object* m_BrdfLUTQuadObj = nullptr;//pbr brdf LUT map render
 
 		/*Debug function*/

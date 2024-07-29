@@ -563,30 +563,30 @@ namespace BlackPearl {
 		Object* sphereObjPlastic = CreateSphere(1.5, 64, 64);
 		//textures spheres
 		IDevice* device = m_DeviceManager->GetDevice();
-		TextureHandle RustalbedoTexture = device->createTexture({TextureType::DiffuseMap, "assets/texture/pbr/rustSphere/rustediron2_basecolor.png"});
-		TextureHandle RustaoTexture = device->createTexture({TextureType::AoMap, "assets/texture/pbr/rustSphere/rustediron2_ao.png"});
-		TextureHandle RustroughnessTexture = device->createTexture({TextureType::RoughnessMap, "assets/texture/pbr/rustSphere/rustediron2_roughness.png"});
-		TextureHandle RustmentallicTexture = device->createTexture({TextureType::MentallicMap, "assets/texture/pbr/rustSphere/rustediron2_metallic.png"});
-		TextureHandle RustnormalTexture = device->createTexture({TextureType::NormalMap, "assets/texture/pbr/rustSphere/rustediron2_normal.png"});
+		TextureHandle RustalbedoTexture = device->createTexture(TextureDesc(TextureType::DiffuseMap, "assets/texture/pbr/rustSphere/rustediron2_basecolor.png"));
+		TextureHandle RustaoTexture = device->createTexture(TextureDesc(TextureType::AoMap, "assets/texture/pbr/rustSphere/rustediron2_ao.png"));
+		TextureHandle RustroughnessTexture = device->createTexture(TextureDesc(TextureType::RoughnessMap, "assets/texture/pbr/rustSphere/rustediron2_roughness.png"));
+		TextureHandle RustmentallicTexture = device->createTexture(TextureDesc(TextureType::MentallicMap, "assets/texture/pbr/rustSphere/rustediron2_metallic.png"));
+		TextureHandle RustnormalTexture = device->createTexture(TextureDesc(TextureType::NormalMap, "assets/texture/pbr/rustSphere/rustediron2_normal.png"));
 
 
-		TextureHandle IronalbedoTexture = device->createTexture({TextureType::DiffuseMap, "assets/texture/pbr/IronScuffed/Iron-Scuffed_basecolor.png"});
-		TextureHandle IronaoTexture = device->createTexture({TextureType::AoMap, "assets/texture/pbr/IronScuffed/Iron-Scuffed_ao.png"});
-		TextureHandle IronroughnessTexture = device->createTexture({TextureType::RoughnessMap, "assets/texture/pbr/IronScuffed/Iron-Scuffed_roughness.png"});
-		TextureHandle IronmentallicTexture = device->createTexture({TextureType::MentallicMap, "assets/texture/pbr/IronScuffed/Iron-Scuffed_metallic.png"});
-		TextureHandle IronnormalTexture = device->createTexture({TextureType::NormalMap, "assets/texture/pbr/IronScuffed/Iron-Scuffed_normal.png"});
+		TextureHandle IronalbedoTexture = device->createTexture(TextureDesc(TextureType::DiffuseMap, "assets/texture/pbr/IronScuffed/Iron-Scuffed_basecolor.png"));
+		TextureHandle IronaoTexture = device->createTexture(TextureDesc(TextureType::AoMap, "assets/texture/pbr/IronScuffed/Iron-Scuffed_ao.png"));
+		TextureHandle IronroughnessTexture = device->createTexture(TextureDesc(TextureType::RoughnessMap, "assets/texture/pbr/IronScuffed/Iron-Scuffed_roughness.png"));
+		TextureHandle IronmentallicTexture = device->createTexture(TextureDesc(TextureType::MentallicMap, "assets/texture/pbr/IronScuffed/Iron-Scuffed_metallic.png"));
+		TextureHandle IronnormalTexture = device->createTexture(TextureDesc(TextureType::NormalMap, "assets/texture/pbr/IronScuffed/Iron-Scuffed_normal.png"));
 
-		TextureHandle StonealbedoTexture = device->createTexture({TextureType::DiffuseMap, "assets/texture/pbr/cobblestone/cobblestone-curved_2_albedo.png"});
-		TextureHandle StoneaoTexture = device->createTexture({TextureType::AoMap, "assets/texture/pbr/cobblestone/cobblestone-curved_2_ao.png"});
-		TextureHandle StoneroughnessTexture = device->createTexture({TextureType::RoughnessMap, "assets/texture/pbr/cobblestone/cobblestone-curved_2_roughness.png"});
-		TextureHandle StonementallicTexture = device->createTexture({TextureType::MentallicMap, "assets/texture/pbr/cobblestone/cobblestone-curved_2_metallic.png"});
-		TextureHandle StonenormalTexture = device->createTexture({TextureType::NormalMap, "assets/texture/pbr/cobblestone/cobblestone-curved_2_normal-dx.png"});
+		TextureHandle StonealbedoTexture = device->createTexture(TextureDesc(TextureType::DiffuseMap, "assets/texture/pbr/cobblestone/cobblestone-curved_2_albedo.png"));
+		TextureHandle StoneaoTexture = device->createTexture(TextureDesc(TextureType::AoMap, "assets/texture/pbr/cobblestone/cobblestone-curved_2_ao.png"));
+		TextureHandle StoneroughnessTexture = device->createTexture(TextureDesc(TextureType::RoughnessMap, "assets/texture/pbr/cobblestone/cobblestone-curved_2_roughness.png"));
+		TextureHandle StonementallicTexture = device->createTexture(TextureDesc(TextureType::MentallicMap, "assets/texture/pbr/cobblestone/cobblestone-curved_2_metallic.png"));
+		TextureHandle StonenormalTexture = device->createTexture(TextureDesc(TextureType::NormalMap, "assets/texture/pbr/cobblestone/cobblestone-curved_2_normal-dx.png"));
 
-		TextureHandle PlasticalbedoTexture = device->createTexture({TextureType::DiffuseMap, "assets/texture/pbr/plasticSphere/scuffed-plastic4-alb.png"});
-		TextureHandle PlasticaoTexture = device->createTexture({TextureType::AoMap, "assets/texture/pbr/plasticSphere/scuffed-plastic-ao.png"});
-		TextureHandle PlasticroughnessTexture = device->createTexture({TextureType::RoughnessMap, "assets/texture/pbr/plasticSphere/scuffed-plastic-rough.png"});
-		TextureHandle PlasticmentallicTexture = device->createTexture({TextureType::MentallicMap, "assets/texture/pbr/plasticSphere/scuffed-plastic-metal.png"});
-		TextureHandle PlasticnormalTexture = device->createTexture({TextureType::NormalMap, "assets/texture/pbr/plasticSphere/scuffed-plastic-normal.png"});
+		TextureHandle PlasticalbedoTexture = device->createTexture(TextureDesc(TextureType::DiffuseMap, "assets/texture/pbr/plasticSphere/scuffed-plastic4-alb.png"));
+		TextureHandle PlasticaoTexture = device->createTexture(TextureDesc(TextureType::AoMap, "assets/texture/pbr/plasticSphere/scuffed-plastic-ao.png"));
+		TextureHandle PlasticroughnessTexture = device->createTexture(TextureDesc(TextureType::RoughnessMap, "assets/texture/pbr/plasticSphere/scuffed-plastic-rough.png"));
+		TextureHandle PlasticmentallicTexture = device->createTexture(TextureDesc(TextureType::MentallicMap, "assets/texture/pbr/plasticSphere/scuffed-plastic-metal.png"));
+		TextureHandle PlasticnormalTexture = device->createTexture(TextureDesc(TextureType::NormalMap, "assets/texture/pbr/plasticSphere/scuffed-plastic-normal.png"));
 
 
 

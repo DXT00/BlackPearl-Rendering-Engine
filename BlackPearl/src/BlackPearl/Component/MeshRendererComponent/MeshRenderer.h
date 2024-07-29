@@ -37,8 +37,8 @@ namespace BlackPearl {
 		}
 		void SetTexture(unsigned int meshIndex, ITexture* texture);
 		void SetTextures(ITexture* texture);
-		void SetModelTexture(unsigned int meshIndex, const std::shared_ptr<ITexture>& texture);
-		void SetModelTextures(const std::shared_ptr<ITexture>& texture);
+		void SetModelTexture(unsigned int meshIndex, const TextureHandle& texture);
+		void SetModelTextures(const TextureHandle& texture);
 
 		void SetShaders(const std::string& image);
 		void SetShaders(const std::shared_ptr<Shader>& shader);

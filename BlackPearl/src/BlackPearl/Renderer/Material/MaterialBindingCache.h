@@ -40,7 +40,7 @@ namespace BlackPearl {
 
         BindingSetHandle CreateMaterialBindingSet(const Material* material);
        // BindingSetItem GetTextureBindingSetItem(uint32_t slot, const std::shared_ptr<LoadedTexture>& texture) const;
-        BindingSetItem GetTextureBindingSetItem(uint32_t slot, const std::shared_ptr<ITexture>& texture) const;
+        BindingSetItem GetTextureBindingSetItem(uint32_t slot, const TextureHandle& texture) const;
 
 
     public:

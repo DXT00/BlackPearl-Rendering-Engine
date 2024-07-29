@@ -4,7 +4,7 @@
 #include "BlackPearl/Renderer/Material/Texture3D.h"
 #include "BlackPearl/Renderer/MasterRenderer/BasicRenderer.h"
 #include "BlackPearl/Component/BoundingBoxComponent/BoundingBox.h"
-
+#include "BlackPearl/RHI/RHITexture.h"
 namespace BlackPearl {
 	class CloudRenderer :public BasicRenderer
 	{
@@ -13,9 +13,9 @@ namespace BlackPearl {
 		CloudRenderer();
 		
 		void Init(Scene* scene);
-		void Render(MainCamera* mainCamera, Object* obj, Object* boundingBoxObj, const std::shared_ptr<Texture> postProcessTexture);
-		void RenderCombineScene(MainCamera* mainCamera, Object* obj, const std::shared_ptr<Texture> postProcessTexture);
-		void RenderScene(MainCamera* mainCamera, Object* obj, const std::shared_ptr<Texture> postProcessTexture);
+		void Render(MainCamera* mainCamera, Object* obj, Object* boundingBoxObj, const TextureHandle postProcessTexture);
+		void RenderCombineScene(MainCamera* mainCamera, Object* obj, const TextureHandle postProcessTexture);
+		void RenderScene(MainCamera* mainCamera, Object* obj, const TextureHandle postProcessTexture);
 
 		std::shared_ptr<Shader> GetShader() { return m_CloudShader; }
 		void ShowNoise3DTexture(Object* cube);

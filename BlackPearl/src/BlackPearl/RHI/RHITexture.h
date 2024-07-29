@@ -67,6 +67,7 @@ namespace BlackPearl {
 			type = _type;
 			path = _path;
 		}
+
 		// opengl 不需要sampler， filter在texture desc 里配置
 		FilterMode minFilter = FilterMode::Linear;
 		FilterMode magFilter = FilterMode::Linear;

@@ -278,7 +278,7 @@ namespace BlackPearl {
 		}
 		TextureHandle GetDepthTexture() { return m_TextureDepthBuffer; }
 		TextureHandle GetCubeMapDepthTexture() { return m_CubeMapDepthBuffer; }
-		TextureHandle GetCubeMapColorTexture(unsigned int attachmentPoint) { return m_TextureColorBuffers[attachmentPoint]); }
+		TextureHandle GetCubeMapColorTexture(unsigned int attachmentPoint) { return m_TextureColorBuffers[attachmentPoint]; }
 
 
 		unsigned int GetWidth()const { return m_Width; }

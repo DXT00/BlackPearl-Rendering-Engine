@@ -1,5 +1,7 @@
 #pragma once
-#include "BlackPearl/Renderer/Material/Texture.h"
+#include "BlackPearl/RHI/RHITexture.h"
+#include "BlackPearl/RHI/OpenGLRHI/OpenGLTexture.h"
+
 namespace BlackPearl {
 	class TextureImage2D:public Texture
 	{

@@ -11,7 +11,6 @@
 
 #include "BlackPearl/Renderer/Shader/Shader.h"
 #include "BlackPearl/Renderer/Buffer/Buffer.h"
-#include "BlackPearl/Renderer/Material/CubeMapTexture.h"
 #include "BlackPearl/Renderer/Renderer.h"
 #include "BlackPearl/Renderer/RenderCommand.h"
 #include "BlackPearl/Renderer/MasterRenderer/MasterRenderer.h"

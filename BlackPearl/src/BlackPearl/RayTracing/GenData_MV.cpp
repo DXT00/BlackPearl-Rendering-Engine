@@ -110,7 +110,7 @@ namespace BlackPearl {
 		}
 	}
 
-	void  GenData_MV::SetTex(const std::map<std::shared_ptr<Texture>, size_t>& tex2Idx) {
+	void  GenData_MV::SetTex(const std::map<TextureHandle, size_t>& tex2Idx) {
 
 		for (auto& pair : tex2Idx) {
 			auto target = m_Tex2Vec.find(pair.first);

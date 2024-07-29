@@ -9,7 +9,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "Renderer/Material/Texture.h"
+#include "BlackPearl/RHI/RHITexture.h"
 #include "Component/CameraComponent/PerspectiveCamera.h"
 #include "Renderer/Renderer.h"
 #include "Renderer/Buffer/Buffer.h"
