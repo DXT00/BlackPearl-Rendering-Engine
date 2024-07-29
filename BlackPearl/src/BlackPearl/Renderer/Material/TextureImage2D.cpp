@@ -4,8 +4,8 @@
 #include "BlackPearl/Core.h"
 namespace BlackPearl {
 
-
-
+	//What is the difference between glBindImageTexture() and glBindTexture()
+	//https://stackoverflow.com/questions/37136813/what-is-the-difference-between-glbindimagetexture-and-glbindtexture
 
 	TextureImage2D::TextureImage2D(
 		const std::vector<float>& textureBuffer,

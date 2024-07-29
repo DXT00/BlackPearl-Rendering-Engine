@@ -510,7 +510,6 @@ namespace BlackPearl {
 		church->GetComponent<MeshRenderer>()->SetIsShadowObjects(false);
 
 		m_BackGroundObjsList.push_back(church);
-		//m_ShadowObjsList.push_back(church);
 
 
 		BlackPearl::Object* light = CreateLight(LightType::PointLight);
@@ -518,32 +517,6 @@ namespace BlackPearl {
 		light->GetComponent<MeshRenderer>()->SetIsShadowObjects(false);
 		light->GetComponent<PointLight>()->UpdateMesh({ {0,0,0} ,{1,1,1},{0,0,0},{0,0,0},1.0 });
 
-		//for (int i = 0; i < 10; i++) {
-		//	Object* light = CreateLight(LightType::PointLight);
-		//	light->GetComponent<Transform>()->SetPosition({ -50+i*10,30,0.0 });
-		//	light->GetComponent<Transform>()->SetLastPosition({ 0.0,-1.0,0.0 });//0.0,0.0,3.0
-		//	light->GetComponent<MeshRenderer>()->SetIsShadowObjects(false);
-		//	light->GetComponent<PointLight>()->UpdateMesh({ {0,0,0} ,{1,1,1},{1,1,1},{0,0,0},40 });
-
-		//}
-
-		//for (int i = 0; i < 10; i++) {
-		//	Object* light = CreateLight(LightType::PointLight);
-		//	light->GetComponent<Transform>()->SetPosition({ -50 + i * 10,5,0.0 });
-		//	light->GetComponent<Transform>()->SetLastPosition({ 0.0,-1.0,0.0 });//0.0,0.0,3.0
-		//	light->GetComponent<MeshRenderer>()->SetIsShadowObjects(false);
-		//	light->GetComponent<PointLight>()->UpdateMesh({ {0,0,0} ,{1,1,1},{1,1,1},{0,0,0},40 });
-
-		//}
-
-		//for (int i = 0; i < 10; i++) {
-		//	Object* light = CreateLight(LightType::PointLight);
-		//	light->GetComponent<Transform>()->SetPosition({ -50 + i * 10,10,0.0 });
-		//	light->GetComponent<Transform>()->SetLastPosition({ 0.0,-1.0,0.0 });//0.0,0.0,3.0
-		//	light->GetComponent<MeshRenderer>()->SetIsShadowObjects(false);
-		//	light->GetComponent<PointLight>()->UpdateMesh({ {0,0,0} ,{1,1,1},{1,1,1},{0,0,0},40 });
-
-		//}
 
 	}
 
@@ -554,152 +527,25 @@ namespace BlackPearl {
 		light->GetComponent<Transform>()->SetInitPosition({ 0.0,-1.0,0.0 });
 		light->GetComponent<MeshRenderer>()->SetIsShadowObjects(false);
 
-
-
-
-		Object* sphereObjIron = CreateSphere(1.5, 64, 64);//CreateCube();//
-		Object* sphereObjRust = CreateSphere(1.5, 64, 64);
-		Object* sphereObjStone = CreateSphere(1.5, 64, 64);
-		Object* sphereObjPlastic = CreateSphere(1.5, 64, 64);
+		Object* sphereObjIron = LoadStaticBackGroundObject("SphereIron");
+		Object* sphereObjRust = LoadStaticBackGroundObject("SphereRust");
+		Object* sphereObjStone = LoadStaticBackGroundObject("SphereStone");
+		Object* sphereObjPlastic = LoadStaticBackGroundObject("SpherePlastic");
+		Object* cube = LoadStaticBackGroundObject("WoodCube");
 		//textures spheres
 		IDevice* device = m_DeviceManager->GetDevice();
-		TextureHandle RustalbedoTexture = device->createTexture(TextureDesc(TextureType::DiffuseMap, "assets/texture/pbr/rustSphere/rustediron2_basecolor.png"));
-		TextureHandle RustaoTexture = device->createTexture(TextureDesc(TextureType::AoMap, "assets/texture/pbr/rustSphere/rustediron2_ao.png"));
-		TextureHandle RustroughnessTexture = device->createTexture(TextureDesc(TextureType::RoughnessMap, "assets/texture/pbr/rustSphere/rustediron2_roughness.png"));
-		TextureHandle RustmentallicTexture = device->createTexture(TextureDesc(TextureType::MentallicMap, "assets/texture/pbr/rustSphere/rustediron2_metallic.png"));
-		TextureHandle RustnormalTexture = device->createTexture(TextureDesc(TextureType::NormalMap, "assets/texture/pbr/rustSphere/rustediron2_normal.png"));
-
-
-		TextureHandle IronalbedoTexture = device->createTexture(TextureDesc(TextureType::DiffuseMap, "assets/texture/pbr/IronScuffed/Iron-Scuffed_basecolor.png"));
-		TextureHandle IronaoTexture = device->createTexture(TextureDesc(TextureType::AoMap, "assets/texture/pbr/IronScuffed/Iron-Scuffed_ao.png"));
-		TextureHandle IronroughnessTexture = device->createTexture(TextureDesc(TextureType::RoughnessMap, "assets/texture/pbr/IronScuffed/Iron-Scuffed_roughness.png"));
-		TextureHandle IronmentallicTexture = device->createTexture(TextureDesc(TextureType::MentallicMap, "assets/texture/pbr/IronScuffed/Iron-Scuffed_metallic.png"));
-		TextureHandle IronnormalTexture = device->createTexture(TextureDesc(TextureType::NormalMap, "assets/texture/pbr/IronScuffed/Iron-Scuffed_normal.png"));
-
-		TextureHandle StonealbedoTexture = device->createTexture(TextureDesc(TextureType::DiffuseMap, "assets/texture/pbr/cobblestone/cobblestone-curved_2_albedo.png"));
-		TextureHandle StoneaoTexture = device->createTexture(TextureDesc(TextureType::AoMap, "assets/texture/pbr/cobblestone/cobblestone-curved_2_ao.png"));
-		TextureHandle StoneroughnessTexture = device->createTexture(TextureDesc(TextureType::RoughnessMap, "assets/texture/pbr/cobblestone/cobblestone-curved_2_roughness.png"));
-		TextureHandle StonementallicTexture = device->createTexture(TextureDesc(TextureType::MentallicMap, "assets/texture/pbr/cobblestone/cobblestone-curved_2_metallic.png"));
-		TextureHandle StonenormalTexture = device->createTexture(TextureDesc(TextureType::NormalMap, "assets/texture/pbr/cobblestone/cobblestone-curved_2_normal-dx.png"));
-
-		TextureHandle PlasticalbedoTexture = device->createTexture(TextureDesc(TextureType::DiffuseMap, "assets/texture/pbr/plasticSphere/scuffed-plastic4-alb.png"));
-		TextureHandle PlasticaoTexture = device->createTexture(TextureDesc(TextureType::AoMap, "assets/texture/pbr/plasticSphere/scuffed-plastic-ao.png"));
-		TextureHandle PlasticroughnessTexture = device->createTexture(TextureDesc(TextureType::RoughnessMap, "assets/texture/pbr/plasticSphere/scuffed-plastic-rough.png"));
-		TextureHandle PlasticmentallicTexture = device->createTexture(TextureDesc(TextureType::MentallicMap, "assets/texture/pbr/plasticSphere/scuffed-plastic-metal.png"));
-		TextureHandle PlasticnormalTexture = device->createTexture(TextureDesc(TextureType::NormalMap, "assets/texture/pbr/plasticSphere/scuffed-plastic-normal.png"));
-
-
-
-		sphereObjIron->GetComponent<MeshRenderer>()->SetTextures(IronnormalTexture);
-		sphereObjIron->GetComponent<MeshRenderer>()->SetTextures(IronalbedoTexture);
-		sphereObjIron->GetComponent<MeshRenderer>()->SetTextures(IronaoTexture);
-		sphereObjIron->GetComponent<MeshRenderer>()->SetTextures(IronroughnessTexture);
-		sphereObjIron->GetComponent<MeshRenderer>()->SetTextures(IronmentallicTexture);
-
-		sphereObjIron->GetComponent<MeshRenderer>()->SetPBRTextureSamples(true);
-		sphereObjIron->GetComponent<MeshRenderer>()->SetTextureDiffuseSamples(true);
-		//	sphereObjIron->GetComponent<MeshRenderer>()->SetTextureMetallicSamples(true);
-
-		sphereObjIron->GetComponent<MeshRenderer>()->SetIsPBRObject(true);
+		
 		sphereObjIron->GetComponent<Transform>()->SetInitPosition({ 10,0,0 });
 
-		sphereObjRust->GetComponent<MeshRenderer>()->SetTextures(RustnormalTexture);
-		sphereObjRust->GetComponent<MeshRenderer>()->SetTextures(RustalbedoTexture);
-		sphereObjRust->GetComponent<MeshRenderer>()->SetTextures(RustaoTexture);
-		sphereObjRust->GetComponent<MeshRenderer>()->SetTextures(RustroughnessTexture);
-		sphereObjRust->GetComponent<MeshRenderer>()->SetTextures(RustmentallicTexture);
-
-		sphereObjRust->GetComponent<MeshRenderer>()->SetPBRTextureSamples(true);
-		sphereObjRust->GetComponent<MeshRenderer>()->SetTextureDiffuseSamples(true);
-		//sphereObjRust->GetComponent<MeshRenderer>()->SetTextureMetallicSamples(true);
-
-		sphereObjRust->GetComponent<MeshRenderer>()->SetIsPBRObject(true);
 		sphereObjRust->GetComponent<Transform>()->SetInitPosition({ 5,0,0 });
-
-		sphereObjStone->GetComponent<MeshRenderer>()->SetTextures(StonenormalTexture);
-		sphereObjStone->GetComponent<MeshRenderer>()->SetTextures(StonealbedoTexture);
-		sphereObjStone->GetComponent<MeshRenderer>()->SetTextures(StoneaoTexture);
-		sphereObjStone->GetComponent<MeshRenderer>()->SetTextures(StoneroughnessTexture);
-		sphereObjStone->GetComponent<MeshRenderer>()->SetTextures(StonementallicTexture);
-
-		sphereObjStone->GetComponent<MeshRenderer>()->SetPBRTextureSamples(true);
-		sphereObjStone->GetComponent<MeshRenderer>()->SetTextureDiffuseSamples(true);
-		//	sphereObjStone->GetComponent<MeshRenderer>()->SetTextureMetallicSamples(true);
-
-		sphereObjStone->GetComponent<MeshRenderer>()->SetIsPBRObject(true);
+		
 		sphereObjStone->GetComponent<Transform>()->SetInitPosition({ -5,0,0 });
 
-		sphereObjPlastic->GetComponent<MeshRenderer>()->SetTextures(PlasticnormalTexture);
-		sphereObjPlastic->GetComponent<MeshRenderer>()->SetTextures(PlasticalbedoTexture);
-		sphereObjPlastic->GetComponent<MeshRenderer>()->SetTextures(PlasticaoTexture);
-		sphereObjPlastic->GetComponent<MeshRenderer>()->SetTextures(PlasticroughnessTexture);
-		sphereObjPlastic->GetComponent<MeshRenderer>()->SetTextures(PlasticmentallicTexture);
-
-
-		sphereObjPlastic->GetComponent<MeshRenderer>()->SetPBRTextureSamples(true);
-		sphereObjPlastic->GetComponent<MeshRenderer>()->SetTextureDiffuseSamples(true);
-		//	sphereObjPlastic->GetComponent<MeshRenderer>()->SetTextureMetallicSamples(true);
-
-		sphereObjPlastic->GetComponent<MeshRenderer>()->SetIsPBRObject(true);
 		sphereObjPlastic->GetComponent<Transform>()->SetInitPosition({ -10.0,0,0 });
-
-
-		sphereObjIron->GetComponent<MeshRenderer>()->SetIsBackGroundObjects(true);
-		sphereObjRust->GetComponent<MeshRenderer>()->SetIsBackGroundObjects(true);
-		sphereObjStone->GetComponent<MeshRenderer>()->SetIsBackGroundObjects(true);
-		sphereObjPlastic->GetComponent<MeshRenderer>()->SetIsBackGroundObjects(true);
-
-
-		Object* cube = CreateCube();
+		
 		cube->GetComponent<Transform>()->SetInitPosition({ -2.0f,-2.5f,0.0f });
 		cube->GetComponent<Transform>()->SetInitScale({ 16.0f,0.5f,16.0f });
-		TextureDesc desc;
-		desc.type = TextureType::DiffuseMap;
-		desc.path = "assets/texture/wood.png";
-		desc.minFilter = FilterMode::Linear_Mip_Linear;
-		desc.magFilter = FilterMode::Linear;
-		desc.wrap = SamplerAddressMode::ClampToEdge;
-		desc.format = Format::RGBA8_UNORM;
-		desc.generateMipmap = true;
-
-
-		TextureHandle cubeTexture = device->createTexture(desc);
-		desc.type = TextureType::SpecularMap;
-		TextureHandle cubeKsTexture = device->createTexture(desc);
-
-		cube->GetComponent<MeshRenderer>()->SetTextures(cubeTexture);
-		cube->GetComponent<MeshRenderer>()->SetTextures(cubeKsTexture);
-
-		cube->GetComponent<MeshRenderer>()->SetTextureDiffuseSamples(true);
-		cube->GetComponent<MeshRenderer>()->SetIsBackGroundObjects(true);
-
-		/*	BlackPearl::Object* specularProbe = CreateLightProbe(BlackPearl::ProbeType::REFLECTION_PROBE);
-			cube->AddChildObj(specularProbe);
-			specularProbe->GetComponent<Transform>()->SetInitPosition(cube->GetComponent<Transform>()->GetPosition());
-			specularProbe->GetComponent<BlackPearl::LightProbe>()->AddExcludeObjectId(cube->GetId().id);
-
-			BlackPearl::Object* specularProbe1 = CreateLightProbe(BlackPearl::ProbeType::REFLECTION_PROBE);
-			specularProbe1->GetComponent<Transform>()->SetInitPosition(sphereObjIron->GetComponent<Transform>()->GetPosition());
-			sphereObjIron->AddChildObj(specularProbe1);
-			specularProbe1->GetComponent<BlackPearl::LightProbe>()->AddExcludeObjectId(sphereObjIron->GetId().id);
-
-			BlackPearl::Object* specularProbe2 = CreateLightProbe(BlackPearl::ProbeType::REFLECTION_PROBE);
-			specularProbe2->GetComponent<Transform>()->SetInitPosition(sphereObjRust->GetComponent<Transform>()->GetPosition());
-			sphereObjRust->AddChildObj(specularProbe2);
-			specularProbe2->GetComponent<BlackPearl::LightProbe>()->AddExcludeObjectId(sphereObjRust->GetId().id);
-
-			BlackPearl::Object* specularProbe3 = CreateLightProbe(BlackPearl::ProbeType::REFLECTION_PROBE);
-			specularProbe3->GetComponent<Transform>()->SetInitPosition(sphereObjStone->GetComponent<Transform>()->GetPosition());
-			sphereObjStone->AddChildObj(specularProbe3);
-			specularProbe3->GetComponent<BlackPearl::LightProbe>()->AddExcludeObjectId(sphereObjStone->GetId().id);*/
-
-
-
-		m_BackGroundObjsList.push_back(sphereObjIron);
-		m_BackGroundObjsList.push_back(sphereObjStone);
-		m_BackGroundObjsList.push_back(sphereObjPlastic);
-		m_BackGroundObjsList.push_back(sphereObjRust);
-		m_BackGroundObjsList.push_back(cube);
+		
 		m_ShadowObjsList.push_back(sphereObjIron);
 		m_ShadowObjsList.push_back(sphereObjStone);
 		m_ShadowObjsList.push_back(sphereObjPlastic);
@@ -715,128 +561,25 @@ namespace BlackPearl {
 		light->GetComponent<Transform>()->SetInitPosition({ 0.0,-1.0,0.0 });
 		light->GetComponent<MeshRenderer>()->SetIsShadowObjects(false);
 
-
 		IDevice* device = m_DeviceManager->GetDevice();
 
-
-		Object* sphereObjIron = CreateSphere(1.5, 64, 64);//CreateCube();//
-		Object* sphereObjRust = CreateSphere(1.5, 64, 64);
-		Object* sphereObjStone = CreateSphere(1.5, 64, 64);
-		Object* sphereObjPlastic = CreateSphere(1.5, 64, 64);
-		//textures spheres
-		TextureHandle RustalbedoTexture= device->createTexture({TextureType::DiffuseMap, "assets/texture/pbr/rustSphere/rustediron2_basecolor.png"});
-		TextureHandle RustaoTexture= device->createTexture({TextureType::AoMap, "assets/texture/pbr/rustSphere/rustediron2_ao.png"});
-		TextureHandle RustroughnessTexture= device->createTexture({TextureType::RoughnessMap, "assets/texture/pbr/rustSphere/rustediron2_roughness.png"});
-		TextureHandle RustmentallicTexture= device->createTexture({TextureType::MentallicMap, "assets/texture/pbr/rustSphere/rustediron2_metallic.png"});
-		TextureHandle RustnormalTexture= device->createTexture({TextureType::NormalMap, "assets/texture/pbr/rustSphere/rustediron2_normal.png"});
-
-
-		TextureHandle IronalbedoTexture = device->createTexture({TextureType::DiffuseMap, "assets/texture/pbr/IronScuffed/Iron-Scuffed_basecolor.png"});
-		TextureHandle IronaoTexture = device->createTexture({TextureType::AoMap, "assets/texture/pbr/IronScuffed/Iron-Scuffed_ao.png"});
-		TextureHandle IronroughnessTexture = device->createTexture({TextureType::RoughnessMap, "assets/texture/pbr/IronScuffed/Iron-Scuffed_roughness.png"});
-		TextureHandle IronmentallicTexture = device->createTexture({TextureType::MentallicMap, "assets/texture/pbr/IronScuffed/Iron-Scuffed_metallic.png"});
-		TextureHandle IronnormalTexture = device->createTexture({TextureType::NormalMap, "assets/texture/pbr/IronScuffed/Iron-Scuffed_normal.png"});
-
-		TextureHandle StonealbedoTexture = device->createTexture({TextureType::DiffuseMap, "assets/texture/pbr/cobblestone/cobblestone-curved_2_albedo.png"});
-		TextureHandle StoneaoTexture = device->createTexture({TextureType::AoMap, "assets/texture/pbr/cobblestone/cobblestone-curved_2_ao.png"});
-		TextureHandle StoneroughnessTexture = device->createTexture({TextureType::RoughnessMap, "assets/texture/pbr/cobblestone/cobblestone-curved_2_roughness.png"});
-		TextureHandle StonementallicTexture = device->createTexture({TextureType::MentallicMap, "assets/texture/pbr/cobblestone/cobblestone-curved_2_metallic.png"});
-		TextureHandle StonenormalTexture = device->createTexture({TextureType::NormalMap, "assets/texture/pbr/cobblestone/cobblestone-curved_2_normal-dx.png"});
-
-		TextureHandle PlasticalbedoTexture = device->createTexture({TextureType::DiffuseMap, "assets/texture/pbr/plasticSphere/scuffed-plastic4-alb.png"});
-		TextureHandle PlasticaoTexture = device->createTexture({TextureType::AoMap, "assets/texture/pbr/plasticSphere/scuffed-plastic-ao.png"});
-		TextureHandle PlasticroughnessTexture = device->createTexture({TextureType::RoughnessMap, "assets/texture/pbr/plasticSphere/scuffed-plastic-rough.png"});
-		TextureHandle PlasticmentallicTexture = device->createTexture({TextureType::MentallicMap, "assets/texture/pbr/plasticSphere/scuffed-plastic-metal.png"});
-		TextureHandle PlasticnormalTexture = device->createTexture({TextureType::NormalMap, "assets/texture/pbr/plasticSphere/scuffed-plastic-normal.png"});
-
-
-
-		sphereObjIron->GetComponent<MeshRenderer>()->SetTextures(IronnormalTexture);
-		sphereObjIron->GetComponent<MeshRenderer>()->SetTextures(IronalbedoTexture);
-		sphereObjIron->GetComponent<MeshRenderer>()->SetTextures(IronaoTexture);
-		sphereObjIron->GetComponent<MeshRenderer>()->SetTextures(IronroughnessTexture);
-		sphereObjIron->GetComponent<MeshRenderer>()->SetTextures(IronmentallicTexture);
-
-		sphereObjIron->GetComponent<MeshRenderer>()->SetPBRTextureSamples(true);
-		sphereObjIron->GetComponent<MeshRenderer>()->SetTextureDiffuseSamples(true);
-		//	sphereObjIron->GetComponent<MeshRenderer>()->SetTextureMetallicSamples(true);
-
-		sphereObjIron->GetComponent<MeshRenderer>()->SetIsPBRObject(true);
+		Object* sphereObjIron = LoadStaticBackGroundObject("SphereIron");
+		Object* sphereObjRust = LoadStaticBackGroundObject("SphereRust");
+		Object* sphereObjStone = LoadStaticBackGroundObject("SphereStone");
+		Object* sphereObjPlastic = LoadStaticBackGroundObject("SpherePlastic");
+		Object* cube = LoadStaticBackGroundObject("WoodCube");
+		
 		sphereObjIron->GetComponent<Transform>()->SetInitPosition({ 10,0,0 });
 
-		sphereObjRust->GetComponent<MeshRenderer>()->SetTextures(RustnormalTexture);
-		sphereObjRust->GetComponent<MeshRenderer>()->SetTextures(RustalbedoTexture);
-		sphereObjRust->GetComponent<MeshRenderer>()->SetTextures(RustaoTexture);
-		sphereObjRust->GetComponent<MeshRenderer>()->SetTextures(RustroughnessTexture);
-		sphereObjRust->GetComponent<MeshRenderer>()->SetTextures(RustmentallicTexture);
-
-		sphereObjRust->GetComponent<MeshRenderer>()->SetPBRTextureSamples(true);
-		sphereObjRust->GetComponent<MeshRenderer>()->SetTextureDiffuseSamples(true);
-		//sphereObjRust->GetComponent<MeshRenderer>()->SetTextureMetallicSamples(true);
-
-		sphereObjRust->GetComponent<MeshRenderer>()->SetIsPBRObject(true);
 		sphereObjRust->GetComponent<Transform>()->SetInitPosition({ 5,0,0 });
 
-		sphereObjStone->GetComponent<MeshRenderer>()->SetTextures(StonenormalTexture);
-		sphereObjStone->GetComponent<MeshRenderer>()->SetTextures(StonealbedoTexture);
-		sphereObjStone->GetComponent<MeshRenderer>()->SetTextures(StoneaoTexture);
-		sphereObjStone->GetComponent<MeshRenderer>()->SetTextures(StoneroughnessTexture);
-		sphereObjStone->GetComponent<MeshRenderer>()->SetTextures(StonementallicTexture);
-
-		sphereObjStone->GetComponent<MeshRenderer>()->SetPBRTextureSamples(true);
-		sphereObjStone->GetComponent<MeshRenderer>()->SetTextureDiffuseSamples(true);
-		//	sphereObjStone->GetComponent<MeshRenderer>()->SetTextureMetallicSamples(true);
-
-		sphereObjStone->GetComponent<MeshRenderer>()->SetIsPBRObject(true);
 		sphereObjStone->GetComponent<Transform>()->SetInitPosition({ -5,0,0 });
 
-		sphereObjPlastic->GetComponent<MeshRenderer>()->SetTextures(PlasticnormalTexture);
-		sphereObjPlastic->GetComponent<MeshRenderer>()->SetTextures(PlasticalbedoTexture);
-		sphereObjPlastic->GetComponent<MeshRenderer>()->SetTextures(PlasticaoTexture);
-		sphereObjPlastic->GetComponent<MeshRenderer>()->SetTextures(PlasticroughnessTexture);
-		sphereObjPlastic->GetComponent<MeshRenderer>()->SetTextures(PlasticmentallicTexture);
-
-
-		sphereObjPlastic->GetComponent<MeshRenderer>()->SetPBRTextureSamples(true);
-		sphereObjPlastic->GetComponent<MeshRenderer>()->SetTextureDiffuseSamples(true);
-		//	sphereObjPlastic->GetComponent<MeshRenderer>()->SetTextureMetallicSamples(true);
-
-		sphereObjPlastic->GetComponent<MeshRenderer>()->SetIsPBRObject(true);
 		sphereObjPlastic->GetComponent<Transform>()->SetInitPosition({ -10.0,0,0 });
 
-
-		sphereObjIron->GetComponent<MeshRenderer>()->SetIsBackGroundObjects(true);
-		sphereObjRust->GetComponent<MeshRenderer>()->SetIsBackGroundObjects(true);
-		sphereObjStone->GetComponent<MeshRenderer>()->SetIsBackGroundObjects(true);
-		sphereObjPlastic->GetComponent<MeshRenderer>()->SetIsBackGroundObjects(true);
-
-
-		Object* cube = CreateCube();
 		cube->GetComponent<Transform>()->SetInitPosition({ -2.0f,-2.5f,0.0f });
 		cube->GetComponent<Transform>()->SetInitScale({ 16.0f,0.5f,16.0f });
 
-		TextureDesc desc;
-		desc.type = TextureType::DiffuseMap;
-		desc.path = "assets/texture/wood.png";
-		desc.minFilter = FilterMode::Linear_Mip_Linear;
-		desc.magFilter = FilterMode::Linear;
-		desc.wrap = SamplerAddressMode::ClampToEdge;
-		desc.format = Format::RGBA8_UNORM;
-		desc.generateMipmap = true;
-
-
-		TextureHandle cubeTexture = device->createTexture(desc);
-		desc.type = TextureType::SpecularMap;
-		TextureHandle cubeKsTexture = device->createTexture(desc);
-
-		/*std::shared_ptr<Texture> cubeTexture = device->createTexture({TextureType::DiffuseMap, "assets/texture/wood.png", GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR, GL_RGBA, GL_CLAMP_TO_EDGE, GL_UNSIGNED_BYTE, true});
-		std::shared_ptr<Texture> cubeKsTexture = device->createTexture({TextureType::SpecularMap, "assets/texture/wood.png", GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR, GL_RGBA, GL_CLAMP_TO_EDGE, GL_UNSIGNED_BYTE, true});*/
-
-		cube->GetComponent<MeshRenderer>()->SetTextures(cubeTexture);
-		cube->GetComponent<MeshRenderer>()->SetTextures(cubeKsTexture);
-
-		cube->GetComponent<MeshRenderer>()->SetTextureDiffuseSamples(true);
-		cube->GetComponent<MeshRenderer>()->SetIsBackGroundObjects(true);
 
 		BlackPearl::Object* specularProbe = CreateLightProbe(BlackPearl::ProbeType::REFLECTION_PROBE);
 		cube->AddChildObj(specularProbe);
@@ -858,16 +601,7 @@ namespace BlackPearl {
 		sphereObjStone->AddChildObj(specularProbe3);
 		specularProbe3->GetComponent<BlackPearl::LightProbe>()->AddExcludeObjectId(sphereObjStone->GetId().id);
 
-		/*BlackPearl::Object* specularProbe4 = CreateLightProbe(BlackPearl::ProbeType::REFLECTION_PROBE);
-		sphereObjPlastic->AddChildObj(specularProbe4);
-		specularProbe4->GetComponent<BlackPearl::LightProbe>()->AddExcludeObjectId(sphereObjPlastic->GetId().id);*/
 
-
-		m_BackGroundObjsList.push_back(sphereObjIron);
-		m_BackGroundObjsList.push_back(sphereObjStone);
-		m_BackGroundObjsList.push_back(sphereObjPlastic);
-		m_BackGroundObjsList.push_back(sphereObjRust);
-		m_BackGroundObjsList.push_back(cube);
 		m_ShadowObjsList.push_back(sphereObjIron);
 		m_ShadowObjsList.push_back(sphereObjStone);
 		m_ShadowObjsList.push_back(sphereObjPlastic);
@@ -878,32 +612,9 @@ namespace BlackPearl {
 	void Layer::LoadSwordScene()
 	{
 		IDevice* device = m_DeviceManager->GetDevice();
+		Object* sword = LoadStaticBackGroundObject("Sword");
+		m_ShadowObjsList.push_back(sword);
 
-		Object* sword = CreateModel("assets/models/sword/OBJ/Big_Sword_OBJ.obj", "assets/shaders/pbr/PbrTexture.glsl", false, "Sword");
-		TextureHandle SwordalbedoTexture = device->createTexture({ TextureType::DiffuseMap, "assets/models/sword/textures/Big Sword_Base_Color_Map.jpg" });
-		TextureHandle SwordaoTexture = device->createTexture({TextureType::AoMap, "assets/models/sword/textures/Big Sword_AO_Map.jpg" });
-		TextureHandle SwordroughnessTexture = device->createTexture({TextureType::RoughnessMap, "assets/models/sword/textures/Big Sword_Roughness_Map.jpg" });
-		TextureHandle SwordmentallicTexture = device->createTexture({TextureType::MentallicMap, "assets/models/sword/textures/Big Sword_Metalness.jpg" });
-		TextureHandle SwordnormalTexture = device->createTexture({TextureType::NormalMap, "assets/models/sword/textures/Big Sword_Normal_Map.jpg" });
-		TextureHandle SwordemissionTexture = device->createTexture({TextureType::EmissionMap, "assets/models/sword/textures/Big Sword_Emission_Map.jpg" });
-
-		sword->GetComponent<MeshRenderer>()->SetTextures(SwordalbedoTexture);
-		sword->GetComponent<MeshRenderer>()->SetTextures(SwordaoTexture);
-		sword->GetComponent<MeshRenderer>()->SetTextures(SwordroughnessTexture);
-		sword->GetComponent<MeshRenderer>()->SetTextures(SwordmentallicTexture);
-		sword->GetComponent<MeshRenderer>()->SetTextures(SwordnormalTexture);
-		sword->GetComponent<MeshRenderer>()->SetTextures(SwordemissionTexture);
-
-		sword->GetComponent<MeshRenderer>()->SetPBRTextureSamples(true);
-		sword->GetComponent<MeshRenderer>()->SetIsPBRObject(true);
-		//	sword->GetComponent<MeshRenderer>()->SetTextureSamples(true);//TODO::
-		sword->GetComponent<MeshRenderer>()->SetTextureDiffuseSamples(true);
-		//	sword->GetComponent<MeshRenderer>()->SetTextureMetallicSamples(true);
-		sword->GetComponent<MeshRenderer>()->SetTexturEmissionSamples(true);
-
-		sword->GetComponent<MeshRenderer>()->SetIsPBRObject(true);
-
-		m_BackGroundObjsList.push_back(sword);
 
 	}
 
@@ -985,11 +696,11 @@ namespace BlackPearl {
 		if (modelName == "House") {
 			//house model
 			staticModel = CreateModel("assets/models/Alpine/Alpine_chalet.obj", "assets/shaders/IronMan.glsl", false, "House");
-			TextureHandle housealbedoTexture = device->createTexture({ TextureType::DiffuseMap, "assets/models/Alpine/Diffuse_map.png" });
-			TextureHandle houseroughnessTexture = device->createTexture({ TextureType::RoughnessMap, "assets/models/Alpine/Roughness_map.png" });
-			TextureHandle housementallicTexture = device->createTexture({ TextureType::MentallicMap, "assets/models/Alpine/Metallic_map.png" });
-			TextureHandle housenormalTexture = device->createTexture({ TextureType::NormalMap, "assets/models/Alpine/Normal_map.png" });
-			TextureHandle houseaoTexture = device->createTexture({ TextureType::AoMap, "assets/models/Alpine/Ao_map.png" });
+			TextureHandle housealbedoTexture = device->createTexture(TextureDesc(TextureType::DiffuseMap, "assets/models/Alpine/Diffuse_map.png"));
+			TextureHandle houseroughnessTexture = device->createTexture(TextureDesc(TextureType::RoughnessMap, "assets/models/Alpine/Roughness_map.png"));
+			TextureHandle housementallicTexture = device->createTexture(TextureDesc(TextureType::MentallicMap, "assets/models/Alpine/Metallic_map.png"));
+			TextureHandle housenormalTexture = device->createTexture(TextureDesc(TextureType::NormalMap, "assets/models/Alpine/Normal_map.png"));
+			TextureHandle houseaoTexture = device->createTexture(TextureDesc(TextureType::AoMap, "assets/models/Alpine/Ao_map.png"));
 
 			staticModel->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(housealbedoTexture);
 			staticModel->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(houseroughnessTexture);
@@ -1024,17 +735,65 @@ namespace BlackPearl {
 			staticModel->GetComponent<MeshRenderer>()->SetIsBackGroundObjects(true);
 
 		}
+		if (modelName == "WoodCube") {
+			staticModel = CreateCube();
+			TextureDesc desc;
+			desc.type = TextureType::DiffuseMap;
+			desc.path = "assets/texture/wood.png";
+			desc.minFilter = FilterMode::Linear_Mip_Linear;
+			desc.magFilter = FilterMode::Linear;
+			desc.wrap = SamplerAddressMode::ClampToEdge;
+			desc.format = Format::RGBA8_UNORM;
+			desc.generateMipmap = true;
+
+
+			TextureHandle cubeTexture = device->createTexture(desc);
+			desc.type = TextureType::SpecularMap;
+			TextureHandle cubeKsTexture = device->createTexture(desc);
+
+			staticModel->GetComponent<MeshRenderer>()->SetTextures(cubeTexture);
+			staticModel->GetComponent<MeshRenderer>()->SetTextures(cubeKsTexture);
+
+			staticModel->GetComponent<MeshRenderer>()->SetTextureDiffuseSamples(true);
+			staticModel->GetComponent<MeshRenderer>()->SetIsBackGroundObjects(true);
+
+		}if (modelName == "Sword") {
+			Object* sword = CreateModel("assets/models/sword/OBJ/Big_Sword_OBJ.obj", "assets/shaders/pbr/PbrTexture.glsl", false, "Sword");
+			TextureHandle SwordalbedoTexture = device->createTexture(TextureDesc(TextureType::DiffuseMap, "assets/models/sword/textures/Big Sword_Base_Color_Map.jpg"));
+			TextureHandle SwordaoTexture = device->createTexture(TextureDesc(TextureType::AoMap, "assets/models/sword/textures/Big Sword_AO_Map.jpg"));
+			TextureHandle SwordroughnessTexture = device->createTexture(TextureDesc(TextureType::RoughnessMap, "assets/models/sword/textures/Big Sword_Roughness_Map.jpg"));
+			TextureHandle SwordmentallicTexture = device->createTexture(TextureDesc(TextureType::MentallicMap, "assets/models/sword/textures/Big Sword_Metalness.jpg"));
+			TextureHandle SwordnormalTexture = device->createTexture(TextureDesc(TextureType::NormalMap, "assets/models/sword/textures/Big Sword_Normal_Map.jpg"));
+			TextureHandle SwordemissionTexture = device->createTexture(TextureDesc(TextureType::EmissionMap, "assets/models/sword/textures/Big Sword_Emission_Map.jpg"));
+
+			sword->GetComponent<MeshRenderer>()->SetTextures(SwordalbedoTexture);
+			sword->GetComponent<MeshRenderer>()->SetTextures(SwordaoTexture);
+			sword->GetComponent<MeshRenderer>()->SetTextures(SwordroughnessTexture);
+			sword->GetComponent<MeshRenderer>()->SetTextures(SwordmentallicTexture);
+			sword->GetComponent<MeshRenderer>()->SetTextures(SwordnormalTexture);
+			sword->GetComponent<MeshRenderer>()->SetTextures(SwordemissionTexture);
+
+			sword->GetComponent<MeshRenderer>()->SetPBRTextureSamples(true);
+			sword->GetComponent<MeshRenderer>()->SetIsPBRObject(true);
+			//	sword->GetComponent<MeshRenderer>()->SetTextureSamples(true);//TODO::
+			sword->GetComponent<MeshRenderer>()->SetTextureDiffuseSamples(true);
+			//	sword->GetComponent<MeshRenderer>()->SetTextureMetallicSamples(true);
+			sword->GetComponent<MeshRenderer>()->SetTexturEmissionSamples(true);
+
+			sword->GetComponent<MeshRenderer>()->SetIsPBRObject(true);
+
+		}
 		else if (modelName == "Sphere") {
 			staticModel = CreateSphere(1.5, 64, 64);
 			staticModel->GetComponent<Transform>()->SetInitScale(glm::vec3(0.003));
 			staticModel->GetComponent<Transform>()->SetInitPosition({ -0.5f,0.0f,2.5f });
 			staticModel->GetComponent<Transform>()->SetInitRotation({ 0.0f,68.0f,0.0f });
 			staticModel->GetComponent<MeshRenderer>()->SetIsBackGroundObjects(true);
-			TextureHandle PlasticalbedoTexture = device->createTexture({ TextureType::DiffuseMap, "assets/texture/pbr/plasticSphere/scuffed-plastic4-alb.png" });
-			TextureHandle PlasticaoTexture = device->createTexture({ TextureType::AoMap, "assets/texture/pbr/plasticSphere/scuffed-plastic-ao.png" });
-			TextureHandle PlasticroughnessTexture = device->createTexture({ TextureType::RoughnessMap, "assets/texture/pbr/plasticSphere/scuffed-plastic-rough.png" });
-			TextureHandle PlasticmentallicTexture = device->createTexture({ TextureType::MentallicMap, "assets/texture/pbr/plasticSphere/scuffed-plastic-metal.png" });
-			TextureHandle PlasticnormalTexture = device->createTexture({ TextureType::NormalMap, "assets/texture/pbr/plasticSphere/scuffed-plastic-normal.png" });
+			TextureHandle PlasticalbedoTexture = device->createTexture(TextureDesc(TextureType::DiffuseMap, "assets/texture/pbr/plasticSphere/scuffed-plastic4-alb.png"));
+			TextureHandle PlasticaoTexture = device->createTexture(TextureDesc(TextureType::AoMap, "assets/texture/pbr/plasticSphere/scuffed-plastic-ao.png"));
+			TextureHandle PlasticroughnessTexture = device->createTexture(TextureDesc(TextureType::RoughnessMap, "assets/texture/pbr/plasticSphere/scuffed-plastic-rough.png"));
+			TextureHandle PlasticmentallicTexture = device->createTexture(TextureDesc(TextureType::MentallicMap, "assets/texture/pbr/plasticSphere/scuffed-plastic-metal.png"));
+			TextureHandle PlasticnormalTexture = device->createTexture(TextureDesc(TextureType::NormalMap, "assets/texture/pbr/plasticSphere/scuffed-plastic-normal.png"));
 			staticModel->GetComponent<MeshRenderer>()->SetTextures(PlasticnormalTexture);
 			staticModel->GetComponent<MeshRenderer>()->SetTextures(PlasticalbedoTexture);
 			staticModel->GetComponent<MeshRenderer>()->SetTextures(PlasticaoTexture);
@@ -1048,13 +807,12 @@ namespace BlackPearl {
 		}
 		else if (modelName == "SphereIron") {
 			staticModel = CreateSphere(1.5, 64, 64);
-			auto device = m_DeviceManager->GetDevice();
 
-			TextureHandle IronalbedoTexture = device->createTexture({TextureType::DiffuseMap, "assets/texture/pbr/IronScuffed/Iron-Scuffed_basecolor.png"});
-			TextureHandle IronaoTexture = device->createTexture({ TextureType::AoMap, "assets/texture/pbr/IronScuffed/Iron-Scuffed_ao.png" });
-			TextureHandle IronroughnessTexture = device->createTexture({ TextureType::RoughnessMap, "assets/texture/pbr/IronScuffed/Iron-Scuffed_roughness.png" });
-			TextureHandle IronmentallicTexture = device->createTexture({ TextureType::MentallicMap, "assets/texture/pbr/IronScuffed/Iron-Scuffed_metallic.png" });
-			TextureHandle IronnormalTexture = device->createTexture({ TextureType::NormalMap, "assets/texture/pbr/IronScuffed/Iron-Scuffed_normal.png" });
+			TextureHandle IronalbedoTexture = device->createTexture(TextureDesc(TextureType::DiffuseMap, "assets/texture/pbr/IronScuffed/Iron-Scuffed_basecolor.png"));
+			TextureHandle IronaoTexture = device->createTexture(TextureDesc(TextureType::AoMap, "assets/texture/pbr/IronScuffed/Iron-Scuffed_ao.png"));
+			TextureHandle IronroughnessTexture = device->createTexture(TextureDesc(TextureType::RoughnessMap, "assets/texture/pbr/IronScuffed/Iron-Scuffed_roughness.png"));
+			TextureHandle IronmentallicTexture = device->createTexture(TextureDesc(TextureType::MentallicMap, "assets/texture/pbr/IronScuffed/Iron-Scuffed_metallic.png"));
+			TextureHandle IronnormalTexture = device->createTexture(TextureDesc(TextureType::NormalMap, "assets/texture/pbr/IronScuffed/Iron-Scuffed_normal.png"));
 
 			staticModel->GetComponent<MeshRenderer>()->SetTextures(IronnormalTexture);
 			staticModel->GetComponent<MeshRenderer>()->SetTextures(IronalbedoTexture);
@@ -1073,6 +831,66 @@ namespace BlackPearl {
 			BlackPearl::Object* specularProbe = CreateLightProbe(BlackPearl::ProbeType::REFLECTION_PROBE);
 			staticModel->AddChildObj(specularProbe);
 			specularProbe->GetComponent<BlackPearl::LightProbe>()->AddExcludeObjectId(staticModel->GetId().id);
+		}
+		else if (modelName == "SphereRust") {
+			staticModel = CreateSphere(1.5, 64, 64);
+			TextureHandle RustalbedoTexture = device->createTexture(TextureDesc(TextureType::DiffuseMap, "assets/texture/pbr/rustSphere/rustediron2_basecolor.png"));
+			TextureHandle RustaoTexture = device->createTexture(TextureDesc(TextureType::AoMap, "assets/texture/pbr/rustSphere/rustediron2_ao.png"));
+			TextureHandle RustroughnessTexture = device->createTexture(TextureDesc(TextureType::RoughnessMap, "assets/texture/pbr/rustSphere/rustediron2_roughness.png"));
+			TextureHandle RustmentallicTexture = device->createTexture(TextureDesc(TextureType::MentallicMap, "assets/texture/pbr/rustSphere/rustediron2_metallic.png"));
+			TextureHandle RustnormalTexture = device->createTexture(TextureDesc(TextureType::NormalMap, "assets/texture/pbr/rustSphere/rustediron2_normal.png"));
+			staticModel->GetComponent<MeshRenderer>()->SetPBRTextureSamples(true);
+			staticModel->GetComponent<MeshRenderer>()->SetTextureDiffuseSamples(true);
+			//sphereObjRust->GetComponent<MeshRenderer>()->SetTextureMetallicSamples(true);
+
+			staticModel->GetComponent<MeshRenderer>()->SetIsPBRObject(true);
+			staticModel->GetComponent<Transform>()->SetInitPosition({ 5,0,0 });
+			staticModel->GetComponent<MeshRenderer>()->SetIsBackGroundObjects(true);
+
+		}
+		else if (modelName == "SphereStone") {
+			staticModel = CreateSphere(1.5, 64, 64);
+
+			TextureHandle StonealbedoTexture = device->createTexture(TextureDesc(TextureType::DiffuseMap, "assets/texture/pbr/cobblestone/cobblestone-curved_2_albedo.png"));
+			TextureHandle StoneaoTexture = device->createTexture(TextureDesc(TextureType::AoMap, "assets/texture/pbr/cobblestone/cobblestone-curved_2_ao.png"));
+			TextureHandle StoneroughnessTexture = device->createTexture(TextureDesc(TextureType::RoughnessMap, "assets/texture/pbr/cobblestone/cobblestone-curved_2_roughness.png"));
+			TextureHandle StonementallicTexture = device->createTexture(TextureDesc(TextureType::MentallicMap, "assets/texture/pbr/cobblestone/cobblestone-curved_2_metallic.png"));
+			TextureHandle StonenormalTexture = device->createTexture(TextureDesc(TextureType::NormalMap, "assets/texture/pbr/cobblestone/cobblestone-curved_2_normal-dx.png"));
+
+			staticModel->GetComponent<MeshRenderer>()->SetTextures(StonenormalTexture);
+			staticModel->GetComponent<MeshRenderer>()->SetTextures(StonealbedoTexture);
+			staticModel->GetComponent<MeshRenderer>()->SetTextures(StoneaoTexture);
+			staticModel->GetComponent<MeshRenderer>()->SetTextures(StoneroughnessTexture);
+			staticModel->GetComponent<MeshRenderer>()->SetTextures(StonementallicTexture);
+
+			staticModel->GetComponent<MeshRenderer>()->SetPBRTextureSamples(true);
+			staticModel->GetComponent<MeshRenderer>()->SetTextureDiffuseSamples(true);
+			//	sphereObjStone->GetComponent<MeshRenderer>()->SetTextureMetallicSamples(true);
+
+			staticModel->GetComponent<MeshRenderer>()->SetIsPBRObject(true);
+			staticModel->GetComponent<MeshRenderer>()->SetIsBackGroundObjects(true);
+		}
+		else if (modelName == "SpherePlastic") {
+			staticModel = CreateSphere(1.5, 64, 64);
+			TextureHandle PlasticalbedoTexture = device->createTexture(TextureDesc(TextureType::DiffuseMap, "assets/texture/pbr/plasticSphere/scuffed-plastic4-alb.png"));
+			TextureHandle PlasticaoTexture = device->createTexture(TextureDesc(TextureType::AoMap, "assets/texture/pbr/plasticSphere/scuffed-plastic-ao.png"));
+			TextureHandle PlasticroughnessTexture = device->createTexture(TextureDesc(TextureType::RoughnessMap, "assets/texture/pbr/plasticSphere/scuffed-plastic-rough.png"));
+			TextureHandle PlasticmentallicTexture = device->createTexture(TextureDesc(TextureType::MentallicMap, "assets/texture/pbr/plasticSphere/scuffed-plastic-metal.png"));
+			TextureHandle PlasticnormalTexture = device->createTexture(TextureDesc(TextureType::NormalMap, "assets/texture/pbr/plasticSphere/scuffed-plastic-normal.png"));
+			staticModel->GetComponent<MeshRenderer>()->SetTextures(PlasticnormalTexture);
+			staticModel->GetComponent<MeshRenderer>()->SetTextures(PlasticalbedoTexture);
+			staticModel->GetComponent<MeshRenderer>()->SetTextures(PlasticaoTexture);
+			staticModel->GetComponent<MeshRenderer>()->SetTextures(PlasticroughnessTexture);
+			staticModel->GetComponent<MeshRenderer>()->SetTextures(PlasticmentallicTexture);
+
+
+			staticModel->GetComponent<MeshRenderer>()->SetPBRTextureSamples(true);
+			staticModel->GetComponent<MeshRenderer>()->SetTextureDiffuseSamples(true);
+			//	sphereObjPlastic->GetComponent<MeshRenderer>()->SetTextureMetallicSamples(true);
+
+			staticModel->GetComponent<MeshRenderer>()->SetIsPBRObject(true);
+			staticModel->GetComponent<MeshRenderer>()->SetIsBackGroundObjects(true);
+
 		}
 		else {
 			GE_CORE_ERROR("no such name:" + modelName + "!")
@@ -1095,10 +913,10 @@ namespace BlackPearl {
 
 			auto device = m_DeviceManager->GetDevice();
 			dynamicModel = CreateModel("assets/models-animation/56-sphere-bot-basic/Sphere-Bot Basic/Armature_001-(COLLADA_3 (COLLAborative Design Activity)).dae", "assets/shaders/animatedModel/animatedModel.glsl", true, "Robot");
-			TextureHandle RobotAoTexture = device->createTexture({ TextureType::AoMap, "assets/models-animation/56-sphere-bot-basic/Sphere-Bot Basic/Sphere_Bot_ao.jpg" });
-			TextureHandle RobotRoughnessTexture = device->createTexture({ TextureType::RoughnessMap, "assets/models-animation/56-sphere-bot-basic/Sphere-Bot Basic/Sphere_Bot_rough.jpg" });
-			TextureHandle RobotMentallicTexture = device->createTexture({ TextureType::MentallicMap, "assets/models-animation/56-sphere-bot-basic/Sphere-Bot Basic/Sphere_Bot_metalness.jpg" });
-			TextureHandle RobotNormalTexture = device->createTexture({ TextureType::NormalMap, "assets/models-animation/56-sphere-bot-basic/Sphere-Bot Basic/Sphere_Bot_nmap_2.jpg" });
+			TextureHandle RobotAoTexture = device->createTexture(TextureDesc(TextureType::AoMap, "assets/models-animation/56-sphere-bot-basic/Sphere-Bot Basic/Sphere_Bot_ao.jpg"));
+			TextureHandle RobotRoughnessTexture = device->createTexture(TextureDesc(TextureType::RoughnessMap, "assets/models-animation/56-sphere-bot-basic/Sphere-Bot Basic/Sphere_Bot_rough.jpg"));
+			TextureHandle RobotMentallicTexture = device->createTexture(TextureDesc(TextureType::MentallicMap, "assets/models-animation/56-sphere-bot-basic/Sphere-Bot Basic/Sphere_Bot_metalness.jpg"));
+			TextureHandle RobotNormalTexture = device->createTexture(TextureDesc(TextureType::NormalMap, "assets/models-animation/56-sphere-bot-basic/Sphere-Bot Basic/Sphere_Bot_nmap_2.jpg"));
 
 			dynamicModel->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(RobotNormalTexture);
 			dynamicModel->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(RobotRoughnessTexture);
