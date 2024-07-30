@@ -77,6 +77,7 @@ namespace BlackPearl
     
             { Format::RGB8_UNORM,        "RGB8_UNORM",        3,  1, FormatKind::Float,         true,  true,  true,  false, false, false,  false,  false },
             { Format::RGB8_FLOAT,        "RGB8_FLOAT",        3,  1, FormatKind::Float,         true,  true,  true,  false, false, false,  true,   false },
+            { Format::RGB16_FLOAT,       "RGB16_FLOAT",       6,  1, FormatKind::Float,         true,  true,  true,  false, false, false,  true,   false }
 
     
     };

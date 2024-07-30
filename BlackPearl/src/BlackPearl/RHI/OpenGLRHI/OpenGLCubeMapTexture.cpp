@@ -9,6 +9,12 @@ namespace BlackPearl {
 	
 
 
+	void CubeMapTexture::Init(TextureDesc& desc, float* data)
+	{
+		fillTextureInfo(desc);
+		LoadCubeMap();
+	}
+
 	CubeMapTexture::~CubeMapTexture()
 	{
 

@@ -3,7 +3,6 @@
 #include "BlackPearl/Component/TransformComponent/Transform.h"
 #include "BlackPearl/Object/Object.h"
 #include "BlackPearl/MainCamera/MainCamera.h"
-#include "BlackPearl/Renderer/Material/TextureImage2D.h"
 #include "BlackPearl/Component/LightComponent/LightSources.h"
 #include "BlackPearl/RHI/RHITexture.h"
 

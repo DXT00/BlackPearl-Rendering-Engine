@@ -52,7 +52,8 @@ namespace BlackPearl {
                 break;
 
             default:
-                GE_CORE_INFO("MaterialBindingCache: unknown MaterialResource value (%d)", item.resource);
+                GE_ASSERT(0, "MaterialBindingCache: unknown MaterialResource value");
+              //  GE_CORE_INFO("MaterialBindingCache: unknown MaterialResource value {0}" ,item.resource);
                 return nullptr;
             }
 

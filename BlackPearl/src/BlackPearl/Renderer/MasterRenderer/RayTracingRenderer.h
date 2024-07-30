@@ -1,7 +1,7 @@
 #pragma once
 #include "BlackPearl/Renderer/MasterRenderer/BasicRenderer.h"
 #include "BlackPearl/MainCamera/MainCamera.h"
-#include "BlackPearl/Renderer/Material/TextureImage2D.h"
+#include "BlackPearl/RHI/OpenGLRHI/OpenGLImageTexture2D.h"
 #include "BlackPearl/RayTracing/GenData.h"
 #include "BlackPearl/RayTracing/Group.h"
 #include "BlackPearl/Scene/SceneBuilder.h"
@@ -46,11 +46,11 @@ namespace BlackPearl {
 		std::vector<float> m_MaterialData;
 		std::vector<float> m_PackData;
 
-		std::shared_ptr<TextureImage2D> m_SceneDataTex;
-		std::shared_ptr<TextureImage2D> m_TexDataTex;
-		std::shared_ptr<TextureImage2D> m_MaterialDataTex;
-		std::shared_ptr<TextureImage2D> m_PackDataTex;
-		std::shared_ptr<TextureImage2D> m_SkyBoxTex;
+		TextureHandle m_SceneDataTex;
+		TextureHandle m_TexDataTex;
+		TextureHandle m_MaterialDataTex;
+		TextureHandle m_PackDataTex;
+		TextureHandle m_SkyBoxTex;
 		std::map<TextureHandle, size_t> m_Tex2RenderIdMap;
 		std::map<TextureHandle, size_t> m_CubeMap2RenderIdMap;
 

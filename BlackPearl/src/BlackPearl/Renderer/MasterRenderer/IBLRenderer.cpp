@@ -164,8 +164,7 @@ namespace BlackPearl {
 			m_CaptureProjection * m_CaptureViews[4],
 			m_CaptureProjection * m_CaptureViews[5]
 		};
-		std::shared_ptr<FrameBuffer> frameBuffer(new FrameBuffer());
-		GE_ERROR_JUDGE();
+		std::shared_ptr<FrameBuffer> frameBuffer = std::make_shared<FrameBuffer>();
 		frameBuffer->Bind();
 		GE_ERROR_JUDGE();
 		frameBuffer->AttachCubeMapColorTexture(0, m_HdrCubeMap);
@@ -242,7 +241,7 @@ namespace BlackPearl {
 		//glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
 
 		glm::vec2 mipMapSize = { m_SkyBoxCubeMap->getDesc().width,m_SkyBoxCubeMap->getDesc().height };
-		std::shared_ptr<FrameBuffer> frameBuffer(new FrameBuffer());
+		std::shared_ptr<FrameBuffer> frameBuffer = std::make_shared<FrameBuffer>();
 		//	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		GE_ERROR_JUDGE();
 		frameBuffer->Bind();
@@ -318,7 +317,7 @@ namespace BlackPearl {
 
 		m_IrradianceCubeMapID = diffuseIrradianceCubeMap->GetRendererID();*/
 
-		std::shared_ptr<FrameBuffer> frameBuffer(new FrameBuffer());
+		std::shared_ptr<FrameBuffer> frameBuffer = std::make_shared<FrameBuffer>();
 		frameBuffer->Bind();
 		frameBuffer->AttachRenderBuffer(m_IrradianceCubeMap->getDesc().width, m_IrradianceCubeMap->getDesc().height);
 
@@ -372,7 +371,7 @@ namespace BlackPearl {
 		m_SkyBoxCubeMap->Bind();
 		//glBindTexture(GL_TEXTURE_CUBE_MAP, m_HdrCubeMapID);
 
-		std::shared_ptr<FrameBuffer> frameBuffer(new FrameBuffer());
+		std::shared_ptr<FrameBuffer> frameBuffer = std::make_shared<FrameBuffer>();
 		frameBuffer->Bind();
 		frameBuffer->AttachCubeMapColorTexture(0, m_PrefilterCubeMap);
 		frameBuffer->AttachRenderBuffer(m_SpecularPrefilterMapDim, m_SpecularPrefilterMapDim);
@@ -417,7 +416,7 @@ namespace BlackPearl {
 
 	void IBLRenderer::RenderSpecularBRDFLUTMap()
 	{
-		std::shared_ptr<FrameBuffer> frameBuffer(new FrameBuffer());
+		std::shared_ptr<FrameBuffer> frameBuffer = std::make_shared<FrameBuffer>();
 
 		frameBuffer->Bind();
 		frameBuffer->AttachRenderBuffer(m_BRDFLutDim, m_BRDFLutDim);

@@ -530,11 +530,7 @@ namespace BlackPearl {
 		TimeCounter::End("AmbientLight Rendering");
 		TimeCounter::Start();
 #endif
-	/*	std::shared_ptr<FrameBuffer> frameBuffer(new FrameBuffer());
-		frameBuffer->Bind();
-		frameBuffer->AttachRenderBuffer(m_TextureWidth, m_TexxtureHeight);
-		frameBuffer->AttachColorTexture(m_HDRPostProcessTexture, 0);
-		frameBuffer->BindRenderBuffer();*/
+
 
 		m_LightPassFrameBuffer->Bind();
 		m_LightPassFrameBuffer->BindRenderBuffer();

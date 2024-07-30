@@ -3,8 +3,6 @@
 #include "BlackPearl/Renderer/Material/Texture3D.h"
 #include "BlackPearl/Renderer/Shader/Shader.h"
 #include "BlackPearl/Renderer/Buffer/Buffer.h"
-#include "BlackPearl/Renderer/Material/TextureImage2D.h"
-#include "BlackPearl/Renderer/Buffer/Buffer.h"
 namespace BlackPearl {
 	class VoxelConeTracingDeferredRenderer :public BasicRenderer
 	{

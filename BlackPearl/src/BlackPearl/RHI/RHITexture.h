@@ -19,7 +19,7 @@ namespace BlackPearl {
 		RoughnessMap,
 		MentallicMap,
 		OpacityMap,
-		ImageMap
+		Image2DMap
 	};
 
 	struct TextureDesc

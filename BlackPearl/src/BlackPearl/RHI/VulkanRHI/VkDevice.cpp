@@ -285,14 +285,14 @@ namespace BlackPearl {
 
 				if ((desc.sharedResourceFlags & SharedResourceFlags::Shared) != 0)
 				{
-
+					assert(0);
 //#ifdef _WIN32
 					//vkGetMemoryWin32HandleKHR()
 					//PFN_vkGetMemoryWin32HandleKHR vkGetMemoryWin32HandleKHR = PFN_vkGetMemoryWin32HandleKHR(vkGetDeviceProcAddr(m_Context.device, "vkGetMemoryWin32HandleKHR"));
-					int fd;
-					//Get a POSIX file descriptor for a memory object
-					vkGetMemoryFdKHR(m_Context.device, reinterpret_cast<const VkMemoryGetFdInfoKHR*>(texture->memory), &fd);
-					texture->sharedHandle = (void*)(size_t)fd;
+					//int fd;
+					////Get a POSIX file descriptor for a memory object
+					//vkGetMemoryFdKHR(m_Context.device, reinterpret_cast<const VkMemoryGetFdInfoKHR*>(texture->memory), &fd);
+					//texture->sharedHandle = (void*)(size_t)fd;
 					//texture->sharedHandle = m_Context.device.getMemoryWin32HandleKHR({ texture->memory, vk::ExternalMemoryHandleTypeFlagBits::eOpaqueWin32 });
 
 //#else

@@ -2,7 +2,10 @@
 #include "RayTracingRenderer.h"
 #include "BlackPearl/Common/CommonFunc.h"
 #include "BlackPearl/Math/Math.h"
+#include "BlackPearl/Renderer/DeviceManager.h"
+#include "BlackPearl/RHI/OpenGLRHI/OpenGLImageTexture2D.h"
 namespace BlackPearl {
+	extern DeviceManager* g_deviceManager;
 
 	RayTracingRenderer::RayTracingRenderer() {
 
@@ -186,11 +189,59 @@ namespace BlackPearl {
 		size_t packDataSize = Math::Fit2Square(m_PackData.size());
 
 		m_SceneData.resize(sceneDataSize * sceneDataSize);
-		m_SceneDataTex.reset(DBG_NEW TextureImage2D(m_SceneData, sceneDataSize, sceneDataSize, GL_NEAREST, GL_NEAREST, GL_R32F, GL_RED, GL_CLAMP_TO_EDGE, GL_FLOAT, GL_READ_WRITE));
-		m_TexDataTex.reset(DBG_NEW TextureImage2D(m_TextureData, texDataSize, texDataSize, GL_NEAREST, GL_NEAREST, GL_R32F, GL_RED, GL_CLAMP_TO_EDGE, GL_FLOAT, GL_READ_WRITE));
-		m_MaterialDataTex.reset(DBG_NEW TextureImage2D(m_MaterialData, matDataSize, matDataSize, GL_NEAREST, GL_NEAREST, GL_R32F, GL_RED, GL_CLAMP_TO_EDGE, GL_FLOAT, GL_READ_WRITE));
 
-		m_PackDataTex.reset(DBG_NEW TextureImage2D(m_PackData, (packDataSize + 1) / 2, (packDataSize + 1) / 2, GL_NEAREST, GL_NEAREST, GL_RGBA32F, GL_RGBA, GL_CLAMP_TO_EDGE, GL_FLOAT, GL_READ_WRITE));
+		TextureDesc desc;
+		desc.type = TextureType::Image2DMap;
+		desc.width = sceneDataSize;
+		desc.height = sceneDataSize;
+		desc.data = m_SceneData.data();
+		desc.minFilter = FilterMode::Nearest;
+		desc.magFilter = FilterMode::Nearest;
+		desc.wrap = SamplerAddressMode::ClampToEdge;
+		desc.format = Format::R32_FLOAT;
+		desc.isUAV = true;
+		m_SceneDataTex = g_deviceManager->GetDevice()->createTexture(desc);
+
+
+		desc.type = TextureType::Image2DMap;
+		desc.width = texDataSize;
+		desc.height = texDataSize;
+		desc.data = m_SceneData.data();
+		desc.minFilter = FilterMode::Nearest;
+		desc.magFilter = FilterMode::Nearest;
+		desc.wrap = SamplerAddressMode::ClampToEdge;
+		desc.format = Format::R32_FLOAT;
+		desc.isUAV = true;
+		m_TexDataTex = g_deviceManager->GetDevice()->createTexture(desc);
+
+
+		desc.type = TextureType::Image2DMap;
+		desc.width = matDataSize;
+		desc.height = matDataSize;
+		desc.data = m_SceneData.data();
+		desc.minFilter = FilterMode::Nearest;
+		desc.magFilter = FilterMode::Nearest;
+		desc.wrap = SamplerAddressMode::ClampToEdge;
+		desc.format = Format::R32_FLOAT;
+		desc.isUAV = true;
+		m_MaterialDataTex = g_deviceManager->GetDevice()->createTexture(desc);
+
+		//m_SceneDataTex.reset(DBG_NEW TextureImage2D(m_SceneData, sceneDataSize, sceneDataSize, GL_NEAREST, GL_NEAREST, GL_R32F, GL_RED, GL_CLAMP_TO_EDGE, GL_FLOAT, GL_READ_WRITE));
+		//m_TexDataTex.reset(DBG_NEW TextureImage2D(m_TextureData, texDataSize, texDataSize, GL_NEAREST, GL_NEAREST, GL_R32F, GL_RED, GL_CLAMP_TO_EDGE, GL_FLOAT, GL_READ_WRITE));
+		//m_MaterialDataTex.reset(DBG_NEW TextureImage2D(m_MaterialData, matDataSize, matDataSize, GL_NEAREST, GL_NEAREST, GL_R32F, GL_RED, GL_CLAMP_TO_EDGE, GL_FLOAT, GL_READ_WRITE));
+
+		desc.type = TextureType::Image2DMap;
+		desc.width = (packDataSize + 1) / 2;
+		desc.height = (packDataSize + 1) / 2;
+		desc.data = m_SceneData.data();
+		desc.minFilter = FilterMode::Nearest;
+		desc.magFilter = FilterMode::Nearest;
+		desc.wrap = SamplerAddressMode::ClampToEdge;
+		desc.format = Format::RGBA32_FLOAT;
+		desc.isUAV = true;
+		m_PackDataTex = g_deviceManager->GetDevice()->createTexture(desc);
+
+		//m_PackDataTex.reset(DBG_NEW TextureImage2D(m_PackData, (packDataSize + 1) / 2, (packDataSize + 1) / 2, GL_NEAREST, GL_NEAREST, GL_RGBA32F, GL_RGBA, GL_CLAMP_TO_EDGE, GL_FLOAT, GL_READ_WRITE));
 		m_Tex2RenderIdMap = scene->GetImg2RenderIdMap();
 		m_CubeMap2RenderIdMap = scene->GetCubeMap2RenderIdMap();
 	}
@@ -228,10 +279,10 @@ namespace BlackPearl {
 			glActiveTexture(GL_TEXTURE3);
 			m_GBuffers[m_ReadBuffer]->GetColorTexture(3)->Bind();
 
-			m_SceneDataTex->Bind(4);
-			m_MaterialDataTex->Bind(5);
-			m_TexDataTex->Bind(6);
-			m_PackDataTex->Bind(7);
+			static_cast<ImageTexture2D*>(m_SceneDataTex.Get())->Bind(4);
+			static_cast<ImageTexture2D*>(m_MaterialDataTex.Get())->Bind(5);
+			static_cast<ImageTexture2D*>(m_TexDataTex.Get())->Bind(6);
+			static_cast<ImageTexture2D*>(m_PackDataTex.Get())->Bind(7);
 
 			m_GroupShader->SetUniform1f("u_rdSeed[0]", Math::Rand_F());
 			m_GroupShader->SetUniform1f("u_rdSeed[1]", Math::Rand_F());
@@ -291,10 +342,10 @@ namespace BlackPearl {
 			glActiveTexture(GL_TEXTURE3);
 			m_GBuffers[m_ReadBuffer]->GetColorTexture(3)->Bind();
 
-			m_SceneDataTex->Bind(4);
-			m_MaterialDataTex->Bind(5);
-			m_TexDataTex->Bind(6);
-			m_PackDataTex->Bind(7);
+			static_cast<ImageTexture2D*>(m_SceneDataTex.Get())->Bind(4);
+			static_cast<ImageTexture2D*>(m_MaterialDataTex.Get())->Bind(5);
+			static_cast<ImageTexture2D*>(m_TexDataTex.Get())->Bind(6);
+			static_cast<ImageTexture2D*>(m_PackDataTex.Get())->Bind(7);
 			size_t base_id = 9;
 			std::map<TextureHandle, size_t>::iterator it = m_Tex2RenderIdMap.begin();
 			for (;it != m_Tex2RenderIdMap.end();it++)

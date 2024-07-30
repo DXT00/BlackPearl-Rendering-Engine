@@ -18,9 +18,8 @@ namespace BlackPearl {
 			bool generateMipmap = false,
 			unsigned int mipmapLevel = 5*/
 		)
-			:Texture(desc.type, desc.faces) {
-			fillTextureInfo(desc);
-			LoadCubeMap();
+			:Texture(desc) {
+		
 		};
 		//empty CubeMap,use in CubeShadowMap
 		/*CubeMapTexture(
@@ -42,6 +41,9 @@ namespace BlackPearl {
 			m_Height = height;
 			m_MipMapLevel = mipmapLevel;
 		};*/
+		virtual void Init(
+			TextureDesc& desc,
+			float* data = nullptr);
 		virtual ~CubeMapTexture();
 		void	LoadCubeMap();
 		/*void	LoadCubeMap(std::vector<std::string> faces, unsigned int minFilter,unsigned int maxFilter,int wrap,int internalFormat, int format, int dataType, bool generateMipmap);

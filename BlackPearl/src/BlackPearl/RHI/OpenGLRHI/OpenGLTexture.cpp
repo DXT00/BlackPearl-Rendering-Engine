@@ -26,26 +26,23 @@ namespace BlackPearl {
 	Texture::Texture(
 		TextureDesc& desc,
 		float* data
-	) :desc(desc),
+	) : desc(desc),
 		TextureStateExtension(desc)
 	{
-		m_Path = desc.path;
-		m_Type = desc.type;
-		m_Width = desc.width;
-		m_Height = desc.height;
+		
 		glGenTextures(1, &m_TextureID);
 		GE_ERROR_JUDGE();//出现error的原因：很可能m_TextureID用在了别的target上，例如CUBEMAP,不行的话运行前加个断点 = = 
 
-		glBindTexture(GL_TEXTURE_2D, m_TextureID);
+		Bind();
 		GE_ERROR_JUDGE();
-
-		if (data != nullptr) {
-			Init(desc, data);
+		Init(desc, data);
+		/*if (data != nullptr) {
+			
 		}
 		else {
 			assert(!m_Path.empty());
 			Init(desc);
-		}
+		}*/
 		GE_ERROR_JUDGE();
 
 
@@ -80,15 +77,15 @@ namespace BlackPearl {
 
 	//}
 	//Use in CubeMap
-	Texture::Texture(TextureType type, std::vector<std::string> faces)
-		:desc(desc),
-		TextureStateExtension(desc) {
-		m_Path = "";
-		//m_FacesPath = faces;
-		m_Type = type;
-		glGenTextures(1, &m_TextureID);
+	//Texture::Texture(TextureType type, std::vector<std::string> faces)
+	//	:desc(desc),
+	//	TextureStateExtension(desc) {
+	//	m_Path = "";
+	//	//m_FacesPath = faces;
+	//	m_Type = type;
+	//	glGenTextures(1, &m_TextureID);
 
-	}
+	//}
 
 	Texture::~Texture()
 	{
@@ -98,81 +95,91 @@ namespace BlackPearl {
 
 
 	void Texture::Init(
-		TextureDesc& desc)
+		TextureDesc& desc, float* data)
 	{
-
-		//LoadTexture(image, minFilter, magFilter, internalFormat, format, wrap, dataType);
-		GE_ASSERT(m_Path.size() != 0, "texture image is empty!");
-
-		int width, height, nrChannels;
-
-		stbi_set_flip_vertically_on_load(true);
-
-
-		unsigned char* data = stbi_load(m_Path.c_str(), &width, &height, &nrChannels, 0);
-		GE_ASSERT(data, "fail to load texture data!");
-		GLenum format;
-		switch (nrChannels) //注意不同图片有不同的通道数！
-		{
-		case 1:
-			format = GL_RED;
-			break;
-		case 2:
-			format = GL_RG;
-			break;
-		case 3:
-			format = GL_RGB;
-			break;
-		case 4:
-			format = GL_RGBA;
-			break;
-		default:
-			GE_CORE_ERROR("Channel {0} has unknown format!", nrChannels)
-				break;
-		}
-		m_Width = width;
-		m_Height = height;
-		desc.width = m_Width;
-		desc.height = m_Height;
 		fillTextureInfo(desc);
+		if (data != nullptr) {
+			GE_ASSERT(m_Path.size() != 0, "texture image is empty!");
+
+			int width, height, nrChannels;
+
+			stbi_set_flip_vertically_on_load(true);
+
+
+			unsigned char* data = stbi_load(m_Path.c_str(), &width, &height, &nrChannels, 0);
+			GE_ASSERT(data, "fail to load texture data!");
+			GLenum format;
+			switch (nrChannels) //注意不同图片有不同的通道数！
+			{
+			case 1:
+				format = GL_RED;
+				break;
+			case 2:
+				format = GL_RG;
+				break;
+			case 3:
+				format = GL_RGB;
+				break;
+			case 4:
+				format = GL_RGBA;
+				break;
+			default:
+				GE_CORE_ERROR("Channel {0} has unknown format!", nrChannels)
+					break;
+			}
+			m_Width = width;
+			m_Height = height;
+			desc.width = m_Width;
+			desc.height = m_Height;
+			m_Format = format;
+		}
+		//LoadTexture(image, minFilter, magFilter, internalFormat, format, wrap, dataType);
+		
+	
 
 		//glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
 		//glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, format, GL_UNSIGNED_BYTE, data);
 		//glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, format, GL_UNSIGNED_BYTE, data);
-		glTexImage2D(GL_TEXTURE_2D, 0, m_InnerFormat, width, height, 0, format, m_DataType, data);
-		if (desc.generateMipmap)
-			glGenerateMipmap(GL_TEXTURE_2D);//为当前绑定的纹理自动生成所有需要的多级渐远纹理
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, m_Wrap);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, m_Wrap);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, m_MinFilter);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, m_MagFilter);
-		//UnBind();
-		stbi_image_free(data);
-	}
-
-	void Texture::Init(
-		const TextureDesc& desc, float* data)
-	{
-
-		/*	FBO(
-				GLuint w, GLuint h, GLenum magFilter = GL_NEAREST, GLenum minFilter = GL_NEAREST,
-				GLint internalFormat = GL_RGB16F, GLint format = GL_FLOAT, GLint wrap = GL_REPEAT);*/
-				//纹理过滤---邻近过滤和线性过滤
-		fillTextureInfo(desc);
 		glTexImage2D(GL_TEXTURE_2D, 0, m_InnerFormat, m_Width, m_Height, 0, m_Format, m_DataType, data);
-
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, m_MinFilter);//纹理缩小时用邻近过滤
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, m_MagFilter);//纹理放大时也用邻近过滤
-		//TODO:: 是不是可以删掉？
+		
 		if (m_Wrap != -1) {
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, m_Wrap);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, m_Wrap);
 		}
 
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, m_MinFilter);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, m_MagFilter);
+
 		if (desc.generateMipmap)
 			glGenerateMipmap(GL_TEXTURE_2D);//为当前绑定的纹理自动生成所有需要的多级渐远纹理
-		//	UnBind();
+
+		if (data != nullptr)
+			stbi_image_free(data);
 	}
+
+	//void Texture::Init(
+	//	const TextureDesc& desc, float* data)
+	//{
+
+	//	/*	FBO(
+	//			GLuint w, GLuint h, GLenum magFilter = GL_NEAREST, GLenum minFilter = GL_NEAREST,
+	//			GLint internalFormat = GL_RGB16F, GLint format = GL_FLOAT, GLint wrap = GL_REPEAT);*/
+	//			//纹理过滤---邻近过滤和线性过滤
+	//	fillTextureInfo(desc);
+	//	glTexImage2D(GL_TEXTURE_2D, 0, m_InnerFormat, m_Width, m_Height, 0, m_Format, m_DataType, data);
+
+	//	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, m_MinFilter);//纹理缩小时用邻近过滤
+	//	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, m_MagFilter);//纹理放大时也用邻近过滤
+	//	//TODO:: 是不是可以删掉？
+	//	if (m_Wrap != -1) {
+	//		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, m_Wrap);
+	//		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, m_Wrap);
+	//	}
+
+	//	if (desc.generateMipmap)
+	//		glGenerateMipmap(GL_TEXTURE_2D);//为当前绑定的纹理自动生成所有需要的多级渐远纹理
+	//	//	UnBind();
+	//}
 
 	void Texture::SetSizeFilter(GLenum min_filter, GLenum mag_filter) {
 
@@ -316,8 +323,14 @@ namespace BlackPearl {
 
 	}
 
+
+
 	void Texture::fillTextureInfo(const TextureDesc& desc)
 	{
+		m_Path = desc.path;
+		m_Type = desc.type;
+		m_Width = desc.width;
+		m_Height = desc.height;
 		auto fm = _ConvertFormat(desc.format);
 		m_Format = fm.first;
 		m_DataType = fm.second;

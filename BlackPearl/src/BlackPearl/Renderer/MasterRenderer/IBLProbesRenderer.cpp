@@ -18,7 +18,6 @@ namespace BlackPearl {
 	float IBLProbesRenderer::s_ProbeGridSpace = 5.0f;
 	IBLProbesRenderer::IBLProbesRenderer()
 	{
-		//	m_FrameBuffer.reset(DBG_NEW FrameBuffer());
 
 		m_LightProbeShader.reset(DBG_NEW Shader("assets/shaders/lightProbes/lightProbe.glsl"));
 		m_IBLShader.reset(DBG_NEW Shader("assets/shaders/lightProbes/iblSHTexture.glsl"));
@@ -268,7 +267,7 @@ namespace BlackPearl {
 		//glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
 
 		glm::vec2 mipMapSize = { environmentCubeMap->getDesc().width, environmentCubeMap->getDesc().height };
-		std::shared_ptr<FrameBuffer> frameBuffer(DBG_NEW FrameBuffer());
+		std::shared_ptr<FrameBuffer> frameBuffer = std::make_shared<FrameBuffer>();
 		//	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		GE_ERROR_JUDGE();
 		frameBuffer->Bind();
@@ -480,7 +479,7 @@ namespace BlackPearl {
 		//probe->GetHdrEnvironmentCubeMap()->Bind();
 		GE_ERROR_JUDGE();
 
-		std::shared_ptr<FrameBuffer> frameBuffer(new FrameBuffer());
+		std::shared_ptr<FrameBuffer> frameBuffer = std::make_shared<FrameBuffer>();
 		GE_ERROR_JUDGE();
 
 		frameBuffer->Bind();
@@ -547,7 +546,7 @@ namespace BlackPearl {
 		m_SpecularBrdfLUTTexture = g_deviceManager->GetDevice()->createTexture(desc);
 
 		//m_SpecularBrdfLUTTexture.reset(DBG_NEW Texture(Texture::DiffuseMap, Configuration::EnvironmantMapResolution, Configuration::EnvironmantMapResolution, false, GL_LINEAR, GL_LINEAR, GL_RG16F, GL_RG, GL_CLAMP_TO_EDGE, GL_FLOAT));
-		std::shared_ptr<FrameBuffer> frameBuffer(new FrameBuffer());
+		std::shared_ptr<FrameBuffer> frameBuffer = std::make_shared<FrameBuffer>();
 
 		frameBuffer->Bind();
 		frameBuffer->AttachRenderBuffer(Configuration::EnvironmantMapResolution, Configuration::EnvironmantMapResolution);

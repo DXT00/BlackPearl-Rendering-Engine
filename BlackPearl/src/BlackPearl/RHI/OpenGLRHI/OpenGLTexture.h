@@ -59,13 +59,13 @@ namespace BlackPearl {
 			return desc.type;
 		}
 
-		void Init(
-			TextureDesc& desc
-		);
-		void Init(
-			const TextureDesc& desc,
-			float* data);
+		//void Init(
+		//	TextureDesc& desc
+		//);
 
+		virtual void Init(
+			TextureDesc& desc,
+			float* data = nullptr);
 		virtual void Bind();
 		virtual void UnBind();
 		void Storage(GLsizei width, GLsizei height, GLenum internal_format, GLsizei levels = 1);

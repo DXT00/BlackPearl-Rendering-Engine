@@ -12,7 +12,7 @@ namespace BlackPearl {
 	public:
 		ShadowMapRenderer(Object *CameraObj) {
 			m_ShadowBox.reset(DBG_NEW ShadowBox(glm::mat4(1.0f), CameraObj->GetComponent<PerspectiveCamera>()));
-			m_FrameBuffer = std::make_shared<FrameBuffer>(DBG_NEW FrameBuffer());
+			m_FrameBuffer = std::make_shared<FrameBuffer>();
 			m_FrameBuffer->DisableColorBuffer();
 			m_FrameBuffer->AttachDepthTexture(s_ShadowMapWidth, s_ShadowMapHeight);
 			m_SimpleDepthShader.reset(DBG_NEW BlackPearl::Shader("assets/shaders/shadowMap/directLight/DepthShader_ShadowMapLayer.glsl"));

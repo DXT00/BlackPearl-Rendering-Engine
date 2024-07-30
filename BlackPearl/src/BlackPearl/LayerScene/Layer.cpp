@@ -418,6 +418,7 @@ namespace BlackPearl {
 		m_ShadowObjsList.push_back(cube5);
 
 	}
+	
 	void Layer::LoadCornellScene1()
 	{
 		/*create pointlights*/
@@ -493,6 +494,7 @@ namespace BlackPearl {
 
 
 	}
+	
 	void Layer::LoadChurchScene()
 	{
 		Object* church = CreateModel("assets/models/crytek-sponza/sponza.obj", "assets/shaders/IronMan.glsl", false, "Church");
