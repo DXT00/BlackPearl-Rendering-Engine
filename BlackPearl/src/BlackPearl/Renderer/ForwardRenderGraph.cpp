@@ -19,6 +19,7 @@ namespace BlackPearl {
 		//BasePass
 		m_BasePassRenderer = DBG_NEW BasePassRenderer();
 		BasePassRenderer::CreateParameters params;
+		//params.materialBindings = std::make_shared<MaterialBindingCache>(m_DeviceManager->GetDevice(),);
 		m_BasePassRenderer->Init(m_DeviceManager->GetDevice(), m_ShaderFactory, params);
 		//PostProcessPass
 		/*m_PostProcessRenderer = DBG_NEW PostProcessRenderer();

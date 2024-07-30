@@ -75,6 +75,42 @@ namespace BlackPearl {
 
 	MaterialBindingCache::MaterialBindingCache(IDevice* device, ShaderType shaderType, uint32_t registerSpace, const std::vector<MaterialResourceBinding>& bindings, ISampler* sampler, ITexture* fallbackTexture, bool trackLiveness)
 	{
+        m_Device = device;
+
+        nvrhi::BindingLayoutDesc layoutDesc;
+        layoutDesc.visibility = shaderType;
+        layoutDesc.registerSpace = registerSpace;
+
+        for (const auto& item : bindings)
+        {
+            nvrhi::BindingLayoutItem layoutItem{};
+            layoutItem.slot = item.slot;
+
+            switch (item.resource)
+            {
+            case MaterialResource::ConstantBuffer:
+                layoutItem.type = nvrhi::ResourceType::ConstantBuffer;
+                break;
+            case MaterialResource::DiffuseTexture:
+            case MaterialResource::SpecularTexture:
+            case MaterialResource::NormalTexture:
+            case MaterialResource::EmissiveTexture:
+            case MaterialResource::OcclusionTexture:
+            case MaterialResource::TransmissionTexture:
+                layoutItem.type = nvrhi::ResourceType::Texture_SRV;
+                break;
+            case MaterialResource::Sampler:
+                layoutItem.type = nvrhi::ResourceType::Sampler;
+                break;
+            default:
+                log::error("MaterialBindingCache: unknown MaterialResource value (%d)", item.resource);
+                return;
+            }
+
+            layoutDesc.bindings.push_back(layoutItem);
+        }
+
+        m_BindingLayout = m_Device->createBindingLayout(layoutDesc);
 	}
 
 	IBindingLayout* MaterialBindingCache::GetLayout() const

@@ -713,10 +713,7 @@ finished executing, the objects are transitioned into the "available" state, i.e
         RG32_FLOAT,
         RGB32_UINT,
         RGB32_SINT,
-        RGB8_UNORM,
-        RGB8_FLOAT,
 
-        RGB16_FLOAT,
         RGB32_FLOAT,
         RGBA32_UINT,
         RGBA32_SINT,
@@ -743,6 +740,10 @@ finished executing, the objects are transitioned into the "available" state, i.e
         BC6H_SFLOAT,
         BC7_UNORM,
         BC7_UNORM_SRGB,
+
+        RGB8_UNORM,
+        RGB8_FLOAT,
+        RGB16_FLOAT,
 
         COUNT,
     };
