@@ -838,8 +838,8 @@ namespace BlackPearl
 		std::vector<VkSpecializationMapEntry>& specMapEntries,
 		std::vector<uint32_t>& specData)
 	{
-		VkPipelineShaderStageCreateInfo shaderStageCreateInfo;
-
+		VkPipelineShaderStageCreateInfo shaderStageCreateInfo{};
+		shaderStageCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
 		shaderStageCreateInfo.stage = shader->stageFlagBits;
 		shaderStageCreateInfo.module = shader->shaderModule;
 		shaderStageCreateInfo.pName = shader->desc.entryName.c_str();
@@ -866,7 +866,7 @@ namespace BlackPearl
 				.setPData(specData.data() + specData.size())
 				.setDataSize(shader->specializationConstants.size() * sizeof(uint32_t));*/
 
-			VkSpecializationInfo specInfo;
+			VkSpecializationInfo specInfo{};
 			specInfo.pMapEntries = specMapEntries.data() + specMapEntries.size();
 			specInfo.mapEntryCount = static_cast<uint32_t>(shader->specializationConstants.size());
 			specInfo.pData = specData.data() + specData.size();
@@ -881,10 +881,10 @@ namespace BlackPearl
 					.setOffset(static_cast<uint32_t>(dataOffset))
 					.setSize(sizeof(uint32_t));*/
 
-					VkSpecializationMapEntry specMapEntry;
-					specMapEntry.constantID = constant.constantID;
-					specMapEntry.offset = static_cast<uint32_t>(dataOffset);
-					specMapEntry.size = sizeof(uint32_t);
+				VkSpecializationMapEntry specMapEntry{};
+				specMapEntry.constantID = constant.constantID;
+				specMapEntry.offset = static_cast<uint32_t>(dataOffset);
+				specMapEntry.size = sizeof(uint32_t);
 
 				specMapEntries.push_back(specMapEntry);
 				specData.push_back(constant.value.u);

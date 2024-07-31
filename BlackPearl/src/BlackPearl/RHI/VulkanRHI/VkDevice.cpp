@@ -639,14 +639,11 @@ namespace BlackPearl {
 		VkPipelineVertexInputStateCreateInfo vertexInput{};
 		if (inputLayout)
 		{
-
 			vertexInput.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
 			vertexInput.vertexBindingDescriptionCount = uint32_t(inputLayout->bindingDesc.size());
 			vertexInput.pVertexBindingDescriptions = inputLayout->bindingDesc.data();
 			vertexInput.vertexAttributeDescriptionCount = uint32_t(inputLayout->attributeDesc.size());
 			vertexInput.pVertexAttributeDescriptions = inputLayout->attributeDesc.data();
-
-
 		}
 
 		VkPipelineInputAssemblyStateCreateInfo inputAssembly{};
@@ -660,24 +657,10 @@ namespace BlackPearl {
 		const auto& blendState = desc.renderState.blendState;
 
 
-		VkPipelineViewportStateCreateInfo viewportState;
+		VkPipelineViewportStateCreateInfo viewportState{};
 		viewportState.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
 		viewportState.viewportCount = 1;
 		viewportState.scissorCount = 1;
-
-
-		//auto rasterizer = vk::PipelineRasterizationStateCreateInfo()
-		//	// .setDepthClampEnable(??)
-		//	// .setRasterizerDiscardEnable(??)
-		//	.setPolygonMode(convertFillMode(rasterState.fillMode))
-		//	.setCullMode(convertCullMode(rasterState.cullMode))
-		//	.setFrontFace(rasterState.frontCounterClockwise ?
-		//		vk::FrontFace::eCounterClockwise : vk::FrontFace::eClockwise)
-		//	.setDepthBiasEnable(rasterState.depthBias ? true : false)
-		//	.setDepthBiasConstantFactor(float(rasterState.depthBias))
-		//	.setDepthBiasClamp(rasterState.depthBiasClamp)
-		//	.setDepthBiasSlopeFactor(rasterState.slopeScaledDepthBias)
-		//	.setLineWidth(1.0f);
 
 		VkPipelineRasterizationStateCreateInfo rasterizer{};
 		rasterizer.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
@@ -693,28 +676,23 @@ namespace BlackPearl {
 
 		// Conservative raster state
 		VkPipelineRasterizationConservativeStateCreateInfoEXT conservativeRasterState{};
+		conservativeRasterState.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_CONSERVATIVE_STATE_CREATE_INFO_EXT;
 		conservativeRasterState.conservativeRasterizationMode = VK_CONSERVATIVE_RASTERIZATION_MODE_OVERESTIMATE_EXT;
 
-		/*auto conservativeRasterState = vk::PipelineRasterizationConservativeStateCreateInfoEXT()
-			.setConservativeRasterizationMode(vk::ConservativeRasterizationModeEXT::eOverestimate);*/
 		if (rasterState.conservativeRasterEnable)
 		{
 			rasterizer.pNext = &conservativeRasterState;
 		}
 
 		VkPipelineMultisampleStateCreateInfo multisample{};
+		multisample.sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
 		multisample.rasterizationSamples = VkSampleCountFlagBits(fb->framebufferInfo.sampleCount);
 		multisample.alphaToCoverageEnable = blendState.alphaToCoverageEnable;
-		/*.setRasterizationSamples(vk::SampleCountFlagBits(fb->framebufferInfo.sampleCount))
-		.setAlphaToCoverageEnable(blendState.alphaToCoverageEnable);*/
+
 
 		VkPipelineDepthStencilStateCreateInfo depthStencil{};
-		//.setDepthTestEnable(depthStencilState.depthTestEnable)
-		//.setDepthWriteEnable(depthStencilState.depthWriteEnable)
-		//.setDepthCompareOp(convertCompareOp(depthStencilState.depthFunc))
-		//.setStencilTestEnable(depthStencilState.stencilEnable)
-		//.setFront(convertStencilState(depthStencilState, depthStencilState.frontFaceStencil))
-		//.setBack(convertStencilState(depthStencilState, depthStencilState.backFaceStencil));
+
+		depthStencil.sType = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
 		depthStencil.depthTestEnable = depthStencilState.depthTestEnable;
 		depthStencil.depthWriteEnable = depthStencilState.depthWriteEnable;
 		depthStencil.depthCompareOp = VkUtil::convertCompareOp(depthStencilState.depthFunc);
@@ -727,7 +705,8 @@ namespace BlackPearl {
 		{ VkUtil::convertShadingRateCombiner(desc.shadingRateState.pipelinePrimitiveCombiner),
 			VkUtil::convertShadingRateCombiner(desc.shadingRateState.imageCombiner)
 		};
-		VkPipelineFragmentShadingRateStateCreateInfoKHR shadingRateState;
+		VkPipelineFragmentShadingRateStateCreateInfoKHR shadingRateState{};
+		shadingRateState.sType = VK_STRUCTURE_TYPE_PIPELINE_FRAGMENT_SHADING_RATE_STATE_CREATE_INFO_KHR;
 		shadingRateState.combinerOps[0] = combiners[0];
 		shadingRateState.combinerOps[1] = combiners[1];
 		shadingRateState.fragmentSize = VkUtil::convertFragmentShadingRate(desc.shadingRateState.shadingRate);
@@ -755,43 +734,23 @@ namespace BlackPearl {
 			}
 		}
 		VkPushConstantRange pushConstantRange{};
-		/*	auto pushConstantRange = vk::PushConstantRange()
-				.setOffset(0)
-				.setSize(pushConstantSize)
-				.setStageFlags(convertShaderTypeToShaderStageFlagBits(pso->shaderMask));*/
 
 		pushConstantRange.offset = 0;
 		pushConstantRange.size = pushConstantSize;
 		pushConstantRange.stageFlags = VkUtil::convertShaderTypeToShaderStageFlagBits(pso->shaderMask);
 
-
-		VkPipelineLayoutCreateInfo pipelineLayoutInfo;
+		VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
+		pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
 		pipelineLayoutInfo.setLayoutCount = uint32_t(descriptorSetLayouts.size());
 		pipelineLayoutInfo.pSetLayouts = descriptorSetLayouts.data();
 		pipelineLayoutInfo.pushConstantRangeCount = pushConstantSize ? 1 : 0;
 		pipelineLayoutInfo.pPushConstantRanges = &pushConstantRange;
-
-		/*auto pipelineLayoutInfo = vk::PipelineLayoutCreateInfo()
-			.setSetLayoutCount(uint32_t(descriptorSetLayouts.size()))
-			.setPSetLayouts(descriptorSetLayouts.data())
-			.setPushConstantRangeCount(pushConstantSize ? 1 : 0)
-			.setPPushConstantRanges(&pushConstantRange);*/
-
-
-
-			//res = m_Context.device.createPipelineLayout(&pipelineLayoutInfo,
-			//	m_Context.allocationCallbacks,
-			//	&pso->pipelineLayout);
-			//CHECK_VK_FAIL(res)
 
 		if (vkCreatePipelineLayout(m_Context.device, &pipelineLayoutInfo,
 			m_Context.allocationCallbacks,
 			&pso->pipelineLayout) != VK_SUCCESS) {
 			throw std::runtime_error("failed to create pipeline layout!");
 		}
-		/*	vkCreatePipelineLayout(m_Context.device, &pipelineLayoutInfo,
-				m_Context.allocationCallbacks,
-				&pso->pipelineLayout)*/
 
 		attachment_vector<VkPipelineColorBlendAttachmentState> colorBlendAttachments(fb->desc.colorAttachments.size());
 
@@ -800,13 +759,10 @@ namespace BlackPearl {
 			colorBlendAttachments[i] = VkUtil::convertBlendState(blendState.targets[i]);
 		}
 
-		VkPipelineColorBlendStateCreateInfo colorBlend;
-
+		VkPipelineColorBlendStateCreateInfo colorBlend{};
+		colorBlend.sType = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO;
 		colorBlend.attachmentCount = uint32_t(colorBlendAttachments.size());
 		colorBlend.pAttachments = colorBlendAttachments.data();
-
-		/*.setAttachmentCount(uint32_t(colorBlendAttachments.size()))
-		.setPAttachments(colorBlendAttachments.data());*/
 
 		pso->usesBlendConstants = blendState.usesConstantColor(uint32_t(fb->desc.colorAttachments.size()));
 
@@ -818,14 +774,10 @@ namespace BlackPearl {
 		};
 
 		VkPipelineDynamicStateCreateInfo dynamicStateInfo{};
-
+		dynamicStateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
 		dynamicStateInfo.dynamicStateCount = pso->usesBlendConstants ? 3 : 2;
 		dynamicStateInfo.pDynamicStates = dynamicStates;
 
-
-		//auto dynamicStateInfo = VkPipelineDynamicStateCreateInfo()
-		//	.setDynamicStateCount(pso->usesBlendConstants ? 3 : 2)
-		//	.setPDynamicStates(dynamicStates);
 		VkGraphicsPipelineCreateInfo pipelineInfo{};
 		pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
 		pipelineInfo.stageCount = uint32_t(shaderStages.size());
@@ -846,29 +798,11 @@ namespace BlackPearl {
 		pipelineInfo.pTessellationState = VK_NULL_HANDLE;
 		pipelineInfo.pNext = &shadingRateState;
 
-		//auto pipelineInfo = VkGraphicsPipelineCreateInfo()
-		//	.setStageCount(uint32_t(shaderStages.size()))
-		//	.setPStages(shaderStages.data())
-		//	.setPVertexInputState(&vertexInput)
-		//	.setPInputAssemblyState(&inputAssembly)
-		//	.setPViewportState(&viewportState)
-		//	.setPRasterizationState(&rasterizer)
-		//	.setPMultisampleState(&multisample)
-		//	.setPDepthStencilState(&depthStencil)
-		//	.setPColorBlendState(&colorBlend)
-		//	.setPDynamicState(&dynamicStateInfo)
-		//	.setLayout(pso->pipelineLayout)
-		//	.setRenderPass(fb->renderPass)
-		//	.setSubpass(0)
-		//	.setBasePipelineHandle(nullptr)
-		//	.setBasePipelineIndex(-1)
-		//	.setPTessellationState(nullptr)
-		//	.setPNext(&shadingRateState);
-
 		VkPipelineTessellationStateCreateInfo tessellationState{};
 
 		if (desc.primType == PrimitiveType::PatchList)
 		{
+			tessellationState.sType = VK_STRUCTURE_TYPE_PIPELINE_TESSELLATION_STATE_CREATE_INFO;
 			tessellationState.patchControlPoints = desc.patchControlPoints;
 			pipelineInfo.pTessellationState = &tessellationState;
 		}
@@ -878,19 +812,7 @@ namespace BlackPearl {
 			&pso->pipeline) != VK_SUCCESS) {
 			throw std::runtime_error("failed to create graphics pipeline!");
 		}
-		/*vkCreateGraphicsPipelines(m_Context.device, m_Context.pipelineCache,
-			1, &pipelineInfo,
-			m_Context.allocationCallbacks,
-			&pso->pipeline)*/
-
-
-			//res = m_Context.device.createGraphicsPipelines(m_Context.pipelineCache,
-			//	1, &pipelineInfo,
-			//	m_Context.allocationCallbacks,
-			//	&pso->pipeline);
-			//ASSERT_VK_OK(res); // for debugging
-			//CHECK_VK_FAIL(res);
-
+	
 		return GraphicsPipelineHandle::Create(pso);
 	}
 
@@ -971,11 +893,12 @@ namespace BlackPearl {
 
 		sampler->samplerInfo = samplerInfo;
 
-		VkSamplerReductionModeCreateInfoEXT samplerReductionCreateInfo;
+		VkSamplerReductionModeCreateInfoEXT samplerReductionCreateInfo{};
 		if (desc.reductionType == SamplerReductionType::Minimum || desc.reductionType == SamplerReductionType::Maximum)
 		{
 			VkSamplerReductionModeEXT reductionMode =
 				desc.reductionType == SamplerReductionType::Maximum ? VK_SAMPLER_REDUCTION_MODE_MAX : VK_SAMPLER_REDUCTION_MODE_MIN;
+			samplerReductionCreateInfo.sType = VK_STRUCTURE_TYPE_SAMPLER_REDUCTION_MODE_CREATE_INFO_EXT;
 			samplerReductionCreateInfo.reductionMode = reductionMode;
 
 			sampler->samplerInfo.pNext = &samplerReductionCreateInfo;
@@ -1323,7 +1246,8 @@ namespace BlackPearl {
 					{
 						assert(binding.format != Format::UNKNOWN);
 
-						VkBufferViewCreateInfo bufferViewInfo;
+						VkBufferViewCreateInfo bufferViewInfo{};
+						bufferViewInfo.sType = VK_STRUCTURE_TYPE_BUFFER_VIEW_CREATE_INFO;
 						bufferViewInfo.buffer = buffer->buffer;
 						bufferViewInfo.offset = range.byteOffset;
 						bufferViewInfo.range = range.byteSize;
@@ -1695,7 +1619,8 @@ namespace BlackPearl {
 									.setRange(range.byteSize)
 									.setFormat(vkformat);*/
 
-					VkBufferViewCreateInfo bufferViewInfo;
+					VkBufferViewCreateInfo bufferViewInfo{};
+					bufferViewInfo.sType = VK_STRUCTURE_TYPE_BUFFER_VIEW_CREATE_INFO;
 					bufferViewInfo.buffer = buffer->buffer;
 					bufferViewInfo.offset = range.byteOffset;
 					bufferViewInfo.range = range.byteSize;
