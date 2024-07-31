@@ -118,7 +118,7 @@ namespace BlackPearl {
 
 	IBindingLayout* MaterialBindingCache::GetLayout() const
 	{
-		return nullptr;
+		return m_BindingLayout;
 	}
 
 	IBindingSet* MaterialBindingCache::GetMaterialBindingSet(const Material* material)
