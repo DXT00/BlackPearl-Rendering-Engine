@@ -165,17 +165,17 @@ namespace BlackPearl {
 		static math::float4 VectorCompareGT(const math::float4& Vec1, const math::float4& Vec2)
 		{
 			return math::float4(
-				Vec1.x > Vec2.x ? 0xFFFFFFFF : 0,
-				Vec1.y > Vec2.y ? 0xFFFFFFFF : 0,
-				Vec1.z > Vec2.z ? 0xFFFFFFFF : 0,
-				Vec1.w > Vec2.w ? 0xFFFFFFFF : 0);
+				Vec1.x > Vec2.x ? (float)0xFFFFFFFF : 0,
+				Vec1.y > Vec2.y ? (float)0xFFFFFFFF : 0,
+				Vec1.z > Vec2.z ? (float)0xFFFFFFFF : 0,
+				Vec1.w > Vec2.w ? (float)0xFFFFFFFF : 0);
 		}
 		static math::float3 VectorCompareGT(const math::float3& Vec1, const math::float3& Vec2)
 		{
 			return math::float3(
-				Vec1.x > Vec2.x ? 0xFFFFFFFF : 0,
-				Vec1.y > Vec2.y ? 0xFFFFFFFF : 0,
-				Vec1.z > Vec2.z ? 0xFFFFFFFF : 0);
+				Vec1.x > Vec2.x ? (float)0xFFFFFFFF : 0,
+				Vec1.y > Vec2.y ? (float)0xFFFFFFFF : 0,
+				Vec1.z > Vec2.z ? (float)0xFFFFFFFF : 0);
 		}
 
 		/**

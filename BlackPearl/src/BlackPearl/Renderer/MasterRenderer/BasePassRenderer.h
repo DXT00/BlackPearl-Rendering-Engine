@@ -44,7 +44,7 @@ namespace BlackPearl {
                 bool frontCounterClockwise : 1;
                 bool reverseDepth : 1;
             } bits;
-            uint32_t value;
+            uint32_t value = 0;
 
             static constexpr size_t Count = 1 << 7;
         };

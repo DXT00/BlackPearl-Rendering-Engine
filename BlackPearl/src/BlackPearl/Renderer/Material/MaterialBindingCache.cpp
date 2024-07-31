@@ -1,7 +1,8 @@
 #include "pch.h"
 #include "MaterialBindingCache.h"
 #include "BlackPearl/RHI/RHIBindingSet.h"
-
+#include "BlackPearl/RHI/RHIDefinitions.h"
+#include "BlackPearl/Core.h"
 namespace BlackPearl {
 	BindingSetHandle MaterialBindingCache::CreateMaterialBindingSet(const Material* material)
 	{
@@ -72,24 +73,24 @@ namespace BlackPearl {
 	//{
 	//	return BindingSetItem::Texture_SRV(slot, texture && texture->texture ? texture->texture.Get() : m_FallbackTexture.Get());
 	//}
-
+    // same as opengl set uniform
 	MaterialBindingCache::MaterialBindingCache(IDevice* device, ShaderType shaderType, uint32_t registerSpace, const std::vector<MaterialResourceBinding>& bindings, ISampler* sampler, ITexture* fallbackTexture, bool trackLiveness)
 	{
         m_Device = device;
 
-        nvrhi::BindingLayoutDesc layoutDesc;
+        RHIBindingLayoutDesc layoutDesc;
         layoutDesc.visibility = shaderType;
         layoutDesc.registerSpace = registerSpace;
 
         for (const auto& item : bindings)
         {
-            nvrhi::BindingLayoutItem layoutItem{};
+            RHIBindingLayoutItem layoutItem{};
             layoutItem.slot = item.slot;
 
             switch (item.resource)
             {
             case MaterialResource::ConstantBuffer:
-                layoutItem.type = nvrhi::ResourceType::ConstantBuffer;
+                layoutItem.type = RHIResourceType::RT_ConstantBuffer;
                 break;
             case MaterialResource::DiffuseTexture:
             case MaterialResource::SpecularTexture:
@@ -97,13 +98,15 @@ namespace BlackPearl {
             case MaterialResource::EmissiveTexture:
             case MaterialResource::OcclusionTexture:
             case MaterialResource::TransmissionTexture:
-                layoutItem.type = nvrhi::ResourceType::Texture_SRV;
+                layoutItem.type = RHIResourceType::RT_Texture_SRV;
                 break;
             case MaterialResource::Sampler:
-                layoutItem.type = nvrhi::ResourceType::Sampler;
+                layoutItem.type = RHIResourceType::RT_Sampler;
                 break;
             default:
-                log::error("MaterialBindingCache: unknown MaterialResource value (%d)", item.resource);
+               // GE_CORE_ERROR("MaterialBindingCache: unknown MaterialResource value {0}", item.resource);
+                //log::error("MaterialBindingCache: unknown MaterialResource value (%d)", item.resource);
+                GE_CORE_ERROR("MaterialBindingCache: unknown MaterialResource value");
                 return;
             }
 

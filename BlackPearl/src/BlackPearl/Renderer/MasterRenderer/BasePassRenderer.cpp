@@ -78,6 +78,7 @@ namespace BlackPearl {
         }
 
         PipelineKey key;// = context.keyTemplate;
+        key.value = 0;
         key.bits.cullMode = cullMode;
         key.bits.domain = material->domain;
 
