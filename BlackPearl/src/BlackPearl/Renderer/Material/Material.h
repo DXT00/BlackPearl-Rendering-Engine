@@ -121,7 +121,7 @@ namespace BlackPearl {
 
 		}
 	public:
-
+		bool isDirty = false;
 		MaterialDomain domain = MaterialDomain::Opaque;
 		BufferHandle materialConstants;
 		MaterialConstants FillMaterialConstants();
