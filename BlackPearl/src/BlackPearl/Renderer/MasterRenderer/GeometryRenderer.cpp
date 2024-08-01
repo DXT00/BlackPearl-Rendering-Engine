@@ -80,10 +80,11 @@ namespace BlackPearl {
             if (newMaterial)
             {
                 if (item.material->isDirty) {
-                    const_cast<Material*>(item.material)->FillMaterialConstants();
+                    MaterialConstants cb = const_cast<Material*>(item.material)->FillMaterialConstants();
                     commandList->writeBuffer(item.material->materialConstants,
-                        &m_Resources->materialData[material->materialID],
+                        &cb,
                         sizeof(MaterialConstants));
+                    const_cast<Material*>(item.material)->isDirty = false;
                 }
                 drawMaterial = pass->SetupMaterial(item.material, item.cullMode, graphicsState);
 

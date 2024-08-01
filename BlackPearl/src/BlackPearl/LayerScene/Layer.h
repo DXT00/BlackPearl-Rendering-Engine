@@ -24,7 +24,7 @@
 #include "BlackPearl/Math/Math.h"
 #include "BlackPearl/Component/LightProbeComponent/LightProbeComponent.h"
 #include <WinUser.h>
-
+#include "hlsl/core/material_cb.h"
 using namespace std::chrono;
 
 namespace BlackPearl {
@@ -146,7 +146,7 @@ namespace BlackPearl {
 
 		void ShowShader(std::string imguiShaders, int meshIndex, static int& itemIndex, int offset);
 		void ShowTextures(std::string imguiShaders, int meshIndex, static  int& itemIndex, TextureType textureType, static TextureType& type, int offset);
-		void ShowMaterialProps(Material::Props& imGuiProps);
+		void ShowMaterialProps(Props& imGuiProps);
 		std::vector<Object*> GetObjects();
 		//std::vector<std::string> GetObjectsName();
 

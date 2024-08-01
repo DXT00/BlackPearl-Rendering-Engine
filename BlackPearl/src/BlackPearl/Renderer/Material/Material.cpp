@@ -1,12 +1,15 @@
 #include "pch.h"
 #include "Material.h"
 #include "MaterialManager.h"
+#include "BlackPearl/Renderer/DeviceManager.h"
 namespace BlackPearl {
 	//extern  DynamicRHI::Type g_RHIType;
+	extern DeviceManager* g_deviceManager;
+
 	Material::Material(const std::shared_ptr<Shader>& shader, const std::shared_ptr<TextureMaps>& textureMaps, const MaterialColor& materialColors)
 		:m_Shader(shader), m_TextureMaps(textureMaps), m_MaterialColors(materialColors), m_Props(Props())
 	{
-		
+		_CreateMaterialConstantBuffer();
 	}
 	Material::Material(const std::string shaderPath, const std::shared_ptr<TextureMaps>& textureMaps, 
 		math::float3 ambientColor, 
@@ -48,6 +51,7 @@ namespace BlackPearl {
 			}
 		}
 
+		_CreateMaterialConstantBuffer();
 
 	}
 
@@ -90,9 +94,10 @@ namespace BlackPearl {
 
 
 	}
-	void Material::SetId(uint32_t matId)
+	void Material::SetId(uint32_t _matId)
 	{
-		m_MatId = matId;
+		m_MatId = _matId;
+		name = name + "_" + std::to_string(m_MatId);
 	}
 	uint32_t Material::GetId() const
 	{
@@ -207,6 +212,7 @@ namespace BlackPearl {
 	MaterialConstants Material::FillMaterialConstants()
 	{
 		MaterialConstants material_cb;
+		material_cb.materialID = m_MatId;
 		material_cb.diffuseColor = m_MaterialColors.Get().diffuseColor;
 		material_cb.specularColor = m_MaterialColors.Get().specularColor;
 		material_cb.ambientColor = m_MaterialColors.Get().ambientColor;
@@ -252,6 +258,18 @@ namespace BlackPearl {
 			material_cb.flags |= MaterialFlags_UseTransmissionTexture;
 
 		return material_cb;
+	}
+
+	void Material::_CreateMaterialConstantBuffer()
+	{
+		BufferDesc bufferDesc;
+		bufferDesc.byteSize = sizeof(MaterialConstants);
+		bufferDesc.debugName = name;
+		bufferDesc.isConstantBuffer = true;
+		bufferDesc.initialState = ResourceStates::Common;
+		bufferDesc.keepInitialState = true;
+
+		materialConstants =  g_deviceManager->GetDevice()->createBuffer(bufferDesc);
 	}
 
 

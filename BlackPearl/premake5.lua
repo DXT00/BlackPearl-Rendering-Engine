@@ -37,7 +37,7 @@ project "BlackPearl"
 	filter { "files:**.hlsl" }
 		flags("ExcludeFromBuild")
 	filter {}
-	files { "./assets/shaders/hlsl/core/**.h",
+	files { 
 		"./assets/shaders/hlsl/passes/**.hlsl",
 		"./assets/shaders/hlsl/test/**.hlsl" }
 

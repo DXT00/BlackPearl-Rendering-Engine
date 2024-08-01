@@ -23,6 +23,7 @@ project "SandboxVK"
 		"../BlackPearl/vendor/spdlog/include",
 		"../BlackPearl/src",
 		"../BlackPearl/vendor",
+		"../BlackPearl/assets/shaders",
 		"../%{IncludeDir.glm}",
 		"../%{IncludeDir.GLFW}",
 		"../%{IncludeDir.assimp}",

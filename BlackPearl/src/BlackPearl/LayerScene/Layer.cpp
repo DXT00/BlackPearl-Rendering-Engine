@@ -21,7 +21,7 @@
 #include "BlackPearl/Renderer/MasterRenderer/CloudRenderer.h"
 #include "BlackPearl/Application.h"
 #include "BlackPearl/Renderer/Buffer/D3D12Buffer/D3D12Buffer.h"
-
+#include "hlsl/core/material_cb.h"
 namespace BlackPearl {
 	static int buttonNum = 0;
 	void Layer::OnImguiRender()
@@ -1214,7 +1214,7 @@ namespace BlackPearl {
 
 	}
 
-	void Layer::ShowMaterialProps(Material::Props& imGuiProps)
+	void Layer::ShowMaterialProps(Props& imGuiProps)
 	{
 	}
 
@@ -1331,7 +1331,7 @@ namespace BlackPearl {
 		}
 
 		ImGui::TextColored({ 1.0,0.64,0.0,1.0 }, "Material Properties");
-		Material::Props imGuiProps = imGuiMeshes[0]->GetMaterial()->GetProps();//TODO::默认所有mesh 的Material::Props 是一样的
+		Props imGuiProps = imGuiMeshes[0]->GetMaterial()->GetProps();//TODO::默认所有mesh 的Material::Props 是一样的
 		float imGuiShininess = imGuiProps.shininess;
 		bool  imGUiBlinnLight = imGuiProps.isBinnLight;
 		bool  imGUiIsPBRTextureSample = (bool)imGuiProps.isPBRTextureSample;

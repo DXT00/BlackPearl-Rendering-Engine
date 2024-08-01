@@ -78,6 +78,11 @@ finished executing, the objects are transitioned into the "available" state, i.e
         template<typename T> operator T* () const { return static_cast<T*>(pointer); }
     };
 
+    struct MemoryRequirements
+    {
+        uint64_t size = 0;
+        uint64_t alignment = 0;
+    };
 
 
 

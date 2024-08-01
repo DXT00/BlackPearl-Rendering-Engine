@@ -79,7 +79,7 @@ namespace BlackPearl {
 		void* mapBuffer(IBuffer* b, CpuAccessMode mapFlags) override;
 		void unmapBuffer(IBuffer* b) override;
 
-
+	    MemoryRequirements getBufferMemoryRequirements(IBuffer* buffer) override;
 		GraphicsPipelineHandle createGraphicsPipeline(const GraphicsPipelineDesc& desc, IFramebuffer* fb) override;
 		ComputePipelineHandle createComputePipeline(const ComputePipelineDesc& desc) override;
 		MeshletPipelineHandle createMeshletPipeline(const MeshletPipelineDesc& desc, IFramebuffer* fb) override;

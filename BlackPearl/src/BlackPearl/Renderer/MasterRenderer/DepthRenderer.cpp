@@ -77,7 +77,7 @@ namespace BlackPearl {
 		m_HizFrameBuffer->Bind();
 
 
-		m_MipmapLevel = 1 + (int)log2f(fmaxf(Configuration::WindowWidth, Configuration::WindowHeight));
+		m_MipmapLevel = 1 + (int)std::log2f(fmaxf(Configuration::WindowWidth, Configuration::WindowHeight));
 		int curWidth = Configuration::WindowWidth;
 		int curHeight = Configuration::WindowHeight;
 

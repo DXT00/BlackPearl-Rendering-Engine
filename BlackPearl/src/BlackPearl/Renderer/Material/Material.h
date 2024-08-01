@@ -89,7 +89,7 @@ namespace BlackPearl {
 		void SetMaterialColorDiffuseColor(const math::float3& color);
 		void SetMaterialColorSpecularColor(const math::float3& color);
 		void SetMaterialColorEmissionColor(const math::float3& color);
-		void SetId(uint32_t matId);
+		void SetId(uint32_t _matId);
 		uint32_t GetId() const;
 
 		void SetProps(const Props& props);
@@ -121,7 +121,7 @@ namespace BlackPearl {
 
 		}
 	public:
-		bool isDirty = false;
+		bool isDirty = true;
 		MaterialDomain domain = MaterialDomain::Opaque;
 		BufferHandle materialConstants;
 		MaterialConstants FillMaterialConstants();
@@ -136,14 +136,19 @@ namespace BlackPearl {
 
 		//MaterialConstants ÓÃÓÚ shader ´«µÝ
 	public:
-		std::string name;
+		std::string name = "Default_Material";
 	private:
 		std::shared_ptr<Shader>		 m_Shader = nullptr;
 		std::shared_ptr<TextureMaps> m_TextureMaps = nullptr;
 		MaterialColor				 m_MaterialColors;
 		Props                        m_Props;
 		RTXType						 m_RTXType;
-		uint32_t					 m_MatId;
+		uint32_t					 m_MatId = 0;
+
+
+	private:
+		void _CreateMaterialConstantBuffer();
+
 	};
 
 }

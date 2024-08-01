@@ -9,7 +9,7 @@ namespace BlackPearl {
        
         BindingSetDesc bindingSetDesc;
         bindingSetDesc.trackLiveness = m_TrackLiveness;
-        material->FillMaterialConstants();
+
         for (const auto& item : m_BindingDesc)
         {
             BindingSetItem setItem;
