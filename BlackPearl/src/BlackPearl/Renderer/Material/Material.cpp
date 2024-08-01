@@ -204,6 +204,56 @@ namespace BlackPearl {
 		m_RTXType = materialType;
 	}
 
+	MaterialConstants Material::FillMaterialConstants()
+	{
+		MaterialConstants material_cb;
+		material_cb.diffuseColor = m_MaterialColors.Get().diffuseColor;
+		material_cb.specularColor = m_MaterialColors.Get().specularColor;
+		material_cb.ambientColor = m_MaterialColors.Get().ambientColor;
+		material_cb.emissionColor = m_MaterialColors.Get().emissionColor;
+		material_cb.roughnessValue = 0.5f;
+		material_cb.metalnessValue = 0.5f;
+		material_cb.aoValue = 1.0f;
+		material_cb.shininess = 64.0f;
+
+		material_cb.props.isBinnLight = m_Props.isBinnLight;
+		material_cb.props.isPBRTextureSample = m_Props.isPBRTextureSample;
+		material_cb.props.isDiffuseTextureSample = m_Props.isDiffuseTextureSample;
+		material_cb.props.isSpecularTextureSample = m_Props.isSpecularTextureSample;
+		material_cb.props.isHeightTextureSample = m_Props.isHeightTextureSample;
+		material_cb.props.isEmissionTextureSample = m_Props.isEmissionTextureSample;
+		material_cb.props.isRefractMaterial = m_Props.isRefractMaterial;
+		material_cb.props.isDoubleSided = m_Props.isDoubleSided;
+
+		if(m_TextureMaps->diffuseTextureMap && material_cb.props.isDiffuseTextureSample)
+			material_cb.flags |= MaterialFlags_UseBaseOrDiffuseTexture;
+		if (m_TextureMaps->specularTextureMap && material_cb.props.isSpecularTextureSample)
+			material_cb.flags |= MaterialFlags_UseSpecularTexture;
+		if (m_TextureMaps->emissionTextureMap && material_cb.props.isEmissionTextureSample)
+			material_cb.flags |= MaterialFlags_UseEmissiveTexture;
+
+		if (m_TextureMaps->normalTextureMap)
+			material_cb.flags |= MaterialFlags_UseNormalTexture;
+		if (m_TextureMaps->heightTextureMap && material_cb.props.isHeightTextureSample)
+			material_cb.flags |= MaterialFlags_UseHeightMapTexture;
+		if (m_TextureMaps->cubeTextureMap)
+			material_cb.flags |= MaterialFlags_UseCubeMapTexture;
+		if (m_TextureMaps->depthTextureMap)
+			material_cb.flags |= MaterialFlags_UseDepthTexture;
+		if (m_TextureMaps->aoMap)
+			material_cb.flags |= MaterialFlags_UseOcclusionTexture;
+		if (m_TextureMaps->roughnessMap)
+			material_cb.flags |= MaterialFlags_UseRoughnessTexture;
+		if (m_TextureMaps->mentallicMap)
+			material_cb.flags |= MaterialFlags_UseMetalTexture;
+		if (m_TextureMaps->opacityMap)
+			material_cb.flags |= MaterialFlags_UseOpacityTexture;
+		if (m_TextureMaps->transmissionTexture)
+			material_cb.flags |= MaterialFlags_UseTransmissionTexture;
+
+		return material_cb;
+	}
+
 
 
 }

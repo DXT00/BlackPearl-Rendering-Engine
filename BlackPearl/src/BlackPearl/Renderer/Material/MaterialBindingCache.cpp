@@ -9,7 +9,7 @@ namespace BlackPearl {
        
         BindingSetDesc bindingSetDesc;
         bindingSetDesc.trackLiveness = m_TrackLiveness;
-
+        material->FillMaterialConstants();
         for (const auto& item : m_BindingDesc)
         {
             BindingSetItem setItem;
@@ -74,9 +74,14 @@ namespace BlackPearl {
 	//	return BindingSetItem::Texture_SRV(slot, texture && texture->texture ? texture->texture.Get() : m_FallbackTexture.Get());
 	//}
     // same as opengl set uniform
-	MaterialBindingCache::MaterialBindingCache(IDevice* device, ShaderType shaderType, uint32_t registerSpace, const std::vector<MaterialResourceBinding>& bindings, ISampler* sampler, ITexture* fallbackTexture, bool trackLiveness)
+	MaterialBindingCache::MaterialBindingCache(IDevice* device, ShaderType shaderType, uint32_t registerSpace, const std::vector<MaterialResourceBinding>& bindings, ISampler* sampler, ITexture* fallbackTexture, bool trackLiveness) : 
+        m_Device(device)
+        , m_ShaderType(shaderType)
+        , m_BindingDesc(bindings)
+        , m_FallbackTexture(fallbackTexture)
+        , m_Sampler(sampler)
+        , m_TrackLiveness(trackLiveness)
 	{
-        m_Device = device;
 
         RHIBindingLayoutDesc layoutDesc;
         layoutDesc.visibility = shaderType;

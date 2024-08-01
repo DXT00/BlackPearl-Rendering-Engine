@@ -4,6 +4,7 @@
 #include "MaterialColor.h"
 #include "BlackPearl/RHI/DynamicRHI.h"
 #include "BlackPearl/RHI/RHITexture.h"
+#include "hlsl/core/material_cb.h"
 
 namespace BlackPearl {
 	class Material
@@ -21,30 +22,7 @@ namespace BlackPearl {
 			RTX_ROUGHNESS,
 			RTX_AO
 		};
-		struct Props {
-			//Enable texture
-			float shininess;
-			float refractIndex; //电解质系数
-			bool  isBinnLight;
-			int  isPBRTextureSample;//是否使用纹理-->包括 ao,normal,metalllic,roughness
-			int  isDiffuseTextureSample;//是否使用纹理
-			int  isSpecularTextureSample;//是否使用纹理
-			int  isHeightTextureSample;//是否使用纹理
-			int  isEmissionTextureSample;//是否使用纹理
-			int isRefractMaterial;
-			int isDoubleSided;
-
-			Props() :shininess(64.0f),
-				refractIndex(1.5),
-				isBinnLight(false), 
-				isPBRTextureSample(0),
-				isDiffuseTextureSample(0),
-				isSpecularTextureSample(0),
-				isEmissionTextureSample(0),
-				isHeightTextureSample(0),
-				isRefractMaterial(0){}
-
-		};
+		
 		struct TextureMaps {
 			TextureHandle diffuseTextureMap;
 			TextureHandle specularTextureMap;
@@ -145,15 +123,18 @@ namespace BlackPearl {
 	public:
 
 		MaterialDomain domain = MaterialDomain::Opaque;
-		std::shared_ptr<LoadedTexture> baseOrDiffuseTexture; // metal-rough: base color; spec-gloss: diffuse color; .a = opacity (both modes)
-		std::shared_ptr<LoadedTexture> metalRoughOrSpecularTexture; // metal-rough: ORM map; spec-gloss: specular color, .a = glossiness
-		std::shared_ptr<LoadedTexture> normalTexture;
-		std::shared_ptr<LoadedTexture> emissiveTexture;
-		std::shared_ptr<LoadedTexture> occlusionTexture;
-		std::shared_ptr<LoadedTexture> transmissionTexture; // see KHR_materials_transmission; undefined on specular-gloss materials
-		// std::shared_ptr<LoadedTexture> thicknessTexture; // see KHR_materials_volume (not implemented yet)
 		BufferHandle materialConstants;
+		MaterialConstants FillMaterialConstants();
 
+		//std::shared_ptr<LoadedTexture> baseOrDiffuseTexture; // metal-rough: base color; spec-gloss: diffuse color; .a = opacity (both modes)
+		//std::shared_ptr<LoadedTexture> metalRoughOrSpecularTexture; // metal-rough: ORM map; spec-gloss: specular color, .a = glossiness
+		//std::shared_ptr<LoadedTexture> normalTexture;
+		//std::shared_ptr<LoadedTexture> emissiveTexture;
+		//std::shared_ptr<LoadedTexture> occlusionTexture;
+		//std::shared_ptr<LoadedTexture> transmissionTexture; // see KHR_materials_transmission; undefined on specular-gloss materials
+		// std::shared_ptr<LoadedTexture> thicknessTexture; // see KHR_materials_volume (not implemented yet)
+
+		//MaterialConstants 用于 shader 传递
 	public:
 		std::string name;
 	private:

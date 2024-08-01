@@ -41,6 +41,13 @@ static const int MaterialFlags_UseOcclusionTexture              = 0x00000040;
 static const int MaterialFlags_UseTransmissionTexture           = 0x00000080;
 static const int MaterialFlags_ThinSurface                      = 0x00000100;
 static const int MaterialFlags_PSDExclude                       = 0x00000200;
+static const int MaterialFlags_UseHeightMapTexture              = 0x00000400;
+static const int MaterialFlags_UseCubeMapTexture                = 0x00000800;
+static const int MaterialFlags_UseDepthTexture                  = 0x00001000;
+static const int MaterialFlags_UseSpecularTexture               = 0x00002000;
+static const int MaterialFlags_UseRoughnessTexture              = 0x00004000;
+static const int MaterialFlags_UseMetalTexture                  = 0x00008000;
+static const int MaterialFlags_UseOpacityTexture                = 0x00010000;
 
 static const int MaterialFlags_NestedPriorityMask               = 0xF0000000;
 static const int MaterialFlags_NestedPriorityShift              = 28;
@@ -49,6 +56,35 @@ static const int MaterialFlags_PSDDominantDeltaLobeP1Mask       = 0x0F000000;
 static const int MaterialFlags_PSDDominantDeltaLobeP1Shift      = 24;
 
 // NOTE: adjust LoadMaterialConstants(...) in bindless.h when changing this structure
+
+
+
+struct Props {
+    //Enable texture
+    float shininess;
+    float refractIndex; //电解质系数
+    bool  isBinnLight;
+    int  isPBRTextureSample;//是否使用纹理-->包括 ao,normal,metalllic,roughness
+    int  isDiffuseTextureSample;//是否使用纹理
+    int  isSpecularTextureSample;//是否使用纹理
+    int  isHeightTextureSample;//是否使用纹理
+    int  isEmissionTextureSample;//是否使用纹理
+    int isRefractMaterial;
+    int isDoubleSided;
+
+    Props() :shininess(64.0f),
+        refractIndex(1.5),
+        isBinnLight(false),
+        isPBRTextureSample(0),
+        isDiffuseTextureSample(0),
+        isSpecularTextureSample(0),
+        isEmissionTextureSample(0),
+        isHeightTextureSample(0),
+        isRefractMaterial(0) {}
+
+};
+
+
 
 // using https://github.com/KhronosGroup/glTF/tree/main/extensions/2.0/Khronos/KHR_materials_volume#attenuation convention
 struct VolumeConstants
@@ -59,21 +95,22 @@ struct VolumeConstants
 
 struct MaterialConstants
 {
-    float3  baseOrDiffuseColor;
+    //float3  baseOrDiffuseColor;
+    //float3  specularColor;
+    //float3  emissiveColor;
+
     unsigned int flags;
 
-    float3  specularColor;
     int     materialID;
 
-    float3  emissiveColor;
     int     domain;
 
     float   opacity;
-    float   roughness;
-    float   metalness;
+    //float   roughness;
+    //float   metalness;
     float   normalTextureScale;
 
-    float   occlusionStrength;
+    //float   occlusionStrength;
     float   alphaCutoff;
     float   transmissionFactor;
     uint    baseOrDiffuseTextureIndex;
@@ -94,6 +131,27 @@ struct MaterialConstants
     uint    padding2;
 
     VolumeConstants volume;
+
+
+    float3 ambientColor;
+    float3 diffuseColor;
+    float3 specularColor;
+    float3 emissionColor;
+    float roughnessValue;
+    float metalnessValue;
+    float aoValue;
+  
+    float shininess;
+    float specularDiffusion;
+    float diffuseReflectivity;
+    float specularReflectivity;
+    float transparency;
+    float emissivity;
+
+    float refractiveIndex;
+
+    Props props;
+
 };
 
 #endif // MATERIAL_CB_H

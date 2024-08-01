@@ -21,13 +21,27 @@ project "BlackPearl"
 		"./vendor/glm/glm/**.hpp",
 		"./vendor/glm/glm/**.inl",
 		"./vendor/stb/**.h",
-		"./assets/shaders/hlsl/core/**.h"
+		"./assets/shaders/hlsl/core/**.h",
+		"./assets/shaders/hlsl/test/**.hlsl",
+		"./assets/shaders/hlsl/passes/**.hlsl"
+
 	}
 	defines
 	{
 		"_CRT_SECURE_NO_WARNINGS",
 		--"STB_IMAGE_IMPLEMENTATION"
 	}
+
+	filter { "files:./assets/shaders/hlsl/passes/**.hlsl" }
+	filter { "files:./assets/shaders/hlsl/test/**.hlsl" }
+	filter { "files:**.hlsl" }
+		flags("ExcludeFromBuild")
+	filter {}
+	files { "./assets/shaders/hlsl/core/**.h",
+		"./assets/shaders/hlsl/passes/**.hlsl",
+		"./assets/shaders/hlsl/test/**.hlsl" }
+
+
 	includedirs
 	{
 		"./src",
@@ -49,6 +63,8 @@ project "BlackPearl"
 		"./vendor/GLEW",
 		"./assets/shaders/"
 	}
+
+
 
 	libdirs{
 	"./vendor/assimp_build/code/Debug",

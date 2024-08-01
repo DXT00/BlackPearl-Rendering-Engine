@@ -36,7 +36,7 @@ namespace BlackPearl {
             .setBorderColor(1.0f);
         m_ShadowSampler = m_Device->createSampler(samplerDesc);
 
-        //TODO::
+        //constant uniform variables
         m_ForwardViewCB = m_Device->createBuffer(RHIUtils::CreateVolatileConstantBufferDesc(sizeof(ForwardShadingViewConstants), "ForwardShadingViewConstants", params.numConstantBufferVersions));
         m_ForwardLightCB = m_Device->createBuffer(RHIUtils::CreateVolatileConstantBufferDesc(sizeof(ForwardShadingLightConstants), "ForwardShadingLightConstants", params.numConstantBufferVersions));
 
