@@ -22,8 +22,8 @@
 
 #ifndef PIXEL_READBACK_CB_H
 #define PIXEL_READBACK_CB_H
-#include "BlackPearl/Math/Math.h"
-using namespace BlackPearl::math;
+//#include "BlackPearl/Math/Math.h"
+//using namespace BlackPearl::math;
 struct PixelReadbackConstants
 {
     int2    pixelPosition;

@@ -22,8 +22,8 @@
 
 #ifndef DEPTH_CB_H
 #define DEPTH_CB_H
-#include "BlackPearl/Math/Math.h"
-using namespace BlackPearl::math;
+//#include "BlackPearl/Math/Math.h"
+//using namespace BlackPearl::math;
 
 struct DepthPassConstants
 {

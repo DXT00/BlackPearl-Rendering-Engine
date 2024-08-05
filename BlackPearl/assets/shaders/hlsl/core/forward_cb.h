@@ -25,7 +25,7 @@
 
 #include "light_cb.h"
 #include "view_cb.h"
-#include "BlackPearl/Math/vector.h"
+//#include "BlackPearl/Math/vector.h"
 #define FORWARD_MAX_LIGHTS 16
 #define FORWARD_MAX_SHADOWS 16
 #define FORWARD_MAX_LIGHT_PROBES 16
@@ -36,14 +36,14 @@ struct ForwardShadingViewConstants
 
 struct ForwardShadingLightConstants
 {
-    BlackPearl::math::float2      shadowMapTextureSize;
-    BlackPearl::math::float2      shadowMapTextureSizeInv;
-    BlackPearl::math::float4      ambientColorTop;
-    BlackPearl::math::float4      ambientColorBottom;
+    float2      shadowMapTextureSize;
+    float2      shadowMapTextureSizeInv;
+    float4      ambientColorTop;
+    float4      ambientColorBottom;
 
-    BlackPearl::math::uint2       padding;
-    BlackPearl::math::uint        numLights;
-    BlackPearl::math::uint        numLightProbes;
+    uint2       padding;
+    uint        numLights;
+    uint        numLightProbes;
 
     LightConstants lights[FORWARD_MAX_LIGHTS];
     ShadowConstants shadows[FORWARD_MAX_SHADOWS];

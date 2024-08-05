@@ -36,8 +36,8 @@
 #define MODE_MIN    1
 #define MODE_MAX    2
 #define MODE_MINMAX 3
-#include "BlackPearl/Math/Math.h"
-using namespace BlackPearl::math;
+//#include "BlackPearl/Math/Math.h"
+//using namespace BlackPearl::math;
 struct MipmmapGenConstants
 {
     uint dispatch;

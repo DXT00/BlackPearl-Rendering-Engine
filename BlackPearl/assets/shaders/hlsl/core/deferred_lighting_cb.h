@@ -29,8 +29,8 @@
 #define DEFERRED_MAX_LIGHTS 16
 #define DEFERRED_MAX_SHADOWS 16
 #define DEFERRED_MAX_LIGHT_PROBES 16
-#include "BlackPearl/Math/Math.h"
-using namespace BlackPearl::math;
+//#include "BlackPearl/Math/Math.h"
+//using namespace BlackPearl::math;
 struct DeferredLightingConstants
 {
     PlanarViewConstants view;

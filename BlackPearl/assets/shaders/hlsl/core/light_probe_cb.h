@@ -22,8 +22,8 @@
 
 #ifndef LIGHT_PROBE_CB_H
 #define LIGHT_PROBE_CB_H
-#include "BlackPearl/Math/Math.h"
-using namespace BlackPearl::math;
+//#include "BlackPearl/Math/Math.h"
+//using namespace BlackPearl::math;
 struct LightProbeConstants
 {
     uint sampleCount;

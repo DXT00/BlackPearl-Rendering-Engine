@@ -22,8 +22,8 @@
 
 #ifndef MATERIAL_CB_H
 #define MATERIAL_CB_H
-#include "BlackPearl/Math/Math.h"
-using namespace BlackPearl::math;
+//#include "BlackPearl/Math/Math.h"
+//using namespace BlackPearl::math;
 static const int MaterialDomain_Opaque                   = 0;
 static const int MaterialDomain_AlphaTested              = 1;
 static const int MaterialDomain_AlphaBlended             = 2;
@@ -72,15 +72,20 @@ struct Props {
     int isRefractMaterial;
     int isDoubleSided;
 
-    Props() :shininess(64.0f),
-        refractIndex(1.5),
-        isBinnLight(false),
-        isPBRTextureSample(0),
-        isDiffuseTextureSample(0),
-        isSpecularTextureSample(0),
-        isEmissionTextureSample(0),
-        isHeightTextureSample(0),
-        isRefractMaterial(0) {}
+ /*   Props() {
+        shininess = (64.0f),
+            refractIndex = (1.5),
+            isBinnLight = (false),
+            isPBRTextureSample = (0),
+            isDiffuseTextureSample = (0),
+            isSpecularTextureSample = (0),
+            isEmissionTextureSample = (0),
+            isHeightTextureSample = (0),
+            isRefractMaterial = (0);
+    
+    
+    
+    }*/
 
 };
 
