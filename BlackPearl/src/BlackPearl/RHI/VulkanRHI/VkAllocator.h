@@ -20,7 +20,7 @@ namespace BlackPearl {
         void freeBufferMemory(Buffer* buffer) ;
 
         VkResult allocateTextureMemory(ETexture* texture) ;
-        void freeTextureMemory(const ETexture* texture) ;
+        void freeTextureMemory(ETexture* texture) ;
 
         VkResult allocateMemory(MemoryResource* res,
             VkMemoryRequirements memRequirements,

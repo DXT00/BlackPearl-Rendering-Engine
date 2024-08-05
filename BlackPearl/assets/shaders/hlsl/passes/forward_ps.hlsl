@@ -60,7 +60,7 @@ float3 GetIncidentVector(float4 directionOrPosition, float3 surfacePos)
 void main(
     in float4 i_position : SV_Position,
     in SceneVertex i_vtx,
-    in bool i_isFrontFace : SV_IsFrontFace,
+   // in bool i_isFrontFace : SV_IsFrontFace,
     out float4 o_color : SV_Target0
 #if TRANSMISSIVE_MATERIAL
     , out float4 o_backgroundBlendFactor : SV_Target1
@@ -72,8 +72,8 @@ void main(
     MaterialSample surfaceMaterial = EvaluateSceneMaterial(i_vtx.normal, i_vtx.tangent, g_Material, textures);
     float3 surfaceWorldPos = i_vtx.pos;
 
-    if (!i_isFrontFace)
-        surfaceMaterial.shadingNormal = -surfaceMaterial.shadingNormal;
+   /* if (!i_isFrontFace)
+        surfaceMaterial.shadingNormal = -surfaceMaterial.shadingNormal;*/
 
     if (g_Material.domain != MaterialDomain_Opaque)
         clip(surfaceMaterial.opacity - g_Material.alphaCutoff);

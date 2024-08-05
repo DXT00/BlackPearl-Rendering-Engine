@@ -22,6 +22,7 @@ project "BlackPearl"
 		"./vendor/glm/glm/**.inl",
 		"./vendor/stb/**.h",
 		"./assets/shaders/hlsl/core/**.h",
+		--"./assets/shaders/hlsl/core/**.hlsli",
 		"./assets/shaders/hlsl/test/**.hlsl",
 		"./assets/shaders/hlsl/passes/**.hlsl"
 
@@ -35,6 +36,7 @@ project "BlackPearl"
 	filter { "files:./assets/shaders/hlsl/passes/**.hlsl" }
 	filter { "files:./assets/shaders/hlsl/test/**.hlsl" }
 	filter { "files:**.hlsl" }
+	--filter { "files:**.hlsli" }
 		flags("ExcludeFromBuild")
 	filter {}
 	files { 
