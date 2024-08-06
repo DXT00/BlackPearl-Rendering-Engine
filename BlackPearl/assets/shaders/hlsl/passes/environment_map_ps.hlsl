@@ -22,7 +22,7 @@
 
 #pragma pack_matrix(row_major)
 
-#include <donut/shaders/sky_cb.h>
+#include <core/sky_cb.h>
 
 cbuffer c_Sky : register(b0)
 {

@@ -20,7 +20,7 @@
 * DEALINGS IN THE SOFTWARE.
 */
 
-#include <donut/shaders/forward_vertex.hlsli>
+#include <core/forward_vertex.hlsli>
 
 struct VSOutput
 {

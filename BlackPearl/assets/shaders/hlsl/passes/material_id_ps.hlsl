@@ -20,10 +20,10 @@
 * DEALINGS IN THE SOFTWARE.
 */
 
-#include <donut/shaders/scene_material.hlsli>
-#include <donut/shaders/material_bindings.hlsli>
-#include <donut/shaders/forward_vertex.hlsli>
-#include <donut/shaders/vulkan.hlsli>
+#include <core/scene_material.hlsli>
+#include <core/material_bindings.hlsli>
+#include <core/forward_vertex.hlsli>
+#include <core/vulkan.hlsli>
 
 struct Constants {
     uint instanceOffset;

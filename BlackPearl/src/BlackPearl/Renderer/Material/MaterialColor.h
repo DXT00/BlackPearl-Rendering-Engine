@@ -10,14 +10,14 @@ namespace BlackPearl {
 			AmbientColor,
 			DiffuseColor,
 			SpecularColor,
-			EmissionColor
+			emissiveColor
 
 		};
 		struct Color {
 			math::float3 ambientColor = math::float3(0.0);
 			math::float3 diffuseColor = math::float3(0.0);
 			math::float3 specularColor = math::float3(0.0);
-			math::float3 emissionColor = math::float3(0.0);
+			math::float3 emissiveColor = math::float3(0.0);
 		//	float intensity = 1.0f;
 			
 		};
@@ -33,7 +33,7 @@ namespace BlackPearl {
 			m_Color.ambientColor  = color.ambientColor;
 			m_Color.diffuseColor  = color.diffuseColor;
 			m_Color.specularColor = color.specularColor;
-			m_Color.emissionColor = color.emissionColor;
+			m_Color.emissiveColor = color.emissiveColor;
 		}
 		//float GetIntensity() const { return m_Color.intensity; }
 		//void SetIntensity(float intensity) { m_Color.intensity = intensity; }
@@ -47,7 +47,7 @@ namespace BlackPearl {
 			m_Color.specularColor = color;
 		}
 		void SetEmissionColor(const math::float3 color) {
-			m_Color.emissionColor = color;
+			m_Color.emissiveColor = color;
 		}
 	private:
 		Type m_Type;

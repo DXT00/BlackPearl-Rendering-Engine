@@ -22,8 +22,11 @@
 
 #ifndef SSAO_CB_H
 #define SSAO_CB_H
+//#ifdef GE_SHADERCOMPILE
+//#else
 //#include "BlackPearl/Math/Math.h"
 //using namespace BlackPearl::math;
+//#endif
 #include "view_cb.h"
 
 struct SsaoConstants

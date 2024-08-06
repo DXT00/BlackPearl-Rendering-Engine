@@ -21,7 +21,7 @@
 */
 
 #pragma pack_matrix(row_major)
-#include <donut/shaders/depth_cb.h>
+#include <core/depth_cb.h>
 
 cbuffer c_Depth : register(b0)
 {

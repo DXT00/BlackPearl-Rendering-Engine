@@ -20,7 +20,7 @@
 * DEALINGS IN THE SOFTWARE.
 */
 
-#include <donut/shaders/pixel_readback_cb.h>
+#include <core/pixel_readback_cb.h>
 
 cbuffer c_PixelReadback : register(b0)
 {

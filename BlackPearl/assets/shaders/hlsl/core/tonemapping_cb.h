@@ -22,8 +22,11 @@
 
 #ifndef DEPTH_CB_H
 #define DEPTH_CB_H
+//#ifdef COMPILE_IN_BLACKPEARL
 //#include "BlackPearl/Math/Math.h"
 //using namespace BlackPearl::math;
+//#endif
+
 struct ToneMappingConstants
 {
     uint2 viewOrigin;

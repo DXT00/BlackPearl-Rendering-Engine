@@ -22,8 +22,8 @@
 
 #pragma pack_matrix(row_major)
 
-#include <donut/shaders/ssao_cb.h>
-#include <donut/shaders/utils.hlsli>
+#include <core/ssao_cb.h>
+#include <core/utils.hlsli>
 
 Texture2DArray<float> t_DeinterleavedDepth : register(t0);
 #if OCT_ENCODED_NORMALS

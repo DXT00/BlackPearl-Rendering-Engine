@@ -22,9 +22,9 @@
 
 #pragma pack_matrix(row_major)
 
-#include <donut/shaders/material_cb.h>
-#include <donut/shaders/scene_material.hlsli>
-#include <donut/shaders/vulkan.hlsli>
+#include <core/material_cb.h>
+#include <core/scene_material.hlsli>
+#include <core/vulkan.hlsli>
 
 Texture2D t_BaseOrDiffuse : register(t0 VK_DESCRIPTOR_SET(1));
 SamplerState s_MaterialSampler : register(s0 VK_DESCRIPTOR_SET(1));

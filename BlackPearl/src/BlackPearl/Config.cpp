@@ -41,7 +41,7 @@ namespace BlackPearl {
 	const char* ShaderConfig::AMBIENT_COLOR   = "u_Material.ambientColor";
 	const char* ShaderConfig::DIFFUSE_COLOR   = "u_Material.diffuseColor";
 	const char* ShaderConfig::SPECULAR_COLOR  = "u_Material.specularColor";
-	const char* ShaderConfig::EMISSION_COLOR  = "u_Material.emissionColor";
+	const char* ShaderConfig::EMISSION_COLOR  = "u_Material.emissiveColor";
 	const char* ShaderConfig::METALLIC_VALUE  = "u_Material.metalnessValue";
 	const char* ShaderConfig::ROUGHNESS_VALUE = "u_Material.roughnessValue";
 	const char* ShaderConfig::AO_VALUE        = "u_Material.aoValue";

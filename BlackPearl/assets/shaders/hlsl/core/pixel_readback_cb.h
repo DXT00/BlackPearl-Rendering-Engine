@@ -22,8 +22,12 @@
 
 #ifndef PIXEL_READBACK_CB_H
 #define PIXEL_READBACK_CB_H
+//#ifdef GE_SHADERCOMPILE
+//
+//#else
 //#include "BlackPearl/Math/Math.h"
 //using namespace BlackPearl::math;
+//#endif
 struct PixelReadbackConstants
 {
     int2    pixelPosition;

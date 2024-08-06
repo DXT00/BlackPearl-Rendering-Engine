@@ -399,14 +399,14 @@ const char* MaterialDomainToString(MaterialDomain domain)
 //{
 //}
 
-void EMaterial::FillConstantBuffer(MaterialConstants& constants) const
-{
-}
-
-bool EMaterial::SetProperty(const std::string& name, const math::float4& value)
-{
-    return false;
-}
+//void EMaterial::FillConstantBuffer(MaterialConstants& constants) const
+//{
+//}
+//
+//bool EMaterial::SetProperty(const std::string& name, const math::float4& value)
+//{
+//    return false;
+//}
 
 /*void LightProbe::FillLightProbeConstants(LightProbeConstants& lightProbeConstants) const
 {

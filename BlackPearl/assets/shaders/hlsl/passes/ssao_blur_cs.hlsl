@@ -22,7 +22,7 @@
 
 #pragma pack_matrix(row_major)
 
-#include <donut/shaders/ssao_cb.h>
+#include <core/ssao_cb.h>
 
 SamplerState s_Point : register(s0);
 Texture2DArray<float> t_DeinterleavedDepth : register(t0);

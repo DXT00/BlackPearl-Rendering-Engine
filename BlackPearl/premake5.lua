@@ -22,9 +22,9 @@ project "BlackPearl"
 		"./vendor/glm/glm/**.inl",
 		"./vendor/stb/**.h",
 		"./assets/shaders/hlsl/core/**.h",
-		--"./assets/shaders/hlsl/core/**.hlsli",
-		"./assets/shaders/hlsl/test/**.hlsl",
-		"./assets/shaders/hlsl/passes/**.hlsl"
+		-- "./assets/shaders/hlsl/core/**.hlsli",
+		-- "./assets/shaders/hlsl/test/**.hlsl",
+		-- "./assets/shaders/hlsl/passes/**.hlsl"
 
 	}
 	defines
@@ -33,16 +33,14 @@ project "BlackPearl"
 		--"STB_IMAGE_IMPLEMENTATION"
 	}
 
-	filter { "files:./assets/shaders/hlsl/passes/**.hlsl" }
-	filter { "files:./assets/shaders/hlsl/test/**.hlsl" }
-	filter { "files:**.hlsl" }
-	--filter { "files:**.hlsli" }
-		flags("ExcludeFromBuild")
-	filter {}
-	files { 
-		"./assets/shaders/hlsl/passes/**.hlsl",
-		"./assets/shaders/hlsl/test/**.hlsl" }
-
+	-- filter { "files:./assets/shaders/hlsl/passes/**.hlsl" }
+	-- filter { "files:./assets/shaders/hlsl/test/**.hlsl" }
+	-- filter { "files:**.hlsl" }
+	-- 	flags("ExcludeFromBuild")
+	-- filter {}
+	-- files { "./assets/shaders/hlsl/core/**.h",
+	-- 	"./assets/shaders/hlsl/passes/**.hlsl",
+	-- 	"./assets/shaders/hlsl/test/**.hlsl" }
 
 	includedirs
 	{

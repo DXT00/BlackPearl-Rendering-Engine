@@ -25,7 +25,12 @@
 
 #include "light_cb.h"
 #include "view_cb.h"
-//#include "BlackPearl/Math/vector.h"
+//#ifdef GE_SHADERCOMPILE
+//
+//#else
+//#include "BlackPearl/Math/Math.h"
+//using namespace BlackPearl::math;
+//#endif
 #define FORWARD_MAX_LIGHTS 16
 #define FORWARD_MAX_SHADOWS 16
 #define FORWARD_MAX_LIGHT_PROBES 16

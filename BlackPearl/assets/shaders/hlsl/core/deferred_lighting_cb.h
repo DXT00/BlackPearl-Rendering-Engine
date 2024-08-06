@@ -29,8 +29,14 @@
 #define DEFERRED_MAX_LIGHTS 16
 #define DEFERRED_MAX_SHADOWS 16
 #define DEFERRED_MAX_LIGHT_PROBES 16
+
+//#ifndef GE_SHADERCOMPILE
+//
 //#include "BlackPearl/Math/Math.h"
 //using namespace BlackPearl::math;
+//
+//#endif
+
 struct DeferredLightingConstants
 {
     PlanarViewConstants view;

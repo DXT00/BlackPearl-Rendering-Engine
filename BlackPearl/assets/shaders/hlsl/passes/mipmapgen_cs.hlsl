@@ -20,7 +20,7 @@
 * DEALINGS IN THE SOFTWARE.
 */
 
-#include <donut/shaders/mipmapgen_cb.h>
+#include <core/mipmapgen_cb.h>
 
 
 #if MODE == MODE_COLOR

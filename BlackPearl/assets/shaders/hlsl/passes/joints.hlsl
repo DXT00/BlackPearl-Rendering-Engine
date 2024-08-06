@@ -20,9 +20,9 @@
 * DEALINGS IN THE SOFTWARE.
 */
 
-#include <donut/shaders/view_cb.h>
-#include <donut/shaders/packing.hlsli>
-#include <donut/shaders/vulkan.hlsli>
+#include <core/view_cb.h>
+#include <core/packing.hlsli>
+#include <core/vulkan.hlsli>
 
 // simple line drawing shader for the joints render pass
 

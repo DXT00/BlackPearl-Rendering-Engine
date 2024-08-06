@@ -569,9 +569,7 @@ namespace BlackPearl {
 
 			shader->SetUniformVec3f(ShaderConfig::AMBIENT_COLOR, materialColor.ambientColor);
 
-			shader->SetUniformVec3f(ShaderConfig::EMISSION_COLOR, materialColor.emissionColor);
-
-			shader->SetUniformVec3f(ShaderConfig::EMISSION_COLOR, materialColor.emissionColor);
+			shader->SetUniformVec3f(ShaderConfig::EMISSION_COLOR, materialColor.emissiveColor);
 
 			shader->SetUniform1f(ShaderConfig::ROUGHNESS_VALUE, 1.0f);
 

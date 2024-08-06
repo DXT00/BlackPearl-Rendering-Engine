@@ -20,12 +20,11 @@
 * DEALINGS IN THE SOFTWARE.
 */
 
-#ifndef BINDLESS_H_
-#define BINDLESS_H_
+#pragma once
 
 #include "material_cb.h"
-//#include "BlackPearl/Math/Math.h"
-//using namespace BlackPearl::math;
+
+
 struct GeometryData
 {
     uint numIndices;
@@ -142,10 +141,10 @@ MaterialConstants LoadMaterialConstants(ByteAddressBuffer buffer, uint offset)
     ret.emissiveColor = asfloat(c.xyz);
     ret.domain = int(c.w);
     ret.opacity = asfloat(d.x);
-    ret.roughness = asfloat(d.y);
-    ret.metalness = asfloat(d.z);
+    ret.roughnessValue = asfloat(d.y);
+    ret.metalnessValue = asfloat(d.z);
     ret.normalTextureScale = asfloat(d.w);
-    ret.occlusionStrength = asfloat(e.x);
+    ret.aoValue = asfloat(e.x);
     ret.alphaCutoff = asfloat(e.y);
     ret.transmissionFactor = asfloat(e.z);
     ret.baseOrDiffuseTextureIndex = asfloat(e.w);
@@ -165,4 +164,4 @@ MaterialConstants LoadMaterialConstants(ByteAddressBuffer buffer, uint offset)
 
 #endif
 
-#endif // BINDLESS_H_
+//#endif // BINDLESS_H_

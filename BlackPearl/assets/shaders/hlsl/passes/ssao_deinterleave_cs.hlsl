@@ -22,7 +22,7 @@
 
 #pragma pack_matrix(row_major)
 
-#include <donut/shaders/ssao_cb.h>
+#include <core/ssao_cb.h>
 
 Texture2D<float> t_InputDepth : register(t0);
 RWTexture2DArray<float> u_DeinterleavedDepth : register(u0);

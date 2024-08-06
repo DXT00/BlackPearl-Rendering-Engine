@@ -22,7 +22,7 @@
 
 #pragma pack_matrix(row_major)
 
-#include <donut/shaders/tonemapping_cb.h>
+#include <core/tonemapping_cb.h>
 
 Buffer<uint> t_Histogram : register(t0);
 RWBuffer<uint> u_Exposure : register(u0);

@@ -15,7 +15,7 @@ namespace BlackPearl {
 		math::float3 ambientColor, 
 		math::float3 diffuseColor, 
 		math::float3 specularColor, 
-		math::float3 emissionColor)
+		math::float3 emissiveColor)
 	{
 		m_Props = Props();
 		m_TextureMaps = textureMaps;
@@ -28,7 +28,7 @@ namespace BlackPearl {
 			//if (specularColor.length() != 0)
 				m_MaterialColors.SetSpecularColor(specularColor);
 			//if (emissionColor.length() != 0)
-				m_MaterialColors.SetEmissionColor(emissionColor);
+				m_MaterialColors.SetEmissionColor(emissiveColor);
 
 			//TODO:: 重构Shader，区分OpenGL和DirectX
 			if (DynamicRHI::g_RHIType == DynamicRHI::Type::OpenGL) {
@@ -45,7 +45,7 @@ namespace BlackPearl {
 					m_Shader->SetUniformVec3f("u_Material.specularColor", specularColor);
 				//}
 				//if (emissionColor.length() != 0) {
-					m_Shader->SetUniformVec3f("u_Material.emissionColor", emissionColor);
+					m_Shader->SetUniformVec3f("u_Material.emissiveColor", emissiveColor);
 
 				//}
 			}
@@ -216,7 +216,7 @@ namespace BlackPearl {
 		material_cb.diffuseColor = m_MaterialColors.Get().diffuseColor;
 		material_cb.specularColor = m_MaterialColors.Get().specularColor;
 		material_cb.ambientColor = m_MaterialColors.Get().ambientColor;
-		material_cb.emissionColor = m_MaterialColors.Get().emissionColor;
+		material_cb.emissiveColor = m_MaterialColors.Get().emissiveColor;
 		material_cb.roughnessValue = 0.5f;
 		material_cb.metalnessValue = 0.5f;
 		material_cb.aoValue = 1.0f;

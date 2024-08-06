@@ -22,10 +22,10 @@
 
 #pragma pack_matrix(row_major)
 
-#include <donut/shaders/gbuffer.hlsli>
-#include <donut/shaders/lighting.hlsli>
-#include <donut/shaders/shadows.hlsli>
-#include <donut/shaders/deferred_lighting_cb.h>
+#include <core/gbuffer.hlsli>
+#include <core/lighting.hlsli>
+#include <core/shadows.hlsli>
+#include <core/deferred_lighting_cb.h>
 
 cbuffer c_Deferred : register(b0)
 {

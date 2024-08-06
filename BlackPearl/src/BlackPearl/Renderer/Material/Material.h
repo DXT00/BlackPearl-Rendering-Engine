@@ -4,6 +4,9 @@
 #include "MaterialColor.h"
 #include "BlackPearl/RHI/DynamicRHI.h"
 #include "BlackPearl/RHI/RHITexture.h"
+#include "BlackPearl/Math/Math.h"
+using namespace BlackPearl::math;
+
 #include "hlsl/core/material_cb.h"
 
 namespace BlackPearl {
@@ -70,7 +73,7 @@ namespace BlackPearl {
 		Material(
 			const std::string shaderPath,
 			const std::shared_ptr<TextureMaps>& textureMaps,
-			math::float3 ambientColor, math::float3 diffuseColor, math::float3 specularColor, math::float3 emissionColor
+			math::float3 ambientColor, math::float3 diffuseColor, math::float3 specularColor, math::float3 emissiveColor
 		);
 
 		~Material();

@@ -22,8 +22,13 @@
 
 #ifndef LIGHT_PROBE_CB_H
 #define LIGHT_PROBE_CB_H
+//#ifdef GE_SHADERCOMPILE
+//
+//#else
 //#include "BlackPearl/Math/Math.h"
 //using namespace BlackPearl::math;
+//#endif
+
 struct LightProbeConstants
 {
     uint sampleCount;

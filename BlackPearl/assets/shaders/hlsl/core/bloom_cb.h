@@ -22,8 +22,12 @@
 
 #ifndef BLOOM_CB_H
 #define BLOOM_CB_H
+//#ifdef GE_SHADERCOMPILE
+//
+//#else
 //#include "BlackPearl/Math/Math.h"
 //using namespace BlackPearl::math;
+//#endif
 struct BloomConstants
 {
     float2 pixstep;

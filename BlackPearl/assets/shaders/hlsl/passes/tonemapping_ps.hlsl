@@ -22,7 +22,7 @@
 
 #pragma pack_matrix(row_major)
 
-#include <donut/shaders/tonemapping_cb.h>
+#include "core/tonemapping_cb.h"
 
 #if SOURCE_ARRAY
 Texture2DArray t_Source : register(t0);

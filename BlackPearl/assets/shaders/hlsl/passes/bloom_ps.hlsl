@@ -22,7 +22,7 @@
 
 #pragma pack_matrix(row_major)
 
-#include <donut/shaders/bloom_cb.h>
+#include <core/bloom_cb.h>
 
 cbuffer c_Bloom : register(b0)
 {

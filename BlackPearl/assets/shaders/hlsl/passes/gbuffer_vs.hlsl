@@ -22,9 +22,9 @@
 
 #pragma pack_matrix(row_major)
 
-#include <donut/shaders/gbuffer_cb.h>
-#include <donut/shaders/forward_vertex.hlsli>
-#include <donut/shaders/vulkan.hlsli>
+#include <core/gbuffer_cb.h>
+#include <core/forward_vertex.hlsli>
+#include <core/vulkan.hlsli>
 
 cbuffer c_GBuffer : register(b1 VK_DESCRIPTOR_SET(1))
 {

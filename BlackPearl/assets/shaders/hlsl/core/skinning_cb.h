@@ -28,8 +28,13 @@
 #define SkinningFlag_Tangents       0x04
 #define SkinningFlag_TexCoord1      0x08
 #define SkinningFlag_TexCoord2      0x10
+
+//#ifdef GE_SHADERCOMPILE
+//
+//#else
 //#include "BlackPearl/Math/Math.h"
 //using namespace BlackPearl::math;
+//#endif
 struct SkinningConstants
 {
     uint numVertices;

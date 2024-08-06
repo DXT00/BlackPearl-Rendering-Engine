@@ -22,7 +22,7 @@
 
 #pragma pack_matrix(row_major)
 
-#include <donut/shaders/sky.hlsli>
+#include <core/sky.hlsli>
 
 cbuffer c_Sky : register(b0)
 {

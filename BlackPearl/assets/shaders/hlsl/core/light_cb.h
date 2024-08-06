@@ -24,8 +24,12 @@
 #define LIGHT_CB_H
 
 #include "light_types.h"
-//#include "BlackPearl/Math/vector.h"
+//#ifdef GE_SHADERCOMPILE
+//
+//#else
+//#include "BlackPearl/Math/Math.h"
 //using namespace BlackPearl::math;
+//#endif
 struct ShadowConstants
 {
     float4x4 matWorldToUvzwShadow;

@@ -165,9 +165,9 @@ MaterialSample EvaluateSceneMaterial(float3 normal, float4 tangent, MaterialCons
     
     if (material.flags & MaterialFlags_UseSpecularGlossModel)
     {
-        float3 diffuseColor = material.baseOrDiffuseColor.rgb * textures.baseOrDiffuse.rgb;
+        float3 diffuseColor = material.diffuseColor.rgb * textures.baseOrDiffuse.rgb;
         float3 specularColor = material.specularColor.rgb * textures.metalRoughOrSpecular.rgb;
-        result.roughness = 1.0 - textures.metalRoughOrSpecular.a * (1.0 - material.roughness);
+        result.roughness = 1.0 - textures.metalRoughOrSpecular.a * (1.0 - material.roughnessValue);
 
 #if ENABLE_METAL_ROUGH_RECONSTRUCTION
         ConvertSpecularGlossToMetalRough(diffuseColor, specularColor, result.baseColor, result.metalness);
@@ -181,9 +181,9 @@ MaterialSample EvaluateSceneMaterial(float3 normal, float4 tangent, MaterialCons
     }
     else
     {
-        result.baseColor = material.baseOrDiffuseColor.rgb * textures.baseOrDiffuse.rgb;
-        result.roughness = material.roughness * textures.metalRoughOrSpecular.g;
-        result.metalness = material.metalness * textures.metalRoughOrSpecular.b;
+        result.baseColor = material.diffuseColor.rgb * textures.baseOrDiffuse.rgb;
+        result.roughness = material.roughnessValue * textures.metalRoughOrSpecular.g;
+        result.metalness = material.roughnessValue * textures.metalRoughOrSpecular.b;
         result.hasMetalRoughParams = true;
 
         // Compute the BRDF inputs for the metal-rough model
@@ -197,8 +197,8 @@ MaterialSample EvaluateSceneMaterial(float3 normal, float4 tangent, MaterialCons
     {
         result.occlusion = textures.occlusion.r;
     }
-
-    result.occlusion = lerp(1.0, result.occlusion, material.occlusionStrength);
+    //material.aoValue * result.occlusion + (1.0 - material.aoValue) * 1.0
+    result.occlusion = lerp(1.0, result.occlusion, material.aoValue);
     
     result.opacity = material.opacity;
     if (material.flags & MaterialFlags_UseBaseOrDiffuseTexture)

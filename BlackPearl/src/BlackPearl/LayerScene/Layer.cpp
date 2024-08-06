@@ -1372,7 +1372,7 @@ namespace BlackPearl {
 			ImGui::ColorEdit3("specularColor", color.specularColor);
 			//mesh->GetMaterial()->SetMaterialColorSpecularColor(color.specularColor);
 
-			ImGui::ColorEdit3("emissionColor", color.emissionColor);
+			ImGui::ColorEdit3("emissiveColor", color.emissiveColor);
 			//mesh->GetMaterial()->SetMaterialColorEmissionColor(color.emissionColor);
 			imGuiMeshes[i]->SetMaterialColor(color);
 

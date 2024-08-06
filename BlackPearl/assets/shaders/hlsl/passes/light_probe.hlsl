@@ -22,7 +22,7 @@
 
 #pragma pack_matrix(row_major)
 
-#include <donut/shaders/brdf.hlsli>
+#include <core/brdf.hlsli>
 
 // GS to replicate a quad into 6 cube faces
 
