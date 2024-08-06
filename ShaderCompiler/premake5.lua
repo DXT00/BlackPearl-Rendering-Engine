@@ -39,6 +39,7 @@ project "ShaderCompiler"
 	defines
 	{
 		-- "GE_API_VULKAN"
+		"GE_SHADERCOMPILE"
 	}
 
 	links

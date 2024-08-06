@@ -316,7 +316,8 @@ namespace BlackPearl {
 			VkRect2D renderArea;
 			renderArea.extent = VkExtent2D{ fb->framebufferInfo.width, fb->framebufferInfo.height };
 			renderArea.offset = VkOffset2D{ 0,0 };
-			VkRenderPassBeginInfo beginInfo;
+			VkRenderPassBeginInfo beginInfo{};
+			beginInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
 			beginInfo.renderPass = fb->renderPass;
 			beginInfo.framebuffer = fb->framebuffer;
 			beginInfo.renderArea = renderArea;

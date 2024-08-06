@@ -158,7 +158,7 @@ finished executing, the objects are transitioned into the "available" state, i.e
     static constexpr uint32_t c_MaxRenderTargets = 8;
     static constexpr uint32_t c_MaxViewports = 16;
     static constexpr uint32_t c_MaxVertexAttributes = 16;
-    static constexpr uint32_t c_MaxBindingLayouts = 5;
+    static constexpr uint32_t c_MaxBindingLayouts = 20;
     static constexpr uint32_t c_MaxBindingsPerLayout = 128;
     static constexpr uint32_t c_MaxVolatileConstantBuffersPerLayout = 6;
     static constexpr uint32_t c_MaxVolatileConstantBuffers = 32;
