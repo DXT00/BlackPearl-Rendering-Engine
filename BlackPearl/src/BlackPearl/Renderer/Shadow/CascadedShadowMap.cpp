@@ -31,7 +31,7 @@ namespace BlackPearl{
 			std::shared_ptr<ShadowMap2D> planarShadowMap = std::make_shared<ShadowMap2D>(device, m_ShadowMapTexture, cascade, cascadeViewport);
 			m_Cascades.push_back(planarShadowMap);
 
-			m_CompositeView.push_back(planarShadowMap->GetPlanarView());
+			m_CompositeView.push_back(planarShadowMap->GetPlanarView().get());
 		}
 
 		m_NumberOfCascades = 0;
@@ -87,9 +87,10 @@ namespace BlackPearl{
 	{
 		return float4x4();
 	}
-	const IView& CascadedShadowMap::GetView() const
+	const std::vector<SceneData*>& CascadedShadowMap::GetView() const
 	{
 		// TODO: 在此处插入 return 语句
+		return m_CompositeView;
 	}
 	ITexture* CascadedShadowMap::GetTexture() const
 	{

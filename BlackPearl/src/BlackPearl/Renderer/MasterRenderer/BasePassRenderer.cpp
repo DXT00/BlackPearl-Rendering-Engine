@@ -47,6 +47,7 @@ namespace BlackPearl {
 
         m_DrawStrategy = DBG_NEW InstancedOpaqueDrawStrategy();
 
+        m_CommonPasses = std::make_shared<CommonRenderPasses>(device, shaderFactory);
 
     }
     void BasePassRenderer::Render(ICommandList* commandList, IFramebuffer* targetFramebuffer, Scene* scene)
@@ -264,7 +265,7 @@ namespace BlackPearl {
 
     ShaderHandle BasePassRenderer::CreateVertexShader(const std::shared_ptr<ShaderFactory>& shaderFactory, const CreateParameters& params)
     {
-        return shaderFactory->CreateShader("hlsl/passes/forward_test_vs.hlsl", "main", nullptr, ShaderType::Vertex);
+        return shaderFactory->CreateShader("hlsl/test/forward_test_vs.hlsl", "main", nullptr, ShaderType::Vertex);
     }
 
     ShaderHandle BasePassRenderer::CreateGeometryShader(const std::shared_ptr<ShaderFactory>& shaderFactory, const CreateParameters& params)
@@ -290,7 +291,7 @@ namespace BlackPearl {
         std::vector<ShaderMacro> Macros;
         Macros.push_back(ShaderMacro("TRANSMISSIVE_MATERIAL", transmissiveMaterial ? "1" : "0"));
 
-        return shaderFactory->CreateShader("hlsl/passes/forward_test_ps.hlsl", "main", &Macros, ShaderType::Pixel);
+        return shaderFactory->CreateShader("hlsl/test/forward_test_ps.hlsl", "main", &Macros, ShaderType::Pixel);
     }
 
     InputLayoutHandle BasePassRenderer::CreateInputLayout(IShader* vertexShader, const CreateParameters& params)

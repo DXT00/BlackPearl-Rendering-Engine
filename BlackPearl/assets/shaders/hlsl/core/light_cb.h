@@ -30,6 +30,13 @@
 //#include "BlackPearl/Math/Math.h"
 //using namespace BlackPearl::math;
 //#endif
+
+//#if COMPILE_SHADER
+//
+//#else
+//#include "BlackPearl/Math/Math.h"
+//using namespace BlackPearl::math;
+//#endif
 struct ShadowConstants
 {
     float4x4 matWorldToUvzwShadow;

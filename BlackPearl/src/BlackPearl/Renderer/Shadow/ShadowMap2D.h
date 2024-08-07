@@ -9,7 +9,7 @@ namespace BlackPearl {
 	{
     private:
         TextureHandle m_ShadowMapTexture;
-        std::shared_ptr<IView> m_View;
+        SceneData* m_View;
         bool m_IsLitOutOfBounds = false;
         float2 m_FadeRangeTexels = 1.f;
         float2 m_ShadowMapSize;
@@ -50,7 +50,7 @@ namespace BlackPearl {
         std::shared_ptr<SceneData> GetPlanarView();
 
         virtual float4x4 GetWorldToUvzwMatrix() const override;
-        virtual const IView& GetView() const override;
+        virtual const std::vector<SceneData*>& GetView() const override;
         virtual ITexture* GetTexture() const override;
         virtual uint32_t GetNumberOfCascades() const override;
         virtual const IShadowMap* GetCascade(uint32_t index) const override;

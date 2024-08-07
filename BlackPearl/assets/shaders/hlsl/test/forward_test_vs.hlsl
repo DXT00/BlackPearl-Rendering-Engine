@@ -50,5 +50,6 @@ void main(
     o_vtx.tangent.w = i_vtx.tangent.w;
 
     float4 worldPos = float4(o_vtx.pos, 1.0);
-    o_position = mul(worldPos, g_ForwardView.view.matWorldToClip);
+    float4 tmpPos = mul(worldPos, g_ForwardView.view.matView);
+    o_position = mul(worldPos, g_ForwardView.view.matProjection);
 }

@@ -5,6 +5,7 @@
 #include "BlackPearl/Node/Node.h"
 #include "BlackPearl/Lumen/LumenSceneData.h"
 #include "SceneOctree.h"
+#include "BlackPearl/Component/LightProbeComponent/LightProbeComponent.h"
 namespace BlackPearl {
 	class Scene
 	{

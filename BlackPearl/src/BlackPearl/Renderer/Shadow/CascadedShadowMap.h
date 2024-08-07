@@ -12,7 +12,7 @@ namespace BlackPearl {
         TextureHandle m_ShadowMapTexture;
         std::vector<std::shared_ptr<ShadowMap2D>> m_Cascades;
         std::vector<std::shared_ptr<ShadowMap2D>> m_PerObjectShadows;
-        std::vector<std::shared_ptr<SceneData>> m_CompositeView;
+        std::vector<SceneData*> m_CompositeView;
         int m_NumberOfCascades;
 
     public:
@@ -73,7 +73,7 @@ namespace BlackPearl {
         std::shared_ptr<IView> GetPerObjectView(uint32_t object);
 
         virtual float4x4 GetWorldToUvzwMatrix() const override;
-        virtual const IView& GetView() const override;
+        virtual const std::vector<SceneData*>& GetView() const override;
         virtual ITexture* GetTexture() const override;
         virtual uint32_t GetNumberOfCascades() const override;
         virtual const IShadowMap* GetCascade(uint32_t index) const override;

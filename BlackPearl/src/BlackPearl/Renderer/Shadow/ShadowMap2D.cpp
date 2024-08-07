@@ -46,9 +46,14 @@ namespace BlackPearl {
 		return float4x4();
 	}
 
-	const IView& ShadowMap2D::GetView() const
+	const std::vector<SceneData*>& ShadowMap2D::GetView() const
 	{
 		// TODO: 在此处插入 return 语句
+		/*std::vector<std::shared_ptr<SceneData>> views;
+		views.push_back(m_View);*/
+		std::vector<SceneData*> views;
+		views.push_back(m_View);
+		return views;
 	}
 
 	ITexture* ShadowMap2D::GetTexture() const

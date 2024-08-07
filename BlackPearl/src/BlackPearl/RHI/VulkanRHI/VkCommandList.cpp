@@ -13,6 +13,42 @@
 #include "BlackPearl/RHI/Common/RHIUtils.h"
 #include "BlackPearl/RHI/Common/FormatInfo.h"
 namespace BlackPearl {
+	extern VkImageAspectFlags guessImageAspectFlags(VkFormat format);
+	static void computeMipLevelInformation(const TextureDesc& desc, uint32_t mipLevel, uint32_t* widthOut, uint32_t* heightOut, uint32_t* depthOut)
+	{
+		uint32_t width = std::max(desc.width >> mipLevel, uint32_t(1));
+		uint32_t height = std::max(desc.height >> mipLevel, uint32_t(1));
+		uint32_t depth = std::max(desc.depth >> mipLevel, uint32_t(1));
+
+		if (widthOut)
+			*widthOut = width;
+		if (heightOut)
+			*heightOut = height;
+		if (depthOut)
+			*depthOut = depth;
+	}
+
+	//VkImageAspectFlags guessImageAspectFlags(VkFormat format)
+	//{
+	//	switch (format)  // NOLINT(clang-diagnostic-switch-enum)
+	//	{
+	//	case VkFormat::VK_FORMAT_D16_UNORM:
+	//	case VkFormat::VK_FORMAT_X8_D24_UNORM_PACK32://X8D24UnormPack32
+	//	case VkFormat::VK_FORMAT_D32_SFLOAT:
+	//		return VkImageAspectFlagBits::VK_IMAGE_ASPECT_DEPTH_BIT;
+
+	//	case VkFormat::VK_FORMAT_S8_UINT:
+	//		return VK_IMAGE_ASPECT_COLOR_BIT;
+
+	//	case VkFormat::VK_FORMAT_D16_UNORM_S8_UINT:
+	//	case VkFormat::VK_FORMAT_D24_UNORM_S8_UINT:
+	//	case VkFormat::VK_FORMAT_D32_SFLOAT_S8_UINT:
+	//		return VK_IMAGE_ASPECT_DEPTH_BIT | VK_IMAGE_ASPECT_STENCIL_BIT;
+
+	//	default:
+	//		return VK_IMAGE_ASPECT_COLOR_BIT;
+	//	}
+	//}
 
 	static VkViewport VKViewportWithDXCoords(const RHIViewport& v)
 	{
@@ -147,9 +183,90 @@ namespace BlackPearl {
 		assert(0);
 
 	}
-	void CommandList::writeTexture(ITexture* dest, uint32_t arraySlice, uint32_t mipLevel, const void* data, size_t rowPitch, size_t depthPitch)
+	void CommandList::writeTexture(ITexture* _dest, uint32_t arraySlice, uint32_t mipLevel, const void* data, size_t rowPitch, size_t depthPitch)
 	{
-		assert(0);
+		_endRenderPass();
+
+		ETexture* dest = static_cast<ETexture*>(_dest);
+
+		TextureDesc desc = dest->getDesc();
+
+		uint32_t mipWidth, mipHeight, mipDepth;
+		computeMipLevelInformation(desc, mipLevel, &mipWidth, &mipHeight, &mipDepth);
+
+		const FormatInfo& formatInfo = getFormatInfo(desc.format);
+		uint32_t deviceNumCols = (mipWidth + formatInfo.blockSize - 1) / formatInfo.blockSize;
+		uint32_t deviceNumRows = (mipHeight + formatInfo.blockSize - 1) / formatInfo.blockSize;
+		uint32_t deviceRowPitch = deviceNumCols * formatInfo.bytesPerBlock;
+		uint32_t deviceMemSize = deviceRowPitch * deviceNumRows * mipDepth;
+
+		Buffer* uploadBuffer;
+		uint64_t uploadOffset;
+		void* uploadCpuVA;
+		m_UploadManager->suballocateBuffer(
+			deviceMemSize,
+			&uploadBuffer,
+			&uploadOffset,
+			&uploadCpuVA,
+			MakeVersion(m_CurrentCmdBuf->recordingID, m_CommandListParameters.queueType, false));
+
+		size_t minRowPitch = std::min(size_t(deviceRowPitch), rowPitch);
+		uint8_t* mappedPtr = (uint8_t*)uploadCpuVA;
+		for (uint32_t slice = 0; slice < mipDepth; slice++)
+		{
+			const uint8_t* sourcePtr = (const uint8_t*)data + depthPitch * slice;
+			for (uint32_t row = 0; row < deviceNumRows; row++)
+			{
+				memcpy(mappedPtr, sourcePtr, minRowPitch);
+				mappedPtr += deviceRowPitch;
+				sourcePtr += rowPitch;
+			}
+		}
+
+		//imageCopy.setBufferOffset(uploadOffset)
+		//	.setBufferRowLength(deviceNumCols * formatInfo.blockSize)
+		//	.setBufferImageHeight(deviceNumRows * formatInfo.blockSize)
+		//	.setImageSubresource(vk::ImageSubresourceLayers()
+		//		.setAspectMask(guessImageAspectFlags(dest->imageInfo.format))
+		//		.setMipLevel(mipLevel)
+		//		.setBaseArrayLayer(arraySlice)
+		//		.setLayerCount(1))
+		//	.setImageExtent(vk::Extent3D().setWidth(mipWidth).setHeight(mipHeight).setDepth(mipDepth));
+
+		VkImageSubresourceLayers layers{};
+		layers.aspectMask = guessImageAspectFlags(dest->imageInfo.format);
+		layers.mipLevel = mipLevel;
+		layers.baseArrayLayer = arraySlice;
+		layers.layerCount = 1;
+
+		VkExtent3D extend3d{};
+		extend3d.width = mipWidth;
+		extend3d.height = mipHeight;
+		extend3d.depth = mipDepth;
+
+		VkBufferImageCopy imageCopy{};
+		imageCopy.bufferOffset = uploadOffset;
+		imageCopy.bufferRowLength = deviceNumCols * formatInfo.blockSize;
+		imageCopy.bufferImageHeight = deviceNumRows * formatInfo.blockSize;
+		imageCopy.imageSubresource = layers;
+		imageCopy.imageExtent = extend3d;
+		assert(m_CurrentCmdBuf);
+
+		if (m_EnableAutomaticBarriers)
+		{
+			_requireTextureState(dest, TextureSubresourceSet(mipLevel, 1, arraySlice, 1), ResourceStates::CopyDest);
+		}
+		commitBarriers();
+
+		m_CurrentCmdBuf->referencedResources.push_back(dest);
+		vkCmdCopyBufferToImage(m_CurrentCmdBuf->cmdBuf, uploadBuffer->buffer,
+			dest->image, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
+			1, &imageCopy);
+	/*	m_CurrentCmdBuf->cmdBuf.copyBufferToImage(uploadBuffer->buffer,
+			dest->image, vk::ImageLayout::eTransferDstOptimal,
+			1, &imageCopy);*/
+
+
 	}
 	void CommandList::resolveTexture(ITexture* dest, const TextureSubresourceSet& dstSubresources, ITexture* src, const TextureSubresourceSet& srcSubresources)
 	{
@@ -408,6 +525,8 @@ namespace BlackPearl {
 				// This is tested by the validation layer, skip invalid slots here if VL is not used.
 				if (binding.slot >= c_MaxVertexAttributes)
 					continue;
+				if (binding.buffer == NULL)
+					return;
 
 				vertexBuffers[binding.slot] = dynamic_cast<Buffer*>(binding.buffer)->buffer;
 				vertexBufferOffsets[binding.slot] = VkDeviceSize(binding.offset);
@@ -1260,10 +1379,12 @@ namespace BlackPearl {
 			// but that should be fine - better than using potentially hundreds of ranges.
 			int numVersions = state.maxVersion - state.minVersion + 1;
 
-			VkMappedMemoryRange range;
+			VkMappedMemoryRange range{};
+			range.sType = VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE;
 			range.memory = buffer->memory;
 			range.offset = state.minVersion * buffer->desc.byteSize;
 			range.size = numVersions * buffer->desc.byteSize;
+			range.pNext = nullptr;
 		/*	auto range = vk::MappedMemoryRange()
 				.setMemory(she->memory)
 				.setOffset(state.minVersion * buffer->desc.byteSize)

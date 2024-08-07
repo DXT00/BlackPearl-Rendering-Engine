@@ -2,6 +2,8 @@
 #include"BlackPearl/Renderer/VertexArray.h"
 #include "BlackPearl/Component/Component.h"
 #include "BlackPearl/Renderer/Shadow/ShadowMap.h"
+using namespace BlackPearl::math;
+
 #include "hlsl/core/light_cb.h"
 #include <glm/glm.hpp>
 namespace BlackPearl {

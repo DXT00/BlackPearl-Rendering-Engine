@@ -5,6 +5,9 @@
 #include "BlackPearl/RHI/RHIDefinitions.h"
 #include "BlackPearl/Math/frustum.h"
 #include "BlackPearl/Math/Math.h"
+#include "BlackPearl/Component/LightComponent/LightSources.h"
+using namespace BlackPearl::math;
+#include "hlsl/core/view_cb.h"
 namespace BlackPearl {
 
 	class IView {

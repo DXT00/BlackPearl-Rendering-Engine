@@ -1,7 +1,7 @@
 #pragma once
 #include "BlackPearl/Object/Object.h"
 namespace BlackPearl {
-
+	class Light;
 	class LightSources
 	{
 	public:
