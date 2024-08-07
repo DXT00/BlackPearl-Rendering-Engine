@@ -31,37 +31,37 @@
 
 struct PlanarViewConstants
 {
-    float4x4    matWorldToView;
-    float4x4    matViewToClip;
-    float4x4    matWorldToClip;
-    float4x4    matClipToView;
-    float4x4    matViewToWorld;
-    float4x4    matClipToWorld;
+    //float4x4    matWorldToView;
+    //float4x4    matViewToClip;
+    //float4x4    matWorldToClip;
+    //float4x4    matClipToView;
+    //float4x4    matViewToWorld;
+    //float4x4    matClipToWorld;
 
-    float4x4    matViewToClipNoOffset;
-    float4x4    matWorldToClipNoOffset;
-    float4x4    matClipToViewNoOffset;
-    float4x4    matClipToWorldNoOffset;
+    //float4x4    matViewToClipNoOffset;
+    //float4x4    matWorldToClipNoOffset;
+    //float4x4    matClipToViewNoOffset;
+    //float4x4    matClipToWorldNoOffset;
 
     float2      viewportOrigin;
     float2      viewportSize;
 
-    float2      viewportSizeInv;
-    float2      pixelOffset;
+    //float2      viewportSizeInv;
+    //float2      pixelOffset;
 
-    float2      clipToWindowScale;
-    float2      clipToWindowBias;
+    //float2      clipToWindowScale;
+    //float2      clipToWindowBias;
 
-    float2      windowToClipScale;
-    float2      windowToClipBias;
+    //float2      windowToClipScale;
+    //float2      windowToClipBias;
 
-    float4      cameraDirectionOrPosition;
+    //float4      cameraDirectionOrPosition;
 
-    float4x4 ProjectionViewMatrix;
-    float4x4 ViewMatrix;
-    float4x4 ProjectionMatrix;
-    float3 CameraPosition;
-    float3 CameraRotation;
+    float4x4 matProjectionView;
+    float4x4 matView;
+    float4x4 matProjection;
+    float3 cameraPos;
+    float3 cameraRot;
 
 };
 
