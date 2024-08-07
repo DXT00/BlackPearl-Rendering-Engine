@@ -22,4 +22,15 @@ namespace BlackPearl {
 		}
 		return nullptr;
 	}
+	void Light::FillLightConstants(LightConstants& lightConstants) const
+	{
+		lightConstants.color = m_LightProp.diffuse;
+		lightConstants.shadowCascades = int4(-1);
+		lightConstants.perObjectShadows = int4(-1);
+		lightConstants.shadowChannel = int4(shadowChannel, -1, -1, -1);
+		if (shadowMap)
+			lightConstants.outOfBoundsShadow = shadowMap->IsLitOutOfBounds() ? 1.f : 0.f;
+		else
+			lightConstants.outOfBoundsShadow = 1.f;
+	}
 }

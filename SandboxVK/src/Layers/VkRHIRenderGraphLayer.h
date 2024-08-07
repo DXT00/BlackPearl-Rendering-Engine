@@ -30,6 +30,8 @@ public:
 		m_Scene->AddObject(m_SphereObj);
 		m_Scene->AddObject(m_CubeObj);
 
+		m_Scene->SetLightSources(GetLightSources());
+
 		m_RenderGraph->Init(m_Scene);
 
 		m_DeviceManager->AddRenderGraphToBack(m_RenderGraph);

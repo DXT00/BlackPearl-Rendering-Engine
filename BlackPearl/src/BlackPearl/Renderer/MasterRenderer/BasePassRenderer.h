@@ -9,6 +9,11 @@
 #include "BlackPearl/Scene/Scene.h"
 #include "BlackPearl/Renderer/Shader/ShaderFactory.h"
 #include "BlackPearl/Renderer/SceneType.h"
+#include "BlackPearl/Component/LightComponent/Light.h"
+#include "BlackPearl/Component/LightProbeComponent/LightProbeComponent.h"
+#include "BlackPearl/Component/LightComponent/LightSources.h"
+#include "BlackPearl/Math/Math.h"
+#include "BlackPearl/Renderer/CommonRenderPass.h"
 namespace std
 {
     template<>
@@ -25,6 +30,7 @@ namespace std
 namespace BlackPearl {
 
 
+  
 	class BasePassRenderer : public GeometryRenderer
 	{
     public:
@@ -49,8 +55,6 @@ namespace BlackPearl {
             static constexpr size_t Count = 1 << 7;
         };
 
-
-
         BasePassRenderer();
         virtual ~BasePassRenderer();
 
@@ -68,7 +72,12 @@ namespace BlackPearl {
         bool SetupMaterial(const Material* material, RasterCullMode cullMode, GraphicsState& state) override;
         void SetupInputBuffers(BufferGroup* buffers, GraphicsState& state) override;
         void SetPushConstants(ICommandList* commandList, GraphicsState& state, DrawArguments& args) override { }
-
+        void PrepareLights(
+            ICommandList* commandList,
+            LightSources* lights,
+            math::float3 ambientColorTop,
+            math::float3 ambientColorBottom,
+            const std::vector<std::shared_ptr<LightProbe>>& lightProbes);
 
     protected:
         InstancedOpaqueDrawStrategy* m_DrawStrategy;
@@ -92,7 +101,7 @@ namespace BlackPearl {
 
         std::unordered_map<std::pair<ITexture*, ITexture*>, BindingSetHandle> m_LightBindingSets;
 
-        //std::shared_ptr<CommonRenderPasses> m_CommonPasses;
+        std::shared_ptr<CommonRenderPasses> m_CommonPasses;
         std::shared_ptr<MaterialBindingCache> m_MaterialBindings;
 
         virtual ShaderHandle CreateVertexShader(const std::shared_ptr<ShaderFactory>& shaderFactory, const CreateParameters& params);

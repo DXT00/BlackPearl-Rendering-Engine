@@ -15,7 +15,8 @@ namespace BlackPearl {
 		[[nodiscard]] virtual VariableRateShadingState GetVariableRateShadingState() const = 0;
 
 		[[nodiscard]] virtual math::frustum GetViewFrustum() const = 0;
-		
+		virtual void FillPlanarViewConstants(PlanarViewConstants& constants) const = 0;
+
 
 	};
 	class SceneData : public IView
@@ -65,6 +66,8 @@ namespace BlackPearl {
 		virtual ViewportState GetViewportState() const override;
 		virtual VariableRateShadingState GetVariableRateShadingState() const override;
 		virtual math::frustum GetViewFrustum() const override;
+		virtual void FillPlanarViewConstants(PlanarViewConstants& constants) const override;
+
 		RHIViewport m_Viewport;
 		RHIRect m_ScissorRect;
 		VariableRateShadingState m_ShadingRateState;

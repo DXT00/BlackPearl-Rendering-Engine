@@ -24,11 +24,29 @@ namespace BlackPearl {
 	void Scene::GetCamera()
 	{
 	}
-	void Scene::AddLights(Object* obj)
+	//void Scene::AddLights(Object* obj)
+	//{
+	//}
+	//void Scene::GetLights()
+	//{
+	//}
+	void Scene::SetLightSources(LightSources* lightSources)
 	{
+		m_LightSources = lightSources;
 	}
-	void Scene::GetLights()
+	LightSources* Scene::GetLightSources() const
 	{
+		return m_LightSources;
+	}
+
+	void Scene::SetLightProbes(const std::vector<std::shared_ptr<LightProbe>>& probes)
+	{
+		m_LightProbes = probes;
+	}
+
+	std::vector<std::shared_ptr<LightProbe>> Scene::GetLightProbes() const
+	{
+		return m_LightProbes;
 	}
 	void Scene::AddObject(Object* obj)
 	{

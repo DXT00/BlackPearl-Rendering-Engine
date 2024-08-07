@@ -4,6 +4,10 @@
 #include "BlackPearl/Core.h"
 #include "BlackPearl/Renderer/DeviceManager.h"
 #include "BlackPearl/RHI/RHITexture.h"
+#include "BlackPearl/Math/Math.h"
+using namespace BlackPearl::math;
+
+#include "hlsl/core/light_cb.h"
 namespace BlackPearl {
 	extern DeviceManager* g_deviceManager;
 
@@ -76,6 +80,12 @@ namespace BlackPearl {
 		std::vector<uint64_t> GetExcludeObjectsId()const { return m_ExcludeObjsId; }
 		bool GetDynamicSpecularMap() { return m_UpdateSpecularMapEveryFrame; }
 		void SetDynamicSpecularMap(bool dynamic) { m_UpdateSpecularMapEveryFrame = dynamic; }
+	
+		void FillLightProbeConstants(LightProbeConstants& lightProbeConstants) const;
+
+	public:
+		bool enabled = true;
+	
 	private:
 
 		/* probe's view matrix */

@@ -3,7 +3,7 @@
 #include "BlackPearl/Renderer/Buffer/Buffer.h"
 #include "BlackPearl/Component/LightComponent/ParallelLight.h"
 #include "BlackPearl/Renderer/MasterRenderer/BasicRenderer.h"
-#include "BlackPearl/Renderer/ShadowBox/ShadowBox.h"
+#include "BlackPearl/Renderer/Shadow/ShadowBox/ShadowBox.h"
 #include "BlackPearl/Object/Object.h"
 namespace BlackPearl {
 	//ShadowMap的Render操作 输入数据(Objs)--->ShadowMapRenderer--->渲染ShadowMap

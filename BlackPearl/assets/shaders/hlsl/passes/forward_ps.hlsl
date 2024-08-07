@@ -29,12 +29,12 @@
 #include <core/lighting.hlsli>
 #include <core/shadows.hlsli>
 #include <core/vulkan.hlsli>
-
+// m_ForwardViewCB
 cbuffer c_ForwardView : register(b1 VK_DESCRIPTOR_SET(1))
 {
     ForwardShadingViewConstants g_ForwardView;
 };
-
+// m_ForwardLightCB
 cbuffer c_ForwardLight : register(b2 VK_DESCRIPTOR_SET(1))
 {
     ForwardShadingLightConstants g_ForwardLight;

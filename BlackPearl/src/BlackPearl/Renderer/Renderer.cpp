@@ -8,6 +8,9 @@
 #include "BlackPearl/Component/LightComponent/LightSources.h"
 #include "glm/gtc/matrix_transform.hpp"
 #include "Mesh/Mesh.h"
+using namespace BlackPearl::math;
+#include <hlsl/core/view_cb.h>
+
 namespace BlackPearl {
 
 	SceneData * Renderer::s_SceneData = DBG_NEW SceneData();
@@ -154,6 +157,39 @@ namespace BlackPearl {
 	math::frustum SceneData::GetViewFrustum() const
 	{
 		return ViewFrustum;
+	}
+
+	void SceneData::FillPlanarViewConstants(PlanarViewConstants& constants) const
+	{
+
+		//constants.matWorldToView = affineToHomogeneous(GetViewMatrix());
+		//constants.matViewToClip = GetProjectionMatrix(true);
+		//constants.matWorldToClip = GetViewProjectionMatrix(true);
+		//constants.matClipToView = GetInverseProjectionMatrix(true);
+		//constants.matViewToWorld = affineToHomogeneous(GetInverseViewMatrix());
+		//constants.matClipToWorld = GetInverseViewProjectionMatrix(true);
+		//constants.matViewToClipNoOffset = GetProjectionMatrix(false);
+		//constants.matWorldToClipNoOffset = GetViewProjectionMatrix(false);
+		//constants.matClipToViewNoOffset = GetInverseProjectionMatrix(false);
+		//constants.matClipToWorldNoOffset = GetInverseViewProjectionMatrix(false);
+
+		//ViewportState viewportState = GetViewportState();
+		//const RHIViewport& viewport = viewportState.viewports[0];
+		//constants.viewportOrigin = float2(viewport.minX, viewport.minY);
+		//constants.viewportSize = float2(viewport.width(), viewport.height());
+		//constants.viewportSizeInv = 1.f / constants.viewportSize;
+
+		//constants.clipToWindowScale = float2(0.5f * viewport.width(), -0.5f * viewport.height());
+		//constants.clipToWindowBias = constants.viewportOrigin + constants.viewportSize * 0.5f;
+
+		//constants.windowToClipScale = 1.f / constants.clipToWindowScale;
+		//constants.windowToClipBias = -constants.clipToWindowBias * constants.windowToClipScale;
+
+		//constants.cameraDirectionOrPosition = IsOrthographicProjection()
+		//	? float4(GetViewDirection(), 0.f)
+		//	: float4(GetViewOrigin(), 1.f);
+
+		//constants.pixelOffset = GetPixelOffset();
 	}
 	
 }

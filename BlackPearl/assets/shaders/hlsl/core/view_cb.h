@@ -56,6 +56,13 @@ struct PlanarViewConstants
     float2      windowToClipBias;
 
     float4      cameraDirectionOrPosition;
+
+    float4x4 ProjectionViewMatrix;
+    float4x4 ViewMatrix;
+    float4x4 ProjectionMatrix;
+    float3 CameraPosition;
+    float3 CameraRotation;
+
 };
 
 #endif // VIEW_CB_H

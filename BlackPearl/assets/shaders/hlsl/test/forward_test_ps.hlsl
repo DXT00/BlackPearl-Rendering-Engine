@@ -40,14 +40,14 @@ cbuffer c_ForwardLight : register(b2 VK_DESCRIPTOR_SET(1))
     ForwardShadingLightConstants g_ForwardLight;
 };
 
-Texture2DArray t_ShadowMapArray : register(t10 VK_DESCRIPTOR_SET(2));
-TextureCubeArray t_DiffuseLightProbe : register(t11 VK_DESCRIPTOR_SET(2));
-TextureCubeArray t_SpecularLightProbe : register(t12 VK_DESCRIPTOR_SET(2));
-Texture2D t_EnvironmentBrdf : register(t13 VK_DESCRIPTOR_SET(2));
+// Texture2DArray t_ShadowMapArray : register(t10 VK_DESCRIPTOR_SET(2));
+// TextureCubeArray t_DiffuseLightProbe : register(t11 VK_DESCRIPTOR_SET(2));
+// TextureCubeArray t_SpecularLightProbe : register(t12 VK_DESCRIPTOR_SET(2));
+// Texture2D t_EnvironmentBrdf : register(t13 VK_DESCRIPTOR_SET(2));
 
 SamplerState s_ShadowSampler : register(s1 VK_DESCRIPTOR_SET(1));
-SamplerState s_LightProbeSampler : register(s2 VK_DESCRIPTOR_SET(2));
-SamplerState s_BrdfSampler : register(s3 VK_DESCRIPTOR_SET(2));
+// SamplerState s_LightProbeSampler : register(s2 VK_DESCRIPTOR_SET(2));
+// SamplerState s_BrdfSampler : register(s3 VK_DESCRIPTOR_SET(2));
 
 float3 GetIncidentVector(float4 directionOrPosition, float3 surfacePos)
 {
@@ -84,92 +84,92 @@ void main(
     float3 diffuseTerm = 0;
     float3 specularTerm = 0;
 
-    [loop]
-        for (uint nLight = 0; nLight < g_ForwardLight.numLights; nLight++)
-        {
-            LightConstants light = g_ForwardLight.lights[nLight];
+    // [loop]
+    //     for (uint nLight = 0; nLight < g_ForwardLight.numLights; nLight++)
+    //     {
+    //         LightConstants light = g_ForwardLight.lights[nLight];
 
-            float2 shadow = 0;
-            for (int cascade = 0; cascade < 4; cascade++)
-            {
-                if (light.shadowCascades[cascade] >= 0)
-                {
-                    float2 cascadeShadow = EvaluateShadowGather16(t_ShadowMapArray, s_ShadowSampler, g_ForwardLight.shadows[light.shadowCascades[cascade]], surfaceWorldPos, g_ForwardLight.shadowMapTextureSize);
+    //         float2 shadow = 0;
+    //         for (int cascade = 0; cascade < 4; cascade++)
+    //         {
+    //             if (light.shadowCascades[cascade] >= 0)
+    //             {
+    //                 float2 cascadeShadow = EvaluateShadowGather16(t_ShadowMapArray, s_ShadowSampler, g_ForwardLight.shadows[light.shadowCascades[cascade]], surfaceWorldPos, g_ForwardLight.shadowMapTextureSize);
 
-                    shadow = saturate(shadow + cascadeShadow * (1.0001 - shadow.y));
+    //                 shadow = saturate(shadow + cascadeShadow * (1.0001 - shadow.y));
 
-                    if (shadow.y == 1)
-                        break;
-                }
-                else
-                    break;
-            }
+    //                 if (shadow.y == 1)
+    //                     break;
+    //             }
+    //             else
+    //                 break;
+    //         }
 
-            shadow.x += (1 - shadow.y) * light.outOfBoundsShadow;
+    //         shadow.x += (1 - shadow.y) * light.outOfBoundsShadow;
 
-            float objectShadow = 1;
+    //         float objectShadow = 1;
 
-            for (int object = 0; object < 4; object++)
-            {
-                if (light.perObjectShadows[object] >= 0)
-                {
-                    float2 thisObjectShadow = EvaluateShadowGather16(t_ShadowMapArray, s_ShadowSampler, g_ForwardLight.shadows[light.perObjectShadows[object]], surfaceWorldPos, g_ForwardLight.shadowMapTextureSize);
+    //         for (int object = 0; object < 4; object++)
+    //         {
+    //             if (light.perObjectShadows[object] >= 0)
+    //             {
+    //                 float2 thisObjectShadow = EvaluateShadowGather16(t_ShadowMapArray, s_ShadowSampler, g_ForwardLight.shadows[light.perObjectShadows[object]], surfaceWorldPos, g_ForwardLight.shadowMapTextureSize);
 
-                    objectShadow *= saturate(thisObjectShadow.x + (1 - thisObjectShadow.y));
-                }
-            }
+    //                 objectShadow *= saturate(thisObjectShadow.x + (1 - thisObjectShadow.y));
+    //             }
+    //         }
 
-            shadow.x *= objectShadow;
+    //         shadow.x *= objectShadow;
 
-            float3 diffuseRadiance, specularRadiance;
-            ShadeSurface(light, surfaceMaterial, surfaceWorldPos, viewIncident, diffuseRadiance, specularRadiance);
+    //         float3 diffuseRadiance, specularRadiance;
+    //         ShadeSurface(light, surfaceMaterial, surfaceWorldPos, viewIncident, diffuseRadiance, specularRadiance);
 
-            diffuseTerm += (shadow.x * diffuseRadiance) * light.color;
-            specularTerm += (shadow.x * specularRadiance) * light.color;
-        }
+    //         diffuseTerm += (shadow.x * diffuseRadiance) * light.color;
+    //         specularTerm += (shadow.x * specularRadiance) * light.color;
+    //     }
 
     float NdotV = saturate(-dot(surfaceMaterial.shadingNormal, viewIncident));
 
-    if (g_ForwardLight.numLightProbes > 0)
-    {
-        float3 N = surfaceMaterial.shadingNormal;
-        float3 R = reflect(viewIncident, N);
+    // if (g_ForwardLight.numLightProbes > 0)
+    // {
+    //     float3 N = surfaceMaterial.shadingNormal;
+    //     float3 R = reflect(viewIncident, N);
 
-        float2 environmentBrdf = t_EnvironmentBrdf.SampleLevel(s_BrdfSampler, float2(NdotV, surfaceMaterial.roughness), 0).xy;
+    //     float2 environmentBrdf = t_EnvironmentBrdf.SampleLevel(s_BrdfSampler, float2(NdotV, surfaceMaterial.roughness), 0).xy;
 
-        float lightProbeWeight = 0;
-        float3 lightProbeDiffuse = 0;
-        float3 lightProbeSpecular = 0;
+    //     float lightProbeWeight = 0;
+    //     float3 lightProbeDiffuse = 0;
+    //     float3 lightProbeSpecular = 0;
 
-        [loop]
-            for (uint nProbe = 0; nProbe < g_ForwardLight.numLightProbes; nProbe++)
-            {
-                LightProbeConstants lightProbe = g_ForwardLight.lightProbes[nProbe];
+    //     [loop]
+    //         for (uint nProbe = 0; nProbe < g_ForwardLight.numLightProbes; nProbe++)
+    //         {
+    //             LightProbeConstants lightProbe = g_ForwardLight.lightProbes[nProbe];
 
-                float weight = GetLightProbeWeight(lightProbe, surfaceWorldPos);
+    //             float weight = GetLightProbeWeight(lightProbe, surfaceWorldPos);
 
-                if (weight == 0)
-                    continue;
+    //             if (weight == 0)
+    //                 continue;
 
-                float specularMipLevel = sqrt(saturate(surfaceMaterial.roughness)) * (lightProbe.mipLevels - 1);
-                float3 diffuseProbe = t_DiffuseLightProbe.SampleLevel(s_LightProbeSampler, float4(N.xyz, lightProbe.diffuseArrayIndex), 0).rgb;
-                float3 specularProbe = t_SpecularLightProbe.SampleLevel(s_LightProbeSampler, float4(R.xyz, lightProbe.specularArrayIndex), specularMipLevel).rgb;
+    //             float specularMipLevel = sqrt(saturate(surfaceMaterial.roughness)) * (lightProbe.mipLevels - 1);
+    //             float3 diffuseProbe = t_DiffuseLightProbe.SampleLevel(s_LightProbeSampler, float4(N.xyz, lightProbe.diffuseArrayIndex), 0).rgb;
+    //             float3 specularProbe = t_SpecularLightProbe.SampleLevel(s_LightProbeSampler, float4(R.xyz, lightProbe.specularArrayIndex), specularMipLevel).rgb;
 
-                lightProbeDiffuse += (weight * lightProbe.diffuseScale) * diffuseProbe;
-                lightProbeSpecular += (weight * lightProbe.specularScale) * specularProbe;
-                lightProbeWeight += weight;
-            }
+    //             lightProbeDiffuse += (weight * lightProbe.diffuseScale) * diffuseProbe;
+    //             lightProbeSpecular += (weight * lightProbe.specularScale) * specularProbe;
+    //             lightProbeWeight += weight;
+    //         }
 
-        if (lightProbeWeight > 1)
-        {
-            float invWeight = rcp(lightProbeWeight);
-            lightProbeDiffuse *= invWeight;
-            lightProbeSpecular *= invWeight;
-        }
+    //     if (lightProbeWeight > 1)
+    //     {
+    //         float invWeight = rcp(lightProbeWeight);
+    //         lightProbeDiffuse *= invWeight;
+    //         lightProbeSpecular *= invWeight;
+    //     }
 
-        diffuseTerm += lightProbeDiffuse * surfaceMaterial.diffuseAlbedo * surfaceMaterial.occlusion;
-        specularTerm += lightProbeSpecular * (surfaceMaterial.specularF0 * environmentBrdf.x + environmentBrdf.y) * surfaceMaterial.occlusion;
-    }
+    //     diffuseTerm += lightProbeDiffuse * surfaceMaterial.diffuseAlbedo * surfaceMaterial.occlusion;
+    //     specularTerm += lightProbeSpecular * (surfaceMaterial.specularF0 * environmentBrdf.x + environmentBrdf.y) * surfaceMaterial.occlusion;
+    // }
 
     {
         float3 ambientColor = lerp(g_ForwardLight.ambientColorBottom.rgb, g_ForwardLight.ambientColorTop.rgb, surfaceMaterial.shadingNormal.y * 0.5 + 0.5);

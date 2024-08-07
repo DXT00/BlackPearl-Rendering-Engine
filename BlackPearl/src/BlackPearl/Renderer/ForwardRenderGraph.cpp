@@ -34,6 +34,7 @@ namespace BlackPearl {
 	void ForwardRenderGraph::Render(IFramebuffer* framebuffer, IView* View)
 	{
 		m_CommandList->open();
+		m_BasePassRenderer->PrepareLights(m_CommandList, m_Scene->GetLightSources(), math::float3(1.0), math::float3(1.0,0.0,1.0), m_Scene->GetLightProbes());
 		m_BasePassRenderer->Render(m_CommandList, framebuffer, m_Scene);
 		//m_PostProcessRenderer->Render(m_CommandList, PostProcessRenderer::RenderPassType::Debug_BlendDebugViz,
 		//	m_ConstantBuffer, miniConstants, m_FrameBuffer, *m_RenderTargets, m_RenderTargets->OutputColor);

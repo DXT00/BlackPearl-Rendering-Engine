@@ -61,6 +61,16 @@ namespace BlackPearl {
 		//case: for virtual node ,such as RTXTransformNode
 		Material()
 			: m_Props(Props()) {
+
+				m_Props.shininess = 64.0f;
+				m_Props.refractIndex = 1.5;
+				m_Props.isBinnLight = false;
+				m_Props.isPBRTextureSample = 0;
+				m_Props.isDiffuseTextureSample = 0;
+				m_Props.isSpecularTextureSample = 0;
+				m_Props.isEmissionTextureSample = 0;
+				m_Props.isHeightTextureSample = 0;
+				m_Props.isRefractMaterial = 0;
 		}
 
 		Material(

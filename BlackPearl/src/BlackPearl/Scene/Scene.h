@@ -19,8 +19,13 @@ namespace BlackPearl {
 		~Scene();
 		void AddCamera();
 		void GetCamera();
-		void AddLights(Object* obj);
-		void GetLights();
+		//void AddLights(Object* obj);
+		//void GetLights();
+		void SetLightSources(LightSources* lightSources);
+		LightSources* GetLightSources() const;
+		void SetLightProbes(const std::vector<std::shared_ptr<LightProbe>>& lightSources);
+		std::vector<std::shared_ptr<LightProbe>> GetLightProbes() const;
+
 		void AddObject(Object* obj);
 		// only single nodes now
 		void UpdateObjsAABB();
@@ -67,6 +72,9 @@ namespace BlackPearl {
 		Object* m_RootObj;
 		Node* m_RootNode;
 
+		LightSources* m_LightSources;
+
+		std::vector<std::shared_ptr<LightProbe>> m_LightProbes;
 
 	private:
 		void _AddNode(Node* node);

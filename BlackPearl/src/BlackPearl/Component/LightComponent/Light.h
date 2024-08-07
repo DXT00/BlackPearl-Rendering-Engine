@@ -1,6 +1,8 @@
 #pragma once
 #include"BlackPearl/Renderer/VertexArray.h"
 #include "BlackPearl/Component/Component.h"
+#include "BlackPearl/Renderer/Shadow/ShadowMap.h"
+#include "hlsl/core/light_cb.h"
 #include <glm/glm.hpp>
 namespace BlackPearl {
 
@@ -41,8 +43,6 @@ namespace BlackPearl {
 		Props GetLightProps() const { return  m_LightProp; }
 		Props GetLightLastProps() const { return  m_LightLastProp; }
 
-		//	virtual std::shared_ptr<VertexArray> GetVertexArray() = 0;
-			//virtual std::shared_ptr<Shader> GetShader() = 0;
 		virtual LightType GetType() = 0;
 		virtual void Init() = 0;
 		static Light* Create(
@@ -64,6 +64,12 @@ namespace BlackPearl {
 			m_LightProp.shadowBias = props.shadowBias;
 		}
 	
+
+		void Light::FillLightConstants(LightConstants& lightConstants) const;
+	public:        
+		std::shared_ptr<IShadowMap> shadowMap = nullptr;
+		int shadowChannel = -1;
+
 	protected:
 		Props m_LightProp;
 		Props m_LightLastProp;
