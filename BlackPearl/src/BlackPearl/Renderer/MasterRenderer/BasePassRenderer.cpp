@@ -124,15 +124,39 @@ namespace BlackPearl {
 
         buffers->indexBuffer = m_Device->createBuffer(buffers->indexBufferDesc);
         buffers->vertexBuffer = m_Device->createBuffer(buffers->vertexBufferDesc);
+        //TODO:: ÊÊÅä²»Í¬µÄvertex attribute
+        uint32_t slot = 0;
+        state.vertexBuffers = {};
+        if (buffers->hasAttribute(VertexAttribute::Position)) {
+            state.vertexBuffers.push_back({ buffers->vertexBuffer, slot, buffers->getVertexBufferRange(VertexAttribute::Position).byteOffset });
+            slot++;
+        }
+        if (buffers->hasAttribute(VertexAttribute::PrevPosition)) {
+            state.vertexBuffers.push_back({ buffers->vertexBuffer, slot, buffers->getVertexBufferRange(VertexAttribute::PrevPosition).byteOffset });
+            slot++;
+        }
+        if (buffers->hasAttribute(VertexAttribute::TexCoord1)) {
+            state.vertexBuffers.push_back({ buffers->vertexBuffer, slot, buffers->getVertexBufferRange(VertexAttribute::TexCoord1).byteOffset });
+            slot++;
+        }
+        if (buffers->hasAttribute(VertexAttribute::Normal)) {
+            state.vertexBuffers.push_back({ buffers->vertexBuffer, slot, buffers->getVertexBufferRange(VertexAttribute::Normal).byteOffset });
+            slot++;
+        }
+        if (buffers->hasAttribute(VertexAttribute::Tangent)) {
+            state.vertexBuffers.push_back({ buffers->vertexBuffer, slot, buffers->getVertexBufferRange(VertexAttribute::Tangent).byteOffset });
+            slot++;
+        }
 
-        state.vertexBuffers = {
-        { buffers->vertexBuffer, 0, buffers->getVertexBufferRange(VertexAttribute::Position).byteOffset },
-        { buffers->vertexBuffer, 1, buffers->getVertexBufferRange(VertexAttribute::PrevPosition).byteOffset },
-        { buffers->vertexBuffer, 2, buffers->getVertexBufferRange(VertexAttribute::TexCoord1).byteOffset },
-        { buffers->vertexBuffer, 3, buffers->getVertexBufferRange(VertexAttribute::Normal).byteOffset },
-        { buffers->vertexBuffer, 4, buffers->getVertexBufferRange(VertexAttribute::Tangent).byteOffset },
-        //{ buffers->instanceBuffer, 5, 0 }
-        };
+        //state.vertexBuffers = {
+        //{ buffers->vertexBuffer, 0, buffers->getVertexBufferRange(VertexAttribute::Position).byteOffset },
+        //{ buffers->vertexBuffer, 1, buffers->getVertexBufferRange(VertexAttribute::PrevPosition).byteOffset },
+        //{ buffers->vertexBuffer, 2, buffers->getVertexBufferRange(VertexAttribute::TexCoord1).byteOffset },
+        //{ buffers->vertexBuffer, 3, buffers->getVertexBufferRange(VertexAttribute::Normal).byteOffset },
+       
+        //{ buffers->vertexBuffer, 4, buffers->getVertexBufferRange(VertexAttribute::Tangent).byteOffset },
+        ////{ buffers->instanceBuffer, 5, 0 }
+        //};
 
         state.indexBuffer = { buffers->indexBuffer, Format::R32_UINT, 0 };
     }
@@ -302,7 +326,8 @@ namespace BlackPearl {
             GetVertexAttributeDesc(VertexAttribute::PrevPosition, "PREV_POS", 1),
             GetVertexAttributeDesc(VertexAttribute::TexCoord1, "TEXCOORD", 2),
             GetVertexAttributeDesc(VertexAttribute::Normal, "NORMAL", 3),
-            GetVertexAttributeDesc(VertexAttribute::Tangent, "TANGENT", 4),
+            //TODO::
+           // GetVertexAttributeDesc(VertexAttribute::Tangent, "TANGENT", 4),
             //GetVertexAttributeDesc(VertexAttribute::Transform, "TRANSFORM", 5),
         };
 
