@@ -23,11 +23,12 @@ public class SandBoxAndriodRender implements GLSurfaceView.Renderer{
 
     @Override
     public void onDrawFrame(GL10 gl) {
+
         mNativeSandboxRender.native_Run();
     }
 
     public void init() {
-        //mNativeSandboxRender.native_Init();
+        mNativeSandboxRender.native_Init();
     }
     public int getSampleType() {
         return mSampleType;

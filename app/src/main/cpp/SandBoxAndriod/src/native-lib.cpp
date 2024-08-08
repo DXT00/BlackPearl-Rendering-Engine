@@ -2,7 +2,8 @@
 #include <string>
 #include "BlackPearl/Core.h"
 #include "BlackPearl/Application.h"
-
+#include "BlackPearl/EntryPoint.h"
+#include "SandBoxAndriod.h"
 #define NATIVE_RENDER_CLASS_NAME "com/example/blackpearl/SandBoxNativeRenderer"
 
 
@@ -19,12 +20,12 @@ Java_com_example_blackpearl_MainActivity_stringFromJNI(
 
 JNIEXPORT void JNICALL native_Init(JNIEnv *env, jobject instance, jstring layer)
 {
-    //BlackPearl::Application* app = BlackPearl::CreateApplication(0);
+    SandBoxAndriod::GetInstance();
 }
 
 JNIEXPORT void JNICALL native_Run(JNIEnv *env, jobject instance)
 {
-
+    SandBoxAndriod::GetInstance()->Run();
 }
 
 static JNINativeMethod g_RenderMethods[] = {

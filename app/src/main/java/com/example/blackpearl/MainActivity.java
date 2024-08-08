@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity implements ViewTreeObserver.
 
     private ActivityMainBinding binding;
 
-    private SandBoxAndriodRender mSanderBoxRender = new SandBoxAndriodRender();
+    private SandBoxAndriodRender mSanderBoxRender ;
     private int mSampleSelectedIndex = SAMPLE_TYPE_KEY_BEATING_HEART - SAMPLE_TYPE;
     private SensorManager mSensorManager;
     private static final String[] SAMPLE_TITLES = {
@@ -63,7 +63,7 @@ public class MainActivity extends AppCompatActivity implements ViewTreeObserver.
         mRootView = (ViewGroup) findViewById(R.id.rootView);
         mRootView.getViewTreeObserver().addOnGlobalLayoutListener(this);
         mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
-
+        mSanderBoxRender = new SandBoxAndriodRender();
         mSanderBoxRender.init();
     }
 
