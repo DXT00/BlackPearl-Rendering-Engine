@@ -100,7 +100,7 @@ namespace BlackPearl {
         std::mutex m_Mutex;
 
         std::unordered_map<std::pair<ITexture*, ITexture*>, BindingSetHandle> m_LightBindingSets;
-
+        BindingSetHandle m_LightBinding;
         std::shared_ptr<CommonRenderPasses> m_CommonPasses;
         std::shared_ptr<MaterialBindingCache> m_MaterialBindings;
 

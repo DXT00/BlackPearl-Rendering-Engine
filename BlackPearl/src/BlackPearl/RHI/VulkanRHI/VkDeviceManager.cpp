@@ -238,7 +238,7 @@ namespace BlackPearl {
 				VK_KHR_BUFFER_DEVICE_ADDRESS_EXTENSION_NAME,
 				VK_NV_MESH_SHADER_EXTENSION_NAME,
 				VK_KHR_FRAGMENT_SHADING_RATE_EXTENSION_NAME,
-				VK_KHR_SYNCHRONIZATION_2_EXTENSION_NAME,
+				//VK_KHR_SYNCHRONIZATION_2_EXTENSION_NAME,
 				//VK_EXT_OPACITY_MICROMAP_EXTENSION_NAME,
 				VK_EXT_CONSERVATIVE_RASTERIZATION_EXTENSION_NAME
 			},
@@ -471,9 +471,9 @@ namespace BlackPearl {
 		VkApplicationInfo applicationInfo{};
 		applicationInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
 		applicationInfo.pApplicationName = "BlackPearl VkSandBox";
-		applicationInfo.applicationVersion = VK_MAKE_VERSION(1, 2, 0);
+		applicationInfo.applicationVersion = VK_MAKE_VERSION(1, 3, 0);
 		applicationInfo.pEngineName = "BlackPearl";
-		applicationInfo.engineVersion = VK_MAKE_VERSION(1, 2, 0);
+		applicationInfo.engineVersion = VK_MAKE_VERSION(1, 3, 0);
 		applicationInfo.apiVersion = VK_API_VERSION_1_2;
 
 		// create the vulkan instance

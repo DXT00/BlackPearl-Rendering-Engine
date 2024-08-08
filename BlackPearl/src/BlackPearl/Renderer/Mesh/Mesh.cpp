@@ -58,6 +58,7 @@ namespace BlackPearl {
 	{
 		buffers->indexData = filter->indexData;
 		buffers->positionData = filter->positionData;
+		buffers->prePositionData = filter->prePositionData;
 		buffers->texcoord1Data = filter->texcoord1Data;
 		buffers->normalData = filter->normalData;
 		buffers->tangentData = filter->tangentData;
@@ -75,6 +76,12 @@ namespace BlackPearl {
 		{
 			_AppendBufferRange(buffers->getVertexBufferRange(VertexAttribute::Position),
 				buffers->positionData.size() * sizeof(buffers->positionData[0]), bufferDesc.byteSize);
+		}
+
+		if (!buffers->prePositionData.empty())
+		{
+			_AppendBufferRange(buffers->getVertexBufferRange(VertexAttribute::PrevPosition),
+				buffers->prePositionData.size() * sizeof(buffers->prePositionData[0]), bufferDesc.byteSize);
 		}
 
 		if (!buffers->normalData.empty())

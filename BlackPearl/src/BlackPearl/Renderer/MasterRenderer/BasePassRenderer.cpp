@@ -21,6 +21,7 @@ namespace BlackPearl {
         m_GeometryShader = CreateGeometryShader(shaderFactory, params);
         m_PixelShader = CreatePixelShader(shaderFactory, params, false);
         m_PixelShaderTransmissive = CreatePixelShader(shaderFactory, params, true);
+        m_CommonPasses = std::make_shared<CommonRenderPasses>(device, shaderFactory);
 
         if (params.materialBindings)
             m_MaterialBindings = params.materialBindings;
@@ -47,7 +48,6 @@ namespace BlackPearl {
 
         m_DrawStrategy = DBG_NEW InstancedOpaqueDrawStrategy();
 
-        m_CommonPasses = std::make_shared<CommonRenderPasses>(device, shaderFactory);
 
     }
     void BasePassRenderer::Render(ICommandList* commandList, IFramebuffer* targetFramebuffer, Scene* scene)
@@ -91,14 +91,14 @@ namespace BlackPearl {
 
         //TODO:: ¼Ópass context
         PipelineKey key;// = context.keyTemplate;
-        key.value = 0;
+        key.value = material->GetId();
         key.bits.cullMode = cullMode;
         key.bits.domain = material->domain;
         key.bits.frontCounterClockwise = true;
         key.bits.reverseDepth = false;
 
         GraphicsPipelineHandle& pipeline = m_Pipelines[key.value];
-
+       // GraphicsPipelineHandle pipeline = CreateGraphicsPipeline(key, state.framebuffer);
         if (!pipeline)
         {
             std::lock_guard<std::mutex> lockGuard(m_Mutex);
@@ -114,7 +114,7 @@ namespace BlackPearl {
 
         state.pipeline = pipeline;
         //state.bindings = { materialBindingSet, m_ViewBindingSet, context.lightBindingSet };
-        state.bindings = { materialBindingSet, m_ViewBindingSet };
+        state.bindings = { materialBindingSet, m_ViewBindingSet, m_LightBinding };
 
 
         return true;
@@ -131,7 +131,7 @@ namespace BlackPearl {
         { buffers->vertexBuffer, 2, buffers->getVertexBufferRange(VertexAttribute::TexCoord1).byteOffset },
         { buffers->vertexBuffer, 3, buffers->getVertexBufferRange(VertexAttribute::Normal).byteOffset },
         { buffers->vertexBuffer, 4, buffers->getVertexBufferRange(VertexAttribute::Tangent).byteOffset },
-        { buffers->instanceBuffer, 5, 0 }
+        //{ buffers->instanceBuffer, 5, 0 }
         };
 
         state.indexBuffer = { buffers->indexBuffer, Format::R32_UINT, 0 };
@@ -196,7 +196,7 @@ namespace BlackPearl {
             {
                 lightBindings = CreateLightBindingSet(shadowMapTexture, lightProbeDiffuse, lightProbeSpecular, lightProbeEnvironmentBrdf);
             }
-
+            m_LightBinding = lightBindings;
            // context.lightBindingSet = lightBindings;
         }
 
@@ -303,7 +303,7 @@ namespace BlackPearl {
             GetVertexAttributeDesc(VertexAttribute::TexCoord1, "TEXCOORD", 2),
             GetVertexAttributeDesc(VertexAttribute::Normal, "NORMAL", 3),
             GetVertexAttributeDesc(VertexAttribute::Tangent, "TANGENT", 4),
-            GetVertexAttributeDesc(VertexAttribute::Transform, "TRANSFORM", 5),
+            //GetVertexAttributeDesc(VertexAttribute::Transform, "TRANSFORM", 5),
         };
 
         return m_Device->createInputLayout(inputDescs, uint32_t(std::size(inputDescs)), vertexShader);
@@ -389,9 +389,9 @@ namespace BlackPearl {
             ShaderType::Pixel,
             /* registerSpace = */ 0,
             materialBindings,
-            nullptr,//commonPasses.m_AnisotropicWrapSampler,
-            nullptr,//commonPasses.m_GrayTexture,
-            nullptr//commonPasses.m_BlackTexture
+            m_CommonPasses->m_AnisotropicWrapSampler,
+            m_CommonPasses->m_GrayTexture,
+            m_CommonPasses->m_BlackTexture
         );
     }
 

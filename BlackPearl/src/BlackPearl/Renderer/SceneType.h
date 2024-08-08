@@ -226,6 +226,8 @@ namespace BlackPearl
         //std::vector<float> vertexData; 不需要vertexData, 如果有骨骼的话 vector类型会不一样
         //最后通过writeBuffer 来写
         std::vector<math::float3> positionData;
+        std::vector<math::float3> prePositionData;
+
         std::vector<math::float2> texcoord1Data;
         std::vector<math::float2> texcoord2Data;
         std::vector<math::float3> normalData;

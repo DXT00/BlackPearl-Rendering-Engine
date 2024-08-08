@@ -8,6 +8,22 @@ namespace BlackPearl {
 	CommonRenderPasses::CommonRenderPasses(IDevice* device, std::shared_ptr<ShaderFactory> shaderFactory)
 	{
 		m_Device = device;
+		SamplerDesc samplerDesc;
+		samplerDesc
+			.setAllFilters(false)
+			.setAllAddressModes(SamplerAddressMode::Clamp);
+		m_PointClampSampler = m_Device->createSampler(samplerDesc);
+
+		samplerDesc.setAllFilters(true);
+		m_LinearClampSampler = m_Device->createSampler(samplerDesc);
+
+		samplerDesc.setAllAddressModes(SamplerAddressMode::Wrap);
+		m_LinearWrapSampler = m_Device->createSampler(samplerDesc);
+
+		samplerDesc.setMaxAnisotropy(16);
+		m_AnisotropicWrapSampler = m_Device->createSampler(samplerDesc);
+
+
 		unsigned int blackImage = 0xff000000;
 		unsigned int grayImage = 0xff808080;
 		unsigned int whiteImage = 0xffffffff;

@@ -172,6 +172,7 @@ namespace BlackPearl {
 		for (size_t i = 0; i < (int)vertices.size()/8; i++)
 		{
 			positionData.push_back({ vertices[i * 8],vertices[i * 8 + 1],vertices[i * 8 + 2] });
+			prePositionData.push_back({ vertices[i * 8],vertices[i * 8 + 1],vertices[i * 8 + 2] });
 			normalData.push_back({ vertices[i * 8 + 3],vertices[i * 8 + 4] ,vertices[i * 8 + 5] });
 			texcoord1Data.push_back({ vertices[i * 8 + 6],vertices[i * 8 + 7] });
 		}

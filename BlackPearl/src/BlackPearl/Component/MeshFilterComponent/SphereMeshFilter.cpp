@@ -28,6 +28,7 @@ namespace BlackPearl {
 				vertices.push_back(y);
 				vertices.push_back(z);
 				positionData.push_back({ x,y,z });
+				prePositionData.push_back({ x,y,z });
 				//normal
 				vertices.push_back(x / m_Radius);
 				vertices.push_back(y / m_Radius);

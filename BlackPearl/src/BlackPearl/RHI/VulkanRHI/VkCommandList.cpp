@@ -430,6 +430,11 @@ namespace BlackPearl {
 
 		if (!m_CurrentGraphicsState.framebuffer)
 		{
+			std::array<VkClearValue, 3> clearValues{};
+			clearValues[0].color = { 1.0f, 0.5f, 1.0f, 1.0f };
+			clearValues[1].color = { 1.0f, 0.5f, 1.0f, 1.0f };
+			clearValues[1].depthStencil = { 1.0f, 0 };
+
 			VkRect2D renderArea;
 			renderArea.extent = VkExtent2D{ fb->framebufferInfo.width, fb->framebufferInfo.height };
 			renderArea.offset = VkOffset2D{ 0,0 };
@@ -438,7 +443,10 @@ namespace BlackPearl {
 			beginInfo.renderPass = fb->renderPass;
 			beginInfo.framebuffer = fb->framebuffer;
 			beginInfo.renderArea = renderArea;
-			beginInfo.clearValueCount = 0;
+			beginInfo.clearValueCount = static_cast<uint32_t>(clearValues.size());
+			beginInfo.pClearValues = clearValues.data();
+
+
 
 			vkCmdBeginRenderPass(m_CurrentCmdBuf->cmdBuf, &beginInfo, VK_SUBPASS_CONTENTS_INLINE);
 			
@@ -1080,8 +1088,9 @@ namespace BlackPearl {
 		if (!imageBarriers.empty())
 		{
 			VkDependencyInfo dep_info{};
+			dep_info.sType = VK_STRUCTURE_TYPE_DEPENDENCY_INFO;
 			dep_info.pImageMemoryBarriers = imageBarriers.data();
-
+			dep_info.pNext = nullptr;
 			//m_CurrentCmdBuf->cmdBuf.pipelineBarrier2(dep_info);
 
 			vkCmdPipelineBarrier2(m_CurrentCmdBuf->cmdBuf, &dep_info);
