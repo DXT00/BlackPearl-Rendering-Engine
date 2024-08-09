@@ -166,17 +166,6 @@ namespace BlackPearl {
 		buffers->indexBufferDesc = IndexbufferDesc;
 
 
-		BufferDesc InstanceBufferDesc;
-		InstanceBufferDesc.isVertexBuffer = true;
-		InstanceBufferDesc.byteSize = 0;
-		InstanceBufferDesc.debugName = "InstanceBuffer";
-		InstanceBufferDesc.canHaveTypedViews = true;
-		InstanceBufferDesc.canHaveRawViews = true;
-		InstanceBufferDesc.isAccelStructBuildInput = false;
-
-		buffers->instanceBufferDesc = InstanceBufferDesc;
-
-
 
 	}
 

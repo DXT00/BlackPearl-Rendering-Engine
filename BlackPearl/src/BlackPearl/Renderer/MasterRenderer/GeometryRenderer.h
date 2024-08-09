@@ -4,6 +4,7 @@
 #include "BlackPearl/Math/vector.h"
 #include "BlackPearl/Renderer/SceneType.h"
 #include "BlackPearl/Renderer/DrawStrategy.h"
+#include "BlackPearl/Component/TransformComponent/Transform.h"
 namespace BlackPearl {
    
 
@@ -14,7 +15,7 @@ namespace BlackPearl {
         //[[nodiscard]] virtual ViewType::Enum GetSupportedViewTypes() const = 0;
         virtual void SetupView(ICommandList* commandList, const IView* view, const IView* viewPrev) = 0;
         virtual bool SetupMaterial(const Material* material, RasterCullMode cullMode, GraphicsState& state) = 0;
-        virtual void SetupInputBuffers(ICommandList* commandList, BufferGroup* buffers, GraphicsState& state) = 0;
+        virtual void SetupInputBuffers(ICommandList* commandList, BufferGroup* buffers, Transform* trans, GraphicsState& state) = 0;
         virtual void SetPushConstants(ICommandList* commandList, GraphicsState& state, DrawArguments& args) = 0;
         virtual ~GeometryRenderer() = default;
 	};

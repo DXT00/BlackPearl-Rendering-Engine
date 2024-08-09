@@ -243,6 +243,11 @@ namespace BlackPearl
         std::vector<float> jointWeight1Data;
         std::vector<float> jointWeight2Data;
 
+        //Transform Matrix
+        InstanceData instanceData;
+
+
+
        // std::vector<math::vector<uint16_t, 4>> jointData;
         //std::vector<math::float4> weightData;
 

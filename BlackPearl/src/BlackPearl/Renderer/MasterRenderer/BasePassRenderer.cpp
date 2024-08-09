@@ -121,7 +121,7 @@ namespace BlackPearl {
         return true;
     }
     //cpu buffer upload µ½ gpu
-    void BasePassRenderer::SetupInputBuffers(ICommandList* commandList, BufferGroup* buffers, GraphicsState& state)
+    void BasePassRenderer::SetupInputBuffers(ICommandList* commandList, BufferGroup* buffers, Transform* trans, GraphicsState& state)
     {
 
         _UploadIndexBuffers(commandList, buffers, state);
@@ -572,10 +572,39 @@ namespace BlackPearl {
         }
     }
 
-    void BasePassRenderer::_UploadInstanceBuffers(ICommandList* commandList, BufferGroup* buffers, GraphicsState& state)
+    void BasePassRenderer::_UploadInstanceBuffers(ICommandList* commandList, BufferGroup* buffers, Transform* trans, GraphicsState& state)
     {
+
+
+        BufferDesc& bufferDesc = buffers->instanceBufferDesc;
+        bufferDesc.byteSize = sizeof(InstanceData) * 1;
+        bufferDesc.debugName = "Instances";
+        bufferDesc.structStride = 0;// m_EnableBindlessResources ? sizeof(InstanceData) : 0;
+        bufferDesc.canHaveRawViews = true;
+        bufferDesc.canHaveUAVs = true;
+        bufferDesc.isVertexBuffer = true;
+        bufferDesc.initialState = ResourceStates::Common;
+        bufferDesc.keepInitialState = true;
+
         buffers->instanceBuffer = m_Device->createBuffer(buffers->instanceBufferDesc);
 
+
+        InstanceData& idata = buffers->instanceData;
+        //affineToColumnMajor(node->GetLocalToWorldTransformFloat(), idata.transform);
+        //affineToColumnMajor(node->GetPrevLocalToWorldTransformFloat(), idata.prevTransform);
+
+        //idata.firstGeometryInstanceIndex = instance->GetGeometryInstanceIndex();
+        //idata.firstGeometryIndex = mesh->geometries[0]->globalGeometryIndex;
+        //idata.numGeometries = uint32_t(mesh->geometries.size());
+        //idata.padding = 0u;
+
+
+        /*idata.transform = trans->GetTransformMatrix();
+        idata.transform = trans->GetTransformMatrix();*/
+
+        commandList->writeBuffer(buffers->instanceBuffer, &buffers->instanceData,
+            1* sizeof(InstanceData));
+    }
     }
 
 }
