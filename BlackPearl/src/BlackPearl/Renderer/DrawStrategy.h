@@ -28,6 +28,7 @@
 #include "BlackPearl/Renderer/Renderer.h"
 #include "BlackPearl/Scene/Scene.h"
 #include "BlackPearl/RHI/RHIDefinitions.h"
+#include "BlackPearl/Component/TransformComponent/Transform.h"
 
 namespace BlackPearl {
     struct DrawItem
@@ -40,6 +41,8 @@ namespace BlackPearl {
         const BufferGroup* buffers;
         float distanceToCamera;
         RasterCullMode cullMode;
+        Transform* transform;
+
     };
 
     class IDrawStrategy

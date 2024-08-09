@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "BasePassRenderer.h"
+#include "BlackPearl/RHI/RHIDefinitions.h"
 #include "BlackPearl/RHI/RHIInputLayout.h"
 #include "BlackPearl/RHI/Common/RHIUtils.h"
 #include "BlackPearl/Renderer/Material/MaterialBindingCache.h"
@@ -119,34 +120,29 @@ namespace BlackPearl {
 
         return true;
     }
-    void BasePassRenderer::SetupInputBuffers(BufferGroup* buffers, GraphicsState& state)
+    //cpu buffer upload 到 gpu
+    void BasePassRenderer::SetupInputBuffers(ICommandList* commandList, BufferGroup* buffers, GraphicsState& state)
     {
 
-        buffers->indexBuffer = m_Device->createBuffer(buffers->indexBufferDesc);
-        buffers->vertexBuffer = m_Device->createBuffer(buffers->vertexBufferDesc);
-        //TODO:: 适配不同的vertex attribute
-        uint32_t slot = 0;
-        state.vertexBuffers = {};
-        if (buffers->hasAttribute(VertexAttribute::Position)) {
-            state.vertexBuffers.push_back({ buffers->vertexBuffer, slot, buffers->getVertexBufferRange(VertexAttribute::Position).byteOffset });
-            slot++;
-        }
-        if (buffers->hasAttribute(VertexAttribute::PrevPosition)) {
-            state.vertexBuffers.push_back({ buffers->vertexBuffer, slot, buffers->getVertexBufferRange(VertexAttribute::PrevPosition).byteOffset });
-            slot++;
-        }
-        if (buffers->hasAttribute(VertexAttribute::TexCoord1)) {
-            state.vertexBuffers.push_back({ buffers->vertexBuffer, slot, buffers->getVertexBufferRange(VertexAttribute::TexCoord1).byteOffset });
-            slot++;
-        }
-        if (buffers->hasAttribute(VertexAttribute::Normal)) {
-            state.vertexBuffers.push_back({ buffers->vertexBuffer, slot, buffers->getVertexBufferRange(VertexAttribute::Normal).byteOffset });
-            slot++;
-        }
-        if (buffers->hasAttribute(VertexAttribute::Tangent)) {
-            state.vertexBuffers.push_back({ buffers->vertexBuffer, slot, buffers->getVertexBufferRange(VertexAttribute::Tangent).byteOffset });
-            slot++;
-        }
+        _UploadIndexBuffers(commandList, buffers, state);
+        _UploadVertexBuffers(commandList, buffers, state);
+        _UploadInstanceBuffers(commandList, buffers, state);
+
+
+        //buffers->vertexBuffer = m_Device->createBuffer(buffers->vertexBufferDesc);
+
+
+        //if (m_DescriptorTable)
+        //{
+        //    buffers->indexBufferDescriptor = std::make_shared<DescriptorHandle>(m_DescriptorTable->CreateDescriptorHandle(
+        //        nvrhi::BindingSetItem::RawBuffer_SRV(0, buffers->indexBuffer)));
+        //}
+
+
+
+      
+
+       
 
         //state.vertexBuffers = {
         //{ buffers->vertexBuffer, 0, buffers->getVertexBufferRange(VertexAttribute::Position).byteOffset },
@@ -158,7 +154,10 @@ namespace BlackPearl {
         ////{ buffers->instanceBuffer, 5, 0 }
         //};
 
-        state.indexBuffer = { buffers->indexBuffer, Format::R32_UINT, 0 };
+
+
+
+
     }
 
     /// <summary>
@@ -481,6 +480,102 @@ namespace BlackPearl {
         }
 
         return m_Device->createGraphicsPipeline(pipelineDesc, framebuffer);
+    }
+
+    void BasePassRenderer::_UploadIndexBuffers(ICommandList* commandList, BufferGroup* buffers, GraphicsState& state)
+    {
+        if (!buffers->indexData.empty() && !buffers->indexBuffer)
+        {
+
+            buffers->indexBuffer = m_Device->createBuffer(buffers->indexBufferDesc);
+
+            /* if (m_DescriptorTable)
+             {
+                 buffers->indexBufferDescriptor = std::make_shared<DescriptorHandle>(m_DescriptorTable->CreateDescriptorHandle(
+                     nvrhi::BindingSetItem::RawBuffer_SRV(0, buffers->indexBuffer)));
+             }*/
+
+            commandList->beginTrackingBufferState(buffers->indexBuffer, ResourceStates::Common);
+
+            commandList->writeBuffer(buffers->indexBuffer, buffers->indexData.data(), buffers->indexData.size() * sizeof(uint32_t));
+            std::vector<uint32_t>().swap(buffers->indexData);
+
+            ResourceStates res_state = ResourceStates::IndexBuffer | ResourceStates::ShaderResource;
+
+            if (buffers->indexBufferDesc.isAccelStructBuildInput)
+                res_state = res_state | ResourceStates::AccelStructBuildInput;
+
+            commandList->setPermanentBufferState(buffers->indexBuffer, res_state);
+            commandList->commitBarriers();
+        }
+
+        state.indexBuffer = { buffers->indexBuffer, Format::R32_UINT, 0 };
+
+    }
+
+    void BasePassRenderer::_UploadVertexBuffers(ICommandList* commandList, BufferGroup* buffers, GraphicsState& state)
+    {
+        if (!buffers->vertexBuffer) {
+            //TODO:: 适配不同的vertex attribute
+            uint32_t slot = 0;
+            state.vertexBuffers = {};
+            if (buffers->hasAttribute(VertexAttribute::Position) && !buffers->positionData.empty()) {
+
+                const auto& range = buffers->getVertexBufferRange(VertexAttribute::Position);
+                commandList->writeBuffer(buffers->vertexBuffer, buffers->positionData.data(), range.byteSize, range.byteOffset);
+                std::vector<float3>().swap(buffers->positionData);
+
+                state.vertexBuffers.push_back({ buffers->vertexBuffer, slot, buffers->getVertexBufferRange(VertexAttribute::Position).byteOffset });
+                slot++;
+            }
+            if (buffers->hasAttribute(VertexAttribute::PrevPosition) && !buffers->prePositionData.empty()) {
+
+                const auto& range = buffers->getVertexBufferRange(VertexAttribute::PrevPosition);
+                commandList->writeBuffer(buffers->vertexBuffer, buffers->prePositionData.data(), range.byteSize, range.byteOffset);
+                std::vector<float3>().swap(buffers->prePositionData);
+
+
+                state.vertexBuffers.push_back({ buffers->vertexBuffer, slot, buffers->getVertexBufferRange(VertexAttribute::PrevPosition).byteOffset });
+                slot++;
+            }
+            if (buffers->hasAttribute(VertexAttribute::TexCoord1) && !buffers->texcoord1Data.empty()) {
+
+                const auto& range = buffers->getVertexBufferRange(VertexAttribute::TexCoord1);
+                commandList->writeBuffer(buffers->vertexBuffer, buffers->texcoord1Data.data(), range.byteSize, range.byteOffset);
+                std::vector<float2>().swap(buffers->texcoord1Data);
+
+                state.vertexBuffers.push_back({ buffers->vertexBuffer, slot, buffers->getVertexBufferRange(VertexAttribute::TexCoord1).byteOffset });
+                slot++;
+            }
+            if (buffers->hasAttribute(VertexAttribute::Normal) && !buffers->normalData.empty()) {
+
+                const auto& range = buffers->getVertexBufferRange(VertexAttribute::Normal);
+                commandList->writeBuffer(buffers->vertexBuffer, buffers->normalData.data(), range.byteSize, range.byteOffset);
+                std::vector<float3>().swap(buffers->normalData);
+
+                state.vertexBuffers.push_back({ buffers->vertexBuffer, slot, buffers->getVertexBufferRange(VertexAttribute::Normal).byteOffset });
+                slot++;
+            }
+            if (buffers->hasAttribute(VertexAttribute::Tangent) && !buffers->tangentData.empty()) {
+
+                const auto& range = buffers->getVertexBufferRange(VertexAttribute::Tangent);
+                commandList->writeBuffer(buffers->vertexBuffer, buffers->tangentData.data(), range.byteSize, range.byteOffset);
+                std::vector<float3>().swap(buffers->tangentData);
+
+                state.vertexBuffers.push_back({ buffers->vertexBuffer, slot, buffers->getVertexBufferRange(VertexAttribute::Tangent).byteOffset });
+                slot++;
+            }
+            //Transform
+            state.vertexBuffers.push_back({ buffers->instanceBuffer, 5, 0 });
+
+
+        }
+    }
+
+    void BasePassRenderer::_UploadInstanceBuffers(ICommandList* commandList, BufferGroup* buffers, GraphicsState& state)
+    {
+        buffers->instanceBuffer = m_Device->createBuffer(buffers->instanceBufferDesc);
+
     }
 
 }

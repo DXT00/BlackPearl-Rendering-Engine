@@ -71,7 +71,7 @@ namespace BlackPearl {
 
             if (newBuffers)
             {
-                pass->SetupInputBuffers(const_cast<BufferGroup*>(item.buffers), graphicsState);
+                pass->SetupInputBuffers(commandList, const_cast<BufferGroup*>(item.buffers), graphicsState);
 
                 lastBuffers = item.buffers;
                 stateValid = false;

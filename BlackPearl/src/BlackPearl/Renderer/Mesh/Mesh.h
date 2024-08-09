@@ -13,6 +13,7 @@
 #include "BlackPearl/Renderer/Mesh/Meshlet.h"
 #include "BlackPearl/Renderer/SceneType.h"
 #include "BlackPearl/Component/MeshFilterComponent/MeshFilter.h"
+#include "BlackPearl/Component/TransformComponent/Transform.h"
 #include "BlackPearl/RHI/RHIBuffer.h"
 #include <initializer_list>
 #include <memory>
@@ -113,7 +114,7 @@ namespace BlackPearl {
 
 		std::shared_ptr<Material>    material = nullptr;
 
-
+		void UpdateInstanceBuffer(Transform* transform);
 	public:
 		//temp for directX mseh shader TODO::¼æÈÝopengl ºÍd3d12 mesh½Ó¿Ú
 		std::vector<uint32_t>		VertexStrides;

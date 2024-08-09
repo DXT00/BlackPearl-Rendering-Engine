@@ -2,7 +2,7 @@
 #include "DrawStrategy.h"
 #include "BlackPearl/Renderer/CullingManager.h"
 #include "BlackPearl/Component/MeshRendererComponent/MeshRenderer.h"
-
+#include "BlackPearl/Component/TransformComponent/Transform.h"
 
 namespace BlackPearl {
 	extern CullingManager* g_cullingManager;
@@ -39,12 +39,16 @@ namespace BlackPearl {
 		{
 			Object* obj = m_VisibleObjs[i];
 			MeshRenderer* renderer = obj->GetComponent<MeshRenderer>();
+			Transform* transform = obj->GetComponent<Transform>();
 			for (const auto & mesh: renderer->GetMeshes())
 			{
+				///mesh->UpdateInstanceBuffer(transform);
+
 				// 一个DrawItem 对应一个mesh
 				DrawItem item;
 				//item.instance = meshInstance;
 				item.mesh = mesh.get();
+				item.transform = transform;
 				//item.geometry = geometry.get();
 				item.material = mesh->material.get();
 				item.buffers = item.mesh->buffers.get();

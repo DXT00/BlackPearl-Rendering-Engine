@@ -14,7 +14,7 @@ namespace BlackPearl {
         //[[nodiscard]] virtual ViewType::Enum GetSupportedViewTypes() const = 0;
         virtual void SetupView(ICommandList* commandList, const IView* view, const IView* viewPrev) = 0;
         virtual bool SetupMaterial(const Material* material, RasterCullMode cullMode, GraphicsState& state) = 0;
-        virtual void SetupInputBuffers(BufferGroup* buffers, GraphicsState& state) = 0;
+        virtual void SetupInputBuffers(ICommandList* commandList, BufferGroup* buffers, GraphicsState& state) = 0;
         virtual void SetPushConstants(ICommandList* commandList, GraphicsState& state, DrawArguments& args) = 0;
         virtual ~GeometryRenderer() = default;
 	};

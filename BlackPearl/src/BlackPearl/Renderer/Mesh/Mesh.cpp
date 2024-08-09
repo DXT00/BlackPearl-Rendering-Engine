@@ -54,6 +54,11 @@ namespace BlackPearl {
 		m_VertexBufferLayout = layout;	
 	}
 
+	void Mesh::UpdateInstanceBuffer(Transform* transform)
+	{
+		
+	}
+
 	void Mesh::_InitBufferGroup(const MeshFilter* filter)
 	{
 		buffers->indexData = filter->indexData;
@@ -159,6 +164,20 @@ namespace BlackPearl {
 
 
 		buffers->indexBufferDesc = IndexbufferDesc;
+
+
+		BufferDesc InstanceBufferDesc;
+		InstanceBufferDesc.isVertexBuffer = true;
+		InstanceBufferDesc.byteSize = 0;
+		InstanceBufferDesc.debugName = "InstanceBuffer";
+		InstanceBufferDesc.canHaveTypedViews = true;
+		InstanceBufferDesc.canHaveRawViews = true;
+		InstanceBufferDesc.isAccelStructBuildInput = false;
+
+		buffers->instanceBufferDesc = InstanceBufferDesc;
+
+
+
 	}
 
 	void Mesh::Init(uint32_t verticesSize)

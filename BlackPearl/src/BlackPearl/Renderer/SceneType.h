@@ -209,6 +209,7 @@ namespace BlackPearl
     {
         BufferHandle indexBuffer;
         BufferHandle vertexBuffer;
+        // ´æ´¢ transform ÐÅÏ¢£¬°üÀ¨scale, translate, rotate
         BufferHandle instanceBuffer;
 
         BufferDesc indexBufferDesc;
