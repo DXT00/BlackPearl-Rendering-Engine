@@ -428,7 +428,8 @@ namespace BlackPearl {
         pipelineDesc.renderState.rasterState.frontCounterClockwise = key.bits.frontCounterClockwise;
         pipelineDesc.renderState.rasterState.setCullMode(key.bits.cullMode);
         pipelineDesc.renderState.blendState.alphaToCoverageEnable = false;
-        pipelineDesc.bindingLayouts = { m_MaterialBindings->GetLayout(), m_ViewBindingLayout, m_LightBindingLayout };
+       // pipelineDesc.bindingLayouts = { m_MaterialBindings->GetLayout(), m_ViewBindingLayout, m_LightBindingLayout };
+        pipelineDesc.bindingLayouts = { m_MaterialBindings->GetLayout(), m_ViewBindingLayout };
 
         pipelineDesc.renderState.depthStencilState
             .setDepthFunc(key.bits.reverseDepth
