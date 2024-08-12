@@ -993,7 +993,7 @@ namespace BlackPearl {
 				.setSize(buffer->desc.byteSize));*/
 
 			VkBufferMemoryBarrier bufferBarrier{};
-			bufferBarrier.sType = VK_STRUCTURE_TYPE_MEMORY_BARRIER;
+			bufferBarrier.sType = VK_STRUCTURE_TYPE_BUFFER_MEMORY_BARRIER;
 			bufferBarrier.srcAccessMask = before.accessMask;
 			bufferBarrier.dstAccessMask = after.accessMask;
 			bufferBarrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;

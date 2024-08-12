@@ -125,8 +125,8 @@ namespace BlackPearl {
     {
 
         _UploadIndexBuffers(commandList, buffers, state);
+        _UploadInstanceBuffers(commandList, buffers, trans, state);
         _UploadVertexBuffers(commandList, buffers, state);
-        _UploadInstanceBuffers(commandList, buffers, state);
 
 
         //buffers->vertexBuffer = m_Device->createBuffer(buffers->vertexBufferDesc);
@@ -515,7 +515,9 @@ namespace BlackPearl {
 
     void BasePassRenderer::_UploadVertexBuffers(ICommandList* commandList, BufferGroup* buffers, GraphicsState& state)
     {
+
         if (!buffers->vertexBuffer) {
+            buffers->vertexBuffer = m_Device->createBuffer(buffers->vertexBufferDesc);
             //TODO:: ÊÊÅä²»Í¬µÄvertex attribute
             uint32_t slot = 0;
             state.vertexBuffers = {};
@@ -575,7 +577,7 @@ namespace BlackPearl {
     void BasePassRenderer::_UploadInstanceBuffers(ICommandList* commandList, BufferGroup* buffers, Transform* trans, GraphicsState& state)
     {
 
-
+        
         BufferDesc& bufferDesc = buffers->instanceBufferDesc;
         bufferDesc.byteSize = sizeof(InstanceData) * 1;
         bufferDesc.debugName = "Instances";
@@ -586,7 +588,9 @@ namespace BlackPearl {
         bufferDesc.initialState = ResourceStates::Common;
         bufferDesc.keepInitialState = true;
 
-        buffers->instanceBuffer = m_Device->createBuffer(buffers->instanceBufferDesc);
+        if (buffers->instanceBuffer == nullptr) {
+            buffers->instanceBuffer = m_Device->createBuffer(buffers->instanceBufferDesc);
+        }
 
 
         InstanceData& idata = buffers->instanceData;
@@ -598,13 +602,44 @@ namespace BlackPearl {
         //idata.numGeometries = uint32_t(mesh->geometries.size());
         //idata.padding = 0u;
 
+        glm::mat4 mat =  trans->GetTransformMatrix();
+       // math::float4x4 transM = Math::ToFloat4x4(mat);
+        
+        glm::mat4 tmp = glm::transpose(mat);
 
+
+        float m[12] = {
+            tmp[0].x,
+            tmp[0].y,
+            tmp[0].z,
+            tmp[0].w,
+            tmp[1].x,
+            tmp[1].y,
+            tmp[1].z,
+            tmp[1].w,
+            tmp[2].x,
+            tmp[2].y,
+            tmp[2].z,
+            tmp[2].w
+        };
+        float4 i_instanceMatrix0 = Math::ToFloat4(tmp[0]);
+        float4 i_instanceMatrix1 = Math::ToFloat4(tmp[1]);
+        float4 i_instanceMatrix2 = Math::ToFloat4(tmp[2]);
+
+        float3x4 instanceMatrix = float3x4(i_instanceMatrix0, i_instanceMatrix1, i_instanceMatrix2);
+
+        idata.transform = instanceMatrix;
+        idata.prevTransform = instanceMatrix;
+        idata.firstGeometryInstanceIndex = 0;// instance->GetGeometryInstanceIndex();
+        idata.firstGeometryIndex = 0;// mesh->geometries[0]->globalGeometryIndex;
+        idata.numGeometries = 1;// uint32_t(mesh->geometries.size());
+        idata.padding = 0u;
         /*idata.transform = trans->GetTransformMatrix();
         idata.transform = trans->GetTransformMatrix();*/
 
         commandList->writeBuffer(buffers->instanceBuffer, &buffers->instanceData,
-            1* sizeof(InstanceData));
+            1 * sizeof(InstanceData));
     }
-    }
-
+    
 }
+
