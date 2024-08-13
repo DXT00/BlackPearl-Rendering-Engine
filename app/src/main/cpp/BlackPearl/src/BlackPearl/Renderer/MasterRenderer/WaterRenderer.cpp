@@ -3,6 +3,9 @@
 #include "BlackPearl/Renderer/Buffer/Buffer.h"
 #include "BlackPearl/Math/Math.h"
 #include <random>
+#ifdef GE_PLATFORM_ANDRIOD
+#include "GLES3/gl32.h"
+#endif
 namespace BlackPearl {
 	WaterRenderer::WaterRenderer()
 	{
@@ -14,7 +17,7 @@ namespace BlackPearl {
 	{
 		const int vertexCnt = mGridDim + 1;
 		std::vector<GridVertex> vertices(vertexCnt * vertexCnt);
-		//×Ü¹²mGridDim * mGridDim¶à¸öÕý·½ÐÎ£¬Ã¿¸öÕý·½ÐÎ6¸öindex
+		//ï¿½Ü¹ï¿½mGridDim * mGridDimï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î£ï¿½Ã¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½6ï¿½ï¿½index
 		std::vector<uint32_t> indices(mGridDim * mGridDim * 2 * 3);
 
 		unsigned int idx = 0;
@@ -284,12 +287,12 @@ namespace BlackPearl {
         m_VAO->GetIndexBuffer()->Bind();
         /*grid_vao->Bind();
         grid_ibo->Bind();*/
-
+#ifdef  GE_PLATFORM_WINDOWS
         if (m_wireframe_mode)
             glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
         else
             glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-
+#endif
         glDrawElements(GL_TRIANGLES, mGridDim * mGridDim * 2 * 3, GL_UNSIGNED_INT, 0);
 	}
 }

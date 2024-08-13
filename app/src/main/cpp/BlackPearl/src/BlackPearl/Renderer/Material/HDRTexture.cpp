@@ -1,5 +1,10 @@
 #include "pch.h"
+#ifdef GE_PLATFORM_ANDRIOD
+#include "GLES3/gl3.h"
+#endif
+#ifdef GE_PLATFORM_WINDOWS
 #include "glad/glad.h"
+#endif
 #include "HDRTexture.h"
 
 #include "BlackPearl/Core.h"
@@ -32,7 +37,7 @@ namespace BlackPearl {
 		float  *data = stbi_loadf(image.c_str(), &width, &height, &nrChannels, 0);
 		GE_ASSERT(data, "fail to load texture data!");
 		GLenum format;
-		switch (nrChannels) //注意不同图片有不同的通道数！
+		switch (nrChannels) //注锟解不同图片锟叫诧拷同锟斤拷通锟斤拷锟斤拷锟斤拷
 		{
 		case 1:
 			format = GL_RED;
@@ -52,7 +57,7 @@ namespace BlackPearl {
 		//glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, format, GL_FLOAT, data);
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, width, height, 0, format, GL_FLOAT, data);
 
-		glGenerateMipmap(GL_TEXTURE_2D);//为当前绑定的纹理自动生成所有需要的多级渐远纹理
+		glGenerateMipmap(GL_TEXTURE_2D);//为锟斤拷前锟襟定碉拷锟斤拷锟斤拷锟皆讹拷锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷要锟侥多级锟斤拷远锟斤拷锟斤拷
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);

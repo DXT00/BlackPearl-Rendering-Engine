@@ -1,5 +1,12 @@
 #include "pch.h"
+#ifdef GE_PLATFORM_ANDRIOD
+//#include "GLES3/gl3.h"
+#include "GLES3/gl32.h"
+#endif
+#ifdef GE_PLATFORM_WINDOWS
 #include "glad/glad.h"
+#endif
+
 #include "Buffer.h"
 #include "BlackPearl/Config.h"
 #include "BlackPearl/Log.h"
@@ -259,7 +266,9 @@ namespace BlackPearl {
 
 		m_CubeMapDepthBuffer = cubeMap;// .reset(DBG_NEW CubeMapTexture(Texture::Type::CubeMap, imageWidth, imageHeight, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR, GL_CLAMP_TO_EDGE, GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT, GL_FLOAT));
 		Bind();
-		glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, m_CubeMapDepthBuffer->GetRendererID(), 0);
+        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, m_CubeMapDepthBuffer->GetRendererID());
+
+       // glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, m_CubeMapDepthBuffer->GetRendererID(), 0);
 		GE_ASSERT(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "Framebuffer not complete!");
 	}
 
@@ -298,7 +307,9 @@ namespace BlackPearl {
 
 	void FrameBuffer::DisableColorBuffer()
 	{
+#ifdef GE_PLATFORM_WINDOWS
 		glDrawBuffer(GL_NONE);
+#endif
 		glReadBuffer(GL_NONE);
 	}
 
@@ -488,11 +499,19 @@ namespace BlackPearl {
 		GLuint initVal = 0;
 
 		//glGenBuffers(1, &m_RendererID);
+#ifdef GE_PLATFORM_WINDOWS
 		glCreateBuffers(1, &m_RendererID);
 		//glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_RendererID);
 		glNamedBufferStorage(m_RendererID, bytes, nullptr, mapFlags);
 		//glBufferData(GL_SHADER_STORAGE_BUFFER, bytes, nullptr, GL_STATIC_COPY);
 		//glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+#endif
+#ifdef GE_PLATFORM_ANDRIOD
+        glGenBuffers(1, &m_RendererID);
+        glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_RendererID);
+        glBufferData(GL_SHADER_STORAGE_BUFFER, bytes, nullptr, mapFlags);
+#endif
+
 	}
 
 

@@ -1,5 +1,6 @@
 #include "pch.h"
 #ifdef GE_API_OPENGL
+#ifdef GE_PLATFORM_WINDOWS
 #include "GL/glew.h"
 
 #include "OpenGLWindow.h"
@@ -41,9 +42,11 @@ namespace BlackPearl {
 		else {
 			GE_CORE_ERROR("GLEW failed to initialize (glewExperimental might not be supported).");
 		}
+#ifdef GE_PLATFORM_WINDOWS
 
 		m_Context.reset(DBG_NEW Context(m_Window));
 		m_Context->Init();
+#endif
 	}
 	void OpenGLWindow::OnUpdate()
 	{
@@ -96,4 +99,5 @@ namespace BlackPearl {
 		return donut::math::vector<int, 2>(width, height);
 	}
 }
+#endif
 #endif

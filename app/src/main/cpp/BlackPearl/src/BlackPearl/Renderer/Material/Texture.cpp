@@ -6,6 +6,10 @@
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
+
+#ifdef GE_PLATFORM_ANDRIOD
+#include "GLES3/gl32.h"
+#endif
 namespace BlackPearl {
 
 
@@ -53,7 +57,7 @@ namespace BlackPearl {
 		m_Path = "";
 		m_Type = type;
 		glGenTextures(1, &m_TextureID);
-		GE_ERROR_JUDGE();//³öÏÖerrorµÄÔ­Òò£ººÜ¿ÉÄÜm_TextureIDÓÃÔÚÁË±ðµÄtargetÉÏ£¬ÀýÈçCUBEMAP,²»ÐÐµÄ»°ÔËÐÐÇ°¼Ó¸ö¶Ïµã = = 
+		GE_ERROR_JUDGE();//ï¿½ï¿½ï¿½ï¿½errorï¿½ï¿½Ô­ï¿½ò£ººÜ¿ï¿½ï¿½ï¿½m_TextureIDï¿½ï¿½ï¿½ï¿½ï¿½Ë±ï¿½ï¿½targetï¿½Ï£ï¿½ï¿½ï¿½ï¿½ï¿½CUBEMAP,ï¿½ï¿½ï¿½ÐµÄ»ï¿½ï¿½ï¿½ï¿½ï¿½Ç°ï¿½Ó¸ï¿½ï¿½Ïµï¿½ = = 
 
 		glBindTexture(GL_TEXTURE_2D, m_TextureID);
 		GE_ERROR_JUDGE();
@@ -100,7 +104,7 @@ namespace BlackPearl {
 		unsigned char* data = stbi_load(image.c_str(), &width, &height, &nrChannels, 0);
 		GE_ASSERT(data, "fail to load texture data!");
 		GLenum format;
-		switch (nrChannels) //×¢Òâ²»Í¬Í¼Æ¬ÓÐ²»Í¬µÄÍ¨µÀÊý£¡
+		switch (nrChannels) //×¢ï¿½â²»Í¬Í¼Æ¬ï¿½Ð²ï¿½Í¬ï¿½ï¿½Í¨ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		{
 		case 1:
 			format = GL_RED;
@@ -125,7 +129,7 @@ namespace BlackPearl {
 		//glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, format, GL_UNSIGNED_BYTE, data);
 		glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, format, dataType, data);
 		if (generateMipmap)
-			glGenerateMipmap(GL_TEXTURE_2D);//Îªµ±Ç°°ó¶¨µÄÎÆÀí×Ô¶¯Éú³ÉËùÓÐÐèÒªµÄ¶à¼¶½¥Ô¶ÎÆÀí
+			glGenerateMipmap(GL_TEXTURE_2D);//Îªï¿½ï¿½Ç°ï¿½ó¶¨µï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Òªï¿½Ä¶à¼¶ï¿½ï¿½Ô¶ï¿½ï¿½ï¿½ï¿½
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrap);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrap);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, minFilter);
@@ -150,32 +154,38 @@ namespace BlackPearl {
 		/*	FBO(
 				GLuint w, GLuint h, GLenum magFilter = GL_NEAREST, GLenum minFilter = GL_NEAREST,
 				GLint internalFormat = GL_RGB16F, GLint format = GL_FLOAT, GLint wrap = GL_REPEAT);*/
-				//ÎÆÀí¹ýÂË---ÁÚ½ü¹ýÂËºÍÏßÐÔ¹ýÂË
+				//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½---ï¿½Ú½ï¿½ï¿½ï¿½ï¿½Ëºï¿½ï¿½ï¿½ï¿½Ô¹ï¿½ï¿½ï¿½
 		
 		glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, format, dataType, data);
 
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, minFilter);//ÎÆÀíËõÐ¡Ê±ÓÃÁÚ½ü¹ýÂË
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, maxFilter);//ÎÆÀí·Å´óÊ±Ò²ÓÃÁÚ½ü¹ýÂË
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, minFilter);//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð¡Ê±ï¿½ï¿½ï¿½Ú½ï¿½ï¿½ï¿½ï¿½ï¿½
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, maxFilter);//ï¿½ï¿½ï¿½ï¿½Å´ï¿½Ê±Ò²ï¿½ï¿½ï¿½Ú½ï¿½ï¿½ï¿½ï¿½ï¿½
 		if (wrap != -1) {
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrap);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrap);
 		}
 
 		if (generateMipmap)
-			glGenerateMipmap(GL_TEXTURE_2D);//Îªµ±Ç°°ó¶¨µÄÎÆÀí×Ô¶¯Éú³ÉËùÓÐÐèÒªµÄ¶à¼¶½¥Ô¶ÎÆÀí
+			glGenerateMipmap(GL_TEXTURE_2D);//Îªï¿½ï¿½Ç°ï¿½ó¶¨µï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Òªï¿½Ä¶à¼¶ï¿½ï¿½Ô¶ï¿½ï¿½ï¿½ï¿½
 		//	UnBind();
 	}
 
 	void Texture::SetSizeFilter(GLenum min_filter, GLenum mag_filter) {
+#ifdef GE_PLATFORM_WINDOWS
 
 		glTextureParameteri(m_TextureID, GL_TEXTURE_MIN_FILTER, min_filter);
 		glTextureParameteri(m_TextureID, GL_TEXTURE_MAG_FILTER, mag_filter);
+#endif
+
+
 	}
 	void Texture::SetWrapFilter(GLenum filter) {
+#ifdef GE_PLATFORM_WINDOWS
 
 		glTextureParameteri(m_TextureID, GL_TEXTURE_WRAP_S, filter);
 		glTextureParameteri(m_TextureID, GL_TEXTURE_WRAP_T, filter);
 		glTextureParameteri(m_TextureID, GL_TEXTURE_WRAP_R, filter);
+#endif
 	}
 
 	void Texture::Bind()
@@ -190,7 +200,14 @@ namespace BlackPearl {
 	void Texture::Storage(GLsizei width, GLsizei height, GLenum internal_format, GLsizei levels)
 	{
 		glBindTexture(GL_TEXTURE_2D, m_TextureID);
+#ifdef GE_PLATFORM_WINDOWS
 
 		glTextureStorage2D(m_TextureID, levels, internal_format, width, height);
-	}
+#endif
+#ifdef GE_PLATFORM_ANDRIOD
+
+        glTexStorage2D(m_TextureID, levels, internal_format, width, height);
+#endif
+
+    }
 }

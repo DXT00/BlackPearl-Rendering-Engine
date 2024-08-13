@@ -7,6 +7,9 @@
 #include "BlackPearl/Config.h"
 #include "BlackPearl/Timestep/TimeCounter.h"
 #include "BlackPearl/Common/CommonFunc.h"
+#ifdef GE_PLATFORM_ANDRIOD
+#include "GLES3/gl32.h"
+#endif
 namespace BlackPearl {
 	bool VoxelConeTracingDeferredRenderer::s_Shadows = true;
 	bool VoxelConeTracingDeferredRenderer::s_IndirectDiffuseLight = true;
@@ -369,7 +372,7 @@ namespace BlackPearl {
 	}
 	void VoxelConeTracingDeferredRenderer::RenderVoxelVisualization(unsigned int viewportWidth, unsigned int viewportHeight)
 	{
-		/* ÔÚ±¾º¯ÊýÀïÍ·Íê³ÉäÖÈ¾ */
+		/* ï¿½Ú±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í·ï¿½ï¿½ï¿½ï¿½ï¿½È¾ */
 		m_CubeObj->GetComponent<Transform>()->SetPosition(Renderer::GetSceneData()->CameraPosition);
 		m_CubeObj->GetComponent<Transform>()->SetRotation(Renderer::GetSceneData()->CameraRotation);
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -639,7 +642,7 @@ namespace BlackPearl {
 		m_FinalScreenShader->Unbind();
 		//TimeCounter::End("postProcess rendering");
 
-		/*********************************ÕýÏòäÖÈ¾ light objects ********************************************************/
+		/*********************************ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¾ light objects ********************************************************/
 
 		glDepthMask(GL_TRUE);
 		glEnable(GL_DEPTH_TEST);

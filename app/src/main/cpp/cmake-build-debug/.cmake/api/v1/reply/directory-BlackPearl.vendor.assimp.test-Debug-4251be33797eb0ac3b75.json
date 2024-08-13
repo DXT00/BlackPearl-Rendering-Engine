@@ -1,0 +1,14 @@
+{
+	"backtraceGraph" : 
+	{
+		"commands" : [],
+		"files" : [],
+		"nodes" : []
+	},
+	"installers" : [],
+	"paths" : 
+	{
+		"build" : "BlackPearl/vendor/assimp/test",
+		"source" : "BlackPearl/vendor/assimp/test"
+	}
+}

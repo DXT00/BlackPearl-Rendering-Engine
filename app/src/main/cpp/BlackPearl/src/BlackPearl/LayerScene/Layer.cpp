@@ -7,7 +7,7 @@
 #include "BlackPearl/Component/TerrainComponent/TerrainComponent.h"
 #include "BlackPearl/Renderer/Model/Model.h"
 #include "BlackPearl/Renderer/Shader/Shader.h"
-#include "imgui/imgui.h"
+
 #include <glm/gtc/type_ptr.hpp>
 #include <stdio.h>
 #include <stdlib.h>
@@ -27,6 +27,7 @@ namespace BlackPearl {
 	static int buttonNum = 0;
 	void Layer::OnImguiRender()
 	{
+#ifdef GE_PLATFORM_WINDOWS
 		ImGui::Begin("Settings");
 		ImGui::ColorEdit3("Suqare Color", glm::value_ptr(m_BackgroundColor));
 		ImGui::End();
@@ -327,6 +328,7 @@ namespace BlackPearl {
 
 		ImGui::End();
 		m_fileDialog.Display();
+#endif
 
 
 	}
@@ -417,7 +419,6 @@ namespace BlackPearl {
 		m_ShadowObjsList.push_back(cube3);
 		m_ShadowObjsList.push_back(cube4);
 		m_ShadowObjsList.push_back(cube5);
-
 	}
 	void Layer::LoadCornellScene1()
 	{
@@ -1225,7 +1226,9 @@ namespace BlackPearl {
 
 	void Layer::ShowCamera(PerspectiveCamera* perspectiveCamera)
 	{
-		ImGui::Text("Yaw = %f,Pitch= %f", perspectiveCamera->Yaw(), perspectiveCamera->Pitch());
+#ifdef GE_PLATFORM_WINDOWS
+
+        ImGui::Text("Yaw = %f,Pitch= %f", perspectiveCamera->Yaw(), perspectiveCamera->Pitch());
 		ImGui::Text("ProjectionViewMatrix[0].x = %f,ProjectionViewMatrix[1].x = %f", perspectiveCamera->GetProjectionViewMatrix()[0].x
 			, perspectiveCamera->GetProjectionViewMatrix()[1].x);
 		ImGui::Text("ProjectionViewMatrix[2].x = %f,ProjectionViewMatrix[3].x = %f", perspectiveCamera->GetProjectionViewMatrix()[2].x, perspectiveCamera->GetProjectionViewMatrix()[3].x);
@@ -1239,12 +1242,15 @@ namespace BlackPearl {
 		perspectiveCamera->SetMoveSpeed(moveSpeed);
 		ImGui::DragFloat("CameraRotateSpeed", &rotSpeed, perspectiveCamera->GetRotateSpeed(), 0.1, 500, "%.3f ");
 		perspectiveCamera->SetRotateSpeed(rotSpeed);
+#endif
 
 	}
 
 	void Layer::ShowCamera(MainCamera* mainCamera)
 	{
-		ImGui::Text("Yaw = %f,Pitch= %f", mainCamera->Yaw(), mainCamera->Pitch());
+#ifdef GE_PLATFORM_WINDOWS
+
+        ImGui::Text("Yaw = %f,Pitch= %f", mainCamera->Yaw(), mainCamera->Pitch());
 		ImGui::Text("Position.x = %f,Position.y = %f,Position.z = %f", mainCamera->GetPosition().x, mainCamera->GetPosition().y, mainCamera->GetPosition().z);
 		ImGui::Text("Front.x = %f,Front.y = %f,Front.z = %f", mainCamera->Front().x, mainCamera->Front().y, mainCamera->Front().z);
 		ImGui::Text("Up.x = %f,Up.y = %f,Up.z = %f", mainCamera->Up().x, mainCamera->Up().y, mainCamera->Up().z);
@@ -1255,11 +1261,12 @@ namespace BlackPearl {
 		mainCamera->SetMoveSpeed(moveSpeed);
 		ImGui::DragFloat("CameraRotateSpeed", &rotSpeed, mainCamera->GetRotateSpeed(), 0.1, 500, "%.3f ");
 		mainCamera->SetRotateSpeed(rotSpeed);
-
+#endif
 	}
 
 	void Layer::ShowTerrian(Object* obj)
 	{
+#ifdef GE_PLATFORM_WINDOWS
 
 		ImGui::Text("Terrian");
 		bool dynamicTessLevel = obj->GetComponent<TerrainComponent>()->GetDynamicTess();
@@ -1270,12 +1277,14 @@ namespace BlackPearl {
 		float staticTessLevel = obj->GetComponent<TerrainComponent>()->GetStaticTessLevel();
 		ImGui::DragFloat("staticTessLevel", &staticTessLevel, obj->GetComponent<TerrainComponent>()->GetStaticTessLevel(), 8.0f, 200.0f, "%.3f ");
 		obj->GetComponent<TerrainComponent>()->SetTessLevel(staticTessLevel);
-
+#endif
 	}
 
 	void Layer::ShowShader(std::string imguiShaders, int meshIndex, int& itemIndex, int offset)
 	{
-		std::string buttonName = "select file##" + std::to_string(meshIndex + offset);
+#ifdef GE_PLATFORM_WINDOWS
+
+        std::string buttonName = "select file##" + std::to_string(meshIndex + offset);
 		std::string inputTextName = "mesh" + std::to_string(meshIndex + offset);
 
 		//imguiShaders = mesh->GetMaterial()->GetShader()->GetPath();
@@ -1289,11 +1298,12 @@ namespace BlackPearl {
 			m_fileDialog.Open();
 		}
 		//	ImGui::PopID();
-
+#endif
 	}
 
 	void Layer::ShowTextures(std::string imguiShaders, int meshIndex, int& itemIndex, Texture::Type textureType,  Texture::Type& type, int offset)
 	{
+#ifdef GE_PLATFORM_WINDOWS
 
 		std::string buttonName = ""; //+std::to_string(meshIndex + offset);
 		std::string inputTextName = "";// +std::to_string(meshIndex + offset);
@@ -1358,7 +1368,7 @@ namespace BlackPearl {
 		}
 
 		//ImGui::PopID();
-
+#endif
 	}
 
 	void Layer::ShowMaterialProps(Material::Props& imGuiProps)
@@ -1367,6 +1377,7 @@ namespace BlackPearl {
 
 	void Layer::ShowMeshRenderer(MeshRenderer* comp)
 	{
+#ifdef GE_PLATFORM_WINDOWS
 
 		ImGui::Text("MeshRenderer");
 		const std::vector<std::shared_ptr<Mesh>>& imGuiMeshes = comp->GetMeshes();
@@ -1561,12 +1572,14 @@ namespace BlackPearl {
 
 		}
 
-
+#endif
 	}
 
 	void Layer::ShowTransform(Transform* comp, Object* obj)
 	{
-		ImGui::Text("Transform");
+#ifdef GE_PLATFORM_WINDOWS
+
+        ImGui::Text("Transform");
 
 		float pos[] = { comp->GetPosition().x,comp->GetPosition().y,comp->GetPosition().z };
 		ImGui::DragFloat3("position", pos, 0.2f, -100.0f, 100.0f, "%.3f ");
@@ -1579,12 +1592,14 @@ namespace BlackPearl {
 		float rotate[] = { comp->GetRotation().x,comp->GetRotation().y,comp->GetRotation().z };
 		ImGui::DragFloat3("rotation", rotate, 1.0f, -360.0f, 360.0f, "%.3f ");
 		obj->SetRotation({ rotate[0],rotate[1],rotate[2] });
-
+#endif
 	}
 
 	void Layer::ShowLightProbe(LightProbe* probe, Object* obj)
 	{
-		ImGui::Text("LightProbe");
+#ifdef GE_PLATFORM_WINDOWS
+
+        ImGui::Text("LightProbe");
 
 		float zFar = probe->GetZfar();
 		ImGui::DragFloat("zFar", &zFar, 0.5f, 1.0, 100.0);
@@ -1593,13 +1608,15 @@ namespace BlackPearl {
 		bool dynamicSpecularMap = probe->GetDynamicSpecularMap();
 		ImGui::Checkbox("dynamicSpecularLight", &dynamicSpecularMap);
 		probe->SetDynamicSpecularMap(dynamicSpecularMap);
-
+#endif
 
 	}
 
 	void Layer::ShowPointLight(PointLight* pointLight)
 	{
-		//if (comp->GetType() == LightType::PointLight) {
+#ifdef GE_PLATFORM_WINDOWS
+
+        //if (comp->GetType() == LightType::PointLight) {
 			//auto pointLight = std::dynamic_pointer_cast<PointLight>(comp);
 		//auto color = pointLight->GetMeshes()->GetMaterial()->GetMaterialColor().Get();
 		auto props = pointLight->GetLightProps();
@@ -1624,12 +1641,14 @@ namespace BlackPearl {
 		pros.shadowBias = bias;
 
 		pointLight->UpdateMesh(pros);
-
+#endif
 	}
 
 	void Layer::ShowParallelLight(ParallelLight* parallelLight)
 	{
-		auto props = parallelLight->GetLightProps();
+#ifdef GE_PLATFORM_WINDOWS
+
+        auto props = parallelLight->GetLightProps();
 		glm::vec3 direction = parallelLight->GetDirection();
 
 		float dir[] = { direction.x,direction.y,direction.z };
@@ -1647,6 +1666,7 @@ namespace BlackPearl {
 
 
 		parallelLight->UpdateMesh({ props.ambient ,props.diffuse,props.specular,props.emission,intensity });
+#endif
 	}
 
 	std::vector<Object*> Layer::GetObjects()

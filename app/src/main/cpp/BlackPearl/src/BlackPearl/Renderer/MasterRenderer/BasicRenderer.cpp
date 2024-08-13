@@ -14,6 +14,9 @@
 #include "BlackPearl/Config.h"
 #include "BlackPearl/Log.h"
 #include "BlackPearl/Debugger/D3D12Debugger/HLSLPixDebugger.h"
+#ifdef GE_PLATFORM_ANDRIOD
+#include "GLES3/gl32.h"
+#endif
 namespace BlackPearl {
 	uint32_t BasicRenderer::s_DrawCallCnt = 0;
 
@@ -364,6 +367,7 @@ namespace BlackPearl {
 
 	void BasicRenderer::DrawMultiIndirect(std::shared_ptr<VertexArray> vertexArray, std::shared_ptr<Shader> shader, uint32_t cmdsCnt)
 	{
+#ifdef GE_PLATFORM_WINDOWS
 		shader->Bind();
 		GE_ERROR_JUDGE();
 
@@ -372,6 +376,7 @@ namespace BlackPearl {
 
 		glMultiDrawElementsIndirect(GL_TRIANGLES, GL_UNSIGNED_INT, (GLvoid*)0, cmdsCnt, 0);
 		s_DrawCallCnt++;
+#endif
 	}
 
 	void BasicRenderer::DrawTerrain(Object* obj, std::shared_ptr<Shader> shader, bool drawPolygon)
@@ -399,8 +404,12 @@ namespace BlackPearl {
 			glDrawArrays(GL_PATCHES, 0, vertexPerChunk * chunkCnt);
 			s_DrawCallCnt++;
 
+            //glPolygonMode was never part of OpenGL ES 2.0, or any version of ES
+#ifdef GE_PLATFORM_WINDOWS
 			if (drawPolygon)
 				glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+#endif
+
 		}
 	}
 

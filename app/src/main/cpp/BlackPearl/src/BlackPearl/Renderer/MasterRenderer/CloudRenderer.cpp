@@ -3,7 +3,10 @@
 #include "BlackPearl/Component/CameraComponent/PerspectiveCamera.h"
 #include "BlackPearl/Renderer/Material/Texture3D.h"
 #include "BlackPearl/Core.h"
-
+#ifdef GE_PLATFORM_ANDRIOD
+//#include "GLES3/gl3.h"
+#include "GLES3/gl32.h"
+#endif
 namespace BlackPearl {
 
 	float CloudRenderer::s_rayStep = 0.1;
@@ -47,10 +50,18 @@ namespace BlackPearl {
 		m_CloudFrameBuffer->UnBind();
 
 		m_DepthFrameBuffer.reset(DBG_NEW FrameBuffer());
+#ifdef GE_PLATFORM_WINDOWS
 		m_DepthTexture.reset(DBG_NEW Texture(Texture::Type::DepthMap, Configuration::WindowWidth, Configuration::WindowHeight, true/*isDepth*/, GL_NEAREST_MIPMAP_NEAREST, GL_NEAREST, GL_DEPTH_COMPONENT32, GL_DEPTH_COMPONENT, GL_CLAMP_TO_EDGE, GL_FLOAT, true/*genmipmap*/));
+#endif
+#ifdef GE_PLATFORM_ANDRIOD
+        m_DepthTexture.reset(DBG_NEW Texture(Texture::Type::DepthMap, Configuration::WindowWidth, Configuration::WindowHeight, true/*isDepth*/, GL_NEAREST_MIPMAP_NEAREST, GL_NEAREST, GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT, GL_CLAMP_TO_EDGE, GL_FLOAT, true/*genmipmap*/));
+#endif
 		m_DepthFrameBuffer->Bind();
 		m_DepthFrameBuffer->AttachDepthTexture(m_DepthTexture, 0);
-		glDrawBuffer(GL_NONE); // No color buffer is drawn to.
+#ifdef GE_PLATFORM_WINDOWS
+
+        glDrawBuffer(GL_NONE); // No color buffer is drawn to.
+#endif
 		glReadBuffer(GL_NONE);
 		m_DepthFrameBuffer->UnBind();
 

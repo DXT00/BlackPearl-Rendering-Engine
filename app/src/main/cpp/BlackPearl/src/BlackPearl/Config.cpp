@@ -1,5 +1,11 @@
 #include "pch.h"
-#include <glad/glad.h>
+#ifdef GE_PLATFORM_ANDRIOD
+#include "GLES3/gl3.h"
+#endif
+#ifdef GE_PLATFORM_WINDOWS
+#include "glad/glad.h"
+#endif
+
 #include "Config.h"
 
 namespace BlackPearl {
@@ -16,7 +22,7 @@ namespace BlackPearl {
 	//const VoxelConeTracingRenderer::RenderingMode Configuration::RenderingMode = VoxelConeTracingRenderer::RenderingMode::VOXEL_CONE_TRACING;
 	const float Configuration::ShadowMapPointLightRadius = 30.0f;
 
-	/* ÕâÀï¸ÄÁË£¬prefilterMap.glslÀïµÄ	float resolution =512.0;Ò²Òª¸Ä */
+	/* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ë£ï¿½prefilterMap.glslï¿½ï¿½ï¿½	float resolution =512.0;Ò²Òªï¿½ï¿½ */
 	const float Configuration::EnvironmantMapResolution = 64.0;// 256.0f;
 	
 

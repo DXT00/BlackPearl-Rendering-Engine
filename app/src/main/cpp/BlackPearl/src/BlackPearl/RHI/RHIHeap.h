@@ -13,8 +13,8 @@ namespace BlackPearl {
         HeapType type;
         std::string debugName;
 
-        constexpr HeapDesc& setCapacity(uint64_t value) { capacity = value; return *this; }
-        constexpr HeapDesc& setType(HeapType value) { type = value; return *this; }
+        const HeapDesc& setCapacity(uint64_t value) { capacity = value; return *this; }
+        const HeapDesc& setType(HeapType value) { type = value; return *this; }
         HeapDesc& setDebugName(const std::string& value) { debugName = value; return *this; }
     };
     class IHeap : public IResource

@@ -5,6 +5,9 @@
 #include "BlackPearl/Component/MeshRendererComponent/MeshRenderer.h"
 #include "BlackPearl/Renderer/Renderer.h"
 #include "BlackPearl/Common/CommonFunc.h"
+#ifdef GE_PLATFORM_ANDRIOD
+#include "GLES3/gl32.h"
+#endif
 namespace BlackPearl {
 
 
@@ -71,10 +74,20 @@ namespace BlackPearl {
 		m_MeshGatherer->GetVAO()->UpdateVertexBuffers();
 
 		m_HizFrameBuffer.reset(DBG_NEW FrameBuffer());
-		m_DepthTexture.reset(DBG_NEW Texture(Texture::Type::DepthMap, Configuration::WindowWidth, Configuration::WindowHeight, true/*isDepth*/, GL_NEAREST_MIPMAP_NEAREST, GL_NEAREST, GL_DEPTH_COMPONENT32, GL_DEPTH_COMPONENT, GL_CLAMP_TO_EDGE, GL_FLOAT, true/*genmipmap*/));
+#ifdef GE_PLATFORM_WINDOWS
+
+        m_DepthTexture.reset(DBG_NEW Texture(Texture::Type::DepthMap, Configuration::WindowWidth, Configuration::WindowHeight, true/*isDepth*/, GL_NEAREST_MIPMAP_NEAREST, GL_NEAREST, GL_DEPTH_COMPONENT32, GL_DEPTH_COMPONENT, GL_CLAMP_TO_EDGE, GL_FLOAT, true/*genmipmap*/));
+#endif
+#ifdef GE_PLATFORM_ANDRIOD
+
+        m_DepthTexture.reset(DBG_NEW Texture(Texture::Type::DepthMap, Configuration::WindowWidth, Configuration::WindowHeight, true/*isDepth*/, GL_NEAREST_MIPMAP_NEAREST, GL_NEAREST, GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT, GL_CLAMP_TO_EDGE, GL_FLOAT, true/*genmipmap*/));
+#endif
 		m_HizFrameBuffer->Bind();
 		m_HizFrameBuffer->AttachDepthTexture(m_DepthTexture, 0);
-		glDrawBuffer(GL_NONE); // No color buffer is drawn to.
+#ifdef GE_PLATFORM_WINDOWS
+
+        glDrawBuffer(GL_NONE); // No color buffer is drawn to.
+#endif
 		glReadBuffer(GL_NONE);
 		m_HizFrameBuffer->UnBind();
 

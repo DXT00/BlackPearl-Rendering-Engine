@@ -4,6 +4,7 @@
 
 #include "SandBoxAndriod.h"
 
+SandBoxAndriod* SandBoxAndriod::m_App = nullptr;
 SandBoxAndriod* SandBoxAndriod::GetInstance(){
 
     if (m_App == nullptr)

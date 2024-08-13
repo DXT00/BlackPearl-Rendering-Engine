@@ -10,13 +10,13 @@ namespace BlackPearl {
         Format format = Format::UNKNOWN;
         bool isReadOnly = false;
 
-        constexpr FramebufferAttachment& setTexture(ITexture* t) { texture = t; return *this; }
-        constexpr FramebufferAttachment& setSubresources(TextureSubresourceSet value) { subresources = value; return *this; }
-        constexpr FramebufferAttachment& setArraySlice(uint32_t index) { subresources.baseArraySlice = index; subresources.numArraySlices = 1; return *this; }
-        constexpr FramebufferAttachment& setArraySliceRange(uint32_t index, uint32_t count) { subresources.baseArraySlice = index; subresources.numArraySlices = count; return *this; }
-        constexpr FramebufferAttachment& setMipLevel(uint32_t level) { subresources.baseMipLevel = level; subresources.numMipLevels = 1; return *this; }
-        constexpr FramebufferAttachment& setFormat(Format f) { format = f; return *this; }
-        constexpr FramebufferAttachment& setReadOnly(bool ro) { isReadOnly = ro; return *this; }
+         FramebufferAttachment& setTexture(ITexture* t) { texture = t; return *this; }
+         FramebufferAttachment& setSubresources(TextureSubresourceSet value) { subresources = value; return *this; }
+         FramebufferAttachment& setArraySlice(uint32_t index) { subresources.baseArraySlice = index; subresources.numArraySlices = 1; return *this; }
+         FramebufferAttachment& setArraySliceRange(uint32_t index, uint32_t count) { subresources.baseArraySlice = index; subresources.numArraySlices = count; return *this; }
+         FramebufferAttachment& setMipLevel(uint32_t level) { subresources.baseMipLevel = level; subresources.numMipLevels = 1; return *this; }
+         FramebufferAttachment& setFormat(Format f) { format = f; return *this; }
+         FramebufferAttachment& setReadOnly(bool ro) { isReadOnly = ro; return *this; }
 
         [[nodiscard]] bool valid() const { return texture != nullptr; }
     };

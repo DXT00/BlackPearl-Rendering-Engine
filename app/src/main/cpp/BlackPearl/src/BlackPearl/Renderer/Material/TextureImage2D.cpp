@@ -1,5 +1,10 @@
 #include "pch.h"
-#include <glad/glad.h>
+#ifdef GE_PLATFORM_ANDRIOD
+#include "GLES3/gl32.h"
+#endif
+#ifdef GE_PLATFORM_WINDOWS
+#include "glad/glad.h"
+#endif
 #include "TextureImage2D.h"
 #include "BlackPearl/Core.h"
 namespace BlackPearl {
@@ -24,8 +29,8 @@ namespace BlackPearl {
 		glBindTexture(GL_TEXTURE_2D, m_RendererID);
 	/*	glActiveTexture(GL_TEXTURE0 + textureID);
 		glBindImageTexture( textureID, m_RendererID, 0, GL_FALSE, 0, m_Acess, m_InternalFormat);*/
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, minFilter);//ÎÆÀíËõÐ¡Ê±ÓÃÁÚ½ü¹ýÂË
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, maxFilter);//ÎÆÀí·Å´óÊ±Ò²ÓÃÁÚ½ü¹ýÂË
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, minFilter);//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð¡Ê±ï¿½ï¿½ï¿½Ú½ï¿½ï¿½ï¿½ï¿½ï¿½
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, maxFilter);//ï¿½ï¿½ï¿½ï¿½Å´ï¿½Ê±Ò²ï¿½ï¿½ï¿½Ú½ï¿½ï¿½ï¿½ï¿½ï¿½
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrap);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrap);
 
@@ -79,7 +84,9 @@ namespace BlackPearl {
 		glGenFramebuffers(1, &fbo);
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo);
 		glFramebufferTexture(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, m_RendererID, 0); //Only need to do this once.
-		glDrawBuffer(GL_COLOR_ATTACHMENT0); //Only need to do this once.
+#ifdef GE_PLATFORM_WINDOWS
+        glDrawBuffer(GL_COLOR_ATTACHMENT0); //Only need to do this once.
+#endif
 		glClearBufferfv(GL_COLOR, 0, clearColor);
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 
@@ -87,6 +94,7 @@ namespace BlackPearl {
 
 	void TextureImage2D::ShowProperties()
 	{
+#ifdef GE_PLATFORM_WINDOWS
 		/*check what the maximum size of the total work group that we give to glDispatchCompute() is.
 		We can get the x, y, and z extents of this*/
 		int workGroupCnt[3];
@@ -106,6 +114,7 @@ namespace BlackPearl {
 
 		GE_CORE_INFO("max local (in one shader) work group sizes x:{0} y:{1} z:{2}\n",
 			workGroupSize[0], workGroupSize[1], workGroupSize[2]);
+#endif
 	}
 
 }

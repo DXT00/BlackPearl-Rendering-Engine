@@ -2,6 +2,8 @@
 #include "RHITexture.h"
 #include <BlackPearl/Core.h>
 namespace BlackPearl {
+    uint32_t TextureSubresourceSet::AllMipLevels = uint32_t(-1);
+    uint32_t TextureSubresourceSet::AllArraySlices = uint32_t(-1);
 	TextureSubresourceSet TextureSubresourceSet::resolve(const TextureDesc& desc, bool singleMipLevel) const
 	{
         TextureSubresourceSet ret;

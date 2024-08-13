@@ -1,4 +1,15 @@
-"G:\CLion 2023.3.4\bin\cmake\win\x64\bin\cmake.exe" -DCMAKE_BUILD_TYPE=Debug -G Ninja -DCMAKE_SYSTEM_NAME=Android -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_SYSTEM_VERSION=26 -DANDROID_PLATFORM=android-26 -DANDROID_ABI=arm64-v8a -DCMAKE_ANDROID_ARCH_ABI=arm64-v8a -DANDROID_NDK=G:\AndriodSDK\ndk\21.1.6352462 -DCMAKE_ANDROID_NDK=G:\AndriodSDK\ndk\21.1.6352462 -DCMAKE_TOOLCHAIN_FILE=G:\AndriodSDK\ndk\21.1.6352462\build\cmake\android.toolchain.cmake -DCMAKE_MAKE_PROGRAM=G:\AndriodSDK\cmake\3.10.2.4988404\bin\ninja.exe -DCMAKE_CXX_FLAGS=-std=c++11 -DCMAKE_LIBRARY_OUTPUT_DIRECTORY=G:\AA_AndriodLearn\NDK_OpenGLES_3_0\app\build\intermediates\cxx\Debug\output\obj\arm64-v8a -DCMAKE_RUNTIME_OUTPUT_DIRECTORY=G:\AA_AndriodLearn\NDK_OpenGLES_3_0\app\build\intermediates\cxx\Debug\output\obj\arm64-v8a -DRENDER_API=opengl -S G:\AA_AndriodLearn\BlackPearl\app\src\main\cpp -B G:\AA_AndriodLearn\BlackPearl\app\src\main\cpp\cmake-build-debug
+"G:\CLion 2023.3.4\bin\cmake\win\x64\bin\cmake.exe" -DCMAKE_BUILD_TYPE=Debug -G Ninja -DCMAKE_SYSTEM_NAME=Android -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_SYSTEM_VERSION=26 -DANDROID_PLATFORM=android-26 -DANDROID_ABI=arm64-v8a -DCMAKE_ANDROID_ARCH_ABI=arm64-v8a -DANDROID_NDK=G:\AndriodSDK\ndk\21.1.6352462 -DCMAKE_ANDROID_NDK=G:\AndriodSDK\ndk\21.1.6352462 -DCMAKE_TOOLCHAIN_FILE=G:\AndriodSDK\ndk\21.1.6352462\build\cmake\android.toolchain.cmake -DCMAKE_MAKE_PROGRAM=G:\AndriodSDK\cmake\3.10.2.4988404\bin\ninja.exe -DCMAKE_CXX_FLAGS=-std=c++11 -DCMAKE_LIBRARY_OUTPUT_DIRECTORY=G:\AA_AndriodLearn\BlackPearl\app\src\main\cpp\bin\arm64-v8a -DCMAKE_RUNTIME_OUTPUT_DIRECTORY=G:\AA_AndriodLearn\BlackPearl\app\src\main\cpp\bin\arm64-v8a -DRENDER_API=opengl -S G:\AA_AndriodLearn\BlackPearl\app\src\main\cpp -B G:\AA_AndriodLearn\BlackPearl\app\src\main\cpp\cmake-build-debug
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: G:/AndriodSDK/ndk/21.1.6352462/toolchains/llvm/prebuilt/windows-x86_64/bin/clang.exe - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: G:/AndriodSDK/ndk/21.1.6352462/toolchains/llvm/prebuilt/windows-x86_64/bin/clang++.exe - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- CMAKE_RUNTIME_OUTPUT_DIRECTORY---G:/AA_AndriodLearn/BlackPearl/app/src/main/cpp/cmake-build-debug/bin/.
 RENDER_API = opengl
 -- Building for Android
 -- Configuring for Debug build
@@ -6,11 +17,29 @@ RENDER_API = opengl
 -- Configuring for MinSizeRel build
 -- Build spdlog: 1.4.0
 -- Build type: Debug
--- Using X11 for window creation
-aaa BlackPearlLib = BlackPearlLib1-NOTFOUND
--- Configuring done (0.3s)
-CMake Error at BlackPearl/vendor/GLFW/src/CMakeLists.txt:92 (add_library):
-  No SOURCES given to target: glfw
-
-
-CMake Generate step failed.  Build files cannot be regenerated correctly.
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD - Failed
+-- Looking for pthread_create in pthreads
+-- Looking for pthread_create in pthreads - not found
+-- Looking for pthread_create in pthread
+-- Looking for pthread_create in pthread - not found
+-- Check if compiler accepts -pthread
+-- Check if compiler accepts -pthread - yes
+-- Found Threads: TRUE  
+-- Shared libraries enabled
+-- Looking for ZLIB...
+-- Found ZLIB: optimized;G:/AndriodSDK/ndk/21.1.6352462/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/aarch64-linux-android/libz.a;debug;G:/AndriodSDK/ndk/21.1.6352462/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/aarch64-linux-android/libz.a
+INFO Hunter enabled or RT-extension not found. glTF import/export will be built without Open3DGC-compression.
+-- Enabled importer formats: AMF 3DS AC ASE ASSBIN B3D BVH COLLADA DXF CSM HMP IRRMESH IQM IRR LWO LWS M3D MD2 MD3 MD5 MDC MDL NFF NDO OFF OBJ OGRE OPENGEX PLY MS3D COB BLEND IFC XGL FBX Q3D Q3BSP RAW SIB SMD STL TERRAGEN 3D X X3D GLTF 3MF MMD
+-- Disabled importer formats:
+-- Enabled exporter formats: OBJ OPENGEX PLY 3DS ASSBIN ASSXML M3D COLLADA FBX STL X X3D GLTF 3MF PBRT ASSJSON STEP
+-- Disabled exporter formats:
+-- Treating all warnings as errors (for assimp library only)
+Building Assimp Viewer only supported on Windows.
+-- make SandboxAndriod CMAKE_RUNTIME_OUTPUT_DIRECTORY---G:/AA_AndriodLearn/BlackPearl/app/src/main/cpp/cmake-build-debug/bin/.
+-- -------make SandboxAndriod---------------------
+-- -------make CMAKE_CURRENT_SOURCE_DIR- G:/AA_AndriodLearn/BlackPearl/app/src/main/cpp/SandBoxAndriod--------------------
+-- -------make CMAKE_SOURCE_DIR- G:/AA_AndriodLearn/BlackPearl/app/src/main/cpp--------------------
+-- Configuring done (2.5s)
+-- Generating done (0.5s)
+-- Build files have been written to: G:/AA_AndriodLearn/BlackPearl/app/src/main/cpp/cmake-build-debug

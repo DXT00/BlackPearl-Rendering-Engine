@@ -3,7 +3,9 @@
 #include "BlackPearl/Node/BatchNode.h"
 #include "BlackPearl/Node/SingleNode.h"
 #include "BlackPearl/Component/MeshRendererComponent/MeshRenderer.h"
-
+#ifdef GE_PLATFORM_ANDRIOD
+#include "GLES3/gl32.h"
+#endif
 namespace BlackPearl {
 	struct DrawElementsCommand
 	{
@@ -175,14 +177,14 @@ namespace BlackPearl {
 
 	void IndirectRendererTest::Render(const std::shared_ptr<Shader>& shader)
 	{
-
+#ifdef   GE_PLATFORM_WINDOWS
 		TestGenerateDrawCommands();
 		glMultiDrawElementsIndirect(GL_TRIANGLES, //type
 			GL_UNSIGNED_INT, //indices represented as unsigned ints
 			(GLvoid*)0, //start with the first draw command
 			100, //draw 100 objects
 			0); //no stride, the draw commands are tightly packed
-
+#endif
 	}
 
 	void IndirectRendererTest::Init(Scene* scene, const std::shared_ptr<Shader>& shader)

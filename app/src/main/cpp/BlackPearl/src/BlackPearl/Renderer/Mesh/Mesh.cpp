@@ -1,5 +1,10 @@
 #include "pch.h"
-#include <glad/glad.h>
+#ifdef GE_PLATFORM_ANDRIOD
+#include "GLES3/gl3.h"
+#endif
+#ifdef GE_PLATFORM_WINDOWS
+#include "glad/glad.h"
+#endif
 #include "Mesh.h"
 #include "glm/glm.hpp"
 
@@ -45,9 +50,11 @@ namespace BlackPearl {
 
 	void Mesh::SetTessellation(uint32_t verticesPerTessPatch)
 	{
-		if (DynamicRHI::g_RHIType == DynamicRHI::Type::OpenGL)
-			glPatchParameteri(GL_PATCH_VERTICES, verticesPerTessPatch);
+#ifdef GE_PLATFORM_WINDOWS
 
+        if (DynamicRHI::g_RHIType == DynamicRHI::Type::OpenGL)
+			glPatchParameteri(GL_PATCH_VERTICES, verticesPerTessPatch);
+#endif
 	}
 
 	void Mesh::SetVertexBufferLayout(const VertexBufferLayout& layout)

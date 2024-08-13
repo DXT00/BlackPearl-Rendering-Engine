@@ -63,6 +63,7 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 add_subdirectory(BlackPearl)
 add_subdirectory(BlackPearl/vendor/imgui)
 add_subdirectory(BlackPearl/vendor/spdlog)
+add_subdirectory(BlackPearl/vendor/assimp)
 if(WIN32)
     add_subdirectory(BlackPearl/vendor/GLFW)
     add_subdirectory(Sandbox)
@@ -73,6 +74,8 @@ endif()
 
 if(ANDROID)
 add_subdirectory(SandboxAndriod)
+add_subdirectory(native_render)
+
 endif()
 #
 

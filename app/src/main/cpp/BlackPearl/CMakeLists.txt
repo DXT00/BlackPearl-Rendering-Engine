@@ -14,7 +14,7 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin/${CMAKE_CFG_INTDIR}"
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin/${CMAKE_CFG_INTDIR}")
 set(CMAKE_OBJECT_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin-int/${CMAKE_CFG_INTDIR}")
 
-
+message(STATUS "CMAKE_RUNTIME_OUTPUT_DIRECTORY---${CMAKE_RUNTIME_OUTPUT_DIRECTORY}")
 
 # 添加源文件
 file(GLOB_RECURSE SRC_FILES LIST_DIRECTORIES false "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp" "${CMAKE_CURRENT_SOURCE_DIR}/src/*.h")
@@ -48,14 +48,9 @@ include_directories(
         "${CMAKE_CURRENT_SOURCE_DIR}/vendor/directxmesh_desktop_win10.2022.7.30.1/include"
         "${CMAKE_CURRENT_SOURCE_DIR}/vendor/ShaderMake/include"
 )
-
 # 库目录
 link_directories(
-        "${CMAKE_CURRENT_SOURCE_DIR}/vendor/assimp_build/code/Debug"
-        "${CMAKE_CURRENT_SOURCE_DIR}/vendor/assimp_build/lib/Debug"
-        "${CMAKE_CURRENT_SOURCE_DIR}/vendor/assimp_build/lib/Release"
-        "${CMAKE_CURRENT_SOURCE_DIR}/vendor/assimp_build/bin/Debug"
-        "${CMAKE_CURRENT_SOURCE_DIR}/vendor/assimp_build/bin/Release"
+
         "${CMAKE_CURRENT_SOURCE_DIR}/vendor/directxtex_uwp.2022.5.10.1/native/lib"
         "${CMAKE_CURRENT_SOURCE_DIR}/vendor/directxmesh_desktop_win10.2022.7.30.1/native/lib/x64/Debug"
         "${CMAKE_CURRENT_SOURCE_DIR}/vendor/directxmesh_desktop_win10.2022.7.30.1/native/lib/x64/Release"
@@ -65,22 +60,51 @@ link_directories(
         "${CMAKE_CURRENT_SOURCE_DIR}/vendor/spdlog/bin/${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/spdlog"
         "${CMAKE_CURRENT_SOURCE_DIR}/vendor/GLFW/bin/${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/GLFW"
 )
-
+if(WIN32)
+    link_directories(
+            "${CMAKE_CURRENT_SOURCE_DIR}/vendor/assimp_build/code/Debug/win"
+            "${CMAKE_CURRENT_SOURCE_DIR}/vendor/assimp_build/lib/Debug/win"
+            "${CMAKE_CURRENT_SOURCE_DIR}/vendor/assimp_build/lib/Release/win"
+            "${CMAKE_CURRENT_SOURCE_DIR}/vendor/assimp_build/bin/Debug/win"
+            "${CMAKE_CURRENT_SOURCE_DIR}/vendor/assimp_build/bin/Release/win"
+    )
+elseif(ANDROID)
+    link_directories(
+            "${CMAKE_CURRENT_SOURCE_DIR}/vendor/assimp_build/lib/Debug/android"
+            "${CMAKE_CURRENT_SOURCE_DIR}/vendor/assimp_build/lib/Release/android"
+            "${CMAKE_CURRENT_SOURCE_DIR}/vendor/assimp_build/bin/Debug/android"
+            "${CMAKE_CURRENT_SOURCE_DIR}/vendor/assimp_build/bin/Release/android"
+    )
+endif ()
 #set(RENDER_API "opengl")
 # 链接库和条件编译
 if(${RENDER_API} STREQUAL "opengl")
     message("RENDER_API = opengl")
     target_link_libraries(
             BlackPearl
-            PUBLIC
-            glfw
-            GLEW
-            Glad
+            PRIVATE
             ImGui
-            opengl32
-            assimp-vc142-mtd
             spdlog
     )
+    if(WIN32)
+        target_link_libraries(
+                BlackPearl
+                PRIVATE
+                glfw
+                GLEW
+                Glad
+                opengl32
+
+        )
+    elseif(ANDROID)
+        target_link_libraries(
+            BlackPearl
+            PRIVATE
+                EGL
+                GLESv3
+                assimp
+    )
+    endif ()
     add_definitions(
             -DGLFW_INCLUDE_NONE
             -DGE_API_OPENGL
@@ -89,7 +113,7 @@ elseif(${RENDER_API} STREQUAL "vulkan")
     message("RENDER_API = vulkan")
     target_link_libraries(
             BlackPearl
-            PUBLIC
+            PRIVATE
             glfw
             GLEW
             Glad
@@ -106,7 +130,7 @@ elseif(${RENDER_API} STREQUAL "direct3d")
     message("RENDER_API = direct3d")
     target_link_libraries(
             BlackPearl
-            PUBLIC
+            PRIVATE
             glfw
             GLEW
             Glad
@@ -121,7 +145,7 @@ else() #default opengl
     message("set default RENDER_API = opengl")
     target_link_libraries(
             BlackPearl
-            PUBLIC
+            PRIVATE
             glfw
             GLEW
             Glad

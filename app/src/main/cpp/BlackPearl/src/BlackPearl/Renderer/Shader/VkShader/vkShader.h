@@ -1,5 +1,10 @@
 #pragma once
+#ifdef GE_PLATFORM_ANDRIOD
+#include "GLES3/gl3.h"
+#endif
+#ifdef GE_PLATFORM_WINDOWS
 #include "glad/glad.h"
+#endif
 #include<glm/glm.hpp>
 #include<string>
 #include<memory>

@@ -1,10 +1,16 @@
 #include "pch.h"
+
+#ifdef GE_PLATFORM_ANDRIOD
+#include "GLES3/gl3.h"
+#endif
+#ifdef GE_PLATFORM_WINDOWS
 #include "glad/glad.h"
+#endif
 #include"BlackPearl/Core.h"
 #include "Context.h"
 
 namespace BlackPearl {
-
+#ifdef GE_PLATFORM_WINDOWS
 	Context::Context(GLFWwindow* windowHandle)
 		:m_WindowHandle(windowHandle)
 	{
@@ -35,4 +41,5 @@ namespace BlackPearl {
 	{
 		glfwSwapBuffers(m_WindowHandle);
 	}
+#endif
 }

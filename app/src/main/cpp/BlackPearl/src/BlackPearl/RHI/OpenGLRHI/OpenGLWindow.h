@@ -1,5 +1,6 @@
 #pragma once
 #ifdef GE_API_OPENGL
+#ifdef GE_PLATFORM_WINDOWS
 #include "BlackPearl/Window.h"
 #include <GLFW/glfw3.h>
 
@@ -29,12 +30,12 @@ namespace BlackPearl {
 
 	private:
 		GLFWwindow* m_Window;
+#ifdef GE_PLATFORM_WINDOWS
 		std::unique_ptr<Context> m_Context;
-
-
+#endif
 
 	};
 
 }
-
+#endif
 #endif

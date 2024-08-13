@@ -47,7 +47,9 @@ if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   include("G:/AA_AndriodLearn/BlackPearl/app/src/main/cpp/cmake-build-debug/BlackPearl/cmake_install.cmake")
   include("G:/AA_AndriodLearn/BlackPearl/app/src/main/cpp/cmake-build-debug/BlackPearl/vendor/imgui/cmake_install.cmake")
   include("G:/AA_AndriodLearn/BlackPearl/app/src/main/cpp/cmake-build-debug/BlackPearl/vendor/spdlog/cmake_install.cmake")
+  include("G:/AA_AndriodLearn/BlackPearl/app/src/main/cpp/cmake-build-debug/BlackPearl/vendor/assimp/cmake_install.cmake")
   include("G:/AA_AndriodLearn/BlackPearl/app/src/main/cpp/cmake-build-debug/SandBoxAndriod/cmake_install.cmake")
+  include("G:/AA_AndriodLearn/BlackPearl/app/src/main/cpp/cmake-build-debug/native_render/cmake_install.cmake")
 
 endif()
 

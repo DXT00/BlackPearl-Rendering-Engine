@@ -2,6 +2,9 @@
 #include "SphericalHarmonics.h"
 #include "glm/glm.hpp"
 #include "BlackPearl/Core.h"
+#ifdef GE_PLATFORM_ANDRIOD
+#include "GLES3/gl32.h"
+#endif
 namespace BlackPearl {
 	const float PI = 3.14159265359f;
 	std::vector<std::vector<glm::vec3>> cubeMapFaceNormal = {
@@ -65,12 +68,16 @@ namespace BlackPearl {
 		std::vector<float*> faces;
 		faces.assign(6, new float[size]);
 		environmentCubeMap->Bind();
-		glGetTexImage(GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, GL_RGB, GL_FLOAT, faces[0]);
+#ifdef GE_PLATFORM_WINDOWS
+
+        glGetTexImage(GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, GL_RGB, GL_FLOAT, faces[0]);
 		glGetTexImage(GL_TEXTURE_CUBE_MAP_NEGATIVE_X, 0, GL_RGB, GL_FLOAT, faces[1]);
 		glGetTexImage(GL_TEXTURE_CUBE_MAP_POSITIVE_Y, 0, GL_RGB, GL_FLOAT, faces[2]);
 		glGetTexImage(GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, GL_RGB, GL_FLOAT, faces[3]);
 		glGetTexImage(GL_TEXTURE_CUBE_MAP_POSITIVE_Z, 0, GL_RGB, GL_FLOAT, faces[4]);
 		glGetTexImage(GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, GL_RGB, GL_FLOAT, faces[5]);
+#endif
+        //TODO:: gles3.2 不支持 glGetTexImage
 		environmentCubeMap->UnBind();
 
 

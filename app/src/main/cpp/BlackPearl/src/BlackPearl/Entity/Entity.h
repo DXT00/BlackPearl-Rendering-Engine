@@ -1,6 +1,5 @@
 #pragma once
-#include<string>
-#include "glm/glm.hpp"
+#include <string>
 #include "BlackPearl/Config.h"
 #include "BlackPearl/Core.h"
 #include <unordered_map>
@@ -10,7 +9,7 @@ namespace BlackPearl {
 	class Entity
 	{
 	public:
-		//	static const unsigned int s_MaxComponents;//Ò»¸öEntity×î¶à32¸öComponent!//TODO::ÕâÐ©³£Á¿×îºÃÐ´µ½Ò»¸öÎÄ¼þÀï£¡
+		//	static const unsigned int s_MaxComponents;//Ò»ï¿½ï¿½Entityï¿½ï¿½ï¿½32ï¿½ï¿½Component!//TODO::ï¿½ï¿½Ð©ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð´ï¿½ï¿½Ò»ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï£¡
 
 		struct Id {
 			Id() :id(0) {}
@@ -107,9 +106,9 @@ namespace BlackPearl {
 
 
 	private:
-		std::vector<Entity*> m_EntityList;  // Entity::id.index --->µ½ Entity::idµÄÓ³Éä£»
-		std::vector<unsigned int> m_FreeList;//¼ÇÂ¼ÎÞÐ§µÄEntity
-		std::vector<std::uint32_t> m_EntityVersion;//¼ÇÂ¼Í¬Ò»¸öEntityµÄ°æ±¾ºÅ£¨Ïàµ±ÓÚprefabµÄ¶à¸öÊµÀý),Ã¿´ÎdestroyÒ»¸öEntity,VertionºÅ¼ÓÒ»£¡
+		std::vector<Entity*> m_EntityList;  // Entity::id.index --->ï¿½ï¿½ Entity::idï¿½ï¿½Ó³ï¿½ä£»
+		std::vector<unsigned int> m_FreeList;//ï¿½ï¿½Â¼ï¿½ï¿½Ð§ï¿½ï¿½Entity
+		std::vector<std::uint32_t> m_EntityVersion;//ï¿½ï¿½Â¼Í¬Ò»ï¿½ï¿½Entityï¿½Ä°æ±¾ï¿½Å£ï¿½ï¿½àµ±ï¿½ï¿½prefabï¿½Ä¶ï¿½ï¿½Êµï¿½ï¿½),Ã¿ï¿½ï¿½destroyÒ»ï¿½ï¿½Entity,Vertionï¿½Å¼ï¿½Ò»ï¿½ï¿½
 		std::uint32_t m_IndexCounter = 0;
 	};
 

@@ -2,6 +2,9 @@
 #include "RayTracingRenderer.h"
 #include "BlackPearl/Common/CommonFunc.h"
 #include "BlackPearl/Math/Math.h"
+#ifdef GE_PLATFORM_ANDRIOD
+#include "GLES3/gl32.h"
+#endif
 namespace BlackPearl {
 
 	RayTracingRenderer::RayTracingRenderer() {

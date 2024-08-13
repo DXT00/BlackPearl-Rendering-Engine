@@ -13,8 +13,11 @@
 #include "BlackPearl/Component/TransformComponent/Transform.h"
 #include "BlackPearl/Component/CameraComponent/PerspectiveCamera.h"
 #include "BlackPearl/Component/MeshRendererComponent/MeshRenderer.h"
+#ifdef GE_PLATFORM_WINDOWS
 #include "imgui/imgui.h"
+
 #include "imgui/imfilebrowser.h"
+#endif
 #include "BlackPearl/MainCamera/MainCamera.h"
 #include "BlackPearl/Input.h"
 #include "BlackPearl/KeyCodes.h"
@@ -37,9 +40,10 @@ namespace BlackPearl {
 			:m_DebugName(name) {
 
 			m_LightSources = new LightSources();
+#ifdef GE_PLATFORM_WINDOWS
 			m_fileDialog.SetTitle("file selector");
 			m_fileDialog.SetPwd("./assets");
-
+#endif
 			/*MainCamera Init*/
 			m_MainCamera = CreateCamera();
 			m_MainCamera->SetPosition(glm::vec3(0, 0, 0.0f));
@@ -264,7 +268,9 @@ namespace BlackPearl {
 
 
 		LightSources* m_LightSources;
+#ifdef GE_PLATFORM_WINDOWS
 		ImGui::FileBrowser m_fileDialog;
+#endif
 		glm::vec4 m_BackgroundColor = { 0.0f,0.0f,0.0f,0.0f };
 
 		/*MainCamera and Input*/

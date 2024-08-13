@@ -6,6 +6,9 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <BlackPearl/Component/LightComponent/PointLight.h>
 #include <BlackPearl/Renderer/MasterRenderer/ShadowMapPointLightRenderer.h>
+#ifdef GE_PLATFORM_ANDRIOD
+#include "GLES3/gl32.h"
+#endif
 namespace BlackPearl {
 
 	float IBLRenderer::s_GICoeffs = 0.5f;
@@ -48,8 +51,10 @@ namespace BlackPearl {
 	{
 		GE_ASSERT(hdrCubeObj, "hdrCubeObj is nullptr!");
 		GE_ASSERT(brdfLUTQuad, "brdfLUTQuad is nullptr!");
+#ifdef GE_PLATFORM_WINDOWS
 
 		glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
+#endif
 		float aspect = 1.0;
 		m_CaptureProjection = glm::perspective(glm::radians(90.0f), aspect, 0.1f, 10.0f);
 		m_CaptureViews = {
@@ -125,17 +130,17 @@ namespace BlackPearl {
 		frameBuffer->BindRenderBuffer();
 
 		/*
-		ÃæÏòÁ¢·½ÌåÁù¸öÃæÉèÖÃÁù¸ö²»Í¬µÄÊÓÍ¼¾ØÕó£¬
-		¸ø¶¨Í¶Ó°¾ØÕóµÄ fov Îª 90 ¶ÈÒÔ²¶×½Õû¸öÃæ£¬
-		²¢äÖÈ¾Á¢·½ÌåÁù´Î£¬½«½á¹û´æ´¢ÔÚ¸¡µãÖ¡»º³åÖÐ
+		ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¬ï¿½ï¿½ï¿½ï¿½Í¼ï¿½ï¿½ï¿½ï¿½
+		ï¿½ï¿½ï¿½ï¿½Í¶Ó°ï¿½ï¿½ï¿½ï¿½ï¿½ fov Îª 90 ï¿½ï¿½ï¿½Ô²ï¿½×½ï¿½ï¿½ï¿½ï¿½ï¿½æ£¬
+		ï¿½ï¿½ï¿½ï¿½È¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½æ´¢ï¿½Ú¸ï¿½ï¿½ï¿½Ö¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		*/
 		for (unsigned int i = 0; i < 6; i++)
 		{	
-			//TODO:: camera->FrontÓÐÎÊÌâ£¬²»¹ýFrontÖ»ÓÃÓÚspotLight£¬ÕâÀïÔÝÇÒ²»¹Ü
+			//TODO:: camera->Frontï¿½ï¿½ï¿½ï¿½ï¿½â£¬ï¿½ï¿½ï¿½ï¿½FrontÖ»ï¿½ï¿½ï¿½ï¿½spotLightï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò²ï¿½ï¿½ï¿½
 			Renderer::SceneData* scene = DBG_NEW Renderer::SceneData{ m_CaptureProjectionViews[i] ,m_CaptureViews[i],m_CaptureProjection,Renderer::GetSceneData()->CameraPosition,Renderer::GetSceneData()->CameraRotation, Renderer::GetSceneData()->CameraFront,Renderer::GetSceneData()->LightSources };
 
 			//m_HdrMapToCubeShader->SetUniformMat4f("u_CubeMapProjectionView", m_CaptureProjectionViews[i]);
-			//½«CubeMapµÄÁù¸öÃæ¸½¼Óµ½FrameBufferµÄGL_COLOR_ATTACHMENT0ÖÐ
+			//ï¿½ï¿½CubeMapï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½æ¸½ï¿½Óµï¿½FrameBufferï¿½ï¿½GL_COLOR_ATTACHMENT0ï¿½ï¿½
 			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, m_HdrCubeMap->GetRendererID(), 0);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			m_HdrMapToCubeShader->Bind();

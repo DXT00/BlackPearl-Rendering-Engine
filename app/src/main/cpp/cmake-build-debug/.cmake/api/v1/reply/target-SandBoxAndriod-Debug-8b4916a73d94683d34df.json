@@ -1,0 +1,338 @@
+{
+	"artifacts" : 
+	[
+		{
+			"path" : "G:/AA_AndriodLearn/BlackPearl/app/src/main/cpp/bin/arm64-v8a/libSandBoxAndriodd.so"
+		}
+	],
+	"backtrace" : 1,
+	"backtraceGraph" : 
+	{
+		"commands" : 
+		[
+			"add_library",
+			"target_link_libraries",
+			"set_property",
+			"find_package",
+			"TARGET_LINK_LIBRARIES",
+			"add_definitions",
+			"target_include_directories"
+		],
+		"files" : 
+		[
+			"SandBoxAndriod/CMakeLists.txt",
+			"G:/CLion 2023.3.4/bin/cmake/win/x64/share/cmake-3.27/Modules/FindThreads.cmake",
+			"BlackPearl/vendor/spdlog/CMakeLists.txt",
+			"BlackPearl/CMakeLists.txt",
+			"BlackPearl/vendor/assimp/code/CMakeLists.txt"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 27,
+				"parent" : 0
+			},
+			{
+				"command" : 1,
+				"file" : 0,
+				"line" : 83,
+				"parent" : 0
+			},
+			{
+				"file" : 2
+			},
+			{
+				"command" : 3,
+				"file" : 2,
+				"line" : 59,
+				"parent" : 3
+			},
+			{
+				"file" : 1,
+				"parent" : 4
+			},
+			{
+				"command" : 2,
+				"file" : 1,
+				"line" : 238,
+				"parent" : 5
+			},
+			{
+				"file" : 3
+			},
+			{
+				"command" : 1,
+				"file" : 3,
+				"line" : 83,
+				"parent" : 7
+			},
+			{
+				"command" : 1,
+				"file" : 3,
+				"line" : 100,
+				"parent" : 7
+			},
+			{
+				"file" : 4
+			},
+			{
+				"command" : 4,
+				"file" : 4,
+				"line" : 1227,
+				"parent" : 10
+			},
+			{
+				"command" : 5,
+				"file" : 0,
+				"line" : 23,
+				"parent" : 0
+			},
+			{
+				"command" : 5,
+				"file" : 0,
+				"line" : 24,
+				"parent" : 0
+			},
+			{
+				"command" : 6,
+				"file" : 0,
+				"line" : 59,
+				"parent" : 0
+			}
+		]
+	},
+	"compileGroups" : 
+	[
+		{
+			"compileCommandFragments" : 
+			[
+				{
+					"fragment" : "-g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -std=c++11 -O0 -fno-limit-debug-info  -std=c++11 -fPIC -fcolor-diagnostics"
+				},
+				{
+					"backtrace" : 2,
+					"fragment" : "-pthread"
+				}
+			],
+			"defines" : 
+			[
+				{
+					"backtrace" : 12,
+					"define" : "GE_API_GLES"
+				},
+				{
+					"backtrace" : 13,
+					"define" : "GE_PLATFORM_ANDRIOD"
+				},
+				{
+					"backtrace" : 2,
+					"define" : "SPDLOG_COMPILED_LIB"
+				},
+				{
+					"define" : "SandBoxAndriod_EXPORTS"
+				}
+			],
+			"includes" : 
+			[
+				{
+					"backtrace" : 14,
+					"path" : "G:/AA_AndriodLearn/BlackPearl/app/src/main/cpp/SandBoxAndriod/src"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "G:/AA_AndriodLearn/BlackPearl/app/src/main/cpp/BlackPearl/src"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "G:/AA_AndriodLearn/BlackPearl/app/src/main/cpp/BlackPearl/vendor/glm"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "G:/AA_AndriodLearn/BlackPearl/app/src/main/cpp/BlackPearl/vendor/spdlog/include"
+				},
+				{
+					"backtrace" : 14,
+					"path" : "G:/AA_AndriodLearn/BlackPearl/app/src/main/cpp/BlackPearl/vendor/assimp/include"
+				}
+			],
+			"language" : "CXX",
+			"languageStandard" : 
+			{
+				"backtraces" : 
+				[
+					1
+				],
+				"standard" : "11"
+			},
+			"sourceIndexes" : 
+			[
+				1,
+				3,
+				5
+			],
+			"sysroot" : 
+			{
+				"path" : "G:/AndriodSDK/ndk/21.1.6352462/toolchains/llvm/prebuilt/windows-x86_64/sysroot"
+			}
+		}
+	],
+	"dependencies" : 
+	[
+		{
+			"backtrace" : 2,
+			"id" : "BlackPearl::@0736906dea7636a4313b"
+		},
+		{
+			"backtrace" : 2,
+			"id" : "ImGui::@dbe4f5bb5fbf1758ddbb"
+		},
+		{
+			"backtrace" : 2,
+			"id" : "spdlog::@a2ad132d4cf584f1a997"
+		},
+		{
+			"backtrace" : 2,
+			"id" : "assimp::@f6de6b2f8c1d97a9b095"
+		}
+	],
+	"id" : "SandBoxAndriod::@21c71f453f694d4ff091",
+	"link" : 
+	{
+		"commandFragments" : 
+		[
+			{
+				"fragment" : "-Wl,--exclude-libs,libgcc.a -Wl,--exclude-libs,libgcc_real.a -Wl,--exclude-libs,libatomic.a -static-libstdc++ -Wl,--build-id -Wl,--fatal-warnings -Wl,--no-undefined -Qunused-arguments",
+				"role" : "flags"
+			},
+			{
+				"backtrace" : 2,
+				"fragment" : "bin\\libBlackPearl.a",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 2,
+				"fragment" : "-lEGL",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 2,
+				"fragment" : "-lGLESv3",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 2,
+				"fragment" : "-landroid",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 2,
+				"fragment" : "-llog",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 2,
+				"fragment" : "G:\\AA_AndriodLearn\\BlackPearl\\app\\src\\main\\cpp\\BlackPearl\\vendor\\spdlog\\bin\\Debug-Android-arm64-v8a\\spdlog\\libspdlog.a",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 6,
+				"fragment" : "-pthread",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 8,
+				"fragment" : "G:\\AA_AndriodLearn\\BlackPearl\\app\\src\\main\\cpp\\BlackPearl\\vendor\\imgui\\bin\\Debug-Android-arm64-v8a\\ImGui\\libImGui.a",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 9,
+				"fragment" : "G:\\AA_AndriodLearn\\BlackPearl\\app\\src\\main\\cpp\\bin\\arm64-v8a\\libassimpd.so",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 11,
+				"fragment" : "G:\\AndriodSDK\\ndk\\21.1.6352462\\toolchains\\llvm\\prebuilt\\windows-x86_64\\sysroot\\usr\\lib\\aarch64-linux-android\\libz.a",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "-latomic -lm",
+				"role" : "libraries"
+			}
+		],
+		"language" : "CXX",
+		"sysroot" : 
+		{
+			"path" : "G:/AndriodSDK/ndk/21.1.6352462/toolchains/llvm/prebuilt/windows-x86_64/sysroot"
+		}
+	},
+	"name" : "SandBoxAndriod",
+	"nameOnDisk" : "libSandBoxAndriodd.so",
+	"paths" : 
+	{
+		"build" : "SandBoxAndriod",
+		"source" : "SandBoxAndriod"
+	},
+	"sourceGroups" : 
+	[
+		{
+			"name" : "Header Files",
+			"sourceIndexes" : 
+			[
+				0,
+				2,
+				4
+			]
+		},
+		{
+			"name" : "Source Files",
+			"sourceIndexes" : 
+			[
+				1,
+				3,
+				5
+			]
+		}
+	],
+	"sources" : 
+	[
+		{
+			"backtrace" : 1,
+			"path" : "BlackPearl/src/BlackPearl.h",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "BlackPearl/src/pch.cpp",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "BlackPearl/src/pch.h",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "SandBoxAndriod/src/SandBoxAndriod.cpp",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "SandBoxAndriod/src/SandBoxAndriod.h",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "SandBoxAndriod/src/native-lib.cpp",
+			"sourceGroupIndex" : 1
+		}
+	],
+	"type" : "SHARED_LIBRARY"
+}

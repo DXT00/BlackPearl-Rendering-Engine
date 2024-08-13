@@ -23,8 +23,114 @@ ANDROID_NDK:UNINITIALIZED=G:\AndriodSDK\ndk\21.1.6352462
 //No help, variable specified on the command line.
 ANDROID_PLATFORM:UNINITIALIZED=android-26
 
-//Build shared libraries
-BUILD_SHARED_LIBS:BOOL=OFF
+//Android JNI IOSystem support is active
+ASSIMP_ANDROID_JNIIOSYSTEM:BOOL=OFF
+
+//Path for library output files
+ASSIMP_ARCHIVE_OUTPUT_DIRECTORY:STRING=G:/AA_AndriodLearn/BlackPearl/app/src/main/cpp/cmake-build-debug/BlackPearl/vendor/assimp/lib
+
+//Enable AddressSanitizer.
+ASSIMP_ASAN:BOOL=OFF
+
+//default value of all ASSIMP_BUILD_XXX_EXPORTER values
+ASSIMP_BUILD_ALL_EXPORTERS_BY_DEFAULT:BOOL=ON
+
+//default value of all ASSIMP_BUILD_XXX_IMPORTER values
+ASSIMP_BUILD_ALL_IMPORTERS_BY_DEFAULT:BOOL=ON
+
+//describe the current architecture.
+ASSIMP_BUILD_ARCHITECTURE:STRING=
+
+//If the supplementary tools for Assimp are built in addition to
+// the library.
+ASSIMP_BUILD_ASSIMP_TOOLS:BOOL=ON
+
+//describe the current compiler.
+ASSIMP_BUILD_COMPILER:STRING=
+
+//Build documentation using Doxygen.
+ASSIMP_BUILD_DOCS:BOOL=OFF
+
+//If the Draco libraries are to be built. Primarily for glTF
+ASSIMP_BUILD_DRACO:BOOL=OFF
+
+//Build package as Mac OS X Framework bundle.
+ASSIMP_BUILD_FRAMEWORK:BOOL=OFF
+
+//Build the C4D importer, which relies on the non-free Cineware
+// SDK.
+ASSIMP_BUILD_NONFREE_C4D_IMPORTER:BOOL=OFF
+
+//If the official samples are built as well (needs Glut).
+ASSIMP_BUILD_SAMPLES:BOOL=OFF
+
+//If the test suite for Assimp is built in addition to the library.
+ASSIMP_BUILD_TESTS:BOOL=ON
+
+//Build your own zlib
+ASSIMP_BUILD_ZLIB:BOOL=OFF
+
+//Enable this to measure test coverage.
+ASSIMP_COVERALLS:BOOL=OFF
+
+//Set to ON to enable double precision processing
+ASSIMP_DOUBLE_PRECISION:BOOL=OFF
+
+//adds the target headercheck which compiles every header file,
+// default disabled because it adds many targets
+ASSIMP_HEADERCHECK:BOOL=OFF
+
+//Enable Hunter package manager support
+ASSIMP_HUNTER_ENABLED:BOOL=OFF
+
+//Don't call git to get the hash.
+ASSIMP_IGNORE_GIT_HASH:BOOL=OFF
+
+//Inject debug postfix in .a/.so/.dll lib names
+ASSIMP_INJECT_DEBUG_POSTFIX:BOOL=ON
+
+//Disable this if you want to use assimp as a submodule.
+ASSIMP_INSTALL:BOOL=ON
+
+//Path for runtime output files
+ASSIMP_LIBRARY_OUTPUT_DIRECTORY:STRING=G:\AA_AndriodLearn\BlackPearl\app\src\main\cpp\bin\arm64-v8a
+
+//Suffix to append to library names
+ASSIMP_LIBRARY_SUFFIX:STRING=
+
+//Disable Assimp's export functionality.
+ASSIMP_NO_EXPORT:BOOL=OFF
+
+//Set to ON to generate CPack configuration files and packaging
+// targets
+ASSIMP_OPT_BUILD_PACKAGES:BOOL=OFF
+
+//the package-specific version used for uploading the sources
+ASSIMP_PACKAGE_VERSION:STRING=0
+
+//Suppress rapidjson warning on MSVC (NOTE: breaks android build)
+ASSIMP_RAPIDJSON_NO_MEMBER_ITERATOR:BOOL=ON
+
+//Path for runtime output files
+ASSIMP_RUNTIME_OUTPUT_DIRECTORY:STRING=Debug-Android-arm64-v8a
+
+//Enable Undefined Behavior sanitizer.
+ASSIMP_UBSAN:BOOL=OFF
+
+//Treat all warnings as errors.
+ASSIMP_WARNINGS_AS_ERRORS:BOOL=ON
+
+//Value Computed by CMake
+Assimp_BINARY_DIR:STATIC=G:/AA_AndriodLearn/BlackPearl/app/src/main/cpp/cmake-build-debug/BlackPearl/vendor/assimp
+
+//Value Computed by CMake
+Assimp_IS_TOP_LEVEL:STATIC=OFF
+
+//Value Computed by CMake
+Assimp_SOURCE_DIR:STATIC=G:/AA_AndriodLearn/BlackPearl/app/src/main/cpp/BlackPearl/vendor/assimp
+
+//Build package with shared libraries.
+BUILD_SHARED_LIBS:BOOL=ON
 
 //Value Computed by CMake
 BlackPearl-Engine_BINARY_DIR:STATIC=G:/AA_AndriodLearn/BlackPearl/app/src/main/cpp/cmake-build-debug
@@ -35,9 +141,6 @@ BlackPearl-Engine_IS_TOP_LEVEL:STATIC=ON
 //Value Computed by CMake
 BlackPearl-Engine_SOURCE_DIR:STATIC=G:/AA_AndriodLearn/BlackPearl/app/src/main/cpp
 
-//Path to a library.
-BlackPearlLib1:FILEPATH=BlackPearlLib1-NOTFOUND
-
 //Value Computed by CMake
 BlackPearl_BINARY_DIR:STATIC=G:/AA_AndriodLearn/BlackPearl/app/src/main/cpp/cmake-build-debug/BlackPearl
 
@@ -45,7 +148,7 @@ BlackPearl_BINARY_DIR:STATIC=G:/AA_AndriodLearn/BlackPearl/app/src/main/cpp/cmak
 BlackPearl_IS_TOP_LEVEL:STATIC=OFF
 
 //Dependencies for the target
-BlackPearl_LIB_DEPENDS:STATIC=general;glfw;general;GLEW;general;Glad;general;ImGui;general;opengl32;general;assimp-vc142-mtd;general;spdlog;
+BlackPearl_LIB_DEPENDS:STATIC=general;ImGui;general;spdlog;general;EGL;general;GLESv3;general;assimp;
 
 //Value Computed by CMake
 BlackPearl_SOURCE_DIR:STATIC=G:/AA_AndriodLearn/BlackPearl/app/src/main/cpp/BlackPearl
@@ -132,6 +235,9 @@ CMAKE_C_FLAGS_RELWITHDEBINFO:STRING=-O2 -g -DNDEBUG
 //Libraries linked by default with all C applications.
 CMAKE_C_STANDARD_LIBRARIES:STRING=-latomic -lm
 
+//Debug Postfix for lib, samples and tools
+CMAKE_DEBUG_POSTFIX:STRING=d
+
 //Path to a program.
 CMAKE_DLLTOOL:FILEPATH=G:/CLion 2023.3.4/bin/mingw/bin/dlltool.exe
 
@@ -208,7 +314,7 @@ CMAKE_INSTALL_SHAREDSTATEDIR:PATH=com
 CMAKE_INSTALL_SYSCONFDIR:PATH=etc
 
 //No help, variable specified on the command line.
-CMAKE_LIBRARY_OUTPUT_DIRECTORY:UNINITIALIZED=G:\AA_AndriodLearn\NDK_OpenGLES_3_0\app\build\intermediates\cxx\Debug\output\obj\arm64-v8a
+CMAKE_LIBRARY_OUTPUT_DIRECTORY:UNINITIALIZED=G:\AA_AndriodLearn\BlackPearl\app\src\main\cpp\bin\arm64-v8a
 
 //Path to a program.
 CMAKE_LINKER:FILEPATH=G:/AndriodSDK/ndk/21.1.6352462/toolchains/llvm/prebuilt/windows-x86_64/bin/ld.lld.exe
@@ -277,7 +383,7 @@ CMAKE_RANLIB:FILEPATH=G:/AndriodSDK/ndk/21.1.6352462/toolchains/llvm/prebuilt/wi
 CMAKE_READELF:FILEPATH=G:/AndriodSDK/ndk/21.1.6352462/toolchains/llvm/prebuilt/windows-x86_64/bin/llvm-readelf.exe
 
 //No help, variable specified on the command line.
-CMAKE_RUNTIME_OUTPUT_DIRECTORY:UNINITIALIZED=G:\AA_AndriodLearn\NDK_OpenGLES_3_0\app\build\intermediates\cxx\Debug\output\obj\arm64-v8a
+CMAKE_RUNTIME_OUTPUT_DIRECTORY:UNINITIALIZED=G:\AA_AndriodLearn\BlackPearl\app\src\main\cpp\bin\arm64-v8a
 
 //Flags used by the linker during the creation of dll's.
 CMAKE_SHARED_LINKER_FLAGS:STRING=
@@ -337,56 +443,14 @@ CMAKE_SYSTEM_VERSION:UNINITIALIZED=26
 //Path to a program.
 CMAKE_TAPI:FILEPATH=CMAKE_TAPI-NOTFOUND
 
-//No help, variable specified on the command line.
-CMAKE_TOOLCHAIN_FILE:UNINITIALIZED=G:\AndriodSDK\ndk\21.1.6352462\build\cmake\android.toolchain.cmake
+//The CMake toolchain file
+CMAKE_TOOLCHAIN_FILE:FILEPATH=G:/AndriodSDK/ndk/21.1.6352462/build/cmake/android.toolchain.cmake
 
 //If this value is on, makefiles will be generated without the
 // .SILENT directive, and all commands will be echoed to the console
 // during the make.  This is useful for debugging only. With Visual
 // Studio IDE projects all commands are done without /nologo.
 CMAKE_VERBOSE_MAKEFILE:BOOL=FALSE
-
-//Doxygen documentation generation tool (https://www.doxygen.nl)
-DOXYGEN_EXECUTABLE:FILEPATH=G:/Strawberry/c/bin/doxygen.exe
-
-//Value Computed by CMake
-GLFW_BINARY_DIR:STATIC=G:/AA_AndriodLearn/BlackPearl/app/src/main/cpp/cmake-build-debug/BlackPearl/vendor/GLFW
-
-//Build the GLFW documentation
-GLFW_BUILD_DOCS:BOOL=ON
-
-//Build the GLFW example programs
-GLFW_BUILD_EXAMPLES:BOOL=ON
-
-//Build the GLFW test programs
-GLFW_BUILD_TESTS:BOOL=ON
-
-//The directory containing a CMake configuration file for GLFW.
-GLFW_DIR:PATH=GLFW_DIR-NOTFOUND
-
-//Path to a file.
-GLFW_INCLUDE_DIRS:PATH=GLFW_INCLUDE_DIRS-NOTFOUND
-
-//Generate installation target
-GLFW_INSTALL:BOOL=ON
-
-//Value Computed by CMake
-GLFW_IS_TOP_LEVEL:STATIC=OFF
-
-//Path to a library.
-GLFW_LIBRARIES:FILEPATH=GLFW_LIBRARIES-NOTFOUND
-
-//Value Computed by CMake
-GLFW_SOURCE_DIR:STATIC=G:/AA_AndriodLearn/BlackPearl/app/src/main/cpp/BlackPearl/vendor/GLFW
-
-//Use OSMesa for offscreen context creation
-GLFW_USE_OSMESA:BOOL=OFF
-
-//Use Wayland for window creation
-GLFW_USE_WAYLAND:BOOL=OFF
-
-//Use the Vulkan loader statically linked into application
-GLFW_VULKAN_STATIC:BOOL=OFF
 
 //Value Computed by CMake
 ImGui_BINARY_DIR:STATIC=G:/AA_AndriodLearn/BlackPearl/app/src/main/cpp/cmake-build-debug/BlackPearl/vendor/imgui
@@ -396,13 +460,6 @@ ImGui_IS_TOP_LEVEL:STATIC=OFF
 
 //Value Computed by CMake
 ImGui_SOURCE_DIR:STATIC=G:/AA_AndriodLearn/BlackPearl/app/src/main/cpp/BlackPearl/vendor/imgui
-
-//Takes an empty string or 64. Directory where lib will be installed:
-// lib or lib64
-LIB_SUFFIX:STRING=
-
-//Path to a library.
-MATH_LIBRARY:FILEPATH=G:/AndriodSDK/ndk/21.1.6352462/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/aarch64-linux-android/libm.a
 
 //No help, variable specified on the command line.
 RENDER_API:UNINITIALIZED=opengl
@@ -448,412 +505,25 @@ TARGET_PLATFORM_ANDROID:BOOL=OFF
 TARGET_PLATFORM_WINDOWS:BOOL=ON
 
 //Path to a file.
-VULKAN_INCLUDE_DIR:PATH=G:/AndriodSDK/ndk/21.1.6352462/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include
+ZLIB_INCLUDE_DIR:PATH=G:/AndriodSDK/ndk/21.1.6352462/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include
 
 //Path to a library.
-VULKAN_LIBRARY:FILEPATH=G:/AndriodSDK/ndk/21.1.6352462/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/aarch64-linux-android/26/libvulkan.so
-
-//Path to a file.
-X11_ICE_INCLUDE_PATH:PATH=X11_ICE_INCLUDE_PATH-NOTFOUND
+ZLIB_LIBRARY_DBG:FILEPATH=G:/AndriodSDK/ndk/21.1.6352462/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/aarch64-linux-android/libz.a
 
 //Path to a library.
-X11_ICE_LIB:FILEPATH=X11_ICE_LIB-NOTFOUND
+ZLIB_LIBRARY_REL:FILEPATH=G:/AndriodSDK/ndk/21.1.6352462/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/aarch64-linux-android/libz.a
 
-//Path to a file.
-X11_SM_INCLUDE_PATH:PATH=X11_SM_INCLUDE_PATH-NOTFOUND
+//Dependencies for the target
+assimp_LIB_DEPENDS:STATIC=optimized;G:/AndriodSDK/ndk/21.1.6352462/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/aarch64-linux-android/libz.a;debug;G:/AndriodSDK/ndk/21.1.6352462/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/aarch64-linux-android/libz.a;
 
-//Path to a library.
-X11_SM_LIB:FILEPATH=X11_SM_LIB-NOTFOUND
+//Value Computed by CMake
+native-render_BINARY_DIR:STATIC=G:/AA_AndriodLearn/BlackPearl/app/src/main/cpp/cmake-build-debug/native_render
 
-//Path to a file.
-X11_X11_INCLUDE_PATH:PATH=X11_X11_INCLUDE_PATH-NOTFOUND
+//Value Computed by CMake
+native-render_IS_TOP_LEVEL:STATIC=OFF
 
-//Path to a library.
-X11_X11_LIB:FILEPATH=X11_X11_LIB-NOTFOUND
-
-//Path to a file.
-X11_X11_xcb_INCLUDE_PATH:PATH=X11_X11_xcb_INCLUDE_PATH-NOTFOUND
-
-//Path to a library.
-X11_X11_xcb_LIB:FILEPATH=X11_X11_xcb_LIB-NOTFOUND
-
-//Path to a file.
-X11_XRes_INCLUDE_PATH:PATH=X11_XRes_INCLUDE_PATH-NOTFOUND
-
-//Path to a library.
-X11_XRes_LIB:FILEPATH=X11_XRes_LIB-NOTFOUND
-
-//Path to a file.
-X11_XShm_INCLUDE_PATH:PATH=X11_XShm_INCLUDE_PATH-NOTFOUND
-
-//Path to a file.
-X11_XSync_INCLUDE_PATH:PATH=X11_XSync_INCLUDE_PATH-NOTFOUND
-
-//Path to a file.
-X11_Xaccessrules_INCLUDE_PATH:PATH=X11_Xaccessrules_INCLUDE_PATH-NOTFOUND
-
-//Path to a file.
-X11_Xaccessstr_INCLUDE_PATH:PATH=X11_Xaccessstr_INCLUDE_PATH-NOTFOUND
-
-//Path to a file.
-X11_Xau_INCLUDE_PATH:PATH=X11_Xau_INCLUDE_PATH-NOTFOUND
-
-//Path to a library.
-X11_Xau_LIB:FILEPATH=X11_Xau_LIB-NOTFOUND
-
-//Path to a file.
-X11_Xaw_INCLUDE_PATH:PATH=X11_Xaw_INCLUDE_PATH-NOTFOUND
-
-//Path to a library.
-X11_Xaw_LIB:FILEPATH=X11_Xaw_LIB-NOTFOUND
-
-//Path to a file.
-X11_Xcomposite_INCLUDE_PATH:PATH=X11_Xcomposite_INCLUDE_PATH-NOTFOUND
-
-//Path to a library.
-X11_Xcomposite_LIB:FILEPATH=X11_Xcomposite_LIB-NOTFOUND
-
-//Path to a file.
-X11_Xcursor_INCLUDE_PATH:PATH=X11_Xcursor_INCLUDE_PATH-NOTFOUND
-
-//Path to a library.
-X11_Xcursor_LIB:FILEPATH=X11_Xcursor_LIB-NOTFOUND
-
-//Path to a file.
-X11_Xdamage_INCLUDE_PATH:PATH=X11_Xdamage_INCLUDE_PATH-NOTFOUND
-
-//Path to a library.
-X11_Xdamage_LIB:FILEPATH=X11_Xdamage_LIB-NOTFOUND
-
-//Path to a file.
-X11_Xdmcp_INCLUDE_PATH:PATH=X11_Xdmcp_INCLUDE_PATH-NOTFOUND
-
-//Path to a library.
-X11_Xdmcp_LIB:FILEPATH=X11_Xdmcp_LIB-NOTFOUND
-
-//Path to a file.
-X11_Xext_INCLUDE_PATH:PATH=X11_Xext_INCLUDE_PATH-NOTFOUND
-
-//Path to a library.
-X11_Xext_LIB:FILEPATH=X11_Xext_LIB-NOTFOUND
-
-//Path to a file.
-X11_Xfixes_INCLUDE_PATH:PATH=X11_Xfixes_INCLUDE_PATH-NOTFOUND
-
-//Path to a library.
-X11_Xfixes_LIB:FILEPATH=X11_Xfixes_LIB-NOTFOUND
-
-//Path to a file.
-X11_Xft_INCLUDE_PATH:PATH=X11_Xft_INCLUDE_PATH-NOTFOUND
-
-//Path to a library.
-X11_Xft_LIB:FILEPATH=X11_Xft_LIB-NOTFOUND
-
-//Path to a file.
-X11_Xi_INCLUDE_PATH:PATH=X11_Xi_INCLUDE_PATH-NOTFOUND
-
-//Path to a library.
-X11_Xi_LIB:FILEPATH=X11_Xi_LIB-NOTFOUND
-
-//Path to a file.
-X11_Xinerama_INCLUDE_PATH:PATH=X11_Xinerama_INCLUDE_PATH-NOTFOUND
-
-//Path to a library.
-X11_Xinerama_LIB:FILEPATH=X11_Xinerama_LIB-NOTFOUND
-
-//Path to a file.
-X11_Xkb_INCLUDE_PATH:PATH=X11_Xkb_INCLUDE_PATH-NOTFOUND
-
-//Path to a file.
-X11_Xkblib_INCLUDE_PATH:PATH=X11_Xkblib_INCLUDE_PATH-NOTFOUND
-
-//Path to a file.
-X11_Xlib_INCLUDE_PATH:PATH=X11_Xlib_INCLUDE_PATH-NOTFOUND
-
-//Path to a file.
-X11_Xmu_INCLUDE_PATH:PATH=X11_Xmu_INCLUDE_PATH-NOTFOUND
-
-//Path to a library.
-X11_Xmu_LIB:FILEPATH=X11_Xmu_LIB-NOTFOUND
-
-//Path to a file.
-X11_Xpm_INCLUDE_PATH:PATH=X11_Xpm_INCLUDE_PATH-NOTFOUND
-
-//Path to a library.
-X11_Xpm_LIB:FILEPATH=X11_Xpm_LIB-NOTFOUND
-
-//Path to a file.
-X11_Xrandr_INCLUDE_PATH:PATH=X11_Xrandr_INCLUDE_PATH-NOTFOUND
-
-//Path to a library.
-X11_Xrandr_LIB:FILEPATH=X11_Xrandr_LIB-NOTFOUND
-
-//Path to a file.
-X11_Xrender_INCLUDE_PATH:PATH=X11_Xrender_INCLUDE_PATH-NOTFOUND
-
-//Path to a library.
-X11_Xrender_LIB:FILEPATH=X11_Xrender_LIB-NOTFOUND
-
-//Path to a file.
-X11_Xshape_INCLUDE_PATH:PATH=X11_Xshape_INCLUDE_PATH-NOTFOUND
-
-//Path to a file.
-X11_Xss_INCLUDE_PATH:PATH=X11_Xss_INCLUDE_PATH-NOTFOUND
-
-//Path to a library.
-X11_Xss_LIB:FILEPATH=X11_Xss_LIB-NOTFOUND
-
-//Path to a file.
-X11_Xt_INCLUDE_PATH:PATH=X11_Xt_INCLUDE_PATH-NOTFOUND
-
-//Path to a library.
-X11_Xt_LIB:FILEPATH=X11_Xt_LIB-NOTFOUND
-
-//Path to a file.
-X11_Xtst_INCLUDE_PATH:PATH=X11_Xtst_INCLUDE_PATH-NOTFOUND
-
-//Path to a library.
-X11_Xtst_LIB:FILEPATH=X11_Xtst_LIB-NOTFOUND
-
-//Path to a file.
-X11_Xutil_INCLUDE_PATH:PATH=X11_Xutil_INCLUDE_PATH-NOTFOUND
-
-//Path to a file.
-X11_Xv_INCLUDE_PATH:PATH=X11_Xv_INCLUDE_PATH-NOTFOUND
-
-//Path to a library.
-X11_Xv_LIB:FILEPATH=X11_Xv_LIB-NOTFOUND
-
-//Path to a file.
-X11_Xxf86misc_INCLUDE_PATH:PATH=X11_Xxf86misc_INCLUDE_PATH-NOTFOUND
-
-//Path to a library.
-X11_Xxf86misc_LIB:FILEPATH=X11_Xxf86misc_LIB-NOTFOUND
-
-//Path to a file.
-X11_Xxf86vm_INCLUDE_PATH:PATH=X11_Xxf86vm_INCLUDE_PATH-NOTFOUND
-
-//Path to a library.
-X11_Xxf86vm_LIB:FILEPATH=X11_Xxf86vm_LIB-NOTFOUND
-
-//Path to a file.
-X11_dpms_INCLUDE_PATH:PATH=X11_dpms_INCLUDE_PATH-NOTFOUND
-
-//Path to a file.
-X11_xcb_INCLUDE_PATH:PATH=X11_xcb_INCLUDE_PATH-NOTFOUND
-
-//Path to a library.
-X11_xcb_LIB:FILEPATH=X11_xcb_LIB-NOTFOUND
-
-//Path to a file.
-X11_xcb_composite_INCLUDE_PATH:PATH=X11_xcb_composite_INCLUDE_PATH-NOTFOUND
-
-//Path to a library.
-X11_xcb_composite_LIB:FILEPATH=X11_xcb_composite_LIB-NOTFOUND
-
-//Path to a file.
-X11_xcb_cursor_INCLUDE_PATH:PATH=X11_xcb_cursor_INCLUDE_PATH-NOTFOUND
-
-//Path to a library.
-X11_xcb_cursor_LIB:FILEPATH=X11_xcb_cursor_LIB-NOTFOUND
-
-//Path to a file.
-X11_xcb_damage_INCLUDE_PATH:PATH=X11_xcb_damage_INCLUDE_PATH-NOTFOUND
-
-//Path to a library.
-X11_xcb_damage_LIB:FILEPATH=X11_xcb_damage_LIB-NOTFOUND
-
-//Path to a file.
-X11_xcb_dpms_INCLUDE_PATH:PATH=X11_xcb_dpms_INCLUDE_PATH-NOTFOUND
-
-//Path to a library.
-X11_xcb_dpms_LIB:FILEPATH=X11_xcb_dpms_LIB-NOTFOUND
-
-//Path to a file.
-X11_xcb_dri2_INCLUDE_PATH:PATH=X11_xcb_dri2_INCLUDE_PATH-NOTFOUND
-
-//Path to a library.
-X11_xcb_dri2_LIB:FILEPATH=X11_xcb_dri2_LIB-NOTFOUND
-
-//Path to a file.
-X11_xcb_dri3_INCLUDE_PATH:PATH=X11_xcb_dri3_INCLUDE_PATH-NOTFOUND
-
-//Path to a library.
-X11_xcb_dri3_LIB:FILEPATH=X11_xcb_dri3_LIB-NOTFOUND
-
-//Path to a file.
-X11_xcb_errors_INCLUDE_PATH:PATH=X11_xcb_errors_INCLUDE_PATH-NOTFOUND
-
-//Path to a library.
-X11_xcb_errors_LIB:FILEPATH=X11_xcb_errors_LIB-NOTFOUND
-
-//Path to a file.
-X11_xcb_ewmh_INCLUDE_PATH:PATH=X11_xcb_ewmh_INCLUDE_PATH-NOTFOUND
-
-//Path to a library.
-X11_xcb_ewmh_LIB:FILEPATH=X11_xcb_ewmh_LIB-NOTFOUND
-
-//Path to a file.
-X11_xcb_glx_INCLUDE_PATH:PATH=X11_xcb_glx_INCLUDE_PATH-NOTFOUND
-
-//Path to a library.
-X11_xcb_glx_LIB:FILEPATH=X11_xcb_glx_LIB-NOTFOUND
-
-//Path to a file.
-X11_xcb_icccm_INCLUDE_PATH:PATH=X11_xcb_icccm_INCLUDE_PATH-NOTFOUND
-
-//Path to a library.
-X11_xcb_icccm_LIB:FILEPATH=X11_xcb_icccm_LIB-NOTFOUND
-
-//Path to a file.
-X11_xcb_image_INCLUDE_PATH:PATH=X11_xcb_image_INCLUDE_PATH-NOTFOUND
-
-//Path to a library.
-X11_xcb_image_LIB:FILEPATH=X11_xcb_image_LIB-NOTFOUND
-
-//Path to a file.
-X11_xcb_keysyms_INCLUDE_PATH:PATH=X11_xcb_keysyms_INCLUDE_PATH-NOTFOUND
-
-//Path to a library.
-X11_xcb_keysyms_LIB:FILEPATH=X11_xcb_keysyms_LIB-NOTFOUND
-
-//Path to a file.
-X11_xcb_present_INCLUDE_PATH:PATH=X11_xcb_present_INCLUDE_PATH-NOTFOUND
-
-//Path to a library.
-X11_xcb_present_LIB:FILEPATH=X11_xcb_present_LIB-NOTFOUND
-
-//Path to a file.
-X11_xcb_randr_INCLUDE_PATH:PATH=X11_xcb_randr_INCLUDE_PATH-NOTFOUND
-
-//Path to a library.
-X11_xcb_randr_LIB:FILEPATH=X11_xcb_randr_LIB-NOTFOUND
-
-//Path to a file.
-X11_xcb_record_INCLUDE_PATH:PATH=X11_xcb_record_INCLUDE_PATH-NOTFOUND
-
-//Path to a library.
-X11_xcb_record_LIB:FILEPATH=X11_xcb_record_LIB-NOTFOUND
-
-//Path to a file.
-X11_xcb_render_INCLUDE_PATH:PATH=X11_xcb_render_INCLUDE_PATH-NOTFOUND
-
-//Path to a library.
-X11_xcb_render_LIB:FILEPATH=X11_xcb_render_LIB-NOTFOUND
-
-//Path to a file.
-X11_xcb_render_util_INCLUDE_PATH:PATH=X11_xcb_render_util_INCLUDE_PATH-NOTFOUND
-
-//Path to a library.
-X11_xcb_render_util_LIB:FILEPATH=X11_xcb_render_util_LIB-NOTFOUND
-
-//Path to a file.
-X11_xcb_res_INCLUDE_PATH:PATH=X11_xcb_res_INCLUDE_PATH-NOTFOUND
-
-//Path to a library.
-X11_xcb_res_LIB:FILEPATH=X11_xcb_res_LIB-NOTFOUND
-
-//Path to a file.
-X11_xcb_screensaver_INCLUDE_PATH:PATH=X11_xcb_screensaver_INCLUDE_PATH-NOTFOUND
-
-//Path to a library.
-X11_xcb_screensaver_LIB:FILEPATH=X11_xcb_screensaver_LIB-NOTFOUND
-
-//Path to a file.
-X11_xcb_shape_INCLUDE_PATH:PATH=X11_xcb_shape_INCLUDE_PATH-NOTFOUND
-
-//Path to a library.
-X11_xcb_shape_LIB:FILEPATH=X11_xcb_shape_LIB-NOTFOUND
-
-//Path to a file.
-X11_xcb_shm_INCLUDE_PATH:PATH=X11_xcb_shm_INCLUDE_PATH-NOTFOUND
-
-//Path to a library.
-X11_xcb_shm_LIB:FILEPATH=X11_xcb_shm_LIB-NOTFOUND
-
-//Path to a file.
-X11_xcb_sync_INCLUDE_PATH:PATH=X11_xcb_sync_INCLUDE_PATH-NOTFOUND
-
-//Path to a library.
-X11_xcb_sync_LIB:FILEPATH=X11_xcb_sync_LIB-NOTFOUND
-
-//Path to a file.
-X11_xcb_util_INCLUDE_PATH:PATH=X11_xcb_util_INCLUDE_PATH-NOTFOUND
-
-//Path to a library.
-X11_xcb_util_LIB:FILEPATH=X11_xcb_util_LIB-NOTFOUND
-
-//Path to a file.
-X11_xcb_xf86dri_INCLUDE_PATH:PATH=X11_xcb_xf86dri_INCLUDE_PATH-NOTFOUND
-
-//Path to a library.
-X11_xcb_xf86dri_LIB:FILEPATH=X11_xcb_xf86dri_LIB-NOTFOUND
-
-//Path to a file.
-X11_xcb_xfixes_INCLUDE_PATH:PATH=X11_xcb_xfixes_INCLUDE_PATH-NOTFOUND
-
-//Path to a library.
-X11_xcb_xfixes_LIB:FILEPATH=X11_xcb_xfixes_LIB-NOTFOUND
-
-//Path to a file.
-X11_xcb_xinerama_INCLUDE_PATH:PATH=X11_xcb_xinerama_INCLUDE_PATH-NOTFOUND
-
-//Path to a library.
-X11_xcb_xinerama_LIB:FILEPATH=X11_xcb_xinerama_LIB-NOTFOUND
-
-//Path to a file.
-X11_xcb_xinput_INCLUDE_PATH:PATH=X11_xcb_xinput_INCLUDE_PATH-NOTFOUND
-
-//Path to a library.
-X11_xcb_xinput_LIB:FILEPATH=X11_xcb_xinput_LIB-NOTFOUND
-
-//Path to a file.
-X11_xcb_xkb_INCLUDE_PATH:PATH=X11_xcb_xkb_INCLUDE_PATH-NOTFOUND
-
-//Path to a library.
-X11_xcb_xkb_LIB:FILEPATH=X11_xcb_xkb_LIB-NOTFOUND
-
-//Path to a file.
-X11_xcb_xrm_INCLUDE_PATH:PATH=X11_xcb_xrm_INCLUDE_PATH-NOTFOUND
-
-//Path to a library.
-X11_xcb_xrm_LIB:FILEPATH=X11_xcb_xrm_LIB-NOTFOUND
-
-//Path to a file.
-X11_xcb_xtest_INCLUDE_PATH:PATH=X11_xcb_xtest_INCLUDE_PATH-NOTFOUND
-
-//Path to a library.
-X11_xcb_xtest_LIB:FILEPATH=X11_xcb_xtest_LIB-NOTFOUND
-
-//Path to a file.
-X11_xcb_xv_INCLUDE_PATH:PATH=X11_xcb_xv_INCLUDE_PATH-NOTFOUND
-
-//Path to a library.
-X11_xcb_xv_LIB:FILEPATH=X11_xcb_xv_LIB-NOTFOUND
-
-//Path to a file.
-X11_xcb_xvmc_INCLUDE_PATH:PATH=X11_xcb_xvmc_INCLUDE_PATH-NOTFOUND
-
-//Path to a library.
-X11_xcb_xvmc_LIB:FILEPATH=X11_xcb_xvmc_LIB-NOTFOUND
-
-//Path to a file.
-X11_xkbcommon_INCLUDE_PATH:PATH=X11_xkbcommon_INCLUDE_PATH-NOTFOUND
-
-//Path to a library.
-X11_xkbcommon_LIB:FILEPATH=X11_xkbcommon_LIB-NOTFOUND
-
-//Path to a file.
-X11_xkbcommon_X11_INCLUDE_PATH:PATH=X11_xkbcommon_X11_INCLUDE_PATH-NOTFOUND
-
-//Path to a library.
-X11_xkbcommon_X11_LIB:FILEPATH=X11_xkbcommon_X11_LIB-NOTFOUND
-
-//Path to a file.
-X11_xkbfile_INCLUDE_PATH:PATH=X11_xkbfile_INCLUDE_PATH-NOTFOUND
-
-//Path to a library.
-X11_xkbfile_LIB:FILEPATH=X11_xkbfile_LIB-NOTFOUND
+//Value Computed by CMake
+native-render_SOURCE_DIR:STATIC=G:/AA_AndriodLearn/BlackPearl/app/src/main/cpp/native_render
 
 //Value Computed by CMake
 spdlog_BINARY_DIR:STATIC=G:/AA_AndriodLearn/BlackPearl/app/src/main/cpp/cmake-build-debug/BlackPearl/vendor/spdlog
@@ -869,6 +539,10 @@ spdlog_SOURCE_DIR:STATIC=G:/AA_AndriodLearn/BlackPearl/app/src/main/cpp/BlackPea
 # INTERNAL cache entries
 ########################
 
+//ADVANCED property for variable: ASSIMP_BUILD_ARCHITECTURE
+ASSIMP_BUILD_ARCHITECTURE-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: ASSIMP_BUILD_COMPILER
+ASSIMP_BUILD_COMPILER-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_ADDR2LINE
 CMAKE_ADDR2LINE-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_AR
@@ -1003,7 +677,7 @@ CMAKE_MODULE_LINKER_FLAGS_RELWITHDEBINFO-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_NM
 CMAKE_NM-ADVANCED:INTERNAL=1
 //number of local generators
-CMAKE_NUMBER_OF_MAKEFILES:INTERNAL=10
+CMAKE_NUMBER_OF_MAKEFILES:INTERNAL=11
 //ADVANCED property for variable: CMAKE_OBJCOPY
 CMAKE_OBJCOPY-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_OBJDUMP
@@ -1046,24 +720,20 @@ CMAKE_STRIP-ADVANCED:INTERNAL=1
 CMAKE_TAPI-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_VERBOSE_MAKEFILE
 CMAKE_VERBOSE_MAKEFILE-ADVANCED:INTERNAL=1
-//ADVANCED property for variable: DOXYGEN_EXECUTABLE
-DOXYGEN_EXECUTABLE-ADVANCED:INTERNAL=1
-//Details about finding Doxygen
-FIND_PACKAGE_MESSAGE_DETAILS_Doxygen:INTERNAL=[G:/Strawberry/c/bin/doxygen.exe][cfound components: doxygen ][v1.9.7()]
 //Details about finding Threads
 FIND_PACKAGE_MESSAGE_DETAILS_Threads:INTERNAL=[TRUE][v()]
-//Details about finding Vulkan
-FIND_PACKAGE_MESSAGE_DETAILS_Vulkan:INTERNAL=[G:/AndriodSDK/ndk/21.1.6352462/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/lib/aarch64-linux-android/26/libvulkan.so][G:/AndriodSDK/ndk/21.1.6352462/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include][v()]
-//ADVANCED property for variable: MATH_LIBRARY
-MATH_LIBRARY-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: RT_LIBRARY
 RT_LIBRARY-ADVANCED:INTERNAL=1
 //Result of TRY_COMPILE
 THREADS_HAVE_PTHREAD_ARG:INTERNAL=TRUE
-//ADVANCED property for variable: VULKAN_INCLUDE_DIR
-VULKAN_INCLUDE_DIR-ADVANCED:INTERNAL=1
-//ADVANCED property for variable: VULKAN_LIBRARY
-VULKAN_LIBRARY-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: ZLIB_INCLUDE_DIR
+ZLIB_INCLUDE_DIR-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: ZLIB_LIBRARY_DBG
+ZLIB_LIBRARY_DBG-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: ZLIB_LIBRARY_REL
+ZLIB_LIBRARY_REL-ADVANCED:INTERNAL=1
+//x
+ZLIB_PREFIX_PATH_INT_CHECK:INTERNAL=
 //linker supports push/pop state
 _CMAKE_LINKER_PUSHPOP_STATE_SUPPORTED:INTERNAL=TRUE
 //CMAKE_INSTALL_PREFIX during last run

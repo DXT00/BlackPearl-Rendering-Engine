@@ -3,6 +3,7 @@
 #include "BlackPearl/Entity/Entity.h"
 #include "BlackPearl/Component/BaseComponent.h"
 #include "BlackPearl/Component/Component.h"
+#include "glm/glm.hpp"
 namespace BlackPearl {
 	extern EntityManager* g_entityManager;
 	class Object 

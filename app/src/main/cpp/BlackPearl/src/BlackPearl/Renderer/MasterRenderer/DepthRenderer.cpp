@@ -13,14 +13,18 @@ namespace BlackPearl {
 	void DepthRenderer::Init()
 	{
 		m_DepthShader = std::make_shared<Shader>("assets/shaders/occlusionCulling/depthMap.glsl");
-		m_DepthTexture.reset(DBG_NEW Texture(Texture::Type::DepthMap, Configuration::WindowWidth, Configuration::WindowHeight, true/*isDepth*/, GL_NEAREST_MIPMAP_NEAREST, GL_NEAREST, GL_DEPTH_COMPONENT32, GL_DEPTH_COMPONENT, GL_CLAMP_TO_EDGE, GL_FLOAT, true/*genmipmap*/));
+#ifdef GE_PLATFORM_WINDOWS
+
+        m_DepthTexture.reset(DBG_NEW Texture(Texture::Type::DepthMap, Configuration::WindowWidth, Configuration::WindowHeight, true/*isDepth*/, GL_NEAREST_MIPMAP_NEAREST, GL_NEAREST, GL_DEPTH_COMPONENT32, GL_DEPTH_COMPONENT, GL_CLAMP_TO_EDGE, GL_FLOAT, true/*genmipmap*/));
+#endif
 		m_HizShader = std::make_shared<Shader>("assets/shaders/occlusionCulling/hiz.glsl");
 
 		m_HizFrameBuffer.reset(DBG_NEW FrameBuffer());
-		m_DepthTexture.reset(DBG_NEW Texture(Texture::Type::DepthMap, Configuration::WindowWidth, Configuration::WindowHeight, true/*isDepth*/, GL_NEAREST_MIPMAP_NEAREST, GL_NEAREST, GL_DEPTH_COMPONENT32, GL_DEPTH_COMPONENT, GL_CLAMP_TO_EDGE, GL_FLOAT, true/*genmipmap*/));
 		m_HizFrameBuffer->Bind();
 		m_HizFrameBuffer->AttachDepthTexture(m_DepthTexture, 0);
+#ifdef GE_PLATFORM_WINDOWS
 		glDrawBuffer(GL_NONE); // No color buffer is drawn to.
+#endif
 		glReadBuffer(GL_NONE);
 		m_HizFrameBuffer->UnBind();
 

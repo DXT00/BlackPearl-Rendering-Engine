@@ -1,10 +1,17 @@
 #pragma once
+#ifdef GE_PLATFORM_ANDRIOD
+#include "GLES3/gl32.h"
+#endif
+#ifdef GE_PLATFORM_WINDOWS
 #include "glad/glad.h"
-#include<glm/glm.hpp>
+#endif
+//#include "glm/glm.hpp"
+//#include ""
 #include<string>
 #include<memory>
 #include <unordered_map>
 #include "BlackPearl/Component/LightComponent/LightSources.h"
+#include "glm/glm.hpp"
 namespace BlackPearl {
 
 

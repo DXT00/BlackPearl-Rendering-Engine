@@ -4,6 +4,9 @@
 #include "BlackPearl/Component/TransformComponent/Transform.h"
 #include "BlackPearl/Component/LightComponent/PointLight.h"
 #include "BlackPearl/Config.h"
+#ifdef GE_PLATFORM_ANDRIOD
+#include "GLES3/gl32.h"
+#endif
 namespace BlackPearl {
 	bool VoxelConeTracingRenderer::s_Shadows = true;
 	bool VoxelConeTracingRenderer::s_IndirectDiffuseLight = true;
@@ -37,7 +40,11 @@ namespace BlackPearl {
 		m_BrdfLUTQuadObj = brdfLUTQuadObj;
 		//m_DebugQuadObj = debugQuadObj;
 		//glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
+#ifdef GE_PLATFORM_WINDOWS
+        //GLES TODO::
+        //https://registry.khronos.org/OpenGL/extensions/EXT/EXT_multisample_compatibility.txt
 		glEnable(GL_MULTISAMPLE);
+#endif
 		m_VoxelConeTracingShader.reset(DBG_NEW Shader("assets/shaders/voxelization/voxelConeTracing/voxelConeTracingPBR.glsl"));
 		InitVoxelization();
 		InitVoxelVisualization(viewportWidth, viewportHeight);

@@ -16,12 +16,12 @@ namespace BlackPearl {
         bool isInstanced = false;
 
         VertexAttributeDesc& setName(const std::string& value) { name = value; return *this; }
-        constexpr VertexAttributeDesc& setFormat(Format value) { format = value; return *this; }
-        constexpr VertexAttributeDesc& setArraySize(uint32_t value) { arraySize = value; return *this; }
-        constexpr VertexAttributeDesc& setBufferIndex(uint32_t value) { bufferIndex = value; return *this; }
-        constexpr VertexAttributeDesc& setOffset(uint32_t value) { offset = value; return *this; }
-        constexpr VertexAttributeDesc& setElementStride(uint32_t value) { elementStride = value; return *this; }
-        constexpr VertexAttributeDesc& setIsInstanced(bool value) { isInstanced = value; return *this; }
+         VertexAttributeDesc& setFormat(Format value) { format = value; return *this; }
+         VertexAttributeDesc& setArraySize(uint32_t value) { arraySize = value; return *this; }
+         VertexAttributeDesc& setBufferIndex(uint32_t value) { bufferIndex = value; return *this; }
+         VertexAttributeDesc& setOffset(uint32_t value) { offset = value; return *this; }
+         VertexAttributeDesc& setElementStride(uint32_t value) { elementStride = value; return *this; }
+         VertexAttributeDesc& setIsInstanced(bool value) { isInstanced = value; return *this; }
     };
 
     class IInputLayout : public IResource

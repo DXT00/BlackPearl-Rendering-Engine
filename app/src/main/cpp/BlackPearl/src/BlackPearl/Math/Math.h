@@ -10,7 +10,7 @@ namespace dm = donut::math;
 #include "affine.h"
 #include "box.h"
 #include "color.h"
-#include "quat.h"
+//#include "quat.h"
 #include "sphere.h"
 #include "frustum.h"
 

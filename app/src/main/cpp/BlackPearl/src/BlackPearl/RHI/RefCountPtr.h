@@ -289,7 +289,7 @@ namespace BlackPearl
     class RefCounter : public T
     {
     private:
-        std::atomic<unsigned long> m_refCount = 1;
+        std::atomic<unsigned long> m_refCount = {1};
     public:
         virtual unsigned long AddRef()
         {

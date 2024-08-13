@@ -1,6 +1,5 @@
 #pragma once
 #include"pch.h"
-#include <glad/glad.h>
 #include "Shader.h"
 #include <BlackPearl/Core.h>
 #include "BlackPearl/Component/LightComponent/ParallelLight.h"
@@ -11,6 +10,9 @@
 #include "BlackPearl/Component/LightComponent/LightSources.h"
 #include "BlackPearl/Component/TransformComponent/Transform.h"
 #include "BlackPearl/Core.h"
+#ifdef GE_PLATFORM_ANDRIOD
+#include "GLES3/gl32.h"
+#endif
 namespace BlackPearl {
 
 	static GLenum ShaderTypeFromString(const std::string&type) {
@@ -104,7 +106,7 @@ namespace BlackPearl {
 		std::unordered_map<unsigned int, std::string> shaderSources;
 		const char* typeToken = "#type";
 		size_t typeTockenLength = strlen(typeToken);
-		size_t pos = source.find(typeToken, 0);//findÕÒ²»µ½»á·µ»Ønpos
+		size_t pos = source.find(typeToken, 0);//findï¿½Ò²ï¿½ï¿½ï¿½ï¿½á·µï¿½ï¿½npos
 		while (pos != std::string::npos) {
 			size_t eol = source.find_first_of("\r\n", pos);
 			GE_ASSERT(eol != std::string::npos, "Syntax error");
@@ -115,12 +117,12 @@ namespace BlackPearl {
 			size_t nextLinePos = source.find_first_not_of("\r\n", eol);
 			pos = source.find(typeToken, nextLinePos);
 			shaderSources[ShaderTypeFromString(type)] = source.substr(nextLinePos,
-				pos - (nextLinePos == std::string::npos ? source.size() - 1 : nextLinePos));//string::npos±íÊ¾sourceµÄÄ©Î²Î»ÖÃ
+				pos - (nextLinePos == std::string::npos ? source.size() - 1 : nextLinePos));//string::nposï¿½ï¿½Ê¾sourceï¿½ï¿½Ä©Î²Î»ï¿½ï¿½
 
 		}
 		//add common struct source
 		if (shaderSources.find(GL_FRAGMENT_SHADER)!=shaderSources.end()) {
-			size_t pos = shaderSources[GL_FRAGMENT_SHADER].find("#version", 0);//findÕÒ²»µ½»á·µ»Ønpos
+			size_t pos = shaderSources[GL_FRAGMENT_SHADER].find("#version", 0);//findï¿½Ò²ï¿½ï¿½ï¿½ï¿½á·µï¿½ï¿½npos
 			GE_ASSERT(pos != std::string::npos, "Syntax error");
 
 			size_t eol = shaderSources[GL_FRAGMENT_SHADER].find_first_of("\r\n", pos);
@@ -270,7 +272,7 @@ namespace BlackPearl {
 			if (lightObj->HasComponent<SpotLight>()) {
 				auto lightSource = lightObj->GetComponent<SpotLight>();
 
-				lightSource->UpdatePositionAndDirection(Renderer::GetSceneData()->CameraPosition, Renderer::GetSceneData()->CameraFront);//SpotLightµÄÊ±ºò¼ÇµÃ¸üÐÂCamera
+				lightSource->UpdatePositionAndDirection(Renderer::GetSceneData()->CameraPosition, Renderer::GetSceneData()->CameraFront);//SpotLightï¿½ï¿½Ê±ï¿½ï¿½ÇµÃ¸ï¿½ï¿½ï¿½Camera
 
 				this->SetUniform1ui("u_LightType", (unsigned int)LightType::SpotLight);
 				this->SetUniform1i("u_HasSpotLight", 1);
@@ -278,7 +280,7 @@ namespace BlackPearl {
 				this->SetUniformVec3f("u_SpotLight.ambient", lightSource->GetLightProps().ambient);
 				this->SetUniformVec3f("u_SpotLight.diffuse", lightSource->GetLightProps().diffuse);
 				this->SetUniformVec3f("u_SpotLight.specular", lightSource->GetLightProps().specular);
-				this->SetUniformVec3f("u_SpotLight.position",lightSource->GetPosition()); //TODO:Position Ó¦¸Ã´ÓTransformÄÃ
+				this->SetUniformVec3f("u_SpotLight.position",lightSource->GetPosition()); //TODO:Position Ó¦ï¿½Ã´ï¿½Transformï¿½ï¿½
 				this->SetUniformVec3f("u_SpotLight.direction", lightSource->GetDirection());
 
 				this->SetUniform1f("u_SpotLight.cutOff",lightSource->GetCutOffAngle());

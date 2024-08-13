@@ -11,7 +11,9 @@ namespace BlackPearl {
 
 	void ImGuiLayer::OnAttach()
 	{
-		IMGUI_CHECKVERSION();
+#ifdef GE_PLATFORM_WINDOWS
+
+        IMGUI_CHECKVERSION();
 		ImGui::CreateContext();
 	
 
@@ -41,15 +43,19 @@ namespace BlackPearl {
 		// Setup Platform/Renderer bindings
 		ImGui_ImplGlfw_InitForOpenGL(window, true);
 		ImGui_ImplOpenGL3_Init("#version 410");
-
+#endif
 	}
 
 	void ImGuiLayer::OnDetach()
 	{
-		ImGui_ImplOpenGL3_Shutdown();
+#ifdef GE_PLATFORM_WINDOWS
+
+        ImGui_ImplOpenGL3_Shutdown();
 		ImGui_ImplGlfw_Shutdown();
 		ImGui::DestroyContext();
-	}
+#endif
+
+    }
 
 	void ImGuiLayer::OnUpdate(Timestep ts)
 	{
@@ -58,22 +64,32 @@ namespace BlackPearl {
 
 	void ImGuiLayer::OnImguiRender()
 	{
-		static bool show = true;
+#ifdef GE_PLATFORM_WINDOWS
+
+        static bool show = true;
 		ImGui::ShowDemoWindow(&show);
+#endif
 
 
-	}
+
+    }
 
 	void ImGuiLayer::Begin()
 	{
-		ImGui_ImplOpenGL3_NewFrame();
+#ifdef GE_PLATFORM_WINDOWS
+
+        ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
-	}
+#endif
+
+    }
 
 	void ImGuiLayer::End()
 	{
-		ImGuiIO& io = ImGui::GetIO();
+#ifdef GE_PLATFORM_WINDOWS
+
+        ImGuiIO& io = ImGui::GetIO();
 		Application& app = Application::Get();
 		io.DisplaySize = ImVec2((float)app.GetWindow().GetWidth(), (float)app.GetWindow().GetHeight());
 
@@ -88,5 +104,7 @@ namespace BlackPearl {
 			ImGui::RenderPlatformWindowsDefault();
 			glfwMakeContextCurrent(backup_current_context);
 		}
-	}
+#endif
+
+    }
 }

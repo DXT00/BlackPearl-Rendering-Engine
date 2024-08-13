@@ -16,7 +16,7 @@ public:
     static void DestroyInstance();
     virtual ~SandBoxAndriod() = default;
 private:
-    static SandBoxAndriod *m_App;
+    static SandBoxAndriod* m_App;
 };
 
 

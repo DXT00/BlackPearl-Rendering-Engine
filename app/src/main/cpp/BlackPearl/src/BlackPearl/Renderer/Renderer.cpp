@@ -1,5 +1,10 @@
 #include "pch.h"
-#include<glad/glad.h>
+#ifdef GE_PLATFORM_ANDRIOD
+#include "GLES3/gl3.h"
+#endif
+#ifdef GE_PLATFORM_WINDOWS
+#include "glad/glad.h"
+#endif
 #include "Renderer.h"
 #include "BlackPearl/Component/LightComponent/Light.h"
 #include "BlackPearl/Component/LightComponent/ParallelLight.h"
@@ -27,8 +32,10 @@ namespace BlackPearl {
 	void Renderer::Init()
 	{
 		glEnable(GL_DEPTH_TEST);
-		//¶àÖØ²ÉÑù£¬¿¹¾â³Ý // MSAA. Set MSAA level using GLFW (see Config.h).
+		//ï¿½ï¿½ï¿½Ø²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ // MSAA. Set MSAA level using GLFW (see Config.h).
+#ifdef GE_PLATFORM_WINDOWS
 		glEnable(GL_MULTISAMPLE);
+#endif
 	//	glEnable(GL_BLEND);
 		//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	}
@@ -48,7 +55,7 @@ namespace BlackPearl {
 			if (lightObj->HasComponent<ParallelLight>()) {
 			}
 			if (lightObj->HasComponent<PointLight>()) {
-				//std::dynamic_pointer_cast<PointLight>(lightSource)->GetShader()->Bind();//Ò»¶¨Òª¼ÇµÃÏÈBind()Ö¸¶¨ÊÇÄÄÒ»¸öShader!
+				//std::dynamic_pointer_cast<PointLight>(lightSource)->GetShader()->Bind();//Ò»ï¿½ï¿½Òªï¿½Çµï¿½ï¿½ï¿½Bind()Ö¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½Shader!
 				//glm::mat4 model = glm::mat4(1.0f);
 				//model = glm::translate(model, std::dynamic_pointer_cast<PointLight>(lightSource)->GetPosition());
 				//model = glm::scale(model, glm::vec3(0.5f));

@@ -39,24 +39,24 @@ namespace BlackPearl {
         // on command list close.
         bool keepInitialState = false;
 
-        constexpr TextureDesc& setWidth(uint32_t value) { width = value; return *this; }
-        constexpr TextureDesc& setHeight(uint32_t value) { height = value; return *this; }
-        constexpr TextureDesc& setDepth(uint32_t value) { depth = value; return *this; }
-        constexpr TextureDesc& setArraySize(uint32_t value) { arraySize = value; return *this; }
-        constexpr TextureDesc& setMipLevels(uint32_t value) { mipLevels = value; return *this; }
-        constexpr TextureDesc& setSampleCount(uint32_t value) { sampleCount = value; return *this; }
-        constexpr TextureDesc& setSampleQuality(uint32_t value) { sampleQuality = value; return *this; }
-        constexpr TextureDesc& setFormat(Format value) { format = value; return *this; }
-        constexpr TextureDesc& setDimension(TextureDimension value) { dimension = value; return *this; }
+         TextureDesc& setWidth(uint32_t value) { width = value; return *this; }
+         TextureDesc& setHeight(uint32_t value) { height = value; return *this; }
+         TextureDesc& setDepth(uint32_t value) { depth = value; return *this; }
+         TextureDesc& setArraySize(uint32_t value) { arraySize = value; return *this; }
+         TextureDesc& setMipLevels(uint32_t value) { mipLevels = value; return *this; }
+         TextureDesc& setSampleCount(uint32_t value) { sampleCount = value; return *this; }
+         TextureDesc& setSampleQuality(uint32_t value) { sampleQuality = value; return *this; }
+         TextureDesc& setFormat(Format value) { format = value; return *this; }
+         TextureDesc& setDimension(TextureDimension value) { dimension = value; return *this; }
         TextureDesc& setDebugName(const std::string& value) { debugName = value; return *this; }
-        constexpr TextureDesc& setIsRenderTarget(bool value) { isRenderTarget = value; return *this; }
-        constexpr TextureDesc& setIsUAV(bool value) { isUAV = value; return *this; }
-        constexpr TextureDesc& setIsTypeless(bool value) { isTypeless = value; return *this; }
-        constexpr TextureDesc& setIsVirtual(bool value) { isVirtual = value; return *this; }
-        constexpr TextureDesc& setClearValue(const Color& value) { clearValue = value; useClearValue = true; return *this; }
-        constexpr TextureDesc& setUseClearValue(bool value) { useClearValue = value; return *this; }
-        constexpr TextureDesc& setInitialState(ResourceStates value) { initialState = value; return *this; }
-        constexpr TextureDesc& setKeepInitialState(bool value) { keepInitialState = value; return *this; }
+         TextureDesc& setIsRenderTarget(bool value) { isRenderTarget = value; return *this; }
+         TextureDesc& setIsUAV(bool value) { isUAV = value; return *this; }
+         TextureDesc& setIsTypeless(bool value) { isTypeless = value; return *this; }
+         TextureDesc& setIsVirtual(bool value) { isVirtual = value; return *this; }
+         TextureDesc& setClearValue(const Color& value) { clearValue = value; useClearValue = true; return *this; }
+         TextureDesc& setUseClearValue(bool value) { useClearValue = value; return *this; }
+         TextureDesc& setInitialState(ResourceStates value) { initialState = value; return *this; }
+         TextureDesc& setKeepInitialState(bool value) { keepInitialState = value; return *this; }
     };
 
 
@@ -77,20 +77,20 @@ namespace BlackPearl {
 
         [[nodiscard]] TextureSlice resolve(const TextureDesc& desc) const;
 
-        constexpr TextureSlice& setOrigin(uint32_t vx = 0, uint32_t vy = 0, uint32_t vz = 0) { x = vx; y = vy; z = vz; return *this; }
-        constexpr TextureSlice& setWidth(uint32_t value) { width = value; return *this; }
-        constexpr TextureSlice& setHeight(uint32_t value) { height = value; return *this; }
-        constexpr TextureSlice& setDepth(uint32_t value) { depth = value; return *this; }
-        constexpr TextureSlice& setSize(uint32_t vx = uint32_t(-1), uint32_t vy = uint32_t(-1), uint32_t vz = uint32_t(-1)) { width = vx; height = vy; depth = vz; return *this; }
-        constexpr TextureSlice& setMipLevel(uint32_t level) { mipLevel = level; return *this; }
-        constexpr TextureSlice& setArraySlice(uint32_t slice) { arraySlice = slice; return *this; }
+         TextureSlice& setOrigin(uint32_t vx = 0, uint32_t vy = 0, uint32_t vz = 0) { x = vx; y = vy; z = vz; return *this; }
+         TextureSlice& setWidth(uint32_t value) { width = value; return *this; }
+         TextureSlice& setHeight(uint32_t value) { height = value; return *this; }
+         TextureSlice& setDepth(uint32_t value) { depth = value; return *this; }
+         TextureSlice& setSize(uint32_t vx = uint32_t(-1), uint32_t vy = uint32_t(-1), uint32_t vz = uint32_t(-1)) { width = vx; height = vy; depth = vz; return *this; }
+         TextureSlice& setMipLevel(uint32_t level) { mipLevel = level; return *this; }
+         TextureSlice& setArraySlice(uint32_t slice) { arraySlice = slice; return *this; }
     };
 
 
     struct TextureSubresourceSet
     {
-        static constexpr uint32_t AllMipLevels = uint32_t(-1);
-        static constexpr uint32_t AllArraySlices = uint32_t(-1);
+        static  uint32_t AllMipLevels ;
+        static  uint32_t AllArraySlices ;
     
         uint32_t baseMipLevel = 0;
         uint32_t numMipLevels = 1;
@@ -119,17 +119,20 @@ namespace BlackPearl {
         }
         bool operator !=(const TextureSubresourceSet& other) const { return !(*this == other); }
     
-        constexpr TextureSubresourceSet& setBaseMipLevel(uint32_t value) { baseMipLevel = value; return *this; }
-        constexpr TextureSubresourceSet& setNumMipLevels(uint32_t value) { numMipLevels = value; return *this; }
-        constexpr TextureSubresourceSet& setMipLevels(uint32_t base, uint32_t num) { baseMipLevel = base; numMipLevels = num; return *this; }
-        constexpr TextureSubresourceSet& setBaseArraySlice(uint32_t value) { baseArraySlice = value; return *this; }
-        constexpr TextureSubresourceSet& setNumArraySlices(uint32_t value) { numArraySlices = value; return *this; }
-        constexpr TextureSubresourceSet& setArraySlices(uint32_t base, uint32_t num) { baseArraySlice = base; numArraySlices = num; return *this; }
+         TextureSubresourceSet& setBaseMipLevel(uint32_t value) { baseMipLevel = value; return *this; }
+         TextureSubresourceSet& setNumMipLevels(uint32_t value) { numMipLevels = value; return *this; }
+         TextureSubresourceSet& setMipLevels(uint32_t base, uint32_t num) { baseMipLevel = base; numMipLevels = num; return *this; }
+         TextureSubresourceSet& setBaseArraySlice(uint32_t value) { baseArraySlice = value; return *this; }
+         TextureSubresourceSet& setNumArraySlices(uint32_t value) { numArraySlices = value; return *this; }
+         TextureSubresourceSet& setArraySlices(uint32_t base, uint32_t num) { baseArraySlice = base; numArraySlices = num; return *this; }
     
         // see the bottom of this file for a specialization of std::hash<TextureSubresourceSet>
     };
 
-static const TextureSubresourceSet AllSubresources = TextureSubresourceSet(0, TextureSubresourceSet::AllMipLevels, 0, TextureSubresourceSet::AllArraySlices);
+
+
+
+    static const TextureSubresourceSet AllSubresources = TextureSubresourceSet(0, TextureSubresourceSet::AllMipLevels, 0, TextureSubresourceSet::AllArraySlices);
 
     class ITexture: public IResource
     {

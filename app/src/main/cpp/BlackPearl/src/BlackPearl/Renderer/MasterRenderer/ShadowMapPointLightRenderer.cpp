@@ -13,10 +13,10 @@ namespace BlackPearl {
 	int ShadowMapPointLightRenderer::s_PCFSamplesCnt = 10.0f;
 
 	//float ShadowMapPointLightRenderer::s_LightSize = 1.0f;
-	//NearPlane ²»¿É¸Ä±ØÐë±£Ö¤ÊÇ1 £¬shaderÖÐÒª×ª»»µ½[0,1]×ø±êÏµ
+	//NearPlane ï¿½ï¿½ï¿½É¸Ä±ï¿½ï¿½ë±£Ö¤ï¿½ï¿½1 ï¿½ï¿½shaderï¿½ï¿½Òª×ªï¿½ï¿½ï¿½ï¿½[0,1]ï¿½ï¿½ï¿½ï¿½Ïµ
 	//CubeMapDepthShader.glsl
 	const float ShadowMapPointLightRenderer::s_NearPlane = 1.0f;
-	//Ö»ÓÐµ±³¡¾°ÖÐÓÐÎïÌåÎ»ÖÃ·¢Éú±ä»¯Ê±£¨light or dynamic objs)²Å»áÖØÐÂ¸üÐÂshadow map
+	//Ö»ï¿½Ðµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î»ï¿½Ã·ï¿½ï¿½ï¿½ï¿½ä»¯Ê±ï¿½ï¿½light or dynamic objs)ï¿½Å»ï¿½ï¿½ï¿½ï¿½Â¸ï¿½ï¿½ï¿½shadow map
 	static bool  s_UpdateShadowMap = false;
 
 	ShadowMapPointLightRenderer::ShadowMapPointLightRenderer()
@@ -46,7 +46,7 @@ namespace BlackPearl {
 		float aspect = (float)s_ShadowMapPointLightWidth / (float)s_ShadowMapPointLightHeight;
 		glm::mat4 pointLightProjection = glm::perspective(glm::radians(s_FOV), aspect, s_NearPlane, s_FarPlane);
 
-			//TODO:¶à¸öPointLights
+			//TODO:ï¿½ï¿½ï¿½PointLights
 		GE_ASSERT(lightSources->GetPointLights().size() >0, "no pointlight found!");
 
 		for (Object* pointLight:lightSources->GetPointLights())
@@ -55,7 +55,10 @@ namespace BlackPearl {
 			
 			m_FrameBuffer->Bind();
 			m_FrameBuffer->AttachCubeMapDepthTexture(shadowMap);
-			glDrawBuffer(GL_NONE);
+#ifdef GE_PLATFORM_WINDOWS
+
+            glDrawBuffer(GL_NONE);
+#endif
 			glReadBuffer(GL_NONE);
 			m_FrameBuffer->UnBind();
 			glm::vec3 lightPos = pointLight->GetComponent<Transform>()->GetPosition();

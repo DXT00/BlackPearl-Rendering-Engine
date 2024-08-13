@@ -1,5 +1,7 @@
 #pragma once
 #include <glm/glm.hpp>
+#include <vector>
+#include <initializer_list>
 namespace BlackPearl {
 
 	class MaterialColor
@@ -13,14 +15,24 @@ namespace BlackPearl {
 
 		};
 		struct Color {
-			glm::vec3 ambientColor = glm::vec3(0.0);
-			glm::vec3 diffuseColor = glm::vec3(0.0);
-			glm::vec3 specularColor = glm::vec3(0.0);
-			glm::vec3 emissionColor = glm::vec3(0.0);
-		//	float intensity = 1.0f;
-			
-		};
-		MaterialColor(){}
+            glm::vec3 ambientColor = glm::vec3(0.0);
+            glm::vec3 diffuseColor = glm::vec3(0.0);
+            glm::vec3 specularColor = glm::vec3(0.0);
+            glm::vec3 emissionColor = glm::vec3(0.0);
+
+            //	float intensity = 1.0f;
+            Color(std::initializer_list<glm::vec3> color) {
+                std::vector<glm::vec3> c = color;
+
+                ambientColor = c[0];
+                diffuseColor = c[1];
+                specularColor = c[2];
+                emissionColor = c[3];
+            }
+            Color(){}
+        };
+		//
+        MaterialColor(){}
 		MaterialColor(Type type, Color & color)
 			:m_Type(type), m_Color(color) {}
 

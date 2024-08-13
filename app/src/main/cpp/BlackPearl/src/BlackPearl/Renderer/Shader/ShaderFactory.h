@@ -3,6 +3,7 @@
 #include "BlackPearl/RHI/RHIShaderLibrary.h"
 #include "BlackPearl/FileSystem/FileSystem.h"
 #include<filesystem>
+#include "glm/glm.hpp"
 namespace BlackPearl {
 
     // Specific blob implementation that owns the data and frees it when deleted.

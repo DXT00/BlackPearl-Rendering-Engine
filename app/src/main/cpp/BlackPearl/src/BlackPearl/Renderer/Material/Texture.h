@@ -1,7 +1,12 @@
 #pragma once
 #include <string>
 #include <vector>
-#include<glad/glad.h>
+#ifdef GE_PLATFORM_ANDRIOD
+#include "GLES3/gl3.h"
+#endif
+#ifdef GE_PLATFORM_WINDOWS
+#include "glad/glad.h"
+#endif
 
 
 namespace BlackPearl {
