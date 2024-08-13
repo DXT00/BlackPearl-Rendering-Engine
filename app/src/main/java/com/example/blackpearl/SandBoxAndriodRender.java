@@ -8,7 +8,7 @@ public class SandBoxAndriodRender implements GLSurfaceView.Renderer{
     SandBoxNativeRenderer mNativeSandboxRender;
     SandBoxAndriodRender()
     {
-
+        mNativeSandboxRender = new SandBoxNativeRenderer();
     }
 
     @Override
