@@ -51,7 +51,7 @@
 #endif
 
 #ifndef MATERIAL_SAMPLER_SLOT 
-#define MATERIAL_SAMPLER_SLOT s0
+#define MATERIAL_SAMPLER_SLOT s128
 #endif
 
 cbuffer c_Material : register(MATERIAL_CB_SLOT)

@@ -30,12 +30,12 @@
 #include <core/shadows.hlsli>
 #include <core/vulkan.hlsli>
 
-cbuffer c_ForwardView : register(b1 VK_DESCRIPTOR_SET(1))
+cbuffer c_ForwardView : register(b257 VK_DESCRIPTOR_SET(1))
 {
     ForwardShadingViewConstants g_ForwardView;
 };
 
-cbuffer c_ForwardLight : register(b2 VK_DESCRIPTOR_SET(1))
+cbuffer c_ForwardLight : register(b258 VK_DESCRIPTOR_SET(1))
 {
     ForwardShadingLightConstants g_ForwardLight;
 };
@@ -45,7 +45,7 @@ cbuffer c_ForwardLight : register(b2 VK_DESCRIPTOR_SET(1))
 // TextureCubeArray t_SpecularLightProbe : register(t12 VK_DESCRIPTOR_SET(2));
 // Texture2D t_EnvironmentBrdf : register(t13 VK_DESCRIPTOR_SET(2));
 
-SamplerState s_ShadowSampler : register(s1 VK_DESCRIPTOR_SET(1));
+SamplerState s_ShadowSampler : register(s129 VK_DESCRIPTOR_SET(1));
 // SamplerState s_LightProbeSampler : register(s2 VK_DESCRIPTOR_SET(2));
 // SamplerState s_BrdfSampler : register(s3 VK_DESCRIPTOR_SET(2));
 
@@ -69,7 +69,9 @@ void main(
 {
     MaterialTextureSample textures = SampleMaterialTexturesAuto(i_vtx.texCoord);
 
-    MaterialSample surfaceMaterial = EvaluateSceneMaterial(i_vtx.normal, i_vtx.tangent, g_Material, textures);
+    //MaterialSample surfaceMaterial = EvaluateSceneMaterial(i_vtx.normal, i_vtx.tangent, g_Material, textures);
+        MaterialSample surfaceMaterial = EvaluateSceneMaterial(i_vtx.normal, float4(1,0,0,1), g_Material, textures);
+
     float3 surfaceWorldPos = i_vtx.pos;
 
     if (!i_isFrontFace)

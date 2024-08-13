@@ -26,7 +26,7 @@
 #include <core/forward_vertex.hlsli>
 #include <core/vulkan.hlsli>
 
-cbuffer c_ForwardView : register(b1 VK_DESCRIPTOR_SET(1))
+cbuffer c_ForwardView : register(b257 VK_DESCRIPTOR_SET(1))
 {
     ForwardShadingViewConstants g_ForwardView;
 };
@@ -46,8 +46,8 @@ void main(
     o_vtx = i_vtx;
 	o_vtx.pos = mul(instanceMatrix, float4(i_vtx.pos, 1.0)).xyz;
     o_vtx.normal = mul(instanceMatrix, float4(i_vtx.normal, 0)).xyz;
-    o_vtx.tangent.xyz = mul(instanceMatrix, float4(i_vtx.tangent.xyz, 0)).xyz;
-    o_vtx.tangent.w = i_vtx.tangent.w;
+    // o_vtx.tangent.xyz = mul(instanceMatrix, float4(i_vtx.tangent.xyz, 0)).xyz;
+    // o_vtx.tangent.w = i_vtx.tangent.w;
 
     float4 worldPos = float4(o_vtx.pos, 1.0);
     float4 tmpPos = mul(worldPos, g_ForwardView.view.matView);

@@ -75,7 +75,7 @@ namespace BlackPearl {
     // verify the packing of BindingLayoutItem for good alignment
     static_assert(sizeof(RHIBindingLayoutItem) == 8, "sizeof(BindingLayoutItem) is supposed to be 8 bytes");
 
-    typedef nvrhi::static_vector<RHIBindingLayoutItem, c_MaxBindingsPerLayout> BindingLayoutItemArray;
+    typedef std::vector<RHIBindingLayoutItem> BindingLayoutItemArray;
 
 
     struct VulkanBindingOffsets

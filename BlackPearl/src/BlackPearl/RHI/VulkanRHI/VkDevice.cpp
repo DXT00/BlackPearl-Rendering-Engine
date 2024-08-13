@@ -1593,7 +1593,28 @@ namespace BlackPearl {
 		query->commandListID = 0;
 	}
 
+	void generateWriteDescriptorData(uint32_t bindingLocation,
+		VkDescriptorType descriptorType,
+		VkDescriptorImageInfo* imageInfo,
+		VkDescriptorBufferInfo* bufferInfo,
+		VkBufferView* bufferView,
+		VkWriteDescriptorSet* descriptorWriteInfo, 
+		BindingSet* ret,int bindingIndex,
+		const void* pNext = nullptr) 
+	{
+		//VkWriteDescriptorSet& descriptorWrites = descriptorWriteInfo[bindingIndex];
+		descriptorWriteInfo[bindingIndex].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+		descriptorWriteInfo[bindingIndex].descriptorType = descriptorType;
+		descriptorWriteInfo[bindingIndex].dstSet = ret->descriptorSet;
+		descriptorWriteInfo[bindingIndex].dstBinding = bindingLocation;
+		descriptorWriteInfo[bindingIndex].dstArrayElement = 0;
+		descriptorWriteInfo[bindingIndex].descriptorCount = 1;
+		descriptorWriteInfo[bindingIndex].pImageInfo = imageInfo;
+		descriptorWriteInfo[bindingIndex].pBufferInfo = bufferInfo;
+		descriptorWriteInfo[bindingIndex].pTexelBufferView = bufferView;
+		descriptorWriteInfo[bindingIndex].pNext = pNext;
 
+	}
 	
 
 	BindingSetHandle Device::createBindingSet(const BindingSetDesc& desc, IBindingLayout* _layout)
@@ -1629,37 +1650,18 @@ namespace BlackPearl {
 		}
 
 		// collect all of the descriptor write data
-		nvrhi::static_vector<VkDescriptorImageInfo, c_MaxBindingsPerLayout> descriptorImageInfo;
-		nvrhi::static_vector<VkDescriptorBufferInfo, c_MaxBindingsPerLayout> descriptorBufferInfo;
-		nvrhi::static_vector<VkWriteDescriptorSet, c_MaxBindingsPerLayout> descriptorWriteInfo;
-		nvrhi::static_vector<VkWriteDescriptorSetAccelerationStructureKHR, c_MaxBindingsPerLayout> accelStructWriteInfo;
+		std::vector<VkDescriptorImageInfo> descriptorImageInfo;
+		std::vector<VkDescriptorBufferInfo> descriptorBufferInfo;
+		VkWriteDescriptorSet descriptorWriteInfo[200];
+		VkDescriptorBufferInfo bufferinfos[100];
+		VkDescriptorImageInfo imageInfos[100];
+		VkBufferViewCreateInfo  bufferViewinfos[100];
+		int descriptorCnt = 0;
+		int bufferDescCnt = 0;
+		int bufferViewDescCnt = 0;
+		int ImageDescCnt = 0;
 
-		auto generateWriteDescriptorData =
-			// generates a vk::WriteDescriptorSet struct in descriptorWriteInfo
-			[&](uint32_t bindingLocation,
-				VkDescriptorType descriptorType,
-				VkDescriptorImageInfo* imageInfo,
-				VkDescriptorBufferInfo* bufferInfo,
-				VkBufferView* bufferView,
-				const void* pNext = nullptr)
-			{
-
-				VkWriteDescriptorSet&& descriptorWrites = {};
-				descriptorWrites.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-				descriptorWrites.descriptorType = descriptorType;
-				descriptorWrites.dstSet = ret->descriptorSet;
-				descriptorWrites.dstBinding = bindingLocation;
-				descriptorWrites.dstArrayElement = 0;
-				descriptorWrites.descriptorCount = 1;
-				descriptorWrites.pImageInfo = imageInfo;
-				descriptorWrites.pBufferInfo = bufferInfo;
-				descriptorWrites.pTexelBufferView = bufferView;
-				descriptorWrites.pNext = pNext;
-
-
-				descriptorWriteInfo.push_back(std::move(descriptorWrites));
-
-			};
+		std::vector<VkWriteDescriptorSetAccelerationStructureKHR> accelStructWriteInfo;
 
 		for (size_t bindingIndex = 0; bindingIndex < desc.bindings.size(); bindingIndex++)
 		{
@@ -1683,15 +1685,15 @@ namespace BlackPearl {
 				const ETexture::TextureSubresourceViewType textureViewType = getTextureViewType(binding.format, texture->desc.format);
 				auto& view = texture->getSubresourceView(subresource, binding.dimension, binding.format, textureViewType);
 
-				VkDescriptorImageInfo& imageInfo = descriptorImageInfo.emplace_back();
-
-				//VkDescriptorImageInfo imageInfo;
-				imageInfo.imageView = view.view;
-				imageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+				imageInfos[ImageDescCnt].imageView = view.view;
+				imageInfos[ImageDescCnt].imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
 
 				generateWriteDescriptorData(layoutBinding.binding,
 					layoutBinding.descriptorType,
-					&imageInfo, nullptr, nullptr);
+					&imageInfos[ImageDescCnt], nullptr,nullptr, descriptorWriteInfo, ret, bindingIndex);
+
+				ImageDescCnt++;
+				descriptorCnt++;
 
 				if (!static_cast<bool>(texture->permanentState))
 					ret->bindingsThatNeedTransitions.push_back(static_cast<uint16_t>(bindingIndex));
@@ -1711,19 +1713,16 @@ namespace BlackPearl {
 				const auto textureViewType = getTextureViewType(binding.format, texture->desc.format);
 				auto& view = texture->getSubresourceView(subresource, binding.dimension, binding.format, textureViewType);
 
-				VkDescriptorImageInfo& imageInfo = descriptorImageInfo.emplace_back();
 
-				//VkDescriptorImageInfo imageInfo{};
-				imageInfo.imageView = view.view;
-				imageInfo.imageLayout = VK_IMAGE_LAYOUT_GENERAL;
+				imageInfos[ImageDescCnt].imageView = view.view;
+				imageInfos[ImageDescCnt].imageLayout = VK_IMAGE_LAYOUT_GENERAL;
 
-				//imageInfo = vk::DescriptorImageInfo()
-				//	.setImageView(view.view)
-				//	.setImageLayout(vk::ImageLayout::eGeneral);
 
 				generateWriteDescriptorData(layoutBinding.binding,
 					layoutBinding.descriptorType,
-					&imageInfo, nullptr, nullptr);
+					&imageInfos[ImageDescCnt], nullptr, nullptr, descriptorWriteInfo, ret, bindingIndex);
+				ImageDescCnt++;
+				descriptorCnt++;
 
 				if (!static_cast<bool>(texture->permanentState))
 					ret->bindingsThatNeedTransitions.push_back(static_cast<uint16_t>(bindingIndex));
@@ -1732,9 +1731,7 @@ namespace BlackPearl {
 						ResourceStates::UnorderedAccess,
 						true, texture->desc.debugName, m_Context.messageCallback);
 			}
-
 			break;
-
 			case RHIResourceType::RT_TypedBuffer_SRV:
 			case RHIResourceType::RT_TypedBuffer_UAV:
 			{
@@ -1766,31 +1763,24 @@ namespace BlackPearl {
 				{
 					assert(format != Format::UNKNOWN);
 
+					bufferViewinfos[bufferViewDescCnt].sType = VK_STRUCTURE_TYPE_BUFFER_VIEW_CREATE_INFO;
+					bufferViewinfos[bufferViewDescCnt].buffer = buffer->buffer;
+					bufferViewinfos[bufferViewDescCnt].offset = range.byteOffset;
+					bufferViewinfos[bufferViewDescCnt].range = range.byteSize;
+					bufferViewinfos[bufferViewDescCnt].format = vkformat;
 
-					/*			auto bufferViewInfo = vk::BufferViewCreateInfo()
-									.setBuffer(buffer->buffer)
-									.setOffset(range.byteOffset)
-									.setRange(range.byteSize)
-									.setFormat(vkformat);*/
-
-					VkBufferViewCreateInfo bufferViewInfo{};
-					bufferViewInfo.sType = VK_STRUCTURE_TYPE_BUFFER_VIEW_CREATE_INFO;
-					bufferViewInfo.buffer = buffer->buffer;
-					bufferViewInfo.offset = range.byteOffset;
-					bufferViewInfo.range = range.byteSize;
-					bufferViewInfo.format = vkformat;
-
-					//vkCreateBufferView(m_Context.device, &bufferViewInfo, m_Context.allocationCallbacks, &bufferViewRef);
-					if (vkCreateBufferView(m_Context.device, &bufferViewInfo, m_Context.allocationCallbacks, &bufferViewRef) != VK_SUCCESS) {
+					if (vkCreateBufferView(m_Context.device, &bufferViewinfos[bufferViewDescCnt], m_Context.allocationCallbacks, &bufferViewRef) != VK_SUCCESS) {
 						throw std::runtime_error("failed to create buffer view!");
 					}
-					/*		res = m_Context.device.createBufferView(&bufferViewInfo, m_Context.allocationCallbacks, &bufferViewRef);
-							ASSERT_VK_OK(res);*/
 				}
 
 				generateWriteDescriptorData(layoutBinding.binding,
 					layoutBinding.descriptorType,
-					nullptr, nullptr, &bufferViewRef);
+					nullptr, nullptr, &bufferViewRef, descriptorWriteInfo, ret, bindingIndex);
+
+				bufferViewDescCnt++;
+				descriptorCnt++;
+
 
 				if (!static_cast<bool>(buffer->permanentState))
 					ret->bindingsThatNeedTransitions.push_back(static_cast<uint16_t>(bindingIndex));
@@ -1808,7 +1798,7 @@ namespace BlackPearl {
 			case RHIResourceType::RT_ConstantBuffer:
 			case RHIResourceType::RT_VolatileConstantBuffer:
 			{
-				const auto buffer = dynamic_cast<Buffer*>(binding.resourceHandle);
+				Buffer* buffer = static_cast<Buffer*>(binding.resourceHandle);
 
 				if (binding.type == RHIResourceType::RT_StructuredBuffer_UAV || binding.type == RHIResourceType::RT_RawBuffer_UAV)
 					assert(buffer->desc.canHaveUAVs);
@@ -1819,21 +1809,26 @@ namespace BlackPearl {
 
 				const auto range = binding.range.resolve(buffer->desc);
 
-				auto& bufferInfo = descriptorBufferInfo.emplace_back();
-				//VkDescriptorBufferInfo bufferInfo;
-				bufferInfo.buffer = buffer->buffer;
-				bufferInfo.offset = range.byteOffset;
-				bufferInfo.range = range.byteSize;
-
-				/*           bufferInfo = vk::DescriptorBufferInfo()
-							   .setBuffer(buffer->buffer)
-							   .setOffset(range.byteOffset)
-							   .setRange(range.byteSize);*/
-
+				bufferinfos[bufferDescCnt].buffer = buffer->buffer;
+				bufferinfos[bufferDescCnt].offset = range.byteOffset;
+				bufferinfos[bufferDescCnt].range = range.byteSize;
+			
 				assert(buffer->buffer);
-				generateWriteDescriptorData(layoutBinding.binding,
-					layoutBinding.descriptorType,
-					nullptr, &bufferInfo, nullptr);
+
+				descriptorWriteInfo[bindingIndex].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+				descriptorWriteInfo[bindingIndex].descriptorType = layoutBinding.descriptorType;
+				descriptorWriteInfo[bindingIndex].dstSet = ret->descriptorSet;
+				descriptorWriteInfo[bindingIndex].dstBinding = layoutBinding.binding;
+				descriptorWriteInfo[bindingIndex].dstArrayElement = 0;
+				descriptorWriteInfo[bindingIndex].descriptorCount = 1;
+				descriptorWriteInfo[bindingIndex].pImageInfo = nullptr;
+				descriptorWriteInfo[bindingIndex].pBufferInfo = &bufferinfos[bufferDescCnt];
+				descriptorWriteInfo[bindingIndex].pTexelBufferView = nullptr;
+				descriptorWriteInfo[bindingIndex].pNext = nullptr;
+
+				bufferDescCnt++;
+				descriptorCnt++;
+
 
 				if (binding.type == RHIResourceType::RT_VolatileConstantBuffer)
 				{
@@ -1866,15 +1861,25 @@ namespace BlackPearl {
 			{
 				const auto sampler = dynamic_cast<Sampler*>(binding.resourceHandle);
 
-				auto& imageInfo = descriptorImageInfo.emplace_back();
+				//VkDescriptorImageInfo imageInfo{};
 
-				imageInfo.sampler = sampler->sampler;
-				//imageInfo = vk::DescriptorImageInfo()
-				//	.setSampler(sampler->sampler);
+				//imageInfo.sampler = sampler->sampler;
+				////imageInfo = vk::DescriptorImageInfo()
+				////	.setSampler(sampler->sampler);
+				//descriptorImageInfo.push_back(imageInfo);
+
+				imageInfos[ImageDescCnt].sampler = sampler->sampler;
+
+
+
 
 				generateWriteDescriptorData(layoutBinding.binding,
 					layoutBinding.descriptorType,
-					&imageInfo, nullptr, nullptr);
+					&imageInfos[ImageDescCnt], nullptr, nullptr, descriptorWriteInfo, ret, bindingIndex);
+
+				ImageDescCnt++;
+				descriptorCnt++;
+
 			}
 
 			break;
@@ -1908,7 +1913,7 @@ namespace BlackPearl {
 		}
 
 		//m_Context.device.updateDescriptorSets(uint32_t(descriptorWriteInfo.size()), descriptorWriteInfo.data(), 0, nullptr);
-		vkUpdateDescriptorSets(m_Context.device, uint32_t(descriptorWriteInfo.size()), descriptorWriteInfo.data(), 0, nullptr);
+		vkUpdateDescriptorSets(m_Context.device, uint32_t(descriptorCnt), descriptorWriteInfo, 0, nullptr);
 
 
 		return BindingSetHandle::Create(ret);

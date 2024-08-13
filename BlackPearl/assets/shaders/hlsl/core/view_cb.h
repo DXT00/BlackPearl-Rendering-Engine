@@ -22,6 +22,7 @@
 
 #ifndef VIEW_CB_H
 #define VIEW_CB_H
+#include "align.h"
 //#ifdef GE_SHADERCOMPILE
 //
 //#else
@@ -43,8 +44,8 @@ struct PlanarViewConstants
     //float4x4    matClipToViewNoOffset;
     //float4x4    matClipToWorldNoOffset;
 
-    float2      viewportOrigin;
-    float2      viewportSize;
+    ALIGN(8) float2      viewportOrigin;
+    ALIGN(8) float2      viewportSize;
 
     //float2      viewportSizeInv;
     //float2      pixelOffset;
@@ -57,11 +58,11 @@ struct PlanarViewConstants
 
     //float4      cameraDirectionOrPosition;
 
-    float4x4 matProjectionView;
-    float4x4 matView;
-    float4x4 matProjection;
-    float3 cameraPos;
-    float3 cameraRot;
+    ALIGN(16) float4x4 matProjectionView;
+    ALIGN(16) float4x4 matView;
+    ALIGN(16) float4x4 matProjection;
+    ALIGN(16) float3 cameraPos;
+    ALIGN(16) float3 cameraRot;
 
 };
 

@@ -115,7 +115,8 @@ namespace BlackPearl {
 
         state.pipeline = pipeline;
         //state.bindings = { materialBindingSet, m_ViewBindingSet, context.lightBindingSet };
-        state.bindings = { materialBindingSet, m_ViewBindingSet, m_LightBinding };
+       // state.bindings = { materialBindingSet, m_ViewBindingSet, m_LightBinding };
+        state.bindings = { materialBindingSet, m_ViewBindingSet };
 
 
         return true;
@@ -327,7 +328,7 @@ namespace BlackPearl {
             GetVertexAttributeDesc(VertexAttribute::Normal, "NORMAL", 3),
             //TODO::
            // GetVertexAttributeDesc(VertexAttribute::Tangent, "TANGENT", 4),
-            //GetVertexAttributeDesc(VertexAttribute::Transform, "TRANSFORM", 5),
+            GetVertexAttributeDesc(VertexAttribute::Transform, "TRANSFORM", 4),
         };
 
         return m_Device->createInputLayout(inputDescs, uint32_t(std::size(inputDescs)), vertexShader);
@@ -569,7 +570,7 @@ namespace BlackPearl {
                 slot++;
             }
             //Transform
-            state.vertexBuffers.push_back({ buffers->instanceBuffer, 5, 0 });
+            state.vertexBuffers.push_back({ buffers->instanceBuffer, slot, 0 });
 
 
         }

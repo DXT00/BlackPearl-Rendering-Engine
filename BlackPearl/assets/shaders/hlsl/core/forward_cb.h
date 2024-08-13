@@ -34,6 +34,7 @@
 #define FORWARD_MAX_LIGHTS 16
 #define FORWARD_MAX_SHADOWS 16
 #define FORWARD_MAX_LIGHT_PROBES 16
+#include "align.h"
 struct ForwardShadingViewConstants
 {
     PlanarViewConstants view;
@@ -41,14 +42,14 @@ struct ForwardShadingViewConstants
 
 struct ForwardShadingLightConstants
 {
-    float2      shadowMapTextureSize;
-    float2      shadowMapTextureSizeInv;
-    float4      ambientColorTop;
-    float4      ambientColorBottom;
+    ALIGN(8) float2      shadowMapTextureSize;
+    ALIGN(8) float2      shadowMapTextureSizeInv;
+    ALIGN(16) float4      ambientColorTop;
+    ALIGN(16) float4      ambientColorBottom;
 
-    uint2       padding;
-    uint        numLights;
-    uint        numLightProbes;
+    ALIGN(8) uint2       padding;
+    ALIGN(4) uint        numLights;
+    ALIGN(4) uint        numLightProbes;
 
     LightConstants lights[FORWARD_MAX_LIGHTS];
     ShadowConstants shadows[FORWARD_MAX_SHADOWS];

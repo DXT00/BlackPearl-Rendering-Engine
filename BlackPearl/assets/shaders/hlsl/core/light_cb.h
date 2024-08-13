@@ -22,7 +22,7 @@
 
 #ifndef LIGHT_CB_H
 #define LIGHT_CB_H
-
+#include "align.h"
 #include "light_types.h"
 //#ifdef GE_SHADERCOMPILE
 //
@@ -39,53 +39,53 @@
 //#endif
 struct ShadowConstants
 {
-    float4x4 matWorldToUvzwShadow;
+    ALIGN(16) float4x4 matWorldToUvzwShadow;
 
-    float2 shadowFadeScale;
-    float2 shadowFadeBias;
+    ALIGN(8) float2 shadowFadeScale;
+    ALIGN(8) float2 shadowFadeBias;
 
-    float2 shadowMapCenterUV;
-    float shadowFalloffDistance;
-    int shadowMapArrayIndex;
+    ALIGN(8) float2 shadowMapCenterUV;
+    ALIGN(4) float shadowFalloffDistance;
+    ALIGN(4) int shadowMapArrayIndex;
 
-    float2 shadowMapSizeTexels;
-    float2 shadowMapSizeTexelsInv;
+    ALIGN(8) float2 shadowMapSizeTexels;
+    ALIGN(8) float2 shadowMapSizeTexelsInv;
 };
 
 struct LightConstants
 {
-    float3 direction;
-    int lightType;
+    ALIGN(16) float3 direction;
+    ALIGN(4) int lightType;
 
-    float3 position;
-    float radius;
+    ALIGN(16) float3 position;
+    ALIGN(4) float radius;
 
-    float3 color;
-    float intensity; // illuminance (lm/m2) for directional lights, luminous intensity (lm/sr) for positional lights
+    ALIGN(16) float3 color;
+    ALIGN(4) float intensity; // illuminance (lm/m2) for directional lights, luminous intensity (lm/sr) for positional lights
 
-    float angularSizeOrInvRange;   // angular size for directional lights, 1/range for spot and point lights
-    float innerAngle;
-    float outerAngle;
-    float outOfBoundsShadow;
+    ALIGN(4) float angularSizeOrInvRange;   // angular size for directional lights, 1/range for spot and point lights
+    ALIGN(4) float innerAngle;
+    ALIGN(4) float outerAngle;
+    ALIGN(4) float outOfBoundsShadow;
 
-    int4 shadowCascades;
-    int4 perObjectShadows;
+    ALIGN(4) int4 shadowCascades;
+    ALIGN(4) int4 perObjectShadows;
 
-    int4 shadowChannel;
+    ALIGN(4) int4 shadowChannel;
 };
 
 struct LightProbeConstants
 {
-    float diffuseScale;
-    float specularScale;
-    float mipLevels;
-    float padding1;
+    ALIGN(4) float diffuseScale;
+    ALIGN(4) float specularScale;
+    ALIGN(4) float mipLevels;
+    ALIGN(4) float padding1;
 
-    uint diffuseArrayIndex;
-    uint specularArrayIndex;
-    uint2 padding2;
+    ALIGN(4) uint diffuseArrayIndex;
+    ALIGN(4) uint specularArrayIndex;
+    ALIGN(8) uint2 padding2;
 
-    float4 frustumPlanes[6];
+    ALIGN(16) float4 frustumPlanes[6];
 };
 
 #endif // LIGHT_CB_H

@@ -252,7 +252,7 @@ namespace BlackPearl {
     static_assert(sizeof(BindingSetItem) == 32, "sizeof(BindingSetItem) is supposed to be 32 bytes");
 
     // describes the resource bindings for a single pipeline stage
-    typedef nvrhi::static_vector<BindingSetItem, c_MaxBindingsPerLayout> BindingSetItemArray;
+    typedef std::vector<BindingSetItem> BindingSetItemArray;
 
     // describes a set of bindings across all stages of the pipeline
     // (not all bindings need to be present in the set, but the set must be defined by a single BindingSetItem object)

@@ -1152,8 +1152,8 @@ namespace BlackPearl {
 	}
 	void CommandList::_bindBindingSets(VkPipelineBindPoint bindPoint, VkPipelineLayout pipelineLayout, const BindingSetVector& bindings)
 	{
-		nvrhi::static_vector<uint32_t, c_MaxVolatileConstantBuffers> dynamicOffsets;
-		nvrhi::static_vector<VkDescriptorSet, c_MaxBindingLayouts> descriptorSets;
+		std::vector<uint32_t> dynamicOffsets;
+		std::vector<VkDescriptorSet> descriptorSets;
 
 		for (const auto& bindingSetHandle : bindings)
 		{
