@@ -95,7 +95,7 @@ namespace BlackPearl {
                 continue;
             }
 
-            const auto bindingLocation = registerOffset + binding.slot;//
+            const auto bindingLocation =  binding.slot;//registerOffset +
 
             VkDescriptorSetLayoutBinding descriptorSetLayoutBinding{};
 

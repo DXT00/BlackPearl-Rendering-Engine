@@ -30,12 +30,12 @@
 #include <core/shadows.hlsli>
 #include <core/vulkan.hlsli>
 
-cbuffer c_ForwardView : register(b257 VK_DESCRIPTOR_SET(1))
+cbuffer c_ForwardView : register(b7)
 {
     ForwardShadingViewConstants g_ForwardView;
 };
 
-cbuffer c_ForwardLight : register(b258 VK_DESCRIPTOR_SET(1))
+cbuffer c_ForwardLight : register(b8)
 {
     ForwardShadingLightConstants g_ForwardLight;
 };
@@ -45,7 +45,7 @@ cbuffer c_ForwardLight : register(b258 VK_DESCRIPTOR_SET(1))
 // TextureCubeArray t_SpecularLightProbe : register(t12 VK_DESCRIPTOR_SET(2));
 // Texture2D t_EnvironmentBrdf : register(t13 VK_DESCRIPTOR_SET(2));
 
-SamplerState s_ShadowSampler : register(s129 VK_DESCRIPTOR_SET(1));
+SamplerState s_ShadowSampler : register(s9);
 // SamplerState s_LightProbeSampler : register(s2 VK_DESCRIPTOR_SET(2));
 // SamplerState s_BrdfSampler : register(s3 VK_DESCRIPTOR_SET(2));
 
@@ -60,7 +60,7 @@ float3 GetIncidentVector(float4 directionOrPosition, float3 surfacePos)
 void main(
     in float4 i_position : SV_Position,
     in SceneVertex i_vtx,
-    in bool i_isFrontFace : SV_IsFrontFace,
+   // in bool i_isFrontFace : SV_IsFrontFace,
     out float4 o_color : SV_Target0
 #if TRANSMISSIVE_MATERIAL
     , out float4 o_backgroundBlendFactor : SV_Target1
@@ -74,7 +74,7 @@ void main(
 
     float3 surfaceWorldPos = i_vtx.pos;
 
-    if (!i_isFrontFace)
+    //if (!i_isFrontFace)
         surfaceMaterial.shadingNormal = -surfaceMaterial.shadingNormal;
 
     if (g_Material.domain != MaterialDomain_Opaque)

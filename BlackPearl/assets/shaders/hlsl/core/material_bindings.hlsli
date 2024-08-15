@@ -23,7 +23,7 @@
 // Bindings - can be overriden before including this file if necessary
 
 #ifndef MATERIAL_CB_SLOT 
-#define MATERIAL_CB_SLOT b0
+#define MATERIAL_CB_SLOT b10
 #endif
 
 #ifndef MATERIAL_DIFFUSE_SLOT 
@@ -51,7 +51,7 @@
 #endif
 
 #ifndef MATERIAL_SAMPLER_SLOT 
-#define MATERIAL_SAMPLER_SLOT s128
+#define MATERIAL_SAMPLER_SLOT s6
 #endif
 
 cbuffer c_Material : register(MATERIAL_CB_SLOT)

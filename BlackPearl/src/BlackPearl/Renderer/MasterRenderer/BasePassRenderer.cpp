@@ -48,7 +48,7 @@ namespace BlackPearl {
 
         m_ViewBindingLayout = CreateViewBindingLayout();
         m_ViewBindingSet = CreateViewBindingSet();
-        m_LightBindingLayout = CreateLightBindingLayout();
+        //m_LightBindingLayout = CreateLightBindingLayout();
 
         m_DrawStrategy = DBG_NEW InstancedOpaqueDrawStrategy();
 
@@ -292,7 +292,9 @@ namespace BlackPearl {
 
     ShaderHandle BasePassRenderer::CreateVertexShader(const std::shared_ptr<ShaderFactory>& shaderFactory, const CreateParameters& params)
     {
-        return shaderFactory->CreateShader("hlsl/test/forward_test_vs.hlsl", "main", nullptr, ShaderType::Vertex);
+        std::vector<ShaderMacro> Macros;
+        Macros.push_back(ShaderMacro("COMPILE_SHADER", "1"));
+        return shaderFactory->CreateShader("hlsl/test/forward_test_vs.hlsl", "main", &Macros, ShaderType::Vertex);
     }
 
     ShaderHandle BasePassRenderer::CreateGeometryShader(const std::shared_ptr<ShaderFactory>& shaderFactory, const CreateParameters& params)
@@ -317,7 +319,7 @@ namespace BlackPearl {
     {
         std::vector<ShaderMacro> Macros;
         Macros.push_back(ShaderMacro("TRANSMISSIVE_MATERIAL", transmissiveMaterial ? "1" : "0"));
-
+        Macros.push_back(ShaderMacro("COMPILE_SHADER", "1"));
         return shaderFactory->CreateShader("hlsl/test/forward_test_ps.hlsl", "main", &Macros, ShaderType::Pixel);
     }
 
@@ -348,9 +350,9 @@ namespace BlackPearl {
             //RHIBindingLayoutItem::RT_VolatileConstantBuffer(1),
             //RHIBindingLayoutItem::RT_VolatileConstantBuffer(2),
 
-            RHIBindingLayoutItem::RT_ConstantBuffer(1),
-            RHIBindingLayoutItem::RT_ConstantBuffer(2),
-            RHIBindingLayoutItem::RT_Sampler(1)
+            RHIBindingLayoutItem::RT_ConstantBuffer(7),
+            RHIBindingLayoutItem::RT_ConstantBuffer(8),
+            RHIBindingLayoutItem::RT_Sampler(9)
         };                        
 
         return m_Device->createBindingLayout(viewLayoutDesc);
@@ -360,9 +362,9 @@ namespace BlackPearl {
     {
        BindingSetDesc bindingSetDesc;
         bindingSetDesc.bindings = {
-            BindingSetItem::ConstantBuffer(1, m_ForwardViewCB),
-            BindingSetItem::ConstantBuffer(2, m_ForwardLightCB),
-            BindingSetItem::Sampler(1, m_ShadowSampler)
+            BindingSetItem::ConstantBuffer(7, m_ForwardViewCB),
+            BindingSetItem::ConstantBuffer(8, m_ForwardLightCB),
+            BindingSetItem::Sampler(9, m_ShadowSampler)
         };
         bindingSetDesc.trackLiveness = m_TrackLiveness;
 
@@ -405,14 +407,14 @@ namespace BlackPearl {
     std::shared_ptr<MaterialBindingCache> BasePassRenderer::CreateMaterialBindingCache()
     {
         std::vector<MaterialResourceBinding> materialBindings = {
-               { MaterialResource::ConstantBuffer, 0 },
+               { MaterialResource::ConstantBuffer, 10 },
                { MaterialResource::DiffuseTexture, 0 },
                { MaterialResource::SpecularTexture, 1 },
                { MaterialResource::NormalTexture, 2 },
                { MaterialResource::EmissiveTexture, 3 },
                { MaterialResource::OcclusionTexture, 4 },
                { MaterialResource::TransmissionTexture, 5 },
-               { MaterialResource::Sampler, 0 },
+               { MaterialResource::Sampler, 6 },
         };
 
         return std::make_shared<MaterialBindingCache>(
