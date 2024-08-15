@@ -40,8 +40,11 @@ namespace BlackPearl {
         m_ShadowSampler = m_Device->createSampler(samplerDesc);
 
         //constant uniform variables
-        m_ForwardViewCB = m_Device->createBuffer(RHIUtils::CreateVolatileConstantBufferDesc(sizeof(ForwardShadingViewConstants), "ForwardShadingViewConstants", params.numConstantBufferVersions));
-        m_ForwardLightCB = m_Device->createBuffer(RHIUtils::CreateVolatileConstantBufferDesc(sizeof(ForwardShadingLightConstants), "ForwardShadingLightConstants", params.numConstantBufferVersions));
+       /* m_ForwardViewCB = m_Device->createBuffer(RHIUtils::CreateVolatileConstantBufferDesc(sizeof(ForwardShadingViewConstants), "ForwardShadingViewConstants", params.numConstantBufferVersions));
+        m_ForwardLightCB = m_Device->createBuffer(RHIUtils::CreateVolatileConstantBufferDesc(sizeof(ForwardShadingLightConstants), "ForwardShadingLightConstants", params.numConstantBufferVersions));*/
+
+        m_ForwardViewCB = m_Device->createBuffer(RHIUtils::CreateStaticConstantBufferDesc(sizeof(ForwardShadingViewConstants), "ForwardShadingViewConstants"));
+        m_ForwardLightCB = m_Device->createBuffer(RHIUtils::CreateStaticConstantBufferDesc(sizeof(ForwardShadingLightConstants), "ForwardShadingLightConstants"));
 
         m_ViewBindingLayout = CreateViewBindingLayout();
         m_ViewBindingSet = CreateViewBindingSet();
@@ -342,8 +345,11 @@ namespace BlackPearl {
         RHIBindingLayoutDesc viewLayoutDesc;
         viewLayoutDesc.visibility = ShaderType::All;
         viewLayoutDesc.bindings = {
-            RHIBindingLayoutItem::RT_VolatileConstantBuffer(1),
-            RHIBindingLayoutItem::RT_VolatileConstantBuffer(2),
+            //RHIBindingLayoutItem::RT_VolatileConstantBuffer(1),
+            //RHIBindingLayoutItem::RT_VolatileConstantBuffer(2),
+
+            RHIBindingLayoutItem::RT_ConstantBuffer(1),
+            RHIBindingLayoutItem::RT_ConstantBuffer(2),
             RHIBindingLayoutItem::RT_Sampler(1)
         };                        
 

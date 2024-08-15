@@ -672,6 +672,7 @@ namespace BlackPearl {
 	}
 	void CommandList::endTimerQuery(ITimerQuery* query)
 	{
+
 	}
 	void CommandList::beginMarker(const char* name)
 	{
@@ -816,13 +817,17 @@ namespace BlackPearl {
 			_commitBarriersInternal();
 		}
 	}
-	ResourceStates CommandList::getTextureSubresourceState(ITexture* texture, uint32_t arraySlice, uint32_t mipLevel)
+	ResourceStates CommandList::getTextureSubresourceState(ITexture* _texture, uint32_t arraySlice, uint32_t mipLevel)
 	{
-		return ResourceStates();
+		ETexture* texture = checked_cast<ETexture*>(_texture);
+
+		return m_StateTracker.getTextureSubresourceState(texture, arraySlice, mipLevel);
 	}
-	ResourceStates CommandList::getBufferState(IBuffer* buffer)
+	ResourceStates CommandList::getBufferState(IBuffer* _buffer)
 	{
-		return ResourceStates();
+		Buffer* buffer = checked_cast<Buffer*>(_buffer);
+
+		return m_StateTracker.getBufferState(buffer);
 	}
 	void CommandList::_updateGraphicsVolatileBuffers()
 	{
@@ -860,15 +865,22 @@ namespace BlackPearl {
 	void CommandList::_updateRayTracingVolatileBuffers()
 	{
 	}
-	void CommandList::_requireTextureState(ITexture* texture, TextureSubresourceSet subresources, ResourceStates state)
+	void CommandList::_requireTextureState(ITexture* _texture, TextureSubresourceSet subresources, ResourceStates state)
 	{
+		ETexture* texture = checked_cast<ETexture*>(_texture);
+
+		m_StateTracker.requireTextureState(texture, subresources, state);
 	}
-	void CommandList::_requireBufferState(IBuffer* buffer, ResourceStates state)
+	void CommandList::_requireBufferState(IBuffer* _buffer, ResourceStates state)
 	{
+		Buffer* buffer = checked_cast<Buffer*>(_buffer);
+
+		m_StateTracker.requireBufferState(buffer, state);
 	}
 	bool CommandList::_anyBarriers() const
 	{
-		return false;
+		return !m_StateTracker.getBufferBarriers().empty() || !m_StateTracker.getTextureBarriers().empty();
+
 	}
 	void CommandList::_commitBarriersInternal()
 	{
@@ -1202,10 +1214,18 @@ namespace BlackPearl {
 			//	/* firstSet = */ 0, uint32_t(descriptorSets.size()), descriptorSets.data(),
 			//	uint32_t(dynamicOffsets.size()), dynamicOffsets.data());
 
+			if (dynamicOffsets.empty()) {
+				vkCmdBindDescriptorSets(m_CurrentCmdBuf->cmdBuf, bindPoint, pipelineLayout,
+					/* firstSet = */ 0, uint32_t(descriptorSets.size()), descriptorSets.data(),
+					0, nullptr);
+			}
+			else {
+				vkCmdBindDescriptorSets(m_CurrentCmdBuf->cmdBuf, bindPoint, pipelineLayout,
+					/* firstSet = */ 0, uint32_t(descriptorSets.size()), descriptorSets.data(),
+					uint32_t(dynamicOffsets.size()), dynamicOffsets.data());
+			}
 
-			vkCmdBindDescriptorSets(m_CurrentCmdBuf->cmdBuf, bindPoint, pipelineLayout,
-				/* firstSet = */ 0, uint32_t(descriptorSets.size()), descriptorSets.data(),
-				uint32_t(dynamicOffsets.size()), dynamicOffsets.data());
+
 		}
 	}
 	void CommandList::_endRenderPass()
