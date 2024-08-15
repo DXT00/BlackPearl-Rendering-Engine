@@ -43,8 +43,8 @@ namespace BlackPearl {
        /* m_ForwardViewCB = m_Device->createBuffer(RHIUtils::CreateVolatileConstantBufferDesc(sizeof(ForwardShadingViewConstants), "ForwardShadingViewConstants", params.numConstantBufferVersions));
         m_ForwardLightCB = m_Device->createBuffer(RHIUtils::CreateVolatileConstantBufferDesc(sizeof(ForwardShadingLightConstants), "ForwardShadingLightConstants", params.numConstantBufferVersions));*/
 
-        m_ForwardViewCB = m_Device->createBuffer(RHIUtils::CreateStaticConstantBufferDesc(sizeof(ForwardShadingViewConstants), "ForwardShadingViewConstants"));
-        m_ForwardLightCB = m_Device->createBuffer(RHIUtils::CreateStaticConstantBufferDesc(sizeof(ForwardShadingLightConstants), "ForwardShadingLightConstants"));
+        m_ForwardViewCB = m_Device->createBuffer(RHIUtils::CreateVolatileConstantBufferDesc(sizeof(ForwardShadingViewConstants), "ForwardShadingViewConstants", params.numConstantBufferVersions));
+        m_ForwardLightCB = m_Device->createBuffer(RHIUtils::CreateVolatileConstantBufferDesc(sizeof(ForwardShadingLightConstants), "ForwardShadingLightConstants", params.numConstantBufferVersions));
 
         m_ViewBindingLayout = CreateViewBindingLayout();
         m_ViewBindingSet = CreateViewBindingSet();
@@ -350,8 +350,8 @@ namespace BlackPearl {
             //RHIBindingLayoutItem::RT_VolatileConstantBuffer(1),
             //RHIBindingLayoutItem::RT_VolatileConstantBuffer(2),
 
-            RHIBindingLayoutItem::RT_ConstantBuffer(7),
-            RHIBindingLayoutItem::RT_ConstantBuffer(8),
+            RHIBindingLayoutItem::RT_VolatileConstantBuffer(7),
+            RHIBindingLayoutItem::RT_VolatileConstantBuffer(8),
             RHIBindingLayoutItem::RT_Sampler(9)
         };                        
 
@@ -528,6 +528,8 @@ namespace BlackPearl {
 
         if (!buffers->vertexBuffer) {
             buffers->vertexBuffer = m_Device->createBuffer(buffers->vertexBufferDesc);
+            commandList->beginTrackingBufferState(buffers->vertexBuffer, ResourceStates::Common);
+
             //TODO:: ÊÊÅä²»Í¬µÄvertex attribute
             uint32_t slot = 0;
             state.vertexBuffers = {};
@@ -580,7 +582,13 @@ namespace BlackPearl {
             //Transform
             state.vertexBuffers.push_back({ buffers->instanceBuffer, slot, 0 });
 
+            ResourceStates state = ResourceStates::VertexBuffer | ResourceStates::ShaderResource;
 
+            if (buffers->vertexBufferDesc.isAccelStructBuildInput)
+                state = state | ResourceStates::AccelStructBuildInput;
+
+            commandList->setPermanentBufferState(buffers->vertexBuffer, state);
+            commandList->commitBarriers();
         }
     }
 
