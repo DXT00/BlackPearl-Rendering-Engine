@@ -350,9 +350,9 @@ namespace BlackPearl {
             //RHIBindingLayoutItem::RT_VolatileConstantBuffer(1),
             //RHIBindingLayoutItem::RT_VolatileConstantBuffer(2),
 
-            RHIBindingLayoutItem::RT_VolatileConstantBuffer(7),
-            RHIBindingLayoutItem::RT_VolatileConstantBuffer(8),
-            RHIBindingLayoutItem::RT_Sampler(9)
+            RHIBindingLayoutItem::RT_VolatileConstantBuffer(1),
+            RHIBindingLayoutItem::RT_VolatileConstantBuffer(2),
+            RHIBindingLayoutItem::RT_Sampler(3)
         };                        
 
         return m_Device->createBindingLayout(viewLayoutDesc);
@@ -407,7 +407,7 @@ namespace BlackPearl {
     std::shared_ptr<MaterialBindingCache> BasePassRenderer::CreateMaterialBindingCache()
     {
         std::vector<MaterialResourceBinding> materialBindings = {
-               { MaterialResource::ConstantBuffer, 10 },
+               { MaterialResource::ConstantBuffer, 7 },
                { MaterialResource::DiffuseTexture, 0 },
                { MaterialResource::SpecularTexture, 1 },
                { MaterialResource::NormalTexture, 2 },

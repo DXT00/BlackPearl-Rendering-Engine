@@ -221,13 +221,13 @@ string buildCompilerCommandLine(const CompilerOptions& options, const fs::path& 
 	{
 		ss << "-spirv ";
 
-		for (int space = 0; space < 10; space++)
+	/*	for (int space = 0; space < 10; space++)
 		{
 			ss << "-fvk-t-shift " << g_Options.vulkanTextureShift << " " << space << " ";
 			ss << "-fvk-s-shift " << g_Options.vulkanSamplerShift << " " << space << " ";
 			ss << "-fvk-b-shift " << g_Options.vulkanConstantShift << " " << space << " ";
 			ss << "-fvk-u-shift " << g_Options.vulkanUavShift << " " << space << " ";
-		}
+		}*/
 	}
 	
 	return ss.str();

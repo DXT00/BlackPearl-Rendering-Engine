@@ -23,7 +23,7 @@
 // Bindings - can be overriden before including this file if necessary
 
 #ifndef MATERIAL_CB_SLOT 
-#define MATERIAL_CB_SLOT b10
+#define MATERIAL_CB_SLOT b7
 #endif
 
 #ifndef MATERIAL_DIFFUSE_SLOT 

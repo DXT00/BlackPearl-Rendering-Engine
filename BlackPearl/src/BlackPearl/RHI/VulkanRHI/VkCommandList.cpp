@@ -1172,7 +1172,7 @@ namespace BlackPearl {
 			const BindingSetDesc* desc = bindingSetHandle->getDesc();
 			if (desc)
 			{
-				BindingSet* bindingSet = dynamic_cast<BindingSet*>(bindingSetHandle);
+				BindingSet* bindingSet = static_cast<BindingSet*>(bindingSetHandle);
 				descriptorSets.push_back(bindingSet->descriptorSet);
 
 				for (Buffer* constnatBuffer : bindingSet->volatileConstantBuffers)
