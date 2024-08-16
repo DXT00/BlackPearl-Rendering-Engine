@@ -544,7 +544,6 @@ namespace BlackPearl {
 			}
 			vkCmdBindVertexBuffers(m_CurrentCmdBuf->cmdBuf, 0, maxVbIndex + 1, vertexBuffers, vertexBufferOffsets);
 
-			//m_CurrentCmdBuf->cmdBuf.bindVertexBuffers(0, maxVbIndex + 1, vertexBuffers, vertexBufferOffsets);
 		}
 
 		if (state.indirectParams)
