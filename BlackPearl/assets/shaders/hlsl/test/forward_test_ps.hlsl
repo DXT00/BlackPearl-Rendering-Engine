@@ -35,17 +35,17 @@ cbuffer c_ForwardView : register(b1 VK_DESCRIPTOR_SET(1))
     ForwardShadingViewConstants g_ForwardView;
 };
 
-cbuffer c_ForwardLight : register(b2 VK_DESCRIPTOR_SET(1))
-{
-    ForwardShadingLightConstants g_ForwardLight;
-};
+// cbuffer c_ForwardLight : register(b2 VK_DESCRIPTOR_SET(1))
+// {
+//     ForwardShadingLightConstants g_ForwardLight;
+// };
 
 // Texture2DArray t_ShadowMapArray : register(t10 VK_DESCRIPTOR_SET(2));
 // TextureCubeArray t_DiffuseLightProbe : register(t11 VK_DESCRIPTOR_SET(2));
 // TextureCubeArray t_SpecularLightProbe : register(t12 VK_DESCRIPTOR_SET(2));
 // Texture2D t_EnvironmentBrdf : register(t13 VK_DESCRIPTOR_SET(2));
 
-SamplerState s_ShadowSampler : register(s3 VK_DESCRIPTOR_SET(1));
+SamplerState s_ShadowSampler : register(s2 VK_DESCRIPTOR_SET(1));
 // SamplerState s_LightProbeSampler : register(s2 VK_DESCRIPTOR_SET(2));
 // SamplerState s_BrdfSampler : register(s3 VK_DESCRIPTOR_SET(2));
 
@@ -174,7 +174,7 @@ void main(
     // }
 
     {
-        float3 ambientColor = lerp(g_ForwardLight.ambientColorBottom.rgb, g_ForwardLight.ambientColorTop.rgb, surfaceMaterial.shadingNormal.y * 0.5 + 0.5);
+        float3 ambientColor = float3(0,0,0);// lerp(g_ForwardLight.ambientColorBottom.rgb, g_ForwardLight.ambientColorTop.rgb, surfaceMaterial.shadingNormal.y * 0.5 + 0.5);
 
         diffuseTerm += ambientColor * surfaceMaterial.diffuseAlbedo * surfaceMaterial.occlusion;
         specularTerm += ambientColor * surfaceMaterial.specularF0 * surfaceMaterial.occlusion;

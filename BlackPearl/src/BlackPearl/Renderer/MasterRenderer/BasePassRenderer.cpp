@@ -44,7 +44,7 @@ namespace BlackPearl {
         m_ForwardLightCB = m_Device->createBuffer(RHIUtils::CreateVolatileConstantBufferDesc(sizeof(ForwardShadingLightConstants), "ForwardShadingLightConstants", params.numConstantBufferVersions));*/
 
         m_ForwardViewCB = m_Device->createBuffer(RHIUtils::CreateVolatileConstantBufferDesc(sizeof(ForwardShadingViewConstants), "ForwardShadingViewConstants", params.numConstantBufferVersions));
-        m_ForwardLightCB = m_Device->createBuffer(RHIUtils::CreateVolatileConstantBufferDesc(sizeof(ForwardShadingLightConstants), "ForwardShadingLightConstants", params.numConstantBufferVersions));
+     //   m_ForwardLightCB = m_Device->createBuffer(RHIUtils::CreateVolatileConstantBufferDesc(sizeof(ForwardShadingLightConstants), "ForwardShadingLightConstants", params.numConstantBufferVersions));
 
         m_ViewBindingLayout = CreateViewBindingLayout();
         m_ViewBindingSet = CreateViewBindingSet();
@@ -351,8 +351,8 @@ namespace BlackPearl {
             //RHIBindingLayoutItem::RT_VolatileConstantBuffer(2),
 
             RHIBindingLayoutItem::RT_VolatileConstantBuffer(1),
-            RHIBindingLayoutItem::RT_VolatileConstantBuffer(2),
-            RHIBindingLayoutItem::RT_Sampler(3)
+          //  RHIBindingLayoutItem::RT_VolatileConstantBuffer(2),
+            RHIBindingLayoutItem::RT_Sampler(2)
         };                        
 
         return m_Device->createBindingLayout(viewLayoutDesc);
@@ -362,9 +362,9 @@ namespace BlackPearl {
     {
        BindingSetDesc bindingSetDesc;
         bindingSetDesc.bindings = {
-            BindingSetItem::ConstantBuffer(7, m_ForwardViewCB),
-            BindingSetItem::ConstantBuffer(8, m_ForwardLightCB),
-            BindingSetItem::Sampler(9, m_ShadowSampler)
+            BindingSetItem::ConstantBuffer(1, m_ForwardViewCB),
+            //BindingSetItem::ConstantBuffer(8, m_ForwardLightCB),
+            BindingSetItem::Sampler(2, m_ShadowSampler)
         };
         bindingSetDesc.trackLiveness = m_TrackLiveness;
 
