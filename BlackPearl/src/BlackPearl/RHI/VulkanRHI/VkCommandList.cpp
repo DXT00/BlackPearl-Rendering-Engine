@@ -431,8 +431,8 @@ namespace BlackPearl {
 		if (!m_CurrentGraphicsState.framebuffer)
 		{
 			std::array<VkClearValue, 3> clearValues{};
-			clearValues[0].color = { 1.0f, 0.5f, 1.0f, 1.0f };
-			clearValues[1].color = { 1.0f, 0.5f, 1.0f, 1.0f };
+			clearValues[0].color = { 1.0f, 0.0f, 1.0f, 1.0f };
+			clearValues[1].color = { 1.0f, 0.0f, 1.0f, 1.0f };
 			clearValues[1].depthStencil = { 1.0f, 0 };
 
 			VkRect2D renderArea;
