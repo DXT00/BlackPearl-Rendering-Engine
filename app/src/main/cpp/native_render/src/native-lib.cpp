@@ -70,7 +70,7 @@ static void UnregisterNativeMethods(JNIEnv *env, const char *className)
 }
 
 // call this func when loading lib
-extern "C" jint JNI_OnLoad_SandBoxAndriod(JavaVM *jvm, void *p)
+extern "C" jint JNI_OnLoad(JavaVM *jvm, void *p)
 {
     //LOGCATE("===== JNI_OnLoad =====");
     jint jniRet = JNI_ERR;
@@ -91,7 +91,7 @@ extern "C" jint JNI_OnLoad_SandBoxAndriod(JavaVM *jvm, void *p)
     return JNI_VERSION_1_6;
 }
 
-extern "C" void JNI_OnUnload_SandBoxAndriod(JavaVM *jvm, void *p)
+extern "C" void JNI_OnUnload(JavaVM *jvm, void *p)
 {
     JNIEnv *env = NULL;
     if (jvm->GetEnv((void **) (&env), JNI_VERSION_1_6) != JNI_OK)
