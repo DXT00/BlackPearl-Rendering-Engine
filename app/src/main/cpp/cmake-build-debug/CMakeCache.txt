@@ -129,6 +129,9 @@ Assimp_IS_TOP_LEVEL:STATIC=OFF
 //Value Computed by CMake
 Assimp_SOURCE_DIR:STATIC=G:/AA_AndriodLearn/BlackPearl/app/src/main/cpp/BlackPearl/vendor/assimp
 
+//Build from blackpearl
+BUILD_FROM_BLACKPEARL:BOOL=ON
+
 //Build package with shared libraries.
 BUILD_SHARED_LIBS:BOOL=ON
 

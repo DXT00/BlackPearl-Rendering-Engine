@@ -3,13 +3,26 @@
 //
 
 #include "SandBoxAndriod.h"
+#include "BlackPearl/Application.h"
+#include "BlackPearl/RHI/DynamicRHI.h"
 
-SandBoxAndriod* SandBoxAndriod::m_App = nullptr;
-SandBoxAndriod* SandBoxAndriod::GetInstance(){
+SandBoxAndriod::SandBoxAndriod()
+{
+    const std::string a= "aa";
+
+
+}
+BlackPearl::Application* SandBoxAndriod::m_App = nullptr;
+BlackPearl::Application* SandBoxAndriod::GetInstance(){
 
     if (m_App == nullptr)
     {
-        m_App = new SandBoxAndriod();
+#ifdef GE_PLATFORM_WINDOWS
+        m_App = nullptr;
+#else
+        m_App = new BlackPearl::Application();
+
+#endif
     }
     return m_App;
 

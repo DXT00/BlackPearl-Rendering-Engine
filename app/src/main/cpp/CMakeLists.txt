@@ -15,6 +15,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 option(TARGET_PLATFORM_WINDOWS "Target Windows platform" ON)
 option(TARGET_PLATFORM_ANDROID "Target Android platform" OFF)
 
+option(BUILD_FROM_BLACKPEARL "Build from blackpearl" ON)
+
 # 输出目录
 if(WIN32)
     set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BUILD_TYPE}-${CMAKE_SYSTEM_NAME}-${CMAKE_SYSTEM_PROCESSOR})

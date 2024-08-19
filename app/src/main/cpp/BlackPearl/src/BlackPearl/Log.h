@@ -53,142 +53,142 @@ namespace BlackPearl {
 	template<typename... Args>
 	void Log::Trace(const char* fmt, const Args &... args)
 	{
-		if (DynamicRHI::g_RHIType == DynamicRHI::Type::OpenGL || DynamicRHI::g_RHIType == DynamicRHI::Type::Vulkan) {
-			m_OpenGLCoreLogger->trace(fmt, args...);
-		}
-		else if (DynamicRHI::g_RHIType == DynamicRHI::Type::D3D12) {
-#ifdef GE_API_D3D12
-            m_D3D12CoreLogger->trace(fmt, args...);
-#endif
-		}
+//		if (DynamicRHI::g_RHIType == DynamicRHI::Type::OpenGL || DynamicRHI::g_RHIType == DynamicRHI::Type::Vulkan) {
+//			m_OpenGLCoreLogger->trace(fmt, args...);
+//		}
+//		else if (DynamicRHI::g_RHIType == DynamicRHI::Type::D3D12) {
+//#ifdef GE_API_D3D12
+//            m_D3D12CoreLogger->trace(fmt, args...);
+//#endif
+//		}
 	}
 
 	template<typename... Args>
 	void Log::Info(const char* fmt, const Args &... args)
 	{
-		if (DynamicRHI::g_RHIType == DynamicRHI::Type::OpenGL || DynamicRHI::g_RHIType == DynamicRHI::Type::Vulkan) {
-			m_OpenGLCoreLogger->info(fmt, args...);
-		}
-		else if (DynamicRHI::g_RHIType == DynamicRHI::Type::D3D12) {
-#ifdef GE_API_D3D12
-			m_D3D12CoreLogger->info(fmt, args...);
-#endif
-
-        }
+//		if (DynamicRHI::g_RHIType == DynamicRHI::Type::OpenGL || DynamicRHI::g_RHIType == DynamicRHI::Type::Vulkan) {
+//			m_OpenGLCoreLogger->info(fmt, args...);
+//		}
+//		else if (DynamicRHI::g_RHIType == DynamicRHI::Type::D3D12) {
+//#ifdef GE_API_D3D12
+//			m_D3D12CoreLogger->info(fmt, args...);
+//#endif
+//
+//        }
 	}
 
 	template<typename... Args>
 	void Log::Warn(const char* fmt, const Args &... args)
 	{
-		if (DynamicRHI::g_RHIType == DynamicRHI::Type::OpenGL || DynamicRHI::g_RHIType == DynamicRHI::Type::Vulkan) {
-			m_OpenGLCoreLogger->warn(fmt, args...);
-		}
-		else if (DynamicRHI::g_RHIType == DynamicRHI::Type::D3D12) {
-#ifdef GE_API_D3D12
-			m_D3D12CoreLogger->warn(fmt, args...);
-#endif
-
-		}
+//		if (DynamicRHI::g_RHIType == DynamicRHI::Type::OpenGL || DynamicRHI::g_RHIType == DynamicRHI::Type::Vulkan) {
+//			m_OpenGLCoreLogger->warn(fmt, args...);
+//		}
+//		else if (DynamicRHI::g_RHIType == DynamicRHI::Type::D3D12) {
+//#ifdef GE_API_D3D12
+//			m_D3D12CoreLogger->warn(fmt, args...);
+//#endif
+//
+//		}
 
 	}
 
 	template<typename... Args>
 	void Log::Error(const char* fmt, const Args &... args)
 	{
-		if (DynamicRHI::g_RHIType == DynamicRHI::Type::OpenGL || DynamicRHI::g_RHIType == DynamicRHI::Type::Vulkan) {
-			m_OpenGLCoreLogger->error(fmt, args...);
-		}
-		else if (DynamicRHI::g_RHIType == DynamicRHI::Type::D3D12) {
-#ifdef GE_API_D3D12
-            m_D3D12CoreLogger->error(fmt, args...);
-#endif
-
-		}
+//		if (DynamicRHI::g_RHIType == DynamicRHI::Type::OpenGL || DynamicRHI::g_RHIType == DynamicRHI::Type::Vulkan) {
+//			m_OpenGLCoreLogger->error(fmt, args...);
+//		}
+//		else if (DynamicRHI::g_RHIType == DynamicRHI::Type::D3D12) {
+//#ifdef GE_API_D3D12
+//            m_D3D12CoreLogger->error(fmt, args...);
+//#endif
+//
+//		}
 
 	}
 
 	template<typename... Args>
 	void Log::Fatal(const char* fmt, const Args &... args)
 	{
-		if (DynamicRHI::g_RHIType == DynamicRHI::Type::OpenGL || DynamicRHI::g_RHIType == DynamicRHI::Type::Vulkan) {
-			m_OpenGLCoreLogger->critical(fmt, args...);
-		}
-		else if (DynamicRHI::g_RHIType == DynamicRHI::Type::D3D12) {
-#ifdef GE_API_D3D12
-            m_D3D12CoreLogger->fatal(fmt, args...);
-#endif
-
-		}
+//		if (DynamicRHI::g_RHIType == DynamicRHI::Type::OpenGL || DynamicRHI::g_RHIType == DynamicRHI::Type::Vulkan) {
+//			m_OpenGLCoreLogger->critical(fmt, args...);
+//		}
+//		else if (DynamicRHI::g_RHIType == DynamicRHI::Type::D3D12) {
+//#ifdef GE_API_D3D12
+//            m_D3D12CoreLogger->fatal(fmt, args...);
+//#endif
+//
+//		}
 
 	}
 
 	template<typename ...Args>
 	void Log::Trace(const Args & ...args)
 	{
-		if (DynamicRHI::g_RHIType == DynamicRHI::Type::OpenGL || DynamicRHI::g_RHIType == DynamicRHI::Type::Vulkan) {
-			m_OpenGLCoreLogger->critical(args...);
-		}
-		else if (DynamicRHI::g_RHIType == DynamicRHI::Type::D3D12) {
-#ifdef GE_API_D3D12
-            m_D3D12CoreLogger->fatal(args...);
-#endif
-
-		}
+//		if (DynamicRHI::g_RHIType == DynamicRHI::Type::OpenGL || DynamicRHI::g_RHIType == DynamicRHI::Type::Vulkan) {
+//			m_OpenGLCoreLogger->critical(args...);
+//		}
+//		else if (DynamicRHI::g_RHIType == DynamicRHI::Type::D3D12) {
+//#ifdef GE_API_D3D12
+//            m_D3D12CoreLogger->fatal(args...);
+//#endif
+//
+//		}
 	}
 
 	template<typename ...Args>
 	void Log::Info(const Args & ...args)
 	{
-		if (DynamicRHI::g_RHIType == DynamicRHI::Type::OpenGL || DynamicRHI::g_RHIType == DynamicRHI::Type::Vulkan) {
-			m_OpenGLCoreLogger->info(args...);
-		}
-		else if (DynamicRHI::g_RHIType == DynamicRHI::Type::D3D12) {
-#ifdef GE_API_D3D12
-            m_D3D12CoreLogger->info(args...);
-#endif
-
-		}
+//		if (DynamicRHI::g_RHIType == DynamicRHI::Type::OpenGL || DynamicRHI::g_RHIType == DynamicRHI::Type::Vulkan) {
+//			m_OpenGLCoreLogger->info(args...);
+//		}
+//		else if (DynamicRHI::g_RHIType == DynamicRHI::Type::D3D12) {
+//#ifdef GE_API_D3D12
+//            m_D3D12CoreLogger->info(args...);
+//#endif
+//
+//		}
 	}
 
 	template<typename ...Args>
 	void Log::Warn(const Args & ...args)
 	{
-		if (DynamicRHI::g_RHIType == DynamicRHI::Type::OpenGL || DynamicRHI::g_RHIType == DynamicRHI::Type::Vulkan) {
-			m_OpenGLCoreLogger->warn(args...);
-		}
-		else if (DynamicRHI::g_RHIType == DynamicRHI::Type::D3D12) {
-#ifdef GE_API_D3D12
-            m_D3D12CoreLogger->warn(args...);
-#endif
-
-		}
+//		if (DynamicRHI::g_RHIType == DynamicRHI::Type::OpenGL || DynamicRHI::g_RHIType == DynamicRHI::Type::Vulkan) {
+//			m_OpenGLCoreLogger->warn(args...);
+//		}
+//		else if (DynamicRHI::g_RHIType == DynamicRHI::Type::D3D12) {
+//#ifdef GE_API_D3D12
+//            m_D3D12CoreLogger->warn(args...);
+//#endif
+//
+//		}
 	}
 
 	template<typename ...Args>
 	void Log::Error(const Args & ...args)
 	{
-		if (DynamicRHI::g_RHIType == DynamicRHI::Type::OpenGL || DynamicRHI::g_RHIType == DynamicRHI::Type::Vulkan) {
-			m_OpenGLCoreLogger->error(args...);
-		}
-		else if (DynamicRHI::g_RHIType == DynamicRHI::Type::D3D12) {
-#ifdef GE_API_D3D12
-            m_D3D12CoreLogger->error(args...);
-#endif
-
-		}
+//		if (DynamicRHI::g_RHIType == DynamicRHI::Type::OpenGL || DynamicRHI::g_RHIType == DynamicRHI::Type::Vulkan) {
+//			m_OpenGLCoreLogger->error(args...);
+//		}
+//		else if (DynamicRHI::g_RHIType == DynamicRHI::Type::D3D12) {
+//#ifdef GE_API_D3D12
+//            m_D3D12CoreLogger->error(args...);
+//#endif
+//
+//		}
 	}
 
 	template<typename ...Args>
 	void Log::Fatal(const Args & ...args)
 	{
-		if (DynamicRHI::g_RHIType == DynamicRHI::Type::OpenGL || DynamicRHI::g_RHIType == DynamicRHI::Type::Vulkan) {
-			m_OpenGLCoreLogger->critical(args...);
-		}
-		else if (DynamicRHI::g_RHIType == DynamicRHI::Type::D3D12) {
-#ifdef GE_API_D3D12
-            m_D3D12CoreLogger->fatal(args...);
-#endif
-		}
+//		if (DynamicRHI::g_RHIType == DynamicRHI::Type::OpenGL || DynamicRHI::g_RHIType == DynamicRHI::Type::Vulkan) {
+//			m_OpenGLCoreLogger->critical(args...);
+//		}
+//		else if (DynamicRHI::g_RHIType == DynamicRHI::Type::D3D12) {
+//#ifdef GE_API_D3D12
+//            m_D3D12CoreLogger->fatal(args...);
+//#endif
+//		}
 	}
 }
 extern class BlackPearl::Log* BlackPearl::g_Log;

@@ -27,7 +27,7 @@
 #include <BlackPearl/Luanch/Luanch.h>
 
 namespace BlackPearl {
-	Log* g_Log;
+	Log* g_Log = nullptr;
 	ObjectManager* g_objectManager = DBG_NEW ObjectManager();
 	EntityManager* g_entityManager = DBG_NEW EntityManager();
 	MaterialManager* g_materialManager = DBG_NEW MaterialManager();
@@ -41,6 +41,26 @@ namespace BlackPearl {
 #ifdef GE_PLATFORM_WINDOWS
 	Application::Application(HINSTANCE hInstance, int nShowCmd, DynamicRHI::Type rhiType, const std::string& renderer)
 #else
+    Application::Application()
+    {
+
+        if (!g_DynamicRHI) {
+            DynamicRHIInit(DynamicRHI::Type::OpenGL);
+        }
+        g_shouldEngineExit = false;
+        g_Log = DBG_NEW Log();
+
+        GE_ASSERT(!s_Instance, "Application's Instance already exist!");
+        s_Instance = this;
+#ifdef GE_PLATFORM_WINDOWS
+        m_AppConf.hInstance = hInstance;
+#endif
+        m_AppConf.nShowCmd = 0;
+        m_AppConf.renderer = "";
+        m_AppConf.rhiType = DynamicRHI::Type::OpenGL;
+        Init();
+
+    }
     Application::Application(int nShowCmd, DynamicRHI::Type rhiType, const std::string& renderer)
 #endif
     {

@@ -34,18 +34,18 @@ static JNINativeMethod g_RenderMethods[] = {
 
 static int RegisterNativeMethods(JNIEnv *env, const char *className, JNINativeMethod *methods, int methodNum)
 {
-    GE_CORE_INFO("RegisterNativeMethods");
+   // GE_CORE_INFO("RegisterNativeMethods");
     //LOGCATE("RegisterNativeMethods");
     jclass clazz = env->FindClass(className);
     if (clazz == NULL)
     {
-        GE_CORE_INFO("RegisterNativeMethods fail. clazz == NULL");
+        //GE_CORE_INFO("RegisterNativeMethods fail. clazz == NULL");
         //LOGCATE("RegisterNativeMethods fail. clazz == NULL");
         return JNI_FALSE;
     }
     if (env->RegisterNatives(clazz, methods, methodNum) < 0)
     {
-        GE_CORE_INFO("RegisterNativeMethods fail");
+       // GE_CORE_INFO("RegisterNativeMethods fail");
         //LOGCATE("RegisterNativeMethods fail");
         return JNI_FALSE;
     }
@@ -54,12 +54,12 @@ static int RegisterNativeMethods(JNIEnv *env, const char *className, JNINativeMe
 
 static void UnregisterNativeMethods(JNIEnv *env, const char *className)
 {
-    GE_CORE_INFO("UnregisterNativeMethods");
+    //GE_CORE_INFO("UnregisterNativeMethods");
    // LOGCATE("UnregisterNativeMethods");
     jclass clazz = env->FindClass(className);
     if (clazz == NULL)
     {
-        GE_CORE_INFO("UnregisterNativeMethods fail. clazz == NULL")
+       // GE_CORE_INFO("UnregisterNativeMethods fail. clazz == NULL")
         //LOGCATE("UnregisterNativeMethods fail. clazz == NULL");
         return;
     }

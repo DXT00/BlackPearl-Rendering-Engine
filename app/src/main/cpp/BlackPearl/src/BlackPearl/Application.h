@@ -40,6 +40,7 @@ namespace BlackPearl {
 #ifdef GE_PLATFORM_WINDOWS
 		Application(HINSTANCE hInstance, int nShowCmd, DynamicRHI::Type rhiType, const std::string& renderer);
 #else
+        Application();
         Application(int nShowCmd, DynamicRHI::Type rhiType, const std::string& renderer);
 #endif
 		virtual ~Application();

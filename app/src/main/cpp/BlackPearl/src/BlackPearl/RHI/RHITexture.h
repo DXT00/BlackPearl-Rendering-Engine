@@ -89,8 +89,8 @@ namespace BlackPearl {
 
     struct TextureSubresourceSet
     {
-        static  uint32_t AllMipLevels ;
-        static  uint32_t AllArraySlices ;
+        static uint32_t AllMipLevels;
+        static uint32_t AllArraySlices;
     
         uint32_t baseMipLevel = 0;
         uint32_t numMipLevels = 1;
@@ -132,7 +132,7 @@ namespace BlackPearl {
 
 
 
-    static const TextureSubresourceSet AllSubresources = TextureSubresourceSet(0, TextureSubresourceSet::AllMipLevels, 0, TextureSubresourceSet::AllArraySlices);
+    static const TextureSubresourceSet AllSubresources;
 
     class ITexture: public IResource
     {

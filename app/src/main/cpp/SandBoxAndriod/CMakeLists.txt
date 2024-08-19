@@ -13,8 +13,10 @@ project("SandBoxAndriod" LANGUAGES CXX)
 
 
 file(GLOB src-files
-        ${CMAKE_SOURCE_DIR}/BlackPearl/src/*.cpp
-        ${CMAKE_SOURCE_DIR}/BlackPearl/src/*.h
+#        ${CMAKE_SOURCE_DIR}/BlackPearl/src/*.cpp
+#        ${CMAKE_SOURCE_DIR}/BlackPearl/src/*.h
+        ../BlackPearl/src/*.cpp
+        ../BlackPearl/src/*.h
         ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/*.h
 
@@ -34,62 +36,97 @@ add_library( # Sets the name of the library.
         ${src-files}
 )
 
-#
-#include_directories(
-#        "${CMAKE_CURRENT_SOURCE_DIR}/src"
-#        "${CMAKE_SOURCE_DIR}/BlackPearl/src"
-#        "${CMAKE_SOURCE_DIR}/BlackPearl/vendor/glm"
-#        "${CMAKE_SOURCE_DIR}/BlackPearl/vendor/spdlog/include"
-#        "${CMAKE_SOURCE_DIR}/BlackPearl//vendor/assimp/include"
-#)
+
 
 link_directories(
 #        "${CMAKE_CURRENT_SOURCE_DIR}/lib"
         "${CMAKE_SOURCE_DIR}/BlackPearl/vendor/assimp_build/lib/Debug/android"
         "${CMAKE_BINARY_DIR}/bin/${CMAKE_CFG_INTDIR}"
-#       "${CMAKE_SOURCE_DIR}/bin/arm64-v8a"
+        "../bin/arm64-v8a"
+        "G:/AA_AndriodLearn/BlackPearl/app/src/main/cpp/SandBoxAndriod/../bin/arm64-v8a/"
+
+        #       "${CMAKE_SOURCE_DIR}/bin/arm64-v8a"
 )
-message(STATUS "make SandboxAndriod CMAKE_RUNTIME_OUTPUT_DIRECTORY---${CMAKE_BINARY_DIR}/bin/${CMAKE_CFG_INTDIR}")
 
-message(STATUS "-------make SandboxAndriod---------------------")
-
-message(STATUS "-------make CMAKE_CURRENT_SOURCE_DIR- ${CMAKE_CURRENT_SOURCE_DIR}--------------------")
-message(STATUS "-------make CMAKE_SOURCE_DIR- ${CMAKE_SOURCE_DIR}--------------------")
+message(STATUS "-------make ${CMAKE_CURRENT_SOURCE_DIR}- ${CMAKE_SOURCE_DIR}/BlackPearl/src--------------------")
 
 target_include_directories(
         SandBoxAndriod
-        PRIVATE
+        PUBLIC
         "${CMAKE_CURRENT_SOURCE_DIR}/src"
-        "${CMAKE_SOURCE_DIR}/BlackPearl/src"
-        "${CMAKE_SOURCE_DIR}/BlackPearl/vendor/glm"
-        "${CMAKE_SOURCE_DIR}/BlackPearl/vendor/spdlog/include"
-        "${CMAKE_SOURCE_DIR}/BlackPearl//vendor/assimp/include"
+        "../BlackPearl/src"
+        "../BlackPearl/vendor/glm"
+        "../BlackPearl/vendor/spdlog/include"
+        "../BlackPearl//vendor/assimp/include"
 )
 
 
 #include_directories(
 #        "${CMAKE_CURRENT_SOURCE_DIR}/src"
-#        "${CMAKE_SOURCE_DIR}/BlackPearl/src"
-#        "${CMAKE_SOURCE_DIR}/BlackPearl/vendor/spdlog/include"
-#        "${CMAKE_SOURCE_DIR}/BlackPearl/vendor/glm"
-##        "${CMAKE_SOURCE_DIR}/BlackPearl/vendor"
+#        "../BlackPearl/src"
+#        "../BlackPearl/vendor/spdlog/include"
+#        "../BlackPearl/vendor/glm"
+#        "../BlackPearl/vendor"
+#        "../BlackPearl/vendor/assimp/include"
 #)
+find_library( # Sets the name of the path variable.
+        BlackPearl-lib
+        NAMES BlackPearl
+        HINTS "${CMAKE_BINARY_DIR}/bin/${CMAKE_CFG_INTDIR}"
+        # Specifies the name of the NDK library that
+        # you want CMake to locate.
+        )
 
+
+#if(BUILD_FROM_BLACKPEARL)
+#    message(STATUS "---------------BUILD_FROM_BLACKPEARL-------------")
+#else ()
+    add_library(BlackPearl STATIC IMPORTED)
+    set_target_properties(BlackPearl PROPERTIES IMPORTED_LOCATION ${CMAKE_CURRENT_SOURCE_DIR}/../bin/arm64-v8a/libBlackPearl.a)
+
+    add_library(spdlog STATIC IMPORTED)
+    set_target_properties(spdlog PROPERTIES IMPORTED_LOCATION ${CMAKE_CURRENT_SOURCE_DIR}/../BlackPearl/vendor/spdlog/bin/Debug-Android-arm64-v8a/spdlog/libspdlog.a)
+
+
+    add_library(assimpd SHARED IMPORTED)
+    set_target_properties(assimpd PROPERTIES IMPORTED_LOCATION ${CMAKE_CURRENT_SOURCE_DIR}/../bin/arm64-v8a/libassimpd.so)
+
+message(STATUS "---------------${CMAKE_CURRENT_SOURCE_DIR}/../bin/arm64-v8a/libBlackPearl.a-------------")
+#endif ()
+#
 
 # Specifies libraries CMake should link to your target library. You
 # can link libraries from various origins, such as libraries defined in this
 # build script, prebuilt third-party libraries, or Android system libraries.
 #target_include_directories(SandBoxAndriod PUBLIC ../BlackPearl/src)
-target_link_libraries(
-        SandBoxAndriod
-        PRIVATE
-        # List libraries link to the target library
-        BlackPearl
-        EGL
-        GLESv3
-        android
-        log
-        spdlog
-#        assimpd
-#        ImGui
+
+
+if(BUILD_FROM_BLACKPEARL)
+    target_link_libraries(
+            SandBoxAndriod
+            PRIVATE
+            # List libraries link to the target library
+            BlackPearl
+            EGL
+            GLESv3
+            android
+            log
+            spdlog
+            #        assimpd
+            #        ImGui
     )
+else ()
+    target_link_libraries(
+            SandBoxAndriod
+            PRIVATE
+            # List libraries link to the target library
+            BlackPearl
+            EGL
+            GLESv3
+            android
+            log
+            spdlog
+                    assimpd
+            #        ImGui
+    )
+endif ()

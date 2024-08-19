@@ -5,18 +5,19 @@
 #ifndef BLACKPEARL_SANDBOXANDRIOD_H
 #define BLACKPEARL_SANDBOXANDRIOD_H
 #include "BlackPearl.h"
-#include "BlackPearl/Application.h"
 
-class SandBoxAndriod : public BlackPearl::Application {
+
+class SandBoxAndriod{
 public:
-    SandBoxAndriod()
-    : BlackPearl::Application(0, BlackPearl::DynamicRHI::Type::OpenGL, ""){}
+    SandBoxAndriod();
 
-    static SandBoxAndriod* GetInstance();
+
+    static BlackPearl::Application* GetInstance();
     static void DestroyInstance();
-    virtual ~SandBoxAndriod() = default;
+    virtual ~SandBoxAndriod() {};
+    void Run(){}
 private:
-    static SandBoxAndriod* m_App;
+    static BlackPearl::Application* m_App;
 };
 
 

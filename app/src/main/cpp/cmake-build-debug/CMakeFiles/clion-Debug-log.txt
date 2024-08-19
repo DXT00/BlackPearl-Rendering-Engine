@@ -9,7 +9,7 @@
 -- Check for working CXX compiler: G:/AndriodSDK/ndk/21.1.6352462/toolchains/llvm/prebuilt/windows-x86_64/bin/clang++.exe - skipped
 -- Detecting CXX compile features
 -- Detecting CXX compile features - done
--- CMAKE_RUNTIME_OUTPUT_DIRECTORY---G:/AA_AndriodLearn/BlackPearl/app/src/main/cpp/cmake-build-debug/bin/.
+-- CMAKE_RUNTIME_OUTPUT_DIRECTORY---../bin/arm64-v8a
 RENDER_API = opengl
 -- Building for Android
 -- Configuring for Debug build
@@ -36,10 +36,37 @@ INFO Hunter enabled or RT-extension not found. glTF import/export will be built 
 -- Disabled exporter formats:
 -- Treating all warnings as errors (for assimp library only)
 Building Assimp Viewer only supported on Windows.
--- make SandboxAndriod CMAKE_RUNTIME_OUTPUT_DIRECTORY---G:/AA_AndriodLearn/BlackPearl/app/src/main/cpp/cmake-build-debug/bin/.
--- -------make SandboxAndriod---------------------
--- -------make CMAKE_CURRENT_SOURCE_DIR- G:/AA_AndriodLearn/BlackPearl/app/src/main/cpp/SandBoxAndriod--------------------
--- -------make CMAKE_SOURCE_DIR- G:/AA_AndriodLearn/BlackPearl/app/src/main/cpp--------------------
--- Configuring done (2.5s)
--- Generating done (0.5s)
--- Build files have been written to: G:/AA_AndriodLearn/BlackPearl/app/src/main/cpp/cmake-build-debug
+-- -------make G:/AA_AndriodLearn/BlackPearl/app/src/main/cpp/SandBoxAndriod- G:/AA_AndriodLearn/BlackPearl/app/src/main/cpp/BlackPearl/src--------------------
+CMake Error at SandBoxAndriod/CMakeLists.txt:83 (add_library):
+  add_library cannot create imported target "BlackPearl" because another
+  target with the same name already exists.
+
+
+CMake Error at SandBoxAndriod/CMakeLists.txt:86 (add_library):
+  add_library cannot create imported target "spdlog" because another target
+  with the same name already exists.
+
+
+-- Configuring incomplete, errors occurred!
+
+Cannot get compiler information:
+	Compiler exited with error code 1: G:\AndriodSDK\ndk\21.1.6352462\toolchains\llvm\prebuilt\windows-x86_64\bin\clang++.exe -xc++ -DGE_API_OPENGL -DGE_PLATFORM_ANDRIOD -DGLEW_NO_GLU -DGLFW_INCLUDE_NONE -DSPDLOG_COMPILED_LIB -D_CRT_SECURE_NO_WARNINGS -IG:/AA_AndriodLearn/BlackPearl/app/src/main/cpp/BlackPearl/src -IG:/AA_AndriodLearn/BlackPearl/app/src/main/cpp/BlackPearl/vendor/spdlog/include -IG:/AA_AndriodLearn/BlackPearl/app/src/main/cpp/BlackPearl/vendor/GLEW/include -IG:/AA_AndriodLearn/BlackPearl/app/src/main/cpp/BlackPearl/vendor/Glad/include -IG:/AA_AndriodLearn/BlackPearl/app/src/main/cpp/BlackPearl/vendor -IG:/AA_AndriodLearn/BlackPearl/app/src/main/cpp/BlackPearl/vendor/glm -IG:/AA_AndriodLearn/BlackPearl/app/src/main/cpp/BlackPearl/vendor/stb -IG:/AA_AndriodLearn/BlackPearl/app/src/main/cpp/BlackPearl/vendor/assimp/include -IG:/AA_AndriodLearn/BlackPearl/app/src/main/cpp/BlackPearl/vendor/GLFW/include -IG:/AA_AndriodLearn/BlackPearl/app/src/main/cpp/BlackPearl/vendor/VulkanSDK/1.3.236.0/Include -IG:/AA_AndriodLearn/BlackPearl/app/src/main/cpp/BlackPearl/vendor/directxtex_uwp.2022.7.30.1/include -IG:/AA_AndriodLearn/BlackPearl/app/src/main/cpp/BlackPearl/vendor/directxmesh_desktop_win10.2022.7.30.1/include -IG:/AA_AndriodLearn/BlackPearl/app/src/main/cpp/BlackPearl/vendor/ShaderMake/include -IG:/AA_AndriodLearn/BlackPearl/app/src/main/cpp/BlackPearl/vendor/assimp/code/../include -IG:/AA_AndriodLearn/BlackPearl/app/src/main/cpp/cmake-build-debug/BlackPearl/vendor/assimp/code/../include --sysroot=G:/AndriodSDK/ndk/21.1.6352462/toolchains/llvm/prebuilt/windows-x86_64/sysroot --target=aarch64-none-linux-android26 -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -std=c++11 -O0 -fno-limit-debug-info -std=gnu++17 -fPIC -pthread -Winvalid-pch -Xclang -include -Xclang -v -dD -E
+	<built-in>:1:10: fatal error: '-v' file not found
+	#include "-v"
+	         ^~~~
+	1 error generated.
+	
+	
+	Compiler exited with error code 1: G:\AndriodSDK\ndk\21.1.6352462\toolchains\llvm\prebuilt\windows-x86_64\bin\clang++.exe -xc++ -DGE_API_OPENGL -DGE_PLATFORM_ANDRIOD -DGLEW_NO_GLU -DGLFW_INCLUDE_NONE -DSPDLOG_COMPILED_LIB -D_CRT_SECURE_NO_WARNINGS -IG:/AA_AndriodLearn/BlackPearl/app/src/main/cpp/BlackPearl/src -IG:/AA_AndriodLearn/BlackPearl/app/src/main/cpp/BlackPearl/vendor/spdlog/include -IG:/AA_AndriodLearn/BlackPearl/app/src/main/cpp/BlackPearl/vendor/GLEW/include -IG:/AA_AndriodLearn/BlackPearl/app/src/main/cpp/BlackPearl/vendor/Glad/include -IG:/AA_AndriodLearn/BlackPearl/app/src/main/cpp/BlackPearl/vendor -IG:/AA_AndriodLearn/BlackPearl/app/src/main/cpp/BlackPearl/vendor/glm -IG:/AA_AndriodLearn/BlackPearl/app/src/main/cpp/BlackPearl/vendor/stb -IG:/AA_AndriodLearn/BlackPearl/app/src/main/cpp/BlackPearl/vendor/assimp/include -IG:/AA_AndriodLearn/BlackPearl/app/src/main/cpp/BlackPearl/vendor/GLFW/include -IG:/AA_AndriodLearn/BlackPearl/app/src/main/cpp/BlackPearl/vendor/VulkanSDK/1.3.236.0/Include -IG:/AA_AndriodLearn/BlackPearl/app/src/main/cpp/BlackPearl/vendor/directxtex_uwp.2022.7.30.1/include -IG:/AA_AndriodLearn/BlackPearl/app/src/main/cpp/BlackPearl/vendor/directxmesh_desktop_win10.2022.7.30.1/include -IG:/AA_AndriodLearn/BlackPearl/app/src/main/cpp/BlackPearl/vendor/ShaderMake/include -IG:/AA_AndriodLearn/BlackPearl/app/src/main/cpp/BlackPearl/vendor/assimp/code/../include -IG:/AA_AndriodLearn/BlackPearl/app/src/main/cpp/cmake-build-debug/BlackPearl/vendor/assimp/code/../include --sysroot=G:/AndriodSDK/ndk/21.1.6352462/toolchains/llvm/prebuilt/windows-x86_64/sysroot --target=aarch64-none-linux-android26 -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -std=c++11 -O0 -fno-limit-debug-info -std=gnu++17 -fPIC -pthread -Winvalid-pch -Xclang -include -Xclang -x c++-header -fpch-preprocess -v -dD -E
+	Android (6317467 based on r365631c1) clang version 9.0.8 (https://android.googlesource.com/toolchain/llvm-project e0caee08e5f09b374a27a676d04978c81fcb1928) (based on LLVM 9.0.8svn)
+	Target: aarch64-none-linux-android26
+	Thread model: posix
+	InstalledDir: G:\AndriodSDK\ndk\21.1.6352462\toolchains\llvm\prebuilt\windows-x86_64\bin
+	Found candidate GCC installation: G:\AndriodSDK\ndk\21.1.6352462\toolchains\llvm\prebuilt\windows-x86_64\bin/../lib/gcc/aarch64-linux-android\4.9.x
+	Selected GCC installation: G:\AndriodSDK\ndk\21.1.6352462\toolchains\llvm\prebuilt\windows-x86_64\bin/../lib/gcc/aarch64-linux-android/4.9.x
+	Candidate multilib: .;@m64
+	Selected multilib: .;@m64
+	Found CUDA installation: C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.0, version 7.0
+	clang++: error: no such file or directory: 'c++-header'
+	
+	
