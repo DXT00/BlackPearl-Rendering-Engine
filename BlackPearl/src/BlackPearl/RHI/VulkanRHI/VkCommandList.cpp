@@ -431,8 +431,8 @@ namespace BlackPearl {
 		if (!m_CurrentGraphicsState.framebuffer)
 		{
 			std::array<VkClearValue, 3> clearValues{};
-			clearValues[0].color = { 1.0f, 0.0f, 1.0f, 1.0f };
-			clearValues[1].color = { 1.0f, 0.0f, 1.0f, 1.0f };
+			clearValues[0].color = { 0.0f, 0.0f, 0.0f, 1.0f };
+			clearValues[1].color = { 0.0f, 0.0f, 0.0f, 1.0f };
 			clearValues[1].depthStencil = { 1.0f, 0 };
 
 			VkRect2D renderArea;
@@ -544,6 +544,7 @@ namespace BlackPearl {
 			}
 			vkCmdBindVertexBuffers(m_CurrentCmdBuf->cmdBuf, 0, maxVbIndex + 1, vertexBuffers, vertexBufferOffsets);
 
+			//m_CurrentCmdBuf->cmdBuf.bindVertexBuffers(0, maxVbIndex + 1, vertexBuffers, vertexBufferOffsets);
 		}
 
 		if (state.indirectParams)

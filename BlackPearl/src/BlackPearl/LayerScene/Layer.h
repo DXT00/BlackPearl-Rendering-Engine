@@ -42,7 +42,7 @@ namespace BlackPearl {
 
 			/*MainCamera Init*/
 			m_MainCamera = CreateCamera();
-			m_MainCamera->SetPosition(glm::vec3(0, 0, 0.0f));
+			m_MainCamera->SetPosition(glm::vec3(0, 0, 5.0f));
 			m_CameraPosition = m_MainCamera->GetPosition();
 			m_CameraRotation.Yaw = m_MainCamera->Yaw();
 			m_CameraRotation.Pitch = m_MainCamera->Pitch();
@@ -251,6 +251,10 @@ namespace BlackPearl {
 
 			//GE_CORE_INFO("Cam Pitch = " + std::to_string(m_CameraRotation.Pitch) + "Cam Yaw =" + std::to_string(m_CameraRotation.Yaw));
 			m_MainCamera->SetPosition(m_CameraPosition);
+
+			GE_CORE_INFO("Cam Pos = " + std::to_string(m_CameraPosition.x) + "," + std::to_string(m_CameraPosition.y) + "," + std::to_string(m_CameraPosition.z));
+
+
 		}
 
 	protected:

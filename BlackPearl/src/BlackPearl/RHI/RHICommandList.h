@@ -158,6 +158,9 @@ namespace BlackPearl {
         // Returns the owning device, does NOT call AddRef on it
         virtual IDevice* getDevice() = 0;
         virtual const CommandListParameters& getDesc() = 0;
+
+        virtual const GraphicsState& GetLastGraphicsState() const = 0;
+
     };
 
     typedef RefCountPtr<ICommandList> CommandListHandle;

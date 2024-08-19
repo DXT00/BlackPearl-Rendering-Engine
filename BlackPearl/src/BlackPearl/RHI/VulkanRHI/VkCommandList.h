@@ -121,6 +121,8 @@ namespace BlackPearl {
         const CommandListParameters& getDesc() override { return m_CommandListParameters; }
 
         TrackedCommandBufferPtr getCurrentCmdBuf() const { return m_CurrentCmdBuf; }
+
+        const GraphicsState& GetLastGraphicsState() const { return m_CurrentGraphicsState; }
     private:
         Device* m_Device;
         const VulkanContext& m_Context;

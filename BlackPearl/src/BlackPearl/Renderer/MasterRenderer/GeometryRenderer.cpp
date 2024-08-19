@@ -76,6 +76,13 @@ namespace BlackPearl {
                 lastBuffers = item.buffers;
                 stateValid = false;
             }
+            //else {
+            //    //pass->SetupInputBuffers(commandList, const_cast<BufferGroup*>(lastBuffers), item.transform, graphicsState);
+
+            //    graphicsState.vertexBuffers = commandList->GetLastGraphicsState().vertexBuffers;
+            //    graphicsState.indexBuffer = commandList->GetLastGraphicsState().indexBuffer;
+
+            //}
 
             if (newMaterial)
             {

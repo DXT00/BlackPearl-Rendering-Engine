@@ -217,7 +217,7 @@ void main(
         + specularTerm
         + surfaceMaterial.emissiveColor;
 
-        o_color.rgb =float3(0,1,0);
+        o_color.rgb =float3(1,1,0);
 
     o_color.a = surfaceMaterial.opacity;
 

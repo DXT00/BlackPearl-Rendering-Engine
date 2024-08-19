@@ -26,10 +26,10 @@
 #include <core/forward_vertex.hlsli>
 #include <core/vulkan.hlsli>
 
-// cbuffer c_ForwardView : register(b1 VK_DESCRIPTOR_SET(1))
-// {
-//     ForwardShadingViewConstants g_ForwardView;
-// };
+cbuffer c_ForwardView : register(b1 VK_DESCRIPTOR_SET(1))
+{
+    ForwardShadingViewConstants g_ForwardView;
+};
 
 void main(
 	in SceneVertex i_vtx,
@@ -50,7 +50,7 @@ void main(
     // o_vtx.tangent.w = i_vtx.tangent.w;
 
     float4 worldPos = float4(o_vtx.pos, 1.0);
-    // float4 tmpPos = mul(worldPos, g_ForwardView.view.matView);
-    // o_position = mul(worldPos, g_ForwardView.view.matProjection);
-    o_position = worldPos;
+    float4 tmpPos = mul(worldPos, g_ForwardView.view.matView);
+    o_position = mul(tmpPos, g_ForwardView.view.matProjection);
+    //o_position = worldPos;
 }

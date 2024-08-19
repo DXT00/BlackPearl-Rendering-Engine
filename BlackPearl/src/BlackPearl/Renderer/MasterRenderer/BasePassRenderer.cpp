@@ -528,19 +528,15 @@ namespace BlackPearl {
 
         if (!buffers->vertexBuffer) {
             buffers->vertexBuffer = m_Device->createBuffer(buffers->vertexBufferDesc);
+
             commandList->beginTrackingBufferState(buffers->vertexBuffer, ResourceStates::Common);
 
             //TODO:: 适配不同的vertex attribute
             uint32_t slot = 0;
-            state.vertexBuffers = {};
             if (buffers->hasAttribute(VertexAttribute::Position) && !buffers->positionData.empty()) {
-
                 const auto& range = buffers->getVertexBufferRange(VertexAttribute::Position);
                 commandList->writeBuffer(buffers->vertexBuffer, buffers->positionData.data(), range.byteSize, range.byteOffset);
                 std::vector<float3>().swap(buffers->positionData);
-
-                state.vertexBuffers.push_back({ buffers->vertexBuffer, slot, buffers->getVertexBufferRange(VertexAttribute::Position).byteOffset });
-                slot++;
             }
             if (buffers->hasAttribute(VertexAttribute::PrevPosition) && !buffers->prePositionData.empty()) {
 
@@ -548,9 +544,6 @@ namespace BlackPearl {
                 commandList->writeBuffer(buffers->vertexBuffer, buffers->prePositionData.data(), range.byteSize, range.byteOffset);
                 std::vector<float3>().swap(buffers->prePositionData);
 
-
-                state.vertexBuffers.push_back({ buffers->vertexBuffer, slot, buffers->getVertexBufferRange(VertexAttribute::PrevPosition).byteOffset });
-                slot++;
             }
             if (buffers->hasAttribute(VertexAttribute::TexCoord1) && !buffers->texcoord1Data.empty()) {
 
@@ -558,17 +551,13 @@ namespace BlackPearl {
                 commandList->writeBuffer(buffers->vertexBuffer, buffers->texcoord1Data.data(), range.byteSize, range.byteOffset);
                 std::vector<float2>().swap(buffers->texcoord1Data);
 
-                state.vertexBuffers.push_back({ buffers->vertexBuffer, slot, buffers->getVertexBufferRange(VertexAttribute::TexCoord1).byteOffset });
-                slot++;
             }
             if (buffers->hasAttribute(VertexAttribute::Normal) && !buffers->normalData.empty()) {
 
                 const auto& range = buffers->getVertexBufferRange(VertexAttribute::Normal);
                 commandList->writeBuffer(buffers->vertexBuffer, buffers->normalData.data(), range.byteSize, range.byteOffset);
                 std::vector<float3>().swap(buffers->normalData);
-
-                state.vertexBuffers.push_back({ buffers->vertexBuffer, slot, buffers->getVertexBufferRange(VertexAttribute::Normal).byteOffset });
-                slot++;
+     
             }
             if (buffers->hasAttribute(VertexAttribute::Tangent) && !buffers->tangentData.empty()) {
 
@@ -576,20 +565,45 @@ namespace BlackPearl {
                 commandList->writeBuffer(buffers->vertexBuffer, buffers->tangentData.data(), range.byteSize, range.byteOffset);
                 std::vector<float3>().swap(buffers->tangentData);
 
-                state.vertexBuffers.push_back({ buffers->vertexBuffer, slot, buffers->getVertexBufferRange(VertexAttribute::Tangent).byteOffset });
-                slot++;
             }
-            //Transform
-            state.vertexBuffers.push_back({ buffers->instanceBuffer, slot, 0 });
 
-            ResourceStates state = ResourceStates::VertexBuffer | ResourceStates::ShaderResource;
+            ResourceStates state_ = ResourceStates::VertexBuffer | ResourceStates::ShaderResource;
 
             if (buffers->vertexBufferDesc.isAccelStructBuildInput)
-                state = state | ResourceStates::AccelStructBuildInput;
+                state_ = state_ | ResourceStates::AccelStructBuildInput;
 
-            commandList->setPermanentBufferState(buffers->vertexBuffer, state);
+            commandList->setPermanentBufferState(buffers->vertexBuffer, state_);
             commandList->commitBarriers();
+
         }
+ 
+        //TODO:: 适配不同的vertex attribute
+        uint32_t slot = 0;
+        state.vertexBuffers = {};
+        if (buffers->hasAttribute(VertexAttribute::Position)) {
+            state.vertexBuffers.push_back({ buffers->vertexBuffer, slot, buffers->getVertexBufferRange(VertexAttribute::Position).byteOffset });
+            slot++;
+        }
+        if (buffers->hasAttribute(VertexAttribute::PrevPosition)) {
+            state.vertexBuffers.push_back({ buffers->vertexBuffer, slot, buffers->getVertexBufferRange(VertexAttribute::PrevPosition).byteOffset });
+            slot++;
+        }
+        if (buffers->hasAttribute(VertexAttribute::TexCoord1)) {
+            state.vertexBuffers.push_back({ buffers->vertexBuffer, slot, buffers->getVertexBufferRange(VertexAttribute::TexCoord1).byteOffset });
+            slot++;
+        }
+        if (buffers->hasAttribute(VertexAttribute::Normal)) {
+            state.vertexBuffers.push_back({ buffers->vertexBuffer, slot, buffers->getVertexBufferRange(VertexAttribute::Normal).byteOffset });
+            slot++;
+        }
+        if (buffers->hasAttribute(VertexAttribute::Tangent)) {
+            state.vertexBuffers.push_back({ buffers->vertexBuffer, slot, buffers->getVertexBufferRange(VertexAttribute::Tangent).byteOffset });
+            slot++;
+        }
+        //Transform
+        state.vertexBuffers.push_back({ buffers->instanceBuffer, slot, 0 });
+
+      
     }
 
     void BasePassRenderer::_UploadInstanceBuffers(ICommandList* commandList, BufferGroup* buffers, Transform* trans, GraphicsState& state)
