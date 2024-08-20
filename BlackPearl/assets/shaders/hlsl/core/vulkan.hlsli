@@ -30,7 +30,7 @@
 #else
 #define VK_PUSH_CONSTANT
 #define VK_BINDING(reg,dset) 
-#define VK_DESCRIPTOR_SET(dset)
+#define VK_DESCRIPTOR_SET(dset) ,space##dset
 #endif
 
 #endif // VULKAN_HLSLI

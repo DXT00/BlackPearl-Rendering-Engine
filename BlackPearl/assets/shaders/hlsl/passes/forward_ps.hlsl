@@ -80,7 +80,7 @@ void main(
     if (g_Material.domain != MaterialDomain_Opaque)
         clip(surfaceMaterial.opacity - g_Material.alphaCutoff);
 
-    float4 cameraDirectionOrPosition = float4(g_ForwardView.view.cameraPos,1.0);
+    float4 cameraDirectionOrPosition = float4(g_ForwardView.cameraPos,1.0);
     float3 viewIncident = GetIncidentVector(cameraDirectionOrPosition, surfaceWorldPos);
 
     float3 diffuseTerm = 0;

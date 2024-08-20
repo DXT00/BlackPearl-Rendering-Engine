@@ -50,5 +50,5 @@ void main(
     // o_vtx.tangent.w = i_vtx.tangent.w;
 
     float4 worldPos = float4(o_vtx.pos, 1.0);
-    float4 tmpPos = mul(worldPos, g_ForwardView.view.matView);
-    o_position = mul(worldPos, g_ForwardView.view.matProjection);}
+    float4 tmpPos = mul(worldPos, g_ForwardView.matView);
+    o_position = mul(worldPos, g_ForwardView.matProjection);}

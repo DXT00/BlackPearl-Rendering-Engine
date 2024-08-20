@@ -8,6 +8,7 @@
 #include "BlackPearl/Component/LightComponent/LightSources.h"
 using namespace BlackPearl::math;
 #include "hlsl/core/view_cb.h"
+#include "hlsl/core/forward_cb.h"
 namespace BlackPearl {
 
 	class IView {
@@ -18,7 +19,7 @@ namespace BlackPearl {
 		[[nodiscard]] virtual VariableRateShadingState GetVariableRateShadingState() const = 0;
 
 		[[nodiscard]] virtual math::frustum GetViewFrustum() const = 0;
-		virtual void FillPlanarViewConstants(PlanarViewConstants& constants) const = 0;
+		virtual void FillPlanarViewConstants(ForwardShadingViewConstants& constants) const = 0;
 
 
 	};
@@ -69,7 +70,7 @@ namespace BlackPearl {
 		virtual ViewportState GetViewportState() const override;
 		virtual VariableRateShadingState GetVariableRateShadingState() const override;
 		virtual math::frustum GetViewFrustum() const override;
-		virtual void FillPlanarViewConstants(PlanarViewConstants& constants) const override;
+		virtual void FillPlanarViewConstants(ForwardShadingViewConstants& constants) const override;
 
 		RHIViewport m_Viewport;
 		RHIRect m_ScissorRect;

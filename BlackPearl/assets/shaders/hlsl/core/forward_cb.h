@@ -37,7 +37,26 @@
 #include "align.h"
 struct ForwardShadingViewConstants
 {
-    PlanarViewConstants view;
+   // PlanarViewConstants view;
+    ALIGN(8) float2      viewportOrigin;
+    ALIGN(8) float2      viewportSize;
+
+    //float2      viewportSizeInv;
+    //float2      pixelOffset;
+
+    //float2      clipToWindowScale;
+    //float2      clipToWindowBias;
+
+    //float2      windowToClipScale;
+    //float2      windowToClipBias;
+
+    //float4      cameraDirectionOrPosition;
+
+    ALIGN(16) float4x4 matProjectionView;
+    ALIGN(16) float4x4 matView;
+    ALIGN(16) float4x4 matProjection;
+    ALIGN(16) float3 cameraPos;
+    ALIGN(16) float3 cameraRot;
 };
 
 struct ForwardShadingLightConstants

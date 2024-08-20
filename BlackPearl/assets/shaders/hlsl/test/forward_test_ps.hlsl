@@ -21,7 +21,6 @@
 */
 
 #pragma pack_matrix(row_major)
-
 #include <core/forward_cb.h>
 #include <core/scene_material.hlsli>
 #include <core/material_bindings.hlsli>
@@ -30,7 +29,7 @@
 #include <core/shadows.hlsli>
 #include <core/vulkan.hlsli>
 
-cbuffer c_ForwardView : register(b1 VK_DESCRIPTOR_SET(1))
+cbuffer c_ForwardView : register(b0,space1)
 {
     ForwardShadingViewConstants g_ForwardView;
 };
@@ -45,7 +44,7 @@ cbuffer c_ForwardView : register(b1 VK_DESCRIPTOR_SET(1))
 // TextureCubeArray t_SpecularLightProbe : register(t12 VK_DESCRIPTOR_SET(2));
 // Texture2D t_EnvironmentBrdf : register(t13 VK_DESCRIPTOR_SET(2));
 
-SamplerState s_ShadowSampler : register(s2 VK_DESCRIPTOR_SET(1));
+SamplerState s_ShadowSampler : register(s1,space1);
 // SamplerState s_LightProbeSampler : register(s2 VK_DESCRIPTOR_SET(2));
 // SamplerState s_BrdfSampler : register(s3 VK_DESCRIPTOR_SET(2));
 
@@ -80,7 +79,7 @@ void main(
     if (g_Material.domain != MaterialDomain_Opaque)
         clip(surfaceMaterial.opacity - g_Material.alphaCutoff);
 
-    float4 cameraDirectionOrPosition = float4(g_ForwardView.view.cameraPos,1.0);
+    float4 cameraDirectionOrPosition = float4(g_ForwardView.cameraPos,1.0);
     float3 viewIncident = GetIncidentVector(cameraDirectionOrPosition, surfaceWorldPos);
 
     float3 diffuseTerm = 0;
@@ -213,13 +212,17 @@ void main(
 
 #else // TRANSMISSIVE_MATERIAL
 
-    o_color.rgb = diffuseTerm
-        + specularTerm
-        + surfaceMaterial.emissiveColor;
+    // o_color.rgb = diffuseTerm
+    //     + specularTerm
+    //     + surfaceMaterial.emissiveColor;
 
+    if(g_ForwardView.cameraPos.z>0)
         o_color.rgb =float3(1,1,0);
+        else{
+             o_color.rgb =float3(0,0,1);
+        }
 
-    o_color.a = surfaceMaterial.opacity;
+    o_color.a = 1;//surfaceMaterial.opacity;
 
 #endif // TRANSMISSIVE_MATERIAL
 }

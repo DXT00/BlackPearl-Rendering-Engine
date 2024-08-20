@@ -159,7 +159,7 @@ namespace BlackPearl {
 		return ViewFrustum;
 	}
 
-	void SceneData::FillPlanarViewConstants(PlanarViewConstants& constants) const
+	void SceneData::FillPlanarViewConstants(ForwardShadingViewConstants& constants) const
 	{
 
 		//constants.matWorldToView = affineToHomogeneous(GetViewMatrix());
@@ -190,9 +190,9 @@ namespace BlackPearl {
 		//	: float4(GetViewOrigin(), 1.f);
 
 		//constants.pixelOffset = GetPixelOffset();
-		constants.matProjectionView = Math::ToFloat4x4(ProjectionViewMatrix);
-		constants.matView = Math::ToFloat4x4(ViewMatrix);
-		constants.matProjection = Math::ToFloat4x4(ProjectionMatrix);
+		constants.matProjectionView =  Math::ToFloat4x4(ProjectionViewMatrix);
+		constants.matView = math::transpose(Math::ToFloat4x4(ViewMatrix));
+		constants.matProjection = math::transpose(Math::ToFloat4x4(ProjectionMatrix));
 		constants.cameraPos = Math::ToFloat3(CameraPosition);
 		constants.cameraRot = Math::ToFloat3(CameraRotation);
 		constants.viewportSize = math::float2(m_Viewport.width(), m_Viewport.height());

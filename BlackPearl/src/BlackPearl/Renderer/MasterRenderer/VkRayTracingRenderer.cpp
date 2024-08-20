@@ -14,6 +14,8 @@
 #include "BlackPearl/Log.h"
 #include "BlackPearl/RHI/RHIBindingSet.h"
 #include "BlackPearl/Math/Math.h"
+#include "BlackPearl/Renderer/DeviceManager.h"
+#include "BlackPearl/RHI/VulkanRHI/VkDevice.h"
 #define GLM_FORCE_RADIANS
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -23,6 +25,7 @@
 #include <random>
 
 namespace BlackPearl {
+    extern DeviceManager* g_deviceManager;
     //标志可以并发处理多少帧，允许多个帧同时运行，也就是说，允许一帧的渲染不干扰下一帧的录制
     const uint32_t PARTICLE_COUNT = 8192;
 
