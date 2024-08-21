@@ -43,9 +43,8 @@ namespace BlackPearl {
        /* m_ForwardViewCB = m_Device->createBuffer(RHIUtils::CreateVolatileConstantBufferDesc(sizeof(ForwardShadingViewConstants), "ForwardShadingViewConstants", params.numConstantBufferVersions));
         m_ForwardLightCB = m_Device->createBuffer(RHIUtils::CreateVolatileConstantBufferDesc(sizeof(ForwardShadingLightConstants), "ForwardShadingLightConstants", params.numConstantBufferVersions));*/
 
-        m_ForwardViewCB = m_Device->createBuffer(RHIUtils::CreateStaticConstantBufferDesc(sizeof(ForwardShadingViewConstants), "ForwardShadingViewConstants"));
-     //   m_ForwardLightCB = m_Device->createBuffer(RHIUtils::CreateVolatileConstantBufferDesc(sizeof(ForwardShadingLightConstants), "ForwardShadingLightConstants", params.numConstantBufferVersions));
-
+     //   m_ForwardViewCB = m_Device->createBuffer(RHIUtils::CreateStaticConstantBufferDesc(sizeof(ForwardShadingViewConstants), "ForwardShadingViewConstants"));
+        m_ForwardViewCB = m_Device->createBuffer(RHIUtils::CreateVolatileConstantBufferDesc(sizeof(ForwardShadingViewConstants), "ForwardShadingViewConstants", params.numConstantBufferVersions));
         m_ViewBindingLayout = CreateViewBindingLayout();
         m_ViewBindingSet = CreateViewBindingSet();
         //m_LightBindingLayout = CreateLightBindingLayout();
@@ -71,7 +70,7 @@ namespace BlackPearl {
 
         ForwardShadingViewConstants viewConstants = {};
         view->FillPlanarViewConstants(viewConstants);
-        commandList->beginTrackingBufferState(m_ForwardViewCB, ResourceStates::ConstantBuffer);
+        commandList->beginTrackingBufferState(m_ForwardViewCB, ResourceStates::Common);
         commandList->writeBuffer(m_ForwardViewCB, &viewConstants, sizeof(ForwardShadingViewConstants));
 
       /*  context.keyTemplate.bits.frontCounterClockwise = view->IsMirrored();
@@ -351,7 +350,7 @@ namespace BlackPearl {
             //RHIBindingLayoutItem::RT_VolatileConstantBuffer(1),
             //RHIBindingLayoutItem::RT_VolatileConstantBuffer(2),
 
-            RHIBindingLayoutItem::RT_ConstantBuffer(0),
+            RHIBindingLayoutItem::RT_VolatileConstantBuffer(0),
           //  RHIBindingLayoutItem::RT_VolatileConstantBuffer(2),
             RHIBindingLayoutItem::RT_Sampler(1)
         };                        
