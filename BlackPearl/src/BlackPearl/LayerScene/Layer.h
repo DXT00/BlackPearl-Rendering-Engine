@@ -162,20 +162,20 @@ namespace BlackPearl {
 				moveDelta = maxMoveDelta;
 
 			if (Input::IsKeyPressed(KeyCodes::Get(BP_KEY_W))) {
-				if (DynamicRHI::g_RHIType == DynamicRHI::Type::Vulkan) {
+				/*if (DynamicRHI::g_RHIType == DynamicRHI::Type::Vulkan) {
 					m_CameraPosition -= m_MainCamera->Front() * moveDelta;
-				}
-				else {
+				}*/
+				//else {
 					m_CameraPosition += m_MainCamera->Front() * moveDelta;
-				}
+				//}
 			}
 			else if (Input::IsKeyPressed(KeyCodes::Get(BP_KEY_S))) {
-				if (DynamicRHI::g_RHIType == DynamicRHI::Type::Vulkan) {
+				/*if (DynamicRHI::g_RHIType == DynamicRHI::Type::Vulkan) {
 					m_CameraPosition += m_MainCamera->Front() * moveDelta;
 				}
-				else {
+				else {*/
 					m_CameraPosition -= m_MainCamera->Front() * moveDelta;
-				}
+				//}
 			}
 			if (Input::IsKeyPressed(KeyCodes::Get(BP_KEY_A))) {
 				if (DynamicRHI::g_RHIType == DynamicRHI::Type::D3D12) {

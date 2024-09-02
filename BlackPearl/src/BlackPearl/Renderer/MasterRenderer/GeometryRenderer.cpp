@@ -5,6 +5,7 @@ namespace BlackPearl {
 
     void RenderView(ICommandList* commandList, IFramebuffer* framebuffer, IView* view, IView* viewPrev, IDrawStrategy* drawStrategy, GeometryRenderer* pass, bool materialEvents)
     {
+        pass->SetupView(commandList, view, viewPrev);
 
         const Material* lastMaterial = nullptr;
         const BufferGroup* lastBuffers = nullptr;
@@ -103,7 +104,6 @@ namespace BlackPearl {
             {
                 if (!stateValid)
                 {
-                    pass->SetupView(commandList, view, viewPrev);
 
                     commandList->setGraphicsState(graphicsState);
                     stateValid = true;
