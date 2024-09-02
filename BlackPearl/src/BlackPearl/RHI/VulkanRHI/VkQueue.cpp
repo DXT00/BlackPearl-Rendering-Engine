@@ -39,9 +39,10 @@ namespace BlackPearl {
 		std::array<const VkSemaphore, 1> semaphores = { trackingSemaphore };
 		std::array<uint64_t, 1> waitValues = { commandListID };
 
-	    VkSemaphoreWaitInfo waitInfo;
+		VkSemaphoreWaitInfo waitInfo{};
 		waitInfo.pSemaphores = semaphores.data();
 		waitInfo.pValues = waitValues.data();
+		waitInfo.pNext = nullptr;
 		/*	.setSemaphores(semaphores)
 			.setValues(waitValues);*/
 		VkResult result =vkWaitSemaphores(m_Context.device ,&waitInfo, timeout);
