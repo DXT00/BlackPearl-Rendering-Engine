@@ -1326,6 +1326,10 @@ namespace BlackPearl {
 				bool isSubmitted = (originalVersionInfo & c_VersionSubmittedFlag) != 0;
 				uint32_t queueIndex = uint32_t(originalVersionInfo >> c_VersionQueueShift) & c_VersionQueueMask;
 				uint64_t id = originalVersionInfo & c_VersionIDMask;
+				std::stringstream ss;
+
+				ss << "Volatile constant buffer id = " << id << ",queueIndex = " << queueIndex << ",queueCompletionValues[queueIndex]=" << queueCompletionValues[queueIndex];
+				GE_CORE_INFO("Volatile constant buffer id =" + std::to_string(id)+ ",queueIndex = "+ std::to_string(queueIndex) +",queueCompletionValues[queueIndex]=" + std::to_string(queueCompletionValues[queueIndex]));
 
 				// If the version is in a recorded but not submitted command list,
 				// we can't use it. So, only compare the version ID for submitted CLs.
@@ -1333,7 +1337,6 @@ namespace BlackPearl {
 				{
 					// Versions can potentially be used in CLs submitted to different queues.
 					// So we store the queue index and use look at the last finished CL in that queue.
-
 					if (queueIndex >= uint32_t(CommandQueue::Count))
 					{
 						// If the version points at an invalid queue, assume it's available. Signal the error too.
@@ -1350,6 +1353,9 @@ namespace BlackPearl {
 						break;
 					}
 				}
+				else {
+					GE_CORE_INFO("Volatile constant buffer not submit ------------");
+				}
 			}
 
 			if (!found)
@@ -1361,7 +1367,7 @@ namespace BlackPearl {
 
 				std::stringstream ss;
 				ss << "Volatile constant buffer " << buffer->desc.debugName <<
-					" has maxVersions = " << buffer->desc.maxVersions << ", which is insufficient.";
+					" has maxVersions = " << buffer->desc.maxVersions << ", which is insufficient.  ";
 
 				m_Context.error(ss.str());
 				return;
