@@ -73,7 +73,7 @@ namespace BlackPearl {
 		virtual ComputePipelineHandle createComputePipeline(const ComputePipelineDesc& desc) = 0;
 		virtual MeshletPipelineHandle createMeshletPipeline(const MeshletPipelineDesc& desc, IFramebuffer* fb) = 0;
 
-		//virtual RayTracingPipelineHandle createRayTracingPipeline(const RayTracingPipelineDesc& desc) = 0;
+		virtual RayTracingPipelineHandle createRayTracingPipeline(const RayTracingPipelineDesc& desc) = 0;
 
 		virtual BindingLayoutHandle createBindingLayout(const RHIBindingLayoutDesc& desc) = 0;
 		virtual BindingLayoutHandle createBindlessLayout(const RHIBindlessLayoutDesc& desc) = 0;

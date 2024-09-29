@@ -10,6 +10,9 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "BlackPearl/RHI/RHITexture.h"
+#ifdef	GE_API_D3D12
+#include "BlackPearl/RHI/D3D12RHI/D3D12ModelLoader.h"
+#endif
 #include "Component/CameraComponent/PerspectiveCamera.h"
 #include "Renderer/Renderer.h"
 #include "Renderer/Buffer/Buffer.h"
@@ -92,7 +95,7 @@ namespace BlackPearl {
 		g_deviceManager->Init(deviceParams);
 
 #ifdef	GE_API_D3D12
-		g_modelLoader = D3D12ModelLoader();
+		g_modelLoader = DBG_NEW D3D12ModelLoader();
 #else
 		g_modelLoader = DBG_NEW ModelLoader();
 #endif

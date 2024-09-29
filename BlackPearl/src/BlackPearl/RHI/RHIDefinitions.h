@@ -7,6 +7,7 @@
 #include <string>
 #include <vector>
 #include "BlackPearl/RHI/Common/Containers.h"
+
 namespace BlackPearl {
     /*
 Version words are used to track the usage of upload buffers, scratch buffers,
@@ -935,9 +936,6 @@ finished executing, the objects are transitioned into the "available" state, i.e
     //////////////////////////////////////////////////////////////////////////
 
 
-
-
-
     struct DrawArguments
     {
         uint32_t vertexCount = 0;
@@ -981,6 +979,19 @@ finished executing, the objects are transitioned into the "available" state, i.e
         constexpr DrawIndexedIndirectArguments& setBaseVertexLocation(int32_t value) { baseVertexLocation = value; return *this; }
         constexpr DrawIndexedIndirectArguments& setStartInstanceLocation(uint32_t value) { startInstanceLocation = value; return *this; }
     };
+
+    struct DispatchRaysArguments
+    {
+        uint32_t width = 1;
+        uint32_t height = 1;
+        uint32_t depth = 1;
+
+        constexpr DispatchRaysArguments& setWidth(uint32_t value) { width = value; return *this; }
+        constexpr DispatchRaysArguments& setHeight(uint32_t value) { height = value; return *this; }
+        constexpr DispatchRaysArguments& setDepth(uint32_t value) { depth = value; return *this; }
+        constexpr DispatchRaysArguments& setDimensions(uint32_t w, uint32_t h = 1, uint32_t d = 1) { width = w; height = h; depth = d; return *this; }
+    };
+
 
 
     template <class T>

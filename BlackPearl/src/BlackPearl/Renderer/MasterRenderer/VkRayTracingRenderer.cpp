@@ -78,6 +78,7 @@ namespace BlackPearl {
     void VkRayTracingRenderer::Init(RayTraceScene* scene)
     {
         mScene = scene;
+     
         CreateInstance();
         SetupDebugMessenger();
         CreateSurface();

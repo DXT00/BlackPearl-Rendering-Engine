@@ -19,19 +19,19 @@ public:
 
 		BlackPearl::Layer* layer = NULL;
 		const std::string layer_name = renderer + "Layer";
-
-	/*	if (renderer == "VkTest") {
+/*
+		if (renderer == "VkTest") {
 			layer = DBG_NEW VkTestLayer(layer_name);
 		}
 		if (renderer == "VkGpuParticles") {
 			layer = DBG_NEW VkGpuParticlesLayer(layer_name);
 		}*/
-		//if (renderer == "VkRayTracing") {
-		//	layer = DBG_NEW VkRayTracingLayer(layer_name);
-		//}
-		if (renderer == "VkRHIRenderGraphLayer") {
-			layer = DBG_NEW VkRHIRenderGraphLayer(layer_name);
+		if (renderer == "VkRayTracing") {
+			layer = DBG_NEW VkRayTracingLayer(layer_name);
 		}
+		/*if (renderer == "VkRHIRenderGraphLayer") {
+			layer = DBG_NEW VkRHIRenderGraphLayer(layer_name);
+		}*/
 		GetLayerManager()->PushLayer(layer);
 	}
 	virtual ~SandBoxVK() {
@@ -42,7 +42,7 @@ public:
 };
 
 BlackPearl::Application* BlackPearl::CreateApplication(HINSTANCE hInstance, int nShowCmd) {
-	return DBG_NEW SandBoxVK(hInstance, nShowCmd, BlackPearl::DynamicRHI::Type::Vulkan, "VkRHIRenderGraphLayer");
+	return DBG_NEW SandBoxVK(hInstance, nShowCmd, BlackPearl::DynamicRHI::Type::Vulkan, "VkRayTracing");
 
 }
 

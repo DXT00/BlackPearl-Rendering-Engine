@@ -94,22 +94,22 @@ namespace BlackPearl {
         virtual void setMeshletState(const MeshletState& state) = 0;
         virtual void dispatchMesh(uint32_t groupsX, uint32_t groupsY = 1, uint32_t groupsZ = 1) = 0;
 
-        //virtual void setRayTracingState(const rt::State& state) = 0;
-        //virtual void dispatchRays(const rt::DispatchRaysArguments& args) = 0;
+        virtual void setRayTracingState(const RayTracingState& state) = 0;
+        virtual void dispatchRays(const DispatchRaysArguments& args) = 0;
 
-        //virtual void buildOpacityMicromap(rt::IOpacityMicromap* omm, const rt::OpacityMicromapDesc& desc) = 0;
+        virtual void buildOpacityMicromap(rt::IOpacityMicromap* omm, const rt::OpacityMicromapDesc& desc) = 0;
 
-        //virtual void buildBottomLevelAccelStruct(rt::IAccelStruct* as, const rt::GeometryDesc* pGeometries, size_t numGeometries,
-        //    rt::AccelStructBuildFlags buildFlags = rt::AccelStructBuildFlags::None) = 0;
-        //virtual void compactBottomLevelAccelStructs() = 0;
-        //virtual void buildTopLevelAccelStruct(rt::IAccelStruct* as, const rt::InstanceDesc* pInstances, size_t numInstances,
-        //    rt::AccelStructBuildFlags buildFlags = rt::AccelStructBuildFlags::None) = 0;
+        virtual void buildBottomLevelAccelStruct(rt::IAccelStruct* as, const rt::GeometryDesc* pGeometries, size_t numGeometries,
+            rt::AccelStructBuildFlags buildFlags = rt::AccelStructBuildFlags::None) = 0;
+        virtual void compactBottomLevelAccelStructs() = 0;
+        virtual void buildTopLevelAccelStruct(rt::IAccelStruct* as, const rt::InstanceDesc* pInstances, size_t numInstances,
+            rt::AccelStructBuildFlags buildFlags = rt::AccelStructBuildFlags::None) = 0;
 
-        //// A version of buildTopLevelAccelStruct that takes the instance data from a buffer on the GPU.
-        //// The buffer must be pre-filled with rt::InstanceDesc structures using a copy operation or a shader.
-        //// No validation on the buffer contents is performed by NVRHI, and no state or liveness tracking for the referenced BLAS'es.
-        //virtual void buildTopLevelAccelStructFromBuffer(rt::IAccelStruct* as, nvrhi::IBuffer* instanceBuffer, uint64_t instanceBufferOffset, size_t numInstances,
-        //    rt::AccelStructBuildFlags buildFlags = rt::AccelStructBuildFlags::None) = 0;
+        // A version of buildTopLevelAccelStruct that takes the instance data from a buffer on the GPU.
+        // The buffer must be pre-filled with rt::InstanceDesc structures using a copy operation or a shader.
+        // No validation on the buffer contents is performed by NVRHI, and no state or liveness tracking for the referenced BLAS'es.
+        virtual void buildTopLevelAccelStructFromBuffer(rt::IAccelStruct* as, IBuffer* instanceBuffer, uint64_t instanceBufferOffset, size_t numInstances,
+            rt::AccelStructBuildFlags buildFlags = rt::AccelStructBuildFlags::None) = 0;
 
         virtual void beginTimerQuery(ITimerQuery* query) = 0;
         virtual void endTimerQuery(ITimerQuery* query) = 0;

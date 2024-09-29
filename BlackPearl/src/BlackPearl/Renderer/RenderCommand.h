@@ -2,6 +2,7 @@
 #include "glad/glad.h"
 #include "glm/glm.hpp"
 #include "BlackPearl/Math//vector.h"
+#include "BlackPearl/Math/Math.h"
 
 namespace BlackPearl {
 
@@ -18,7 +19,11 @@ namespace BlackPearl {
 
 		}
 
+		inline static void SetClearColor(const glm::vec4& color) {
+			math::float4 colorf4 = Math::ToFloat4(color);
+			SetClearColor(colorf4);
 
+		}
 
 	};
 

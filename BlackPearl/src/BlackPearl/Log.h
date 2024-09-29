@@ -1,11 +1,11 @@
 #pragma once
-#include "BlackPearl/RHI/D3D12RHI/D3D12Logger.h"
 #include "spdlog/spdlog.h"
 #include "spdlog/fmt/ostr.h"
 #include "spdlog/sinks/stdout_color_sinks.h"
 #include "BlackPearl/RHI/DynamicRHI.h"
-
-
+#ifdef	GE_API_D3D12
+#include "BlackPearl/RHI/D3D12RHI/D3D12Logger.h"
+#endif
 namespace BlackPearl {
 	extern class Log* g_Log;
 	//extern DynamicRHI::Type g_RHIType;
@@ -42,122 +42,75 @@ namespace BlackPearl {
 	/*private:
 		static std::shared_ptr<spdlog::logger> s_CoreLogger;*/
 	private:
+#ifdef	GE_API_D3D12
+		using LoggerPtr = std::shared_ptr<D3D12Logger>;
 
-		std::shared_ptr<spdlog::logger> m_OpenGLCoreLogger;
-		std::shared_ptr<D3D12Logger> m_D3D12CoreLogger;
+#else
+		using LoggerPtr = std::shared_ptr<spdlog::logger>;
+
+#endif 
+		LoggerPtr mLogger;
 	};
 
 	template<typename... Args>
 	void Log::Trace(const char* fmt, const Args &... args)
 	{
-		if (DynamicRHI::g_RHIType == DynamicRHI::Type::OpenGL || DynamicRHI::g_RHIType == DynamicRHI::Type::Vulkan) {
-			m_OpenGLCoreLogger->trace(fmt, args...);
-		}
-		else if (g_RHIType == DynamicRHI::Type::D3D12) {
-			m_D3D12CoreLogger->trace(fmt, args...);
-		}
+		mLogger->trace(fmt, args...);
+
 	}
 
 	template<typename... Args>
 	void Log::Info(const char* fmt, const Args &... args)
 	{
-		if (DynamicRHI::g_RHIType == DynamicRHI::Type::OpenGL || DynamicRHI::g_RHIType == DynamicRHI::Type::Vulkan) {
-			m_OpenGLCoreLogger->info(fmt, args...);
-		}
-		else if (DynamicRHI::g_RHIType == DynamicRHI::Type::D3D12) {
-			m_D3D12CoreLogger->info(fmt, args...);
-		}
+		mLogger->info(fmt, args...);
 	}
 
 	template<typename... Args>
 	void Log::Warn(const char* fmt, const Args &... args)
 	{
-		if (DynamicRHI::g_RHIType == DynamicRHI::Type::OpenGL || DynamicRHI::g_RHIType == DynamicRHI::Type::Vulkan) {
-			m_OpenGLCoreLogger->warn(fmt, args...);
-		}
-		else if (DynamicRHI::g_RHIType == DynamicRHI::Type::D3D12) {
-			m_D3D12CoreLogger->warn(fmt, args...);
-		}
-
+		mLogger->warn(fmt, args...);
 	}
 
 	template<typename... Args>
 	void Log::Error(const char* fmt, const Args &... args)
 	{
-		if (DynamicRHI::g_RHIType == DynamicRHI::Type::OpenGL || DynamicRHI::g_RHIType == DynamicRHI::Type::Vulkan) {
-			m_OpenGLCoreLogger->error(fmt, args...);
-		}
-		else if (DynamicRHI::g_RHIType == DynamicRHI::Type::D3D12) {
-			m_D3D12CoreLogger->error(fmt, args...);
-		}
-
+		mLogger->error(fmt, args...);
 	}
 
 	template<typename... Args>
 	void Log::Fatal(const char* fmt, const Args &... args)
 	{
-		if (DynamicRHI::g_RHIType == DynamicRHI::Type::OpenGL || DynamicRHI::g_RHIType == DynamicRHI::Type::Vulkan) {
-			m_OpenGLCoreLogger->fatal(fmt, args...);
-		}
-		else if (DynamicRHI::g_RHIType == DynamicRHI::Type::D3D12) {
-			m_D3D12CoreLogger->fatal(fmt, args...);
-		}
-
+		mLogger->fatal(fmt, args...);
 	}
 
 	template<typename ...Args>
 	void Log::Trace(const Args & ...args)
 	{
-		if (DynamicRHI::g_RHIType == DynamicRHI::Type::OpenGL || DynamicRHI::g_RHIType == DynamicRHI::Type::Vulkan) {
-			m_OpenGLCoreLogger->fatal(fmt, args...);
-		}
-		else if (DynamicRHI::g_RHIType == DynamicRHI::Type::D3D12) {
-			m_D3D12CoreLogger->fatal(fmt, args...);
-		}
+		mLogger->fatal(fmt, args...);
 	}
 
 	template<typename ...Args>
 	void Log::Info(const Args & ...args)
 	{
-		if (DynamicRHI::g_RHIType == DynamicRHI::Type::OpenGL || DynamicRHI::g_RHIType == DynamicRHI::Type::Vulkan) {
-			m_OpenGLCoreLogger->info(args...);
-		}
-		else if (DynamicRHI::g_RHIType == DynamicRHI::Type::D3D12) {
-			m_D3D12CoreLogger->info(args...);
-		}
+		mLogger->info(args...);
 	}
 
 	template<typename ...Args>
 	void Log::Warn(const Args & ...args)
 	{
-		if (DynamicRHI::g_RHIType == DynamicRHI::Type::OpenGL || DynamicRHI::g_RHIType == DynamicRHI::Type::Vulkan) {
-			m_OpenGLCoreLogger->warn(args...);
-		}
-		else if (DynamicRHI::g_RHIType == DynamicRHI::Type::D3D12) {
-			m_D3D12CoreLogger->warn(args...);
-		}
+		mLogger->warn(args...);
 	}
 
 	template<typename ...Args>
 	void Log::Error(const Args & ...args)
 	{
-		if (DynamicRHI::g_RHIType == DynamicRHI::Type::OpenGL || DynamicRHI::g_RHIType == DynamicRHI::Type::Vulkan) {
-			m_OpenGLCoreLogger->error(args...);
-		}
-		else if (DynamicRHI::g_RHIType == DynamicRHI::Type::D3D12) {
-			m_D3D12CoreLogger->error(args...);
-		}
+		mLogger->error(args...);
 	}
 
 	template<typename ...Args>
 	void Log::Fatal(const Args & ...args)
 	{
-		if (DynamicRHI::g_RHIType == DynamicRHI::Type::OpenGL || DynamicRHI::g_RHIType == DynamicRHI::Type::Vulkan) {
-			m_OpenGLCoreLogger->fatal(args...);
-		}
-		else if (DynamicRHI::g_RHIType == DynamicRHI::Type::D3D12) {
-			m_D3D12CoreLogger->fatal(args...);
-		}
+		mLogger->fatal(args...);
 	}
 }
 

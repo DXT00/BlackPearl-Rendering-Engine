@@ -672,6 +672,61 @@ namespace BlackPearl
 			.setColorWriteMask(convertColorMask(state.colorWriteMask));*/
 	}
 
+	VkBuildAccelerationStructureFlagsKHR VkUtil::convertAccelStructBuildFlags(rt::AccelStructBuildFlags buildFlags)
+	{
+#if ENABLE_SHORTCUT_CONVERSIONS
+		static_assert(uint32_t(rt::AccelStructBuildFlags::AllowUpdate) == uint32_t(VK_BUILD_ACCELERATION_STRUCTURE_ALLOW_UPDATE_BIT_KHR));
+		static_assert(uint32_t(rt::AccelStructBuildFlags::AllowCompaction) == uint32_t(VK_BUILD_ACCELERATION_STRUCTURE_ALLOW_COMPACTION_BIT_KHR));
+		static_assert(uint32_t(rt::AccelStructBuildFlags::PreferFastTrace) == uint32_t(VK_BUILD_ACCELERATION_STRUCTURE_PREFER_FAST_TRACE_BIT_KHR));
+		static_assert(uint32_t(rt::AccelStructBuildFlags::PreferFastBuild) == uint32_t(VK_BUILD_ACCELERATION_STRUCTURE_PREFER_FAST_BUILD_BIT_KHR));
+		static_assert(uint32_t(rt::AccelStructBuildFlags::MinimizeMemory) == uint32_t(VK_BUILD_ACCELERATION_STRUCTURE_LOW_MEMORY_BIT_KHR));
+
+		return VkBuildAccelerationStructureFlagsKHR(uint32_t(buildFlags) & 0x1f);
+#else
+		vk::BuildAccelerationStructureFlagsKHR flags = vk::BuildAccelerationStructureFlagBitsKHR(0);
+		if ((buildFlags & rt::AccelStructBuildFlags::AllowUpdate) != 0)
+			flags |= vk::BuildAccelerationStructureFlagBitsKHR::eAllowUpdate;
+		if ((buildFlags & rt::AccelStructBuildFlags::AllowCompaction) != 0)
+			flags |= vk::BuildAccelerationStructureFlagBitsKHR::eAllowCompaction;
+		if ((buildFlags & rt::AccelStructBuildFlags::PreferFastTrace) != 0)
+			flags |= vk::BuildAccelerationStructureFlagBitsKHR::ePreferFastTrace;
+		if ((buildFlags & rt::AccelStructBuildFlags::PreferFastBuild) != 0)
+			flags |= vk::BuildAccelerationStructureFlagBitsKHR::ePreferFastBuild;
+		if ((buildFlags & rt::AccelStructBuildFlags::MinimizeMemory) != 0)
+			flags |= vk::BuildAccelerationStructureFlagBitsKHR::eLowMemory;
+		return flags;
+#endif
+	}
+
+	VkGeometryInstanceFlagsKHR VkUtil::convertInstanceFlags(rt::InstanceFlags instanceFlags)
+	{
+#if ENABLE_SHORTCUT_CONVERSIONS
+		static_assert(uint32_t(rt::InstanceFlags::TriangleCullDisable) == uint32_t(VK_GEOMETRY_INSTANCE_TRIANGLE_FACING_CULL_DISABLE_BIT_KHR));
+		static_assert(uint32_t(rt::InstanceFlags::TriangleFrontCounterclockwise) == uint32_t(VK_GEOMETRY_INSTANCE_TRIANGLE_FRONT_COUNTERCLOCKWISE_BIT_KHR));
+		static_assert(uint32_t(rt::InstanceFlags::ForceOpaque) == uint32_t(VK_GEOMETRY_INSTANCE_FORCE_OPAQUE_BIT_KHR));
+		static_assert(uint32_t(rt::InstanceFlags::ForceNonOpaque) == uint32_t(VK_GEOMETRY_INSTANCE_FORCE_NO_OPAQUE_BIT_KHR));
+		static_assert(uint32_t(rt::InstanceFlags::ForceOMM2State) == uint32_t(VK_GEOMETRY_INSTANCE_FORCE_OPACITY_MICROMAP_2_STATE_EXT));
+		static_assert(uint32_t(rt::InstanceFlags::DisableOMMs) == uint32_t(VK_GEOMETRY_INSTANCE_DISABLE_OPACITY_MICROMAPS_EXT));
+
+		return VkGeometryInstanceFlagsKHR(uint32_t(instanceFlags));
+#else
+		vk::GeometryInstanceFlagsKHR flags = vk::GeometryInstanceFlagBitsKHR(0);
+		if ((instanceFlags & rt::InstanceFlags::ForceNonOpaque) != 0)
+			flags |= vk::GeometryInstanceFlagBitsKHR::eForceNoOpaque;
+		if ((instanceFlags & rt::InstanceFlags::ForceOpaque) != 0)
+			flags |= vk::GeometryInstanceFlagBitsKHR::eForceOpaque;
+		if ((instanceFlags & rt::InstanceFlags::ForceOMM2State) != 0)
+			flags |= vk::GeometryInstanceFlagBitsKHR::eForceOpacityMicromap2StateEXT;
+		if ((instanceFlags & rt::InstanceFlags::DisableOMMs) != 0)
+			flags |= vk::GeometryInstanceFlagBitsKHR::eDisableOpacityMicromapsEXT;
+		if ((instanceFlags & rt::InstanceFlags::TriangleCullDisable) != 0)
+			flags |= vk::GeometryInstanceFlagBitsKHR::eTriangleCullDisable;
+		if ((instanceFlags & rt::InstanceFlags::TriangleFrontCounterclockwise) != 0)
+			flags |= vk::GeometryInstanceFlagBitsKHR::eTriangleFrontCounterclockwise;
+		return flags;
+#endif
+	}
+
 	/*VkBuildAccelerationStructureFlagsKHR VkUtil::convertAccelStructBuildFlags(rt::AccelStructBuildFlags buildFlags)
 	{
 #if ENABLE_SHORTCUT_CONVERSIONS

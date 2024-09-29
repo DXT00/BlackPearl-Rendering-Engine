@@ -5,6 +5,7 @@
 #include "../RefCountPtr.h"
 #include "../RHIShader.h"
 #include "../RHIResources.h"
+#include "VkPipeline.h"
 
 #include "VkContext.h"
 #include <vulkan/vulkan.h>
@@ -35,7 +36,39 @@ namespace BlackPearl {
     private:
         const VulkanContext& m_Context;
     };
-	
+
+    class ShaderTable : public RefCounter<IShaderTable>
+    {
+    public:
+        RefCountPtr<RayTracingPipeline> pipeline;
+
+        int rayGenerationShader = -1;
+        std::vector<uint32_t> missShaders;
+        std::vector<uint32_t> callableShaders;
+        std::vector<uint32_t> hitGroups;
+
+        uint32_t version = 0;
+
+        ShaderTable(const VulkanContext& context, RayTracingPipeline* _pipeline)
+            : pipeline(_pipeline)
+            , m_Context(context)
+        { }
+
+        void setRayGenerationShader(const char* exportName, IBindingSet* bindings = nullptr) override;
+        int addMissShader(const char* exportName, IBindingSet* bindings = nullptr) override;
+        int addHitGroup(const char* exportName, IBindingSet* bindings = nullptr) override;
+        int addCallableShader(const char* exportName, IBindingSet* bindings = nullptr) override;
+        void clearMissShaders() override;
+        void clearHitShaders() override;
+        void clearCallableShaders() override;
+        IRayTracingPipeline* getPipeline() override { return pipeline; }
+        uint32_t getNumEntries() const;
+
+    private:
+        const VulkanContext& m_Context;
+
+        bool verifyShaderGroupExists(const char* exportName, int shaderGroupIndex) const;
+    };
 }
 
 #endif

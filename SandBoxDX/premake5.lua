@@ -16,6 +16,7 @@ project "SandboxDX"
 		
 	}
 
+
 	filter { "files:SandboxDX/assets/shaders_hlsl/**.hlsl" }
 	filter { "files:**.hlsl" }
 		flags("ExcludeFromBuild")

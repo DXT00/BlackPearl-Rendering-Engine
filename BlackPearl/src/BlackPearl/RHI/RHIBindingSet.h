@@ -6,7 +6,7 @@
 #include "RHIBuffer.h"
 #include "RHISampler.h"
 #include "RHIBindingLayoutDesc.h"
-#include "RHIAccelStruct.h"
+#include "RHIRayTraceStruct.h"
 #include "BlackPearl/RHI/Common/Containers.h"
 namespace BlackPearl {
     struct BindingSetItem
@@ -151,7 +151,7 @@ namespace BlackPearl {
             return result;
         }
 
-        static BindingSetItem RayTracingAccelStruct(uint32_t slot, IAccelStruct* as)
+        static BindingSetItem RayTracingAccelStruct(uint32_t slot, rt::IAccelStruct* as)
         {
             BindingSetItem result;
             result.slot = slot;

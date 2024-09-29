@@ -18,6 +18,14 @@ project "SandboxVK"
 	}
 
 
+	--filter { "files:src/BlackPearl/RHI/OpenGLRHI/**.cpp" }
+	--filter { "files:src/BlackPearl/RHI/OpenGLRHI/**.h" }
+	--filter { "files:src/BlackPearl/Renderer/Buffer/D3D12Buffer/**.h" }
+	--filter { "files:src/BlackPearl/Renderer/Buffer/D3D12Buffer/**.cpp" }
+	--filter { "files:src/BlackPearl/Renderer/MasterRenderer/D3D12**.h" }
+	--filter { "files:src/BlackPearl/Renderer/MasterRenderer/D3D12**.cpp" }
+	--filter { "files:src/BlackPearl/Renderer/Shader/D3D12Shader/**.h" }
+	--filter { "files:src/BlackPearl/Renderer/Shader/D3D12Shader/**.cpp" }
 	includedirs
 	{
 		"../BlackPearl/vendor/spdlog/include",

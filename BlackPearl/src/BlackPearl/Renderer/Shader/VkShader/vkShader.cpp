@@ -11,6 +11,8 @@
 #include "BlackPearl/Component/TransformComponent/Transform.h"
 #include "BlackPearl/Core.h"
 #include "VkShader.h"
+#include "BlackPearl/RHI/RHIPipeline.h"
+#include "VkShader.h"
 namespace BlackPearl {
 
 	static GLenum ShaderTypeFromString(const std::string& type) {
@@ -217,72 +219,9 @@ namespace BlackPearl {
 		return m_Code;
 	}
 
-	//void vkShader::SetUniform1i(const std::string& name, int val) const
-	//{
-	//	GLint loc = glGetUniformLocation(m_RendererID, name.c_str());
-	//	GE_ERROR_JUDGE();
+	
 
-	//	if (loc != -1)
-	//		glUniform1i(loc, val);
-	//	GE_ERROR_JUDGE();
 
-	//}
-
-	//void vkShader::SetUniform1ui(const std::string& name, const unsigned int val) const
-	//{
-	//	glUniform1ui(glGetUniformLocation(m_RendererID, name.c_str()), val);
-	//	GE_ERROR_JUDGE();
-
-	//}
-	//void vkShader::SetUniform1f(const std::string& name, float val) const
-	//{
-	//	glUniform1f(glGetUniformLocation(m_RendererID, name.c_str()), val);
-	//	GE_ERROR_JUDGE();
-
-	//}
-
-	//void vkShader::SetUniformMat4f(const std::string& name, const glm::mat4& mat) const
-	//{
-	//	GLint location = glGetUniformLocation(m_RendererID, name.c_str());
-	//	glUniformMatrix4fv(location, 1, GL_FALSE, &mat[0][0]);
-	//	GE_ERROR_JUDGE();
-
-	//}
-
-	//void vkShader::SetUniformMat3x4f(const std::string& name, const float* mat3x4, uint32_t count) const
-	//{
-	//	GLint location = glGetUniformLocation(m_RendererID, name.c_str());
-	//	glProgramUniformMatrix3x4fv(m_RendererID, location, count, GL_FALSE, mat3x4);
-	//	GE_ERROR_JUDGE();
-
-	//}
-
-	//void vkShader::SetUniformMat4f(const std::string& name, const float* mat4x4, uint32_t count) const
-	//{
-	//	GLint location = glGetUniformLocation(m_RendererID, name.c_str());
-	//	glProgramUniformMatrix4fv(m_RendererID, location, count, GL_FALSE, mat4x4);
-	//}
-
-	//void vkShader::SetUniformVec3f(const std::string& name, const glm::vec3& value) const
-	//{
-	//	glUniform3fv(glGetUniformLocation(m_RendererID, name.c_str()), 1, &value[0]);
-	//	GE_ERROR_JUDGE();
-
-	//}
-	//void vkShader::SetUniformVec2f(const std::string& name, const glm::vec2& value) const
-	//{
-	//	glUniform2fv(glGetUniformLocation(m_RendererID, name.c_str()), 1, &value[0]);
-	//	GE_ERROR_JUDGE();
-
-	//}
-
-	//void vkShader::SetUniformVec2i(const std::string& name, const glm::ivec2& value) const
-	//{
-	//	GLint location = glGetUniformLocation(m_RendererID, name.c_str());
-	//	GE_ERROR_JUDGE();
-
-	//	glUniform2iv(location, 1, &value[0]);
-	//	GE_ERROR_JUDGE();
 
 
 	//}

@@ -10,10 +10,58 @@
 #include "VkBindingSet.h"
 #include "VkDescriptorTable.h"
 #include "VkTexture.h"
+#include "VkRayTraceStruct.h"
 #include "BlackPearl/RHI/Common/RHIUtils.h"
 #include "BlackPearl/RHI/Common/FormatInfo.h"
+#include "BlackPearl/RHI/VulkanRHI/VkShader.h"
+#include "BlackPearl/RHI/RHIRayTraceStruct.h"
 namespace BlackPearl {
 	extern VkImageAspectFlags guessImageAspectFlags(VkFormat format);
+
+	VkDeviceOrHostAddressConstKHR getBufferAddress(IBuffer* _buffer, uint64_t offset)
+	{
+		VkDeviceOrHostAddressConstKHR address{};
+		if (!_buffer)
+			return address;
+
+		Buffer* buffer = static_cast<Buffer*>(_buffer);
+
+		address.deviceAddress = buffer->deviceAddress + size_t(offset);
+		return address;
+	}
+
+
+
+	static VkBuildMicromapFlagBitsEXT GetAsVkBuildMicromapFlagBitsEXT(rt::OpacityMicromapBuildFlags flags)
+	{
+		assert((flags & (rt::OpacityMicromapBuildFlags::FastBuild | rt::OpacityMicromapBuildFlags::FastTrace)) == flags);
+		static_assert((uint32_t)VK_BUILD_MICROMAP_PREFER_FAST_TRACE_BIT_EXT == (uint32_t)rt::OpacityMicromapBuildFlags::FastTrace);
+		static_assert((uint32_t)VK_BUILD_MICROMAP_PREFER_FAST_BUILD_BIT_EXT == (uint32_t)rt::OpacityMicromapBuildFlags::FastBuild);
+		return (VkBuildMicromapFlagBitsEXT)flags;
+	}
+
+	static const VkMicromapUsageEXT* GetAsVkOpacityMicromapUsageCounts(const rt::OpacityMicromapUsageCount* counts)
+	{
+		static_assert(sizeof(rt::OpacityMicromapUsageCount) == sizeof(VkMicromapUsageEXT));
+		static_assert(offsetof(rt::OpacityMicromapUsageCount, count) == offsetof(VkMicromapUsageEXT, count));
+		static_assert(sizeof(rt::OpacityMicromapUsageCount::count) == sizeof(VkMicromapUsageEXT::count));
+		static_assert(offsetof(rt::OpacityMicromapUsageCount, subdivisionLevel) == offsetof(VkMicromapUsageEXT, subdivisionLevel));
+		static_assert(sizeof(rt::OpacityMicromapUsageCount::subdivisionLevel) == sizeof(VkMicromapUsageEXT::subdivisionLevel));
+		static_assert(offsetof(rt::OpacityMicromapUsageCount, format) == offsetof(VkMicromapUsageEXT, format));
+		static_assert(sizeof(rt::OpacityMicromapUsageCount::format) == sizeof(VkMicromapUsageEXT::format));
+		return (VkMicromapUsageEXT*)counts;
+	}
+
+	static VkDeviceOrHostAddressKHR getMutableBufferAddress(IBuffer* _buffer, uint64_t offset)
+	{
+		VkDeviceOrHostAddressKHR address{};
+		if (!_buffer)
+			return address;
+
+		Buffer* buffer = checked_cast<Buffer*>(_buffer);
+		address.deviceAddress = buffer->deviceAddress + size_t(offset);
+		return address;
+	}
 	static void computeMipLevelInformation(const TextureDesc& desc, uint32_t mipLevel, uint32_t* widthOut, uint32_t* heightOut, uint32_t* depthOut)
 	{
 		uint32_t width = std::max(desc.width >> mipLevel, uint32_t(1));
@@ -226,12 +274,12 @@ namespace BlackPearl {
 		//imageCopy.setBufferOffset(uploadOffset)
 		//	.setBufferRowLength(deviceNumCols * formatInfo.blockSize)
 		//	.setBufferImageHeight(deviceNumRows * formatInfo.blockSize)
-		//	.setImageSubresource(vk::ImageSubresourceLayers()
+		//	.setImageSubresource(VkImageSubresourceLayers()
 		//		.setAspectMask(guessImageAspectFlags(dest->imageInfo.format))
 		//		.setMipLevel(mipLevel)
 		//		.setBaseArrayLayer(arraySlice)
 		//		.setLayerCount(1))
-		//	.setImageExtent(vk::Extent3D().setWidth(mipWidth).setHeight(mipHeight).setDepth(mipDepth));
+		//	.setImageExtent(VkExtent3D().setWidth(mipWidth).setHeight(mipHeight).setDepth(mipDepth));
 
 		VkImageSubresourceLayers layers{};
 		layers.aspectMask = guessImageAspectFlags(dest->imageInfo.format);
@@ -472,7 +520,7 @@ namespace BlackPearl {
 
 		if (!state.viewport.viewports.empty() && arraysAreDifferent(state.viewport.viewports, m_CurrentGraphicsState.viewport.viewports))
 		{
-			nvrhi::static_vector<VkViewport, c_MaxViewports> viewports;
+			static_vector<VkViewport, c_MaxViewports> viewports;
 			for (const auto& vp : state.viewport.viewports)
 			{
 				viewports.push_back(VKViewportWithDXCoords(vp));
@@ -484,7 +532,7 @@ namespace BlackPearl {
 
 		if (!state.viewport.scissorRects.empty() && arraysAreDifferent(state.viewport.scissorRects, m_CurrentGraphicsState.viewport.scissorRects))
 		{
-			nvrhi::static_vector<VkRect2D, c_MaxViewports> scissors;
+			static_vector<VkRect2D, c_MaxViewports> scissors;
 			for (const auto& sc : state.viewport.scissorRects)
 			{
 				VkOffset2D offset = { sc.minX, sc.minY };
@@ -666,6 +714,402 @@ namespace BlackPearl {
 
 
 		//m_CurrentCmdBuf->cmdBuf.drawMeshTasksNV(groupsX, 0);
+	}
+	void CommandList::setRayTracingState(const RayTracingState& state)
+	{
+		if (!state.shaderTable)
+			return;
+
+		ShaderTable* shaderTable = static_cast<ShaderTable*>(state.shaderTable);
+		RayTracingPipeline* pso = shaderTable->pipeline;
+
+		if (shaderTable->rayGenerationShader < 0)
+		{
+			m_Context.error("The STB does not have a valid RayGen shader set");
+			return;
+		}
+
+		if (m_EnableAutomaticBarriers)
+		{
+			for (size_t i = 0; i < state.bindings.size() && i < pso->desc.globalBindingLayouts.size(); i++)
+			{
+				BindingLayout* layout = pso->pipelineBindingLayouts[i].Get();
+
+				if ((layout->desc.visibility & ShaderType::AllRayTracing) == 0)
+					continue;
+
+				setResourceStatesForBindingSet(state.bindings[i]);
+			}
+		}
+
+		if (m_CurrentRayTracingState.shaderTable != state.shaderTable)
+		{
+			m_CurrentCmdBuf->referencedResources.push_back(state.shaderTable);
+		}
+
+		if (!m_CurrentRayTracingState.shaderTable || m_CurrentRayTracingState.shaderTable->getPipeline() != pso)
+		{
+			vkCmdBindPipeline(m_CurrentCmdBuf->cmdBuf, VK_PIPELINE_BIND_POINT_RAY_TRACING_KHR, pso->pipeline);
+			m_CurrentPipelineLayout = pso->pipelineLayout;
+			m_CurrentPushConstantsVisibility = pso->pushConstantVisibility;
+		}
+
+		if (arraysAreDifferent(m_CurrentRayTracingState.bindings, state.bindings) || m_AnyVolatileBufferWrites)
+		{
+			_bindBindingSets(VK_PIPELINE_BIND_POINT_RAY_TRACING_KHR, pso->pipelineLayout, state.bindings);
+		}
+
+		// Rebuild the SBT if we're binding a new one or if it's been changed since the previous bind.
+
+		if (m_CurrentRayTracingState.shaderTable != shaderTable || m_CurrentShaderTablePointers.version != shaderTable->version)
+		{
+			const uint32_t shaderGroupHandleSize = m_Context.rayTracingPipelineProperties.shaderGroupHandleSize;
+			const uint32_t shaderGroupBaseAlignment = m_Context.rayTracingPipelineProperties.shaderGroupBaseAlignment;
+
+			const uint32_t shaderTableSize = shaderTable->getNumEntries() * shaderGroupBaseAlignment;
+
+			// First, allocate a piece of the upload buffer. That will be our SBT on the device.
+
+			Buffer* uploadBuffer = nullptr;
+			uint64_t uploadOffset = 0;
+			uint8_t* uploadCpuVA = nullptr;
+			bool allocated = m_UploadManager->suballocateBuffer(shaderTableSize, &uploadBuffer, &uploadOffset, (void**)&uploadCpuVA,
+				MakeVersion(m_CurrentCmdBuf->recordingID, m_CommandListParameters.queueType, false),
+				shaderGroupBaseAlignment);
+
+			if (!allocated)
+			{
+				m_Context.error("Failed to suballocate an upload buffer for the SBT");
+				return;
+			}
+
+			assert(uploadCpuVA);
+			assert(uploadBuffer);
+
+			// Copy the shader and group handles into the device SBT, record the pointers.
+
+			VkStridedDeviceAddressRegionKHR rayGenHandle{};
+			VkStridedDeviceAddressRegionKHR missHandles{};
+			VkStridedDeviceAddressRegionKHR hitGroupHandles{};
+			VkStridedDeviceAddressRegionKHR callableHandles{};
+
+			// ... RayGen
+
+			uint32_t sbtIndex = 0;
+			memcpy(uploadCpuVA + sbtIndex * shaderGroupBaseAlignment,
+				pso->shaderGroupHandles.data() + shaderGroupHandleSize * shaderTable->rayGenerationShader,
+				shaderGroupHandleSize);
+			rayGenHandle.deviceAddress = (uploadBuffer->deviceAddress + uploadOffset + sbtIndex * shaderGroupBaseAlignment);
+			rayGenHandle.size = (shaderGroupBaseAlignment);
+			rayGenHandle.stride = (shaderGroupBaseAlignment);
+			sbtIndex++;
+
+			// ... Miss
+
+			if (!shaderTable->missShaders.empty())
+			{
+				missHandles.deviceAddress = (uploadBuffer->deviceAddress + uploadOffset + sbtIndex * shaderGroupBaseAlignment);
+				for (uint32_t shaderGroupIndex : shaderTable->missShaders)
+				{
+					memcpy(uploadCpuVA + sbtIndex * shaderGroupBaseAlignment,
+						pso->shaderGroupHandles.data() + shaderGroupHandleSize * shaderGroupIndex,
+						shaderGroupHandleSize);
+					sbtIndex++;
+				}
+				missHandles.size =(shaderGroupBaseAlignment * uint32_t(shaderTable->missShaders.size()));
+				missHandles.stride = (shaderGroupBaseAlignment);
+			}
+
+			// ... Hit Groups
+
+			if (!shaderTable->hitGroups.empty())
+			{
+				hitGroupHandles.deviceAddress = (uploadBuffer->deviceAddress + uploadOffset + sbtIndex * shaderGroupBaseAlignment);
+				for (uint32_t shaderGroupIndex : shaderTable->hitGroups)
+				{
+					memcpy(uploadCpuVA + sbtIndex * shaderGroupBaseAlignment,
+						pso->shaderGroupHandles.data() + shaderGroupHandleSize * shaderGroupIndex,
+						shaderGroupHandleSize);
+					sbtIndex++;
+				}
+				hitGroupHandles.size =(shaderGroupBaseAlignment * uint32_t(shaderTable->hitGroups.size()));
+				hitGroupHandles.stride = (shaderGroupBaseAlignment);
+			}
+
+			// ... Callable
+
+			if (!shaderTable->callableShaders.empty())
+			{
+				callableHandles.deviceAddress = (uploadBuffer->deviceAddress + uploadOffset + sbtIndex * shaderGroupBaseAlignment);
+				for (uint32_t shaderGroupIndex : shaderTable->callableShaders)
+				{
+					memcpy(uploadCpuVA + sbtIndex * shaderGroupBaseAlignment,
+						pso->shaderGroupHandles.data() + shaderGroupHandleSize * shaderGroupIndex,
+						shaderGroupHandleSize);
+					sbtIndex++;
+				}
+				callableHandles.size =(shaderGroupBaseAlignment * uint32_t(shaderTable->callableShaders.size()));
+				callableHandles.stride = (shaderGroupBaseAlignment);
+			}
+
+			// Store the device pointers to the SBT for use in dispatchRays later, and the version.
+
+			m_CurrentShaderTablePointers.rayGen = rayGenHandle;
+			m_CurrentShaderTablePointers.miss = missHandles;
+			m_CurrentShaderTablePointers.hitGroups = hitGroupHandles;
+			m_CurrentShaderTablePointers.callable = callableHandles;
+			m_CurrentShaderTablePointers.version = shaderTable->version;
+		}
+
+		commitBarriers();
+
+		m_CurrentGraphicsState = GraphicsState();
+		m_CurrentComputeState = ComputeState();
+		m_CurrentMeshletState = MeshletState();
+		m_CurrentRayTracingState = state;
+		m_AnyVolatileBufferWrites = false;
+	}
+	void CommandList::dispatchRays(const DispatchRaysArguments& args)
+	{
+		assert(m_CurrentCmdBuf);
+
+		_updateRayTracingVolatileBuffers();
+		vkCmdTraceRaysKHR(m_CurrentCmdBuf->cmdBuf, &m_CurrentShaderTablePointers.rayGen,
+			&m_CurrentShaderTablePointers.miss,
+			&m_CurrentShaderTablePointers.hitGroups,
+			&m_CurrentShaderTablePointers.callable,
+			args.width, args.height, args.depth);
+
+
+	}
+	void CommandList::buildOpacityMicromap(rt::IOpacityMicromap* pOpacityMicromap, const rt::OpacityMicromapDesc& desc)
+	{
+		OpacityMicromap* omm = checked_cast<OpacityMicromap*>(pOpacityMicromap);
+
+		if (m_EnableAutomaticBarriers)
+		{
+			_requireBufferState(desc.inputBuffer, ResourceStates::OpacityMicromapBuildInput);
+			_requireBufferState(desc.perOmmDescs, ResourceStates::OpacityMicromapBuildInput);
+
+			_requireBufferState(omm->dataBuffer, ResourceStates::OpacityMicromapWrite);
+		}
+
+		if (desc.trackLiveness)
+		{
+			m_CurrentCmdBuf->referencedResources.push_back(desc.inputBuffer);
+			m_CurrentCmdBuf->referencedResources.push_back(desc.perOmmDescs);
+			m_CurrentCmdBuf->referencedResources.push_back(omm->dataBuffer);
+		}
+
+		commitBarriers();
+
+		VkMicromapBuildInfoEXT buildInfo{};
+		buildInfo.sType = (VkStructureType)VK_MICROMAP_TYPE_OPACITY_MICROMAP_EXT;
+		buildInfo.flags = GetAsVkBuildMicromapFlagBitsEXT(desc.flags);
+		buildInfo.mode = VK_BUILD_MICROMAP_MODE_BUILD_EXT;
+		buildInfo.dstMicromap = omm->opacityMicromap;
+		buildInfo.pUsageCounts = GetAsVkOpacityMicromapUsageCounts(desc.counts.data());
+		buildInfo.usageCountsCount = (uint32_t)desc.counts.size();
+		buildInfo.data = getBufferAddress(desc.inputBuffer, desc.inputBufferOffset);
+		buildInfo.triangleArray = getBufferAddress(desc.perOmmDescs, desc.perOmmDescsOffset);
+		buildInfo.triangleArrayStride = (VkDeviceSize)sizeof(VkMicromapTriangleEXT);
+
+			//.setType(VkMicromapTypeEXT::eOpacityMicromap)
+			//.setFlags(GetAsVkBuildMicromapFlagBitsEXT(desc.flags))
+			//.setMode(vk::BuildMicromapModeEXT::eBuild)
+			//.setDstMicromap(omm->opacityMicromap.get())
+			//.setPUsageCounts(GetAsVkOpacityMicromapUsageCounts(desc.counts.data()))
+			//.setUsageCountsCount((uint32_t)desc.counts.size())
+			//.setData(getBufferAddress(desc.inputBuffer, desc.inputBufferOffset))
+			//.setTriangleArray(getBufferAddress(desc.perOmmDescs, desc.perOmmDescsOffset))
+			//.setTriangleArrayStride((VkDeviceSize)sizeof(vk::MicromapTriangleEXT))
+			//;
+
+		VkMicromapBuildSizesInfoEXT buildSize;
+		//m_Context.device.getMicromapBuildSizesEXT(VkAccelerationStructureBuildTypeKHR::eDevice, &buildInfo, &buildSize);
+
+		vkGetMicromapBuildSizesEXT(m_Context.device, VK_ACCELERATION_STRUCTURE_BUILD_TYPE_DEVICE_KHR, &buildInfo, &buildSize);
+
+
+		if (buildSize.buildScratchSize != 0)
+		{
+			Buffer* scratchBuffer = nullptr;
+			uint64_t scratchOffset = 0;
+			uint64_t currentVersion = MakeVersion(m_CurrentCmdBuf->recordingID, m_CommandListParameters.queueType, false);
+
+			bool allocated = m_ScratchManager->suballocateBuffer(buildSize.buildScratchSize, &scratchBuffer, &scratchOffset, nullptr,
+				currentVersion, m_Context.accelStructProperties.minAccelerationStructureScratchOffsetAlignment);
+
+			if (!allocated)
+			{
+				std::stringstream ss;
+				ss << "Couldn't suballocate a scratch buffer for OMM " << (omm->desc.debugName) << " build. "
+					"The build requires " << buildSize.buildScratchSize << " bytes of scratch space.";
+
+				m_Context.error(ss.str());
+				return;
+			}
+
+			//buildInfo.setScratchData(getMutableBufferAddress(scratchBuffer, scratchOffset));
+			buildInfo.scratchData = getMutableBufferAddress(scratchBuffer, scratchOffset);
+		}
+
+		vkCmdBuildMicromapsEXT(m_CurrentCmdBuf->cmdBuf, 1, &buildInfo);
+		//m_CurrentCmdBuf->cmdBuf.buildMicromapsEXT(1, &buildInfo);
+	}
+	void CommandList::buildBottomLevelAccelStruct(rt::IAccelStruct* _as, const rt::GeometryDesc* pGeometries, size_t numGeometries, rt::AccelStructBuildFlags buildFlags)
+	{
+		AccelStruct* as = static_cast<AccelStruct*>(_as);
+
+		const bool performUpdate = (buildFlags & rt::AccelStructBuildFlags::PerformUpdate) != 0;
+		if (performUpdate)
+		{
+			assert(as->allowUpdate);
+		}
+
+		std::vector<VkAccelerationStructureGeometryKHR> geometries;
+		std::vector<VkAccelerationStructureTrianglesOpacityMicromapEXT> omms;
+		std::vector<VkAccelerationStructureBuildRangeInfoKHR> buildRanges;
+		std::vector<uint32_t> maxPrimitiveCounts;
+		geometries.resize(numGeometries);
+		omms.resize(numGeometries);
+		maxPrimitiveCounts.resize(numGeometries);
+		buildRanges.resize(numGeometries);
+
+		for (size_t i = 0; i < numGeometries; i++)
+		{
+			_convertBottomLevelGeometry(pGeometries[i], geometries[i], omms[i], maxPrimitiveCounts[i], &buildRanges[i], m_Context);
+
+			const rt::GeometryDesc& src = pGeometries[i];
+
+			switch (src.geometryType)
+			{
+			case rt::GeometryType::Triangles: {
+				const rt::GeometryTriangles& srct = src.geometryData.triangles;
+				if (m_EnableAutomaticBarriers)
+				{
+					if (srct.indexBuffer)
+						_requireBufferState(srct.indexBuffer, ResourceStates::AccelStructBuildInput);
+					if (srct.vertexBuffer)
+						_requireBufferState(srct.vertexBuffer, ResourceStates::AccelStructBuildInput);
+					if (OpacityMicromap* om = checked_cast<OpacityMicromap*>(srct.opacityMicromap))
+						_requireBufferState(om->dataBuffer, ResourceStates::AccelStructBuildInput);
+				}
+				break;
+			}
+			case rt::GeometryType::AABBs: {
+				const rt::GeometryAABBs& srca = src.geometryData.aabbs;
+				if (m_EnableAutomaticBarriers)
+				{
+					if (srca.buffer)
+						_requireBufferState(srca.buffer, ResourceStates::AccelStructBuildInput);
+				}
+				break;
+			}
+			}
+		}
+
+		VkAccelerationStructureBuildGeometryInfoKHR buildInfo{};
+		buildInfo.sType = (VkStructureType)VK_ACCELERATION_STRUCTURE_TYPE_BOTTOM_LEVEL_KHR;
+		buildInfo.mode = performUpdate ? VK_BUILD_ACCELERATION_STRUCTURE_MODE_UPDATE_KHR : VK_BUILD_ACCELERATION_STRUCTURE_MODE_BUILD_KHR;
+		buildInfo.pGeometries = geometries.data();
+		buildInfo.flags = VkUtil::convertAccelStructBuildFlags(buildFlags);
+		buildInfo.dstAccelerationStructure = as->accelStruct;
+			
+			
+
+		if (as->allowUpdate)
+			buildInfo.flags |= VK_BUILD_ACCELERATION_STRUCTURE_ALLOW_UPDATE_BIT_KHR;
+
+		if (performUpdate)
+			buildInfo.srcAccelerationStructure = as->accelStruct;
+
+
+
+		if (m_EnableAutomaticBarriers)
+		{
+			_requireBufferState(as->dataBuffer, ResourceStates::AccelStructWrite);
+		}
+		commitBarriers();
+		
+		VkAccelerationStructureBuildSizesInfoKHR buildSizes;
+
+
+		vkGetAccelerationStructureBuildSizesKHR(m_Context.device, VK_ACCELERATION_STRUCTURE_BUILD_TYPE_DEVICE_KHR, &buildInfo, maxPrimitiveCounts.data(), &buildSizes);
+
+		if (buildSizes.accelerationStructureSize > as->dataBuffer->getDesc().byteSize)
+		{
+			std::stringstream ss;
+			ss << "BLAS " << (as->desc.debugName) << " build requires at least "
+				<< buildSizes.accelerationStructureSize << " bytes in the data buffer, while the allocated buffer is only "
+				<< as->dataBuffer->getDesc().byteSize << " bytes";
+
+			m_Context.error(ss.str());
+			return;
+		}
+
+		size_t scratchSize = performUpdate
+			? buildSizes.updateScratchSize
+			: buildSizes.buildScratchSize;
+
+		Buffer* scratchBuffer = nullptr;
+		uint64_t scratchOffset = 0;
+		uint64_t currentVersion = MakeVersion(m_CurrentCmdBuf->recordingID, m_CommandListParameters.queueType, false);
+
+		bool allocated = m_ScratchManager->suballocateBuffer(scratchSize, &scratchBuffer, &scratchOffset, nullptr,
+			currentVersion, m_Context.accelStructProperties.minAccelerationStructureScratchOffsetAlignment);
+
+		if (!allocated)
+		{
+			std::stringstream ss;
+			ss << "Couldn't suballocate a scratch buffer for BLAS " << (as->desc.debugName) << " build. "
+				"The build requires " << scratchSize << " bytes of scratch space.";
+
+			m_Context.error(ss.str());
+			return;
+		}
+
+		assert(scratchBuffer->deviceAddress);
+		//buildInfo.setScratchData(scratchBuffer->deviceAddress + scratchOffset);
+		buildInfo.scratchData.deviceAddress = scratchBuffer->deviceAddress + scratchOffset;
+		std::array<VkAccelerationStructureBuildGeometryInfoKHR, 1> buildInfos = { buildInfo };
+		std::array<const VkAccelerationStructureBuildRangeInfoKHR*, 1> buildRangeArrays = { buildRanges.data() };
+
+		//m_CurrentCmdBuf->cmdBuf.buildAccelerationStructuresKHR(buildInfos, buildRangeArrays);
+
+
+		vkCmdBuildAccelerationStructuresKHR(m_CurrentCmdBuf->cmdBuf, buildInfos.size(),
+			reinterpret_cast<const VkAccelerationStructureBuildGeometryInfoKHR*>(buildInfos.data()), 
+			reinterpret_cast<const VkAccelerationStructureBuildRangeInfoKHR* const*>(buildRangeArrays.data()));
+
+
+		if (as->desc.trackLiveness)
+			m_CurrentCmdBuf->referencedResources.push_back(as);
+	}
+	void CommandList::compactBottomLevelAccelStructs()
+	{
+#ifdef NVRHI_WITH_RTXMU
+
+		if (!m_Context.rtxMuResources->asBuildsCompleted.empty())
+		{
+			std::lock_guard lockGuard(m_Context.rtxMuResources->asListMutex);
+
+			if (!m_Context.rtxMuResources->asBuildsCompleted.empty())
+			{
+				m_Context.rtxMemUtil->PopulateCompactionCommandList(m_CurrentCmdBuf->cmdBuf, m_Context.rtxMuResources->asBuildsCompleted);
+
+				m_CurrentCmdBuf->rtxmuCompactionIds.insert(m_CurrentCmdBuf->rtxmuCompactionIds.end(), m_Context.rtxMuResources->asBuildsCompleted.begin(), m_Context.rtxMuResources->asBuildsCompleted.end());
+
+				m_Context.rtxMuResources->asBuildsCompleted.clear();
+			}
+		}
+#endif
+	}
+	void CommandList::buildTopLevelAccelStruct(rt::IAccelStruct* as, const rt::InstanceDesc* pInstances, size_t numInstances, rt::AccelStructBuildFlags buildFlags)
+	{
+	}
+	void CommandList::buildTopLevelAccelStructFromBuffer(rt::IAccelStruct* as, IBuffer* instanceBuffer, uint64_t instanceBufferOffset, size_t numInstances, rt::AccelStructBuildFlags buildFlags)
+	{
 	}
 	void CommandList::beginTimerQuery(ITimerQuery* query)
 	{
@@ -864,6 +1308,15 @@ namespace BlackPearl {
 	}
 	void CommandList::_updateRayTracingVolatileBuffers()
 	{
+		if (m_AnyVolatileBufferWrites && m_CurrentRayTracingState.shaderTable)
+		{
+			RayTracingPipeline* pso = checked_cast<RayTracingPipeline*>(m_CurrentRayTracingState.shaderTable->getPipeline());
+
+			_bindBindingSets(VK_PIPELINE_BIND_POINT_RAY_TRACING_KHR, pso->pipelineLayout, m_CurrentComputeState.bindings);
+
+			m_AnyVolatileBufferWrites = false;
+		}
+
 	}
 	void CommandList::_requireTextureState(ITexture* _texture, TextureSubresourceSet subresources, ResourceStates state)
 	{
@@ -1159,6 +1612,10 @@ namespace BlackPearl {
 		m_StateTracker.clearBarriers();
 
 	}
+	void CommandList::_convertBottomLevelGeometry(const rt::GeometryDesc& src, VkAccelerationStructureGeometryKHR& dst, VkAccelerationStructureTrianglesOpacityMicromapEXT& dstOmm, uint32_t& maxPrimitiveCount, VkAccelerationStructureBuildRangeInfoKHR* pRange, const VulkanContext& context)
+	{
+
+	}
 	void CommandList::_clearTexture(ITexture* texture, TextureSubresourceSet subresources, const VkClearColorValue& clearValue)
 	{
 	}
@@ -1420,7 +1877,7 @@ namespace BlackPearl {
 			range.offset = state.minVersion * buffer->desc.byteSize;
 			range.size = numVersions * buffer->desc.byteSize;
 			range.pNext = nullptr;
-		/*	auto range = vk::MappedMemoryRange()
+		/*	auto range = VkMappedMemoryRange()
 				.setMemory(she->memory)
 				.setOffset(state.minVersion * buffer->desc.byteSize)
 				.setSize(numVersions * buffer->desc.byteSize);*/

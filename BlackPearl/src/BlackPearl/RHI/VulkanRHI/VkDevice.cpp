@@ -27,7 +27,7 @@
 
 namespace BlackPearl {
 	template <typename T>
-	using attachment_vector = nvrhi::static_vector<T, c_MaxRenderTargets + 1>; // render targets + depth
+	using attachment_vector = static_vector<T, c_MaxRenderTargets + 1>; // render targets + depth
 
 	static TextureDimension getDimensionForFramebuffer(TextureDimension dimension, bool isArray)
 	{
@@ -466,7 +466,7 @@ namespace BlackPearl {
 		attachment_vector<VkAttachmentReference2> colorAttachmentRefs(desc.colorAttachments.size());
 		VkAttachmentReference2 depthAttachmentRef{};
 
-		nvrhi::static_vector<VkImageView, c_MaxRenderTargets + 1> attachmentViews;
+		static_vector<VkImageView, c_MaxRenderTargets + 1> attachmentViews;
 		attachmentViews.resize(desc.colorAttachments.size());
 
 		uint32_t numArraySlices = 0;
@@ -867,7 +867,7 @@ namespace BlackPearl {
 
 		/*.setCombinerOps(combiners)
 		.setFragmentSize(convertFragmentShadingRate(desc.shadingRateState.shadingRate));*/
-		nvrhi::static_vector<VkDescriptorSetLayout, c_MaxBindingLayouts> descriptorSetLayouts;
+		static_vector<VkDescriptorSetLayout, c_MaxBindingLayouts> descriptorSetLayouts;
 		uint32_t pushConstantSize = 0;
 		for (const BindingLayoutHandle& _layout : desc.bindingLayouts)
 		{
@@ -1283,9 +1283,9 @@ namespace BlackPearl {
 		VkResult res;
 
 		// collect all of the descriptor write data
-		nvrhi::static_vector<VkDescriptorImageInfo, c_MaxBindingsPerLayout> descriptorImageInfo;
-		nvrhi::static_vector<VkDescriptorBufferInfo, c_MaxBindingsPerLayout> descriptorBufferInfo;
-		nvrhi::static_vector<VkWriteDescriptorSet, c_MaxBindingsPerLayout> descriptorWriteInfo;
+		static_vector<VkDescriptorImageInfo, c_MaxBindingsPerLayout> descriptorImageInfo;
+		static_vector<VkDescriptorBufferInfo, c_MaxBindingsPerLayout> descriptorBufferInfo;
+		static_vector<VkWriteDescriptorSet, c_MaxBindingsPerLayout> descriptorWriteInfo;
 
 		auto generateWriteDescriptorData =
 			// generates a vk::WriteDescriptorSet struct in descriptorWriteInfo

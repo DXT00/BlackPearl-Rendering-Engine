@@ -1,7 +1,8 @@
 #pragma once
+#include <string>
 namespace BlackPearl {
 
-	class D3D12Logger 
+	class D3D12Logger
 	{
 
 	public:
@@ -32,7 +33,7 @@ namespace BlackPearl {
 		template<typename ...Args>
 		void fatal(const Args &... args);
 
-		//TODO:: ÔÝÎ´ÊµÏÖ
+		//TODO:: ï¿½ï¿½Î´Êµï¿½ï¿½
 		template<typename... Args>
 		void trace(const char* fmt, const Args &... args) {};
 		template<typename... Args>
