@@ -904,7 +904,8 @@ namespace BlackPearl {
 		commitBarriers();
 
 		VkMicromapBuildInfoEXT buildInfo{};
-		buildInfo.sType = (VkStructureType)VK_MICROMAP_TYPE_OPACITY_MICROMAP_EXT;
+		buildInfo.sType = VK_STRUCTURE_TYPE_MICROMAP_BUILD_INFO_EXT;
+		buildInfo.type = VK_MICROMAP_TYPE_OPACITY_MICROMAP_EXT;
 		buildInfo.flags = GetAsVkBuildMicromapFlagBitsEXT(desc.flags);
 		buildInfo.mode = VK_BUILD_MICROMAP_MODE_BUILD_EXT;
 		buildInfo.dstMicromap = omm->opacityMicromap;
@@ -1010,12 +1011,12 @@ namespace BlackPearl {
 		}
 
 		VkAccelerationStructureBuildGeometryInfoKHR buildInfo{};
-		buildInfo.sType = (VkStructureType)VK_ACCELERATION_STRUCTURE_TYPE_BOTTOM_LEVEL_KHR;
+		buildInfo.type = VK_ACCELERATION_STRUCTURE_TYPE_BOTTOM_LEVEL_KHR;
+		buildInfo.sType = VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_BUILD_GEOMETRY_INFO_KHR;
 		buildInfo.mode = performUpdate ? VK_BUILD_ACCELERATION_STRUCTURE_MODE_UPDATE_KHR : VK_BUILD_ACCELERATION_STRUCTURE_MODE_BUILD_KHR;
 		buildInfo.pGeometries = geometries.data();
 		buildInfo.flags = VkUtil::convertAccelStructBuildFlags(buildFlags);
 		buildInfo.dstAccelerationStructure = as->accelStruct;
-			
 			
 
 		if (as->allowUpdate)
@@ -1032,7 +1033,7 @@ namespace BlackPearl {
 		}
 		commitBarriers();
 		
-		VkAccelerationStructureBuildSizesInfoKHR buildSizes;
+		VkAccelerationStructureBuildSizesInfoKHR buildSizes{};
 
 
 		vkGetAccelerationStructureBuildSizesKHR(m_Context.device, VK_ACCELERATION_STRUCTURE_BUILD_TYPE_DEVICE_KHR, &buildInfo, maxPrimitiveCounts.data(), &buildSizes);
@@ -1105,11 +1106,89 @@ namespace BlackPearl {
 		}
 #endif
 	}
-	void CommandList::buildTopLevelAccelStruct(rt::IAccelStruct* as, const rt::InstanceDesc* pInstances, size_t numInstances, rt::AccelStructBuildFlags buildFlags)
+	void CommandList::buildTopLevelAccelStruct(rt::IAccelStruct* _as, const rt::InstanceDesc* pInstances, size_t numInstances, rt::AccelStructBuildFlags buildFlags)
 	{
+		AccelStruct* as = checked_cast<AccelStruct*>(_as);
+
+		as->instances.resize(numInstances);
+
+		for (size_t i = 0; i < numInstances; i++)
+		{
+			const rt::InstanceDesc& src = pInstances[i];
+			VkAccelerationStructureInstanceKHR& dst = as->instances[i];
+
+			AccelStruct* blas = checked_cast<AccelStruct*>(src.bottomLevelAS);
+#ifdef NVRHI_WITH_RTXMU
+			blas->rtxmuBuffer = m_Context.rtxMemUtil->GetBuffer(blas->rtxmuId);
+			blas->accelStruct = m_Context.rtxMemUtil->GetAccelerationStruct(blas->rtxmuId);
+			blas->accelStructDeviceAddress = m_Context.rtxMemUtil->GetDeviceAddress(blas->rtxmuId);
+			dst.setAccelerationStructureReference(blas->accelStructDeviceAddress);
+#else
+			dst.accelerationStructureReference =(blas->accelStructDeviceAddress);
+#endif
+			dst.instanceCustomIndex =(src.instanceID);
+			dst.instanceShaderBindingTableRecordOffset =(src.instanceContributionToHitGroupIndex * m_Context.rayTracingPipelineProperties.shaderGroupBaseAlignment);
+			dst.flags = VkUtil::convertInstanceFlags(src.flags);
+			dst.mask = src.instanceMask;
+			memcpy(dst.transform.matrix, src.transform, sizeof(float) * 12);
+
+#ifndef NVRHI_WITH_RTXMU
+			if (m_EnableAutomaticBarriers) 
+			{
+				_requireBufferState(blas->dataBuffer, ResourceStates::AccelStructBuildBlas);
+			}
+#endif
+		}
+
+#ifdef NVRHI_WITH_RTXMU
+		m_Context.rtxMemUtil->PopulateUAVBarriersCommandList(m_CurrentCmdBuf->cmdBuf, m_CurrentCmdBuf->rtxmuBuildIds);
+#endif
+
+		uint64_t currentVersion = MakeVersion(m_CurrentCmdBuf->recordingID, m_CommandListParameters.queueType, false);
+
+		Buffer* uploadBuffer = nullptr;
+		uint64_t uploadOffset = 0;
+		void* uploadCpuVA = nullptr;
+		m_UploadManager->suballocateBuffer(as->instances.size() * sizeof(VkAccelerationStructureInstanceKHR),
+			&uploadBuffer, &uploadOffset, &uploadCpuVA, currentVersion);
+
+		// Copy the instance data to GPU-visible memory.
+		// The vk::AccelerationStructureInstanceKHR struct should be directly copyable, but ReSharper/clang thinks it's not,
+		// so the inspection is disabled with a comment below.
+		memcpy(uploadCpuVA, as->instances.data(), // NOLINT(bugprone-undefined-memory-manipulation)
+			as->instances.size() * sizeof(VkAccelerationStructureInstanceKHR));
+
+		if (m_EnableAutomaticBarriers)
+		{
+			_requireBufferState(as->dataBuffer, ResourceStates::AccelStructWrite);
+		}
+		commitBarriers();
+
+		_buildTopLevelAccelStructInternal(as, uploadBuffer->deviceAddress + uploadOffset, numInstances, buildFlags, currentVersion);
+
+		if (as->desc.trackLiveness)
+			m_CurrentCmdBuf->referencedResources.push_back(as);
 	}
-	void CommandList::buildTopLevelAccelStructFromBuffer(rt::IAccelStruct* as, IBuffer* instanceBuffer, uint64_t instanceBufferOffset, size_t numInstances, rt::AccelStructBuildFlags buildFlags)
+	void CommandList::buildTopLevelAccelStructFromBuffer(rt::IAccelStruct* _as, IBuffer* _instanceBuffer, uint64_t instanceBufferOffset, size_t numInstances, rt::AccelStructBuildFlags buildFlags)
 	{
+		AccelStruct* as = checked_cast<AccelStruct*>(_as);
+		Buffer* instanceBuffer = checked_cast<Buffer*>(_instanceBuffer);
+
+		as->instances.clear();
+
+		if (m_EnableAutomaticBarriers)
+		{
+			_requireBufferState(as->dataBuffer, ResourceStates::AccelStructWrite);
+			_requireBufferState(instanceBuffer, ResourceStates::AccelStructBuildInput);
+		}
+		commitBarriers();
+
+		uint64_t currentVersion = MakeVersion(m_CurrentCmdBuf->recordingID, m_CommandListParameters.queueType, false);
+
+		_buildTopLevelAccelStructInternal(as, instanceBuffer->deviceAddress + instanceBufferOffset, numInstances, buildFlags, currentVersion);
+
+		if (as->desc.trackLiveness)
+			m_CurrentCmdBuf->referencedResources.push_back(as);
 	}
 	void CommandList::beginTimerQuery(ITimerQuery* query)
 	{
@@ -1612,9 +1691,212 @@ namespace BlackPearl {
 		m_StateTracker.clearBarriers();
 
 	}
+	void CommandList::_buildTopLevelAccelStructInternal(AccelStruct* as, VkDeviceAddress instanceData, size_t numInstances, rt::AccelStructBuildFlags buildFlags, uint64_t currentVersion)
+	{
+		const bool performUpdate = (buildFlags & rt::AccelStructBuildFlags::PerformUpdate) != 0;
+		if (performUpdate)
+		{
+			assert(as->allowUpdate);
+			assert(as->instances.size() == numInstances);
+		}
+		VkAccelerationStructureGeometryInstancesDataKHR Instances{};
+		Instances.sType = VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_GEOMETRY_INSTANCES_DATA_KHR;
+		Instances.data.deviceAddress = instanceData;
+		Instances.arrayOfPointers = false;
+
+		VkAccelerationStructureGeometryKHR geometry{};
+		geometry.sType = VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_GEOMETRY_KHR;
+		geometry.geometryType = VK_GEOMETRY_TYPE_INSTANCES_KHR;
+		geometry.geometry.instances = Instances;
+		//geometry.geometry.setInstances(VkAccelerationStructureGeometryInstancesDataKHR()
+		//	.setData(instanceData)
+		//	.setArrayOfPointers(false));
+
+		VkAccelerationStructureBuildRangeInfoKHR range{};
+		range.primitiveCount = numInstances;
+
+		std::array<VkAccelerationStructureGeometryKHR, 1> geometries = { geometry };
+		std::array<VkAccelerationStructureBuildRangeInfoKHR, 1> buildRanges = { range };
+		std::array<uint32_t, 1> maxPrimitiveCounts = { uint32_t(numInstances) };
+
+		//auto buildInfo = VkAccelerationStructureBuildGeometryInfoKHR()
+		//	.setType(VkAccelerationStructureTypeKHR::eTopLevel)
+		//	.setMode(performUpdate ? VkBuildAccelerationStructureModeKHR::eUpdate : VkBuildAccelerationStructureModeKHR::eBuild)
+		//	.setGeometries(geometries)
+		//	.setFlags(convertAccelStructBuildFlags(buildFlags))
+		//	.setDstAccelerationStructure(as->accelStruct);
+
+
+		VkAccelerationStructureBuildGeometryInfoKHR buildInfo{};
+		buildInfo.type = VK_ACCELERATION_STRUCTURE_TYPE_TOP_LEVEL_KHR;
+		buildInfo.sType = VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_BUILD_GEOMETRY_INFO_KHR;
+		buildInfo.mode = performUpdate ? VK_BUILD_ACCELERATION_STRUCTURE_MODE_UPDATE_KHR : VK_BUILD_ACCELERATION_STRUCTURE_MODE_BUILD_KHR;
+		buildInfo.pGeometries = geometries.data();
+		buildInfo.flags = VkUtil::convertAccelStructBuildFlags(buildFlags);
+		buildInfo.dstAccelerationStructure = as->accelStruct;
+
+
+		if (as->allowUpdate)
+			buildInfo.flags |= VK_BUILD_ACCELERATION_STRUCTURE_ALLOW_UPDATE_BIT_KHR;
+
+		if (performUpdate)
+			buildInfo.srcAccelerationStructure = as->accelStruct;
+
+		VkAccelerationStructureBuildSizesInfoKHR buildSizes{};
+		vkGetAccelerationStructureBuildSizesKHR(m_Context.device, VK_ACCELERATION_STRUCTURE_BUILD_TYPE_DEVICE_KHR, &buildInfo, maxPrimitiveCounts.data(), &buildSizes);
+
+		/*auto buildSizes = m_Context.device.getAccelerationStructureBuildSizesKHR(
+			VkAccelerationStructureBuildTypeKHR::eDevice, buildInfo, maxPrimitiveCounts);*/
+
+		if (buildSizes.accelerationStructureSize > as->dataBuffer->getDesc().byteSize)
+		{
+			std::stringstream ss;
+			ss << "TLAS " << (as->desc.debugName) << " build requires at least "
+				<< buildSizes.accelerationStructureSize << " bytes in the data buffer, while the allocated buffer is only "
+				<< as->dataBuffer->getDesc().byteSize << " bytes";
+
+			m_Context.error(ss.str());
+			return;
+		}
+
+		size_t scratchSize = performUpdate
+			? buildSizes.updateScratchSize
+			: buildSizes.buildScratchSize;
+
+		Buffer* scratchBuffer = nullptr;
+		uint64_t scratchOffset = 0;
+
+		bool allocated = m_ScratchManager->suballocateBuffer(scratchSize, &scratchBuffer, &scratchOffset, nullptr,
+			currentVersion, m_Context.accelStructProperties.minAccelerationStructureScratchOffsetAlignment);
+
+		if (!allocated)
+		{
+			std::stringstream ss;
+			ss << "Couldn't suballocate a scratch buffer for TLAS " << (as->desc.debugName) << " build. "
+				"The build requires " << scratchSize << " bytes of scratch space.";
+
+			m_Context.error(ss.str());
+			return;
+		}
+
+		assert(scratchBuffer->deviceAddress);
+		buildInfo.scratchData.deviceAddress = (scratchBuffer->deviceAddress + scratchOffset);
+
+		std::array<VkAccelerationStructureBuildGeometryInfoKHR, 1> buildInfos = { buildInfo };
+		std::array<const VkAccelerationStructureBuildRangeInfoKHR*, 1> buildRangeArrays = { buildRanges.data() };
+
+		//m_CurrentCmdBuf->cmdBuf.buildAccelerationStructuresKHR(buildInfos, buildRangeArrays);
+		vkCmdBuildAccelerationStructuresKHR(m_CurrentCmdBuf->cmdBuf, buildInfos.size(),
+			reinterpret_cast<const VkAccelerationStructureBuildGeometryInfoKHR*>(buildInfos.data()),
+			reinterpret_cast<const VkAccelerationStructureBuildRangeInfoKHR* const*>(buildRangeArrays.data()));
+
+
+	}
 	void CommandList::_convertBottomLevelGeometry(const rt::GeometryDesc& src, VkAccelerationStructureGeometryKHR& dst, VkAccelerationStructureTrianglesOpacityMicromapEXT& dstOmm, uint32_t& maxPrimitiveCount, VkAccelerationStructureBuildRangeInfoKHR* pRange, const VulkanContext& context)
 	{
+		switch (src.geometryType)
+		{
+		case rt::GeometryType::Triangles: {
+			const rt::GeometryTriangles& srct = src.geometryData.triangles;
+			VkAccelerationStructureGeometryTrianglesDataKHR dstt{};
+			dstt.sType = VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_GEOMETRY_TRIANGLES_DATA_KHR;
 
+			switch (srct.indexFormat)  // NOLINT(clang-diagnostic-switch-enum)
+			{
+			case Format::R8_UINT:
+				dstt.indexType = (VK_INDEX_TYPE_UINT8_EXT);
+				break;
+
+			case Format::R16_UINT:
+				dstt.indexType = VK_INDEX_TYPE_UINT16;
+				break;
+
+			case Format::R32_UINT:
+				dstt.indexType = VK_INDEX_TYPE_UINT32;
+				break;
+
+			case Format::UNKNOWN:
+				dstt.indexType = VK_INDEX_TYPE_NONE_KHR;
+				break;
+
+			default:
+				context.error("Unsupported ray tracing geometry index type");
+				dstt.indexType = VK_INDEX_TYPE_NONE_KHR;
+				break;
+			}
+
+			dstt.vertexFormat =(VkUtil::convertFormat(srct.vertexFormat));
+			dstt.vertexData = (getBufferAddress(srct.vertexBuffer, srct.vertexOffset));
+			dstt.vertexStride = (srct.vertexStride);
+			dstt.maxVertex = (std::max(srct.vertexCount, 1u) - 1u);
+			dstt.indexData = (getBufferAddress(srct.indexBuffer, srct.indexOffset));
+
+			if (src.useTransform){
+
+				VkDeviceOrHostAddressConstKHR address;
+				address.hostAddress = &src.transform;
+				dstt.transformData = address;
+			}
+
+			if (srct.opacityMicromap)
+			{
+				OpacityMicromap* om = checked_cast<OpacityMicromap*>(srct.opacityMicromap);
+
+				dstOmm.indexType = srct.ommIndexFormat == Format::R16_UINT ? VK_INDEX_TYPE_UINT16 : VK_INDEX_TYPE_UINT32;
+				dstOmm.indexBuffer.deviceAddress = getMutableBufferAddress(srct.ommIndexBuffer, srct.ommIndexBufferOffset).deviceAddress;
+				dstOmm.indexStride = srct.ommIndexFormat == Format::R16_UINT ? 2 : 4;
+				dstOmm.baseTriangle = 0;
+				dstOmm.pUsageCounts = GetAsVkOpacityMicromapUsageCounts(srct.pOmmUsageCounts);
+				dstOmm.usageCountsCount = srct.numOmmUsageCounts;
+				dstOmm.micromap = om->opacityMicromap;
+
+					/*.setIndexType(srct.ommIndexFormat == Format::R16_UINT ? VkIndexType::eUint16 : VkIndexType::eUint32)
+					.setIndexBuffer(getMutableBufferAddress(srct.ommIndexBuffer, srct.ommIndexBufferOffset).deviceAddress)
+					.setIndexStride(srct.ommIndexFormat == Format::R16_UINT ? 2 : 4)
+					.setBaseTriangle(0)
+					.setPUsageCounts(GetAsVkOpacityMicromapUsageCounts(srct.pOmmUsageCounts))
+					.setUsageCountsCount(srct.numOmmUsageCounts)
+					.setMicromap(om->opacityMicromap.get());*/
+
+				dstt.pNext = &dstOmm;
+			}
+
+			maxPrimitiveCount = (srct.indexFormat == Format::UNKNOWN)
+				? (srct.vertexCount / 3)
+				: (srct.indexCount / 3);
+
+			dst.geometryType = VK_GEOMETRY_TYPE_TRIANGLES_KHR;
+			dst.geometry.triangles = dstt;
+
+			break;
+		}
+		case rt::GeometryType::AABBs: {
+			const rt::GeometryAABBs& srca = src.geometryData.aabbs;
+			VkAccelerationStructureGeometryAabbsDataKHR dsta;
+
+			dsta.data = getBufferAddress(srca.buffer, srca.offset);
+			dsta.stride = srca.stride;
+
+			maxPrimitiveCount = srca.count;
+
+			dst.geometryType= VK_GEOMETRY_TYPE_AABBS_KHR;
+			dst.geometry.aabbs = dsta;
+
+			break;
+		}
+		}
+
+		if (pRange)
+		{
+			pRange->primitiveCount = (maxPrimitiveCount);
+		}
+
+		VkGeometryFlagsKHR geometryFlags = VkGeometryFlagBitsKHR(0);
+		if ((src.flags & rt::GeometryFlags::Opaque) != 0)
+			geometryFlags |= VK_GEOMETRY_OPAQUE_BIT_KHR;
+		if ((src.flags & rt::GeometryFlags::NoDuplicateAnyHitInvocation) != 0)
+			geometryFlags |= VkGeometryFlagBitsKHR::VK_GEOMETRY_NO_DUPLICATE_ANY_HIT_INVOCATION_BIT_KHR;
+		dst.flags = (geometryFlags);
 	}
 	void CommandList::_clearTexture(ITexture* texture, TextureSubresourceSet subresources, const VkClearColorValue& clearValue)
 	{

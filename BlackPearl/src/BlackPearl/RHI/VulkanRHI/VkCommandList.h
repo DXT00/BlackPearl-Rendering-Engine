@@ -32,6 +32,7 @@
 #include "VkCommandBuffer.h"
 #include "VkUploadManager.h"
 #include <vulkan/vulkan.h>
+#include "VkRayTraceStruct.h"
 #include <vulkan/vulkan_core.h>
 namespace BlackPearl {
 	class CommandList : public RefCounter<ICommandList>
@@ -184,7 +185,7 @@ namespace BlackPearl {
         void _commitBarriersInternal();
         void _commitBarriersInternal_synchronization2();
 
-
+        void _buildTopLevelAccelStructInternal(AccelStruct* as, VkDeviceAddress instanceData, size_t numInstances, rt::AccelStructBuildFlags buildFlags, uint64_t currentVersion);
 
         // rayTracing
         void _convertBottomLevelGeometry(const rt::GeometryDesc& src, VkAccelerationStructureGeometryKHR& dst, VkAccelerationStructureTrianglesOpacityMicromapEXT& dstOmm,

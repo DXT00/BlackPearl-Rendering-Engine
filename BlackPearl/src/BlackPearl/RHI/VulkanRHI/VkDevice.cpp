@@ -28,6 +28,24 @@
 namespace BlackPearl {
 	template <typename T>
 	using attachment_vector = static_vector<T, c_MaxRenderTargets + 1>; // render targets + depth
+	static void registerShaderModule(
+		IShader* _shader,
+		std::unordered_map<EShader*, uint32_t>& shaderStageIndices,
+		size_t& numShaders,
+		size_t& numShadersWithSpecializations,
+		size_t& numSpecializationConstants)
+	{
+		if (!_shader)
+			return;
+
+		EShader* shader = static_cast<EShader*>(_shader);
+		auto it = shaderStageIndices.find(shader);
+		if (it == shaderStageIndices.end())
+		{
+			VkUtil::countSpecializationConstants(shader, numShaders, numShadersWithSpecializations, numSpecializationConstants);
+			shaderStageIndices[shader] = uint32_t(shaderStageIndices.size());
+		}
+	}
 
 	static TextureDimension getDimensionForFramebuffer(TextureDimension dimension, bool isArray)
 	{
@@ -978,6 +996,229 @@ namespace BlackPearl {
 	MeshletPipelineHandle Device::createMeshletPipeline(const MeshletPipelineDesc& desc, IFramebuffer* fb)
 	{
 		return MeshletPipelineHandle();
+	}
+
+	RayTracingPipelineHandle Device::createRayTracingPipeline(const RayTracingPipelineDesc& desc)
+	{
+		RayTracingPipeline* pso = new RayTracingPipeline(m_Context);
+		pso->desc = desc;
+
+		// TODO: move the pipeline layout creation to a common function
+
+		for (const BindingLayoutHandle& _layout : desc.globalBindingLayouts)
+		{
+			BindingLayout* layout = static_cast<BindingLayout*>(_layout.Get());
+			pso->pipelineBindingLayouts.push_back(layout);
+		}
+
+		BindingVector<VkDescriptorSetLayout> descriptorSetLayouts;
+		uint32_t pushConstantSize = 0;
+		ShaderType pushConstantVisibility = ShaderType::None;
+		for (const BindingLayoutHandle& _layout : desc.globalBindingLayouts)
+		{
+			BindingLayout* layout = static_cast<BindingLayout*>(_layout.Get());
+			descriptorSetLayouts.push_back(layout->descriptorSetLayout);
+
+			if (!layout->isBindless)
+			{
+				for (const RHIBindingLayoutItem& item : layout->desc.bindings)
+				{
+					if (item.type == RHIResourceType::RT_PushConstants)
+					{
+						pushConstantSize = item.size;
+						pushConstantVisibility = layout->desc.visibility;
+						// assume there's only one push constant item in all layouts -- the validation layer makes sure of that
+						break;
+					}
+				}
+			}
+		}
+
+		VkPushConstantRange pushConstantRange{};
+
+		pushConstantRange.offset = 0;
+		pushConstantRange.size = pushConstantSize;
+		pushConstantRange.stageFlags = VkUtil::convertShaderTypeToShaderStageFlagBits(pushConstantVisibility);
+
+		VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
+		pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
+		pipelineLayoutInfo.setLayoutCount = uint32_t(descriptorSetLayouts.size());
+		pipelineLayoutInfo.pSetLayouts = descriptorSetLayouts.data();
+		pipelineLayoutInfo.pushConstantRangeCount = pushConstantSize ? 1 : 0;
+		pipelineLayoutInfo.pPushConstantRanges = &pushConstantRange;
+
+		if (vkCreatePipelineLayout(m_Context.device, &pipelineLayoutInfo,
+			m_Context.allocationCallbacks,
+			&pso->pipelineLayout) != VK_SUCCESS) {
+			throw std::runtime_error("failed to create pipeline layout!");
+		}
+
+
+
+		// Count all shader modules with their specializations,
+		// place them into a dictionary to remove duplicates.
+
+		size_t numShaders = 0;
+		size_t numShadersWithSpecializations = 0;
+		size_t numSpecializationConstants = 0;
+
+		std::unordered_map<EShader*, uint32_t> shaderStageIndices; // shader -> index
+
+		for (const auto& shaderDesc : desc.shaders)
+		{
+			if (shaderDesc.bindingLayout)
+			{
+				RHIUtils::NotSupported();
+				return nullptr;
+			}
+
+			registerShaderModule(shaderDesc.shader, shaderStageIndices, numShaders,
+				numShadersWithSpecializations, numSpecializationConstants);
+		}
+
+		for (const auto& hitGroupDesc : desc.hitGroups)
+		{
+			if (hitGroupDesc.bindingLayout)
+			{
+				RHIUtils::NotSupported();
+				return nullptr;
+			}
+
+			registerShaderModule(hitGroupDesc.closestHitShader, shaderStageIndices, numShaders,
+				numShadersWithSpecializations, numSpecializationConstants);
+
+			registerShaderModule(hitGroupDesc.anyHitShader, shaderStageIndices, numShaders,
+				numShadersWithSpecializations, numSpecializationConstants);
+
+			registerShaderModule(hitGroupDesc.intersectionShader, shaderStageIndices, numShaders,
+				numShadersWithSpecializations, numSpecializationConstants);
+		}
+
+		assert(numShaders == shaderStageIndices.size());
+
+		// Populate the shader stages, shader groups, and specializations arrays.
+
+		std::vector<VkPipelineShaderStageCreateInfo> shaderStages;
+		std::vector<VkRayTracingShaderGroupCreateInfoKHR> shaderGroups;
+		std::vector<VkSpecializationInfo> specInfos;
+		std::vector<VkSpecializationMapEntry> specMapEntries;
+		std::vector<uint32_t> specData;
+
+		shaderStages.resize(numShaders);
+		shaderGroups.reserve(desc.shaders.size() + desc.hitGroups.size());
+		specInfos.reserve(numShadersWithSpecializations);
+		specMapEntries.reserve(numSpecializationConstants);
+		specData.reserve(numSpecializationConstants);
+
+		// ... Individual shaders (RayGen, Miss, Callable)
+
+		for (const auto& shaderDesc : desc.shaders)
+		{
+			std::string exportName = shaderDesc.exportName;
+
+			/*	.setType(VkRayTracingShaderGroupTypeKHR::eGeneral)
+					.setClosestHitShader(VK_SHADER_UNUSED_KHR)
+					.setAnyHitShader(VK_SHADER_UNUSED_KHR)
+					.setIntersectionShader(VK_SHADER_UNUSED_KHR);*/
+
+			VkRayTracingShaderGroupCreateInfoKHR shaderGroupCreateInfo{};
+			shaderGroupCreateInfo.sType = VK_STRUCTURE_TYPE_RAY_TRACING_SHADER_GROUP_CREATE_INFO_KHR;
+			shaderGroupCreateInfo.type = VK_RAY_TRACING_SHADER_GROUP_TYPE_GENERAL_KHR;
+			shaderGroupCreateInfo.closestHitShader = VK_SHADER_UNUSED_KHR;
+			shaderGroupCreateInfo.anyHitShader = VK_SHADER_UNUSED_KHR;
+			shaderGroupCreateInfo.intersectionShader = VK_SHADER_UNUSED_KHR;
+			if (shaderDesc.shader)
+			{
+				EShader* shader = static_cast<EShader*>(shaderDesc.shader.Get());
+				uint32_t shaderStageIndex = shaderStageIndices[shader];
+				shaderStages[shaderStageIndex] = VkUtil::makeShaderStageCreateInfo(shader, specInfos, specMapEntries, specData);
+
+				if (exportName.empty())
+					exportName = shader->desc.entryName;
+
+				shaderGroupCreateInfo.generalShader = (shaderStageIndex);
+			}
+
+			if (!exportName.empty())
+			{
+				pso->shaderGroups[exportName] = uint32_t(shaderGroups.size());
+				shaderGroups.push_back(shaderGroupCreateInfo);
+			}
+		}
+
+		// ... Hit groups
+
+		for (const auto& hitGroupDesc : desc.hitGroups)
+		{
+
+			VkRayTracingShaderGroupCreateInfoKHR shaderGroupCreateInfo{};
+			shaderGroupCreateInfo.sType = VK_STRUCTURE_TYPE_RAY_TRACING_SHADER_GROUP_CREATE_INFO_KHR;
+			shaderGroupCreateInfo.type = hitGroupDesc.isProceduralPrimitive
+				? VK_RAY_TRACING_SHADER_GROUP_TYPE_PROCEDURAL_HIT_GROUP_KHR
+				: VK_RAY_TRACING_SHADER_GROUP_TYPE_TRIANGLES_HIT_GROUP_KHR;
+			shaderGroupCreateInfo.generalShader = VK_SHADER_UNUSED_KHR;
+			shaderGroupCreateInfo.closestHitShader = VK_SHADER_UNUSED_KHR;
+			shaderGroupCreateInfo.anyHitShader = VK_SHADER_UNUSED_KHR;
+			shaderGroupCreateInfo.intersectionShader = VK_SHADER_UNUSED_KHR;
+
+			if (hitGroupDesc.closestHitShader)
+			{
+				EShader* shader = static_cast<EShader*>(hitGroupDesc.closestHitShader.Get());
+				uint32_t shaderStageIndex = shaderStageIndices[shader];
+				shaderStages[shaderStageIndex] = VkUtil::makeShaderStageCreateInfo(shader, specInfos, specMapEntries, specData);
+				shaderGroupCreateInfo.closestHitShader = shaderStageIndex;
+			}
+			if (hitGroupDesc.anyHitShader)
+			{
+				EShader* shader = static_cast<EShader*>(hitGroupDesc.anyHitShader.Get());
+				uint32_t shaderStageIndex = shaderStageIndices[shader];
+				shaderStages[shaderStageIndex] = VkUtil::makeShaderStageCreateInfo(shader, specInfos, specMapEntries, specData);
+				shaderGroupCreateInfo.anyHitShader = shaderStageIndex;
+			}
+			if (hitGroupDesc.intersectionShader)
+			{
+				EShader* shader = static_cast<EShader*>(hitGroupDesc.intersectionShader.Get());
+				uint32_t shaderStageIndex = shaderStageIndices[shader];
+				shaderStages[shaderStageIndex] = VkUtil::makeShaderStageCreateInfo(shader, specInfos, specMapEntries, specData);
+				shaderGroupCreateInfo.intersectionShader = shaderStageIndex;
+			}
+
+			assert(!hitGroupDesc.exportName.empty());
+
+			pso->shaderGroups[hitGroupDesc.exportName] = uint32_t(shaderGroups.size());
+			shaderGroups.push_back(shaderGroupCreateInfo);
+		}
+
+		// Create the pipeline object
+
+		VkPipelineLibraryCreateInfoKHR libraryInfo{};
+		libraryInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LIBRARY_CREATE_INFO_KHR;
+		VkRayTracingPipelineCreateInfoKHR pipelineInfo{};
+		pipelineInfo.sType = VK_STRUCTURE_TYPE_RAY_TRACING_PIPELINE_CREATE_INFO_KHR;
+		pipelineInfo.pGroups = shaderGroups.data();
+		pipelineInfo.layout = pso->pipelineLayout;
+		pipelineInfo.maxPipelineRayRecursionDepth = desc.maxRecursionDepth;
+		pipelineInfo.pLibraryInfo = &libraryInfo;
+
+
+		VkDeferredOperationKHR deferredOp{};
+
+		VkResult res = vkCreateRayTracingPipelinesKHR(m_Context.device, deferredOp, m_Context.pipelineCache,
+			1, &pipelineInfo,
+			m_Context.allocationCallbacks,
+			&pso->pipeline);
+		assert(res == VkResult::VK_SUCCESS);
+
+		// Obtain the shader group handles to fill the SBT buffer later
+
+		pso->shaderGroupHandles.resize(m_Context.rayTracingPipelineProperties.shaderGroupHandleSize * shaderGroups.size());
+
+
+		res = vkGetRayTracingShaderGroupHandlesKHR(m_Context.device, pso->pipeline, 0,
+			uint32_t(shaderGroups.size()),
+			pso->shaderGroupHandles.size(), pso->shaderGroupHandles.data());
+
+		return RayTracingPipelineHandle::Create(pso);
 	}
 
 	CommandListHandle Device::createCommandList(const CommandListParameters& params)

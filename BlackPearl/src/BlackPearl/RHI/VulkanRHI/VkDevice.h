@@ -83,6 +83,7 @@ namespace BlackPearl {
 		GraphicsPipelineHandle createGraphicsPipeline(const GraphicsPipelineDesc& desc, IFramebuffer* fb) override;
 		ComputePipelineHandle createComputePipeline(const ComputePipelineDesc& desc) override;
 		MeshletPipelineHandle createMeshletPipeline(const MeshletPipelineDesc& desc, IFramebuffer* fb) override;
+		RayTracingPipelineHandle createRayTracingPipeline(const RayTracingPipelineDesc& desc) override;
 
 
 		BindingLayoutHandle createBindingLayout(const RHIBindingLayoutDesc& desc) override;
