@@ -52,7 +52,29 @@ namespace BlackPearl {
 	}
 	ShaderLibraryHandle ShaderFactory::CreateShaderLibrary(const char* fileName, const std::vector<ShaderMacro>* pDefines)
 	{
-		return ShaderLibraryHandle();
+		std::shared_ptr<IBlob> byteCode = GetBytecode(fileName, nullptr);
+
+		if (!byteCode)
+			return nullptr;
+
+		std::vector<ShaderMake::ShaderConstant> constants;
+		if (pDefines)
+		{
+			for (const ShaderMacro& define : *pDefines)
+				constants.push_back(ShaderMake::ShaderConstant{ define.name.c_str(), define.definition.c_str() });
+		}
+
+		const void* permutationBytecode = nullptr;
+		size_t permutationSize = 0;
+		if (!ShaderMake::findPermutationInBlob(byteCode->data(), byteCode->size(), constants.data(), uint32_t(constants.size()), &permutationBytecode, &permutationSize))
+		{
+			const std::string message = ShaderMake::formatShaderNotFoundMessage(byteCode->data(), byteCode->size(), constants.data(), uint32_t(constants.size()));
+			GE_CORE_ERROR(message.c_str());
+
+			return nullptr;
+		}
+
+		return m_Device->createShaderLibrary(permutationBytecode, permutationSize);
 	}
 	std::shared_ptr<IBlob> ShaderFactory::GetBytecode(const char* fileName, const char* entryName)
 	{

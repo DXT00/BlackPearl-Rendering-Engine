@@ -5,6 +5,7 @@
 #include "../RefCountPtr.h"
 #include "../RHIShader.h"
 #include "../RHIResources.h"
+#include "../RHIShaderLibrary.h"
 #include "VkPipeline.h"
 
 #include "VkContext.h"
@@ -68,6 +69,23 @@ namespace BlackPearl {
         const VulkanContext& m_Context;
 
         bool verifyShaderGroupExists(const char* exportName, int shaderGroupIndex) const;
+    };
+
+
+    class ShaderLibrary : public RefCounter<IShaderLibrary>
+    {
+    public:
+       VkShaderModule shaderModule;
+
+        explicit ShaderLibrary(const VulkanContext& context)
+            : m_Context(context)
+        { }
+
+        ~ShaderLibrary() override;
+        void getBytecode(const void** ppBytecode, size_t* pSize) const override;
+        ShaderHandle getShader(const char* entryName, ShaderType shaderType) override;
+    private:
+        const VulkanContext& m_Context;
     };
 }
 

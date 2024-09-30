@@ -1,9 +1,10 @@
 #pragma once
 #include "BlackPearl/RHI/RHIFrameBuffer.h"
 #include "BlackPearl/RHI/RHIDevice.h"
-#include "DeviceManager.h"
+#include "../DeviceManager.h"
 #include "BlackPearl/Renderer/MasterRenderer/BasicRenderer.h"
 #include "BlackPearl/Renderer/Renderer.h"
+
 namespace BlackPearl {
     //class DeviceManager;
     class RenderGraph

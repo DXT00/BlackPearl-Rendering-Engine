@@ -1340,8 +1340,22 @@ namespace BlackPearl {
 
 	ShaderLibraryHandle Device::createShaderLibrary(const void* binary, size_t binarySize)
 	{
-		GE_ASSERT(0, "not complete yet");
-		return ShaderLibraryHandle();
+		ShaderLibrary* library = new ShaderLibrary(m_Context);
+
+		//auto shaderInfo = VkShaderModuleCreateInfo()
+		//	.setCodeSize(binarySize)
+		//	.setPCode((const uint32_t*)binary);
+
+
+		VkShaderModuleCreateInfo createInfo = {};
+		createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
+		createInfo.codeSize = binarySize;
+		createInfo.pCode = (const uint32_t*)binary;
+
+		const VkResult res = vkCreateShaderModule(m_Context.device, &createInfo, m_Context.allocationCallbacks, &library->shaderModule);
+		assert(res == VkResult::VK_SUCCESS);
+
+		return ShaderLibraryHandle::Create(library);
 	}
 
 	InputLayoutHandle Device::createInputLayout(const VertexAttributeDesc* attributeDesc, uint32_t attributeCount, IShader* vertexShader)

@@ -2,6 +2,7 @@
 #if GE_API_VULKAN
 
 #include "VkShader.h"
+#include "VkUtil.h"
 
 namespace BlackPearl {
 	EShader::~EShader()
@@ -25,5 +26,26 @@ namespace BlackPearl {
 	void ShaderTable::clearHitShaders() {}
 	void ShaderTable::clearCallableShaders()  {}
 	uint32_t ShaderTable::getNumEntries() const { return 0; }
+
+
+
+	void ShaderLibrary::getBytecode(const void** ppBytecode, size_t* pSize) const
+	{
+		if (ppBytecode) *ppBytecode = nullptr;
+		if (pSize) *pSize = 0;
+	}
+
+	ShaderHandle BlackPearl::ShaderLibrary::getShader(const char* entryName, ShaderType shaderType)
+	{
+		EShader* newShader = new EShader(m_Context);
+		newShader->desc.entryName = entryName;
+		newShader->desc.shaderType = shaderType;
+		newShader->shaderModule = shaderModule;
+		newShader->baseShader = this;
+		newShader->stageFlagBits = VkUtil::convertShaderTypeToShaderStageFlagBits(shaderType);
+
+		return ShaderHandle::Create(newShader);
+	}
+
 }
 #endif
