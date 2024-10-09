@@ -1,8 +1,8 @@
 #pragma once
 #include <BlackPearl.h>
 #include "BlackPearl/Renderer/RenderTargets.h"
-#include "BlackPearl/Renderer/RenderGraph.h"
-#include "BlackPearl/Renderer/ForwardRenderGraph.h"
+#include "BlackPearl/Renderer/RenderGraph/RenderGraph.h"
+#include "BlackPearl/Renderer/RenderGraph/ForwardRenderGraph.h"
 
 
 class VkRHIRenderGraphLayer :public BlackPearl::Layer {
@@ -58,7 +58,6 @@ public:
 
 		m_DeviceManager->Run();
 
-		m_DeviceManager->Present();
 		//m_RenderGraph->Render(m_DeviceManager->GetFrameBuffer(), BlackPearl::Renderer::GetSceneData());
 		
 		
