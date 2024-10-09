@@ -4,6 +4,7 @@
 #include "../DeviceManager.h"
 #include "BlackPearl/Renderer/MasterRenderer/BasicRenderer.h"
 #include "BlackPearl/Renderer/Renderer.h"
+#include "BlackPearl/Renderer/CommonRenderPass.h"
 
 namespace BlackPearl {
     //class DeviceManager;
@@ -44,6 +45,7 @@ namespace BlackPearl {
         DeviceManager* m_DeviceManager = nullptr;
 
         std::vector<BasicRenderer*> mRenderPasses;
+
 
     };
 }

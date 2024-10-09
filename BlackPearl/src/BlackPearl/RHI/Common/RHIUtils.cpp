@@ -23,7 +23,6 @@
 #include "pch.h"
 #include "RHIUtils.h"
 #include "BlackPearl/RHI/RHIDefinitions.h"
-
 #include <sstream>
 #include <BlackPearl/RHI/Common/FormatInfo.h>
 

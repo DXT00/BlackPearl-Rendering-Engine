@@ -2,8 +2,8 @@
 #include "RenderGraph.h"
 
 #include "BlackPearl/Renderer/MasterRenderer/BasePassRenderer.h"
-#include "BlackPearl/Renderer/MasterRenderer/RayTraceRenderer.h"
 #include "BlackPearl/Renderer/Renderer.h"
+#include "BlackPearl/Renderer/CommonRenderPass.h"
 namespace BlackPearl {
 	class RayTracingRenderGraph : public RenderGraph
 	{
@@ -15,24 +15,24 @@ namespace BlackPearl {
 		virtual void Render(IFramebuffer* framebuffer, IView* View);
 	private:
 
-		void _CreateRenderTagets();
+		void PathTrace(IFramebuffer* framebuffer);
+		void Denoise(IFramebuffer* framebuffer);
 		IFramebuffer* m_FrameBuffer;
 
 		CommandListHandle                    m_CommandList;
 		BufferHandle                         m_ConstantBuffer;
+		std::shared_ptr<CommonRenderPasses> m_CommonPasses;
+		BindingLayoutHandle                  m_BindlessLayout;
 
-		RayTraceRenderer* m_RayTracePass;
-		BindingLayoutHandle m_BindingLayout;
-		BindingLayoutHandle m_BindlessLayout;
-		BindingLayoutHandle m_ExtraBindingLayout;
+		//Rtxdi pass
+		std::unique_ptr<RtxdiRenderer>                  m_RtxdiPass;
+
 		//Lighting pass
 
 		std::shared_ptr<ShaderFactory> m_ShaderFactory;
 		std::unique_ptr<RenderTargets> m_RenderTargets;
 		glm::vec4 m_BackgroundColor1 = { 1.0f,1.0f,1.0f,1.0f };
 
-
-		Scene* m_Scene = nullptr;
 	};
 }
 

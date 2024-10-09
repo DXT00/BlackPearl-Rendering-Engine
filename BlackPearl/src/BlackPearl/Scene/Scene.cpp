@@ -48,6 +48,10 @@ namespace BlackPearl {
 	{
 		return m_LightProbes;
 	}
+	void Scene::SetDesctiptorTableMgr(const std::shared_ptr<DescriptorTableManager>& descriptorTable)
+	{
+		m_DescriptorTableMgr = descriptorTable;
+	}
 	void Scene::AddObject(Object* obj)
 	{
 		SingleNode* singleNode = DBG_NEW SingleNode(obj);

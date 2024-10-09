@@ -6,6 +6,9 @@
 #include "BlackPearl/Lumen/LumenSceneData.h"
 #include "SceneOctree.h"
 #include "BlackPearl/Component/LightProbeComponent/LightProbeComponent.h"
+#include "BlackPearl/Renderer/DescriptorTableManager.h"
+#include "BlackPearl/RHI/RHIDescriptorTable.h"
+
 namespace BlackPearl {
 	class Scene
 	{
@@ -26,6 +29,9 @@ namespace BlackPearl {
 		LightSources* GetLightSources() const;
 		void SetLightProbes(const std::vector<std::shared_ptr<LightProbe>>& lightSources);
 		std::vector<std::shared_ptr<LightProbe>> GetLightProbes() const;
+
+		void SetDesctiptorTableMgr(const std::shared_ptr<DescriptorTableManager>& descriptorTable);
+
 
 		void AddObject(Object* obj);
 		// only single nodes now
@@ -48,6 +54,9 @@ namespace BlackPearl {
 		}
 		DemoType GetDemoType() { return m_DemoType; }
 
+		IDescriptorTable* GetDescriptorTable() const { return m_DescriptorTableMgr ? m_DescriptorTableMgr->GetDescriptorTable() : nullptr; }
+
+
 		/** An octree containing the primitives in the scene. */
 		ScenePrimitiveOctree *PrimitiveOctree;
 
@@ -69,6 +78,8 @@ namespace BlackPearl {
 		std::vector<Node*>   m_SingleNodesList;
 		std::vector<Model*>  m_ModelList;
 		std::shared_ptr<MeshManager> m_MeshMgr;
+
+		std::shared_ptr<DescriptorTableManager> m_DescriptorTableMgr;
 
 		Object* m_RootObj;
 		Node* m_RootNode;
