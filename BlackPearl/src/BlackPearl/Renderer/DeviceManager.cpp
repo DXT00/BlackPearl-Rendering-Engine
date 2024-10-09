@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "DeviceManager.h"
-#include "RenderGraph.h"
+#include "BlackPearl/Renderer/RenderGraph/RenderGraph.h"
 #include "BlackPearl/RHI/RHIFrameBuffer.h"
 #include "BlackPearl/Math/vector.h"
 #include "BlackPearl/Application.h"
@@ -85,6 +85,9 @@ namespace BlackPearl {
         {
             it->Render(framebuffer, Renderer::GetSceneData());
         }
+        Present();
+        ++m_FrameIndex;
+
     }
     void DeviceManager::GetWindowDimensions(int& width, int& height)
     {

@@ -4,6 +4,7 @@
 #include "BlackPearl/Renderer/MasterRenderer/BasePassRenderer.h"
 #include "BlackPearl/Renderer/Renderer.h"
 #include "BlackPearl/Renderer/CommonRenderPass.h"
+#include "BlackPearl/Renderer/MasterRenderer/RTXDI/RtxdiRenderer.h"
 namespace BlackPearl {
 	class RayTracingRenderGraph : public RenderGraph
 	{
@@ -14,9 +15,11 @@ namespace BlackPearl {
 		virtual void Init(Scene* scene);
 		virtual void Render(IFramebuffer* framebuffer, IView* View);
 	private:
-
+		void BuildOpacityMicromaps(ICommandList* commandList, uint32_t frameIndex);
+		void BuildTLAS(ICommandList* commandList, uint32_t frameIndex) const;
 		void PathTrace(IFramebuffer* framebuffer);
 		void Denoise(IFramebuffer* framebuffer);
+		void PostProcessAA(IFramebuffer* framebuffer);
 		IFramebuffer* m_FrameBuffer;
 
 		CommandListHandle                    m_CommandList;
