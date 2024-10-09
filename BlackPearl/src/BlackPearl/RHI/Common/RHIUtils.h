@@ -26,6 +26,7 @@
 #include "BlackPearl/RHI/RHIDefinitions.h"
 #include "BlackPearl/RHI/RHIBuffer.h"
 #include "BlackPearl/RHI/RHIDevice.h"
+#include "BlackPearl/RHI/RHIRayTraceStruct.h"
 namespace BlackPearl
 {
 	class RHIUtils {
@@ -66,11 +67,11 @@ namespace BlackPearl
 			uint32_t stencil
 		);
 
-	/*	void BuildBottomLevelAccelStruct(
+		static void BuildBottomLevelAccelStruct(
 			ICommandList* commandList,
 			rt::IAccelStruct* as,
 			const rt::AccelStructDesc& desc
-		);*/
+		);
 
 		// Places a UAV barrier on the provided texture.
 		// Useful when doing multiple consecutive dispatch calls with the same resources but different constants.

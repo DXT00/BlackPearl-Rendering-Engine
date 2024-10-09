@@ -131,13 +131,13 @@ namespace BlackPearl
         }
     }
 
-    //void BuildBottomLevelAccelStruct(ICommandList* commandList, rt::IAccelStruct* as, const rt::AccelStructDesc& desc)
-    //{
-    //    commandList->buildBottomLevelAccelStruct(as,
-    //        desc.bottomLevelGeometries.data(),
-    //        desc.bottomLevelGeometries.size(),
-    //        desc.buildFlags);
-    //}
+    void BuildBottomLevelAccelStruct(ICommandList* commandList, rt::IAccelStruct* as, const rt::AccelStructDesc& desc)
+    {
+        commandList->buildBottomLevelAccelStruct(as,
+            desc.bottomLevelGeometries.data(),
+            desc.bottomLevelGeometries.size(),
+            desc.buildFlags);
+    }
 
     void RHIUtils::TextureUavBarrier(ICommandList* commandList, ITexture* texture)
     {

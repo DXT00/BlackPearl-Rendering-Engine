@@ -36,6 +36,9 @@ namespace BlackPearl {
 		std::unique_ptr<RenderTargets> m_RenderTargets;
 		glm::vec4 m_BackgroundColor1 = { 1.0f,1.0f,1.0f,1.0f };
 
+		Scene* m_Scene;
+		rt::AccelStructHandle                m_TopLevelAS;
+
 	};
 }
 
