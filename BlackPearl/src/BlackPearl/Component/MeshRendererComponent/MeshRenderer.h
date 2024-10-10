@@ -5,9 +5,15 @@
 #include "BlackPearl/Renderer/Model/Model.h"
 #include "BlackPearl/Renderer/Renderer.h"
 #include "BlackPearl/RHI/RHITexture.h"
+#include "BlackPearl/RHI/RHIRayTraceStruct.h"
 
 //MeshRenderer÷ª∏∫‘‰÷»æ
 namespace BlackPearl {
+	struct MeshInfo {
+		rt::AccelStructHandle accelStruct; // for use by applications
+		rt::AccelStructHandle accelStructOMM; // for use by application
+		std::vector<rt::OpacityMicromapHandle> opacityMicroMaps; // for use by application
+	};
 	class MeshRenderer :public Component<MeshRenderer>
 	{
 	public:

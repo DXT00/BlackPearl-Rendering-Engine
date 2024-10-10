@@ -15,12 +15,11 @@
 #include "BlackPearl/Component/MeshFilterComponent/MeshFilter.h"
 #include "BlackPearl/Component/TransformComponent/Transform.h"
 #include "BlackPearl/RHI/RHIBuffer.h"
-#include "BlackPearl/RHI/RHIRayTraceStruct.h"
 #include <initializer_list>
 #include <memory>
 
 namespace BlackPearl {
-
+	//submesh
 	class Mesh
 	{
 	public:
@@ -102,9 +101,7 @@ namespace BlackPearl {
 		uint32_t vertexOffset = 0;
 		//uint32_t totalIndices = 0;
 		//uint32_t totalVertices = 0;
-		rt::AccelStructHandle accelStruct; // for use by applications
-		rt::AccelStructHandle accelStructOMM; // for use by application
-		std::vector<rt::OpacityMicromapHandle> opacityMicroMaps; // for use by application
+
 
 		uint32_t                     m_IndicesSize = 0; //m_IndicesSize = m_indicesCount* sizeof(uint32_t)
 		uint32_t					 m_IndicesCount = 0; //

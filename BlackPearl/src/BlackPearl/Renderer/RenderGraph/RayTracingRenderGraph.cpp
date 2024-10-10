@@ -6,6 +6,7 @@
 #include "BlackPearl/Renderer/MasterRenderer/RTXDI/RtxdiRenderer.h"
 #include "BlackPearl/RHI/Common/RHIUtils.h"
 #include "BlackPearl/UI/UIManager.h"
+#include "BlackPearl/Component/MeshRendererComponent/MeshRenderer.h"
 namespace BlackPearl {
     extern UIManager* g_uiManager;
     extern RootFileSystem* g_rootFileSystem;
@@ -66,7 +67,7 @@ namespace BlackPearl {
 
         std::vector<rt::InstanceDesc> instances; // TODO: make this a member, avoid allocs :)
 
-        //uint subInstanceCount = 0;
+        uint subInstanceCount = 0;
         //for (const auto& instance : m_Scene->GetObjects())
         //{
         //    const bool ommDebugViewEnabled = false;// m_ui.DebugView == DebugViewType::FirstHitOpacityMicroMapInWorld || m_ui.DebugView == DebugViewType::FirstHitOpacityMicroMapOverlay;
@@ -74,7 +75,7 @@ namespace BlackPearl {
         //    // This may sound a bit counter intuitive, the goal is to intersect micro-triangles marked as transparent without them actually being treated as such.
 
         //    const bool forceOpaque = ommDebugViewEnabled || g_uiManager->m_UIData.AS.ForceOpaque;
-        //    const bool hasAttachementOMM = instance->GetComponent<MeshRendeerer>()->GetMesh()->accelStructOMM.Get() != nullptr;
+        //    const bool hasAttachementOMM = instance->GetComponent<MeshRenderer>()->GetMeshes()->accelStructOMM.Get() != nullptr;
         //    const bool useOmmBLAS = g_uiManager->m_UIData.OpacityMicroMaps.Enable && hasAttachementOMM && !forceOpaque;
 
         //    rt::InstanceDesc instanceDesc;
@@ -97,12 +98,12 @@ namespace BlackPearl {
         //}
         //assert(m_SubInstanceCount == subInstanceCount);
 
-        // Compact acceleration structures that are tagged for compaction and have finished executing the original build
-        commandList->compactBottomLevelAccelStructs();
+        //// Compact acceleration structures that are tagged for compaction and have finished executing the original build
+        //commandList->compactBottomLevelAccelStructs();
 
-        commandList->beginMarker("TLAS Update");
-        commandList->buildTopLevelAccelStruct(m_TopLevelAS, instances.data(), instances.size(), rt::AccelStructBuildFlags::AllowEmptyInstances);
-        commandList->endMarker();
+        //commandList->beginMarker("TLAS Update");
+        //commandList->buildTopLevelAccelStruct(m_TopLevelAS, instances.data(), instances.size(), rt::AccelStructBuildFlags::AllowEmptyInstances);
+        //commandList->endMarker();
     }
 
     void RayTracingRenderGraph::PathTrace(IFramebuffer* framebuffer)
