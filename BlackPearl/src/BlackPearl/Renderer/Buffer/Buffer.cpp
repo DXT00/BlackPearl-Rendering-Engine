@@ -178,55 +178,65 @@ namespace BlackPearl {
 
 	//------------------------FrameBuffer-----------------//
 	//note: framebuffer has no memory, imageWidth, imageHeight is the width and height of the attachment! 不同attachment有不同的width和height
-	//FrameBuffer::FrameBuffer(const int imageWidth,int imageHeight,std::initializer_list<Attachment> attachment, unsigned int colorAttachmentPoint,bool disableColor, TextureType colorTextureType)
-	//{
-	//	/* m_Width,m_Height for voxel cone tracing */
-	//	m_Width = imageWidth;
-	//	m_Height = imageHeight;
-	//	GLint previousFrameBuffer;
-	//	glGetIntegerv(GL_FRAMEBUFFER_BINDING, &previousFrameBuffer);//获取之前绑定的Framebuffer
+	FrameBuffer::FrameBuffer(const int imageWidth,int imageHeight,std::initializer_list<Attachment> attachment, unsigned int colorAttachmentPoint,bool disableColor, TextureType colorTextureType)
+	{
+		/* m_Width,m_Height for voxel cone tracing */
+		m_Width = imageWidth;
+		m_Height = imageHeight;
+		GLint previousFrameBuffer;
+		glGetIntegerv(GL_FRAMEBUFFER_BINDING, &previousFrameBuffer);//获取之前绑定的Framebuffer
 
-	//	glGenFramebuffers(1, &m_RendererID);
-	//	Bind();
-	//	if (disableColor) {
-	//		DisableColorBuffer();
-	//	}
-	//	for (Attachment attach:attachment)
-	//	{
-	//		if (attach == Attachment::ColorTexture)
-	//			AttachColorTexture(colorTextureType, colorAttachmentPoint,imageWidth,imageHeight);
-	//		else if (attach == Attachment::DepthTexture)
-	//			AttachDepthTexture(imageWidth, imageHeight);
-	//	/*	else if (attach == Attachment::CubeMapDepthTexture)
-	//			AttachCubeMapDepthTexture(imageWidth, imageHeight);*/
-	//		else if (attach == Attachment::CubeMapColorTexture)
-	//			AttachCubeMapColorTexture(colorAttachmentPoint,imageWidth, imageHeight);
-	//		else if (attach == Attachment::RenderBuffer)
-	//			AttachRenderBuffer(imageWidth, imageHeight);
+		glGenFramebuffers(1, &m_RendererID);
+		Bind();
+		if (disableColor) {
+			DisableColorBuffer();
+		}
+		for (Attachment attach:attachment)
+		{
+			if (attach == Attachment::ColorTexture)
+				AttachColorTexture(colorTextureType, colorAttachmentPoint,imageWidth,imageHeight);
+			else if (attach == Attachment::DepthTexture)
+				AttachDepthTexture(imageWidth, imageHeight);
+		/*	else if (attach == Attachment::CubeMapDepthTexture)
+				AttachCubeMapDepthTexture(imageWidth, imageHeight);*/
+			else if (attach == Attachment::CubeMapColorTexture)
+				AttachCubeMapColorTexture(colorAttachmentPoint,imageWidth, imageHeight);
+			else if (attach == Attachment::RenderBuffer)
+				AttachRenderBuffer(imageWidth, imageHeight);
 
-	//	}
-	//	
-	//	/*if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-	//		GE_CORE_ERROR("Framebuffer is not complete!");*/
+		}
+		
+		/*if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+			GE_CORE_ERROR("Framebuffer is not complete!");*/
 
-	//	GE_ASSERT(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "Framebuffer not complete!");
+		GE_ASSERT(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "Framebuffer not complete!");
 
-	//	UnBind();
-	//	//绑定回原来的FrameBuffer
-	//	glBindFramebuffer(GL_FRAMEBUFFER, previousFrameBuffer);
+		UnBind();
+		//绑定回原来的FrameBuffer
+		glBindFramebuffer(GL_FRAMEBUFFER, previousFrameBuffer);
 
-	//}
+	}
 
-	//void FrameBuffer::AttachColorTexture(TextureType textureType,unsigned int attachmentPoints,unsigned int imageWidth,unsigned int imageHeight)
-	//{
-	//	GE_CORE_WARN(" 注意Texture是否是默认的格式！");
+	void FrameBuffer::AttachColorTexture(TextureType textureType, unsigned int attachmentPoints,unsigned int imageWidth,unsigned int imageHeight)
+	{
+		GE_CORE_WARN(" 注意Texture是否是默认的格式！");
 
-	//	m_TextureColorBuffers[attachmentPoints].reset(DBG_NEW Texture(textureType, imageWidth, imageHeight,false, GL_NEAREST, GL_NEAREST, GL_RGB16F, GL_RGBA, GL_REPEAT,GL_FLOAT));
-	//	
-	//	//将它附加到当前绑定的帧缓冲对象
-	//	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0+attachmentPoints, GL_TEXTURE_2D, m_TextureColorBuffers[attachmentPoints]->GetRendererID(), 0);
-	//	GE_ASSERT(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "Framebuffer not complete!");
-	//}
+		TextureDesc desc;
+		desc.type = textureType;
+		desc.width = imageWidth;
+		desc.height = imageHeight;
+		desc.minFilter = FilterMode::Nearest;
+		desc.magFilter = FilterMode::Nearest;
+		desc.wrap = SamplerAddressMode::Repeat;
+		desc.format = Format::RGBA16_FLOAT;
+		desc.generateMipmap = true;
+		g_deviceManager->GetDevice()->createTexture(desc);
+		m_TextureColorBuffers[attachmentPoints] = g_deviceManager->GetDevice()->createTexture(desc);
+		
+		//将它附加到当前绑定的帧缓冲对象
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0+attachmentPoints, GL_TEXTURE_2D, (GLuint)static_cast<Texture*>(m_TextureColorBuffers[attachmentPoints].Get())->GetRendererID(), 0);
+		GE_ASSERT(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "Framebuffer not complete!");
+	}
 
 	void FrameBuffer::AttachColorTexture(TextureHandle texture, unsigned int attachmentPoints)
 	{

@@ -4,7 +4,9 @@
 #include "OpenGLCubeMapTexture.h"
 
 //#define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h"
+
+//
+#include "BlackPearl/RHI/Common/stb_util.h"
 namespace BlackPearl {
 	
 
@@ -29,13 +31,13 @@ namespace BlackPearl {
 			if (!desc.faces.empty())
 			{
 				int width, height, nrChannels;
-				unsigned char* data = stbi_load(desc.faces[i].c_str(), &width, &height, &nrChannels, 0);
+				unsigned char* data = stbi_load_util(desc.faces[i].c_str(), &width, &height, &nrChannels, 0);
 				m_Width = width;
 				m_Height = height;
 				//glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
 				glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, m_InnerFormat, m_Width, m_Height, 0, m_Format, m_DataType, data);
 
-				stbi_image_free(data);
+				stbi_image_free_util(data);
 			}
 			else
 			{

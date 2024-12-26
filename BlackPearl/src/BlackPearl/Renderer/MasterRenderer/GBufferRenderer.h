@@ -6,6 +6,7 @@
 #include "AnimatedModelRenderer.h"
 #include "SkyboxRenderer.h"
 #include "BlackPearl/Map/MapManager.h"
+#include "BlackPearl/RHI/OpenGLRHI/OpenGLTexture.h"
 namespace BlackPearl {
 
 	class GBufferRenderer:public BasicRenderer
@@ -32,10 +33,10 @@ namespace BlackPearl {
 			LightSources* lightSources,
 			std::vector<Object*>diffuseProbes,
 			std::vector<Object*>reflectionProbes,
-			std::shared_ptr<ITexture>specularBrdfLUTTexture,
+			std::shared_ptr<Texture>specularBrdfLUTTexture,
 			Object* skyBox, 
 			MapManager* mapManager,
-			std::shared_ptr<ITexture> depthTexture,
+			std::shared_ptr<Texture> depthTexture,
 			bool enableSSR);
 
 		std::vector<Object*> FindKnearProbes(math::float3 objPos, std::vector<Object*> probes,unsigned int k);

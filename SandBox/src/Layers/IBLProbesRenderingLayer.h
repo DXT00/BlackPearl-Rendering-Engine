@@ -20,7 +20,7 @@ public:
 		: Layer(name)
 	{
 
-		m_MainCamera->SetPosition(math::float3(-2.0f, 0.0f, 14.0f));
+		m_MainCamera->SetPosition(glm::vec3(-2.0f, 0.0f, 14.0f));
 
 
 		/* MapManager */
@@ -215,9 +215,20 @@ public:
 			m_loopIndex++;
 			BlackPearl::TimeCounter::End("Render ShadowMap");
 		}*/
+
+		// BlackPearl::ITexture* brdfLUTTexture = m_IBLProbesRenderer->GetSpecularBrdfLUTTexture().Get();
+		//std::shared_ptr<BlackPearl::Texture> texShared;// = std::make_shared<BlackPearl::Texture>(static_cast<BlackPearl::Texture*>(brdfLUTTexture));
+
+		BlackPearl::ITexture* brdfLUTTexture = m_IBLProbesRenderer->GetSpecularBrdfLUTTexture().Get();
+		std::shared_ptr<BlackPearl::Texture> texShared;
+
+		BlackPearl::Texture* te = static_cast<BlackPearl::Texture*>(brdfLUTTexture);
+		texShared.reset(te);
+
+
 		m_GBufferRenderer->RenderSceneWithGBufferAndProbes(m_BackGroundObjsList, m_DynamicObjsList, runtime / 1000.0f,
 			m_BackGroundObjsList, m_GBufferDebugQuad, GetLightSources(), m_DiffuseLightProbes, m_ReflectionLightProbes,
-			m_IBLProbesRenderer->GetSpecularBrdfLUTTexture(), m_SkyBoxObj1, m_MapManager, nullptr, false);
+			texShared, m_SkyBoxObj1, m_MapManager, nullptr, false);
 
 		if (BlackPearl::Input::IsKeyPressed(BlackPearl::KeyCodes::Get(BP_KEY_L))) {
 			m_ShowLightProbe = !m_ShowLightProbe;

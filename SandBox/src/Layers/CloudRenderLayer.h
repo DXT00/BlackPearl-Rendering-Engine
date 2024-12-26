@@ -14,7 +14,7 @@ public:
 	CloudRenderLayer(const std::string& name)
 		: Layer(name)
 	{
-
+		BlackPearl::IDevice* device = m_DeviceManager->GetDevice();
 		//m_CameraObj = CreateCamera();
 		//auto cameraComponent = m_CameraObj->GetComponent<BlackPearl::PerspectiveCamera>();
 		//cameraComponent->SetPosition(math::float3(0.0f, 0.0f, 8.0f));
@@ -22,7 +22,7 @@ public:
 		//m_CameraRotation.Yaw = cameraComponent->Yaw();
 		//m_CameraRotation.Pitch = cameraComponent->Pitch();
 		m_Scene = DBG_NEW BlackPearl::Scene();
-		m_SphereObj = CreateSphere(0.5, 64, 64);
+		m_SphereObj = LoadStaticBackGroundObject("SphereStone");
 		m_QuadObj = CreateQuad();
 		m_CubeObj = CreateCube();
 		//m_CubeObj->GetComponent<BlackPearl::Transform>()->SetScale({ 0.2,0.2,0.2 });
@@ -37,18 +37,7 @@ public:
 
 
 		m_SphereObj->GetComponent<BlackPearl::MeshRenderer>()->SetShaders(m_PBRRenderer->GetShader());
-		TextureHandle albedoTexture(DBG_NEW Texture({ TextureType::DiffuseMap, "assets/texture/pbr/cobblestone/cobblestone-curved_2_albedo.png" }));
-		TextureHandle aoTexture(DBG_NEW Texture({ TextureType::AoMap, "assets/texture/pbr/cobblestone/cobblestone-curved_2_ao.png" }));
-		TextureHandle roughnessTexture(DBG_NEW Texture({ TextureType::RoughnessMap, "assets/texture/pbr/cobblestone/cobblestone-curved_2_roughness.png" }));
-		TextureHandle mentallicTexture(DBG_NEW Texture({ TextureType::MentallicMap, "assets/texture/pbr/cobblestone/cobblestone-curved_2_metallic.png" }));
-		TextureHandle normalTexture(DBG_NEW Texture({ TextureType::NormalMap, "assets/texture/pbr/cobblestone/cobblestone-curved_2_normal-dx.png" }));
-
-		m_SphereObj->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(normalTexture);
-
-		m_SphereObj->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(albedoTexture);
-		m_SphereObj->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(aoTexture);
-		m_SphereObj->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(roughnessTexture);
-		m_SphereObj->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(mentallicTexture);
+	
 		m_SphereObj->GetComponent<BlackPearl::MeshRenderer>()->GetMeshes()[0]->GetMaterial()->SetMaterialColorDiffuseColor({ 1.0,0.0,0.0 });
 		
 		m_SphereObj->GetComponent<BlackPearl::Transform>()->SetPosition({
@@ -66,7 +55,7 @@ public:
 			 "assets/skybox/skybox1/SkyMorning_Back.png",
 			});
 
-		BlackPearl::IDevice* device = m_DeviceManager->GetDevice();
+		//BlackPearl::IDevice* device = m_DeviceManager->GetDevice();
 
 		BlackPearl::TextureDesc desc;
 		desc.type = TextureType::None;

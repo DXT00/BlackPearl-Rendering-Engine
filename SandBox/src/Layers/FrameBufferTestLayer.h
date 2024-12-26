@@ -15,7 +15,8 @@ public:
 		
 
 		m_MasterRenderer = DBG_NEW BlackPearl::MasterRenderer(m_MainCamera->GetObj());
-
+		//m_FrameBuffer = std::make_shared<BlackPearl::FrameBuffer>();
+		//m_FrameBuffer->AttachColorTexture()
 		m_FrameBuffer.reset(DBG_NEW BlackPearl::FrameBuffer(
 			BlackPearl::Configuration::WindowWidth, 
 			BlackPearl::Configuration::WindowHeight, 

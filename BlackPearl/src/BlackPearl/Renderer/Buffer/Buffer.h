@@ -250,8 +250,8 @@ namespace BlackPearl {
 		FrameBuffer();
 		
 		/*initial with attachment*/
-		//FrameBuffer(const int imageWidth, const int imageHeight, std::initializer_list<Attachment> attachment,  unsigned int colorAttachmentPoint,bool disableColor, TextureType colorTextureType = TextureType::DiffuseMap);
-		//void AttachColorTexture(TextureType textureType, unsigned int attachmentPoints, unsigned int imageWidth, unsigned int imageHeight);
+		FrameBuffer(const int imageWidth, const int imageHeight, std::initializer_list<Attachment> attachment,  unsigned int colorAttachmentPoint,bool disableColor, TextureType colorTextureType = TextureType::DiffuseMap);
+		void AttachColorTexture(TextureType textureType, unsigned int attachmentPoints, unsigned int imageWidth, unsigned int imageHeight);
 		void AttachColorTexture(TextureHandle texture, unsigned int attachmentPoints);
 
 		void AttachDepthTexture(const int imageWidth, int imageHeight);

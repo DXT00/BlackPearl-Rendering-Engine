@@ -1,6 +1,8 @@
 #pragma once
 #include "BlackPearl/RHI/RHITexture.h"
 #include "BlackPearl/RHI/OpenGLRHI/OpenGLTexture.h"
+//#include "BlackPearl/RHI/Common/stb_util.h"
+#define STB_IMAGE_IMPLEMENTATION
 namespace BlackPearl {
 	class CubeMapTexture: public Texture
 	{

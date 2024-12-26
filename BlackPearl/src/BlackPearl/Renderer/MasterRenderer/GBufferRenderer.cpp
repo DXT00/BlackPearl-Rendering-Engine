@@ -15,6 +15,7 @@
 #include <chrono>
 #include "glm/glm.hpp"
 #include "BlackPearl/Renderer/DeviceManager.h"
+#include "BlackPearl/RHI/OpenGLRHI/OpenGLTexture.h"
 
 namespace BlackPearl {
 	extern DeviceManager* g_deviceManager;
@@ -298,9 +299,9 @@ namespace BlackPearl {
 
 	void GBufferRenderer::RenderSceneWithGBufferAndProbes(std::vector<Object*> staticObjects, std::vector<Object*> dynamicObjects, float timeInSecond, std::vector<Object*> backGroundObjs, Object* gBufferDebugQuad, LightSources* lightSources,
 		std::vector<Object*> diffuseProbes, std::vector<Object*> reflectionProbes,
-		std::shared_ptr<ITexture> specularBrdfLUTTexture, Object* skyBox,
+		std::shared_ptr<Texture> specularBrdfLUTTexture, Object* skyBox,
 		MapManager* mapManager,
-		std::shared_ptr<ITexture> depthTexture,
+		std::shared_ptr<Texture> depthTexture,
 		bool enableSSR)
 	{
 

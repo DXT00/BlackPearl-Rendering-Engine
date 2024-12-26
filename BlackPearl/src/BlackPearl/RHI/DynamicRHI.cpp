@@ -28,7 +28,9 @@ namespace BlackPearl {
 			dynamicModule = DBG_NEW OpenGLDynamicModule();
 		}
 		else if (DynamicRHI::g_RHIType == DynamicRHI::Type::D3D12) {
+#ifdef GE_API_D3D12
 			dynamicModule = DBG_NEW D3D12DynamicModule();
+#endif
 		}
 		else if (DynamicRHI::g_RHIType == DynamicRHI::Type::Vulkan) {
 #ifdef GE_API_VULKAN

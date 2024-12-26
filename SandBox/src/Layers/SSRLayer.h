@@ -46,7 +46,7 @@ public:
 		/* create probes */
 
 		m_DiffuseLightProbeGrid = CreateProbeGrid(m_MapManager, BlackPearl::ProbeType::DIFFUSE_PROBE,
-			glm::vec3(4, 2, 4), glm::vec3(2.0, 2.0, 6.7), 5);
+			math::float3(4, 2, 4), math::float3(2.0, 2.0, 6.7), 5);
 		/*	m_ReflectLightProbeGrid = CreateProbeGrid(m_MapManager, BlackPearl::ProbeType::REFLECTION_PROBE,
 				glm::vec3(2, 1, 1), glm::vec3(2.0, 6.0, 6.7), 6);*/
 
@@ -224,9 +224,18 @@ for (auto pointlight : GetLightSources()->GetPointLights()) {
 		m_loopIndex++;
 		BlackPearl::TimeCounter::End("Render ShadowMap");
 	}*/
+
+		ITexture* brdfLUTTexture = m_IBLProbesRenderer->GetSpecularBrdfLUTTexture().Get();
+		std::shared_ptr<Texture> texShared;
+		texShared.reset(static_cast<Texture*>(brdfLUTTexture));
+
+		ITexture* depthTexture = m_DepthRenderer->GetDepthTexture().Get();
+		std::shared_ptr<Texture> depthTexShared;
+		depthTexShared.reset(static_cast<Texture*>(depthTexture));
+
 		m_GBufferRenderer->RenderSceneWithGBufferAndProbes(m_BackGroundObjsList, m_DynamicObjsList, runtime / 1000.0f,
 			m_BackGroundObjsList, m_GBufferDebugQuad, GetLightSources(), m_DiffuseLightProbes, m_ReflectionLightProbes,
-			m_IBLProbesRenderer->GetSpecularBrdfLUTTexture(), m_SkyBoxObj1, m_MapManager, m_DepthRenderer->GetDepthTexture(), m_EnableSSR);
+			texShared, m_SkyBoxObj1, m_MapManager, depthTexShared, m_EnableSSR);
 
 		if (BlackPearl::Input::IsKeyPressed(BlackPearl::KeyCodes::Get(BP_KEY_L))) {
 			m_ShowLightProbe = !m_ShowLightProbe;

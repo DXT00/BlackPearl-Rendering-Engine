@@ -3,8 +3,8 @@
 #include "HDRTexture.h"
 
 #include "BlackPearl/Core.h"
+#include "BlackPearl/RHI/Common/stb_util.h"
 
-#include "stb_image.h"
 
 namespace BlackPearl {
 	
@@ -26,10 +26,10 @@ namespace BlackPearl {
 
 		int width, height, nrChannels;
 
-		stbi_set_flip_vertically_on_load(true);
+		stbi_set_flip_vertically_on_load_util(true);
 
 
-		float  *data = stbi_loadf(image.c_str(), &width, &height, &nrChannels, 0);
+		float  *data = stbi_loadf_util(image.c_str(), &width, &height, &nrChannels, 0);
 		GE_ASSERT(data, "fail to load texture data!");
 		GLenum format;
 		switch (nrChannels) //注意不同图片有不同的通道数！
@@ -59,7 +59,7 @@ namespace BlackPearl {
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		UnBind();
 
-		stbi_image_free(data);
+		stbi_image_free_util(data);
 
 	}
 	void HDRTexture::Bind()

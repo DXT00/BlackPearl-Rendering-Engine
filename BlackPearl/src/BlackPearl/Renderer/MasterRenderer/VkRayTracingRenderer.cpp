@@ -21,7 +21,6 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 #include <chrono>
-#include "stb_image.h"
 #include <random>
 
 namespace BlackPearl {
