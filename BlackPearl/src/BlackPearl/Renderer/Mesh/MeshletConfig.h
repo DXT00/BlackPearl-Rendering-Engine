@@ -21,14 +21,14 @@ namespace BlackPearl {
         EType    Type;
         uint32_t Offset;
     };
-    struct MeshInfo
-    {
-        uint32_t IndexSize;
-        uint32_t MeshletCount;
+    //struct MeshletInfo
+    //{
+    //    uint32_t IndexSize;
+    //    uint32_t MeshletCount;
 
-        uint32_t LastMeshletVertCount;
-        uint32_t LastMeshletPrimCount;
-    };
+    //    uint32_t LastMeshletVertCount;
+    //    uint32_t LastMeshletPrimCount;
+    //};
 
     enum FileVersion
     {

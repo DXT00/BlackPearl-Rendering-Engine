@@ -187,7 +187,7 @@ namespace BlackPearl {
 
 
 
-		MeshInfo m_MeshInfo;
+		//MeshInfo m_MeshInfo;
 	};
 
 }

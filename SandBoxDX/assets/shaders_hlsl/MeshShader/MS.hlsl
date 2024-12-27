@@ -55,7 +55,7 @@ struct Meshlet
 };
 
 ConstantBuffer<Constants> Globals             : register(b0);
-ConstantBuffer<MeshInfo>  MeshInfo            : register(b1);
+ConstantBuffer<MeshletInfo>  MeshInfo            : register(b1);
 
 StructuredBuffer<Vertex>  Vertices            : register(t0);
 StructuredBuffer<Meshlet> Meshlets            : register(t1);

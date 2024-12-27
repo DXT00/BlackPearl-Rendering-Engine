@@ -1,8 +1,12 @@
 #include "pch.h"
 #include "BlackPearl/Core.h"
 #include "DynamicRHI.h"
+#ifdef GE_API_D3D12
 #include "D3D12RHI/D3D12DynamicModule.h"
+#endif
+#ifdef GE_API_OPENGL
 #include "OpenGLRHI/OpenGLDynamicModule.h"
+#endif
 #include "VulkanRHI/VkDynamicModule.h"
 
 
@@ -25,10 +29,14 @@ namespace BlackPearl {
 		DynamicRHI::g_RHIType = rhiType;
 		DynamicModule* dynamicModule;
 		if (DynamicRHI::g_RHIType == DynamicRHI::Type::OpenGL) {
+#ifdef GE_API_OPENGL
 			dynamicModule = DBG_NEW OpenGLDynamicModule();
+#endif
 		}
 		else if (DynamicRHI::g_RHIType == DynamicRHI::Type::D3D12) {
+#ifdef GE_API_D3D12
 			dynamicModule = DBG_NEW D3D12DynamicModule();
+#endif
 		}
 		else if (DynamicRHI::g_RHIType == DynamicRHI::Type::Vulkan) {
 #ifdef GE_API_VULKAN

@@ -1251,9 +1251,19 @@ namespace BlackPearl {
 	}
 
 
+	DeviceManager* DeviceManager::CreateD3D12()
+	{
+		return nullptr;
+	}
+
 	DeviceManager* DeviceManager::CreateVK()
 	{
 		return new VKDeviceManager();
+	}
+
+	DeviceManager* DeviceManager::CreateOpenGL()
+	{
+		return nullptr;
 	}
 }
 #endif

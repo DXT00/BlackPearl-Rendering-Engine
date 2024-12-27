@@ -15,6 +15,7 @@
 #include "BlackPearl/RHI/Common/FormatInfo.h"
 #include "BlackPearl/RHI/VulkanRHI/VkShader.h"
 #include "BlackPearl/RHI/RHIRayTraceStruct.h"
+#include <vulkan/vulkan_core.h>
 namespace BlackPearl {
 	extern VkImageAspectFlags guessImageAspectFlags(VkFormat format);
 
