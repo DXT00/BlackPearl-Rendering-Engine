@@ -35,6 +35,7 @@ project "Sandbox"
 		"../BlackPearl/vendor/spdlog/include",
 		"../BlackPearl/src",
 		"../BlackPearl/vendor",
+		"../BlackPearl/vendor/stb",
 		"../BlackPearl/assets/shaders",
 		"../%{IncludeDir.glm}",
 		"../%{IncludeDir.GLFW}",

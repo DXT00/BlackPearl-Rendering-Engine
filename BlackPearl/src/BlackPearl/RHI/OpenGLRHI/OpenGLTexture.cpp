@@ -4,9 +4,7 @@
 #include "BlackPearl/Config.h"
 #include "BlackPearl/RHI/RHIDefinitions.h"
 
-#define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h"
-
+#include "BlackPearl/RHI/Common/stb_util.h"
 namespace BlackPearl {
 
 	//Texture::Texture(const TextureDesc& desc)
@@ -103,10 +101,10 @@ namespace BlackPearl {
 
 			int width, height, nrChannels;
 
-			stbi_set_flip_vertically_on_load(true);
+			stbi_set_flip_vertically_on_load_util(true);
 
 
-			unsigned char* data = stbi_load(m_Path.c_str(), &width, &height, &nrChannels, 0);
+			unsigned char* data = stbi_load_util(m_Path.c_str(), &width, &height, &nrChannels, 0);
 			GE_ASSERT(data, "fail to load texture data!");
 			GLenum format;
 			switch (nrChannels) //注意不同图片有不同的通道数！
@@ -154,7 +152,7 @@ namespace BlackPearl {
 			glGenerateMipmap(GL_TEXTURE_2D);//为当前绑定的纹理自动生成所有需要的多级渐远纹理
 
 		if (data != nullptr)
-			stbi_image_free(data);
+			stbi_image_free_util(data);
 	}
 
 	//void Texture::Init(

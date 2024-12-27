@@ -14,17 +14,10 @@ public:
 		: Layer(name)
 	{
 
-		//m_CameraObj = CreateCamera();
-		//auto cameraComponent = m_CameraObj->GetComponent<BlackPearl::PerspectiveCamera>();
-		//cameraComponent->SetPosition(glm::vec3(0.0f, 0.0f, 8.0f));
-		//m_CameraPosition = cameraComponent->GetPosition();
-		//m_CameraRotation.Yaw = cameraComponent->Yaw();
-		//m_CameraRotation.Pitch = cameraComponent->Pitch();
 		m_Scene = DBG_NEW BlackPearl::Scene();
-		m_SphereObj = CreateSphere(0.5, 64, 64);
+		m_SphereObj = LoadStaticBackGroundObject("SphereStone");
 		m_QuadObj = CreateQuad();
 		m_CubeObj = CreateCube();
-		//m_CubeObj->GetComponent<BlackPearl::Transform>()->SetScale({ 0.2,0.2,0.2 });
 
 		m_Scene->AddObject(m_SphereObj);
 		m_Scene->AddObject(m_CubeObj);
@@ -37,22 +30,6 @@ public:
 
 		m_SphereObj->GetComponent<BlackPearl::MeshRenderer>()->SetShaders(m_PBRRenderer->GetShader());
 
-		BlackPearl::IDevice* device = m_DeviceManager->GetDevice();
-
-		BlackPearl::TextureHandle StonealbedoTexture = device->createTexture({BlackPearl::TextureType::DiffuseMap, "assets/texture/pbr/cobblestone/cobblestone-curved_2_albedo.png"});
-		BlackPearl::TextureHandle StoneaoTexture = device->createTexture({ BlackPearl::TextureType::AoMap, "assets/texture/pbr/cobblestone/cobblestone-curved_2_ao.png" });
-		BlackPearl::TextureHandle StoneroughnessTexture = device->createTexture({ BlackPearl::TextureType::RoughnessMap, "assets/texture/pbr/cobblestone/cobblestone-curved_2_roughness.png" });
-		BlackPearl::TextureHandle StonementallicTexture = device->createTexture({ BlackPearl::TextureType::MentallicMap, "assets/texture/pbr/cobblestone/cobblestone-curved_2_metallic.png" });
-		BlackPearl::TextureHandle StonenormalTexture = device->createTexture({ BlackPearl::TextureType::NormalMap, "assets/texture/pbr/cobblestone/cobblestone-curved_2_normal-dx.png" });
-
-
-
-		m_SphereObj->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(StonenormalTexture);
-
-		m_SphereObj->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(StonealbedoTexture);
-		m_SphereObj->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(StoneaoTexture);
-		m_SphereObj->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(StoneroughnessTexture);
-		m_SphereObj->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(StonenormalTexture);
 		m_SphereObj->GetComponent<BlackPearl::MeshRenderer>()->GetMeshes()[0]->GetMaterial()->SetMaterialColorDiffuseColor({ 1.0,0.0,0.0 });
 
 		m_SphereObj->GetComponent<BlackPearl::Transform>()->SetPosition({
@@ -70,7 +47,6 @@ public:
 			 "assets/skybox/skybox1/SkyMorning_Back.png",
 			});
 
-		BlackPearl::IDevice* device = m_DeviceManager->GetDevice();
 
 		BlackPearl::TextureDesc desc;
 		desc.type = TextureType::None;
@@ -82,6 +58,7 @@ public:
 		desc.format = Format::RGBA16_FLOAT;
 		desc.generateMipmap = false;
 
+		BlackPearl::IDevice* device = m_DeviceManager->GetDevice();
 		m_HDRPostProcessTexture = device->createTexture(desc); //.reset(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::None, BlackPearl::Configuration::WindowWidth, BlackPearl::Configuration::WindowHeight, false, GL_LINEAR, GL_LINEAR, GL_RGBA16F, GL_RGBA, GL_CLAMP_TO_EDGE, GL_FLOAT));
 		m_LightPassFrameBuffer.reset(DBG_NEW BlackPearl::FrameBuffer());
 		m_LightPassFrameBuffer->Bind();
@@ -89,7 +66,6 @@ public:
 		m_LightPassFrameBuffer->AttachColorTexture(m_HDRPostProcessTexture, 0);
 		m_LightPassFrameBuffer->BindRenderBuffer();
 		m_LightPassFrameBuffer->UnBind();
-
 
 
 		m_Bunny = CreateModel("assets/models/bunny/bunny.obj", "assets/shaders/IronMan.glsl", false, "Bunny", false);// CreateCube();

@@ -179,6 +179,8 @@ namespace BlackPearl {
 
 	void Application::_InitFileSystem()
 	{
+
+#ifdef	GE_API_VULKAN
 		std::filesystem::path shaderPath = g_rootFileSystem->GetExeDir()/"assets/shaders"/Configuration::GetShaderTypeName();
 		//std::filesystem::path appShaderPath = g_rootFileSystem->GetExeDir()/"shaders/pt_sdk"/Configuration::GetShaderTypeName(DynamicRHI::g_RHIType);
 		//std::filesystem::path nrdShaderPath = g_rootFileSystem->GetExeDir()/"shaders/nrd"/Configuration::GetShaderTypeName(DynamicRHI::g_RHIType);
@@ -188,6 +190,7 @@ namespace BlackPearl {
 		//g_rootFileSystem->mount("/shaders/app", appShaderPath);
 		//g_rootFileSystem->mount("/shaders/nrd", nrdShaderPath);
 		//g_rootFileSystem->mount("/shaders/omm", ommShaderPath);
+#endif
 
 
 	}
