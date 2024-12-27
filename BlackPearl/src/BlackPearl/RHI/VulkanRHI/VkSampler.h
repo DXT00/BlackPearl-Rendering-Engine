@@ -4,7 +4,7 @@
 #include "../RefCountPtr.h"
 #include "../RHISampler.h"
 #include "VkContext.h"
-#include <vulkan/vulkan.h>
+#include <vulkan/vulkan_core.h>
 namespace BlackPearl {
 	class Sampler :public RefCounter<ISampler>
 	{

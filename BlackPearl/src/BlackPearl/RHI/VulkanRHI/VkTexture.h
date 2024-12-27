@@ -5,7 +5,7 @@
 #include "BlackPearl/RHI/RHIHeap.h"
 #include "BlackPearl/RHI/RHIState.h"
 #include "VkMemoryResource.h"
-#include <vulkan/vulkan.h>
+#include <vulkan/vulkan_core.h>
 #include <mutex>
 #include <tuple>
 #include "VkAllocator.h"

@@ -14,30 +14,36 @@ workspace "BlackPearl"
 	--architecture "x86"
 	architecture "x86_64"
 	
-	-- local renderApi = _OPTIONS["RenderAPI"]
-	print(_OPTIONS["RenderAPI"])
-	if _OPTIONS["RenderAPI"] == "opengl" then
-		startproject "Sandbox"
-		print("set startproject to Sandbox.")
-	elseif _OPTIONS["RenderAPI"] == "vulkan"  then
-		startproject "SandboxVK"
-		print("set startproject to SandboxVK.")
-	elseif _OPTIONS["RenderAPI"] == "direct3d" then
-		startproject "SandboxDX"
-		print("set startproject to SandboxDX.")
-	else
-		print("Invalid RenderAPI option. Defaulting to SandboxVK.")
-		startproject "SandboxVK"
-	end
-	
 	configurations
 	{
 		"Debug",
 		"Release",
 		"Dist"
 	}
+	outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
-outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
+	-- local renderApi = _OPTIONS["RenderAPI"]
+	print(_OPTIONS["RenderAPI"])
+	if _OPTIONS["RenderAPI"] == "opengl" then
+		startproject "Sandbox"
+		include "SandBox"
+		print("set startproject to Sandbox.")
+	elseif _OPTIONS["RenderAPI"] == "vulkan"  then
+		startproject "SandboxVK"
+		include "SandBoxVK"
+		print("set startproject to SandboxVK.")
+	elseif _OPTIONS["RenderAPI"] == "direct3d" then
+		startproject "SandboxDX"
+		include "SandBoxDX"
+		print("set startproject to SandboxDX.")
+	else
+		print("Invalid RenderAPI option. Defaulting to SandboxVK.")
+		startproject "SandboxVK"
+		include "SandBoxVK"
+	end
+	
+
+
 
 -- Include directories relative to root folder (solution directory)
 IncludeDir = {}
@@ -48,7 +54,7 @@ IncludeDir["glm"] = "BlackPearl/vendor/glm"
 IncludeDir["stb"] = "BlackPearl/vendor/stb"
 IncludeDir["assimp"] = "BlackPearl/vendor/assimp/include"
 IncludeDir["GLEW"] = "BlackPearl/vendor/GLEW/include"
-IncludeDir["vulkan"] = "BlackPearl/vendor/VulkanSDK/1.3.236.0/Include"
+IncludeDir["vulkan"] = "BlackPearl/vendor/vulkan/1.3.290.0/Include"
 IncludeDir["directxtex"] = "BlackPearl/vendor/directxtex_uwp.2022.7.30.1/include"
 IncludeDir["directxmesh"] = "BlackPearl/vendor/directxmesh_desktop_win10.2022.7.30.1/include"
 IncludeDir["ShaderMake"] = "BlackPearl/vendor/ShaderMake/include"
@@ -64,8 +70,6 @@ include "BlackPearl/vendor/GLEW"
 --include "BlackPearl/vendor/ShaderMake"
 
 include "BlackPearl"
-include "SandBox"
-include "SandBoxVK"
-include "SandBoxDX"
+
 include "ShaderCompiler"
 

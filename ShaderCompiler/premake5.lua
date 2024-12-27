@@ -33,7 +33,7 @@ project "ShaderCompiler"
 	}
 
 	libdirs{
-        -- "../BlackPearl/vendor/VulkanSDK/1.3.236.0/Lib"
+        -- "../BlackPearl/vendor/vulkan/1.3.290.0/Lib"
     }
 
 	defines

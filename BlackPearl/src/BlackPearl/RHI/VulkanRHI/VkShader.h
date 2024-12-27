@@ -9,7 +9,7 @@
 #include "VkPipeline.h"
 
 #include "VkContext.h"
-#include <vulkan/vulkan.h>
+#include <vulkan/vulkan_core.h>
 namespace BlackPearl {
     //先用EShader定义，防止和OpenGL定义的Shader重复
     class EShader : public RefCounter<IShader>
@@ -81,7 +81,7 @@ namespace BlackPearl {
             : m_Context(context)
         { }
 
-        ~ShaderLibrary() override;
+        virtual ~ShaderLibrary() override;
         void getBytecode(const void** ppBytecode, size_t* pSize) const override;
         ShaderHandle getShader(const char* entryName, ShaderType shaderType) override;
     private:

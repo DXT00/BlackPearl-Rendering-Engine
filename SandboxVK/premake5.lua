@@ -39,13 +39,13 @@ project "SandboxVK"
 		"../%{IncludeDir.vulkan}",
 		--"../%{IncludeDir.ImGui}",
 		-- "%{IncludeDir.glslShader}",
-		"../%{IncludeDir.vulkan}"
+		--"../%{IncludeDir.vulkan}"
 		--"packages/directxtex_uwp.2022.7.30.1/native/lib/x64/Debug"
 
 	}
 
 	libdirs{
-        "../BlackPearl/vendor/VulkanSDK/1.3.236.0/Lib"
+  --      "../BlackPearl/vendor/vulkan/1.3.290.0/Lib"
     }
 
 	defines
@@ -59,7 +59,7 @@ project "SandboxVK"
 		"d3d12.lib",
 		"dxgi.lib",
 		"dxguid.lib",
-		"vulkan-1.lib"
+		--"vulkan-1.lib"
 		--"directxtex.lib",
 	}
 	

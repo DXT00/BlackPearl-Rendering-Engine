@@ -1,6 +1,6 @@
 #pragma once
 #include "BlackPearl/RHI/RHIDefinitions.h"
-#include <vulkan/vulkan.h>
+#include <vulkan/vulkan_core.h>
 namespace BlackPearl
 {
     // Format mapping table. The rows must be in the exactly same order as Format enum members are defined.

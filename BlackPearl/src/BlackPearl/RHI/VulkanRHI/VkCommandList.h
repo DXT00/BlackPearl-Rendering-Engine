@@ -31,7 +31,6 @@
 #include "VkBuffer.h"
 #include "VkCommandBuffer.h"
 #include "VkUploadManager.h"
-#include <vulkan/vulkan.h>
 #include "VkRayTraceStruct.h"
 #include <vulkan/vulkan_core.h>
 namespace BlackPearl {

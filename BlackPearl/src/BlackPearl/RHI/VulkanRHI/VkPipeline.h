@@ -7,7 +7,7 @@
 #include "../RHIBindingSet.h"
 #include "VkContext.h"
 #include "VkBindingLayout.h"
-#include <vulkan/vulkan.h>
+#include <vulkan/vulkan_core.h>
 namespace BlackPearl {
 	class GraphicsPipeline :public RefCounter<IGraphicsPipeline>
 	{

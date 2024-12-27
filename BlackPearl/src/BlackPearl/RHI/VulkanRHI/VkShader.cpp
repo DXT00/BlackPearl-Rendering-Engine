@@ -29,6 +29,10 @@ namespace BlackPearl {
 
 
 
+	ShaderLibrary::~ShaderLibrary()
+	{
+	}
+
 	void ShaderLibrary::getBytecode(const void** ppBytecode, size_t* pSize) const
 	{
 		if (ppBytecode) *ppBytecode = nullptr;

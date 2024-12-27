@@ -6,7 +6,7 @@
 #include "../RHIBindingLayoutDesc.h"
 #include "VkContext.h"
 #include "VkBuffer.h"
-#include <vulkan/vulkan.h>
+#include <vulkan/vulkan_core.h>
 namespace BlackPearl {
 	class BindingSet : public RefCounter<IBindingSet>
 	{

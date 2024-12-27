@@ -4,7 +4,7 @@
 #include "../RefCountPtr.h"
 #include "../RHIBindingLayoutDesc.h"
 #include "VkContext.h"
-#include <vulkan/vulkan.h>
+#include <vulkan/vulkan_core.h>
 namespace BlackPearl {
 	class BindingLayout :public RefCounter<IBindingLayout>
 	{

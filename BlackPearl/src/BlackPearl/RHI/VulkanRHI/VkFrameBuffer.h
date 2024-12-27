@@ -3,7 +3,7 @@
 
 #include "BlackPearl/RHI/RHIFrameBuffer.h"
 #include "VkContext.h"
-#include <vulkan/vulkan.h>
+#include <vulkan/vulkan_core.h>
 namespace BlackPearl {
     class Framebuffer : public RefCounter<IFramebuffer>
     {

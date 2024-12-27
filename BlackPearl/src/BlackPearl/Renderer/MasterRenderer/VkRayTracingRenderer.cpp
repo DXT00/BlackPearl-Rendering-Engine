@@ -3,8 +3,7 @@
 #include "VkRayTracingRenderer.h"
 #include "BlackPearl/Renderer/Shader/VkShader/vkShader.h"
 #include "BlackPearl/Application.h"
-#include "vulkan/vulkan_core.h"
-#include <examples/imgui_impl_glfw.cpp>
+
 #include "BlackPearl/Renderer/Buffer/VkBuffer/VkBuffer.h"
 #include "BlackPearl/Renderer/Image/VkImage.h"
 #include "BlackPearl/RHI/VulkanRHI/VkRenderConfig.h"

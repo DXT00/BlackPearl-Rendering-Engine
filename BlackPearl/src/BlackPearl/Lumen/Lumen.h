@@ -3,7 +3,6 @@
 #include "BlackPearl/Scene/Scene.h"
 namespace BlackPearl {
 	class LumenSceneData;
-	int32_t GLumenDirectLightingMaxLightsPerTile = 8;
 
 	namespace Lumen {
 

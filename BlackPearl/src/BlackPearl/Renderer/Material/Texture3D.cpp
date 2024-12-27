@@ -1,10 +1,8 @@
 #include "pch.h"
 #include "Texture3D.h"
 #include "BlackPearl/Core.h"
-//#include <glad/glad.h>
-#define GLEW_STATIC
-#include"GLEW/include/GL/glew.h"
-#include "GLFW/glfw3.h"
+#include "glad/glad.h"
+
 namespace BlackPearl {
 
 	Texture3D::Texture3D(const std::vector<float>& textureBuffer, const int width, const int height, const int depth, const bool generateMipmaps)

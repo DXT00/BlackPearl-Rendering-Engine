@@ -22,10 +22,6 @@ project "BlackPearl"
 		"./vendor/glm/glm/**.inl",
 		"./vendor/stb/**.h",
 		"./assets/shaders/hlsl/core/**.h",
-		-- "./assets/shaders/hlsl/core/**.hlsli",
-		-- "./assets/shaders/hlsl/test/**.hlsl",
-		-- "./assets/shaders/hlsl/passes/**.hlsl"
-
 	}
 	
 
@@ -34,15 +30,6 @@ project "BlackPearl"
 		"_CRT_SECURE_NO_WARNINGS",
 		--"STB_IMAGE_IMPLEMENTATION"
 	}
-
-	-- filter { "files:./assets/shaders/hlsl/passes/**.hlsl" }
-	-- filter { "files:./assets/shaders/hlsl/test/**.hlsl" }
-	-- filter { "files:**.hlsl" }
-	-- 	flags("ExcludeFromBuild")
-	-- filter {}
-	-- files { "./assets/shaders/hlsl/core/**.h",
-	-- 	"./assets/shaders/hlsl/passes/**.hlsl",
-	-- 	"./assets/shaders/hlsl/test/**.hlsl" }
 
 	includedirs
 	{
@@ -78,7 +65,7 @@ project "BlackPearl"
 	"./vendor/directxmesh_desktop_win10.2022.7.30.1/native/lib/x64/Debug",
 	"./vendor/directxmesh_desktop_win10.2022.7.30.1/native/lib/x64/Release",
     --"./vendor/imgui/bin/".. outputdir .. "/ImGui",
-	"./vendor/VulkanSDK/1.3.236.0/Lib",
+	"./vendor/vulkan/1.3.290.0/Lib",
 	"./vendor/ShaderMake/build/Debug",
 
 	}
@@ -143,10 +130,10 @@ project "BlackPearl"
 		--"ShaderMakeBlob",
 
 		--"assimp",
-		"opengl32.lib",
-		"vulkan-1.lib",
+		--"opengl32.lib",
+		"vulkan-1",
 		--"assimp-vc140-mt.lib"
-		"assimp-vc142-mtd.lib", 
+		"assimp-vc142-mtd",
    }
    defines
    {

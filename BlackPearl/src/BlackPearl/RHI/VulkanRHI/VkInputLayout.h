@@ -4,7 +4,7 @@
 #include "../RefCountPtr.h"
 #include "../RHIInputLayout.h"
 #include "VkContext.h"
-#include <vulkan/vulkan.h>
+#include <vulkan/vulkan_core.h>
 namespace BlackPearl {
 	class InputLayout :public RefCounter<IInputLayout>
 	{

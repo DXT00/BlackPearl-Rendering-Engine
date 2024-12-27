@@ -1080,7 +1080,7 @@ namespace BlackPearl {
 		//m_CurrentCmdBuf->cmdBuf.buildAccelerationStructuresKHR(buildInfos, buildRangeArrays);
 
 
-		vkCmdBuildAccelerationStructuresKHR(m_CurrentCmdBuf->cmdBuf, buildInfos.size(),
+		vkCmdBuildAccelerationStructuresKHR(m_CurrentCmdBuf->cmdBuf, (uint32_t)buildInfos.size(),
 			reinterpret_cast<const VkAccelerationStructureBuildGeometryInfoKHR*>(buildInfos.data()), 
 			reinterpret_cast<const VkAccelerationStructureBuildRangeInfoKHR* const*>(buildRangeArrays.data()));
 
@@ -1787,7 +1787,7 @@ namespace BlackPearl {
 		std::array<const VkAccelerationStructureBuildRangeInfoKHR*, 1> buildRangeArrays = { buildRanges.data() };
 
 		//m_CurrentCmdBuf->cmdBuf.buildAccelerationStructuresKHR(buildInfos, buildRangeArrays);
-		vkCmdBuildAccelerationStructuresKHR(m_CurrentCmdBuf->cmdBuf, buildInfos.size(),
+		vkCmdBuildAccelerationStructuresKHR(m_CurrentCmdBuf->cmdBuf,(uint32_t) buildInfos.size(),
 			reinterpret_cast<const VkAccelerationStructureBuildGeometryInfoKHR*>(buildInfos.data()),
 			reinterpret_cast<const VkAccelerationStructureBuildRangeInfoKHR* const*>(buildRangeArrays.data()));
 

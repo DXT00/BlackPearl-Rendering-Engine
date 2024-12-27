@@ -21,7 +21,6 @@
 #include "BlackPearl/RHI/RHIDefinitions.h"
 #include "../Common/Containers.h"
 #include "../Common/FormatInfo.h"
-#include <vulkan/vulkan.h>
 #include "BlackPearl/Core.h"
 #include "vulkan/vulkan_core.h"
 
