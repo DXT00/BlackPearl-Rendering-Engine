@@ -7,6 +7,7 @@ import static com.example.blackpearl.SandBoxNativeRenderer.SAMPLE_TYPE;
 import static com.example.blackpearl.SandBoxNativeRenderer.SAMPLE_TYPE_KEY_BEATING_HEART;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -18,7 +19,10 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.os.Environment;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RelativeLayout;
@@ -34,8 +38,9 @@ public class MainActivity extends AppCompatActivity implements ViewTreeObserver.
 
     // Used to load the 'blackpearl' library on application startup.
     static {
-       // System.loadLibrary("blackpearl");
+        System.loadLibrary("SandBoxAndriod");
     }
+
     private ViewGroup mRootView;
     private MySurfaceView mGLSurfaceView;
 
@@ -54,28 +59,31 @@ public class MainActivity extends AppCompatActivity implements ViewTreeObserver.
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-
-        // Example of a call to a native method
-        TextView tv = binding.sampleText;
-        //tv.setText(stringFromJNI());
-        tv.setText("Hi BlackPearl");
+//        tv.setText("Hi BlackPearl");
 
         mRootView = (ViewGroup) findViewById(R.id.rootView);
         mRootView.getViewTreeObserver().addOnGlobalLayoutListener(this);
         mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         mSanderBoxRender = new SandBoxAndriodRender();
+
+        // Example of a call to a native method
+        TextView tv = binding.sampleText;
+       tv.setText(stringFromJNI());
+        Log.d("TAG","before init");
         mSanderBoxRender.init();
+        Log.d("TAG","after init");
+//        mSanderBoxRender.run();
     }
 
     @Override
     public void onGlobalLayout() {
-//        mRootView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-//        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(
-//                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-//        lp.addRule(RelativeLayout.CENTER_IN_PARENT);
-//        mGLSurfaceView = new MyGLSurfaceView(this, mGLRender);
-//        mRootView.addView(mGLSurfaceView, lp);
-//        mGLSurfaceView.setRenderMode(RENDERMODE_CONTINUOUSLY);
+        mRootView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        lp.addRule(RelativeLayout.CENTER_IN_PARENT);
+        mGLSurfaceView = new MySurfaceView(this, mSanderBoxRender);
+        mRootView.addView(mGLSurfaceView, lp);
+        mGLSurfaceView.setRenderMode(RENDERMODE_CONTINUOUSLY);
 
     }
 
@@ -84,7 +92,21 @@ public class MainActivity extends AppCompatActivity implements ViewTreeObserver.
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
 
    }
-
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mSensorManager.registerListener(this,
+                mSensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY),
+                SensorManager.SENSOR_DELAY_FASTEST);
+//        if (!hasPermissionsGranted(REQUEST_PERMISSIONS)) {
+//            ActivityCompat.requestPermissions(this, REQUEST_PERMISSIONS, PERMISSION_REQUEST_CODE);
+//        }
+//        ///sdcard/Android/data/com.byteflow.app/files/Download
+//        String fileDir = getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath();
+//        CommonUtils.copyAssetsDirToSDCard(MainActivity.this, "poly", fileDir + "/model");
+//        CommonUtils.copyAssetsDirToSDCard(MainActivity.this, "fonts", fileDir);
+//        CommonUtils.copyAssetsDirToSDCard(MainActivity.this, "yuv", fileDir);
+    }
     private void showGLSampleDialog()
     {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -164,5 +186,17 @@ public class MainActivity extends AppCompatActivity implements ViewTreeObserver.
     @Override
     public void onSensorChanged(SensorEvent event) {
 
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+       // if (id == R.id.action_change_sample) {
+            showGLSampleDialog();
+      //  }
+        return true;
     }
 }

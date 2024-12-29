@@ -24,9 +24,6 @@ public class SandBoxNativeRenderer {
     public static final int SAMPLE_TYPE_PBO                     = SAMPLE_TYPE + 18;
     public static final int SAMPLE_TYPE_KEY_BEATING_HEART       = SAMPLE_TYPE + 19;
 
-    static {
-        System.loadLibrary("SandBoxAndriod");
-    }
 
     public native void native_Init();
 //

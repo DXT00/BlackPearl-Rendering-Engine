@@ -8,23 +8,26 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # 静态链接运行时库
 set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded" CACHE STRING "" FORCE)
 
-
-
-if(ANDROID)
-    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "../bin/arm64-v8a")
-    set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "../bin/arm64-v8a")
-    set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "../bin/arm64-v8a")
-    set(CMAKE_OBJECT_OUTPUT_DIRECTORY "../bin/bin-int/arm64-v8a")
-else()
-    # 输出目录和中间目录
-    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin/${CMAKE_CFG_INTDIR}")
-    set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin/${CMAKE_CFG_INTDIR}")
-    set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin/${CMAKE_CFG_INTDIR}")
-    set(CMAKE_OBJECT_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin-int/${CMAKE_CFG_INTDIR}")
+if(WIN32)
+    set(SYSTEM "windows")
+    set(ARCH "x86_64")
+elseif (ANDROID)
+    set(SYSTEM "android")
+    set(ARCH "arm64-v8a")
 endif ()
 
+set(ROOT_DIR "${CMAKE_SOURCE_DIR}")
+set(BLACKPEARL_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
+set(VENDOR_DIR "${BLACKPEARL_DIR}/vendor")
+set(OUTPUT_DIR "${CMAKE_BUILD_TYPE}-${SYSTEM}-${ARCH}")
 
-message(STATUS "CMAKE_RUNTIME_OUTPUT_DIRECTORY---${CMAKE_RUNTIME_OUTPUT_DIRECTORY}")
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${ROOT_DIR}/bin/${OUTPUT_DIR}/${PROJECT_NAME}")
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${ROOT_DIR}/bin/${OUTPUT_DIR}/${PROJECT_NAME}")
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${ROOT_DIR}/bin/${OUTPUT_DIR}/${PROJECT_NAME}")
+set(CMAKE_OBJECT_OUTPUT_DIRECTORY "${ROOT_DIR}/bin-int/${OUTPUT_DIR}/${PROJECT_NAME}")
+
+
+message(STATUS "CMAKE_RUNTIME_OUTPUT_DIRECTORY---${CMAKE_RUNTIME_OUTPUT_DIRECTORY},OUTPUT_DIR=${OUTPUT_DIR}")
 
 # 添加源文件
 file(GLOB_RECURSE SRC_FILES LIST_DIRECTORIES false "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp" "${CMAKE_CURRENT_SOURCE_DIR}/src/*.h")
@@ -36,54 +39,40 @@ add_library(BlackPearl STATIC ${SRC_FILES})
 add_definitions(
         -D_CRT_SECURE_NO_WARNINGS
         -DGLFW_INCLUDE_NONE
-
 )
 
 # 头文件包含目录
 include_directories(
         "${CMAKE_CURRENT_SOURCE_DIR}/src"
-        "${CMAKE_CURRENT_SOURCE_DIR}/vendor/spdlog/include"
-        # 注意：下面的路径需要根据实际情况调整，特别是那些使用了占位符的路径
-        # "${CMAKE_CURRENT_SOURCE_DIR}/../%{IncludeDir.GLFW}"
-        "${CMAKE_CURRENT_SOURCE_DIR}/vendor/GLEW/include"
-        "${CMAKE_CURRENT_SOURCE_DIR}/vendor/Glad/include"
-        "${CMAKE_CURRENT_SOURCE_DIR}/vendor"
-        "${CMAKE_CURRENT_SOURCE_DIR}/vendor/glm"
-        "${CMAKE_CURRENT_SOURCE_DIR}/vendor/stb"
-        "${CMAKE_CURRENT_SOURCE_DIR}/vendor/assimp/include"
-        "${CMAKE_CURRENT_SOURCE_DIR}/vendor/GLFW/include"
-        "${CMAKE_CURRENT_SOURCE_DIR}/vendor/VulkanSDK/1.3.236.0/Include"
-        "${CMAKE_CURRENT_SOURCE_DIR}/vendor/directxtex_uwp.2022.7.30.1/include"
-        "${CMAKE_CURRENT_SOURCE_DIR}/vendor/GLEW/include"
-        "${CMAKE_CURRENT_SOURCE_DIR}/vendor/directxmesh_desktop_win10.2022.7.30.1/include"
-        "${CMAKE_CURRENT_SOURCE_DIR}/vendor/ShaderMake/include"
+        "${VENDOR_DIR}"
+        "${VENDOR_DIR}/spdlog/include"
+        "${VENDOR_DIR}/GLEW/include"
+        "${VENDOR_DIR}/Glad/include"
+        "${VENDOR_DIR}/glm"
+        "${VENDOR_DIR}/stb"
+        "${VENDOR_DIR}/assimp/include"
+        "${VENDOR_DIR}/GLFW/include"
+        "${VENDOR_DIR}/VulkanSDK/1.3.236.0/Include"
+        "${VENDOR_DIR}/directxtex_uwp.2022.7.30.1/include"
+        "${VENDOR_DIR}/GLEW/include"
+        "${VENDOR_DIR}/directxmesh_desktop_win10.2022.7.30.1/include"
+        "${VENDOR_DIR}/ShaderMake/include"
 )
 # 库目录
-link_directories(
-
-        "${CMAKE_CURRENT_SOURCE_DIR}/vendor/directxtex_uwp.2022.5.10.1/native/lib"
-        "${CMAKE_CURRENT_SOURCE_DIR}/vendor/directxmesh_desktop_win10.2022.7.30.1/native/lib/x64/Debug"
-        "${CMAKE_CURRENT_SOURCE_DIR}/vendor/directxmesh_desktop_win10.2022.7.30.1/native/lib/x64/Release"
-        "${CMAKE_CURRENT_SOURCE_DIR}/vendor/VulkanSDK/1.3.236.0/Lib"
-        "${CMAKE_CURRENT_SOURCE_DIR}/vendor/ShaderMake/build/Debug"
-        "${CMAKE_CURRENT_SOURCE_DIR}/vendor/imgui/bin/${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/ImGui"
-        "${CMAKE_CURRENT_SOURCE_DIR}/vendor/spdlog/bin/${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/spdlog"
-        "${CMAKE_CURRENT_SOURCE_DIR}/vendor/GLFW/bin/${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/GLFW"
+target_link_directories(
+        ${PROJECT_NAME} PUBLIC
+        "${VENDOR_DIR}/directxtex_uwp.2022.5.10.1/native/lib"
+        "${VENDOR_DIR}/directxmesh_desktop_win10.2022.7.30.1/native/lib/x64/${CMAKE_BUILD_TYPE}"
+        "${VENDOR_DIR}/VulkanSDK/1.3.236.0/Lib"
+        "${VENDOR_DIR}/ShaderMake/build/Debug"
+        "${VENDOR_DIR}/spdlog/bin/${OUTPUT_DIR}/spdlog"
+        "${CMAKE_CURRENT_SOURCE_DIR}/vendor/assimp_build/bin/${CMAKE_BUILD_TYPE}/${SYSTEM}"
 )
 if(WIN32)
-    link_directories(
-            "${CMAKE_CURRENT_SOURCE_DIR}/vendor/assimp_build/code/Debug/win"
-            "${CMAKE_CURRENT_SOURCE_DIR}/vendor/assimp_build/lib/Debug/win"
-            "${CMAKE_CURRENT_SOURCE_DIR}/vendor/assimp_build/lib/Release/win"
-            "${CMAKE_CURRENT_SOURCE_DIR}/vendor/assimp_build/bin/Debug/win"
-            "${CMAKE_CURRENT_SOURCE_DIR}/vendor/assimp_build/bin/Release/win"
-    )
-elseif(ANDROID)
-    link_directories(
-            "${CMAKE_CURRENT_SOURCE_DIR}/vendor/assimp_build/lib/Debug/android"
-            "${CMAKE_CURRENT_SOURCE_DIR}/vendor/assimp_build/lib/Release/android"
-            "${CMAKE_CURRENT_SOURCE_DIR}/vendor/assimp_build/bin/Debug/android"
-            "${CMAKE_CURRENT_SOURCE_DIR}/vendor/assimp_build/bin/Release/android"
+    target_link_directories(
+            ${PROJECT_NAME} PUBLIC
+            "${CMAKE_CURRENT_SOURCE_DIR}/vendor/GLFW/bin/${OUTPUT_DIR}/GLFW"
+            "${CMAKE_CURRENT_SOURCE_DIR}/vendor/imgui/bin/${OUTPUT_DIR}/ImGui"
     )
 endif ()
 #set(RENDER_API "opengl")
@@ -93,7 +82,6 @@ if(${RENDER_API} STREQUAL "opengl")
     target_link_libraries(
             BlackPearl
             PRIVATE
-            ImGui
             spdlog
     )
     if(WIN32)
@@ -104,7 +92,7 @@ if(${RENDER_API} STREQUAL "opengl")
                 GLEW
                 Glad
                 opengl32
-
+                ImGui
         )
     elseif(ANDROID)
         target_link_libraries(
@@ -175,16 +163,13 @@ if(WIN32)
     message(STATUS "Building for Windows")
     add_definitions(
             -DGE_PLATFORM_WINDOWS
-            # 其他Windows平台宏...
     )
 elseif(ANDROID)
     message(STATUS "Building for Android")
     add_definitions(
             -DGE_PLATFORM_ANDRIOD
             -DGLEW_NO_GLU
-            # 其他Windows平台宏...
     )
-    # 在此处添加Android平台特有的配置
 endif()
 
 # 构建配置设置

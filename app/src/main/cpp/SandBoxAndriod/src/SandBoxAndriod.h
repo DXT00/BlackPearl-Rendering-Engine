@@ -11,7 +11,7 @@ class SandBoxAndriod{
 public:
     SandBoxAndriod();
 
-
+    static void add();
     static BlackPearl::Application* GetInstance();
     static void DestroyInstance();
     virtual ~SandBoxAndriod() {};

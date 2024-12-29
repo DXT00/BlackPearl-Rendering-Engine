@@ -4,7 +4,7 @@ bin/
 bin-int/
 bakup/
 x64/
-BlackPearl/vendor/
+#BlackPearl/vendor/
 
 #Files
 *.user
@@ -20,6 +20,7 @@ SandBoxDX/assets/texture
 *.tlog
 *.1.tlog
 *.obj
+*.o
 *.idb
 *.pdb
 *.lastbuildstate

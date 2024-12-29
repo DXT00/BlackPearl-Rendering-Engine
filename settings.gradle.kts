@@ -21,4 +21,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "BlackPearl"
 include(":app")
- 
+include(":SandboxAndriod")

@@ -23,11 +23,22 @@ android {
 
     buildTypes {
         release {
+            debuggable true
+            jniDebuggable true
             minifyEnabled false
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
+        }
+
+        /*  release {
+              minifyEnabled false
+              proguardFiles(
+                  getDefaultProguardFile("proguard-android-optimize.txt"),
+                  "proguard-rules.pro"
+              )
+          }*/
+        debug {
+            debuggable true
+            jniDebuggable true
+            minifyEnabled false
         }
     }
     compileOptions {
@@ -42,9 +53,18 @@ android {
             version = "3.22.1"
         }
     }
-//    packagingOptions {
-//        pickFirst 'src/main/cpp/bin/arm64-v8a/libBlackPearl.a'
-//    }
+
+    sourceSets {
+        main {
+            //jniLibs.srcDirs = ['libs']
+            jniLibs.srcDir 'lib/arm64-v8a/'
+
+        }
+    }
+        packagingOptions {
+        pickFirst 'lib/arm64-v8a/libassimpd.so'
+        pickFirst 'lib/arm64-v8a/libSandBoxAndriod.so'
+    }
 
 
     buildFeatures {

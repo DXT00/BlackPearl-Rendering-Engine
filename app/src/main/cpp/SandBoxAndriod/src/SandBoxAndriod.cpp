@@ -13,17 +13,21 @@ SandBoxAndriod::SandBoxAndriod()
 
 }
 BlackPearl::Application* SandBoxAndriod::m_App = nullptr;
+
+ void SandBoxAndriod::add(){
+    int a = 1;
+}
 BlackPearl::Application* SandBoxAndriod::GetInstance(){
 
-    if (m_App == nullptr)
-    {
-#ifdef GE_PLATFORM_WINDOWS
-        m_App = nullptr;
-#else
-        m_App = new BlackPearl::Application();
-
-#endif
-    }
+//    if (m_App == nullptr)
+//    {
+//#ifdef GE_PLATFORM_WINDOWS
+//        m_App = nullptr;
+//#else
+//        m_App = new BlackPearl::Application();
+//
+//#endif
+//    }
     return m_App;
 
 }
