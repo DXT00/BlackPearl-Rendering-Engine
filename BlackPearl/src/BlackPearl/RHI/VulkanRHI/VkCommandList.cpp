@@ -875,7 +875,7 @@ namespace BlackPearl {
 		assert(m_CurrentCmdBuf);
 
 		_updateRayTracingVolatileBuffers();
-		vkCmdTraceRaysKHR(m_CurrentCmdBuf->cmdBuf, &m_CurrentShaderTablePointers.rayGen,
+		m_Context.vkFuncLoader->vkCmdTraceRaysKHR(m_CurrentCmdBuf->cmdBuf, &m_CurrentShaderTablePointers.rayGen,
 			&m_CurrentShaderTablePointers.miss,
 			&m_CurrentShaderTablePointers.hitGroups,
 			&m_CurrentShaderTablePointers.callable,
@@ -930,7 +930,7 @@ namespace BlackPearl {
 		VkMicromapBuildSizesInfoEXT buildSize;
 		//m_Context.device.getMicromapBuildSizesEXT(VkAccelerationStructureBuildTypeKHR::eDevice, &buildInfo, &buildSize);
 
-		vkGetMicromapBuildSizesEXT(m_Context.device, VK_ACCELERATION_STRUCTURE_BUILD_TYPE_DEVICE_KHR, &buildInfo, &buildSize);
+		m_Context.vkFuncLoader->vkGetMicromapBuildSizesEXT(m_Context.device, VK_ACCELERATION_STRUCTURE_BUILD_TYPE_DEVICE_KHR, &buildInfo, &buildSize);
 
 
 		if (buildSize.buildScratchSize != 0)
@@ -955,8 +955,8 @@ namespace BlackPearl {
 			//buildInfo.setScratchData(getMutableBufferAddress(scratchBuffer, scratchOffset));
 			buildInfo.scratchData = getMutableBufferAddress(scratchBuffer, scratchOffset);
 		}
-
-		vkCmdBuildMicromapsEXT(m_CurrentCmdBuf->cmdBuf, 1, &buildInfo);
+		m_Context.vkFuncLoader->vkCmdBuildMicromapsEXT(m_CurrentCmdBuf->cmdBuf, 1, &buildInfo);
+		//vkCmdBuildMicromapsEXT(m_CurrentCmdBuf->cmdBuf, 1, &buildInfo);
 		//m_CurrentCmdBuf->cmdBuf.buildMicromapsEXT(1, &buildInfo);
 	}
 	void CommandList::buildBottomLevelAccelStruct(rt::IAccelStruct* _as, const rt::GeometryDesc* pGeometries, size_t numGeometries, rt::AccelStructBuildFlags buildFlags)
@@ -1037,7 +1037,7 @@ namespace BlackPearl {
 		VkAccelerationStructureBuildSizesInfoKHR buildSizes{};
 
 
-		vkGetAccelerationStructureBuildSizesKHR(m_Context.device, VK_ACCELERATION_STRUCTURE_BUILD_TYPE_DEVICE_KHR, &buildInfo, maxPrimitiveCounts.data(), &buildSizes);
+		m_Context.vkFuncLoader->vkGetAccelerationStructureBuildSizesKHR(m_Context.device, VK_ACCELERATION_STRUCTURE_BUILD_TYPE_DEVICE_KHR, &buildInfo, maxPrimitiveCounts.data(), &buildSizes);
 
 		if (buildSizes.accelerationStructureSize > as->dataBuffer->getDesc().byteSize)
 		{
@@ -1080,7 +1080,7 @@ namespace BlackPearl {
 		//m_CurrentCmdBuf->cmdBuf.buildAccelerationStructuresKHR(buildInfos, buildRangeArrays);
 
 
-		vkCmdBuildAccelerationStructuresKHR(m_CurrentCmdBuf->cmdBuf, (uint32_t)buildInfos.size(),
+		m_Context.vkFuncLoader->vkCmdBuildAccelerationStructuresKHR(m_CurrentCmdBuf->cmdBuf, (uint32_t)buildInfos.size(),
 			reinterpret_cast<const VkAccelerationStructureBuildGeometryInfoKHR*>(buildInfos.data()), 
 			reinterpret_cast<const VkAccelerationStructureBuildRangeInfoKHR* const*>(buildRangeArrays.data()));
 
@@ -1744,7 +1744,7 @@ namespace BlackPearl {
 			buildInfo.srcAccelerationStructure = as->accelStruct;
 
 		VkAccelerationStructureBuildSizesInfoKHR buildSizes{};
-		vkGetAccelerationStructureBuildSizesKHR(m_Context.device, VK_ACCELERATION_STRUCTURE_BUILD_TYPE_DEVICE_KHR, &buildInfo, maxPrimitiveCounts.data(), &buildSizes);
+		m_Context.vkFuncLoader->vkGetAccelerationStructureBuildSizesKHR(m_Context.device, VK_ACCELERATION_STRUCTURE_BUILD_TYPE_DEVICE_KHR, &buildInfo, maxPrimitiveCounts.data(), &buildSizes);
 
 		/*auto buildSizes = m_Context.device.getAccelerationStructureBuildSizesKHR(
 			VkAccelerationStructureBuildTypeKHR::eDevice, buildInfo, maxPrimitiveCounts);*/
@@ -1787,7 +1787,7 @@ namespace BlackPearl {
 		std::array<const VkAccelerationStructureBuildRangeInfoKHR*, 1> buildRangeArrays = { buildRanges.data() };
 
 		//m_CurrentCmdBuf->cmdBuf.buildAccelerationStructuresKHR(buildInfos, buildRangeArrays);
-		vkCmdBuildAccelerationStructuresKHR(m_CurrentCmdBuf->cmdBuf,(uint32_t) buildInfos.size(),
+		m_Context.vkFuncLoader->vkCmdBuildAccelerationStructuresKHR(m_CurrentCmdBuf->cmdBuf,(uint32_t) buildInfos.size(),
 			reinterpret_cast<const VkAccelerationStructureBuildGeometryInfoKHR*>(buildInfos.data()),
 			reinterpret_cast<const VkAccelerationStructureBuildRangeInfoKHR* const*>(buildRangeArrays.data()));
 

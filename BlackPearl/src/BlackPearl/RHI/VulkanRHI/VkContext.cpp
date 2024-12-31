@@ -4,7 +4,10 @@
 #include "VkContext.h"
 
 namespace BlackPearl {
-
+    void VulkanContext::setVkFuncLoader(VkFunctionLoader* funcLoader)
+    {
+        vkFuncLoader = funcLoader;
+    }
     void VulkanContext::nameVKObject(const void* handle, VkDebugReportObjectTypeEXT objtype, const char* name) const
     {
         if (extensions.EXT_debug_marker && name && *name && handle)

@@ -54,7 +54,7 @@ namespace BlackPearl {
             vkGetDeviceMicromapCompatibilityEXT = PFN_vkGetDeviceMicromapCompatibilityEXT(vkGetDeviceProcAddr(device, "vkGetDeviceMicromapCompatibilityEXT"));
             vkGetMicromapBuildSizesEXT = PFN_vkGetMicromapBuildSizesEXT(vkGetDeviceProcAddr(device, "vkGetMicromapBuildSizesEXT"));
         }
-    private:
+    public:
         //=== VK_VERSION_1_0 ===
         PFN_vkGetDeviceProcAddr vkGetDeviceProcAddr = 0;
         //=== VK_KHR_ray_tracing_pipeline ===

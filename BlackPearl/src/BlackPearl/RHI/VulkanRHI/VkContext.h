@@ -4,6 +4,7 @@
 #include<vulkan/vulkan_core.h>
 #include<vulkan/vulkan_core.h>
 #include "BlackPearl/RHI/RHIMessageCallback.h"
+#include "VkFunctionLoader.h"
 namespace BlackPearl {
 
 	struct VulkanContext
@@ -12,12 +13,14 @@ namespace BlackPearl {
 		VulkanContext(VkInstance instance,
 			VkPhysicalDevice physicalDevice,
 			VkDevice device,
+			
 			VkAllocationCallbacks* allocationCallbacks = nullptr)
 			: instance(instance)
 			, physicalDevice(physicalDevice)
 			, device(device)
 			, allocationCallbacks(allocationCallbacks)
 			, pipelineCache(nullptr)
+			, vkFuncLoader(nullptr)
 		{ }
 
 		VkInstance instance;
@@ -25,6 +28,7 @@ namespace BlackPearl {
 		VkDevice device;
 		VkAllocationCallbacks* allocationCallbacks;
 		VkPipelineCache pipelineCache;
+		VkFunctionLoader* vkFuncLoader;
 
 		struct {
 			bool KHR_synchronization2 = false;
@@ -52,6 +56,7 @@ namespace BlackPearl {
 		VkPhysicalDeviceFragmentShadingRateFeaturesKHR shadingRateFeatures{};
 		VkPhysicalDeviceRayTracingInvocationReorderPropertiesNV nvRayTracingInvocationReorderProperties{};
 
+		void setVkFuncLoader(VkFunctionLoader* funcLoader);
 		IMessageCallback* messageCallback = nullptr;
 		void nameVKObject(const void* handle, VkDebugReportObjectTypeEXT objtype, const char* name) const;
 		void error(const std::string& message) const;

@@ -91,6 +91,8 @@ namespace BlackPearl {
 		:m_Context(desc.instance, desc.physicalDevice, desc.device, reinterpret_cast<VkAllocationCallbacks*>(desc.allocationCallbacks))
 		, m_Allocator(m_Context)
 	{
+		m_VKFuncLoader = DBG_NEW VkFunctionLoader(PFN_vkGetDeviceProcAddr(vkGetInstanceProcAddr(desc.instance, "vkGetDeviceProcAddr")), desc.device);
+		m_Context.setVkFuncLoader(m_VKFuncLoader);
 
 		if (desc.graphicsQueue)
 		{
@@ -272,6 +274,9 @@ namespace BlackPearl {
 
 	Device::~Device()
 	{
+		if (m_VKFuncLoader) {
+			delete m_VKFuncLoader;
+		}
 	}
 
 	Queue* Device::getQueue(CommandQueue queue) const
@@ -1202,7 +1207,12 @@ namespace BlackPearl {
 
 		VkDeferredOperationKHR deferredOp{};
 
-		VkResult res = vkCreateRayTracingPipelinesKHR(m_Context.device, deferredOp, m_Context.pipelineCache,
+		//VkResult res = vkCreateRayTracingPipelinesKHR(m_Context.device, deferredOp, m_Context.pipelineCache,
+		//	1, &pipelineInfo,
+		//	m_Context.allocationCallbacks,
+		//	&pso->pipeline);
+
+		VkResult res = m_Context.vkFuncLoader->vkCreateRayTracingPipelinesKHR(m_Context.device, deferredOp, m_Context.pipelineCache,
 			1, &pipelineInfo,
 			m_Context.allocationCallbacks,
 			&pso->pipeline);
@@ -1213,9 +1223,14 @@ namespace BlackPearl {
 		pso->shaderGroupHandles.resize(m_Context.rayTracingPipelineProperties.shaderGroupHandleSize * shaderGroups.size());
 
 
-		res = vkGetRayTracingShaderGroupHandlesKHR(m_Context.device, pso->pipeline, 0,
+		/*res = vkGetRayTracingShaderGroupHandlesKHR(m_Context.device, pso->pipeline, 0,
+			uint32_t(shaderGroups.size()),
+			pso->shaderGroupHandles.size(), pso->shaderGroupHandles.data());*/
+
+		res = m_Context.vkFuncLoader->vkGetRayTracingShaderGroupHandlesKHR(m_Context.device, pso->pipeline, 0,
 			uint32_t(shaderGroups.size()),
 			pso->shaderGroupHandles.size(), pso->shaderGroupHandles.data());
+
 
 		return RayTracingPipelineHandle::Create(pso);
 	}
