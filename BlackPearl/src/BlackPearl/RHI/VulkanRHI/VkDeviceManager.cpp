@@ -235,7 +235,7 @@ namespace BlackPearl {
 			{
 				VK_EXT_DEBUG_MARKER_EXTENSION_NAME,
 				VK_EXT_DESCRIPTOR_INDEXING_EXTENSION_NAME,
-				VK_KHR_BUFFER_DEVICE_ADDRESS_EXTENSION_NAME,
+				//VK_KHR_BUFFER_DEVICE_ADDRESS_EXTENSION_NAME,
 				VK_NV_MESH_SHADER_EXTENSION_NAME,
 				VK_KHR_FRAGMENT_SHADING_RATE_EXTENSION_NAME,
 				//VK_KHR_SYNCHRONIZATION_2_EXTENSION_NAME,
@@ -474,7 +474,7 @@ namespace BlackPearl {
 		applicationInfo.applicationVersion = VK_MAKE_VERSION(1, 3, 0);
 		applicationInfo.pEngineName = "BlackPearl";
 		applicationInfo.engineVersion = VK_MAKE_VERSION(1, 3, 0);
-		applicationInfo.apiVersion = VK_API_VERSION_1_2;
+		applicationInfo.apiVersion = VK_API_VERSION_1_3;
 
 		// create the vulkan instance
 		VkInstanceCreateInfo createInfo{};

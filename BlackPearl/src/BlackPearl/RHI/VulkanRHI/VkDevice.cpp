@@ -91,7 +91,7 @@ namespace BlackPearl {
 		:m_Context(desc.instance, desc.physicalDevice, desc.device, reinterpret_cast<VkAllocationCallbacks*>(desc.allocationCallbacks))
 		, m_Allocator(m_Context)
 	{
-		m_VKFuncLoader = DBG_NEW VkFunctionLoader(PFN_vkGetDeviceProcAddr(vkGetInstanceProcAddr(desc.instance, "vkGetDeviceProcAddr")), desc.device);
+		m_VKFuncLoader = DBG_NEW VkFunctionLoader(desc.instance, desc.device);
 		m_Context.setVkFuncLoader(m_VKFuncLoader);
 
 		if (desc.graphicsQueue)

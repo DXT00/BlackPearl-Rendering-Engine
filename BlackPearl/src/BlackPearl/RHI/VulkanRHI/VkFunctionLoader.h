@@ -1,58 +1,62 @@
 #pragma once
 #include "vulkan/vulkan_core.h"
+#ifndef VK_NO_PROTOTYPES
+#	define VK_NO_PROTOTYPES
+#endif
 namespace BlackPearl {
 
 	class VkFunctionLoader
 	{
     public:
-        VkFunctionLoader(PFN_vkGetDeviceProcAddr getProcAddr, VkDevice device) : vkGetDeviceProcAddr(getProcAddr)
+        VkFunctionLoader(VkInstance instance, VkDevice device) 
         {
-            vkGetDeviceProcAddr = PFN_vkGetDeviceProcAddr(vkGetDeviceProcAddr(device, "vkGetDeviceProcAddr"));
-
+            vkGetDeviceProcAddr = PFN_vkGetDeviceProcAddr(vkGetInstanceProcAddr(instance, "vkGetDeviceProcAddr"));
+#ifdef VK_KHR_ray_tracing_pipeline
             //=== VK_KHR_ray_tracing_pipeline ===
-            vkCmdTraceRaysKHR = PFN_vkCmdTraceRaysKHR(vkGetDeviceProcAddr(device, "vkCmdTraceRaysKHR"));
-            vkCreateRayTracingPipelinesKHR = PFN_vkCreateRayTracingPipelinesKHR(vkGetDeviceProcAddr(device, "vkCreateRayTracingPipelinesKHR"));
-            vkGetRayTracingShaderGroupHandlesKHR = PFN_vkGetRayTracingShaderGroupHandlesKHR(vkGetDeviceProcAddr(device, "vkGetRayTracingShaderGroupHandlesKHR"));
-            vkGetRayTracingCaptureReplayShaderGroupHandlesKHR = PFN_vkGetRayTracingCaptureReplayShaderGroupHandlesKHR(vkGetDeviceProcAddr(device, "vkGetRayTracingCaptureReplayShaderGroupHandlesKHR"));
-            vkCmdTraceRaysIndirectKHR = PFN_vkCmdTraceRaysIndirectKHR(vkGetDeviceProcAddr(device, "vkCmdTraceRaysIndirectKHR"));
-            vkGetRayTracingShaderGroupStackSizeKHR = PFN_vkGetRayTracingShaderGroupStackSizeKHR(vkGetDeviceProcAddr(device, "vkGetRayTracingShaderGroupStackSizeKHR"));
-            vkCmdSetRayTracingPipelineStackSizeKHR = PFN_vkCmdSetRayTracingPipelineStackSizeKHR(vkGetDeviceProcAddr(device, "vkCmdSetRayTracingPipelineStackSizeKHR"));
-        
+            vkCmdTraceRaysKHR =(PFN_vkCmdTraceRaysKHR)(vkGetInstanceProcAddr(instance, "vkCmdTraceRaysKHR"));
+            vkCreateRayTracingPipelinesKHR = (PFN_vkCreateRayTracingPipelinesKHR)(vkGetInstanceProcAddr(instance, "vkCreateRayTracingPipelinesKHR"));
+            vkGetRayTracingShaderGroupHandlesKHR = (PFN_vkGetRayTracingShaderGroupHandlesKHR)(vkGetInstanceProcAddr(instance, "vkGetRayTracingShaderGroupHandlesKHR"));
+            vkGetRayTracingCaptureReplayShaderGroupHandlesKHR = (PFN_vkGetRayTracingCaptureReplayShaderGroupHandlesKHR)(vkGetInstanceProcAddr(instance, "vkGetRayTracingCaptureReplayShaderGroupHandlesKHR"));
+            vkCmdTraceRaysIndirectKHR = (PFN_vkCmdTraceRaysIndirectKHR)(vkGetInstanceProcAddr(instance, "vkCmdTraceRaysIndirectKHR"));
+            vkGetRayTracingShaderGroupStackSizeKHR = (PFN_vkGetRayTracingShaderGroupStackSizeKHR)(vkGetInstanceProcAddr(instance, "vkGetRayTracingShaderGroupStackSizeKHR"));
+            vkCmdSetRayTracingPipelineStackSizeKHR = (PFN_vkCmdSetRayTracingPipelineStackSizeKHR)(vkGetInstanceProcAddr(instance, "vkCmdSetRayTracingPipelineStackSizeKHR"));
+
+#endif
 
             //=== VK_KHR_acceleration_structure ===
-            vkCreateAccelerationStructureKHR = PFN_vkCreateAccelerationStructureKHR(vkGetDeviceProcAddr(device, "vkCreateAccelerationStructureKHR"));
-            vkDestroyAccelerationStructureKHR = PFN_vkDestroyAccelerationStructureKHR(vkGetDeviceProcAddr(device, "vkDestroyAccelerationStructureKHR"));
-            vkCmdBuildAccelerationStructuresKHR = PFN_vkCmdBuildAccelerationStructuresKHR(vkGetDeviceProcAddr(device, "vkCmdBuildAccelerationStructuresKHR"));
-            vkCmdBuildAccelerationStructuresIndirectKHR = PFN_vkCmdBuildAccelerationStructuresIndirectKHR(vkGetDeviceProcAddr(device, "vkCmdBuildAccelerationStructuresIndirectKHR"));
-            vkBuildAccelerationStructuresKHR = PFN_vkBuildAccelerationStructuresKHR(vkGetDeviceProcAddr(device, "vkBuildAccelerationStructuresKHR"));
-            vkCopyAccelerationStructureKHR = PFN_vkCopyAccelerationStructureKHR(vkGetDeviceProcAddr(device, "vkCopyAccelerationStructureKHR"));
-            vkCopyAccelerationStructureToMemoryKHR = PFN_vkCopyAccelerationStructureToMemoryKHR(vkGetDeviceProcAddr(device, "vkCopyAccelerationStructureToMemoryKHR"));
-            vkCopyMemoryToAccelerationStructureKHR = PFN_vkCopyMemoryToAccelerationStructureKHR(vkGetDeviceProcAddr(device, "vkCopyMemoryToAccelerationStructureKHR"));
-            vkWriteAccelerationStructuresPropertiesKHR = PFN_vkWriteAccelerationStructuresPropertiesKHR(vkGetDeviceProcAddr(device, "vkWriteAccelerationStructuresPropertiesKHR"));
-            vkCmdCopyAccelerationStructureKHR = PFN_vkCmdCopyAccelerationStructureKHR(vkGetDeviceProcAddr(device, "vkCmdCopyAccelerationStructureKHR"));
-            vkCmdCopyAccelerationStructureToMemoryKHR = PFN_vkCmdCopyAccelerationStructureToMemoryKHR(vkGetDeviceProcAddr(device, "vkCmdCopyAccelerationStructureToMemoryKHR"));
-            vkCmdCopyMemoryToAccelerationStructureKHR = PFN_vkCmdCopyMemoryToAccelerationStructureKHR(vkGetDeviceProcAddr(device, "vkCmdCopyMemoryToAccelerationStructureKHR"));
-            vkGetAccelerationStructureDeviceAddressKHR = PFN_vkGetAccelerationStructureDeviceAddressKHR(vkGetDeviceProcAddr(device, "vkGetAccelerationStructureDeviceAddressKHR"));
-            vkCmdWriteAccelerationStructuresPropertiesKHR = PFN_vkCmdWriteAccelerationStructuresPropertiesKHR(vkGetDeviceProcAddr(device, "vkCmdWriteAccelerationStructuresPropertiesKHR"));
-            vkGetDeviceAccelerationStructureCompatibilityKHR = PFN_vkGetDeviceAccelerationStructureCompatibilityKHR(vkGetDeviceProcAddr(device, "vkGetDeviceAccelerationStructureCompatibilityKHR"));
-            vkGetAccelerationStructureBuildSizesKHR = PFN_vkGetAccelerationStructureBuildSizesKHR(vkGetDeviceProcAddr(device, "vkGetAccelerationStructureBuildSizesKHR"));
+            vkCreateAccelerationStructureKHR = PFN_vkCreateAccelerationStructureKHR(vkGetInstanceProcAddr(instance, "vkCreateAccelerationStructureKHR"));
+            vkDestroyAccelerationStructureKHR = PFN_vkDestroyAccelerationStructureKHR(vkGetInstanceProcAddr(instance, "vkDestroyAccelerationStructureKHR"));
+            vkCmdBuildAccelerationStructuresKHR = PFN_vkCmdBuildAccelerationStructuresKHR(vkGetInstanceProcAddr(instance, "vkCmdBuildAccelerationStructuresKHR"));
+            vkCmdBuildAccelerationStructuresIndirectKHR = PFN_vkCmdBuildAccelerationStructuresIndirectKHR(vkGetInstanceProcAddr(instance, "vkCmdBuildAccelerationStructuresIndirectKHR"));
+            vkBuildAccelerationStructuresKHR = PFN_vkBuildAccelerationStructuresKHR(vkGetInstanceProcAddr(instance, "vkBuildAccelerationStructuresKHR"));
+            vkCopyAccelerationStructureKHR = PFN_vkCopyAccelerationStructureKHR(vkGetInstanceProcAddr(instance, "vkCopyAccelerationStructureKHR"));
+            vkCopyAccelerationStructureToMemoryKHR = PFN_vkCopyAccelerationStructureToMemoryKHR(vkGetInstanceProcAddr(instance, "vkCopyAccelerationStructureToMemoryKHR"));
+            vkCopyMemoryToAccelerationStructureKHR = PFN_vkCopyMemoryToAccelerationStructureKHR(vkGetInstanceProcAddr(instance, "vkCopyMemoryToAccelerationStructureKHR"));
+            vkWriteAccelerationStructuresPropertiesKHR = PFN_vkWriteAccelerationStructuresPropertiesKHR(vkGetInstanceProcAddr(instance, "vkWriteAccelerationStructuresPropertiesKHR"));
+            vkCmdCopyAccelerationStructureKHR = PFN_vkCmdCopyAccelerationStructureKHR(vkGetInstanceProcAddr(instance, "vkCmdCopyAccelerationStructureKHR"));
+            vkCmdCopyAccelerationStructureToMemoryKHR = PFN_vkCmdCopyAccelerationStructureToMemoryKHR(vkGetInstanceProcAddr(instance, "vkCmdCopyAccelerationStructureToMemoryKHR"));
+            vkCmdCopyMemoryToAccelerationStructureKHR = PFN_vkCmdCopyMemoryToAccelerationStructureKHR(vkGetInstanceProcAddr(instance, "vkCmdCopyMemoryToAccelerationStructureKHR"));
+            vkGetAccelerationStructureDeviceAddressKHR = PFN_vkGetAccelerationStructureDeviceAddressKHR(vkGetInstanceProcAddr(instance, "vkGetAccelerationStructureDeviceAddressKHR"));
+            vkCmdWriteAccelerationStructuresPropertiesKHR = PFN_vkCmdWriteAccelerationStructuresPropertiesKHR(vkGetInstanceProcAddr(instance, "vkCmdWriteAccelerationStructuresPropertiesKHR"));
+            vkGetDeviceAccelerationStructureCompatibilityKHR = PFN_vkGetDeviceAccelerationStructureCompatibilityKHR(vkGetInstanceProcAddr(instance, "vkGetDeviceAccelerationStructureCompatibilityKHR"));
+            vkGetAccelerationStructureBuildSizesKHR = PFN_vkGetAccelerationStructureBuildSizesKHR(vkGetInstanceProcAddr(instance, "vkGetAccelerationStructureBuildSizesKHR"));
 
 
             //=== VK_EXT_opacity_micromap ===
-            vkCreateMicromapEXT = PFN_vkCreateMicromapEXT(vkGetDeviceProcAddr(device, "vkCreateMicromapEXT"));
-            vkDestroyMicromapEXT = PFN_vkDestroyMicromapEXT(vkGetDeviceProcAddr(device, "vkDestroyMicromapEXT"));
-            vkCmdBuildMicromapsEXT = PFN_vkCmdBuildMicromapsEXT(vkGetDeviceProcAddr(device, "vkCmdBuildMicromapsEXT"));
-            vkBuildMicromapsEXT = PFN_vkBuildMicromapsEXT(vkGetDeviceProcAddr(device, "vkBuildMicromapsEXT"));
-            vkCopyMicromapEXT = PFN_vkCopyMicromapEXT(vkGetDeviceProcAddr(device, "vkCopyMicromapEXT"));
-            vkCopyMicromapToMemoryEXT = PFN_vkCopyMicromapToMemoryEXT(vkGetDeviceProcAddr(device, "vkCopyMicromapToMemoryEXT"));
-            vkCopyMemoryToMicromapEXT = PFN_vkCopyMemoryToMicromapEXT(vkGetDeviceProcAddr(device, "vkCopyMemoryToMicromapEXT"));
-            vkWriteMicromapsPropertiesEXT = PFN_vkWriteMicromapsPropertiesEXT(vkGetDeviceProcAddr(device, "vkWriteMicromapsPropertiesEXT"));
-            vkCmdCopyMicromapEXT = PFN_vkCmdCopyMicromapEXT(vkGetDeviceProcAddr(device, "vkCmdCopyMicromapEXT"));
-            vkCmdCopyMicromapToMemoryEXT = PFN_vkCmdCopyMicromapToMemoryEXT(vkGetDeviceProcAddr(device, "vkCmdCopyMicromapToMemoryEXT"));
-            vkCmdCopyMemoryToMicromapEXT = PFN_vkCmdCopyMemoryToMicromapEXT(vkGetDeviceProcAddr(device, "vkCmdCopyMemoryToMicromapEXT"));
-            vkCmdWriteMicromapsPropertiesEXT = PFN_vkCmdWriteMicromapsPropertiesEXT(vkGetDeviceProcAddr(device, "vkCmdWriteMicromapsPropertiesEXT"));
-            vkGetDeviceMicromapCompatibilityEXT = PFN_vkGetDeviceMicromapCompatibilityEXT(vkGetDeviceProcAddr(device, "vkGetDeviceMicromapCompatibilityEXT"));
-            vkGetMicromapBuildSizesEXT = PFN_vkGetMicromapBuildSizesEXT(vkGetDeviceProcAddr(device, "vkGetMicromapBuildSizesEXT"));
+            vkCreateMicromapEXT = PFN_vkCreateMicromapEXT(vkGetInstanceProcAddr(instance, "vkCreateMicromapEXT"));
+            vkDestroyMicromapEXT = PFN_vkDestroyMicromapEXT(vkGetInstanceProcAddr(instance, "vkDestroyMicromapEXT"));
+            vkCmdBuildMicromapsEXT = PFN_vkCmdBuildMicromapsEXT(vkGetInstanceProcAddr(instance, "vkCmdBuildMicromapsEXT"));
+            vkBuildMicromapsEXT = PFN_vkBuildMicromapsEXT(vkGetInstanceProcAddr(instance, "vkBuildMicromapsEXT"));
+            vkCopyMicromapEXT = PFN_vkCopyMicromapEXT(vkGetInstanceProcAddr(instance, "vkCopyMicromapEXT"));
+            vkCopyMicromapToMemoryEXT = PFN_vkCopyMicromapToMemoryEXT(vkGetInstanceProcAddr(instance, "vkCopyMicromapToMemoryEXT"));
+            vkCopyMemoryToMicromapEXT = PFN_vkCopyMemoryToMicromapEXT(vkGetInstanceProcAddr(instance, "vkCopyMemoryToMicromapEXT"));
+            vkWriteMicromapsPropertiesEXT = PFN_vkWriteMicromapsPropertiesEXT(vkGetInstanceProcAddr(instance, "vkWriteMicromapsPropertiesEXT"));
+            vkCmdCopyMicromapEXT = PFN_vkCmdCopyMicromapEXT(vkGetInstanceProcAddr(instance, "vkCmdCopyMicromapEXT"));
+            vkCmdCopyMicromapToMemoryEXT = PFN_vkCmdCopyMicromapToMemoryEXT(vkGetInstanceProcAddr(instance, "vkCmdCopyMicromapToMemoryEXT"));
+            vkCmdCopyMemoryToMicromapEXT = PFN_vkCmdCopyMemoryToMicromapEXT(vkGetInstanceProcAddr(instance, "vkCmdCopyMemoryToMicromapEXT"));
+            vkCmdWriteMicromapsPropertiesEXT = PFN_vkCmdWriteMicromapsPropertiesEXT(vkGetInstanceProcAddr(instance, "vkCmdWriteMicromapsPropertiesEXT"));
+            vkGetDeviceMicromapCompatibilityEXT = PFN_vkGetDeviceMicromapCompatibilityEXT(vkGetInstanceProcAddr(instance, "vkGetDeviceMicromapCompatibilityEXT"));
+            vkGetMicromapBuildSizesEXT = PFN_vkGetMicromapBuildSizesEXT(vkGetInstanceProcAddr(instance, "vkGetMicromapBuildSizesEXT"));
         }
     public:
         //=== VK_VERSION_1_0 ===
