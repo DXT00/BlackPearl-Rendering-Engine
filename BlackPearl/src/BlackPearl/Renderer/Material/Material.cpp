@@ -2,6 +2,7 @@
 #include "Material.h"
 #include "MaterialManager.h"
 #include "BlackPearl/Renderer/DeviceManager.h"
+#include "BlackPearl/Application.h"
 namespace BlackPearl {
 	//extern  DynamicRHI::Type g_RHIType;
 	extern DeviceManager* g_deviceManager;
@@ -9,7 +10,9 @@ namespace BlackPearl {
 	Material::Material(const std::shared_ptr<Shader>& shader, const std::shared_ptr<TextureMaps>& textureMaps, const MaterialColor& materialColors)
 		:m_Shader(shader), m_TextureMaps(textureMaps), m_MaterialColors(materialColors), m_Props(Props())
 	{
+#if APP_VERSION == APP_VERSION_1_0
 		_CreateMaterialConstantBuffer();
+#endif
 	}
 	Material::Material(const std::string shaderPath, const std::shared_ptr<TextureMaps>& textureMaps, 
 		math::float3 ambientColor, 

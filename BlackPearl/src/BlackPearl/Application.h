@@ -26,6 +26,16 @@
 using namespace std::chrono;
 namespace BlackPearl {
 
+	enum AppVersion {
+		VERSION_0_0 = 0,
+		VERSION_1_0,
+		VERSION_None
+
+	};
+#define APP_VERSION VERSION_None
+
+#define APP_VERSION_0_0 0
+#define APP_VERSION_1_0 1
 
 	class Application
 	{
@@ -34,9 +44,10 @@ namespace BlackPearl {
 			HINSTANCE hInstance;
 			int nShowCmd;
 			std::string renderer;
+			AppVersion version;
 			DynamicRHI::Type rhiType;
 		};
-		Application(HINSTANCE hInstance, int nShowCmd, DynamicRHI::Type rhiType, const std::string& renderer);
+		Application(HINSTANCE hInstance, int nShowCmd, DynamicRHI::Type rhiType, AppVersion version);
 		virtual ~Application();
 
 		inline static Application &Get() { return *s_Instance; }
@@ -71,6 +82,7 @@ namespace BlackPearl {
 		Window* m_Window;
 		AppConf m_AppConf;
 
+		AppVersion m_Version;
 		double m_StartTimeMs;
 		long long m_FrameNum = 0;
 		/* for Sample, every sample is a renderGraph */

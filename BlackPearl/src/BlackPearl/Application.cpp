@@ -54,7 +54,7 @@ namespace BlackPearl {
 	extern bool g_shouldEngineExit;
 	extern DynamicRHI* g_DynamicRHI;
 	long long Application::s_TotalFrameNum = 0;
-	Application::Application(HINSTANCE hInstance, int nShowCmd, DynamicRHI::Type rhiType, const std::string& renderer)
+	Application::Application(HINSTANCE hInstance, int nShowCmd, DynamicRHI::Type rhiType, AppVersion version)
 	{
 		if (!g_DynamicRHI) {
 			DynamicRHIInit(rhiType);
@@ -66,7 +66,8 @@ namespace BlackPearl {
 		s_Instance = this;
 		m_AppConf.hInstance = hInstance;
 		m_AppConf.nShowCmd = nShowCmd;
-		m_AppConf.renderer = renderer;
+		//m_AppConf.renderer = renderer;
+		m_AppConf.version = version;
 		m_AppConf.rhiType = rhiType;
 		Init();
 	}
@@ -92,23 +93,31 @@ namespace BlackPearl {
 		deviceParams.vsyncEnabled = Configuration::Vsync;
 		deviceParams.swapChainBufferCount = Configuration::SwapchainCount;
 		deviceParams.maxFramesInFlight = deviceParams.swapChainBufferCount;
-
 		g_deviceManager = DeviceManager::Create(DynamicRHI::g_RHIType);
-		g_deviceManager->Init(deviceParams);
 
-#ifdef	GE_API_D3D12
-		g_modelLoader = DBG_NEW D3D12ModelLoader();
-#else
-		g_modelLoader = DBG_NEW ModelLoader();
-#endif
-		g_modelLoader->RegisterDeviceManager(g_deviceManager);
+		if (m_AppConf.version >= AppVersion::VERSION_1_0) {
+#define APP_VERSION VERSION_1_0
+			g_deviceManager->Init(deviceParams);
+		}
+		else {
+#define APP_VERSION VERSION_0_0
 
-		m_LayerManager = DBG_NEW LayerManager();
-		m_LayerManager->RegisterDeviceManager(g_deviceManager);
+		}
 
-		g_objectManager->RegisterDeviceManager(g_deviceManager);
+	#ifdef	GE_API_D3D12
+			g_modelLoader = DBG_NEW D3D12ModelLoader();
+	#else
+			g_modelLoader = DBG_NEW ModelLoader();
+	#endif
+			g_modelLoader->RegisterDeviceManager(g_deviceManager);
 
-		g_uiManager = DBG_NEW UIManager();
+			m_LayerManager = DBG_NEW LayerManager();
+			m_LayerManager->RegisterDeviceManager(g_deviceManager);
+
+			g_objectManager->RegisterDeviceManager(g_deviceManager);
+
+			g_uiManager = DBG_NEW UIManager();
+	
 		m_StartTimeMs = 0;// duration_cast<milliseconds>(system_clock::now().time_since_epoch());
 	}
 
