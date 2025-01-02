@@ -13,8 +13,8 @@ namespace BlackPearl {
 		void Render(Object* animatedModel,float timeInSecond);
 		void Render(Object* animatedModel, float timeInSecond,std::shared_ptr<Shader> shader);
 
-		void Render(Object* animatedModel, float timeInSecond, Renderer::SceneData* scene);
-		void Render(Object* animatedModel, float timeInSecond, std::shared_ptr<Shader> shader, Renderer::SceneData* scene);
+		void Render(Object* animatedModel, float timeInSecond, SceneData* scene);
+		void Render(Object* animatedModel, float timeInSecond, std::shared_ptr<Shader> shader, SceneData* scene);
 
 		void SetShader(std::shared_ptr<Shader> shader) {
 			m_AnimatedShader  = shader;

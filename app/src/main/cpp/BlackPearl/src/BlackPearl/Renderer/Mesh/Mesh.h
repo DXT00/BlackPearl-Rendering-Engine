@@ -11,15 +11,22 @@
 #include "BlackPearl/Common/CommonFunc.h"
 #include "BlackPearl/Renderer/Mesh/MeshletConfig.h"
 #include "BlackPearl/Renderer/Mesh/Meshlet.h"
+#include "BlackPearl/Renderer/SceneType.h"
+#include "BlackPearl/Component/MeshFilterComponent/MeshFilter.h"
+#include "BlackPearl/Component/TransformComponent/Transform.h"
+#include "BlackPearl/RHI/RHIBuffer.h"
 #include <initializer_list>
 #include <memory>
 
 namespace BlackPearl {
-
+	//submesh
 	class Mesh
 	{
 	public:
-		Mesh() {};
+		Mesh() {
+			buffers = std::make_shared<BufferGroup>();
+		
+		};
 		/*one vertexBuffer*/
 		Mesh(
 			float* vertices,
@@ -34,8 +41,7 @@ namespace BlackPearl {
 
 		/*one vertexBuffer*/
 		Mesh(
-			std::vector<float> vertices,
-			std::vector<uint32_t> indices,
+			const MeshFilter* meshFilter,
 			std::shared_ptr<Material> material,
 			const VertexBufferLayout& layout,
 			bool tessellation = false,
@@ -57,15 +63,15 @@ namespace BlackPearl {
 		std::shared_ptr<VertexArray> GetVertexArray() const { return m_VertexArray; }
 		uint32_t					 GetIndicesSize() const { return m_IndicesSize; }
 		uint32_t				     GetVerticesSize(unsigned int vertexBufferId);
-		std::shared_ptr<Material>    GetMaterial() const { return m_Material; }
+		std::shared_ptr<Material>    GetMaterial() const { return material; }
 		VertexBufferLayout			 GetVertexBufferLayout() const { return m_VertexBufferLayout; }
 		uint32_t					 GetVertexCount() const { return m_VerticeCount; }
 		uint32_t					 GetIndicesCount() const { return m_IndicesCount; }
 
-		void SetShader(const std::string& path)				     { m_Material->SetShader(path); }
-		void SetShader(const std::shared_ptr<Shader> &shader)    { m_Material->SetShader(shader); }
-		void SetTexture(const std::shared_ptr<Texture>& texture) { m_Material->SetTexture(texture); }
-		void SetMaterialColor(MaterialColor::Color color)        { m_Material->SetMaterialColor(color); }
+		void SetShader(const std::string& path)				     { material->SetShader(path); }
+		void SetShader(const std::shared_ptr<Shader> &shader)    { material->SetShader(shader); }
+		void SetTexture(ITexture* texture) { material->SetTexture(texture); }
+		void SetMaterialColor(MaterialColor::Color color)        { material->SetMaterialColor(color); }
 		void SetTessellation(uint32_t verticesPerTessPatch);
 		void SetVertexBufferLayout(const VertexBufferLayout& layout);
 
@@ -82,11 +88,35 @@ namespace BlackPearl {
 		std::pair<uint32_t*, uint32_t> GetIndicesBuffer() const { return { m_Indices, m_IndicesSize }; }
 		uint32_t GetIndicesConut() const { return m_IndicesCount; }
 
-
-
+		math::float3 GetMinPLocal() const { return m_MinLocalP; }
+		math::float3 GetMaxPLocal() const { return m_MaxLocalP; }
 
 	public:
-		//temp for directX mseh shader TODO::ï¿½ï¿½ï¿½ï¿½opengl ï¿½ï¿½d3d12 meshï¿½Ó¿ï¿½
+		std::string name;
+		std::shared_ptr<BufferGroup> buffers;
+		//std::shared_ptr<MeshInfo> skinPrototype;
+		//std::vector<std::shared_ptr<MeshGeometry>> geometries;
+		math::box3 objectSpaceBounds;
+		uint32_t indexOffset = 0;
+		uint32_t vertexOffset = 0;
+		//uint32_t totalIndices = 0;
+		//uint32_t totalVertices = 0;
+
+
+		uint32_t                     m_IndicesSize = 0; //m_IndicesSize = m_indicesCount* sizeof(uint32_t)
+		uint32_t					 m_IndicesCount = 0; //
+		uint32_t					 m_VerticeSize = 0; //m_VerticeSize = m_VerticeArrayCount* sizeof(float)
+		uint32_t					 m_VerticeCount = 0; // one vertex has multiple attributes, a vertex = (pos.xyz, normal.xyz, tex.xy..), m_VerticeCount is the number of attribute vertex
+		uint32_t					 m_VerticeArrayCount = 0;
+
+
+		int globalMeshIndex = 0;
+
+		std::shared_ptr<Material>    material = nullptr;
+
+		void UpdateInstanceBuffer(Transform* transform);
+	public:
+		//temp for directX mseh shader TODO::¼æÈÝopengl ºÍd3d12 mesh½Ó¿Ú
 		std::vector<uint32_t>		VertexStrides;
 		std::vector<Span<uint8_t>>  Vertices_ml;
 		uint32_t					VertexCount_ml;
@@ -99,32 +129,37 @@ namespace BlackPearl {
 		Span<uint8_t>				Indices_ml;
 		Span<Subset>				IndexSubsets;
 		uint32_t					IndexSize_ml;
-#ifdef GE_API_D3D12
-
-    std::vector<Microsoft::WRL::ComPtr<ID3D12Resource>> VertexResources;
+		std::vector<Microsoft::WRL::ComPtr<ID3D12Resource>> VertexResources;
 		Microsoft::WRL::ComPtr<ID3D12Resource>              IndexResource;
 		Microsoft::WRL::ComPtr<ID3D12Resource>              MeshletResource;
 		Microsoft::WRL::ComPtr<ID3D12Resource>              UniqueVertexIndexResource;
 		Microsoft::WRL::ComPtr<ID3D12Resource>              PrimitiveIndexResource;
 		Microsoft::WRL::ComPtr<ID3D12Resource>              CullDataResource;
 		Microsoft::WRL::ComPtr<ID3D12Resource>              MeshInfoResource;
-#endif
 
 
 	private:
+
+		void _InitBufferGroup(const MeshFilter* filter);
+		void _AppendBufferRange(BufferRange& range, size_t size, uint64_t& currentBufferSize);
+
 		void Init(uint32_t verticesSize);
 		void ParseAttributes(const VertexBufferLayout& layout);
 		std::shared_ptr<VertexArray> m_VertexArray;
 		VertexBufferLayout           m_VertexBufferLayout;
-		float*                       m_Vertices = nullptr;
-		uint32_t*                    m_Indices = nullptr;
-		uint32_t                     m_IndicesSize = 0; //m_IndicesSize = m_indicesCount* sizeof(uint32_t)
-		uint32_t					 m_IndicesCount = 0;
-		uint32_t					 m_VerticeSize = 0; //m_VerticeSize = m_VerticeArrayCount* sizeof(float)
-		uint32_t					 m_VerticeCount = 0; // one vertex has multiple attributes, a vertex = (pos.xyz, normal.xyz, tex.xy..), m_VerticeCount is the number of attribute vertex
-		uint32_t					 m_VerticeArrayCount = 0;
 
-		std::shared_ptr<Material>    m_Material = nullptr;
+		
+		//rt::AccelStructHandle accelStruct; // for use by applications
+		//rt::AccelStructHandle accelStructOMM; // for use by application
+		//std::vector<rt::OpacityMicromapHandle> opacityMicroMaps; // for use by application
+
+		std::unique_ptr<MeshDebugData> debugData;
+		bool debugDataDirty = true; // set this to true to make Scene update the debug data
+
+	    float* m_Vertices = nullptr;
+		uint32_t* m_Indices = nullptr;
+		
+
 		bool m_NeedTessellation;
 		//for batch rendering and indirect drawcall
 		float* m_Positions		= nullptr;
@@ -146,6 +181,13 @@ namespace BlackPearl {
 		uint32_t m_JointIndices1Size = 0;
 		uint32_t m_WeightSize = 0;
 		uint32_t m_Weight1Size = 0;
+
+		math::float3 m_MinLocalP = math::float3(FLT_MAX);
+		math::float3 m_MaxLocalP = math::float3(-FLT_MAX);;
+
+
+
+		//MeshInfo m_MeshInfo;
 	};
 
 }

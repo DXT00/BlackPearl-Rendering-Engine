@@ -1,11 +1,13 @@
 #include "pch.h"
 #include "PointLight.h"
+#include "BlackPearl/Renderer/DeviceManager.h"
 
 
 
 
 namespace BlackPearl {
 
+	extern DeviceManager* g_deviceManager;
 
 	void PointLight::Init()
 	{
@@ -59,13 +61,24 @@ namespace BlackPearl {
 		std::shared_ptr<Material> lightMaterial;
 		std::shared_ptr<Material::TextureMaps> texture(DBG_NEW Material::TextureMaps());
 
-		lightMaterial.reset(DBG_NEW Material("assets/shaders/PointLight.glsl", texture, m_LightProp.diffuse, m_LightProp.diffuse, m_LightProp.diffuse, m_LightProp.diffuse));
+		lightMaterial.reset(DBG_NEW Material("assets/shaders/glsl/PointLight.glsl", texture, m_LightProp.diffuse, m_LightProp.diffuse, m_LightProp.diffuse, m_LightProp.diffuse));
 		VertexBufferLayout layout = {
 			{ElementDataType::Float3,"aPos",false,0}
 		};
-		m_Mesh = std::make_shared<Mesh>(lightVertices, std::vector<unsigned int>(), lightMaterial, layout);//这里没有indices!
+		m_Mesh = std::make_shared<Mesh>(lightVertices.data(), lightVertices.size(),nullptr, 0, lightMaterial, layout);//这里没有indices!
 
-		m_ShadowMap.reset(DBG_NEW CubeMapTexture(Texture::Type::CubeMap, m_ShadowMapPointLightWidth, m_ShadowMapPointLightWidth, GL_NEAREST, GL_NEAREST, GL_CLAMP_TO_EDGE, GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT, GL_FLOAT));
+		TextureDesc desc;
+		desc.type = TextureType::CubeMap;
+		desc.width = m_ShadowMapPointLightWidth;
+		desc.height = m_ShadowMapPointLightWidth;
+		desc.minFilter = FilterMode::Nearest;
+		desc.magFilter = FilterMode::Nearest;
+		desc.wrap = SamplerAddressMode::ClampToEdge;
+		desc.format = Format::D32;
+		m_ShadowMap = g_deviceManager->GetDevice()->createTexture(desc);
+
+
+		//m_ShadowMap.reset(DBG_NEW CubeMapTexture(Texture::Type::CubeMap, m_ShadowMapPointLightWidth, m_ShadowMapPointLightWidth, GL_NEAREST, GL_NEAREST, GL_CLAMP_TO_EDGE, GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT, GL_FLOAT));
 		//m_Meshes.push_back(mesh);
 
 		//std::shared_ptr<VertexBuffer> pointLightVertexBuffer;

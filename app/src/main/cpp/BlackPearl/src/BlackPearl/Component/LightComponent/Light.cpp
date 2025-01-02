@@ -5,7 +5,7 @@
 #include "SpotLight.h"
 namespace BlackPearl {
 
-	Light * Light::Create( LightType type, const glm::vec3 & position, const glm::vec3& direction, const float cutOffAngle, const float outterCutOffAngle, Props props)
+	Light * Light::Create(LightType type, const math::float3 & position, const math::float3& direction, const float cutOffAngle, const float outterCutOffAngle, Props props)
 	{
 		
 		switch (type)
@@ -21,5 +21,16 @@ namespace BlackPearl {
 				break;
 		}
 		return nullptr;
+	}
+	void Light::FillLightConstants(LightConstants& lightConstants) const
+	{
+		lightConstants.color = m_LightProp.diffuse;
+		lightConstants.shadowCascades = int4(-1);
+		lightConstants.perObjectShadows = int4(-1);
+		lightConstants.shadowChannel = int4(shadowChannel, -1, -1, -1);
+		if (shadowMap)
+			lightConstants.outOfBoundsShadow = shadowMap->IsLitOutOfBounds() ? 1.f : 0.f;
+		else
+			lightConstants.outOfBoundsShadow = 1.f;
 	}
 }

@@ -31,7 +31,7 @@ namespace BlackPearl {
 		};
 
 		for (auto& obj : m_ObjectsList) {
-			const std::vector<std::shared_ptr<Mesh>>& meshes = obj->GetComponent<MeshRenderer>()->GetMeshes();
+			std::vector<std::shared_ptr<Mesh>>& meshes = obj->GetComponent<MeshRenderer>()->GetMeshes();
 			for (auto mesh: meshes)
 			{
 				m_VertexCnt += mesh->GetVertexCount();
@@ -122,7 +122,7 @@ namespace BlackPearl {
 			std::fill(m_ObjIdBuffer + baseVertexCnt, m_ObjIdBuffer + baseVertexCnt + meshVetCnt, objId);
 			std::shared_ptr<Material> material = mesh->GetMaterial();
 			MaterialColor::Color materialColor = material->GetMaterialColor().Get();
-			float diffuse[3] = { materialColor.diffuseColor.r,materialColor.diffuseColor.g,materialColor.diffuseColor.b };
+			float diffuse[3] = { materialColor.diffuseColor.x,materialColor.diffuseColor.y,materialColor.diffuseColor.z };
 			uint32_t floatsize = sizeof(float);
 
 			for (size_t i = 0; i < meshVetCnt; i++)
@@ -150,28 +150,28 @@ namespace BlackPearl {
 	{
 	}
 
-	void Batch::AddColorToBuffer(uint32_t objId, glm::vec3 color)
+	void Batch::AddColorToBuffer(uint32_t objId, math::float3 color)
 	{
 	}
 
-	void Batch::UpdateBatchPosition(glm::vec3 pos)
+	void Batch::UpdateBatchPosition(math::float3 pos)
 	{
 		for (size_t i = 0; i < m_ObjectsList.size(); i++)
 		{
 			Object* obj = m_ObjectsList[i];
 			glm::vec3 objPos = obj->GetComponent<Transform>()->GetPosition();
-			obj->GetComponent<Transform>()->SetPosition(objPos + pos);
+			obj->GetComponent<Transform>()->SetPosition(objPos + Math::ToVec3(pos));
 			UpdateModelTransformBuffer(i, obj->GetComponent<Transform>()->GetTransformMatrix());
 		}
 	}
 
-	void Batch::UpdateBatchScale(glm::vec3 scale)
+	void Batch::UpdateBatchScale(math::float3 scale)
 	{
 		for (size_t i = 0; i < m_ObjectsList.size(); i++)
 		{
 			Object* obj = m_ObjectsList[i];
 			glm::vec3 objscale = obj->GetComponent<Transform>()->GetPosition();
-			obj->GetComponent<Transform>()->SetScale(objscale * scale);
+			obj->GetComponent<Transform>()->SetScale(objscale * Math::ToVec3(scale));
 			//UpdateModelTransformBuffer(i, obj->GetComponent<Transform>()->GetTransformMatrix());
 			AddObjTransformToBuffer(i, m_ObjectsList[i]->GetComponent<Transform>()->GetTransformMatrix());
 
@@ -201,7 +201,7 @@ namespace BlackPearl {
 		indexBuffer.reset(DBG_NEW IndexBuffer(m_IndexBuffer, m_IndexCnt * sizeof(uint32_t)));
 		m_VertexArray->SetIndexBuffer(indexBuffer);
 
-		//锟斤拷锟矫匡拷锟絭ertexbuffer 一锟斤拷attribute,锟斤拷么 stride = 0, offset 也 = 0
+		//如果每个vertexbuffer 一种attribute,那么 stride = 0, offset 也 = 0
 		std::shared_ptr<VertexBuffer> vertexBuffer(DBG_NEW VertexBuffer(m_PositionBuffer, m_PositionsSize, false/*interleaved*/));
 		vertexBuffer->SetBufferLayout({ {ElementDataType::Float3, "aPos", false, POS_SLOT} });
 		std::shared_ptr<VertexBuffer> normalBuffer(DBG_NEW VertexBuffer(m_NormalBuffer, m_NormalsSize, false/*interleaved*/));

@@ -1,0 +1,59 @@
+﻿  SandBoxDX.cpp
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.22621.0\shared\minwindef.h(130,1): warning C4005: “APIENTRY”: 宏重定义
+  (编译源文件“src/SandBoxDX.cpp”)
+  D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\Glad\include\glad\glad.h(32,1):
+  参见“APIENTRY”的前一个定义
+  
+D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\spdlog\include\spdlog\fmt\bundled\format.h(378,18): warning C4996: 'stdext::checked_array_iterator<T*>': warning STL4043: stdext::checked_array_iterator, stdext::unchecked_array_iterator, and related factory functions are non-Standard extensions and will be removed in the future. std::span (since C++20) and gsl::span can be used instead. You can define _SILENCE_STDEXT_ARR_ITERS_DEPRECATION_WARNING or _SILENCE_ALL_MS_EXT_DEPRECATION_WARNINGS to suppress this warning.
+  (编译源文件“src/SandBoxDX.cpp”)
+  C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.39.33519\include\iterator(1470,35):
+  参见“stdext::checked_array_iterator”的声明
+  D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\spdlog\include\spdlog\fmt\bundled\format.h(378,18):
+  模板实例化上下文(最早的实例化上下文)为
+  	D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\spdlog\include\spdlog\fmt\bundled\format.h(378,8):
+  	在编译类模板“fmt::v5::internal::checked”时
+  
+D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\vendor\spdlog\include\spdlog\fmt\bundled\format.h(382,1): warning C4996: 'stdext::checked_array_iterator<T*>': warning STL4043: stdext::checked_array_iterator, stdext::unchecked_array_iterator, and related factory functions are non-Standard extensions and will be removed in the future. std::span (since C++20) and gsl::span can be used instead. You can define _SILENCE_STDEXT_ARR_ITERS_DEPRECATION_WARNING or _SILENCE_ALL_MS_EXT_DEPRECATION_WARNINGS to suppress this warning.
+  (编译源文件“src/SandBoxDX.cpp”)
+  C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.39.33519\include\iterator(1470,35):
+  参见“stdext::checked_array_iterator”的声明
+  
+D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\src\BlackPearl\Math\Math.h(134,10): warning C4267: “参数”: 从“size_t”转换到“int”，可能丢失数据
+  (编译源文件“src/SandBoxDX.cpp”)
+  
+D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\src\BlackPearl\Math\Math.h(134,13): warning C4267: “参数”: 从“size_t”转换到“int”，可能丢失数据
+  (编译源文件“src/SandBoxDX.cpp”)
+  
+D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\src\BlackPearl\Math\Math.h(134,20): warning C4267: “参数”: 从“size_t”转换到“glm::mat<4,4,glm::f32,glm::packed_highp>::length_type”，可能丢失数据
+  (编译源文件“src/SandBoxDX.cpp”)
+  
+D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\src\BlackPearl\Math\Math.h(134,23): warning C4267: “参数”: 从“size_t”转换到“glm::vec<4,float,glm::packed_highp>::length_type”，可能丢失数据
+  (编译源文件“src/SandBoxDX.cpp”)
+  
+D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\src\BlackPearl\Math\Math.h(193,1): warning C4554: “|”: 检查运算符优先级是否存在的可能的错误；使用括号阐明优先级
+  (编译源文件“src/SandBoxDX.cpp”)
+  
+D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\src\BlackPearl\Math\Math.h(208,1): warning C4554: “|”: 检查运算符优先级是否存在的可能的错误；使用括号阐明优先级
+  (编译源文件“src/SandBoxDX.cpp”)
+  
+D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\src\BlackPearl\Math\Math.h(232,29): warning C4267: “参数”: 从“size_t”转换到“int”，可能丢失数据
+  (编译源文件“src/SandBoxDX.cpp”)
+  
+D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\src\BlackPearl\Math\Math.h(233,13): warning C4267: “参数”: 从“size_t”转换到“int”，可能丢失数据
+  (编译源文件“src/SandBoxDX.cpp”)
+  
+D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\src\BlackPearl\Math\Math.h(233,23): warning C4267: “参数”: 从“size_t”转换到“int”，可能丢失数据
+  (编译源文件“src/SandBoxDX.cpp”)
+  
+D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\src\BlackPearl\Math\Math.h(236,13): warning C4267: “参数”: 从“size_t”转换到“int”，可能丢失数据
+  (编译源文件“src/SandBoxDX.cpp”)
+  
+D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\src\BlackPearl\Math\Math.h(236,23): warning C4267: “参数”: 从“size_t”转换到“int”，可能丢失数据
+  (编译源文件“src/SandBoxDX.cpp”)
+  
+D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\src\BlackPearl\Renderer\Buffer\Buffer.h(129,56): warning C4267: “return”: 从“size_t”转换到“uint32_t”，可能丢失数据
+  (编译源文件“src/SandBoxDX.cpp”)
+  
+D:\AA_LEARN_CODING\LearnOpenGL\BlackPearl-Rendering-Engine\BlackPearl\src\BlackPearl\Renderer\Renderer.h(10,10): error C1083: 无法打开包括文件: “hlsl/core/view_cb.h”: No such file or directory
+  (编译源文件“src/SandBoxDX.cpp”)
+  

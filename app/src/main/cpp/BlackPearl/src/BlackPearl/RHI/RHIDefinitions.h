@@ -7,6 +7,7 @@
 #include <string>
 #include <vector>
 #include "BlackPearl/RHI/Common/Containers.h"
+
 namespace BlackPearl {
     /*
 Version words are used to track the usage of upload buffers, scratch buffers,
@@ -78,6 +79,11 @@ finished executing, the objects are transitioned into the "available" state, i.e
         template<typename T> operator T* () const { return static_cast<T*>(pointer); }
     };
 
+    struct MemoryRequirements
+    {
+        uint64_t size = 0;
+        uint64_t alignment = 0;
+    };
 
 
 
@@ -93,6 +99,31 @@ finished executing, the objects are transitioned into the "available" state, i.e
     constexpr uint32_t c_VersionQueueMask = 0x7;
     constexpr uint64_t c_VersionIDMask = 0x0FFFFFFFFFFFFFFF;
 
+
+    enum class Feature : uint8_t
+    {
+        DeferredCommandLists,
+        SinglePassStereo,
+        RayTracingAccelStruct,
+        RayTracingPipeline,
+        RayTracingOpacityMicromap,
+        RayQuery,
+        ShaderExecutionReordering,
+        FastGeometryShader,
+        Meshlets,
+        ConservativeRasterization,
+        VariableRateShading,
+        ShaderSpecializations,
+        VirtualResources,
+        ComputeQueue,
+        CopyQueue,
+        ConstantBufferRanges
+    };
+
+    struct VariableRateShadingFeatureInfo
+    {
+        uint32_t shadingRateImageTileSize;
+    };
 
     enum class CommandQueue : uint8_t
     {
@@ -115,10 +146,10 @@ finished executing, the objects are transitioned into the "available" state, i.e
         return version & c_VersionIDMask;
     }
 
-  /*  constexpr CommandQueue VersionGetQueue(uint64_t version)
+    constexpr CommandQueue VersionGetQueue(uint64_t version)
     {
         return CommandQueue((version >> c_VersionQueueShift) & c_VersionQueueMask);
-    }*/
+    }
 
     constexpr bool VersionGetSubmitted(uint64_t version)
     {
@@ -128,13 +159,15 @@ finished executing, the objects are transitioned into the "available" state, i.e
     static constexpr uint32_t c_MaxRenderTargets = 8;
     static constexpr uint32_t c_MaxViewports = 16;
     static constexpr uint32_t c_MaxVertexAttributes = 16;
-    static constexpr uint32_t c_MaxBindingLayouts = 5;
+    static constexpr uint32_t c_MaxBindingLayouts = 20;
     static constexpr uint32_t c_MaxBindingsPerLayout = 128;
     static constexpr uint32_t c_MaxVolatileConstantBuffersPerLayout = 6;
     static constexpr uint32_t c_MaxVolatileConstantBuffers = 32;
     static constexpr uint32_t c_MaxPushConstantSize = 128; // D3D12: root signature is 256 bytes max., Vulkan: 128 bytes of push constants guaranteed
     static constexpr uint32_t c_ConstantBufferOffsetSizeAlignment = 256; // Partially bound constant buffers must have offsets aligned to this and sizes multiple of this
 
+    template <typename T>
+    using BindingVector = static_vector<T, c_MaxBindingLayouts>;
 
 #define NVRHI_ENUM_CLASS_FLAG_OPERATORS(T) \
     inline T operator | (T a, T b) { return T(uint32_t(a) | uint32_t(b)); } \
@@ -218,16 +251,16 @@ finished executing, the objects are transitioned into the "available" state, i.e
             BlendOp     blendOpAlpha = BlendOp::Add;
             ColorMask   colorWriteMask = ColorMask::All;
 
-             RenderTarget& setBlendEnable(bool enable) { blendEnable = enable; return *this; }
-             RenderTarget& enableBlend() { blendEnable = true; return *this; }
-             RenderTarget& disableBlend() { blendEnable = false; return *this; }
-             RenderTarget& setSrcBlend(BlendFactor value) { srcBlend = value; return *this; }
-             RenderTarget& setDestBlend(BlendFactor value) { destBlend = value; return *this; }
-             RenderTarget& setBlendOp(BlendOp value) { blendOp = value; return *this; }
-             RenderTarget& setSrcBlendAlpha(BlendFactor value) { srcBlendAlpha = value; return *this; }
-             RenderTarget& setDestBlendAlpha(BlendFactor value) { destBlendAlpha = value; return *this; }
-             RenderTarget& setBlendOpAlpha(BlendOp value) { blendOpAlpha = value; return *this; }
-             RenderTarget& setColorWriteMask(ColorMask value) { colorWriteMask = value; return *this; }
+            constexpr RenderTarget& setBlendEnable(bool enable) { blendEnable = enable; return *this; }
+            constexpr RenderTarget& enableBlend() { blendEnable = true; return *this; }
+            constexpr RenderTarget& disableBlend() { blendEnable = false; return *this; }
+            constexpr RenderTarget& setSrcBlend(BlendFactor value) { srcBlend = value; return *this; }
+            constexpr RenderTarget& setDestBlend(BlendFactor value) { destBlend = value; return *this; }
+            constexpr RenderTarget& setBlendOp(BlendOp value) { blendOp = value; return *this; }
+            constexpr RenderTarget& setSrcBlendAlpha(BlendFactor value) { srcBlendAlpha = value; return *this; }
+            constexpr RenderTarget& setDestBlendAlpha(BlendFactor value) { destBlendAlpha = value; return *this; }
+            constexpr RenderTarget& setBlendOpAlpha(BlendOp value) { blendOpAlpha = value; return *this; }
+            constexpr RenderTarget& setColorWriteMask(ColorMask value) { colorWriteMask = value; return *this; }
 
             [[nodiscard]] bool usesConstantColor() const;
 
@@ -252,14 +285,14 @@ finished executing, the objects are transitioned into the "available" state, i.e
         RenderTarget targets[c_MaxRenderTargets];
         bool alphaToCoverageEnable = false;
 
-         BlendState& setRenderTarget(uint32_t index, const RenderTarget& target) { targets[index] = target; return *this; }
-         BlendState& setAlphaToCoverageEnable(bool enable) { alphaToCoverageEnable = enable; return *this; }
-         BlendState& enableAlphaToCoverage() { alphaToCoverageEnable = true; return *this; }
-         BlendState& disableAlphaToCoverage() { alphaToCoverageEnable = false; return *this; }
+        constexpr BlendState& setRenderTarget(uint32_t index, const RenderTarget& target) { targets[index] = target; return *this; }
+        constexpr BlendState& setAlphaToCoverageEnable(bool enable) { alphaToCoverageEnable = enable; return *this; }
+        constexpr BlendState& enableAlphaToCoverage() { alphaToCoverageEnable = true; return *this; }
+        constexpr BlendState& disableAlphaToCoverage() { alphaToCoverageEnable = false; return *this; }
 
         [[nodiscard]] bool usesConstantColor(uint32_t numTargets) const;
 
-         bool operator ==(const BlendState& other) const
+        constexpr bool operator ==(const BlendState& other) const
         {
             if (alphaToCoverageEnable != other.alphaToCoverageEnable)
                 return false;
@@ -273,7 +306,7 @@ finished executing, the objects are transitioned into the "available" state, i.e
             return true;
         }
 
-         bool operator !=(const BlendState& other) const
+        constexpr bool operator !=(const BlendState& other) const
         {
             return !(*this == other);
         }
@@ -311,10 +344,10 @@ finished executing, the objects are transitioned into the "available" state, i.e
             StencilOp passOp = StencilOp::Keep;
             ComparisonFunc stencilFunc = ComparisonFunc::Always;
 
-             StencilOpDesc& setFailOp(StencilOp value) { failOp = value; return *this; }
-             StencilOpDesc& setDepthFailOp(StencilOp value) { depthFailOp = value; return *this; }
-             StencilOpDesc& setPassOp(StencilOp value) { passOp = value; return *this; }
-             StencilOpDesc& setStencilFunc(ComparisonFunc value) { stencilFunc = value; return *this; }
+            constexpr StencilOpDesc& setFailOp(StencilOp value) { failOp = value; return *this; }
+            constexpr StencilOpDesc& setDepthFailOp(StencilOp value) { depthFailOp = value; return *this; }
+            constexpr StencilOpDesc& setPassOp(StencilOp value) { passOp = value; return *this; }
+            constexpr StencilOpDesc& setStencilFunc(ComparisonFunc value) { stencilFunc = value; return *this; }
         };
 
         bool            depthTestEnable = true;
@@ -327,22 +360,66 @@ finished executing, the objects are transitioned into the "available" state, i.e
         StencilOpDesc   frontFaceStencil;
         StencilOpDesc   backFaceStencil;
 
-         DepthStencilState& setDepthTestEnable(bool value) { depthTestEnable = value; return *this; }
-         DepthStencilState& enableDepthTest() { depthTestEnable = true; return *this; }
-         DepthStencilState& disableDepthTest() { depthTestEnable = false; return *this; }
-         DepthStencilState& setDepthWriteEnable(bool value) { depthWriteEnable = value; return *this; }
-         DepthStencilState& enableDepthWrite() { depthWriteEnable = true; return *this; }
-         DepthStencilState& disableDepthWrite() { depthWriteEnable = false; return *this; }
-         DepthStencilState& setDepthFunc(ComparisonFunc value) { depthFunc = value; return *this; }
-         DepthStencilState& setStencilEnable(bool value) { stencilEnable = value; return *this; }
-         DepthStencilState& enableStencil() { stencilEnable = true; return *this; }
-         DepthStencilState& disableStencil() { stencilEnable = false; return *this; }
-         DepthStencilState& setStencilReadMask(uint8_t value) { stencilReadMask = value; return *this; }
-         DepthStencilState& setStencilWriteMask(uint8_t value) { stencilWriteMask = value; return *this; }
-         DepthStencilState& setStencilRefValue(uint8_t value) { stencilRefValue = value; return *this; }
-         DepthStencilState& setFrontFaceStencil(const StencilOpDesc& value) { frontFaceStencil = value; return *this; }
-         DepthStencilState& setBackFaceStencil(const StencilOpDesc& value) { backFaceStencil = value; return *this; }
+        constexpr DepthStencilState& setDepthTestEnable(bool value) { depthTestEnable = value; return *this; }
+        constexpr DepthStencilState& enableDepthTest() { depthTestEnable = true; return *this; }
+        constexpr DepthStencilState& disableDepthTest() { depthTestEnable = false; return *this; }
+        constexpr DepthStencilState& setDepthWriteEnable(bool value) { depthWriteEnable = value; return *this; }
+        constexpr DepthStencilState& enableDepthWrite() { depthWriteEnable = true; return *this; }
+        constexpr DepthStencilState& disableDepthWrite() { depthWriteEnable = false; return *this; }
+        constexpr DepthStencilState& setDepthFunc(ComparisonFunc value) { depthFunc = value; return *this; }
+        constexpr DepthStencilState& setStencilEnable(bool value) { stencilEnable = value; return *this; }
+        constexpr DepthStencilState& enableStencil() { stencilEnable = true; return *this; }
+        constexpr DepthStencilState& disableStencil() { stencilEnable = false; return *this; }
+        constexpr DepthStencilState& setStencilReadMask(uint8_t value) { stencilReadMask = value; return *this; }
+        constexpr DepthStencilState& setStencilWriteMask(uint8_t value) { stencilWriteMask = value; return *this; }
+        constexpr DepthStencilState& setStencilRefValue(uint8_t value) { stencilRefValue = value; return *this; }
+        constexpr DepthStencilState& setFrontFaceStencil(const StencilOpDesc& value) { frontFaceStencil = value; return *this; }
+        constexpr DepthStencilState& setBackFaceStencil(const StencilOpDesc& value) { backFaceStencil = value; return *this; }
     };
+
+
+    enum class FormatSupport : uint32_t
+    {
+        None = 0,
+
+        Buffer = 0x00000001,
+        IndexBuffer = 0x00000002,
+        VertexBuffer = 0x00000004,
+
+        Texture = 0x00000008,
+        DepthStencil = 0x00000010,
+        RenderTarget = 0x00000020,
+        Blendable = 0x00000040,
+
+        ShaderLoad = 0x00000080,
+        ShaderSample = 0x00000100,
+        ShaderUavLoad = 0x00000200,
+        ShaderUavStore = 0x00000400,
+        ShaderAtomic = 0x00000800,
+    };
+
+    NVRHI_ENUM_CLASS_FLAG_OPERATORS(FormatSupport)
+
+
+    enum class HeapType : uint8_t
+    {
+        DeviceLocal,
+        Upload,
+        Readback
+    };
+
+    struct HeapDesc
+    {
+        uint64_t capacity = 0;
+        HeapType type;
+        std::string debugName;
+
+        constexpr HeapDesc& setCapacity(uint64_t value) { capacity = value; return *this; }
+        constexpr HeapDesc& setType(HeapType value) { type = value; return *this; }
+        HeapDesc& setDebugName(const std::string& value) { debugName = value; return *this; }
+    };
+
+
     enum class RasterFillMode : uint8_t
     {
         Solid,
@@ -381,40 +458,40 @@ finished executing, the objects are transitioned into the "available" state, i.e
         char samplePositionsX[16]{};
         char samplePositionsY[16]{};
 
-         RasterState& setFillMode(RasterFillMode value) { fillMode = value; return *this; }
-         RasterState& setFillSolid() { fillMode = RasterFillMode::Solid; return *this; }
-         RasterState& setFillWireframe() { fillMode = RasterFillMode::Wireframe; return *this; }
-         RasterState& setCullMode(RasterCullMode value) { cullMode = value; return *this; }
-         RasterState& setCullBack() { cullMode = RasterCullMode::Back; return *this; }
-         RasterState& setCullFront() { cullMode = RasterCullMode::Front; return *this; }
-         RasterState& setCullNone() { cullMode = RasterCullMode::None; return *this; }
-         RasterState& setFrontCounterClockwise(bool value) { frontCounterClockwise = value; return *this; }
-         RasterState& setDepthClipEnable(bool value) { depthClipEnable = value; return *this; }
-         RasterState& enableDepthClip() { depthClipEnable = true; return *this; }
-         RasterState& disableDepthClip() { depthClipEnable = false; return *this; }
-         RasterState& setScissorEnable(bool value) { scissorEnable = value; return *this; }
-         RasterState& enableScissor() { scissorEnable = true; return *this; }
-         RasterState& disableScissor() { scissorEnable = false; return *this; }
-         RasterState& setMultisampleEnable(bool value) { multisampleEnable = value; return *this; }
-         RasterState& enableMultisample() { multisampleEnable = true; return *this; }
-         RasterState& disableMultisample() { multisampleEnable = false; return *this; }
-         RasterState& setAntialiasedLineEnable(bool value) { antialiasedLineEnable = value; return *this; }
-         RasterState& enableAntialiasedLine() { antialiasedLineEnable = true; return *this; }
-         RasterState& disableAntialiasedLine() { antialiasedLineEnable = false; return *this; }
-         RasterState& setDepthBias(int value) { depthBias = value; return *this; }
-         RasterState& setDepthBiasClamp(float value) { depthBiasClamp = value; return *this; }
-         RasterState& setSlopeScaleDepthBias(float value) { slopeScaledDepthBias = value; return *this; }
-         RasterState& setForcedSampleCount(uint8_t value) { forcedSampleCount = value; return *this; }
-         RasterState& setProgrammableSamplePositionsEnable(bool value) { programmableSamplePositionsEnable = value; return *this; }
-         RasterState& enableProgrammableSamplePositions() { programmableSamplePositionsEnable = true; return *this; }
-         RasterState& disableProgrammableSamplePositions() { programmableSamplePositionsEnable = false; return *this; }
-         RasterState& setConservativeRasterEnable(bool value) { conservativeRasterEnable = value; return *this; }
-         RasterState& enableConservativeRaster() { conservativeRasterEnable = true; return *this; }
-         RasterState& disableConservativeRaster() { conservativeRasterEnable = false; return *this; }
-         RasterState& setQuadFillEnable(bool value) { quadFillEnable = value; return *this; }
-         RasterState& enableQuadFill() { quadFillEnable = true; return *this; }
-         RasterState& disableQuadFill() { quadFillEnable = false; return *this; }
-         RasterState& setSamplePositions(const char* x, const char* y, int count) { for (int i = 0; i < count; i++) { samplePositionsX[i] = x[i]; samplePositionsY[i] = y[i]; } return *this; }
+        constexpr RasterState& setFillMode(RasterFillMode value) { fillMode = value; return *this; }
+        constexpr RasterState& setFillSolid() { fillMode = RasterFillMode::Solid; return *this; }
+        constexpr RasterState& setFillWireframe() { fillMode = RasterFillMode::Wireframe; return *this; }
+        constexpr RasterState& setCullMode(RasterCullMode value) { cullMode = value; return *this; }
+        constexpr RasterState& setCullBack() { cullMode = RasterCullMode::Back; return *this; }
+        constexpr RasterState& setCullFront() { cullMode = RasterCullMode::Front; return *this; }
+        constexpr RasterState& setCullNone() { cullMode = RasterCullMode::None; return *this; }
+        constexpr RasterState& setFrontCounterClockwise(bool value) { frontCounterClockwise = value; return *this; }
+        constexpr RasterState& setDepthClipEnable(bool value) { depthClipEnable = value; return *this; }
+        constexpr RasterState& enableDepthClip() { depthClipEnable = true; return *this; }
+        constexpr RasterState& disableDepthClip() { depthClipEnable = false; return *this; }
+        constexpr RasterState& setScissorEnable(bool value) { scissorEnable = value; return *this; }
+        constexpr RasterState& enableScissor() { scissorEnable = true; return *this; }
+        constexpr RasterState& disableScissor() { scissorEnable = false; return *this; }
+        constexpr RasterState& setMultisampleEnable(bool value) { multisampleEnable = value; return *this; }
+        constexpr RasterState& enableMultisample() { multisampleEnable = true; return *this; }
+        constexpr RasterState& disableMultisample() { multisampleEnable = false; return *this; }
+        constexpr RasterState& setAntialiasedLineEnable(bool value) { antialiasedLineEnable = value; return *this; }
+        constexpr RasterState& enableAntialiasedLine() { antialiasedLineEnable = true; return *this; }
+        constexpr RasterState& disableAntialiasedLine() { antialiasedLineEnable = false; return *this; }
+        constexpr RasterState& setDepthBias(int value) { depthBias = value; return *this; }
+        constexpr RasterState& setDepthBiasClamp(float value) { depthBiasClamp = value; return *this; }
+        constexpr RasterState& setSlopeScaleDepthBias(float value) { slopeScaledDepthBias = value; return *this; }
+        constexpr RasterState& setForcedSampleCount(uint8_t value) { forcedSampleCount = value; return *this; }
+        constexpr RasterState& setProgrammableSamplePositionsEnable(bool value) { programmableSamplePositionsEnable = value; return *this; }
+        constexpr RasterState& enableProgrammableSamplePositions() { programmableSamplePositionsEnable = true; return *this; }
+        constexpr RasterState& disableProgrammableSamplePositions() { programmableSamplePositionsEnable = false; return *this; }
+        constexpr RasterState& setConservativeRasterEnable(bool value) { conservativeRasterEnable = value; return *this; }
+        constexpr RasterState& enableConservativeRaster() { conservativeRasterEnable = true; return *this; }
+        constexpr RasterState& disableConservativeRaster() { conservativeRasterEnable = false; return *this; }
+        constexpr RasterState& setQuadFillEnable(bool value) { quadFillEnable = value; return *this; }
+        constexpr RasterState& enableQuadFill() { quadFillEnable = true; return *this; }
+        constexpr RasterState& disableQuadFill() { quadFillEnable = false; return *this; }
+        constexpr RasterState& setSamplePositions(const char* x, const char* y, int count) { for (int i = 0; i < count; i++) { samplePositionsX[i] = x[i]; samplePositionsY[i] = y[i]; } return *this; }
     };
     enum class ShaderType : uint16_t
     {
@@ -479,10 +556,10 @@ finished executing, the objects are transitioned into the "available" state, i.e
 
         bool operator !=(const VariableRateShadingState& b) const { return !(*this == b); }
 
-         VariableRateShadingState& setEnabled(bool value) { enabled = value; return *this; }
-         VariableRateShadingState& setShadingRate(VariableShadingRate value) { shadingRate = value; return *this; }
-         VariableRateShadingState& setPipelinePrimitiveCombiner(ShadingRateCombiner value) { pipelinePrimitiveCombiner = value; return *this; }
-         VariableRateShadingState& setImageCombiner(ShadingRateCombiner value) { imageCombiner = value; return *this; }
+        constexpr VariableRateShadingState& setEnabled(bool value) { enabled = value; return *this; }
+        constexpr VariableRateShadingState& setShadingRate(VariableShadingRate value) { shadingRate = value; return *this; }
+        constexpr VariableRateShadingState& setPipelinePrimitiveCombiner(ShadingRateCombiner value) { pipelinePrimitiveCombiner = value; return *this; }
+        constexpr VariableRateShadingState& setImageCombiner(ShadingRateCombiner value) { imageCombiner = value; return *this; }
     };
 
     struct SinglePassStereoState
@@ -499,9 +576,9 @@ finished executing, the objects are transitioned into the "available" state, i.e
 
         bool operator !=(const SinglePassStereoState& b) const { return !(*this == b); }
 
-         SinglePassStereoState& setEnabled(bool value) { enabled = value; return *this; }
-         SinglePassStereoState& setIndependentViewportMask(bool value) { independentViewportMask = value; return *this; }
-         SinglePassStereoState& setRenderTargetIndexOffset(uint16_t value) { renderTargetIndexOffset = value; return *this; }
+        constexpr SinglePassStereoState& setEnabled(bool value) { enabled = value; return *this; }
+        constexpr SinglePassStereoState& setIndependentViewportMask(bool value) { independentViewportMask = value; return *this; }
+        constexpr SinglePassStereoState& setRenderTargetIndexOffset(uint16_t value) { renderTargetIndexOffset = value; return *this; }
     };
 
     struct RenderState
@@ -511,10 +588,10 @@ finished executing, the objects are transitioned into the "available" state, i.e
         RasterState rasterState;
         SinglePassStereoState singlePassStereo;
 
-         RenderState& setBlendState(const BlendState& value) { blendState = value; return *this; }
-         RenderState& setDepthStencilState(const DepthStencilState& value) { depthStencilState = value; return *this; }
-         RenderState& setRasterState(const RasterState& value) { rasterState = value; return *this; }
-         RenderState& setSinglePassStereoState(const SinglePassStereoState& value) { singlePassStereo = value; return *this; }
+        constexpr RenderState& setBlendState(const BlendState& value) { blendState = value; return *this; }
+        constexpr RenderState& setDepthStencilState(const DepthStencilState& value) { depthStencilState = value; return *this; }
+        constexpr RenderState& setRasterState(const RasterState& value) { rasterState = value; return *this; }
+        constexpr RenderState& setSinglePassStereoState(const SinglePassStereoState& value) { singlePassStereo = value; return *this; }
     };
 
     enum class CpuAccessMode : uint8_t
@@ -644,6 +721,7 @@ finished executing, the objects are transitioned into the "available" state, i.e
         RG32_FLOAT,
         RGB32_UINT,
         RGB32_SINT,
+
         RGB32_FLOAT,
         RGBA32_UINT,
         RGBA32_SINT,
@@ -670,6 +748,10 @@ finished executing, the objects are transitioned into the "available" state, i.e
         BC6H_SFLOAT,
         BC7_UNORM,
         BC7_UNORM_SRGB,
+
+        RGB8_UNORM,
+        RGB8_FLOAT,
+        RGB16_FLOAT,
 
         COUNT,
     };
@@ -856,9 +938,6 @@ finished executing, the objects are transitioned into the "available" state, i.e
     //////////////////////////////////////////////////////////////////////////
 
 
-
-
-
     struct DrawArguments
     {
         uint32_t vertexCount = 0;
@@ -866,12 +945,13 @@ finished executing, the objects are transitioned into the "available" state, i.e
         uint32_t startIndexLocation = 0;
         uint32_t startVertexLocation = 0;
         uint32_t startInstanceLocation = 0;
+        bool drawIndex = true;
 
-         DrawArguments& setVertexCount(uint32_t value) { vertexCount = value; return *this; }
-         DrawArguments& setInstanceCount(uint32_t value) { instanceCount = value; return *this; }
-         DrawArguments& setStartIndexLocation(uint32_t value) { startIndexLocation = value; return *this; }
-         DrawArguments& setStartVertexLocation(uint32_t value) { startVertexLocation = value; return *this; }
-         DrawArguments& setStartInstanceLocation(uint32_t value) { startInstanceLocation = value; return *this; }
+        constexpr DrawArguments& setVertexCount(uint32_t value) { vertexCount = value; return *this; }
+        constexpr DrawArguments& setInstanceCount(uint32_t value) { instanceCount = value; return *this; }
+        constexpr DrawArguments& setStartIndexLocation(uint32_t value) { startIndexLocation = value; return *this; }
+        constexpr DrawArguments& setStartVertexLocation(uint32_t value) { startVertexLocation = value; return *this; }
+        constexpr DrawArguments& setStartInstanceLocation(uint32_t value) { startInstanceLocation = value; return *this; }
     };
 
     struct DrawIndirectArguments
@@ -881,10 +961,10 @@ finished executing, the objects are transitioned into the "available" state, i.e
         uint32_t startVertexLocation = 0;
         uint32_t startInstanceLocation = 0;
 
-         DrawIndirectArguments& setVertexCount(uint32_t value) { vertexCount = value; return *this; }
-         DrawIndirectArguments& setInstanceCount(uint32_t value) { instanceCount = value; return *this; }
-         DrawIndirectArguments& setStartVertexLocation(uint32_t value) { startVertexLocation = value; return *this; }
-         DrawIndirectArguments& setStartInstanceLocation(uint32_t value) { startInstanceLocation = value; return *this; }
+        constexpr DrawIndirectArguments& setVertexCount(uint32_t value) { vertexCount = value; return *this; }
+        constexpr DrawIndirectArguments& setInstanceCount(uint32_t value) { instanceCount = value; return *this; }
+        constexpr DrawIndirectArguments& setStartVertexLocation(uint32_t value) { startVertexLocation = value; return *this; }
+        constexpr DrawIndirectArguments& setStartInstanceLocation(uint32_t value) { startInstanceLocation = value; return *this; }
     };
 
     struct DrawIndexedIndirectArguments
@@ -895,12 +975,25 @@ finished executing, the objects are transitioned into the "available" state, i.e
         int32_t  baseVertexLocation = 0;
         uint32_t startInstanceLocation = 0;
 
-         DrawIndexedIndirectArguments& setIndexCount(uint32_t value) { indexCount = value; return *this; }
-         DrawIndexedIndirectArguments& setInstanceCount(uint32_t value) { instanceCount = value; return *this; }
-         DrawIndexedIndirectArguments& setStartIndexLocation(uint32_t value) { startIndexLocation = value; return *this; }
-         DrawIndexedIndirectArguments& setBaseVertexLocation(int32_t value) { baseVertexLocation = value; return *this; }
-         DrawIndexedIndirectArguments& setStartInstanceLocation(uint32_t value) { startInstanceLocation = value; return *this; }
+        constexpr DrawIndexedIndirectArguments& setIndexCount(uint32_t value) { indexCount = value; return *this; }
+        constexpr DrawIndexedIndirectArguments& setInstanceCount(uint32_t value) { instanceCount = value; return *this; }
+        constexpr DrawIndexedIndirectArguments& setStartIndexLocation(uint32_t value) { startIndexLocation = value; return *this; }
+        constexpr DrawIndexedIndirectArguments& setBaseVertexLocation(int32_t value) { baseVertexLocation = value; return *this; }
+        constexpr DrawIndexedIndirectArguments& setStartInstanceLocation(uint32_t value) { startInstanceLocation = value; return *this; }
     };
+
+    struct DispatchRaysArguments
+    {
+        uint32_t width = 1;
+        uint32_t height = 1;
+        uint32_t depth = 1;
+
+        constexpr DispatchRaysArguments& setWidth(uint32_t value) { width = value; return *this; }
+        constexpr DispatchRaysArguments& setHeight(uint32_t value) { height = value; return *this; }
+        constexpr DispatchRaysArguments& setDepth(uint32_t value) { depth = value; return *this; }
+        constexpr DispatchRaysArguments& setDimensions(uint32_t w, uint32_t h = 1, uint32_t d = 1) { width = w; height = h; depth = d; return *this; }
+    };
+
 
 
     template <class T>

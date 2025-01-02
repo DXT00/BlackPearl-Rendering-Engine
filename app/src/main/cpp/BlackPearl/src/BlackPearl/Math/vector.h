@@ -23,14 +23,14 @@
 #pragma once
 #include <cmath>
 //#include "BlackPearl/Math/dnoutMath.h"
-#include "basics.h"
+//#include "basics.h"
 // Compile-time assert
 
 #define cassert(x) static_assert(x, #x)
-namespace donut::math
+namespace BlackPearl::math
 {
     typedef unsigned int uint;
-    constexpr float epsilon_ = 1e-6f;
+
     // Macro to define conversion and subscript operators
 #define VECTOR_MEMBERS(T, n) \
 			typedef T (&array_t)[n]; \
@@ -254,7 +254,18 @@ namespace donut::math
         template<typename T> constexpr vector<bool, 3> operator op (const vector<T, 3>& a, T b) \
         { return vector<bool, 3>(a.x op b, a.y op b, a.z op b); } \
         template<typename T> constexpr vector<bool, 4> operator op (const vector<T, 4>& a, T b) \
-        { return vector<bool, 4>(a.x op b, a.y op b, a.z op b, a.w op b); } 
+        { return vector<bool, 4>(a.x op b, a.y op b, a.z op b, a.w op b); } \
+
+
+#define DEFINE_RELATIONAL_OPERATORS_SINGLE(op) \
+        /* Vector-vector op */ \
+        template<typename T> constexpr bool operator op (const vector<T, 2>& a, const vector<T, 2>& b) \
+        { return (a.x op b.x && a.y op b.y); } \
+        template<typename T> bool operator op (const vector<T, 3>& a, const vector<T, 3>& b) \
+        { return (a.x op b.x && a.y op b.y && a.z op b.z); } \
+        template<typename T> constexpr bool operator op (const vector<T, 4>& a, const vector<T, 4>& b) \
+        { return (a.x op b.x && a.y op b.y && a.z op b.z && a.w op b.w); } \
+       
 
 	DEFINE_BINARY_OPERATORS(+);
 	DEFINE_BINARY_OPERATORS(-);
@@ -275,12 +286,14 @@ namespace donut::math
 	DEFINE_INPLACE_OPERATORS(|=);
 	DEFINE_INPLACE_OPERATORS(^=);
 
-	DEFINE_RELATIONAL_OPERATORS(==);
+	//DEFINE_RELATIONAL_OPERATORS(==);
 	DEFINE_RELATIONAL_OPERATORS(!=);
 	DEFINE_RELATIONAL_OPERATORS(<);
 	DEFINE_RELATIONAL_OPERATORS(>);
 	DEFINE_RELATIONAL_OPERATORS(<=);
 	DEFINE_RELATIONAL_OPERATORS(>=);
+
+    DEFINE_RELATIONAL_OPERATORS_SINGLE(==);
 
 #undef DEFINE_UNARY_OPERATOR
 #undef DEFINE_BINARY_OPERATORS
@@ -340,7 +353,7 @@ namespace donut::math
 	}
 
 	template <typename T, int n>
-	vector<bool, n> isnear(vector<T, n> const & a, vector<T, n> const & b, float epsilon = epsilon_)
+	vector<bool, n> isnear(vector<T, n> const & a, vector<T, n> const & b, float epsilon = epsilon)
 	{
 		vector<bool, n> result;
 		for (int i = 0; i < n; ++i)
@@ -349,7 +362,7 @@ namespace donut::math
 	}
 
 	template <typename T, int n>
-	vector<bool, n> isnear(vector<T, n> const & a, T b, float epsilon = epsilon_)
+	vector<bool, n> isnear(vector<T, n> const & a, T b, float epsilon = epsilon)
 	{
 		vector<bool, n> result;
 		for (int i = 0; i < n; ++i)
@@ -358,7 +371,7 @@ namespace donut::math
 	}
 
 	template <typename T, int n>
-	vector<bool, n> isnear(T a, vector<T, n> const & b, float epsilon = epsilon_)
+	vector<bool, n> isnear(T a, vector<T, n> const & b, float epsilon =epsilon)
 	{
 		vector<bool, n> result;
 		for (int i = 0; i < n; ++i)

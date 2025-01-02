@@ -1,5 +1,4 @@
 #pragma once
-#ifdef GE_API_D3D12
 #include "BlackPearl/Window.h"
 #include "dinput.h"
 namespace BlackPearl {
@@ -10,7 +9,7 @@ namespace BlackPearl {
 		:Window(){
 			Init();
 		}
-		virtual ~D3D12Window(){
+		~D3D12Window(){
 			if (m_DI) {
 				m_DI->Release();
 			}
@@ -23,7 +22,7 @@ namespace BlackPearl {
 		bool IsMouseButtonPressed(int button) override;
 		std::pair<float, float> GetMousePosition() override;
 		void* GetNativeWindow() const override { return m_hwnd; }
-		donut::math::vector<int, 2> GetCurWindowSize() override;
+		math::vector<int, 2> GetCurWindowSize() override;
 
 	private:
 		static LRESULT CALLBACK D3D12Window::WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
@@ -46,4 +45,3 @@ namespace BlackPearl {
 
 }
 
-#endif

@@ -1,7 +1,8 @@
 #pragma once
 #include "pch.h"
 #include "Meshlet.h"
-#include  "BlackPearl/Math/vector.h"
+#include <DirectXMath.h>
+using namespace DirectX;
 namespace BlackPearl {
     const uint32_t c_prolog = 'MSHL';
 
@@ -20,14 +21,14 @@ namespace BlackPearl {
         EType    Type;
         uint32_t Offset;
     };
-    struct MeshInfo
-    {
-        uint32_t IndexSize;
-        uint32_t MeshletCount;
+    //struct MeshletInfo
+    //{
+    //    uint32_t IndexSize;
+    //    uint32_t MeshletCount;
 
-        uint32_t LastMeshletVertCount;
-        uint32_t LastMeshletPrimCount;
-    };
+    //    uint32_t LastMeshletVertCount;
+    //    uint32_t LastMeshletPrimCount;
+    //};
 
     enum FileVersion
     {
@@ -88,7 +89,7 @@ namespace BlackPearl {
 
     struct CullData
     {
-        donut::math::float4 BoundingSphere; // xyz = center, w = radius
+        DirectX::XMFLOAT4 BoundingSphere; // xyz = center, w = radius
         uint8_t           NormalCone[4];  // xyz = axis, w = -cos(a + 90)
         float             ApexOffset;     // apex = center - axis * offset
     };

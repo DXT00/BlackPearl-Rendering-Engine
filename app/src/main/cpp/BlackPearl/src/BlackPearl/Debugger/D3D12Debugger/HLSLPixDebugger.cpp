@@ -1,5 +1,4 @@
 #include "pch.h"
-#ifdef GE_PLATFORM_WINDOWS
 #include <filesystem>
 #include <shlobj.h>
 #include "BlackPearl/Core.h"
@@ -38,4 +37,3 @@ namespace BlackPearl {
 	}
 }
 
-#endif

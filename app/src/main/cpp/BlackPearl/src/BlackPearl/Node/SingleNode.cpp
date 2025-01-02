@@ -1,21 +1,30 @@
 #include "pch.h"
 #include "SingleNode.h"
 #include "BlackPearl/Component/MeshRendererComponent/MeshRenderer.h"
+#include "BlackPearl/Component/BoundingBoxComponent/BoundingBox.h"
 #include "BlackPearl/Object/Object.h"
 
 namespace BlackPearl {
 	SingleNode::SingleNode(Object* obj)
-		: Node(Node::Type::Single_Node),
+		: Node(obj, Node::Type::Single_Node),
+		
 		m_VertexCnt(0),
 		m_IndexCnt(0)
 	{
-		m_Obj = obj;
-		const std::vector<std::shared_ptr<Mesh>>& meshes = obj->GetComponent<MeshRenderer>()->GetMeshes();
-		for (auto mesh : meshes)
-		{
-			m_VertexCnt += mesh->GetVertexCount();
-			m_IndexCnt += mesh->GetIndicesCount();
+		//m_Obj = obj;
+		if (obj->HasComponent<MeshRenderer>()) {
+			std::vector<std::shared_ptr<Mesh>>& meshes = obj->GetComponent<MeshRenderer>()->GetMeshes();
+			for (auto mesh : meshes)
+			{
+				m_VertexCnt += mesh->GetVertexCount();
+				m_IndexCnt += mesh->GetIndicesCount();
+			}
+			//PrimitiveOctreeNode Init
+			Bound = obj->GetComponent<BoundingBox>()->Get();
 		}
+
+
+
 	}
 	SingleNode::~SingleNode()
 	{
@@ -30,8 +39,8 @@ namespace BlackPearl {
 		return m_IndexCnt;
 	}
 
-	Object* SingleNode::GetObj() const
-	{
-		return m_Obj;
-	}
+	//Object* SingleNode::GetObj() const
+	//{
+	//	return m_Obj;
+	//}
 }

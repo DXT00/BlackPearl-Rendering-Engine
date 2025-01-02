@@ -18,7 +18,7 @@ project "ShaderCompiler"
 	includedirs
 	{
 		-- "../BlackPearl/vendor/spdlog/include",
-		"../BlackPearl/src/BlackPearl/RHI",
+		"../BlackPearl/src",
 		-- "../BlackPearl/vendor",
 		-- "../%{IncludeDir.glm}",
 		-- "../%{IncludeDir.GLFW}",
@@ -33,12 +33,13 @@ project "ShaderCompiler"
 	}
 
 	libdirs{
-        -- "../BlackPearl/vendor/VulkanSDK/1.3.236.0/Lib"
+        -- "../BlackPearl/vendor/vulkan/1.3.290.0/Lib"
     }
 
 	defines
 	{
 		-- "GE_API_VULKAN"
+		"GE_SHADERCOMPILE"
 	}
 
 	links

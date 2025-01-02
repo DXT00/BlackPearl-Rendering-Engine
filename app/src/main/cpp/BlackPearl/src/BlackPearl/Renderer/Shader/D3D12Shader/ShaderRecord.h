@@ -4,12 +4,12 @@ namespace BlackPearl {
 	class ShaderRecord
 	{
 	public:
-		ShaderRecord(void* pShaderIdentifier, unsigned int shaderIndentifierSize) {
+		ShaderRecord(void* pShaderIdentifier, UINT shaderIndentifierSize) {
 			m_ShaderIdentifier.ptr = pShaderIdentifier;
 			m_ShaderIdentifier.size = shaderIndentifierSize;
 		}
-		ShaderRecord(void* pShaderIdentifier, unsigned int shaderIndentifierSize,
-			void* pRootArgument, unsigned int rootArgumentSize) {
+		ShaderRecord(void* pShaderIdentifier, UINT shaderIndentifierSize,
+			void* pRootArgument, UINT rootArgumentSize) {
 			m_ShaderIdentifier.ptr = pShaderIdentifier;
 			m_ShaderIdentifier.size = shaderIndentifierSize;
 			if (pRootArgument) {
@@ -27,13 +27,13 @@ namespace BlackPearl {
 		}
 		struct PointerWithSize
 		{
-			PointerWithSize(void* ptr, unsigned int size)
+			PointerWithSize(void* ptr, UINT size)
 				:ptr(ptr), size(size){}
 			PointerWithSize()
 			:ptr(nullptr), size(0){}
 
 			void* ptr;
-			unsigned int size;
+			UINT size;
 
 		};
 		PointerWithSize m_ShaderIdentifier;

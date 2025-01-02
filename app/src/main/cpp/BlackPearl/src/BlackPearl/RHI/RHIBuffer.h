@@ -38,26 +38,26 @@ namespace BlackPearl {
 
         SharedResourceFlags sharedResourceFlags = SharedResourceFlags::None;
 
-         BufferDesc& setByteSize(uint64_t value) { byteSize = value; return *this; }
-         BufferDesc& setStructStride(uint32_t value) { structStride = value; return *this; }
-         BufferDesc& setMaxVersions(uint32_t value) { maxVersions = value; return *this; }
+        constexpr BufferDesc& setByteSize(uint64_t value) { byteSize = value; return *this; }
+        constexpr BufferDesc& setStructStride(uint32_t value) { structStride = value; return *this; }
+        constexpr BufferDesc& setMaxVersions(uint32_t value) { maxVersions = value; return *this; }
         BufferDesc& setDebugName(const std::string& value) { debugName = value; return *this; }
-         BufferDesc& setFormat(Format value) { format = value; return *this; }
-         BufferDesc& setCanHaveUAVs(bool value) { canHaveUAVs = value; return *this; }
-         BufferDesc& setCanHaveTypedViews(bool value) { canHaveTypedViews = value; return *this; }
-         BufferDesc& setCanHaveRawViews(bool value) { canHaveRawViews = value; return *this; }
-         BufferDesc& setIsVertexBuffer(bool value) { isVertexBuffer = value; return *this; }
-         BufferDesc& setIsIndexBuffer(bool value) { isIndexBuffer = value; return *this; }
-         BufferDesc& setIsConstantBuffer(bool value) { isConstantBuffer = value; return *this; }
-         BufferDesc& setIsDrawIndirectArgs(bool value) { isDrawIndirectArgs = value; return *this; }
-         BufferDesc& setIsAccelStructBuildInput(bool value) { isAccelStructBuildInput = value; return *this; }
-         BufferDesc& setIsAccelStructStorage(bool value) { isAccelStructStorage = value; return *this; }
-         BufferDesc& setIsShaderBindingTable(bool value) { isShaderBindingTable = value; return *this; }
-         BufferDesc& setIsVolatile(bool value) { isVolatile = value; return *this; }
-         BufferDesc& setIsVirtual(bool value) { isVirtual = value; return *this; }
-         BufferDesc& setInitialState(ResourceStates value) { initialState = value; return *this; }
-         BufferDesc& setKeepInitialState(bool value) { keepInitialState = value; return *this; }
-         BufferDesc& setCpuAccess(CpuAccessMode value) { cpuAccess = value; return *this; }
+        constexpr BufferDesc& setFormat(Format value) { format = value; return *this; }
+        constexpr BufferDesc& setCanHaveUAVs(bool value) { canHaveUAVs = value; return *this; }
+        constexpr BufferDesc& setCanHaveTypedViews(bool value) { canHaveTypedViews = value; return *this; }
+        constexpr BufferDesc& setCanHaveRawViews(bool value) { canHaveRawViews = value; return *this; }
+        constexpr BufferDesc& setIsVertexBuffer(bool value) { isVertexBuffer = value; return *this; }
+        constexpr BufferDesc& setIsIndexBuffer(bool value) { isIndexBuffer = value; return *this; }
+        constexpr BufferDesc& setIsConstantBuffer(bool value) { isConstantBuffer = value; return *this; }
+        constexpr BufferDesc& setIsDrawIndirectArgs(bool value) { isDrawIndirectArgs = value; return *this; }
+        constexpr BufferDesc& setIsAccelStructBuildInput(bool value) { isAccelStructBuildInput = value; return *this; }
+        constexpr BufferDesc& setIsAccelStructStorage(bool value) { isAccelStructStorage = value; return *this; }
+        constexpr BufferDesc& setIsShaderBindingTable(bool value) { isShaderBindingTable = value; return *this; }
+        constexpr BufferDesc& setIsVolatile(bool value) { isVolatile = value; return *this; }
+        constexpr BufferDesc& setIsVirtual(bool value) { isVirtual = value; return *this; }
+        constexpr BufferDesc& setInitialState(ResourceStates value) { initialState = value; return *this; }
+        constexpr BufferDesc& setKeepInitialState(bool value) { keepInitialState = value; return *this; }
+        constexpr BufferDesc& setCpuAccess(CpuAccessMode value) { cpuAccess = value; return *this; }
     };
 
     struct BufferRange
@@ -73,11 +73,11 @@ namespace BlackPearl {
         { }
 
         [[nodiscard]] BufferRange resolve(const BufferDesc& desc) const;
-        [[nodiscard]]  bool isEntireBuffer(const BufferDesc& desc) const { return (byteOffset == 0) && (byteSize == ~0ull || byteSize == desc.byteSize); }
-         bool operator== (const BufferRange& other) const { return byteOffset == other.byteOffset && byteSize == other.byteSize; }
+        [[nodiscard]] constexpr bool isEntireBuffer(const BufferDesc& desc) const { return (byteOffset == 0) && (byteSize == ~0ull || byteSize == desc.byteSize); }
+        constexpr bool operator== (const BufferRange& other) const { return byteOffset == other.byteOffset && byteSize == other.byteSize; }
 
-         BufferRange& setByteOffset(uint64_t value) { byteOffset = value; return *this; }
-         BufferRange& setByteSize(uint64_t value) { byteSize = value; return *this; }
+        constexpr BufferRange& setByteOffset(uint64_t value) { byteOffset = value; return *this; }
+        constexpr BufferRange& setByteSize(uint64_t value) { byteSize = value; return *this; }
     };
 
     static const BufferRange EntireBuffer = BufferRange(0, ~0ull);

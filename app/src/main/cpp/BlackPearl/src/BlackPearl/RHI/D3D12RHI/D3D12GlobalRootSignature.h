@@ -1,5 +1,4 @@
 #include "pch.h"
-#ifdef GE_API_D3D12
 #include "D3D12RootSignature.h"
 #include "BlackPearl/Core.h"
 namespace BlackPearl {
@@ -49,4 +48,3 @@ namespace BlackPearl {
 
 
 }
-#endif

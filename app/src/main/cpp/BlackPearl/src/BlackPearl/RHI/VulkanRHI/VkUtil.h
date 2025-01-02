@@ -1,9 +1,10 @@
 #pragma once
 #if GE_API_VULKAN
 
-#include <vulkan/vulkan.h>
+#include <vulkan/vulkan_core.h>
 #include "BlackPearl/RHI/RHIDefinitions.h"
 #include "BlackPearl/RHI/RHISampler.h"
+#include "BlackPearl/RHI/RHIRayTraceStruct.h"
 namespace BlackPearl {
 
     class ETexture;
@@ -60,8 +61,8 @@ namespace BlackPearl {
         static VkBlendOp convertBlendOp(BlendOp op);
         static VkColorComponentFlags convertColorMask(ColorMask mask);
         static VkPipelineColorBlendAttachmentState convertBlendState(const BlendState::RenderTarget& state);
-        //static VkBuildAccelerationStructureFlagsKHR convertAccelStructBuildFlags(rt::AccelStructBuildFlags buildFlags);
-       // static VkGeometryInstanceFlagsKHR convertInstanceFlags(rt::InstanceFlags instanceFlags);
+        static VkBuildAccelerationStructureFlagsKHR convertAccelStructBuildFlags(rt::AccelStructBuildFlags buildFlags);
+        static VkGeometryInstanceFlagsKHR convertInstanceFlags(rt::InstanceFlags instanceFlags);
         static VkExtent2D convertFragmentShadingRate(VariableShadingRate shadingRate);
         static VkFragmentShadingRateCombinerOpKHR convertShadingRateCombiner(ShadingRateCombiner combiner);
    

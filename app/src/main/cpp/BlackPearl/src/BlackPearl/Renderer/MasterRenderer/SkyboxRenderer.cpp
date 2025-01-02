@@ -1,10 +1,9 @@
 #include "pch.h"
 #include "SkyboxRenderer.h"
+#include "BlackPearl/Renderer/DeviceManager.h"
 
 namespace BlackPearl {
-
-
-
+	extern DeviceManager* g_deviceManager;
 	SkyboxRenderer::SkyboxRenderer()
 	{
 		std::vector<std::string> morningBox = {
@@ -32,9 +31,25 @@ namespace BlackPearl {
 		"assets/skybox/skybox1/SkyNight_Back.png"
 		};
 		m_SkyboxShader.reset(DBG_NEW Shader("assets/shaders/SkyBoxMultiTexture.glsl"));
-		m_SkyBoxTexture[0].reset(DBG_NEW CubeMapTexture(Texture::Type::CubeMap, nightBox , GL_LINEAR, GL_LINEAR, GL_CLAMP_TO_EDGE, GL_RGB, GL_RGB, GL_UNSIGNED_BYTE));
+
+		TextureDesc desc;
+		desc.type = TextureType::CubeMap;
+		desc.minFilter = FilterMode::Linear;
+		desc.magFilter = FilterMode::Linear;
+		desc.wrap = SamplerAddressMode::ClampToEdge;
+		desc.format = Format::RGB8_UNORM;
+		desc.faces = nightBox;
+		m_SkyBoxTexture[0] = g_deviceManager->GetDevice()->createTexture(desc);
+
+		desc.faces = morningBox;
+		m_SkyBoxTexture[1] = g_deviceManager->GetDevice()->createTexture(desc);
+		desc.faces = sunSetBox;
+		m_SkyBoxTexture[2] = g_deviceManager->GetDevice()->createTexture(desc);
+
+
+		/*m_SkyBoxTexture[0].reset(DBG_NEW CubeMapTexture(Texture::Type::CubeMap, nightBox , GL_LINEAR, GL_LINEAR, GL_CLAMP_TO_EDGE, GL_RGB, GL_RGB, GL_UNSIGNED_BYTE));
 		m_SkyBoxTexture[1].reset(DBG_NEW CubeMapTexture(Texture::Type::CubeMap,morningBox , GL_LINEAR, GL_LINEAR, GL_CLAMP_TO_EDGE, GL_RGB, GL_RGB, GL_UNSIGNED_BYTE));
-		m_SkyBoxTexture[2].reset(DBG_NEW CubeMapTexture(Texture::Type::CubeMap,sunSetBox , GL_LINEAR, GL_LINEAR, GL_CLAMP_TO_EDGE, GL_RGB, GL_RGB, GL_UNSIGNED_BYTE));
+		m_SkyBoxTexture[2].reset(DBG_NEW CubeMapTexture(Texture::Type::CubeMap,sunSetBox , GL_LINEAR, GL_LINEAR, GL_CLAMP_TO_EDGE, GL_RGB, GL_RGB, GL_UNSIGNED_BYTE));*/
 	}
 
 	void SkyboxRenderer::Render(Object* skybox,float timeSecond)
@@ -71,11 +86,11 @@ namespace BlackPearl {
 	{
 		DrawObject(skybox);
 	}
-	void SkyboxRenderer::Render(Object* skybox, Renderer::SceneData* scene)
+	void SkyboxRenderer::Render(Object* skybox, SceneData* scene)
 	{
 		DrawObject(skybox, scene);
 	}
-	void SkyboxRenderer::Render(Object* skybox, float timeSecond, Renderer::SceneData* scene)
+	void SkyboxRenderer::Render(Object* skybox, float timeSecond, SceneData* scene)
 	{
 
 		float currentTimeS = fmod(timeSecond, m_TotalTimeIntervalS);

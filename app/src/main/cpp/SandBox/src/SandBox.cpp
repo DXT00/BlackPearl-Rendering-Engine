@@ -25,55 +25,72 @@
 #include "Layers/CloudRenderLayer.h"
 #include "Layers/WaterRenderLayer.h"
 #include "Layers/SSRLayer.h"
+enum RenderSample {
+	BP_ShadowMapPointLight,
+	BP_VoxelConeTracing,
+	BP_PbrRendering,
+	BP_IBLRendering,
+	BP_IBLProbesRendering,
+	BP_VoxelConeTracingDeferred,
+	BP_VoxelConeTracingSVO,
+	BP_RayTracing,
+	BP_BatchRendering,
+	BP_IndirectRendering,
+	BP_IndirectOcclusionCull,
+	BP_CloudRender,
+	BP_WaterRender,
+	BP_SSR
 
+};
 class SandBox :public BlackPearl::Application {
 public:
 
-	SandBox(HINSTANCE hInstance,int nShowCmd, BlackPearl::DynamicRHI::Type rhiType, const std::string &renderer)
-	:Application(hInstance, nShowCmd, rhiType, renderer){
+
+	SandBox(HINSTANCE hInstance,int nShowCmd, BlackPearl::DynamicRHI::Type rhiType, RenderSample renderer)
+	:Application(hInstance, nShowCmd, rhiType, selectAppVersion(renderer)){
 		
 		BlackPearl::Layer* layer = NULL;
 		const std::string layer_name = renderer+"Layer";
-		if (renderer == "ShadowMapPointLight") { //pcf, pcss
+		if (renderer == BP_ShadowMapPointLight) { //pcf, pcss
 			layer = DBG_NEW ShadowMapPointLightLayer(layer_name);
 		}
-		else if(renderer == "VoxelConeTracing"){
+		else if(renderer == BP_VoxelConeTracing){
 			layer = DBG_NEW VoxelConeTracingLayer(layer_name);
 		}
-		else if (renderer == "PbrRendering") {
+		else if (renderer == BP_PbrRendering) {
 			layer = DBG_NEW PbrRenderingLayer(layer_name);
 		}
-		else if (renderer == "IBLRendering") {
+		else if (renderer == BP_IBLRendering) {
 			layer = DBG_NEW IBLRenderingLayer(layer_name);
 		}
-		else if (renderer == "IBLProbesRendering") {
+		else if (renderer == BP_IBLProbesRendering) {
 			layer = DBG_NEW IBLProbesRenderingLayer(layer_name);
 		}
-		else if (renderer == "VoxelConeTracingDeferred") {
+		else if (renderer == BP_VoxelConeTracingDeferred) {
 			layer = DBG_NEW VoxelConeTracingDeferredLayer(layer_name);
 		}
-		else if (renderer == "VoxelConeTracingSVO") {
+		else if (renderer == BP_VoxelConeTracingSVO) {
 			layer = DBG_NEW VoxelConeTracingSVOLayer(layer_name);
 		}
-		else if (renderer == "RayTracing") {
+		else if (renderer == BP_RayTracing) {
 			layer = DBG_NEW RayTracingLayer(layer_name);
 		}
-		else if (renderer == "BatchRendering") {
+		else if (renderer == BP_BatchRendering) {
 			layer = DBG_NEW BatchRenderingLayer(layer_name);
 		}
-		else if (renderer == "IndirectRendering") {
+		else if (renderer == BP_IndirectRendering) {
 			layer = DBG_NEW IndirectDrawLayer(layer_name);
 		}
-		else if (renderer == "IndirectOcclusionCull") {
+		else if (renderer == BP_IndirectOcclusionCull) {
 			layer = DBG_NEW IndirectOcclusionCullLayer(layer_name);
 		}
-		else if (renderer == "CloudRender") {
+		else if (renderer == BP_CloudRender) {
 			layer = DBG_NEW CloudRenderLayer(layer_name);
 		}
-		else if (renderer == "WaterRender") {
+		else if (renderer == BP_WaterRender) {
 			layer = DBG_NEW WaterRenderLayer(layer_name);
 		}
-		else if (renderer == "SSR") {
+		else if (renderer == BP_SSR) {
 			layer = DBG_NEW SSRLayer(layer_name);
 		}
 		/*else if (renderer == "LumenRenderingLayer") {
@@ -82,12 +99,17 @@ public:
 		GetLayerManager()->PushLayer(layer);
 	}
 	virtual ~SandBox() = default;
+private:
+	BlackPearl::AppVersion selectAppVersion(RenderSample sample) {
+		return BlackPearl::AppVersion::VERSION_0_0;
+	
+	}
 
 };
 
 BlackPearl::Application* BlackPearl::CreateApplication(HINSTANCE hInstance, int nShowCmd) {
 
-	return DBG_NEW SandBox(hInstance, nShowCmd, BlackPearl::DynamicRHI::Type::OpenGL, "SSR");
+	return DBG_NEW SandBox(hInstance, nShowCmd, BlackPearl::DynamicRHI::Type::OpenGL, RenderSample::BP_IndirectRendering);
 	//return DBG_NEW SandBox(hInstance, nShowCmd, BlackPearl::DynamicRHI::Type::OpenGL, "PbrRendering");
 }
 

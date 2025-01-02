@@ -8,7 +8,7 @@
 // PURPOSE, MERCHANTABILITY, OR NON-INFRINGEMENT.
 //
 //*********************************************************
-#ifdef GE_API_D3D12
+
 #ifndef __D3DX12_H__
 #define __D3DX12_H__
 
@@ -4050,4 +4050,3 @@ private:
 #endif //__D3DX12_H__
 
 
-#endif

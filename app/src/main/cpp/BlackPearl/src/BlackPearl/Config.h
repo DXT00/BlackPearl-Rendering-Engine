@@ -2,20 +2,22 @@
 #include<bitset>
 namespace BlackPearl {
 	//一个Entity最多32个Component
-
 	//inline static void SyncGPU();
+#define GE_OLD_WORLD_MAX			2097152.0						/* UE4 maximum world size */
+#define GE_OLD_HALF_WORLD_MAX		(GE_OLD_WORLD_MAX * 0.5)		/* UE4 half maximum world size */
 	class Configuration {
 	public:
 		static const unsigned int MaxComponents = 32;
 		typedef std::bitset<MaxComponents> ComponentMask;
 
-		static const unsigned int WindowWidth = 1920;// 960;1024x768 
-		static const unsigned int WindowHeight = 1080;// 540;
+		static const unsigned int WindowWidth = 300;//960;// 1920 1024x768 
+		static const unsigned int WindowHeight = 300;//540;// 540;1080
 
 		//多重采样
 		static const unsigned int MSAA_SAMPLES = 4;
 
-	
+		//VSync
+		static const bool Vsync = true;
 
 		//static const VoxelConeTracingRenderer::RenderingMode RenderingMode; 
 
@@ -29,8 +31,6 @@ namespace BlackPearl {
 		// Max pointLight Num
 		// ------------------------------------------
 		static const unsigned int MaxPointLightNum = 20;
-
-
 
 
 		// ------------------------------------------
@@ -81,6 +81,8 @@ namespace BlackPearl {
 		/* Rendering Device Settings*/
 		static const unsigned int SwapchainCount = 2;
 	
+		/* shader path settings*/
+		static const char* GetShaderTypeName();
 	};
 	struct ShaderConfig {
 

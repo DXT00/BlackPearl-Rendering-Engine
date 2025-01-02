@@ -25,7 +25,7 @@
 //#include <algorithm>
 #include "./vector.h"
 
-namespace donut::math
+namespace BlackPearl::math
 {
 
 #define MATRIX_MEMBERS(T, rows, cols) \
@@ -126,7 +126,7 @@ namespace donut::math
             , m10(_row1.x), m11(_row1.y) { }
 
 		template<typename U>
-		explicit  matrix(const matrix<U, 2, 2>& m)
+		explicit constexpr matrix(const matrix<U, 2, 2>& m)
 		{
 			for (int i = 0; i < 4; ++i)
 				m_data[i] = T(m.m_data[i]);
@@ -205,7 +205,7 @@ namespace donut::math
             , m20(m.m20), m21(m.m21), m22(m.m22) { }
 
 		template<typename U>
-		explicit  matrix(const matrix<U, 3, 3>& m)
+		explicit constexpr matrix(const matrix<U, 3, 3>& m)
 		{
 			for (int i = 0; i < 9; ++i)
 				m_data[i] = T(m.m_data[i]);
@@ -287,7 +287,7 @@ namespace donut::math
             , m20(m.m20), m21(m.m21), m22(m.m22), m23(m.m23) { }
 
 		template<typename U>
-		explicit  matrix(const matrix<U, 3, 4>& m)
+		explicit constexpr matrix(const matrix<U, 3, 4>& m)
 		{
 			for (int i = 0; i < 12; ++i)
 				m_data[i] = T(m.m_data[i]);
@@ -369,7 +369,7 @@ namespace donut::math
             , m30(_row3.x), m31(_row3.y), m32(_row3.z), m33(_row3.w) { }
 
 		template<typename U>
-		explicit  matrix(const matrix<U, 4, 4>& m)
+		explicit constexpr matrix(const matrix<U, 4, 4>& m)
 		{
 			for (int i = 0; i < 16; ++i)
 				m_data[i] = T(m.m_data[i]);
@@ -851,7 +851,7 @@ namespace donut::math
 	}
 
 	template <typename T, int rows, int cols>
-	matrix<bool, rows, cols> isnear(matrix<T, rows, cols> const & a, matrix<T, rows, cols> const & b, float epsilon = dm::epsilon)
+	matrix<bool, rows, cols> isnear(matrix<T, rows, cols> const & a, matrix<T, rows, cols> const & b, float epsilon = epsilon)
 	{
 		matrix<bool, rows, cols> result;
 		for (int i = 0; i < rows*cols; ++i)
@@ -860,7 +860,7 @@ namespace donut::math
 	}
 
 	template <typename T, int rows, int cols>
-	matrix<bool, rows, cols> isnear(matrix<T, rows, cols> const & a, T b, float epsilon = dm::epsilon)
+	matrix<bool, rows, cols> isnear(matrix<T, rows, cols> const & a, T b, float epsilon = epsilon)
 	{
 		matrix<bool, rows, cols> result;
 		for (int i = 0; i < rows*cols; ++i)
@@ -869,7 +869,7 @@ namespace donut::math
 	}
 
 	template <typename T, int rows, int cols>
-	matrix<bool, rows, cols> isnear(T a, matrix<T, rows, cols> const & b, float epsilon = dm::epsilon)
+	matrix<bool, rows, cols> isnear(T a, matrix<T, rows, cols> const & b, float epsilon = epsilon)
 	{
 		matrix<bool, rows, cols> result;
 		for (int i = 0; i < rows*cols; ++i)

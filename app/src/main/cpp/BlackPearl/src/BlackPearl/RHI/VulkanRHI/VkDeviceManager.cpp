@@ -106,6 +106,7 @@ namespace BlackPearl {
 		}
 		ITexture* GetBackBuffer(uint32_t index) override
 		{
+			GE_CORE_INFO("backbufer id "+ std::to_string(index));
 			if (index < m_SwapChainImages.size())
 				return m_SwapChainImages[index].rhiHandle;
 			return nullptr;
@@ -186,7 +187,19 @@ namespace BlackPearl {
 		bool _checkDeviceExtensionSupport(VkPhysicalDevice device);
 		SwapChainSupportDetails _querySwapChainSupport(VkPhysicalDevice device);
 
+		static VKAPI_ATTR VkBool32 VKAPI_CALL _debugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity, VkDebugUtilsMessageTypeFlagsEXT messageType, const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData, void* pUserData) {
+			std::cerr << "validation layer: " << pCallbackData->pMessage << std::endl;
 
+			return VK_FALSE;
+		}
+
+		void _populateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT& createInfo) {
+			createInfo = {};
+			createInfo.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
+			createInfo.messageSeverity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;
+			createInfo.messageType = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;
+			createInfo.pfnUserCallback = _debugCallback;
+		}
 		struct VulkanExtensionSet
 		{
 			std::unordered_set<std::string> instance;
@@ -222,11 +235,11 @@ namespace BlackPearl {
 			{
 				VK_EXT_DEBUG_MARKER_EXTENSION_NAME,
 				VK_EXT_DESCRIPTOR_INDEXING_EXTENSION_NAME,
-				VK_KHR_BUFFER_DEVICE_ADDRESS_EXTENSION_NAME,
+				//VK_KHR_BUFFER_DEVICE_ADDRESS_EXTENSION_NAME,
 				VK_NV_MESH_SHADER_EXTENSION_NAME,
 				VK_KHR_FRAGMENT_SHADING_RATE_EXTENSION_NAME,
-				VK_KHR_SYNCHRONIZATION_2_EXTENSION_NAME,
-				VK_EXT_OPACITY_MICROMAP_EXTENSION_NAME,
+				//VK_KHR_SYNCHRONIZATION_2_EXTENSION_NAME,
+				//VK_EXT_OPACITY_MICROMAP_EXTENSION_NAME,
 				VK_EXT_CONSERVATIVE_RASTERIZATION_EXTENSION_NAME
 			},
 		};
@@ -338,13 +351,23 @@ namespace BlackPearl {
 		}
 
 		// add any extensions required by GLFW
-		uint32_t glfwExtCount;
+		uint32_t glfwExtCount = 0;
 		const char** glfwExt = glfwGetRequiredInstanceExtensions(&glfwExtCount);
+
+		std::vector<const char*> exts(glfwExt, glfwExt + glfwExtCount);
+
 		assert(glfwExt);
 
 		for (uint32_t i = 0; i < glfwExtCount; i++)
 		{
+			auto a = glfwExt[i];
 			enabledExtensions.instance.insert(std::string(glfwExt[i]));
+		}
+
+		if (enableValidationLayers) {
+			enabledExtensions.instance.insert(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
+			enabledExtensions.layers.insert("VK_LAYER_KHRONOS_validation");
+
 		}
 
 		// add instance extensions requested by the user
@@ -352,6 +375,7 @@ namespace BlackPearl {
 		{
 			enabledExtensions.instance.insert(name);
 		}
+		
 		for (const std::string& name : m_DeviceParams.optionalVulkanInstanceExtensions)
 		{
 			optionalExtensions.instance.insert(name);
@@ -398,8 +422,9 @@ namespace BlackPearl {
 		GE_CORE_INFO("Enabled Vulkan instance extensions:");
 		for (const auto& ext : enabledExtensions.instance)
 		{
-			GE_CORE_INFO("%s", ext.c_str());
+			GE_CORE_INFO(ext.c_str());
 		}
+
 
 		std::unordered_set<std::string> requiredLayers = enabledExtensions.layers;
 
@@ -434,25 +459,42 @@ namespace BlackPearl {
 		GE_CORE_INFO( "Enabled Vulkan layers:");
 		for (const auto& layer : enabledExtensions.layers)
 		{
-			GE_CORE_INFO( "    %s", layer.c_str());
+			GE_CORE_INFO(layer.c_str());
 		}
+
 
 		auto instanceExtVec = stringSetToVector(enabledExtensions.instance);
 		auto layerVec = stringSetToVector(enabledExtensions.layers);
 
-		VkApplicationInfo applicationInfo;
-		applicationInfo.apiVersion = VK_MAKE_VERSION(1, 3, 0);
+		/*VkApplicationInfo applicationInfo;
+		applicationInfo.apiVersion = VK_MAKE_VERSION(1, 3, 0);*/
+		VkApplicationInfo applicationInfo{};
+		applicationInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
+		applicationInfo.pApplicationName = "BlackPearl VkSandBox";
+		applicationInfo.applicationVersion = VK_MAKE_VERSION(1, 3, 0);
+		applicationInfo.pEngineName = "BlackPearl";
+		applicationInfo.engineVersion = VK_MAKE_VERSION(1, 3, 0);
+		applicationInfo.apiVersion = VK_API_VERSION_1_3;
 
 		// create the vulkan instance
-		VkInstanceCreateInfo info;
-		info.enabledLayerCount = uint32_t(layerVec.size());
-		info.ppEnabledLayerNames = layerVec.data();
-		info.enabledExtensionCount = uint32_t(instanceExtVec.size());
-		info.ppEnabledExtensionNames = instanceExtVec.data();
-		info.pApplicationInfo = &applicationInfo;
+		VkInstanceCreateInfo createInfo{};
+		createInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
+		createInfo.enabledLayerCount = uint32_t(layerVec.size());
+		createInfo.ppEnabledLayerNames = layerVec.data();
+		createInfo.enabledExtensionCount = uint32_t(instanceExtVec.size());
+		createInfo.ppEnabledExtensionNames = instanceExtVec.data();
+		createInfo.pApplicationInfo = &applicationInfo;
 
 
-		const VkResult res = vkCreateInstance(&info, nullptr, &m_Instance);
+		VkDebugUtilsMessengerCreateInfoEXT debugCreateInfo{};
+		if (enableValidationLayers) {
+			_populateDebugMessengerCreateInfo(debugCreateInfo);
+			createInfo.pNext = (VkDebugUtilsMessengerCreateInfoEXT*)&debugCreateInfo;
+		}
+		else {
+			createInfo.pNext = nullptr;
+		}
+		const VkResult res = vkCreateInstance(&createInfo, nullptr, &m_Instance);
 		if (res != VkResult::VK_SUCCESS)
 		{
 			GE_CORE_ERROR("Failed to create a Vulkan instance");
@@ -572,6 +614,8 @@ namespace BlackPearl {
 
 		std::vector<VkExtensionProperties> deviceExtensions(extensionCount);
 		vkEnumerateDeviceExtensionProperties(m_PhysicalDevice, nullptr, &extensionCount, deviceExtensions.data());
+		std::unordered_set<std::string> requiredDeviceExt = enabledExtensions.device;
+
 		for (const auto& ext : deviceExtensions)
 		{
 			const std::string name = ext.extensionName;
@@ -584,6 +628,18 @@ namespace BlackPearl {
 			{
 				enabledExtensions.device.insert(name);
 			}
+			requiredDeviceExt.erase(name);
+		}
+
+		if (!requiredDeviceExt.empty())
+		{
+			std::stringstream ss;
+			ss << "Cannot create a Vulkan device because the following required device(s) are not supported:";
+			for (const auto& ext : requiredDeviceExt)
+				ss << std::endl << "  - " << ext;
+
+			GE_CORE_ERROR(ss.str().c_str());
+			return false;
 		}
 
 		bool accelStructSupported = false;
@@ -598,7 +654,7 @@ namespace BlackPearl {
 		GE_CORE_INFO( "Enabled Vulkan device extensions:");
 		for (const auto& ext : enabledExtensions.device)
 		{
-			GE_CORE_INFO( "    %s", ext.c_str());
+			GE_CORE_INFO(ext.c_str());
 
 			if (ext == VK_KHR_ACCELERATION_STRUCTURE_EXTENSION_NAME)
 				accelStructSupported = true;
@@ -646,63 +702,66 @@ namespace BlackPearl {
 			queueDesc.push_back(queueCreateInfo);
 		}
 
-
 		VkPhysicalDeviceAccelerationStructureFeaturesKHR accelStructFeatures{};
+		accelStructFeatures.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_ACCELERATION_STRUCTURE_FEATURES_KHR;
 		accelStructFeatures.accelerationStructure = true;
-		 VkPhysicalDeviceBufferAddressFeaturesEXT bufferAddressFeatures{};
-		 bufferAddressFeatures.bufferDeviceAddress = true;
-			//.setBufferDeviceAddress(true);
-		 VkPhysicalDeviceRayTracingPipelineFeaturesKHR rayPipelineFeatures{};
-		 rayPipelineFeatures.rayTracingPipeline = true;
-		 rayPipelineFeatures.rayTraversalPrimitiveCulling = true;
 
+		VkPhysicalDeviceBufferAddressFeaturesEXT bufferAddressFeatures{};
+		bufferAddressFeatures.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_BUFFER_DEVICE_ADDRESS_FEATURES_EXT;
+		bufferAddressFeatures.bufferDeviceAddress = true;
+		//.setBufferDeviceAddress(true);
+		VkPhysicalDeviceRayTracingPipelineFeaturesKHR rayPipelineFeatures{};
+		rayPipelineFeatures.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_RAY_TRACING_PIPELINE_FEATURES_KHR;
+		rayPipelineFeatures.rayTracingPipeline = true;
+		rayPipelineFeatures.rayTraversalPrimitiveCulling = true;
 
-	     VkPhysicalDeviceRayQueryFeaturesKHR rayQueryFeatures{};
-		 rayQueryFeatures.rayQuery = true;
-		 VkPhysicalDeviceMeshShaderFeaturesNV meshletFeatures{};
-		 meshletFeatures.taskShader = true;
-		 meshletFeatures.meshShader = true;
+		VkPhysicalDeviceRayQueryFeaturesKHR rayQueryFeatures{};
+		rayQueryFeatures.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_RAY_QUERY_FEATURES_KHR;
+		rayQueryFeatures.rayQuery = true;
 
-
+		VkPhysicalDeviceMeshShaderFeaturesNV meshletFeatures{};
+		meshletFeatures.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MESH_SHADER_FEATURES_NV;
+		meshletFeatures.taskShader = true;
+		meshletFeatures.meshShader = true;
 		
 		VkPhysicalDeviceFragmentShadingRateFeaturesKHR vrsFeatures{};
+		vrsFeatures.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FRAGMENT_SHADING_RATE_FEATURES_KHR;
 		vrsFeatures.pipelineFragmentShadingRate = true;
 		vrsFeatures.primitiveFragmentShadingRate = true;
 		vrsFeatures.attachmentFragmentShadingRate = true;
 
 
-
-
-			//.setPipelineFragmentShadingRate(true)
-			//.setPrimitiveFragmentShadingRate(true)
-			//.setAttachmentFragmentShadingRate(true);
-		 VkPhysicalDeviceSynchronization2Features s2Features{};
-		 s2Features.synchronization2 = true;
-		 VkPhysicalDeviceOpacityMicromapFeaturesEXT ommFeatures{};
-		 ommFeatures.micromap = true;
+		VkPhysicalDeviceSynchronization2Features s2Features{};
+		s2Features.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SYNCHRONIZATION_2_FEATURES;
+		s2Features.synchronization2 = true;
+		VkPhysicalDeviceOpacityMicromapFeaturesEXT ommFeatures{};
+		ommFeatures.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_OPACITY_MICROMAP_FEATURES_EXT;
+		ommFeatures.micromap = true;
 
 
 		void* pNext = nullptr;
 #define APPEND_EXTENSION(condition, desc) if (condition) { (desc).pNext = pNext; pNext = &(desc); }  // NOLINT(cppcoreguidelines-macro-usage)
 		APPEND_EXTENSION(accelStructSupported, accelStructFeatures)
-			APPEND_EXTENSION(bufferAddressSupported, bufferAddressFeatures)
-			APPEND_EXTENSION(rayPipelineSupported, rayPipelineFeatures)
-			APPEND_EXTENSION(rayQuerySupported, rayQueryFeatures)
-			APPEND_EXTENSION(meshletsSupported, meshletFeatures)
-			APPEND_EXTENSION(vrsSupported, vrsFeatures)
-			APPEND_EXTENSION(s2Supported, s2Features)
-			APPEND_EXTENSION(ommSupported, ommFeatures)
+		APPEND_EXTENSION(bufferAddressSupported, bufferAddressFeatures)
+		APPEND_EXTENSION(rayPipelineSupported, rayPipelineFeatures)
+		APPEND_EXTENSION(rayQuerySupported, rayQueryFeatures)
+		APPEND_EXTENSION(meshletsSupported, meshletFeatures)
+		APPEND_EXTENSION(vrsSupported, vrsFeatures)
+		APPEND_EXTENSION(s2Supported, s2Features)
+		APPEND_EXTENSION(ommSupported, ommFeatures)
 #undef APPEND_EXTENSION
 
-			// Determine support for Buffer Device Address, the Vulkan 1.2 way
-		VkPhysicalDeviceFeatures2 physicalDeviceFeatures2;
-		VkPhysicalDeviceBufferDeviceAddressFeatures bufferDeviceAddressFeatures;
+		// Determine support for Buffer Device Address, the Vulkan 1.2 way
+		VkPhysicalDeviceFeatures2 physicalDeviceFeatures2{};
+		physicalDeviceFeatures2.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2;
+		VkPhysicalDeviceBufferDeviceAddressFeatures bufferDeviceAddressFeatures{};
+		bufferDeviceAddressFeatures.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_BUFFER_DEVICE_ADDRESS_FEATURES;
+
 		physicalDeviceFeatures2.pNext = &bufferDeviceAddressFeatures;
 		vkGetPhysicalDeviceFeatures2(m_PhysicalDevice, &physicalDeviceFeatures2);
 
-		 VkPhysicalDeviceFeatures deviceFeatures{};
-
-
+		VkPhysicalDeviceFeatures deviceFeatures{};
+		
 		 //.setShaderImageGatherExtended(true)
 			// .setSamplerAnisotropy(true)
 			// .setTessellationShader(true)
@@ -732,6 +791,8 @@ namespace BlackPearl {
 			 .setPNext(pNext);*/
 
 		VkPhysicalDeviceVulkan12Features vulkan12features{};
+		vulkan12features.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_2_FEATURES;
+		vulkan12features.descriptorIndexing = VK_TRUE;
 		vulkan12features.runtimeDescriptorArray = true;
 		vulkan12features.descriptorBindingPartiallyBound = true;
 		vulkan12features.descriptorBindingVariableDescriptorCount = true;
@@ -774,7 +835,7 @@ namespace BlackPearl {
 		if (m_DeviceParams.deviceCreateInfoCallback)
 			m_DeviceParams.deviceCreateInfoCallback(deviceDesc);
 
-		if (vkCreateDevice(m_PhysicalDevice, &(VkDeviceCreateInfo)deviceDesc, nullptr, &m_Device) != VkResult::VK_SUCCESS) {
+		if (vkCreateDevice(m_PhysicalDevice, &deviceDesc, nullptr, &m_Device) != VkResult::VK_SUCCESS) {
 			GE_CORE_ERROR("failed to create device");
 			return false;
 		};
@@ -797,12 +858,12 @@ namespace BlackPearl {
 		//VULKAN_HPP_DEFAULT_DISPATCHER.init(m_Device);
 
 		// stash the renderer string
-		VkPhysicalDeviceProperties prop;
+		VkPhysicalDeviceProperties prop{};
 		vkGetPhysicalDeviceProperties(m_PhysicalDevice, &prop);
 		
 		//m_RendererString = std::string(prop.deviceName.data());
 
-		GE_CORE_INFO("Created Vulkan device: %s", prop.deviceName);
+		GE_CORE_INFO(prop.deviceName);
 
 		return true;
 	}
@@ -848,6 +909,15 @@ namespace BlackPearl {
 		extent.width = m_DeviceParams.backBufferWidth;
 		extent.height = m_DeviceParams.backBufferHeight;
 
+		SwapChainSupportDetails swapChainSupport = _querySwapChainSupport(m_PhysicalDevice);
+		uint32_t imageCount = m_DeviceParams.swapChainBufferCount;// swapChainSupport.capabilities.minImageCount + 1;
+		if (imageCount < swapChainSupport.capabilities.minImageCount) {
+			imageCount = swapChainSupport.capabilities.minImageCount;
+		}
+		if (swapChainSupport.capabilities.maxImageCount > 0 && imageCount > swapChainSupport.capabilities.maxImageCount) {
+			imageCount = swapChainSupport.capabilities.maxImageCount;
+		}
+
 		std::unordered_set<uint32_t> uniqueQueues = {
 			uint32_t(m_GraphicsQueueFamily),
 			uint32_t(m_PresentQueueFamily) };
@@ -860,7 +930,7 @@ namespace BlackPearl {
 		createInfo.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
 		createInfo.surface = m_WindowSurface;
 
-		createInfo.minImageCount = m_DeviceParams.swapChainBufferCount;
+		createInfo.minImageCount = imageCount;// m_DeviceParams.swapChainBufferCount;
 		createInfo.imageFormat = m_SwapChainFormat.format;
 		createInfo.imageColorSpace = m_SwapChainFormat.colorSpace;
 		createInfo.imageExtent = extent;
@@ -882,37 +952,14 @@ namespace BlackPearl {
 			throw std::runtime_error("failed to create swap chain!");
 		}
 
-			/*.setSurface(m_WindowSurface)
-			.setMinImageCount(m_DeviceParams.swapChainBufferCount)
-			.setImageFormat(m_SwapChainFormat.format)
-			.setImageColorSpace(m_SwapChainFormat.colorSpace)
-			.setImageExtent(extent)
-			.setImageArrayLayers(1)
-			.setImageUsage(vk::ImageUsageFlagBits::eColorAttachment | vk::ImageUsageFlagBits::eTransferDst | vk::ImageUsageFlagBits::eSampled)
-			.setImageSharingMode(enableSwapChainSharing ? vk::SharingMode::eConcurrent : vk::SharingMode::eExclusive)
-			.setQueueFamilyIndexCount(enableSwapChainSharing ? uint32_t(queues.size()) : 0)
-			.setPQueueFamilyIndices(enableSwapChainSharing ? queues.data() : nullptr)
-			.setPreTransform(vk::SurfaceTransformFlagBitsKHR::eIdentity)
-			.setCompositeAlpha(vk::CompositeAlphaFlagBitsKHR::eOpaque)
-			.setPresentMode(m_DeviceParams.vsyncEnabled ? vk::PresentModeKHR::eFifo : vk::PresentModeKHR::eImmediate)
-			.setClipped(true)
-			.setOldSwapchain(nullptr);*/
 
-		//const vk::Result res = m_Device.createSwapchainKHR(&desc, nullptr, &m_SwapChain);
-		//if (res != vk::Result::eSuccess)
-		//{
-		//	GE_CORE_ERROR("Failed to create a Vulkan swap chain, error code = %s", VkUtil::resultToString(VkResult(res)));
-		//	return false;
 		//}
-		SwapChainSupportDetails swapChainSupport = _querySwapChainSupport(m_PhysicalDevice);
-		uint32_t imageCount = swapChainSupport.capabilities.minImageCount + 1;
-		if (swapChainSupport.capabilities.maxImageCount > 0 && imageCount > swapChainSupport.capabilities.maxImageCount) {
-			imageCount = swapChainSupport.capabilities.maxImageCount;
-		}
+		
 		// retrieve swap chain images
 		vkGetSwapchainImagesKHR(m_Device, m_SwapChain, &imageCount, nullptr);
-		m_SwapChainImages.resize(imageCount);
+		m_SwapChainImages.clear();
 		std::vector<VkImage> images;
+		images.resize(imageCount);
 		vkGetSwapchainImagesKHR(m_Device, m_SwapChain, &imageCount, images.data());
 
 		//auto images = m_Device.getSwapchainImagesKHR(m_SwapChain);
@@ -1017,9 +1064,10 @@ namespace BlackPearl {
 
 		CHECK(createSwapChain())
 
-		m_BarrierCommandList = m_NvrhiDevice->createCommandList();
+		//m_BarrierCommandList = m_NvrhiDevice->createCommandList();
 		VkSemaphoreCreateInfo semaphoreInfo{};
-		semaphoreInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;	vkCreateSemaphore(m_Device, &semaphoreInfo, nullptr, &m_PresentSemaphore);
+		semaphoreInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;	
+		vkCreateSemaphore(m_Device, &semaphoreInfo, nullptr, &m_PresentSemaphore);
 
 #undef CHECK
 
@@ -1131,7 +1179,7 @@ namespace BlackPearl {
 		const VkResult res = vkAcquireNextImageKHR(m_Device,m_SwapChain,
 			std::numeric_limits<uint64_t>::max(), // timeout
 			m_PresentSemaphore,
-			VkFence(),
+			VK_NULL_HANDLE,
 			&m_SwapChainIndex);
 
 		assert(res == VK_SUCCESS);
@@ -1143,12 +1191,13 @@ namespace BlackPearl {
 	{
 		m_NvrhiDevice->queueSignalSemaphore(CommandQueue::Graphics, m_PresentSemaphore, 0);
 
-		m_BarrierCommandList->open(); // umm...
-		m_BarrierCommandList->close();
-		m_NvrhiDevice->executeCommandList(m_BarrierCommandList);
+		//m_BarrierCommandList->open(); // umm...
+		//m_BarrierCommandList->close();
+		//m_NvrhiDevice->executeCommandList(m_BarrierCommandList);
 
 
-		VkPresentInfoKHR info;
+		VkPresentInfoKHR info{};
+		info.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
 		info.waitSemaphoreCount = 1;
 		info.pWaitSemaphores = &m_PresentSemaphore;
 		info.swapchainCount = 1;
@@ -1202,9 +1251,19 @@ namespace BlackPearl {
 	}
 
 
+	DeviceManager* DeviceManager::CreateD3D12()
+	{
+		return nullptr;
+	}
+
 	DeviceManager* DeviceManager::CreateVK()
 	{
 		return new VKDeviceManager();
+	}
+
+	DeviceManager* DeviceManager::CreateOpenGL()
+	{
+		return nullptr;
 	}
 }
 #endif

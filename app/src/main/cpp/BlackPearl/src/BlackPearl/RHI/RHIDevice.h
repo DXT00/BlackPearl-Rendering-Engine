@@ -7,8 +7,9 @@
 #include "RHICommandList.h"
 #include "RHIQuery.h"
 #include "RHIMessageCallback.h"
+#include "RHIDescriptorTable.h"
 #ifdef GE_API_VULKAN
-#include <vulkan/vulkan.h>
+#include <vulkan/vulkan_core.h>
 #endif
 namespace BlackPearl {
 
@@ -17,7 +18,11 @@ namespace BlackPearl {
 	public:
 		//virtual HeapHandle createHeap(const HeapDesc& d) = 0;
 
-		virtual TextureHandle createTexture(const TextureDesc& d) = 0;
+		//virtual TextureHandle createTexture(const TextureDesc& d) = 0;
+		virtual TextureHandle createTexture(TextureDesc& d) = 0;
+
+		virtual SamplerHandle createSampler(const SamplerDesc& d) = 0;
+
 		//virtual MemoryRequirements getTextureMemoryRequirements(ITexture* texture) = 0;
 		//virtual bool bindTextureMemory(ITexture* texture, IHeap* heap, uint64_t offset) = 0;
 
@@ -28,9 +33,9 @@ namespace BlackPearl {
 		//virtual void unmapStagingTexture(IStagingTexture* tex) = 0;
 
 		virtual BufferHandle createBuffer(const BufferDesc& d) = 0;
-		//virtual void* mapBuffer(IBuffer* buffer, CpuAccessMode cpuAccess) = 0;
-		//virtual void unmapBuffer(IBuffer* buffer) = 0;
-		//virtual MemoryRequirements getBufferMemoryRequirements(IBuffer* buffer) = 0;
+		virtual void* mapBuffer(IBuffer* buffer, CpuAccessMode cpuAccess) = 0;
+		virtual void unmapBuffer(IBuffer* buffer) = 0;
+		virtual MemoryRequirements getBufferMemoryRequirements(IBuffer* buffer) = 0;
 		//virtual bool bindBufferMemory(IBuffer* buffer, IHeap* heap, uint64_t offset) = 0;
 
 		//virtual BufferHandle createHandleForNativeBuffer(ObjectType objectType, Object buffer, const BufferDesc& desc) = 0;
@@ -39,10 +44,11 @@ namespace BlackPearl {
 		//virtual ShaderHandle createShaderSpecialization(IShader* baseShader, const ShaderSpecialization* constants, uint32_t numConstants) = 0;
 		virtual ShaderLibraryHandle createShaderLibrary(const void* binary, size_t binarySize) = 0;
 
-		virtual SamplerHandle createSampler(const SamplerDesc& d) = 0;
 
 		//// Note: vertexShader is only necessary on D3D11, otherwise it may be null
-		//virtual InputLayoutHandle createInputLayout(const VertexAttributeDesc* d, uint32_t attributeCount, IShader* vertexShader) = 0;
+		virtual InputLayoutHandle createInputLayout(const VertexAttributeDesc* d, uint32_t attributeCount, IShader* vertexShader) = 0;
+
+		virtual bool writeDescriptorTable(IDescriptorTable* descriptorTable, const BindingSetItem& item) = 0;
 
 		// Event queries
 		virtual EventQueryHandle createEventQuery() = 0;
@@ -67,14 +73,14 @@ namespace BlackPearl {
 		virtual ComputePipelineHandle createComputePipeline(const ComputePipelineDesc& desc) = 0;
 		virtual MeshletPipelineHandle createMeshletPipeline(const MeshletPipelineDesc& desc, IFramebuffer* fb) = 0;
 
-		//virtual RayTracingPipelineHandle createRayTracingPipeline(const RayTracingPipelineDesc& desc) = 0;
+		virtual RayTracingPipelineHandle createRayTracingPipeline(const RayTracingPipelineDesc& desc) = 0;
 
 		virtual BindingLayoutHandle createBindingLayout(const RHIBindingLayoutDesc& desc) = 0;
 		virtual BindingLayoutHandle createBindlessLayout(const RHIBindlessLayoutDesc& desc) = 0;
 		virtual BindingSetHandle createBindingSet(const BindingSetDesc& desc, IBindingLayout* layout) = 0;
 		// virtual DescriptorTableHandle createDescriptorTable(IBindingLayout* layout) = 0;
 
-		// virtual void resizeDescriptorTable(IDescriptorTable* descriptorTable, uint32_t newSize, bool keepContents = true) = 0;
+		virtual void resizeDescriptorTable(IDescriptorTable* descriptorTable, uint32_t newSize, bool keepContents = true) = 0;
 		// virtual bool writeDescriptorTable(IDescriptorTable* descriptorTable, const BindingSetItem& item) = 0;
 
 		// //virtual rt::OpacityMicromapHandle createOpacityMicromap(const rt::OpacityMicromapDesc& desc) = 0;
@@ -91,9 +97,9 @@ namespace BlackPearl {
 		// // IMPORTANT: Call this method at least once per frame.
 		// virtual void runGarbageCollection() = 0;
 
-		// virtual bool queryFeatureSupport(Feature feature, void* pInfo = nullptr, size_t infoSize = 0) = 0;
+		virtual bool queryFeatureSupport(Feature feature, void* pInfo = nullptr, size_t infoSize = 0) = 0;
 
-		// virtual FormatSupport queryFormatSupport(Format format) = 0;
+		virtual FormatSupport queryFormatSupport(Format format) = 0;
 
 		 // Front-end for executeCommandLists(..., 1) for compatibility and convenience
 		uint64_t executeCommandList(ICommandList* commandList, CommandQueue executionQueue = CommandQueue::Graphics)

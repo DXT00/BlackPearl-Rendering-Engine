@@ -1,5 +1,4 @@
 #pragma once
-#ifdef GE_API_D3D12
 #include "d3dx12.h"
 #include "BlackPearl/Core.h"
 namespace BlackPearl {
@@ -63,4 +62,4 @@ namespace BlackPearl {
 
 
 }
-#endif
+

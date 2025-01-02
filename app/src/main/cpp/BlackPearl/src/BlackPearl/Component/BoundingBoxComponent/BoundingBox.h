@@ -12,7 +12,7 @@ namespace BlackPearl {
 		BoundingBox(AABB box) 
 			:Component(Component::Type::BoundingBox),m_Box(box){
 		};
-		const AABB& Get() const { return m_Box; }
+		AABB Get() const { return m_Box; }
 		void SetBox(const AABB& box) {
 			m_Box = box;
 		}

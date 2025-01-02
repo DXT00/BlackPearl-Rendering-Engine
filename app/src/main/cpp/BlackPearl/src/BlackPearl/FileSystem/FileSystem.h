@@ -85,6 +85,7 @@ namespace BlackPearl
     class IFileSystem
     {
     public:
+        IFileSystem();
         virtual ~IFileSystem() = default;
 
         // Test if a folder exists.
@@ -111,6 +112,14 @@ namespace BlackPearl
         // Returns the number of directories found, or a negative number on errors - see donut::vfs::status.
         // The directory names, relative to the 'path', are passed to 'callback' in no particular order.
         virtual int enumerateDirectories(const std::filesystem::path& path, enumerate_callback_t callback, bool allowDuplicates = false) = 0;
+   
+        std::filesystem::path GetExeDir() const;
+    protected:
+        std::filesystem::path m_ExeDir;
+
+
+
+
     };
 
     // An implementation of virtual file system that directly maps to the OS files.

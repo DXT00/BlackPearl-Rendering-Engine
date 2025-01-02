@@ -4,6 +4,11 @@
 #include "BlackPearl/Renderer/Mesh/MeshManager.h"
 #include "BlackPearl/Node/Node.h"
 #include "BlackPearl/Lumen/LumenSceneData.h"
+#include "SceneOctree.h"
+#include "BlackPearl/Component/LightProbeComponent/LightProbeComponent.h"
+#include "BlackPearl/Renderer/DescriptorTableManager.h"
+#include "BlackPearl/RHI/RHIDescriptorTable.h"
+
 namespace BlackPearl {
 	class Scene
 	{
@@ -18,10 +23,17 @@ namespace BlackPearl {
 		~Scene();
 		void AddCamera();
 		void GetCamera();
-		void AddLights(Object* obj);
-		void GetLights();
+		//void AddLights(Object* obj);
+		//void GetLights();
+		void SetLightSources(LightSources* lightSources);
+		LightSources* GetLightSources() const;
+		void SetLightProbes(const std::vector<std::shared_ptr<LightProbe>>& lightSources);
+		std::vector<std::shared_ptr<LightProbe>> GetLightProbes() const;
+
+		void SetDesctiptorTableMgr(const std::shared_ptr<DescriptorTableManager>& descriptorTable);
+
+
 		void AddObject(Object* obj);
-		void AddNode(Node* node);
 		// only single nodes now
 		void UpdateObjsAABB();
 
@@ -36,19 +48,49 @@ namespace BlackPearl {
 		uint32_t GetSingleNodesCnt() const { return m_SingleNodesList.size(); }
 
 		Node* GetSingleNodes(uint32_t i) const { return m_SingleNodesList[i]; }
-
+		//TODO:: Octree manager
+		Node* GetRootNode() const {
+			return m_RootNode;
+		}
 		DemoType GetDemoType() { return m_DemoType; }
+
+		IDescriptorTable* GetDescriptorTable() const { return m_DescriptorTableMgr ? m_DescriptorTableMgr->GetDescriptorTable() : nullptr; }
+
+
+		/** An octree containing the primitives in the scene. */
+		ScenePrimitiveOctree *PrimitiveOctree;
+
+		/**unordered_map of primitive octree node index**/
+		std::unordered_map<uint64_t, uint32_t> PrimitiveOctreeIndex;
+
 	public:
 		std::shared_ptr<LumenSceneData> LumenSceneData;
+		std::vector<AABB> m_ObjectBounds;
+		std::vector<uint32_t> m_ObjectOctreeIndex;
 	protected:
 		DemoType m_DemoType;
 		std::vector<Object*> m_ObjectList;
+
+
 		std::vector<Node*>   m_NodesList;
 		std::vector<Node*>   m_BatchNodesList;
 		std::vector<Node*>   m_InstanceNodesList;
 		std::vector<Node*>   m_SingleNodesList;
 		std::vector<Model*>  m_ModelList;
 		std::shared_ptr<MeshManager> m_MeshMgr;
+
+		std::shared_ptr<DescriptorTableManager> m_DescriptorTableMgr;
+
+		Object* m_RootObj;
+		Node* m_RootNode;
+
+		LightSources* m_LightSources;
+
+		std::vector<std::shared_ptr<LightProbe>> m_LightProbes;
+
+	private:
+		void _AddNode(Node* node);
+
 	};
 
 

@@ -1,8 +1,12 @@
 #include "pch.h"
 #include "BlackPearl/Core.h"
 #include "DynamicRHI.h"
+#ifdef GE_API_D3D12
 #include "D3D12RHI/D3D12DynamicModule.h"
+#endif
+#ifdef GE_API_OPENGL
 #include "OpenGLRHI/OpenGLDynamicModule.h"
+#endif
 #include "VulkanRHI/VkDynamicModule.h"
 
 
@@ -10,14 +14,23 @@ namespace BlackPearl {
 
 	//global RHI
 	DynamicRHI* g_DynamicRHI = nullptr;
+#if GE_API_D3D12
+	DynamicRHI::Type DynamicRHI::g_RHIType = DynamicRHI::Type::D3D12;
+
+#elif GE_API_VULKAN
 	DynamicRHI::Type DynamicRHI::g_RHIType = DynamicRHI::Type::Vulkan;
+
+#else
+	DynamicRHI::Type DynamicRHI::g_RHIType = DynamicRHI::Type::OpenGL;
+
+#endif
 	void DynamicRHIInit(DynamicRHI::Type rhiType)
 	{
 		DynamicRHI::g_RHIType = rhiType;
 		DynamicModule* dynamicModule;
 		if (DynamicRHI::g_RHIType == DynamicRHI::Type::OpenGL) {
 #ifdef GE_API_OPENGL
-            dynamicModule = DBG_NEW OpenGLDynamicModule();
+			dynamicModule = DBG_NEW OpenGLDynamicModule();
 #endif
 		}
 		else if (DynamicRHI::g_RHIType == DynamicRHI::Type::D3D12) {
@@ -37,7 +50,7 @@ namespace BlackPearl {
 	{
 		return g_DynamicRHI->InitWindow();
 	}
-	//TODO:ï¿½ï¿½ï¿½Mathï¿½â£¬ï¿½ï¿½ï¿½ï¿½glmï¿½ï¿½DirectXMath
+	//TODO:Ìí¼ÓMath¿â£¬Çø·ÖglmÓëDirectXMath
 	void RHIInitMathLib() {
 		g_DynamicRHI->InitMathLib();
 	}

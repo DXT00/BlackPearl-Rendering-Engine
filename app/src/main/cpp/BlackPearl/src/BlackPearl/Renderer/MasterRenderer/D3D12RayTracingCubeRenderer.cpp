@@ -1,5 +1,4 @@
 #include "pch.h"
-#ifdef GE_API_D3D12
 #include "D3D12RayTracingCubeRenderer.h"
 #include "BlackPearl/Application.h"
 #include "BlackPearl/Config.h"
@@ -614,7 +613,7 @@ namespace BlackPearl {
 
 		// Allocate resources for acceleration structures.
 		// Acceleration structures can only be placed in resources that are created in the default heap (or custom heap equivalent). 
-		// Default heap is OK since the application doesnï¿½t need CPU read/write access to them. 
+		// Default heap is OK since the application doesn’t need CPU read/write access to them. 
 		// The resources that will contain acceleration structures must be created in the state D3D12_RESOURCE_STATE_RAYTRACING_ACCELERATION_STRUCTURE, 
 		// and must have resource flag D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS. The ALLOW_UNORDERED_ACCESS requirement simply acknowledges both: 
 		//  - the system will be doing this type of access in its implementation of acceleration structure builds behind the scenes.
@@ -800,4 +799,3 @@ namespace BlackPearl {
 		m_deviceResources->Present(D3D12_RESOURCE_STATE_PRESENT);
 	}
 }
-#endif

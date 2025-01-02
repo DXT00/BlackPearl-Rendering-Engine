@@ -6,7 +6,8 @@
 #include "RHIBuffer.h"
 #include "RHISampler.h"
 #include "RHIBindingLayoutDesc.h"
-#include "RHIAccelStruct.h"
+#include "RHIRayTraceStruct.h"
+#include "BlackPearl/RHI/Common/Containers.h"
 namespace BlackPearl {
     struct BindingSetItem
     {
@@ -65,8 +66,6 @@ namespace BlackPearl {
             result.unused = 0;
             return result;
         }
-
-        static TextureSubresourceSet AllSubresources ;
 
         static BindingSetItem Texture_SRV(uint32_t slot, ITexture* texture, Format format = Format::UNKNOWN,
             TextureSubresourceSet subresources = AllSubresources, TextureDimension dimension = TextureDimension::Unknown)
@@ -152,7 +151,7 @@ namespace BlackPearl {
             return result;
         }
 
-        static BindingSetItem RayTracingAccelStruct(uint32_t slot, IAccelStruct* as)
+        static BindingSetItem RayTracingAccelStruct(uint32_t slot, rt::IAccelStruct* as)
         {
             BindingSetItem result;
             result.slot = slot;
@@ -250,15 +249,16 @@ namespace BlackPearl {
     };
 
     // verify the packing of BindingSetItem for good alignment
-    //static_assert(sizeof(BindingSetItem) == 32, "sizeof(BindingSetItem) is supposed to be 32 bytes");
+    static_assert(sizeof(BindingSetItem) == 32, "sizeof(BindingSetItem) is supposed to be 32 bytes");
 
     // describes the resource bindings for a single pipeline stage
+    typedef std::vector<BindingSetItem> BindingSetItemArray;
 
     // describes a set of bindings across all stages of the pipeline
     // (not all bindings need to be present in the set, but the set must be defined by a single BindingSetItem object)
     struct BindingSetDesc
     {
-         std::vector<BindingSetItem> bindings;
+        BindingSetItemArray bindings;
 
         // Enables automatic liveness tracking of this binding set by nvrhi command lists.
         // By setting trackLiveness to false, you take the responsibility of not releasing it 

@@ -26,7 +26,7 @@
 
 #define _CRTDBG_MAP_ALLOC
 
-//Ê¹ï¿½ï¿½Ä£ï¿½å»ºï¿½ï¿½
+//Ê¹ÓÃÄ£°å»º³å
 #ifdef GE_STENCIL_TEST
 #define GE_ENABLE_STENCIL_TEST
 #endif // GE_STENCIL_TEST
@@ -37,20 +37,11 @@
 #define _SH
 
 
-#define GE_SAVE_DELETE(p)   \
-if(p != nullptr)            \
-{                           \
-    delete p;               \
-    p = nullptr;            \
-}                           \
-
-
+#define GE_SAVE_DELETE(p) {if(p!=nullptr){delete p;p = nullptr;}}
 #define GE_SAVE_DELETE_ARRAY(p) {if(p!=nullptr){delete [] p;p = nullptr;}}
 
 #define GE_SAVE_FREE(p) {if(p!=nullptr){free(p);p = nullptr;}}
 #define GE_SAVE_FREE_ARRAY(p) {if(p!=nullptr){free(p);p = nullptr;}}
-
-#ifdef GE_PLATFORM_WINDOWS
 #define GE_ERROR_JUDGE()\
 {\
 	GLenum err = glGetError();\
@@ -66,37 +57,13 @@ if(p != nullptr)            \
 		GE_CORE_ERROR("GL_INVALID_FRAMEBUFFER_OPERATION");}\
 	else if (err == GL_OUT_OF_MEMORY){ \
 		GE_CORE_ERROR("GL_OUT_OF_MEMORY");}\
-    else if (err == GL_STACK_UNDERFLOW){ \
+	else if (err == GL_STACK_UNDERFLOW){ \
 		GE_CORE_ERROR("GL_STACK_UNDERFLOW");}\
-    else if (err == GL_STACK_OVERFLOW){ \
+	else if (err == GL_STACK_OVERFLOW){ \
 		GE_CORE_ERROR("GL_STACK_OVERFLOW");}\
 	else{\
 		GE_CORE_ERROR("no such err type!"); }\
 }
-#endif
-#ifdef GE_PLATFORM_ANDRIOD
-#define GE_ERROR_JUDGE()\
-{\
-	GLenum err = glGetError();\
-	if (err == GL_NO_ERROR){ \
-	}\
-	else if (err == GL_INVALID_ENUM){ \
-		GE_CORE_ERROR("GL_INVALID_ENUM");}\
-	else if (err == GL_INVALID_VALUE){ \
-		GE_CORE_ERROR("GL_INVALID_VALUE");}\
-	else if (err == GL_INVALID_OPERATION){\
-		GE_CORE_ERROR("GL_INVALID_OPERATION");}\
-	else if (err == GL_INVALID_FRAMEBUFFER_OPERATION){ \
-		GE_CORE_ERROR("GL_INVALID_FRAMEBUFFER_OPERATION");}\
-	else if (err == GL_OUT_OF_MEMORY){ \
-		GE_CORE_ERROR("GL_OUT_OF_MEMORY");}\
-	else{\
-		GE_CORE_ERROR("no such err type!"); }\
-}
-#endif
-
-
-
 
 #define GE_INVALID_ENUM() GE_ASSERT(0,"Invalid enum value")
 #define GE_INVALID_NOTSUPPORT() GE_ASSERT(0,"Not Supported")

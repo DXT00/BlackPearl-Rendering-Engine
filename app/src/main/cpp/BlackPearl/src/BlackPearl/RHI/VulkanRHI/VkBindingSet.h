@@ -6,13 +6,13 @@
 #include "../RHIBindingLayoutDesc.h"
 #include "VkContext.h"
 #include "VkBuffer.h"
-#include <vulkan/vulkan.h>
+#include <vulkan/vulkan_core.h>
 namespace BlackPearl {
 	class BindingSet : public RefCounter<IBindingSet>
 	{
     public:
-        virtual const BindingSetDesc* getDesc() const override { return nullptr; };  // returns nullptr for descriptor tables
-        virtual IBindingLayout* getLayout() const override { return nullptr; }
+        virtual const BindingSetDesc* getDesc() const override { return &desc; };  // returns nullptr for descriptor tables
+        virtual IBindingLayout* getLayout() const override { return layout; }
 
 
         BindingSetDesc desc;

@@ -1,10 +1,5 @@
 #include "pch.h"
-#ifdef GE_PLATFORM_ANDRIOD
-#include "GLES3/gl3.h"
-#endif
-#ifdef GE_PLATFORM_WINDOWS
-#include "glad/glad.h"
-#endif
+#include <glad/glad.h>
 #include "Mesh.h"
 #include "glm/glm.hpp"
 
@@ -28,8 +23,8 @@ namespace BlackPearl {
 		GE_SAVE_FREE(m_JointIndices1);
 		GE_SAVE_FREE(m_Weight);
 		GE_SAVE_FREE(m_Weight1);
-		m_Material.reset();
-#ifdef GE_API_D3D12
+		material.reset();
+
 		IndexResource.Reset();
 		MeshletResource.Reset();
 		UniqueVertexIndexResource.Reset();
@@ -40,7 +35,6 @@ namespace BlackPearl {
 		{
 			VertexResources[i].Reset();
 		}
-#endif
 	}
 
 	uint32_t Mesh::GetVerticesSize(unsigned int vertexBufferId)
@@ -50,16 +44,129 @@ namespace BlackPearl {
 
 	void Mesh::SetTessellation(uint32_t verticesPerTessPatch)
 	{
-#ifdef GE_PLATFORM_WINDOWS
-
-        if (DynamicRHI::g_RHIType == DynamicRHI::Type::OpenGL)
+		if (DynamicRHI::g_RHIType == DynamicRHI::Type::OpenGL)
 			glPatchParameteri(GL_PATCH_VERTICES, verticesPerTessPatch);
-#endif
+
 	}
 
 	void Mesh::SetVertexBufferLayout(const VertexBufferLayout& layout)
 	{
 		m_VertexBufferLayout = layout;	
+	}
+
+	void Mesh::UpdateInstanceBuffer(Transform* transform)
+	{
+		
+	}
+
+	void Mesh::_InitBufferGroup(const MeshFilter* filter)
+	{
+		buffers->indexData = filter->indexData;
+		buffers->positionData = filter->positionData;
+		buffers->prePositionData = filter->prePositionData;
+		buffers->texcoord1Data = filter->texcoord1Data;
+		buffers->normalData = filter->normalData;
+		buffers->tangentData = filter->tangentData;
+		buffers->bitangentData = filter->bitangentData;
+
+		BufferDesc bufferDesc;
+		bufferDesc.isVertexBuffer = true;
+		bufferDesc.byteSize = 0;
+		bufferDesc.debugName = "VertexBuffer";
+		bufferDesc.canHaveTypedViews = true;
+		bufferDesc.canHaveRawViews = true;
+		bufferDesc.isAccelStructBuildInput = false;
+
+		if (!buffers->positionData.empty())
+		{
+			_AppendBufferRange(buffers->getVertexBufferRange(VertexAttribute::Position),
+				buffers->positionData.size() * sizeof(buffers->positionData[0]), bufferDesc.byteSize);
+		}
+
+		if (!buffers->prePositionData.empty())
+		{
+			_AppendBufferRange(buffers->getVertexBufferRange(VertexAttribute::PrevPosition),
+				buffers->prePositionData.size() * sizeof(buffers->prePositionData[0]), bufferDesc.byteSize);
+		}
+
+		if (!buffers->normalData.empty())
+		{
+			_AppendBufferRange(buffers->getVertexBufferRange(VertexAttribute::Normal),
+				buffers->normalData.size() * sizeof(buffers->normalData[0]), bufferDesc.byteSize);
+		}
+
+		if (!buffers->tangentData.empty())
+		{
+			_AppendBufferRange(buffers->getVertexBufferRange(VertexAttribute::Tangent),
+				buffers->tangentData.size() * sizeof(buffers->tangentData[0]), bufferDesc.byteSize);
+		}
+
+		if (!buffers->texcoord1Data.empty())
+		{
+			_AppendBufferRange(buffers->getVertexBufferRange(VertexAttribute::TexCoord1),
+				buffers->texcoord1Data.size() * sizeof(buffers->texcoord1Data[0]), bufferDesc.byteSize);
+		}
+
+		if (!buffers->texcoord2Data.empty())
+		{
+			_AppendBufferRange(buffers->getVertexBufferRange(VertexAttribute::TexCoord2),
+				buffers->texcoord2Data.size() * sizeof(buffers->texcoord2Data[0]), bufferDesc.byteSize);
+		}
+
+		if (!buffers->jointIdData.empty())
+		{
+			_AppendBufferRange(buffers->getVertexBufferRange(VertexAttribute::JointIndices),
+				buffers->jointIdData.size() * sizeof(buffers->jointIdData[0]), bufferDesc.byteSize);
+		}
+
+		if (!buffers->jointId1Data.empty())
+		{
+			_AppendBufferRange(buffers->getVertexBufferRange(VertexAttribute::JointIndices),
+				buffers->jointId1Data.size() * sizeof(buffers->jointId1Data[0]), bufferDesc.byteSize);
+		}
+
+		if (!buffers->jointId2Data.empty())
+		{
+			_AppendBufferRange(buffers->getVertexBufferRange(VertexAttribute::JointIndices),
+				buffers->jointId2Data.size() * sizeof(buffers->jointId2Data[0]), bufferDesc.byteSize);
+		}
+
+		if (!buffers->jointWeightData.empty())
+		{
+			_AppendBufferRange(buffers->getVertexBufferRange(VertexAttribute::JointWeights),
+				buffers->jointWeightData.size() * sizeof(buffers->jointWeightData[0]), bufferDesc.byteSize);
+		}
+
+		if (!buffers->jointWeight1Data.empty())
+		{
+			_AppendBufferRange(buffers->getVertexBufferRange(VertexAttribute::JointWeights),
+				buffers->jointWeight1Data.size() * sizeof(buffers->jointWeight1Data[0]), bufferDesc.byteSize);
+		}
+
+		if (!buffers->jointWeight2Data.empty())
+		{
+			_AppendBufferRange(buffers->getVertexBufferRange(VertexAttribute::JointWeights),
+				buffers->jointWeight2Data.size() * sizeof(buffers->jointWeight2Data[0]), bufferDesc.byteSize);
+		}
+
+		buffers->vertexBufferDesc = bufferDesc;
+
+
+
+		BufferDesc IndexbufferDesc;
+		IndexbufferDesc.isIndexBuffer = true;
+		IndexbufferDesc.byteSize = buffers->indexData.size() * sizeof(uint32_t);
+		IndexbufferDesc.debugName = "IndexBuffer";
+		IndexbufferDesc.canHaveTypedViews = true;
+		IndexbufferDesc.canHaveRawViews = true;
+		IndexbufferDesc.format = Format::R32_UINT;
+		IndexbufferDesc.isAccelStructBuildInput = false;
+
+
+		buffers->indexBufferDesc = IndexbufferDesc;
+
+
+
 	}
 
 	void Mesh::Init(uint32_t verticesSize)
@@ -83,7 +190,7 @@ namespace BlackPearl {
 		uint32_t attributeSizeofOneVertex = 0;
 		for (size_t i = 0; i < m_VertexBufferLayout.GetElements().size(); i++)
 		{
-			const BufferElement& element = m_VertexBufferLayout.GetElement(i);
+			BufferElement& element = m_VertexBufferLayout.GetElement(i);
 			attributeSizeofOneVertex += element.GetElementCount();
 		}
 		m_VerticeCount = m_VerticeArrayCount / attributeSizeofOneVertex;
@@ -117,7 +224,7 @@ namespace BlackPearl {
 		std::map<uint32_t, std::string> slot_to_attribute;
 		for (size_t i = 0; i < layout.GetElements().size(); i++)
 		{
-			const BufferElement& element = layout.GetElement(i);
+			BufferElement& element = layout.GetElement(i);
 			slot_to_attribute[element.Location] = element.Name;
 			if (element.Name == "aPos" || element.Name == "POSITION") {
 				pos_cnt = element.GetElementCount();
@@ -176,6 +283,17 @@ namespace BlackPearl {
 			{
 				if (it->second == "aPos" || it->second == "POSITION") {
 					memcpy(m_Positions + i * pos_cnt, m_Vertices + i * attributeSizeofOneVertex + offset,  pos_cnt * sizeof(float));
+					math::float3 pos;
+					pos.x = m_Vertices[i * attributeSizeofOneVertex + offset];
+					pos.y = m_Vertices[i * attributeSizeofOneVertex + offset + 1];
+					pos.z = m_Vertices[i * attributeSizeofOneVertex + offset + 2];
+					m_MinLocalP.x = math::min(pos.x, m_MinLocalP.x);
+					m_MinLocalP.y = math::min(pos.y, m_MinLocalP.x);
+					m_MinLocalP.z = math::min(pos.z, m_MinLocalP.x);
+
+					m_MaxLocalP.x = math::max(pos.x, m_MaxLocalP.x);
+					m_MaxLocalP.y = math::max(pos.y, m_MaxLocalP.x);
+					m_MaxLocalP.z = math::max(pos.z, m_MaxLocalP.x);
 					offset += pos_cnt;
 				}
 				else if (it->second == "aNormal" || it->second == "NORMAL") {
@@ -227,33 +345,35 @@ namespace BlackPearl {
 		: m_Vertices(vertices),
 		m_Indices(indices),
 		m_IndicesSize(indicesSize),
-		m_Material(material),
+		material(material),
 		m_VertexBufferLayout(layout),
 		m_VerticeSize(verticesSize),
 		m_NeedTessellation(tessellation)
 	{
+		buffers = std::make_shared<BufferGroup>();
 		m_VerticeArrayCount = verticesSize / sizeof(float);
 		m_IndicesCount = indicesSize / sizeof(uint32_t);
 		Init(m_VerticeSize);
 		if (tessellation)
 			SetTessellation(verticesPerTessPatch);
-		g_materialManager->AddMaterial(m_Material);
+		g_materialManager->AddMaterial(material);
 
 	};
 
 	/*one vertexBuffer*/
 	Mesh::Mesh(
-		std::vector<float> vertices,
-		std::vector<uint32_t> indices,
+		const MeshFilter* meshFilter,
 		std::shared_ptr<Material> material,
 		const VertexBufferLayout& layout,
 		bool tessellation,
 		uint32_t verticesPerTessPatch)
-		: m_Material(material),
+		: material(material),
 		m_VertexBufferLayout(layout),
 		m_NeedTessellation(tessellation)
 	{
-		
+		buffers = std::make_shared<BufferGroup>();
+		std::vector<float> vertices = meshFilter->GetVertices();
+		std::vector<uint32_t> indices = meshFilter->GetIndices();
 		m_IndicesCount = indices.size();
 		m_IndicesSize = m_IndicesCount * sizeof(uint32_t);
 		m_VerticeArrayCount = vertices.size();
@@ -269,12 +389,13 @@ namespace BlackPearl {
 
 		GE_ASSERT(m_VerticeArrayCount > 0, "vertices cnt <=0 ");
 		m_Vertices = DBG_NEW float[m_VerticeArrayCount];
-		memcpy(m_Vertices, &vertices[0], m_VerticeSize);//×¢ï¿½ï¿½memcpyï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö½ï¿½ï¿½ï¿½!!!
+		memcpy(m_Vertices, &vertices[0], m_VerticeSize);//×¢Òâmemcpy×îºóÒ»¸ö²ÎÊýÊÇ×Ö½ÚÊý!!!
 
+		_InitBufferGroup(meshFilter);
 		Init(m_VerticeSize);
 		if (tessellation)
 			SetTessellation(verticesPerTessPatch);
-		g_materialManager->AddMaterial(m_Material);
+		g_materialManager->AddMaterial(material);
 
 	};
 
@@ -284,10 +405,11 @@ namespace BlackPearl {
 		std::vector<std::shared_ptr<VertexBuffer>> vertexBuffers,
 		bool tessellation,
 		uint32_t verticesPerTessPatch) {
+		buffers = std::make_shared<BufferGroup>();
 		m_VertexArray.reset(DBG_NEW VertexArray());
 		m_IndicesSize = indexBuffer->GetIndicesSize();
 		m_IndicesCount = m_IndicesSize / sizeof(uint32_t);
-		m_Material = material;
+		material = material;
 		m_NeedTessellation = tessellation;
 		m_Indices = const_cast<uint32_t*>(indexBuffer->GetIndicies());
 		m_VertexArray->SetIndexBuffer(indexBuffer);
@@ -300,18 +422,25 @@ namespace BlackPearl {
 
 			for (size_t i = 0; i < m_VertexBufferLayout.GetElements().size(); i++)
 			{
-				const BufferElement& element = m_VertexBufferLayout.GetElement(i);
+				BufferElement& element = m_VertexBufferLayout.GetElement(i);
 				attributeSizeofOneVertex += element.ElementSize;
 			}
 			m_VerticeCount += vertexBuffer->GetVertexSize() / attributeSizeofOneVertex;
 
-			//TODO:: ï¿½Ö¶ï¿½ï¿½ vbo ï¿½ï¿½ï¿½ï¿½
+			//TODO:: ·Ö¶à¸ö vbo ½âÎö
 			if(vertexBuffers.size() == 1)
 				ParseAttributes(m_VertexBufferLayout);
 		}
 
 		if (tessellation)
 			SetTessellation(verticesPerTessPatch);
-		g_materialManager->AddMaterial(m_Material);
+		g_materialManager->AddMaterial(material);
+	}
+
+	void Mesh::_AppendBufferRange(BufferRange& range, size_t size, uint64_t& currentBufferSize)
+	{
+		range.byteOffset = currentBufferSize;
+		range.byteSize = size;
+		currentBufferSize += range.byteSize;
 	}
 }

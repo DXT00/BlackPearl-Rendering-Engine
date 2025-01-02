@@ -1,17 +1,17 @@
 #include "pch.h"
-#ifdef GE_PLATFORM_ANDRIOD
-//#include "GLES3/gl3.h"
-#include "GLES3/gl32.h"
-#endif
-#ifdef GE_PLATFORM_WINDOWS
 #include "glad/glad.h"
-#endif
-
 #include "Buffer.h"
 #include "BlackPearl/Config.h"
-#include "BlackPearl/Log.h"
+#include "BlackPearl/RHI/RHIDefinitions.h"
+#include "BlackPearl/RHI/RHISampler.h"
+#include "BlackPearl/Renderer/DeviceManager.h"
+#include "BlackPearl/RHI/OpenGLRHI/OpenGLTexture.h"
 #include <memory>
+
+
 namespace BlackPearl {
+	extern DeviceManager* g_deviceManager;
+
 	//------------------------VertexBuffer-----------------//
 	/* 
 	darwType = GL_STATIC_DRAW / GL_DYNAMIC_DRAW (buffer can be read or written)
@@ -35,7 +35,7 @@ namespace BlackPearl {
 	VertexBuffer::VertexBuffer(const float* vertices, uint32_t size, bool Interleaved , bool divisor, uint32_t perInstance, uint32_t drawType)
 	{
 		m_VerticesFloat = vertices;
-		//TODO:: Ê¹ï¿½ï¿½RHIBuffer
+		//TODO:: Ê¹ÓÃRHIBuffer
 #ifdef GE_API_OPENGL
 		glGenBuffers(1, &m_RendererID);
 		glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);
@@ -177,14 +177,14 @@ namespace BlackPearl {
 	}
 
 	//------------------------FrameBuffer-----------------//
-	//note: framebuffer has no memory, imageWidth, imageHeight is the width and height of the attachment! ï¿½ï¿½Í¬attachmentï¿½Ð²ï¿½Í¬ï¿½ï¿½widthï¿½ï¿½height
-	FrameBuffer::FrameBuffer(const int imageWidth,int imageHeight,std::initializer_list<Attachment> attachment, unsigned int colorAttachmentPoint,bool disableColor, Texture::Type colorTextureType)
+	//note: framebuffer has no memory, imageWidth, imageHeight is the width and height of the attachment! ²»Í¬attachmentÓÐ²»Í¬µÄwidthºÍheight
+	FrameBuffer::FrameBuffer(const int imageWidth,int imageHeight,std::initializer_list<Attachment> attachment, unsigned int colorAttachmentPoint,bool disableColor, TextureType colorTextureType)
 	{
 		/* m_Width,m_Height for voxel cone tracing */
 		m_Width = imageWidth;
 		m_Height = imageHeight;
 		GLint previousFrameBuffer;
-		glGetIntegerv(GL_FRAMEBUFFER_BINDING, &previousFrameBuffer);//ï¿½ï¿½È¡Ö®Ç°ï¿½ó¶¨µï¿½Framebuffer
+		glGetIntegerv(GL_FRAMEBUFFER_BINDING, &previousFrameBuffer);//»ñÈ¡Ö®Ç°°ó¶¨µÄFramebuffer
 
 		glGenFramebuffers(1, &m_RendererID);
 		Bind();
@@ -212,77 +212,107 @@ namespace BlackPearl {
 		GE_ASSERT(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "Framebuffer not complete!");
 
 		UnBind();
-		//ï¿½ó¶¨»ï¿½Ô­ï¿½ï¿½ï¿½ï¿½FrameBuffer
+		//°ó¶¨»ØÔ­À´µÄFrameBuffer
 		glBindFramebuffer(GL_FRAMEBUFFER, previousFrameBuffer);
 
 	}
 
-	void FrameBuffer::AttachColorTexture(Texture::Type textureType,unsigned int attachmentPoints,unsigned int imageWidth,unsigned int imageHeight)
+	void FrameBuffer::AttachColorTexture(TextureType textureType, unsigned int attachmentPoints,unsigned int imageWidth,unsigned int imageHeight)
 	{
-		GE_CORE_WARN(" ×¢ï¿½ï¿½Textureï¿½Ç·ï¿½ï¿½ï¿½Ä¬ï¿½ÏµÄ¸ï¿½Ê½ï¿½ï¿½");
+		GE_CORE_WARN(" ×¢ÒâTextureÊÇ·ñÊÇÄ¬ÈÏµÄ¸ñÊ½£¡");
 
-		m_TextureColorBuffers[attachmentPoints].reset(DBG_NEW Texture(textureType, imageWidth, imageHeight,false, GL_NEAREST, GL_NEAREST, GL_RGB16F, GL_RGBA, GL_REPEAT,GL_FLOAT));
+		TextureDesc desc;
+		desc.type = textureType;
+		desc.width = imageWidth;
+		desc.height = imageHeight;
+		desc.minFilter = FilterMode::Nearest;
+		desc.magFilter = FilterMode::Nearest;
+		desc.wrap = SamplerAddressMode::Repeat;
+		desc.format = Format::RGBA16_FLOAT;
+		desc.generateMipmap = true;
+		g_deviceManager->GetDevice()->createTexture(desc);
+		m_TextureColorBuffers[attachmentPoints] = g_deviceManager->GetDevice()->createTexture(desc);
 		
-		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Óµï¿½ï¿½ï¿½Ç°ï¿½ó¶¨µï¿½Ö¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0+attachmentPoints, GL_TEXTURE_2D, m_TextureColorBuffers[attachmentPoints]->GetRendererID(), 0);
+		//½«Ëü¸½¼Óµ½µ±Ç°°ó¶¨µÄÖ¡»º³å¶ÔÏó
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0+attachmentPoints, GL_TEXTURE_2D, (GLuint)static_cast<Texture*>(m_TextureColorBuffers[attachmentPoints].Get())->GetRendererID(), 0);
 		GE_ASSERT(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "Framebuffer not complete!");
 	}
 
-	void FrameBuffer::AttachColorTexture(std::shared_ptr<Texture> texture, unsigned int attachmentPoints)
+	void FrameBuffer::AttachColorTexture(TextureHandle texture, unsigned int attachmentPoints)
 	{
-		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Óµï¿½ï¿½ï¿½Ç°ï¿½ó¶¨µï¿½Ö¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+		//½«Ëü¸½¼Óµ½µ±Ç°°ó¶¨µÄÖ¡»º³å¶ÔÏó
 		m_TextureColorBuffers[attachmentPoints] = texture;
 		Bind();
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + attachmentPoints, GL_TEXTURE_2D, (GLuint)texture->GetRendererID(), 0);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + attachmentPoints, GL_TEXTURE_2D, (GLuint)static_cast<Texture*>(texture.Get())->GetRendererID(), 0);
 		GE_ASSERT(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "Framebuffer not complete!");
 	}
-
+	//TODO:: Í¨¹ýdevice->createFramebuffer(fboDesc);´´½¨
 	void FrameBuffer::AttachDepthTexture(const int imageWidth, int imageHeight)
 	{	
-		GE_CORE_WARN(" ×¢ï¿½ï¿½Textureï¿½Ç·ï¿½ï¿½ï¿½Ä¬ï¿½ÏµÄ¸ï¿½Ê½ï¿½ï¿½");
+		GE_CORE_WARN(" ×¢ÒâTextureÊÇ·ñÊÇÄ¬ÈÏµÄ¸ñÊ½£¡");
 
-		m_TextureDepthBuffer.reset(DBG_NEW BlackPearl::Texture(Texture::Type::DepthMap, imageWidth, imageHeight,false, GL_NEAREST, GL_NEAREST, GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT, GL_CLAMP_TO_EDGE, GL_FLOAT));
 
-		//m_TextureDepthBuffer.reset(DBG_NEW BlackPearl::DepthTexture(Texture::Type::DepthMap, m_Width, m_Height));
+		TextureDesc desc;
+		desc.type = TextureType::DepthMap;
+		desc.width = imageWidth;
+		desc.height = imageHeight;
+		desc.minFilter = FilterMode::Linear;
+		desc.magFilter = FilterMode::Linear;
+		desc.wrap = SamplerAddressMode::ClampToEdge;
+		desc.format = Format::D32;
+		desc.generateMipmap = true;
+		//texture->diffuseTextureMap = g_deviceManager->GetDevice()->createTexture(desc);
+		auto texture = g_deviceManager->GetDevice()->createTexture(desc);
+
+		//m_TextureDepthBuffer.reset(DBG_NEW BlackPearl::Texture(Texture::Type::DepthMap, imageWidth, imageHeight,false, GL_NEAREST, GL_NEAREST, GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT, GL_CLAMP_TO_EDGE, GL_FLOAT));
+		m_TextureDepthBuffer = texture;
 		Bind();
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, m_TextureDepthBuffer->GetRendererID(), 0);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, static_cast<Texture*>(m_TextureDepthBuffer.Get())->GetRendererID(), 0);
 
 		GE_ASSERT(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "Framebuffer not complete!");
 	}
 
-	void FrameBuffer::AttachDepthTexture(std::shared_ptr<Texture> texture, int mipmapLevel) {
+	void FrameBuffer::AttachDepthTexture(TextureHandle texture, int mipmapLevel) {
 		m_TextureDepthBuffer = texture;
 		//Bind();
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, m_TextureDepthBuffer->GetRendererID(), mipmapLevel);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, static_cast<Texture*>(m_TextureDepthBuffer.Get())->GetRendererID(), mipmapLevel);
 		GLenum statue = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 		GE_ASSERT(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "Framebuffer not complete!");
 	}
 
 
 
-	//TODO::×¢ï¿½ï¿½CubeMapï¿½Ä¸ï¿½Ê½
-	void FrameBuffer::AttachCubeMapDepthTexture(std::shared_ptr<CubeMapTexture> cubeMap)
+	//TODO::×¢ÒâCubeMapµÄ¸ñÊ½
+	void FrameBuffer::AttachCubeMapDepthTexture(TextureHandle cubeMap)
 	{
 
 		m_CubeMapDepthBuffer = cubeMap;// .reset(DBG_NEW CubeMapTexture(Texture::Type::CubeMap, imageWidth, imageHeight, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR, GL_CLAMP_TO_EDGE, GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT, GL_FLOAT));
 		Bind();
-        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, m_CubeMapDepthBuffer->GetRendererID());
-
-       // glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, m_CubeMapDepthBuffer->GetRendererID(), 0);
+		glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, static_cast<Texture*>(m_CubeMapDepthBuffer.Get())->GetRendererID(), 0);
 		GE_ASSERT(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "Framebuffer not complete!");
 	}
 
-	//TODO::ï¿½ï¿½ï¿½ï¿½Ó¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	//TODO::Õâ¸ö½Ó¿ÚÓÐÎÊÌâ
 	void FrameBuffer::AttachCubeMapColorTexture(unsigned int attachmentPoints,const int imageWidth, int imageHeight) {
-		//GE_CORE_ERROR("ï¿½ï¿½ï¿½Üµï¿½ï¿½Ã£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½!");
-		GE_CORE_WARN(" ×¢ï¿½ï¿½Textureï¿½Ç·ï¿½ï¿½ï¿½Ä¬ï¿½ÏµÄ¸ï¿½Ê½ï¿½ï¿½");
-
-		m_TextureColorBuffers[attachmentPoints].reset(DBG_NEW CubeMapTexture(Texture::Type::CubeMap, imageWidth, imageHeight, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR, GL_CLAMP_TO_EDGE, GL_RGB16F, GL_RGB, GL_FLOAT));
+		//GE_CORE_ERROR("²»ÄÜµ÷ÓÃ£¬ºóÐøÍêÉÆ!");
+		GE_CORE_WARN(" ×¢ÒâTextureÊÇ·ñÊÇÄ¬ÈÏµÄ¸ñÊ½£¡");
+		TextureDesc desc;
+		desc.type = TextureType::CubeMap;
+		desc.width = imageWidth;
+		desc.height = imageHeight;
+		desc.minFilter = FilterMode::Linear_Mip_Linear;
+		desc.magFilter = FilterMode::Linear;
+		desc.wrap = SamplerAddressMode::ClampToEdge;
+		desc.format = Format::RGB16_FLOAT;
+		desc.generateMipmap = false;
+		//texture->diffuseTextureMap = g_deviceManager->GetDevice()->createTexture(desc);
+		m_TextureColorBuffers[attachmentPoints] = g_deviceManager->GetDevice()->createTexture(desc);
+		//m_TextureColorBuffers[attachmentPoints].reset(DBG_NEW CubeMapTexture(Texture::Type::CubeMap, imageWidth, imageHeight, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR, GL_CLAMP_TO_EDGE, GL_RGB16F, GL_RGB, GL_FLOAT));
 	//	GE_ASSERT(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "Framebuffer not complete!");
 		//Bind();
 
 	}
-	void FrameBuffer::AttachCubeMapColorTexture(unsigned int attachmentPoints, std::shared_ptr<CubeMapTexture> cubeMap)
+	void FrameBuffer::AttachCubeMapColorTexture(unsigned int attachmentPoints, TextureHandle cubeMap)
 	{
 		m_TextureColorBuffers[attachmentPoints] = cubeMap;
 		//GE_ASSERT(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "Framebuffer not complete!");
@@ -307,9 +337,7 @@ namespace BlackPearl {
 
 	void FrameBuffer::DisableColorBuffer()
 	{
-#ifdef GE_PLATFORM_WINDOWS
 		glDrawBuffer(GL_NONE);
-#endif
 		glReadBuffer(GL_NONE);
 	}
 
@@ -332,17 +360,7 @@ namespace BlackPearl {
 		glBindRenderbuffer(GL_RENDERBUFFER, m_RenderBufferID);
 	}
 	
-	void FrameBuffer::BindColorTexture(unsigned int attachmentPoints)
-	{
-		m_TextureColorBuffers[attachmentPoints]->Bind();
 
-	}
-	void FrameBuffer::UnBindTexture(unsigned int attachmentPoints)
-	{
-		GE_ASSERT(m_TextureColorBuffers[attachmentPoints], "m_TextureColorBuffers[" + std::to_string(attachmentPoints)+"] is nullptr!");
-		m_TextureColorBuffers[attachmentPoints]->UnBind();
-
-	}
 	void FrameBuffer::CleanUp()
 	{
 		
@@ -398,27 +416,48 @@ namespace BlackPearl {
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 	}
+	// device->createTexture
 	void GBuffer::InitGITextures()
 	{
+
+		TextureDesc desc;
+		desc.type = TextureType::DiffuseMap;
+		desc.width = m_Width;
+		desc.height = m_Height;
+		desc.minFilter = FilterMode::Nearest;
+		desc.magFilter = FilterMode::Nearest;
+		desc.wrap = SamplerAddressMode::ClampToEdge;
+		desc.format = Format::RGBA16_FLOAT;
+		desc.generateMipmap = false;
+		//texture->diffuseTextureMap = g_deviceManager->GetDevice()->createTexture(desc);
+		m_PositionTexture = g_deviceManager->GetDevice()->createTexture(desc);
+
 		//m_PositionTexture RGB-position A--isPBRObject+objectId -->voxel cone tracing
-		m_PositionTexture.reset(DBG_NEW Texture(Texture::Type::DiffuseMap, m_Width, m_Height, false, GL_NEAREST, GL_NEAREST, GL_RGBA16F, GL_RGBA, -1, GL_FLOAT));
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, (GLuint)m_PositionTexture->GetRendererID(), 0);
+		//m_PositionTexture.reset(DBG_NEW Texture(TextureType::DiffuseMap, m_Width, m_Height, false, GL_NEAREST, GL_NEAREST, GL_RGBA16F, GL_RGBA, -1, GL_FLOAT));
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, (GLuint)static_cast<Texture*>(m_PositionTexture.Get())->GetRendererID(), 0);
 		//m_NormalTexture RGB-normal A--isSkyBox -->voxel cone tracing
-		m_NormalTexture.reset(DBG_NEW Texture(Texture::Type::DiffuseMap, m_Width, m_Height, false, GL_NEAREST, GL_NEAREST, GL_RGBA16F, GL_RGBA, -1, GL_FLOAT));
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, (GLuint)m_NormalTexture->GetRendererID(), 0);
+		//m_NormalTexture.reset(DBG_NEW Texture(Texture::Type::DiffuseMap, m_Width, m_Height, false, GL_NEAREST, GL_NEAREST, GL_RGBA16F, GL_RGBA, -1, GL_FLOAT));
+		m_NormalTexture = g_deviceManager->GetDevice()->createTexture(desc);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, (GLuint)static_cast<Texture*>(m_NormalTexture.Get())->GetRendererID(), 0);
 
-		m_DiffuseRoughnessTexture.reset(DBG_NEW Texture(Texture::Type::DiffuseMap, m_Width, m_Height, false, GL_NEAREST, GL_NEAREST, GL_RGBA16F, GL_RGBA, -1, GL_FLOAT));
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, (GLuint)m_DiffuseRoughnessTexture->GetRendererID(), 0);
+		m_DiffuseRoughnessTexture = g_deviceManager->GetDevice()->createTexture(desc);
+		//m_DiffuseRoughnessTexture.reset(DBG_NEW Texture(Texture::Type::DiffuseMap, m_Width, m_Height, false, GL_NEAREST, GL_NEAREST, GL_RGBA16F, GL_RGBA, -1, GL_FLOAT));
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, (GLuint)static_cast<Texture*>(m_DiffuseRoughnessTexture.Get())->GetRendererID(), 0);
 
-		m_SpecularMentallicTexture.reset(DBG_NEW Texture(Texture::Type::DiffuseMap, m_Width, m_Height, false, GL_NEAREST, GL_NEAREST, GL_RGBA16F, GL_RGBA, -1, GL_FLOAT));
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT3, GL_TEXTURE_2D, (GLuint)m_SpecularMentallicTexture->GetRendererID(), 0);
+
+		m_SpecularMentallicTexture = g_deviceManager->GetDevice()->createTexture(desc);
+		//m_SpecularMentallicTexture.reset(DBG_NEW Texture(Texture::Type::DiffuseMap, m_Width, m_Height, false, GL_NEAREST, GL_NEAREST, GL_RGBA16F, GL_RGBA, -1, GL_FLOAT));
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT3, GL_TEXTURE_2D, (GLuint)static_cast<Texture*>(m_SpecularMentallicTexture.Get())->GetRendererID(), 0);
 
 		//m_AmbientGI RBG-ambienGI AO-isPBRObject -->lightprobe
-		m_AmbientGIAOTexture.reset(DBG_NEW Texture(Texture::Type::DiffuseMap, m_Width, m_Height, false, GL_NEAREST, GL_NEAREST, GL_RGBA16F, GL_RGBA, -1, GL_FLOAT));
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT4, GL_TEXTURE_2D, (GLuint)m_AmbientGIAOTexture->GetRendererID(), 0);
+		m_AmbientGIAOTexture = g_deviceManager->GetDevice()->createTexture(desc);
+		//m_AmbientGIAOTexture.reset(DBG_NEW Texture(Texture::Type::DiffuseMap, m_Width, m_Height, false, GL_NEAREST, GL_NEAREST, GL_RGBA16F, GL_RGBA, -1, GL_FLOAT));
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT4, GL_TEXTURE_2D, (GLuint)static_cast<Texture*>(m_AmbientGIAOTexture.Get())->GetRendererID(), 0);
 
-		m_NormalMapTexture.reset(DBG_NEW Texture(Texture::Type::DiffuseMap, m_Width, m_Height, false, GL_NEAREST, GL_NEAREST, GL_RGB16F, GL_RGB, -1, GL_FLOAT));
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT5, GL_TEXTURE_2D, (GLuint)m_NormalMapTexture->GetRendererID(), 0);
+		desc.format = Format::RGB16_FLOAT;
+		m_NormalMapTexture = g_deviceManager->GetDevice()->createTexture(desc);
+		//m_NormalMapTexture.reset(DBG_NEW Texture(Texture::Type::DiffuseMap, m_Width, m_Height, false, GL_NEAREST, GL_NEAREST, GL_RGB16F, GL_RGB, -1, GL_FLOAT));
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT5, GL_TEXTURE_2D, (GLuint)static_cast<Texture*>(m_NormalMapTexture.Get())->GetRendererID(), 0);
 
 
 		GLuint attachments[6] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2 ,GL_COLOR_ATTACHMENT3,GL_COLOR_ATTACHMENT4,GL_COLOR_ATTACHMENT5 };
@@ -432,7 +471,7 @@ namespace BlackPearl {
 		GE_ASSERT(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "Framebuffer not complete!");
 
 	}
-	std::shared_ptr<Texture> GBuffer::GetColorTexture(unsigned int idx)
+	TextureHandle GBuffer::GetColorTexture(unsigned int idx)
 	{
 		GE_ASSERT(idx<m_ColorTextures.size() && m_ColorTextures[idx],"fail to get texture")
 		return m_ColorTextures[idx];
@@ -443,9 +482,22 @@ namespace BlackPearl {
 		const size_t colorBufferNum = 4;
 		for (size_t i = 0; i < colorBufferNum; i++) {
 
-			std::shared_ptr<Texture> texture;
-			texture.reset(DBG_NEW Texture(Texture::Type::DiffuseMap, m_Width, m_Height, false, GL_NEAREST, GL_NEAREST, GL_RGBA32F, GL_RGBA, GL_CLAMP_TO_EDGE, GL_FLOAT));
-			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_TEXTURE_2D, (GLuint)texture->GetRendererID(), 0);
+			TextureHandle texture;
+			TextureDesc desc;
+			desc.type = TextureType::DiffuseMap;
+			desc.width = m_Width;
+			desc.height = m_Height;
+			desc.minFilter = FilterMode::Nearest;
+			desc.magFilter = FilterMode::Nearest;
+			desc.wrap = SamplerAddressMode::ClampToEdge;
+			desc.format = Format::RGBA32_FLOAT;
+			desc.generateMipmap = false;
+			//texture->diffuseTextureMap = g_deviceManager->GetDevice()->createTexture(desc);
+			texture = g_deviceManager->GetDevice()->createTexture(desc);
+
+
+			//texture.reset(DBG_NEW Texture(Texture::Type::DiffuseMap, m_Width, m_Height, false, GL_NEAREST, GL_NEAREST, GL_RGBA32F, GL_RGBA, GL_CLAMP_TO_EDGE, GL_FLOAT));
+			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_TEXTURE_2D, (GLuint)static_cast<Texture*>(texture.Get())->GetRendererID(), 0);
 			m_ColorTextures.push_back(texture);
 
 		}
@@ -499,19 +551,11 @@ namespace BlackPearl {
 		GLuint initVal = 0;
 
 		//glGenBuffers(1, &m_RendererID);
-#ifdef GE_PLATFORM_WINDOWS
 		glCreateBuffers(1, &m_RendererID);
 		//glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_RendererID);
 		glNamedBufferStorage(m_RendererID, bytes, nullptr, mapFlags);
 		//glBufferData(GL_SHADER_STORAGE_BUFFER, bytes, nullptr, GL_STATIC_COPY);
 		//glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
-#endif
-#ifdef GE_PLATFORM_ANDRIOD
-        glGenBuffers(1, &m_RendererID);
-        glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_RendererID);
-        glBufferData(GL_SHADER_STORAGE_BUFFER, bytes, nullptr, mapFlags);
-#endif
-
 	}
 
 

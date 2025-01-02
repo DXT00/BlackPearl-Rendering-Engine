@@ -1,5 +1,4 @@
 #include "pch.h"
-#ifdef GE_API_D3D12
 #include "D3D12MeshShaderRenderer.h"
 #include "BlackPearl/Application.h"
 #include "BlackPearl/Common/CommonFunc.h"
@@ -87,7 +86,7 @@ namespace BlackPearl {
 	void D3D12MeshShaderRenderer::MoveToNextFrame()
 	{
 		const UINT64 curFenceValue = m_FenceValues[m_FrameIndex];
-		//ï¿½ï¿½command queueï¿½ï¿½Ä©Î²ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½fence valueï¿½ï¿½ÎªcurFenceValueï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+		//ÔÚcommand queueµÄÄ©Î²Ôö¼ÓÒ»¸ö½«fence valueÉèÎªcurFenceValueµÄÃüÁî
 		ThrowIfFailed(m_CommandQueue->Signal(m_Fence.Get(), curFenceValue));
 
 		// Update the frame index.
@@ -95,11 +94,11 @@ namespace BlackPearl {
 
 		if (m_Fence->GetCompletedValue() < m_FenceValues[m_FrameIndex])
 		{
-			//ï¿½ï¿½ï¿½Ð¡ï¿½ï¿½backbuffer frameï¿½ï¿½fenceï¿½ï¿½Ëµï¿½ï¿½ï¿½ï¿½Ö¡ï¿½Ä±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½î»¹Ã»ï¿½ï¿½È«ï¿½ï¿½ï¿½ï¿½ï¿½
-			//ï¿½ï¿½Ã´ï¿½ï¿½ï¿½Ç¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ïµ½ï¿½ï¿½Ä´ï¿½ï¿½ï¿½ï¿½Â¼ï¿½ï¿½ï¿½ï¿½ï¿½fence valueï¿½ï¿½ï¿½ï¿½
-			// m_FenceValues[m_FrameIndex]ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç²ï¿½Í£Ö¹CPUï¿½Ëµï¿½ï¿½ï¿½ï¿½ï¿½
+			//Èç¹ûÐ¡ÓÚbackbuffer frameµÄfence£¬ËµÃ÷±¾Ö¡µÄ±»ÆÚÍûÃüÁî»¹Ã»ÓÐÈ«²¿Íê³É
+			//ÄÇÃ´ÎÒÃÇ¿ÉÒÔÔö¼ÓÒ»¸ö´ïµ½ºóµÄ´¥·¢ÊÂ¼þ£¬ÔÚfence valueµ½´ï
+			// m_FenceValues[m_FrameIndex]ºó¸æËßÎÒÃÇ²¢Í£Ö¹CPU¶ËµÄ×èÈû
 			ThrowIfFailed(m_Fence->SetEventOnCompletion(m_FenceValues[m_FrameIndex], m_FenceEvent));
-			//ï¿½È´ï¿½Ò»Ö±ï¿½ï¿½fence valueï¿½ïµ½ mCurrentFence
+			//µÈ´ýÒ»Ö±µ½fence value´ïµ½ mCurrentFence
 			WaitForSingleObject(m_FenceEvent, INFINITE);
 		}
 		m_FenceValues[m_FrameIndex] = curFenceValue + 1;
@@ -217,7 +216,7 @@ namespace BlackPearl {
 
 	void D3D12MeshShaderRenderer::UploadModel(Object* model)
 	{
-		std::vector<std::shared_ptr<Mesh>>& meshes = model->GetComponent<MeshRenderer>()->GetModel()->m_Meshes;
+		std::vector<std::shared_ptr<Mesh>>& meshes = model->GetComponent<MeshRenderer>()->GetModel()->meshes;
 		for (uint32_t i = 0; i < meshes.size(); ++i)
 		{
 			auto& m = meshes[i];
@@ -384,10 +383,10 @@ namespace BlackPearl {
 
 	void D3D12MeshShaderRenderer::UploadModel(Model* model)
 	{
-		// std::vector<Mesh>& meshes = model->GetComponent<MeshRenderer>()->GetModel()->m_Meshes;
-		for (uint32_t i = 0; i < model->m_Meshes.size(); ++i)
+		// std::vector<Mesh>& meshes = model->GetComponent<MeshRenderer>()->GetModel()->meshes;
+		for (uint32_t i = 0; i < model->meshes.size(); ++i)
 		{
-			auto& m = model->m_Meshes[i];
+			auto& m = model->meshes[i];
 			// Create committed D3D resources of proper sizes
 			auto indexDesc = CD3DX12_RESOURCE_DESC::Buffer(m->Indices_ml.size());
 			auto meshletDesc = CD3DX12_RESOURCE_DESC::Buffer(m->Meshlets.size() * sizeof(m->Meshlets[0]));
@@ -867,7 +866,7 @@ namespace BlackPearl {
 		m_CommandList->SetGraphicsRootConstantBufferView(0, m_ConstantBuffer->GetGPUVirtualAddress() + sizeof(SceneConstantBuffer) * m_FrameIndex);
 
 		for (auto& model : m_Scene->GetModels()) {
-			for (auto& mesh : model->m_Meshes) {
+			for (auto& mesh : model->meshes) {
 				m_CommandList->SetGraphicsRoot32BitConstant(1, mesh->IndexSize_ml, 0);
 				m_CommandList->SetGraphicsRootShaderResourceView(2, mesh->VertexResources[0]->GetGPUVirtualAddress());
 				m_CommandList->SetGraphicsRootShaderResourceView(3, mesh->MeshletResource->GetGPUVirtualAddress());
@@ -890,4 +889,3 @@ namespace BlackPearl {
 		ThrowIfFailed(m_CommandList->Close());
 	}
 }
-#endif

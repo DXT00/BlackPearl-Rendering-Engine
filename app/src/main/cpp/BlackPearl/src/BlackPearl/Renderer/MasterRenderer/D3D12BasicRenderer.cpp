@@ -1,5 +1,4 @@
 #include "pch.h"
-#ifdef GE_API_D3D12
 #include "D3D12BasicRenderer.h"
 #include "BlackPearl/Application.h"
 #include "BlackPearl/Common/CommonFunc.h"
@@ -364,4 +363,3 @@ namespace BlackPearl {
         m_FrameIndex = m_SwapChain->GetCurrentBackBufferIndex();
     }
 }
-#endif

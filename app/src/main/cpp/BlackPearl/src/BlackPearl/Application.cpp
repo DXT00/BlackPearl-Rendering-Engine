@@ -1,4 +1,6 @@
 #include "pch.h"
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
 #include "Application.h"
 
 #include <iostream>
@@ -7,7 +9,10 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "Renderer/Material/Texture.h"
+#include "BlackPearl/RHI/RHITexture.h"
+#ifdef	GE_API_D3D12
+#include "BlackPearl/RHI/D3D12RHI/D3D12ModelLoader.h"
+#endif
 #include "Component/CameraComponent/PerspectiveCamera.h"
 #include "Renderer/Renderer.h"
 #include "Renderer/Buffer/Buffer.h"
@@ -22,15 +27,26 @@
 #include "BlackPearl/Entity/Entity.h"
 #include "BlackPearl/ObjectManager/ObjectManager.h"
 #include "BlackPearl/LayerScene/LayerManager.h"
+#include "BlackPearl/Renderer/CullingManager.h"
 #include "BlackPearl/Renderer/MasterRenderer/BasicRenderer.h"
 #include "BlackPearl/Log.h"
+#include "BlackPearl/Renderer/Model/ModelLoader.h"
 #include <BlackPearl/Luanch/Luanch.h>
+#include "BlackPearl/Config.h"
+#include "BlackPearl/UI/UIManager.h"
 
 namespace BlackPearl {
+
 	Log* g_Log = nullptr;
-	ObjectManager* g_objectManager = DBG_NEW ObjectManager();
-	EntityManager* g_entityManager = DBG_NEW EntityManager();
+	ObjectManager*   g_objectManager = DBG_NEW ObjectManager();
+	EntityManager*   g_entityManager = DBG_NEW EntityManager();
 	MaterialManager* g_materialManager = DBG_NEW MaterialManager();
+	DeviceManager*   g_deviceManager = nullptr;
+	CullingManager* g_cullingManager = DBG_NEW CullingManager();
+	ModelLoader* g_modelLoader = nullptr;
+	RootFileSystem* g_rootFileSystem = DBG_NEW RootFileSystem();
+	UIManager* g_uiManager = nullptr;
+
 	double Application::s_AppFPS = 0.0f;
 	double Application::s_AppAverageFPS = 0.0f;
 
@@ -38,32 +54,8 @@ namespace BlackPearl {
 	extern bool g_shouldEngineExit;
 	extern DynamicRHI* g_DynamicRHI;
 	long long Application::s_TotalFrameNum = 0;
-#ifdef GE_PLATFORM_WINDOWS
-	Application::Application(HINSTANCE hInstance, int nShowCmd, DynamicRHI::Type rhiType, const std::string& renderer)
-#else
-    Application::Application()
-    {
-
-        if (!g_DynamicRHI) {
-            DynamicRHIInit(DynamicRHI::Type::OpenGL);
-        }
-        g_shouldEngineExit = false;
-        g_Log = DBG_NEW Log();
-
-        GE_ASSERT(!s_Instance, "Application's Instance already exist!");
-        s_Instance = this;
-#ifdef GE_PLATFORM_WINDOWS
-        m_AppConf.hInstance = hInstance;
-#endif
-        m_AppConf.nShowCmd = 0;
-        m_AppConf.renderer = "";
-        m_AppConf.rhiType = DynamicRHI::Type::OpenGL;
-        Init();
-
-    }
-    Application::Application(int nShowCmd, DynamicRHI::Type rhiType, const std::string& renderer)
-#endif
-    {
+	Application::Application(HINSTANCE hInstance, int nShowCmd, DynamicRHI::Type rhiType, AppVersion version)
+	{
 		if (!g_DynamicRHI) {
 			DynamicRHIInit(rhiType);
 		}
@@ -72,11 +64,10 @@ namespace BlackPearl {
 
 		GE_ASSERT(!s_Instance, "Application's Instance already exist!");
 		s_Instance = this;
-#ifdef GE_PLATFORM_WINDOWS
 		m_AppConf.hInstance = hInstance;
-#endif
 		m_AppConf.nShowCmd = nShowCmd;
-		m_AppConf.renderer = renderer;
+		//m_AppConf.renderer = renderer;
+		m_AppConf.version = version;
 		m_AppConf.rhiType = rhiType;
 		Init();
 	}
@@ -93,7 +84,40 @@ namespace BlackPearl {
 		m_Window = RHIInitWindow();
 		m_Window->SetAppCallBack(std::bind(&Application::OnEvent, this, std::placeholders::_1));
 
-		m_LayerManager = DBG_NEW LayerManager();
+		/*file system*/
+		_InitFileSystem();
+		/*Render*/
+		DeviceCreationParameters deviceParams;
+		deviceParams.backBufferWidth = Configuration::WindowWidth;
+		deviceParams.backBufferHeight = Configuration::WindowHeight;
+		deviceParams.vsyncEnabled = Configuration::Vsync;
+		deviceParams.swapChainBufferCount = Configuration::SwapchainCount;
+		deviceParams.maxFramesInFlight = deviceParams.swapChainBufferCount;
+		g_deviceManager = DeviceManager::Create(DynamicRHI::g_RHIType);
+
+		if (m_AppConf.version >= AppVersion::VERSION_1_0) {
+#define APP_VERSION VERSION_1_0
+			g_deviceManager->Init(deviceParams);
+		}
+		else {
+#define APP_VERSION VERSION_0_0
+
+		}
+
+	#ifdef	GE_API_D3D12
+			g_modelLoader = DBG_NEW D3D12ModelLoader();
+	#else
+			g_modelLoader = DBG_NEW ModelLoader();
+	#endif
+			g_modelLoader->RegisterDeviceManager(g_deviceManager);
+
+			m_LayerManager = DBG_NEW LayerManager();
+			m_LayerManager->RegisterDeviceManager(g_deviceManager);
+
+			g_objectManager->RegisterDeviceManager(g_deviceManager);
+
+			g_uiManager = DBG_NEW UIManager();
+	
 		m_StartTimeMs = 0;// duration_cast<milliseconds>(system_clock::now().time_since_epoch());
 	}
 
@@ -160,6 +184,24 @@ namespace BlackPearl {
 
 	void Application::EngineExit() {
 		RHIEngineExit();
+	}
+
+	void Application::_InitFileSystem()
+	{
+
+#ifdef	GE_API_VULKAN
+		std::filesystem::path shaderPath = g_rootFileSystem->GetExeDir()/"assets/shaders"/Configuration::GetShaderTypeName();
+		//std::filesystem::path appShaderPath = g_rootFileSystem->GetExeDir()/"shaders/pt_sdk"/Configuration::GetShaderTypeName(DynamicRHI::g_RHIType);
+		//std::filesystem::path nrdShaderPath = g_rootFileSystem->GetExeDir()/"shaders/nrd"/Configuration::GetShaderTypeName(DynamicRHI::g_RHIType);
+		//std::filesystem::path ommShaderPath = g_rootFileSystem->GetExeDir()/"shaders/omm"/Configuration::GetShaderTypeName(DynamicRHI::g_RHIType);
+	
+		g_rootFileSystem->mount("assets/shaders/spv", shaderPath);
+		//g_rootFileSystem->mount("/shaders/app", appShaderPath);
+		//g_rootFileSystem->mount("/shaders/nrd", nrdShaderPath);
+		//g_rootFileSystem->mount("/shaders/omm", ommShaderPath);
+#endif
+
+
 	}
 
 	bool Application::OnCameraRotate(MouseMovedEvent& e)

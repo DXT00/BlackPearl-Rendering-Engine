@@ -1,5 +1,4 @@
 #include "pch.h"
-#ifdef GE_API_D3D12
 #include "D3D12Renderer.h"
 namespace BlackPearl {
 
@@ -20,4 +19,3 @@ namespace BlackPearl {
 	}
 
 }
-#endif

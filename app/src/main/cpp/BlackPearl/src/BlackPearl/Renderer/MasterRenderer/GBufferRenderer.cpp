@@ -11,10 +11,14 @@
 #include "glm/gtc/random.hpp"
 #include <glm\ext\scalar_common.hpp>
 #include "BlackPearl/Timestep/TimeCounter.h"
+#include "BlackPearl/Math/Math.h"
 #include <chrono>
 #include "glm/glm.hpp"
+#include "BlackPearl/Renderer/DeviceManager.h"
+#include "BlackPearl/RHI/OpenGLRHI/OpenGLTexture.h"
 
 namespace BlackPearl {
+	extern DeviceManager* g_deviceManager;
 	float GBufferRenderer::s_GICoeffs = 0.2f;
 	float GBufferRenderer::s_SSRGICoeffs = 0.2f;
 
@@ -23,9 +27,26 @@ namespace BlackPearl {
 	GBufferRenderer::GBufferRenderer()
 	{
 		m_GBuffer.reset(DBG_NEW GBuffer(m_TextureWidth, m_TexxtureHeight));
-		m_SSRTestTexture.reset(DBG_NEW Texture(Texture::Type::None, m_TextureWidth, m_TexxtureHeight, false, GL_LINEAR, GL_LINEAR, GL_RGBA16F, GL_RGBA, GL_CLAMP_TO_EDGE, GL_FLOAT));
+		IDevice* device = g_deviceManager->GetDevice();
+		TextureDesc desc;
+		desc.type = TextureType::None;
+		desc.width = m_TextureWidth;
+		desc.height = m_TexxtureHeight;
+		desc.minFilter = FilterMode::Linear;
+		desc.magFilter = FilterMode::Linear;
+		desc.wrap = SamplerAddressMode::ClampToEdge;
+		desc.format = Format::RGBA16_FLOAT;
+		desc.generateMipmap = true;
 
-		m_HDRPostProcessTexture.reset(DBG_NEW Texture(Texture::Type::None, m_TextureWidth, m_TexxtureHeight, false, GL_LINEAR, GL_LINEAR, GL_RGBA16F, GL_RGBA, GL_CLAMP_TO_EDGE, GL_FLOAT));
+		m_SSRTestTexture = device->createTexture(desc);
+		//m_SSRTestTexture.reset(DBG_NEW Texture(Texture::Type::None, m_TextureWidth, m_TexxtureHeight, false, GL_LINEAR, GL_LINEAR, GL_RGBA16F, GL_RGBA, GL_CLAMP_TO_EDGE, GL_FLOAT));
+
+
+	
+		//m_HDRPostProcessTexture.reset(DBG_NEW Texture(Texture::Type::None, m_TextureWidth, m_TexxtureHeight, false, GL_LINEAR, GL_LINEAR, GL_RGBA16F, GL_RGBA, GL_CLAMP_TO_EDGE, GL_FLOAT));
+		
+		m_HDRPostProcessTexture = device->createTexture(desc);
+		
 		m_LightPassFrameBuffer.reset(DBG_NEW FrameBuffer());
 		m_LightPassFrameBuffer->Bind();
 		m_LightPassFrameBuffer->AttachRenderBuffer(m_TextureWidth, m_TexxtureHeight);
@@ -184,7 +205,7 @@ namespace BlackPearl {
 		glDisable(GL_CULL_FACE);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);*/
 
-		//std::vector<glm::vec3> color = {
+		//std::vector<math::float3> color = {
 		//	{1.0,0.0,0.0},
 		//	{1.0,1.0,0.0},
 		//	{1.0,0.0,1.0},
@@ -262,7 +283,7 @@ namespace BlackPearl {
 	{
 		auto lightProps = pointLight->GetComponent<PointLight>()->GetLightProps();
 		auto attenuation = pointLight->GetComponent<PointLight>()->GetAttenuation();
-		glm::vec3 lightDiffuse = lightProps.diffuse;
+		math::float3 lightDiffuse = lightProps.diffuse;
 		float constant = attenuation.constant;
 		float linear = attenuation.linear;
 		float quadratic = attenuation.quadratic;
@@ -318,7 +339,7 @@ namespace BlackPearl {
 				obj->GetComponent<Transform>()->GetPosition() != obj->GetComponent<Transform>()->GetLastPosition()||
 				mapManager->m_ProbeGridPosChanged)
 			{
-				kDiffuseProbesIdx = FindKnearAreaProbes(pos, diffuseProbes, m_K, mapManager);
+				kDiffuseProbesIdx = FindKnearAreaProbes(Math::ToFloat3(pos), diffuseProbes, m_K, mapManager);
 				obj->GetComponent<MeshRenderer>()->SetDiffuseProbeChache(kDiffuseProbesIdx);
 				obj->GetComponent<MeshRenderer>()->SetIsDiffuseProbeCacheSet(true);
 				mapManager->m_ProbeGridPosChanged = false;
@@ -357,7 +378,7 @@ namespace BlackPearl {
 				for (int sh = 0; sh < 9; sh++)
 				{
 					int index = sh + 9 * i;
-					m_GBufferShader->SetUniformVec3f("u_SHCoeffs[" + std::to_string(index) + "]", glm::vec3(
+					m_GBufferShader->SetUniformVec3f("u_SHCoeffs[" + std::to_string(index) + "]", math::float3(
 						diffuseProbes[kDiffuseProbesIdx[i]]->GetComponent<LightProbe>()->GetCoeffis()[sh][0],
 						diffuseProbes[kDiffuseProbesIdx[i]]->GetComponent<LightProbe>()->GetCoeffis()[sh][1],
 						diffuseProbes[kDiffuseProbesIdx[i]]->GetComponent<LightProbe>()->GetCoeffis()[sh][2])
@@ -408,7 +429,7 @@ namespace BlackPearl {
 				obj->GetComponent<Transform>()->GetPosition() != obj->GetComponent<Transform>()->GetLastPosition() ||
 				mapManager->m_ProbeGridPosChanged)
 			{
-				kDiffuseProbesIdx = FindKnearAreaProbes(pos, diffuseProbes, m_K, mapManager);
+				kDiffuseProbesIdx = FindKnearAreaProbes(Math::ToFloat3(pos), diffuseProbes, m_K, mapManager);
 				obj->GetComponent<MeshRenderer>()->SetDiffuseProbeChache(kDiffuseProbesIdx);
 				obj->GetComponent<MeshRenderer>()->SetIsDiffuseProbeCacheSet(true);
 				mapManager->m_ProbeGridPosChanged = false;
@@ -442,7 +463,7 @@ namespace BlackPearl {
 				for (int sh = 0; sh < 9; sh++)
 				{
 					int index = sh + 9 * i;
-					animatedShader->SetUniformVec3f("u_SHCoeffs[" + std::to_string(index) + "]", glm::vec3(
+					animatedShader->SetUniformVec3f("u_SHCoeffs[" + std::to_string(index) + "]", math::float3(
 						diffuseProbes[kDiffuseProbesIdx[i]]->GetComponent<LightProbe>()->GetCoeffis()[sh][0],
 						diffuseProbes[kDiffuseProbesIdx[i]]->GetComponent<LightProbe>()->GetCoeffis()[sh][1],
 						diffuseProbes[kDiffuseProbesIdx[i]]->GetComponent<LightProbe>()->GetCoeffis()[sh][2])
@@ -510,11 +531,7 @@ namespace BlackPearl {
 		TimeCounter::End("AmbientLight Rendering");
 		TimeCounter::Start();
 #endif
-	/*	std::shared_ptr<FrameBuffer> frameBuffer(new FrameBuffer());
-		frameBuffer->Bind();
-		frameBuffer->AttachRenderBuffer(m_TextureWidth, m_TexxtureHeight);
-		frameBuffer->AttachColorTexture(m_HDRPostProcessTexture, 0);
-		frameBuffer->BindRenderBuffer();*/
+
 
 		m_LightPassFrameBuffer->Bind();
 		m_LightPassFrameBuffer->BindRenderBuffer();
@@ -680,7 +697,7 @@ namespace BlackPearl {
 		//glEnable(GL_BLEND);
 		//glDisable(GL_CULL_FACE);
 		//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		//std::vector<glm::vec3> color = {
+		//std::vector<math::float3> color = {
 		//	{1.0,0.0,0.0},
 		//	{1.0,1.0,0.0},
 		//	{1.0,0.0,1.0},
@@ -710,12 +727,12 @@ namespace BlackPearl {
 
 	}
 
-	std::vector<Object*> GBufferRenderer::FindKnearProbes(glm::vec3 objPos, std::vector<Object*> probes,unsigned int k)
+	std::vector<Object*> GBufferRenderer::FindKnearProbes(math::float3 objPos, std::vector<Object*> probes,unsigned int k)
 	{
-		glm::vec3 pos = objPos;
+		math::float3 pos = objPos;
 		std::vector<Object*> kProbes;
 		std::sort(probes.begin(), probes.end(), [=](Object* pa, Object* pb)
-		{return glm::length(pa->GetComponent<Transform>()->GetPosition() - pos) < glm::length(pb->GetComponent<Transform>()->GetPosition() - pos); });
+		{return glm::length(pa->GetComponent<Transform>()->GetPosition() - Math::ToVec3(pos)) < glm::length(pb->GetComponent<Transform>()->GetPosition() - Math::ToVec3(pos)); });
 
 		GE_ASSERT(k <= (unsigned int)probes.size(), "m_K larger than probes' number!");
 
@@ -728,9 +745,9 @@ namespace BlackPearl {
 		return kProbes;
 	}
 	//only for diffuse probe
-	std::vector<unsigned int> GBufferRenderer::FindKnearAreaProbes(glm::vec3 objPos, std::vector<Object*> probes, unsigned int k,MapManager* mapManager)
+	std::vector<unsigned int> GBufferRenderer::FindKnearAreaProbes(math::float3 objPos, std::vector<Object*> probes, unsigned int k,MapManager* mapManager)
 	{
-		//glm::vec3 pos = objPos;
+		//math::float3 pos = objPos;
 		//Area currentArea = mapManager->GetArea( mapManager->CalculateAreaId(pos));
 		//std::set<unsigned int> nearByArea = mapManager->FindNearByArea(pos);
 	
@@ -765,9 +782,9 @@ namespace BlackPearl {
 
 
 		//return kProbes;
-		glm::vec3 pos = objPos;
-		Area currentArea = mapManager->GetArea(mapManager->CalculateAreaId(pos));
-		std::set<unsigned int> nearByArea = mapManager->FindNearByArea(pos);
+		math::float3 pos = objPos;
+		Area currentArea = mapManager->GetArea(mapManager->CalculateAreaId(Math::ToVec3(pos)));
+		std::set<unsigned int> nearByArea = mapManager->FindNearByArea(Math::ToVec3(pos));
 
 		std::vector<unsigned int> nearByProbes;
 		std::set<unsigned int>::iterator it;
@@ -784,7 +801,7 @@ namespace BlackPearl {
 		}
 		std::vector<unsigned int> kProbes;
 		std::sort(nearByProbes.begin(), nearByProbes.end(), [=](unsigned int a, unsigned int b)
-		{return glm::length(probes[a]->GetComponent<Transform>()->GetPosition() - pos) < glm::length(probes[b]->GetComponent<Transform>()->GetPosition() - pos); });
+		{return glm::length(probes[a]->GetComponent<Transform>()->GetPosition() - Math::ToVec3(pos)) < glm::length(probes[b]->GetComponent<Transform>()->GetPosition() - Math::ToVec3(pos)); });
 
 		//if(k > (unsigned int)nearByProbes.size())
 		//	GE_CORE_WARN( "m_K {0} larger than nearby probes' number:{1}!", k, (unsigned int)nearByProbes.size());

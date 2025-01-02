@@ -5,11 +5,11 @@
 #include "BlackPearl/Component/MeshRendererComponent/MeshRenderer.h"
 #include "BlackPearl/Renderer/Renderer.h"
 #include "BlackPearl/Common/CommonFunc.h"
-#ifdef GE_PLATFORM_ANDRIOD
-#include "GLES3/gl32.h"
-#endif
+#include "BlackPearl/Renderer/DeviceManager.h"
+#include "BlackPearl/RHI/OpenGLRHI/OpenGLTexture.h"
 namespace BlackPearl {
 
+	extern DeviceManager* g_deviceManager;
 
 	IndirectCullRenderer::IndirectCullRenderer()
 	{
@@ -74,20 +74,23 @@ namespace BlackPearl {
 		m_MeshGatherer->GetVAO()->UpdateVertexBuffers();
 
 		m_HizFrameBuffer.reset(DBG_NEW FrameBuffer());
-#ifdef GE_PLATFORM_WINDOWS
 
-        m_DepthTexture.reset(DBG_NEW Texture(Texture::Type::DepthMap, Configuration::WindowWidth, Configuration::WindowHeight, true/*isDepth*/, GL_NEAREST_MIPMAP_NEAREST, GL_NEAREST, GL_DEPTH_COMPONENT32, GL_DEPTH_COMPONENT, GL_CLAMP_TO_EDGE, GL_FLOAT, true/*genmipmap*/));
-#endif
-#ifdef GE_PLATFORM_ANDRIOD
+		IDevice* device = g_deviceManager->GetDevice();
+		TextureDesc desc;
+		desc.type = TextureType::DepthMap;
+		desc.width = Configuration::WindowWidth;
+		desc.height = Configuration::WindowHeight;
+		desc.minFilter = FilterMode::Nearest_Mip_Nearnest;
+		desc.magFilter = FilterMode::Nearest;
+		desc.wrap = SamplerAddressMode::ClampToEdge;
+		desc.format = Format::D32;
+		desc.generateMipmap = true;
+		m_DepthTexture = device->createTexture(desc);
 
-        m_DepthTexture.reset(DBG_NEW Texture(Texture::Type::DepthMap, Configuration::WindowWidth, Configuration::WindowHeight, true/*isDepth*/, GL_NEAREST_MIPMAP_NEAREST, GL_NEAREST, GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT, GL_CLAMP_TO_EDGE, GL_FLOAT, true/*genmipmap*/));
-#endif
+		//m_DepthTexture.reset(DBG_NEW Texture(TextureType::DepthMap, Configuration::WindowWidth, Configuration::WindowHeight, true/*isDepth*/, GL_NEAREST_MIPMAP_NEAREST, GL_NEAREST, GL_DEPTH_COMPONENT32, GL_DEPTH_COMPONENT, GL_CLAMP_TO_EDGE, GL_FLOAT, true/*genmipmap*/));
 		m_HizFrameBuffer->Bind();
 		m_HizFrameBuffer->AttachDepthTexture(m_DepthTexture, 0);
-#ifdef GE_PLATFORM_WINDOWS
-
-        glDrawBuffer(GL_NONE); // No color buffer is drawn to.
-#endif
+		glDrawBuffer(GL_NONE); // No color buffer is drawn to.
 		glReadBuffer(GL_NONE);
 		m_HizFrameBuffer->UnBind();
 
@@ -140,7 +143,7 @@ namespace BlackPearl {
 		m_HizFrameBuffer->Bind();
 
 
-		m_MipmapLevel = 1+ (int)log2f(fmaxf(Configuration::WindowWidth, Configuration::WindowHeight));
+		m_MipmapLevel = 1+ (int)std::log2f(fmaxf(Configuration::WindowWidth, Configuration::WindowHeight));
 		int curWidth = Configuration::WindowWidth;
 		int curHeight = Configuration::WindowHeight;
 
@@ -166,7 +169,7 @@ namespace BlackPearl {
 			glViewport(0, 0, curWidth, curHeight);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, i - 1);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, i - 1);
-			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, m_DepthTexture->GetRendererID(), i);
+			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, static_cast<Texture*>(m_DepthTexture.Get())->GetRendererID(), i);
 			GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 			GE_ASSERT(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "Framebuffer not complete!");
 			m_HizShader->SetUniform1i("u_LastMipLevel", i - 1);
@@ -181,7 +184,7 @@ namespace BlackPearl {
 		//reset mipmap level range, and bind lod 0
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, m_MipmapLevel - 1);
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, m_DepthTexture->GetRendererID(), 0);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, static_cast<Texture*>(m_DepthTexture.Get())->GetRendererID(), 0);
 
 
 		glDepthFunc(GL_LEQUAL);
@@ -377,7 +380,7 @@ namespace BlackPearl {
 		for (auto node : m_Scene->GetSingleNodes())
 		{
 			SingleNode* singleNode = dynamic_cast<SingleNode*>(node);
-            const auto& meshes = singleNode->GetObj()->GetComponent<MeshRenderer>()->GetMeshes();
+			auto& meshes = singleNode->GetObj()->GetComponent<MeshRenderer>()->GetMeshes();
 
 			AddObjTransformToBuffer(baseInstance, singleNode->GetObj()->GetComponent<Transform>()->GetTransformMatrix());
 			baseInstance++;
@@ -399,7 +402,7 @@ namespace BlackPearl {
 		for (auto node : m_Scene->GetSingleNodes())
 		{
 			SingleNode* singleNode = dynamic_cast<SingleNode*>(node);
-			const auto& meshes = singleNode->GetObj()->GetComponent<MeshRenderer>()->GetMeshes();
+			auto& meshes = singleNode->GetObj()->GetComponent<MeshRenderer>()->GetMeshes();
 
 
 			for (auto mesh : meshes)
@@ -445,7 +448,7 @@ namespace BlackPearl {
 		m_IndexCnt = 0;
 		m_ObjsCnt = 0;
 		m_MeshCnt = 0;
-		//ï¿½ï¿½Òªï¿½ï¿½Ö¤Ã¿ï¿½ï¿½object ï¿½ï¿½vertex attribute ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð¶ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½Ä£ï¿½ï¿½ï¿½IndirectVertexï¿½Ðµï¿½ï¿½ï¿½ï¿½ï¿½
+		//ÐèÒª±£Ö¤Ã¿¸öobject µÄvertex attribute ÊôÐÔÅÅÁÐ¶¼ÊÇÒ»ÑùµÄ£¬¼´IndirectVertexÖÐµÄÊôÐÔ
 		for (size_t i = 0; i < m_Scene->GetSingleNodesCnt(); i++)
 		{
 			SingleNode* singleNode = dynamic_cast<SingleNode*>(m_Scene->GetSingleNodes(i));
@@ -471,7 +474,7 @@ namespace BlackPearl {
 		for (auto node : m_Scene->GetSingleNodes())
 		{
 			SingleNode* singleNode = dynamic_cast<SingleNode*>(node);
-			const auto& meshes = singleNode->GetObj()->GetComponent<MeshRenderer>()->GetMeshes();
+			auto& meshes = singleNode->GetObj()->GetComponent<MeshRenderer>()->GetMeshes();
 
 
 			for (auto mesh : meshes)
@@ -566,7 +569,7 @@ namespace BlackPearl {
 		//	indexBuffer.reset(DBG_NEW IndexBuffer(m_IndexBuffer, m_IndexCnt * sizeof(uint32_t)));
 		//	m_VertexArray->SetIndexBuffer(indexBuffer);
 
-		//	//ï¿½ï¿½ï¿½Ã¿ï¿½ï¿½vertexbuffer Ò»ï¿½ï¿½attribute,ï¿½ï¿½Ã´ stride = 0, offset Ò² = 0
+		//	//Èç¹ûÃ¿¸övertexbuffer Ò»ÖÖattribute,ÄÇÃ´ stride = 0, offset Ò² = 0
 		//	std::shared_ptr<VertexBuffer> vertexBuffer(DBG_NEW VertexBuffer(m_PositionBuffer, m_VertexCnt * sizeof(float) * 3));
 		//	vertexBuffer->SetBufferLayout({ {ElementDataType::Float3, "aPos", false, POS_SLOT} });
 		//	std::shared_ptr<VertexBuffer> normalBuffer(DBG_NEW VertexBuffer(m_NormalBuffer, m_VertexCnt * sizeof(float) * 3));

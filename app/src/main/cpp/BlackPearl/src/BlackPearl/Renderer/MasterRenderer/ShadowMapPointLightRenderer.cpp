@@ -13,10 +13,10 @@ namespace BlackPearl {
 	int ShadowMapPointLightRenderer::s_PCFSamplesCnt = 10.0f;
 
 	//float ShadowMapPointLightRenderer::s_LightSize = 1.0f;
-	//NearPlane ï¿½ï¿½ï¿½É¸Ä±ï¿½ï¿½ë±£Ö¤ï¿½ï¿½1 ï¿½ï¿½shaderï¿½ï¿½Òª×ªï¿½ï¿½ï¿½ï¿½[0,1]ï¿½ï¿½ï¿½ï¿½Ïµ
+	//NearPlane ²»¿É¸Ä±ØÐë±£Ö¤ÊÇ1 £¬shaderÖÐÒª×ª»»µ½[0,1]×ø±êÏµ
 	//CubeMapDepthShader.glsl
 	const float ShadowMapPointLightRenderer::s_NearPlane = 1.0f;
-	//Ö»ï¿½Ðµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î»ï¿½Ã·ï¿½ï¿½ï¿½ï¿½ä»¯Ê±ï¿½ï¿½light or dynamic objs)ï¿½Å»ï¿½ï¿½ï¿½ï¿½Â¸ï¿½ï¿½ï¿½shadow map
+	//Ö»ÓÐµ±³¡¾°ÖÐÓÐÎïÌåÎ»ÖÃ·¢Éú±ä»¯Ê±£¨light or dynamic objs)²Å»áÖØÐÂ¸üÐÂshadow map
 	static bool  s_UpdateShadowMap = false;
 
 	ShadowMapPointLightRenderer::ShadowMapPointLightRenderer()
@@ -46,19 +46,16 @@ namespace BlackPearl {
 		float aspect = (float)s_ShadowMapPointLightWidth / (float)s_ShadowMapPointLightHeight;
 		glm::mat4 pointLightProjection = glm::perspective(glm::radians(s_FOV), aspect, s_NearPlane, s_FarPlane);
 
-			//TODO:ï¿½ï¿½ï¿½PointLights
+			//TODO:¶à¸öPointLights
 		GE_ASSERT(lightSources->GetPointLights().size() >0, "no pointlight found!");
 
 		for (Object* pointLight:lightSources->GetPointLights())
 		{
-			std::shared_ptr<CubeMapTexture> shadowMap = pointLight->GetComponent<PointLight>()->GetShadowMap();
+			TextureHandle shadowMap = pointLight->GetComponent<PointLight>()->GetShadowMap();
 			
 			m_FrameBuffer->Bind();
 			m_FrameBuffer->AttachCubeMapDepthTexture(shadowMap);
-#ifdef GE_PLATFORM_WINDOWS
-
-            glDrawBuffer(GL_NONE);
-#endif
+			glDrawBuffer(GL_NONE);
 			glReadBuffer(GL_NONE);
 			m_FrameBuffer->UnBind();
 			glm::vec3 lightPos = pointLight->GetComponent<Transform>()->GetPosition();
@@ -70,7 +67,7 @@ namespace BlackPearl {
 			m_LightProjectionViewMatries[5] = (pointLightProjection * glm::lookAt(lightPos, lightPos + glm::vec3(0.0, 0.0, -1.0f), glm::vec3(0.0, -1.0f, 0.0)));
 
 
-			glViewport(0, 0, shadowMap->GetWidth(), shadowMap->GetHeight());
+			glViewport(0, 0, shadowMap->getDesc().width, shadowMap->getDesc().height);
 			m_FrameBuffer->Bind();
 			glClear(GL_DEPTH_BUFFER_BIT);
 

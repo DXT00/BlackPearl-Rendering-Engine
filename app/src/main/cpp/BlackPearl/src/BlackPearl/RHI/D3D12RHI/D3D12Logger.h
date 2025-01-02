@@ -1,8 +1,8 @@
 #pragma once
-#ifdef GE_API_D3D12
+#include <string>
 namespace BlackPearl {
 
-	class D3D12Logger 
+	class D3D12Logger
 	{
 
 	public:
@@ -99,4 +99,3 @@ namespace BlackPearl {
 	}
 
 }
-#endif

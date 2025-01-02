@@ -22,9 +22,8 @@ namespace BlackPearl {
 	{
 		if (obj->GetComponent<BasicInfo>()->GetObjectType() == ObjectType::OT_Sphere)
 			return SphereBoundingBox(obj);
-		else if (obj->GetComponent<BasicInfo>()->GetObjectType() == ObjectType::OT_Sphere)
-			return TriangleBoundingBox(obj);
 		else if (obj->GetComponent<BasicInfo>()->GetObjectType() == ObjectType::OT_Model) {
+
 			std::vector<BlackPearl::Vertex> verteices = obj->GetComponent<MeshRenderer>()->GetModel()->GetMeshVertex();
 			obj->AddComponent<BVHNode>(verteices);
 			AABB box = obj->GetComponent<BVHNode>()->GetRootBox();
@@ -33,6 +32,28 @@ namespace BlackPearl {
 
 			obj->AddComponent<BoundingBox>(box);
 			return box;
+		}
+		else { //Cube, Quad, Tiangle
+			const std::vector<std::shared_ptr<Mesh>>& meshes= obj->GetComponent<MeshRenderer>()->GetMeshes();
+			//Get positon, calculate aabb
+			AABB objBox;
+			int idx = 0;
+			for (const auto& mesh : meshes) {
+				AABB box(mesh->GetMinPLocal(), mesh->GetMaxPLocal(), true);
+				glm::mat4 m = obj->GetComponent<Transform>()->GetTransformMatrix();
+				box.UpdateTransform(m);
+				if (idx == 0) {
+					objBox = box;
+				}
+				else {
+					objBox.Expand(box);
+				}
+				idx++;
+
+			}
+
+			return objBox;
+
 		}
 	}
 
@@ -66,11 +87,11 @@ namespace BlackPearl {
 
 	AABB BoundingBoxBuilder::SphereBoundingBox(Object* obj)
 	{
-		glm::vec3 center = obj->GetComponent<Transform>()->GetPosition();
-		glm::vec3 radius =glm::vec3(obj->GetComponent<SphereMeshFilter>()->GetRadius());
-		glm::vec3 minP = center - radius;
-		glm::vec3 maxP = center + radius;
-		return AABB(minP,maxP);
+		math::float3 center = Math::ToFloat3(obj->GetComponent<Transform>()->GetPosition());
+		math::float3 radius =math::float3(obj->GetComponent<SphereMeshFilter>()->GetRadius());
+		math::float3 minP = center - radius;
+		math::float3 maxP = center + radius;
+		return AABB(minP,maxP,true);
 	}
 
 	AABB BoundingBoxBuilder::TriangleBoundingBox(Object* obj)

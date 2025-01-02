@@ -4,7 +4,7 @@
 #include "BlackPearl/Component/TransformComponent/Transform.h"
 namespace BlackPearl {
 	BatchNode::BatchNode(Object* selfObj, const std::vector<Object*>& objs, bool dynamic)
-		: Node(Node::Type::Batch_Node)
+		: Node(selfObj, Node::Type::Batch_Node)
 	{
 		//m_ObjectsList = objs;
 		m_Batch = std::make_shared<Batch>(objs, dynamic);
@@ -72,16 +72,16 @@ namespace BlackPearl {
 		return m_Batch->GetModelMatrix();
 	}
 
-	void BatchNode::SetDeltaPosition(glm::vec3 pos)
+	void BatchNode::SetDeltaPosition(math::float3 pos)
 	{
-		m_SelfObj->GetComponent<Transform>()->SetPosition(pos);
+		m_SelfObj->GetComponent<Transform>()->SetPosition(Math::ToVec3(pos));
 		m_Batch->UpdateBatchPosition(pos);
 		
 	}
 
-	void BatchNode::SetDeltaScale(glm::vec3 scale)
+	void BatchNode::SetDeltaScale(math::float3 scale)
 	{
-		m_SelfObj->GetComponent<Transform>()->SetScale(scale);
+		m_SelfObj->GetComponent<Transform>()->SetScale(Math::ToVec3(scale));
 		m_Batch->UpdateBatchScale(scale);
 	}
 

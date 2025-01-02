@@ -6,8 +6,8 @@ namespace BlackPearl {
 
     void RenderTargets::Init(
         IDevice* device,
-        donut::math::int2 renderSize,
-        donut::math::int2 displaySize,
+        math::int2 renderSize,
+        math::int2 displaySize,
         bool enableMotionVectors,
         bool useReverseProjection,
         int backbufferCount)
@@ -237,7 +237,7 @@ namespace BlackPearl {
 //        }
     }
 
-    [[nodiscard]] bool RenderTargets::IsUpdateRequired(donut::math::int2 renderSize, donut::math::int2 displaySize, donut::math::uint sampleCount) const
+    [[nodiscard]] bool RenderTargets::IsUpdateRequired(math::int2 renderSize, math::int2 displaySize, math::uint sampleCount) const
     {
      /*   if (any(m_RenderSize != renderSize) || any(m_DisplaySize != displaySize) || m_SampleCount != sampleCount) return true;*/
         return false;

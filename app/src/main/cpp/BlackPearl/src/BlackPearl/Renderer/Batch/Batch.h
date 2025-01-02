@@ -32,8 +32,8 @@ namespace BlackPearl {
 		float* GetModelMatrix() const { return m_ModelTransformBuffer; }
 		std::vector<Object*> GetObjects() const { return m_ObjectsList; }
 
-		void UpdateBatchPosition(glm::vec3 pos);
-		void UpdateBatchScale(glm::vec3 scale);
+		void UpdateBatchPosition(math::float3 pos);
+		void UpdateBatchScale(math::float3 scale);
 
 		void UpdateObjsTransform();
 
@@ -58,7 +58,7 @@ namespace BlackPearl {
 		void CreateVertexArray();
 		void AddMeshToBuffer(uint32_t objId, const std::vector<std::shared_ptr<Mesh>>& meshes, uint32_t& baseVertexCnt, uint32_t& baseIndexCnt);
 		void AddMaterialIdToBuffer(uint32_t objId, uint32_t matId, uint32_t baseVertexCnt);
-		void AddColorToBuffer(uint32_t objId, glm::vec3 color);
+		void AddColorToBuffer(uint32_t objId, math::float3 color);
 		void CopyMeshBufferToBatchBuffer(uint32_t vertexCnt, float* buffer, const std::pair<float*, uint32_t>& meshBuffer, const std::shared_ptr<Mesh>& mesh, int elementSlot, uint32_t itemCnt);
 		void CopyMeshBufferToBatchBuffer(uint32_t vertexCnt, uint32_t* buffer, const std::pair<uint32_t*, uint32_t>& meshBuffer, const std::shared_ptr<Mesh>& mesh, int elementSlot, uint32_t itemCnt);
 		void UpdateModelTransformBuffer(uint32_t objId, glm::mat4 modelMat);

@@ -1,5 +1,4 @@
 #pragma once
-#ifdef GE_API_D3D12
 #include <d3d12.h>
 #include "BasicRenderer.h"
 #include "D3D12Renderer.h"
@@ -153,4 +152,3 @@ namespace BlackPearl {
 }
 
 
-#endif

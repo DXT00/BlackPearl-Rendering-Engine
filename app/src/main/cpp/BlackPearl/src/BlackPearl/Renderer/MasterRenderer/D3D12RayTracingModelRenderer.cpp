@@ -1,5 +1,4 @@
 #include "pch.h"
-#ifdef GE_API_D3D12
 #include "D3D12RayTracingModelRenderer.h"
 #include "BlackPearl/Application.h"
 #include "BlackPearl/Common/CommonFunc.h"
@@ -1081,4 +1080,3 @@ namespace BlackPearl {
 		}
 	}
 }
-#endif

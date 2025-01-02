@@ -75,7 +75,7 @@ namespace BlackPearl {
     // verify the packing of BindingLayoutItem for good alignment
     static_assert(sizeof(RHIBindingLayoutItem) == 8, "sizeof(BindingLayoutItem) is supposed to be 8 bytes");
 
-    typedef nvrhi::static_vector<RHIBindingLayoutItem, c_MaxBindingsPerLayout> BindingLayoutItemArray;
+    typedef std::vector<RHIBindingLayoutItem> BindingLayoutItemArray;
 
 
     struct VulkanBindingOffsets
@@ -85,10 +85,10 @@ namespace BlackPearl {
         uint32_t constantBuffer = 256;
         uint32_t unorderedAccess = 384;
 
-         VulkanBindingOffsets& setShaderResourceOffset(uint32_t value) { shaderResource = value; return *this; }
-         VulkanBindingOffsets& setSamplerOffset(uint32_t value) { sampler = value; return *this; }
-         VulkanBindingOffsets& setConstantBufferOffset(uint32_t value) { constantBuffer = value; return *this; }
-         VulkanBindingOffsets& setUnorderedAccessViewOffset(uint32_t value) { unorderedAccess = value; return *this; }
+        constexpr VulkanBindingOffsets& setShaderResourceOffset(uint32_t value) { shaderResource = value; return *this; }
+        constexpr VulkanBindingOffsets& setSamplerOffset(uint32_t value) { sampler = value; return *this; }
+        constexpr VulkanBindingOffsets& setConstantBufferOffset(uint32_t value) { constantBuffer = value; return *this; }
+        constexpr VulkanBindingOffsets& setUnorderedAccessViewOffset(uint32_t value) { unorderedAccess = value; return *this; }
     };
 
 	class RHIBindingLayoutDesc
@@ -108,7 +108,7 @@ namespace BlackPearl {
         //   The motivation for such validation is that DXC maps register spaces to Vulkan descriptor sets by default.
         bool registerSpaceIsDescriptorSet = false;
 
-        std::vector<RHIBindingLayoutItem> bindings;
+        BindingLayoutItemArray bindings;
         VulkanBindingOffsets bindingOffsets;
 
         RHIBindingLayoutDesc& setVisibility(ShaderType value) { visibility = value; return *this; }

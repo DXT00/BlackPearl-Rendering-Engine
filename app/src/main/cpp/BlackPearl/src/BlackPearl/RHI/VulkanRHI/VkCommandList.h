@@ -31,7 +31,7 @@
 #include "VkBuffer.h"
 #include "VkCommandBuffer.h"
 #include "VkUploadManager.h"
-#include <vulkan/vulkan.h>
+#include "VkRayTraceStruct.h"
 #include <vulkan/vulkan_core.h>
 namespace BlackPearl {
 	class CommandList : public RefCounter<ICommandList>
@@ -80,15 +80,15 @@ namespace BlackPearl {
         void setMeshletState(const MeshletState& state) override;
         void dispatchMesh(uint32_t groupsX, uint32_t groupsY = 1, uint32_t groupsZ = 1) override;
 
-       /* void setRayTracingState(const rt::State& state) override;
-        void dispatchRays(const rt::DispatchRaysArguments& args) override;
+        void setRayTracingState(const RayTracingState& state) override;
+        void dispatchRays(const DispatchRaysArguments& args) override;
 
         void buildOpacityMicromap(rt::IOpacityMicromap* omm, const rt::OpacityMicromapDesc& desc) override;
         void buildBottomLevelAccelStruct(rt::IAccelStruct* as, const rt::GeometryDesc* pGeometries, size_t numGeometries, rt::AccelStructBuildFlags buildFlags) override;
         void compactBottomLevelAccelStructs() override;
         void buildTopLevelAccelStruct(rt::IAccelStruct* as, const rt::InstanceDesc* pInstances, size_t numInstances, rt::AccelStructBuildFlags buildFlags) override;
-        void buildTopLevelAccelStructFromBuffer(rt::IAccelStruct* as, nvrhi::IBuffer* instanceBuffer, uint64_t instanceBufferOffset, size_t numInstances,
-            rt::AccelStructBuildFlags buildFlags = rt::AccelStructBuildFlags::None) override;*/
+        void buildTopLevelAccelStructFromBuffer(rt::IAccelStruct* as, IBuffer* instanceBuffer, uint64_t instanceBufferOffset, size_t numInstances,
+            rt::AccelStructBuildFlags buildFlags = rt::AccelStructBuildFlags::None) override;
 
         void beginTimerQuery(ITimerQuery* query) override;
         void endTimerQuery(ITimerQuery* query) override;
@@ -121,6 +121,8 @@ namespace BlackPearl {
         const CommandListParameters& getDesc() override { return m_CommandListParameters; }
 
         TrackedCommandBufferPtr getCurrentCmdBuf() const { return m_CurrentCmdBuf; }
+
+        const GraphicsState& GetLastGraphicsState() const { return m_CurrentGraphicsState; }
     private:
         Device* m_Device;
         const VulkanContext& m_Context;
@@ -138,7 +140,7 @@ namespace BlackPearl {
         GraphicsState m_CurrentGraphicsState{};
         ComputeState m_CurrentComputeState{};
         MeshletState m_CurrentMeshletState{};
-       // rt::State m_CurrentRayTracingState;
+        RayTracingState m_CurrentRayTracingState;
         bool m_AnyVolatileBufferWrites = false;
 
         struct ShaderTableState
@@ -181,6 +183,12 @@ namespace BlackPearl {
 
         void _commitBarriersInternal();
         void _commitBarriersInternal_synchronization2();
+
+        void _buildTopLevelAccelStructInternal(AccelStruct* as, VkDeviceAddress instanceData, size_t numInstances, rt::AccelStructBuildFlags buildFlags, uint64_t currentVersion);
+
+        // rayTracing
+        void _convertBottomLevelGeometry(const rt::GeometryDesc& src, VkAccelerationStructureGeometryKHR& dst, VkAccelerationStructureTrianglesOpacityMicromapEXT& dstOmm,
+            uint32_t& maxPrimitiveCount, VkAccelerationStructureBuildRangeInfoKHR* pRange, const VulkanContext& context);
 	};
 
 }

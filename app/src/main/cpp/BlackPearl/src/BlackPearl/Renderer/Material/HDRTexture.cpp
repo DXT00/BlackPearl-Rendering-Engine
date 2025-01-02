@@ -1,15 +1,10 @@
 #include "pch.h"
-#ifdef GE_PLATFORM_ANDRIOD
-#include "GLES3/gl3.h"
-#endif
-#ifdef GE_PLATFORM_WINDOWS
 #include "glad/glad.h"
-#endif
 #include "HDRTexture.h"
 
 #include "BlackPearl/Core.h"
+#include "BlackPearl/RHI/Common/stb_util.h"
 
-#include "stb_image.h"
 
 namespace BlackPearl {
 	
@@ -31,13 +26,13 @@ namespace BlackPearl {
 
 		int width, height, nrChannels;
 
-		stbi_set_flip_vertically_on_load(true);
+		stbi_set_flip_vertically_on_load_util(true);
 
 
-		float  *data = stbi_loadf(image.c_str(), &width, &height, &nrChannels, 0);
+		float  *data = stbi_loadf_util(image.c_str(), &width, &height, &nrChannels, 0);
 		GE_ASSERT(data, "fail to load texture data!");
 		GLenum format;
-		switch (nrChannels) //×¢ï¿½â²»Í¬Í¼Æ¬ï¿½Ð²ï¿½Í¬ï¿½ï¿½Í¨ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+		switch (nrChannels) //×¢Òâ²»Í¬Í¼Æ¬ÓÐ²»Í¬µÄÍ¨µÀÊý£¡
 		{
 		case 1:
 			format = GL_RED;
@@ -57,14 +52,14 @@ namespace BlackPearl {
 		//glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, format, GL_FLOAT, data);
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, width, height, 0, format, GL_FLOAT, data);
 
-		glGenerateMipmap(GL_TEXTURE_2D);//Îªï¿½ï¿½Ç°ï¿½ó¶¨µï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Òªï¿½Ä¶à¼¶ï¿½ï¿½Ô¶ï¿½ï¿½ï¿½ï¿½
+		glGenerateMipmap(GL_TEXTURE_2D);//Îªµ±Ç°°ó¶¨µÄÎÆÀí×Ô¶¯Éú³ÉËùÓÐÐèÒªµÄ¶à¼¶½¥Ô¶ÎÆÀí
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		UnBind();
 
-		stbi_image_free(data);
+		stbi_image_free_util(data);
 
 	}
 	void HDRTexture::Bind()

@@ -14,8 +14,8 @@ namespace BlackPearl {
 		virtual ~ParallelLight() = default;
 		virtual void Init() override;
 
-		inline void SetDirection(const glm::vec3& direction) { m_Direction = direction; }
-		inline glm::vec3 GetDirection() { return m_Direction; }
+		inline void SetDirection(const math::float3& direction) { m_Direction = direction; }
+		inline math::float3 GetDirection() { return m_Direction; }
 		void UpdateMesh(Props props) {
 			SetProps(props);
 			/*		std::shared_ptr<Material> lightMaterial = m_Mesh.GetMaterial();
@@ -27,7 +27,7 @@ namespace BlackPearl {
 		//	virtual std::shared_ptr<VertexArray> GetVertexArray()override { return m_VertexArray; };
 		//	virtual std::shared_ptr<Shader> GetShader() override { return m_Shader; };
 	private:
-		glm::vec3 m_Direction;
+		math::float3 m_Direction;
 
 		//	std::shared_ptr<VertexArray> m_VertexArray;
 		//	std::shared_ptr<Shader> m_Shader;

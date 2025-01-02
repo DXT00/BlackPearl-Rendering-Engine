@@ -36,7 +36,6 @@ extern "C" {
 #include <glob.h>
 }
 #endif // _WIN32
-
 //using namespace donut::vfs;
 namespace BlackPearl {
 
@@ -184,35 +183,35 @@ static int enumerateNativeFiles(const char* pattern, bool directories, enumerate
     return numEntries;
 
 #else // WIN32
-//TODO:: error: use of undeclared identifier 'globfree64'
-//    glob_t glob_matches;
-//    int globResult = glob64(pattern, 0 /*flags*/, nullptr /*errfunc*/, &glob_matches);
-//
-//    if (globResult == 0)
-//    {
-//        int numEntries = 0;
-//
-//        for (int i = 0; i < glob_matches.gl_pathc; ++i)
-//        {
-//            const char* globentry = (glob_matches.gl_pathv)[i];
-//            std::error_code ec, ec2;
-//            std::filesystem::directory_entry entry(globentry, ec);
-//            if (!ec)
-//            {
-//                if (directories == entry.is_directory(ec2) && !ec2)
-//                {
-//                    callback(entry.path().filename().native());
-//                    ++numEntries;
-//                }
-//            }
-//        }
-//        globfree64(&glob_matches);
-//
-//        return numEntries;
-//    }
-//
-//    if (globResult == GLOB_NOMATCH)
-//        return 0;
+
+    glob64_t glob_matches;
+    int globResult = glob64(pattern, 0 /*flags*/, nullptr /*errfunc*/, &glob_matches);
+
+    if (globResult == 0)
+    {
+        int numEntries = 0;
+
+        for (int i = 0; i < glob_matches.gl_pathc; ++i)
+        {
+            const char* globentry = (glob_matches.gl_pathv)[i];
+            std::error_code ec, ec2;
+            std::filesystem::directory_entry entry(globentry, ec);
+            if (!ec)
+            {
+                if (directories == entry.is_directory(ec2) && !ec2)
+                {
+                    callback(entry.path().filename().native());
+                    ++numEntries;
+                }
+            }
+        }
+        globfree64(&glob_matches);
+
+        return numEntries;
+    }
+
+    if (globResult == GLOB_NOMATCH)
+        return 0;
 
     return status::Failed;
 
@@ -436,6 +435,33 @@ static void appendPatternToRegex(const std::string& pattern, std::stringstream& 
         default: regex << c;
         }
     }
+}
+
+std::filesystem::path IFileSystem::GetExeDir() const
+{
+    return m_ExeDir;
+}
+
+IFileSystem::IFileSystem()
+{
+    char path[MAX_PATH] = { 0 };
+#ifdef _WIN32
+    if (GetModuleFileNameA(nullptr, path, MAX_PATH) == 0)
+        return ;
+#else // _WIN32
+    // /proc/self/exe is mostly linux-only, but can't hurt to try it elsewhere
+    if (readlink("/proc/self/exe", path, std::size(path)) <= 0)
+    {
+        // portable but assumes executable dir == cwd
+        if (!getcwd(path, std::size(path)))
+            return ""; // failure
+    }
+#endif // _WIN32
+
+    std::filesystem::path result = path;
+    result = result.parent_path();
+    m_ExeDir = result;
+    
 }
 
 //std::string getFileSearchRegex(const std::filesystem::path& path, const std::vector<std::string>& extensions)

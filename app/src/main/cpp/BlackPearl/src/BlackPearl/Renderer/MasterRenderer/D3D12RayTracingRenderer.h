@@ -1,5 +1,4 @@
 #pragma once
-#ifdef GE_API_D3D12
 #include "BasicRenderer.h"
 #include <d3d12.h>
 #include "BlackPearl/RHI/D3D12RHI/DirectXRaytracingHelper.h"
@@ -118,4 +117,3 @@ namespace BlackPearl {
 	};
 
 }
-#endif

@@ -13,21 +13,18 @@
 #include "BlackPearl/Component/TransformComponent/Transform.h"
 #include "BlackPearl/Component/CameraComponent/PerspectiveCamera.h"
 #include "BlackPearl/Component/MeshRendererComponent/MeshRenderer.h"
-#ifdef GE_PLATFORM_WINDOWS
 #include "imgui/imgui.h"
-
 #include "imgui/imfilebrowser.h"
-#endif
 #include "BlackPearl/MainCamera/MainCamera.h"
 #include "BlackPearl/Input.h"
 #include "BlackPearl/KeyCodes.h"
 #include "BlackPearl/Map/MapManager.h"
 #include "BlackPearl/Node/BatchNode.h"
 #include "BlackPearl/Renderer/DeviceManager.h"
-#ifdef GE_PLATFORM_WINDOWS
+#include "BlackPearl/Math/Math.h"
+#include "BlackPearl/Component/LightProbeComponent/LightProbeComponent.h"
 #include <WinUser.h>
-#endif
-
+#include "hlsl/core/material_cb.h"
 using namespace std::chrono;
 
 namespace BlackPearl {
@@ -40,19 +37,15 @@ namespace BlackPearl {
 			:m_DebugName(name) {
 
 			m_LightSources = new LightSources();
-#ifdef GE_PLATFORM_WINDOWS
 			m_fileDialog.SetTitle("file selector");
 			m_fileDialog.SetPwd("./assets");
-#endif
+
 			/*MainCamera Init*/
 			m_MainCamera = CreateCamera();
 			m_MainCamera->SetPosition(glm::vec3(0, 0, 0.0f));
 			m_CameraPosition = m_MainCamera->GetPosition();
 			m_CameraRotation.Yaw = m_MainCamera->Yaw();
 			m_CameraRotation.Pitch = m_MainCamera->Pitch();
-
-			/*Render*/
-			m_DeviceManager = DeviceManager::Create(DynamicRHI::g_RHIType);
 
 			/*Status*/
 			m_StartTimeMs = duration_cast<milliseconds>(system_clock::now().time_since_epoch());
@@ -64,7 +57,7 @@ namespace BlackPearl {
 				GE_SAVE_DELETE(obj);
 			}
 			//GE_SAVE_DELETE(obj);
-			/*for (auto& obj : m_BackGroundObjsList) //ï¿½ï¿½Òªm_BackGroundObjsListï¿½ï¿½m_ObjectsListï¿½Ø¸ï¿½É¾ï¿½ï¿½ï¿½ï¿½
+			/*for (auto& obj : m_BackGroundObjsList) //²»Òªm_BackGroundObjsListÓëm_ObjectsListÖØ¸´É¾³ý£¡
 				GE_SAVE_DELETE(obj);
 			for (auto& obj : m_DynamicObjsList)
 				GE_SAVE_DELETE(obj);
@@ -77,9 +70,10 @@ namespace BlackPearl {
 			m_BackGroundObjsList.clear();
 			m_DynamicObjsList.clear();
 			m_ShadowObjsList.clear();
-			GE_SAVE_DELETE(m_DeviceManager);
-
 		};
+
+		// ×ÊÔ´´´½¨£¬°üÀ¨RenderGraph£¬³¡¾°µÈ
+		virtual void OnSetup() {}
 		virtual void OnAttach() {}
 		virtual void OnDetach() {}
 		virtual void OnUpdate(Timestep ts) {
@@ -88,6 +82,9 @@ namespace BlackPearl {
 		}
 		virtual void OnImguiRender();
 
+		void SetDeviceManager(DeviceManager* deviceMgr) {
+			m_DeviceManager = deviceMgr;
+		}
 
 		void LoadScene(const std::string demoScene);
 		void LoadCornellScene();
@@ -99,7 +96,7 @@ namespace BlackPearl {
 
 		void LoadSwordScene();
 		void LoadCubesScene();
-		std::vector<Object*> LoadCubesScene1(int cubeNum, glm::vec3 pos);
+		std::vector<Object*> Layer::LoadCubesScene1(int cubeNum, glm::vec3 pos);
 		void LoadD3D12ModelScene();
 
 		Object* LoadDynamicObject(const std::string modelName);
@@ -130,11 +127,11 @@ namespace BlackPearl {
 		Object* CreateSphere(const float radius, const unsigned int stackCount, const unsigned int sectorCount, const std::string& shaderPath = "assets/shaders/Sphere.glsl", const std::string& texturePath = "", const std::string& name = "Sphere");
 		Object* CreatePlane(const std::string& shaderPath = "assets/shaders/Plane.glsl", const std::string& texturePath = "assets/texture/wood.png", const std::string& name = "Plane");
 		Object* CreateSkyBox(const std::vector<std::string>& textureFaces, const std::string& shaderPath = "assets/shaders/SkyBox.glsl", const std::string& name = "SkyBox");
-		//TODO::Quad ï¿½ï¿½TexturePathï¿½Í»ï¿½ï¿½bug...
+		//TODO::Quad ¼ÓTexturePath¾Í»á³öbug...
 		Object* CreateQuad(const std::string& shaderPath = "assets/shaders/Quad.glsl", const std::string& texturePath = "", const std::string& name = "Quad");
 
 		Object* CreateLightProbe(ProbeType type, const std::string& shaderPath = "assets/shaders/lightProbes/lightProbe.glsl", const std::string& texturePath = "", const std::string& name = "LightProbe");
-		Object* CreateProbeGrid(MapManager* mapManager, ProbeType type, glm::vec3 probeNums, glm::vec3 offsets, float space);
+		Object* CreateProbeGrid(MapManager* mapManager, ProbeType type, math::float3 probeNums, math::float3 offsets, float space);
 		MainCamera* CreateCamera(const std::string& name = "Camera");
 		BatchNode* CreateBatchNode(std::vector<Object*> objs, bool dynamic, const std::string& name = "BatchNode");
 
@@ -147,9 +144,9 @@ namespace BlackPearl {
 		void ShowCamera(MainCamera* mainCamera);
 		void ShowTerrian(Object* obj);
 
-		void ShowShader(std::string imguiShaders, int meshIndex,  int& itemIndex, int offset);
-		void ShowTextures(std::string imguiShaders, int meshIndex,  int& itemIndex, Texture::Type textureType, Texture::Type& type, int offset);
-		void ShowMaterialProps(Material::Props& imGuiProps);
+		void ShowShader(std::string imguiShaders, int meshIndex, static int& itemIndex, int offset);
+		void ShowTextures(std::string imguiShaders, int meshIndex, static  int& itemIndex, TextureType textureType, static TextureType& type, int offset);
+		void ShowMaterialProps(Props& imGuiProps);
 		std::vector<Object*> GetObjects();
 		//std::vector<std::string> GetObjectsName();
 
@@ -165,20 +162,20 @@ namespace BlackPearl {
 				moveDelta = maxMoveDelta;
 
 			if (Input::IsKeyPressed(KeyCodes::Get(BP_KEY_W))) {
-				if (DynamicRHI::g_RHIType == DynamicRHI::Type::Vulkan) {
+				/*if (DynamicRHI::g_RHIType == DynamicRHI::Type::Vulkan) {
 					m_CameraPosition -= m_MainCamera->Front() * moveDelta;
-				}
-				else {
+				}*/
+				//else {
 					m_CameraPosition += m_MainCamera->Front() * moveDelta;
-				}
+				//}
 			}
 			else if (Input::IsKeyPressed(KeyCodes::Get(BP_KEY_S))) {
-				if (DynamicRHI::g_RHIType == DynamicRHI::Type::Vulkan) {
+				/*if (DynamicRHI::g_RHIType == DynamicRHI::Type::Vulkan) {
 					m_CameraPosition += m_MainCamera->Front() * moveDelta;
 				}
-				else {
+				else {*/
 					m_CameraPosition -= m_MainCamera->Front() * moveDelta;
-				}
+				//}
 			}
 			if (Input::IsKeyPressed(KeyCodes::Get(BP_KEY_A))) {
 				if (DynamicRHI::g_RHIType == DynamicRHI::Type::D3D12) {
@@ -248,35 +245,37 @@ namespace BlackPearl {
 				m_MainCamera->SetRotation({ m_CameraRotation.Pitch, m_CameraRotation.Yaw, 0.0f });
 			}
 			else {
-				m_LastMouseX = posx;//lastMouseÊ±ï¿½Ì¼ï¿½Â¼ï¿½ï¿½Ç°ï¿½ï¿½ï¿½ï¿½Î»ï¿½Ã£ï¿½ï¿½ï¿½Ö¹ï¿½Ù´Îµï¿½ï¿½ï¿½Ò¼ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+				m_LastMouseX = posx;//lastMouseÊ±¿Ì¼ÇÂ¼µ±Ç°×ø±êÎ»ÖÃ£¬·ÀÖ¹ÔÙ´Îµã»÷ÓÒ¼üÊ±£¬·¢Éú¶¶¶¯£¡
 				m_LastMouseY = posy;
 			}
 
-			//GE_CORE_INFO("Cam Pitch = " + std::to_string(m_CameraRotation.Pitch) + "Cam Yaw =" + std::to_string(m_CameraRotation.Yaw));
 			m_MainCamera->SetPosition(m_CameraPosition);
+
+			GE_CORE_INFO("Cam Pos = " + std::to_string(m_CameraPosition.x) + "," + std::to_string(m_CameraPosition.y) + "," + std::to_string(m_CameraPosition.z));
+			GE_CORE_INFO("Cam Pitch = " + std::to_string(m_CameraRotation.Pitch) + "Cam Yaw =" + std::to_string(m_CameraRotation.Yaw));
+
+
 		}
 
 	protected:
 		std::string      m_DebugName;
 
-		//Ã¿ï¿½ï¿½Layerï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ObjectsList
+		//Ã¿²ãLayer¶¼ÓÐÒ»¸öObjectsList
 		std::vector<Object*>          m_ObjectsList;
-		/*ï¿½ï¿½ï¿½ï¿½lightProbes ï¿½ï¿½Îªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Objects*/
+		/*ÓÃÓÚlightProbes ×÷Îª±³¾°µÄObjects*/
 		std::vector<Object*> m_BackGroundObjsList;
 		std::vector<Object*> m_DynamicObjsList;
 		std::vector<Object*> m_ShadowObjsList;
 
 
 		LightSources* m_LightSources;
-#ifdef GE_PLATFORM_WINDOWS
 		ImGui::FileBrowser m_fileDialog;
-#endif
-		glm::vec4 m_BackgroundColor = { 0.0f,0.0f,0.0f,0.0f };
+		math::float4 m_BackgroundColor = { 0.0f,0.0f,0.0f,0.0f };
 
 		/*MainCamera and Input*/
 
 		MainCamera* m_MainCamera = nullptr;
-		glm::vec3 m_CameraPosition = { 0.0f,0.0f,5.0f };
+		glm::vec3 m_CameraPosition = { 0.0f,0.0f,0.0f };
 		struct CameraRotation {
 			float Yaw;
 			float Pitch;
@@ -294,8 +293,8 @@ namespace BlackPearl {
 		std::vector<Object*> m_DiffuseLightProbes;
 		std::vector<Object*> m_ReflectionLightProbes;
 
-		/*Render */
-		DeviceManager* m_DeviceManager;
+		/*DeviceManager*/
+		DeviceManager* m_DeviceManager = nullptr;
 	};
 
 }

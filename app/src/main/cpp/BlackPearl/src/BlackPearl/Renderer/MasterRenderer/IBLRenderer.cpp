@@ -6,10 +6,12 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <BlackPearl/Component/LightComponent/PointLight.h>
 #include <BlackPearl/Renderer/MasterRenderer/ShadowMapPointLightRenderer.h>
-#ifdef GE_PLATFORM_ANDRIOD
-#include "GLES3/gl32.h"
-#endif
+#include "BlackPearl/Renderer/Renderer.h"
+#include "BlackPearl/Renderer/DeviceManager.h"
+#include "BlackPearl/RHI/OpenGLRHI/OpenGLTexture.h"
+
 namespace BlackPearl {
+	extern DeviceManager* g_deviceManager;
 
 	float IBLRenderer::s_GICoeffs = 0.5f;
 	bool IBLRenderer::s_HDR = true;
@@ -39,11 +41,65 @@ namespace BlackPearl {
 		m_SpecularPrefilterShader.reset(DBG_NEW Shader("assets/shaders/ibl/prefilterMap.glsl"));
 		m_SpecularBRDFLutShader.reset(DBG_NEW Shader("assets/shaders/ibl/brdf.glsl"));
 
-		m_HdrCubeMap.reset(DBG_NEW CubeMapTexture(Texture::Type::CubeMap, m_EnvironmentMapDim, m_EnvironmentMapDim, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR, GL_CLAMP_TO_EDGE, GL_RGB8, GL_RGB, GL_FLOAT));
-		m_IrradianceCubeMap.reset(DBG_NEW CubeMapTexture(Texture::CubeMap, m_IrradianceDiffuseMapDim, m_IrradianceDiffuseMapDim, GL_LINEAR, GL_LINEAR, GL_CLAMP_TO_EDGE, GL_RGB8, GL_RGB, GL_FLOAT));
-		m_BRDFLUTTexture.reset(DBG_NEW Texture(Texture::DiffuseMap, m_BRDFLutDim, m_BRDFLutDim, false, GL_LINEAR, GL_LINEAR, GL_RG16F, GL_RG, GL_CLAMP_TO_EDGE, GL_FLOAT));
-		m_PrefilterCubeMap.reset(DBG_NEW CubeMapTexture(Texture::CubeMap, m_SpecularPrefilterMapDim, m_SpecularPrefilterMapDim, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR, GL_CLAMP_TO_EDGE, GL_RGB8, GL_RGB, GL_FLOAT, true));
-		m_SkyBoxCubeMap.reset(DBG_NEW CubeMapTexture(Texture::Type::CubeMap, m_EnvironmentMapDim, m_EnvironmentMapDim, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR, GL_CLAMP_TO_EDGE, GL_RGB8, GL_RGB, GL_FLOAT, true));
+
+		//m_HdrCubeMap.reset(DBG_NEW CubeMapTexture(Texture::Type::CubeMap, m_EnvironmentMapDim, m_EnvironmentMapDim, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR, GL_CLAMP_TO_EDGE, GL_RGB8, GL_RGB, GL_FLOAT));
+		//m_IrradianceCubeMap.reset(DBG_NEW CubeMapTexture(Texture::CubeMap, m_IrradianceDiffuseMapDim, m_IrradianceDiffuseMapDim, GL_LINEAR, GL_LINEAR, GL_CLAMP_TO_EDGE, GL_RGB8, GL_RGB, GL_FLOAT));
+		//m_BRDFLUTTexture.reset(DBG_NEW Texture(Texture::DiffuseMap, m_BRDFLutDim, m_BRDFLutDim, false, GL_LINEAR, GL_LINEAR, GL_RG16F, GL_RG, GL_CLAMP_TO_EDGE, GL_FLOAT));
+		//m_PrefilterCubeMap.reset(DBG_NEW CubeMapTexture(Texture::CubeMap, m_SpecularPrefilterMapDim, m_SpecularPrefilterMapDim, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR, GL_CLAMP_TO_EDGE, GL_RGB8, GL_RGB, GL_FLOAT, true));
+		//m_SkyBoxCubeMap.reset(DBG_NEW CubeMapTexture(Texture::Type::CubeMap, m_EnvironmentMapDim, m_EnvironmentMapDim, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR, GL_CLAMP_TO_EDGE, GL_RGB8, GL_RGB, GL_FLOAT, true));
+
+
+		TextureDesc desc;
+		desc.type = TextureType::CubeMap;
+		desc.width = m_EnvironmentMapDim;
+		desc.height = m_EnvironmentMapDim;
+		desc.minFilter = FilterMode::Linear_Mip_Linear;
+		desc.magFilter = FilterMode::Linear;
+		desc.wrap = SamplerAddressMode::ClampToEdge;
+		desc.format = Format::RGB8_FLOAT;
+
+		m_HdrCubeMap = g_deviceManager->GetDevice()->createTexture(desc);
+
+
+		desc.type = TextureType::CubeMap;
+		desc.width = m_IrradianceDiffuseMapDim;
+		desc.height = m_IrradianceDiffuseMapDim;
+		desc.minFilter = FilterMode::Linear;
+		desc.magFilter = FilterMode::Linear;
+		desc.wrap = SamplerAddressMode::ClampToEdge;
+		desc.format = Format::RGB8_FLOAT;
+		m_IrradianceCubeMap = g_deviceManager->GetDevice()->createTexture(desc);
+
+		desc.type = TextureType::DiffuseMap;
+		desc.width = m_BRDFLutDim;
+		desc.height = m_BRDFLutDim;
+		desc.minFilter = FilterMode::Linear;
+		desc.magFilter = FilterMode::Linear;
+		desc.wrap = SamplerAddressMode::ClampToEdge;
+		desc.format = Format::RG16_FLOAT;
+
+		m_BRDFLUTTexture = g_deviceManager->GetDevice()->createTexture(desc);
+
+		desc.type = TextureType::CubeMap;
+		desc.width = m_SpecularPrefilterMapDim;
+		desc.height = m_SpecularPrefilterMapDim;
+		desc.minFilter = FilterMode::Linear_Mip_Linear;
+		desc.magFilter = FilterMode::Linear;
+		desc.wrap = SamplerAddressMode::ClampToEdge;
+		desc.format = Format::RGB8_FLOAT;
+
+		m_PrefilterCubeMap = g_deviceManager->GetDevice()->createTexture(desc);
+
+		desc.type = TextureType::CubeMap;
+		desc.width = m_EnvironmentMapDim;
+		desc.height = m_EnvironmentMapDim;
+		desc.minFilter = FilterMode::Linear_Mip_Linear;
+		desc.magFilter = FilterMode::Linear;
+		desc.wrap = SamplerAddressMode::ClampToEdge;
+		desc.format = Format::RGB8_FLOAT;
+		desc.mipLevels = 5;
+
+		m_SkyBoxCubeMap = g_deviceManager->GetDevice()->createTexture(desc);
 		//m_HdrTexture.reset(DBG_NEW HDRTexture("assets/texture/hdrEnvironmentMap/Desert_Highway/Road_to_MonumentValley_Ref.hdr"));
 
 	}
@@ -51,10 +107,8 @@ namespace BlackPearl {
 	{
 		GE_ASSERT(hdrCubeObj, "hdrCubeObj is nullptr!");
 		GE_ASSERT(brdfLUTQuad, "brdfLUTQuad is nullptr!");
-#ifdef GE_PLATFORM_WINDOWS
 
 		glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
-#endif
 		float aspect = 1.0;
 		m_CaptureProjection = glm::perspective(glm::radians(90.0f), aspect, 0.1f, 10.0f);
 		m_CaptureViews = {
@@ -90,7 +144,7 @@ namespace BlackPearl {
 	void IBLRenderer::RenderHdrMapToEnvironmentCubeMap() {
 
 
-		float aspect = (float)m_HdrCubeMap->GetWidth() / (float)m_HdrCubeMap->GetHeight();
+		float aspect = (float)m_HdrCubeMap->getDesc().width / (float)m_HdrCubeMap->getDesc().height;
 		m_CaptureProjection = glm::perspective(glm::radians(90.0f), aspect, 0.1f, 10.0f);
 		m_CaptureViews = {
 			glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f,  0.0f,  0.0f), glm::vec3(0.0f, -1.0f,  0.0f)),
@@ -110,13 +164,12 @@ namespace BlackPearl {
 			m_CaptureProjection * m_CaptureViews[4],
 			m_CaptureProjection * m_CaptureViews[5]
 		};
-		std::shared_ptr<FrameBuffer> frameBuffer(new FrameBuffer());
-		GE_ERROR_JUDGE();
+		std::shared_ptr<FrameBuffer> frameBuffer = std::make_shared<FrameBuffer>();
 		frameBuffer->Bind();
 		GE_ERROR_JUDGE();
 		frameBuffer->AttachCubeMapColorTexture(0, m_HdrCubeMap);
 		GE_ERROR_JUDGE();
-		frameBuffer->AttachRenderBuffer(m_HdrCubeMap->GetWidth(), m_HdrCubeMap->GetHeight());
+		frameBuffer->AttachRenderBuffer(m_HdrCubeMap->getDesc().width, m_HdrCubeMap->getDesc().height);
 		GE_ERROR_JUDGE();
 
 		m_HdrMapToCubeShader->Bind();
@@ -125,23 +178,23 @@ namespace BlackPearl {
 		m_HdrMapToCubeShader->SetUniform1i("hdrTexture", 1);
 
 		//Draw CubeMap from hdrMap
-		glViewport(0, 0, m_HdrCubeMap->GetWidth(), m_HdrCubeMap->GetHeight());
+		glViewport(0, 0, m_HdrCubeMap->getDesc().width, m_HdrCubeMap->getDesc().height);
 		frameBuffer->Bind();
 		frameBuffer->BindRenderBuffer();
 
 		/*
-		ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¬ï¿½ï¿½ï¿½ï¿½Í¼ï¿½ï¿½ï¿½ï¿½
-		ï¿½ï¿½ï¿½ï¿½Í¶Ó°ï¿½ï¿½ï¿½ï¿½ï¿½ fov Îª 90 ï¿½ï¿½ï¿½Ô²ï¿½×½ï¿½ï¿½ï¿½ï¿½ï¿½æ£¬
-		ï¿½ï¿½ï¿½ï¿½È¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½æ´¢ï¿½Ú¸ï¿½ï¿½ï¿½Ö¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+		ÃæÏòÁ¢·½ÌåÁù¸öÃæÉèÖÃÁù¸ö²»Í¬µÄÊÓÍ¼¾ØÕó£¬
+		¸ø¶¨Í¶Ó°¾ØÕóµÄ fov Îª 90 ¶ÈÒÔ²¶×½Õû¸öÃæ£¬
+		²¢äÖÈ¾Á¢·½ÌåÁù´Î£¬½«½á¹û´æ´¢ÔÚ¸¡µãÖ¡»º³åÖÐ
 		*/
 		for (unsigned int i = 0; i < 6; i++)
 		{	
-			//TODO:: camera->Frontï¿½ï¿½ï¿½ï¿½ï¿½â£¬ï¿½ï¿½ï¿½ï¿½FrontÖ»ï¿½ï¿½ï¿½ï¿½spotLightï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò²ï¿½ï¿½ï¿½
-			Renderer::SceneData* scene = DBG_NEW Renderer::SceneData{ m_CaptureProjectionViews[i] ,m_CaptureViews[i],m_CaptureProjection,Renderer::GetSceneData()->CameraPosition,Renderer::GetSceneData()->CameraRotation, Renderer::GetSceneData()->CameraFront,Renderer::GetSceneData()->LightSources };
+			//TODO:: camera->FrontÓÐÎÊÌâ£¬²»¹ýFrontÖ»ÓÃÓÚspotLight£¬ÕâÀïÔÝÇÒ²»¹Ü
+			SceneData* scene = DBG_NEW SceneData{ m_CaptureProjectionViews[i] ,m_CaptureViews[i],m_CaptureProjection,Renderer::GetSceneData()->CameraPosition,Renderer::GetSceneData()->CameraRotation, Renderer::GetSceneData()->CameraFront,Renderer::GetSceneData()->LightSources };
 
 			//m_HdrMapToCubeShader->SetUniformMat4f("u_CubeMapProjectionView", m_CaptureProjectionViews[i]);
-			//ï¿½ï¿½CubeMapï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½æ¸½ï¿½Óµï¿½FrameBufferï¿½ï¿½GL_COLOR_ATTACHMENT0ï¿½ï¿½
-			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, m_HdrCubeMap->GetRendererID(), 0);
+			//½«CubeMapµÄÁù¸öÃæ¸½¼Óµ½FrameBufferµÄGL_COLOR_ATTACHMENT0ÖÐ
+			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,static_cast<Texture*>(m_HdrCubeMap.Get())->GetRendererID(), 0);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			m_HdrMapToCubeShader->Bind();
 			DrawObject(m_CubeObj, m_HdrMapToCubeShader, scene);
@@ -162,7 +215,7 @@ namespace BlackPearl {
 		GE_ERROR_JUDGE();
 		glm::vec3 center{ 0,0,0 };
 	
-		float aspect = (float)m_SkyBoxCubeMap->GetWidth() / (float)m_SkyBoxCubeMap->GetHeight();
+		float aspect = (float)m_SkyBoxCubeMap->getDesc().width / (float)m_SkyBoxCubeMap->getDesc().height;
 		auto projection = glm::perspective(glm::radians(90.0f), aspect, 0.1f, 10.0f);
 		//	cameraComponent->SetPosition(probe->GetPosition());
 
@@ -187,8 +240,8 @@ namespace BlackPearl {
 
 		//glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
 
-		glm::vec2 mipMapSize = { m_SkyBoxCubeMap->GetWidth(),m_SkyBoxCubeMap->GetHeight() };
-		std::shared_ptr<FrameBuffer> frameBuffer(new FrameBuffer());
+		glm::vec2 mipMapSize = { m_SkyBoxCubeMap->getDesc().width,m_SkyBoxCubeMap->getDesc().height };
+		std::shared_ptr<FrameBuffer> frameBuffer = std::make_shared<FrameBuffer>();
 		//	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		GE_ERROR_JUDGE();
 		frameBuffer->Bind();
@@ -197,9 +250,9 @@ namespace BlackPearl {
 		frameBuffer->AttachCubeMapColorTexture(0, m_SkyBoxCubeMap);
 		GE_ERROR_JUDGE();
 		//TODO::
-		frameBuffer->AttachRenderBuffer(m_SkyBoxCubeMap->GetWidth(), m_SkyBoxCubeMap->GetHeight());
+		frameBuffer->AttachRenderBuffer(m_SkyBoxCubeMap->getDesc().width, m_SkyBoxCubeMap->getDesc().height);
 		GE_ERROR_JUDGE();
-		for (unsigned int mip = 0; mip < m_SkyBoxCubeMap->GetMipMapLevel(); mip++)
+		for (unsigned int mip = 0; mip < m_SkyBoxCubeMap->getDesc().mipLevels; mip++)
 		{
 
 			
@@ -215,8 +268,8 @@ namespace BlackPearl {
 			{
 				frameBuffer->Bind();
 				frameBuffer->BindRenderBuffer();
-				Renderer::SceneData* scene = DBG_NEW Renderer::SceneData{ ProbeProjectionViews[i] ,ProbeView[i],projection,Renderer::GetSceneData()->CameraPosition,Renderer::GetSceneData()->CameraRotation, Renderer::GetSceneData()->CameraFront,Renderer::GetSceneData()->LightSources };
-				glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, m_SkyBoxCubeMap->GetRendererID(), mip);
+				SceneData* scene = DBG_NEW SceneData{ ProbeProjectionViews[i] ,ProbeView[i],projection,Renderer::GetSceneData()->CameraPosition,Renderer::GetSceneData()->CameraRotation, Renderer::GetSceneData()->CameraFront,Renderer::GetSceneData()->LightSources };
+				glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, static_cast<Texture*>(m_SkyBoxCubeMap.Get())->GetRendererID(), mip);
 				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 				//BasicRenderer::DrawLightSources(lightSources, scene);
@@ -264,9 +317,9 @@ namespace BlackPearl {
 
 		m_IrradianceCubeMapID = diffuseIrradianceCubeMap->GetRendererID();*/
 
-		std::shared_ptr<FrameBuffer> frameBuffer(new FrameBuffer());
+		std::shared_ptr<FrameBuffer> frameBuffer = std::make_shared<FrameBuffer>();
 		frameBuffer->Bind();
-		frameBuffer->AttachRenderBuffer(m_IrradianceCubeMap->GetWidth(), m_IrradianceCubeMap->GetHeight());
+		frameBuffer->AttachRenderBuffer(m_IrradianceCubeMap->getDesc().width, m_IrradianceCubeMap->getDesc().height);
 
 		
 
@@ -284,14 +337,14 @@ namespace BlackPearl {
 		//glBindTexture(GL_TEXTURE_CUBE_MAP, m_HdrCubeMapID);
 		// pbr: solve diffuse integral by convolution to create an irradiance (cube)map.
 
-		glViewport(0, 0, m_IrradianceCubeMap->GetWidth(), m_IrradianceCubeMap->GetHeight()); // don't forget to configure the viewport to the capture dimensions.
+		glViewport(0, 0, m_IrradianceCubeMap->getDesc().width, m_IrradianceCubeMap->getDesc().height); // don't forget to configure the viewport to the capture dimensions.
 		frameBuffer->Bind();
 
 		for (unsigned int i = 0; i < 6; ++i)
 		{
-			Renderer::SceneData* scene = DBG_NEW Renderer::SceneData{ m_CaptureProjectionViews[i] ,m_CaptureViews[i],m_CaptureProjection,Renderer::GetSceneData()->CameraPosition,Renderer::GetSceneData()->CameraRotation,Renderer::GetSceneData()->CameraFront,Renderer::GetSceneData()->LightSources };
+			SceneData* scene = DBG_NEW SceneData{ m_CaptureProjectionViews[i] ,m_CaptureViews[i],m_CaptureProjection,Renderer::GetSceneData()->CameraPosition,Renderer::GetSceneData()->CameraRotation,Renderer::GetSceneData()->CameraFront,Renderer::GetSceneData()->LightSources };
 
-			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, m_IrradianceCubeMap->GetRendererID(), 0);
+			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,static_cast<Texture*>(m_IrradianceCubeMap.Get())->GetRendererID(), 0);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 			DrawObject(m_CubeObj, m_IrradianceShader, scene);
@@ -318,7 +371,7 @@ namespace BlackPearl {
 		m_SkyBoxCubeMap->Bind();
 		//glBindTexture(GL_TEXTURE_CUBE_MAP, m_HdrCubeMapID);
 
-		std::shared_ptr<FrameBuffer> frameBuffer(new FrameBuffer());
+		std::shared_ptr<FrameBuffer> frameBuffer = std::make_shared<FrameBuffer>();
 		frameBuffer->Bind();
 		frameBuffer->AttachCubeMapColorTexture(0, m_PrefilterCubeMap);
 		frameBuffer->AttachRenderBuffer(m_SpecularPrefilterMapDim, m_SpecularPrefilterMapDim);
@@ -342,11 +395,11 @@ namespace BlackPearl {
 
 			for (unsigned int i = 0; i < 6; i++)
 			{
-				Renderer::SceneData* scene = DBG_NEW Renderer::SceneData{ m_CaptureProjectionViews[i] ,m_CaptureViews[i],m_CaptureProjection,Renderer::GetSceneData()->CameraPosition,Renderer::GetSceneData()->CameraRotation,Renderer::GetSceneData()->CameraFront,Renderer::GetSceneData()->LightSources };
+				SceneData* scene = DBG_NEW SceneData{ m_CaptureProjectionViews[i] ,m_CaptureViews[i],m_CaptureProjection,Renderer::GetSceneData()->CameraPosition,Renderer::GetSceneData()->CameraRotation,Renderer::GetSceneData()->CameraFront,Renderer::GetSceneData()->LightSources };
 
 				//m_SpecularPrefilterShader->SetUniformMat4f("u_CubeMapProjectionView", m_CaptureProjectionViews[i]);
 
-				glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, m_PrefilterCubeMap->GetRendererID(), mip);
+				glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, static_cast<Texture*>(m_PrefilterCubeMap.Get())->GetRendererID(), mip);
 				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 				m_CubeObj->GetComponent<MeshRenderer>()->SetShaders(m_SpecularPrefilterShader);
 				DrawObject(m_CubeObj, m_SpecularPrefilterShader,scene,4);
@@ -363,7 +416,7 @@ namespace BlackPearl {
 
 	void IBLRenderer::RenderSpecularBRDFLUTMap()
 	{
-		std::shared_ptr<FrameBuffer> frameBuffer(new FrameBuffer());
+		std::shared_ptr<FrameBuffer> frameBuffer = std::make_shared<FrameBuffer>();
 
 		frameBuffer->Bind();
 		frameBuffer->AttachRenderBuffer(m_BRDFLutDim, m_BRDFLutDim);

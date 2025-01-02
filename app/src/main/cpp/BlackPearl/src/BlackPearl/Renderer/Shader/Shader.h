@@ -1,17 +1,11 @@
 #pragma once
-#ifdef GE_PLATFORM_ANDRIOD
-#include "GLES3/gl32.h"
-#endif
-#ifdef GE_PLATFORM_WINDOWS
 #include "glad/glad.h"
-#endif
-//#include "glm/glm.hpp"
-//#include ""
+#include<glm/glm.hpp>
 #include<string>
 #include<memory>
 #include <unordered_map>
 #include "BlackPearl/Component/LightComponent/LightSources.h"
-#include "glm/glm.hpp"
+#include "BlackPearl/Math/vector.h"
 namespace BlackPearl {
 
 
@@ -25,7 +19,7 @@ namespace BlackPearl {
 		void Unbind() const;
 		std::string ReadFile(const std::string& filepath);
 		
-		std::unordered_map<GLenum, std::string> PreProcess(const std::string& source, const std::string& commonSource);
+		std::unordered_map<GLenum, std::string> Shader::PreProcess(const std::string& source, const std::string& commonSource);
 		void Compile(const std::unordered_map<GLenum, std::string>& shaderSources);
 
 		void SetLightUniform( LightSources lightSources);
@@ -40,6 +34,8 @@ namespace BlackPearl {
 
 		void SetUniformVec3f(const std::string & name, const glm::vec3& value) const;
 		void SetUniformVec2f(const std::string& name, const glm::vec2& value) const;
+		void SetUniformVec3f(const std::string& name, const math::float3& value) const;
+		void SetUniformVec2f(const std::string& name, const math::float2& value) const;
 		void SetUniformVec2i(const std::string& name, const glm::ivec2& value) const;
 		
 

@@ -3,13 +3,11 @@
 #include <vector>
 #include <string>   
 #include <cstdint>
-#include "BlackPearl/Renderer/Material/Texture.h"
+#include "BlackPearl/RHI/RHITexture.h"
 #include "BlackPearl/Renderer/Buffer/Buffer.h"
 #include "BlackPearl/Object/Object.h"
 #include "glm/glm.hpp"
-#ifdef GE_API_D3D12
 #include "d3d12.h"
-#endif
 #include "BlackPearl/RHI/D3D12RHI/d3dx12.h"
 #include "BlackPearl/Log.h"
 namespace BlackPearl {
@@ -17,11 +15,11 @@ namespace BlackPearl {
 	class CommonFunc
 	{
 	public:
-		static void ShowGBuffer(unsigned int row, unsigned int col, Object* quad, std::shared_ptr<GBuffer> gBuffer, std::vector<std::shared_ptr<Texture> >textures);
-        static void ShowFrameBuffer(unsigned int row, unsigned int col, Object* quad, std::shared_ptr<FrameBuffer> frameBuffer, std::vector<std::shared_ptr<Texture> >textures);
-        static void ShowFrameBuffer(glm::vec4 viewPort, Object* quad, std::shared_ptr<FrameBuffer> frameBuffer, std::shared_ptr<Texture> texture, bool isMipmap, int lod);
-        static void ShowTextures(unsigned int row, unsigned int col, Object* quad, std::vector<std::shared_ptr<Texture> >textures);
-        static void ShowTexture(glm::vec4 viewPort, Object* quad, std::shared_ptr<Texture> texture, bool isMipmap, int lod = 0);
+		static void ShowGBuffer(unsigned int row, unsigned int col, Object* quad, std::shared_ptr<GBuffer> gBuffer, std::vector<TextureHandle>textures);
+        static void ShowFrameBuffer(unsigned int row, unsigned int col, Object* quad, std::shared_ptr<FrameBuffer> frameBuffer, std::vector<TextureHandle >textures);
+        static void ShowFrameBuffer(glm::vec4 viewPort, Object* quad, std::shared_ptr<FrameBuffer> frameBuffer, TextureHandle texture, bool isMipmap, int lod);
+        static void ShowTextures(unsigned int row, unsigned int col, Object* quad, std::vector<TextureHandle>textures);
+        static void ShowTexture(glm::vec4 viewPort, Object* quad, TextureHandle texture, bool isMipmap, int lod = 0);
     };
     // Assign a name to the object to aid with debugging.
 #if defined(_DEBUG) || defined(DBG)
@@ -38,7 +36,6 @@ namespace BlackPearl {
         }
     }
 #else
-#ifdef GE_API_D3D12
     inline void SetName(ID3D12Object*, LPCWSTR)
     {
     }
@@ -46,16 +43,12 @@ namespace BlackPearl {
     {
     }
 #endif
-#endif
 
     // Naming helper for ComPtr<T>.
     // Assigns the name of the variable as the name of the object.
     // The indexed variant will include the index in the name of the object.
 #define NAME_D3D12_OBJECT(x) SetName((x).Get(), L#x)
 #define NAME_D3D12_OBJECT_INDEXED(x, n) SetNameIndexed((x)[n].Get(), L#x, n)
-#ifdef GE_API_D3D12
-
-
 
     class HrException : public std::runtime_error
     {
@@ -76,7 +69,17 @@ namespace BlackPearl {
     {
         return (size + (alignment - 1)) & ~(alignment - 1);
     }
-   
+
+    template<typename T> T Align(T size, T alignment)
+    {
+        return (size + alignment - 1) & ~(alignment - 1);
+    }
+
+    inline void AddAlignUp(uint32_t& offset, uint32_t size, uint32_t align = 4096u) {
+        offset += size;
+        uint32_t pad = (align - offset % align);
+        offset += pad;
+    }
 
     inline UINT CalculateConstantBufferByteSize(UINT byteSize)
     {
@@ -111,13 +114,7 @@ namespace BlackPearl {
     {
         ThrowIfFailed(value ? S_OK : E_FAIL, msg);
     }
-#endif
 
-    inline void AddAlignUp(uint32_t& offset, uint32_t size, uint32_t align = 4096u) {
-        offset += size;
-        uint32_t pad = (align - offset % align);
-        offset += pad;
-    }
     // be careful to use this function, you need to delete wc after function is called, or it will have a memery leak.
     inline const wchar_t* To_Wchar(const char * c) {
         const size_t cSize = strlen(c)+1;

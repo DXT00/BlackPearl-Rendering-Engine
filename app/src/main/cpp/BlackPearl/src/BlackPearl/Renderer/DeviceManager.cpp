@@ -1,10 +1,14 @@
 #include "pch.h"
 #include "DeviceManager.h"
-#include "RenderGraph.h"
+#include "BlackPearl/Renderer/RenderGraph/RenderGraph.h"
 #include "BlackPearl/RHI/RHIFrameBuffer.h"
 #include "BlackPearl/Math/vector.h"
 #include "BlackPearl/Application.h"
 namespace BlackPearl {
+    void DeviceManager::Init(const DeviceCreationParameters& params)
+    {
+        CreateDeviceAndSwapChain(params);
+    }
     DeviceManager* DeviceManager::Create(DynamicRHI::Type api)
     {
         switch (api)
@@ -19,9 +23,13 @@ namespace BlackPearl {
             return CreateVK();
 #endif
         default:
-            GE_CORE_ERROR("DeviceManager::Create: Unsupported Graphics API");
-            return nullptr;
+            //GE_CORE_ERROR("DeviceManager::Create: Unsupported Graphics API");
+            return CreateOpenGL();
         }
+    }
+    IFramebuffer* DeviceManager::GetFrameBuffer()
+    {
+        return m_SwapChainFramebuffers[GetCurrentBackBufferIndex()];
     }
     bool DeviceManager::CreateWindowDeviceAndSwapChain(const DeviceCreationParameters& params, const char* windowTitle)
     {
@@ -75,8 +83,11 @@ namespace BlackPearl {
 
         for (auto it : m_vRenderGraphs)
         {
-            it->Render(framebuffer);
+            it->Render(framebuffer, Renderer::GetSceneData());
         }
+        Present();
+        ++m_FrameIndex;
+
     }
     void DeviceManager::GetWindowDimensions(int& width, int& height)
     {
@@ -85,7 +96,7 @@ namespace BlackPearl {
     {
         int width;
         int height;
-        donut::math::vector<int, 2> windowSize = Application::Get().GetWindow().GetCurWindowSize();
+        math::vector<int, 2> windowSize = Application::Get().GetWindow().GetCurWindowSize();
 
         if (windowSize.x == 0 || windowSize.y == 0)
         {

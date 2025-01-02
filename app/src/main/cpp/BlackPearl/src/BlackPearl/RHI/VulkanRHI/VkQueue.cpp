@@ -39,9 +39,10 @@ namespace BlackPearl {
 		std::array<const VkSemaphore, 1> semaphores = { trackingSemaphore };
 		std::array<uint64_t, 1> waitValues = { commandListID };
 
-	    VkSemaphoreWaitInfo waitInfo;
+		VkSemaphoreWaitInfo waitInfo{};
 		waitInfo.pSemaphores = semaphores.data();
 		waitInfo.pValues = waitValues.data();
+		waitInfo.pNext = nullptr;
 		/*	.setSemaphores(semaphores)
 			.setValues(waitValues);*/
 		VkResult result =vkWaitSemaphores(m_Context.device ,&waitInfo, timeout);
@@ -55,6 +56,22 @@ namespace BlackPearl {
 		, m_Queue(queue)
 		, m_QueueID(queueID)
 		, m_QueueFamilyIndex(queueFamilyIndex) {
+
+		VkSemaphoreTypeCreateInfo semaphoreTypeInfo{};
+		semaphoreTypeInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_TYPE_CREATE_INFO;
+		semaphoreTypeInfo.pNext = nullptr;
+		semaphoreTypeInfo.semaphoreType = VK_SEMAPHORE_TYPE_TIMELINE;
+
+			//.setSemaphoreType(vk::SemaphoreType::eTimeline);
+
+		VkSemaphoreCreateInfo semaphoreInfo{};
+		semaphoreInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
+		semaphoreInfo.pNext = &semaphoreTypeInfo;
+
+		vkCreateSemaphore(context.device, &semaphoreInfo, context.allocationCallbacks, &trackingSemaphore);
+
+
+		//trackingSemaphore = context.device.createSemaphore(semaphoreInfo, context.allocationCallbacks);
 	}
 
 	Queue::~Queue()
@@ -92,17 +109,17 @@ namespace BlackPearl {
 
 		TrackedCommandBufferPtr ret = std::make_shared<TrackedCommandBuffer>(m_Context);
 
-		VkCommandPoolCreateInfo cmdPoolInfo;
+		VkCommandPoolCreateInfo cmdPoolInfo{};
+		cmdPoolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
 		cmdPoolInfo.queueFamilyIndex = m_QueueFamilyIndex;
 		cmdPoolInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT | VK_COMMAND_POOL_CREATE_TRANSIENT_BIT;
-		cmdPoolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
 
 
 		if (vkCreateCommandPool(m_Context.device, &cmdPoolInfo, nullptr, &ret->cmdPool) != VK_SUCCESS) {
 			throw std::runtime_error("failed to create command pool!");
 		}
 		
-		VkCommandBufferAllocateInfo allocInfo;
+		VkCommandBufferAllocateInfo allocInfo{};
 		allocInfo.commandBufferCount = 1;
 		allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
 		allocInfo.commandPool = ret->cmdPool;
@@ -184,19 +201,20 @@ namespace BlackPearl {
 		m_SignalSemaphores.push_back(trackingSemaphore);
 		m_SignalSemaphoreValues.push_back(m_LastSubmittedID);
 
-		VkTimelineSemaphoreSubmitInfo timelineSemaphoreInfo;
+		VkTimelineSemaphoreSubmitInfo timelineSemaphoreInfo{};
+		timelineSemaphoreInfo.sType = VK_STRUCTURE_TYPE_TIMELINE_SEMAPHORE_SUBMIT_INFO;
 		timelineSemaphoreInfo.signalSemaphoreValueCount = uint32_t(m_SignalSemaphoreValues.size());
 		timelineSemaphoreInfo.pSignalSemaphoreValues = m_SignalSemaphoreValues.data();
 
 
 		if (!m_WaitSemaphoreValues.empty())
 		{
-
 			timelineSemaphoreInfo.waitSemaphoreValueCount = uint32_t(m_WaitSemaphoreValues.size());
 			timelineSemaphoreInfo.pWaitSemaphoreValues = m_WaitSemaphoreValues.data();
 		}
 		
-		VkSubmitInfo submitInfo;
+		VkSubmitInfo submitInfo{};
+		submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
 		submitInfo.pNext = &timelineSemaphoreInfo;
 		submitInfo.commandBufferCount = uint32_t(numCmd);
 		submitInfo.pCommandBuffers = commandBuffers.data();

@@ -1,7 +1,7 @@
 #pragma once
 #if GE_API_VULKAN
 
-#include<vulkan/vulkan.h>
+#include<vulkan/vulkan_core.h>
 #include "BlackPearl/RHI/RHIResources.h"
 #include "BlackPearl/RHI/VulkanRHI/VkBuffer.h"
 #include "BlackPearl/RHI/VulkanRHI/VkContext.h"

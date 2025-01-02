@@ -1,8 +1,9 @@
 #pragma once
 #include "BlackPearl/Object/Object.h"
+#include "BlackPearl/Scene/SceneOctree.h"
 #include "BlackPearl/Component/TransformComponent/Transform.h"
 namespace BlackPearl {
-	class Node
+	class Node : public PrimitiveOctreeNode
 	{
 	public:
 		enum Type {
@@ -10,10 +11,11 @@ namespace BlackPearl {
 			Batch_Node,
 			Instance_Node,
 		};
-		Node(Type type):
-			m_Type(type){}
-		virtual void AddObj(Object* obj) = 0;
-		virtual void UpdateObjs() = 0;
+
+		Node(Object* obj ,Type type):
+			PrimitiveOctreeNode(obj), m_Type(type){}
+		virtual void AddObj(Object* obj) {};
+		virtual void UpdateObjs() {};
 
 		//virtual void UpdateTransform(const Transform& trans) = 0;
 
@@ -21,13 +23,24 @@ namespace BlackPearl {
 		Type GetType() const {
 			return m_Type;
 		}
-		 
+		[[nodiscard]] Node* GetParent() const { return m_Parent; }
+		[[nodiscard]] Node* GetFirstChild() const { return m_FirstChild.get(); }
+		[[nodiscard]] Node* GetNextSibling() const { return m_NextSibling.get(); }
+		[[nodiscard]] const std::shared_ptr<Node>& GetLeaf() const { return m_Leaf; }
+		std::string m_Name;
+		bool m_Dirty = false;
 	protected:
-
-
-		Node* m_Parent = nullptr;
 		std::vector<Object*> m_ChildNodes;
 		Type m_Type;
+
+	private:
+		//friend class SceneGraph;
+		//std::weak_ptr<SceneGraph> m_Graph;
+
+		Node* m_Parent = nullptr;
+		std::shared_ptr<Node> m_FirstChild;
+		std::shared_ptr<Node> m_NextSibling;
+		std::shared_ptr<Node> m_Leaf;
 
 	};
 

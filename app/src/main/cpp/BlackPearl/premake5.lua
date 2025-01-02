@@ -15,13 +15,22 @@ project "BlackPearl"
 	files
 	{
 		"./src/**.h",
-		"./src/**.cpp"
+		"./src/**.cpp",
+		"./src/**.jpg",
+		"./src/**.png",
+		"./vendor/glm/glm/**.hpp",
+		"./vendor/glm/glm/**.inl",
+		"./vendor/stb/**.h",
+		"./assets/shaders/hlsl/core/**.h",
 	}
+	
+
 	defines
 	{
 		"_CRT_SECURE_NO_WARNINGS",
 		--"STB_IMAGE_IMPLEMENTATION"
 	}
+
 	includedirs
 	{
 		"./src",
@@ -40,8 +49,10 @@ project "BlackPearl"
 		"../%{IncludeDir.ShaderMake}",
 
 		"./vendor",
-		"./vendor/GLEW"
+		"./vendor/GLEW",
+		"./assets/shaders/"
 	}
+
 
 	libdirs{
 	"./vendor/assimp_build/code/Debug",
@@ -54,12 +65,30 @@ project "BlackPearl"
 	"./vendor/directxmesh_desktop_win10.2022.7.30.1/native/lib/x64/Debug",
 	"./vendor/directxmesh_desktop_win10.2022.7.30.1/native/lib/x64/Release",
     --"./vendor/imgui/bin/".. outputdir .. "/ImGui",
-	"./vendor/VulkanSDK/1.3.236.0/Lib",
+	"./vendor/vulkan/1.3.290.0/Lib",
 	"./vendor/ShaderMake/build/Debug",
 
 	}
 
    filter { "options:RenderAPI=opengl" }
+   removefiles  { "./src/BlackPearl/RHI/VulkanRHI/**.cpp" }
+   removefiles  { "./src/BlackPearl/RHI/VulkanRHI/**.h" }
+   removefiles  { "./src/BlackPearl/RHI/D3D12RHI/**.cpp" }
+   removefiles  { "./src/BlackPearl/RHI/D3D12RHI/**.h" }
+   removefiles  { "./src/BlackPearl/Renderer/Buffer/D3D12Buffer/**.h" }
+   removefiles  { "./src/BlackPearl/Renderer/Buffer/D3D12Buffer/**.cpp" }
+   removefiles  { "./src/BlackPearl/Renderer/MasterRenderer/D3D12**.h" }
+   removefiles  { "./src/BlackPearl/Renderer/MasterRenderer/D3D12**.cpp" }
+   removefiles  { "./src/BlackPearl/Renderer/Shader/D3D12Shader/**.h" }
+   removefiles  { "./src/BlackPearl/Renderer/Shader/D3D12Shader/**.cpp" }
+   removefiles  { "./src/BlackPearl/Renderer/Buffer/VkBuffer/**.h" }
+   removefiles  { "./src/BlackPearl/Renderer/Buffer/VkBuffer/**.cpp" }
+   removefiles  { "./src/BlackPearl/Renderer/Shader/VkShader/**.h" }
+   removefiles  { "./src/BlackPearl/Renderer/Shader/VkShader/**.cpp" }
+   removefiles  { "./src/BlackPearl/Renderer/Image/Vk**.h" }
+   removefiles  { "./src/BlackPearl/Renderer/Image/Vk**.cpp" }
+   removefiles  { "./src/BlackPearl/Renderer/MasterRenderer/Vk**.h" }
+   removefiles  { "./src/BlackPearl/Renderer/MasterRenderer/Vk**.cpp" }
    links 
    { 
 		"GLFW",
@@ -76,8 +105,22 @@ project "BlackPearl"
 		"GLFW_INCLUDE_NONE",
 		"GE_API_OPENGL"
 	}
+   	flags
+   	{
+		"MultiProcessorCompile"
+   	}
 
    filter { "options:RenderAPI=vulkan" }
+   removefiles  { "./src/BlackPearl/RHI/OpenGLRHI/**.cpp" }
+   removefiles  { "./src/BlackPearl/RHI/OpenGLRHI/**.h" }
+   removefiles  { "./src/BlackPearl/RHI/D3D12RHI/**.cpp" }
+   removefiles  { "./src/BlackPearl/RHI/D3D12RHI/**.h" }
+   removefiles  { "./src/BlackPearl/Renderer/Buffer/D3D12Buffer/**.h" }
+   removefiles  { "./src/BlackPearl/Renderer/Buffer/D3D12Buffer/**.cpp" }
+   removefiles  { "./src/BlackPearl/Renderer/MasterRenderer/D3D12**.h" }
+   removefiles  { "./src/BlackPearl/Renderer/MasterRenderer/D3D12**.cpp" }
+   removefiles  { "./src/BlackPearl/Renderer/Shader/D3D12Shader/**.h" }
+   removefiles  { "./src/BlackPearl/Renderer/Shader/D3D12Shader/**.cpp" }
    links 
    { 
 		"GLFW",
@@ -87,18 +130,37 @@ project "BlackPearl"
 		--"ShaderMakeBlob",
 
 		--"assimp",
-		"opengl32.lib",
-		"vulkan-1.lib",
+		--"opengl32.lib",
+		"vulkan-1",
 		--"assimp-vc140-mt.lib"
-		"assimp-vc142-mtd.lib", 
+		"assimp-vc142-mtd",
    }
    defines
    {
 		"GLFW_INCLUDE_NONE",
 		"GE_API_VULKAN"
    }
+   	flags
+   	{
+		"MultiProcessorCompile"
+   	}
+
+	   
+
 
    filter { "options:RenderAPI=direct3d" }
+   removefiles { "./src/BlackPearl/RHI/VulkanRHI/**.cpp" }
+   removefiles { "./src/BlackPearl/RHI/VulkanRHI/**.h" }
+   removefiles { "./src/BlackPearl/RHI/OpenGLRHI/**.cpp" }
+   removefiles { "./src/BlackPearl/RHI/OpenGLRHI/**.h" }
+   removefiles { "./src/BlackPearl/Renderer/Buffer/VkBuffer/**.h" }
+   removefiles { "./src/BlackPearl/Renderer/Buffer/VkBuffer/**.cpp" }
+   removefiles { "./src/BlackPearl/Renderer/Shader/VkShader/**.h" }
+   removefiles { "./src/BlackPearl/Renderer/Shader/VkShader/**.cpp" }
+   removefiles  { "./src/BlackPearl/Renderer/Image/Vk**.h" }
+   removefiles  { "./src/BlackPearl/Renderer/Image/Vk**.cpp" }
+   removefiles { "./src/BlackPearl/Renderer/MasterRenderer/Vk**.h" }
+   removefiles { "./src/BlackPearl/Renderer/MasterRenderer/Vk**.cpp" }
 	links 
 	{ 
 		"GLFW",
@@ -117,6 +179,10 @@ project "BlackPearl"
 		"GLFW_INCLUDE_NONE",
 		"GE_API_D3D12"
 	}
+	flags
+    {
+		"MultiProcessorCompile"
+    }
 
 	filter "system:windows"
 		systemversion "latest"

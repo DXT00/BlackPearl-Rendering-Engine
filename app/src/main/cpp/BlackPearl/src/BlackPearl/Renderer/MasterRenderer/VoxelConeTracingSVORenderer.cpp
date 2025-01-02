@@ -5,10 +5,12 @@
 #include "BlackPearl/Component/LightComponent/PointLight.h"
 #include "BlackPearl/Renderer/MasterRenderer/GBufferRenderer.h"
 #include "BlackPearl/Config.h"
-#ifdef GE_PLATFORM_ANDRIOD
-#include "GLES3/gl32.h"
-#endif
+#include "BlackPearl/Renderer/DeviceManager.h"
+#include "BlackPearl/RHI/OpenGLRHI/OpenGLTexture.h"
 namespace BlackPearl {
+
+	extern DeviceManager* g_deviceManager;
+
 	bool  VoxelConeTracingSVORenderer::s_Shadows = true;
 	bool  VoxelConeTracingSVORenderer::s_IndirectDiffuseLight = true;
 	bool  VoxelConeTracingSVORenderer::s_IndirectSpecularLight = true;
@@ -59,10 +61,7 @@ namespace BlackPearl {
 		m_BrdfLUTQuadObj = brdfLUTQuadObj;
 		m_QuadFinalScreenObj = quadFinalScreenObj;
 		m_QuadPathTracing = quadPathTracing;
-#ifdef GE_PLATFORM_WINDOWS
-
-        glEnable(GL_MULTISAMPLE);
-#endif
+		glEnable(GL_MULTISAMPLE);
 		GE_ERROR_JUDGE();
 
 		InitVoxelization();
@@ -75,13 +74,7 @@ namespace BlackPearl {
 		//	ErrorJudge(glGetError());
 
 			/* Automic Count Buffer*/
-#ifdef GE_PLATFORM_WINDOWS
-        GLbitfield map_flags = (GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT | GL_MAP_READ_BIT | GL_MAP_WRITE_BIT);
-#endif
-#ifdef GE_PLATFORM_ANDRIOD
-
-        GLbitfield map_flags = ( GL_MAP_READ_BIT | GL_MAP_WRITE_BIT);
-#endif
+		GLbitfield mapFlags = (GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT | GL_MAP_READ_BIT | GL_MAP_WRITE_BIT);
 		m_AtomicCountBuffer.reset(DBG_NEW AtomicBuffer());
 		GE_ERROR_JUDGE();
 
@@ -120,13 +113,7 @@ namespace BlackPearl {
 	void VoxelConeTracingSVORenderer::InitPathTracing()
 	{
 		/*SVO path tracer */
-#ifdef GE_PLATFORM_WINDOWS
 		GLbitfield map_flags = (GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT | GL_MAP_READ_BIT | GL_MAP_WRITE_BIT);
-#endif
-#ifdef GE_PLATFORM_ANDRIOD
-
-        GLbitfield map_flags = ( GL_MAP_READ_BIT | GL_MAP_WRITE_BIT);
-#endif
 		m_SobolSSBO.reset(DBG_NEW ShaderStorageBuffer(sizeof(GLfloat) * 2 * s_MaxBounce, map_flags));
 		GE_ERROR_JUDGE();
 
@@ -135,14 +122,9 @@ namespace BlackPearl {
 
 		//m_SobolSSBO->Bind();
 		GE_ERROR_JUDGE();
-#ifdef GE_PLATFORM_WINDOWS
-		m_SobolPtr = (GLfloat*)glMapNamedBufferRange(m_SobolSSBO->GetRenderID(), 0, sizeof(GLfloat) * 2 * s_MaxBounce, map_flags);
-#endif
-#ifdef GE_PLATFORM_ANDRIOD
-    m_SobolPtr = (GLfloat*)glMapBufferRange(m_SobolSSBO->GetRenderID(), 0, sizeof(GLfloat) * 2 * s_MaxBounce, map_flags);
-#endif
 
-        GE_ERROR_JUDGE();
+		m_SobolPtr = (GLfloat*)glMapNamedBufferRange(m_SobolSSBO->GetRenderID(), 0, sizeof(GLfloat) * 2 * s_MaxBounce, map_flags);
+		GE_ERROR_JUDGE();
 
 		m_Sobol->Next(m_SobolPtr);
 		m_SobolSSBO->UnBind();
@@ -151,13 +133,36 @@ namespace BlackPearl {
 		m_PathTracingShader.reset(DBG_NEW Shader("assets/shaders/gBufferVoxelSVO/pathTracing.glsl"));
 		GE_ERROR_JUDGE();
 
-		m_PathTracingColor.reset(DBG_NEW Texture(Texture::Type::None, m_ScreenWidth, m_ScreenHeight, false, GL_LINEAR, GL_LINEAR, GL_RGBA32F, GL_RGBA, GL_CLAMP_TO_EDGE, GL_FLOAT));
+		IDevice* device = g_deviceManager->GetDevice();
+		TextureDesc desc;
+		desc.type = TextureType::None;
+		desc.width = m_ScreenWidth;
+		desc.height = m_ScreenHeight;
+		desc.minFilter = FilterMode::Linear;
+		desc.magFilter = FilterMode::Linear;
+		desc.wrap = SamplerAddressMode::ClampToEdge;
+		desc.format = Format::RGBA32_FLOAT;
+		desc.generateMipmap = false;
+
+		m_PathTracingColor = device->createTexture(desc);
+		//m_PathTracingColor.reset(DBG_NEW Texture(Texture::Type::None, m_ScreenWidth, m_ScreenHeight, false, GL_LINEAR, GL_LINEAR, GL_RGBA32F, GL_RGBA, GL_CLAMP_TO_EDGE, GL_FLOAT));
 		GE_ERROR_JUDGE();
 
-		m_PathTracingAlbedo.reset(DBG_NEW Texture(Texture::Type::None, m_ScreenWidth, m_ScreenHeight, false, GL_LINEAR, GL_LINEAR, GL_RGBA8, GL_RGBA, GL_CLAMP_TO_EDGE, GL_FLOAT));
+		desc.type = TextureType::None;
+		desc.width = m_ScreenWidth;
+		desc.height = m_ScreenHeight;
+		desc.minFilter = FilterMode::Linear;
+		desc.magFilter = FilterMode::Linear;
+		desc.wrap = SamplerAddressMode::ClampToEdge;
+		desc.format = Format::RGBA8_SNORM;
+		desc.generateMipmap = false;
+
+		m_PathTracingAlbedo = device->createTexture(desc);
+		//m_PathTracingAlbedo.reset(DBG_NEW Texture(Texture::Type::None, m_ScreenWidth, m_ScreenHeight, false, GL_LINEAR, GL_LINEAR, GL_RGBA8, GL_RGBA, GL_CLAMP_TO_EDGE, GL_FLOAT));
 		GE_ERROR_JUDGE();
 		//
-		m_PathTracingNormal.reset(DBG_NEW Texture(Texture::Type::None, m_ScreenWidth, m_ScreenHeight, false, GL_LINEAR, GL_LINEAR, GL_RGBA8_SNORM, GL_RGBA, GL_CLAMP_TO_EDGE, GL_FLOAT));
+		m_PathTracingNormal = device->createTexture(desc);
+		//m_PathTracingNormal.reset(DBG_NEW Texture(Texture::Type::None, m_ScreenWidth, m_ScreenHeight, false, GL_LINEAR, GL_LINEAR, GL_RGBA8_SNORM, GL_RGBA, GL_CLAMP_TO_EDGE, GL_FLOAT));
 		GE_ERROR_JUDGE();
 		/* init GBuffer for deffer rendering */
 		m_GBuffer.reset(DBG_NEW GBuffer(m_ScreenWidth, m_ScreenHeight));
@@ -259,7 +264,7 @@ namespace BlackPearl {
 
 	void VoxelConeTracingSVORenderer::BuildFragmentList(const std::vector<Object*>& objs, Object* skybox)
 	{
-		//Í³ï¿½ï¿½fragmentï¿½ï¿½ï¿½ï¿½
+		//Í³¼ÆfragmentÊýÁ¿
 
 		Voxelize(objs, skybox, false);
 		glMemoryBarrier(GL_ATOMIC_COUNTER_BARRIER_BIT);
@@ -287,7 +292,7 @@ namespace BlackPearl {
 		glUnmapBuffer(GL_ATOMIC_COUNTER_BUFFER);
 		m_AtomicCountBuffer->UnBind();
 
-		//ï¿½æ´¢fragmentï¿½ï¿½ï¿½ï¿½
+		//´æ´¢fragmentÊý¾Ý
 		Voxelize(objs, skybox, true);
 		glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
 		//glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
@@ -318,17 +323,7 @@ namespace BlackPearl {
 
 		//m_DebugOctreeBufTexture.reset(DBG_NEW BufferTexture(sizeof(GLuint) * m_TotalTreeNode, GL_RG16UI, 0));
 		//m_AtomicCountBuffer.reset(DBG_NEW AtomicBuffer());
-		//GLbitfield mapFlags = (GL_MAP_COHERENT_BIT | GL_MAP_READ_BIT | GL_MAP_WRITE_BIT);
-
-#ifdef GE_PLATFORM_WINDOWS
-        GLbitfield mapFlags = (GL_MAP_COHERENT_BIT | GL_MAP_READ_BIT | GL_MAP_WRITE_BIT);
-#endif
-#ifdef GE_PLATFORM_ANDRIOD
-
-        GLbitfield mapFlags = ( GL_MAP_READ_BIT | GL_MAP_WRITE_BIT);
-#endif
-
-
+		GLbitfield mapFlags = (GL_MAP_COHERENT_BIT | GL_MAP_READ_BIT | GL_MAP_WRITE_BIT);
 		m_AtomicCountBuffer.reset(DBG_NEW AtomicBuffer());
 		//	m_AtomicCountBuffer->ResetValue(0);
 		int nodeOffset = 0;
@@ -374,12 +369,10 @@ namespace BlackPearl {
 			//ShowBufferTexture(m_OctreeNodeTex[0], m_TotalTreeNode);
 
 			//initial node
-			unsigned int allocNodeNum = 0;
+			unsigned int allocNodeNum;
 			unsigned int reset = 0;
 			m_AtomicCountBuffer->Bind();
-#ifdef GE_PLATFORM_WINDOWS
-            glGetBufferSubData(GL_ATOMIC_COUNTER_BUFFER, 0, sizeof(GLuint), &allocNodeNum);
-#endif
+			glGetBufferSubData(GL_ATOMIC_COUNTER_BUFFER, 0, sizeof(GLuint), &allocNodeNum);
 			glBufferSubData(GL_ATOMIC_COUNTER_BUFFER, 0, sizeof(GLuint), &reset);//reset counter to zero
 			m_AtomicCountBuffer->UnBind();
 
@@ -476,9 +469,22 @@ namespace BlackPearl {
 
 	void VoxelConeTracingSVORenderer::RenderSpecularBRDFLUTMap()
 	{
-		m_SpecularBrdfLUTTexture.reset(DBG_NEW Texture(Texture::DiffuseMap, m_VoxelTextureSize, m_VoxelTextureSize, false, GL_LINEAR, GL_LINEAR, GL_RG16F, GL_RG, GL_CLAMP_TO_EDGE, GL_FLOAT));
+		IDevice* device = g_deviceManager->GetDevice();
+		TextureDesc desc;
+		desc.type = TextureType::DiffuseMap;
+		desc.width = m_VoxelTextureSize;
+		desc.height = m_VoxelTextureSize;
+		desc.minFilter = FilterMode::Linear;
+		desc.magFilter = FilterMode::Linear;
+		desc.wrap = SamplerAddressMode::ClampToEdge;
+		desc.format = Format::RG16_FLOAT;
+		desc.generateMipmap = false;
+
+		m_SpecularBrdfLUTTexture = device->createTexture(desc);
+
+		//m_SpecularBrdfLUTTexture.reset(DBG_NEW Texture(Texture::DiffuseMap, m_VoxelTextureSize, m_VoxelTextureSize, false, GL_LINEAR, GL_LINEAR, GL_RG16F, GL_RG, GL_CLAMP_TO_EDGE, GL_FLOAT));
 		//std::shared_ptr<Texture> brdfLUTTexture(new Texture(Texture::None, 512, 512, GL_LINEAR, GL_LINEAR, GL_RG16F, GL_RG, GL_CLAMP_TO_EDGE, GL_FLOAT));
-		std::shared_ptr<FrameBuffer> frameBuffer(new FrameBuffer());
+		std::shared_ptr<FrameBuffer> frameBuffer = std::make_shared<FrameBuffer>();
 		//	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		frameBuffer->Bind();
@@ -529,7 +535,7 @@ namespace BlackPearl {
 
 	void VoxelConeTracingSVORenderer::RenderVoxelVisualization(Camera* camera, const std::vector<Object*>& objs, unsigned int viewportWidth, unsigned int viewportHeight)
 	{
-		/* ï¿½Ú±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í·ï¿½ï¿½ï¿½ï¿½ï¿½È¾ */
+		/* ÔÚ±¾º¯ÊýÀïÍ·Íê³ÉäÖÈ¾ */
 		//glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		GE_ERROR_JUDGE();
 		//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -678,7 +684,7 @@ namespace BlackPearl {
 
 
 
-		/*********************************ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¾ light objects ********************************************************/
+		/*********************************ÕýÏòäÖÈ¾ light objects ********************************************************/
 
 		glDepthMask(GL_TRUE);
 		glEnable(GL_DEPTH_TEST);
@@ -725,11 +731,11 @@ namespace BlackPearl {
 		m_SobolSSBO->Bind();
 		m_SobolSSBO->BindIndex(5);
 		m_PathTracingColor->Bind();
-		glBindImageTexture(0, m_PathTracingColor->GetRendererID(), 0, GL_FALSE, 0, GL_READ_WRITE, GL_RGBA32F);
+		glBindImageTexture(0, static_cast<Texture*>(m_PathTracingColor.Get())->GetRendererID(), 0, GL_FALSE, 0, GL_READ_WRITE, GL_RGBA32F);
 		m_PathTracingAlbedo->Bind();
-		glBindImageTexture(1, m_PathTracingAlbedo->GetRendererID(), 0, GL_FALSE, 0, GL_READ_WRITE, GL_RGBA8);
+		glBindImageTexture(1, static_cast<Texture*>(m_PathTracingAlbedo.Get())->GetRendererID(), 0, GL_FALSE, 0, GL_READ_WRITE, GL_RGBA8);
 		m_PathTracingNormal->Bind();
-		glBindImageTexture(2, m_PathTracingNormal->GetRendererID(), 0, GL_FALSE, 0, GL_READ_WRITE, GL_RGBA8_SNORM);
+		glBindImageTexture(2, static_cast<Texture*>(m_PathTracingNormal.Get())->GetRendererID(), 0, GL_FALSE, 0, GL_READ_WRITE, GL_RGBA8_SNORM);
 		glBindImageTexture(3, m_OctreeNodeTex[0]->GetTextureID(), 0, GL_FALSE, 0, GL_READ_ONLY, GL_R32UI);
 		glBindImageTexture(4, m_OctreeNodeTex[1]->GetTextureID(), 0, GL_FALSE, 0, GL_READ_ONLY, GL_R32UI);
 		//glBindImageTexture(6, m_DebugOctreeBufTexture->GetTextureID(), 0, GL_FALSE, 0, GL_READ_WRITE, GL_RGBA8UI);
@@ -793,20 +799,17 @@ namespace BlackPearl {
 
 	void VoxelConeTracingSVORenderer::ShowBufferTexture(std::shared_ptr<BufferTexture> bufferTexture, int dataLength)
 	{
-#ifdef GE_PLATFORM_WINDOWS
-
-        std::vector<GLuint> pos(dataLength, 0);
+		std::vector<GLuint> pos(dataLength, 0);
 		bufferTexture->Bind();
 
 		//m_VoxelPosBufTexture->BindTexture();
 
-		GLuint* data = (GLuint*)glMapBuffer(GL_TEXTURE_BUFFER, GL_READ_ONLY);//ï¿½æ´¢Ë³ï¿½ï¿½ï¿½ï¿½ A_BGR
+		GLuint* data = (GLuint*)glMapBuffer(GL_TEXTURE_BUFFER, GL_READ_ONLY);//´æ´¢Ë³ÐòÊÇ A_BGR
 		for (int j = 0; j < dataLength; ++j)
 			pos[j] = data[j];
 		data = nullptr;
 		glUnmapBuffer(GL_TEXTURE_BUFFER);
 		bufferTexture->Unbind();
-#endif
 	}
 
 	void VoxelConeTracingSVORenderer::DrawGBuffer(Object* gBufferDebugQuad)

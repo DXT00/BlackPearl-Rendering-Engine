@@ -3,7 +3,6 @@
 #include "BlackPearl/Scene/Scene.h"
 namespace BlackPearl {
 	class LumenSceneData;
-	int32_t GLumenDirectLightingMaxLightsPerTile = 8;
 
 	namespace Lumen {
 
@@ -101,8 +100,8 @@ namespace BlackPearl {
 			HighResPages,
 		};
 
-//		const TCHAR* GetRayTracedLightingModeName(EHardwareRayTracingLightingMode LightingMode);
-//		const TCHAR* GetRayTracedNormalModeName(int NormalMode);
+		const TCHAR* GetRayTracedLightingModeName(EHardwareRayTracingLightingMode LightingMode);
+		const TCHAR* GetRayTracedNormalModeName(int NormalMode);
 		float GetHardwareRayTracingPullbackBias();
 
 		//bool UseFarField(const FSceneViewFamily& ViewFamily);

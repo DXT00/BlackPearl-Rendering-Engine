@@ -1,12 +1,7 @@
 #include "pch.h"
-#ifdef GE_PLATFORM_ANDRIOD
-#include "GLES3/gl3.h"
-#endif
-#ifdef GE_PLATFORM_WINDOWS
-#include "glad/glad.h"
-#endif
-
+#include <glad/glad.h>
 #include "Config.h"
+#include "BlackPearl/RHI/DynamicRHI.h"
 
 namespace BlackPearl {
 
@@ -19,18 +14,35 @@ namespace BlackPearl {
 			wait_return = glClientWaitSync(sync_fence, GL_SYNC_FLUSH_COMMANDS_BIT, 1);
 		glDeleteSync(sync_fence);
 	}
+	const char* Configuration::GetShaderTypeName()
+	{
+		switch (DynamicRHI::g_RHIType)
+		{
+
+		case DynamicRHI::Type::D3D12:
+			return "dxbc";
+		case DynamicRHI::Type::Vulkan:
+			return "spv";
+		case DynamicRHI::Type::OpenGL:
+			assert(!"no need to compile shaders externally");
+			return "";
+		default:
+			assert(!"Unknown graphics API");
+			return "";
+		}
+	}
 	//const VoxelConeTracingRenderer::RenderingMode Configuration::RenderingMode = VoxelConeTracingRenderer::RenderingMode::VOXEL_CONE_TRACING;
 	const float Configuration::ShadowMapPointLightRadius = 30.0f;
 
-	/* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ë£ï¿½prefilterMap.glslï¿½ï¿½ï¿½	float resolution =512.0;Ò²Òªï¿½ï¿½ */
+	/* ÕâÀï¸ÄÁË£¬prefilterMap.glslÀïµÄ	float resolution =512.0;Ò²Òª¸Ä */
 	const float Configuration::EnvironmantMapResolution = 64.0;// 256.0f;
 	
 
 	const char* ShaderConfig::AMBIENT_COLOR   = "u_Material.ambientColor";
 	const char* ShaderConfig::DIFFUSE_COLOR   = "u_Material.diffuseColor";
 	const char* ShaderConfig::SPECULAR_COLOR  = "u_Material.specularColor";
-	const char* ShaderConfig::EMISSION_COLOR  = "u_Material.emissionColor";
-	const char* ShaderConfig::METALLIC_VALUE  = "u_Material.mentallicValue";
+	const char* ShaderConfig::EMISSION_COLOR  = "u_Material.emissiveColor";
+	const char* ShaderConfig::METALLIC_VALUE  = "u_Material.metalnessValue";
 	const char* ShaderConfig::ROUGHNESS_VALUE = "u_Material.roughnessValue";
 	const char* ShaderConfig::AO_VALUE        = "u_Material.aoValue";
 

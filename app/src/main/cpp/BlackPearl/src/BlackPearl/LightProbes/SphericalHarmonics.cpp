@@ -1,10 +1,8 @@
 #include "pch.h"
 #include "SphericalHarmonics.h"
+#include "BlackPearl/RHI/OpenGLRHI/OpenGLCubeMapTexture.h"
 #include "glm/glm.hpp"
 #include "BlackPearl/Core.h"
-#ifdef GE_PLATFORM_ANDRIOD
-#include "GLES3/gl32.h"
-#endif
 namespace BlackPearl {
 	const float PI = 3.14159265359f;
 	std::vector<std::vector<glm::vec3>> cubeMapFaceNormal = {
@@ -54,10 +52,10 @@ namespace BlackPearl {
 	}
 	// give me a cubemap, its size and number of channels
 	// and i'll give you spherical harmonics
-	std::vector<std::vector<float>> SphericalHarmonics::UpdateCoeffs(std::shared_ptr<CubeMapTexture> environmentCubeMap)
+	std::vector<std::vector<float>> SphericalHarmonics::UpdateCoeffs(TextureHandle environmentCubeMap)
 	{
 		std::vector<std::vector<float>> SHCoeffs(9, std::vector<float>(3,0.0));
-		float size = environmentCubeMap->GetWidth() * environmentCubeMap->GetHeight() * 3;
+		float size = environmentCubeMap->getDesc().width * environmentCubeMap->getDesc().height * 3;
 		/*float* bufferPosX = new float[size];
 		float* bufferNegX = new float[size];
 		float* bufferPosY = new float[size];
@@ -68,20 +66,16 @@ namespace BlackPearl {
 		std::vector<float*> faces;
 		faces.assign(6, new float[size]);
 		environmentCubeMap->Bind();
-#ifdef GE_PLATFORM_WINDOWS
-
-        glGetTexImage(GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, GL_RGB, GL_FLOAT, faces[0]);
+		glGetTexImage(GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, GL_RGB, GL_FLOAT, faces[0]);
 		glGetTexImage(GL_TEXTURE_CUBE_MAP_NEGATIVE_X, 0, GL_RGB, GL_FLOAT, faces[1]);
 		glGetTexImage(GL_TEXTURE_CUBE_MAP_POSITIVE_Y, 0, GL_RGB, GL_FLOAT, faces[2]);
 		glGetTexImage(GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, GL_RGB, GL_FLOAT, faces[3]);
 		glGetTexImage(GL_TEXTURE_CUBE_MAP_POSITIVE_Z, 0, GL_RGB, GL_FLOAT, faces[4]);
 		glGetTexImage(GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, GL_RGB, GL_FLOAT, faces[5]);
-#endif
-        //TODO:: gles3.2 不支持 glGetTexImage
 		environmentCubeMap->UnBind();
 
 
-		unsigned int width = environmentCubeMap->GetWidth();
+		unsigned int width = environmentCubeMap->getDesc().width;
 		if (!initialCubeMapVector)
 			InitialCubeMapVector(width);
 

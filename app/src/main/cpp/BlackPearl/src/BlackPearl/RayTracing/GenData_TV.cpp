@@ -8,13 +8,13 @@ namespace BlackPearl {
 	{
 		
 	}
-	void GenData_TV::ParseTextureData(std::map<std::shared_ptr<Texture>, std::vector<size_t>> tex2vec)
+	void GenData_TV::ParseTextureData(std::map<TextureHandle, std::vector<size_t>> tex2vec)
 	{
 		for (auto pair:tex2vec)
 		{
-			std::shared_ptr<Texture> texture = pair.first;
+			TextureHandle texture = pair.first;
 
-			if (texture->GetType() == Texture::Type::CubeMap) {
+			if (texture->GetType() == TextureType::CubeMap) {
 				ParseCubeMap(texture);
 			}
 			else {
@@ -23,7 +23,7 @@ namespace BlackPearl {
 		}
 	}
 
-	void GenData_TV::ParseColorData(std::map<std::shared_ptr<glm::vec3>, std::vector<size_t>> color2vec, std::vector<float>& packData)
+	void GenData_TV::ParseColorData(std::map<std::shared_ptr<math::float3>, std::vector<size_t>> color2vec, std::vector<float>& packData)
 	{
 		for (auto pair : color2vec)
 		{
@@ -32,7 +32,7 @@ namespace BlackPearl {
 		}
 	}
 
-	void GenData_TV::ParseColor(std::shared_ptr <glm::vec3>color, std::vector<float>& packData)
+	void GenData_TV::ParseColor(std::shared_ptr <math::float3>color, std::vector<float>& packData)
 	{
 		auto targetPair = m_Color2Idx.find(color);
 		if (targetPair != m_Color2Idx.end())
@@ -40,19 +40,19 @@ namespace BlackPearl {
 
 		m_Color2Idx[color] = m_TexData.size();
 
-		m_TexData.push_back(Texture::Type::None);
+		m_TexData.push_back(TextureType::None);
 
 		m_TexData.push_back(packData.size() / 4);
 	
-		packData.push_back(color->r);
-		packData.push_back(color->g);
-		packData.push_back(color->b);
+		packData.push_back(color->x);
+		packData.push_back(color->y);
+		packData.push_back(color->z);
 		packData.push_back(0);
 	}
 
 
 
-	void GenData_TV::ParseCubeMap(std::shared_ptr<Texture> texture)
+	void GenData_TV::ParseCubeMap(TextureHandle texture)
 	{
 		auto targetPair = m_Tex2Idx.find(texture);
 		if (targetPair != m_Tex2Idx.end())
@@ -62,14 +62,14 @@ namespace BlackPearl {
 
 		m_TexData.push_back(texture->GetType());
 
-		std::shared_ptr<CubeMapTexture> cube_texture = std::static_pointer_cast<CubeMapTexture>(texture);
+		TextureHandle cube_texture = texture;
 		if (m_CubeMap2RenderId.find(cube_texture) == m_CubeMap2RenderId.end()) {
 			m_CubeMap2RenderId[cube_texture] = m_CubeMap2RenderId.size();
 		}
 		m_TexData.push_back(m_CubeMap2RenderId[cube_texture]);
 	}
 
-	void GenData_TV::ParseImgMap(std::shared_ptr<Texture> texture)
+	void GenData_TV::ParseImgMap(TextureHandle texture)
 	{
 		auto targetPair = m_Tex2Idx.find(texture);
 		if (targetPair != m_Tex2Idx.end())

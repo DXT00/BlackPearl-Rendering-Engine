@@ -11,8 +11,8 @@ namespace BlackPearl {
 	{
 	}
 
-//	XMINT2 LumenSceneData::GetRadiosityAtlasSize() const
-//	{
-//		return PhysicalAtlasSize;
-//	}
+	XMINT2 LumenSceneData::GetRadiosityAtlasSize() const
+	{
+		return PhysicalAtlasSize;
+	}
 }

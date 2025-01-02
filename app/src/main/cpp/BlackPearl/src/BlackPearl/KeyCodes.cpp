@@ -1,7 +1,6 @@
 #include "pch.h"
 #include "KeyCodes.h"
 #include "BlackPearl/RHI/DynamicRHI.h"
-#include "BlackPearl/Log.h"
 namespace BlackPearl {
 	//extern DynamicRHI::Type g_RHIType;
 

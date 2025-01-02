@@ -3,8 +3,7 @@
 #include "VkRayTracingRenderer.h"
 #include "BlackPearl/Renderer/Shader/VkShader/vkShader.h"
 #include "BlackPearl/Application.h"
-#include "vulkan/vulkan_core.h"
-#include <examples/imgui_impl_glfw.cpp>
+
 #include "BlackPearl/Renderer/Buffer/VkBuffer/VkBuffer.h"
 #include "BlackPearl/Renderer/Image/VkImage.h"
 #include "BlackPearl/RHI/VulkanRHI/VkRenderConfig.h"
@@ -13,15 +12,18 @@
 #include "BlackPearl/RHI/RHIBindingLayoutDesc.h"
 #include "BlackPearl/Log.h"
 #include "BlackPearl/RHI/RHIBindingSet.h"
+#include "BlackPearl/Math/Math.h"
+#include "BlackPearl/Renderer/DeviceManager.h"
+#include "BlackPearl/RHI/VulkanRHI/VkDevice.h"
 #define GLM_FORCE_RADIANS
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
 #include <chrono>
-#include "stb_image.h"
 #include <random>
 
 namespace BlackPearl {
+    extern DeviceManager* g_deviceManager;
     //标志可以并发处理多少帧，允许多个帧同时运行，也就是说，允许一帧的渲染不干扰下一帧的录制
     const uint32_t PARTICLE_COUNT = 8192;
 
@@ -74,6 +76,7 @@ namespace BlackPearl {
     void VkRayTracingRenderer::Init(RayTraceScene* scene)
     {
         mScene = scene;
+     
         CreateInstance();
         SetupDebugMessenger();
         CreateSurface();
@@ -394,7 +397,7 @@ namespace BlackPearl {
         appInfo.applicationVersion = VK_MAKE_VERSION(1, 0, 0);
         appInfo.pEngineName = "No Engine";
         appInfo.engineVersion = VK_MAKE_VERSION(1, 0, 0);
-        appInfo.apiVersion = VK_API_VERSION_1_0;
+        appInfo.apiVersion = VK_API_VERSION_1_3;
 
         VkInstanceCreateInfo createInfo{};
         createInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;

@@ -10,7 +10,7 @@
 #include "BlackPearl/Component/LightComponent/Light.h"
 #include <chrono>
 using namespace std::chrono;
-
+using namespace BlackPearl;
 class ShadowMapPointLightLayer :public BlackPearl::Layer {
 
 public:
@@ -85,12 +85,16 @@ public:
 		Deer->GetComponent<BlackPearl::MeshRenderer>()->SetIsBackGroundObjects(true);
 
 		m_Sword = CreateModel("assets/models/sword/OBJ/Big_Sword_OBJ.obj", "assets/shaders/pbr/PbrTexture.glsl", false, "Sword");
-		std::shared_ptr<BlackPearl::Texture> SwordalbedoTexture(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::DiffuseMap, "assets/models/sword/textures/Big Sword_Base_Color_Map.jpg"));
-		std::shared_ptr<BlackPearl::Texture> SwordaoTexture(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::AoMap, "assets/models/sword/textures/Big Sword_AO_Map.jpg"));
-		std::shared_ptr<BlackPearl::Texture> SwordroughnessTexture(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::RoughnessMap, "assets/models/sword/textures/Big Sword_Roughness_Map.jpg"));
-		std::shared_ptr<BlackPearl::Texture> SwordmentallicTexture(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::MentallicMap, "assets/models/sword/textures/Big Sword_Metalness.jpg"));
-		std::shared_ptr<BlackPearl::Texture> SwordnormalTexture(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::NormalMap, "assets/models/sword/textures/Big Sword_Normal_Map.jpg"));
-		std::shared_ptr<BlackPearl::Texture> SwordemissionTexture(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::EmissionMap, "assets/models/sword/textures/Big Sword_Emission_Map.jpg"));
+
+
+		BlackPearl::IDevice* device = m_DeviceManager->GetDevice();
+
+		BlackPearl::TextureHandle SwordalbedoTexture = device->createTexture(TextureDesc( BlackPearl::DiffuseMap, "assets/models/sword/textures/Big Sword_Base_Color_Map.jpg" ));
+		BlackPearl::TextureHandle SwordaoTexture = device->createTexture(TextureDesc(BlackPearl::TextureType::AoMap, "assets/models/sword/textures/Big Sword_AO_Map.jpg" ));
+		BlackPearl::TextureHandle SwordroughnessTexture = device->createTexture(TextureDesc(BlackPearl::TextureType::RoughnessMap, "assets/models/sword/textures/Big Sword_Roughness_Map.jpg"));
+		BlackPearl::TextureHandle SwordmentallicTexture = device->createTexture(TextureDesc(BlackPearl::TextureType::MentallicMap, "assets/models/sword/textures/Big Sword_Metalness.jpg"));
+		BlackPearl::TextureHandle SwordnormalTexture = device->createTexture(TextureDesc(BlackPearl::TextureType::NormalMap, "assets/models/sword/textures/Big Sword_Normal_Map.jpg"));
+		BlackPearl::TextureHandle SwordemissionTexture = device->createTexture(TextureDesc(BlackPearl::TextureType::EmissionMap, "assets/models/sword/textures/Big Sword_Emission_Map.jpg"));
 
 		m_Sword->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(SwordalbedoTexture);
 		m_Sword->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(SwordaoTexture);
@@ -98,6 +102,7 @@ public:
 		m_Sword->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(SwordmentallicTexture);
 		m_Sword->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(SwordnormalTexture);
 		m_Sword->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(SwordemissionTexture);
+
 
 		m_Sword->GetComponent<BlackPearl::MeshRenderer>()->SetPBRTextureSamples(true);
 		m_Sword->GetComponent<BlackPearl::MeshRenderer>()->SetIsPBRObject(true);

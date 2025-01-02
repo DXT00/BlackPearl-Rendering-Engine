@@ -4,10 +4,12 @@
 #include "BlackPearl/Component/TransformComponent/Transform.h"
 #include "BlackPearl/Component/LightComponent/PointLight.h"
 #include "BlackPearl/Config.h"
-#ifdef GE_PLATFORM_ANDRIOD
-#include "GLES3/gl32.h"
-#endif
+#include "BlackPearl/Renderer/DeviceManager.h"
+#include "BlackPearl/RHI/RHITexture.h"
+
 namespace BlackPearl {
+	extern DeviceManager* g_deviceManager;
+
 	bool VoxelConeTracingRenderer::s_Shadows = true;
 	bool VoxelConeTracingRenderer::s_IndirectDiffuseLight = true;
 	bool VoxelConeTracingRenderer::s_IndirectSpecularLight = true;
@@ -40,11 +42,7 @@ namespace BlackPearl {
 		m_BrdfLUTQuadObj = brdfLUTQuadObj;
 		//m_DebugQuadObj = debugQuadObj;
 		//glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
-#ifdef GE_PLATFORM_WINDOWS
-        //GLES TODO::
-        //https://registry.khronos.org/OpenGL/extensions/EXT/EXT_multisample_compatibility.txt
 		glEnable(GL_MULTISAMPLE);
-#endif
 		m_VoxelConeTracingShader.reset(DBG_NEW Shader("assets/shaders/voxelization/voxelConeTracing/voxelConeTracingPBR.glsl"));
 		InitVoxelization();
 		InitVoxelVisualization(viewportWidth, viewportHeight);
@@ -344,9 +342,19 @@ namespace BlackPearl {
 
 	void VoxelConeTracingRenderer::RenderSpecularBRDFLUTMap()
 	{
-		m_SpecularBrdfLUTTexture.reset(DBG_NEW Texture(Texture::DiffuseMap, m_VoxelTextureSize, m_VoxelTextureSize, false, GL_LINEAR, GL_LINEAR, GL_RG16F, GL_RG, GL_CLAMP_TO_EDGE, GL_FLOAT));
+		TextureDesc desc;
+		desc.type = TextureType::DiffuseMap;
+		desc.width = m_VoxelTextureSize;
+		desc.height = m_VoxelTextureSize;
+		desc.minFilter = FilterMode::Linear;
+		desc.magFilter = FilterMode::Linear;
+		desc.wrap = SamplerAddressMode::ClampToEdge;
+		desc.format = Format::RG16_FLOAT;
+		m_SpecularBrdfLUTTexture = g_deviceManager->GetDevice()->createTexture(desc);
+
+		//m_SpecularBrdfLUTTexture.reset(DBG_NEW Texture(Texture::DiffuseMap, m_VoxelTextureSize, m_VoxelTextureSize, false, GL_LINEAR, GL_LINEAR, GL_RG16F, GL_RG, GL_CLAMP_TO_EDGE, GL_FLOAT));
 		//std::shared_ptr<Texture> brdfLUTTexture(new Texture(Texture::None, 512, 512, GL_LINEAR, GL_LINEAR, GL_RG16F, GL_RG, GL_CLAMP_TO_EDGE, GL_FLOAT));
-		std::shared_ptr<FrameBuffer> frameBuffer(new FrameBuffer());
+		std::shared_ptr<FrameBuffer> frameBuffer = std::make_shared<FrameBuffer>();
 		//	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		frameBuffer->Bind();

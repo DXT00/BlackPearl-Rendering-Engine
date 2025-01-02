@@ -1,6 +1,6 @@
 #pragma once
 #include "BlackPearl/RHI/RHIDefinitions.h"
-#include <vulkan/vulkan.h>
+#include <vulkan/vulkan_core.h>
 namespace BlackPearl
 {
     // Format mapping table. The rows must be in the exactly same order as Format enum members are defined.
@@ -74,6 +74,12 @@ namespace BlackPearl
             { Format::BC6H_SFLOAT,       "BC6H_SFLOAT",       16,  4, FormatKind::Float,        true,  true,  true,  false, false, false, true,  false },
             { Format::BC7_UNORM,         "BC7_UNORM",         16,  4, FormatKind::Normalized,   true,  true,  true,  true,  false, false, false, false },
             { Format::BC7_UNORM_SRGB,    "BC7_UNORM_SRGB",    16,  4, FormatKind::Normalized,   true,  true,  true,  true,  false, false, false, true  },
+    
+            { Format::RGB8_UNORM,        "RGB8_UNORM",        3,  1, FormatKind::Float,         true,  true,  true,  false, false, false,  false,  false },
+            { Format::RGB8_FLOAT,        "RGB8_FLOAT",        3,  1, FormatKind::Float,         true,  true,  true,  false, false, false,  true,   false },
+            { Format::RGB16_FLOAT,       "RGB16_FLOAT",       6,  1, FormatKind::Float,         true,  true,  true,  false, false, false,  true,   false }
+
+    
     };
 
 	const FormatInfo& getFormatInfo(Format format);

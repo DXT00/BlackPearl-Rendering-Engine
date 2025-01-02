@@ -1,5 +1,4 @@
 #include "pch.h"
-#ifdef GE_API_D3D12
 #include "D3D12DeviceResources.h"
 #include "BlackPearl/Core.h"
 #include "BlackPearl/Common/CommonFunc.h"
@@ -255,7 +254,7 @@ void DeviceResources::CreateDeviceResources()
 
     BlackPearl::ThrowIfFailed(m_d3dDevice->CreateCommandQueue(&queueDesc, IID_PPV_ARGS(&m_commandQueue)));
 
-    // Create descriptor heaps for render target views and depth stencil views.//Ä¿ï¿½ï¿½ï¿½ï¿½Í¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    // Create descriptor heaps for render target views and depth stencil views.//Ä¿±êÊÓÍ¼µÄÃèÊö·û¶Ñ
     D3D12_DESCRIPTOR_HEAP_DESC rtvDescriptorHeapDesc = {};
     rtvDescriptorHeapDesc.NumDescriptors = m_backBufferCount;
     rtvDescriptorHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
@@ -266,7 +265,7 @@ void DeviceResources::CreateDeviceResources()
 
     if (m_depthBufferFormat != DXGI_FORMAT_UNKNOWN)
     {
-        //ï¿½ï¿½ï¿½Ä£ï¿½ï¿½ï¿½ï¿½Í¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+        //Éî¶ÈÄ£°åÊÓÍ¼µÄÃèÊö·û¶Ñ
         D3D12_DESCRIPTOR_HEAP_DESC dsvDescriptorHeapDesc = {};
         dsvDescriptorHeapDesc.NumDescriptors = 1;
         dsvDescriptorHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_DSV;
@@ -606,4 +605,3 @@ void DeviceResources::InitializeAdapter(IDXGIAdapter1** ppAdapter)
 
     *ppAdapter = adapter.Detach();
 }
-#endif

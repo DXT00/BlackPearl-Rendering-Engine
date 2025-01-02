@@ -1,11 +1,7 @@
 #pragma once
 
 #include <cstdlib>
-
-#ifdef GE_PLATFORM_WINDOWS
 #include <crtdbg.h>
-#endif
-
 #include <iostream>
 #include <memory>
 #include <utility>
@@ -22,6 +18,10 @@
 #include <unordered_set>
 #include <optional>
 
+//#include "BlackPearl/Log.h"
+
+
+
 #ifdef _DEBUG
 #define DBG_NEW new ( _NORMAL_BLOCK , __FILE__ , __LINE__ )
 // Replace _NORMAL_BLOCK with _CLIENT_BLOCK if you want the
@@ -30,6 +30,7 @@
 #define DBG_NEW new
 #endif
 
-#ifdef GE_PLATFORM_WINDOWS
 #define _CRTDBG_MAP_ALLOC
-#endif
+//#ifdef HZ_PLATFORM_WINDOWS
+//#include <Windows.h>
+//#endif

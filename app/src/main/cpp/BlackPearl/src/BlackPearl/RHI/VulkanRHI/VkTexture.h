@@ -5,7 +5,7 @@
 #include "BlackPearl/RHI/RHIHeap.h"
 #include "BlackPearl/RHI/RHIState.h"
 #include "VkMemoryResource.h"
-#include <vulkan/vulkan.h>
+#include <vulkan/vulkan_core.h>
 #include <mutex>
 #include <tuple>
 #include "VkAllocator.h"
@@ -74,6 +74,12 @@ namespace BlackPearl {
 
         ~ETexture() override;
         const TextureDesc& getDesc() const override { return desc; }
+        virtual const TextureType& GetType() const override { return desc.type; }
+
+		virtual void UnBind() override {};
+		virtual void Bind()override {};
+
+        static void fillTextureInfo(ETexture* texture, const TextureDesc& desc);
        // Object getNativeObject(ObjectType objectType) override;
        // Object getNativeView(ObjectType objectType, Format format, TextureSubresourceSet subresources, TextureDimension dimension, bool isReadOnlyDSV = false) override;
 

@@ -16,6 +16,7 @@ project "SandboxDX"
 		
 	}
 
+
 	filter { "files:SandboxDX/assets/shaders_hlsl/**.hlsl" }
 	filter { "files:**.hlsl" }
 		flags("ExcludeFromBuild")
@@ -52,7 +53,7 @@ project "SandboxDX"
 	
 	defines
 	{
-		"GE_API_D3D12RHI"
+		"GE_API_D3D12"
 	}
 
 	filter "system:windows"
@@ -62,7 +63,7 @@ project "SandboxDX"
 		{
 			"GLFW_INCLUDE_NONE",
 			"GE_PLATFORM_WINDOWS",
-			"GE_API_D3D12RHI"
+			"GE_API_D3D12"
 		}
 
 	filter "configurations:Debug"

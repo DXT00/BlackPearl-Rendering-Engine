@@ -1,22 +1,37 @@
 #include "pch.h"
 #include "AABB.h"
-#include <math.h>
-#include "BlackPearl/RayTracing/Ray.h"
 
+#include "BlackPearl/RayTracing/Ray.h"
+#include "BlackPearl/Math/Math.h"
 
 namespace BlackPearl {
 
-	const AABB AABB::InValid(glm::vec3(-1), glm::vec3(-1), false);
+	const AABB AABB::InValid(math::float3(-1), math::float3(-1), true, false);
 
 	AABB::AABB()
 	{
 		*this = InValid;
+		m_Center = math::float3(0.0);
+		m_Extent = math::float3(0.0);
 	}
 	
-	AABB::AABB(const glm::vec3& minP, const glm::vec3& maxP, bool isValid)
-		: m_MinP(minP),m_MaxP(maxP),m_IsValid(isValid)
+	AABB::AABB(const math::float3& minPOrCenter, const math::float3& maxPOrExtent, bool setMinMax, bool IsValid)
 	{
+		m_IsValid = IsValid;
 
+		if (setMinMax) {
+			m_MinP = minPOrCenter;
+			m_MaxP = maxPOrExtent;
+			_CalculateCenterAndExtent();
+		}
+		else {
+			m_Center = minPOrCenter;
+			m_Extent = maxPOrExtent;
+
+			m_MinP = m_Center - m_Extent / 2.0f;
+			m_MaxP = m_Center + m_Extent / 2.0f;
+		}
+		//m_IsValid = true;
 	}
 
 	void AABB::SetInvalid()
@@ -25,18 +40,20 @@ namespace BlackPearl {
 		*this = InValid;
 	}
 
-	void AABB::SetP(const glm::vec3& minP, const glm::vec3& maxP)
+	void AABB::SetP(const math::float3& minP, const math::float3& maxP)
 	{
 		m_MinP = minP;
 		m_MaxP = maxP;
+		_CalculateCenterAndExtent();
+
 	}
 
 	const AABB AABB::operator+(const AABB& aabb) const
 	{
 		if (m_IsValid) {
 			if (aabb.IsValid()) {
-				glm::vec3 minP = glm::min(aabb.GetMinP(), m_MinP);
-				glm::vec3 maxP = glm::max(aabb.GetMaxP(), m_MaxP);
+				math::float3 minP = math::min(aabb.GetMinP(), m_MinP);
+				math::float3 maxP = math::max(aabb.GetMaxP(), m_MaxP);
 				return { minP,maxP,true };
 			}
 			else {
@@ -66,8 +83,8 @@ namespace BlackPearl {
 
 		tMin = Ray::tMin;
 		tMax = ray->GetTMax();
-		const glm::vec3& dir = ray->GetDir();
-        const glm::vec3& org = ray->GetOrigin();
+		math::float3& dir = ray->GetDir();
+		math::float3& org = ray->GetOrigin();
 
 
 		for (int i = 0; i < 3; i++)
@@ -83,8 +100,8 @@ namespace BlackPearl {
 
 				if (dir[i] < 0.0f)
 					std::swap(t0, t1);
-				tMin = glm::max(tMin,t0);
-				tMin = glm::min(tMax,t1);
+				tMin = math::max(tMin,t0);
+				tMin = math::min(tMax,t1);
 			}
 
 
@@ -98,7 +115,7 @@ namespace BlackPearl {
 
 	float AABB::GetSurfaceArea() const
 	{
-		glm::vec3 extends = GetExtent();
+		math::float3 extends = GetExtent();
 		return 2.0f * (extends.x * extends.y + extends.y * extends.z + extends.z * extends.x);
 	}
 
@@ -106,13 +123,14 @@ namespace BlackPearl {
 	{
 		if (aabb.IsValid()) {
 			if (m_IsValid) {
-				m_MinP = glm::min(m_MinP, aabb.GetMinP());
-				m_MaxP = glm::max(m_MaxP, aabb.GetMaxP());	
+				m_MinP = math::min(m_MinP, aabb.GetMinP());
+				m_MaxP = math::max(m_MaxP, aabb.GetMaxP());	
 			}
 			else {
 				m_MinP = aabb.GetMinP();
 				m_MaxP = aabb.GetMaxP();
 			}
+			_CalculateCenterAndExtent();
 			m_IsValid = true;
 		}
 		
@@ -121,11 +139,18 @@ namespace BlackPearl {
 
 	void AABB::UpdateTransform(glm::mat4 model)
 	{
-		glm::vec4 min = model * glm::vec4(m_MinP,1);
-		glm::vec4 max = model * glm::vec4(m_MaxP,1);
+		glm::vec4 min = model * glm::vec4(m_MinP.x, m_MinP.y, m_MinP.z,1);
+		glm::vec4 max = model * glm::vec4(m_MaxP.x, m_MaxP.y, m_MaxP.z,1);
 
-		m_MinP = glm::vec3(min.r, min.b, min.g);
-		m_MaxP = glm::vec3(max.r, max.b, max.g);
+		m_MinP = math::float3(min.r, min.b, min.g);
+		m_MaxP = math::float3(max.r, max.b, max.g);
+		_CalculateCenterAndExtent();
+	}
+
+	void AABB::_CalculateCenterAndExtent()
+	{
+		m_Center = (m_MinP + m_MaxP) * 0.5f;
+		m_Extent =  m_MaxP - m_MinP;
 	}
 
 }

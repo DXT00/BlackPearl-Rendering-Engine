@@ -1,9 +1,16 @@
 #pragma once
 #include "BlackPearl/Component/Component.h"
-#include "BlackPearl/Renderer/Material/CubeMapTexture.h"
 #include "glm/glm.hpp"
 #include "BlackPearl/Core.h"
+#include "BlackPearl/Renderer/DeviceManager.h"
+#include "BlackPearl/RHI/RHITexture.h"
+#include "BlackPearl/Math/Math.h"
+using namespace BlackPearl::math;
+
+#include "hlsl/core/light_cb.h"
 namespace BlackPearl {
+	extern DeviceManager* g_deviceManager;
+
 	enum ProbeType {
 		DIFFUSE_PROBE,
 		REFLECTION_PROBE
@@ -17,8 +24,21 @@ namespace BlackPearl {
 		
 			m_Type = type;
 			m_Zfar = 13.0f;
-			if (type == ProbeType::REFLECTION_PROBE)
-				m_SpecularPrefilterCubeMap.reset(DBG_NEW CubeMapTexture(Texture::CubeMap, m_SpecularCubeMapResolution, m_SpecularCubeMapResolution, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR, GL_CLAMP_TO_EDGE, GL_RGB16F, GL_RGB, GL_FLOAT, true));
+			if (type == ProbeType::REFLECTION_PROBE) {
+				TextureDesc desc;
+				desc.type = TextureType::CubeMap;
+				desc.width = m_SpecularCubeMapResolution;
+				desc.height = m_SpecularCubeMapResolution;
+				desc.minFilter = FilterMode::Linear_Mip_Linear;
+				desc.magFilter = FilterMode::Linear;
+				desc.wrap = SamplerAddressMode::ClampToEdge;
+				desc.format = Format::RGB16_FLOAT;
+				desc.generateMipmap = true;
+
+				m_SpecularPrefilterCubeMap = g_deviceManager->GetDevice()->createTexture(desc);
+				//m_SpecularPrefilterCubeMap.reset(DBG_NEW CubeMapTexture(Texture::CubeMap, m_SpecularCubeMapResolution, m_SpecularCubeMapResolution, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR, GL_CLAMP_TO_EDGE, GL_RGB16F, GL_RGB, GL_FLOAT, true));
+
+			}
 			if (type == ProbeType::DIFFUSE_PROBE)
 				m_SHCoeffs.assign(9, std::vector<float>(3, 0.0f));
 		
@@ -29,9 +49,9 @@ namespace BlackPearl {
 
 		/* Textures */
 		//std::shared_ptr<CubeMapTexture> GetHdrEnvironmentCubeMap()const    { return m_HdrEnvironmentCubeMap; }
-		std::shared_ptr<CubeMapTexture> GetSpecularPrefilterCubeMap()const { GE_ASSERT(m_Type == ProbeType::REFLECTION_PROBE, "is not a reflection probe"); return m_SpecularPrefilterCubeMap; }
+		TextureHandle GetSpecularPrefilterCubeMap()const { GE_ASSERT(m_Type == ProbeType::REFLECTION_PROBE, "is not a reflection probe"); return m_SpecularPrefilterCubeMap; }
 		//std::shared_ptr<CubeMapTexture> GetDiffuseIrradianceCubeMap()const { return m_DiffuseIrradianceCubeMap; }
-		std::shared_ptr<Texture> GetSpecularBrdfLutMap()const { return m_SpecularBrdfLutMap; }
+		TextureHandle GetSpecularBrdfLutMap()const { return m_SpecularBrdfLutMap; }
 
 		/* resolution */
 		unsigned int GetSpecularCubeMapResolution() const { GE_ASSERT(m_Type == ProbeType::REFLECTION_PROBE, "is not a reflection probe"); return m_SpecularCubeMapResolution; }
@@ -60,14 +80,20 @@ namespace BlackPearl {
 		std::vector<uint64_t> GetExcludeObjectsId()const { return m_ExcludeObjsId; }
 		bool GetDynamicSpecularMap() { return m_UpdateSpecularMapEveryFrame; }
 		void SetDynamicSpecularMap(bool dynamic) { m_UpdateSpecularMapEveryFrame = dynamic; }
+	
+		void FillLightProbeConstants(LightProbeConstants& lightProbeConstants) const;
+
+	public:
+		bool enabled = true;
+	
 	private:
 
 		/* probe's view matrix */
 		glm::mat4 m_ViewMatrix = glm::mat4(1.0f);
 		/* Textures */
-		std::shared_ptr<CubeMapTexture> m_HdrEnvironmentCubeMap = nullptr;
-		std::shared_ptr<CubeMapTexture> m_SpecularPrefilterCubeMap = nullptr;
-		std::shared_ptr<Texture>		m_SpecularBrdfLutMap = nullptr;
+		TextureHandle m_HdrEnvironmentCubeMap = nullptr;
+		TextureHandle m_SpecularPrefilterCubeMap = nullptr;
+		TextureHandle		m_SpecularBrdfLutMap = nullptr;
 		unsigned int m_MaxMipmapLevel = 5;
 
 		unsigned int					m_SampleCounts = 1024;

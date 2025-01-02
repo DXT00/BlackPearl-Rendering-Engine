@@ -3,8 +3,6 @@
 #include "BlackPearl/Renderer/Material/Texture3D.h"
 #include "BlackPearl/Renderer/Shader/Shader.h"
 #include "BlackPearl/Renderer/Buffer/Buffer.h"
-#include "BlackPearl/Renderer/Material/TextureImage2D.h"
-#include "BlackPearl/Renderer/Buffer/Buffer.h"
 namespace BlackPearl {
 	class VoxelConeTracingDeferredRenderer :public BasicRenderer
 	{
@@ -113,7 +111,7 @@ namespace BlackPearl {
 		// ----------------
 		std::shared_ptr<Shader> m_SpecularBRDFLutShader;
 		/*只计算一次*/
-		std::shared_ptr<Texture> m_SpecularBrdfLUTTexture ;
+		TextureHandle m_SpecularBrdfLUTTexture ;
 		Object* m_BrdfLUTQuadObj = nullptr;//pbr brdf LUT map render
 
 
@@ -133,7 +131,7 @@ namespace BlackPearl {
 		// FrameBuffer which render scene to 
 		// ----------------
 		std::shared_ptr<FrameBuffer> m_FrameBuffer;
-		std::shared_ptr<Texture> m_PostProcessTexture;
+		TextureHandle m_PostProcessTexture;
 
 		// ----------------
 		// Render voxel

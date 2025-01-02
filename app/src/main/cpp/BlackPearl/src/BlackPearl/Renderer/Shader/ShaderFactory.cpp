@@ -5,8 +5,12 @@
 #include "BlackPearl/Core.h"
 
 namespace BlackPearl {
-	ShaderFactory::ShaderFactory(DeviceHandle rendererInterface, std::shared_ptr<IFileSystem> fs, const std::filesystem::path& basePath)
+	ShaderFactory::ShaderFactory(DeviceHandle rendererInterface, IFileSystem* fs, const std::filesystem::path& basePath)
 	{
+		//m_basePath  = assets/shaders
+		m_Device = rendererInterface;
+		m_fs = fs;
+		m_basePath = basePath;
 	}
 	void ShaderFactory::ClearCache()
 	{
@@ -48,7 +52,29 @@ namespace BlackPearl {
 	}
 	ShaderLibraryHandle ShaderFactory::CreateShaderLibrary(const char* fileName, const std::vector<ShaderMacro>* pDefines)
 	{
-		return ShaderLibraryHandle();
+		std::shared_ptr<IBlob> byteCode = GetBytecode(fileName, nullptr);
+
+		if (!byteCode)
+			return nullptr;
+
+		std::vector<ShaderMake::ShaderConstant> constants;
+		if (pDefines)
+		{
+			for (const ShaderMacro& define : *pDefines)
+				constants.push_back(ShaderMake::ShaderConstant{ define.name.c_str(), define.definition.c_str() });
+		}
+
+		const void* permutationBytecode = nullptr;
+		size_t permutationSize = 0;
+		if (!ShaderMake::findPermutationInBlob(byteCode->data(), byteCode->size(), constants.data(), uint32_t(constants.size()), &permutationBytecode, &permutationSize))
+		{
+			const std::string message = ShaderMake::formatShaderNotFoundMessage(byteCode->data(), byteCode->size(), constants.data(), uint32_t(constants.size()));
+			GE_CORE_ERROR(message.c_str());
+
+			return nullptr;
+		}
+
+		return m_Device->createShaderLibrary(permutationBytecode, permutationSize);
 	}
 	std::shared_ptr<IBlob> ShaderFactory::GetBytecode(const char* fileName, const char* entryName)
 	{
@@ -65,7 +91,7 @@ namespace BlackPearl {
 				adjustedName += "_" + std::string(entryName);
 		}
 
-		std::filesystem::path shaderFilePath = m_basePath / (adjustedName + ".bin");
+		std::filesystem::path shaderFilePath = m_basePath /(adjustedName + ".bin");
 
 		std::shared_ptr<IBlob>& data = m_BytecodeCache[shaderFilePath.generic_string()];
 

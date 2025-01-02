@@ -10,7 +10,6 @@
 //*********************************************************
 
 #pragma once
-#ifdef GE_API_D3D12
 #include <wrl/client.h>
 #include <d3d12.h>
 #include "BlackPearl/RHI/D3D12RHI/d3dx12.h"
@@ -142,8 +141,8 @@ namespace BlackPearl {
 	}
 
 	//// Create SRV for a buffer.
-	//// TODO::ï¿½ï¿½×° descritorHeap
-	//// ï¿½ï¿½ï¿½ï¿½Ô´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½pDescriptorHeap ï¿½Ï´ï¿½ï¿½ï¿½SRVï¿½ï¿½Ô´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	//// TODO::·â×° descritorHeap
+	//// ÔÚ×ÊÔ´ÃèÊö·û¶ÑpDescriptorHeap ÉÏ´´½¨SRV×ÊÔ´ÃèÊö·û
 	inline UINT CreateBufferSRV(
 		ID3D12Device* pDevice, 
 		ComPtr<ID3D12DescriptorHeap> pDescriptorHeap,
@@ -154,7 +153,7 @@ namespace BlackPearl {
 		UINT elementSize) {
 		// SRV
 		D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
-		srvDesc.ViewDimension = D3D12_SRV_DIMENSION_BUFFER; //ï¿½ï¿½ï¿½ï¿½SRVï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+		srvDesc.ViewDimension = D3D12_SRV_DIMENSION_BUFFER; //´´½¨SRVÃèÊö·û
 		srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
 		srvDesc.Buffer.NumElements = numElements;
 		if (elementSize == 0)
@@ -214,5 +213,5 @@ namespace BlackPearl {
 	}
 
 }
-#endif
+
 

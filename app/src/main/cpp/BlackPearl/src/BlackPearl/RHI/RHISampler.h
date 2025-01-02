@@ -7,8 +7,14 @@ namespace BlackPearl {
     //////////////////////////////////////////////////////////////////////////
 // Sampler
 //////////////////////////////////////////////////////////////////////////
+    enum class FilterMode: uint8_t {
+        Linear,
+        Nearest,
+        Nearest_Mip_Nearnest,
+        Linear_Mip_Linear
+    };
 
-    enum class SamplerAddressMode : uint8_t
+    enum class SamplerAddressMode: uint8_t
     {
         // D3D names
         Clamp,

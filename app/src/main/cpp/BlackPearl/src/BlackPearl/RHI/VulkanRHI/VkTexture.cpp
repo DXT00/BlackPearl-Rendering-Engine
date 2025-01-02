@@ -229,7 +229,7 @@ namespace BlackPearl {
         return flags;
     }
     // fills out all info fields in Texture based on a TextureDesc
-    static void fillTextureInfo(ETexture* texture, const TextureDesc& desc)
+    void ETexture::fillTextureInfo(ETexture* texture, const TextureDesc& desc)
     {
         texture->desc = desc;
 
@@ -328,7 +328,8 @@ namespace BlackPearl {
 
         VkImageViewType imageViewType = textureDimensionToImageViewType(dimension);
 
-        VkImageViewCreateInfo viewInfo;
+        VkImageViewCreateInfo viewInfo{};
+        viewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
         viewInfo.image = image;
         viewInfo.viewType = imageViewType;
         viewInfo.format = vkformat;
@@ -389,6 +390,8 @@ namespace BlackPearl {
 	}
 
 
+
+
     TextureHandle Device::createHandleForNativeTexture(uint32_t objectType, RHIObject _texture, const TextureDesc& desc)
     {
         if (_texture.integer == 0)
@@ -397,16 +400,19 @@ namespace BlackPearl {
         if (objectType != ObjectTypes::VK_Image)
             return nullptr;
 
-        VkImage image;
+        VkImage image = (VkImage)(_texture.pointer);
 
         ETexture* texture = new ETexture(m_Context, m_Allocator);
-        fillTextureInfo(texture, desc);
+        ETexture::fillTextureInfo(texture, desc);
 
         texture->image = image;
         texture->managed = false;
 
         return TextureHandle::Create(texture);
     }
+
+
+
 
 }
 

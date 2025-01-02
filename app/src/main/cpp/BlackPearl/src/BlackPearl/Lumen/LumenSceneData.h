@@ -4,8 +4,8 @@
 #include "LumenStruct.h"
 #include "BlackPearl/Common/CommonFunc.h"
 #include "BlackPearl/Renderer/Buffer/Buffer.h"
-//#include "DirectXMath.h"
-//using namespace DirectX;
+#include "DirectXMath.h"
+using namespace DirectX;
 namespace BlackPearl {
 
 	class LumenSceneData
@@ -42,13 +42,13 @@ namespace BlackPearl {
 		//page table //TODO::
 		//std::vector<FLumenPageTableEntry> PageTable;
 		// Virtual surface cache page table
-		//XMINT2 PhysicalAtlasSize = XMINT2(0, 0);
+		XMINT2 PhysicalAtlasSize = XMINT2(0, 0);
 
 
 	public:
 		//int32_t GetNumCardPages() const { return PageTable.size(); }
-		//XMINT2 GetPhysicalAtlasSize() const { return PhysicalAtlasSize; }
-		//XMINT2 GetRadiosityAtlasSize() const;
+		XMINT2 GetPhysicalAtlasSize() const { return PhysicalAtlasSize; }
+		XMINT2 GetRadiosityAtlasSize() const;
 	};
 
 }

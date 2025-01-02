@@ -1,6 +1,6 @@
 #pragma once
 #include "pch.h"
-//#include "BlackPearl/Core.h"
+#include "BlackPearl/Core.h"
  
 
 namespace BlackPearl {
@@ -11,7 +11,7 @@ namespace BlackPearl {
 		MouseButtonPressed, MouseButtonReleased, MouseMoved, MouseScrolled
 	};
 	enum EventCategory {
-		None = 0,
+		EventNone = 0,
 		EventCategoryApplication = BIT(0),
 		EventCategoryInput = BIT(1),
 		EventCategoryKeyBoard = BIT(2),

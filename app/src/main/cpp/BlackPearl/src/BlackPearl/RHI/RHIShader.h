@@ -2,7 +2,7 @@
 #include "RHIBindingSet.h"
 namespace BlackPearl {
 
-class IPipeline;
+
 
 struct ShaderSpecialization
 {
@@ -68,7 +68,8 @@ struct ShaderDesc
         : shaderType(type)
     { }
 };
-
+//for raytracing
+class IRayTracingPipeline;
 class IShaderTable :public IResource
 {
 public:
@@ -79,7 +80,7 @@ public:
     virtual void clearMissShaders() = 0;
     virtual void clearHitShaders() = 0;
     virtual void clearCallableShaders() = 0;
-    virtual IPipeline* getPipeline() = 0;
+    virtual IRayTracingPipeline* getPipeline() = 0;
 };
 typedef RefCountPtr<IShaderTable> ShaderTableHandle;
 

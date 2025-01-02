@@ -23,7 +23,7 @@
 #include "BlackPearl/Math/dnoutMath.h"
 #include <assert.h>
 
-namespace donut::math
+namespace BlackPearl::math
 {
 	// Color space conversions
 

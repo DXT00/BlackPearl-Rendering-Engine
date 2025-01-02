@@ -26,19 +26,19 @@
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Dist|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -55,22 +55,22 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>bin\Debug-windows-x86_64\SandboxDX\</OutDir>
-    <IntDir>bin-int\Debug-windows-x86_64\SandboxDX\</IntDir>
+    <OutDir>..\bin\Debug-windows-x86_64\SandboxDX\</OutDir>
+    <IntDir>..\bin-int\Debug-windows-x86_64\SandboxDX\</IntDir>
     <TargetName>SandboxDX</TargetName>
     <TargetExt>.exe</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>bin\Release-windows-x86_64\SandboxDX\</OutDir>
-    <IntDir>bin-int\Release-windows-x86_64\SandboxDX\</IntDir>
+    <OutDir>..\bin\Release-windows-x86_64\SandboxDX\</OutDir>
+    <IntDir>..\bin-int\Release-windows-x86_64\SandboxDX\</IntDir>
     <TargetName>SandboxDX</TargetName>
     <TargetExt>.exe</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Dist|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>bin\Dist-windows-x86_64\SandboxDX\</OutDir>
-    <IntDir>bin-int\Dist-windows-x86_64\SandboxDX\</IntDir>
+    <OutDir>..\bin\Dist-windows-x86_64\SandboxDX\</OutDir>
+    <IntDir>..\bin-int\Dist-windows-x86_64\SandboxDX\</IntDir>
     <TargetName>SandboxDX</TargetName>
     <TargetExt>.exe</TargetExt>
   </PropertyGroup>
@@ -78,7 +78,7 @@
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>GLFW_INCLUDE_NONE;GE_PLATFORM_WINDOWS;GE_API_D3D12RHI;GE_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>GLFW_INCLUDE_NONE;GE_PLATFORM_WINDOWS;GE_D3D12RHI;GE_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>..\BlackPearl\vendor\spdlog\include;..\BlackPearl\src;..\BlackPearl\vendor;..\BlackPearl\vendor\glm;..\BlackPearl\vendor\GLFW\include;..\BlackPearl\vendor\assimp\include;..\BlackPearl\vendor\Glad\include;..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
@@ -95,7 +95,7 @@
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>GLFW_INCLUDE_NONE;GE_PLATFORM_WINDOWS;GE_API_D3D12RHI;GE_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>GLFW_INCLUDE_NONE;GE_PLATFORM_WINDOWS;GE_D3D12RHI;GE_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>..\BlackPearl\vendor\spdlog\include;..\BlackPearl\src;..\BlackPearl\vendor;..\BlackPearl\vendor\glm;..\BlackPearl\vendor\GLFW\include;..\BlackPearl\vendor\assimp\include;..\BlackPearl\vendor\Glad\include;..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -116,7 +116,7 @@
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>GLFW_INCLUDE_NONE;GE_PLATFORM_WINDOWS;GE_API_D3D12RHI;GE_DIST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>GLFW_INCLUDE_NONE;GE_PLATFORM_WINDOWS;GE_D3D12RHI;GE_DIST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>..\BlackPearl\vendor\spdlog\include;..\BlackPearl\src;..\BlackPearl\vendor;..\BlackPearl\vendor\glm;..\BlackPearl\vendor\GLFW\include;..\BlackPearl\vendor\assimp\include;..\BlackPearl\vendor\Glad\include;..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -134,12 +134,28 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="assets\shaders_hlsl_h\RayTracingMetaball.hlsl.h" />
+    <ClInclude Include="assets\shaders_hlsl_h\Raytracing.hlsl.h" />
+    <ClInclude Include="assets\shaders_hlsl_h\RaytracingCube.hlsl.h" />
     <ClInclude Include="src\Layers\AdvanceLightTestLayer.h" />
+    <ClInclude Include="src\Layers\CubeTestLayer.h" />
     <ClInclude Include="src\Layers\D3D12BasicRenderLayer.h" />
     <ClInclude Include="src\Layers\D3D12MeshShaderLayer.h" />
     <ClInclude Include="src\Layers\D3D12RayTracingCubeLayer.h" />
     <ClInclude Include="src\Layers\D3D12RayTracingLayer.h" />
     <ClInclude Include="src\Layers\D3D12RayTracingModelLayer.h" />
+    <ClInclude Include="src\Layers\FrameBufferTestLayer.h" />
+    <ClInclude Include="src\Layers\IBLProbesRenderingLayer.h" />
+    <ClInclude Include="src\Layers\IBLRenderingLayer.h" />
+    <ClInclude Include="src\Layers\PbrRenderingLayer.h" />
+    <ClInclude Include="src\Layers\RayTracingLayer.h" />
+    <ClInclude Include="src\Layers\ShadowMapPointLightLayer.h" />
+    <ClInclude Include="src\Layers\ShadowMapTestLayer.h" />
+    <ClInclude Include="src\Layers\SkyBoxTestLayer.h" />
+    <ClInclude Include="src\Layers\VoxelConeTracingDeferredLayer.h" />
+    <ClInclude Include="src\Layers\VoxelConeTracingLayer.h" />
+    <ClInclude Include="src\Layers\VoxelConeTracingSVOLayer.h" />
+    <ClInclude Include="src\Layers\VoxelizationTestLayer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\SandBoxDX.cpp" />
@@ -150,87 +166,17 @@
       <ShaderModel>6.3</ShaderModel>
       <EntryPointName></EntryPointName>
       <VariableName>g_ptriangle</VariableName>
-      <HeaderFileOutput>./assets/shsaders_hlsl_h/triangle.hlsl.h</HeaderFileOutput>
+      <HeaderFileOutput>./assets/shaders_hlsl_h/triangle.hlsl.h</HeaderFileOutput>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">bin/Debug-windows-x86_64/SandboxDX/triangle.cso</ObjectFileOutput>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">bin/Release-windows-x86_64/SandboxDX/triangle.cso</ObjectFileOutput>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Dist|x64'">bin/Dist-windows-x86_64/SandboxDX/triangle.cso</ObjectFileOutput>
-    </FxCompile>
-    <FxCompile Include="assets\shaders_hlsl\ClusterLighting\ClusterLightingCulling.hlsl">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-      <ShaderModel>6.3</ShaderModel>
-      <EntryPointName></EntryPointName>
-      <VariableName>g_pClusterLightingCulling</VariableName>
-      <HeaderFileOutput>./assets/shsaders_hlsl_h/ClusterLightingCulling.hlsl.h</HeaderFileOutput>
-      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">bin/Debug-windows-x86_64/SandboxDX/ClusterLightingCulling.cso</ObjectFileOutput>
-      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">bin/Release-windows-x86_64/SandboxDX/ClusterLightingCulling.cso</ObjectFileOutput>
-      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Dist|x64'">bin/Dist-windows-x86_64/SandboxDX/ClusterLightingCulling.cso</ObjectFileOutput>
-    </FxCompile>
-    <FxCompile Include="assets\shaders_hlsl\LumenShader\GlobalDistancceFieldUtils.hlsl">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-      <ShaderModel>6.3</ShaderModel>
-      <EntryPointName></EntryPointName>
-      <VariableName>g_pGlobalDistancceFieldUtils</VariableName>
-      <HeaderFileOutput>./assets/shsaders_hlsl_h/GlobalDistancceFieldUtils.hlsl.h</HeaderFileOutput>
-      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">bin/Debug-windows-x86_64/SandboxDX/GlobalDistancceFieldUtils.cso</ObjectFileOutput>
-      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">bin/Release-windows-x86_64/SandboxDX/GlobalDistancceFieldUtils.cso</ObjectFileOutput>
-      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Dist|x64'">bin/Dist-windows-x86_64/SandboxDX/GlobalDistancceFieldUtils.cso</ObjectFileOutput>
-    </FxCompile>
-    <FxCompile Include="assets\shaders_hlsl\LumenShader\LumenRadiosity.hlsl">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-      <ShaderModel>6.3</ShaderModel>
-      <EntryPointName></EntryPointName>
-      <VariableName>g_pLumenRadiosity</VariableName>
-      <HeaderFileOutput>./assets/shsaders_hlsl_h/LumenRadiosity.hlsl.h</HeaderFileOutput>
-      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">bin/Debug-windows-x86_64/SandboxDX/LumenRadiosity.cso</ObjectFileOutput>
-      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">bin/Release-windows-x86_64/SandboxDX/LumenRadiosity.cso</ObjectFileOutput>
-      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Dist|x64'">bin/Dist-windows-x86_64/SandboxDX/LumenRadiosity.cso</ObjectFileOutput>
-    </FxCompile>
-    <FxCompile Include="assets\shaders_hlsl\LumenShader\LumenRadiosityCulling.hlsl">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-      <ShaderModel>6.3</ShaderModel>
-      <EntryPointName></EntryPointName>
-      <VariableName>g_pLumenRadiosityCulling</VariableName>
-      <HeaderFileOutput>./assets/shsaders_hlsl_h/LumenRadiosityCulling.hlsl.h</HeaderFileOutput>
-      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">bin/Debug-windows-x86_64/SandboxDX/LumenRadiosityCulling.cso</ObjectFileOutput>
-      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">bin/Release-windows-x86_64/SandboxDX/LumenRadiosityCulling.cso</ObjectFileOutput>
-      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Dist|x64'">bin/Dist-windows-x86_64/SandboxDX/LumenRadiosityCulling.cso</ObjectFileOutput>
-    </FxCompile>
-    <FxCompile Include="assets\shaders_hlsl\LumenShader\LumenSceneDirectLighting.hlsl">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-      <ShaderModel>6.3</ShaderModel>
-      <EntryPointName></EntryPointName>
-      <VariableName>g_pLumenSceneDirectLighting</VariableName>
-      <HeaderFileOutput>./assets/shsaders_hlsl_h/LumenSceneDirectLighting.hlsl.h</HeaderFileOutput>
-      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">bin/Debug-windows-x86_64/SandboxDX/LumenSceneDirectLighting.cso</ObjectFileOutput>
-      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">bin/Release-windows-x86_64/SandboxDX/LumenSceneDirectLighting.cso</ObjectFileOutput>
-      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Dist|x64'">bin/Dist-windows-x86_64/SandboxDX/LumenSceneDirectLighting.cso</ObjectFileOutput>
-    </FxCompile>
-    <FxCompile Include="assets\shaders_hlsl\LumenShader\LumenSceneDirectLightingCulling.hlsl">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-      <ShaderModel>6.3</ShaderModel>
-      <EntryPointName></EntryPointName>
-      <VariableName>g_pLumenSceneDirectLightingCulling</VariableName>
-      <HeaderFileOutput>./assets/shsaders_hlsl_h/LumenSceneDirectLightingCulling.hlsl.h</HeaderFileOutput>
-      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">bin/Debug-windows-x86_64/SandboxDX/LumenSceneDirectLightingCulling.cso</ObjectFileOutput>
-      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">bin/Release-windows-x86_64/SandboxDX/LumenSceneDirectLightingCulling.cso</ObjectFileOutput>
-      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Dist|x64'">bin/Dist-windows-x86_64/SandboxDX/LumenSceneDirectLightingCulling.cso</ObjectFileOutput>
-    </FxCompile>
-    <FxCompile Include="assets\shaders_hlsl\LumenShader\LumenTracingCommon.hlsl">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-      <ShaderModel>6.3</ShaderModel>
-      <EntryPointName></EntryPointName>
-      <VariableName>g_pLumenTracingCommon</VariableName>
-      <HeaderFileOutput>./assets/shsaders_hlsl_h/LumenTracingCommon.hlsl.h</HeaderFileOutput>
-      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">bin/Debug-windows-x86_64/SandboxDX/LumenTracingCommon.cso</ObjectFileOutput>
-      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">bin/Release-windows-x86_64/SandboxDX/LumenTracingCommon.cso</ObjectFileOutput>
-      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Dist|x64'">bin/Dist-windows-x86_64/SandboxDX/LumenTracingCommon.cso</ObjectFileOutput>
     </FxCompile>
     <FxCompile Include="assets\shaders_hlsl\MeshShader\MS.hlsl">
       <ExcludedFromBuild>true</ExcludedFromBuild>
       <ShaderModel>6.3</ShaderModel>
       <EntryPointName></EntryPointName>
       <VariableName>g_pMS</VariableName>
-      <HeaderFileOutput>./assets/shsaders_hlsl_h/MS.hlsl.h</HeaderFileOutput>
+      <HeaderFileOutput>./assets/shaders_hlsl_h/MS.hlsl.h</HeaderFileOutput>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">bin/Debug-windows-x86_64/SandboxDX/MS.cso</ObjectFileOutput>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">bin/Release-windows-x86_64/SandboxDX/MS.cso</ObjectFileOutput>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Dist|x64'">bin/Dist-windows-x86_64/SandboxDX/MS.cso</ObjectFileOutput>
@@ -240,7 +186,7 @@
       <ShaderModel>6.3</ShaderModel>
       <EntryPointName></EntryPointName>
       <VariableName>g_pPS</VariableName>
-      <HeaderFileOutput>./assets/shsaders_hlsl_h/PS.hlsl.h</HeaderFileOutput>
+      <HeaderFileOutput>./assets/shaders_hlsl_h/PS.hlsl.h</HeaderFileOutput>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">bin/Debug-windows-x86_64/SandboxDX/PS.cso</ObjectFileOutput>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">bin/Release-windows-x86_64/SandboxDX/PS.cso</ObjectFileOutput>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Dist|x64'">bin/Dist-windows-x86_64/SandboxDX/PS.cso</ObjectFileOutput>
@@ -250,7 +196,7 @@
       <ShaderModel>6.3</ShaderModel>
       <EntryPointName></EntryPointName>
       <VariableName>g_pRayTracingMetaball</VariableName>
-      <HeaderFileOutput>./assets/shsaders_hlsl_h/RayTracingMetaball.hlsl.h</HeaderFileOutput>
+      <HeaderFileOutput>./assets/shaders_hlsl_h/RayTracingMetaball.hlsl.h</HeaderFileOutput>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">bin/Debug-windows-x86_64/SandboxDX/RayTracingMetaball.cso</ObjectFileOutput>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">bin/Release-windows-x86_64/SandboxDX/RayTracingMetaball.cso</ObjectFileOutput>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Dist|x64'">bin/Dist-windows-x86_64/SandboxDX/RayTracingMetaball.cso</ObjectFileOutput>
@@ -260,7 +206,7 @@
       <ShaderModel>6.3</ShaderModel>
       <EntryPointName></EntryPointName>
       <VariableName>g_ptest</VariableName>
-      <HeaderFileOutput>./assets/shsaders_hlsl_h/test.hlsl.h</HeaderFileOutput>
+      <HeaderFileOutput>./assets/shaders_hlsl_h/test.hlsl.h</HeaderFileOutput>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">bin/Debug-windows-x86_64/SandboxDX/test.cso</ObjectFileOutput>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">bin/Release-windows-x86_64/SandboxDX/test.cso</ObjectFileOutput>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Dist|x64'">bin/Dist-windows-x86_64/SandboxDX/test.cso</ObjectFileOutput>
@@ -270,7 +216,7 @@
       <ShaderModel>6.3</ShaderModel>
       <EntryPointName></EntryPointName>
       <VariableName>g_pRaytracing</VariableName>
-      <HeaderFileOutput>./assets/shsaders_hlsl_h/Raytracing.hlsl.h</HeaderFileOutput>
+      <HeaderFileOutput>./assets/shaders_hlsl_h/Raytracing.hlsl.h</HeaderFileOutput>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">bin/Debug-windows-x86_64/SandboxDX/Raytracing.cso</ObjectFileOutput>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">bin/Release-windows-x86_64/SandboxDX/Raytracing.cso</ObjectFileOutput>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Dist|x64'">bin/Dist-windows-x86_64/SandboxDX/Raytracing.cso</ObjectFileOutput>
@@ -280,14 +226,14 @@
       <ShaderModel>6.3</ShaderModel>
       <EntryPointName></EntryPointName>
       <VariableName>g_pRaytracingCube</VariableName>
-      <HeaderFileOutput>./assets/shsaders_hlsl_h/RaytracingCube.hlsl.h</HeaderFileOutput>
+      <HeaderFileOutput>./assets/shaders_hlsl_h/RaytracingCube.hlsl.h</HeaderFileOutput>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">bin/Debug-windows-x86_64/SandboxDX/RaytracingCube.cso</ObjectFileOutput>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">bin/Release-windows-x86_64/SandboxDX/RaytracingCube.cso</ObjectFileOutput>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Dist|x64'">bin/Dist-windows-x86_64/SandboxDX/RaytracingCube.cso</ObjectFileOutput>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\BlackPearl.vcxproj">
+    <ProjectReference Include="..\BlackPearl\BlackPearl.vcxproj">
       <Project>{B6CF16AE-A287-58FB-0B8F-3157F765F3EB}</Project>
     </ProjectReference>
   </ItemGroup>

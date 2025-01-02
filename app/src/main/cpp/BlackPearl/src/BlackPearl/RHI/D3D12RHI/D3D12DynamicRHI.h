@@ -1,5 +1,4 @@
 #pragma once
-#ifdef GE_API_D3D12
 #include "../DynamicRHI.h"
 #include "BlackPearl/Window.h"
 #include "BlackPearl/Log.h"
@@ -23,4 +22,4 @@ namespace BlackPearl {
 	};
 }
 
-#endif
+

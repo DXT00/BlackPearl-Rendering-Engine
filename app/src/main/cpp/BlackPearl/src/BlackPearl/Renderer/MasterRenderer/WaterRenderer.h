@@ -32,13 +32,13 @@ namespace BlackPearl {
 
 		std::shared_ptr<Shader> m_OceanShader;
 
-		std::shared_ptr<Texture> m_InitialSpectrumTexture;
-		std::shared_ptr<Texture> m_PingPhaseTexture;
-		std::shared_ptr<Texture> m_PongPhaseTexture;
-		std::shared_ptr<Texture> m_SpectrumTexture;
-		std::shared_ptr<Texture> m_TempTexture;
+		TextureHandle m_InitialSpectrumTexture;
+		TextureHandle m_PingPhaseTexture;
+		TextureHandle m_PongPhaseTexture;
+		TextureHandle m_SpectrumTexture;
+		TextureHandle m_TempTexture;
 
-		std::shared_ptr<Texture> m_NormalMapTexture;
+		TextureHandle m_NormalMapTexture;
 		bool m_is_ping_phase = true;
 		float m_wind_magnitude = 14.142135f;
 		float m_wind_angle = 90.f;

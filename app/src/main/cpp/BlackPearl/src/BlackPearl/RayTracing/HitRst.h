@@ -2,20 +2,20 @@
 #include "Ray.h"
 #include "glm/glm.hpp"
 #include "BlackPearl/Renderer/Material/Material.h"
-
+#include "BlackPearl/Math/vector.h"
 namespace BlackPearl {
 
 	struct Vertex {
 		bool isHit;
-		glm::vec3 pos;
-		glm::vec3 normal;
+		math::float3 pos;
+		math::float3 normal;
 		glm::vec2 uv;
 
 	};
 
 	struct HitRecord {
-		HitRecord(std::shared_ptr<Ray> ray = NULL, const glm::vec3& pos = glm::vec3(0),
-			const glm::vec3& normal = glm::vec3(0, 0, 1), float u = 0, float v = 0);
+		HitRecord(std::shared_ptr<Ray> ray = NULL, const math::float3& pos = math::float3(0.0f),
+			const math::float3& normal = math::float3(0, 0, 1), float u = 0, float v = 0);
 
 		std::shared_ptr<Ray> ray;
 		Vertex vertex;

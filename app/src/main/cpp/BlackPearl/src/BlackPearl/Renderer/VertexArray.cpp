@@ -1,10 +1,5 @@
 #include "pch.h"
-#ifdef GE_PLATFORM_ANDRIOD
-#include "GLES3/gl3.h"
-#endif
-#ifdef GE_PLATFORM_WINDOWS
-#include "glad/glad.h"
-#endif
+#include <glad/glad.h>
 #include "VertexArray.h"
 #include "Buffer/Buffer.h"
 #include "BlackPearl/Core.h"

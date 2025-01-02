@@ -1,5 +1,4 @@
 #pragma once
-#ifdef GE_API_D3D12
 #include <d3d12.h>
 #include "BlackPearl/Common/CommonFunc.h"
 #include "BlackPearl/Renderer/Buffer/Buffer.h"
@@ -62,4 +61,3 @@ namespace BlackPearl {
 	};*/
 
 }
-#endif

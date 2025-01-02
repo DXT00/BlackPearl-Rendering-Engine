@@ -1,12 +1,10 @@
 #include "pch.h"
-#ifdef GE_API_OPENGL
-#ifdef GE_PLATFORM_WINDOWS
+#define GLEW_STATIC
 #include "GL/glew.h"
 
 #include "OpenGLWindow.h"
-#define GLEW_STATIC
 #include "BlackPearl/Event/MouseEvent.h"
-#include "BlackPearl/Core.h"
+
 namespace BlackPearl {
 	static bool g_GLFWInitialized = false;
 	void OpenGLWindow::Init()
@@ -42,11 +40,9 @@ namespace BlackPearl {
 		else {
 			GE_CORE_ERROR("GLEW failed to initialize (glewExperimental might not be supported).");
 		}
-#ifdef GE_PLATFORM_WINDOWS
 
 		m_Context.reset(DBG_NEW Context(m_Window));
 		m_Context->Init();
-#endif
 	}
 	void OpenGLWindow::OnUpdate()
 	{
@@ -91,13 +87,12 @@ namespace BlackPearl {
 		glfwGetCursorPos(m_Window, &xpos, &ypos);
 		return { (float)xpos,(float)ypos };
 	}
-	donut::math::vector<int, 2> OpenGLWindow::GetCurWindowSize()
+	math::vector<int, 2> OpenGLWindow::GetCurWindowSize()
 	{
 		int width;
 		int height;
 		glfwGetWindowSize(m_Window, &width, &height);
-		return donut::math::vector<int, 2>(width, height);
+		return math::vector<int, 2>(width, height);
 	}
 }
-#endif
-#endif
+

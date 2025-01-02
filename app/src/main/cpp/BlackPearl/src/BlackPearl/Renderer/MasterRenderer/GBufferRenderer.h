@@ -6,6 +6,7 @@
 #include "AnimatedModelRenderer.h"
 #include "SkyboxRenderer.h"
 #include "BlackPearl/Map/MapManager.h"
+#include "BlackPearl/RHI/OpenGLRHI/OpenGLTexture.h"
 namespace BlackPearl {
 
 	class GBufferRenderer:public BasicRenderer
@@ -38,8 +39,8 @@ namespace BlackPearl {
 			std::shared_ptr<Texture> depthTexture,
 			bool enableSSR);
 
-		std::vector<Object*> FindKnearProbes(glm::vec3 objPos, std::vector<Object*> probes,unsigned int k);
-		std::vector<unsigned int> FindKnearAreaProbes(glm::vec3 objPos, std::vector<Object*> probes, unsigned int k,MapManager* mapManager);
+		std::vector<Object*> FindKnearProbes(math::float3 objPos, std::vector<Object*> probes,unsigned int k);
+		std::vector<unsigned int> FindKnearAreaProbes(math::float3 objPos, std::vector<Object*> probes, unsigned int k,MapManager* mapManager);
 		
 		static float s_GICoeffs;
 		static float s_SSRGICoeffs;
@@ -66,9 +67,9 @@ namespace BlackPearl {
 
 		/* 用作 tone mapping 和 hdr 后期处理 */
 		std::shared_ptr<FrameBuffer> m_HDRFrameBuffer;
-		std::shared_ptr<Texture> m_HDRPostProcessTexture;
+		TextureHandle m_HDRPostProcessTexture;
 
-		std::shared_ptr<Texture> m_SSRTestTexture;
+		TextureHandle m_SSRTestTexture;
 
 		/**** shader ****/
 		/* write pos,normal,color to gBuffer */

@@ -1,5 +1,5 @@
 #pragma once
-#ifdef GE_API_D3D12
+
 namespace BlackPearl {
 
 	class D3D12Renderer
@@ -21,4 +21,3 @@ namespace BlackPearl {
 	};
 
 }
-#endif

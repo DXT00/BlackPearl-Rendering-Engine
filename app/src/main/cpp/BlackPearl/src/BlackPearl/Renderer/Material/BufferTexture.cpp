@@ -1,10 +1,5 @@
 #include "pch.h"
-#ifdef GE_PLATFORM_ANDRIOD
-#include "GLES3/gl32.h"
-#endif
-#ifdef GE_PLATFORM_WINDOWS
 #include "glad/glad.h"
-#endif
 #include "BufferTexture.h"
 namespace BlackPearl {
 

@@ -1,5 +1,4 @@
 #pragma once
-#ifdef GE_API_D3D12
 #include "BlackPearl/Scene/SDFScene.h"
 #include "BlackPearl/Renderer/Buffer/D3D12Buffer/D3D12Buffer.h"
 #include "BlackPearl/RHI/D3D12RHI/D3D12LocalRootSignature.h"
@@ -110,4 +109,4 @@ namespace BlackPearl {
 	};
 
 }
-#endif
+

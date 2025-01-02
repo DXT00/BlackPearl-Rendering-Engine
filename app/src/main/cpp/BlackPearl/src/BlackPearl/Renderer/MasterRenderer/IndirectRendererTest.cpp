@@ -3,9 +3,7 @@
 #include "BlackPearl/Node/BatchNode.h"
 #include "BlackPearl/Node/SingleNode.h"
 #include "BlackPearl/Component/MeshRendererComponent/MeshRenderer.h"
-#ifdef GE_PLATFORM_ANDRIOD
-#include "GLES3/gl32.h"
-#endif
+
 namespace BlackPearl {
 	struct DrawElementsCommand
 	{
@@ -177,14 +175,14 @@ namespace BlackPearl {
 
 	void IndirectRendererTest::Render(const std::shared_ptr<Shader>& shader)
 	{
-#ifdef   GE_PLATFORM_WINDOWS
+
 		TestGenerateDrawCommands();
 		glMultiDrawElementsIndirect(GL_TRIANGLES, //type
 			GL_UNSIGNED_INT, //indices represented as unsigned ints
 			(GLvoid*)0, //start with the first draw command
 			100, //draw 100 objects
 			0); //no stride, the draw commands are tightly packed
-#endif
+
 	}
 
 	void IndirectRendererTest::Init(Scene* scene, const std::shared_ptr<Shader>& shader)
@@ -517,11 +515,11 @@ namespace BlackPearl {
 		for (auto node : m_Scene->GetSingleNodes())
 		{
 			SingleNode* singleNode = dynamic_cast<SingleNode*>(node);
-            const auto& meshes = singleNode->GetObj()->GetComponent<MeshRenderer>()->GetMeshes();
+			auto& meshes = singleNode->GetObj()->GetComponent<MeshRenderer>()->GetMeshes();
 			/*	uint32_t baseMeshVert = 0;
 				uint32_t baseMeshIndex = 0;*/
 
-			for (const auto& mesh : meshes)
+			for (auto mesh : meshes)
 			{
 				uint32_t meshVetCnt = mesh->GetVertexCount();
 				uint32_t meshIndexCnt = mesh->GetIndicesConut();
@@ -539,7 +537,7 @@ namespace BlackPearl {
 
 				std::shared_ptr<Material> material = mesh->GetMaterial();
 				MaterialColor::Color materialColor = material->GetMaterialColor().Get();
-				float diffuse[3] = { materialColor.diffuseColor.r,materialColor.diffuseColor.g,materialColor.diffuseColor.b };
+				float diffuse[3] = { materialColor.diffuseColor.x,materialColor.diffuseColor.y,materialColor.diffuseColor.z };
 				uint32_t floatsize = sizeof(float);
 
 				for (size_t i = 0; i < meshVetCnt; i++)
@@ -605,10 +603,10 @@ namespace BlackPearl {
 		for (auto node : m_Scene->GetSingleNodes())
 		{
 			SingleNode* singleNode = dynamic_cast<SingleNode*>(node);
-			const auto& meshes = singleNode->GetObj()->GetComponent<MeshRenderer>()->GetMeshes();
+			auto& meshes = singleNode->GetObj()->GetComponent<MeshRenderer>()->GetMeshes();
 
 
-			for (const auto& mesh : meshes)
+			for (auto mesh : meshes)
 			{
 				uint32_t meshVetCnt = mesh->GetVertexCount();
 				uint32_t meshIndexCnt = mesh->GetIndicesConut();
@@ -619,7 +617,7 @@ namespace BlackPearl {
 
 				std::shared_ptr<Material> material = mesh->GetMaterial();
 				MaterialColor::Color materialColor = material->GetMaterialColor().Get();
-				float diffuse[3] = { materialColor.diffuseColor.r,materialColor.diffuseColor.g,materialColor.diffuseColor.b };
+				float diffuse[3] = { materialColor.diffuseColor.x,materialColor.diffuseColor.y,materialColor.diffuseColor.z };
 				uint32_t floatsize = sizeof(float);
 
 				for (size_t i = 0; i < meshVetCnt; i++)
@@ -767,7 +765,7 @@ namespace BlackPearl {
 		indexBuffer.reset(DBG_NEW IndexBuffer(m_IndexBuffer, m_IndexCnt * sizeof(uint32_t)));
 		m_VertexArray->SetIndexBuffer(indexBuffer);
 
-		//锟斤拷锟矫匡拷锟絭ertexbuffer 一锟斤拷attribute,锟斤拷么 stride = 0, offset 也 = 0
+		//如果每个vertexbuffer 一种attribute,那么 stride = 0, offset 也 = 0
 		std::shared_ptr<VertexBuffer> vertexBuffer(DBG_NEW VertexBuffer(m_PositionBuffer, m_VertexCnt * sizeof(float) * 3, false));
 		vertexBuffer->SetBufferLayout({ {ElementDataType::Float3, "aPos", false, POS_SLOT} });
 		std::shared_ptr<VertexBuffer> normalBuffer(DBG_NEW VertexBuffer(m_NormalBuffer, m_VertexCnt * sizeof(float) * 3, false));

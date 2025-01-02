@@ -1,6 +1,6 @@
 #pragma once
-#ifdef GE_PLATFORM_WINDOWS
-#include <GLFW/glfw3.h>
+
+#include"GLFW/glfw3.h"
 
 namespace BlackPearl {
 
@@ -17,4 +17,3 @@ namespace BlackPearl {
 	};
 
 }
-#endif

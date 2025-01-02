@@ -1,16 +1,16 @@
 #pragma once
-#include "BlackPearl/RHI/D3D12RHI/D3D12Logger.h"
 #include "spdlog/spdlog.h"
 #include "spdlog/fmt/ostr.h"
 #include "spdlog/sinks/stdout_color_sinks.h"
 #include "BlackPearl/RHI/DynamicRHI.h"
-
-
+#ifdef	GE_API_D3D12
+#include "BlackPearl/RHI/D3D12RHI/D3D12Logger.h"
+#endif
 namespace BlackPearl {
 	extern class Log* g_Log;
 	//extern DynamicRHI::Type g_RHIType;
 
-	//TODO::Í¨ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½OpenGLï¿½ï¿½DirectX,ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä£ï¿½å£¬ï¿½ï¿½ï¿½ï¿½Ê¹ï¿½Ã¼Ì³Ğ£ï¿½ï¿½ï¿½ï¿½è¿¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	//TODO::Í¨¹ıÀàÇø·ÖOpenGLºÍDirectX,ÓÉÓÚÓĞÄ£°å£¬ÄÑÒÔÊ¹ÓÃ¼Ì³Ğ£¬»¹Ğè¿¼ÂÇÆäËû·½·¨
 	class Log
 	{
 	public:
@@ -42,164 +42,82 @@ namespace BlackPearl {
 	/*private:
 		static std::shared_ptr<spdlog::logger> s_CoreLogger;*/
 	private:
+#ifdef	GE_API_D3D12
+		using LoggerPtr = std::shared_ptr<D3D12Logger>;
 
-		std::shared_ptr<spdlog::logger> m_OpenGLCoreLogger;
-        //TODO:: ç»Ÿä¸€æˆä¸€ä¸ª
-#ifdef GE_API_D3D12
-		std::shared_ptr<D3D12Logger> m_D3D12CoreLogger;
-#endif
+#else
+		using LoggerPtr = std::shared_ptr<spdlog::logger>;
+
+#endif 
+		LoggerPtr mLogger;
 	};
 
 	template<typename... Args>
 	void Log::Trace(const char* fmt, const Args &... args)
 	{
-//		if (DynamicRHI::g_RHIType == DynamicRHI::Type::OpenGL || DynamicRHI::g_RHIType == DynamicRHI::Type::Vulkan) {
-//			m_OpenGLCoreLogger->trace(fmt, args...);
-//		}
-//		else if (DynamicRHI::g_RHIType == DynamicRHI::Type::D3D12) {
-//#ifdef GE_API_D3D12
-//            m_D3D12CoreLogger->trace(fmt, args...);
-//#endif
-//		}
+		mLogger->trace(fmt, args...);
+
 	}
 
 	template<typename... Args>
 	void Log::Info(const char* fmt, const Args &... args)
 	{
-//		if (DynamicRHI::g_RHIType == DynamicRHI::Type::OpenGL || DynamicRHI::g_RHIType == DynamicRHI::Type::Vulkan) {
-//			m_OpenGLCoreLogger->info(fmt, args...);
-//		}
-//		else if (DynamicRHI::g_RHIType == DynamicRHI::Type::D3D12) {
-//#ifdef GE_API_D3D12
-//			m_D3D12CoreLogger->info(fmt, args...);
-//#endif
-//
-//        }
+		mLogger->info(fmt, args...);
 	}
 
 	template<typename... Args>
 	void Log::Warn(const char* fmt, const Args &... args)
 	{
-//		if (DynamicRHI::g_RHIType == DynamicRHI::Type::OpenGL || DynamicRHI::g_RHIType == DynamicRHI::Type::Vulkan) {
-//			m_OpenGLCoreLogger->warn(fmt, args...);
-//		}
-//		else if (DynamicRHI::g_RHIType == DynamicRHI::Type::D3D12) {
-//#ifdef GE_API_D3D12
-//			m_D3D12CoreLogger->warn(fmt, args...);
-//#endif
-//
-//		}
-
+		mLogger->warn(fmt, args...);
 	}
 
 	template<typename... Args>
 	void Log::Error(const char* fmt, const Args &... args)
 	{
-//		if (DynamicRHI::g_RHIType == DynamicRHI::Type::OpenGL || DynamicRHI::g_RHIType == DynamicRHI::Type::Vulkan) {
-//			m_OpenGLCoreLogger->error(fmt, args...);
-//		}
-//		else if (DynamicRHI::g_RHIType == DynamicRHI::Type::D3D12) {
-//#ifdef GE_API_D3D12
-//            m_D3D12CoreLogger->error(fmt, args...);
-//#endif
-//
-//		}
-
+		mLogger->error(fmt, args...);
 	}
 
 	template<typename... Args>
 	void Log::Fatal(const char* fmt, const Args &... args)
 	{
-//		if (DynamicRHI::g_RHIType == DynamicRHI::Type::OpenGL || DynamicRHI::g_RHIType == DynamicRHI::Type::Vulkan) {
-//			m_OpenGLCoreLogger->critical(fmt, args...);
-//		}
-//		else if (DynamicRHI::g_RHIType == DynamicRHI::Type::D3D12) {
-//#ifdef GE_API_D3D12
-//            m_D3D12CoreLogger->fatal(fmt, args...);
-//#endif
-//
-//		}
-
+		mLogger->fatal(fmt, args...);
 	}
 
 	template<typename ...Args>
 	void Log::Trace(const Args & ...args)
 	{
-//		if (DynamicRHI::g_RHIType == DynamicRHI::Type::OpenGL || DynamicRHI::g_RHIType == DynamicRHI::Type::Vulkan) {
-//			m_OpenGLCoreLogger->critical(args...);
-//		}
-//		else if (DynamicRHI::g_RHIType == DynamicRHI::Type::D3D12) {
-//#ifdef GE_API_D3D12
-//            m_D3D12CoreLogger->fatal(args...);
-//#endif
-//
-//		}
+		mLogger->fatal(fmt, args...);
 	}
 
 	template<typename ...Args>
 	void Log::Info(const Args & ...args)
 	{
-//		if (DynamicRHI::g_RHIType == DynamicRHI::Type::OpenGL || DynamicRHI::g_RHIType == DynamicRHI::Type::Vulkan) {
-//			m_OpenGLCoreLogger->info(args...);
-//		}
-//		else if (DynamicRHI::g_RHIType == DynamicRHI::Type::D3D12) {
-//#ifdef GE_API_D3D12
-//            m_D3D12CoreLogger->info(args...);
-//#endif
-//
-//		}
+		mLogger->info(args...);
 	}
 
 	template<typename ...Args>
 	void Log::Warn(const Args & ...args)
 	{
-//		if (DynamicRHI::g_RHIType == DynamicRHI::Type::OpenGL || DynamicRHI::g_RHIType == DynamicRHI::Type::Vulkan) {
-//			m_OpenGLCoreLogger->warn(args...);
-//		}
-//		else if (DynamicRHI::g_RHIType == DynamicRHI::Type::D3D12) {
-//#ifdef GE_API_D3D12
-//            m_D3D12CoreLogger->warn(args...);
-//#endif
-//
-//		}
+		mLogger->warn(args...);
 	}
 
 	template<typename ...Args>
 	void Log::Error(const Args & ...args)
 	{
-//		if (DynamicRHI::g_RHIType == DynamicRHI::Type::OpenGL || DynamicRHI::g_RHIType == DynamicRHI::Type::Vulkan) {
-//			m_OpenGLCoreLogger->error(args...);
-//		}
-//		else if (DynamicRHI::g_RHIType == DynamicRHI::Type::D3D12) {
-//#ifdef GE_API_D3D12
-//            m_D3D12CoreLogger->error(args...);
-//#endif
-//
-//		}
+		mLogger->error(args...);
 	}
 
 	template<typename ...Args>
 	void Log::Fatal(const Args & ...args)
 	{
-//		if (DynamicRHI::g_RHIType == DynamicRHI::Type::OpenGL || DynamicRHI::g_RHIType == DynamicRHI::Type::Vulkan) {
-//			m_OpenGLCoreLogger->critical(args...);
-//		}
-//		else if (DynamicRHI::g_RHIType == DynamicRHI::Type::D3D12) {
-//#ifdef GE_API_D3D12
-//            m_D3D12CoreLogger->fatal(args...);
-//#endif
-//		}
+		mLogger->fatal(args...);
 	}
 }
-extern class BlackPearl::Log* BlackPearl::g_Log;
+
 //Core log macros
 #define GE_CORE_TRACE(...) { extern class BlackPearl::Log* BlackPearl::g_Log; BlackPearl::g_Log->Trace(__VA_ARGS__);}
-#define GE_CORE_INFO(...)  { BlackPearl::g_Log->Info(__VA_ARGS__);}
-#define GE_CORE_WARN(...)  { BlackPearl::g_Log->Warn(__VA_ARGS__);}
-#ifdef GE_PLATFORM_WINDOWS
-#define GE_CORE_ERROR(...) { BlackPearl::g_Log->Error(__VA_ARGS__);__debugbreak();}
-#else
-#define GE_CORE_ERROR(...) { BlackPearl::g_Log->Error(__VA_ARGS__);}
-#endif
+#define GE_CORE_INFO(...)  { extern class BlackPearl::Log* BlackPearl::g_Log; BlackPearl::g_Log->Info(__VA_ARGS__);}
+#define GE_CORE_WARN(...)  { extern class BlackPearl::Log* BlackPearl::g_Log; BlackPearl::g_Log->Warn(__VA_ARGS__);}
+#define GE_CORE_ERROR(...) { extern class BlackPearl::Log* BlackPearl::g_Log; BlackPearl::g_Log->Error(__VA_ARGS__);__debugbreak();}
 #define GE_CORE_FATAL(...) { extern class BlackPearl::Log* BlackPearl::g_Log; BlackPearl::g_Log->Fatal(__VA_ARGS__);}
 

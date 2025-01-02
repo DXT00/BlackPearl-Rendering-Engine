@@ -16,13 +16,20 @@ namespace BlackPearl {
 
 			GE_ASSERT(m_PointLightNums <= Configuration::MaxComponents, "m_PointLightNums > Configuration::MaxComponents !");
 			m_PointLightNums++;
+			m_Lights.push_back(light->GetComponent<PointLight>());
 			AddPointLight(light);
-		}
-		if (light->HasComponent<ParallelLight>())
-			AddParallelLight(light);
 
-		if (light->HasComponent<SpotLight>())
+		}
+		if (light->HasComponent<ParallelLight>()) {
+			m_Lights.push_back(light->GetComponent<ParallelLight>());
+			AddParallelLight(light);
+		}
+
+		if (light->HasComponent<SpotLight>()) {
+			m_Lights.push_back(light->GetComponent<SpotLight>());
 			AddSpotLight(light);
+
+		}
 	}
 	void LightSources::AddPointLight(Object* pointLight)
 	{

@@ -42,7 +42,7 @@ struct CommandLineOptions
 	std::string compilerPath;
 	Platform platform = Platform::UNKNOWN;
 	bool parallel = false;
-	bool verbose = false;
+	bool verbose = true;
 	bool force = false;
 	bool help = false;
 	bool keep = false;

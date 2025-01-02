@@ -31,8 +31,8 @@
 #include <thread>
 #include <mutex>
 #include <csignal>
-#include "Common/Misc.h"
-#include "Common/shader-blob.h"
+#include "BlackPearl/RHI/Common/Misc.h"
+#include "BlackPearl/RHI/Common/shader-blob.h"
 //#include <nvrhi/common/shader-blob.h>
 //#include <nvrhi/common/misc.h>
 
@@ -196,6 +196,7 @@ string buildCompilerCommandLine(const CompilerOptions& options, const fs::path& 
 	ss << "$COMPILER ";
 #endif
 	ss << path_string(shaderFile) << " ";
+	//ss << "-Fo " << path_string(outputFile) << " 
 	ss << "-Fo " << path_string(outputFile) << " ";
 	ss << "-T " << options.target << " ";
 	if (!options.entryPoint.empty())
@@ -206,6 +207,8 @@ string buildCompilerCommandLine(const CompilerOptions& options, const fs::path& 
 		ss << "-D" << define << " ";
 	for (const string& dir : g_Options.includePaths)
 		ss << "-I" << path_string(dir) << " ";
+
+
 
 	ss << g_SharedCompilerOptions;
 
@@ -218,13 +221,13 @@ string buildCompilerCommandLine(const CompilerOptions& options, const fs::path& 
 	{
 		ss << "-spirv ";
 
-		for (int space = 0; space < 10; space++)
+	/*	for (int space = 0; space < 10; space++)
 		{
 			ss << "-fvk-t-shift " << g_Options.vulkanTextureShift << " " << space << " ";
 			ss << "-fvk-s-shift " << g_Options.vulkanSamplerShift << " " << space << " ";
 			ss << "-fvk-b-shift " << g_Options.vulkanConstantShift << " " << space << " ";
 			ss << "-fvk-u-shift " << g_Options.vulkanUavShift << " " << space << " ";
-		}
+		}*/
 	}
 	
 	return ss.str();
@@ -468,7 +471,7 @@ bool WriteShaderBlob(const string& compiledShaderName, const vector<BlobEntry>& 
 			fs::remove(inputFileName);
 		}
 		
-		BlackPearl::ShaderBlobEntry binaryEntry;
+		BlackPearl::ShaderMake::ShaderBlobEntry binaryEntry;
 		binaryEntry.permutationSize = (uint32_t)entry.permutation.size();
 		binaryEntry.dataSize = (uint32_t)fileSize;
 

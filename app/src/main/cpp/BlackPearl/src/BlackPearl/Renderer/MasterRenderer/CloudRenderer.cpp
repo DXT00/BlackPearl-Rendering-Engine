@@ -2,13 +2,11 @@
 #include "CloudRenderer.h"
 #include "BlackPearl/Component/CameraComponent/PerspectiveCamera.h"
 #include "BlackPearl/Renderer/Material/Texture3D.h"
-#include "BlackPearl/Core.h"
-#ifdef GE_PLATFORM_ANDRIOD
-//#include "GLES3/gl3.h"
-#include "GLES3/gl32.h"
-#endif
-namespace BlackPearl {
+#include "BlackPearl/Math/Math.h"
+#include "BlackPearl/Renderer/DeviceManager.h"
 
+namespace BlackPearl {
+	extern DeviceManager* g_deviceManager;
 	float CloudRenderer::s_rayStep = 0.1;
 	float CloudRenderer::s_step = 0.1;
 	glm::vec3 CloudRenderer::s_colA = glm::vec3(1.0, 0.64274913, 0.3443396);
@@ -17,8 +15,8 @@ namespace BlackPearl {
 	float CloudRenderer::s_colorOffset2 = 1.0;
 	float CloudRenderer::s_NoiseTexture3DSize = 128.0;
 	float CloudRenderer::s_densityOffset = 0.0;
-	glm::vec3 CloudRenderer::s_boundsMin = glm::vec3(-10.0, 20.0, -10.0);// glm::vec3(-10.0);
-	glm::vec3 CloudRenderer::s_boundsMax = glm::vec3(23.0,23.0,23.0);//glm::vec3(10.0);
+	math::float3 CloudRenderer::s_boundsMin = math::float3(-10.0, 20.0, -10.0);// glm::vec3(-10.0);
+	math::float3 CloudRenderer::s_boundsMax = math::float3(23.0,23.0,23.0);//glm::vec3(10.0);
 	float CloudRenderer::s_lightAbsorptionTowardSun = 1.0;
 	float CloudRenderer::s_densityMultiplier = 53.0;
 	CloudRenderer::CloudRenderer()
@@ -33,7 +31,12 @@ namespace BlackPearl {
 		const std::vector<GLfloat> texture3D(4 * s_NoiseTexture3DSize * s_NoiseTexture3DSize * s_NoiseTexture3DSize, 0.0f);
 		m_NoiseTexture = DBG_NEW Texture3D(texture3D, s_NoiseTexture3DSize, s_NoiseTexture3DSize, s_NoiseTexture3DSize, true);
 
-		m_WeatherTexture.reset(DBG_NEW Texture(BlackPearl::Texture::Type::HeightMap, "assets/texture/weather3.png"));
+		TextureDesc desc;
+		desc.type = TextureType::HeightMap;
+		desc.path = "assets/texture/weather3.png";
+		m_WeatherTexture = g_deviceManager->GetDevice()->createTexture(desc);
+
+		//m_WeatherTexture.reset(DBG_NEW Texture(BlackPearl::Texture::Type::HeightMap, "assets/texture/weather3.png"));
 	}
 
 
@@ -42,7 +45,20 @@ namespace BlackPearl {
 		m_Scene = scene;
 
 		m_CloudFrameBuffer.reset(DBG_NEW FrameBuffer());
-		m_CloudTexture.reset(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::None, BlackPearl::Configuration::WindowWidth, BlackPearl::Configuration::WindowHeight, false, GL_LINEAR, GL_LINEAR, GL_RGBA16F, GL_RGBA, GL_CLAMP_TO_EDGE, GL_FLOAT));
+
+		TextureDesc desc;
+		desc.type = TextureType::None;
+		desc.width = Configuration::WindowWidth;
+		desc.height = Configuration::WindowHeight;
+		desc.minFilter = FilterMode::Linear;
+		desc.magFilter = FilterMode::Linear;
+		desc.wrap = SamplerAddressMode::ClampToEdge;
+		desc.format = Format::RGBA16_FLOAT;
+		desc.generateMipmap = true;
+		m_CloudTexture = g_deviceManager->GetDevice()->createTexture(desc);
+
+
+		//m_CloudTexture.reset(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::None, BlackPearl::Configuration::WindowWidth, BlackPearl::Configuration::WindowHeight, false, GL_LINEAR, GL_LINEAR, GL_RGBA16F, GL_RGBA, GL_CLAMP_TO_EDGE, GL_FLOAT));
 		m_CloudFrameBuffer->Bind();
 		m_CloudFrameBuffer->AttachRenderBuffer(BlackPearl::Configuration::WindowWidth, BlackPearl::Configuration::WindowHeight);
 		m_CloudFrameBuffer->AttachColorTexture(m_CloudTexture, 0);
@@ -50,18 +66,22 @@ namespace BlackPearl {
 		m_CloudFrameBuffer->UnBind();
 
 		m_DepthFrameBuffer.reset(DBG_NEW FrameBuffer());
-#ifdef GE_PLATFORM_WINDOWS
-		m_DepthTexture.reset(DBG_NEW Texture(Texture::Type::DepthMap, Configuration::WindowWidth, Configuration::WindowHeight, true/*isDepth*/, GL_NEAREST_MIPMAP_NEAREST, GL_NEAREST, GL_DEPTH_COMPONENT32, GL_DEPTH_COMPONENT, GL_CLAMP_TO_EDGE, GL_FLOAT, true/*genmipmap*/));
-#endif
-#ifdef GE_PLATFORM_ANDRIOD
-        m_DepthTexture.reset(DBG_NEW Texture(Texture::Type::DepthMap, Configuration::WindowWidth, Configuration::WindowHeight, true/*isDepth*/, GL_NEAREST_MIPMAP_NEAREST, GL_NEAREST, GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT, GL_CLAMP_TO_EDGE, GL_FLOAT, true/*genmipmap*/));
-#endif
+
+		//TextureDesc desc;
+		desc.type = TextureType::DepthMap;
+		desc.width = Configuration::WindowWidth;
+		desc.height = Configuration::WindowHeight;
+		desc.minFilter = FilterMode::Nearest_Mip_Nearnest;
+		desc.magFilter = FilterMode::Nearest;
+		desc.wrap = SamplerAddressMode::ClampToEdge;
+		desc.format = Format::D32;
+		desc.generateMipmap = true;
+		m_DepthTexture = g_deviceManager->GetDevice()->createTexture(desc);
+
+		//m_DepthTexture.reset(DBG_NEW Texture(Texture::Type::DepthMap, Configuration::WindowWidth, Configuration::WindowHeight, true/*isDepth*/, GL_NEAREST_MIPMAP_NEAREST, GL_NEAREST, GL_DEPTH_COMPONENT32, GL_DEPTH_COMPONENT, GL_CLAMP_TO_EDGE, GL_FLOAT, true/*genmipmap*/));
 		m_DepthFrameBuffer->Bind();
 		m_DepthFrameBuffer->AttachDepthTexture(m_DepthTexture, 0);
-#ifdef GE_PLATFORM_WINDOWS
-
-        glDrawBuffer(GL_NONE); // No color buffer is drawn to.
-#endif
+		glDrawBuffer(GL_NONE); // No color buffer is drawn to.
 		glReadBuffer(GL_NONE);
 		m_DepthFrameBuffer->UnBind();
 
@@ -70,7 +90,7 @@ namespace BlackPearl {
 
 	}
 
-	void CloudRenderer::Render(MainCamera* mainCamera,Object* obj, Object* BoundingBoxObj, const std::shared_ptr<Texture> postProcessTexture)
+	void CloudRenderer::Render(MainCamera* mainCamera,Object* obj, Object* BoundingBoxObj, const TextureHandle postProcessTexture)
 	{
 		//m_CloudFrameBuffer->Bind();
 
@@ -126,7 +146,7 @@ namespace BlackPearl {
 		//m_CloudFrameBuffer->UnBind();
 	}
 
-	void CloudRenderer::RenderCombineScene(MainCamera* mainCamera, Object* obj, const std::shared_ptr<Texture> postProcessTexture)
+	void CloudRenderer::RenderCombineScene(MainCamera* mainCamera, Object* obj, const TextureHandle postProcessTexture)
 	{
 		m_SceneRenderShader->Bind();
 		m_SceneRenderShader->SetUniform1i("u_CloudTexture", 8);
@@ -140,7 +160,7 @@ namespace BlackPearl {
 		m_SceneRenderShader->Unbind();
 	}
 
-	void CloudRenderer::RenderScene(MainCamera* mainCamera, Object* obj, const std::shared_ptr<Texture> postProcessTexture)
+	void CloudRenderer::RenderScene(MainCamera* mainCamera, Object* obj, const TextureHandle postProcessTexture)
 	{
 		m_SceneRenderShader->Bind();
 		m_SceneRenderShader->SetUniform1i("u_CloudTexture", 8);

@@ -9,8 +9,8 @@ namespace BlackPearl {
 		virtual void				 AddObj(Object* obj) override;
 		virtual void				 UpdateObjs() override;
 		void						 SetRenderState();
-		void						 SetDeltaPosition(glm::vec3 pos);
-		void						 SetDeltaScale(glm::vec3);
+		void						 SetDeltaPosition(math::float3 pos);
+		void						 SetDeltaScale(math::float3);
 
 		float*						 GetModelMatrix() const;
 		uint32_t                     GetIndexCount() const;

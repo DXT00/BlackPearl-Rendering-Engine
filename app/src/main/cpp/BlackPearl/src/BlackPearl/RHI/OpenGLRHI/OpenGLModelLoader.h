@@ -1,13 +1,13 @@
 #include "BlackPearl/Renderer/Model/ModelLoader.h"
 #include "BlackPearl/Renderer/Mesh/Meshlet.h"
 #include "BlackPearl/Renderer/Mesh/MeshletGenerator.h"
-//TODO::ï¿½ï¿½ Model.cppï¿½Ðµï¿½ assimp Ä£ï¿½Í¼ï¿½ï¿½ï¿½ï¿½Æµï¿½ï¿½ï¿½ï¿½ï¿½
+//TODO::°Ñ Model.cppÖÐµÄ assimp Ä£ÐÍ¼ÓÔØÒÆµ½ÕâÀï
 namespace BlackPearl {
 	class OpenGLModelLoader : public ModelLoader
 	{
 	public:
 		OpenGLModelLoader(bool createMeshlet, const MeshletOption& options);
-		virtual ~OpenGLModelLoader();
+		~OpenGLModelLoader();
 		virtual void Load(std::vector<std::shared_ptr<Mesh>>& output_meshes, BoundingSphere& bounding_sphere, const std::string& path);
 		void LoadMeshletModel(std::vector<std::shared_ptr<Mesh>>& output_meshes, BoundingSphere& bounding_sphere, const std::string& path);
 		void LoadCommonModel(std::vector<std::shared_ptr<Mesh>>& output_meshes, const std::string& path);

@@ -1,12 +1,12 @@
 #pragma once
 #include "BlackPearl/Renderer/Buffer/Buffer.h"
 #include "BlackPearl/Renderer/Material/HDRTexture.h"
-#include "BlackPearl/Renderer/Material/CubeMapTexture.h"
+#include "BlackPearl/RHI/RHITexture.h"
 #include"BlackPearl/Object/Object.h"
 #include "BlackPearl/Renderer/Shader/Shader.h"
 #include "BlackPearl/Renderer/MasterRenderer/BasicRenderer.h"
 namespace BlackPearl {
-	class IBLRenderer:public BasicRenderer
+	class IBLRenderer: public BasicRenderer
 	{
 	public:
 		IBLRenderer();
@@ -28,10 +28,10 @@ namespace BlackPearl {
 		//draw brdfLUT quad (just for debug)
 		void DrawBRDFLUTMap();
 		void Render(std::vector<Object*>objs);
-		std::shared_ptr<CubeMapTexture> GetHdrCubeMap() { return m_HdrCubeMap; }
-		std::shared_ptr<CubeMapTexture> GetSkyBoxCubeMap() { return m_SkyBoxCubeMap; }
-		std::shared_ptr<CubeMapTexture> GetSpecularCubeMap() { return m_PrefilterCubeMap; }
-		std::shared_ptr<CubeMapTexture> GetIrradianceCubeMap() { return m_IrradianceCubeMap; }
+		TextureHandle GetHdrCubeMap() { return m_HdrCubeMap; }
+		TextureHandle GetSkyBoxCubeMap() { return m_SkyBoxCubeMap; }
+		TextureHandle GetSpecularCubeMap() { return m_PrefilterCubeMap; }
+		TextureHandle GetIrradianceCubeMap() { return m_IrradianceCubeMap; }
 		static float s_GICoeffs;
 		static bool s_HDR;
 	private:
@@ -66,11 +66,11 @@ namespace BlackPearl {
 		//unsigned int				m_IrradianceCubeMapID;
 		//unsigned int				m_PrefilterCubeMapID;
 		//unsigned int				m_BRDFLUTTextureID;
-		std::shared_ptr<Texture>	m_BRDFLUTTexture;
-		std::shared_ptr<CubeMapTexture> m_IrradianceCubeMap;
-		std::shared_ptr<CubeMapTexture> m_PrefilterCubeMap;
-		std::shared_ptr<CubeMapTexture> m_HdrCubeMap;
-		std::shared_ptr<CubeMapTexture> m_SkyBoxCubeMap;
+		TextureHandle	m_BRDFLUTTexture;
+		TextureHandle m_IrradianceCubeMap;
+		TextureHandle m_PrefilterCubeMap;
+		TextureHandle m_HdrCubeMap;
+		TextureHandle m_SkyBoxCubeMap;
 
 		unsigned int m_EnvironmentMapDim = 256;
 		unsigned int m_SpecularPrefilterMapDim = 256;

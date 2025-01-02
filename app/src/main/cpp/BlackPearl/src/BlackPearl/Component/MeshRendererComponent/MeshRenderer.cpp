@@ -17,7 +17,7 @@ namespace BlackPearl {
 	//		mesh.Draw(m_TransformMatrix);
 	//}
 
-	void MeshRenderer::SetTexture(unsigned int meshIndex, const std::shared_ptr<Texture>& texture) {
+	void MeshRenderer::SetTexture(unsigned int meshIndex, ITexture* texture) {
 		auto meshes = GetMeshes();
 		if (meshIndex < GetMeshes().size()) {
 			meshes[meshIndex]->SetTexture(texture);
@@ -26,7 +26,7 @@ namespace BlackPearl {
 			GE_CORE_ERROR("meshIndex out of m_Meshes range!")
 		}
 	}
-	void MeshRenderer::SetTextures(const std::shared_ptr<Texture>& texture)
+	void MeshRenderer::SetTextures(ITexture* texture)
 	{
 		GE_ASSERT(!GetMeshes().empty(), "m_Meshes is empty,MeshRenderer::SetTextures doesn't work!");
 		for (auto mesh : GetMeshes()) {
@@ -34,14 +34,14 @@ namespace BlackPearl {
 		}
 
 	}
-	void MeshRenderer::SetModelTexture(unsigned int meshIndex, const std::shared_ptr<Texture>&texture)
+	void MeshRenderer::SetModelTexture(unsigned int meshIndex, const TextureHandle&texture)
 	{
 		GE_ASSERT(m_Model, "m_Model is nullptr");
 		GE_ASSERT(!m_Model->GetMeshes().empty(), "Model has no textures!");
 		GE_ASSERT(m_Model->GetMeshes().size() > meshIndex, "meshIndex out of m_Meshes range!");
 		m_Model->GetMeshes()[meshIndex]->SetTexture(texture);
 	}
-	void MeshRenderer::SetModelTextures(const std::shared_ptr<Texture>& texture)
+	void MeshRenderer::SetModelTextures(const TextureHandle& texture)
 	{
 		GE_ASSERT(m_Model, "m_Model is nullptr");
 		GE_ASSERT(!m_Model->GetMeshes().empty(), "Model has no textures!");

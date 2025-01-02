@@ -18,11 +18,20 @@ project "SandboxVK"
 	}
 
 
+	--filter { "files:src/BlackPearl/RHI/OpenGLRHI/**.cpp" }
+	--filter { "files:src/BlackPearl/RHI/OpenGLRHI/**.h" }
+	--filter { "files:src/BlackPearl/Renderer/Buffer/D3D12Buffer/**.h" }
+	--filter { "files:src/BlackPearl/Renderer/Buffer/D3D12Buffer/**.cpp" }
+	--filter { "files:src/BlackPearl/Renderer/MasterRenderer/D3D12**.h" }
+	--filter { "files:src/BlackPearl/Renderer/MasterRenderer/D3D12**.cpp" }
+	--filter { "files:src/BlackPearl/Renderer/Shader/D3D12Shader/**.h" }
+	--filter { "files:src/BlackPearl/Renderer/Shader/D3D12Shader/**.cpp" }
 	includedirs
 	{
 		"../BlackPearl/vendor/spdlog/include",
 		"../BlackPearl/src",
 		"../BlackPearl/vendor",
+		"../BlackPearl/assets/shaders",
 		"../%{IncludeDir.glm}",
 		"../%{IncludeDir.GLFW}",
 		"../%{IncludeDir.assimp}",
@@ -30,13 +39,13 @@ project "SandboxVK"
 		"../%{IncludeDir.vulkan}",
 		--"../%{IncludeDir.ImGui}",
 		-- "%{IncludeDir.glslShader}",
-		"../%{IncludeDir.vulkan}"
+		--"../%{IncludeDir.vulkan}"
 		--"packages/directxtex_uwp.2022.7.30.1/native/lib/x64/Debug"
 
 	}
 
 	libdirs{
-        "../BlackPearl/vendor/VulkanSDK/1.3.236.0/Lib"
+  --      "../BlackPearl/vendor/vulkan/1.3.290.0/Lib"
     }
 
 	defines
@@ -50,7 +59,7 @@ project "SandboxVK"
 		"d3d12.lib",
 		"dxgi.lib",
 		"dxguid.lib",
-		"vulkan-1.lib"
+		--"vulkan-1.lib"
 		--"directxtex.lib",
 	}
 	

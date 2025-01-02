@@ -15,16 +15,36 @@
 #include "VkQuery.h"
 #include "VkQueue.h"
 #include "VkTexture.h"
+#include "VkDescriptorTable.h"
+#include "BlackPearl/RHI/Common/RHIUtils.h"
 #include "BlackPearl/RHI/RHITexture.h"
 #include "BlackPearl/RHI/RHIDefinitions.h"
 #include "../Common/Containers.h"
 #include "../Common/FormatInfo.h"
-#include <vulkan/vulkan.h>
 #include "BlackPearl/Core.h"
+#include "vulkan/vulkan_core.h"
 
 namespace BlackPearl {
 	template <typename T>
-	using attachment_vector = nvrhi::static_vector<T, c_MaxRenderTargets + 1>; // render targets + depth
+	using attachment_vector = static_vector<T, c_MaxRenderTargets + 1>; // render targets + depth
+	static void registerShaderModule(
+		IShader* _shader,
+		std::unordered_map<EShader*, uint32_t>& shaderStageIndices,
+		size_t& numShaders,
+		size_t& numShadersWithSpecializations,
+		size_t& numSpecializationConstants)
+	{
+		if (!_shader)
+			return;
+
+		EShader* shader = static_cast<EShader*>(_shader);
+		auto it = shaderStageIndices.find(shader);
+		if (it == shaderStageIndices.end())
+		{
+			VkUtil::countSpecializationConstants(shader, numShaders, numShadersWithSpecializations, numSpecializationConstants);
+			shaderStageIndices[shader] = uint32_t(shaderStageIndices.size());
+		}
+	}
 
 	static TextureDimension getDimensionForFramebuffer(TextureDimension dimension, bool isArray)
 	{
@@ -53,10 +73,26 @@ namespace BlackPearl {
 
 		return dimension;
 	}
+
+	static ETexture::TextureSubresourceViewType getTextureViewType(Format bindingFormat, Format textureFormat)
+	{
+		Format format = (bindingFormat == Format::UNKNOWN) ? textureFormat : bindingFormat;
+
+		const FormatInfo& formatInfo = getFormatInfo(format);
+
+		if (formatInfo.hasDepth)
+			return ETexture::TextureSubresourceViewType::DepthOnly;
+		else if (formatInfo.hasStencil)
+			return ETexture::TextureSubresourceViewType::StencilOnly;
+		else
+			return ETexture::TextureSubresourceViewType::AllAspects;
+	}
 	Device::Device(const DeviceDesc& desc)
 		:m_Context(desc.instance, desc.physicalDevice, desc.device, reinterpret_cast<VkAllocationCallbacks*>(desc.allocationCallbacks))
 		, m_Allocator(m_Context)
 	{
+		m_VKFuncLoader = DBG_NEW VkFunctionLoader(desc.instance, desc.device);
+		m_Context.setVkFuncLoader(m_VKFuncLoader);
 
 		if (desc.graphicsQueue)
 		{
@@ -117,14 +153,20 @@ namespace BlackPearl {
 			m_Context.extensions.buffer_device_address = true;
 
 		void* pNext = nullptr;
-		VkPhysicalDeviceAccelerationStructurePropertiesKHR accelStructProperties;
-		VkPhysicalDeviceRayTracingPipelinePropertiesKHR rayTracingPipelineProperties;
-		VkPhysicalDeviceConservativeRasterizationPropertiesEXT conservativeRasterizationProperties;
-		VkPhysicalDeviceFragmentShadingRatePropertiesKHR shadingRateProperties;
-		VkPhysicalDeviceOpacityMicromapPropertiesEXT opacityMicromapProperties;
-		VkPhysicalDeviceRayTracingInvocationReorderPropertiesNV nvRayTracingInvocationReorderProperties;
-		
-		VkPhysicalDeviceProperties2 deviceProperties2;
+		VkPhysicalDeviceAccelerationStructurePropertiesKHR accelStructProperties{};
+		accelStructProperties.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_ACCELERATION_STRUCTURE_PROPERTIES_KHR;
+		VkPhysicalDeviceRayTracingPipelinePropertiesKHR rayTracingPipelineProperties{};
+		rayTracingPipelineProperties.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_RAY_TRACING_PIPELINE_PROPERTIES_KHR;
+		VkPhysicalDeviceConservativeRasterizationPropertiesEXT conservativeRasterizationProperties{};
+		conservativeRasterizationProperties.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_CONSERVATIVE_RASTERIZATION_PROPERTIES_EXT;
+		VkPhysicalDeviceFragmentShadingRatePropertiesKHR shadingRateProperties{};
+		shadingRateProperties.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FRAGMENT_SHADING_RATE_PROPERTIES_KHR;
+		VkPhysicalDeviceOpacityMicromapPropertiesEXT opacityMicromapProperties{};
+		opacityMicromapProperties.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_OPACITY_MICROMAP_PROPERTIES_EXT;
+		VkPhysicalDeviceRayTracingInvocationReorderPropertiesNV nvRayTracingInvocationReorderProperties{};
+		nvRayTracingInvocationReorderProperties.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_RAY_TRACING_INVOCATION_REORDER_PROPERTIES_NV;
+		VkPhysicalDeviceProperties2 deviceProperties2{};
+		deviceProperties2.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PROPERTIES_2;
 
 		if (m_Context.extensions.KHR_acceleration_structure)
 		{
@@ -184,8 +226,10 @@ namespace BlackPearl {
 
 		if (m_Context.extensions.KHR_fragment_shading_rate)
 		{
-			VkPhysicalDeviceFeatures2 deviceFeatures2;
-			VkPhysicalDeviceFragmentShadingRateFeaturesKHR shadingRateFeatures;
+			VkPhysicalDeviceFeatures2 deviceFeatures2{};
+			deviceFeatures2.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2;
+			VkPhysicalDeviceFragmentShadingRateFeaturesKHR shadingRateFeatures{};
+			shadingRateFeatures.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FRAGMENT_SHADING_RATE_FEATURES_KHR;
 			deviceFeatures2.pNext = &shadingRateFeatures;
 			vkGetPhysicalDeviceFeatures2(m_Context.physicalDevice, &deviceFeatures2);
 			//m_Context.physicalDevice.getFeatures2(&deviceFeatures2);
@@ -217,7 +261,8 @@ namespace BlackPearl {
 		//	m_Context.error("Failed to create the pipeline cache");
 		//}
 
-		VkPipelineCacheCreateInfo pipelineInfo;
+		VkPipelineCacheCreateInfo pipelineInfo{};
+		pipelineInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_CACHE_CREATE_INFO;
 		VkResult res =  vkCreatePipelineCache(m_Context.device, &pipelineInfo,
 				m_Context.allocationCallbacks,
 				&m_Context.pipelineCache);
@@ -229,6 +274,9 @@ namespace BlackPearl {
 
 	Device::~Device()
 	{
+		if (m_VKFuncLoader) {
+			delete m_VKFuncLoader;
+		}
 	}
 
 	Queue* Device::getQueue(CommandQueue queue) const
@@ -236,43 +284,198 @@ namespace BlackPearl {
 		return m_Queues[int(queue)].get(); 
 	}
 
-	TextureHandle Device::createTexture(const TextureDesc& d)
+	TextureHandle Device::createTexture(TextureDesc& desc)
 	{
-//		ETexture* texture = new ETexture(m_Context, m_Allocator);
-//		assert(texture);
-//		fillTextureInfo(texture, desc);
-//
-//		vk::Result res = m_Context.device.createImage(&texture->imageInfo, m_Context.allocationCallbacks, &texture->image);
-//		ASSERT_VK_OK(res);
-//		CHECK_VK_FAIL(res)
-//
-//			//m_Context.nameVKObject(texture->image, vk::DebugReportObjectTypeEXT::eImage, desc.debugName.c_str());
-//
-//		if (!desc.isVirtual)
-//		{
-//			res = m_Allocator.allocateTextureMemory(texture);
-//			ASSERT_VK_OK(res);
-//			CHECK_VK_FAIL(res)
-//
-//				if ((desc.sharedResourceFlags & SharedResourceFlags::Shared) != 0)
-//				{
+		ETexture* texture = new ETexture(m_Context, m_Allocator);
+		assert(texture);
+		ETexture::fillTextureInfo(texture, desc);
+
+		//VkResult res = m_Context.device.createImage(&texture->imageInfo, m_Context.allocationCallbacks, &texture->image);
+		VkResult res = vkCreateImage(m_Context.device, &texture->imageInfo, m_Context.allocationCallbacks, &texture->image);
+		assert(res == VkResult::VK_SUCCESS);
+		//CHECK_VK_FAIL(res)
+
+			//m_Context.nameVKObject(texture->image, vk::DebugReportObjectTypeEXT::eImage, desc.debugName.c_str());
+
+		if (!desc.isVirtual)
+		{
+			res = m_Allocator.allocateTextureMemory(texture);
+			assert(res == VkResult::VK_SUCCESS);
+
+			//ASSERT_VK_OK(res);
+			//CHECK_VK_FAIL(res)
+
+				if ((desc.sharedResourceFlags & SharedResourceFlags::Shared) != 0)
+				{
+					assert(0);
 //#ifdef _WIN32
-//					texture->sharedHandle = m_Context.device.getMemoryWin32HandleKHR({ texture->memory, vk::ExternalMemoryHandleTypeFlagBits::eOpaqueWin32 });
+					//vkGetMemoryWin32HandleKHR()
+					//PFN_vkGetMemoryWin32HandleKHR vkGetMemoryWin32HandleKHR = PFN_vkGetMemoryWin32HandleKHR(vkGetDeviceProcAddr(m_Context.device, "vkGetMemoryWin32HandleKHR"));
+					//int fd;
+					////Get a POSIX file descriptor for a memory object
+					//vkGetMemoryFdKHR(m_Context.device, reinterpret_cast<const VkMemoryGetFdInfoKHR*>(texture->memory), &fd);
+					//texture->sharedHandle = (void*)(size_t)fd;
+					//texture->sharedHandle = m_Context.device.getMemoryWin32HandleKHR({ texture->memory, vk::ExternalMemoryHandleTypeFlagBits::eOpaqueWin32 });
+
 //#else
-//					texture->sharedHandle = (void*)(size_t)m_Context.device.getMemoryFdKHR({ texture->memory, vk::ExternalMemoryHandleTypeFlagBits::eOpaqueFd });
+					
+					/*int fd;
+					vkGetMemoryFdKHR(m_Context.device, reinterpret_cast<const VkMemoryGetFdInfoKHR*>(texture->memory), &fd);
+					texture->sharedHandle = (void*)(size_t)fd;*/
+					//texture->sharedHandle = (void*)(size_t)m_Context.device.getMemoryFdKHR({ texture->memory, vk::ExternalMemoryHandleTypeFlagBits::eOpaqueFd });
 //#endif
-//				}
-//
-//			m_Context.nameVKObject(texture->memory, vk::DebugReportObjectTypeEXT::eDeviceMemory, desc.debugName.c_str());
-//		}
-//
-//		return TextureHandle::Create(texture);
-		return TextureHandle();
+				}
+
+			//m_Context.nameVKObject(texture->memory, vk::DebugReportObjectTypeEXT::eDeviceMemory, desc.debugName.c_str());
+		}
+
+		return TextureHandle::Create(texture);
+		//return TextureHandle();
 	}
 
-	BufferHandle Device::createBuffer(const BufferDesc& d)
+	BufferHandle Device::createBuffer(const BufferDesc& desc)
 	{
-		return BufferHandle();
+		// Check some basic constraints first - the validation layer is expected to handle them too
+
+		if (desc.isVolatile && desc.maxVersions == 0)
+			return nullptr;
+
+		if (desc.isVolatile && !desc.isConstantBuffer)
+			return nullptr;
+
+		if (desc.byteSize == 0)
+			return nullptr;
+
+
+		Buffer* buffer = new Buffer(m_Context, m_Allocator);
+		buffer->desc = desc;
+
+		VkBufferUsageFlags usageFlags = VK_BUFFER_USAGE_TRANSFER_SRC_BIT |
+			VK_BUFFER_USAGE_TRANSFER_DST_BIT;
+
+		if (desc.isVertexBuffer)
+			usageFlags |= VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
+
+		if (desc.isIndexBuffer)
+			usageFlags |= VK_BUFFER_USAGE_INDEX_BUFFER_BIT;
+
+		if (desc.isDrawIndirectArgs)
+			usageFlags |= VK_BUFFER_USAGE_INDIRECT_BUFFER_BIT;
+
+		if (desc.isConstantBuffer)
+			usageFlags |= VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT;
+
+		if (desc.structStride != 0 || desc.canHaveUAVs || desc.canHaveRawViews)
+			usageFlags |= VK_BUFFER_USAGE_STORAGE_BUFFER_BIT;
+
+		if (desc.canHaveTypedViews)
+			usageFlags |= VK_BUFFER_USAGE_UNIFORM_TEXEL_BUFFER_BIT;
+
+		if (desc.canHaveTypedViews && desc.canHaveUAVs)
+			usageFlags |= VK_BUFFER_USAGE_STORAGE_BUFFER_BIT;
+
+		if (desc.isAccelStructBuildInput)
+			usageFlags |= VK_BUFFER_USAGE_ACCELERATION_STRUCTURE_BUILD_INPUT_READ_ONLY_BIT_KHR;
+
+		if (desc.isAccelStructStorage)
+			usageFlags |= VK_BUFFER_USAGE_ACCELERATION_STRUCTURE_STORAGE_BIT_KHR;
+
+		if (desc.isShaderBindingTable)
+			usageFlags |= VK_BUFFER_USAGE_SHADER_BINDING_TABLE_BIT_KHR;
+
+		if (m_Context.extensions.buffer_device_address)
+			usageFlags |= VK_BUFFER_USAGE_SHADER_DEVICE_ADDRESS_BIT_KHR;
+
+		uint64_t size = desc.byteSize;
+
+		if (desc.isVolatile)
+		{
+			assert(!desc.isVirtual);
+
+			uint64_t alignment = m_Context.physicalDeviceProperties.limits.minUniformBufferOffsetAlignment;
+
+			uint64_t atomSize = m_Context.physicalDeviceProperties.limits.nonCoherentAtomSize;
+			alignment = std::max(alignment, atomSize);
+
+			assert((alignment & (alignment - 1)) == 0); // check if it's a power of 2
+
+			size = (size + alignment - 1) & ~(alignment - 1);
+			buffer->desc.byteSize = size;
+
+			size *= desc.maxVersions;
+
+			buffer->versionTracking.resize(desc.maxVersions);
+			std::fill(buffer->versionTracking.begin(), buffer->versionTracking.end(), 0);
+
+			buffer->desc.cpuAccess = CpuAccessMode::Write; // to get the right memory type allocated
+		}
+		else if (desc.byteSize < 65536)
+		{
+			// vulkan allows for <= 64kb buffer updates to be done inline via vkCmdUpdateBuffer,
+			// but the data size must always be a multiple of 4
+			// enlarge the buffer slightly to allow for this
+			size = (size + 3) & ~3ull;
+		}
+
+		VkBufferCreateInfo bufferInfo{};
+		bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
+		bufferInfo.size = size;
+		bufferInfo.usage = usageFlags;
+		bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+		
+
+#if _WIN32
+		const auto handleType = VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_WIN32_BIT;
+#else
+		const auto handleType = VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_FD_BIT;
+#endif
+		VkExternalMemoryBufferCreateInfo externalBuffer{  };
+		externalBuffer.sType = VK_STRUCTURE_TYPE_EXTERNAL_MEMORY_BUFFER_CREATE_INFO;
+		externalBuffer.handleTypes = handleType;
+		if (desc.sharedResourceFlags == SharedResourceFlags::Shared)
+			bufferInfo.pNext = (&externalBuffer);
+		VkResult res = vkCreateBuffer(m_Context.device, &bufferInfo, m_Context.allocationCallbacks, &buffer->buffer);
+		//VkResult res = m_Context.device.createBuffer(&bufferInfo, m_Context.allocationCallbacks, &buffer->buffer);
+		if (res != VkResult::VK_SUCCESS)
+			assert(0);
+
+		//m_Context.nameVKObject(VkBuffer(buffer->buffer), VkDebugReportObjectTypeEXT::eBuffer, desc.debugName.c_str());
+
+		if (!desc.isVirtual)
+		{
+			res = m_Allocator.allocateBufferMemory(buffer, (usageFlags & VK_BUFFER_USAGE_SHADER_DEVICE_ADDRESS_BIT) != 0);
+			if (res != VkResult::VK_SUCCESS)
+				assert(0);
+
+				//m_Context.nameVKObject(buffer->memory, VkDebugReportObjectTypeEXT::eDeviceMemory, desc.debugName.c_str());
+
+			if (desc.isVolatile)
+			{
+				VkResult res = vkMapMemory(m_Context.device, buffer->memory, 0, size,0, &buffer->mappedMemory); //m_Context.device.mapMemory(buffer->memory, 0, size);
+				assert(res == VkResult::VK_SUCCESS);
+			}
+
+			if (m_Context.extensions.buffer_device_address)
+			{
+				VkBufferDeviceAddressInfo addressInfo{};
+				addressInfo.sType = VK_STRUCTURE_TYPE_BUFFER_DEVICE_ADDRESS_INFO;
+				addressInfo.buffer = buffer->buffer;
+				//auto addressInfo = VkBufferDeviceAddressInfo().setBuffer(buffer->buffer);
+				buffer->deviceAddress = vkGetBufferDeviceAddress(m_Context.device, &addressInfo);
+				//buffer->deviceAddress = m_Context.device.getBufferAddress(addressInfo);
+			}
+
+			if (desc.sharedResourceFlags == SharedResourceFlags::Shared)
+			{
+//#ifdef _WIN32
+//				buffer->sharedHandle = m_Context.device.getMemoryWin32HandleKHR({ buffer->memory, vk::ExternalMemoryHandleTypeFlagBits::eOpaqueWin32 });
+//#else
+//				buffer->sharedHandle = (void*)(size_t)m_Context.device.getMemoryFdKHR({ buffer->memory, vk::ExternalMemoryHandleTypeFlagBits::eOpaqueFd });
+//#endif
+			}
+		}
+
+		return BufferHandle::Create(buffer);
 	}
 
 	FramebufferHandle Device::createFramebuffer(const FramebufferDesc& desc)
@@ -283,9 +486,9 @@ namespace BlackPearl {
 
 		attachment_vector<VkAttachmentDescription2> attachmentDescs(desc.colorAttachments.size());
 		attachment_vector<VkAttachmentReference2> colorAttachmentRefs(desc.colorAttachments.size());
-		VkAttachmentReference2 depthAttachmentRef;
+		VkAttachmentReference2 depthAttachmentRef{};
 
-		nvrhi::static_vector<VkImageView, c_MaxRenderTargets + 1> attachmentViews;
+		static_vector<VkImageView, c_MaxRenderTargets + 1> attachmentViews;
 		attachmentViews.resize(desc.colorAttachments.size());
 
 		uint32_t numArraySlices = 0;
@@ -301,27 +504,18 @@ namespace BlackPearl {
 			const VkFormat attachmentFormat = (rt.format == Format::UNKNOWN ? t->imageInfo.format : VkFormat(VkUtil::convertFormat(rt.format)));
 
 			attachmentDescs[i] = VkAttachmentDescription2{};
-
+			attachmentDescs[i].sType = VK_STRUCTURE_TYPE_ATTACHMENT_DESCRIPTION_2;
 			attachmentDescs[i].format = attachmentFormat;
 			attachmentDescs[i].samples = t->imageInfo.samples;
-			attachmentDescs[i].loadOp = VK_ATTACHMENT_LOAD_OP_LOAD;
+			attachmentDescs[i].loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;// VK_ATTACHMENT_LOAD_OP_LOAD;
 			attachmentDescs[i].storeOp = VK_ATTACHMENT_STORE_OP_STORE;
-			attachmentDescs[i].initialLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
-			attachmentDescs[i].finalLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
-
-			//.setFormat(attachmentFormat)
-			//.setSamples(t->imageInfo.samples)
-			//.setLoadOp(VkAttachmentLoadOp::eLoad)
-			//.setStoreOp(VkAttachmentStoreOp::eStore)
-			//.setInitialLayout(VkImageLayout::eColorAttachmentOptimal)
-			//.setFinalLayout(VkImageLayout::eColorAttachmentOptimal);
+			attachmentDescs[i].initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;// VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+			attachmentDescs[i].finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;// VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
 
 			colorAttachmentRefs[i] = VkAttachmentReference2{};
+			colorAttachmentRefs[i].sType = VK_STRUCTURE_TYPE_ATTACHMENT_REFERENCE_2;
 			colorAttachmentRefs[i].attachment = i;
 			colorAttachmentRefs[i].layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
-
-			/*.setAttachment(i)
-			.setLayout(VkImageLayout::eColorAttachmentOptimal);*/
 
 			TextureSubresourceSet subresources = rt.subresources.resolve(t->desc, true);
 
@@ -354,15 +548,9 @@ namespace BlackPearl {
 				depthLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_READ_ONLY_OPTIMAL;
 			}
 
-			/*	attachmentDescs.push_back(vk::AttachmentDescription2()
-					.setFormat(texture->imageInfo.format)
-					.setSamples(texture->imageInfo.samples)
-					.setLoadOp(vk::AttachmentLoadOp::eLoad)
-					.setStoreOp(vk::AttachmentStoreOp::eStore)
-					.setInitialLayout(depthLayout)
-					.setFinalLayout(depthLayout));*/
 
-			VkAttachmentDescription2 depthAttachment;
+			VkAttachmentDescription2 depthAttachment{};
+			depthAttachment.sType = VK_STRUCTURE_TYPE_ATTACHMENT_DESCRIPTION_2;
 			depthAttachment.format = texture->imageInfo.format;
 			depthAttachment.samples = texture->imageInfo.samples;
 			depthAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_LOAD;
@@ -374,6 +562,7 @@ namespace BlackPearl {
 
 
 			depthAttachmentRef = VkAttachmentReference2{};
+			depthAttachmentRef.sType = VK_STRUCTURE_TYPE_ATTACHMENT_REFERENCE_2;
 			depthAttachmentRef.attachment = uint32_t(attachmentDescs.size()) - 1;
 			depthAttachmentRef.layout = depthLayout;
 			/*.setAttachment(uint32_t(attachmentDescs.size()) - 1)
@@ -394,7 +583,8 @@ namespace BlackPearl {
 				numArraySlices = subresources.numArraySlices;
 		}
 
-		VkSubpassDescription2 subpass;
+		VkSubpassDescription2 subpass{};
+		subpass.sType = VK_STRUCTURE_TYPE_SUBPASS_DESCRIPTION_2;
 		/*auto subpass = VkSubpassDescription2()
 			.setPipelineBindPoint(vk::PipelineBindPoint::eGraphics)
 			.setColorAttachmentCount(uint32_t(desc.colorAttachments.size()))
@@ -410,8 +600,8 @@ namespace BlackPearl {
 
 		// add VRS attachment
 		// declare the structures here to avoid using pointers to out-of-scope objects in renderPassInfo further
-		VkAttachmentReference2 vrsAttachmentRef;
-		VkFragmentShadingRateAttachmentInfoKHR shadingRateAttachmentInfo;
+		VkAttachmentReference2 vrsAttachmentRef{};
+		VkFragmentShadingRateAttachmentInfoKHR shadingRateAttachmentInfo{};
 
 		if (desc.shadingRateAttachment.valid())
 		{
@@ -428,7 +618,8 @@ namespace BlackPearl {
 			//	.setFinalLayout(vk::ImageLayout::eFragmentShadingRateAttachmentOptimalKHR);
 
 
-			VkAttachmentDescription2 vrsAttachmentDesc;
+			VkAttachmentDescription2 vrsAttachmentDesc{};
+			vrsAttachmentDesc.sType = VK_STRUCTURE_TYPE_ATTACHMENT_DESCRIPTION_2;
 			vrsAttachmentDesc.format = VK_FORMAT_R8_UINT;
 			vrsAttachmentDesc.samples = VK_SAMPLE_COUNT_1_BIT;
 			vrsAttachmentDesc.loadOp = VK_ATTACHMENT_LOAD_OP_LOAD;
@@ -457,14 +648,14 @@ namespace BlackPearl {
 			vkGetPhysicalDeviceProperties2(m_Context.physicalDevice, &props);
 			/*m_Context.physicalDevice.getProperties2(&props);*/
 
-			VkAttachmentReference2 vrsAttachmentRef;
+			VkAttachmentReference2 vrsAttachmentRef{};
 			/*		.setAttachment(uint32_t(attachmentDescs.size()) - 1)
 					.setLayout(vk::ImageLayout::eFragmentShadingRateAttachmentOptimalKHR);*/
-
+			vrsAttachmentRef.sType = VK_STRUCTURE_TYPE_ATTACHMENT_REFERENCE_2;
 			vrsAttachmentRef.attachment = uint32_t(attachmentDescs.size()) - 1;
 			vrsAttachmentRef.layout = VK_IMAGE_LAYOUT_FRAGMENT_SHADING_RATE_ATTACHMENT_OPTIMAL_KHR;
 
-			VkFragmentShadingRateAttachmentInfoKHR shadingRateAttachmentInfo;
+			VkFragmentShadingRateAttachmentInfoKHR shadingRateAttachmentInfo{};
 			shadingRateAttachmentInfo.pFragmentShadingRateAttachment = &vrsAttachmentRef;
 			shadingRateAttachmentInfo.shadingRateAttachmentTexelSize = rateProps.minFragmentShadingRateAttachmentTexelSize;
 
@@ -473,12 +664,8 @@ namespace BlackPearl {
 			subpass.pNext = &shadingRateAttachmentInfo;
 		}
 
-		VkRenderPassCreateInfo2&& renderPassInfo = {};
-		//.setAttachmentCount(uint32_t(attachmentDescs.size()))
-		//.setPAttachments(attachmentDescs.data())
-		//.setSubpassCount(1)
-		//.setPSubpasses(&subpass);
-
+		VkRenderPassCreateInfo2&& renderPassInfo{};
+		renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO_2;
 		renderPassInfo.attachmentCount = uint32_t(attachmentDescs.size());
 		renderPassInfo.pAttachments = attachmentDescs.data();
 		renderPassInfo.subpassCount = 1;
@@ -490,21 +677,9 @@ namespace BlackPearl {
 			throw std::runtime_error("failed to create render pass!");
 		}
 
-		//vk::Result res = m_Context.device.createRenderPass2(&renderPassInfo,
-		//	m_Context.allocationCallbacks,
-		//	&fb->renderPass);
-		//CHECK_VK_FAIL(res)
 
-			// set up the framebuffer object
-			//auto framebufferInfo = vk::FramebufferCreateInfo()
-			//.setRenderPass(fb->renderPass)
-			//.setAttachmentCount(uint32_t(attachmentViews.size()))
-			//.setPAttachments(attachmentViews.data())
-			//.setWidth(fb->framebufferInfo.width)
-			//.setHeight(fb->framebufferInfo.height)
-			//.setLayers(numArraySlices);
-
-		VkFramebufferCreateInfo framebufferInfo;
+		VkFramebufferCreateInfo framebufferInfo{};
+		framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
 		framebufferInfo.renderPass = fb->renderPass;
 		framebufferInfo.attachmentCount = uint32_t(attachmentViews.size());
 		framebufferInfo.pAttachments = attachmentViews.data();
@@ -512,16 +687,38 @@ namespace BlackPearl {
 		framebufferInfo.height = fb->framebufferInfo.height;
 		framebufferInfo.layers = numArraySlices;
 
-
-		/*	res = m_Context.device.createFramebuffer(&framebufferInfo, m_Context.allocationCallbacks,
-				&fb->framebuffer);
-			CHECK_VK_FAIL(res)*/
 		if (vkCreateFramebuffer(m_Context.device, &framebufferInfo, m_Context.allocationCallbacks, &fb->framebuffer) != VK_SUCCESS) {
 			throw std::runtime_error("failed to create framebuffer!");
 		}
 
 
 		return FramebufferHandle::Create(fb);
+	}
+
+	void* Device::mapBuffer(IBuffer* b, CpuAccessMode mapFlags)
+	{
+		Buffer* buffer = static_cast<Buffer*>(b);
+
+		return mapBuffer(buffer, mapFlags, 0, buffer->desc.byteSize);
+
+	}
+
+	void Device::unmapBuffer(IBuffer* b)
+	{
+	}
+
+	MemoryRequirements Device::getBufferMemoryRequirements(IBuffer* _buffer)
+	{
+		Buffer* buffer = static_cast<Buffer*>(_buffer);
+
+		VkMemoryRequirements vulkanMemReq;
+		vkGetBufferMemoryRequirements(m_Context.device, buffer->buffer, &vulkanMemReq);
+		//m_Context.device.getBufferMemoryRequirements(buffer->buffer, &vulkanMemReq);
+
+		MemoryRequirements memReq;
+		memReq.alignment = vulkanMemReq.alignment;
+		memReq.size = vulkanMemReq.size;
+		return memReq;
 	}
 
 	GraphicsPipelineHandle Device::createGraphicsPipeline(const GraphicsPipelineDesc& desc, IFramebuffer* _fb)
@@ -618,14 +815,11 @@ namespace BlackPearl {
 		VkPipelineVertexInputStateCreateInfo vertexInput{};
 		if (inputLayout)
 		{
-
 			vertexInput.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
 			vertexInput.vertexBindingDescriptionCount = uint32_t(inputLayout->bindingDesc.size());
 			vertexInput.pVertexBindingDescriptions = inputLayout->bindingDesc.data();
 			vertexInput.vertexAttributeDescriptionCount = uint32_t(inputLayout->attributeDesc.size());
 			vertexInput.pVertexAttributeDescriptions = inputLayout->attributeDesc.data();
-
-
 		}
 
 		VkPipelineInputAssemblyStateCreateInfo inputAssembly{};
@@ -639,24 +833,10 @@ namespace BlackPearl {
 		const auto& blendState = desc.renderState.blendState;
 
 
-		VkPipelineViewportStateCreateInfo viewportState;
+		VkPipelineViewportStateCreateInfo viewportState{};
 		viewportState.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
 		viewportState.viewportCount = 1;
 		viewportState.scissorCount = 1;
-
-
-		//auto rasterizer = vk::PipelineRasterizationStateCreateInfo()
-		//	// .setDepthClampEnable(??)
-		//	// .setRasterizerDiscardEnable(??)
-		//	.setPolygonMode(convertFillMode(rasterState.fillMode))
-		//	.setCullMode(convertCullMode(rasterState.cullMode))
-		//	.setFrontFace(rasterState.frontCounterClockwise ?
-		//		vk::FrontFace::eCounterClockwise : vk::FrontFace::eClockwise)
-		//	.setDepthBiasEnable(rasterState.depthBias ? true : false)
-		//	.setDepthBiasConstantFactor(float(rasterState.depthBias))
-		//	.setDepthBiasClamp(rasterState.depthBiasClamp)
-		//	.setDepthBiasSlopeFactor(rasterState.slopeScaledDepthBias)
-		//	.setLineWidth(1.0f);
 
 		VkPipelineRasterizationStateCreateInfo rasterizer{};
 		rasterizer.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
@@ -672,28 +852,23 @@ namespace BlackPearl {
 
 		// Conservative raster state
 		VkPipelineRasterizationConservativeStateCreateInfoEXT conservativeRasterState{};
+		conservativeRasterState.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_CONSERVATIVE_STATE_CREATE_INFO_EXT;
 		conservativeRasterState.conservativeRasterizationMode = VK_CONSERVATIVE_RASTERIZATION_MODE_OVERESTIMATE_EXT;
 
-		/*auto conservativeRasterState = vk::PipelineRasterizationConservativeStateCreateInfoEXT()
-			.setConservativeRasterizationMode(vk::ConservativeRasterizationModeEXT::eOverestimate);*/
 		if (rasterState.conservativeRasterEnable)
 		{
 			rasterizer.pNext = &conservativeRasterState;
 		}
 
 		VkPipelineMultisampleStateCreateInfo multisample{};
+		multisample.sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
 		multisample.rasterizationSamples = VkSampleCountFlagBits(fb->framebufferInfo.sampleCount);
 		multisample.alphaToCoverageEnable = blendState.alphaToCoverageEnable;
-		/*.setRasterizationSamples(vk::SampleCountFlagBits(fb->framebufferInfo.sampleCount))
-		.setAlphaToCoverageEnable(blendState.alphaToCoverageEnable);*/
+
 
 		VkPipelineDepthStencilStateCreateInfo depthStencil{};
-		//.setDepthTestEnable(depthStencilState.depthTestEnable)
-		//.setDepthWriteEnable(depthStencilState.depthWriteEnable)
-		//.setDepthCompareOp(convertCompareOp(depthStencilState.depthFunc))
-		//.setStencilTestEnable(depthStencilState.stencilEnable)
-		//.setFront(convertStencilState(depthStencilState, depthStencilState.frontFaceStencil))
-		//.setBack(convertStencilState(depthStencilState, depthStencilState.backFaceStencil));
+
+		depthStencil.sType = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
 		depthStencil.depthTestEnable = depthStencilState.depthTestEnable;
 		depthStencil.depthWriteEnable = depthStencilState.depthWriteEnable;
 		depthStencil.depthCompareOp = VkUtil::convertCompareOp(depthStencilState.depthFunc);
@@ -706,14 +881,15 @@ namespace BlackPearl {
 		{ VkUtil::convertShadingRateCombiner(desc.shadingRateState.pipelinePrimitiveCombiner),
 			VkUtil::convertShadingRateCombiner(desc.shadingRateState.imageCombiner)
 		};
-		VkPipelineFragmentShadingRateStateCreateInfoKHR shadingRateState;
+		VkPipelineFragmentShadingRateStateCreateInfoKHR shadingRateState{};
+		shadingRateState.sType = VK_STRUCTURE_TYPE_PIPELINE_FRAGMENT_SHADING_RATE_STATE_CREATE_INFO_KHR;
 		shadingRateState.combinerOps[0] = combiners[0];
 		shadingRateState.combinerOps[1] = combiners[1];
 		shadingRateState.fragmentSize = VkUtil::convertFragmentShadingRate(desc.shadingRateState.shadingRate);
 
 		/*.setCombinerOps(combiners)
 		.setFragmentSize(convertFragmentShadingRate(desc.shadingRateState.shadingRate));*/
-		nvrhi::static_vector<VkDescriptorSetLayout, c_MaxBindingLayouts> descriptorSetLayouts;
+		static_vector<VkDescriptorSetLayout, c_MaxBindingLayouts> descriptorSetLayouts;
 		uint32_t pushConstantSize = 0;
 		for (const BindingLayoutHandle& _layout : desc.bindingLayouts)
 		{
@@ -734,43 +910,23 @@ namespace BlackPearl {
 			}
 		}
 		VkPushConstantRange pushConstantRange{};
-		/*	auto pushConstantRange = vk::PushConstantRange()
-				.setOffset(0)
-				.setSize(pushConstantSize)
-				.setStageFlags(convertShaderTypeToShaderStageFlagBits(pso->shaderMask));*/
 
 		pushConstantRange.offset = 0;
 		pushConstantRange.size = pushConstantSize;
 		pushConstantRange.stageFlags = VkUtil::convertShaderTypeToShaderStageFlagBits(pso->shaderMask);
 
-
-		VkPipelineLayoutCreateInfo pipelineLayoutInfo;
+		VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
+		pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
 		pipelineLayoutInfo.setLayoutCount = uint32_t(descriptorSetLayouts.size());
 		pipelineLayoutInfo.pSetLayouts = descriptorSetLayouts.data();
 		pipelineLayoutInfo.pushConstantRangeCount = pushConstantSize ? 1 : 0;
 		pipelineLayoutInfo.pPushConstantRanges = &pushConstantRange;
-
-		/*auto pipelineLayoutInfo = vk::PipelineLayoutCreateInfo()
-			.setSetLayoutCount(uint32_t(descriptorSetLayouts.size()))
-			.setPSetLayouts(descriptorSetLayouts.data())
-			.setPushConstantRangeCount(pushConstantSize ? 1 : 0)
-			.setPPushConstantRanges(&pushConstantRange);*/
-
-
-
-			//res = m_Context.device.createPipelineLayout(&pipelineLayoutInfo,
-			//	m_Context.allocationCallbacks,
-			//	&pso->pipelineLayout);
-			//CHECK_VK_FAIL(res)
 
 		if (vkCreatePipelineLayout(m_Context.device, &pipelineLayoutInfo,
 			m_Context.allocationCallbacks,
 			&pso->pipelineLayout) != VK_SUCCESS) {
 			throw std::runtime_error("failed to create pipeline layout!");
 		}
-		/*	vkCreatePipelineLayout(m_Context.device, &pipelineLayoutInfo,
-				m_Context.allocationCallbacks,
-				&pso->pipelineLayout)*/
 
 		attachment_vector<VkPipelineColorBlendAttachmentState> colorBlendAttachments(fb->desc.colorAttachments.size());
 
@@ -779,13 +935,10 @@ namespace BlackPearl {
 			colorBlendAttachments[i] = VkUtil::convertBlendState(blendState.targets[i]);
 		}
 
-		VkPipelineColorBlendStateCreateInfo colorBlend;
-
+		VkPipelineColorBlendStateCreateInfo colorBlend{};
+		colorBlend.sType = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO;
 		colorBlend.attachmentCount = uint32_t(colorBlendAttachments.size());
 		colorBlend.pAttachments = colorBlendAttachments.data();
-
-		/*.setAttachmentCount(uint32_t(colorBlendAttachments.size()))
-		.setPAttachments(colorBlendAttachments.data());*/
 
 		pso->usesBlendConstants = blendState.usesConstantColor(uint32_t(fb->desc.colorAttachments.size()));
 
@@ -797,14 +950,10 @@ namespace BlackPearl {
 		};
 
 		VkPipelineDynamicStateCreateInfo dynamicStateInfo{};
-
+		dynamicStateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
 		dynamicStateInfo.dynamicStateCount = pso->usesBlendConstants ? 3 : 2;
 		dynamicStateInfo.pDynamicStates = dynamicStates;
 
-
-		//auto dynamicStateInfo = VkPipelineDynamicStateCreateInfo()
-		//	.setDynamicStateCount(pso->usesBlendConstants ? 3 : 2)
-		//	.setPDynamicStates(dynamicStates);
 		VkGraphicsPipelineCreateInfo pipelineInfo{};
 		pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
 		pipelineInfo.stageCount = uint32_t(shaderStages.size());
@@ -825,29 +974,11 @@ namespace BlackPearl {
 		pipelineInfo.pTessellationState = VK_NULL_HANDLE;
 		pipelineInfo.pNext = &shadingRateState;
 
-		//auto pipelineInfo = VkGraphicsPipelineCreateInfo()
-		//	.setStageCount(uint32_t(shaderStages.size()))
-		//	.setPStages(shaderStages.data())
-		//	.setPVertexInputState(&vertexInput)
-		//	.setPInputAssemblyState(&inputAssembly)
-		//	.setPViewportState(&viewportState)
-		//	.setPRasterizationState(&rasterizer)
-		//	.setPMultisampleState(&multisample)
-		//	.setPDepthStencilState(&depthStencil)
-		//	.setPColorBlendState(&colorBlend)
-		//	.setPDynamicState(&dynamicStateInfo)
-		//	.setLayout(pso->pipelineLayout)
-		//	.setRenderPass(fb->renderPass)
-		//	.setSubpass(0)
-		//	.setBasePipelineHandle(nullptr)
-		//	.setBasePipelineIndex(-1)
-		//	.setPTessellationState(nullptr)
-		//	.setPNext(&shadingRateState);
-
 		VkPipelineTessellationStateCreateInfo tessellationState{};
 
 		if (desc.primType == PrimitiveType::PatchList)
 		{
+			tessellationState.sType = VK_STRUCTURE_TYPE_PIPELINE_TESSELLATION_STATE_CREATE_INFO;
 			tessellationState.patchControlPoints = desc.patchControlPoints;
 			pipelineInfo.pTessellationState = &tessellationState;
 		}
@@ -857,19 +988,7 @@ namespace BlackPearl {
 			&pso->pipeline) != VK_SUCCESS) {
 			throw std::runtime_error("failed to create graphics pipeline!");
 		}
-		/*vkCreateGraphicsPipelines(m_Context.device, m_Context.pipelineCache,
-			1, &pipelineInfo,
-			m_Context.allocationCallbacks,
-			&pso->pipeline)*/
-
-
-			//res = m_Context.device.createGraphicsPipelines(m_Context.pipelineCache,
-			//	1, &pipelineInfo,
-			//	m_Context.allocationCallbacks,
-			//	&pso->pipeline);
-			//ASSERT_VK_OK(res); // for debugging
-			//CHECK_VK_FAIL(res);
-
+	
 		return GraphicsPipelineHandle::Create(pso);
 	}
 
@@ -881,6 +1000,239 @@ namespace BlackPearl {
 	MeshletPipelineHandle Device::createMeshletPipeline(const MeshletPipelineDesc& desc, IFramebuffer* fb)
 	{
 		return MeshletPipelineHandle();
+	}
+
+	RayTracingPipelineHandle Device::createRayTracingPipeline(const RayTracingPipelineDesc& desc)
+	{
+		RayTracingPipeline* pso = new RayTracingPipeline(m_Context);
+		pso->desc = desc;
+
+		// TODO: move the pipeline layout creation to a common function
+
+		for (const BindingLayoutHandle& _layout : desc.globalBindingLayouts)
+		{
+			BindingLayout* layout = static_cast<BindingLayout*>(_layout.Get());
+			pso->pipelineBindingLayouts.push_back(layout);
+		}
+
+		BindingVector<VkDescriptorSetLayout> descriptorSetLayouts;
+		uint32_t pushConstantSize = 0;
+		ShaderType pushConstantVisibility = ShaderType::None;
+		for (const BindingLayoutHandle& _layout : desc.globalBindingLayouts)
+		{
+			BindingLayout* layout = static_cast<BindingLayout*>(_layout.Get());
+			descriptorSetLayouts.push_back(layout->descriptorSetLayout);
+
+			if (!layout->isBindless)
+			{
+				for (const RHIBindingLayoutItem& item : layout->desc.bindings)
+				{
+					if (item.type == RHIResourceType::RT_PushConstants)
+					{
+						pushConstantSize = item.size;
+						pushConstantVisibility = layout->desc.visibility;
+						// assume there's only one push constant item in all layouts -- the validation layer makes sure of that
+						break;
+					}
+				}
+			}
+		}
+
+		VkPushConstantRange pushConstantRange{};
+
+		pushConstantRange.offset = 0;
+		pushConstantRange.size = pushConstantSize;
+		pushConstantRange.stageFlags = VkUtil::convertShaderTypeToShaderStageFlagBits(pushConstantVisibility);
+
+		VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
+		pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
+		pipelineLayoutInfo.setLayoutCount = uint32_t(descriptorSetLayouts.size());
+		pipelineLayoutInfo.pSetLayouts = descriptorSetLayouts.data();
+		pipelineLayoutInfo.pushConstantRangeCount = pushConstantSize ? 1 : 0;
+		pipelineLayoutInfo.pPushConstantRanges = &pushConstantRange;
+
+		if (vkCreatePipelineLayout(m_Context.device, &pipelineLayoutInfo,
+			m_Context.allocationCallbacks,
+			&pso->pipelineLayout) != VK_SUCCESS) {
+			throw std::runtime_error("failed to create pipeline layout!");
+		}
+
+
+
+		// Count all shader modules with their specializations,
+		// place them into a dictionary to remove duplicates.
+
+		size_t numShaders = 0;
+		size_t numShadersWithSpecializations = 0;
+		size_t numSpecializationConstants = 0;
+
+		std::unordered_map<EShader*, uint32_t> shaderStageIndices; // shader -> index
+
+		for (const auto& shaderDesc : desc.shaders)
+		{
+			if (shaderDesc.bindingLayout)
+			{
+				RHIUtils::NotSupported();
+				return nullptr;
+			}
+
+			registerShaderModule(shaderDesc.shader, shaderStageIndices, numShaders,
+				numShadersWithSpecializations, numSpecializationConstants);
+		}
+
+		for (const auto& hitGroupDesc : desc.hitGroups)
+		{
+			if (hitGroupDesc.bindingLayout)
+			{
+				RHIUtils::NotSupported();
+				return nullptr;
+			}
+
+			registerShaderModule(hitGroupDesc.closestHitShader, shaderStageIndices, numShaders,
+				numShadersWithSpecializations, numSpecializationConstants);
+
+			registerShaderModule(hitGroupDesc.anyHitShader, shaderStageIndices, numShaders,
+				numShadersWithSpecializations, numSpecializationConstants);
+
+			registerShaderModule(hitGroupDesc.intersectionShader, shaderStageIndices, numShaders,
+				numShadersWithSpecializations, numSpecializationConstants);
+		}
+
+		assert(numShaders == shaderStageIndices.size());
+
+		// Populate the shader stages, shader groups, and specializations arrays.
+
+		std::vector<VkPipelineShaderStageCreateInfo> shaderStages;
+		std::vector<VkRayTracingShaderGroupCreateInfoKHR> shaderGroups;
+		std::vector<VkSpecializationInfo> specInfos;
+		std::vector<VkSpecializationMapEntry> specMapEntries;
+		std::vector<uint32_t> specData;
+
+		shaderStages.resize(numShaders);
+		shaderGroups.reserve(desc.shaders.size() + desc.hitGroups.size());
+		specInfos.reserve(numShadersWithSpecializations);
+		specMapEntries.reserve(numSpecializationConstants);
+		specData.reserve(numSpecializationConstants);
+
+		// ... Individual shaders (RayGen, Miss, Callable)
+
+		for (const auto& shaderDesc : desc.shaders)
+		{
+			std::string exportName = shaderDesc.exportName;
+
+			/*	.setType(VkRayTracingShaderGroupTypeKHR::eGeneral)
+					.setClosestHitShader(VK_SHADER_UNUSED_KHR)
+					.setAnyHitShader(VK_SHADER_UNUSED_KHR)
+					.setIntersectionShader(VK_SHADER_UNUSED_KHR);*/
+
+			VkRayTracingShaderGroupCreateInfoKHR shaderGroupCreateInfo{};
+			shaderGroupCreateInfo.sType = VK_STRUCTURE_TYPE_RAY_TRACING_SHADER_GROUP_CREATE_INFO_KHR;
+			shaderGroupCreateInfo.type = VK_RAY_TRACING_SHADER_GROUP_TYPE_GENERAL_KHR;
+			shaderGroupCreateInfo.closestHitShader = VK_SHADER_UNUSED_KHR;
+			shaderGroupCreateInfo.anyHitShader = VK_SHADER_UNUSED_KHR;
+			shaderGroupCreateInfo.intersectionShader = VK_SHADER_UNUSED_KHR;
+			if (shaderDesc.shader)
+			{
+				EShader* shader = static_cast<EShader*>(shaderDesc.shader.Get());
+				uint32_t shaderStageIndex = shaderStageIndices[shader];
+				shaderStages[shaderStageIndex] = VkUtil::makeShaderStageCreateInfo(shader, specInfos, specMapEntries, specData);
+
+				if (exportName.empty())
+					exportName = shader->desc.entryName;
+
+				shaderGroupCreateInfo.generalShader = (shaderStageIndex);
+			}
+
+			if (!exportName.empty())
+			{
+				pso->shaderGroups[exportName] = uint32_t(shaderGroups.size());
+				shaderGroups.push_back(shaderGroupCreateInfo);
+			}
+		}
+
+		// ... Hit groups
+
+		for (const auto& hitGroupDesc : desc.hitGroups)
+		{
+
+			VkRayTracingShaderGroupCreateInfoKHR shaderGroupCreateInfo{};
+			shaderGroupCreateInfo.sType = VK_STRUCTURE_TYPE_RAY_TRACING_SHADER_GROUP_CREATE_INFO_KHR;
+			shaderGroupCreateInfo.type = hitGroupDesc.isProceduralPrimitive
+				? VK_RAY_TRACING_SHADER_GROUP_TYPE_PROCEDURAL_HIT_GROUP_KHR
+				: VK_RAY_TRACING_SHADER_GROUP_TYPE_TRIANGLES_HIT_GROUP_KHR;
+			shaderGroupCreateInfo.generalShader = VK_SHADER_UNUSED_KHR;
+			shaderGroupCreateInfo.closestHitShader = VK_SHADER_UNUSED_KHR;
+			shaderGroupCreateInfo.anyHitShader = VK_SHADER_UNUSED_KHR;
+			shaderGroupCreateInfo.intersectionShader = VK_SHADER_UNUSED_KHR;
+
+			if (hitGroupDesc.closestHitShader)
+			{
+				EShader* shader = static_cast<EShader*>(hitGroupDesc.closestHitShader.Get());
+				uint32_t shaderStageIndex = shaderStageIndices[shader];
+				shaderStages[shaderStageIndex] = VkUtil::makeShaderStageCreateInfo(shader, specInfos, specMapEntries, specData);
+				shaderGroupCreateInfo.closestHitShader = shaderStageIndex;
+			}
+			if (hitGroupDesc.anyHitShader)
+			{
+				EShader* shader = static_cast<EShader*>(hitGroupDesc.anyHitShader.Get());
+				uint32_t shaderStageIndex = shaderStageIndices[shader];
+				shaderStages[shaderStageIndex] = VkUtil::makeShaderStageCreateInfo(shader, specInfos, specMapEntries, specData);
+				shaderGroupCreateInfo.anyHitShader = shaderStageIndex;
+			}
+			if (hitGroupDesc.intersectionShader)
+			{
+				EShader* shader = static_cast<EShader*>(hitGroupDesc.intersectionShader.Get());
+				uint32_t shaderStageIndex = shaderStageIndices[shader];
+				shaderStages[shaderStageIndex] = VkUtil::makeShaderStageCreateInfo(shader, specInfos, specMapEntries, specData);
+				shaderGroupCreateInfo.intersectionShader = shaderStageIndex;
+			}
+
+			assert(!hitGroupDesc.exportName.empty());
+
+			pso->shaderGroups[hitGroupDesc.exportName] = uint32_t(shaderGroups.size());
+			shaderGroups.push_back(shaderGroupCreateInfo);
+		}
+
+		// Create the pipeline object
+
+		VkPipelineLibraryCreateInfoKHR libraryInfo{};
+		libraryInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LIBRARY_CREATE_INFO_KHR;
+		VkRayTracingPipelineCreateInfoKHR pipelineInfo{};
+		pipelineInfo.sType = VK_STRUCTURE_TYPE_RAY_TRACING_PIPELINE_CREATE_INFO_KHR;
+		pipelineInfo.pGroups = shaderGroups.data();
+		pipelineInfo.layout = pso->pipelineLayout;
+		pipelineInfo.maxPipelineRayRecursionDepth = desc.maxRecursionDepth;
+		pipelineInfo.pLibraryInfo = &libraryInfo;
+
+
+		VkDeferredOperationKHR deferredOp{};
+
+		//VkResult res = vkCreateRayTracingPipelinesKHR(m_Context.device, deferredOp, m_Context.pipelineCache,
+		//	1, &pipelineInfo,
+		//	m_Context.allocationCallbacks,
+		//	&pso->pipeline);
+
+		VkResult res = m_Context.vkFuncLoader->vkCreateRayTracingPipelinesKHR(m_Context.device, deferredOp, m_Context.pipelineCache,
+			1, &pipelineInfo,
+			m_Context.allocationCallbacks,
+			&pso->pipeline);
+		assert(res == VkResult::VK_SUCCESS);
+
+		// Obtain the shader group handles to fill the SBT buffer later
+
+		pso->shaderGroupHandles.resize(m_Context.rayTracingPipelineProperties.shaderGroupHandleSize * shaderGroups.size());
+
+
+		/*res = vkGetRayTracingShaderGroupHandlesKHR(m_Context.device, pso->pipeline, 0,
+			uint32_t(shaderGroups.size()),
+			pso->shaderGroupHandles.size(), pso->shaderGroupHandles.data());*/
+
+		res = m_Context.vkFuncLoader->vkGetRayTracingShaderGroupHandlesKHR(m_Context.device, pso->pipeline, 0,
+			uint32_t(shaderGroups.size()),
+			pso->shaderGroupHandles.size(), pso->shaderGroupHandles.data());
+
+
+		return RayTracingPipelineHandle::Create(pso);
 	}
 
 	CommandListHandle Device::createCommandList(const CommandListParameters& params)
@@ -931,7 +1283,8 @@ namespace BlackPearl {
 		//	.setMaxLod(std::numeric_limits<float>::max())
 		//	.setBorderColor(pickSamplerBorderColor(desc));
 
-		VkSamplerCreateInfo samplerInfo;
+		VkSamplerCreateInfo samplerInfo{};
+		samplerInfo.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
 		samplerInfo.magFilter = desc.magFilter ? VK_FILTER_LINEAR : VK_FILTER_NEAREST;
 		samplerInfo.minFilter = desc.minFilter ? VK_FILTER_LINEAR : VK_FILTER_NEAREST;
 		samplerInfo.mipmapMode = desc.mipFilter ? VK_SAMPLER_MIPMAP_MODE_LINEAR : VK_SAMPLER_MIPMAP_MODE_NEAREST;
@@ -949,11 +1302,12 @@ namespace BlackPearl {
 
 		sampler->samplerInfo = samplerInfo;
 
-		VkSamplerReductionModeCreateInfoEXT samplerReductionCreateInfo;
+		VkSamplerReductionModeCreateInfoEXT samplerReductionCreateInfo{};
 		if (desc.reductionType == SamplerReductionType::Minimum || desc.reductionType == SamplerReductionType::Maximum)
 		{
 			VkSamplerReductionModeEXT reductionMode =
 				desc.reductionType == SamplerReductionType::Maximum ? VK_SAMPLER_REDUCTION_MODE_MAX : VK_SAMPLER_REDUCTION_MODE_MIN;
+			samplerReductionCreateInfo.sType = VK_STRUCTURE_TYPE_SAMPLER_REDUCTION_MODE_CREATE_INFO_EXT;
 			samplerReductionCreateInfo.reductionMode = reductionMode;
 
 			sampler->samplerInfo.pNext = &samplerReductionCreateInfo;
@@ -973,7 +1327,8 @@ namespace BlackPearl {
 		shader->desc = d;
 		shader->stageFlagBits = VkUtil::convertShaderTypeToShaderStageFlagBits(d.shaderType);
 
-		VkShaderModuleCreateInfo shaderInfo;
+		VkShaderModuleCreateInfo shaderInfo{};
+		shaderInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
 		shaderInfo.codeSize = binarySize;
 		shaderInfo.pCode = (const uint32_t*)binary;
 
@@ -999,8 +1354,92 @@ namespace BlackPearl {
 
 	ShaderLibraryHandle Device::createShaderLibrary(const void* binary, size_t binarySize)
 	{
-		GE_ASSERT(0, "not complete yet");
-		return ShaderLibraryHandle();
+		ShaderLibrary* library = new ShaderLibrary(m_Context);
+
+		//auto shaderInfo = VkShaderModuleCreateInfo()
+		//	.setCodeSize(binarySize)
+		//	.setPCode((const uint32_t*)binary);
+
+
+		VkShaderModuleCreateInfo createInfo = {};
+		createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
+		createInfo.codeSize = binarySize;
+		createInfo.pCode = (const uint32_t*)binary;
+
+		const VkResult res = vkCreateShaderModule(m_Context.device, &createInfo, m_Context.allocationCallbacks, &library->shaderModule);
+		assert(res == VkResult::VK_SUCCESS);
+
+		return ShaderLibraryHandle::Create(library);
+	}
+
+	InputLayoutHandle Device::createInputLayout(const VertexAttributeDesc* attributeDesc, uint32_t attributeCount, IShader* vertexShader)
+	{
+		(void)vertexShader;
+
+		InputLayout* layout = new InputLayout();
+
+		int total_attribute_array_size = 0;
+
+		// collect all buffer bindings
+		std::unordered_map<uint32_t, VkVertexInputBindingDescription> bindingMap;
+		for (uint32_t i = 0; i < attributeCount; i++)
+		{
+			const VertexAttributeDesc& desc = attributeDesc[i];
+
+			assert(desc.arraySize > 0);
+
+			total_attribute_array_size += desc.arraySize;
+
+			if (bindingMap.find(desc.bufferIndex) == bindingMap.end())
+			{
+				VkVertexInputBindingDescription bindingDescription{};
+				bindingDescription.binding = desc.bufferIndex;
+				bindingDescription.stride = desc.elementStride;
+				bindingDescription.inputRate = desc.isInstanced ? VK_VERTEX_INPUT_RATE_INSTANCE : VK_VERTEX_INPUT_RATE_VERTEX;
+
+				bindingMap[desc.bufferIndex] = bindingDescription;
+				
+			}
+			else {
+				assert(bindingMap[desc.bufferIndex].stride == desc.elementStride);
+				assert(bindingMap[desc.bufferIndex].inputRate == (desc.isInstanced ? VK_VERTEX_INPUT_RATE_INSTANCE : VK_VERTEX_INPUT_RATE_VERTEX));
+			}
+		}
+
+		for (const auto& b : bindingMap)
+		{
+			layout->bindingDesc.push_back(b.second);
+		}
+
+		// build attribute descriptions
+		layout->inputDesc.resize(attributeCount);
+		layout->attributeDesc.resize(total_attribute_array_size);
+
+		uint32_t attributeLocation = 0;
+		for (uint32_t i = 0; i < attributeCount; i++)
+		{
+			const VertexAttributeDesc& in = attributeDesc[i];
+			layout->inputDesc[i] = in;
+
+			uint32_t element_size_bytes = getFormatInfo(in.format).bytesPerBlock;
+
+			uint32_t bufferOffset = 0;
+
+			for (uint32_t slot = 0; slot < in.arraySize; ++slot)
+			{
+				auto& outAttrib = layout->attributeDesc[attributeLocation];
+
+				outAttrib.location = attributeLocation;
+				outAttrib.binding = in.bufferIndex;
+				outAttrib.format = VkUtil::convertFormat(in.format);
+				outAttrib.offset = bufferOffset + in.offset;
+				bufferOffset += element_size_bytes;
+
+				++attributeLocation;
+			}
+		}
+
+		return InputLayoutHandle::Create(layout);
 	}
 
 	VkSemaphore Device::getQueueSemaphore(CommandQueue queueID)
@@ -1031,9 +1470,350 @@ namespace BlackPearl {
 		return value;//m_Context.device.getSemaphoreCounterValue(getQueueSemaphore(queue));
 	}
 
+	bool Device::queryFeatureSupport(Feature feature, void* pInfo, size_t infoSize)
+	{
+		switch (feature)  // NOLINT(clang-diagnostic-switch-enum)
+		{
+		case Feature::DeferredCommandLists:
+			return true;
+		case Feature::RayTracingAccelStruct:
+			return m_Context.extensions.KHR_acceleration_structure;
+		case Feature::RayTracingPipeline:
+			return m_Context.extensions.KHR_ray_tracing_pipeline;
+		case Feature::RayTracingOpacityMicromap:
+#ifdef NVRHI_WITH_RTXMU
+			return false; // RTXMU does not support OMMs
+#else
+			return m_Context.extensions.EXT_opacity_micromap && m_Context.extensions.KHR_synchronization2;
+#endif
+		case Feature::RayQuery:
+			return m_Context.extensions.KHR_ray_query;
+		case Feature::ShaderExecutionReordering:
+		{
+			if (m_Context.extensions.NV_ray_tracing_invocation_reorder)
+			{
+				return VK_RAY_TRACING_INVOCATION_REORDER_MODE_REORDER_NV == m_Context.nvRayTracingInvocationReorderProperties.rayTracingInvocationReorderReorderingHint;
+			}
+			return false;
+		}
+		case Feature::ShaderSpecializations:
+			return true;
+		case Feature::Meshlets:
+			return m_Context.extensions.NV_mesh_shader;
+		case Feature::VariableRateShading:
+			if (pInfo)
+			{
+				if (infoSize == sizeof(VariableRateShadingFeatureInfo))
+				{
+					auto* pVrsInfo = reinterpret_cast<VariableRateShadingFeatureInfo*>(pInfo);
+					const auto& tileExtent = m_Context.shadingRateProperties.minFragmentShadingRateAttachmentTexelSize;
+					pVrsInfo->shadingRateImageTileSize = std::max(tileExtent.width, tileExtent.height);
+				}
+				else
+					RHIUtils::NotSupported();
+			}
+			return m_Context.extensions.KHR_fragment_shading_rate && m_Context.shadingRateFeatures.attachmentFragmentShadingRate;
+		case Feature::ConservativeRasterization:
+			return m_Context.extensions.EXT_conservative_rasterization;
+		case Feature::VirtualResources:
+			return true;
+		case Feature::ComputeQueue:
+			return (m_Queues[uint32_t(CommandQueue::Compute)] != nullptr);
+		case Feature::CopyQueue:
+			return (m_Queues[uint32_t(CommandQueue::Copy)] != nullptr);
+		case Feature::ConstantBufferRanges:
+			return true;
+		default:
+			return false;
+		}
+	}
+
 	FramebufferHandle Device::createHandleForNativeFramebuffer(VkRenderPass renderPass, VkFramebuffer framebuffer, const FramebufferDesc& desc, bool transferOwnership)
 	{
 		return FramebufferHandle();
+	}
+
+	void Device::resizeDescriptorTable(IDescriptorTable* _descriptorTable, uint32_t newSize, bool keepContents)
+	{
+		assert(newSize <= static_cast<DescriptorTable*>(_descriptorTable)->layout->getBindlessDesc()->maxCapacity);
+		(void)_descriptorTable;
+		(void)newSize;
+		(void)keepContents;
+	}
+
+	bool Device::writeDescriptorTable(IDescriptorTable* _descriptorTable, const BindingSetItem& binding)
+	{
+		DescriptorTable* descriptorTable = static_cast<DescriptorTable*>(_descriptorTable);
+		BindingLayout* layout = static_cast<BindingLayout*>(descriptorTable->layout.Get());
+
+		if (binding.slot >= descriptorTable->capacity)
+			return false;
+
+		VkResult res;
+
+		// collect all of the descriptor write data
+		static_vector<VkDescriptorImageInfo, c_MaxBindingsPerLayout> descriptorImageInfo;
+		static_vector<VkDescriptorBufferInfo, c_MaxBindingsPerLayout> descriptorBufferInfo;
+		static_vector<VkWriteDescriptorSet, c_MaxBindingsPerLayout> descriptorWriteInfo;
+
+		auto generateWriteDescriptorData =
+			// generates a vk::WriteDescriptorSet struct in descriptorWriteInfo
+			[&](uint32_t bindingLocation,
+				VkDescriptorType descriptorType,
+				VkDescriptorImageInfo* imageInfo,
+				VkDescriptorBufferInfo* bufferInfo,
+				VkBufferView* bufferView)
+			{
+				/*descriptorWriteInfo.push_back(
+					VkWriteDescriptorSet()
+					.setDstSet(descriptorTable->descriptorSet)
+					.setDstBinding(bindingLocation)
+					.setDstArrayElement(binding.slot)
+					.setDescriptorCount(1)
+					.setDescriptorType(descriptorType)
+					.setPImageInfo(imageInfo)
+					.setPBufferInfo(bufferInfo)
+					.setPTexelBufferView(bufferView)
+				);*/
+
+
+
+				VkWriteDescriptorSet descriptorWrite{};
+				descriptorWrite.dstSet = descriptorTable->descriptorSet;
+				descriptorWrite.dstBinding = bindingLocation;
+				descriptorWrite.dstArrayElement = binding.slot;
+				descriptorWrite.descriptorCount = 1;
+				descriptorWrite.descriptorType = descriptorType;
+				descriptorWrite.pImageInfo = imageInfo;
+				descriptorWrite.pBufferInfo = bufferInfo;
+				descriptorWrite.pTexelBufferView = bufferView;
+
+				descriptorWriteInfo.push_back(descriptorWrite);
+				
+			};
+
+		for (uint32_t bindingLocation = 0; bindingLocation < uint32_t(layout->bindlessDesc.registerSpaces.size()); bindingLocation++)
+		{
+			if (layout->bindlessDesc.registerSpaces[bindingLocation].type == binding.type)
+			{
+				const VkDescriptorSetLayoutBinding& layoutBinding = layout->vulkanLayoutBindings[bindingLocation];
+
+				switch (binding.type)
+				{
+				case RHIResourceType::RT_Texture_SRV:
+				{
+					const auto& texture = static_cast<ETexture*>(binding.resourceHandle);
+
+					const auto subresource = binding.subresources.resolve(texture->desc, false);
+					const auto textureViewType = getTextureViewType(binding.format, texture->desc.format);
+					auto& view = texture->getSubresourceView(subresource, binding.dimension, binding.format, textureViewType);
+
+					VkDescriptorImageInfo& imageInfo = descriptorImageInfo.emplace_back();
+
+
+					//VkDescriptorImageInfo imageInfo;
+					imageInfo.imageView = view.view;
+					imageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+			/*		imageInfo = VkDescriptorImageInfo()
+						.setImageView(view.view)
+						.setImageLayout(vk::ImageLayout::eShaderReadOnlyOptimal);*/
+
+					generateWriteDescriptorData(layoutBinding.binding,
+						layoutBinding.descriptorType,
+						&imageInfo, nullptr, nullptr);
+				}
+
+				break;
+
+				case RHIResourceType::RT_Texture_UAV:
+				{
+					const auto texture = static_cast<ETexture*>(binding.resourceHandle);
+
+					const auto subresource = binding.subresources.resolve(texture->desc, true);
+					const auto textureViewType = getTextureViewType(binding.format, texture->desc.format);
+					auto& view = texture->getSubresourceView(subresource, binding.dimension, binding.format, textureViewType);
+
+					VkDescriptorImageInfo& imageInfo = descriptorImageInfo.emplace_back();
+					//imageInfo = vk::DescriptorImageInfo()
+					//	.setImageView(view.view)
+					//	.setImageLayout(vk::ImageLayout::eGeneral);
+
+
+					//VkDescriptorImageInfo imageInfo;
+					imageInfo.imageView = view.view;
+					imageInfo.imageLayout = VK_IMAGE_LAYOUT_GENERAL;
+
+					generateWriteDescriptorData(layoutBinding.binding,
+						layoutBinding.descriptorType,
+						&imageInfo, nullptr, nullptr);
+				}
+
+				break;
+
+				case RHIResourceType::RT_TypedBuffer_SRV:
+				case RHIResourceType::RT_TypedBuffer_UAV:
+				{
+					const auto& buffer = static_cast<Buffer*>(binding.resourceHandle);
+
+					auto vkformat = VkUtil::convertFormat(binding.format);
+
+					const auto range = binding.range.resolve(buffer->desc);
+					uint64_t viewInfoHash = 0;
+					hash_combine(viewInfoHash, range.byteOffset);
+					hash_combine(viewInfoHash, range.byteSize);
+					hash_combine(viewInfoHash, (uint64_t)vkformat);
+
+					const auto& bufferViewFound = buffer->viewCache.find(viewInfoHash);
+					auto& bufferViewRef = (bufferViewFound != buffer->viewCache.end()) ? bufferViewFound->second : buffer->viewCache[viewInfoHash];
+					if (bufferViewFound == buffer->viewCache.end())
+					{
+						assert(binding.format != Format::UNKNOWN);
+
+						VkBufferViewCreateInfo bufferViewInfo{};
+						bufferViewInfo.sType = VK_STRUCTURE_TYPE_BUFFER_VIEW_CREATE_INFO;
+						bufferViewInfo.buffer = buffer->buffer;
+						bufferViewInfo.offset = range.byteOffset;
+						bufferViewInfo.range = range.byteSize;
+						bufferViewInfo.format = vkformat;
+
+						//vkCreateBufferView(m_Context.device, &bufferViewInfo, m_Context.allocationCallbacks, &bufferViewRef);
+						if (vkCreateBufferView(m_Context.device, &bufferViewInfo, m_Context.allocationCallbacks, &bufferViewRef) != VK_SUCCESS) {
+							throw std::runtime_error("failed to create buffer view!");
+						}
+					/*	 VkBufferViewCreateInfo bufferViewInfo{}
+							.setBuffer(buffer->buffer)
+							.setOffset(range.byteOffset)
+							.setRange(range.byteSize)
+							.setFormat(vk::Format(vkformat));
+
+						res = m_Context.device.createBufferView(&bufferViewInfo, m_Context.allocationCallbacks, &bufferViewRef);
+						ASSERT_VK_OK(res);*/
+					}
+
+					generateWriteDescriptorData(layoutBinding.binding,
+						layoutBinding.descriptorType,
+						nullptr, nullptr, &bufferViewRef);
+				}
+				break;
+
+				case RHIResourceType::RT_StructuredBuffer_SRV:
+				case RHIResourceType::RT_StructuredBuffer_UAV:
+				case RHIResourceType::RT_RawBuffer_SRV:
+				case RHIResourceType::RT_RawBuffer_UAV:
+				case RHIResourceType::RT_ConstantBuffer:
+				case RHIResourceType::RT_VolatileConstantBuffer:
+				{
+					const auto buffer = static_cast<Buffer*>(binding.resourceHandle);
+
+					const auto range = binding.range.resolve(buffer->desc);
+
+					auto& bufferInfo = descriptorBufferInfo.emplace_back();
+					//VkDescriptorBufferInfo bufferInfo{};
+					
+					bufferInfo.buffer = buffer->buffer;
+					bufferInfo.offset = range.byteOffset;
+					bufferInfo.range = range.byteSize;
+
+					assert(buffer->buffer);
+					generateWriteDescriptorData(layoutBinding.binding,
+						layoutBinding.descriptorType,
+						nullptr, &bufferInfo, nullptr);
+				}
+
+				break;
+
+				case RHIResourceType::RT_Sampler:
+				{
+					const auto& sampler = static_cast<Sampler*>(binding.resourceHandle);
+
+					VkDescriptorImageInfo& imageInfo = descriptorImageInfo.emplace_back();
+					imageInfo.sampler = sampler->sampler;
+				/*	imageInfo = vk::DescriptorImageInfo()
+						.setSampler(sampler->sampler);*/
+
+					generateWriteDescriptorData(layoutBinding.binding,
+						layoutBinding.descriptorType,
+						&imageInfo, nullptr, nullptr);
+				}
+
+				break;
+
+				case RHIResourceType::RT_RayTracingAccelStruct:
+					RHIUtils::NotImplemented();
+					break;
+
+				case RHIResourceType::RT_PushConstants:
+					RHIUtils::NotSupported();
+					break;
+
+				case RHIResourceType::RT_None:
+				case RHIResourceType::RT_Count:
+				default:
+					RHIUtils::InvalidEnum();
+				}
+			}
+		}
+		vkUpdateDescriptorSets(m_Context.device, uint32_t(descriptorWriteInfo.size()), descriptorWriteInfo.data(), 0, nullptr);
+		//m_Context.device.updateDescriptorSets(uint32_t(descriptorWriteInfo.size()), descriptorWriteInfo.data(), 0, nullptr);
+
+		return true;
+	}
+
+	FormatSupport Device::queryFormatSupport(Format format)
+	{
+		VkFormat vulkanFormat = VkUtil::convertFormat(format);
+
+		VkFormatProperties props;
+		//m_Context.physicalDevice.getFormatProperties(vk::Format(vulkanFormat), &props);
+		//TODO::
+		FormatSupport result = FormatSupport::None;
+
+		//if (props.bufferFeatures)
+		//	result = result | FormatSupport::Buffer;
+
+		//if (format == Format::R32_UINT || format == Format::R16_UINT) {
+		//	// There is no explicit bit in vk::FormatFeatureFlags for index buffers
+		//	result = result | FormatSupport::IndexBuffer;
+		//}
+
+		//if (props.bufferFeatures & vk::FormatFeatureFlagBits::eVertexBuffer)
+		//	result = result | FormatSupport::VertexBuffer;
+
+		//if (props.optimalTilingFeatures)
+		//	result = result | FormatSupport::Texture;
+
+		//if (props.optimalTilingFeatures & vk::FormatFeatureFlagBits::eDepthStencilAttachment)
+		//	result = result | FormatSupport::DepthStencil;
+
+		//if (props.optimalTilingFeatures & vk::FormatFeatureFlagBits::eColorAttachment)
+		//	result = result | FormatSupport::RenderTarget;
+
+		//if (props.optimalTilingFeatures & vk::FormatFeatureFlagBits::eColorAttachmentBlend)
+		//	result = result | FormatSupport::Blendable;
+
+		//if ((props.optimalTilingFeatures & vk::FormatFeatureFlagBits::eSampledImage) ||
+		//	(props.bufferFeatures & vk::FormatFeatureFlagBits::eUniformTexelBuffer))
+		//{
+		//	result = result | FormatSupport::ShaderLoad;
+		//}
+
+		//if (props.optimalTilingFeatures & vk::FormatFeatureFlagBits::eSampledImageFilterLinear)
+		//	result = result | FormatSupport::ShaderSample;
+
+		//if ((props.optimalTilingFeatures & vk::FormatFeatureFlagBits::eStorageImage) ||
+		//	(props.bufferFeatures & vk::FormatFeatureFlagBits::eStorageTexelBuffer))
+		//{
+		//	result = result | FormatSupport::ShaderUavLoad;
+		//	result = result | FormatSupport::ShaderUavStore;
+		//}
+
+		//if ((props.optimalTilingFeatures & vk::FormatFeatureFlagBits::eStorageImageAtomic) ||
+		//	(props.bufferFeatures & vk::FormatFeatureFlagBits::eStorageTexelBufferAtomic))
+		//{
+		//	result = result | FormatSupport::ShaderAtomic;
+		//}
+
+		return result;
 	}
 
 	EventQueryHandle Device::createEventQuery()
@@ -1082,20 +1862,29 @@ namespace BlackPearl {
 		query->commandListID = 0;
 	}
 
-
-	static ETexture::TextureSubresourceViewType getTextureViewType(Format bindingFormat, Format textureFormat)
+	void generateWriteDescriptorData(uint32_t bindingLocation,
+		VkDescriptorType descriptorType,
+		VkDescriptorImageInfo* imageInfo,
+		VkDescriptorBufferInfo* bufferInfo,
+		VkBufferView* bufferView,
+		VkWriteDescriptorSet* descriptorWriteInfo, 
+		BindingSet* ret,int bindingIndex,
+		const void* pNext = nullptr) 
 	{
-		Format format = (bindingFormat == Format::UNKNOWN) ? textureFormat : bindingFormat;
+		//VkWriteDescriptorSet& descriptorWrites = descriptorWriteInfo[bindingIndex];
+		descriptorWriteInfo[bindingIndex].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+		descriptorWriteInfo[bindingIndex].descriptorType = descriptorType;
+		descriptorWriteInfo[bindingIndex].dstSet = ret->descriptorSet;
+		descriptorWriteInfo[bindingIndex].dstBinding = bindingLocation;
+		descriptorWriteInfo[bindingIndex].dstArrayElement = 0;
+		descriptorWriteInfo[bindingIndex].descriptorCount = 1;
+		descriptorWriteInfo[bindingIndex].pImageInfo = imageInfo;
+		descriptorWriteInfo[bindingIndex].pBufferInfo = bufferInfo;
+		descriptorWriteInfo[bindingIndex].pTexelBufferView = bufferView;
+		descriptorWriteInfo[bindingIndex].pNext = pNext;
 
-		const FormatInfo& formatInfo = getFormatInfo(format);
-
-		if (formatInfo.hasDepth)
-			return ETexture::TextureSubresourceViewType::DepthOnly;
-		else if (formatInfo.hasStencil)
-			return ETexture::TextureSubresourceViewType::StencilOnly;
-		else
-			return ETexture::TextureSubresourceViewType::AllAspects;
 	}
+	
 
 	BindingSetHandle Device::createBindingSet(const BindingSetDesc& desc, IBindingLayout* _layout)
 	{
@@ -1108,7 +1897,8 @@ namespace BlackPearl {
 		const auto& descriptorSetLayout = layout->descriptorSetLayout;
 		const auto& poolSizes = layout->descriptorPoolSizeInfo;
 
-		VkDescriptorPoolCreateInfo poolInfo;
+		VkDescriptorPoolCreateInfo poolInfo{};
+		poolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
 		poolInfo.poolSizeCount = uint32_t(poolSizes.size());
 		poolInfo.pPoolSizes = poolSizes.data();
 		poolInfo.maxSets = 1;
@@ -1129,37 +1919,18 @@ namespace BlackPearl {
 		}
 
 		// collect all of the descriptor write data
-		nvrhi::static_vector<VkDescriptorImageInfo, c_MaxBindingsPerLayout> descriptorImageInfo;
-		nvrhi::static_vector<VkDescriptorBufferInfo, c_MaxBindingsPerLayout> descriptorBufferInfo;
-		nvrhi::static_vector<VkWriteDescriptorSet, c_MaxBindingsPerLayout> descriptorWriteInfo;
-		nvrhi::static_vector<VkWriteDescriptorSetAccelerationStructureKHR, c_MaxBindingsPerLayout> accelStructWriteInfo;
+		std::vector<VkDescriptorImageInfo> descriptorImageInfo;
+		std::vector<VkDescriptorBufferInfo> descriptorBufferInfo;
+		VkWriteDescriptorSet descriptorWriteInfo[200];
+		VkDescriptorBufferInfo bufferinfos[100];
+		VkDescriptorImageInfo imageInfos[100];
+		VkBufferViewCreateInfo  bufferViewinfos[100];
+		int descriptorCnt = 0;
+		int bufferDescCnt = 0;
+		int bufferViewDescCnt = 0;
+		int ImageDescCnt = 0;
 
-		auto generateWriteDescriptorData =
-			// generates a vk::WriteDescriptorSet struct in descriptorWriteInfo
-			[&](uint32_t bindingLocation,
-				VkDescriptorType descriptorType,
-				VkDescriptorImageInfo* imageInfo,
-				VkDescriptorBufferInfo* bufferInfo,
-				VkBufferView* bufferView,
-				const void* pNext = nullptr)
-			{
-
-				VkWriteDescriptorSet&& descriptorWrites = {};
-				descriptorWrites.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-				descriptorWrites.descriptorType = descriptorType;
-				descriptorWrites.dstSet = ret->descriptorSet;
-				descriptorWrites.dstBinding = bindingLocation;
-				descriptorWrites.dstArrayElement = 0;
-				descriptorWrites.descriptorCount = 1;
-				descriptorWrites.pImageInfo = imageInfo;
-				descriptorWrites.pBufferInfo = bufferInfo;
-				descriptorWrites.pTexelBufferView = bufferView;
-				descriptorWrites.pNext = pNext;
-
-
-				descriptorWriteInfo.push_back(std::move(descriptorWrites));
-
-			};
+		std::vector<VkWriteDescriptorSetAccelerationStructureKHR> accelStructWriteInfo;
 
 		for (size_t bindingIndex = 0; bindingIndex < desc.bindings.size(); bindingIndex++)
 		{
@@ -1183,15 +1954,15 @@ namespace BlackPearl {
 				const ETexture::TextureSubresourceViewType textureViewType = getTextureViewType(binding.format, texture->desc.format);
 				auto& view = texture->getSubresourceView(subresource, binding.dimension, binding.format, textureViewType);
 
-				VkDescriptorImageInfo& imageInfo = descriptorImageInfo.emplace_back();
-
-				//VkDescriptorImageInfo imageInfo;
-				imageInfo.imageView = view.view;
-				imageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+				imageInfos[ImageDescCnt].imageView = view.view;
+				imageInfos[ImageDescCnt].imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
 
 				generateWriteDescriptorData(layoutBinding.binding,
 					layoutBinding.descriptorType,
-					&imageInfo, nullptr, nullptr);
+					&imageInfos[ImageDescCnt], nullptr,nullptr, descriptorWriteInfo, ret, bindingIndex);
+
+				ImageDescCnt++;
+				descriptorCnt++;
 
 				if (!static_cast<bool>(texture->permanentState))
 					ret->bindingsThatNeedTransitions.push_back(static_cast<uint16_t>(bindingIndex));
@@ -1211,19 +1982,16 @@ namespace BlackPearl {
 				const auto textureViewType = getTextureViewType(binding.format, texture->desc.format);
 				auto& view = texture->getSubresourceView(subresource, binding.dimension, binding.format, textureViewType);
 
-				VkDescriptorImageInfo& imageInfo = descriptorImageInfo.emplace_back();
 
-				//VkDescriptorImageInfo imageInfo{};
-				imageInfo.imageView = view.view;
-				imageInfo.imageLayout = VK_IMAGE_LAYOUT_GENERAL;
+				imageInfos[ImageDescCnt].imageView = view.view;
+				imageInfos[ImageDescCnt].imageLayout = VK_IMAGE_LAYOUT_GENERAL;
 
-				//imageInfo = vk::DescriptorImageInfo()
-				//	.setImageView(view.view)
-				//	.setImageLayout(vk::ImageLayout::eGeneral);
 
 				generateWriteDescriptorData(layoutBinding.binding,
 					layoutBinding.descriptorType,
-					&imageInfo, nullptr, nullptr);
+					&imageInfos[ImageDescCnt], nullptr, nullptr, descriptorWriteInfo, ret, bindingIndex);
+				ImageDescCnt++;
+				descriptorCnt++;
 
 				if (!static_cast<bool>(texture->permanentState))
 					ret->bindingsThatNeedTransitions.push_back(static_cast<uint16_t>(bindingIndex));
@@ -1232,9 +2000,7 @@ namespace BlackPearl {
 						ResourceStates::UnorderedAccess,
 						true, texture->desc.debugName, m_Context.messageCallback);
 			}
-
 			break;
-
 			case RHIResourceType::RT_TypedBuffer_SRV:
 			case RHIResourceType::RT_TypedBuffer_UAV:
 			{
@@ -1266,30 +2032,24 @@ namespace BlackPearl {
 				{
 					assert(format != Format::UNKNOWN);
 
+					bufferViewinfos[bufferViewDescCnt].sType = VK_STRUCTURE_TYPE_BUFFER_VIEW_CREATE_INFO;
+					bufferViewinfos[bufferViewDescCnt].buffer = buffer->buffer;
+					bufferViewinfos[bufferViewDescCnt].offset = range.byteOffset;
+					bufferViewinfos[bufferViewDescCnt].range = range.byteSize;
+					bufferViewinfos[bufferViewDescCnt].format = vkformat;
 
-					/*			auto bufferViewInfo = vk::BufferViewCreateInfo()
-									.setBuffer(buffer->buffer)
-									.setOffset(range.byteOffset)
-									.setRange(range.byteSize)
-									.setFormat(vkformat);*/
-
-					VkBufferViewCreateInfo bufferViewInfo;
-					bufferViewInfo.buffer = buffer->buffer;
-					bufferViewInfo.offset = range.byteOffset;
-					bufferViewInfo.range = range.byteSize;
-					bufferViewInfo.format = vkformat;
-
-					vkCreateBufferView(m_Context.device, &bufferViewInfo, m_Context.allocationCallbacks, &bufferViewRef);
-					if (vkCreateBufferView(m_Context.device, &bufferViewInfo, m_Context.allocationCallbacks, &bufferViewRef) != VK_SUCCESS) {
+					if (vkCreateBufferView(m_Context.device, &bufferViewinfos[bufferViewDescCnt], m_Context.allocationCallbacks, &bufferViewRef) != VK_SUCCESS) {
 						throw std::runtime_error("failed to create buffer view!");
 					}
-					/*		res = m_Context.device.createBufferView(&bufferViewInfo, m_Context.allocationCallbacks, &bufferViewRef);
-							ASSERT_VK_OK(res);*/
 				}
 
 				generateWriteDescriptorData(layoutBinding.binding,
 					layoutBinding.descriptorType,
-					nullptr, nullptr, &bufferViewRef);
+					nullptr, nullptr, &bufferViewRef, descriptorWriteInfo, ret, bindingIndex);
+
+				bufferViewDescCnt++;
+				descriptorCnt++;
+
 
 				if (!static_cast<bool>(buffer->permanentState))
 					ret->bindingsThatNeedTransitions.push_back(static_cast<uint16_t>(bindingIndex));
@@ -1307,7 +2067,7 @@ namespace BlackPearl {
 			case RHIResourceType::RT_ConstantBuffer:
 			case RHIResourceType::RT_VolatileConstantBuffer:
 			{
-				const auto buffer = dynamic_cast<Buffer*>(binding.resourceHandle);
+				Buffer* buffer = static_cast<Buffer*>(binding.resourceHandle);
 
 				if (binding.type == RHIResourceType::RT_StructuredBuffer_UAV || binding.type == RHIResourceType::RT_RawBuffer_UAV)
 					assert(buffer->desc.canHaveUAVs);
@@ -1318,21 +2078,26 @@ namespace BlackPearl {
 
 				const auto range = binding.range.resolve(buffer->desc);
 
-				auto& bufferInfo = descriptorBufferInfo.emplace_back();
-				//VkDescriptorBufferInfo bufferInfo;
-				bufferInfo.buffer = buffer->buffer;
-				bufferInfo.offset = range.byteOffset;
-				bufferInfo.range = range.byteSize;
-
-				/*           bufferInfo = vk::DescriptorBufferInfo()
-							   .setBuffer(buffer->buffer)
-							   .setOffset(range.byteOffset)
-							   .setRange(range.byteSize);*/
-
+				bufferinfos[bufferDescCnt].buffer = buffer->buffer;
+				bufferinfos[bufferDescCnt].offset = range.byteOffset;
+				bufferinfos[bufferDescCnt].range = range.byteSize;
+			
 				assert(buffer->buffer);
-				generateWriteDescriptorData(layoutBinding.binding,
-					layoutBinding.descriptorType,
-					nullptr, &bufferInfo, nullptr);
+
+				descriptorWriteInfo[bindingIndex].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+				descriptorWriteInfo[bindingIndex].descriptorType = layoutBinding.descriptorType;
+				descriptorWriteInfo[bindingIndex].dstSet = ret->descriptorSet;
+				descriptorWriteInfo[bindingIndex].dstBinding = layoutBinding.binding;
+				descriptorWriteInfo[bindingIndex].dstArrayElement = 0;
+				descriptorWriteInfo[bindingIndex].descriptorCount = 1;
+				descriptorWriteInfo[bindingIndex].pImageInfo = nullptr;
+				descriptorWriteInfo[bindingIndex].pBufferInfo = &bufferinfos[bufferDescCnt];
+				descriptorWriteInfo[bindingIndex].pTexelBufferView = nullptr;
+				descriptorWriteInfo[bindingIndex].pNext = nullptr;
+
+				bufferDescCnt++;
+				descriptorCnt++;
+
 
 				if (binding.type == RHIResourceType::RT_VolatileConstantBuffer)
 				{
@@ -1365,15 +2130,25 @@ namespace BlackPearl {
 			{
 				const auto sampler = dynamic_cast<Sampler*>(binding.resourceHandle);
 
-				auto& imageInfo = descriptorImageInfo.emplace_back();
+				//VkDescriptorImageInfo imageInfo{};
 
-				imageInfo.sampler = sampler->sampler;
-				//imageInfo = vk::DescriptorImageInfo()
-				//	.setSampler(sampler->sampler);
+				//imageInfo.sampler = sampler->sampler;
+				////imageInfo = vk::DescriptorImageInfo()
+				////	.setSampler(sampler->sampler);
+				//descriptorImageInfo.push_back(imageInfo);
+
+				imageInfos[ImageDescCnt].sampler = sampler->sampler;
+
+
+
 
 				generateWriteDescriptorData(layoutBinding.binding,
 					layoutBinding.descriptorType,
-					&imageInfo, nullptr, nullptr);
+					&imageInfos[ImageDescCnt], nullptr, nullptr, descriptorWriteInfo, ret, bindingIndex);
+
+				ImageDescCnt++;
+				descriptorCnt++;
+
 			}
 
 			break;
@@ -1407,7 +2182,7 @@ namespace BlackPearl {
 		}
 
 		//m_Context.device.updateDescriptorSets(uint32_t(descriptorWriteInfo.size()), descriptorWriteInfo.data(), 0, nullptr);
-		vkUpdateDescriptorSets(m_Context.device, uint32_t(descriptorWriteInfo.size()), descriptorWriteInfo.data(), 0, nullptr);
+		vkUpdateDescriptorSets(m_Context.device, uint32_t(descriptorCnt), descriptorWriteInfo, 0, nullptr);
 
 
 		return BindingSetHandle::Create(ret);
@@ -1444,6 +2219,48 @@ namespace BlackPearl {
 
 		Device* device = new Device(desc);
 		return DeviceHandle::Create(device);
+	}
+
+	void* Device::mapBuffer(IBuffer* b, CpuAccessMode flags, uint64_t offset, size_t size) const
+	{
+		Buffer* buffer = static_cast<Buffer*>(b);
+
+		assert(flags != CpuAccessMode::None);
+
+		// If the buffer has been used in a command list before, wait for that CL to complete
+		if (buffer->lastUseCommandListID != 0)
+		{
+			auto& queue = m_Queues[uint32_t(buffer->lastUseQueue)];
+			queue->waitCommandList(buffer->lastUseCommandListID, ~0ull);
+		}
+
+		VkAccessFlags accessFlags;
+
+		switch (flags)
+		{
+		case CpuAccessMode::Read:
+			accessFlags = VK_ACCESS_HOST_READ_BIT;
+			break;
+
+		case CpuAccessMode::Write:
+			accessFlags = VK_ACCESS_MEMORY_WRITE_BIT;
+			break;
+
+		case CpuAccessMode::None:
+		default:
+			RHIUtils::InvalidEnum();
+			break;
+		}
+
+		// TODO: there should be a barrier... But there can't be a command list here
+		// buffer->barrier(cmd, vk::PipelineStageFlagBits::eHost, accessFlags);
+
+		void* ptr = nullptr;
+		VkResult res = vkMapMemory(m_Context.device, buffer->memory, 0, size, 0, &ptr);
+		//[[maybe_unused]] const VkResult res = m_Context.device.mapMemory(buffer->memory, offset, size, vk::MemoryMapFlags(), &ptr);
+		assert(res == VkResult::VK_SUCCESS);
+
+		return ptr;
 	}
 
 }

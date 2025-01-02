@@ -94,7 +94,7 @@ namespace BlackPearl
                 bufferView.Offset = dataOffset;
                 bufferView.Size = m.VertexCount * l.Stride;
 
-                for (uint32_t k = 0; k < Attribute::Count; ++k)
+                for (uint32_t k = 0; k < _countof(meshView.Attributes); ++k)
                 {
                     meshView.Attributes[k] = uint32_t(-1);
                 }

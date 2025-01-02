@@ -1,5 +1,4 @@
 #pragma once
-#ifdef GE_API_D3D12
 #include "Scene.h"
 #include "BlackPearl/Renderer/Buffer/D3D12Buffer/D3D12Buffer.h"
 #include "BlackPearl/RHI/D3D12RHI/DirectXRaytracingHelper.h"
@@ -29,13 +28,13 @@ namespace BlackPearl {
 			Count_IntersectionShaderType
 		};
 
-		//Ã¿ï¿½ï¿½Triangleï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+		//Ã¿¸öTriangleµÄÊôÐÔ
 		struct TriangleRootArguments
 		{
 			PrimitiveConstantBuffer materialCb;
 		};
 
-		//Ã¿ï¿½ï¿½AABBï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+		//Ã¿¸öAABBµÄÊôÐÔ
 		struct AABBRootArguments
 		{
 			PrimitiveConstantBuffer materialCb;
@@ -127,4 +126,3 @@ namespace BlackPearl {
 	};
 
 }
-#endif

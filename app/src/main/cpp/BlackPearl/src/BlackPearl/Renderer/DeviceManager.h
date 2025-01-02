@@ -25,10 +25,14 @@
 #include "BlackPearl/RHI/RHIDevice.h"
 #include "BlackPearl/RHI/RHIDefinitions.h"
 #include "BlackPearl/RHI/DynamicRHI.h"
-#include <list>
+
 #if GE_API_VULKAN
-#include <vulkan/vulkan.h>
 #include <vulkan/vulkan_core.h>
+#endif
+
+#if GE_API_D3D12
+#include <dxgi.h>
+#include <d3dcommon.h>
 #endif
 
 namespace BlackPearl {
@@ -42,7 +46,7 @@ namespace BlackPearl {
         uint32_t backBufferWidth = 1280;
         uint32_t backBufferHeight = 720;
         uint32_t refreshRate = 0;
-        uint32_t swapChainBufferCount = 3;
+        uint32_t swapChainBufferCount = 2;
         Format swapChainFormat = Format::SRGBA8_UNORM;
         uint32_t swapChainSampleCount = 1;
         uint32_t swapChainSampleQuality = 0;
@@ -101,11 +105,11 @@ namespace BlackPearl {
 	class DeviceManager
 	{
     public:
+        void Init(const DeviceCreationParameters& params);
         static DeviceManager* Create(DynamicRHI::Type api);
 
-        bool CreateWindowDeviceAndSwapChain(const DeviceCreationParameters& params, const char* windowTitle);
+        IFramebuffer* GetFrameBuffer();
 
-        bool CreateDeviceAndSwapChain(const DeviceCreationParameters& params);
 
         void AddRenderGraphToFront(RenderGraph* pController);
         void AddRenderGraphToBack(RenderGraph* pController);
@@ -121,6 +125,9 @@ namespace BlackPearl {
             x = m_DPIScaleFactorX;
             y = m_DPIScaleFactorY;
         }
+        virtual void BeginFrame() = 0;
+        virtual void Present() = 0;
+        void UpdateWindowSize();
 
     protected:
         bool m_windowVisible = false;
@@ -148,7 +155,10 @@ namespace BlackPearl {
 
         DeviceManager() = default;
 
-        void UpdateWindowSize();
+        bool CreateWindowDeviceAndSwapChain(const DeviceCreationParameters& params, const char* windowTitle);
+        bool CreateDeviceAndSwapChain(const DeviceCreationParameters& params);
+
+
 
         void BackBufferResizing();
         void BackBufferResized();
@@ -161,8 +171,7 @@ namespace BlackPearl {
         virtual bool CreateDeviceAndSwapChain() = 0;
         virtual void DestroyDeviceAndSwapChain() = 0;
         virtual void ResizeSwapChain() = 0;
-        virtual void BeginFrame() = 0;
-        virtual void Present() = 0;
+    
 
     public:
         [[nodiscard]] virtual IDevice* GetDevice() const = 0;
@@ -225,10 +234,10 @@ namespace BlackPearl {
         } m_callbacks;
 
     private:
-        static DeviceManager* CreateD3D11();
+
         static DeviceManager* CreateD3D12();
         static DeviceManager* CreateVK();
-
+        static DeviceManager* CreateOpenGL();
         std::string m_WindowTitle;
 	};
 

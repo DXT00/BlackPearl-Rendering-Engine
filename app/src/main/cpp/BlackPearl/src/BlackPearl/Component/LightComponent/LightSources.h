@@ -1,7 +1,7 @@
 #pragma once
 #include "BlackPearl/Object/Object.h"
 namespace BlackPearl {
-
+	class Light;
 	class LightSources
 	{
 	public:
@@ -14,6 +14,8 @@ namespace BlackPearl {
 		void AddLight(Object* light);
 		inline unsigned int const GetPointLightNum()const { return m_PointLightNums; }
 		inline std::vector<Object*> Get()const { return m_LightSources; }
+		std::vector<Light*> GetLights()const { return m_Lights; }
+
 		std::vector<Object*> GetPointLights() const { return m_PontLights; }
 		std::vector<Object*> GetParallelLights() const { return m_ParallelLights; }
 		std::vector<Object*> GetSpotLights() const { return m_SpotLights; }
@@ -27,7 +29,8 @@ namespace BlackPearl {
 		std::vector<Object*> m_PontLights;
 		std::vector<Object*> m_ParallelLights;
 		std::vector<Object*> m_SpotLights;
-							 
+		std::vector<Light*>  m_Lights;
+
 
 		unsigned int m_PointLightNums;
 

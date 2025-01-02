@@ -10,7 +10,6 @@
 //*********************************************************
 
 #pragma once
-#ifdef GE_API_D3D12
 #include <wrl.h>
 #include <d3d12.h>
 #include <dxgi1_6.h>
@@ -238,4 +237,3 @@ namespace BlackPearl {
             && featureSupportData.RaytracingTier != D3D12_RAYTRACING_TIER_NOT_SUPPORTED;
     }
 }
-#endif

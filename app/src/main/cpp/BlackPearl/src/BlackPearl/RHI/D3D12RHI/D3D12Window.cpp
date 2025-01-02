@@ -1,5 +1,4 @@
 #include "pch.h"
-#ifdef GE_API_D3D12
 #include "D3D12Window.h"
 #include "BlackPearl/Application.h"
 #include "BlackPearl/Common/CommonFunc.h"
@@ -109,15 +108,15 @@ namespace BlackPearl {
 		return { m_MousePosition.first, m_MousePosition.second};
 	}
 
-	donut::math::vector<int, 2> D3D12Window::GetCurWindowSize()
+	math::vector<int, 2> D3D12Window::GetCurWindowSize()
 	{
 		HWND foreground = GetForegroundWindow();
 		RECT rct;
 		GetWindowRect(foreground, &rct);
-		int width = rct.right - rct.left;   //ï¿½ï¿½ï¿½ÚµÄ¿ï¿½ï¿½
-		int height = rct.bottom - rct.top;  //ï¿½ï¿½ï¿½ÚµÄ¸ß¶ï¿½
+		int width = rct.right - rct.left;   //´°¿ÚµÄ¿í¶È
+		int height = rct.bottom - rct.top;  //´°¿ÚµÄ¸ß¶È
 
-		return donut::math::vector<int, 2>(width, height);
+		return math::vector<int, 2>(width, height);
 	}
 
 	LRESULT CALLBACK D3D12Window::WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) {
@@ -178,4 +177,3 @@ namespace BlackPearl {
 			lParam);
 	}
 }
-#endif

@@ -1,10 +1,5 @@
 #pragma once
-#ifdef GE_PLATFORM_ANDRIOD
-#include "GLES3/gl3.h"
-#endif
-#ifdef GE_PLATFORM_WINDOWS
 #include "glad/glad.h"
-#endif
 #include<glm/glm.hpp>
 #include<string>
 #include<memory>
@@ -24,7 +19,7 @@ namespace BlackPearl {
 		std::vector<char> Code();
 		//std::string ReadFile(const std::string& filepath);
 
-		std::unordered_map<GLenum, std::string> PreProcess(const std::string& source, const std::string& commonSource);
+		std::unordered_map<GLenum, std::string> vkShader::PreProcess(const std::string& source, const std::string& commonSource);
 		void Compile(const std::unordered_map<GLenum, std::string>& shaderSources);
 
 		//void SetLightUniform(LightSources lightSources);

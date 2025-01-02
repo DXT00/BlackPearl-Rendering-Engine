@@ -1,14 +1,12 @@
 #pragma once
-#include "BasicRenderer.h"
 //#define VK_USE_PLATFORM_WIN32_KHR
 #ifdef GE_API_VULKAN
-//#define GLFW_INCLUDE_NONE
-//#define GLFW_INCLUDE_VULKAN
-#include <vulkan/vulkan.h>
 
-//#include <GLFW/glfw3.h>
-//#define GLFW_EXPOSE_NATIVE_WIN32
+#include "vulkan/vulkan_core.h"
 
+#define GLFW_INCLUDE_VULKAN
+#include <GLFW/glfw3.h>
+#include "BasicRenderer.h"
 
 namespace BlackPearl {
 

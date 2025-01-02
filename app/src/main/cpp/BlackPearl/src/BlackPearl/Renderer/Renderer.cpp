@@ -1,10 +1,5 @@
 #include "pch.h"
-#ifdef GE_PLATFORM_ANDRIOD
-#include "GLES3/gl3.h"
-#endif
-#ifdef GE_PLATFORM_WINDOWS
-#include "glad/glad.h"
-#endif
+#include<glad/glad.h>
 #include "Renderer.h"
 #include "BlackPearl/Component/LightComponent/Light.h"
 #include "BlackPearl/Component/LightComponent/ParallelLight.h"
@@ -13,9 +8,13 @@
 #include "BlackPearl/Component/LightComponent/LightSources.h"
 #include "glm/gtc/matrix_transform.hpp"
 #include "Mesh/Mesh.h"
+using namespace BlackPearl::math;
+#include <hlsl/core/view_cb.h>
+
 namespace BlackPearl {
 
-	Renderer::SceneData * Renderer::s_SceneData = DBG_NEW Renderer::SceneData;
+	SceneData * Renderer::s_SceneData = DBG_NEW SceneData();
+	SceneData* Renderer::s_PreSceneData = DBG_NEW SceneData();
 
 	Renderer::Renderer()
 	{
@@ -32,16 +31,15 @@ namespace BlackPearl {
 	void Renderer::Init()
 	{
 		glEnable(GL_DEPTH_TEST);
-		//ï¿½ï¿½ï¿½Ø²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ // MSAA. Set MSAA level using GLFW (see Config.h).
-#ifdef GE_PLATFORM_WINDOWS
+		//¶àÖØ²ÉÑù£¬¿¹¾â³Ý // MSAA. Set MSAA level using GLFW (see Config.h).
 		glEnable(GL_MULTISAMPLE);
-#endif
 	//	glEnable(GL_BLEND);
 		//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	}
 
 	void Renderer::BeginScene(const Camera & camera, const LightSources& lightSources)
 	{
+		s_PreSceneData = s_SceneData;
 		s_SceneData->LightSources = lightSources;
 		s_SceneData->ProjectionViewMatrix = camera.GetProjectionViewMatrix();
 		s_SceneData->CameraPosition = camera.GetPosition();
@@ -50,12 +48,15 @@ namespace BlackPearl {
 		s_SceneData->CameraFront = camera.Front();
 		s_SceneData->ViewMatrix = camera.GetViewMatrix();
 		s_SceneData->ProjectionMatrix = camera.GetProjectionMatrix();
+		s_SceneData->SetViewport(RHIViewport(Configuration::WindowWidth, Configuration::WindowHeight));
+
+		s_SceneData->ViewFrustum = math::frustum(Math::ToFloat4x4(s_SceneData->ViewMatrix * s_SceneData->ProjectionMatrix), s_SceneData->ReverseZ);
 		for (Object* lightObj : lightSources.Get()) {
 			//std::shared_ptr<Light> lightSource(lightObj->GetComponent<Light>());
 			if (lightObj->HasComponent<ParallelLight>()) {
 			}
 			if (lightObj->HasComponent<PointLight>()) {
-				//std::dynamic_pointer_cast<PointLight>(lightSource)->GetShader()->Bind();//Ò»ï¿½ï¿½Òªï¿½Çµï¿½ï¿½ï¿½Bind()Ö¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½Shader!
+				//std::dynamic_pointer_cast<PointLight>(lightSource)->GetShader()->Bind();//Ò»¶¨Òª¼ÇµÃÏÈBind()Ö¸¶¨ÊÇÄÄÒ»¸öShader!
 				//glm::mat4 model = glm::mat4(1.0f);
 				//model = glm::translate(model, std::dynamic_pointer_cast<PointLight>(lightSource)->GetPosition());
 				//model = glm::scale(model, glm::vec3(0.5f));
@@ -133,4 +134,70 @@ namespace BlackPearl {
 
 		vertexArray->Bind();
 	}
+
+	void SceneData::SetViewport(RHIViewport viewport)
+	{
+		if (viewport == m_Viewport)
+			return;
+		m_Viewport = viewport;
+		m_ScissorRect = RHIRect(viewport);
+	}
+
+	ViewportState SceneData::GetViewportState() const
+	{
+		ViewportState vs;
+		vs.addViewport(m_Viewport);
+		vs.addScissorRect(m_ScissorRect);
+		return vs;
+	}
+	VariableRateShadingState SceneData::GetVariableRateShadingState() const
+	{
+		return m_ShadingRateState;
+	}
+	math::frustum SceneData::GetViewFrustum() const
+	{
+		return ViewFrustum;
+	}
+
+	void SceneData::FillPlanarViewConstants(ForwardShadingViewConstants& constants) const
+	{
+
+		//constants.matWorldToView = affineToHomogeneous(GetViewMatrix());
+		//constants.matViewToClip = GetProjectionMatrix(true);
+		//constants.matWorldToClip = GetViewProjectionMatrix(true);
+		//constants.matClipToView = GetInverseProjectionMatrix(true);
+		//constants.matViewToWorld = affineToHomogeneous(GetInverseViewMatrix());
+		//constants.matClipToWorld = GetInverseViewProjectionMatrix(true);
+		//constants.matViewToClipNoOffset = GetProjectionMatrix(false);
+		//constants.matWorldToClipNoOffset = GetViewProjectionMatrix(false);
+		//constants.matClipToViewNoOffset = GetInverseProjectionMatrix(false);
+		//constants.matClipToWorldNoOffset = GetInverseViewProjectionMatrix(false);
+
+		//ViewportState viewportState = GetViewportState();
+		//const RHIViewport& viewport = viewportState.viewports[0];
+		//constants.viewportOrigin = float2(viewport.minX, viewport.minY);
+		//constants.viewportSize = float2(viewport.width(), viewport.height());
+		//constants.viewportSizeInv = 1.f / constants.viewportSize;
+
+		//constants.clipToWindowScale = float2(0.5f * viewport.width(), -0.5f * viewport.height());
+		//constants.clipToWindowBias = constants.viewportOrigin + constants.viewportSize * 0.5f;
+
+		//constants.windowToClipScale = 1.f / constants.clipToWindowScale;
+		//constants.windowToClipBias = -constants.clipToWindowBias * constants.windowToClipScale;
+
+		//constants.cameraDirectionOrPosition = IsOrthographicProjection()
+		//	? float4(GetViewDirection(), 0.f)
+		//	: float4(GetViewOrigin(), 1.f);
+
+		//constants.pixelOffset = GetPixelOffset();
+		constants.matProjectionView =  Math::ToFloat4x4(ProjectionViewMatrix);
+		constants.matView = Math::ToFloat4x4(ViewMatrix);
+		constants.matProjection = Math::ToFloat4x4(ProjectionMatrix);
+		constants.cameraPos = Math::ToFloat3(CameraPosition);
+		constants.cameraRot = Math::ToFloat3(CameraRotation);
+		constants.viewportSize = math::float2(m_Viewport.width(), m_Viewport.height());
+		constants.viewportOrigin = math::float2(m_Viewport.minX, m_Viewport.minY);
+
+	}
+	
 }

@@ -2,7 +2,6 @@
 #include "BlackPearl/Renderer/Shader/Shader.h"
 #include <memory>
 #include "Window.h"
-#include "Renderer/Material/Texture.h"
 #include "Component/CameraComponent/Camera.h"
 #include "Renderer/VertexArray.h"
 #include "BlackPearl/Timestep/Timestep.h"
@@ -20,29 +19,35 @@
 #include "BlackPearl/Entity/Entity.h"
 #include "BlackPearl/RHI/DynamicRHI.h"
 #include "BlackPearl/Renderer/Material/MaterialManager.h"
+#include "BlackPearl/Renderer/DeviceManager.h"
+#include "BlackPearl/FileSystem/FileSystem.h"
 
 #include <chrono>
 using namespace std::chrono;
 namespace BlackPearl {
 
+	enum AppVersion {
+		VERSION_0_0 = 0,
+		VERSION_1_0,
+		VERSION_None
+
+	};
+#define APP_VERSION VERSION_None
+
+#define APP_VERSION_0_0 0
+#define APP_VERSION_1_0 1
 
 	class Application
 	{
 	public:
 		struct AppConf {
-#ifdef GE_PLATFORM_WINDOWS
 			HINSTANCE hInstance;
-#endif
 			int nShowCmd;
 			std::string renderer;
+			AppVersion version;
 			DynamicRHI::Type rhiType;
 		};
-#ifdef GE_PLATFORM_WINDOWS
-		Application(HINSTANCE hInstance, int nShowCmd, DynamicRHI::Type rhiType, const std::string& renderer);
-#else
-        Application();
-        Application(int nShowCmd, DynamicRHI::Type rhiType, const std::string& renderer);
-#endif
+		Application(HINSTANCE hInstance, int nShowCmd, DynamicRHI::Type rhiType, AppVersion version);
 		virtual ~Application();
 
 		inline static Application &Get() { return *s_Instance; }
@@ -64,28 +69,30 @@ namespace BlackPearl {
 		bool OnCameraRotate(MouseMovedEvent&e);
 		bool OnWindowClose();
 		void EngineExit();
+
+	private:
+		void _InitFileSystem();
 	
 	
 	private:
-		static Application* s_Instance; //TODO::锟斤拷锟皆诧拷delete,锟斤拷锟竭革拷为 unique_ptr
+		static Application* s_Instance; //TODO::可以不delete,或者改为 unique_ptr
 		double m_LastFrameTime = 0.0f;
 
 	private:
 		Window* m_Window;
 		AppConf m_AppConf;
 
+		AppVersion m_Version;
 		double m_StartTimeMs;
 		long long m_FrameNum = 0;
+		/* for Sample, every sample is a renderGraph */
 		LayerManager* m_LayerManager = nullptr;
+		/* for Render */
+		DeviceManager* m_DeviceManager = nullptr;
 		double m_TotalSecond = 0;
+
 
 	};
 	//To be define in a client
-#ifdef GE_PLATFORM_WINDOWS
 	Application * CreateApplication(HINSTANCE hInstance, int nShowCmd);
-#endif
-
-#ifdef GE_PLATFORM_ANDRIOD
-    Application* CreateAndriodApplication(int nShowCmd);
-#endif
 }

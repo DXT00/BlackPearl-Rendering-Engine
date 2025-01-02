@@ -12,12 +12,12 @@ namespace BlackPearl {
 		void Init();
 		void RenderDepthMap(Object* Quad, const std::vector<Object*> backgroundObjs);
 
-		std::shared_ptr<Texture> GetDepthTexture() const { return m_DepthTexture; }
+		TextureHandle GetDepthTexture() const { return m_DepthTexture; }
 
 	private:
 
 		std::shared_ptr<Shader> m_DepthShader;
-		std::shared_ptr<Texture> m_DepthTexture;
+		TextureHandle m_DepthTexture;
 
 		std::shared_ptr<Shader> m_HizShader;
 		std::shared_ptr<FrameBuffer> m_HizFrameBuffer;

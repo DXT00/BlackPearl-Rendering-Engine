@@ -14,17 +14,10 @@ public:
 		: Layer(name)
 	{
 
-		//m_CameraObj = CreateCamera();
-		//auto cameraComponent = m_CameraObj->GetComponent<BlackPearl::PerspectiveCamera>();
-		//cameraComponent->SetPosition(glm::vec3(0.0f, 0.0f, 8.0f));
-		//m_CameraPosition = cameraComponent->GetPosition();
-		//m_CameraRotation.Yaw = cameraComponent->Yaw();
-		//m_CameraRotation.Pitch = cameraComponent->Pitch();
 		m_Scene = DBG_NEW BlackPearl::Scene();
-		m_SphereObj = CreateSphere(0.5, 64, 64);
+		m_SphereObj = LoadStaticBackGroundObject("SphereStone");
 		m_QuadObj = CreateQuad();
 		m_CubeObj = CreateCube();
-		//m_CubeObj->GetComponent<BlackPearl::Transform>()->SetScale({ 0.2,0.2,0.2 });
 
 		m_Scene->AddObject(m_SphereObj);
 		m_Scene->AddObject(m_CubeObj);
@@ -36,18 +29,7 @@ public:
 
 
 		m_SphereObj->GetComponent<BlackPearl::MeshRenderer>()->SetShaders(m_PBRRenderer->GetShader());
-		std::shared_ptr<BlackPearl::Texture> albedoTexture(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::DiffuseMap, "assets/texture/pbr/cobblestone/cobblestone-curved_2_albedo.png"));
-		std::shared_ptr<BlackPearl::Texture> aoTexture(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::AoMap, "assets/texture/pbr/cobblestone/cobblestone-curved_2_ao.png"));
-		std::shared_ptr<BlackPearl::Texture> roughnessTexture(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::RoughnessMap, "assets/texture/pbr/cobblestone/cobblestone-curved_2_roughness.png"));
-		std::shared_ptr<BlackPearl::Texture> mentallicTexture(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::MentallicMap, "assets/texture/pbr/cobblestone/cobblestone-curved_2_metallic.png"));
-		std::shared_ptr<BlackPearl::Texture> normalTexture(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::NormalMap, "assets/texture/pbr/cobblestone/cobblestone-curved_2_normal-dx.png"));
 
-		m_SphereObj->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(normalTexture);
-
-		m_SphereObj->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(albedoTexture);
-		m_SphereObj->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(aoTexture);
-		m_SphereObj->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(roughnessTexture);
-		m_SphereObj->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(mentallicTexture);
 		m_SphereObj->GetComponent<BlackPearl::MeshRenderer>()->GetMeshes()[0]->GetMaterial()->SetMaterialColorDiffuseColor({ 1.0,0.0,0.0 });
 
 		m_SphereObj->GetComponent<BlackPearl::Transform>()->SetPosition({
@@ -66,8 +48,18 @@ public:
 			});
 
 
+		BlackPearl::TextureDesc desc;
+		desc.type = TextureType::None;
+		desc.width = BlackPearl::Configuration::WindowWidth;
+		desc.height = BlackPearl::Configuration::WindowHeight;
+		desc.minFilter = FilterMode::Linear;
+		desc.magFilter = FilterMode::Linear;
+		desc.wrap = SamplerAddressMode::ClampToEdge;
+		desc.format = Format::RGBA16_FLOAT;
+		desc.generateMipmap = false;
 
-		m_HDRPostProcessTexture.reset(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::None, BlackPearl::Configuration::WindowWidth, BlackPearl::Configuration::WindowHeight, false, GL_LINEAR, GL_LINEAR, GL_RGBA16F, GL_RGBA, GL_CLAMP_TO_EDGE, GL_FLOAT));
+		BlackPearl::IDevice* device = m_DeviceManager->GetDevice();
+		m_HDRPostProcessTexture = device->createTexture(desc); //.reset(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::None, BlackPearl::Configuration::WindowWidth, BlackPearl::Configuration::WindowHeight, false, GL_LINEAR, GL_LINEAR, GL_RGBA16F, GL_RGBA, GL_CLAMP_TO_EDGE, GL_FLOAT));
 		m_LightPassFrameBuffer.reset(DBG_NEW BlackPearl::FrameBuffer());
 		m_LightPassFrameBuffer->Bind();
 		m_LightPassFrameBuffer->AttachRenderBuffer(BlackPearl::Configuration::WindowWidth, BlackPearl::Configuration::WindowHeight);
@@ -76,31 +68,12 @@ public:
 		m_LightPassFrameBuffer->UnBind();
 
 
-
 		m_Bunny = CreateModel("assets/models/bunny/bunny.obj", "assets/shaders/IronMan.glsl", false, "Bunny", false);// CreateCube();
 		m_Bunny->SetScale({ 3.0,3.0,3.0 });
 		m_Bunny->GetComponent<BlackPearl::MeshRenderer>()->GetMeshes()[0]->GetMaterial()->SetMaterialColorDiffuseColor({ 1.0,1.0,1.0 });
 
 		BlackPearl::Object* light = CreateLight(BlackPearl::LightType::PointLight, "Light");
 		light->SetPosition({ 0.0,12.0,5.0 });
-		/*m_Sword = CreateModel("assets/models/sword/OBJ/Big_Sword_OBJ.obj", "assets/shaders/pbr/PbrTexture.glsl", false, "Sword");
-		std::shared_ptr<BlackPearl::Texture> SwordalbedoTexture(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::DiffuseMap, "assets/models/sword/textures/Big Sword_Base_Color_Map.jpg"));
-		std::shared_ptr<BlackPearl::Texture> SwordaoTexture(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::AoMap, "assets/models/sword/textures/Big Sword_AO_Map.jpg"));
-		std::shared_ptr<BlackPearl::Texture> SwordroughnessTexture(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::RoughnessMap, "assets/models/sword/textures/Big Sword_Roughness_Map.jpg"));
-		std::shared_ptr<BlackPearl::Texture> SwordmentallicTexture(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::MentallicMap, "assets/models/sword/textures/Big Sword_Metalness.jpg"));
-		std::shared_ptr<BlackPearl::Texture> SwordnormalTexture(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::NormalMap, "assets/models/sword/textures/Big Sword_Normal_Map.jpg"));
-		std::shared_ptr<BlackPearl::Texture> SwordemissionTexture(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::EmissionMap, "assets/models/sword/textures/Big Sword_Emission_Map.jpg"));
-
-		m_Sword->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(SwordalbedoTexture);
-		m_Sword->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(SwordaoTexture);
-		m_Sword->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(SwordroughnessTexture);
-		m_Sword->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(SwordmentallicTexture);
-		m_Sword->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(SwordnormalTexture);
-		m_Sword->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(SwordemissionTexture);
-
-		m_Sword->GetComponent<BlackPearl::MeshRenderer>()->SetPBRTextureSamples(true);
-		m_Sword->GetComponent<BlackPearl::MeshRenderer>()->SetIsPBRObject(true);
-		m_Sword->GetComponent<BlackPearl::MeshRenderer>()->SetTexturEmissionSamples(true);*/
 
 
 		m_WaterRenderer->Init(m_Scene);
@@ -180,7 +153,7 @@ private:
 	BlackPearl::Scene* m_Scene;
 
 	std::vector<BlackPearl::Object*> m_LightObjs;
-	std::shared_ptr<BlackPearl::Texture> m_HDRPostProcessTexture;
+	BlackPearl::TextureHandle m_HDRPostProcessTexture;
 	std::shared_ptr<BlackPearl::FrameBuffer> m_LightPassFrameBuffer;
 
 

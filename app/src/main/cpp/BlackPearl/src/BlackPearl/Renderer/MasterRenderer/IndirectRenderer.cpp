@@ -76,7 +76,7 @@ namespace BlackPearl {
 		for (auto node : m_Scene->GetSingleNodes())
 		{
 			SingleNode* singleNode = dynamic_cast<SingleNode*>(node);
-            const auto& meshes = singleNode->GetObj()->GetComponent<MeshRenderer>()->GetMeshes();
+			auto& meshes = singleNode->GetObj()->GetComponent<MeshRenderer>()->GetMeshes();
 
 			AddObjTransformToBuffer(baseInstance, singleNode->GetObj()->GetComponent<Transform>()->GetTransformMatrix());
 			baseInstance++;
@@ -98,10 +98,10 @@ namespace BlackPearl {
 		for (auto node : m_Scene->GetSingleNodes())
 		{
 			SingleNode* singleNode = dynamic_cast<SingleNode*>(node);
-            const auto&  meshes = singleNode->GetObj()->GetComponent<MeshRenderer>()->GetMeshes();
+			auto& meshes = singleNode->GetObj()->GetComponent<MeshRenderer>()->GetMeshes();
 
 
-			for (const auto& mesh : meshes)
+			for (auto mesh : meshes)
 			{
 				uint32_t meshVetCnt = mesh->GetVertexCount();
 				uint32_t meshIndexCnt = mesh->GetIndicesConut();
@@ -145,7 +145,7 @@ namespace BlackPearl {
 		m_IndexCnt = 0;
 		m_ObjsCnt = 0;
 		m_MeshCnt = 0;
-		//ï¿½ï¿½Òªï¿½ï¿½Ö¤Ã¿ï¿½ï¿½object ï¿½ï¿½vertex attribute ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð¶ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½Ä£ï¿½ï¿½ï¿½IndirectVertexï¿½Ðµï¿½ï¿½ï¿½ï¿½ï¿½
+		//ÐèÒª±£Ö¤Ã¿¸öobject µÄvertex attribute ÊôÐÔÅÅÁÐ¶¼ÊÇÒ»ÑùµÄ£¬¼´IndirectVertexÖÐµÄÊôÐÔ
 		for (size_t i = 0; i < m_Scene->GetSingleNodesCnt(); i++)
 		{
 			SingleNode* singleNode = dynamic_cast<SingleNode*>(m_Scene->GetSingleNodes(i));
@@ -171,10 +171,10 @@ namespace BlackPearl {
 		for (auto node : m_Scene->GetSingleNodes())
 		{
 			SingleNode* singleNode = dynamic_cast<SingleNode*>(node);
-			const auto& meshes = singleNode->GetObj()->GetComponent<MeshRenderer>()->GetMeshes();
+			auto& meshes = singleNode->GetObj()->GetComponent<MeshRenderer>()->GetMeshes();
 	
 
-			for (const auto& mesh : meshes)
+			for (auto mesh : meshes)
 			{
 				uint32_t meshVetCnt = mesh->GetVertexCount();
 				uint32_t meshIndexCnt = mesh->GetIndicesConut();
@@ -266,7 +266,7 @@ namespace BlackPearl {
 	//	indexBuffer.reset(DBG_NEW IndexBuffer(m_IndexBuffer, m_IndexCnt * sizeof(uint32_t)));
 	//	m_VertexArray->SetIndexBuffer(indexBuffer);
 
-	//	//ï¿½ï¿½ï¿½Ã¿ï¿½ï¿½vertexbuffer Ò»ï¿½ï¿½attribute,ï¿½ï¿½Ã´ stride = 0, offset Ò² = 0
+	//	//Èç¹ûÃ¿¸övertexbuffer Ò»ÖÖattribute,ÄÇÃ´ stride = 0, offset Ò² = 0
 	//	std::shared_ptr<VertexBuffer> vertexBuffer(DBG_NEW VertexBuffer(m_PositionBuffer, m_VertexCnt * sizeof(float) * 3));
 	//	vertexBuffer->SetBufferLayout({ {ElementDataType::Float3, "aPos", false, POS_SLOT} });
 	//	std::shared_ptr<VertexBuffer> normalBuffer(DBG_NEW VertexBuffer(m_NormalBuffer, m_VertexCnt * sizeof(float) * 3));
@@ -400,7 +400,7 @@ namespace BlackPearl {
 	//	for (auto node : m_Scene->GetSingleNodes())
 	//	{
 	//		SingleNode* singleNode = dynamic_cast<SingleNode*>(node);
-	//		auto meshes = singleNode->GetObj()->GetComponent<MeshRenderer>()->GetMeshes();
+	//		auto& meshes = singleNode->GetObj()->GetComponent<MeshRenderer>()->GetMeshes();
 	//	/*	uint32_t baseMeshVert = 0;
 	//		uint32_t baseMeshIndex = 0;*/
 

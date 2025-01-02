@@ -1,12 +1,10 @@
 #include "pch.h"
-#ifdef GE_API_D3D12
 #include "D3D12ModelLoader.h"
 #include "BlackPearl/Common/CommonFunc.h"
 #include "WaveFrontReader.h"
 #include "DirectXMesh.h"
 #include "BlackPearl/Renderer/Mesh/MeshletConfig.h"
 #include "BlackPearl/RHI/D3D12RHI/D3D12VertexBuffer.h"
-
 using namespace DirectX;
 namespace BlackPearl {
     
@@ -28,14 +26,29 @@ namespace BlackPearl {
         12, // Bitangent
     };
 
-    D3D12ModelLoader::D3D12ModelLoader(bool isMeshletModel)
+    D3D12ModelLoader::D3D12ModelLoader()
     {
-        m_IsMeshletModel = isMeshletModel;
+        //m_IsMeshletModel = isMeshletModel;
 
     }
     
     D3D12ModelLoader::~D3D12ModelLoader()
     {
+    }
+
+    Model* D3D12ModelLoader::LoadModel(const std::string& path, const ModelDesc& desc)
+    {
+        m_IsMeshletModel = desc.bIsMeshletModel;
+        Model* model = DBG_NEW Model(path, desc);
+        std::vector<std::shared_ptr<Mesh>> meshes;
+        if (desc.bCreateMeshlet && !desc.bIsMeshletModel) {
+            m_MeshletGenerator = std::make_shared<MeshletGenerator>();
+            m_MeshletGenerator->Process(meshes, desc.options);
+        }
+        //m_ModelLoader = DBG_NEW D3D12ModelLoader(desc.bIsMeshletModel);
+        Load(meshes, m_BoundingSphere, path);
+        model->meshes = meshes;
+        return model;
     }
 
     void D3D12ModelLoader::Load(std::vector<std::shared_ptr<Mesh>>& output_meshes, BoundingSphere& bounding_sphere, const std::string& path) {
@@ -138,7 +151,7 @@ namespace BlackPearl {
                 {ElementDataType::Float3,"BITANGENT", false, 0}
             };
             //std::vector<uint32_t> vertexStrides;
-            //std::vector<Span<uint8_t>> vertices; //Ã¿ï¿½ï¿½attributeï¿½ï¿½Ó¦Ò»ï¿½ï¿½Span<uint_8> ?
+            //std::vector<Span<uint8_t>> vertices; //Ã¿¸öattribute¶ÔÓ¦Ò»¸öSpan<uint_8> ?
             //uint32_t vertexCount;
             //Span<Subset>               meshletSubsets;
             //Span<Meshlet>              meshlets;
@@ -171,7 +184,7 @@ namespace BlackPearl {
             std::vector<uint32_t> vbMap;
             uint32_t numElements = 0;
            
-            // vertices ï¿½æ´¢ï¿½á¹¹
+            // vertices ´æ´¢½á¹¹
             // v0.pos,v0.normal | v1.pos,v1.normal
             for (uint32_t j = 0; j < Attribute::Count; ++j)
             {
@@ -193,7 +206,7 @@ namespace BlackPearl {
                 Span<uint8_t> verts = MakeSpan(m_Buffer.data() + bufferView.Offset, bufferView.Size);
 
                 mesh->VertexStrides.push_back(accessor.Stride);
-                mesh->Vertices_ml.push_back(verts); //ï¿½ï¿½ï¿½ï¿½ï¿½openGLï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½Ã¿ï¿½ï¿½attributesï¿½Ö¿ï¿½pushï¿½ï¿½vertices
+                mesh->Vertices_ml.push_back(verts); //ÕâÀïºÍopenGL²»Ò»Ñù£¬Ã¿¸öattributes·Ö¿ªpushµ½vertices
                 mesh->VertexCount_ml = static_cast<uint32_t>(verts.size()) / accessor.Stride;
             }
 
@@ -289,13 +302,13 @@ namespace BlackPearl {
                 {
                     break;
                 }
-                //ï¿½Òµï¿½positionï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½attributeï¿½ï¿½Î»ï¿½ï¿½
+                //ÕÒµ½positionµÄÏÂÒ»¸öattributeµÄÎ»ÖÃ
                 if (element.Location == vbIndexPos)
                 {
                     positionOffset += m->GetVertexBufferLayout().GetElement(j).GetElementCount();
                 }
             }
-            // vertices ï¿½æ´¢ï¿½á¹¹
+            // vertices ´æ´¢½á¹¹
             // NORMAL  : v0.normal, v1.normal, v2.normal ...
             // POSITION: v0.pos, v1.pos, v2.pos .....
             //vbIndexPos = 1
@@ -321,4 +334,3 @@ namespace BlackPearl {
     {
     }
 }
-#endif

@@ -14,21 +14,21 @@ namespace BlackPearl {
 			std::string Title;
 			unsigned int Height;
 			unsigned int Width;
-			WindowData(const std::string& title = "BlackPearl", unsigned int width = Configuration::WindowWidth, unsigned int height = Configuration::WindowHeight)//1920锟斤拷1080 锟斤拷应锟斤拷PerspeciveCamera projectionMatrix也要锟斤拷
+			WindowData(const std::string& title = "BlackPearl", unsigned int width = Configuration::WindowWidth, unsigned int height = Configuration::WindowHeight)//1920：1080 对应的PerspeciveCamera projectionMatrix也要改
 				:Title(title), Width(width), Height(height) {}
 
 			std::function<void(Event&)> EventCallback;
 
 		};
 		Window(const WindowData& data = WindowData());
-		virtual ~Window();
+		~Window();
 		virtual void Init() = 0;
 		virtual void OnUpdate() = 0;
 		virtual bool ShouldClose() = 0;
 		virtual bool IsKeyPressed(int keycode) = 0;
 		virtual bool IsMouseButtonPressed(int button) = 0;
 		virtual std::pair<float, float> GetMousePosition() = 0;
-		virtual donut::math::vector<int, 2> GetCurWindowSize() = 0;
+		virtual math::vector<int, 2> GetCurWindowSize() = 0;
 
 		inline unsigned int GetHeight() const { return m_Data.Height; }
 		inline unsigned int GetWidth() const { return m_Data.Width; }

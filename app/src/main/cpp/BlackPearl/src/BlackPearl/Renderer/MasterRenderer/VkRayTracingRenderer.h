@@ -1,16 +1,14 @@
 #pragma once
-#include "BasicRenderer.h"
-#include "BlackPearl/Scene/RayTraceScene.h"
+
 //#define VK_USE_PLATFORM_WIN32_KHR
 #ifdef GE_API_VULKAN
-//#define GLFW_INCLUDE_NONE
-//#define GLFW_INCLUDE_VULKAN
-#include <vulkan/vulkan.h>
+#include "vulkan/vulkan_core.h"
 
-//#include <GLFW/glfw3.h>
-//#define GLFW_EXPOSE_NATIVE_WIN32
+#define GLFW_INCLUDE_VULKAN
+#include <GLFW/glfw3.h>
 #include "glm/glm.hpp"
-
+#include "BasicRenderer.h"
+#include "BlackPearl/Scene/RayTraceScene.h"
 namespace BlackPearl {
 
 	class VkRayTracingRenderer
@@ -98,15 +96,15 @@ namespace BlackPearl {
 
 		struct QuadVertex
 		{
-			glm::vec3 position;
-			glm::vec3 normal;
+			math::float3 position;
+			math::float3 normal;
 			glm::vec2 color;
 
 
 		};
 		struct Vertex {
 			glm::vec2 pos;
-			glm::vec3 color;
+			math::float3 color;
 			glm::vec2 texCoord;
 
 			static VkVertexInputBindingDescription getBindingDescription() {
@@ -156,8 +154,8 @@ namespace BlackPearl {
 		//};
 
 		struct Quad {
-			glm::vec3 position;
-			glm::vec3 normal;
+			math::float3 position;
+			math::float3 normal;
 			glm::vec2 color;
 
 			static VkVertexInputBindingDescription getBindingDescription() {

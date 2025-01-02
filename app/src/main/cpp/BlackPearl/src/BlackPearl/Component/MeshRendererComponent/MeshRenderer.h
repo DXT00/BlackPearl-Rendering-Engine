@@ -4,9 +4,16 @@
 #include "BlackPearl/Renderer/Mesh/Mesh.h"
 #include "BlackPearl/Renderer/Model/Model.h"
 #include "BlackPearl/Renderer/Renderer.h"
+#include "BlackPearl/RHI/RHITexture.h"
+#include "BlackPearl/RHI/RHIRayTraceStruct.h"
 
-//MeshRendererÖ»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¾
+//MeshRendererÖ»¸ºÔðäÖÈ¾
 namespace BlackPearl {
+	struct MeshInfo {
+		rt::AccelStructHandle accelStruct; // for use by applications
+		rt::AccelStructHandle accelStructOMM; // for use by application
+		std::vector<rt::OpacityMicromapHandle> opacityMicroMaps; // for use by application
+	};
 	class MeshRenderer :public Component<MeshRenderer>
 	{
 	public:
@@ -28,16 +35,16 @@ namespace BlackPearl {
 		//void UpdateTransformMatrix(glm::mat4 transformMatrix);
 
 		inline std::shared_ptr<Model>GetModel()  const { return m_Model; }
-		[[nodiscard]] std::vector<std::shared_ptr<Mesh>> GetMeshes() const {
+		std::vector<std::shared_ptr<Mesh>>GetMeshes() const {
 			return m_Model != nullptr ? m_Model->GetMeshes() : m_Meshes;
 		}
 		std::vector<std::shared_ptr<Mesh>>& GetMeshlets() {
 			return m_Model != nullptr ? m_Model->GetMeshlets() : m_Meshes;
 		}
-		void SetTexture(unsigned int meshIndex, const std::shared_ptr<Texture>& texture);
-		void SetTextures(const std::shared_ptr<Texture>& texture);
-		void SetModelTexture(unsigned int meshIndex, const std::shared_ptr<Texture>& texture);
-		void SetModelTextures(const std::shared_ptr<Texture>& texture);
+		void SetTexture(unsigned int meshIndex, ITexture* texture);
+		void SetTextures(ITexture* texture);
+		void SetModelTexture(unsigned int meshIndex, const TextureHandle& texture);
+		void SetModelTextures(const TextureHandle& texture);
 
 		void SetShaders(const std::string& image);
 		void SetShaders(const std::shared_ptr<Shader>& shader);
@@ -99,7 +106,7 @@ namespace BlackPearl {
 		}
 
 	private:
-		//ï¿½ï¿½ï¿½ï¿½ï¿½Í½ï¿½Ö¹ï¿½ï¿½È¾
+		//¿ªÆôºÍ½ûÖ¹äÖÈ¾
 		bool m_EnableRender = true;
 		bool m_IsPBRObject = false;
 		std::vector<std::shared_ptr<Mesh>> m_Meshes;

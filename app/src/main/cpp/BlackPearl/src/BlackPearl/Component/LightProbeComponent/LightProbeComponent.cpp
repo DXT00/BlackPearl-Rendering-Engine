@@ -1,8 +1,7 @@
 #include "pch.h"
 #include "LightProbeComponent.h"
-#include "BlackPearl/Renderer/Material/CubeMapTexture.h"
-namespace BlackPearl {
 
+namespace BlackPearl {
 	//LightProbeComponent::LightProbeComponent(ProbeType type)
 	//{
 	//	//GE_ASSERT(cubeObj, "cubeObj is nullptr");
@@ -44,4 +43,19 @@ namespace BlackPearl {
 
 
 	
+	void LightProbe::FillLightProbeConstants(LightProbeConstants& lightProbeConstants) const
+	{
+		//TODO::
+		lightProbeConstants.diffuseArrayIndex = 0;// diffuseArrayIndex;
+		lightProbeConstants.specularArrayIndex = 0; //specularArrayIndex;
+		lightProbeConstants.diffuseScale = 0;// diffuseScale;
+		lightProbeConstants.specularScale = 0;// specularScale;
+		lightProbeConstants.mipLevels = 0.0f;// specularMap ? static_cast<float>(specularMap->getDesc().mipLevels) : 0.f;
+
+		for (uint32_t nPlane = 0; nPlane < 6; nPlane++)
+		{
+			lightProbeConstants.frustumPlanes[nPlane] = float4(0.0);// float4(bounds.planes[nPlane].normal, bounds.planes[nPlane].distance);
+		}
+	}
+
 }

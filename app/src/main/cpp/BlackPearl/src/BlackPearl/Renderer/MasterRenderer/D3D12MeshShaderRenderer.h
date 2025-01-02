@@ -1,5 +1,4 @@
 #pragma once
-#ifdef GE_API_D3D12
 #include "D3D12Renderer.h"
 #include "BasicRenderer.h"
 #include "BlackPearl/RHI/D3D12RHI/D3D12DeviceResources.h"
@@ -101,4 +100,3 @@ namespace BlackPearl {
 
 }
 
-#endif

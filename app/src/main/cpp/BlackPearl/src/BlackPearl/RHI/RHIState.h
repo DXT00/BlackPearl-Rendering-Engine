@@ -64,6 +64,18 @@ namespace BlackPearl {
     };
 
 
+    struct RayTracingState
+    {
+        IShaderTable* shaderTable = nullptr;
+
+        BindingSetVector bindings;
+
+        RayTracingState& setShaderTable(IShaderTable* value) { shaderTable = value; return *this; }
+        RayTracingState& addBindingSet(IBindingSet* value) { bindings.push_back(value); return *this; }
+    };
+
+
+
     struct BufferStateExtension
     {
         const BufferDesc& descRef;

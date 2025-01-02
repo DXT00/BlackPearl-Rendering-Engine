@@ -13,7 +13,7 @@
 //
 // DeviceResources.h - A wrapper for the Direct3D 12 device and swapchain
 //
-#ifdef GE_API_D3D12
+#pragma once
 #include <wrl.h>
 #include <d3d12.h>
 #include <dxgi1_6.h>
@@ -175,4 +175,3 @@ namespace DX
         IDeviceNotify* m_deviceNotify;
     };
 }
-#endif

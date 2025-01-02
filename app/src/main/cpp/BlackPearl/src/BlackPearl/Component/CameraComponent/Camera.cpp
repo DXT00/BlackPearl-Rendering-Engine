@@ -5,6 +5,8 @@
 #include "BlackPearl/Core.h"
 #include <glm/gtc/matrix_transform.hpp>
 #include "BlackPearl/Component/Component.h"
+#include "BlackPearl/Math/Math.h"
+
 namespace BlackPearl {
 
 	Camera * Camera::Create(unsigned int type)
@@ -30,7 +32,7 @@ namespace BlackPearl {
 	{
 
 		m_ViewMatrix = glm::lookAt(m_Position, m_Position + m_ViewMatrixProps.Front, m_ViewMatrixProps.Up);
-		m_ViewProjectionMatrix = m_ProjectionMatrix * m_ViewMatrix;
+		m_ProjectionViewMatrix = m_ProjectionMatrix * m_ViewMatrix;
 
 	}
 	void Camera::RecalculateViewMatrix(float yaw, float pitch)
@@ -47,7 +49,7 @@ namespace BlackPearl {
 
 
 		m_ViewMatrix = glm::lookAt(m_Position, m_Position + m_ViewMatrixProps.Front, m_ViewMatrixProps.Up);
-		m_ViewProjectionMatrix = m_ProjectionMatrix * m_ViewMatrix;
+		m_ProjectionViewMatrix = m_ProjectionMatrix * m_ViewMatrix;
 
 	}
 

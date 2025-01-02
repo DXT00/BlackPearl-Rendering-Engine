@@ -1,0 +1,2 @@
+.\ShaderCompiler\bin\Debug-windows-x86_64\ShaderCompiler\ShaderCompiler.exe -i .\BlackPearl\assets\shaders\shaders.cfg -o .\SandboxVK\bin\Debug-windows-x86_64\SandboxVK\assets\shaders\spv --compiler .\BlackPearl\vendor\VulkanSDK\1.3.236.0\Bin\dxc.exe -P SPIRV -I .\BlackPearl\assets\shaders\hlsl\  -I .\BlackPearl\src\
+PAUSE

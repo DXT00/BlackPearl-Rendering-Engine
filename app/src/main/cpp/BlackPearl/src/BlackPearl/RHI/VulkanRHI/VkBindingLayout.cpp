@@ -95,15 +95,15 @@ namespace BlackPearl {
                 continue;
             }
 
-            const auto bindingLocation = registerOffset + binding.slot;
+            const auto bindingLocation =  binding.slot;//registerOffset +
 
-            VkDescriptorSetLayoutBinding descriptorSetLayoutBinding;
+            VkDescriptorSetLayoutBinding descriptorSetLayoutBinding{};
 
             descriptorSetLayoutBinding.binding = bindingLocation;
             descriptorSetLayoutBinding.descriptorCount = descriptorCount;
             descriptorSetLayoutBinding.descriptorType = (VkDescriptorType)descriptorType;
             descriptorSetLayoutBinding.stageFlags = shaderStageFlags;
-
+            descriptorSetLayoutBinding.pImmutableSamplers = nullptr;
               /*  .setBinding(bindingLocation)
                 .setDescriptorCount(descriptorCount)
                 .setDescriptorType(descriptorType)
@@ -211,7 +211,8 @@ namespace BlackPearl {
         //    .setBindingCount(uint32_t(vulkanLayoutBindings.size()))
         //    .setPBindings(vulkanLayoutBindings.data());
 
-        VkDescriptorSetLayoutCreateInfo descriptorSetLayoutInfo;
+        VkDescriptorSetLayoutCreateInfo descriptorSetLayoutInfo{};
+        descriptorSetLayoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
         descriptorSetLayoutInfo.bindingCount = vulkanLayoutBindings.size();
         descriptorSetLayoutInfo.pBindings = vulkanLayoutBindings.data();
 

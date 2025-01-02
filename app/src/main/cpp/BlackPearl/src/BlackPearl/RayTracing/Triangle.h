@@ -1,7 +1,7 @@
 #pragma once
 #include "Hitable.h"
 #include "glm/glm.hpp"
-#include "BlackPearl/RayTracing/Vertex.h"
+#include "BlackPearl/Renderer/Mesh/Vertex.h"
 #include "BlackPearl/Component/Component.h"
 namespace BlackPearl {
 	class Triangle : public Component<Triangle>

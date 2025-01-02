@@ -1,5 +1,4 @@
 #pragma once
-#ifdef GE_API_D3D12
 #include "GpuUploadBuffer.h"
 #include "BlackPearl/Core.h"
 namespace BlackPearl {
@@ -41,4 +40,3 @@ namespace BlackPearl {
 	};
 
 }
-#endif

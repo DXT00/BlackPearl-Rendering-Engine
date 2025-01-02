@@ -2,7 +2,7 @@
 #include "InstanceNode.h"
 namespace BlackPearl {
 	InstanceNode::InstanceNode()
-		:Node(Node::Type::Instance_Node)
+		:Node(nullptr,Node::Type::Instance_Node)
 	{
 	}
 }

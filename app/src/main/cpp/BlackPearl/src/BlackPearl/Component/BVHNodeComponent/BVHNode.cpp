@@ -76,7 +76,7 @@ namespace BlackPearl {
 	void BVHNode::Build(std::vector<Object*> objs)
 	{
 		size_t num = objs.size();
-		//ï¿½ï¿½ï¿½ã³¡ï¿½ï¿½ï¿½ï¿½bounding box
+		//¼ÆËã³¡¾°µÄbounding box
 		size_t dim = 3;
 		if (num == 1) {
 			m_IsLeaf = true;
@@ -114,10 +114,10 @@ namespace BlackPearl {
 			float boxLen = m_Box.GetExtent()[i];
 			float bucketLen = static_cast<float>(boxLen / num);
 
-			//ï¿½ï¿½ï¿½ä³¡ï¿½ï¿½ï¿½Ðµï¿½ï¿½ï¿½ï¿½åµ½bucketsï¿½ï¿½
+			//·ÖÅä³¡¾°ÖÐµÄÎïÌåµ½bucketsÖÐ
 			for (auto obj : objs)
 			{
-				const AABB& obj_box = obj->GetComponent<BlackPearl::BoundingBox>()->Get();
+				AABB& obj_box = obj->GetComponent<BlackPearl::BoundingBox>()->Get();
 				int bucketID = 0;
 				if(boxLen != 0)
 					bucketID = (obj_box.GetCenter()[i] - m_Box.GetMinP()[i]) / boxLen;
@@ -125,7 +125,7 @@ namespace BlackPearl {
 				boxOfBuckets[bucketID].Expand(obj_box);
 			}
 
-			//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ñ·Ö¸ï¿½ï¿½
+			//¼ÆËã×î¼Ñ·Ö¸îµã
 			std::vector<AABB> leftBox(m_BucketsNum);
 			std::vector<AABB> rightBox(m_BucketsNum);
 			std::vector<size_t> leftAccNum(m_BucketsNum);
@@ -169,7 +169,7 @@ namespace BlackPearl {
 			}
 
 		}
-		//ï¿½Ý¹ï¿½Ö¸ï¿½BVH Node
+		//µÝ¹é·Ö¸îBVH Node
 		if (leftNodes.size() == num) {
 			size_t leftNum = num / 2;
 
@@ -198,7 +198,7 @@ namespace BlackPearl {
 	//AABB BVHNode::Build(const std::vector<Triangle*>& triMesh) {
 
 	//	size_t num = triMesh.size();
-	//	//ï¿½ï¿½ï¿½ã³¡ï¿½ï¿½ï¿½ï¿½bounding box
+	//	//¼ÆËã³¡¾°µÄbounding box
 	//	size_t dim = 3;
 
 	//	if (num == 1) {
@@ -226,7 +226,7 @@ namespace BlackPearl {
 	//		float boxLen = m_Box.GetExtent()[i];
 	//		float bucketLen = static_cast<float>(boxLen / num);
 
-	//		//ï¿½ï¿½ï¿½ä³¡ï¿½ï¿½ï¿½Ðµï¿½ï¿½ï¿½ï¿½åµ½bucketsï¿½ï¿½
+	//		//·ÖÅä³¡¾°ÖÐµÄÎïÌåµ½bucketsÖÐ
 	//		for (auto tri : triMesh)
 	//		{
 	//			AABB& obj_box = tri->GetBoundingBox();
@@ -235,7 +235,7 @@ namespace BlackPearl {
 	//			boxOfBuckets[bucketID].Expand(obj_box);
 	//		}
 
-	//		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ñ·Ö¸ï¿½ï¿½
+	//		//¼ÆËã×î¼Ñ·Ö¸îµã
 	//		std::vector<AABB> leftBox(m_BucketsNum);
 	//		std::vector<AABB> rightBox(m_BucketsNum);
 	//		std::vector<size_t> leftAccNum(m_BucketsNum);
@@ -261,7 +261,7 @@ namespace BlackPearl {
 	//			}
 	//		}
 
-	//		//ï¿½Ý¹ï¿½Ö¸ï¿½BVH Node
+	//		//µÝ¹é·Ö¸îBVH Node
 	//		std::vector<Triangle*> leftNodes;
 	//		std::vector<Triangle*> rightNodes;
 

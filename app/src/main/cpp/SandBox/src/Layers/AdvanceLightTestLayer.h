@@ -19,33 +19,9 @@ public:
 
 		BlackPearl::Renderer::Init();
 
-		//m_SkyBoxObj = CreateSkyBox(
-		//	{ "assets/skybox/skybox/right.jpg",
-		//	 "assets/skybox/skybox/left.jpg",
-		//	 "assets/skybox/skybox/top.jpg",
-		//	 "assets/skybox/skybox/bottom.jpg",
-		//	 "assets/skybox/skybox/front.jpg",
-		//	 "assets/skybox/skybox/back.jpg",
-		//	});
-		//m_PlaneObj =CreatePlane();
-		//m_PlaneObj = CreatePlane("assets/shaders/PlaneBlinnPhong.glsl");
-
+	
 		m_CubeObj = CreateCube("assets/shaders/Cube.glsl", "assets/texture/wood.png");
-	/*	auto meshComponent = m_CubeObj->GetComponent<BlackPearl::MeshRenderer>();
-		std::shared_ptr<BlackPearl::Texture> cubeMapTexture(DBG_NEW BlackPearl::CubeMapTexture(BlackPearl::Texture::Type::CubeMap,
-			{ "assets/skybox/skybox/right.jpg",
-			 "assets/skybox/skybox/left.jpg",
-			 "assets/skybox/skybox/top.jpg",
-			 "assets/skybox/skybox/bottom.jpg",
-			 "assets/skybox/skybox/front.jpg",
-			 "assets/skybox/skybox/back.jpg",
-			}));
-		meshComponent->SetTexture(0, cubeMapTexture);
-
-		auto meshComponent1 = m_PlaneObj->GetComponent<BlackPearl::MeshRenderer>();
-		
-		meshComponent1->SetTexture(0, cubeMapTexture);*/
-
+	
 	
 	}
 
@@ -98,7 +74,7 @@ private:
 	BlackPearl::Object* m_SkyBoxObj;
 
 
-	glm::vec4 m_BackgroundColor = { 0.0f,0.0f,0.0f,0.0f };
+	BlackPearl::math::float4 m_BackgroundColor = { 0.0f,0.0f,0.0f,0.0f };
 
 
 	BlackPearl::MasterRenderer *m_MasterRenderer;

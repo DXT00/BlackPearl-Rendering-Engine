@@ -1,5 +1,4 @@
 #include "pch.h"
-#ifdef GE_API_D3D12
 #include "BlackPearl/Renderer/DeviceManager.h"
 #include "BlackPearl/RHI/RHITexture.h"
 #include "BlackPearl/RHI/DynamicRHI.h"
@@ -126,5 +125,10 @@ namespace BlackPearl {
     {
     }
 
+    DeviceManager* DeviceManager::CreateD3D12()
+    {
+        return nullptr;
+    }
+
+
 }
-#endif

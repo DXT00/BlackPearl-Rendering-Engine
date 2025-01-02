@@ -38,8 +38,8 @@ namespace BlackPearl {
 			m_Tex2Vec[material->GetTextureMaps()->cubeTextureMap].push_back(m_MatData.size());
 		}
 		else {
-			std::shared_ptr<glm::vec3> color;
-			color.reset(DBG_NEW glm::vec3(material->GetMaterialColor().Get().diffuseColor));
+			std::shared_ptr<math::float3> color;
+			color.reset(DBG_NEW math::float3(material->GetMaterialColor().Get().diffuseColor));
 			m_Color2Vec[color].push_back(m_MatData.size());
 
 		}
@@ -62,8 +62,8 @@ namespace BlackPearl {
 			m_Tex2Vec[material->GetTextureMaps()->specularTextureMap].push_back(m_MatData.size());
 		}
 		else {
-			std::shared_ptr<glm::vec3> color;
-			color.reset(DBG_NEW glm::vec3(material->GetMaterialColor().Get().specularColor));
+			std::shared_ptr<math::float3> color;
+			color.reset(DBG_NEW math::float3(material->GetMaterialColor().Get().specularColor));
 			m_Color2Vec[color].push_back(m_MatData.size());
 
 		}
@@ -98,7 +98,7 @@ namespace BlackPearl {
 	{
 	}
 
-	void GenData_MV::SetTex(const std::map<std::shared_ptr<glm::vec3>, size_t>& color2Idx)
+	void GenData_MV::SetTex(const std::map<std::shared_ptr<math::float3>, size_t>& color2Idx)
 	{
 
 		for (auto& pair : color2Idx) {
@@ -110,7 +110,7 @@ namespace BlackPearl {
 		}
 	}
 
-	void  GenData_MV::SetTex(const std::map<std::shared_ptr<Texture>, size_t>& tex2Idx) {
+	void  GenData_MV::SetTex(const std::map<TextureHandle, size_t>& tex2Idx) {
 
 		for (auto& pair : tex2Idx) {
 			auto target = m_Tex2Vec.find(pair.first);

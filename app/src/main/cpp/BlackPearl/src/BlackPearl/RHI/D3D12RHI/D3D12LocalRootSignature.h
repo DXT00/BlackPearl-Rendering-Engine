@@ -1,6 +1,5 @@
 #pragma once
 #include "D3D12RootSignature.h"
-#ifdef GE_API_D3D12
 namespace BlackPearl {
 
 	class D3D12LocalRootSignature 
@@ -58,4 +57,4 @@ namespace BlackPearl {
 	};
 }
 
-#endif
+

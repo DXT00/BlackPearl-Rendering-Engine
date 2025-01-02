@@ -11,7 +11,6 @@
 
 #include "BlackPearl/Renderer/Shader/Shader.h"
 #include "BlackPearl/Renderer/Buffer/Buffer.h"
-#include "BlackPearl/Renderer/Material/CubeMapTexture.h"
 #include "BlackPearl/Renderer/Renderer.h"
 #include "BlackPearl/Renderer/RenderCommand.h"
 #include "BlackPearl/Renderer/MasterRenderer/MasterRenderer.h"
@@ -39,6 +38,7 @@
 #include "BlackPearl/Renderer/MasterRenderer/SkyboxRenderer.h"
 #include "BlackPearl/Renderer/MasterRenderer/WaterRenderer.h"
 #include "BlackPearl/Renderer/MasterRenderer/DepthRenderer.h"
+#include "BlackPearl/Renderer/MasterRenderer/PostProcessRenderer.h"
 
 #ifdef GE_API_VULKAN
 #include "BlackPearl/Renderer/MasterRenderer/VkBasicRender.h"
@@ -75,6 +75,19 @@
 #include "BlackPearl/Scene/SDFScene.h"
 #include "BlackPearl/Scene/DemoScene/MetaBallSDFScene.h"
 #include "BlackPearl/Scene/BoundingBoxBuilder.h"
+
+#ifdef GE_API_D3D12
 //D3D12 API
 #include "BlackPearl/RHI/D3D12RHI/D3D12DeviceResources.h"
+#endif
+
+
+#include "BlackPearl/RHI/OpenGLRHI/OpenGLTexture.h"
+
+//RHI
 #include "BlackPearl/RHI/DynamicRHI.h"
+#include "BlackPearl/RHI/RHICommandList.h"
+#include "BlackPearl/RHI/RHIBuffer.h"
+#include "BlackPearl/Renderer/Shader/ShaderFactory.h"
+#include "BlackPearl/RHI/RHITexture.h"
+

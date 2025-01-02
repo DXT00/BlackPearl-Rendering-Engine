@@ -13,12 +13,12 @@
 #endif
 
 #define _CRTDBG_MAP_ALLOC
-#ifdef GE_PLATFORM_WINDOWS
 #include <cstdlib>
 #include <crtdbg.h>
 #include <windows.h>
 
 
+#ifdef GE_PLATFORM_WINDOWS
 
 extern BlackPearl::Application* BlackPearl::CreateApplication(HINSTANCE hInstance, int nShowCmd);
 

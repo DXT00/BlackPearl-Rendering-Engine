@@ -7,7 +7,7 @@
 #include "BlackPearl/Component/TerrainComponent/TerrainComponent.h"
 #include "BlackPearl/Renderer/Model/Model.h"
 #include "BlackPearl/Renderer/Shader/Shader.h"
-
+#include "imgui.h"
 #include <glm/gtc/type_ptr.hpp>
 #include <stdio.h>
 #include <stdlib.h>
@@ -21,15 +21,13 @@
 #include "BlackPearl/Renderer/MasterRenderer/CloudRenderer.h"
 #include "BlackPearl/Application.h"
 #include "BlackPearl/Renderer/Buffer/D3D12Buffer/D3D12Buffer.h"
-
+#include "hlsl/core/material_cb.h"
 namespace BlackPearl {
-
 	static int buttonNum = 0;
 	void Layer::OnImguiRender()
 	{
-#ifdef GE_PLATFORM_WINDOWS
 		ImGui::Begin("Settings");
-		ImGui::ColorEdit3("Suqare Color", glm::value_ptr(m_BackgroundColor));
+		ImGui::ColorEdit3("Suqare Color", (m_BackgroundColor));
 		ImGui::End();
 		ImGui::Begin("GI Settings");
 		//ImGui::Text("FPS = %.3lf", Application::s_AppFPS);
@@ -108,8 +106,8 @@ namespace BlackPearl {
 		float boxMin[] = { CloudRenderer::s_boundsMin.x, CloudRenderer::s_boundsMin.y, CloudRenderer::s_boundsMin.z };
 
 		ImGui::DragFloat3("s_boundsMax", boxMax, 0.05f, 0.001f, 100.0f, "%.3f ");
-		CloudRenderer::s_boundsMax = glm::vec3(boxMax[0], boxMax[1], boxMax[2]);
-		CloudRenderer::s_boundsMin = glm::vec3(boxMin[0], boxMin[1], boxMin[2]);
+		CloudRenderer::s_boundsMax = math::float3(boxMax[0], boxMax[1], boxMax[2]);
+		CloudRenderer::s_boundsMin = math::float3(boxMin[0], boxMin[1], boxMin[2]);
 
 
 	
@@ -133,7 +131,7 @@ namespace BlackPearl {
 
 
 
-		static Object* currentObj = nullptr;//TODO::×¢ï¿½ï¿½ï¿½Ú´ï¿½Ð¹Â©
+		static Object* currentObj = nullptr;//TODO::×¢ÒâÄÚ´æÐ¹Â©
 
 		if (ImGui::CollapsingHeader("Create")) {
 
@@ -256,7 +254,7 @@ namespace BlackPearl {
 
 				bool isBackGroundObj = currentObj->GetComponent<MeshRenderer>()->GetIsBackGroundObjects();
 				ImGui::Checkbox("isBackGroundObj", &isBackGroundObj);
-				//TODO:: ï¿½ï¿½ï¿½Ô²ï¿½ï¿½ï¿½ bitset
+				//TODO:: ¿ÉÒÔ²ÉÓÃ bitset
 				if (isBackGroundObj) {
 					std::vector<Object*>::const_iterator it = std::find(m_BackGroundObjsList.begin(), m_BackGroundObjsList.end(), currentObj);
 					if (it == m_BackGroundObjsList.end()) {
@@ -280,7 +278,7 @@ namespace BlackPearl {
 				/*shadowObj list*/
 				bool isShadowObj = currentObj->GetComponent<MeshRenderer>()->GetIsShadowObjects();
 				ImGui::Checkbox("isShadowObj", &isShadowObj);
-				//TODO:: ï¿½ï¿½ï¿½Ô²ï¿½ï¿½ï¿½ bitset
+				//TODO:: ¿ÉÒÔ²ÉÓÃ bitset
 				if (isShadowObj) {
 					std::vector<Object*>::const_iterator it = std::find(m_ShadowObjsList.begin(), m_ShadowObjsList.end(), currentObj);
 					if (it == m_ShadowObjsList.end()) {
@@ -328,7 +326,6 @@ namespace BlackPearl {
 
 		ImGui::End();
 		m_fileDialog.Display();
-#endif
 
 
 	}
@@ -419,7 +416,9 @@ namespace BlackPearl {
 		m_ShadowObjsList.push_back(cube3);
 		m_ShadowObjsList.push_back(cube4);
 		m_ShadowObjsList.push_back(cube5);
+
 	}
+	
 	void Layer::LoadCornellScene1()
 	{
 		/*create pointlights*/
@@ -495,6 +494,7 @@ namespace BlackPearl {
 
 
 	}
+	
 	void Layer::LoadChurchScene()
 	{
 		Object* church = CreateModel("assets/models/crytek-sponza/sponza.obj", "assets/shaders/IronMan.glsl", false, "Church");
@@ -512,7 +512,6 @@ namespace BlackPearl {
 		church->GetComponent<MeshRenderer>()->SetIsShadowObjects(false);
 
 		m_BackGroundObjsList.push_back(church);
-		//m_ShadowObjsList.push_back(church);
 
 
 		BlackPearl::Object* light = CreateLight(LightType::PointLight);
@@ -520,32 +519,6 @@ namespace BlackPearl {
 		light->GetComponent<MeshRenderer>()->SetIsShadowObjects(false);
 		light->GetComponent<PointLight>()->UpdateMesh({ {0,0,0} ,{1,1,1},{0,0,0},{0,0,0},1.0 });
 
-		//for (int i = 0; i < 10; i++) {
-		//	Object* light = CreateLight(LightType::PointLight);
-		//	light->GetComponent<Transform>()->SetPosition({ -50+i*10,30,0.0 });
-		//	light->GetComponent<Transform>()->SetLastPosition({ 0.0,-1.0,0.0 });//0.0,0.0,3.0
-		//	light->GetComponent<MeshRenderer>()->SetIsShadowObjects(false);
-		//	light->GetComponent<PointLight>()->UpdateMesh({ {0,0,0} ,{1,1,1},{1,1,1},{0,0,0},40 });
-
-		//}
-
-		//for (int i = 0; i < 10; i++) {
-		//	Object* light = CreateLight(LightType::PointLight);
-		//	light->GetComponent<Transform>()->SetPosition({ -50 + i * 10,5,0.0 });
-		//	light->GetComponent<Transform>()->SetLastPosition({ 0.0,-1.0,0.0 });//0.0,0.0,3.0
-		//	light->GetComponent<MeshRenderer>()->SetIsShadowObjects(false);
-		//	light->GetComponent<PointLight>()->UpdateMesh({ {0,0,0} ,{1,1,1},{1,1,1},{0,0,0},40 });
-
-		//}
-
-		//for (int i = 0; i < 10; i++) {
-		//	Object* light = CreateLight(LightType::PointLight);
-		//	light->GetComponent<Transform>()->SetPosition({ -50 + i * 10,10,0.0 });
-		//	light->GetComponent<Transform>()->SetLastPosition({ 0.0,-1.0,0.0 });//0.0,0.0,3.0
-		//	light->GetComponent<MeshRenderer>()->SetIsShadowObjects(false);
-		//	light->GetComponent<PointLight>()->UpdateMesh({ {0,0,0} ,{1,1,1},{1,1,1},{0,0,0},40 });
-
-		//}
 
 	}
 
@@ -556,140 +529,25 @@ namespace BlackPearl {
 		light->GetComponent<Transform>()->SetInitPosition({ 0.0,-1.0,0.0 });
 		light->GetComponent<MeshRenderer>()->SetIsShadowObjects(false);
 
-
-
-
-		Object* sphereObjIron = CreateSphere(1.5, 64, 64);//CreateCube();//
-		Object* sphereObjRust = CreateSphere(1.5, 64, 64);
-		Object* sphereObjStone = CreateSphere(1.5, 64, 64);
-		Object* sphereObjPlastic = CreateSphere(1.5, 64, 64);
+		Object* sphereObjIron = LoadStaticBackGroundObject("SphereIron");
+		Object* sphereObjRust = LoadStaticBackGroundObject("SphereRust");
+		Object* sphereObjStone = LoadStaticBackGroundObject("SphereStone");
+		Object* sphereObjPlastic = LoadStaticBackGroundObject("SpherePlastic");
+		Object* cube = LoadStaticBackGroundObject("WoodCube");
 		//textures spheres
-		std::shared_ptr<Texture> RustalbedoTexture(DBG_NEW Texture(Texture::Type::DiffuseMap, "assets/texture/pbr/rustSphere/rustediron2_basecolor.png"));
-		std::shared_ptr<Texture> RustaoTexture(DBG_NEW Texture(Texture::Type::AoMap, "assets/texture/pbr/rustSphere/rustediron2_ao.png"));
-		std::shared_ptr<Texture> RustroughnessTexture(DBG_NEW Texture(Texture::Type::RoughnessMap, "assets/texture/pbr/rustSphere/rustediron2_roughness.png"));
-		std::shared_ptr<Texture> RustmentallicTexture(DBG_NEW Texture(Texture::Type::MentallicMap, "assets/texture/pbr/rustSphere/rustediron2_metallic.png"));
-		std::shared_ptr<Texture> RustnormalTexture(DBG_NEW Texture(Texture::Type::NormalMap, "assets/texture/pbr/rustSphere/rustediron2_normal.png"));
-
-
-		std::shared_ptr<Texture> IronalbedoTexture(DBG_NEW Texture(Texture::Type::DiffuseMap, "assets/texture/pbr/IronScuffed/Iron-Scuffed_basecolor.png"));
-		std::shared_ptr<Texture> IronaoTexture(DBG_NEW Texture(Texture::Type::AoMap, "assets/texture/pbr/IronScuffed/Iron-Scuffed_ao.png"));
-		std::shared_ptr<Texture> IronroughnessTexture(DBG_NEW Texture(Texture::Type::RoughnessMap, "assets/texture/pbr/IronScuffed/Iron-Scuffed_roughness.png"));
-		std::shared_ptr<Texture> IronmentallicTexture(DBG_NEW Texture(Texture::Type::MentallicMap, "assets/texture/pbr/IronScuffed/Iron-Scuffed_metallic.png"));
-		std::shared_ptr<Texture> IronnormalTexture(DBG_NEW Texture(Texture::Type::NormalMap, "assets/texture/pbr/IronScuffed/Iron-Scuffed_normal.png"));
-
-		std::shared_ptr<Texture> StonealbedoTexture(DBG_NEW Texture(Texture::Type::DiffuseMap, "assets/texture/pbr/cobblestone/cobblestone-curved_2_albedo.png"));
-		std::shared_ptr<Texture> StoneaoTexture(DBG_NEW Texture(Texture::Type::AoMap, "assets/texture/pbr/cobblestone/cobblestone-curved_2_ao.png"));
-		std::shared_ptr<Texture> StoneroughnessTexture(DBG_NEW Texture(Texture::Type::RoughnessMap, "assets/texture/pbr/cobblestone/cobblestone-curved_2_roughness.png"));
-		std::shared_ptr<Texture> StonementallicTexture(DBG_NEW Texture(Texture::Type::MentallicMap, "assets/texture/pbr/cobblestone/cobblestone-curved_2_metallic.png"));
-		std::shared_ptr<Texture> StonenormalTexture(DBG_NEW Texture(Texture::Type::NormalMap, "assets/texture/pbr/cobblestone/cobblestone-curved_2_normal-dx.png"));
-
-		std::shared_ptr<Texture> PlasticalbedoTexture(DBG_NEW Texture(Texture::Type::DiffuseMap, "assets/texture/pbr/plasticSphere/scuffed-plastic4-alb.png"));
-		std::shared_ptr<Texture> PlasticaoTexture(DBG_NEW Texture(Texture::Type::AoMap, "assets/texture/pbr/plasticSphere/scuffed-plastic-ao.png"));
-		std::shared_ptr<Texture> PlasticroughnessTexture(DBG_NEW Texture(Texture::Type::RoughnessMap, "assets/texture/pbr/plasticSphere/scuffed-plastic-rough.png"));
-		std::shared_ptr<Texture> PlasticmentallicTexture(DBG_NEW Texture(Texture::Type::MentallicMap, "assets/texture/pbr/plasticSphere/scuffed-plastic-metal.png"));
-		std::shared_ptr<Texture> PlasticnormalTexture(DBG_NEW Texture(Texture::Type::NormalMap, "assets/texture/pbr/plasticSphere/scuffed-plastic-normal.png"));
-
-
-
-		sphereObjIron->GetComponent<MeshRenderer>()->SetTextures(IronnormalTexture);
-		sphereObjIron->GetComponent<MeshRenderer>()->SetTextures(IronalbedoTexture);
-		sphereObjIron->GetComponent<MeshRenderer>()->SetTextures(IronaoTexture);
-		sphereObjIron->GetComponent<MeshRenderer>()->SetTextures(IronroughnessTexture);
-		sphereObjIron->GetComponent<MeshRenderer>()->SetTextures(IronmentallicTexture);
-
-		sphereObjIron->GetComponent<MeshRenderer>()->SetPBRTextureSamples(true);
-		sphereObjIron->GetComponent<MeshRenderer>()->SetTextureDiffuseSamples(true);
-		//	sphereObjIron->GetComponent<MeshRenderer>()->SetTextureMetallicSamples(true);
-
-		sphereObjIron->GetComponent<MeshRenderer>()->SetIsPBRObject(true);
+		IDevice* device = m_DeviceManager->GetDevice();
+		
 		sphereObjIron->GetComponent<Transform>()->SetInitPosition({ 10,0,0 });
 
-		sphereObjRust->GetComponent<MeshRenderer>()->SetTextures(RustnormalTexture);
-		sphereObjRust->GetComponent<MeshRenderer>()->SetTextures(RustalbedoTexture);
-		sphereObjRust->GetComponent<MeshRenderer>()->SetTextures(RustaoTexture);
-		sphereObjRust->GetComponent<MeshRenderer>()->SetTextures(RustroughnessTexture);
-		sphereObjRust->GetComponent<MeshRenderer>()->SetTextures(RustmentallicTexture);
-
-		sphereObjRust->GetComponent<MeshRenderer>()->SetPBRTextureSamples(true);
-		sphereObjRust->GetComponent<MeshRenderer>()->SetTextureDiffuseSamples(true);
-		//sphereObjRust->GetComponent<MeshRenderer>()->SetTextureMetallicSamples(true);
-
-		sphereObjRust->GetComponent<MeshRenderer>()->SetIsPBRObject(true);
 		sphereObjRust->GetComponent<Transform>()->SetInitPosition({ 5,0,0 });
-
-		sphereObjStone->GetComponent<MeshRenderer>()->SetTextures(StonenormalTexture);
-		sphereObjStone->GetComponent<MeshRenderer>()->SetTextures(StonealbedoTexture);
-		sphereObjStone->GetComponent<MeshRenderer>()->SetTextures(StoneaoTexture);
-		sphereObjStone->GetComponent<MeshRenderer>()->SetTextures(StoneroughnessTexture);
-		sphereObjStone->GetComponent<MeshRenderer>()->SetTextures(StonementallicTexture);
-
-		sphereObjStone->GetComponent<MeshRenderer>()->SetPBRTextureSamples(true);
-		sphereObjStone->GetComponent<MeshRenderer>()->SetTextureDiffuseSamples(true);
-		//	sphereObjStone->GetComponent<MeshRenderer>()->SetTextureMetallicSamples(true);
-
-		sphereObjStone->GetComponent<MeshRenderer>()->SetIsPBRObject(true);
+		
 		sphereObjStone->GetComponent<Transform>()->SetInitPosition({ -5,0,0 });
 
-		sphereObjPlastic->GetComponent<MeshRenderer>()->SetTextures(PlasticnormalTexture);
-		sphereObjPlastic->GetComponent<MeshRenderer>()->SetTextures(PlasticalbedoTexture);
-		sphereObjPlastic->GetComponent<MeshRenderer>()->SetTextures(PlasticaoTexture);
-		sphereObjPlastic->GetComponent<MeshRenderer>()->SetTextures(PlasticroughnessTexture);
-		sphereObjPlastic->GetComponent<MeshRenderer>()->SetTextures(PlasticmentallicTexture);
-
-
-		sphereObjPlastic->GetComponent<MeshRenderer>()->SetPBRTextureSamples(true);
-		sphereObjPlastic->GetComponent<MeshRenderer>()->SetTextureDiffuseSamples(true);
-		//	sphereObjPlastic->GetComponent<MeshRenderer>()->SetTextureMetallicSamples(true);
-
-		sphereObjPlastic->GetComponent<MeshRenderer>()->SetIsPBRObject(true);
 		sphereObjPlastic->GetComponent<Transform>()->SetInitPosition({ -10.0,0,0 });
-
-
-		sphereObjIron->GetComponent<MeshRenderer>()->SetIsBackGroundObjects(true);
-		sphereObjRust->GetComponent<MeshRenderer>()->SetIsBackGroundObjects(true);
-		sphereObjStone->GetComponent<MeshRenderer>()->SetIsBackGroundObjects(true);
-		sphereObjPlastic->GetComponent<MeshRenderer>()->SetIsBackGroundObjects(true);
-
-
-		Object* cube = CreateCube();
+		
 		cube->GetComponent<Transform>()->SetInitPosition({ -2.0f,-2.5f,0.0f });
 		cube->GetComponent<Transform>()->SetInitScale({ 16.0f,0.5f,16.0f });
-		std::shared_ptr<Texture> cubeTexture(DBG_NEW Texture(Texture::Type::DiffuseMap, "assets/texture/wood.png", GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR, GL_RGBA, GL_CLAMP_TO_EDGE, GL_UNSIGNED_BYTE, true));
-		std::shared_ptr<Texture> cubeKsTexture(DBG_NEW Texture(Texture::Type::SpecularMap, "assets/texture/wood.png", GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR, GL_RGBA, GL_CLAMP_TO_EDGE, GL_UNSIGNED_BYTE, true));
-
-		cube->GetComponent<MeshRenderer>()->SetTextures(cubeTexture);
-		cube->GetComponent<MeshRenderer>()->SetTextures(cubeKsTexture);
-
-		cube->GetComponent<MeshRenderer>()->SetTextureDiffuseSamples(true);
-		cube->GetComponent<MeshRenderer>()->SetIsBackGroundObjects(true);
-
-		/*	BlackPearl::Object* specularProbe = CreateLightProbe(BlackPearl::ProbeType::REFLECTION_PROBE);
-			cube->AddChildObj(specularProbe);
-			specularProbe->GetComponent<Transform>()->SetInitPosition(cube->GetComponent<Transform>()->GetPosition());
-			specularProbe->GetComponent<BlackPearl::LightProbe>()->AddExcludeObjectId(cube->GetId().id);
-
-			BlackPearl::Object* specularProbe1 = CreateLightProbe(BlackPearl::ProbeType::REFLECTION_PROBE);
-			specularProbe1->GetComponent<Transform>()->SetInitPosition(sphereObjIron->GetComponent<Transform>()->GetPosition());
-			sphereObjIron->AddChildObj(specularProbe1);
-			specularProbe1->GetComponent<BlackPearl::LightProbe>()->AddExcludeObjectId(sphereObjIron->GetId().id);
-
-			BlackPearl::Object* specularProbe2 = CreateLightProbe(BlackPearl::ProbeType::REFLECTION_PROBE);
-			specularProbe2->GetComponent<Transform>()->SetInitPosition(sphereObjRust->GetComponent<Transform>()->GetPosition());
-			sphereObjRust->AddChildObj(specularProbe2);
-			specularProbe2->GetComponent<BlackPearl::LightProbe>()->AddExcludeObjectId(sphereObjRust->GetId().id);
-
-			BlackPearl::Object* specularProbe3 = CreateLightProbe(BlackPearl::ProbeType::REFLECTION_PROBE);
-			specularProbe3->GetComponent<Transform>()->SetInitPosition(sphereObjStone->GetComponent<Transform>()->GetPosition());
-			sphereObjStone->AddChildObj(specularProbe3);
-			specularProbe3->GetComponent<BlackPearl::LightProbe>()->AddExcludeObjectId(sphereObjStone->GetId().id);*/
-
-
-
-		m_BackGroundObjsList.push_back(sphereObjIron);
-		m_BackGroundObjsList.push_back(sphereObjStone);
-		m_BackGroundObjsList.push_back(sphereObjPlastic);
-		m_BackGroundObjsList.push_back(sphereObjRust);
-		m_BackGroundObjsList.push_back(cube);
+		
 		m_ShadowObjsList.push_back(sphereObjIron);
 		m_ShadowObjsList.push_back(sphereObjStone);
 		m_ShadowObjsList.push_back(sphereObjPlastic);
@@ -705,112 +563,25 @@ namespace BlackPearl {
 		light->GetComponent<Transform>()->SetInitPosition({ 0.0,-1.0,0.0 });
 		light->GetComponent<MeshRenderer>()->SetIsShadowObjects(false);
 
+		IDevice* device = m_DeviceManager->GetDevice();
 
-
-
-		Object* sphereObjIron = CreateSphere(1.5, 64, 64);//CreateCube();//
-		Object* sphereObjRust = CreateSphere(1.5, 64, 64);
-		Object* sphereObjStone = CreateSphere(1.5, 64, 64);
-		Object* sphereObjPlastic = CreateSphere(1.5, 64, 64);
-		//textures spheres
-		std::shared_ptr<Texture> RustalbedoTexture(DBG_NEW Texture(Texture::Type::DiffuseMap, "assets/texture/pbr/rustSphere/rustediron2_basecolor.png"));
-		std::shared_ptr<Texture> RustaoTexture(DBG_NEW Texture(Texture::Type::AoMap, "assets/texture/pbr/rustSphere/rustediron2_ao.png"));
-		std::shared_ptr<Texture> RustroughnessTexture(DBG_NEW Texture(Texture::Type::RoughnessMap, "assets/texture/pbr/rustSphere/rustediron2_roughness.png"));
-		std::shared_ptr<Texture> RustmentallicTexture(DBG_NEW Texture(Texture::Type::MentallicMap, "assets/texture/pbr/rustSphere/rustediron2_metallic.png"));
-		std::shared_ptr<Texture> RustnormalTexture(DBG_NEW Texture(Texture::Type::NormalMap, "assets/texture/pbr/rustSphere/rustediron2_normal.png"));
-
-
-		std::shared_ptr<Texture> IronalbedoTexture(DBG_NEW Texture(Texture::Type::DiffuseMap, "assets/texture/pbr/IronScuffed/Iron-Scuffed_basecolor.png"));
-		std::shared_ptr<Texture> IronaoTexture(DBG_NEW Texture(Texture::Type::AoMap, "assets/texture/pbr/IronScuffed/Iron-Scuffed_ao.png"));
-		std::shared_ptr<Texture> IronroughnessTexture(DBG_NEW Texture(Texture::Type::RoughnessMap, "assets/texture/pbr/IronScuffed/Iron-Scuffed_roughness.png"));
-		std::shared_ptr<Texture> IronmentallicTexture(DBG_NEW Texture(Texture::Type::MentallicMap, "assets/texture/pbr/IronScuffed/Iron-Scuffed_metallic.png"));
-		std::shared_ptr<Texture> IronnormalTexture(DBG_NEW Texture(Texture::Type::NormalMap, "assets/texture/pbr/IronScuffed/Iron-Scuffed_normal.png"));
-
-		std::shared_ptr<Texture> StonealbedoTexture(DBG_NEW Texture(Texture::Type::DiffuseMap, "assets/texture/pbr/cobblestone/cobblestone-curved_2_albedo.png"));
-		std::shared_ptr<Texture> StoneaoTexture(DBG_NEW Texture(Texture::Type::AoMap, "assets/texture/pbr/cobblestone/cobblestone-curved_2_ao.png"));
-		std::shared_ptr<Texture> StoneroughnessTexture(DBG_NEW Texture(Texture::Type::RoughnessMap, "assets/texture/pbr/cobblestone/cobblestone-curved_2_roughness.png"));
-		std::shared_ptr<Texture> StonementallicTexture(DBG_NEW Texture(Texture::Type::MentallicMap, "assets/texture/pbr/cobblestone/cobblestone-curved_2_metallic.png"));
-		std::shared_ptr<Texture> StonenormalTexture(DBG_NEW Texture(Texture::Type::NormalMap, "assets/texture/pbr/cobblestone/cobblestone-curved_2_normal-dx.png"));
-
-		std::shared_ptr<Texture> PlasticalbedoTexture(DBG_NEW Texture(Texture::Type::DiffuseMap, "assets/texture/pbr/plasticSphere/scuffed-plastic4-alb.png"));
-		std::shared_ptr<Texture> PlasticaoTexture(DBG_NEW Texture(Texture::Type::AoMap, "assets/texture/pbr/plasticSphere/scuffed-plastic-ao.png"));
-		std::shared_ptr<Texture> PlasticroughnessTexture(DBG_NEW Texture(Texture::Type::RoughnessMap, "assets/texture/pbr/plasticSphere/scuffed-plastic-rough.png"));
-		std::shared_ptr<Texture> PlasticmentallicTexture(DBG_NEW Texture(Texture::Type::MentallicMap, "assets/texture/pbr/plasticSphere/scuffed-plastic-metal.png"));
-		std::shared_ptr<Texture> PlasticnormalTexture(DBG_NEW Texture(Texture::Type::NormalMap, "assets/texture/pbr/plasticSphere/scuffed-plastic-normal.png"));
-
-
-
-		sphereObjIron->GetComponent<MeshRenderer>()->SetTextures(IronnormalTexture);
-		sphereObjIron->GetComponent<MeshRenderer>()->SetTextures(IronalbedoTexture);
-		sphereObjIron->GetComponent<MeshRenderer>()->SetTextures(IronaoTexture);
-		sphereObjIron->GetComponent<MeshRenderer>()->SetTextures(IronroughnessTexture);
-		sphereObjIron->GetComponent<MeshRenderer>()->SetTextures(IronmentallicTexture);
-
-		sphereObjIron->GetComponent<MeshRenderer>()->SetPBRTextureSamples(true);
-		sphereObjIron->GetComponent<MeshRenderer>()->SetTextureDiffuseSamples(true);
-		//	sphereObjIron->GetComponent<MeshRenderer>()->SetTextureMetallicSamples(true);
-
-		sphereObjIron->GetComponent<MeshRenderer>()->SetIsPBRObject(true);
+		Object* sphereObjIron = LoadStaticBackGroundObject("SphereIron");
+		Object* sphereObjRust = LoadStaticBackGroundObject("SphereRust");
+		Object* sphereObjStone = LoadStaticBackGroundObject("SphereStone");
+		Object* sphereObjPlastic = LoadStaticBackGroundObject("SpherePlastic");
+		Object* cube = LoadStaticBackGroundObject("WoodCube");
+		
 		sphereObjIron->GetComponent<Transform>()->SetInitPosition({ 10,0,0 });
 
-		sphereObjRust->GetComponent<MeshRenderer>()->SetTextures(RustnormalTexture);
-		sphereObjRust->GetComponent<MeshRenderer>()->SetTextures(RustalbedoTexture);
-		sphereObjRust->GetComponent<MeshRenderer>()->SetTextures(RustaoTexture);
-		sphereObjRust->GetComponent<MeshRenderer>()->SetTextures(RustroughnessTexture);
-		sphereObjRust->GetComponent<MeshRenderer>()->SetTextures(RustmentallicTexture);
-
-		sphereObjRust->GetComponent<MeshRenderer>()->SetPBRTextureSamples(true);
-		sphereObjRust->GetComponent<MeshRenderer>()->SetTextureDiffuseSamples(true);
-		//sphereObjRust->GetComponent<MeshRenderer>()->SetTextureMetallicSamples(true);
-
-		sphereObjRust->GetComponent<MeshRenderer>()->SetIsPBRObject(true);
 		sphereObjRust->GetComponent<Transform>()->SetInitPosition({ 5,0,0 });
 
-		sphereObjStone->GetComponent<MeshRenderer>()->SetTextures(StonenormalTexture);
-		sphereObjStone->GetComponent<MeshRenderer>()->SetTextures(StonealbedoTexture);
-		sphereObjStone->GetComponent<MeshRenderer>()->SetTextures(StoneaoTexture);
-		sphereObjStone->GetComponent<MeshRenderer>()->SetTextures(StoneroughnessTexture);
-		sphereObjStone->GetComponent<MeshRenderer>()->SetTextures(StonementallicTexture);
-
-		sphereObjStone->GetComponent<MeshRenderer>()->SetPBRTextureSamples(true);
-		sphereObjStone->GetComponent<MeshRenderer>()->SetTextureDiffuseSamples(true);
-		//	sphereObjStone->GetComponent<MeshRenderer>()->SetTextureMetallicSamples(true);
-
-		sphereObjStone->GetComponent<MeshRenderer>()->SetIsPBRObject(true);
 		sphereObjStone->GetComponent<Transform>()->SetInitPosition({ -5,0,0 });
 
-		sphereObjPlastic->GetComponent<MeshRenderer>()->SetTextures(PlasticnormalTexture);
-		sphereObjPlastic->GetComponent<MeshRenderer>()->SetTextures(PlasticalbedoTexture);
-		sphereObjPlastic->GetComponent<MeshRenderer>()->SetTextures(PlasticaoTexture);
-		sphereObjPlastic->GetComponent<MeshRenderer>()->SetTextures(PlasticroughnessTexture);
-		sphereObjPlastic->GetComponent<MeshRenderer>()->SetTextures(PlasticmentallicTexture);
-
-
-		sphereObjPlastic->GetComponent<MeshRenderer>()->SetPBRTextureSamples(true);
-		sphereObjPlastic->GetComponent<MeshRenderer>()->SetTextureDiffuseSamples(true);
-		//	sphereObjPlastic->GetComponent<MeshRenderer>()->SetTextureMetallicSamples(true);
-
-		sphereObjPlastic->GetComponent<MeshRenderer>()->SetIsPBRObject(true);
 		sphereObjPlastic->GetComponent<Transform>()->SetInitPosition({ -10.0,0,0 });
 
-
-		sphereObjIron->GetComponent<MeshRenderer>()->SetIsBackGroundObjects(true);
-		sphereObjRust->GetComponent<MeshRenderer>()->SetIsBackGroundObjects(true);
-		sphereObjStone->GetComponent<MeshRenderer>()->SetIsBackGroundObjects(true);
-		sphereObjPlastic->GetComponent<MeshRenderer>()->SetIsBackGroundObjects(true);
-
-
-		Object* cube = CreateCube();
 		cube->GetComponent<Transform>()->SetInitPosition({ -2.0f,-2.5f,0.0f });
 		cube->GetComponent<Transform>()->SetInitScale({ 16.0f,0.5f,16.0f });
-		std::shared_ptr<Texture> cubeTexture(DBG_NEW Texture(Texture::Type::DiffuseMap, "assets/texture/wood.png", GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR, GL_RGBA, GL_CLAMP_TO_EDGE, GL_UNSIGNED_BYTE, true));
-		std::shared_ptr<Texture> cubeKsTexture(DBG_NEW Texture(Texture::Type::SpecularMap, "assets/texture/wood.png", GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR, GL_RGBA, GL_CLAMP_TO_EDGE, GL_UNSIGNED_BYTE, true));
 
-		cube->GetComponent<MeshRenderer>()->SetTextures(cubeTexture);
-		cube->GetComponent<MeshRenderer>()->SetTextures(cubeKsTexture);
-
-		cube->GetComponent<MeshRenderer>()->SetTextureDiffuseSamples(true);
-		cube->GetComponent<MeshRenderer>()->SetIsBackGroundObjects(true);
 
 		BlackPearl::Object* specularProbe = CreateLightProbe(BlackPearl::ProbeType::REFLECTION_PROBE);
 		cube->AddChildObj(specularProbe);
@@ -832,16 +603,7 @@ namespace BlackPearl {
 		sphereObjStone->AddChildObj(specularProbe3);
 		specularProbe3->GetComponent<BlackPearl::LightProbe>()->AddExcludeObjectId(sphereObjStone->GetId().id);
 
-		/*BlackPearl::Object* specularProbe4 = CreateLightProbe(BlackPearl::ProbeType::REFLECTION_PROBE);
-		sphereObjPlastic->AddChildObj(specularProbe4);
-		specularProbe4->GetComponent<BlackPearl::LightProbe>()->AddExcludeObjectId(sphereObjPlastic->GetId().id);*/
 
-
-		m_BackGroundObjsList.push_back(sphereObjIron);
-		m_BackGroundObjsList.push_back(sphereObjStone);
-		m_BackGroundObjsList.push_back(sphereObjPlastic);
-		m_BackGroundObjsList.push_back(sphereObjRust);
-		m_BackGroundObjsList.push_back(cube);
 		m_ShadowObjsList.push_back(sphereObjIron);
 		m_ShadowObjsList.push_back(sphereObjStone);
 		m_ShadowObjsList.push_back(sphereObjPlastic);
@@ -851,31 +613,10 @@ namespace BlackPearl {
 
 	void Layer::LoadSwordScene()
 	{
-		Object* sword = CreateModel("assets/models/sword/OBJ/Big_Sword_OBJ.obj", "assets/shaders/pbr/PbrTexture.glsl", false, "Sword");
-		std::shared_ptr<Texture> SwordalbedoTexture(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::DiffuseMap, "assets/models/sword/textures/Big Sword_Base_Color_Map.jpg"));
-		std::shared_ptr<Texture> SwordaoTexture(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::AoMap, "assets/models/sword/textures/Big Sword_AO_Map.jpg"));
-		std::shared_ptr<Texture> SwordroughnessTexture(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::RoughnessMap, "assets/models/sword/textures/Big Sword_Roughness_Map.jpg"));
-		std::shared_ptr<Texture> SwordmentallicTexture(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::MentallicMap, "assets/models/sword/textures/Big Sword_Metalness.jpg"));
-		std::shared_ptr<Texture> SwordnormalTexture(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::NormalMap, "assets/models/sword/textures/Big Sword_Normal_Map.jpg"));
-		std::shared_ptr<Texture> SwordemissionTexture(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::EmissionMap, "assets/models/sword/textures/Big Sword_Emission_Map.jpg"));
+		IDevice* device = m_DeviceManager->GetDevice();
+		Object* sword = LoadStaticBackGroundObject("Sword");
+		m_ShadowObjsList.push_back(sword);
 
-		sword->GetComponent<MeshRenderer>()->SetTextures(SwordalbedoTexture);
-		sword->GetComponent<MeshRenderer>()->SetTextures(SwordaoTexture);
-		sword->GetComponent<MeshRenderer>()->SetTextures(SwordroughnessTexture);
-		sword->GetComponent<MeshRenderer>()->SetTextures(SwordmentallicTexture);
-		sword->GetComponent<MeshRenderer>()->SetTextures(SwordnormalTexture);
-		sword->GetComponent<MeshRenderer>()->SetTextures(SwordemissionTexture);
-
-		sword->GetComponent<MeshRenderer>()->SetPBRTextureSamples(true);
-		sword->GetComponent<MeshRenderer>()->SetIsPBRObject(true);
-		//	sword->GetComponent<MeshRenderer>()->SetTextureSamples(true);//TODO::
-		sword->GetComponent<MeshRenderer>()->SetTextureDiffuseSamples(true);
-		//	sword->GetComponent<MeshRenderer>()->SetTextureMetallicSamples(true);
-		sword->GetComponent<MeshRenderer>()->SetTexturEmissionSamples(true);
-
-		sword->GetComponent<MeshRenderer>()->SetIsPBRObject(true);
-
-		m_BackGroundObjsList.push_back(sword);
 
 	}
 
@@ -897,7 +638,7 @@ namespace BlackPearl {
 					//cube->GetComponent<Transform>()->SetRotation({0.0f,45.0f, 0.0f});
 
 					cube->GetComponent<Transform>()->SetInitScale({ 0.5f * cubeSize, 0.5f * cubeSize, 0.5f * cubeSize });
-					//std::shared_ptr<Texture> cubeTexture(DBG_NEW Texture(Texture::Type::DiffuseMap, "assets/texture/wood.png"));
+					//std::shared_ptr<Texture> cubeTexture(DBG_NEW Texture(TextureType::DiffuseMap, "assets/texture/wood.png"));
 					cube->GetComponent<MeshRenderer>()->GetMeshes()[0]->GetMaterial()->SetMaterialColorDiffuseColor({ (1.0f / num) * i,(1.0f / num) * j,(1.0f / num) * k });
 					cube->GetComponent<MeshRenderer>()->GetMeshes()[0]->GetMaterial()->SetMaterialColorSpecularColor({ 0.0f,0.0f,0.0f });
 
@@ -952,15 +693,16 @@ namespace BlackPearl {
 	Object* Layer::LoadStaticBackGroundObject(const std::string modelName)
 	{
 		Object* staticModel = nullptr;
+		IDevice* device = m_DeviceManager->GetDevice();
 
 		if (modelName == "House") {
 			//house model
 			staticModel = CreateModel("assets/models/Alpine/Alpine_chalet.obj", "assets/shaders/IronMan.glsl", false, "House");
-			std::shared_ptr<BlackPearl::Texture> housealbedoTexture(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::DiffuseMap, "assets/models/Alpine/Diffuse_map.png"));
-			std::shared_ptr<BlackPearl::Texture> houseroughnessTexture(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::RoughnessMap, "assets/models/Alpine/Roughness_map.png"));
-			std::shared_ptr<BlackPearl::Texture> housementallicTexture(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::MentallicMap, "assets/models/Alpine/Metallic_map.png"));
-			std::shared_ptr<BlackPearl::Texture> housenormalTexture(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::NormalMap, "assets/models/Alpine/Normal_map.png"));
-			std::shared_ptr<BlackPearl::Texture> houseaoTexture(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::AoMap, "assets/models/Alpine/Ao_map.png"));
+			TextureHandle housealbedoTexture = device->createTexture(TextureDesc(TextureType::DiffuseMap, "assets/models/Alpine/Diffuse_map.png"));
+			TextureHandle houseroughnessTexture = device->createTexture(TextureDesc(TextureType::RoughnessMap, "assets/models/Alpine/Roughness_map.png"));
+			TextureHandle housementallicTexture = device->createTexture(TextureDesc(TextureType::MentallicMap, "assets/models/Alpine/Metallic_map.png"));
+			TextureHandle housenormalTexture = device->createTexture(TextureDesc(TextureType::NormalMap, "assets/models/Alpine/Normal_map.png"));
+			TextureHandle houseaoTexture = device->createTexture(TextureDesc(TextureType::AoMap, "assets/models/Alpine/Ao_map.png"));
 
 			staticModel->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(housealbedoTexture);
 			staticModel->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(houseroughnessTexture);
@@ -995,17 +737,65 @@ namespace BlackPearl {
 			staticModel->GetComponent<MeshRenderer>()->SetIsBackGroundObjects(true);
 
 		}
+		if (modelName == "WoodCube") {
+			staticModel = CreateCube();
+			TextureDesc desc;
+			desc.type = TextureType::DiffuseMap;
+			desc.path = "assets/texture/wood.png";
+			desc.minFilter = FilterMode::Linear_Mip_Linear;
+			desc.magFilter = FilterMode::Linear;
+			desc.wrap = SamplerAddressMode::ClampToEdge;
+			desc.format = Format::RGBA8_UNORM;
+			desc.generateMipmap = true;
+
+
+			TextureHandle cubeTexture = device->createTexture(desc);
+			desc.type = TextureType::SpecularMap;
+			TextureHandle cubeKsTexture = device->createTexture(desc);
+
+			staticModel->GetComponent<MeshRenderer>()->SetTextures(cubeTexture);
+			staticModel->GetComponent<MeshRenderer>()->SetTextures(cubeKsTexture);
+
+			staticModel->GetComponent<MeshRenderer>()->SetTextureDiffuseSamples(true);
+			staticModel->GetComponent<MeshRenderer>()->SetIsBackGroundObjects(true);
+
+		}if (modelName == "Sword") {
+			Object* sword = CreateModel("assets/models/sword/OBJ/Big_Sword_OBJ.obj", "assets/shaders/pbr/PbrTexture.glsl", false, "Sword");
+			TextureHandle SwordalbedoTexture = device->createTexture(TextureDesc(TextureType::DiffuseMap, "assets/models/sword/textures/Big Sword_Base_Color_Map.jpg"));
+			TextureHandle SwordaoTexture = device->createTexture(TextureDesc(TextureType::AoMap, "assets/models/sword/textures/Big Sword_AO_Map.jpg"));
+			TextureHandle SwordroughnessTexture = device->createTexture(TextureDesc(TextureType::RoughnessMap, "assets/models/sword/textures/Big Sword_Roughness_Map.jpg"));
+			TextureHandle SwordmentallicTexture = device->createTexture(TextureDesc(TextureType::MentallicMap, "assets/models/sword/textures/Big Sword_Metalness.jpg"));
+			TextureHandle SwordnormalTexture = device->createTexture(TextureDesc(TextureType::NormalMap, "assets/models/sword/textures/Big Sword_Normal_Map.jpg"));
+			TextureHandle SwordemissionTexture = device->createTexture(TextureDesc(TextureType::EmissionMap, "assets/models/sword/textures/Big Sword_Emission_Map.jpg"));
+
+			sword->GetComponent<MeshRenderer>()->SetTextures(SwordalbedoTexture);
+			sword->GetComponent<MeshRenderer>()->SetTextures(SwordaoTexture);
+			sword->GetComponent<MeshRenderer>()->SetTextures(SwordroughnessTexture);
+			sword->GetComponent<MeshRenderer>()->SetTextures(SwordmentallicTexture);
+			sword->GetComponent<MeshRenderer>()->SetTextures(SwordnormalTexture);
+			sword->GetComponent<MeshRenderer>()->SetTextures(SwordemissionTexture);
+
+			sword->GetComponent<MeshRenderer>()->SetPBRTextureSamples(true);
+			sword->GetComponent<MeshRenderer>()->SetIsPBRObject(true);
+			//	sword->GetComponent<MeshRenderer>()->SetTextureSamples(true);//TODO::
+			sword->GetComponent<MeshRenderer>()->SetTextureDiffuseSamples(true);
+			//	sword->GetComponent<MeshRenderer>()->SetTextureMetallicSamples(true);
+			sword->GetComponent<MeshRenderer>()->SetTexturEmissionSamples(true);
+
+			sword->GetComponent<MeshRenderer>()->SetIsPBRObject(true);
+
+		}
 		else if (modelName == "Sphere") {
 			staticModel = CreateSphere(1.5, 64, 64);
 			staticModel->GetComponent<Transform>()->SetInitScale(glm::vec3(0.003));
 			staticModel->GetComponent<Transform>()->SetInitPosition({ -0.5f,0.0f,2.5f });
 			staticModel->GetComponent<Transform>()->SetInitRotation({ 0.0f,68.0f,0.0f });
 			staticModel->GetComponent<MeshRenderer>()->SetIsBackGroundObjects(true);
-			std::shared_ptr<Texture> PlasticalbedoTexture(DBG_NEW Texture(Texture::Type::DiffuseMap, "assets/texture/pbr/plasticSphere/scuffed-plastic4-alb.png"));
-			std::shared_ptr<Texture> PlasticaoTexture(DBG_NEW Texture(Texture::Type::AoMap, "assets/texture/pbr/plasticSphere/scuffed-plastic-ao.png"));
-			std::shared_ptr<Texture> PlasticroughnessTexture(DBG_NEW Texture(Texture::Type::RoughnessMap, "assets/texture/pbr/plasticSphere/scuffed-plastic-rough.png"));
-			std::shared_ptr<Texture> PlasticmentallicTexture(DBG_NEW Texture(Texture::Type::MentallicMap, "assets/texture/pbr/plasticSphere/scuffed-plastic-metal.png"));
-			std::shared_ptr<Texture> PlasticnormalTexture(DBG_NEW Texture(Texture::Type::NormalMap, "assets/texture/pbr/plasticSphere/scuffed-plastic-normal.png"));
+			TextureHandle PlasticalbedoTexture = device->createTexture(TextureDesc(TextureType::DiffuseMap, "assets/texture/pbr/plasticSphere/scuffed-plastic4-alb.png"));
+			TextureHandle PlasticaoTexture = device->createTexture(TextureDesc(TextureType::AoMap, "assets/texture/pbr/plasticSphere/scuffed-plastic-ao.png"));
+			TextureHandle PlasticroughnessTexture = device->createTexture(TextureDesc(TextureType::RoughnessMap, "assets/texture/pbr/plasticSphere/scuffed-plastic-rough.png"));
+			TextureHandle PlasticmentallicTexture = device->createTexture(TextureDesc(TextureType::MentallicMap, "assets/texture/pbr/plasticSphere/scuffed-plastic-metal.png"));
+			TextureHandle PlasticnormalTexture = device->createTexture(TextureDesc(TextureType::NormalMap, "assets/texture/pbr/plasticSphere/scuffed-plastic-normal.png"));
 			staticModel->GetComponent<MeshRenderer>()->SetTextures(PlasticnormalTexture);
 			staticModel->GetComponent<MeshRenderer>()->SetTextures(PlasticalbedoTexture);
 			staticModel->GetComponent<MeshRenderer>()->SetTextures(PlasticaoTexture);
@@ -1020,11 +810,11 @@ namespace BlackPearl {
 		else if (modelName == "SphereIron") {
 			staticModel = CreateSphere(1.5, 64, 64);
 
-			std::shared_ptr<Texture> IronalbedoTexture(DBG_NEW Texture(Texture::Type::DiffuseMap, "assets/texture/pbr/IronScuffed/Iron-Scuffed_basecolor.png"));
-			std::shared_ptr<Texture> IronaoTexture(DBG_NEW Texture(Texture::Type::AoMap, "assets/texture/pbr/IronScuffed/Iron-Scuffed_ao.png"));
-			std::shared_ptr<Texture> IronroughnessTexture(DBG_NEW Texture(Texture::Type::RoughnessMap, "assets/texture/pbr/IronScuffed/Iron-Scuffed_roughness.png"));
-			std::shared_ptr<Texture> IronmentallicTexture(DBG_NEW Texture(Texture::Type::MentallicMap, "assets/texture/pbr/IronScuffed/Iron-Scuffed_metallic.png"));
-			std::shared_ptr<Texture> IronnormalTexture(DBG_NEW Texture(Texture::Type::NormalMap, "assets/texture/pbr/IronScuffed/Iron-Scuffed_normal.png"));
+			TextureHandle IronalbedoTexture = device->createTexture(TextureDesc(TextureType::DiffuseMap, "assets/texture/pbr/IronScuffed/Iron-Scuffed_basecolor.png"));
+			TextureHandle IronaoTexture = device->createTexture(TextureDesc(TextureType::AoMap, "assets/texture/pbr/IronScuffed/Iron-Scuffed_ao.png"));
+			TextureHandle IronroughnessTexture = device->createTexture(TextureDesc(TextureType::RoughnessMap, "assets/texture/pbr/IronScuffed/Iron-Scuffed_roughness.png"));
+			TextureHandle IronmentallicTexture = device->createTexture(TextureDesc(TextureType::MentallicMap, "assets/texture/pbr/IronScuffed/Iron-Scuffed_metallic.png"));
+			TextureHandle IronnormalTexture = device->createTexture(TextureDesc(TextureType::NormalMap, "assets/texture/pbr/IronScuffed/Iron-Scuffed_normal.png"));
 
 			staticModel->GetComponent<MeshRenderer>()->SetTextures(IronnormalTexture);
 			staticModel->GetComponent<MeshRenderer>()->SetTextures(IronalbedoTexture);
@@ -1044,6 +834,66 @@ namespace BlackPearl {
 			staticModel->AddChildObj(specularProbe);
 			specularProbe->GetComponent<BlackPearl::LightProbe>()->AddExcludeObjectId(staticModel->GetId().id);
 		}
+		else if (modelName == "SphereRust") {
+			staticModel = CreateSphere(1.5, 64, 64);
+			TextureHandle RustalbedoTexture = device->createTexture(TextureDesc(TextureType::DiffuseMap, "assets/texture/pbr/rustSphere/rustediron2_basecolor.png"));
+			TextureHandle RustaoTexture = device->createTexture(TextureDesc(TextureType::AoMap, "assets/texture/pbr/rustSphere/rustediron2_ao.png"));
+			TextureHandle RustroughnessTexture = device->createTexture(TextureDesc(TextureType::RoughnessMap, "assets/texture/pbr/rustSphere/rustediron2_roughness.png"));
+			TextureHandle RustmentallicTexture = device->createTexture(TextureDesc(TextureType::MentallicMap, "assets/texture/pbr/rustSphere/rustediron2_metallic.png"));
+			TextureHandle RustnormalTexture = device->createTexture(TextureDesc(TextureType::NormalMap, "assets/texture/pbr/rustSphere/rustediron2_normal.png"));
+			staticModel->GetComponent<MeshRenderer>()->SetPBRTextureSamples(true);
+			staticModel->GetComponent<MeshRenderer>()->SetTextureDiffuseSamples(true);
+			//sphereObjRust->GetComponent<MeshRenderer>()->SetTextureMetallicSamples(true);
+
+			staticModel->GetComponent<MeshRenderer>()->SetIsPBRObject(true);
+			staticModel->GetComponent<Transform>()->SetInitPosition({ 5,0,0 });
+			staticModel->GetComponent<MeshRenderer>()->SetIsBackGroundObjects(true);
+
+		}
+		else if (modelName == "SphereStone") {
+			staticModel = CreateSphere(1.5, 64, 64);
+
+			TextureHandle StonealbedoTexture = device->createTexture(TextureDesc(TextureType::DiffuseMap, "assets/texture/pbr/cobblestone/cobblestone-curved_2_albedo.png"));
+			TextureHandle StoneaoTexture = device->createTexture(TextureDesc(TextureType::AoMap, "assets/texture/pbr/cobblestone/cobblestone-curved_2_ao.png"));
+			TextureHandle StoneroughnessTexture = device->createTexture(TextureDesc(TextureType::RoughnessMap, "assets/texture/pbr/cobblestone/cobblestone-curved_2_roughness.png"));
+			TextureHandle StonementallicTexture = device->createTexture(TextureDesc(TextureType::MentallicMap, "assets/texture/pbr/cobblestone/cobblestone-curved_2_metallic.png"));
+			TextureHandle StonenormalTexture = device->createTexture(TextureDesc(TextureType::NormalMap, "assets/texture/pbr/cobblestone/cobblestone-curved_2_normal-dx.png"));
+
+			staticModel->GetComponent<MeshRenderer>()->SetTextures(StonenormalTexture);
+			staticModel->GetComponent<MeshRenderer>()->SetTextures(StonealbedoTexture);
+			staticModel->GetComponent<MeshRenderer>()->SetTextures(StoneaoTexture);
+			staticModel->GetComponent<MeshRenderer>()->SetTextures(StoneroughnessTexture);
+			staticModel->GetComponent<MeshRenderer>()->SetTextures(StonementallicTexture);
+
+			staticModel->GetComponent<MeshRenderer>()->SetPBRTextureSamples(true);
+			staticModel->GetComponent<MeshRenderer>()->SetTextureDiffuseSamples(true);
+			//	sphereObjStone->GetComponent<MeshRenderer>()->SetTextureMetallicSamples(true);
+
+			staticModel->GetComponent<MeshRenderer>()->SetIsPBRObject(true);
+			staticModel->GetComponent<MeshRenderer>()->SetIsBackGroundObjects(true);
+		}
+		else if (modelName == "SpherePlastic") {
+			staticModel = CreateSphere(1.5, 64, 64);
+			TextureHandle PlasticalbedoTexture = device->createTexture(TextureDesc(TextureType::DiffuseMap, "assets/texture/pbr/plasticSphere/scuffed-plastic4-alb.png"));
+			TextureHandle PlasticaoTexture = device->createTexture(TextureDesc(TextureType::AoMap, "assets/texture/pbr/plasticSphere/scuffed-plastic-ao.png"));
+			TextureHandle PlasticroughnessTexture = device->createTexture(TextureDesc(TextureType::RoughnessMap, "assets/texture/pbr/plasticSphere/scuffed-plastic-rough.png"));
+			TextureHandle PlasticmentallicTexture = device->createTexture(TextureDesc(TextureType::MentallicMap, "assets/texture/pbr/plasticSphere/scuffed-plastic-metal.png"));
+			TextureHandle PlasticnormalTexture = device->createTexture(TextureDesc(TextureType::NormalMap, "assets/texture/pbr/plasticSphere/scuffed-plastic-normal.png"));
+			staticModel->GetComponent<MeshRenderer>()->SetTextures(PlasticnormalTexture);
+			staticModel->GetComponent<MeshRenderer>()->SetTextures(PlasticalbedoTexture);
+			staticModel->GetComponent<MeshRenderer>()->SetTextures(PlasticaoTexture);
+			staticModel->GetComponent<MeshRenderer>()->SetTextures(PlasticroughnessTexture);
+			staticModel->GetComponent<MeshRenderer>()->SetTextures(PlasticmentallicTexture);
+
+
+			staticModel->GetComponent<MeshRenderer>()->SetPBRTextureSamples(true);
+			staticModel->GetComponent<MeshRenderer>()->SetTextureDiffuseSamples(true);
+			//	sphereObjPlastic->GetComponent<MeshRenderer>()->SetTextureMetallicSamples(true);
+
+			staticModel->GetComponent<MeshRenderer>()->SetIsPBRObject(true);
+			staticModel->GetComponent<MeshRenderer>()->SetIsBackGroundObjects(true);
+
+		}
 		else {
 			GE_CORE_ERROR("no such name:" + modelName + "!")
 		}
@@ -1062,11 +912,13 @@ namespace BlackPearl {
 
 		}
 		else if (modelName == "Robot") {
+
+			auto device = m_DeviceManager->GetDevice();
 			dynamicModel = CreateModel("assets/models-animation/56-sphere-bot-basic/Sphere-Bot Basic/Armature_001-(COLLADA_3 (COLLAborative Design Activity)).dae", "assets/shaders/animatedModel/animatedModel.glsl", true, "Robot");
-			std::shared_ptr<BlackPearl::Texture> RobotAoTexture(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::AoMap, "assets/models-animation/56-sphere-bot-basic/Sphere-Bot Basic/Sphere_Bot_ao.jpg"));
-			std::shared_ptr<BlackPearl::Texture> RobotRoughnessTexture(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::RoughnessMap, "assets/models-animation/56-sphere-bot-basic/Sphere-Bot Basic/Sphere_Bot_rough.jpg"));
-			std::shared_ptr<BlackPearl::Texture> RobotMentallicTexture(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::MentallicMap, "assets/models-animation/56-sphere-bot-basic/Sphere-Bot Basic/Sphere_Bot_metalness.jpg"));
-			std::shared_ptr<BlackPearl::Texture> RobotNormalTexture(DBG_NEW BlackPearl::Texture(BlackPearl::Texture::Type::NormalMap, "assets/models-animation/56-sphere-bot-basic/Sphere-Bot Basic/Sphere_Bot_nmap_2.jpg"));
+			TextureHandle RobotAoTexture = device->createTexture(TextureDesc(TextureType::AoMap, "assets/models-animation/56-sphere-bot-basic/Sphere-Bot Basic/Sphere_Bot_ao.jpg"));
+			TextureHandle RobotRoughnessTexture = device->createTexture(TextureDesc(TextureType::RoughnessMap, "assets/models-animation/56-sphere-bot-basic/Sphere-Bot Basic/Sphere_Bot_rough.jpg"));
+			TextureHandle RobotMentallicTexture = device->createTexture(TextureDesc(TextureType::MentallicMap, "assets/models-animation/56-sphere-bot-basic/Sphere-Bot Basic/Sphere_Bot_metalness.jpg"));
+			TextureHandle RobotNormalTexture = device->createTexture(TextureDesc(TextureType::NormalMap, "assets/models-animation/56-sphere-bot-basic/Sphere-Bot Basic/Sphere_Bot_nmap_2.jpg"));
 
 			dynamicModel->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(RobotNormalTexture);
 			dynamicModel->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(RobotRoughnessTexture);
@@ -1165,7 +1017,7 @@ namespace BlackPearl {
 		(type == ProbeType::DIFFUSE_PROBE) ? m_DiffuseLightProbes.push_back(probe) : m_ReflectionLightProbes.push_back(probe);
 		return probe;
 	}
-	Object* Layer::CreateProbeGrid(MapManager* mapManager, ProbeType type, glm::vec3 probeNums, glm::vec3 offsets, float space)
+	Object* Layer::CreateProbeGrid(MapManager* mapManager, ProbeType type, math::float3 probeNums, math::float3 offsets, float space)
 	{
 		std::string objName = (type == ProbeType::DIFFUSE_PROBE) ? "Kd ProbesGrid" : "Ks ProbeGrid";
 		Object* obj = CreateEmpty(objName);
@@ -1226,9 +1078,7 @@ namespace BlackPearl {
 
 	void Layer::ShowCamera(PerspectiveCamera* perspectiveCamera)
 	{
-#ifdef GE_PLATFORM_WINDOWS
-
-        ImGui::Text("Yaw = %f,Pitch= %f", perspectiveCamera->Yaw(), perspectiveCamera->Pitch());
+		ImGui::Text("Yaw = %f,Pitch= %f", perspectiveCamera->Yaw(), perspectiveCamera->Pitch());
 		ImGui::Text("ProjectionViewMatrix[0].x = %f,ProjectionViewMatrix[1].x = %f", perspectiveCamera->GetProjectionViewMatrix()[0].x
 			, perspectiveCamera->GetProjectionViewMatrix()[1].x);
 		ImGui::Text("ProjectionViewMatrix[2].x = %f,ProjectionViewMatrix[3].x = %f", perspectiveCamera->GetProjectionViewMatrix()[2].x, perspectiveCamera->GetProjectionViewMatrix()[3].x);
@@ -1242,15 +1092,12 @@ namespace BlackPearl {
 		perspectiveCamera->SetMoveSpeed(moveSpeed);
 		ImGui::DragFloat("CameraRotateSpeed", &rotSpeed, perspectiveCamera->GetRotateSpeed(), 0.1, 500, "%.3f ");
 		perspectiveCamera->SetRotateSpeed(rotSpeed);
-#endif
 
 	}
 
 	void Layer::ShowCamera(MainCamera* mainCamera)
 	{
-#ifdef GE_PLATFORM_WINDOWS
-
-        ImGui::Text("Yaw = %f,Pitch= %f", mainCamera->Yaw(), mainCamera->Pitch());
+		ImGui::Text("Yaw = %f,Pitch= %f", mainCamera->Yaw(), mainCamera->Pitch());
 		ImGui::Text("Position.x = %f,Position.y = %f,Position.z = %f", mainCamera->GetPosition().x, mainCamera->GetPosition().y, mainCamera->GetPosition().z);
 		ImGui::Text("Front.x = %f,Front.y = %f,Front.z = %f", mainCamera->Front().x, mainCamera->Front().y, mainCamera->Front().z);
 		ImGui::Text("Up.x = %f,Up.y = %f,Up.z = %f", mainCamera->Up().x, mainCamera->Up().y, mainCamera->Up().z);
@@ -1261,12 +1108,11 @@ namespace BlackPearl {
 		mainCamera->SetMoveSpeed(moveSpeed);
 		ImGui::DragFloat("CameraRotateSpeed", &rotSpeed, mainCamera->GetRotateSpeed(), 0.1, 500, "%.3f ");
 		mainCamera->SetRotateSpeed(rotSpeed);
-#endif
+
 	}
 
 	void Layer::ShowTerrian(Object* obj)
 	{
-#ifdef GE_PLATFORM_WINDOWS
 
 		ImGui::Text("Terrian");
 		bool dynamicTessLevel = obj->GetComponent<TerrainComponent>()->GetDynamicTess();
@@ -1277,17 +1123,15 @@ namespace BlackPearl {
 		float staticTessLevel = obj->GetComponent<TerrainComponent>()->GetStaticTessLevel();
 		ImGui::DragFloat("staticTessLevel", &staticTessLevel, obj->GetComponent<TerrainComponent>()->GetStaticTessLevel(), 8.0f, 200.0f, "%.3f ");
 		obj->GetComponent<TerrainComponent>()->SetTessLevel(staticTessLevel);
-#endif
+
 	}
 
-	void Layer::ShowShader(std::string imguiShaders, int meshIndex, int& itemIndex, int offset)
+	void Layer::ShowShader(std::string imguiShaders, int meshIndex, static  int& itemIndex, int offset)
 	{
-#ifdef GE_PLATFORM_WINDOWS
-
-        std::string buttonName = "select file##" + std::to_string(meshIndex + offset);
+		std::string buttonName = "select file##" + std::to_string(meshIndex + offset);
 		std::string inputTextName = "mesh" + std::to_string(meshIndex + offset);
 
-		//imguiShaders = mesh->GetMaterial()->GetShader()->GetPath();
+		//imguiShaders = mesh->GetMaterial()->GetShader()->getDesc().path;
 	//	ImGui::PushID(meshIndex);
 
 		char* shader = const_cast<char*>(imguiShaders.c_str());
@@ -1298,54 +1142,53 @@ namespace BlackPearl {
 			m_fileDialog.Open();
 		}
 		//	ImGui::PopID();
-#endif
+
 	}
 
-	void Layer::ShowTextures(std::string imguiShaders, int meshIndex, int& itemIndex, Texture::Type textureType,  Texture::Type& type, int offset)
+	void Layer::ShowTextures(std::string imguiShaders, int meshIndex, static  int& itemIndex, TextureType textureType, static TextureType& type, int offset)
 	{
-#ifdef GE_PLATFORM_WINDOWS
 
 		std::string buttonName = ""; //+std::to_string(meshIndex + offset);
 		std::string inputTextName = "";// +std::to_string(meshIndex + offset);
 
 		switch (textureType) {
-		case Texture::Type::DiffuseMap:
+		case TextureType::DiffuseMap:
 			buttonName += "diffuseMap";
 			inputTextName += "diffuseMap";
 			break;
-		case Texture::Type::SpecularMap:
+		case TextureType::SpecularMap:
 			buttonName += "specularMap";
 			inputTextName += "specularMap";
 			break;
-		case Texture::Type::EmissionMap:
+		case TextureType::EmissionMap:
 			buttonName += "emissionMap";
 			inputTextName += "emissionMap";
 			break;
-		case Texture::Type::HeightMap:
+		case TextureType::HeightMap:
 			buttonName += "heightMap";
 			inputTextName += "heightMap";
 			break;
-		case Texture::Type::NormalMap:
+		case TextureType::NormalMap:
 			buttonName += "normalMap";
 			inputTextName += "normalMap";
 			break;
-		case Texture::Type::CubeMap:
+		case TextureType::CubeMap:
 			buttonName += "cubeMap";
 			inputTextName += "cubeMap";
 			break;
-		case Texture::Type::DepthMap:
+		case TextureType::DepthMap:
 			buttonName += "depthMap";
 			inputTextName += "depthMap";
 			break;
-		case Texture::Type::AoMap:
+		case TextureType::AoMap:
 			buttonName += "aoMap";
 			inputTextName += "aoMap";
 			break;
-		case Texture::Type::RoughnessMap:
+		case TextureType::RoughnessMap:
 			buttonName += "roughnessMap";
 			inputTextName += "roughnessMap";
 			break;
-		case Texture::Type::MentallicMap:
+		case TextureType::MentallicMap:
 			buttonName += "mentallicMap";
 			inputTextName += "mentallicMap";
 			break;
@@ -1357,7 +1200,7 @@ namespace BlackPearl {
 		if (imguiShaders.size() == 0)
 			ImGui::Text("                    ");
 		else
-			ImGui::Text("%s",imguiShaders.c_str());
+			ImGui::Text(imguiShaders.c_str());
 
 		ImGui::SameLine();
 
@@ -1368,19 +1211,18 @@ namespace BlackPearl {
 		}
 
 		//ImGui::PopID();
-#endif
+
 	}
 
-	void Layer::ShowMaterialProps(Material::Props& imGuiProps)
+	void Layer::ShowMaterialProps(Props& imGuiProps)
 	{
 	}
 
 	void Layer::ShowMeshRenderer(MeshRenderer* comp)
 	{
-#ifdef GE_PLATFORM_WINDOWS
 
 		ImGui::Text("MeshRenderer");
-		const std::vector<std::shared_ptr<Mesh>>& imGuiMeshes = comp->GetMeshes();
+		std::vector<std::shared_ptr<Mesh>>& imGuiMeshes = comp->GetMeshes();
 		if (imGuiMeshes.empty()) return;
 
 		int offset = 0;
@@ -1419,104 +1261,68 @@ namespace BlackPearl {
 
 
 			static  int itemIndexTexture = -1;
-			static Texture::Type type;
+			static TextureType type;
 			//std::cout << "itemIndexTexture" << itemIndexTexture << std::endl;
 			//GE_CORE_TRACE("itemIndexTexture:"+std::to_string(itemIndexTexture) );
 			for (int i = 0; i < imGuiMeshes.size(); i++)
 			{
 				std::string text = "Mesh" + std::to_string(i);
-				ImGui::TextColored({ 1.0,0.64,0.0,1.0 }, "%s:",text.c_str());
+				ImGui::TextColored({ 1.0,0.64,0.0,1.0 }, text.c_str());
 				if (imGuiMeshes[i]->GetMaterial()->GetTextureMaps()->diffuseTextureMap != nullptr) {
-					imguiDiffuseTextures[i] = imGuiMeshes[i]->GetMaterial()->GetTextureMaps()->diffuseTextureMap->GetPath();
+					imguiDiffuseTextures[i] = imGuiMeshes[i]->GetMaterial()->GetTextureMaps()->diffuseTextureMap->getDesc().path;
 				}
-				ShowTextures(imguiDiffuseTextures[i], i, itemIndexTexture, Texture::DiffuseMap, type, imGuiMeshes.size() * 2);
+				ShowTextures(imguiDiffuseTextures[i], i, itemIndexTexture, TextureType::DiffuseMap, type, imGuiMeshes.size() * 2);
 
 
 				if (imGuiMeshes[i]->GetMaterial()->GetTextureMaps()->specularTextureMap != nullptr)
-					imguiSpecularTextures[i] = imGuiMeshes[i]->GetMaterial()->GetTextureMaps()->specularTextureMap->GetPath();
-				ShowTextures(imguiSpecularTextures[i], i, itemIndexTexture, Texture::SpecularMap, type, imGuiMeshes.size() * 2);
+					imguiSpecularTextures[i] = imGuiMeshes[i]->GetMaterial()->GetTextureMaps()->specularTextureMap->getDesc().path;
+				ShowTextures(imguiSpecularTextures[i], i, itemIndexTexture, TextureType::SpecularMap, type, imGuiMeshes.size() * 2);
 
 				if (imGuiMeshes[i]->GetMaterial()->GetTextureMaps()->emissionTextureMap != nullptr)
-					imguiEmissionTextures[i] = imGuiMeshes[i]->GetMaterial()->GetTextureMaps()->emissionTextureMap->GetPath();
-				ShowTextures(imguiEmissionTextures[i], i, itemIndexTexture, Texture::EmissionMap, type, imGuiMeshes.size() * 2);
+					imguiEmissionTextures[i] = imGuiMeshes[i]->GetMaterial()->GetTextureMaps()->emissionTextureMap->getDesc().path;
+				ShowTextures(imguiEmissionTextures[i], i, itemIndexTexture, TextureType::EmissionMap, type, imGuiMeshes.size() * 2);
 
 				if (imGuiMeshes[i]->GetMaterial()->GetTextureMaps()->normalTextureMap != nullptr)
-					imguiNormalTextures[i] = imGuiMeshes[i]->GetMaterial()->GetTextureMaps()->normalTextureMap->GetPath();
-				ShowTextures(imguiNormalTextures[i], i, itemIndexTexture, Texture::NormalMap, type, imGuiMeshes.size() * 2);
+					imguiNormalTextures[i] = imGuiMeshes[i]->GetMaterial()->GetTextureMaps()->normalTextureMap->getDesc().path;
+				ShowTextures(imguiNormalTextures[i], i, itemIndexTexture, TextureType::NormalMap, type, imGuiMeshes.size() * 2);
 
 				if (imGuiMeshes[i]->GetMaterial()->GetTextureMaps()->cubeTextureMap != nullptr)
-					imguiCubeTextures[i] = imGuiMeshes[i]->GetMaterial()->GetTextureMaps()->cubeTextureMap->GetPath();
-				ShowTextures(imguiCubeTextures[i], i, itemIndexTexture, Texture::CubeMap, type, imGuiMeshes.size() * 2);
+					imguiCubeTextures[i] = imGuiMeshes[i]->GetMaterial()->GetTextureMaps()->cubeTextureMap->getDesc().path;
+				ShowTextures(imguiCubeTextures[i], i, itemIndexTexture, TextureType::CubeMap, type, imGuiMeshes.size() * 2);
 
 				if (imGuiMeshes[i]->GetMaterial()->GetTextureMaps()->heightTextureMap != nullptr)
-					imguiHeightTextures[i] = imGuiMeshes[i]->GetMaterial()->GetTextureMaps()->heightTextureMap->GetPath();
-				ShowTextures(imguiHeightTextures[i], i, itemIndexTexture, Texture::HeightMap, type, imGuiMeshes.size() * 2);
+					imguiHeightTextures[i] = imGuiMeshes[i]->GetMaterial()->GetTextureMaps()->heightTextureMap->getDesc().path;
+				ShowTextures(imguiHeightTextures[i], i, itemIndexTexture, TextureType::HeightMap, type, imGuiMeshes.size() * 2);
 
 				if (imGuiMeshes[i]->GetMaterial()->GetTextureMaps()->depthTextureMap != nullptr)
-					imguiDepthTextures[i] = imGuiMeshes[i]->GetMaterial()->GetTextureMaps()->depthTextureMap->GetPath();
-				ShowTextures(imguiDepthTextures[i], i, itemIndexTexture, Texture::DepthMap, type, imGuiMeshes.size() * 2);
+					imguiDepthTextures[i] = imGuiMeshes[i]->GetMaterial()->GetTextureMaps()->depthTextureMap->getDesc().path;
+				ShowTextures(imguiDepthTextures[i], i, itemIndexTexture, TextureType::DepthMap, type, imGuiMeshes.size() * 2);
 
 				if (imGuiMeshes[i]->GetMaterial()->GetTextureMaps()->aoMap != nullptr)
-					imguiDepthTextures[i] = imGuiMeshes[i]->GetMaterial()->GetTextureMaps()->aoMap->GetPath();
-				ShowTextures(imguiDepthTextures[i], i, itemIndexTexture, Texture::AoMap, type, imGuiMeshes.size() * 2);
+					imguiDepthTextures[i] = imGuiMeshes[i]->GetMaterial()->GetTextureMaps()->aoMap->getDesc().path;
+				ShowTextures(imguiDepthTextures[i], i, itemIndexTexture, TextureType::AoMap, type, imGuiMeshes.size() * 2);
 
 
 				if (imGuiMeshes[i]->GetMaterial()->GetTextureMaps()->roughnessMap != nullptr)
-					imguiDepthTextures[i] = imGuiMeshes[i]->GetMaterial()->GetTextureMaps()->roughnessMap->GetPath();
-				ShowTextures(imguiDepthTextures[i], i, itemIndexTexture, Texture::RoughnessMap, type, imGuiMeshes.size() * 2);
+					imguiDepthTextures[i] = imGuiMeshes[i]->GetMaterial()->GetTextureMaps()->roughnessMap->getDesc().path;
+				ShowTextures(imguiDepthTextures[i], i, itemIndexTexture, TextureType::RoughnessMap, type, imGuiMeshes.size() * 2);
 
 
 				if (imGuiMeshes[i]->GetMaterial()->GetTextureMaps()->mentallicMap != nullptr)
-					imguiDepthTextures[i] = imGuiMeshes[i]->GetMaterial()->GetTextureMaps()->mentallicMap->GetPath();
-				ShowTextures(imguiDepthTextures[i], i, itemIndexTexture, Texture::MentallicMap, type, imGuiMeshes.size() * 2);
+					imguiDepthTextures[i] = imGuiMeshes[i]->GetMaterial()->GetTextureMaps()->mentallicMap->getDesc().path;
+				ShowTextures(imguiDepthTextures[i], i, itemIndexTexture, TextureType::MentallicMap, type, imGuiMeshes.size() * 2);
 			}
 			if (itemIndexTexture != -1) {
 				if (m_fileDialog.HasSelected()) {
+					TextureDesc desc;
+					desc.type = type;
+					desc.path = m_fileDialog.GetSelected().string();
+					TextureHandle texture = m_DeviceManager->GetDevice()->createTexture(desc);
 
-					switch (type) {
-					case Texture::DiffuseMap:
-						imGuiMeshes[itemIndexTexture]->GetMaterial()->SetTexture(Texture::DiffuseMap, m_fileDialog.GetSelected().string());//"assets/texture/" + 
-						break;
-					case Texture::SpecularMap:
-						imGuiMeshes[itemIndexTexture]->GetMaterial()->SetTexture(Texture::SpecularMap, m_fileDialog.GetSelected().string());//"assets/texture/" +
-						break;
-					case Texture::EmissionMap:
-						imGuiMeshes[itemIndexTexture]->GetMaterial()->SetTexture(Texture::EmissionMap, m_fileDialog.GetSelected().string());
-						break;
-					case Texture::NormalMap:
-						imGuiMeshes[itemIndexTexture]->GetMaterial()->SetTexture(Texture::NormalMap, m_fileDialog.GetSelected().string());
-						break;
-					case Texture::CubeMap:
-						imGuiMeshes[itemIndexTexture]->GetMaterial()->SetTexture(Texture::CubeMap, m_fileDialog.GetSelected().string());
-						break;
-					case Texture::HeightMap:
-						imGuiMeshes[itemIndexTexture]->GetMaterial()->SetTexture(Texture::HeightMap, m_fileDialog.GetSelected().string());
-						break;
-					case Texture::DepthMap:
-						imGuiMeshes[itemIndexTexture]->GetMaterial()->SetTexture(Texture::DepthMap, m_fileDialog.GetSelected().string());
-						break;
+					imGuiMeshes[itemIndexTexture]->GetMaterial()->SetTexture(texture);
+	
 
-					case Texture::AoMap:
-						imGuiMeshes[itemIndexTexture]->GetMaterial()->SetTexture(Texture::AoMap, m_fileDialog.GetSelected().string());
-						break;
-
-					case Texture::RoughnessMap:
-						imGuiMeshes[itemIndexTexture]->GetMaterial()->SetTexture(Texture::RoughnessMap, m_fileDialog.GetSelected().string());
-						break;
-
-					case Texture::MentallicMap:
-						imGuiMeshes[itemIndexTexture]->GetMaterial()->SetTexture(Texture::MentallicMap, m_fileDialog.GetSelected().string());
-						break;
-                   case Texture::None:
-					defalut:
-						GE_CORE_ERROR("Unknown texture type");
-                            break;
-					}
-
-					//imguiTextures[itemIndexTexture] = m_fileDialog.GetSelected().string();
-					////GE_CORE_INFO("Selected filename:" + m_fileDialog.GetSelected().string());
-					//textures[itemIndexTexture] = const_cast<char*>(imguiTextures[itemIndexTexture].c_str());// (m_fileDialog.GetSelected().string().c_str());
-					//imGuiMeshes[itemIndexTexture]->GetMaterial()->SetShader("assets/texture/" + imguiTextures[itemIndexTexture]);
+					
 					m_fileDialog.ClearSelected();
 					itemIndexTexture = -1;
 				}
@@ -1525,7 +1331,7 @@ namespace BlackPearl {
 		}
 
 		ImGui::TextColored({ 1.0,0.64,0.0,1.0 }, "Material Properties");
-		Material::Props imGuiProps = imGuiMeshes[0]->GetMaterial()->GetProps();//TODO::Ä¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½mesh ï¿½ï¿½Material::Props ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½
+		Props imGuiProps = imGuiMeshes[0]->GetMaterial()->GetProps();//TODO::Ä¬ÈÏËùÓÐmesh µÄMaterial::Props ÊÇÒ»ÑùµÄ
 		float imGuiShininess = imGuiProps.shininess;
 		bool  imGUiBlinnLight = imGuiProps.isBinnLight;
 		bool  imGUiIsPBRTextureSample = (bool)imGuiProps.isPBRTextureSample;
@@ -1560,26 +1366,24 @@ namespace BlackPearl {
 
 		for (int i = 0; i < imGuiMeshes.size(); i++) {
 			MaterialColor::Color color = imGuiMeshes[i]->GetMaterial()->GetMaterialColor().Get();
-			ImGui::ColorEdit3("diffuseColor", glm::value_ptr(color.diffuseColor));
+			ImGui::ColorEdit3("diffuseColor", color.diffuseColor);
 			//mesh->GetMaterial()->SetMaterialColorDiffuseColor(color.diffuseColor);
 
-			ImGui::ColorEdit3("specularColor", glm::value_ptr(color.specularColor));
+			ImGui::ColorEdit3("specularColor", color.specularColor);
 			//mesh->GetMaterial()->SetMaterialColorSpecularColor(color.specularColor);
 
-			ImGui::ColorEdit3("emissionColor", glm::value_ptr(color.emissionColor));
+			ImGui::ColorEdit3("emissiveColor", color.emissiveColor);
 			//mesh->GetMaterial()->SetMaterialColorEmissionColor(color.emissionColor);
 			imGuiMeshes[i]->SetMaterialColor(color);
 
 		}
 
-#endif
+
 	}
 
 	void Layer::ShowTransform(Transform* comp, Object* obj)
 	{
-#ifdef GE_PLATFORM_WINDOWS
-
-        ImGui::Text("Transform");
+		ImGui::Text("Transform");
 
 		float pos[] = { comp->GetPosition().x,comp->GetPosition().y,comp->GetPosition().z };
 		ImGui::DragFloat3("position", pos, 0.2f, -100.0f, 100.0f, "%.3f ");
@@ -1592,14 +1396,12 @@ namespace BlackPearl {
 		float rotate[] = { comp->GetRotation().x,comp->GetRotation().y,comp->GetRotation().z };
 		ImGui::DragFloat3("rotation", rotate, 1.0f, -360.0f, 360.0f, "%.3f ");
 		obj->SetRotation({ rotate[0],rotate[1],rotate[2] });
-#endif
+
 	}
 
 	void Layer::ShowLightProbe(LightProbe* probe, Object* obj)
 	{
-#ifdef GE_PLATFORM_WINDOWS
-
-        ImGui::Text("LightProbe");
+		ImGui::Text("LightProbe");
 
 		float zFar = probe->GetZfar();
 		ImGui::DragFloat("zFar", &zFar, 0.5f, 1.0, 100.0);
@@ -1608,15 +1410,13 @@ namespace BlackPearl {
 		bool dynamicSpecularMap = probe->GetDynamicSpecularMap();
 		ImGui::Checkbox("dynamicSpecularLight", &dynamicSpecularMap);
 		probe->SetDynamicSpecularMap(dynamicSpecularMap);
-#endif
+
 
 	}
 
 	void Layer::ShowPointLight(PointLight* pointLight)
 	{
-#ifdef GE_PLATFORM_WINDOWS
-
-        //if (comp->GetType() == LightType::PointLight) {
+		//if (comp->GetType() == LightType::PointLight) {
 			//auto pointLight = std::dynamic_pointer_cast<PointLight>(comp);
 		//auto color = pointLight->GetMeshes()->GetMaterial()->GetMaterialColor().Get();
 		auto props = pointLight->GetLightProps();
@@ -1625,10 +1425,10 @@ namespace BlackPearl {
 		float area = pointLight->GetLightProps().area;
 		float bias = pointLight->GetLightProps().shadowBias;
 
-		ImGui::ColorEdit3("ambient Color", glm::value_ptr(props.ambient));
-		ImGui::ColorEdit3("diffuse Color", glm::value_ptr(props.diffuse));
-		ImGui::ColorEdit3("specular Color", glm::value_ptr(props.specular));
-		ImGui::ColorEdit3("emission Color", glm::value_ptr(props.emission));
+		ImGui::ColorEdit3("ambient Color", props.ambient);
+		ImGui::ColorEdit3("diffuse Color", props.diffuse);
+		ImGui::ColorEdit3("specular Color", props.specular);
+		ImGui::ColorEdit3("emission Color", props.emission);
 		ImGui::DragInt("attenuation", &attenuation, 0.5f, 7, 3250);
 		ImGui::DragFloat("intensity", &intensity, 0.1f, 0.1, 100);
 		ImGui::DragFloat("lightSize", &area, 0.1f, 0.1, 100);
@@ -1641,32 +1441,29 @@ namespace BlackPearl {
 		pros.shadowBias = bias;
 
 		pointLight->UpdateMesh(pros);
-#endif
+
 	}
 
 	void Layer::ShowParallelLight(ParallelLight* parallelLight)
 	{
-#ifdef GE_PLATFORM_WINDOWS
-
-        auto props = parallelLight->GetLightProps();
-		glm::vec3 direction = parallelLight->GetDirection();
+		auto props = parallelLight->GetLightProps();
+		math::float3 direction = parallelLight->GetDirection();
 
 		float dir[] = { direction.x,direction.y,direction.z };
 		ImGui::DragFloat3("position", dir, 0.05f, 0.0f, 1.0f, "%.3f ");
 		parallelLight->SetDirection({ dir[0],dir[1],dir[2] });
 
 		float intensity = parallelLight->GetLightProps().intensity;
-		ImGui::DragFloat3("direction", glm::value_ptr(props.emission));
+		ImGui::DragFloat3("direction", (props.emission));
 
-		ImGui::ColorEdit3("ambient Color", glm::value_ptr(props.ambient));
-		ImGui::ColorEdit3("diffuse Color", glm::value_ptr(props.diffuse));
-		ImGui::ColorEdit3("specular Color", glm::value_ptr(props.specular));
-		ImGui::ColorEdit3("emission Color", glm::value_ptr(props.emission));
+		ImGui::ColorEdit3("ambient Color", (props.ambient));
+		ImGui::ColorEdit3("diffuse Color", (props.diffuse));
+		ImGui::ColorEdit3("specular Color", (props.specular));
+		ImGui::ColorEdit3("emission Color", (props.emission));
 		ImGui::DragFloat("intensity", &intensity, 1.0f, 1, 100);
 
 
 		parallelLight->UpdateMesh({ props.ambient ,props.diffuse,props.specular,props.emission,intensity });
-#endif
 	}
 
 	std::vector<Object*> Layer::GetObjects()
@@ -1677,7 +1474,7 @@ namespace BlackPearl {
 	//{
 	//	return g_objectManager->GetObjectsName();
 	//}
-	void Layer::DestroyObjects() //TODO:É¾ï¿½ï¿½Ä³Ò»ï¿½ï¿½Objectsï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã»ï¿½ï¿½ï¿½ï¿½--ï¿½ï¿½ï¿½ï¿½ï¿½Â¿ï¿½ï¿½ï¿½m_EntityToObjectsï¿½ï¿½ï¿½Ý½á¹¹
+	void Layer::DestroyObjects() //TODO:É¾³ýÄ³Ò»¸öObjectsµÄÇé¿ö»¹Ã»´¦Àí--¡·ÖØÐÂ¿¼ÂÇm_EntityToObjectsÊý¾Ý½á¹¹
 	{
 		g_objectManager->DestroyObjects();
 	}

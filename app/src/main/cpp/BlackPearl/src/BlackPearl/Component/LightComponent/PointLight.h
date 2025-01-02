@@ -3,8 +3,7 @@
 #include <glm/glm.hpp>
 #include "BlackPearl/Renderer/Shader/Shader.h"
 #include "BlackPearl/Renderer/Mesh/Mesh.h"
-#include "BlackPearl/Renderer/Material/CubeMapTexture.h"
-#include "BlackPearl/Log.h"
+#include "BlackPearl/RHI/RHITexture.h"
 namespace BlackPearl {
 
 	class PointLight :public Light
@@ -56,14 +55,14 @@ namespace BlackPearl {
 					constant = 1.0f, linear = 0.0014f, quadratic = 0.000007f;
 					break;
 				default:
-					//GE_CORE_ERROR("Undefined maxDistance! Failed to construct Attenuation!")
+					GE_CORE_ERROR("Undefined maxDistance! Failed to construct Attenuation!")
 						break;
 				}
 
 			}
-			//Ä¬ï¿½Ï¾ï¿½ï¿½ï¿½50 constant(1.0f),linear(0.09f),quadratic(0.032){}
-			//Ä¬ï¿½Ï¾ï¿½ï¿½ï¿½3250constant(1.0f),linear(0.0014f),quadratic(0.000007)
-			//ï¿½ï¿½ï¿½https://learnopengl-cn.github.io/02%20Lighting/05%20Light%20casters/
+			//Ä¬ÈÏ¾àÀë50 constant(1.0f),linear(0.09f),quadratic(0.032){}
+			//Ä¬ÈÏ¾àÀë3250constant(1.0f),linear(0.0014f),quadratic(0.000007)
+			//²é±í£ºhttps://learnopengl-cn.github.io/02%20Lighting/05%20Light%20casters/
 		};
 		PointLight(Props props = Props())
 			:Light() {
@@ -73,22 +72,22 @@ namespace BlackPearl {
 		virtual ~PointLight() = default;
 		virtual void Init() override;
 
-		inline void SetDiffuse(glm::vec3 diffuse) {
+		inline void SetDiffuse(math::float3 diffuse) {
 			m_LightProp.diffuse = diffuse;
 			m_Mesh->SetMaterialColor({ m_LightProp.ambient,m_LightProp.diffuse,m_LightProp.specular ,m_LightProp.emission });
 
 		}
-		inline void SetAmbient(glm::vec3 ambient) {
+		inline void SetAmbient(math::float3 ambient) {
 			m_LightProp.ambient = ambient;
 			m_Mesh->SetMaterialColor({ m_LightProp.ambient,m_LightProp.diffuse,m_LightProp.specular ,m_LightProp.emission });
 
 		}
-		inline void SetSpecular(glm::vec3 specular) {
+		inline void SetSpecular(math::float3 specular) {
 			m_LightProp.specular = specular;
 			m_Mesh->SetMaterialColor({ m_LightProp.ambient,m_LightProp.diffuse,m_LightProp.specular ,m_LightProp.emission });
 
 		}
-		inline void SetEmission(glm::vec3 emission) {
+		inline void SetEmission(math::float3 emission) {
 			m_LightProp.emission = emission;
 			m_Mesh->SetMaterialColor({ m_LightProp.ambient,m_LightProp.diffuse,m_LightProp.specular ,m_LightProp.emission });
 
@@ -108,7 +107,7 @@ namespace BlackPearl {
 		inline Attenuation GetAttenuation() const { return m_Attenuation; }
 		virtual inline LightType GetType() override { return LightType::PointLight; }
 
-		std::shared_ptr<CubeMapTexture> GetShadowMap()const { return m_ShadowMap; }
+		TextureHandle GetShadowMap()const { return m_ShadowMap; }
 		unsigned int GetShadowMapWidth() const{ return m_ShadowMapPointLightWidth; }
 		unsigned int GetShadowMapHeight() const { return m_ShadowMapPointLightHeight; }
 
@@ -117,8 +116,8 @@ namespace BlackPearl {
 	private:
 		std::shared_ptr<Mesh> m_Mesh;
 		Attenuation m_Attenuation;
-		/* Ã¿ï¿½ï¿½PointLightï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½É¼ï¿½ï¿½ï¿½ï¿½ï¿½Î§ï¿½ï¿½Èµï¿½ShadowMap */
-		std::shared_ptr<CubeMapTexture> m_ShadowMap;
+		/* Ã¿¸öPointLight¶¼ÓÐÒ»¸ö²É¼¯ËüÖÜÎ§Éî¶ÈµÄShadowMap */
+		TextureHandle m_ShadowMap;
 		unsigned int m_ShadowMapPointLightWidth = 1024;
 		unsigned int m_ShadowMapPointLightHeight = 1024;
 	};

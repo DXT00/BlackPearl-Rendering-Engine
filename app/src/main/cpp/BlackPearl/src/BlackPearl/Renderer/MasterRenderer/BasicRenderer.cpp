@@ -12,29 +12,23 @@
 #include "BlackPearl/Renderer/Renderer.h"
 #include "BlackPearl/Renderer/MasterRenderer/ShadowMapPointLightRenderer.h"
 #include "BlackPearl/Config.h"
-#include "BlackPearl/Log.h"
 #include "BlackPearl/Debugger/D3D12Debugger/HLSLPixDebugger.h"
-#ifdef GE_PLATFORM_ANDRIOD
-#include "GLES3/gl32.h"
-#endif
 namespace BlackPearl {
 	uint32_t BasicRenderer::s_DrawCallCnt = 0;
 
 	BasicRenderer::BasicRenderer()
 	{
-#ifdef GE_PLATFORM_WINDOWS
-		if (GetModuleHandle(L"WinPixGpuCapturer.dll") == 0)
+		/*if (GetModuleHandle(L"WinPixGpuCapturer.dll") == 0)
 		{
 			LoadLibrary(HLSLPixDebugger::GetLatestWinPixGpuCapturerPath_Cpp17().c_str());
-		}
-#endif
+		}*/
 	}
 
 	BasicRenderer::~BasicRenderer()
 	{
 	}
 
-	void BasicRenderer::RenderScene(const std::vector<Object*>& objs, const LightSources* lightSources, Renderer::SceneData* scene)
+	void BasicRenderer::RenderScene(const std::vector<Object*>& objs, const LightSources* lightSources, SceneData* scene)
 	{
 		DrawObjects(objs, scene);
 		DrawLightSources(lightSources, scene);
@@ -55,7 +49,7 @@ namespace BlackPearl {
 		//}
 	}
 
-	void BasicRenderer::DrawObjectsExcept(const std::vector<Object*>& objs, const std::vector<Object*>& exceptObjs, Renderer::SceneData* scene)
+	void BasicRenderer::DrawObjectsExcept(const std::vector<Object*>& objs, const std::vector<Object*>& exceptObjs, SceneData* scene)
 	{
 
 		for (auto Obj : objs) {
@@ -70,7 +64,7 @@ namespace BlackPearl {
 
 		}
 	}
-	void BasicRenderer::DrawObjectsExcept(const std::vector<Object*>& objs, const Object* exceptObj, Renderer::SceneData* scene)
+	void BasicRenderer::DrawObjectsExcept(const std::vector<Object*>& objs, const Object* exceptObj, SceneData* scene)
 	{
 
 		for (auto obj : objs) {
@@ -80,22 +74,22 @@ namespace BlackPearl {
 		}
 
 	}
-	//objsï¿½Ð¿ï¿½ï¿½Ô°ï¿½ï¿½ï¿½Light
-	void BasicRenderer::DrawObjects(std::vector<Object*>objs, Renderer::SceneData* scene)
+	//objsÖÐ¿ÉÒÔ°üº¬Light
+	void BasicRenderer::DrawObjects(std::vector<Object*>objs, SceneData* scene)
 	{
 		for (auto obj : objs) {
 			DrawObject(obj, scene);
 		}
 
 	}
-	void BasicRenderer::DrawObjects(std::vector<Object*> objs, std::shared_ptr<Shader> shader, Renderer::SceneData* scene, unsigned int textureBeginIdx)
+	void BasicRenderer::DrawObjects(std::vector<Object*> objs, std::shared_ptr<Shader> shader, SceneData* scene, unsigned int textureBeginIdx)
 	{
 		for (auto obj : objs) {
 			DrawObject(obj, shader, scene);
 		}
 	}
-	//Ã¿ï¿½ï¿½MeshÒ»ï¿½ï¿½shader
-	void BasicRenderer::DrawObject(Object* obj, Renderer::SceneData* scene, unsigned int textureBeginIdx)
+	//Ã¿¸öMeshÒ»¸öshader
+	void BasicRenderer::DrawObject(Object* obj, SceneData* scene, unsigned int textureBeginIdx)
 	{
 		GE_ASSERT(obj, "obj is empty!");
 		if (!obj->HasComponent<MeshRenderer>() || !obj->GetComponent<MeshRenderer>()->GetEnableRender())
@@ -164,7 +158,7 @@ namespace BlackPearl {
 
 		}
 	}
-	void BasicRenderer::DrawObject(Object* obj, std::shared_ptr<Shader> shader, Renderer::SceneData* scene, unsigned int textureBeginIdx)
+	void BasicRenderer::DrawObject(Object* obj, std::shared_ptr<Shader> shader, SceneData* scene, unsigned int textureBeginIdx)
 	{
 		GE_ASSERT(obj, "obj is empty!");
 		if (!obj->HasComponent<MeshRenderer>() || !obj->GetComponent<MeshRenderer>()->GetEnableRender())
@@ -246,7 +240,7 @@ namespace BlackPearl {
 		}
 	}
 
-	void BasicRenderer::DrawObjectVertex(Object* obj, std::shared_ptr<Shader> shader, Renderer::SceneData* scene, unsigned int textureBeginIdx)
+	void BasicRenderer::DrawObjectVertex(Object* obj, std::shared_ptr<Shader> shader, SceneData* scene, unsigned int textureBeginIdx)
 	{
 		GE_ASSERT(obj, "obj is empty!");
 		if (!obj->HasComponent<MeshRenderer>() || !obj->GetComponent<MeshRenderer>()->GetEnableRender())
@@ -367,7 +361,6 @@ namespace BlackPearl {
 
 	void BasicRenderer::DrawMultiIndirect(std::shared_ptr<VertexArray> vertexArray, std::shared_ptr<Shader> shader, uint32_t cmdsCnt)
 	{
-#ifdef GE_PLATFORM_WINDOWS
 		shader->Bind();
 		GE_ERROR_JUDGE();
 
@@ -376,7 +369,6 @@ namespace BlackPearl {
 
 		glMultiDrawElementsIndirect(GL_TRIANGLES, GL_UNSIGNED_INT, (GLvoid*)0, cmdsCnt, 0);
 		s_DrawCallCnt++;
-#endif
 	}
 
 	void BasicRenderer::DrawTerrain(Object* obj, std::shared_ptr<Shader> shader, bool drawPolygon)
@@ -404,17 +396,13 @@ namespace BlackPearl {
 			glDrawArrays(GL_PATCHES, 0, vertexPerChunk * chunkCnt);
 			s_DrawCallCnt++;
 
-            //glPolygonMode was never part of OpenGL ES 2.0, or any version of ES
-#ifdef GE_PLATFORM_WINDOWS
 			if (drawPolygon)
 				glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-#endif
-
 		}
 	}
 
 
-	void BasicRenderer::DrawPointLight(Object* obj, Renderer::SceneData* scene, unsigned int textureBeginIdx)
+	void BasicRenderer::DrawPointLight(Object* obj, SceneData* scene, unsigned int textureBeginIdx)
 	{
 		GE_ASSERT(obj->HasComponent<PointLight>(), "obj has no pointlight component!");
 		glm::mat4 transformMatrix = obj->GetComponent<Transform>()->GetTransformMatrix();
@@ -460,7 +448,7 @@ namespace BlackPearl {
 		}
 
 	}
-	void BasicRenderer::DrawLightSources(const LightSources* lightSources, Renderer::SceneData* scene, unsigned int textureBeginIdx)
+	void BasicRenderer::DrawLightSources(const LightSources* lightSources, SceneData* scene, unsigned int textureBeginIdx)
 	{
 		for (auto lightObj : lightSources->Get()) {
 			if (lightObj->HasComponent<PointLight>())
@@ -480,7 +468,7 @@ namespace BlackPearl {
 
 		/************************************* Map settings *****************************************************/
 
-		//kï¿½ï¿½2ï¿½ï¿½Ê¼ï¿½ï¿½0ï¿½ï¿½1ï¿½ï¿½textureï¿½ï¿½ï¿½ï¿½ï¿½Ô¶ï¿½ï¿½ï¿½ texture
+		//k´Ó2¿ªÊ¼£¬0£¬1ºÅtextureÓÃÓÚ×Ô¶¨Òå texture
 		bool diffuseMap = false, specularMap = false, normalMap = false,
 			mentallicMap = false, aoMap = false, roughnessMap = false,
 			emissionMap = false, cubeMap = false, depthMap = false,
@@ -521,8 +509,8 @@ namespace BlackPearl {
 				glActiveTexture(GL_TEXTURE0 + k);
 				shader->SetUniform1i(ShaderConfig::HEIGHT_TEXTURE2D, k);
 				textures->heightTextureMap->Bind();
-				float width = textures->heightTextureMap->GetWidth();
-				float height = textures->heightTextureMap->GetHeight();
+				float width = textures->heightTextureMap->getDesc().height;
+				float height = textures->heightTextureMap->getDesc().width;
 
 				shader->SetUniformVec2f("u_HeightMapSize", glm::vec2(width, height));
 
@@ -581,9 +569,7 @@ namespace BlackPearl {
 
 			shader->SetUniformVec3f(ShaderConfig::AMBIENT_COLOR, materialColor.ambientColor);
 
-			shader->SetUniformVec3f(ShaderConfig::EMISSION_COLOR, materialColor.emissionColor);
-
-			shader->SetUniformVec3f(ShaderConfig::EMISSION_COLOR, materialColor.emissionColor);
+			shader->SetUniformVec3f(ShaderConfig::EMISSION_COLOR, materialColor.emissiveColor);
 
 			shader->SetUniform1f(ShaderConfig::ROUGHNESS_VALUE, 1.0f);
 

@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "D3D12Logger.h"
 //#include <debugapi.h>
-#ifdef GE_API_D3D12
+
 namespace BlackPearl {
 
 	std::string D3D12Logger::LevelToStr(level_enum level) {
@@ -31,4 +31,3 @@ namespace BlackPearl {
 
 }
 
-#endif

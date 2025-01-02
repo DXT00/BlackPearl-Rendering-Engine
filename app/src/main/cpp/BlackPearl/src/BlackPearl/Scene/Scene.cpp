@@ -2,11 +2,17 @@
 #include "Scene.h"
 #include "BlackPearl/Node/SingleNode.h"
 #include "BlackPearl/Component/BoundingBoxComponent/BoundingBox.h"
+#include "BlackPearl/LayerScene/Layer.h"
+#include "BlackPearl/Config.h"
+
 namespace BlackPearl {
 	Scene::Scene(DemoType type)
 	{
 		m_DemoType = type;
 		m_MeshMgr = std::make_shared<MeshManager>();
+		m_RootObj = g_objectManager->CreateGroup("root object");
+		m_RootNode = DBG_NEW SingleNode(m_RootObj);
+		PrimitiveOctree = DBG_NEW ScenePrimitiveOctree(AABB(math::float3(0.0), math::float3(GE_OLD_HALF_WORLD_MAX)));
 	}
 
 	Scene::~Scene()
@@ -18,23 +24,46 @@ namespace BlackPearl {
 	void Scene::GetCamera()
 	{
 	}
-	void Scene::AddLights(Object* obj)
+	//void Scene::AddLights(Object* obj)
+	//{
+	//}
+	//void Scene::GetLights()
+	//{
+	//}
+	void Scene::SetLightSources(LightSources* lightSources)
 	{
+		m_LightSources = lightSources;
 	}
-	void Scene::GetLights()
+	LightSources* Scene::GetLightSources() const
 	{
+		return m_LightSources;
+	}
+
+	void Scene::SetLightProbes(const std::vector<std::shared_ptr<LightProbe>>& probes)
+	{
+		m_LightProbes = probes;
+	}
+
+	std::vector<std::shared_ptr<LightProbe>> Scene::GetLightProbes() const
+	{
+		return m_LightProbes;
+	}
+	void Scene::SetDesctiptorTableMgr(const std::shared_ptr<DescriptorTableManager>& descriptorTable)
+	{
+		m_DescriptorTableMgr = descriptorTable;
 	}
 	void Scene::AddObject(Object* obj)
 	{
 		SingleNode* singleNode = DBG_NEW SingleNode(obj);
-		AddNode(singleNode);
+		_AddNode(singleNode);
 		m_ObjectList.push_back(obj);
-
+		PrimitiveOctree->AddElement(*singleNode);
 	}
 
-	void Scene::AddNode(Node* node)
+	void Scene::_AddNode(Node* node)
 	{
 		m_NodesList.push_back(node);
+		node->Scene = this;
 		if (node->GetType() == Node::Type::Batch_Node) {
 			m_BatchNodesList.push_back(node);
 		}
@@ -43,6 +72,9 @@ namespace BlackPearl {
 		}
 		else if (node->GetType() == Node::Type::Single_Node) {
 			m_SingleNodesList.push_back(node);
+		}
+		else {
+			GE_ASSERT(0, "unknown node type");
 		}
 	}
 

@@ -20,7 +20,7 @@ public:
 		m_BatchShader.reset(DBG_NEW BlackPearl::Shader(path));
 		m_TerrainShader.reset(DBG_NEW BlackPearl::Shader("assets/shaders/Terrain/Terrain.glsl"));
 
-		objs = LoadCubesScene1(6, glm::vec3(40,0,0));
+		objs  = LoadCubesScene1(6, glm::vec3(40,0,0));
 		objs1 = LoadCubesScene1(6, glm::vec3(0, 0, -40));
 		objs2 = LoadCubesScene1(6, glm::vec3(0, 0, 0));
 		objs3 = LoadCubesScene1(6, glm::vec3(-40, 0, 0));

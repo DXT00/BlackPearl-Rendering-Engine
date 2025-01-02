@@ -22,7 +22,7 @@
 
 #pragma once
 
-namespace donut::math
+namespace BlackPearl::math
 {
 	template<typename T>
 	struct quaternion
@@ -307,7 +307,7 @@ namespace donut::math
 	}
 
 	template<typename T>
-	bool4 isnear(const quaternion<T>& a, const quaternion<T>& b, T eps = dm::epsilon)
+	bool4 isnear(const quaternion<T>& a, const quaternion<T>& b, T eps = epsilon)
 	{
 		bool4 result;
 		for (int i = 0; i < 4; ++i)
@@ -316,7 +316,7 @@ namespace donut::math
 	}
 
 	template<typename T>
-	bool4 isnear(const quaternion<T>& a, T b, T eps = dm::epsilon)
+	bool4 isnear(const quaternion<T>& a, T b, T eps = epsilon)
 	{
 		bool4 result;
 		for (int i = 0; i < 4; ++i)
@@ -325,7 +325,7 @@ namespace donut::math
 	}
 
 	template<typename T>
-	bool4 isnear(T a, const quaternion<T>& b, T eps = dm::epsilon)
+	bool4 isnear(T a, const quaternion<T>& b, T eps = epsilon)
 	{
 		bool4 result;
 		for (int i = 0; i < 4; ++i)
