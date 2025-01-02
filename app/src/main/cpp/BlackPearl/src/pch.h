@@ -1,7 +1,11 @@
 #pragma once
 
 #include <cstdlib>
+
+#ifdef GE_PLATFORM_WINDOWS
 #include <crtdbg.h>
+#endif
+
 #include <iostream>
 #include <memory>
 #include <utility>
@@ -17,9 +21,6 @@
 #include <unordered_map>
 #include <unordered_set>
 #include <optional>
-
-//#include "BlackPearl/Log.h"
-
 
 
 #ifdef _DEBUG

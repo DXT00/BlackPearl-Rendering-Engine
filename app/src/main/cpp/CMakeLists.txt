@@ -1,37 +1,90 @@
-# For more information about using CMake with Android Studio, read the
-# documentation: https://d.android.com/studio/projects/add-native-code.html.
-# For more examples on how to use CMake, see https://github.com/android/ndk-samples.
+cmake_minimum_required(VERSION 3.10)
+project(BlackPearl-Engine)
 
-# Sets the minimum CMake version required for this project.
-cmake_minimum_required(VERSION 3.22.1)
+# 设置构建配置
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-# Declares the project name. The project name can be accessed via ${ PROJECT_NAME},
-# Since this is the top level CMakeLists.txt, the project name is also accessible
-# with ${CMAKE_PROJECT_NAME} (both CMake variables are in-sync within the top level
-# build script scope).
-project("myapplication")
+# 选择渲染API
 
-# Creates and names a library, sets it as either STATIC
-# or SHARED, and provides the relative paths to its source code.
-# You can define multiple libraries, and CMake builds them for you.
-# Gradle automatically packages shared libraries with your APK.
+#option(RENDER_API_OPENGL "Use OpenGL for rendering" OFF)
+#option(RENDER_API_DIRECT3D "Use Direct3D (Windows only)" OFF)
+#option(RENDER_API_VULKAN "Use Vulkan" ON)
+
+# 选择目标平台
+option(TARGET_PLATFORM_WINDOWS "Target Windows platform" ON)
+option(TARGET_PLATFORM_ANDROID "Target Android platform" OFF)
+
+option(BUILD_FROM_BLACKPEARL "Build from blackpearl" ON)
+
+## 输出目录
+#if(WIN32)
+#    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BUILD_TYPE}-${CMAKE_SYSTEM_NAME}-${CMAKE_SYSTEM_PROCESSOR})
+#elseif(ANDROID)
+#    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BUILD_TYPE}-${CMAKE_SYSTEM_NAME}-${CMAKE_ANDROID_ARCH_ABI})
+#endif()
+
+set(RENDER_API "opengl")
+## 包含目录
+#include_directories(
+#        ${CMAKE_CURRENT_SOURCE_DIR}/BlackPearl/vendor/GLFW/include
+#        ${CMAKE_CURRENT_SOURCE_DIR}/BlackPearl/vendor/Glad/include
+#        ${CMAKE_CURRENT_SOURCE_DIR}/BlackPearl/vendor/imgui
+#        ${CMAKE_CURRENT_SOURCE_DIR}/BlackPearl/vendor/glm
+#        ${CMAKE_CURRENT_SOURCE_DIR}/BlackPearl/vendor/stb
+#        ${CMAKE_CURRENT_SOURCE_DIR}/BlackPearl/vendor/assimp/include
+#        ${CMAKE_CURRENT_SOURCE_DIR}/BlackPearl/vendor/GLEW/include
+#        ${CMAKE_CURRENT_SOURCE_DIR}/BlackPearl/vendor/VulkanSDK/1.3.236.0/Include
+#        ${CMAKE_CURRENT_SOURCE_DIR}/BlackPearl/vendor/directxtex_uwp.2022.7.30.1/include
+#        ${CMAKE_CURRENT_SOURCE_DIR}/BlackPearl/vendor/directxmesh_desktop_win10.2022.7.30.1/include
+#        ${CMAKE_CURRENT_SOURCE_DIR}/BlackPearl/vendor/ShaderMake/include
+#        ${CMAKE_CURRENT_SOURCE_DIR}/SandboxDX/assets/shaders_hlsl_h
+#)
+
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
+# 根据平台和渲染API选择合适的库
+#if(TARGET_PLATFORM_WINDOWS)
+#    if(${RENDER_API} STREQUAL "opengl")
+#        find_package(GLFW REQUIRED)
+#        find_package(GLEW REQUIRED)
+#        find_package(ImGui REQUIRED)
+#    elseif(${RENDER_API} STREQUAL "direct3d")
+#        # 导入Direct3D相关库
+#    elseif(${RENDER_API} STREQUAL "vulkan")
+#        find_package(Vulkan REQUIRED)
+#    endif()
+#elseif(TARGET_PLATFORM_ANDROID)
+#    # Android平台的配置
+#    find_package(OpenGL REQUIRED)
+#    find_package(EGL REQUIRED)
+#    find_package(GLESv2 REQUIRED)
+#    # ...其他Android特定配置
+#endif()
+
+# 添加子项目
+add_subdirectory(BlackPearl)
+#add_subdirectory(BlackPearl/vendor/imgui)
+#add_subdirectory(BlackPearl/vendor/spdlog)
+#add_subdirectory(BlackPearl/vendor/assimp)
+if(WIN32)
+    add_subdirectory(BlackPearl/vendor/GLFW)
+    add_subdirectory(Sandbox)
+    add_subdirectory(SandboxVK)
+    add_subdirectory(SandboxDX)
+    add_subdirectory(ShaderCompiler)
+endif()
+
+if(ANDROID)
+    add_subdirectory(SandboxAndriod)
+
+
+endif()
 #
-# In this top level CMakeLists.txt, ${CMAKE_PROJECT_NAME} is used to define
-# the target library name; in the sub-module's CMakeLists.txt, ${PROJECT_NAME}
-# is preferred for the same purpose.
-#
-# In order to load a library into your app from Java/Kotlin, you must call
-# System.loadLibrary() and pass the name of the library defined here;
-# for GameActivity/NativeActivity derived applications, the same library name must be
-# used in the AndroidManifest.xml file.
-add_library(${CMAKE_PROJECT_NAME} SHARED
-        # List C/C++ source files with relative paths to this CMakeLists.txt.
-        native-lib.cpp)
 
-# Specifies libraries CMake should link to your target library. You
-# can link libraries from various origins, such as libraries defined in this
-# build script, prebuilt third-party libraries, or Android system libraries.
-target_link_libraries(${CMAKE_PROJECT_NAME}
-        # List libraries link to the target library
-        android
-        log)
+# 如果需要，添加更多子项目
+# add_subdirectory(BlackPearl/vendor/assimp)
+# add_subdirectory(Sandbox)
+# add_subdirectory(SandboxVK)
+# add_subdirectory(SandboxDX)
+# add_subdirectory(SandboxAndriod)
+# add_subdirectory(ShaderCompiler)
