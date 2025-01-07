@@ -533,7 +533,7 @@ namespace BlackPearl {
 		Object* sphereObjRust = LoadStaticBackGroundObject("SphereRust");
 		Object* sphereObjStone = LoadStaticBackGroundObject("SphereStone");
 		Object* sphereObjPlastic = LoadStaticBackGroundObject("SpherePlastic");
-		Object* cube = LoadStaticBackGroundObject("WoodCube");
+		//Object* cube = LoadStaticBackGroundObject("WoodCube");
 		//textures spheres
 		IDevice* device = m_DeviceManager->GetDevice();
 		
@@ -545,14 +545,14 @@ namespace BlackPearl {
 
 		sphereObjPlastic->GetComponent<Transform>()->SetInitPosition({ -10.0,0,0 });
 		
-		cube->GetComponent<Transform>()->SetInitPosition({ -2.0f,-2.5f,0.0f });
-		cube->GetComponent<Transform>()->SetInitScale({ 16.0f,0.5f,16.0f });
+		/*cube->GetComponent<Transform>()->SetInitPosition({ -2.0f,-2.5f,0.0f });
+		cube->GetComponent<Transform>()->SetInitScale({ 16.0f,0.5f,16.0f });*/
 		
 		m_ShadowObjsList.push_back(sphereObjIron);
 		m_ShadowObjsList.push_back(sphereObjStone);
 		m_ShadowObjsList.push_back(sphereObjPlastic);
 		m_ShadowObjsList.push_back(sphereObjRust);
-		m_ShadowObjsList.push_back(cube);
+		//m_ShadowObjsList.push_back(cube);
 
 	}
 

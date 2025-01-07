@@ -66,6 +66,23 @@ namespace BlackPearl {
 		TextureDesc(TextureType _type, const std::string& _path) {
 			type = _type;
 			path = _path;
+			if (type == TextureType::DiffuseMap) {
+				format = Format::RGB8_UNORM;
+			}
+			else if (type == TextureType::AoMap) {
+				format = Format::RGBA8_UNORM;
+			}
+			else if (type == TextureType::RoughnessMap) {
+				format = Format::RGBA8_UNORM;
+
+			}
+			else if (type == TextureType::MentallicMap) {
+				format = Format::R8_UNORM;
+
+			}
+			else if (type == TextureType::NormalMap) {
+				format = Format::RGB8_UNORM;
+			}
 		}
 
 		// opengl 不需要sampler， filter在texture desc 里配置
