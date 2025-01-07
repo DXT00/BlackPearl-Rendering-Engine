@@ -251,8 +251,8 @@ namespace BlackPearl {
 
 			m_MainCamera->SetPosition(m_CameraPosition);
 
-			GE_CORE_INFO("Cam Pos = " + std::to_string(m_CameraPosition.x) + "," + std::to_string(m_CameraPosition.y) + "," + std::to_string(m_CameraPosition.z));
-			GE_CORE_INFO("Cam Pitch = " + std::to_string(m_CameraRotation.Pitch) + "Cam Yaw =" + std::to_string(m_CameraRotation.Yaw));
+			//GE_CORE_INFO("Cam Pos = " + std::to_string(m_CameraPosition.x) + "," + std::to_string(m_CameraPosition.y) + "," + std::to_string(m_CameraPosition.z));
+			//GE_CORE_INFO("Cam Pitch = " + std::to_string(m_CameraRotation.Pitch) + "Cam Yaw =" + std::to_string(m_CameraRotation.Yaw));
 
 
 		}

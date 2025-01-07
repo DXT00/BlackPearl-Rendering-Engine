@@ -34,7 +34,7 @@ namespace BlackPearl {
 	{
 	public:
 
-		TextureDesc desc;
+		TextureDesc m_desc;
 
 	
 		/*д╛хож╣
@@ -53,10 +53,10 @@ namespace BlackPearl {
 		Texture(TextureType type, std::vector<std::string> faces);
 
 		~Texture() override;
-		const TextureDesc& getDesc() const override { return desc; }
+		const TextureDesc& getDesc() const override { return m_desc; }
 		
 		const TextureType& GetType() const override {
-			return desc.type;
+			return m_desc.type;
 		}
 
 		//void Init(

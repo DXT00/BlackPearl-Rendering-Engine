@@ -101,7 +101,7 @@ public:
 	virtual ~SandBox() = default;
 private:
 	BlackPearl::AppVersion selectAppVersion(RenderSample sample) {
-		return BlackPearl::AppVersion::VERSION_0_0;
+		return BlackPearl::AppVersion::VERSION_1_0;
 	
 	}
 

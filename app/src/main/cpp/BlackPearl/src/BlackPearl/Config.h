@@ -10,8 +10,8 @@ namespace BlackPearl {
 		static const unsigned int MaxComponents = 32;
 		typedef std::bitset<MaxComponents> ComponentMask;
 
-		static const unsigned int WindowWidth = 300;//960;// 1920 1024x768 
-		static const unsigned int WindowHeight = 300;//540;// 540;1080
+		static const unsigned int WindowWidth = 960;  ///300;//960;// 1920 1024x768 
+		static const unsigned int WindowHeight = 540;// 300;//540;// 540;1080
 
 		//多重采样
 		static const unsigned int MSAA_SAMPLES = 4;

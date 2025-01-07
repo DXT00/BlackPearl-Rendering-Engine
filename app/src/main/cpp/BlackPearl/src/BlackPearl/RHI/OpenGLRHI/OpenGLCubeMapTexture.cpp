@@ -28,10 +28,10 @@ namespace BlackPearl {
 		for (unsigned int i = 0; i < 6; i++)
 		{
 	
-			if (!desc.faces.empty())
+			if (!m_desc.faces.empty())
 			{
 				int width, height, nrChannels;
-				unsigned char* data = stbi_load_util(desc.faces[i].c_str(), &width, &height, &nrChannels, 0);
+				unsigned char* data = stbi_load_util(m_desc.faces[i].c_str(), &width, &height, &nrChannels, 0);
 				m_Width = width;
 				m_Height = height;
 				//glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
@@ -53,7 +53,7 @@ namespace BlackPearl {
 		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, m_Wrap);
 		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, m_Wrap);
 
-		if (desc.generateMipmap)
+		if (m_desc.generateMipmap)
 			glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
 
 

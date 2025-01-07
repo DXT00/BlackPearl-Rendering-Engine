@@ -24,7 +24,7 @@ namespace BlackPearl {
 	Texture::Texture(
 		TextureDesc& desc,
 		float* data
-	) : desc(desc),
+	) : m_desc(desc),
 		TextureStateExtension(desc)
 	{
 		
@@ -129,6 +129,10 @@ namespace BlackPearl {
 			m_Height = height;
 			desc.width = m_Width;
 			desc.height = m_Height;
+
+			m_desc.width = m_Width;
+			m_desc.height = m_Height;
+
 			m_Format = format;
 		}
 		//LoadTexture(image, minFilter, magFilter, internalFormat, format, wrap, dataType);
