@@ -1,24 +1,63 @@
 #include "pch.h"
 #include "BlackPearl/Renderer/DeviceManager.h"
+#include "OpenGLDeviceManager.h"
+#include "OpenGLDevice.h"
 namespace BlackPearl {
-    class D3D12DeviceManager : public DeviceManager
+    const char* OpenGLDeviceManager::GetRendererString() const
+    {
+        return nullptr;
+    }
+    IDevice* OpenGLDeviceManager::GetDevice() const
+    {
+            return m_NvrhiDevice;
+        
+    }
+    bool OpenGLDeviceManager::CreateDeviceAndSwapChain()
+    {
+        m_NvrhiDevice = Device::createDevice();
+        return true;
+    }
+
+
+    void OpenGLDeviceManager::DestroyDeviceAndSwapChain()
     {
 
-        [[nodiscard]] const char* GetRendererString() const override
-        {
-            return "";
-        }
+    }
 
-        [[nodiscard]] IDevice* GetDevice() const override
-        {
-            return nullptr;
-        }
+    void OpenGLDeviceManager::ResizeSwapChain()
+    {
+    }
 
-    
-    };
+    void OpenGLDeviceManager::BeginFrame()
+    {
+    }
+
+    void OpenGLDeviceManager::Present()
+    {
+    }
+
+    ITexture* OpenGLDeviceManager::GetCurrentBackBuffer()
+    {
+        return nullptr;
+    }
+
+    ITexture* OpenGLDeviceManager::GetBackBuffer(uint32_t index)
+    {
+        return nullptr;
+    }
+
+    uint32_t OpenGLDeviceManager::GetCurrentBackBufferIndex()
+    {
+        return 0;
+    }
+
+    uint32_t OpenGLDeviceManager::GetBackBufferCount()
+    {
+        return 0;
+    }
 
     DeviceManager* DeviceManager::CreateOpenGL()
     {
-        return nullptr;
+        return new OpenGLDeviceManager();
     }
 }
