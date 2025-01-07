@@ -1,6 +1,8 @@
 #pragma once
 #include "BlackPearl/RHI/RHIDefinitions.h"
+#ifdef GE_API_VULKAN
 #include <vulkan/vulkan_core.h>
+#endif
 namespace BlackPearl
 {
     // Format mapping table. The rows must be in the exactly same order as Format enum members are defined.
@@ -85,11 +87,13 @@ namespace BlackPearl
 	const FormatInfo& getFormatInfo(Format format);
 
 
-
+#ifdef GE_API_VULKAN
     struct FormatMapping
     {
         Format rhiFormat;
+
         VkFormat vkFormat;
+
     };
 
     static const std::array<FormatMapping, size_t(Format::COUNT)> c_FormatMap = { {
@@ -164,6 +168,6 @@ namespace BlackPearl
 
     } };
 
-    
+#endif
 
 }

@@ -53,8 +53,9 @@ namespace BlackPearl {
 				//}
 			}
 		}
-
+#if APP_VERSION == APP_VERSION_1_0
 		_CreateMaterialConstantBuffer();
+#endif
 
 	}
 

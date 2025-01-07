@@ -19,7 +19,7 @@ project "BlackPearl"
 		"./src/**.jpg",
 		"./src/**.png",
 		"./vendor/glm/glm/**.hpp",
-		"./vendor/glm/glm/**.inl",
+		--"./vendor/glm/glm/**.inl",
 		"./vendor/stb/**.h",
 		"./assets/shaders/hlsl/core/**.h",
 	}
@@ -55,12 +55,12 @@ project "BlackPearl"
 
 
 	libdirs{
-	"./vendor/assimp_build/code/Debug",
-	"./vendor/assimp_build/lib/Debug",
-	"./vendor/assimp_build/lib/Release",
-	"./vendor/assimp_build/bin/Debug",
-	"./vendor/assimp_build/bin/Release",
-	"./vendor/assimp_build/bin/Release",
+	--"./vendor/assimp_build/code/Debug",
+	"./vendor/assimp_build/lib/Debug/windows",
+	"./vendor/assimp_build/lib/Release/windows",
+	"./vendor/assimp_build/bin/Debug/windows",
+	"./vendor/assimp_build/bin/Release/windows",
+	"./vendor/assimp_build/bin/Release/windows",
 	"./vendor/directxtex_uwp.2022.5.10.1/native/lib",
 	"./vendor/directxmesh_desktop_win10.2022.7.30.1/native/lib/x64/Debug",
 	"./vendor/directxmesh_desktop_win10.2022.7.30.1/native/lib/x64/Release",
