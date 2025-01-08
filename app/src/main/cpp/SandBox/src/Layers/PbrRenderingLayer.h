@@ -16,23 +16,18 @@ public:
 		: Layer(name)
 	{
 
-		//m_CameraObj = CreateCamera();
-		//auto cameraComponent = m_CameraObj->GetComponent<BlackPearl::PerspectiveCamera>();
-		//cameraComponent->SetPosition(glm::vec3(0.0f, 0.0f, 8.0f));
-		//m_CameraPosition = cameraComponent->GetPosition();
-		//m_CameraRotation.Yaw = cameraComponent->Yaw();
-		//m_CameraRotation.Pitch = cameraComponent->Pitch();
+		
+	}
+	void OnSetup() override {
+
 		m_SphereObj = CreateSphere(0.5, 64, 64);
 		//Scene
 		m_PBRRenderer = DBG_NEW BlackPearl::PBRRenderer();
-		
+
 		m_SphereObj->GetComponent<BlackPearl::MeshRenderer>()->SetShaders(m_PBRRenderer->GetShader());
-		//std::shared_ptr<BlackPearl::Texture> albedoTexture(DBG_NEW BlackPearl::Texture(BlackPearl::TextureType::DiffuseMap, "assets/texture/pbr/rustSphere/rustediron2_basecolor.png"));
-		//std::shared_ptr<BlackPearl::Texture> aoTexture(DBG_NEW BlackPearl::Texture(BlackPearl::TextureType::AoMap, "assets/texture/pbr/rustSphere/rustediron2_ao.png"));
-		//std::shared_ptr<BlackPearl::Texture> roughnessTexture(DBG_NEW BlackPearl::Texture(BlackPearl::TextureType::RoughnessMap, "assets/texture/pbr/rustSphere/rustediron2_roughness.png"));
-		//std::shared_ptr<BlackPearl::Texture> mentallicTexture(DBG_NEW BlackPearl::Texture(BlackPearl::TextureType::MentallicMap, "assets/texture/pbr/rustSphere/rustediron2_metallic.png"));
-		//std::shared_ptr<BlackPearl::Texture> normalTexture(DBG_NEW BlackPearl::Texture(BlackPearl::TextureType::NormalMap, "assets/texture/pbr/rustSphere/rustediron2_normal.png"));
+		
 		BlackPearl::TextureDesc texDesc;
+		texDesc.format = BlackPearl::Format::RGBA8_UNORM;
 		texDesc.type = BlackPearl::TextureType::DiffuseMap;
 		texDesc.path = "assets/texture/pbr/cobblestone/cobblestone-curved_2_albedo.png";
 		TextureHandle albedoTexture = m_DeviceManager->GetDevice()->createTexture(texDesc);
@@ -44,11 +39,11 @@ public:
 		texDesc.type = BlackPearl::TextureType::RoughnessMap;
 		texDesc.path = "assets/texture/pbr/cobblestone/cobblestone-curved_2_roughness.png";
 		TextureHandle roughnessTexture = m_DeviceManager->GetDevice()->createTexture(texDesc);
-		
+
 		texDesc.type = BlackPearl::TextureType::MentallicMap;
 		texDesc.path = "assets/texture/pbr/cobblestone/cobblestone-curved_2_metallic.png";
 		TextureHandle mentallicTexture = m_DeviceManager->GetDevice()->createTexture(texDesc);
-		
+
 		texDesc.type = BlackPearl::TextureType::NormalMap;
 		texDesc.path = "assets/texture/pbr/cobblestone/cobblestone-curved_2_normal-dx.png";
 		TextureHandle normalTexture = m_DeviceManager->GetDevice()->createTexture(texDesc);
@@ -59,13 +54,11 @@ public:
 		m_SphereObj->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(roughnessTexture);
 		m_SphereObj->GetComponent<BlackPearl::MeshRenderer>()->SetTextures(mentallicTexture);
 
-		m_SphereObj->GetComponent<BlackPearl::MeshRenderer>()->GetMeshes()[0]->GetMaterial()->SetMaterialColorDiffuseColor({ 1.0,0.0,0.0});
+		m_SphereObj->GetComponent<BlackPearl::MeshRenderer>()->GetMeshes()[0]->GetMaterial()->SetMaterialColorDiffuseColor({ 1.0,0.0,0.0 });
 		m_SphereObjIron = LoadStaticBackGroundObject("SphereIron");
 		m_SphereObjRust = LoadStaticBackGroundObject("SphereRust");
 		m_SphereObjStone = LoadStaticBackGroundObject("SphereStone");
 		m_SphereObjPlastic = LoadStaticBackGroundObject("SpherePlastic");
-
-
 
 		Object* light = CreateLight(LightType::PointLight, "Light");
 		light->SetPosition({ 0.0,0.0,5.0 });
@@ -73,13 +66,8 @@ public:
 
 		BlackPearl::IDevice* device = m_DeviceManager->GetDevice();
 
-	
-
-
-
 		Renderer::Init();
 	}
-
 	virtual ~PbrRenderingLayer() {
 
 		DestroyObjects();

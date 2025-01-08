@@ -97,6 +97,7 @@ namespace BlackPearl {
 		desc.magFilter = FilterMode::Linear;
 		desc.wrap = SamplerAddressMode::ClampToEdge;
 		desc.format = Format::RGB8_FLOAT;
+		desc.generateMipmap = true;
 		desc.mipLevels = 5;
 
 		m_SkyBoxCubeMap = g_deviceManager->GetDevice()->createTexture(desc);
@@ -236,8 +237,6 @@ namespace BlackPearl {
 			projection * ProbeView[4],
 			projection * ProbeView[5]
 		};
-
-
 		//glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
 
 		glm::vec2 mipMapSize = { m_SkyBoxCubeMap->getDesc().width,m_SkyBoxCubeMap->getDesc().height };
@@ -252,10 +251,9 @@ namespace BlackPearl {
 		//TODO::
 		frameBuffer->AttachRenderBuffer(m_SkyBoxCubeMap->getDesc().width, m_SkyBoxCubeMap->getDesc().height);
 		GE_ERROR_JUDGE();
+		frameBuffer->Bind();
 		for (unsigned int mip = 0; mip < m_SkyBoxCubeMap->getDesc().mipLevels; mip++)
 		{
-
-			
 			/*glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, mipMapSize.x, mipMapSize.y);
 			glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, frameBuffer->GetRenderBufferID());*/
 			GE_ERROR_JUDGE();
@@ -266,29 +264,24 @@ namespace BlackPearl {
 			GE_ERROR_JUDGE();
 			for (unsigned int i = 0; i < 6; i++)
 			{
-				frameBuffer->Bind();
 				frameBuffer->BindRenderBuffer();
+
 				SceneData* scene = DBG_NEW SceneData{ ProbeProjectionViews[i] ,ProbeView[i],projection,Renderer::GetSceneData()->CameraPosition,Renderer::GetSceneData()->CameraRotation, Renderer::GetSceneData()->CameraFront,Renderer::GetSceneData()->LightSources };
 				glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, static_cast<Texture*>(m_SkyBoxCubeMap.Get())->GetRendererID(), mip);
+				GE_ERROR_JUDGE();
+
 				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+				GE_ERROR_JUDGE();
 
 				//BasicRenderer::DrawLightSources(lightSources, scene);
 				glDepthFunc(GL_LEQUAL);
+				GE_ERROR_JUDGE();
+
 				DrawObject(skyBox, scene,8);
 				glDepthFunc(GL_LESS);
-			/*	for (auto obj : objects) {
-					if (obj->GetComponent<MeshRenderer>()->GetIsPBRObject()) {
-						m_PbrShader->Bind();
-						DrawObject(obj, m_PbrShader, scene, 4);
-						GE_ERROR_JUDGE();
-					}
-					else {
-						m_NonPbrShader->Bind();
-						DrawObject(obj, m_NonPbrShader, scene, 4);
-						GE_ERROR_JUDGE();
-					}
+				GE_ERROR_JUDGE();
 
-				}*/
+
 				delete scene;
 				scene = nullptr;
 

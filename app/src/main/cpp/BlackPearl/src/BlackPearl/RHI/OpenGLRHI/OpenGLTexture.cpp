@@ -31,17 +31,11 @@ namespace BlackPearl {
 		glGenTextures(1, &m_TextureID);
 		GE_ERROR_JUDGE();//出现error的原因：很可能m_TextureID用在了别的target上，例如CUBEMAP,不行的话运行前加个断点 = = 
 
-		Bind();
+		/*Bind();
 		GE_ERROR_JUDGE();
 		Init(desc, data);
-		/*if (data != nullptr) {
-			
-		}
-		else {
-			assert(!m_Path.empty());
-			Init(desc);
-		}*/
-		GE_ERROR_JUDGE();
+
+		GE_ERROR_JUDGE();*/
 
 
 	}
@@ -95,6 +89,7 @@ namespace BlackPearl {
 	void Texture::Init(
 		TextureDesc& desc, float* data)
 	{
+		Bind();
 		fillTextureInfo(desc);
 		if (data != nullptr) {
 			GE_ASSERT(m_Path.size() != 0, "texture image is empty!");

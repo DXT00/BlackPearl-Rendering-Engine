@@ -45,8 +45,8 @@ namespace BlackPearl {
 		};*/
 		virtual void Init(
 			TextureDesc& desc,
-			float* data = nullptr);
-		virtual ~CubeMapTexture();
+			float* data = nullptr) override;
+		virtual ~CubeMapTexture() override;
 		void	LoadCubeMap();
 		/*void	LoadCubeMap(std::vector<std::string> faces, unsigned int minFilter,unsigned int maxFilter,int wrap,int internalFormat, int format, int dataType, bool generateMipmap);
 		void	LoadCubeMap(const int width, const int height, unsigned int minFilter, unsigned int maxFilter,int wrap, int internalFormat,int format, int dataType, bool generateMipmap);*/

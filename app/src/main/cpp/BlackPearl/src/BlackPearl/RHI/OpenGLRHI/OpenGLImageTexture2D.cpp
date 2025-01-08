@@ -27,6 +27,7 @@ namespace BlackPearl {
 
 	void ImageTexture2D::Init(TextureDesc& desc, float* data)
 	{
+		Bind();
 		fillTextureInfo(desc);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, m_MinFilter);//纹理缩小时用邻近过滤
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, m_MagFilter);//纹理放大时也用邻近过滤

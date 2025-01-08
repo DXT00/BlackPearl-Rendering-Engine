@@ -14,14 +14,27 @@ public:
 		: Layer(name)
 	{
 
-		
+
+	}
+
+	virtual ~IBLRenderingLayer() {
+
+		DestroyObjects();
+		delete m_BasicRenderer;
+		delete m_IBLRenderer;
+		//delete m_PBRRenderer;
+
+	}
+
+	void OnSetup() override {
+
 		//Shader
 		//m_BackGroundShader.reset(DBG_NEW BlackPearl::Shader("assets/shaders/ibl/background.glsl"));
 	//	m_DebugQuadShader.reset(DBG_NEW BlackPearl::Shader("assets/shaders/QuadDebug.glsl"));
 		m_LightProbeShader.reset(DBG_NEW BlackPearl::Shader("assets/shaders/lightProbes/lightProbe.glsl"));
 
 		//Scene
-	
+
 		//skybox and quad for BrdfLUTMap
 		m_CubeObj = CreateCube();
 		m_CubeObj->GetComponent<BlackPearl::Transform>()->SetScale({ 0.2,0.2,0.2 });
@@ -50,25 +63,18 @@ public:
 		LoadSpheresScene();
 		LoadCornellScene();
 		//LoadChurchScene();
-		
+
 
 	//	LoadStaticBackGroundObject("Sphere");
 
 		/*Draw CubeMap from hdrMap and Create environment IrrdianceMap*/
-		m_IBLRenderer->Init(m_CubeObj, m_BrdfLUTQuadObj,m_SkyBoxObj,m_BackGroundObjsList , GetLightSources());
+		m_IBLRenderer->Init(m_CubeObj, m_BrdfLUTQuadObj, m_SkyBoxObj, m_BackGroundObjsList, GetLightSources());
 
 		//glViewport(0, 0, BlackPearl::Configuration::WindowWidth, BlackPearl::Configuration::WindowHeight);
 
+	
 	}
 
-	virtual ~IBLRenderingLayer() {
-
-		DestroyObjects();
-		delete m_BasicRenderer;
-		delete m_IBLRenderer;
-		//delete m_PBRRenderer;
-
-	}
 	void OnUpdate(BlackPearl::Timestep ts) override {
 
 
@@ -100,7 +106,7 @@ public:
 		double runtime = currentTimeMs.count() - m_StartTimeMs.count();
 		
 		m_ShadowMapPointLightRenderer->RenderCubeMap(m_BackGroundObjsList, m_DynamicObjsList, runtime / 1000.0f, GetLightSources());
-		m_IBLRenderer->RenderTextureSphere(m_BackGroundObjsList,GetLightSources());
+		m_IBLRenderer->RenderTextureSphere(m_BackGroundObjsList, GetLightSources());
 
 
 

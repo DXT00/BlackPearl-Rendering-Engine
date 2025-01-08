@@ -53,7 +53,7 @@ namespace BlackPearl {
 		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, m_Wrap);
 		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, m_Wrap);
 
-		if (m_desc.generateMipmap)
+		if (m_desc.generateMipmap || m_desc.mipLevels>0)
 			glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
 
 

@@ -50,7 +50,7 @@ namespace BlackPearl {
 			1,2,3
 		};
 		indexData = indices;
-
+		SetIndices(indexData);
 	}
 }
 

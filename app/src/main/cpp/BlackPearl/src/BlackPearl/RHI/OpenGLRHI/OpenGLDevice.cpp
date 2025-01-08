@@ -21,7 +21,11 @@ namespace BlackPearl
 		else {
 			texture = DBG_NEW Texture(d);
 		}
+
 		GE_ASSERT(texture, "texture is nullptr");
+
+		texture->Init(d, d.data);
+
 		return TextureHandle::Create(texture);
 	}
 
