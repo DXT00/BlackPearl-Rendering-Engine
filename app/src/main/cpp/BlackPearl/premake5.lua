@@ -71,8 +71,8 @@ project "BlackPearl"
 	}
 
    filter { "options:RenderAPI=opengl" }
-   removefiles  { "./src/BlackPearl/RHI/VulkanRHI/**.cpp" }
-   removefiles  { "./src/BlackPearl/RHI/VulkanRHI/**.h" }
+   --removefiles  { "./src/BlackPearl/RHI/VulkanRHI/**.cpp" }
+   --removefiles  { "./src/BlackPearl/RHI/VulkanRHI/**.h" }
    removefiles  { "./src/BlackPearl/RHI/D3D12RHI/**.cpp" }
    removefiles  { "./src/BlackPearl/RHI/D3D12RHI/**.h" }
    removefiles  { "./src/BlackPearl/Renderer/Buffer/D3D12Buffer/**.h" }
