@@ -1,406 +1,1211 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
-/*=============================================================================
-	OpenGLDrvPrivate.h: Private OpenGL RHI definitions.
-=============================================================================*/
+//#include "CoreMinimal.h"
+//#include "Android/AndroidPlatform.h"
 
-#pragma once
+#ifdef GE_PLATFORM_ANDRIOD
 
-#include "CoreMinimal.h"
-#include "Stats/Stats.h"
-#include "RHI.h"
-#include "RenderResource.h"
-#include "OpenGLDrv.h"
+#include "../OpenGLDrvPrivate.h"
+//#include "AndroidOpenGL.h"
+//#include "OpenGLDrvPrivate.h"
+//#include "OpenGLES.h"
+//#include "Android/AndroidWindow.h"
+//#include "AndroidOpenGLPrivate.h"
+//#include "Android/AndroidPlatformMisc.h"
+//#include "Android/AndroidPlatformFramePacer.h"
+//#include "Android/AndroidJNI.h"
+//#include "GenericPlatform/GenericPlatformCrashContext.h"
 
-#define SUBALLOCATED_CONSTANT_BUFFER 0
+PFNeglPresentationTimeANDROID eglPresentationTimeANDROID_p = NULL;
+PFNeglGetNextFrameIdANDROID eglGetNextFrameIdANDROID_p = NULL;
+PFNeglGetCompositorTimingANDROID eglGetCompositorTimingANDROID_p = NULL;
+PFNeglGetFrameTimestampsANDROID eglGetFrameTimestampsANDROID_p = NULL;
+PFNeglQueryTimestampSupportedANDROID eglQueryTimestampSupportedANDROID_p = NULL;
+PFNeglQueryTimestampSupportedANDROID eglGetCompositorTimingSupportedANDROID_p = NULL;
+PFNeglQueryTimestampSupportedANDROID eglGetFrameTimestampsSupportedANDROID_p = NULL;
 
-#define GL_CHECK(x)		x; do { GLint Err = glGetError(); if (Err != 0) {FPlatformMisc::LowLevelOutputDebugStringf(TEXT("(%s:%d) GL_CHECK Failed '%s'! %d (%x)\n"), ANSI_TO_TCHAR(__FILE__), __LINE__, ANSI_TO_TCHAR( #x ), Err, Err); check(!Err);}} while (0)
+namespace GLFuncPointers
+{
+	PFNGLFRAMEBUFFERFETCHBARRIERQCOMPROC glFramebufferFetchBarrierQCOM = NULL;
+}
 
-// 
-// #if !defined(__GNUC__) && !defined(__clang__) && !defined(__INTEL_COMPILER) && !(defined(_MSC_VER) && _MSC_VER >= 1900)
-// #define LOG_AND_GET_GL_INT_TEMP(IntEnum,Default) 
-// GLint Value_##IntEnum = Default; if (IntEnum) {glGetIntegerv(IntEnum, &Value_##IntEnum); glGetError();} else {Value_##IntEnum = Default;} 
-// UE_LOG(LogRHI, Log, TEXT("  ") ## TEXT(#IntEnum) ## TEXT(": %d"), Value_##IntEnum)
-// #else
-// #define LOG_AND_GET_GL_INT_TEMP(IntEnum,Default) GLint Value_##IntEnum = Default; if (IntEnum) {glGetIntegerv(IntEnum, &Value_##IntEnum); glGetError();} else {Value_##IntEnum = Default;} 
-// UE_LOG(LogRHI, Log, TEXT("  " #IntEnum ": %d"), Value_##IntEnum)
-// #endif
+int32 FAndroidOpenGL::GLMajorVerion = 0;
+int32 FAndroidOpenGL::GLMinorVersion = 0;
+
+bool FAndroidOpenGL::bSupportsImageExternal = false;
+bool FAndroidOpenGL::bRequiresAdrenoTilingHint = false;
+
+//static TAutoConsoleVariable<int32> CVarEnableAdrenoTilingHint(
+//	TEXT("r.Android.EnableAdrenoTilingHint"),
+//	1,
+//	TEXT("Whether Adreno-based Android devices should hint to the driver to use tiling mode for the mobile base pass.\n")
+//	TEXT("  0 = hinting disabled\n")
+//	TEXT("  1 = hinting enabled for Adreno devices running Andorid 8 or earlier [default]\n")
+//	TEXT("  2 = hinting always enabled for Adreno devices\n"));
+//
+//static TAutoConsoleVariable<int32> CVarDisableEarlyFragmentTests(
+//	TEXT("r.Android.DisableEarlyFragmentTests"),
+//	0,
+//	TEXT("Whether to disable early_fragment_tests if any \n"),
+//	ECVF_ReadOnly);
+//
+//static TAutoConsoleVariable<int32> CVarDisableFBFNonCoherent(
+//	TEXT("r.Android.DisableFBFNonCoherent"),
+//	0,
+//	TEXT("Whether to disable usage of QCOM_shader_framebuffer_fetch_noncoherent extension\n"),
+//	ECVF_ReadOnly);
+
+struct FPlatformOpenGLDevice
+{
+	bool TargetDirty;
+
+	void SetCurrentSharedContext();
+	void SetCurrentRenderingContext();
+	void SetupCurrentContext();
+	void SetCurrentNULLContext();
+
+	FPlatformOpenGLDevice();
+	~FPlatformOpenGLDevice();
+	void Init();
+	void LoadEXT();
+	void Terminate();
+	void ReInit();
+};
 
 
+FPlatformOpenGLDevice::~FPlatformOpenGLDevice()
+{
+	FPlatformRHIFramePacer::Destroy();
 
-#if !defined(__GNUC__) && !defined(__clang__) && !defined(__INTEL_COMPILER) && !(defined(_MSC_VER) && _MSC_VER >= 1900)
-#define LOG_AND_GET_GL_INT(IntEnum, Default, Dest) \
-		do \
-		{ \
-			Dest = Default; \
-			extern bool GDisableOpenGLDebugOutput; \
-			GDisableOpenGLDebugOutput = true; \
-			glGetIntegerv(IntEnum, &Dest); \
-			GDisableOpenGLDebugOutput = false; \
-			\
-			UE_LOG(LogRHI, Log, TEXT("  ") ## TEXT(#IntEnum) ## TEXT(": %d"), Dest); \
-		} \
-		while (0)
+	FAndroidAppEntry::ReleaseEGL();
+}
+
+FPlatformOpenGLDevice::FPlatformOpenGLDevice()
+{
+}
+
+// call out to JNI to see if the application was packaged for Oculus Mobile
+extern bool AndroidThunkCpp_IsOculusMobileApplication();
+
+
+// RenderDoc
+#define GL_DEBUG_TOOL_EXT	0x6789
+static bool bRunningUnderRenderDoc = false;
+
+
+#if UE_BUILD_SHIPPING
+#define CHECK_JNI_EXCEPTIONS(env)  env->ExceptionClear();
 #else
-	#define LOG_AND_GET_GL_INT(IntEnum, Default, Dest) \
-		do \
-		{ \
-			Dest = Default; \
-			extern bool GDisableOpenGLDebugOutput; \
-			GDisableOpenGLDebugOutput = true; \
-			glGetIntegerv(IntEnum, &Dest); \
-			GDisableOpenGLDebugOutput = false; \
-			UE_LOG(LogRHI, Log, TEXT("  " #IntEnum ": %d"), Dest); \
-		} \
-		while (0)
+#define CHECK_JNI_EXCEPTIONS(env)  if (env->ExceptionCheck()) {env->ExceptionDescribe();env->ExceptionClear();}
 #endif
 
-#define GET_GL_INT(IntEnum, Default, Dest) \
-	do \
-	{ \
-		Dest = Default; \
-		extern bool GDisableOpenGLDebugOutput; \
-		GDisableOpenGLDebugOutput = true; \
-		glGetIntegerv(IntEnum, &Dest); \
-		GDisableOpenGLDebugOutput = false; \
-		} \
-	while (0)
+struct FOpenGLRemoteGLProgramCompileJNI
+{
+	jclass OGLServiceAccessor = 0;
+	jmethodID DispatchProgramLink = 0;
+	jmethodID StartRemoteProgramLink = 0;
+	jmethodID StopRemoteProgramLink = 0;
+	jclass ProgramResponseClass = 0;
+	jfieldID ProgramResponse_SuccessField = 0;
+	jfieldID ProgramResponse_ErrorField = 0;
+	jfieldID ProgramResponse_CompiledBinaryField = 0;
+	bool bAllFound = false;
 
-struct FPlatformOpenGLContext;
-struct FPlatformOpenGLDevice;
+	void Init(JNIEnv* Env)
+	{
+		// class JNIProgramLinkResponse
+		// {
+		// 	boolean bCompileSuccess;
+		// 	String ErrorMessage;
+		// 	byte[] CompiledProgram;
+		// };
+		// JNIProgramLinkResponse AndroidThunkJava_OGLRemoteProgramLink(...):
 
-/**
- * The OpenGL RHI stats.
- */
-DECLARE_CYCLE_STAT_EXTERN(TEXT("Present time"),STAT_OpenGLPresentTime,STATGROUP_OpenGLRHI, );
-DECLARE_DWORD_COUNTER_STAT_EXTERN(TEXT("Triangles drawn"),STAT_OpenGLTriangles,STATGROUP_OpenGLRHI, );
-DECLARE_DWORD_COUNTER_STAT_EXTERN(TEXT("Lines drawn"),STAT_OpenGLLines,STATGROUP_OpenGLRHI, );
-DECLARE_CYCLE_STAT_EXTERN(TEXT("CreateTexture time"),STAT_OpenGLCreateTextureTime,STATGROUP_OpenGLRHI, );
-DECLARE_CYCLE_STAT_EXTERN(TEXT("LockTexture time"),STAT_OpenGLLockTextureTime,STATGROUP_OpenGLRHI, );
-DECLARE_CYCLE_STAT_EXTERN(TEXT("UnlockTexture time"),STAT_OpenGLUnlockTextureTime,STATGROUP_OpenGLRHI, );
-DECLARE_CYCLE_STAT_EXTERN(TEXT("CopyTexture time"),STAT_OpenGLCopyTextureTime,STATGROUP_OpenGLRHI, );
-DECLARE_CYCLE_STAT_EXTERN(TEXT("CopyMipToMipAsync time"),STAT_OpenGLCopyMipToMipAsyncTime,STATGROUP_OpenGLRHI, );
-DECLARE_CYCLE_STAT_EXTERN(TEXT("UploadTextureMip time"),STAT_OpenGLUploadTextureMipTime,STATGROUP_OpenGLRHI, );
-DECLARE_CYCLE_STAT_EXTERN(TEXT("CreateBoundShaderState time"),STAT_OpenGLCreateBoundShaderStateTime,STATGROUP_OpenGLRHI, );
-DECLARE_CYCLE_STAT_EXTERN(TEXT("Constant buffer update time"),STAT_OpenGLConstantBufferUpdateTime,STATGROUP_OpenGLRHI, );
-DECLARE_CYCLE_STAT_EXTERN(TEXT("Uniform commit time"),STAT_OpenGLUniformCommitTime,STATGROUP_OpenGLRHI, );
-DECLARE_CYCLE_STAT_EXTERN(TEXT("Shader compile time"),STAT_OpenGLShaderCompileTime,STATGROUP_OpenGLRHI, );
-DECLARE_CYCLE_STAT_EXTERN(TEXT("Shader compile verify time"),STAT_OpenGLShaderCompileVerifyTime,STATGROUP_OpenGLRHI, );
-DECLARE_CYCLE_STAT_EXTERN(TEXT("Shader link time"),STAT_OpenGLShaderLinkTime,STATGROUP_OpenGLRHI, );
-DECLARE_CYCLE_STAT_EXTERN(TEXT("Shader link verify time"),STAT_OpenGLShaderLinkVerifyTime,STATGROUP_OpenGLRHI, );
-DECLARE_CYCLE_STAT_EXTERN(TEXT("Shader bind param time"),STAT_OpenGLShaderBindParameterTime,STATGROUP_OpenGLRHI, );
-DECLARE_CYCLE_STAT_EXTERN(TEXT("Uniform buffer pool cleanup time"),STAT_OpenGLUniformBufferCleanupTime,STATGROUP_OpenGLRHI, );
-DECLARE_MEMORY_STAT_EXTERN(TEXT("Uniform buffer pool memory"),STAT_OpenGLFreeUniformBufferMemory,STATGROUP_OpenGLRHI, );
-DECLARE_CYCLE_STAT_EXTERN(TEXT("Emulated Uniform buffer time"), STAT_OpenGLEmulatedUniformBufferTime,STATGROUP_OpenGLRHI, );
-DECLARE_DWORD_ACCUMULATOR_STAT_EXTERN(TEXT("Uniform buffer pool num free"),STAT_OpenGLNumFreeUniformBuffers,STATGROUP_OpenGLRHI, );
-DECLARE_CYCLE_STAT_EXTERN(TEXT("Time for first draw of shader programs"), STAT_OpenGLShaderFirstDrawTime,STATGROUP_OpenGLRHI, );
-DECLARE_MEMORY_STAT_EXTERN(TEXT("Active Program binary memory (estimate driver use)"), STAT_OpenGLProgramBinaryMemory, STATGROUP_OpenGLRHI, );
-DECLARE_DWORD_ACCUMULATOR_STAT_EXTERN(TEXT("GL Program count"), STAT_OpenGLProgramCount, STATGROUP_OpenGLRHI, );
-DECLARE_CYCLE_STAT_EXTERN(TEXT("Program get from cache time"),STAT_OpenGLUseCachedProgramTime,STATGROUP_OpenGLRHI, );
-DECLARE_CYCLE_STAT_EXTERN(TEXT("Program create from binary time"),STAT_OpenGLCreateProgramFromBinaryTime,STATGROUP_OpenGLRHI, );
 
-DECLARE_CYCLE_STAT_EXTERN(TEXT("Program LRU cache eviction time"), STAT_OpenGLShaderLRUEvictTime, STATGROUP_OpenGLRHI, );
-DECLARE_CYCLE_STAT_EXTERN(TEXT("Program LRU cache miss time"), STAT_OpenGLShaderLRUMissTime, STATGROUP_OpenGLRHI, );
-DECLARE_DWORD_ACCUMULATOR_STAT_EXTERN(TEXT("Program LRU count"), STAT_OpenGLShaderLRUProgramCount, STATGROUP_OpenGLRHI, );
-DECLARE_DWORD_ACCUMULATOR_STAT_EXTERN(TEXT("Program LRU evicted count"), STAT_OpenGLShaderLRUEvictedProgramCount, STATGROUP_OpenGLRHI, );
-DECLARE_DWORD_ACCUMULATOR_STAT_EXTERN(TEXT("Program LRU miss count"), STAT_OpenGLShaderLRUMissCount, STATGROUP_OpenGLRHI, );
-DECLARE_MEMORY_STAT_EXTERN(TEXT("Program LRU memory (evicted, heap)"), STAT_OpenGLShaderLRUProgramMemory, STATGROUP_OpenGLRHI, );
-DECLARE_MEMORY_STAT_EXTERN(TEXT("Program LRU mem mapped (evicted, filemapped)"), STAT_OpenGLShaderLRUProgramMemoryMapped, STATGROUP_OpenGLRHI, );
+		check(OGLServiceAccessor == 0);
+		OGLServiceAccessor = AndroidJavaEnv::FindJavaClassGlobalRef("com/epicgames/unreal/psoservices/PSOProgramServiceAccessor");
+		CHECK_JNI_EXCEPTIONS(Env);
+		if (OGLServiceAccessor)
+		{
+			DispatchProgramLink = FJavaWrapper::FindStaticMethod(Env, OGLServiceAccessor, "AndroidThunkJava_OGLRemoteProgramLink", "([BLjava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lcom/epicgames/unreal/psoservices/PSOProgramServiceAccessor$JNIProgramLinkResponse;", false);
+			CHECK_JNI_EXCEPTIONS(Env);
+			StartRemoteProgramLink = FJavaWrapper::FindStaticMethod(Env, OGLServiceAccessor, "AndroidThunkJava_StartRemoteProgramLink", "(IZ)Z", false);
+			CHECK_JNI_EXCEPTIONS(Env);
+			StopRemoteProgramLink = FJavaWrapper::FindStaticMethod(Env, OGLServiceAccessor, "AndroidThunkJava_StopRemoteProgramLink", "()V", false);
+			CHECK_JNI_EXCEPTIONS(Env);
+			ProgramResponseClass = AndroidJavaEnv::FindJavaClassGlobalRef("com/epicgames/unreal/psoservices/PSOProgramServiceAccessor$JNIProgramLinkResponse");
+			CHECK_JNI_EXCEPTIONS(Env);
+			ProgramResponse_SuccessField = FJavaWrapper::FindField(Env, ProgramResponseClass, "bCompileSuccess", "Z", true);
+			CHECK_JNI_EXCEPTIONS(Env);
+			ProgramResponse_CompiledBinaryField = FJavaWrapper::FindField(Env, ProgramResponseClass, "CompiledProgram", "[B", true);
+			CHECK_JNI_EXCEPTIONS(Env);
+			ProgramResponse_ErrorField = FJavaWrapper::FindField(Env, ProgramResponseClass, "ErrorMessage", "Ljava/lang/String;", true);
+			CHECK_JNI_EXCEPTIONS(Env);
+		}
 
-#if OPENGLRHI_DETAILED_STATS
-DECLARE_CYCLE_STAT_EXTERN(TEXT("DrawPrimitive Time"),STAT_OpenGLDrawPrimitiveTime,STATGROUP_OpenGLRHI, );
-DECLARE_CYCLE_STAT_EXTERN(TEXT("DrawPrimitive Driver Time"),STAT_OpenGLDrawPrimitiveDriverTime,STATGROUP_OpenGLRHI, );
-DECLARE_CYCLE_STAT_EXTERN(TEXT("DrawPrimitiveUP Time"),STAT_OpenGLDrawPrimitiveUPTime,STATGROUP_OpenGLRHI, );
-DECLARE_CYCLE_STAT_EXTERN(TEXT("Shader bind time"),STAT_OpenGLShaderBindTime,STATGROUP_OpenGLRHI, );
-DECLARE_CYCLE_STAT_EXTERN(TEXT("Texture bind time"),STAT_OpenGLTextureBindTime,STATGROUP_OpenGLRHI, );
-DECLARE_CYCLE_STAT_EXTERN(TEXT("Uniform bind time"),STAT_OpenGLUniformBindTime,STATGROUP_OpenGLRHI, );
-DECLARE_CYCLE_STAT_EXTERN(TEXT("VBO setup time"),STAT_OpenGLVBOSetupTime,STATGROUP_OpenGLRHI, );
+		bAllFound = OGLServiceAccessor && DispatchProgramLink && StartRemoteProgramLink && StopRemoteProgramLink && ProgramResponseClass && ProgramResponse_SuccessField && ProgramResponse_CompiledBinaryField && ProgramResponse_ErrorField;
+		UE_CLOG(!bAllFound, LogRHI, Fatal, TEXT("Failed to find JNI GL remote program compiler."));
+	}
+}OpenGLRemoteGLProgramCompileJNI;
+
+static bool AreAndroidOpenGLRemoteCompileServicesAvailable()
+{
+	static int RemoteCompileService = -1;
+	if (RemoteCompileService == -1)
+	{
+		const FString* ConfigRulesDisableProgramCompileServices = FAndroidMisc::GetConfigRulesVariable(TEXT("DisableProgramCompileServices"));
+		bool bConfigRulesDisableProgramCompileServices = ConfigRulesDisableProgramCompileServices && ConfigRulesDisableProgramCompileServices->Equals("true", ESearchCase::IgnoreCase);
+		static const auto CVarBinaryProgramCache = IConsoleManager::Get().FindConsoleVariable(TEXT("r.ProgramBinaryCache.Enable"));
+		static const auto CVarNumRemoteProgramCompileServices = IConsoleManager::Get().FindConsoleVariable(TEXT("Android.OpenGL.NumRemoteProgramCompileServices"));
+
+		RemoteCompileService = !bConfigRulesDisableProgramCompileServices && OpenGLRemoteGLProgramCompileJNI.bAllFound && (CVarBinaryProgramCache->GetInt() != 0) && (CVarNumRemoteProgramCompileServices->GetInt() > 0);
+		FGenericCrashContext::SetEngineData(TEXT("Android.PSOService"), RemoteCompileService == 0 ? TEXT("disabled") : TEXT("enabled"));
+		UE_CLOG(!RemoteCompileService, LogRHI, Log, TEXT("Remote PSO services disabled: (%d, %d, %d, %d)"), bConfigRulesDisableProgramCompileServices, OpenGLRemoteGLProgramCompileJNI.bAllFound, CVarBinaryProgramCache->GetInt(), CVarNumRemoteProgramCompileServices->GetInt());
+	}
+	return RemoteCompileService;
+}
+
+void FPlatformOpenGLDevice::Init()
+{
+	// Initialize frame pacer
+	FPlatformRHIFramePacer::Init(new FAndroidOpenGLFramePacer());
+
+	extern void InitDebugContext();
+
+	bRunningUnderRenderDoc = glIsEnabled(GL_DEBUG_TOOL_EXT) != GL_FALSE;
+
+	FPlatformMisc::LowLevelOutputDebugString(TEXT("FPlatformOpenGLDevice:Init"));
+	bool bCreateSurface = !AndroidThunkCpp_IsOculusMobileApplication();
+	AndroidEGL::GetInstance()->InitSurface(false, bCreateSurface);
+
+	LoadEXT();
+	PlatformRenderingContextSetup(this);
+
+	InitDefaultGLContextState();
+	InitDebugContext();
+
+	PlatformSharedContextSetup(this);
+	InitDefaultGLContextState();
+	InitDebugContext();
+
+	AndroidEGL::GetInstance()->InitBackBuffer(); //can be done only after context is made current.
+
+	OpenGLRemoteGLProgramCompileJNI.Init(FAndroidApplication::GetJavaEnv());
+
+	// AsyncPipelinePrecompile can be enabled on android GL, precompiles are compiled via separate processes and the result is stored in GL's LRU cache as an evicted binary.
+	// The lru cache is a requirement as the precompile produces binary program data only.
+	GRHISupportsAsyncPipelinePrecompile = AreAndroidOpenGLRemoteCompileServicesAvailable();
+}
+
+FPlatformOpenGLDevice* PlatformCreateOpenGLDevice()
+{
+	FPlatformOpenGLDevice* Device = new FPlatformOpenGLDevice();
+	Device->Init();
+	return Device;
+}
+
+bool PlatformCanEnableGPUCapture()
+{
+	return bRunningUnderRenderDoc;
+}
+
+void PlatformReleaseOpenGLContext(FPlatformOpenGLDevice* Device, FPlatformOpenGLContext* Context)
+{
+}
+
+void* PlatformGetWindow(FPlatformOpenGLContext* Context, void** AddParam)
+{
+	check(Context);
+
+	return (void*)&Context->eglContext;
+}
+
+bool PlatformBlitToViewport(FPlatformOpenGLDevice* Device, const FOpenGLViewport& Viewport, uint32 BackbufferSizeX, uint32 BackbufferSizeY, bool bPresent, bool bLockToVsync)
+{
+	SCOPED_NAMED_EVENT(STAT_PlatformBlitToViewportTime, FColor::Red)
+
+		FPlatformOpenGLContext* const Context = Viewport.GetGLContext();
+
+	if (bPresent && AndroidEGL::GetInstance()->IsOfflineSurfaceRequired())
+	{
+		if (Device->TargetDirty)
+		{
+			VERIFY_GL_SCOPE();
+			glBindFramebuffer(GL_FRAMEBUFFER, Context->ViewportFramebuffer);
+			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, Context->BackBufferTarget, Context->BackBufferResource, 0);
+
+			Device->TargetDirty = false;
+		}
+
+		{
+			VERIFY_GL_SCOPE();
+			glDisable(GL_FRAMEBUFFER_SRGB);
+			glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+			FOpenGL::DrawBuffer(GL_BACK);
+			glBindFramebuffer(GL_READ_FRAMEBUFFER, Context->ViewportFramebuffer);
+			FOpenGL::ReadBuffer(GL_COLOR_ATTACHMENT0);
+
+			FOpenGL::BlitFramebuffer(
+				0, 0, BackbufferSizeX, BackbufferSizeY,
+				0, BackbufferSizeY, BackbufferSizeX, 0,
+				GL_COLOR_BUFFER_BIT,
+				GL_NEAREST
+			);
+
+			glEnable(GL_FRAMEBUFFER_SRGB);
+
+			// Bind viewport FBO so driver knows we don't need backbuffer image anymore
+			glBindFramebuffer(GL_FRAMEBUFFER, Context->ViewportFramebuffer);
+		}
+	}
+
+	if (bPresent && Viewport.GetCustomPresent())
+	{
+		QUICK_SCOPE_CYCLE_COUNTER(STAT_FAndroidOpenGL_PlatformBlitToViewport_CustomPresent);
+		int32 SyncInterval = FAndroidPlatformRHIFramePacer::GetLegacySyncInterval();
+		bPresent = Viewport.GetCustomPresent()->Present(SyncInterval);
+	}
+	if (bPresent)
+	{
+		AndroidEGL::GetInstance()->UpdateBuffersTransform();
+		FAndroidPlatformRHIFramePacer::SwapBuffers(bLockToVsync);
+	}
+	static IConsoleVariable* CVar = IConsoleManager::Get().FindConsoleVariable(TEXT("a.UseFrameTimeStampsForPacing"));
+	const bool bForceGPUFence = CVar ? CVar->GetInt() != 0 : false;
+
+	return bPresent && ShouldUseGPUFencesToLimitLatency();
+}
+
+void PlatformRenderingContextSetup(FPlatformOpenGLDevice* Device)
+{
+	Device->SetCurrentRenderingContext();
+	Device->SetupCurrentContext();
+}
+
+void PlatformFlushIfNeeded()
+{
+}
+
+void PlatformRebindResources(FPlatformOpenGLDevice* Device)
+{
+}
+
+void PlatformSharedContextSetup(FPlatformOpenGLDevice* Device)
+{
+	Device->SetCurrentSharedContext();
+	Device->SetupCurrentContext();
+}
+
+void PlatformNULLContextSetup()
+{
+	AndroidEGL::GetInstance()->ReleaseContextOwnership();
+}
+
+EOpenGLCurrentContext PlatformOpenGLCurrentContext(FPlatformOpenGLDevice* Device)
+{
+	return (EOpenGLCurrentContext)AndroidEGL::GetInstance()->GetCurrentContextType();
+}
+
+void* PlatformOpenGLCurrentContextHandle(FPlatformOpenGLDevice* Device)
+{
+	return AndroidEGL::GetInstance()->GetCurrentContext();
+}
+
+void PlatformRestoreDesktopDisplayMode()
+{
+}
+
+bool PlatformInitOpenGL()
+{
+	check(!FAndroidMisc::ShouldUseVulkan());
+
+	{
+		// determine ES version. PlatformInitOpenGL happens before ProcessExtensions and therefore FAndroidOpenGL::bES31Support.
+		FString FullVersionString, VersionString, SubVersionString;
+		FAndroidGPUInfo::Get().GLVersion.Split(TEXT("OpenGL ES "), nullptr, &FullVersionString);
+		FullVersionString.Split(TEXT(" "), &FullVersionString, nullptr);
+		FullVersionString.Split(TEXT("."), &VersionString, &SubVersionString);
+		FAndroidOpenGL::GLMajorVerion = FCString::Atoi(*VersionString);
+		FAndroidOpenGL::GLMinorVersion = FCString::Atoi(*SubVersionString);
+
+		bool bES32Supported = FAndroidOpenGL::GLMajorVerion == 3 && FAndroidOpenGL::GLMinorVersion >= 2;
+		static const auto CVarDisableES31 = IConsoleManager::Get().FindTConsoleVariableDataInt(TEXT("r.Android.DisableOpenGLES31Support"));
+
+		bool bBuildForES31 = false;
+		GConfig->GetBool(TEXT("/Script/AndroidRuntimeSettings.AndroidRuntimeSettings"), TEXT("bBuildForES31"), bBuildForES31, GEngineIni);
+
+		const bool bSupportsFloatingPointRTs = FAndroidMisc::SupportsFloatingPointRenderTargets();
+
+		if (bBuildForES31 && bES32Supported)
+		{
+			FOpenGLES::CurrentFeatureLevelSupport = FAndroidOpenGL::GLMinorVersion >= 2 ? FOpenGLES::EFeatureLevelSupport::ES32 : FOpenGLES::EFeatureLevelSupport::ES31;
+			UE_LOG(LogRHI, Log, TEXT("App is packaged for OpenGL ES 3.1 and an ES %d.%d-capable device was detected."), FAndroidOpenGL::GLMajorVerion, FAndroidOpenGL::GLMinorVersion);
+		}
+		else
+		{
+			FString Message = TEXT("");
+
+			if (bES32Supported)
+			{
+				Message.Append(TEXT("This device does not support Vulkan but the app was not packaged with ES 3.1 support."));
+				if (FAndroidMisc::GetAndroidBuildVersion() < 26)
+				{
+					Message.Append(TEXT(" Updating to a newer Android version may resolve this issue."));
+				}
+				FPlatformMisc::LowLevelOutputDebugString(*Message);
+				FAndroidMisc::MessageBoxExt(EAppMsgType::Ok, *Message, TEXT("Unable to run on this device!"));
+			}
+			else
+			{
+				Message.Append(TEXT("This device only supports OpenGL ES 2/3/3.1 which is not supported, only supports ES 3.2+ "));
+				FPlatformMisc::LowLevelOutputDebugString(*Message);
+				FAndroidMisc::MessageBoxExt(EAppMsgType::Ok, *Message, TEXT("Unable to run on this device!"));
+			}
+		}
+
+		// Needs to initialize GPU vendor id before AndroidEGL::AcquireCurrentRenderingContext
+		FString& VendorName = FAndroidGPUInfo::Get().VendorName;
+		if (VendorName.Contains(TEXT("ImgTec")) || VendorName.Contains(TEXT("Imagination")))
+		{
+			GRHIVendorId = 0x1010;
+		}
+		else if (VendorName.Contains(TEXT("ARM")))
+		{
+			GRHIVendorId = 0x13B5;
+		}
+		else if (VendorName.Contains(TEXT("Qualcomm")))
+		{
+			GRHIVendorId = 0x5143;
+		}
+	}
+	return true;
+}
+
+bool PlatformOpenGLContextValid()
+{
+	return AndroidEGL::GetInstance()->IsCurrentContextValid();
+}
+
+void PlatformGetBackbufferDimensions(uint32& OutWidth, uint32& OutHeight)
+{
+	AndroidEGL::GetInstance()->GetDimensions(OutWidth, OutHeight);
+}
+
+// =============================================================
+
+void PlatformGetNewOcclusionQuery(GLuint* OutQuery, uint64* OutQueryContext)
+{
+}
+
+bool PlatformContextIsCurrent(uint64 QueryContext)
+{
+	return true;
+}
+
+void FPlatformOpenGLDevice::LoadEXT()
+{
+	eglGetSystemTimeNV_p = (PFNEGLGETSYSTEMTIMENVPROC)((void*)eglGetProcAddress("eglGetSystemTimeNV"));
+	eglCreateSyncKHR_p = (PFNEGLCREATESYNCKHRPROC)((void*)eglGetProcAddress("eglCreateSyncKHR"));
+	eglDestroySyncKHR_p = (PFNEGLDESTROYSYNCKHRPROC)((void*)eglGetProcAddress("eglDestroySyncKHR"));
+	eglClientWaitSyncKHR_p = (PFNEGLCLIENTWAITSYNCKHRPROC)((void*)eglGetProcAddress("eglClientWaitSyncKHR"));
+	eglGetSyncAttribKHR_p = (PFNEGLGETSYNCATTRIBKHRPROC)((void*)eglGetProcAddress("eglGetSyncAttribKHR"));
+
+	eglPresentationTimeANDROID_p = (PFNeglPresentationTimeANDROID)((void*)eglGetProcAddress("eglPresentationTimeANDROID"));
+	eglGetNextFrameIdANDROID_p = (PFNeglGetNextFrameIdANDROID)((void*)eglGetProcAddress("eglGetNextFrameIdANDROID"));
+	eglGetCompositorTimingANDROID_p = (PFNeglGetCompositorTimingANDROID)((void*)eglGetProcAddress("eglGetCompositorTimingANDROID"));
+	eglGetFrameTimestampsANDROID_p = (PFNeglGetFrameTimestampsANDROID)((void*)eglGetProcAddress("eglGetFrameTimestampsANDROID"));
+	eglQueryTimestampSupportedANDROID_p = (PFNeglQueryTimestampSupportedANDROID)((void*)eglGetProcAddress("eglQueryTimestampSupportedANDROID"));
+	eglGetCompositorTimingSupportedANDROID_p = (PFNeglQueryTimestampSupportedANDROID)((void*)eglGetProcAddress("eglGetCompositorTimingSupportedANDROID"));
+	eglGetFrameTimestampsSupportedANDROID_p = (PFNeglQueryTimestampSupportedANDROID)((void*)eglGetProcAddress("eglGetFrameTimestampsSupportedANDROID"));
+
+	const TCHAR* NotAvailable = TEXT("NOT Available");
+	const TCHAR* Present = TEXT("Present");
+
+	UE_LOG(LogRHI, Log, TEXT("Extension %s %s"), TEXT("eglPresentationTimeANDROID"), eglPresentationTimeANDROID_p ? Present : NotAvailable);
+	UE_LOG(LogRHI, Log, TEXT("Extension %s %s"), TEXT("eglGetNextFrameIdANDROID"), eglGetNextFrameIdANDROID_p ? Present : NotAvailable);
+	UE_LOG(LogRHI, Log, TEXT("Extension %s %s"), TEXT("eglGetCompositorTimingANDROID"), eglGetCompositorTimingANDROID_p ? Present : NotAvailable);
+	UE_LOG(LogRHI, Log, TEXT("Extension %s %s"), TEXT("eglGetFrameTimestampsANDROID"), eglGetFrameTimestampsANDROID_p ? Present : NotAvailable);
+	UE_LOG(LogRHI, Log, TEXT("Extension %s %s"), TEXT("eglQueryTimestampSupportedANDROID"), eglQueryTimestampSupportedANDROID_p ? Present : NotAvailable);
+	UE_LOG(LogRHI, Log, TEXT("Extension %s %s"), TEXT("eglGetCompositorTimingSupportedANDROID"), eglGetCompositorTimingSupportedANDROID_p ? Present : NotAvailable);
+	UE_LOG(LogRHI, Log, TEXT("Extension %s %s"), TEXT("eglGetFrameTimestampsSupportedANDROID"), eglGetFrameTimestampsSupportedANDROID_p ? Present : NotAvailable);
+
+	glDebugMessageControlKHR = (PFNGLDEBUGMESSAGECONTROLKHRPROC)((void*)eglGetProcAddress("glDebugMessageControlKHR"));
+
+	// Some PowerVR drivers (Rogue Han and Intel-based devices) are crashing using glDebugMessageControlKHR (causes signal 11 crash)
+	if (glDebugMessageControlKHR != NULL && FAndroidMisc::GetGPUFamily().Contains(TEXT("PowerVR")))
+	{
+		glDebugMessageControlKHR = NULL;
+	}
+
+	glDebugMessageInsertKHR = (PFNGLDEBUGMESSAGEINSERTKHRPROC)((void*)eglGetProcAddress("glDebugMessageInsertKHR"));
+	glDebugMessageCallbackKHR = (PFNGLDEBUGMESSAGECALLBACKKHRPROC)((void*)eglGetProcAddress("glDebugMessageCallbackKHR"));
+	glDebugMessageLogKHR = (PFNGLGETDEBUGMESSAGELOGKHRPROC)((void*)eglGetProcAddress("glDebugMessageLogKHR"));
+	glGetPointervKHR = (PFNGLGETPOINTERVKHRPROC)((void*)eglGetProcAddress("glGetPointervKHR"));
+	glPushDebugGroupKHR = (PFNGLPUSHDEBUGGROUPKHRPROC)((void*)eglGetProcAddress("glPushDebugGroupKHR"));
+	glPopDebugGroupKHR = (PFNGLPOPDEBUGGROUPKHRPROC)((void*)eglGetProcAddress("glPopDebugGroupKHR"));
+	glObjectLabelKHR = (PFNGLOBJECTLABELKHRPROC)((void*)eglGetProcAddress("glObjectLabelKHR"));
+	glGetObjectLabelKHR = (PFNGLGETOBJECTLABELKHRPROC)((void*)eglGetProcAddress("glGetObjectLabelKHR"));
+	glObjectPtrLabelKHR = (PFNGLOBJECTPTRLABELKHRPROC)((void*)eglGetProcAddress("glObjectPtrLabelKHR"));
+	glGetObjectPtrLabelKHR = (PFNGLGETOBJECTPTRLABELKHRPROC)((void*)eglGetProcAddress("glGetObjectPtrLabelKHR"));
+}
+
+FPlatformOpenGLContext* PlatformGetOpenGLRenderingContext(FPlatformOpenGLDevice* Device)
+{
+	return AndroidEGL::GetInstance()->GetRenderingContext();
+}
+
+FPlatformOpenGLContext* PlatformCreateOpenGLContext(FPlatformOpenGLDevice* Device, void* InWindowHandle)
+{
+	//Assumes Device is already initialized and context already created.
+	return AndroidEGL::GetInstance()->GetRenderingContext();
+}
+
+void PlatformDestroyOpenGLContext(FPlatformOpenGLDevice* Device, FPlatformOpenGLContext* Context)
+{
+}
+
+FOpenGLTexture* PlatformCreateBuiltinBackBuffer(FOpenGLDynamicRHI* OpenGLRHI, uint32 SizeX, uint32 SizeY)
+{
+	check(IsInRenderingThread());
+	// Create the built-in back buffer if we disable backbuffer sampling.
+	// Otherwise return null and we will create an off-screen surface afterward.
+	if (!AndroidEGL::GetInstance()->IsOfflineSurfaceRequired())
+	{
+		const FOpenGLTextureCreateDesc CreateDesc =
+			FRHITextureCreateDesc::Create2D(TEXT("PlatformCreateBuiltinBackBuffer"), SizeX, SizeY, PF_B8G8R8A8)
+			.SetFlags(ETextureCreateFlags::RenderTargetable | ETextureCreateFlags::Presentable | ETextureCreateFlags::ResolveTargetable)
+			.DetermineInititialState();
+
+		return new FOpenGLTexture(CreateDesc);
+	}
+	else
+	{
+		return nullptr;
+	}
+}
+
+void PlatformResizeGLContext(FPlatformOpenGLDevice* Device, FPlatformOpenGLContext* Context, uint32 SizeX, uint32 SizeY, bool bFullscreen, bool bWasFullscreen, GLenum BackBufferTarget, GLuint BackBufferResource)
+{
+	check(Context);
+	VERIFY_GL_SCOPE();
+
+	Context->BackBufferResource = BackBufferResource;
+	Context->BackBufferTarget = BackBufferTarget;
+
+	if (AndroidEGL::GetInstance()->IsOfflineSurfaceRequired())
+	{
+		Device->TargetDirty = true;
+		glBindFramebuffer(GL_FRAMEBUFFER, Context->ViewportFramebuffer);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, BackBufferTarget, BackBufferResource, 0);
+	}
+
+	glViewport(0, 0, SizeX, SizeY);
+	VERIFY_GL(glViewport);
+}
+
+void PlatformGetSupportedResolution(uint32& Width, uint32& Height)
+{
+}
+
+bool PlatformGetAvailableResolutions(std::vector<RHIScreenResolution>& Resolutions, bool bIgnoreRefreshRate)
+{
+	return true;
+}
+
+int32 PlatformGlGetError()
+{
+	return glGetError();
+}
+
+// =============================================================
+
+void PlatformReleaseOcclusionQuery(GLuint Query, uint64 QueryContext)
+{
+}
+
+void FPlatformOpenGLDevice::SetCurrentSharedContext()
+{
+	AndroidEGL::GetInstance()->SetCurrentSharedContext();
+}
+
+void PlatformDestroyOpenGLDevice(FPlatformOpenGLDevice* Device)
+{
+	delete Device;
+}
+
+void FPlatformOpenGLDevice::SetCurrentRenderingContext()
+{
+	AndroidEGL::GetInstance()->AcquireCurrentRenderingContext();
+}
+
+void FPlatformOpenGLDevice::SetupCurrentContext()
+{
+	GLuint* DefaultVao = nullptr;
+	EOpenGLCurrentContext ContextType = (EOpenGLCurrentContext)AndroidEGL::GetInstance()->GetCurrentContextType();
+
+	if (ContextType == CONTEXT_Rendering)
+	{
+		DefaultVao = &AndroidEGL::GetInstance()->GetRenderingContext()->DefaultVertexArrayObject;
+	}
+	else if (ContextType == CONTEXT_Shared)
+	{
+		DefaultVao = &AndroidEGL::GetInstance()->GetSharedContext()->DefaultVertexArrayObject;
+	}
+	else
+	{
+		//Invalid or Other return
+		return;
+	}
+
+	if (*DefaultVao == 0)
+	{
+		glGenVertexArrays(1, DefaultVao);
+		glBindVertexArray(*DefaultVao);
+	}
+}
+
+void PlatformLabelObjects()
+{
+	GLuint FrameBuffer = AndroidEGL::GetInstance()->GetResolveFrameBuffer();
+	if (FrameBuffer != 0)
+	{
+		FOpenGL::LabelObject(GL_FRAMEBUFFER, FrameBuffer, "ResolveFB");
+	}
+}
+
+//--------------------------------
+#define VIRTUALIZE_QUERIES (1)
+
+static int32 GMaxmimumOcclusionQueries = 4000;
+
+#if VIRTUALIZE_QUERIES
+// These data structures could be better, but it would be tricky. InFlightVirtualQueries.Remove(QueryId) is a drag
+TArray<GLuint> UsableRealQueries;
+TArray<int32> InFlightVirtualQueries;
+TArray<GLuint> VirtualToRealMap;
+TArray<GLuint64> VirtualResults;
+TArray<int32> FreeVirtuals;
+TArray<GLuint> QueriesBeganButNotEnded;
 #endif
 
-enum EOpenGLCurrentContext : int8
+#define QUERY_CHECK(x) check(x)
+//#define QUERY_CHECK(x) if (!(x)) { FPlatformMisc::LocalPrint(TEXT("Failed a check on line:\n")); FPlatformMisc::LocalPrint(TEXT( PREPROCESSOR_TO_STRING(__LINE__))); FPlatformMisc::LocalPrint(TEXT("\n")); *((int*)3) = 13; }
+
+#define CHECK_QUERY_ERRORS (DO_CHECK)
+
+void PlatformGetNewRenderQuery(GLuint* OutQuery, uint64* OutQueryContext)
 {
-	CONTEXT_Other = -2,
-	CONTEXT_Invalid = -1,
-	CONTEXT_Shared = 0,
-	CONTEXT_Rendering = 1,
-//	CONTEXT_TextureStreaming = 2,
-};
-
-/*------------------------------------------------------------------------------
-	All platforms using OpenGL must implement the following API.
-------------------------------------------------------------------------------*/
-
-/** Platform specific OpenGL context. */
-struct FPlatformOpenGLContext;
-
-/** Platform specific OpenGL device. */
-struct FPlatformOpenGLDevice;
-
-/**
- * Initialize OpenGL on this platform. This must be called once before device
- * contexts can be created.
- * @returns true if initialization was successful.
- */
-bool PlatformInitOpenGL();
-
-/**
- * Returns true, if current thread has a valid OpenGL context selected, false otherwise.
- * Useful for debugging.
- */
-bool PlatformOpenGLContextValid();
-
-/**
- * Just a glGetError() call. Added to make it possible to compile GL_VERIFY macros in
- * other projects than OpenGLDrv.
- */
-int32 PlatformGlGetError();
-
-/**
- * Say which of the standard UE OpenGL contexts is currently in use. This is used by OpenGLDrv to
- * decide which of the context cache objects to use for mirroring OpenGL context state in
- * order to optimize out redundant OpenGL calls.
- */
-EOpenGLCurrentContext PlatformOpenGLCurrentContext(FPlatformOpenGLDevice* Device);
-
-/**
- * Check if the query's OpenGL context is a current one. If it's not, there's no sense in issuing
- * OpenGL command for this query and it must be released and recreated.
- */
-bool PlatformContextIsCurrent( uint64 QueryContext );
-
-/**
- * Create the OpenGL device, encompassing all data needed to handle set of OpenGL contexts
- * for a single OpenGL RHI. This contains shared context (to be used for resource loading),
- * rendering context (to be used for rendering), and viewport contexts (to be used for
- * blitting for various platform-specific viewports). On different platforms implementation
- * details differ, by a lot.
- * This should be called when creating the OpenGL RHI.
- */
-FPlatformOpenGLDevice* PlatformCreateOpenGLDevice();
-
-/**
-* Returns true if the platform supports a GPU capture tool (eg RenderDoc)
-*/
-bool PlatformCanEnableGPUCapture();
-
-/**
- * Destroy the OpenGL device for single OpenGL RHI. This should happen when destroying the RHI.
- */
-void PlatformDestroyOpenGLDevice(FPlatformOpenGLDevice* Device);
-
-/**
- * Create an OpenGL context connected to some window, or fullscreen. This will be used to
- * transfer the rendering results to screen by rendering thread, inside RHIEndDrawingViewport().
- */
-FPlatformOpenGLContext* PlatformCreateOpenGLContext(FPlatformOpenGLDevice* Device, void* InWindowHandle);
-
-/**
- * Destroy a viewport OpenGL context.
- */
-void PlatformDestroyOpenGLContext(FPlatformOpenGLDevice* Device, FPlatformOpenGLContext* Context);
-
-/**
- * Set up rendering OpenGL context on current thread. This is the only context that can be used for rendering,
- * and not only loading resources and framebuffer blitting (due to limitations of Windows OpenGL).
- */
-void PlatformRenderingContextSetup(FPlatformOpenGLDevice* Device);
-
-// Some platforms require flushing and rebinding renderbuffers after context/thread changes
-void PlatformFlushIfNeeded();
-
-/**
- * Set up shared context on current thread. This thread should be always set on main game thread (expect at times
- * when main game thread is doing the rendering for the rendering thread that doesn't exist).
- */
-void PlatformSharedContextSetup(FPlatformOpenGLDevice* Device);
-
-/**
- * This is used to detach an OpenGL context from current thread.
- */
-void PlatformNULLContextSetup();
-
-// Creates a platform-specific back buffer
-class FOpenGLTexture* PlatformCreateBuiltinBackBuffer(FOpenGLDynamicRHI* OpenGLRHI, uint32 SizeX, uint32 SizeY);
-
-/**
- * Main function for transferring data to on-screen buffers.
- * On Windows it temporarily switches OpenGL context, on Mac only context's output view.
- * Should return true if frame was presented and it is necessary to finish frame rendering.
- */
-bool PlatformBlitToViewport(IRHICommandContext& RHICmdContext, FPlatformOpenGLDevice* Device, const FOpenGLViewport& Viewport, uint32 BackbufferSizeX, uint32 BackbufferSizeY, bool bPresent,bool bLockToVsync);
-
-/**
- * Resize the GL context for platform.
- */
-void PlatformResizeGLContext( FPlatformOpenGLDevice* Device, FPlatformOpenGLContext* Context, uint32 SizeX, uint32 SizeY, bool bFullscreen, bool bWasFullscreen, GLenum BackBufferTarget, GLuint BackBufferResource);
-
-
-/**
- * Returns a supported screen resolution that most closely matches input.
- */
-void PlatformGetSupportedResolution(uint32 &Width, uint32 &Height);
-
-/**
- * Retrieve available screen resolutions.
- */
-bool PlatformGetAvailableResolutions(FScreenResolutionArray& Resolutions, bool bIgnoreRefreshRate);
-
-/**
- * Restore the original display mode
- */
-void PlatformRestoreDesktopDisplayMode();
-
-// Returns native window handle.
-void* PlatformGetWindow(FPlatformOpenGLContext* Context, void** AddParam);
-
-/*------------------------------------------------------------------------------
-	OpenGL texture format table.
-------------------------------------------------------------------------------*/
-
-struct FOpenGLTextureFormat
-{
-	// [0]: without sRGB, [1]: with sRGB
-	GLenum InternalFormat[2] = { GL_NONE, GL_NONE };
-	GLenum Format = GL_NONE;
-	GLenum Type = GL_NONE;
-	bool bCompressed = false;
-	// Reorder to B and R elements using texture swizzle
-	bool bBGRA = false;
-
-	FOpenGLTextureFormat() = default;
-
-	FOpenGLTextureFormat(
-		GLenum InInternalFormat, GLenum InInternalFormatSRGB, GLenum InFormat,
-		GLenum InType, bool bInCompressed, bool bInBGRA)
+#if CHECK_QUERY_ERRORS
+	GLenum Err = glGetError();
+	while (Err != GL_NO_ERROR)
 	{
-		InternalFormat[0] = InInternalFormat;
-		InternalFormat[1] = InInternalFormatSRGB;
-		Format = InFormat;
-		Type = InType;
-		bCompressed = bInCompressed;
-		bBGRA = bInBGRA;
+		Err = glGetError();
 	}
-};
+#endif
 
-extern FOpenGLTextureFormat OPENGLDRV_API GOpenGLTextureFormats[PF_MAX];
+	* OutQueryContext = 0;
+	VERIFY_GL_SCOPE();
 
-inline uint32 FindMaxMipmapLevel(uint32 Size)
-{
-	uint32 MipCount = 1;
-	while( Size >>= 1 )
+#if !VIRTUALIZE_QUERIES
+	FOpenGLES::GenQueries(1, OutQuery);
+#if CHECK_QUERY_ERRORS
+	Err = glGetError();
+	if (Err != GL_NO_ERROR)
 	{
-		MipCount++;
+		FPlatformMisc::LowLevelOutputDebugStringf(TEXT("GenQueries Failed, glError %d (0x%x)"), Err, Err);
+		*(char*)3 = 0;
 	}
-	return MipCount;
-}
+#endif
+#else
 
-inline uint32 FindMaxMipmapLevel(uint32 Width, uint32 Height)
-{
-	return FindMaxMipmapLevel((Width > Height) ? Width : Height);
-}
 
-inline uint32 FindMaxMipmapLevel(uint32 Width, uint32 Height, uint32 Depth)
-{
-	return FindMaxMipmapLevel((Width > Height) ? Width : Height, Depth);
-}
-
-inline void FindPrimitiveType(uint32 InPrimitiveType, uint32 InNumPrimitives, GLenum &DrawMode, GLsizei &NumElements)
-{
-	DrawMode = GL_TRIANGLES;
-	NumElements = InNumPrimitives;
-
-	switch (InPrimitiveType)
+	if (!UsableRealQueries.Num() && !InFlightVirtualQueries.Num())
 	{
-	case PT_TriangleList:
-		DrawMode = GL_TRIANGLES;
-		NumElements = InNumPrimitives * 3;
+		GRHIMaximumReccommendedOustandingOcclusionQueries = GMaxmimumOcclusionQueries;
+		UE_LOG(LogRHI, Log, TEXT("AndroidOpenGL: Using a maximum of %d occlusion queries."), GMaxmimumOcclusionQueries);
+
+		UsableRealQueries.AddDefaulted(GMaxmimumOcclusionQueries);
+		glGenQueries(GMaxmimumOcclusionQueries, &UsableRealQueries[0]);
+#if CHECK_QUERY_ERRORS
+		Err = glGetError();
+		if (Err != GL_NO_ERROR)
+		{
+			FPlatformMisc::LowLevelOutputDebugStringf(TEXT("GenQueries Failed, glError %d (0x%x)"), Err, Err);
+			*(char*)3 = 0;
+		}
+#endif
+		VirtualToRealMap.Add(0); // this is null, it is not a real query and never will be
+		VirtualResults.Add(0); // this is null, it is not a real query and never will be
+	}
+
+	if (FreeVirtuals.Num())
+	{
+		*OutQuery = FreeVirtuals.Pop();
+		return;
+	}
+	*OutQuery = VirtualToRealMap.Num();
+	VirtualToRealMap.Add(0);
+	VirtualResults.Add(0);
+#endif
+}
+
+void PlatformReleaseRenderQuery(GLuint Query, uint64 QueryContext)
+{
+#if !VIRTUALIZE_QUERIES
+	glDeleteQueries(1, &Query);
+#else
+	GLuint RealIndex = VirtualToRealMap[Query];
+	if (RealIndex)
+	{
+		GLuint OutResult;
+		// still in use, wait for it now.
+		FAndroidOpenGL::GetQueryObject(Query, FAndroidOpenGL::QM_Result, &OutResult);
+		QUERY_CHECK(!VirtualToRealMap[Query]);
+	}
+	FreeVirtuals.Add(Query);
+#endif
+}
+
+void FAndroidOpenGL::GetQueryObject(GLuint QueryId, EQueryMode QueryMode, GLuint64* OutResult)
+{
+	GLuint Result;
+	GetQueryObject(QueryId, QueryMode, &Result);
+	*OutResult = Result;
+}
+
+void FAndroidOpenGL::GetQueryObject(GLuint QueryId, EQueryMode QueryMode, GLuint* OutResult)
+{
+	GLenum QueryName = (QueryMode == QM_Result) ? GL_QUERY_RESULT : GL_QUERY_RESULT_AVAILABLE;
+	VERIFY_GL_SCOPE();
+
+	FRenderThreadIdleScope IdleScope(ERenderThreadIdleTypes::WaitingForGPUQuery, QueryName == GL_QUERY_RESULT);
+
+#if !VIRTUALIZE_QUERIES
+#if CHECK_QUERY_ERRORS
+	GLenum Err = glGetError();
+	while (Err != GL_NO_ERROR)
+	{
+		Err = glGetError();
+	}
+#endif
+
+	glGetQueryObjectuiv(QueryId, QueryName, OutResult);
+#else
+	GLuint RealIndex = VirtualToRealMap[QueryId];
+	if (!RealIndex)
+	{
+		if (QueryName == GL_QUERY_RESULT_AVAILABLE)
+		{
+			*OutResult = GL_TRUE;
+		}
+		else
+		{
+			*OutResult = VirtualResults[QueryId];
+		}
+		return;
+	}
+
+	if (QueryName == GL_QUERY_RESULT)
+	{
+		{
+			QUICK_SCOPE_CYCLE_COUNTER(STAT_FAndroidOpenGL_GetQueryObject_Remove);
+			int NumRem = InFlightVirtualQueries.Remove(QueryId);
+			QUERY_CHECK(NumRem == 1);
+		}
+		UsableRealQueries.Add(RealIndex);
+		VirtualToRealMap[QueryId] = 0;
+	}
+
+#if CHECK_QUERY_ERRORS
+	GLenum Err = glGetError();
+	while (Err != GL_NO_ERROR)
+	{
+		Err = glGetError();
+	}
+#endif
+
+	glGetQueryObjectuiv(RealIndex, QueryName, OutResult);
+
+	if (QueryName == GL_QUERY_RESULT)
+	{
+		VirtualResults[QueryId] = *OutResult;
+	}
+#endif
+
+#if CHECK_QUERY_ERRORS
+	Err = glGetError();
+	QUERY_CHECK(Err == GL_NO_ERROR);
+#endif
+}
+
+GLuint FAndroidOpenGL::MakeVirtualQueryReal(GLuint Query)
+{
+#if !VIRTUALIZE_QUERIES
+	return Query;
+#else
+	GLuint RealIndex = VirtualToRealMap[Query];
+	if (RealIndex)
+	{
+		GLuint OutResult;
+		QUICK_SCOPE_CYCLE_COUNTER(STAT_FAndroidOpenGL_BeginQuery_RecycleWait);
+		// still in use, wait for it now.
+		FAndroidOpenGL::GetQueryObject(Query, QM_Result, &OutResult);
+		QUERY_CHECK(!VirtualToRealMap[Query]);
+	}
+	if (!UsableRealQueries.Num())
+	{
+		QUERY_CHECK(InFlightVirtualQueries.Num() + QueriesBeganButNotEnded.Num() == GMaxmimumOcclusionQueries);
+		QUERY_CHECK(InFlightVirtualQueries.Num()); // if this fires, then it means the nesting of begins is too deep.
+		GLuint OutResult;
+		QUICK_SCOPE_CYCLE_COUNTER(STAT_FAndroidOpenGL_BeginQuery_FreeWait);
+		FAndroidOpenGL::GetQueryObject(InFlightVirtualQueries[0], QM_Result, &OutResult);
+		QUERY_CHECK(UsableRealQueries.Num());
+	}
+	RealIndex = UsableRealQueries.Pop();
+	VirtualToRealMap[Query] = RealIndex;
+	VirtualResults[Query] = 0;
+
+	return RealIndex;
+#endif
+}
+
+bool FAndroidOpenGL::SupportsFramebufferSRGBEnable()
+{
+	static auto* MobileUseHWsRGBEncodingCVAR = IConsoleManager::Get().FindTConsoleVariableDataInt(TEXT("r.Mobile.UseHWsRGBEncoding"));
+	const bool bMobileUseHWsRGBEncoding = (MobileUseHWsRGBEncodingCVAR && MobileUseHWsRGBEncodingCVAR->GetValueOnAnyThread() == 1);
+	return bMobileUseHWsRGBEncoding;
+}
+
+void FAndroidOpenGL::BeginQuery(GLenum QueryType, GLuint Query)
+{
+	QUERY_CHECK(QueryType == UGL_ANY_SAMPLES_PASSED || SupportsDisjointTimeQueries());
+#if CHECK_QUERY_ERRORS
+	GLenum Err = glGetError();
+	while (Err != GL_NO_ERROR)
+	{
+		Err = glGetError();
+	}
+#endif
+
+	VERIFY_GL_SCOPE();
+
+#if !VIRTUALIZE_QUERIES
+	glBeginQuery(QueryType, Query);
+#else
+	GLuint RealIndex = MakeVirtualQueryReal(Query);
+	QueriesBeganButNotEnded.Add(Query);
+	glBeginQuery(QueryType, RealIndex);
+#endif
+#if CHECK_QUERY_ERRORS
+	Err = glGetError();
+
+	QUERY_CHECK(Err == GL_NO_ERROR);
+#endif
+}
+
+void FAndroidOpenGL::EndQuery(GLenum QueryType)
+{
+	QUERY_CHECK(QueryType == UGL_ANY_SAMPLES_PASSED || SupportsDisjointTimeQueries());
+
+#if CHECK_QUERY_ERRORS
+	GLenum Err = glGetError();
+	while (Err != GL_NO_ERROR)
+	{
+		Err = glGetError();
+	}
+#endif
+
+	VERIFY_GL_SCOPE();
+
+	if (QueryType == UGL_ANY_SAMPLES_PASSED)
+	{
+		//return;
+	}
+
+#if VIRTUALIZE_QUERIES
+	InFlightVirtualQueries.Add(QueriesBeganButNotEnded.Pop());
+#endif
+	glEndQuery(QueryType);
+
+#if CHECK_QUERY_ERRORS
+	Err = glGetError();
+
+	QUERY_CHECK(Err == GL_NO_ERROR);
+#endif
+}
+
+FAndroidOpenGL::EImageExternalType FAndroidOpenGL::ImageExternalType = FAndroidOpenGL::EImageExternalType::None;
+
+extern bool AndroidThunkCpp_GetMetaDataBoolean(const FString& Key);
+extern FString AndroidThunkCpp_GetMetaDataString(const FString& Key);
+
+void FAndroidOpenGL::SetupDefaultGLContextState(const FString& ExtensionsString)
+{
+	// Enable QCOM non-coherent framebuffer fetch if supported
+	if (CVarDisableFBFNonCoherent.GetValueOnAnyThread() == 0 &&
+		ExtensionsString.Contains(TEXT("GL_QCOM_shader_framebuffer_fetch_noncoherent")) &&
+		ExtensionsString.Contains(TEXT("GL_EXT_shader_framebuffer_fetch")))
+	{
+		glEnable(GL_FRAMEBUFFER_FETCH_NONCOHERENT_QCOM);
+	}
+}
+
+bool FAndroidOpenGL::RequiresAdrenoTilingModeHint()
+{
+	return bRequiresAdrenoTilingHint;
+}
+
+void FAndroidOpenGL::EnableAdrenoTilingModeHint(bool bEnable)
+{
+	if (bEnable && CVarEnableAdrenoTilingHint.GetValueOnAnyThread() != 0)
+	{
+		glEnable(GL_BINNING_CONTROL_HINT_QCOM);
+		glHint(GL_BINNING_CONTROL_HINT_QCOM, GL_GPU_OPTIMIZED_QCOM);
+	}
+	else
+	{
+		glDisable(GL_BINNING_CONTROL_HINT_QCOM);
+	}
+}
+
+void FAndroidOpenGL::ProcessExtensions(const FString& ExtensionsString)
+{
+	FString VersionString = FString(ANSI_TO_TCHAR((const ANSICHAR*)glGetString(GL_VERSION)));
+	FString SubVersionString;
+
+	FOpenGLES::ProcessExtensions(ExtensionsString);
+
+	FString RendererString = FString(ANSI_TO_TCHAR((const ANSICHAR*)glGetString(GL_RENDERER)));
+
+	// Common GPU types
+	const bool bIsNvidiaBased = RendererString.Contains(TEXT("NVIDIA"));
+	const bool bIsPoverVRBased = RendererString.Contains(TEXT("PowerVR"));
+	const bool bIsAdrenoBased = RendererString.Contains(TEXT("Adreno"));
+	const bool bIsMaliBased = RendererString.Contains(TEXT("Mali"));
+
+	if (bIsPoverVRBased)
+	{
+		bHasHardwareHiddenSurfaceRemoval = true;
+		UE_LOG(LogRHI, Log, TEXT("Enabling support for Hidden Surface Removal on PowerVR"));
+	}
+
+	if (bIsAdrenoBased)
+	{
+		GMaxmimumOcclusionQueries = 510;
+		// This is to avoid a bug in Adreno drivers that define GL_ARM_shader_framebuffer_fetch_depth_stencil even when device does not support this extension
+		// OpenGL ES 3.1 V@127.0 (GIT@I1af360237c)
+		bRequiresARMShaderFramebufferFetchDepthStencilUndef = !bSupportsShaderDepthStencilFetch;
+
+		// FORT-221329's broken adreno driver not common on Android 9 and above. TODO: check adreno driver version instead.
+		bRequiresAdrenoTilingHint = FAndroidMisc::GetAndroidBuildVersion() < 28 || CVarEnableAdrenoTilingHint.GetValueOnAnyThread() == 2;
+		UE_CLOG(bRequiresAdrenoTilingHint, LogRHI, Log, TEXT("Enabling Adreno tiling hint."));
+	}
+
+	if (bIsMaliBased)
+	{
+		//TODO restrict this to problematic drivers only
+		bRequiresReadOnlyBuffersWorkaround = true;
+	}
+
+	// Disable ASTC if requested by device profile
+	static const auto CVarDisableASTC = IConsoleManager::Get().FindTConsoleVariableDataInt(TEXT("r.Android.DisableASTCSupport"));
+	if (bSupportsASTC && CVarDisableASTC->GetValueOnAnyThread())
+	{
+		bSupportsASTC = false;
+		bSupportsASTCHDR = false;
+		FAndroidGPUInfo::Get().RemoveTargetPlatform(TEXT("Android_ASTC"));
+		UE_LOG(LogRHI, Log, TEXT("ASTC was disabled via r.OpenGL.DisableASTCSupport"));
+	}
+
+	// Check for external image support for different ES versions
+	ImageExternalType = EImageExternalType::None;
+
+	static const auto CVarOverrideExternalTextureSupport = IConsoleManager::Get().FindTConsoleVariableDataInt(TEXT("r.Android.OverrideExternalTextureSupport"));
+	const int32 OverrideExternalTextureSupport = CVarOverrideExternalTextureSupport->GetValueOnAnyThread();
+	switch (OverrideExternalTextureSupport)
+	{
+	case 1:
+		ImageExternalType = EImageExternalType::None;
 		break;
-	case PT_TriangleStrip:
-		DrawMode = GL_TRIANGLE_STRIP;
-		NumElements = InNumPrimitives + 2;
+
+	case 2:
+		ImageExternalType = EImageExternalType::ImageExternal100;
 		break;
-	case PT_LineList:
-		DrawMode = GL_LINES;
-		NumElements = InNumPrimitives * 2;
+
+	case 3:
+		ImageExternalType = EImageExternalType::ImageExternal300;
 		break;
-	case PT_PointList:
-		DrawMode = GL_POINTS;
-		NumElements = InNumPrimitives;
+
+	case 4:
+		ImageExternalType = EImageExternalType::ImageExternalESSL300;
 		break;
+
+	case 0:
 	default:
-		UE_LOG(LogRHI, Fatal,TEXT("Unsupported primitive type %u"), InPrimitiveType);
+		// auto-detect by extensions (default)
+		bool bHasImageExternal = ExtensionsString.Contains(TEXT("GL_OES_EGL_image_external ")) || ExtensionsString.EndsWith(TEXT("GL_OES_EGL_image_external"));
+		bool bHasImageExternalESSL3 = ExtensionsString.Contains(TEXT("OES_EGL_image_external_essl3"));
+		if (bHasImageExternal || bHasImageExternalESSL3)
+		{
+			ImageExternalType = EImageExternalType::ImageExternal100;
+			if (bHasImageExternalESSL3)
+			{
+				ImageExternalType = EImageExternalType::ImageExternalESSL300;
+			}
+			else
+			{
+				// Adreno 5xx can do essl3 even without extension in list
+				if (bIsAdrenoBased && RendererString.Contains(TEXT("(TM) 5")))
+				{
+					ImageExternalType = EImageExternalType::ImageExternalESSL300;
+				}
+			}
+
+			if (bIsNvidiaBased)
+			{
+				// Nvidia needs version 100 even though it supports ES3
+				ImageExternalType = EImageExternalType::ImageExternal100;
+			}
+		}
 		break;
 	}
-}
-
-inline uint32 FindUniformElementSize(GLenum UniformType)
-{
-	switch (UniformType)
+	switch (ImageExternalType)
 	{
-	case GL_FLOAT:
-		return sizeof(float);
-	case GL_FLOAT_VEC2:
-		return sizeof(float) * 2;
-	case GL_FLOAT_VEC3:
-		return sizeof(float) * 3;
-	case GL_FLOAT_VEC4:
-		return sizeof(float) * 4;
+	case EImageExternalType::None:
+		UE_LOG(LogRHI, Log, TEXT("Image external disabled"));
+		break;
 
-	case GL_INT:
-	case GL_BOOL:
-		return sizeof(uint32);
-	case GL_INT_VEC2:
-	case GL_BOOL_VEC2:
-		return sizeof(uint32) * 2;
-	case GL_INT_VEC3:
-	case GL_BOOL_VEC3:
-		return sizeof(uint32) * 3;
-	case GL_INT_VEC4:
-	case GL_BOOL_VEC4:
-		return sizeof(uint32) * 4;
+	case EImageExternalType::ImageExternal100:
+		UE_LOG(LogRHI, Log, TEXT("Image external enabled: ImageExternal100"));
+		break;
 
-	case GL_FLOAT_MAT2:
-		return sizeof(float) * 4;
-	case GL_FLOAT_MAT3:
-		return sizeof(float) * 9;
-	case GL_FLOAT_MAT4:
-		return sizeof(float) * 16;
-	case GL_FLOAT_MAT2x3:
-		return sizeof(float) * 6;
-	case GL_FLOAT_MAT2x4:
-		return sizeof(float) * 8;
-	case GL_FLOAT_MAT3x2:
-		return sizeof(float) * 6;
-	case GL_FLOAT_MAT3x4:
-		return sizeof(float) * 12;
-	case GL_FLOAT_MAT4x2:
-		return sizeof(float) * 8;
-	case GL_FLOAT_MAT4x3:
-		return sizeof(float) * 12;
+	case EImageExternalType::ImageExternal300:
+		UE_LOG(LogRHI, Log, TEXT("Image external enabled: ImageExternal300"));
+		break;
 
-	case GL_SAMPLER_1D:
-	case GL_SAMPLER_2D:
-	case GL_SAMPLER_3D:
-	case GL_SAMPLER_CUBE:
-	case GL_SAMPLER_1D_SHADOW:
-	case GL_SAMPLER_2D_SHADOW:
+	case EImageExternalType::ImageExternalESSL300:
+		UE_LOG(LogRHI, Log, TEXT("Image external enabled: ImageExternalESSL300"));
+		break;
+
 	default:
-		return sizeof(uint32);
+		ImageExternalType = EImageExternalType::None;
+		UE_LOG(LogRHI, Log, TEXT("Image external disabled; unknown type"));
+	}
+	bSupportsImageExternal = ImageExternalType != EImageExternalType::None;
+
+	// check for supported texture formats if enabled
+	bool bCookOnTheFly = false;
+#if !UE_BUILD_SHIPPING
+	FString FileHostIP;
+	bCookOnTheFly = FParse::Value(FCommandLine::Get(), TEXT("filehostip"), FileHostIP);
+#endif
+	if (!bCookOnTheFly && AndroidThunkCpp_GetMetaDataBoolean(TEXT("com.epicgames.unreal.GameActivity.bValidateTextureFormats")))
+	{
+		FString CookedFlavorsString = AndroidThunkCpp_GetMetaDataString(TEXT("com.epicgames.unreal.GameActivity.CookedFlavors"));
+		if (!CookedFlavorsString.IsEmpty())
+		{
+			TArray<FString> CookedFlavors;
+			CookedFlavorsString.ParseIntoArray(CookedFlavors, TEXT(","), true);
+
+			// check each cooked flavor for support (only need one to be supported)
+			bool bFoundSupported = false;
+			for (FString Flavor : CookedFlavors)
+			{
+				if (Flavor.Equals(TEXT("ETC2")))
+				{
+					if (FOpenGL::SupportsETC2())
+					{
+						bFoundSupported = true;
+						break;
+					}
+				}
+				if (Flavor.Equals(TEXT("DXT")))
+				{
+					if (FOpenGL::SupportsDXT())
+					{
+						bFoundSupported = true;
+						break;
+					}
+				}
+				if (Flavor.Equals(TEXT("ASTC")))
+				{
+					if (FOpenGL::SupportsASTC())
+					{
+						bFoundSupported = true;
+						break;
+					}
+				}
+			}
+
+			if (!bFoundSupported)
+			{
+				FString Message = TEXT("Cooked Flavors: ") + CookedFlavorsString + TEXT("\n\nSupported: ETC2") +
+					(FOpenGL::SupportsDXT() ? TEXT(",DXT") : TEXT("")) +
+					(FOpenGL::SupportsASTC() ? TEXT(",ASTC") : TEXT(""));
+
+				FPlatformMisc::LowLevelOutputDebugStringf(TEXT("Error: Unsupported Texture Format\n%s"), *Message);
+				FAndroidMisc::MessageBoxExt(EAppMsgType::Ok, *Message, TEXT("Unsupported Texture Format"));
+			}
+		}
+	}
+
+	// Qualcomm non-coherent framebuffer_fetch
+	if (CVarDisableFBFNonCoherent.GetValueOnAnyThread() == 0 &&
+		ExtensionsString.Contains(TEXT("GL_QCOM_shader_framebuffer_fetch_noncoherent")) &&
+		ExtensionsString.Contains(TEXT("GL_EXT_shader_framebuffer_fetch")))
+	{
+		glFramebufferFetchBarrierQCOM = (PFNGLFRAMEBUFFERFETCHBARRIERQCOMPROC)((void*)eglGetProcAddress("glFramebufferFetchBarrierQCOM"));
+		if (glFramebufferFetchBarrierQCOM != nullptr)
+		{
+			UE_LOG(LogRHI, Log, TEXT("Using QCOM_shader_framebuffer_fetch_noncoherent"));
+		}
+	}
+
+	if (CVarDisableEarlyFragmentTests.GetValueOnAnyThread() != 0)
+	{
+		bRequiresDisabledEarlyFragmentTests = true;
+		UE_LOG(LogRHI, Log, TEXT("Disabling early_fragment_tests"));
 	}
 }
 
-/**
- * Calculate the dynamic buffer size needed for a given allocation.
- */
-inline uint32 CalcDynamicBufferSize(uint32 Size)
+FString FAndroidMisc::GetGPUFamily()
 {
-	// Allocate dynamic buffers in MB increments.
-	return Align(Size, (1 << 20));
+	return FAndroidGPUInfo::Get().GetGPUFamily();
 }
 
-/**
- * Call after creating a context to initialise default state values to correct values for UE.
- */
-void InitDefaultGLContextState(void);
+FString FAndroidMisc::GetGLVersion()
+{
+	return FAndroidGPUInfo::Get().GLVersion;
+}
 
-extern bool GUseEmulatedUniformBuffers;
+bool FAndroidMisc::SupportsFloatingPointRenderTargets()
+{
+	return FAndroidGPUInfo::Get().bSupportsFloatingPointRenderTargets;
+}
+
+bool FAndroidMisc::SupportsShaderFramebufferFetch()
+{
+	return FAndroidGPUInfo::Get().bSupportsFrameBufferFetch;
+}
+
+bool FAndroidMisc::SupportsES30()
+{
+	return true;
+}
+
+void FAndroidMisc::GetValidTargetPlatforms(TArray<FString>& TargetPlatformNames)
+{
+	TargetPlatformNames = FAndroidGPUInfo::Get().TargetPlatformNames;
+}
+
+void FAndroidAppEntry::PlatformInit()
+{
+	// Try to create an ES3.2 EGL here for gpu queries and don't have to recreate the GL context.
+	AndroidEGL::GetInstance()->Init(AndroidEGL::AV_OpenGLES, 3, 2, false);
+}
+
+void FAndroidAppEntry::ReleaseEGL()
+{
+	AndroidEGL* EGL = AndroidEGL::GetInstance();
+	if (EGL->IsInitialized())
+	{
+		EGL->DestroyBackBuffer();
+		EGL->Terminate();
+	}
+}
+
+static bool GRemoteCompileServicesActive = false;
+
+bool AreAndroidOpenGLRemoteCompileServicesActive()
+{
+	return GRemoteCompileServicesActive && AreAndroidOpenGLRemoteCompileServicesAvailable();
+}
+
+bool FAndroidOpenGL::AreRemoteCompileServicesActive()
+{
+	return AreAndroidOpenGLRemoteCompileServicesActive();
+}
+
+bool FAndroidOpenGL::StartAndWaitForRemoteCompileServices(int NumServices)
+{
+	bool bResult = false;
+	JNIEnv* Env = FAndroidApplication::GetJavaEnv();
+
+	if (Env && AreAndroidOpenGLRemoteCompileServicesAvailable())
+	{
+		bResult = (bool)Env->CallStaticBooleanMethod(OpenGLRemoteGLProgramCompileJNI.OGLServiceAccessor, OpenGLRemoteGLProgramCompileJNI.StartRemoteProgramLink, (jint)NumServices, (jboolean)false);
+		GRemoteCompileServicesActive = bResult;
+	}
+
+	return bResult;
+}
+
+void FAndroidOpenGL::StopRemoteCompileServices()
+{
+	GRemoteCompileServicesActive = false;
+	JNIEnv* Env = FAndroidApplication::GetJavaEnv();
+
+	if (Env && ensure(AreAndroidOpenGLRemoteCompileServicesAvailable()))
+	{
+		Env->CallStaticVoidMethod(OpenGLRemoteGLProgramCompileJNI.OGLServiceAccessor, OpenGLRemoteGLProgramCompileJNI.StopRemoteProgramLink);
+	}
+}
+
+namespace AndroidOGLService
+{
+	std::atomic<bool> bOneTimeErrorEncountered = false;
+}
+
+TArray<uint8> FAndroidOpenGL::DispatchAndWaitForRemoteGLProgramCompile(const TArrayView<uint8> ContextData, const TArray<ANSICHAR>& VertexGlslCode, const TArray<ANSICHAR>& PixelGlslCode, const TArray<ANSICHAR>& ComputeGlslCode, FString& FailureMessageOUT)
+{
+	bool bResult = false;
+	JNIEnv* Env = FAndroidApplication::GetJavaEnv();
+	TArray<uint8> CompiledProgramBinary;
+	FString ErrorMessage;
+
+	if (Env && ensure(GRemoteCompileServicesActive) && ensure(AreAndroidOpenGLRemoteCompileServicesAvailable()))
+	{
+		// todo: double conversion :(
+		auto jVS = NewScopedJavaObject(Env, Env->NewStringUTF(TCHAR_TO_UTF8(ANSI_TO_TCHAR(VertexGlslCode.IsEmpty() ? "" : VertexGlslCode.GetData()))));
+		auto jPS = NewScopedJavaObject(Env, Env->NewStringUTF(TCHAR_TO_UTF8(ANSI_TO_TCHAR(PixelGlslCode.IsEmpty() ? "" : PixelGlslCode.GetData()))));
+		auto jCS = NewScopedJavaObject(Env, Env->NewStringUTF(TCHAR_TO_UTF8(ANSI_TO_TCHAR(ComputeGlslCode.IsEmpty() ? "" : ComputeGlslCode.GetData()))));
+		auto ProgramKeyBuffer = NewScopedJavaObject(Env, Env->NewByteArray(ContextData.Num()));
+		Env->SetByteArrayRegion(*ProgramKeyBuffer, 0, ContextData.Num(), reinterpret_cast<const jbyte*>(ContextData.GetData()));
+		auto ProgramResponseObj = NewScopedJavaObject(Env, Env->CallStaticObjectMethod(OpenGLRemoteGLProgramCompileJNI.OGLServiceAccessor, OpenGLRemoteGLProgramCompileJNI.DispatchProgramLink, *ProgramKeyBuffer, *jVS, *jPS, *jCS));
+		CHECK_JNI_EXCEPTIONS(Env);
+
+		if (*ProgramResponseObj)
+		{
+			bool bSucceeded = (bool)Env->GetBooleanField(*ProgramResponseObj, OpenGLRemoteGLProgramCompileJNI.ProgramResponse_SuccessField);
+			if (bSucceeded)
+			{
+				auto ProgramResult = NewScopedJavaObject(Env, (jbyteArray)Env->GetObjectField(*ProgramResponseObj, OpenGLRemoteGLProgramCompileJNI.ProgramResponse_CompiledBinaryField));
+				int len = Env->GetArrayLength(*ProgramResult);
+				CompiledProgramBinary.SetNumUninitialized(len);
+				Env->GetByteArrayRegion(*ProgramResult, 0, len, reinterpret_cast<jbyte*>(CompiledProgramBinary.GetData()));
+			}
+			else
+			{
+				if (AndroidOGLService::bOneTimeErrorEncountered.exchange(true) == false)
+				{
+					FGenericCrashContext::SetEngineData(TEXT("Android.PSOService"), TEXT("ec"));
+				}
+
+				FailureMessageOUT = FJavaHelper::FStringFromLocalRef(Env, (jstring)Env->GetObjectField(*ProgramResponseObj, OpenGLRemoteGLProgramCompileJNI.ProgramResponse_ErrorField));
+				check(!FailureMessageOUT.IsEmpty());
+			}
+		}
+		else
+		{
+			if (AndroidOGLService::bOneTimeErrorEncountered.exchange(true) == false)
+			{
+				FGenericCrashContext::SetEngineData(TEXT("Android.PSOService"), TEXT("es"));
+			}
+			FailureMessageOUT = TEXT("Remote compiler failed.");
+		}
+	}
+	return CompiledProgramBinary;
+}
+
+
+#endif

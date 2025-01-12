@@ -933,6 +933,14 @@ finished executing, the objects are transitioned into the "available" state, i.e
         ViewportState& addViewportAndScissorRect(const RHIViewport& v) { return addViewport(v).addScissorRect(RHIRect(v)); }
     };
 
+
+    /** Screen Resolution */
+    struct RHIScreenResolution
+    {
+        uint32_t Width;
+        uint32_t Height;
+        uint32_t RefreshRate;
+    };
     //////////////////////////////////////////////////////////////////////////
     // Draw and Dispatch
     //////////////////////////////////////////////////////////////////////////

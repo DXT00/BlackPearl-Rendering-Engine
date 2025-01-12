@@ -83,6 +83,8 @@ namespace BlackPearl {
 	
 		/* shader path settings*/
 		static const char* GetShaderTypeName();
+
+		/* OpenGL settings*/
 	};
 	struct ShaderConfig {
 

@@ -13,6 +13,12 @@
 //#include "OpenGLDrv.h"
 #include "stdint.h"
 #include "OpenGLThirdParty.h"
+#include <BlackPearl/RHI/OpenGLRHI/OpenGLDynamicRHI.h>
+#include "BlackPearl/Common/CommonFunc.h"
+#include "BlackPearl/RHI/RHIDefinitions.h"
+
+namespace BlackPearl {
+
 
 #define SUBALLOCATED_CONSTANT_BUFFER 0
 
@@ -221,15 +227,15 @@ void PlatformSharedContextSetup(FPlatformOpenGLDevice* Device);
  */
 void PlatformNULLContextSetup();
 
-// Creates a platform-specific back buffer
-class FOpenGLTexture* PlatformCreateBuiltinBackBuffer(FOpenGLDynamicRHI* OpenGLRHI, uint32_t SizeX, uint32_t SizeY);
+//// Creates a platform-specific back buffer
+//class FOpenGLTexture* PlatformCreateBuiltinBackBuffer(OpenGLDynamicRHI* OpenGLRHI, uint32_t SizeX, uint32_t SizeY);
 
 /**
  * Main function for transferring data to on-screen buffers.
  * On Windows it temporarily switches OpenGL context, on Mac only context's output view.
  * Should return true if frame was presented and it is necessary to finish frame rendering.
  */
-bool PlatformBlitToViewport(IRHICommandContext& RHICmdContext, FPlatformOpenGLDevice* Device, const FOpenGLViewport& Viewport, uint32_t BackbufferSizeX, uint32_t BackbufferSizeY, bool bPresent,bool bLockToVsync);
+bool PlatformBlitToViewport(FPlatformOpenGLDevice* Device, const OpenGLViewport& Viewport, uint32_t BackbufferSizeX, uint32_t BackbufferSizeY, bool bPresent,bool bLockToVsync);
 
 /**
  * Resize the GL context for platform.
@@ -245,7 +251,7 @@ void PlatformGetSupportedResolution(uint32_t &Width, uint32_t &Height);
 /**
  * Retrieve available screen resolutions.
  */
-bool PlatformGetAvailableResolutions(FScreenResolutionArray& Resolutions, bool bIgnoreRefreshRate);
+bool PlatformGetAvailableResolutions(std::vector<RHIScreenResolution>& Resolutions, bool bIgnoreRefreshRate);
 
 /**
  * Restore the original display mode
@@ -284,7 +290,7 @@ struct FOpenGLTextureFormat
 	}
 };
 
-extern FOpenGLTextureFormat OPENGLDRV_API GOpenGLTextureFormats[PF_MAX];
+extern FOpenGLTextureFormat GOpenGLTextureFormats[(int)Format::COUNT];
 
 inline uint32_t FindMaxMipmapLevel(uint32_t Size)
 {
@@ -313,24 +319,25 @@ inline void FindPrimitiveType(uint32_t InPrimitiveType, uint32_t InNumPrimitives
 
 	switch (InPrimitiveType)
 	{
-	case PT_TriangleList:
+	case (uint32_t)PrimitiveType::TriangleList:
 		DrawMode = GL_TRIANGLES;
 		NumElements = InNumPrimitives * 3;
 		break;
-	case PT_TriangleStrip:
+	case (uint32_t)PrimitiveType::TriangleStrip:
 		DrawMode = GL_TRIANGLE_STRIP;
 		NumElements = InNumPrimitives + 2;
 		break;
-	case PT_LineList:
+	case (uint32_t)PrimitiveType::LineList:
 		DrawMode = GL_LINES;
 		NumElements = InNumPrimitives * 2;
 		break;
-	case PT_PointList:
+	case (uint32_t)PrimitiveType::PointList:
 		DrawMode = GL_POINTS;
 		NumElements = InNumPrimitives;
 		break;
 	default:
-		UE_LOG(LogRHI, Fatal,TEXT("Unsupported primitive type %u"), InPrimitiveType);
+		assert(0);
+		//UE_LOG(LogRHI, Fatal,TEXT("Unsupported primitive type %u"), InPrimitiveType);
 		break;
 	}
 }
@@ -406,3 +413,5 @@ inline uint32_t CalcDynamicBufferSize(uint32_t Size)
 void InitDefaultGLContextState(void);
 
 extern bool GUseEmulatedUniformBuffers;
+
+}

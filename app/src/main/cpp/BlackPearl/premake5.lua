@@ -47,7 +47,7 @@ project "BlackPearl"
 		"../%{IncludeDir.directxtex}",
 		"../%{IncludeDir.directxmesh}",
 		"../%{IncludeDir.ShaderMake}",
-
+		"../%{IncludeDir.OpenGL}",
 		"./vendor",
 		"./vendor/GLEW",
 		"./assets/shaders/"
