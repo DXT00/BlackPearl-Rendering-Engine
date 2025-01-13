@@ -3,6 +3,8 @@
 #include "BlackPearl/RHI/OpenGLRHI/OpenGLViewport.h"
 #include "BlackPearl/Config.h"
 #include "BlackPearl/RHI/OpenGLRHI/OpenGLDynamicRHI.h"
+#include "BlackPearl/Core/Windows/WindowsCriticalSection.h"
+#include "BlackPearl/Core/ScopeLock.h"
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 /*=============================================================================
@@ -300,7 +302,7 @@ struct FPlatformOpenGLDevice
 
 		PlatformCreateDummyGLWindow(&SharedContext);
 		PlatformCreateOpenGLContextCore(&SharedContext, MajorVersion, MinorVersion, NULL);
-		assert(SharedContext.OpenGLContext)
+		assert(SharedContext.OpenGLContext);
 		{
 			FScopeContext ScopeContext(&SharedContext);
 			InitDebugContext();

@@ -2,9 +2,9 @@
 #include "glad/glad.h"
 struct FOpenGLCommonState
 {
-	TArray<FTextureStage>	Textures;
-	TArray<FOpenGLSamplerState*>	SamplerStates;
-	TArray<FUAVStage>		UAVs;
+	std::vector<FTextureStage>	Textures;
+	std::vector<FOpenGLSamplerState*>	SamplerStates;
+	std::vector<FUAVStage>		UAVs;
 
 	FOpenGLCommonState()
 	{}
@@ -49,7 +49,7 @@ struct FOpenGLContextState final : public FOpenGLCommonState
 	GLuint							Program;
 	GLuint 							UniformBuffers[CrossCompiler::NUM_SHADER_STAGES * OGL_MAX_UNIFORM_BUFFER_BINDINGS];
 	GLuint 							UniformBufferOffsets[CrossCompiler::NUM_SHADER_STAGES * OGL_MAX_UNIFORM_BUFFER_BINDINGS];
-	TArray<FOpenGLSamplerState*>	CachedSamplerStates;
+	std::vector<FOpenGLSamplerState*>	CachedSamplerStates;
 	GLenum							ActiveTexture;
 	bool							bScissorEnabled;
 	FIntRect						Scissor;
