@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "../OpenGLDrvPrivate.h"
+#include "OpenGLDrvWindows.h"
 #include "BlackPearl/RHI/OpenGLRHI/OpenGLViewport.h"
 #include "BlackPearl/Config.h"
 #include "BlackPearl/RHI/OpenGLRHI/OpenGLDynamicRHI.h"

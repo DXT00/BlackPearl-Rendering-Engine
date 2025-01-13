@@ -17,6 +17,16 @@
 #include "BlackPearl/Common/CommonFunc.h"
 #include "BlackPearl/RHI/RHIDefinitions.h"
 
+#if GE_PLATFORM_WINDOWS
+#include "Windows/OpenGLWindows.h"
+#elif GE_PLATFORM_ANDRIOD
+#include "Android/AndroidOpenGL.h"
+#else
+#error "platform not support"
+#endif
+
+
+
 namespace BlackPearl {
 
 

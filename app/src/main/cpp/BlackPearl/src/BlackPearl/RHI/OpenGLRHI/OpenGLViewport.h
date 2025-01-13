@@ -1,14 +1,16 @@
 #pragma once
+#include <algorithm>
 #include "BlackPearl/RHI/RHIDefinitions.h"
-#include "BlackPearl/RHI/OpenGLRHI/OpenGLTexture.h"
 namespace BlackPearl {
+	class OpenGLEventQuery;
+	class Texture;
 	class OpenGLViewport : public RHIViewport
 	{
 
 	public:
 
-		FOpenGLViewport(class FOpenGLDynamicRHI* InOpenGLRHI, void* InWindowHandle, uint32_t InSizeX, uint32_t InSizeY, bool bInIsFullscreen, EPixelFormat PreferredPixelFormat);
-		~FOpenGLViewport();
+		OpenGLViewport(class OpenGLDynamicRHI* InOpenGLRHI, void* InWindowHandle, uint32_t InSizeX, uint32_t InSizeY, bool bInIsFullscreen, EPixelFormat PreferredPixelFormat);
+		~OpenGLViewport();
 
 		void Resize(uint32_t InSizeX, uint32_t InSizeY, bool bInIsFullscreen);
 
@@ -23,27 +25,28 @@ namespace BlackPearl {
 		virtual void* GetNativeWindow(void** AddParam) const ;
 
 		struct FPlatformOpenGLContext* GetGLContext() const { return OpenGLContext; }
-		FOpenGLDynamicRHI* GetOpenGLRHI() const { return OpenGLRHI; }
+		OpenGLDynamicRHI* GetOpenGLRHI() const { return OpenGLRHI; }
 
-		virtual void SetCustomPresent(FRHICustomPresent* InCustomPresent) 
+		/*virtual void SetCustomPresent(FRHICustomPresent* InCustomPresent) 
 		{
 			CustomPresent = InCustomPresent;
 		}
-		FRHICustomPresent* GetCustomPresent() const { return CustomPresent.GetReference(); }
+		FRHICustomPresent* GetCustomPresent() const { return CustomPresent.GetReference(); }*/
 	private:
 
-		friend class FOpenGLDynamicRHI;
+		friend class OpenGLDynamicRHI;
 
-		FOpenGLDynamicRHI* OpenGLRHI;
+		OpenGLDynamicRHI* OpenGLRHI;
 		struct FPlatformOpenGLContext* OpenGLContext;
 		uint32_t SizeX;
 		uint32_t SizeY;
 		bool bIsFullscreen;
-		EPixelFormat PixelFormat;
+		Format PixelFormat;
 		bool bIsValid;
 		Texture* BackBuffer;
-		TUniquePtr<FOpenGLEventQuery> FrameSyncEvent;
-		FCustomPresentRHIRef CustomPresent;
+		std::unique_ptr<OpenGLEventQuery>FrameSyncEvent;
+		//TUniquePtr<FOpenGLEventQuery> 
+		//FCustomPresentRHIRef CustomPresent;
 
 
 	};
