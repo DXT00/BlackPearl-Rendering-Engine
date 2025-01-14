@@ -28,47 +28,34 @@ namespace BlackPearl {
         PlatformInitOpenGL();
 
         m_NvrhiDevice = Device::createDevice();
+		m_PlatformDevice = PlatformCreateOpenGLDevice();
 
 		InitRHICapabilitiesForGL();
 
-		assert(PlatformOpenGLCurrentContext(m_NvrhiDevice) == CONTEXT_Shared);
+		assert(PlatformOpenGLCurrentContext(m_PlatformDevice) == CONTEXT_Shared);
+//
+//		if (PlatformCanEnableGPUCapture())
+//		{
+//			EnableIdealGPUCaptureOptions(true);
+//
+//			
+//		}
+//
+//		{
+//			// Temp disable gpusorting for Opengl because of issues on Adreno and Mali devices
+//			auto* CVar = IConsoleManager::Get().FindConsoleVariable(TEXT("FX.AllowGPUSorting"));
+//			if (CVar)
+//			{
+//#if PLATFORM_ANDROID
+//				if (!AndroidThunkCpp_IsOculusMobileApplication())
+//#endif
+//				{
+//					CVar->Set(false);
+//				}
+//			}
+//		}
 
-		if (PlatformCanEnableGPUCapture())
-		{
-			EnableIdealGPUCaptureOptions(true);
-
-			// Disable persistent mapping
-			{
-				auto* CVar = IConsoleManager::Get().FindConsoleVariable(TEXT("OpenGL.UBODirectWrite"));
-				if (CVar)
-				{
-					CVar->Set(false);
-				}
-			}
-			{
-				auto* CVar = IConsoleManager::Get().FindConsoleVariable(TEXT("OpenGL.UseStagingBuffer"));
-				if (CVar)
-				{
-					CVar->Set(false);
-				}
-			}
-		}
-
-		{
-			// Temp disable gpusorting for Opengl because of issues on Adreno and Mali devices
-			auto* CVar = IConsoleManager::Get().FindConsoleVariable(TEXT("FX.AllowGPUSorting"));
-			if (CVar)
-			{
-#if PLATFORM_ANDROID
-				if (!AndroidThunkCpp_IsOculusMobileApplication())
-#endif
-				{
-					CVar->Set(false);
-				}
-			}
-		}
-
-#if PLATFORM_ANDROID
+#ifdef GE_PLATFORM_ANDRIOD
 		// Temp disable gpu particles for OpenGL because of issues on Adreno devices with old driver version
 		if (GRHIVendorId == 0x5143)
 		{
@@ -94,20 +81,20 @@ namespace BlackPearl {
 #endif
 
 		// Disable SingleRHIThreadStall for GL occlusion queiresn, which should be set for D3D11 only. Enabling it causes RT->RHIT deadlock
-		{
+		/*{
 			auto* CVar = IConsoleManager::Get().FindConsoleVariable(TEXT("r.Occlusion.SingleRHIThreadStall"));
 			if (CVar)
 			{
 				CVar->Set(0);
 			}
-		}
+		}*/
 
-		PrivateOpenGLDevicePtr = this;
-		GlobalUniformBuffers.AddZeroed(FUniformBufferStaticSlotRegistry::Get().GetSlotCount());
-
-#if RHI_NEW_GPU_PROFILER == 0
-		GPUProfilingData.Emplace();
-#endif
+//		PrivateOpenGLDevicePtr = this;
+//		GlobalUniformBuffers.AddZeroed(FUniformBufferStaticSlotRegistry::Get().GetSlotCount());
+//
+//#if RHI_NEW_GPU_PROFILER == 0
+//		GPUProfilingData.Emplace();
+//#endif
 
 
 

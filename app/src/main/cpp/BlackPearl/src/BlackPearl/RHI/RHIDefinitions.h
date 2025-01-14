@@ -238,6 +238,24 @@ finished executing, the objects are transitioned into the "available" state, i.e
         Alpha = 8,
         All = 0xF
     };
+
+    /**
+ * Action to take when a render target is unset or at the end of a pass.
+ */
+    enum class ERenderTargetStoreAction : uint8_t
+    {
+        // Contents of the render target emitted during the pass are not stored back to memory.
+        ENoAction,
+
+        // Contents of the render target emitted during the pass are stored back to memory.
+        EStore,
+
+        // Contents of the render target emitted during the pass are resolved using a box filter and stored back to memory.
+        EMultisampleResolve,
+
+        Num,
+        NumBits = 2,
+    };
     struct BlendState
     {
         struct RenderTarget
@@ -638,7 +656,8 @@ finished executing, the objects are transitioned into the "available" state, i.e
 		TriangleFan,
 		TriangleListWithAdjacency,
 		TriangleStripWithAdjacency,
-		PatchList
+		PatchList,
+        NUM
 	};
 
     enum class TextureDimension : uint8_t

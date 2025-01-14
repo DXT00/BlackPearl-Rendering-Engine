@@ -4,6 +4,7 @@
 #include "BlackPearl/RHI/RHIState.h"
 #include "OpenGLDevice.h"
 #include "OpenGLContext.h"
+#include "OpenGLViewport.h"
 namespace BlackPearl {
 	class CommandList :public RefCounter<ICommandList> {
         // Internal backend methods
@@ -96,6 +97,9 @@ namespace BlackPearl {
         Device* m_Device;
         OpenGLContext m_Context;
 
+
+
+
         CommandListParameters m_CommandListParameters;
 
        // CommandListResourceStateTracker m_StateTracker;
@@ -113,11 +117,57 @@ namespace BlackPearl {
         bool m_AnyVolatileBufferWrites = false;
 
 
+        /** Counter incremented each time RHIBeginScene is called. */
+        uint32_t SceneFrameCounter;
 
-        //std::unordered_map<Buffer*, VolatileBufferState> m_VolatileBufferStates;
+        /** Value used to detect when resource tables need to be recached. INDEX_NONE means always recache. */
+        uint32_t ResourceTableFrameCounter;
 
-        //std::unique_ptr<UploadManager> m_UploadManager;
-        //std::unique_ptr<UploadManager> m_ScratchManager;
+        ///** RHI device state, independent of underlying OpenGL context used */
+        //FOpenGLRHIState						PendingState;
+        //FSamplerStateRHIRef					PointSamplerState;
+
+        /** A list of all viewport RHIs that have been created. */
+        std::vector<OpenGLViewport*>        Viewports;
+        RefCounter<OpenGLViewport>		DrawingViewport;
+        bool								bRevertToSharedContextAfterDrawingViewport;
+
+        bool								bIsRenderingContextAcquired;
+
+        PrimitiveType						PrimitiveType = PrimitiveType::NUM;
+
+        ///** A history of the most recently used bound shader states, used to keep transient bound shader states from being recreated for each use. */
+        //TGlobalResource< TBoundShaderStateHistory<10000> > BoundShaderStateHistory;
+
+        /** Per-context state caching */
+        FOpenGLContextState InvalidContextState;
+        FOpenGLContextState	SharedContextState;
+        FOpenGLContextState	RenderingContextState;
+        // Cached context type on BeginScene
+        int32_t BeginSceneContextType;
+
+        template <typename TRHIShader, typename TRHIProxyShader>
+        void ApplyStaticUniformBuffers(TRHIShader* Shader, TRHIProxyShader* ProxyShader);
+
+        std::vector<FRHIUniformBuffer*> GlobalUniformBuffers;
+
+        /** Cached mip-limits for textures when ARB_texture_view is unavailable */
+        std::map<GLuint, std::pair<GLenum, GLenum>> TextureMipLimits;
+
+        /** Underlying platform-specific data */
+        struct FPlatformOpenGLDevice* PlatformDevice;
+
+        ///** Query list. This is used to inform queries they're no longer valid when OpenGL context they're in gets released from another thread. */
+        //std::vector<FOpenGLRenderQuery*> Queries;
+
+        ///** A critical section to protect modifications and iteration over Queries list */
+        //FCriticalSection QueriesListCriticalSection;
+
+        //FOpenGLGPUProfiler GPUProfilingData;
+        //friend FOpenGLGPUProfiler;
+
+        //FCriticalSection CustomPresentSection;
+        //TRefCountPtr<class FRHICustomPresent> CustomPresent;
 
 
 

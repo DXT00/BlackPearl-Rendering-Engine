@@ -175,7 +175,6 @@ namespace BlackPearl
 	DeviceHandle Device::createDevice()
 	{
 		Device* device = new Device();
-		device->m_PlatformDevice = PlatformCreateOpenGLDevice();
 
 		return DeviceHandle(device);
 	}
