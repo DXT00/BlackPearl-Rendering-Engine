@@ -5,7 +5,7 @@
 #include "RHIResources.h"
 #include "RHIBuffer.h"
 namespace BlackPearl {
-            typedef float AffineTransform[12];
+        typedef float AffineTransform[12];
 
         constexpr AffineTransform c_IdentityTransform = {
         //  +----+----+---------  rotation and scaling

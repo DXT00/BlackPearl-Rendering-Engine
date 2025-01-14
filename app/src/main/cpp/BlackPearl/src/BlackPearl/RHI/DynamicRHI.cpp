@@ -44,6 +44,7 @@ namespace BlackPearl {
 #endif
 		}
 		g_DynamicRHI = dynamicModule->CreateRHI();
+		g_DynamicRHI->InitRHI();
 	}
 
 	Window* RHIInitWindow()

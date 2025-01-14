@@ -2,7 +2,9 @@
 #include "glad/glad.h"
 #include "OpenGLDriver/OpenGL.h"
 #include "OpenGLDriver/OpenGLDrvPrivate.h"
-
+#include "BlackPearl/Core/Memory.h"
+#include "BlackPearl/RHI/RHIShader.h"
+#include "OpenGLShaderResource.h"
 namespace BlackPearl {
 
 
@@ -94,8 +96,8 @@ struct FOpenGLDepthStencilStateData
 	GLenum CCWStencilFail;
 	GLenum CCWStencilZFail;
 	GLenum CCWStencilPass;
-	uint32 StencilReadMask;
-	uint32 StencilWriteMask;
+	uint32_t StencilReadMask;
+	uint32_t StencilWriteMask;
 
 	FOpenGLDepthStencilStateData()
 		: bZEnable(false)
@@ -137,10 +139,10 @@ struct FOpenGLBlendStateData
 		GLenum AlphaBlendOperation;
 		GLenum AlphaSourceBlendFactor;
 		GLenum AlphaDestBlendFactor;
-		uint32 ColorWriteMaskR : 1;
-		uint32 ColorWriteMaskG : 1;
-		uint32 ColorWriteMaskB : 1;
-		uint32 ColorWriteMaskA : 1;
+		uint32_t ColorWriteMaskR : 1;
+		uint32_t ColorWriteMaskG : 1;
+		uint32_t ColorWriteMaskB : 1;
+		uint32_t ColorWriteMaskA : 1;
 	};
 
 	TStaticArray<FRenderTarget, MaxSimultaneousRenderTargets> RenderTargets;
@@ -150,7 +152,7 @@ struct FOpenGLBlendStateData
 	FOpenGLBlendStateData()
 	{
 		bUseAlphaToCoverage = false;
-		for (int32 i = 0; i < MaxSimultaneousRenderTargets; ++i)
+		for (int32_t i = 0; i < MaxSimultaneousRenderTargets; ++i)
 		{
 			FRenderTarget& Target = RenderTargets[i];
 			Target.bAlphaBlendEnable = false;
@@ -189,9 +191,9 @@ struct FTextureStage
 	class FOpenGLShaderResourceView* SRV;
 	GLenum Target;
 	GLuint Resource;
-	int32 LimitMip;
+	int32_t LimitMip;
 	bool bHasMips;
-	int32 NumMips;
+	int32_t NumMips;
 
 	FTextureStage()
 		: Texture(NULL)
@@ -274,8 +276,8 @@ struct FOpenGLContextState final : public FOpenGLCommonState
 	uint32_t						RenderTargetHeight;
 	GLuint							OcclusionQuery;
 	GLuint							Program;
-	GLuint 							UniformBuffers[CrossCompiler::NUM_SHADER_STAGES * OGL_MAX_UNIFORM_BUFFER_BINDINGS];
-	GLuint 							UniformBufferOffsets[CrossCompiler::NUM_SHADER_STAGES * OGL_MAX_UNIFORM_BUFFER_BINDINGS];
+	GLuint 							UniformBuffers[ShaderType::All * OGL_MAX_UNIFORM_BUFFER_BINDINGS];
+	GLuint 							UniformBufferOffsets[ShaderType::All * OGL_MAX_UNIFORM_BUFFER_BINDINGS];
 	std::vector<FOpenGLSamplerState*>	CachedSamplerStates;
 	GLenum							ActiveTexture;
 	bool							bScissorEnabled;
@@ -353,7 +355,7 @@ struct FOpenGLContextState final : public FOpenGLCommonState
 	virtual void InitializeResources(int32_t NumCombinedTextures, int32_t NumCombinedUAVUnits) override
 	{
 		FOpenGLCommonState::InitializeResources(NumCombinedTextures, NumCombinedUAVUnits);
-		CachedSamplerStates.Empty(NumCombinedTextures);
+		CachedSamplerStates.clear(NumCombinedTextures);
 		CachedSamplerStates.AddZeroed(NumCombinedTextures);
 
 		checkf(NumCombinedUAVUnits <= sizeof(ActiveUAVMask) * 8, TEXT("Not enough bits in ActiveUAVMask to store %d UAV units"), NumCombinedUAVUnits);
@@ -361,7 +363,7 @@ struct FOpenGLContextState final : public FOpenGLCommonState
 
 	virtual void CleanupResources() override
 	{
-		CachedSamplerStates.Empty();
+		CachedSamplerStates.clear();
 		FOpenGLCommonState::CleanupResources();
 	}
 };

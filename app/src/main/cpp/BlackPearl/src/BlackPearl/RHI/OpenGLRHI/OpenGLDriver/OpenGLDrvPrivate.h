@@ -16,14 +16,8 @@
 #include <BlackPearl/RHI/OpenGLRHI/OpenGLDynamicRHI.h>
 #include "BlackPearl/Common/CommonFunc.h"
 #include "BlackPearl/RHI/RHIDefinitions.h"
+#include "OpenGLDrv.h"
 
-#if GE_PLATFORM_WINDOWS
-#include "Windows/OpenGLWindows.h"
-#elif GE_PLATFORM_ANDRIOD
-#include "Android/AndroidOpenGL.h"
-#else
-#error "platform not support"
-#endif
 
 
 

@@ -10,10 +10,6 @@
 #include "BlackPearl/Core/Platform.h"
 #include "BlackPearl/Core.h"
 #include "BlackPearl/RHI/RHIDefinitions.h"
-// HEADER_UNIT_SKIP - REVISIT
-//
-//#include "Containers/ContainersFwd.h"
-//#include "Logging/LogMacros.h"
 
 namespace BlackPearl {
 

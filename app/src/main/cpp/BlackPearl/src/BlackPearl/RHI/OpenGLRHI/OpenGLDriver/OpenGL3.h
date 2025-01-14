@@ -6,18 +6,15 @@
 
 #pragma once
 
-//#include "UObject/UObjectHierarchyFwd.h"
-//#include "Misc/AssertionMacros.h"
-//#include "HAL/UnrealMemory.h"
-//#include "Containers/Array.h"
-//#include "Containers/UnrealString.h"
-//#include "Misc/Parse.h"
-//#include "Containers/StringConv.h"
-//#include "CoreGlobals.h"
-//#include "Containers/Map.h"
-//#include "CoreMinimal.h"
-//#include "Misc/CommandLine.h"
 #include "OpenGL.h"
+#include "OpenGLThirdParty.h"
+
+#define OPENGL_GL3		1
+
+#define USE_OPENGL_NAME_CACHE 1
+#define OPENGL_NAME_CACHE_SIZE 1024
+
+
 namespace BlackPearl {
 	struct FPlatformOpenGLContext;
 	struct FPlatformOpenGLDevice;
@@ -26,12 +23,9 @@ namespace BlackPearl {
 
 	typedef GLsync UGLsync;
 
-#define OPENGL_GL3		1
 
-#define USE_OPENGL_NAME_CACHE 1
-#define OPENGL_NAME_CACHE_SIZE 1024
 
-	struct FOpenGL3 : public FOpenGLBase
+	struct FOpenGL3 : public BlackPearl::FOpenGLBase
 	{
 		static FORCEINLINE bool IsDebugContent() { return bDebugContext; }
 
@@ -134,7 +128,7 @@ namespace BlackPearl {
 		}
 
 		// Required
-		static FORCEINLINE void* MapBufferRange(GLenum Type, uint32 InOffset, uint32 InSize, EResourceLockMode LockMode)
+		static FORCEINLINE void* MapBufferRange(GLenum Type, uint32_t InOffset, uint32_t InSize, EResourceLockMode LockMode)
 		{
 			GLenum Access;
 			switch (LockMode)
@@ -170,7 +164,7 @@ namespace BlackPearl {
 			glUnmapBuffer(Type);
 		}
 
-		static FORCEINLINE void UnmapBufferRange(GLenum Type, uint32 InOffset, uint32 InSize)
+		static FORCEINLINE void UnmapBufferRange(GLenum Type, uint32_t InOffset, uint32_t InSize)
 		{
 			UnmapBuffer(Type);
 		}
@@ -444,17 +438,19 @@ namespace BlackPearl {
 		static FORCEINLINE GLuint CreateShader(GLenum Type)
 		{
 #if USE_OPENGL_NAME_CACHE
-			static TMap<GLenum, TArray<GLuint>> ShaderNames;
-			TArray<GLuint>& Shaders = ShaderNames.FindOrAdd(Type);
-			if (!Shaders.Num())
+			static std::map<GLenum, std::vector<GLuint>> ShaderNames;
+			std::vector<GLuint>& Shaders = ShaderNames[Type];
+			if (!Shaders.empty())
 			{
-				while (Shaders.Num() < OPENGL_NAME_CACHE_SIZE)
+				while (Shaders.size() < OPENGL_NAME_CACHE_SIZE)
 				{
 					GLuint Resource = glCreateShader(Type);
-					Shaders.Add(Resource);
+					Shaders.push_back(Resource);
 				}
 			}
-			return Shaders.Pop();
+			GLuint shader = Shaders.back();
+			Shaders.pop_back();
+			return shader;
 #else
 			return glCreateShader(Type);
 #endif
@@ -463,16 +459,18 @@ namespace BlackPearl {
 		static FORCEINLINE GLuint CreateProgram()
 		{
 #if USE_OPENGL_NAME_CACHE
-			static TArray<GLuint> ProgramNames;
-			if (!ProgramNames.Num())
+			static std::vector<GLuint> ProgramNames;
+			if (!ProgramNames.size())
 			{
-				while (ProgramNames.Num() < OPENGL_NAME_CACHE_SIZE)
+				while (ProgramNames.size() < OPENGL_NAME_CACHE_SIZE)
 				{
 					GLuint Resource = glCreateProgram();
-					ProgramNames.Add(Resource);
+					ProgramNames.push_back(Resource);
 				}
 			}
-			return ProgramNames.Pop();
+			GLuint program = ProgramNames.back();
+			ProgramNames.pop_back();
+			return program;
 #else
 			return glCreateProgram();
 #endif
@@ -556,9 +554,9 @@ namespace BlackPearl {
 			glGenerateMipmap(Target);
 		}
 
-		static FORCEINLINE const ANSICHAR* GetStringIndexed(GLenum Name, GLuint Index)
+		static FORCEINLINE const char* GetStringIndexed(GLenum Name, GLuint Index)
 		{
-			return (const ANSICHAR*)glGetStringi(Name, Index);
+			return (const char*)glGetStringi(Name, Index);
 		}
 
 		static FORCEINLINE GLuint GetMajorVersion()
@@ -622,10 +620,10 @@ namespace BlackPearl {
 			return bAndroidGLESCompatibilityMode ? SP_OPENGL_ES3_1_ANDROID : SP_OPENGL_PCES3_1;
 		}
 
-		static FORCEINLINE FString GetAdapterName()
-		{
-			return ANSI_TO_TCHAR((const ANSICHAR*)glGetString(GL_RENDERER));
-		}
+		//static FORCEINLINE FString GetAdapterName()
+		//{
+		//	return ANSI_TO_TCHAR((const char*)glGetString(GL_RENDERER));
+		//}
 
 		static FPlatformOpenGLDevice* CreateDevice()	UGL_REQUIRED(NULL)
 			static FPlatformOpenGLContext* CreateContext(FPlatformOpenGLDevice* Device, void* WindowHandle)	UGL_REQUIRED(NULL)
@@ -633,7 +631,7 @@ namespace BlackPearl {
 			static void ProcessQueryGLInt();
 		static void ProcessExtensions(const FString& ExtensionsString);
 
-		static FORCEINLINE int32 GetReadHalfFloatPixelsEnum() { return GL_HALF_FLOAT; }
+		static FORCEINLINE int32_t GetReadHalfFloatPixelsEnum() { return GL_HALF_FLOAT; }
 
 		static FORCEINLINE bool IsAndroidGLESCompatibilityModeEnabled() { return bAndroidGLESCompatibilityMode; }
 

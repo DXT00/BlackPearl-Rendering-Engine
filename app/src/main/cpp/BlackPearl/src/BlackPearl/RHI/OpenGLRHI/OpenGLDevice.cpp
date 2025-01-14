@@ -5,6 +5,7 @@
 #include "OpenGLImageTexture2D.h"
 #include "OpenGLFrameBuffer.h"
 #include "BlackPearl/Core.h"
+#include "BlackPearl/RHI/OpenGLRHI/OpenGLDriver/OpenGLDrvPrivate.h"
 namespace BlackPearl 
 {
 	TextureHandle Device::createTexture(TextureDesc& d)
@@ -174,6 +175,8 @@ namespace BlackPearl
 	DeviceHandle Device::createDevice()
 	{
 		Device* device = new Device();
+		device->m_PlatformDevice = PlatformCreateOpenGLDevice();
+
 		return DeviceHandle(device);
 	}
 }

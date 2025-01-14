@@ -787,7 +787,7 @@ bool PlatformInitOpenGL()
 #pragma warning(push)
 #pragma warning(disable:4191)
 
-// Create a dummy context so that wglCreateContextAttribsARB can be initialized.
+		// Create a dummy context so that wglCreateContextAttribsARB can be initialized.
 		FPlatformOpenGLContext DummyContext;
 		PlatformCreateDummyGLWindow(&DummyContext);
 		DummyContext.OpenGLContext = wglCreateContext(DummyContext.DeviceContext);

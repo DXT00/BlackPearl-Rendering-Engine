@@ -2,6 +2,6 @@
 
 #pragma once
 
-#include "CoreTypes.h"
+#include "BlackPearl/Core.h"
 
 #include COMPILED_PLATFORM_HEADER(CriticalSection.h)

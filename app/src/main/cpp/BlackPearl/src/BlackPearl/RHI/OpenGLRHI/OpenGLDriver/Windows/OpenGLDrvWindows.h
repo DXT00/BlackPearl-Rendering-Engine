@@ -13,6 +13,8 @@
 	#error "OpenGLWindows.h included for a platform other than Windows."
 #endif
 
+namespace BlackPearl{
+
 
 /** List all OpenGL entry points used by Unreal that must be loaded from opengl32.dll */
 #define ENUM_GL_ENTRYPOINTS_DLL(EnumMacro) \
@@ -418,7 +420,7 @@ struct FWindowsOpenGL : public FOpenGL4
 		bDebugContext = glIsEnabled(GL_DEBUG_OUTPUT) != GL_FALSE || GRunningUnderRenderDoc;
 	}
 
-	static FORCEINLINE void LabelObject(GLenum Type, GLuint Object, const ANSICHAR* Name)
+	static FORCEINLINE void LabelObject(GLenum Type, GLuint Object, const char* Name)
 	{
 		if (glObjectLabel && bDebugContext)
 		{
@@ -426,7 +428,7 @@ struct FWindowsOpenGL : public FOpenGL4
 		}
 	}
 
-	static FORCEINLINE void PushGroupMarker(const ANSICHAR* Name)
+	static FORCEINLINE void PushGroupMarker(const char* Name)
 	{
 		if (glPushDebugGroup && bDebugContext)
 		{
@@ -478,15 +480,15 @@ struct FWindowsOpenGL : public FOpenGL4
 		{
 			const bool bArrayTexture = Target == GL_TEXTURE_2D_ARRAY || Target == GL_TEXTURE_CUBE_MAP_ARRAY;
 
-			for (uint32 MipIndex = 0; MipIndex < uint32(Levels); MipIndex++)
+			for (uint32_t MipIndex = 0; MipIndex < uint32_t(Levels); MipIndex++)
 			{
 				glTexImage3D(
 					Target,
 					MipIndex,
 					InternalFormat,
-					FMath::Max<uint32>(1, (Width >> MipIndex)),
-					FMath::Max<uint32>(1, (Height >> MipIndex)),
-					(bArrayTexture) ? Depth : FMath::Max<uint32>(1, (Depth >> MipIndex)),
+					Math::Max<uint32_t>(1, (Width >> MipIndex)),
+					Math::Max<uint32_t>(1, (Height >> MipIndex)),
+					(bArrayTexture) ? Depth : Math::Max<uint32_t>(1, (Depth >> MipIndex)),
 					0,
 					Format,
 					Type,
@@ -565,3 +567,5 @@ struct FWindowsOpenGL : public FOpenGL4
 };
 
 typedef FWindowsOpenGL FOpenGL;
+
+}

@@ -1,6 +1,25 @@
 #pragma once
 #include"Log.h"
 
+#ifdef GE_PLATFORM_WINDOWS
+#define PLATFORM_HEADER_NAME Windows
+#elif defined(GE_PLATFORM_ANDRIOD)
+#define PLATFORM_HEADER_NAME Andriod
+#endif
+
+//#define PREPROCESSOR_TO_STRING(Token) #Token
+#define GE_STRINGIZE(Token) GE_PRIVATE_STRINGIZE(Token)
+#define GE_PRIVATE_STRINGIZE(Token) #Token
+#define PREPROCESSOR_TO_STRING(Token)   GE_STRINGIZE(Token)
+
+#define GE_JOIN(TokenA, TokenB) TokenA##TokenB
+
+#define GE_PRIVATE_JOIN(TokenA, TokenB) 
+#define PREPROCESSOR_JOIN(TokenA, TokenB)             GE_JOIN(TokenA, TokenB)
+
+#define COMPILED_PLATFORM_HEADER(Suffix) PREPROCESSOR_TO_STRING(PREPROCESSOR_JOIN(PLATFORM_HEADER_NAME/PLATFORM_HEADER_NAME, Suffix))
+
+
 #ifdef GE_DEBUG
 #define GE_ENABLE_ASSERTS
 #endif

@@ -63,6 +63,12 @@ namespace BlackPearl {
 
 
 		static DeviceHandle createDevice();
+		FPlatformOpenGLDevice* getPlatformDevice() const { return m_PlatformDevice; }
+	public:
+		struct FPlatformOpenGLDevice* m_PlatformDevice = nullptr;
+
+	private:
+		/** Underlying platform-specific data */
 	};
 
 }

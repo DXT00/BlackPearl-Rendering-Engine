@@ -127,6 +127,9 @@ namespace BlackPearl {
 		static DeviceHandle createDevice(const DeviceDesc& desc);
 		VkDevice getDevice() { return m_Context.device; }
 		VkFunctionLoader* getLoader() const { return m_VKFuncLoader; }
+
+
+
 	private:
 		VulkanContext m_Context;
 		VulkanAllocator m_Allocator;
