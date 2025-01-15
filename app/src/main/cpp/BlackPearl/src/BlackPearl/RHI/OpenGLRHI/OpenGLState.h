@@ -312,10 +312,10 @@ struct FOpenGLCommonState
 
 struct FOpenGLContextState final : public FOpenGLCommonState
 {
-	FOpenGLRasterizerState		RasterizerState;
-	FOpenGLDepthStencilState	DepthStencilState;
+	FOpenGLRasterizerState			RasterizerState;
+	FOpenGLDepthStencilState		DepthStencilState;
 	uint32_t						StencilRef;
-	FOpenGLBlendState			BlendState;
+	FOpenGLBlendState				BlendState;
 	GLuint							Framebuffer;
 	uint32_t						RenderTargetWidth;
 	uint32_t						RenderTargetHeight;

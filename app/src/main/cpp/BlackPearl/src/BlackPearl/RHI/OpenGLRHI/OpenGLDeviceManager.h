@@ -31,7 +31,6 @@ namespace BlackPearl {
         uint32_t GetBackBufferCount() override;
     private:
         DeviceHandle m_NvrhiDevice;
-        struct FPlatformOpenGLDevice* m_PlatformDevice = nullptr;
 
     };
 

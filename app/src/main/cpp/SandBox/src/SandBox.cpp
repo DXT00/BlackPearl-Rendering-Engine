@@ -25,6 +25,7 @@
 #include "Layers/CloudRenderLayer.h"
 #include "Layers/WaterRenderLayer.h"
 #include "Layers/SSRLayer.h"
+#include "Layers/RHIRenderGraphLayer.h"
 enum RenderSample {
 	BP_ShadowMapPointLight,
 	BP_VoxelConeTracing,
@@ -39,7 +40,8 @@ enum RenderSample {
 	BP_IndirectOcclusionCull,
 	BP_CloudRender,
 	BP_WaterRender,
-	BP_SSR
+	BP_SSR,
+	BP_RHIRenderGraphLayer
 
 };
 class SandBox :public BlackPearl::Application {
@@ -93,6 +95,9 @@ public:
 		else if (renderer == BP_SSR) {
 			layer = DBG_NEW SSRLayer(layer_name);
 		}
+		else if (renderer == BP_RHIRenderGraphLayer) {
+			layer = DBG_NEW RHIRenderGraphLayer(layer_name);
+		}
 		/*else if (renderer == "LumenRenderingLayer") {
 			layer = DBG_NEW LumenRenderingLayer(layer_name);
 		}*/
@@ -109,7 +114,7 @@ private:
 
 BlackPearl::Application* BlackPearl::CreateApplication(HINSTANCE hInstance, int nShowCmd) {
 
-	return DBG_NEW SandBox(hInstance, nShowCmd, BlackPearl::DynamicRHI::Type::OpenGL, RenderSample::BP_IBLRendering);
+	return DBG_NEW SandBox(hInstance, nShowCmd, BlackPearl::DynamicRHI::Type::OpenGL, RenderSample::BP_RHIRenderGraphLayer);
 	//return DBG_NEW SandBox(hInstance, nShowCmd, BlackPearl::DynamicRHI::Type::OpenGL, "PbrRendering");
 }
 

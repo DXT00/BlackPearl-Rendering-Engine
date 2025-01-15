@@ -13,7 +13,15 @@ namespace BlackPearl {
 	//	glGenTextures(1, &m_TextureID);
 	//}
 
+	/** Caching it here, to avoid getting it every time we create a texture. 0 is no multisampling. */
+	GLint GMaxOpenGLColorSamples = 0;
+	GLint GMaxOpenGLDepthSamples = 0;
+	GLint GMaxOpenGLIntegerSamples = 0;
 
+	// in bytes, never change after RHI, needed to scale game features
+	int64_t GOpenGLDedicatedVideoMemory = 0;
+	// In bytes. Never changed after RHI init. Our estimate of the amount of memory that we can use for graphics resources in total.
+	int64_t GOpenGLTotalGraphicsMemory = 0;
 
 	/*
 	internalforamt指的是纹理数据在OpenGL中是如何表示的，如GL_RGB就表示纹理的像素在OpenGL里面以红绿蓝三个分量表示，

@@ -19,6 +19,35 @@ instance using the object is executed, the objects with a matching version are
 transitioned into the "submitted" state. Later, when the command list instance has
 finished executing, the objects are transitioned into the "available" state, i.e. 0.
  */
+ /** Maximum number of miplevels in a texture. */
+    enum { MAX_TEXTURE_MIP_COUNT = 15 };
+
+    /** Maximum number of static/skeletal mesh LODs */
+    enum { MAX_MESH_LOD_COUNT = 8 };
+
+    enum class EGpuVendorId : uint32_t
+    {
+        Unknown = 0xffffffff,
+        NotQueried = 0,
+
+        Amd = 0x1002,
+        ImgTec = 0x1010,
+        Nvidia = 0x10DE,
+        Arm = 0x13B5,
+        Broadcom = 0x14E4,
+        Qualcomm = 0x5143,
+        Intel = 0x8086,
+        Apple = 0x106B,
+        Vivante = 0x7a05,
+        VeriSilicon = 0x1EB1,
+        SamsungAMD = 0x144D,
+        Microsoft = 0x1414,
+
+        Kazan = 0x10003,	// VkVendorId
+        Codeplay = 0x10004,	// VkVendorId
+        Mesa = 0x10005,	// VkVendorId
+    };
+
     namespace ObjectTypes
     {
         constexpr uint32_t SharedHandle = 0x00000001;
@@ -692,6 +721,15 @@ finished executing, the objects are transitioned into the "available" state, i.e
         Shared_CrossAdapter = 0x04,
     };
     NVRHI_ENUM_CLASS_FLAG_OPERATORS(SharedResourceFlags)
+    
+        enum class ERHIBindlessSupport : uint8_t
+    {
+        Unsupported,
+        RayTracingOnly,
+        AllShaderTypes,
+
+        NumBits = 2
+    };
 
     enum class Format : uint8_t
     {

@@ -73,6 +73,7 @@ void FOpenGL4::ProcessExtensions( const std::string& ExtensionsString )
 #define GL_GPU_MEMORY_INFO_EVICTED_MEMORY_NVX            0x904B
 #endif
 
+// get gpu memory size
 uint64_t FOpenGL4::GetVideoMemorySize()
 {
 	uint64_t VideoMemorySize = 0;

@@ -4,10 +4,12 @@
 #include<vulkan/vulkan_core.h>
 #include<vulkan/vulkan_core.h>
 #include "BlackPearl/RHI/RHIMessageCallback.h"
+#include "BlackPearl/RHI/RHIDeviceContext.h"
+
 #include "VkFunctionLoader.h"
 namespace BlackPearl {
 
-	struct VulkanContext
+	struct VulkanContext : public RHIDeviceContext
 	{
 	public:
 		VulkanContext(VkInstance instance,

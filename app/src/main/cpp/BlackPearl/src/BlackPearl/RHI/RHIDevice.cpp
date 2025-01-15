@@ -2,3 +2,6 @@
 #include "RHIDevice.h"
 
 
+namespace BlackPearl {
+
+}

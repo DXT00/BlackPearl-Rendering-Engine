@@ -613,20 +613,20 @@ namespace BlackPearl {
 			return (glIsProgramPipeline(Pipeline) == GL_TRUE);
 		}
 
-		//static FORCEINLINE ERHIFeatureLevel::Type GetFeatureLevel()
-		//{
-		//	return ERHIFeatureLevel::ES3_1;
-		//}
+		static FORCEINLINE ERHIFeatureLevel::Type GetFeatureLevel()
+		{
+			return ERHIFeatureLevel::ES3_1;
+		}
 
-		//static FORCEINLINE EShaderPlatform GetShaderPlatform()
-		//{
-		//	return bAndroidGLESCompatibilityMode ? SP_OPENGL_ES3_1_ANDROID : SP_OPENGL_PCES3_1;
-		//}
+		static FORCEINLINE EShaderPlatform GetShaderPlatform()
+		{
+			return bAndroidGLESCompatibilityMode ? SP_OPENGL_ES3_1_ANDROID : SP_OPENGL_PCES3_1;
+		}
 
-		//static FORCEINLINE FString GetAdapterName()
-		//{
-		//	return ANSI_TO_TCHAR((const char*)glGetString(GL_RENDERER));
-		//}
+		static FORCEINLINE std::string GetAdapterName()
+		{
+			return std::string((const char*)glGetString(GL_RENDERER));
+		}
 
 		static FPlatformOpenGLDevice* CreateDevice()	UGL_REQUIRED(NULL)
 			static FPlatformOpenGLContext* CreateContext(FPlatformOpenGLDevice* Device, void* WindowHandle)	UGL_REQUIRED(NULL)

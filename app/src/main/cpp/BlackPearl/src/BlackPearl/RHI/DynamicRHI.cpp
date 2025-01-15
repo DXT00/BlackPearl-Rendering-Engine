@@ -7,8 +7,14 @@
 #ifdef GE_API_OPENGL
 #include "OpenGLRHI/OpenGLDynamicModule.h"
 #endif
-#include "VulkanRHI/VkDynamicModule.h"
 
+#ifdef GE_API_VULKAN
+#include "VulkanRHI/VkDynamicModule.h"
+#endif
+
+#include "RHIShader.h"
+#include "RHIGlobals.h"
+#include "RHIDefinitions.h"
 
 namespace BlackPearl {
 
@@ -62,4 +68,38 @@ namespace BlackPearl {
 	void RHIEngineExit() {
 		g_DynamicRHI->EngineExit();
 	}
+
+
+
+	EShaderPlatform GMaxRHIShaderPlatform = SP_PCD3D_SM5;
+
+	/** The maximum feature level supported on this machine */
+	ERHIFeatureLevel::Type GMaxRHIFeatureLevel = ERHIFeatureLevel::SM5;
+
+	bool IsRHIDeviceAMD()
+	{
+		assert(GRHIVendorId != 0);
+		return GRHIVendorId == 0x1002;
+	}
+
+	bool IsRHIDeviceIntel()
+	{
+		assert(GRHIVendorId != 0);
+		return GRHIVendorId == 0x8086;
+	}
+
+	bool IsRHIDeviceNVIDIA()
+	{
+		assert(GRHIVendorId != 0);
+		return GRHIVendorId == 0x10DE;
+	}
+
+	bool IsRHIDeviceApple()
+	{
+		assert(GRHIVendorId != 0);
+		return GRHIVendorId == (uint32_t)EGpuVendorId::Apple;
+	}
+
+
+
 }

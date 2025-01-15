@@ -7,6 +7,8 @@
 #include "BlackPearl/Core.h"
 
 namespace BlackPearl {
+    // GL_MAX_DRAW_BUFFERS value
+    GLint GMaxOpenGLDrawBuffers = 0;
     OpenGLFramebuffer::OpenGLFramebuffer()
     {
         glGenFramebuffers(1, &m_Fbo);

@@ -1,20 +1,24 @@
 #pragma once
 #include "../RHIDevice.h"
 #include "../RefCountPtr.h"
-#include "../RHIDevice.h"
 #include "../RHIPipeline.h"
 #include "../RHIFrameBuffer.h"
 #include "../RHIDefinitions.h"
 #include "../RHICommandList.h"
 #include "../RHIQuery.h"
 #include "../RHIDescriptorTable.h"
-
+#include "../OpenGLRHI/OpenGLDriver/OpenGLDrvPrivate.h"
+#include "../OpenGLRHI/OpenGLState.h"
 namespace BlackPearl {
 	class Device :public RefCounter<IDevice>
 	{
 	public:
-		Device(){}
+		Device();
 		virtual ~Device() override {}
+
+
+
+
 		virtual TextureHandle createTexture(TextureDesc& d) ;
 
 		TextureHandle createHandleForNativeTexture(uint32_t objectType, RHIObject texture, const TextureDesc& desc) override;
@@ -66,7 +70,18 @@ namespace BlackPearl {
 	public:
 
 	private:
-		/** Underlying platform-specific data */
+		void InitializeStateResources();
+
+		/** RHI device state, independent of underlying OpenGL context used */
+		FOpenGLRHIState						PendingState;
+
+
+		/* store opengl context*/
+		FPlatformOpenGLDevice* m_PlatformDevice = nullptr;
+		/** Per-context state caching */
+		FOpenGLContextState InvalidContextState;
+		FOpenGLContextState	SharedContextState;
+		FOpenGLContextState	RenderingContextState;
 	};
 
 }

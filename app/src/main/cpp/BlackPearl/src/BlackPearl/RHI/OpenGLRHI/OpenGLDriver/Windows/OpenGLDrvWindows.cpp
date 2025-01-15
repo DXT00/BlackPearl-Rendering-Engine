@@ -2,6 +2,7 @@
 #include "../OpenGLDrvPrivate.h"
 #include "OpenGLDrvWindows.h"
 #include "BlackPearl/RHI/OpenGLRHI/OpenGLViewport.h"
+#include "BlackPearl/RHI/RHIDeviceContext.h"
 #include "BlackPearl/Config.h"
 #include "BlackPearl/RHI/OpenGLRHI/OpenGLDynamicRHI.h"
 #include "BlackPearl/Core/ScopeLock.h"
@@ -278,7 +279,7 @@ void PlatformReleaseOpenGLContext(FPlatformOpenGLDevice* Device, FPlatformOpenGL
 extern void OnQueryInvalidation(void);
 
 /** Platform specific OpenGL device. */
-struct FPlatformOpenGLDevice
+struct FPlatformOpenGLDevice : public RHIDeviceContext
 {
 	FPlatformOpenGLContext	SharedContext;
 	FPlatformOpenGLContext	RenderingContext;
