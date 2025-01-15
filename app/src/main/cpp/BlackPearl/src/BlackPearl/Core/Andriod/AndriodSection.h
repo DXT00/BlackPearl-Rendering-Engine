@@ -77,3 +77,4 @@ private:
 	FPThreadsCriticalSection(const FPThreadsCriticalSection&);
 	FPThreadsCriticalSection& operator=(const FPThreadsCriticalSection&);
 };
+typedef FPThreadsCriticalSection FCriticalSection;

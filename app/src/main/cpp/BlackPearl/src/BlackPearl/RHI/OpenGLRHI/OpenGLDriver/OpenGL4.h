@@ -6,14 +6,16 @@
 
 #pragma once
 
+#include "BlackPearl/RHI/OpenGLRHI/OpenGLDriver/OpenGL3.h"
+
+namespace BlackPearl {
+
 #define OPENGL_GL4		1
 
-//#include "UObject/UObjectHierarchyFwd.h"
-//#include "Misc/AssertionMacros.h"
-#include "OpenGL3.h"
-namespace BlackPearl {
-	struct FOpenGL4 : public FOpenGL3
+
+	class FOpenGL4 : public FOpenGL3
 	{
+	public:
 		static FORCEINLINE bool SupportsDrawIndirect() { return true; }
 
 		// Optional
@@ -91,21 +93,21 @@ namespace BlackPearl {
 		{
 			glTextureView(ViewName, ViewTarget, SrcName, InternalFormat, MinLevel, NumLevels, MinLayer, NumLayers);
 		}
-		static FORCEINLINE void ClearBufferData(GLenum Target, GLenum InternalFormat, GLenum Format, GLenum Type, const uint32* Data)
+		static FORCEINLINE void ClearBufferData(GLenum Target, GLenum InternalFormat, GLenum Format, GLenum Type, const uint32_t* Data)
 		{
 			glClearBufferData(Target, InternalFormat, Format, Type, Data);
 		}
 
 		static void ProcessQueryGLInt();
-		static void ProcessExtensions(const FString& ExtensionsString);
+		static void ProcessExtensions(const std::string& ExtensionsString);
 
-		static FORCEINLINE GLint GetMaxComputeUniformComponents() { check(MaxComputeUniformComponents != -1); return MaxComputeUniformComponents; }
+		static FORCEINLINE GLint GetMaxComputeUniformComponents() { assert(MaxComputeUniformComponents != -1); return MaxComputeUniformComponents; }
 
 		static FORCEINLINE GLint GetFirstComputeUAVUnit() { return 0; }
-		static FORCEINLINE GLint GetMaxComputeUAVUnits() { check(MaxComputeUAVUnits != -1); return MaxComputeUAVUnits; }
+		static FORCEINLINE GLint GetMaxComputeUAVUnits() { assert(MaxComputeUAVUnits != -1); return MaxComputeUAVUnits; }
 		static FORCEINLINE GLint GetFirstVertexUAVUnit() { return 0; }
 		static FORCEINLINE GLint GetFirstPixelUAVUnit() { return 0; }
-		static FORCEINLINE GLint GetMaxPixelUAVUnits() { check(MaxPixelUAVUnits != -1); return MaxPixelUAVUnits; }
+		static FORCEINLINE GLint GetMaxPixelUAVUnits() { assert(MaxPixelUAVUnits != -1); return MaxPixelUAVUnits; }
 		static FORCEINLINE GLint GetMaxCombinedUAVUnits() { return MaxCombinedUAVUnits; }
 
 		static uint64_t GetVideoMemorySize();

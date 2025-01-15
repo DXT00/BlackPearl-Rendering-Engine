@@ -1,3 +1,6 @@
+#include "BlackPearl/Core.h"
+#include COMPILED_PLATFORM_HEADER(Platform.h)
+
 #ifdef GE_PLATFORM_WINDOWS
 #if _DEBUG 
 #define FORCEINLINE	inline									/* Easier to debug */

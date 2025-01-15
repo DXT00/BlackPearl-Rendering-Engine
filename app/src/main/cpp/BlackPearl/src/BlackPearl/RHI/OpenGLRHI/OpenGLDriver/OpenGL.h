@@ -10,6 +10,7 @@
 #include "BlackPearl/Core/Platform.h"
 #include "BlackPearl/Core.h"
 #include "BlackPearl/RHI/RHIDefinitions.h"
+#include "BlackPearl/RHI/OpenGLRHI/OpenGLDriver/OpenGLDrv.h"
 
 namespace BlackPearl {
 
@@ -69,7 +70,7 @@ extern "C" struct FOpenGLTextureFormat;
 class FOpenGLBase
 {
 public:
-	enum class EResourceLockMode : uint8_t
+	enum  EResourceLockMode: uint8_t
 	{
 		RLM_ReadWrite,
 		RLM_ReadOnly,

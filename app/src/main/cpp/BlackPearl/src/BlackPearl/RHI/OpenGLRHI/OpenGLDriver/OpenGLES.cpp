@@ -4,12 +4,12 @@
 	OpenGLES.cpp: OpenGL ES implementation.
 =============================================================================*/
 
-#include "CoreMinimal.h"
-#include "HAL/IConsoleManager.h"
+//#include "CoreMinimal.h"
+//#include "HAL/IConsoleManager.h"
 #include "OpenGLDrv.h"
 #include "OpenGLDrvPrivate.h"
 
-#if !PLATFORM_DESKTOP
+#if !GE_PLATFORM_WINDOWS
 
 #if OPENGL_ES
 

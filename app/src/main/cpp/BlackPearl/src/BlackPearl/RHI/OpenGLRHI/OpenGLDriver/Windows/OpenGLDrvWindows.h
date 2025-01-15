@@ -3,15 +3,20 @@
 #pragma once
 
 //#include COMPILED_PLATFORM_HEADER(OpenGLThirdParty.h)
+#include "BlackPearl/Math/Math.h"
 
 #ifdef GE_PLATFORM_WINDOWS
-#include "glad/glad.h"
-#include <windef.h>
-#include <wingdi.h>
-#include "GL/wglext.h"
+#include <GL/glcorearb.h>
+#include <GL/glext.h>
+#include <GL/wglext.h>
 #else
 	#error "OpenGLWindows.h included for a platform other than Windows."
 #endif
+#if !EMULATE_ES31
+#include "BlackPearl/RHI/OpenGLRHI/OpenGLDriver/OpenGL4.h"
+#endif
+
+
 
 namespace BlackPearl{
 
@@ -394,26 +399,21 @@ namespace BlackPearl{
 	ENUM_GL_ENTRYPOINTS_OPTIONAL(EnumMacro)
 
 /** Declare all GL functions. */
-#define DECLARE_GL_ENTRYPOINTS(Type,Func) extern Type OPENGLDRV_API Func;
+#define DECLARE_GL_ENTRYPOINTS(Type,Func) extern Type Func;
 ENUM_GL_ENTRYPOINTS_ALL(DECLARE_GL_ENTRYPOINTS);
 #undef DECLARE_GL_ENTRYPOINTS
 
 /** This function is handled separately because it is used to get a real context. */
 extern PFNWGLCREATECONTEXTATTRIBSARBPROC wglCreateContextAttribsARB;
 
-
-
-#if !EMULATE_ES31
-#include "../OpenGL4.h"
-#endif
-
 // RenderDoc defines
 #define GL_DEBUG_TOOL_EXT                 0x6789
 #define GL_DEBUG_TOOL_NAME_EXT            0x678A
 #define GL_DEBUG_TOOL_PURPOSE_EXT         0x678B
 
-struct FWindowsOpenGL : public FOpenGL4
+class FWindowsOpenGL : public FOpenGL4
 {
+public:
 	static FORCEINLINE void InitDebugContext()
 	{
 		extern bool GRunningUnderRenderDoc;
@@ -432,7 +432,7 @@ struct FWindowsOpenGL : public FOpenGL4
 	{
 		if (glPushDebugGroup && bDebugContext)
 		{
-			glPushDebugGroup(GL_DEBUG_SOURCE_APPLICATION, 1, FCStringAnsi::Strlen(Name), Name);
+			glPushDebugGroup(GL_DEBUG_SOURCE_APPLICATION, 1, strlen(Name), Name);
 		}
 	}
 
@@ -496,8 +496,9 @@ struct FWindowsOpenGL : public FOpenGL4
 				);
 			}
 		}
-	}
+	};
 
+	
 	static FORCEINLINE void CopyImageSubData(GLuint SrcName, GLenum SrcTarget, GLint SrcLevel, GLint SrcX, GLint SrcY, GLint SrcZ, GLuint DstName, GLenum DstTarget, GLint DstLevel, GLint DstX, GLint DstY, GLint DstZ, GLsizei Width, GLsizei Height, GLsizei Depth)
 	{
 		glCopyImageSubData(SrcName, SrcTarget, SrcLevel, SrcX, SrcY, SrcZ, DstName, DstTarget, DstLevel, DstX, DstY, DstZ, Width, Height, Depth);
@@ -564,6 +565,8 @@ struct FWindowsOpenGL : public FOpenGL4
 	{
 		glProgramBinary(Program, BinaryFormat, Binary, Length);
 	}
+
+
 };
 
 typedef FWindowsOpenGL FOpenGL;

@@ -6,16 +6,17 @@
 
 #pragma once
 
-#include "OpenGL.h"
+#include "BlackPearl/RHI/OpenGLRHI/OpenGLDriver/OpenGL.h"
 #include "OpenGLThirdParty.h"
-
+#include "BlackPearl/Core/Memory.h"
+namespace BlackPearl {
 #define OPENGL_GL3		1
 
 #define USE_OPENGL_NAME_CACHE 1
 #define OPENGL_NAME_CACHE_SIZE 1024
 
 
-namespace BlackPearl {
+
 	struct FPlatformOpenGLContext;
 	struct FPlatformOpenGLDevice;
 
@@ -25,8 +26,10 @@ namespace BlackPearl {
 
 
 
-	struct FOpenGL3 : public BlackPearl::FOpenGLBase
+	class FOpenGL3 : public FOpenGLBase
 	{
+	public:
+
 		static FORCEINLINE bool IsDebugContent() { return bDebugContext; }
 
 		static FORCEINLINE bool SupportsTimestampQueries() { return TimestampQueryBits > 0; }
@@ -574,7 +577,7 @@ namespace BlackPearl {
 		}
 		static FORCEINLINE void ProgramParameter(GLuint Program, GLenum PName, GLint Value)
 		{
-			check(PName != GL_PROGRAM_SEPARABLE);
+			assert(PName != GL_PROGRAM_SEPARABLE);
 			glProgramParameteri(Program, PName, Value);
 		}
 		static FORCEINLINE void ProgramUniform1i(GLuint Program, GLint Location, GLint V0)
@@ -610,15 +613,15 @@ namespace BlackPearl {
 			return (glIsProgramPipeline(Pipeline) == GL_TRUE);
 		}
 
-		static FORCEINLINE ERHIFeatureLevel::Type GetFeatureLevel()
-		{
-			return ERHIFeatureLevel::ES3_1;
-		}
+		//static FORCEINLINE ERHIFeatureLevel::Type GetFeatureLevel()
+		//{
+		//	return ERHIFeatureLevel::ES3_1;
+		//}
 
-		static FORCEINLINE EShaderPlatform GetShaderPlatform()
-		{
-			return bAndroidGLESCompatibilityMode ? SP_OPENGL_ES3_1_ANDROID : SP_OPENGL_PCES3_1;
-		}
+		//static FORCEINLINE EShaderPlatform GetShaderPlatform()
+		//{
+		//	return bAndroidGLESCompatibilityMode ? SP_OPENGL_ES3_1_ANDROID : SP_OPENGL_PCES3_1;
+		//}
 
 		//static FORCEINLINE FString GetAdapterName()
 		//{
@@ -629,7 +632,7 @@ namespace BlackPearl {
 			static FPlatformOpenGLContext* CreateContext(FPlatformOpenGLDevice* Device, void* WindowHandle)	UGL_REQUIRED(NULL)
 
 			static void ProcessQueryGLInt();
-		static void ProcessExtensions(const FString& ExtensionsString);
+		static void ProcessExtensions(const std::string& ExtensionsString);
 
 		static FORCEINLINE int32_t GetReadHalfFloatPixelsEnum() { return GL_HALF_FLOAT; }
 

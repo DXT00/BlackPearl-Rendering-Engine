@@ -8,6 +8,10 @@
 //#include "HAL/IConsoleManager.h"
 #include "OpenGLDrv.h"
 #include "OpenGLDrvPrivate.h"
+#include <string>
+
+namespace BlackPearl {
+
 
 #if OPENGL_GL3
 
@@ -42,19 +46,19 @@ void FOpenGL3::ProcessQueryGLInt()
 #undef LOG_AND_GET_GL_QUERY_INT
 }
 
-void FOpenGL3::ProcessExtensions( const FString& ExtensionsString )
+void FOpenGL3::ProcessExtensions( const std::string& ExtensionsString )
 {
-	int32 MajorVersion = 0;
-	int32 MinorVersion = 0;
+	int32_t MajorVersion = 0;
+	int32_t MinorVersion = 0;
 
-	FString Version = ANSI_TO_TCHAR((const ANSICHAR*)glGetString(GL_VERSION));
-	FString MajorString, MinorString;
-	if (Version.Split(TEXT("."), &MajorString, &MinorString))
-	{
-		MajorVersion = FCString::Atoi(*MajorString);
-		MinorVersion = FCString::Atoi(*MinorString);
-	}
-	check(MajorVersion!=0);
+	std::string Version = std::string((const char*)glGetString(GL_VERSION));
+	std::string MajorString, MinorString;
+	//if (Version.Split(TEXT("."), &MajorString, &MinorString))
+	//{
+	//	MajorVersion = atoi(MajorString.c_str());
+	//	MinorVersion = atoi(MinorString.c_str());
+	//}
+	//assert(MajorVersion!=0);
 
 	ProcessQueryGLInt();
 	FOpenGLBase::ProcessExtensions(ExtensionsString);
@@ -77,7 +81,10 @@ void FOpenGL3::ProcessExtensions( const FString& ExtensionsString )
 		glDeleteFramebuffers(1, &FrameBuffer);
 	}
 
-	bAndroidGLESCompatibilityMode = GetFeatureLevel() == ERHIFeatureLevel::ES3_1 && ExtensionsString.Contains(TEXT("GL_ARB_ES3_1_compatibility")) && FParse::Param(FCommandLine::Get(), TEXT("GLESCompat"));
+	bAndroidGLESCompatibilityMode = ExtensionsString.find("GL_ARB_ES3_1_compatibility") == std::string::npos;
+
+	//bAndroidGLESCompatibilityMode = GetFeatureLevel() == ERHIFeatureLevel::ES3_1 && ExtensionsString.find("GL_ARB_ES3_1_compatibility") != ExtensionsString .end() && FParse::Param(FCommandLine::Get(), TEXT("GLESCompat"));
 }
 
 #endif
+}

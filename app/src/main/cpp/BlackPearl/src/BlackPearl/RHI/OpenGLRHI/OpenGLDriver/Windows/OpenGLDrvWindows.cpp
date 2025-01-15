@@ -4,8 +4,8 @@
 #include "BlackPearl/RHI/OpenGLRHI/OpenGLViewport.h"
 #include "BlackPearl/Config.h"
 #include "BlackPearl/RHI/OpenGLRHI/OpenGLDynamicRHI.h"
-#include "BlackPearl/Core/Windows/WindowsCriticalSection.h"
 #include "BlackPearl/Core/ScopeLock.h"
+#include "BlackPearl/Core/CriticalSection.h"
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 /*=============================================================================
@@ -817,19 +817,19 @@ bool PlatformInitOpenGL()
 		if (bOpenGLSupported)
 		{
 			// Retrieve the OpenGL DLL.
-			void* OpenGLDLL = FPlatformProcess::GetDllHandle(TEXT("opengl32.dll"));
+			void* OpenGLDLL = FPlatformProc::GetDllHandle("opengl32.dll");
 			if (!OpenGLDLL)
 			{
 				//UE_LOG(LogRHI, Fatal, TEXT("Couldn't load opengl32.dll"));
 			}
 
 			// Initialize entry points required by Unreal from opengl32.dll
-#define GET_GL_ENTRYPOINTS_DLL(Type,Func) Func = (Type)FPlatformProcess::GetDllExport(OpenGLDLL,TEXT(#Func));
+#define GET_GL_ENTRYPOINTS_DLL(Type,Func) Func = (Type)FPlatformProc::GetDllExport(OpenGLDLL,#Func);
 			ENUM_GL_ENTRYPOINTS_DLL(GET_GL_ENTRYPOINTS_DLL);
 #undef GET_GL_ENTRYPOINTS_DLL
 
 			// Release the OpenGL DLL.
-			FPlatformProcess::FreeDllHandle(OpenGLDLL);
+			FPlatformProc::FreeDllHandle(OpenGLDLL);
 
 			// Initialize all entry points required by Unreal.
 #define GET_GL_ENTRYPOINTS(Type,Func) Func = (Type)wglGetProcAddress(#Func);
@@ -842,11 +842,11 @@ bool PlatformInitOpenGL()
 
 // Check that all of the entry points have been initialized.
 			bool bFoundAllEntryPoints = true;
-#define CHECK_GL_ENTRYPOINTS(Type,Func) if (Func == NULL) { bFoundAllEntryPoints = false; UE_LOG(LogRHI, Warning, TEXT("Failed to find entry point for %s"), TEXT(#Func)); }
+#define CHECK_GL_ENTRYPOINTS(Type,Func) if (Func == NULL) { bFoundAllEntryPoints = false; printf("Failed to find entry point for %s", #Func); }
 			ENUM_GL_ENTRYPOINTS_DLL(CHECK_GL_ENTRYPOINTS);
 			ENUM_GL_ENTRYPOINTS(CHECK_GL_ENTRYPOINTS);
 #undef CHECK_GL_ENTRYPOINTS
-			assert(bFoundAllEntryPoints, TEXT("Failed to find all OpenGL entry points."));
+			assert(bFoundAllEntryPoints, ("Failed to find all OpenGL entry points."));
 		}
 
 		// The dummy context can now be released.
