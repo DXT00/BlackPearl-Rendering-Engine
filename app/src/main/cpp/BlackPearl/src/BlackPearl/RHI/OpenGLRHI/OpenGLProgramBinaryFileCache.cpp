@@ -192,7 +192,7 @@ void FOpenGLProgramBinaryCache::Initialize()
 		return;
 	}
 
-#if PLATFORM_ANDROID
+#if GE_PLATFORM_ANDROID
 	if (FOpenGL::HasBinaryProgramRetrievalFailed())
 	{
 		if (FOpenGL::SupportsProgramBinary())
