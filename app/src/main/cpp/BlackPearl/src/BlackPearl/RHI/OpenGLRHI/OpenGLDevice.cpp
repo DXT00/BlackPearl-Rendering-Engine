@@ -4,6 +4,7 @@
 #include "OpenGLCubeMapTexture.h"
 #include "OpenGLImageTexture2D.h"
 #include "OpenGLFrameBuffer.h"
+#include "OpenGLCommandList.h"
 #include "BlackPearl/Core.h"
 #include "BlackPearl/Log.h"
 #include "BlackPearl/RHI/OpenGLRHI/OpenGLDriver/OpenGLDrvPrivate.h"
@@ -114,7 +115,11 @@ namespace BlackPearl
 
 	CommandListHandle Device::createCommandList(const CommandListParameters& params)
 	{
-		return CommandListHandle();
+
+		CommandList* cmdList = new CommandList(this, m_Context, params);
+
+		return CommandListHandle::Create(cmdList);
+
 	}
 
 	uint64_t Device::executeCommandLists(ICommandList* const* pCommandLists, size_t numCommandLists, CommandQueue executionQueue)
@@ -597,11 +602,11 @@ namespace BlackPearl
 	Device::Device()
 	{
 
-		m_PlatformDevice = PlatformCreateOpenGLDevice();
+		m_Context.PlatformDevice = PlatformCreateOpenGLDevice();
 
 		InitRHICapabilitiesForGL();
 
-		assert(PlatformOpenGLCurrentContext(m_PlatformDevice) == CONTEXT_Shared);
+		assert(PlatformOpenGLCurrentContext(m_Context.PlatformDevice) == CONTEXT_Shared);
 
 
 		assert(!GIsRHIInitialized);

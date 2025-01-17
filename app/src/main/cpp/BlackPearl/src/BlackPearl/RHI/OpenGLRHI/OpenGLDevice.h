@@ -9,6 +9,7 @@
 #include "../RHIDescriptorTable.h"
 #include "../OpenGLRHI/OpenGLDriver/OpenGLDrvPrivate.h"
 #include "../OpenGLRHI/OpenGLState.h"
+#include "../OpenGLRHI/OpenGLContext.h"
 namespace BlackPearl {
 	class Device :public RefCounter<IDevice>
 	{
@@ -77,7 +78,9 @@ namespace BlackPearl {
 
 
 		/* store opengl context*/
-		FPlatformOpenGLDevice* m_PlatformDevice = nullptr;
+		//FPlatformOpenGLDevice* m_PlatformDevice = nullptr;
+		OpenGLContext m_Context;
+		
 		/** Per-context state caching */
 		FOpenGLContextState InvalidContextState;
 		FOpenGLContextState	SharedContextState;

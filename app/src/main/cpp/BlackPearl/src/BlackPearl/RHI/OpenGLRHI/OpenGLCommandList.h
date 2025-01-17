@@ -8,7 +8,7 @@
 namespace BlackPearl {
 	class CommandList :public RefCounter<ICommandList> {
         // Internal backend methods
-
+    public:
         CommandList(Device* device, const OpenGLContext& context, const CommandListParameters& parameters);
 
        // void executed(Queue& queue, uint64_t submissionID);
@@ -20,7 +20,6 @@ namespace BlackPearl {
         void open() override;
         void close() override;
         void clearState() override;
-
         void clearTextureFloat(ITexture* texture, TextureSubresourceSet subresources, const Color& clearColor) override;
         void clearDepthStencilTexture(ITexture* texture, TextureSubresourceSet subresources, bool clearDepth, float depth, bool clearStencil, uint8_t stencil) override;
         void clearTextureUInt(ITexture* texture, TextureSubresourceSet subresources, uint32_t clearColor) override;
@@ -94,6 +93,9 @@ namespace BlackPearl {
 
         const GraphicsState& GetLastGraphicsState() const { return m_CurrentGraphicsState; }
     private:
+        void _setViewport(float minX, float minY, float minZ, float maxX, float maxY, float maxZ);
+    
+    private:
         Device* m_Device;
         OpenGLContext m_Context;
 
@@ -129,7 +131,7 @@ namespace BlackPearl {
 
         /** A list of all viewport RHIs that have been created. */
         std::vector<OpenGLViewport*>        Viewports;
-        RefCounter<OpenGLViewport>		DrawingViewport;
+        OpenGLViewport*		                DrawingViewport;
         bool								bRevertToSharedContextAfterDrawingViewport;
 
         bool								bIsRenderingContextAcquired;
@@ -154,8 +156,7 @@ namespace BlackPearl {
         /** Cached mip-limits for textures when ARB_texture_view is unavailable */
         std::map<GLuint, std::pair<GLenum, GLenum>> TextureMipLimits;
 
-        /** Underlying platform-specific data */
-        struct FPlatformOpenGLDevice* PlatformDevice;
+ 
 
         ///** Query list. This is used to inform queries they're no longer valid when OpenGL context they're in gets released from another thread. */
         //std::vector<FOpenGLRenderQuery*> Queries;
