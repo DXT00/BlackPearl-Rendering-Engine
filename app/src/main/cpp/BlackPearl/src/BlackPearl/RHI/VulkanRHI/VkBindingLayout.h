@@ -6,7 +6,7 @@
 #include "VkContext.h"
 #include <vulkan/vulkan_core.h>
 namespace BlackPearl {
-	class BindingLayout :public RefCounter<IBindingLayout>
+	class BindingLayout : public RefCounter<IBindingLayout>
 	{
     public:
         RHIBindingLayoutDesc desc;

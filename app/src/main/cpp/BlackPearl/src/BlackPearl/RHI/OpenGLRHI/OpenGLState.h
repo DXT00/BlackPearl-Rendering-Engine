@@ -7,6 +7,8 @@
 #include "OpenGLShaderResource.h"
 #include "BlackPearl/RHI/RHIDefinitions.h"
 #include "OpenGLBuffer.h"
+#include "OpenGLPipeline.h"
+#include "OpenGLShader.h"
 #include "../OpenGLRHI/OpenGLDriver/OpenGLDrvPrivate.h"
 namespace BlackPearl {
 
@@ -341,7 +343,7 @@ struct FOpenGLContextState final : public FOpenGLCommonState
 	int32_t							FirstNonzeroRenderTarget;
 	bool							bAlphaToCoverageEnabled;
 
-	FOpenGLVertexDeclaration* VertexDecl;
+	//FOpenGLVertexDeclaration* VertexDecl;
 	FOpenGLCachedAttr				VertexAttrs[NUM_OPENGL_VERTEX_STREAMS];
 	FOpenGLStream					VertexStreams[NUM_OPENGL_VERTEX_STREAMS];
 
@@ -384,7 +386,7 @@ struct FOpenGLContextState final : public FOpenGLCommonState
 		, ClearDepth(-1.0f)
 		, FirstNonzeroRenderTarget(0)
 		, bAlphaToCoverageEnabled(false)
-		, VertexDecl(0)
+	//	, VertexDecl(0)
 		, VertexAttrs()
 		, VertexStreams()
 		, ActiveStreamMask(0)
@@ -432,9 +434,9 @@ struct FOpenGLRHIState final : public FOpenGLCommonState
 	bool							bAlphaToCoverageEnabled;
 
 	// Pending framebuffer setup
-	int32_t							NumRenderingSamples;// Only used with GL_EXT_multisampled_render_to_texture
-	int32_t							FirstNonzeroRenderTarget;
-	FOpenGLTexture*					RenderTargets[c_MaxRenderTargets];
+	int32_t								NumRenderingSamples;// Only used with GL_EXT_multisampled_render_to_texture
+	int32_t								FirstNonzeroRenderTarget;
+	FOpenGLTexture*					    RenderTargets[c_MaxRenderTargets];
 	uint32_t							RenderTargetMipmapLevels[c_MaxRenderTargets];
 	uint32_t							RenderTargetArrayIndex[c_MaxRenderTargets];
 	FOpenGLTexture* DepthStencil;
@@ -444,7 +446,7 @@ struct FOpenGLRHIState final : public FOpenGLCommonState
 	bool							bFramebufferSetupInvalid;
 
 	// Information about pending BeginDraw[Indexed]PrimitiveUP calls.
-	FOpenGLStream					DynamicVertexStream;
+	FOpenGLStream					    DynamicVertexStream;
 	uint32_t							NumVertices;
 	uint32_t							PrimitiveType;
 	uint32_t							NumPrimitives;
@@ -457,8 +459,10 @@ struct FOpenGLRHIState final : public FOpenGLCommonState
 	//FOpenGLLinkedProgram* LinkedProgramAndDirtyFlag;
 	//FOpenGLShaderParameterCache* ShaderParameters;
 
-	//TRefCountPtr<FOpenGLBoundShaderState>	BoundShaderState;
-	//FComputeShaderRHIRef					CurrentComputeShader;
+	//FOpenGLBoundShaderState*	BoundShaderState;
+	GraphicsPipeline*		GraphicsPipline;
+
+	Shader*					CurrentComputeShader;
 
 	/** The RHI does not allow more than 14 constant buffers per shader stage due to D3D11 limits. */
 	enum { MAX_UNIFORM_BUFFERS_PER_SHADER_STAGE = 14 };

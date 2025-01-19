@@ -50,9 +50,85 @@ namespace BlackPearl{
 	}
 	void CommandList::setGraphicsState(const GraphicsState& state)
 	{
+		FRHIGraphicsPipelineStateFallBack* FallbackGraphicsState = static_cast<FRHIGraphicsPipelineStateFallBack*>(GraphicsState);
+
+		auto& PsoInit = FallbackGraphicsState->Initializer;
+
+		if (PsoInit.bFromPSOFileCache)
+		{
+			checkNoEntry();
+			// 		// If we're from the PSO cache we're just preparing the PSO and do not need to set the state.
+			return;
+		}
+
+		RHISetBoundShaderState(
+			RHICreateBoundShaderState_internal(
+				PsoInit.BoundShaderState.VertexDeclarationRHI,
+				PsoInit.BoundShaderState.VertexShaderRHI,
+				PsoInit.BoundShaderState.PixelShaderRHI,
+				PsoInit.BoundShaderState.GetGeometryShader(),
+				PsoInit.bFromPSOFileCache
+			).GetReference()
+		);
+
+		RHISetDepthStencilState(FallbackGraphicsState->Initializer.DepthStencilState, StencilRef);
+		RHISetRasterizerState(FallbackGraphicsState->Initializer.RasterizerState);
+		RHISetBlendState(FallbackGraphicsState->Initializer.BlendState, FLinearColor(1.0f, 1.0f, 1.0f));
+		if (GSupportsDepthBoundsTest)
+		{
+			RHIEnableDepthBoundsTest(FallbackGraphicsState->Initializer.bDepthBounds);
+		}
+
+		if (bApplyAdditionalState)
+		{
+			ApplyStaticUniformBuffers(PsoInit.BoundShaderState.VertexShaderRHI, ResourceCast(PsoInit.BoundShaderState.VertexShaderRHI));
+			ApplyStaticUniformBuffers(PsoInit.BoundShaderState.GetGeometryShader(), ResourceCast(PsoInit.BoundShaderState.GetGeometryShader()));
+			ApplyStaticUniformBuffers(PsoInit.BoundShaderState.PixelShaderRHI, ResourceCast(PsoInit.BoundShaderState.PixelShaderRHI));
+		}
+
+		// Store the PSO's primitive (after since IRHICommandContext::RHISetGraphicsPipelineState sets the BSS)
+		m_Device->PSOPrimitiveType = PsoInit.PrimitiveType;
 	}
 	void CommandList::draw(const DrawArguments& args)
 	{
+		//SCOPE_CYCLE_COUNTER_DETAILED(STAT_OpenGLDrawPrimitiveTime);
+		//VERIFY_GL_SCOPE();
+		//RHI_DRAW_CALL_STATS(PrimitiveType, NumPrimitives * NumInstances);
+
+		FOpenGLContextState& ContextState = m_Device->GetContextStateForCurrentContext();
+		m_Device->BindPendingFramebuffer(ContextState);
+		m_Device->SetPendingBlendStateForActiveRenderTargets(ContextState);
+		m_Device->UpdateViewportInOpenGLContext(ContextState);
+		m_Device->UpdateScissorRectInOpenGLContext(ContextState);
+		m_Device->UpdateRasterizerStateInOpenGLContext(ContextState);
+		m_Device->UpdateDepthStencilStateInOpenGLContext(ContextState);
+		m_Device->BindPendingShaderState(ContextState);
+		m_Device->CommitGraphicsResourceTables();
+		m_Device->SetupTexturesForDraw(ContextState);
+		m_Device->SetupUAVsForDraw(ContextState);
+		m_Device->CommitNonComputeShaderConstants();
+		m_Device->CachedBindElementArrayBuffer(ContextState, 0);
+		uint32_t VertexCount = GetVertexCountForPrimitiveCount(NumPrimitives, PrimitiveType);
+		SetupVertexArrays(ContextState, BaseVertexIndex, PendingState.Streams, NUM_OPENGL_VERTEX_STREAMS, VertexCount);
+
+		GLenum DrawMode = GL_TRIANGLES;
+		GLsizei NumElements = 0;
+		FindPrimitiveType(PrimitiveType, NumPrimitives, DrawMode, NumElements);
+
+		GPUProfilingData.RegisterGPUWork(NumPrimitives * NumInstances, VertexCount * NumInstances);
+		if (NumInstances == 1)
+		{
+			//SCOPE_CYCLE_COUNTER_DETAILED(STAT_OpenGLDrawPrimitiveDriverTime);
+			//CONDITIONAL_SCOPE_CYCLE_COUNTER(STAT_OpenGLShaderFirstDrawTime, PendingState.BoundShaderState->RequiresDriverInstantiation());
+			glDrawArrays(DrawMode, 0, NumElements);
+		}
+		else
+		{
+			//SCOPE_CYCLE_COUNTER_DETAILED(STAT_OpenGLDrawPrimitiveDriverTime);
+			//CONDITIONAL_SCOPE_CYCLE_COUNTER(STAT_OpenGLShaderFirstDrawTime, PendingState.BoundShaderState->RequiresDriverInstantiation());
+			FOpenGL::DrawArraysInstanced(DrawMode, 0, NumElements, NumInstances);
+		}
+		GOpenGLKickHint.OnDrawCall(ContextState);
 	}
 	void CommandList::drawIndexed(const DrawArguments& args)
 	{

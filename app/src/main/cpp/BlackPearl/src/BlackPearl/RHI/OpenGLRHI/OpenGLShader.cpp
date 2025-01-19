@@ -1,7 +1,7 @@
 #pragma once
 #include"pch.h"
 #include <glad/glad.h>
-#include "Shader.h"
+#include "OpenGLShader.h"
 #include <BlackPearl/Core.h>
 #include "BlackPearl/Component/LightComponent/ParallelLight.h"
 #include "BlackPearl/Component/LightComponent/PointLight.h"
@@ -10,7 +10,7 @@
 #include "BlackPearl/Renderer/Renderer.h"
 #include "BlackPearl/Component/LightComponent/LightSources.h"
 #include "BlackPearl/Component/TransformComponent/Transform.h"
-#include "BlackPearl/Core.h"
+#include "../OpenGLRHI/OpenGLDevice.h"
 namespace BlackPearl {
 
 	static GLenum ShaderTypeFromString(const std::string&type) {
@@ -420,5 +420,131 @@ namespace BlackPearl {
 		glUniform2iv(location, 1, &value[0]);
 		GE_ERROR_JUDGE();
 
+	}
+
+	void Device::BindUniformBufferBase(FOpenGLContextState& ContextState, int32_t NumUniformBuffers, uint32_t** BoundUniformBuffers, uint32_t FirstUniformBuffer, bool ForceUpdate)
+	{
+		/*SCOPE_CYCLE_COUNTER_DETAILED(STAT_OpenGLUniformBindTime);
+		VERIFY_GL_SCOPE();
+		checkSlow(IsInRenderingThread() || IsInRHIThread());*/
+
+		for (int32_t BufferIndex = 0; BufferIndex < NumUniformBuffers; ++BufferIndex)
+		{
+			GLuint Buffer = 0;
+			uint32_t Offset = 0;
+			uint32_t Size = ZERO_FILLED_DUMMY_UNIFORM_BUFFER_SIZE;
+			int32_t BindIndex = FirstUniformBuffer + BufferIndex;
+
+			if (BoundUniformBuffers[BufferIndex])
+			{
+	/*			FRHIUniformBuffer* UB = BoundUniformBuffers[BufferIndex];
+				FOpenGLUniformBuffer* GLUB = ((FOpenGLUniformBuffer*)UB);*/
+				Buffer = (GLuint)BoundUniformBuffers[BufferIndex]; //GLUB->Resource;
+
+				if (GLUB->bIsEmulatedUniformBuffer)
+				{
+					continue;
+				}
+
+				Size = GLUB->GetSize();
+#if SUBALLOCATED_CONSTANT_BUFFER
+				Offset = GLUB->Offset;
+#endif
+			}
+			else
+			{
+				if (PendingState.ZeroFilledDummyUniformBuffer == 0)
+				{
+					void* ZeroBuffer = malloc(ZERO_FILLED_DUMMY_UNIFORM_BUFFER_SIZE);
+					FMemory::Memzero(ZeroBuffer, ZERO_FILLED_DUMMY_UNIFORM_BUFFER_SIZE);
+					FOpenGL::GenBuffers(1, &PendingState.ZeroFilledDummyUniformBuffer);
+					assert(PendingState.ZeroFilledDummyUniformBuffer != 0);
+					CachedBindUniformBuffer(ContextState, PendingState.ZeroFilledDummyUniformBuffer);
+					glBufferData(GL_UNIFORM_BUFFER, ZERO_FILLED_DUMMY_UNIFORM_BUFFER_SIZE, ZeroBuffer, GL_STATIC_DRAW);
+					delete ZeroBuffer;
+
+					OpenGLBufferStats::UpdateUniformBufferStats(ZERO_FILLED_DUMMY_UNIFORM_BUFFER_SIZE, true);
+				}
+
+				Buffer = PendingState.ZeroFilledDummyUniformBuffer;
+			}
+
+			if (ForceUpdate || (Buffer != 0 && ContextState.UniformBuffers[BindIndex] != Buffer) || ContextState.UniformBufferOffsets[BindIndex] != Offset)
+			{
+				FOpenGL::BindBufferRange(GL_UNIFORM_BUFFER, BindIndex, Buffer, Offset, Size);
+				ContextState.UniformBuffers[BindIndex] = Buffer;
+				ContextState.UniformBufferOffsets[BindIndex] = Offset;
+				ContextState.UniformBufferBound = Buffer;	// yes, calling glBindBufferRange also changes uniform buffer binding.
+			}
+		}
+	}
+	void Device::BindPendingShaderState(FOpenGLContextState& ContextState)
+	{
+		bool ForceUniformBindingUpdate = false;
+
+		GLuint PendingProgram = PendingState.GraphicsPipline->shaderLinkProgram;
+		if (ContextState.Program != PendingProgram)
+		{
+			FOpenGL::BindProgramPipeline(PendingProgram);
+			ContextState.Program = PendingProgram;
+			//MarkShaderParameterCachesDirty(PendingState.ShaderParameters, false);
+			//PendingState.LinkedProgramAndDirtyFlag = nullptr;
+		}
+
+		if (PendingState.bAnyDirtyRealUniformBuffers[(int)ShaderType::Vertex] ||
+			PendingState.bAnyDirtyRealUniformBuffers[(int)ShaderType::Pixel] ||
+			PendingState.bAnyDirtyRealUniformBuffers[(int)ShaderType::Geometry])
+		{
+			int32_t NextUniformBufferIndex = OGL_FIRST_UNIFORM_BUFFER;
+
+			/*static_assert(SF_NumGraphicsFrequencies == 5 && SF_NumFrequencies == 10, "Unexpected SF_ ordering");
+			static_assert(SF_RayGen > SF_NumGraphicsFrequencies, "SF_NumGraphicsFrequencies be the number of frequencies supported in OpenGL");*/
+
+			int32_t NumUniformBuffers[(int)ShaderType::AllGraphics];
+
+			PendingState.GraphicsPipline->pipelineBindingLayouts->getNumUniformBuffers(NumUniformBuffers);
+
+			if (PendingState.bAnyDirtyRealUniformBuffers[(int)ShaderType::Vertex])
+			{
+				BindUniformBufferBase(
+					ContextState,
+					NumUniformBuffers[(int)ShaderType::Vertex],
+					PendingState.BoundUniformBuffers[(int)ShaderType::Vertex],
+					NextUniformBufferIndex,
+					ForceUniformBindingUpdate);
+			}
+			NextUniformBufferIndex += NumUniformBuffers[(int)ShaderType::Vertex];
+
+			if (PendingState.bAnyDirtyRealUniformBuffers[(int)ShaderType::Pixel])
+			{
+				BindUniformBufferBase(
+					ContextState,
+					NumUniformBuffers[(int)ShaderType::Pixel]],
+					PendingState.BoundUniformBuffers[SF_Pixel],
+					NextUniformBufferIndex,
+					ForceUniformBindingUpdate);
+			}
+			NextUniformBufferIndex += NumUniformBuffers[(int)ShaderType::Pixel];
+
+			if (NumUniformBuffers[(int)ShaderType::Geometry] >= 0 && PendingState.bAnyDirtyRealUniformBuffers[SF_Geometry])
+			{
+				BindUniformBufferBase(
+					ContextState,
+					NumUniformBuffers[SF_Geometry],
+					PendingState.BoundUniformBuffers[SF_Geometry],
+					NextUniformBufferIndex,
+					ForceUniformBindingUpdate);
+				NextUniformBufferIndex += NumUniformBuffers[SF_Geometry];
+			}
+
+			PendingState.bAnyDirtyRealUniformBuffers[(int)ShaderType::Vertex] = false;
+			PendingState.bAnyDirtyRealUniformBuffers[(int)ShaderType::Pixel] = false;
+			PendingState.bAnyDirtyRealUniformBuffers[(int)ShaderType::Geometry] = false;
+		}
+
+		if (FOpenGL::SupportsBindlessTexture())
+		{
+			SetupBindlessTextures(ContextState, PendingState.BoundShaderState->LinkedProgram->Samplers);
+		}
 	}
 }

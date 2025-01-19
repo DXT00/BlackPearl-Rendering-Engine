@@ -54,9 +54,41 @@ namespace BlackPearl
 	}
 
 
-	BufferHandle Device::createBuffer(const BufferDesc& d)
+	BufferHandle Device::createBuffer(const BufferDesc& desc)
 	{
-		return BufferHandle();
+		if (desc.isVolatile && desc.maxVersions == 0)
+			return nullptr;
+
+		if (desc.isVolatile && !desc.isConstantBuffer)
+			return nullptr;
+
+		if (desc.byteSize == 0)
+			return nullptr;
+
+
+		OpenGLBuffer* buffer = nullptr;
+		if (desc.isVertexBuffer) {
+			buffer = OpenGLBufferFactory::createVertexBuffer(desc);
+		}
+		else if (desc.isIndexBuffer) {
+			buffer = OpenGLBufferFactory::createIndexBuffer(desc);
+		}
+		else if (desc.isConstantBuffer) {
+			buffer = OpenGLBufferFactory::createIndexBuffer(desc);
+		}
+		else if (desc.isDrawIndirectArgs) {
+			buffer = OpenGLBufferFactory::createIndexBuffer(desc);
+		}
+		else if (desc.canHaveUAVs) {
+			buffer = OpenGLBufferFactory::createIndexBuffer(desc);
+		}
+		else if (desc.canHaveTypedViews) {
+			buffer = OpenGLBufferFactory::createIndexBuffer(desc);
+		}
+		else if (desc.canHaveTypedViews) {
+			buffer = OpenGLBufferFactory::createIndexBuffer(desc);
+		}
+
 	}
 
 	FramebufferHandle Device::createFramebuffer(const FramebufferDesc& desc)
@@ -206,6 +238,34 @@ namespace BlackPearl
 		SharedContextState.InitializeResources(FOpenGL::GetMaxCombinedTextureImageUnits(), FOpenGL::GetMaxCombinedUAVUnits());
 		RenderingContextState.InitializeResources(FOpenGL::GetMaxCombinedTextureImageUnits(), FOpenGL::GetMaxCombinedUAVUnits());
 		PendingState.InitializeResources(FOpenGL::GetMaxCombinedTextureImageUnits(), FOpenGL::GetMaxCombinedUAVUnits());
+	}
+
+	FOpenGLContextState& Device::GetContextStateForCurrentContext(bool bAssertIfInvalid)
+	{
+		// most common case
+		if (BeginSceneContextType == CONTEXT_Rendering)
+		{
+			return RenderingContextState;
+		}
+
+		int32_t ContextType = (int32_t)PlatformOpenGLCurrentContext(m_Context.PlatformDevice);
+		if (bAssertIfInvalid)
+		{
+			assert(ContextType >= 0);
+		}
+		else if (ContextType < 0)
+		{
+			return InvalidContextState;
+		}
+
+		if (ContextType == CONTEXT_Rendering)
+		{
+			return RenderingContextState;
+		}
+		else
+		{
+			return SharedContextState;
+		}
 	}
 
 	static void InitRHICapabilitiesForGL() {
@@ -664,5 +724,228 @@ namespace BlackPearl
 
 		FRenderResource::InitPreRHIResources();*/
 		GIsRHIInitialized = true;
+	}
+
+	void Device::SetPendingBlendStateForActiveRenderTargets(FOpenGLContextState& ContextState)
+	{
+		bool bABlendWasSet = false;
+		bool bMSAAEnabled = false;
+
+		//
+		// Need to expand setting for glBlendFunction and glBlendEquation
+
+		for (uint32_t RenderTargetIndex = 0; RenderTargetIndex < c_MaxRenderTargets; ++RenderTargetIndex)
+		{
+			if (PendingState.RenderTargets[RenderTargetIndex] == 0)
+			{
+				// Even if on this stage blend states are incompatible with other stages, we can disregard it, as no render target is assigned to it.
+				continue;
+			}
+			else if (RenderTargetIndex == 0)
+			{
+				Texture* RenderTarget2D = PendingState.RenderTargets[RenderTargetIndex];
+				bMSAAEnabled = PendingState.NumRenderingSamples > 1 || RenderTarget2D->IsMultisampled();
+			}
+
+			const FOpenGLBlendStateData::FRenderTarget& RenderTargetBlendState = PendingState.BlendState.RenderTargets[RenderTargetIndex];
+			FOpenGLBlendStateData::FRenderTarget& CachedRenderTargetBlendState = ContextState.BlendState.RenderTargets[RenderTargetIndex];
+
+			if (CachedRenderTargetBlendState.bAlphaBlendEnable != RenderTargetBlendState.bAlphaBlendEnable)
+			{
+				if (RenderTargetBlendState.bAlphaBlendEnable)
+				{
+					FOpenGL::EnableIndexed(GL_BLEND, RenderTargetIndex);
+				}
+				else
+				{
+					FOpenGL::DisableIndexed(GL_BLEND, RenderTargetIndex);
+				}
+				CachedRenderTargetBlendState.bAlphaBlendEnable = RenderTargetBlendState.bAlphaBlendEnable;
+			}
+
+			if (RenderTargetBlendState.bAlphaBlendEnable)
+			{
+				if (FOpenGL::SupportsSeparateAlphaBlend())
+				{
+					// Set current blend per stage
+					if (RenderTargetBlendState.bSeparateAlphaBlendEnable)
+					{
+						if (CachedRenderTargetBlendState.ColorSourceBlendFactor != RenderTargetBlendState.ColorSourceBlendFactor
+							|| CachedRenderTargetBlendState.ColorDestBlendFactor != RenderTargetBlendState.ColorDestBlendFactor
+							|| CachedRenderTargetBlendState.AlphaSourceBlendFactor != RenderTargetBlendState.AlphaSourceBlendFactor
+							|| CachedRenderTargetBlendState.AlphaDestBlendFactor != RenderTargetBlendState.AlphaDestBlendFactor)
+						{
+							FOpenGL::BlendFuncSeparatei(
+								RenderTargetIndex,
+								RenderTargetBlendState.ColorSourceBlendFactor, RenderTargetBlendState.ColorDestBlendFactor,
+								RenderTargetBlendState.AlphaSourceBlendFactor, RenderTargetBlendState.AlphaDestBlendFactor
+							);
+						}
+
+						if (CachedRenderTargetBlendState.ColorBlendOperation != RenderTargetBlendState.ColorBlendOperation
+							|| CachedRenderTargetBlendState.AlphaBlendOperation != RenderTargetBlendState.AlphaBlendOperation)
+						{
+							FOpenGL::BlendEquationSeparatei(
+								RenderTargetIndex,
+								RenderTargetBlendState.ColorBlendOperation,
+								RenderTargetBlendState.AlphaBlendOperation
+							);
+						}
+					}
+					else
+					{
+						if (CachedRenderTargetBlendState.ColorSourceBlendFactor != RenderTargetBlendState.ColorSourceBlendFactor
+							|| CachedRenderTargetBlendState.ColorDestBlendFactor != RenderTargetBlendState.ColorDestBlendFactor
+							|| CachedRenderTargetBlendState.AlphaSourceBlendFactor != RenderTargetBlendState.AlphaSourceBlendFactor
+							|| CachedRenderTargetBlendState.AlphaDestBlendFactor != RenderTargetBlendState.AlphaDestBlendFactor)
+						{
+							FOpenGL::BlendFunci(RenderTargetIndex, RenderTargetBlendState.ColorSourceBlendFactor, RenderTargetBlendState.ColorDestBlendFactor);
+						}
+
+						if (CachedRenderTargetBlendState.ColorBlendOperation != RenderTargetBlendState.ColorBlendOperation)
+						{
+							FOpenGL::BlendEquationi(RenderTargetIndex, RenderTargetBlendState.ColorBlendOperation);
+						}
+					}
+
+					CachedRenderTargetBlendState.bSeparateAlphaBlendEnable = RenderTargetBlendState.bSeparateAlphaBlendEnable;
+					CachedRenderTargetBlendState.ColorBlendOperation = RenderTargetBlendState.ColorBlendOperation;
+					CachedRenderTargetBlendState.ColorSourceBlendFactor = RenderTargetBlendState.ColorSourceBlendFactor;
+					CachedRenderTargetBlendState.ColorDestBlendFactor = RenderTargetBlendState.ColorDestBlendFactor;
+					if (RenderTargetBlendState.bSeparateAlphaBlendEnable)
+					{
+						CachedRenderTargetBlendState.AlphaSourceBlendFactor = RenderTargetBlendState.AlphaSourceBlendFactor;
+						CachedRenderTargetBlendState.AlphaDestBlendFactor = RenderTargetBlendState.AlphaDestBlendFactor;
+					}
+					else
+					{
+						CachedRenderTargetBlendState.AlphaSourceBlendFactor = RenderTargetBlendState.ColorSourceBlendFactor;
+						CachedRenderTargetBlendState.AlphaDestBlendFactor = RenderTargetBlendState.ColorDestBlendFactor;
+					}
+				}
+				else
+				{
+					if (bABlendWasSet)
+					{
+						// Detect the case of subsequent render target needing different blend setup than one already set in this call.
+						if (CachedRenderTargetBlendState.bSeparateAlphaBlendEnable != RenderTargetBlendState.bSeparateAlphaBlendEnable
+							|| CachedRenderTargetBlendState.ColorBlendOperation != RenderTargetBlendState.ColorBlendOperation
+							|| CachedRenderTargetBlendState.ColorSourceBlendFactor != RenderTargetBlendState.ColorSourceBlendFactor
+							|| CachedRenderTargetBlendState.ColorDestBlendFactor != RenderTargetBlendState.ColorDestBlendFactor
+							|| (RenderTargetBlendState.bSeparateAlphaBlendEnable &&
+								(CachedRenderTargetBlendState.AlphaSourceBlendFactor != RenderTargetBlendState.AlphaSourceBlendFactor
+									|| CachedRenderTargetBlendState.AlphaDestBlendFactor != RenderTargetBlendState.AlphaDestBlendFactor
+									)
+								)
+							)
+							GE_CORE_INFO("OpenGL state on draw requires setting different blend operation or factors to different render targets. This is not supported on Mac OS X!");
+					}
+					else
+					{
+						// Set current blend to all stages
+						if (RenderTargetBlendState.bSeparateAlphaBlendEnable)
+						{
+							if (CachedRenderTargetBlendState.ColorSourceBlendFactor != RenderTargetBlendState.ColorSourceBlendFactor
+								|| CachedRenderTargetBlendState.ColorDestBlendFactor != RenderTargetBlendState.ColorDestBlendFactor
+								|| CachedRenderTargetBlendState.AlphaSourceBlendFactor != RenderTargetBlendState.AlphaSourceBlendFactor
+								|| CachedRenderTargetBlendState.AlphaDestBlendFactor != RenderTargetBlendState.AlphaDestBlendFactor)
+							{
+								glBlendFuncSeparate(
+									RenderTargetBlendState.ColorSourceBlendFactor, RenderTargetBlendState.ColorDestBlendFactor,
+									RenderTargetBlendState.AlphaSourceBlendFactor, RenderTargetBlendState.AlphaDestBlendFactor
+								);
+							}
+
+							if (CachedRenderTargetBlendState.ColorBlendOperation != RenderTargetBlendState.ColorBlendOperation
+								|| CachedRenderTargetBlendState.AlphaBlendOperation != RenderTargetBlendState.AlphaBlendOperation)
+							{
+								glBlendEquationSeparate(
+									RenderTargetBlendState.ColorBlendOperation,
+									RenderTargetBlendState.AlphaBlendOperation
+								);
+							}
+						}
+						else
+						{
+							if (CachedRenderTargetBlendState.ColorSourceBlendFactor != RenderTargetBlendState.ColorSourceBlendFactor
+								|| CachedRenderTargetBlendState.ColorDestBlendFactor != RenderTargetBlendState.ColorDestBlendFactor
+								|| CachedRenderTargetBlendState.AlphaSourceBlendFactor != RenderTargetBlendState.AlphaSourceBlendFactor
+								|| CachedRenderTargetBlendState.AlphaDestBlendFactor != RenderTargetBlendState.AlphaDestBlendFactor)
+							{
+								glBlendFunc(RenderTargetBlendState.ColorSourceBlendFactor, RenderTargetBlendState.ColorDestBlendFactor);
+							}
+
+							if (CachedRenderTargetBlendState.ColorBlendOperation != RenderTargetBlendState.ColorBlendOperation
+								|| CachedRenderTargetBlendState.AlphaBlendOperation != RenderTargetBlendState.ColorBlendOperation)
+							{
+								glBlendEquation(RenderTargetBlendState.ColorBlendOperation);
+							}
+						}
+
+						// Set cached values of all stages to what they were set by global calls, common to all stages
+						for (uint32_t RenderTargetIndex2 = 0; RenderTargetIndex2 < c_MaxRenderTargets; ++RenderTargetIndex2)
+						{
+							FOpenGLBlendStateData::FRenderTarget& CachedRenderTargetBlendState2 = ContextState.BlendState.RenderTargets[RenderTargetIndex2];
+							CachedRenderTargetBlendState2.bSeparateAlphaBlendEnable = RenderTargetBlendState.bSeparateAlphaBlendEnable;
+							CachedRenderTargetBlendState2.ColorBlendOperation = RenderTargetBlendState.ColorBlendOperation;
+							CachedRenderTargetBlendState2.ColorSourceBlendFactor = RenderTargetBlendState.ColorSourceBlendFactor;
+							CachedRenderTargetBlendState2.ColorDestBlendFactor = RenderTargetBlendState.ColorDestBlendFactor;
+							if (RenderTargetBlendState.bSeparateAlphaBlendEnable)
+							{
+								CachedRenderTargetBlendState2.AlphaBlendOperation = RenderTargetBlendState.AlphaBlendOperation;
+								CachedRenderTargetBlendState2.AlphaSourceBlendFactor = RenderTargetBlendState.AlphaSourceBlendFactor;
+								CachedRenderTargetBlendState2.AlphaDestBlendFactor = RenderTargetBlendState.AlphaDestBlendFactor;
+								CachedRenderTargetBlendState2.AlphaBlendOperation = RenderTargetBlendState.AlphaBlendOperation;
+							}
+							else
+							{
+								CachedRenderTargetBlendState2.AlphaBlendOperation = RenderTargetBlendState.ColorBlendOperation;
+								CachedRenderTargetBlendState2.AlphaSourceBlendFactor = RenderTargetBlendState.ColorSourceBlendFactor;
+								CachedRenderTargetBlendState2.AlphaDestBlendFactor = RenderTargetBlendState.ColorDestBlendFactor;
+								CachedRenderTargetBlendState2.AlphaBlendOperation = RenderTargetBlendState.ColorBlendOperation;
+							}
+						}
+
+						bABlendWasSet = true;
+					}
+				}
+			}
+
+			CachedRenderTargetBlendState.bSeparateAlphaBlendEnable = RenderTargetBlendState.bSeparateAlphaBlendEnable;
+
+			if (CachedRenderTargetBlendState.ColorWriteMaskR != RenderTargetBlendState.ColorWriteMaskR
+				|| CachedRenderTargetBlendState.ColorWriteMaskG != RenderTargetBlendState.ColorWriteMaskG
+				|| CachedRenderTargetBlendState.ColorWriteMaskB != RenderTargetBlendState.ColorWriteMaskB
+				|| CachedRenderTargetBlendState.ColorWriteMaskA != RenderTargetBlendState.ColorWriteMaskA)
+			{
+				FOpenGL::ColorMaskIndexed(
+					RenderTargetIndex,
+					RenderTargetBlendState.ColorWriteMaskR,
+					RenderTargetBlendState.ColorWriteMaskG,
+					RenderTargetBlendState.ColorWriteMaskB,
+					RenderTargetBlendState.ColorWriteMaskA
+				);
+
+				CachedRenderTargetBlendState.ColorWriteMaskR = RenderTargetBlendState.ColorWriteMaskR;
+				CachedRenderTargetBlendState.ColorWriteMaskG = RenderTargetBlendState.ColorWriteMaskG;
+				CachedRenderTargetBlendState.ColorWriteMaskB = RenderTargetBlendState.ColorWriteMaskB;
+				CachedRenderTargetBlendState.ColorWriteMaskA = RenderTargetBlendState.ColorWriteMaskA;
+			}
+		}
+
+		PendingState.bAlphaToCoverageEnabled = bMSAAEnabled && PendingState.BlendState.bUseAlphaToCoverage;
+		if (PendingState.bAlphaToCoverageEnabled != ContextState.bAlphaToCoverageEnabled)
+		{
+			if (PendingState.bAlphaToCoverageEnabled)
+			{
+				glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE);
+			}
+			else
+			{
+				glDisable(GL_SAMPLE_ALPHA_TO_COVERAGE);
+			}
+
+			ContextState.bAlphaToCoverageEnabled = PendingState.bAlphaToCoverageEnabled;
+		}
 	}
 }

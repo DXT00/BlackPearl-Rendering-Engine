@@ -9,6 +9,7 @@
 #include "BlackPearl/RHI/RHIBindingLayoutDesc.h"
 #include "BlackPearl/RHI/RHIBindingSet.h"
 #include "BlackPearl/RHI/RHIDefinitions.h"
+#include "OpenGLBindingLayout.h"
 namespace BlackPearl {
 
 	BindingLayout::BindingLayout(const VulkanContext& context, const RHIBindingLayoutDesc& desc)
@@ -199,7 +200,9 @@ namespace BlackPearl {
         }
 	}
 
-	BindingLayout::~BindingLayout()
+
+
+    BindingLayout::~BindingLayout()
 	{
 	}
 

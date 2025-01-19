@@ -542,28 +542,28 @@ finished executing, the objects are transitioned into the "available" state, i.e
     };
     enum class ShaderType : uint16_t
     {
-        None = 0x0000,
+        None = 0,
 
-        Compute = 0x0020,
+        Compute,
 
-        Vertex = 0x0001,
-        Hull = 0x0002,
-        Domain = 0x0004,
-        Geometry = 0x0008,
-        Pixel = 0x0010,
-        Amplification = 0x0040,
-        Mesh = 0x0080,
-        AllGraphics = 0x00FE,
+        Vertex,
+        Hull,
+        Domain,
+        Geometry,
+        Pixel,
+        Amplification,
+        Mesh,
+        AllGraphics,
 
-        RayGeneration = 0x0100,
-        AnyHit = 0x0200,
-        ClosestHit = 0x0400,
-        Miss = 0x0800,
-        Intersection = 0x1000,
-        Callable = 0x2000,
-        AllRayTracing = 0x3F00,
+        RayGeneration,
+        AnyHit,
+        ClosestHit,
+        Miss,
+        Intersection ,
+        Callable,
+        AllRayTracing,
 
-        All = 0x3FFF,
+        All,
     };
     NVRHI_ENUM_CLASS_FLAG_OPERATORS(ShaderType)
 
@@ -943,6 +943,20 @@ finished executing, the objects are transitioned into the "available" state, i.e
                 && maxX == b.maxX
                 && maxY == b.maxY
                 && maxZ == b.maxZ;
+        }
+        RHIViewport& operator =(const RHIViewport& b)
+        {
+            if (this == &b) 
+                return *this;
+
+            minX == b.minX;
+            minY == b.minY;
+            minZ == b.minZ;
+            maxX == b.maxX;
+            maxY == b.maxY;
+            maxZ == b.maxZ;
+            
+            return *this;
         }
         bool operator !=(const RHIViewport& b) const { return !(*this == b); }
 

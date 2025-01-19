@@ -75,6 +75,7 @@ namespace BlackPearl {
 		ShaderHandle GS;
 		ShaderHandle PS;
 
+
 		RenderState renderState;
 		VariableRateShadingState shadingRateState;
 

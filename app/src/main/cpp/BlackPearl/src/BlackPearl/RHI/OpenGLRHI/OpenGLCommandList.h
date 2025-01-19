@@ -97,65 +97,11 @@ namespace BlackPearl {
     
     private:
         Device* m_Device;
-        OpenGLContext m_Context;
-
-
-
+        const OpenGLContext& m_Context;
 
         CommandListParameters m_CommandListParameters;
 
-       // CommandListResourceStateTracker m_StateTracker;
-        bool m_EnableAutomaticBarriers = true;
-
-        //// current internal command buffer
-        //TrackedCommandBufferPtr m_CurrentCmdBuf = nullptr;
-
-        //VkPipelineLayout m_CurrentPipelineLayout;
-        //VkShaderStageFlags m_CurrentPushConstantsVisibility;
-        GraphicsState m_CurrentGraphicsState{};
-        ComputeState m_CurrentComputeState{};
-        MeshletState m_CurrentMeshletState{};
-        RayTracingState m_CurrentRayTracingState;
-        bool m_AnyVolatileBufferWrites = false;
-
-
-        /** Counter incremented each time RHIBeginScene is called. */
-        uint32_t SceneFrameCounter;
-
-        /** Value used to detect when resource tables need to be recached. INDEX_NONE means always recache. */
-        uint32_t ResourceTableFrameCounter;
-
-        ///** RHI device state, independent of underlying OpenGL context used */
-        //FOpenGLRHIState						PendingState;
-        //FSamplerStateRHIRef					PointSamplerState;
-
-        /** A list of all viewport RHIs that have been created. */
-        std::vector<OpenGLViewport*>        Viewports;
-        OpenGLViewport*		                DrawingViewport;
-        bool								bRevertToSharedContextAfterDrawingViewport;
-
-        bool								bIsRenderingContextAcquired;
-
-        PrimitiveType						PrimitiveType = PrimitiveType::NUM;
-
-        ///** A history of the most recently used bound shader states, used to keep transient bound shader states from being recreated for each use. */
-        //TGlobalResource< TBoundShaderStateHistory<10000> > BoundShaderStateHistory;
-
-        /** Per-context state caching */
-        FOpenGLContextState InvalidContextState;
-        FOpenGLContextState	SharedContextState;
-        FOpenGLContextState	RenderingContextState;
-        // Cached context type on BeginScene
-        int32_t BeginSceneContextType;
-
-        template <typename TRHIShader, typename TRHIProxyShader>
-        void ApplyStaticUniformBuffers(TRHIShader* Shader, TRHIProxyShader* ProxyShader);
-
-        std::vector<FRHIUniformBuffer*> GlobalUniformBuffers;
-
-        /** Cached mip-limits for textures when ARB_texture_view is unavailable */
-        std::map<GLuint, std::pair<GLenum, GLenum>> TextureMipLimits;
-
+      
  
 
         ///** Query list. This is used to inform queries they're no longer valid when OpenGL context they're in gets released from another thread. */

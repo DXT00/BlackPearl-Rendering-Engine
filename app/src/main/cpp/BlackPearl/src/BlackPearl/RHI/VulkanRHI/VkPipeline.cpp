@@ -2,6 +2,7 @@
 #if GE_API_VULKAN
 
 #include "VkPipeline.h"
+#include "OpenGLPipeline.h"
 
 namespace BlackPearl {
 	//TODO::
@@ -12,6 +13,7 @@ namespace BlackPearl {
 	GraphicsPipeline::~GraphicsPipeline()
 	{
 	}
+
 	MeshletPipeline::~MeshletPipeline()
 	{
 	}
