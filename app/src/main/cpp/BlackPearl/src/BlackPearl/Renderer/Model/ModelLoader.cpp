@@ -199,7 +199,7 @@ namespace BlackPearl {
 			m_CurrentModel->meshes.push_back(ProcessMesh(mesh, m_CurrentModel->vertices, m_CurrentModel->desc.bSortVerticces));
 		}
 
-		for (GLuint i = 0; i < node->mNumChildren; i++)
+		for (int i = 0; i < node->mNumChildren; i++)
 		{
 			this->ProcessNode(node->mChildren[i], scene);
 		}
@@ -477,7 +477,7 @@ namespace BlackPearl {
 	/*	std::shared_ptr<VertexBuffer> vertexBuffer(DBG_NEW VertexBuffer(vertexData.data(), vertexData.size() * sizeof(float)));
 		vertexBuffer->SetBufferLayout(layout);*/
 
-		std::shared_ptr<IndexBuffer> indexBuffer(DBG_NEW IndexBuffer(indicesData.data(), indicesData.size() * sizeof(uint32_t)));
+		//std::shared_ptr<IndexBuffer> indexBuffer(DBG_NEW IndexBuffer(indicesData.data(), indicesData.size() * sizeof(uint32_t)));
 
 		m_VerticesIdx += aimesh->mNumVertices;
 

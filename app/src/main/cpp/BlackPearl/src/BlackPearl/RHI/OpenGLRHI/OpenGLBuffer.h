@@ -41,7 +41,7 @@ namespace BlackPearl {
 	/** The layout of a uniform buffer in memory. */
 	struct FRHIUniformBufferLayout //: public FRHIResource
 	{
-		FRHIUniformBufferLayout() = delete;
+		FRHIUniformBufferLayout() = default;
 
 		 //explicit FRHIUniformBufferLayout(const FRHIUniformBufferLayoutInitializer& Initializer);
 

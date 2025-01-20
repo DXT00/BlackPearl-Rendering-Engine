@@ -37,10 +37,6 @@ namespace BlackPearl {
 		}
 	}
 
-	uint32_t Mesh::GetVerticesSize(unsigned int vertexBufferId)
-	{
-		return m_VertexArray->GetVertexBuffers()[vertexBufferId]->GetVertexSize();
-	}
 
 	void Mesh::SetTessellation(uint32_t verticesPerTessPatch)
 	{
@@ -169,36 +165,36 @@ namespace BlackPearl {
 
 	}
 
-	void Mesh::Init(uint32_t verticesSize)
-	{
+	//void Mesh::Init(uint32_t verticesSize)
+	//{
 
-		m_VertexArray.reset(DBG_NEW VertexArray());
+	//	m_VertexArray.reset(DBG_NEW VertexArray());
 
-		std::shared_ptr<VertexBuffer> vertexBuffer;
-		vertexBuffer.reset(DBG_NEW VertexBuffer(m_Vertices, verticesSize));
+	//	std::shared_ptr<VertexBuffer> vertexBuffer;
+	//	vertexBuffer.reset(DBG_NEW VertexBuffer(m_Vertices, verticesSize));
 
-		if (m_IndicesSize != 0) {
-			std::shared_ptr<IndexBuffer> indexBuffer;
-			//indexBuffer.reset(new IndexBuffer(m_Indices));
-			indexBuffer.reset(DBG_NEW IndexBuffer(m_Indices, m_IndicesSize));
-			m_VertexArray->SetIndexBuffer(indexBuffer);
-		}
-		vertexBuffer->SetBufferLayout(m_VertexBufferLayout);
-		m_VertexArray->AddVertexBuffer(vertexBuffer);
+	//	if (m_IndicesSize != 0) {
+	//		std::shared_ptr<IndexBuffer> indexBuffer;
+	//		//indexBuffer.reset(new IndexBuffer(m_Indices));
+	//		indexBuffer.reset(DBG_NEW IndexBuffer(m_Indices, m_IndicesSize));
+	//		m_VertexArray->SetIndexBuffer(indexBuffer);
+	//	}
+	//	vertexBuffer->SetBufferLayout(m_VertexBufferLayout);
+	//	m_VertexArray->AddVertexBuffer(vertexBuffer);
 
-		//calculate vertex cnt
-		uint32_t attributeSizeofOneVertex = 0;
-		for (size_t i = 0; i < m_VertexBufferLayout.GetElements().size(); i++)
-		{
-			BufferElement& element = m_VertexBufferLayout.GetElement(i);
-			attributeSizeofOneVertex += element.GetElementCount();
-		}
-		m_VerticeCount = m_VerticeArrayCount / attributeSizeofOneVertex;
+	//	//calculate vertex cnt
+	//	uint32_t attributeSizeofOneVertex = 0;
+	//	for (size_t i = 0; i < m_VertexBufferLayout.GetElements().size(); i++)
+	//	{
+	//		BufferElement& element = m_VertexBufferLayout.GetElement(i);
+	//		attributeSizeofOneVertex += element.GetElementCount();
+	//	}
+	//	m_VerticeCount = m_VerticeArrayCount / attributeSizeofOneVertex;
 
 
-		ParseAttributes(m_VertexBufferLayout);
+	//	ParseAttributes(m_VertexBufferLayout);
 
-	}
+	//}
 
 	void Mesh::ParseAttributes(const VertexBufferLayout& layout)
 	{
@@ -214,13 +210,7 @@ namespace BlackPearl {
 		uint32_t weight1_cnt = 0;
 
 		uint32_t vertexCount = 0;
-		//uint32_t attributeSizeofOneVertex;
-		//for (size_t i = 0; i < layout.GetElements().size(); i++)
-		//{
-		//	BufferElement& element = layout.GetElement(i);
-		//	attributeSizeofOneVertex += element.GetElementCount();
-		//}
-		//m_VerticeCount = m_VerticeArrayCount / attributeSizeofOneVertex;
+
 		std::map<uint32_t, std::string> slot_to_attribute;
 		for (size_t i = 0; i < layout.GetElements().size(); i++)
 		{
@@ -353,7 +343,7 @@ namespace BlackPearl {
 		buffers = std::make_shared<BufferGroup>();
 		m_VerticeArrayCount = verticesSize / sizeof(float);
 		m_IndicesCount = indicesSize / sizeof(uint32_t);
-		Init(m_VerticeSize);
+		//Init(m_VerticeSize);
 		if (tessellation)
 			SetTessellation(verticesPerTessPatch);
 		g_materialManager->AddMaterial(material);
@@ -392,50 +382,50 @@ namespace BlackPearl {
 		memcpy(m_Vertices, &vertices[0], m_VerticeSize);//注意memcpy最后一个参数是字节数!!!
 
 		_InitBufferGroup(meshFilter);
-		Init(m_VerticeSize);
+		//Init(m_VerticeSize);
 		if (tessellation)
 			SetTessellation(verticesPerTessPatch);
 		g_materialManager->AddMaterial(material);
 
 	};
 
-	/*multiple vertexBuffers, for model*/
-	Mesh::Mesh(std::shared_ptr<Material> material,
-		std::shared_ptr<IndexBuffer> indexBuffer,
-		std::vector<std::shared_ptr<VertexBuffer>> vertexBuffers,
-		bool tessellation,
-		uint32_t verticesPerTessPatch) {
-		buffers = std::make_shared<BufferGroup>();
-		m_VertexArray.reset(DBG_NEW VertexArray());
-		m_IndicesSize = indexBuffer->GetIndicesSize();
-		m_IndicesCount = m_IndicesSize / sizeof(uint32_t);
-		material = material;
-		m_NeedTessellation = tessellation;
-		m_Indices = const_cast<uint32_t*>(indexBuffer->GetIndicies());
-		m_VertexArray->SetIndexBuffer(indexBuffer);
-		for (auto vertexBuffer : vertexBuffers) {
-			m_VertexBufferLayout = vertexBuffer->GetBufferLayout();
-			m_VertexArray->AddVertexBuffer(vertexBuffer);
-			m_Vertices = const_cast<float*>(vertexBuffer->GetVerticesFloat());
+	///*multiple vertexBuffers, for model*/
+	//Mesh::Mesh(std::shared_ptr<Material> material,
+	//	std::shared_ptr<IndexBuffer> indexBuffer,
+	//	std::vector<std::shared_ptr<VertexBuffer>> vertexBuffers,
+	//	bool tessellation,
+	//	uint32_t verticesPerTessPatch) {
+	//	buffers = std::make_shared<BufferGroup>();
+	//	m_VertexArray.reset(DBG_NEW VertexArray());
+	//	m_IndicesSize = indexBuffer->GetIndicesSize();
+	//	m_IndicesCount = m_IndicesSize / sizeof(uint32_t);
+	//	material = material;
+	//	m_NeedTessellation = tessellation;
+	//	m_Indices = const_cast<uint32_t*>(indexBuffer->GetIndicies());
+	//	m_VertexArray->SetIndexBuffer(indexBuffer);
+	//	for (auto vertexBuffer : vertexBuffers) {
+	//		m_VertexBufferLayout = vertexBuffer->GetBufferLayout();
+	//		m_VertexArray->AddVertexBuffer(vertexBuffer);
+	//		m_Vertices = const_cast<float*>(vertexBuffer->GetVerticesFloat());
 
-			uint32_t attributeSizeofOneVertex = 0;
+	//		uint32_t attributeSizeofOneVertex = 0;
 
-			for (size_t i = 0; i < m_VertexBufferLayout.GetElements().size(); i++)
-			{
-				BufferElement& element = m_VertexBufferLayout.GetElement(i);
-				attributeSizeofOneVertex += element.ElementSize;
-			}
-			m_VerticeCount += vertexBuffer->GetVertexSize() / attributeSizeofOneVertex;
+	//		for (size_t i = 0; i < m_VertexBufferLayout.GetElements().size(); i++)
+	//		{
+	//			BufferElement& element = m_VertexBufferLayout.GetElement(i);
+	//			attributeSizeofOneVertex += element.ElementSize;
+	//		}
+	//		m_VerticeCount += vertexBuffer->GetVertexSize() / attributeSizeofOneVertex;
 
-			//TODO:: 分多个 vbo 解析
-			if(vertexBuffers.size() == 1)
-				ParseAttributes(m_VertexBufferLayout);
-		}
+	//		//TODO:: 分多个 vbo 解析
+	//		if(vertexBuffers.size() == 1)
+	//			ParseAttributes(m_VertexBufferLayout);
+	//	}
 
-		if (tessellation)
-			SetTessellation(verticesPerTessPatch);
-		g_materialManager->AddMaterial(material);
-	}
+	//	if (tessellation)
+	//		SetTessellation(verticesPerTessPatch);
+	//	g_materialManager->AddMaterial(material);
+	//}
 
 	void Mesh::_AppendBufferRange(BufferRange& range, size_t size, uint64_t& currentBufferSize)
 	{

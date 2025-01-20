@@ -30,6 +30,12 @@ namespace BlackPearl {
 		GE_ASSERT(false, "Unknown shader type!");
 		return 0;
 	}
+	void Shader::getBytecode(const void** ppBytecode, size_t* pSize) const
+	{
+		// we don't save these for vulkan
+		if (ppBytecode) *ppBytecode = nullptr;
+		if (pSize) *pSize = 0;
+	}
 	Shader::Shader(
 		const std::string& vertexSrc, 
 		const std::string& fragmentSrc, 
@@ -49,7 +55,43 @@ namespace BlackPearl {
 
 	}
 
-	Shader::Shader(const std::string & filepath)
+	Shader::Shader(const ShaderDesc& _desc, const void* binaryCode, size_t binarySize):
+		desc(_desc)
+	{
+
+		// 后续启动时加载二进制数据
+		GLuint newProgram = glCreateProgram();
+		//load_from_file("shader.bin", &binary, &binaryLength);
+		//TODO::  desc.binaryformat 要与第一次编译是时候一样，通常存储binaryCode在第一个GLenum(uint_32t)
+		//BinaryFormat is stored at the start of ProgramBinary array
+		glProgramBinary(newProgram, desc.binaryformat, binaryCode, binarySize);
+		free((void*)binaryCode);
+
+		// 验证加载是否成功
+		GLint linkStatus = GL_FALSE;
+		glGetProgramiv(newProgram, GL_LINK_STATUS, &linkStatus);
+		if (linkStatus == GL_FALSE) {
+			// 处理错误
+			GLint maxLength = 0;
+			glGetProgramiv(newProgram, GL_INFO_LOG_LENGTH, &maxLength);
+			GE_ERROR_JUDGE();
+			// The maxLength includes the NULL character
+			std::vector<GLchar> infoLog(maxLength);
+			glGetProgramInfoLog(newProgram, maxLength, &maxLength, &infoLog[0]);
+			GE_ERROR_JUDGE();
+			// We don't need the program anymore.
+			glDeleteProgram(newProgram);
+			GE_ERROR_JUDGE();
+			
+			GE_CORE_ERROR("{0}", infoLog.data());
+			GE_ASSERT(false, "Shader link failure!")
+
+				return;
+		}
+	}
+
+	Shader::Shader(const ShaderDesc& _desc, const std::string & filepath) :
+		desc(_desc)
 	{
 		if (filepath.empty()) {
 
@@ -463,7 +505,7 @@ namespace BlackPearl {
 					glBufferData(GL_UNIFORM_BUFFER, ZERO_FILLED_DUMMY_UNIFORM_BUFFER_SIZE, ZeroBuffer, GL_STATIC_DRAW);
 					delete ZeroBuffer;
 
-					OpenGLBufferStats::UpdateUniformBufferStats(ZERO_FILLED_DUMMY_UNIFORM_BUFFER_SIZE, true);
+					//OpenGLBufferStats::UpdateUniformBufferStats(ZERO_FILLED_DUMMY_UNIFORM_BUFFER_SIZE, true);
 				}
 
 				Buffer = PendingState.ZeroFilledDummyUniformBuffer;

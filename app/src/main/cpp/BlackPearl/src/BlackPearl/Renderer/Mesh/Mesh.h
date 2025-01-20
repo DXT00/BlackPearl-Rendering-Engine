@@ -48,21 +48,20 @@ namespace BlackPearl {
 			uint32_t verticesPerTessPatch = 4
 		);
 
-		/*multiple vertexBuffers*/
-		Mesh(
-			std::shared_ptr<Material> material,
-			std::shared_ptr<IndexBuffer> indexBuffer,
-			std::vector<std::shared_ptr<VertexBuffer>> vertexBuffers,
-			bool tessellation = false,
-			uint32_t verticesPerTessPatch = 4
-		);
-		
+		///*multiple vertexBuffers*/
+		//Mesh(
+		//	std::shared_ptr<Material> material,
+		//	std::shared_ptr<IndexBuffer> indexBuffer,
+		//	std::vector<std::shared_ptr<VertexBuffer>> vertexBuffers,
+		//	bool tessellation = false,
+		//	uint32_t verticesPerTessPatch = 4
+		//);
+		//
 		~Mesh();
 		float* GetVertices() const { return m_Vertices; }
 
 		std::shared_ptr<VertexArray> GetVertexArray() const { return m_VertexArray; }
 		uint32_t					 GetIndicesSize() const { return m_IndicesSize; }
-		uint32_t				     GetVerticesSize(unsigned int vertexBufferId);
 		std::shared_ptr<Material>    GetMaterial() const { return material; }
 		VertexBufferLayout			 GetVertexBufferLayout() const { return m_VertexBufferLayout; }
 		uint32_t					 GetVertexCount() const { return m_VerticeCount; }

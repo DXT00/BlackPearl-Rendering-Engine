@@ -6,14 +6,17 @@
 #include <unordered_map>
 #include "BlackPearl/Component/LightComponent/LightSources.h"
 #include "BlackPearl/Math/vector.h"
+#include "../RHIShader.h"
 namespace BlackPearl {
 
 
-	class Shader
+	class Shader : public RefCounter<IShader>
 	{
 	public:
-		
-		Shader(const std::string& filepath);
+		ShaderDesc desc;
+		//TODO:: use glProgramBinary
+		Shader(const ShaderDesc& _desc, const void* binaryCode, size_t );
+		Shader(const ShaderDesc& _desc, const std::string& filepath);
 		~Shader();
 		void Bind()const;
 		void Unbind() const;
@@ -40,7 +43,8 @@ namespace BlackPearl {
 		
 
 		std::string GetPath() { return m_ShaderPath; }
-
+		const ShaderDesc& getDesc() const override { return desc; }
+		void getBytecode(const void** ppBytecode, size_t* pSize) const override;
 	private:
 		Shader(
 			const std::string& vertexSrc, 

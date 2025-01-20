@@ -119,7 +119,8 @@ struct ShaderDesc
     CustomSemantic* pCustomSemantics = nullptr;
 
     uint32_t* pCoordinateSwizzling = nullptr;
-
+    //for opengl 
+    uint32_t binaryformat = 0;
     ShaderDesc() = default;
 
     ShaderDesc(ShaderType type)

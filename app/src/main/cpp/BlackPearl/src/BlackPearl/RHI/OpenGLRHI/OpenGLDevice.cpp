@@ -54,42 +54,6 @@ namespace BlackPearl
 	}
 
 
-	BufferHandle Device::createBuffer(const BufferDesc& desc)
-	{
-		if (desc.isVolatile && desc.maxVersions == 0)
-			return nullptr;
-
-		if (desc.isVolatile && !desc.isConstantBuffer)
-			return nullptr;
-
-		if (desc.byteSize == 0)
-			return nullptr;
-
-
-		OpenGLBuffer* buffer = nullptr;
-		if (desc.isVertexBuffer) {
-			buffer = OpenGLBufferFactory::createVertexBuffer(desc);
-		}
-		else if (desc.isIndexBuffer) {
-			buffer = OpenGLBufferFactory::createIndexBuffer(desc);
-		}
-		else if (desc.isConstantBuffer) {
-			buffer = OpenGLBufferFactory::createIndexBuffer(desc);
-		}
-		else if (desc.isDrawIndirectArgs) {
-			buffer = OpenGLBufferFactory::createIndexBuffer(desc);
-		}
-		else if (desc.canHaveUAVs) {
-			buffer = OpenGLBufferFactory::createIndexBuffer(desc);
-		}
-		else if (desc.canHaveTypedViews) {
-			buffer = OpenGLBufferFactory::createIndexBuffer(desc);
-		}
-		else if (desc.canHaveTypedViews) {
-			buffer = OpenGLBufferFactory::createIndexBuffer(desc);
-		}
-
-	}
 
 	FramebufferHandle Device::createFramebuffer(const FramebufferDesc& desc)
 	{
@@ -171,7 +135,24 @@ namespace BlackPearl
 
 	ShaderHandle Device::createShader(const ShaderDesc& d, const void* binary, size_t binarySize)
 	{
-		return ShaderHandle();
+		Shader* shader = new Shader(d,binary, binarySize);
+
+		/*shader->desc = d;
+		shader->stageFlagBits = VkUtil::convertShaderTypeToShaderStageFlagBits(d.shaderType);
+
+		VkShaderModuleCreateInfo shaderInfo{};
+		shaderInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
+		shaderInfo.codeSize = binarySize;
+		shaderInfo.pCode = (const uint32_t*)binary;
+
+
+		if (vkCreateShaderModule(m_Context.device, &shaderInfo, m_Context.allocationCallbacks, &shader->shaderModule) != VK_SUCCESS) {
+			GE_CORE_ERROR("failed to create shader module!");
+		}*/
+
+
+
+		return ShaderHandle::Create(shader);
 	}
 
 	ShaderLibraryHandle Device::createShaderLibrary(const void* binary, size_t binarySize)
