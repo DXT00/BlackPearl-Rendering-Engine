@@ -43,7 +43,7 @@ namespace BlackPearl
     }
 
     BufferDesc RHIUtils::CreateStaticConstantBufferDesc(
-        uint32_t byteSize,
+        uint32_t_t byteSize,
         const char* debugName)
     {
         BufferDesc constantBufferDesc;
@@ -55,9 +55,9 @@ namespace BlackPearl
     }
 
     BufferDesc RHIUtils::CreateVolatileConstantBufferDesc(
-        uint32_t byteSize,
+        uint32_t_t byteSize,
         const char* debugName,
-        uint32_t maxVersions)
+        uint32_t_t maxVersions)
     {
         BufferDesc constantBufferDesc;
         constantBufferDesc.byteSize = byteSize;
@@ -71,7 +71,7 @@ namespace BlackPearl
     bool RHIUtils::CreateBindingSetAndLayout(
         IDevice* device,
         ShaderType visibility,
-        uint32_t registerSpace,
+        uint32_t_t registerSpace,
         const BindingSetDesc& bindingSetDesc,
         BindingLayoutHandle& bindingLayout,
         BindingSetHandle& bindingSet)
@@ -84,7 +84,7 @@ namespace BlackPearl
                     layoutItem.slot = item.slot;
                     layoutItem.type = item.type;
                     if (item.type == RHIResourceType::RT_PushConstants)
-                        layoutItem.size = uint32_t(item.range.byteSize);
+                        layoutItem.size = uint32_t_t(item.range.byteSize);
                     layoutDesc.push_back(layoutItem);
                 }
             };
@@ -113,7 +113,7 @@ namespace BlackPearl
         return true;
     }
 
-    void RHIUtils::ClearColorAttachment(ICommandList* commandList, IFramebuffer* framebuffer, uint32_t attachmentIndex, Color color)
+    void RHIUtils::ClearColorAttachment(ICommandList* commandList, IFramebuffer* framebuffer, uint32_t_t attachmentIndex, Color color)
     {
         const FramebufferAttachment& att = framebuffer->getDesc().colorAttachments[attachmentIndex];
         if (att.texture)
@@ -122,7 +122,7 @@ namespace BlackPearl
         }
     }
 
-    void RHIUtils::ClearDepthStencilAttachment(ICommandList* commandList, IFramebuffer* framebuffer, float depth, uint32_t stencil)
+    void RHIUtils::ClearDepthStencilAttachment(ICommandList* commandList, IFramebuffer* framebuffer, float depth, uint32_t_t stencil)
     {
         const FramebufferAttachment& att = framebuffer->getDesc().depthAttachment;
         if (att.texture)
@@ -426,5 +426,19 @@ namespace BlackPearl
                 m_Mutex.unlock();
         }
     }
+        /**
+     * Computes the vertex count for a given number of primitives of the specified type.
+     * @param NumPrimitives The number of primitives.
+     * @param PrimitiveType The type of primitives.
+     * @returns The number of vertices.
+     */
+    inline uint32_t GetVertexCountForPrimitiveCount(uint32_t NumPrimitives, uint32_t PrimitiveType)
+    {
+        static_assert((uint32_t)PrimitiveType::NUM == 8, "This function needs to be updated");
+        uint32_t Factor = (PrimitiveType == (uint32_t)PrimitiveType::TriangleList) ? 3 : (PrimitiveType == (uint32_t)PrimitiveType::LineList) ? 2 : (PrimitiveType == PT_RectList) ? 3 : 1;
+        uint32_t Offset = (PrimitiveType == (uint32_t)PrimitiveType::TriangleStrip) ? 2 : 0;
 
+        return NumPrimitives * Factor + Offset;
+
+    }
 }

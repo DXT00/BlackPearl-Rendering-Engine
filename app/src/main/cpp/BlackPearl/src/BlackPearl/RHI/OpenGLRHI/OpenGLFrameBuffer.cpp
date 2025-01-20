@@ -106,6 +106,7 @@ namespace BlackPearl {
     void Device::BindPendingComputeShaderState(FOpenGLContextState& ContextState, IShader* ComputeShader)
     {
     }
+
     void Device::UpdateRasterizerStateInOpenGLContext(FOpenGLContextState& ContextState)
     {
     }

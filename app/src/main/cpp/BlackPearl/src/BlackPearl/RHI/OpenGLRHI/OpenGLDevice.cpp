@@ -948,4 +948,16 @@ namespace BlackPearl
 			ContextState.bAlphaToCoverageEnabled = PendingState.bAlphaToCoverageEnabled;
 		}
 	}
+	void Device::SetupTexturesForDraw(FOpenGLContextState& ContextState)
+	{
+	}
+	void Device::SetupUAVsForDraw(FOpenGLContextState& ContextState)
+	{
+	}
+	void Device::SetupUAVsForCompute(FOpenGLContextState& ContextState, const Shader* ComputeShader)
+	{
+	}
+	void Device::RHIClearMRT(const bool* bClearColorArray, int32_t NumClearColors, const Color* ColorArray, bool bClearDepth, float Depth, bool bClearStencil, uint32_t Stencil)
+	{
+	}
 }

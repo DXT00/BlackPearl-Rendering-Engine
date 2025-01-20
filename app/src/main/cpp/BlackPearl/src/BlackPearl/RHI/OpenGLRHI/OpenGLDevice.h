@@ -93,11 +93,57 @@ namespace BlackPearl {
 
 		void SetPendingBlendStateForActiveRenderTargets(FOpenGLContextState& ContextState);
 
+		FORCEINLINE void CommitGraphicsResourceTables()
+		{
+			if (PendingState.bAnyDirtyGraphicsUniformBuffers)
+			{
+				CommitGraphicsResourceTablesInner();
+			}
+		}
+
+		FORCEINLINE void CachedBindArrayBuffer(FOpenGLContextState& ContextState, GLuint Buffer)
+		{
+		//	VERIFY_GL_SCOPE();
+			if (ContextState.ArrayBufferBound != Buffer)
+			{
+				glBindBuffer(GL_ARRAY_BUFFER, Buffer);
+				ContextState.ArrayBufferBound = Buffer;
+			}
+		}
+
+		void CachedBindElementArrayBuffer(FOpenGLContextState& ContextState, GLuint Buffer)
+		{
+			//VERIFY_GL_SCOPE();
+			if (ContextState.ElementArrayBufferBound != Buffer)
+			{
+				glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, Buffer);
+				ContextState.ElementArrayBufferBound = Buffer;
+			}
+		}
 
 		/* shader */
 		void BindPendingShaderState(FOpenGLContextState& ContextState);
 		void BindUniformBufferBase(FOpenGLContextState& ContextState, int32_t NumUniformBuffers, uint32_t** BoundUniformBuffers, uint32_t FirstUniformBuffer, bool ForceUpdate);
 	    void BindPendingComputeShaderState(FOpenGLContextState& ContextState, IShader* ComputeShader);
+
+
+		void CommitGraphicsResourceTablesInner();
+		void CommitComputeResourceTables(Shader* ComputeShader);
+		void CommitNonComputeShaderConstants();
+		void CommitComputeShaderConstants(Shader* ComputeShader);
+		void SetPendingBlendStateForActiveRenderTargets(FOpenGLContextState& ContextState);
+
+		void SetupTexturesForDraw(FOpenGLContextState& ContextState);
+		template <typename StateType>
+		void SetupTexturesForDraw(FOpenGLContextState& ContextState, const StateType& ShaderState, int32_t MaxTexturesNeeded);
+
+		void SetupUAVsForDraw(FOpenGLContextState& ContextState);
+		void SetupUAVsForCompute(FOpenGLContextState& ContextState, const Shader* ComputeShader);
+		//void SetupUAVsForProgram(FOpenGLContextState& ContextState, const TBitArray<>& NeededBits, int32_t MaxUAVUnitUsed);
+
+		void RHIClearMRT(const bool* bClearColorArray, int32_t NumClearColors, const Color* ColorArray, bool bClearDepth, float Depth, bool bClearStencil, uint32_t Stencil);
+
+
 
 			/** RHI device state, independent of underlying OpenGL context used */
 		FOpenGLRHIState						PendingState;
@@ -165,6 +211,11 @@ namespace BlackPearl {
 		std::map<GLuint, std::pair<GLenum, GLenum>> TextureMipLimits;
 
 	};
+
+	template<typename StateType>
+	inline void Device::SetupTexturesForDraw(FOpenGLContextState& ContextState, const StateType& ShaderState, int32_t MaxTexturesNeeded)
+	{
+	}
 
 }
 

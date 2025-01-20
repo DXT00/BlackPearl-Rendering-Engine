@@ -231,4 +231,17 @@ namespace BlackPearl{
 	void CommandList::_setViewport(float minX, float minY, float minZ, float maxX, float maxY, float maxZ)
 	{
 	}
+
+	void Device::CommitGraphicsResourceTablesInner()
+	{
+	}
+	void Device::CommitComputeResourceTables(Shader* ComputeShader)
+	{
+	}
+	void Device::CommitNonComputeShaderConstants()
+	{
+	}
+	void Device::CommitComputeShaderConstants(Shader* ComputeShader)
+	{
+	}
 }
