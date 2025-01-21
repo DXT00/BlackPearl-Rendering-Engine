@@ -96,18 +96,20 @@ namespace BlackPearl
 
 	BindingLayoutHandle Device::createBindingLayout(const RHIBindingLayoutDesc& desc)
 	{
-		return BindingLayoutHandle();
+		BindingLayout* ret = new BindingLayout(m_Context, desc);
+		return BindingLayoutHandle::Create(ret);
+
 	}
 
 	BindingLayoutHandle Device::createBindlessLayout(const RHIBindlessLayoutDesc& desc)
 	{
-		return BindingLayoutHandle();
+		BindingLayout* ret = new BindingLayout(m_Context, desc);
+
+		//ret->bake();
+
+		return BindingLayoutHandle::Create(ret);
 	}
 
-	BindingSetHandle Device::createBindingSet(const BindingSetDesc& desc, IBindingLayout* layout)
-	{
-		return BindingSetHandle();
-	}
 
 	CommandListHandle Device::createCommandList(const CommandListParameters& params)
 	{
@@ -128,10 +130,7 @@ namespace BlackPearl
 		return nullptr;
 	}
 
-	SamplerHandle Device::createSampler(const SamplerDesc& d)
-	{
-		return SamplerHandle();
-	}
+	
 
 	ShaderHandle Device::createShader(const ShaderDesc& d, const void* binary, size_t binarySize)
 	{

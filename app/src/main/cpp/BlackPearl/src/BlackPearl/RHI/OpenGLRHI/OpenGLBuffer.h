@@ -4,10 +4,10 @@
 
 namespace BlackPearl {
 
-	class OpenGLBuffer: public RefCounter<IBuffer>, public BufferStateExtension
+	class Buffer: public RefCounter<IBuffer>, public BufferStateExtension
 	{
 	public:
-		OpenGLBuffer(const BufferDesc& _desc)
+		Buffer(const BufferDesc& _desc)
 			: BufferStateExtension(_desc) {
 			desc = _desc;
 		}
@@ -19,16 +19,16 @@ namespace BlackPearl {
 	};
 	class OpenGLBufferFactory {
 	public:
-		static OpenGLBuffer* createUniformBuffer(const BufferDesc& _desc);
-		static OpenGLBuffer* createIndexBuffer(const BufferDesc& _desc);
-		static OpenGLBuffer* createVertexBuffer(const BufferDesc& _desc);
-		static OpenGLBuffer* createIndirectBuffer(const BufferDesc& _desc);
-		static OpenGLBuffer* createShaderStorageBuffer(const BufferDesc& _desc);
-		static OpenGLBuffer* createTexelBuffer(const BufferDesc& _desc);
+		static Buffer* createUniformBuffer(const BufferDesc& _desc);
+		static Buffer* createIndexBuffer(const BufferDesc& _desc);
+		static Buffer* createVertexBuffer(const BufferDesc& _desc);
+		static Buffer* createIndirectBuffer(const BufferDesc& _desc);
+		static Buffer* createShaderStorageBuffer(const BufferDesc& _desc);
+		static Buffer* createTexelBuffer(const BufferDesc& _desc);
 	};
 
 
-	class OpenGLRenderBuffer : public OpenGLBuffer
+	class OpenGLRenderBuffer : public Buffer
 	{
 	public:
 		OpenGLRenderBuffer(const BufferDesc& _desc);
@@ -136,7 +136,7 @@ namespace BlackPearl {
 
 		std::vector<uint32_t> Data;
 	};
-	class OpenGLUniformBuffer : public OpenGLBuffer
+	class OpenGLUniformBuffer : public Buffer
 	{
 	public:
 		OpenGLUniformBuffer(const FRHIUniformBufferLayout* InLayout, const BufferDesc& _desc);

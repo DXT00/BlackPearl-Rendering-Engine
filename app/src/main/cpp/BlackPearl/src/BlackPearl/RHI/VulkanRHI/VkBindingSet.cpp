@@ -5,8 +5,6 @@
 #include "VkBindingSet.h"
 
 namespace BlackPearl {
-    BindingSet::~BindingSet()
-    {
-    }
+ 
 }
 #endif
