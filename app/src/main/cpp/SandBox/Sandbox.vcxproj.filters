@@ -51,6 +51,9 @@
     <ClInclude Include="src\Layers\PbrRenderingLayer.h">
       <Filter>src\Layers</Filter>
     </ClInclude>
+    <ClInclude Include="src\Layers\RHIRenderGraphLayer.h">
+      <Filter>src\Layers</Filter>
+    </ClInclude>
     <ClInclude Include="src\Layers\RayTracingLayer.h">
       <Filter>src\Layers</Filter>
     </ClInclude>

@@ -36,10 +36,18 @@ namespace BlackPearl{
 	void CommandList::resolveTexture(ITexture* dest, const TextureSubresourceSet& dstSubresources, ITexture* src, const TextureSubresourceSet& srcSubresources)
 	{
 	}
-	void CommandList::writeBuffer(IBuffer* b, const void* data, size_t dataSize, uint64_t destOffsetBytes)
+	void CommandList::writeBuffer(IBuffer* _buffer, const void* data, size_t dataSize, uint64_t destOffsetBytes)
 	{
 		// RHIUpdateUniformBuffer(FRHICommandListBase & RHICmdList, FRHIUniformBuffer * UniformBufferRHI, const void* Contents) final override;
-		
+		Buffer* buffer = dynamic_cast<Buffer*>(_buffer);
+		if (buffer->desc.isVolatile)
+		{
+			assert(destOffsetBytes == 0);
+
+			_writeVolatileBuffer(buffer, data, dataSize);
+
+			return;
+		}
 	}
 	void CommandList::clearBufferUInt(IBuffer* b, uint32_t clearValue)
 	{
