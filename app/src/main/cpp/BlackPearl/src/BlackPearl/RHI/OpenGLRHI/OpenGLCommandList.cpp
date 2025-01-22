@@ -38,6 +38,8 @@ namespace BlackPearl{
 	}
 	void CommandList::writeBuffer(IBuffer* b, const void* data, size_t dataSize, uint64_t destOffsetBytes)
 	{
+		// RHIUpdateUniformBuffer(FRHICommandListBase & RHICmdList, FRHIUniformBuffer * UniformBufferRHI, const void* Contents) final override;
+		
 	}
 	void CommandList::clearBufferUInt(IBuffer* b, uint32_t clearValue)
 	{

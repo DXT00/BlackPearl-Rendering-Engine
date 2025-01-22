@@ -2,6 +2,7 @@
 #include "OpenGLBindingSet.h"
 #include "OpenGLDevice.h"
 #include "OpenGLTexture.h"
+#include "OpenGLSampler.h"
 namespace BlackPearl {
 	BindingSet::~BindingSet()
 	{
@@ -45,7 +46,7 @@ namespace BlackPearl {
 			{
 			case RHIResourceType::RT_Texture_SRV:
 			{
-				Texture* texture = dynamic_cast<Texture*>(binding.resourceHandle);
+				/*Texture* texture = dynamic_cast<Texture*>(binding.resourceHandle);
 
 				const TextureSubresourceSet subresource = binding.subresources.resolve(texture->getDesc(), false);
 				const Texture::TextureSubresourceViewType textureViewType = getTextureViewType(binding.format, texture->desc.format);
@@ -66,14 +67,17 @@ namespace BlackPearl {
 				else
 					verifyPermanentResourceState(texture->permanentState,
 						ResourceStates::ShaderResource,
-						true, texture->desc.debugName, m_Context.messageCallback);
+						true, texture->desc.debugName, m_Context.messageCallback);*/
 			}
 
 			break;
 
 			case RHIResourceType::RT_Texture_UAV:
 			{
-				const auto texture = dynamic_cast<Texture*>(binding.resourceHandle);
+				ImageDescCnt++;
+				descriptorCnt++;
+
+				/*const auto texture = dynamic_cast<Texture*>(binding.resourceHandle);
 
 				const auto subresource = binding.subresources.resolve(texture->desc, true);
 				const auto textureViewType = getTextureViewType(binding.format, texture->desc.format);
@@ -87,21 +91,19 @@ namespace BlackPearl {
 				generateWriteDescriptorData(layoutBinding.binding,
 					layoutBinding.descriptorType,
 					&imageInfos[ImageDescCnt], nullptr, nullptr, descriptorWriteInfo, ret, bindingIndex);
-				ImageDescCnt++;
-				descriptorCnt++;
-
+				
 				if (!static_cast<bool>(texture->permanentState))
 					ret->bindingsThatNeedTransitions.push_back(static_cast<uint16_t>(bindingIndex));
 				else
 					verifyPermanentResourceState(texture->permanentState,
 						ResourceStates::UnorderedAccess,
-						true, texture->desc.debugName, m_Context.messageCallback);
+						true, texture->desc.debugName, m_Context.messageCallback);*/
 			}
 			break;
 			case RHIResourceType::RT_TypedBuffer_SRV:
 			case RHIResourceType::RT_TypedBuffer_UAV:
 			{
-				const auto buffer = dynamic_cast<Buffer*>(binding.resourceHandle);
+				/*const auto buffer = dynamic_cast<Buffer*>(binding.resourceHandle);
 
 				assert(buffer->desc.canHaveTypedViews);
 				const bool isUAV = (binding.type == RHIResourceType::RT_TypedBuffer_UAV);
@@ -142,18 +144,18 @@ namespace BlackPearl {
 
 				generateWriteDescriptorData(layoutBinding.binding,
 					layoutBinding.descriptorType,
-					nullptr, nullptr, &bufferViewRef, descriptorWriteInfo, ret, bindingIndex);
+					nullptr, nullptr, &bufferViewRef, descriptorWriteInfo, ret, bindingIndex);*/
 
 				bufferViewDescCnt++;
 				descriptorCnt++;
 
 
-				if (!static_cast<bool>(buffer->permanentState))
-					ret->bindingsThatNeedTransitions.push_back(static_cast<uint16_t>(bindingIndex));
-				else
-					verifyPermanentResourceState(buffer->permanentState,
-						isUAV ? ResourceStates::UnorderedAccess : ResourceStates::ShaderResource,
-						false, buffer->desc.debugName, m_Context.messageCallback);
+				//if (!static_cast<bool>(buffer->permanentState))
+				//	ret->bindingsThatNeedTransitions.push_back(static_cast<uint16_t>(bindingIndex));
+				//else
+				//	verifyPermanentResourceState(buffer->permanentState,
+				//		isUAV ? ResourceStates::UnorderedAccess : ResourceStates::ShaderResource,
+				//		false, buffer->desc.debugName, m_Context.messageCallback);
 			}
 			break;
 
@@ -164,7 +166,7 @@ namespace BlackPearl {
 			case RHIResourceType::RT_ConstantBuffer:
 			case RHIResourceType::RT_VolatileConstantBuffer:
 			{
-				Buffer* buffer = static_cast<Buffer*>(binding.resourceHandle);
+				/*Buffer* buffer = static_cast<Buffer*>(binding.resourceHandle);
 
 				if (binding.type == RHIResourceType::RT_StructuredBuffer_UAV || binding.type == RHIResourceType::RT_RawBuffer_UAV)
 					assert(buffer->desc.canHaveUAVs);
@@ -218,7 +220,7 @@ namespace BlackPearl {
 						verifyPermanentResourceState(buffer->permanentState, requiredState,
 							false, buffer->desc.debugName, m_Context.messageCallback);
 					}
-				}
+				}*/
 			}
 
 			break;
