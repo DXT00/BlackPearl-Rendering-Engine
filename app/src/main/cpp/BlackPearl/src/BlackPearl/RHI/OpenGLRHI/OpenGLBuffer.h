@@ -12,7 +12,7 @@ namespace BlackPearl {
 			desc = _desc;
 		}
 		BufferDesc desc;
-
+		GLuint rendererID;
 		const BufferDesc& getDesc() const override { return desc; }
 		
 
@@ -41,7 +41,7 @@ namespace BlackPearl {
 	/** The layout of a uniform buffer in memory. */
 	struct FRHIUniformBufferLayout //: public FRHIResource
 	{
-		FRHIUniformBufferLayout() = default;
+		FRHIUniformBufferLayout() {};
 
 		 //explicit FRHIUniformBufferLayout(const FRHIUniformBufferLayoutInitializer& Initializer);
 

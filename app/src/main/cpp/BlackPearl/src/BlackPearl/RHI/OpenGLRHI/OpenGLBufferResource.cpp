@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "glad/glad.h"
-#include "Buffer.h"
+#include "OpenGLBufferResource.h"
 #include "BlackPearl/Config.h"
 #include "BlackPearl/RHI/RHIDefinitions.h"
 #include "BlackPearl/RHI/RHISampler.h"
@@ -12,16 +12,21 @@
 namespace BlackPearl {
 	extern DeviceManager* g_deviceManager;
 
+	VertexBuffer::VertexBuffer(const BufferDesc& _desc)
+	:Buffer(_desc) {
+		glGenBuffers(1, &rendererID);
+	}
+	
 	//------------------------VertexBuffer-----------------//
 	/* 
 	darwType = GL_STATIC_DRAW / GL_DYNAMIC_DRAW (buffer can be read or written)
 	*/
-	VertexBuffer::VertexBuffer(const std::vector<float>& vertices, bool Interleaved, bool divisor, uint32_t perInstance , uint32_t drawType)
-	{
+	VertexBuffer::VertexBuffer(const BufferDesc& _desc, const std::vector<float>& vertices, bool Interleaved, bool divisor, uint32_t perInstance , uint32_t drawType)
+	:Buffer(_desc){
 		m_VerticesFloat = (&vertices[0]);
 #ifdef GE_API_OPENGL
-		glGenBuffers(1, &m_RendererID);
-		glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);
+		glGenBuffers(1, &rendererID);
+		glBindBuffer(GL_ARRAY_BUFFER, rendererID);
 		glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), &vertices[0], drawType);
 #endif
 
@@ -32,13 +37,13 @@ namespace BlackPearl {
 			m_DivPerInstance = perInstance;
 		}
 	}
-	VertexBuffer::VertexBuffer(const float* vertices, uint32_t size, bool Interleaved , bool divisor, uint32_t perInstance, uint32_t drawType)
-	{
+	VertexBuffer::VertexBuffer(const BufferDesc& _desc, const float* vertices, uint32_t size, bool Interleaved , bool divisor, uint32_t perInstance, uint32_t drawType)
+		:Buffer(_desc) {
 		m_VerticesFloat = vertices;
 		//TODO:: 使用RHIBuffer
 #ifdef GE_API_OPENGL
-		glGenBuffers(1, &m_RendererID);
-		glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);
+		glGenBuffers(1, &rendererID);
+		glBindBuffer(GL_ARRAY_BUFFER, rendererID);
 		glBufferData(GL_ARRAY_BUFFER, size, vertices, drawType);
 #endif
 		m_VertexSize = size;
@@ -48,12 +53,12 @@ namespace BlackPearl {
 			m_DivPerInstance = perInstance;
 		}
 	}
-	VertexBuffer::VertexBuffer(const unsigned int* vertices, uint32_t size, bool Interleaved, bool divisor, uint32_t perInstance, uint32_t drawType)
-	{
+	VertexBuffer::VertexBuffer(const BufferDesc& _desc, const unsigned int* vertices, uint32_t size, bool Interleaved, bool divisor, uint32_t perInstance, uint32_t drawType)
+		:Buffer(_desc) {
 		m_VerticesUint = vertices;
 #ifdef GE_API_OPENGL
-		glGenBuffers(1, &m_RendererID);
-		glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);
+		glGenBuffers(1, &rendererID);
+		glBindBuffer(GL_ARRAY_BUFFER, rendererID);
 		glBufferData(GL_ARRAY_BUFFER, size, vertices, drawType);
 #endif
 		m_VertexSize = size;
@@ -64,12 +69,12 @@ namespace BlackPearl {
 		}
 
 	}
-	VertexBuffer::VertexBuffer(void* vertices, uint32_t size, bool Interleaved, bool divisor, uint32_t perInstance, uint32_t drawType)
-	{
+	VertexBuffer::VertexBuffer(const BufferDesc& _desc, void* vertices, uint32_t size, bool Interleaved, bool divisor, uint32_t perInstance, uint32_t drawType)
+		:Buffer(_desc) {
 		m_VerticesVoidData = vertices;
 #ifdef GE_API_OPENGL
-		glGenBuffers(1, &m_RendererID);
-		glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);
+		glGenBuffers(1, &rendererID);
+		glBindBuffer(GL_ARRAY_BUFFER, rendererID);
 		glBufferData(GL_ARRAY_BUFFER, size, vertices, drawType);
 #endif
 		m_VertexSize = size;
@@ -89,7 +94,7 @@ namespace BlackPearl {
 	void VertexBuffer::Bind() {
 
 #ifdef GE_API_OPENGL
-		glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);
+		glBindBuffer(GL_ARRAY_BUFFER, rendererID);
 #endif
 	}
 
@@ -97,7 +102,7 @@ namespace BlackPearl {
 	{
 		m_VerticesVoidData = vertices;
 #ifdef GE_API_OPENGL
-		glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);
+		glBindBuffer(GL_ARRAY_BUFFER, rendererID);
 		glBufferData(GL_ARRAY_BUFFER, size, vertices, drawType);
 #endif
 		m_VertexSize = size;
@@ -112,25 +117,30 @@ namespace BlackPearl {
 	void VertexBuffer::CleanUp()
 	{
 #ifdef GE_API_OPENGL
-		glDeleteBuffers(1, &m_RendererID);
+		glDeleteBuffers(1, &rendererID);
 #endif
 	}
+	IndexBuffer::IndexBuffer(const BufferDesc& _desc)
+		:Buffer(_desc) {
+		glGenBuffers(1, &rendererID);
+	}
+
 	//------------------------IndexBuffer-----------------//
-	IndexBuffer::IndexBuffer(const std::vector<unsigned int>& indices, uint32_t drawType)
-	{
+	IndexBuffer::IndexBuffer(const BufferDesc& _desc, const std::vector<unsigned int>& indices, uint32_t drawType)
+		:Buffer(_desc) {
 #ifdef GE_API_OPENGL
-		glGenBuffers(1, &m_RendererID);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_RendererID);
+		glGenBuffers(1, &rendererID);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, rendererID);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), &indices[0], drawType);
 #endif
 		m_IndiciesSize = indices.size() * sizeof(unsigned int);
 		m_Indicies = indices.data();
 	}
-	IndexBuffer::IndexBuffer(unsigned int * indices, unsigned int size, uint32_t drawType)
-	{
+	IndexBuffer::IndexBuffer(const BufferDesc& _desc, unsigned int * indices, unsigned int size, uint32_t drawType)
+		:Buffer(_desc) {
 #ifdef GE_API_OPENGL
-		glGenBuffers(1, &m_RendererID);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_RendererID);
+		glGenBuffers(1, &rendererID);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, rendererID);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, size, indices, drawType);
 #endif
 		m_IndiciesSize = size;
@@ -139,13 +149,13 @@ namespace BlackPearl {
 	IndexBuffer::~IndexBuffer()
 	{
 #ifdef GE_API_OPENGL
-		glDeleteBuffers(1, &m_RendererID);
+		glDeleteBuffers(1, &rendererID);
 #endif
 	}
 	void IndexBuffer::Bind()
 	{
 #ifdef GE_API_OPENGL
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_RendererID);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, rendererID);
 #endif
 
 	}
@@ -170,23 +180,23 @@ namespace BlackPearl {
 	}
 
 
-	FrameBuffer::FrameBuffer()
-	{
+	FrameBuffer::FrameBuffer(const BufferDesc& _desc)
+		:Buffer(_desc) {
 
-		glGenFramebuffers(1, &m_RendererID);
+		glGenFramebuffers(1, &rendererID);
 	}
 
 	//------------------------FrameBuffer-----------------//
 	//note: framebuffer has no memory, imageWidth, imageHeight is the width and height of the attachment! 不同attachment有不同的width和height
-	FrameBuffer::FrameBuffer(const int imageWidth,int imageHeight,std::initializer_list<Attachment> attachment, unsigned int colorAttachmentPoint,bool disableColor, TextureType colorTextureType)
-	{
+	FrameBuffer::FrameBuffer(const BufferDesc& _desc, const int imageWidth,int imageHeight,std::initializer_list<Attachment> attachment, unsigned int colorAttachmentPoint,bool disableColor, TextureType colorTextureType)
+		:Buffer(_desc) {
 		/* m_Width,m_Height for voxel cone tracing */
 		m_Width = imageWidth;
 		m_Height = imageHeight;
 		GLint previousFrameBuffer;
 		glGetIntegerv(GL_FRAMEBUFFER_BINDING, &previousFrameBuffer);//获取之前绑定的Framebuffer
 
-		glGenFramebuffers(1, &m_RendererID);
+		glGenFramebuffers(1, &rendererID);
 		Bind();
 		if (disableColor) {
 			DisableColorBuffer();
@@ -344,7 +354,7 @@ namespace BlackPearl {
 	void FrameBuffer::Bind()
 	{
 		//glBindTexture(GL_TEXTURE_2D, 0);
-		glBindFramebuffer(GL_FRAMEBUFFER, m_RendererID);
+		glBindFramebuffer(GL_FRAMEBUFFER, rendererID);
 		//glViewport(0, 0, width, height);
 
 	}
@@ -365,7 +375,7 @@ namespace BlackPearl {
 	{
 		
 		glDeleteRenderbuffers(1, &m_RenderBufferID);
-		glDeleteFramebuffers(1,&m_RendererID);
+		glDeleteFramebuffers(1,&rendererID);
 
 	}
 	void FrameBuffer::SetViewPort(int width, int height)
@@ -376,15 +386,15 @@ namespace BlackPearl {
 	}
 
 	/*----------------------------    GBuffer   --------------------------------*/
-	GBuffer::GBuffer(const unsigned int imageWidth, const unsigned int imageHeight, Type type)
-	{
+	GBuffer::GBuffer(const BufferDesc& _desc, const unsigned int imageWidth, const unsigned int imageHeight, Type type)
+		:Buffer(_desc) {
 
 		m_Width  = imageWidth;
 		m_Height = imageHeight;
 		m_Type = type;
 
 		
-		glGenFramebuffers(1, &m_RendererID);
+		glGenFramebuffers(1, &rendererID);
 		Bind();
 		
 		switch (type) {
@@ -408,7 +418,7 @@ namespace BlackPearl {
 	}
 	void GBuffer::Bind()
 	{
-		glBindFramebuffer(GL_FRAMEBUFFER, m_RendererID);
+		glBindFramebuffer(GL_FRAMEBUFFER, rendererID);
 
 	}
 	void GBuffer::UnBind()
@@ -512,12 +522,12 @@ namespace BlackPearl {
 
 	}
 	/*----------------------------    AtomicBuffer   --------------------------------*/
-
-	AtomicBuffer::AtomicBuffer()
-	{
+	
+	AtomicBuffer::AtomicBuffer(const BufferDesc& _desc)
+		:Buffer(_desc) {
 		GLuint initVal = 0;
-		glGenBuffers(1, &m_RendererID);
-		glBindBuffer(GL_ATOMIC_COUNTER_BUFFER, m_RendererID);
+		glGenBuffers(1, &rendererID);
+		glBindBuffer(GL_ATOMIC_COUNTER_BUFFER, rendererID);
 		glBufferData(GL_ATOMIC_COUNTER_BUFFER, sizeof(GLuint), &initVal, GL_DYNAMIC_DRAW);
 		glBindBuffer(GL_ATOMIC_COUNTER_BUFFER, 0);
 
@@ -531,11 +541,11 @@ namespace BlackPearl {
 	
 	void AtomicBuffer::Bind()
 	{
-		glBindBuffer(GL_ATOMIC_COUNTER_BUFFER, m_RendererID);
+		glBindBuffer(GL_ATOMIC_COUNTER_BUFFER, rendererID);
 	}
 	void AtomicBuffer::BindIndex(unsigned int index)
 	{
-		glBindBufferBase(GL_ATOMIC_COUNTER_BUFFER, index, m_RendererID);
+		glBindBufferBase(GL_ATOMIC_COUNTER_BUFFER, index, rendererID);
 	}
 	void AtomicBuffer::UnBind()
 	{
@@ -543,26 +553,33 @@ namespace BlackPearl {
 	}
 	void AtomicBuffer::CleanUp()
 	{
-		glDeleteBuffers(1, &m_RendererID);
+		glDeleteBuffers(1, &rendererID);
+	}
+
+
+	ShaderStorageBuffer::ShaderStorageBuffer(const BufferDesc& _desc)
+		:Buffer(_desc) {
+		glCreateBuffers(1, &rendererID);
+
 	}
 	/*----------------------------    SSBO   --------------------------------*/
-	ShaderStorageBuffer::ShaderStorageBuffer(GLsizeiptr bytes,GLbitfield mapFlags)
-	{
+	ShaderStorageBuffer::ShaderStorageBuffer(const BufferDesc& _desc, GLsizeiptr bytes,GLbitfield mapFlags)
+		:Buffer(_desc) {
 		GLuint initVal = 0;
 
-		//glGenBuffers(1, &m_RendererID);
-		glCreateBuffers(1, &m_RendererID);
-		//glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_RendererID);
-		glNamedBufferStorage(m_RendererID, bytes, nullptr, mapFlags);
+		//glGenBuffers(1, &rendererID);
+		glCreateBuffers(1, &rendererID);
+		//glBindBuffer(GL_SHADER_STORAGE_BUFFER, rendererID);
+		glNamedBufferStorage(rendererID, bytes, nullptr, mapFlags);
 		//glBufferData(GL_SHADER_STORAGE_BUFFER, bytes, nullptr, GL_STATIC_COPY);
 		//glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 	}
 
 
-	ShaderStorageBuffer::ShaderStorageBuffer(uint32_t size, uint32_t drawType, void* data)
-	{
-		glGenBuffers(1, &m_RendererID);
-		glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_RendererID);
+	ShaderStorageBuffer::ShaderStorageBuffer(const BufferDesc& _desc, uint32_t size, uint32_t drawType, void* data)
+		:Buffer(_desc) {
+		glGenBuffers(1, &rendererID);
+		glBindBuffer(GL_SHADER_STORAGE_BUFFER, rendererID);
 		glBufferData(GL_SHADER_STORAGE_BUFFER, size, data, drawType);
 	}
 
@@ -574,12 +591,12 @@ namespace BlackPearl {
 	
 	void ShaderStorageBuffer::Bind()
 	{
-		glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_RendererID);
+		glBindBuffer(GL_SHADER_STORAGE_BUFFER, rendererID);
 
 	}
 	void ShaderStorageBuffer::BindIndex(unsigned int index)
 	{
-		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, index, m_RendererID);
+		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, index, rendererID);
 	}
 	void ShaderStorageBuffer::UnBind()
 	{
@@ -588,37 +605,42 @@ namespace BlackPearl {
 	}
 	void ShaderStorageBuffer::CleanUp()
 	{
-		glDeleteBuffers(1, &m_RendererID);
+		glDeleteBuffers(1, &rendererID);
 
 	}
 
 	/*----------------------------    IndirectBuffer   --------------------------------*/
 
-	IndirectBuffer::IndirectBuffer(const std::vector<IndirectCommand>& commands, uint32_t drawType)
-	{
-		//feed the draw command data to the gpu
-		glGenBuffers(1, &m_RendererID);
+	IndirectBuffer::IndirectBuffer(const BufferDesc& _desc)
+	:Buffer(_desc) {
+		glGenBuffers(1, &rendererID);
+	}
 
-		glBindBuffer(GL_DRAW_INDIRECT_BUFFER, m_RendererID);
+	IndirectBuffer::IndirectBuffer(const BufferDesc& _desc, const std::vector<IndirectCommand>& commands, uint32_t drawType)
+		:Buffer(_desc) {
+		//feed the draw command data to the gpu
+		glGenBuffers(1, &rendererID);
+
+		glBindBuffer(GL_DRAW_INDIRECT_BUFFER, rendererID);
 		glBufferData(GL_DRAW_INDIRECT_BUFFER, commands.size() * sizeof(IndirectCommand), &commands[0], drawType);
 		m_Commands = commands;
 	}
 	IndirectBuffer::~IndirectBuffer()
 	{
-		glDeleteBuffers(1, &m_RendererID);
+		glDeleteBuffers(1, &rendererID);
 	}
 
 	void IndirectBuffer::UpdateCommands(const std::vector<IndirectCommand>& cmds)
 	{
 		m_Commands = cmds;
-		glBindBuffer(GL_DRAW_INDIRECT_BUFFER, m_RendererID);
+		glBindBuffer(GL_DRAW_INDIRECT_BUFFER, rendererID);
 		glBufferData(GL_DRAW_INDIRECT_BUFFER, m_Commands.size() * sizeof(IndirectCommand), &m_Commands[0], GL_DYNAMIC_DRAW);
 
 	}
 
 	void IndirectBuffer::Bind()
 	{
-		glBindBuffer(GL_DRAW_INDIRECT_BUFFER, m_RendererID);
+		glBindBuffer(GL_DRAW_INDIRECT_BUFFER, rendererID);
 		
 
 	}

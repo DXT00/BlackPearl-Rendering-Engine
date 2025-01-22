@@ -3,20 +3,18 @@
 #include "BlackPearl/Core.h"
 //#include "BlackPearl/RHI/OpenGLRHI/OpenGLTexture.h"
 #include "BlackPearl/RHI/RHITexture.h"
+#include "OpenGLBuffer.h"
 #include <glad/glad.h>
 #include <unordered_map>
 namespace BlackPearl {
 
-	
-
-
-	class VertexBuffer {
+	class VertexBuffer : public Buffer {
 	public:
-
-		VertexBuffer(const std::vector<float>&vertices, bool Interleaved = true, bool divisor = false, uint32_t perInstance = 0, uint32_t drawType = GL_STATIC_DRAW);
-		VertexBuffer(const float* vertices, uint32_t size, bool Interleaved = true, bool divisor = false, uint32_t perInstance = 0,uint32_t drawType = GL_STATIC_DRAW);
-		VertexBuffer(const unsigned int* vertices, uint32_t size, bool Interleaved = true, bool divisor = false, uint32_t perInstance = 0, uint32_t drawType = GL_STATIC_DRAW);
-		VertexBuffer(void* vertices, uint32_t size, bool Interleaved = true, bool divisor = false, uint32_t perInstance = 0, uint32_t drawType = GL_STATIC_DRAW);
+		VertexBuffer(const BufferDesc& _desc);
+		VertexBuffer(const BufferDesc& _desc, const std::vector<float>&vertices, bool Interleaved = true, bool divisor = false, uint32_t perInstance = 0, uint32_t drawType = GL_STATIC_DRAW);
+		VertexBuffer(const BufferDesc& _desc, const float* vertices, uint32_t size, bool Interleaved = true, bool divisor = false, uint32_t perInstance = 0,uint32_t drawType = GL_STATIC_DRAW);
+		VertexBuffer(const BufferDesc& _desc, const unsigned int* vertices, uint32_t size, bool Interleaved = true, bool divisor = false, uint32_t perInstance = 0, uint32_t drawType = GL_STATIC_DRAW);
+		VertexBuffer(const BufferDesc& _desc, void* vertices, uint32_t size, bool Interleaved = true, bool divisor = false, uint32_t perInstance = 0, uint32_t drawType = GL_STATIC_DRAW);
 
 		~VertexBuffer();
 		void Bind();
@@ -35,7 +33,7 @@ namespace BlackPearl {
 
 		uint32_t GetDivPerInstance() const { return m_DivPerInstance; }
 	private:
-		uint32_t m_RendererID;
+		//uint32_t m_RendererID;
 		uint32_t m_VertexSize;
 		const float* m_VerticesFloat = nullptr;
 		const uint32_t* m_VerticesUint = nullptr;
@@ -47,10 +45,11 @@ namespace BlackPearl {
 		VertexBufferLayout m_BufferLayout;//这里需要默认构造函数
 	};
 
-	class IndexBuffer {
+	class IndexBuffer : public Buffer {
 	public:
-		IndexBuffer(const std::vector<unsigned int>& indices, uint32_t drawType = GL_STATIC_DRAW);
-		IndexBuffer(unsigned int *indices, unsigned int size, uint32_t drawType = GL_STATIC_DRAW);
+		IndexBuffer(const BufferDesc& _desc);
+		IndexBuffer(const BufferDesc& _desc, const std::vector<unsigned int>& indices, uint32_t drawType = GL_STATIC_DRAW);
+		IndexBuffer(const BufferDesc& _desc, unsigned int *indices, unsigned int size, uint32_t drawType = GL_STATIC_DRAW);
 		~IndexBuffer();
 		uint32_t GetIndicesSize() const { return m_IndiciesSize; }
 		const unsigned int* GetIndicies()const { return m_Indicies; }
@@ -59,7 +58,7 @@ namespace BlackPearl {
 		void UnBind();
 
 	private:
-		unsigned int m_RendererID;
+		//unsigned int m_RendererID;
 		unsigned int m_IndiciesSize;
 		const unsigned int* m_Indicies;
 
@@ -73,9 +72,10 @@ namespace BlackPearl {
 		GLuint  startInstance;
 	};
 
-	class IndirectBuffer {
+	class IndirectBuffer : public Buffer {
 	public:
-		IndirectBuffer(const std::vector<IndirectCommand>& commands, uint32_t drawType = GL_DYNAMIC_DRAW);
+		IndirectBuffer(const BufferDesc& _desc);
+		IndirectBuffer(const BufferDesc& _desc, const std::vector<IndirectCommand>& commands, uint32_t drawType = GL_DYNAMIC_DRAW);
 		~IndirectBuffer();
 		uint32_t GetID() const { return m_RendererID; }
 		void UpdateCommands(const std::vector<IndirectCommand>& cmds);
@@ -90,7 +90,7 @@ namespace BlackPearl {
 	};
 
 
-	class FrameBuffer {
+	class FrameBuffer : public Buffer {
 	public:
 
 		enum Attachment {
@@ -102,10 +102,10 @@ namespace BlackPearl {
 
 		};
 		/*no attachment*/
-		FrameBuffer();
+		FrameBuffer(const BufferDesc& _desc);
 		
 		/*initial with attachment*/
-		FrameBuffer(const int imageWidth, const int imageHeight, std::initializer_list<Attachment> attachment,  unsigned int colorAttachmentPoint,bool disableColor, TextureType colorTextureType = TextureType::DiffuseMap);
+		FrameBuffer(const BufferDesc& _desc, const int imageWidth, const int imageHeight, std::initializer_list<Attachment> attachment,  unsigned int colorAttachmentPoint,bool disableColor, TextureType colorTextureType = TextureType::DiffuseMap);
 		void AttachColorTexture(TextureType textureType, unsigned int attachmentPoints, unsigned int imageWidth, unsigned int imageHeight);
 		void AttachColorTexture(TextureHandle texture, unsigned int attachmentPoints);
 
@@ -144,7 +144,7 @@ namespace BlackPearl {
 		void SetViewPort(int width, int height);
 	private:
 		unsigned int m_Width, m_Height;
-		unsigned int m_RendererID;
+		//unsigned int m_RendererID;
 		
 
 		//GL_COLOR_ATTACHMENTi 到 Texture的映射
@@ -157,14 +157,14 @@ namespace BlackPearl {
 		unsigned int m_RenderBufferID;
 	};
 
-	class GBuffer
+	class GBuffer : public Buffer
 	{
 	public:
 		enum  Type {
 			GI,
 			RayTracing
 		};
-		GBuffer(const unsigned int imageWidth,const unsigned int imageHeight,Type type = Type::GI);
+		GBuffer(const BufferDesc& _desc, const unsigned int imageWidth,const unsigned int imageHeight,Type type = Type::GI);
 		void Bind();
 		void UnBind();
 		/************************ GI Texture (voxel cone tracing and light probe)*********/
@@ -200,16 +200,16 @@ namespace BlackPearl {
 		/************************ Raytracing Texture ************************************/
 		std::vector<TextureHandle> m_ColorTextures;
 
-		unsigned int m_RendererID;
+		//unsigned int m_RendererID;
 		unsigned int m_RenderBufferID;
 		unsigned int m_Width, m_Height;
 		Type m_Type;
 
 
 	};
-	class AtomicBuffer {
+	class AtomicBuffer : public Buffer {
 	public:
-		AtomicBuffer();
+		AtomicBuffer(const BufferDesc& _desc);
 		~AtomicBuffer() {
 			CleanUp();
 		}
@@ -219,25 +219,27 @@ namespace BlackPearl {
 		void ResetValue(GLuint val);
 		void CleanUp();
 	private:
-		unsigned int m_RendererID;
+		//unsigned int m_RendererID;
 		
 	};
 	//SSBO
-	class ShaderStorageBuffer {
+	class ShaderStorageBuffer : public Buffer {
 	public:
-		ShaderStorageBuffer(GLsizeiptr bytes, GLbitfield mapFlags);
-		ShaderStorageBuffer(uint32_t size, uint32_t drawType, void* data);
+		ShaderStorageBuffer::ShaderStorageBuffer(const BufferDesc& _desc);
+			
+		ShaderStorageBuffer(const BufferDesc& _desc, GLsizeiptr bytes, GLbitfield mapFlags);
+		ShaderStorageBuffer(const BufferDesc& _desc, uint32_t size, uint32_t drawType, void* data);
 
 		~ShaderStorageBuffer();
 		GLuint GetRenderID() const {
-			return m_RendererID;
+			return rendererID;
 		}
 		void Bind();
 		void BindIndex(unsigned int index);
 		void UnBind();
 		void CleanUp();
 	private:
-		GLuint m_RendererID;
+		//GLuint m_RendererID;
 
 	};
 }

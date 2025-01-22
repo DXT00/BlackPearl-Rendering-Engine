@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "OpenGLBindingSet.h"
 #include "OpenGLDevice.h"
+#include "OpenGLSampler.h"
 #include "OpenGLTexture.h"
 #include "OpenGLSampler.h"
 namespace BlackPearl {
@@ -49,7 +50,7 @@ namespace BlackPearl {
 				/*Texture* texture = dynamic_cast<Texture*>(binding.resourceHandle);
 
 				const TextureSubresourceSet subresource = binding.subresources.resolve(texture->getDesc(), false);
-				const Texture::TextureSubresourceViewType textureViewType = getTextureViewType(binding.format, texture->desc.format);
+				/*const Texture::TextureSubresourceViewType textureViewType = getTextureViewType(binding.format, texture->desc.format);
 				auto& view = texture->getSubresourceView(subresource, binding.dimension, binding.format, textureViewType);
 
 				imageInfos[ImageDescCnt].imageView = view.view;
@@ -57,7 +58,7 @@ namespace BlackPearl {
 
 				generateWriteDescriptorData(layoutBinding.binding,
 					layoutBinding.descriptorType,
-					&imageInfos[ImageDescCnt], nullptr, nullptr, descriptorWriteInfo, ret, bindingIndex);
+					&imageInfos[ImageDescCnt], nullptr, nullptr, descriptorWriteInfo, ret, bindingIndex);*/
 
 				ImageDescCnt++;
 				descriptorCnt++;
@@ -67,7 +68,7 @@ namespace BlackPearl {
 				else
 					verifyPermanentResourceState(texture->permanentState,
 						ResourceStates::ShaderResource,
-						true, texture->desc.debugName, m_Context.messageCallback);*/
+						true, texture->getDesc().debugName, m_Context.messageCallback);
 			}
 
 			break;
@@ -168,7 +169,7 @@ namespace BlackPearl {
 			{
 				/*Buffer* buffer = static_cast<Buffer*>(binding.resourceHandle);
 
-				if (binding.type == RHIResourceType::RT_StructuredBuffer_UAV || binding.type == RHIResourceType::RT_RawBuffer_UAV)
+				/*if (binding.type == RHIResourceType::RT_StructuredBuffer_UAV || binding.type == RHIResourceType::RT_RawBuffer_UAV)
 					assert(buffer->desc.canHaveUAVs);
 				if (binding.type == RHIResourceType::RT_StructuredBuffer_UAV || binding.type == RHIResourceType::RT_StructuredBuffer_SRV)
 					assert(buffer->desc.structStride != 0);
@@ -195,7 +196,7 @@ namespace BlackPearl {
 				descriptorWriteInfo[bindingIndex].pNext = nullptr;
 
 				bufferDescCnt++;
-				descriptorCnt++;
+				descriptorCnt++;*/
 
 
 				if (binding.type == RHIResourceType::RT_VolatileConstantBuffer)

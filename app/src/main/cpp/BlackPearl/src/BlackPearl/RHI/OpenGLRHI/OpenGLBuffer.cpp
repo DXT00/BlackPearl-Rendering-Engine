@@ -3,6 +3,7 @@
 #include "glad/glad.h"
 #include "OpenGLBufferResource.h"
 #include "OpenGLDevice.h"
+#include "BlackPearl/Core.h"
 
 namespace BlackPearl {
 
@@ -18,7 +19,7 @@ namespace BlackPearl {
             return nullptr;
 
 
-        OpenGLBuffer* buffer = nullptr;
+        Buffer* buffer = nullptr;
         if (desc.isVertexBuffer) {
             buffer = OpenGLBufferFactory::createVertexBuffer(desc);
         }
@@ -26,19 +27,20 @@ namespace BlackPearl {
             buffer = OpenGLBufferFactory::createIndexBuffer(desc);
         }
         else if (desc.isConstantBuffer) {
-            buffer = OpenGLBufferFactory::createIndexBuffer(desc);
+            buffer = OpenGLBufferFactory::createUniformBuffer(desc);
         }
         else if (desc.isDrawIndirectArgs) {
-            buffer = OpenGLBufferFactory::createIndexBuffer(desc);
+            buffer = OpenGLBufferFactory::createIndirectBuffer(desc);
         }
-        else if (desc.canHaveUAVs) {
-            buffer = OpenGLBufferFactory::createIndexBuffer(desc);
-        }
-        else if (desc.canHaveTypedViews) {
-            buffer = OpenGLBufferFactory::createIndexBuffer(desc);
+        else if (desc.canHaveUAVs || desc.canHaveRawViews) {
+            buffer = OpenGLBufferFactory::createShaderStorageBuffer(desc);
         }
         else if (desc.canHaveTypedViews) {
-            buffer = OpenGLBufferFactory::createIndexBuffer(desc);
+            //todo::
+            buffer = OpenGLBufferFactory::createTexelBuffer(desc);
+        }
+        else if (desc.canHaveTypedViews && desc.canHaveUAVs) {
+            buffer = OpenGLBufferFactory::createShaderStorageBuffer(desc);
         }
 
     }
@@ -53,24 +55,25 @@ namespace BlackPearl {
     Buffer* OpenGLBufferFactory::createUniformBuffer(const BufferDesc& _desc)
     {
         FRHIUniformBufferLayout* layout = new FRHIUniformBufferLayout();
-        return new OpenGLUniformBuffer(layout, _desc);
+        return DBG_NEW OpenGLUniformBuffer(layout, _desc);
     }
     Buffer* OpenGLBufferFactory::createIndexBuffer(const BufferDesc& _desc)
     {
-        return nullptr;
+        return DBG_NEW IndexBuffer(_desc);
     }
     Buffer* OpenGLBufferFactory::createVertexBuffer(const BufferDesc& _desc)
     {
-        return nullptr;
+        return  DBG_NEW VertexBuffer(_desc);
     }
     Buffer* OpenGLBufferFactory::createIndirectBuffer(const BufferDesc& _desc)
     {
-        return nullptr;
+        return  DBG_NEW IndirectBuffer(_desc);
     }
     Buffer* OpenGLBufferFactory::createShaderStorageBuffer(const BufferDesc& _desc)
     {
-        return nullptr;
+        return DBG_NEW ShaderStorageBuffer(_desc);
     }
+    //todo
     Buffer* OpenGLBufferFactory::createTexelBuffer(const BufferDesc& _desc)
     {
         return nullptr;

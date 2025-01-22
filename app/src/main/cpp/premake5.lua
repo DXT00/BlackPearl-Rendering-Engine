@@ -27,6 +27,7 @@ workspace "BlackPearl"
 	if _OPTIONS["RenderAPI"] == "opengl" then
 		startproject "Sandbox"
 		include "SandBox"
+		include "SandBoxVK"
 		print("set startproject to Sandbox.")
 	elseif _OPTIONS["RenderAPI"] == "vulkan"  then
 		startproject "SandboxVK"

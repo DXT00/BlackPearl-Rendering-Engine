@@ -25,6 +25,8 @@ namespace BlackPearl {
         // A dynamic/upload buffer whose contents only live in the current command list
         bool isVolatile = false;
 
+		//todo:: only gl
+		bool isDynamic = false;
         // Indicates that the buffer is created with no backing memory,
         // and memory is bound to the texture later using bindBufferMemory.
         // On DX12, the buffer resource is created at the time of memory binding.
