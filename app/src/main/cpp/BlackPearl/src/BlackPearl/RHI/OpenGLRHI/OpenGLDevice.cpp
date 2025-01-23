@@ -11,6 +11,7 @@
 #include "BlackPearl/RHI/RHIGlobals.h"
 #include "BlackPearl/RHI/DynamicRHI.h"
 #include "BlackPearl/RHI/RHIDefinitions.h"
+
 namespace BlackPearl 
 {
 	extern GLint GMaxOpenGLColorSamples;
@@ -72,11 +73,6 @@ namespace BlackPearl
 	MemoryRequirements Device::getBufferMemoryRequirements(IBuffer* buffer)
 	{
 		return MemoryRequirements();
-	}
-
-	GraphicsPipelineHandle Device::createGraphicsPipeline(const GraphicsPipelineDesc& desc, IFramebuffer* fb)
-	{
-		return GraphicsPipelineHandle();
 	}
 
 	ComputePipelineHandle Device::createComputePipeline(const ComputePipelineDesc& desc)

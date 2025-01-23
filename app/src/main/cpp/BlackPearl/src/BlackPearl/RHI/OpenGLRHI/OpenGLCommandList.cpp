@@ -82,6 +82,22 @@ namespace BlackPearl{
 	}
 	void CommandList::setGraphicsState(const GraphicsState& state)
 	{
+
+
+
+
+
+
+
+
+
+		//bind uniformbuffer
+
+
+
+
+
+
 		FRHIGraphicsPipelineStateFallBack* FallbackGraphicsState = static_cast<FRHIGraphicsPipelineStateFallBack*>(GraphicsState);
 
 		auto& PsoInit = FallbackGraphicsState->Initializer;

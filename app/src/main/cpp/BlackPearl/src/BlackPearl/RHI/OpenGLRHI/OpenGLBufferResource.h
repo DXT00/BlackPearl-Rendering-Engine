@@ -90,7 +90,7 @@ namespace BlackPearl {
 	};
 
 
-	class FrameBuffer : public Buffer {
+	class Framebuffer : public Buffer {
 	public:
 
 		enum Attachment {
@@ -102,10 +102,10 @@ namespace BlackPearl {
 
 		};
 		/*no attachment*/
-		FrameBuffer(const BufferDesc& _desc);
+		Framebuffer(const BufferDesc& _desc);
 		
 		/*initial with attachment*/
-		FrameBuffer(const BufferDesc& _desc, const int imageWidth, const int imageHeight, std::initializer_list<Attachment> attachment,  unsigned int colorAttachmentPoint,bool disableColor, TextureType colorTextureType = TextureType::DiffuseMap);
+		Framebuffer(const BufferDesc& _desc, const int imageWidth, const int imageHeight, std::initializer_list<Attachment> attachment,  unsigned int colorAttachmentPoint,bool disableColor, TextureType colorTextureType = TextureType::DiffuseMap);
 		void AttachColorTexture(TextureType textureType, unsigned int attachmentPoints, unsigned int imageWidth, unsigned int imageHeight);
 		void AttachColorTexture(TextureHandle texture, unsigned int attachmentPoints);
 

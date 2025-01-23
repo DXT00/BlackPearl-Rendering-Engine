@@ -2,6 +2,60 @@
 #include "BasePassRenderer.h"
 
 namespace BlackPearl {
+    /* Á÷³Ì·ÂÕÕue: */
+    /*
+    	FIntPoint DisplacementMapResolution(OutTextureRenderTargetResource->GetSizeX(), OutTextureRenderTargetResource->GetSizeY());
+
+		// Update viewport.
+		RHICmdList.SetViewport(
+			0, 0, 0.f,
+			DisplacementMapResolution.X, DisplacementMapResolution.Y, 1.f);
+
+		// Get shaders.
+		FGlobalShaderMap* GlobalShaderMap = GetGlobalShaderMap(FeatureLevel);
+		TShaderMapRef< FLensDistortionUVGenerationVS > VertexShader(GlobalShaderMap);
+		TShaderMapRef< FLensDistortionUVGenerationPS > PixelShader(GlobalShaderMap);
+
+		// Set the graphic pipeline state.
+		FGraphicsPipelineStateInitializer GraphicsPSOInit;
+		RHICmdList.ApplyCachedRenderTargets(GraphicsPSOInit);
+		GraphicsPSOInit.DepthStencilState = TStaticDepthStencilState<false, CF_Always>::GetRHI();
+		GraphicsPSOInit.BlendState = TStaticBlendState<>::GetRHI();
+		GraphicsPSOInit.RasterizerState = TStaticRasterizerState<>::GetRHI();
+		GraphicsPSOInit.PrimitiveType = PT_TriangleList;
+		GraphicsPSOInit.BoundShaderState.VertexDeclarationRHI = GetVertexDeclarationFVector4();
+		GraphicsPSOInit.BoundShaderState.VertexShaderRHI = VertexShader.GetVertexShader();
+		GraphicsPSOInit.BoundShaderState.PixelShaderRHI = PixelShader.GetPixelShader();
+		SetGraphicsPipelineState(RHICmdList, GraphicsPSOInit, 0);
+
+		// Update viewport.
+		RHICmdList.SetViewport(
+			0, 0, 0.f,
+			OutTextureRenderTargetResource->GetSizeX(), OutTextureRenderTargetResource->GetSizeY(), 1.f);
+
+		// Update shader uniform parameters.
+
+		SetShaderParametersLegacyVS(RHICmdList, VertexShader, CompiledCameraModel, DisplacementMapResolution);
+		SetShaderParametersLegacyPS(RHICmdList, PixelShader, CompiledCameraModel, DisplacementMapResolution);
+
+		// Draw grid.
+		uint32 PrimitiveCount = kGridSubdivisionX * kGridSubdivisionY * 2;
+		RHICmdList.DrawPrimitive(0, PrimitiveCount, 1);
+	}
+	RHICmdList.EndRenderPass();
+
+	RHICmdList.Transition(FRHITransitionInfo(RenderTargetTexture, ERHIAccess::RTV, ERHIAccess::SRVMask));
+    
+    
+    
+    
+    
+    */
+
+
+
+
+
 
     void RenderView(ICommandList* commandList, IFramebuffer* framebuffer, IView* view, IView* viewPrev, IDrawStrategy* drawStrategy, GeometryRenderer* pass, bool materialEvents)
     {
@@ -45,7 +99,6 @@ namespace BlackPearl {
                     }
                 }
 
-                pass->SetPushConstants(commandList, graphicsState, currentDraw);
 
                 if(currentDraw.drawIndex)
                     commandList->drawIndexed(currentDraw);

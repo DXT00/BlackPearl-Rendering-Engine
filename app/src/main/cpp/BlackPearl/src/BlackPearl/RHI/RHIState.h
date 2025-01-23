@@ -21,6 +21,14 @@ namespace BlackPearl {
 
         IBuffer* indirectParams = nullptr;
 
+
+        FBoundShaderStateInput			BoundShaderState;
+        FRHIBlendState* BlendState;
+        FRHIRasterizerState* RasterizerState;
+        FRHIDepthStencilState* DepthStencilState;
+        FImmutableSamplerState			ImmutableSamplerState;
+
+
         GraphicsState& setPipeline(IGraphicsPipeline* value) { pipeline = value; return *this; }
         GraphicsState& setFramebuffer(IFramebuffer* value) { framebuffer = value; return *this; }
         GraphicsState& setViewport(const ViewportState& value) { viewport = value; return *this; }

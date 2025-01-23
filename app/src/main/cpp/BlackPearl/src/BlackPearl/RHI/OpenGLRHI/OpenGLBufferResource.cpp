@@ -180,15 +180,15 @@ namespace BlackPearl {
 	}
 
 
-	FrameBuffer::FrameBuffer(const BufferDesc& _desc)
+	Framebuffer::Framebuffer(const BufferDesc& _desc)
 		:Buffer(_desc) {
 
 		glGenFramebuffers(1, &rendererID);
 	}
 
-	//------------------------FrameBuffer-----------------//
+	//------------------------Framebuffer-----------------//
 	//note: framebuffer has no memory, imageWidth, imageHeight is the width and height of the attachment! 不同attachment有不同的width和height
-	FrameBuffer::FrameBuffer(const BufferDesc& _desc, const int imageWidth,int imageHeight,std::initializer_list<Attachment> attachment, unsigned int colorAttachmentPoint,bool disableColor, TextureType colorTextureType)
+	Framebuffer::Framebuffer(const BufferDesc& _desc, const int imageWidth,int imageHeight,std::initializer_list<Attachment> attachment, unsigned int colorAttachmentPoint,bool disableColor, TextureType colorTextureType)
 		:Buffer(_desc) {
 		/* m_Width,m_Height for voxel cone tracing */
 		m_Width = imageWidth;
@@ -222,12 +222,12 @@ namespace BlackPearl {
 		GE_ASSERT(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "Framebuffer not complete!");
 
 		UnBind();
-		//绑定回原来的FrameBuffer
+		//绑定回原来的Framebuffer
 		glBindFramebuffer(GL_FRAMEBUFFER, previousFrameBuffer);
 
 	}
 
-	void FrameBuffer::AttachColorTexture(TextureType textureType, unsigned int attachmentPoints,unsigned int imageWidth,unsigned int imageHeight)
+	void Framebuffer::AttachColorTexture(TextureType textureType, unsigned int attachmentPoints,unsigned int imageWidth,unsigned int imageHeight)
 	{
 		GE_CORE_WARN(" 注意Texture是否是默认的格式！");
 
@@ -248,7 +248,7 @@ namespace BlackPearl {
 		GE_ASSERT(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "Framebuffer not complete!");
 	}
 
-	void FrameBuffer::AttachColorTexture(TextureHandle texture, unsigned int attachmentPoints)
+	void Framebuffer::AttachColorTexture(TextureHandle texture, unsigned int attachmentPoints)
 	{
 		//将它附加到当前绑定的帧缓冲对象
 		m_TextureColorBuffers[attachmentPoints] = texture;
@@ -257,7 +257,7 @@ namespace BlackPearl {
 		GE_ASSERT(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "Framebuffer not complete!");
 	}
 	//TODO:: 通过device->createFramebuffer(fboDesc);创建
-	void FrameBuffer::AttachDepthTexture(const int imageWidth, int imageHeight)
+	void Framebuffer::AttachDepthTexture(const int imageWidth, int imageHeight)
 	{	
 		GE_CORE_WARN(" 注意Texture是否是默认的格式！");
 
@@ -282,7 +282,7 @@ namespace BlackPearl {
 		GE_ASSERT(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "Framebuffer not complete!");
 	}
 
-	void FrameBuffer::AttachDepthTexture(TextureHandle texture, int mipmapLevel) {
+	void Framebuffer::AttachDepthTexture(TextureHandle texture, int mipmapLevel) {
 		m_TextureDepthBuffer = texture;
 		//Bind();
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, static_cast<Texture*>(m_TextureDepthBuffer.Get())->GetRendererID(), mipmapLevel);
@@ -293,7 +293,7 @@ namespace BlackPearl {
 
 
 	//TODO::注意CubeMap的格式
-	void FrameBuffer::AttachCubeMapDepthTexture(TextureHandle cubeMap)
+	void Framebuffer::AttachCubeMapDepthTexture(TextureHandle cubeMap)
 	{
 
 		m_CubeMapDepthBuffer = cubeMap;// .reset(DBG_NEW CubeMapTexture(Texture::Type::CubeMap, imageWidth, imageHeight, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR, GL_CLAMP_TO_EDGE, GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT, GL_FLOAT));
@@ -303,7 +303,7 @@ namespace BlackPearl {
 	}
 
 	//TODO::这个接口有问题
-	void FrameBuffer::AttachCubeMapColorTexture(unsigned int attachmentPoints,const int imageWidth, int imageHeight) {
+	void Framebuffer::AttachCubeMapColorTexture(unsigned int attachmentPoints,const int imageWidth, int imageHeight) {
 		//GE_CORE_ERROR("不能调用，后续完善!");
 		GE_CORE_WARN(" 注意Texture是否是默认的格式！");
 		TextureDesc desc;
@@ -322,12 +322,12 @@ namespace BlackPearl {
 		//Bind();
 
 	}
-	void FrameBuffer::AttachCubeMapColorTexture(unsigned int attachmentPoints, TextureHandle cubeMap)
+	void Framebuffer::AttachCubeMapColorTexture(unsigned int attachmentPoints, TextureHandle cubeMap)
 	{
 		m_TextureColorBuffers[attachmentPoints] = cubeMap;
 		//GE_ASSERT(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "Framebuffer not complete!");
 	}
-	void FrameBuffer::AttachRenderBuffer(const int imageWidth, int imageHeight)
+	void Framebuffer::AttachRenderBuffer(const int imageWidth, int imageHeight)
 	{
 		//  create a renderbuffer object for depth and stencil attachment (we won't be sampling these)
 		//	unsigned int renderBuffer;
@@ -345,40 +345,40 @@ namespace BlackPearl {
 
 	}
 
-	void FrameBuffer::DisableColorBuffer()
+	void Framebuffer::DisableColorBuffer()
 	{
 		glDrawBuffer(GL_NONE);
 		glReadBuffer(GL_NONE);
 	}
 
-	void FrameBuffer::Bind()
+	void Framebuffer::Bind()
 	{
 		//glBindTexture(GL_TEXTURE_2D, 0);
 		glBindFramebuffer(GL_FRAMEBUFFER, rendererID);
 		//glViewport(0, 0, width, height);
 
 	}
-	void FrameBuffer::UnBind()
+	void Framebuffer::UnBind()
 	{
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		glViewport(0, 0, Configuration::WindowWidth, Configuration::WindowHeight);
 
 	}
 
-	void FrameBuffer::BindRenderBuffer()
+	void Framebuffer::BindRenderBuffer()
 	{	
 		glBindRenderbuffer(GL_RENDERBUFFER, m_RenderBufferID);
 	}
 	
 
-	void FrameBuffer::CleanUp()
+	void Framebuffer::CleanUp()
 	{
 		
 		glDeleteRenderbuffers(1, &m_RenderBufferID);
 		glDeleteFramebuffers(1,&rendererID);
 
 	}
-	void FrameBuffer::SetViewPort(int width, int height)
+	void Framebuffer::SetViewPort(int width, int height)
 	{
 		m_Width = width;
 		m_Height = height;
