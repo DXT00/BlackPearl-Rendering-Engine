@@ -91,10 +91,10 @@ namespace BlackPearl {
 
       //  TrackedCommandBufferPtr getCurrentCmdBuf() const { return m_CurrentCmdBuf; }
 
-        const GraphicsState& GetLastGraphicsState() const { return m_CurrentGraphicsState; }
-    private:
-        void _setViewport(float minX, float minY, float minZ, float maxX, float maxY, float maxZ);
-    
+      //  const GraphicsState& GetLastGraphicsState() const { return m_CurrentGraphicsState; }
+        void setViewport(float minX, float minY, float minZ, float maxX, float maxY, float maxZ);
+        void setScissorRect(bool bEnable, uint32_t minX, uint32_t minY, uint32_t maxX, uint32_t maxY);
+
     private:
         Device* m_Device;
         const OpenGLContext& m_Context;

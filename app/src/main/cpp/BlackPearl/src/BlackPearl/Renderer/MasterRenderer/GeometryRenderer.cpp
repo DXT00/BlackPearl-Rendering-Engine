@@ -53,7 +53,53 @@ namespace BlackPearl {
     */
 
 
+    void RenderPassTemplate(ICommandList* cmdList, IFramebuffer* framebuffer, IView* view) {
 
+        GraphicsState graphicsPSO;
+        graphicsPSO.framebuffer = framebuffer;
+        graphicsPSO.viewport = view->GetViewportState();
+        graphicsPSO.shadingRateState = view->GetVariableRateShadingState();
+
+        // Update viewport.
+        //cmdList->setViewport(
+        //    0, 0, 0.f,
+        //    DisplacementMapResolution.X, DisplacementMapResolution.Y, 1.f);
+
+        //// Get shaders.
+        //FGlobalShaderMap* GlobalShaderMap = GetGlobalShaderMap(FeatureLevel);
+        //TShaderMapRef< FLensDistortionUVGenerationVS > VertexShader(GlobalShaderMap);
+        //TShaderMapRef< FLensDistortionUVGenerationPS > PixelShader(GlobalShaderMap);
+
+        // Set the graphic pipeline state.
+        //FGraphicsPipelineStateInitializer GraphicsPSOInit;
+        cmdList->ApplyCachedRenderTargets(graphicsPSO);
+        graphicsPSO.DepthStencilState = TStaticDepthStencilState<false, CF_Always>::GetRHI();
+        graphicsPSO.BlendState = TStaticBlendState<>::GetRHI();
+        graphicsPSO.RasterizerState = TStaticRasterizerState<>::GetRHI();
+        graphicsPSO.PrimitiveType = PT_TriangleList;
+        graphicsPSO.BoundShaderState.VertexDeclarationRHI = GetVertexDeclarationFVector4();
+        graphicsPSO.BoundShaderState.VertexShaderRHI = VertexShader.GetVertexShader();
+        graphicsPSO.BoundShaderState.PixelShaderRHI = PixelShader.GetPixelShader();
+        SetGraphicsPipelineState(RHICmdList, GraphicsPSOInit, 0);
+
+        // Update viewport.
+        cmdList->setViewport(
+            0, 0, 0.f,
+            OutTextureRenderTargetResource->GetSizeX(), OutTextureRenderTargetResource->GetSizeY(), 1.f);
+
+        // Update shader uniform parameters.
+
+        SetShaderParametersLegacyVS(RHICmdList, VertexShader, CompiledCameraModel, DisplacementMapResolution);
+        SetShaderParametersLegacyPS(RHICmdList, PixelShader, CompiledCameraModel, DisplacementMapResolution);
+
+        // Draw grid.
+        uint32_t PrimitiveCount = kGridSubdivisionX * kGridSubdivisionY * 2;
+        RHICmdList.DrawPrimitive(0, PrimitiveCount, 1);
+   /* }
+    RHICmdList.EndRenderPass();
+
+    RHICmdList.Transition(FRHITransitionInfo(RenderTargetTexture, ERHIAccess::RTV, ERHIAccess::SRVMask));*/
+    }
 
 
 

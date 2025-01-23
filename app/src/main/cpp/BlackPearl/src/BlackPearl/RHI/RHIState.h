@@ -3,6 +3,8 @@
 #include "RHIBuffer.h"
 #include "RHIBindingSet.h"
 #include "RHIMessageCallback.h"
+#include "RHIDefinitions.h"
+
 namespace BlackPearl {
 
 
@@ -23,9 +25,9 @@ namespace BlackPearl {
 
 
         FBoundShaderStateInput			BoundShaderState;
-        FRHIBlendState* BlendState;
-        FRHIRasterizerState* RasterizerState;
-        FRHIDepthStencilState* DepthStencilState;
+        BlendState* BlendState;
+        RasterState* RasterizerState;
+        DepthStencilState* DepthStencilState;
         FImmutableSamplerState			ImmutableSamplerState;
 
 

@@ -19,7 +19,7 @@ namespace BlackPearl {
         virtual void SetPushConstants(ICommandList* commandList, GraphicsState& state, DrawArguments& args) = 0;
         virtual ~GeometryRenderer() = default;
 	};
-
+    void RenderPassTemplate(ICommandList* cmdList);
     void RenderView(
         ICommandList* commandList,
         IFramebuffer* framebuffer,

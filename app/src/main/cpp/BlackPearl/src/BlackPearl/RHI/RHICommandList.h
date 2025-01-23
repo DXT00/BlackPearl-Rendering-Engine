@@ -160,7 +160,8 @@ namespace BlackPearl {
         virtual const CommandListParameters& getDesc() = 0;
 
         virtual const GraphicsState& GetLastGraphicsState() const = 0;
-
+        virtual void setViewport(float minX, float minY, float minZ, float maxX, float maxY, float maxZ) {}
+        virtual void setScissorRect(bool bEnable, uint32_t minX, uint32_t minY, uint32_t maxX, uint32_t maxY) {}
     };
 
     typedef RefCountPtr<ICommandList> CommandListHandle;

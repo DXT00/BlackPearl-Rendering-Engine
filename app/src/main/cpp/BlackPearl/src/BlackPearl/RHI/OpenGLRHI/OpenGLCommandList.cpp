@@ -276,10 +276,25 @@ namespace BlackPearl{
 	{
 		return ResourceStates();
 	}
-	void CommandList::_setViewport(float minX, float minY, float minZ, float maxX, float maxY, float maxZ)
+	void CommandList::setViewport(float minX, float minY, float minZ, float maxX, float maxY, float maxZ)
 	{
-	}
+		m_Device->PendingState.Viewport.minX = (uint32_t)minX;
+		m_Device->PendingState.Viewport.minY = (uint32_t)minY;
+		m_Device->PendingState.Viewport.maxX = (uint32_t)maxX;
+		m_Device->PendingState.Viewport.maxY = (uint32_t)maxY;
+		m_Device->PendingState.DepthMinZ = minZ;
+		m_Device->PendingState.DepthMaxZ = maxZ;
 
+		setScissorRect(false, 0, 0, 0, 0);
+	}
+	void CommandList::setScissorRect(bool bEnable, uint32_t minX, uint32_t minY, uint32_t maxX, uint32_t maxY)
+	{
+		m_Device->PendingState.bScissorEnabled = bEnable;
+		m_Device->PendingState.Scissor.minX = minX;
+		m_Device->PendingState.Scissor.minY = minY;
+		m_Device->PendingState.Scissor.maxX = maxX;
+		m_Device->PendingState.Scissor.maxY = maxY;
+	}
 	void Device::CommitGraphicsResourceTablesInner()
 	{
 	}
