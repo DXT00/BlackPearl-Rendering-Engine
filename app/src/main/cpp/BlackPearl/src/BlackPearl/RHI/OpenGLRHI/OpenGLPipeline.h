@@ -7,7 +7,6 @@ namespace BlackPearl {
 	{
 	public:
 
-		GraphicsPipelineDesc desc;
 		FramebufferInfo framebufferInfo;
 		ShaderType shaderMask = ShaderType::None;
 		std::vector<RefCountPtr<BindingLayout>> pipelineBindingLayouts;

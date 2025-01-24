@@ -628,19 +628,7 @@ finished executing, the objects are transitioned into the "available" state, i.e
         constexpr SinglePassStereoState& setRenderTargetIndexOffset(uint16_t value) { renderTargetIndexOffset = value; return *this; }
     };
 
-    struct RenderState
-    {
-        BlendState blendState;
-        DepthStencilState depthStencilState;
-        RasterState rasterState;
-        SinglePassStereoState singlePassStereo;
-
-        constexpr RenderState& setBlendState(const BlendState& value) { blendState = value; return *this; }
-        constexpr RenderState& setDepthStencilState(const DepthStencilState& value) { depthStencilState = value; return *this; }
-        constexpr RenderState& setRasterState(const RasterState& value) { rasterState = value; return *this; }
-        constexpr RenderState& setSinglePassStereoState(const SinglePassStereoState& value) { singlePassStereo = value; return *this; }
-    };
-
+ 
     enum class CpuAccessMode : uint8_t
     {
         None,

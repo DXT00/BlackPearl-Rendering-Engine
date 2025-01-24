@@ -4,6 +4,9 @@
 namespace BlackPearl {
     /* Á÷³Ì·ÂÕÕue: */
     /*
+        //BeginRenderPass»ácache renderTarget
+        RHICmdList.BeginRenderPass(RenderPassInfo, TEXT("Test_Clear_DrawColoredQuad"));
+
     	FIntPoint DisplacementMapResolution(OutTextureRenderTargetResource->GetSizeX(), OutTextureRenderTargetResource->GetSizeY());
 
 		// Update viewport.
@@ -73,7 +76,7 @@ namespace BlackPearl {
         // Set the graphic pipeline state.
         //FGraphicsPipelineStateInitializer GraphicsPSOInit;
         cmdList->ApplyCachedRenderTargets(graphicsPSO);
-        graphicsPSO.DepthStencilState = TStaticDepthStencilState<false, CF_Always>::GetRHI();
+        graphicsPSO.pipeline->desc.depthStencilState = TStaticDepthStencilState<false, CF_Always>::GetRHI();
         graphicsPSO.BlendState = TStaticBlendState<>::GetRHI();
         graphicsPSO.RasterizerState = TStaticRasterizerState<>::GetRHI();
         graphicsPSO.PrimitiveType = PT_TriangleList;
