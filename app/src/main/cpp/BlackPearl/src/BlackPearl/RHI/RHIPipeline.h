@@ -76,7 +76,17 @@ namespace BlackPearl {
 		ShaderHandle PS;
 
 
-		RenderState renderState;
+		BlendState blendState;
+		DepthStencilState depthStencilState;
+		RasterState rasterState;
+		SinglePassStereoState singlePassStereo;
+
+		void setBlendState(const BlendState& value) { blendState = value; }
+		void setDepthStencilState(const DepthStencilState& value) { depthStencilState = value;}
+		void setRasterState(const RasterState& value) { rasterState = value; }
+		void setSinglePassStereoState(const SinglePassStereoState& value) { singlePassStereo = value; }
+		
+		
 		VariableRateShadingState shadingRateState;
 
 		std::vector<BindingLayoutHandle> bindingLayouts;
@@ -92,7 +102,7 @@ namespace BlackPearl {
 		GraphicsPipelineDesc& setGeometryShader(IShader* value) { GS = value; return *this; }
 		GraphicsPipelineDesc& setPixelShader(IShader* value) { PS = value; return *this; }
 		GraphicsPipelineDesc& setFragmentShader(IShader* value) { PS = value; return *this; }
-		GraphicsPipelineDesc& setRenderState(const RenderState& value) { renderState = value; return *this; }
+		//GraphicsPipelineDesc& setRenderState(const RenderState& value) { renderState = value; return *this; }
 		GraphicsPipelineDesc& setVariableRateShadingState(const VariableRateShadingState& value) { shadingRateState = value; return *this; }
 		GraphicsPipelineDesc& addBindingLayout(IBindingLayout* layout) { bindingLayouts.push_back(layout); return *this; }
 	};
@@ -100,6 +110,8 @@ namespace BlackPearl {
 	class IGraphicsPipeline : public IResource
 	{
 	public:
+		GraphicsPipelineDesc desc;
+
 		[[nodiscard]] virtual const GraphicsPipelineDesc& getDesc() const = 0;
 		[[nodiscard]] virtual const FramebufferInfo& getFramebufferInfo() const = 0;
 	};

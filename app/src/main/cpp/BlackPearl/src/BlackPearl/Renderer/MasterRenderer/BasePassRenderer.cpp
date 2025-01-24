@@ -434,13 +434,13 @@ namespace BlackPearl {
         pipelineDesc.inputLayout = m_InputLayout;
         pipelineDesc.VS = m_VertexShader;
         pipelineDesc.GS = m_GeometryShader;
-        pipelineDesc.renderState.rasterState.frontCounterClockwise = key.bits.frontCounterClockwise;
-        pipelineDesc.renderState.rasterState.setCullMode(key.bits.cullMode);
-        pipelineDesc.renderState.blendState.alphaToCoverageEnable = false;
+        pipelineDesc.rasterState.frontCounterClockwise = key.bits.frontCounterClockwise;
+        pipelineDesc.rasterState.setCullMode(key.bits.cullMode);
+        pipelineDesc.blendState.alphaToCoverageEnable = false;
        // pipelineDesc.bindingLayouts = { m_MaterialBindings->GetLayout(), m_ViewBindingLayout, m_LightBindingLayout };
         pipelineDesc.bindingLayouts = { m_MaterialBindings->GetLayout(), m_ViewBindingLayout };
 
-        pipelineDesc.renderState.depthStencilState
+        pipelineDesc.depthStencilState
             .setDepthFunc(key.bits.reverseDepth
                 ? ComparisonFunc::GreaterOrEqual
                 : ComparisonFunc::LessOrEqual);
@@ -453,20 +453,20 @@ namespace BlackPearl {
 
         case MaterialDomain::AlphaTested:
             pipelineDesc.PS = m_PixelShader;
-            pipelineDesc.renderState.blendState.alphaToCoverageEnable = true;
+            pipelineDesc.blendState.alphaToCoverageEnable = true;
             break;
 
         case MaterialDomain::AlphaBlended: {
             pipelineDesc.PS = m_PixelShader;
-            pipelineDesc.renderState.blendState.alphaToCoverageEnable = false;
-            pipelineDesc.renderState.blendState.targets[0]
+            pipelineDesc.blendState.alphaToCoverageEnable = false;
+            pipelineDesc.blendState.targets[0]
                 .enableBlend()
                 .setSrcBlend(BlendFactor::SrcAlpha)
                 .setDestBlend(BlendFactor::InvSrcAlpha)
                 .setSrcBlendAlpha(BlendFactor::Zero)
                 .setDestBlendAlpha(BlendFactor::One);
 
-            pipelineDesc.renderState.depthStencilState.disableDepthWrite();
+            pipelineDesc.depthStencilState.disableDepthWrite();
             break;
         }
 
@@ -474,15 +474,15 @@ namespace BlackPearl {
         case MaterialDomain::TransmissiveAlphaTested:
         case MaterialDomain::TransmissiveAlphaBlended: {
             pipelineDesc.PS = m_PixelShaderTransmissive;
-            pipelineDesc.renderState.blendState.alphaToCoverageEnable = false;
-            pipelineDesc.renderState.blendState.targets[0]
+            pipelineDesc.blendState.alphaToCoverageEnable = false;
+            pipelineDesc.blendState.targets[0]
                 .enableBlend()
                 .setSrcBlend(BlendFactor::One)
                 .setDestBlend(BlendFactor::Src1Color)
                 .setSrcBlendAlpha(BlendFactor::Zero)
                 .setDestBlendAlpha(BlendFactor::One);
 
-            pipelineDesc.renderState.depthStencilState.disableDepthWrite();
+            pipelineDesc.depthStencilState.disableDepthWrite();
             break;
         }
         default:

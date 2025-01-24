@@ -24,11 +24,13 @@ namespace BlackPearl {
         IBuffer* indirectParams = nullptr;
 
 
-        FBoundShaderStateInput			BoundShaderState;
+        //都在pipeline的desc里
+
+       /* FBoundShaderStateInput			BoundShaderState;
         BlendState* BlendState;
         RasterState* RasterizerState;
         DepthStencilState* DepthStencilState;
-        FImmutableSamplerState			ImmutableSamplerState;
+        FImmutableSamplerState			ImmutableSamplerState;*/
 
 
         GraphicsState& setPipeline(IGraphicsPipeline* value) { pipeline = value; return *this; }

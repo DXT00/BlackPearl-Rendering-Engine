@@ -131,10 +131,10 @@ namespace BlackPearl {
             pipelineDesc.primType = PrimitiveType::TriangleStrip;
             pipelineDesc.VS = m_CommonPasses->m_FullscreenVS;
             pipelineDesc.PS = m_RenderShaders[passIndex];
-            pipelineDesc.renderState.rasterState.setCullNone();
-            pipelineDesc.renderState.depthStencilState.depthTestEnable = false;
-            pipelineDesc.renderState.depthStencilState.stencilEnable = false;
-            pipelineDesc.renderState.blendState.targets[0].enableBlend()
+            pipelineDesc.rasterState.setCullNone();
+            pipelineDesc.depthStencilState.depthTestEnable = false;
+            pipelineDesc.depthStencilState.stencilEnable = false;
+            pipelineDesc.blendState.targets[0].enableBlend()
                 .setSrcBlend(BlendFactor::SrcAlpha)
                 .setDestBlend(BlendFactor::InvSrcAlpha)
                 .setSrcBlendAlpha(BlendFactor::Zero)
