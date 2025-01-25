@@ -100,7 +100,7 @@ namespace BlackPearl {
 		ShaderHandle createShader(const ShaderDesc& d, const void* binary, size_t binarySize) override;
 		virtual ShaderLibraryHandle createShaderLibrary(const void* binary, size_t binarySize) override;
 
-		InputLayoutHandle createInputLayout(const VertexAttributeDesc* d, uint32_t attributeCount, IShader* vertexShader);
+		InputLayoutHandle createInputLayout(const VertexAttributeDesc* d, uint32_t attributeCount);
 		// vulkan::IDevice implementation
 		VkSemaphore getQueueSemaphore(CommandQueue queueID) override;
 		void queueWaitForSemaphore(CommandQueue waitQueue, VkSemaphore semaphore, uint64_t value) override;

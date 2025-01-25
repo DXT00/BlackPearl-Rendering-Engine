@@ -34,6 +34,7 @@
 #include <BlackPearl/Luanch/Luanch.h>
 #include "BlackPearl/Config.h"
 #include "BlackPearl/UI/UIManager.h"
+#include "BlackPearl/Renderer/Shader/ShaderFactory.h"
 
 namespace BlackPearl {
 
@@ -46,6 +47,7 @@ namespace BlackPearl {
 	ModelLoader* g_modelLoader = nullptr;
 	RootFileSystem* g_rootFileSystem = DBG_NEW RootFileSystem();
 	UIManager* g_uiManager = nullptr;
+	ShaderFactory* g_shaderFactory = nullptr;
 
 	double Application::s_AppFPS = 0.0f;
 	double Application::s_AppAverageFPS = 0.0f;
@@ -117,6 +119,8 @@ namespace BlackPearl {
 			g_objectManager->RegisterDeviceManager(g_deviceManager);
 
 			g_uiManager = DBG_NEW UIManager();
+
+			g_shaderFactory = DBG_NEW ShaderFactory(g_deviceManager->GetDevice(), g_rootFileSystem, "assets/shaders/spv");
 	
 		m_StartTimeMs = 0;// duration_cast<milliseconds>(system_clock::now().time_since_epoch());
 	}

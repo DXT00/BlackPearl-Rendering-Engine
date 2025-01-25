@@ -1,6 +1,6 @@
 #include "OpenGLCommandList.h"
 #include "OpenGLBufferResource.h"
-namespace BlackPearl{
+namespace BlackPearl {
 	CommandList::CommandList(Device* device, const OpenGLContext& context, const CommandListParameters& parameters)
 		:m_Context(context)
 	{
@@ -58,7 +58,7 @@ namespace BlackPearl{
 		else if (buffer->desc.isIndexBuffer) {
 			IndexBuffer* ibo = static_cast<IndexBuffer*>(buffer);
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo->rendererID);
-			glBufferData(GL_ELEMENT_ARRAY_BUFFER, dataSize, data, buffer->desc.isDynamic ? GL_DYNAMIC_DRAW:GL_STATIC_DRAW);
+			glBufferData(GL_ELEMENT_ARRAY_BUFFER, dataSize, data, buffer->desc.isDynamic ? GL_DYNAMIC_DRAW : GL_STATIC_DRAW);
 		}
 		else if (buffer->desc.isDrawIndirectArgs) {
 			IndirectBuffer* ibo = static_cast<IndirectBuffer*>(buffer);
@@ -80,36 +80,33 @@ namespace BlackPearl{
 	void CommandList::setPushConstants(const void* data, size_t byteSize)
 	{
 	}
+	void CommandList::setBoundShaderState(const BoundShaderState& state)
+	{
+		BoundShaderState* BoundShaderState = ResourceCast(BoundShaderStateRHI);
+		PendingState.BoundShaderState = BoundShaderState;
+
+		// Prevent transient bound shader states from being recreated for each use by keeping a history of the most recently used bound shader states.
+		// The history keeps them alive, and the bound shader state cache allows them to be reused if needed.
+		BoundShaderStateHistory.Add(BoundShaderState);
+	}
+
 	void CommandList::setGraphicsState(const GraphicsState& state)
 	{
-
-
-
-
-
-
-
-
-
 		//bind uniformbuffer
 
+		//TODO::
+		//FRHIGraphicsPipelineStateFallBack* FallbackGraphicsState = static_cast<FRHIGraphicsPipelineStateFallBack*>(GraphicsState);
 
+		//auto& PsoInit = FallbackGraphicsState->Initializer;
 
+		//if (PsoInit.bFromPSOFileCache)
+		//{
+		//	//checkNoEntry();
+		//	// 		// If we're from the PSO cache we're just preparing the PSO and do not need to set the state.
+		//	return;
+		//}
 
-
-
-		FRHIGraphicsPipelineStateFallBack* FallbackGraphicsState = static_cast<FRHIGraphicsPipelineStateFallBack*>(GraphicsState);
-
-		auto& PsoInit = FallbackGraphicsState->Initializer;
-
-		if (PsoInit.bFromPSOFileCache)
-		{
-			checkNoEntry();
-			// 		// If we're from the PSO cache we're just preparing the PSO and do not need to set the state.
-			return;
-		}
-
-		RHISetBoundShaderState(
+		setBoundShaderState(
 			RHICreateBoundShaderState_internal(
 				PsoInit.BoundShaderState.VertexDeclarationRHI,
 				PsoInit.BoundShaderState.VertexShaderRHI,
@@ -307,4 +304,5 @@ namespace BlackPearl{
 	void Device::CommitComputeShaderConstants(Shader* ComputeShader)
 	{
 	}
+
 }

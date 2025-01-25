@@ -1,15 +1,17 @@
 #pragma once
 #include "glad/glad.h"
 #include "OpenGLDriver/OpenGL.h"
-#include "OpenGLDriver/OpenGLDrvPrivate.h"
 #include "BlackPearl/Core/Memory.h"
 #include "BlackPearl/RHI/RHIShader.h"
+#include "BlackPearl/RHI/RHIState.h"
 #include "OpenGLShaderResource.h"
 #include "BlackPearl/RHI/RHIDefinitions.h"
 #include "OpenGLBuffer.h"
 #include "OpenGLPipeline.h"
 #include "OpenGLShader.h"
-#include "../OpenGLRHI/OpenGLDriver/OpenGLDrvPrivate.h"
+#include "OpenGLInputLayout.h"
+#include "OpenGLDriver/OpenGLDrvPrivate.h"
+
 namespace BlackPearl {
 
 
@@ -31,6 +33,66 @@ struct FOpenGLStream
 	{
 	}
 };
+
+
+
+/**
+ * Combined shader state and vertex definition for rendering geometry.
+ * Each unique instance consists of a vertex decl, vertex shader, and pixel shader.
+ */
+class FOpenGLBoundShaderState : public BoundShaderState
+{
+public:
+
+	FCachedBoundShaderStateLink CacheLink;
+
+	uint16_t StreamStrides[MaxVertexElementCount];
+
+	FOpenGLLinkedProgram* LinkedProgram;
+	InputLayout* VertexDeclaration;
+	Shader* VertexShader;
+	Shader* PixelShader;
+	Shader* GeometryShader;
+
+	/** Initialization constructor. */
+	FOpenGLBoundShaderState(
+		FOpenGLLinkedProgram* InLinkedProgram,
+		InputLayout* InVertexDeclarationRHI,
+		Shader* InVertexShaderRHI,
+		Shader* InPixelShaderRHI,
+		Shader* InGeometryShaderRHI
+	);
+
+	const TBitArray<>& GetTextureNeeds(int32_t& OutMaxTextureStageUsed);
+	const TBitArray<>& GetUAVNeeds(int32_t& OutMaxUAVUnitUsed) const;
+	void GetNumUniformBuffers(int32_t NumVertexUniformBuffers[SF_NumGraphicsFrequencies]);
+
+	bool NeedsTextureStage(int32_t TextureStageIndex);
+	int32_t MaxTextureStageUsed();
+	bool RequiresDriverInstantiation();
+
+	Shader* GetVertexShader()
+	{
+		assert(VertexShader);
+		return VertexShader;
+	}
+
+	Shader* GetPixelShader()
+	{
+		assert(PixelShader);
+		return PixelShader;
+	}
+
+	Shader* GetGeometryShader()
+	{
+		return GeometryShader;
+	}
+
+	virtual ~FOpenGLBoundShaderState();
+};
+
+
+
 
 struct FOpenGLSamplerStateData
 {

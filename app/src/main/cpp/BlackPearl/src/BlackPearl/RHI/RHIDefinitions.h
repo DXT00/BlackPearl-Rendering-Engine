@@ -9,22 +9,20 @@
 #include "BlackPearl/RHI/Common/Containers.h"
 
 namespace BlackPearl {
-    /*
-Version words are used to track the usage of upload buffers, scratch buffers,
-and volatile constant buffers across multiple command lists and their instances.
 
-Versioned objects are initially allocated in the "pending" state, meaing they have
-the submitted flag set to zero, but the instance is nonzero. When the command list
-instance using the object is executed, the objects with a matching version are
-transitioned into the "submitted" state. Later, when the command list instance has
-finished executing, the objects are transitioned into the "available" state, i.e. 0.
- */
  /** Maximum number of miplevels in a texture. */
     enum { MAX_TEXTURE_MIP_COUNT = 15 };
 
     /** Maximum number of static/skeletal mesh LODs */
     enum { MAX_MESH_LOD_COUNT = 8 };
 
+
+    /** The maximum number of vertex elements which can be used by a vertex declaration. */
+    enum
+    {
+        MaxVertexElementCount = 17,
+        MaxVertexElementCount_NumBits = 5,
+    };
     enum class EGpuVendorId : uint32_t
     {
         Unknown = 0xffffffff,
@@ -330,6 +328,10 @@ finished executing, the objects are transitioned into the "available" state, i.e
         };
 
         RenderTarget targets[c_MaxRenderTargets];
+        //alphaToCoverageEnable 用于MSAA
+        /*
+        * 在多重采样抗锯齿（MSAA, Multi-Sample Anti-Aliasing）中，每个像素可能有多个样本，每个样本都有自己的 alpha 值。GL_SAMPLE_ALPHA_TO_COVERAGE 的作用是决定是否基于片元的 alpha 值来影响覆盖率，即是否根据 alpha 值来调整像素的覆盖状态。
+        */
         bool alphaToCoverageEnable = false;
 
         constexpr BlendState& setRenderTarget(uint32_t index, const RenderTarget& target) { targets[index] = target; return *this; }

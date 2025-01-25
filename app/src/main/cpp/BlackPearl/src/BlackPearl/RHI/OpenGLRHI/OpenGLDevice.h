@@ -51,7 +51,7 @@ namespace BlackPearl {
 		ShaderHandle createShader(const ShaderDesc& d, const void* binary, size_t binarySize) override;
 		virtual ShaderLibraryHandle createShaderLibrary(const void* binary, size_t binarySize) override;
 
-		InputLayoutHandle createInputLayout(const VertexAttributeDesc* d, uint32_t attributeCount, IShader* vertexShader);
+		InputLayoutHandle createInputLayout(const VertexAttributeDesc* d, uint32_t attributeCount);
 		bool queryFeatureSupport(Feature feature, void* pInfo = nullptr, size_t infoSize = 0) override;
 		
 

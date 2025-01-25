@@ -1,7 +1,9 @@
 #include "pch.h"
 #include "BasePassRenderer.h"
-
+#include "BlackPearl/Renderer/Shader/ShaderFactory.h"
+#include "BlackPearl/RHI/PipelineStateCache.h"
 namespace BlackPearl {
+    extern ShaderFactory* g_shaderFactory;
     /* 流程仿照ue: */
     /*
         //BeginRenderPass会cache renderTarget
@@ -56,7 +58,37 @@ namespace BlackPearl {
     */
 
 
-    void RenderPassTemplate(ICommandList* cmdList, IFramebuffer* framebuffer, IView* view) {
+    void RenderPassTemplate(ICommandList* cmdList, IFramebuffer* framebuffer, IView* view) 
+    {
+        std::vector<ShaderMacro> Macros;
+       // Macros.push_back(ShaderMacro("COMPILE_SHADER", "1"));
+        ShaderHandle vertexShader = g_shaderFactory->CreateShader("hlsl/test/forward_test_vs.hlsl", "main", &Macros, ShaderType::Vertex);
+        ShaderHandle pixelShader = g_shaderFactory->CreateShader("hlsl/test/forward_test_vs.hlsl", "main", &Macros, ShaderType::Pixel);
+
+        //资源准备 vertexBuffers, indexBuffer, inputLayout, bindingLayout(uniform resource)
+        std::vector<VertexBufferBinding> vertexBuffers;
+        IndexBufferBinding indexBuffer;
+        const VertexAttributeDesc inputDescs[] =
+        {
+            GetVertexAttributeDesc(VertexAttribute::Position, "POS", 0),
+            GetVertexAttributeDesc(VertexAttribute::PrevPosition, "PREV_POS", 1),
+            GetVertexAttributeDesc(VertexAttribute::TexCoord1, "TEXCOORD", 2),
+            GetVertexAttributeDesc(VertexAttribute::Normal, "NORMAL", 3),
+            //TODO::
+           // GetVertexAttributeDesc(VertexAttribute::Tangent, "TANGENT", 4),
+            GetVertexAttributeDesc(VertexAttribute::Transform, "TRANSFORM", 4),
+        };
+
+        InputLayoutHandle inputLayout = cmdList->getDevice()->createInputLayout(inputDescs, uint32_t(std::size(inputDescs)));
+
+        RHIBindingLayoutDesc viewLayoutDesc;
+        viewLayoutDesc.visibility = ShaderType::All;
+        viewLayoutDesc.bindings = {
+            RHIBindingLayoutItem::RT_VolatileConstantBuffer(0),
+            RHIBindingLayoutItem::RT_Sampler(1)
+        };
+
+        BindingLayoutHandle bindinglayout = cmdList->getDevice()->createBindingLayout(viewLayoutDesc);
 
         GraphicsState graphicsPSO;
         graphicsPSO.framebuffer = framebuffer;
@@ -75,29 +107,43 @@ namespace BlackPearl {
 
         // Set the graphic pipeline state.
         //FGraphicsPipelineStateInitializer GraphicsPSOInit;
-        cmdList->ApplyCachedRenderTargets(graphicsPSO);
-        graphicsPSO.pipeline->desc.depthStencilState = TStaticDepthStencilState<false, CF_Always>::GetRHI();
-        graphicsPSO.BlendState = TStaticBlendState<>::GetRHI();
-        graphicsPSO.RasterizerState = TStaticRasterizerState<>::GetRHI();
-        graphicsPSO.PrimitiveType = PT_TriangleList;
-        graphicsPSO.BoundShaderState.VertexDeclarationRHI = GetVertexDeclarationFVector4();
-        graphicsPSO.BoundShaderState.VertexShaderRHI = VertexShader.GetVertexShader();
-        graphicsPSO.BoundShaderState.PixelShaderRHI = PixelShader.GetPixelShader();
-        SetGraphicsPipelineState(RHICmdList, GraphicsPSOInit, 0);
+       // cmdList->ApplyCachedRenderTargets(graphicsPSO);
+        graphicsPSO.pipeline->desc.depthStencilState.setDepthFunc(ComparisonFunc::LessOrEqual);
+        graphicsPSO.pipeline->desc.blendState.alphaToCoverageEnable = false;
+        graphicsPSO.pipeline->desc.rasterState.frontCounterClockwise = true;
+        graphicsPSO.pipeline->desc.rasterState.cullMode = RasterCullMode::Back;
+        graphicsPSO.pipeline->desc.primType = PrimitiveType::TriangleList;
+        graphicsPSO.pipeline->desc.inputLayout = inputLayout;
+       // graphicsPSO.pipeline->desc.BoundShaderState.VertexDeclarationRHI = GetVertexDeclarationFVector4();
+        graphicsPSO.pipeline->desc.VS = vertexShader;
+        graphicsPSO.pipeline->desc.PS = pixelShader;
+        graphicsPSO.pipeline->desc.bindingLayouts = { bindinglayout };
+        graphicsPSO.indexBuffer = indexBuffer;
+        graphicsPSO.vertexBuffers = vertexBuffers;
+
+        //TODO::
+       // SetGraphicsPipelineState(cmdList, graphicsPSO, 0);
+        cmdList->setGraphicsState(graphicsPSO);
+
+        // pipelineDesc.bindingLayouts = { m_MaterialBindings->GetLayout(), m_ViewBindingLayout, m_LightBindingLayout };
+
 
         // Update viewport.
-        cmdList->setViewport(
+        /*cmdList->setViewport(
             0, 0, 0.f,
-            OutTextureRenderTargetResource->GetSizeX(), OutTextureRenderTargetResource->GetSizeY(), 1.f);
+            OutTextureRenderTargetResource->GetSizeX(), OutTextureRenderTargetResource->GetSizeY(), 1.f);*/
 
         // Update shader uniform parameters.
 
-        SetShaderParametersLegacyVS(RHICmdList, VertexShader, CompiledCameraModel, DisplacementMapResolution);
-        SetShaderParametersLegacyPS(RHICmdList, PixelShader, CompiledCameraModel, DisplacementMapResolution);
+       // SetShaderParametersLegacyVS(cmdList, VertexShader, CompiledCameraModel, DisplacementMapResolution);
+       // SetShaderParametersLegacyPS(cmdList, PixelShader, CompiledCameraModel, DisplacementMapResolution);
 
         // Draw grid.
-        uint32_t PrimitiveCount = kGridSubdivisionX * kGridSubdivisionY * 2;
-        RHICmdList.DrawPrimitive(0, PrimitiveCount, 1);
+       /* uint32_t PrimitiveCount = kGridSubdivisionX * kGridSubdivisionY * 2;
+        cmdList->DrawPrimitive(0, PrimitiveCount, 1);*/
+
+        DrawArguments args;
+        cmdList->draw(args);
    /* }
     RHICmdList.EndRenderPass();
 

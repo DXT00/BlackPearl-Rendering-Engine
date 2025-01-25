@@ -336,7 +336,7 @@ namespace BlackPearl {
             GetVertexAttributeDesc(VertexAttribute::Transform, "TRANSFORM", 4),
         };
 
-        return m_Device->createInputLayout(inputDescs, uint32_t(std::size(inputDescs)), vertexShader);
+        return m_Device->createInputLayout(inputDescs, uint32_t(std::size(inputDescs)));
     }
 
 

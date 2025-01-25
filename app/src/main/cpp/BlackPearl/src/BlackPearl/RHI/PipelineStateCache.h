@@ -12,8 +12,20 @@ namespace BlackPearl {
 	class GraphicsPipelineStateInitializer
 	{
 	public:
-
+		union
+		{
+			struct
+			{
+				uint16_t					Reserved : 14;
+				uint16_t					bPSOPrecache : 1;
+				uint16_t					bFromPSOFileCache : 1;
+			};
+			uint16_t						Flags;
+		};
 	};
+
+	void SetGraphicsPipelineState(ICommandList& RHICmdList, const GraphicsPipelineStateInitializer& Initializer, uint32_t StencilRef);
+
 	class PipelineStateCache
 	{
 	public:

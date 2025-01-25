@@ -155,7 +155,7 @@ namespace BlackPearl
 		return ShaderLibraryHandle();
 	}
 
-	InputLayoutHandle Device::createInputLayout(const VertexAttributeDesc* d, uint32_t attributeCount, IShader* vertexShader)
+	InputLayoutHandle Device::createInputLayout(const VertexAttributeDesc* d, uint32_t attributeCount)
 	{
 		return InputLayoutHandle();
 	}

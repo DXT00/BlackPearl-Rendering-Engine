@@ -440,6 +440,11 @@ namespace BlackPearl {
 		vkCmdPushConstants(m_CurrentCmdBuf->cmdBuf, m_CurrentPipelineLayout, m_CurrentPushConstantsVisibility, 0, uint32_t(byteSize), data);
 		//m_CurrentCmdBuf->cmdBuf.pushConstants(m_CurrentPipelineLayout, m_CurrentPushConstantsVisibility, 0, uint32_t(byteSize), data);
 	}
+	void CommandList::setBoundShaderState(const BoundShaderState& state)
+	{
+
+	}
+
 	void CommandList::setGraphicsState(const GraphicsState& state)
 	{
 		assert(m_CurrentCmdBuf);
