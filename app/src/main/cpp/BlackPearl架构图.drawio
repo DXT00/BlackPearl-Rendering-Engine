@@ -1,6 +1,6 @@
-<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36 Edg/132.0.0.0" version="26.0.6">
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36 Edg/132.0.0.0" version="26.0.7">
   <diagram name="第 1 页" id="sPAzHPQsa-k4dK7YGP5Q">
-    <mxGraphModel dx="2191" dy="3246" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" background="#969696" math="0" shadow="0">
+    <mxGraphModel dx="1426" dy="3097" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" background="#969696" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -799,6 +799,32 @@
         </mxCell>
         <mxCell id="hAJ1MNdIGRJDm5Ungw3t-13" value="bindingLayoutItem N" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" parent="1" vertex="1">
           <mxGeometry x="2589.5" y="-1966" width="143" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="q3SPq7tO0h6Agjnhl1nr-4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="q3SPq7tO0h6Agjnhl1nr-1" target="q3SPq7tO0h6Agjnhl1nr-3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="q3SPq7tO0h6Agjnhl1nr-5" value="GetAndOrCreateGraphicsPipelineState" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="q3SPq7tO0h6Agjnhl1nr-4">
+          <mxGeometry x="-0.0946" y="3" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="q3SPq7tO0h6Agjnhl1nr-1" value="psoInitializer" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="676" y="1515" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="q3SPq7tO0h6Agjnhl1nr-2" value="从pso序列化文件获取GraphicsState" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="900" y="1463" width="120" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="q3SPq7tO0h6Agjnhl1nr-6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="q3SPq7tO0h6Agjnhl1nr-3" target="hUuMY0uO9q-IGBFzty4h-19">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="q3SPq7tO0h6Agjnhl1nr-3" value="GraphicsState" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="1097" y="1515" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="q3SPq7tO0h6Agjnhl1nr-8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="q3SPq7tO0h6Agjnhl1nr-7" target="q3SPq7tO0h6Agjnhl1nr-1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="q3SPq7tO0h6Agjnhl1nr-7" value="createPipeline()" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="676" y="1619" width="120" height="60" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
