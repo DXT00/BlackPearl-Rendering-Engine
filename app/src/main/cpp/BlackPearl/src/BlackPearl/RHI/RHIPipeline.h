@@ -75,6 +75,7 @@ namespace BlackPearl {
 		ShaderHandle GS;
 		ShaderHandle PS;
 
+		bool bFromPSOFileCache;
 
 		BlendState blendState;
 		DepthStencilState depthStencilState;

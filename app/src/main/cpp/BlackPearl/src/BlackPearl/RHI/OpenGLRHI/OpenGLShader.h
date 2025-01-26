@@ -8,7 +8,12 @@
 #include "BlackPearl/Math/vector.h"
 #include "../RHIShader.h"
 namespace BlackPearl {
+	class FOpenGLLinkedProgram {
+	public:
+		FOpenGLLinkedProgram() {
 
+		}
+	};
 
 	class Shader : public RefCounter<IShader>
 	{

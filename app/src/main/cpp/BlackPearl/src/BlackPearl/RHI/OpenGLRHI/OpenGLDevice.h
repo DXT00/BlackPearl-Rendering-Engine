@@ -143,7 +143,13 @@ namespace BlackPearl {
 
 		void RHIClearMRT(const bool* bClearColorArray, int32_t NumClearColors, const Color* ColorArray, bool bClearDepth, float Depth, bool bClearStencil, uint32_t Stencil);
 
-
+		BoundShaderState* RHICreateBoundShaderState_Internal(
+			InputLayout* VertexDeclarationRHI,
+			Shader* VertexShaderRHI,
+			Shader* PixelShaderRHI,
+			Shader* GeometryShaderRHI,
+			bool bFromPSOFileCache
+		);
 
 			/** RHI device state, independent of underlying OpenGL context used */
 		FOpenGLRHIState						PendingState;

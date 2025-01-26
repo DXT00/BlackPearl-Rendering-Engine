@@ -589,4 +589,113 @@ namespace BlackPearl {
 			SetupBindlessTextures(ContextState, PendingState.BoundShaderState->LinkedProgram->Samplers);
 		}
 	}
+
+
+	//TODO:: shader 和 linkProgram是分开的
+	FOpenGLBoundShaderState::FOpenGLBoundShaderState(
+		InputLayout* InVertexDeclarationRHI,
+		Shader* InVertexShaderRHI,
+		Shader* InPixelShaderRHI,
+		Shader* InGeometryShaderRHI
+	)
+		: CacheLink(InVertexDeclaration, InVertexShader, InPixelShader, InGeometryShader, this)
+		, LinkedProgram(FindOrCreateLinkedProgram(InVertexShader, InPixelShader, InGeometryShader))
+		, VertexDeclaration(InVertexDeclaration)
+		, VertexShader(InVertexShader)
+		, PixelShader(InPixelShader)
+		, GeometryShader(InGeometryShader)
+	{
+		assert(VertexDeclaration);
+
+		if (VertexDeclaration)
+		{
+			FMemory::Memcpy(StreamStrides, VertexDeclaration->StreamStrides, sizeof(StreamStrides));
+		}
+		else
+		{
+			FMemory::Memzero(StreamStrides, sizeof(StreamStrides));
+		}
+	}
+
+	FOpenGLBoundShaderState::~FOpenGLBoundShaderState()
+	{
+		//VERIFY_GL_SCOPE();
+
+		assert(LinkedProgram);
+
+		const bool bIsEvicted = FGLProgramCache::IsUsingLRU() && GetOpenGLProgramsCache().IsEvicted(LinkedProgram->ProgramKey);
+		if (!bIsEvicted)
+		{
+			StaticLastReleasedPrograms[StaticLastReleasedProgramsIndex++] = LinkedProgram;
+			if (StaticLastReleasedProgramsIndex == LAST_RELEASED_PROGRAMS_CACHE_COUNT)
+			{
+				StaticLastReleasedProgramsIndex = 0;
+			}
+
+			OnProgramDeletion(LinkedProgram->Program);
+		}
+	}
+
+
+	BoundShaderState* Device::RHICreateBoundShaderState_Internal(
+		InputLayout* VertexDeclarationRHI,
+		Shader* VertexShaderRHI,
+		Shader* PixelShaderRHI,
+		Shader* GeometryShaderRHI,
+		bool bFromPSOFileCache
+	)
+	{
+		//VERIFY_GL_SCOPE();
+		assert(!bFromPSOFileCache);
+
+		//SCOPE_CYCLE_COUNTER(STAT_OpenGLCreateBoundShaderStateTime);
+
+		InputLayout* VertexDeclaration = VertexDeclarationRHI;
+		Shader* VertexShader = VertexShaderRHI;
+		Shader* PixelShader = PixelShaderRHI;
+		Shader* GeometryShader = GeometryShaderRHI;
+
+		if (!PixelShader)
+		{
+			// use special null pixel shader when PixelShader was set to NULL
+			TShaderMapRef<FNULLPS> NullPS(GetGlobalShaderMap(GMaxRHIFeatureLevel));
+			PixelShader = FOpenGLDynamicRHI::ResourceCast(NullPS.GetPixelShader());
+		}
+
+		// Check for an existing bound shader state which matches the parameters
+		FCachedBoundShaderStateLink* CachedBoundShaderStateLink = GetCachedBoundShaderState(
+			VertexDeclaration,
+			VertexShader,
+			PixelShader,
+			GeometryShader
+		);
+
+		if (CachedBoundShaderStateLink)
+		{
+			// If we've already created a bound shader state with these parameters, reuse it.
+			FOpenGLBoundShaderState* BoundShaderState = ResourceCast(CachedBoundShaderStateLink->BoundShaderState);
+
+			GetOpenGLProgramsCache().Touch(BoundShaderState->LinkedProgram);
+
+			// touch may have unevicted the program, set it up.
+			BoundShaderState->LinkedProgram->UpdateShaders<FOpenGLLinkedProgram::FGraphicsProgram>(VertexShader, PixelShader, GeometryShader);
+
+			return BoundShaderState;
+		}
+		else
+		{
+			// Make sure we have OpenGL context set up, and invalidate the parameters cache and current program (as we'll link a new one soon)
+			GetContextStateForCurrentContext().Program = -1;
+			MarkShaderParameterCachesDirty(PendingState.ShaderParameters, false);
+			PendingState.LinkedProgramAndDirtyFlag = nullptr;
+
+			return new FOpenGLBoundShaderState(
+				VertexDeclaration
+				, VertexShader
+				, PixelShader
+				, GeometryShader
+			);
+		}
+	}
+
 }

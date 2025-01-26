@@ -80,7 +80,13 @@ namespace BlackPearl {
         // Sets the push constants block on the command list, aka "root constants" on DX12.
         // Only valid after setGraphicsState or setComputeState etc.
         virtual void setPushConstants(const void* data, size_t byteSize) = 0;
-        virtual void setBoundShaderState(const BoundShaderState& state) = 0;
+        virtual void setBoundShaderState(BoundShaderState* state) = 0;
+
+        virtual void setDepthStencilaState(DepthStencilState* state) {}
+        virtual void setRasterizerState(RasterState* state) {}
+        virtual void setBlendState(BlendState* state) {}
+
+
         virtual void setGraphicsState(const GraphicsState& state) = 0;
         virtual void draw(const DrawArguments& args) = 0;
         virtual void drawIndexed(const DrawArguments& args) = 0;

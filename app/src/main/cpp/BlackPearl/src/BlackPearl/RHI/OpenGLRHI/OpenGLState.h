@@ -56,20 +56,19 @@ public:
 
 	/** Initialization constructor. */
 	FOpenGLBoundShaderState(
-		FOpenGLLinkedProgram* InLinkedProgram,
 		InputLayout* InVertexDeclarationRHI,
 		Shader* InVertexShaderRHI,
 		Shader* InPixelShaderRHI,
 		Shader* InGeometryShaderRHI
 	);
 
-	const TBitArray<>& GetTextureNeeds(int32_t& OutMaxTextureStageUsed);
-	const TBitArray<>& GetUAVNeeds(int32_t& OutMaxUAVUnitUsed) const;
-	void GetNumUniformBuffers(int32_t NumVertexUniformBuffers[SF_NumGraphicsFrequencies]);
+	//const TBitArray<>& GetTextureNeeds(int32_t& OutMaxTextureStageUsed);
+	//const TBitArray<>& GetUAVNeeds(int32_t& OutMaxUAVUnitUsed) const;
+	//void GetNumUniformBuffers(int32_t NumVertexUniformBuffers[SF_NumGraphicsFrequencies]);
 
-	bool NeedsTextureStage(int32_t TextureStageIndex);
+	/*bool NeedsTextureStage(int32_t TextureStageIndex);
 	int32_t MaxTextureStageUsed();
-	bool RequiresDriverInstantiation();
+	bool RequiresDriverInstantiation();*/
 
 	Shader* GetVertexShader()
 	{
@@ -521,7 +520,7 @@ struct FOpenGLRHIState final : public FOpenGLCommonState
 	//FOpenGLLinkedProgram* LinkedProgramAndDirtyFlag;
 	//FOpenGLShaderParameterCache* ShaderParameters;
 
-	//FOpenGLBoundShaderState*	BoundShaderState;
+	FOpenGLBoundShaderState*	BoundShaderState;
 	GraphicsPipeline*		GraphicsPipline;
 
 	Shader*					CurrentComputeShader;

@@ -67,7 +67,7 @@ namespace BlackPearl {
 
         void setPushConstants(const void* data, size_t byteSize) override;
 
-        void setBoundShaderState(const BoundShaderState& state) override;
+        void setBoundShaderState(BoundShaderState* state) override;
         void setGraphicsState(const GraphicsState& state) override;
         void setComputeState(const ComputeState& state) override;
 

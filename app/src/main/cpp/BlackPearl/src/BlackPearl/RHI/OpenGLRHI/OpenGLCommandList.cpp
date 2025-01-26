@@ -80,14 +80,14 @@ namespace BlackPearl {
 	void CommandList::setPushConstants(const void* data, size_t byteSize)
 	{
 	}
-	void CommandList::setBoundShaderState(const BoundShaderState& state)
+	void CommandList::setBoundShaderState(BoundShaderState* state)
 	{
-		BoundShaderState* BoundShaderState = ResourceCast(BoundShaderStateRHI);
-		PendingState.BoundShaderState = BoundShaderState;
+		FOpenGLBoundShaderState* BoundShaderState = static_cast<FOpenGLBoundShaderState*>(state);
+		m_Device->PendingState.BoundShaderState = BoundShaderState;
 
 		// Prevent transient bound shader states from being recreated for each use by keeping a history of the most recently used bound shader states.
 		// The history keeps them alive, and the bound shader state cache allows them to be reused if needed.
-		BoundShaderStateHistory.Add(BoundShaderState);
+		//BoundShaderStateHistory.Add(BoundShaderState);
 	}
 
 	void CommandList::setGraphicsState(const GraphicsState& state)
@@ -107,18 +107,18 @@ namespace BlackPearl {
 		//}
 
 		setBoundShaderState(
-			RHICreateBoundShaderState_internal(
-				PsoInit.BoundShaderState.VertexDeclarationRHI,
-				PsoInit.BoundShaderState.VertexShaderRHI,
-				PsoInit.BoundShaderState.PixelShaderRHI,
-				PsoInit.BoundShaderState.GetGeometryShader(),
-				PsoInit.bFromPSOFileCache
-			).GetReference()
+			m_Device->RHICreateBoundShaderState_Internal(
+				static_cast<InputLayout*>(state.pipeline->desc.inputLayout.Get()),
+				static_cast<Shader*>(state.pipeline->desc.VS.Get()),
+				static_cast<Shader*>(state.pipeline->desc.PS.Get()),
+				static_cast<Shader*>(state.pipeline->desc.GS.Get()),
+				state.pipeline->desc.bFromPSOFileCache
+			)
 		);
 
-		RHISetDepthStencilState(FallbackGraphicsState->Initializer.DepthStencilState, StencilRef);
-		RHISetRasterizerState(FallbackGraphicsState->Initializer.RasterizerState);
-		RHISetBlendState(FallbackGraphicsState->Initializer.BlendState, FLinearColor(1.0f, 1.0f, 1.0f));
+		setDepthStencilaState(FallbackGraphicsState->Initializer.DepthStencilState, StencilRef);
+		setRasterizerState(FallbackGraphicsState->Initializer.RasterizerState);
+		setBlendState(FallbackGraphicsState->Initializer.BlendState, FLinearColor(1.0f, 1.0f, 1.0f));
 		if (GSupportsDepthBoundsTest)
 		{
 			RHIEnableDepthBoundsTest(FallbackGraphicsState->Initializer.bDepthBounds);
@@ -292,6 +292,9 @@ namespace BlackPearl {
 		m_Device->PendingState.Scissor.maxX = maxX;
 		m_Device->PendingState.Scissor.maxY = maxY;
 	}
+
+
+
 	void Device::CommitGraphicsResourceTablesInner()
 	{
 	}
@@ -302,6 +305,18 @@ namespace BlackPearl {
 	{
 	}
 	void Device::CommitComputeShaderConstants(Shader* ComputeShader)
+	{
+	}
+
+	void CommandList::setDepthStencilaState(DepthStencilState* state)
+	{
+	}
+
+	void CommandList::setRasterizerState(RasterState* state)
+	{
+	}
+
+	void CommandList::setBlendState(BlendState* state)
 	{
 	}
 
