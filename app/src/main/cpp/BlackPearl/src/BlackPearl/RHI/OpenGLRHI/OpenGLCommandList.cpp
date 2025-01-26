@@ -1,5 +1,7 @@
 #include "OpenGLCommandList.h"
 #include "OpenGLBufferResource.h"
+#include "OpenGLBindingSet.h"
+#include "BlackPearl/RHI/RHIGlobals.h"
 namespace BlackPearl {
 	CommandList::CommandList(Device* device, const OpenGLContext& context, const CommandListParameters& parameters)
 		:m_Context(context)
@@ -89,7 +91,72 @@ namespace BlackPearl {
 		// The history keeps them alive, and the bound shader state cache allows them to be reused if needed.
 		//BoundShaderStateHistory.Add(BoundShaderState);
 	}
+	void CommandList::_bindBindingSets(const BindingSetVector& bindings)
+	{
+		std::vector<uint32_t> dynamicOffsets;
+		//std::vector<VkDescriptorSet> descriptorSets;
 
+		for (const auto& bindingSetHandle : bindings)
+		{
+			const BindingSetDesc* desc = bindingSetHandle->getDesc();
+			if (desc)
+			{
+				BindingSet* bindingSet = static_cast<BindingSet*>(bindingSetHandle);
+				//descriptorSets.push_back(bindingSet->descriptorSet);
+
+				for (Buffer* constnatBuffer : bindingSet->volatileConstantBuffers)
+				{
+					auto found = m_VolatileBufferStates.find(constnatBuffer);
+					if (found == m_VolatileBufferStates.end())
+					{
+						std::stringstream ss;
+						ss << "Binding volatile constant buffer " << (constnatBuffer->desc.debugName)
+							<< " before writing into it is invalid.";
+						m_Context.error(ss.str());
+
+						dynamicOffsets.push_back(0); // use zero offset just to use something
+					}
+					else
+					{
+						uint32_t version = found->second.latestVersion;
+						uint64_t offset = version * constnatBuffer->desc.byteSize;
+						assert(offset < std::numeric_limits<uint32_t>::max());
+						dynamicOffsets.push_back(uint32_t(offset));
+					}
+				}
+
+				if (desc->trackLiveness)
+					m_CurrentCmdBuf->referencedResources.push_back(bindingSetHandle);
+			}
+			else
+			{
+				// Vulkan 也有DescriptorTable？
+				DescriptorTable* table = dynamic_cast<DescriptorTable*>(bindingSetHandle);
+				descriptorSets.push_back(table->descriptorSet);
+			}
+		}
+
+		//if (!descriptorSets.empty())
+		//{
+
+		//	//m_CurrentCmdBuf->cmdBuf.bindDescriptorSets(bindPoint, pipelineLayout,
+		//	//	/* firstSet = */ 0, uint32_t(descriptorSets.size()), descriptorSets.data(),
+		//	//	uint32_t(dynamicOffsets.size()), dynamicOffsets.data());
+
+		//	if (dynamicOffsets.empty()) {
+		//		vkCmdBindDescriptorSets(m_CurrentCmdBuf->cmdBuf, bindPoint, pipelineLayout,
+		//			/* firstSet = */ 0, uint32_t(descriptorSets.size()), descriptorSets.data(),
+		//			0, nullptr);
+		//	}
+		//	else {
+		//		vkCmdBindDescriptorSets(m_CurrentCmdBuf->cmdBuf, bindPoint, pipelineLayout,
+		//			/* firstSet = */ 0, uint32_t(descriptorSets.size()), descriptorSets.data(),
+		//			uint32_t(dynamicOffsets.size()), dynamicOffsets.data());
+		//	}
+
+
+		//}
+	}
 	void CommandList::setGraphicsState(const GraphicsState& state)
 	{
 		//bind uniformbuffer
@@ -105,6 +172,17 @@ namespace BlackPearl {
 		//	// 		// If we're from the PSO cache we're just preparing the PSO and do not need to set the state.
 		//	return;
 		//}
+		//TODO:: 同时设置多个 viewport 需要用glViewportArrayv
+		setViewport(state.viewport.viewports[0].minX, state.viewport.viewports[0].minY, state.viewport.viewports[0].minZ, 
+			state.viewport.viewports[0].maxX, state.viewport.viewports[0].maxY, state.viewport.viewports[0].maxZ);
+
+		setScissorRect(true, state.viewport.scissorRects[0].minX, state.viewport.scissorRects[0].minY,
+			state.viewport.scissorRects[0].maxX, state.viewport.scissorRects[0].maxY);
+
+	
+		//uniform buffer + texture, sampler...
+		_bindBindingSets(state.bindings);
+		
 
 		setBoundShaderState(
 			m_Device->RHICreateBoundShaderState_Internal(
@@ -116,23 +194,23 @@ namespace BlackPearl {
 			)
 		);
 
-		setDepthStencilaState(FallbackGraphicsState->Initializer.DepthStencilState, StencilRef);
-		setRasterizerState(FallbackGraphicsState->Initializer.RasterizerState);
-		setBlendState(FallbackGraphicsState->Initializer.BlendState, FLinearColor(1.0f, 1.0f, 1.0f));
+		setDepthStencilaState(&state.pipeline->desc.depthStencilState);
+		setRasterizerState(&state.pipeline->desc.rasterState);
+		setBlendState(&state.pipeline->desc.blendState);
 		if (GSupportsDepthBoundsTest)
 		{
-			RHIEnableDepthBoundsTest(FallbackGraphicsState->Initializer.bDepthBounds);
+			//RHIEnableDepthBoundsTest(FallbackGraphicsState->Initializer.bDepthBounds);
 		}
 
-		if (bApplyAdditionalState)
+		/*if (bApplyAdditionalState)
 		{
 			ApplyStaticUniformBuffers(PsoInit.BoundShaderState.VertexShaderRHI, ResourceCast(PsoInit.BoundShaderState.VertexShaderRHI));
 			ApplyStaticUniformBuffers(PsoInit.BoundShaderState.GetGeometryShader(), ResourceCast(PsoInit.BoundShaderState.GetGeometryShader()));
 			ApplyStaticUniformBuffers(PsoInit.BoundShaderState.PixelShaderRHI, ResourceCast(PsoInit.BoundShaderState.PixelShaderRHI));
-		}
+		}*/
 
 		// Store the PSO's primitive (after since IRHICommandContext::RHISetGraphicsPipelineState sets the BSS)
-		m_Device->PSOPrimitiveType = PsoInit.PrimitiveType;
+		m_Device->PSOPrimitiveType = state.pipeline->desc.primType;
 	}
 	void CommandList::draw(const DrawArguments& args)
 	{
@@ -310,14 +388,22 @@ namespace BlackPearl {
 
 	void CommandList::setDepthStencilaState(DepthStencilState* state)
 	{
+		m_Device->PendingState.DepthStencilState = *state;
+
 	}
 
 	void CommandList::setRasterizerState(RasterState* state)
 	{
+		m_Device->PendingState.RasterizerState = *state;
+
 	}
 
 	void CommandList::setBlendState(BlendState* state)
 	{
+		//深拷贝
+		m_Device->PendingState.BlendState = *state;
+		/*FOpenGLBlendState* NewState = ResourceCast(NewStateRHI);
+		FMemory::Memcpy(&PendingState.BlendState, &(NewState->Data), sizeof(FOpenGLBlendStateData));*/
 	}
 
 }

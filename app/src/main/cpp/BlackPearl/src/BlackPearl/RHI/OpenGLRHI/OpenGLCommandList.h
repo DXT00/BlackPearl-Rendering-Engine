@@ -147,7 +147,7 @@ namespace BlackPearl {
         void _commitBarriersInternal_synchronization2();
 
        
-
+        void _bindBindingSets(const BindingSetVector& bindings);
 
 
 	};

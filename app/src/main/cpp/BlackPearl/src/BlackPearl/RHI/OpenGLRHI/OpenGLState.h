@@ -478,10 +478,14 @@ struct FOpenGLContextState final : public FOpenGLCommonState
 
 struct FOpenGLRHIState final : public FOpenGLCommonState
 {
-	FOpenGLRasterizerState			RasterizerState;
-	FOpenGLDepthStencilState		DepthStencilState;
+	//FOpenGLRasterizerState			RasterizerState;
+	//FOpenGLDepthStencilState		DepthStencilState;
+	RasterState			RasterizerState;
+	DepthStencilState		DepthStencilState;
+	BlendState				BlendState;
+
 	uint32_t							StencilRef;
-	FOpenGLBlendState				BlendState;
+	//FOpenGLBlendState				BlendState;
 	GLuint							Framebuffer;
 	bool							bScissorEnabled;
 	RHIRect							Scissor;
