@@ -404,7 +404,7 @@ struct FOpenGLContextState final : public FOpenGLCommonState
 	int32_t							FirstNonzeroRenderTarget;
 	bool							bAlphaToCoverageEnabled;
 
-	//FOpenGLVertexDeclaration* VertexDecl;
+	InputLayout* VertexDecl;
 	FOpenGLCachedAttr				VertexAttrs[NUM_OPENGL_VERTEX_STREAMS];
 	FOpenGLStream					VertexStreams[NUM_OPENGL_VERTEX_STREAMS];
 

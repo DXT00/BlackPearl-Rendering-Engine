@@ -2,6 +2,8 @@
 #include <glad/glad.h>
 #include "VertexArray.h"
 #include "Buffer/Buffer.h"
+#include "BlackPearl/RHI/OpenGLRHI/OpenGLBuffer.h"
+#include "BlackPearl/RHI/OpenGLRHI/OpenGLBufferResource.h"
 #include "BlackPearl/Core.h"
 namespace BlackPearl {
 	static uint32_t ShaderDataTypeToBufferType(const ElementDataType& type) {

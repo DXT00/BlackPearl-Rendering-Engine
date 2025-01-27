@@ -232,7 +232,7 @@ namespace BlackPearl {
 		m_Device->CommitNonComputeShaderConstants();
 		m_Device->CachedBindElementArrayBuffer(ContextState, 0);
 		uint32_t VertexCount = GetVertexCountForPrimitiveCount(NumPrimitives, PrimitiveType);
-		SetupVertexArrays(ContextState, BaseVertexIndex, PendingState.Streams, NUM_OPENGL_VERTEX_STREAMS, VertexCount);
+		m_Device->SetupVertexArrays(ContextState, BaseVertexIndex, PendingState.Streams, NUM_OPENGL_VERTEX_STREAMS, VertexCount);
 
 		GLenum DrawMode = GL_TRIANGLES;
 		GLsizei NumElements = 0;

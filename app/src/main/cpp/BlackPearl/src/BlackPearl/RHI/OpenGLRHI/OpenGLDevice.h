@@ -133,6 +133,7 @@ namespace BlackPearl {
 		void CommitComputeShaderConstants(Shader* ComputeShader);
 		void SetPendingBlendStateForActiveRenderTargets(FOpenGLContextState& ContextState);
 
+		/* Texture */
 		void SetupTexturesForDraw(FOpenGLContextState& ContextState);
 		template <typename StateType>
 		void SetupTexturesForDraw(FOpenGLContextState& ContextState, const StateType& ShaderState, int32_t MaxTexturesNeeded);
@@ -142,7 +143,10 @@ namespace BlackPearl {
 		//void SetupUAVsForProgram(FOpenGLContextState& ContextState, const TBitArray<>& NeededBits, int32_t MaxUAVUnitUsed);
 
 		void RHIClearMRT(const bool* bClearColorArray, int32_t NumClearColors, const Color* ColorArray, bool bClearDepth, float Depth, bool bClearStencil, uint32_t Stencil);
-
+		
+		
+	
+		
 		BoundShaderState* RHICreateBoundShaderState_Internal(
 			InputLayout* VertexDeclarationRHI,
 			Shader* VertexShaderRHI,
@@ -150,6 +154,7 @@ namespace BlackPearl {
 			Shader* GeometryShaderRHI,
 			bool bFromPSOFileCache
 		);
+		void SetupVertexArrays(FOpenGLContextState& ContextState, uint32_t BaseVertexIndex, FOpenGLStream* Streams, uint32_t NumStreams, uint32_t MaxVertices);
 
 			/** RHI device state, independent of underlying OpenGL context used */
 		FOpenGLRHIState						PendingState;
