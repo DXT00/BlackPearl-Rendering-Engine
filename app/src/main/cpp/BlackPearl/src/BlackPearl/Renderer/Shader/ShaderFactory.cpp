@@ -25,8 +25,9 @@ namespace BlackPearl {
 	{
 		std::shared_ptr<IBlob> byteCode = GetBytecode(fileName, entryName);
 
-		if (!byteCode)
-			return nullptr;
+		if (!byteCode) {
+			return m_Device->createShader(desc, nullptr, 0);
+		}
 
 		std::vector<ShaderMake::ShaderConstant> constants;
 		if (pDefines)

@@ -202,6 +202,12 @@ class FOpenGLRasterizerState : public RasterState
 
 class FOpenGLDepthStencilState : public DepthStencilState
 {
+public:
+    FOpenGLDepthStencilState()
+    :bTwoSidedStencilMode(false){
+
+    }
+    bool bTwoSidedStencilMode;
 //public:
 //	virtual bool GetInitializer(FDepthStencilStateInitializerRHI& Init) override final;
 //
@@ -389,8 +395,8 @@ struct FOpenGLContextState final : public FOpenGLCommonState
 	std::vector<FOpenGLSamplerState*>	CachedSamplerStates;
 	GLenum							ActiveTexture;
 	bool							bScissorEnabled;
-	RHIViewport						Scissor;
-	RHIRect							Viewport;
+    RHIRect                         Scissor;
+	RHIViewport							Viewport;
 	float							DepthMinZ;
 	float							DepthMaxZ;
 	GLuint							ArrayBufferBound;
@@ -481,7 +487,7 @@ struct FOpenGLRHIState final : public FOpenGLCommonState
 	//FOpenGLRasterizerState			RasterizerState;
 	//FOpenGLDepthStencilState		DepthStencilState;
 	RasterState			RasterizerState;
-	DepthStencilState		DepthStencilState;
+    FOpenGLDepthStencilState		DepthStencilState;
 	BlendState				BlendState;
 
 	uint32_t							StencilRef;

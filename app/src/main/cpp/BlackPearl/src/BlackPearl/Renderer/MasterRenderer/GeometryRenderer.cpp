@@ -58,8 +58,15 @@ namespace BlackPearl {
     */
 
 
-    void RenderPassTemplate(ICommandList* cmdList, IFramebuffer* framebuffer, IView* view) 
+    void RenderPassTemplate(ICommandList* cmdList, IFramebuffer* framebuffer, IView* view, IDrawStrategy* drawStrategy)
     {
+
+
+        for (const auto& item : drawStrategy->GetDrawItems()) {
+            if (item.material == nullptr)
+                continue;
+
+        }
         std::vector<ShaderMacro> Macros;
        // Macros.push_back(ShaderMacro("COMPILE_SHADER", "1"));
         ShaderHandle vertexShader = g_shaderFactory->CreateShader("hlsl/test/forward_test_vs.hlsl", "main", &Macros, ShaderType::Vertex);

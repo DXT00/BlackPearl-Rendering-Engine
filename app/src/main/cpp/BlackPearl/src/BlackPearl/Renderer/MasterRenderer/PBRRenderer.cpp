@@ -10,6 +10,34 @@ namespace BlackPearl {
 		DrawObjects(objs, m_PbrShader);
 	}
 
+	void PBRRenderer::Render(ICommandList* commandList, IFramebuffer* targetFramebuffer, Scene* scene)
+	{
+		commandList->beginMarker("BasePass");
+		SceneData* view = Renderer::GetSceneData();
+		SceneData* preView = Renderer::GetPreSceneData();
+
+		m_DrawStrategy->PrepareForView(scene, *view);
+		RenderPassTemplate(commandList, targetFramebuffer, view, m_DrawStrategy);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+		commandList->endMarker();
+	}
+
 	void PBRRenderer::Render(Object * obj)
 	{
 		m_PbrShader->Bind();

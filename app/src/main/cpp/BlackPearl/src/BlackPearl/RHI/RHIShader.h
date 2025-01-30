@@ -111,6 +111,8 @@ struct ShaderDesc
     ShaderType shaderType = ShaderType::None;
     std::string debugName;
     std::string entryName = "main";
+    //glsl file
+    std::string filePath;
 
     int hlslExtensionsUAV = -1;
 

@@ -5,12 +5,14 @@
 #include "OpenGLImageTexture2D.h"
 #include "OpenGLFrameBuffer.h"
 #include "OpenGLCommandList.h"
+#include "OpenGLUtil.h"
 #include "BlackPearl/Core.h"
 #include "BlackPearl/Log.h"
 #include "BlackPearl/RHI/OpenGLRHI/OpenGLDriver/OpenGLDrvPrivate.h"
 #include "BlackPearl/RHI/RHIGlobals.h"
 #include "BlackPearl/RHI/DynamicRHI.h"
 #include "BlackPearl/RHI/RHIDefinitions.h"
+
 
 namespace BlackPearl 
 {
@@ -130,7 +132,15 @@ namespace BlackPearl
 
 	ShaderHandle Device::createShader(const ShaderDesc& d, const void* binary, size_t binarySize)
 	{
-		Shader* shader = new Shader(d,binary, binarySize);
+		Shader* shader = nullptr;
+		if (binary == nullptr)
+		{
+			shader = new Shader(d, d.filePath);
+		}
+		else {
+			shader = new Shader(d, binary, binarySize);
+
+		}
 
 		/*shader->desc = d;
 		shader->stageFlagBits = VkUtil::convertShaderTypeToShaderStageFlagBits(d.shaderType);
@@ -1150,7 +1160,7 @@ namespace BlackPearl
 			StreamMask >>= 1;
 		}
 		//Ensure that all requested streams were set
-		check(StreamMask == 0);
+		assert(StreamMask == 0);
 
 		// Disable active unused streams
 		for (uint32_t StreamIndex = 0; StreamIndex < NUM_OPENGL_VERTEX_STREAMS && NotUsedButActiveStreamMask; StreamIndex++)
@@ -1164,7 +1174,280 @@ namespace BlackPearl
 			}
 			NotUsedButActiveStreamMask >>= 1;
 		}
-		check(NotUsedButActiveStreamMask == 0);
+		assert(NotUsedButActiveStreamMask == 0);
 	}
 
+
+    void Device::BindPendingComputeShaderState(FOpenGLContextState& ContextState, IShader* ComputeShader)
+    {
+    }
+
+    void Device::UpdateRasterizerStateInOpenGLContext(FOpenGLContextState& ContextState)
+    {
+        if (FOpenGL::SupportsPolygonMode() && ContextState.RasterizerState.fillMode != PendingState.RasterizerState.fillMode)
+        {
+            FOpenGL::PolygonMode(GL_FRONT_AND_BACK, PendingState.RasterizerState.fillMode);
+            ContextState.RasterizerState.fillMode = PendingState.RasterizerState.fillMode;
+        }
+
+        if (ContextState.RasterizerState.cullMode != PendingState.RasterizerState.cullMode)
+        {
+            if (OpenGLUtil::convertCullMode(PendingState.RasterizerState.cullMode) != GL_NONE)
+            {
+                // Only call glEnable if needed
+                if (OpenGLUtil::convertCullMode(ContextState.RasterizerState.cullMode) == GL_NONE)
+                {
+                    glEnable(GL_CULL_FACE);
+                }
+                glCullFace(OpenGLUtil::convertCullMode(PendingState.RasterizerState.cullMode);
+            }
+            else
+            {
+                glDisable(GL_CULL_FACE);
+            }
+            ContextState.RasterizerState.cullMode = PendingState.RasterizerState.cullMode;
+        }
+
+        if (FOpenGL::SupportsDepthClamp() && ContextState.RasterizerState.depthClipEnable != PendingState.RasterizerState.depthClipEnable)
+        {
+            if (PendingState.RasterizerState.depthClipEnable == true)
+            {
+                glEnable(GL_DEPTH_CLAMP);
+            }
+            else
+            {
+                glDisable(GL_DEPTH_CLAMP);
+            }
+            ContextState.RasterizerState.depthClipEnable = PendingState.RasterizerState.depthClipEnable;
+        }
+
+        // Convert our platform independent depth bias into an OpenGL depth bias.
+        const float BiasScale = float((1<<24)-1);	// Warning: this assumes depth bits == 24, and won't be correct with 32.
+        float DepthBias = PendingState.RasterizerState.depthBias * BiasScale;
+        if (ContextState.RasterizerState.depthBias != PendingState.RasterizerState.depthBias
+            || ContextState.RasterizerState.slopeScaledDepthBias != PendingState.RasterizerState.slopeScaledDepthBias)
+        {
+            if ((DepthBias == 0.0f) && (PendingState.RasterizerState.slopeScaledDepthBias == 0.0f))
+            {
+                // If we're here, both previous 2 'if' conditions are true, and this implies that cached state was not all zeroes, so we need to glDisable.
+                glDisable(GL_POLYGON_OFFSET_FILL);
+                if ( FOpenGL::SupportsPolygonMode() )
+                {
+                    glDisable(GL_POLYGON_OFFSET_LINE);
+                    glDisable(GL_POLYGON_OFFSET_POINT);
+                }
+            }
+            else
+            {
+                if (ContextState.RasterizerState.depthBias == 0.0f && ContextState.RasterizerState.slopeScaledDepthBias == 0.0f)
+                {
+                    glEnable(GL_POLYGON_OFFSET_FILL);
+                    if ( FOpenGL::SupportsPolygonMode() )
+                    {
+                        glEnable(GL_POLYGON_OFFSET_LINE);
+                        glEnable(GL_POLYGON_OFFSET_POINT);
+                    }
+                }
+                glPolygonOffset(PendingState.RasterizerState.slopeScaledDepthBias, DepthBias);
+            }
+
+            ContextState.RasterizerState.depthBias = PendingState.RasterizerState.depthBias;
+            ContextState.RasterizerState.slopeScaledDepthBias = PendingState.RasterizerState.slopeScaledDepthBias;
+        }
+    }
+    void Device::UpdateDepthStencilStateInOpenGLContext(FOpenGLContextState& ContextState)
+    {
+        if (ContextState.DepthStencilState.depthTestEnable != PendingState.DepthStencilState.depthTestEnable)
+        {
+            if (PendingState.DepthStencilState.depthTestEnable)
+            {
+                glEnable(GL_DEPTH_TEST);
+            }
+            else
+            {
+                glDisable(GL_DEPTH_TEST);
+            }
+            ContextState.DepthStencilState.depthTestEnable = PendingState.DepthStencilState.depthTestEnable;
+        }
+
+        if (ContextState.DepthStencilState.depthWriteEnable != PendingState.DepthStencilState.depthWriteEnable)
+        {
+            glDepthMask((GLboolean)PendingState.DepthStencilState.depthWriteEnable);
+            ContextState.DepthStencilState.depthWriteEnable = PendingState.DepthStencilState.depthWriteEnable;
+        }
+
+        if (PendingState.DepthStencilState.depthTestEnable)
+        {
+            if (ContextState.DepthStencilState.depthFunc != PendingState.DepthStencilState.depthFunc)
+            {
+                glDepthFunc(OpenGLUtil::convertCompareOp(PendingState.DepthStencilState.depthFunc));
+                ContextState.DepthStencilState.depthFunc = PendingState.DepthStencilState.depthFunc;
+            }
+        }
+
+        if (ContextState.DepthStencilState.stencilEnable != PendingState.DepthStencilState.stencilEnable)
+        {
+            if (PendingState.DepthStencilState.stencilEnable)
+            {
+                glEnable(GL_STENCIL_TEST);
+            }
+            else
+            {
+                glDisable(GL_STENCIL_TEST);
+            }
+            ContextState.DepthStencilState.stencilEnable = PendingState.DepthStencilState.stencilEnable;
+        }
+
+        // If only two-sided <-> one-sided stencil mode changes, and nothing else, we need to call full set of functions
+        // to ensure all drivers handle this correctly - some of them might keep those states in different variables.
+        if (ContextState.DepthStencilState.bTwoSidedStencilMode != PendingState.DepthStencilState.bTwoSidedStencilMode)
+        {
+            // Invalidate cache to enforce update of part of stencil state that needs to be set with different functions, when needed next
+            // Values below are all invalid, but they'll never be used, only compared to new values to be set.
+//            ContextState.DepthStencilState.frontFaceStencil.stencilFunc = 0xFFFF;
+//            ContextState.DepthStencilState.frontFaceStencil.failOp = 0xFFFF;
+//            ContextState.DepthStencilState.StencilZFail = 0xFFFF;
+//            ContextState.DepthStencilState.StencilPass = 0xFFFF;
+//            ContextState.DepthStencilState.CCWStencilFunc = 0xFFFF;
+//            ContextState.DepthStencilState.CCWStencilFail = 0xFFFF;
+//            ContextState.DepthStencilState.CCWStencilZFail = 0xFFFF;
+//            ContextState.DepthStencilState.CCWStencilPass = 0xFFFF;
+//            ContextState.DepthStencilState.StencilReadMask = 0xFFFF;
+
+            ContextState.DepthStencilState.bTwoSidedStencilMode = PendingState.DepthStencilState.bTwoSidedStencilMode;
+        }
+
+        if (PendingState.DepthStencilState.stencilEnable)
+        {
+            /*
+             *  // 为正面多边形设置模板测试
+                glStencilFuncSeparate(GL_FRONT, GL_EQUAL, 1, 0xFF);
+                // 为背面多边形设置模板测试
+                glStencilFuncSeparate(GL_BACK, GL_NOTEQUAL, 2, 0xFF);
+             *
+             * */
+            if (PendingState.DepthStencilState.bTwoSidedStencilMode)
+            {
+                if (ContextState.DepthStencilState.backFaceStencil.stencilFunc != PendingState.DepthStencilState.backFaceStencil.stencilFunc
+                    || ContextState.StencilRef != PendingState.StencilRef
+                    || ContextState.DepthStencilState.stencilReadMask != PendingState.DepthStencilState.stencilReadMask)
+                {
+                    glStencilFuncSeparate(GL_BACK, OpenGLUtil::convertCompareOp(PendingState.DepthStencilState.backFaceStencil.stencilFunc), PendingState.StencilRef, PendingState.DepthStencilState.stencilReadMask);
+                    ContextState.DepthStencilState.backFaceStencil.stencilFunc = PendingState.DepthStencilState.backFaceStencil.stencilFunc;
+                }
+
+                if (ContextState.DepthStencilState.backFaceStencil.failOp != PendingState.DepthStencilState.backFaceStencil.failOp
+                    || ContextState.DepthStencilState.backFaceStencil.depthFailOp != PendingState.DepthStencilState.backFaceStencil.depthFailOp
+                    || ContextState.DepthStencilState.backFaceStencil.passOp != PendingState.DepthStencilState.backFaceStencil.passOp)
+                {
+                    glStencilOpSeparate(GL_BACK, OpenGLUtil::convertStencilOp(PendingState.DepthStencilState.backFaceStencil.failOp),OpenGLUtil::convertStencilOp( PendingState.DepthStencilState.backFaceStencil.depthFailOp), OpenGLUtil::convertStencilOp(PendingState.DepthStencilState.backFaceStencil.passOp));
+                    ContextState.DepthStencilState.backFaceStencil.failOp = PendingState.DepthStencilState.backFaceStencil.failOp;
+                    ContextState.DepthStencilState.backFaceStencil.depthFailOp = PendingState.DepthStencilState.backFaceStencil.depthFailOp;
+                    ContextState.DepthStencilState.backFaceStencil.passOp = PendingState.DepthStencilState.backFaceStencil.passOp;
+                }
+
+                if (ContextState.DepthStencilState.frontFaceStencil.stencilFunc != PendingState.DepthStencilState.frontFaceStencil.stencilFunc
+                    || ContextState.StencilRef != PendingState.StencilRef
+                    || ContextState.DepthStencilState.stencilReadMask != PendingState.DepthStencilState.stencilReadMask)
+                {
+                    glStencilFuncSeparate(GL_FRONT, OpenGLUtil::convertCompareOp(PendingState.DepthStencilState.frontFaceStencil.stencilFunc), PendingState.StencilRef, PendingState.DepthStencilState.stencilReadMask);
+                    ContextState.DepthStencilState.frontFaceStencil.stencilFunc = PendingState.DepthStencilState.frontFaceStencil.stencilFunc;
+                }
+
+                if (ContextState.DepthStencilState.frontFaceStencil.failOp != PendingState.DepthStencilState.frontFaceStencil.failOp
+                    || ContextState.DepthStencilState.frontFaceStencil.depthFailOp != PendingState.DepthStencilState.frontFaceStencil.depthFailOp
+                    || ContextState.DepthStencilState.frontFaceStencil.passOp != PendingState.DepthStencilState.frontFaceStencil.passOp)
+                {
+                    glStencilOpSeparate(GL_FRONT, OpenGLUtil::convertStencilOp(PendingState.DepthStencilState.frontFaceStencil.failOp), OpenGLUtil::convertStencilOp(PendingState.DepthStencilState.frontFaceStencil.depthFailOp), OpenGLUtil::convertStencilOp(PendingState.DepthStencilState.frontFaceStencil.passOp));
+                    ContextState.DepthStencilState.frontFaceStencil.failOp = PendingState.DepthStencilState.frontFaceStencil.failOp;
+                    ContextState.DepthStencilState.frontFaceStencil.depthFailOp = PendingState.DepthStencilState.frontFaceStencil.depthFailOp;
+                    ContextState.DepthStencilState.frontFaceStencil.passOp = PendingState.DepthStencilState.frontFaceStencil.passOp;
+                }
+
+                ContextState.DepthStencilState.stencilReadMask = PendingState.DepthStencilState.stencilReadMask;
+                ContextState.StencilRef = PendingState.StencilRef;
+            }
+            else
+            {
+                if (ContextState.DepthStencilState.backFaceStencil.stencilFunc != PendingState.DepthStencilState.backFaceStencil.stencilFunc
+                    || ContextState.StencilRef != PendingState.StencilRef
+                    || ContextState.DepthStencilState.stencilReadMask != PendingState.DepthStencilState.stencilReadMask)
+                {
+                    glStencilFunc(PendingState.DepthStencilState.stencilReadMask, PendingState.StencilRef, PendingState.DepthStencilState.stencilReadMask);
+                    ContextState.DepthStencilState.stencilReadMask = PendingState.DepthStencilState.stencilReadMask;
+                    ContextState.DepthStencilState.stencilReadMask = PendingState.DepthStencilState.stencilReadMask;
+                    ContextState.StencilRef = PendingState.StencilRef;
+                }
+
+                if (ContextState.DepthStencilState.backFaceStencil.failOp != PendingState.DepthStencilState.backFaceStencil.failOp
+                    || ContextState.DepthStencilState.backFaceStencil.depthFailOp != PendingState.DepthStencilState.backFaceStencil.depthFailOp
+                    || ContextState.DepthStencilState.backFaceStencil.passOp != PendingState.DepthStencilState.backFaceStencil.passOp)
+                {
+                    glStencilOp(OpenGLUtil::convertStencilOp(PendingState.DepthStencilState.backFaceStencil.failOp), OpenGLUtil::convertStencilOp(PendingState.DepthStencilState.backFaceStencil.depthFailOp), OpenGLUtil::convertStencilOp(PendingState.DepthStencilState.backFaceStencil.passOp));
+                    ContextState.DepthStencilState.backFaceStencil.failOp = PendingState.DepthStencilState.backFaceStencil.failOp;
+                    ContextState.DepthStencilState.backFaceStencil.depthFailOp = PendingState.DepthStencilState.backFaceStencil.depthFailOp;
+                    ContextState.DepthStencilState.backFaceStencil.passOp = PendingState.DepthStencilState.backFaceStencil.passOp;
+                }
+            }
+            /*
+             *  void glStencilMask(GLuint mask);
+                参数说明
+                mask: 指定一个掩码，用于控制模板缓冲区的写入操作。掩码的每一位对应模板缓冲区中的一个位。
+                 如果掩码中的某一位为 1，则模板缓冲区中的相应位可以被修改；
+                 如果掩码中的某一位为 0，则模板缓冲区中的相应位保持不变。
+             *
+             * */
+            if (ContextState.DepthStencilState.stencilWriteMask != PendingState.DepthStencilState.stencilWriteMask)
+            {
+                glStencilMask(PendingState.DepthStencilState.stencilWriteMask);
+                ContextState.DepthStencilState.stencilWriteMask = PendingState.DepthStencilState.stencilWriteMask;
+            }
+        }
+    }
+    void Device::UpdateScissorRectInOpenGLContext(FOpenGLContextState& ContextState)
+    {
+        if (ContextState.bScissorEnabled != PendingState.bScissorEnabled)
+        {
+            if (PendingState.bScissorEnabled)
+            {
+                glEnable(GL_SCISSOR_TEST);
+            }
+            else
+            {
+                glDisable(GL_SCISSOR_TEST);
+            }
+            ContextState.bScissorEnabled = PendingState.bScissorEnabled;
+        }
+
+        if (PendingState.bScissorEnabled &&
+            ContextState.Scissor != PendingState.Scissor)
+        {
+            assert(PendingState.Scissor.minX <= PendingState.Scissor.maxX);
+            assert(PendingState.Scissor.minY <= PendingState.Scissor.maxY);
+            glScissor(PendingState.Scissor.minX, PendingState.Scissor.minY, PendingState.Scissor.maxX - PendingState.Scissor.minX, PendingState.Scissor.maxY - PendingState.Scissor.minY);
+            ContextState.Scissor = PendingState.Scissor;
+        }
+    }
+    void Device::UpdateViewportInOpenGLContext(FOpenGLContextState& ContextState)
+    {
+        if (ContextState.Viewport != PendingState.Viewport)
+        {
+            //@todo the viewport defined by glViewport does not clip, unlike the viewport in d3d
+            // Set the scissor rect to the viewport unless it is explicitly set smaller to emulate d3d.
+            glViewport(
+                    PendingState.Viewport.minX,
+                    PendingState.Viewport.minY,
+                    PendingState.Viewport.maxX - PendingState.Viewport.minX,
+                    PendingState.Viewport.maxY - PendingState.Viewport.minY);
+
+            ContextState.Viewport = PendingState.Viewport;
+        }
+
+        if (ContextState.DepthMinZ != PendingState.DepthMinZ || ContextState.DepthMaxZ != PendingState.DepthMaxZ)
+        {
+            FOpenGL::DepthRange(PendingState.DepthMinZ, PendingState.DepthMaxZ);
+            ContextState.DepthMinZ = PendingState.DepthMinZ;
+            ContextState.DepthMaxZ = PendingState.DepthMaxZ;
+        }
+    }
 }

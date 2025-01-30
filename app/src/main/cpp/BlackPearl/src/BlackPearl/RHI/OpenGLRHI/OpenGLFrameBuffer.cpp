@@ -7,6 +7,7 @@
 #include "BlackPearl/Core.h"
 #include "OpenGLDevice.h"
 #include "BlackPearl/RHI/RHIDefinitions.h"
+#include "BlackPearl/RHI/OpenGLRHI/OpenGLDriver/OpenGLDrvPrivate.h"
 namespace BlackPearl {
     // GL_MAX_DRAW_BUFFERS value
     GLint GMaxOpenGLDrawBuffers = 0;
@@ -43,7 +44,7 @@ namespace BlackPearl {
     void OpenGLFramebuffer::_BindColorAttachments()
     {
         for (int i = 0; i < desc.colorAttachments.size();i++) {
-            //½«Ëü¸½¼Óµ½µ±Ç°°ó¶¨µÄÖ¡»º³å¶ÔÏó
+            //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Óµï¿½ï¿½ï¿½Ç°ï¿½ó¶¨µï¿½Ö¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
             const auto& attach = desc.colorAttachments[i];
             Texture* texture = static_cast<Texture*>(attach.texture);
             glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_TEXTURE_2D, texture->GetRendererID(), 0);
@@ -103,60 +104,5 @@ namespace BlackPearl {
         }
     }
 
-    void Device::BindPendingComputeShaderState(FOpenGLContextState& ContextState, IShader* ComputeShader)
-    {
-    }
 
-    void Device::UpdateRasterizerStateInOpenGLContext(FOpenGLContextState& ContextState)
-    {
-    }
-    void Device::UpdateDepthStencilStateInOpenGLContext(FOpenGLContextState& ContextState)
-    {
-    }
-    void Device::UpdateScissorRectInOpenGLContext(FOpenGLContextState& ContextState)
-    {
-        if (ContextState.bScissorEnabled != PendingState.bScissorEnabled)
-        {
-            if (PendingState.bScissorEnabled)
-            {
-                glEnable(GL_SCISSOR_TEST);
-            }
-            else
-            {
-                glDisable(GL_SCISSOR_TEST);
-            }
-            ContextState.bScissorEnabled = PendingState.bScissorEnabled;
-        }
-
-        if (PendingState.bScissorEnabled &&
-            ContextState.Scissor != PendingState.Scissor)
-        {
-            assert(PendingState.Scissor.minX <= PendingState.Scissor.maxX);
-            assert(PendingState.Scissor.minY <= PendingState.Scissor.maxY);
-            glScissor(PendingState.Scissor.minX, PendingState.Scissor.minY, PendingState.Scissor.maxX - PendingState.Scissor.minX, PendingState.Scissor.maxY - PendingState.Scissor.minY);
-            ContextState.Scissor = PendingState.Scissor;
-        }
-    }
-    void Device::UpdateViewportInOpenGLContext(FOpenGLContextState& ContextState)
-    {
-        if (ContextState.Viewport != PendingState.Viewport)
-        {
-            //@todo the viewport defined by glViewport does not clip, unlike the viewport in d3d
-            // Set the scissor rect to the viewport unless it is explicitly set smaller to emulate d3d.
-            glViewport(
-                PendingState.Viewport.minX,
-                PendingState.Viewport.minY,
-                PendingState.Viewport.maxX - PendingState.Viewport.minX,
-                PendingState.Viewport.maxY - PendingState.Viewport.minY);
-
-            ContextState.Viewport = PendingState.Viewport;
-        }
-
-        if (ContextState.DepthMinZ != PendingState.DepthMinZ || ContextState.DepthMaxZ != PendingState.DepthMaxZ)
-        {
-            FOpenGL::DepthRange(PendingState.DepthMinZ, PendingState.DepthMaxZ);
-            ContextState.DepthMinZ = PendingState.DepthMinZ;
-            ContextState.DepthMaxZ = PendingState.DepthMaxZ;
-        }
-    }
 }

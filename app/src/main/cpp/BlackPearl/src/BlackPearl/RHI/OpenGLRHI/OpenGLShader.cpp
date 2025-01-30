@@ -59,19 +59,19 @@ namespace BlackPearl {
 		desc(_desc)
 	{
 
-		// ºóĞøÆô¶¯Ê±¼ÓÔØ¶ş½øÖÆÊı¾İ
+		// åç»­å¯åŠ¨æ—¶åŠ è½½äºŒè¿›åˆ¶æ•°æ®
 		GLuint newProgram = glCreateProgram();
 		//load_from_file("shader.bin", &binary, &binaryLength);
-		//TODO::  desc.binaryformat ÒªÓëµÚÒ»´Î±àÒëÊÇÊ±ºòÒ»Ñù£¬Í¨³£´æ´¢binaryCodeÔÚµÚÒ»¸öGLenum(uint_32t)
+		//TODO::  desc.binaryformat è¦ä¸ç¬¬ä¸€æ¬¡ç¼–è¯‘æ˜¯æ—¶å€™ä¸€æ ·ï¼Œé€šå¸¸å­˜å‚¨binaryCodeåœ¨ç¬¬ä¸€ä¸ªGLenum(uint_32t)
 		//BinaryFormat is stored at the start of ProgramBinary array
 		glProgramBinary(newProgram, desc.binaryformat, binaryCode, binarySize);
 		free((void*)binaryCode);
 
-		// ÑéÖ¤¼ÓÔØÊÇ·ñ³É¹¦
+		// éªŒè¯åŠ è½½æ˜¯å¦æˆåŠŸ
 		GLint linkStatus = GL_FALSE;
 		glGetProgramiv(newProgram, GL_LINK_STATUS, &linkStatus);
 		if (linkStatus == GL_FALSE) {
-			// ´¦Àí´íÎó
+			// å¤„ç†é”™è¯¯
 			GLint maxLength = 0;
 			glGetProgramiv(newProgram, GL_INFO_LOG_LENGTH, &maxLength);
 			GE_ERROR_JUDGE();
@@ -146,7 +146,7 @@ namespace BlackPearl {
 		std::unordered_map<unsigned int, std::string> shaderSources;
 		const char* typeToken = "#type";
 		size_t typeTockenLength = strlen(typeToken);
-		size_t pos = source.find(typeToken, 0);//findÕÒ²»µ½»á·µ»Ønpos
+		size_t pos = source.find(typeToken, 0);//findï¿½Ò²ï¿½ï¿½ï¿½ï¿½á·µï¿½ï¿½npos
 		while (pos != std::string::npos) {
 			size_t eol = source.find_first_of("\r\n", pos);
 			GE_ASSERT(eol != std::string::npos, "Syntax error");
@@ -157,12 +157,12 @@ namespace BlackPearl {
 			size_t nextLinePos = source.find_first_not_of("\r\n", eol);
 			pos = source.find(typeToken, nextLinePos);
 			shaderSources[ShaderTypeFromString(type)] = source.substr(nextLinePos,
-				pos - (nextLinePos == std::string::npos ? source.size() - 1 : nextLinePos));//string::npos±íÊ¾sourceµÄÄ©Î²Î»ÖÃ
+				pos - (nextLinePos == std::string::npos ? source.size() - 1 : nextLinePos));//string::nposè¡¨ç¤ºsourceçš„æœ«å°¾ä½ç½®
 
 		}
 		//add common struct source
 		if (shaderSources.find(GL_FRAGMENT_SHADER)!=shaderSources.end()) {
-			size_t pos = shaderSources[GL_FRAGMENT_SHADER].find("#version", 0);//findÕÒ²»µ½»á·µ»Ønpos
+			size_t pos = shaderSources[GL_FRAGMENT_SHADER].find("#version", 0);//findæ‰¾ä¸åˆ°ä¼šè¿”å›npos
 			GE_ASSERT(pos != std::string::npos, "Syntax error");
 
 			size_t eol = shaderSources[GL_FRAGMENT_SHADER].find_first_of("\r\n", pos);
@@ -312,7 +312,7 @@ namespace BlackPearl {
 			if (lightObj->HasComponent<SpotLight>()) {
 				auto lightSource = lightObj->GetComponent<SpotLight>();
 
-				lightSource->UpdatePositionAndDirection(Renderer::GetSceneData()->CameraPosition, Renderer::GetSceneData()->CameraFront);//SpotLightµÄÊ±ºò¼ÇµÃ¸üĞÂCamera
+				lightSource->UpdatePositionAndDirection(Renderer::GetSceneData()->CameraPosition, Renderer::GetSceneData()->CameraFront);//SpotLightï¿½ï¿½Ê±ï¿½ï¿½ÇµÃ¸ï¿½ï¿½ï¿½Camera
 
 				this->SetUniform1ui("u_LightType", (unsigned int)LightType::SpotLight);
 				this->SetUniform1i("u_HasSpotLight", 1);
@@ -320,7 +320,7 @@ namespace BlackPearl {
 				this->SetUniformVec3f("u_SpotLight.ambient", lightSource->GetLightProps().ambient);
 				this->SetUniformVec3f("u_SpotLight.diffuse", lightSource->GetLightProps().diffuse);
 				this->SetUniformVec3f("u_SpotLight.specular", lightSource->GetLightProps().specular);
-				this->SetUniformVec3f("u_SpotLight.position",lightSource->GetPosition()); //TODO:Position Ó¦¸Ã´ÓTransformÄÃ
+				this->SetUniformVec3f("u_SpotLight.position",lightSource->GetPosition()); //TODO:Position Ó¦ï¿½Ã´ï¿½Transformï¿½ï¿½
 				this->SetUniformVec3f("u_SpotLight.direction", lightSource->GetDirection());
 
 				this->SetUniform1f("u_SpotLight.cutOff",lightSource->GetCutOffAngle());
@@ -544,7 +544,7 @@ namespace BlackPearl {
 
 			int32_t NumUniformBuffers[(int)ShaderType::AllGraphics];
 
-			PendingState.GraphicsPipline->pipelineBindingLayouts->getNumUniformBuffers(NumUniformBuffers);
+			//PendingState.GraphicsPipline->pipelineBindingLayouts->getNumUniformBuffers(NumUniformBuffers);
 
 			if (PendingState.bAnyDirtyRealUniformBuffers[(int)ShaderType::Vertex])
 			{
@@ -568,15 +568,15 @@ namespace BlackPearl {
 			}
 			NextUniformBufferIndex += NumUniformBuffers[(int)ShaderType::Pixel];
 
-			if (NumUniformBuffers[(int)ShaderType::Geometry] >= 0 && PendingState.bAnyDirtyRealUniformBuffers[SF_Geometry])
+			if (NumUniformBuffers[(int)ShaderType::Geometry] >= 0 && PendingState.bAnyDirtyRealUniformBuffers[(int)ShaderType::Geometry])
 			{
 				BindUniformBufferBase(
 					ContextState,
-					NumUniformBuffers[SF_Geometry],
-					PendingState.BoundUniformBuffers[SF_Geometry],
+					NumUniformBuffers[(int)ShaderType::Geometry],
+					PendingState.BoundUniformBuffers[(int)ShaderType::Geometry],
 					NextUniformBufferIndex,
 					ForceUniformBindingUpdate);
-				NextUniformBufferIndex += NumUniformBuffers[SF_Geometry];
+				NextUniformBufferIndex += NumUniformBuffers[(int)ShaderType::Geometry];
 			}
 
 			PendingState.bAnyDirtyRealUniformBuffers[(int)ShaderType::Vertex] = false;
@@ -591,7 +591,7 @@ namespace BlackPearl {
 	}
 
 
-	//TODO:: shader ºÍ linkProgramÊÇ·Ö¿ªµÄ
+	//TODO:: shader å’Œ linkProgramæ˜¯åˆ†å¼€çš„
 	FOpenGLBoundShaderState::FOpenGLBoundShaderState(
 		InputLayout* InVertexDeclarationRHI,
 		Shader* InVertexShaderRHI,

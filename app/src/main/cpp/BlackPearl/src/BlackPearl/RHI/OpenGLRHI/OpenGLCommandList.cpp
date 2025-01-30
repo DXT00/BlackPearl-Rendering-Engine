@@ -2,6 +2,7 @@
 #include "OpenGLBufferResource.h"
 #include "OpenGLBindingSet.h"
 #include "BlackPearl/RHI/RHIGlobals.h"
+#include "BlackPearl/RHI/OpenGLRHI/OpenGLDriver/OpenGLDrvPrivate.h"
 namespace BlackPearl {
 	CommandList::CommandList(Device* device, const OpenGLContext& context, const CommandListParameters& parameters)
 		:m_Context(context)
@@ -130,7 +131,7 @@ namespace BlackPearl {
 			}
 			else
 			{
-				// Vulkan Ò²ÓÐDescriptorTable£¿
+				// Vulkan Ò²ï¿½ï¿½DescriptorTableï¿½ï¿½
 				DescriptorTable* table = dynamic_cast<DescriptorTable*>(bindingSetHandle);
 				descriptorSets.push_back(table->descriptorSet);
 			}
@@ -172,7 +173,7 @@ namespace BlackPearl {
 		//	// 		// If we're from the PSO cache we're just preparing the PSO and do not need to set the state.
 		//	return;
 		//}
-		//TODO:: Í¬Ê±ÉèÖÃ¶à¸ö viewport ÐèÒªÓÃglViewportArrayv
+		//TODO:: Í¬Ê±ï¿½ï¿½ï¿½Ã¶ï¿½ï¿½ viewport ï¿½ï¿½Òªï¿½ï¿½glViewportArrayv
 		setViewport(state.viewport.viewports[0].minX, state.viewport.viewports[0].minY, state.viewport.viewports[0].minZ, 
 			state.viewport.viewports[0].maxX, state.viewport.viewports[0].maxY, state.viewport.viewports[0].maxZ);
 
@@ -231,14 +232,21 @@ namespace BlackPearl {
 		m_Device->SetupUAVsForDraw(ContextState);
 		m_Device->CommitNonComputeShaderConstants();
 		m_Device->CachedBindElementArrayBuffer(ContextState, 0);
-		uint32_t VertexCount = GetVertexCountForPrimitiveCount(NumPrimitives, PrimitiveType);
+
+        int NumPrimitives = args.instanceCount;
+        int NumInstances = args.instanceCount;
+
+		uint32_t VertexCount = args.vertexCount;//GetVertexCountForPrimitiveCount(NumPrimitives, PrimitiveType);
+        uint32_t BaseVertexIndex = args.startVertexLocation;
+
 		m_Device->SetupVertexArrays(ContextState, BaseVertexIndex, PendingState.Streams, NUM_OPENGL_VERTEX_STREAMS, VertexCount);
 
 		GLenum DrawMode = GL_TRIANGLES;
 		GLsizei NumElements = 0;
-		FindPrimitiveType(PrimitiveType, NumPrimitives, DrawMode, NumElements);
 
-		GPUProfilingData.RegisterGPUWork(NumPrimitives * NumInstances, VertexCount * NumInstances);
+        FindPrimitiveType(PrimitiveType, NumPrimitives, DrawMode, NumElements);
+
+		//GPUProfilingData.RegisterGPUWork(NumPrimitives * NumInstances, VertexCount * NumInstances);
 		if (NumInstances == 1)
 		{
 			//SCOPE_CYCLE_COUNTER_DETAILED(STAT_OpenGLDrawPrimitiveDriverTime);
@@ -251,7 +259,7 @@ namespace BlackPearl {
 			//CONDITIONAL_SCOPE_CYCLE_COUNTER(STAT_OpenGLShaderFirstDrawTime, PendingState.BoundShaderState->RequiresDriverInstantiation());
 			FOpenGL::DrawArraysInstanced(DrawMode, 0, NumElements, NumInstances);
 		}
-		GOpenGLKickHint.OnDrawCall(ContextState);
+		//GOpenGLKickHint.OnDrawCall(ContextState);
 	}
 	void CommandList::drawIndexed(const DrawArguments& args)
 	{
@@ -400,7 +408,7 @@ namespace BlackPearl {
 
 	void CommandList::setBlendState(BlendState* state)
 	{
-		//Éî¿½±´
+		//ï¿½î¿½ï¿½ï¿½
 		m_Device->PendingState.BlendState = *state;
 		/*FOpenGLBlendState* NewState = ResourceCast(NewStateRHI);
 		FMemory::Memcpy(&PendingState.BlendState, &(NewState->Data), sizeof(FOpenGLBlendStateData));*/
