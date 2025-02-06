@@ -6,7 +6,7 @@
 #include "BlackPearl/Renderer/DrawStrategy.h"
 namespace BlackPearl {
 	extern ShaderFactory* g_shaderFactory;
-	class PBRRenderer:public BasicRenderer, public GeometryRenderer
+	class PBRRenderer: public BasicRenderer, public GeometryRenderer
 	{
 	public:
 		PBRRenderer() {

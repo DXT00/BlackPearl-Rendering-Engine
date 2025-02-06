@@ -56,7 +56,51 @@ namespace BlackPearl {
     
     
     */
+    bool SetupMaterial(const Material* material, RasterCullMode cullMode, GraphicsState& state) {
+        // auto& context = static_cast<Context&>(abstractContext);
 
+        IBindingSet* materialBindingSet = m_MaterialBindings->GetMaterialBindingSet(material);
+
+        if (!materialBindingSet)
+            return false;
+
+        if (material->domain >= MaterialDomain::Count || cullMode > RasterCullMode::None)
+        {
+            assert(false);
+            return false;
+        }
+
+        //TODO:: ¼Ópass context
+        PipelineKey key;// = context.keyTemplate;
+        key.value = material->GetId();
+        key.bits.cullMode = cullMode;
+        key.bits.domain = material->domain;
+        key.bits.frontCounterClockwise = true;
+        key.bits.reverseDepth = false;
+
+        GraphicsPipelineHandle& pipeline = m_Pipelines[key.value];
+        // GraphicsPipelineHandle pipeline = CreateGraphicsPipeline(key, state.framebuffer);
+        if (!pipeline)
+        {
+            std::lock_guard<std::mutex> lockGuard(m_Mutex);
+
+            if (!pipeline)
+                pipeline = CreateGraphicsPipeline(key, state.framebuffer);
+
+            if (!pipeline)
+                return false;
+        }
+
+        assert(pipeline->getFramebufferInfo() == state.framebuffer->getFramebufferInfo());
+
+        state.pipeline = pipeline;
+        //state.bindings = { materialBindingSet, m_ViewBindingSet, context.lightBindingSet };
+       // state.bindings = { materialBindingSet, m_ViewBindingSet, m_LightBinding };
+        state.bindings = { materialBindingSet, m_ViewBindingSet };
+
+
+        return true;
+    }
 
     void RenderPassTemplate(ICommandList* cmdList, IFramebuffer* framebuffer, IView* view, IDrawStrategy* drawStrategy)
     {
