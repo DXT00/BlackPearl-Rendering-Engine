@@ -54,7 +54,7 @@ namespace BlackPearl {
             bool trackLiveness = true);
 
         IBindingLayout* GetLayout() const;
-        IBindingSet* GetMaterialBindingSet(const Material* material);
+        IBindingSet* GetOrCreateMaterialBindingSet(const Material* material);
         void Clear();
     };
 

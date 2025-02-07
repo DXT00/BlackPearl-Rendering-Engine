@@ -13,11 +13,18 @@
 #include "BlackPearl/Renderer/MasterRenderer/ShadowMapPointLightRenderer.h"
 #include "BlackPearl/Config.h"
 #include "BlackPearl/Debugger/D3D12Debugger/HLSLPixDebugger.h"
+#include "BlackPearl/RHI/PipelineStateCache.h"
+#include "BlackPearl/Renderer/Shader/ShaderFactory.h"
+
 namespace BlackPearl {
+	extern ShaderFactory* g_shaderFactory;
+
 	uint32_t BasicRenderer::s_DrawCallCnt = 0;
 
-	BasicRenderer::BasicRenderer()
+	BasicRenderer::BasicRenderer(IDevice* device)
 	{
+		m_Device = device;
+
 		/*if (GetModuleHandle(L"WinPixGpuCapturer.dll") == 0)
 		{
 			LoadLibrary(HLSLPixDebugger::GetLatestWinPixGpuCapturerPath_Cpp17().c_str());
@@ -620,6 +627,183 @@ namespace BlackPearl {
 
 		
 
+	}
+	
+
+	bool BasicRenderer::SetupMaterial(const Material* material, RasterCullMode cullMode, const GraphicsPipelineDesc& pipelineDesc, GraphicsState& state) {
+		// auto& context = static_cast<Context&>(abstractContext);
+
+		//TODO:: 加pass context
+		PipelineKey key;// = context.keyTemplate;
+		key.value = material->GetId();
+		key.bits.cullMode = cullMode;
+		key.bits.domain = material->domain;
+		key.bits.frontCounterClockwise = true;
+		key.bits.reverseDepth = false;
+
+		state.pipeline = PipelineStateCache::GetAndOrCreateGraphicsPipelineState(m_Device, pipelineDesc, key, state);
+		
+		IBindingSet* materialBindingSet = m_MaterialBindingsCache->GetOrCreateMaterialBindingSet(material);
+
+		if (!materialBindingSet)
+			return false;
+
+		if (material->domain >= MaterialDomain::Count || cullMode > RasterCullMode::None)
+		{
+			assert(false);
+			return false;
+		}
+
+		
+
+		//GraphicsPipelineHandle& pipeline = m_Pipelines[key.value];
+		//// GraphicsPipelineHandle pipeline = CreateGraphicsPipeline(key, state.framebuffer);
+		//if (!pipeline)
+		//{
+		//	//std::lock_guard<std::mutex> lockGuard(m_Mutex);
+
+		//	if (!pipeline)
+		//		pipeline = CreateGraphicsPipeline(key, state.framebuffer);
+
+		//	if (!pipeline)
+		//		return false;
+		//}
+
+		//assert(pipeline->getFramebufferInfo() == state.framebuffer->getFramebufferInfo());
+
+		//state.pipeline = pipeline;
+		//state.bindings = { materialBindingSet, m_ViewBindingSet, context.lightBindingSet };
+	   // state.bindings = { materialBindingSet, m_ViewBindingSet, m_LightBinding };
+		state.bindings.push_back(materialBindingSet);
+
+
+		return true;
+	}
+
+	void BasicRenderer::RenderPassTemplate(ICommandList* cmdList, IFramebuffer* framebuffer, IView* view, IDrawStrategy* drawStrategy)
+	{
+
+
+		for (const auto& item : drawStrategy->GetDrawItems()) {
+			if (item.material == nullptr)
+				continue;
+
+			std::vector<ShaderMacro> Macros;
+			// Macros.push_back(ShaderMacro("COMPILE_SHADER", "1"));
+			ShaderHandle vertexShader = g_shaderFactory->CreateShader("hlsl/test/forward_test_vs.hlsl", "main", &Macros, ShaderType::Vertex);
+			ShaderHandle pixelShader = g_shaderFactory->CreateShader("hlsl/test/forward_test_vs.hlsl", "main", &Macros, ShaderType::Pixel);
+
+			//资源准备 vertexBuffers, indexBuffer, inputLayout, bindingLayout(uniform resource)
+			std::vector<VertexBufferBinding> vertexBuffers;
+			IndexBufferBinding indexBuffer;
+			const VertexAttributeDesc inputDescs[] =
+			{
+				GetVertexAttributeDesc(VertexAttribute::Position, "POS", 0),
+				GetVertexAttributeDesc(VertexAttribute::PrevPosition, "PREV_POS", 1),
+				GetVertexAttributeDesc(VertexAttribute::TexCoord1, "TEXCOORD", 2),
+				GetVertexAttributeDesc(VertexAttribute::Normal, "NORMAL", 3),
+				//TODO::
+			   // GetVertexAttributeDesc(VertexAttribute::Tangent, "TANGENT", 4),
+				GetVertexAttributeDesc(VertexAttribute::Transform, "TRANSFORM", 4),
+			};
+
+			InputLayoutHandle inputLayout = cmdList->getDevice()->createInputLayout(inputDescs, uint32_t(std::size(inputDescs)));
+
+			RHIBindingLayoutDesc viewLayoutDesc;
+			viewLayoutDesc.visibility = ShaderType::All;
+			viewLayoutDesc.bindings = {
+				RHIBindingLayoutItem::RT_VolatileConstantBuffer(0),
+				RHIBindingLayoutItem::RT_Sampler(1)
+			};
+
+			BindingLayoutHandle bindinglayout = cmdList->getDevice()->createBindingLayout(viewLayoutDesc);
+
+			GraphicsState graphicsPSO;
+			graphicsPSO.framebuffer = framebuffer;
+			graphicsPSO.viewport = view->GetViewportState();
+			graphicsPSO.shadingRateState = view->GetVariableRateShadingState();
+
+			// Update viewport.
+			//cmdList->setViewport(
+			//    0, 0, 0.f,
+			//    DisplacementMapResolution.X, DisplacementMapResolution.Y, 1.f);
+
+			//// Get shaders.
+			//FGlobalShaderMap* GlobalShaderMap = GetGlobalShaderMap(FeatureLevel);
+			//TShaderMapRef< FLensDistortionUVGenerationVS > VertexShader(GlobalShaderMap);
+			//TShaderMapRef< FLensDistortionUVGenerationPS > PixelShader(GlobalShaderMap);
+
+			// Set the graphic pipeline state.
+			//FGraphicsPipelineStateInitializer GraphicsPSOInit;
+		   // cmdList->ApplyCachedRenderTargets(graphicsPSO);
+
+			GraphicsPipelineDesc psoDesc;
+
+			psoDesc.depthStencilState.setDepthFunc(ComparisonFunc::LessOrEqual);
+			psoDesc.blendState.alphaToCoverageEnable = false;
+			psoDesc.rasterState.frontCounterClockwise = true;
+			psoDesc.rasterState.cullMode = RasterCullMode::Back;
+			psoDesc.primType = PrimitiveType::TriangleList;
+			psoDesc.inputLayout = inputLayout;
+			//psoDesc.BoundShaderState.VertexDeclarationRHI = GetVertexDeclarationFVector4();
+			psoDesc.VS = vertexShader;
+			psoDesc.PS = pixelShader;
+			psoDesc.bindingLayouts = { bindinglayout };
+
+			SetupMaterial(item.material, item.cullMode, psoDesc, graphicsPSO);
+			graphicsPSO.indexBuffer = indexBuffer;
+			graphicsPSO.vertexBuffers = vertexBuffers;
+
+			//TODO::GetAndOrCreateGraphicsPipelineState
+		   // SetGraphicsPipelineState(cmdList, graphicsPSO, 0);
+			cmdList->setGraphicsState(graphicsPSO);
+
+			// pipelineDesc.bindingLayouts = { m_MaterialBindings->GetLayout(), m_ViewBindingLayout, m_LightBindingLayout };
+
+
+			// Update viewport.
+			/*cmdList->setViewport(
+				0, 0, 0.f,
+				OutTextureRenderTargetResource->GetSizeX(), OutTextureRenderTargetResource->GetSizeY(), 1.f);*/
+
+				// Update shader uniform parameters.
+
+			   // SetShaderParametersLegacyVS(cmdList, VertexShader, CompiledCameraModel, DisplacementMapResolution);
+			   // SetShaderParametersLegacyPS(cmdList, PixelShader, CompiledCameraModel, DisplacementMapResolution);
+
+				// Draw grid.
+			   /* uint32_t PrimitiveCount = kGridSubdivisionX * kGridSubdivisionY * 2;
+				cmdList->DrawPrimitive(0, PrimitiveCount, 1);*/
+
+			DrawArguments args;
+			if (item.mesh->m_IndicesCount == 0) {
+				args.drawIndex = false;
+				args.vertexCount = item.mesh->m_VerticeCount;
+			}
+			else {
+				args.drawIndex = true;
+				args.vertexCount = item.mesh->m_IndicesCount;// numIndices;
+
+			}
+			args.instanceCount = 1;
+			args.startVertexLocation = item.mesh->vertexOffset;// +item.geometry.vertexOffsetInMesh;
+			args.startIndexLocation = item.mesh->indexOffset;// +item.geometry.indexOffsetInMesh;
+			args.startInstanceLocation = 0;// item.instance.GetInstanceIndex();
+
+			if (args.drawIndex)
+				cmdList->drawIndexed(args);
+			else
+				cmdList->draw(args);
+
+			/* }
+			 RHICmdList.EndRenderPass();
+
+			 RHICmdList.Transition(FRHITransitionInfo(RenderTargetTexture, ERHIAccess::RTV, ERHIAccess::SRVMask));*/
+
+
+
+		}
+		
 	}
 
 

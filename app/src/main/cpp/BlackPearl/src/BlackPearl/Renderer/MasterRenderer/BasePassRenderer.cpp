@@ -82,7 +82,7 @@ namespace BlackPearl {
     {
        // auto& context = static_cast<Context&>(abstractContext);
 
-        IBindingSet* materialBindingSet = m_MaterialBindings->GetMaterialBindingSet(material);
+        IBindingSet* materialBindingSet = m_MaterialBindings->GetOrCreateMaterialBindingSet(material);
 
         if (!materialBindingSet)
             return false;

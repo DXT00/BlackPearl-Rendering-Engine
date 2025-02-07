@@ -93,6 +93,8 @@ namespace BlackPearl {
         constexpr uint32_t VK_Micromap = 0x00030014;
     };
 
+  
+
     struct RHIObject
     {
         union {

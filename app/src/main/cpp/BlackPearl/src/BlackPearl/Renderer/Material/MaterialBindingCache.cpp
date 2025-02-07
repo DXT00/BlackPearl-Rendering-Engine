@@ -126,7 +126,7 @@ namespace BlackPearl {
 		return m_BindingLayout;
 	}
 
-	IBindingSet* MaterialBindingCache::GetMaterialBindingSet(const Material* material)
+	IBindingSet* MaterialBindingCache::GetOrCreateMaterialBindingSet(const Material* material)
 	{
 		std::lock_guard<std::mutex> lockGuard(m_Mutex);
 

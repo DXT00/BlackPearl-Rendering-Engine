@@ -103,4 +103,15 @@ namespace BlackPearl {
 	return OutCachedState;
 }
 
+	GraphicsPipelineHandle PipelineStateCache::GetAndOrCreateGraphicsPipelineState(DeviceHandle device, const GraphicsPipelineDesc& pipelineDesc, const PipelineKey& Initializer, GraphicsState& psoState)
+	{
+		if (GGraphicsPipelineCache.find(Initializer) != GGraphicsPipelineCache.end()) {
+			return GGraphicsPipelineCache[Initializer];
+		}
+		else {
+			
+			return device->createGraphicsPipeline(pipelineDesc, psoState.framebuffer);
+		}
+	}
+
 }

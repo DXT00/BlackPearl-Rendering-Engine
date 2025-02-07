@@ -2,6 +2,8 @@
 #include "BlackPearl/Component/LightComponent/LightSources.h"
 #include "BlackPearl/Renderer/Mesh/Mesh.h"
 #include "BlackPearl/Renderer/Renderer.h"
+#include "BlackPearl/Renderer/DrawStrategy.h"
+#include "BlackPearl/Renderer/Material/MaterialBindingCache.h"
 #include "BlackPearl/Scene/Scene.h"
 #include "BlackPearl/Node/BatchNode.h"
 #include "BlackPearl/Node/InstanceNode.h"
@@ -12,7 +14,7 @@ namespace BlackPearl {
 	class BasicRenderer
 	{
 	public:
-		BasicRenderer();
+		BasicRenderer(IDevice* device);
 		virtual ~BasicRenderer();
 		virtual void RenderScene(const std::vector<Object *>&objs, const LightSources* lightSources,SceneData *scene = Renderer::GetSceneData());
 		
@@ -42,8 +44,17 @@ namespace BlackPearl {
 		void DrawPointLight(Object *obj, SceneData* scene = Renderer::GetSceneData(), unsigned int textureBeginIdx = 2);
 		void DrawLightSources(const LightSources* lightSources, SceneData* scene = Renderer::GetSceneData(), unsigned int textureBeginIdx = 2);
 		void PrepareBasicShaderParameters(std::shared_ptr<Mesh> mesh,std::shared_ptr<Shader> shader, bool isLight = false, unsigned int textureBeginIdx = 2);
+	protected:
+
+		bool SetupMaterial(const Material* material, RasterCullMode cullMode, const GraphicsPipelineDesc& pipelineDesc, GraphicsState& state);
+		void RenderPassTemplate(ICommandList* cmdList, IFramebuffer* framebuffer, IView* view, IDrawStrategy* drawStrategy);
+		DeviceHandle m_Device;
+		std::shared_ptr<MaterialBindingCache> m_MaterialBindingsCache;
+
 	public:
+
 		static uint32_t s_DrawCallCnt;
+
 	
 	};
 

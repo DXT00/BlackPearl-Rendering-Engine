@@ -14,6 +14,7 @@
 #include "BlackPearl/Component/LightComponent/LightSources.h"
 #include "BlackPearl/Math/Math.h"
 #include "BlackPearl/Renderer/CommonRenderPass.h"
+#include "BlackPearl/RHI/PipelineStateCache.h"
 namespace std
 {
     template<>
@@ -41,20 +42,7 @@ namespace BlackPearl {
             bool trackLiveness = true;
             uint32_t numConstantBufferVersions = 16;
         };
-        union PipelineKey
-        {
-            struct
-            {
-                MaterialDomain domain : 3;
-                RasterCullMode cullMode : 2;
-                bool frontCounterClockwise : 1;
-                bool reverseDepth : 1;
-            } bits;
-            uint32_t value = 0;
-
-            static constexpr size_t Count = 1 << 7;
-        };
-
+   
         BasePassRenderer();
         virtual ~BasePassRenderer();
 
