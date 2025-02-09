@@ -10,6 +10,7 @@
 #include "../OpenGLRHI/OpenGLDriver/OpenGLDrvPrivate.h"
 #include "../OpenGLRHI/OpenGLState.h"
 #include "../OpenGLRHI/OpenGLContext.h"
+#include "BlackPearl/Core/Container/TBitArray.h"
 namespace BlackPearl {
 	class Device :public RefCounter<IDevice>
 	{
@@ -138,9 +139,12 @@ namespace BlackPearl {
 		template <typename StateType>
 		void SetupTexturesForDraw(FOpenGLContextState& ContextState, const StateType& ShaderState, int32_t MaxTexturesNeeded);
 
+		/* SSBO */
+
 		void SetupUAVsForDraw(FOpenGLContextState& ContextState);
 		void SetupUAVsForCompute(FOpenGLContextState& ContextState, const Shader* ComputeShader);
-		//void SetupUAVsForProgram(FOpenGLContextState& ContextState, const TBitArray<>& NeededBits, int32_t MaxUAVUnitUsed);
+		void SetupUAVsForProgram(FOpenGLContextState& ContextState, const TBitArray& NeededBits, int32_t MaxUAVUnitUsed);
+		void CachedSetupUAVStage(FOpenGLContextState& ContextState, GLint UAVIndex, GLenum Format, GLuint Resource, bool bLayered, GLint Layer, GLenum Access);
 
 		void RHIClearMRT(const bool* bClearColorArray, int32_t NumClearColors, const Color* ColorArray, bool bClearDepth, float Depth, bool bClearStencil, uint32_t Stencil);
 		
@@ -226,6 +230,53 @@ namespace BlackPearl {
 	template<typename StateType>
 	inline void Device::SetupTexturesForDraw(FOpenGLContextState& ContextState, const StateType& ShaderState, int32_t MaxTexturesNeeded)
 	{
+		//VERIFY_GL_SCOPE();
+		//SCOPE_CYCLE_COUNTER_DETAILED(STAT_OpenGLTextureBindTime);
+
+		int32_t MaxProgramTexture = 0;
+		const TBitArray<>& NeededBits = ShaderState->GetTextureNeeds(MaxProgramTexture);
+
+		for (int32_t TextureStageIndex = 0; TextureStageIndex <= MaxProgramTexture; ++TextureStageIndex)
+		{
+			if (!NeededBits[TextureStageIndex])
+			{
+				// Current program doesn't make use of this texture stage. No matter what UnrealEditor wants to have on in,
+				// it won't be useful for this draw, so telling OpenGL we don't really need it to give the driver
+				// more leeway in memory management, and avoid false alarms about same texture being set on
+				// texture stage and in framebuffer.
+				CachedSetupTextureStage(ContextState, TextureStageIndex, GL_NONE, 0, -1, 1);
+			}
+			else
+			{
+				const FTextureStage& TextureStage = PendingState.Textures[TextureStageIndex];
+
+				CachedSetupTextureStage(ContextState, TextureStageIndex, TextureStage.Target, TextureStage.Resource, TextureStage.LimitMip, TextureStage.NumMips);
+
+				bool bExternalTexture = (TextureStage.Target == GL_TEXTURE_EXTERNAL_OES);
+				if (!bExternalTexture)
+				{
+					FOpenGLSamplerState* PendingSampler = PendingState.SamplerStates[TextureStageIndex];
+
+					if (ContextState.SamplerStates[TextureStageIndex] != PendingSampler)
+					{
+						FOpenGL::BindSampler(TextureStageIndex, PendingSampler ? PendingSampler->Resource : 0);
+						ContextState.SamplerStates[TextureStageIndex] = PendingSampler;
+					}
+				}
+				else if (TextureStage.Target != GL_TEXTURE_BUFFER)
+				{
+					FOpenGL::BindSampler(TextureStageIndex, 0);
+					ContextState.SamplerStates[TextureStageIndex] = nullptr;
+					ApplyTextureStage(ContextState, TextureStageIndex, TextureStage, PendingState.SamplerStates[TextureStageIndex]);
+				}
+			}
+		}
+
+		// For now, continue to clear unused stages
+		for (int32_t TextureStageIndex = MaxProgramTexture + 1; TextureStageIndex < MaxTexturesNeeded; ++TextureStageIndex)
+		{
+			CachedSetupTextureStage(ContextState, TextureStageIndex, GL_NONE, 0, -1, 1);
+		}
 	}
 
 }

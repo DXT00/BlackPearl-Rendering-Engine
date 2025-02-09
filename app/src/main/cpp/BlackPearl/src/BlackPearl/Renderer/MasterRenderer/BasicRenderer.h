@@ -9,8 +9,10 @@
 #include "BlackPearl/Node/InstanceNode.h"
 #include "BlackPearl/Node/SingleNode.h"
 #include "BlackPearl/Node/Node.h"
+#include "BlackPearl/RHI/RHIDevice.h"
 
-namespace BlackPearl {
+namespace BlackPearl 
+{
 	class BasicRenderer
 	{
 	public:
@@ -18,19 +20,19 @@ namespace BlackPearl {
 		virtual ~BasicRenderer();
 		virtual void RenderScene(const std::vector<Object *>&objs, const LightSources* lightSources,SceneData *scene = Renderer::GetSceneData());
 		
-		//每个Object在render前的设置
+		//每锟斤拷Object锟斤拷render前锟斤拷锟斤拷锟斤拷
 		virtual void RenderConfigure(Object * obj);
-		//TODO::这两个函数可以删掉
+		//TODO::锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷删锟斤拷
 		void DrawObjectsExcept(const std::vector<Object*>& objs, const std::vector<Object*>& exceptObjs, SceneData* scene = Renderer::GetSceneData());
 		void DrawObjectsExcept(const std::vector<Object*>& objs, const Object* exceptObj, SceneData* scene = Renderer::GetSceneData());
 
-		//不同object使用不同shader,使用前要先设置shader
+		//锟斤拷同object使锟矫诧拷同shader,使锟斤拷前要锟斤拷锟斤拷锟斤拷shader
 		virtual void DrawObjects(std::vector<Object *>objs, SceneData* scene = Renderer::GetSceneData());
-		//所有Objects使用同一个shader
+		//锟斤拷锟斤拷Objects使锟斤拷同一锟斤拷shader
 		virtual void DrawObjects(std::vector<Object *>objs,std::shared_ptr<Shader> shader, SceneData* scene = Renderer::GetSceneData(), unsigned int textureBeginIdx = 2);
-		//使用前要先设置shader,这个Object的不同Mesh可以有不同的shader
+		//使锟斤拷前要锟斤拷锟斤拷锟斤拷shader,锟斤拷锟絆bject锟侥诧拷同Mesh锟斤拷锟斤拷锟叫诧拷同锟斤拷shader
 		virtual void DrawObject(Object *obj, SceneData* scene = Renderer::GetSceneData(),unsigned int textureBeginIdx=2);
-		//这个Object的所有Mesh使用同一个shader
+		//锟斤拷锟絆bject锟斤拷锟斤拷锟斤拷Mesh使锟斤拷同一锟斤拷shader
 		virtual void DrawObject(Object *obj, std::shared_ptr<Shader> shader, SceneData* scene = Renderer::GetSceneData(), unsigned int textureBeginIdx = 2);
 		void DrawObjectVertex(Object* obj, std::shared_ptr<Shader> shader, SceneData* scene = Renderer::GetSceneData(), unsigned int textureBeginIdx = 2);
 		void DiscpatchCompute(uint32_t x, uint32_t y, uint32_t z);
@@ -46,11 +48,16 @@ namespace BlackPearl {
 		void PrepareBasicShaderParameters(std::shared_ptr<Mesh> mesh,std::shared_ptr<Shader> shader, bool isLight = false, unsigned int textureBeginIdx = 2);
 	protected:
 
-		bool SetupMaterial(const Material* material, RasterCullMode cullMode, const GraphicsPipelineDesc& pipelineDesc, GraphicsState& state);
-		void RenderPassTemplate(ICommandList* cmdList, IFramebuffer* framebuffer, IView* view, IDrawStrategy* drawStrategy);
+        void SetupInputBuffers(ICommandList* cmdList, BufferGroup* buffers, Transform* trans, GraphicsState& state);
+        bool SetupMaterial(const Material* material, RasterCullMode cullMode, const GraphicsPipelineDesc& pipelineDesc, GraphicsState& state);
+		void RenderPassTemplate(ICommandList* cmdList, IFramebuffer* framebuffer, IView* view, IDrawStrategy* drawStrategy, const ShaderParameters& shaderParms);
 		DeviceHandle m_Device;
 		std::shared_ptr<MaterialBindingCache> m_MaterialBindingsCache;
 
+    private:
+        void _UploadIndexBuffers(ICommandList* commandList, BufferGroup* buffers, GraphicsState& state);
+        void _UploadVertexBuffers(ICommandList* commandList, BufferGroup* buffers, GraphicsState& state);
+        void _UploadInstanceBuffers(ICommandList* commandList, BufferGroup* buffers, Transform* trans, GraphicsState& state);
 	public:
 
 		static uint32_t s_DrawCallCnt;

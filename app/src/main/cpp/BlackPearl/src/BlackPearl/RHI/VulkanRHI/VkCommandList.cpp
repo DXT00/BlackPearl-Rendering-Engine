@@ -1,5 +1,5 @@
 #include "pch.h"
-#if GE_API_VULKAN
+//#if GE_API_VULKAN
 
 #include "BlackPearl/Core.h"
 #include "../Common/Misc.h"
@@ -2206,4 +2206,4 @@ namespace BlackPearl {
 	}
 
 }
-#endif
+//#endif

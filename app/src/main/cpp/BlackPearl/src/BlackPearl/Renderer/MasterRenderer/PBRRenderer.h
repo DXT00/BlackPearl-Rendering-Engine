@@ -1,36 +1,49 @@
 #pragma once
 //#include "BlackPearl/Renderer/Shader/Shader.h"
 #include "BlackPearl/Renderer/MasterRenderer/BasicRenderer.h"
-#include "BlackPearl/Renderer/MasterRenderer/GeometryRenderer.h"
+//#include "BlackPearl/Renderer/MasterRenderer/GeometryRenderer.h"
 #include "BlackPearl/Renderer/Shader/ShaderFactory.h"
 #include "BlackPearl/Renderer/DrawStrategy.h"
+#include "BlackPearl/RHI/RHIDevice.h"
+#include "BlackPearl/Object/Object.h"
+
 namespace BlackPearl {
+
 	extern ShaderFactory* g_shaderFactory;
-	class PBRRenderer: public BasicRenderer, public GeometryRenderer
+	class PBRRenderer: public BasicRenderer//public GeometryRenderer
 	{
 	public:
-		PBRRenderer() {
+		PBRRenderer(IDevice* device)
+		:BasicRenderer(device)
+		{
 			m_DrawStrategy = DBG_NEW InstancedOpaqueDrawStrategy();
 
 
 			ShaderDesc desc = ShaderDesc(ShaderType::All);
 			desc.debugName = "PbrShader";
 			m_PbrShader = g_shaderFactory->CreateShader("assets/shaders/pbr/PbrTexture.glsl", "main", nullptr, desc);
-		//	m_PbrShader.reset(DBG_NEW Shader("assets/shaders/pbr/Pbr.glsl"));
+		    //	m_PbrShader.reset(DBG_NEW Shader("assets/shaders/pbr/Pbr.glsl"));
 			//m_PbrShader.reset(DBG_NEW Shader("assets/shaders/pbr/PbrTexture.glsl"));
 		};
 
-		
+		void Init();
 		void Render(const std::vector<Object*>& objs);
 		void Render(ICommandList* commandList, IFramebuffer* targetFramebuffer, Scene* scene);
 
 		void Render(Object* obj);
 		ShaderHandle GetShader() { return m_PbrShader; }
 		~PBRRenderer();
+
 	private:
 		ShaderHandle m_PbrShader;
 
 		InstancedOpaqueDrawStrategy* m_DrawStrategy;
+
+        BufferHandle  m_ForwardViewCB;
+        SamplerHandle m_ShadowSampler;
+
+
+        ShaderParameters m_ShaderParameters;
 	};
 }
 

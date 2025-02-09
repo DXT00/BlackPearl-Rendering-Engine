@@ -939,8 +939,136 @@ namespace BlackPearl
 		SetupTexturesForDraw(ContextState, PendingState.BoundShaderState, FOpenGL::GetMaxCombinedTextureImageUnits());
 
 	}
+
+
+	void Device::CachedSetupUAVStage(FOpenGLContextState& ContextState, GLint UAVIndex, GLenum Format, GLuint Resource, bool bLayered, GLint Layer, GLenum Access)
+	{
+		//VERIFY_GL_SCOPE();
+
+		FUAVStage& UAVStage = ContextState.UAVs[UAVIndex];
+
+		if (UAVStage.Format == Format &&
+			UAVStage.Resource == Resource &&
+			UAVStage.Access == Access &&
+			UAVStage.Layer == Layer &&
+			UAVStage.bLayered == bLayered)
+		{
+			// Nothing's changed, no need to update
+			return;
+		}
+
+		// unbind any SSBO or Image in this slot
+		if (Resource == 0)
+		{
+			if (UAVStage.Resource != 0)
+			{
+				// SSBO
+				if (UAVStage.Format == 0)
+				{
+					FOpenGL::BindBufferBase(GL_SHADER_STORAGE_BUFFER, UAVIndex, 0);
+					ContextState.StorageBufferBound = 0;
+				}
+				else // Image
+				{
+					FOpenGL::BindImageTexture(UAVIndex, 0, 0, GL_FALSE, 0, GL_READ_WRITE, GL_R32F);
+				}
+
+				UAVStage.Format = 0;
+				UAVStage.Resource = 0;
+				UAVStage.Access = GL_READ_WRITE;
+				UAVStage.Layer = 0;
+				UAVStage.bLayered = false;
+			}
+		}
+		else
+		{
+			// SSBO
+			if (Format == 0)
+			{
+				// make sure we dont end up binding both SSBO and Image to the same UAV slot
+				if (UAVStage.Resource != 0 && UAVStage.Format != 0)
+				{
+					FOpenGL::BindImageTexture(UAVIndex, 0, 0, GL_FALSE, 0, GL_READ_WRITE, GL_R32F);
+				}
+
+				FOpenGL::BindBufferBase(GL_SHADER_STORAGE_BUFFER, UAVIndex, Resource);
+
+				UAVStage.Format = 0;
+				UAVStage.Resource = Resource;
+				UAVStage.Access = GL_READ_WRITE;
+				UAVStage.Layer = 0;
+				UAVStage.bLayered = false;
+				ContextState.StorageBufferBound = Resource;
+			}
+			else // Image
+			{
+				// make sure we dont end up binding both SSBO and Image to the same UAV slot
+				if (UAVStage.Resource != 0 && UAVStage.Format == 0)
+				{
+					FOpenGL::BindBufferBase(GL_SHADER_STORAGE_BUFFER, UAVIndex, 0);
+					ContextState.StorageBufferBound = 0;
+				}
+
+				//assert(IsImageTextureFormatSupported(Format));
+
+				FOpenGL::BindImageTexture(UAVIndex, Resource, 0, bLayered ? GL_TRUE : GL_FALSE, Layer, Access, Format);
+
+				UAVStage.Format = Format;
+				UAVStage.Resource = Resource;
+				UAVStage.Access = Access;
+				UAVStage.Layer = Layer;
+				UAVStage.bLayered = bLayered;
+			}
+		}
+
+		uint32_t UAVBit = 1 << UAVIndex;
+		if (Resource != 0)
+		{
+			ContextState.ActiveUAVMask |= UAVBit;
+		}
+		else
+		{
+			ContextState.ActiveUAVMask &= ~UAVBit;
+		}
+	}
+
+	void Device::SetupUAVsForProgram(FOpenGLContextState& ContextState, const TBitArray& NeededBits, int32_t MaxUAVUnitUsed)
+	{
+		if (MaxUAVUnitUsed < 0 && ContextState.ActiveUAVMask == 0)
+		{
+			// Quit early if program does not use UAVs and context has no active UAV units
+			return;
+		}
+
+		for (int32_t UAVStageIndex = 0; UAVStageIndex <= MaxUAVUnitUsed; ++UAVStageIndex)
+		{
+			if (!NeededBits[UAVStageIndex])
+			{
+				CachedSetupUAVStage(ContextState, UAVStageIndex, 0, 0, false, 0, GL_READ_WRITE);
+			}
+			else
+			{
+				const FUAVStage& UAVStage = PendingState.UAVs[UAVStageIndex];
+				CachedSetupUAVStage(ContextState, UAVStageIndex, UAVStage.Format, UAVStage.Resource, UAVStage.bLayered, UAVStage.Layer, UAVStage.Access);
+			}
+		}
+
+		// clear rest of the units
+		int32_t UAVStageIndex = (MaxUAVUnitUsed + 1);
+		if ((ContextState.ActiveUAVMask >> UAVStageIndex) != 0)
+		{
+			const int32_t NumUAVs = ContextState.UAVs.size();
+			for (; UAVStageIndex < NumUAVs; ++UAVStageIndex)
+			{
+				CachedSetupUAVStage(ContextState, UAVStageIndex, 0, 0, false, 0, GL_READ_WRITE);
+			}
+		}
+	}
 	void Device::SetupUAVsForDraw(FOpenGLContextState& ContextState)
 	{
+		int32_t MaxUAVUnitUsed = 0;
+		const TBitArray& NeededBits = PendingState.BoundShaderState->GetUAVNeeds(MaxUAVUnitUsed);
+		SetupUAVsForProgram(ContextState, NeededBits, MaxUAVUnitUsed);
 	}
 	void Device::SetupUAVsForCompute(FOpenGLContextState& ContextState, const Shader* ComputeShader)
 	{

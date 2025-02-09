@@ -42,24 +42,6 @@ set(RENDER_API "opengl")
 #)
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
-# 根据平台和渲染API选择合适的库
-#if(TARGET_PLATFORM_WINDOWS)
-#    if(${RENDER_API} STREQUAL "opengl")
-#        find_package(GLFW REQUIRED)
-#        find_package(GLEW REQUIRED)
-#        find_package(ImGui REQUIRED)
-#    elseif(${RENDER_API} STREQUAL "direct3d")
-#        # 导入Direct3D相关库
-#    elseif(${RENDER_API} STREQUAL "vulkan")
-#        find_package(Vulkan REQUIRED)
-#    endif()
-#elseif(TARGET_PLATFORM_ANDROID)
-#    # Android平台的配置
-#    find_package(OpenGL REQUIRED)
-#    find_package(EGL REQUIRED)
-#    find_package(GLESv2 REQUIRED)
-#    # ...其他Android特定配置
-#endif()
 
 # 添加子项目
 add_subdirectory(BlackPearl)
@@ -67,7 +49,7 @@ add_subdirectory(BlackPearl)
 #add_subdirectory(BlackPearl/vendor/spdlog)
 #add_subdirectory(BlackPearl/vendor/assimp)
 if(WIN32)
-    add_subdirectory(BlackPearl/vendor/GLFW)
+#    add_subdirectory(BlackPearl/vendor/GLFW)
     add_subdirectory(Sandbox)
     #add_subdirectory(SandboxVK)
    # add_subdirectory(SandboxDX)

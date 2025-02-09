@@ -3,11 +3,13 @@
 #include "MaterialManager.h"
 #include "BlackPearl/Renderer/DeviceManager.h"
 #include "BlackPearl/Application.h"
+#include "BlackPearl/Renderer/Shader/ShaderFactory.h"
 namespace BlackPearl {
-	//extern  DynamicRHI::Type g_RHIType;
+
+    extern ShaderFactory* g_shaderFactory;
 	extern DeviceManager* g_deviceManager;
 
-	Material::Material(const std::shared_ptr<Shader>& shader, const std::shared_ptr<TextureMaps>& textureMaps, const MaterialColor& materialColors)
+	Material::Material(IShader* shader, const std::shared_ptr<TextureMaps>& textureMaps, const MaterialColor& materialColors)
 		:m_Shader(shader), m_TextureMaps(textureMaps), m_MaterialColors(materialColors), m_Props(Props())
 	{
 #if APP_VERSION == APP_VERSION_1_0
@@ -33,24 +35,23 @@ namespace BlackPearl {
 			//if (emissionColor.length() != 0)
 				m_MaterialColors.SetEmissionColor(emissiveColor);
 
-			//TODO:: ÖØ¹¹Shader£¬Çø·ÖOpenGLºÍDirectX
+			//TODO:: ï¿½Ø¹ï¿½Shaderï¿½ï¿½ï¿½ï¿½ï¿½ï¿½OpenGLï¿½ï¿½DirectX
 			if (DynamicRHI::g_RHIType == DynamicRHI::Type::OpenGL) {
-				m_Shader.reset(DBG_NEW Shader(shaderPath));
-				m_Shader->Bind();
-				//if (ambientColor.length() != 0) {
-					// .push_back(MaterialColor(MaterialColor::Type::AmbientColor, ambientColor));
-					m_Shader->SetUniformVec3f("u_Material.ambientColor", ambientColor);
-				//}
-				//if (diffuseColor.length() != 0) {					
-					m_Shader->SetUniformVec3f("u_Material.diffuseColor", diffuseColor);
-				//}
-				//if (specularColor.length() != 0) {
-					m_Shader->SetUniformVec3f("u_Material.specularColor", specularColor);
-				//}
-				//if (emissionColor.length() != 0) {
-					m_Shader->SetUniformVec3f("u_Material.emissiveColor", emissiveColor);
+                std::vector<ShaderMacro> Macros;        
+				m_Shader = g_shaderFactory->CreateShader(shaderPath.c_str(), "main", &Macros, ShaderType::AllGraphics);
 
-				//}
+                //TODO:: shader state set
+//                m_Shader->Bind();
+//
+//				m_Shader->SetUniformVec3f("u_Material.ambientColor", ambientColor);
+//
+//				m_Shader->SetUniformVec3f("u_Material.diffuseColor", diffuseColor);
+//
+//				m_Shader->SetUniformVec3f("u_Material.specularColor", specularColor);
+//
+//				m_Shader->SetUniformVec3f("u_Material.emissiveColor", emissiveColor);
+
+
 			}
 		}
 #if APP_VERSION == APP_VERSION_1_0
@@ -67,10 +68,12 @@ namespace BlackPearl {
 
 	void Material::SetShader(const std::string& shaderPath)
 	{
-		m_Shader.reset(DBG_NEW Shader(shaderPath));
+		//m_Shader.reset(DBG_NEW Shader(shaderPath));
+        std::vector<ShaderMacro> Macros;
+        m_Shader= g_shaderFactory->CreateShader(shaderPath.c_str(), "main", &Macros, ShaderType::AllGraphics);
 
 	}
-	void Material::SetShader(const std::shared_ptr<Shader> &shader)
+	void Material::SetShader(IShader* shader)
 	{
 		m_Shader = shader;
 
@@ -216,8 +219,9 @@ namespace BlackPearl {
 	MaterialConstants Material::FillMaterialConstants()
 	{
 		MaterialConstants material_cb;
+        //MaterialColor::Color color =  m_MaterialColors.Get();
 		material_cb.materialID = m_MatId;
-		material_cb.diffuseColor = m_MaterialColors.Get().diffuseColor;
+		material_cb.diffuseColor =  m_MaterialColors.Get().diffuseColor;
 		material_cb.specularColor = m_MaterialColors.Get().specularColor;
 		material_cb.ambientColor = m_MaterialColors.Get().ambientColor;
 		material_cb.emissiveColor = m_MaterialColors.Get().emissiveColor;

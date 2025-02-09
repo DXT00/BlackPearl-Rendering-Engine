@@ -27,7 +27,7 @@
 
 
 #ifdef GE_ENABLE_ASSERTS
-#define GE_ASSERT(x,...) {if(!(x)){GE_CORE_ERROR("Assertion Failed:{0}",__VA_ARGS__);__debugbreak();}}
+#define GE_ASSERT(x,...) {if(!(x)){GE_CORE_ERROR("Assertion Failed:{0}",__VA_ARGS__);DEBUG_BREAK();}}
 #else
 #define GE_ASSERT(x,...) 
 #endif
@@ -45,7 +45,7 @@
 
 #define _CRTDBG_MAP_ALLOC
 
-//Ê¹ÓÃÄ£°å»º³å
+//Ê¹ï¿½ï¿½Ä£ï¿½å»ºï¿½ï¿½
 #ifdef GE_STENCIL_TEST
 #define GE_ENABLE_STENCIL_TEST
 #endif // GE_STENCIL_TEST

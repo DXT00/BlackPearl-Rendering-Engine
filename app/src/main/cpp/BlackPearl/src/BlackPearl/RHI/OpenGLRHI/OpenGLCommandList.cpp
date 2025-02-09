@@ -1,9 +1,12 @@
+#include "pch.h"
 #include "OpenGLCommandList.h"
 #include "OpenGLBufferResource.h"
 #include "OpenGLBindingSet.h"
 #include "BlackPearl/RHI/RHIGlobals.h"
 #include "BlackPearl/RHI/OpenGLRHI/OpenGLDriver/OpenGLDrvPrivate.h"
+
 namespace BlackPearl {
+
 	CommandList::CommandList(Device* device, const OpenGLContext& context, const CommandListParameters& parameters)
 		:m_Context(context)
 	{
@@ -74,6 +77,7 @@ namespace BlackPearl {
 			glBufferData(GL_SHADER_STORAGE_BUFFER, dataSize, data, buffer->desc.isDynamic ? GL_DYNAMIC_DRAW : GL_STATIC_DRAW);
 		}
 	}
+
 	void CommandList::clearBufferUInt(IBuffer* b, uint32_t clearValue)
 	{
 	}
@@ -103,37 +107,42 @@ namespace BlackPearl {
 			if (desc)
 			{
 				BindingSet* bindingSet = static_cast<BindingSet*>(bindingSetHandle);
+
+
+
+
+
 				//descriptorSets.push_back(bindingSet->descriptorSet);
 
-				for (Buffer* constnatBuffer : bindingSet->volatileConstantBuffers)
-				{
-					auto found = m_VolatileBufferStates.find(constnatBuffer);
-					if (found == m_VolatileBufferStates.end())
-					{
-						std::stringstream ss;
-						ss << "Binding volatile constant buffer " << (constnatBuffer->desc.debugName)
-							<< " before writing into it is invalid.";
-						m_Context.error(ss.str());
-
-						dynamicOffsets.push_back(0); // use zero offset just to use something
-					}
-					else
-					{
-						uint32_t version = found->second.latestVersion;
-						uint64_t offset = version * constnatBuffer->desc.byteSize;
-						assert(offset < std::numeric_limits<uint32_t>::max());
-						dynamicOffsets.push_back(uint32_t(offset));
-					}
-				}
-
-				if (desc->trackLiveness)
-					m_CurrentCmdBuf->referencedResources.push_back(bindingSetHandle);
+//				for (Buffer* constnatBuffer : bindingSet->volatileConstantBuffers)
+//				{
+//					auto found = m_VolatileBufferStates.find(constnatBuffer);
+//					if (found == m_VolatileBufferStates.end())
+//					{
+//						std::stringstream ss;
+//						ss << "Binding volatile constant buffer " << (constnatBuffer->desc.debugName)
+//							<< " before writing into it is invalid.";
+//						m_Context.error(ss.str());
+//
+//						dynamicOffsets.push_back(0); // use zero offset just to use something
+//					}
+//					else
+//					{
+//						uint32_t version = found->second.latestVersion;
+//						uint64_t offset = version * constnatBuffer->desc.byteSize;
+//						assert(offset < std::numeric_limits<uint32_t>::max());
+//						dynamicOffsets.push_back(uint32_t(offset));
+//					}
+//				}
+//
+//				if (desc->trackLiveness)
+//					m_CurrentCmdBuf->referencedResources.push_back(bindingSetHandle);
 			}
 			else
 			{
-				// Vulkan Ҳ��DescriptorTable��
-				DescriptorTable* table = dynamic_cast<DescriptorTable*>(bindingSetHandle);
-				descriptorSets.push_back(table->descriptorSet);
+//				// Vulkan Ҳ��DescriptorTable��
+//				DescriptorTable* table = dynamic_cast<DescriptorTable*>(bindingSetHandle);
+//				descriptorSets.push_back(table->descriptorSet);
 			}
 		}
 
@@ -389,6 +398,33 @@ namespace BlackPearl {
 	}
 	void Device::CommitNonComputeShaderConstants()
 	{
+		//VERIFY_GL_SCOPE();
+
+		FOpenGLLinkedProgram* LinkedProgram = PendingState.BoundShaderState->LinkedProgram;
+		if (GUseEmulatedUniformBuffers)
+		{
+			PendingState.ShaderParameters[CrossCompiler::SHADER_STAGE_VERTEX].CommitPackedUniformBuffers(LinkedProgram, CrossCompiler::SHADER_STAGE_VERTEX, PendingState.BoundUniformBuffers[SF_Vertex], PendingState.BoundShaderState->GetVertexShader()->UniformBuffersCopyInfo);
+			PendingState.ShaderParameters[CrossCompiler::SHADER_STAGE_PIXEL].CommitPackedUniformBuffers(LinkedProgram, CrossCompiler::SHADER_STAGE_PIXEL, PendingState.BoundUniformBuffers[SF_Pixel], PendingState.BoundShaderState->GetPixelShader()->UniformBuffersCopyInfo);
+			if (PendingState.BoundShaderState->GetGeometryShader())
+			{
+				PendingState.ShaderParameters[CrossCompiler::SHADER_STAGE_GEOMETRY].CommitPackedUniformBuffers(LinkedProgram, CrossCompiler::SHADER_STAGE_GEOMETRY, PendingState.BoundUniformBuffers[SF_Geometry], PendingState.BoundShaderState->GetGeometryShader()->UniformBuffersCopyInfo);
+			}
+		}
+
+		if (LinkedProgram == PendingState.LinkedProgramAndDirtyFlag)
+		{
+			return;
+		}
+
+		// commit packed global only if current program has changed or any global parameter has changed (RHISetShaderParameter)
+		PendingState.ShaderParameters[CrossCompiler::SHADER_STAGE_VERTEX].CommitPackedGlobals(LinkedProgram, CrossCompiler::SHADER_STAGE_VERTEX);
+		PendingState.ShaderParameters[CrossCompiler::SHADER_STAGE_PIXEL].CommitPackedGlobals(LinkedProgram, CrossCompiler::SHADER_STAGE_PIXEL);
+		if (PendingState.BoundShaderState->GetGeometryShader())
+		{
+			PendingState.ShaderParameters[CrossCompiler::SHADER_STAGE_GEOMETRY].CommitPackedGlobals(LinkedProgram, CrossCompiler::SHADER_STAGE_GEOMETRY);
+		}
+
+		PendingState.LinkedProgramAndDirtyFlag = LinkedProgram;
 	}
 	void Device::CommitComputeShaderConstants(Shader* ComputeShader)
 	{

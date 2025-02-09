@@ -10,7 +10,7 @@ namespace BlackPearl {
 	extern class Log* g_Log;
 	//extern DynamicRHI::Type g_RHIType;
 
-	//TODO::Í¨¹ýÀàÇø·ÖOpenGLºÍDirectX,ÓÉÓÚÓÐÄ£°å£¬ÄÑÒÔÊ¹ÓÃ¼Ì³Ð£¬»¹Ðè¿¼ÂÇÆäËû·½·¨
+	//TODO::Í¨ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½OpenGLï¿½ï¿½DirectX,ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä£ï¿½å£¬ï¿½ï¿½ï¿½ï¿½Ê¹ï¿½Ã¼Ì³Ð£ï¿½ï¿½ï¿½ï¿½è¿¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	class Log
 	{
 	public:
@@ -114,10 +114,17 @@ namespace BlackPearl {
 	}
 }
 
-//Core log macros
-#define GE_CORE_TRACE(...) { extern class BlackPearl::Log* BlackPearl::g_Log; BlackPearl::g_Log->Trace(__VA_ARGS__);}
-#define GE_CORE_INFO(...)  { extern class BlackPearl::Log* BlackPearl::g_Log; BlackPearl::g_Log->Info(__VA_ARGS__);}
-#define GE_CORE_WARN(...)  { extern class BlackPearl::Log* BlackPearl::g_Log; BlackPearl::g_Log->Warn(__VA_ARGS__);}
-#define GE_CORE_ERROR(...) { extern class BlackPearl::Log* BlackPearl::g_Log; BlackPearl::g_Log->Error(__VA_ARGS__);__debugbreak();}
-#define GE_CORE_FATAL(...) { extern class BlackPearl::Log* BlackPearl::g_Log; BlackPearl::g_Log->Fatal(__VA_ARGS__);}
+#if defined(_MSC_VER)
+#define DEBUG_BREAK() __debugbreak()
+#elif defined(__GNUC__) || defined(__clang__)
+#define DEBUG_BREAK() __builtin_trap()
+#else//Core log macros
+#error "Unsupported compiler"
+#endif
+
+#define GE_CORE_TRACE(...) { BlackPearl::g_Log->Trace(__VA_ARGS__);}
+#define GE_CORE_INFO(...)  { BlackPearl::g_Log->Info(__VA_ARGS__);}
+#define GE_CORE_WARN(...)  { BlackPearl::g_Log->Warn(__VA_ARGS__);}
+#define GE_CORE_ERROR(...) { BlackPearl::g_Log->Error(__VA_ARGS__); DEBUG_BREAK();}
+#define GE_CORE_FATAL(...) { BlackPearl::g_Log->Fatal(__VA_ARGS__);}
 

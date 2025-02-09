@@ -25,6 +25,7 @@
 #include "RHIBuffer.h"
 #include "RHIState.h"
 #include "RHIQuery.h"
+#include "RHIDefinitions.h"
 
 namespace BlackPearl {
     class IDevice;

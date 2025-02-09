@@ -1,6 +1,6 @@
 #pragma once
 #include"BlackPearl/Renderer/VertexArray.h"
-#include "BlackPearl/Renderer/Shader/Shader.h"
+//#include "BlackPearl/Renderer/Shader/Shader.h"
 #include "BlackPearl/Component/CameraComponent/Camera.h"
 #include "BlackPearl/RHI/RHIDefinitions.h"
 #include "BlackPearl/Math/frustum.h"

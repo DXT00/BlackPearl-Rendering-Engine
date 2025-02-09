@@ -1,11 +1,13 @@
 #pragma once
-#include "BlackPearl/RHI/RHI.h"
-#include "BlackPearl/RHI/RHICommandList.h"
-#include "BlackPearl/RHI/RHIState.h"
+
 #include "OpenGLDevice.h"
 #include "OpenGLContext.h"
 #include "OpenGLViewport.h"
+#include "BlackPearl/RHI/RHICommandList.h"
+#include "BlackPearl/RHI/RHIState.h"
+
 namespace BlackPearl {
+
 	class CommandList :public RefCounter<ICommandList> {
         // Internal backend methods
     public:

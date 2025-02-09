@@ -23,12 +23,12 @@
 #pragma once
 
 //
-//#ifdef GE_SHADERCOMPILE
-//
-//#else
-//#include "BlackPearl/Math/Math.h"
-//using namespace BlackPearl::math;
-//#endif
+#ifdef GE_SHADERCOMPILE
+
+#else
+#include "BlackPearl/Math/Math.h"
+using namespace BlackPearl::math;
+#endif
 
 
 static const int MaterialDomain_Opaque                   = 0;
@@ -69,13 +69,13 @@ static const int MaterialFlags_PSDDominantDeltaLobeP1Shift      = 24;
 struct Props {
     //Enable texture
     float shininess;
-    float refractIndex; //µç½âÖÊÏµÊý
+    float refractIndex; //ï¿½ï¿½ï¿½ï¿½ï¿½Ïµï¿½ï¿½
     bool  isBinnLight;
-    int  isPBRTextureSample;//ÊÇ·ñÊ¹ÓÃÎÆÀí-->°üÀ¨ ao,normal,metalllic,roughness
-    int  isDiffuseTextureSample;//ÊÇ·ñÊ¹ÓÃÎÆÀí
-    int  isSpecularTextureSample;//ÊÇ·ñÊ¹ÓÃÎÆÀí
-    int  isHeightTextureSample;//ÊÇ·ñÊ¹ÓÃÎÆÀí
-    int  isEmissionTextureSample;//ÊÇ·ñÊ¹ÓÃÎÆÀí
+    int  isPBRTextureSample;//ï¿½Ç·ï¿½Ê¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½-->ï¿½ï¿½ï¿½ï¿½ ao,normal,metalllic,roughness
+    int  isDiffuseTextureSample;//ï¿½Ç·ï¿½Ê¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    int  isSpecularTextureSample;//ï¿½Ç·ï¿½Ê¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    int  isHeightTextureSample;//ï¿½Ç·ï¿½Ê¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    int  isEmissionTextureSample;//ï¿½Ç·ï¿½Ê¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     int isRefractMaterial;
     int isDoubleSided;
 

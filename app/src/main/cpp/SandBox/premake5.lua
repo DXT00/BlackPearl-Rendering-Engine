@@ -54,9 +54,9 @@ project "Sandbox"
 	links
 	{
 		"BlackPearl",
-		"d3d12.lib",
-		"dxgi.lib",
-		"dxguid.lib",
+		--"d3d12.lib",
+		--"dxgi.lib",
+		--"dxguid.lib",
 		--"vulkan-1.lib",
 		--"directxtex.lib",
 	}

@@ -131,7 +131,7 @@ namespace BlackPearl {
 
 
 
-		static Object* currentObj = nullptr;//TODO::×¢ÒâÄÚ´æÐ¹Â©
+		static Object* currentObj = nullptr;//TODO::×¢ï¿½ï¿½ï¿½Ú´ï¿½Ð¹Â©
 
 		if (ImGui::CollapsingHeader("Create")) {
 
@@ -254,7 +254,7 @@ namespace BlackPearl {
 
 				bool isBackGroundObj = currentObj->GetComponent<MeshRenderer>()->GetIsBackGroundObjects();
 				ImGui::Checkbox("isBackGroundObj", &isBackGroundObj);
-				//TODO:: ¿ÉÒÔ²ÉÓÃ bitset
+				//TODO:: ï¿½ï¿½ï¿½Ô²ï¿½ï¿½ï¿½ bitset
 				if (isBackGroundObj) {
 					std::vector<Object*>::const_iterator it = std::find(m_BackGroundObjsList.begin(), m_BackGroundObjsList.end(), currentObj);
 					if (it == m_BackGroundObjsList.end()) {
@@ -278,7 +278,7 @@ namespace BlackPearl {
 				/*shadowObj list*/
 				bool isShadowObj = currentObj->GetComponent<MeshRenderer>()->GetIsShadowObjects();
 				ImGui::Checkbox("isShadowObj", &isShadowObj);
-				//TODO:: ¿ÉÒÔ²ÉÓÃ bitset
+				//TODO:: ï¿½ï¿½ï¿½Ô²ï¿½ï¿½ï¿½ bitset
 				if (isShadowObj) {
 					std::vector<Object*>::const_iterator it = std::find(m_ShadowObjsList.begin(), m_ShadowObjsList.end(), currentObj);
 					if (it == m_ShadowObjsList.end()) {
@@ -1331,7 +1331,7 @@ namespace BlackPearl {
 		}
 
 		ImGui::TextColored({ 1.0,0.64,0.0,1.0 }, "Material Properties");
-		Props imGuiProps = imGuiMeshes[0]->GetMaterial()->GetProps();//TODO::Ä¬ÈÏËùÓÐmesh µÄMaterial::Props ÊÇÒ»ÑùµÄ
+		Props imGuiProps = imGuiMeshes[0]->GetMaterial()->GetProps();//TODO::Ä¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½mesh ï¿½ï¿½Material::Props ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½
 		float imGuiShininess = imGuiProps.shininess;
 		bool  imGUiBlinnLight = imGuiProps.isBinnLight;
 		bool  imGUiIsPBRTextureSample = (bool)imGuiProps.isPBRTextureSample;
@@ -1474,7 +1474,7 @@ namespace BlackPearl {
 	//{
 	//	return g_objectManager->GetObjectsName();
 	//}
-	void Layer::DestroyObjects() //TODO:É¾³ýÄ³Ò»¸öObjectsµÄÇé¿ö»¹Ã»´¦Àí--¡·ÖØÐÂ¿¼ÂÇm_EntityToObjectsÊý¾Ý½á¹¹
+	void Layer::DestroyObjects() //TODO:É¾ï¿½ï¿½Ä³Ò»ï¿½ï¿½Objectsï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã»ï¿½ï¿½ï¿½ï¿½--ï¿½ï¿½ï¿½ï¿½ï¿½Â¿ï¿½ï¿½ï¿½m_EntityToObjectsï¿½ï¿½ï¿½Ý½á¹¹
 	{
 		g_objectManager->DestroyObjects();
 	}

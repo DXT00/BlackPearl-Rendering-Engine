@@ -9,8 +9,7 @@
 
 #include "BlackPearl/Math/Math.h"
 
-#include "BlackPearl/Renderer/Shader/Shader.h"
-#include "BlackPearl/Renderer/Buffer/Buffer.h"
+
 #include "BlackPearl/Renderer/Renderer.h"
 #include "BlackPearl/Renderer/RenderCommand.h"
 #include "BlackPearl/Renderer/MasterRenderer/MasterRenderer.h"

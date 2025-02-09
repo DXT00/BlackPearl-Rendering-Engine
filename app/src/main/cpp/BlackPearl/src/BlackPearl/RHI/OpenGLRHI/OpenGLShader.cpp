@@ -483,10 +483,10 @@ namespace BlackPearl {
 				FOpenGLUniformBuffer* GLUB = ((FOpenGLUniformBuffer*)UB);*/
 				Buffer = (GLuint)BoundUniformBuffers[BufferIndex]; //GLUB->Resource;
 
-				if (GLUB->bIsEmulatedUniformBuffer)
+				/*if (GLUB->bIsEmulatedUniformBuffer)
 				{
 					continue;
-				}
+				}*/
 
 				Size = GLUB->GetSize();
 #if SUBALLOCATED_CONSTANT_BUFFER
@@ -561,8 +561,8 @@ namespace BlackPearl {
 			{
 				BindUniformBufferBase(
 					ContextState,
-					NumUniformBuffers[(int)ShaderType::Pixel]],
-					PendingState.BoundUniformBuffers[SF_Pixel],
+					NumUniformBuffers[(int)ShaderType::Pixel],
+					PendingState.BoundUniformBuffers[(int)ShaderType::Pixel],
 					NextUniformBufferIndex,
 					ForceUniformBindingUpdate);
 			}
@@ -584,10 +584,10 @@ namespace BlackPearl {
 			PendingState.bAnyDirtyRealUniformBuffers[(int)ShaderType::Geometry] = false;
 		}
 
-		if (FOpenGL::SupportsBindlessTexture())
+	/*	if (FOpenGL::SupportsBindlessTexture())
 		{
 			SetupBindlessTextures(ContextState, PendingState.BoundShaderState->LinkedProgram->Samplers);
-		}
+		}*/
 	}
 
 

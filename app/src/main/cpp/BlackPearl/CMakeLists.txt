@@ -28,10 +28,20 @@ set(CMAKE_OBJECT_OUTPUT_DIRECTORY "${ROOT_DIR}/bin-int/${OUTPUT_DIR}/${PROJECT_N
 
 
 message(STATUS "CMAKE_RUNTIME_OUTPUT_DIRECTORY---${CMAKE_RUNTIME_OUTPUT_DIRECTORY},OUTPUT_DIR=${OUTPUT_DIR}")
-
+set(RENDER_API "opengl")
 # 添加源文件
-file(GLOB_RECURSE SRC_FILES LIST_DIRECTORIES false "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp" "${CMAKE_CURRENT_SOURCE_DIR}/src/*.h")
+file(GLOB_RECURSE SRC_FILES LIST_DIRECTORIES false
+        "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/src/*.h"
+        "${CMAKE_CURRENT_SOURCE_DIR}/assets/shaders/hlsl/core/**.h"
+)
+if(${RENDER_API} STREQUAL "opengl")
+list(REMOVE_ITEM SRC_FILES
+        "${CMAKE_CURRENT_SOURCE_DIR}/src/BlackPearl/Renderer/MasterRendererBak/*.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/src/BlackPearl/Renderer/MasterRendererBak/*.h"
 
+)
+endif ()
 # 创建静态库目标
 add_library(BlackPearl STATIC ${SRC_FILES})
 
@@ -44,6 +54,7 @@ add_definitions(
 # 头文件包含目录
 include_directories(
         "${CMAKE_CURRENT_SOURCE_DIR}/src"
+        "${CMAKE_CURRENT_SOURCE_DIR}//assets/shaders/"
         "${VENDOR_DIR}"
         "${VENDOR_DIR}/spdlog/include"
         "${VENDOR_DIR}/GLEW/include"
@@ -75,9 +86,11 @@ if(WIN32)
             "${CMAKE_CURRENT_SOURCE_DIR}/vendor/imgui/bin/${OUTPUT_DIR}/ImGui"
     )
 endif ()
-#set(RENDER_API "opengl")
+
 # 链接库和条件编译
 if(${RENDER_API} STREQUAL "opengl")
+
+
     message("RENDER_API = opengl")
     target_link_libraries(
             BlackPearl

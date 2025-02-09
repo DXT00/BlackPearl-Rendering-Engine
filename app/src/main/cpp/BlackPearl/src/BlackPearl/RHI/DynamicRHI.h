@@ -2,7 +2,7 @@
 #include "BlackPearl/Window.h"
 namespace BlackPearl{
 	extern EShaderPlatform GMaxRHIShaderPlatform;
-	extern ERHIFeatureLevel::Type GMaxRHIFeatureLevel
+	extern ERHIFeatureLevel::Type GMaxRHIFeatureLevel;
 
 	class Window;
 	class DynamicModule;

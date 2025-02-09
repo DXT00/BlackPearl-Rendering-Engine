@@ -15,6 +15,9 @@ namespace BlackPearl {
 
         uint32_t slot;
 
+        //name in shader
+        std::string name;
+
         RHIResourceType type : 8;
         TextureDimension dimension : 8; // valid for Texture_SRV, Texture_UAV
         Format format : 8; // valid for Texture_SRV, Texture_UAV, Buffer_SRV, Buffer_UAV
@@ -67,7 +70,7 @@ namespace BlackPearl {
             return result;
         }
 
-        static BindingSetItem Texture_SRV(uint32_t slot, ITexture* texture, Format format = Format::UNKNOWN,
+        static BindingSetItem Texture_SRV(uint32_t slot, ITexture* texture, std::string name = "", Format format = Format::UNKNOWN,
             TextureSubresourceSet subresources = AllSubresources, TextureDimension dimension = TextureDimension::Unknown)
         {
             BindingSetItem result;
@@ -81,7 +84,7 @@ namespace BlackPearl {
             return result;
         }
 
-        static BindingSetItem Texture_UAV(uint32_t slot, ITexture* texture, Format format = Format::UNKNOWN,
+        static BindingSetItem Texture_UAV(uint32_t slot, ITexture* texture, std::string name = "", Format format = Format::UNKNOWN,
             TextureSubresourceSet subresources = TextureSubresourceSet(0, 1, 0, TextureSubresourceSet::AllArraySlices),
             TextureDimension dimension = TextureDimension::Unknown)
         {
@@ -96,7 +99,7 @@ namespace BlackPearl {
             return result;
         }
 
-        static BindingSetItem TypedBuffer_SRV(uint32_t slot, IBuffer* buffer, Format format = Format::UNKNOWN, BufferRange range = EntireBuffer)
+        static BindingSetItem TypedBuffer_SRV(uint32_t slot, IBuffer* buffer, std::string name = "", Format format = Format::UNKNOWN, BufferRange range = EntireBuffer)
         {
             BindingSetItem result;
             result.slot = slot;
@@ -109,7 +112,7 @@ namespace BlackPearl {
             return result;
         }
 
-        static BindingSetItem TypedBuffer_UAV(uint32_t slot, IBuffer* buffer, Format format = Format::UNKNOWN, BufferRange range = EntireBuffer)
+        static BindingSetItem TypedBuffer_UAV(uint32_t slot, IBuffer* buffer, std::string name = "", Format format = Format::UNKNOWN, BufferRange range = EntireBuffer)
         {
             BindingSetItem result;
             result.slot = slot;
@@ -122,7 +125,7 @@ namespace BlackPearl {
             return result;
         }
 
-        static BindingSetItem ConstantBuffer(uint32_t slot, IBuffer* buffer, BufferRange range = EntireBuffer)
+        static BindingSetItem ConstantBuffer(uint32_t slot, IBuffer* buffer, std::string name = "", BufferRange range = EntireBuffer)
         {
             bool isVolatile = buffer && buffer->getDesc().isVolatile;
 
@@ -137,7 +140,7 @@ namespace BlackPearl {
             return result;
         }
 
-        static BindingSetItem Sampler(uint32_t slot, ISampler* sampler)
+        static BindingSetItem Sampler(uint32_t slot, ISampler* sampler, std::string name = "", )
         {
             BindingSetItem result;
             result.slot = slot;
@@ -151,7 +154,7 @@ namespace BlackPearl {
             return result;
         }
 
-        static BindingSetItem RayTracingAccelStruct(uint32_t slot, rt::IAccelStruct* as)
+        static BindingSetItem RayTracingAccelStruct(uint32_t slot, rt::IAccelStruct* as, std::string name = "")
         {
             BindingSetItem result;
             result.slot = slot;
@@ -165,7 +168,7 @@ namespace BlackPearl {
             return result;
         }
 
-        static BindingSetItem StructuredBuffer_SRV(uint32_t slot, IBuffer* buffer, Format format = Format::UNKNOWN, BufferRange range = EntireBuffer)
+        static BindingSetItem StructuredBuffer_SRV(uint32_t slot, IBuffer* buffer,std::string name = "",  Format format = Format::UNKNOWN, BufferRange range = EntireBuffer)
         {
             BindingSetItem result;
             result.slot = slot;
@@ -178,7 +181,7 @@ namespace BlackPearl {
             return result;
         }
 
-        static BindingSetItem StructuredBuffer_UAV(uint32_t slot, IBuffer* buffer, Format format = Format::UNKNOWN, BufferRange range = EntireBuffer)
+        static BindingSetItem StructuredBuffer_UAV(uint32_t slot, IBuffer* buffer, std::string name = "", Format format = Format::UNKNOWN, BufferRange range = EntireBuffer)
         {
             BindingSetItem result;
             result.slot = slot;
@@ -191,7 +194,7 @@ namespace BlackPearl {
             return result;
         }
 
-        static BindingSetItem RawBuffer_SRV(uint32_t slot, IBuffer* buffer, BufferRange range = EntireBuffer)
+        static BindingSetItem RawBuffer_SRV(uint32_t slot, IBuffer* buffer,std::string name = "",  BufferRange range = EntireBuffer)
         {
             BindingSetItem result;
             result.slot = slot;
@@ -204,7 +207,7 @@ namespace BlackPearl {
             return result;
         }
 
-        static BindingSetItem RawBuffer_UAV(uint32_t slot, IBuffer* buffer, BufferRange range = EntireBuffer)
+        static BindingSetItem RawBuffer_UAV(uint32_t slot, IBuffer* buffer, std::string name = "", BufferRange range = EntireBuffer)
         {
             BindingSetItem result;
             result.slot = slot;

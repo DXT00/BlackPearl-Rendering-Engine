@@ -2,6 +2,8 @@
 #include "RHIDefinitions.h"
 #include "RHITexture.h"
 #include "RHIBuffer.h"
+#include "RHIBindingSet.h"
+
 namespace BlackPearl {
 
     struct FramebufferAttachment
@@ -85,7 +87,7 @@ namespace BlackPearl {
     // An extended version of FramebufferInfo that also contains the 'width' and 'height' members.
 // It is provided mostly for backward compatibility and convenience reasons, as previously these members
 // were available in the regular FramebufferInfo structure.
-    struct FramebufferInfoEx : FramebufferInfo
+    struct FramebufferInfoEx : public FramebufferInfo
     {
         uint32_t width = 0;
         uint32_t height = 0;

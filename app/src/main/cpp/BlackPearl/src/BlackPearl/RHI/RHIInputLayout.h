@@ -1,12 +1,16 @@
 #pragma once
-#include<string>
+
 #include "RHIDefinitions.h"
 #include "RefCountPtr.h"
 #include "RHIResources.h"
+#include <string>
+using namespace std;
+
 namespace BlackPearl {
+
     struct VertexAttributeDesc
     {
-        std::string name;
+        string name;
         Format format = Format::UNKNOWN;
         uint32_t arraySize = 1;
         uint32_t bufferIndex = 0;
@@ -15,7 +19,7 @@ namespace BlackPearl {
         uint32_t elementStride = 0;
         bool isInstanced = false;
 
-        VertexAttributeDesc& setName(const std::string& value) { name = value; return *this; }
+        VertexAttributeDesc& setName(const string& value) { name = value; return *this; }
         constexpr VertexAttributeDesc& setFormat(Format value) { format = value; return *this; }
         constexpr VertexAttributeDesc& setArraySize(uint32_t value) { arraySize = value; return *this; }
         constexpr VertexAttributeDesc& setBufferIndex(uint32_t value) { bufferIndex = value; return *this; }

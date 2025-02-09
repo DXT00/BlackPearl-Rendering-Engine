@@ -1,52 +1,68 @@
-#
-# Copyright (c) 2014-2021, NVIDIA CORPORATION. All rights reserved.
-#
-# Permission is hereby granted, free of charge, to any person obtaining a
-# copy of this software and associated documentation files (the "Software"),
-# to deal in the Software without restriction, including without limitation
-# the rights to use, copy, modify, merge, publish, distribute, sublicense,
-# and/or sell copies of the Software, and to permit persons to whom the
-# Software is furnished to do so, subject to the following conditions:
-#
-# The above copyright notice and this permission notice shall be included in
-# all copies or substantial portions of the Software.
-#
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
-# THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-# FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-# DEALINGS IN THE SOFTWARE.
 
+cmake_minimum_required(VERSION 3.12)
+project(ShaderCompiler)
 
-set(SRC_FILES
-    shaderCompiler.cpp
-    options.cpp
-    options.h
-    ../../src/common/shader-blob.cpp
-    ../../include/nvrhi/common/containers.h
-    ../../include/nvrhi/common/misc.h
-    ../../include/nvrhi/common/resource.h
-    ../../include/nvrhi/common/shader-blob.h
-    ../../include/nvrhi/nvrhi.h
-)
+# 设置 C++ 标准为 C++17
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
 
-add_executable(shaderCompiler "${SRC_FILES}")
-
-target_link_libraries(shaderCompiler cxxopts)
-target_include_directories(shaderCompiler PRIVATE ../../include)
+# 设置静态运行时库
 if(MSVC)
-	target_compile_definitions(shaderCompiler PRIVATE _CRT_SECURE_NO_WARNINGS)
-else()
-	target_link_libraries(shaderCompiler stdc++fs pthread)
+	set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 endif()
 
-set_target_properties(shaderCompiler PROPERTIES OUTPUT_NAME "nvrhi-scomp")
+# 设置输出目录
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin/${CMAKE_BUILD_TYPE})
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin/${CMAKE_BUILD_TYPE})
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin-int/${CMAKE_BUILD_TYPE})
 
-set_property(TARGET shaderCompiler PROPERTY FOLDER "Tools")
+set(ROOT_DIR ${CMAKE_SOURCE_DIR})
+set(ShaderCompiler_DIR "${ROOT_DIR}/ShaderCompiler")
 
-if (NVRHI_INSTALL)
-    install(TARGETS shaderCompiler
-        RUNTIME DESTINATION bin)
+message(STATUS "ShaderCompiler_DIR = ${ShaderCompiler_DIR}")
+# 添加源文件
+file(GLOB
+		SOURCES
+		"${ShaderCompiler_DIR}/src/*.h"
+		"${ShaderCompiler_DIR}/src/*.hpp"
+		"${ShaderCompiler_DIR}/src/*.cpp"
+)
+message(STATUS "SOURCES = ${SOURCES}")
+
+# 添加可执行文件
+add_executable(ShaderCompiler ${SOURCES})
+
+# 包含目录
+target_include_directories(ShaderCompiler PRIVATE ../BlackPearl/src)
+
+# 链接库
+target_link_libraries(ShaderCompiler BlackPearl)
+
+# 定义宏
+target_compile_definitions(ShaderCompiler PRIVATE GE_SHADERCOMPILE)
+
+# Windows 平台特定设置
+if(WIN32)
+	target_compile_definitions(ShaderCompiler PRIVATE GE_PLATFORM_WINDOWS)
 endif()
+
+# Debug 配置
+set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT ShaderCompiler)
+set_property(TARGET ShaderCompiler PROPERTY CMAKE_DEBUG_POSTFIX "_d")
+
+# 配置设置
+foreach(CONFIG IN ITEMS Debug Release Dist)
+	string(TOUPPER ${CONFIG} CONFIG_UPPER)
+	set_target_properties(ShaderCompiler PROPERTIES
+			COMPILE_DEFINITIONS_${CONFIG_UPPER} GE_${CONFIG_UPPER}
+			RUNTIME_OUTPUT_DIRECTORY_${CONFIG_UPPER} ${CMAKE_BINARY_DIR}/bin/${CONFIG}
+			ARCHIVE_OUTPUT_DIRECTORY_${CONFIG_UPPER} ${CMAKE_BINARY_DIR}/bin-int/${CONFIG}
+			LIBRARY_OUTPUT_DIRECTORY_${CONFIG_UPPER} ${CMAKE_BINARY_DIR}/bin/${CONFIG}
+	)
+endforeach()
+
+# 优化设置
+set_property(TARGET ShaderCompiler PROPERTY CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g")
+set_property(TARGET ShaderCompiler PROPERTY CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O2")
+set_property(TARGET ShaderCompiler PROPERTY CMAKE_CXX_FLAGS_DIST "${CMAKE_CXX_FLAGS_RELEASE} -O2")

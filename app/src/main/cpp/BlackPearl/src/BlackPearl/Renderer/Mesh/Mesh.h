@@ -1,8 +1,8 @@
 #pragma once
 #include <vector>
 #include <string>
-#include "BlackPearl/Renderer/Shader/Shader.h"
-#include "BlackPearl/Renderer/Buffer/Buffer.h"
+//#include "BlackPearl/Renderer/Shader/Shader.h"
+//#include "BlackPearl/Renderer/Buffer/Buffer.h"
 #include "BlackPearl/Component/LightComponent/LightSources.h"
 #include "BlackPearl/Component/BoundingSphereComponent/BoundingSphere.h"
 #include "BlackPearl/Renderer/Material/MaterialColor.h"
@@ -68,7 +68,7 @@ namespace BlackPearl {
 		uint32_t					 GetIndicesCount() const { return m_IndicesCount; }
 
 		void SetShader(const std::string& path)				     { material->SetShader(path); }
-		void SetShader(const std::shared_ptr<Shader> &shader)    { material->SetShader(shader); }
+		void SetShader(IShader* shader)    { material->SetShader(shader); }
 		void SetTexture(ITexture* texture) { material->SetTexture(texture); }
 		void SetMaterialColor(MaterialColor::Color color)        { material->SetMaterialColor(color); }
 		void SetTessellation(uint32_t verticesPerTessPatch);
@@ -115,7 +115,7 @@ namespace BlackPearl {
 
 		void UpdateInstanceBuffer(Transform* transform);
 	public:
-		//temp for directX mseh shader TODO::¼æÈÝopengl ºÍd3d12 mesh½Ó¿Ú
+		//temp for directX mseh shader TODO::ï¿½ï¿½ï¿½ï¿½opengl ï¿½ï¿½d3d12 meshï¿½Ó¿ï¿½
 		std::vector<uint32_t>		VertexStrides;
 		std::vector<Span<uint8_t>>  Vertices_ml;
 		uint32_t					VertexCount_ml;

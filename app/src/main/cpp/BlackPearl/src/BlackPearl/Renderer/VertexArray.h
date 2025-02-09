@@ -1,5 +1,7 @@
 ﻿#pragma once
-#include"BlackPearl/Renderer/Buffer/Buffer.h"
+//#include"BlackPearl/Renderer/Buffer/Buffer.h"
+#include "BlackPearl/RHI/OpenGLRHI/OpenGLBufferResource.h"
+#include <cstdint>
 namespace BlackPearl {
 
 	class VertexArray

@@ -15,7 +15,7 @@
 #endif
 #include "Component/CameraComponent/PerspectiveCamera.h"
 #include "Renderer/Renderer.h"
-#include "Renderer/Buffer/Buffer.h"
+//#include "Renderer/Buffer/Buffer.h"
 #include "Core.h"
 #include "Input.h"
 #include "Event/Event.h"

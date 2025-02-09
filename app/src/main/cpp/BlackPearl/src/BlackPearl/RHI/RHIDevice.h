@@ -2,8 +2,8 @@
 #include "RHIDefinitions.h"
 #include "RHIPipeline.h"
 #include "RHITexture.h"
+#include "RHIBuffer.h"
 #include "RHIFrameBuffer.h"
-#include "RHIShaderLibrary.h"
 #include "RHICommandList.h"
 #include "RHIQuery.h"
 #include "RHIMessageCallback.h"
@@ -11,6 +11,7 @@
 #ifdef GE_API_VULKAN
 #include <vulkan/vulkan_core.h>
 #endif
+#include "RHIShaderLibrary.h"
 namespace BlackPearl {
 
 	class IDevice : public IResource

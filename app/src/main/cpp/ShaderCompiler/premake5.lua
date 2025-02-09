@@ -17,19 +17,7 @@ project "ShaderCompiler"
 
 	includedirs
 	{
-		-- "../BlackPearl/vendor/spdlog/include",
-		"../BlackPearl/src",
-		-- "../BlackPearl/vendor",
-		-- "../%{IncludeDir.glm}",
-		-- "../%{IncludeDir.GLFW}",
-		-- "../%{IncludeDir.assimp}",
-		-- "../%{IncludeDir.Glad}",
-		-- "../%{IncludeDir.vulkan}",
-		-- --"../%{IncludeDir.ImGui}",
-		-- -- "%{IncludeDir.glslShader}",
-		-- "../%{IncludeDir.vulkan}"
-		-- --"packages/directxtex_uwp.2022.7.30.1/native/lib/x64/Debug"
-
+		"../BlackPearl/src"
 	}
 
 	libdirs{
@@ -38,18 +26,12 @@ project "ShaderCompiler"
 
 	defines
 	{
-		-- "GE_API_VULKAN"
 		"GE_SHADERCOMPILE"
 	}
 
 	links
 	{
 		"BlackPearl",
-		-- "d3d12.lib",
-		-- "dxgi.lib",
-		-- "dxguid.lib",
-		-- "vulkan-1.lib"
-		--"directxtex.lib",
 	}
 	
 

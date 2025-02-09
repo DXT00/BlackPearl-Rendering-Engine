@@ -1,11 +1,10 @@
 #pragma once
-#include "BlackPearl/Renderer/Shader/Shader.h"
 #include <memory>
 #include "Window.h"
 #include "Component/CameraComponent/Camera.h"
 #include "Renderer/VertexArray.h"
 #include "BlackPearl/Timestep/Timestep.h"
-#include "Event/MouseEvent.h"
+#include "BlackPearl/Event/MouseEvent.h"
 #include "Component/LightComponent/Light.h"
 #include "Component/LightComponent/LightSources.h"
 #include "Renderer/Mesh/Mesh.h"

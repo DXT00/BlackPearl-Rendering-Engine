@@ -1,19 +1,21 @@
 #pragma once
-#include "BlackPearl/Renderer/Shader/Shader.h"
+//#include "BlackPearl/Renderer/Shader/Shader.h"
+#include "BlackPearl/RHI/RHIShader.h"
 #include "BlackPearl/Renderer/SceneType.h"
 #include "MaterialColor.h"
 #include "BlackPearl/RHI/DynamicRHI.h"
 #include "BlackPearl/RHI/RHITexture.h"
 #include "BlackPearl/Math/Math.h"
+#include "hlsl/core/material_cb.h"
+
 using namespace BlackPearl::math;
 
-#include "hlsl/core/material_cb.h"
 
 namespace BlackPearl {
 	class Material
 	{
 	public:
-		//ÓÃÓÚRaytracing²ÄÖÊÅÐ¶Ï
+		//ï¿½ï¿½ï¿½ï¿½Raytracingï¿½ï¿½ï¿½ï¿½ï¿½Ð¶ï¿½
 		enum RTXType
 		{
 			RTX_AMBIENT,
@@ -74,7 +76,7 @@ namespace BlackPearl {
 		}
 
 		Material(
-			const std::shared_ptr<Shader>& shader,
+            IShader*  shader,
 			const std::shared_ptr<TextureMaps>& textureMaps,
 			const MaterialColor& materialColors
 		);
@@ -87,15 +89,15 @@ namespace BlackPearl {
 		);
 
 		~Material();
-		//TODO:: Çø·ÖopenglºÍdirectX shader
-		std::shared_ptr<Shader>      GetShader()const { GE_ASSERT(DynamicRHI::g_RHIType == DynamicRHI::Type::OpenGL,"Shader class only support opengl now"); return m_Shader; }
+		//TODO:: ï¿½ï¿½ï¿½ï¿½openglï¿½ï¿½directX shader
+		ShaderHandle      GetShader()const { GE_ASSERT(DynamicRHI::g_RHIType == DynamicRHI::Type::OpenGL,"Shader class only support opengl now"); return m_Shader; }
 		std::shared_ptr<TextureMaps> GetTextureMaps()const { return m_TextureMaps; }
 		MaterialColor                GetMaterialColor()const { return m_MaterialColors; }
 		Props                        GetProps() const { return m_Props; }
 		RTXType						 GetRTXType() const { return m_RTXType; }
 
 		void SetShader(const std::string& shaderPath);
-		void SetShader(const std::shared_ptr<Shader>& shader);
+		void SetShader(IShader* shader);
 		void SetTexture(ITexture* texture);
 		//void SetTexture(const TextureType type, const std::string& image);
 		void SetMaterialColor(MaterialColor::Color color);
@@ -147,11 +149,11 @@ namespace BlackPearl {
 		//std::shared_ptr<LoadedTexture> transmissionTexture; // see KHR_materials_transmission; undefined on specular-gloss materials
 		// std::shared_ptr<LoadedTexture> thicknessTexture; // see KHR_materials_volume (not implemented yet)
 
-		//MaterialConstants ÓÃÓÚ shader ´«µÝ
+		//MaterialConstants ï¿½ï¿½ï¿½ï¿½ shader ï¿½ï¿½ï¿½ï¿½
 	public:
 		std::string name = "Default_Material";
 	private:
-		std::shared_ptr<Shader>		 m_Shader = nullptr;
+		ShaderHandle 		 m_Shader = nullptr;
 		std::shared_ptr<TextureMaps> m_TextureMaps = nullptr;
 		MaterialColor				 m_MaterialColors;
 		Props                        m_Props;

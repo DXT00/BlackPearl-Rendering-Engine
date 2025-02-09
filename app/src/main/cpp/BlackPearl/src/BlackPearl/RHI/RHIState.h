@@ -5,6 +5,8 @@
 #include "RHIMessageCallback.h"
 #include "RHIDefinitions.h"
 #include "RHIShader.h"
+#include "RHIInputLayout.h"
+
 namespace BlackPearl {
 
     struct BoundShaderState
