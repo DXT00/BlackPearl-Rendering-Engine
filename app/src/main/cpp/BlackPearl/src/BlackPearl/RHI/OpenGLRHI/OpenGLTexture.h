@@ -30,7 +30,7 @@ namespace BlackPearl {
 
 
 
-	class Texture :public RefCounter<ITexture>, public TextureStateExtension
+	class Texture : public RefCounter<ITexture>, public TextureStateExtension
 	{
 	public:
 

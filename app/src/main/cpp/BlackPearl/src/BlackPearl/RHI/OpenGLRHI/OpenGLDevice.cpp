@@ -218,7 +218,16 @@ namespace BlackPearl
 
 		return DeviceHandle(device);
 	}
-
+    void CachedBindUniformBuffer(FOpenGLContextState& ContextState, GLuint Buffer)
+    {
+        //VERIFY_GL_SCOPE();
+        //check(IsInRenderingThread() || IsInRHIThread());
+        if (ContextState.UniformBufferBound != Buffer)
+        {
+            glBindBuffer(GL_UNIFORM_BUFFER, Buffer);
+            ContextState.UniformBufferBound = Buffer;
+        }
+    }
 	void Device::InitializeStateResources()
 	{
 		SharedContextState.InitializeResources(FOpenGL::GetMaxCombinedTextureImageUnits(), FOpenGL::GetMaxCombinedUAVUnits());
@@ -1128,6 +1137,8 @@ namespace BlackPearl
 			CachedSetupTextureStage(ContextState, TextureStageIndex, GL_NONE, 0, -1, 1);
 		}
 	}
+
+
 
 	void Device::SetupVertexArrays(FOpenGLContextState& ContextState, uint32_t BaseVertexIndex, FOpenGLStream* Streams, uint32_t NumStreams, uint32_t MaxVertices)
 	{

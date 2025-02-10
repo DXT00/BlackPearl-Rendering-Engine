@@ -432,7 +432,7 @@ namespace BlackPearl {
 
 	void CommandList::setDepthStencilaState(DepthStencilState* state)
 	{
-		m_Device->PendingState.DepthStencilState = *state;
+		m_Device->PendingState.DepthStencilState = *(static_cast<FOpenGLDepthStencilState*>(state));
 
 	}
 

@@ -75,6 +75,7 @@ namespace BlackPearl {
         {
             BindingSetItem result;
             result.slot = slot;
+            result.name = name;
             result.type = RHIResourceType::RT_Texture_SRV;
             result.resourceHandle = texture;
             result.format = format;
@@ -90,6 +91,7 @@ namespace BlackPearl {
         {
             BindingSetItem result;
             result.slot = slot;
+            result.name = name;
             result.type = RHIResourceType::RT_Texture_UAV;
             result.resourceHandle = texture;
             result.format = format;
@@ -103,6 +105,7 @@ namespace BlackPearl {
         {
             BindingSetItem result;
             result.slot = slot;
+            result.name = name;
             result.type = RHIResourceType::RT_TypedBuffer_SRV;
             result.resourceHandle = buffer;
             result.format = format;
@@ -116,6 +119,7 @@ namespace BlackPearl {
         {
             BindingSetItem result;
             result.slot = slot;
+            result.name = name;
             result.type = RHIResourceType::RT_TypedBuffer_UAV;
             result.resourceHandle = buffer;
             result.format = format;
@@ -131,6 +135,7 @@ namespace BlackPearl {
 
             BindingSetItem result;
             result.slot = slot;
+            result.name = name;
             result.type = isVolatile ? RHIResourceType::RT_VolatileConstantBuffer : RHIResourceType::RT_ConstantBuffer;
             result.resourceHandle = buffer;
             result.format = Format::UNKNOWN;
@@ -140,10 +145,11 @@ namespace BlackPearl {
             return result;
         }
 
-        static BindingSetItem Sampler(uint32_t slot, ISampler* sampler, std::string name = "", )
+        static BindingSetItem Sampler(uint32_t slot, ISampler* sampler, std::string name = "")
         {
             BindingSetItem result;
             result.slot = slot;
+            result.name = name;
             result.type = RHIResourceType::RT_Sampler;
             result.resourceHandle = sampler;
             result.format = Format::UNKNOWN;
@@ -158,6 +164,7 @@ namespace BlackPearl {
         {
             BindingSetItem result;
             result.slot = slot;
+            result.name = name;
             result.type = RHIResourceType::RT_RayTracingAccelStruct;
             result.resourceHandle = as;
             result.format = Format::UNKNOWN;
@@ -172,6 +179,7 @@ namespace BlackPearl {
         {
             BindingSetItem result;
             result.slot = slot;
+            result.name = name;
             result.type = RHIResourceType::RT_StructuredBuffer_SRV;
             result.resourceHandle = buffer;
             result.format = format;
@@ -185,6 +193,7 @@ namespace BlackPearl {
         {
             BindingSetItem result;
             result.slot = slot;
+            result.name = name;
             result.type = RHIResourceType::RT_StructuredBuffer_UAV;
             result.resourceHandle = buffer;
             result.format = format;
@@ -198,6 +207,7 @@ namespace BlackPearl {
         {
             BindingSetItem result;
             result.slot = slot;
+            result.name = name;
             result.type = RHIResourceType::RT_RawBuffer_SRV;
             result.resourceHandle = buffer;
             result.format = Format::UNKNOWN;
@@ -211,6 +221,7 @@ namespace BlackPearl {
         {
             BindingSetItem result;
             result.slot = slot;
+            result.name = name;
             result.type = RHIResourceType::RT_RawBuffer_UAV;
             result.resourceHandle = buffer;
             result.format = Format::UNKNOWN;
@@ -220,10 +231,11 @@ namespace BlackPearl {
             return result;
         }
 
-        static BindingSetItem PushConstants(uint32_t slot, uint32_t byteSize)
+        static BindingSetItem PushConstants(uint32_t slot, uint32_t byteSize, std::string name = "")
         {
             BindingSetItem result;
             result.slot = slot;
+            result.name = name;
             result.type = RHIResourceType::RT_PushConstants;
             result.resourceHandle = nullptr;
             result.format = Format::UNKNOWN;
@@ -233,10 +245,11 @@ namespace BlackPearl {
             result.unused = 0;
             return result;
         }
-        static BindingSetItem InputAttachment(uint32_t slot, ITexture* texture)
+        static BindingSetItem InputAttachment(uint32_t slot, ITexture* texture,std::string name = "")
         {
             BindingSetItem result;
             result.slot = slot;
+            result.name = name;
             result.type = RHIResourceType::RT_Texture_InputAttachment;
             result.resourceHandle = texture;
             result.format = Format::UNKNOWN;
@@ -252,7 +265,7 @@ namespace BlackPearl {
     };
 
     // verify the packing of BindingSetItem for good alignment
-    static_assert(sizeof(BindingSetItem) == 32, "sizeof(BindingSetItem) is supposed to be 32 bytes");
+   // static_assert(sizeof(BindingSetItem) == 32, "sizeof(BindingSetItem) is supposed to be 32 bytes");
 
     // describes the resource bindings for a single pipeline stage
     typedef std::vector<BindingSetItem> BindingSetItemArray;

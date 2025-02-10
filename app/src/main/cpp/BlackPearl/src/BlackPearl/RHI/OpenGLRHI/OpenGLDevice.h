@@ -5,13 +5,14 @@
 #include "../RHIFrameBuffer.h"
 #include "../RHIDefinitions.h"
 #include "../RHICommandList.h"
+#include "../RHIShader.h"
+#include "../RHIInputLayout.h"
 #include "../RHIQuery.h"
 #include "../RHIDescriptorTable.h"
 #include "../OpenGLRHI/OpenGLDriver/OpenGLDrvPrivate.h"
-#include "../OpenGLRHI/OpenGLState.h"
-#include "../OpenGLRHI/OpenGLContext.h"
 #include "BlackPearl/Core/Container/TBitArray.h"
 namespace BlackPearl {
+    class OpenGLViewport;
 	class Device :public RefCounter<IDevice>
 	{
 	public:
@@ -71,16 +72,15 @@ namespace BlackPearl {
 
 		static DeviceHandle createDevice();
 	public:
-		void CachedBindUniformBuffer(FOpenGLContextState& ContextState, GLuint Buffer)
-		{
-			//VERIFY_GL_SCOPE();
-			//check(IsInRenderingThread() || IsInRHIThread());
-			if (ContextState.UniformBufferBound != Buffer)
-			{
-				glBindBuffer(GL_UNIFORM_BUFFER, Buffer);
-				ContextState.UniformBufferBound = Buffer;
-			}
-		}
+        class FOpenGLContextState;
+        class OpenGLContext;
+        class Shader;
+        class BoundShaderState;
+        class FOpenGLRHIState;
+        class FOpenGLLinkedProgram;
+        class FOpenGLStream;
+		void CachedBindUniformBuffer(FOpenGLContextState& ContextState, GLuint Buffer);
+
 	protected:
 		void InitializeStateResources();
 		FOpenGLContextState& GetContextStateForCurrentContext(bool bAssertIfInvalid = true);
@@ -132,7 +132,6 @@ namespace BlackPearl {
 		void CommitComputeResourceTables(Shader* ComputeShader);
 		void CommitNonComputeShaderConstants();
 		void CommitComputeShaderConstants(Shader* ComputeShader);
-		void SetPendingBlendStateForActiveRenderTargets(FOpenGLContextState& ContextState);
 
 		/* Texture */
 		void SetupTexturesForDraw(FOpenGLContextState& ContextState);
@@ -152,12 +151,14 @@ namespace BlackPearl {
 	
 		
 		BoundShaderState* RHICreateBoundShaderState_Internal(
-			InputLayout* VertexDeclarationRHI,
-			Shader* VertexShaderRHI,
-			Shader* PixelShaderRHI,
-			Shader* GeometryShaderRHI,
+			IInputLayout* VertexDeclarationRHI,
+			IShader* VertexShaderRHI,
+			IShader* PixelShaderRHI,
+			IShader* GeometryShaderRHI,
 			bool bFromPSOFileCache
 		);
+
+
 		void SetupVertexArrays(FOpenGLContextState& ContextState, uint32_t BaseVertexIndex, FOpenGLStream* Streams, uint32_t NumStreams, uint32_t MaxVertices);
 
 			/** RHI device state, independent of underlying OpenGL context used */
@@ -192,8 +193,7 @@ namespace BlackPearl {
 		/** Value used to detect when resource tables need to be recached. INDEX_NONE means always recache. */
 		uint32_t ResourceTableFrameCounter;
 
-		///** RHI device state, independent of underlying OpenGL context used */
-		FOpenGLRHIState						PendingState;
+
 		//FSamplerStateRHIRef					PointSamplerState;
 
 		/** A list of all viewport RHIs that have been created. */
@@ -208,11 +208,6 @@ namespace BlackPearl {
 		///** A history of the most recently used bound shader states, used to keep transient bound shader states from being recreated for each use. */
 		//TGlobalResource< TBoundShaderStateHistory<10000> > BoundShaderStateHistory;
 
-		/** Per-context state caching */
-		FOpenGLContextState InvalidContextState;
-		FOpenGLContextState	SharedContextState;
-		FOpenGLContextState	RenderingContextState;
-
 
 		// Cached context type on BeginScene
 		int32_t BeginSceneContextType;
@@ -224,6 +219,14 @@ namespace BlackPearl {
 
 		/** Cached mip-limits for textures when ARB_texture_view is unavailable */
 		std::map<GLuint, std::pair<GLenum, GLenum>> TextureMipLimits;
+
+		private:
+			/**
+			 * Link vertex and pixel shaders in to an OpenGL program.
+			 */
+			FOpenGLLinkedProgram* LinkProgram(Shader* vertexShader, Shader* pixelShader, Shader* geometryShader);
+
+
 
 	};
 

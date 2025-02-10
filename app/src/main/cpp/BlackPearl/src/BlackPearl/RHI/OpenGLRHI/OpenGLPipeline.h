@@ -11,7 +11,7 @@ namespace BlackPearl {
 		ShaderType shaderMask = ShaderType::None;
 		std::vector<RefCountPtr<BindingLayout>> pipelineBindingLayouts;
 		//use by gl
-		uint32_t shaderLinkProgram = -1;
+		//uint32_t shaderLinkProgram = -1;
 		//VkPipelineLayout pipelineLayout;
 		//VkPipeline pipeline;
 		//VkShaderStageFlags pushConstantVisibility;

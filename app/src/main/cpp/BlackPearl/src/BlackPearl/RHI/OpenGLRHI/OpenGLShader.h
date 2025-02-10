@@ -6,21 +6,18 @@
 #include <unordered_map>
 #include "BlackPearl/Component/LightComponent/LightSources.h"
 #include "BlackPearl/Math/vector.h"
-#include "../RHIShader.h"
-namespace BlackPearl {
-	class FOpenGLLinkedProgram {
-	public:
-		FOpenGLLinkedProgram() {
+#include "BlackPearl/RHI/RHIShader.h"
+#include <BlackPearl/Renderer/Renderer.h>
 
-		}
-	};
+namespace BlackPearl {
+
 
 	class Shader : public RefCounter<IShader>
 	{
 	public:
 		ShaderDesc desc;
 		//TODO:: use glProgramBinary
-		Shader(const ShaderDesc& _desc, const void* binaryCode, size_t );
+		Shader(const ShaderDesc& _desc, const void* binaryCode, size_t binarySize);
 		Shader(const ShaderDesc& _desc, const std::string& filepath);
 		~Shader();
 		void Bind()const;
@@ -65,4 +62,10 @@ namespace BlackPearl {
 
 
 	};
+
+    class FOpenGLLinkedProgram {
+    public :
+        GLuint		Program;
+        bool		bDrawn;
+    };
 }
