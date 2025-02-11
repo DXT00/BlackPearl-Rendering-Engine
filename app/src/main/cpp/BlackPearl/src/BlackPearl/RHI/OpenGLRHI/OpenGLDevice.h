@@ -1,6 +1,6 @@
 #pragma once
-#include "../RHIDevice.h"
 #include "../RefCountPtr.h"
+#include "../RHIDevice.h"
 #include "../RHIPipeline.h"
 #include "../RHIFrameBuffer.h"
 #include "../RHIDefinitions.h"
@@ -12,23 +12,30 @@
 #include "../OpenGLRHI/OpenGLDriver/OpenGLDrvPrivate.h"
 #include "BlackPearl/Core/Container/TBitArray.h"
 namespace BlackPearl {
+
     class OpenGLViewport;
+	class FOpenGLContextState;
+	class OpenGLContext;
+	class Shader;
+	class BoundShaderState;
+	class FOpenGLRHIState;
+	class FOpenGLLinkedProgram;
+	class FOpenGLStream;
+
+
 	class Device :public RefCounter<IDevice>
 	{
 	public:
-		friend class CommandList;
+
 		Device();
-		virtual ~Device() override {}
+		~Device() {}
 
-
-
-
-		virtual TextureHandle createTexture(TextureDesc& d) ;
+		virtual TextureHandle createTexture(TextureDesc& d) override;
 
 		TextureHandle createHandleForNativeTexture(uint32_t objectType, RHIObject texture, const TextureDesc& desc) override;
 
 		BufferHandle createBuffer(const BufferDesc& d) override;
-		virtual FramebufferHandle createFramebuffer(const FramebufferDesc& desc);
+		virtual FramebufferHandle createFramebuffer(const FramebufferDesc& desc) override;
 
 		void* mapBuffer(IBuffer* b, CpuAccessMode mapFlags) override;
 		void unmapBuffer(IBuffer* b) override;
@@ -71,15 +78,22 @@ namespace BlackPearl {
 
 
 		static DeviceHandle createDevice();
+
+		friend class CommandList;
+
 	public:
-        class FOpenGLContextState;
-        class OpenGLContext;
-        class Shader;
-        class BoundShaderState;
-        class FOpenGLRHIState;
-        class FOpenGLLinkedProgram;
-        class FOpenGLStream;
+        
 		void CachedBindUniformBuffer(FOpenGLContextState& ContextState, GLuint Buffer);
+
+
+		IBoundShaderState* RHICreateBoundShaderState_Internal(
+			IInputLayout* VertexDeclarationRHI,
+			IShader* VertexShaderRHI,
+			IShader* PixelShaderRHI,
+			IShader* GeometryShaderRHI,
+			bool bFromPSOFileCache
+		);
+
 
 	protected:
 		void InitializeStateResources();
@@ -102,25 +116,10 @@ namespace BlackPearl {
 			}
 		}
 
-		FORCEINLINE void CachedBindArrayBuffer(FOpenGLContextState& ContextState, GLuint Buffer)
-		{
-		//	VERIFY_GL_SCOPE();
-			if (ContextState.ArrayBufferBound != Buffer)
-			{
-				glBindBuffer(GL_ARRAY_BUFFER, Buffer);
-				ContextState.ArrayBufferBound = Buffer;
-			}
-		}
-
-		void CachedBindElementArrayBuffer(FOpenGLContextState& ContextState, GLuint Buffer)
-		{
-			//VERIFY_GL_SCOPE();
-			if (ContextState.ElementArrayBufferBound != Buffer)
-			{
-				glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, Buffer);
-				ContextState.ElementArrayBufferBound = Buffer;
-			}
-		}
+		FORCEINLINE void CachedBindArrayBuffer(FOpenGLContextState& ContextState, GLuint Buffer);
+		
+		void CachedBindElementArrayBuffer(FOpenGLContextState& ContextState, GLuint Buffer);
+		
 
 		/* shader */
 		void BindPendingShaderState(FOpenGLContextState& ContextState);
@@ -148,15 +147,6 @@ namespace BlackPearl {
 		void RHIClearMRT(const bool* bClearColorArray, int32_t NumClearColors, const Color* ColorArray, bool bClearDepth, float Depth, bool bClearStencil, uint32_t Stencil);
 		
 		
-	
-		
-		BoundShaderState* RHICreateBoundShaderState_Internal(
-			IInputLayout* VertexDeclarationRHI,
-			IShader* VertexShaderRHI,
-			IShader* PixelShaderRHI,
-			IShader* GeometryShaderRHI,
-			bool bFromPSOFileCache
-		);
 
 
 		void SetupVertexArrays(FOpenGLContextState& ContextState, uint32_t BaseVertexIndex, FOpenGLStream* Streams, uint32_t NumStreams, uint32_t MaxVertices);

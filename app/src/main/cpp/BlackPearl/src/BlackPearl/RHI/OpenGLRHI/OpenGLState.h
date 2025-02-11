@@ -8,20 +8,23 @@
 #include "BlackPearl/RHI/RHIState.h"
 #include "BlackPearl/RHI/RHIDefinitions.h"
 
-
-#include "OpenGLShaderResource.h"
-#include "OpenGLBuffer.h"
-#include "OpenGLPipeline.h"
-#include "OpenGLShader.h"
-#include "OpenGLInputLayout.h"
-
+//
+//#include "OpenGLShaderResource.h"
+//#include "OpenGLBuffer.h"
+//#include "OpenGLPipeline.h"
+//#include "OpenGLShader.h"
+//#include "OpenGLInputLayout.h"
+//#include "OpenGLBoundShaderState.h"
 namespace BlackPearl {
-
+	class InputLayout;
+	class BoundShaderState;
+	class GraphicsPipeline;
+	class OpenGLUniformBuffer;
+	class Shader;
+	class FOpenGLShaderParameterCache;
 
 #define ZERO_FILLED_DUMMY_UNIFORM_BUFFER_SIZE 65536
 
-class FRenderTarget;
-class BoundShaderState;
 struct FOpenGLStream
 {
 	GLuint VertexBufferResource;
@@ -37,9 +40,6 @@ struct FOpenGLStream
 	{
 	}
 };
-
-
-
 
 struct FOpenGLSamplerStateData
 {
@@ -82,143 +82,7 @@ struct FOpenGLSamplerStateData
 	}
 };
 
-//class FOpenGLSamplerState : public FRHISamplerState
-//{
-//public:
-//	GLuint Resource;
-//	FOpenGLSamplerStateData Data;
-//
-//	~FOpenGLSamplerState();
-//};
 
-//struct FOpenGLRasterizerStateData
-//{
-//	GLenum FillMode = GL_FILL;
-//	GLenum CullMode = GL_NONE;
-//	float DepthBias = 0.0f;
-//	float SlopeScaleDepthBias = 0.0f;
-//	ERasterizerDepthClipMode DepthClipMode = ERasterizerDepthClipMode::DepthClip;
-//};
-
-class FOpenGLRasterizerState : public RasterState
-{
-//public:
-//	virtual bool GetInitializer(FRasterizerStateInitializerRHI& Init) override final;
-//
-//	FOpenGLRasterizerStateData Data;
-};
-
-//struct FOpenGLDepthStencilStateData
-//{
-//	bool bZEnable;
-//	bool bZWriteEnable;
-//	GLenum ZFunc;
-//
-//
-//	bool bStencilEnable;
-//	bool bTwoSidedStencilMode;
-//	GLenum StencilFunc;
-//	GLenum StencilFail;
-//	GLenum StencilZFail;
-//	GLenum StencilPass;
-//	GLenum CCWStencilFunc;
-//	GLenum CCWStencilFail;
-//	GLenum CCWStencilZFail;
-//	GLenum CCWStencilPass;
-//	uint32_t StencilReadMask;
-//	uint32_t StencilWriteMask;
-//
-//	FOpenGLDepthStencilStateData()
-//		: bZEnable(false)
-//		, bZWriteEnable(true)
-//		, ZFunc(GL_LESS)
-//		, bStencilEnable(false)
-//		, bTwoSidedStencilMode(false)
-//		, StencilFunc(GL_ALWAYS)
-//		, StencilFail(GL_KEEP)
-//		, StencilZFail(GL_KEEP)
-//		, StencilPass(GL_KEEP)
-//		, CCWStencilFunc(GL_ALWAYS)
-//		, CCWStencilFail(GL_KEEP)
-//		, CCWStencilZFail(GL_KEEP)
-//		, CCWStencilPass(GL_KEEP)
-//		, StencilReadMask(0xFFFFFFFF)
-//		, StencilWriteMask(0xFFFFFFFF)
-//	{
-//	}
-//};
-
-class FOpenGLDepthStencilState : public DepthStencilState
-{
-public:
-    FOpenGLDepthStencilState()
-    :bTwoSidedStencilMode(false){
-
-    }
-    bool bTwoSidedStencilMode;
-//public:
-//	virtual bool GetInitializer(FDepthStencilStateInitializerRHI& Init) override final;
-//
-//	FOpenGLDepthStencilStateData Data;
-};
-
-//struct FOpenGLBlendStateData
-//{
-//	struct FRenderTarget
-//	{
-//		bool bAlphaBlendEnable;
-//		GLenum ColorBlendOperation;
-//		GLenum ColorSourceBlendFactor;
-//		GLenum ColorDestBlendFactor;
-//		bool bSeparateAlphaBlendEnable;
-//		GLenum AlphaBlendOperation;
-//		GLenum AlphaSourceBlendFactor;
-//		GLenum AlphaDestBlendFactor;
-//		uint32_t ColorWriteMaskR : 1;
-//		uint32_t ColorWriteMaskG : 1;
-//		uint32_t ColorWriteMaskB : 1;
-//		uint32_t ColorWriteMaskA : 1;
-//	};
-//
-//	static_vector<FRenderTarget, c_MaxRenderTargets> RenderTargets;
-//
-//	bool bUseAlphaToCoverage;
-//
-//	FOpenGLBlendStateData()
-//	{
-//		bUseAlphaToCoverage = false;
-//		for (int32_t i = 0; i < c_MaxRenderTargets; ++i)
-//		{
-//			FRenderTarget& Target = RenderTargets[i];
-//			Target.bAlphaBlendEnable = false;
-//			Target.ColorBlendOperation = GL_NONE;
-//			Target.ColorSourceBlendFactor = GL_NONE;
-//			Target.ColorDestBlendFactor = GL_NONE;
-//			Target.bSeparateAlphaBlendEnable = false;
-//			Target.AlphaBlendOperation = GL_NONE;
-//			Target.AlphaSourceBlendFactor = GL_NONE;
-//			Target.AlphaDestBlendFactor = GL_NONE;
-//			Target.ColorWriteMaskR = false;
-//			Target.ColorWriteMaskG = false;
-//			Target.ColorWriteMaskB = false;
-//			Target.ColorWriteMaskA = false;
-//		}
-//	}
-//};
-
-class FOpenGLBlendState : public BlendState
-{
-	/*FBlendStateInitializerRHI RHIInitializer;
-public:
-	FOpenGLBlendState(const FBlendStateInitializerRHI& Initializer) : RHIInitializer(Initializer) {}
-	virtual bool GetInitializer(FBlendStateInitializerRHI& Init) override final
-	{
-		Init = RHIInitializer;
-		return true;
-	}*/
-
-	//FOpenGLBlendStateData Data;
-};
 class FOpenGLSamplerState 
 {
 public:
@@ -329,10 +193,10 @@ struct FOpenGLCommonState
 
 struct FOpenGLContextState final : public FOpenGLCommonState
 {
-	FOpenGLRasterizerState			RasterizerState;
-	FOpenGLDepthStencilState		DepthStencilState;
+	RasterState						RasterizerState;
+	DepthStencilState				DepthStencilState;
 	uint32_t						StencilRef;
-	FOpenGLBlendState				BlendState;
+	BlendState						BlendState;
 	GLuint							Framebuffer;
 	uint32_t						RenderTargetWidth;
 	uint32_t						RenderTargetHeight;
@@ -358,7 +222,7 @@ struct FOpenGLContextState final : public FOpenGLCommonState
 	int32_t							FirstNonzeroRenderTarget;
 	bool							bAlphaToCoverageEnabled;
 
-	InputLayout* VertexDecl;
+	InputLayout*					VertexDecl;
 	FOpenGLCachedAttr				VertexAttrs[NUM_OPENGL_VERTEX_STREAMS];
 	FOpenGLStream					VertexStreams[NUM_OPENGL_VERTEX_STREAMS];
 
@@ -432,10 +296,9 @@ struct FOpenGLContextState final : public FOpenGLCommonState
 
 struct FOpenGLRHIState final : public FOpenGLCommonState
 {
-	//FOpenGLRasterizerState			RasterizerState;
-	//FOpenGLDepthStencilState		DepthStencilState;
+	
 	RasterState			RasterizerState;
-    FOpenGLDepthStencilState		DepthStencilState;
+    DepthStencilState		DepthStencilState;
 	BlendState				BlendState;
 
 	uint32_t							StencilRef;
@@ -475,8 +338,8 @@ struct FOpenGLRHIState final : public FOpenGLCommonState
 	FOpenGLStream					Streams[NUM_OPENGL_VERTEX_STREAMS];
 
 	// we null this when the we dirty PackedGlobalUniformDirty. Thus we can skip all of CommitNonComputeShaderConstants if it matches the current program
-	//FOpenGLLinkedProgram* LinkedProgramAndDirtyFlag;
-	//FOpenGLShaderParameterCache* ShaderParameters;
+	FOpenGLLinkedProgram*			LinkedProgramAndDirtyFlag;
+	FOpenGLShaderParameterCache*	ShaderParameters;
 
 	BoundShaderState*	    BoundShaderState;
 	GraphicsPipeline*		GraphicsPipline;
@@ -525,10 +388,10 @@ struct FOpenGLRHIState final : public FOpenGLCommonState
 		, NumPrimitives(0)
 		, MinVertexIndex(0)
 		, IndexDataStride(0)
-	/*	, LinkedProgramAndDirtyFlag(nullptr)
+		, LinkedProgramAndDirtyFlag(nullptr)
 		, ShaderParameters(NULL)
 		, BoundShaderState(NULL)
-		, CurrentComputeShader(NULL)*/
+		/*	, CurrentComputeShader(NULL)*/
 		, UpVertexBufferBytes(0)
 		, UpIndexBufferBytes(0)
 		, UpVertexBuffer(0)
@@ -547,7 +410,7 @@ struct FOpenGLRHIState final : public FOpenGLCommonState
 		CleanupResources();
 	}
 
-	virtual void InitializeResources(int32_t NumCombinedTextures, int32_t NumComputeUAVUnits) override;
+	virtual void InitializeResources(int32_t NumCombinedTextures, int32_t NumComputeUAVUnits) override{}
 
 	virtual void CleanupResources() override
 	{
@@ -558,24 +421,4 @@ struct FOpenGLRHIState final : public FOpenGLCommonState
 	}
 };
 
-//template<>
-//struct TOpenGLResourceTraits<FRHISamplerState>
-//{
-//	typedef FOpenGLSamplerState TConcreteType;
-//};
-//template<>
-//struct TOpenGLResourceTraits<FRHIRasterizerState>
-//{
-//	typedef FOpenGLRasterizerState TConcreteType;
-//};
-//template<>
-//struct TOpenGLResourceTraits<FRHIDepthStencilState>
-//{
-//	typedef FOpenGLDepthStencilState TConcreteType;
-//};
-//template<>
-//struct TOpenGLResourceTraits<FRHIBlendState>
-//{
-//	typedef FOpenGLBlendState TConcreteType;
-//};
 }

@@ -3,19 +3,35 @@
 #include "OpenGLTexture.h"
 #include "OpenGLCubeMapTexture.h"
 #include "OpenGLImageTexture2D.h"
-#include "OpenGLFrameBuffer.h"
+#include "OpenGLBindingLayout.h"
 #include "OpenGLCommandList.h"
-#include "OpenGLUtil.h"
-#include "BlackPearl/Core.h"
-#include "BlackPearl/Log.h"
-#include "BlackPearl/RHI/OpenGLRHI/OpenGLDriver/OpenGLDrvPrivate.h"
+#include "OpenGLShader.h"
 #include "BlackPearl/RHI/RHIGlobals.h"
-#include "BlackPearl/RHI/DynamicRHI.h"
-#include "BlackPearl/RHI/RHIDefinitions.h"
+#include "BlackPearl/RHI/OpenGLRHI/OpenGLProgramBinaryFileCache.h"
+#include "OpenGLState.h"
+//#include "OpenGLFrameBuffer.h"
+//
+//
+//#include "OpenGLUtil.h"
+//#include "BlackPearl/Core.h"
+//#include "BlackPearl/Log.h"
+//
+//
+//#include "BlackPearl/RHI/DynamicRHI.h"
+//#include "BlackPearl/RHI/RHIDefinitions.h"
+//#include "BlackPearl/RHI/RHITexture.h"
+//#include "BlackPearl/RHI/RHIBindingLayoutDesc.h"
+//#include "OpenGLDriver/OpenGLDrv.h"
+
+
+#include "OpenGLDriver/OpenGLDrvPrivate.h"
 
 
 namespace BlackPearl 
 {
+
+	extern class Log* g_Log;
+
 	extern GLint GMaxOpenGLColorSamples;
 	extern GLint GMaxOpenGLDepthSamples;
 	extern GLint GMaxOpenGLIntegerSamples;
@@ -53,14 +69,14 @@ namespace BlackPearl
 
 	TextureHandle Device::createHandleForNativeTexture(uint32_t objectType, RHIObject texture, const TextureDesc& desc)
 	{
-		return TextureHandle();
+		return nullptr;
 	}
 
 
 
 	FramebufferHandle Device::createFramebuffer(const FramebufferDesc& desc)
 	{
-		return FramebufferHandle();
+		return nullptr;
 	}
 
 	void* Device::mapBuffer(IBuffer* b, CpuAccessMode mapFlags)
@@ -218,16 +234,7 @@ namespace BlackPearl
 
 		return DeviceHandle(device);
 	}
-    void CachedBindUniformBuffer(FOpenGLContextState& ContextState, GLuint Buffer)
-    {
-        //VERIFY_GL_SCOPE();
-        //check(IsInRenderingThread() || IsInRHIThread());
-        if (ContextState.UniformBufferBound != Buffer)
-        {
-            glBindBuffer(GL_UNIFORM_BUFFER, Buffer);
-            ContextState.UniformBufferBound = Buffer;
-        }
-    }
+
 	void Device::InitializeStateResources()
 	{
 		SharedContextState.InitializeResources(FOpenGL::GetMaxCombinedTextureImageUnits(), FOpenGL::GetMaxCombinedUAVUnits());
@@ -943,6 +950,30 @@ namespace BlackPearl
 			ContextState.bAlphaToCoverageEnabled = PendingState.bAlphaToCoverageEnabled;
 		}
 	}
+
+	void Device::CachedBindArrayBuffer(FOpenGLContextState& ContextState, GLuint Buffer)
+	{
+		
+			//	VERIFY_GL_SCOPE();
+			if (ContextState.ArrayBufferBound != Buffer)
+			{
+				glBindBuffer(GL_ARRAY_BUFFER, Buffer);
+				ContextState.ArrayBufferBound = Buffer;
+			}
+		
+
+	}
+	void Device::CachedBindElementArrayBuffer(FOpenGLContextState& ContextState, GLuint Buffer)
+	{
+		
+			//VERIFY_GL_SCOPE();
+			if (ContextState.ElementArrayBufferBound != Buffer)
+			{
+				glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, Buffer);
+				ContextState.ElementArrayBufferBound = Buffer;
+			}
+		
+	}
 	void Device::SetupTexturesForDraw(FOpenGLContextState& ContextState)
 	{
 		SetupTexturesForDraw(ContextState, PendingState.BoundShaderState, FOpenGL::GetMaxCombinedTextureImageUnits());
@@ -1086,59 +1117,62 @@ namespace BlackPearl
 	{
 	}
 
-	template <typename StateType>
-	void Device::SetupTexturesForDraw(FOpenGLContextState& ContextState, const StateType& ShaderState, int32_t MaxTexturesNeeded)
-	{
-		//VERIFY_GL_SCOPE();
-		//SCOPE_CYCLE_COUNTER_DETAILED(STAT_OpenGLTextureBindTime);
-
-		int32_t MaxProgramTexture = 0;
-		const TBitArray<>& NeededBits = ShaderState->GetTextureNeeds(MaxProgramTexture);
-
-		for (int32_t TextureStageIndex = 0; TextureStageIndex <= MaxProgramTexture; ++TextureStageIndex)
-		{
-			if (!NeededBits[TextureStageIndex])
-			{
-				// Current program doesn't make use of this texture stage. No matter what UnrealEditor wants to have on in,
-				// it won't be useful for this draw, so telling OpenGL we don't really need it to give the driver
-				// more leeway in memory management, and avoid false alarms about same texture being set on
-				// texture stage and in framebuffer.
-				//CachedSetupTextureStage(ContextState, TextureStageIndex, GL_NONE, 0, -1, 1);
-			}
-			else
-			{
-				const FTextureStage& TextureStage = PendingState.Textures[TextureStageIndex];
-
-				//CachedSetupTextureStage(ContextState, TextureStageIndex, TextureStage.Target, TextureStage.Resource, TextureStage.LimitMip, TextureStage.NumMips);
-
-				bool bExternalTexture = (TextureStage.Target == GL_TEXTURE_EXTERNAL_OES);
-				if (!bExternalTexture)
-				{
-					FOpenGLSamplerState* PendingSampler = PendingState.SamplerStates[TextureStageIndex];
-
-					if (ContextState.SamplerStates[TextureStageIndex] != PendingSampler)
-					{
-						FOpenGL::BindSampler(TextureStageIndex, PendingSampler ? PendingSampler->Resource : 0);
-						ContextState.SamplerStates[TextureStageIndex] = PendingSampler;
-					}
-				}
-				else if (TextureStage.Target != GL_TEXTURE_BUFFER)
-				{
-					FOpenGL::BindSampler(TextureStageIndex, 0);
-					ContextState.SamplerStates[TextureStageIndex] = nullptr;
-					ApplyTextureStage(ContextState, TextureStageIndex, TextureStage, PendingState.SamplerStates[TextureStageIndex]);
-				}
-			}
-		}
-
-		// For now, continue to clear unused stages
-		for (int32_t TextureStageIndex = MaxProgramTexture + 1; TextureStageIndex < MaxTexturesNeeded; ++TextureStageIndex)
-		{
-			CachedSetupTextureStage(ContextState, TextureStageIndex, GL_NONE, 0, -1, 1);
-		}
-	}
+  
 
 
+//	template <typename StateType>
+//	void Device::SetupTexturesForDraw(FOpenGLContextState& ContextState, const StateType& ShaderState, int32_t MaxTexturesNeeded)
+//	{
+//		//VERIFY_GL_SCOPE();
+//		//SCOPE_CYCLE_COUNTER_DETAILED(STAT_OpenGLTextureBindTime);
+//
+//		int32_t MaxProgramTexture = 0;
+//		const TBitArray<>& NeededBits = ShaderState->GetTextureNeeds(MaxProgramTexture);
+//
+//		for (int32_t TextureStageIndex = 0; TextureStageIndex <= MaxProgramTexture; ++TextureStageIndex)
+//		{
+//			if (!NeededBits[TextureStageIndex])
+//			{
+//				// Current program doesn't make use of this texture stage. No matter what UnrealEditor wants to have on in,
+//				// it won't be useful for this draw, so telling OpenGL we don't really need it to give the driver
+//				// more leeway in memory management, and avoid false alarms about same texture being set on
+//				// texture stage and in framebuffer.
+//				//CachedSetupTextureStage(ContextState, TextureStageIndex, GL_NONE, 0, -1, 1);
+//			}
+//			else
+//			{
+//				const FTextureStage& TextureStage = PendingState.Textures[TextureStageIndex];
+//
+//				//CachedSetupTextureStage(ContextState, TextureStageIndex, TextureStage.Target, TextureStage.Resource, TextureStage.LimitMip, TextureStage.NumMips);
+//
+//				bool bExternalTexture = (TextureStage.Target == GL_TEXTURE_EXTERNAL_OES);
+//				if (!bExternalTexture)
+//				{
+//					FOpenGLSamplerState* PendingSampler = PendingState.SamplerStates[TextureStageIndex];
+//
+//					if (ContextState.SamplerStates[TextureStageIndex] != PendingSampler)
+//					{
+//						FOpenGL::BindSampler(TextureStageIndex, PendingSampler ? PendingSampler->Resource : 0);
+//						ContextState.SamplerStates[TextureStageIndex] = PendingSampler;
+//					}
+//				}
+//				else if (TextureStage.Target != GL_TEXTURE_BUFFER)
+//				{
+//					FOpenGL::BindSampler(TextureStageIndex, 0);
+//					ContextState.SamplerStates[TextureStageIndex] = nullptr;
+//					ApplyTextureStage(ContextState, TextureStageIndex, TextureStage, PendingState.SamplerStates[TextureStageIndex]);
+//				}
+//			}
+//		}
+//
+//		// For now, continue to clear unused stages
+//		for (int32_t TextureStageIndex = MaxProgramTexture + 1; TextureStageIndex < MaxTexturesNeeded; ++TextureStageIndex)
+//		{
+//			CachedSetupTextureStage(ContextState, TextureStageIndex, GL_NONE, 0, -1, 1);
+//		}
+//	}
+//
+//
 
 	void Device::SetupVertexArrays(FOpenGLContextState& ContextState, uint32_t BaseVertexIndex, FOpenGLStream* Streams, uint32_t NumStreams, uint32_t MaxVertices)
 	{
@@ -1589,4 +1623,8 @@ namespace BlackPearl
             ContextState.DepthMaxZ = PendingState.DepthMaxZ;
         }
     }
+
+
+
+
 }

@@ -1,4 +1,7 @@
 #include "pch.h"
+#include "OpenGLDevice.h"
+#include "OpenGLBoundShaderState.h"
+#include "OpenGLContext.h"
 #include "OpenGLCommandList.h"
 #include "OpenGLBufferResource.h"
 #include "OpenGLBindingSet.h"
@@ -87,10 +90,10 @@ namespace BlackPearl {
 	void CommandList::setPushConstants(const void* data, size_t byteSize)
 	{
 	}
-	void CommandList::setBoundShaderState(BoundShaderState* state)
+	void CommandList::setBoundShaderState(IBoundShaderState* state)
 	{
-		FOpenGLBoundShaderState* BoundShaderState = static_cast<FOpenGLBoundShaderState*>(state);
-		m_Device->PendingState.BoundShaderState = BoundShaderState;
+        BoundShaderState* BoundShaderState_ = static_cast<BoundShaderState*>(state);
+		m_Device->PendingState.BoundShaderState = BoundShaderState_;
 
 		// Prevent transient bound shader states from being recreated for each use by keeping a history of the most recently used bound shader states.
 		// The history keeps them alive, and the bound shader state cache allows them to be reused if needed.
@@ -196,10 +199,10 @@ namespace BlackPearl {
 
 		setBoundShaderState(
 			m_Device->RHICreateBoundShaderState_Internal(
-				static_cast<InputLayout*>(state.pipeline->desc.inputLayout.Get()),
-				static_cast<Shader*>(state.pipeline->desc.VS.Get()),
-				static_cast<Shader*>(state.pipeline->desc.PS.Get()),
-				static_cast<Shader*>(state.pipeline->desc.GS.Get()),
+				state.pipeline->desc.inputLayout.Get(),
+				state.pipeline->desc.VS.Get(),
+				state.pipeline->desc.PS.Get(),
+				state.pipeline->desc.GS.Get(),
 				state.pipeline->desc.bFromPSOFileCache
 			)
 		);
@@ -364,6 +367,12 @@ namespace BlackPearl {
 	{
 		return ResourceStates();
 	}
+
+    IDevice* CommandList::getDevice()
+    {
+        return m_Device;
+    }
+
 	ResourceStates CommandList::getBufferState(IBuffer* buffer)
 	{
 		return ResourceStates();

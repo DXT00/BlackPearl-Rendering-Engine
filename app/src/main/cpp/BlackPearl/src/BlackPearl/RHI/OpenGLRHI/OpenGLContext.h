@@ -1,7 +1,6 @@
 #pragma once
-#include "OpenGLState.h"
 namespace BlackPearl {
-
+    struct FPlatformOpenGLDevice;
 	class OpenGLContext
 	{
 

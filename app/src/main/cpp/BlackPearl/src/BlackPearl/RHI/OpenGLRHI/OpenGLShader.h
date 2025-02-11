@@ -4,14 +4,13 @@
 #include<string>
 #include<memory>
 #include <unordered_map>
-#include "BlackPearl/Component/LightComponent/LightSources.h"
 #include "BlackPearl/Math/vector.h"
 #include "BlackPearl/RHI/RHIShader.h"
 #include <BlackPearl/Renderer/Renderer.h>
 
 namespace BlackPearl {
 
-
+	class LightSources;
 	class Shader : public RefCounter<IShader>
 	{
 	public:
@@ -27,7 +26,7 @@ namespace BlackPearl {
 		std::unordered_map<GLenum, std::string> Shader::PreProcess(const std::string& source, const std::string& commonSource);
 		void Compile(const std::unordered_map<GLenum, std::string>& shaderSources);
 
-		void SetLightUniform( LightSources lightSources);
+		void SetLightUniform(LightSources lightSources);
 
 		void SetUniform1i(const std::string &name, int val) const;
 		void SetUniform1ui(const std::string & name, const unsigned int val) const;
@@ -47,7 +46,10 @@ namespace BlackPearl {
 		std::string GetPath() { return m_ShaderPath; }
 		const ShaderDesc& getDesc() const override { return desc; }
 		void getBytecode(const void** ppBytecode, size_t* pSize) const override;
-	private:
+
+        GLuint m_ShaderID = 0;
+
+    private:
 		Shader(
 			const std::string& vertexSrc, 
 			const std::string& fragmentSrc, 
@@ -55,7 +57,7 @@ namespace BlackPearl {
 			const std::string& tessCtlSrc,
 			const std::string& tessEvlSrc);
 
-		int32_t m_RendererID = -1;
+        GLuint m_RendererID = -1;
 		std::string m_ShaderPath;
 		std::string m_FragmentCommonStruct;
 		std::string m_CommonStructPath="assets/shaders/common/CommonStruct.glsl";
@@ -65,6 +67,7 @@ namespace BlackPearl {
 
     class FOpenGLLinkedProgram {
     public :
+       // FOpenGLLinkedProgram(Shader* vertexShader, Shader pixelShader, Shader* geometryShader);
         GLuint		Program;
         bool		bDrawn;
     };

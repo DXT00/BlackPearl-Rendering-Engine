@@ -1,12 +1,5 @@
 #pragma once
-namespace BlackPearl{
-	enum
-	{
-		OGL_MAX_UNIFORM_BUFFER_BINDINGS = 12,	// @todo-mobile: Remove me
-		OGL_FIRST_UNIFORM_BUFFER = 0,			// @todo-mobile: Remove me
-		OGL_UAV_NOT_SUPPORTED_FOR_GRAPHICS_UNIT = -1, // for now, only CS and PS supports UAVs/ images
-	};
-
+namespace BlackPearl {
 
 	/**
 	 * Caching of OpenGL uniform parameters.
@@ -36,9 +29,9 @@ namespace BlackPearl{
 		 * Commit shader parameters to the currently bound program.
 		 * @param ParameterTable - Information on the bound uniform arrays for the program.
 		 */
-		/*void CommitPackedGlobals(const FOpenGLLinkedProgram* LinkedProgram, int32_t Stage);
+		 /*void CommitPackedGlobals(const FOpenGLLinkedProgram* LinkedProgram, int32_t Stage);
 
-		void CommitPackedUniformBuffers(FOpenGLLinkedProgram* LinkedProgram, int32_t Stage, FRHIUniformBuffer** UniformBuffers, const TArray<CrossCompiler::FUniformBufferCopyInfo>& UniformBuffersCopyInfo);*/
+		 void CommitPackedUniformBuffers(FOpenGLLinkedProgram* LinkedProgram, int32_t Stage, FRHIUniformBuffer** UniformBuffers, const TArray<CrossCompiler::FUniformBufferCopyInfo>& UniformBuffersCopyInfo);*/
 
 	private:
 
@@ -63,4 +56,5 @@ namespace BlackPearl{
 	};
 
 
-	
+
+}

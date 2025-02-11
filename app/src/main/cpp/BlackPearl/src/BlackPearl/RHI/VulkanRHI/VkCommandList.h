@@ -26,6 +26,8 @@
 #include "BlackPearl/RHI/RHI.h"
 #include "BlackPearl/RHI/RHICommandList.h"
 #include "BlackPearl/RHI/RHIState.h"
+#include "BlackPearl/RHI/RHIBoundShaderState.h"
+
 #include "VkDevice.h"
 #include "VkQueue.h"
 #include "VkBuffer.h"
@@ -67,7 +69,7 @@ namespace BlackPearl {
 
         void setPushConstants(const void* data, size_t byteSize) override;
 
-        void setBoundShaderState(BoundShaderState* state) override;
+        void setBoundShaderState(IBoundShaderState* state) override;
         void setGraphicsState(const GraphicsState& state) override;
         void setComputeState(const ComputeState& state) override;
 

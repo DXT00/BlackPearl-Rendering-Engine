@@ -26,6 +26,7 @@
 #include "RHIState.h"
 #include "RHIQuery.h"
 #include "RHIDefinitions.h"
+#include "RHIBoundShaderState.h"
 
 namespace BlackPearl {
     class IDevice;
@@ -81,7 +82,7 @@ namespace BlackPearl {
         // Sets the push constants block on the command list, aka "root constants" on DX12.
         // Only valid after setGraphicsState or setComputeState etc.
         virtual void setPushConstants(const void* data, size_t byteSize) = 0;
-        virtual void setBoundShaderState(BoundShaderState* state) = 0;
+        virtual void setBoundShaderState(IBoundShaderState* state) = 0;
 
         virtual void setDepthStencilaState(DepthStencilState* state) {}
         virtual void setRasterizerState(RasterState* state) {}
@@ -166,7 +167,7 @@ namespace BlackPearl {
         virtual IDevice* getDevice() = 0;
         virtual const CommandListParameters& getDesc() = 0;
 
-        virtual const GraphicsState& GetLastGraphicsState() const = 0;
+        virtual const GraphicsState& GetLastGraphicsState() const {};
         virtual void setViewport(float minX, float minY, float minZ, float maxX, float maxY, float maxZ) {}
         virtual void setScissorRect(bool bEnable, uint32_t minX, uint32_t minY, uint32_t maxX, uint32_t maxY) {}
     };

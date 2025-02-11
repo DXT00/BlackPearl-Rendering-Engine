@@ -10,6 +10,13 @@
 
 namespace BlackPearl {
 
+    enum
+    {
+	    OGL_MAX_UNIFORM_BUFFER_BINDINGS = 12,	
+	    OGL_FIRST_UNIFORM_BUFFER = 0,			
+	    OGL_UAV_NOT_SUPPORTED_FOR_GRAPHICS_UNIT = -1, 
+    };
+
  /** Maximum number of miplevels in a texture. */
     enum { MAX_TEXTURE_MIP_COUNT = 15 };
 
@@ -400,7 +407,7 @@ namespace BlackPearl {
             constexpr StencilOpDesc& setPassOp(StencilOp value) { passOp = value; return *this; }
             constexpr StencilOpDesc& setStencilFunc(ComparisonFunc value) { stencilFunc = value; return *this; }
         };
-
+        bool            bTwoSidedStencilMode = false;
         bool            depthTestEnable = true;
         bool            depthWriteEnable = true;
         ComparisonFunc  depthFunc = ComparisonFunc::Less;

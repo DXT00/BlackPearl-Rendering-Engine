@@ -3,4 +3,5 @@
 
 namespace BlackPearl {
 	GLint GMaxOpenGLTextureFilterAnisotropic = 1;
+
 }

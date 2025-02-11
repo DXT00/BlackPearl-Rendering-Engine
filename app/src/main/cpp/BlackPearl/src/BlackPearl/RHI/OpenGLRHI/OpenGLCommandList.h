@@ -1,23 +1,16 @@
 #pragma once
 
-#include "OpenGLDevice.h"
-#include "OpenGLContext.h"
-#include "OpenGLViewport.h"
+#include "BlackPearl/RHI/RefCountPtr.h"
 #include "BlackPearl/RHI/RHICommandList.h"
-#include "BlackPearl/RHI/RHIState.h"
 
 namespace BlackPearl {
+    class OpenGLContext;
+    class Device;
 
 	class CommandList :public RefCounter<ICommandList> {
         // Internal backend methods
     public:
         CommandList(Device* device, const OpenGLContext& context, const CommandListParameters& parameters);
-
-       // void executed(Queue& queue, uint64_t submissionID);
-
-        // IResource implementation
-
-        // ICommandList implementation
 
         void open() override;
         void close() override;
@@ -38,7 +31,7 @@ namespace BlackPearl {
 
         void setPushConstants(const void* data, size_t byteSize) override;
        
-        void setBoundShaderState(BoundShaderState* state) override;
+        void setBoundShaderState(IBoundShaderState* state) override;
         void setDepthStencilaState(DepthStencilState* state) override;
         void setRasterizerState(RasterState* state) override;
         void setBlendState(BlendState* state) override;
@@ -94,12 +87,11 @@ namespace BlackPearl {
         ResourceStates getTextureSubresourceState(ITexture* texture, uint32_t arraySlice, uint32_t mipLevel) override;
         ResourceStates getBufferState(IBuffer* buffer) override;
 
-        IDevice* getDevice() override { return m_Device; }
+        IDevice* getDevice() override;
         const CommandListParameters& getDesc() override { return m_CommandListParameters; }
 
       //  TrackedCommandBufferPtr getCurrentCmdBuf() const { return m_CurrentCmdBuf; }
 
-      //  const GraphicsState& GetLastGraphicsState() const { return m_CurrentGraphicsState; }
         void setViewport(float minX, float minY, float minZ, float maxX, float maxY, float maxZ);
         void setScissorRect(bool bEnable, uint32_t minX, uint32_t minY, uint32_t maxX, uint32_t maxY);
 
