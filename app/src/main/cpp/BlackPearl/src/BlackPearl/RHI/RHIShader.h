@@ -109,7 +109,7 @@ struct CustomSemantic
 };
 struct ShaderDesc
 {
-    ShaderType shaderType = ShaderType::None;
+    ShaderType shaderType = ShaderType::All;
     std::string debugName;
     std::string entryName = "main";
     //glsl file

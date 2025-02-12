@@ -12,7 +12,7 @@
 //#include "OpenGLFrameBuffer.h"
 //
 //
-//#include "OpenGLUtil.h"
+#include "OpenGLUtil.h"
 //#include "BlackPearl/Core.h"
 //#include "BlackPearl/Log.h"
 //

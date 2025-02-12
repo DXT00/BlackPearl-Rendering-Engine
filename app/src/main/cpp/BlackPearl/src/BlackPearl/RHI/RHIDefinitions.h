@@ -551,18 +551,23 @@ namespace BlackPearl {
         constexpr RasterState& disableQuadFill() { quadFillEnable = false; return *this; }
         constexpr RasterState& setSamplePositions(const char* x, const char* y, int count) { for (int i = 0; i < count; i++) { samplePositionsX[i] = x[i]; samplePositionsY[i] = y[i]; } return *this; }
     };
-    enum class ShaderType : uint16_t
+
+
+    enum ShaderType : uint16_t
     {
-        None = 0,
 
-        Compute,
 
-        Vertex,
+        Vertex = 0,
+        Pixel,
+        Geometry,
         Hull,
         Domain,
-        Geometry,
-        Pixel,
-        Amplification,
+        NUM_NON_COMPUTE_SHADER_STAGES,
+        Compute = NUM_NON_COMPUTE_SHADER_STAGES,
+
+        NUM_COMPILE_SHADER_STAGES,
+
+        Amplification = NUM_COMPILE_SHADER_STAGES,
         Mesh,
         AllGraphics,
 

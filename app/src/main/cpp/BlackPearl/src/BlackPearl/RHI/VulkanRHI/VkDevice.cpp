@@ -1017,7 +1017,7 @@ namespace BlackPearl {
 
 		BindingVector<VkDescriptorSetLayout> descriptorSetLayouts;
 		uint32_t pushConstantSize = 0;
-		ShaderType pushConstantVisibility = ShaderType::None;
+		ShaderType pushConstantVisibility = ShaderType::All;
 		for (const BindingLayoutHandle& _layout : desc.globalBindingLayouts)
 		{
 			BindingLayout* layout = static_cast<BindingLayout*>(_layout.Get());

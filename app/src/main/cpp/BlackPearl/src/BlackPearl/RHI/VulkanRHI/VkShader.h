@@ -26,7 +26,7 @@ namespace BlackPearl {
         std::vector<ShaderSpecialization> specializationConstants;
 
         explicit EShader(const VulkanContext& context)
-            : desc(ShaderType::None)
+            : desc(ShaderType::All)
             , m_Context(context)
         { }
 

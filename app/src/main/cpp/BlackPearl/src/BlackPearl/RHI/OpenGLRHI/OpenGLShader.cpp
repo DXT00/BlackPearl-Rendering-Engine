@@ -11,15 +11,71 @@
 #include "BlackPearl/Component/LightComponent/LightSources.h"
 #include "BlackPearl/Component/TransformComponent/Transform.h"
 #include "OpenGLBoundShaderState.h"
+#include "OpenGLShaderResource.h"
 #include "BlackPearl/Log.h"
 
 #include "OpenGLDevice.h"
 #include "OpenGLState.h"
 #include "BlackPearl/RHI/RHIShader.h"
 
+
 namespace BlackPearl
 {
+#define STATS 1
+    static uint32_t GCurrentDriverProgramBinaryAllocation = 0;
+    static uint32_t GNumPrograms = 0;
+
     extern class Log* g_Log;
+
+    // Helper to verify a compiled shader 
+// returns true if shader was compiled without any errors or errors should be ignored
+    static bool VerifyShaderCompilation(GLuint Resource, GLenum type)
+    {
+       // VERIFY_GL_SCOPE();
+        // Verify that an OpenGL shader has compiled successfully.
+       // SCOPE_CYCLE_COUNTER(STAT_OpenGLShaderCompileVerifyTime);
+       // {
+            GLint CompileStatus;
+            glGetShaderiv(Resource, GL_COMPILE_STATUS, &CompileStatus);
+            if (CompileStatus != GL_TRUE)
+            {
+                
+                    GLint LogLength;
+                    glGetShaderiv(Resource, GL_INFO_LOG_LENGTH, &LogLength);
+                    
+#if GE_PLATFORM_ANDROID
+                    if (LogLength == 0)
+                    {
+                        // make it big anyway
+                        // there was a bug in android 2.2 where glGetShaderiv would return 0 even though there was a error message
+                        // https://code.google.com/p/android/issues/detail?id=9953
+                        LogLength = 4096;
+                    }
+#endif
+                    std::vector<GLchar> infoLog(LogLength);
+                    glGetShaderInfoLog(Resource, LogLength, &LogLength, &infoLog[0]);
+                    GE_ERROR_JUDGE();
+                    glDeleteShader(Resource);
+                    GE_ERROR_JUDGE();
+
+                    std::string shaderType;
+                    if (type == GL_VERTEX_SHADER)shaderType = "vertex shader";
+                    else if (type == GL_FRAGMENT_SHADER)shaderType = "fragment shader";
+                    else if (type == GL_GEOMETRY_SHADER)shaderType = "geometry shader";
+                    else if (type == GL_COMPUTE_SHADER)shaderType = "compute shader";
+                    else if (type == GL_TESS_CONTROL_SHADER)shaderType = "tessellation control shader";
+                    else if (type == GL_TESS_EVALUATION_SHADER)shaderType = "tessellation evaluation shader";
+
+
+                    GE_CORE_ERROR("{0} compile failed :{1}", shaderType, infoLog.data());
+                    GE_ASSERT(false, "Shader compliation failure!")
+                    
+                    return false;
+            }
+        //}
+        return true;
+    }
+
     static GLenum ShaderTypeFromString(const std::string &type) {
 
         if (type == "vertex")
@@ -104,10 +160,10 @@ namespace BlackPearl
             return;
         }
         m_ShaderPath = filepath;
-        std::string source = ReadFile(filepath);
+        m_GlslCode = ReadFile(filepath);
         std::string commonSource = ReadFile(m_CommonStructPath);
 
-        std::unordered_map<GLenum, std::string> shaderSources = PreProcess(source, commonSource);
+        std::unordered_map<GLenum, std::string> shaderSources = PreProcess(m_GlslCode, commonSource);
         Compile(shaderSources);
 
     }
@@ -275,6 +331,30 @@ namespace BlackPearl
             GE_ERROR_JUDGE();
         }
         m_RendererID = program;
+    }
+
+
+    void Shader::Compile(GLenum shaderType)
+    {
+        //TODO:: multi thread compile
+        //FScopeLock Lock(&GCompiledShaderCacheCS);
+        //FOpenGLCompiledShaderValue& FoundShader = GetOpenGLCompiledShaderCache().FindOrAdd(ShaderCodeKey);
+       // Resource = FoundShader.Resource;
+        if (m_ShaderID == 0)
+        {
+            //SCOPE_CYCLE_COUNTER(STAT_OpenGLShaderCompileTime);
+            m_ShaderID = FOpenGL::CreateShader(shaderType);
+
+           /* TArray<ANSICHAR> UncompressedShaderCode = FoundShader.GetUncompressedShader();
+            int32_t GlslCodeLength = UncompressedShaderCode.Num() - 1;
+            const ANSICHAR* UncompressedGlslCodeString = UncompressedShaderCode.GetData();*/
+            const GLchar* sourceCstr = m_GlslCode.c_str();
+            glShaderSource(m_ShaderID, 1, &sourceCstr, nullptr);
+            glCompileShader(m_ShaderID);
+            const bool bSuccessfullyCompiled = VerifyShaderCompilation(m_ShaderID, shaderType);
+            assert(bSuccessfullyCompiled);
+
+        }
     }
 
     void Shader::SetLightUniform(LightSources lightSources) {
@@ -465,6 +545,172 @@ namespace BlackPearl
 
     }
 
+
+
+    static void SetNewProgramStats(GLuint Program)
+    {
+
+#if STATS
+        GLint BinaryLength = 0;
+        glGetProgramiv(Program, GL_PROGRAM_BINARY_LENGTH, &BinaryLength);
+#endif
+
+        GNumPrograms++;
+#if STATS
+        GCurrentDriverProgramBinaryAllocation += BinaryLength;
+#endif
+    }
+
+
+ /**
+ * Verify that an OpenGL program has linked successfully.
+ */
+    static bool VerifyLinkedProgram(GLuint program)
+    {
+       
+
+        // Note the different functions here: glGetProgram* instead of glGetShader*.
+        GLint isLinked = 0;
+        glGetProgramiv(program, GL_LINK_STATUS, (int*)&isLinked);
+        GE_ERROR_JUDGE();
+        if (isLinked == GL_FALSE) {
+            GLint maxLength = 0;
+            glGetProgramiv(program, GL_INFO_LOG_LENGTH, &maxLength);
+            GE_ERROR_JUDGE();
+            // The maxLength includes the NULL character
+            std::vector<GLchar> infoLog(maxLength);
+            glGetProgramInfoLog(program, maxLength, &maxLength, &infoLog[0]);
+            GE_ERROR_JUDGE();
+            // We don't need the program anymore.
+            glDeleteProgram(program);
+            GE_ERROR_JUDGE();
+            // Don't leak shaders either.
+            for (auto& shader : ShaderID) {
+                glDeleteShader(shader);
+                GE_ERROR_JUDGE();
+            }
+
+            GE_CORE_ERROR("{0}", infoLog.data());
+            GE_ASSERT(false, "Shader link failure!")
+
+            return false;
+        }
+
+        return true;
+    }
+
+    static void ConfigureStageStates(FOpenGLLinkedProgram* LinkedProgram)
+    {
+        const FOpenGLLinkedProgramConfiguration& Config = LinkedProgram->Config;
+
+        if (Config.Shaders[ShaderType::Vertex].bValid)
+        {
+            LinkedProgram->ConfigureShaderStage(
+                ShaderType::Vertex,
+                OGL_FIRST_UNIFORM_BUFFER
+            );
+            //assert(LinkedProgram->StagePackedUniformInfo[ShaderType::Vertex].PackedUniformInfos.Num() <= Config.Shaders[ShaderType::Vertex].Bindings.PackedGlobalArrays.Num());
+        }
+
+        if (Config.Shaders[ShaderType::Pixel].bValid)
+        {
+            LinkedProgram->ConfigureShaderStage(
+                ShaderType::Pixel,
+                OGL_FIRST_UNIFORM_BUFFER +
+                Config.Shaders[ShaderType::Vertex].Bindings.NumUniformBuffers
+            );
+           // assert(LinkedProgram->StagePackedUniformInfo[ShaderType::Pixel].PackedUniformInfos.Num() <= Config.Shaders[ShaderType::Pixel].Bindings.PackedGlobalArrays.Num());
+        }
+
+        if (Config.Shaders[ShaderType::Geometry].bValid)
+        {
+            LinkedProgram->ConfigureShaderStage(
+                ShaderType::Geometry,
+                OGL_FIRST_UNIFORM_BUFFER +
+                Config.Shaders[ShaderType::Vertex].Bindings.NumUniformBuffers +
+                Config.Shaders[ShaderType::Pixel].Bindings.NumUniformBuffers
+            );
+           // assert(LinkedProgram->StagePackedUniformInfo[ShaderType::Geometry].PackedUniformInfos.Num() <= Config.Shaders[ShaderType::Geometry].Bindings.PackedGlobalArrays.Num());
+        }
+
+        if (Config.Shaders[ShaderType::Compute].bValid)
+        {
+            LinkedProgram->ConfigureShaderStage(
+                ShaderType::Compute,
+                OGL_FIRST_UNIFORM_BUFFER
+            );
+            //assert(LinkedProgram->StagePackedUniformInfo[ShaderType::Compute].PackedUniformInfos.Num() <= Config.Shaders[ShaderType::Compute].Bindings.PackedGlobalArrays.Num());
+        }
+    }
+
+
+    template<class TOpenGLStage0RHI, class TOpenGLStage1RHI>
+    static void BindShaderStage(FOpenGLLinkedProgramConfiguration& Config, CrossCompiler::EShaderStage NextStage, TOpenGLStage0RHI* NextStageShaderIn, CrossCompiler::EShaderStage PrevStage, TOpenGLStage1RHI* PrevStageShaderIn)
+    {
+        auto* PrevStageShader = FOpenGLDynamicRHI::ResourceCast(PrevStageShaderIn);
+        auto* NextStageShader = FOpenGLDynamicRHI::ResourceCast(NextStageShaderIn);
+
+        assert(NextStageShader && PrevStageShader);
+
+        FOpenGLLinkedProgramConfiguration::ShaderInfo& ShaderInfo = Config.Shaders[NextStage];
+        FOpenGLLinkedProgramConfiguration::ShaderInfo& PrevInfo = Config.Shaders[PrevStage];
+
+        GLuint NextStageResource = NextStageShader->Resource;
+        FOpenGLShaderBindings NextStageBindings = NextStageShader->Bindings;
+
+        ShaderInfo.Bindings = NextStageBindings;
+        ShaderInfo.Resource = NextStageResource;
+    }
+
+    static FOpenGLLinkedProgramConfiguration CreateConfig(IShader* VertexShaderRHI, IShader* PixelShaderRHI, IShader* GeometryShaderRHI)
+    {
+        Shader* VertexShader   = static_cast<Shader*>(VertexShaderRHI);
+        Shader* PixelShader    = static_cast<Shader*>(PixelShaderRHI);
+        Shader* GeometryShader = static_cast<Shader*>(GeometryShaderRHI);
+
+        FOpenGLLinkedProgramConfiguration Config;
+
+        assert(VertexShaderRHI);
+        assert(PixelShaderRHI);
+
+        VertexShader->Compile(GL_VERTEX_SHADER);
+        PixelShader->Compile(GL_FRAGMENT_SHADER);
+
+        // Fill-in the configuration
+        Config.Shaders[ShaderType::Vertex].Bindings = VertexShader->Bindings;
+        Config.Shaders[ShaderType::Vertex].Resource = VertexShader->m_ShaderID;
+        Config.Shaders[ShaderType::Vertex].ShaderKey = VertexShader->ShaderCodeKey;
+        Config.Shaders[ShaderType::Vertex].bValid = true;
+        Config.ProgramKey.ShaderHashes[ShaderType::Vertex] = VertexShaderRHI->GetHash();
+
+        if (GeometryShaderRHI)
+        {
+            assert(VertexShader);
+            GeometryShader->Compile(GL_GEOMETRY_SHADER);
+            BindShaderStage(Config, ShaderType::Geometry, GeometryShaderRHI, ShaderType::Vertex, VertexShaderRHI);
+            Config.ProgramKey.ShaderHashes[ShaderType::Geometry] = GeometryShaderRHI->GetHash();
+            Config.Shaders[ShaderType::Geometry].ShaderKey = GeometryShader->ShaderCodeKey;
+            Config.Shaders[ShaderType::Geometry].bValid = true;
+        }
+
+        assert(GeometryShaderRHI || VertexShaderRHI);
+        if (GeometryShaderRHI)
+        {
+            BindShaderStage(Config, ShaderType::Pixel, PixelShaderRHI, ShaderType::Geometry, GeometryShaderRHI);
+        }
+        else
+        {
+            BindShaderStage(Config, ShaderType::Pixel, PixelShaderRHI, ShaderType::Vertex, VertexShaderRHI);
+        }
+        Config.ProgramKey.ShaderHashes[ShaderType::Pixel] = PixelShaderRHI->GetHash();
+        Config.Shaders[ShaderType::Pixel].ShaderKey = PixelShader->ShaderCodeKey;
+        Config.Shaders[ShaderType::Pixel].bValid = true;
+
+
+        return Config;
+    };
+
+
     FOpenGLLinkedProgram* Device::LinkProgram(Shader* vertexShader, Shader* pixelShader, Shader* geometryShader)
     {
         // Make sure we have OpenGL context set up, and invalidate the parameters cache and current program (as we'll link a new one soon)
@@ -476,10 +722,10 @@ namespace BlackPearl
         //        // VERIFY_GL_SCOPE();
         //
         //        // ensure that compute shaders are always alone
-        //        check((Config.Shaders[CrossCompiler::SHADER_STAGE_VERTEX].Resource == 0) !=
-        //              (Config.Shaders[CrossCompiler::SHADER_STAGE_COMPUTE].Resource == 0));
-        //        check((Config.Shaders[CrossCompiler::SHADER_STAGE_PIXEL].Resource == 0) !=
-        //              (Config.Shaders[CrossCompiler::SHADER_STAGE_COMPUTE].Resource == 0));
+        //        check((Config.Shaders[ShaderType::Vertex].Resource == 0) !=
+        //              (Config.Shaders[ShaderType::Compute].Resource == 0));
+        //        check((Config.Shaders[ShaderType::Pixel].Resource == 0) !=
+        //              (Config.Shaders[ShaderType::Compute].Resource == 0));
         //
         GLuint Program = 0;
         FOpenGL::GenProgramPipelines(1, &Program);
@@ -496,9 +742,9 @@ namespace BlackPearl
             FOpenGL::UseProgramStages(Program, GL_GEOMETRY_SHADER_BIT,
                 geometryShader->m_ShaderID);
         }
-        //        if (Config.Shaders[CrossCompiler::SHADER_STAGE_COMPUTE].Resource) {
+        //        if (Config.Shaders[ShaderType::Compute].Resource) {
         //            FOpenGL::UseProgramStages(Program, GL_COMPUTE_SHADER_BIT,
-        //                                      Config.Shaders[CrossCompiler::SHADER_STAGE_COMPUTE].Resource);
+        //                                      Config.Shaders[ShaderType::Compute].Resource);
         //        }
         //
         //        if (FOpenGLProgramBinaryCache::IsEnabled() || FGLProgramCache::IsUsingLRU()) {
@@ -509,6 +755,7 @@ namespace BlackPearl
         glLinkProgram(Program);
 
         if (!VerifyLinkedProgram(Program)) {
+            //TODO:: delete Shader
             return nullptr;
         }
 
@@ -754,7 +1001,233 @@ namespace BlackPearl
         //}
     }
 
+    void FOpenGLLinkedProgram::ConfigureShaderStage(int Stage, uint32_t FirstUniformBuffer)
+    {
+        static const GLint FirstTextureUnit[ShaderType::NUM_COMPILE_SHADER_STAGES] =
+        {
+            FOpenGL::GetFirstVertexTextureUnit(),
+            FOpenGL::GetFirstPixelTextureUnit(),
+            FOpenGL::GetFirstGeometryTextureUnit(),
+            0,
+            0,
+            FOpenGL::GetFirstComputeTextureUnit()
+        };
 
+        static const GLint MaxTextureUnit[ShaderType::NUM_COMPILE_SHADER_STAGES] =
+        {
+            FOpenGL::GetMaxVertexTextureImageUnits(),
+            FOpenGL::GetMaxTextureImageUnits(),
+            FOpenGL::GetMaxGeometryTextureImageUnits(),
+            0,
+            0,
+            FOpenGL::GetMaxComputeTextureImageUnits()
+        };
+
+        static const GLint FirstUAVUnit[ShaderType::NUM_COMPILE_SHADER_STAGES] =
+        {
+            FOpenGL::GetFirstVertexUAVUnit(),
+            FOpenGL::GetFirstPixelUAVUnit(),
+            OGL_UAV_NOT_SUPPORTED_FOR_GRAPHICS_UNIT,
+            OGL_UAV_NOT_SUPPORTED_FOR_GRAPHICS_UNIT,
+            OGL_UAV_NOT_SUPPORTED_FOR_GRAPHICS_UNIT,
+            FOpenGL::GetFirstComputeUAVUnit()
+        };
+
+        //SCOPE_CYCLE_COUNTER(STAT_OpenGLShaderBindParameterTime);
+        //VERIFY_GL_SCOPE();
+
+        FOpenGLUniformName Name;
+        Name.Buffer[0] = CrossCompiler::ShaderStageIndexToTypeName(Stage);
+
+        GLuint StageProgram = Program;
+
+        // Bind Global uniform arrays (vu_h, pu_i, etc)
+        {
+            Name.Buffer[1] = 'u';
+            Name.Buffer[2] = '_';
+            Name.Buffer[3] = 0;
+            Name.Buffer[4] = 0;
+
+            TArray<FPackedUniformInfo> PackedUniformInfos;
+            for (uint8 Index = 0; Index < CrossCompiler::PACKED_TYPEINDEX_MAX; ++Index)
+            {
+                uint8 ArrayIndexType = CrossCompiler::PackedTypeIndexToTypeName(Index);
+                Name.Buffer[3] = ArrayIndexType;
+                GLint Location = glGetUniformLocation(StageProgram, Name.Buffer);
+                if ((int32)Location != -1)
+                {
+                    FPackedUniformInfo Info = { Location, ArrayIndexType, Index };
+                    PackedUniformInfos.Add(Info);
+                }
+            }
+
+            SortPackedUniformInfos(PackedUniformInfos, Config.Shaders[Stage].Bindings.PackedGlobalArrays, StagePackedUniformInfo[Stage].PackedUniformInfos);
+        }
+
+        // Bind uniform buffer packed arrays (vc0_h, pc2_i, etc)
+        {
+            Name.Buffer[1] = 'c';
+            Name.Buffer[2] = 0;
+            Name.Buffer[3] = 0;
+            Name.Buffer[4] = 0;
+            Name.Buffer[5] = 0;
+            Name.Buffer[6] = 0;
+
+            check(StagePackedUniformInfo[Stage].PackedUniformBufferInfos.Num() == 0);
+            int32 NumUniformBuffers = Config.Shaders[Stage].Bindings.NumUniformBuffers;
+            StagePackedUniformInfo[Stage].PackedUniformBufferInfos.SetNum(NumUniformBuffers);
+            int32 NumPackedUniformBuffers = Config.Shaders[Stage].Bindings.PackedUniformBuffers.Num();
+            check(NumPackedUniformBuffers <= NumUniformBuffers);
+
+            for (int32 UB = 0; UB < NumPackedUniformBuffers; ++UB)
+            {
+                const TArray<CrossCompiler::FPackedArrayInfo>& PackedInfo = Config.Shaders[Stage].Bindings.PackedUniformBuffers[UB];
+                TArray<FPackedUniformInfo>& PackedBuffers = StagePackedUniformInfo[Stage].PackedUniformBufferInfos[UB];
+
+                ANSICHAR* Str = SetIndex(Name.Buffer, 2, UB);
+                *Str++ = '_';
+                Str[1] = 0;
+                for (uint8 Index = 0; Index < PackedInfo.Num(); ++Index)
+                {
+                    Str[0] = PackedInfo[Index].TypeName;
+                    GLint Location = glGetUniformLocation(StageProgram, Name.Buffer); // This could be -1 if optimized out
+                    FPackedUniformInfo Info = { Location, PackedInfo[Index].TypeName,  PackedInfo[Index].TypeIndex };
+                    PackedBuffers.Add(Info);
+                }
+            }
+        }
+
+        // Reserve and setup Space for Emulated Uniform Buffers
+        StagePackedUniformInfo[Stage].LastEmulatedUniformBufferSet.Empty(Config.Shaders[Stage].Bindings.NumUniformBuffers);
+        StagePackedUniformInfo[Stage].LastEmulatedUniformBufferSet.AddZeroed(Config.Shaders[Stage].Bindings.NumUniformBuffers);
+
+        // Bind samplers.
+        Name.Buffer[1] = 's';
+        Name.Buffer[2] = 0;
+        Name.Buffer[3] = 0;
+        Name.Buffer[4] = 0;
+        int32 LastFoundIndex = -1;
+        for (int32 SamplerIndex = 0; SamplerIndex < Config.Shaders[Stage].Bindings.NumSamplers; ++SamplerIndex)
+        {
+            SetIndex(Name.Buffer, 2, SamplerIndex);
+            GLint Location = glGetUniformLocation(StageProgram, Name.Buffer);
+            if (Location == -1)
+            {
+                if (LastFoundIndex != -1)
+                {
+                    // It may be an array of samplers. Get the initial element location, if available, and count from it.
+                    SetIndex(Name.Buffer, 2, LastFoundIndex);
+                    int32 OffsetOfArraySpecifier = (LastFoundIndex > 9) ? 4 : 3;
+                    int32 ArrayIndex = SamplerIndex - LastFoundIndex;
+                    Name.Buffer[OffsetOfArraySpecifier] = '[';
+                    ANSICHAR* EndBracket = SetIndex(Name.Buffer, OffsetOfArraySpecifier + 1, ArrayIndex);
+                    *EndBracket++ = ']';
+                    *EndBracket = 0;
+                    Location = glGetUniformLocation(StageProgram, Name.Buffer);
+                }
+            }
+            else
+            {
+                LastFoundIndex = SamplerIndex;
+            }
+
+            if (Location != -1)
+            {
+                if (OpenGLConsoleVariables::bBindlessTexture == 0 || !FOpenGL::SupportsBindlessTexture())
+                {
+                    // Non-bindless, setup the unit info
+                    FOpenGL::ProgramUniform1i(StageProgram, Location, FirstTextureUnit[Stage] + SamplerIndex);
+                    TextureStageNeeds[FirstTextureUnit[Stage] + SamplerIndex] = true;
+                    MaxTextureStage = FMath::Max(MaxTextureStage, FirstTextureUnit[Stage] + SamplerIndex);
+                    if (SamplerIndex >= MaxTextureUnit[Stage])
+                    {
+                        UE_LOG(LogShaders, Error, TEXT("%s has a shader using too many textures (idx %d, max allowed %d) at stage %d"), *Config.ProgramKey.ToString(), SamplerIndex, MaxTextureUnit[Stage] - 1, Stage);
+                        checkNoEntry();
+                    }
+                }
+                else
+                {
+                    //Bindless, save off the slot information
+                    FOpenGLBindlessSamplerInfo Info;
+                    Info.Handle = Location;
+                    Info.Slot = FirstTextureUnit[Stage] + SamplerIndex;
+                    Samplers.Add(Info);
+                }
+            }
+        }
+
+        // Bind UAVs/images.
+        Name.Buffer[1] = 'i';
+        Name.Buffer[2] = 0;
+        Name.Buffer[3] = 0;
+        Name.Buffer[4] = 0;
+        int32 LastFoundUAVIndex = -1;
+        for (int32 UAVIndex = 0; UAVIndex < Config.Shaders[Stage].Bindings.NumUAVs; ++UAVIndex)
+        {
+            ANSICHAR* Str = SetIndex(Name.Buffer, 2, UAVIndex);
+            GLint Location = glGetUniformLocation(StageProgram, Name.Buffer);
+            if (Location == -1)
+            {
+                // SSBO
+                Str[0] = '_';
+                Str[1] = 'V';
+                Str[2] = 'A';
+                Str[3] = 'R';
+                Str[4] = '\0';
+                Location = glGetProgramResourceIndex(StageProgram, GL_SHADER_STORAGE_BLOCK, Name.Buffer);
+            }
+
+            if (Location == -1)
+            {
+                if (LastFoundUAVIndex != -1)
+                {
+                    // It may be an array of UAVs. Get the initial element location, if available, and count from it.
+                    SetIndex(Name.Buffer, 2, LastFoundUAVIndex);
+                    int32 OffsetOfArraySpecifier = (LastFoundUAVIndex > 9) ? 4 : 3;
+                    int32 ArrayIndex = UAVIndex - LastFoundUAVIndex;
+                    Name.Buffer[OffsetOfArraySpecifier] = '[';
+                    ANSICHAR* EndBracket = SetIndex(Name.Buffer, OffsetOfArraySpecifier + 1, ArrayIndex);
+                    *EndBracket++ = ']';
+                    *EndBracket = '\0';
+                    Location = glGetUniformLocation(StageProgram, Name.Buffer);
+                }
+            }
+            else
+            {
+                LastFoundUAVIndex = UAVIndex;
+            }
+
+            if (Location != -1)
+            {
+                // compute shaders have layout(binding) for images
+                // glUniform1i(Location, FirstUAVUnit[Stage] + UAVIndex);
+
+                // verify that only CS and PS uses UAVs (limitation on MALI GPUs)
+                assert(Stage == ShaderType::Compute || Stage == ShaderType::Pixel);
+
+                UAVStageNeeds[FirstUAVUnit[Stage] + UAVIndex] = true;
+                MaxUAVUnitUsed = FMath::Max(MaxUAVUnitUsed, FirstUAVUnit[Stage] + UAVIndex);
+            }
+        }
+
+        // Bind uniform buffers.
+        if (FOpenGL::SupportsUniformBuffers())
+        {
+            Name.Buffer[1] = 'b';
+            Name.Buffer[2] = 0;
+            Name.Buffer[3] = 0;
+            Name.Buffer[4] = 0;
+            for (int32 BufferIndex = 0; BufferIndex < Config.Shaders[Stage].Bindings.NumUniformBuffers; ++BufferIndex)
+            {
+                SetIndex(Name.Buffer, 2, BufferIndex);
+                GLint Location = GetOpenGLProgramUniformBlockIndex(StageProgram, Name);
+                if (Location >= 0)
+                {
+                    GetOpenGLProgramUniformBlockBinding(StageProgram, Location, FirstUniformBuffer + BufferIndex);
+                }
+            }
+        }
+    }
   
 
 }

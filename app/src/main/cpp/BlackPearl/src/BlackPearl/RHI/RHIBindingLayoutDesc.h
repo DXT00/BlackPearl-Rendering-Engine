@@ -94,7 +94,7 @@ namespace BlackPearl {
 	class RHIBindingLayoutDesc
 	{
     public:
-        ShaderType visibility = ShaderType::None;
+        ShaderType visibility = ShaderType::All;
         uint32_t registerSpace = 0;
 
         // This flag controls the validation behavior for pipelines that use multiple binding layouts.
@@ -126,7 +126,7 @@ namespace BlackPearl {
    // with the table type (SRV or UAV) derived from the resource type assigned to each space.
     struct RHIBindlessLayoutDesc
     {
-        ShaderType visibility = ShaderType::None;
+        ShaderType visibility = ShaderType::All;
         uint32_t firstSlot = 0;
         uint32_t maxCapacity = 0;
         std::vector<RHIBindingLayoutItem> registerSpaces;

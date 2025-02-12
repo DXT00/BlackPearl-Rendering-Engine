@@ -14,7 +14,7 @@ namespace BlackPearl {
 	public:
 
 		FramebufferInfo framebufferInfo;
-		ShaderType shaderMask = ShaderType::None;
+		ShaderType shaderMask = ShaderType::All;
 		std::vector<RefCountPtr<BindingLayout>> pipelineBindingLayouts;
 		VkPipelineLayout pipelineLayout;
 		VkPipeline pipeline;
@@ -59,7 +59,7 @@ namespace BlackPearl {
 	public:
 		MeshletPipelineDesc desc;
 		FramebufferInfo framebufferInfo;
-		ShaderType shaderMask = ShaderType::None;
+		ShaderType shaderMask = ShaderType::All;
 		std::vector<RefCountPtr<BindingLayout>> pipelineBindingLayouts;
 		VkPipelineLayout pipelineLayout;
 		VkPipeline pipeline;
