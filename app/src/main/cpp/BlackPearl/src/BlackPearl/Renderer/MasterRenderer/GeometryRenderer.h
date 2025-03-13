@@ -12,6 +12,8 @@ namespace BlackPearl {
 	class GeometryRenderer : public BasicRenderer
 	{
     public:
+        GeometryRenderer(IDevice* device)
+        :BasicRenderer(device){}
         //[[nodiscard]] virtual ViewType::Enum GetSupportedViewTypes() const = 0;
         virtual void SetupView(ICommandList* commandList, const IView* view, const IView* viewPrev) = 0;
         virtual bool SetupMaterial(const Material* material, RasterCullMode cullMode, GraphicsState& state) = 0;

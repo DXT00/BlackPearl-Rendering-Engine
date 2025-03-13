@@ -22,9 +22,12 @@ namespace BlackPearl {
 		uint32_t value = 0;
 
 		static constexpr size_t Count = 1 << 7;
+
+		
 	};
 
-	std::unordered_map<PipelineKey, GraphicsPipelineHandle> GGraphicsPipelineCache;
+	
+	std::unordered_map<uint32_t, GraphicsPipelineHandle> GGraphicsPipelineCache;
 
 	class GraphicsPipelineStateInitializer
 	{

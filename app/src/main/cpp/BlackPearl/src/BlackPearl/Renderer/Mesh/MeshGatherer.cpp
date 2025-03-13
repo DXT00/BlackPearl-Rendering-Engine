@@ -129,23 +129,25 @@ namespace BlackPearl {
 
 	void MeshGatherer::FillVAO()
 	{
-		std::shared_ptr<VertexBuffer> PosVBO = std::make_shared<VertexBuffer>(m_PositionBuffer, m_VertexCnt * sizeof(float) * 3, false/*interleaved*/);
+		//TODO:: desc
+		BufferDesc descVertex;
+		std::shared_ptr<VertexBuffer> PosVBO = std::make_shared<VertexBuffer>(descVertex, m_PositionBuffer, m_VertexCnt * sizeof(float) * 3, false/*interleaved*/);
 		PosVBO->SetBufferLayout({ {ElementDataType::Float3,"aPos",false,POS_SLOT } });
 
-		std::shared_ptr<VertexBuffer> NormalVBO = std::make_shared<VertexBuffer>(m_NormalBuffer, m_VertexCnt * sizeof(float) * 3, false/*interleaved*/);
+		std::shared_ptr<VertexBuffer> NormalVBO = std::make_shared<VertexBuffer>(descVertex, m_NormalBuffer, m_VertexCnt * sizeof(float) * 3, false/*interleaved*/);
 		NormalVBO->SetBufferLayout({ {ElementDataType::Float3,"aNormal",false,NORMAL_SLOT } });
 
 
-		std::shared_ptr<VertexBuffer> TexCoordsVBO = std::make_shared<VertexBuffer>(m_TexCordBuffer, m_VertexCnt * sizeof(float) * 2, false/*interleaved*/);
+		std::shared_ptr<VertexBuffer> TexCoordsVBO = std::make_shared<VertexBuffer>(descVertex, m_TexCordBuffer, m_VertexCnt * sizeof(float) * 2, false/*interleaved*/);
 		TexCoordsVBO->SetBufferLayout({ {ElementDataType::Float2,"aTexCoords",false,TEXCOORD_SLOT } });
 
-		std::shared_ptr<VertexBuffer> TangentVBO = std::make_shared<VertexBuffer>(m_TangentBuffer, m_VertexCnt * sizeof(float) * 3, false/*interleaved*/);
+		std::shared_ptr<VertexBuffer> TangentVBO = std::make_shared<VertexBuffer>(descVertex, m_TangentBuffer, m_VertexCnt * sizeof(float) * 3, false/*interleaved*/);
 		TangentVBO->SetBufferLayout({ {ElementDataType::Float3,"aTangent",false,TANGENT_SLOT } });
 
-		std::shared_ptr<VertexBuffer> BitangentVBO = std::make_shared<VertexBuffer>(m_BitangentBuffer, m_VertexCnt * sizeof(float) * 3, false/*interleaved*/);
+		std::shared_ptr<VertexBuffer> BitangentVBO = std::make_shared<VertexBuffer>(descVertex, m_BitangentBuffer, m_VertexCnt * sizeof(float) * 3, false/*interleaved*/);
 		BitangentVBO->SetBufferLayout({ {ElementDataType::Float3,"aBitangent",false,BITANGENT_SLOT } });
 
-		std::shared_ptr<VertexBuffer> ModelVBO = std::make_shared<VertexBuffer>(reinterpret_cast<float*>(m_ObjsTransformBuffer), m_ObjsCnt * sizeof(glm::mat4), true/*interleaved*/, true/*divisor*/, 1/*perInstance*/);
+		std::shared_ptr<VertexBuffer> ModelVBO = std::make_shared<VertexBuffer>(descVertex, reinterpret_cast<float*>(m_ObjsTransformBuffer), m_ObjsCnt * sizeof(glm::mat4), true/*interleaved*/, true/*divisor*/, 1/*perInstance*/);
 		ModelVBO->SetBufferLayout({ { ElementDataType::Float4,"aModel",false,MODEL_SLOT},
 			{ ElementDataType::Float4,"aModelV1",false,MODEL_SLOT + 1} ,
 			{ ElementDataType::Float4,"aModelV2",false,MODEL_SLOT + 2},
@@ -158,7 +160,9 @@ namespace BlackPearl {
 		m_VAO->SetVertexBuffer(BITANGENT_SLOT, BitangentVBO);
 
 		m_VAO->SetVertexBuffer(MODEL_SLOT, ModelVBO);
-		m_VAO->SetIndexBuffer(std::make_shared<IndexBuffer>(m_IndexBuffer, m_IndexCnt * sizeof(uint32_t)));
+
+		BufferDesc desc;
+		m_VAO->SetIndexBuffer(std::make_shared<IndexBuffer>(desc, m_IndexBuffer, m_IndexCnt * sizeof(uint32_t)));
 
 	}
 

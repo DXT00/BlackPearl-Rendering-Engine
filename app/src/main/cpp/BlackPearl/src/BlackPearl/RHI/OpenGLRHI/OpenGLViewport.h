@@ -1,8 +1,9 @@
 #pragma once
 #include <algorithm>
 #include "BlackPearl/RHI/RHIDefinitions.h"
+#include "OpenGLQuery.h"
 namespace BlackPearl {
-	class OpenGLEventQuery;
+	class EventQuery;
 	class Texture;
 	class OpenGLViewport : public RHIViewport
 	{
@@ -44,7 +45,7 @@ namespace BlackPearl {
 		Format PixelFormat;
 		bool bIsValid;
 		Texture* BackBuffer;
-		std::unique_ptr<OpenGLEventQuery>FrameSyncEvent;
+		std::unique_ptr<EventQuery>FrameSyncEvent;
 		//TUniquePtr<FOpenGLEventQuery> 
 		//FCustomPresentRHIRef CustomPresent;
 

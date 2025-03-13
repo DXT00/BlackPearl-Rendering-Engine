@@ -7,7 +7,8 @@
 #include "BlackPearl/Component/LightComponent/ParallelLight.h"
 #include "hlsl/core/forward_cb.h"
 namespace BlackPearl {
-    BasePassRenderer::BasePassRenderer()
+    BasePassRenderer::BasePassRenderer(IDevice* device)
+        :GeometryRenderer(device)
     {
     }
     BasePassRenderer::~BasePassRenderer()

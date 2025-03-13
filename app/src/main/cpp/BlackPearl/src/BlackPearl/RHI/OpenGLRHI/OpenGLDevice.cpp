@@ -1363,6 +1363,174 @@ namespace BlackPearl
 		assert(NotUsedButActiveStreamMask == 0);
 	}
 
+	void Device::CachedSetupTextureStageInner(FOpenGLContextState& ContextState, GLint TextureIndex, GLenum Target, GLuint Resource, GLint BaseMip, GLint NumMips)
+	{
+
+		//DETAILED_QUICK_SCOPE_CYCLE_COUNTER(STAT_CachedSetupTextureStage);
+		//VERIFY_GL_SCOPE();
+		FTextureStage& TextureState = ContextState.Textures[TextureIndex];
+
+		// Something will have to be changed. Switch to the stage in question.
+		if (ContextState.ActiveTexture != TextureIndex)
+		{
+			glActiveTexture(GL_TEXTURE0 + TextureIndex);
+			ContextState.ActiveTexture = TextureIndex;
+		}
+
+		if (TextureState.Target == Target)
+		{
+			glBindTexture(Target, Resource);
+		}
+		else
+		{
+			if (TextureState.Target != GL_NONE)
+			{
+				// Unbind different texture target on the same stage, to avoid OpenGL keeping its data, and potential driver problems.
+				glBindTexture(TextureState.Target, 0);
+			}
+
+			if (Target != GL_NONE)
+			{
+				glBindTexture(Target, Resource);
+			}
+		}
+
+		//// Use the texture SRV's LimitMip value to specify the mip available for sampling
+		//// This requires SupportsTextureBaseLevel & is a fallback for TextureView
+		//if (Target != GL_NONE && Target != GL_TEXTURE_BUFFER && Target != GL_TEXTURE_EXTERNAL_OES)
+		//{
+		//	std::pair<GLenum, GLenum>* MipLimits;
+
+		//	{
+		//		DETAILED_QUICK_SCOPE_CYCLE_COUNTER(STAT_CachedSetupTextureStage_Find);
+		//		MipLimits = TextureMipLimits.Find(Resource);
+		//	}
+
+		//	GLint BaseMip = LimitMip == -1 ? 0 : LimitMip;
+		//	GLint MaxMip = LimitMip == -1 ? NumMips - 1 : LimitMip;
+
+		//	const bool bSameLimitMip = MipLimits && MipLimits->Key == BaseMip;
+		//	const bool bSameNumMips = MipLimits && MipLimits->Value == MaxMip;
+
+		//	if (!bSameLimitMip || !bSameNumMips)
+		//	{
+		//		DETAILED_QUICK_SCOPE_CYCLE_COUNTER(STAT_CachedSetupTextureStage_TexParameter);
+
+		//		bool bBoundAsRenderTarget = false;
+		//		for (uint32 RenderTargetIndex = 0; RenderTargetIndex < MaxSimultaneousRenderTargets; ++RenderTargetIndex)
+		//		{
+		//			if (PendingState.RenderTargets[RenderTargetIndex] == 0)
+		//			{
+		//				break;
+		//			}
+		//			else
+		//			{
+		//				if (PendingState.RenderTargets[RenderTargetIndex]->GetResource() == Resource)
+		//				{
+		//					bBoundAsRenderTarget = true;
+		//					break;
+		//				}
+		//			}
+		//		}
+
+		//		// If a SRV is bound as render target, skip the BASE_LEVEL and MAX_LEVEL settings because it would cause crash on some android devices.
+		//		if (!bBoundAsRenderTarget)
+		//		{
+		//			if (!bSameLimitMip)
+		//			{
+		//				FOpenGL::TexParameter(Target, GL_TEXTURE_BASE_LEVEL, BaseMip);
+		//			}
+		//			if (!bSameNumMips)
+		//			{
+		//				FOpenGL::TexParameter(Target, GL_TEXTURE_MAX_LEVEL, MaxMip);
+		//			}
+		//			if (MipLimits)
+		//			{
+		//				MipLimits->Key = BaseMip;
+		//				MipLimits->Value = MaxMip;
+		//			}
+		//			else
+		//			{
+		//				TextureMipLimits.Add(Resource, TPair<GLenum, GLenum>(BaseMip, MaxMip));
+		//			}
+		//		}
+		//		else
+		//		{
+		//			LimitMip = 0;
+		//			NumMips = 0;
+		//		}
+		//	}
+		//}
+		//else
+		//{
+		//	LimitMip = 0;
+		//	NumMips = 0;
+		//}
+
+		//TextureState.LimitMip = LimitMip;
+		//TextureState.NumMips = NumMips;
+		//TextureState.Target = Target;
+		//TextureState.Resource = Resource;
+	}
+
+	void Device::ApplyTextureStage(FOpenGLContextState& ContextState, GLint TextureIndex, const FTextureStage& TextureStage, FOpenGLSamplerState* SamplerState)
+	{
+		//GLenum Target = TextureStage.Target;
+		////VERIFY_GL_SCOPE();
+		//const bool bHasTexture = (TextureStage.Texture != NULL);
+		//if (!bHasTexture || TextureStage.Texture->SamplerState != SamplerState)
+		//{
+		//	// Texture must be bound first
+		//	if (ContextState.ActiveTexture != TextureIndex)
+		//	{
+		//		glActiveTexture(GL_TEXTURE0 + TextureIndex);
+		//		ContextState.ActiveTexture = TextureIndex;
+		//	}
+
+		//	GLint WrapS = SamplerState->Data.WrapS;
+		//	GLint WrapT = SamplerState->Data.WrapT;
+
+		//	// Sets parameters of currently bound texture
+		//	FOpenGL::TexParameter(Target, GL_TEXTURE_WRAP_S, WrapS);
+		//	FOpenGL::TexParameter(Target, GL_TEXTURE_WRAP_T, WrapT);
+		//	if (FOpenGL::SupportsTexture3D())
+		//	{
+		//		FOpenGL::TexParameter(Target, GL_TEXTURE_WRAP_R, SamplerState->Data.WrapR);
+		//	}
+
+		//	if (FOpenGL::SupportsTextureLODBias())
+		//	{
+		//		FOpenGL::TexParameter(Target, GL_TEXTURE_LOD_BIAS, SamplerState->Data.LODBias);
+		//	}
+		//	// Make sure we don't set mip filtering on if the texture has no mip levels, as that will cause a crash/black render on ES.
+		//	GLint MinFilter = ModifyFilterByMips(SamplerState->Data.MinFilter, TextureStage.bHasMips);
+		//	if (OpenGLConsoleVariables::GOpenGLForceBilinear && MinFilter == GL_LINEAR_MIPMAP_LINEAR)
+		//	{
+		//		MinFilter = GL_LINEAR_MIPMAP_NEAREST;
+		//	}
+
+		//	FOpenGL::TexParameter(Target, GL_TEXTURE_MIN_FILTER, MinFilter);
+		//	FOpenGL::TexParameter(Target, GL_TEXTURE_MAG_FILTER, SamplerState->Data.MagFilter);
+		//	if (FOpenGL::SupportsTextureFilterAnisotropic())
+		//	{
+		//		// GL_EXT_texture_filter_anisotropic requires value to be at least 1
+		//		GLint MaxAnisotropy = FMath::Max(1, SamplerState->Data.MaxAnisotropy);
+		//		FOpenGL::TexParameter(Target, GL_TEXTURE_MAX_ANISOTROPY_EXT, MaxAnisotropy);
+		//	}
+
+		//	if (FOpenGL::SupportsTextureCompare())
+		//	{
+		//		FOpenGL::TexParameter(Target, GL_TEXTURE_COMPARE_MODE, SamplerState->Data.CompareMode);
+		//		FOpenGL::TexParameter(Target, GL_TEXTURE_COMPARE_FUNC, SamplerState->Data.CompareFunc);
+		//	}
+
+		//	if (bHasTexture)
+		//	{
+		//		TextureStage.Texture->SamplerState = SamplerState;
+		//	}
+		//}
+	}
+
 
     void Device::BindPendingComputeShaderState(FOpenGLContextState& ContextState, IShader* ComputeShader)
     {

@@ -150,7 +150,7 @@ namespace UE
 	class TScopeLock
 	{
 	public:
-		UE_NONCOPYABLE(TScopeLock);
+		//UE_NONCOPYABLE(TScopeLock);
 
 		[[nodiscard]]  TScopeLock(MutexType& InMutex)
 			: Mutex(&InMutex)
@@ -183,7 +183,7 @@ namespace UE
 	class TConditionalScopeLock
 	{
 	public:
-		UE_NONCOPYABLE(TConditionalScopeLock);
+		//UE_NONCOPYABLE(TConditionalScopeLock);
 
 		[[nodiscard]]  TConditionalScopeLock(MutexType& InMutex, bool bShouldLock)
 			: Mutex(bShouldLock ? &InMutex : nullptr)
@@ -228,7 +228,7 @@ namespace UE
 	class TScopeUnlock
 	{
 	public:
-		UE_NONCOPYABLE(TScopeUnlock);
+		//UE_NONCOPYABLE(TScopeUnlock);
 
 		[[nodiscard]]  TScopeUnlock(MutexType& InMutex)
 			: Mutex(&InMutex)

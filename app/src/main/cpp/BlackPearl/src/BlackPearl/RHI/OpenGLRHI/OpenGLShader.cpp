@@ -854,7 +854,7 @@ namespace BlackPearl
     template<class TOpenGLStage0RHI, class TOpenGLStage1RHI>
     static void BindShaderStage(FOpenGLLinkedProgramConfiguration& Config, ShaderType NextStage, TOpenGLStage0RHI* NextStageShaderIn, ShaderType PrevStage, TOpenGLStage1RHI* PrevStageShaderIn)
     {
-        auto* PrevStageShader = FOpenGLDynamicRHI::ResourceCast(PrevStageShaderIn);
+       /* auto* PrevStageShader = FOpenGLDynamicRHI::ResourceCast(PrevStageShaderIn);
         auto* NextStageShader = FOpenGLDynamicRHI::ResourceCast(NextStageShaderIn);
 
         assert(NextStageShader && PrevStageShader);
@@ -866,7 +866,7 @@ namespace BlackPearl
         FOpenGLShaderBindings NextStageBindings = NextStageShader->Bindings;
 
         ShaderInfo.Bindings = NextStageBindings;
-        ShaderInfo.Resource = NextStageResource;
+        ShaderInfo.Resource = NextStageResource;*/
     }
 
     static FOpenGLLinkedProgramConfiguration CreateConfig(IShader* VertexShaderRHI, IShader* PixelShaderRHI, IShader* GeometryShaderRHI, std::vector<IBindingSet*> bindingSet)

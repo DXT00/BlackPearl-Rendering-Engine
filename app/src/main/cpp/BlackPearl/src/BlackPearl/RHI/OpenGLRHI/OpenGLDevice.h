@@ -24,6 +24,11 @@ namespace BlackPearl {
 	class FOpenGLStream;
 	class Buffer;
 
+	// Define here so don't have to do platform filtering
+#ifndef GL_TEXTURE_EXTERNAL_OES
+#define GL_TEXTURE_EXTERNAL_OES 0x8D65
+#endif
+
 
 	class Device :public RefCounter<IDevice>
 	{
@@ -155,7 +160,24 @@ namespace BlackPearl {
 
 
 		void SetupVertexArrays(FOpenGLContextState& ContextState, uint32_t BaseVertexIndex, FOpenGLStream* Streams, uint32_t NumStreams, uint32_t MaxVertices);
+		void CachedSetupTextureStageInner(FOpenGLContextState& ContextState, GLint TextureIndex, GLenum Target, GLuint Resource, GLint BaseMip, GLint NumMips);
 
+		void ApplyTextureStage(FOpenGLContextState& ContextState, GLint TextureIndex, const FTextureStage& TextureStage, FOpenGLSamplerState* SamplerState);
+
+		/** Set a resource on texture target of a specific real OpenGL stage. Goes through cache to eliminate redundant calls. */
+		FORCEINLINE void CachedSetupTextureStage(FOpenGLContextState& ContextState, GLint TextureIndex, GLenum Target, GLuint Resource, GLint BaseMip, GLint NumMips)
+		{
+			FTextureStage& TextureState = ContextState.Textures[TextureIndex];
+			const bool bSameTarget = (TextureState.Target == Target);
+			const bool bSameResource = (TextureState.Resource == Resource);
+
+			if (bSameTarget && bSameResource)
+			{
+				// Nothing changed, no need to update
+				return;
+			}
+			CachedSetupTextureStageInner(ContextState, TextureIndex, Target, Resource, BaseMip, NumMips);
+		}
 			/** RHI device state, independent of underlying OpenGL context used */
 		FOpenGLRHIState					PendingState;
 

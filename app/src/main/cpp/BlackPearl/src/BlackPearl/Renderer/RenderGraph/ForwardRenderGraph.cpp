@@ -17,7 +17,7 @@ namespace BlackPearl {
 		//m_IndirectCullRenderer->Init(scene);
 
 		//BasePass
-		m_BasePassRenderer = DBG_NEW BasePassRenderer();
+		m_BasePassRenderer = DBG_NEW BasePassRenderer(m_DeviceManager->GetDevice());
 		BasePassRenderer::CreateParameters params;
 		//params.materialBindings = std::make_shared<MaterialBindingCache>(m_DeviceManager->GetDevice(),);
 		m_BasePassRenderer->Init(m_DeviceManager->GetDevice(), m_ShaderFactory, params);

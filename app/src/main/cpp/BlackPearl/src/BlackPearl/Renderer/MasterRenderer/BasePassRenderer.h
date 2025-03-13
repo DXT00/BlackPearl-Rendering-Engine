@@ -44,7 +44,7 @@ namespace BlackPearl {
             uint32_t numConstantBufferVersions = 16;
         };
    
-        BasePassRenderer();
+        BasePassRenderer(IDevice* device);
         virtual ~BasePassRenderer();
 
         //PostProcessRenderer(

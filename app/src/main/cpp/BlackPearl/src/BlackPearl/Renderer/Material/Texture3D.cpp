@@ -27,8 +27,7 @@ namespace BlackPearl {
 		GE_ERROR_JUDGE();
 
 		//Upload texture buffer
-		 int levels = 5;
-		glTexStorage3D(GL_TEXTURE_3D, levels, GL_RGBA8, m_Width, m_Height, m_Depth);
+		glTexStorage3D(GL_TEXTURE_3D, m_MipLevel, GL_RGBA8, m_Width, m_Height, m_Depth);
 		GE_ERROR_JUDGE();
 
 		glTexSubImage3D(GL_TEXTURE_3D, 0,0,0,0, m_Width, m_Height, m_Depth,  GL_RGBA, GL_FLOAT, &textureBuffer[0]);//Upload level0
@@ -52,7 +51,23 @@ namespace BlackPearl {
 		GLint previousBoundTextureID;
 		glGetIntegerv(GL_TEXTURE_BINDING_3D, &previousBoundTextureID);
 		glBindTexture(GL_TEXTURE_3D, m_TextureID);
-		glClearTexImage(m_TextureID, 0, GL_RGBA, GL_FLOAT, &clearColor);
+		//gl4.4 版本才有, 一次清理多个mipmap
+		// 	glClearTexImage(m_TextureID, 0, GL_RGBA, GL_FLOAT, &clearColor);
+		// 
+		// 
+		//改成compute shader
+		//Upload texture buffer
+		glTexStorage3D(GL_TEXTURE_3D, m_MipLevel, GL_RGBA8, m_Width, m_Height, m_Depth);
+		GE_ERROR_JUDGE();
+
+		std::vector<GLubyte> clearData(m_Width*m_Height*m_Depth * 4);
+		for (size_t i = 0; i < clearData.size(); i += 4) {
+			memcpy(&clearData[i], clearColor, 4);
+		}
+
+
+		// 上传数据到纹理
+		glTexSubImage3D(GL_TEXTURE_3D, 0, 0, 0, 0, 64, 64, 64, GL_RGBA, GL_UNSIGNED_BYTE, clearData.data());
 		glBindTexture(GL_TEXTURE_3D, previousBoundTextureID);
 	}
 	//void Texture3D::Clear(GLuint clearColor[4])

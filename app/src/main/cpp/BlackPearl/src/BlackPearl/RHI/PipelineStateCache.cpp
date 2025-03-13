@@ -105,8 +105,8 @@ namespace BlackPearl {
 
 	GraphicsPipelineHandle PipelineStateCache::GetAndOrCreateGraphicsPipelineState(DeviceHandle device, const GraphicsPipelineDesc& pipelineDesc, const PipelineKey& Initializer, GraphicsState& psoState)
 	{
-		if (GGraphicsPipelineCache.find(Initializer) != GGraphicsPipelineCache.end()) {
-			return GGraphicsPipelineCache[Initializer];
+		if (GGraphicsPipelineCache.find(Initializer.value) != GGraphicsPipelineCache.end()) {
+			return GGraphicsPipelineCache[Initializer.value];
 		}
 		else {
 			

@@ -26,6 +26,7 @@ namespace BlackPearl {
 	private:
 		unsigned int m_TextureID;
 		int m_Width, m_Height, m_Depth;
+		int m_MipLevel = 5;
 		//std::vector<float> m_ClearData;//TODO::
 	};
 
