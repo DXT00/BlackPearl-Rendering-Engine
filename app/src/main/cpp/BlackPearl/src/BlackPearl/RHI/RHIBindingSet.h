@@ -1,5 +1,6 @@
 #pragma once
-#include<stdint.h>
+#include <stdint.h>
+#include <string>
 #include "RHIDefinitions.h"
 #include "RHIResources.h"
 #include "RHITexture.h"
@@ -9,6 +10,32 @@
 #include "RHIRayTraceStruct.h"
 #include "BlackPearl/RHI/Common/Containers.h"
 namespace BlackPearl {
+
+
+    struct BufferRange
+    {
+        uint64_t byteOffset = 0;
+        uint64_t byteSize = 0;
+
+        BufferRange() = default;
+
+        BufferRange(uint64_t _byteOffset, uint64_t _byteSize)
+            : byteOffset(_byteOffset)
+            , byteSize(_byteSize)
+        {
+        }
+
+        [[nodiscard]] BufferRange resolve(const BufferDesc& desc) const;
+        [[nodiscard]] constexpr bool isEntireBuffer(const BufferDesc& desc) const { return (byteOffset == 0) && (byteSize == ~0ull || byteSize == desc.byteSize); }
+        constexpr bool operator== (const BufferRange& other) const { return byteOffset == other.byteOffset && byteSize == other.byteSize; }
+
+        constexpr BufferRange& setByteOffset(uint64_t value) { byteOffset = value; return *this; }
+        constexpr BufferRange& setByteSize(uint64_t value) { byteSize = value; return *this; }
+    };
+
+    static const BufferRange EntireBuffer = BufferRange(0, ~0ull);
+
+
     struct BindingSetItem
     {
         IResource* resourceHandle;
@@ -31,8 +58,8 @@ namespace BlackPearl {
         };
 
         // verify that the `subresources` and `range` have the same size and are covered by `rawData`
-        static_assert(sizeof(TextureSubresourceSet) == 16, "sizeof(TextureSubresourceSet) is supposed to be 16 bytes");
-        static_assert(sizeof(BufferRange) == 16, "sizeof(BufferRange) is supposed to be 16 bytes");
+        /*static_assert(sizeof(TextureSubresourceSet) == 16, "sizeof(TextureSubresourceSet) is supposed to be 16 bytes");
+        static_assert(sizeof(BufferRange) == 16, "sizeof(BufferRange) is supposed to be 16 bytes");*/
 
         bool operator ==(const BindingSetItem& b) const
         {

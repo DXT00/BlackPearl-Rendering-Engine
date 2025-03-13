@@ -6,6 +6,7 @@
 //
 //#include "CoreMinimal.h"
 //#include "OpenGLDrv.h"
+#include "pch.h"
 #include "OpenGLDrvPrivate.h"
 #include "BlackPearl/Math/Math.h"
 namespace BlackPearl {
@@ -48,15 +49,15 @@ void FOpenGL4::ProcessExtensions( const std::string& ExtensionsString )
  
 	std::string Version = std::string((const char*)glGetString(GL_VERSION));
 	std::string MajorString, MinorString;
-	if (Version.Split(TEXT("."), &MajorString, &MinorString))
+	/*if (Version.Split(TEXT("."), &MajorString, &MinorString))
 	{
-		MajorVersion = FCString::Atoi(*MajorString);
-		MinorVersion = FCString::Atoi(*MinorString);
+		MajorVersion = atoi(MajorString.c_str());
+		MinorVersion = atoi(MinorString.c_str());
 	}
-	assert(MajorVersion!=0);
+	assert(MajorVersion!=0);*/
 
 
-	bSupportsGPUMemoryInfo = ExtensionsString.Contains(TEXT("GL_NVX_gpu_memory_info"));
+	bSupportsGPUMemoryInfo = ExtensionsString.find(("GL_NVX_gpu_memory_info"))!= std::string::npos;
 
 	//Process Queries after extensions to avoid queries that use functionality that might not be present
 	ProcessQueryGLInt();

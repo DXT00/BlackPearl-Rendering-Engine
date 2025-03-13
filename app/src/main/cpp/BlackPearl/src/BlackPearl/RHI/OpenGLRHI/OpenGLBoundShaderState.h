@@ -1,6 +1,7 @@
 #pragma once
-#include "BlackPearl/RHI/RHIBoundShaderState.h"
 #include "BlackPearl/RHI/RHIShader.h"
+#include "BlackPearl\RHI\RHIBoundShaderState.h"
+#include "BlackPearl\Core\Container\TBitArray.h"
 #include "OpenGLShader.h"
 namespace BlackPearl {
 	
@@ -33,7 +34,8 @@ namespace BlackPearl {
 		FOpenGLLinkedProgram* LinkedProgram;
 		//TRefCountPtr<FOpenGLVertexDeclaration> VertexDeclaration;
 	
-
+		const TBitArray& GetTextureNeeds(int32_t& OutMaxTextureStageUsed);
+		const TBitArray& GetUAVNeeds(int32_t& OutMaxUAVUnitUsed) const;
 	private:
 
 	};

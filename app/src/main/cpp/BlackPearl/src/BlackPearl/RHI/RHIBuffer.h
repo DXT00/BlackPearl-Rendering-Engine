@@ -1,4 +1,5 @@
 #pragma once
+#include <vector>
 #include "RHIDefinitions.h"
 #include "RefCountPtr.h"
 #include "RHIResources.h"
@@ -65,28 +66,6 @@ namespace BlackPearl {
         constexpr BufferDesc& setCpuAccess(CpuAccessMode value) { cpuAccess = value; return *this; }
     };
 
-    struct BufferRange
-    {
-        uint64_t byteOffset = 0;
-        uint64_t byteSize = 0;
-
-        BufferRange() = default;
-
-        BufferRange(uint64_t _byteOffset, uint64_t _byteSize)
-            : byteOffset(_byteOffset)
-            , byteSize(_byteSize)
-        { }
-
-        [[nodiscard]] BufferRange resolve(const BufferDesc& desc) const;
-        [[nodiscard]] constexpr bool isEntireBuffer(const BufferDesc& desc) const { return (byteOffset == 0) && (byteSize == ~0ull || byteSize == desc.byteSize); }
-        constexpr bool operator== (const BufferRange& other) const { return byteOffset == other.byteOffset && byteSize == other.byteSize; }
-
-        constexpr BufferRange& setByteOffset(uint64_t value) { byteOffset = value; return *this; }
-        constexpr BufferRange& setByteSize(uint64_t value) { byteSize = value; return *this; }
-    };
-
-    static const BufferRange EntireBuffer = BufferRange(0, ~0ull);
-
     class IBuffer :public IResource
     {
     public:
@@ -94,62 +73,6 @@ namespace BlackPearl {
     };
 
 
-	class VertexBufferLayout {
-	public:
-		VertexBufferLayout() { //GE_CORE_INFO("VertexBufferLayout defult constructor!")
-		}
-		VertexBufferLayout(std::initializer_list<BufferElement> elements)
-			:m_Elememts(elements) {
-			CalculateStrideAndOffset();
-			UpdateDesc();
-
-		};
-		void CalculateStrideAndOffset();
-
-		inline std::vector<BufferElement> GetElements() const { return m_Elememts; }
-		inline BufferElement GetElement(uint32_t i) const {
-			GE_ASSERT((i < ElementSize()), "i exceed max elements size");
-			return m_Elememts[i];
-		}
-
-		bool HasElement(uint32_t i) {
-			if (i < ElementSize())
-				return true;
-			return false;
-		}
-		void AddElement(const BufferElement& element) {
-			m_Elememts.push_back(element);
-			CalculateStrideAndOffset();
-			UpdateDesc();
-		}
-		uint32_t ElementSize() const { return m_Elememts.size(); }
-		uint32_t GetStride() const { return m_Stride; }
-		//for directx
-		virtual void UpdateDesc() {}
-
-		VertexBufferLayout(const VertexBufferLayout& rhs) {
-			m_Elememts.resize(rhs.ElementSize());
-			for (size_t i = 0; i < rhs.ElementSize(); i++)
-			{
-				m_Elememts[i] = rhs.m_Elememts[i];
-			}
-			m_Stride = rhs.m_Stride;
-
-		}
-		VertexBufferLayout& operator = (const VertexBufferLayout& rhs) {
-			this->m_Elememts.resize(rhs.ElementSize());
-			for (size_t i = 0; i < rhs.ElementSize(); i++)
-			{
-				this->m_Elememts[i] = rhs.m_Elememts[i];
-			}
-			this->m_Stride = rhs.m_Stride;
-			return *this;
-		}
-
-	protected:
-		std::vector<BufferElement> m_Elememts;
-		uint32_t m_Stride = 0;
-	};
 
     typedef RefCountPtr<IBuffer> BufferHandle;
 

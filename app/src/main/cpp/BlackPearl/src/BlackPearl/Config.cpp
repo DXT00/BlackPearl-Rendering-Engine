@@ -1,5 +1,7 @@
 #include "pch.h"
-#include <glad/glad.h>
+//#include <glad/glad.h>
+#include "BlackPearl/RHI/OpenGLRHI/OpenGLDriver/OpenGLFunctions.h"
+
 #include "Config.h"
 #include "BlackPearl/RHI/DynamicRHI.h"
 

@@ -1,4 +1,6 @@
-﻿#include "AndriodPlatform.h"
+﻿#include "pch.h"
+#ifdef GE_PLATFORM_ANDRIOD
+#include "AndriodPlatform.h"
 
 #include <dlfcn.h> 
 #include <time.h>
@@ -26,3 +28,4 @@ namespace BlackPearl {
 		dlclose(DllHandle);
 	}
 }
+#endif

@@ -91,7 +91,9 @@
 //#include IMGUI_IMPL_OPENGL_LOADER_CUSTOM
 //#endif
 //#endif
-#include <glad/glad.h>
+//#include <glad/glad.h>
+#include "BlackPearl/RHI/OpenGLRHI/OpenGLDriver/OpenGLThirdParty.h"
+
 // OpenGL Data
 static char         g_GlslVersionString[32] = "";
 static GLuint       g_FontTexture = 0;

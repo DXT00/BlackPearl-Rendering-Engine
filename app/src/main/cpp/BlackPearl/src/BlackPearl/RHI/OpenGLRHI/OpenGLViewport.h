@@ -9,7 +9,7 @@ namespace BlackPearl {
 
 	public:
 
-		OpenGLViewport(class OpenGLDynamicRHI* InOpenGLRHI, void* InWindowHandle, uint32_t InSizeX, uint32_t InSizeY, bool bInIsFullscreen, EPixelFormat PreferredPixelFormat);
+		OpenGLViewport(class OpenGLDynamicRHI* InOpenGLRHI, void* InWindowHandle, uint32_t InSizeX, uint32_t InSizeY, bool bInIsFullscreen, Format PreferredPixelFormat);
 		~OpenGLViewport();
 
 		void Resize(uint32_t InSizeX, uint32_t InSizeY, bool bInIsFullscreen);

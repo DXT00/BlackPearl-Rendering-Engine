@@ -2,7 +2,7 @@
 
 //#include "CoreMinimal.h"
 //#include "Android/AndroidPlatform.h"
-
+#include "pch.h"
 #ifdef GE_PLATFORM_ANDRIOD
 
 #include "../OpenGLDrvPrivate.h"

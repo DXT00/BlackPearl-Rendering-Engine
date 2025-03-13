@@ -7,9 +7,11 @@
 #pragma once
 
 #include "BlackPearl/RHI/OpenGLRHI/OpenGLDriver/OpenGL.h"
-#include "OpenGLThirdParty.h"
+#include "BlackPearl/RHI/RHIShader.h"
+//#include "OpenGLThirdParty.h"
 #include "BlackPearl/Core/Memory.h"
 namespace BlackPearl {
+
 #define OPENGL_GL3		1
 
 #define USE_OPENGL_NAME_CACHE 1
@@ -22,7 +24,7 @@ namespace BlackPearl {
 
 	template<typename KeyType, typename ValueType, typename SetAllocator, typename KeyFuncs > class TMap;
 
-	typedef GLsync UGLsync;
+	//typedef GLsync UGLsync;
 
 
 
@@ -55,7 +57,7 @@ namespace BlackPearl {
 			glEndQuery(QueryType);
 		}
 
-		static FORCEINLINE void GetQueryObject(GLuint QueryId, EQueryMode QueryMode, GLuint64* OutResult)
+		static FORCEINLINE void GetQueryObject(GLuint QueryId, FOpenGLBase::EQueryMode QueryMode, GLuint64* OutResult)
 		{
 			GLenum QueryName = (QueryMode == QM_Result) ? GL_QUERY_RESULT : GL_QUERY_RESULT_AVAILABLE;
 			GLuint64 Result = 0;
@@ -73,22 +75,22 @@ namespace BlackPearl {
 			glDrawBuffer(Mode);
 		}
 
-		static FORCEINLINE void DeleteSync(UGLsync Sync)
+		static FORCEINLINE void DeleteSync(GLsync Sync)
 		{
 			glDeleteSync(Sync);
 		}
 
-		static FORCEINLINE UGLsync FenceSync(GLenum Condition, GLbitfield Flags)
+		static FORCEINLINE GLsync FenceSync(GLenum Condition, GLbitfield Flags)
 		{
 			return glFenceSync(Condition, Flags);
 		}
 
-		static FORCEINLINE bool IsSync(UGLsync Sync)
+		static FORCEINLINE bool IsSync(GLsync Sync)
 		{
 			return (glIsSync(Sync) == GL_TRUE) ? true : false;
 		}
 
-		static FORCEINLINE EFenceResult ClientWaitSync(UGLsync Sync, GLbitfield Flags, GLuint64 Timeout)
+		static FORCEINLINE EFenceResult ClientWaitSync(GLsync Sync, GLbitfield Flags, GLuint64 Timeout)
 		{
 			GLenum Result = glClientWaitSync(Sync, Flags, Timeout);
 			switch (Result)

@@ -14,8 +14,8 @@ namespace BlackPearl {
     {
         std::vector<ShaderMacro> Macros;
         // Macros.push_back(ShaderMacro("COMPILE_SHADER", "1"));
-        ShaderHandle vertexShader = g_shaderFactory->CreateShader("hlsl/test/forward_test_vs.hlsl", "main", &Macros, ShaderType::Vertex);
-        ShaderHandle pixelShader = g_shaderFactory->CreateShader("hlsl/test/forward_test_vs.hlsl", "main", &Macros, ShaderType::Pixel);
+        ShaderHandle vertexShader = g_shaderFactory->CreateShader("hlsl/test/forward_test_vs.hlsl", "main", ShaderType::VertexShader, &Macros);
+        ShaderHandle pixelShader = g_shaderFactory->CreateShader("hlsl/test/forward_test_vs.hlsl", "main", ShaderType::Pixel, &Macros);
 
         std::vector<VertexBufferBinding> vertexBuffers;
         IndexBufferBinding indexBuffer;
@@ -51,7 +51,7 @@ namespace BlackPearl {
 
         m_ShaderParameters[ShaderType::Pixel].bindingLayouts.push_back(viewBindinglayout);
         m_ShaderParameters[ShaderType::Pixel].bindingSets.push_back(viewBindingset);
-        m_ShaderParameters[ShaderType::Vertex].inputLayout = inputLayout;
+        m_ShaderParameters[ShaderType::VertexShader].inputLayout = inputLayout;
     }
 
 	void PBRRenderer::Render(ICommandList* commandList, IFramebuffer* targetFramebuffer, Scene* scene)

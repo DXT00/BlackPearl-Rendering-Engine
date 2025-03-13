@@ -12,6 +12,7 @@
 #include "OpenGLBuffer.h"
 #include "OpenGLInputLayout.h"
 #include "OpenGLUtil.h"
+#include "OpenGLBoundShaderState.h"
 //#include "OpenGLFrameBuffer.h"
 //
 //
@@ -114,14 +115,14 @@ namespace BlackPearl
 
 	BindingLayoutHandle Device::createBindingLayout(const RHIBindingLayoutDesc& desc)
 	{
-		BindingLayout* ret = new BindingLayout(m_Context, desc);
+		BindingLayout* ret = new BindingLayout(*m_Context, desc);
 		return BindingLayoutHandle::Create(ret);
 
 	}
 
 	BindingLayoutHandle Device::createBindlessLayout(const RHIBindlessLayoutDesc& desc)
 	{
-		BindingLayout* ret = new BindingLayout(m_Context, desc);
+		BindingLayout* ret = new BindingLayout(*m_Context, desc);
 
 		//ret->bake();
 
@@ -132,7 +133,7 @@ namespace BlackPearl
 	CommandListHandle Device::createCommandList(const CommandListParameters& params)
 	{
 
-		CommandList* cmdList = new CommandList(this, m_Context, params);
+		CommandList* cmdList = new CommandList(this, *m_Context, params);
 
 		return CommandListHandle::Create(cmdList);
 
@@ -153,14 +154,12 @@ namespace BlackPearl
 	ShaderHandle Device::createShader(const ShaderDesc& d, const void* binary, size_t binarySize)
 	{
 		Shader* shader = nullptr;
-		if (binary == nullptr)
-		{
-			shader = new Shader(d, d.filePath);
-		}
-		else {
+		if (binary)
 			shader = new Shader(d, binary, binarySize);
-
+		else {
+			shader = new Shader(d);
 		}
+		
 
 		/*shader->desc = d;
 		shader->stageFlagBits = VkUtil::convertShaderTypeToShaderStageFlagBits(d.shaderType);
@@ -241,8 +240,8 @@ namespace BlackPearl
 
 	void Device::InitializeStateResources()
 	{
-		SharedContextState.InitializeResources(FOpenGL::GetMaxCombinedTextureImageUnits(), FOpenGL::GetMaxCombinedUAVUnits());
-		RenderingContextState.InitializeResources(FOpenGL::GetMaxCombinedTextureImageUnits(), FOpenGL::GetMaxCombinedUAVUnits());
+		SharedContextState->InitializeResources(FOpenGL::GetMaxCombinedTextureImageUnits(), FOpenGL::GetMaxCombinedUAVUnits());
+		RenderingContextState->InitializeResources(FOpenGL::GetMaxCombinedTextureImageUnits(), FOpenGL::GetMaxCombinedUAVUnits());
 		PendingState.InitializeResources(FOpenGL::GetMaxCombinedTextureImageUnits(), FOpenGL::GetMaxCombinedUAVUnits());
 	}
 
@@ -251,26 +250,26 @@ namespace BlackPearl
 		// most common case
 		if (BeginSceneContextType == CONTEXT_Rendering)
 		{
-			return RenderingContextState;
+			return *RenderingContextState;
 		}
 
-		int32_t ContextType = (int32_t)PlatformOpenGLCurrentContext(m_Context.PlatformDevice);
+		int32_t ContextType = (int32_t)PlatformOpenGLCurrentContext(m_Context->PlatformDevice);
 		if (bAssertIfInvalid)
 		{
 			assert(ContextType >= 0);
 		}
 		else if (ContextType < 0)
 		{
-			return InvalidContextState;
+			return *InvalidContextState;
 		}
 
 		if (ContextType == CONTEXT_Rendering)
 		{
-			return RenderingContextState;
+			return *RenderingContextState;
 		}
 		else
 		{
-			return SharedContextState;
+			return *SharedContextState;
 		}
 	}
 
@@ -667,12 +666,12 @@ namespace BlackPearl
 
 	Device::Device()
 	{
-
-		m_Context.PlatformDevice = PlatformCreateOpenGLDevice();
+		m_Context = new OpenGLContext();
+		m_Context->PlatformDevice = PlatformCreateOpenGLDevice();
 
 		InitRHICapabilitiesForGL();
 
-		assert(PlatformOpenGLCurrentContext(m_Context.PlatformDevice) == CONTEXT_Shared);
+		assert(PlatformOpenGLCurrentContext(m_Context->PlatformDevice) == CONTEXT_Shared);
 
 
 		assert(!GIsRHIInitialized);
@@ -784,8 +783,8 @@ namespace BlackPearl
 						{
 							FOpenGL::BlendFuncSeparatei(
 								RenderTargetIndex,
-								RenderTargetBlendState.srcBlend, RenderTargetBlendState.destBlend,
-								RenderTargetBlendState.srcBlendAlpha, RenderTargetBlendState.destBlendAlpha
+								OpenGLUtil::convertBlendValue(RenderTargetBlendState.srcBlend), OpenGLUtil::convertBlendValue(RenderTargetBlendState.destBlend),
+								OpenGLUtil::convertBlendValue(RenderTargetBlendState.srcBlendAlpha), OpenGLUtil::convertBlendValue(RenderTargetBlendState.destBlendAlpha)
 							);
 						}
 
@@ -806,7 +805,7 @@ namespace BlackPearl
 							|| CachedRenderTargetBlendState.srcBlendAlpha != RenderTargetBlendState.srcBlendAlpha
 							|| CachedRenderTargetBlendState.destBlendAlpha != RenderTargetBlendState.destBlendAlpha)
 						{
-							FOpenGL::BlendFunci(RenderTargetIndex, RenderTargetBlendState.srcBlend, RenderTargetBlendState.destBlend);
+							FOpenGL::BlendFunci(RenderTargetIndex, OpenGLUtil::convertBlendValue(RenderTargetBlendState.srcBlend), OpenGLUtil::convertBlendValue(RenderTargetBlendState.destBlend));
 						}
 
 						if (CachedRenderTargetBlendState.blendOp != RenderTargetBlendState.blendOp)
@@ -858,8 +857,8 @@ namespace BlackPearl
 								|| CachedRenderTargetBlendState.destBlendAlpha != RenderTargetBlendState.destBlendAlpha)
 							{
 								glBlendFuncSeparate(
-									RenderTargetBlendState.srcBlend, RenderTargetBlendState.destBlend,
-									RenderTargetBlendState.srcBlendAlpha, RenderTargetBlendState.destBlendAlpha
+									OpenGLUtil::convertBlendValue(RenderTargetBlendState.srcBlend), OpenGLUtil::convertBlendValue(RenderTargetBlendState.destBlend),
+									OpenGLUtil::convertBlendValue(RenderTargetBlendState.srcBlendAlpha), OpenGLUtil::convertBlendValue(RenderTargetBlendState.destBlendAlpha)
 								);
 							}
 
@@ -879,7 +878,7 @@ namespace BlackPearl
 								|| CachedRenderTargetBlendState.srcBlendAlpha != RenderTargetBlendState.srcBlendAlpha
 								|| CachedRenderTargetBlendState.destBlendAlpha != RenderTargetBlendState.destBlendAlpha)
 							{
-								glBlendFunc(RenderTargetBlendState.srcBlend, RenderTargetBlendState.destBlend);
+								glBlendFunc(OpenGLUtil::convertBlendValue(RenderTargetBlendState.srcBlend), OpenGLUtil::convertBlendValue(RenderTargetBlendState.destBlend));
 							}
 
 							if (CachedRenderTargetBlendState.blendOp != RenderTargetBlendState.blendOp
@@ -892,7 +891,7 @@ namespace BlackPearl
 						// Set cached values of all stages to what they were set by global calls, common to all stages
 						for (uint32_t RenderTargetIndex2 = 0; RenderTargetIndex2 < c_MaxRenderTargets; ++RenderTargetIndex2)
 						{
-							FOpenGLBlendStateData::FRenderTarget& CachedRenderTargetBlendState2 = ContextState.BlendState.RenderTargets[RenderTargetIndex2];
+							BlendState::RenderTarget& CachedRenderTargetBlendState2 = ContextState.BlendState.targets[RenderTargetIndex2];
 							CachedRenderTargetBlendState2.bSeparateAlphaBlendEnable = RenderTargetBlendState.bSeparateAlphaBlendEnable;
 							CachedRenderTargetBlendState2.blendOp = RenderTargetBlendState.blendOp;
 							CachedRenderTargetBlendState2.srcBlend = RenderTargetBlendState.srcBlend;
@@ -920,30 +919,29 @@ namespace BlackPearl
 
 			CachedRenderTargetBlendState.bSeparateAlphaBlendEnable = RenderTargetBlendState.bSeparateAlphaBlendEnable;
 
-			if (CachedRenderTargetBlendState.ColorWriteMaskR != RenderTargetBlendState.ColorWriteMaskR
-				|| CachedRenderTargetBlendState.ColorWriteMaskG != RenderTargetBlendState.ColorWriteMaskG
+			if (CachedRenderTargetBlendState.colorWriteMask != RenderTargetBlendState.colorWriteMask
+				/*|| CachedRenderTargetBlendState.ColorWriteMaskG != RenderTargetBlendState.ColorWriteMaskG
 				|| CachedRenderTargetBlendState.ColorWriteMaskB != RenderTargetBlendState.ColorWriteMaskB
-				|| CachedRenderTargetBlendState.ColorWriteMaskA != RenderTargetBlendState.ColorWriteMaskA)
+				|| CachedRenderTargetBlendState.ColorWriteMaskA != RenderTargetBlendState.ColorWriteMaskA)*/
+				)
 			{
 				FOpenGL::ColorMaskIndexed(
 					RenderTargetIndex,
-					RenderTargetBlendState.ColorWriteMaskR,
-					RenderTargetBlendState.ColorWriteMaskG,
-					RenderTargetBlendState.ColorWriteMaskB,
-					RenderTargetBlendState.ColorWriteMaskA
+					RenderTargetBlendState.colorWriteMaskRed(),
+					RenderTargetBlendState.colorWriteMaskGreen(),
+					RenderTargetBlendState.colorWriteMaskBlue(),
+					RenderTargetBlendState.colorWriteMaskAlpha()
 				);
 
-				CachedRenderTargetBlendState.ColorWriteMaskR = RenderTargetBlendState.ColorWriteMaskR;
-				CachedRenderTargetBlendState.ColorWriteMaskG = RenderTargetBlendState.ColorWriteMaskG;
-				CachedRenderTargetBlendState.ColorWriteMaskB = RenderTargetBlendState.ColorWriteMaskB;
-				CachedRenderTargetBlendState.ColorWriteMaskA = RenderTargetBlendState.ColorWriteMaskA;
+				CachedRenderTargetBlendState.colorWriteMask = RenderTargetBlendState.colorWriteMask;
+				
 			}
 		}
 
-		PendingState.bAlphaToCoverageEnabled = bMSAAEnabled && PendingState.BlendState.bUseAlphaToCoverage;
-		if (PendingState.bAlphaToCoverageEnabled != ContextState.bAlphaToCoverageEnabled)
+		PendingState.alphaToCoverageEnable = bMSAAEnabled && PendingState.BlendState.alphaToCoverageEnable;
+		if (PendingState.alphaToCoverageEnable != ContextState.bAlphaToCoverageEnabled)
 		{
-			if (PendingState.bAlphaToCoverageEnabled)
+			if (PendingState.alphaToCoverageEnable)
 			{
 				glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE);
 			}
@@ -1130,7 +1128,8 @@ namespace BlackPearl
 		//VERIFY_GL_SCOPE();
 		VertexBuffer* vertexBuffer = static_cast<VertexBuffer*>(VertexBufferRHI);
 		PendingState.Streams[StreamIndex].VertexBufferResource = vertexBuffer ? vertexBuffer->rendererID : 0;
-		PendingState.Streams[StreamIndex].Stride = PendingState.BoundShaderState ? PendingState.BoundShaderState->StreamStrides[StreamIndex] : 0;
+		//TODO:: 确认下
+		PendingState.Streams[StreamIndex].Stride = PendingState.BoundShaderState ? PendingState.BoundShaderState->VertexDeclarationRHI->getAttributeDesc(StreamIndex)->elementStride : 0;
 		PendingState.Streams[StreamIndex].Offset = Offset;
 	}
 
@@ -1197,7 +1196,7 @@ namespace BlackPearl
 		uint32_t StreamMask = ContextState.ActiveStreamMask;
 
 		//check(IsValidRef(PendingState.BoundShaderState));
-		InputLayout* VertexDeclaration = PendingState.BoundShaderState->VertexDeclaration;
+		InputLayout* VertexDeclaration = static_cast<InputLayout*>(PendingState.BoundShaderState->VertexDeclarationRHI);
 		//const CrossCompiler::FShaderBindingInOutMask& AttributeMask = PendingState.BoundShaderState->GetVertexShader()->Bindings.InOutMask;
 		// || AttributeMask.Bitmask != ContextState.VertexAttrs_EnabledBits
 		if (ContextState.VertexDecl != VertexDeclaration)
@@ -1373,7 +1372,7 @@ namespace BlackPearl
     {
         if (FOpenGL::SupportsPolygonMode() && ContextState.RasterizerState.fillMode != PendingState.RasterizerState.fillMode)
         {
-            FOpenGL::PolygonMode(GL_FRONT_AND_BACK, PendingState.RasterizerState.fillMode);
+            FOpenGL::PolygonMode(GL_FRONT_AND_BACK, OpenGLUtil::convertFillMode(PendingState.RasterizerState.fillMode));
             ContextState.RasterizerState.fillMode = PendingState.RasterizerState.fillMode;
         }
 

@@ -23,7 +23,7 @@
 
 namespace BlackPearl {
 
-
+	class OpenGLViewport;
 #define SUBALLOCATED_CONSTANT_BUFFER 0
 
 #define GL_CHECK(x)		x; do { GLint Err = glGetError(); if (Err != 0) {FPlatformMisc::LowLevelOutputDebugStringf(TEXT("(%s:%d) GL_CHECK Failed '%s'! %d (%x)\n"), ANSI_TO_TCHAR(__FILE__), __LINE__, ANSI_TO_TCHAR( #x ), Err, Err); check(!Err);}} while (0)

@@ -1,9 +1,9 @@
 #pragma once
-#include "glad/glad.h"
+//#include "glad/glad.h"
 #include "glm/glm.hpp"
 #include "BlackPearl/Math//vector.h"
 #include "BlackPearl/Math/Math.h"
-
+#include "BlackPearl/RHI/OpenGLRHI/OpenGLDriver/OpenGLFunctions.h"
 namespace BlackPearl {
 
 	class RenderCommand

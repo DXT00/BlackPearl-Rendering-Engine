@@ -5,6 +5,7 @@
 #include "BlackPearl/RHI/RHIDefinitions.h"
 
 #include "BlackPearl/RHI/Common/stb_util.h"
+#include "BlackPearl/RHI/OpenGLRHI/OpenGLDriver/OpenGLFunctions.h"
 namespace BlackPearl {
 
 	//Texture::Texture(const TextureDesc& desc)
@@ -186,16 +187,20 @@ namespace BlackPearl {
 	//	//	UnBind();
 	//}
 
-	void Texture::SetSizeFilter(GLenum min_filter, GLenum mag_filter) {
-
-		glTextureParameteri(m_TextureID, GL_TEXTURE_MIN_FILTER, min_filter);
-		glTextureParameteri(m_TextureID, GL_TEXTURE_MAG_FILTER, mag_filter);
+	void Texture::SetSizeFilter(GLenum min_filter, GLenum mag_filter)
+	{
+		Bind();
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, min_filter);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, mag_filter);
 	}
-	void Texture::SetWrapFilter(GLenum filter) {
 
-		glTextureParameteri(m_TextureID, GL_TEXTURE_WRAP_S, filter); //GL_REPEAT 表示纹理X方向循环使用纹理
-		glTextureParameteri(m_TextureID, GL_TEXTURE_WRAP_T, filter); //GL_REPEAT 表示纹理y方向循环使用纹理
-		glTextureParameteri(m_TextureID, GL_TEXTURE_WRAP_R, filter);  //GL_REPEAT 表示纹理z方向循环使用纹理
+	void Texture::SetWrapFilter(GLenum filter) {
+		Bind();
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, filter); //GL_REPEAT 表示纹理X方向循环使用纹理
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, filter); //GL_REPEAT 表示纹理y方向循环使用纹理
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, filter);  //GL_REPEAT 表示纹理z方向循环使用纹理
+	
+		//glTextureParameteri  是 OpenGL 4.5 引入的 Direct State Access (DSA) 函数，提供了更直接的纹理操作方式，减少了状态切换的开销
 	}
 
 	//return <format, dataType>
@@ -360,7 +365,11 @@ namespace BlackPearl {
 	{
 		glBindTexture(GL_TEXTURE_2D, m_TextureID);
 
-		glTextureStorage2D(m_TextureID, levels, internal_format, width, height);
+		//glTextureStorage2D(m_TextureID, levels, internal_format, width, height);
+
+		//无需绑定，直接操作纹理 ID , OpenGL 4.5 引入
+		glTexStorage2D(GL_TEXTURE_2D, levels, internal_format, width, height);
+
 	}
 
 }

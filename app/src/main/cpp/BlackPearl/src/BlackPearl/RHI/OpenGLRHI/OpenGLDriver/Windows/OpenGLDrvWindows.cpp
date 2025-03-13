@@ -7,15 +7,18 @@
 #include "BlackPearl/RHI/OpenGLRHI/OpenGLDynamicRHI.h"
 #include "BlackPearl/Core/ScopeLock.h"
 #include "BlackPearl/Core/CriticalSection.h"
+#include "BlackPearl\RHI\Common\RHIUtils.h"
 // Copyright Epic Games, Inc. All Rights Reserved.
 
-/*=============================================================================
-	OpenGLWindowsLoader.cpp: Manual loading of OpenGL functions from DLL.
-=============================================================================*/
+
 
 namespace BlackPearl {
 //
 //
+	/*------------------------------------------------------------------------------
+	OpenGL function pointers.
+------------------------------------------------------------------------------*/
+
 //#define DEFINE_GL_ENTRYPOINTS(Type,Func) Type Func = NULL;
 //ENUM_GL_ENTRYPOINTS_ALL(DEFINE_GL_ENTRYPOINTS);
 //#undef DEFINE_GL_ENTRYPOINTS
@@ -44,20 +47,6 @@ static HGLRC GetCurrentContext()
 	return wglGetCurrentContext();
 }
 
-
-/** Platform specific OpenGL context. */
-struct FPlatformOpenGLContext
-{
-	HWND WindowHandle;
-	HDC DeviceContext;
-	HGLRC OpenGLContext;
-	bool bReleaseWindowOnDestroy;
-	int32_t SyncInterval;
-	GLuint	ViewportFramebuffer;
-	GLuint	VertexArrayObject;	// one has to be generated and set for each context (OpenGL 3.2 Core requirements)
-	GLuint	BackBufferResource;
-	GLenum	BackBufferTarget;
-};
 
 class FScopeContext
 {
@@ -397,7 +386,8 @@ void PlatformReleaseOpenGLContext(FPlatformOpenGLDevice* Device, FPlatformOpenGL
 {
 	assert(Context && Context->OpenGLContext);
 
-	Device->ViewportContexts.RemoveSingle(Context);
+	auto it = std::find(Device->ViewportContexts.begin(), Device->ViewportContexts.end(), Context);
+	Device->ViewportContexts.erase(it);
 	Device->TargetDirty = true;
 
 	bool bActiveContextWillBeReleased = false;
@@ -498,7 +488,7 @@ bool PlatformBlitToViewport(FPlatformOpenGLDevice* Device, const OpenGLViewport&
 		FScopeContext ScopeContext(&TempContext);
 
 		GLuint vfb = TempContext.ViewportFramebuffer;
-		if (Viewport.GetCustomPresent())
+		/*if (Viewport.GetCustomPresent())
 		{
 			Device->TargetDirty = false;
 			glDisable(GL_FRAMEBUFFER_SRGB);
@@ -512,7 +502,7 @@ bool PlatformBlitToViewport(FPlatformOpenGLDevice* Device, const OpenGLViewport&
 			{
 				Device->TargetDirty = true;
 			}
-		}
+		}*/
 
 		if (Device->ViewportContexts.size() == 1 && Device->TargetDirty)
 		{
@@ -681,8 +671,8 @@ void PlatformGetSupportedResolution(uint32_t& Width, uint32_t& Height)
 
 	while (EnumDisplaySettings(NULL, ModeIndex++, &DisplayMode))
 	{
-		bool IsEqualOrBetterWidth = FMath::Abs((int32_t)DisplayMode.dmPelsWidth - (int32_t)Width) <= FMath::Abs((int32_t)BestWidth - (int32_t)Width);
-		bool IsEqualOrBetterHeight = FMath::Abs((int32_t)DisplayMode.dmPelsHeight - (int32_t)Height) <= FMath::Abs((int32_t)BestHeight - (int32_t)Height);
+		bool IsEqualOrBetterWidth = math::abs((int32_t)DisplayMode.dmPelsWidth - (int32_t)Width) <= math::abs((int32_t)BestWidth - (int32_t)Width);
+		bool IsEqualOrBetterHeight = math::abs((int32_t)DisplayMode.dmPelsHeight - (int32_t)Height) <= math::abs((int32_t)BestHeight - (int32_t)Height);
 		if (!InitializedMode || (IsEqualOrBetterWidth && IsEqualOrBetterHeight))
 		{
 			BestWidth = DisplayMode.dmPelsWidth;
@@ -759,13 +749,13 @@ bool PlatformGetAvailableResolutions(std::vector<RHIScreenResolution>& Resolutio
 			if (bAddIt)
 			{
 				// Add the mode to the list
-				int32_t Temp2Index = Resolutions.AddZeroed();
 
-				RHIScreenResolution& ScreenResolution = Resolutions[Temp2Index];
+				RHIScreenResolution ScreenResolution;
 
 				ScreenResolution.Width = DisplayMode.dmPelsWidth;
 				ScreenResolution.Height = DisplayMode.dmPelsHeight;
 				ScreenResolution.RefreshRate = DisplayMode.dmDisplayFrequency;
+				Resolutions.push_back(ScreenResolution);
 			}
 		}
 	}
@@ -949,7 +939,7 @@ void PlatformGetNewRenderQuery(GLuint* OutQuery, uint64_t* OutQueryContext)
 			if (ReleasedQueries[Index].Context == Context)
 			{
 				NewQuery = ReleasedQueries[Index].Query;
-				ReleasedQueries.RemoveAtSwap(Index);
+				ReleasedQueries.erase(ReleasedQueries.begin()+Index);
 				break;
 			}
 		}
@@ -980,7 +970,7 @@ void PlatformReleaseRenderQuery(GLuint Query, uint64_t QueryContext)
 		FOpenGLReleasedQuery ReleasedQuery;
 		ReleasedQuery.Context = (HGLRC)QueryContext;
 		ReleasedQuery.Query = Query;
-		ReleasedQueries.Add(ReleasedQuery);
+		ReleasedQueries.push_back(ReleasedQuery);
 	}
 }
 
@@ -998,7 +988,7 @@ void DeleteQueriesForCurrentContext(HGLRC Context)
 			if (ReleasedQueries[Index].Context == Context)
 			{
 				FOpenGL::DeleteQueries(1, &ReleasedQueries[Index].Query);
-				ReleasedQueries.RemoveAtSwap(Index);
+				ReleasedQueries.erase(ReleasedQueries.begin()+Index);
 				--Index;
 			}
 		}

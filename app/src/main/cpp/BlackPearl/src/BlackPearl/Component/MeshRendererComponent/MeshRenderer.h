@@ -47,7 +47,7 @@ namespace BlackPearl {
 		void SetModelTextures(const TextureHandle& texture);
 
 		void SetShaders(const std::string& image);
-		void SetShaders(const std::shared_ptr<Shader>& shader);
+		void SetShaders(const std::shared_ptr<MaterialShader>& shader);
 
 		void SetEnableCullFace(bool isEnable) { m_EnableCullFace = isEnable; }
 		bool GetEnableCullFace()const { return m_EnableCullFace; }

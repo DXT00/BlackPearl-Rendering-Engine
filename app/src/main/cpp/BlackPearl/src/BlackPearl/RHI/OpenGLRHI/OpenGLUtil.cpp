@@ -222,9 +222,9 @@ namespace BlackPearl {
 		}
 	}
 
-	VkColorComponentFlags OpenGLUtil::convertColorMask(ColorMask mask)
+	GLenum OpenGLUtil::convertColorMask(ColorMask mask)
 	{
-		return VkColorComponentFlags(uint8_t(mask));
+		return GLenum(uint8_t(mask));
 	}
 
 }

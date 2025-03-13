@@ -185,7 +185,7 @@ namespace BlackPearl {
 
 		LoadMaterialColors(material, colors);
 
-		meshMaterial.reset(DBG_NEW Material(m_CurrentModel->desc.shader, textures, colors));
+		meshMaterial.reset(DBG_NEW Material(m_CurrentModel->desc.shader.get(), textures, colors));
 		meshMaterial->SetShininess(shininess);
 		return meshMaterial;
 	}

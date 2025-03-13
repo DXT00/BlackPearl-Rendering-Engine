@@ -170,166 +170,166 @@ namespace BlackPearl {
 	}
 	void BasicRenderer::DrawObject(Object* obj, IShader* shader, SceneData* scene, unsigned int textureBeginIdx)
 	{
-		GE_ASSERT(obj, "obj is empty!");
-		if (!obj->HasComponent<MeshRenderer>() || !obj->GetComponent<MeshRenderer>()->GetEnableRender())
-			return;
+		//GE_ASSERT(obj, "obj is empty!");
+		//if (!obj->HasComponent<MeshRenderer>() || !obj->GetComponent<MeshRenderer>()->GetEnableRender())
+		//	return;
 
-		glm::mat4 transformMatrix = obj->GetComponent<Transform>()->GetTransformMatrix();
-		std::vector<std::shared_ptr<Mesh>> meshes = obj->GetComponent<MeshRenderer>()->GetMeshes();
-		GE_ERROR_JUDGE();
+		//glm::mat4 transformMatrix = obj->GetComponent<Transform>()->GetTransformMatrix();
+		//std::vector<std::shared_ptr<Mesh>> meshes = obj->GetComponent<MeshRenderer>()->GetMeshes();
+		//GE_ERROR_JUDGE();
 
-		shader->Bind();
-		if (obj->GetComponent<MeshRenderer>()->GetIsPBRObject()) {
-			shader->SetUniform1i("u_IsPBRObjects", 1);
-		}
-		else {
-			shader->SetUniform1i("u_IsPBRObjects", 0);
-		}
-		GE_ERROR_JUDGE();
+		//shader->Bind();
+		//if (obj->GetComponent<MeshRenderer>()->GetIsPBRObject()) {
+		//	shader->SetUniform1i("u_IsPBRObjects", 1);
+		//}
+		//else {
+		//	shader->SetUniform1i("u_IsPBRObjects", 0);
+		//}
+		//GE_ERROR_JUDGE();
 
-		for (int i = 0; i < meshes.size(); i++) {
-			if (obj->HasComponent<PointLight>() || obj->HasComponent<ParallelLight>() || obj->HasComponent<SpotLight>())
-				PrepareBasicShaderParameters(meshes[i], shader, true, textureBeginIdx);
-			else
-				PrepareBasicShaderParameters(meshes[i], shader, false, textureBeginIdx);
-			GE_ERROR_JUDGE();
+		//for (int i = 0; i < meshes.size(); i++) {
+		//	if (obj->HasComponent<PointLight>() || obj->HasComponent<ParallelLight>() || obj->HasComponent<SpotLight>())
+		//		PrepareBasicShaderParameters(meshes[i], shader, true, textureBeginIdx);
+		//	else
+		//		PrepareBasicShaderParameters(meshes[i], shader, false, textureBeginIdx);
+		//	GE_ERROR_JUDGE();
 
-			Renderer::Submit(meshes[i]->GetVertexArray(), shader, transformMatrix, scene);
-			GE_ERROR_JUDGE();
+		//	Renderer::Submit(meshes[i]->GetVertexArray(), shader, transformMatrix, scene);
+		//	GE_ERROR_JUDGE();
 
-			if (meshes[i]->GetIndicesSize() > 0) {
-				unsigned int indicesNum = meshes[i]->GetIndicesSize() / sizeof(unsigned int);
-				meshes[i]->GetVertexArray()->GetIndexBuffer()->Bind();
-				GE_ERROR_JUDGE();
-				/*for (size_t v = 0; v < indicesNum; v++)
-				{
-					GE_CORE_INFO("indexBuffer{0} = {1}\n", v, meshes[i]->GetVertexArray()->GetIndexBuffer()->GetIndicies()[v]);
+		//	if (meshes[i]->GetIndicesSize() > 0) {
+		//		unsigned int indicesNum = meshes[i]->GetIndicesSize() / sizeof(unsigned int);
+		//		meshes[i]->GetVertexArray()->GetIndexBuffer()->Bind();
+		//		GE_ERROR_JUDGE();
+		//		/*for (size_t v = 0; v < indicesNum; v++)
+		//		{
+		//			GE_CORE_INFO("indexBuffer{0} = {1}\n", v, meshes[i]->GetVertexArray()->GetIndexBuffer()->GetIndicies()[v]);
 
-				}*/
+		//		}*/
 
-				glDrawElements(GL_TRIANGLES, indicesNum, GL_UNSIGNED_INT, 0);
-				s_DrawCallCnt++;
-				GE_ERROR_JUDGE();
-				/*meshes[i]->GetVertexArray()->GetIndexBuffer()->UnBind();
-				GE_ERROR_JUDGE();*/
+		//		glDrawElements(GL_TRIANGLES, indicesNum, GL_UNSIGNED_INT, 0);
+		//		s_DrawCallCnt++;
+		//		GE_ERROR_JUDGE();
+		//		/*meshes[i]->GetVertexArray()->GetIndexBuffer()->UnBind();
+		//		GE_ERROR_JUDGE();*/
 
-			}
-			else
-			{
-				meshes[i]->GetVertexArray()->UpdateVertexBuffers();
-				GE_ERROR_JUDGE();
-				for (int j = 0; j < meshes[i]->GetVertexArray()->GetVertexBuffers().size(); j++)
-				{
-					auto vertexBuffer = meshes[i]->GetVertexArray()->GetVertexBuffers()[j];
-					unsigned int vertexNum = vertexBuffer->GetVertexSize() / vertexBuffer->GetBufferLayout().GetStride();
-			
+		//	}
+		//	else
+		//	{
+		//		meshes[i]->GetVertexArray()->UpdateVertexBuffers();
+		//		GE_ERROR_JUDGE();
+		//		for (int j = 0; j < meshes[i]->GetVertexArray()->GetVertexBuffers().size(); j++)
+		//		{
+		//			auto vertexBuffer = meshes[i]->GetVertexArray()->GetVertexBuffers()[j];
+		//			unsigned int vertexNum = vertexBuffer->GetVertexSize() / vertexBuffer->GetBufferLayout().GetStride();
+		//	
 
 
-					glDrawArrays(GL_TRIANGLES, 0, vertexNum);
-					s_DrawCallCnt++;
-					GE_ERROR_JUDGE();
+		//			glDrawArrays(GL_TRIANGLES, 0, vertexNum);
+		//			s_DrawCallCnt++;
+		//			GE_ERROR_JUDGE();
 
-					for (int index = 0; index < vertexBuffer->GetBufferLayout().GetElements().size(); index++)
-					{
-						glDisableVertexAttribArray(vertexBuffer->GetBufferLayout().GetElements()[index].Location);
-					}
-					vertexBuffer->UnBind();
-					GE_ERROR_JUDGE();
+		//			for (int index = 0; index < vertexBuffer->GetBufferLayout().GetElements().size(); index++)
+		//			{
+		//				glDisableVertexAttribArray(vertexBuffer->GetBufferLayout().GetElements()[index].Location);
+		//			}
+		//			vertexBuffer->UnBind();
+		//			GE_ERROR_JUDGE();
 
-				}
+		//		}
 
-			}
-			meshes[i]->GetVertexArray()->UnBind();
-			GE_ERROR_JUDGE();
-			meshes[i]->GetMaterial()->Unbind();
-			GE_ERROR_JUDGE();
+		//	}
+		//	meshes[i]->GetVertexArray()->UnBind();
+		//	GE_ERROR_JUDGE();
+		//	meshes[i]->GetMaterial()->Unbind();
+		//	GE_ERROR_JUDGE();
 
-			shader->Unbind();
-			GE_ERROR_JUDGE();
+		//	shader->Unbind();
+		//	GE_ERROR_JUDGE();
 
-		}
+		//}
 	}
 
 	void BasicRenderer::DrawObjectVertex(Object* obj, IShader* shader, SceneData* scene, unsigned int textureBeginIdx)
 	{
-		GE_ASSERT(obj, "obj is empty!");
-		if (!obj->HasComponent<MeshRenderer>() || !obj->GetComponent<MeshRenderer>()->GetEnableRender())
-			return;
+		//GE_ASSERT(obj, "obj is empty!");
+		//if (!obj->HasComponent<MeshRenderer>() || !obj->GetComponent<MeshRenderer>()->GetEnableRender())
+		//	return;
 
-		glm::mat4 transformMatrix = obj->GetComponent<Transform>()->GetTransformMatrix();
-		std::vector<std::shared_ptr<Mesh>> meshes = obj->GetComponent<MeshRenderer>()->GetMeshes();
-		GE_ERROR_JUDGE();
-
-
-		if (obj->GetComponent<MeshRenderer>()->GetIsPBRObject()) {
-			shader->SetUniform1i("u_IsPBRObjects", 1);
-		}
-		else {
-			shader->SetUniform1i("u_IsPBRObjects", 0);
-		}
-		GE_ERROR_JUDGE();
-
-		for (int i = 0; i < meshes.size(); i++) {
-			if (obj->HasComponent<PointLight>() || obj->HasComponent<ParallelLight>() || obj->HasComponent<SpotLight>())
-				PrepareBasicShaderParameters(meshes[i], shader, true, textureBeginIdx);
-			else
-				PrepareBasicShaderParameters(meshes[i], shader, false, textureBeginIdx);
-			GE_ERROR_JUDGE();
-
-			Renderer::Submit(meshes[i]->GetVertexArray(), shader, transformMatrix, scene);
-			GE_ERROR_JUDGE();
-
-			/*if (meshes[i]->GetIndicesSize() > 0) {
-				unsigned int indicesNum = meshes[i]->GetIndicesSize() / sizeof(unsigned int);
-				meshes[i]->GetVertexArray()->GetIndexBuffer()->Bind();
-				GE_ERROR_JUDGE();
-				for (size_t v = 0; v < indicesNum; v++)
-				{
-					GE_CORE_INFO("indexBuffer{0} = {1}\n", v, meshes[i]->GetVertexArray()->GetIndexBuffer()->GetIndicies()[v]);
-
-				}
-
-				glDrawElements(GL_TRIANGLES, indicesNum, GL_UNSIGNED_INT, 0);
-				s_DrawCallCnt++;
-				GE_ERROR_JUDGE();
-				meshes[i]->GetVertexArray()->GetIndexBuffer()->UnBind();
-				GE_ERROR_JUDGE();
-
-			}
-			else*/
-			{
-				meshes[i]->GetVertexArray()->UpdateVertexBuffers();
-				GE_ERROR_JUDGE();
-				for (int j = 0; j < meshes[i]->GetVertexArray()->GetVertexBuffers().size(); j++)
-				{
-					auto vertexBuffer = meshes[i]->GetVertexArray()->GetVertexBuffers()[j];
-					unsigned int vertexNum = vertexBuffer->GetVertexSize() / vertexBuffer->GetBufferLayout().GetStride();
+		//glm::mat4 transformMatrix = obj->GetComponent<Transform>()->GetTransformMatrix();
+		//std::vector<std::shared_ptr<Mesh>> meshes = obj->GetComponent<MeshRenderer>()->GetMeshes();
+		//GE_ERROR_JUDGE();
 
 
+		//if (obj->GetComponent<MeshRenderer>()->GetIsPBRObject()) {
+		//	shader->SetUniform1i("u_IsPBRObjects", 1);
+		//}
+		//else {
+		//	shader->SetUniform1i("u_IsPBRObjects", 0);
+		//}
+		//GE_ERROR_JUDGE();
 
-					glDrawArrays(GL_TRIANGLES, 0, vertexNum);
-					s_DrawCallCnt++;
-					GE_ERROR_JUDGE();
+		//for (int i = 0; i < meshes.size(); i++) {
+		//	if (obj->HasComponent<PointLight>() || obj->HasComponent<ParallelLight>() || obj->HasComponent<SpotLight>())
+		//		PrepareBasicShaderParameters(meshes[i], shader, true, textureBeginIdx);
+		//	else
+		//		PrepareBasicShaderParameters(meshes[i], shader, false, textureBeginIdx);
+		//	GE_ERROR_JUDGE();
 
-					for (int index = 0; index < vertexBuffer->GetBufferLayout().GetElements().size(); index++)
-					{
-						glDisableVertexAttribArray(vertexBuffer->GetBufferLayout().GetElements()[index].Location);
-					}
-					vertexBuffer->UnBind();
-					GE_ERROR_JUDGE();
+		//	Renderer::Submit(meshes[i]->GetVertexArray(), shader, transformMatrix, scene);
+		//	GE_ERROR_JUDGE();
 
-				}
+		//	/*if (meshes[i]->GetIndicesSize() > 0) {
+		//		unsigned int indicesNum = meshes[i]->GetIndicesSize() / sizeof(unsigned int);
+		//		meshes[i]->GetVertexArray()->GetIndexBuffer()->Bind();
+		//		GE_ERROR_JUDGE();
+		//		for (size_t v = 0; v < indicesNum; v++)
+		//		{
+		//			GE_CORE_INFO("indexBuffer{0} = {1}\n", v, meshes[i]->GetVertexArray()->GetIndexBuffer()->GetIndicies()[v]);
 
-			}
-			meshes[i]->GetVertexArray()->UnBind();
-			GE_ERROR_JUDGE();
-			meshes[i]->GetMaterial()->Unbind();
-			GE_ERROR_JUDGE();
+		//		}
 
-			shader->Unbind();
-			GE_ERROR_JUDGE();
+		//		glDrawElements(GL_TRIANGLES, indicesNum, GL_UNSIGNED_INT, 0);
+		//		s_DrawCallCnt++;
+		//		GE_ERROR_JUDGE();
+		//		meshes[i]->GetVertexArray()->GetIndexBuffer()->UnBind();
+		//		GE_ERROR_JUDGE();
 
-		}
+		//	}
+		//	else*/
+		//	{
+		//		meshes[i]->GetVertexArray()->UpdateVertexBuffers();
+		//		GE_ERROR_JUDGE();
+		//		for (int j = 0; j < meshes[i]->GetVertexArray()->GetVertexBuffers().size(); j++)
+		//		{
+		//			auto vertexBuffer = meshes[i]->GetVertexArray()->GetVertexBuffers()[j];
+		//			unsigned int vertexNum = vertexBuffer->GetVertexSize() / vertexBuffer->GetBufferLayout().GetStride();
+
+
+
+		//			glDrawArrays(GL_TRIANGLES, 0, vertexNum);
+		//			s_DrawCallCnt++;
+		//			GE_ERROR_JUDGE();
+
+		//			for (int index = 0; index < vertexBuffer->GetBufferLayout().GetElements().size(); index++)
+		//			{
+		//				glDisableVertexAttribArray(vertexBuffer->GetBufferLayout().GetElements()[index].Location);
+		//			}
+		//			vertexBuffer->UnBind();
+		//			GE_ERROR_JUDGE();
+
+		//		}
+
+		//	}
+		//	meshes[i]->GetVertexArray()->UnBind();
+		//	GE_ERROR_JUDGE();
+		//	meshes[i]->GetMaterial()->Unbind();
+		//	GE_ERROR_JUDGE();
+
+		//	shader->Unbind();
+		//	GE_ERROR_JUDGE();
+
+		//}
 	}
 
 	void BasicRenderer::DiscpatchCompute(uint32_t x, uint32_t y, uint32_t z)
@@ -382,7 +382,7 @@ namespace BlackPearl {
 	}
 
 	void BasicRenderer::DrawTerrain(Object* obj, IShader* shader, bool drawPolygon)
-	//{
+	{//{
 	//	GE_ASSERT(obj->HasComponent<TerrainComponent>(), "obj has no terrain component");
 	//	glm::mat4 transformMatrix = obj->GetComponent<Transform>()->GetTransformMatrix();
 	//	std::vector<std::shared_ptr<Mesh>> meshes = obj->GetComponent<MeshRenderer>()->GetMeshes();
@@ -864,7 +864,7 @@ namespace BlackPearl {
 
 //			std::vector<ShaderMacro> Macros;
 //			// Macros.push_back(ShaderMacro("COMPILE_SHADER", "1"));
-//			ShaderHandle vertexShader = g_shaderFactory->CreateShader("hlsl/test/forward_test_vs.hlsl", "main", &Macros, ShaderType::Vertex);
+//			ShaderHandle vertexShader = g_shaderFactory->CreateShader("hlsl/test/forward_test_vs.hlsl", "main", &Macros, ShaderType::VertexShader);
 //			ShaderHandle pixelShader = g_shaderFactory->CreateShader("hlsl/test/forward_test_vs.hlsl", "main", &Macros, ShaderType::Pixel);
 //
 //			std::vector<VertexBufferBinding> vertexBuffers;
@@ -896,11 +896,11 @@ namespace BlackPearl {
 			psoDesc.rasterState.frontCounterClockwise = true;
 			psoDesc.rasterState.cullMode = RasterCullMode::Back;
 			psoDesc.primType = PrimitiveType::TriangleList;
-			psoDesc.inputLayout = shaderParms[ShaderType::Vertex].inputLayout;
+			psoDesc.inputLayout = shaderParms[ShaderType::VertexShader].inputLayout;
 			//psoDesc.BoundShaderState.VertexDeclarationRHI = GetVertexDeclarationFVector4();
             //TODO :: opengl 分开 vs, ps
-			psoDesc.VS = item.material->GetVertShader();
-			psoDesc.PS = item.material->GetFragShader();
+			psoDesc.VS = item.material->GetShader()->GetVertexShader();
+			psoDesc.PS = item.material->GetShader()->GetPixelShader();
 
             for (int j = 0; j < shaderParms[ShaderType::Pixel].bindingLayouts.size(); ++j) {
                 psoDesc.bindingLayouts.push_back(shaderParms[ShaderType::Pixel].bindingLayouts[j]);

@@ -1,5 +1,7 @@
 #include "pch.h"
-#include <glad/glad.h>
+//#include <glad/glad.h>
+#include "BlackPearl/RHI/OpenGLRHI/OpenGLDriver/OpenGLThirdParty.h"
+
 #include <GLFW/glfw3.h>
 #include "Application.h"
 

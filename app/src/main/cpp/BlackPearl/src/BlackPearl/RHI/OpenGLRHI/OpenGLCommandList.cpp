@@ -259,7 +259,7 @@ namespace BlackPearl {
 		uint32_t VertexCount = args.vertexCount;//GetVertexCountForPrimitiveCount(NumPrimitives, PrimitiveType);
         uint32_t BaseVertexIndex = args.startVertexLocation;
 
-		m_Device->SetupVertexArrays(ContextState, BaseVertexIndex, PendingState.Streams, NUM_OPENGL_VERTEX_STREAMS, VertexCount);
+		m_Device->SetupVertexArrays(ContextState, BaseVertexIndex, m_Device->PendingState.Streams, NUM_OPENGL_VERTEX_STREAMS, VertexCount);
 
 		GLenum DrawMode = GL_TRIANGLES;
 		GLsizei NumElements = args.vertexCount;
@@ -421,11 +421,11 @@ namespace BlackPearl {
 		FOpenGLLinkedProgram* LinkedProgram = PendingState.BoundShaderState->LinkedProgram;
 		if (GUseEmulatedUniformBuffers)
 		{
-			PendingState.ShaderParameters[ShaderType::Vertex].CommitPackedUniformBuffers(LinkedProgram, ShaderType::Vertex, PendingState.ShaderParameters[ShaderType::Vertex].bindings);
-			PendingState.ShaderParameters[ShaderType::Pixel].CommitPackedUniformBuffers(LinkedProgram, ShaderType::Pixel, PendingState.ShaderParameters[ShaderType::Pixel].bindings);
+			PendingState.ShaderParameters[ShaderType::VertexShader].CommitPackedUniformBuffers(LinkedProgram, ShaderType::VertexShader, PendingState.ShaderParameters[ShaderType::VertexShader].bindingSets);
+			PendingState.ShaderParameters[ShaderType::Pixel].CommitPackedUniformBuffers(LinkedProgram, ShaderType::Pixel, PendingState.ShaderParameters[ShaderType::Pixel].bindingSets);
 			if (PendingState.BoundShaderState->GetGeometryShader())
 			{
-				PendingState.ShaderParameters[ShaderType::Geometry].CommitPackedUniformBuffers(LinkedProgram, ShaderType::Geometry, PendingState.ShaderParameters[ShaderType::Geometry].bindings);
+				PendingState.ShaderParameters[ShaderType::Geometry].CommitPackedUniformBuffers(LinkedProgram, ShaderType::Geometry, PendingState.ShaderParameters[ShaderType::Geometry].bindingSets);
 			}
 		}
 
@@ -435,7 +435,7 @@ namespace BlackPearl {
 		}
 
 		// commit packed global only if current program has changed or any global parameter has changed (RHISetShaderParameter)
-		PendingState.ShaderParameters[ShaderType::Vertex].CommitPackedGlobals(LinkedProgram, LinkedProgram, ShaderType::Vertex);
+		PendingState.ShaderParameters[ShaderType::VertexShader].CommitPackedGlobals(LinkedProgram, ShaderType::VertexShader);
 		PendingState.ShaderParameters[ShaderType::Pixel].CommitPackedGlobals(LinkedProgram, ShaderType::Pixel);
 		if (PendingState.BoundShaderState->GetGeometryShader())
 		{
@@ -450,7 +450,7 @@ namespace BlackPearl {
 
 	void CommandList::setDepthStencilaState(DepthStencilState* state)
 	{
-		m_Device->PendingState.DepthStencilState = *(static_cast<FOpenGLDepthStencilState*>(state));
+		m_Device->PendingState.DepthStencilState = *(state);
 
 	}
 

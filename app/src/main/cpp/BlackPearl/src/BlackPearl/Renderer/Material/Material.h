@@ -6,6 +6,7 @@
 #include "BlackPearl/RHI/DynamicRHI.h"
 #include "BlackPearl/RHI/RHITexture.h"
 #include "BlackPearl/Math/Math.h"
+#include "BlackPearl/Renderer/Shader/MaterialShader.h"
 #include "hlsl/core/material_cb.h"
 
 using namespace BlackPearl::math;
@@ -76,15 +77,14 @@ namespace BlackPearl {
 		}
 
 		Material(
-            IShader*  vertShader,
-			IShader*  fragShader,
+			MaterialShader* shader,
 			const std::shared_ptr<TextureMaps>& textureMaps,
 			const MaterialColor& materialColors
 		);
 			
 
 		Material(
-			const std::string vertShaderPath, const std::string fragShaderPath,
+			const std::string shaderPath, 
 			const std::shared_ptr<TextureMaps>& textureMaps,
 			math::float3 ambientColor, math::float3 diffuseColor, math::float3 specularColor, math::float3 emissiveColor
 		);
@@ -93,16 +93,15 @@ namespace BlackPearl {
 		//TODO:: ����opengl��directX shader
 		//ShaderHandle      GetShader()const { GE_ASSERT(DynamicRHI::g_RHIType == DynamicRHI::Type::OpenGL, "Shader class only support opengl now"); return m_Shader; }
 
-		ShaderHandle      GetVertShader()const { GE_ASSERT(DynamicRHI::g_RHIType == DynamicRHI::Type::OpenGL,"Shader class only support opengl now"); return m_VertShader; }
-		ShaderHandle      GetFragShader()const { GE_ASSERT(DynamicRHI::g_RHIType == DynamicRHI::Type::OpenGL, "Shader class only support opengl now"); return m_FragShader; }
+		MaterialShader*      GetShader()const { return m_MaterialShader; }
 
 		std::shared_ptr<TextureMaps> GetTextureMaps()const { return m_TextureMaps; }
 		MaterialColor                GetMaterialColor()const { return m_MaterialColors; }
 		Props                        GetProps() const { return m_Props; }
 		RTXType						 GetRTXType() const { return m_RTXType; }
 
-		void SetShader(const std::string& shaderPath, ShaderType shaderType);
-		void SetShader(IShader* shader, ShaderType shaderType);
+		void SetShader(const std::string& shaderPath);
+		void SetShader(MaterialShader* shader);
 		void SetTexture(ITexture* texture);
 		//void SetTexture(const TextureType type, const std::string& image);
 		void SetMaterialColor(MaterialColor::Color color);
@@ -158,9 +157,8 @@ namespace BlackPearl {
 	public:
 		std::string name = "Default_Material";
 	private:
-		ShaderHandle 		 m_VertShader = nullptr;
-		ShaderHandle 		 m_FragShader = nullptr;
-
+		
+		MaterialShader*		 m_MaterialShader = nullptr;
 		std::shared_ptr<TextureMaps> m_TextureMaps = nullptr;
 		MaterialColor				 m_MaterialColors;
 		Props                        m_Props;

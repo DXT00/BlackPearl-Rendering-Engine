@@ -68,7 +68,7 @@ namespace BlackPearl {
 		uint32_t					 GetIndicesCount() const { return m_IndicesCount; }
 
 		void SetShader(const std::string& path)				     { material->SetShader(path); }
-		void SetShader(IShader* shader)    { material->SetShader(shader); }
+		void SetShader(MaterialShader* shader)    { material->SetShader(shader); }
 		void SetTexture(ITexture* texture) { material->SetTexture(texture); }
 		void SetMaterialColor(MaterialColor::Color color)        { material->SetMaterialColor(color); }
 		void SetTessellation(uint32_t verticesPerTessPatch);
@@ -128,6 +128,7 @@ namespace BlackPearl {
 		Span<uint8_t>				Indices_ml;
 		Span<Subset>				IndexSubsets;
 		uint32_t					IndexSize_ml;
+#ifdef GE_API_D3D12
 		std::vector<Microsoft::WRL::ComPtr<ID3D12Resource>> VertexResources;
 		Microsoft::WRL::ComPtr<ID3D12Resource>              IndexResource;
 		Microsoft::WRL::ComPtr<ID3D12Resource>              MeshletResource;
@@ -136,7 +137,7 @@ namespace BlackPearl {
 		Microsoft::WRL::ComPtr<ID3D12Resource>              CullDataResource;
 		Microsoft::WRL::ComPtr<ID3D12Resource>              MeshInfoResource;
 
-
+#endif
 	private:
 
 		void _InitBufferGroup(const MeshFilter* filter);

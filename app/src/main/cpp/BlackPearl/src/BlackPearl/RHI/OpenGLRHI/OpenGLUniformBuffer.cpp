@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "glad/glad.h"
+#include "BlackPearl/RHI/OpenGLRHI/OpenGLDriver/OpenGLFunctions.h"
 #include "OpenGLUniformBuffer.h"
 #include "OpenGLDriver/OpenGLDrvPrivate.h"
 
@@ -12,7 +12,7 @@ namespace BlackPearl {
 	OpenGLUniformBuffer::OpenGLUniformBuffer(const UniformBufferLayout* InLayout, const BufferDesc& _desc)
 		:Buffer(_desc)
 	{
-		glCreateBuffers(1, &rendererID);
+		glGenBuffers(1, &rendererID);
 		//check(IsInRenderingThread());
 		//FRHICommandListImmediate& RHICmdList = FRHICommandListExecutor::GetImmediateCommandList();
 

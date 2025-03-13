@@ -4,7 +4,9 @@
 #include "OpenGLSampler.h"
 #include "OpenGLTexture.h"
 #include "OpenGLSampler.h"
+#include "OpenGLBindingLayout.h"
 namespace BlackPearl {
+
 	BindingSet::~BindingSet()
 	{
 	}
@@ -12,7 +14,7 @@ namespace BlackPearl {
 	{
 		BindingLayout* layout = dynamic_cast<BindingLayout*>(_layout);
 
-		BindingSet* ret = new BindingSet(m_Context);
+		BindingSet* ret = new BindingSet(*m_Context);
 		ret->desc = desc;
 		ret->layout = layout;
 
@@ -63,12 +65,12 @@ namespace BlackPearl {
 				ImageDescCnt++;
 				descriptorCnt++;
 
-				if (!static_cast<bool>(texture->permanentState))
+				/*if (!static_cast<bool>(texture->permanentState))
 					ret->bindingsThatNeedTransitions.push_back(static_cast<uint16_t>(bindingIndex));
 				else
 					verifyPermanentResourceState(texture->permanentState,
 						ResourceStates::ShaderResource,
-						true, texture->getDesc().debugName, m_Context.messageCallback);
+						true, texture->getDesc().debugName, m_Context.messageCallback);*/
 			}
 
 			break;
@@ -199,7 +201,7 @@ namespace BlackPearl {
 				descriptorCnt++;*/
 
 
-				if (binding.type == RHIResourceType::RT_VolatileConstantBuffer)
+				/*if (binding.type == RHIResourceType::RT_VolatileConstantBuffer)
 				{
 					assert(buffer->desc.isVolatile);
 					ret->volatileConstantBuffers.push_back(buffer);

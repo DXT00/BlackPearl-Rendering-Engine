@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "OpenGLBuffer.h"
-#include "glad/glad.h"
+//#include "glad/glad.h"
+#include "BlackPearl/RHI/OpenGLRHI/OpenGLDriver/OpenGLFunctions.h"
 #include "OpenGLBufferResource.h"
 
 #include "OpenGLUniformBuffer.h"

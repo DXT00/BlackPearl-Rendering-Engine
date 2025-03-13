@@ -11,6 +11,7 @@
 #include "../RHIDescriptorTable.h"
 #include "../OpenGLRHI/OpenGLDriver/OpenGLDrvPrivate.h"
 #include "BlackPearl/Core/Container/TBitArray.h"
+#include "OpenGLState.h"
 namespace BlackPearl {
 
     class OpenGLViewport;
@@ -156,17 +157,17 @@ namespace BlackPearl {
 		void SetupVertexArrays(FOpenGLContextState& ContextState, uint32_t BaseVertexIndex, FOpenGLStream* Streams, uint32_t NumStreams, uint32_t MaxVertices);
 
 			/** RHI device state, independent of underlying OpenGL context used */
-		FOpenGLRHIState						PendingState;
+		FOpenGLRHIState					PendingState;
 
 
 		/* store opengl context*/
 		//FPlatformOpenGLDevice* m_PlatformDevice = nullptr;
-		OpenGLContext m_Context;
+		OpenGLContext *m_Context;
 		
 		/** Per-context state caching */
-		FOpenGLContextState InvalidContextState;
-		FOpenGLContextState	SharedContextState;
-		FOpenGLContextState	RenderingContextState;
+		FOpenGLContextState *InvalidContextState;
+		FOpenGLContextState	*SharedContextState;
+		FOpenGLContextState	*RenderingContextState;
 
 
 
@@ -231,7 +232,7 @@ namespace BlackPearl {
 		//SCOPE_CYCLE_COUNTER_DETAILED(STAT_OpenGLTextureBindTime);
 
 		int32_t MaxProgramTexture = 0;
-		const TBitArray<>& NeededBits = ShaderState->GetTextureNeeds(MaxProgramTexture);
+		const TBitArray& NeededBits = ShaderState->GetTextureNeeds(MaxProgramTexture);
 
 		for (int32_t TextureStageIndex = 0; TextureStageIndex <= MaxProgramTexture; ++TextureStageIndex)
 		{

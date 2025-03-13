@@ -1,4 +1,5 @@
 ﻿
+#ifdef GE_PLATFORM_ANDRIOD
 #include <dlfcn.h> 
 #include <time.h>
 
@@ -17,3 +18,4 @@ namespace BlackPearl {
 
 }
 
+#endif

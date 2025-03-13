@@ -13,13 +13,13 @@ namespace BlackPearl {
 	}
 
 
-	GraphicsPipelineHandle Device::createGraphicsPipeline(const GraphicsPipelineDesc& desc, IFramebuffer* fb)
+	GraphicsPipelineHandle Device::createGraphicsPipeline(const GraphicsPipelineDesc& desc, IFramebuffer* _fb)
 	{
-		Framebuffer* fb = dynamic_cast<Framebuffer*>(fb);
+		Framebuffer* fb = dynamic_cast<Framebuffer*>(_fb);
 
 		InputLayout* inputLayout = dynamic_cast<InputLayout*>(desc.inputLayout.Get());
 
-		GraphicsPipeline* pso = new GraphicsPipeline(m_Context);
+		GraphicsPipeline* pso = new GraphicsPipeline(*m_Context);
 		pso->desc = desc;
 		pso->framebufferInfo = fb->framebufferInfo;
 
@@ -51,7 +51,7 @@ namespace BlackPearl {
 		// Set up shader stages
 		if (desc.VS)
 		{
-			pso->shaderMask = pso->shaderMask | ShaderType::Vertex;
+			pso->shaderMask = pso->shaderMask | ShaderType::VertexShader;
 		}
 
 		if (desc.HS)

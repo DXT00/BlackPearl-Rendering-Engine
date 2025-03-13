@@ -31,6 +31,7 @@
 #include <thread>
 #include <mutex>
 #include <csignal>
+#include <string>
 #include "BlackPearl/RHI/Common/Misc.h"
 #include "BlackPearl/RHI/Common/shader-blob.h"
 //#include <nvrhi/common/shader-blob.h>
@@ -52,25 +53,24 @@ error "Missing the <filesystem> header."
 #define putenv _putenv
 #endif
 
-using namespace std;
 
 CommandLineOptions g_Options;
-string g_PlatformName;
+std::string g_PlatformName;
 
 struct CompileTask
 {
-	string sourceFile;
-	string shaderName;
-	string entryPoint;
-	string combinedDefines;
-	string commandLine;
+	std::string sourceFile;
+	std::string shaderName;
+	std::string entryPoint;
+	std::string combinedDefines;
+	std::string commandLine;
 };
 
-vector<CompileTask> g_CompileTasks;
+std::vector<CompileTask> g_CompileTasks;
 int g_OriginalTaskCount;
-atomic<int> g_ProcessedTaskCount;
-mutex g_TaskMutex;
-mutex g_ReportMutex;
+std::atomic<int> g_ProcessedTaskCount;
+std::mutex g_TaskMutex;
+std::mutex g_ReportMutex;
 bool g_Terminate = false;
 bool g_CompileSuccess = true;
 fs::file_time_type g_ConfigWriteTime;
@@ -78,24 +78,24 @@ fs::file_time_type g_ConfigWriteTime;
 struct BlobEntry
 {
 	fs::path compiledPermutationFile;
-	string permutation;
+	std::string permutation;
 };
 
-map<string, vector<BlobEntry>> g_ShaderBlobs;
+std::map<std::string, std::vector<BlobEntry>> g_ShaderBlobs;
 
-map<fs::path, fs::file_time_type> g_HierarchicalUpdateTimes;
-vector<fs::path> g_IgnoreIncludes;
+std::map<fs::path, fs::file_time_type> g_HierarchicalUpdateTimes;
+std::vector<fs::path> g_IgnoreIncludes;
 
 const char* g_SharedCompilerOptions = "-nologo ";
 
-string path_string(fs::path path)
+std::string path_string(fs::path path)
 {
 	return path.make_preferred().string();
 }
 
-bool getHierarchicalUpdateTime(const fs::path& rootFilePath, list<fs::path>& callStack, fs::file_time_type& outTime)
+bool getHierarchicalUpdateTime(const fs::path& rootFilePath, std::list<fs::path>& callStack, fs::file_time_type& outTime)
 {
-	static basic_regex<char> include_pattern("\\s*#include\\s+[\"<]([^>\"]+)[>\"].*");
+	static std::basic_regex<char> include_pattern("\\s*#include\\s+[\"<]([^>\"]+)[>\"].*");
 
 	auto found = g_HierarchicalUpdateTimes.find(rootFilePath);
 	if (found != g_HierarchicalUpdateTimes.end())
@@ -104,12 +104,12 @@ bool getHierarchicalUpdateTime(const fs::path& rootFilePath, list<fs::path>& cal
 		return true;
 	}
 
-	ifstream inputFile(rootFilePath);
+	std::ifstream inputFile(rootFilePath);
 	if (!inputFile.is_open())
 	{
-		cout << "ERROR: Cannot open file  " << path_string(rootFilePath) << endl;
+		std::cout << "ERROR: Cannot open file  " << path_string(rootFilePath) << std::endl;
 		for (const fs::path& otherPath : callStack)
-			cout << "            included in  " << path_string(otherPath) << endl;
+			std::cout << "            included in  " << path_string(otherPath) << std::endl;
 
 		return false;
 	}
@@ -120,7 +120,7 @@ bool getHierarchicalUpdateTime(const fs::path& rootFilePath, list<fs::path>& cal
 	fs::file_time_type hierarchicalUpdateTime = fs::last_write_time(rootFilePath);
 
 	uint32_t lineno = 0;
-	for (string line; getline(inputFile, line);)
+	for (std::string line; std::getline(inputFile, line);)
 	{
 		lineno++;
 
@@ -128,7 +128,7 @@ bool getHierarchicalUpdateTime(const fs::path& rootFilePath, list<fs::path>& cal
 		std::regex_match(line.c_str(), result, include_pattern);
 		if (!result.empty())
 		{
-			fs::path include = string(result[1]);
+			fs::path include = std::string(result[1]);
 
 			bool ignoreThisInclude = false;
 			for (const fs::path& ignoredPath : g_IgnoreIncludes)
@@ -151,7 +151,7 @@ bool getHierarchicalUpdateTime(const fs::path& rootFilePath, list<fs::path>& cal
 			}
 			else
 			{
-				for (const string& includePath : g_Options.includePaths)
+				for (const std::string& includePath : g_Options.includePaths)
 				{
 					includedFilePath = includePath / include;
 					if (fs::exists(includedFilePath))
@@ -164,9 +164,9 @@ bool getHierarchicalUpdateTime(const fs::path& rootFilePath, list<fs::path>& cal
 
 			if (!foundIncludedFile)
 			{
-				cout << "ERROR: Cannot find include file  " << path_string(include) << endl;
+				std::cout << "ERROR: Cannot find include file  " << path_string(include) << std::endl;
 				for (const fs::path& otherPath : callStack)
-					cout << "                    included in  " << path_string(otherPath) << endl;
+					std::cout << "                    included in  " << path_string(otherPath) << std::endl;
 
 				return false;
 			}
@@ -187,7 +187,7 @@ bool getHierarchicalUpdateTime(const fs::path& rootFilePath, list<fs::path>& cal
 	return true;
 }
 
-string buildCompilerCommandLine(const CompilerOptions& options, const fs::path& shaderFile, const fs::path& outputFile)
+ std::string buildCompilerCommandLine(const CompilerOptions& options, const fs::path& shaderFile, const fs::path& outputFile)
 {
 	std::ostringstream ss;
 #ifdef _WIN32
@@ -201,18 +201,18 @@ string buildCompilerCommandLine(const CompilerOptions& options, const fs::path& 
 	ss << "-T " << options.target << " ";
 	if (!options.entryPoint.empty())
 		ss << "-E " << options.entryPoint << " ";
-	for (const string& define : options.definitions)
+	for (const std::string& define : options.definitions)
 		ss << "-D" << define << " ";
-	for (const string& define : g_Options.additionalDefines)
+	for (const std::string& define : g_Options.additionalDefines)
 		ss << "-D" << define << " ";
-	for (const string& dir : g_Options.includePaths)
+	for (const std::string& dir : g_Options.includePaths)
 		ss << "-I" << path_string(dir) << " ";
 
 
 
 	ss << g_SharedCompilerOptions;
 
-	for (const string& option : g_Options.additionalCompilerOptions)
+	for (const std::string& option : g_Options.additionalCompilerOptions)
 	{
 		ss << option << " ";
 	}
@@ -233,9 +233,9 @@ string buildCompilerCommandLine(const CompilerOptions& options, const fs::path& 
 	return ss.str();
 }
 
-void printError(uint32_t lineno, const string& error)
+void printError(uint32_t lineno, const std::string& error)
 {
-	cerr << g_Options.inputFile << "(" << lineno << "): " << error << endl;
+	std::cerr << g_Options.inputFile << "(" << lineno << "): " << error << std::endl;
 }
 
 fs::path removeLeadingDotDots(const fs::path& path)
@@ -256,7 +256,7 @@ fs::path removeLeadingDotDots(const fs::path& path)
 	return result;
 }
 
-bool processShaderConfig(uint32_t lineno, const string& shaderConfig)
+bool processShaderConfig(uint32_t lineno, const std::string& shaderConfig)
 {
 	CompilerOptions compilerOptions;
 	if (!compilerOptions.parse(shaderConfig))
@@ -265,8 +265,8 @@ bool processShaderConfig(uint32_t lineno, const string& shaderConfig)
 		return false;
 	}
 	
-	ostringstream combinedDefines;
-	for (const string& define : compilerOptions.definitions)
+	std::ostringstream combinedDefines;
+	for (const std::string& define : compilerOptions.definitions)
 	{
 		combinedDefines << define << " ";
 	}
@@ -292,7 +292,7 @@ bool processShaderConfig(uint32_t lineno, const string& shaderConfig)
 	fs::path compiledShaderPath = g_Options.outputPath / compiledShaderName.parent_path();
 	if (!fs::exists(compiledShaderPath))
 	{
-		cout << "INFO: Creating directory " << compiledShaderPath << endl;
+		std::cout << "INFO: Creating directory " << compiledShaderPath << std::endl;
 		fs::create_directories(compiledShaderPath);
 	}
 	else if(!g_Options.force)
@@ -303,7 +303,7 @@ bool processShaderConfig(uint32_t lineno, const string& shaderConfig)
 			fs::file_time_type compiledFileTime = fs::last_write_time(compiledShaderFile);
 
 			fs::file_time_type sourceHierarchyTime;
-			list<fs::path> callStack;
+			std::list<fs::path> callStack;
 			if (!getHierarchicalUpdateTime(sourceFile, callStack, sourceHierarchyTime))
 				return false;
 
@@ -326,7 +326,7 @@ bool processShaderConfig(uint32_t lineno, const string& shaderConfig)
 
 	fs::path compiledPermutationFile = g_Options.outputPath / compiledPermutationName;
 
-	string commandLine = buildCompilerCommandLine(compilerOptions, sourceFile, compiledPermutationFile);
+	 std::string commandLine = buildCompilerCommandLine(compilerOptions, sourceFile, compiledPermutationFile);
 	
 	CompileTask task;
 	task.sourceFile = sourceFile.generic_string();
@@ -342,20 +342,20 @@ bool processShaderConfig(uint32_t lineno, const string& shaderConfig)
 		entry.compiledPermutationFile = compiledPermutationFile;
 		entry.permutation = combinedDefines.str();
 
-		vector<BlobEntry>& entries = g_ShaderBlobs[path_string(compiledShaderName)];
+		std::vector<BlobEntry>& entries = g_ShaderBlobs[path_string(compiledShaderName)];
 		entries.push_back(entry);
 	}
 
 	return true;
 }
 
-bool expandPermutations(uint32_t lineno, const string& shaderConfig)
+bool expandPermutations(uint32_t lineno, const std::string& shaderConfig)
 {
 	size_t opening = shaderConfig.find('{');
-	if (opening != string::npos)
+	if (opening != std::string::npos)
 	{
 		size_t closing = shaderConfig.find('}', opening);
-		if (closing == string::npos)
+		if (closing == std::string::npos)
 		{
 			printError(lineno, "missing }");
 			return false;
@@ -366,10 +366,10 @@ bool expandPermutations(uint32_t lineno, const string& shaderConfig)
 		{
 			size_t comma = shaderConfig.find(',', current);
 
-			if (comma == string::npos || comma > closing)
+			if (comma == std::string::npos || comma > closing)
 				comma = closing;
 
-			string newConfig = shaderConfig.substr(0, opening) 
+			 std::string newConfig = shaderConfig.substr(0, opening) 
 				+ shaderConfig.substr(current, comma - current) 
 				+ shaderConfig.substr(closing + 1);
 
@@ -394,11 +394,11 @@ inline bool _isspace(int ch)
 	return strchr(" \t\r\n", ch) != nullptr;
 }
 
-bool trim(string& s)
+bool trim(std::string& s)
 {
 	size_t pos;
 	pos = s.find('#');
-	if (pos != string::npos)
+	if (pos != std::string::npos)
 		s.erase(pos, s.size() - pos);
 
 	// remove leading whitespace
@@ -414,33 +414,33 @@ bool trim(string& s)
 	return !s.empty();
 }
 
-bool WriteShaderBlob(const string& compiledShaderName, const vector<BlobEntry>& entries)
+bool WriteShaderBlob(const std::string& compiledShaderName, const std::vector<BlobEntry>& entries)
 {
 	fs::path outputFilePath = fs::path(g_Options.outputPath) / compiledShaderName;
-	string outputFileName = path_string(outputFilePath);
+	 std::string outputFileName = path_string(outputFilePath);
 
 	FILE* outputFile = fopen(outputFileName.c_str(), "wb");
 	if (!outputFile)
 	{
-		cout << "ERROR: cannot write " << outputFileName << endl;
+		std::cout << "ERROR: cannot write " << outputFileName << std::endl;
 		return false;
 	}
 
 	if (g_Options.verbose)
 	{
-		cout << "INFO: writing " << outputFileName << endl;
+		std::cout << "INFO: writing " << outputFileName << std::endl;
 	}
 
 	fwrite("NVSP", 1, 4, outputFile);
 
 	for (const BlobEntry& entry : entries)
 	{
-		string inputFileName = path_string(entry.compiledPermutationFile);
+		 std::string inputFileName = path_string(entry.compiledPermutationFile);
 		FILE* inputFile = fopen(inputFileName.c_str(), "rb");
 
 		if (!inputFile)
 		{
-			cout << "ERROR: cannot read " << inputFileName << endl;
+			std::cout << "ERROR: cannot read " << inputFileName << std::endl;
 			fclose(outputFile);
 			return false;
 		}
@@ -457,7 +457,7 @@ bool WriteShaderBlob(const string& compiledShaderName, const vector<BlobEntry>& 
 
 		if (fileSize > size_t(std::numeric_limits<uint32_t>::max()))
 		{
-			cout << "ERROR: binary shader file too big: " << inputFileName << endl;
+			std::cout << "ERROR: binary shader file too big: " << inputFileName << std::endl;
 			fclose(inputFile);
 			continue;
 		}
@@ -491,7 +491,7 @@ void compileThreadProc()
 	{
 		CompileTask task;
 		{
-			lock_guard<mutex> guard(g_TaskMutex);
+			std::lock_guard<std::mutex> guard(g_TaskMutex);
 			if (g_CompileTasks.empty())
 				return;
 
@@ -501,23 +501,23 @@ void compileThreadProc()
 
 		if (g_Options.verbose)
 		{
-			lock_guard<mutex> guard(g_ReportMutex);
-			cout << task.commandLine << endl;
+			std::lock_guard<std::mutex> guard(g_ReportMutex);
+			std::cout << task.commandLine << std::endl;
 		}
 
-		string commandLine = task.commandLine + " 2>&1";
+		 std::string commandLine = task.commandLine + " 2>&1";
 
 		FILE* pipe = popen(commandLine.c_str(), "r");
 		if (!pipe)
 		{
-			lock_guard<mutex> guard(g_ReportMutex);
-			cout << "ERROR: cannot run " << g_Options.compilerPath << endl;
+			std::lock_guard<std::mutex> guard(g_ReportMutex);
+			std::cout << "ERROR: cannot run " << g_Options.compilerPath << std::endl;
 			g_CompileSuccess = false;
 			g_Terminate = true;
 			return;
 		}
 
-		ostringstream ss;
+		std::ostringstream ss;
 		char buf[1024];
 		while (fgets(buf, sizeof(buf), pipe))
 			ss << buf;
@@ -526,7 +526,7 @@ void compileThreadProc()
 		g_ProcessedTaskCount++;
 
 		{
-			lock_guard<mutex> guard(g_ReportMutex);
+			std::lock_guard<std::mutex> guard(g_ReportMutex);
 
 			const char* resultCode = (result == 0) ? " OK  " : "FAIL ";
 			float progress = (float)g_ProcessedTaskCount / (float)g_OriginalTaskCount;
@@ -539,12 +539,12 @@ void compileThreadProc()
 				task.entryPoint.c_str(), 
 				task.combinedDefines.c_str());
 
-			cout << buf << endl;
+			std::cout << buf << std::endl;
  
 			if (result != 0 && !g_Terminate)
 			{
-				cout << "ERRORS for " << task.shaderName << ":" << task.entryPoint << " " << task.combinedDefines << ": " << endl;
-				cout << ss.str() << endl;
+				std::cout << "ERRORS for " << task.shaderName << ":" << task.entryPoint << " " << task.combinedDefines << ": " << std::endl;
+				std::cout << ss.str() << std::endl;
 				g_CompileSuccess = false;
 			}
 		}
@@ -557,15 +557,15 @@ void signal_handler(int sig)
 
 	g_Terminate = true;
 
-	lock_guard<mutex> guard(g_ReportMutex);
-	cout << "SIGINT received, terminating" << endl;
+	std::lock_guard<std::mutex> guard(g_ReportMutex);
+	std::cout << "SIGINT received, terminating" << std::endl;
 }
 
 int main(int argc, char** argv)
 {
 	if (!g_Options.parse(argc, argv))
 	{
-		cout << g_Options.errorMessage << endl;
+		std::cout << g_Options.errorMessage << std::endl;
 		return 1;
 	}
 
@@ -587,9 +587,9 @@ int main(int argc, char** argv)
 	// Updated shaderCompiler executable also means everything must be recompiled
 	g_ConfigWriteTime = std::max(g_ConfigWriteTime, fs::last_write_time(argv[0]));
 	
-	ifstream configFile(g_Options.inputFile);
+	std::ifstream configFile(g_Options.inputFile);
 	uint32_t lineno = 0;
-	for(string line; getline(configFile, line);)
+	for( std::string line; std::getline(configFile, line);)
 	{
 		lineno++;
 
@@ -602,7 +602,7 @@ int main(int argc, char** argv)
 
 	if (g_CompileTasks.empty())
 	{
-		cout << "All " << g_PlatformName << " outputs are up to date." << endl;
+		std::cout << "All " << g_PlatformName << " outputs are up to date." << std::endl;
 		return 0;
 	}
 
@@ -623,11 +623,11 @@ int main(int argc, char** argv)
 		
 		if (g_Options.verbose)
 		{
-			cout << envBuf << endl;
+			std::cout << envBuf << std::endl;
 		}
 	}
 
-	unsigned int threadCount = thread::hardware_concurrency();
+	unsigned int threadCount =  std::thread::hardware_concurrency();
 	if (threadCount == 0 || !g_Options.parallel)
 	{
 		threadCount = 1;
@@ -635,11 +635,11 @@ int main(int argc, char** argv)
 
 	signal(SIGINT, signal_handler);
 
-	vector<thread> threads;
+	std::vector<std::thread> threads;
 	threads.resize(threadCount);
 	for (unsigned int threadIndex = 0; threadIndex < threadCount; threadIndex++)
 	{
-		threads[threadIndex] = thread(compileThreadProc);
+		threads[threadIndex] =  std::thread(compileThreadProc);
 	}
 	for (unsigned int threadIndex = 0; threadIndex < threadCount; threadIndex++)
 	{
@@ -649,7 +649,7 @@ int main(int argc, char** argv)
 	if (!g_CompileSuccess || g_Terminate)
 		return 1;
 
-	for (const pair<const string, vector<BlobEntry>>& it : g_ShaderBlobs)
+	for (const std::pair<const std::string, std::vector<BlobEntry>>& it : g_ShaderBlobs)
 	{
 		if (!WriteShaderBlob(it.first, it.second))
 			return 1;

@@ -1,5 +1,6 @@
 #include "pch.h"
-#include "glad/glad.h"
+//#include "glad/glad.h"
+#include "BlackPearl/RHI/OpenGLRHI/OpenGLDriver/OpenGLFunctions.h"
 #include "OpenGLBufferResource.h"
 #include "BlackPearl/Config.h"
 #include "BlackPearl/RHI/RHIDefinitions.h"
@@ -559,20 +560,20 @@ namespace BlackPearl {
 
 	ShaderStorageBuffer::ShaderStorageBuffer(const BufferDesc& _desc)
 		:Buffer(_desc) {
-		glCreateBuffers(1, &rendererID);
-
+		//glCreateBuffers(1, &rendererID);
+		glGenBuffers(1, &rendererID);
 	}
 	/*----------------------------    SSBO   --------------------------------*/
 	ShaderStorageBuffer::ShaderStorageBuffer(const BufferDesc& _desc, GLsizeiptr bytes,GLbitfield mapFlags)
 		:Buffer(_desc) {
 		GLuint initVal = 0;
 
-		//glGenBuffers(1, &rendererID);
-		glCreateBuffers(1, &rendererID);
-		//glBindBuffer(GL_SHADER_STORAGE_BUFFER, rendererID);
-		glNamedBufferStorage(rendererID, bytes, nullptr, mapFlags);
-		//glBufferData(GL_SHADER_STORAGE_BUFFER, bytes, nullptr, GL_STATIC_COPY);
-		//glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+		glGenBuffers(1, &rendererID);
+		//glCreateBuffers(1, &rendererID);
+		glBindBuffer(GL_SHADER_STORAGE_BUFFER, rendererID);
+		//glNamedBufferStorage(rendererID, bytes, nullptr, mapFlags);
+		glBufferData(GL_SHADER_STORAGE_BUFFER, bytes, nullptr, GL_STATIC_COPY);
+		glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 	}
 
 

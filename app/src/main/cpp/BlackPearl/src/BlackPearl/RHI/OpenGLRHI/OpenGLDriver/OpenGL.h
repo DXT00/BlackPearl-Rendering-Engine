@@ -10,7 +10,7 @@
 #include "BlackPearl/Core/Platform.h"
 #include "BlackPearl/Core.h"
 #include "BlackPearl/RHI/RHIDefinitions.h"
-#include "BlackPearl/RHI/OpenGLRHI/OpenGLDriver/OpenGLDrv.h"
+#include "OpenGLFunctions.h"
 
 namespace BlackPearl {
 
@@ -197,10 +197,10 @@ public:
 	static FORCEINLINE void BindFragDataLocation(GLuint Program, GLuint Color, const GLchar *Name) UGL_OPTIONAL_VOID
 	static FORCEINLINE void ReadBuffer(GLenum Mode) UGL_OPTIONAL_VOID
 	static FORCEINLINE void DrawBuffer(GLenum Mode) UGL_OPTIONAL_VOID
-	static FORCEINLINE void DeleteSync(UGLsync Sync) UGL_OPTIONAL_VOID
-	static FORCEINLINE UGLsync FenceSync(GLenum Condition, GLbitfield Flags) UGL_OPTIONAL(UGLsync())
-	static FORCEINLINE bool IsSync(UGLsync Sync) UGL_OPTIONAL(false)
-	static FORCEINLINE EFenceResult ClientWaitSync(UGLsync Sync, GLbitfield Flags, GLuint64 Timeout) UGL_OPTIONAL(FR_WaitFailed)
+	static FORCEINLINE void DeleteSync(GLsync Sync) UGL_OPTIONAL_VOID
+	static FORCEINLINE GLsync FenceSync(GLenum Condition, GLbitfield Flags) UGL_OPTIONAL(GLsync())
+	static FORCEINLINE bool IsSync(GLsync Sync) UGL_OPTIONAL(false)
+	static FORCEINLINE EFenceResult ClientWaitSync(GLsync Sync, GLbitfield Flags, GLuint64 Timeout) UGL_OPTIONAL(FR_WaitFailed)
 	static FORCEINLINE void GenSamplers(GLsizei Count, GLuint *Samplers) UGL_OPTIONAL_VOID
 	static FORCEINLINE void DeleteSamplers(GLsizei Count, GLuint *Samplers) UGL_OPTIONAL_VOID
 	static FORCEINLINE void SetSamplerParameter(GLuint Sampler, GLenum Parameter, GLint Value) UGL_OPTIONAL_VOID

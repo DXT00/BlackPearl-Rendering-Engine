@@ -3,6 +3,8 @@
 #include "BlackPearl/RHI/OpenGLRHI/OpenGLCubeMapTexture.h"
 #include "glm/glm.hpp"
 #include "BlackPearl/Core.h"
+#include "BlackPearl/RHI/OpenGLRHI/OpenGLDriver/OpenGLFunctions.h"
+
 namespace BlackPearl {
 	const float PI = 3.14159265359f;
 	std::vector<std::vector<glm::vec3>> cubeMapFaceNormal = {

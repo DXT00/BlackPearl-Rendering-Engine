@@ -6,6 +6,7 @@
 
 //#include "CoreMinimal.h"
 //#include "HAL/IConsoleManager.h"
+#include "pch.h"
 #include "OpenGLDrv.h"
 #include "OpenGLDrvPrivate.h"
 

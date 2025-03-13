@@ -3,7 +3,7 @@
 #include "LumenCard.h"
 #include "LumenStruct.h"
 #include "BlackPearl/Common/CommonFunc.h"
-#include "BlackPearl/Renderer/Buffer/Buffer.h"
+//#include "BlackPearl/Renderer/Buffer/Buffer.h"
 #include "DirectXMath.h"
 using namespace DirectX;
 namespace BlackPearl {

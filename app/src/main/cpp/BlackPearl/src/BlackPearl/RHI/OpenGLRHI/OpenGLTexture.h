@@ -1,7 +1,9 @@
 #pragma once
 #include <string>
 #include <vector>
-#include <glad/glad.h>
+#include <utility>
+//#include <glad/glad.h>
+#include "BlackPearl/RHI/OpenGLRHI/OpenGLDriver/OpenGLThirdParty.h"
 
 #include "BlackPearl/RHI/RHITexture.h"
 #include "BlackPearl/RHI/RHIState.h"

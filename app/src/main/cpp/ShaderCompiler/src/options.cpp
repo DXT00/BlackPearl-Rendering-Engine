@@ -57,14 +57,13 @@ namespace fs = std::experimental::filesystem;
 error "Missing the <filesystem> header."
 #endif
 
-using namespace std;
 using namespace cxxopts;
 
 bool CommandLineOptions::parse(int argc, char** argv)
 {
 	Options options(argv[0], "Batch shader compiler for NVRHI");
 	
-	string platformName;
+	std::string platformName;
 
 	options.add_options()
 		("i,infile", "File with the list of shaders to compile", value(inputFile))

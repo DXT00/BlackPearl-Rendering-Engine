@@ -2,7 +2,7 @@
 #include "RefCountPtr.h"
 #include "RHIResources.h"
 #include "RHIInputLayout.h"
-
+#include "RHIShader.h"
 namespace BlackPearl{
 
 
@@ -47,9 +47,9 @@ namespace BlackPearl{
         IShader* GetAmplificationShader() const { return AmplificationShaderRHI; }
         void SetAmplificationShader(IShader* InAmplificationShader) { AmplificationShaderRHI = InAmplificationShader; }
 #else
-        constexpr IShader* GetMeshShader() const { return nullptr; }
+        IShader* GetMeshShader() const { return nullptr; }
         void SetMeshShader(IShader*) {}
-        constexpr IShader* GetAmplificationShader() const { return nullptr; }
+        IShader* GetAmplificationShader() const { return nullptr; }
         void SetAmplificationShader(IShader*) {}
 #endif
 
@@ -57,7 +57,7 @@ namespace BlackPearl{
         IShader* GetGeometryShader() const { return GeometryShaderRHI; }
         void SetGeometryShader(IShader* InGeometryShader) { GeometryShaderRHI = InGeometryShader; }
 #else
-        constexpr IShader* GetGeometryShader() const { return nullptr; }
+        IShader* GetGeometryShader() const { return nullptr; }
         void SetGeometryShader(IShader*) {}
 #endif
 

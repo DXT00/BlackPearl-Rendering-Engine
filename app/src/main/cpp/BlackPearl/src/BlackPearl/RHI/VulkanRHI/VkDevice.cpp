@@ -780,7 +780,7 @@ namespace BlackPearl {
 		{
 			shaderStages.push_back(VkUtil::makeShaderStageCreateInfo(VS,
 				specInfos, specMapEntries, specData));
-			pso->shaderMask = pso->shaderMask | ShaderType::Vertex;
+			pso->shaderMask = pso->shaderMask | ShaderType::VertexShader;
 		}
 
 		if (desc.HS)

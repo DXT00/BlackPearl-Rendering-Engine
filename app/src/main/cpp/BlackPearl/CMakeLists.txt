@@ -56,6 +56,7 @@ include_directories(
         "${CMAKE_CURRENT_SOURCE_DIR}/src"
         "${CMAKE_CURRENT_SOURCE_DIR}//assets/shaders/"
         "${VENDOR_DIR}"
+        "${VENDOR_DIR}/OpenGL/include"
         "${VENDOR_DIR}/spdlog/include"
         "${VENDOR_DIR}/GLEW/include"
         "${VENDOR_DIR}/Glad/include"

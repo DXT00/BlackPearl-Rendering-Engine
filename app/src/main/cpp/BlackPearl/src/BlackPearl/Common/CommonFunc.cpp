@@ -3,7 +3,10 @@
 #include "BlackPearl/Config.h"
 #include "BlackPearl/Renderer/MasterRenderer/BasicRenderer.h"
 #include "BlackPearl/Component/MeshRendererComponent/MeshRenderer.h"
+
 namespace BlackPearl {
+	//TODO:: Gbuffer to all api
+#ifdef GE_API_OPENGL
 	void CommonFunc::ShowGBuffer(unsigned int row, unsigned int col, Object* quad,std::shared_ptr<GBuffer> gBuffer, std::vector<TextureHandle> textures)
 	{
 		gBuffer->UnBind();
@@ -12,6 +15,7 @@ namespace BlackPearl {
 		//gBuffer->UnBind();
 		//delete basicRenderer;
 	}
+#endif
 	void CommonFunc::ShowFrameBuffer(unsigned int row, unsigned int col, Object* quad, IBuffer* frameBuffer, std::vector<TextureHandle> textures)
 	{
 		//frameBuffer->UnBind();

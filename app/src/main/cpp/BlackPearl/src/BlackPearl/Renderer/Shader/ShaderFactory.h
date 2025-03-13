@@ -2,7 +2,8 @@
 #include "BlackPearl/RHI/RHIDevice.h"
 #include "BlackPearl/RHI/RHIShaderLibrary.h"
 #include "BlackPearl/FileSystem/FileSystem.h"
-#include<filesystem>
+#include <filesystem>
+#include <string>
 namespace BlackPearl {
 
     // Specific blob implementation that owns the data and frees it when deleted.
@@ -37,9 +38,11 @@ namespace BlackPearl {
 
         void ClearCache();
 
-       ShaderHandle CreateShader(const char* fileName, const char* entryName, const std::vector<ShaderMacro>* pDefines, ShaderType shaderType);
-       ShaderHandle CreateShader(const char* fileName, const char* entryName, const std::vector<ShaderMacro>* pDefines, const ShaderDesc& desc);
-       ShaderLibraryHandle CreateShaderLibrary(const char* fileName, const std::vector<ShaderMacro>* pDefines);
+       ShaderHandle CreateShader(const char* fileName, const char* entryName, ShaderType shaderType, const std::vector<ShaderMacro>* pDefines = nullptr);
+       ShaderHandle CreateShaderFromSource(const std::string& srcCode, const char* entryName, ShaderType shaderType, const std::vector<ShaderMacro>* pDefines = nullptr);
+
+       ShaderHandle CreateShader(const char* fileName, const char* entryName,const ShaderDesc& desc, const std::vector<ShaderMacro>* pDefines = nullptr);
+       ShaderLibraryHandle CreateShaderLibrary(const char* fileName, const std::vector<ShaderMacro>* pDefines = nullptr);
 
         std::shared_ptr<IBlob> GetBytecode(const char* fileName, const char* entryName);
 

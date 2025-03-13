@@ -5,6 +5,8 @@
 //#include COMPILED_PLATFORM_HEADER(OpenGLThirdParty.h)
 
 #ifdef GE_PLATFORM_WINDOWS
+#include <Windows.h>
+
 #include <GL/glcorearb.h>
 #include <GL/glext.h>
 #include <GL/wglext.h>

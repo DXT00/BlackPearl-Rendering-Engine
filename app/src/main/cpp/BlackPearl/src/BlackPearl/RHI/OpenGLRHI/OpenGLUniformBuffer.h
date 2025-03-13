@@ -96,7 +96,7 @@ namespace BlackPearl {
 
 		// Provides public non-const access to ResourceTable.
 		// @todo refactor uniform buffers to perform updates as a member function, so this isn't necessary.
-		std::vector<TRefCountPtr<FRHIResource>>& GetResourceTable() { return ResourceTable; }
+		//std::vector<TRefCountPtr<FRHIResource>>& GetResourceTable() { return ResourceTable; }
 
 		//void SetLayoutTable(const void* Contents, EUniformBufferValidation Validation);
 	};

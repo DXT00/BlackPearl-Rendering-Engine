@@ -1,5 +1,5 @@
 #pragma once
-#include "glad/glad.h"
+//#include "glad/glad.h"
 #include<glm/glm.hpp>
 #include<string>
 #include<memory>
@@ -8,24 +8,26 @@
 #include "BlackPearl/RHI/RHIShader.h"
 #include <BlackPearl/Renderer/Renderer.h>
 #include "OpenGLShaderResource.h"
+#include "BlackPearl/RHI/OpenGLRHI/OpenGLDriver/OpenGLFunctions.h"
 
 namespace BlackPearl {
 
 	class LightSources;
 	class BindingSet;
+	class FOpenGLShaderBindings;
 	class Shader : public RefCounter<IShader>
 	{
 	public:
 		ShaderDesc desc;
 		//TODO:: use glProgramBinary
 		Shader(const ShaderDesc& _desc, const void* binaryCode, size_t binarySize);
-		Shader(const ShaderDesc& _desc, const std::string& filepath);
+		Shader(const ShaderDesc& _desc);
 		~Shader();
 		void Bind()const;
 		void Unbind() const;
 		std::string ReadFile(const std::string& filepath);
 		
-		std::unordered_map<GLenum, std::string> Shader::PreProcess(const std::string& source, const std::string& commonSource);
+		std::unordered_map<GLenum, std::string> PreProcess(const std::string& source, const std::string& commonSource);
 		void Compile(const std::unordered_map<GLenum, std::string>& shaderSources);
 		void Compile(GLenum shaderType);
 		void SetLightUniform(LightSources lightSources);
@@ -120,116 +122,7 @@ namespace BlackPearl {
 
 
 
-	/**
-	 * Shader binding information. for shader bindingSet
-	 */
-	struct FOpenGLShaderBindings
-	{
-		std::vector<std::vector<FPackedArrayInfo>>	PackedUniformBuffers;
-		std::vector<FPackedArrayInfo>			PackedGlobalArrays;
-		std::vector<FOpenGLShaderVarying>					InputVaryings;
-		std::vector<FOpenGLShaderVarying>					OutputVaryings;
-	//	FShaderResourceTable							ShaderResourceTable;
-		//CrossCompiler::FShaderBindingInOutMask			InOutMask;
-
-		uint8_t	NumSamplers;
-		uint8_t	NumUniformBuffers;
-		uint8_t	NumUAVs;
-		bool	bFlattenUB;
-
-		//FSHAHash VaryingHash; // Not serialized, built during load to allow us to diff varying info but avoid the memory overhead.
-
-		FOpenGLShaderBindings() :
-			NumSamplers(0),
-			NumUniformBuffers(0),
-			NumUAVs(0),
-			bFlattenUB(false)
-		{
-		}
-
-		friend bool operator==(const FOpenGLShaderBindings& A, const FOpenGLShaderBindings& B)
-		{
-			assert(0);
-			return false;
-
-			//bool bEqual = true;
-
-			////bEqual &= A.InOutMask == B.InOutMask;
-			//bEqual &= A.NumSamplers == B.NumSamplers;
-			//bEqual &= A.NumUniformBuffers == B.NumUniformBuffers;
-			//bEqual &= A.NumUAVs == B.NumUAVs;
-			//bEqual &= A.bFlattenUB == B.bFlattenUB;
-			//bEqual &= A.PackedGlobalArrays.size() == B.PackedGlobalArrays.size();
-			//bEqual &= A.PackedUniformBuffers.size() == B.PackedUniformBuffers.size();
-			//bEqual &= A.InputVaryings.size() == B.InputVaryings.size();
-			//bEqual &= A.OutputVaryings.size() == B.OutputVaryings.size();
-			////bEqual &= A.ShaderResourceTable == B.ShaderResourceTable;
-			////bEqual &= A.VaryingHash == B.VaryingHash;
-
-			//if (!bEqual)
-			//{
-			//	return bEqual;
-			//}
-
-			//bEqual &= FMemory::Memcmp(A.PackedGlobalArrays.data(), B.PackedGlobalArrays.data(), A.PackedGlobalArrays.GetTypeSize() * A.PackedGlobalArrays.Num()) == 0;
-
-			//for (int32_t Item = 0; bEqual && Item < A.PackedUniformBuffers.size(); Item++)
-			//{
-			//	const TArray<CrossCompiler::FPackedArrayInfo>& ArrayA = A.PackedUniformBuffers[Item];
-			//	const TArray<CrossCompiler::FPackedArrayInfo>& ArrayB = B.PackedUniformBuffers[Item];
-
-			//	bEqual = bEqual && (ArrayA.Num() == ArrayB.Num()) && (FMemory::Memcmp(ArrayA.GetData(), ArrayB.GetData(), ArrayA.GetTypeSize() * ArrayA.Num()) == 0);
-			//}
-
-
-			//for (int32 Item = 0; bEqual && Item < A.InputVaryings.Num(); Item++)
-			//{
-			//	bEqual &= A.InputVaryings[Item] == B.InputVaryings[Item];
-			//}
-
-			//for (int32 Item = 0; bEqual && Item < A.OutputVaryings.Num(); Item++)
-			//{
-			//	bEqual &= A.OutputVaryings[Item] == B.OutputVaryings[Item];
-			//}
-
-			//return bEqual;
-		}
-
-		friend uint32_t GetTypeHash(const FOpenGLShaderBindings& Binding)
-		{
-			//uint32 Hash = 0;
-			//Hash = Binding.InOutMask.Bitmask;
-			//Hash ^= Binding.NumSamplers << 16;
-			//Hash ^= Binding.NumUniformBuffers << 24;
-			//Hash ^= Binding.NumUAVs;
-			//Hash ^= Binding.bFlattenUB << 8;
-			//Hash ^= FCrc::MemCrc_DEPRECATED(Binding.PackedGlobalArrays.GetData(), Binding.PackedGlobalArrays.GetTypeSize() * Binding.PackedGlobalArrays.Num());
-
-			////@todo-rco: Do we need to calc Binding.ShaderResourceTable.GetTypeHash()?
-
-			//for (int32 Item = 0; Item < Binding.PackedUniformBuffers.Num(); Item++)
-			//{
-			//	const TArray<CrossCompiler::FPackedArrayInfo>& Array = Binding.PackedUniformBuffers[Item];
-			//	Hash ^= FCrc::MemCrc_DEPRECATED(Array.GetData(), Array.GetTypeSize() * Array.Num());
-			//}
-
-			//for (int32 Item = 0; Item < Binding.InputVaryings.Num(); Item++)
-			//{
-			//	Hash ^= GetTypeHash(Binding.InputVaryings[Item]);
-			//}
-
-			//for (int32 Item = 0; Item < Binding.OutputVaryings.Num(); Item++)
-			//{
-			//	Hash ^= GetTypeHash(Binding.OutputVaryings[Item]);
-			//}
-
-			//Hash ^= GetTypeHash(Binding.VaryingHash);
-
-			//return Hash;
-			return 0;
-		}
-	};
-
+	
 	
 	class FOpenGLLinkedProgramConfiguration
 	{

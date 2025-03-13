@@ -6,19 +6,19 @@
 #include "BlackPearl/Component/LightProbeComponent/LightProbeComponent.h"
 #include "BlackPearl/Component/TerrainComponent/TerrainComponent.h"
 #include "BlackPearl/Renderer/Model/Model.h"
-#include "BlackPearl/Renderer/Shader/Shader.h"
+//#include "BlackPearl/Renderer/Shader/Shader.h"
 #include "imgui.h"
 #include <glm/gtc/type_ptr.hpp>
 #include <stdio.h>
 #include <stdlib.h>
-#include "BlackPearl/Renderer/MasterRenderer/IBLRenderer.h"
-#include "BlackPearl/Renderer/MasterRenderer/IBLProbesRenderer.h"
-#include "BlackPearl/Renderer/MasterRenderer/ShadowMapPointLightRenderer.h"
-#include "BlackPearl/Renderer/MasterRenderer/GBufferRenderer.h"
-#include "BlackPearl/Renderer/MasterRenderer/VoxelConeTracingRenderer.h"
-#include "BlackPearl/Renderer/MasterRenderer/VoxelConeTracingDeferredRenderer.h"
-#include "BlackPearl/Renderer/MasterRenderer/VoxelConeTracingSVORenderer.h"
-#include "BlackPearl/Renderer/MasterRenderer/CloudRenderer.h"
+//#include "BlackPearl/Renderer/MasterRenderer/IBLRenderer.h"
+//#include "BlackPearl/Renderer/MasterRenderer/IBLProbesRenderer.h"
+//#include "BlackPearl/Renderer/MasterRenderer/ShadowMapPointLightRenderer.h"
+//#include "BlackPearl/Renderer/MasterRenderer/GBufferRenderer.h"
+//#include "BlackPearl/Renderer/MasterRenderer/VoxelConeTracingRenderer.h"
+//#include "BlackPearl/Renderer/MasterRenderer/VoxelConeTracingDeferredRenderer.h"
+//#include "BlackPearl/Renderer/MasterRenderer/VoxelConeTracingSVORenderer.h"
+//#include "BlackPearl/Renderer/MasterRenderer/CloudRenderer.h"
 #include "BlackPearl/Application.h"
 #include "BlackPearl/Renderer/Buffer/D3D12Buffer/D3D12Buffer.h"
 #include "hlsl/core/material_cb.h"
@@ -30,104 +30,102 @@ namespace BlackPearl {
 		ImGui::ColorEdit3("Suqare Color", (m_BackgroundColor));
 		ImGui::End();
 		ImGui::Begin("GI Settings");
-		//ImGui::Text("FPS = %.3lf", Application::s_AppFPS);
-		//ImGui::Text("AvgFPS = %.3lf", Application::s_AppAverageFPS);
+
+	//	ImGui::Text("SVO voxel GI");
+	//	ImGui::Checkbox("spp pause", &VoxelConeTracingSVORenderer::s_Pause);
+	//	ImGui::Checkbox("svo direct light", &VoxelConeTracingSVORenderer::s_DirectLight);
+	//	ImGui::Checkbox("svo Indirect diffuse light", &VoxelConeTracingSVORenderer::s_IndirectDiffuseLight);
+	//	ImGui::Checkbox("svo Indirect specular light", &VoxelConeTracingSVORenderer::s_IndirectSpecularLight);
+	//	ImGui::DragFloat("svo GICoeffs", &VoxelConeTracingSVORenderer::s_GICoeffs, 0.2f, 0.0f, 1.0f, "%.3f ");
+	//	ImGui::DragFloat("specularAngle", &VoxelConeTracingSVORenderer::s_IndirestSpecularAngle, 0.2f, 0.01f, 45.0f, "%.4f ");
+	//	ImGui::DragFloat("specularStep", &VoxelConeTracingSVORenderer::s_Step, 0.01f, 0.01f, 45.0f, "%.4f ");
 	//	ImGui::Separator();
-		ImGui::Text("SVO voxel GI");
-		ImGui::Checkbox("spp pause", &VoxelConeTracingSVORenderer::s_Pause);
-		ImGui::Checkbox("svo direct light", &VoxelConeTracingSVORenderer::s_DirectLight);
-		ImGui::Checkbox("svo Indirect diffuse light", &VoxelConeTracingSVORenderer::s_IndirectDiffuseLight);
-		ImGui::Checkbox("svo Indirect specular light", &VoxelConeTracingSVORenderer::s_IndirectSpecularLight);
-		ImGui::DragFloat("svo GICoeffs", &VoxelConeTracingSVORenderer::s_GICoeffs, 0.2f, 0.0f, 1.0f, "%.3f ");
-		ImGui::DragFloat("specularAngle", &VoxelConeTracingSVORenderer::s_IndirestSpecularAngle, 0.2f, 0.01f, 45.0f, "%.4f ");
-		ImGui::DragFloat("specularStep", &VoxelConeTracingSVORenderer::s_Step, 0.01f, 0.01f, 45.0f, "%.4f ");
-		ImGui::Separator();
 
-		ImGui::Text("Deferred voxel GI");
-		ImGui::Checkbox("Voxelize", &VoxelConeTracingDeferredRenderer::s_VoxelizeNow);
+	//	ImGui::Text("Deferred voxel GI");
+	//	ImGui::Checkbox("Voxelize", &VoxelConeTracingDeferredRenderer::s_VoxelizeNow);
 
-		ImGui::Checkbox("Indirect diffuse", &VoxelConeTracingDeferredRenderer::s_IndirectDiffuseLight);
-		ImGui::Checkbox("Indirect specular", &VoxelConeTracingDeferredRenderer::s_IndirectSpecularLight);
-		ImGui::Checkbox("Direct light", &VoxelConeTracingDeferredRenderer::s_DirectLight);
-		ImGui::Checkbox("Shadows", &VoxelConeTracingDeferredRenderer::s_Shadows);
+	//	ImGui::Checkbox("Indirect diffuse", &VoxelConeTracingDeferredRenderer::s_IndirectDiffuseLight);
+	//	ImGui::Checkbox("Indirect specular", &VoxelConeTracingDeferredRenderer::s_IndirectSpecularLight);
+	//	ImGui::Checkbox("Direct light", &VoxelConeTracingDeferredRenderer::s_DirectLight);
+	//	ImGui::Checkbox("Shadows", &VoxelConeTracingDeferredRenderer::s_Shadows);
 
-		ImGui::Checkbox("HDR", &VoxelConeTracingDeferredRenderer::s_HDR);
-		/*ImGui::Checkbox("voxel blur horizontal", &VoxelConeTracingDeferredRenderer::s_GuassianHorizontal);
-		ImGui::Checkbox("voxel blur vertical", &VoxelConeTracingDeferredRenderer::s_GuassianVertical);
-		ImGui::Checkbox("voxel blur showBlurArea", &VoxelConeTracingDeferredRenderer::s_ShowBlurArea);*/
-		ImGui::Checkbox("Blur mipmap", &VoxelConeTracingDeferredRenderer::s_MipmapBlurSpecularTracing);
-		ImGui::DragFloat("Specular\nBlur\nThreshold", &VoxelConeTracingDeferredRenderer::s_SpecularBlurThreshold, 0.2f, 0.0f, 1.0f, "%.4f ");
-		ImGui::DragFloat("Indirect\nSpecular\nAngle", &VoxelConeTracingDeferredRenderer::s_IndirectSpecularAngle, 0.2f, 1.0f, 45.0f, "%.4f ");
-		ImGui::DragFloat("GICoeffs", &VoxelConeTracingDeferredRenderer::s_GICoeffs, 0.2f, 0.0f, 1.0f, "%.3f ");
-		ImGui::DragInt("Visualization \nmipmap\nlevel", &VoxelConeTracingDeferredRenderer::s_VisualizeMipmapLevel, 1.0f, 0, 5);
+	//	ImGui::Checkbox("HDR", &VoxelConeTracingDeferredRenderer::s_HDR);
+	//	/*ImGui::Checkbox("voxel blur horizontal", &VoxelConeTracingDeferredRenderer::s_GuassianHorizontal);
+	//	ImGui::Checkbox("voxel blur vertical", &VoxelConeTracingDeferredRenderer::s_GuassianVertical);
+	//	ImGui::Checkbox("voxel blur showBlurArea", &VoxelConeTracingDeferredRenderer::s_ShowBlurArea);*/
+	//	ImGui::Checkbox("Blur mipmap", &VoxelConeTracingDeferredRenderer::s_MipmapBlurSpecularTracing);
+	//	ImGui::DragFloat("Specular\nBlur\nThreshold", &VoxelConeTracingDeferredRenderer::s_SpecularBlurThreshold, 0.2f, 0.0f, 1.0f, "%.4f ");
+	//	ImGui::DragFloat("Indirect\nSpecular\nAngle", &VoxelConeTracingDeferredRenderer::s_IndirectSpecularAngle, 0.2f, 1.0f, 45.0f, "%.4f ");
+	//	ImGui::DragFloat("GICoeffs", &VoxelConeTracingDeferredRenderer::s_GICoeffs, 0.2f, 0.0f, 1.0f, "%.3f ");
+	//	ImGui::DragInt("Visualization \nmipmap\nlevel", &VoxelConeTracingDeferredRenderer::s_VisualizeMipmapLevel, 1.0f, 0, 5);
 
 
 
-		ImGui::Separator();
-		ImGui::Text("forward voxel GI");
-		ImGui::Checkbox("voxel Indirect diffuse", &VoxelConeTracingRenderer::s_IndirectDiffuseLight);
-		ImGui::Checkbox("voxel Indirect specular", &VoxelConeTracingRenderer::s_IndirectSpecularLight);
-		ImGui::Checkbox("voxel direct light", &VoxelConeTracingRenderer::s_DirectLight);
-		ImGui::DragFloat("voxel GICoeffs", &VoxelConeTracingRenderer::s_GICoeffs, 0.2f, 0.0f, 1.0f, "%.3f ");
-		ImGui::Checkbox("voxel HDR", &VoxelConeTracingRenderer::s_HDR);
-		ImGui::Separator();
-		ImGui::Text("light probe GI");
-		ImGui::DragFloat("GICoeffs", &GBufferRenderer::s_GICoeffs, 0.2f, 0.0f, 1.0f, "%.3f ");
-		ImGui::Checkbox("HDR", &GBufferRenderer::s_HDR);
-
-		ImGui::Separator();
-
-
-
-		ImGui::Text("image based lighting  GI");
-		ImGui::DragFloat("IBL GICoeffs", &IBLRenderer::s_GICoeffs, 0.2f, 0.0f, 1.0f, "%.3f ");
-		ImGui::Checkbox("IBL HDR", &GBufferRenderer::s_HDR);
-
-		ImGui::Text("SSR GI");
-		ImGui::DragFloat("SSRGICoeffs", &GBufferRenderer::s_SSRGICoeffs, 0.2f, 0.0f, 1.0f, "%.3f ");
-
-
-		ImGui::End();
-
-		ImGui::Begin("Cloud Settings");
-		//ImGui::Text("FPS = %.3lf", Application::s_AppFPS);
-		//ImGui::Text("AvgFPS = %.3lf", Application::s_AppAverageFPS);
 	//	ImGui::Separator();
-	
-		ImGui::DragFloat("rayStep", &CloudRenderer::s_rayStep, 0.2f, 0.0f, 1.0f, "%.4f ");
-		ImGui::DragFloat("step", &CloudRenderer::s_step, 0.2f, 1.0f, 45.0f, "%.4f ");
-		ImGui::DragFloat("colorOffset1", &CloudRenderer::s_colorOffset1, 0.2f, 0.0f, 1.0f, "%.3f ");
-		ImGui::DragFloat("colorOffset2", &CloudRenderer::s_colorOffset2, 0.0f, 0, 1.0f, "%.3f ");
-		ImGui::DragFloat("s_densityOffset", &CloudRenderer::s_densityOffset, 0.0f, -1.0f, 1.0f, "%.3f ");
-		ImGui::DragFloat("s_lightAbsorptionTowardSun", &CloudRenderer::s_lightAbsorptionTowardSun, 1.0f, 0.0f, 100.0f, "%.3f ");
-		ImGui::DragFloat("s_densityMultiplier", &CloudRenderer::s_densityMultiplier, 1.0f, 0.0f, 100.0f, "%.3f ");
+	//	ImGui::Text("forward voxel GI");
+	//	ImGui::Checkbox("voxel Indirect diffuse", &VoxelConeTracingRenderer::s_IndirectDiffuseLight);
+	//	ImGui::Checkbox("voxel Indirect specular", &VoxelConeTracingRenderer::s_IndirectSpecularLight);
+	//	ImGui::Checkbox("voxel direct light", &VoxelConeTracingRenderer::s_DirectLight);
+	//	ImGui::DragFloat("voxel GICoeffs", &VoxelConeTracingRenderer::s_GICoeffs, 0.2f, 0.0f, 1.0f, "%.3f ");
+	//	ImGui::Checkbox("voxel HDR", &VoxelConeTracingRenderer::s_HDR);
+	//	ImGui::Separator();
+	//	ImGui::Text("light probe GI");
+	//	ImGui::DragFloat("GICoeffs", &GBufferRenderer::s_GICoeffs, 0.2f, 0.0f, 1.0f, "%.3f ");
+	//	ImGui::Checkbox("HDR", &GBufferRenderer::s_HDR);
 
-		float boxMax[] = { CloudRenderer::s_boundsMax.x, CloudRenderer::s_boundsMax.y, CloudRenderer::s_boundsMax.z };
-		float boxMin[] = { CloudRenderer::s_boundsMin.x, CloudRenderer::s_boundsMin.y, CloudRenderer::s_boundsMin.z };
-
-		ImGui::DragFloat3("s_boundsMax", boxMax, 0.05f, 0.001f, 100.0f, "%.3f ");
-		CloudRenderer::s_boundsMax = math::float3(boxMax[0], boxMax[1], boxMax[2]);
-		CloudRenderer::s_boundsMin = math::float3(boxMin[0], boxMin[1], boxMin[2]);
-
-
-	
-
-		ImGui::End();
+	//	ImGui::Separator();
 
 
 
-		ImGui::Begin("Performance");
-		ImGui::Text("FPS = %.3lf", Application::s_AppFPS);
-		ImGui::Text("AvgFPS = %.3lf", Application::s_AppAverageFPS);
-		ImGui::Separator();
-		ImGui::Text("s_TotalFrameNum = %d", Application::s_TotalFrameNum);
-		ImGui::Text("DrawCalls per frame = %.3lf", (double)BasicRenderer::s_DrawCallCnt);
+	//	ImGui::Text("image based lighting  GI");
+	//	ImGui::DragFloat("IBL GICoeffs", &IBLRenderer::s_GICoeffs, 0.2f, 0.0f, 1.0f, "%.3f ");
+	//	ImGui::Checkbox("IBL HDR", &GBufferRenderer::s_HDR);
 
-		//ImGui::Text("DrawCalls per frame = %.3lf", (double)Application::s_TotalFrameNum/BasicRenderer::s_DrawCallCnt);
-		ImGui::Text("Objs num = %d", (int)m_ObjectsList.size());
-		ImGui::Text("BackGround Objs num = %d", (int)m_BackGroundObjsList.size());
+	//	ImGui::Text("SSR GI");
+	//	ImGui::DragFloat("SSRGICoeffs", &GBufferRenderer::s_SSRGICoeffs, 0.2f, 0.0f, 1.0f, "%.3f ");
 
-		ImGui::End();
+
+	//	ImGui::End();
+
+	//	ImGui::Begin("Cloud Settings");
+	//	//ImGui::Text("FPS = %.3lf", Application::s_AppFPS);
+	//	//ImGui::Text("AvgFPS = %.3lf", Application::s_AppAverageFPS);
+	////	ImGui::Separator();
+	//
+	//	ImGui::DragFloat("rayStep", &CloudRenderer::s_rayStep, 0.2f, 0.0f, 1.0f, "%.4f ");
+	//	ImGui::DragFloat("step", &CloudRenderer::s_step, 0.2f, 1.0f, 45.0f, "%.4f ");
+	//	ImGui::DragFloat("colorOffset1", &CloudRenderer::s_colorOffset1, 0.2f, 0.0f, 1.0f, "%.3f ");
+	//	ImGui::DragFloat("colorOffset2", &CloudRenderer::s_colorOffset2, 0.0f, 0, 1.0f, "%.3f ");
+	//	ImGui::DragFloat("s_densityOffset", &CloudRenderer::s_densityOffset, 0.0f, -1.0f, 1.0f, "%.3f ");
+	//	ImGui::DragFloat("s_lightAbsorptionTowardSun", &CloudRenderer::s_lightAbsorptionTowardSun, 1.0f, 0.0f, 100.0f, "%.3f ");
+	//	ImGui::DragFloat("s_densityMultiplier", &CloudRenderer::s_densityMultiplier, 1.0f, 0.0f, 100.0f, "%.3f ");
+
+	//	float boxMax[] = { CloudRenderer::s_boundsMax.x, CloudRenderer::s_boundsMax.y, CloudRenderer::s_boundsMax.z };
+	//	float boxMin[] = { CloudRenderer::s_boundsMin.x, CloudRenderer::s_boundsMin.y, CloudRenderer::s_boundsMin.z };
+
+	//	ImGui::DragFloat3("s_boundsMax", boxMax, 0.05f, 0.001f, 100.0f, "%.3f ");
+	//	CloudRenderer::s_boundsMax = math::float3(boxMax[0], boxMax[1], boxMax[2]);
+	//	CloudRenderer::s_boundsMin = math::float3(boxMin[0], boxMin[1], boxMin[2]);
+
+
+	//
+
+	//	ImGui::End();
+
+
+
+	//	ImGui::Begin("Performance");
+	//	ImGui::Text("FPS = %.3lf", Application::s_AppFPS);
+	//	ImGui::Text("AvgFPS = %.3lf", Application::s_AppAverageFPS);
+	//	ImGui::Separator();
+	//	ImGui::Text("s_TotalFrameNum = %d", Application::s_TotalFrameNum);
+	//	ImGui::Text("DrawCalls per frame = %.3lf", (double)BasicRenderer::s_DrawCallCnt);
+
+	//	//ImGui::Text("DrawCalls per frame = %.3lf", (double)Application::s_TotalFrameNum/BasicRenderer::s_DrawCallCnt);
+	//	ImGui::Text("Objs num = %d", (int)m_ObjectsList.size());
+	//	ImGui::Text("BackGround Objs num = %d", (int)m_BackGroundObjsList.size());
+
+	//	ImGui::End();
 
 
 
@@ -1433,7 +1431,7 @@ namespace BlackPearl {
 		ImGui::DragFloat("intensity", &intensity, 0.1f, 0.1, 100);
 		ImGui::DragFloat("lightSize", &area, 0.1f, 0.1, 100);
 		ImGui::DragFloat("shadowBias", &bias, 0.001f, 0.001, 100);
-		ImGui::DragInt("pcfSamplesCnt", &ShadowMapPointLightRenderer::s_PCFSamplesCnt, 1, 2, 60);
+		//ImGui::DragInt("pcfSamplesCnt", &ShadowMapPointLightRenderer::s_PCFSamplesCnt, 1, 2, 60);
 
 		pointLight->SetAttenuation(attenuation);
 		Light::Props pros = { props.ambient ,props.diffuse,props.specular,props.emission,intensity };

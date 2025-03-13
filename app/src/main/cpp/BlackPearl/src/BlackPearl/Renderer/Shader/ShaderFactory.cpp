@@ -15,13 +15,20 @@ namespace BlackPearl {
 	void ShaderFactory::ClearCache()
 	{
 	}
-	ShaderHandle ShaderFactory::CreateShader(const char* fileName, const char* entryName, const std::vector<ShaderMacro>* pDefines, ShaderType shaderType)
+	ShaderHandle ShaderFactory::CreateShaderFromSource(const std::string& srcCode, const char* entryName, ShaderType shaderType, const std::vector<ShaderMacro>* pDefines) {
+		ShaderDesc desc = ShaderDesc(shaderType);
+		desc.srcCode = srcCode;
+		desc.createFromSource = true;
+		return m_Device->createShader(desc, nullptr, 0);
+	}
+
+	ShaderHandle ShaderFactory::CreateShader(const char* fileName, const char* entryName,  ShaderType shaderType, const std::vector<ShaderMacro>* pDefines)
 	{
 		ShaderDesc desc = ShaderDesc(shaderType);
 		desc.debugName = fileName;
-		return CreateShader(fileName, entryName, pDefines, desc);
+		return CreateShader(fileName, entryName, desc, pDefines);
 	}
-	ShaderHandle ShaderFactory::CreateShader(const char* fileName, const char* entryName, const std::vector<ShaderMacro>* pDefines, const ShaderDesc& desc)
+	ShaderHandle ShaderFactory::CreateShader(const char* fileName, const char* entryName, const ShaderDesc& desc, const std::vector<ShaderMacro>* pDefines)
 	{
 		std::shared_ptr<IBlob> byteCode = GetBytecode(fileName, entryName);
 

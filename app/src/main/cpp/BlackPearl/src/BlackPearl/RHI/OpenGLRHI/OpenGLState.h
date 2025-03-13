@@ -1,5 +1,7 @@
 #pragma once
-#include "glad/glad.h"
+//#include "glad/glad.h"
+#include "BlackPearl/RHI/OpenGLRHI/OpenGLDriver/OpenGLFunctions.h"
+
 #include "OpenGLDriver/OpenGL.h"
 #include "OpenGLDriver/OpenGLDrvPrivate.h"
 
@@ -23,6 +25,7 @@ namespace BlackPearl {
 	class Shader;
 	class FOpenGLShaderParameterCache;
 	class FOpenGLLinkedProgram;
+	class Texture;
 #define ZERO_FILLED_DUMMY_UNIFORM_BUFFER_SIZE 65536
 
 struct FOpenGLStream
@@ -320,10 +323,10 @@ struct FOpenGLRHIState final : public FOpenGLCommonState
 	// Pending framebuffer setup
 	int32_t								NumRenderingSamples;// Only used with GL_EXT_multisampled_render_to_texture
 	int32_t								FirstNonzeroRenderTarget;
-	FOpenGLTexture*					    RenderTargets[c_MaxRenderTargets];
+	Texture*							RenderTargets[c_MaxRenderTargets];
 	uint32_t							RenderTargetMipmapLevels[c_MaxRenderTargets];
 	uint32_t							RenderTargetArrayIndex[c_MaxRenderTargets];
-	FOpenGLTexture* DepthStencil;
+	Texture* DepthStencil;
 	ERenderTargetStoreAction		StencilStoreAction;
 	uint32_t						DepthTargetWidth;
 	uint32_t						DepthTargetHeight;
@@ -366,7 +369,7 @@ struct FOpenGLRHIState final : public FOpenGLCommonState
 	uint32_t UpStride;
 	void* UpVertexBuffer;
 	void* UpIndexBuffer;
-
+	bool alphaToCoverageEnable;
 	FOpenGLRHIState()
 		: StencilRef(0)
 		, Framebuffer(0)

@@ -294,7 +294,7 @@ namespace BlackPearl {
     {
         std::vector<ShaderMacro> Macros;
         Macros.push_back(ShaderMacro("COMPILE_SHADER", "1"));
-        return shaderFactory->CreateShader("hlsl/test/forward_test_vs.hlsl", "main", &Macros, ShaderType::Vertex);
+        return shaderFactory->CreateShader("hlsl/test/forward_test_vs.hlsl", "main", &Macros, ShaderType::VertexShader);
     }
 
     ShaderHandle BasePassRenderer::CreateGeometryShader(const std::shared_ptr<ShaderFactory>& shaderFactory, const CreateParameters& params)
@@ -320,7 +320,7 @@ namespace BlackPearl {
         std::vector<ShaderMacro> Macros;
         Macros.push_back(ShaderMacro("TRANSMISSIVE_MATERIAL", transmissiveMaterial ? "1" : "0"));
         Macros.push_back(ShaderMacro("COMPILE_SHADER", "1"));
-        return shaderFactory->CreateShader("hlsl/test/forward_test_ps.hlsl", "main", &Macros, ShaderType::Pixel);
+        return shaderFactory->CreateShader("hlsl/test/forward_test_ps.hlsl", "main", ShaderType::Pixel, &Macros);
     }
 
     InputLayoutHandle BasePassRenderer::CreateInputLayout(IShader* vertexShader, const CreateParameters& params)

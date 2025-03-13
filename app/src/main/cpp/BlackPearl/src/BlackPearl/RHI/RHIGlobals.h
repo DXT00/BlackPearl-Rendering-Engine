@@ -3,6 +3,7 @@
 #include <stdint.h>
 #include "BlackPearl/RHI/RHIDefinitions.h"
 #include "BlackPearl/Math/vector.h"
+#include "BlackPearl/RHI/RHIShader.h"
 namespace BlackPearl {
 	struct FRHIGlobals
 	{
@@ -120,7 +121,7 @@ namespace BlackPearl {
 		bool RHIThreadNeedsKicking = false;
 
 		/** If an RHI cannot do an unlimited number of occlusion queries without stalling and waiting for the GPU, this can be used to tune hte occlusion culler to try not to do that. */
-		int32_t MaximumReccommendedOustandingOcclusionQueries = MAX_int32;
+		int32_t MaximumReccommendedOustandingOcclusionQueries = INT_MAX;
 
 		/** Some RHIs can only do visible or not occlusion queries. */
 		bool SupportsExactOcclusionQueries = true;
@@ -257,12 +258,12 @@ namespace BlackPearl {
 		 *	The size to check against for Draw*UP call vertex counts.
 		 *	If greater than this value, the draw call will not occur.
 		 */
-		int32_t DrawUPVertexCheckCount = MAX_int32;
+		int32_t DrawUPVertexCheckCount = INT_MAX;
 		/**
 		 *	The size to check against for Draw*UP call index counts.
 		 *	If greater than this value, the draw call will not occur.
 		 */
-		int32_t DrawUPIndexCheckCount = MAX_int32;
+		int32_t DrawUPIndexCheckCount = INT_MAX;
 
 		///** true for each VET that is supported. One-to-one mapping with EVertexElementType */
 		//FVertexElementTypeSupportInfo VertexElementTypeSupport;

@@ -3,7 +3,7 @@
 /*=============================================================================
 	OpenGL3.cpp: OpenGL 3.2 implementation.
 =============================================================================*/
-
+#include "pch.h"
 //#include "CoreMinimal.h"
 //#include "HAL/IConsoleManager.h"
 #include "OpenGLDrv.h"

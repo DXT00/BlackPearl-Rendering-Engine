@@ -167,7 +167,9 @@ namespace BlackPearl {
         virtual IDevice* getDevice() = 0;
         virtual const CommandListParameters& getDesc() = 0;
 
-        virtual const GraphicsState& GetLastGraphicsState() const {};
+        virtual const GraphicsState& GetLastGraphicsState() const {
+            return GraphicsState();
+        };
         virtual void setViewport(float minX, float minY, float minZ, float maxX, float maxY, float maxZ) {}
         virtual void setScissorRect(bool bEnable, uint32_t minX, uint32_t minY, uint32_t maxX, uint32_t maxY) {}
     };

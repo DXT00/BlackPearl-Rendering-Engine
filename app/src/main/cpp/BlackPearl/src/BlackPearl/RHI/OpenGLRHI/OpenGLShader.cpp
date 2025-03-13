@@ -1,6 +1,6 @@
 #pragma once
 #include"pch.h"
-#include <glad/glad.h>
+//#include <glad/glad.h>
 #include "OpenGLShader.h"
 #include <BlackPearl/Core.h>
 #include "BlackPearl/Component/LightComponent/ParallelLight.h"
@@ -22,6 +22,7 @@
 #include "BlackPearl/RHI/Common/RHIUtils.h"
 #include "BlackPearl/RHI/RHIShader.h"
 #include "BlackPearl/Renderer/Shader/CrossCompilerCommon.h"
+#include "BlackPearl\RHI\OpenGLRHI\OpenGLDriver\OpenGLThirdParty.h"
 
 namespace BlackPearl
 {
@@ -158,21 +159,45 @@ namespace BlackPearl
         }
     }
 
-    Shader::Shader(const ShaderDesc &_desc, const std::string &filepath) 
+    Shader::Shader(const ShaderDesc &_desc) 
         :desc(_desc) {
-        if (filepath.empty()) {
+       /* if (filepath.empty()) {
 
             GE_CORE_WARN("no shader path found");
             return;
+        }*/
+        if (desc.createFromSource) {
+            m_GlslCode = desc.srcCode;
         }
-        m_ShaderPath = filepath;
-        m_GlslCode = ReadFile(filepath);
-        std::string commonSource = ReadFile(m_CommonStructPath);
+        else {
+            m_ShaderPath = desc.filePath;
+            m_GlslCode = ReadFile(m_ShaderPath);
+        }
+       
+       /* std::string commonSource = ReadFile(m_CommonStructPath);
 
         std::unordered_map<GLenum, std::string> shaderSources = PreProcess(m_GlslCode, commonSource);
-        Compile(shaderSources);
+        Compile(shaderSources);*/
 
     }
+
+
+    //Shader::Shader(const ShaderDesc& _desc, const std::string& filepath)
+    //    :desc(_desc) {
+    //    if (filepath.empty()) {
+
+    //        GE_CORE_WARN("no shader path found");
+    //        return;
+    //    }
+    //    m_ShaderPath = filepath;
+    //    m_GlslCode = ReadFile(filepath);
+    //    std::string commonSource = ReadFile(m_CommonStructPath);
+
+    //    std::unordered_map<GLenum, std::string> shaderSources = PreProcess(m_GlslCode, commonSource);
+    //    Compile(shaderSources);
+
+    //}
+
 
     Shader::~Shader() {
 
@@ -507,15 +532,20 @@ namespace BlackPearl
     }
 
     void Shader::SetUniformMat3x4f(const std::string &name, const float *mat3x4, uint32_t count) const {
-        GLint location = glGetUniformLocation(m_RendererID, name.c_str());
+        printf("unsupport SetUniformMat3x4f now!\n");
+        assert(0);
+
+      /*  GLint location = glGetUniformLocation(m_RendererID, name.c_str());
         glProgramUniformMatrix3x4fv(m_RendererID, location, count, GL_FALSE, mat3x4);
-        GE_ERROR_JUDGE();
+        GE_ERROR_JUDGE();*/
 
     }
 
     void Shader::SetUniformMat4f(const std::string &name, const float *mat4x4, uint32_t count) const {
-        GLint location = glGetUniformLocation(m_RendererID, name.c_str());
-        glProgramUniformMatrix4fv(m_RendererID, location, count, GL_FALSE, mat4x4);
+        printf("unsupport SetUniformMat4f now!\n");
+        assert(0);
+       /* GLint location = glGetUniformLocation(m_RendererID, name.c_str());
+        glProgramUniformMatrix4fv(m_RendererID, location, count, GL_FALSE, mat4x4);*/
     }
 
     void Shader::SetUniformVec3f(const std::string &name, const glm::vec3 &value) const {
@@ -624,7 +654,7 @@ namespace BlackPearl
 
         FOpenGL::UniformBlockBinding(Program, UniformBlockIndex, UniformBlockBinding);
     }
-    static GLuint GetOpenGLProgramUniformBlockIndex(GLuint Program, const string& UniformBlockName)
+    static GLuint GetOpenGLProgramUniformBlockIndex(GLuint Program, const std::string& UniformBlockName)
     {
         /*TMap<FOpenGLUniformName, int64>& Locations = GetOpenGLUniformBlockLocations().FindOrAdd(Program);
         int64* Location = Locations.Find(UniformBlockName);
@@ -780,13 +810,13 @@ namespace BlackPearl
     {
         const FOpenGLLinkedProgramConfiguration& Config = LinkedProgram->Config;
 
-        if (Config.Shaders[ShaderType::Vertex].bValid)
+        if (Config.Shaders[ShaderType::VertexShader].bValid)
         {
             LinkedProgram->ConfigureShaderStage(
-                ShaderType::Vertex,
+                ShaderType::VertexShader,
                 OGL_FIRST_UNIFORM_BUFFER
             );
-            //assert(LinkedProgram->StagePackedUniformInfo[ShaderType::Vertex].PackedUniformInfos.Num() <= Config.Shaders[ShaderType::Vertex].Bindings.PackedGlobalArrays.Num());
+            //assert(LinkedProgram->StagePackedUniformInfo[ShaderType::VertexShader].PackedUniformInfos.Num() <= Config.Shaders[ShaderType::VertexShader].Bindings.PackedGlobalArrays.Num());
         }
 
         if (Config.Shaders[ShaderType::Pixel].bValid)
@@ -794,7 +824,7 @@ namespace BlackPearl
             LinkedProgram->ConfigureShaderStage(
                 ShaderType::Pixel,
                 OGL_FIRST_UNIFORM_BUFFER +
-                Config.Shaders[ShaderType::Vertex].Bindings.NumUniformBuffers
+                Config.Shaders[ShaderType::VertexShader].Bindings.NumUniformBuffers
             );
            // assert(LinkedProgram->StagePackedUniformInfo[ShaderType::Pixel].PackedUniformInfos.Num() <= Config.Shaders[ShaderType::Pixel].Bindings.PackedGlobalArrays.Num());
         }
@@ -804,7 +834,7 @@ namespace BlackPearl
             LinkedProgram->ConfigureShaderStage(
                 ShaderType::Geometry,
                 OGL_FIRST_UNIFORM_BUFFER +
-                Config.Shaders[ShaderType::Vertex].Bindings.NumUniformBuffers +
+                Config.Shaders[ShaderType::VertexShader].Bindings.NumUniformBuffers +
                 Config.Shaders[ShaderType::Pixel].Bindings.NumUniformBuffers
             );
            // assert(LinkedProgram->StagePackedUniformInfo[ShaderType::Geometry].PackedUniformInfos.Num() <= Config.Shaders[ShaderType::Geometry].Bindings.PackedGlobalArrays.Num());
@@ -854,23 +884,23 @@ namespace BlackPearl
         PixelShader->Compile(GL_FRAGMENT_SHADER);
 
         // Fill-in the configuration
-        Config.Shaders[ShaderType::Vertex].Bindings = VertexShader->Bindings;
-        Config.Shaders[ShaderType::Vertex].Resource = VertexShader->m_ShaderID;
-        Config.Shaders[ShaderType::Vertex].ShaderKey = VertexShader->ShaderCodeKey;
-        Config.Shaders[ShaderType::Vertex].bValid = true;
+        Config.Shaders[ShaderType::VertexShader].Bindings = VertexShader->Bindings;
+        Config.Shaders[ShaderType::VertexShader].Resource = VertexShader->m_ShaderID;
+        Config.Shaders[ShaderType::VertexShader].ShaderKey = VertexShader->ShaderCodeKey;
+        Config.Shaders[ShaderType::VertexShader].bValid = true;
         for (size_t i = 0; i < bindingSet.size(); i++)
         {
             BindingSet* bs = static_cast<BindingSet*>(bindingSet[i]);
             Config.bindingSet.push_back(bs);
         }
        // Config.bindingSet = bindingSet;
-        //Config.ProgramKey.ShaderHashes[ShaderType::Vertex] = VertexShaderRHI->GetHash();
+        //Config.ProgramKey.ShaderHashes[ShaderType::VertexShader] = VertexShaderRHI->GetHash();
 
         if (GeometryShaderRHI)
         {
             assert(VertexShader);
             GeometryShader->Compile(GL_GEOMETRY_SHADER);
-            BindShaderStage(Config, ShaderType::Geometry, GeometryShaderRHI, ShaderType::Vertex, VertexShaderRHI);
+            BindShaderStage(Config, ShaderType::Geometry, GeometryShaderRHI, ShaderType::VertexShader, VertexShaderRHI);
             //Config.ProgramKey.ShaderHashes[ShaderType::Geometry] = GeometryShaderRHI->GetHash();
             Config.Shaders[ShaderType::Geometry].ShaderKey = GeometryShader->ShaderCodeKey;
             Config.Shaders[ShaderType::Geometry].bValid = true;
@@ -883,7 +913,7 @@ namespace BlackPearl
         }
         else
         {
-            BindShaderStage(Config, ShaderType::Pixel, PixelShaderRHI, ShaderType::Vertex, VertexShaderRHI);
+            BindShaderStage(Config, ShaderType::Pixel, PixelShaderRHI, ShaderType::VertexShader, VertexShaderRHI);
         }
         //Config.ProgramKey.ShaderHashes[ShaderType::Pixel] = PixelShaderRHI->GetHash();
         Config.Shaders[ShaderType::Pixel].ShaderKey = PixelShader->ShaderCodeKey;
@@ -907,7 +937,7 @@ namespace BlackPearl
         //        // VERIFY_GL_SCOPE();
         //
         //        // ensure that compute shaders are always alone
-        //        check((Config.Shaders[ShaderType::Vertex].Resource == 0) !=
+        //        check((Config.Shaders[ShaderType::VertexShader].Resource == 0) !=
         //              (Config.Shaders[ShaderType::Compute].Resource == 0));
         //        check((Config.Shaders[ShaderType::Pixel].Resource == 0) !=
         //              (Config.Shaders[ShaderType::Compute].Resource == 0));
@@ -1039,7 +1069,7 @@ namespace BlackPearl
 //            //PendingState.LinkedProgramAndDirtyFlag = nullptr;
 //        }
 //
-//        if (PendingState.bAnyDirtyRealUniformBuffers[(int) ShaderType::Vertex] ||
+//        if (PendingState.bAnyDirtyRealUniformBuffers[(int) ShaderType::VertexShader] ||
 //            PendingState.bAnyDirtyRealUniformBuffers[(int) ShaderType::Pixel] ||
 //            PendingState.bAnyDirtyRealUniformBuffers[(int) ShaderType::Geometry]) {
 //            int32_t NextUniformBufferIndex = OGL_FIRST_UNIFORM_BUFFER;
@@ -1051,15 +1081,15 @@ namespace BlackPearl
 //
 //            //PendingState.GraphicsPipline->pipelineBindingLayouts->getNumUniformBuffers(NumUniformBuffers);
 //
-//            if (PendingState.bAnyDirtyRealUniformBuffers[(int) ShaderType::Vertex]) {
+//            if (PendingState.bAnyDirtyRealUniformBuffers[(int) ShaderType::VertexShader]) {
 //                BindUniformBufferBase(
 //                        ContextState,
-//                        NumUniformBuffers[(int) ShaderType::Vertex],
-//                        PendingState.BoundUniformBuffers[(int) ShaderType::Vertex],
+//                        NumUniformBuffers[(int) ShaderType::VertexShader],
+//                        PendingState.BoundUniformBuffers[(int) ShaderType::VertexShader],
 //                        NextUniformBufferIndex,
 //                        ForceUniformBindingUpdate);
 //            }
-//            NextUniformBufferIndex += NumUniformBuffers[(int) ShaderType::Vertex];
+//            NextUniformBufferIndex += NumUniformBuffers[(int) ShaderType::VertexShader];
 //
 //            if (PendingState.bAnyDirtyRealUniformBuffers[(int) ShaderType::Pixel]) {
 //                BindUniformBufferBase(
@@ -1082,7 +1112,7 @@ namespace BlackPearl
 //                NextUniformBufferIndex += NumUniformBuffers[(int) ShaderType::Geometry];
 //            }
 //
-//            PendingState.bAnyDirtyRealUniformBuffers[(int) ShaderType::Vertex] = false;
+//            PendingState.bAnyDirtyRealUniformBuffers[(int) ShaderType::VertexShader] = false;
 //            PendingState.bAnyDirtyRealUniformBuffers[(int) ShaderType::Pixel] = false;
 //            PendingState.bAnyDirtyRealUniformBuffers[(int) ShaderType::Geometry] = false;
 //        }

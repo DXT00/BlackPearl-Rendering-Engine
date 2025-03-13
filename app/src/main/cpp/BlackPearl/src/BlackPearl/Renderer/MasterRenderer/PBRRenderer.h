@@ -21,7 +21,7 @@ namespace BlackPearl {
 
 			ShaderDesc desc = ShaderDesc(ShaderType::All);
 			desc.debugName = "PbrShader";
-			m_PbrShader = g_shaderFactory->CreateShader("assets/shaders/pbr/PbrTexture.glsl", "main", nullptr, desc);
+			m_PbrShader = g_shaderFactory->CreateShader("assets/shaders/pbr/PbrTexture.glsl", "main", desc);
 		    //	m_PbrShader.reset(DBG_NEW Shader("assets/shaders/pbr/Pbr.glsl"));
 			//m_PbrShader.reset(DBG_NEW Shader("assets/shaders/pbr/PbrTexture.glsl"));
 		};

@@ -14,6 +14,7 @@
 #include "BlackPearl/RHI/DynamicRHI.h"
 #include "BlackPearl/AABB/AABB.h"
 #include "BlackPearl/Animation/Bone.h"
+#include "BlackPearl/Renderer/Shader/MaterialShader.h"
 //#include <assimp/material.h>
 
 //#include <assimp/cimport.h>
@@ -46,7 +47,7 @@ namespace BlackPearl {
 		bool bCreateMeshlet;
 		bool bIsMeshletModel;
 		MeshletOption options;
-		std::shared_ptr<Shader>shader;
+		std::shared_ptr<MaterialShader> shader;
 		AnimationInfo animationInfo;
 
 		ModelDesc() 
@@ -90,7 +91,7 @@ namespace BlackPearl {
 		std::vector<std::shared_ptr<Mesh>>       GetMeshes() const { return meshes; }
 		std::vector<std::shared_ptr<Mesh>>&  GetMeshlets() { return meshes; }
 
-		std::shared_ptr<Shader> GetShader()const { return desc.shader; }
+		std::shared_ptr<MaterialShader> GetShader()const { return desc.shader; }
 		std::vector<Vertex>		GetMeshVertex() const { return vertices; }
 
 

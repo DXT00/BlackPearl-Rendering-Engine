@@ -1,3 +1,4 @@
+#pragma once
 #include "../RHISampler.h"
 #include "OpenGLState.h"
 

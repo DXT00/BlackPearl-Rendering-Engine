@@ -1,4 +1,6 @@
+#include "pch.h"
 #include "OpenGLQuery.h"
+#include "BlackPearl/RHI/OpenGLRHI/OpenGLDriver/OpenGLDrv.h"
 #include <assert.h>
 
 namespace BlackPearl {
@@ -20,7 +22,7 @@ namespace BlackPearl {
 		if (Sync)
 		{
 			FOpenGL::DeleteSync(Sync);
-			Sync = UGLsync();
+			Sync = GLsync();
 		}
 		Sync = FOpenGL::FenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0);
 		FOpenGL::Flush();
@@ -32,7 +34,7 @@ namespace BlackPearl {
 	{
 
 
-		QUICK_SCOPE_CYCLE_COUNTER(STAT_FOpenGLEventQuery_WaitForCompletion);
+		//QUICK_SCOPE_CYCLE_COUNTER(STAT_FOpenGLEventQuery_WaitForCompletion);
 
 		assert(FOpenGL::IsSync(Sync));
 
@@ -46,16 +48,16 @@ namespace BlackPearl {
 			break;
 
 		case FOpenGL::FR_TimeoutExpired:
-			UE_LOG(LogRHI, Log, TEXT("Timed out while waiting for GPU to catch up. (500 ms)"));
+			//UE_LOG(LogRHI, Log, TEXT("Timed out while waiting for GPU to catch up. (500 ms)"));
 			break;
 
 		case FOpenGL::FR_WaitFailed:
-			UE_LOG(LogRHI, Log, TEXT("Wait on GPU failed in driver"));
+			//UE_LOG(LogRHI, Log, TEXT("Wait on GPU failed in driver"));
 			break;
 
 		default:
-			UE_LOG(LogRHI, Log, TEXT("Unknown error while waiting on GPU"));
-			check(0);
+			//UE_LOG(LogRHI, Log, TEXT("Unknown error while waiting on GPU"));
+			assert(0);
 			break;
 		}
 	}

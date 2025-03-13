@@ -28,6 +28,10 @@
 
 namespace BlackPearl
 {
+    uint32_t RHIGetSyncInterval()
+    {
+        return Configuration::Vsync ? 1 : 0;
+    }
     BlendState::RenderTarget RHIUtils::CreateAddBlendState(
         BlendFactor srcBlend,
         BlendFactor dstBlend)
@@ -202,15 +206,14 @@ namespace BlackPearl
     {
         switch (stage)
         {
-        case ShaderType::None:          return "None";
         case ShaderType::Compute:       return "Compute";
-        case ShaderType::Vertex:        return "Vertex";
+        case ShaderType::VertexShader:        return "Vertex";
         case ShaderType::Hull:          return "Hull";
         case ShaderType::Domain:        return "Domain";
         case ShaderType::Geometry:      return "Geometry";
         case ShaderType::Pixel:         return "Pixel";
         case ShaderType::Amplification: return "Amplification";
-        case ShaderType::Mesh:          return "Mesh";
+        case ShaderType::MeshShader:          return "Mesh";
         case ShaderType::AllGraphics:   return "AllGraphics";
         case ShaderType::RayGeneration: return "RayGeneration";
         case ShaderType::AnyHit:        return "AnyHit";
@@ -434,8 +437,8 @@ namespace BlackPearl
      */
     inline uint32_t GetVertexCountForPrimitiveCount(uint32_t NumPrimitives, uint32_t PrimitiveType)
     {
-        static_assert((uint32_t)PrimitiveType::NUM == 8, "This function needs to be updated");
-        uint32_t Factor = (PrimitiveType == (uint32_t)PrimitiveType::TriangleList) ? 3 : (PrimitiveType == (uint32_t)PrimitiveType::LineList) ? 2 : (PrimitiveType == PT_RectList) ? 3 : 1;
+      //  static_assert((uint32_t)PrimitiveType::NUM == 8, "This function needs to be updated");
+        uint32_t Factor = (PrimitiveType == (uint32_t)PrimitiveType::TriangleList) ? 3 : (PrimitiveType == (uint32_t)PrimitiveType::LineList) ? 2 : (PrimitiveType == (uint32_t)PrimitiveType::RectList) ? 3 : 1;
         uint32_t Offset = (PrimitiveType == (uint32_t)PrimitiveType::TriangleStrip) ? 2 : 0;
 
         return NumPrimitives * Factor + Offset;

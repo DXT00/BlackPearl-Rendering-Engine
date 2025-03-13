@@ -4,7 +4,8 @@
 //#include "BlackPearl/RHI/OpenGLRHI/OpenGLTexture.h"
 #include "BlackPearl/RHI/RHITexture.h"
 #include "OpenGLBuffer.h"
-#include <glad/glad.h>
+//#include <glad/glad.h>
+#include "BlackPearl/RHI/OpenGLRHI/OpenGLDriver/OpenGLThirdParty.h"
 #include <unordered_map>
 namespace BlackPearl {
 
@@ -92,7 +93,7 @@ namespace BlackPearl {
 
 	class Framebuffer : public Buffer {
 	public:
-
+		FramebufferInfo framebufferInfo;
 		enum Attachment {
 			ColorTexture,
 			DepthTexture,

@@ -1,5 +1,7 @@
 #pragma once
 #include "../RHIInputLayout.h"
+#include "BlackPearl/RHI/OpenGLRHI/OpenGLDriver/OpenGLThirdParty.h"
+
 
 namespace BlackPearl {
 	class InputLayout :public RefCounter<IInputLayout>

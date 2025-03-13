@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "glad/glad.h"
+#include "BlackPearl/RHI/OpenGLRHI/OpenGLDriver/OpenGLFunctions.h"
 #include "OpenGLFrameBuffer.h"
 #include "OpenGLBuffer.h"
 #include "OpenGLTexture.h"
@@ -7,7 +7,6 @@
 #include "BlackPearl/Core.h"
 #include "OpenGLDevice.h"
 #include "BlackPearl/RHI/RHIDefinitions.h"
-#include "BlackPearl/RHI/OpenGLRHI/OpenGLDriver/OpenGLDrvPrivate.h"
 namespace BlackPearl {
     // GL_MAX_DRAW_BUFFERS value
     GLint GMaxOpenGLDrawBuffers = 0;

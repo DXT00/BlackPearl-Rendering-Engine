@@ -47,7 +47,7 @@ project "BlackPearl"
 		"../%{IncludeDir.directxtex}",
 		"../%{IncludeDir.directxmesh}",
 		"../%{IncludeDir.ShaderMake}",
-		"../%{IncludeDir.OpenGL}",
+		--"../%{IncludeDir.OpenGL}",
 		"./vendor",
 		"./vendor/GLEW",
 		"./assets/shaders/"
@@ -75,6 +75,13 @@ project "BlackPearl"
    removefiles  { "./src/BlackPearl/RHI/VulkanRHI/**.h" }
    removefiles  { "./src/BlackPearl/Renderer/MasterRendererBak/**.cpp" }
    removefiles  { "./src/BlackPearl/Renderer/MasterRendererBak/**.h" }
+   removefiles  { "./src/BlackPearl/Renderer/Lumen/**.h" }
+   removefiles  { "./src/BlackPearl/Renderer/Lumen/**.cpp" }
+   removefiles  { "./src/BlackPearl/RayTracing/**.cpp" }
+	removefiles  { "./src/BlackPearl/RayTracing/**.h" }
+
+	removefiles  { "./src/BlackPearl/ImGui/imgui_impl_opengl3.cpp" }
+	removefiles  { "./src/BlackPearl/ImGui/imgui_impl_opengl3.h" }
    removefiles  { "./src/BlackPearl/RHI/D3D12RHI/**.cpp" }
    removefiles  { "./src/BlackPearl/RHI/D3D12RHI/**.h" }
    removefiles  { "./src/BlackPearl/Renderer/Buffer/D3D12Buffer/**.h" }

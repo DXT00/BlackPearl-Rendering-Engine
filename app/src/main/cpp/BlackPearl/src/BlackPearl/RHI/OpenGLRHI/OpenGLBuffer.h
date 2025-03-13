@@ -1,7 +1,7 @@
 #pragma once
 #include "BlackPearl/RHI/RHIBuffer.h"
 #include "BlackPearl/RHI/RHIState.h"
-
+#include "BlackPearl/RHI/OpenGLRHI/OpenGLDriver/OpenGLThirdParty.h"
 namespace BlackPearl {
 
 	class Buffer: public RefCounter<IBuffer>, public BufferStateExtension

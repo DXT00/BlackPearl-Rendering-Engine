@@ -5,7 +5,6 @@
 #include "RHIResources.h"
 #include "BlackPearl/Core.h"
 #include <string>
-using namespace std;
 
 namespace BlackPearl {
 
@@ -48,8 +47,9 @@ namespace BlackPearl {
 
 
 		}
-		GE_ASSERT(false, "Unknown ElementDataType!")
-			return 0;
+		
+		assert("Unknown ElementDataType!");
+	    return 0;
 	}
 
 
@@ -87,7 +87,7 @@ namespace BlackPearl {
 			case ElementDataType::False:	return 1;
 			case ElementDataType::True:		return 1;
 			}
-			GE_ASSERT(false, "Unknown ElementDataType!")
+			assert(false, "Unknown ElementDataType!");
 				return 0;
 		}
 		void operator=(const BufferElement& rhs) {
@@ -101,10 +101,66 @@ namespace BlackPearl {
 		}
 	};
 
+	class VertexBufferLayout {
+	public:
+		VertexBufferLayout() { //GE_CORE_INFO("VertexBufferLayout defult constructor!")
+		}
+		VertexBufferLayout(std::initializer_list<BufferElement> elements)
+			:m_Elememts(elements) {
+			CalculateStrideAndOffset();
+			UpdateDesc();
+
+		};
+		void CalculateStrideAndOffset();
+
+		inline std::vector<BufferElement> GetElements() const { return m_Elememts; }
+		BufferElement GetElement(uint32_t i) const {
+			assert((i < ElementSize()), "i exceed max elements size");
+			return m_Elememts[i];
+		}
+
+		bool HasElement(uint32_t i) {
+			if (i < ElementSize())
+				return true;
+			return false;
+		}
+		void AddElement(const BufferElement& element) {
+			m_Elememts.push_back(element);
+			CalculateStrideAndOffset();
+			UpdateDesc();
+		}
+		uint32_t ElementSize() const { return m_Elememts.size(); }
+		uint32_t GetStride() const { return m_Stride; }
+		//for directx
+		virtual void UpdateDesc() {}
+
+		VertexBufferLayout(const VertexBufferLayout& rhs) {
+			m_Elememts.resize(rhs.ElementSize());
+			for (size_t i = 0; i < rhs.ElementSize(); i++)
+			{
+				m_Elememts[i] = rhs.m_Elememts[i];
+			}
+			m_Stride = rhs.m_Stride;
+
+		}
+		VertexBufferLayout& operator = (const VertexBufferLayout& rhs) {
+			this->m_Elememts.resize(rhs.ElementSize());
+			for (size_t i = 0; i < rhs.ElementSize(); i++)
+			{
+				this->m_Elememts[i] = rhs.m_Elememts[i];
+			}
+			this->m_Stride = rhs.m_Stride;
+			return *this;
+		}
+
+	protected:
+		std::vector<BufferElement> m_Elememts;
+		uint32_t m_Stride = 0;
+	};
 
     struct VertexAttributeDesc
     {
-        string name;
+		std::string name;
         Format format = Format::UNKNOWN;
         uint32_t streamIndex = 0;
         uint32_t arraySize = 1;
@@ -117,13 +173,13 @@ namespace BlackPearl {
         bool bNormalized = true;
 		bool bShouldConvertToFloat = false;
 
-        VertexAttributeDesc& setName(const string& value) { name = value; return *this; }
+     /*   VertexAttributeDesc& setName(const std::string& value) { name = value; return *this; }
         constexpr VertexAttributeDesc& setFormat(Format value) { format = value; return *this; }
         constexpr VertexAttributeDesc& setArraySize(uint32_t value) { arraySize = value; return *this; }
         constexpr VertexAttributeDesc& setBufferIndex(uint32_t value) { bufferIndex = value; return *this; }
         constexpr VertexAttributeDesc& setOffset(uint32_t value) { offset = value; return *this; }
         constexpr VertexAttributeDesc& setElementStride(uint32_t value) { elementStride = value; return *this; }
-        constexpr VertexAttributeDesc& setIsInstanced(bool value) { isInstanced = value; return *this; }
+        constexpr VertexAttributeDesc& setIsInstanced(bool value) { isInstanced = value; return *this; }*/
     };
 
     class IInputLayout : public IResource

@@ -1,8 +1,8 @@
 #pragma once
 #include "pch.h"
-#include <glad/glad.h>
+//#include <glad/glad.h>
 #include "OpenGLCubeMapTexture.h"
-
+#include "BlackPearl/RHI/OpenGLRHI/OpenGLDriver/OpenGLFunctions.h"
 //#define STB_IMAGE_IMPLEMENTATION
 
 //

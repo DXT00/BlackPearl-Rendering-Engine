@@ -3,14 +3,14 @@
 #include "RHIDefinitions.h"
 #include "RefCountPtr.h"
 #include "RHIResources.h"
-#include "RHIBuffer.h"
+//#include "RHIBuffer.h"
 namespace BlackPearl {
 
 
 	namespace rt
 	{
 
-
+		class IBuffer;
 		//////////////////////////////////////////////////////////////////////////
 	// rt::OpacityMicromap
 	//////////////////////////////////////////////////////////////////////////
@@ -151,21 +151,21 @@ namespace BlackPearl {
 			const OpacityMicromapUsageCount* pOmmUsageCounts = nullptr;
 			uint32_t numOmmUsageCounts = 0;
 
-			GeometryTriangles& setIndexBuffer(IBuffer* value) { indexBuffer = value; return *this; }
-			GeometryTriangles& setVertexBuffer(IBuffer* value) { vertexBuffer = value; return *this; }
-			GeometryTriangles& setIndexFormat(Format value) { indexFormat = value; return *this; }
-			GeometryTriangles& setVertexFormat(Format value) { vertexFormat = value; return *this; }
-			GeometryTriangles& setIndexOffset(uint64_t value) { indexOffset = value; return *this; }
-			GeometryTriangles& setVertexOffset(uint64_t value) { vertexOffset = value; return *this; }
-			GeometryTriangles& setIndexCount(uint32_t value) { indexCount = value; return *this; }
-			GeometryTriangles& setVertexCount(uint32_t value) { vertexCount = value; return *this; }
+			GeometryTriangles& setIndexBuffer(IBuffer* value);
+			GeometryTriangles& setVertexBuffer(IBuffer* value);
+			GeometryTriangles& setIndexFormat(Format value);
+			GeometryTriangles& setVertexFormat(Format value);
+			GeometryTriangles& setIndexOffset(uint64_t value);
+			GeometryTriangles& setVertexOffset(uint64_t value);
+			GeometryTriangles& setIndexCount(uint32_t value);
+			GeometryTriangles& setVertexCount(uint32_t value);
 			// GeometryTriangles& setVertexStride(uint32_t value) { vertexStride = value; return *this; }
 			 //GeometryTriangles& setOpacityMicromap(IOpacityMicromap* value) { opacityMicromap = value; return *this; }
-			GeometryTriangles& setOmmIndexBuffer(IBuffer* value) { ommIndexBuffer = value; return *this; }
-			GeometryTriangles& setOmmIndexBufferOffset(uint64_t value) { ommIndexBufferOffset = value; return *this; }
-			GeometryTriangles& setOmmIndexFormat(Format value) { ommIndexFormat = value; return *this; }
+			GeometryTriangles& setOmmIndexBuffer(IBuffer* value);
+			GeometryTriangles& setOmmIndexBufferOffset(uint64_t value);
+			GeometryTriangles& setOmmIndexFormat(Format value);
 			//GeometryTriangles& setPOmmUsageCounts(const OpacityMicromapUsageCount* value) { pOmmUsageCounts = value; return *this; }
-			GeometryTriangles& setNumOmmUsageCounts(uint32_t value) { numOmmUsageCounts = value; return *this; }
+			GeometryTriangles& setNumOmmUsageCounts(uint32_t value);
 		};
 
 		struct GeometryAABBs

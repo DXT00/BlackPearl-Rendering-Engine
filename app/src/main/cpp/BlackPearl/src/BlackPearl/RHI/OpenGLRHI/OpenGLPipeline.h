@@ -3,12 +3,13 @@
 #include "OpenGLContext.h"
 #include "OpenGLBindingLayout.h"
 namespace BlackPearl {
+
 	class GraphicsPipeline :public RefCounter<IGraphicsPipeline>
 	{
 	public:
 
 		FramebufferInfo framebufferInfo;
-		ShaderType shaderMask = ShaderType::None;
+		ShaderType shaderMask = ShaderType::All;
 		std::vector<RefCountPtr<BindingLayout>> pipelineBindingLayouts;
 		//use by gl
 		//uint32_t shaderLinkProgram = -1;

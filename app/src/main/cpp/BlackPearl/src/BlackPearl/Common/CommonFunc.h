@@ -6,21 +6,29 @@
 #include "BlackPearl/RHI/RHITexture.h"
 #include "BlackPearl/Object/Object.h"
 #include "glm/glm.hpp"
+#ifdef GE_API_D3D12
 #include "d3d12.h"
 #include "BlackPearl/RHI/D3D12RHI/d3dx12.h"
+#endif
+#ifdef GE_API_OPENGL
+#include "BlackPearl/RHI/OpenGLRHI/OpenGLBufferResource.h"
+#endif
 #include "BlackPearl/Log.h"
 namespace BlackPearl {
     const char s_padding[4096] = {};
 	class CommonFunc
 	{
 	public:
+#ifdef GE_API_OPENGL
 		static void ShowGBuffer(unsigned int row, unsigned int col, Object* quad, std::shared_ptr<GBuffer> gBuffer, std::vector<TextureHandle>textures);
         static void ShowFrameBuffer(unsigned int row, unsigned int col, Object* quad, IBuffer* frameBuffer, std::vector<TextureHandle >textures);
+#endif
         static void ShowFrameBuffer(glm::vec4 viewPort, Object* quad, IBuffer* frameBuffer, TextureHandle texture, bool isMipmap, int lod);
         static void ShowTextures(unsigned int row, unsigned int col, Object* quad, std::vector<TextureHandle>textures);
         static void ShowTexture(glm::vec4 viewPort, Object* quad, TextureHandle texture, bool isMipmap, int lod = 0);
     };
     // Assign a name to the object to aid with debugging.
+#ifdef GE_API_D3D12
 #if defined(_DEBUG) || defined(DBG)
     inline void SetName(ID3D12Object* pObject, LPCWSTR name)
     {
@@ -48,7 +56,7 @@ namespace BlackPearl {
     // The indexed variant will include the index in the name of the object.
 #define NAME_D3D12_OBJECT(x) SetName((x).Get(), L#x)
 #define NAME_D3D12_OBJECT_INDEXED(x, n) SetNameIndexed((x)[n].Get(), L#x, n)
-
+#endif
     class HrException : public std::runtime_error
     {
         inline std::string HrToString(HRESULT hr)
@@ -79,12 +87,13 @@ namespace BlackPearl {
         uint32_t pad = (align - offset % align);
         offset += pad;
     }
-
+#ifdef GE_API_D3D12
     inline UINT CalculateConstantBufferByteSize(UINT byteSize)
     {
         // Constant buffer size is required to be aligned.
         return Align(byteSize, D3D12_CONSTANT_BUFFER_DATA_PLACEMENT_ALIGNMENT);
     }
+#endif
     inline void ThrowIfFailed(HRESULT hr)
     {
         if (FAILED(hr))

@@ -1,5 +1,6 @@
 #include "pch.h"
-#include <glad/glad.h>
+//#include <glad/glad.h>
+#include "BlackPearl/RHI/OpenGLRHI/OpenGLDriver/OpenGLThirdParty.h"
 #include "Mesh.h"
 #include "glm/glm.hpp"
 #include "BlackPearl/RHI/RHIShader.h"
@@ -24,6 +25,7 @@ namespace BlackPearl {
 		GE_SAVE_FREE(m_Weight);
 		GE_SAVE_FREE(m_Weight1);
 		material.reset();
+#ifdef GE_API_D3D12
 
 		IndexResource.Reset();
 		MeshletResource.Reset();
@@ -35,13 +37,18 @@ namespace BlackPearl {
 		{
 			VertexResources[i].Reset();
 		}
+#endif
+
 	}
 
 
 	void Mesh::SetTessellation(uint32_t verticesPerTessPatch)
 	{
-		if (DynamicRHI::g_RHIType == DynamicRHI::Type::OpenGL)
-			glPatchParameteri(GL_PATCH_VERTICES, verticesPerTessPatch);
+#ifdef GE_API_OPENGL
+		//TODO::
+		/*if (DynamicRHI::g_RHIType == DynamicRHI::Type::OpenGL)
+			glPatchParameteri(GL_PATCH_VERTICES, verticesPerTessPatch);*/
+#endif
 
 	}
 

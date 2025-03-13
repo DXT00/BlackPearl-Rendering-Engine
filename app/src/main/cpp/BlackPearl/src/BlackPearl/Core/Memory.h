@@ -1,5 +1,5 @@
 
-
+#pragma once
 
 #include "BlackPearl/Core.h"
 

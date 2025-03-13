@@ -1,5 +1,5 @@
 #include "pch.h"
-#include<glad/glad.h>
+//#include <glad/glad.h>
 #include "Renderer.h"
 #include "BlackPearl/Component/LightComponent/Light.h"
 #include "BlackPearl/Component/LightComponent/ParallelLight.h"
@@ -30,9 +30,9 @@ namespace BlackPearl {
 
 	void Renderer::Init()
 	{
-		glEnable(GL_DEPTH_TEST);
+		//glEnable(GL_DEPTH_TEST);
 		//多重采样，抗锯齿 // MSAA. Set MSAA level using GLFW (see Config.h).
-		glEnable(GL_MULTISAMPLE);
+		//glEnable(GL_MULTISAMPLE);
 	//	glEnable(GL_BLEND);
 		//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	}
@@ -79,10 +79,10 @@ namespace BlackPearl {
 
 	}
 
-	void Renderer::Submit(const std::shared_ptr<VertexArray>& vertexArray, const std::shared_ptr<Shader>& shader, const glm::mat4 & model, SceneData* sceneData)
+	void Renderer::Submit(const std::shared_ptr<VertexArray>& vertexArray,  IShader* shader, const glm::mat4 & model, SceneData* sceneData)
 	{
 		//shader->Bind();
-		shader->SetUniformMat4f("u_TranInverseModel", glm::transpose(glm::inverse(model)));
+		/*shader->SetUniformMat4f("u_TranInverseModel", glm::transpose(glm::inverse(model)));
 
 		shader->SetUniformMat4f("u_ProjectionView", sceneData->ProjectionViewMatrix);
 		shader->SetUniformMat4f("u_Projection", sceneData->ProjectionMatrix);
@@ -91,48 +91,35 @@ namespace BlackPearl {
 		shader->SetUniformMat4f("u_Model", model);
 		shader->SetUniformVec3f("u_CameraViewPos", sceneData->CameraPosition);
 
-		vertexArray->Bind();
+		vertexArray->Bind();*/
 
 
 	}
-	void Renderer::Submit(const std::shared_ptr<VertexArray>& vertexArray, const std::shared_ptr<Shader>& shader, float* model, uint32_t objCnt, SceneData* sceneData)
+	void Renderer::Submit(const std::shared_ptr<VertexArray>& vertexArray, IShader* shader, float* model, uint32_t objCnt, SceneData* sceneData)
 	{
+		//shader->SetUniformMat4f("u_ProjectionView", sceneData->ProjectionViewMatrix);
+		//shader->SetUniformMat4f("u_Projection", sceneData->ProjectionMatrix);
+		//shader->SetUniformMat4f("u_View", sceneData->ViewMatrix);
 
-		////shader->Bind();
-		//for (size_t id = 0; id < objCnt; id++)
-		//{
-		//	for (size_t i = 0; i < 12; i++)
-		//	{
-		//		GE_CORE_INFO("objid = " + std::to_string(id) + ", i=" + std::to_string(i) + ", m[i]=" + std::to_string(model[id * 12 + i]));
-
-		//	}
+		//if (model != nullptr && objCnt != 0) {
+		//	shader->SetUniformMat3x4f("u_Model", model, objCnt);
 		//}
 
+		//shader->SetUniformVec3f("u_CameraViewPos", sceneData->CameraPosition);
 
-		shader->SetUniformMat4f("u_ProjectionView", sceneData->ProjectionViewMatrix);
-		shader->SetUniformMat4f("u_Projection", sceneData->ProjectionMatrix);
-		shader->SetUniformMat4f("u_View", sceneData->ViewMatrix);
-
-		if (model != nullptr && objCnt != 0) {
-			shader->SetUniformMat3x4f("u_Model", model, objCnt);
-		}
-		//shader->SetUniformMat4f("u_Model", model, objCnt);
-
-		shader->SetUniformVec3f("u_CameraViewPos", sceneData->CameraPosition);
-
-		vertexArray->Bind();
+		//vertexArray->Bind();
 
 
 	}
-	void Renderer::Submit(const std::shared_ptr<VertexArray>& vertexArray, const std::shared_ptr<Shader>& shader, SceneData* sceneData)
+	void Renderer::Submit(const std::shared_ptr<VertexArray>& vertexArray, IShader* shader, SceneData* sceneData)
 	{
-		shader->SetUniformMat4f("u_ProjectionView", sceneData->ProjectionViewMatrix);
+		/*shader->SetUniformMat4f("u_ProjectionView", sceneData->ProjectionViewMatrix);
 		shader->SetUniformMat4f("u_Projection", sceneData->ProjectionMatrix);
 		shader->SetUniformMat4f("u_View", sceneData->ViewMatrix);
 		
 		shader->SetUniformVec3f("u_CameraViewPos", sceneData->CameraPosition);
 
-		vertexArray->Bind();
+		vertexArray->Bind();*/
 	}
 
 	void SceneData::SetViewport(RHIViewport viewport)

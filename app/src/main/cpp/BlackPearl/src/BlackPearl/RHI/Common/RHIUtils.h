@@ -29,6 +29,15 @@
 #include "BlackPearl/RHI/RHIRayTraceStruct.h"
 namespace BlackPearl
 {
+	//´¹Ö±Í¬²½
+	/*
+	TEXT("  0 - Unlocked (present immediately)\n")
+	TEXT("  1 - Present every vblank interval\n")
+	TEXT("  2 - Present every 2 vblank intervals\n")
+	TEXT("  3 - etc...\n"),
+	*/
+	uint32_t RHIGetSyncInterval();
+
 	class RHIUtils {
 	public:
 		static BlendState::RenderTarget CreateAddBlendState(
@@ -112,6 +121,7 @@ namespace BlackPearl
 		static void NotSupported();
 		static void InvalidEnum();
 
+	
 		
 	};
 

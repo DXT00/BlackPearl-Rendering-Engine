@@ -1,7 +1,8 @@
 #include "pch.h"
 #include "Texture3D.h"
 #include "BlackPearl/Core.h"
-#include "glad/glad.h"
+//#include "glad/glad.h"
+#include "BlackPearl/RHI/OpenGLRHI/OpenGLDriver/OpenGLFunctions.h"
 
 namespace BlackPearl {
 

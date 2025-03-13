@@ -144,7 +144,7 @@ namespace BlackPearl {
 		ShaderHandle MS;
 		ShaderHandle PS;
 
-		RenderState renderState;
+		//RenderState renderState;
 
 		std::vector<BindingLayoutHandle> bindingLayouts;
 
@@ -154,7 +154,7 @@ namespace BlackPearl {
 		MeshletPipelineDesc& setMeshShader(IShader* value) { MS = value; return *this; }
 		MeshletPipelineDesc& setPixelShader(IShader* value) { PS = value; return *this; }
 		MeshletPipelineDesc& setFragmentShader(IShader* value) { PS = value; return *this; }
-		MeshletPipelineDesc& setRenderState(const RenderState& value) { renderState = value; return *this; }
+		//MeshletPipelineDesc& setRenderState(const RenderState& value) { renderState = value; return *this; }
 		MeshletPipelineDesc& addBindingLayout(IBindingLayout* layout) { bindingLayouts.push_back(layout); return *this; }
 	};
 

@@ -6,6 +6,8 @@
 #include "BlackPearl/Math/frustum.h"
 #include "BlackPearl/Math/Math.h"
 #include "BlackPearl/Component/LightComponent/LightSources.h"
+#include "BlackPearl/RHI/RHIShader.h"
+
 using namespace BlackPearl::math;
 #include "hlsl/core/view_cb.h"
 #include "hlsl/core/forward_cb.h"
@@ -91,9 +93,9 @@ namespace BlackPearl {
 		static void Init();
 		static void BeginScene(const Camera& camera, const LightSources& lightSources);//每次Update都要调用BeginScene一次，因为Camera的ViewProjection Matrix会改变
 		/*默认 scene 是 default camera*/
-		static void Submit(const std::shared_ptr<VertexArray>& vertexArray, const std::shared_ptr<Shader>& shader, const glm::mat4& model = glm::mat4(1.0f), SceneData* sceneData= GetSceneData());//Submmit前记得调用 BeginScene()!
-		static void Submit(const std::shared_ptr<VertexArray>& vertexArray, const std::shared_ptr<Shader>& shader, float* model, uint32_t objCnt, SceneData* sceneData = GetSceneData());//Submmit前记得调用 BeginScene()!
-		void Submit(const std::shared_ptr<VertexArray>& vertexArray, const std::shared_ptr<Shader>& shader, SceneData* sceneData);
+		static void Submit(const std::shared_ptr<VertexArray>& vertexArray, IShader* shader, const glm::mat4& model = glm::mat4(1.0f), SceneData* sceneData= GetSceneData());//Submmit前记得调用 BeginScene()!
+		static void Submit(const std::shared_ptr<VertexArray>& vertexArray, IShader* shader, float* model, uint32_t objCnt, SceneData* sceneData = GetSceneData());//Submmit前记得调用 BeginScene()!
+		void Submit(const std::shared_ptr<VertexArray>& vertexArray, IShader* shader, SceneData* sceneData);
 
 		static SceneData* GetSceneData() { return s_SceneData; }
 		static SceneData* GetPreSceneData() { return s_PreSceneData; }

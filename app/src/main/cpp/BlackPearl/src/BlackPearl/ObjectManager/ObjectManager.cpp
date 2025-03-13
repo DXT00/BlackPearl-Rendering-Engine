@@ -27,6 +27,7 @@
 #include "BlackPearl/RHI/DynamicRHI.h"
 #include "BlackPearl/Math/Math.h"
 #include "BlackPearl/Renderer/Model/ModelLoader.h"
+#include "BlackPearl/Renderer/Shader/MaterialShader.h"
 namespace BlackPearl {
 
 	extern ModelLoader* g_modelLoader;
@@ -96,15 +97,10 @@ namespace BlackPearl {
 		const bool isMeshletModel,
 		MeshletOption options)
 	{
-		std::shared_ptr<Shader> shader;
-		if (shaderPath == "") {
-			shader.reset(DBG_NEW Shader(shaderPath));
-			GE_CORE_WARN("shaderPath is empty");
-		}
-		else {
-			shader.reset(DBG_NEW Shader(shaderPath));
-			shader->Bind();
-		}
+		std::shared_ptr<MaterialShader> shader;
+
+		shader.reset(DBG_NEW MaterialShader(shaderPath));
+	
 		ModelDesc desc;
 		desc.bIsAnimated = isAnimated;
 		desc.bSortVerticces = vertices_sorted;

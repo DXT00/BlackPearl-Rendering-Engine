@@ -1,9 +1,12 @@
 #pragma once
 #include <string>
 #include "stdint.h"
-#include "RHIBindingSet.h"
+#include "RHIDefinitions.h"
+#include "RHIResources.h"
 namespace BlackPearl {
     class IInputLayout;
+    class IBindingLayout;
+    class IBindingSet;
     /** @warning: update *LegacyShaderPlatform* when the below changes */
     enum EShaderPlatform : uint16_t
     {
@@ -27,6 +30,8 @@ namespace BlackPearl {
         SP_NumPlatforms,
         SP_NumBits = 16,
     };
+
+
     /**
  * The RHI's feature level indicates what level of support can be relied upon.
  * Note: these are named after graphics API's like ES3 but a feature level can be used with a different API (eg ERHIFeatureLevel::ES3.1 on D3D11)
@@ -63,6 +68,12 @@ namespace BlackPearl {
             Num
         };
     };
+
+
+    EShaderPlatform GMaxRHIShaderPlatform = EShaderPlatform::SP_PCD3D_SM5;
+
+    /** The maximum feature level supported on this machine */
+    ERHIFeatureLevel::Type GMaxRHIFeatureLevel = ERHIFeatureLevel::SM5;
 struct ShaderSpecialization
 {
     uint32_t constantID = 0;
@@ -114,6 +125,9 @@ struct ShaderDesc
     std::string entryName = "main";
     //glsl file
     std::string filePath;
+
+    std::string srcCode;
+    bool createFromSource = false;
 
     int hlslExtensionsUAV = -1;
 

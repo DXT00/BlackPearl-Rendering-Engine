@@ -58,11 +58,11 @@ namespace BlackPearl {
 		}
 
 	}
-	void MeshRenderer::SetShaders(const std::shared_ptr<Shader>& shader)
+	void MeshRenderer::SetShaders(const std::shared_ptr<MaterialShader>& shader)
 	{
 		GE_ASSERT(!GetMeshes().empty(), "m_Meshes is empty,MeshRenderer::SetShaders doesn't work!");
 		for (int i = 0; i < GetMeshes().size(); i++) {
-			GetMeshes()[i]->SetShader(shader);
+			GetMeshes()[i]->SetShader(shader.get());
 		}
 	}
 }
