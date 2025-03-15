@@ -33,13 +33,13 @@ namespace BlackPearl {
 		// -------------------------------------
 		// Initialize GLEW.
 		// -------------------------------------
-		glewExperimental = GL_TRUE;
-		if (glewInit() == GLEW_OK) {
-			GE_CORE_INFO(" GLEW initialized.");
-		}
-		else {
-			GE_CORE_ERROR("GLEW failed to initialize (glewExperimental might not be supported).");
-		}
+		//glewExperimental = GL_TRUE;
+		//if (glewInit() == GLEW_OK) {
+		//	GE_CORE_INFO(" GLEW initialized.");
+		//}
+		//else {
+		//	GE_CORE_ERROR("GLEW failed to initialize (glewExperimental might not be supported).");
+		//}
 
 		m_Context.reset(DBG_NEW Context(m_Window));
 		m_Context->Init();

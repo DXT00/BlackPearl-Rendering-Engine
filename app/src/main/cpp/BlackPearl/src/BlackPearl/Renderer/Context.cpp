@@ -1,6 +1,7 @@
 #include "pch.h"
-#include "glad/glad.h"
-#include "BlackPearl/RHI/OpenGLRHI/OpenGLDriver/OpenGLThirdParty.h"
+//#include "glad/glad.h"
+//#include "BlackPearl/RHI/OpenGLRHI/OpenGLDriver/OpenGLThirdParty.h"
+#include "BlackPearl/RHI/OpenGLRHI/OpenGLDriver/OpenGLFunctions.h"
 
 #include"BlackPearl/Core.h"
 #include "Context.h"
@@ -25,8 +26,8 @@ namespace BlackPearl {
 			glViewport(0, 0, width, height);
 		});
 
-		int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
-		GE_ASSERT(status, "Failed to initialize Glad!");
+		/*int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
+		GE_ASSERT(status, "Failed to initialize Glad!");*/
 
 		GE_CORE_INFO("OpenGL Vendor :{0}", glGetString(GL_VENDOR));
 		GE_CORE_INFO("OpenGL Renderer :{0}", glGetString(GL_RENDERER));

@@ -7,7 +7,7 @@
 #pragma once
 
 #include "BlackPearl/RHI/OpenGLRHI/OpenGLDriver/OpenGL.h"
-#include "BlackPearl/RHI/RHIShader.h"
+#include "BlackPearl/RHI/RHIGlobals.h"
 //#include "OpenGLThirdParty.h"
 #include "BlackPearl/Core/Memory.h"
 namespace BlackPearl {
@@ -615,7 +615,7 @@ namespace BlackPearl {
 			return (glIsProgramPipeline(Pipeline) == GL_TRUE);
 		}
 
-		static FORCEINLINE ERHIFeatureLevel::Type GetFeatureLevel()
+		static FORCEINLINE ERHIFeatureLevel GetFeatureLevel()
 		{
 			return ERHIFeatureLevel::ES3_1;
 		}

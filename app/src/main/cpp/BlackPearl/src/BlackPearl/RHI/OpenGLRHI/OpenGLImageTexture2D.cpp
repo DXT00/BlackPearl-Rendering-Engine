@@ -1,5 +1,5 @@
 #include "pch.h"
-#include <glad/glad.h>
+#include "BlackPearl/RHI/OpenGLRHI/OpenGLDriver/OpenGLFunctions.h"
 #include "OpenGLImageTexture2D.h"
 #include "BlackPearl/Core.h"
 namespace BlackPearl {

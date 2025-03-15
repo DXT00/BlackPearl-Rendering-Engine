@@ -14,7 +14,6 @@
 
 namespace BlackPearl {
 
-
 struct FPlatformOpenGLContext;
 struct FPlatformOpenGLDevice;
 

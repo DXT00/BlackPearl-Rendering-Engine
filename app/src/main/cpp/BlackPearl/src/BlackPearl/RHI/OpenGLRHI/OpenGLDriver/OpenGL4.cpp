@@ -20,6 +20,7 @@ GLint FOpenGL4::MaxComputeUAVUnits = -1;
 GLint FOpenGL4::MaxPixelUAVUnits = -1;
 
 bool FOpenGL4::bSupportsGPUMemoryInfo = false;
+extern bool GDisableOpenGLDebugOutput;
 
 void FOpenGL4::ProcessQueryGLInt()
 {

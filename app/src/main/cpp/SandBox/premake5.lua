@@ -13,8 +13,10 @@ project "Sandbox"
 
 	files
 	{
-		"src/**.h",
-		"src/**.cpp",
+		"src/Layers/**.h",
+		"src/Layers/**.cpp",
+		"src/Sandbox.cpp",
+
 		"assets/shaders_hlsl/**.hlsl",
 		
 	}
@@ -40,9 +42,12 @@ project "Sandbox"
 		"../%{IncludeDir.glm}",
 		"../%{IncludeDir.GLFW}",
 		"../%{IncludeDir.assimp}",
+		--"../BlackPearl/vendor/OpenGL/include",
+		"../%{IncludeDir.ImGui}",
+		--"../%{IncludeDir.OpenGL}",
 		"../%{IncludeDir.Glad}",
 		"../%{IncludeDir.glslShader}",
-		"../%{IncludeDir.vulkan}"
+		--"../%{IncludeDir.vulkan}"
 
 	}
 
@@ -54,13 +59,19 @@ project "Sandbox"
 	links
 	{
 		"BlackPearl",
+		"ImGui",
+		"Glad",--for imgui
+		--"ShaderMakeBlob",
+		--"assimp",
+		--"opengl32",
+		"assimp-vc142-mtd.lib", 
+		-- "opengl32.lib",
 		--"d3d12.lib",
 		--"dxgi.lib",
 		--"dxguid.lib",
 		--"vulkan-1.lib",
 		--"directxtex.lib",
 	}
-
 
 	filter "system:windows"
 		systemversion "latest"

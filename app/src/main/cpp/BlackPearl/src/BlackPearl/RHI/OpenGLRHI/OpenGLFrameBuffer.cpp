@@ -6,6 +6,7 @@
 #include "BlackPearl/Config.h"
 #include "BlackPearl/Core.h"
 #include "OpenGLDevice.h"
+#include "BlackPearl/RHI/RHIGlobals.h"
 #include "BlackPearl/RHI/RHIDefinitions.h"
 namespace BlackPearl {
     // GL_MAX_DRAW_BUFFERS value

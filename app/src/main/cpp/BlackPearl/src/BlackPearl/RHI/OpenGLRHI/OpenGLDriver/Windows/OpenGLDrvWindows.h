@@ -46,13 +46,13 @@ extern PFNWGLCREATECONTEXTATTRIBSARBPROC wglCreateContextAttribsARB;
 #define GL_DEBUG_TOOL_EXT                 0x6789
 #define GL_DEBUG_TOOL_NAME_EXT            0x678A
 #define GL_DEBUG_TOOL_PURPOSE_EXT         0x678B
+extern bool GRunningUnderRenderDoc;
 
 class FWindowsOpenGL : public FOpenGL4
 {
 public:
 	static FORCEINLINE void InitDebugContext()
 	{
-		extern bool GRunningUnderRenderDoc;
 		bDebugContext = glIsEnabled(GL_DEBUG_OUTPUT) != GL_FALSE || GRunningUnderRenderDoc;
 	}
 

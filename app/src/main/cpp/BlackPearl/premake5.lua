@@ -77,11 +77,11 @@ project "BlackPearl"
    removefiles  { "./src/BlackPearl/Renderer/MasterRendererBak/**.h" }
    removefiles  { "./src/BlackPearl/Renderer/Lumen/**.h" }
    removefiles  { "./src/BlackPearl/Renderer/Lumen/**.cpp" }
-   removefiles  { "./src/BlackPearl/RayTracing/**.cpp" }
-	removefiles  { "./src/BlackPearl/RayTracing/**.h" }
+   --removefiles  { "./src/BlackPearl/RayTracing/**.cpp" }
+	--removefiles  { "./src/BlackPearl/RayTracing/**.h" }
 
-	removefiles  { "./src/BlackPearl/ImGui/imgui_impl_opengl3.cpp" }
-	removefiles  { "./src/BlackPearl/ImGui/imgui_impl_opengl3.h" }
+	--removefiles  { "./src/BlackPearl/ImGui/imgui_impl_opengl3.cpp" }
+	--removefiles  { "./src/BlackPearl/ImGui/imgui_impl_opengl3.h" }
    removefiles  { "./src/BlackPearl/RHI/D3D12RHI/**.cpp" }
    removefiles  { "./src/BlackPearl/RHI/D3D12RHI/**.h" }
    removefiles  { "./src/BlackPearl/Renderer/Buffer/D3D12Buffer/**.h" }
@@ -101,14 +101,23 @@ project "BlackPearl"
    links 
    { 
 		"GLFW",
-		"GLEW",
+		--"GLEW",
 		"Glad",
 		"ImGui",
 		--"ShaderMakeBlob",
 		--"assimp",
-		"opengl32.lib",
+		"opengl32",
 		"assimp-vc142-mtd.lib", 
    }
+
+
+
+   includedirs
+	{
+		"../%{IncludeDir.OpenGL}",
+	}
+
+
    defines
 	{
 		"GLFW_INCLUDE_NONE",

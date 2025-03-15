@@ -61,6 +61,7 @@ IncludeDir["directxmesh"] = "BlackPearl/vendor/directxmesh_desktop_win10.2022.7.
 IncludeDir["ShaderMake"] = "BlackPearl/vendor/ShaderMake/include"
 
 IncludeDir["hlslShader"] = "SandboxDX/assets/shaders_hlsl_h"
+-- use system lib and gl include
 IncludeDir["OpenGL"] = "BlackPearl/vendor/OpenGL/include"
 
 

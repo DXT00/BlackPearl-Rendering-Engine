@@ -8,6 +8,7 @@
 #include "BlackPearl/LayerScene/LayerManager.h"
 
 #include "BlackPearl/Math/Math.h"
+#include "BlackPearl/Application.h"
 
 
 #include "BlackPearl/Renderer/Renderer.h"

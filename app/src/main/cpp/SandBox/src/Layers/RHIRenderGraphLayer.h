@@ -1,9 +1,9 @@
 #pragma once
-#include <BlackPearl.h>
+//#include <BlackPearl.h>
 #include "BlackPearl/Renderer/RenderTargets.h"
 #include "BlackPearl/Renderer/RenderGraph/RenderGraph.h"
 #include "BlackPearl/Renderer/RenderGraph/ForwardRenderGraph.h"
-
+#include "BlackPearl\LayerScene\Layer.h"
 
 class RHIRenderGraphLayer :public BlackPearl::Layer {
 public:

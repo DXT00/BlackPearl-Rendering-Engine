@@ -1,6 +1,6 @@
 #pragma once
 #include "BlackPearl/Renderer/Material/Material.h"
-
+#include "BlackPearl\Object\Object.h"
 namespace BlackPearl {
 
 	class GenData_HV

@@ -2,6 +2,7 @@
 #include <unordered_map>
 #include "RHIState.h"
 #include "RHICommandList.h"
+#include "RHIPipeline.h"
 #include "BlackPearl/Renderer/SceneType.h"
 // Typed caches for compute and graphics
 //typedef TDiscardableKeyValueCache< FRHIComputeShader*, FComputePipelineState*> FComputePipelineCache;
@@ -27,7 +28,6 @@ namespace BlackPearl {
 	};
 
 	
-	std::unordered_map<uint32_t, GraphicsPipelineHandle> GGraphicsPipelineCache;
 
 	class GraphicsPipelineStateInitializer
 	{

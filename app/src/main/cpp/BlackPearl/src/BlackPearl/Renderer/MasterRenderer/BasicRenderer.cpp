@@ -18,6 +18,7 @@
 #include "BlackPearl/RHI/RHIShader.h"
 #ifdef GE_API_OPENGL
 #include "BlackPearl/RHI/OpenGLRHI/OpenGLShader.h"
+#include "BlackPearl/RHI/OpenGLRHI/OpenGLDriver/OpenGLFunctions.h"
 #endif
 
 namespace BlackPearl {

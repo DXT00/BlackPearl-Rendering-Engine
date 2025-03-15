@@ -630,7 +630,7 @@ struct FOpenGLES : public FOpenGLBase
 		return SP_OPENGL_ES3_1_ANDROID;
 	}
 
-	static FORCEINLINE ERHIFeatureLevel::Type GetFeatureLevel()
+	static FORCEINLINE ERHIFeatureLevel GetFeatureLevel()
 	{
 		return ERHIFeatureLevel::ES3_1;
 	}

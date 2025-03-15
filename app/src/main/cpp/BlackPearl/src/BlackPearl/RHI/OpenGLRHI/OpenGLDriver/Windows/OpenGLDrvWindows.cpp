@@ -19,9 +19,7 @@ namespace BlackPearl {
 	OpenGL function pointers.
 ------------------------------------------------------------------------------*/
 
-//#define DEFINE_GL_ENTRYPOINTS(Type,Func) Type Func = NULL;
-//ENUM_GL_ENTRYPOINTS_ALL(DEFINE_GL_ENTRYPOINTS);
-//#undef DEFINE_GL_ENTRYPOINTS
+
 PFNWGLCREATECONTEXTATTRIBSARBPROC wglCreateContextAttribsARB = NULL;
 
 extern PFNWGLSWAPINTERVALEXTPROC wglSwapIntervalEXT_ProcAddress;	// set in OpenGLDevice.cpp
@@ -266,6 +264,7 @@ static void PlatformCreateOpenGLContextCore(FPlatformOpenGLContext* OutContext, 
 void PlatformReleaseOpenGLContext(FPlatformOpenGLDevice* Device, FPlatformOpenGLContext* Context);
 
 extern void OnQueryInvalidation(void);
+extern void InitDebugContext();
 
 /** Platform specific OpenGL device. */
 struct FPlatformOpenGLDevice : public RHIDeviceContext
@@ -281,7 +280,6 @@ struct FPlatformOpenGLDevice : public RHIDeviceContext
 	FPlatformOpenGLDevice()
 		: TargetDirty(true)
 	{
-		extern void InitDebugContext();
 		ContextUsageGuard = new FCriticalSection;
 
 		int MajorVersion = 0;

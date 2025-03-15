@@ -91,8 +91,9 @@
 //#include IMGUI_IMPL_OPENGL_LOADER_CUSTOM
 //#endif
 //#endif
-//#include <glad/glad.h>
-#include "BlackPearl/RHI/OpenGLRHI/OpenGLDriver/OpenGLThirdParty.h"
+
+#include <glad/glad.h>
+//#include "BlackPearl/RHI/OpenGLRHI/OpenGLDriver/OpenGLThirdParty.h"
 
 // OpenGL Data
 static char         g_GlslVersionString[32] = "";
@@ -158,7 +159,8 @@ void    ImGui_ImplOpenGL3_RenderDrawData(ImDrawData* draw_data)
     draw_data->ScaleClipRects(io.DisplayFramebufferScale);
 
     // Backup GL state
-    GLenum last_active_texture; glGetIntegerv(GL_ACTIVE_TEXTURE, (GLint*)&last_active_texture);
+    GLenum last_active_texture; 
+    glGetIntegerv(GL_ACTIVE_TEXTURE, (GLint*)&last_active_texture);
     glActiveTexture(GL_TEXTURE0);
     GLint last_program; glGetIntegerv(GL_CURRENT_PROGRAM, &last_program);
     GLint last_texture; glGetIntegerv(GL_TEXTURE_BINDING_2D, &last_texture);

@@ -1,6 +1,6 @@
 #pragma once
 #include "BlackPearl/RHI/RHIQuery.h"
-#include "GL/glcorearb.h"
+#include "BlackPearl\RHI\OpenGLRHI\OpenGLDriver\OpenGLFunctions.h"
 
 namespace BlackPearl {
 	class OpenGLQuery

@@ -58,7 +58,6 @@ namespace BlackPearl {
 		do \
 		{ \
 			Dest = Default; \
-			extern bool GDisableOpenGLDebugOutput; \
 			GDisableOpenGLDebugOutput = true; \
 			glGetIntegerv(IntEnum, &Dest); \
 			GDisableOpenGLDebugOutput = false; \
@@ -71,7 +70,6 @@ namespace BlackPearl {
 	do \
 	{ \
 		Dest = Default; \
-		extern bool GDisableOpenGLDebugOutput; \
 		GDisableOpenGLDebugOutput = true; \
 		glGetIntegerv(IntEnum, &Dest); \
 		GDisableOpenGLDebugOutput = false; \

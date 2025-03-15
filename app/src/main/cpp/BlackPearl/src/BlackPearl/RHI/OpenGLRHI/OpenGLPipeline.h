@@ -23,7 +23,7 @@ namespace BlackPearl {
 		{
 		}
 
-		~GraphicsPipeline() override;
+		~GraphicsPipeline() override {};
 		const GraphicsPipelineDesc& getDesc() const override { return desc; }
 		const FramebufferInfo& getFramebufferInfo() const override { return framebufferInfo; }
 		void getNumUniformBuffers(uint32_t** unifromBuffers);

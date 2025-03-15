@@ -4,6 +4,7 @@
 #include "RHICommandList.h"
 namespace BlackPearl {
 
+	std::unordered_map<uint32_t, GraphicsPipelineHandle> GGraphicsPipelineCache;
 
 	void SetGraphicsPipelineState(ICommandList& RHICmdList, const GraphicsPipelineStateInitializer& Initializer, uint32_t StencilRef)
 	{

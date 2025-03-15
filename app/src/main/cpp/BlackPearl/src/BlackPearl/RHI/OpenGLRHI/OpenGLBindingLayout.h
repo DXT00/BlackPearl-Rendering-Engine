@@ -26,7 +26,7 @@ namespace BlackPearl {
 		BindingLayout(const OpenGLContext& context, const RHIBindingLayoutDesc& desc);
 		BindingLayout(const OpenGLContext& context, const RHIBindlessLayoutDesc& desc);
 
-		~BindingLayout() override;
+		~BindingLayout() override {};
 		const RHIBindingLayoutDesc* getDesc() const override { return isBindless ? nullptr : &desc; }
 		const RHIBindlessLayoutDesc* getBindlessDesc() const override { return isBindless ? &bindlessDesc : nullptr; }
 

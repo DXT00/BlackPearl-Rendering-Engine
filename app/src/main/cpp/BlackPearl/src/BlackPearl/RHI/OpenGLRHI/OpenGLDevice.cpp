@@ -35,20 +35,182 @@ namespace BlackPearl
 {
 
 	extern class Log* g_Log;
+	extern int64_t GOpenGLDedicatedVideoMemory;
+	extern int64_t GOpenGLTotalGraphicsMemory;
 
 	extern GLint GMaxOpenGLColorSamples;
 	extern GLint GMaxOpenGLDepthSamples;
 	extern GLint GMaxOpenGLIntegerSamples;
 	extern GLint GMaxOpenGLTextureFilterAnisotropic;
 	extern GLint GMaxOpenGLDrawBuffers;
-	extern EShaderPlatform GMaxRHIShaderPlatform;
-	extern ERHIFeatureLevel::Type GMaxRHIFeatureLevel;
 	bool GUseEmulatedUniformBuffers;
+	static Device* PrivateOpenGLDevicePtr = NULL;
+	bool GDisableOpenGLDebugOutput = true;
 
 #if GE_PLATFORM_WINDOWS
 	PFNWGLSWAPINTERVALEXTPROC wglSwapIntervalEXT_ProcAddress = NULL;
 #endif
+	/**
+ * OpenGL debug message callback. Conforms to GLDEBUGPROCARB.
+ */
+#if PLATFORM_ANDROID
+#ifndef GL_APIENTRY
+#define GL_APIENTRY APIENTRY
+#endif
+	void GL_APIENTRY OpenGLDebugMessageCallbackARB(
+#else
+	void APIENTRY OpenGLDebugMessageCallbackARB(
+#endif
+		GLenum Source,
+		GLenum Type,
+		GLuint Id,
+		GLenum Severity,
+		GLsizei Length,
+		const GLchar* Message,
+		GLvoid* UserParam)
+	{
+		//		if (GDisableOpenGLDebugOutput)
+		//			return;
+		//#if !NO_LOGGING
+		//		const TCHAR* SourceStr = GetOpenGLDebugSourceStringARB(Source);
+		//		const TCHAR* TypeStr = GetOpenGLDebugTypeStringARB(Type);
+		//		const TCHAR* SeverityStr = GetOpenGLDebugSeverityStringARB(Severity);
+		//
+		//		ELogVerbosity::Type Verbosity = ELogVerbosity::Warning;
+		//		if (Type == GL_DEBUG_TYPE_ERROR_ARB && Severity == GL_DEBUG_SEVERITY_HIGH_ARB)
+		//		{
+		//			Verbosity = ELogVerbosity::Error;
+		//		}
+		//
+		//		if ((Verbosity & ELogVerbosity::VerbosityMask) <= FLogCategoryLogRHI::CompileTimeVerbosity)
+		//		{
+		//			if (!LogRHI.IsSuppressed(Verbosity))
+		//			{
+		//				FMsg::Logf(__FILE__, __LINE__, LogRHI.GetCategoryName(), Verbosity,
+		//					TEXT("[%s][%s][%s][%u] %s"),
+		//					SourceStr,
+		//					TypeStr,
+		//					SeverityStr,
+		//					Id,
+		//					ANSI_TO_TCHAR(Message)
+		//				);
+		//			}
+		//
+		//			// this is a debugging code to catch VIDEO->HOST copying
+		//			if (Id == 131186)
+		//			{
+		//				int A = 5;
+		//			}
+		//		}
+		//#endif
+	}
 
+
+	/**
+ * OpenGL debug message callback. Conforms to GLDEBUGPROCAMD.
+ */
+	void APIENTRY OpenGLDebugMessageCallbackAMD(
+		GLuint Id,
+		GLenum Category,
+		GLenum Severity,
+		GLsizei Length,
+		const GLchar* Message,
+		GLvoid* UserParam)
+	{
+		//#if !NO_LOGGING
+		//		const TCHAR* CategoryStr = GetOpenGLDebugCategoryStringAMD(Category);
+		//		const TCHAR* SeverityStr = GetOpenGLDebugSeverityStringAMD(Severity);
+		//
+		//		ELogVerbosity::Type Verbosity = ELogVerbosity::Warning;
+		//		if (Severity == GL_DEBUG_SEVERITY_HIGH_AMD)
+		//		{
+		//			Verbosity = ELogVerbosity::Fatal;
+		//		}
+		//
+		//		if ((Verbosity & ELogVerbosity::VerbosityMask) <= FLogCategoryLogRHI::CompileTimeVerbosity)
+		//		{
+		//			if (!LogRHI.IsSuppressed(Verbosity))
+		//			{
+		//				FMsg::Logf(__FILE__, __LINE__, LogRHI.GetCategoryName(), Verbosity,
+		//					TEXT("[%s][%s][%u] %s"),
+		//					CategoryStr,
+		//					SeverityStr,
+		//					Id,
+		//					ANSI_TO_TCHAR(Message)
+		//				);
+		//			}
+		//		}
+		//#endif
+	}
+
+
+	void InitDebugContext()
+	{
+		// Set the debug output callback if the driver supports it.
+		//VERIFY_GL(__FUNCTION__);
+		bool bDebugOutputInitialized = false;
+#if !ENABLE_VERIFY_GL
+#if defined(GL_ARB_debug_output)
+		if (glDebugMessageCallbackARB)
+		{
+			// Synchronous output can slow things down, but we'll get better callstack if breaking in or crashing in the callback. This is debug only after all.
+			glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+			glDebugMessageCallbackARB(GLDEBUGPROCARB(OpenGLDebugMessageCallbackARB), /*UserParam=*/ NULL);
+			bDebugOutputInitialized = (glGetError() == GL_NO_ERROR);
+		}
+#elif defined(GL_KHR_debug)
+		// OpenGLES names the debug functions differently, but they behave the same
+		if (glDebugMessageCallbackKHR)
+		{
+			glDebugMessageCallbackKHR(GLDEBUGPROCKHR(OpenGLDebugMessageCallbackARB), /*UserParam=*/ NULL);
+			bDebugOutputInitialized = (glGetError() == GL_NO_ERROR);
+		}
+#endif // GL_ARB_debug_output / GL_KHR_debug
+#if defined(GL_AMD_debug_output)
+		if (glDebugMessageCallbackAMD && !bDebugOutputInitialized)
+		{
+			glDebugMessageCallbackAMD(OpenGLDebugMessageCallbackAMD, /*UserParam=*/ NULL);
+			bDebugOutputInitialized = (glGetError() == GL_NO_ERROR);
+		}
+#endif // GL_AMD_debug_output
+#endif // !ENABLE_VERIFY_GL
+
+		if (!bDebugOutputInitialized)
+		{
+			printf("OpenGL debug output extension not supported!\n");
+		}
+
+		// this is to suppress feeding back of the debug markers and groups to the log, since those originate in the app anyways...
+#if ENABLE_OPENGL_DEBUG_GROUPS && defined(GL_ARB_debug_output) && GL_ARB_debug_output && GL_KHR_debug
+		if (glDebugMessageControlARB && bDebugOutputInitialized)
+		{
+			glDebugMessageControlARB(GL_DEBUG_SOURCE_APPLICATION_ARB, GL_DEBUG_TYPE_MARKER, GL_DONT_CARE, 0, NULL, GL_FALSE);
+			glDebugMessageControlARB(GL_DEBUG_SOURCE_APPLICATION_ARB, GL_DEBUG_TYPE_PUSH_GROUP, GL_DONT_CARE, 0, NULL, GL_FALSE);
+			glDebugMessageControlARB(GL_DEBUG_SOURCE_APPLICATION_ARB, GL_DEBUG_TYPE_POP_GROUP, GL_DONT_CARE, 0, NULL, GL_FALSE);
+#ifdef GL_KHR_debug
+			glDebugMessageControlARB(GL_DEBUG_SOURCE_API_ARB, GL_DEBUG_TYPE_OTHER_ARB, GL_DEBUG_SEVERITY_NOTIFICATION, 0, NULL, GL_FALSE);
+#endif
+			printf("disabling reporting back of debug groups and markers to the OpenGL debug output callback\n"));
+		}
+#elif ENABLE_OPENGL_DEBUG_GROUPS && !defined(GL_ARB_debug_output) && defined(GL_KHR_debug) && GL_KHR_debug
+		if (glDebugMessageControlKHR)
+		{
+			glDebugMessageControlKHR(GL_DEBUG_SOURCE_APPLICATION_KHR, GL_DEBUG_TYPE_MARKER_KHR, GL_DONT_CARE, 0, NULL, GL_FALSE);
+			glDebugMessageControlKHR(GL_DEBUG_SOURCE_APPLICATION_KHR, GL_DEBUG_TYPE_PUSH_GROUP_KHR, GL_DONT_CARE, 0, NULL, GL_FALSE);
+			glDebugMessageControlKHR(GL_DEBUG_SOURCE_APPLICATION_KHR, GL_DEBUG_TYPE_POP_GROUP_KHR, GL_DONT_CARE, 0, NULL, GL_FALSE);
+			glDebugMessageControlKHR(GL_DEBUG_SOURCE_API_KHR, GL_DEBUG_TYPE_OTHER_KHR, GL_DEBUG_SEVERITY_NOTIFICATION, 0, NULL, GL_FALSE);
+			printf("disabling reporting back of debug groups and markers to the OpenGL debug output callback\n");
+		}
+#endif
+	}
+
+	void OnQueryInvalidation(void)
+	{
+		if (PrivateOpenGLDevicePtr)
+		{
+			//PrivateOpenGLDevicePtr->InvalidateQueries();
+		}
+	}
 
 	TextureHandle Device::createTexture(TextureDesc& d)
 	{
@@ -686,8 +848,6 @@ namespace BlackPearl
 
 #if GE_PLATFORM_WINDOWS
 
-		extern int64_t GOpenGLDedicatedVideoMemory;
-		extern int64_t GOpenGLTotalGraphicsMemory;
 
 		GOpenGLDedicatedVideoMemory = FOpenGL::GetVideoMemorySize();
 
@@ -729,6 +889,7 @@ namespace BlackPearl
 
 		FRenderResource::InitPreRHIResources();*/
 		GIsRHIInitialized = true;
+		PrivateOpenGLDevicePtr = this;
 	}
 
 	void Device::SetPendingBlendStateForActiveRenderTargets(FOpenGLContextState& ContextState)

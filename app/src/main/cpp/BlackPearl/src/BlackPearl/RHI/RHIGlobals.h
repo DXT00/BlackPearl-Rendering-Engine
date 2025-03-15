@@ -5,10 +5,71 @@
 #include "BlackPearl/Math/vector.h"
 #include "BlackPearl/RHI/RHIShader.h"
 namespace BlackPearl {
+	/** @warning: update *LegacyShaderPlatform* when the below changes */
+	enum EShaderPlatform : uint16_t
+	{
+		SP_PCD3D_SM5 = 0,
+		SP_PCD3D_ES3_1 = 14,
+		SP_OPENGL_PCES3_1 = 15,
+		SP_VULKAN_PCES3_1 = 17,
+		SP_VULKAN_SM5 = 20,
+		SP_VULKAN_ES3_1_ANDROID = 21,
+		SP_OPENGL_ES3_1_ANDROID = 24,
+		SP_StaticPlatform_First = 32,
+#define DDPI_NUM_STATIC_SHADER_PLATFORMS 16
+		SP_StaticPlatform_Last = (SP_StaticPlatform_First + DDPI_NUM_STATIC_SHADER_PLATFORMS - 1),
+
+		//  Add new platforms below this line, starting from (SP_StaticPlatform_Last + 1)
+		//---------------------------------------------------------------------------------
+		SP_VULKAN_SM5_ANDROID = SP_StaticPlatform_Last + 1,
+		SP_PCD3D_SM6 = SP_StaticPlatform_Last + 2,
+		SP_VULKAN_SM6 = SP_StaticPlatform_Last + 4,
+
+		SP_NumPlatforms,
+		SP_NumBits = 16,
+	};
+
+
+
+	enum ERHIFeatureLevel : int
+	{
+
+		/** Feature level defined by the core capabilities of OpenGL ES3.1 & Metal/Vulkan. */
+		ES3_1,
+		/**
+		 * Feature level defined by the capabilities of DX11 Shader Model 5.
+		 *   Compute shaders with shared memory, group sync, UAV writes, integer atomics
+		 *   Indirect drawing
+		 *   Pixel shaders with UAV writes
+		 *   Cubemap arrays
+		 *   Read-only depth or stencil views (eg read depth buffer as SRV while depth test and stencil write)
+		 * Tessellation is not considered part of Feature Level SM5 and has a separate capability flag.
+		 */
+		SM5,
+
+		/**
+		 * Feature level defined by the capabilities of DirectX 12 hardware feature level 12_2 with Shader Model 6.5
+		 *   Raytracing Tier 1.1
+		 *   Mesh and Amplification shaders
+		 *   Variable rate shading
+		 *   Sampler feedback
+		 *   Resource binding tier 3
+		 */
+		SM6,
+
+		Num
+	};
+
+
 	struct FRHIGlobals
 	{
 		 FRHIGlobals();
 		 ~FRHIGlobals();
+		
+		ERHIFeatureLevel GMaxRHIFeatureLevel;
+
+		EShaderPlatform GMaxRHIShaderPlatform;
+
 
 		/** True if the render hardware has been initialized. */
 		bool IsRHIInitialized = false;
@@ -673,4 +734,6 @@ namespace BlackPearl {
 #define GRHISupportsReservedResources                          GRHIGlobals.SupportsReservedResources
 #define GShaderPlatformForFeatureLevel                         GRHIGlobals.ShaderPlatformForFeatureLevel
 #define GRHIIsDebugLayerEnabled                                GRHIGlobals.IsDebugLayerEnabled
+#define GMaxRHIFeatureLevel									   GRHIGlobals.GMaxRHIFeatureLevel
+#define GMaxRHIShaderPlatform								   GRHIGlobals.GMaxRHIShaderPlatform
 }

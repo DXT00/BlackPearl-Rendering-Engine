@@ -11,6 +11,7 @@
 #include "BlackPearl/Renderer/DeviceManager.h"
 #include "BlackPearl/RHI/RHIDevice.h"
 #include "BlackPearl/Component/LightProbeComponent/LightProbeComponent.h"
+#include "BlackPearl/RayTracing/Triangle.h"
 
 namespace BlackPearl {
 	class ObjectManager

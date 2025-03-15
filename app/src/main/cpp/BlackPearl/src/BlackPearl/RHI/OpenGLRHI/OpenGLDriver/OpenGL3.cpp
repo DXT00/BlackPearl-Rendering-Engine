@@ -12,7 +12,7 @@
 
 namespace BlackPearl {
 
-
+extern bool GDisableOpenGLDebugOutput;
 #if OPENGL_GL3
 
 bool FOpenGL3::bAndroidGLESCompatibilityMode = false;

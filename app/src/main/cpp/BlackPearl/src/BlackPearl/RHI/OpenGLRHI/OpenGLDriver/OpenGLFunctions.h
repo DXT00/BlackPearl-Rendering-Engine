@@ -400,6 +400,7 @@ namespace BlackPearl {
 ENUM_GL_ENTRYPOINTS_ALL(DECLARE_GL_ENTRYPOINTS);
 #undef DECLARE_GL_ENTRYPOINTS
 
+
 //// buffers
 //extern PFNGLGENBUFFERSARBPROC				glGenBuffers;
 //extern PFNGLBINDBUFFERARBPROC				glBindBuffer;

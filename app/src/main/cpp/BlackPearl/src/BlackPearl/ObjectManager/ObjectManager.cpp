@@ -358,11 +358,11 @@ namespace BlackPearl {
 	Object* ObjectManager::CreateTriangle(const std::vector<Vertex>& points, const std::string name)
 	{
 		Object* obj = CreateEmpty(name);
-		std::shared_ptr<BasicInfo> info = obj->AddComponent<BasicInfo>();
+	/*	std::shared_ptr<BasicInfo> info = obj->AddComponent<BasicInfo>();
 		info->SetObjectType(ObjectType::OT_Triangle);
 		obj->AddComponent<Triangle>(points);
 		AABB box = obj->GetComponent<Triangle>()->GetBoundingBox();
-		obj->AddComponent<BoundingBox>(box);		m_Objs.push_back(obj);
+		obj->AddComponent<BoundingBox>(box);		m_Objs.push_back(obj);*/
 		return obj;
 	}
 
