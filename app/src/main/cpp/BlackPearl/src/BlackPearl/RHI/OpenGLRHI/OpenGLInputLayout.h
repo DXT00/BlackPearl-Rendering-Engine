@@ -7,6 +7,11 @@ namespace BlackPearl {
 	class InputLayout :public RefCounter<IInputLayout>
 	{
     public:
+		InputLayout(const VertexBufferLayout& _layout) {
+			layout = _layout;
+		}
+		VertexBufferLayout layout;
+
         std::vector<VertexAttributeDesc> inputDesc;
 
       /*  std::vector<VkVertexInputBindingDescription> bindingDesc;

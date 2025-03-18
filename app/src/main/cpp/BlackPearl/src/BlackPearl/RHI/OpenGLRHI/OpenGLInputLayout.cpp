@@ -4,7 +4,7 @@ namespace BlackPearl {
 
 	uint32_t InputLayout::getNumAttributes() const
 	{
-		return uint32_t(inputDesc.size());
+		return layouts.ElementSize();
 	}
 	const VertexAttributeDesc* InputLayout::getAttributeDesc(uint32_t index) const
 	{
