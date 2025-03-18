@@ -98,7 +98,7 @@ namespace BlackPearl
         Count
     };
 
-    VertexAttributeDesc GetVertexAttributeDesc(VertexAttribute attribute, const char* name, uint32_t bufferIndex);
+    VertexAttributeDesc GetVertexAttributeDesc(VertexAttribute attribute, const char* name, uint32_t location);
 
 
     struct SceneLoadingStats

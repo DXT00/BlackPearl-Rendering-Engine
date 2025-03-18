@@ -164,7 +164,7 @@ namespace BlackPearl {
         Format format = Format::UNKNOWN;
         uint32_t streamIndex = 0;
         uint32_t arraySize = 1;
-        uint32_t bufferIndex = 0;
+        uint32_t location = 0;
         uint32_t offset = 0;
         // note: for most APIs, all strides for a given bufferIndex must be identical
         uint32_t elementStride = 0;

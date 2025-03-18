@@ -2,9 +2,23 @@
 #include "OpenGLInputLayout.h"
 namespace BlackPearl {
 
+	InputLayout::InputLayout(const VertexBufferLayout& _layout)
+	{
+		layout = _layout;
+		inputDesc.resize(layout.ElementSize());
+		for (size_t i = 0; i < inputDesc.size(); i++)
+		{
+			inputDesc[i].bNormalized = layout.GetElement(i).Normalized;
+			inputDesc[i].location = layout.GetElement(i).Location;
+
+		}
+
+
+	}
+
 	uint32_t InputLayout::getNumAttributes() const
 	{
-		return layouts.ElementSize();
+		return layout.ElementSize();
 	}
 	const VertexAttributeDesc* InputLayout::getAttributeDesc(uint32_t index) const
 	{
@@ -13,4 +27,5 @@ namespace BlackPearl {
 		else
 			return nullptr;
 	}
+
 }

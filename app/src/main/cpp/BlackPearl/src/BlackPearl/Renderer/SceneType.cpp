@@ -322,11 +322,11 @@ namespace BlackPearl {
 //    return Light::SetProperty(name, value);
 //}
 
-VertexAttributeDesc GetVertexAttributeDesc(VertexAttribute attribute, const char* name, uint32_t bufferIndex)
+VertexAttributeDesc GetVertexAttributeDesc(VertexAttribute attribute, const char* name, uint32_t location)
 {
     VertexAttributeDesc result = {};
     result.name = name;
-    result.bufferIndex = bufferIndex;
+    result.location = location;
     result.arraySize = 1;
 
     switch (attribute)
