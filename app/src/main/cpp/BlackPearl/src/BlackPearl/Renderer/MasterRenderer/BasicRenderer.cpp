@@ -863,32 +863,10 @@ namespace BlackPearl {
 			if (item.material == nullptr)
 				continue;
 
-//			std::vector<ShaderMacro> Macros;
-//			// Macros.push_back(ShaderMacro("COMPILE_SHADER", "1"));
-//			ShaderHandle vertexShader = g_shaderFactory->CreateShader("hlsl/test/forward_test_vs.hlsl", "main", &Macros, ShaderType::VertexShader);
-//			ShaderHandle pixelShader = g_shaderFactory->CreateShader("hlsl/test/forward_test_vs.hlsl", "main", &Macros, ShaderType::Pixel);
-//
-//			std::vector<VertexBufferBinding> vertexBuffers;
-//			IndexBufferBinding indexBuffer;
-//			const VertexAttributeDesc inputDescs[] =
-//			{
-//				GetVertexAttributeDesc(VertexAttribute::Position, "POS", 0),
-//				GetVertexAttributeDesc(VertexAttribute::PrevPosition, "PREV_POS", 1),
-//				GetVertexAttributeDesc(VertexAttribute::TexCoord1, "TEXCOORD", 2),
-//				GetVertexAttributeDesc(VertexAttribute::Normal, "NORMAL", 3),
-//				//TODO::
-//			   // GetVertexAttributeDesc(VertexAttribute::Tangent, "TANGENT", 4),
-//				GetVertexAttributeDesc(VertexAttribute::Transform, "TRANSFORM", 4),
-//			};
-//
-//			InputLayoutHandle inputLayout = cmdList->getDevice()->createInputLayout(inputDescs, uint32_t(std::size(inputDescs)));
-
-
 			GraphicsState graphicsPSO;
 			graphicsPSO.framebuffer = framebuffer;
 			graphicsPSO.viewport = view->GetViewportState();
 			graphicsPSO.shadingRateState = view->GetVariableRateShadingState();
-
 
 			GraphicsPipelineDesc psoDesc;
 
@@ -897,6 +875,7 @@ namespace BlackPearl {
 			psoDesc.rasterState.frontCounterClockwise = true;
 			psoDesc.rasterState.cullMode = RasterCullMode::Back;
 			psoDesc.primType = PrimitiveType::TriangleList;
+			// input layout 是mesh传过来的？
 			psoDesc.inputLayout = shaderParms[ShaderType::VertexShader].inputLayout;
 			//psoDesc.BoundShaderState.VertexDeclarationRHI = GetVertexDeclarationFVector4();
             //TODO :: opengl 分开 vs, ps

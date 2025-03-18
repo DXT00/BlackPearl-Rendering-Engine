@@ -67,7 +67,9 @@ namespace BlackPearl {
 		ShaderHandle createShader(const ShaderDesc& d, const void* binary, size_t binarySize) override;
 		virtual ShaderLibraryHandle createShaderLibrary(const void* binary, size_t binarySize) override;
 
-		InputLayoutHandle createInputLayout(const VertexAttributeDesc* d, uint32_t attributeCount);
+		//InputLayoutHandle createInputLayout(const VertexAttributeDesc* d, uint32_t attributeCount);
+	    InputLayoutHandle createInputLayout(const VertexBufferLayout& d) override;
+
 		bool queryFeatureSupport(Feature feature, void* pInfo = nullptr, size_t infoSize = 0) override;
 		
 
@@ -187,9 +189,9 @@ namespace BlackPearl {
 		OpenGLContext *m_Context;
 		
 		/** Per-context state caching */
-		FOpenGLContextState *InvalidContextState;
-		FOpenGLContextState	*SharedContextState;
-		FOpenGLContextState	*RenderingContextState;
+		FOpenGLContextState InvalidContextState;
+		FOpenGLContextState	SharedContextState;
+		FOpenGLContextState	RenderingContextState;
 
 
 

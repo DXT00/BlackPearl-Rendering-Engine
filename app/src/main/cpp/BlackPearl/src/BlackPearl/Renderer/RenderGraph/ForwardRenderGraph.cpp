@@ -17,17 +17,23 @@ namespace BlackPearl {
 		//m_IndirectCullRenderer->Init(scene);
 
 		//BasePass
-		m_BasePassRenderer = DBG_NEW BasePassRenderer(m_DeviceManager->GetDevice());
+		//m_BasePassRenderer = DBG_NEW BasePassRenderer(m_DeviceManager->GetDevice());
+		m_PBRRenderer = DBG_NEW PBRRenderer(m_DeviceManager->GetDevice());
+
+
 		BasePassRenderer::CreateParameters params;
 		//params.materialBindings = std::make_shared<MaterialBindingCache>(m_DeviceManager->GetDevice(),);
-		m_BasePassRenderer->Init(m_DeviceManager->GetDevice(), m_ShaderFactory, params);
+		//m_BasePassRenderer->Init(m_DeviceManager->GetDevice(), m_ShaderFactory, params);
+		m_PBRRenderer->Init();
+
+
 		//PostProcessPass
 		/*m_PostProcessRenderer = DBG_NEW PostProcessRenderer();
 		m_PostProcessRenderer->Init(GetDevice(), m_ShaderFactory);*/
 		
-
+		AddPass(m_PBRRenderer);
 		//AddPass(m_IndirectCullRenderer);
-		AddPass(m_BasePassRenderer);
+		//AddPass(m_BasePassRenderer);
 		//AddPass(m_PostProcessRenderer);
 	}
 
@@ -35,7 +41,9 @@ namespace BlackPearl {
 	{
 		m_CommandList->open();
 //		m_BasePassRenderer->PrepareLights(m_CommandList, m_Scene->GetLightSources(), math::float3(1.0), math::float3(1.0,0.0,1.0), m_Scene->GetLightProbes());
-		m_BasePassRenderer->Render(m_CommandList, framebuffer, m_Scene);
+		//m_BasePassRenderer->Render(m_CommandList, framebuffer, m_Scene);
+		m_PBRRenderer->Render(m_CommandList, framebuffer, m_Scene);
+
 		//m_PostProcessRenderer->Render(m_CommandList, PostProcessRenderer::RenderPassType::Debug_BlendDebugViz,
 		//	m_ConstantBuffer, miniConstants, m_FrameBuffer, *m_RenderTargets, m_RenderTargets->OutputColor);
 		m_CommandList->close();

@@ -3,6 +3,7 @@
 #include "RHIDefinitions.h"
 #include "RHIResources.h"
 #include "RHISampler.h"
+#include "BlackPearl\Log.h"
 namespace BlackPearl {
 
 
@@ -82,6 +83,12 @@ namespace BlackPearl {
 			}
 			else if (type == TextureType::NormalMap) {
 				format = Format::RGB8_UNORM;
+			}
+			else if (type == TextureType::EmissionMap) {
+				format = Format::RGB8_UNORM;
+			}
+			else {
+				GE_CORE_WARN("Unknown texture type\n");
 			}
 		}
 

@@ -4,6 +4,7 @@
 //#include "BlackPearl/Renderer/MasterRenderer/PostProcessRenderer.h"
 #include "BlackPearl/Renderer/MasterRenderer/BasePassRenderer.h"
 #include "BlackPearl/Renderer/Renderer.h"
+#include "BlackPearl/Renderer/MasterRenderer/PBRRenderer.h"
 namespace BlackPearl {
 	class ForwardRenderGraph : public RenderGraph
 	{
@@ -32,6 +33,8 @@ namespace BlackPearl {
 		//PostProcessRenderer* m_PostProcessRenderer;
 		//IndirectCullRenderer* m_IndirectCullRenderer;
 		BasePassRenderer* m_BasePassRenderer;
+		PBRRenderer* m_PBRRenderer;
+
 
 		Scene* m_Scene = nullptr;
 	};

@@ -37,7 +37,7 @@ static void ContextMakeCurrent(HDC DC, HGLRC RC)
 	{
 		Result = wglMakeCurrent(nullptr, nullptr);
 	}
-	assert(Result);
+	GE_ASSERT(Result,"fail to make current context");
 }
 
 static HGLRC GetCurrentContext()
@@ -799,7 +799,7 @@ bool PlatformInitOpenGL()
 			}
 			else
 			{
-				//UE_LOG(LogRHI, Error, TEXT("OpenGL %d.%d not supported by driver"), MajorVersion, MinorVersion);
+				GE_CORE_ERROR("OpenGL " + std::to_string(MajorVersion)+"." + std::to_string(MinorVersion)+"not supported by driver\n");
 			}
 		}
 
@@ -809,7 +809,7 @@ bool PlatformInitOpenGL()
 			void* OpenGLDLL = FPlatformProc::GetDllHandle("opengl32.dll");
 			if (!OpenGLDLL)
 			{
-				//UE_LOG(LogRHI, Fatal, TEXT("Couldn't load opengl32.dll"));
+				GE_CORE_ERROR("Couldn't load opengl32.dll\n");
 			}
 
 			// Initialize entry points required by Unreal from opengl32.dll
@@ -835,7 +835,7 @@ bool PlatformInitOpenGL()
 			ENUM_GL_ENTRYPOINTS_DLL(CHECK_GL_ENTRYPOINTS);
 			ENUM_GL_ENTRYPOINTS(CHECK_GL_ENTRYPOINTS);
 #undef CHECK_GL_ENTRYPOINTS
-			assert(bFoundAllEntryPoints, ("Failed to find all OpenGL entry points."));
+			GE_ASSERT(bFoundAllEntryPoints, ("Failed to find all OpenGL entry points."));
 		}
 
 		// The dummy context can now be released.

@@ -12,10 +12,16 @@ namespace BlackPearl {
 	}
     void PBRRenderer::Init()
     {
-        std::vector<ShaderMacro> Macros;
-        // Macros.push_back(ShaderMacro("COMPILE_SHADER", "1"));
-        ShaderHandle vertexShader = g_shaderFactory->CreateShader("hlsl/test/forward_test_vs.hlsl", "main", ShaderType::VertexShader, &Macros);
-        ShaderHandle pixelShader = g_shaderFactory->CreateShader("hlsl/test/forward_test_vs.hlsl", "main", ShaderType::Pixel, &Macros);
+        //std::vector<ShaderMacro> Macros;
+        //// Macros.push_back(ShaderMacro("COMPILE_SHADER", "1"));
+        //ShaderHandle vertexShader = g_shaderFactory->CreateShader("hlsl/test/forward_test_vs.hlsl", "main", ShaderType::VertexShader, &Macros);
+        //ShaderHandle pixelShader = g_shaderFactory->CreateShader("hlsl/test/forward_test_vs.hlsl", "main", ShaderType::Pixel, &Macros);
+
+        m_DrawStrategy = DBG_NEW InstancedOpaqueDrawStrategy();
+        ShaderDesc desc = ShaderDesc(ShaderType::All);
+        desc.debugName = "PbrShader";
+        m_PbrShader = DBG_NEW MaterialShader("assets/shaders/pbr/PbrTexture.glsl");
+
 
         std::vector<VertexBufferBinding> vertexBuffers;
         IndexBufferBinding indexBuffer;

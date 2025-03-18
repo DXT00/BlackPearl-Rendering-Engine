@@ -61,7 +61,7 @@ namespace BlackPearl {
 			GDisableOpenGLDebugOutput = true; \
 			glGetIntegerv(IntEnum, &Dest); \
 			GDisableOpenGLDebugOutput = false; \
-			UE_LOG(LogRHI, Log, TEXT("  " #IntEnum ": %d"), Dest); \
+			GE_CORE_INFO("  " #IntEnum ": {}", Dest); \
 		} \
 		while (0)
 #endif

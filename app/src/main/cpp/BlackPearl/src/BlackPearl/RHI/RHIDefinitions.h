@@ -749,8 +749,8 @@ namespace BlackPearl {
     enum ShaderType : uint16_t
     {
 
-
-        VertexShader = 0,
+        Invalid = 0,
+        VertexShader,
         Pixel,
         Geometry,
         Hull,

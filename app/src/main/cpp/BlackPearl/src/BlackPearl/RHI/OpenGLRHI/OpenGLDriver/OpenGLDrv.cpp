@@ -1,25 +1,7 @@
 #include "pch.h"
 #include "OpenGLDrv.h"
 namespace BlackPearl {
-	GLint FOpenGLBase::MaxTextureImageUnits = -1;
-	GLint FOpenGLBase::MaxCombinedTextureImageUnits = -1;
-	GLint FOpenGLBase::MaxComputeTextureImageUnits = -1;
-	GLint FOpenGLBase::MaxVertexTextureImageUnits = -1;
-	GLint FOpenGLBase::MaxGeometryTextureImageUnits = -1;
-	GLint FOpenGLBase::MaxVaryingVectors = -1;
-	GLint FOpenGLBase::TextureBufferAlignment = -1;
-	GLint FOpenGLBase::MaxVertexUniformComponents = -1;
-	GLint FOpenGLBase::MaxPixelUniformComponents = -1;
-	GLint FOpenGLBase::MaxGeometryUniformComponents = -1;
-	bool  FOpenGLBase::bSupportsClipControl = false;
-	bool  FOpenGLBase::bSupportsASTC = false;
-	bool  FOpenGLBase::bSupportsASTCHDR = false;
-	bool  FOpenGLBase::bSupportsSeamlessCubemap = false;
-	bool  FOpenGLBase::bSupportsVolumeTextureRendering = false;
-	bool  FOpenGLBase::bSupportsTextureFilterAnisotropic = false;
-	bool  FOpenGLBase::bSupportsDrawBuffersBlend = false;
-	bool  FOpenGLBase::bAmdWorkaround = false;
-
+	
 	void GetExtensionsString(std::string& ExtensionsString)
 	{
 		GLint ExtensionCount = 0;

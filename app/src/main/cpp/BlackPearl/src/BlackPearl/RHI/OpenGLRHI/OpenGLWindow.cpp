@@ -41,8 +41,8 @@ namespace BlackPearl {
 		//	GE_CORE_ERROR("GLEW failed to initialize (glewExperimental might not be supported).");
 		//}
 
-		m_Context.reset(DBG_NEW Context(m_Window));
-		m_Context->Init();
+		/*m_Context.reset(DBG_NEW Context(m_Window));
+		m_Context->Init();*/
 	}
 	void OpenGLWindow::OnUpdate()
 	{

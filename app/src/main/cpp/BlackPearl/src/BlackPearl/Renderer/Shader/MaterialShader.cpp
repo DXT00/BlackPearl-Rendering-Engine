@@ -21,7 +21,7 @@ namespace BlackPearl {
         if (type == "tessellation_evaluation_shader")
             return ShaderType::TesselationEvaluation;
         //GE_ASSERT(false, "Unknown shader type!");
-        return ShaderType::All;
+        return ShaderType::Invalid;
     }
 
 
@@ -30,21 +30,21 @@ namespace BlackPearl {
 	{
 		m_ShaderPath = filepath;
         std::string commonSource = ReadFile(m_CommonStructPath);
-
+        m_GlslCode = ReadFile(m_ShaderPath);
         std::unordered_map<ShaderType, std::string> shaderSources = PreProcess(m_GlslCode, commonSource);
         if (shaderSources.find(ShaderType::VertexShader) != shaderSources.end()) {
             m_VertexShader = g_shaderFactory->CreateShaderFromSource(shaderSources[ShaderType::VertexShader], "main", ShaderType::VertexShader);
         } 
-        else if (shaderSources.find(ShaderType::Pixel) != shaderSources.end()) {
-            m_VertexShader = g_shaderFactory->CreateShaderFromSource(shaderSources[ShaderType::Pixel], "main", ShaderType::Pixel);
+        if (shaderSources.find(ShaderType::Pixel) != shaderSources.end()) {
+            m_PixelShader = g_shaderFactory->CreateShaderFromSource(shaderSources[ShaderType::Pixel], "main", ShaderType::Pixel);
 
         }
-        else if (shaderSources.find(ShaderType::Geometry) != shaderSources.end()) {
-            m_VertexShader = g_shaderFactory->CreateShaderFromSource(shaderSources[ShaderType::Geometry], "main", ShaderType::Geometry);
+        if (shaderSources.find(ShaderType::Geometry) != shaderSources.end()) {
+            m_GeometryShader = g_shaderFactory->CreateShaderFromSource(shaderSources[ShaderType::Geometry], "main", ShaderType::Geometry);
 
         }
-        else if (shaderSources.find(ShaderType::Compute) != shaderSources.end()) {
-            m_VertexShader = g_shaderFactory->CreateShaderFromSource(shaderSources[ShaderType::Compute], "main", ShaderType::Compute);
+        if (shaderSources.find(ShaderType::Compute) != shaderSources.end()) {
+            m_ComputeShader = g_shaderFactory->CreateShaderFromSource(shaderSources[ShaderType::Compute], "main", ShaderType::Compute);
 
         }
 	}

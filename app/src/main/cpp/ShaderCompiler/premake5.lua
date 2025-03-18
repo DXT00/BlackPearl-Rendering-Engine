@@ -17,7 +17,10 @@ project "ShaderCompiler"
 
 	includedirs
 	{
-		"../BlackPearl/src"
+		"../BlackPearl/src",
+		"../BlackPearl/vendor/spdlog/include",
+		"../BlackPearl/vendor/GLFW/include",
+
 	}
 
 	libdirs{

@@ -7,7 +7,7 @@
 #include "BlackPearl/Component/TerrainComponent/TerrainComponent.h"
 #include "BlackPearl/Renderer/Model/Model.h"
 //#include "BlackPearl/Renderer/Shader/Shader.h"
-#include "imgui.h"
+#include "BlackPearl\ImGui\imgui.h"
 #include <glm/gtc/type_ptr.hpp>
 #include <stdio.h>
 #include <stdlib.h>
@@ -758,7 +758,7 @@ namespace BlackPearl {
 			staticModel->GetComponent<MeshRenderer>()->SetIsBackGroundObjects(true);
 
 		}if (modelName == "Sword") {
-			Object* sword = CreateModel("assets/models/sword/OBJ/Big_Sword_OBJ.obj", "assets/shaders/pbr/PbrTexture.glsl", false, "Sword");
+			staticModel = CreateModel("assets/models/sword/OBJ/Big_Sword_OBJ.obj", "assets/shaders/pbr/PbrTexture.glsl", false, "Sword");
 			TextureHandle SwordalbedoTexture = device->createTexture(TextureDesc(TextureType::DiffuseMap, "assets/models/sword/textures/Big Sword_Base_Color_Map.jpg"));
 			TextureHandle SwordaoTexture = device->createTexture(TextureDesc(TextureType::AoMap, "assets/models/sword/textures/Big Sword_AO_Map.jpg"));
 			TextureHandle SwordroughnessTexture = device->createTexture(TextureDesc(TextureType::RoughnessMap, "assets/models/sword/textures/Big Sword_Roughness_Map.jpg"));
@@ -766,21 +766,21 @@ namespace BlackPearl {
 			TextureHandle SwordnormalTexture = device->createTexture(TextureDesc(TextureType::NormalMap, "assets/models/sword/textures/Big Sword_Normal_Map.jpg"));
 			TextureHandle SwordemissionTexture = device->createTexture(TextureDesc(TextureType::EmissionMap, "assets/models/sword/textures/Big Sword_Emission_Map.jpg"));
 
-			sword->GetComponent<MeshRenderer>()->SetTextures(SwordalbedoTexture);
-			sword->GetComponent<MeshRenderer>()->SetTextures(SwordaoTexture);
-			sword->GetComponent<MeshRenderer>()->SetTextures(SwordroughnessTexture);
-			sword->GetComponent<MeshRenderer>()->SetTextures(SwordmentallicTexture);
-			sword->GetComponent<MeshRenderer>()->SetTextures(SwordnormalTexture);
-			sword->GetComponent<MeshRenderer>()->SetTextures(SwordemissionTexture);
+			staticModel->GetComponent<MeshRenderer>()->SetTextures(SwordalbedoTexture);
+			staticModel->GetComponent<MeshRenderer>()->SetTextures(SwordaoTexture);
+			staticModel->GetComponent<MeshRenderer>()->SetTextures(SwordroughnessTexture);
+			staticModel->GetComponent<MeshRenderer>()->SetTextures(SwordmentallicTexture);
+			staticModel->GetComponent<MeshRenderer>()->SetTextures(SwordnormalTexture);
+			staticModel->GetComponent<MeshRenderer>()->SetTextures(SwordemissionTexture);
 
-			sword->GetComponent<MeshRenderer>()->SetPBRTextureSamples(true);
-			sword->GetComponent<MeshRenderer>()->SetIsPBRObject(true);
+			staticModel->GetComponent<MeshRenderer>()->SetPBRTextureSamples(true);
+			staticModel->GetComponent<MeshRenderer>()->SetIsPBRObject(true);
 			//	sword->GetComponent<MeshRenderer>()->SetTextureSamples(true);//TODO::
-			sword->GetComponent<MeshRenderer>()->SetTextureDiffuseSamples(true);
+			staticModel->GetComponent<MeshRenderer>()->SetTextureDiffuseSamples(true);
 			//	sword->GetComponent<MeshRenderer>()->SetTextureMetallicSamples(true);
-			sword->GetComponent<MeshRenderer>()->SetTexturEmissionSamples(true);
+			staticModel->GetComponent<MeshRenderer>()->SetTexturEmissionSamples(true);
 
-			sword->GetComponent<MeshRenderer>()->SetIsPBRObject(true);
+			staticModel->GetComponent<MeshRenderer>()->SetIsPBRObject(true);
 
 		}
 		else if (modelName == "Sphere") {

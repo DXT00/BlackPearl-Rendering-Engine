@@ -402,8 +402,8 @@ namespace BlackPearl
 
 	void Device::InitializeStateResources()
 	{
-		SharedContextState->InitializeResources(FOpenGL::GetMaxCombinedTextureImageUnits(), FOpenGL::GetMaxCombinedUAVUnits());
-		RenderingContextState->InitializeResources(FOpenGL::GetMaxCombinedTextureImageUnits(), FOpenGL::GetMaxCombinedUAVUnits());
+		SharedContextState.InitializeResources(FOpenGL::GetMaxCombinedTextureImageUnits(), FOpenGL::GetMaxCombinedUAVUnits());
+		RenderingContextState.InitializeResources(FOpenGL::GetMaxCombinedTextureImageUnits(), FOpenGL::GetMaxCombinedUAVUnits());
 		PendingState.InitializeResources(FOpenGL::GetMaxCombinedTextureImageUnits(), FOpenGL::GetMaxCombinedUAVUnits());
 	}
 
@@ -412,7 +412,7 @@ namespace BlackPearl
 		// most common case
 		if (BeginSceneContextType == CONTEXT_Rendering)
 		{
-			return *RenderingContextState;
+			return RenderingContextState;
 		}
 
 		int32_t ContextType = (int32_t)PlatformOpenGLCurrentContext(m_Context->PlatformDevice);
@@ -422,16 +422,16 @@ namespace BlackPearl
 		}
 		else if (ContextType < 0)
 		{
-			return *InvalidContextState;
+			return InvalidContextState;
 		}
 
 		if (ContextType == CONTEXT_Rendering)
 		{
-			return *RenderingContextState;
+			return RenderingContextState;
 		}
 		else
 		{
-			return *SharedContextState;
+			return SharedContextState;
 		}
 	}
 
@@ -445,7 +445,7 @@ namespace BlackPearl
 
 		// GL vendor and version information.
 
-#define LOG_GL_STRING(StringEnum) GE_CORE_INFO("AverageFPS = " + std::string((const char*)glGetString(StringEnum)));
+#define LOG_GL_STRING(StringEnum) GE_CORE_INFO(#StringEnum + std::string(":") + std::string((const char*)glGetString(StringEnum)));
 
 		GE_CORE_INFO(("Initializing OpenGL RHI"));
 		LOG_GL_STRING(GL_VENDOR);
@@ -518,7 +518,7 @@ namespace BlackPearl
 		FOpenGL::InitDebugContext();
 
 
-#define LOG_AND_GET_GL_INT_TEMP(IntEnum,Default) GLint Value_##IntEnum = Default; if (IntEnum) {glGetIntegerv(IntEnum, &Value_##IntEnum); glGetError();} else {Value_##IntEnum = Default;} GE_CORE_INFO("  " #IntEnum + std::to_string(Value_##IntEnum))
+#define LOG_AND_GET_GL_INT_TEMP(IntEnum,Default) GLint Value_##IntEnum = Default; if (IntEnum) {glGetIntegerv(IntEnum, &Value_##IntEnum); glGetError();} else {Value_##IntEnum = Default;} GE_CORE_INFO("  " #IntEnum + std::string(": ") + std::to_string(Value_##IntEnum))
 
 		LOG_AND_GET_GL_INT_TEMP(GL_MAX_TEXTURE_SIZE, 0);
 #if defined(GL_MAX_TEXTURE_BUFFER_SIZE)
@@ -1968,5 +1968,10 @@ namespace BlackPearl
 
 
 
+
+	InputLayoutHandle Device::createInputLayout(const VertexBufferLayout& d)
+	{
+		return InputLayoutHandle();
+	}
 
 }

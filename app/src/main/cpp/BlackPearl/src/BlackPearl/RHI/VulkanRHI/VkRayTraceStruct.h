@@ -1,4 +1,5 @@
 #pragma once
+#if GE_API_VULKAN
 #include "BlackPearl/RHI/RHIRayTraceStruct.h"
 #include "BlackPearl/RHI/VulkanRHI/VkContext.h"
 namespace BlackPearl {
@@ -57,3 +58,4 @@ namespace BlackPearl {
 	};
 }
 
+#endif

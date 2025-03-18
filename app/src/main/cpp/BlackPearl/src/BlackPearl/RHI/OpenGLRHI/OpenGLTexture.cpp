@@ -325,8 +325,14 @@ namespace BlackPearl {
 			return GL_CLAMP_TO_EDGE;
 		case SamplerAddressMode::ClampToBorder:
 			return GL_CLAMP_TO_BORDER;
-		default:
+		case SamplerAddressMode::Repeat:
+			return GL_REPEAT;
+
+		default: {
+			GE_CORE_ERROR("Unknown warp type");
 			assert(0);
+
+		}
 		}
 
 		return GL_CLAMP_TO_EDGE;

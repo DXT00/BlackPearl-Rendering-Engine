@@ -3,6 +3,9 @@
 
 #include "BlackPearl/Application.h"
 #include "BlackPearl/RHI/OpenGLRHI/OpenGLWindow.h"
+#include "imgui.h"
+#include "imgui_impl_opengl3.h"
+#include "imgui_impl_glfw.h"
 //#define IMGUI_IMPL_OPENGL_LOADER_GLAD
 //
 //#include "examples/imgui_impl_opengl3.cpp"

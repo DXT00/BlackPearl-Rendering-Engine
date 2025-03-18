@@ -36,8 +36,8 @@ project "BlackPearl"
 		"./src",
 		"./vendor/spdlog/include",
 		"../%{IncludeDir.GLFW}",
-		"../%{IncludeDir.Glad}",
-		"../%{IncludeDir.ImGui}",
+		--"../%{IncludeDir.Glad}",
+		--"../%{IncludeDir.ImGui}",
 		"../%{IncludeDir.glm}",
 		"../%{IncludeDir.stb}",
 		"../%{IncludeDir.assimp}",
@@ -71,8 +71,8 @@ project "BlackPearl"
 	}
 
    filter { "options:RenderAPI=opengl" }
-   removefiles  { "./src/BlackPearl/RHI/VulkanRHI/**.cpp" }
-   removefiles  { "./src/BlackPearl/RHI/VulkanRHI/**.h" }
+   --removefiles  { "./src/BlackPearl/RHI/VulkanRHI/**.cpp" }
+   --removefiles  { "./src/BlackPearl/RHI/VulkanRHI/**.h" }
    removefiles  { "./src/BlackPearl/Renderer/MasterRendererBak/**.cpp" }
    removefiles  { "./src/BlackPearl/Renderer/MasterRendererBak/**.h" }
    removefiles  { "./src/BlackPearl/Renderer/Lumen/**.h" }
@@ -102,8 +102,8 @@ project "BlackPearl"
    { 
 		"GLFW",
 		--"GLEW",
-		"Glad",
-		"ImGui",
+		--"Glad",
+		--"ImGui",
 		--"ShaderMakeBlob",
 		--"assimp",
 		"opengl32",

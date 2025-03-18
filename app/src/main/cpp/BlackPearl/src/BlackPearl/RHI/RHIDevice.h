@@ -48,7 +48,8 @@ namespace BlackPearl {
 
 
 		//// Note: vertexShader is only necessary on D3D11, otherwise it may be null
-		virtual InputLayoutHandle createInputLayout(const VertexAttributeDesc* d, uint32_t attributeCount) = 0;
+		//virtual InputLayoutHandle createInputLayout(const VertexAttributeDesc* d, uint32_t attributeCount) = 0;
+		virtual InputLayoutHandle createInputLayout(const VertexBufferLayout& d) = 0;
 
 		virtual bool writeDescriptorTable(IDescriptorTable* descriptorTable, const BindingSetItem& item) = 0;
 

@@ -6,6 +6,7 @@
 #include "BlackPearl/Renderer/DrawStrategy.h"
 #include "BlackPearl/RHI/RHIDevice.h"
 #include "BlackPearl/Object/Object.h"
+#include "BlackPearl/Renderer/Shader/MaterialShader.h"
 
 namespace BlackPearl {
 
@@ -16,12 +17,7 @@ namespace BlackPearl {
 		PBRRenderer(IDevice* device)
 		:BasicRenderer(device)
 		{
-			m_DrawStrategy = DBG_NEW InstancedOpaqueDrawStrategy();
-
-
-			ShaderDesc desc = ShaderDesc(ShaderType::All);
-			desc.debugName = "PbrShader";
-			m_PbrShader = g_shaderFactory->CreateShader("assets/shaders/pbr/PbrTexture.glsl", "main", desc);
+			
 		    //	m_PbrShader.reset(DBG_NEW Shader("assets/shaders/pbr/Pbr.glsl"));
 			//m_PbrShader.reset(DBG_NEW Shader("assets/shaders/pbr/PbrTexture.glsl"));
 		};
@@ -31,11 +27,11 @@ namespace BlackPearl {
 		void Render(ICommandList* commandList, IFramebuffer* targetFramebuffer, Scene* scene);
 
 		void Render(Object* obj);
-		ShaderHandle GetShader() { return m_PbrShader; }
+		MaterialShader* GetShader() const { return m_PbrShader; }
 		~PBRRenderer();
 
 	private:
-		ShaderHandle m_PbrShader;
+		MaterialShader* m_PbrShader;
 
 		InstancedOpaqueDrawStrategy* m_DrawStrategy;
 
