@@ -46,6 +46,7 @@ namespace BlackPearl {
         else if (desc.canHaveTypedViews && desc.canHaveUAVs) {
             buffer = OpenGLBufferFactory::createShaderStorageBuffer(desc);
         }
+        return BufferHandle::Create(buffer);
 
     }
 

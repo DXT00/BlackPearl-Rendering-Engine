@@ -25,18 +25,23 @@ namespace BlackPearl {
 
         std::vector<VertexBufferBinding> vertexBuffers;
         IndexBufferBinding indexBuffer;
-        const VertexAttributeDesc inputDescs[] =
-                {
-                        GetVertexAttributeDesc(VertexAttribute::Position, "POS", 0),
-                        GetVertexAttributeDesc(VertexAttribute::PrevPosition, "PREV_POS", 1),
-                        GetVertexAttributeDesc(VertexAttribute::TexCoord1, "TEXCOORD", 2),
-                        GetVertexAttributeDesc(VertexAttribute::Normal, "NORMAL", 3),
-                        //TODO::
-                        // GetVertexAttributeDesc(VertexAttribute::Tangent, "TANGENT", 4),
-                        GetVertexAttributeDesc(VertexAttribute::Transform, "TRANSFORM", 4),
-                };
+        //const VertexAttributeDesc inputDescs[] =
+        //        {
+        //                GetVertexAttributeDesc(VertexAttribute::Position, "POS", 0),
+        //                GetVertexAttributeDesc(VertexAttribute::PrevPosition, "PREV_POS", 1),
+        //                GetVertexAttributeDesc(VertexAttribute::TexCoord1, "TEXCOORD", 2),
+        //                GetVertexAttributeDesc(VertexAttribute::Normal, "NORMAL", 3),
+        //                //TODO::
+        //                // GetVertexAttributeDesc(VertexAttribute::Tangent, "TANGENT", 4),
+        //                GetVertexAttributeDesc(VertexAttribute::Transform, "TRANSFORM", 4),
+        //        };
 
-        InputLayoutHandle inputLayout = m_Device->createInputLayout(inputDescs, uint32_t(std::size(inputDescs)));
+        //InputLayoutHandle inputLayout = m_Device->createInputLayout(inputDescs, uint32_t(std::size(inputDescs)));
+
+        auto samplerDesc = SamplerDesc()
+            .setAllAddressModes(SamplerAddressMode::Border)
+            .setBorderColor(1.0f);
+        m_ShadowSampler = m_Device->createSampler(samplerDesc);
 
         m_ForwardViewCB = m_Device->createBuffer(RHIUtils::CreateStaticConstantBufferDesc(sizeof(ForwardShadingViewConstants), "ForwardShadingViewConstants"));
 
@@ -57,7 +62,7 @@ namespace BlackPearl {
 
         m_ShaderParameters[ShaderType::Pixel].bindingLayouts.push_back(viewBindinglayout);
         m_ShaderParameters[ShaderType::Pixel].bindingSets.push_back(viewBindingset);
-        m_ShaderParameters[ShaderType::VertexShader].inputLayout = inputLayout;
+        //m_ShaderParameters[ShaderType::VertexShader].inputLayout = inputLayout;
     }
 
 	void PBRRenderer::Render(ICommandList* commandList, IFramebuffer* targetFramebuffer, Scene* scene)

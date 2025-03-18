@@ -876,7 +876,7 @@ namespace BlackPearl {
 			psoDesc.rasterState.cullMode = RasterCullMode::Back;
 			psoDesc.primType = PrimitiveType::TriangleList;
 			// input layout 是mesh传过来的？
-			psoDesc.inputLayout = shaderParms[ShaderType::VertexShader].inputLayout;
+			psoDesc.inputLayout = m_Device->createInputLayout(item.mesh->GetVertexBufferLayout());//shaderParms[ShaderType::VertexShader].inputLayout;
 			//psoDesc.BoundShaderState.VertexDeclarationRHI = GetVertexDeclarationFVector4();
             //TODO :: opengl 分开 vs, ps
 			psoDesc.VS = item.material->GetShader()->GetVertexShader();

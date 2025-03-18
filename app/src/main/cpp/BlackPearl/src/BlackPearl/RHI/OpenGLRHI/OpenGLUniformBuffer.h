@@ -67,6 +67,8 @@ namespace BlackPearl {
 		/** Unique ID for state shadowing purposes. */
 		uint32_t UniqueID;
 
+		//GLuint blockIndex;
+
 		/** Emulated uniform data for ES2.  多个uniformbuffers 合并提交*/
 		/*static FAutoConsoleVariable CVarOpenGLUseEmulatedUBs(
 		TEXT("OpenGL.UseEmulatedUBs"),

@@ -10,6 +10,8 @@ namespace BlackPearl {
 		{
 			inputDesc[i].bNormalized = layout.GetElement(i).Normalized;
 			inputDesc[i].location = layout.GetElement(i).Location;
+			inputDesc[i].elementStride = layout.GetStride();
+			inputDesc[i].offset = layout.GetElement(i).Offset;
 
 		}
 

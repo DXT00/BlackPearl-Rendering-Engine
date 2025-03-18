@@ -326,18 +326,24 @@ namespace BlackPearl {
 
     InputLayoutHandle BasePassRenderer::CreateInputLayout(IShader* vertexShader, const CreateParameters& params)
     {
-        const VertexAttributeDesc inputDescs[] =
-        {
-            GetVertexAttributeDesc(VertexAttribute::Position, "POS", 0),
-            GetVertexAttributeDesc(VertexAttribute::PrevPosition, "PREV_POS", 1),
-            GetVertexAttributeDesc(VertexAttribute::TexCoord1, "TEXCOORD", 2),
-            GetVertexAttributeDesc(VertexAttribute::Normal, "NORMAL", 3),
-            //TODO::
-           // GetVertexAttributeDesc(VertexAttribute::Tangent, "TANGENT", 4),
-            GetVertexAttributeDesc(VertexAttribute::Transform, "TRANSFORM", 4),
+        //const VertexAttributeDesc inputDescs[] =
+        //{
+        //    GetVertexAttributeDesc(VertexAttribute::Position, "POS", 0),
+        //    GetVertexAttributeDesc(VertexAttribute::PrevPosition, "PREV_POS", 1),
+        //    GetVertexAttributeDesc(VertexAttribute::TexCoord1, "TEXCOORD", 2),
+        //    GetVertexAttributeDesc(VertexAttribute::Normal, "NORMAL", 3),
+        //    //TODO::
+        //   // GetVertexAttributeDesc(VertexAttribute::Tangent, "TANGENT", 4),
+        //    GetVertexAttributeDesc(VertexAttribute::Transform, "TRANSFORM", 4),
+        //};
+        VertexBufferLayout layout = {
+            {ElementDataType::Float3,"aPos",false,0},
+            {ElementDataType::Float3,"aPrePos",false,1},
+            {ElementDataType::Float2,"aTexCoords",false,2},
+            {ElementDataType::Float3,"aNormal",false,3},
         };
 
-        return m_Device->createInputLayout(inputDescs, uint32_t(std::size(inputDescs)));
+        return m_Device->createInputLayout(layout);
     }
 
 

@@ -118,7 +118,7 @@ public:
         std::vector<IBindingSet*> bindingSets;
    // };
    
-    IInputLayout* inputLayout;
+   // IInputLayout* inputLayout;
    // ShaderBindings shaderbinding;
     //s[ShaderType::NUM_COMPILE_SHADER_STAGES]
 

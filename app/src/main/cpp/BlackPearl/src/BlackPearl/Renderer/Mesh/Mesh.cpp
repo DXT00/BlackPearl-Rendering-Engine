@@ -52,10 +52,7 @@ namespace BlackPearl {
 
 	}
 
-	void Mesh::SetVertexBufferLayout(const VertexBufferLayout& layout)
-	{
-		m_VertexBufferLayout = layout;	
-	}
+	
 
 	void Mesh::UpdateInstanceBuffer(Transform* transform)
 	{

@@ -93,6 +93,7 @@ namespace BlackPearl {
 	public:
 		std::string name;
 		std::shared_ptr<BufferGroup> buffers;
+
 		//std::shared_ptr<MeshInfo> skinPrototype;
 		//std::vector<std::shared_ptr<MeshGeometry>> geometries;
 		math::box3 objectSpaceBounds;
@@ -107,7 +108,6 @@ namespace BlackPearl {
 		uint32_t					 m_VerticeSize = 0; //m_VerticeSize = m_VerticeArrayCount* sizeof(float)
 		uint32_t					 m_VerticeCount = 0; // one vertex has multiple attributes, a vertex = (pos.xyz, normal.xyz, tex.xy..), m_VerticeCount is the number of attribute vertex
 		uint32_t					 m_VerticeArrayCount = 0;
-
 
 		int globalMeshIndex = 0;
 
