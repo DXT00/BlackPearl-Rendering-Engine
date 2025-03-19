@@ -36,7 +36,8 @@ namespace BlackPearl {
 		for (size_t bindingIndex = 0; bindingIndex < desc.bindings.size(); bindingIndex++)
 		{
 			const BindingSetItem& binding = desc.bindings[bindingIndex];
-			const GLBindingItem& layoutBinding = layout->glLayoutBindings[bindingIndex];
+			//gl ²»ÐèÒªlayout
+			//const GLBindingItem& layoutBinding = layout->glLayoutBindings[bindingIndex];
 
 			if (binding.resourceHandle == nullptr)
 			{
@@ -197,8 +198,7 @@ namespace BlackPearl {
 				descriptorWriteInfo[bindingIndex].pTexelBufferView = nullptr;
 				descriptorWriteInfo[bindingIndex].pNext = nullptr;
 
-				bufferDescCnt++;
-				descriptorCnt++;*/
+				*/
 
 
 				/*if (binding.type == RHIResourceType::RT_VolatileConstantBuffer)
@@ -224,8 +224,10 @@ namespace BlackPearl {
 							false, buffer->desc.debugName, m_Context.messageCallback);
 					}
 				}*/
+				bufferDescCnt++;
+				descriptorCnt++;
 			}
-
+		
 			break;
 
 			case RHIResourceType::RT_Sampler:

@@ -5,7 +5,7 @@
 #include "OpenGLDriver/OpenGLDrvPrivate.h"
 namespace BlackPearl {
 
-
+#define GLBackBufferCnt 2
 	/**
  * Initialize RHI capabilities for the current OpenGL context.
  */
@@ -57,6 +57,16 @@ namespace BlackPearl {
 
     void OpenGLDeviceManager::ResizeSwapChain()
     {
+
+    }
+
+    void OpenGLDeviceManager::BackBufferResizedInner()
+    {
+    }
+
+    IFramebuffer* OpenGLDeviceManager::GetCurrentFramebuffer()
+    {
+        return nullptr;
     }
 
     void OpenGLDeviceManager::BeginFrame()
@@ -67,25 +77,25 @@ namespace BlackPearl {
     {
     }
 
-    ITexture* OpenGLDeviceManager::GetCurrentBackBuffer()
-    {
-        return nullptr;
-    }
+    //ITexture* OpenGLDeviceManager::GetCurrentBackBuffer()
+    //{
+    //    return nullptr;
+    //}
 
-    ITexture* OpenGLDeviceManager::GetBackBuffer(uint32_t index)
-    {
-        return nullptr;
-    }
+    //ITexture* OpenGLDeviceManager::GetBackBuffer(uint32_t index)
+    //{
+    //    return nullptr;
+    //}
 
-    uint32_t OpenGLDeviceManager::GetCurrentBackBufferIndex()
-    {
-        return 0;
-    }
+    //uint32_t OpenGLDeviceManager::GetCurrentBackBufferIndex()
+    //{
+    //    return 0;
+    //}
 
-    uint32_t OpenGLDeviceManager::GetBackBufferCount()
-    {
-        return 0;
-    }
+    //uint32_t OpenGLDeviceManager::GetBackBufferCount()
+    //{
+    //    return GLBackBufferCnt;
+    //}
 
     DeviceManager* DeviceManager::CreateOpenGL()
     {

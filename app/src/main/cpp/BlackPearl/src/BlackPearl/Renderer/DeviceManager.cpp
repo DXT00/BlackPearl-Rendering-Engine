@@ -7,6 +7,7 @@
 namespace BlackPearl {
     void DeviceManager::Init(const DeviceCreationParameters& params)
     {
+        m_FirstFrame = true;
         CreateDeviceAndSwapChain(params);
     }
     DeviceManager* DeviceManager::Create(DynamicRHI::Type api)
@@ -27,10 +28,10 @@ namespace BlackPearl {
             return CreateOpenGL();
         }
     }
-    IFramebuffer* DeviceManager::GetFrameBuffer()
-    {
-        return m_SwapChainFramebuffers[GetCurrentBackBufferIndex()];
-    }
+    //IFramebuffer* DeviceManager::GetFrameBuffer()
+    //{
+    //    return m_SwapChainFramebuffers[GetCurrentBackBufferIndex()];
+    //}
     bool DeviceManager::CreateWindowDeviceAndSwapChain(const DeviceCreationParameters& params, const char* windowTitle)
     {
         return false;
@@ -79,7 +80,7 @@ namespace BlackPearl {
     {
         BeginFrame();
 
-        IFramebuffer* framebuffer = m_SwapChainFramebuffers[GetCurrentBackBufferIndex()];
+        IFramebuffer* framebuffer = GetCurrentFramebuffer();
 
         for (auto it : m_vRenderGraphs)
         {
@@ -115,13 +116,10 @@ namespace BlackPearl {
 
         if (int(m_DeviceParams.backBufferWidth) != width ||
             int(m_DeviceParams.backBufferHeight) != height ||
-            (m_DeviceParams.vsyncEnabled != m_RequestedVSync && GetGraphicsAPI() == DynamicRHI::Type::Vulkan) ||
-            GetBackBufferCount() != m_SwapChainFramebuffers.size())
+            (m_DeviceParams.vsyncEnabled != m_RequestedVSync) ||
+            m_FirstFrame)
         {
-            // window is not minimized, and the size has changed
-
-            BackBufferResizing();
-
+            m_FirstFrame = false;
             m_DeviceParams.backBufferWidth = width;
             m_DeviceParams.backBufferHeight = height;
             m_DeviceParams.vsyncEnabled = m_RequestedVSync;
@@ -129,21 +127,12 @@ namespace BlackPearl {
             ResizeSwapChain();
             BackBufferResized();
 
-            assert(GetBackBufferCount() == m_SwapChainFramebuffers.size());
         }
 
         m_DeviceParams.vsyncEnabled = m_RequestedVSync;
     }
 
-    void DeviceManager::BackBufferResizing()
-    {
-        m_SwapChainFramebuffers.clear();
 
-        for (auto it : m_vRenderGraphs)
-        {
-            it->BackBufferResizing();
-        }
-    }
 
     void DeviceManager::BackBufferResized()
     {
@@ -153,15 +142,8 @@ namespace BlackPearl {
                 m_DeviceParams.backBufferHeight,
                 m_DeviceParams.swapChainSampleCount);
         }
-
-        uint32_t backBufferCount = GetBackBufferCount();
-        m_SwapChainFramebuffers.resize(backBufferCount);
-        for (uint32_t index = 0; index < backBufferCount; index++)
-        {
-            FramebufferDesc fboDesc;
-            fboDesc.addColorAttachment(GetBackBuffer(index));
-            m_SwapChainFramebuffers[index] = GetDevice()->createFramebuffer(fboDesc);
-        }
+        BackBufferResizedInner();
+      
     }
     void DeviceManager::Animate(double elapsedTime)
     {
@@ -193,14 +175,14 @@ namespace BlackPearl {
     void DeviceManager::MouseScrollUpdate(double xoffset, double yoffset)
     {
     }
-    IFramebuffer* DeviceManager::GetCurrentFramebuffer()
-    {
-        return nullptr;
-    }
-    IFramebuffer* DeviceManager::GetFramebuffer(uint32_t index)
-    {
-        return nullptr;
-    }
+    //IFramebuffer* DeviceManager::GetCurrentFramebuffer()
+    //{
+    //    return nullptr;
+    //}
+    //IFramebuffer* DeviceManager::GetFramebuffer(uint32_t index)
+    //{
+    //    return nullptr;
+    //}
     void DeviceManager::Shutdown()
     {
     }

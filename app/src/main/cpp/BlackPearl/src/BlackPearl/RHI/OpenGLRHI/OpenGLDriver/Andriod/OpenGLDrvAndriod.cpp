@@ -6,7 +6,7 @@
 #ifdef GE_PLATFORM_ANDRIOD
 
 #include "../OpenGLDrvPrivate.h"
-//#include "AndroidOpenGL.h"
+#include "OpenGLDrvAndriod.h"
 //#include "OpenGLDrvPrivate.h"
 //#include "OpenGLES.h"
 //#include "Android/AndroidWindow.h"

@@ -19,16 +19,17 @@ namespace BlackPearl {
         bool CreateDeviceAndSwapChain() override;
         void DestroyDeviceAndSwapChain() override;
         virtual void ResizeSwapChain() override;
-
+        virtual void BackBufferResizedInner() override;
+        virtual IFramebuffer* GetCurrentFramebuffer() override;
 
         void BeginFrame() override;
         void Present() override;
 
 
-        ITexture* GetCurrentBackBuffer() override;
+ /*       ITexture* GetCurrentBackBuffer() override;
         ITexture* GetBackBuffer(uint32_t index) override;
         uint32_t GetCurrentBackBufferIndex() override;
-        uint32_t GetBackBufferCount() override;
+        uint32_t GetBackBufferCount() override;*/
     private:
         DeviceHandle m_NvrhiDevice;
 

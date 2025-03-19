@@ -108,7 +108,7 @@ namespace BlackPearl {
         void Init(const DeviceCreationParameters& params);
         static DeviceManager* Create(DynamicRHI::Type api);
 
-        IFramebuffer* GetFrameBuffer();
+        //IFramebuffer* GetFrameBuffer();
 
 
         void AddRenderGraphToFront(RenderGraph* pController);
@@ -131,7 +131,7 @@ namespace BlackPearl {
 
     protected:
         bool m_windowVisible = false;
-
+        bool m_FirstFrame = true;
         DeviceCreationParameters m_DeviceParams;
         //GLFWwindow* m_Window = nullptr;
         // set to true if running on NV GPU
@@ -151,17 +151,14 @@ namespace BlackPearl {
 
         uint32_t m_FrameIndex = 0;
 
-        std::vector<FramebufferHandle> m_SwapChainFramebuffers;
 
         DeviceManager() = default;
 
         bool CreateWindowDeviceAndSwapChain(const DeviceCreationParameters& params, const char* windowTitle);
         bool CreateDeviceAndSwapChain(const DeviceCreationParameters& params);
 
-
-
-        void BackBufferResizing();
         void BackBufferResized();
+        virtual void BackBufferResizedInner() = 0;
 
         void Animate(double elapsedTime);
         
@@ -202,15 +199,15 @@ namespace BlackPearl {
         //[[nodiscard]] GLFWwindow* GetWindow() const { return m_Window; }
         [[nodiscard]] uint32_t GetFrameIndex() const { return m_FrameIndex; }
 
-        virtual ITexture* GetCurrentBackBuffer() = 0;
-        virtual ITexture* GetBackBuffer(uint32_t index) = 0;
-        virtual uint32_t GetCurrentBackBufferIndex() = 0;
-        virtual uint32_t GetBackBufferCount() = 0;
-        IFramebuffer* GetCurrentFramebuffer();
-        IFramebuffer* GetFramebuffer(uint32_t index);
-
+        //virtual ITexture* GetCurrentBackBuffer() = 0;
+        //virtual ITexture* GetBackBuffer(uint32_t index) = 0;
+        //virtual uint32_t GetCurrentBackBufferIndex() = 0;
+        //virtual uint32_t GetBackBufferCount() = 0;
+        //IFramebuffer* GetCurrentFramebuffer();
+        //IFramebuffer* GetFramebuffer(uint32_t index);
+        virtual IFramebuffer* GetCurrentFramebuffer() = 0;
         virtual void Shutdown();
-        virtual ~DeviceManager() = default;
+        virtual ~DeviceManager() {};
 
         void SetWindowTitle(const char* title);
         void SetInformativeWindowTitle(const char* applicationName, bool includeFramerate, const char* extraInfo/* = nullptr*/);
