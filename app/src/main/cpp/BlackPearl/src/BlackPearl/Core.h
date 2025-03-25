@@ -3,7 +3,7 @@
 
 #ifdef GE_PLATFORM_WINDOWS
 #define PLATFORM_HEADER_NAME Windows
-#elif defined(GE_PLATFORM_ANDRIOD)
+#elif defined(GE_PLATFORM_ANDROID)
 #define PLATFORM_HEADER_NAME Andriod
 #endif
 

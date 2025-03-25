@@ -169,7 +169,8 @@ namespace BlackPearl {
         virtual void DestroyDeviceAndSwapChain() = 0;
         virtual void ResizeSwapChain() = 0;
     
-
+        virtual void _RHIViewportBeginDraw() = 0;
+        virtual void _RHIViewportEndDraw() = 0;
     public:
         [[nodiscard]] virtual IDevice* GetDevice() const = 0;
         [[nodiscard]] virtual const char* GetRendererString() const = 0;

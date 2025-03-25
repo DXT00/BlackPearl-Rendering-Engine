@@ -150,6 +150,7 @@ namespace BlackPearl {
 
 		m_VolatileBufferStates.clear();
 	}
+
 	void CommandList::open()
 	{
 		m_CurrentCmdBuf = m_Device->getQueue(m_CommandListParameters.queueType)->getOrCreateCommandBuffer();
@@ -183,6 +184,25 @@ namespace BlackPearl {
 		clearState();
 
 		_flushVolatileBufferWrites();
+	}
+
+	void CommandList::beginRenderPass(const FRHIRenderPassInfo& renderPassInfo, const std::string& passName) 
+	{
+	}
+	void CommandList::endRenderPass() 
+	{
+	}
+	void CommandList::nextSubpass() 
+	{
+	}
+
+	bool CommandList::hasTiledGPU()
+	{
+#ifdef GE_PLATFORM_WINDOWS
+		return false;
+#elif defined GE_PLATFORM_ANDROID 
+		return true;
+#endif
 	}
 	void CommandList::clearState()
 	{

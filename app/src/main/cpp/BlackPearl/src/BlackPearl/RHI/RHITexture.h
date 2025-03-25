@@ -61,6 +61,8 @@ namespace BlackPearl {
 		// on command list close.
 		bool keepInitialState = false;
 
+		bool isMultiSample() const { return sampleCount > 1; }
+
 //TODO:: ·Å¿ªºê
 //#ifdef GE_API_OPENGL
 		

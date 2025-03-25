@@ -1,11 +1,12 @@
 #pragma once
-
+#include "BlackPearl/RHI/RHIDefinitions.h"
 #include "BlackPearl/RHI/RefCountPtr.h"
 #include "BlackPearl/RHI/RHICommandList.h"
 
 namespace BlackPearl {
     class OpenGLContext;
     class Device;
+    class Texture;
 
 	class CommandList :public RefCounter<ICommandList> {
         // Internal backend methods
@@ -14,6 +15,11 @@ namespace BlackPearl {
 
         void open() override;
         void close() override;
+
+        virtual void beginRenderPass(const FRHIRenderPassInfo& renderPassInfo, const std::string& passName) override;
+        virtual void endRenderPass() override;
+        virtual void nextSubpass() override;
+
         void clearState() override;
         void clearTextureFloat(ITexture* texture, TextureSubresourceSet subresources, const Color& clearColor) override;
         void clearDepthStencilTexture(ITexture* texture, TextureSubresourceSet subresources, bool clearDepth, float depth, bool clearStencil, uint8_t stencil) override;
@@ -32,9 +38,11 @@ namespace BlackPearl {
         void setPushConstants(const void* data, size_t byteSize) override;
        
         void setBoundShaderState(IBoundShaderState* state) override;
-        void setDepthStencilaState(DepthStencilState* state) override;
+        void setDepthStencilState(DepthStencilState* state) override;
         void setRasterizerState(RasterState* state) override;
         void setBlendState(BlendState* state) override;
+        void setIndexBufferState(IBuffer* IndexBuffer) override;
+        void setVertexBufferState(const std::vector<VertexBufferBinding>& vertexBuffers) override;
 
         void setGraphicsState(const GraphicsState& state) override;
         void setComputeState(const ComputeState& state) override;
@@ -95,6 +103,8 @@ namespace BlackPearl {
         void setViewport(float minX, float minY, float minZ, float maxX, float maxY, float maxZ);
         void setScissorRect(bool bEnable, uint32_t minX, uint32_t minY, uint32_t maxX, uint32_t maxY);
 
+        virtual bool hasTiledGPU() override;
+
     private:
         Device* m_Device;
         const OpenGLContext& m_Context;
@@ -144,5 +154,11 @@ namespace BlackPearl {
         void _bindBindingSets(const BindingSetVector& bindings);
 
 
+        void _setRenderTargets(uint32_t NumSimultaneousRenderTargets, const FRHIRenderTargetView* NewRenderTargets, const FRHIDepthRenderTargetView* NewDepthStencilTarget);
+        void _setRenderTargetsAndClear(const FRHISetRenderTargetsInfo& RenderTargetsInfo);
+
+
+        GLuint _getOpenGLFramebuffer(uint32_t NumSimultaneousRenderTargets, Texture** RenderTargets, const uint32_t* ArrayIndices, const uint32_t* MipmapLevels, Texture* DepthStencilTarget);
+        GLuint _getOpenGLFramebuffer(uint32_t NumSimultaneousRenderTargets, Texture** RenderTargets, const uint32_t* ArrayIndices, const uint32_t* MipmapLevels, Texture* DepthStencilTarget, int32_t NumRenderingSamples);
 	};
 }

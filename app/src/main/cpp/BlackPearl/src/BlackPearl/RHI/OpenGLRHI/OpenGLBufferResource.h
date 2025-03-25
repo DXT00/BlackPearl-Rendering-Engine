@@ -14,7 +14,7 @@ namespace BlackPearl {
 		VertexBuffer(const BufferDesc& _desc);
 		VertexBuffer(const BufferDesc& _desc, const std::vector<float>&vertices, bool Interleaved = true, bool divisor = false, uint32_t perInstance = 0, uint32_t drawType = GL_STATIC_DRAW);
 		VertexBuffer(const BufferDesc& _desc, const float* vertices, uint32_t size, bool Interleaved = true, bool divisor = false, uint32_t perInstance = 0,uint32_t drawType = GL_STATIC_DRAW);
-		VertexBuffer(const BufferDesc& _desc, const unsigned int* vertices, uint32_t size, bool Interleaved = true, bool divisor = false, uint32_t perInstance = 0, uint32_t drawType = GL_STATIC_DRAW);
+		VertexBuffer(const BufferDesc& _desc, const uint32_t* vertices, uint32_t size, bool Interleaved = true, bool divisor = false, uint32_t perInstance = 0, uint32_t drawType = GL_STATIC_DRAW);
 		VertexBuffer(const BufferDesc& _desc, void* vertices, uint32_t size, bool Interleaved = true, bool divisor = false, uint32_t perInstance = 0, uint32_t drawType = GL_STATIC_DRAW);
 
 		~VertexBuffer();
@@ -26,13 +26,19 @@ namespace BlackPearl {
 		const uint32_t* GetVerticesUInt() const { return m_VerticesUint; }
 		const void* GetVerticesVoid() const { return m_VerticesVoidData; }
 
-		void SetBufferLayout(const VertexBufferLayout& layout) { m_BufferLayout = layout; }
+		void SetBufferLayout(const VertexBufferLayout& layout) { 
+			m_BufferLayout = layout;
+			desc.structStride = m_BufferLayout.GetStride();
+		}
 		VertexBufferLayout GetBufferLayout() const { return m_BufferLayout; }
 		uint32_t GetVertexSize()const { return m_VertexSize; }
 		bool GetDivisor() const { return m_Divisor; }
 		bool GetInterleaved() const { return m_Interleaved; }
 
 		uint32_t GetDivPerInstance() const { return m_DivPerInstance; }
+
+		virtual uint32_t GetStride() override { return m_BufferLayout.GetStride(); }
+
 	private:
 		//uint32_t m_RendererID;
 		uint32_t m_VertexSize;
@@ -49,19 +55,20 @@ namespace BlackPearl {
 	class IndexBuffer : public Buffer {
 	public:
 		IndexBuffer(const BufferDesc& _desc);
-		IndexBuffer(const BufferDesc& _desc, const std::vector<unsigned int>& indices, uint32_t drawType = GL_STATIC_DRAW);
-		IndexBuffer(const BufferDesc& _desc, unsigned int *indices, unsigned int size, uint32_t drawType = GL_STATIC_DRAW);
+		IndexBuffer(const BufferDesc& _desc, const std::vector<uint32_t>& indices, uint32_t drawType = GL_STATIC_DRAW);
+		IndexBuffer(const BufferDesc& _desc, uint32_t*indices, uint32_t size, uint32_t drawType = GL_STATIC_DRAW);
 		~IndexBuffer();
 		uint32_t GetIndicesSize() const { return m_IndiciesSize; }
-		const unsigned int* GetIndicies()const { return m_Indicies; }
+		const uint32_t* GetIndicies()const { return m_Indicies; }
 
 		void Bind();
 		void UnBind();
+		virtual uint32_t GetStride() override { return sizeof(uint32_t); }
 
 	private:
-		//unsigned int m_RendererID;
-		unsigned int m_IndiciesSize;
-		const unsigned int* m_Indicies;
+		//uint32_t m_RendererID;
+		uint32_t m_IndiciesSize;
+		const uint32_t* m_Indicies;
 
 	};
 
@@ -86,77 +93,77 @@ namespace BlackPearl {
 
 
 	private:
-		unsigned int m_RendererID;
+		uint32_t m_RendererID;
 		std::vector<IndirectCommand> m_Commands;
 	};
 
 
-	class Framebuffer : public Buffer {
-	public:
-		FramebufferInfo framebufferInfo;
-		enum Attachment {
-			ColorTexture,
-			DepthTexture,
-			CubeMapDepthTexture,
-			CubeMapColorTexture,
-			RenderBuffer
+	//class Framebuffer : public Buffer {
+	//public:
+	//	FramebufferInfo framebufferInfo;
+	//	enum Attachment {
+	//		ColorTexture,
+	//		DepthTexture,
+	//		CubeMapDepthTexture,
+	//		CubeMapColorTexture,
+	//		RenderBuffer
 
-		};
-		/*no attachment*/
-		Framebuffer(const BufferDesc& _desc);
-		
-		/*initial with attachment*/
-		Framebuffer(const BufferDesc& _desc, const int imageWidth, const int imageHeight, std::initializer_list<Attachment> attachment,  unsigned int colorAttachmentPoint,bool disableColor, TextureType colorTextureType = TextureType::DiffuseMap);
-		void AttachColorTexture(TextureType textureType, unsigned int attachmentPoints, unsigned int imageWidth, unsigned int imageHeight);
-		void AttachColorTexture(TextureHandle texture, unsigned int attachmentPoints);
+	//	};
+	//	/*no attachment*/
+	//	Framebuffer(const FramebufferDesc& _desc);
+	//	
+	//	/*initial with attachment*/
+	//	Framebuffer(const FramebufferDesc& _desc, const int imageWidth, const int imageHeight, std::initializer_list<Attachment> attachment,  uint32_t colorAttachmentPoint,bool disableColor, TextureType colorTextureType = TextureType::DiffuseMap);
+	//	void AttachColorTexture(TextureType textureType, uint32_t attachmentPoints, uint32_t imageWidth, uint32_t imageHeight);
+	//	void AttachColorTexture(TextureHandle texture, uint32_t attachmentPoints);
 
-		void AttachDepthTexture(const int imageWidth, int imageHeight);
-		void AttachDepthTexture(TextureHandle texture, int mipmapLevel);
+	//	void AttachDepthTexture(const int imageWidth, int imageHeight);
+	//	void AttachDepthTexture(TextureHandle texture, int mipmapLevel);
 
-		//void AttachCubeMapDepthTexture(const int imageWidth, int imageHeight);//use for point light shadow map
-		void AttachCubeMapDepthTexture(TextureHandle cubeMap);//use for point light shadow map
+	//	//void AttachCubeMapDepthTexture(const int imageWidth, int imageHeight);//use for point light shadow map
+	//	void AttachCubeMapDepthTexture(TextureHandle cubeMap);//use for point light shadow map
 
-		void AttachCubeMapColorTexture(unsigned int attachmentPoints,const int imageWidth, int imageHeight);//use for point light shadow map
-		void AttachCubeMapColorTexture(unsigned int attachmentPoints, TextureHandle cubeMap);
+	//	void AttachCubeMapColorTexture(uint32_t attachmentPoints,const int imageWidth, int imageHeight);//use for point light shadow map
+	//	void AttachCubeMapColorTexture(uint32_t attachmentPoints, TextureHandle cubeMap);
 
-		void AttachRenderBuffer(const int imageWidth, int imageHeight);
-		void DisableColorBuffer();
-		void Bind();
-		void UnBind();
-		void BindRenderBuffer();
+	//	void AttachRenderBuffer(const int imageWidth, int imageHeight);
+	//	void DisableColorBuffer();
+	//	void Bind();
+	//	void UnBind();
+	//	void BindRenderBuffer();
 
-		
-		void CleanUp();
+	//	
+	//	void CleanUp();
 
-		TextureHandle GetColorTexture(unsigned int attachmentPoint) {
-			GE_ASSERT(m_TextureColorBuffers[attachmentPoint], "attachmentPoint "+ std::to_string( attachmentPoint) +"has no ColorTexture")
-			return m_TextureColorBuffers[attachmentPoint]; 
-		}
-		TextureHandle GetDepthTexture() { return m_TextureDepthBuffer; }
-		TextureHandle GetCubeMapDepthTexture() { return m_CubeMapDepthBuffer; }
-		TextureHandle GetCubeMapColorTexture(unsigned int attachmentPoint) { return m_TextureColorBuffers[attachmentPoint]; }
+	//	TextureHandle GetColorTexture(uint32_t attachmentPoint) {
+	//		GE_ASSERT(m_TextureColorBuffers[attachmentPoint], "attachmentPoint "+ std::to_string( attachmentPoint) +"has no ColorTexture")
+	//		return m_TextureColorBuffers[attachmentPoint]; 
+	//	}
+	//	TextureHandle GetDepthTexture() { return m_TextureDepthBuffer; }
+	//	TextureHandle GetCubeMapDepthTexture() { return m_CubeMapDepthBuffer; }
+	//	TextureHandle GetCubeMapColorTexture(uint32_t attachmentPoint) { return m_TextureColorBuffers[attachmentPoint]; }
 
 
-		unsigned int GetWidth()const { return m_Width; }
-		unsigned int GetHeight()const { return m_Height; }
-		unsigned int GetRenderBufferID() const {
-			return m_RenderBufferID;		
-		}
-		void SetViewPort(int width, int height);
-	private:
-		unsigned int m_Width, m_Height;
-		//unsigned int m_RendererID;
-		
+	//	uint32_t GetWidth()const { return m_Width; }
+	//	uint32_t GetHeight()const { return m_Height; }
+	//	uint32_t GetRenderBufferID() const {
+	//		return m_RenderBufferID;		
+	//	}
+	//	void SetViewPort(int width, int height);
+	//private:
+	//	uint32_t m_Width, m_Height;
+	//	//uint32_t m_RendererID;
+	//	
 
-		//GL_COLOR_ATTACHMENTi 到 Texture的映射
-		std::unordered_map<unsigned int, TextureHandle> m_TextureColorBuffers;
-		//TextureHandlem_TextureColorBuffer;
-		TextureHandle m_TextureDepthBuffer;
-		TextureHandle m_CubeMapDepthBuffer;
-		TextureHandle m_CubeMapColorBuffer;
+	//	//GL_COLOR_ATTACHMENTi 到 Texture的映射
+	//	std::unordered_map<uint32_t, TextureHandle> m_TextureColorBuffers;
+	//	//TextureHandlem_TextureColorBuffer;
+	//	TextureHandle m_TextureDepthBuffer;
+	//	TextureHandle m_CubeMapDepthBuffer;
+	//	TextureHandle m_CubeMapColorBuffer;
 
-		unsigned int m_RenderBufferID;
-	};
+	//	uint32_t m_RenderBufferID;
+	//};
 
 	class GBuffer : public Buffer
 	{
@@ -165,7 +172,7 @@ namespace BlackPearl {
 			GI,
 			RayTracing
 		};
-		GBuffer(const BufferDesc& _desc, const unsigned int imageWidth,const unsigned int imageHeight,Type type = Type::GI);
+		GBuffer(const BufferDesc& _desc, const uint32_t imageWidth,const uint32_t imageHeight,Type type = Type::GI);
 		void Bind();
 		void UnBind();
 		/************************ GI Texture (voxel cone tracing and light probe)*********/
@@ -179,7 +186,7 @@ namespace BlackPearl {
 		void InitGITextures();
 
 		/************************ Raytracing Texture ************************************/
-		TextureHandle GetColorTexture(unsigned int idx);
+		TextureHandle GetColorTexture(uint32_t idx);
 		std::vector<TextureHandle> GetColorTextures() { return m_ColorTextures; }
 
 		void InitRayTracingTextures();
@@ -201,9 +208,9 @@ namespace BlackPearl {
 		/************************ Raytracing Texture ************************************/
 		std::vector<TextureHandle> m_ColorTextures;
 
-		//unsigned int m_RendererID;
-		unsigned int m_RenderBufferID;
-		unsigned int m_Width, m_Height;
+		//uint32_t m_RendererID;
+		uint32_t m_RenderBufferID;
+		uint32_t m_Width, m_Height;
 		Type m_Type;
 
 
@@ -215,12 +222,12 @@ namespace BlackPearl {
 			CleanUp();
 		}
 		void Bind();
-		void BindIndex(unsigned int index);
+		void BindIndex(uint32_t index);
 		void UnBind();
 		void ResetValue(GLuint val);
 		void CleanUp();
 	private:
-		//unsigned int m_RendererID;
+		//uint32_t m_RendererID;
 		
 	};
 	//SSBO
@@ -236,7 +243,7 @@ namespace BlackPearl {
 			return rendererID;
 		}
 		void Bind();
-		void BindIndex(unsigned int index);
+		void BindIndex(uint32_t index);
 		void UnBind();
 		void CleanUp();
 	private:

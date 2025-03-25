@@ -383,7 +383,7 @@ namespace BlackPearl
             glShaderSource(m_ShaderID, 1, &sourceCstr, nullptr);
             glCompileShader(m_ShaderID);
             const bool bSuccessfullyCompiled = VerifyShaderCompilation(m_ShaderID, shaderType);
-            assert(bSuccessfullyCompiled);
+            GE_ASSERT(bSuccessfullyCompiled, "shader compile failed");
 
         }
     }
@@ -945,18 +945,18 @@ namespace BlackPearl
         GLuint Program = 0;
         FOpenGL::GenProgramPipelines(1, &Program);
         std::vector<GLuint> shaderIds;
-        if (vertexShader->m_ShaderID) {
+        if (vertexShader && vertexShader->m_ShaderID) {
             FOpenGL::UseProgramStages(Program, GL_VERTEX_SHADER_BIT,
                 vertexShader->m_ShaderID);
             shaderIds.push_back(vertexShader->m_ShaderID);
         }
-        if (pixelShader->m_ShaderID) {
+        if (pixelShader && pixelShader->m_ShaderID) {
             FOpenGL::UseProgramStages(Program, GL_FRAGMENT_SHADER_BIT,
                 pixelShader->m_ShaderID);
             shaderIds.push_back(pixelShader->m_ShaderID);
 
         }
-        if (geometryShader->m_ShaderID) {
+        if (geometryShader && geometryShader->m_ShaderID) {
             FOpenGL::UseProgramStages(Program, GL_GEOMETRY_SHADER_BIT,
                 geometryShader->m_ShaderID);
             shaderIds.push_back(geometryShader->m_ShaderID);

@@ -12,6 +12,7 @@
 #include "OpenGLBuffer.h"
 #include "OpenGLInputLayout.h"
 #include "OpenGLUtil.h"
+#include "OpenGLFrameBuffer.h"
 #include "OpenGLBoundShaderState.h"
 //#include "OpenGLFrameBuffer.h"
 //
@@ -24,7 +25,7 @@
 //#include "BlackPearl/RHI/DynamicRHI.h"
 //#include "BlackPearl/RHI/RHIDefinitions.h"
 //#include "BlackPearl/RHI/RHITexture.h"
-//#include "BlackPearl/RHI/RHIBindingLayoutDesc.h"
+//#include "BlackPearl/RHI/RHIBindingLayout.h"
 //#include "OpenGLDriver/OpenGLDrv.h"
 
 
@@ -243,7 +244,9 @@ namespace BlackPearl
 
 	FramebufferHandle Device::createFramebuffer(const FramebufferDesc& desc)
 	{
-		return nullptr;
+		Framebuffer* fb = new Framebuffer(desc);
+		fb->desc = desc;
+		fb->framebufferInfo = FramebufferInfoEx(desc);
 	}
 
 	void* Device::mapBuffer(IBuffer* b, CpuAccessMode mapFlags)
@@ -1122,14 +1125,14 @@ namespace BlackPearl
 		
 
 	}
-	void Device::CachedBindElementArrayBuffer(FOpenGLContextState& ContextState, GLuint Buffer)
+	void Device::CachedBindElementArrayBuffer(FOpenGLContextState& ContextState)
 	{
 		
 			//VERIFY_GL_SCOPE();
-			if (ContextState.ElementArrayBufferBound != Buffer)
+			if (ContextState.ElementArrayBufferBound != PendingState.ibo)
 			{
-				glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, Buffer);
-				ContextState.ElementArrayBufferBound = Buffer;
+				glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, PendingState.ibo);
+				ContextState.ElementArrayBufferBound = PendingState.ibo;
 			}
 		
 	}

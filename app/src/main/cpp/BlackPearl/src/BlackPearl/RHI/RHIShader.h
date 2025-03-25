@@ -4,7 +4,6 @@
 #include "RHIDefinitions.h"
 #include "RHIResources.h"
 namespace BlackPearl {
-    class IInputLayout;
     class IBindingLayout;
     class IBindingSet;
 
@@ -110,19 +109,7 @@ typedef RefCountPtr<IShader> ShaderHandle;
 
 
 
-class ShaderParameters
-{
-public:
-   // struct ShaderBindings {
-        std::vector<IBindingLayout*> bindingLayouts;
-        std::vector<IBindingSet*> bindingSets;
-   // };
-   
-   // IInputLayout* inputLayout;
-   // ShaderBindings shaderbinding;
-    //s[ShaderType::NUM_COMPILE_SHADER_STAGES]
 
-};
 namespace RHICore {
 
 

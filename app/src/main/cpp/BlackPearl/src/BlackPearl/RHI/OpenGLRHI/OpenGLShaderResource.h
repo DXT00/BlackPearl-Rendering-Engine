@@ -5,6 +5,7 @@
 #include "../RHIDefinitions.h"
 #include "../RHIShader.h"
 #include "BlackPearl/Renderer/Shader/CrossCompilerCommon.h"
+#include "BlackPearl/Renderer/Shader/ShaderParameters.h"
 
 namespace BlackPearl {
 
@@ -278,7 +279,7 @@ namespace BlackPearl {
 		 void CommitPackedGlobals(const FOpenGLLinkedProgram* LinkedProgram, int32_t Stage);
 
 		 //void CommitPackedUniformBuffers(FOpenGLLinkedProgram* LinkedProgram, int32_t Stage, FRHIUniformBuffer** UniformBuffers, const TArray<CrossCompiler::FUniformBufferCopyInfo>& UniformBuffersCopyInfo);
-		 void CommitPackedUniformBuffers(FOpenGLLinkedProgram* LinkedProgram, int32_t Stage, const std::vector<IBindingSet*> bindings);
+		 void CommitPackedUniformBuffers(FOpenGLLinkedProgram* LinkedProgram, int32_t Stage, const std::vector<BindingSetHandle>& bindings);
 
 	private:
 

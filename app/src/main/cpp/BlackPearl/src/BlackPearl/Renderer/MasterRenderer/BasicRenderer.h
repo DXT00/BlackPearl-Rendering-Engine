@@ -10,6 +10,8 @@
 #include "BlackPearl/Node/SingleNode.h"
 #include "BlackPearl/Node/Node.h"
 #include "BlackPearl/RHI/RHIDevice.h"
+#include "BlackPearl/Renderer/Shader/ShaderParameters.h"
+
 namespace BlackPearl 
 {
 	class BasicRenderer

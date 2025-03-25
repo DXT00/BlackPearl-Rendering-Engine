@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "OpenGLUtil.h"
-#ifdef GE_PLATFORM_ANDRIOD
+#ifdef GE_PLATFORM_ANDROID
 #include "../OpenGLRHI/OpenGLDriver/OpenGLES.h"
 #else
 #include "../OpenGLRHI/OpenGLDriver/OpenGL.h"

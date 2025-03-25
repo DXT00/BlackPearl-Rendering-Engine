@@ -8,7 +8,7 @@
 #define FORCEINLINE	 									    /* Easier to debug */
 #endif
 
-#elif defined(GE_PLATFORM_ANDRIOD)
+#elif defined(GE_PLATFORM_ANDROID)
 #if _DEBUG 
 #define FORCEINLINE	inline									/* Easier to debug */
 #else

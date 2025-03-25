@@ -70,6 +70,7 @@ namespace BlackPearl {
     {
     public:
         [[nodiscard]] virtual const BufferDesc& getDesc() const = 0;
+        [[nodiscard]] virtual uint32_t GetStride() = 0;
     };
 
 

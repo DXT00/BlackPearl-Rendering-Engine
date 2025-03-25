@@ -69,13 +69,13 @@ static const int MaterialFlags_PSDDominantDeltaLobeP1Shift      = 24;
 struct Props {
     //Enable texture
     float shininess;
-    float refractIndex; //�����ϵ��
+    float refractIndex;
     bool  isBinnLight;
     int  isPBRTextureSample;//�Ƿ�ʹ������-->���� ao,normal,metalllic,roughness
-    int  isDiffuseTextureSample;//�Ƿ�ʹ������
-    int  isSpecularTextureSample;//�Ƿ�ʹ������
-    int  isHeightTextureSample;//�Ƿ�ʹ������
-    int  isEmissionTextureSample;//�Ƿ�ʹ������
+    int  isDiffuseTextureSample;
+    int  isSpecularTextureSample;
+    int  isHeightTextureSample;
+    int  isEmissionTextureSample;
     int isRefractMaterial;
     int isDoubleSided;
 

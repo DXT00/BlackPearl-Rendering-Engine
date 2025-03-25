@@ -123,7 +123,10 @@ namespace BlackPearl {
 			g_uiManager = DBG_NEW UIManager();
 
 			g_shaderFactory = DBG_NEW ShaderFactory(g_deviceManager->GetDevice(), g_rootFileSystem, "assets/shaders/spv");
-	
+			
+			g_materialManager->RegisterDeviceManager(g_deviceManager);
+			g_materialManager->Init();
+
 		m_StartTimeMs = 0;// duration_cast<milliseconds>(system_clock::now().time_since_epoch());
 	}
 

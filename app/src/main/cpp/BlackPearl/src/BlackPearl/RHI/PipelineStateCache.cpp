@@ -110,8 +110,9 @@ namespace BlackPearl {
 			return GGraphicsPipelineCache[Initializer.value];
 		}
 		else {
-			
-			return device->createGraphicsPipeline(pipelineDesc, psoState.framebuffer);
+			GraphicsPipelineHandle pso = device->createGraphicsPipeline(pipelineDesc, psoState.framebuffer);
+			GGraphicsPipelineCache[Initializer.value] = pso;
+			return pso;
 		}
 	}
 

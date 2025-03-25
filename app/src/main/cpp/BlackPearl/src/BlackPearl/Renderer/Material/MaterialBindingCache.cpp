@@ -1,16 +1,27 @@
 #include "pch.h"
 #include "MaterialBindingCache.h"
+#include "Material.h"
 #include "BlackPearl/RHI/RHIBindingSet.h"
 #include "BlackPearl/RHI/RHIDefinitions.h"
 #include "BlackPearl/Core.h"
+#include "MaterialManager.h"
 namespace BlackPearl {
-	BindingSetHandle MaterialBindingCache::CreateMaterialBindingSet(const Material* material)
+    extern MaterialManager* g_materialManager;
+
+
+    std::unordered_map<uint32_t, MaterialBindingItem> GMaterialBindingSetCache;
+
+    MaterialBindingCache::MaterialBindingCache()
+    {
+    }
+
+    BindingSetHandle MaterialBindingCache::CreateMaterialBindingSet(DeviceHandle device, const Material* material, BindingLayoutHandle bindingLayout)
 	{
        
         BindingSetDesc bindingSetDesc;
-        bindingSetDesc.trackLiveness = m_TrackLiveness;
+        bindingSetDesc.trackLiveness = false;// m_TrackLiveness;
 
-        for (const auto& item : m_BindingDesc)
+        for (const auto& item : material->materialTemplate->GetBindingDesc())
         {
             BindingSetItem setItem;
 
@@ -25,7 +36,7 @@ namespace BlackPearl {
             case MaterialResource::Sampler:
                 setItem = BindingSetItem::Sampler(
                     item.slot,
-                    m_Sampler);
+                    material->GetSampler());
                 break;
 
             case MaterialResource::DiffuseTexture:
@@ -60,34 +71,19 @@ namespace BlackPearl {
 
             bindingSetDesc.bindings.push_back(setItem);
         }
-
-        return m_Device->createBindingSet(bindingSetDesc, m_BindingLayout);
+        return device->createBindingSet(bindingSetDesc, bindingLayout);
 	}
 
-    BindingSetItem MaterialBindingCache::GetTextureBindingSetItem(uint32_t slot, const TextureHandle& texture) const
+    BindingLayoutHandle MaterialBindingCache::CreateMaterialBindingLayout(
+        DeviceHandle device,
+        const Material* material)
     {
-        return BindingSetItem::Texture_SRV(slot, texture? texture.Get() : m_FallbackTexture.Get());
-    }
-
-	//BindingSetItem MaterialBindingCache::GetTextureBindingSetItem(uint32_t slot, const std::shared_ptr<LoadedTexture>& texture) const
-	//{
-	//	return BindingSetItem::Texture_SRV(slot, texture && texture->texture ? texture->texture.Get() : m_FallbackTexture.Get());
-	//}
-    // same as opengl set uniform
-	MaterialBindingCache::MaterialBindingCache(IDevice* device, ShaderType shaderType, uint32_t registerSpace, const std::vector<MaterialResourceBinding>& bindings, ISampler* sampler, ITexture* fallbackTexture, bool trackLiveness) : 
-        m_Device(device)
-        , m_ShaderType(shaderType)
-        , m_BindingDesc(bindings)
-        , m_FallbackTexture(fallbackTexture)
-        , m_Sampler(sampler)
-        , m_TrackLiveness(trackLiveness)
-	{
 
         RHIBindingLayoutDesc layoutDesc;
-        layoutDesc.visibility = shaderType;
-        layoutDesc.registerSpace = registerSpace;
+        layoutDesc.visibility = ShaderType::Pixel;
+        layoutDesc.registerSpace = material->materialTemplate->GetRegisterSpace();
 
-        for (const auto& item : bindings)
+        for (const auto& item : material->materialTemplate->GetBindingDesc())
         {
             RHIBindingLayoutItem layoutItem{};
             layoutItem.slot = item.slot;
@@ -109,35 +105,49 @@ namespace BlackPearl {
                 layoutItem.type = RHIResourceType::RT_Sampler;
                 break;
             default:
-               // GE_CORE_ERROR("MaterialBindingCache: unknown MaterialResource value {0}", item.resource);
-                //log::error("MaterialBindingCache: unknown MaterialResource value (%d)", item.resource);
+                // GE_CORE_ERROR("MaterialBindingCache: unknown MaterialResource value {0}", item.resource);
+                 //log::error("MaterialBindingCache: unknown MaterialResource value (%d)", item.resource);
                 GE_CORE_ERROR("MaterialBindingCache: unknown MaterialResource value");
-                return;
+                return nullptr;
             }
 
             layoutDesc.bindings.push_back(layoutItem);
         }
 
-        m_BindingLayout = m_Device->createBindingLayout(layoutDesc);
-	}
+        return device->createBindingLayout(layoutDesc);
+    }
+
+    BindingSetItem MaterialBindingCache::GetTextureBindingSetItem(uint32_t slot, const TextureHandle& texture) 
+    {
+        return BindingSetItem::Texture_SRV(slot, texture? texture.Get() : g_materialManager->systemTextures.whiteTexture.Get());
+    }
+
+	//BindingSetItem MaterialBindingCache::GetTextureBindingSetItem(uint32_t slot, const std::shared_ptr<LoadedTexture>& texture) const
+	//{
+	//	return BindingSetItem::Texture_SRV(slot, texture && texture->texture ? texture->texture.Get() : m_FallbackTexture.Get());
+	//}
+    // same as opengl set uniform
+
 
 	IBindingLayout* MaterialBindingCache::GetLayout() const
 	{
 		return m_BindingLayout;
 	}
 
-	IBindingSet* MaterialBindingCache::GetOrCreateMaterialBindingSet(const Material* material)
+    MaterialBindingItem& MaterialBindingCache::GetOrCreateMaterialBindingSet(DeviceHandle device, const Material* material)
 	{
-		std::lock_guard<std::mutex> lockGuard(m_Mutex);
+		//std::lock_guard<std::mutex> lockGuard(m_Mutex);
+        //TODO:: m_BindingSets ¼Ó hash
+        uint32_t key = material->GetId();
+        if (GMaterialBindingSetCache.find(key) != GMaterialBindingSetCache.end()) {
+                return GMaterialBindingSetCache[key];
+        }
 
-		BindingSetHandle& bindingSet = m_BindingSets[material];
+        BindingLayoutHandle bindingLayout = CreateMaterialBindingLayout(device, material);
+        BindingSetHandle bindingSet = CreateMaterialBindingSet(device, material, bindingLayout);
 
-		if (bindingSet)
-			return bindingSet;
-
-		bindingSet = CreateMaterialBindingSet(material);
-
-		return bindingSet;
+        GMaterialBindingSetCache[key] = MaterialBindingItem(bindingSet, bindingLayout);
+		return GMaterialBindingSetCache[key];
 	}
 
 	void MaterialBindingCache::Clear()

@@ -49,7 +49,7 @@ namespace BlackPearl {
 		static const GLint MaxCombinedImageUnits = 48;
 
 		//if (IsMobilePlatform(GMaxRHIShaderPlatform))
-#ifdef GE_PLATFORM_ANDRIOD
+#ifdef GE_PLATFORM_ANDROID
 		{
 			// clamp things to the levels that the spec is expecting, check the minimum is supported.
 			CheckAndSetImageUnits(MaxTextureImageUnits, GLESMaxImageUnitsPerStage, TEXT("pixel stage"));

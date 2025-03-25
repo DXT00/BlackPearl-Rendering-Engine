@@ -5,10 +5,9 @@
 #include "OpenGLDriver/OpenGLDrvPrivate.h"
 namespace BlackPearl {
 
-#define GLBackBufferCnt 2
 	/**
- * Initialize RHI capabilities for the current OpenGL context.
- */
+     * Initialize RHI capabilities for the current OpenGL context.
+     */
 
     const char* OpenGLDeviceManager::GetRendererString() const
     {
@@ -26,7 +25,19 @@ namespace BlackPearl {
 
         m_NvrhiDevice = Device::createDevice();
 
+        for (size_t i = 0; i < GL_BACKBUFFER_CNT; i++)
+        {
+            TextureDesc textureDesc;
+            textureDesc.width = m_DeviceParams.backBufferWidth;
+            textureDesc.height = m_DeviceParams.backBufferHeight;
+            textureDesc.format = m_DeviceParams.swapChainFormat;
+            textureDesc.debugName = "GL backbuffer image";
+            textureDesc.initialState = ResourceStates::Present;
+            textureDesc.keepInitialState = true;
+            textureDesc.isRenderTarget = true;
 
+            m_DefaultBackBuffers[i] = GetDevice()->createTexture(textureDesc);
+        }
 		// Disable SingleRHIThreadStall for GL occlusion queiresn, which should be set for D3D11 only. Enabling it causes RT->RHIT deadlock
 		/*{
 			auto* CVar = IConsoleManager::Get().FindConsoleVariable(TEXT("r.Occlusion.SingleRHIThreadStall"));
@@ -62,11 +73,19 @@ namespace BlackPearl {
 
     void OpenGLDeviceManager::BackBufferResizedInner()
     {
+       // uint32_t backBufferCount = GetBackBufferCount();
+        //m_DefaultFramebuffers.resize(backBufferCount);
+        for (uint32_t index = 0; index < GL_BACKBUFFER_CNT; index++)
+        {
+            FramebufferDesc fboDesc;
+            fboDesc.addColorAttachment(m_DefaultBackBuffers[index]);
+            m_DefaultFramebuffers[index] = GetDevice()->createFramebuffer(fboDesc);
+        }
     }
 
     IFramebuffer* OpenGLDeviceManager::GetCurrentFramebuffer()
     {
-        return nullptr;
+        return m_DefaultFramebuffers[m_BackBufferIndex];
     }
 
     void OpenGLDeviceManager::BeginFrame()
@@ -74,6 +93,15 @@ namespace BlackPearl {
     }
 
     void OpenGLDeviceManager::Present()
+    {
+        m_BackBufferIndex = (m_BackBufferIndex + 1) % GL_BACKBUFFER_CNT;
+    }
+
+    void OpenGLDeviceManager::_RHIViewportBeginDraw()
+    {
+    }
+
+    void OpenGLDeviceManager::_RHIViewportEndDraw()
     {
     }
 

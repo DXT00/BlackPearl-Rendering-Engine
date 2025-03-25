@@ -199,6 +199,7 @@ namespace BlackPearl {
 		m_VertexArray.reset(DBG_NEW VertexArray(false/*interleaved*/));
 		std::shared_ptr<IndexBuffer> indexBuffer;
 		BufferDesc descIndex;
+		descIndex.structStride = sizeof(uint32_t);
 
 		indexBuffer.reset(DBG_NEW IndexBuffer(descIndex, m_IndexBuffer, m_IndexCnt * sizeof(uint32_t)));
 		m_VertexArray->SetIndexBuffer(indexBuffer);

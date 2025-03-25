@@ -20,7 +20,7 @@ namespace BlackPearl {
 		static const bool Vsync = true;
 
 		//static const VoxelConeTracingRenderer::RenderingMode RenderingMode; 
-
+		static const bool MobileMultiView = false; //for vr
 		// ------------------------------------------
 		// Animaition Joints conut
 		// ------------------------------------------

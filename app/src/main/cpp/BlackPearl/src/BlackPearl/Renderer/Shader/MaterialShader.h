@@ -12,10 +12,10 @@ namespace BlackPearl {
 		std::string GetPath() const {
 			return m_ShaderPath;
 		}
-		IShader* GetVertexShader() const { return m_VertexShader; }
-		IShader* GetPixelShader() const { return m_PixelShader; }
-		IShader* GetGeometryShader() const { return m_GeometryShader; }
-		IShader* GetComputeShader() const { return m_ComputeShader; }
+		ShaderHandle GetVertexShader() const { return m_VertexShader; }
+		ShaderHandle GetPixelShader() const { return m_PixelShader; }
+		ShaderHandle GetGeometryShader() const { return m_GeometryShader; }
+		ShaderHandle GetComputeShader() const { return m_ComputeShader; }
 
 	private:
 		std::string ReadFile(const std::string& filepath);
@@ -26,10 +26,10 @@ namespace BlackPearl {
 		std::string m_CommonStructPath = "assets/shaders/common/CommonStruct.glsl";
 
 
-		IShader* m_VertexShader = nullptr;
-		IShader* m_PixelShader = nullptr;
-		IShader* m_GeometryShader = nullptr;
-		IShader* m_ComputeShader = nullptr;
+		ShaderHandle m_VertexShader = nullptr;
+		ShaderHandle m_PixelShader = nullptr;
+		ShaderHandle m_GeometryShader = nullptr;
+		ShaderHandle m_ComputeShader = nullptr;
 
 
 	};

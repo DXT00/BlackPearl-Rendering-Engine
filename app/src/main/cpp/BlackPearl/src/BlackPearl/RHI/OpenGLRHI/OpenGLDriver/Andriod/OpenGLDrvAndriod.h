@@ -8,7 +8,7 @@
 
 #include "BlackPearl/Core/Platform.h"
 
-#ifdef GE_PLATFORM_ANDRIOD
+#ifdef GE_PLATFORM_ANDROID
 
 //#include "CoreMinimal.h"
 //#include "Logging/LogMacros.h"

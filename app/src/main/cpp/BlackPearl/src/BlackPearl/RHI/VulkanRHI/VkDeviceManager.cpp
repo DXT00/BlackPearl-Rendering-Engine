@@ -972,6 +972,12 @@ namespace BlackPearl {
 			m_NvrhiDevice->setEventQuery(query, CommandQueue::Graphics);
 			m_FramesInFlight.push(query);
 		}
+	void VKDeviceManager::_RHIViewportBeginDraw()
+	{
+	}
+	void VKDeviceManager::_RHIViewportEndDraw()
+	{
+	}
 	}
 
 

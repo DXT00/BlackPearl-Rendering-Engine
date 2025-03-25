@@ -2,7 +2,7 @@
 #if GE_API_VULKAN
 
 #include "../RefCountPtr.h"
-#include "../RHIBindingLayoutDesc.h"
+#include "../RHIBindingLayout.h"
 #include "VkContext.h"
 #include <vulkan/vulkan_core.h>
 namespace BlackPearl {

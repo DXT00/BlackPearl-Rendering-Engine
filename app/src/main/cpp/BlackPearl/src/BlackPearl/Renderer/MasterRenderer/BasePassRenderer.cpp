@@ -25,15 +25,15 @@ namespace BlackPearl {
         m_PixelShaderTransmissive = CreatePixelShader(shaderFactory, params, true);
         m_CommonPasses = std::make_shared<CommonRenderPasses>(device, shaderFactory);
 
-        if (params.materialBindings)
-            m_MaterialBindings = params.materialBindings;
-        else {
-            //TODO::
+        //if (params.materialBindings)
+        //    m_MaterialBindings = params.materialBindings;
+        //else {
+        //    //TODO::
 
-            m_MaterialBindings = CreateMaterialBindingCache();
-            //GE_ASSERT(0, "params.materialBindings = nullptr");
+        //    m_MaterialBindings = CreateMaterialBindingCache();
+        //    //GE_ASSERT(0, "params.materialBindings = nullptr");
 
-        }
+        //}
 
         auto samplerDesc = SamplerDesc()
             .setAllAddressModes(SamplerAddressMode::Border)
@@ -83,9 +83,9 @@ namespace BlackPearl {
     {
        // auto& context = static_cast<Context&>(abstractContext);
 
-        IBindingSet* materialBindingSet = m_MaterialBindings->GetOrCreateMaterialBindingSet(material);
+        MaterialBindingItem& materialBindingItem = MaterialBindingCache::GetOrCreateMaterialBindingSet(m_Device, material);
 
-        if (!materialBindingSet)
+        if (!materialBindingItem.bindingSet)
             return false;
 
         if (material->domain >= MaterialDomain::Count || cullMode > RasterCullMode::None)
@@ -109,7 +109,7 @@ namespace BlackPearl {
             std::lock_guard<std::mutex> lockGuard(m_Mutex);
 
             if (!pipeline)
-                pipeline = CreateGraphicsPipeline(key, state.framebuffer);
+                pipeline = CreateGraphicsPipeline(key, state.framebuffer, materialBindingItem.bindingLayout);
 
             if (!pipeline)
                 return false;
@@ -120,7 +120,7 @@ namespace BlackPearl {
         state.pipeline = pipeline;
         //state.bindings = { materialBindingSet, m_ViewBindingSet, context.lightBindingSet };
        // state.bindings = { materialBindingSet, m_ViewBindingSet, m_LightBinding };
-        state.bindings = { materialBindingSet, m_ViewBindingSet };
+        state.bindings = { materialBindingItem.bindingSet, m_ViewBindingSet };
 
 
         return true;
@@ -411,31 +411,31 @@ namespace BlackPearl {
         return m_Device->createBindingSet(bindingSetDesc, m_LightBindingLayout);
     }
 
-    std::shared_ptr<MaterialBindingCache> BasePassRenderer::CreateMaterialBindingCache()
-    {
-        std::vector<MaterialResourceBinding> materialBindings = {
-               { MaterialResource::ConstantBuffer, 7 },
-               { MaterialResource::DiffuseTexture, 0 },
-               { MaterialResource::SpecularTexture, 1 },
-               { MaterialResource::NormalTexture, 2 },
-               { MaterialResource::EmissiveTexture, 3 },
-               { MaterialResource::OcclusionTexture, 4 },
-               { MaterialResource::TransmissionTexture, 5 },
-               { MaterialResource::Sampler, 6 },
-        };
+    //std::shared_ptr<MaterialBindingCache> BasePassRenderer::CreateMaterialBindingCache()
+    //{
+    //    std::vector<MaterialResourceBinding> materialBindings = {
+    //           { MaterialResource::ConstantBuffer, 7 },
+    //           { MaterialResource::DiffuseTexture, 0 },
+    //           { MaterialResource::SpecularTexture, 1 },
+    //           { MaterialResource::NormalTexture, 2 },
+    //           { MaterialResource::EmissiveTexture, 3 },
+    //           { MaterialResource::OcclusionTexture, 4 },
+    //           { MaterialResource::TransmissionTexture, 5 },
+    //           { MaterialResource::Sampler, 6 },
+    //    };
 
-        return std::make_shared<MaterialBindingCache>(
-            m_Device,
-            ShaderType::Pixel,
-            /* registerSpace = */ 0,
-            materialBindings,
-            m_CommonPasses->m_AnisotropicWrapSampler,
-            m_CommonPasses->m_GrayTexture,
-            m_CommonPasses->m_BlackTexture
-        );
-    }
+    //    return std::make_shared<MaterialBindingCache>(
+    //        m_Device,
+    //        ShaderType::Pixel,
+    //        /* registerSpace = */ 0,
+    //        materialBindings,
+    //        m_CommonPasses->m_AnisotropicWrapSampler,
+    //        m_CommonPasses->m_GrayTexture,
+    //        m_CommonPasses->m_BlackTexture
+    //    );
+    //}
 
-    GraphicsPipelineHandle BasePassRenderer::CreateGraphicsPipeline(PipelineKey key, IFramebuffer* framebuffer)
+    GraphicsPipelineHandle BasePassRenderer::CreateGraphicsPipeline(PipelineKey key, IFramebuffer* framebuffer, BindingLayoutHandle materialLayout)
     {
         GraphicsPipelineDesc pipelineDesc;
         pipelineDesc.inputLayout = m_InputLayout;
@@ -445,7 +445,7 @@ namespace BlackPearl {
         pipelineDesc.rasterState.setCullMode(key.bits.cullMode);
         pipelineDesc.blendState.alphaToCoverageEnable = false;
        // pipelineDesc.bindingLayouts = { m_MaterialBindings->GetLayout(), m_ViewBindingLayout, m_LightBindingLayout };
-        pipelineDesc.bindingLayouts = { m_MaterialBindings->GetLayout(), m_ViewBindingLayout };
+        pipelineDesc.bindingLayouts = {  m_ViewBindingLayout , materialLayout };//m_MaterialBindings->GetLayout(),
 
         pipelineDesc.depthStencilState
             .setDepthFunc(key.bits.reverseDepth

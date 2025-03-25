@@ -62,7 +62,11 @@ namespace BlackPearl {
         virtual void open() = 0;
         virtual void close() = 0;
 
-        // Clears the graphics state of the underlying command list object and resets the state cache.
+        virtual void beginRenderPass(const FRHIRenderPassInfo& renderPassInfo, const std::string& passName) = 0;
+        virtual void endRenderPass() = 0;
+        virtual void nextSubpass() = 0;
+
+         // Clears the graphics state of the underlying command list object and resets the state cache.
         virtual void clearState() = 0;
 
         virtual void clearTextureFloat(ITexture* t, TextureSubresourceSet subresources, const Color& clearColor) = 0;
@@ -84,10 +88,11 @@ namespace BlackPearl {
         virtual void setPushConstants(const void* data, size_t byteSize) = 0;
         virtual void setBoundShaderState(IBoundShaderState* state) = 0;
 
-        virtual void setDepthStencilaState(DepthStencilState* state) {}
+        virtual void setDepthStencilState(DepthStencilState* state) {}
         virtual void setRasterizerState(RasterState* state) {}
         virtual void setBlendState(BlendState* state) {}
-
+        virtual void setIndexBufferState(IBuffer* IndexBuffer) {};
+        virtual void setVertexBufferState(const std::vector<VertexBufferBinding>& vertexBuffers) {};
 
         virtual void setGraphicsState(const GraphicsState& state) = 0;
         virtual void draw(const DrawArguments& args) = 0;
@@ -172,6 +177,9 @@ namespace BlackPearl {
         };
         virtual void setViewport(float minX, float minY, float minZ, float maxX, float maxY, float maxZ) {}
         virtual void setScissorRect(bool bEnable, uint32_t minX, uint32_t minY, uint32_t maxX, uint32_t maxY) {}
+
+        virtual bool hasTiledGPU() = 0;
+
     };
 
     typedef RefCountPtr<ICommandList> CommandListHandle;

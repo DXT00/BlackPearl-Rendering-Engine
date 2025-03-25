@@ -1,5 +1,5 @@
 ﻿#include "pch.h"
-#ifdef GE_PLATFORM_ANDRIOD
+#ifdef GE_PLATFORM_ANDROID
 #include "AndriodPlatform.h"
 
 #include <dlfcn.h> 

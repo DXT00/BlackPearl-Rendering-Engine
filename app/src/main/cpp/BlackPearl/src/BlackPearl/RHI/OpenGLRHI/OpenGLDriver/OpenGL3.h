@@ -14,7 +14,7 @@ namespace BlackPearl {
 
 #define OPENGL_GL3		1
 
-#define USE_OPENGL_NAME_CACHE 1
+#define USE_OPENGL_NAME_CACHE 0
 #define OPENGL_NAME_CACHE_SIZE 1024
 
 

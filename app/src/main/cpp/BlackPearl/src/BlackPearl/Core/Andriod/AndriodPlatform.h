@@ -1,5 +1,5 @@
 ﻿
-#ifdef GE_PLATFORM_ANDRIOD
+#ifdef GE_PLATFORM_ANDROID
 #include <dlfcn.h> 
 #include <time.h>
 

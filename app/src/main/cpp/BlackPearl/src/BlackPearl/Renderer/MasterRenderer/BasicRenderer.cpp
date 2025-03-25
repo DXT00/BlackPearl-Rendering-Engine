@@ -14,8 +14,10 @@
 #include "BlackPearl/Config.h"
 #include "BlackPearl/Debugger/D3D12Debugger/HLSLPixDebugger.h"
 #include "BlackPearl/RHI/PipelineStateCache.h"
-#include "BlackPearl/Renderer/Shader/ShaderFactory.h"
 #include "BlackPearl/RHI/RHIShader.h"
+
+#include "BlackPearl/Renderer/Shader/ShaderFactory.h"
+
 #ifdef GE_API_OPENGL
 #include "BlackPearl/RHI/OpenGLRHI/OpenGLShader.h"
 #include "BlackPearl/RHI/OpenGLRHI/OpenGLDriver/OpenGLFunctions.h"
@@ -29,6 +31,7 @@ namespace BlackPearl {
 	BasicRenderer::BasicRenderer(IDevice* device)
 	{
 		m_Device = device;
+		//m_MaterialBindingsCache.reset(DBG_NEW MaterialBindingCache());
 
 		/*if (GetModuleHandle(L"WinPixGpuCapturer.dll") == 0)
 		{
@@ -828,7 +831,8 @@ namespace BlackPearl {
 
 		state.pipeline = PipelineStateCache::GetAndOrCreateGraphicsPipelineState(m_Device, pipelineDesc, key, state);
 		
-		IBindingSet* materialBindingSet = m_MaterialBindingsCache->GetOrCreateMaterialBindingSet(material);
+		//TODO:: bindingSet cache
+		IBindingSet* materialBindingSet = MaterialBindingCache::GetOrCreateMaterialBindingSet(m_Device, material).bindingSet;
 
 		if (!materialBindingSet)
 			return false;
@@ -881,7 +885,7 @@ namespace BlackPearl {
             //TODO :: opengl 分开 vs, ps
 			psoDesc.VS = item.material->GetShader()->GetVertexShader();
 			psoDesc.PS = item.material->GetShader()->GetPixelShader();
-
+			psoDesc.bFromPSOFileCache = false;
             for (int j = 0; j < shaderParms[ShaderType::Pixel].bindingLayouts.size(); ++j) {
                 psoDesc.bindingLayouts.push_back(shaderParms[ShaderType::Pixel].bindingLayouts[j]);
             }
@@ -890,6 +894,7 @@ namespace BlackPearl {
                 graphicsPSO.bindings.push_back(shaderParms[ShaderType::Pixel].bindingSets[j]);
             }
 
+			
             SetupMaterial(item.material, item.cullMode, psoDesc, graphicsPSO);
             SetupInputBuffers(cmdList, const_cast<BufferGroup*>(item.buffers), item.transform, graphicsPSO);
 
@@ -900,7 +905,6 @@ namespace BlackPearl {
 		   // SetGraphicsPipelineState(cmdList, graphicsPSO, 0);
            // SetShaderParametersLegacyVS
 			cmdList->setGraphicsState(graphicsPSO);
-
 
 
 			DrawArguments args;
@@ -917,6 +921,7 @@ namespace BlackPearl {
 			args.startVertexLocation = item.mesh->vertexOffset;// +item.geometry.vertexOffsetInMesh;
 			args.startIndexLocation = item.mesh->indexOffset;// +item.geometry.indexOffsetInMesh;
 			args.startInstanceLocation = 0;// item.instance.GetInstanceIndex();
+
 
 			if (args.drawIndex)
 				cmdList->drawIndexed(args);

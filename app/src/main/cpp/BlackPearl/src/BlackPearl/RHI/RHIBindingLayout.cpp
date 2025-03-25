@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "RHIBindingLayoutDesc.h"
+#include "RHIBindingLayout.h"
 
 namespace BlackPearl {
 

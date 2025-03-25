@@ -1,6 +1,6 @@
 #pragma once
 #include "BlackPearl/Renderer/MasterRenderer/BasicRenderer.h"
-#include "BlackPearl/RHI/RHIBindingLayoutDesc.h"
+#include "BlackPearl/RHI/RHIBindingLayout.h"
 #include "BlackPearl/Math/vector.h"
 #include "BlackPearl/Renderer/SceneType.h"
 #include "BlackPearl/Renderer/DrawStrategy.h"

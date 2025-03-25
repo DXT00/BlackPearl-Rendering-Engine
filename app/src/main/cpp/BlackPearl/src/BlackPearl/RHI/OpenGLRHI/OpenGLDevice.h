@@ -128,7 +128,7 @@ namespace BlackPearl {
 
 		FORCEINLINE void CachedBindArrayBuffer(FOpenGLContextState& ContextState, GLuint Buffer);
 		
-		void CachedBindElementArrayBuffer(FOpenGLContextState& ContextState, GLuint Buffer);
+		void CachedBindElementArrayBuffer(FOpenGLContextState& ContextState);
 		
 
 		/* shader */
@@ -239,6 +239,8 @@ namespace BlackPearl {
 		/** Cached mip-limits for textures when ARB_texture_view is unavailable */
 		std::map<GLuint, std::pair<GLenum, GLenum>> TextureMipLimits;
 
+		protected:
+			FRHIRenderPassInfo RenderPassInfo;
 		private:
 			/**
 			 * Link vertex and pixel shaders in to an OpenGL program.

@@ -68,12 +68,18 @@ namespace BlackPearl {
 	void PBRRenderer::Render(ICommandList* commandList, IFramebuffer* targetFramebuffer, Scene* scene)
 	{
 		commandList->beginMarker("BasePass");
+        
+        //TODO:: get default framebuffer
+        FRHIRenderPassInfo RPInfo(targetFramebuffer->getDesc().colorAttachments[0].texture, ERenderTargetActions::Clear_Store);
+        commandList->beginRenderPass(RPInfo, "BasePass");
+
 		SceneData* view = Renderer::GetSceneData();
 		SceneData* preView = Renderer::GetPreSceneData();
 
 		m_DrawStrategy->PrepareForView(scene, *view);
 		RenderPassTemplate(commandList, targetFramebuffer, view, m_DrawStrategy, m_ShaderParameters);
-
+        
+        commandList->endRenderPass();
 		commandList->endMarker();
 	}
 

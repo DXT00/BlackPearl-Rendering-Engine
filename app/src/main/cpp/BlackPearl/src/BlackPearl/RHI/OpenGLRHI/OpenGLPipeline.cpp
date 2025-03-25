@@ -12,7 +12,7 @@ namespace BlackPearl {
 	{
 	}
 
-
+	//TODO:: framebuffer is gl default framebuffer, _fb is NULL
 	GraphicsPipelineHandle Device::createGraphicsPipeline(const GraphicsPipelineDesc& desc, IFramebuffer* _fb)
 	{
 		Framebuffer* fb = dynamic_cast<Framebuffer*>(_fb);
@@ -21,7 +21,9 @@ namespace BlackPearl {
 
 		GraphicsPipeline* pso = new GraphicsPipeline(*m_Context);
 		pso->desc = desc;
-		pso->framebufferInfo = fb->framebufferInfo;
+
+		if(fb)
+			pso->framebufferInfo = fb->framebufferInfo;
 
 		for (const BindingLayoutHandle& _layout : desc.bindingLayouts)
 		{

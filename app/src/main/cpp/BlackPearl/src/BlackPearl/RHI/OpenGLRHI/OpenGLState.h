@@ -315,10 +315,13 @@ struct FOpenGLRHIState final : public FOpenGLCommonState
 	float							DepthMinZ;
 	float							DepthMaxZ;
 	GLuint							ZeroFilledDummyUniformBuffer;
-	uint32_t							RenderTargetWidth;
-	uint32_t							RenderTargetHeight;
+	uint32_t						RenderTargetWidth;
+	uint32_t						RenderTargetHeight;
 	GLuint							RunningOcclusionQuery;
 	bool							bAlphaToCoverageEnabled;
+
+	GLuint							ibo;
+	std::vector<GLuint>				vbos;
 
 	// Pending framebuffer setup
 	int32_t								NumRenderingSamples;// Only used with GL_EXT_multisampled_render_to_texture
@@ -401,6 +404,7 @@ struct FOpenGLRHIState final : public FOpenGLCommonState
 		, UpIndexBufferBytes(0)
 		, UpVertexBuffer(0)
 		, UpIndexBuffer(0)
+		, ibo(0)
 	{
 		Scissor.minX = Scissor.minY = Scissor.maxX = Scissor.maxY = 0;
 		Viewport.minX = Viewport.minY = Viewport.maxX = Viewport.maxY = 0;

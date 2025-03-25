@@ -11,15 +11,15 @@
 namespace BlackPearl {
     // GL_MAX_DRAW_BUFFERS value
     GLint GMaxOpenGLDrawBuffers = 0;
-    OpenGLFramebuffer::OpenGLFramebuffer()
+    Framebuffer::Framebuffer()
     {
         glGenFramebuffers(1, &m_Fbo);
 
     }
-    OpenGLFramebuffer::~OpenGLFramebuffer()
+    Framebuffer::~Framebuffer()
     {
     }
-    void OpenGLFramebuffer::Bind()
+    void Framebuffer::Bind()
     {
         glBindFramebuffer(GL_FRAMEBUFFER, m_Fbo);
         _BindColorAttachments();
@@ -27,13 +27,13 @@ namespace BlackPearl {
         _BindRenderbuffer();
 
     }
-    void OpenGLFramebuffer::Unbind()
+    void Framebuffer::Unbind()
     {
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
         glViewport(0, 0, Configuration::WindowWidth, Configuration::WindowHeight);
     }
 
-    void OpenGLFramebuffer::BindCubeMapColorAttachments(int attachmentId, int face)
+    void Framebuffer::BindCubeMapColorAttachments(int attachmentId, int face)
     {
         const auto& attach = desc.cubeMapAttachment;
         Texture* texture = static_cast<Texture*>(attach.texture);
@@ -41,10 +41,9 @@ namespace BlackPearl {
     }
 
 
-    void OpenGLFramebuffer::_BindColorAttachments()
+    void Framebuffer::_BindColorAttachments()
     {
         for (int i = 0; i < desc.colorAttachments.size();i++) {
-            //�������ӵ���ǰ�󶨵�֡�������
             const auto& attach = desc.colorAttachments[i];
             Texture* texture = static_cast<Texture*>(attach.texture);
             glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_TEXTURE_2D, texture->GetRendererID(), 0);
@@ -52,7 +51,7 @@ namespace BlackPearl {
         }
     }
 
-    void OpenGLFramebuffer::_BindDepthAttachments()
+    void Framebuffer::_BindDepthAttachments()
     {
         const auto& attach = desc.depthAttachment;
         Texture* texture = static_cast<Texture*>(attach.texture);
@@ -60,7 +59,7 @@ namespace BlackPearl {
         GE_ASSERT(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "Framebuffer not complete!");
     }
     
-    void OpenGLFramebuffer::_BindRenderbuffer()
+    void Framebuffer::_BindRenderbuffer()
     {
         OpenGLRenderBuffer* renderbuffer = static_cast<OpenGLRenderBuffer*>(desc.rboAttachment.rbo);
         glBindRenderbuffer(GL_RENDERBUFFER, renderbuffer->rbo);

@@ -132,7 +132,7 @@ namespace BlackPearl {
 		};
 
 		SetVertices(vertices);
-		//std::vector<unsigned int>  indices = {
+		//std::vector<uint32_t>  indices = {
 		//	0,1,2,
 		//	0,2,3,
 		//	4,5,6,
@@ -148,7 +148,7 @@ namespace BlackPearl {
 
 //		};
 // 		   			// Cube indices.
-		std::vector<unsigned int>  indices =
+		std::vector<uint32_t>  indices =
 		{
 			3,1,0,
 			2,1,3,

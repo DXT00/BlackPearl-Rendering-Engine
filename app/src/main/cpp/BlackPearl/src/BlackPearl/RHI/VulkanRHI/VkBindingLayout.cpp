@@ -6,7 +6,7 @@
 #include "VkUtil.h"
 #include "VkEnum.h"
 #include "BlackPearl/Core.h"
-#include "BlackPearl/RHI/RHIBindingLayoutDesc.h"
+#include "BlackPearl/RHI/RHIBindingLayout.h"
 #include "BlackPearl/RHI/RHIBindingSet.h"
 #include "BlackPearl/RHI/RHIDefinitions.h"
 #include "OpenGLBindingLayout.h"

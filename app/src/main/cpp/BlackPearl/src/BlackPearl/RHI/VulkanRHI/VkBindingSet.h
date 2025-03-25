@@ -3,7 +3,7 @@
 
 #include "../RefCountPtr.h"
 #include "../RHIBindingSet.h"
-#include "../RHIBindingLayoutDesc.h"
+#include "../RHIBindingLayout.h"
 #include "VkContext.h"
 #include "VkBuffer.h"
 #include <vulkan/vulkan_core.h>

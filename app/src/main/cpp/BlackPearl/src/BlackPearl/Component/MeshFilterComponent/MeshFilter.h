@@ -11,9 +11,9 @@ namespace BlackPearl {
 			:Component(Component::Type::MeshFilter) {}
 		~MeshFilter();
 		std::vector<float>  GetVertices() const{ return m_Vertices; }
-		std::vector<unsigned int> GetIndices() const{ return m_Indices;}
+		std::vector<uint32_t> GetIndices() const{ return m_Indices;}
 		void SetVertices(std::vector<float> vertices) { m_Vertices = vertices; }
-		void SetIndices(std::vector<unsigned int> indices) { m_Indices = indices; }
+		void SetIndices(std::vector<uint32_t> indices) { m_Indices = indices; }
 
 		std::vector<uint32_t> indexData;
 
@@ -29,7 +29,7 @@ namespace BlackPearl {
 		
 	protected:
 		std::vector<float>        m_Vertices;
-		std::vector<unsigned int> m_Indices;
+		std::vector<uint32_t> m_Indices;
 
 	
 	};

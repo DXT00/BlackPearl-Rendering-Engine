@@ -1,11 +1,26 @@
 #pragma once
 #include "Material.h"
+#include "BlackPearl/RHI/RHIDevice.h"
+#include "BlackPearl/RHI/RHITexture.h"
+#include "BlackPearl/Renderer/DeviceManager.h"
 namespace BlackPearl {
+
+	struct SystemTextures {
+		TextureHandle blackTexture;
+		TextureHandle grayTexture;
+		TextureHandle whiteTexture;
+		TextureHandle blackTexture2DArray;
+		TextureHandle whiteTexture2DArray;
+		TextureHandle blackCubeMapArray;
+
+	};
 	class MaterialManager
 	{
 	public:
 		MaterialManager();
 		~MaterialManager();
+		void RegisterDeviceManager(DeviceManager* deviceManager);
+		void Init();
 
 		std::shared_ptr<Material> GetMaterial(uint32_t matId) {
 			if (m_MaterialDB.find(matId) == m_MaterialDB.end())
@@ -22,9 +37,25 @@ namespace BlackPearl {
 
 		}
 
+
+	public:
+		SystemTextures systemTextures;
+
 	private:
+		void _CreateSystemTextures(DeviceHandle device);
+
 		std::unordered_map<uint32_t, std::shared_ptr<Material>> m_MaterialDB;
 		uint32_t m_MatMaxId = 0;
+		DeviceHandle m_Device;
+
+
+
+		
+
+		
+		
+		
+		
 	};
 }
 

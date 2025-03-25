@@ -6,7 +6,7 @@
 #include "RHITexture.h"
 #include "RHIBuffer.h"
 #include "RHISampler.h"
-#include "RHIBindingLayoutDesc.h"
+#include "RHIBindingLayout.h"
 #include "RHIRayTraceStruct.h"
 #include "BlackPearl/RHI/Common/Containers.h"
 namespace BlackPearl {

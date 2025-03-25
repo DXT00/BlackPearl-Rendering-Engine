@@ -2,7 +2,7 @@
 #include "BlackPearl/RHI/RHIFrameBuffer.h"
 namespace BlackPearl {
     //TODO:: 命名为Framebuffer, 通过cmake include
-    class OpenGLFramebuffer : public RefCounter<IFramebuffer>
+    class Framebuffer : public RefCounter<IFramebuffer>
     {
     public:
         FramebufferDesc desc;
@@ -13,8 +13,8 @@ namespace BlackPearl {
 
         bool managed = true;
 
-        explicit OpenGLFramebuffer();
-        ~OpenGLFramebuffer() override;
+        explicit Framebuffer();
+        ~Framebuffer() override;
         const FramebufferDesc& getDesc() const override { return desc; }
         const FramebufferInfoEx& getFramebufferInfo() const override { return framebufferInfo; }
 

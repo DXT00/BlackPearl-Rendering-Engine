@@ -51,6 +51,13 @@ namespace BlackPearl {
 
         void open() override;
         void close() override;
+
+        //TODO:: 
+        virtual void beginRenderPass(const FRHIRenderPassInfo& renderPassInfo, const std::string& passName) override;
+        virtual void endRenderPass() override;
+        virtual void nextSubpass() override;
+
+
         void clearState() override;
 
         void clearTextureFloat(ITexture* texture, TextureSubresourceSet subresources, const Color& clearColor) override;
@@ -127,6 +134,9 @@ namespace BlackPearl {
         TrackedCommandBufferPtr getCurrentCmdBuf() const { return m_CurrentCmdBuf; }
 
         const GraphicsState& GetLastGraphicsState() const { return m_CurrentGraphicsState; }
+
+        virtual bool hasTiledGPU() override;
+
     private:
         Device* m_Device;
         const VulkanContext& m_Context;

@@ -26,11 +26,11 @@ namespace BlackPearl {
 	{
 	}
 
-	void FOpenGLShaderParameterCache::CommitPackedUniformBuffers(FOpenGLLinkedProgram* LinkedProgram, int32_t Stage, const std::vector<IBindingSet*> bindings)
+	void FOpenGLShaderParameterCache::CommitPackedUniformBuffers(FOpenGLLinkedProgram* LinkedProgram, int32_t Stage, const std::vector<BindingSetHandle>& bindings)
 	{
 		for (size_t i = 0; i < bindings.size(); i++)
 		{
-			BindingSet* bindingSet = static_cast<BindingSet*>(bindings[i]);
+			BindingSet* bindingSet = static_cast<BindingSet*>(bindings[i].Get());
 			for (BindingSetItem& binding : bindingSet->desc.bindings)
 			{
 

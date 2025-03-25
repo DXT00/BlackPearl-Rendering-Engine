@@ -3,7 +3,7 @@
 #include<vector>
 #include "RHIDefinitions.h"
 #include "RHIShader.h"
-#include "RHIBindingLayoutDesc.h"
+#include "RHIBindingLayout.h"
 #include "RHIInputLayout.h"
 #include "RHIFrameBuffer.h"
 namespace BlackPearl {
@@ -75,7 +75,7 @@ namespace BlackPearl {
 		ShaderHandle GS;
 		ShaderHandle PS;
 
-		bool bFromPSOFileCache;
+		bool bFromPSOFileCache = false;
 
 		BlendState blendState;
 		DepthStencilState depthStencilState;

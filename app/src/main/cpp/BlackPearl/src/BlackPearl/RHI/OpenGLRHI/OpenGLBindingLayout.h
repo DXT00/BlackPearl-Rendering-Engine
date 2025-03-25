@@ -1,5 +1,5 @@
 #pragma once
-#include "../RHIBindingLayoutDesc.h"
+#include "../RHIBindingLayout.h"
 #include "OpenGLContext.h"
 
 namespace BlackPearl {

@@ -28,6 +28,7 @@
 #include "BlackPearl/Math/Math.h"
 #include "BlackPearl/Renderer/Model/ModelLoader.h"
 #include "BlackPearl/Renderer/Shader/MaterialShader.h"
+#include "BlackPearl/Renderer/Material/MaterialTemplate/MaterialTemplate.h"
 namespace BlackPearl {
 
 	extern ModelLoader* g_modelLoader;
@@ -150,7 +151,7 @@ namespace BlackPearl {
 
 		}
 
-		material.reset(DBG_NEW Material(shaderPath, texture, { 1.0,1.0,1.0 }, { 1.0,1.0,1.0 }, { 1.0,1.0,1.0 }, {}));
+		material.reset(DBG_NEW Material(shaderPath, texture, { 1.0,1.0,1.0 }, { 1.0,1.0,1.0 }, { 1.0,1.0,1.0 }, {0.0,0.0,0.0}));
 #if GE_API_VULKAN
 		VertexBufferLayout layout = {
 			{ElementDataType::Float3,"aPos",false,0},

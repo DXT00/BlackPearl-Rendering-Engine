@@ -7,6 +7,7 @@
 #include "BlackPearl/RHI/RHIDevice.h"
 #include "BlackPearl/Object/Object.h"
 #include "BlackPearl/Renderer/Shader/MaterialShader.h"
+#include "BlackPearl/Renderer/Shader/ShaderParameters.h"
 
 namespace BlackPearl {
 

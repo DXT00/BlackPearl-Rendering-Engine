@@ -20,6 +20,7 @@ namespace BlackPearl {
        // void OnPreRender() {}
         virtual ~RenderGraph() = default;
 
+       
         virtual void Render(IFramebuffer* framebuffer, IView* View) { }
         virtual void Animate(float fElapsedTimeSeconds) { }
         virtual void BackBufferResizing() { }

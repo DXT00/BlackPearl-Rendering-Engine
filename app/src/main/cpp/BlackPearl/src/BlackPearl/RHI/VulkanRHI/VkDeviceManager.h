@@ -60,6 +60,9 @@ namespace BlackPearl {
 		void BeginFrame() override;
 		void Present() override;
 
+		virtual void _RHIViewportBeginDraw() override;
+		virtual void _RHIViewportEndDraw() override;
+
 		const char* GetRendererString() const override
 		{
 			return m_RendererString.c_str();

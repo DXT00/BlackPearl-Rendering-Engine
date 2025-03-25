@@ -14,7 +14,8 @@ namespace BlackPearl {
 		BufferDesc desc;
 		GLuint rendererID;
 		const BufferDesc& getDesc() const override { return desc; }
-		
+		virtual uint32_t GetStride() { return desc.structStride; }
+
 
 	};
 	class OpenGLBufferFactory {

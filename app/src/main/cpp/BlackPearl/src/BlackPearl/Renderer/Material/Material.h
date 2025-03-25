@@ -8,6 +8,8 @@
 #include "BlackPearl/Math/Math.h"
 #include "BlackPearl/Renderer/Shader/MaterialShader.h"
 #include "hlsl/core/material_cb.h"
+#include "MaterialTemplate/MaterialTemplate.h"
+#include "MaterialResouceBinding.h"
 
 using namespace BlackPearl::math;
 
@@ -16,7 +18,6 @@ namespace BlackPearl {
 	class Material
 	{
 	public:
-		//����Raytracing�����ж�
 		enum RTXType
 		{
 			RTX_AMBIENT,
@@ -79,31 +80,34 @@ namespace BlackPearl {
 		Material(
 			MaterialShader* shader,
 			const std::shared_ptr<TextureMaps>& textureMaps,
-			const MaterialColor& materialColors
+			const MaterialColor& materialColors,
+			MaterialTemplateType templateType = MaterialTemplateType::kPBR,
+			const std::vector<MaterialResourceBinding>& customBindings
+			= std::vector<MaterialResourceBinding>()
 		);
 			
-
 		Material(
 			const std::string shaderPath, 
 			const std::shared_ptr<TextureMaps>& textureMaps,
-			math::float3 ambientColor, math::float3 diffuseColor, math::float3 specularColor, math::float3 emissiveColor
+			math::float3 ambientColor, math::float3 diffuseColor, math::float3 specularColor, math::float3 emissiveColor,
+			MaterialTemplateType templateType = MaterialTemplateType::kPBR,
+			const std::vector<MaterialResourceBinding>& customBindings
+			= std::vector<MaterialResourceBinding>()
 		);
 
 		~Material();
-		//TODO:: ����opengl��directX shader
-		//ShaderHandle      GetShader()const { GE_ASSERT(DynamicRHI::g_RHIType == DynamicRHI::Type::OpenGL, "Shader class only support opengl now"); return m_Shader; }
 
-		MaterialShader*      GetShader()const { return m_MaterialShader; }
-
+		MaterialShader*				 GetShader()const { return m_MaterialShader; }
 		std::shared_ptr<TextureMaps> GetTextureMaps()const { return m_TextureMaps; }
 		MaterialColor                GetMaterialColor()const { return m_MaterialColors; }
 		Props                        GetProps() const { return m_Props; }
 		RTXType						 GetRTXType() const { return m_RTXType; }
+		SamplerHandle				 GetSampler() const { return m_Sampler; }
 
 		void SetShader(const std::string& shaderPath);
 		void SetShader(MaterialShader* shader);
 		void SetTexture(ITexture* texture);
-		//void SetTexture(const TextureType type, const std::string& image);
+		void SetSampler(ISampler* sampler);
 		void SetMaterialColor(MaterialColor::Color color);
 		void SetMaterialColorDiffuseColor(const math::float3& color);
 		void SetMaterialColorSpecularColor(const math::float3& color);
@@ -144,31 +148,24 @@ namespace BlackPearl {
 		MaterialDomain domain = MaterialDomain::Opaque;
 		BufferHandle materialConstants;
 		MaterialConstants FillMaterialConstants();
-
-		//std::shared_ptr<LoadedTexture> baseOrDiffuseTexture; // metal-rough: base color; spec-gloss: diffuse color; .a = opacity (both modes)
-		//std::shared_ptr<LoadedTexture> metalRoughOrSpecularTexture; // metal-rough: ORM map; spec-gloss: specular color, .a = glossiness
-		//std::shared_ptr<LoadedTexture> normalTexture;
-		//std::shared_ptr<LoadedTexture> emissiveTexture;
-		//std::shared_ptr<LoadedTexture> occlusionTexture;
-		//std::shared_ptr<LoadedTexture> transmissionTexture; // see KHR_materials_transmission; undefined on specular-gloss materials
-		// std::shared_ptr<LoadedTexture> thicknessTexture; // see KHR_materials_volume (not implemented yet)
-
-		//MaterialConstants ���� shader ����
-	public:
+		MaterialTemplate* materialTemplate;
+		MaterialTemplateType materialTemplateType = MaterialTemplateType::kPBR;
+		std::vector<MaterialResourceBinding> customBindingDesc;
 		std::string name = "Default_Material";
+
 	private:
 		
-		MaterialShader*		 m_MaterialShader = nullptr;
+		MaterialShader*				 m_MaterialShader = nullptr;
 		std::shared_ptr<TextureMaps> m_TextureMaps = nullptr;
 		MaterialColor				 m_MaterialColors;
+		SamplerHandle				 m_Sampler = nullptr;
 		Props                        m_Props;
 		RTXType						 m_RTXType;
 		uint32_t					 m_MatId = 0;
 
-
 	private:
 		void _CreateMaterialConstantBuffer();
-
+		MaterialTemplate* _CreateMaterialTemplate();
 	};
 
 }
