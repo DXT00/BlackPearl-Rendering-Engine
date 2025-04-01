@@ -172,6 +172,9 @@ int32_t PlatformGlGetError();
  */
 EOpenGLCurrentContext PlatformOpenGLCurrentContext(FPlatformOpenGLDevice* Device);
 
+
+void PlatformBindContextVAO(FPlatformOpenGLDevice* Device);
+
 /**
  * Check if the query's OpenGL context is a current one. If it's not, there's no sense in issuing
  * OpenGL command for this query and it must be released and recreated.

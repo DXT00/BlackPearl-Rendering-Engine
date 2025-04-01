@@ -5,7 +5,7 @@
 #include "OpenGLDevice.h"
 #include "OpenGLShader.h"
 #include "OpenGLInputLayout.h"
-
+#include "OpenGLFrameBuffer.h"
 namespace BlackPearl {
 
 	void GraphicsPipeline::getNumUniformBuffers(uint32_t** unifromBuffers)

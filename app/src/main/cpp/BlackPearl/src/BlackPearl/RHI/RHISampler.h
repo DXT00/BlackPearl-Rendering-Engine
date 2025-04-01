@@ -45,9 +45,9 @@ namespace BlackPearl {
         float maxAnisotropy = 1.f;
         float mipBias = 0.f;
 
-        bool minFilter = true;
-        bool magFilter = true;
-        bool mipFilter = true;
+        FilterMode minFilter = FilterMode::Linear;
+        FilterMode magFilter = FilterMode::Linear;
+        FilterMode mipFilter = FilterMode::Linear_Mip_Linear;
         SamplerAddressMode addressU = SamplerAddressMode::Clamp;
         SamplerAddressMode addressV = SamplerAddressMode::Clamp;
         SamplerAddressMode addressW = SamplerAddressMode::Clamp;
@@ -56,10 +56,15 @@ namespace BlackPearl {
         SamplerDesc& setBorderColor(const Color& color) { borderColor = color; return *this; }
         SamplerDesc& setMaxAnisotropy(float value) { maxAnisotropy = value; return *this; }
         SamplerDesc& setMipBias(float value) { mipBias = value; return *this; }
-        SamplerDesc& setMinFilter(bool enable) { minFilter = enable; return *this; }
-        SamplerDesc& setMagFilter(bool enable) { magFilter = enable; return *this; }
-        SamplerDesc& setMipFilter(bool enable) { mipFilter = enable; return *this; }
-        SamplerDesc& setAllFilters(bool enable) { minFilter = magFilter = mipFilter = enable; return *this; }
+        SamplerDesc& setMinFilter(bool enable) { (enable)? minFilter = FilterMode::Linear: minFilter = FilterMode::Nearest; return *this; }
+        SamplerDesc& setMagFilter(bool enable) { (enable) ? magFilter = FilterMode::Linear: magFilter = FilterMode::Nearest; return *this; }
+        SamplerDesc& setMipFilter(bool enable) { (enable) ? mipFilter = FilterMode::Linear_Mip_Linear: mipFilter = FilterMode::Nearest_Mip_Nearnest; return *this; }
+        SamplerDesc& setAllFilters(bool enable) {
+            setMinFilter(enable); 
+            setMagFilter(enable);
+            setMipFilter(enable);
+
+            return *this; }
         SamplerDesc& setAddressU(SamplerAddressMode mode) { addressU = mode; return *this; }
         SamplerDesc& setAddressV(SamplerAddressMode mode) { addressV = mode; return *this; }
         SamplerDesc& setAddressW(SamplerAddressMode mode) { addressW = mode; return *this; }

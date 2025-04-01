@@ -349,15 +349,33 @@ namespace BlackPearl {
 		{
 			glDrawArraysInstanced(Mode, First, Count, InstanceCount);
 		}
-
+		/*
+		void glDrawElementsInstanced(
+			GLenum mode,          // 图元类型（如 GL_TRIANGLES、GL_LINES）
+			GLsizei count,        // 每个实例的索引数量
+			GLenum type,          // 索引数据类型（GL_UNSIGNED_SHORT/GL_UNSIGNED_INT）
+			const void* indices,  // 索引数据指针（或偏移量）
+			GLsizei instancecount // 实例数量
+		);
+		*/
 		static FORCEINLINE void DrawElementsInstanced(GLenum Mode, GLsizei Count, GLenum Type, const GLvoid* Indices, GLsizei InstanceCount)
 		{
 			glDrawElementsInstanced(Mode, Count, Type, Indices, InstanceCount);
 		}
-
+		/*
+				void glDrawRangeElements(
+					GLenum mode,          // 图元类型（如 GL_TRIANGLES、GL_LINES）
+					GLuint start,         // 最小顶点索引值
+					GLuint end,           // 最大顶点索引值
+					GLsizei count,        // 要绘制的索引数量
+					GLenum type,         // 索引数据类型（GL_UNSIGNED_SHORT、GL_UNSIGNED_INT）
+					const void* indices   // 索引数据指针
+				);
+		*/
 		static FORCEINLINE void DrawRangeElements(GLenum Mode, GLuint Start, GLuint End, GLsizei Count, GLenum Type, const GLvoid* Indices)
 		{
-			glDrawRangeElements(Mode, Start, End, Count, Type, Indices);
+			if(glDrawRangeElements)
+				glDrawRangeElements(Mode, Start, End, Count, Type, Indices);
 		}
 
 		static FORCEINLINE void ClearBufferfv(GLenum Buffer, GLint DrawBufferIndex, const GLfloat* Value)

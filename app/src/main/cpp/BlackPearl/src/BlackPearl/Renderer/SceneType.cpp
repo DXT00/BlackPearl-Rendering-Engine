@@ -333,28 +333,37 @@ VertexAttributeDesc GetVertexAttributeDesc(VertexAttribute attribute, const char
     {
     case VertexAttribute::Position:
     case VertexAttribute::PrevPosition:
-        result.format = Format::RGB32_FLOAT;
+        //result.format = Format::RGB32_FLOAT;
+        result.elementType = ElementDataType::Float3;
         result.elementStride = sizeof(math::float3);
         break;
     case VertexAttribute::TexCoord1:
     case VertexAttribute::TexCoord2:
-        result.format = Format::RG32_FLOAT;
+       // result.format = Format::RG32_FLOAT;
+        result.elementType = ElementDataType::Float2;
+
         result.elementStride = sizeof(math::float2);
         break;
     case VertexAttribute::Normal:
     case VertexAttribute::Tangent:
-        result.format = Format::RGBA8_SNORM;
+       // result.format = Format::RGBA8_SNORM;
+        result.elementType = ElementDataType::Float4;
+
         result.elementStride = sizeof(uint32_t);
         break;
     case VertexAttribute::Transform:
-        result.format = Format::RGBA32_FLOAT;
+        result.elementType = ElementDataType::Float4;
+
+        //result.format = Format::RGBA32_FLOAT;
         result.arraySize = 3;
         result.offset = offsetof(InstanceData, transform);
         result.elementStride = sizeof(InstanceData);
         result.isInstanced = true;
         break;
     case VertexAttribute::PrevTransform:
-        result.format = Format::RGBA32_FLOAT;
+        result.elementType = ElementDataType::Float4;
+
+        //result.format = Format::RGBA32_FLOAT;
         result.arraySize = 3;
         result.offset = offsetof(InstanceData, prevTransform);
         result.elementStride = sizeof(InstanceData);

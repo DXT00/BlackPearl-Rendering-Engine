@@ -17,8 +17,9 @@ namespace BlackPearl {
 	class IDevice : public IResource
 	{
 	public:
+		
 		//virtual HeapHandle createHeap(const HeapDesc& d) = 0;
-
+		virtual RHIViewport* createViewport(void* windowHandle, uint32_t width, uint32_t height, Format format, bool bFullScreen) = 0;
 		//virtual TextureHandle createTexture(const TextureDesc& d) = 0;
 		virtual TextureHandle createTexture(TextureDesc& d) = 0;
 

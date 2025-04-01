@@ -33,7 +33,7 @@ public:
 
 
 		m_MainCamera->SetMoveSpeed(5.0f);
-		m_Scene->AddObject(m_SphereObj);
+		//m_Scene->AddObject(m_SphereObj);
 		m_Scene->AddObject(m_CubeObj);
 
 

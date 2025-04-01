@@ -27,6 +27,7 @@
 #include "RHIQuery.h"
 #include "RHIDefinitions.h"
 #include "RHIBoundShaderState.h"
+#include "RHIRenderTarget.h"
 
 namespace BlackPearl {
     class IDevice;
@@ -61,6 +62,9 @@ namespace BlackPearl {
     public:
         virtual void open() = 0;
         virtual void close() = 0;
+        virtual void beginDrawingViewport(RHIViewport* viewport, ITexture* renderTarget) = 0;
+        virtual void endDrawingViewport(RHIViewport* viewport, bool bPresent, bool bLockToVsync) = 0;
+        virtual void clearMRT(bool bClearColor, int32_t NumClearColors, const Color* ColorArray, bool bClearDepth, float Depth, bool bClearStencil, uint32_t Stencil) = 0;
 
         virtual void beginRenderPass(const FRHIRenderPassInfo& renderPassInfo, const std::string& passName) = 0;
         virtual void endRenderPass() = 0;

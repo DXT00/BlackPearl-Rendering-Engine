@@ -6,10 +6,12 @@
 #include "BlackPearl/RHI/OpenGLRHI/OpenGLDriver/OpenGLThirdParty.h"
 
 #include "BlackPearl/RHI/RHITexture.h"
+#include "BlackPearl/RHI/RHISampler.h"
 #include "BlackPearl/RHI/RHIState.h"
+
 //#include "BlackPearl/RHI/Common/stb_util.h"
 namespace BlackPearl {
-
+	class Sampler;
 	// opengl 不需要sampler， filter在texture desc 里配置
 	//TODO:: 使用同样的名字 TextureDesc，cmake根据API选 .h
 	/*struct GLTextureDesc : public TextureDesc 
@@ -31,14 +33,14 @@ namespace BlackPearl {
 	};*/
 
 
-
+	//gl texture 需要指定使用哪个sampler
 	class Texture : public RefCounter<ITexture>, public TextureStateExtension
 	{
 	public:
 
-		TextureDesc m_desc;
+		TextureDesc desc;
 
-	
+		Sampler* sampler = nullptr;
 		/*默认值
 		,GL_LINEAR, GL_LINEAR, GL_RGBA, GL_CLAMP_TO_EDGE, GL_UNSIGNED_BYTE
 		*/
@@ -55,10 +57,10 @@ namespace BlackPearl {
 		Texture(TextureType type, std::vector<std::string> faces);
 
 		~Texture() override;
-		const TextureDesc& getDesc() const override { return m_desc; }
+		const TextureDesc& getDesc() const override { return desc; }
 		
 		const TextureType& GetType() const override {
-			return m_desc.type;
+			return desc.type;
 		}
 
 		//void Init(
@@ -82,6 +84,9 @@ namespace BlackPearl {
 		int GetCurrentLod() const { return m_CurLod; }
 		unsigned int	GetMipMapLevel() const { return m_MipMapLevel; }
 
+		/*void SetSampler(SamplerHandle sampler);
+		SamplerHandle GetSampler() const;*/
+
 	protected:
 		unsigned int m_TextureID;
 		int m_Width = 0;
@@ -97,13 +102,15 @@ namespace BlackPearl {
 		GLint m_MagFilter;
 		GLint m_Wrap = -1;
 		unsigned int m_MipMapLevel = 0;
-	private:
-		std::pair<GLenum, GLenum> _ConvertFormat(Format format);
+	
+	/*	std::pair<GLenum, GLenum> _ConvertFormat(Format format);
 		GLenum _ConvertInnerFormat(Format format);
 		GLint _ConvertFilter(FilterMode filter);
-		GLint _ConvertWarp(SamplerAddressMode warp);
+		GLint _ConvertWarp(SamplerAddressMode warp);*/
 	protected:
 		void fillTextureInfo(const TextureDesc& desc);
+		void createDefaultSampler(const TextureDesc& desc);
+
 	};
 
 

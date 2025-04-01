@@ -20,4 +20,6 @@ namespace BlackPearl {
                 desc.depthAttachment.isReadOnly ? ResourceStates::DepthRead : ResourceStates::DepthWrite);
         }
 	}
+
+
 }

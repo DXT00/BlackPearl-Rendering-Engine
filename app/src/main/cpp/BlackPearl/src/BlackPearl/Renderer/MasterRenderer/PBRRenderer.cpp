@@ -2,6 +2,9 @@
 #include "PBRRenderer.h"
 #include "BlackPearl/RHI/Common/RHIUtils.h"
 #include "hlsl/core/forward_cb.h"
+#include "BlackPearl/RHI/OpenGLRHI/OpenGLDriver/OpenGLFunctions.h"
+#include "BlackPearl/Core.h"
+
 namespace BlackPearl {
 
 
@@ -68,15 +71,22 @@ namespace BlackPearl {
 	void PBRRenderer::Render(ICommandList* commandList, IFramebuffer* targetFramebuffer, Scene* scene)
 	{
 		commandList->beginMarker("BasePass");
-        
+        GE_ERROR_JUDGE();
+
         //TODO:: get default framebuffer
         FRHIRenderPassInfo RPInfo(targetFramebuffer->getDesc().colorAttachments[0].texture, ERenderTargetActions::Clear_Store);
         commandList->beginRenderPass(RPInfo, "BasePass");
+        GE_ERROR_JUDGE();
 
 		SceneData* view = Renderer::GetSceneData();
+        GE_ERROR_JUDGE();
+
 		SceneData* preView = Renderer::GetPreSceneData();
+        GE_ERROR_JUDGE();
 
 		m_DrawStrategy->PrepareForView(scene, *view);
+        GE_ERROR_JUDGE();
+
 		RenderPassTemplate(commandList, targetFramebuffer, view, m_DrawStrategy, m_ShaderParameters);
         
         commandList->endRenderPass();

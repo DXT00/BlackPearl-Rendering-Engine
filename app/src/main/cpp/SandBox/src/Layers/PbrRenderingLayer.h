@@ -4,8 +4,8 @@
 #include "glm/glm.hpp"
 #include "glm/ext/matrix_transform.hpp"
 
-#include "imgui/imgui.h"
-#include "imgui/imfilebrowser.h"
+//#include "BlackPearl/ImGui/imgui.h"
+//#include "BlackPearl/ImGui/imfilebrowser.h"
 #include <glm/gtc/type_ptr.hpp>
 using namespace BlackPearl;
 
@@ -22,9 +22,9 @@ public:
 
 		m_SphereObj = CreateSphere(0.5, 64, 64);
 		//Scene
-		m_PBRRenderer = DBG_NEW BlackPearl::PBRRenderer();
+		m_PBRRenderer = DBG_NEW BlackPearl::PBRRenderer(m_DeviceManager->GetDevice());
 
-		m_SphereObj->GetComponent<BlackPearl::MeshRenderer>()->SetShaders(m_PBRRenderer->GetShader());
+		//m_SphereObj->GetComponent<BlackPearl::MeshRenderer>()->SetShaders(m_PBRRenderer->GetShader());
 		
 		BlackPearl::TextureDesc texDesc;
 		texDesc.format = BlackPearl::Format::RGBA8_UNORM;

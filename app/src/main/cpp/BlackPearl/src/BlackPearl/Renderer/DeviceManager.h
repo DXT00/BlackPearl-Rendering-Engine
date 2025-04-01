@@ -47,7 +47,7 @@ namespace BlackPearl {
         uint32_t backBufferHeight = 720;
         uint32_t refreshRate = 0;
         uint32_t swapChainBufferCount = 2;
-        Format swapChainFormat = Format::SRGBA8_UNORM;
+        Format swapChainFormat = Format::RGBA8_UNORM;
         uint32_t swapChainSampleCount = 1;
         uint32_t swapChainSampleQuality = 0;
         uint32_t maxFramesInFlight = 2;
@@ -155,7 +155,7 @@ namespace BlackPearl {
         DeviceManager() = default;
 
         bool CreateWindowDeviceAndSwapChain(const DeviceCreationParameters& params, const char* windowTitle);
-        bool CreateDeviceAndSwapChain(const DeviceCreationParameters& params);
+        bool CreateViewport(const DeviceCreationParameters& params);
 
         void BackBufferResized();
         virtual void BackBufferResizedInner() = 0;
@@ -165,12 +165,12 @@ namespace BlackPearl {
         void UpdateAverageFrameTime(double elapsedTime);
 
         // device-specific methods
-        virtual bool CreateDeviceAndSwapChain() = 0;
-        virtual void DestroyDeviceAndSwapChain() = 0;
-        virtual void ResizeSwapChain() = 0;
-    
-        virtual void _RHIViewportBeginDraw() = 0;
-        virtual void _RHIViewportEndDraw() = 0;
+        virtual bool CreateViewport(uint32_t width, uint32_t height, Format format, bool bFullScreen) = 0;
+        virtual void DestroyViewport() = 0;
+        virtual void ResizeViewport() = 0;
+        virtual void _RHIBeginDrawingViewport(RHIViewport* viewport, ITexture* renderTarget) = 0;
+        virtual void _RHIEndDrawingViewport(RHIViewport* viewport) = 0;
+
     public:
         [[nodiscard]] virtual IDevice* GetDevice() const = 0;
         [[nodiscard]] virtual const char* GetRendererString() const = 0;
@@ -206,7 +206,7 @@ namespace BlackPearl {
         //virtual uint32_t GetBackBufferCount() = 0;
         //IFramebuffer* GetCurrentFramebuffer();
         //IFramebuffer* GetFramebuffer(uint32_t index);
-        virtual IFramebuffer* GetCurrentFramebuffer() = 0;
+        virtual FramebufferHandle GetCurrentFramebuffer() = 0;
         virtual void Shutdown();
         virtual ~DeviceManager() {};
 

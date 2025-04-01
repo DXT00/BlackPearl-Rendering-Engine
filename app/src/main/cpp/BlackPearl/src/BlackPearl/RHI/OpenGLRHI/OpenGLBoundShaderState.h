@@ -14,7 +14,8 @@ namespace BlackPearl {
 			IInputLayout* InVertexDeclarationRHI
 			, IShader* VertexShader
 			, IShader* PixelShader
-			, IShader* GeometryShader
+			, IShader* GeometryShader,
+			FOpenGLLinkedProgram* _LinkedProgram
 		) /*: IBoundShaderState(
 			InVertexDeclarationRHI
 			, VertexShader
@@ -28,6 +29,7 @@ namespace BlackPearl {
 #if PLATFORM_SUPPORTS_GEOMETRY_SHADERS
 			GeometryShaderRHI = GeometryShader;
 #endif
+			LinkedProgram = _LinkedProgram;
 		}
 		//uint16_t StreamStrides[MaxVertexElementCount];
 

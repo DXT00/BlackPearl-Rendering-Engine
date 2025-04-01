@@ -23,6 +23,11 @@ namespace BlackPearl {
 		Image2DMap
 	};
 
+	enum class TextureAccess {
+		ReadOnly,
+		WriteOnly,
+		ReadWrite
+	};
 	struct TextureDesc
 	{
 		TextureDesc(){}
@@ -31,18 +36,29 @@ namespace BlackPearl {
 		uint32_t height = 1;
 		uint32_t depth = 1;
 		uint32_t arraySize = 1;
-		uint32_t mipLevels = 1;
+		uint32_t mipLevelsCnt = 1;
+		uint32_t defaultMipLevel = 0;
+
 		uint32_t sampleCount = 1;
 		uint32_t sampleQuality = 0;
 		Format format = Format::UNKNOWN;
 		TextureDimension dimension = TextureDimension::Texture2D;
+		TextureAccess access = TextureAccess::ReadOnly;
 		std::string debugName;
+
+		/** Clear value to use when fast-clearing the texture. */
+		//TODO::
+		//FClearValueBinding ClearValue;
+
+		bool isLayer = false; //for texture array
+		uint32_t layer = 0;           //texure index in texture array
 
 		bool isShaderResource = true; // Note: isShaderResource is initialized to 'true' for backward compatibility
 		bool isRenderTarget = false;
 		bool isUAV = false;
 		bool isTypeless = false;
 		bool isShadingRateSurface = false;
+		bool isExternalTexture = false;
 
 		SharedResourceFlags sharedResourceFlags = SharedResourceFlags::None;
 
@@ -97,8 +113,11 @@ namespace BlackPearl {
 		// opengl 不需要sampler， filter在texture desc 里配置
 		FilterMode minFilter = FilterMode::Linear;
 		FilterMode magFilter = FilterMode::Linear;
+		FilterMode mipFilter = FilterMode::Linear_Mip_Linear;
+
 		//int internalFormat = GL_RGBA;
 		//int glformat = GL_RGBA;
+		//TODO:: split u, v, w warp
 		SamplerAddressMode wrap = SamplerAddressMode::ClampToEdge;
 		//unsigned int dataType = GL_UNSIGNED_BYTE;
 		bool generateMipmap = false;
@@ -114,7 +133,7 @@ namespace BlackPearl {
 		constexpr TextureDesc& setHeight(uint32_t value) { height = value; return *this; }
 		constexpr TextureDesc& setDepth(uint32_t value) { depth = value; return *this; }
 		constexpr TextureDesc& setArraySize(uint32_t value) { arraySize = value; return *this; }
-		constexpr TextureDesc& setMipLevels(uint32_t value) { mipLevels = value; return *this; }
+		constexpr TextureDesc& setMipLevels(uint32_t value) { mipLevelsCnt = value; return *this; }
 		constexpr TextureDesc& setSampleCount(uint32_t value) { sampleCount = value; return *this; }
 		constexpr TextureDesc& setSampleQuality(uint32_t value) { sampleQuality = value; return *this; }
 		constexpr TextureDesc& setFormat(Format value) { format = value; return *this; }

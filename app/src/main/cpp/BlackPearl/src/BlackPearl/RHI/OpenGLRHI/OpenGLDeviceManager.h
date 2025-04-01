@@ -3,7 +3,7 @@
 #include "BlackPearl/Renderer/DeviceManager.h"
 namespace BlackPearl {
 
-#define GL_BACKBUFFER_CNT 2
+    class OpenGLViewport;
     class OpenGLDeviceManager : public DeviceManager
     {
 
@@ -18,18 +18,18 @@ namespace BlackPearl {
         }
 
     protected:
-        bool CreateDeviceAndSwapChain() override;
-        void DestroyDeviceAndSwapChain() override;
-        virtual void ResizeSwapChain() override;
+        bool CreateViewport(uint32_t width, uint32_t height, Format format, bool bFullScreen) override;
+        void DestroyViewport() override;
+        virtual void ResizeViewport() override;
         virtual void BackBufferResizedInner() override;
-        virtual IFramebuffer* GetCurrentFramebuffer() override;
+        virtual FramebufferHandle GetCurrentFramebuffer() override;
 
         void BeginFrame() override;
         void Present() override;
 
 
-        virtual void _RHIViewportBeginDraw() override;
-        virtual void _RHIViewportEndDraw() override;
+        virtual void _RHIBeginDrawingViewport(RHIViewport* viewport, ITexture* renderTarget) override;
+        virtual void _RHIEndDrawingViewport(RHIViewport* viewport) override;
 
         uint32_t GetBackBufferCount()
         {
@@ -41,10 +41,10 @@ namespace BlackPearl {
         uint32_t GetBackBufferCount() override;*/
     private:
         DeviceHandle m_NvrhiDevice;
-        //default gl front/ back buffer, empty texture, just adapt the rhi
-        FramebufferHandle m_DefaultFramebuffers[2];
-        TextureHandle m_DefaultBackBuffers[2];
 
+        OpenGLViewport* m_Viewport = nullptr;
+
+        CommandListHandle m_CommandList = nullptr;
         uint32_t m_BackBufferIndex = 0;
 
 

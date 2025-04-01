@@ -8,7 +8,7 @@
 //#include "Layers/AdvanceLightTestLayer.h"
 //#include "Layers/ShadowMapTestLayer.h"
 //#include "Layers/ShadowMapPointLightLayer.h"
-//#include "Layers/PbrRenderingLayer.h"
+#include "Layers/PbrRenderingLayer.h"
 //#include "Layers/IBLRenderingLayer.h"
 //#include "Layers/SkyBoxTestLayer.h"
 //#include "Layers/VoxelConeTracingLayer.h"
@@ -24,7 +24,7 @@
 //#include "Layers/CloudRenderLayer.h"
 //#include "Layers/WaterRenderLayer.h"
 //#include "Layers/SSRLayer.h"
-//#include "Layers/RHIRenderGraphLayer.h"
+#include "Layers/RHIRenderGraphLayer.h"
 #include "BlackPearl\Application.h"
 #include "BlackPearl\EntryPoint.h"
 enum RenderSample {
@@ -60,9 +60,9 @@ enum RenderSample {
 			//else if(renderer == BP_VoxelConeTracing){
 			//	layer = DBG_NEW VoxelConeTracingLayer(layer_name);
 			//}
-			//else if (renderer == BP_PbrRendering) {
-			//	layer = DBG_NEW PbrRenderingLayer(layer_name);
-			//}
+			if (renderer == BP_PbrRendering) {
+				layer = DBG_NEW PbrRenderingLayer(layer_name);
+			}
 			//else if (renderer == BP_IBLRendering) {
 			//	layer = DBG_NEW IBLRenderingLayer(layer_name);
 			//}
@@ -97,13 +97,13 @@ enum RenderSample {
 			//	layer = DBG_NEW SSRLayer(layer_name);
 			//}
 			//else
-			//if (renderer == BP_RHIRenderGraphLayer) {
-			//	layer = DBG_NEW RHIRenderGraphLayer(layer_name);
-			//}
+			else if (renderer == BP_RHIRenderGraphLayer) {
+				layer = DBG_NEW RHIRenderGraphLayer(layer_name);
+			}
 			///*else if (renderer == "LumenRenderingLayer") {
 			//	layer = DBG_NEW LumenRenderingLayer(layer_name);
 			//}*/
-			//GetLayerManager()->PushLayer(layer);
+			GetLayerManager()->PushLayer(layer);
 		}
 		virtual ~SandBox() = default;
 	private:

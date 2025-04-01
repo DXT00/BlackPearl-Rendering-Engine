@@ -8,7 +8,7 @@
 #include "BlackPearl/Core.h"
 #include "BlackPearl/RHI/OpenGLRHI/OpenGLInputLayout.h"
 #include "BlackPearl/RHI/OpenGLRHI/OpenGLDriver/OpenGLFunctions.h"
-
+#include "BlackPearl/RHI/OpenGLRHI/OpenGLUtil.h"
 namespace BlackPearl {
 
 	VertexArray::VertexArray(bool interleaved, uint32_t target)
@@ -140,10 +140,10 @@ namespace BlackPearl {
 				stride = layout.GetStride();
 				offset = element.Offset;
 			} 
-			if (ShaderDataTypeToBufferType(element.Type) == GL_INT)
-				glVertexAttribIPointer(element.Location, element.GetElementCount(), ShaderDataTypeToBufferType(element.Type), stride, (void*)offset);
+			if (OpenGLUtil::convertInputElementDataType(element.Type) == GL_INT)
+				glVertexAttribIPointer(element.Location, element.GetElementCount(), OpenGLUtil::convertInputElementDataType(element.Type), stride, (void*)offset);
 			else
-				glVertexAttribPointer(element.Location, element.GetElementCount(), ShaderDataTypeToBufferType(element.Type), element.Normalized == true ? GL_TRUE : GL_FALSE, stride, (void*)offset);
+				glVertexAttribPointer(element.Location, element.GetElementCount(), OpenGLUtil::convertInputElementDataType(element.Type), element.Normalized == true ? GL_TRUE : GL_FALSE, stride, (void*)offset);
 			glEnableVertexAttribArray(element.Location);
 			if (vertexBuffer->GetDivisor()) {
 				glVertexAttribDivisor(element.Location, vertexBuffer->GetDivPerInstance());
@@ -161,10 +161,10 @@ namespace BlackPearl {
 		GE_ASSERT(layout.GetElements().size() == 1, "element size  > 1 in attribute vbo");
 
 		for (BufferElement element : layout.GetElements()) {
-			if (ShaderDataTypeToBufferType(element.Type) == GL_INT)
-				glVertexAttribIPointer(element.Location, element.GetElementCount(), ShaderDataTypeToBufferType(element.Type), 0, (void*)0);
+			if (OpenGLUtil::convertInputElementDataType(element.Type) == GL_INT)
+				glVertexAttribIPointer(element.Location, element.GetElementCount(), OpenGLUtil::convertInputElementDataType(element.Type), 0, (void*)0);
 			else
-				glVertexAttribPointer(element.Location, element.GetElementCount(), ShaderDataTypeToBufferType(element.Type), element.Normalized == true ? GL_TRUE : GL_FALSE, 0, (void*)0);
+				glVertexAttribPointer(element.Location, element.GetElementCount(), OpenGLUtil::convertInputElementDataType(element.Type), element.Normalized == true ? GL_TRUE : GL_FALSE, 0, (void*)0);
 			glEnableVertexAttribArray(element.Location);
 			if (vertexBuffer->GetDivisor()) {
 				glVertexAttribDivisor(element.Location, vertexBuffer->GetDivPerInstance());

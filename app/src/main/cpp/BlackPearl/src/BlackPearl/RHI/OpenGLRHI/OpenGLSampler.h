@@ -10,14 +10,12 @@ namespace BlackPearl {
         SamplerDesc desc;
         //todo:: 和desc有重复的，后面要删除
         FOpenGLSamplerState* samplerState;
-        Sampler() {
-
-        }
+        Sampler(const SamplerDesc& d);
 
         /*explicit Sampler(const VulkanContext& context)
             : m_Context(context)
         { }*/
-
+        GLuint GetRenderID() const { return samplerState->Resource; }
         virtual ~Sampler() override;
         const SamplerDesc& getDesc() const override { return desc; }
 

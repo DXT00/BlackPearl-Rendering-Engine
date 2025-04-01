@@ -7,8 +7,8 @@
 
 #include "../OpenGLDrvPrivate.h"
 #include "OpenGLDrvAndriod.h"
-//#include "OpenGLDrvPrivate.h"
-//#include "OpenGLES.h"
+#include "../OpenGLDrvPrivate.h"
+#include "../OpenGLES.h"
 //#include "Android/AndroidWindow.h"
 //#include "AndroidOpenGLPrivate.h"
 //#include "Android/AndroidPlatformMisc.h"

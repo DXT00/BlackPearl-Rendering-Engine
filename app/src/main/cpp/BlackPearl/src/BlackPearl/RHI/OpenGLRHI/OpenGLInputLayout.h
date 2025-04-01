@@ -20,7 +20,7 @@ namespace BlackPearl {
 	};
 
 
-	static uint32_t ShaderDataTypeToBufferType(const ElementDataType& type) {
+	/*static uint32_t ShaderDataTypeToBufferType(const ElementDataType& type) {
 
 		switch (type) {
 		case ElementDataType::Int:      return GL_INT;
@@ -38,7 +38,7 @@ namespace BlackPearl {
 		}
 		GE_ASSERT(false, "Unknown ShaderDataType!")
 			return 0;
-	}
+	}*/
 	// use for GetVertexAttributeDesc
 	static uint32_t FormatToBufferType(const Format& format) {
 

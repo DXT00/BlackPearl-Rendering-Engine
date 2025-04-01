@@ -693,13 +693,14 @@ namespace BlackPearl {
 		return true;
 	}
 
-	IFramebuffer* VKDeviceManager::GetCurrentFramebuffer()
+	FramebufferHandle VKDeviceManager::GetCurrentFramebuffer()
 	{
 		return m_SwapChainFramebuffers[m_SwapChainIndex];
 	}
 
-	bool VKDeviceManager::CreateDeviceAndSwapChain()
+	bool VKDeviceManager::CreateViewport(uint32_t width, uint32_t height, Format format, bool bFullScreen)
 	{
+		
 		if (m_DeviceParams.enableDebugRuntime)
 		{
 			enabledExtensions.instance.insert("VK_EXT_debug_report");
@@ -845,7 +846,7 @@ namespace BlackPearl {
 		return details;
 	}
 
-	void VKDeviceManager::DestroyDeviceAndSwapChain()
+	void VKDeviceManager::DestroyViewport()
 	{
 		destroySwapChain();
 
@@ -909,10 +910,14 @@ namespace BlackPearl {
 		assert(res == VK_SUCCESS);
 
 		m_NvrhiDevice->queueWaitForSemaphore(CommandQueue::Graphics, m_PresentSemaphore, 0);
+
+		_RHIBeginDrawingViewport();
+
 	}
 
 	void VKDeviceManager::Present()
 	{
+		_RHIEndDrawingViewport();
 		m_NvrhiDevice->queueSignalSemaphore(CommandQueue::Graphics, m_PresentSemaphore, 0);
 
 		//m_BarrierCommandList->open(); // umm...
@@ -972,10 +977,10 @@ namespace BlackPearl {
 			m_NvrhiDevice->setEventQuery(query, CommandQueue::Graphics);
 			m_FramesInFlight.push(query);
 		}
-	void VKDeviceManager::_RHIViewportBeginDraw()
+	void VKDeviceManager::_RHIBeginDrawingViewport()
 	{
 	}
-	void VKDeviceManager::_RHIViewportEndDraw()
+	void VKDeviceManager::_RHIEndDrawingViewport()
 	{
 	}
 	}

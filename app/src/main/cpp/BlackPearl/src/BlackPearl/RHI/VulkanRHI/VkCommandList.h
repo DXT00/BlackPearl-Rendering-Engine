@@ -27,6 +27,7 @@
 #include "BlackPearl/RHI/RHICommandList.h"
 #include "BlackPearl/RHI/RHIState.h"
 #include "BlackPearl/RHI/RHIBoundShaderState.h"
+#include "BlackPearl/RHI/RHIDefinitions.h"
 
 #include "VkDevice.h"
 #include "VkQueue.h"
@@ -51,6 +52,9 @@ namespace BlackPearl {
 
         void open() override;
         void close() override;
+        virtual void beginDrawingViewport(RHIViewport* viewport, ITexture* renderTarget) override;
+        virtual void endDrawingViewport(RHIViewport* viewport, bool bPresent, bool bLockToVsync) override;
+        virtual void clearMRT(bool bClearColor, int32_t NumClearColors, const Color* ColorArray, bool bClearDepth, float Depth, bool bClearStencil, uint32_t Stencil) override;
 
         //TODO:: 
         virtual void beginRenderPass(const FRHIRenderPassInfo& renderPassInfo, const std::string& passName) override;

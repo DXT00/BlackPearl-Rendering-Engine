@@ -944,24 +944,28 @@ namespace BlackPearl
         //
         GLuint Program = 0;
         FOpenGL::GenProgramPipelines(1, &Program);
+        GE_ERROR_JUDGE();
         std::vector<GLuint> shaderIds;
         if (vertexShader && vertexShader->m_ShaderID) {
             FOpenGL::UseProgramStages(Program, GL_VERTEX_SHADER_BIT,
                 vertexShader->m_ShaderID);
             shaderIds.push_back(vertexShader->m_ShaderID);
         }
+        GE_ERROR_JUDGE();
         if (pixelShader && pixelShader->m_ShaderID) {
             FOpenGL::UseProgramStages(Program, GL_FRAGMENT_SHADER_BIT,
                 pixelShader->m_ShaderID);
             shaderIds.push_back(pixelShader->m_ShaderID);
 
         }
+        GE_ERROR_JUDGE();
         if (geometryShader && geometryShader->m_ShaderID) {
             FOpenGL::UseProgramStages(Program, GL_GEOMETRY_SHADER_BIT,
                 geometryShader->m_ShaderID);
             shaderIds.push_back(geometryShader->m_ShaderID);
 
         }
+        GE_ERROR_JUDGE();
         //        if (Config.Shaders[ShaderType::Compute].Resource) {
         //            FOpenGL::UseProgramStages(Program, GL_COMPUTE_SHADER_BIT,
         //                                      Config.Shaders[ShaderType::Compute].Resource);
@@ -973,7 +977,7 @@ namespace BlackPearl
 
                 // Link.
         glLinkProgram(Program);
-
+        GE_ERROR_JUDGE();
         if (!VerifyLinkedProgram(Program, shaderIds)) {
             //TODO:: delete Shader
             return nullptr;
@@ -994,7 +998,7 @@ namespace BlackPearl
         return LinkedProgram;
     }
 
-
+   
     void Device::CachedBindUniformBuffer(FOpenGLContextState& ContextState, GLuint Buffer)
     {
         //VERIFY_GL_SCOPE();
@@ -1028,7 +1032,7 @@ namespace BlackPearl
 //                    continue;
 //                }*/
 //
-//                Size = GLUB->GetSize();
+//                Size = `GLUB->GetSize();
 //#if SUBALLOCATED_CONSTANT_BUFFER
 //                Offset = GLUB->Offset;
 //#endif
@@ -1059,63 +1063,63 @@ namespace BlackPearl
     }
 
     void Device::BindPendingShaderState(FOpenGLContextState &ContextState) {
-        bool ForceUniformBindingUpdate = false;
+        //bool ForceUniformBindingUpdate = false;
 
-//        GLuint PendingProgram = PendingState.BoundShaderState->LinkedProgram->Program;
-//        if (ContextState.Program != PendingProgram) {
-//            FOpenGL::BindProgramPipeline(PendingProgram);
-//            ContextState.Program = PendingProgram;
-//            //MarkShaderParameterCachesDirty(PendingState.ShaderParameters, false);
-//            //PendingState.LinkedProgramAndDirtyFlag = nullptr;
-//        }
-//
-//        if (PendingState.bAnyDirtyRealUniformBuffers[(int) ShaderType::VertexShader] ||
-//            PendingState.bAnyDirtyRealUniformBuffers[(int) ShaderType::Pixel] ||
-//            PendingState.bAnyDirtyRealUniformBuffers[(int) ShaderType::Geometry]) {
-//            int32_t NextUniformBufferIndex = OGL_FIRST_UNIFORM_BUFFER;
-//
-//            /*static_assert(SF_NumGraphicsFrequencies == 5 && SF_NumFrequencies == 10, "Unexpected SF_ ordering");
-//            static_assert(SF_RayGen > SF_NumGraphicsFrequencies, "SF_NumGraphicsFrequencies be the number of frequencies supported in OpenGL");*/
-//
-//            int32_t NumUniformBuffers[(int) ShaderType::AllGraphics];
-//
-//            //PendingState.GraphicsPipline->pipelineBindingLayouts->getNumUniformBuffers(NumUniformBuffers);
-//
-//            if (PendingState.bAnyDirtyRealUniformBuffers[(int) ShaderType::VertexShader]) {
-//                BindUniformBufferBase(
-//                        ContextState,
-//                        NumUniformBuffers[(int) ShaderType::VertexShader],
-//                        PendingState.BoundUniformBuffers[(int) ShaderType::VertexShader],
-//                        NextUniformBufferIndex,
-//                        ForceUniformBindingUpdate);
-//            }
-//            NextUniformBufferIndex += NumUniformBuffers[(int) ShaderType::VertexShader];
-//
-//            if (PendingState.bAnyDirtyRealUniformBuffers[(int) ShaderType::Pixel]) {
-//                BindUniformBufferBase(
-//                        ContextState,
-//                        NumUniformBuffers[(int) ShaderType::Pixel],
-//                        PendingState.BoundUniformBuffers[(int) ShaderType::Pixel],
-//                        NextUniformBufferIndex,
-//                        ForceUniformBindingUpdate);
-//            }
-//            NextUniformBufferIndex += NumUniformBuffers[(int) ShaderType::Pixel];
-//
-//            if (NumUniformBuffers[(int) ShaderType::Geometry] >= 0 &&
-//                PendingState.bAnyDirtyRealUniformBuffers[(int) ShaderType::Geometry]) {
-//                BindUniformBufferBase(
-//                        ContextState,
-//                        NumUniformBuffers[(int) ShaderType::Geometry],
-//                        PendingState.BoundUniformBuffers[(int) ShaderType::Geometry],
-//                        NextUniformBufferIndex,
-//                        ForceUniformBindingUpdate);
-//                NextUniformBufferIndex += NumUniformBuffers[(int) ShaderType::Geometry];
-//            }
-//
-//            PendingState.bAnyDirtyRealUniformBuffers[(int) ShaderType::VertexShader] = false;
-//            PendingState.bAnyDirtyRealUniformBuffers[(int) ShaderType::Pixel] = false;
-//            PendingState.bAnyDirtyRealUniformBuffers[(int) ShaderType::Geometry] = false;
-//        }
+        //GLuint PendingProgram = PendingState.BoundShaderState->LinkedProgram->Program;
+        //if (ContextState.Program != PendingProgram) {
+        //    FOpenGL::BindProgramPipeline(PendingProgram);
+        //    ContextState.Program = PendingProgram;
+        //    //MarkShaderParameterCachesDirty(PendingState.ShaderParameters, false);
+        //    //PendingState.LinkedProgramAndDirtyFlag = nullptr;
+        //}
+
+        //if (PendingState.bAnyDirtyRealUniformBuffers[(int) ShaderType::VertexShader] ||
+        //    PendingState.bAnyDirtyRealUniformBuffers[(int) ShaderType::Pixel] ||
+        //    PendingState.bAnyDirtyRealUniformBuffers[(int) ShaderType::Geometry]) {
+        //    int32_t NextUniformBufferIndex = OGL_FIRST_UNIFORM_BUFFER;
+
+        //    /*static_assert(SF_NumGraphicsFrequencies == 5 && SF_NumFrequencies == 10, "Unexpected SF_ ordering");
+        //    static_assert(SF_RayGen > SF_NumGraphicsFrequencies, "SF_NumGraphicsFrequencies be the number of frequencies supported in OpenGL");*/
+
+        //    int32_t NumUniformBuffers[(int) ShaderType::AllGraphics];
+
+        //    //PendingState.GraphicsPipline->pipelineBindingLayouts->getNumUniformBuffers(NumUniformBuffers);
+
+        //    if (PendingState.bAnyDirtyRealUniformBuffers[(int) ShaderType::VertexShader]) {
+        //        BindUniformBufferBase(
+        //                ContextState,
+        //                NumUniformBuffers[(int) ShaderType::VertexShader],
+        //                PendingState.BoundUniformBuffers[(int) ShaderType::VertexShader],
+        //                NextUniformBufferIndex,
+        //                ForceUniformBindingUpdate);
+        //    }
+        //    NextUniformBufferIndex += NumUniformBuffers[(int) ShaderType::VertexShader];
+
+        //    if (PendingState.bAnyDirtyRealUniformBuffers[(int) ShaderType::Pixel]) {
+        //        BindUniformBufferBase(
+        //                ContextState,
+        //                NumUniformBuffers[(int) ShaderType::Pixel],
+        //                PendingState.BoundUniformBuffers[(int) ShaderType::Pixel],
+        //                NextUniformBufferIndex,
+        //                ForceUniformBindingUpdate);
+        //    }
+        //    NextUniformBufferIndex += NumUniformBuffers[(int) ShaderType::Pixel];
+
+        //    if (NumUniformBuffers[(int) ShaderType::Geometry] >= 0 &&
+        //        PendingState.bAnyDirtyRealUniformBuffers[(int) ShaderType::Geometry]) {
+        //        BindUniformBufferBase(
+        //                ContextState,
+        //                NumUniformBuffers[(int) ShaderType::Geometry],
+        //                PendingState.BoundUniformBuffers[(int) ShaderType::Geometry],
+        //                NextUniformBufferIndex,
+        //                ForceUniformBindingUpdate);
+        //        NextUniformBufferIndex += NumUniformBuffers[(int) ShaderType::Geometry];
+        //    }
+
+        //    PendingState.bAnyDirtyRealUniformBuffers[(int) ShaderType::VertexShader] = false;
+        //    PendingState.bAnyDirtyRealUniformBuffers[(int) ShaderType::Pixel] = false;
+        //    PendingState.bAnyDirtyRealUniformBuffers[(int) ShaderType::Geometry] = false;
+        //}
 
         /*	if (FOpenGL::SupportsBindlessTexture())
             {
@@ -1210,7 +1214,8 @@ namespace BlackPearl
                     VertexDeclarationRHI,
                     VertexShader,
                     PixelShader,
-                    GeometryShader
+                    GeometryShader,
+                    LinkedProgram
                 );
            // }
         }

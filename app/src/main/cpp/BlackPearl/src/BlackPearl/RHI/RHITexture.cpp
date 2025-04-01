@@ -13,7 +13,7 @@ namespace BlackPearl {
         }
         else
         {
-            int lastMipLevelPlusOne = std::min(baseMipLevel + numMipLevels, desc.mipLevels);
+            int lastMipLevelPlusOne = std::min(baseMipLevel + numMipLevels, desc.mipLevelsCnt);
             ret.numMipLevels = uint32_t(std::max(0u, lastMipLevelPlusOne - baseMipLevel));
         }
 
@@ -40,7 +40,7 @@ namespace BlackPearl {
 
     bool TextureSubresourceSet::isEntireTexture(const TextureDesc& desc) const
     {
-        if (baseMipLevel > 0u || baseMipLevel + numMipLevels < desc.mipLevels)
+        if (baseMipLevel > 0u || baseMipLevel + numMipLevels < desc.mipLevelsCnt)
             return false;
 
         switch (desc.dimension)  // NOLINT(clang-diagnostic-switch-enum)
@@ -61,7 +61,7 @@ namespace BlackPearl {
     {
         TextureSlice ret(*this);
 
-        GE_ASSERT(mipLevel < desc.mipLevels, "mipLevel invalid");
+        GE_ASSERT(mipLevel < desc.mipLevelsCnt, "mipLevel invalid");
 
         if (width == uint32_t(-1))
             ret.width = std::max(desc.width >> mipLevel, 1u);

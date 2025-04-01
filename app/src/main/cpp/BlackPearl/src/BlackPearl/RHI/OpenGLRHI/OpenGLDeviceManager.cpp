@@ -2,7 +2,9 @@
 #include "BlackPearl/Renderer/DeviceManager.h"
 #include "OpenGLDeviceManager.h"
 #include "OpenGLDevice.h"
+#include "OpenGLViewport.h"
 #include "OpenGLDriver/OpenGLDrvPrivate.h"
+#include "BlackPearl/Application.h"
 namespace BlackPearl {
 
 	/**
@@ -15,29 +17,20 @@ namespace BlackPearl {
     }
     IDevice* OpenGLDeviceManager::GetDevice() const
     {
-            return m_NvrhiDevice;
+        return m_NvrhiDevice;
         
     }
-    bool OpenGLDeviceManager::CreateDeviceAndSwapChain()
+    bool OpenGLDeviceManager::CreateViewport(uint32_t width, uint32_t height, Format format, bool bFullScreen)
     {
+
         // opengl context and driver init
         PlatformInitOpenGL();
 
         m_NvrhiDevice = Device::createDevice();
 
-        for (size_t i = 0; i < GL_BACKBUFFER_CNT; i++)
-        {
-            TextureDesc textureDesc;
-            textureDesc.width = m_DeviceParams.backBufferWidth;
-            textureDesc.height = m_DeviceParams.backBufferHeight;
-            textureDesc.format = m_DeviceParams.swapChainFormat;
-            textureDesc.debugName = "GL backbuffer image";
-            textureDesc.initialState = ResourceStates::Present;
-            textureDesc.keepInitialState = true;
-            textureDesc.isRenderTarget = true;
+        m_CommandList = GetDevice()->createCommandList();
 
-            m_DefaultBackBuffers[i] = GetDevice()->createTexture(textureDesc);
-        }
+        m_Viewport = static_cast<OpenGLViewport*>(GetDevice()->createViewport(Application::Get().GetWindow().GetNativeWindow(), width, height, format, bFullScreen));
 		// Disable SingleRHIThreadStall for GL occlusion queiresn, which should be set for D3D11 only. Enabling it causes RT->RHIT deadlock
 		/*{
 			auto* CVar = IConsoleManager::Get().FindConsoleVariable(TEXT("r.Occlusion.SingleRHIThreadStall"));
@@ -61,48 +54,59 @@ namespace BlackPearl {
     }
 
 
-    void OpenGLDeviceManager::DestroyDeviceAndSwapChain()
+    void OpenGLDeviceManager::DestroyViewport()
     {
 
     }
 
-    void OpenGLDeviceManager::ResizeSwapChain()
+    void OpenGLDeviceManager::ResizeViewport()
     {
 
     }
 
     void OpenGLDeviceManager::BackBufferResizedInner()
     {
+        m_Viewport->Resize(m_DeviceParams.backBufferWidth, m_DeviceParams.backBufferHeight, m_DeviceParams.startFullscreen);
+        //b0, b1
        // uint32_t backBufferCount = GetBackBufferCount();
         //m_DefaultFramebuffers.resize(backBufferCount);
-        for (uint32_t index = 0; index < GL_BACKBUFFER_CNT; index++)
+       /* for (uint32_t index = 0; index < GL_BACKBUFFER_CNT; index++)
         {
             FramebufferDesc fboDesc;
             fboDesc.addColorAttachment(m_DefaultBackBuffers[index]);
             m_DefaultFramebuffers[index] = GetDevice()->createFramebuffer(fboDesc);
-        }
+        }*/
     }
 
-    IFramebuffer* OpenGLDeviceManager::GetCurrentFramebuffer()
+    FramebufferHandle OpenGLDeviceManager::GetCurrentFramebuffer()
     {
-        return m_DefaultFramebuffers[m_BackBufferIndex];
+        return m_Viewport->GetFrameBuffer(m_BackBufferIndex);
     }
 
     void OpenGLDeviceManager::BeginFrame()
     {
+        _RHIBeginDrawingViewport(m_Viewport, nullptr);
     }
 
     void OpenGLDeviceManager::Present()
     {
         m_BackBufferIndex = (m_BackBufferIndex + 1) % GL_BACKBUFFER_CNT;
+        _RHIEndDrawingViewport(m_Viewport);
+
     }
 
-    void OpenGLDeviceManager::_RHIViewportBeginDraw()
+    void OpenGLDeviceManager::_RHIBeginDrawingViewport(RHIViewport* viewport, ITexture* renderTarget)
     {
+        m_CommandList->open();
+        m_CommandList->beginDrawingViewport(viewport, renderTarget);
+        m_CommandList->close();
+        
     }
 
-    void OpenGLDeviceManager::_RHIViewportEndDraw()
+    void OpenGLDeviceManager::_RHIEndDrawingViewport(RHIViewport* viewport)
     {
+        m_CommandList->endDrawingViewport(viewport, true, false);
+
     }
 
     //ITexture* OpenGLDeviceManager::GetCurrentBackBuffer()

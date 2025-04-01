@@ -43,4 +43,9 @@ namespace BlackPearl {
         }
     }
 
+    /*FramebufferAttachment::FramebufferAttachment(ITexture* _texture, ERenderTargetLoadAction InLoadAction, ERenderTargetStoreAction InStoreAction)
+    {
+        
+    }*/
+
 }

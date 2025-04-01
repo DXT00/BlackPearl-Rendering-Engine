@@ -3,7 +3,7 @@
 namespace BlackPearl {
     static uint32_t calcSubresource(uint32_t mipLevel, uint32_t arraySlice, const TextureDesc& desc)
     {
-        return mipLevel + arraySlice * desc.mipLevels;
+        return mipLevel + arraySlice * desc.mipLevelsCnt;
     }
 
     void CommandListResourceStateTracker::setEnableUavBarriersForTexture(TextureStateExtension* texture, bool enableBarriers)
@@ -35,7 +35,7 @@ namespace BlackPearl {
         }
         else
         {
-            tracking->subresourceStates.resize(desc.mipLevels * desc.arraySize, tracking->state);
+            tracking->subresourceStates.resize(desc.mipLevelsCnt * desc.arraySize, tracking->state);
             tracking->state = ResourceStates::Unknown;
 
             for (uint32_t mipLevel = subresources.baseMipLevel; mipLevel < subresources.baseMipLevel + subresources.numMipLevels; mipLevel++)
@@ -159,7 +159,7 @@ namespace BlackPearl {
                     m_MessageCallback->message(MessageSeverity::Error, ss.str().c_str());
                 }
 
-                tracking->subresourceStates.resize(texture->descRef.mipLevels * texture->descRef.arraySize, tracking->state);
+                tracking->subresourceStates.resize(texture->descRef.mipLevelsCnt * texture->descRef.arraySize, tracking->state);
                 tracking->state = ResourceStates::Unknown;
                 stateExpanded = true;
             }

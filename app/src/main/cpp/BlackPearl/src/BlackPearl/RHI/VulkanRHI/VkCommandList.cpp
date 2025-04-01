@@ -195,7 +195,9 @@ namespace BlackPearl {
 	void CommandList::nextSubpass() 
 	{
 	}
-
+	void CommandList::clearMRT(bool bClearColor, int32_t NumClearColors, const Color* ColorArray, bool bClearDepth, float Depth, bool bClearStencil, uint32_t Stencil)
+	{
+	}
 	bool CommandList::hasTiledGPU()
 	{
 #ifdef GE_PLATFORM_WINDOWS
@@ -1484,7 +1486,7 @@ namespace BlackPearl {
 				//.setBaseArrayLayer(barrier.entireTexture ? 0 : barrier.arraySlice)
 				//.setLayerCount(barrier.entireTexture ? texture->desc.arraySize : 1)
 				//.setBaseMipLevel(barrier.entireTexture ? 0 : barrier.mipLevel)
-				//.setLevelCount(barrier.entireTexture ? texture->desc.mipLevels : 1)
+				//.setLevelCount(barrier.entireTexture ? texture->desc.mipLevelsCnt : 1)
 				//.setAspectMask(aspectMask);
 
 			/*imageBarriers.push_back(VkImageMemoryBarrier()
@@ -1508,7 +1510,7 @@ namespace BlackPearl {
 			imageBarrier.image = texture->image;
 			imageBarrier.subresourceRange.aspectMask = aspectMask;
 			imageBarrier.subresourceRange.baseMipLevel = barrier.entireTexture ? 0 : barrier.mipLevel;
-			imageBarrier.subresourceRange.levelCount = barrier.entireTexture ? texture->desc.mipLevels : 1;
+			imageBarrier.subresourceRange.levelCount = barrier.entireTexture ? texture->desc.mipLevelsCnt : 1;
 			imageBarrier.subresourceRange.baseArrayLayer = barrier.entireTexture ? 0 : barrier.arraySlice;
 			imageBarrier.subresourceRange.layerCount = barrier.entireTexture ? texture->desc.arraySize : 1;
 
@@ -1645,7 +1647,7 @@ namespace BlackPearl {
 			imageBarrier.image = texture->image;
 			imageBarrier.subresourceRange.aspectMask = aspectMask;
 			imageBarrier.subresourceRange.baseMipLevel = barrier.entireTexture ? 0 : barrier.mipLevel;
-			imageBarrier.subresourceRange.levelCount = barrier.entireTexture ? texture->desc.mipLevels : 1;
+			imageBarrier.subresourceRange.levelCount = barrier.entireTexture ? texture->desc.mipLevelsCnt : 1;
 			imageBarrier.subresourceRange.baseArrayLayer = barrier.entireTexture ? 0 : barrier.arraySlice;
 			imageBarrier.subresourceRange.layerCount = barrier.entireTexture ? texture->desc.arraySize : 1;
 

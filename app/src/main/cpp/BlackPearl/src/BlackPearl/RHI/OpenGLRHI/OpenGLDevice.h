@@ -9,9 +9,11 @@
 #include "../RHIInputLayout.h"
 #include "../RHIQuery.h"
 #include "../RHIDescriptorTable.h"
+#include "../RHIRenderTarget.h"
 #include "../OpenGLRHI/OpenGLDriver/OpenGLDrvPrivate.h"
 #include "BlackPearl/Core/Container/TBitArray.h"
 #include "OpenGLState.h"
+
 namespace BlackPearl {
 
     class OpenGLViewport;
@@ -23,6 +25,7 @@ namespace BlackPearl {
 	class FOpenGLLinkedProgram;
 	class FOpenGLStream;
 	class Buffer;
+	class Sampler;
 
 	// Define here so don't have to do platform filtering
 #ifndef GL_TEXTURE_EXTERNAL_OES
@@ -36,6 +39,8 @@ namespace BlackPearl {
 
 		Device();
 		~Device() {}
+		
+		virtual RHIViewport* createViewport(void* windowHandle, uint32_t width, uint32_t height, Format format, bool bFullScreen) override;
 
 		virtual TextureHandle createTexture(TextureDesc& d) override;
 
@@ -89,6 +94,7 @@ namespace BlackPearl {
 		static DeviceHandle createDevice();
 
 		friend class CommandList;
+		friend class OpenGLViewport;
 
 	public:
         
@@ -103,6 +109,7 @@ namespace BlackPearl {
 			const std::vector<IBindingSet*>& IBindingSet,
 			bool bFromPSOFileCache
 		);
+
 
 
 	protected:
@@ -137,6 +144,8 @@ namespace BlackPearl {
 	    void BindPendingComputeShaderState(FOpenGLContextState& ContextState, IShader* ComputeShader);
 
 
+		void CommitDescriptorSets(FOpenGLContextState& ContextState);
+
 		void CommitGraphicsResourceTablesInner();
 		void CommitComputeResourceTables(Shader* ComputeShader);
 		void CommitNonComputeShaderConstants();
@@ -160,6 +169,7 @@ namespace BlackPearl {
 		void RHISetStreamSource(uint32_t StreamIndex, Buffer* VertexBuffer, uint32_t Offset);
 
 
+		void BindContextVAO();
 
 		void SetupVertexArrays(FOpenGLContextState& ContextState, uint32_t BaseVertexIndex, FOpenGLStream* Streams, uint32_t NumStreams, uint32_t MaxVertices);
 		void CachedSetupTextureStageInner(FOpenGLContextState& ContextState, GLint TextureIndex, GLenum Target, GLuint Resource, GLint BaseMip, GLint NumMips);
@@ -170,7 +180,7 @@ namespace BlackPearl {
 		FORCEINLINE void CachedSetupTextureStage(FOpenGLContextState& ContextState, GLint TextureIndex, GLenum Target, GLuint Resource, GLint BaseMip, GLint NumMips)
 		{
 			FTextureStage& TextureState = ContextState.Textures[TextureIndex];
-			const bool bSameTarget = (TextureState.Target == Target);
+			const bool bSameTarget = (TextureState.Dimension == Target);
 			const bool bSameResource = (TextureState.Resource == Resource);
 
 			if (bSameTarget && bSameResource)
@@ -214,10 +224,9 @@ namespace BlackPearl {
 
 
 		//FSamplerStateRHIRef					PointSamplerState;
-
-		/** A list of all viewport RHIs that have been created. */
+				/** A list of all viewport RHIs that have been created. */
 		std::vector<OpenGLViewport*>        Viewports;
-		OpenGLViewport* DrawingViewport;
+		OpenGLViewport*						DrawingViewport = nullptr;
 		bool								bRevertToSharedContextAfterDrawingViewport;
 
 		bool								bIsRenderingContextAcquired;
@@ -246,6 +255,13 @@ namespace BlackPearl {
 			 * Link vertex and pixel shaders in to an OpenGL program.
 			 */
 			FOpenGLLinkedProgram* LinkProgram(Shader* vertexShader, Shader* pixelShader, Shader* geometryShader, const std::vector<IBindingSet*>& bindingSets);
+			//void SetRenderTargets(uint32_t NumSimultaneousRenderTargets, const FRHIRenderTargetView* NewRenderTargets, const FRHIDepthRenderTargetView* NewDepthStencilTarget);
+
+			void _commitUBOs(const std::vector<std::pair<Buffer*, uint32_t>>& ubos, FOpenGLContextState& ContextState);
+			void _commitSSBOs(const std::vector<std::pair<Buffer*, uint32_t>>& ssbos, FOpenGLContextState& ContextState);
+			void _commitTexturesAndSamplers(const std::vector<std::pair<Texture*, uint32_t>>& textures, const std::vector<std::pair<Sampler*, uint32_t>>& samplers, FOpenGLContextState& ContextState);
+			void _commitImages(const std::vector<std::pair<Texture*, uint32_t>>& images, FOpenGLContextState& ContextState);
+			//void _commitSamplers(const std::vector<std::pair<Sampler*, uint32_t>>& samplers, FOpenGLContextState& ContextState);
 
 
 
@@ -254,53 +270,53 @@ namespace BlackPearl {
 	template<typename StateType>
 	inline void Device::SetupTexturesForDraw(FOpenGLContextState& ContextState, const StateType& ShaderState, int32_t MaxTexturesNeeded)
 	{
-		//VERIFY_GL_SCOPE();
-		//SCOPE_CYCLE_COUNTER_DETAILED(STAT_OpenGLTextureBindTime);
+		////VERIFY_GL_SCOPE();
+		////SCOPE_CYCLE_COUNTER_DETAILED(STAT_OpenGLTextureBindTime);
 
-		int32_t MaxProgramTexture = 0;
-		const TBitArray& NeededBits = ShaderState->GetTextureNeeds(MaxProgramTexture);
+		//int32_t MaxProgramTexture = 0;
+		//const TBitArray& NeededBits = ShaderState->GetTextureNeeds(MaxProgramTexture);
 
-		for (int32_t TextureStageIndex = 0; TextureStageIndex <= MaxProgramTexture; ++TextureStageIndex)
-		{
-			if (!NeededBits[TextureStageIndex])
-			{
-				// Current program doesn't make use of this texture stage. No matter what UnrealEditor wants to have on in,
-				// it won't be useful for this draw, so telling OpenGL we don't really need it to give the driver
-				// more leeway in memory management, and avoid false alarms about same texture being set on
-				// texture stage and in framebuffer.
-				CachedSetupTextureStage(ContextState, TextureStageIndex, GL_NONE, 0, -1, 1);
-			}
-			else
-			{
-				const FTextureStage& TextureStage = PendingState.Textures[TextureStageIndex];
+		//for (int32_t TextureStageIndex = 0; TextureStageIndex <= MaxProgramTexture; ++TextureStageIndex)
+		//{
+		//	if (!NeededBits[TextureStageIndex])
+		//	{
+		//		// Current program doesn't make use of this texture stage. No matter what UnrealEditor wants to have on in,
+		//		// it won't be useful for this draw, so telling OpenGL we don't really need it to give the driver
+		//		// more leeway in memory management, and avoid false alarms about same texture being set on
+		//		// texture stage and in framebuffer.
+		//		CachedSetupTextureStage(ContextState, TextureStageIndex, GL_NONE, 0, -1, 1);
+		//	}
+		//	else
+		//	{
+		//		const FTextureStage& TextureStage = PendingState.Textures[TextureStageIndex];
 
-				CachedSetupTextureStage(ContextState, TextureStageIndex, TextureStage.Target, TextureStage.Resource, TextureStage.LimitMip, TextureStage.NumMips);
+		//		CachedSetupTextureStage(ContextState, TextureStageIndex, TextureStage.Target, TextureStage.Resource, TextureStage.LimitMip, TextureStage.NumMips);
 
-				bool bExternalTexture = (TextureStage.Target == GL_TEXTURE_EXTERNAL_OES);
-				if (!bExternalTexture)
-				{
-					FOpenGLSamplerState* PendingSampler = PendingState.SamplerStates[TextureStageIndex];
+		//		bool bExternalTexture = (TextureStage.Target == GL_TEXTURE_EXTERNAL_OES);
+		//		if (!bExternalTexture)
+		//		{
+		//			FOpenGLSamplerState* PendingSampler = PendingState.SamplerStates[TextureStageIndex];
 
-					if (ContextState.SamplerStates[TextureStageIndex] != PendingSampler)
-					{
-						FOpenGL::BindSampler(TextureStageIndex, PendingSampler ? PendingSampler->Resource : 0);
-						ContextState.SamplerStates[TextureStageIndex] = PendingSampler;
-					}
-				}
-				else if (TextureStage.Target != GL_TEXTURE_BUFFER)
-				{
-					FOpenGL::BindSampler(TextureStageIndex, 0);
-					ContextState.SamplerStates[TextureStageIndex] = nullptr;
-					ApplyTextureStage(ContextState, TextureStageIndex, TextureStage, PendingState.SamplerStates[TextureStageIndex]);
-				}
-			}
-		}
+		//			if (ContextState.SamplerStates[TextureStageIndex] != PendingSampler)
+		//			{
+		//				FOpenGL::BindSampler(TextureStageIndex, PendingSampler ? PendingSampler->Resource : 0);
+		//				ContextState.SamplerStates[TextureStageIndex] = PendingSampler;
+		//			}
+		//		}
+		//		else if (TextureStage.Target != GL_TEXTURE_BUFFER)
+		//		{
+		//			FOpenGL::BindSampler(TextureStageIndex, 0);
+		//			ContextState.SamplerStates[TextureStageIndex] = nullptr;
+		//			ApplyTextureStage(ContextState, TextureStageIndex, TextureStage, PendingState.SamplerStates[TextureStageIndex]);
+		//		}
+		//	}
+		//}
 
-		// For now, continue to clear unused stages
-		for (int32_t TextureStageIndex = MaxProgramTexture + 1; TextureStageIndex < MaxTexturesNeeded; ++TextureStageIndex)
-		{
-			CachedSetupTextureStage(ContextState, TextureStageIndex, GL_NONE, 0, -1, 1);
-		}
+		//// For now, continue to clear unused stages
+		//for (int32_t TextureStageIndex = MaxProgramTexture + 1; TextureStageIndex < MaxTexturesNeeded; ++TextureStageIndex)
+		//{
+		//	CachedSetupTextureStage(ContextState, TextureStageIndex, GL_NONE, 0, -1, 1);
+		//}
 	}
 
 }

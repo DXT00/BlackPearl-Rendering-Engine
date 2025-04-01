@@ -2,8 +2,9 @@
 #include "OpenGLTexture.h"
 #include "BlackPearl/Core.h"
 #include "BlackPearl/Config.h"
+#include "OpenGLUtil.h"
 #include "BlackPearl/RHI/RHIDefinitions.h"
-
+#include "OpenGLSampler.h"
 #include "BlackPearl/RHI/Common/stb_util.h"
 #include "BlackPearl/RHI/OpenGLRHI/OpenGLDriver/OpenGLFunctions.h"
 namespace BlackPearl {
@@ -31,63 +32,19 @@ namespace BlackPearl {
 	
 	*/
 	Texture::Texture(
-		TextureDesc& desc,
+		TextureDesc& _desc,
 		float* data
-	) : m_desc(desc),
-		TextureStateExtension(desc)
+	) : desc(_desc),
+		TextureStateExtension(_desc)
 	{
 		
 		glGenTextures(1, &m_TextureID);
 		GE_ERROR_JUDGE();//出现error的原因：很可能m_TextureID用在了别的target上，例如CUBEMAP,不行的话运行前加个断点 = = 
 
-		/*Bind();
-		GE_ERROR_JUDGE();
-		Init(desc, data);
-
-		GE_ERROR_JUDGE();*/
-
+	
 
 	}
-	//Use in ShadowMap (DepthMap) or FrameBuffer's empty ColorMap
-	//Texture::Texture(
-	//	Type type,
-	//	const int width,
-	//	const int height,
-	//	bool isDepth,
-	//	unsigned int minFilter,
-	//	unsigned int maxFilter,
-	//	int internalFormat,
-	//	int format,
-	//	int wrap,
-	//	unsigned int dataType,
-	//	bool generateMipmap,
-	//	float* data
-	//) :TextureStateExtension(desc)
-	//{
-	//	m_Width = width;
-	//	m_Height = height;
-	//	m_Path = "";
-	//	m_Type = type;
-	//	glGenTextures(1, &m_TextureID);
-
-	//	glBindTexture(GL_TEXTURE_2D, m_TextureID);
-	//	GE_ERROR_JUDGE();
-	//	Init(width, height, minFilter, magFilter, internalFormat, format, wrap, dataType, generateMipmap, data);
-	//	GE_ERROR_JUDGE();
-
-
-	//}
-	//Use in CubeMap
-	//Texture::Texture(TextureType type, std::vector<std::string> faces)
-	//	:desc(desc),
-	//	TextureStateExtension(desc) {
-	//	m_Path = "";
-	//	//m_FacesPath = faces;
-	//	m_Type = type;
-	//	glGenTextures(1, &m_TextureID);
-
-	//}
-
+	
 	Texture::~Texture()
 	{
 		UnBind();
@@ -96,10 +53,10 @@ namespace BlackPearl {
 
 
 	void Texture::Init(
-		TextureDesc& desc, float* data)
+		TextureDesc& _desc, float* data)
 	{
 		Bind();
-		fillTextureInfo(desc);
+		fillTextureInfo(_desc);
 		if (data != nullptr) {
 			GE_ASSERT(m_Path.size() != 0, "texture image is empty!");
 
@@ -131,11 +88,11 @@ namespace BlackPearl {
 			}
 			m_Width = width;
 			m_Height = height;
+			_desc.width = m_Width;
+			_desc.height = m_Height;
+
 			desc.width = m_Width;
 			desc.height = m_Height;
-
-			m_desc.width = m_Width;
-			m_desc.height = m_Height;
 
 			m_Format = format;
 		}
@@ -156,7 +113,7 @@ namespace BlackPearl {
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, m_MinFilter);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, m_MagFilter);
 
-		if (desc.generateMipmap)
+		if (_desc.generateMipmap)
 			glGenerateMipmap(GL_TEXTURE_2D);//为当前绑定的纹理自动生成所有需要的多级渐远纹理
 
 		if (data != nullptr)
@@ -203,141 +160,8 @@ namespace BlackPearl {
 		//glTextureParameteri  是 OpenGL 4.5 引入的 Direct State Access (DSA) 函数，提供了更直接的纹理操作方式，减少了状态切换的开销
 	}
 
-	//return <format, dataType>
-	std::pair<GLenum, GLenum> Texture::_ConvertFormat(Format format)
-	{
-		//https://www.khronos.org/opengl/wiki/OpenGL_Type
-		//GL_UNSIGNED_BYTE --> 8 bit
-		//GL_BYTE --> 8 bit
 
-		//GL_UNSIGNED_INT --> 32bit
-		// GL_INT --> 32bit
 
-		//GL_UNSIGNED_SHORT -->16bit
-		//GL_SHORT --> 16bit
-
-		switch (format)
-		{
-		case Format::R8_UNORM:
-			return std::make_pair<GLenum, GLenum>(GL_RED, GL_UNSIGNED_BYTE);;
-		case Format::R32_FLOAT:
-			return std::make_pair<GLenum, GLenum>(GL_RED, GL_FLOAT);
-
-		case Format::RG16_FLOAT:
-			return std::make_pair<GLenum, GLenum>(GL_RG, GL_FLOAT);
-
-		case Format::RGB8_UNORM:
-			return std::make_pair<GLenum, GLenum>(GL_RGB, GL_UNSIGNED_BYTE);
-		case Format::RGB8_FLOAT:
-		case Format::RGB32_FLOAT:
-		case Format::RGB16_FLOAT:
-			return std::make_pair<GLenum, GLenum>(GL_RGB, GL_FLOAT);
-
-		case Format::RGBA8_UNORM:
-			return std::make_pair<GLenum, GLenum>(GL_RGBA, GL_UNSIGNED_BYTE);
-
-		case Format::RGBA32_FLOAT:
-		case Format::RGBA16_FLOAT:
-			return std::make_pair<GLenum, GLenum>(GL_RGBA, GL_FLOAT);
-
-		case Format::D16:
-		case Format::D32:
-			return std::make_pair<GLenum, GLenum>(GL_DEPTH_COMPONENT, GL_FLOAT);
-
-		default:
-			GE_ASSERT(0, "unsupport now");
-			break;
-		}
-		return std::make_pair<GLenum, GLenum>(GL_RGBA, GL_UNSIGNED_BYTE);
-
-	}
-
-	GLenum Texture::_ConvertInnerFormat(Format format)
-	{
-		switch (format)
-		{
-
-		case Format::R8_UNORM:
-			return GL_RED;
-		case Format::R32_FLOAT:
-			return GL_R32F;
-		case Format::RG16_FLOAT:
-			return GL_RG16F;
-
-		case Format::RGB8_UNORM:
-			return GL_RGB8;
-
-		case Format::RGB8_FLOAT:
-			return GL_RGB8;
-
-		case Format::RGB32_FLOAT:
-			return GL_RGB32F;
-
-		case Format::RGB16_FLOAT:
-			return GL_RGB16F;
-
-		case Format::RGBA8_UNORM:
-			return GL_RGBA;
-
-		case Format::RGBA32_FLOAT:
-			return GL_RGBA32F;
-		case Format::RGBA16_FLOAT:
-			return GL_RGBA16F;
-
-			//return std::make_pair<GLenum, GLenum>(GL_RGBA, GL_FLOAT);
-		case Format::D16:
-			return GL_DEPTH_COMPONENT16;
-		case Format::D32:
-			return GL_DEPTH_COMPONENT32;
-
-		default:
-			GE_ASSERT(0, "unsupport now");
-			break;
-	}
-		return GL_RGBA;
-	}
-
-	GLint Texture::_ConvertFilter(FilterMode filter)
-	{
-		switch (filter)
-		{
-		case BlackPearl::FilterMode::Linear:
-			return GL_LINEAR;
-		case BlackPearl::FilterMode::Linear_Mip_Linear:
-			return GL_LINEAR_MIPMAP_LINEAR;
-		case BlackPearl::FilterMode::Nearest:
-			return GL_NEAREST;
-		case BlackPearl::FilterMode::Nearest_Mip_Nearnest:
-			return GL_NEAREST_MIPMAP_NEAREST;
-
-		default:
-			assert(0);
-			break;
-		}
-		return GL_LINEAR;
-
-	}
-
-	GLint Texture::_ConvertWarp(SamplerAddressMode warp)
-	{
-		switch (warp) {
-		case SamplerAddressMode::ClampToEdge:
-			return GL_CLAMP_TO_EDGE;
-		case SamplerAddressMode::ClampToBorder:
-			return GL_CLAMP_TO_BORDER;
-		case SamplerAddressMode::Repeat:
-			return GL_REPEAT;
-
-		default: {
-			GE_CORE_ERROR("Unknown warp type");
-			assert(0);
-
-		}
-		}
-
-		return GL_CLAMP_TO_EDGE;
-
-	}
 
 
 
@@ -347,15 +171,31 @@ namespace BlackPearl {
 		m_Type = desc.type;
 		m_Width = desc.width;
 		m_Height = desc.height;
-		auto fm = _ConvertFormat(desc.format);
+		auto fm = OpenGLUtil::convertTextureFormatAndDataType(desc.format);
 		m_Format = fm.first;
 		m_DataType = fm.second;
-		m_InnerFormat = _ConvertInnerFormat(desc.format);
-		m_MinFilter = _ConvertFilter(desc.minFilter);
-		m_MagFilter = _ConvertFilter(desc.magFilter);
-		m_Wrap = _ConvertWarp(desc.wrap);
-		m_MipMapLevel = desc.mipLevels;
+		m_InnerFormat = OpenGLUtil::convertTextureInnerFormat(desc.format);
+		m_MinFilter = OpenGLUtil::convertTextureFilter(desc.minFilter);
+		m_MagFilter = OpenGLUtil::convertTextureFilter(desc.magFilter);
+		m_Wrap = OpenGLUtil::convertTextureWarp(desc.wrap);
+		m_MipMapLevel = desc.mipLevelsCnt;
 
+	
+
+	}
+
+	void Texture::createDefaultSampler(const TextureDesc& desc)
+	{
+		SamplerDesc samplerDesc;
+
+		samplerDesc.magFilter = desc.magFilter;
+		samplerDesc.minFilter = desc.minFilter;
+		samplerDesc.mipFilter = desc.mipFilter;
+		samplerDesc.addressU = desc.wrap;
+		samplerDesc.addressV = desc.wrap;
+		samplerDesc.addressW = desc.wrap;
+
+		sampler = DBG_NEW Sampler(samplerDesc);
 	}
 
 	void Texture::Bind()

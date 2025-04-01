@@ -653,7 +653,7 @@ namespace BlackPearl {
             cmdList->beginTrackingBufferState(buffers->indexBuffer, ResourceStates::Common);
 
             cmdList->writeBuffer(buffers->indexBuffer, buffers->indexData.data(), buffers->indexData.size() * sizeof(uint32_t));
-            std::vector<uint32_t>().swap(buffers->indexData);
+            //std::vector<uint32_t>().swap(buffers->indexData);
 
             ResourceStates res_state = ResourceStates::IndexBuffer | ResourceStates::ShaderResource;
 
@@ -866,6 +866,7 @@ namespace BlackPearl {
 		for (const auto& item : drawStrategy->GetDrawItems()) {
 			if (item.material == nullptr)
 				continue;
+			GE_ERROR_JUDGE();
 
 			GraphicsState graphicsPSO;
 			graphicsPSO.framebuffer = framebuffer;
@@ -882,7 +883,9 @@ namespace BlackPearl {
 			// input layout 是mesh传过来的？
 			psoDesc.inputLayout = m_Device->createInputLayout(item.mesh->GetVertexBufferLayout());//shaderParms[ShaderType::VertexShader].inputLayout;
 			//psoDesc.BoundShaderState.VertexDeclarationRHI = GetVertexDeclarationFVector4();
-            //TODO :: opengl 分开 vs, ps
+			GE_ERROR_JUDGE();
+
+			//TODO :: opengl 分开 vs, ps
 			psoDesc.VS = item.material->GetShader()->GetVertexShader();
 			psoDesc.PS = item.material->GetShader()->GetPixelShader();
 			psoDesc.bFromPSOFileCache = false;
@@ -894,8 +897,9 @@ namespace BlackPearl {
                 graphicsPSO.bindings.push_back(shaderParms[ShaderType::Pixel].bindingSets[j]);
             }
 
-			
+			GE_ERROR_JUDGE();
             SetupMaterial(item.material, item.cullMode, psoDesc, graphicsPSO);
+			GE_ERROR_JUDGE();
             SetupInputBuffers(cmdList, const_cast<BufferGroup*>(item.buffers), item.transform, graphicsPSO);
 
 //			graphicsPSO.indexBuffer = indexBuffer;
@@ -910,11 +914,14 @@ namespace BlackPearl {
 			DrawArguments args;
 			if (item.mesh->m_IndicesCount == 0) {
 				args.drawIndex = false;
-				args.vertexCount = item.mesh->m_VerticeCount;
+				args.vertexCount = item.mesh->m_VerticeArrayCount;
 			}
 			else {
 				args.drawIndex = true;
-				args.vertexCount = item.mesh->m_IndicesCount;// numIndices;
+				//buffers->indexBuffer, buffers->indexData.data(), buffers->indexData.size() * sizeof(uint32_t)
+				args.indices = item.mesh->buffers->indexData;
+				unsigned int indicesNum = item.mesh->GetIndicesSize() / sizeof(unsigned int);
+				args.vertexCount = indicesNum;// numIndices;
 
 			}
 			args.instanceCount = 1;

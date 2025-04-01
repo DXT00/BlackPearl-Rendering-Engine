@@ -332,7 +332,10 @@ namespace BlackPearl {
 		return TextureHandle::Create(texture);
 		//return TextureHandle();
 	}
-
+	RHIViewport* Device::createViewport(void* windowHandle, uint32_t width, uint32_t height, Format format, bool bFullScreen)
+	{
+		return nullptr;
+	}
 	BufferHandle Device::createBuffer(const BufferDesc& desc)
 	{
 		// Check some basic constraints first - the validation layer is expected to handle them too
@@ -1285,6 +1288,8 @@ namespace BlackPearl {
 
 		VkSamplerCreateInfo samplerInfo{};
 		samplerInfo.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
+		//TODO:: 
+		GE_ASSERT(0, "should convert filter");
 		samplerInfo.magFilter = desc.magFilter ? VK_FILTER_LINEAR : VK_FILTER_NEAREST;
 		samplerInfo.minFilter = desc.minFilter ? VK_FILTER_LINEAR : VK_FILTER_NEAREST;
 		samplerInfo.mipmapMode = desc.mipFilter ? VK_SAMPLER_MIPMAP_MODE_LINEAR : VK_SAMPLER_MIPMAP_MODE_NEAREST;

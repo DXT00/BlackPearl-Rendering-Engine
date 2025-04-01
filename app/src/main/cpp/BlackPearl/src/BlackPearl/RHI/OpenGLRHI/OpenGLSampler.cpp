@@ -10,22 +10,27 @@ namespace BlackPearl {
 
 	SamplerHandle Device::createSampler(const SamplerDesc& d)
 	{
-		Sampler* sampler = new Sampler();
+		Sampler* sampler = new Sampler(d);
 
+		
+		return SamplerHandle(sampler);
+		
+	}
+	Sampler::Sampler(const SamplerDesc& d)
+	{
 		const bool anisotropyEnable = d.maxAnisotropy > 1.0f;
 
 
-		sampler->desc = d;
+		desc = d;
 
+		samplerState = new FOpenGLSamplerState;
 
-		sampler->samplerState = new FOpenGLSamplerState;
+		samplerState->Data.WrapS = OpenGLUtil::convertSamplerAddressMode(d.addressU);
+		samplerState->Data.WrapT = OpenGLUtil::convertSamplerAddressMode(d.addressV);
+		samplerState->Data.WrapR = OpenGLUtil::convertSamplerAddressMode(d.addressW);
+		samplerState->Data.LODBias = d.mipBias;
 
-		sampler->samplerState->Data.WrapS = OpenGLUtil::convertSamplerAddressMode(d.addressU);
-		sampler->samplerState->Data.WrapT = OpenGLUtil::convertSamplerAddressMode(d.addressV);
-		sampler->samplerState->Data.WrapR = OpenGLUtil::convertSamplerAddressMode(d.addressW);
-		sampler->samplerState->Data.LODBias = d.mipBias;
-
-		sampler->samplerState->Data.MaxAnisotropy = d.maxAnisotropy > 1.0 ? d.maxAnisotropy : 1;
+		samplerState->Data.MaxAnisotropy = d.maxAnisotropy > 1.0 ? d.maxAnisotropy : 1;
 		//TODO::
 		const bool bComparisonEnabled = false;//(Initializer.SamplerComparisonFunction != SCF_Never);
 
@@ -67,58 +72,59 @@ namespace BlackPearl {
 		if (bComparisonEnabled)
 		{
 			//assert(Initializer.SamplerComparisonFunction == SCF_Less);
-			sampler->samplerState->Data.CompareMode = GL_COMPARE_REF_TO_TEXTURE;
-			sampler->samplerState->Data.CompareFunc = GL_LESS;
+			samplerState->Data.CompareMode = GL_COMPARE_REF_TO_TEXTURE;
+			samplerState->Data.CompareFunc = GL_LESS;
 		}
 		else
 		{
-			sampler->samplerState->Data.CompareMode = GL_NONE;
+			samplerState->Data.CompareMode = GL_NONE;
 		}
+		samplerState->Data.MinFilter = OpenGLUtil::convertTextureFilter(desc.minFilter);
+		samplerState->Data.MagFilter = OpenGLUtil::convertTextureFilter(desc.magFilter);
+
 
 		/*	if (OpenGLConsoleVariables::GOpenGLForceBilinear && (SamplerState->Data.MinFilter == GL_LINEAR_MIPMAP_LINEAR))
 			{
 				SamplerState->Data.MinFilter = GL_LINEAR_MIPMAP_NEAREST;
 			}*/
 
-		sampler->samplerState->Resource = 0;
+		samplerState->Resource = 0;
 
 		//FRHICommandListImmediate::Get().EnqueueLambda([SamplerState](FRHICommandListImmediate&)
-		{
+		//{
 			//VERIFY_GL_SCOPE();
-			FOpenGL::GenSamplers(1, &sampler->samplerState->Resource);
+			FOpenGL::GenSamplers(1, &samplerState->Resource);
 
-			FOpenGL::SetSamplerParameter(sampler->samplerState->Resource, GL_TEXTURE_WRAP_S, sampler->samplerState->Data.WrapS);
-			FOpenGL::SetSamplerParameter(sampler->samplerState->Resource, GL_TEXTURE_WRAP_T, sampler->samplerState->Data.WrapT);
+			FOpenGL::SetSamplerParameter(samplerState->Resource, GL_TEXTURE_WRAP_S, samplerState->Data.WrapS);
+			FOpenGL::SetSamplerParameter(samplerState->Resource, GL_TEXTURE_WRAP_T, samplerState->Data.WrapT);
 			if (FOpenGL::SupportsTexture3D())
 			{
-				FOpenGL::SetSamplerParameter(sampler->samplerState->Resource, GL_TEXTURE_WRAP_R, sampler->samplerState->Data.WrapR);
+				FOpenGL::SetSamplerParameter(samplerState->Resource, GL_TEXTURE_WRAP_R, samplerState->Data.WrapR);
 			}
 			if (FOpenGL::SupportsTextureLODBias())
 			{
-				FOpenGL::SetSamplerParameter(sampler->samplerState->Resource, GL_TEXTURE_LOD_BIAS, sampler->samplerState->Data.LODBias);
+				FOpenGL::SetSamplerParameter(samplerState->Resource, GL_TEXTURE_LOD_BIAS, samplerState->Data.LODBias);
 			}
 
-			FOpenGL::SetSamplerParameter(sampler->samplerState->Resource, GL_TEXTURE_MIN_FILTER, sampler->samplerState->Data.MinFilter);
-			FOpenGL::SetSamplerParameter(sampler->samplerState->Resource, GL_TEXTURE_MAG_FILTER, sampler->samplerState->Data.MagFilter);
+			FOpenGL::SetSamplerParameter(samplerState->Resource, GL_TEXTURE_MIN_FILTER, samplerState->Data.MinFilter);
+			FOpenGL::SetSamplerParameter(samplerState->Resource, GL_TEXTURE_MAG_FILTER, samplerState->Data.MagFilter);
 			if (FOpenGL::SupportsTextureFilterAnisotropic())
 			{
-				FOpenGL::SetSamplerParameter(sampler->samplerState->Resource, GL_TEXTURE_MAX_ANISOTROPY_EXT, sampler->samplerState->Data.MaxAnisotropy);
+				FOpenGL::SetSamplerParameter(samplerState->Resource, GL_TEXTURE_MAX_ANISOTROPY_EXT, samplerState->Data.MaxAnisotropy);
 			}
 
 			if (FOpenGL::SupportsTextureCompare())
 			{
-				FOpenGL::SetSamplerParameter(sampler->samplerState->Resource, GL_TEXTURE_COMPARE_MODE, sampler->samplerState->Data.CompareMode);
-				FOpenGL::SetSamplerParameter(sampler->samplerState->Resource, GL_TEXTURE_COMPARE_FUNC, sampler->samplerState->Data.CompareFunc);
+				FOpenGL::SetSamplerParameter(samplerState->Resource, GL_TEXTURE_COMPARE_MODE, samplerState->Data.CompareMode);
+				FOpenGL::SetSamplerParameter(samplerState->Resource, GL_TEXTURE_COMPARE_FUNC, samplerState->Data.CompareFunc);
 			}
 			//});
 
 		// Manually add reference as we control the creation/destructions, TODO::
-		/*sampler->samplerState->AddRef();
-		GSamplerStateCache.Add(Initializer, sampler->samplerState);*/
+		/*samplerState->AddRef();
+		GSamplerStateCache.Add(Initializer, samplerState);*/
 
 		//return SamplerState;
 
-			return SamplerHandle(sampler);
-		}
 	}
 }

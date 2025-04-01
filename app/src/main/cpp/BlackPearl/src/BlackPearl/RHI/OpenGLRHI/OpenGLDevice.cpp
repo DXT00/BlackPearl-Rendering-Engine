@@ -1,11 +1,13 @@
 #include "pch.h"
 #include "OpenGLDevice.h"
+#include "OpenGLViewport.h"
 #include "OpenGLTexture.h"
 #include "OpenGLCubeMapTexture.h"
 #include "OpenGLImageTexture2D.h"
 #include "OpenGLBindingLayout.h"
 #include "OpenGLCommandList.h"
 #include "OpenGLShader.h"
+#include "OpenGLSampler.h"
 #include "BlackPearl/RHI/RHIGlobals.h"
 #include "BlackPearl/RHI/OpenGLRHI/OpenGLProgramBinaryFileCache.h"
 #include "OpenGLState.h"
@@ -14,6 +16,7 @@
 #include "OpenGLUtil.h"
 #include "OpenGLFrameBuffer.h"
 #include "OpenGLBoundShaderState.h"
+#include "BlackPearl/Application.h"
 //#include "OpenGLFrameBuffer.h"
 //
 //
@@ -106,7 +109,27 @@ namespace BlackPearl
 		//#endif
 	}
 
+	static FORCEINLINE GLint ModifyFilterByMips(GLint Filter, bool bHasMips)
+	{
+		if (!bHasMips)
+		{
+			switch (Filter)
+			{
+			case GL_LINEAR_MIPMAP_NEAREST:
+			case GL_LINEAR_MIPMAP_LINEAR:
+				return GL_LINEAR;
 
+			case GL_NEAREST_MIPMAP_NEAREST:
+			case GL_NEAREST_MIPMAP_LINEAR:
+				return GL_NEAREST;
+
+			default:
+				break;
+			}
+		}
+
+		return Filter;
+	}
 	/**
  * OpenGL debug message callback. Conforms to GLDEBUGPROCAMD.
  */
@@ -212,6 +235,27 @@ namespace BlackPearl
 			//PrivateOpenGLDevicePtr->InvalidateQueries();
 		}
 	}
+	RHIViewport* Device::createViewport(void* windowHandle, uint32_t width, uint32_t height, Format format, bool bFullScreen)
+	{
+	/*	TextureHandle backBuffers[2];
+		for (size_t i = 0; i < GL_BACKBUFFER_CNT; i++)
+		{
+			TextureDesc textureDesc;
+			textureDesc.width = width;
+			textureDesc.height = height;
+			textureDesc.format = format;
+			textureDesc.debugName = "GL backbuffer image " + std::to_string(i);
+			textureDesc.initialState = ResourceStates::Present;
+			textureDesc.keepInitialState = true;
+			textureDesc.isRenderTarget = true;
+			textureDesc.format = Format::RGBA8_UNORM;
+
+			backBuffers[i] = createTexture(textureDesc);
+		}*/
+
+		return DBG_NEW OpenGLViewport(this, windowHandle, width, height, false, format);
+	}
+
 
 	TextureHandle Device::createTexture(TextureDesc& d)
 	{
@@ -247,6 +291,7 @@ namespace BlackPearl
 		Framebuffer* fb = new Framebuffer(desc);
 		fb->desc = desc;
 		fb->framebufferInfo = FramebufferInfoEx(desc);
+		return FramebufferHandle::Create(fb);
 	}
 
 	void* Device::mapBuffer(IBuffer* b, CpuAccessMode mapFlags)
@@ -890,6 +935,9 @@ namespace BlackPearl
 		PrivateOpenGLDevicePtr = this;
 	}
 
+
+
+
 	void Device::SetPendingBlendStateForActiveRenderTargets(FOpenGLContextState& ContextState)
 	{
 		bool bABlendWasSet = false;
@@ -1145,126 +1193,126 @@ namespace BlackPearl
 
 	void Device::CachedSetupUAVStage(FOpenGLContextState& ContextState, GLint UAVIndex, GLenum Format, GLuint Resource, bool bLayered, GLint Layer, GLenum Access)
 	{
-		//VERIFY_GL_SCOPE();
+		////VERIFY_GL_SCOPE();
 
-		FUAVStage& UAVStage = ContextState.UAVs[UAVIndex];
+		//FUAVStage& UAVStage = ContextState.UAVs[UAVIndex];
 
-		if (UAVStage.Format == Format &&
-			UAVStage.Resource == Resource &&
-			UAVStage.Access == Access &&
-			UAVStage.Layer == Layer &&
-			UAVStage.bLayered == bLayered)
-		{
-			// Nothing's changed, no need to update
-			return;
-		}
+		//if (UAVStage.Format == Format &&
+		//	UAVStage.Resource == Resource &&
+		//	UAVStage.Access == Access &&
+		//	UAVStage.Layer == Layer &&
+		//	UAVStage.bLayered == bLayered)
+		//{
+		//	// Nothing's changed, no need to update
+		//	return;
+		//}
 
-		// unbind any SSBO or Image in this slot
-		if (Resource == 0)
-		{
-			if (UAVStage.Resource != 0)
-			{
-				// SSBO
-				if (UAVStage.Format == 0)
-				{
-					FOpenGL::BindBufferBase(GL_SHADER_STORAGE_BUFFER, UAVIndex, 0);
-					ContextState.StorageBufferBound = 0;
-				}
-				else // Image
-				{
-					FOpenGL::BindImageTexture(UAVIndex, 0, 0, GL_FALSE, 0, GL_READ_WRITE, GL_R32F);
-				}
+		//// unbind any SSBO or Image in this slot
+		//if (Resource == 0)
+		//{
+		//	if (UAVStage.Resource != 0)
+		//	{
+		//		// SSBO
+		//		if (UAVStage.Format == 0)
+		//		{
+		//			FOpenGL::BindBufferBase(GL_SHADER_STORAGE_BUFFER, UAVIndex, 0);
+		//			ContextState.StorageBufferBound = 0;
+		//		}
+		//		else // Image
+		//		{
+		//			FOpenGL::BindImageTexture(UAVIndex, 0, 0, GL_FALSE, 0, GL_READ_WRITE, GL_R32F);
+		//		}
 
-				UAVStage.Format = 0;
-				UAVStage.Resource = 0;
-				UAVStage.Access = GL_READ_WRITE;
-				UAVStage.Layer = 0;
-				UAVStage.bLayered = false;
-			}
-		}
-		else
-		{
-			// SSBO
-			if (Format == 0)
-			{
-				// make sure we dont end up binding both SSBO and Image to the same UAV slot
-				if (UAVStage.Resource != 0 && UAVStage.Format != 0)
-				{
-					FOpenGL::BindImageTexture(UAVIndex, 0, 0, GL_FALSE, 0, GL_READ_WRITE, GL_R32F);
-				}
+		//		UAVStage.Format = 0;
+		//		UAVStage.Resource = 0;
+		//		UAVStage.Access = GL_READ_WRITE;
+		//		UAVStage.Layer = 0;
+		//		UAVStage.bLayered = false;
+		//	}
+		//}
+		//else
+		//{
+		//	// SSBO
+		//	if (Format == 0)
+		//	{
+		//		// make sure we dont end up binding both SSBO and Image to the same UAV slot
+		//		if (UAVStage.Resource != 0 && UAVStage.Format != 0)
+		//		{
+		//			FOpenGL::BindImageTexture(UAVIndex, 0, 0, GL_FALSE, 0, GL_READ_WRITE, GL_R32F);
+		//		}
 
-				FOpenGL::BindBufferBase(GL_SHADER_STORAGE_BUFFER, UAVIndex, Resource);
+		//		FOpenGL::BindBufferBase(GL_SHADER_STORAGE_BUFFER, UAVIndex, Resource);
 
-				UAVStage.Format = 0;
-				UAVStage.Resource = Resource;
-				UAVStage.Access = GL_READ_WRITE;
-				UAVStage.Layer = 0;
-				UAVStage.bLayered = false;
-				ContextState.StorageBufferBound = Resource;
-			}
-			else // Image
-			{
-				// make sure we dont end up binding both SSBO and Image to the same UAV slot
-				if (UAVStage.Resource != 0 && UAVStage.Format == 0)
-				{
-					FOpenGL::BindBufferBase(GL_SHADER_STORAGE_BUFFER, UAVIndex, 0);
-					ContextState.StorageBufferBound = 0;
-				}
+		//		UAVStage.Format = 0;
+		//		UAVStage.Resource = Resource;
+		//		UAVStage.Access = GL_READ_WRITE;
+		//		UAVStage.Layer = 0;
+		//		UAVStage.bLayered = false;
+		//		ContextState.StorageBufferBound = Resource;
+		//	}
+		//	else // Image
+		//	{
+		//		// make sure we dont end up binding both SSBO and Image to the same UAV slot
+		//		if (UAVStage.Resource != 0 && UAVStage.Format == 0)
+		//		{
+		//			FOpenGL::BindBufferBase(GL_SHADER_STORAGE_BUFFER, UAVIndex, 0);
+		//			ContextState.StorageBufferBound = 0;
+		//		}
 
-				//assert(IsImageTextureFormatSupported(Format));
+		//		//assert(IsImageTextureFormatSupported(Format));
 
-				FOpenGL::BindImageTexture(UAVIndex, Resource, 0, bLayered ? GL_TRUE : GL_FALSE, Layer, Access, Format);
+		//		FOpenGL::BindImageTexture(UAVIndex, Resource, 0, bLayered ? GL_TRUE : GL_FALSE, Layer, Access, Format);
 
-				UAVStage.Format = Format;
-				UAVStage.Resource = Resource;
-				UAVStage.Access = Access;
-				UAVStage.Layer = Layer;
-				UAVStage.bLayered = bLayered;
-			}
-		}
+		//		UAVStage.Format = Format;
+		//		UAVStage.Resource = Resource;
+		//		UAVStage.Access = Access;
+		//		UAVStage.Layer = Layer;
+		//		UAVStage.bLayered = bLayered;
+		//	}
+		//}
 
-		uint32_t UAVBit = 1 << UAVIndex;
-		if (Resource != 0)
-		{
-			ContextState.ActiveUAVMask |= UAVBit;
-		}
-		else
-		{
-			ContextState.ActiveUAVMask &= ~UAVBit;
-		}
+		//uint32_t UAVBit = 1 << UAVIndex;
+		//if (Resource != 0)
+		//{
+		//	ContextState.ActiveUAVMask |= UAVBit;
+		//}
+		//else
+		//{
+		//	ContextState.ActiveUAVMask &= ~UAVBit;
+		//}
 	}
 
 	void Device::SetupUAVsForProgram(FOpenGLContextState& ContextState, const TBitArray& NeededBits, int32_t MaxUAVUnitUsed)
 	{
-		if (MaxUAVUnitUsed < 0 && ContextState.ActiveUAVMask == 0)
-		{
-			// Quit early if program does not use UAVs and context has no active UAV units
-			return;
-		}
+		//if (MaxUAVUnitUsed < 0 && ContextState.ActiveUAVMask == 0)
+		//{
+		//	// Quit early if program does not use UAVs and context has no active UAV units
+		//	return;
+		//}
 
-		for (int32_t UAVStageIndex = 0; UAVStageIndex <= MaxUAVUnitUsed; ++UAVStageIndex)
-		{
-			if (!NeededBits[UAVStageIndex])
-			{
-				CachedSetupUAVStage(ContextState, UAVStageIndex, 0, 0, false, 0, GL_READ_WRITE);
-			}
-			else
-			{
-				const FUAVStage& UAVStage = PendingState.UAVs[UAVStageIndex];
-				CachedSetupUAVStage(ContextState, UAVStageIndex, UAVStage.Format, UAVStage.Resource, UAVStage.bLayered, UAVStage.Layer, UAVStage.Access);
-			}
-		}
+		//for (int32_t UAVStageIndex = 0; UAVStageIndex <= MaxUAVUnitUsed; ++UAVStageIndex)
+		//{
+		//	if (!NeededBits[UAVStageIndex])
+		//	{
+		//		CachedSetupUAVStage(ContextState, UAVStageIndex, 0, 0, false, 0, GL_READ_WRITE);
+		//	}
+		//	else
+		//	{
+		//		const FUAVStage& UAVStage = PendingState.UAVs[UAVStageIndex];
+		//		CachedSetupUAVStage(ContextState, UAVStageIndex, UAVStage.Format, UAVStage.Resource, UAVStage.bLayered, UAVStage.Layer, UAVStage.Access);
+		//	}
+		//}
 
-		// clear rest of the units
-		int32_t UAVStageIndex = (MaxUAVUnitUsed + 1);
-		if ((ContextState.ActiveUAVMask >> UAVStageIndex) != 0)
-		{
-			const int32_t NumUAVs = ContextState.UAVs.size();
-			for (; UAVStageIndex < NumUAVs; ++UAVStageIndex)
-			{
-				CachedSetupUAVStage(ContextState, UAVStageIndex, 0, 0, false, 0, GL_READ_WRITE);
-			}
-		}
+		//// clear rest of the units
+		//int32_t UAVStageIndex = (MaxUAVUnitUsed + 1);
+		//if ((ContextState.ActiveUAVMask >> UAVStageIndex) != 0)
+		//{
+		//	const int32_t NumUAVs = ContextState.UAVs.size();
+		//	for (; UAVStageIndex < NumUAVs; ++UAVStageIndex)
+		//	{
+		//		CachedSetupUAVStage(ContextState, UAVStageIndex, 0, 0, false, 0, GL_READ_WRITE);
+		//	}
+		//}
 	}
 	void Device::SetupUAVsForDraw(FOpenGLContextState& ContextState)
 	{
@@ -1279,7 +1327,13 @@ namespace BlackPearl
 	{
 	}
 
-  
+	void Device::BindContextVAO() {
+		PlatformBindContextVAO(m_Context->PlatformDevice);
+		//glBindVertexArray(m_Context->PlatformDevice->RenderingContext.VertexArrayObject);
+
+	}
+
+
 
 	// Vertex state.
 	void Device::RHISetStreamSource(uint32_t StreamIndex, Buffer* VertexBufferRHI, uint32_t Offset)
@@ -1393,16 +1447,20 @@ namespace BlackPearl
 						{
 							if (!VertexElement.bShouldConvertToFloat)
 							{
-								FOpenGL::VertexAttribIFormat(AttributeIndex, VertexElement.elementStride, FormatToBufferType(VertexElement.format), VertexElement.offset);
+								FOpenGL::VertexAttribIFormat(AttributeIndex, VertexElement.elementStride, OpenGLUtil::convertInputElementDataType(VertexElement.elementType), VertexElement.offset);
+								GE_ERROR_JUDGE();
+
 							}
 							else
 							{
-								FOpenGL::VertexAttribFormat(AttributeIndex, VertexElement.elementStride, FormatToBufferType(VertexElement.format), VertexElement.bNormalized, VertexElement.offset);
+								FOpenGL::VertexAttribFormat(AttributeIndex, VertexElement.elementSize, OpenGLUtil::convertInputElementDataType(VertexElement.elementType), VertexElement.bNormalized, VertexElement.offset);
+								GE_ERROR_JUDGE();
+
 							}
 
 							Attr.StreamOffset = VertexElement.offset;
 							Attr.Size = VertexElement.elementStride;
-							Attr.Type = FormatToBufferType(VertexElement.format);
+							Attr.Type = OpenGLUtil::convertInputElementDataType(VertexElement.elementType);
 							Attr.bNormalized = VertexElement.bNormalized;
 							Attr.bShouldConvertToFloat = VertexElement.bShouldConvertToFloat;
 						}
@@ -1410,12 +1468,16 @@ namespace BlackPearl
 						if (Attr.StreamIndex != StreamIndex)
 						{
 							FOpenGL::VertexAttribBinding(AttributeIndex, VertexElement.streamIndex);
+							GE_ERROR_JUDGE();
+
 							Attr.StreamIndex = StreamIndex;
 						}
 
 						if (!ContextState.GetVertexAttrEnabled(AttributeIndex))
 						{
 							ContextState.SetVertexAttrEnabled(AttributeIndex, true);
+							GE_ERROR_JUDGE();
+
 							glEnableVertexAttribArray(AttributeIndex);
 						}
 					}
@@ -1427,6 +1489,8 @@ namespace BlackPearl
 						if (ContextState.GetVertexAttrEnabled(AttributeIndex))
 						{
 							ContextState.SetVertexAttrEnabled(AttributeIndex, false);
+							GE_ERROR_JUDGE();
+
 							glDisableVertexAttribArray(AttributeIndex);
 						}
 						static float data[4] = { 0.0f };
@@ -1463,96 +1527,96 @@ namespace BlackPearl
 		// Update the stream mask
 		ContextState.ActiveStreamMask = StreamMask;
 
-		// Enable used streams
-		for (uint32_t StreamIndex = 0; StreamIndex < NumStreams && StreamMask; StreamIndex++)
-		{
-			if (StreamMask & 0x1)
-			{
-				FOpenGLStream& CachedStream = ContextState.VertexStreams[StreamIndex];
-				FOpenGLStream& Stream = Streams[StreamIndex];
-				if (Stream.VertexBufferResource)
-				{
-					uint32_t Offset = BaseVertexIndex * Stream.Stride + Stream.Offset;
-					bool bAnyDifferent = //bitwise ors to get rid of the branches
-						(CachedStream.VertexBufferResource != Stream.VertexBufferResource) ||
-						(CachedStream.Stride != Stream.Stride) ||
-						(CachedStream.Offset != Offset);
+		//// Enable used streams
+		//for (uint32_t StreamIndex = 0; StreamIndex < NumStreams && StreamMask; StreamIndex++)
+		//{
+		//	if (StreamMask & 0x1)
+		//	{
+		//		FOpenGLStream& CachedStream = ContextState.VertexStreams[StreamIndex];
+		//		FOpenGLStream& Stream = Streams[StreamIndex];
+		//		if (Stream.VertexBufferResource)
+		//		{
+		//			uint32_t Offset = BaseVertexIndex * Stream.Stride + Stream.Offset;
+		//			bool bAnyDifferent = //bitwise ors to get rid of the branches
+		//				(CachedStream.VertexBufferResource != Stream.VertexBufferResource) ||
+		//				(CachedStream.Stride != Stream.Stride) ||
+		//				(CachedStream.Offset != Offset);
 
-					if (bAnyDifferent)
-					{
-						assert(Stream.VertexBufferResource != 0);
-						FOpenGL::BindVertexBuffer(StreamIndex, Stream.VertexBufferResource, Offset, Stream.Stride);
-						CachedStream.VertexBufferResource = Stream.VertexBufferResource;
-						CachedStream.Offset = Offset;
-						CachedStream.Stride = Stream.Stride;
-					}
-					if (UpdateDivisors && CachedStream.Divisor != Divisor[StreamIndex])
-					{
-						FOpenGL::VertexBindingDivisor(StreamIndex, Divisor[StreamIndex]);
-						CachedStream.Divisor = Divisor[StreamIndex];
-					}
-				}
-				else
-				{
-					//UE_LOG(LogRHI, Error, TEXT("Stream %d marked as in use, but vertex buffer provided is NULL (Mask = %x)"), StreamIndex, StreamMask);
+		//			if (bAnyDifferent)
+		//			{
+		//				assert(Stream.VertexBufferResource != 0);
+		//				FOpenGL::BindVertexBuffer(StreamIndex, Stream.VertexBufferResource, Offset, Stream.Stride);
+		//				CachedStream.VertexBufferResource = Stream.VertexBufferResource;
+		//				CachedStream.Offset = Offset;
+		//				CachedStream.Stride = Stream.Stride;
+		//			}
+		//			if (UpdateDivisors && CachedStream.Divisor != Divisor[StreamIndex])
+		//			{
+		//				FOpenGL::VertexBindingDivisor(StreamIndex, Divisor[StreamIndex]);
+		//				CachedStream.Divisor = Divisor[StreamIndex];
+		//			}
+		//		}
+		//		else
+		//		{
+		//			//UE_LOG(LogRHI, Error, TEXT("Stream %d marked as in use, but vertex buffer provided is NULL (Mask = %x)"), StreamIndex, StreamMask);
 
-					FOpenGL::BindVertexBuffer(StreamIndex, 0, 0, 0);
-					CachedStream.VertexBufferResource = 0;
-					CachedStream.Offset = 0;
-					CachedStream.Stride = 0;
-				}
-			}
-			StreamMask >>= 1;
-		}
-		//Ensure that all requested streams were set
-		assert(StreamMask == 0);
+		//			FOpenGL::BindVertexBuffer(StreamIndex, 0, 0, 0);
+		//			CachedStream.VertexBufferResource = 0;
+		//			CachedStream.Offset = 0;
+		//			CachedStream.Stride = 0;
+		//		}
+		//	}
+		//	StreamMask >>= 1;
+		//}
+		////Ensure that all requested streams were set
+		//assert(StreamMask == 0);
 
-		// Disable active unused streams
-		for (uint32_t StreamIndex = 0; StreamIndex < NUM_OPENGL_VERTEX_STREAMS && NotUsedButActiveStreamMask; StreamIndex++)
-		{
-			if (NotUsedButActiveStreamMask & 0x1)
-			{
-				FOpenGL::BindVertexBuffer(StreamIndex, 0, 0, 0);
-				ContextState.VertexStreams[StreamIndex].VertexBufferResource = 0;
-				ContextState.VertexStreams[StreamIndex].Offset = 0;
-				ContextState.VertexStreams[StreamIndex].Stride = 0;
-			}
-			NotUsedButActiveStreamMask >>= 1;
-		}
-		assert(NotUsedButActiveStreamMask == 0);
+		//// Disable active unused streams
+		//for (uint32_t StreamIndex = 0; StreamIndex < NUM_OPENGL_VERTEX_STREAMS && NotUsedButActiveStreamMask; StreamIndex++)
+		//{
+		//	if (NotUsedButActiveStreamMask & 0x1)
+		//	{
+		//		FOpenGL::BindVertexBuffer(StreamIndex, 0, 0, 0);
+		//		ContextState.VertexStreams[StreamIndex].VertexBufferResource = 0;
+		//		ContextState.VertexStreams[StreamIndex].Offset = 0;
+		//		ContextState.VertexStreams[StreamIndex].Stride = 0;
+		//	}
+		//	NotUsedButActiveStreamMask >>= 1;
+		//}
+		//assert(NotUsedButActiveStreamMask == 0);
 	}
 
 	void Device::CachedSetupTextureStageInner(FOpenGLContextState& ContextState, GLint TextureIndex, GLenum Target, GLuint Resource, GLint BaseMip, GLint NumMips)
 	{
 
-		//DETAILED_QUICK_SCOPE_CYCLE_COUNTER(STAT_CachedSetupTextureStage);
-		//VERIFY_GL_SCOPE();
-		FTextureStage& TextureState = ContextState.Textures[TextureIndex];
+		////DETAILED_QUICK_SCOPE_CYCLE_COUNTER(STAT_CachedSetupTextureStage);
+		////VERIFY_GL_SCOPE();
+		//FTextureStage& TextureState = ContextState.Textures[TextureIndex];
 
-		// Something will have to be changed. Switch to the stage in question.
-		if (ContextState.ActiveTexture != TextureIndex)
-		{
-			glActiveTexture(GL_TEXTURE0 + TextureIndex);
-			ContextState.ActiveTexture = TextureIndex;
-		}
+		//// Something will have to be changed. Switch to the stage in question.
+		//if (ContextState.ActiveTexture != TextureIndex)
+		//{
+		//	glActiveTexture(GL_TEXTURE0 + TextureIndex);
+		//	ContextState.ActiveTexture = TextureIndex;
+		//}
 
-		if (TextureState.Target == Target)
-		{
-			glBindTexture(Target, Resource);
-		}
-		else
-		{
-			if (TextureState.Target != GL_NONE)
-			{
-				// Unbind different texture target on the same stage, to avoid OpenGL keeping its data, and potential driver problems.
-				glBindTexture(TextureState.Target, 0);
-			}
+		//if (TextureState.Target == Target)
+		//{
+		//	glBindTexture(Target, Resource);
+		//}
+		//else
+		//{
+		//	if (TextureState.Target != GL_NONE)
+		//	{
+		//		// Unbind different texture target on the same stage, to avoid OpenGL keeping its data, and potential driver problems.
+		//		glBindTexture(TextureState.Target, 0);
+		//	}
 
-			if (Target != GL_NONE)
-			{
-				glBindTexture(Target, Resource);
-			}
-		}
+		//	if (Target != GL_NONE)
+		//	{
+		//		glBindTexture(Target, Resource);
+		//	}
+		//}
 
 		//// Use the texture SRV's LimitMip value to specify the mip available for sampling
 		//// This requires SupportsTextureBaseLevel & is a fallback for TextureView
@@ -1634,60 +1698,63 @@ namespace BlackPearl
 
 	void Device::ApplyTextureStage(FOpenGLContextState& ContextState, GLint TextureIndex, const FTextureStage& TextureStage, FOpenGLSamplerState* SamplerState)
 	{
-		//GLenum Target = TextureStage.Target;
-		////VERIFY_GL_SCOPE();
-		//const bool bHasTexture = (TextureStage.Texture != NULL);
-		//if (!bHasTexture || TextureStage.Texture->SamplerState != SamplerState)
-		//{
-		//	// Texture must be bound first
-		//	if (ContextState.ActiveTexture != TextureIndex)
-		//	{
-		//		glActiveTexture(GL_TEXTURE0 + TextureIndex);
-		//		ContextState.ActiveTexture = TextureIndex;
-		//	}
+		GLenum Target = TextureStage.Dimension;
+		//VERIFY_GL_SCOPE();
+		const bool bHasTexture = (TextureStage.Texture != NULL);
+		if (!TextureStage.Texture->sampler)
+			return;
+		Sampler* sampler = TextureStage.Texture->sampler;
+		if (!bHasTexture || sampler->samplerState!= SamplerState)
+		{
+			// Texture must be bound first
+			if (ContextState.ActiveTexture != TextureIndex)
+			{
+				glActiveTexture(GL_TEXTURE0 + TextureIndex);
+				ContextState.ActiveTexture = TextureIndex;
+			}
 
-		//	GLint WrapS = SamplerState->Data.WrapS;
-		//	GLint WrapT = SamplerState->Data.WrapT;
+			GLint WrapS = SamplerState->Data.WrapS;
+			GLint WrapT = SamplerState->Data.WrapT;
 
-		//	// Sets parameters of currently bound texture
-		//	FOpenGL::TexParameter(Target, GL_TEXTURE_WRAP_S, WrapS);
-		//	FOpenGL::TexParameter(Target, GL_TEXTURE_WRAP_T, WrapT);
-		//	if (FOpenGL::SupportsTexture3D())
-		//	{
-		//		FOpenGL::TexParameter(Target, GL_TEXTURE_WRAP_R, SamplerState->Data.WrapR);
-		//	}
+			// Sets parameters of currently bound texture
+			FOpenGL::TexParameter(Target, GL_TEXTURE_WRAP_S, WrapS);
+			FOpenGL::TexParameter(Target, GL_TEXTURE_WRAP_T, WrapT);
+			if (FOpenGL::SupportsTexture3D())
+			{
+				FOpenGL::TexParameter(Target, GL_TEXTURE_WRAP_R, SamplerState->Data.WrapR);
+			}
 
-		//	if (FOpenGL::SupportsTextureLODBias())
-		//	{
-		//		FOpenGL::TexParameter(Target, GL_TEXTURE_LOD_BIAS, SamplerState->Data.LODBias);
-		//	}
-		//	// Make sure we don't set mip filtering on if the texture has no mip levels, as that will cause a crash/black render on ES.
-		//	GLint MinFilter = ModifyFilterByMips(SamplerState->Data.MinFilter, TextureStage.bHasMips);
-		//	if (OpenGLConsoleVariables::GOpenGLForceBilinear && MinFilter == GL_LINEAR_MIPMAP_LINEAR)
-		//	{
-		//		MinFilter = GL_LINEAR_MIPMAP_NEAREST;
-		//	}
+			if (FOpenGL::SupportsTextureLODBias())
+			{
+				FOpenGL::TexParameter(Target, GL_TEXTURE_LOD_BIAS, SamplerState->Data.LODBias);
+			}
+			// Make sure we don't set mip filtering on if the texture has no mip levels, as that will cause a crash/black render on ES.
+			GLint MinFilter = ModifyFilterByMips(SamplerState->Data.MinFilter, TextureStage.bHasMips);
+		/*	if (OpenGLConsoleVariables::GOpenGLForceBilinear && MinFilter == GL_LINEAR_MIPMAP_LINEAR)
+			{
+				MinFilter = GL_LINEAR_MIPMAP_NEAREST;
+			}*/
 
-		//	FOpenGL::TexParameter(Target, GL_TEXTURE_MIN_FILTER, MinFilter);
-		//	FOpenGL::TexParameter(Target, GL_TEXTURE_MAG_FILTER, SamplerState->Data.MagFilter);
-		//	if (FOpenGL::SupportsTextureFilterAnisotropic())
-		//	{
-		//		// GL_EXT_texture_filter_anisotropic requires value to be at least 1
-		//		GLint MaxAnisotropy = FMath::Max(1, SamplerState->Data.MaxAnisotropy);
-		//		FOpenGL::TexParameter(Target, GL_TEXTURE_MAX_ANISOTROPY_EXT, MaxAnisotropy);
-		//	}
+			FOpenGL::TexParameter(Target, GL_TEXTURE_MIN_FILTER, MinFilter);
+			FOpenGL::TexParameter(Target, GL_TEXTURE_MAG_FILTER, SamplerState->Data.MagFilter);
+			if (FOpenGL::SupportsTextureFilterAnisotropic())
+			{
+				// GL_EXT_texture_filter_anisotropic requires value to be at least 1
+				GLint MaxAnisotropy = math::max(1, SamplerState->Data.MaxAnisotropy);
+				FOpenGL::TexParameter(Target, GL_TEXTURE_MAX_ANISOTROPY_EXT, MaxAnisotropy);
+			}
 
-		//	if (FOpenGL::SupportsTextureCompare())
-		//	{
-		//		FOpenGL::TexParameter(Target, GL_TEXTURE_COMPARE_MODE, SamplerState->Data.CompareMode);
-		//		FOpenGL::TexParameter(Target, GL_TEXTURE_COMPARE_FUNC, SamplerState->Data.CompareFunc);
-		//	}
+			if (FOpenGL::SupportsTextureCompare())
+			{
+				FOpenGL::TexParameter(Target, GL_TEXTURE_COMPARE_MODE, SamplerState->Data.CompareMode);
+				FOpenGL::TexParameter(Target, GL_TEXTURE_COMPARE_FUNC, SamplerState->Data.CompareFunc);
+			}
 
-		//	if (bHasTexture)
-		//	{
-		//		TextureStage.Texture->SamplerState = SamplerState;
-		//	}
-		//}
+			if (bHasTexture)
+			{
+				TextureStage.Texture->sampler->samplerState = SamplerState;
+			}
+		}
 	}
 
 

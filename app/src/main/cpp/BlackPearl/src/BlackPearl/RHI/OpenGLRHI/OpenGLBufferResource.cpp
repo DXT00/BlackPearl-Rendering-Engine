@@ -124,6 +124,7 @@ namespace BlackPearl {
 	IndexBuffer::IndexBuffer(const BufferDesc& _desc)
 		:Buffer(_desc) {
 		glGenBuffers(1, &rendererID);
+		GE_ERROR_JUDGE();
 	}
 
 	//------------------------IndexBuffer-----------------//

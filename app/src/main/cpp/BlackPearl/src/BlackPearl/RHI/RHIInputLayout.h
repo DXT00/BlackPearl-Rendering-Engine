@@ -161,7 +161,9 @@ namespace BlackPearl {
     struct VertexAttributeDesc
     {
 		std::string name;
-        Format format = Format::UNKNOWN;
+        //Format format = Format::UNKNOWN;
+		ElementDataType elementType = ElementDataType::Float3;
+		uint32_t elementSize = 3;
         uint32_t streamIndex = 0;
         uint32_t arraySize = 1;
         uint32_t location = 0;
@@ -171,7 +173,7 @@ namespace BlackPearl {
         bool isInstanced = false;
         bool divisor = false;
         bool bNormalized = true;
-		bool bShouldConvertToFloat = false;
+		bool bShouldConvertToFloat = true;
 
      /*   VertexAttributeDesc& setName(const std::string& value) { name = value; return *this; }
         constexpr VertexAttributeDesc& setFormat(Format value) { format = value; return *this; }

@@ -27,7 +27,7 @@ namespace BlackPearl {
         textureDesc.format = Format::RGBA8_UNORM;
         textureDesc.width = 1;
         textureDesc.height = 1;
-        textureDesc.mipLevels = 1;
+        textureDesc.mipLevelsCnt = 1;
 
         textureDesc.debugName = "BlackTexture";
         systemTextures.blackTexture = device->createTexture(textureDesc);

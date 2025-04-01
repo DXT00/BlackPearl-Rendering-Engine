@@ -13,14 +13,14 @@ namespace BlackPearl {
 
         bool managed = true;
 
-        explicit Framebuffer();
+        explicit Framebuffer(const FramebufferDesc& _desc);
         ~Framebuffer() override;
         const FramebufferDesc& getDesc() const override { return desc; }
         const FramebufferInfoEx& getFramebufferInfo() const override { return framebufferInfo; }
 
         virtual void Bind() override;
         virtual void Unbind() override;
-
+        unsigned int GetRenderID() const { return m_Fbo; }
         void BindCubeMapColorAttachments(int attachmentId, int face);
 
     private:

@@ -7,7 +7,7 @@ namespace BlackPearl {
     class OpenGLContext;
     class Device;
     class Texture;
-
+    struct FRHIRenderPassInfo;
 	class CommandList :public RefCounter<ICommandList> {
         // Internal backend methods
     public:
@@ -15,10 +15,12 @@ namespace BlackPearl {
 
         void open() override;
         void close() override;
-
+        virtual void beginDrawingViewport(RHIViewport* viewport, ITexture* renderTarget) override;
+        virtual void endDrawingViewport(RHIViewport* viewport, bool bPresent, bool bLockToVsync) override;
         virtual void beginRenderPass(const FRHIRenderPassInfo& renderPassInfo, const std::string& passName) override;
         virtual void endRenderPass() override;
         virtual void nextSubpass() override;
+        virtual void clearMRT(bool bClearColor, int32_t NumClearColors, const Color* ColorArray, bool bClearDepth, float Depth, bool bClearStencil, uint32_t Stencil) override;
 
         void clearState() override;
         void clearTextureFloat(ITexture* texture, TextureSubresourceSet subresources, const Color& clearColor) override;
@@ -126,6 +128,7 @@ namespace BlackPearl {
         //FCriticalSection CustomPresentSection;
         //TRefCountPtr<class FRHICustomPresent> CustomPresent;
 
+        void _discardRenderTargets(bool Depth, bool Stencil, uint32_t ColorBitMaskIn);
 
 
         void _endRenderPass();
@@ -155,7 +158,10 @@ namespace BlackPearl {
 
 
         void _setRenderTargets(uint32_t NumSimultaneousRenderTargets, const FRHIRenderTargetView* NewRenderTargets, const FRHIDepthRenderTargetView* NewDepthStencilTarget);
+        void _setRenderTargets(FramebufferHandle framebuffer);
+
         void _setRenderTargetsAndClear(const FRHISetRenderTargetsInfo& RenderTargetsInfo);
+        void _clearCurrentFramebufferWithCurrentScissor(FOpenGLContextState& ContextState, int8_t ClearType, int32_t NumClearColors, const Color* ClearColorArray, float Depth, uint32_t Stencil);
 
 
         GLuint _getOpenGLFramebuffer(uint32_t NumSimultaneousRenderTargets, Texture** RenderTargets, const uint32_t* ArrayIndices, const uint32_t* MipmapLevels, Texture* DepthStencilTarget);

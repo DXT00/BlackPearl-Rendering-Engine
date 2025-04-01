@@ -321,7 +321,7 @@ namespace BlackPearl
             desc.dimension == TextureDimension::Texture2DArray ||
             desc.dimension == TextureDimension::TextureCube ||
             desc.dimension == TextureDimension::TextureCubeArray)
-            ss << ", MipLevels = " << desc.mipLevels;
+            ss << ", MipLevels = " << desc.mipLevelsCnt;
 
         if (desc.dimension == TextureDimension::Texture2DMS ||
             desc.dimension == TextureDimension::Texture2DMSArray)

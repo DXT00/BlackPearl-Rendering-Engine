@@ -94,11 +94,13 @@ public:
 
 	~FOpenGLSamplerState() = default;
 };
+
+
 struct FTextureStage
 {
 	class Texture* Texture;
 	class FOpenGLShaderResourceView* SRV;
-	GLenum Target;
+	GLenum Dimension;
 	GLuint Resource;
 	int32_t LimitMip;
 	bool bHasMips;
@@ -107,7 +109,7 @@ struct FTextureStage
 	FTextureStage()
 		: Texture(NULL)
 		, SRV(NULL)
-		, Target(GL_NONE)
+		, Dimension(GL_NONE)
 		, Resource(0)
 		, LimitMip(-1)
 		, bHasMips(false)
@@ -164,7 +166,12 @@ struct FOpenGLCommonState
 {
 	std::vector<FTextureStage>	Textures;
 	std::vector<FOpenGLSamplerState*>	SamplerStates;
-	std::vector<FUAVStage>		UAVs;
+	std::vector<FUAVStage>		UAVsBuffers;
+	std::vector<FUAVStage>		UAVsTextures;
+
+	//std::vector<GLuint>	Textures;
+	//std::vector<GLuint>	SamplerStates;
+	//std::vector<GLuint>		UAVs;
 
 	FOpenGLCommonState()
 	{}
@@ -180,19 +187,24 @@ struct FOpenGLCommonState
 	{
 		assert(NumCombinedTextures >= FOpenGL::GetMaxCombinedTextureImageUnits());
 		assert(NumCombinedUAVUnits >= FOpenGL::GetMaxCombinedUAVUnits());
-		assert(Textures.empty() && SamplerStates.empty() && UAVs.size() == 0);
+		assert(Textures.empty() && SamplerStates.empty() && UAVsTextures.size() == 0);
 		Textures.resize(NumCombinedTextures);
-		SamplerStates.assign(NumCombinedTextures, nullptr);
+		SamplerStates.assign(NumCombinedTextures, 0);
 
-		UAVs.resize(NumCombinedUAVUnits);
-		UAVs.assign(NumCombinedUAVUnits, FUAVStage());
+		//TODO:: NumCombinedUAVUnits = UAVsTextures.size() + UAVsTextures.size()
+		UAVsTextures.resize(NumCombinedUAVUnits);
+		UAVsTextures.assign(NumCombinedUAVUnits, FUAVStage());
+
+		UAVsBuffers.resize(NumCombinedUAVUnits);
+		UAVsTextures.assign(NumCombinedUAVUnits, FUAVStage());
 	}
 
 	virtual void CleanupResources()
 	{
 		SamplerStates.clear();
 		Textures.clear();
-		UAVs.clear();
+		UAVsTextures.clear();
+		UAVsBuffers.clear();
 	}
 };
 
@@ -207,13 +219,14 @@ struct FOpenGLContextState final : public FOpenGLCommonState
 	uint32_t						RenderTargetHeight;
 	GLuint							OcclusionQuery;
 	GLuint							Program;
+	//TODO:: ”ÎshaderŒﬁπÿ£ø
 	GLuint 							UniformBuffers[(int)ShaderType::All * OGL_MAX_UNIFORM_BUFFER_BINDINGS];
 	GLuint 							UniformBufferOffsets[(int)ShaderType::All * OGL_MAX_UNIFORM_BUFFER_BINDINGS];
 	std::vector<FOpenGLSamplerState*>	CachedSamplerStates;
 	GLenum							ActiveTexture;
 	bool							bScissorEnabled;
     RHIRect                         Scissor;
-	RHIViewport							Viewport;
+	RHIViewport						Viewport;
 	float							DepthMinZ;
 	float							DepthMaxZ;
 	GLuint							ArrayBufferBound;

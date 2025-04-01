@@ -316,6 +316,7 @@ struct FPlatformOpenGLDevice : public RHIDeviceContext
 		ContextMakeCurrent(SharedContext.DeviceContext, SharedContext.OpenGLContext);
 	}
 
+	
 	~FPlatformOpenGLDevice()
 	{
 		assert(ViewportContexts.size() == 0);
@@ -506,16 +507,23 @@ bool PlatformBlitToViewport(FPlatformOpenGLDevice* Device, const OpenGLViewport&
 		{
 			glBindFramebuffer(GL_FRAMEBUFFER, TempContext.ViewportFramebuffer);
 			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, Context->BackBufferTarget, Context->BackBufferResource, 0);
+			GE_ERROR_JUDGE();
 
 			FOpenGL::CheckFrameBuffer();
 			Device->TargetDirty = false;
 		}
+		GE_ERROR_JUDGE();
 
 		glDisable(GL_FRAMEBUFFER_SRGB);
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 		FOpenGL::DrawBuffer(GL_BACK);
+		GE_ERROR_JUDGE();
+
 		glBindFramebuffer(GL_READ_FRAMEBUFFER, TempContext.ViewportFramebuffer);
+		GE_ERROR_JUDGE();
+
 		glReadBuffer(GL_COLOR_ATTACHMENT0);
+		GE_ERROR_JUDGE();
 
 		glBlitFramebuffer(
 			0, 0, BackbufferSizeX, BackbufferSizeY,
@@ -523,7 +531,10 @@ bool PlatformBlitToViewport(FPlatformOpenGLDevice* Device, const OpenGLViewport&
 			GL_COLOR_BUFFER_BIT,
 			GL_NEAREST
 		);
+		GE_ERROR_JUDGE();
+
 		glEnable(GL_FRAMEBUFFER_SRGB);
+		GE_ERROR_JUDGE();
 
 		if (bPresent)
 		{
@@ -862,6 +873,32 @@ int32_t PlatformGlGetError()
 	return glGetError();
 }
 
+void PlatformBindContextVAO(FPlatformOpenGLDevice* Device) {
+	HGLRC Context = GetCurrentContext();
+
+	if (Context == Device->RenderingContext.OpenGLContext)	// most common case
+	{
+		//assert(glIsVertexArray(Device->RenderingContext.VertexArrayObject));
+		
+		GLint currentVAO;
+		glGetIntegerv(GL_VERTEX_ARRAY_BINDING, &currentVAO);
+
+		if (currentVAO == static_cast<GLint>(Device->RenderingContext.VertexArrayObject)) {
+			std::cout << "VAO " << Device->RenderingContext.VertexArrayObject << " 已绑定且有效。" << std::endl;
+		}
+		else {
+			std::cerr << "VAO " << Device->RenderingContext.VertexArrayObject << " 未绑定或无效！" << std::endl;
+		}
+		glBindVertexArray(Device->RenderingContext.VertexArrayObject);
+
+		
+	}
+	else if (Context == Device->SharedContext.OpenGLContext)
+	{
+		glBindVertexArray(Device->SharedContext.VertexArrayObject);
+
+	}
+}
 EOpenGLCurrentContext PlatformOpenGLCurrentContext(FPlatformOpenGLDevice* Device)
 {
 	HGLRC Context = GetCurrentContext();

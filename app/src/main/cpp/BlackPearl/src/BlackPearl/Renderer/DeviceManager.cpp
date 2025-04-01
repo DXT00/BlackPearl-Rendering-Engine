@@ -8,7 +8,7 @@ namespace BlackPearl {
     void DeviceManager::Init(const DeviceCreationParameters& params)
     {
         m_FirstFrame = true;
-        CreateDeviceAndSwapChain(params);
+        CreateViewport(params);
     }
     DeviceManager* DeviceManager::Create(DynamicRHI::Type api)
     {
@@ -36,14 +36,14 @@ namespace BlackPearl {
     {
         return false;
     }
-    bool DeviceManager::CreateDeviceAndSwapChain(const DeviceCreationParameters& params)
+    bool DeviceManager::CreateViewport(const DeviceCreationParameters& params)
     {
         m_RequestedVSync = params.vsyncEnabled;
 
         m_DeviceParams.backBufferWidth = params.backBufferWidth;
         m_DeviceParams.backBufferHeight = params.backBufferHeight;
 
-        if (!CreateDeviceAndSwapChain())
+        if (!CreateViewport(m_DeviceParams.backBufferWidth, m_DeviceParams.backBufferHeight, m_DeviceParams.swapChainFormat, m_DeviceParams.startFullscreen))
             return false;
 
         UpdateWindowSize();
@@ -124,7 +124,7 @@ namespace BlackPearl {
             m_DeviceParams.backBufferHeight = height;
             m_DeviceParams.vsyncEnabled = m_RequestedVSync;
 
-            ResizeSwapChain();
+            ResizeViewport();
             BackBufferResized();
 
         }

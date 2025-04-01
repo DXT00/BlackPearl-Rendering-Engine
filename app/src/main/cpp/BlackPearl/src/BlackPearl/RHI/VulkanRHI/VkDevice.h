@@ -70,7 +70,11 @@ namespace BlackPearl {
 		~Device() override;
 
 		Queue* getQueue(CommandQueue queue) const;
+
+
+
 		TextureHandle createTexture(TextureDesc& d) override;
+		RHIViewport* createViewport(void* windowHandle, uint32_t width, uint32_t height, Format format, bool bFullScreen) override;
 
 		TextureHandle createHandleForNativeTexture(uint32_t objectType, RHIObject texture, const TextureDesc& desc) override;
 

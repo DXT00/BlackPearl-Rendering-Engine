@@ -23,12 +23,12 @@ namespace BlackPearl {
 		}
 		
 	protected:
-		virtual IFramebuffer* GetCurrentFramebuffer() override;
+		virtual FramebufferHandle GetCurrentFramebuffer() override;
 
-		bool CreateDeviceAndSwapChain() override;
-		void DestroyDeviceAndSwapChain() override;
+		bool CreateViewport(uint32_t width, uint32_t height, Format format, bool bFullScreen) override;
+		void DestroyViewport() override;
 		void BackBufferResizedInner() override;
-		void ResizeSwapChain() override
+		void ResizeViewport() override
 		{
 			if (m_Device)
 			{
@@ -60,8 +60,8 @@ namespace BlackPearl {
 		void BeginFrame() override;
 		void Present() override;
 
-		virtual void _RHIViewportBeginDraw() override;
-		virtual void _RHIViewportEndDraw() override;
+		virtual void _RHIBeginDrawingViewport() override;
+		virtual void _RHIEndDrawingViewport() override;
 
 		const char* GetRendererString() const override
 		{
@@ -102,6 +102,8 @@ namespace BlackPearl {
 		}
 
 	private:
+		//TODO:: swapchain ·â×°µ½viewport
+		RHIViewport* m_Viewport = nullptr;
 
 		std::vector<FramebufferHandle> m_SwapChainFramebuffers;
 

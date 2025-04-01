@@ -28,6 +28,7 @@
 
 #ifdef GE_ENABLE_ASSERTS
 #define GE_ASSERT(x,...) {if(!(x)){GE_CORE_ERROR("Assertion Failed:{0}",__VA_ARGS__);DEBUG_BREAK();}}
+#define GE_ASSERT(x) {if(!(x)){GE_CORE_ERROR("Assertion Failed");DEBUG_BREAK();}}
 #else
 #define GE_ASSERT(x,...) 
 #endif

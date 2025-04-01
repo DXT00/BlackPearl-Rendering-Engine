@@ -244,7 +244,7 @@ namespace BlackPearl {
       /*  texture->imageInfo = VkImageCreateInfo()
             .setImageType(type)
             .setExtent(extent)
-            .setMipLevels(desc.mipLevels)
+            .setMipLevels(desc.mipLevelsCnt)
             .setArrayLayers(numLayers)
             .setFormat(format)
             .setInitialLayout(vk::ImageLayout::eUndefined)
@@ -257,7 +257,7 @@ namespace BlackPearl {
         imageInfo.imageType = VK_IMAGE_TYPE_2D;
         imageInfo.extent = extent;
         
-        imageInfo.mipLevels = desc.mipLevels;
+        imageInfo.mipLevels = desc.mipLevelsCnt;
         imageInfo.arrayLayers = numLayers;
         imageInfo.format = format;
         imageInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
@@ -355,7 +355,7 @@ namespace BlackPearl {
 	}
 	uint32_t ETexture::getNumSubresources() const
 	{
-        return desc.mipLevels * desc.arraySize;
+        return desc.mipLevelsCnt * desc.arraySize;
 	}
 	uint32_t ETexture::getSubresourceIndex(uint32_t mipLevel, uint32_t arrayLayer) const
 	{
