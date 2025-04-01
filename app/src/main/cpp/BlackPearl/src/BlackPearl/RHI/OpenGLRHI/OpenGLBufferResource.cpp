@@ -16,6 +16,8 @@ namespace BlackPearl {
 	VertexBuffer::VertexBuffer(const BufferDesc& _desc)
 	:Buffer(_desc) {
 		glGenBuffers(1, &rendererID);
+		glBufferData(GL_ARRAY_BUFFER, _desc.byteSize, nullptr, _desc.isDynamic? GL_DYNAMIC_DRAW: GL_STATIC_DRAW); // œ»∑÷≈‰ø’º‰
+
 	}
 	
 	//------------------------VertexBuffer-----------------//
@@ -37,6 +39,7 @@ namespace BlackPearl {
 			m_Divisor = true;
 			m_DivPerInstance = perInstance;
 		}
+		
 	}
 	VertexBuffer::VertexBuffer(const BufferDesc& _desc, const float* vertices, uint32_t size, bool Interleaved , bool divisor, uint32_t perInstance, uint32_t drawType)
 		:Buffer(_desc) {
@@ -175,12 +178,15 @@ namespace BlackPearl {
 	//---------------------VertexBufferLayout----------------//
 	void VertexBufferLayout::CalculateStrideAndOffset()
 	{
-		uint32_t strides = 0;
-		for (BufferElement &element : m_Elememts) {
-			element.Offset = strides;
-			strides += element.ElementSize;
+		if (m_LayoutType == LayoutType::OneVBO_Interleave) {
+			uint32_t strides = 0;
+			for (BufferElement& element : m_Elememts) {
+				element.Offset = strides;
+				strides += element.ElementSize;
+			}
+			m_Stride = strides;
 		}
-		m_Stride = strides;
+
 	}
 
 

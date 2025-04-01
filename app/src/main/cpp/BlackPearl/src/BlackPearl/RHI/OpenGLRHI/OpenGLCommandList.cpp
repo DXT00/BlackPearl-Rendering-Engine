@@ -270,7 +270,7 @@ namespace BlackPearl {
 		if (buffer->desc.isVertexBuffer) {
 			VertexBuffer* vbo = static_cast<VertexBuffer*>(buffer);
 			glBindBuffer(GL_ARRAY_BUFFER, vbo->rendererID);
-			glBufferData(GL_ARRAY_BUFFER, dataSize, data, buffer->desc.isDynamic ? GL_DYNAMIC_DRAW : GL_STATIC_DRAW);
+			glBufferSubData(GL_ARRAY_BUFFER, destOffsetBytes, dataSize, data);
 		}
 		else if (buffer->desc.isIndexBuffer) {
 			IndexBuffer* ibo = static_cast<IndexBuffer*>(buffer);
@@ -1129,7 +1129,7 @@ namespace BlackPearl {
 		setRasterizerState(&state.pipeline->desc.rasterState);
 		setBlendState(&state.pipeline->desc.blendState);
 		setIndexBufferState(state.indexBuffer.buffer);
-		setVertexBufferState(state.vertexBuffers);
+		setVertexBufferState(state.vertexBuffers);//?? buffer 呢
 		if (GSupportsDepthBoundsTest)
 		{
 			//RHIEnableDepthBoundsTest(FallbackGraphicsState->Initializer.bDepthBounds);
@@ -1241,16 +1241,14 @@ namespace BlackPearl {
 		//	m_Device->CommitNonComputeShaderConstants();
 		//}
 		//{
-			//DETAILED_QUICK_SCOPE_CYCLE_COUNTER(STAT_CachedBindElementArrayBuffer);
-			m_Device->CachedBindElementArrayBuffer(ContextState);
-			GE_ERROR_JUDGE();
-			
 			m_Device->BindContextVAO();
 			GE_ERROR_JUDGE();
 
-		//}
-		//{
-			//DETAILED_QUICK_SCOPE_CYCLE_COUNTER(STAT_SetupVertexArrays);
+
+			m_Device->CachedBindElementArrayBuffer(ContextState);
+			GE_ERROR_JUDGE();
+			
+
 			m_Device->SetupVertexArrays(ContextState, args.startIndexLocation, m_Device->PendingState.Streams, NUM_OPENGL_VERTEX_STREAMS, args.vertexCount);
 			GE_ERROR_JUDGE();
 
@@ -1302,7 +1300,6 @@ namespace BlackPearl {
 				}
 
 				HGLRC currentContext = wglGetCurrentContext();
-				assert(currentContext != nullptr);
 				GE_ERROR_JUDGE();
 				//FOpenGL::DrawRangeElements(GL_TRIANGLES, 0, args.vertexCount-1, NumElements, GL_UNSIGNED_SHORT, (void*)(0));
 				glDrawElements(GL_TRIANGLES, NumElements, GL_UNSIGNED_INT, 0);
@@ -1783,6 +1780,12 @@ namespace BlackPearl {
 		{
 			IBuffer* buf = vertexBuffers[i].buffer;
 			m_Device->PendingState.vbos.push_back(static_cast<Buffer*>(buf)->rendererID);
+
+			VertexBuffer* vbo = static_cast<VertexBuffer*>(buf);
+			if (vbo) {
+				//TODO:: 目前所有offset都是0
+				m_Device->RHISetStreamSource(i, vbo, 0);
+			}
 		}
 		
 	}

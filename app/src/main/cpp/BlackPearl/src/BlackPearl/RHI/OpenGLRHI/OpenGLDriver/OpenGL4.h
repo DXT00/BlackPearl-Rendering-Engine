@@ -77,6 +77,16 @@ namespace BlackPearl {
 		{
 			glVertexAttribIFormat(AttribIndex, Size, Type, RelativeOffset);
 		}
+		/*
+		// 将 Shader 中的 Location 0 关联到绑定点 vbo0
+		glVertexAttribBinding(0, 0);
+
+		// 将 Shader 中的 Location 1 关联到绑定点 vbo1
+		glVertexAttribBinding(1, 1);
+
+		Shader (Location) ←[glVertexAttribBinding]→ 绑定点 (Binding Index) ←[glBindVertexBuffer]→ VBO
+
+		*/
 		static FORCEINLINE void VertexAttribBinding(GLuint AttribIndex, GLuint BindingIndex)
 		{
 			glVertexAttribBinding(AttribIndex, BindingIndex);

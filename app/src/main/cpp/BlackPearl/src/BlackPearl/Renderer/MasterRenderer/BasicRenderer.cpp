@@ -862,8 +862,10 @@ namespace BlackPearl {
 	void BasicRenderer::RenderPassTemplate(ICommandList* cmdList, IFramebuffer* framebuffer, IView* view, IDrawStrategy* drawStrategy, const ShaderParameters* shaderParms)
 	{
 
-
+		int id = 0;
 		for (const auto& item : drawStrategy->GetDrawItems()) {
+			if (id > 0)
+				break;
 			if (item.material == nullptr)
 				continue;
 			GE_ERROR_JUDGE();
@@ -941,7 +943,7 @@ namespace BlackPearl {
 			 RHICmdList.Transition(FRHITransitionInfo(RenderTargetTexture, ERHIAccess::RTV, ERHIAccess::SRVMask));*/
 
 
-
+			id++;
 		}
 		
 	}

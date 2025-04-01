@@ -24,7 +24,8 @@
 #define GE_ENABLE_ASSERTS
 #endif
 
-
+#define GE_CURRENT_CONTEXT(DC,RC) \
+	GE_CORE_WARN("Make current context ,DC:"+ #DC+"RC:" #RC)
 
 #ifdef GE_ENABLE_ASSERTS
 #define GE_ASSERT(x,...) {if(!(x)){GE_CORE_ERROR("Assertion Failed:{0}",__VA_ARGS__);DEBUG_BREAK();}}

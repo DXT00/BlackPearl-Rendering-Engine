@@ -21,8 +21,30 @@ namespace BlackPearl {
 		Float4,
 		Mat3,
 		Mat4,
+		Uint32,
+		Uint32_2,
+		Uint32_3,
+		Uint32_4,
+
+
 		False,
 		True
+	};
+	/*
+	
+	*/
+	enum class LayoutType {
+		// [position0, position1, ..., positionN, normal0, normal1, ..., normalN, uv0, uv1, ..., uvN]
+		OneVBO_NoInterleave,
+
+		// [position0, normal0, uv0, position1, normal1, uv1 ..., positionN, normalN, uvN]
+		OneVBO_Interleave,  
+
+		// [position0, position1, ..., positionN]
+		// [normal0, normal1, ........., normalN]
+		// [uv0, uv1, ....................., uvN]
+
+		MultiVBO_NoInterleave, 
 	};
 	
 	static uint32_t GetDataSize(ElementDataType type) {
@@ -39,6 +61,12 @@ namespace BlackPearl {
 		case ElementDataType::Float2:   return 2 * sizeof(float);
 		case ElementDataType::Float3:   return 3 * sizeof(float);
 		case ElementDataType::Float4:   return 4 * sizeof(float);
+
+
+		case ElementDataType::Uint32:    return sizeof(uint32_t);
+		case ElementDataType::Uint32_2:   return 2 * sizeof(uint32_t);
+		case ElementDataType::Uint32_3:   return 3 * sizeof(uint32_t);
+		case ElementDataType::Uint32_4:   return 4 * sizeof(uint32_t);
 
 		case ElementDataType::Mat3:		return 3 * 3 * sizeof(float);
 		case ElementDataType::Mat4:		return 4 * 4 * sizeof(float);
@@ -86,6 +114,12 @@ namespace BlackPearl {
 			case ElementDataType::Mat4:		return 4 * 4;
 			case ElementDataType::False:	return 1;
 			case ElementDataType::True:		return 1;
+
+			case ElementDataType::Uint32:    return 1;
+			case ElementDataType::Uint32_2:  return 2 ;
+			case ElementDataType::Uint32_3:  return 3 ;
+			case ElementDataType::Uint32_4:  return 4 ;
+
 			}
 			assert(false, "Unknown ElementDataType!");
 				return 0;
@@ -130,7 +164,18 @@ namespace BlackPearl {
 			UpdateDesc();
 		}
 		uint32_t ElementSize() const { return m_Elememts.size(); }
-		uint32_t GetStride() const { return m_Stride; }
+		uint32_t GetStride() const
+		{
+			if (m_LayoutType == LayoutType::OneVBO_NoInterleave) {//（数据紧密排列，无间隔）
+				return 0;
+			}
+			else if (m_LayoutType == LayoutType::MultiVBO_NoInterleave) {
+				return 0;
+			}
+			else
+				return m_Stride; 
+	
+		}
 		//for directx
 		virtual void UpdateDesc() {}
 
@@ -143,7 +188,7 @@ namespace BlackPearl {
 			m_Stride = rhs.m_Stride;
 
 		}
-		VertexBufferLayout& operator = (const VertexBufferLayout& rhs) {
+		VertexBufferLayout& operator=(const VertexBufferLayout& rhs) {
 			this->m_Elememts.resize(rhs.ElementSize());
 			for (size_t i = 0; i < rhs.ElementSize(); i++)
 			{
@@ -152,7 +197,7 @@ namespace BlackPearl {
 			this->m_Stride = rhs.m_Stride;
 			return *this;
 		}
-
+		LayoutType m_LayoutType = LayoutType::OneVBO_NoInterleave;;
 	protected:
 		std::vector<BufferElement> m_Elememts;
 		uint32_t m_Stride = 0;
@@ -163,7 +208,10 @@ namespace BlackPearl {
 		std::string name;
         //Format format = Format::UNKNOWN;
 		ElementDataType elementType = ElementDataType::Float3;
-		uint32_t elementSize = 3;
+
+		uint32_t elementCnt = 3;
+		uint32_t elementSizeByte = 3 * sizeof(float);
+
         uint32_t streamIndex = 0;
         uint32_t arraySize = 1;
         uint32_t location = 0;

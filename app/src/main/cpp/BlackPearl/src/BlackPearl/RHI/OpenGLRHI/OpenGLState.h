@@ -34,6 +34,7 @@ struct FOpenGLStream
 	uint32_t Stride;
 	uint32_t Offset;
 	uint32_t Divisor;
+	uint32_t NumVertices;//有多少个顶点，每个顶点有多种属性(pos, normal, uv等）
 
 	FOpenGLStream()
 		: VertexBufferResource(0)

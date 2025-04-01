@@ -1339,11 +1339,15 @@ namespace BlackPearl
 	void Device::RHISetStreamSource(uint32_t StreamIndex, Buffer* VertexBufferRHI, uint32_t Offset)
 	{
 		//VERIFY_GL_SCOPE();
+
+		//一条stream 对应一个sub mesh的所有顶点
+		// layout: [position0, position1, ..., positionN, normal0, normal1, ..., normalN, uv0, uv1, ..., uvN]
 		VertexBuffer* vertexBuffer = static_cast<VertexBuffer*>(VertexBufferRHI);
 		PendingState.Streams[StreamIndex].VertexBufferResource = vertexBuffer ? vertexBuffer->rendererID : 0;
-		//TODO:: 确认下
-		PendingState.Streams[StreamIndex].Stride = PendingState.BoundShaderState ? PendingState.BoundShaderState->VertexDeclarationRHI->getAttributeDesc(StreamIndex)->elementStride : 0;
+		PendingState.Streams[StreamIndex].Stride = vertexBuffer->GetStride();
 		PendingState.Streams[StreamIndex].Offset = Offset;
+		PendingState.Streams[StreamIndex].NumVertices = vertexBuffer->desc.byteSize / vertexBuffer->GetStride();
+
 	}
 
 //	template <typename StateType>
@@ -1402,7 +1406,32 @@ namespace BlackPearl
 
 	void Device::SetupVertexArrays(FOpenGLContextState& ContextState, uint32_t BaseVertexIndex, FOpenGLStream* Streams, uint32_t NumStreams, uint32_t MaxVertices)
 	{
-		//VERIFY_GL_SCOPE();
+		/*
+		glBindVertexArray(vao);
+
+		// 绑定 VBO 到绑定点 0
+		glBindVertexBuffer(0, vbo, 0, 0);  // 步长设为 0（因为数据是分段存储）
+
+		// (1) 位置属性（Location 0）
+		glVertexAttribFormat(0, 3, GL_FLOAT, GL_FALSE, 0);  // 偏移量 0
+		glVertexAttribBinding(0, 0);
+		glEnableVertexAttribArray(0);
+
+		// (2) 法线属性（Location 1）
+		glVertexAttribFormat(1, 3, GL_FLOAT, GL_FALSE, numVertices * sizeof(glm::vec3));  // 偏移量 = positions 的结束位置
+		glVertexAttribBinding(1, 0);
+		glEnableVertexAttribArray(1);
+
+		// (3) UV 属性（Location 2）
+		glVertexAttribFormat(2, 2, GL_FLOAT, GL_FALSE, 2 * numVertices * sizeof(glm::vec3));  // 偏移量 = positions + normals 的结束位置
+		glVertexAttribBinding(2, 0);
+		glEnableVertexAttribArray(2);
+
+		glBindVertexArray(0);
+
+		*/
+
+
 		bool KnowsDivisor[NUM_OPENGL_VERTEX_STREAMS] = { 0 };
 		uint32_t Divisor[NUM_OPENGL_VERTEX_STREAMS] = { 0 };
 		bool UpdateDivisors = false;
@@ -1424,7 +1453,7 @@ namespace BlackPearl
 				VertexAttributeDesc& VertexElement = VertexDeclaration->inputDesc[ElementIndex];
 				uint32_t AttributeIndex = VertexElement.location;
 				const uint32_t StreamIndex = VertexElement.streamIndex;
-
+				uint32_t nonInterleaveStride = 0;
 				//only setup/track attributes actually in use
 				FOpenGLCachedAttr& Attr = ContextState.VertexAttrs[AttributeIndex];
 				//if (AttributeMask.IsFieldEnabled(AttributeIndex))
@@ -1447,13 +1476,23 @@ namespace BlackPearl
 						{
 							if (!VertexElement.bShouldConvertToFloat)
 							{
-								FOpenGL::VertexAttribIFormat(AttributeIndex, VertexElement.elementStride, OpenGLUtil::convertInputElementDataType(VertexElement.elementType), VertexElement.offset);
+								if(VertexDeclaration->layout.m_LayoutType == LayoutType::OneVBO_Interleave)
+									FOpenGL::VertexAttribIFormat(AttributeIndex, VertexElement.elementCnt, OpenGLUtil::convertInputElementDataType(VertexElement.elementType), VertexElement.offset);
+								else if(VertexDeclaration->layout.m_LayoutType == LayoutType::OneVBO_NoInterleave)
+									FOpenGL::VertexAttribIFormat(AttributeIndex, VertexElement.elementCnt, OpenGLUtil::convertInputElementDataType(VertexElement.elementType), nonInterleaveStride);
+								else
+									GE_ASSERT(0);
 								GE_ERROR_JUDGE();
 
 							}
 							else
 							{
-								FOpenGL::VertexAttribFormat(AttributeIndex, VertexElement.elementSize, OpenGLUtil::convertInputElementDataType(VertexElement.elementType), VertexElement.bNormalized, VertexElement.offset);
+								if (VertexDeclaration->layout.m_LayoutType == LayoutType::OneVBO_Interleave)
+									FOpenGL::VertexAttribFormat(AttributeIndex, VertexElement.elementCnt, OpenGLUtil::convertInputElementDataType(VertexElement.elementType), VertexElement.bNormalized, VertexElement.offset);
+								else if (VertexDeclaration->layout.m_LayoutType == LayoutType::OneVBO_NoInterleave)
+									FOpenGL::VertexAttribIFormat(AttributeIndex, VertexElement.elementCnt, OpenGLUtil::convertInputElementDataType(VertexElement.elementType), nonInterleaveStride);
+								else
+									GE_ASSERT(0);
 								GE_ERROR_JUDGE();
 
 							}
@@ -1467,19 +1506,20 @@ namespace BlackPearl
 
 						if (Attr.StreamIndex != StreamIndex)
 						{
-							FOpenGL::VertexAttribBinding(AttributeIndex, VertexElement.streamIndex);
+							FOpenGL::VertexAttribBinding(VertexElement.location, VertexElement.streamIndex);
 							GE_ERROR_JUDGE();
 
 							Attr.StreamIndex = StreamIndex;
 						}
 
-						if (!ContextState.GetVertexAttrEnabled(AttributeIndex))
+					//	if (!ContextState.GetVertexAttrEnabled(AttributeIndex))
 						{
 							ContextState.SetVertexAttrEnabled(AttributeIndex, true);
 							GE_ERROR_JUDGE();
 
 							glEnableVertexAttribArray(AttributeIndex);
 						}
+						nonInterleaveStride +=  Streams[StreamIndex].NumVertices * VertexElement.elementSizeByte;
 					}
 					else
 					{
@@ -1527,63 +1567,66 @@ namespace BlackPearl
 		// Update the stream mask
 		ContextState.ActiveStreamMask = StreamMask;
 
-		//// Enable used streams
-		//for (uint32_t StreamIndex = 0; StreamIndex < NumStreams && StreamMask; StreamIndex++)
-		//{
-		//	if (StreamMask & 0x1)
-		//	{
-		//		FOpenGLStream& CachedStream = ContextState.VertexStreams[StreamIndex];
-		//		FOpenGLStream& Stream = Streams[StreamIndex];
-		//		if (Stream.VertexBufferResource)
-		//		{
-		//			uint32_t Offset = BaseVertexIndex * Stream.Stride + Stream.Offset;
-		//			bool bAnyDifferent = //bitwise ors to get rid of the branches
-		//				(CachedStream.VertexBufferResource != Stream.VertexBufferResource) ||
-		//				(CachedStream.Stride != Stream.Stride) ||
-		//				(CachedStream.Offset != Offset);
+		//// Enable used streams, 顶点流, 每个流对应一个vertex buffer
+		for (uint32_t StreamIndex = 0; StreamIndex < NumStreams && StreamMask; StreamIndex++)
+		{
+			if (StreamMask & 0x1)
+			{
+				FOpenGLStream& CachedStream = ContextState.VertexStreams[StreamIndex];
+				FOpenGLStream& Stream = Streams[StreamIndex];
+				if (Stream.VertexBufferResource)
+				{
+					uint32_t Offset = BaseVertexIndex * Stream.Stride + Stream.Offset;
+					bool bAnyDifferent = //bitwise ors to get rid of the branches
+						(CachedStream.VertexBufferResource != Stream.VertexBufferResource) ||
+						(CachedStream.Stride != Stream.Stride) ||
+						(CachedStream.Offset != Offset);
 
-		//			if (bAnyDifferent)
-		//			{
-		//				assert(Stream.VertexBufferResource != 0);
-		//				FOpenGL::BindVertexBuffer(StreamIndex, Stream.VertexBufferResource, Offset, Stream.Stride);
-		//				CachedStream.VertexBufferResource = Stream.VertexBufferResource;
-		//				CachedStream.Offset = Offset;
-		//				CachedStream.Stride = Stream.Stride;
-		//			}
-		//			if (UpdateDivisors && CachedStream.Divisor != Divisor[StreamIndex])
-		//			{
-		//				FOpenGL::VertexBindingDivisor(StreamIndex, Divisor[StreamIndex]);
-		//				CachedStream.Divisor = Divisor[StreamIndex];
-		//			}
-		//		}
-		//		else
-		//		{
-		//			//UE_LOG(LogRHI, Error, TEXT("Stream %d marked as in use, but vertex buffer provided is NULL (Mask = %x)"), StreamIndex, StreamMask);
+					if (bAnyDifferent)
+					{
+						assert(Stream.VertexBufferResource != 0);
+						//Stream.VertexBufferResource-->vbo.renderID(), vbo.GetStride()
+						// 绑定点0：全局offset=0
+						FOpenGL::BindVertexBuffer(StreamIndex, Stream.VertexBufferResource, Offset, Stream.Stride);
+						CachedStream.VertexBufferResource = Stream.VertexBufferResource;
+						CachedStream.Offset = Offset;
+						CachedStream.Stride = Stream.Stride;
+					}
+					if (UpdateDivisors && CachedStream.Divisor != Divisor[StreamIndex])
+					{
+						//TODO::
+						/*FOpenGL::VertexBindingDivisor(StreamIndex, Divisor[StreamIndex]);
+						CachedStream.Divisor = Divisor[StreamIndex];*/
+					}
+				}
+				else
+				{
+					//UE_LOG(LogRHI, Error, TEXT("Stream %d marked as in use, but vertex buffer provided is NULL (Mask = %x)"), StreamIndex, StreamMask);
 
-		//			FOpenGL::BindVertexBuffer(StreamIndex, 0, 0, 0);
-		//			CachedStream.VertexBufferResource = 0;
-		//			CachedStream.Offset = 0;
-		//			CachedStream.Stride = 0;
-		//		}
-		//	}
-		//	StreamMask >>= 1;
-		//}
-		////Ensure that all requested streams were set
-		//assert(StreamMask == 0);
+					FOpenGL::BindVertexBuffer(StreamIndex, 0, 0, 0);
+					CachedStream.VertexBufferResource = 0;
+					CachedStream.Offset = 0;
+					CachedStream.Stride = 0;
+				}
+			}
+			StreamMask >>= 1;
+		}
+		//Ensure that all requested streams were set
+		assert(StreamMask == 0);
 
-		//// Disable active unused streams
-		//for (uint32_t StreamIndex = 0; StreamIndex < NUM_OPENGL_VERTEX_STREAMS && NotUsedButActiveStreamMask; StreamIndex++)
-		//{
-		//	if (NotUsedButActiveStreamMask & 0x1)
-		//	{
-		//		FOpenGL::BindVertexBuffer(StreamIndex, 0, 0, 0);
-		//		ContextState.VertexStreams[StreamIndex].VertexBufferResource = 0;
-		//		ContextState.VertexStreams[StreamIndex].Offset = 0;
-		//		ContextState.VertexStreams[StreamIndex].Stride = 0;
-		//	}
-		//	NotUsedButActiveStreamMask >>= 1;
-		//}
-		//assert(NotUsedButActiveStreamMask == 0);
+		// Disable active unused streams
+		for (uint32_t StreamIndex = 0; StreamIndex < NUM_OPENGL_VERTEX_STREAMS && NotUsedButActiveStreamMask; StreamIndex++)
+		{
+			if (NotUsedButActiveStreamMask & 0x1)
+			{
+				FOpenGL::BindVertexBuffer(StreamIndex, 0, 0, 0);
+				ContextState.VertexStreams[StreamIndex].VertexBufferResource = 0;
+				ContextState.VertexStreams[StreamIndex].Offset = 0;
+				ContextState.VertexStreams[StreamIndex].Stride = 0;
+			}
+			NotUsedButActiveStreamMask >>= 1;
+		}
+		assert(NotUsedButActiveStreamMask == 0);
 	}
 
 	void Device::CachedSetupTextureStageInner(FOpenGLContextState& ContextState, GLint TextureIndex, GLenum Target, GLuint Resource, GLint BaseMip, GLint NumMips)

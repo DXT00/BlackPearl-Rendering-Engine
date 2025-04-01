@@ -14,7 +14,8 @@ namespace BlackPearl {
 			inputDesc[i].offset = layout.GetElement(i).Offset;
 			inputDesc[i].name = layout.GetElement(i).Name;
 			inputDesc[i].elementType = layout.GetElement(i).Type;
-			inputDesc[i].elementSize = layout.GetElement(i).GetElementCount();
+			inputDesc[i].elementCnt = layout.GetElement(i).GetElementCount();
+			inputDesc[i].elementSizeByte = layout.GetElement(i).ElementSize;
 
 		}
 

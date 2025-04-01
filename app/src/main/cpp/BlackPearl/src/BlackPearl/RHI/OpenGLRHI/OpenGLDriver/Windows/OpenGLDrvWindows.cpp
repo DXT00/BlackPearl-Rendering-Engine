@@ -7,6 +7,7 @@
 #include "BlackPearl/RHI/OpenGLRHI/OpenGLDynamicRHI.h"
 #include "BlackPearl/Core/ScopeLock.h"
 #include "BlackPearl/Core/CriticalSection.h"
+#include "BlackPearl/Core.h"
 #include "BlackPearl\RHI\Common\RHIUtils.h"
 // Copyright Epic Games, Inc. All Rights Reserved.
 
@@ -23,22 +24,14 @@ namespace BlackPearl {
 PFNWGLCREATECONTEXTATTRIBSARBPROC wglCreateContextAttribsARB = NULL;
 
 extern PFNWGLSWAPINTERVALEXTPROC wglSwapIntervalEXT_ProcAddress;	// set in OpenGLDevice.cpp
-
+static void ContextMakeCurrent(HDC DC, HGLRC RC, FPlatformOpenGLDevice* platformDevice = nullptr);
 bool GRunningUnderRenderDoc = false;
 
 /*------------------------------------------------------------------------------
 	OpenGL context management.
 ------------------------------------------------------------------------------*/
+struct FPlatformOpenGLDevice;
 
-static void ContextMakeCurrent(HDC DC, HGLRC RC)
-{
-	bool Result = wglMakeCurrent(DC, RC);
-	if (!Result)
-	{
-		Result = wglMakeCurrent(nullptr, nullptr);
-	}
-	GE_ASSERT(Result,"fail to make current context");
-}
 
 static HGLRC GetCurrentContext()
 {
@@ -313,7 +306,7 @@ struct FPlatformOpenGLDevice : public RHIDeviceContext
 			glGenFramebuffers(1, &RenderingContext.ViewportFramebuffer);
 		}
 
-		ContextMakeCurrent(SharedContext.DeviceContext, SharedContext.OpenGLContext);
+		ContextMakeCurrent(SharedContext.DeviceContext, SharedContext.OpenGLContext, this);
 	}
 
 	
@@ -334,6 +327,42 @@ struct FPlatformOpenGLDevice : public RHIDeviceContext
 FPlatformOpenGLDevice* PlatformCreateOpenGLDevice()
 {
 	return new FPlatformOpenGLDevice;
+}
+
+static void ContextMakeCurrent(HDC DC, HGLRC RC, FPlatformOpenGLDevice* platformDevice)
+{
+	if (!platformDevice) {
+		GE_CORE_WARN("[ContextMakeCurrent] no device Other or invalid context");
+	}
+	else {
+		if (RC == platformDevice->RenderingContext.OpenGLContext)	// most common case
+		{
+			GE_CORE_WARN("[ContextMakeCurrent] Rendering context ");
+
+		}
+		else if (RC == platformDevice->SharedContext.OpenGLContext)
+		{
+			GE_CORE_WARN("[ContextMakeCurrent] Shared context ");
+
+		}
+		else if (RC)
+		{
+			GE_CORE_WARN("[ContextMakeCurrent] Other context ");
+
+		}
+		else
+		{
+			GE_CORE_WARN("[ContextMakeCurrent] invalid context ");
+		}
+	}
+	
+
+	bool Result = wglMakeCurrent(DC, RC);
+	if (!Result)
+	{
+		Result = wglMakeCurrent(nullptr, nullptr);
+	}
+	GE_ASSERT(Result, "fail to make current context");
 }
 
 bool PlatformCanEnableGPUCapture()
@@ -428,7 +457,7 @@ void PlatformReleaseOpenGLContext(FPlatformOpenGLDevice* Device, FPlatformOpenGL
 	{
 		// The rendering context has been made current using the DC of the now destroyed context. Since this DC has been released the current context will be invalid.
 		// To properly set the rendering context we must make current here with it's own DC.
-		ContextMakeCurrent(Device->RenderingContext.DeviceContext, Device->RenderingContext.OpenGLContext);
+		ContextMakeCurrent(Device->RenderingContext.DeviceContext, Device->RenderingContext.OpenGLContext, Device);
 	}
 
 	assert(Context->WindowHandle);
@@ -577,11 +606,11 @@ void PlatformRenderingContextSetup(FPlatformOpenGLDevice* Device)
 	if (Device->ViewportContexts.size() == 1)
 	{
 		// use the HDC of the window, to reduce context swap overhead
-		ContextMakeCurrent(Device->ViewportContexts[0]->DeviceContext, Device->RenderingContext.OpenGLContext);
+		ContextMakeCurrent(Device->ViewportContexts[0]->DeviceContext, Device->RenderingContext.OpenGLContext, Device);
 	}
 	else
 	{
-		ContextMakeCurrent(Device->RenderingContext.DeviceContext, Device->RenderingContext.OpenGLContext);
+		ContextMakeCurrent(Device->RenderingContext.DeviceContext, Device->RenderingContext.OpenGLContext, Device);
 	}
 }
 
@@ -590,7 +619,7 @@ void PlatformSharedContextSetup(FPlatformOpenGLDevice* Device)
 	assert(Device && Device->SharedContext.DeviceContext && Device->SharedContext.OpenGLContext);
 
 	// no need to glFlush() on Windows, it does flush by itself before switching contexts
-	ContextMakeCurrent(Device->SharedContext.DeviceContext, Device->SharedContext.OpenGLContext);
+	ContextMakeCurrent(Device->SharedContext.DeviceContext, Device->SharedContext.OpenGLContext, Device);
 
 }
 
