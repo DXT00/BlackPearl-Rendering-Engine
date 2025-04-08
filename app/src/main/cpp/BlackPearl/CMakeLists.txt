@@ -181,7 +181,7 @@ if(WIN32)
 elseif(ANDROID)
     message(STATUS "Building for Android")
     add_definitions(
-            -DGE_PLATFORM_ANDRIOD
+            -DGE_PLATFORM_ANDROID
             -DGLEW_NO_GLU
     )
 endif()

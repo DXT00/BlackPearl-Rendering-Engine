@@ -30,7 +30,7 @@ file(GLOB src-files
 )
 
 add_definitions(-DGE_API_GLES)
-add_definitions(-DGE_PLATFORM_ANDRIOD)
+add_definitions(-DGE_PLATFORM_ANDROID)
 
 # 创建静态库目标
 add_library(

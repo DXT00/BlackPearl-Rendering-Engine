@@ -141,6 +141,7 @@ namespace BlackPearl {
 		if (!texturePath.empty()) {
 			TextureDesc desc;
 			desc.type = TextureType::DiffuseMap;
+			desc.dimension = TextureDimension::Texture2D;
 			desc.path = texturePath;
 			desc.minFilter = FilterMode::Linear;
 			desc.magFilter = FilterMode::Linear;

@@ -57,7 +57,7 @@ namespace BlackPearl {
 	{
 		Bind();
 		fillTextureInfo(_desc);
-		if (data != nullptr) {
+		if (data != nullptr || !m_Path.empty()) {
 			GE_ASSERT(m_Path.size() != 0, "texture image is empty!");
 
 			int width, height, nrChannels;
@@ -72,15 +72,23 @@ namespace BlackPearl {
 			{
 			case 1:
 				format = GL_RED;
+				desc.format = Format::R8_UNORM;
+
 				break;
 			case 2:
 				format = GL_RG;
+				desc.format = Format::RG8_UNORM;
+
+
 				break;
 			case 3:
 				format = GL_RGB;
+				desc.format = Format::RGB8_UNORM;
+
 				break;
 			case 4:
 				format = GL_RGBA;
+				desc.format = Format::RGBA8_UNORM;
 				break;
 			default:
 				GE_CORE_ERROR("Channel {0} has unknown format!", nrChannels)
@@ -90,6 +98,7 @@ namespace BlackPearl {
 			m_Height = height;
 			_desc.width = m_Width;
 			_desc.height = m_Height;
+			_desc.format = desc.format;
 
 			desc.width = m_Width;
 			desc.height = m_Height;

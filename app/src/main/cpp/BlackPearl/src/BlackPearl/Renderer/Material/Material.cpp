@@ -232,16 +232,16 @@ namespace BlackPearl {
 		material_cb.props.isRefractMaterial = m_Props.isRefractMaterial;
 		material_cb.props.isDoubleSided = m_Props.isDoubleSided;
 
-		if(m_TextureMaps->diffuseTextureMap && material_cb.props.isDiffuseTextureSample)
+		if(m_TextureMaps->diffuseTextureMap)
 			material_cb.flags |= MaterialFlags_UseBaseOrDiffuseTexture;
-		if (m_TextureMaps->specularTextureMap && material_cb.props.isSpecularTextureSample)
+		if (m_TextureMaps->specularTextureMap)
 			material_cb.flags |= MaterialFlags_UseSpecularTexture;
-		if (m_TextureMaps->emissionTextureMap && material_cb.props.isEmissionTextureSample)
+		if (m_TextureMaps->emissionTextureMap)
 			material_cb.flags |= MaterialFlags_UseEmissiveTexture;
 
 		if (m_TextureMaps->normalTextureMap)
 			material_cb.flags |= MaterialFlags_UseNormalTexture;
-		if (m_TextureMaps->heightTextureMap && material_cb.props.isHeightTextureSample)
+		if (m_TextureMaps->heightTextureMap)
 			material_cb.flags |= MaterialFlags_UseHeightMapTexture;
 		if (m_TextureMaps->cubeTextureMap)
 			material_cb.flags |= MaterialFlags_UseCubeMapTexture;

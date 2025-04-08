@@ -119,7 +119,14 @@ namespace BlackPearl {
 
     BindingSetItem MaterialBindingCache::GetTextureBindingSetItem(uint32_t slot, const TextureHandle& texture) 
     {
-        return BindingSetItem::Texture_SRV(slot, texture? texture.Get() : g_materialManager->systemTextures.whiteTexture.Get());
+        if (texture) {
+            return BindingSetItem::Texture_SRV(slot,texture.Get(), "", texture->getDesc().format, AllSubresources, texture->getDesc().dimension);
+
+        }
+        else {
+            return BindingSetItem::Texture_SRV(slot,  g_materialManager->systemTextures.whiteTexture.Get());
+
+        }
     }
 
 	//BindingSetItem MaterialBindingCache::GetTextureBindingSetItem(uint32_t slot, const std::shared_ptr<LoadedTexture>& texture) const

@@ -79,20 +79,7 @@ struct Props {
     int isRefractMaterial;
     int isDoubleSided;
 
- /*   Props() {
-        shininess = (64.0f),
-            refractIndex = (1.5),
-            isBinnLight = (false),
-            isPBRTextureSample = (0),
-            isDiffuseTextureSample = (0),
-            isSpecularTextureSample = (0),
-            isEmissionTextureSample = (0),
-            isHeightTextureSample = (0),
-            isRefractMaterial = (0);
-    
-    
-    
-    }*/
+
 
 };
 
