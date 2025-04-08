@@ -2,8 +2,8 @@
 #version 450 core
 layout(location = 0) in vec3 aPos;
 layout(location = 1) in vec3 aPrePos;
-layout(location = 2) in vec3 aNormal;
-layout(location = 3) in vec2 aTexCoords;
+layout(location = 2) in vec2 aTexCoords;
+layout(location = 3) in vec3 aNormal;
 
 out vec2 TexCoords;
 		
@@ -58,7 +58,7 @@ float LinearizeDepth(float depth){
 }
 void main(){
     MaterialTextureSample texSamples = SampleMaterialTexturesAuto(TexCoords);
-	FragColor = vec4(1.0,1.0,0.0,1.0);// vec4(u_Material.diffuseColor,0.2);
+	FragColor = texSamples.baseOrDiffuse;//vec4(1.0,1.0,0.0,1.0);// vec4(u_Material.diffuseColor,0.2);
 //	FragColor =  vec4(1.0,0.0,0.0,1.0);//texture(u_Material.diffuse,TexCoords);//*vec4(u_Material.diffuseColor,1.0);
 //	float depth = LinearizeDepth(gl_FragCoord.z)/far;
 //	FragColor=vec4(vec3(depth),1.0);
