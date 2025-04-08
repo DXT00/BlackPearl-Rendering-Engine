@@ -36,9 +36,6 @@ namespace BlackPearl {
 
 		InstancedOpaqueDrawStrategy* m_DrawStrategy;
 
-        BufferHandle  m_ForwardViewCB;
-        SamplerHandle m_ShadowSampler;
-
 
         ShaderParameters m_ShaderParameters[ShaderType::NUM_COMPILE_SHADER_STAGES];
 	};

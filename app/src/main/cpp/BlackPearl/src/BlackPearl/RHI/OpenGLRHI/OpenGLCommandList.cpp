@@ -267,10 +267,15 @@ namespace BlackPearl {
 
 			return;
 		}*/
+		//glBindBuffer(GL_ARRAY_BUFFER, 0);
+		//GE_ERROR_JUDGE();
+
 		if (buffer->desc.isVertexBuffer) {
 			VertexBuffer* vbo = static_cast<VertexBuffer*>(buffer);
 			glBindBuffer(GL_ARRAY_BUFFER, vbo->rendererID);
+			GE_ERROR_JUDGE();
 			glBufferSubData(GL_ARRAY_BUFFER, destOffsetBytes, dataSize, data);
+			GE_ERROR_JUDGE();
 		}
 		else if (buffer->desc.isIndexBuffer) {
 			IndexBuffer* ibo = static_cast<IndexBuffer*>(buffer);
@@ -1530,6 +1535,7 @@ namespace BlackPearl {
 		_commitSSBOs(ssbos, ContextState);
 		_commitTexturesAndSamplers(textures, samplers, ContextState);
 		_commitImages(images, ContextState);
+		_commitUBOs(ubos, ContextState);
 		//_commitSamplers(samplers, ContextState);
 	}
 

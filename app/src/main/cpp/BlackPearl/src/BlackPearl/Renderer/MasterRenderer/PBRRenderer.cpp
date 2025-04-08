@@ -2,17 +2,18 @@
 #include "PBRRenderer.h"
 #include "BlackPearl/RHI/Common/RHIUtils.h"
 #include "hlsl/core/forward_cb.h"
+#include "hlsl/core/transform_cb.h"
 #include "BlackPearl/RHI/OpenGLRHI/OpenGLDriver/OpenGLFunctions.h"
 #include "BlackPearl/Core.h"
 
 namespace BlackPearl {
 
 
-	void PBRRenderer::Render(const std::vector<Object*>& objs)
-	{
-//		m_PbrShader->Bind();
-//		DrawObjects(objs, m_PbrShader);
-	}
+    void PBRRenderer::Render(const std::vector<Object*>& objs)
+    {
+        //		m_PbrShader->Bind();
+        //		DrawObjects(objs, m_PbrShader);
+    }
     void PBRRenderer::Init()
     {
         //std::vector<ShaderMacro> Macros;
@@ -48,29 +49,34 @@ namespace BlackPearl {
 
         m_ForwardViewCB = m_Device->createBuffer(RHIUtils::CreateStaticConstantBufferDesc(sizeof(ForwardShadingViewConstants), "ForwardShadingViewConstants"));
 
+        m_ObjectTransformCB = m_Device->createBuffer(RHIUtils::CreateStaticConstantBufferDesc(sizeof(TransformConstants), "TransformConstants"));
         RHIBindingLayoutDesc viewLayoutDesc;
         viewLayoutDesc.visibility = ShaderType::All;
         viewLayoutDesc.bindings = {
                 RHIBindingLayoutItem::RT_VolatileConstantBuffer(0),
-                RHIBindingLayoutItem::RT_Sampler(1)
+                //RHIBindingLayoutItem::RT_Sampler(1),
+                RHIBindingLayoutItem::RT_VolatileConstantBuffer(1)
         };
 
         BindingSetDesc viewBindingSetDesc;
         viewBindingSetDesc.bindings = {
                 BindingSetItem::ConstantBuffer(0, m_ForwardViewCB),
-                BindingSetItem::Sampler(1, m_ShadowSampler)
+                //BindingSetItem::Sampler(1, m_ShadowSampler),
+                BindingSetItem::ConstantBuffer(1, m_ObjectTransformCB),
+
         };
         BindingLayoutHandle viewBindinglayout = m_Device->createBindingLayout(viewLayoutDesc);
         BindingSetHandle viewBindingset = m_Device->createBindingSet(viewBindingSetDesc, viewBindinglayout);
+
 
         m_ShaderParameters[ShaderType::Pixel].bindingLayouts.push_back(viewBindinglayout);
         m_ShaderParameters[ShaderType::Pixel].bindingSets.push_back(viewBindingset);
         //m_ShaderParameters[ShaderType::VertexShader].inputLayout = inputLayout;
     }
 
-	void PBRRenderer::Render(ICommandList* commandList, IFramebuffer* targetFramebuffer, Scene* scene)
-	{
-		commandList->beginMarker("BasePass");
+    void PBRRenderer::Render(ICommandList* commandList, IFramebuffer* targetFramebuffer, Scene* scene)
+    {
+        commandList->beginMarker("BasePass");
         GE_ERROR_JUDGE();
 
         //TODO:: get default framebuffer
@@ -78,29 +84,31 @@ namespace BlackPearl {
         commandList->beginRenderPass(RPInfo, "BasePass");
         GE_ERROR_JUDGE();
 
-		SceneData* view = Renderer::GetSceneData();
+        SceneData* view = Renderer::GetSceneData();
         GE_ERROR_JUDGE();
 
-		SceneData* preView = Renderer::GetPreSceneData();
+        SceneData* preView = Renderer::GetPreSceneData();
         GE_ERROR_JUDGE();
 
-		m_DrawStrategy->PrepareForView(scene, *view);
+        SetupView(commandList, view, preView);
+
+        m_DrawStrategy->PrepareForView(scene, *view);
         GE_ERROR_JUDGE();
 
-		RenderPassTemplate(commandList, targetFramebuffer, view, m_DrawStrategy, m_ShaderParameters);
-        
+        RenderPassTemplate(commandList, targetFramebuffer, view, m_DrawStrategy, m_ShaderParameters);
+
         commandList->endRenderPass();
-		commandList->endMarker();
-	}
+        commandList->endMarker();
+    }
 
-	void PBRRenderer::Render(Object * obj)
-	{
-//		m_PbrShader->Bind();
-//		DrawObject(obj, m_PbrShader);
-	}
+    void PBRRenderer::Render(Object* obj)
+    {
+        //		m_PbrShader->Bind();
+        //		DrawObject(obj, m_PbrShader);
+    }
 
-	PBRRenderer::~PBRRenderer()
-	{
-	}
+    PBRRenderer::~PBRRenderer()
+    {
+    }
 
 }

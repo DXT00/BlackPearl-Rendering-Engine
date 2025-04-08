@@ -19,9 +19,9 @@ namespace BlackPearl {
 		:m_MaterialShader(shader), m_TextureMaps(textureMaps), m_MaterialColors(materialColors), m_Props(Props()), customBindingDesc(customBindings)
 		
 	{
-#if APP_VERSION == APP_VERSION_1_0
+//#if APP_VERSION == APP_VERSION_1_0
 		_CreateMaterialConstantBuffer();
-#endif
+//#endif
 		materialTemplateType = templateType;
 		materialTemplate = _CreateMaterialTemplate();
 
@@ -44,9 +44,9 @@ namespace BlackPearl {
 			m_MaterialShader = new MaterialShader(shaderPath);
 		}
 		customBindingDesc = customBindings;
-#if APP_VERSION == APP_VERSION_1_0
+//#if APP_VERSION == APP_VERSION_1_0
 		_CreateMaterialConstantBuffer();
-#endif
+//#endif
 		materialTemplateType = templateType;
 		materialTemplate = _CreateMaterialTemplate();
 	}

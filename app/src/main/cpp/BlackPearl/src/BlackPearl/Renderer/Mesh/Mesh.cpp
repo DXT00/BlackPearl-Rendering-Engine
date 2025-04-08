@@ -81,54 +81,68 @@ namespace BlackPearl {
 		{
 			_AppendBufferRange(buffers->getVertexBufferRange(VertexAttribute::Position),
 				buffers->positionData.size() * sizeof(buffers->positionData[0]), bufferDesc.byteSize);
+			bufferDesc.vertexCnt = buffers->positionData.size();
 		}
 
 		if (!buffers->prePositionData.empty())
 		{
 			_AppendBufferRange(buffers->getVertexBufferRange(VertexAttribute::PrevPosition),
 				buffers->prePositionData.size() * sizeof(buffers->prePositionData[0]), bufferDesc.byteSize);
+			bufferDesc.vertexCnt = buffers->prePositionData.size();
+
 		}
 
 		if (!buffers->normalData.empty())
 		{
 			_AppendBufferRange(buffers->getVertexBufferRange(VertexAttribute::Normal),
 				buffers->normalData.size() * sizeof(buffers->normalData[0]), bufferDesc.byteSize);
+			bufferDesc.vertexCnt = buffers->normalData.size();
+
 		}
 
 		if (!buffers->tangentData.empty())
 		{
 			_AppendBufferRange(buffers->getVertexBufferRange(VertexAttribute::Tangent),
 				buffers->tangentData.size() * sizeof(buffers->tangentData[0]), bufferDesc.byteSize);
+			bufferDesc.vertexCnt = buffers->tangentData.size();
+
 		}
 
 		if (!buffers->texcoord1Data.empty())
 		{
 			_AppendBufferRange(buffers->getVertexBufferRange(VertexAttribute::TexCoord1),
 				buffers->texcoord1Data.size() * sizeof(buffers->texcoord1Data[0]), bufferDesc.byteSize);
+			bufferDesc.vertexCnt = buffers->texcoord1Data.size();
+
 		}
 
 		if (!buffers->texcoord2Data.empty())
 		{
 			_AppendBufferRange(buffers->getVertexBufferRange(VertexAttribute::TexCoord2),
 				buffers->texcoord2Data.size() * sizeof(buffers->texcoord2Data[0]), bufferDesc.byteSize);
+			bufferDesc.vertexCnt = buffers->texcoord2Data.size();
+
 		}
 
 		if (!buffers->jointIdData.empty())
 		{
 			_AppendBufferRange(buffers->getVertexBufferRange(VertexAttribute::JointIndices),
 				buffers->jointIdData.size() * sizeof(buffers->jointIdData[0]), bufferDesc.byteSize);
+
 		}
 
 		if (!buffers->jointId1Data.empty())
 		{
 			_AppendBufferRange(buffers->getVertexBufferRange(VertexAttribute::JointIndices),
 				buffers->jointId1Data.size() * sizeof(buffers->jointId1Data[0]), bufferDesc.byteSize);
+
 		}
 
 		if (!buffers->jointId2Data.empty())
 		{
 			_AppendBufferRange(buffers->getVertexBufferRange(VertexAttribute::JointIndices),
 				buffers->jointId2Data.size() * sizeof(buffers->jointId2Data[0]), bufferDesc.byteSize);
+
 		}
 
 		if (!buffers->jointWeightData.empty())

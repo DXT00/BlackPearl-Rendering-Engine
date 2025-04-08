@@ -746,7 +746,7 @@ namespace BlackPearl {
             slot++;
         }
         //Transform
-        state.vertexBuffers.push_back({ buffers->instanceBuffer, slot, 0 });
+        //state.vertexBuffers.push_back({ buffers->instanceBuffer, slot, 0 });
 
 
     }
@@ -818,6 +818,13 @@ namespace BlackPearl {
                                  1 * sizeof(InstanceData));
     }
 
+	void BasicRenderer::_UploadTransformBuffers(ICommandList* commandList, Transform* trans, GraphicsState& state)
+	{
+		glm::mat4 mat = trans->GetTransformMatrix();
+		commandList->writeBuffer(m_ObjectTransformCB, &mat,
+			1 * sizeof(glm::mat4));
+	}
+
     bool BasicRenderer::SetupMaterial(const Material* material, RasterCullMode cullMode, const GraphicsPipelineDesc& pipelineDesc, GraphicsState& state) {
 		// auto& context = static_cast<Context&>(abstractContext);
 
@@ -852,12 +859,30 @@ namespace BlackPearl {
     void BasicRenderer::SetupInputBuffers(ICommandList* cmdList, BufferGroup* buffers, Transform* trans, GraphicsState& state)
     {
         _UploadIndexBuffers(cmdList, buffers, state);
-        _UploadInstanceBuffers(cmdList, buffers, trans, state);
-        _UploadVertexBuffers(cmdList, buffers, state);
+		GE_ERROR_JUDGE();
+
+       // _UploadInstanceBuffers(cmdList, buffers, trans, state);
+		_UploadTransformBuffers(cmdList, trans, state);
+		GE_ERROR_JUDGE();
+
+		_UploadVertexBuffers(cmdList, buffers, state);
 
     }
 
+	void BasicRenderer::SetupView(ICommandList* commandList, const IView* view, const IView* viewPrev)
+	{
+		// auto& context = static_cast<Context&>(abstractContext);
 
+		ForwardShadingViewConstants viewConstants = {};
+		view->FillPlanarViewConstants(viewConstants);
+		commandList->beginTrackingBufferState(m_ForwardViewCB, ResourceStates::Common);
+		commandList->writeBuffer(m_ForwardViewCB, &viewConstants, sizeof(ForwardShadingViewConstants));
+
+		/*  context.keyTemplate.bits.frontCounterClockwise = view->IsMirrored();
+		  context.keyTemplate.bits.reverseDepth = view->IsReverseDepth();*/
+
+
+	}
 
 	void BasicRenderer::RenderPassTemplate(ICommandList* cmdList, IFramebuffer* framebuffer, IView* view, IDrawStrategy* drawStrategy, const ShaderParameters* shaderParms)
 	{

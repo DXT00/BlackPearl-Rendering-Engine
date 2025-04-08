@@ -48,6 +48,7 @@ namespace BlackPearl
 		void DrawLightSources(const LightSources* lightSources, SceneData* scene = Renderer::GetSceneData(), unsigned int textureBeginIdx = 2);
 		void PrepareBasicShaderParameters(std::shared_ptr<class Mesh> mesh,IShader* shader, bool isLight = false, unsigned int textureBeginIdx = 2);
 	protected:
+		void SetupView(ICommandList* commandList, const IView* view, const IView* viewPrev);
 
         void SetupInputBuffers(ICommandList* cmdList, BufferGroup* buffers, Transform* trans, GraphicsState& state);
         bool SetupMaterial(const Material* material, RasterCullMode cullMode, const GraphicsPipelineDesc& pipelineDesc, GraphicsState& state);
@@ -55,10 +56,15 @@ namespace BlackPearl
 		DeviceHandle m_Device;
 		std::shared_ptr<MaterialBindingCache> m_MaterialBindingsCache;
 
+		BufferHandle  m_ForwardViewCB;
+		SamplerHandle m_ShadowSampler;
+		BufferHandle m_ObjectTransformCB;
     private:
         void _UploadIndexBuffers(ICommandList* commandList, BufferGroup* buffers, GraphicsState& state);
         void _UploadVertexBuffers(ICommandList* commandList, BufferGroup* buffers, GraphicsState& state);
         void _UploadInstanceBuffers(ICommandList* commandList, BufferGroup* buffers, Transform* trans, GraphicsState& state);
+		void _UploadTransformBuffers(ICommandList* commandList, Transform* trans, GraphicsState& state);
+
 	public:
 
 		static uint32_t s_DrawCallCnt;

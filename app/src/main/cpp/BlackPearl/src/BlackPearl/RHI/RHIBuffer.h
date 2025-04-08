@@ -24,6 +24,7 @@ namespace BlackPearl {
         bool isAccelStructStorage = false;
         bool isShaderBindingTable = false;
 
+        uint32_t vertexCnt = 0;
 		UniformBufferLayout* uniformBufferLayout;
         // A dynamic/upload buffer whose contents only live in the current command list
         bool isVolatile = false;

@@ -16,6 +16,7 @@ namespace BlackPearl {
 	VertexBuffer::VertexBuffer(const BufferDesc& _desc)
 	:Buffer(_desc) {
 		glGenBuffers(1, &rendererID);
+		glBindBuffer(GL_ARRAY_BUFFER, rendererID);
 		glBufferData(GL_ARRAY_BUFFER, _desc.byteSize, nullptr, _desc.isDynamic? GL_DYNAMIC_DRAW: GL_STATIC_DRAW); // œ»∑÷≈‰ø’º‰
 
 	}
