@@ -20,15 +20,15 @@
 
 #ifdef GE_PLATFORM_WINDOWS
 
-extern BlackPearl::Application* BlackPearl::CreateApplication(HINSTANCE hInstance, int nShowCmd);
+extern BlackPearl::Application* BlackPearl::CreateApplication(INSTANCE_HANDLE hInstance, int nShowCmd);
 
 #ifdef GE_API_D3D12
-int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine, _In_ int nShowCmd) {
+int WINAPI WinMain(_In_ INSTANCE_HANDLE hInstance, _In_opt_ INSTANCE_HANDLE hPrevInstance, _In_ LPSTR lpCmdLine, _In_ int nShowCmd) {
 	std::wstringstream wstr;
 	wstr << L"entry\n";
 	OutputDebugStringW(wstr.str().c_str());
 #else
-int main(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine, _In_ int nShowCmd) {
+int main(_In_ INSTANCE_HANDLE hInstance, _In_opt_ INSTANCE_HANDLE hPrevInstance, _In_ LPSTR lpCmdLine, _In_ int nShowCmd) {
 #endif
 
 
