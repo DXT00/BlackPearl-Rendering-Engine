@@ -1,5 +1,6 @@
 #pragma once
 #include"Log.h"
+#include "BlackPearl/Core/Platform.h"
 
 #ifdef GE_PLATFORM_WINDOWS
 #define PLATFORM_HEADER_NAME Windows
@@ -47,7 +48,7 @@
 
 #define _CRTDBG_MAP_ALLOC
 
-//ʹ��ģ�建��
+
 #ifdef GE_STENCIL_TEST
 #define GE_ENABLE_STENCIL_TEST
 #endif // GE_STENCIL_TEST

@@ -8,11 +8,17 @@
 #define FORCEINLINE	 									    /* Easier to debug */
 #endif
 
+#define INSTANCE_HANDLE HINSTANCE
+
+
 #elif defined(GE_PLATFORM_ANDROID)
 #if _DEBUG 
 #define FORCEINLINE	inline									/* Easier to debug */
 #else
 #define FORCEINLINE inline __attribute__ ((always_inline))	/* Force code to be inline */
 #endif
+
+#define INSTANCE_HANDLE int
+
 #endif
 

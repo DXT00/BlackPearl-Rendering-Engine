@@ -40,13 +40,13 @@ namespace BlackPearl {
 	{
 	public:
 		struct AppConf {
-			HINSTANCE hInstance;
+			INSTANCE_HANDLE hInstance;
 			int nShowCmd;
 			std::string renderer;
 			AppVersion version;
 			DynamicRHI::Type rhiType;
 		};
-		Application(HINSTANCE hInstance, int nShowCmd, DynamicRHI::Type rhiType, AppVersion version);
+		Application(INSTANCE_HANDLE hInstance, int nShowCmd, DynamicRHI::Type rhiType, AppVersion version);
 		virtual ~Application();
 
 		inline static Application &Get() { return *s_Instance; }
@@ -93,5 +93,5 @@ namespace BlackPearl {
 
 	};
 	//To be define in a client
-	Application * CreateApplication(HINSTANCE hInstance, int nShowCmd);
+	Application * CreateApplication(INSTANCE_HANDLE hInstance, int nShowCmd);
 }
