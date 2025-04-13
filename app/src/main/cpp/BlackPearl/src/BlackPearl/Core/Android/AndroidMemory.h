@@ -9,5 +9,5 @@ namespace BlackPearl {
 
 	};
 
-	typedef AndroidPlatformMemory PlatformMemory;
+	typedef AndroidPlatformMemory FPlatformMemory;
 }

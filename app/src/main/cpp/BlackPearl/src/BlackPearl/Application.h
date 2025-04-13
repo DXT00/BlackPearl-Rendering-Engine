@@ -20,8 +20,9 @@
 #include "BlackPearl/Renderer/Material/MaterialManager.h"
 #include "BlackPearl/Renderer/DeviceManager.h"
 #include "BlackPearl/FileSystem/FileSystem.h"
-
+#include "BlackPearl/Core.h"
 #include <chrono>
+struct android_app;
 using namespace std::chrono;
 namespace BlackPearl {
 
@@ -40,13 +41,13 @@ namespace BlackPearl {
 	{
 	public:
 		struct AppConf {
-			HINSTANCE hInstance;
+            INSTANCE_HANDLE hInstance;
 			int nShowCmd;
 			std::string renderer;
 			AppVersion version;
 			DynamicRHI::Type rhiType;
 		};
-		Application(HINSTANCE hInstance, int nShowCmd, DynamicRHI::Type rhiType, AppVersion version);
+		Application(INSTANCE_HANDLE hInstance, int nShowCmd, DynamicRHI::Type rhiType, AppVersion version);
 		virtual ~Application();
 
 		inline static Application &Get() { return *s_Instance; }
@@ -74,7 +75,7 @@ namespace BlackPearl {
 	
 	
 	private:
-		static Application* s_Instance; //TODO::可以不delete,或者改为 unique_ptr
+		static Application* s_Instance; //TODO::锟斤拷锟皆诧拷delete,锟斤拷锟竭革拷为 unique_ptr
 		double m_LastFrameTime = 0.0f;
 
 	private:
@@ -92,6 +93,11 @@ namespace BlackPearl {
 
 
 	};
-	//To be define in a client
-	Application * CreateApplication(HINSTANCE hInstance, int nShowCmd);
+#ifdef GE_PLATFORM_WINDOWS
+
+//To be define in a client
+	Application * CreateApplication(INSTANCE_HANDLE hInstance, int nShowCmd);
+#elif defined GE_PLATFORM_ANDROID
+    Application * CreateApplication(INSTANCE_HANDLE hInstance, int nShowCmd, struct android_app* state);
+#endif
 }

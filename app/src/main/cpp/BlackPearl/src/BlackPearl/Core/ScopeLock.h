@@ -6,7 +6,7 @@
 //#include "Misc/AssertionMacros.h"
 //#include "HAL/CriticalSection.h"
 //#include "BlackPearl/Core/ScopeLock.h"
-#include "BlackPearl\Core\CriticalSection.h"
+#include "CriticalSection.h"
 /**
  * Implements a scope lock.
  *

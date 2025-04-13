@@ -1,7 +1,7 @@
 #pragma once
 #include<bitset>
 namespace BlackPearl {
-	//Ò»¸öEntity×î¶à32¸öComponent
+	//Ò»ï¿½ï¿½Entityï¿½ï¿½ï¿½32ï¿½ï¿½Component
 	//inline static void SyncGPU();
 #define GE_OLD_WORLD_MAX			2097152.0						/* UE4 maximum world size */
 #define GE_OLD_HALF_WORLD_MAX		(GE_OLD_WORLD_MAX * 0.5)		/* UE4 half maximum world size */
@@ -11,13 +11,14 @@ namespace BlackPearl {
 #endif
 	class Configuration {
 	public:
+        static const bool GUseThreadedRendering = false;
 		static const unsigned int MaxComponents = 32;
 		typedef std::bitset<MaxComponents> ComponentMask;
 
 		static const unsigned int WindowWidth = 300;  ///300;//960;// 1920 1024x768 
 		static const unsigned int WindowHeight = 300;// 300;//540;// 540;1080
 
-		//¶àÖØ²ÉÑù
+		//ï¿½ï¿½ï¿½Ø²ï¿½ï¿½ï¿½
 		static const unsigned int MSAA_SAMPLES = 4;
 
 		//VSync
@@ -40,13 +41,13 @@ namespace BlackPearl {
 		// ------------------------------------------
 		// Shadow map
 		// ------------------------------------------
-		/*¶ÔÓÚÃ¿¸ö PointLight ÔÚ m_ShadowRaduis ÇòÌå·¶Î§ÄÚµÄÎïÌå²Å»á»­³öshadow */
+		/*ï¿½ï¿½ï¿½ï¿½Ã¿ï¿½ï¿½ PointLight ï¿½ï¿½ m_ShadowRaduis ï¿½ï¿½ï¿½å·¶Î§ï¿½Úµï¿½ï¿½ï¿½ï¿½ï¿½Å»á»­ï¿½ï¿½shadow */
 		static const float ShadowMapPointLightRadius;
 
 		// ------------------------------------------
 		// light probe environment map	and specular map resolution
 		// ------------------------------------------
-		/* prefilterMap.glslÀïµÄ	float resolution =512.0;Ò²Òª¸Ä */
+		/* prefilterMap.glslï¿½ï¿½ï¿½	float resolution =512.0;Ò²Òªï¿½ï¿½ */
 		static const float EnvironmantMapResolution;
 		//static const float GICoeefs;
 
@@ -77,7 +78,7 @@ namespace BlackPearl {
 		// Batch rendering limit
 		//-----------------------------------------------
 		//if exceed MaxObjsInABatch objs in one batch shader compiler will give an error:
-		//¡°offset for relative array access outside supported range¡±
+		//ï¿½ï¿½offset for relative array access outside supported rangeï¿½ï¿½
 		// no sulution yet, details: https://forums.developer.nvidia.com/t/bug-compiler-issues-internal-error-offset-for-relative-array-access-outside-supported-range/46430
 		static const unsigned int MaxObjsInABatch = 300;
 

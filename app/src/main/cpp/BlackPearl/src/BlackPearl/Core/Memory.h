@@ -42,7 +42,7 @@ struct FMemory
 	template< class T >
 	static FORCEINLINE void Memset(T& Src, uint8_t ValueToSet)
 	{
-		static_assert(!TIsPointer<T>::Value, "For pointers use the three parameters function");
+		//static_assert(!TIsPointer<T>::Value, "For pointers use the three parameters function");
 		Memset(&Src, ValueToSet, sizeof(T));
 	}
 
@@ -82,7 +82,7 @@ struct FMemory
 	template< class T >
 	static FORCEINLINE void Memcpy(T& Dest, const T& Src)
 	{
-		static_assert(!TIsPointer<T>::Value, "For pointers use the three parameters function");
+		//static_assert(!TIsPointer<T>::Value, "For pointers use the three parameters function");
 		Memcpy(&Dest, &Src, sizeof(T));
 	}
 

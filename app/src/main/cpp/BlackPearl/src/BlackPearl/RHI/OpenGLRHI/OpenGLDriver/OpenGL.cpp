@@ -1,6 +1,9 @@
 #include "pch.h"
 #include "OpenGL.h"
 #include "OpenGLDrvPrivate.h"
+#include "BlackPearl/RHI/RHIGlobals.h"
+
+
 namespace BlackPearl {
 
 	extern bool GDisableOpenGLDebugOutput;

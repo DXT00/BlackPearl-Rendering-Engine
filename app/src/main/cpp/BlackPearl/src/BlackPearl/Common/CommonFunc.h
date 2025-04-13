@@ -56,7 +56,7 @@ namespace BlackPearl {
     // The indexed variant will include the index in the name of the object.
 #define NAME_D3D12_OBJECT(x) SetName((x).Get(), L#x)
 #define NAME_D3D12_OBJECT_INDEXED(x, n) SetNameIndexed((x)[n].Get(), L#x, n)
-#endif
+
     class HrException : public std::runtime_error
     {
         inline std::string HrToString(HRESULT hr)
@@ -71,11 +71,11 @@ namespace BlackPearl {
     private:
         const HRESULT m_hr;
     };
-
     inline UINT Align(UINT size, UINT alignment)
     {
         return (size + (alignment - 1)) & ~(alignment - 1);
     }
+#endif
 
     template<typename T> T Align(T size, T alignment)
     {
@@ -93,7 +93,7 @@ namespace BlackPearl {
         // Constant buffer size is required to be aligned.
         return Align(byteSize, D3D12_CONSTANT_BUFFER_DATA_PLACEMENT_ALIGNMENT);
     }
-#endif
+
     inline void ThrowIfFailed(HRESULT hr)
     {
         if (FAILED(hr))
@@ -122,7 +122,7 @@ namespace BlackPearl {
     {
         ThrowIfFailed(value ? S_OK : E_FAIL, msg);
     }
-
+#endif
     // be careful to use this function, you need to delete wc after function is called, or it will have a memery leak.
     inline const wchar_t* To_Wchar(const char * c) {
         const size_t cSize = strlen(c)+1;

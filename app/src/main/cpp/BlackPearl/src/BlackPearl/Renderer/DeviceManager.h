@@ -25,7 +25,7 @@
 #include "BlackPearl/RHI/RHIDevice.h"
 #include "BlackPearl/RHI/RHIDefinitions.h"
 #include "BlackPearl/RHI/DynamicRHI.h"
-
+#include <list>
 #if GE_API_VULKAN
 #include <vulkan/vulkan_core.h>
 #endif

@@ -2,7 +2,7 @@
 #include <string>
 #include "BlackPearl/Entity/Entity.h"
 #include "BlackPearl/Component/BaseComponent.h"
-
+#include "BlackPearl/Component/Component.h"
 namespace BlackPearl {
 	extern EntityManager* g_entityManager;
 	class Object 

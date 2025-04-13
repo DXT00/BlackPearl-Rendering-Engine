@@ -8,7 +8,7 @@
 
 //#include "HAL/Platform.h"
 
-namespace BlackPearl {
+
 
 
 #if !GE_PLATFORM_WINDOWS // need this to fix compile issues with Win configuration.
@@ -18,7 +18,7 @@ namespace BlackPearl {
 typedef GLfloat GLdouble;
 
 #include "OpenGL.h"
-#include "OpenGLUtil.h"		// for VERIFY_GL
+//#include "OpenGLUtil.h"		// for VERIFY_GL
 
 #ifdef GL_AMD_debug_output
 	#undef GL_AMD_debug_output
@@ -125,6 +125,8 @@ typedef GLfloat GLdouble;
 #define GL_DEBUG_SEVERITY_NOTIFICATION GL_DEBUG_SEVERITY_NOTIFICATION_KHR
 #endif
 
+namespace BlackPearl{
+
 // FIXME: include gl32.h
 typedef void (GL_APIENTRYP PFNGLFRAMEBUFFERTEXTUREPROC) (GLenum target, GLenum attachment, GLuint texture, GLint level);
 
@@ -180,18 +182,18 @@ struct FOpenGLES : public FOpenGLBase
 {
 	static FORCEINLINE bool IsES31Usable()
 	{
-		check(CurrentFeatureLevelSupport != EFeatureLevelSupport::Invalid);
+		GE_ASSERT(CurrentFeatureLevelSupport != EFeatureLevelSupport::Invalid);
 		return CurrentFeatureLevelSupport >= EFeatureLevelSupport::ES31;
 	}
 
 	static FORCEINLINE bool IsES32Usable()
 	{
-		check(CurrentFeatureLevelSupport != EFeatureLevelSupport::Invalid);
+		GE_ASSERT(CurrentFeatureLevelSupport != EFeatureLevelSupport::Invalid);
 		return CurrentFeatureLevelSupport == EFeatureLevelSupport::ES32;
 	}
 
 	static void		ProcessQueryGLInt();
-	static void		ProcessExtensions(const FString& ExtensionsString);
+	static void		ProcessExtensions(const std::string& ExtensionsString);
 
 	static FORCEINLINE bool SupportsUniformBuffers() { return true; }
 	static FORCEINLINE bool SupportsStructuredBuffers() { return true; }
@@ -238,7 +240,7 @@ struct FOpenGLES : public FOpenGLBase
 	static FORCEINLINE bool RequiresARMShaderFramebufferFetchDepthStencilUndef() { return bRequiresARMShaderFramebufferFetchDepthStencilUndef; }
 
 	// Adreno doesn't support HALF_FLOAT
-	static FORCEINLINE int32 GetReadHalfFloatPixelsEnum() { return GL_FLOAT; }
+	static FORCEINLINE int32_t GetReadHalfFloatPixelsEnum() { return GL_FLOAT; }
 	static FORCEINLINE GLint GetMaxMSAASamplesTileMem() { return MaxMSAASamplesTileMem; }
 
 	// On iOS both glMapBufferOES() and glBufferSubData() for immediate vertex and index data
@@ -276,7 +278,7 @@ struct FOpenGLES : public FOpenGLBase
 		glGetQueryObjectuiv(QueryId, QueryName, OutResult);
 	}
 		
-	static FORCEINLINE void LabelObject(GLenum Type, GLuint Object, const ANSICHAR* Name)
+	static FORCEINLINE void LabelObject(GLenum Type, GLuint Object, const char* Name)
 	{
 		if (glLabelObjectEXT != nullptr)
 		{
@@ -284,7 +286,7 @@ struct FOpenGLES : public FOpenGLBase
 		}
 	}
 
-	static FORCEINLINE GLsizei GetLabelObject(GLenum Type, GLuint Object, GLsizei BufferSize, ANSICHAR* OutName)
+	static FORCEINLINE GLsizei GetLabelObject(GLenum Type, GLuint Object, GLsizei BufferSize, char* OutName)
 	{
 		GLsizei Length = 0;
 		if (glGetObjectLabelEXT != nullptr)
@@ -294,7 +296,7 @@ struct FOpenGLES : public FOpenGLBase
 		return Length;
 	}
 
-	static FORCEINLINE void PushGroupMarker(const ANSICHAR* Name)
+	static FORCEINLINE void PushGroupMarker(const char* Name)
 	{
 		if (glPushGroupMarkerEXT != nullptr)
 		{
@@ -394,7 +396,7 @@ struct FOpenGLES : public FOpenGLBase
 
 	static FORCEINLINE void RenderbufferStorageMultisample(GLenum Target, GLsizei Samples, GLint InternalFormat, GLsizei Width, GLsizei Height)
 	{
-		check(glRenderbufferStorageMultisampleEXT);
+		GE_ASSERT(glRenderbufferStorageMultisampleEXT);
 		glRenderbufferStorageMultisampleEXT(Target, Samples, InternalFormat, Width, Height);
 	}
 
@@ -437,7 +439,7 @@ struct FOpenGLES : public FOpenGLBase
 		}
 		else
 		{
-			check(Index == 0);
+			GE_ASSERT(Index == 0);
 			glEnable(Parameter);
 		}
 	}
@@ -450,7 +452,7 @@ struct FOpenGLES : public FOpenGLBase
 		}
 		else
 		{
-			check(Index == 0);
+			GE_ASSERT(Index == 0);
 			glDisable(Parameter);
 		}
 	}
@@ -463,7 +465,7 @@ struct FOpenGLES : public FOpenGLBase
 		}
 		else
 		{
-			check(Index == 0);
+			GE_ASSERT(Index == 0);
 			glColorMask(Red, Green, Blue, Alpha);
 		}
 	}
@@ -635,9 +637,9 @@ struct FOpenGLES : public FOpenGLBase
 		return ERHIFeatureLevel::ES3_1;
 	}
 
-	static FORCEINLINE FString GetAdapterName()
+	static FORCEINLINE std::string GetAdapterName()
 	{
-		return (TCHAR*)ANSI_TO_TCHAR((const ANSICHAR*)glGetString(GL_RENDERER));
+		return (TCHAR*)ANSI_TO_TCHAR((const char*)glGetString(GL_RENDERER));
 	}
 
 	static FORCEINLINE void TexParameter(GLenum Target, GLenum Parameter, GLint Value)
@@ -664,7 +666,7 @@ struct FOpenGLES : public FOpenGLBase
 
 	static FORCEINLINE void FramebufferTexture2D(GLenum Target, GLenum Attachment, GLenum TexTarget, GLuint Texture, GLint Level)
 	{
-		check(Attachment == GL_COLOR_ATTACHMENT0 ||
+		GE_ASSERT(Attachment == GL_COLOR_ATTACHMENT0 ||
 				Attachment == GL_DEPTH_ATTACHMENT || 
 				Attachment == GL_STENCIL_ATTACHMENT ||
 				Attachment == GL_DEPTH_STENCIL_ATTACHMENT ||
@@ -676,19 +678,19 @@ struct FOpenGLES : public FOpenGLBase
 
 	static FORCEINLINE void FramebufferTexture2DMultisample(GLenum Target, GLenum Attachment, GLenum TexTarget, GLuint Texture, GLint Level, GLint NumSamples)
 	{
-		check(glFramebufferTexture2DMultisampleEXT != nullptr);
+		GE_ASSERT(glFramebufferTexture2DMultisampleEXT != nullptr);
 		glFramebufferTexture2DMultisampleEXT(Target, Attachment, TexTarget, Texture, Level, NumSamples);
 	}
 
 	static FORCEINLINE void FramebufferTextureMultiviewOVR(GLenum Target, GLenum Attachment, GLuint Texture, GLint Level, GLint BaseViewIndex, GLsizei NumViews)
 	{
-		check(glFramebufferTextureMultiviewOVR);
+		GE_ASSERT(glFramebufferTextureMultiviewOVR);
 		glFramebufferTextureMultiviewOVR(Target, Attachment, Texture, Level, BaseViewIndex, NumViews);
 	}
 	
 	static FORCEINLINE void FramebufferTextureMultisampleMultiviewOVR(GLenum Target, GLenum Attachment, GLuint Texture, GLint Level, GLsizei NumSamples, GLint BaseViewIndex, GLsizei NumViews)
 	{
-		check(glFramebufferTextureMultisampleMultiviewOVR);
+		GE_ASSERT(glFramebufferTextureMultisampleMultiviewOVR);
 		glFramebufferTextureMultisampleMultiviewOVR(Target, Attachment, Texture, Level, NumSamples, BaseViewIndex, NumViews);
 	}
 
@@ -700,7 +702,7 @@ struct FOpenGLES : public FOpenGLBase
 	static FORCEINLINE bool TexStorage2D(GLenum Target, GLint Levels, GLint InternalFormat, GLsizei Width, GLsizei Height, GLenum Format, GLenum Type, ETextureCreateFlags Flags)
 	{
 		glTexStorage2D(Target, Levels, InternalFormat, Width, Height);
-		VERIFY_GL(glTexStorage2D);
+        GE_ASSERT(glTexStorage2D);
 		return true;
 	}
 

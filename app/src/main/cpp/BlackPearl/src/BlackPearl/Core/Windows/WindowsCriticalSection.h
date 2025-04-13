@@ -8,7 +8,7 @@
 #include "BlackPearl/Core/Platform.h"
 #include <mutex>
 
-class FString;
+
 
 /**
  * This is the Windows version of a critical section. It uses an aggregate

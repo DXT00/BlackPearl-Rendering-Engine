@@ -49,7 +49,7 @@ enum RenderSample {
 	public:
 	
 	
-		SandBox(HINSTANCE hInstance,int nShowCmd, BlackPearl::DynamicRHI::Type rhiType, RenderSample renderer)
+		SandBox(INSTANCE_HANDLE hInstance,int nShowCmd, BlackPearl::DynamicRHI::Type rhiType, RenderSample renderer)
 		:Application(hInstance, nShowCmd, rhiType, selectAppVersion(renderer)){
 			
 			BlackPearl::Layer* layer = NULL;

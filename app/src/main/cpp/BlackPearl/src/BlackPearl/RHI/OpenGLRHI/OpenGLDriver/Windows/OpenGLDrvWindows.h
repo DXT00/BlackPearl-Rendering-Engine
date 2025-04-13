@@ -6,9 +6,7 @@
 #include "BlackPearl/Math/Math.h"
 #include "BlackPearl/RHI/RHIDefinitions.h"
 #ifdef GE_PLATFORM_WINDOWS
-//#include <Windows.h>
 #include <GL/glcorearb.h>
-//#include <GL/glext.h>
 #include <GL/wglext.h>
 #else
 	#error "OpenGLWindows.h included for a platform other than Windows."
@@ -20,7 +18,6 @@
 
 
 namespace BlackPearl{
-
 
 
 	/** Platform specific OpenGL context. */

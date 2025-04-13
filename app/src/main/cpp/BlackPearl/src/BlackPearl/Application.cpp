@@ -58,7 +58,7 @@ namespace BlackPearl {
 	extern bool g_shouldEngineExit;
 	extern DynamicRHI* g_DynamicRHI;
 	long long Application::s_TotalFrameNum = 0;
-	Application::Application(HINSTANCE hInstance, int nShowCmd, DynamicRHI::Type rhiType, AppVersion version)
+	Application::Application(INSTANCE_HANDLE hInstance, int nShowCmd, DynamicRHI::Type rhiType, AppVersion version)
 	{
 		if (!g_DynamicRHI) {
 			DynamicRHIInit(rhiType);

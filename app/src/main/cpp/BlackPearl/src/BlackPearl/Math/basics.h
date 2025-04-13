@@ -25,6 +25,7 @@
 #include <limits>
 #include <cmath>
 #include "vector.h"
+#include "constant.h"
 // Compile-time array size
 template <typename T, int N> char(&dim_helper(T(&)[N]))[N];
 #define dim(x) (sizeof(dim_helper(x)))
@@ -39,11 +40,7 @@ namespace BlackPearl::math
 	// "uint" is a lot shorter than "unsigned int"
 	typedef unsigned int uint;
 	
-    constexpr float PI_f = 3.141592654f;
-    constexpr double PI_d = 3.14159265358979323;
 
-	// Convenient float constants
-    constexpr float epsilon = 1e-6f;		// A reasonable general-purpose epsilon
     constexpr float infinity = std::numeric_limits<float>::infinity();
     constexpr float NaN = std::numeric_limits<float>::quiet_NaN();
 
@@ -94,7 +91,7 @@ namespace BlackPearl::math
     constexpr T square(T a) { return a*a; }
 
 	// Equality test with epsilon
-    constexpr bool isnear(float a, float b, float eps = epsilon)
+    constexpr bool isnear(float a, float b, float eps = _epsilon)
 	{ return (abs(b - a) < eps); }
 
 	// Test for finiteness

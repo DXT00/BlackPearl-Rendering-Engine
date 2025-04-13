@@ -17,6 +17,7 @@
 #include "OpenGLFrameBuffer.h"
 #include "OpenGLBoundShaderState.h"
 #include "BlackPearl/Application.h"
+#include "BlackPearl/Log.h"
 //#include "OpenGLFrameBuffer.h"
 //
 //
@@ -488,14 +489,16 @@ namespace BlackPearl
 
 				// GL vendor and version information.
 
-#define LOG_GL_STRING(StringEnum) GE_CORE_INFO(#StringEnum + std::string(":") + std::string((const char*)glGetString(StringEnum)));
+#define LOG_GL_STRING(StringEnum)\
+GE_CORE_INFO(#StringEnum + std::string(":") + std::string((const char*)glGetString(StringEnum)));
 
-		GE_CORE_INFO(("Initializing OpenGL RHI"));
-		LOG_GL_STRING(GL_VENDOR);
-		LOG_GL_STRING(GL_RENDERER);
-		LOG_GL_STRING(GL_VERSION);
-		LOG_GL_STRING(GL_SHADING_LANGUAGE_VERSION);
-#undef LOG_GL_STRING
+
+//#undef LOG_GL_STRING
+        GE_CORE_INFO("Initializing OpenGL RHI");
+        LOG_GL_STRING(GL_VENDOR);
+        LOG_GL_STRING(GL_RENDERER);
+        LOG_GL_STRING(GL_VERSION);
+        LOG_GL_STRING(GL_SHADING_LANGUAGE_VERSION);
 
 		GRHIAdapterName = FOpenGL::GetAdapterName();
 		GRHIAdapterInternalDriverVersion = std::string((const char*)glGetString(GL_VERSION));
@@ -871,6 +874,9 @@ namespace BlackPearl
 
 	Device::Device()
 	{
+        // opengl context and driver init
+        PlatformInitOpenGL();
+
 		m_Context = new OpenGLContext();
 		m_Context->PlatformDevice = PlatformCreateOpenGLDevice();
 

@@ -14,7 +14,7 @@ set(ROOT_DIR ${CMAKE_SOURCE_DIR})
 set(SANDBOX_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 set(BLACKPEARL_DIR "${ROOT_DIR}/BlackPearl")
 
-message(STATUS "ROOT_DIR="${ROOT_DIR})
+message(STATUS "ROOT_DIR=${ROOT_DIR}")
 set(OUTPUT_DIR "${CMAKE_BUILD_TYPE}-${SYSTEM}-${ARCH}")
 set(VENDOR_DIR "${BLACKPEARL_DIR}/vendor")
 set(JniLibs_DIR "${ROOT_DIR}/../jniLibs")
@@ -22,12 +22,21 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${ROOT_DIR}/bin/${OUTPUT_DIR}/${PROJECT_NAME
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${ROOT_DIR}/bin/${OUTPUT_DIR}/${PROJECT_NAME}")
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${ROOT_DIR}/bin/${OUTPUT_DIR}/${PROJECT_NAME}")
 set(CMAKE_OBJECT_OUTPUT_DIRECTORY "${ROOT_DIR}/bin-int/${OUTPUT_DIR}/${PROJECT_NAME}")
+# 获取环境变量
+set(NDKROOT_PATH $ENV{NDKROOT})
+message(STATUS "NDKROOT_PATH=${NDKROOT_PATH}")
 
 file(GLOB src-files
         ${BLACKPEARL_DIR}/src/*.h
         ${SANDBOX_DIR}/src/*.cpp
         ${SANDBOX_DIR}/src/*.h
+        ${NDKROOT_PATH}/sources/android/native_app_glue/android_native_app_glue.c
+        ${NDKROOT_PATH}/sources/android/native_app_glue/android_native_app_glue.h
 )
+
+
+list(FILTER src-files EXCLUDE REGEX "/.vshistory/.*")
+
 
 add_definitions(-DGE_API_GLES)
 add_definitions(-DGE_PLATFORM_ANDROID)
@@ -53,6 +62,7 @@ target_include_directories(
         "${ROOT_DIR}/BlackPearl/vendor/glm"
         "${ROOT_DIR}/BlackPearl/vendor/spdlog/include"
         "${ROOT_DIR}/BlackPearl/vendor/assimp/include"
+        "${NDKROOT_PATH}/sources/android/native_app_glue"
 )
 
 

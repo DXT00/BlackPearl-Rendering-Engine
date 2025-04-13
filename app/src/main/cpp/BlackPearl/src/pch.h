@@ -1,8 +1,9 @@
 #pragma once
 
-#include <cstdlib>
 
 #ifdef GE_PLATFORM_WINDOWS
+#include <cstdlib>
+
 #include <crtdbg.h>
 #endif
 

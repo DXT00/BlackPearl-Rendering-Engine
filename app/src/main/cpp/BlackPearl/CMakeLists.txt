@@ -29,12 +29,18 @@ set(CMAKE_OBJECT_OUTPUT_DIRECTORY "${ROOT_DIR}/bin-int/${OUTPUT_DIR}/${PROJECT_N
 
 message(STATUS "CMAKE_RUNTIME_OUTPUT_DIRECTORY---${CMAKE_RUNTIME_OUTPUT_DIRECTORY},OUTPUT_DIR=${OUTPUT_DIR}")
 set(RENDER_API "opengl")
-# 添加源文件
+
+
 file(GLOB_RECURSE SRC_FILES LIST_DIRECTORIES false
         "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/src/*.h"
         "${CMAKE_CURRENT_SOURCE_DIR}/assets/shaders/hlsl/core/**.h"
+
+
 )
+
+list(FILTER SRC_FILES EXCLUDE REGEX "/.vshistory/.*")
+
 if(${RENDER_API} STREQUAL "opengl")
 list(REMOVE_ITEM SRC_FILES
         "${CMAKE_CURRENT_SOURCE_DIR}/src/BlackPearl/Renderer/MasterRendererBak/*.cpp"
@@ -42,6 +48,9 @@ list(REMOVE_ITEM SRC_FILES
 
 )
 endif ()
+
+
+
 # 创建静态库目标
 add_library(BlackPearl STATIC ${SRC_FILES})
 
@@ -69,7 +78,30 @@ include_directories(
         "${VENDOR_DIR}/GLEW/include"
         "${VENDOR_DIR}/directxmesh_desktop_win10.2022.7.30.1/include"
         "${VENDOR_DIR}/ShaderMake/include"
+
 )
+if(ANDROID)
+    # 获取环境变量
+    set(NDKROOT_PATH $ENV{NDKROOT})
+    message(STATUS "bp NDKROOT_PATH=${NDKROOT_PATH}")
+
+    include_directories(
+            "${NDKROOT_PATH}/sources/android/native_app_glue"
+    )
+
+    # 添加 native_app_glue 的源文件（需编译为静态库）
+    set(ANDROID_NATIVE_APP_GLUE_SRC
+            ${ANDROID_NDK}/sources/android/native_app_glue/android_native_app_glue.c
+    )
+
+    # 将 native_app_glue 编译为静态库
+    add_library(android_native_app_glue STATIC ${ANDROID_NATIVE_APP_GLUE_SRC})
+
+    # 设置目标属性（禁用无关警告）
+    target_compile_options(android_native_app_glue PRIVATE -Wno-unused-parameter)
+endif()
+
+
 # 库目录
 target_link_directories(
         ${PROJECT_NAME} PUBLIC
@@ -115,7 +147,12 @@ if(${RENDER_API} STREQUAL "opengl")
                 EGL
                 GLESv3
                 assimp
-    )
+                android_native_app_glue
+        )
+        add_definitions(
+                -DUSE_ANDROID_JNI=1
+                -DUSE_ANDROID_EVENTS
+        )
     endif ()
     add_definitions(
             -DGLFW_INCLUDE_NONE

@@ -1,18 +1,6 @@
+
+#pragma once
+
 #include "BlackPearl/Core.h"
+
 #include COMPILED_PLATFORM_HEADER(Platform.h)
-
-#ifdef GE_PLATFORM_WINDOWS
-#if _DEBUG 
-#define FORCEINLINE	inline									/* Easier to debug */
-#else
-#define FORCEINLINE	 									    /* Easier to debug */
-#endif
-
-#elif defined(GE_PLATFORM_ANDROID)
-#if _DEBUG 
-#define FORCEINLINE	inline									/* Easier to debug */
-#else
-#define FORCEINLINE inline __attribute__ ((always_inline))	/* Force code to be inline */
-#endif
-#endif
-

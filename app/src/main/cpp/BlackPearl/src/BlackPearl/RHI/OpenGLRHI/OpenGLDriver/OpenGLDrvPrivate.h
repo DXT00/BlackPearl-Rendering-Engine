@@ -406,11 +406,11 @@ inline uint32_t FindUniformElementSize(GLenum UniformType)
 /**
  * Calculate the dynamic buffer size needed for a given allocation.
  */
-inline uint32_t CalcDynamicBufferSize(uint32_t Size)
-{
-	// Allocate dynamic buffers in MB increments.
-	return Align(Size, (1 << 20));
-}
+//inline uint32_t CalcDynamicBufferSize(uint32_t Size)
+//{
+//	// Allocate dynamic buffers in MB increments.
+//	return Align(Size, (1 << 20));
+//}
 
 /**
  * Call after creating a context to initialise default state values to correct values for UE.

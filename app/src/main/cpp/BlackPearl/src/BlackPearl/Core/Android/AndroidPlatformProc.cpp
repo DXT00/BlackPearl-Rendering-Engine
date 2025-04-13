@@ -1,6 +1,6 @@
 ﻿#include "pch.h"
 #ifdef GE_PLATFORM_ANDROID
-#include "AndriodPlatform.h"
+#include "AndroidPlatformProc.h"
 
 #include <dlfcn.h> 
 #include <time.h>

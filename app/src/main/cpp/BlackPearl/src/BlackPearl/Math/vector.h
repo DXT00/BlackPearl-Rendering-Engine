@@ -22,10 +22,10 @@
 
 #pragma once
 #include <cmath>
+#include "constant.h"
 //#include "BlackPearl/Math/dnoutMath.h"
 //#include "basics.h"
 // Compile-time assert
-
 #define cassert(x) static_assert(x, #x)
 namespace BlackPearl::math
 {
@@ -353,7 +353,7 @@ namespace BlackPearl::math
 	}
 
 	template <typename T, int n>
-	vector<bool, n> isnear(vector<T, n> const & a, vector<T, n> const & b, float epsilon = epsilon)
+	vector<bool, n> isnear(vector<T, n> const & a, vector<T, n> const & b, float epsilon = _epsilon)
 	{
 		vector<bool, n> result;
 		for (int i = 0; i < n; ++i)
@@ -362,7 +362,7 @@ namespace BlackPearl::math
 	}
 
 	template <typename T, int n>
-	vector<bool, n> isnear(vector<T, n> const & a, T b, float epsilon = epsilon)
+	vector<bool, n> isnear(vector<T, n> const & a, T b, float epsilon = _epsilon)
 	{
 		vector<bool, n> result;
 		for (int i = 0; i < n; ++i)
@@ -371,7 +371,7 @@ namespace BlackPearl::math
 	}
 
 	template <typename T, int n>
-	vector<bool, n> isnear(T a, vector<T, n> const & b, float epsilon =epsilon)
+	vector<bool, n> isnear(T a, vector<T, n> const & b, float epsilon = _epsilon)
 	{
 		vector<bool, n> result;
 		for (int i = 0; i < n; ++i)

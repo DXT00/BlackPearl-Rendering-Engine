@@ -172,22 +172,22 @@ namespace BlackPearl {
             return result;
         }
 
-        template <typename T>
-        static BindingSetItem Varying(uint32_t slot, T varying, int32_t type ,std::string name = "")
-        {
-          
-
-            BindingSetItem result;
-            result.slot = slot;
-            result.name = name;
-            result.type = RT_Varying; 
-            result.resourceHandle = buffer;
-            result.format = Format::UNKNOWN;
-            result.dimension = TextureDimension::Unknown;
-            result.range = range;
-            result.unused = 0;
-            return result;
-        }
+//        template <typename T>
+//        static BindingSetItem Varying(uint32_t slot, T varying, int32_t type ,std::string name = "")
+//        {
+//
+//
+//            BindingSetItem result;
+//            result.slot = slot;
+//            result.name = name;
+//            result.type = RT_Varying;
+//            result.resourceHandle = nullptr;
+//            result.format = Format::UNKNOWN;
+//            result.dimension = TextureDimension::Unknown;
+//            result.range = range;
+//            result.unused = 0;
+//            return result;
+//        }
 
 
         static BindingSetItem Sampler(uint32_t slot, ISampler* sampler, std::string name = "")

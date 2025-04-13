@@ -270,7 +270,7 @@ namespace BlackPearl {
 			FExclusiveDepthStencil InEDS = FExclusiveDepthStencil::DepthWrite_StencilWrite);
 		inline int32_t GetNumColorRenderTargets() const;
 
-		void FRHIRenderPassInfo::ConvertToRenderTargetsInfo(FRHISetRenderTargetsInfo& OutRTInfo) const;
+		void ConvertToRenderTargetsInfo(FRHISetRenderTargetsInfo& OutRTInfo) const;
 
     };
 }

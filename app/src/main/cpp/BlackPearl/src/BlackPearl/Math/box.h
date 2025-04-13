@@ -63,7 +63,7 @@ namespace BlackPearl::math
 
         constexpr vector<T, n> clamp(vector<T, n> const & a) const
         {
-            return dm::clamp(a, m_mins, m_maxs);
+            return math::clamp(a, m_mins, m_maxs);
         }
 
         constexpr vector<T, n> center() const
@@ -276,7 +276,7 @@ namespace BlackPearl::math
 	// !!! this doesn't match the behavior of isnear() for vectors and matrices -
 	// returns a single result rather than a componentwise result
 	template <typename T, int n>
-	bool isnear(box<T, n> const & a, box<T, n> const & b, float epsilon = epsilon)
+	bool isnear(box<T, n> const & a, box<T, n> const & b, float epsilon = _epsilon)
 	{
 		return all(isnear(a.m_mins, b.m_mins, epsilon)) &&
 			   all(isnear(a.m_maxs, b.m_maxs, epsilon));

@@ -23,6 +23,7 @@
 #pragma once
 //#include <cmath>
 //#include <algorithm>
+#include "constant.h"
 #include "./vector.h"
 
 namespace BlackPearl::math
@@ -704,7 +705,7 @@ namespace BlackPearl::math
 			for (int i = j+1; i < n; ++i)
 				if (abs(a[i][j]) > abs(a[pivot][j]))
 					pivot = i;
-			if (abs(a[pivot][j]) < epsilon)
+			if (abs(a[pivot][j]) < _epsilon)
 				return matrix<T, n, n>(NaN);
 
 			// Interchange rows to put pivot element on the diagonal,
@@ -727,7 +728,7 @@ namespace BlackPearl::math
 			// Subtract this row from others to make the rest of column j zero
 			for (int i = 0; i < n; ++i)
 			{
-				if ((i != j) && (abs(a[i][j]) > epsilon))		// skip rows already zero
+				if ((i != j) && (abs(a[i][j]) > _epsilon))		// skip rows already zero
 				{
 					T scale = -a[i][j];
 					a[i] += a[j] * scale;
@@ -765,7 +766,7 @@ namespace BlackPearl::math
 			for (int i = j+1; i < n; ++i)
 				if (abs(a[i][j]) > abs(a[pivot][j]))
 					pivot = i;
-			if (abs(a[pivot][j]) < epsilon)
+			if (abs(a[pivot][j]) < _epsilon)
 				return T(0);
 
 			// Interchange rows to put pivot element on the diagonal,
@@ -788,7 +789,7 @@ namespace BlackPearl::math
 			// Subtract this row from others to make the rest of column j zero
 			for (int i = 0; i < n; ++i)
 			{
-				if ((i != j) && (abs(a[i][j]) > epsilon))		// skip rows already zero
+				if ((i != j) && (abs(a[i][j]) > _epsilon))		// skip rows already zero
 				{
 					T scale = -a[i][j];
 					a[i] += a[j] * scale;
@@ -851,7 +852,7 @@ namespace BlackPearl::math
 	}
 
 	template <typename T, int rows, int cols>
-	matrix<bool, rows, cols> isnear(matrix<T, rows, cols> const & a, matrix<T, rows, cols> const & b, float epsilon = epsilon)
+	matrix<bool, rows, cols> isnear(matrix<T, rows, cols> const & a, matrix<T, rows, cols> const & b, float epsilon = _epsilon)
 	{
 		matrix<bool, rows, cols> result;
 		for (int i = 0; i < rows*cols; ++i)
@@ -860,7 +861,7 @@ namespace BlackPearl::math
 	}
 
 	template <typename T, int rows, int cols>
-	matrix<bool, rows, cols> isnear(matrix<T, rows, cols> const & a, T b, float epsilon = epsilon)
+	matrix<bool, rows, cols> isnear(matrix<T, rows, cols> const & a, T b, float epsilon = _epsilon)
 	{
 		matrix<bool, rows, cols> result;
 		for (int i = 0; i < rows*cols; ++i)
@@ -869,7 +870,7 @@ namespace BlackPearl::math
 	}
 
 	template <typename T, int rows, int cols>
-	matrix<bool, rows, cols> isnear(T a, matrix<T, rows, cols> const & b, float epsilon = epsilon)
+	matrix<bool, rows, cols> isnear(T a, matrix<T, rows, cols> const & b, float epsilon = _epsilon)
 	{
 		matrix<bool, rows, cols> result;
 		for (int i = 0; i < rows*cols; ++i)

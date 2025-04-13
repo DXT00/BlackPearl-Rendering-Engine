@@ -2,7 +2,9 @@
 //#include "pch.h"
 
 #include "BlackPearl/Application.h"
-
+#ifdef GE_PLATFORM_ANDROID
+#include "BlackPearl/Luanch/Android/LuanchAndroid.h"
+#endif
 
 #ifdef _DEBUG
 #define DBG_NEW new ( _NORMAL_BLOCK , __FILE__ , __LINE__ )
@@ -14,11 +16,11 @@
 
 #define _CRTDBG_MAP_ALLOC
 #include <cstdlib>
-#include <crtdbg.h>
-#include <windows.h>
 
 
 #ifdef GE_PLATFORM_WINDOWS
+#include <crtdbg.h>
+#include <windows.h>
 
 extern BlackPearl::Application* BlackPearl::CreateApplication(INSTANCE_HANDLE hInstance, int nShowCmd);
 
@@ -42,6 +44,25 @@ int main(_In_ INSTANCE_HANDLE hInstance, _In_opt_ INSTANCE_HANDLE hPrevInstance,
 	_CrtDumpMemoryLeaks();
 	return 0;
 }
+#elif defined GE_PLATFORM_ANDROID
+
+
+void android_main(struct android_app* state)
+{
+    BlackPearl::LuanchAndroid::InitAndriodThread(state);
+    // Make sure glue isn't stripped. (not needed in ndk-15)
+#if PLATFORM_ANDROID_NDK_VERSION < 150000
+    //app_dummy();
+#endif
+    BlackPearl::Application* app = BlackPearl::CreateApplication(0, 0, state);
+    app->Run();
+    delete app;
+
+    //@todo android: replace with native activity, main loop off of UI thread, etc.
+    //AndroidMain(state);
+}
+
+
 #endif
 
 

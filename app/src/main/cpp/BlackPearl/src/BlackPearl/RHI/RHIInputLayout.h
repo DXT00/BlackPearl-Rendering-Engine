@@ -121,7 +121,7 @@ namespace BlackPearl {
 			case ElementDataType::Uint32_4:  return 4 ;
 
 			}
-			assert(false, "Unknown ElementDataType!");
+			GE_ASSERT(0, "Unknown ElementDataType!");
 				return 0;
 		}
 		void operator=(const BufferElement& rhs) {
@@ -149,7 +149,7 @@ namespace BlackPearl {
 
 		inline std::vector<BufferElement> GetElements() const { return m_Elememts; }
 		BufferElement GetElement(uint32_t i) const {
-			assert((i < ElementSize()), "i exceed max elements size");
+			GE_ASSERT((i < ElementSize()), "i exceed max elements size");
 			return m_Elememts[i];
 		}
 
@@ -166,7 +166,7 @@ namespace BlackPearl {
 		uint32_t ElementSize() const { return m_Elememts.size(); }
 		uint32_t GetStride() const
 		{
-			if (m_LayoutType == LayoutType::OneVBO_NoInterleave) {//£¨Êý¾Ý½ôÃÜÅÅÁÐ£¬ÎÞ¼ä¸ô£©
+			if (m_LayoutType == LayoutType::OneVBO_NoInterleave) {//ï¿½ï¿½ï¿½ï¿½ï¿½Ý½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð£ï¿½ï¿½Þ¼ï¿½ï¿½ï¿½ï¿½
 				return 0;
 			}
 			else if (m_LayoutType == LayoutType::MultiVBO_NoInterleave) {

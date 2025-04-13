@@ -80,13 +80,13 @@ namespace BlackPearl {
 	template<typename... Args>
 	void Log::Fatal(const char* fmt, const Args &... args)
 	{
-		mLogger->fatal(fmt, args...);
+		mLogger->error(fmt, args...);
 	}
 
 	template<typename ...Args>
 	void Log::Trace(const Args & ...args)
 	{
-		mLogger->fatal(fmt, args...);
+		mLogger->error(args...);
 	}
 
 	template<typename ...Args>
@@ -110,7 +110,7 @@ namespace BlackPearl {
 	template<typename ...Args>
 	void Log::Fatal(const Args & ...args)
 	{
-		mLogger->fatal(args...);
+		mLogger->error(args...);
 	}
 }
 
@@ -122,9 +122,9 @@ namespace BlackPearl {
 #error "Unsupported compiler"
 #endif
 
-#define GE_CORE_TRACE(...) { BlackPearl::g_Log->Trace(__VA_ARGS__);}
-#define GE_CORE_INFO(...)  { BlackPearl::g_Log->Info(__VA_ARGS__);}
-#define GE_CORE_WARN(...)  { BlackPearl::g_Log->Warn(__VA_ARGS__);}
-#define GE_CORE_ERROR(...) { BlackPearl::g_Log->Error(__VA_ARGS__); DEBUG_BREAK();}
-#define GE_CORE_FATAL(...) { BlackPearl::g_Log->Fatal(__VA_ARGS__);}
+#define GE_CORE_TRACE(...) { g_Log->Trace(__VA_ARGS__);}
+#define GE_CORE_INFO(...)  { g_Log->Info(__VA_ARGS__);}
+#define GE_CORE_WARN(...)  { g_Log->Warn(__VA_ARGS__);}
+#define GE_CORE_ERROR(...) { g_Log->Error(__VA_ARGS__); DEBUG_BREAK();}
+#define GE_CORE_FATAL(...) { g_Log->Fatal(__VA_ARGS__);}
 

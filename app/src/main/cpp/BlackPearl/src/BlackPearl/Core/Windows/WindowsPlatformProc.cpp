@@ -1,6 +1,6 @@
 ﻿#include "pch.h"
 #include "Windows.h"
-#include "WindowsPlatform.h"
+#include "WindowsPlatformProc.h"
 
 namespace BlackPearl {
 

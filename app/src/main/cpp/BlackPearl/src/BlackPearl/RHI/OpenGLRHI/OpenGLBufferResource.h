@@ -49,7 +49,7 @@ namespace BlackPearl {
 
 		bool m_Divisor = false;
 		uint32_t m_DivPerInstance = 0;
-		VertexBufferLayout m_BufferLayout;//ÕâÀïÐèÒªÄ¬ÈÏ¹¹Ôìº¯Êý
+		VertexBufferLayout m_BufferLayout;//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÒªÄ¬ï¿½Ï¹ï¿½ï¿½ìº¯ï¿½ï¿½
 	};
 
 	class IndexBuffer : public Buffer {
@@ -155,7 +155,7 @@ namespace BlackPearl {
 	//	//uint32_t m_RendererID;
 	//	
 
-	//	//GL_COLOR_ATTACHMENTi µ½ TextureµÄÓ³Éä
+	//	//GL_COLOR_ATTACHMENTi ï¿½ï¿½ Textureï¿½ï¿½Ó³ï¿½ï¿½
 	//	std::unordered_map<uint32_t, TextureHandle> m_TextureColorBuffers;
 	//	//TextureHandlem_TextureColorBuffer;
 	//	TextureHandle m_TextureDepthBuffer;
@@ -202,7 +202,7 @@ namespace BlackPearl {
 		TextureHandle m_DiffuseRoughnessTexture;
 		/* u_Material.specular + u_Material.metallic */
 		TextureHandle m_SpecularMentallicTexture;
-		/* ´æ´¢È«¾Ö¹âÕÕÖÐµÄ diffuse ºÍspecular (vec3 ambient =  (Kd*diffuse+specular) * ao;)µÄÑÕÉ«*/
+		/* ï¿½æ´¢È«ï¿½Ö¹ï¿½ï¿½ï¿½ï¿½Ðµï¿½ diffuse ï¿½ï¿½specular (vec3 ambient =  (Kd*diffuse+specular) * ao;)ï¿½ï¿½ï¿½ï¿½É«*/
 		TextureHandle m_AmbientGIAOTexture;
 
 		/************************ Raytracing Texture ************************************/
@@ -233,7 +233,7 @@ namespace BlackPearl {
 	//SSBO
 	class ShaderStorageBuffer : public Buffer {
 	public:
-		ShaderStorageBuffer::ShaderStorageBuffer(const BufferDesc& _desc);
+		ShaderStorageBuffer(const BufferDesc& _desc);
 			
 		ShaderStorageBuffer(const BufferDesc& _desc, GLsizeiptr bytes, GLbitfield mapFlags);
 		ShaderStorageBuffer(const BufferDesc& _desc, uint32_t size, uint32_t drawType, void* data);
