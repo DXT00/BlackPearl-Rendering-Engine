@@ -1,5 +1,6 @@
 #pragma once
 #include"Log.h"
+#include "BlackPearl/Core/Platform.h"
 
 #ifdef GE_PLATFORM_WINDOWS
 #define PLATFORM_HEADER_NAME Windows
