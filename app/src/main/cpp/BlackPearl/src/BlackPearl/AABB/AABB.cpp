@@ -1,8 +1,8 @@
 #include "pch.h"
-#include "AABB.h"
+#include "AABB/AABB.h"
 
-#include "BlackPearl/RayTracing/Ray.h"
-#include "BlackPearl/Math/Math.h"
+#include "RayTracing/Ray.h"
+#include "Math/Math.h"
 
 namespace BlackPearl {
 
@@ -83,8 +83,8 @@ namespace BlackPearl {
 
 		tMin = Ray::tMin;
 		tMax = ray->GetTMax();
-		math::float3& dir = ray->GetDir();
-		math::float3& org = ray->GetOrigin();
+		const math::float3& dir = ray->GetDir();
+		const math::float3& org = ray->GetOrigin();
 
 
 		for (int i = 0; i < 3; i++)

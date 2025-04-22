@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "MeshManager.h"
+#include "Renderer/Mesh/MeshManager.h"
 #include "BlackPearl/Object/Object.h"
 #include "BlackPearl/Component/MeshRendererComponent/MeshRenderer.h"
 

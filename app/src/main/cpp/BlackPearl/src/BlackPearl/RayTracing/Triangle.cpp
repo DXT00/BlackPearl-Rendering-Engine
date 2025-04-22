@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "Triangle.h"
+#include "RayTracing/Triangle.h"
 #include "BlackPearl/Core.h"
 #include "BlackPearl/Math/Math.h"
 namespace BlackPearl {

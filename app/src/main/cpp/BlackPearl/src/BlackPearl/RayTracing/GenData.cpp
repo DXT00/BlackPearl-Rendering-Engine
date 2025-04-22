@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "GenData.h"
+#include "RayTracing/GenData.h"
 #include "BlackPearl/Component/BasicInfoComponent/BasicInfo.h"
 namespace BlackPearl {
 

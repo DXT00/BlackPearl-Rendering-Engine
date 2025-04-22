@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "SkyBoxMeshFilter.h"
+#include "Component/MeshFilterComponent/SkyBoxMeshFilter.h"
 
 namespace BlackPearl {
 

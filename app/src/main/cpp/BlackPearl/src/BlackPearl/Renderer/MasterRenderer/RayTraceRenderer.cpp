@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "RayTraceRenderer.h"
+#include "Renderer/MasterRenderer/RayTraceRenderer.h"
 namespace BlackPearl {
 	bool RayTraceRenderer::Init(IDevice* device,
         ShaderFactory& shaderFactory,

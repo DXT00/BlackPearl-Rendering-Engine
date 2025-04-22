@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "SingleNode.h"
+#include "Node/SingleNode.h"
 #include "BlackPearl/Component/MeshRendererComponent/MeshRenderer.h"
 #include "BlackPearl/Component/BoundingBoxComponent/BoundingBox.h"
 #include "BlackPearl/Object/Object.h"
@@ -13,7 +13,7 @@ namespace BlackPearl {
 	{
 		//m_Obj = obj;
 		if (obj->HasComponent<MeshRenderer>()) {
-			std::vector<std::shared_ptr<Mesh>>& meshes = obj->GetComponent<MeshRenderer>()->GetMeshes();
+			const std::vector<std::shared_ptr<Mesh>>& meshes = obj->GetComponent<MeshRenderer>()->GetMeshes();
 			for (auto mesh : meshes)
 			{
 				m_VertexCnt += mesh->GetVertexCount();

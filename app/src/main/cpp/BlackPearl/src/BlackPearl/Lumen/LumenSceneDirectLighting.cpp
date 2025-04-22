@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "LumenSceneDirectLighting.h"
+#include "Lumen/LumenSceneDirectLighting.h"
 namespace BlackPearl {
 
 	/*class FSpliceCardPagesIntoTilesCS

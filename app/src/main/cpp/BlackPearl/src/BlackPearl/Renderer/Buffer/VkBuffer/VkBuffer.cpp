@@ -1,8 +1,7 @@
 #include "pch.h"
-#include "VkBuffer.h"
-#include "VkCommandBuffer.h"
-#include "VkBuffer.h"
-#include "VkBuffer.h"
+#include "Renderer/Buffer/VkBuffer/VkBuffer.h"
+#include "Renderer/Buffer/VkBuffer/VkCommandBuffer.h"
+
 
 namespace BlackPearl {
 

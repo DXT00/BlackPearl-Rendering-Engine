@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "Entity.h"
+#include "Entity/Entity.h"
 #include "BlackPearl/Core.h"
 namespace BlackPearl {
 	
@@ -96,7 +96,7 @@ namespace BlackPearl {
 
 	//	m_EntityComponentMasks[id.index].set(family);
 	//	
-	//	//ËùÓÐµÄcomponent¶¼ÓÃCreateÊµÀý»¯-->·½±ã×ÓÀà¼Ì³Ð£¡
+	//	//ï¿½ï¿½ï¿½Ðµï¿½componentï¿½ï¿½ï¿½ï¿½CreateÊµï¿½ï¿½ï¿½ï¿½-->ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì³Ð£ï¿½
 	//	C* component = C::Create(this,id,std::forward<Args>(args)...);
 
 

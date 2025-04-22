@@ -1,26 +1,26 @@
 #include "pch.h"
 #if GE_API_VULKAN
 
-#include "VkUtil.h"
-#include "VkEnum.h"
-#include "VkDevice.h"
-#include "VkBindingLayout.h"
-#include "VkBindingSet.h"
-#include "VkSampler.h"
-#include "VkPipeline.h"
-#include "VkCommandList.h"
-#include "VkFrameBuffer.h"
-#include "VkInputLayout.h"
-#include "VkShader.h"
-#include "VkQuery.h"
-#include "VkQueue.h"
-#include "VkTexture.h"
-#include "VkDescriptorTable.h"
+#include "RHI/VulkanRHI/VkUtil.h"
+#include "RHI/VulkanRHI/VkEnum.h"
+#include "RHI/VulkanRHI/VkDevice.h"
+#include "RHI/VulkanRHI/VkBindingLayout.h"
+#include "RHI/VulkanRHI/VkBindingSet.h"
+#include "RHI/VulkanRHI/VkSampler.h"
+#include "RHI/VulkanRHI/VkPipeline.h"
+#include "RHI/VulkanRHI/VkCommandList.h"
+#include "RHI/VulkanRHI/VkFrameBuffer.h"
+#include "RHI/VulkanRHI/VkInputLayout.h"
+#include "RHI/VulkanRHI/VkShader.h"
+#include "RHI/VulkanRHI/VkQuery.h"
+#include "RHI/VulkanRHI/VkQueue.h"
+#include "RHI/VulkanRHI/VkTexture.h"
+#include "RHI/VulkanRHI/VkDescriptorTable.h"
 #include "BlackPearl/RHI/Common/RHIUtils.h"
 #include "BlackPearl/RHI/RHITexture.h"
 #include "BlackPearl/RHI/RHIDefinitions.h"
-#include "../Common/Containers.h"
-#include "../Common/FormatInfo.h"
+#include "RHI/Common/Containers.h"
+#include "RHI/Common/FormatInfo.h"
 #include "BlackPearl/Core.h"
 #include "vulkan/vulkan_core.h"
 
@@ -284,7 +284,7 @@ namespace BlackPearl {
 		return m_Queues[int(queue)].get(); 
 	}
 
-	TextureHandle Device::createTexture(TextureDesc& desc)
+	TextureHandle Device::createTexture(const TextureDesc& desc)
 	{
 		ETexture* texture = new ETexture(m_Context, m_Allocator);
 		assert(texture);
@@ -2214,6 +2214,16 @@ namespace BlackPearl {
 
 		return BindingLayoutHandle::Create(ret);
 	}
+
+    void Device::acquireThreadOwnership()
+    {
+
+    }
+
+    void Device::releaseThreadOwnership()
+    {
+
+    }
 
 	DeviceHandle Device::createDevice(const DeviceDesc& desc)
 	{

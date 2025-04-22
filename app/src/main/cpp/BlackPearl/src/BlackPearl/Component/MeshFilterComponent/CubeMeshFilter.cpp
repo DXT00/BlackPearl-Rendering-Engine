@@ -1,12 +1,12 @@
 #include "pch.h"
-#include "CubeMeshFilter.h"
+#include "Component/MeshFilterComponent/CubeMeshFilter.h"
 
 namespace BlackPearl {
 
 
 	void CubeMeshFilter::Init()
 	{
-		//std::vector<float>  vertices = {//Èý½ÇÐÎË³ÐòÎªÄæÊ±Õë-->ÓÃÓÚÃæÌÞ³ý
+		//std::vector<float>  vertices = {//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ë³ï¿½ï¿½Îªï¿½ï¿½Ê±ï¿½ï¿½-->ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Þ³ï¿½
 		//	//// Positions          // Normals         // Texture Coords
 		//	////Back face
 		//	//-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f, 0.0f,

@@ -1,6 +1,6 @@
 
 #include "pch.h"
-#include "OpenGLModelLoader.h"
+#include "RHI/OpenGLRHI/OpenGLModelLoader.h"
 
 namespace BlackPearl {
 	OpenGLModelLoader::OpenGLModelLoader(bool createMeshlet, const MeshletOption& options)

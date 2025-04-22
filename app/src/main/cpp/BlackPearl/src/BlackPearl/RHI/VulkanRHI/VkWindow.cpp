@@ -1,7 +1,7 @@
 #include "pch.h"
 #if GE_API_VULKAN
 
-#include "VkWindow.h"
+#include "RHI/VulkanRHI/VkWindow.h"
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
 #include "BlackPearl/Event/MouseEvent.h"

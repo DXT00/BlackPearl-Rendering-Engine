@@ -1,10 +1,10 @@
 #include "pch.h"
-#include "LightSources.h"
-#include "PointLight.h"
-#include "ParallelLight.h"
-#include "SpotLight.h"
+#include "Component/LightComponent/LightSources.h"
+#include "Component/LightComponent/PointLight.h"
+#include "Component/LightComponent/ParallelLight.h"
+#include "Component/LightComponent/SpotLight.h"
 #include "BlackPearl/Config.h"
-#include"Light.h"
+#include "Component/LightComponent/Light.h"
 
 
 namespace BlackPearl {

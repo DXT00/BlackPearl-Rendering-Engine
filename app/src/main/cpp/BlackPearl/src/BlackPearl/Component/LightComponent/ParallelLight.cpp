@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "ParallelLight.h"
+#include "Component/LightComponent/ParallelLight.h"
 #include <glm/gtc/matrix_transform.hpp>
 #include "BlackPearl/Renderer/Renderer.h"
 
@@ -7,7 +7,7 @@ namespace BlackPearl {
 
 	void ParallelLight::Init()
 	{
-		//平行光只提供个方向并不需要Shader渲染！也不需要画出来！
+		//平锟叫癸拷只锟结供锟斤拷锟斤拷锟津并诧拷锟斤拷要Shader锟斤拷染锟斤拷也锟斤拷锟斤拷要锟斤拷锟斤拷锟斤拷锟斤拷
 
 
 		//data

@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "ModelLoader.h"
+#include "Renderer/Model/ModelLoader.h"
 #include "BlackPearl/Renderer/Mesh/Vertex.h"
 #include "BlackPearl/RHI/RHIBindingSet.h"
 #include "BlackPearl/Common/CommonFunc.h"
@@ -78,12 +78,12 @@ namespace BlackPearl {
 		m_FirstVertex = true;
 		m_Path = path;
 		m_Scene = m_Importer.ReadFile(path,
-			aiProcess_Triangulate |  //½«·ÇÈý½ÇÐÎ¹¹³ÉµÄÄ£ÐÍ×ª»»ÎªÓÉÈý½ÇÐÎ¹¹³ÉµÄÄ£ÐÍ
+			aiProcess_Triangulate |  //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î¹ï¿½ï¿½Éµï¿½Ä£ï¿½ï¿½×ªï¿½ï¿½Îªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î¹ï¿½ï¿½Éµï¿½Ä£ï¿½ï¿½
 			aiProcess_GenSmoothNormals |
 			aiProcess_CalcTangentSpace |
 			aiProcess_JoinIdenticalVertices);//
 
-		//²»Òª¼ÓaiProcess_FlipUVs£¡£¡£¡£¬·ñÔòÎÆÀí»á·´£¡£¡£¡
+		//ï¿½ï¿½Òªï¿½ï¿½aiProcess_FlipUVsï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½á·´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 
 
 		if (!m_Scene || m_Scene->mFlags == AI_SCENE_FLAGS_INCOMPLETE || !m_Scene->mRootNode) {
@@ -205,7 +205,7 @@ namespace BlackPearl {
 		}
 	}
 
-	//TODO:: Animation ModelLoader VertexÎ´´¦Àí
+	//TODO:: Animation ModelLoader VertexÎ´ï¿½ï¿½ï¿½ï¿½
 	std::shared_ptr<Mesh> ModelLoader::ProcessMesh(aiMesh* aimesh)
 	{
 		std::shared_ptr<Mesh> mesh = std::make_shared<Mesh>();
@@ -273,7 +273,7 @@ namespace BlackPearl {
 			vertex.normal = normal;
 
 			float2 texCoords = float2(0.0f, 0.0f);
-			if (aimesh->mTextureCoords[0]) {//ÅÐ¶Ï¶¥µãÊÇ·ñÓÐ²ÄÖÊÊôÐÔ
+			if (aimesh->mTextureCoords[0]) {//ï¿½Ð¶Ï¶ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ï¿½Ð²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 
 				texCoords.x = aimesh->mTextureCoords[0][i].x;
 				texCoords.y = aimesh->mTextureCoords[0][i].y;
@@ -427,7 +427,7 @@ namespace BlackPearl {
 				vertex.normal = normal;
 
 				float2 texCoords = float2(0.0f, 0.0f);
-				if (aimesh->mTextureCoords[0]) {//ÅÐ¶Ï¶¥µãÊÇ·ñÓÐ²ÄÖÊÊôÐÔ
+				if (aimesh->mTextureCoords[0]) {//ï¿½Ð¶Ï¶ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ï¿½Ð²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 
 					texCoords.x = aimesh->mTextureCoords[0][idx].x;
 					texCoords.y = aimesh->mTextureCoords[0][idx].y;

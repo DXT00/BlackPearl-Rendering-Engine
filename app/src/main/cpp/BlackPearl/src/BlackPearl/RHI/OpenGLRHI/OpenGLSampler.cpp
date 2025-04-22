@@ -1,7 +1,7 @@
 #include "pch.h"
-#include "OpenGLDevice.h"
-#include "OpenGLUtil.h"
-#include "OpenGLSampler.h"
+#include "RHI/OpenGLRHI/OpenGLDevice.h"
+#include "RHI/OpenGLRHI/OpenGLUtil.h"
+#include "RHI/OpenGLRHI/OpenGLSampler.h"
 namespace BlackPearl {
 	Sampler::~Sampler()
 	{

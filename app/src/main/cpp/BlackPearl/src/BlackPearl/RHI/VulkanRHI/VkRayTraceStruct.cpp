@@ -1,7 +1,7 @@
 #include "pch.h"
 #if GE_API_VULKAN
-#include "VkRayTraceStruct.h"
-#include "VkBuffer.h"
+#include "RHI/VulkanRHI/VkRayTraceStruct.h"
+#include "RHI/VulkanRHI/VkBuffer.h"
 namespace BlackPearl {
 	VkDeviceOrHostAddressConstKHR getBufferAddress(IBuffer* _buffer, uint64_t offset)
 	{

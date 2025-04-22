@@ -1,7 +1,7 @@
 #pragma once
 #include "pch.h"
 //#include <glad/glad.h>
-#include "OpenGLCubeMapTexture.h"
+#include "RHI/OpenGLRHI/OpenGLCubeMapTexture.h"
 #include "BlackPearl/RHI/OpenGLRHI/OpenGLDriver/OpenGLFunctions.h"
 //#define STB_IMAGE_IMPLEMENTATION
 
@@ -11,7 +11,7 @@ namespace BlackPearl {
 	
 
 
-	void CubeMapTexture::Init(TextureDesc& desc, float* data)
+	void CubeMapTexture::Init(const TextureDesc& desc, float* data)
 	{
 		fillTextureInfo(desc);
 		LoadCubeMap();

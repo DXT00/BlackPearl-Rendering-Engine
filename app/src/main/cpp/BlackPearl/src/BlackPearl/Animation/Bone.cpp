@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "Bone.h"
+#include "Animation/Bone.h"
 
 namespace BlackPearl {
 

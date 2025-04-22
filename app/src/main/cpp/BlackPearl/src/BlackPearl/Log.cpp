@@ -1,5 +1,7 @@
 #include"pch.h"
 #include "Log.h"
+#include "spdlog/logger.h"
+#include <string>
 #include "spdlog/sinks/stdout_color_sinks.h"
 
 namespace BlackPearl {

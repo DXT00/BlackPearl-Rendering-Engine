@@ -30,6 +30,7 @@ project "SandboxVK"
 	{
 		"../BlackPearl/vendor/spdlog/include",
 		"../BlackPearl/src",
+		"../BlackPearl/include",
 		"../BlackPearl/vendor",
 		"../BlackPearl/assets/shaders",
 		"../%{IncludeDir.glm}",

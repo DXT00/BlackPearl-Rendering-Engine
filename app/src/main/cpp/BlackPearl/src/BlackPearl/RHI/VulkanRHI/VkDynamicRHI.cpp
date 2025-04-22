@@ -1,8 +1,8 @@
 #include "pch.h"
 #if GE_API_VULKAN
 
-#include "VkDynamicRHI.h"
-#include "VkWindow.h"
+#include "RHI/VulkanRHI/VkDynamicRHI.h"
+#include "RHI/VulkanRHI/VkWindow.h"
 #include "BlackPearl/Application.h"
 
 

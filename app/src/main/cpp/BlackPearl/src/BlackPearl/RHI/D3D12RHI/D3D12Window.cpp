@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "D3D12Window.h"
+#include "RHI/D3D12RHI/D3D12Window.h"
 #include "BlackPearl/Application.h"
 #include "BlackPearl/Common/CommonFunc.h"
 #include "BlackPearl/KeyCodes.h"
@@ -113,8 +113,8 @@ namespace BlackPearl {
 		HWND foreground = GetForegroundWindow();
 		RECT rct;
 		GetWindowRect(foreground, &rct);
-		int width = rct.right - rct.left;   //´°¿ÚµÄ¿í¶È
-		int height = rct.bottom - rct.top;  //´°¿ÚµÄ¸ß¶È
+		int width = rct.right - rct.left;   //ï¿½ï¿½ï¿½ÚµÄ¿ï¿½ï¿½
+		int height = rct.bottom - rct.top;  //ï¿½ï¿½ï¿½ÚµÄ¸ß¶ï¿½
 
 		return math::vector<int, 2>(width, height);
 	}

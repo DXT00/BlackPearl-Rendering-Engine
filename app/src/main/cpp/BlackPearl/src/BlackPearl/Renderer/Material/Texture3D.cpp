@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "Texture3D.h"
+#include "Renderer/Material/Texture3D.h"
 #include "BlackPearl/Core.h"
 //#include "glad/glad.h"
 #include "BlackPearl/RHI/OpenGLRHI/OpenGLDriver/OpenGLFunctions.h"
@@ -51,11 +51,11 @@ namespace BlackPearl {
 		GLint previousBoundTextureID;
 		glGetIntegerv(GL_TEXTURE_BINDING_3D, &previousBoundTextureID);
 		glBindTexture(GL_TEXTURE_3D, m_TextureID);
-		//gl4.4 °æ±¾²ÅÓÐ, Ò»´ÎÇåÀí¶à¸ömipmap
+		//gl4.4 ï¿½æ±¾ï¿½ï¿½ï¿½ï¿½, Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½mipmap
 		// 	glClearTexImage(m_TextureID, 0, GL_RGBA, GL_FLOAT, &clearColor);
 		// 
 		// 
-		//¸Ä³Écompute shader
+		//ï¿½Ä³ï¿½compute shader
 		//Upload texture buffer
 		glTexStorage3D(GL_TEXTURE_3D, m_MipLevel, GL_RGBA8, m_Width, m_Height, m_Depth);
 		GE_ERROR_JUDGE();
@@ -66,7 +66,7 @@ namespace BlackPearl {
 		}
 
 
-		// ÉÏ´«Êý¾Ýµ½ÎÆÀí
+		// ï¿½Ï´ï¿½ï¿½ï¿½ï¿½Ýµï¿½ï¿½ï¿½ï¿½ï¿½
 		glTexSubImage3D(GL_TEXTURE_3D, 0, 0, 0, 0, 64, 64, 64, GL_RGBA, GL_UNSIGNED_BYTE, clearData.data());
 		glBindTexture(GL_TEXTURE_3D, previousBoundTextureID);
 	}

@@ -1,11 +1,11 @@
 #include "pch.h"
-#include "OpenGLPipeline.h"
-#include "OpenGLBuffer.h"
-#include "OpenGLBufferResource.h"
-#include "OpenGLDevice.h"
-#include "OpenGLShader.h"
-#include "OpenGLInputLayout.h"
-#include "OpenGLFrameBuffer.h"
+#include "RHI/OpenGLRHI/OpenGLPipeline.h"
+#include "RHI/OpenGLRHI/OpenGLBuffer.h"
+#include "RHI/OpenGLRHI/OpenGLBufferResource.h"
+#include "RHI/OpenGLRHI/OpenGLDevice.h"
+#include "RHI/OpenGLRHI/OpenGLShader.h"
+#include "RHI/OpenGLRHI/OpenGLInputLayout.h"
+#include "RHI/OpenGLRHI/OpenGLFrameBuffer.h"
 namespace BlackPearl {
 
 	void GraphicsPipeline::getNumUniformBuffers(uint32_t** unifromBuffers)

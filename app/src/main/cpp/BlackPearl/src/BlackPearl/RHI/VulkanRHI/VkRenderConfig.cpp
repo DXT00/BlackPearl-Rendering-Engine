@@ -1,7 +1,7 @@
 #include "pch.h"
 #if GE_API_VULKAN
 
-#include "VkRenderConfig.h"
+#include "RHI/VulkanRHI/VkRenderConfig.h"
 #include <GLFW/glfw3.h>
 
 std::vector<const char*> getRequiredExtensions()

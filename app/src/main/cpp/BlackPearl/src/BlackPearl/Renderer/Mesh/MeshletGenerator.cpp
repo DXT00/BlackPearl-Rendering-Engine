@@ -4,7 +4,7 @@
 //
 #include "pch.h"
 #include "BlackPearl/Common/CommonFunc.h"
-#include "MeshletGenerator.h"
+#include "Renderer/Mesh/MeshletGenerator.h"
 #include "BlackPearl/Renderer/Mesh/MeshletConfig.h"
 
 namespace BlackPearl
@@ -94,7 +94,7 @@ namespace BlackPearl
                 bufferView.Offset = dataOffset;
                 bufferView.Size = m.VertexCount * l.Stride;
 
-                for (uint32_t k = 0; k < _countof(meshView.Attributes); ++k)
+                for (uint32_t k = 0; k < Attribute::Count; ++k)
                 {
                     meshView.Attributes[k] = uint32_t(-1);
                 }

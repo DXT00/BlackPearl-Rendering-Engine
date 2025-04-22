@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "stb_util.h"
+#include "RHI/Common/stb_util.h"
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 

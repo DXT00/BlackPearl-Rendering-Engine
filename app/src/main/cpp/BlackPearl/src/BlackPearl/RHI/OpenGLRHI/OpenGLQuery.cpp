@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "OpenGLQuery.h"
+#include "RHI/OpenGLRHI/OpenGLQuery.h"
 #include "BlackPearl/RHI/OpenGLRHI/OpenGLDriver/OpenGLDrv.h"
 #include <assert.h>
 

@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "D3D12Buffer.h"
+#include "Renderer/Buffer/D3D12Buffer/D3D12Buffer.h"
 
 namespace BlackPearl {
 	//UINT AllocateDescriptor(D3D12_CPU_DESCRIPTOR_HANDLE* cpuDescriptor, ComPtr<ID3D12DescriptorHeap> pDescriptorHeap, UINT& descriptorsAllocated, UINT descriptorSize, UINT descriptorIndexToUse)

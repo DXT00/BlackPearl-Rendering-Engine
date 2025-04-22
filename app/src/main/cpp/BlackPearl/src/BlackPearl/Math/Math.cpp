@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "Math.h"
+#include "Math/Math.h"
 namespace BlackPearl {
 
 	static std::uniform_int_distribution<unsigned> uiMap;

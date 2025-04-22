@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "BaseComponent.h"
+#include "Component/BaseComponent.h"
 
 namespace BlackPearl {
 	BaseComponent::Family BaseComponent::s_FamliyCounter = 0;

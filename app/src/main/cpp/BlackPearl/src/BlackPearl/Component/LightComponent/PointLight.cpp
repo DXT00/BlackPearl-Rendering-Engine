@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "PointLight.h"
+#include "Component/LightComponent/PointLight.h"
 #include "BlackPearl/Renderer/DeviceManager.h"
 
 
@@ -65,7 +65,7 @@ namespace BlackPearl {
 		VertexBufferLayout layout = {
 			{ElementDataType::Float3,"aPos",false,0}
 		};
-		m_Mesh = std::make_shared<Mesh>(lightVertices.data(), lightVertices.size(),nullptr, 0, lightMaterial, layout);//ÕâÀïÃ»ÓÐindices!
+		m_Mesh = std::make_shared<Mesh>(lightVertices.data(), lightVertices.size(),nullptr, 0, lightMaterial, layout);//ï¿½ï¿½ï¿½ï¿½Ã»ï¿½ï¿½indices!
 
 		TextureDesc desc;
 		desc.type = TextureType::CubeMap;

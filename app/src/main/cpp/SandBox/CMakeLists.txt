@@ -18,7 +18,8 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 # 包含目录
 include_directories(
         ../BlackPearl/vendor/spdlog/include
-        ../BlackPearl/src
+        ../BlackPearl/include/BlackPearl
+        ../BlackPearl/include/
         ../BlackPearl/vendor
         ../BlackPearl/vendor/stb
         ../BlackPearl/assets/shaders
@@ -31,11 +32,12 @@ include_directories(
 )
 
 # 源文件
-file(GLOB SOURCES "src/*.cpp" "src/*.h")
+file(GLOB SOURCES "src/*.cpp")
+file(GLOB HEADERS "include/*.h")
 file(GLOB HLSL_SHADERS "assets/shaders_hlsl/*.hlsl")
 
 # 添加可执行文件
-add_executable(Sandbox ${SOURCES})
+add_executable(Sandbox ${SOURCES} ${HEADERS})
 
 # 链接库
 target_link_libraries(Sandbox

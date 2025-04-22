@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "LightProbeComponent.h"
+#include "Component/LightProbeComponent/LightProbeComponent.h"
 
 namespace BlackPearl {
 	//LightProbeComponent::LightProbeComponent(ProbeType type)
@@ -7,7 +7,7 @@ namespace BlackPearl {
 	//	//GE_ASSERT(cubeObj, "cubeObj is nullptr");
 	//	m_Type = type;
 	////	m_LightProbeObj = cubeObj;
-	//	/*ÓëÏà»úÊÓ½Ç¶ÔÓ¦*/
+	//	/*ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó½Ç¶ï¿½Ó¦*/
 	///*	m_LightProbeObj->GetComponent<Transform>()->SetRotation({ 0.0f, -90.0f, 0.0f });
 	//	m_LightProbeObj->GetComponent<MeshRenderer>()->SetIsShadowObjects(false);
 	//	m_LightProbeObj->GetComponent<MeshRenderer>()->SetIsBackGroundObjects(false);*/

@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "LumenCard.h"
+#include "Lumen/LumenCard.h"
 
 namespace BlackPearl{
 

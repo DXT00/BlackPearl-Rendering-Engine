@@ -16,10 +16,10 @@
 #include "BlackPearl/RHI/RHITexture.h"
 #include "BlackPearl/Core.h"
 #include "BlackPearl/Application.h"
-#include "VkDevice.h"
-#include "VkUtil.h"
-#include "VkRenderConfig.h"
-#include "VkDeviceManager.h"
+#include "RHI/VulkanRHI/VkDevice.h"
+#include "RHI/VulkanRHI/VkUtil.h"
+#include "RHI/VulkanRHI/VkRenderConfig.h"
+#include "RHI/VulkanRHI/VkDeviceManager.h"
 
 // Define the Vulkan dynamic dispatcher - this needs to occur in exactly one cpp file in the program.
 

@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "RHIGlobals.h"
+#include "RHI/RHIGlobals.h"
 
 namespace BlackPearl {
 	FRHIGlobals GRHIGlobals;

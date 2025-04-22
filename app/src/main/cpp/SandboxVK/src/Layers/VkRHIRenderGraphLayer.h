@@ -24,7 +24,7 @@ public:
 
 		m_Scene = DBG_NEW BlackPearl::Scene();
 		m_SphereObj = CreateSphere(0.5, 64, 64);
-		m_CubeObj = CreateCube();
+		m_CubeObj = CreateCube("assets/shaders/Cube.glsl", "assets/texture/wood.png");
 
 		m_CubeObj->GetComponent<BlackPearl::Transform>()->SetScale({ 0.2,0.2,0.2 });
 		m_SphereObj->GetComponent<BlackPearl::Transform>()->SetScale({ 0.5,0.5,0.5 });

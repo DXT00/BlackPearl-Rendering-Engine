@@ -1,8 +1,7 @@
 #include "pch.h"
 #if GE_API_VULKAN
 
-#include "VkPipeline.h"
-#include "OpenGLPipeline.h"
+#include "RHI/VulkanRHI/VkPipeline.h"
 
 namespace BlackPearl {
 	//TODO::

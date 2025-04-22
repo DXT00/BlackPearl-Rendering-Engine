@@ -1,12 +1,12 @@
 #include "pch.h"
-#include "BasePassRenderer.h"
+#include "Renderer/MasterRenderer/BasePassRenderer.h"
 #include "BlackPearl/Renderer/Shader/ShaderFactory.h"
 #include "BlackPearl/RHI/PipelineStateCache.h"
 namespace BlackPearl {
     extern ShaderFactory* g_shaderFactory;
-    /* Á÷³Ì·ÂÕÕue: */
+    /* ï¿½ï¿½ï¿½Ì·ï¿½ï¿½ï¿½ue: */
     /*
-        //BeginRenderPass»ácache renderTarget
+        //BeginRenderPassï¿½ï¿½cache renderTarget
         RHICmdList.BeginRenderPass(RenderPassInfo, TEXT("Test_Clear_DrawColoredQuad"));
 
     	FIntPoint DisplacementMapResolution(OutTextureRenderTargetResource->GetSizeX(), OutTextureRenderTargetResource->GetSizeY());

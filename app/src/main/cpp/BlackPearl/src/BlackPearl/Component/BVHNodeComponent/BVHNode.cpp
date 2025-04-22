@@ -1,9 +1,9 @@
 #include "pch.h"
-#include "BVHNode.h"
-#include "BlackPearl/Component/BoundingBoxComponent/BoundingBox.h"
-#include "BlackPearl/RayTracing/Triangle.h"
-#include "BlackPearl/LayerScene/Layer.h"
-#include "BlackPearl/Core.h"
+#include "Component/BVHNodeComponent/BVHNode.h"
+#include "Component/BoundingBoxComponent/BoundingBox.h"
+#include "RayTracing/Triangle.h"
+#include "LayerScene/Layer.h"
+#include "Core.h"
 
 namespace BlackPearl {
 	extern ObjectManager* g_objectManager;
@@ -76,7 +76,7 @@ namespace BlackPearl {
 	void BVHNode::Build(std::vector<Object*> objs)
 	{
 		size_t num = objs.size();
-		//¼ÆËã³¡¾°µÄbounding box
+		//ï¿½ï¿½ï¿½ã³¡ï¿½ï¿½ï¿½ï¿½bounding box
 		size_t dim = 3;
 		if (num == 1) {
 			m_IsLeaf = true;
@@ -114,10 +114,10 @@ namespace BlackPearl {
 			float boxLen = m_Box.GetExtent()[i];
 			float bucketLen = static_cast<float>(boxLen / num);
 
-			//·ÖÅä³¡¾°ÖÐµÄÎïÌåµ½bucketsÖÐ
+			//ï¿½ï¿½ï¿½ä³¡ï¿½ï¿½ï¿½Ðµï¿½ï¿½ï¿½ï¿½åµ½bucketsï¿½ï¿½
 			for (auto obj : objs)
 			{
-				AABB& obj_box = obj->GetComponent<BlackPearl::BoundingBox>()->Get();
+				const AABB& obj_box = obj->GetComponent<BlackPearl::BoundingBox>()->Get();
 				int bucketID = 0;
 				if(boxLen != 0)
 					bucketID = (obj_box.GetCenter()[i] - m_Box.GetMinP()[i]) / boxLen;
@@ -125,7 +125,7 @@ namespace BlackPearl {
 				boxOfBuckets[bucketID].Expand(obj_box);
 			}
 
-			//¼ÆËã×î¼Ñ·Ö¸îµã
+			//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ñ·Ö¸ï¿½ï¿½
 			std::vector<AABB> leftBox(m_BucketsNum);
 			std::vector<AABB> rightBox(m_BucketsNum);
 			std::vector<size_t> leftAccNum(m_BucketsNum);
@@ -169,7 +169,7 @@ namespace BlackPearl {
 			}
 
 		}
-		//µÝ¹é·Ö¸îBVH Node
+		//ï¿½Ý¹ï¿½Ö¸ï¿½BVH Node
 		if (leftNodes.size() == num) {
 			size_t leftNum = num / 2;
 
@@ -198,7 +198,7 @@ namespace BlackPearl {
 	//AABB BVHNode::Build(const std::vector<Triangle*>& triMesh) {
 
 	//	size_t num = triMesh.size();
-	//	//¼ÆËã³¡¾°µÄbounding box
+	//	//ï¿½ï¿½ï¿½ã³¡ï¿½ï¿½ï¿½ï¿½bounding box
 	//	size_t dim = 3;
 
 	//	if (num == 1) {
@@ -226,7 +226,7 @@ namespace BlackPearl {
 	//		float boxLen = m_Box.GetExtent()[i];
 	//		float bucketLen = static_cast<float>(boxLen / num);
 
-	//		//·ÖÅä³¡¾°ÖÐµÄÎïÌåµ½bucketsÖÐ
+	//		//ï¿½ï¿½ï¿½ä³¡ï¿½ï¿½ï¿½Ðµï¿½ï¿½ï¿½ï¿½åµ½bucketsï¿½ï¿½
 	//		for (auto tri : triMesh)
 	//		{
 	//			AABB& obj_box = tri->GetBoundingBox();
@@ -235,7 +235,7 @@ namespace BlackPearl {
 	//			boxOfBuckets[bucketID].Expand(obj_box);
 	//		}
 
-	//		//¼ÆËã×î¼Ñ·Ö¸îµã
+	//		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ñ·Ö¸ï¿½ï¿½
 	//		std::vector<AABB> leftBox(m_BucketsNum);
 	//		std::vector<AABB> rightBox(m_BucketsNum);
 	//		std::vector<size_t> leftAccNum(m_BucketsNum);
@@ -261,7 +261,7 @@ namespace BlackPearl {
 	//			}
 	//		}
 
-	//		//µÝ¹é·Ö¸îBVH Node
+	//		//ï¿½Ý¹ï¿½Ö¸ï¿½BVH Node
 	//		std::vector<Triangle*> leftNodes;
 	//		std::vector<Triangle*> rightNodes;
 

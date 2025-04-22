@@ -1,6 +1,6 @@
 #include "pch.h"
-#include "Sobol.h"
-#include "SobolSequence.h"
+#include "Sampler/Sobol.h"
+#include "Sampler/SobolSequence.h"
 
 namespace BlackPearl {
 

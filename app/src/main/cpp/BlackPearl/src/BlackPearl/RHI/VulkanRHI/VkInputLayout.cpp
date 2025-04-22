@@ -1,8 +1,8 @@
 #include "pch.h"
 #if GE_API_VULKAN
 
-#include "VkBindingLayout.h"
-#include "VkInputLayout.h"
+#include "RHI/VulkanRHI/VkBindingLayout.h"
+#include "RHI/VulkanRHI/VkInputLayout.h"
 
 namespace BlackPearl {
 	uint32_t InputLayout::getNumAttributes() const

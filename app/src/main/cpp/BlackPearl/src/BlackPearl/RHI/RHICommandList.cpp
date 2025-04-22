@@ -1,9 +1,10 @@
 #include "pch.h"
-#include "RHICommandList.h"
+#include "RHI/RHICommandList.h"
 
-
+#include "BlackPearl/Renderer/DeviceManager.h"
 namespace BlackPearl {
-
+    ImmediateCommandList GImmediateCmdList;
+    extern DeviceManager* g_deviceManager;
 	void ICommandList::setResourceStatesForFramebuffer(IFramebuffer* framebuffer)
 	{
         const FramebufferDesc& desc = framebuffer->getDesc();
@@ -20,6 +21,19 @@ namespace BlackPearl {
                 desc.depthAttachment.isReadOnly ? ResourceStates::DepthRead : ResourceStates::DepthWrite);
         }
 	}
+
+
+    void ImmediateCommandList::AcquireThreadOwnership()
+    {
+        if(g_deviceManager)
+            g_deviceManager->GetDevice()->acquireThreadOwnership();
+    }
+
+    void ImmediateCommandList::ReleaseThreadOwnership()
+    {
+        if(g_deviceManager)
+            g_deviceManager->GetDevice()->releaseThreadOwnership();
+    }
 
 
 }

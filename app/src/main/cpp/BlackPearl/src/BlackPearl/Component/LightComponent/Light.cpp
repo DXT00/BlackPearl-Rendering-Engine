@@ -1,8 +1,8 @@
 #include "pch.h"
-#include "Light.h"
-#include "ParallelLight.h"
-#include "PointLight.h"
-#include "SpotLight.h"
+#include "Component/LightComponent/Light.h"
+#include "Component/LightComponent/ParallelLight.h"
+#include "Component/LightComponent/PointLight.h"
+#include "Component/LightComponent/SpotLight.h"
 namespace BlackPearl {
 
 	Light * Light::Create(LightType type, const math::float3 & position, const math::float3& direction, const float cutOffAngle, const float outterCutOffAngle, Props props)

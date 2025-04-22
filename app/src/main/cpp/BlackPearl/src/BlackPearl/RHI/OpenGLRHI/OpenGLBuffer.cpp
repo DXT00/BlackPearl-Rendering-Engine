@@ -1,11 +1,11 @@
 #include "pch.h"
-#include "OpenGLBuffer.h"
+#include "RHI/OpenGLRHI/OpenGLBuffer.h"
 //#include "glad/glad.h"
 #include "BlackPearl/RHI/OpenGLRHI/OpenGLDriver/OpenGLFunctions.h"
-#include "OpenGLBufferResource.h"
+#include "RHI/OpenGLRHI/OpenGLBufferResource.h"
 
-#include "OpenGLUniformBuffer.h"
-#include "OpenGLDevice.h"
+#include "RHI/OpenGLRHI/OpenGLUniformBuffer.h"
+#include "RHI/OpenGLRHI/OpenGLDevice.h"
 #include "BlackPearl/Core.h"
 
 namespace BlackPearl {

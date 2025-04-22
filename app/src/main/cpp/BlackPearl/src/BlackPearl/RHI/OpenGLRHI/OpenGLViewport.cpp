@@ -1,9 +1,9 @@
 #include "pch.h"
-#include "OpenGLViewport.h"
-#include "OpenGLDevice.h"
-#include "OpenGLUtil.h"
-#include "OpenGLContext.h"
-#include "OpenGLTexture.h"
+#include "RHI/OpenGLRHI/OpenGLViewport.h"
+#include "RHI/OpenGLRHI/OpenGLDevice.h"
+#include "RHI/OpenGLRHI/OpenGLUtil.h"
+#include "RHI/OpenGLRHI/OpenGLContext.h"
+#include "RHI/OpenGLRHI/OpenGLTexture.h"
 #include "BlackPearl/Core.h"
 namespace BlackPearl {
 

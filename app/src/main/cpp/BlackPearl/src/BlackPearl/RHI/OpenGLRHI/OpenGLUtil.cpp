@@ -1,10 +1,7 @@
 #include "pch.h"
-#include "OpenGLUtil.h"
-#ifdef GE_PLATFORM_ANDROID
-#include "../OpenGLRHI/OpenGLDriver/OpenGLES.h"
-#else
-#include "../OpenGLRHI/OpenGLDriver/OpenGL.h"
-#endif
+#include "RHI/OpenGLRHI/OpenGLUtil.h"
+#include "RHI/OpenGLRHI/OpenGLDriver/OpenGLDrv.h"
+
 namespace BlackPearl {
 
     GLint OpenGLUtil::convertSamplerAddressMode(SamplerAddressMode mode)
@@ -178,7 +175,8 @@ namespace BlackPearl {
 
 		case BlendFactor::OneMinusConstantColor:
 			return GL_ONE_MINUS_CONSTANT_COLOR;
-
+//Android gles not support Dual-Source Blending https://lumverse.feishu.cn/docx/WRcAdjLx7oea5hxe1gvcgRtzngY
+#ifdef GE_PLATFORM_WINDOWS
 		case BlendFactor::Src1Color:
 			return GL_SRC1_COLOR;
 
@@ -190,7 +188,7 @@ namespace BlackPearl {
 
 		case BlendFactor::OneMinusSrc1Alpha:
 			return GL_ONE_MINUS_SRC1_ALPHA;
-
+#endif
 		default:
 			assert(0);
 			return GL_ONE;
@@ -344,11 +342,18 @@ namespace BlackPearl {
 		case Format::RGBA16_FLOAT:
 			return GL_RGBA16F;
 
-			//return std::make_pair<GLenum, GLenum>(GL_RGBA, GL_FLOAT);
+		// gles depth attachment support: https://lumverse.feishu.cn/docx/F9TKd7UhLozzU5xOGqic0zgPnie#share-LDoZdXbgzobiSLxmJYccXljWnNm
 		case Format::D16:
 			return GL_DEPTH_COMPONENT16;
-		case Format::D32:
+        case Format::D24:
+            return GL_DEPTH_COMPONENT24;  //only for pc ,gles 3+
+#ifdef GE_PLATFORM_WINDOWS
+		case Format::D32: //only for pc opengl
 			return GL_DEPTH_COMPONENT32;
+#elif defined(GE_PLATFORM_ANDROID)
+       case Format::D32_FLOAT: //only for anfroid gles
+           return GL_DEPTH_COMPONENT32F;
+#endif
 
 		default:
 			GE_ASSERT(0, "unsupport now");
@@ -383,8 +388,18 @@ namespace BlackPearl {
 		switch (warp) {
 		case SamplerAddressMode::ClampToEdge:
 			return GL_CLAMP_TO_EDGE;
-		case SamplerAddressMode::ClampToBorder:
-			return GL_CLAMP_TO_BORDER;
+		case SamplerAddressMode::ClampToBorder:{
+        // texture warp for gles version: https://lumverse.feishu.cn/docx/F9TKd7UhLozzU5xOGqic0zgPnie
+#ifdef GE_PLATFORM_ANDROID
+            if(FOpenGLES::IsES32Usable()){
+                return GL_CLAMP_TO_BORDER;
+            }else{
+                return GL_CLAMP_TO_EDGE;
+            }
+#elif defined(GE_PLATFORM_WINDOWS)
+            return GL_CLAMP_TO_BORDER;
+#endif
+        }
 		case SamplerAddressMode::Repeat:
 			return GL_REPEAT;
 

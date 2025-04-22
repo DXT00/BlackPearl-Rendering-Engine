@@ -1,10 +1,10 @@
 #include "pch.h"
-#include "OpenGLTexture.h"
+#include "RHI/OpenGLRHI/OpenGLTexture.h"
 #include "BlackPearl/Core.h"
 #include "BlackPearl/Config.h"
-#include "OpenGLUtil.h"
+#include "RHI/OpenGLRHI/OpenGLUtil.h"
 #include "BlackPearl/RHI/RHIDefinitions.h"
-#include "OpenGLSampler.h"
+#include "RHI/OpenGLRHI/OpenGLSampler.h"
 #include "BlackPearl/RHI/Common/stb_util.h"
 #include "BlackPearl/RHI/OpenGLRHI/OpenGLDriver/OpenGLFunctions.h"
 namespace BlackPearl {
@@ -26,20 +26,20 @@ namespace BlackPearl {
 	int64_t GOpenGLTotalGraphicsMemory = 0;
 
 	/*
-	internalforamtÖ¸µÄÊÇÎÆÀíÊı¾İÔÚOpenGLÖĞÊÇÈçºÎ±íÊ¾µÄ£¬ÈçGL_RGB¾Í±íÊ¾ÎÆÀíµÄÏñËØÔÚOpenGLÀïÃæÒÔºìÂÌÀ¶Èı¸ö·ÖÁ¿±íÊ¾£¬
+	internalforamtæŒ‡çš„æ˜¯çº¹ç†æ•°æ®åœ¨OpenGLä¸­æ˜¯å¦‚ä½•è¡¨ç¤ºçš„ï¼Œå¦‚GL_RGBå°±è¡¨ç¤ºçº¹ç†çš„åƒç´ åœ¨OpenGLé‡Œé¢ä»¥çº¢ç»¿è“ä¸‰ä¸ªåˆ†é‡è¡¨ç¤ºï¼Œ
 
-	formatÖ¸µÄÊÇÔØÈëÎÆÀíµÄ¸ñÊ½£¬Ëü¸æËßOpenGLÍâ²¿Êı¾İÊÇÈçºÎ´æ´¢Ã¿¸öÏñËØÊı¾İµÄ¡£
+	formatæŒ‡çš„æ˜¯è½½å…¥çº¹ç†çš„æ ¼å¼ï¼Œå®ƒå‘Šè¯‰OpenGLå¤–éƒ¨æ•°æ®æ˜¯å¦‚ä½•å­˜å‚¨æ¯ä¸ªåƒç´ æ•°æ®çš„ã€‚
 	
 	*/
 	Texture::Texture(
-		TextureDesc& _desc,
+		const TextureDesc& _desc,
 		float* data
 	) : desc(_desc),
 		TextureStateExtension(_desc)
 	{
 		
 		glGenTextures(1, &m_TextureID);
-		GE_ERROR_JUDGE();//³öÏÖerrorµÄÔ­Òò£ººÜ¿ÉÄÜm_TextureIDÓÃÔÚÁË±ğµÄtargetÉÏ£¬ÀıÈçCUBEMAP,²»ĞĞµÄ»°ÔËĞĞÇ°¼Ó¸ö¶Ïµã = = 
+		GE_ERROR_JUDGE();//å‡ºç°errorçš„åŸå› ï¼šå¾ˆå¯èƒ½m_TextureIDç”¨åœ¨äº†åˆ«çš„targetä¸Šï¼Œä¾‹å¦‚CUBEMAP,ä¸è¡Œçš„è¯è¿è¡Œå‰åŠ ä¸ªæ–­ç‚¹ = = 
 
 	
 
@@ -53,7 +53,7 @@ namespace BlackPearl {
 
 
 	void Texture::Init(
-		TextureDesc& _desc, float* data)
+		const TextureDesc& _desc, float* data)
 	{
 		Bind();
 		fillTextureInfo(_desc);
@@ -68,7 +68,7 @@ namespace BlackPearl {
 			unsigned char* data = stbi_load_util(m_Path.c_str(), &width, &height, &nrChannels, 0);
 			GE_ASSERT(data, "fail to load texture data!");
 			GLenum format;
-			switch (nrChannels) //×¢Òâ²»Í¬Í¼Æ¬ÓĞ²»Í¬µÄÍ¨µÀÊı£¡
+			switch (nrChannels) //æ³¨æ„ä¸åŒå›¾ç‰‡æœ‰ä¸åŒçš„é€šé“æ•°ï¼
 			{
 			case 1:
 				format = GL_RED;
@@ -96,9 +96,9 @@ namespace BlackPearl {
 			}
 			m_Width = width;
 			m_Height = height;
-			_desc.width = m_Width;
-			_desc.height = m_Height;
-			_desc.format = desc.format;
+//			_desc.width = m_Width;
+//			_desc.height = m_Height;
+//			_desc.format = desc.format;
 
 			desc.width = m_Width;
 			desc.height = m_Height;
@@ -123,7 +123,7 @@ namespace BlackPearl {
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, m_MagFilter);
 
 		if (_desc.generateMipmap)
-			glGenerateMipmap(GL_TEXTURE_2D);//Îªµ±Ç°°ó¶¨µÄÎÆÀí×Ô¶¯Éú³ÉËùÓĞĞèÒªµÄ¶à¼¶½¥Ô¶ÎÆÀí
+			glGenerateMipmap(GL_TEXTURE_2D);//ä¸ºå½“å‰ç»‘å®šçš„çº¹ç†è‡ªåŠ¨ç”Ÿæˆæ‰€æœ‰éœ€è¦çš„å¤šçº§æ¸è¿œçº¹ç†
 
 		if (data != nullptr)
 			stbi_image_free_util(data);
@@ -136,20 +136,20 @@ namespace BlackPearl {
 	//	/*	FBO(
 	//			GLuint w, GLuint h, GLenum magFilter = GL_NEAREST, GLenum minFilter = GL_NEAREST,
 	//			GLint internalFormat = GL_RGB16F, GLint format = GL_FLOAT, GLint wrap = GL_REPEAT);*/
-	//			//ÎÆÀí¹ıÂË---ÁÚ½ü¹ıÂËºÍÏßĞÔ¹ıÂË
+	//			//çº¹ç†è¿‡æ»¤---é‚»è¿‘è¿‡æ»¤å’Œçº¿æ€§è¿‡æ»¤
 	//	fillTextureInfo(desc);
 	//	glTexImage2D(GL_TEXTURE_2D, 0, m_InnerFormat, m_Width, m_Height, 0, m_Format, m_DataType, data);
 
-	//	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, m_MinFilter);//ÎÆÀíËõĞ¡Ê±ÓÃÁÚ½ü¹ıÂË
-	//	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, m_MagFilter);//ÎÆÀí·Å´óÊ±Ò²ÓÃÁÚ½ü¹ıÂË
-	//	//TODO:: ÊÇ²»ÊÇ¿ÉÒÔÉ¾µô£¿
+	//	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, m_MinFilter);//çº¹ç†ç¼©å°æ—¶ç”¨é‚»è¿‘è¿‡æ»¤
+	//	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, m_MagFilter);//çº¹ç†æ”¾å¤§æ—¶ä¹Ÿç”¨é‚»è¿‘è¿‡æ»¤
+	//	//TODO:: æ˜¯ä¸æ˜¯å¯ä»¥åˆ æ‰ï¼Ÿ
 	//	if (m_Wrap != -1) {
 	//		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, m_Wrap);
 	//		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, m_Wrap);
 	//	}
 
 	//	if (desc.generateMipmap)
-	//		glGenerateMipmap(GL_TEXTURE_2D);//Îªµ±Ç°°ó¶¨µÄÎÆÀí×Ô¶¯Éú³ÉËùÓĞĞèÒªµÄ¶à¼¶½¥Ô¶ÎÆÀí
+	//		glGenerateMipmap(GL_TEXTURE_2D);//ä¸ºå½“å‰ç»‘å®šçš„çº¹ç†è‡ªåŠ¨ç”Ÿæˆæ‰€æœ‰éœ€è¦çš„å¤šçº§æ¸è¿œçº¹ç†
 	//	//	UnBind();
 	//}
 
@@ -162,11 +162,11 @@ namespace BlackPearl {
 
 	void Texture::SetWrapFilter(GLenum filter) {
 		Bind();
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, filter); //GL_REPEAT ±íÊ¾ÎÆÀíX·½ÏòÑ­»·Ê¹ÓÃÎÆÀí
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, filter); //GL_REPEAT ±íÊ¾ÎÆÀíy·½ÏòÑ­»·Ê¹ÓÃÎÆÀí
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, filter);  //GL_REPEAT ±íÊ¾ÎÆÀíz·½ÏòÑ­»·Ê¹ÓÃÎÆÀí
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, filter); //GL_REPEAT è¡¨ç¤ºçº¹ç†Xæ–¹å‘å¾ªç¯ä½¿ç”¨çº¹ç†
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, filter); //GL_REPEAT è¡¨ç¤ºçº¹ç†yæ–¹å‘å¾ªç¯ä½¿ç”¨çº¹ç†
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, filter);  //GL_REPEAT è¡¨ç¤ºçº¹ç†zæ–¹å‘å¾ªç¯ä½¿ç”¨çº¹ç†
 	
-		//glTextureParameteri  ÊÇ OpenGL 4.5 ÒıÈëµÄ Direct State Access (DSA) º¯Êı£¬Ìá¹©ÁË¸üÖ±½ÓµÄÎÆÀí²Ù×÷·½Ê½£¬¼õÉÙÁË×´Ì¬ÇĞ»»µÄ¿ªÏú
+		//glTextureParameteri  æ˜¯ OpenGL 4.5 å¼•å…¥çš„ Direct State Access (DSA) å‡½æ•°ï¼Œæä¾›äº†æ›´ç›´æ¥çš„çº¹ç†æ“ä½œæ–¹å¼ï¼Œå‡å°‘äº†çŠ¶æ€åˆ‡æ¢çš„å¼€é”€
 	}
 
 
@@ -222,7 +222,7 @@ namespace BlackPearl {
 
 		//glTextureStorage2D(m_TextureID, levels, internal_format, width, height);
 
-		//ÎŞĞè°ó¶¨£¬Ö±½Ó²Ù×÷ÎÆÀí ID , OpenGL 4.5 ÒıÈë
+		//æ— éœ€ç»‘å®šï¼Œç›´æ¥æ“ä½œçº¹ç† ID , OpenGL 4.5 å¼•å…¥
 		glTexStorage2D(GL_TEXTURE_2D, levels, internal_format, width, height);
 
 	}

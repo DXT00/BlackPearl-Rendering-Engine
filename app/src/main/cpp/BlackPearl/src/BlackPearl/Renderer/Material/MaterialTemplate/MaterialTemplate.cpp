@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "MaterialTemplate.h"
+#include "Renderer/Material/MaterialTemplate/MaterialTemplate.h"
 
 namespace BlackPearl {
 	const std::vector<MaterialResourceBinding>& MaterialTemplate::GetBindingDesc() const

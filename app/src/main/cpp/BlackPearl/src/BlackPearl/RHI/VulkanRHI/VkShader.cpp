@@ -1,8 +1,8 @@
 #include "pch.h"
 #if GE_API_VULKAN
 
-#include "VkShader.h"
-#include "VkUtil.h"
+#include "RHI/VulkanRHI/VkShader.h"
+#include "RHI/VulkanRHI/VkUtil.h"
 
 namespace BlackPearl {
 	EShader::~EShader()

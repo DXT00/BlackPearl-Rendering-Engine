@@ -1,6 +1,7 @@
 #include "pch.h"
-#include "FileSystem.h"
+#include "FileSystem/FileSystem.h"
 #include "BlackPearl/Core.h"
+#include <unistd.h>
 /*
 * Copyright (c) 2014-2021, NVIDIA CORPORATION. All rights reserved.
 *
@@ -32,6 +33,8 @@
 #ifdef GE_PLATFORM_WINDOWS
 #include <Shlwapi.h>
 #else
+#include <dirent.h>
+#include <fnmatch.h>
 extern "C" {
 #include <glob.h>
 }
@@ -184,12 +187,15 @@ static int enumerateNativeFiles(const char* pattern, bool directories, enumerate
 
 #else // WIN32
 
-    glob64_t glob_matches;
-    int globResult = glob64(pattern, 0 /*flags*/, nullptr /*errfunc*/, &glob_matches);
+    glob_t glob_matches;
+    int globResult = GLOB_NOMATCH;
+    int numEntries = 0;
+#if __ANDROID_API__ >= 28
+
+     globResult = glob(pattern, 0 /*flags*/, nullptr /*errfunc*/, &glob_matches);
 
     if (globResult == 0)
     {
-        int numEntries = 0;
 
         for (int i = 0; i < glob_matches.gl_pathc; ++i)
         {
@@ -205,10 +211,27 @@ static int enumerateNativeFiles(const char* pattern, bool directories, enumerate
                 }
             }
         }
-        globfree64(&glob_matches);
 
+        globfree(&glob_matches);
         return numEntries;
     }
+#else
+    const char* path = "./";  // 或者从pattern中提取目录
+    DIR* dir = opendir(path);
+    if (!dir) return 0;
+
+    struct dirent* entry;
+    while ((entry = readdir(dir)) != nullptr) {
+        if (fnmatch(pattern, entry->d_name, 0) == 0) {
+
+            callback(entry->d_name);
+            ++numEntries;
+        }
+    }
+    closedir(dir);
+    return numEntries;
+#endif
+
 
     if (globResult == GLOB_NOMATCH)
         return 0;
@@ -444,18 +467,23 @@ std::filesystem::path IFileSystem::GetExeDir() const
 
 IFileSystem::IFileSystem()
 {
-    char path[MAX_PATH] = { 0 };
+
+
 #ifdef _WIN32
+    char path[MAX_PATH] = { 0 };
     if (GetModuleFileNameA(nullptr, path, MAX_PATH) == 0)
         return ;
 #else // _WIN32
+#define FILE_MAX_PATH 256
+    char path[FILE_MAX_PATH] = { 0 };
     // /proc/self/exe is mostly linux-only, but can't hurt to try it elsewhere
     if (readlink("/proc/self/exe", path, std::size(path)) <= 0)
     {
         // portable but assumes executable dir == cwd
         if (!getcwd(path, std::size(path)))
-            return ""; // failure
+            return ; // failure
     }
+#undef FILE_MAX_PATH
 #endif // _WIN32
 
     std::filesystem::path result = path;

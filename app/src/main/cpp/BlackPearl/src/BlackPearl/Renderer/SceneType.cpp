@@ -21,7 +21,7 @@
 * DEALINGS IN THE SOFTWARE.
 */
 #include "pch.h"
-#include "SceneType.h"
+#include "Renderer/SceneType.h"
 #include "BlackPearl/Math/vector.h"
 #include "BlackPearl/RHI/RHIInputLayout.h"
 

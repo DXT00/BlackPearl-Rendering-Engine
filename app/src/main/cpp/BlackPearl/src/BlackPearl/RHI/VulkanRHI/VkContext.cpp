@@ -1,7 +1,7 @@
 #include "pch.h"
 #if GE_API_VULKAN
 
-#include "VkContext.h"
+#include "RHI/VulkanRHI/VkContext.h"
 
 namespace BlackPearl {
     void VulkanContext::setVkFuncLoader(VkFunctionLoader* funcLoader)

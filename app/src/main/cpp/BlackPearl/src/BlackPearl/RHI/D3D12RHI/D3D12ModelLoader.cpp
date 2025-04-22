@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "D3D12ModelLoader.h"
+#include "RHI/D3D12RHI/D3D12ModelLoader.h"
 #include "BlackPearl/Common/CommonFunc.h"
 #include "WaveFrontReader.h"
 #include "DirectXMesh.h"
@@ -151,7 +151,7 @@ namespace BlackPearl {
                 {ElementDataType::Float3,"BITANGENT", false, 0}
             };
             //std::vector<uint32_t> vertexStrides;
-            //std::vector<Span<uint8_t>> vertices; //Ã¿¸öattribute¶ÔÓ¦Ò»¸öSpan<uint_8> ?
+            //std::vector<Span<uint8_t>> vertices; //Ã¿ï¿½ï¿½attributeï¿½ï¿½Ó¦Ò»ï¿½ï¿½Span<uint_8> ?
             //uint32_t vertexCount;
             //Span<Subset>               meshletSubsets;
             //Span<Meshlet>              meshlets;
@@ -184,7 +184,7 @@ namespace BlackPearl {
             std::vector<uint32_t> vbMap;
             uint32_t numElements = 0;
            
-            // vertices ´æ´¢½á¹¹
+            // vertices ï¿½æ´¢ï¿½á¹¹
             // v0.pos,v0.normal | v1.pos,v1.normal
             for (uint32_t j = 0; j < Attribute::Count; ++j)
             {
@@ -206,7 +206,7 @@ namespace BlackPearl {
                 Span<uint8_t> verts = MakeSpan(m_Buffer.data() + bufferView.Offset, bufferView.Size);
 
                 mesh->VertexStrides.push_back(accessor.Stride);
-                mesh->Vertices_ml.push_back(verts); //ÕâÀïºÍopenGL²»Ò»Ñù£¬Ã¿¸öattributes·Ö¿ªpushµ½vertices
+                mesh->Vertices_ml.push_back(verts); //ï¿½ï¿½ï¿½ï¿½ï¿½openGLï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½Ã¿ï¿½ï¿½attributesï¿½Ö¿ï¿½pushï¿½ï¿½vertices
                 mesh->VertexCount_ml = static_cast<uint32_t>(verts.size()) / accessor.Stride;
             }
 
@@ -302,13 +302,13 @@ namespace BlackPearl {
                 {
                     break;
                 }
-                //ÕÒµ½positionµÄÏÂÒ»¸öattributeµÄÎ»ÖÃ
+                //ï¿½Òµï¿½positionï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½attributeï¿½ï¿½Î»ï¿½ï¿½
                 if (element.Location == vbIndexPos)
                 {
                     positionOffset += m->GetVertexBufferLayout().GetElement(j).GetElementCount();
                 }
             }
-            // vertices ´æ´¢½á¹¹
+            // vertices ï¿½æ´¢ï¿½á¹¹
             // NORMAL  : v0.normal, v1.normal, v2.normal ...
             // POSITION: v0.pos, v1.pos, v2.pos .....
             //vbIndexPos = 1

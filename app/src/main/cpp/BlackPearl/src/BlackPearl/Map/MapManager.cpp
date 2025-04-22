@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "MapManager.h"
+#include "Map/MapManager.h"
 #include "BlackPearl/Core.h"
 #include "BlackPearl/Component/LightProbeComponent/LightProbeComponent.h"
 #include "BlackPearl/Component/TransformComponent/Transform.h"

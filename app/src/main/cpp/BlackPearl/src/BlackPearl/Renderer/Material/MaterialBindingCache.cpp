@@ -1,10 +1,10 @@
 #include "pch.h"
-#include "MaterialBindingCache.h"
-#include "Material.h"
+#include "Renderer/Material/MaterialBindingCache.h"
+#include "Renderer/Material/Material.h"
 #include "BlackPearl/RHI/RHIBindingSet.h"
 #include "BlackPearl/RHI/RHIDefinitions.h"
 #include "BlackPearl/Core.h"
-#include "MaterialManager.h"
+#include "Renderer/Material/MaterialManager.h"
 namespace BlackPearl {
     extern MaterialManager* g_materialManager;
 
@@ -144,7 +144,7 @@ namespace BlackPearl {
     MaterialBindingItem& MaterialBindingCache::GetOrCreateMaterialBindingSet(DeviceHandle device, const Material* material)
 	{
 		//std::lock_guard<std::mutex> lockGuard(m_Mutex);
-        //TODO:: m_BindingSets ¼Ó hash
+        //TODO:: m_BindingSets ï¿½ï¿½ hash
         uint32_t key = material->GetId();
         if (GMaterialBindingSetCache.find(key) != GMaterialBindingSetCache.end()) {
                 return GMaterialBindingSetCache[key];

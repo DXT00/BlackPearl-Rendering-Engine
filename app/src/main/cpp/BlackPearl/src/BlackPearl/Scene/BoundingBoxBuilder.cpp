@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "BoundingBoxBuilder.h"
+#include "Scene/BoundingBoxBuilder.h"
 #include "BlackPearl/Object/Object.h"
 #include "BlackPearl/LayerScene/Layer.h"
 #include "glm/glm.hpp"
@@ -99,7 +99,7 @@ namespace BlackPearl {
 		return AABB();
 	}
 
-	////ÔÝÊ±²»Ö§³ÖAnimationModel(AnimationModel vertexBufferÓÐunsigned int ÀàÐÍµÄ)
+	////ï¿½ï¿½Ê±ï¿½ï¿½Ö§ï¿½ï¿½AnimationModel(AnimationModel vertexBufferï¿½ï¿½unsigned int ï¿½ï¿½ï¿½Íµï¿½)
 	//AABB BoundingBoxBuilder::Build(const std::vector<Mesh>& meshes)
 	//{
 	//	std::vector<Triangle> TriMesh;

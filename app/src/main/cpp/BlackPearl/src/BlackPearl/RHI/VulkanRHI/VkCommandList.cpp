@@ -2,15 +2,15 @@
 #if GE_API_VULKAN
 
 #include "BlackPearl/Core.h"
-#include "../Common/Misc.h"
-#include "VkCommandList.h"
-#include "VkUtil.h"
-#include "VkPipeline.h"
-#include "VkFrameBuffer.h"
-#include "VkBindingSet.h"
-#include "VkDescriptorTable.h"
-#include "VkTexture.h"
-#include "VkRayTraceStruct.h"
+#include "RHI/Common/Misc.h"
+#include "RHI/VulkanRHI/VkCommandList.h"
+#include "RHI/VulkanRHI/VkUtil.h"
+#include "RHI/VulkanRHI/VkPipeline.h"
+#include "RHI/VulkanRHI/VkFrameBuffer.h"
+#include "RHI/VulkanRHI/VkBindingSet.h"
+#include "RHI/VulkanRHI/VkDescriptorTable.h"
+#include "RHI/VulkanRHI/VkTexture.h"
+#include "RHI/VulkanRHI/VkRayTraceStruct.h"
 #include "BlackPearl/RHI/Common/RHIUtils.h"
 #include "BlackPearl/RHI/Common/FormatInfo.h"
 #include "BlackPearl/RHI/VulkanRHI/VkShader.h"
@@ -634,7 +634,7 @@ namespace BlackPearl {
 			VkExtent2D shadingRate = VkUtil::convertFragmentShadingRate(state.shadingRateState.shadingRate);
 			//m_CurrentCmdBuf->cmdBuf.setFragmentShadingRateKHR(&shadingRate, combiners);
 
-			// ²»Ö§³Ö
+			// ï¿½ï¿½Ö§ï¿½ï¿½
 			//vkCmdSetFragmentShadingRateKHR(m_CurrentCmdBuf->cmdBuf, &shadingRate, combiners);
 		}
 
@@ -1968,7 +1968,7 @@ namespace BlackPearl {
 			}
 			else
 			{
-				// Vulkan Ò²ÓÐDescriptorTable£¿
+				// Vulkan Ò²ï¿½ï¿½DescriptorTableï¿½ï¿½
 				DescriptorTable* table = dynamic_cast<DescriptorTable*>(bindingSetHandle);
 				descriptorSets.push_back(table->descriptorSet);
 			}

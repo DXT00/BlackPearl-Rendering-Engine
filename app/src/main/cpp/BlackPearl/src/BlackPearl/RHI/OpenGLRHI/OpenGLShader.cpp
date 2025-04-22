@@ -10,19 +10,19 @@
 #include "BlackPearl/Renderer/Renderer.h"
 #include "BlackPearl/Component/LightComponent/LightSources.h"
 #include "BlackPearl/Component/TransformComponent/Transform.h"
-#include "OpenGLBoundShaderState.h"
-#include "OpenGLShaderResource.h"
+#include "RHI/OpenGLRHI/OpenGLBoundShaderState.h"
+#include "RHI/OpenGLRHI/OpenGLShaderResource.h"
 #include "BlackPearl/Log.h"
 
-#include "OpenGLDevice.h"
-#include "OpenGLState.h"
-#include "OpenGLBindingSet.h"
-#include "OpenGLTexture.h"
-#include "OpenGLSampler.h"
+#include "RHI/OpenGLRHI/OpenGLDevice.h"
+#include "RHI/OpenGLRHI/OpenGLState.h"
+#include "RHI/OpenGLRHI/OpenGLBindingSet.h"
+#include "RHI/OpenGLRHI/OpenGLTexture.h"
+#include "RHI/OpenGLRHI/OpenGLSampler.h"
 #include "BlackPearl/RHI/Common/RHIUtils.h"
 #include "BlackPearl/RHI/RHIShader.h"
 #include "BlackPearl/Renderer/Shader/CrossCompilerCommon.h"
-#include "BlackPearl\RHI\OpenGLRHI\OpenGLDriver\OpenGLThirdParty.h"
+#include "RHI\OpenGLRHI\OpenGLDriver\OpenGLThirdParty.h"
 
 namespace BlackPearl
 {

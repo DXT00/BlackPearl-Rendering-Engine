@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "D3D12VertexBuffer.h"
+#include "RHI/D3D12RHI/D3D12VertexBuffer.h"
 
 namespace BlackPearl{
 

@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "VkImage.h"
+#include "Renderer/Image/VkImage.h"
 #include "BlackPearl/Renderer/Buffer/VkBuffer/VkBuffer.h"
 #include "BlackPearl/Renderer/Buffer/VkBuffer/VkCommandBuffer.h"
 #include<stdexcept>

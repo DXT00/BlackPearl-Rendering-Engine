@@ -1,9 +1,9 @@
 #include "pch.h"
 #if GE_API_VULKAN
-#include "VkAllocator.h"
-#include "VkBuffer.h"
-#include "VkTexture.h"
-#include "VkMemoryResource.h"
+#include "RHI/VulkanRHI/VkAllocator.h"
+#include "RHI/VulkanRHI/VkBuffer.h"
+#include "RHI/VulkanRHI/VkTexture.h"
+#include "RHI/VulkanRHI/VkMemoryResource.h"
 
 namespace BlackPearl {
 

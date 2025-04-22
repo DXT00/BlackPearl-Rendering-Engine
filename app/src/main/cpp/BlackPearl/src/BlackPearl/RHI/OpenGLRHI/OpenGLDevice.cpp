@@ -1,21 +1,21 @@
 #include "pch.h"
-#include "OpenGLDevice.h"
-#include "OpenGLViewport.h"
-#include "OpenGLTexture.h"
-#include "OpenGLCubeMapTexture.h"
-#include "OpenGLImageTexture2D.h"
-#include "OpenGLBindingLayout.h"
-#include "OpenGLCommandList.h"
-#include "OpenGLShader.h"
-#include "OpenGLSampler.h"
+#include "RHI/OpenGLRHI/OpenGLDevice.h"
+#include "RHI/OpenGLRHI/OpenGLViewport.h"
+#include "RHI/OpenGLRHI/OpenGLTexture.h"
+#include "RHI/OpenGLRHI/OpenGLCubeMapTexture.h"
+#include "RHI/OpenGLRHI/OpenGLImageTexture2D.h"
+#include "RHI/OpenGLRHI/OpenGLBindingLayout.h"
+#include "RHI/OpenGLRHI/OpenGLCommandList.h"
+#include "RHI/OpenGLRHI/OpenGLShader.h"
+#include "RHI/OpenGLRHI/OpenGLSampler.h"
 #include "BlackPearl/RHI/RHIGlobals.h"
 #include "BlackPearl/RHI/OpenGLRHI/OpenGLProgramBinaryFileCache.h"
-#include "OpenGLState.h"
-#include "OpenGLBuffer.h"
-#include "OpenGLInputLayout.h"
-#include "OpenGLUtil.h"
-#include "OpenGLFrameBuffer.h"
-#include "OpenGLBoundShaderState.h"
+#include "RHI/OpenGLRHI/OpenGLState.h"
+#include "RHI/OpenGLRHI/OpenGLBuffer.h"
+#include "RHI/OpenGLRHI/OpenGLInputLayout.h"
+#include "RHI/OpenGLRHI/OpenGLUtil.h"
+#include "RHI/OpenGLRHI/OpenGLFrameBuffer.h"
+#include "RHI/OpenGLRHI/OpenGLBoundShaderState.h"
 #include "BlackPearl/Application.h"
 #include "BlackPearl/Log.h"
 //#include "OpenGLFrameBuffer.h"
@@ -58,7 +58,7 @@ namespace BlackPearl
 	/**
  * OpenGL debug message callback. Conforms to GLDEBUGPROCARB.
  */
-#if PLATFORM_ANDROID
+#if GE_PLATFORM_ANDROID
 #ifndef GL_APIENTRY
 #define GL_APIENTRY APIENTRY
 #endif
@@ -134,41 +134,42 @@ namespace BlackPearl
 	/**
  * OpenGL debug message callback. Conforms to GLDEBUGPROCAMD.
  */
-	void APIENTRY OpenGLDebugMessageCallbackAMD(
-		GLuint Id,
-		GLenum Category,
-		GLenum Severity,
-		GLsizei Length,
-		const GLchar* Message,
-		GLvoid* UserParam)
-	{
-		//#if !NO_LOGGING
-		//		const TCHAR* CategoryStr = GetOpenGLDebugCategoryStringAMD(Category);
-		//		const TCHAR* SeverityStr = GetOpenGLDebugSeverityStringAMD(Severity);
-		//
-		//		ELogVerbosity::Type Verbosity = ELogVerbosity::Warning;
-		//		if (Severity == GL_DEBUG_SEVERITY_HIGH_AMD)
-		//		{
-		//			Verbosity = ELogVerbosity::Fatal;
-		//		}
-		//
-		//		if ((Verbosity & ELogVerbosity::VerbosityMask) <= FLogCategoryLogRHI::CompileTimeVerbosity)
-		//		{
-		//			if (!LogRHI.IsSuppressed(Verbosity))
-		//			{
-		//				FMsg::Logf(__FILE__, __LINE__, LogRHI.GetCategoryName(), Verbosity,
-		//					TEXT("[%s][%s][%u] %s"),
-		//					CategoryStr,
-		//					SeverityStr,
-		//					Id,
-		//					ANSI_TO_TCHAR(Message)
-		//				);
-		//			}
-		//		}
-		//#endif
-	}
+#if defined(GL_ARB_debug_output)
 
-
+    void APIENTRY OpenGLDebugMessageCallbackAMD(
+            GLuint Id,
+    GLenum Category,
+            GLenum Severity,
+    GLsizei Length,
+    const GLchar* Message,
+            GLvoid* UserParam)
+{
+    //#if !NO_LOGGING
+    //		const TCHAR* CategoryStr = GetOpenGLDebugCategoryStringAMD(Category);
+    //		const TCHAR* SeverityStr = GetOpenGLDebugSeverityStringAMD(Severity);
+    //
+    //		ELogVerbosity::Type Verbosity = ELogVerbosity::Warning;
+    //		if (Severity == GL_DEBUG_SEVERITY_HIGH_AMD)
+    //		{
+    //			Verbosity = ELogVerbosity::Fatal;
+    //		}
+    //
+    //		if ((Verbosity & ELogVerbosity::VerbosityMask) <= FLogCategoryLogRHI::CompileTimeVerbosity)
+    //		{
+    //			if (!LogRHI.IsSuppressed(Verbosity))
+    //			{
+    //				FMsg::Logf(__FILE__, __LINE__, LogRHI.GetCategoryName(), Verbosity,
+    //					TEXT("[%s][%s][%u] %s"),
+    //					CategoryStr,
+    //					SeverityStr,
+    //					Id,
+    //					ANSI_TO_TCHAR(Message)
+    //				);
+    //			}
+    //		}
+    //#endif
+}
+#endif
 	void InitDebugContext()
 	{
 		// Set the debug output callback if the driver supports it.
@@ -258,7 +259,7 @@ namespace BlackPearl
 	}
 
 
-	TextureHandle Device::createTexture(TextureDesc& d)
+	TextureHandle Device::createTexture(const TextureDesc& d)
 	{
 		Texture* texture = nullptr;
 		if (d.type == TextureType::CubeMap) {
@@ -436,6 +437,33 @@ namespace BlackPearl
 	{
 	}
 
+    void Device::acquireThreadOwnership() {
+
+        GE_ASSERT(!bRevertToSharedContextAfterDrawingViewport);	// if this is true, then main thread is rendering using our context right now.
+        PlatformRenderingContextSetup(m_Context->PlatformDevice);
+        bIsRenderingContextAcquired = true;
+       // VERIFY_GL(RHIAcquireThreadOwnership);
+//        {
+//            FScopeLock lock(&CustomPresentSection);
+//            if (CustomPresent)
+//            {
+//                CustomPresent->OnAcquireThreadOwnership();
+//            }
+//        }
+    };
+     void Device::releaseThreadOwnership()
+     {
+//         {
+//             FScopeLock lock(&CustomPresentSection);
+//             if (CustomPresent)
+//             {
+//                 CustomPresent->OnReleaseThreadOwnership();
+//             }
+//         }
+//         VERIFY_GL(RHIReleaseThreadOwnership);
+         bIsRenderingContextAcquired = false;
+         PlatformNULLContextSetup();
+     };
 
 	DeviceHandle Device::createDevice()
 	{
@@ -648,9 +676,9 @@ GE_CORE_INFO(#StringEnum + std::string(":") + std::string((const char*)glGetStri
 		//		std::string ShaderPlatformName = LegacyShaderPlatformToShaderFormat(GMaxRHIShaderPlatform).ToString();
 		//
 		//		printf("OpenGL MajorVersion = %d, MinorVersion = %d, ShaderPlatform = %s, FeatureLevel = %s\n", MajorVersion, MinorVersion, ShaderPlatformName.c_str(), FeatureLevelName.c_str());
-		//#if GE_PLATFORM_ANDROID
-		//		printf("GE_PLATFORM_ANDROID");
-		//#endif
+		#if GE_PLATFORM_ANDROID
+				GE_CORE_INFO("GE_PLATFORM_ANDROID");
+		#endif
 
 		GMaxTextureSamplers = Value_GL_MAX_TEXTURE_IMAGE_UNITS;
 		GMaxTextureMipCount = (int)math::log2f(Value_GL_MAX_TEXTURE_SIZE) + 1;
@@ -920,8 +948,8 @@ GE_CORE_INFO(#StringEnum + std::string(":") + std::string((const char*)glGetStri
 
 #else
 
-		static const auto CVarStreamingTexturePoolSize = IConsoleManager::Get().FindTConsoleVariableDataInt(TEXT("r.Streaming.PoolSize"));
-		GTexturePoolSize = (int64_t)CVarStreamingTexturePoolSize->GetValueOnAnyThread() * 1024 * 1024;
+		//static const auto CVarStreamingTexturePoolSize = IConsoleManager::Get().FindTConsoleVariableDataInt(TEXT("r.Streaming.PoolSize"));
+		GTexturePoolSize = (int64_t)CVarStreamingTexturePoolSize * 1024 * 1024;
 
 		printf("Texture pool is %llu MB (of %llu MB total graphics mem)",
 			GTexturePoolSize / 1024 / 1024,

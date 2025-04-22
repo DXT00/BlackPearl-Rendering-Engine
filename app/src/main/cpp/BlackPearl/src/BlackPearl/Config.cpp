@@ -7,6 +7,7 @@
 
 namespace BlackPearl {
 
+    int32_t Configuration::SyncInterval = 0;
 
 	void Configuration::SyncGPU()
 	{
@@ -36,7 +37,7 @@ namespace BlackPearl {
 	//const VoxelConeTracingRenderer::RenderingMode Configuration::RenderingMode = VoxelConeTracingRenderer::RenderingMode::VOXEL_CONE_TRACING;
 	const float Configuration::ShadowMapPointLightRadius = 30.0f;
 
-	/* ÕâÀï¸ÄÁË£¬prefilterMap.glslÀïµÄ	float resolution =512.0;Ò²Òª¸Ä */
+	/* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ë£ï¿½prefilterMap.glslï¿½ï¿½ï¿½	float resolution =512.0;Ò²Òªï¿½ï¿½ */
 	const float Configuration::EnvironmantMapResolution = 64.0;// 256.0f;
 	
 
@@ -69,4 +70,37 @@ namespace BlackPearl {
 	const char* ShaderConfig::IS_METALLIC_TEXTURE_SAMPLE = "u_Settings.isMetallicTextureSample";
 	const char* ShaderConfig::IS_EMISSION_TEXTURE_SAMPLE = "u_Settings.isEmissionTextureSample";
 	const char* ShaderConfig::IS_HEIGHT_TEXTURE_SAMPLE   = "u_isHeightTextureSample";
+}
+
+
+namespace BlackPearl
+{
+/** Thread ID of the main/game thread																		*/
+    uint32_t					GGameThreadId					= 0;
+    uint32_t					GRenderThreadId					= 0;
+    bool                        GUseThreadedRendering           = false;
+    uint32_t	                GAndroidWindowDPI               = 0;
+    uint32_t                    GAndroid3DSceneMinDPI           = 0;
+    int32_t                     GAndroid3DSceneMaxDesiredPixelCount = 0;
+
+    int32_t GAndroidWindowDPIQueryMethod = 0;
+
+
+
+
+
+    int MobileUseHWsRGBEncodingCVAR = 0;
+    int CVarDisableASTC = 0;
+    int CVarOverrideExternalTextureSupport = 1;
+    int CVarDisableEarlyFragmentTests = 0;
+
+    int CVarEnableAdrenoTilingHint = 1;
+    int CVarDisableFBFNonCoherent = 0;
+
+    int MobileHDRCvar   = 0;
+    int CVarStreamingTexturePoolSize = 1000;
+
+    int CVarDisjointTimerQueries = 1;
+
+
 }

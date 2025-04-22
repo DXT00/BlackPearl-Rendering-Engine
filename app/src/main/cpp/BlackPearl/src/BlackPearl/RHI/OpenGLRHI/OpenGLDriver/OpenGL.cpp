@@ -1,8 +1,8 @@
 #include "pch.h"
-#include "OpenGL.h"
-#include "OpenGLDrvPrivate.h"
+//#include "OpenGL.h"
+#include "OpenGLDrv.h"
 #include "BlackPearl/RHI/RHIGlobals.h"
-
+#include "OpenGLDrvPrivate.h"
 
 namespace BlackPearl {
 
@@ -40,7 +40,7 @@ namespace BlackPearl {
 	{
 		ProcessQueryGLInt();
 
-		auto CheckAndSetImageUnits = [](GLint& StageImageUnitsINOUT, GLint Limit, const TCHAR* Msg)
+		auto CheckAndSetImageUnits = [](GLint& StageImageUnitsINOUT, GLint Limit, const char* Msg)
 			{
 				const bool bUnsupported = StageImageUnitsINOUT < Limit;
 				//GE_ASSERT(bUnsupported, ("GL RHI requires a minimum {2} texture unit count of {1:d}, this device reports {0:d}."), Msg, Limit, StageImageUnitsINOUT);
@@ -53,13 +53,14 @@ namespace BlackPearl {
 
 		//if (IsMobilePlatform(GMaxRHIShaderPlatform))
 #ifdef GE_PLATFORM_ANDROID
-		{
-			// clamp things to the levels that the spec is expecting, check the minimum is supported.
-			CheckAndSetImageUnits(MaxTextureImageUnits, GLESMaxImageUnitsPerStage, TEXT("pixel stage"));
-			CheckAndSetImageUnits(MaxVertexTextureImageUnits, GLESMaxImageUnitsPerStage, TEXT("vertex stage"));
-			CheckAndSetImageUnits(MaxGeometryTextureImageUnits, 0, TEXT("geometry stage")); // gles is not expecting this.
-			CheckAndSetImageUnits(MaxComputeTextureImageUnits, GLESMaxImageUnitsPerStage, TEXT("compute stage"));
-			CheckAndSetImageUnits(MaxCombinedTextureImageUnits, MaxCombinedImageUnits, TEXT("combined"));
+        {
+            // clamp things to the levels that the spec is expecting, check the minimum is supported.
+            CheckAndSetImageUnits(MaxTextureImageUnits, GLESMaxImageUnitsPerStage, ("pixel stage"));
+            CheckAndSetImageUnits(MaxVertexTextureImageUnits, GLESMaxImageUnitsPerStage, ("vertex stage"));
+            CheckAndSetImageUnits(MaxGeometryTextureImageUnits, 0, ("geometry stage")); // gles is not expecting this.
+            CheckAndSetImageUnits(MaxComputeTextureImageUnits, GLESMaxImageUnitsPerStage, ("compute stage"));
+            CheckAndSetImageUnits(MaxCombinedTextureImageUnits, MaxCombinedImageUnits, ("combined"));
+        }
 #else
 		
 		
@@ -78,19 +79,19 @@ namespace BlackPearl {
 
 		bSupportsDrawBuffersBlend = ExtensionsString.find("GL_ARB_draw_buffers_blend") != std::string::npos;
 
-#if PLATFORM_IOS
+#if GE_PLATFORM_IOS
 		GRHIVendorId = 0x1010;
 #else
 		std::string VendorName(std::string((const char*)glGetString(GL_VENDOR)));
 		if (VendorName.find("ATI ") != std::string::npos)
 		{
 			GRHIVendorId = 0x1002;
-#if PLATFORM_WINDOWS || PLATFORM_LINUX
+#if GE_PLATFORM_WINDOWS || GE_PLATFORM_LINUX
 			bAmdWorkaround = true;
 #endif
 		}
-#if PLATFORM_LINUX
-		else if (VendorName.find(TEXT("X.Org")))
+#if GE_PLATFORM_LINUX
+		else if (VendorName.find(("X.Org")))
 		{
 			GRHIVendorId = 0x1002;
 			bAmdWorkaround = true;
@@ -164,7 +165,7 @@ namespace BlackPearl {
 #endif // PLATFORM_LINUX
 
 #if GE_PLATFORM_WINDOWS
-	/*	auto* CVar = IConsoleManager::Get().FindConsoleVariable(TEXT("OpenGL.UseStagingBuffer"));
+	/*	auto* CVar = IConsoleManager::Get().FindConsoleVariable(("OpenGL.UseStagingBuffer"));
 		if (CVar)
 		{
 			CVar->Set(false);

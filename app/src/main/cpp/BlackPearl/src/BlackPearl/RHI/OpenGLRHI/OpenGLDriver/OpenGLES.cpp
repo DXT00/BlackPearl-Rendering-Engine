@@ -9,16 +9,17 @@
 #include "pch.h"
 #include "OpenGLDrv.h"
 #include "OpenGLDrvPrivate.h"
-#include "OpenGLES.h"
-#if !GE_PLATFORM_WINDOWS
+#ifndef GE_PLATFORM_WINDOWS
 
-//#if OPENGL_ES
+#if OPENGL_ES
+
 
 PFNEGLGETSYSTEMTIMENVPROC eglGetSystemTimeNV_p = NULL;
 PFNEGLCREATESYNCKHRPROC eglCreateSyncKHR_p = NULL;
 PFNEGLDESTROYSYNCKHRPROC eglDestroySyncKHR_p = NULL;
 PFNEGLCLIENTWAITSYNCKHRPROC eglClientWaitSyncKHR_p = NULL;
 PFNEGLGETSYNCATTRIBKHRPROC eglGetSyncAttribKHR_p = NULL;
+
 namespace BlackPearl {
 
     namespace GLFuncPointers {
@@ -65,7 +66,7 @@ namespace BlackPearl {
 /** GL_EXT_disjoint_timer_query */
     bool FOpenGLES::bSupportsDisjointTimeQueries = false;
 
-//    static TAutoConsoleVariable <int32> CVarDisjointTimerQueries(
+//    static TAutoConsoleVariable <int32_t> CVarDisjointTimerQueries(
 //            TEXT("r.DisjointTimerQueries"),
 //            0,
 //            TEXT("If set to 1, allows GPU time to be measured (e.g. STAT UNIT). It defaults to 0 because some devices supports it but very slowly."),
@@ -152,7 +153,7 @@ namespace BlackPearl {
 
     bool FOpenGLES::SupportsDisjointTimeQueries() {
         bool bAllowDisjointTimerQueries = false;
-        bAllowDisjointTimerQueries = (CVarDisjointTimerQueries.GetValueOnRenderThread() == 1);
+        bAllowDisjointTimerQueries = (CVarDisjointTimerQueries == 1);
         return bSupportsDisjointTimeQueries && bAllowDisjointTimerQueries;
     }
 
@@ -160,8 +161,7 @@ namespace BlackPearl {
         GLint MaxVertexAttribs;
         LOG_AND_GET_GL_INT(GL_MAX_VERTEX_ATTRIBS, 0, MaxVertexAttribs);
         if (MaxVertexAttribs < 16) {
-            UE_LOG(LogRHI, Error,
-                   TEXT("Device reports support for %d vertex attributes, UnrealEditor requires 16. Rendering artifacts may occur."),
+            GE_CORE_ERROR("Device reports support for {:d} vertex attributes, UnrealEditor requires 16. Rendering artifacts may occur.",
                    MaxVertexAttribs
             );
         }
@@ -179,81 +179,80 @@ namespace BlackPearl {
         GLint MaxCombinedSSBOUnits = 0;
         GET_GL_INT(GL_MAX_COMBINED_SHADER_STORAGE_BLOCKS, 0, MaxCombinedSSBOUnits);
         // UAVs slots in UE are shared between Images and SSBO, so this should be max(GL_MAX_COMBINED_IMAGE_UNIFORMS, GL_MAX_COMBINED_SHADER_STORAGE_BLOCKS)
-        MaxCombinedUAVUnits = FMath::Max(MaxCombinedUAVUnits, MaxCombinedSSBOUnits);
+        MaxCombinedUAVUnits = math::max(MaxCombinedUAVUnits, MaxCombinedSSBOUnits);
 
         // clamp UAV units to a sensible limit
-        MaxCombinedUAVUnits = FMath::Min(MaxCombinedUAVUnits, 16);
-        MaxComputeUAVUnits = FMath::Min(MaxComputeUAVUnits, 16);
+        MaxCombinedUAVUnits = math::min(MaxCombinedUAVUnits, 16);
+        MaxComputeUAVUnits = math::min(MaxComputeUAVUnits, 16);
         // this is split between VS and PS, 4 to each stage
-        MaxPixelUAVUnits = FMath::Min(MaxPixelUAVUnits, 4);
+        MaxPixelUAVUnits = math::min(MaxPixelUAVUnits, 4);
 
         const GLint RequiredMaxVertexUniformComponents = 256;
         if (MaxVertexUniformComponents < RequiredMaxVertexUniformComponents) {
-            UE_LOG(LogRHI, Warning,
-                   TEXT("Device reports support for %d vertex uniform vectors, UnrealEditor requires %d. Rendering artifacts may occur, especially with skeletal meshes. Some drivers, e.g. iOS, report a smaller number than is actually supported."),
+           GE_CORE_WARN("Device reports support for {:d} vertex uniform vectors, UnrealEditor requires  {:d}. Rendering artifacts may occur, especially with skeletal meshes. Some drivers, e.g. iOS, report a smaller number than is actually supported.",
                    MaxVertexUniformComponents,
                    RequiredMaxVertexUniformComponents
             );
         }
-        MaxVertexUniformComponents = FMath::Max<GLint>(MaxVertexUniformComponents, RequiredMaxVertexUniformComponents);
+        MaxVertexUniformComponents = math::max<GLint>(MaxVertexUniformComponents, RequiredMaxVertexUniformComponents);
         MaxGeometryUniformComponents = 0;
         MaxGeometryTextureImageUnits = 0;
 
         // Set lowest possible limits for texture units, to avoid extra work in GL RHI
-        MaxTextureImageUnits = FMath::Min(MaxTextureImageUnits, 16);
-        MaxVertexTextureImageUnits = FMath::Min(MaxVertexTextureImageUnits, 16);
-        MaxCombinedTextureImageUnits = FMath::Min(MaxCombinedTextureImageUnits, 32);
+        MaxTextureImageUnits = math::min(MaxTextureImageUnits, 16);
+        MaxVertexTextureImageUnits = math::min(MaxVertexTextureImageUnits, 16);
+        MaxCombinedTextureImageUnits = math::min(MaxCombinedTextureImageUnits, 32);
     }
 
     void FOpenGLES::ProcessExtensions(const std::string &ExtensionsString) {
         ProcessQueryGLInt();
         FOpenGLBase::ProcessExtensions(ExtensionsString);
 
-        bSupportsDisjointTimeQueries = ExtensionsString.Contains(TEXT("GL_EXT_disjoint_timer_query")) ||
-                                       ExtensionsString.Contains(TEXT("GL_NV_timer_query"));
-        bTimerQueryCanBeDisjoint = !ExtensionsString.Contains(TEXT("GL_NV_timer_query"));
-        bSupportsBGRA8888 = ExtensionsString.Contains(TEXT("GL_APPLE_texture_format_BGRA8888")) ||
-                            ExtensionsString.Contains(TEXT("GL_IMG_texture_format_BGRA8888")) ||
-                            ExtensionsString.Contains(TEXT("GL_EXT_texture_format_BGRA8888"));
-        bSupportsColorBufferFloat = ExtensionsString.Contains(TEXT("GL_EXT_color_buffer_float"));
-        bSupportsColorBufferHalfFloat = ExtensionsString.Contains(TEXT("GL_EXT_color_buffer_half_float"));
-        bSupportsShaderFramebufferFetch = ExtensionsString.Contains(TEXT("GL_EXT_shader_framebuffer_fetch")) ||
-                                          ExtensionsString.Contains(TEXT("GL_NV_shader_framebuffer_fetch"))
-                                          || ExtensionsString.Contains(
-                TEXT("GL_ARM_shader_framebuffer_fetch ")); // has space at the end to exclude GL_ARM_shader_framebuffer_fetch_depth_stencil match
-        bSupportsShaderMRTFramebufferFetch = ExtensionsString.Contains(TEXT("GL_EXT_shader_framebuffer_fetch")) ||
-                                             ExtensionsString.Contains(TEXT("GL_NV_shader_framebuffer_fetch"));
-        bSupportsPixelLocalStorage = ExtensionsString.Contains(TEXT("GL_EXT_shader_pixel_local_storage"));
-        bSupportsShaderDepthStencilFetch = ExtensionsString.Contains(
-                TEXT("GL_ARM_shader_framebuffer_fetch_depth_stencil"));
-        bSupportsMultisampledRenderToTexture = ExtensionsString.Contains(TEXT("GL_EXT_multisampled_render_to_texture"));
-        bSupportsDXT = ExtensionsString.Contains(TEXT("GL_NV_texture_compression_s3tc")) ||
-                       ExtensionsString.Contains(TEXT("GL_EXT_texture_compression_s3tc"));
-        bSupportsNVFrameBufferBlit = ExtensionsString.Contains(TEXT("GL_NV_framebuffer_blit"));
-        bSupportsBufferStorage = ExtensionsString.Contains(TEXT("GL_EXT_buffer_storage"));
-        bSupportsDepthClamp = ExtensionsString.Contains(TEXT("GL_EXT_depth_clamp"));
-        bSupportsASTCDecodeMode = ExtensionsString.Contains(TEXT("GL_EXT_texture_compression_astc_decode_mode"));
+        bSupportsDisjointTimeQueries = ExtensionsString.find(("GL_EXT_disjoint_timer_query")) != std::string::npos ||
+                                       ExtensionsString.find(("GL_NV_timer_query")) != std::string::npos;
+        bTimerQueryCanBeDisjoint = !(ExtensionsString.find(("GL_NV_timer_query"))!= std::string::npos);
+        bSupportsBGRA8888 = ExtensionsString.find(("GL_APPLE_texture_format_BGRA8888"))  != std::string::npos||
+                            ExtensionsString.find(("GL_IMG_texture_format_BGRA8888")) != std::string::npos ||
+                            ExtensionsString.find(("GL_EXT_texture_format_BGRA8888")) != std::string::npos;
+        bSupportsColorBufferFloat = ExtensionsString.find(("GL_EXT_color_buffer_float")) != std::string::npos;
+        bSupportsColorBufferHalfFloat = ExtensionsString.find(("GL_EXT_color_buffer_half_float")) != std::string::npos;
+        bSupportsShaderFramebufferFetch = ExtensionsString.find(("GL_EXT_shader_framebuffer_fetch"))  != std::string::npos||
+                                          ExtensionsString.find(("GL_NV_shader_framebuffer_fetch")) != std::string::npos
+                                          || ExtensionsString.find(
+                ("GL_ARM_shader_framebuffer_fetch ")) != std::string::npos; // has space at the end to exclude GL_ARM_shader_framebuffer_fetch_depth_stencil match
+        bSupportsShaderMRTFramebufferFetch = ExtensionsString.find(("GL_EXT_shader_framebuffer_fetch"))  != std::string::npos||
+                                             ExtensionsString.find(("GL_NV_shader_framebuffer_fetch")) != std::string::npos;
+        bSupportsPixelLocalStorage = ExtensionsString.find(("GL_EXT_shader_pixel_local_storage")) != std::string::npos;
+        bSupportsShaderDepthStencilFetch = ExtensionsString.find(
+                ("GL_ARM_shader_framebuffer_fetch_depth_stencil")) != std::string::npos;
+        bSupportsMultisampledRenderToTexture = ExtensionsString.find(("GL_EXT_multisampled_render_to_texture")) != std::string::npos;
+        bSupportsDXT = ExtensionsString.find(("GL_NV_texture_compression_s3tc")) != std::string::npos ||
+                       ExtensionsString.find(("GL_EXT_texture_compression_s3tc")) != std::string::npos;
+        bSupportsNVFrameBufferBlit = ExtensionsString.find(("GL_NV_framebuffer_blit")) != std::string::npos;
+        bSupportsBufferStorage = ExtensionsString.find(("GL_EXT_buffer_storage")) != std::string::npos;
+        bSupportsDepthClamp = ExtensionsString.find(("GL_EXT_depth_clamp")) != std::string::npos;
+        bSupportsASTCDecodeMode = ExtensionsString.find(("GL_EXT_texture_compression_astc_decode_mode")) != std::string::npos;
 
         // Report shader precision
         int Range[2];
         glGetShaderPrecisionFormat(GL_FRAGMENT_SHADER, GL_LOW_FLOAT, Range, &ShaderLowPrecision);
         glGetShaderPrecisionFormat(GL_FRAGMENT_SHADER, GL_MEDIUM_FLOAT, Range, &ShaderMediumPrecision);
         glGetShaderPrecisionFormat(GL_FRAGMENT_SHADER, GL_HIGH_FLOAT, Range, &ShaderHighPrecision);
-        UE_LOG(LogRHI, Log, TEXT("Fragment shader lowp precision: %d"), ShaderLowPrecision);
-        UE_LOG(LogRHI, Log, TEXT("Fragment shader mediump precision: %d"), ShaderMediumPrecision);
-        UE_LOG(LogRHI, Log, TEXT("Fragment shader highp precision: %d"), ShaderHighPrecision);
+        GE_CORE_INFO("Fragment shader lowp precision: {:d}", ShaderLowPrecision);
+        GE_CORE_INFO("Fragment shader mediump precision: {:d}", ShaderMediumPrecision);
+        GE_CORE_INFO("Fragment shader highp precision: {:d}", ShaderHighPrecision);
 
-        if (FPlatformMisc::IsDebuggerPresent() && UE_BUILD_DEBUG) {
-            // Enable GL debug markers if we're running in Xcode
-            extern int32 GEmitMeshDrawEvent;
-            GEmitMeshDrawEvent = 1;
-            SetEmitDrawEvents(true);
-        }
+//        if (FPlatformMisc::IsDebuggerPresent() && UE_BUILD_DEBUG) {
+//            // Enable GL debug markers if we're running in Xcode
+//            extern int32_t GEmitMeshDrawEvent;
+//            GEmitMeshDrawEvent = 1;
+//            SetEmitDrawEvents(true);
+//        }
 
         glPushGroupMarkerEXT = (PFNGLPUSHGROUPMARKEREXTPROC) ((void *) eglGetProcAddress("glPushGroupMarkerEXT"));
         glPopGroupMarkerEXT = (PFNGLPOPGROUPMARKEREXTPROC) ((void *) eglGetProcAddress("glPopGroupMarkerEXT"));
 
-        if (ExtensionsString.Contains(TEXT("GL_EXT_DEBUG_LABEL"))) {
+        if (ExtensionsString.find(("GL_EXT_DEBUG_LABEL")) != std::string::npos) {
             glLabelObjectEXT = (PFNGLLABELOBJECTEXTPROC) ((void *) eglGetProcAddress("glLabelObjectEXT"));
             glGetObjectLabelEXT = (PFNGLGETOBJECTLABELEXTPROC) ((void *) eglGetProcAddress("glGetObjectLabelEXT"));
         }
@@ -262,14 +261,14 @@ namespace BlackPearl {
             glBufferStorageEXT = (PFNGLBUFFERSTORAGEEXTPROC) ((void *) eglGetProcAddress("glBufferStorageEXT"));
         }
 
-        if (ExtensionsString.Contains(TEXT("GL_EXT_multisampled_render_to_texture2"))) {
+        if (ExtensionsString.find(("GL_EXT_multisampled_render_to_texture2")) != std::string::npos) {
             glFramebufferTexture2DMultisampleEXT = (PFNGLFRAMEBUFFERTEXTURE2DMULTISAMPLEEXTPROC) ((void *) eglGetProcAddress(
                     "glFramebufferTexture2DMultisampleEXT"));
             glRenderbufferStorageMultisampleEXT = (PFNGLRENDERBUFFERSTORAGEMULTISAMPLEEXTPROC) ((void *) eglGetProcAddress(
                     "glRenderbufferStorageMultisampleEXT"));
             glGetIntegerv(GL_MAX_SAMPLES_EXT, &MaxMSAASamplesTileMem);
-            MaxMSAASamplesTileMem = FMath::Max<GLint>(MaxMSAASamplesTileMem, 1);
-            UE_LOG(LogRHI, Log, TEXT("Support for %dx MSAA detected"), MaxMSAASamplesTileMem);
+            MaxMSAASamplesTileMem = math::max<GLint>(MaxMSAASamplesTileMem, 1);
+            GE_CORE_INFO("Support for {:x} MSAA detected", MaxMSAASamplesTileMem);
         } else {
             // indicates RHI supports on-chip MSAA but this device does not.
             MaxMSAASamplesTileMem = 1;
@@ -280,10 +279,10 @@ namespace BlackPearl {
         bSupportsColorBufferHalfFloat = (bSupportsColorBufferHalfFloat || bSupportsColorBufferFloat);
 
         // Mobile multi-view setup
-        const bool bMultiViewSupport = ExtensionsString.Contains(TEXT("GL_OVR_multiview"));
-        const bool bMultiView2Support = ExtensionsString.Contains(TEXT("GL_OVR_multiview2"));
-        const bool bMultiViewMultiSampleSupport = ExtensionsString.Contains(
-                TEXT("GL_OVR_multiview_multisampled_render_to_texture"));
+        const bool bMultiViewSupport = ExtensionsString.find(("GL_OVR_multiview")) != std::string::npos;
+        const bool bMultiView2Support = ExtensionsString.find(("GL_OVR_multiview2")) != std::string::npos;
+        const bool bMultiViewMultiSampleSupport = ExtensionsString.find(
+                ("GL_OVR_multiview_multisampled_render_to_texture")) != std::string::npos;
         if (bMultiViewSupport && bMultiView2Support && bMultiViewMultiSampleSupport) {
             glFramebufferTextureMultiviewOVR = (PFNGLFRAMEBUFFERTEXTUREMULTIVIEWOVRPROC) ((void *) eglGetProcAddress(
                     "glFramebufferTextureMultiviewOVR"));
@@ -295,7 +294,7 @@ namespace BlackPearl {
 
             // Just because the driver declares multi-view support and hands us valid function pointers doesn't actually guarantee the feature works...
             if (bSupportsMobileMultiView) {
-                UE_LOG(LogRHI, Log, TEXT("Device supports mobile multi-view."));
+               GE_CORE_INFO("Device supports mobile multi-view.");
             }
         }
 
@@ -315,7 +314,7 @@ namespace BlackPearl {
             glFramebufferTexture = (PFNGLFRAMEBUFFERTEXTUREPROC)((void *) eglGetProcAddress("glFramebufferTexture"));
         }
 
-        if (!glEnableiEXT && ExtensionsString.Contains(TEXT("GL_EXT_draw_buffers_indexed"))) {
+        if (!glEnableiEXT && ExtensionsString.find(("GL_EXT_draw_buffers_indexed")) != std::string::npos) {
             // GL_EXT_draw_buffers_indexed
             glEnableiEXT = (PFNGLENABLEIEXTPROC) ((void *) eglGetProcAddress("glEnableiEXT"));
             glDisableiEXT = (PFNGLDISABLEIEXTPROC) ((void *) eglGetProcAddress("glDisableiEXT"));
@@ -329,14 +328,14 @@ namespace BlackPearl {
         }
         bSupportsDrawBuffersBlend = (glEnableiEXT != nullptr);
 
-        if (!glTexBufferEXT && ExtensionsString.Contains(TEXT("GL_EXT_texture_buffer"))) {
+        if (!glTexBufferEXT && ExtensionsString.find(("GL_EXT_texture_buffer")) != std::string::npos) {
             // GL_EXT_texture_buffer
             glTexBufferEXT = (PFNGLTEXBUFFEREXTPROC) ((void *) eglGetProcAddress("glTexBufferEXT"));
             glTexBufferRangeEXT = (PFNGLTEXBUFFERRANGEEXTPROC) ((void *) eglGetProcAddress("glTexBufferRangeEXT"));
         }
     }
 
-//#endif
+#endif
 
 #endif //desktop
 }

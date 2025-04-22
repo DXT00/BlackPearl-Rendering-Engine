@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "MainCamera.h"
+#include "MainCamera/MainCamera.h"
 #include "BlackPearl/Component/CameraComponent/PerspectiveCamera.h"
 #include "BlackPearl/Component/TransformComponent/Transform.h"
 

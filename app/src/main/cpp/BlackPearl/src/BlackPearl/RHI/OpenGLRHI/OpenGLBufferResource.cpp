@@ -1,12 +1,15 @@
 #include "pch.h"
 //#include "glad/glad.h"
 #include "BlackPearl/RHI/OpenGLRHI/OpenGLDriver/OpenGLFunctions.h"
-#include "OpenGLBufferResource.h"
+#include "RHI/OpenGLRHI/OpenGLBufferResource.h"
 #include "BlackPearl/Config.h"
 #include "BlackPearl/RHI/RHIDefinitions.h"
 #include "BlackPearl/RHI/RHISampler.h"
 #include "BlackPearl/Renderer/DeviceManager.h"
 #include "BlackPearl/RHI/OpenGLRHI/OpenGLTexture.h"
+#include "BlackPearl/RHI/OpenGLRHI/OpenGLDriver/OpenGLDrv.h"
+#include "BlackPearl/Core.h"
+
 #include <memory>
 
 
@@ -17,7 +20,7 @@ namespace BlackPearl {
 	:Buffer(_desc) {
 		glGenBuffers(1, &rendererID);
 		glBindBuffer(GL_ARRAY_BUFFER, rendererID);
-		glBufferData(GL_ARRAY_BUFFER, _desc.byteSize, nullptr, _desc.isDynamic? GL_DYNAMIC_DRAW: GL_STATIC_DRAW); // ÏÈ·ÖÅä¿Õ¼ä
+		glBufferData(GL_ARRAY_BUFFER, _desc.byteSize, nullptr, _desc.isDynamic? GL_DYNAMIC_DRAW: GL_STATIC_DRAW); // ï¿½È·ï¿½ï¿½ï¿½Õ¼ï¿½
 
 	}
 	
@@ -45,7 +48,7 @@ namespace BlackPearl {
 	VertexBuffer::VertexBuffer(const BufferDesc& _desc, const float* vertices, uint32_t size, bool Interleaved , bool divisor, uint32_t perInstance, uint32_t drawType)
 		:Buffer(_desc) {
 		m_VerticesFloat = vertices;
-		//TODO:: Ê¹ÓÃRHIBuffer
+		//TODO:: Ê¹ï¿½ï¿½RHIBuffer
 #ifdef GE_API_OPENGL
 		glGenBuffers(1, &rendererID);
 		glBindBuffer(GL_ARRAY_BUFFER, rendererID);
@@ -128,7 +131,6 @@ namespace BlackPearl {
 	IndexBuffer::IndexBuffer(const BufferDesc& _desc)
 		:Buffer(_desc) {
 		glGenBuffers(1, &rendererID);
-		GE_ERROR_JUDGE();
 	}
 
 	//------------------------IndexBuffer-----------------//
@@ -198,14 +200,14 @@ namespace BlackPearl {
 	//}
 
 	////------------------------Framebuffer-----------------//
-	////note: framebuffer has no memory, imageWidth, imageHeight is the width and height of the attachment! ²»Í¬attachmentÓÐ²»Í¬µÄwidthºÍheight
+	////note: framebuffer has no memory, imageWidth, imageHeight is the width and height of the attachment! ï¿½ï¿½Í¬attachmentï¿½Ð²ï¿½Í¬ï¿½ï¿½widthï¿½ï¿½height
 	//Framebuffer::Framebuffer(const BufferDesc& _desc, const int imageWidth,int imageHeight,std::initializer_list<Attachment> attachment, uint32_t colorAttachmentPoint,bool disableColor, TextureType colorTextureType)
 	//	:Buffer(_desc) {
 	//	/* m_Width,m_Height for voxel cone tracing */
 	//	m_Width = imageWidth;
 	//	m_Height = imageHeight;
 	//	GLint previousFrameBuffer;
-	//	glGetIntegerv(GL_FRAMEBUFFER_BINDING, &previousFrameBuffer);//»ñÈ¡Ö®Ç°°ó¶¨µÄFramebuffer
+	//	glGetIntegerv(GL_FRAMEBUFFER_BINDING, &previousFrameBuffer);//ï¿½ï¿½È¡Ö®Ç°ï¿½ó¶¨µï¿½Framebuffer
 
 	//	glGenFramebuffers(1, &rendererID);
 	//	Bind();
@@ -233,14 +235,14 @@ namespace BlackPearl {
 	//	GE_ASSERT(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "Framebuffer not complete!");
 
 	//	UnBind();
-	//	//°ó¶¨»ØÔ­À´µÄFramebuffer
+	//	//ï¿½ó¶¨»ï¿½Ô­ï¿½ï¿½ï¿½ï¿½Framebuffer
 	//	glBindFramebuffer(GL_FRAMEBUFFER, previousFrameBuffer);
 
 	//}
 
 	//void Framebuffer::AttachColorTexture(TextureType textureType, uint32_t attachmentPoints,uint32_t imageWidth,uint32_t imageHeight)
 	//{
-	//	GE_CORE_WARN(" ×¢ÒâTextureÊÇ·ñÊÇÄ¬ÈÏµÄ¸ñÊ½£¡");
+	//	GE_CORE_WARN(" ×¢ï¿½ï¿½Textureï¿½Ç·ï¿½ï¿½ï¿½Ä¬ï¿½ÏµÄ¸ï¿½Ê½ï¿½ï¿½");
 
 	//	TextureDesc desc;
 	//	desc.type = textureType;
@@ -254,23 +256,23 @@ namespace BlackPearl {
 	//	g_deviceManager->GetDevice()->createTexture(desc);
 	//	m_TextureColorBuffers[attachmentPoints] = g_deviceManager->GetDevice()->createTexture(desc);
 	//	
-	//	//½«Ëü¸½¼Óµ½µ±Ç°°ó¶¨µÄÖ¡»º³å¶ÔÏó
+	//	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Óµï¿½ï¿½ï¿½Ç°ï¿½ó¶¨µï¿½Ö¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	//	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0+attachmentPoints, GL_TEXTURE_2D, (GLuint)static_cast<Texture*>(m_TextureColorBuffers[attachmentPoints].Get())->GetRendererID(), 0);
 	//	GE_ASSERT(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "Framebuffer not complete!");
 	//}
 
 	//void Framebuffer::AttachColorTexture(TextureHandle texture, uint32_t attachmentPoints)
 	//{
-	//	//½«Ëü¸½¼Óµ½µ±Ç°°ó¶¨µÄÖ¡»º³å¶ÔÏó
+	//	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Óµï¿½ï¿½ï¿½Ç°ï¿½ó¶¨µï¿½Ö¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	//	m_TextureColorBuffers[attachmentPoints] = texture;
 	//	Bind();
 	//	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + attachmentPoints, GL_TEXTURE_2D, (GLuint)static_cast<Texture*>(texture.Get())->GetRendererID(), 0);
 	//	GE_ASSERT(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "Framebuffer not complete!");
 	//}
-	////TODO:: Í¨¹ýdevice->createFramebuffer(fboDesc);´´½¨
+	////TODO:: Í¨ï¿½ï¿½device->createFramebuffer(fboDesc);ï¿½ï¿½ï¿½ï¿½
 	//void Framebuffer::AttachDepthTexture(const int imageWidth, int imageHeight)
 	//{	
-	//	GE_CORE_WARN(" ×¢ÒâTextureÊÇ·ñÊÇÄ¬ÈÏµÄ¸ñÊ½£¡");
+	//	GE_CORE_WARN(" ×¢ï¿½ï¿½Textureï¿½Ç·ï¿½ï¿½ï¿½Ä¬ï¿½ÏµÄ¸ï¿½Ê½ï¿½ï¿½");
 
 
 	//	TextureDesc desc;
@@ -303,7 +305,7 @@ namespace BlackPearl {
 
 
 
-	////TODO::×¢ÒâCubeMapµÄ¸ñÊ½
+	////TODO::×¢ï¿½ï¿½CubeMapï¿½Ä¸ï¿½Ê½
 	//void Framebuffer::AttachCubeMapDepthTexture(TextureHandle cubeMap)
 	//{
 
@@ -313,10 +315,10 @@ namespace BlackPearl {
 	//	GE_ASSERT(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "Framebuffer not complete!");
 	//}
 
-	////TODO::Õâ¸ö½Ó¿ÚÓÐÎÊÌâ
+	////TODO::ï¿½ï¿½ï¿½ï¿½Ó¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	//void Framebuffer::AttachCubeMapColorTexture(uint32_t attachmentPoints,const int imageWidth, int imageHeight) {
-	//	//GE_CORE_ERROR("²»ÄÜµ÷ÓÃ£¬ºóÐøÍêÉÆ!");
-	//	GE_CORE_WARN(" ×¢ÒâTextureÊÇ·ñÊÇÄ¬ÈÏµÄ¸ñÊ½£¡");
+	//	//GE_CORE_ERROR("ï¿½ï¿½ï¿½Üµï¿½ï¿½Ã£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½!");
+	//	GE_CORE_WARN(" ×¢ï¿½ï¿½Textureï¿½Ç·ï¿½ï¿½ï¿½Ä¬ï¿½ÏµÄ¸ï¿½Ê½ï¿½ï¿½");
 	//	TextureDesc desc;
 	//	desc.type = TextureType::CubeMap;
 	//	desc.width = imageWidth;
@@ -455,34 +457,34 @@ namespace BlackPearl {
 
 		//m_PositionTexture RGB-position A--isPBRObject+objectId -->voxel cone tracing
 		//m_PositionTexture.reset(DBG_NEW Texture(TextureType::DiffuseMap, m_Width, m_Height, false, GL_NEAREST, GL_NEAREST, GL_RGBA16F, GL_RGBA, -1, GL_FLOAT));
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, (GLuint)static_cast<Texture*>(m_PositionTexture.Get())->GetRendererID(), 0);
+        FOpenGL::FramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, (GLuint)static_cast<Texture*>(m_PositionTexture.Get())->GetRendererID(), 0);
 		//m_NormalTexture RGB-normal A--isSkyBox -->voxel cone tracing
 		//m_NormalTexture.reset(DBG_NEW Texture(Texture::Type::DiffuseMap, m_Width, m_Height, false, GL_NEAREST, GL_NEAREST, GL_RGBA16F, GL_RGBA, -1, GL_FLOAT));
 		m_NormalTexture = g_deviceManager->GetDevice()->createTexture(desc);
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, (GLuint)static_cast<Texture*>(m_NormalTexture.Get())->GetRendererID(), 0);
+        FOpenGL::FramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, (GLuint)static_cast<Texture*>(m_NormalTexture.Get())->GetRendererID(), 0);
 
 		m_DiffuseRoughnessTexture = g_deviceManager->GetDevice()->createTexture(desc);
 		//m_DiffuseRoughnessTexture.reset(DBG_NEW Texture(Texture::Type::DiffuseMap, m_Width, m_Height, false, GL_NEAREST, GL_NEAREST, GL_RGBA16F, GL_RGBA, -1, GL_FLOAT));
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, (GLuint)static_cast<Texture*>(m_DiffuseRoughnessTexture.Get())->GetRendererID(), 0);
+		FOpenGL::FramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, (GLuint)static_cast<Texture*>(m_DiffuseRoughnessTexture.Get())->GetRendererID(), 0);
 
 
 		m_SpecularMentallicTexture = g_deviceManager->GetDevice()->createTexture(desc);
 		//m_SpecularMentallicTexture.reset(DBG_NEW Texture(Texture::Type::DiffuseMap, m_Width, m_Height, false, GL_NEAREST, GL_NEAREST, GL_RGBA16F, GL_RGBA, -1, GL_FLOAT));
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT3, GL_TEXTURE_2D, (GLuint)static_cast<Texture*>(m_SpecularMentallicTexture.Get())->GetRendererID(), 0);
+		FOpenGL::FramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT3, GL_TEXTURE_2D, (GLuint)static_cast<Texture*>(m_SpecularMentallicTexture.Get())->GetRendererID(), 0);
 
 		//m_AmbientGI RBG-ambienGI AO-isPBRObject -->lightprobe
 		m_AmbientGIAOTexture = g_deviceManager->GetDevice()->createTexture(desc);
 		//m_AmbientGIAOTexture.reset(DBG_NEW Texture(Texture::Type::DiffuseMap, m_Width, m_Height, false, GL_NEAREST, GL_NEAREST, GL_RGBA16F, GL_RGBA, -1, GL_FLOAT));
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT4, GL_TEXTURE_2D, (GLuint)static_cast<Texture*>(m_AmbientGIAOTexture.Get())->GetRendererID(), 0);
+		FOpenGL::FramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT4, GL_TEXTURE_2D, (GLuint)static_cast<Texture*>(m_AmbientGIAOTexture.Get())->GetRendererID(), 0);
 
 		desc.format = Format::RGB16_FLOAT;
 		m_NormalMapTexture = g_deviceManager->GetDevice()->createTexture(desc);
 		//m_NormalMapTexture.reset(DBG_NEW Texture(Texture::Type::DiffuseMap, m_Width, m_Height, false, GL_NEAREST, GL_NEAREST, GL_RGB16F, GL_RGB, -1, GL_FLOAT));
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT5, GL_TEXTURE_2D, (GLuint)static_cast<Texture*>(m_NormalMapTexture.Get())->GetRendererID(), 0);
+		FOpenGL::FramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT5, GL_TEXTURE_2D, (GLuint)static_cast<Texture*>(m_NormalMapTexture.Get())->GetRendererID(), 0);
 
 
 		GLuint attachments[6] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2 ,GL_COLOR_ATTACHMENT3,GL_COLOR_ATTACHMENT4,GL_COLOR_ATTACHMENT5 };
-		glDrawBuffers(6, attachments);
+        FOpenGL::DrawBuffers(6, attachments);
 		// - Create and attach depth buffer (renderbuffer)
 		glGenRenderbuffers(1, &m_RenderBufferID);
 		glBindRenderbuffer(GL_RENDERBUFFER, m_RenderBufferID);
@@ -518,7 +520,7 @@ namespace BlackPearl {
 
 
 			//texture.reset(DBG_NEW Texture(Texture::Type::DiffuseMap, m_Width, m_Height, false, GL_NEAREST, GL_NEAREST, GL_RGBA32F, GL_RGBA, GL_CLAMP_TO_EDGE, GL_FLOAT));
-			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_TEXTURE_2D, (GLuint)static_cast<Texture*>(texture.Get())->GetRendererID(), 0);
+			FOpenGL::FramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_TEXTURE_2D, (GLuint)static_cast<Texture*>(texture.Get())->GetRendererID(), 0);
 			m_ColorTextures.push_back(texture);
 
 		}
@@ -526,7 +528,7 @@ namespace BlackPearl {
 		const GLenum attachments[colorBufferNum] = {
 			GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3
 		};
-		glDrawBuffers(colorBufferNum, attachments);
+        FOpenGL::DrawBuffers(colorBufferNum, attachments);
 		GE_ASSERT(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "Framebuffer not complete!");
 
 

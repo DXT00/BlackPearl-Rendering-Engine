@@ -1,14 +1,15 @@
 #include "pch.h"
 #include "BlackPearl/RHI/OpenGLRHI/OpenGLDriver/OpenGLFunctions.h"
-#include "OpenGLImageTexture2D.h"
+#include "RHI/OpenGLRHI/OpenGLImageTexture2D.h"
 #include "BlackPearl/Core.h"
+#include "BlackPearl/RHI/OpenGLRHI/OpenGLDriver/OpenGLDrv.h"
 namespace BlackPearl {
 
 	//What is the difference between glBindImageTexture() and glBindTexture()
 	//https://stackoverflow.com/questions/37136813/what-is-the-difference-between-glbindimagetexture-and-glbindtexture
 
 	ImageTexture2D::ImageTexture2D(
-		TextureDesc& desc,
+		const TextureDesc& desc,
 		float* textureBuffer
 	) :Texture(desc)
 	{
@@ -25,12 +26,12 @@ namespace BlackPearl {
 
 	}
 
-	void ImageTexture2D::Init(TextureDesc& desc, float* data)
+	void ImageTexture2D::Init(const TextureDesc& desc, float* data)
 	{
 		Bind();
 		fillTextureInfo(desc);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, m_MinFilter);//ÎÆÀíËõÐ¡Ê±ÓÃÁÚ½ü¹ýÂË
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, m_MagFilter);//ÎÆÀí·Å´óÊ±Ò²ÓÃÁÚ½ü¹ýÂË
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, m_MinFilter);//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð¡Ê±ï¿½ï¿½ï¿½Ú½ï¿½ï¿½ï¿½ï¿½ï¿½
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, m_MagFilter);//ï¿½ï¿½ï¿½ï¿½Å´ï¿½Ê±Ò²ï¿½ï¿½ï¿½Ú½ï¿½ï¿½ï¿½ï¿½ï¿½
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, m_Wrap);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, m_Wrap);
 
@@ -74,8 +75,8 @@ namespace BlackPearl {
 		unsigned int fbo;
 		glGenFramebuffers(1, &fbo);
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo);
-		glFramebufferTexture(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, m_TextureID, 0); //Only need to do this once.
-		glDrawBuffer(GL_COLOR_ATTACHMENT0); //Only need to do this once.
+        FOpenGL::FramebufferTexture(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, m_TextureID, 0); //Only need to do this once.
+        FOpenGL::DrawBuffer(GL_COLOR_ATTACHMENT0); //Only need to do this once.
 		glClearBufferfv(GL_COLOR, 0, clearColor);
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 

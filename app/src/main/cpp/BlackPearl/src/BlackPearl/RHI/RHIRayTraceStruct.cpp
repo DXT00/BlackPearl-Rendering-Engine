@@ -1,6 +1,6 @@
 #include "pch.h"
-#include "RHIRayTraceStruct.h"
-#include "RHIBuffer.h"
+#include "RHI/RHIRayTraceStruct.h"
+#include "RHI/RHIBuffer.h"
 namespace BlackPearl {
 	namespace rt {
 		GeometryTriangles& GeometryTriangles::setIndexBuffer(IBuffer* value) { indexBuffer = value; return *this; }

@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "D3D12DeviceResources.h"
+#include "RHI/D3D12RHI/D3D12DeviceResources.h"
 #include "BlackPearl/Core.h"
 #include "BlackPearl/Common/CommonFunc.h"
 #include "BlackPearl/Application.h"
@@ -254,7 +254,7 @@ void DeviceResources::CreateDeviceResources()
 
     BlackPearl::ThrowIfFailed(m_d3dDevice->CreateCommandQueue(&queueDesc, IID_PPV_ARGS(&m_commandQueue)));
 
-    // Create descriptor heaps for render target views and depth stencil views.//Ä¿±êÊÓÍ¼µÄÃèÊö·û¶Ñ
+    // Create descriptor heaps for render target views and depth stencil views.//Ä¿ï¿½ï¿½ï¿½ï¿½Í¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     D3D12_DESCRIPTOR_HEAP_DESC rtvDescriptorHeapDesc = {};
     rtvDescriptorHeapDesc.NumDescriptors = m_backBufferCount;
     rtvDescriptorHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
@@ -265,7 +265,7 @@ void DeviceResources::CreateDeviceResources()
 
     if (m_depthBufferFormat != DXGI_FORMAT_UNKNOWN)
     {
-        //Éî¶ÈÄ£°åÊÓÍ¼µÄÃèÊö·û¶Ñ
+        //ï¿½ï¿½ï¿½Ä£ï¿½ï¿½ï¿½ï¿½Í¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         D3D12_DESCRIPTOR_HEAP_DESC dsvDescriptorHeapDesc = {};
         dsvDescriptorHeapDesc.NumDescriptors = 1;
         dsvDescriptorHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_DSV;

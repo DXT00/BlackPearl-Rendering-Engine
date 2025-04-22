@@ -1,8 +1,8 @@
 #include "pch.h"
-#include "CommonFunc.h"
-#include "BlackPearl/Config.h"
-#include "BlackPearl/Renderer/MasterRenderer/BasicRenderer.h"
-#include "BlackPearl/Component/MeshRendererComponent/MeshRenderer.h"
+#include "Common/CommonFunc.h"
+#include "Config.h"
+#include "Renderer/MasterRenderer/BasicRenderer.h"
+#include "Component/MeshRendererComponent/MeshRenderer.h"
 
 namespace BlackPearl {
 	//TODO:: Gbuffer to all api
@@ -87,5 +87,36 @@ namespace BlackPearl {
 		
 
 	}
+
+
+    std::pair<std::string, std::string> CommonFunc::SplitString(
+            const std::string& str,
+            const std::string& delimiter
+    ) {
+        size_t pos = str.find(delimiter);
+        if (pos == std::string::npos) {
+            return {str, ""};
+        }
+        return {
+                str.substr(0, pos),
+                str.substr(pos + delimiter.length())
+        };
+    }
+
+    std::vector<std::string> CommonFunc::SplitString(const std::string& str, char delimiter)
+    {
+        std::vector<std::string> subStrings;
+        std::size_t start = 0;
+        for(std::size_t pos = 0; pos < str.size(); ++pos ) {
+            if( str[pos] == delimiter ) {
+                if( pos - start > 1 )
+                    subStrings.push_back( str.substr( start, pos-start ) );
+                start = pos+1;
+            }
+        }
+        if( start < str.size() )
+            subStrings.push_back( str.substr( start, str.size()-start ) );
+        return subStrings;
+    }
 }
 

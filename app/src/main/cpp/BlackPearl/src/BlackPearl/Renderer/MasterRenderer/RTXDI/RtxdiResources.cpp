@@ -1,8 +1,8 @@
 #include "pch.h"
 #include "BlackPearl/Core.h"
-#include "RtxdiResources.h"
+#include "Renderer/MasterRenderer/RTXDI/RtxdiResources.h"
 #include "BlackPearl/RHI/RHIDevice.h"
-#include "ShaderParameters.h"
+#include "Renderer/MasterRenderer/RTXDI/ShaderParameters.h"
 #include "BlackPearl/RHI/Common/RHIUtils.h"
 
 namespace BlackPearl {

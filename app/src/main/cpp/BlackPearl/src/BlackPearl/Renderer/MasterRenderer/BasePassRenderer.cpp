@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "BasePassRenderer.h"
+#include "Renderer/MasterRenderer/BasePassRenderer.h"
 #include "BlackPearl/RHI/RHIDefinitions.h"
 #include "BlackPearl/RHI/RHIInputLayout.h"
 #include "BlackPearl/RHI/Common/RHIUtils.h"
@@ -94,7 +94,7 @@ namespace BlackPearl {
             return false;
         }
 
-        //TODO:: ¼Ópass context
+        //TODO:: ï¿½ï¿½pass context
         PipelineKey key;// = context.keyTemplate;
         key.value = material->GetId();
         key.bits.cullMode = cullMode;
@@ -125,7 +125,7 @@ namespace BlackPearl {
 
         return true;
     }
-    //cpu buffer upload µ½ gpu
+    //cpu buffer upload ï¿½ï¿½ gpu
     void BasePassRenderer::SetupInputBuffers(ICommandList* commandList, BufferGroup* buffers, Transform* trans, GraphicsState& state)
     {
 
@@ -538,7 +538,7 @@ namespace BlackPearl {
 
             commandList->beginTrackingBufferState(buffers->vertexBuffer, ResourceStates::Common);
 
-            //TODO:: ÊÊÅä²»Í¬µÄvertex attribute
+            //TODO:: ï¿½ï¿½ï¿½ä²»Í¬ï¿½ï¿½vertex attribute
             uint32_t slot = 0;
             if (buffers->hasAttribute(VertexAttribute::Position) && !buffers->positionData.empty()) {
                 const auto& range = buffers->getVertexBufferRange(VertexAttribute::Position);
@@ -584,7 +584,7 @@ namespace BlackPearl {
 
         }
  
-        //TODO:: ÊÊÅä²»Í¬µÄvertex attribute
+        //TODO:: ï¿½ï¿½ï¿½ä²»Í¬ï¿½ï¿½vertex attribute
         uint32_t slot = 0;
         state.vertexBuffers = {};
         if (buffers->hasAttribute(VertexAttribute::Position)) {

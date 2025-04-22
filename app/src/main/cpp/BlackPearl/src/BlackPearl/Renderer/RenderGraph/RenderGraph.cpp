@@ -1,6 +1,6 @@
 #include "pch.h"
-#include "RenderGraph.h"
-#include "../DeviceManager.h"
+#include "Renderer/RenderGraph/RenderGraph.h"
+#include "Renderer/DeviceManager.h"
 
 namespace BlackPearl {
     void RenderGraph::AddPass(BasicRenderer* renderer)

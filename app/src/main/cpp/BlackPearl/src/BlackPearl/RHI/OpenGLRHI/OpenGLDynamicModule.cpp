@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "BlackPearl/Core.h"
-#include "OpenGLDynamicModule.h"
-#include "OpenGLDynamicRHI.h"
+#include "RHI/OpenGLRHI/OpenGLDynamicModule.h"
+#include "RHI/OpenGLRHI/OpenGLDynamicRHI.h"
 
 namespace BlackPearl {
 

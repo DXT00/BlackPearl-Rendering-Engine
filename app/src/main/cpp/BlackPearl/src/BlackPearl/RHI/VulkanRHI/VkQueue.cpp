@@ -22,8 +22,8 @@
 #include "pch.h"
 #if GE_API_VULKAN
 
-#include "VkQueue.h"
-#include "VkCommandList.h"
+#include "RHI/VulkanRHI/VkQueue.h"
+#include "RHI/VulkanRHI/VkCommandList.h"
 namespace BlackPearl {
 
 

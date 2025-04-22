@@ -1,5 +1,6 @@
 #include "pch.h"
-#include "MetaBallSDFScene.h"
+#ifdef GE_API_D3D12
+#include "Scene/DemoScene/MetaBallSDFScene.h"
 #include "BlackPearl/RHI/D3D12RHI/D3D12LocalRootSignature.h"
 #include "BlackPearl/RHI/D3D12RHI/D3D12GlobalRootSignature.h"
 #include "BlackPearl/Renderer/Buffer/D3D12Buffer/D3D12Buffer.h"
@@ -278,3 +279,4 @@ namespace BlackPearl {
 	//	};
 	//}
 }
+#endif

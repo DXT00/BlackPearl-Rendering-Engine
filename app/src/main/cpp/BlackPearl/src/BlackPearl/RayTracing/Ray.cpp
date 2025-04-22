@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "Ray.h"
+#include "RayTracing/Ray.h"
 
 namespace BlackPearl {
 	const float Ray::tMin = 10e-4;

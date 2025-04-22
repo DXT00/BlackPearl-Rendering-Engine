@@ -32,6 +32,7 @@ project "SandboxDX"
 	{
 		"../BlackPearl/vendor/spdlog/include",
 		"../BlackPearl/src",
+		"../BlackPearl/include",
 		"../BlackPearl/vendor",
 		"../%{IncludeDir.glm}",
 		"../%{IncludeDir.GLFW}",

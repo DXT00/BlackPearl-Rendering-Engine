@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "Object.h"
+#include "Object/Object.h"
 #include "BlackPearl/Component/CameraComponent/PerspectiveCamera.h"
 #include "BlackPearl/Component/TransformComponent/Transform.h"
 #include <utility>
@@ -18,7 +18,7 @@ namespace BlackPearl {
 
 	void Object::Destroy()
 	{
-		//for (auto& pair : m_Components) { //TODO::看一下要不要用智能指针
+		//for (auto& pair : m_Components) { //TODO::锟斤拷一锟斤拷要锟斤拷要锟斤拷锟斤拷锟斤拷指锟斤拷
 		//	auto component = pair.second;
 		//	component.reset(nullptr);
 		//	

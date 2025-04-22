@@ -14,7 +14,7 @@ project "BlackPearl"
 
 	files
 	{
-		"./src/**.h",
+		"./include/**.h",
 		"./src/**.cpp",
 		"./src/**.jpg",
 		"./src/**.png",
@@ -34,6 +34,8 @@ project "BlackPearl"
 	includedirs
 	{
 		"./src",
+		"./include",
+		"./include/BlackPearl",
 		"./vendor/spdlog/include",
 		"../%{IncludeDir.GLFW}",
 		--"../%{IncludeDir.Glad}",
@@ -74,8 +76,8 @@ project "BlackPearl"
    --removefiles  { "./src/BlackPearl/RHI/VulkanRHI/**.cpp" }
    --removefiles  { "./src/BlackPearl/RHI/VulkanRHI/**.h" }
    removefiles  { "./src/BlackPearl/Renderer/MasterRendererBak/**.cpp" }
-   removefiles  { "./src/BlackPearl/Renderer/MasterRendererBak/**.h" }
-   removefiles  { "./src/BlackPearl/Renderer/Lumen/**.h" }
+   removefiles  { "./include/BlackPearl/Renderer/MasterRendererBak/**.h" }
+   removefiles  { "./include/BlackPearl/Renderer/Lumen/**.h" }
    removefiles  { "./src/BlackPearl/Renderer/Lumen/**.cpp" }
    --removefiles  { "./src/BlackPearl/RayTracing/**.cpp" }
 	--removefiles  { "./src/BlackPearl/RayTracing/**.h" }
@@ -83,20 +85,20 @@ project "BlackPearl"
 	--removefiles  { "./src/BlackPearl/ImGui/imgui_impl_opengl3.cpp" }
 	--removefiles  { "./src/BlackPearl/ImGui/imgui_impl_opengl3.h" }
    removefiles  { "./src/BlackPearl/RHI/D3D12RHI/**.cpp" }
-   removefiles  { "./src/BlackPearl/RHI/D3D12RHI/**.h" }
-   removefiles  { "./src/BlackPearl/Renderer/Buffer/D3D12Buffer/**.h" }
+   removefiles  { "./include/BlackPearl/RHI/D3D12RHI/**.h" }
+   removefiles  { "./include/BlackPearl/Renderer/Buffer/D3D12Buffer/**.h" }
    removefiles  { "./src/BlackPearl/Renderer/Buffer/D3D12Buffer/**.cpp" }
-   removefiles  { "./src/BlackPearl/Renderer/MasterRenderer/D3D12**.h" }
+   removefiles  { "./include/BlackPearl/Renderer/MasterRenderer/D3D12**.h" }
    removefiles  { "./src/BlackPearl/Renderer/MasterRenderer/D3D12**.cpp" }
-   removefiles  { "./src/BlackPearl/Renderer/Shader/D3D12Shader/**.h" }
+   removefiles  { "./include/BlackPearl/Renderer/Shader/D3D12Shader/**.h" }
    removefiles  { "./src/BlackPearl/Renderer/Shader/D3D12Shader/**.cpp" }
-   removefiles  { "./src/BlackPearl/Renderer/Buffer/VkBuffer/**.h" }
+   removefiles  { "./include/BlackPearl/Renderer/Buffer/VkBuffer/**.h" }
    removefiles  { "./src/BlackPearl/Renderer/Buffer/VkBuffer/**.cpp" }
-   removefiles  { "./src/BlackPearl/Renderer/Shader/VkShader/**.h" }
+   removefiles  { "./include/BlackPearl/Renderer/Shader/VkShader/**.h" }
    removefiles  { "./src/BlackPearl/Renderer/Shader/VkShader/**.cpp" }
-   removefiles  { "./src/BlackPearl/Renderer/Image/Vk**.h" }
+   removefiles  { "./include/BlackPearl/Renderer/Image/Vk**.h" }
    removefiles  { "./src/BlackPearl/Renderer/Image/Vk**.cpp" }
-   removefiles  { "./src/BlackPearl/Renderer/MasterRenderer/Vk**.h" }
+   removefiles  { "./include/BlackPearl/Renderer/MasterRenderer/Vk**.h" }
    removefiles  { "./src/BlackPearl/Renderer/MasterRenderer/Vk**.cpp" }
    links 
    { 
@@ -122,6 +124,8 @@ project "BlackPearl"
 	{
 		"GLFW_INCLUDE_NONE",
 		"GE_API_OPENGL"
+		"USE_IMGUI"  --premake 默认 windows 平台， 可以使用imgui
+			
 	}
    	flags
    	{
@@ -130,14 +134,14 @@ project "BlackPearl"
 
    filter { "options:RenderAPI=vulkan" }
    removefiles  { "./src/BlackPearl/RHI/OpenGLRHI/**.cpp" }
-   removefiles  { "./src/BlackPearl/RHI/OpenGLRHI/**.h" }
+   removefiles  { "./include/BlackPearl/RHI/OpenGLRHI/**.h" }
    removefiles  { "./src/BlackPearl/RHI/D3D12RHI/**.cpp" }
-   removefiles  { "./src/BlackPearl/RHI/D3D12RHI/**.h" }
-   removefiles  { "./src/BlackPearl/Renderer/Buffer/D3D12Buffer/**.h" }
+   removefiles  { "./include/BlackPearl/RHI/D3D12RHI/**.h" }
+   removefiles  { "./include/BlackPearl/Renderer/Buffer/D3D12Buffer/**.h" }
    removefiles  { "./src/BlackPearl/Renderer/Buffer/D3D12Buffer/**.cpp" }
-   removefiles  { "./src/BlackPearl/Renderer/MasterRenderer/D3D12**.h" }
+   removefiles  { "./include/BlackPearl/Renderer/MasterRenderer/D3D12**.h" }
    removefiles  { "./src/BlackPearl/Renderer/MasterRenderer/D3D12**.cpp" }
-   removefiles  { "./src/BlackPearl/Renderer/Shader/D3D12Shader/**.h" }
+   removefiles  { "./include/BlackPearl/Renderer/Shader/D3D12Shader/**.h" }
    removefiles  { "./src/BlackPearl/Renderer/Shader/D3D12Shader/**.cpp" }
    links 
    { 
@@ -168,16 +172,16 @@ project "BlackPearl"
 
    filter { "options:RenderAPI=direct3d" }
    removefiles { "./src/BlackPearl/RHI/VulkanRHI/**.cpp" }
-   removefiles { "./src/BlackPearl/RHI/VulkanRHI/**.h" }
+   removefiles { "./include/BlackPearl/RHI/VulkanRHI/**.h" }
    removefiles { "./src/BlackPearl/RHI/OpenGLRHI/**.cpp" }
-   removefiles { "./src/BlackPearl/RHI/OpenGLRHI/**.h" }
-   removefiles { "./src/BlackPearl/Renderer/Buffer/VkBuffer/**.h" }
+   removefiles { "./include/BlackPearl/RHI/OpenGLRHI/**.h" }
+   removefiles { "./include/BlackPearl/Renderer/Buffer/VkBuffer/**.h" }
    removefiles { "./src/BlackPearl/Renderer/Buffer/VkBuffer/**.cpp" }
-   removefiles { "./src/BlackPearl/Renderer/Shader/VkShader/**.h" }
+   removefiles { "./include/BlackPearl/Renderer/Shader/VkShader/**.h" }
    removefiles { "./src/BlackPearl/Renderer/Shader/VkShader/**.cpp" }
-   removefiles  { "./src/BlackPearl/Renderer/Image/Vk**.h" }
+   removefiles  { "./include/BlackPearl/Renderer/Image/Vk**.h" }
    removefiles  { "./src/BlackPearl/Renderer/Image/Vk**.cpp" }
-   removefiles { "./src/BlackPearl/Renderer/MasterRenderer/Vk**.h" }
+   removefiles { "./include/BlackPearl/Renderer/MasterRenderer/Vk**.h" }
    removefiles { "./src/BlackPearl/Renderer/MasterRenderer/Vk**.cpp" }
 	links 
 	{ 

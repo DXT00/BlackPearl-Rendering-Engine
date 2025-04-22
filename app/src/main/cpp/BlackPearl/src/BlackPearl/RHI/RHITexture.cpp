@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "RHITexture.h"
+#include "RHI/RHITexture.h"
 #include <BlackPearl/Core.h>
 namespace BlackPearl {
 	TextureSubresourceSet TextureSubresourceSet::resolve(const TextureDesc& desc, bool singleMipLevel) const

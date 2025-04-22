@@ -1,17 +1,17 @@
 #include "pch.h"
-#include "OpenGLDevice.h"
-#include "OpenGLBoundShaderState.h"
-#include "OpenGLContext.h"
-#include "OpenGLCommandList.h"
-#include "OpenGLBufferResource.h"
-#include "OpenGLUniformBuffer.h"
-#include "OpenGLBindingSet.h"
-#include "OpenGLState.h"
-#include "OpenGLViewport.h"
-#include "OpenGLTexture.h"
-#include "OpenGLFrameBuffer.h"
-#include "OpenGLSampler.h"
-#include "OpenGLUtil.h"
+#include "RHI/OpenGLRHI/OpenGLDevice.h"
+#include "RHI/OpenGLRHI/OpenGLBoundShaderState.h"
+#include "RHI/OpenGLRHI/OpenGLContext.h"
+#include "RHI/OpenGLRHI/OpenGLCommandList.h"
+#include "RHI/OpenGLRHI/OpenGLBufferResource.h"
+#include "RHI/OpenGLRHI/OpenGLUniformBuffer.h"
+#include "RHI/OpenGLRHI/OpenGLBindingSet.h"
+#include "RHI/OpenGLRHI/OpenGLState.h"
+#include "RHI/OpenGLRHI/OpenGLViewport.h"
+#include "RHI/OpenGLRHI/OpenGLTexture.h"
+#include "RHI/OpenGLRHI/OpenGLFrameBuffer.h"
+#include "RHI/OpenGLRHI/OpenGLSampler.h"
+#include "RHI/OpenGLRHI/OpenGLUtil.h"
 #include "BlackPearl/Config.h"
 #include "BlackPearl/RHI/RHIGlobals.h"
 #include "BlackPearl/RHI/OpenGLRHI/OpenGLDriver/OpenGLDrvPrivate.h"
@@ -155,7 +155,7 @@ namespace BlackPearl {
 		_setRenderTargets(1, &RTV, &DepthRTV);
 
 #if GE_PLATFORM_ANDROID
-		if (RenderPassInfo.SubpassHint == ESubpassHint::DeferredShadingSubpass &&
+		if (m_Device->RenderPassInfo.SubpassHint == ESubpassHint::DeferredShadingSubpass &&
 			FOpenGL::SupportsPixelLocalStorage() && FOpenGL::SupportsShaderDepthStencilFetch())
 		{
 			glDisable(GL_SHADER_PIXEL_LOCAL_STORAGE_EXT);
@@ -1304,7 +1304,7 @@ namespace BlackPearl {
 					std::cerr << "索引缓冲区越界！" << std::endl;
 				}
 
-				HGLRC currentContext = wglGetCurrentContext();
+				//HGLRC currentContext = wglGetCurrentContext();
 				GE_ERROR_JUDGE();
 				//FOpenGL::DrawRangeElements(GL_TRIANGLES, 0, args.vertexCount-1, NumElements, GL_UNSIGNED_SHORT, (void*)(0));
 				glDrawElements(GL_TRIANGLES, NumElements, GL_UNSIGNED_INT, 0);

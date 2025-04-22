@@ -20,7 +20,7 @@
 * DEALINGS IN THE SOFTWARE.
 */
 #include "pch.h"
-#include "shader-blob.h"
+#include "RHI/Common/shader-blob.h"
 #include "BlackPearl/Core.h"
 #include <sstream>
 

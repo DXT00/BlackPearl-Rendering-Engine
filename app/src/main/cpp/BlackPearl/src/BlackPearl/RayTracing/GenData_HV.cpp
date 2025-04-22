@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "GenData_HV.h"
+#include "RayTracing/GenData_HV.h"
 #include "BlackPearl/Component/BasicInfoComponent/BasicInfo.h"
 #include "BlackPearl/Component/MeshFilterComponent/SphereMeshFilter.h"
 #include "BlackPearl/Component/TransformComponent/Transform.h"
@@ -13,13 +13,13 @@ namespace BlackPearl {
 
 	void GenData_HV::ParseMatData(Object* obj)
 	{
-		//ÕâÀï×¢ÒâobjÌí¼ÓMaterialÊ±ÒªÖ¸¶¨Material Type
+		//ï¿½ï¿½ï¿½ï¿½×¢ï¿½ï¿½objï¿½ï¿½ï¿½MaterialÊ±ÒªÖ¸ï¿½ï¿½Material Type
 		bool has_material = false;
 		if (obj == NULL) return;
 		if (obj->HasComponent<MeshRenderer>()) {
 			std::vector<std::shared_ptr<Mesh>> meshes = obj->GetComponent<MeshRenderer>()->GetMeshes();
 			if (!meshes.empty()) {
-				//TODO:: RayTracing ÔİÊ±Ä¬ÈÏËùÓĞMeshesÊÇÍ¬Ò»ÖÖÀàĞÍµÄ²ÄÖÊ
+				//TODO:: RayTracing ï¿½ï¿½Ê±Ä¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Meshesï¿½ï¿½Í¬Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ÍµÄ²ï¿½ï¿½ï¿½
 				std::shared_ptr<Material> material = meshes[0]->GetMaterial();
 				if (material != nullptr) {
 					m_Mat2Vec[material].push_back(m_SceneData.size());
@@ -151,7 +151,7 @@ namespace BlackPearl {
 		if (bvh_node->GetComponent<BVHNode>()->GetRight())
 			m_SceneData.push_back(-1);
 
-		// childrenEnd ÓÃÒÔ±êÊ¶½áÎ²
+		// childrenEnd ï¿½ï¿½ï¿½Ô±ï¿½Ê¶ï¿½ï¿½Î²
 		m_SceneData.push_back(-float(m_Hitable2Idx[bvh_node]));
 
 		if (bvh_node->GetComponent<BVHNode>()->GetLeft()) {
@@ -191,7 +191,7 @@ namespace BlackPearl {
 		//size_t childSize = sphere->GetChildObjs().size();
 		m_SceneData.push_back(packData.size() / 4);
 
-		std::vector<Vertex>& points = triangle->GetComponent<Triangle>()->GetPoints();
+		const std::vector<Vertex>& points = triangle->GetComponent<Triangle>()->GetPoints();
 		for (size_t i = 0; i < 3; i++)
 		{
 			packData.push_back(points[i].position.x);
@@ -273,7 +273,7 @@ namespace BlackPearl {
 		//m_SceneData.push_back(-1);
 		//m_SceneData.push_back(-float(m_Hitable2Idx[skybox]));
 	}
-	//°ÑMatData id Ìî³äµ½ m_SceneData
+	//ï¿½ï¿½MatData id ï¿½ï¿½äµ½ m_SceneData
 	void GenData_HV::SetMat(std::map<std::shared_ptr<Material>, size_t> const mat2idx)
 	{
 		for (auto const& pair : mat2idx) {

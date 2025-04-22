@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "SphereMeshFilter.h"
+#include "Component/MeshFilterComponent/SphereMeshFilter.h"
 
 namespace BlackPearl {
 
@@ -50,8 +50,8 @@ namespace BlackPearl {
 			int k2 = k1 + m_StackCount + 1;
 			for (int j = 0; j < m_SectorCount; j++, k1++, k2++)
 			{
-				//³ýÁËÍ·Ò»ÐÐºÍÎ²Ò»ÐÐÊÇÈý½ÇÐÎÍâ
-				//ÖÐ¼äµÄÐÐ¶¼ÊÇ¾ØÐÎ£¨Á½¸öÈý½ÇÐÎ£©
+				//ï¿½ï¿½ï¿½ï¿½Í·Ò»ï¿½Ðºï¿½Î²Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+				//ï¿½Ð¼ï¿½ï¿½ï¿½Ð¶ï¿½ï¿½Ç¾ï¿½ï¿½Î£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î£ï¿½
 				if (i != 0) {
 					indices.push_back(k1);
 					indices.push_back(k2);

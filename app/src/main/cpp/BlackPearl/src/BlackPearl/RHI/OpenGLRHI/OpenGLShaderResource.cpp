@@ -1,9 +1,9 @@
 #include "pch.h"
-#include "OpenGLShaderResource.h"
-#include "OpenGLShader.h"
-#include "OpenGLBindingSet.h"
-#include "OpenGLTexture.h"
-#include "OpenGLSampler.h"
+#include "RHI/OpenGLRHI/OpenGLShaderResource.h"
+#include "RHI/OpenGLRHI/OpenGLShader.h"
+#include "RHI/OpenGLRHI/OpenGLBindingSet.h"
+#include "RHI/OpenGLRHI/OpenGLTexture.h"
+#include "RHI/OpenGLRHI/OpenGLSampler.h"
 #include "BlackPearl/RHI/Common/RHIUtils.h"
 
 namespace BlackPearl {

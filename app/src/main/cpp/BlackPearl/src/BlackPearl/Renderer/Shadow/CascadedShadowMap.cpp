@@ -1,6 +1,6 @@
 #include "pch.h"
-#include "CascadedShadowMap.h"
-#include "ShadowMap2D.h"
+#include "Renderer/Shadow/CascadedShadowMap.h"
+#include "Renderer/Shadow/ShadowMap2D.h"
 namespace BlackPearl{
 	CascadedShadowMap::CascadedShadowMap(IDevice* device, int resolution, int numCascades, int numPerObjectShadows, Format format, bool isUAV)
 	{
@@ -89,7 +89,7 @@ namespace BlackPearl{
 	}
 	const std::vector<SceneData*>& CascadedShadowMap::GetView() const
 	{
-		// TODO: ÔÚ´Ë´¦²åÈë return Óï¾ä
+		// TODO: ï¿½Ú´Ë´ï¿½ï¿½ï¿½ï¿½ï¿½ return ï¿½ï¿½ï¿½
 		return m_CompositeView;
 	}
 	ITexture* CascadedShadowMap::GetTexture() const

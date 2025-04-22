@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "OpenGLInputLayout.h"
+#include "RHI/OpenGLRHI/OpenGLInputLayout.h"
 namespace BlackPearl {
 
 	InputLayout::InputLayout(const VertexBufferLayout& _layout)

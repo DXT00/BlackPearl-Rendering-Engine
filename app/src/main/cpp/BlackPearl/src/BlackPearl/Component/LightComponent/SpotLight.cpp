@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "SpotLight.h"
+#include "Component/LightComponent/SpotLight.h"
 
 
 namespace BlackPearl {

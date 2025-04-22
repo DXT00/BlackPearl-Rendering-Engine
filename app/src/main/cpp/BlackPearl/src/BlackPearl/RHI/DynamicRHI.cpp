@@ -1,20 +1,20 @@
 #include "pch.h"
 #include "BlackPearl/Core.h"
-#include "DynamicRHI.h"
+#include "RHI/DynamicRHI.h"
 #ifdef GE_API_D3D12
 #include "D3D12RHI/D3D12DynamicModule.h"
 #endif
 #ifdef GE_API_OPENGL
-#include "OpenGLRHI/OpenGLDynamicModule.h"
+#include "RHI/OpenGLRHI/OpenGLDynamicModule.h"
 #endif
 
 #ifdef GE_API_VULKAN
 #include "VulkanRHI/VkDynamicModule.h"
 #endif
 
-#include "RHIShader.h"
-#include "RHIGlobals.h"
-#include "RHIDefinitions.h"
+#include "RHI/RHIShader.h"
+#include "RHI/RHIGlobals.h"
+#include "RHI/RHIDefinitions.h"
 
 namespace BlackPearl {
 
@@ -57,7 +57,7 @@ namespace BlackPearl {
 	{
 		return g_DynamicRHI->InitWindow();
 	}
-	//TODO:Ìí¼ÓMath¿â£¬Çø·ÖglmÓëDirectXMath
+	//TODO:ï¿½ï¿½ï¿½Mathï¿½â£¬ï¿½ï¿½ï¿½ï¿½glmï¿½ï¿½DirectXMath
 	void RHIInitMathLib() {
 		g_DynamicRHI->InitMathLib();
 	}

@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "SceneOctree.h"
+#include "Scene/SceneOctree.h"
 #include "BlackPearl/Scene/Scene.h"
 namespace BlackPearl {
     void PrimitiveOctreeSemantics::SetOctreeNodeIndex(const PrimitiveOctreeNode& Element, FOctreeElementId2 Id)

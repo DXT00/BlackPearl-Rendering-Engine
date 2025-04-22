@@ -21,7 +21,7 @@
 * DEALINGS IN THE SOFTWARE.
 */
 #include "pch.h"
-#include "FormatInfo.h"
+#include "RHI/Common/FormatInfo.h"
 #include <cassert>
 
 namespace BlackPearl

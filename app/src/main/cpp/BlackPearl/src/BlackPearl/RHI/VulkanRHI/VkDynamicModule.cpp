@@ -1,8 +1,8 @@
 #include "pch.h"
 #if GE_API_VULKAN
 
-#include "VkDynamicModule.h"
-#include "VkDynamicRHI.h"
+#include "RHI/VulkanRHI/VkDynamicModule.h"
+#include "RHI/VulkanRHI/VkDynamicRHI.h"
 
 namespace BlackPearl {
 	DynamicRHI* VkDynamicModule::CreateRHI()

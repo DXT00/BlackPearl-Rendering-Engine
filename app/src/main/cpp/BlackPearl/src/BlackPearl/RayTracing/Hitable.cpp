@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "Hitable.h"
+#include "RayTracing/Hitable.h"
 namespace BlackPearl {
 	Hitable::Hitable()
 	{

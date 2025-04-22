@@ -21,17 +21,14 @@
 */
 
 #include "pch.h"
-#include "RHIUtils.h"
+#include "RHI/Common/RHIUtils.h"
 #include "BlackPearl/RHI/RHIDefinitions.h"
 #include <sstream>
 #include <BlackPearl/RHI/Common/FormatInfo.h>
 
 namespace BlackPearl
 {
-    uint32_t RHIGetSyncInterval()
-    {
-        return Configuration::Vsync ? 1 : 0;
-    }
+
     BlendState::RenderTarget RHIUtils::CreateAddBlendState(
         BlendFactor srcBlend,
         BlendFactor dstBlend)

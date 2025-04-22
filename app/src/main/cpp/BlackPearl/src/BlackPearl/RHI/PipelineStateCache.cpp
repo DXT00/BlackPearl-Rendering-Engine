@@ -1,7 +1,7 @@
 #include "pch.h"
-#include "PipelineStateCache.h"
-#include "RHIState.h"
-#include "RHICommandList.h"
+#include "RHI/PipelineStateCache.h"
+#include "RHI/RHIState.h"
+#include "RHI/RHICommandList.h"
 namespace BlackPearl {
 
 	std::unordered_map<uint32_t, GraphicsPipelineHandle> GGraphicsPipelineCache;

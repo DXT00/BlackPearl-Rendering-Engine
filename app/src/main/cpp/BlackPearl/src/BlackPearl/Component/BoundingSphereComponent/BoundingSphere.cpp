@@ -1,9 +1,10 @@
 #include "pch.h"
-#include "BoundingSphere.h"
+#include "Component/BoundingSphereComponent/BoundingSphere.h"
+#ifdef GE_API_D3D12
 #include <DirectXCollision.h>
 #include <DirectXMathConvert.inl>
 using namespace DirectX;
-
+#endif
 namespace BlackPearl {
 
     //this function is based on DirectXCollision.h : BoundingSphere::CreateFromPoints
@@ -14,6 +15,8 @@ namespace BlackPearl {
     // The algorithm is based on  Jack Ritter, "An Efficient Bounding Sphere",
     // Graphics Gems.
     //-----------------------------------------------------------------------------
+
+#ifdef GE_API_D3D12
 	 void BoundingSphere::CreateFromPoints(BoundingSphere& sphere, size_t Count, const XMFLOAT3* pPoints, size_t Stride) {
         GE_ASSERT(Count > 0, "Count <=0");
         GE_ASSERT(pPoints ,"pPoints = nullptr");
@@ -158,5 +161,5 @@ namespace BlackPearl {
         XMStoreFloat3(&Out.m_Center, NCenter);
         Out.m_Radius = t_5;
     }
-
+#endif
 }

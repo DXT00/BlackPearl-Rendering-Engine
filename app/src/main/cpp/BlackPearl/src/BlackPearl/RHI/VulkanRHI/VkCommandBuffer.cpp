@@ -1,7 +1,7 @@
 #include "pch.h"
 #if GE_API_VULKAN
 
-#include "VkCommandBuffer.h"
+#include "RHI/VulkanRHI/VkCommandBuffer.h"
 
 namespace BlackPearl {
 

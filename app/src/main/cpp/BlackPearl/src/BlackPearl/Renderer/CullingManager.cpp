@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "CullingManager.h"
+#include "Renderer/CullingManager.h"
 
 namespace BlackPearl {
 
@@ -51,7 +51,7 @@ namespace BlackPearl {
 	std::vector<Object*> CullingManager::_GetVisibleObjs(std::vector<bool>& OutVisibleNodes, Scene* Scene)
 	{
 		std::vector<Object*> visibleObjs;
-		// ¶àÏß³Ìcull
+		// ï¿½ï¿½ï¿½ß³ï¿½cull
 		std::vector<Object*> objs = Scene->GetObjects();
 		for (size_t i = 0; i < objs.size(); i++)
 		{

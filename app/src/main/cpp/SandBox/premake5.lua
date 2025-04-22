@@ -36,6 +36,7 @@ project "Sandbox"
 	{
 		"../BlackPearl/vendor/spdlog/include",
 		"../BlackPearl/src",
+		"../BlackPearl/include",
 		"../BlackPearl/vendor",
 		"../BlackPearl/vendor/stb",
 		"../BlackPearl/assets/shaders",

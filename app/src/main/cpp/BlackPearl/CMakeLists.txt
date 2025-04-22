@@ -30,25 +30,69 @@ set(CMAKE_OBJECT_OUTPUT_DIRECTORY "${ROOT_DIR}/bin-int/${OUTPUT_DIR}/${PROJECT_N
 message(STATUS "CMAKE_RUNTIME_OUTPUT_DIRECTORY---${CMAKE_RUNTIME_OUTPUT_DIRECTORY},OUTPUT_DIR=${OUTPUT_DIR}")
 set(RENDER_API "opengl")
 
-
+################################################################ 源文件过滤 ################################################################
 file(GLOB_RECURSE SRC_FILES LIST_DIRECTORIES false
         "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp"
-        "${CMAKE_CURRENT_SOURCE_DIR}/src/*.h"
+        "${CMAKE_CURRENT_SOURCE_DIR}/include/*.h"
         "${CMAKE_CURRENT_SOURCE_DIR}/assets/shaders/hlsl/core/**.h"
-
-
 )
 
 list(FILTER SRC_FILES EXCLUDE REGEX "/.vshistory/.*")
 
 if(${RENDER_API} STREQUAL "opengl")
-list(REMOVE_ITEM SRC_FILES
-        "${CMAKE_CURRENT_SOURCE_DIR}/src/BlackPearl/Renderer/MasterRendererBak/*.cpp"
-        "${CMAKE_CURRENT_SOURCE_DIR}/src/BlackPearl/Renderer/MasterRendererBak/*.h"
+    list(FILTER SRC_FILES EXCLUDE REGEX  ".*/Renderer/MasterRendererBak/.*")
+    list(FILTER SRC_FILES EXCLUDE REGEX  ".*/RHI/VulkanRHI/.*")
+    list(FILTER SRC_FILES EXCLUDE REGEX  ".*/Renderer/Lumen/.*")
+    list(FILTER SRC_FILES EXCLUDE REGEX  ".*/Lumen/.*")
+    list(FILTER SRC_FILES EXCLUDE REGEX  ".*/RHI/D3D12RHI/.*")
+    list(FILTER SRC_FILES EXCLUDE REGEX  ".*/Debugger/D3D12Debugger/.*")
+    list(FILTER SRC_FILES EXCLUDE REGEX  ".*/Renderer/Buffer/D3D12Buffer/.*")
+    list(FILTER SRC_FILES EXCLUDE REGEX  ".*/D3D12Buffer/.*")
+    list(FILTER SRC_FILES EXCLUDE REGEX  ".*Renderer/MasterRenderer/D3D12*.")
+    list(FILTER SRC_FILES EXCLUDE REGEX  ".*Renderer/Shader/D3D12Shader/*.")
+    list(FILTER SRC_FILES EXCLUDE REGEX  ".*Renderer/Buffer/VkBuffer/*.")
+    list(FILTER SRC_FILES EXCLUDE REGEX  ".*Renderer/Shader/VkShader/*.")
+    list(FILTER SRC_FILES EXCLUDE REGEX  ".*Renderer/Image/Vk*.")
+    list(FILTER SRC_FILES EXCLUDE REGEX  ".*Renderer/MasterRenderer/Vk*.")
+elseif(${RENDER_API} STREQUAL "vulkan")
+            list(FILTER SRC_FILES EXCLUDE REGEX  ".*/RHI/OpenGLRHI/*.")
+            list(FILTER SRC_FILES EXCLUDE REGEX  ".*/RHI/OpenGLRHI/*.")
+            list(FILTER SRC_FILES EXCLUDE REGEX  ".*/RHI/D3D12RHI/*.")
+            list(FILTER SRC_FILES EXCLUDE REGEX  ".*/RHI/D3D12RHI/*.")
+            list(FILTER SRC_FILES EXCLUDE REGEX  ".*/Renderer/Buffer/D3D12Buffer/*.")
+            list(FILTER SRC_FILES EXCLUDE REGEX  ".*/Renderer/Buffer/D3D12Buffer/*.")
+            list(FILTER SRC_FILES EXCLUDE REGEX  ".*/Renderer/MasterRenderer/D3D12*.")
+            list(FILTER SRC_FILES EXCLUDE REGEX  ".*/Renderer/MasterRenderer/D3D12*.")
+            list(FILTER SRC_FILES EXCLUDE REGEX  ".*/Renderer/Shader/D3D12Shader/*.")
+            list(FILTER SRC_FILES EXCLUDE REGEX  ".*/Renderer/Shader/D3D12Shader/*.")
+elseif(${RENDER_API} STREQUAL "direct3d")
+            list(FILTER SRC_FILES EXCLUDE REGEX ".*/RHI/VulkanRHI/*.")
+            list(FILTER SRC_FILES EXCLUDE REGEX ".*/RHI/VulkanRHI/*.")
+            list(FILTER SRC_FILES EXCLUDE REGEX ".*/RHI/OpenGLRHI/*.")
+            list(FILTER SRC_FILES EXCLUDE REGEX ".*/RHI/OpenGLRHI/*.")
+            list(FILTER SRC_FILES EXCLUDE REGEX ".*/Renderer/Buffer/VkBuffer/*.")
+            list(FILTER SRC_FILES EXCLUDE REGEX ".*/Renderer/Buffer/VkBuffer/*.")
+            list(FILTER SRC_FILES EXCLUDE REGEX ".*/Renderer/Shader/VkShader/*.")
+            list(FILTER SRC_FILES EXCLUDE REGEX ".*/Renderer/Shader/VkShader/*.")
+            list(FILTER SRC_FILES EXCLUDE REGEX ".*/Renderer/Image/Vk*.")
+            list(FILTER SRC_FILES EXCLUDE REGEX ".*/Renderer/Image/Vk*.")
+            list(FILTER SRC_FILES EXCLUDE REGEX ".*/Renderer/MasterRenderer/Vk*.")
+            list(FILTER SRC_FILES EXCLUDE REGEX ".*/Renderer/MasterRenderer/Vk*.")
 
-)
 endif ()
 
+
+if(ANDROID)
+    list(FILTER SRC_FILES EXCLUDE REGEX  ".*/Core/Windows/.*")
+    list(FILTER SRC_FILES EXCLUDE REGEX  ".*/RHI/OpenGLRHI/OpenGLDriver/Windows/.*")
+    list(FILTER SRC_FILES EXCLUDE REGEX  ".*/ImGui/.*")
+elseif (WIN32)
+    list(FILTER SRC_FILES EXCLUDE REGEX  ".*/Core/Android/.*")
+    list(FILTER SRC_FILES EXCLUDE REGEX  ".*/RHI/OpenGLRHI/OpenGLDriver/Android/.*")
+
+endif ()
+
+message(STATUS "SRC_FILES=${SRC_FILES}")
 
 
 # 创建静态库目标
@@ -58,28 +102,61 @@ add_library(BlackPearl STATIC ${SRC_FILES})
 add_definitions(
         -D_CRT_SECURE_NO_WARNINGS
         -DGLFW_INCLUDE_NONE
-)
 
-# 头文件包含目录
-include_directories(
-        "${CMAKE_CURRENT_SOURCE_DIR}/src"
-        "${CMAKE_CURRENT_SOURCE_DIR}//assets/shaders/"
+)
+################################################################ 设置include dir ################################################################
+set(INCLUDE_DIR
+        "${CMAKE_CURRENT_SOURCE_DIR}/include"
+        "${CMAKE_CURRENT_SOURCE_DIR}/include/BlackPearl"
+        "${CMAKE_CURRENT_SOURCE_DIR}/assets/shaders/"
         "${VENDOR_DIR}"
-        "${VENDOR_DIR}/OpenGL/include"
         "${VENDOR_DIR}/spdlog/include"
-        "${VENDOR_DIR}/GLEW/include"
-        "${VENDOR_DIR}/Glad/include"
-        "${VENDOR_DIR}/glm"
-        "${VENDOR_DIR}/stb"
-        "${VENDOR_DIR}/assimp/include"
-        "${VENDOR_DIR}/GLFW/include"
-        "${VENDOR_DIR}/VulkanSDK/1.3.236.0/Include"
-        "${VENDOR_DIR}/directxtex_uwp.2022.7.30.1/include"
-        "${VENDOR_DIR}/GLEW/include"
-        "${VENDOR_DIR}/directxmesh_desktop_win10.2022.7.30.1/include"
-        "${VENDOR_DIR}/ShaderMake/include"
-
 )
+if(${RENDER_API} STREQUAL "opengl")
+    list(APPEND INCLUDE_DIR
+            "${CMAKE_CURRENT_SOURCE_DIR}/include/BlackPearl/RHI/OpenGLRHI"
+            "${CMAKE_CURRENT_SOURCE_DIR}/include/BlackPearl/RHI/OpenGLRHI/OpenGLDriver"
+    )
+elseif (${RENDER_API} STREQUAL "vulkan")
+    list(APPEND INCLUDE_DIR
+            "${CMAKE_CURRENT_SOURCE_DIR}/include/BlackPearl/RHI/VulkanRHI"
+    )
+elseif (${RENDER_API} STREQUAL "direct3d")
+    list(APPEND INCLUDE_DIR
+            "${CMAKE_CURRENT_SOURCE_DIR}/include/BlackPearl/RHI/D3D12RHI"
+    )
+endif ()
+
+if(WIN32)
+    list(APPEND INCLUDE_DIR
+            "${VENDOR_DIR}/OpenGL/include"
+            "${VENDOR_DIR}/Glad/include"
+            "${VENDOR_DIR}/glm"
+            "${VENDOR_DIR}/stb"
+            "${VENDOR_DIR}/assimp/include"
+            "${VENDOR_DIR}/GLFW/include"
+            "${VENDOR_DIR}/VulkanSDK/1.3.236.0/Include"
+            "${VENDOR_DIR}/directxtex_uwp.2022.7.30.1/include"
+            "${VENDOR_DIR}/GLEW/include"
+            "${VENDOR_DIR}/directxmesh_desktop_win10.2022.7.30.1/include"
+            "${VENDOR_DIR}/ShaderMake/include"
+    )
+elseif (ANDROID)
+    list(APPEND INCLUDE_DIR
+            "${VENDOR_DIR}/glm"
+            "${VENDOR_DIR}/stb"
+            "${VENDOR_DIR}/assimp/include"
+            "${VENDOR_DIR}/ShaderMake/include"
+    )
+
+endif ()
+# 头文件包含目录
+target_include_directories(
+        BlackPearl
+        PUBLIC
+        ${INCLUDE_DIR}
+)
+############################## 创建 android_native_app_glue 库 ##########################
 if(ANDROID)
     # 获取环境变量
     set(NDKROOT_PATH $ENV{NDKROOT})
@@ -102,9 +179,9 @@ if(ANDROID)
 endif()
 
 
-# 库目录
+################################################################ 库目录 ################################################################
 target_link_directories(
-        ${PROJECT_NAME} PUBLIC
+        ${PROJECT_NAME} PRIVATE
         "${VENDOR_DIR}/directxtex_uwp.2022.5.10.1/native/lib"
         "${VENDOR_DIR}/directxmesh_desktop_win10.2022.7.30.1/native/lib/x64/${CMAKE_BUILD_TYPE}"
         "${VENDOR_DIR}/VulkanSDK/1.3.236.0/Lib"
@@ -120,39 +197,46 @@ if(WIN32)
     )
 endif ()
 
-# 链接库和条件编译
+############################## 添加 spdlog 库 ##########################
+
+#set(SPDLOG_BUILD_SHARED OFF)
+#set(SPDLOG_BUILD_TESTS OFF)
+add_subdirectory(${VENDOR_DIR}/spdlog)
+
+##############################  链接库和条件编译 ##########################
+
 if(${RENDER_API} STREQUAL "opengl")
-
-
     message("RENDER_API = opengl")
-    target_link_libraries(
-            BlackPearl
-            PRIVATE
-            spdlog
-    )
     if(WIN32)
         target_link_libraries(
                 BlackPearl
-                PRIVATE
+                PUBLIC
                 glfw
                 GLEW
                 Glad
                 opengl32
                 ImGui
         )
+        add_definitions(
+                -DUSE_IMGUI
+        )
     elseif(ANDROID)
         target_link_libraries(
             BlackPearl
-            PRIVATE
+                PUBLIC
                 EGL
                 GLESv3
                 assimp
                 android_native_app_glue
+                #android
+                spdlog::spdlog_header_only
         )
         add_definitions(
                 -DUSE_ANDROID_JNI=1
                 -DUSE_ANDROID_EVENTS
+                -DSPDLOG_COMPILED_LIB
         )
+        message(STATUS "Android -DSPDLOG_COMPILED_LIB")
     endif ()
     add_definitions(
             -DGLFW_INCLUDE_NONE
@@ -169,7 +253,7 @@ elseif(${RENDER_API} STREQUAL "vulkan")
             ImGui
             vulkan-1
             assimp-vc142-mtd
-            spdlog
+            spdlog::spdlog_header_only
     )
     add_definitions(
             -DGLFW_INCLUDE_NONE
@@ -191,7 +275,7 @@ elseif(${RENDER_API} STREQUAL "direct3d")
             -DGE_API_D3D12
     )
 else() #default opengl
-    message("set default RENDER_API = opengl")
+    message("set default RENDER_API = vulkan")
     target_link_libraries(
             BlackPearl
             PRIVATE
@@ -199,13 +283,13 @@ else() #default opengl
             GLEW
             Glad
             ImGui
-            opengl32
+            vulkan-1
             assimp-vc142-mtd
-            spdlog
+            spdlog::spdlog_header_only
     )
     add_definitions(
             -DGLFW_INCLUDE_NONE
-            -DGE_API_OPENGL
+            -DGE_API_VULKAN
     )
 endif()
 
@@ -259,5 +343,5 @@ endforeach()
 
 
 # 预编译头
-target_precompile_headers(BlackPearl PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/src/pch.h")
+target_precompile_headers(BlackPearl PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/include/pch.h")
 set(PRECOMPILED_HEADER "${CMAKE_CURRENT_SOURCE_DIR}/src/pch.cpp")

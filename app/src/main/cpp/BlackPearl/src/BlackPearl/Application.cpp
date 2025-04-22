@@ -2,7 +2,7 @@
 //#include <glad/glad.h>
 #include "BlackPearl/RHI/OpenGLRHI/OpenGLDriver/OpenGLThirdParty.h"
 
-#include <GLFW/glfw3.h>
+//#include <GLFW/glfw3.h>
 #include "Application.h"
 
 #include <iostream>
@@ -25,7 +25,6 @@
 #include "Component/LightComponent/ParallelLight.h"
 #include "Component/LightComponent/PointLight.h"
 #include "Component/LightComponent/SpotLight.h"
-#include "ImGui/ImGuiLayer.h"
 #include "BlackPearl/Entity/Entity.h"
 #include "BlackPearl/ObjectManager/ObjectManager.h"
 #include "BlackPearl/LayerScene/LayerManager.h"

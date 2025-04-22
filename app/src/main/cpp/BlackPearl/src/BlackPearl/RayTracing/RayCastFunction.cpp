@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "RayCastFunction.h"
+#include "RayTracing/RayCastFunction.h"
 namespace BlackPearl{
 	HitRst RayInSphere(std::shared_ptr<Ray>& ray) 
 	{

@@ -1,10 +1,10 @@
 #include "pch.h"
 #if GE_API_VULKAN
 
-#include "VkTexture.h"
-#include "VkEnum.h"
-#include "VkUtil.h"
-#include "VkDevice.h"
+#include "RHI/VulkanRHI/VkTexture.h"
+#include "RHI/VulkanRHI/VkEnum.h"
+#include "RHI/VulkanRHI/VkUtil.h"
+#include "RHI/VulkanRHI/VkDevice.h"
 #include "BlackPearl/RHI/Common/FormatInfo.h"
 #include "BlackPearl/RHI/RHIDefinitions.h"
 #include "BlackPearl/Core.h"

@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "SceneBuilder.h"
+#include "Scene/SceneBuilder.h"
 
 namespace BlackPearl {
 

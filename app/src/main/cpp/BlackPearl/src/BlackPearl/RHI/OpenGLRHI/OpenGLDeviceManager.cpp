@@ -1,8 +1,8 @@
 #include "pch.h"
 #include "BlackPearl/Renderer/DeviceManager.h"
-#include "OpenGLDeviceManager.h"
-#include "OpenGLDevice.h"
-#include "OpenGLViewport.h"
+#include "RHI/OpenGLRHI/OpenGLDeviceManager.h"
+#include "RHI/OpenGLRHI/OpenGLDevice.h"
+#include "RHI/OpenGLRHI/OpenGLViewport.h"
 #include "OpenGLDriver/OpenGLDrvPrivate.h"
 #include "BlackPearl/Application.h"
 

@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "glm/glm.hpp"
-#include "RayTracingTransform.h"
+#include "Component/TransformComponent/RayTracingTransform.h"
 #include "BlackPearl/Math/Math.h"
 #include "BlackPearl/Component/BVHNodeComponent/BVHNode.h"
 namespace BlackPearl {

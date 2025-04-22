@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "Batch.h"
+#include "Renderer/Batch/Batch.h"
 #include "BlackPearl/Component/MeshRendererComponent/MeshRenderer.h"
 #include "BlackPearl/Component/TransformComponent/Transform.h"
 #include "BlackPearl/Config.h"
@@ -31,7 +31,7 @@ namespace BlackPearl {
 		};
 
 		for (auto& obj : m_ObjectsList) {
-			std::vector<std::shared_ptr<Mesh>>& meshes = obj->GetComponent<MeshRenderer>()->GetMeshes();
+			const std::vector<std::shared_ptr<Mesh>>& meshes = obj->GetComponent<MeshRenderer>()->GetMeshes();
 			for (auto mesh: meshes)
 			{
 				m_VertexCnt += mesh->GetVertexCount();
@@ -204,7 +204,7 @@ namespace BlackPearl {
 		indexBuffer.reset(DBG_NEW IndexBuffer(descIndex, m_IndexBuffer, m_IndexCnt * sizeof(uint32_t)));
 		m_VertexArray->SetIndexBuffer(indexBuffer);
 		BufferDesc desc;
-		//如果每个vertexbuffer 一种attribute,那么 stride = 0, offset 也 = 0
+		//锟斤拷锟矫匡拷锟絭ertexbuffer 一锟斤拷attribute,锟斤拷么 stride = 0, offset 也 = 0
 		std::shared_ptr<VertexBuffer> vertexBuffer(DBG_NEW VertexBuffer(desc, m_PositionBuffer, m_PositionsSize, false/*interleaved*/));
 		vertexBuffer->SetBufferLayout({ {ElementDataType::Float3, "aPos", false, POS_SLOT} });
 		std::shared_ptr<VertexBuffer> normalBuffer(DBG_NEW VertexBuffer(desc, m_NormalBuffer, m_NormalsSize, false/*interleaved*/));

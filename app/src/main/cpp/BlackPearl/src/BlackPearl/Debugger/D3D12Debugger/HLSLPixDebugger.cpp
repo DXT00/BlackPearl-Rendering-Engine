@@ -2,7 +2,7 @@
 #include <filesystem>
 #include <shlobj.h>
 #include "BlackPearl/Core.h"
-#include "HLSLPixDebugger.h"
+#include "Debugger/D3D12Debugger/HLSLPixDebugger.h"
 
 namespace BlackPearl {
 

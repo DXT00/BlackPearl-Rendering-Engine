@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "Group.h"
+#include "RayTracing/Group.h"
 #include "BlackPearl/Component/BoundingBoxComponent/BoundingBox.h"
 namespace BlackPearl {
 

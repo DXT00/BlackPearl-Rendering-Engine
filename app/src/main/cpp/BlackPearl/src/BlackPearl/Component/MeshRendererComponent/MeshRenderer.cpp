@@ -1,12 +1,12 @@
 #include "pch.h"
-#include "MeshRenderer.h"
+#include "Component/MeshRendererComponent//MeshRenderer.h"
 
 namespace BlackPearl {
 
 	//void MeshRenderer::UpdateTransformMatrix(glm::mat4 transformMatrix) {
 	//	m_TransformMatrix = transformMatrix;
 	//}
-	//注意：Draw之前要UpdateTransformMatrix！
+	//注锟解：Draw之前要UpdateTransformMatrix锟斤拷
 	//void MeshRenderer::DrawMeshes() {
 	//	for (auto mesh : GetMeshes())
 	//		mesh.Draw(m_TransformMatrix, Renderer::GetSceneData()->LightSources);

@@ -1,10 +1,10 @@
 #include "pch.h"
-#include "SphericalHarmonics.h"
+#include "LightProbes/SphericalHarmonics.h"
 #include "BlackPearl/RHI/OpenGLRHI/OpenGLCubeMapTexture.h"
 #include "glm/glm.hpp"
 #include "BlackPearl/Core.h"
-#include "BlackPearl/RHI/OpenGLRHI/OpenGLDriver/OpenGLFunctions.h"
-
+//#include "BlackPearl/RHI/OpenGLRHI/OpenGLDriver/OpenGLFunctions.h"
+#include "BlackPearl/RHI/OpenGLRHI/OpenGLDriver/OpenGLDrv.h"
 namespace BlackPearl {
 	const float PI = 3.14159265359f;
 	std::vector<std::vector<glm::vec3>> cubeMapFaceNormal = {
@@ -65,18 +65,54 @@ namespace BlackPearl {
 		float* bufferPosZ = new float[size];
 		float* bufferNegZ = new float[size];*/
 
+        // 定义立方体贴图的6个面
+        const GLenum cubeFaces[] = {
+                GL_TEXTURE_CUBE_MAP_POSITIVE_X, GL_TEXTURE_CUBE_MAP_NEGATIVE_X,
+                GL_TEXTURE_CUBE_MAP_POSITIVE_Y, GL_TEXTURE_CUBE_MAP_NEGATIVE_Y,
+                GL_TEXTURE_CUBE_MAP_POSITIVE_Z, GL_TEXTURE_CUBE_MAP_NEGATIVE_Z
+        };
+
 		std::vector<float*> faces;
 		faces.assign(6, new float[size]);
 		environmentCubeMap->Bind();
-		glGetTexImage(GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, GL_RGB, GL_FLOAT, faces[0]);
-		glGetTexImage(GL_TEXTURE_CUBE_MAP_NEGATIVE_X, 0, GL_RGB, GL_FLOAT, faces[1]);
-		glGetTexImage(GL_TEXTURE_CUBE_MAP_POSITIVE_Y, 0, GL_RGB, GL_FLOAT, faces[2]);
-		glGetTexImage(GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, GL_RGB, GL_FLOAT, faces[3]);
-		glGetTexImage(GL_TEXTURE_CUBE_MAP_POSITIVE_Z, 0, GL_RGB, GL_FLOAT, faces[4]);
-		glGetTexImage(GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, GL_RGB, GL_FLOAT, faces[5]);
+
+#ifdef GE_PLATFORM_WINDOWS
+        for(int i = 0; i < 6; i++){
+            FOpenGL::GetTexImage(cubeFaces[i], 0, GL_RGB, GL_FLOAT, faces[i]);
+        }
+#elif defined(GE_PLATFORM_ANDROID)
+
+        // 创建临时FBO
+        GLuint fbo;
+        glGenFramebuffers(1, &fbo);
+        glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+
+        // 遍历每个面，读取数据
+        for (int i = 0; i < 6; ++i) {
+            // 将立方体贴图面附加到FBO
+            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, cubeFaces[i], static_cast<Texture*>(environmentCubeMap.Get())->GetRendererID(), 0);
+
+            // 检查FBO完整性
+            if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
+                GE_CORE_WARN("Framebuffer not complete for face {:d}", i);
+                continue;
+            }
+
+            // 读取像素数据
+            glReadPixels(0, 0, environmentCubeMap->getDesc().width, environmentCubeMap->getDesc().height, GL_RGB, GL_FLOAT, faces[i]);
+
+            // 可选：检查GL错误
+            GE_ERROR_JUDGE();
+        }
+
+        // 清理
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        glDeleteFramebuffers(1, &fbo);
+#endif
+
 		environmentCubeMap->UnBind();
 
-
+        //TODO:: use compute shader calculate SH
 		unsigned int width = environmentCubeMap->getDesc().width;
 		if (!initialCubeMapVector)
 			InitialCubeMapVector(width);

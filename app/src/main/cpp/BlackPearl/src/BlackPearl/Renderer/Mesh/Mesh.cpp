@@ -1,7 +1,7 @@
 #include "pch.h"
 //#include <glad/glad.h>
 #include "BlackPearl/RHI/OpenGLRHI/OpenGLDriver/OpenGLThirdParty.h"
-#include "Mesh.h"
+#include "Renderer/Mesh/Mesh.h"
 #include "glm/glm.hpp"
 #include "BlackPearl/RHI/RHIShader.h"
 //#include <BlackPearl/Renderer/Shader/Shader.h>
@@ -232,7 +232,7 @@ namespace BlackPearl {
 		std::map<uint32_t, std::string> slot_to_attribute;
 		for (size_t i = 0; i < layout.GetElements().size(); i++)
 		{
-			BufferElement& element = layout.GetElement(i);
+            BufferElement element = layout.GetElement(i);
 			slot_to_attribute[element.Location] = element.Name;
 			if (element.Name == "aPos" || element.Name == "POSITION") {
 				pos_cnt = element.GetElementCount();
@@ -397,7 +397,7 @@ namespace BlackPearl {
 
 		GE_ASSERT(m_VerticeArrayCount > 0, "vertices cnt <=0 ");
 		m_Vertices = DBG_NEW float[m_VerticeArrayCount];
-		memcpy(m_Vertices, &vertices[0], m_VerticeSize);//×¢Òâmemcpy×îºóÒ»¸ö²ÎÊýÊÇ×Ö½ÚÊý!!!
+		memcpy(m_Vertices, &vertices[0], m_VerticeSize);//×¢ï¿½ï¿½memcpyï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö½ï¿½ï¿½ï¿½!!!
 
 		_InitBufferGroup(meshFilter);
 		//Init(m_VerticeSize);
@@ -435,7 +435,7 @@ namespace BlackPearl {
 	//		}
 	//		m_VerticeCount += vertexBuffer->GetVertexSize() / attributeSizeofOneVertex;
 
-	//		//TODO:: ·Ö¶à¸ö vbo ½âÎö
+	//		//TODO:: ï¿½Ö¶ï¿½ï¿½ vbo ï¿½ï¿½ï¿½ï¿½
 	//		if(vertexBuffers.size() == 1)
 	//			ParseAttributes(m_VertexBufferLayout);
 	//	}

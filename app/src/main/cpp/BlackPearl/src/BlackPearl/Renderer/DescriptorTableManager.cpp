@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "DescriptorTableManager.h"
+#include "Renderer/DescriptorTableManager.h"
 
 namespace BlackPearl {
 

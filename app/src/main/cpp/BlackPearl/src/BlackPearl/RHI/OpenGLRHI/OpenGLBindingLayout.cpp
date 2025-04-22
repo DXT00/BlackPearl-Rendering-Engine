@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "OpenGLBindingLayout.h"
+#include "RHI/OpenGLRHI/OpenGLBindingLayout.h"
 #include "BlackPearl/Core.h"
 namespace BlackPearl {
 	BindingLayout::BindingLayout(const OpenGLContext& context, const RHIBindingLayoutDesc& desc)

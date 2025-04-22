@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "BasicRenderer.h"
+#include "Renderer/MasterRenderer/BasicRenderer.h"
 #include "BlackPearl/Component/LightComponent/LightSources.h"
 #include "BlackPearl/Component/LightComponent/ParallelLight.h"
 #include "BlackPearl/Component/LightComponent/PointLight.h"

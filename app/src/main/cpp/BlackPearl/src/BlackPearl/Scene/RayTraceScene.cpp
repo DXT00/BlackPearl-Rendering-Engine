@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "RayTraceScene.h"
+#include "Scene/RayTraceScene.h"
 #include "BlackPearl/Component/BVHNodeComponent/BVHNode.h"
 #include "BlackPearl/Component/MeshRendererComponent/MeshRenderer.h"
 #include "BlackPearl/Component/TransformComponent/Transform.h"

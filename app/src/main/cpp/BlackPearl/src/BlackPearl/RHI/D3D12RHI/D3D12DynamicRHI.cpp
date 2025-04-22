@@ -1,6 +1,6 @@
 #include "pch.h"
-#include "D3D12DynamicRHI.h"
-#include "D3D12Window.h"
+#include "RHI/D3D12RHI/D3D12DynamicRHI.h"
+#include "RHI/D3D12RHI/D3D12Window.h"
 namespace BlackPearl {
 	Window* D3D12DynamicRHI::InitWindow()
 	{

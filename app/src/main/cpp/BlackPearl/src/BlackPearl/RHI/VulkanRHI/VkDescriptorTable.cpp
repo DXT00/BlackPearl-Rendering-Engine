@@ -1,7 +1,7 @@
 #include "pch.h"
 #if GE_API_VULKAN
 
-#include "VkDescriptorTable.h"
+#include "RHI/VulkanRHI/VkDescriptorTable.h"
 
 namespace BlackPearl {
 	DescriptorTable::~DescriptorTable()

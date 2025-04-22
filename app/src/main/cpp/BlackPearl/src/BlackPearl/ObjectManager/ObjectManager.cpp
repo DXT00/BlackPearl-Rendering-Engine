@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "ObjectManager.h"
+#include "ObjectManager/ObjectManager.h"
 #include "BlackPearl/Component/LightComponent/LightSources.h"
 #include "BlackPearl/Component/LightComponent/ParallelLight.h"
 #include "BlackPearl/Component/LightComponent/PointLight.h"
@@ -62,7 +62,7 @@ namespace BlackPearl {
 			break;
 		}
 		case LightType::PointLight: {
-			//TODO:: Ìí¼ÓDirectXÖ§³Ö
+			//TODO:: ï¿½ï¿½ï¿½DirectXÖ§ï¿½ï¿½
 			if (DynamicRHI::g_RHIType == DynamicRHI::Type::OpenGL) {
 
 				std::shared_ptr<PointLight> lightComponent = Obj->AddComponent<PointLight>();
@@ -201,7 +201,7 @@ namespace BlackPearl {
 		}
 
 		material.reset(DBG_NEW Material(shaderPath, texture, { 1.0,1.0,1.0 }, { 1.0,1.0,1.0 }, { 1.0,1.0,1.0 }, {}));
-		//TODO:: ÐÞ¸Äglsl shader £¬ÊÊÅävertex layout
+		//TODO:: ï¿½Þ¸ï¿½glsl shader ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½vertex layout
 //#if GE_API_VULKAN
 		VertexBufferLayout layout = {
 			{ElementDataType::Float3,"aPos",false,0},

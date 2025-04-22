@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "OrthographicCamera.h"
+#include "Component/CameraComponent/OrthographicCamera.h"
 
 namespace BlackPearl {
 

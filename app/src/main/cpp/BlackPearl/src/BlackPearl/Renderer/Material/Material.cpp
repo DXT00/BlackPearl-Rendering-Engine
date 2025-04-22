@@ -1,12 +1,12 @@
 #include "pch.h"
-#include "Material.h"
-#include "MaterialManager.h"
+#include "Renderer/Material/Material.h"
+#include "Renderer/Material/MaterialManager.h"
 #include "BlackPearl/Renderer/DeviceManager.h"
 #include "BlackPearl/Application.h"
 #include "BlackPearl/Renderer/Shader/ShaderFactory.h"
-#include "MaterialTemplate/MaterialTemplatePBR.h"
-#include "MaterialTemplate/MaterialTemplateBlinPhong.h"
-#include "MaterialTemplate/MaterialTemplateCustom.h"
+#include "Renderer/Material/MaterialTemplate/MaterialTemplatePBR.h"
+#include "Renderer/Material/MaterialTemplate/MaterialTemplateBlinPhong.h"
+#include "Renderer/Material/MaterialTemplate/MaterialTemplateCustom.h"
 namespace BlackPearl {
 
     extern ShaderFactory* g_shaderFactory;

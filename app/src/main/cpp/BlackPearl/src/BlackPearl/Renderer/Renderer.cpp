@@ -1,13 +1,13 @@
 #include "pch.h"
 //#include <glad/glad.h>
-#include "Renderer.h"
+#include "Renderer/Renderer.h"
 #include "BlackPearl/Component/LightComponent/Light.h"
 #include "BlackPearl/Component/LightComponent/ParallelLight.h"
 #include "BlackPearl/Component/LightComponent/PointLight.h"
 #include "BlackPearl/Component/LightComponent/SpotLight.h"
 #include "BlackPearl/Component/LightComponent/LightSources.h"
 #include "glm/gtc/matrix_transform.hpp"
-#include "Mesh/Mesh.h"
+#include "Renderer/Mesh/Mesh.h"
 using namespace BlackPearl::math;
 #include <hlsl/core/view_cb.h>
 
@@ -31,7 +31,7 @@ namespace BlackPearl {
 	void Renderer::Init()
 	{
 		//glEnable(GL_DEPTH_TEST);
-		//多重采样，抗锯齿 // MSAA. Set MSAA level using GLFW (see Config.h).
+		//澶氶噸閲囨牱锛屾姉閿娇 // MSAA. Set MSAA level using GLFW (see Config.h).
 		//glEnable(GL_MULTISAMPLE);
 	//	glEnable(GL_BLEND);
 		//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -56,7 +56,7 @@ namespace BlackPearl {
 			if (lightObj->HasComponent<ParallelLight>()) {
 			}
 			if (lightObj->HasComponent<PointLight>()) {
-				//std::dynamic_pointer_cast<PointLight>(lightSource)->GetShader()->Bind();//一定要记得先Bind()指定是哪一个Shader!
+				//std::dynamic_pointer_cast<PointLight>(lightSource)->GetShader()->Bind();//涓�瀹氳璁板緱鍏圔ind()鎸囧畾鏄摢涓�涓猄hader!
 				//glm::mat4 model = glm::mat4(1.0f);
 				//model = glm::translate(model, std::dynamic_pointer_cast<PointLight>(lightSource)->GetPosition());
 				//model = glm::scale(model, glm::vec3(0.5f));

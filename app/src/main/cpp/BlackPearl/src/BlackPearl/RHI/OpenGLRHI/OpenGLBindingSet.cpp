@@ -1,10 +1,10 @@
 #include "pch.h"
-#include "OpenGLBindingSet.h"
-#include "OpenGLDevice.h"
-#include "OpenGLSampler.h"
-#include "OpenGLTexture.h"
-#include "OpenGLSampler.h"
-#include "OpenGLBindingLayout.h"
+#include "RHI/OpenGLRHI/OpenGLBindingSet.h"
+#include "RHI/OpenGLRHI/OpenGLDevice.h"
+#include "RHI/OpenGLRHI/OpenGLSampler.h"
+#include "RHI/OpenGLRHI/OpenGLTexture.h"
+#include "RHI/OpenGLRHI/OpenGLSampler.h"
+#include "RHI/OpenGLRHI/OpenGLBindingLayout.h"
 namespace BlackPearl {
 
 	BindingSet::~BindingSet()
@@ -36,7 +36,7 @@ namespace BlackPearl {
 		for (size_t bindingIndex = 0; bindingIndex < desc.bindings.size(); bindingIndex++)
 		{
 			const BindingSetItem& binding = desc.bindings[bindingIndex];
-			//gl 不需要layout
+			//gl 锟斤拷锟斤拷要layout
 			//const GLBindingItem& layoutBinding = layout->glLayoutBindings[bindingIndex];
 
 			if (binding.resourceHandle == nullptr)

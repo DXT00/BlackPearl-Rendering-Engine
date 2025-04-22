@@ -2,7 +2,7 @@
 //#include "glad/glad.h"
 #include "BlackPearl/RHI/OpenGLRHI/OpenGLDriver/OpenGLFunctions.h"
 
-#include "BufferTexture.h"
+#include "Renderer/Material/BufferTexture.h"
 namespace BlackPearl {
 
 	BufferTexture::BufferTexture(unsigned int bufferSize, int internalFormat,const void* data)

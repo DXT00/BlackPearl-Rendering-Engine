@@ -1,6 +1,11 @@
+
+
 #include "pch.h"
-#include "../OpenGLDrvPrivate.h"
+#ifdef GE_PLATFORM_WINDOWS
 #include "OpenGLDrvWindows.h"
+#endif
+#include "OpenGLDrvPrivate.h"
+
 #include "BlackPearl/RHI/OpenGLRHI/OpenGLViewport.h"
 #include "BlackPearl/RHI/RHIDeviceContext.h"
 #include "BlackPearl/Config.h"
@@ -913,10 +918,10 @@ void PlatformBindContextVAO(FPlatformOpenGLDevice* Device) {
 		glGetIntegerv(GL_VERTEX_ARRAY_BINDING, &currentVAO);
 
 		if (currentVAO == static_cast<GLint>(Device->RenderingContext.VertexArrayObject)) {
-			std::cout << "VAO " << Device->RenderingContext.VertexArrayObject << " ÒÑ°ó¶¨ÇÒÓÐÐ§¡£" << std::endl;
+			std::cout << "VAO " << Device->RenderingContext.VertexArrayObject << " ï¿½Ñ°ï¿½ï¿½ï¿½ï¿½ï¿½Ð§ï¿½ï¿½" << std::endl;
 		}
 		else {
-			std::cerr << "VAO " << Device->RenderingContext.VertexArrayObject << " Î´°ó¶¨»òÎÞÐ§£¡" << std::endl;
+			std::cerr << "VAO " << Device->RenderingContext.VertexArrayObject << " Î´ï¿½ó¶¨»ï¿½ï¿½ï¿½Ð§ï¿½ï¿½" << std::endl;
 		}
 		glBindVertexArray(Device->RenderingContext.VertexArrayObject);
 

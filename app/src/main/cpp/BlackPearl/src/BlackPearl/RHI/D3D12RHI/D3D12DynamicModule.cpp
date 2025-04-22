@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "BlackPearl/Core.h"
-#include "D3D12DynamicModule.h"
-#include "D3D12DynamicRHI.h"
+#include "RHI/D3D12RHI/D3D12DynamicModule.h"
+#include "RHI/D3D12RHI/D3D12DynamicRHI.h"
 
 namespace BlackPearl {
 

@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "BatchNode.h"
+#include "Node/BatchNode.h"
 #include "BlackPearl/Component/MeshRendererComponent/MeshRenderer.h"
 #include "BlackPearl/Component/TransformComponent/Transform.h"
 namespace BlackPearl {

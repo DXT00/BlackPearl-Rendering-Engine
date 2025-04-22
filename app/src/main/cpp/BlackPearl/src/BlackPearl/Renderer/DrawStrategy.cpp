@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "DrawStrategy.h"
+#include "Renderer/DrawStrategy.h"
 #include "BlackPearl/Renderer/CullingManager.h"
 #include "BlackPearl/Component/MeshRendererComponent/MeshRenderer.h"
 #include "BlackPearl/Component/TransformComponent/Transform.h"
@@ -15,7 +15,7 @@ namespace BlackPearl {
 	}
 	void InstancedOpaqueDrawStrategy::FillChunk()
 	{
-		//ÊÓ×¶²Ã¼ô
+		//ï¿½ï¿½×¶ï¿½Ã¼ï¿½
 
 	}
 	void InstancedOpaqueDrawStrategy::PrepareForView(Scene* Scene, const IView& view)
@@ -44,7 +44,7 @@ namespace BlackPearl {
 			{
 				///mesh->UpdateInstanceBuffer(transform);
 
-				// Ò»¸öDrawItem ¶ÔÓ¦Ò»¸ömesh
+				// Ò»ï¿½ï¿½DrawItem ï¿½ï¿½Ó¦Ò»ï¿½ï¿½mesh
 				DrawItem item;
 				//item.instance = meshInstance;
 				item.mesh = mesh.get();

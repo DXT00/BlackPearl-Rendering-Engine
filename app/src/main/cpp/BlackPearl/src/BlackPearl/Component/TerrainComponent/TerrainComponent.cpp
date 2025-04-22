@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "TerrainComponent.h"
+#include "Component/TerrainComponent/TerrainComponent.h"
 namespace BlackPearl {
 	TerrainComponent::TerrainComponent(uint32_t width, uint32_t height, uint32_t chunkCntX, uint32_t chunkCntZ, uint32_t vertexPerChunk)
 		:Component(Component::Type::Terrain),

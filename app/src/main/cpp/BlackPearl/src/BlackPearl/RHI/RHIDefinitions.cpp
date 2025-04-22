@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "RHIDefinitions.h"
+#include "RHI/RHIDefinitions.h"
 
 namespace BlackPearl {
 	bool BlendState::usesConstantColor(uint32_t numTargets) const

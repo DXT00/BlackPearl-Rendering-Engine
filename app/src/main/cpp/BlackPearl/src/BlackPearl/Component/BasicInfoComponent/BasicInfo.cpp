@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "BasicInfo.h"
+#include "Component/BasicInfoComponent/BasicInfo.h"
 
 namespace BlackPearl {
 

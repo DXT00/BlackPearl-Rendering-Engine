@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "BlackPearl/RHI/OpenGLRHI/OpenGLDriver/OpenGLFunctions.h"
-#include "OpenGLUniformBuffer.h"
-#include "OpenGLDriver/OpenGLDrvPrivate.h"
+#include "RHI/OpenGLRHI/OpenGLUniformBuffer.h"
+#include "RHI/OpenGLRHI/OpenGLDriver/OpenGLDrvPrivate.h"
 
 namespace BlackPearl {
 

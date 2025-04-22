@@ -1,5 +1,5 @@
 #include "pch.h"
 #if GE_API_VULKAN
 
-#include "VkMemoryResource.h"
+#include "RHI/VulkanRHI/VkMemoryResource.h"
 #endif

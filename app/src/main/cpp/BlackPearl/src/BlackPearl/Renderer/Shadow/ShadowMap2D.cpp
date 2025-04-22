@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "ShadowMap2D.h"
+#include "Renderer/Shadow/ShadowMap2D.h"
 
 namespace BlackPearl {
 	ShadowMap2D::ShadowMap2D(IDevice* device, int resolution, Format format)
@@ -48,7 +48,7 @@ namespace BlackPearl {
 
 	const std::vector<SceneData*>& ShadowMap2D::GetView() const
 	{
-		// TODO: ÔÚ´Ë´¦²åÈë return Óï¾ä
+		// TODO: ï¿½Ú´Ë´ï¿½ï¿½ï¿½ï¿½ï¿½ return ï¿½ï¿½ï¿½
 		/*std::vector<std::shared_ptr<SceneData>> views;
 		views.push_back(m_View);*/
 		std::vector<SceneData*> views;

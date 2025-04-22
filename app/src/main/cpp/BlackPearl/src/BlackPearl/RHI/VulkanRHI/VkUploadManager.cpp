@@ -1,8 +1,8 @@
 #include "pch.h"
 #if GE_API_VULKAN
 
-#include "VkUploadManager.h"
-#include "VkBuffer.h"
+#include "RHI/VulkanRHI/VkUploadManager.h"
+#include "RHI/VulkanRHI/VkBuffer.h"
 #include "BlackPearl/RHI/RHIDefinitions.h"
 #include "BlackPearl/Common/CommonFunc.h"
 

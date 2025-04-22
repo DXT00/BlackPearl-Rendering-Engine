@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "PerspectiveCamera.h"
+#include "Component/CameraComponent/PerspectiveCamera.h"
 #include <glm/glm.hpp>
 #include "BlackPearl/Config.h"
 #include <glm/gtc/matrix_transform.hpp>

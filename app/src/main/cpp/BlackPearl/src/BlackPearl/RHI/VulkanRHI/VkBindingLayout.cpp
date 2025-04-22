@@ -2,9 +2,9 @@
 #if GE_API_VULKAN
 
 #include <unordered_map>
-#include "VkBindingLayout.h"
-#include "VkUtil.h"
-#include "VkEnum.h"
+#include "RHI/VulkanRHI/VkBindingLayout.h"
+#include "RHI/VulkanRHI/VkUtil.h"
+#include "RHI/VulkanRHI/VkEnum.h"
 #include "BlackPearl/Core.h"
 #include "BlackPearl/RHI/RHIBindingLayout.h"
 #include "BlackPearl/RHI/RHIBindingSet.h"
@@ -114,7 +114,7 @@ namespace BlackPearl {
         }
 	}
     /*    
-     ÔÚ Binding ÖĞ¿ÉÒÔÖ¸¶¨ descriptorCount ×Ö¶ÎÀ´ÉèÖÃÃèÊö·ûÊıÁ¿£¬ÊıÁ¿´óÓÚ 1 ÔòÒâÎ¶×ÅÕâÊÇ¸ö AoD (Array of Descriptor),ÓĞÏŞ Bindless     
+     ï¿½ï¿½ Binding ï¿½Ğ¿ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½ descriptorCount ï¿½Ö¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 1 ï¿½ï¿½ï¿½ï¿½Î¶ï¿½ï¿½ï¿½ï¿½ï¿½Ç¸ï¿½ AoD (Array of Descriptor),ï¿½ï¿½ï¿½ï¿½ Bindless     
     */
 	BindingLayout::BindingLayout(const VulkanContext& context, const RHIBindlessLayoutDesc& _desc)
 		: bindlessDesc(_desc)

@@ -22,7 +22,7 @@
 
 #include "pch.h"
 #include "BlackPearl/Math/dnoutMath.h"
-#include "vector.h"
+#include "Math/vector.h"
 namespace BlackPearl::math
 {
     plane plane::normalize() const

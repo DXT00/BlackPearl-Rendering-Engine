@@ -1,11 +1,11 @@
 #include "pch.h"
-#include "Camera.h"
-#include "OrthographicCamera.h"
-#include "PerspectiveCamera.h"
-#include "BlackPearl/Core.h"
+#include "Component/CameraComponent/Camera.h"
+#include "Component/CameraComponent/OrthographicCamera.h"
+#include "Component/CameraComponent/PerspectiveCamera.h"
+#include "Core.h"
 #include <glm/gtc/matrix_transform.hpp>
 #include "BlackPearl/Component/Component.h"
-#include "BlackPearl/Math/Math.h"
+#include "Math/Math.h"
 
 namespace BlackPearl {
 
@@ -54,7 +54,7 @@ namespace BlackPearl {
 	}
 
 	void Camera::SwitchToFace(unsigned int i)
-	{	//·þ´ÓÓÒÊÖ×ø±êÏµ£¨Ê³Ö¸Ö¸Ïòfront£¬´óÄ´Ö¸Ö¸Ïòup£©
+	{	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ïµï¿½ï¿½Ê³Ö¸Ö¸ï¿½ï¿½frontï¿½ï¿½ï¿½ï¿½Ä´Ö¸Ö¸ï¿½ï¿½upï¿½ï¿½
 		switch (i)
 		{
 		case 0://+x yaw pitch

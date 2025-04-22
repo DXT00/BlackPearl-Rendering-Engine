@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "GenData_TV.h"
+#include "RayTracing/GenData_TV.h"
 
 namespace BlackPearl {
 

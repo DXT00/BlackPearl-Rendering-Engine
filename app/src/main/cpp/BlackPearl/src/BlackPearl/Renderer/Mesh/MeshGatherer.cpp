@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "MeshGatherer.h"
+#include "Renderer/Mesh/MeshGatherer.h"
 #include "BlackPearl/Node/SingleNode.h"
 #include "BlackPearl/Math/Math.h"
 #include "BlackPearl/Component/MeshRendererComponent/MeshRenderer.h"
@@ -71,7 +71,7 @@ namespace BlackPearl {
 		{
 			SingleNode* singleNode = dynamic_cast<SingleNode*>(node);
 			Object* obj = singleNode->GetObj();
-			auto& meshes = obj->GetComponent<MeshRenderer>()->GetMeshes();
+			const auto& meshes = obj->GetComponent<MeshRenderer>()->GetMeshes();
 			std::vector<uint32_t> matIds;
 			uint32_t startMesh = baseMesh;
 		

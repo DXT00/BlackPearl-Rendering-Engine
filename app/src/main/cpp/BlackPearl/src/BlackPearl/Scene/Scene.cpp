@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "Scene.h"
+#include "Scene/Scene.h"
 #include "BlackPearl/Node/SingleNode.h"
 #include "BlackPearl/Component/BoundingBoxComponent/BoundingBox.h"
 #include "BlackPearl/LayerScene/Layer.h"

@@ -1,6 +1,6 @@
 #include "pch.h"
-#include "RHIRenderTarget.h"
-#include "RHITexture.h"
+#include "RHI/RHIRenderTarget.h"
+#include "RHI/RHITexture.h"
 namespace BlackPearl {
 
 

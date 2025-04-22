@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "ShadowBox.h"
+#include "Renderer/Shadow/ShadowBox/ShadowBox.h"
 //#include "BlackPearl/Renderer/MasterRenderer/ShadowMapRenderer.h"
 #include "glm/ext/matrix_transform.hpp"
 #include <glm/gtc/matrix_transform.hpp>
@@ -126,7 +126,7 @@ namespace BlackPearl {
 
 	glm::vec3 ShadowBox::GetCenter()
 	{
-		//ÐèÒª°ÑËü×ª»¯ÎªÊÀ½ç×ø±êÏµ£¬ËùÒÔÐèÒª³ËÒÔlightViewMatrixµÄÄæ¾ØÕó
+		//ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½×ªï¿½ï¿½Îªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ïµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½lightViewMatrixï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		float x = (m_MinX + m_MaxX) / 2.0f;
 		float y = (m_MinY + m_MaxY) / 2.0f;
 		float z = (m_MinZ + m_MaxZ) / 2.0f;

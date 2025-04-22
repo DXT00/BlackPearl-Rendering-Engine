@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "GenData_MV.h"
+#include "RayTracing/GenData_MV.h"
 
 
 namespace BlackPearl {
@@ -43,7 +43,7 @@ namespace BlackPearl {
 			m_Color2Vec[color].push_back(m_MatData.size());
 
 		}
-		m_MatData.push_back(-1);//´æ´¢texture idx»òcolor idx
+		m_MatData.push_back(-1);//ï¿½æ´¢texture idxï¿½ï¿½color idx
 
 	}
 
@@ -67,7 +67,7 @@ namespace BlackPearl {
 			m_Color2Vec[color].push_back(m_MatData.size());
 
 		}
-		m_MatData.push_back(-1);//´æ´¢texture idx»òcolor idx
+		m_MatData.push_back(-1);//ï¿½æ´¢texture idxï¿½ï¿½color idx
 		m_MatData.push_back(material->GetProps().shininess);
 	}
 
@@ -90,7 +90,7 @@ namespace BlackPearl {
 
 
 
-		//m_MatData.push_back(-1);//´æ´¢texture idx»òcolor idx
+		//m_MatData.push_back(-1);//ï¿½æ´¢texture idxï¿½ï¿½color idx
 		m_MatData.push_back(material->GetProps().refractIndex);
 	}
 

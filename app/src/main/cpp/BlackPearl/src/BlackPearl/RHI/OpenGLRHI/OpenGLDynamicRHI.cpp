@@ -1,7 +1,7 @@
 #include "pch.h"
-#include "OpenGLDynamicRHI.h"
-#include "OpenGLWindow.h"
-#include "OpenGLLogger.h"
+#include "RHI/OpenGLRHI/OpenGLDynamicRHI.h"
+#include "RHI/OpenGLRHI/OpenGLWindow.h"
+#include "RHI/OpenGLRHI/OpenGLLogger.h"
 namespace BlackPearl {
 	Window* OpenGLDynamicRHI::InitWindow()
 	{
@@ -14,7 +14,10 @@ namespace BlackPearl {
 
 	void OpenGLDynamicRHI::EngineExit()
 	{
+#ifdef GE_PLATFORM_WINDOWS
 		glfwTerminate();
+#endif
+        //Android todo:: terminate in: ~FPlatformOpenGLDevice()
 
 	}
 

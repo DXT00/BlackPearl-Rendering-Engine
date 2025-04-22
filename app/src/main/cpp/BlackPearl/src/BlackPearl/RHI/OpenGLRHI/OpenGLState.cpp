@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "OpenGLState.h"
+#include "RHI/OpenGLRHI/OpenGLState.h"
 
 namespace BlackPearl {
 	GLint GMaxOpenGLTextureFilterAnisotropic = 1;

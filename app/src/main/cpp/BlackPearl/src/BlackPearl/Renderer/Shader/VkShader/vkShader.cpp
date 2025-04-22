@@ -1,6 +1,6 @@
 #pragma once
 #include"pch.h"
-#include "vkShader.h"
+#include "Renderer/Shader/VkShader/vkShader.h"
 #include <BlackPearl/Core.h>
 #include "BlackPearl/Component/LightComponent/ParallelLight.h"
 #include "BlackPearl/Component/LightComponent/PointLight.h"
@@ -10,11 +10,8 @@
 #include "BlackPearl/Component/LightComponent/LightSources.h"
 #include "BlackPearl/Component/TransformComponent/Transform.h"
 #include "BlackPearl/Core.h"
-#include "VkShader.h"
 #include "BlackPearl/RHI/RHIPipeline.h"
-#include "VkShader.h"
-#include "VkShader.h"
-#include "VkShader.h"
+
 namespace BlackPearl {
 
 	static GLenum ShaderTypeFromString(const std::string& type) {
@@ -145,7 +142,7 @@ namespace BlackPearl {
 	//		if (lightObj->HasComponent<SpotLight>()) {
 	//			auto lightSource = lightObj->GetComponent<SpotLight>();
 
-	//			lightSource->UpdatePositionAndDirection(Renderer::GetSceneData()->CameraPosition, Renderer::GetSceneData()->CameraFront);//SpotLightµÄÊ±ºò¼ÇµÃ¸üÐÂCamera
+	//			lightSource->UpdatePositionAndDirection(Renderer::GetSceneData()->CameraPosition, Renderer::GetSceneData()->CameraFront);//SpotLightï¿½ï¿½Ê±ï¿½ï¿½ÇµÃ¸ï¿½ï¿½ï¿½Camera
 
 	//			this->SetUniform1ui("u_LightType", (unsigned int)LightType::SpotLight);
 	//			this->SetUniform1i("u_HasSpotLight", 1);
@@ -153,7 +150,7 @@ namespace BlackPearl {
 	//			this->SetUniformVec3f("u_SpotLight.ambient", lightSource->GetLightProps().ambient);
 	//			this->SetUniformVec3f("u_SpotLight.diffuse", lightSource->GetLightProps().diffuse);
 	//			this->SetUniformVec3f("u_SpotLight.specular", lightSource->GetLightProps().specular);
-	//			this->SetUniformVec3f("u_SpotLight.position", lightSource->GetPosition()); //TODO:Position Ó¦¸Ã´ÓTransformÄÃ
+	//			this->SetUniformVec3f("u_SpotLight.position", lightSource->GetPosition()); //TODO:Position Ó¦ï¿½Ã´ï¿½Transformï¿½ï¿½
 	//			this->SetUniformVec3f("u_SpotLight.direction", lightSource->GetDirection());
 
 	//			this->SetUniform1f("u_SpotLight.cutOff", lightSource->GetCutOffAngle());

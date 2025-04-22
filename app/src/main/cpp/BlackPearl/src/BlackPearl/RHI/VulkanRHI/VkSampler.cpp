@@ -1,8 +1,8 @@
 #include "pch.h"
 #if GE_API_VULKAN
 
-#include "VkBindingLayout.h"
-#include "VkSampler.h"
+#include "RHI/VulkanRHI/VkBindingLayout.h"
+#include "RHI/VulkanRHI/VkSampler.h"
 
 namespace BlackPearl {
 

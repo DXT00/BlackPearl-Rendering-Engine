@@ -1,14 +1,15 @@
 #include "pch.h"
-#include "BlackPearl/RHI/OpenGLRHI/OpenGLDriver/OpenGLFunctions.h"
-#include "OpenGLFrameBuffer.h"
-#include "OpenGLBuffer.h"
-#include "OpenGLUtil.h"
-#include "OpenGLTexture.h"
-#include "BlackPearl/Config.h"
-#include "BlackPearl/Core.h"
-#include "OpenGLDevice.h"
-#include "BlackPearl/RHI/RHIGlobals.h"
-#include "BlackPearl/RHI/RHIDefinitions.h"
+#include "RHI/OpenGLRHI/OpenGLDriver/OpenGLFunctions.h"
+#include "RHI/OpenGLRHI/OpenGLFrameBuffer.h"
+#include "RHI/OpenGLRHI/OpenGLBuffer.h"
+#include "RHI/OpenGLRHI/OpenGLUtil.h"
+#include "RHI/OpenGLRHI/OpenGLTexture.h"
+#include "RHI/OpenGLRHI/OpenGLDevice.h"
+
+#include "Config.h"
+#include "Core.h"
+#include "RHI/RHIGlobals.h"
+#include "RHI/RHIDefinitions.h"
 namespace BlackPearl {
     // GL_MAX_DRAW_BUFFERS value
     GLint GMaxOpenGLDrawBuffers = 0;
