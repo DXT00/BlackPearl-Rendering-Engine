@@ -838,6 +838,7 @@ void AndroidEGL::DestroyContext(EGLContext InContext)
 EGLContext AndroidEGL::CreateContext(EGLContext InSharedContext)
 {
 	//VERIFY_EGL_SCOPE();
+    LOGI("[dxt00] in AndroidEGL::CreateContext eglCreateContext");
 	return eglCreateContext(PImplData->eglDisplay, PImplData->eglConfigParam,  InSharedContext , ContextAttributes);
 }
 

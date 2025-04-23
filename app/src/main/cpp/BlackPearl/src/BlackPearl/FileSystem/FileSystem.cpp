@@ -190,32 +190,32 @@ static int enumerateNativeFiles(const char* pattern, bool directories, enumerate
     glob_t glob_matches;
     int globResult = GLOB_NOMATCH;
     int numEntries = 0;
-#if __ANDROID_API__ >= 28
-
-     globResult = glob(pattern, 0 /*flags*/, nullptr /*errfunc*/, &glob_matches);
-
-    if (globResult == 0)
-    {
-
-        for (int i = 0; i < glob_matches.gl_pathc; ++i)
-        {
-            const char* globentry = (glob_matches.gl_pathv)[i];
-            std::error_code ec, ec2;
-            std::filesystem::directory_entry entry(globentry, ec);
-            if (!ec)
-            {
-                if (directories == entry.is_directory(ec2) && !ec2)
-                {
-                    callback(entry.path().filename().native());
-                    ++numEntries;
-                }
-            }
-        }
-
-        globfree(&glob_matches);
-        return numEntries;
-    }
-#else
+//#if __ANDROID_API__ >= 28
+//
+//     globResult = glob(pattern, 0 /*flags*/, nullptr /*errfunc*/, &glob_matches);
+//
+//    if (globResult == 0)
+//    {
+//
+//        for (int i = 0; i < glob_matches.gl_pathc; ++i)
+//        {
+//            const char* globentry = (glob_matches.gl_pathv)[i];
+//            std::error_code ec, ec2;
+//            std::filesystem::directory_entry entry(globentry, ec);
+//            if (!ec)
+//            {
+//                if (directories == entry.is_directory(ec2) && !ec2)
+//                {
+//                    callback(entry.path().filename().native());
+//                    ++numEntries;
+//                }
+//            }
+//        }
+//
+//        globfree(&glob_matches);
+//        return numEntries;
+//    }
+//#else
     const char* path = "./";  // 或者从pattern中提取目录
     DIR* dir = opendir(path);
     if (!dir) return 0;
@@ -230,7 +230,7 @@ static int enumerateNativeFiles(const char* pattern, bool directories, enumerate
     }
     closedir(dir);
     return numEntries;
-#endif
+//#endif
 
 
     if (globResult == GLOB_NOMATCH)

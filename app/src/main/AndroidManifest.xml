@@ -2,6 +2,13 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <!--
+    This .apk has no Java/Kotlin code, so set hasCode to false.
+
+    If you copy from this sample and later add Java/Kotlin code, or add a
+    dependency on a library that does (such as androidx), be sure to set
+    `android:hasCode` to `true` (or just remove it, since that's the default).
+    -->
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -14,17 +21,33 @@
         android:theme="@style/Theme.BlackPearl"
         android:requestLegacyExternalStorage="true"
         android:hardwareAccelerated="false"
-        tools:targetApi="31"
+        android:hasCode="true"
+        android:name="androidx.multidex.MultiDexApplication"
         tools:ignore="HardcodedDebugMode">
+
+        <!-- 在这里添加 Startup Provider -->
+        <provider
+            android:name="androidx.startup.InitializationProvider"
+            android:authorities="${applicationId}.androidx-startup"
+            android:exported="false">
+            <meta-data
+                android:name="androidx.work.WorkManagerInitializer"
+                android:value="androidx.startup" />
+        </provider>
+
         <activity
-            android:name=".MainActivity"
-            android:exported="true">
+            android:name="android.app.NativeActivity"
+            android:exported="true"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="landscape"
+            tools:ignore="DiscouragedApi">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="SandBoxAndroid" />
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
     </application>
-
 </manifest>

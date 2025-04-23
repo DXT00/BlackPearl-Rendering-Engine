@@ -8,19 +8,31 @@ android {
 
     defaultConfig {
         applicationId = "com.example.blackpearl"
-        minSdk = 31
+        minSdk = 29
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
-
+        // 确保包含 Java 代码
+        multiDexEnabled true
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         ndk {
-            abiFilters "arm64-v8a"
+            //noinspection ChromeOsAbiSupport
+            abiFilters 'arm64-v8a'
             //abiFilters "armeabi-v7a"
         }
+        externalNativeBuild {
+            cmake {
+                cppFlags "-g"
+                arguments "-DANDROID_STL=c++_shared"
+            }
+        }
     }
-
+    splits {
+        abi {
+            enable false // 确保不启用ABI分包
+        }
+    }
     buildTypes {
         release {
             debuggable true
@@ -61,7 +73,8 @@ android {
 
         }
     }
-        packagingOptions {
+
+    packagingOptions {
         pickFirst 'lib/arm64-v8a/libassimpd.so'
         pickFirst 'lib/arm64-v8a/libSandBoxAndriod.so'
     }
@@ -70,16 +83,21 @@ android {
     buildFeatures {
         viewBinding = true
     }
+    ndkVersion '25.1.8937393'
+
 }
 
 dependencies {
-
+    implementation libs.startup.runtime
+    implementation libs.work.runtime
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.constraintlayout)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
+    implementation(libs.multidex)
+
 
 
 }

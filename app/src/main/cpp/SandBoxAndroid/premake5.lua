@@ -1,4 +1,4 @@
-project "SandBoxAndriod"
+project "SandBoxAndroid"
 	location "."
 	kind "StaticLib"
 	language "C++"

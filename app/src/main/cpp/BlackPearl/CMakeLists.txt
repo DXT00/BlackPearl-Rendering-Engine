@@ -25,7 +25,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${ROOT_DIR}/bin/${OUTPUT_DIR}/${PROJECT_NAME
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${ROOT_DIR}/bin/${OUTPUT_DIR}/${PROJECT_NAME}")
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${ROOT_DIR}/bin/${OUTPUT_DIR}/${PROJECT_NAME}")
 set(CMAKE_OBJECT_OUTPUT_DIRECTORY "${ROOT_DIR}/bin-int/${OUTPUT_DIR}/${PROJECT_NAME}")
-
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O0")
 
 message(STATUS "CMAKE_RUNTIME_OUTPUT_DIRECTORY---${CMAKE_RUNTIME_OUTPUT_DIRECTORY},OUTPUT_DIR=${OUTPUT_DIR}")
 set(RENDER_API "opengl")
@@ -178,6 +178,12 @@ if(ANDROID)
     target_compile_options(android_native_app_glue PRIVATE -Wno-unused-parameter)
 endif()
 
+
+# 标记为可被其他模块使用
+set_target_properties(android_native_app_glue PROPERTIES
+        INTERFACE_INCLUDE_DIRECTORIES ${ANDROID_NDK}/sources/android/native_app_glue
+        VISIBILITY_INTERFACE_PUBLIC ON
+)
 
 ################################################################ 库目录 ################################################################
 target_link_directories(

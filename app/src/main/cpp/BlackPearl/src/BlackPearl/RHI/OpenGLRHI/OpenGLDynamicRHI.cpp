@@ -18,7 +18,7 @@ namespace BlackPearl {
 		glfwTerminate();
 #endif
         //Android todo:: terminate in: ~FPlatformOpenGLDevice()
-
+        //FAndroidAppEntry::ReleaseEGL();
 	}
 
 	/*void OpenGLDynamicRHI::InitLogger() {

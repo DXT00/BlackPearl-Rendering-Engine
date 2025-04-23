@@ -48,17 +48,17 @@ workspace "BlackPearl"
 
 -- Include directories relative to root folder (solution directory)
 IncludeDir = {}
-IncludeDir["GLFW"] = "BlackPearl/vendor/GLFW/include"
-IncludeDir["Glad"] = "BlackPearl/vendor/Glad/include"
+IncludeDir["GLFW"]  = "BlackPearl/vendor/GLFW/include"
+IncludeDir["Glad"]  = "BlackPearl/vendor/Glad/include"
 IncludeDir["ImGui"] = "BlackPearl/vendor/imgui"
-IncludeDir["glm"] = "BlackPearl/vendor/glm"
-IncludeDir["stb"] = "BlackPearl/vendor/stb"
+IncludeDir["glm"]   = "BlackPearl/vendor/glm"
+IncludeDir["stb"]   = "BlackPearl/vendor/stb"
 IncludeDir["assimp"] = "BlackPearl/vendor/assimp/include"
-IncludeDir["GLEW"] = "BlackPearl/vendor/GLEW/include"
+IncludeDir["GLEW"]   = "BlackPearl/vendor/GLEW/include"
 IncludeDir["vulkan"] = "BlackPearl/vendor/vulkan/1.3.290.0/Include"
-IncludeDir["directxtex"] = "BlackPearl/vendor/directxtex_uwp.2022.7.30.1/include"
+IncludeDir["directxtex"]  = "BlackPearl/vendor/directxtex_uwp.2022.7.30.1/include"
 IncludeDir["directxmesh"] = "BlackPearl/vendor/directxmesh_desktop_win10.2022.7.30.1/include"
-IncludeDir["ShaderMake"] = "BlackPearl/vendor/ShaderMake/include"
+IncludeDir["ShaderMake"]  = "BlackPearl/vendor/ShaderMake/include"
 
 IncludeDir["hlslShader"] = "SandboxDX/assets/shaders_hlsl_h"
 -- use system lib and gl include

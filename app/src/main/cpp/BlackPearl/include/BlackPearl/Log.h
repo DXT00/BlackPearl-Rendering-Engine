@@ -6,6 +6,25 @@
 #ifdef	GE_API_D3D12
 #include "BlackPearl/RHI/D3D12RHI/D3D12Logger.h"
 #endif
+
+
+#ifdef GE_PLATFORM_ANDROID
+#include <android/log.h>
+#define LOG_TAG "Native-BlackPearl"
+
+#define _LOG(priority, fmt, ...) \
+  ((void)__android_log_print((priority), (LOG_TAG), (fmt)__VA_OPT__(, ) __VA_ARGS__));
+
+#define LOGE(fmt, ...) _LOG(ANDROID_LOG_ERROR, (fmt)__VA_OPT__(, ) __VA_ARGS__)
+#define LOGW(fmt, ...) _LOG(ANDROID_LOG_WARN, (fmt)__VA_OPT__(, ) __VA_ARGS__)
+#define LOGI(fmt, ...) _LOG(ANDROID_LOG_INFO, (fmt)__VA_OPT__(, ) __VA_ARGS__)
+#else
+#define LOGW(fmt, ...) _LOG(ANDROID_LOG_WARN, (fmt)__VA_OPT__(, ) __VA_ARGS__)
+#define LOGI(fmt, ...) _LOG(ANDROID_LOG_INFO, (fmt)__VA_OPT__(, ) __VA_ARGS__)
+#endif
+
+
+
 namespace spdlog{
     class logger;
 }
