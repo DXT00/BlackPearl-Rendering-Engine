@@ -23,8 +23,20 @@ option(BUILD_FROM_BLACKPEARL "Build from blackpearl" ON)
 #elseif(ANDROID)
 #    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BUILD_TYPE}-${CMAKE_SYSTEM_NAME}-${CMAKE_ANDROID_ARCH_ABI})
 #endif()
-
 set(RENDER_API "opengl")
+if(ANDROID)
+
+    # 设置交叉编译工具链（关键部分）
+    set(CMAKE_SYSTEM_NAME Android)
+    set(CMAKE_SYSTEM_VERSION 26)  # Android 8.0
+    set(ANDROID_PLATFORM android-26)
+    set(ANDROID_ABI arm64-v8a)
+    set(CMAKE_ANDROID_ARCH_ABI arm64-v8a)
+
+    set(CMAKE_TOOLCHAIN_FILE ${ANDROID_NDK}/build/cmake/android.toolchain.cmake)
+
+endif()
+
 ## 包含目录
 #include_directories(
 #        ${CMAKE_CURRENT_SOURCE_DIR}/BlackPearl/vendor/GLFW/include
@@ -57,7 +69,7 @@ if(WIN32)
 endif()
 
 if(ANDROID)
-    add_subdirectory(SandboxAndriod)
+    add_subdirectory(SandBoxAndroid)
 
 
 endif()

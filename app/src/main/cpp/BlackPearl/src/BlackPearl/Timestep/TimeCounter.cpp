@@ -22,7 +22,7 @@ namespace BlackPearl {
 		milliseconds currentTimeMs = duration_cast<milliseconds>(system_clock::now().time_since_epoch());
 		double runtime = currentTimeMs.count() - m_StartTimeMs;
 
-		GE_CORE_WARN("{0} total time:{1}", str, runtime / 1000.0f);
+		GE_CORE_WARN("%s total time:%f", str.c_str(), runtime / 1000.0f);
 		
 	}
 

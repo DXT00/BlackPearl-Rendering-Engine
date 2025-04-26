@@ -77,7 +77,7 @@ namespace BlackPearl {
 		if (!ShaderMake::findPermutationInBlob(byteCode->data(), byteCode->size(), constants.data(), uint32_t(constants.size()), &permutationBytecode, &permutationSize))
 		{
 			const std::string message = ShaderMake::formatShaderNotFoundMessage(byteCode->data(), byteCode->size(), constants.data(), uint32_t(constants.size()));
-			GE_CORE_ERROR(message.c_str());
+			GE_CORE_ERROR("%s",message.c_str());
 
 			return nullptr;
 		}

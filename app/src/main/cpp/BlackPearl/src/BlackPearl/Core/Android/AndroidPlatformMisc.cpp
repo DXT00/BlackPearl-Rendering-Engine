@@ -344,9 +344,9 @@ namespace BlackPearl {
         jmethodID		StopReceiver;
     } JavaEventReceivers[] =
     {
-        { "com/epicgames/unreal/VolumeReceiver",{ "volumeChanged", "(I)V",  (void *)Java_com_epicgames_unreal_VolumeReceiver_volumeChanged } },
-        { "com/epicgames/unreal/BatteryReceiver",{ "dispatchEvent", "(III)V",(void *)Java_com_epicgames_unreal_BatteryReceiver_dispatchEvent } },
-        { "com/epicgames/unreal/HeadsetReceiver",{ "stateChanged",  "(I)V",  (void *)Java_com_epicgames_unreal_HeadsetReceiver_stateChanged } },
+        { "com/example/blackpearl/VolumeReceiver",{ "volumeChanged", "(I)V",  (void *)Java_com_epicgames_unreal_VolumeReceiver_volumeChanged } },
+        { "com/example/blackpearl/BatteryReceiver",{ "dispatchEvent", "(III)V",(void *)Java_com_epicgames_unreal_BatteryReceiver_dispatchEvent } },
+        { "com/example/blackpearl/HeadsetReceiver",{ "stateChanged",  "(I)V",  (void *)Java_com_epicgames_unreal_HeadsetReceiver_stateChanged } },
     };
     
     void InitializeJavaEventReceivers()
@@ -552,7 +552,7 @@ namespace BlackPearl {
 //
 //            if (getRotationMethod == 0 || getOrientationMethod == 0)
 //            {
-//                jclass MainClass = AndroidJavaEnv::FindJavaClassGlobalRef("com/epicgames/unreal/GameActivity");
+//                jclass MainClass = AndroidJavaEnv::FindJavaClassGlobalRef("com/example/blackpearl/MainNativeActivity");
 //                if (MainClass != nullptr)
 //                {
 //                    getRotationMethod = JEnv->GetMethodID(MainClass, "AndroidThunkJava_GetDeviceRotation", "()I");
@@ -1651,7 +1651,7 @@ namespace BlackPearl {
             JNIEnv* JEnv = AndroidJavaEnv::GetJavaEnv();
             if (nullptr != JEnv)
             {
-                jclass Class = AndroidJavaEnv::FindJavaClassGlobalRef("com/epicgames/unreal/GameActivity");
+                jclass Class = AndroidJavaEnv::FindJavaClassGlobalRef("com/example/blackpearl/MainNativeActivity");
                 if (nullptr != Class)
                 {
                     jfieldID Field = JEnv->GetStaticFieldID(Class, "ANDROID_BUILD_VERSION", "I");
@@ -1686,7 +1686,7 @@ namespace BlackPearl {
             JNIEnv* JEnv = AndroidJavaEnv::GetJavaEnv();
             if (nullptr != JEnv)
             {
-                jclass Class = AndroidJavaEnv::FindJavaClassGlobalRef("com/epicgames/unreal/GameActivity");
+                jclass Class = AndroidJavaEnv::FindJavaClassGlobalRef("com/example/blackpearl/MainNativeActivity");
                 if (nullptr != Class)
                 {
                     jfieldID Field = JEnv->GetStaticFieldID(Class, "bSupportedDevice", "Z");

@@ -74,7 +74,7 @@ namespace BlackPearl
                     else if (type == GL_TESS_EVALUATION_SHADER)shaderType = "tessellation evaluation shader";
 
 
-                    GE_CORE_ERROR("{0} compile failed :{1}", shaderType, infoLog.data());
+                    GE_CORE_ERROR("%s compile failed :%s", shaderType.c_str(), infoLog.data());
                     GE_ASSERT(false, "Shader compliation failure!")
                     
                     return false;
@@ -308,7 +308,7 @@ namespace BlackPearl
                 else if (type == GL_TESS_EVALUATION_SHADER)shaderType = "tessellation evaluation shader";
 
 
-                GE_CORE_ERROR("{0} compile failed :{1}", shaderType, infoLog.data());
+                GE_CORE_ERROR("%s compile failed :%s", shaderType.c_str(), infoLog.data());
                 GE_ASSERT(false, "Shader compliation failure!")
 
                 break;
@@ -480,7 +480,7 @@ namespace BlackPearl
         glGetProgramInfoLog(m_RendererID, bufLen, &strLen, infoLog);
         if (strLen > 0) {
             std::string result = reinterpret_cast<char *>(infoLog);
-            GE_CORE_INFO(result);
+            GE_CORE_INFO("%s", result.c_str());
 
         }
         delete[] infoLog;

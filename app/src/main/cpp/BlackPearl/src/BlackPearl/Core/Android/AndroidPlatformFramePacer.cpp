@@ -24,7 +24,7 @@ void FAndroidPlatformRHIFramePacer::Init(IAndroidFramePacer* InFramePacer)
     {
         RefreshRatesString += std::to_string(Rate);
     }
-    GE_CORE_INFO("Device supports the following refresh rates {}" , RefreshRatesString);
+    GE_CORE_INFO("Device supports the following refresh rates %s" , RefreshRatesString.c_str());
     FramePacer = InFramePacer;
     FramePacer->Init();
 }

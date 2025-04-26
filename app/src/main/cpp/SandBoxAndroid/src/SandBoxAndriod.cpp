@@ -38,7 +38,8 @@ public:
         if (renderer == BP_RHIRenderGraphLayer) {
           //  layer = DBG_NEW VkRHIRenderGraphLayer(layer_name);
         }
-        GetLayerManager()->PushLayer(layer);
+        if(layer)
+            GetLayerManager()->PushLayer(layer);
     }
     virtual ~SandBoxAndroid() {
 

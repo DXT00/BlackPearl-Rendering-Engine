@@ -142,10 +142,35 @@ namespace BlackPearl {
 #error "Unsupported compiler"
 #endif
 
-#define GE_CORE_TRACE(...) { g_Log->Trace(__VA_ARGS__);}
-#define GE_CORE_INFO(...)  { g_Log->Info(__VA_ARGS__);}
-#define GE_CORE_WARN(...)  { g_Log->Warn(__VA_ARGS__);}
-#define GE_CORE_ERROR(...) { g_Log->Error(__VA_ARGS__); DEBUG_BREAK();}
-#define GE_CORE_FATAL(...) { g_Log->Fatal(__VA_ARGS__);}
+
+
+#ifdef GE_PLATFORM_WINDOWS
+#define GE_CORE_TRACE(fmt,...) { g_Log->Trace(fmt,__VA_ARGS__);}
+#define GE_CORE_INFO(fmt,...)  { g_Log->Info(fmt,__VA_ARGS__);}
+#define GE_CORE_WARN(fmt,...)  { g_Log->Warn(fmt,__VA_ARGS__);}
+#define GE_CORE_ERROR(fmt,...) { g_Log->Error(fmt,__VA_ARGS__); DEBUG_BREAK();}
+#define GE_CORE_FATAL(fmt,...) { g_Log->Fatal(fmt,__VA_ARGS__);}
+
+//#define GE_CORE_TRACE(...) { g_Log->Trace(__VA_ARGS__);}
+//#define GE_CORE_INFO(...)  { g_Log->Info(__VA_ARGS__);}
+//#define GE_CORE_WARN(...)  { g_Log->Warn(__VA_ARGS__);}
+//#define GE_CORE_ERROR(...) { g_Log->Error(__VA_ARGS__); DEBUG_BREAK();}
+//#define GE_CORE_FATAL(...) { g_Log->Fatal(__VA_ARGS__);}
+
+
+#elif defined(GE_PLATFORM_ANDROID)
+#define GE_CORE_TRACE(fmt, ...)  LOGE(fmt, __VA_ARGS__)
+#define GE_CORE_INFO(fmt, ...)   LOGI(fmt, __VA_ARGS__)
+#define GE_CORE_WARN(fmt, ...)   LOGW(fmt, __VA_ARGS__)
+#define GE_CORE_ERROR(fmt, ...)  {LOGE(fmt, __VA_ARGS__); DEBUG_BREAK();}
+#define GE_CORE_FATAL(fmt, ...)  LOGE(fmt, __VA_ARGS__);
+
+#define GE_CORE_TRACE_VOID(...)  LOGI("%s", __VA_ARGS__)
+#define GE_CORE_INFO_VOID(...)   LOGI("%s", __VA_ARGS__)
+#define GE_CORE_WARN_VOID(...)   LOGW("%s", __VA_ARGS__)
+#define GE_CORE_ERROR_VOID(...)  {LOGE("%s", __VA_ARGS__); DEBUG_BREAK();}
+#define GE_CORE_FATAL_VOID(...)  LOGE("%s", __VA_ARGS__);
+#endif
+
 
 #endif

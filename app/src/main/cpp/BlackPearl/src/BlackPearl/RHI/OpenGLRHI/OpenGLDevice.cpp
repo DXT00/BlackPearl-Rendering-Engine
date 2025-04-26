@@ -518,7 +518,7 @@ namespace BlackPearl
 				// GL vendor and version information.
 
 #define LOG_GL_STRING(StringEnum)\
-GE_CORE_INFO(#StringEnum + std::string(":") + std::string((const char*)glGetString(StringEnum)));
+GE_CORE_INFO(#StringEnum":%s" , ((const char*)glGetString(StringEnum)));
 
 
 //#undef LOG_GL_STRING
@@ -553,7 +553,7 @@ GE_CORE_INFO(#StringEnum + std::string(":") + std::string((const char*)glGetStri
 #endif
 
 			// Log supported GL extensions
-			GE_CORE_INFO("OpenGL Extensions:" + ExtensionsString);
+			GE_CORE_INFO("OpenGL Extensions:%s", ExtensionsString.c_str());
 			/*		std::vector<std::string> GLExtensionArray;
 					ExtensionsString.ParseIntoArray(GLExtensionArray, TEXT(" "), true);
 					for (int ExtIndex = 0; ExtIndex < GLExtensionArray.Num(); ExtIndex++)
@@ -592,7 +592,7 @@ GE_CORE_INFO(#StringEnum + std::string(":") + std::string((const char*)glGetStri
 		FOpenGL::InitDebugContext();
 
 
-#define LOG_AND_GET_GL_INT_TEMP(IntEnum,Default) GLint Value_##IntEnum = Default; if (IntEnum) {glGetIntegerv(IntEnum, &Value_##IntEnum); glGetError();} else {Value_##IntEnum = Default;} GE_CORE_INFO("  " #IntEnum + std::string(": ") + std::to_string(Value_##IntEnum))
+#define LOG_AND_GET_GL_INT_TEMP(IntEnum,Default) GLint Value_##IntEnum = Default; if (IntEnum) {glGetIntegerv(IntEnum, &Value_##IntEnum); glGetError();} else {Value_##IntEnum = Default;} GE_CORE_INFO("  " #IntEnum ": %s" , std::to_string(Value_##IntEnum).c_str())
 
 		LOG_AND_GET_GL_INT_TEMP(GL_MAX_TEXTURE_SIZE, 0);
 #if defined(GL_MAX_TEXTURE_BUFFER_SIZE)

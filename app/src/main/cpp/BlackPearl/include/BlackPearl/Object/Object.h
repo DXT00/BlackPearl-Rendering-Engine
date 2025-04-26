@@ -79,7 +79,7 @@ namespace BlackPearl {
 		template<typename C>
 		void RemoveComponent()
 		{
-			GE_ASSERT(Valid(), "invalid entity" + m_Entity->GetId());
+			//GE_ASSERT(Valid(), "invalid entity %s" , m_Entity->GetId());
 			GE_ASSERT(HasComponent<C>(), "Entity does not has component C!");//TODO
 			const BaseComponent::Family famliy = GetComponentFamliy<C>();
 			m_ComponentMask.reset(famliy);

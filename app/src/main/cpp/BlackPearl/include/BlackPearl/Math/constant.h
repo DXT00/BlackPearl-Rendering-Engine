@@ -14,15 +14,19 @@ namespace BlackPearl::math
     constexpr float _epsilon = 1e-6f;		// A reasonable general-purpose epsilon
 
     // Generic min/max/abs/clamp/saturate
-//#ifdef min
-//#undef min
-//#endif
+#ifdef GE_PLATFORM_WINDOWS
+#ifdef min
+#undef min
+#endif
+#endif
     template <typename T>
     constexpr T min(T a, T b) { return (a < b) ? a : b; }
-    
-//#ifdef max
-//#undef max
-//#endif
+#ifdef GE_PLATFORM_WINDOWS
+#ifdef max
+#undef max
+#endif
+#endif
+
     template <typename T>
     constexpr T max(T a, T b) { return (a < b) ? b : a; }
 }

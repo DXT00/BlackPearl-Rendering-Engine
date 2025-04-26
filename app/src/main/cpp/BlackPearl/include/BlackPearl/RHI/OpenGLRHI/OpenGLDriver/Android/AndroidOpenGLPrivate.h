@@ -56,7 +56,7 @@ private:
     FAndroidGPUInfo()
     {
         // this is only valid in the game thread, make sure we are initialized there before being called on other threads!
-        GE_ASSERT(IsInGameThread())
+       // GE_ASSERT(IsInGameThread())
 
         // make sure GL is started so we can get the supported formats
         AndroidEGL* EGL = AndroidEGL::GetInstance();

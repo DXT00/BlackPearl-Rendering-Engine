@@ -72,6 +72,8 @@ project "BlackPearl"
 
 	}
 
+   removefiles  { ".*/.vshistory/**.cpp" }
+   removefiles  { ".*/.vshistory/**.h" }
    filter { "options:RenderAPI=opengl" }
    --removefiles  { "./src/BlackPearl/RHI/VulkanRHI/**.cpp" }
    --removefiles  { "./src/BlackPearl/RHI/VulkanRHI/**.h" }
@@ -123,7 +125,7 @@ project "BlackPearl"
    defines
 	{
 		"GLFW_INCLUDE_NONE",
-		"GE_API_OPENGL"
+		"GE_API_OPENGL",
 		"USE_IMGUI"  --premake 默认 windows 平台， 可以使用imgui
 			
 	}

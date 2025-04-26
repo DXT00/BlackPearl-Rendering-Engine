@@ -145,7 +145,7 @@ namespace BlackPearl {
 				return s_OpenGLKeyMap[key];
 
 			} else{
-				GE_CORE_ERROR("can't find key" + std::to_string(key));
+				GE_CORE_ERROR("can't find key %s" , std::to_string(key).c_str());
 				return -1;
 			}
 	}
@@ -154,7 +154,7 @@ namespace BlackPearl {
 				return s_D3D12KeyMap[key];
 			}
 			else {
-				GE_CORE_ERROR("can't find key" + std::to_string(key));
+				GE_CORE_ERROR("can't find key %s" , std::to_string(key).c_str());
 				return -1;
 			}
 		}

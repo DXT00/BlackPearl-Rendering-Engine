@@ -51,36 +51,25 @@ add_definitions(-DSPDLOG_HEADER_ONLY)
 
 
 ############################## 创建 android_native_app_glue 库 ##########################
-## 获取环境变量
-#set(NDKROOT_PATH $ENV{NDKROOT})
-#message(STATUS "bp NDKROOT_PATH=${NDKROOT_PATH}")
-#
-#include_directories(
-#        "${NDKROOT_PATH}/sources/android/native_app_glue"
-#)
-#
-## 添加 native_app_glue 的源文件（需编译为静态库）
-#set(ANDROID_NATIVE_APP_GLUE_SRC
-#            ${ANDROID_NDK}/sources/android/native_app_glue/android_native_app_glue.c
-#)
-#
-## 将 native_app_glue 编译为静态库
-#add_library(native_app_glue STATIC ${ANDROID_NATIVE_APP_GLUE_SRC})
-#
-## 设置目标属性（禁用无关警告）
-#target_compile_options(native_app_glue PRIVATE -Wno-unused-parameter)
 
 message(STATUS "ANDROID_NDK = ${ANDROID_NDK}, include ${ANDROID_NDK}/sources/android/native_app_glue/include")
-## 添加native_app_glue
-add_library(native_app_glue STATIC
-        ${ANDROID_NDK}/sources/android/native_app_glue/android_native_app_glue.c
-)
 
-set_target_properties(native_app_glue PROPERTIES
-        INTERFACE_INCLUDE_DIRECTORIES ${ANDROID_NDK}/sources/android/native_app_glue
-        VISIBILITY_INTERFACE_PUBLIC ON
-)
-include_directories(${ANDROID_NDK}/sources/android/native_app_glue)
+## 添加native_app_glue static lib
+set(${CMAKE_C_FLAGS}, "${CMAKE_C_FLAGS}")
+add_library(native_app_glue STATIC
+        ${ANDROID_NDK}/sources/android/native_app_glue/android_native_app_glue.c)
+
+# Export ANativeActivity_onCreate(),
+# Refer to: https://github.com/android-ndk/ndk/issues/381.
+set(CMAKE_SHARED_LINKER_FLAGS
+        "${CMAKE_SHARED_LINKER_FLAGS} -u ANativeActivity_onCreate -u JNI_OnLoad")
+
+#
+#set_target_properties(native_app_glue PROPERTIES
+#        INTERFACE_INCLUDE_DIRECTORIES ${ANDROID_NDK}/sources/android/native_app_glue
+#        VISIBILITY_INTERFACE_PUBLIC ON
+#)
+
 
 ############################## 链接库 ##########################
 
@@ -93,6 +82,8 @@ add_library(
         SHARED
         ${src-files}
 )
+#target_include_directories(SandBoxAndroid PRIVATE
+#        ${ANDROID_NDK}/sources/android/native_app_glue)
 
 target_link_directories(${PROJECT_NAME} PUBLIC
         "${ROOT_DIR}/bin/${OUTPUT_DIR}/BlackPearl"
@@ -108,7 +99,7 @@ target_include_directories(
         "${ROOT_DIR}/BlackPearl/vendor/glm"
         "${ROOT_DIR}/BlackPearl/vendor/spdlog/include"
         "${ROOT_DIR}/BlackPearl/vendor/assimp/include"
-        "${NDKROOT_PATH}/sources/android/native_app_glue"
+        "${ANDROID_NDK}/sources/android/native_app_glue"
         "${ROOT_DIR}/BlackPearl/assets/shaders/"
 )
 set_target_properties(SandBoxAndroid PROPERTIES
@@ -126,7 +117,6 @@ target_link_libraries(
             log
             spdlog
             assimp
-            #android_native_app_glue
             native_app_glue
 )
 

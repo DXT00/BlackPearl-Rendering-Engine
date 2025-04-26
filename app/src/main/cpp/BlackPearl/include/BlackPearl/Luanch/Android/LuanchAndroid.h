@@ -12,6 +12,7 @@ namespace BlackPearl {
 
     namespace LuanchAndroid {
         void InitAndriodThread(struct android_app *state);
+        void InitJavaEnv(struct android_app *state);
     };
 }
 #endif

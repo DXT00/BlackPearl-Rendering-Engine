@@ -84,10 +84,10 @@ static const char* GetAppEventName(EAppEventState State)
     }
 }
 
-
+//app->Run()里Tick()
 void FAppEventManager::Tick()
 {
-    GE_ASSERT(IsInGameThread());
+   // GE_ASSERT(IsInGameThread());
     while (!Queue.empty())
     {
         FAppEventPacket Event = DequeueAppEvent();

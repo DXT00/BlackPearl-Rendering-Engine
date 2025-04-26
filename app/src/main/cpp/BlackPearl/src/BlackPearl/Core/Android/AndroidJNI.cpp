@@ -841,6 +841,8 @@ void AndroidThunkCpp_ShowHiddenAlertDialog()
 // call out to JNI to see if the application was packaged for Oculus Mobile
 bool AndroidThunkCpp_IsOculusMobileApplication()
 {
+    return false;
+    //TODO::
     static int32_t IsOculusMobileApplication = -1;
 
     if (IsOculusMobileApplication == -1)

@@ -11,8 +11,8 @@ namespace BlackPearl
             Prims = Configuration::DefaultPrims;
         }
         MeshletOption(unsigned int verts, unsigned int prims) {
-            GE_ASSERT(verts <= Configuration::MaxVerts , "max vertices of a meshlet must less than" + std::to_string(Configuration::MaxVerts));
-            GE_ASSERT(prims <= Configuration::MaxPrims , "max primitives of a meshlet must less than" + std::to_string(Configuration::MaxPrims));
+            GE_ASSERT(verts <= Configuration::MaxVerts , "max vertices of a meshlet must less than %s" , std::to_string(Configuration::MaxVerts).c_str());
+            GE_ASSERT(prims <= Configuration::MaxPrims , "max primitives of a meshlet must less than %s" , std::to_string(Configuration::MaxPrims).c_str());
 
             Verts = verts;
             Prims = prims;

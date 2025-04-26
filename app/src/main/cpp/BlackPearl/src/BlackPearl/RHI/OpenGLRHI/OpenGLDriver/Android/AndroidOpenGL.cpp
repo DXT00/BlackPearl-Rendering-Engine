@@ -96,8 +96,8 @@ namespace BlackPearl {
 
 
             GE_ASSERT(OGLServiceAccessor == 0);
-            OGLServiceAccessor = AndroidJavaEnv::FindJavaClassGlobalRef("com/epicgames/unreal/psoservices/PSOProgramServiceAccessor");
-            CHECK_JNI_EXCEPTIONS(Env);
+//            OGLServiceAccessor = AndroidJavaEnv::FindJavaClassGlobalRef("com/epicgames/unreal/psoservices/PSOProgramServiceAccessor");
+//            CHECK_JNI_EXCEPTIONS(Env);
             if(OGLServiceAccessor)
             {
 //                DispatchProgramLink = FJavaWrapper::FindStaticMethod(Env, OGLServiceAccessor, "AndroidThunkJava_OGLRemoteProgramLink", "([BLjava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lcom/epicgames/unreal/psoservices/PSOProgramServiceAccessor$JNIProgramLinkResponse;", false);
@@ -330,10 +330,10 @@ namespace BlackPearl {
                 if (bES32Supported) {
                     Message+=(
                             ("This device does not support Vulkan but the app was not packaged with ES 3.1 support."));
-                    if (FAndroidMisc::GetAndroidBuildVersion() < 26) {
-                        Message+=((" Updating to a newer Android version may resolve this issue."));
-                    }
-                    GE_CORE_INFO(Message);
+//                    if (FAndroidMisc::GetAndroidBuildVersion() < 26) {
+//                        Message+=((" Updating to a newer Android version may resolve this issue."));
+//                    }
+                    GE_CORE_INFO("%s",Message.c_str());
 //                    FPlatformMisc::LowLevelOutputDebugString(*Message);
 //                    FAndroidMisc::MessageBoxExt(EAppMsgType::Ok, *Message, ("Unable to run on this device!"));
                 } else {
@@ -845,6 +845,7 @@ namespace BlackPearl {
                                         CVarEnableAdrenoTilingHint == 2;
             if(bRequiresAdrenoTilingHint)
             GE_CORE_INFO("Enabling Adreno tiling hint.");
+          //  LOGI("Enabling Adreno tiling hint.")
         }
 
         if (bIsMaliBased) {

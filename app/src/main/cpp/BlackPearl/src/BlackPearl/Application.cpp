@@ -36,7 +36,9 @@
 #include "BlackPearl/Config.h"
 #include "BlackPearl/UI/UIManager.h"
 #include "BlackPearl/Renderer/Shader/ShaderFactory.h"
-
+#ifdef GE_PLATFORM_ANDROID
+#include "Luanch/Android/AndroidEventManager.h"
+#endif
 namespace BlackPearl {
 
 	Log* g_Log = nullptr;
@@ -72,7 +74,7 @@ namespace BlackPearl {
 		//m_AppConf.renderer = renderer;
 		m_AppConf.version = version;
 		m_AppConf.rhiType = rhiType;
-		Init();
+		//Init();
 	}
 
 	Application::~Application()
@@ -148,7 +150,7 @@ namespace BlackPearl {
 				m_StartTimeMs = currentTimeMs;
 				m_TotalSecond++;
 				s_AppAverageFPS = (double)s_TotalFrameNum / m_TotalSecond;
-				GE_CORE_INFO("AverageFPS = " + std::to_string(s_AppAverageFPS));
+				GE_CORE_INFO("AverageFPS = %s" ,std::to_string(s_AppAverageFPS).c_str());
 			}
 
 
@@ -162,7 +164,10 @@ namespace BlackPearl {
 			ShouldCloseWindow();
 
 			BasicRenderer::s_DrawCallCnt = 0;
-			m_LayerManager->OnUpdateLayers(ts);
+#ifdef GE_PLATFORM_ANDROID
+            FAppEventManager::GetInstance()->Tick();
+#endif
+            m_LayerManager->OnUpdateLayers(ts);
 			m_Window->OnUpdate();
 
 		}
@@ -187,6 +192,9 @@ namespace BlackPearl {
 			RequestEngineExit();
 			return true;
 		}
+#ifdef GE_PLATFORM_ANDROID
+        return FAppEventManager::GetInstance()->IsGamePaused();
+#endif
 		return false;
 	}
 

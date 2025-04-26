@@ -597,7 +597,7 @@ namespace BlackPearl {
 
 		}
 		else {
-			GE_CORE_ERROR("no such name:" + modelName + "!")
+			GE_CORE_ERROR("no such name: %s !" , modelName.c_str())
 		}
 		m_BackGroundObjsList.push_back(staticModel);
 		return staticModel;
@@ -642,7 +642,7 @@ namespace BlackPearl {
 			dynamicModel->GetComponent<BlackPearl::Transform>()->SetInitPosition({ 0.0f,-1.6f,0.0f });
 		}
 		else {
-			GE_CORE_ERROR("no such name:" + modelName + "!")
+			GE_CORE_ERROR("no such name: %s" , modelName.c_str() )
 		}
 		m_DynamicObjsList.push_back(dynamicModel);
 		return dynamicModel;

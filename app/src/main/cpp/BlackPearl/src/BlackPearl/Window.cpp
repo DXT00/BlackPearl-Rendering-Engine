@@ -11,7 +11,7 @@ namespace BlackPearl {
 		m_Data.Width = data.Width;
 		m_Data.Title = data.Title;
 
-		GE_CORE_INFO("Creating window {0} ({1} ,{2})", data.Title, data.Width, data.Height);
+		//GE_CORE_INFO("Creating window {0} ({1} ,{2})", data.Title, data.Width, data.Height);
 		
 
 	}

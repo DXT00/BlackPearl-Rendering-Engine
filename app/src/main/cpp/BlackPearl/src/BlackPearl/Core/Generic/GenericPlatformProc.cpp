@@ -3,9 +3,9 @@
 //
 #include "pch.h"
 #include "Core/Generic/GenericPlatformProc.h"
-#include <unistd.h>
 
 #if PLATFORM_HAS_BSD_TIME
+#include <unistd.h>
 
 void FGenericPlatformProc::Sleep( float Seconds )
 {

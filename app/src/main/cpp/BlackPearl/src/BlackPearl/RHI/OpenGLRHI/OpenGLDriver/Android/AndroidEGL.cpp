@@ -603,7 +603,7 @@ void AndroidEGL::ResizeSharedContextSurface()
 {
 	//VERIFY_GL_SCOPE();
 
-	GE_ASSERT(IsInGameThread());
+	//GE_ASSERT(IsInGameThread());
 
 	// Resize shared is in gamethread, we cant use Window_Event here.
 	if (PImplData->Window &&
@@ -689,7 +689,8 @@ void AndroidEGL::InitRenderSurface(bool bUseSmallSurface, bool bCreateWndSurface
 		Height = WindowSize.height();
 
 		//FPlatformMisc::LowLevelOutputDebugStringf(TEXT("AndroidEGL::InitRenderSurface, Using width: %d, height %d "), Width, Height);
-		AndroidThunkCpp_SetDesiredViewSize(Width, Height);
+		//TODO:: cpp-->java 暂时不支持
+        //AndroidThunkCpp_SetDesiredViewSize(Width, Height);
 	}
 
 	math::int2 OriginalWindowSize(ANativeWindow_getWidth(PImplData->Window), ANativeWindow_getHeight(PImplData->Window));
@@ -724,7 +725,7 @@ void AndroidEGL::InitSharedSurface(bool bUseSmallSurface)
 		Height = WindowSize.height();
 
 		//FPlatformMisc::LowLevelOutputDebugStringf(TEXT("AndroidEGL::InitSharedSurface, Using width: %d, height %d "), Width, Height);
-		AndroidThunkCpp_SetDesiredViewSize(Width, Height);
+		//AndroidThunkCpp_SetDesiredViewSize(Width, Height);
 	}
 
 	//FPlatformMisc::LowLevelOutputDebugStringf(TEXT("AndroidEGL::InitSharedSurface, width: %d, height %d "), Width, Height);
@@ -750,7 +751,7 @@ void AndroidEGL::ReInit()
 
 void AndroidEGL::Init(APIVariant API, uint32_t MajorVersion, uint32_t MinorVersion, bool bDebug)
 {
-	GE_ASSERT(IsInGameThread());
+	//GE_ASSERT(IsInGameThread());
 
 	if (PImplData->Initalized)
 	{
@@ -910,7 +911,7 @@ bool AndroidEGL::InitContexts()
 
 void AndroidEGL::SetCurrentSharedContext()
 {
-	GE_ASSERT(IsInGameThread());
+	//GE_ASSERT(IsInGameThread());
 	PImplData->CurrentContextType = CONTEXT_Shared;
 
 	if(GUseThreadedRendering)
@@ -1072,7 +1073,7 @@ void AndroidEGL::UnBindShared()
 
 void FAndroidAppEntry::ReInitWindow(void* NewNativeWindowHandle)
 {
-	GE_ASSERT(IsInGameThread());
+	//GE_ASSERT(IsInGameThread());
 
 	// Window creation is now handled by BlockRendering, when it resumes after a new window is created.
 	//FPlatformMisc::LowLevelOutputDebugString(TEXT("AndroidEGL::ReInitWindow()"));
@@ -1095,7 +1096,7 @@ void FAndroidAppEntry::ReInitWindow(void* NewNativeWindowHandle)
 
 void AndroidEGL::RefreshWindowSize()
 {
-	GE_ASSERT(IsInGameThread());
+	//GE_ASSERT(IsInGameThread());
 	GE_ASSERT(!FAndroidMisc::ShouldUseVulkan());
 	RHIRect WindowRect = AndroidWindow::GetScreenRect();
 	//UE_LOG(LogAndroid, Log, TEXT("AndroidEGL::RefreshWindowSize updating window size = %d, %d, cached size : %d, %d tid : %d"), WindowRect.Right, WindowRect.Bottom, PImplData->CachedWindowRect.Right, PImplData->CachedWindowRect.Bottom, FPlatformTLS::GetCurrentThreadId());

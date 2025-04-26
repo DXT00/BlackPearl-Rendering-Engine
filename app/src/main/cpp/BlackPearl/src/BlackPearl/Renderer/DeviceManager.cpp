@@ -108,8 +108,8 @@ namespace BlackPearl {
         }
         else
         {
-            width = m_DeviceParams.backBufferWidth;
-            height = m_DeviceParams.backBufferHeight;
+            width = windowSize.x;//m_DeviceParams.backBufferWidth;
+            height =  windowSize.y;//m_DeviceParams.backBufferHeight;
         }
 
         m_windowVisible = true;

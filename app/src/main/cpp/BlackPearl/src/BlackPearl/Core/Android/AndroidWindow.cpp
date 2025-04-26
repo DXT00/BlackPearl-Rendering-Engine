@@ -146,9 +146,11 @@ namespace BlackPearl {
     {
 
     }
+
     math::vector<int, 2> AndroidWindow::GetCurWindowSize()
     {
-
+        RHIRect ScreenRect = GetScreenRect();
+        return {ScreenRect.width(), ScreenRect.height()};
     }
 
 
