@@ -52,7 +52,6 @@ enum RenderSample {
 		SandBox(INSTANCE_HANDLE hInstance,int nShowCmd, BlackPearl::DynamicRHI::Type rhiType, RenderSample renderer)
 		:Application(hInstance, nShowCmd, rhiType, selectAppVersion(renderer)){
 			
-			BlackPearl::Layer* layer = NULL;
 			const std::string layer_name = renderer+"Layer";
 			//if (renderer == BP_ShadowMapPointLight) { //pcf, pcss
 			//	layer = DBG_NEW ShadowMapPointLightLayer(layer_name);
@@ -103,6 +102,9 @@ enum RenderSample {
 			///*else if (renderer == "LumenRenderingLayer") {
 			//	layer = DBG_NEW LumenRenderingLayer(layer_name);
 			//}*/
+		}
+		virtual void Init() override{
+			BlackPearl::Application::Init();
 			GetLayerManager()->PushLayer(layer);
 		}
 		virtual ~SandBox() = default;
@@ -111,7 +113,8 @@ enum RenderSample {
 			return BlackPearl::AppVersion::VERSION_1_0;
 		
 		}
-	
+
+		BlackPearl::Layer* layer = NULL;
 	};
 	//
 	//BlackPearl::Application* BlackPearl::CreateApplication(HINSTANCE hInstance, int nShowCmd) {
@@ -124,7 +127,7 @@ enum RenderSample {
 	
 	BlackPearl::Application* BlackPearl::CreateApplication(HINSTANCE hInstance, int nShowCmd) {
 
-		return DBG_NEW SandBox(hInstance, nShowCmd, BlackPearl::DynamicRHI::Type::OpenGL, RenderSample::BP_RHIRenderGraphLayer);
+		return DBG_NEW SandBox(hInstance, nShowCmd, BlackPearl::DynamicRHI::Type::OpenGL, RenderSample::BP_PbrRendering);
 		//return DBG_NEW SandBox(hInstance, nShowCmd, BlackPearl::DynamicRHI::Type::OpenGL, "PbrRendering");
 	}
 	/*int main() {

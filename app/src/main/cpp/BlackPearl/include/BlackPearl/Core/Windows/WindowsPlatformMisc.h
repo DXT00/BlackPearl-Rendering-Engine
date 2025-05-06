@@ -3,3 +3,13 @@
 //
 
 #pragma once
+#include "Core/Generic/GenericPlatformMisc.h"
+
+namespace BlackPearl {
+	struct FWindowsMisc : public GenericPlatformMisc {
+
+
+	};
+	typedef FWindowsMisc FPlatformMisc;
+
+}

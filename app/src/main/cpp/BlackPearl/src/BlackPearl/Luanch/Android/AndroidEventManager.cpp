@@ -1,6 +1,7 @@
 //
 // Created by DXT00 on 2025/4/13.
 //
+#include "pch.h"
 
 #include "Luanch/Android/AndroidEventManager.h"
 #include "BlackPearl/Core.h"
@@ -484,5 +485,6 @@ bool FAppEventManager::WaitForEventInQueue(EAppEventState InState, double Timeou
 
 extern volatile bool GEventHandlerInitialized;
 
-#endif
+
 }
+#endif

@@ -10,6 +10,7 @@ namespace BlackPearl {
 		m_ImGuiLayer = DBG_NEW ImGuiLayer("ImGuiLayer");
 		PushOverLayer(m_ImGuiLayer);
 #endif
+
 	}
 	LayerManager::~LayerManager() {
 

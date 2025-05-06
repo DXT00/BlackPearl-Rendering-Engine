@@ -53,7 +53,7 @@ namespace BlackPearl {
 		inline Window& GetWindow() { return *m_Window; }
 		LayerManager* GetLayerManager() { return m_LayerManager; }
 		AppConf GetAppConf() const { return m_AppConf; }
-		void Init();
+		virtual void Init();
 		void Run();
 		void OnEvent(Event &event);
 		static double s_AppFPS;

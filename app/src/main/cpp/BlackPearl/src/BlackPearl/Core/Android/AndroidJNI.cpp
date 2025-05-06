@@ -1,6 +1,7 @@
 //
 // Created by DXT00 on 2025/4/14.
 //
+#include "pch.h"
 
 #include "Core/Android/AndroidJNI.h"
 #include "ApplicationCore/Android/AndroidApplication.h"

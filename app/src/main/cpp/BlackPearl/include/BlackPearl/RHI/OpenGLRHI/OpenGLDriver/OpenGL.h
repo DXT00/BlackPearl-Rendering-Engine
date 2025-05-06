@@ -16,8 +16,7 @@
 #include "BlackPearl/Core/Platform.h"
 #include "BlackPearl/Core.h"
 #include "BlackPearl/RHI/RHIDefinitions.h"
-//#include "OpenGLFunctions.h"
-
+#include "OpenGLFunctions.h"
 //typedef GLfloat GLdouble;
 
 namespace BlackPearl {

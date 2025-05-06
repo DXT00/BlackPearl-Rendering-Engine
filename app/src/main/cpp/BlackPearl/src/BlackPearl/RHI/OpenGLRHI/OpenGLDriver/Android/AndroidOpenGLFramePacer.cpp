@@ -1,7 +1,7 @@
 //
 // Created by DXT00 on 2025/4/15.
 //
-
+#include "pch.h"
 #include "Android/AndroidOpenGLFramePacer.h"
 #include "OpenGLDrvPrivate.h"
 #include "BlackPearl/Core/PlatformProc.h"

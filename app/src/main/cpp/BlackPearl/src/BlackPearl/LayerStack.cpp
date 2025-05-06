@@ -4,7 +4,6 @@ namespace BlackPearl {
 
 	LayerStack::LayerStack()
 	{
-
 	}
 
 

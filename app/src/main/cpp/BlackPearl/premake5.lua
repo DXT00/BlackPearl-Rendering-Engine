@@ -72,8 +72,15 @@ project "BlackPearl"
 
 	}
 
+
    removefiles  { ".*/.vshistory/**.cpp" }
    removefiles  { ".*/.vshistory/**.h" }
+-- The premake file is only effective for windows by default
+   removefiles  { "./src/BlackPearl/Core/Android/**.cpp" }
+   removefiles  { "./include/BlackPearl/Core/Android/**.h" }
+   removefiles  { "./src/BlackPearl/RHI/OpenGLRHI/OpenGLDriver/Android/**.cpp" }
+   removefiles  { "./include/BlackPearl/RHI/OpenGLRHI/OpenGLDriver/Android/**.h" }
+
    filter { "options:RenderAPI=opengl" }
    --removefiles  { "./src/BlackPearl/RHI/VulkanRHI/**.cpp" }
    --removefiles  { "./src/BlackPearl/RHI/VulkanRHI/**.h" }
@@ -88,6 +95,8 @@ project "BlackPearl"
 	--removefiles  { "./src/BlackPearl/ImGui/imgui_impl_opengl3.h" }
    removefiles  { "./src/BlackPearl/RHI/D3D12RHI/**.cpp" }
    removefiles  { "./include/BlackPearl/RHI/D3D12RHI/**.h" }
+   removefiles  { "./src/BlackPearl/RHI/VulkanRHI/**.cpp" }
+   removefiles  { "./include/BlackPearl/RHI/VulkanRHI/**.h" }
    removefiles  { "./include/BlackPearl/Renderer/Buffer/D3D12Buffer/**.h" }
    removefiles  { "./src/BlackPearl/Renderer/Buffer/D3D12Buffer/**.cpp" }
    removefiles  { "./include/BlackPearl/Renderer/MasterRenderer/D3D12**.h" }
@@ -119,6 +128,10 @@ project "BlackPearl"
    includedirs
 	{
 		"../%{IncludeDir.OpenGL}",
+		"./include/BlackPearl/RHI/OpenGLRHI/OpenGLDriver",
+		"./include/BlackPearl/RHI/OpenGLRHI",
+		"./include/BlackPearl/ImGui",
+
 	}
 
 

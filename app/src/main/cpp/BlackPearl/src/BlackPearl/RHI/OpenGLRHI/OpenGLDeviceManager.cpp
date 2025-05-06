@@ -3,7 +3,7 @@
 #include "RHI/OpenGLRHI/OpenGLDeviceManager.h"
 #include "RHI/OpenGLRHI/OpenGLDevice.h"
 #include "RHI/OpenGLRHI/OpenGLViewport.h"
-#include "OpenGLDriver/OpenGLDrvPrivate.h"
+#include "RHI/OpenGLRHI/OpenGLDriver/OpenGLDrvPrivate.h"
 #include "BlackPearl/Application.h"
 
 namespace BlackPearl {

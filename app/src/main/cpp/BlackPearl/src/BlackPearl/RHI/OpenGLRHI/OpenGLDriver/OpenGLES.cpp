@@ -337,5 +337,6 @@ namespace BlackPearl {
 
 #endif
 
-#endif //desktop
+
 }
+#endif //desktop

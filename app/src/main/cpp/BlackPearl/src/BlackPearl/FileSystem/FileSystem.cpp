@@ -1,7 +1,11 @@
 #include "pch.h"
 #include "FileSystem/FileSystem.h"
 #include "BlackPearl/Core.h"
+#ifdef GE_PLATFORM_ANDROID
 #include <unistd.h>
+
+#endif // GE_PLATFORM_ANDROID
+
 /*
 * Copyright (c) 2014-2021, NVIDIA CORPORATION. All rights reserved.
 *

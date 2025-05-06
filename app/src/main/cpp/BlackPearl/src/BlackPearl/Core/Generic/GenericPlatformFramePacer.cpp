@@ -1,6 +1,7 @@
 //
 // Created by DXT00 on 2025/4/15.
 //
+#include "pch.h"
 
 #include "Core/Generic/GenericPlatformFramePacer.h"
 #include "BlackPearl/Config.h"

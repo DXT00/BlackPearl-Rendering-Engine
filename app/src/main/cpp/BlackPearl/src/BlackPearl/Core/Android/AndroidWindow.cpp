@@ -2,6 +2,7 @@
 // Created by DXT00 on 2025/4/13.
 //
 // Copyright Epic Games, Inc. All Rights Reserved.
+#include "pch.h"
 
 #include "Core/Android/AndroidWindow.h"
 #include "Core/Android/AndroidPlatformMisc.h"

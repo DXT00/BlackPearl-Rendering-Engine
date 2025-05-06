@@ -2,7 +2,7 @@
 
 #include "pch.h"
 #ifdef GE_PLATFORM_WINDOWS
-#include "OpenGLDrvWindows.h"
+#include "Windows/OpenGLDrvWindows.h"
 #endif
 #include "OpenGLDrvPrivate.h"
 
@@ -13,6 +13,7 @@
 #include "BlackPearl/Core/ScopeLock.h"
 #include "BlackPearl/Core/CriticalSection.h"
 #include "BlackPearl/Core.h"
+#include "BlackPearl/Core/PlatformProc.h"
 #include "BlackPearl\RHI\Common\RHIUtils.h"
 // Copyright Epic Games, Inc. All Rights Reserved.
 

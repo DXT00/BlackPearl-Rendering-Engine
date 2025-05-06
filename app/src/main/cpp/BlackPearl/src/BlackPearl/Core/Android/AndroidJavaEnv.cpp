@@ -1,7 +1,7 @@
 //
 // Created by DXT00 on 2025/4/14.
 //
-// Copyright Epic Games, Inc. All Rights Reserved.
+#include "pch.h"
 
 #include "Core/Android/AndroidJavaEnv.h"
 #include "Core.h"

@@ -13,7 +13,6 @@ namespace BlackPearl {
 		GE_ASSERT(cubeObj, "cubeObj is nullptr");
 		m_Type = type;
 		m_LightProbeObj = cubeObj;
-		/*������ӽǶ�Ӧ*/
 		m_LightProbeObj->GetComponent<Transform>()->SetRotation({ 0.0f, -90.0f, 0.0f});
 		m_LightProbeObj->GetComponent<MeshRenderer>()->SetIsShadowObjects(false);
 		m_LightProbeObj->GetComponent<MeshRenderer>()->SetIsBackGroundObjects(false);
@@ -48,6 +47,4 @@ namespace BlackPearl {
 		m_Size = size;
 		m_LightProbeObj->GetComponent<Transform>()->SetScale(size);
 	}
-
-
 }

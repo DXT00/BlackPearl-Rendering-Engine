@@ -1,7 +1,7 @@
 //
 // Created by DXT00 on 2025/4/13.
 //
-
+#include "pch.h"
 #include "Luanch/Luanch.h"
 #include "Luanch/Android/LuanchAndroid.h"
 #include "BlackPearl/Core/PlatformProc.h"

@@ -45,7 +45,7 @@ project "Sandbox"
 		"../%{IncludeDir.assimp}",
 		--"../BlackPearl/vendor/OpenGL/include",
 		"../%{IncludeDir.ImGui}",
-		--"../%{IncludeDir.OpenGL}",
+		"../%{IncludeDir.OpenGL}",
 		"../%{IncludeDir.Glad}",
 		"../%{IncludeDir.glslShader}",
 		--"../%{IncludeDir.vulkan}"
