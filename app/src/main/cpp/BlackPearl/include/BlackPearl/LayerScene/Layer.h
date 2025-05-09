@@ -39,9 +39,10 @@ namespace BlackPearl {
 			:m_DebugName(name) {
 
 			m_LightSources = new LightSources();
+#ifdef USE_IMGUI
 			m_fileDialog.SetTitle("file selector");
 			m_fileDialog.SetPwd("./assets");
-
+#endif
 			/*MainCamera Init*/
 			m_MainCamera = CreateCamera();
 			m_MainCamera->SetPosition(glm::vec3(0, 0, 0.0f));
@@ -84,7 +85,7 @@ namespace BlackPearl {
 		}
 		virtual void OnImguiRender();
 
-		void SetDeviceManager(DeviceManager* deviceMgr) {
+		virtual void SetDeviceManager(DeviceManager* deviceMgr) {
 			m_DeviceManager = deviceMgr;
 		}
 
@@ -145,6 +146,8 @@ namespace BlackPearl {
 
 		void InputCheck(float ts)
 		{
+//todo:: android  platform
+#ifdef GE_PLATFORM_WINDOWS
 			float maxMoveDelta = 5 * m_MainCamera->GetMoveSpeed();
 			float moveDelta = m_MainCamera->GetMoveSpeed() * ts;
 
@@ -244,7 +247,7 @@ namespace BlackPearl {
 			//GE_CORE_INFO("Cam Pos = " + std::to_string(m_CameraPosition.x) + "," + std::to_string(m_CameraPosition.y) + "," + std::to_string(m_CameraPosition.z));
 			//GE_CORE_INFO("Cam Pitch = " + std::to_string(m_CameraRotation.Pitch) + "Cam Yaw =" + std::to_string(m_CameraRotation.Yaw));
 
-
+#endif
 		}
 
 	protected:
@@ -258,7 +261,9 @@ namespace BlackPearl {
 
 
 		LightSources* m_LightSources;
+#ifdef USE_IMGUI
 		ImGui::FileBrowser m_fileDialog;
+#endif
 		math::float4 m_BackgroundColor = { 0.0f,0.0f,0.0f,0.0f };
 
 		/*MainCamera and Input*/

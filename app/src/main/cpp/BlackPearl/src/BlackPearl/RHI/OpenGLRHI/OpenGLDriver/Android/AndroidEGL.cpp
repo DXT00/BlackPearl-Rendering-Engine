@@ -227,13 +227,14 @@ EGLBoolean AndroidEGL::SetCurrentContext(EGLContext InContext, EGLSurface InSurf
 	//context can be null.so can surface from PlatformNULLContextSetup
 	EGLBoolean Result = EGL_FALSE;
 	EGLContext CurrentContext = GetCurrentContext();
-
+    GE_ERROR_JUDGE_EGL();
 	// activate the context
 	if( CurrentContext != InContext)
 	{
 		if (CurrentContext !=EGL_NO_CONTEXT )
 		{
 			glFlush();
+            GE_ERROR_JUDGE();
 		}
 		if(InContext == EGL_NO_CONTEXT && InSurface == EGL_NO_SURFACE)
 		{
@@ -266,6 +267,7 @@ EGLBoolean AndroidEGL::SetCurrentContext(EGLContext InContext, EGLSurface InSurf
 			GE_ASSERT(Result == EGL_TRUE, ("ERROR: SetCurrentContext eglMakeCurrent failed : 0x%x"), eglGetError());
 		}
 	}
+
 	return Result;
 }
 
@@ -920,7 +922,9 @@ void AndroidEGL::SetCurrentSharedContext()
 	}
 	else
 	{
-		SetCurrentContext(PImplData->SingleThreadedContext.eglContext, PImplData->SingleThreadedContext.eglSurface);
+        GE_CORE_WARN("[dxt00] SetCurrentContext: SingleThreadedContext in SetCurrentSharedContext()")
+
+        SetCurrentContext(PImplData->SingleThreadedContext.eglContext, PImplData->SingleThreadedContext.eglSurface);
 	}
 }
 
@@ -932,6 +936,7 @@ void AndroidEGL::AcquireCurrentRenderingContext()
 	{
 		// Dummy FBO we bind right after SwapBuffers to tell driver that backbuffer is no longer in use by the App
 		glGenFramebuffers(1, &PImplData->DummyFrameBuffer);
+        GE_ERROR_JUDGE();
 		PImplData->RenderingContext.DummyFrameBuffer = PImplData->DummyFrameBuffer;
 		PImplData->SharedContext.DummyFrameBuffer = PImplData->DummyFrameBuffer;
 		PImplData->SingleThreadedContext.DummyFrameBuffer = PImplData->DummyFrameBuffer;
@@ -961,6 +966,7 @@ void AndroidEGL::SetCurrentRenderingContext()
 	}
 	else
 	{
+        GE_CORE_WARN("[dxt00] SetCurrentContext: SingleThreadedContext in SetCurrentRenderingContext()")
 		SetCurrentContext(PImplData->SingleThreadedContext.eglContext, PImplData->SingleThreadedContext.eglSurface);
 	}
 }

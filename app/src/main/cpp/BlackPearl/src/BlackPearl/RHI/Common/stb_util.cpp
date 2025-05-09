@@ -13,6 +13,13 @@ float* stbi_loadf_util(char const* filename, int* x, int* y, int* comp, int req_
 	return stbi_load(filename, x, y, comp, req_comp);
 }
 
+
+
+unsigned char* stbi_load_from_memory_util(unsigned char const *buffer, int len, int *x, int *y, int *comp, int req_comp)
+{
+    return stbi_load_from_memory((const stbi_uc*)buffer, len, x, y, comp, req_comp);
+}
+
 void stbi_image_free_util(void* retval_from_stbi_load)
 {
 	stbi_image_free(retval_from_stbi_load);

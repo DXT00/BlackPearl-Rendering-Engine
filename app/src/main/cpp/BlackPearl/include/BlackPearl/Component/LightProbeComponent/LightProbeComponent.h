@@ -3,7 +3,6 @@
 #include "glm/glm.hpp"
 #include "BlackPearl/Core.h"
 #include "BlackPearl/Renderer/DeviceManager.h"
-#include "BlackPearl/RHI/RHITexture.h"
 #include "BlackPearl/Math/Math.h"
 using namespace BlackPearl::math;
 

@@ -74,14 +74,17 @@ void AndroidJavaEnv::InitializeJavaEnv( JavaVM* VM, jint Version, jobject Global
         CurrentJavaVM = VM;
         CurrentJavaVersion = Version;
 
-//        JNIEnv* Env = GetJavaEnv(false);
-//        jclass MainClass = Env->FindClass("com/example/blackpearl/MainNativeActivity");
-//        jclass classClass = Env->FindClass("java/lang/Class");
-//        jclass classLoaderClass = Env->FindClass("java/lang/ClassLoader");
-//        jmethodID getClassLoaderMethod = Env->GetMethodID(classClass, "getClassLoader", "()Ljava/lang/ClassLoader;");
-//        auto classLoader = NewScopedJavaObject(Env, Env->CallObjectMethod(MainClass, getClassLoaderMethod));
-//        ClassLoader = Env->NewGlobalRef(*classLoader);
-//        FindClassMethod = Env->GetMethodID(classLoaderClass, "findClass", "(Ljava/lang/String;)Ljava/lang/Class;");
+        JNIEnv* Env = GetJavaEnv(false);
+        jclass MainClass = Env->FindClass("com/example/blackpearl/MainNativeActivity");
+        if(MainClass) {
+            jclass classClass = Env->FindClass("java/lang/Class");
+            jclass classLoaderClass = Env->FindClass("java/lang/ClassLoader");
+            jmethodID getClassLoaderMethod = Env->GetMethodID(classClass, "getClassLoader", "()Ljava/lang/ClassLoader;");
+            auto classLoader = NewScopedJavaObject(Env, Env->CallObjectMethod(MainClass, getClassLoaderMethod));
+            ClassLoader = Env->NewGlobalRef(*classLoader);
+            FindClassMethod = Env->GetMethodID(classLoaderClass, "findClass", "(Ljava/lang/String;)Ljava/lang/Class;");
+
+        }
 
     }
     GlobalObjectRef = GlobalThis;

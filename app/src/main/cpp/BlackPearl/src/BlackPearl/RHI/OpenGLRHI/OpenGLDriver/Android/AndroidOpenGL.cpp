@@ -159,7 +159,7 @@ namespace BlackPearl {
         // Initialize frame pacer
         FPlatformRHIFramePacer::Init(new AndroidOpenGLFramePacer());
 
-        extern void InitDebugContext();
+       // extern void InitDebugContext();
 
         bRunningUnderRenderDoc = glIsEnabled(GL_DEBUG_TOOL_EXT) != GL_FALSE;
 
@@ -170,11 +170,11 @@ namespace BlackPearl {
         LoadEXT();
         PlatformRenderingContextSetup(this);
         InitDefaultGLContextState();
-        InitDebugContext();
+       // InitDebugContext();
 
         PlatformSharedContextSetup(this);
         InitDefaultGLContextState();
-        InitDebugContext();
+       // InitDebugContext();
 
         AndroidEGL::GetInstance()->InitBackBuffer(); //can be done only after context is made current.
 

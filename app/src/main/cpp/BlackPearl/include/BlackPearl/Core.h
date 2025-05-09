@@ -112,6 +112,48 @@
 		GE_CORE_ERROR("no such err type!"); }\
 }
 
+
+#define GE_ERROR_JUDGE_EGL()\
+{\
+    GLenum err = eglGetError();\
+    if (err == EGL_SUCCESS){ \
+    }\
+    else if (err == EGL_NOT_INITIALIZED){ \
+        GE_CORE_ERROR("EGL_NOT_INITIALIZED");}\
+    else if (err == EGL_BAD_ACCESS){ \
+        GE_CORE_ERROR("EGL_BAD_ACCESS");}\
+    else if (err == EGL_BAD_ALLOC){\
+        GE_CORE_ERROR("EGL_BAD_ALLOC");}\
+    else if (err == EGL_BAD_CONTEXT){ \
+        GE_CORE_ERROR("EGL_BAD_CONTEXT");}\
+    else if (err == EGL_BAD_CONFIG){ \
+        GE_CORE_ERROR("EGL_BAD_CONFIG");}    \
+    else if (err == EGL_BAD_CURRENT_SURFACE){ \
+        GE_CORE_ERROR("EGL_BAD_CURRENT_SURFACE");}  \
+    else if (err == EGL_BAD_DISPLAY){ \
+        GE_CORE_ERROR("EGL_BAD_DISPLAY");}\
+    else if (err == EGL_BAD_SURFACE){ \
+        GE_CORE_ERROR("EGL_BAD_SURFACE");}\
+    else if (err == EGL_BAD_MATCH){ \
+        GE_CORE_ERROR("EGL_BAD_MATCH");}\
+    else if (err == EGL_BAD_PARAMETER){ \
+        GE_CORE_ERROR("EGL_BAD_PARAMETER");} \
+    else if (err == EGL_BAD_PARAMETER){ \
+        GE_CORE_ERROR("EGL_BAD_PARAMETER");} \
+    else if (err == EGL_BAD_PARAMETER){ \
+        GE_CORE_ERROR("EGL_BAD_PARAMETER");}\
+    else if (err == EGL_BAD_PARAMETER){ \
+        GE_CORE_ERROR("EGL_BAD_PARAMETER");}\
+    else if (err == EGL_BAD_NATIVE_PIXMAP){ \
+        GE_CORE_ERROR("EGL_BAD_NATIVE_PIXMAP");}\
+    else if (err == EGL_CONTEXT_LOST){ \
+        GE_CORE_ERROR("EGL_CONTEXT_LOST");}   \
+    else if (err == EGL_BAD_NATIVE_WINDOW){ \
+        GE_CORE_ERROR("EGL_BAD_NATIVE_WINDOW");} \
+    else{\
+        GE_CORE_ERROR("no such err type!"); }\
+}
+
 #endif
 #define GE_INVALID_ENUM() GE_ASSERT(0,"Invalid enum value")
 #define GE_INVALID_NOTSUPPORT() GE_ASSERT(0,"Not Supported")

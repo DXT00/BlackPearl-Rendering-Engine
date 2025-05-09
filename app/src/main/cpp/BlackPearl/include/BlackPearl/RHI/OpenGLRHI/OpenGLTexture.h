@@ -9,7 +9,7 @@
 #include "BlackPearl/RHI/RHISampler.h"
 #include "BlackPearl/RHI/RHIState.h"
 
-//#include "BlackPearl/RHI/Common/stb_util.h"
+
 namespace BlackPearl {
 	class Sampler;
 	// opengl 不需要sampler， filter在texture desc 里配置

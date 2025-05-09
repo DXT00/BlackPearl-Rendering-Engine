@@ -22,9 +22,21 @@ project "BlackPearl"
 		--"./vendor/glm/glm/**.inl",
 		"./vendor/stb/**.h",
 		"./assets/shaders/hlsl/core/**.h",
+		"!**/.vshistory/**"
 	}
+	excludes {
+        "**/.vshistory/**",  -- 排除整个文件夹
+    }
 	
-
+   removefiles  { ".*/.vshistory/**.cpp" }
+   removefiles  { ".*/.vshistory/**.h" }
+   removefiles  { ".*/.vshistory/.*" }
+    removefiles  { ".*/.vshistory/**.*" }
+-- The premake file is only effective for windows by default
+   removefiles  { "./src/BlackPearl/Core/Android/**.cpp" }
+   removefiles  { "./include/BlackPearl/Core/Android/**.h" }
+   removefiles  { "./src/BlackPearl/RHI/OpenGLRHI/OpenGLDriver/Android/**.cpp" }
+   removefiles  { "./include/BlackPearl/RHI/OpenGLRHI/OpenGLDriver/Android/**.h" }
 	defines
 	{
 		"_CRT_SECURE_NO_WARNINGS",
@@ -73,13 +85,6 @@ project "BlackPearl"
 	}
 
 
-   removefiles  { ".*/.vshistory/**.cpp" }
-   removefiles  { ".*/.vshistory/**.h" }
--- The premake file is only effective for windows by default
-   removefiles  { "./src/BlackPearl/Core/Android/**.cpp" }
-   removefiles  { "./include/BlackPearl/Core/Android/**.h" }
-   removefiles  { "./src/BlackPearl/RHI/OpenGLRHI/OpenGLDriver/Android/**.cpp" }
-   removefiles  { "./include/BlackPearl/RHI/OpenGLRHI/OpenGLDriver/Android/**.h" }
 
    filter { "options:RenderAPI=opengl" }
    --removefiles  { "./src/BlackPearl/RHI/VulkanRHI/**.cpp" }
@@ -111,6 +116,11 @@ project "BlackPearl"
    removefiles  { "./src/BlackPearl/Renderer/Image/Vk**.cpp" }
    removefiles  { "./include/BlackPearl/Renderer/MasterRenderer/Vk**.h" }
    removefiles  { "./src/BlackPearl/Renderer/MasterRenderer/Vk**.cpp" }
+   
+   removefiles  { ".*/.vshistory/.*" }
+
+   removefiles  { ".*/.vshistory/**.cpp" }
+   removefiles  { ".*/.vshistory/**.h" }
    links 
    { 
 		"GLFW",

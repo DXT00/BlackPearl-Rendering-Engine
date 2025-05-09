@@ -481,7 +481,8 @@ namespace BlackPearl {
             state->activity->vm->GetEnv((void **)&Env, JNI_CURRENT_VERSION);
 
 
-            AndroidApplication::InitializeJavaEnv(BlackPearl::GJavaVM, JNI_CURRENT_VERSION, FJavaWrapper::GameActivityThis);
+          //  AndroidApplication::InitializeJavaEnv(BlackPearl::GJavaVM, JNI_CURRENT_VERSION, FJavaWrapper::GameActivityThis);
+          //  FJavaWrapper::FindClassesAndMethods(Env);
 
         }
     }
