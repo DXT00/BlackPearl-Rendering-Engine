@@ -3,6 +3,11 @@
 #include "glm/glm.hpp"
 /*Logical Camera*/
 namespace BlackPearl {
+    struct CameraRotation {
+        float Yaw;
+        float Pitch;
+
+    };
 	class MainCamera
 	{
 	public:

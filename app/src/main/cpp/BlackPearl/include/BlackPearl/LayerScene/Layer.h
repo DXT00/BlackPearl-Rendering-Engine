@@ -25,6 +25,8 @@
 #include "BlackPearl/Component/LightProbeComponent/LightProbeComponent.h"
 #ifdef GE_PLATFORM_WINDOWS
 #include <WinUser.h>
+#else
+#include "BlackPearl/Luanch/Android/AndroidInputManager.h"
 #endif
 #include "hlsl/core/material_cb.h"
 using namespace std::chrono;
@@ -246,7 +248,9 @@ namespace BlackPearl {
 
 			//GE_CORE_INFO("Cam Pos = " + std::to_string(m_CameraPosition.x) + "," + std::to_string(m_CameraPosition.y) + "," + std::to_string(m_CameraPosition.z));
 			//GE_CORE_INFO("Cam Pitch = " + std::to_string(m_CameraRotation.Pitch) + "Cam Yaw =" + std::to_string(m_CameraRotation.Yaw));
+#else
 
+            AndroidInputManager::GetInstance()->Tick(m_MainCamera,m_CameraPosition, m_CameraRotation);
 #endif
 		}
 
@@ -270,11 +274,7 @@ namespace BlackPearl {
 
 		MainCamera* m_MainCamera = nullptr;
 		glm::vec3 m_CameraPosition = { 0.0f,0.0f,0.0f };
-		struct CameraRotation {
-			float Yaw;
-			float Pitch;
 
-		};
 		CameraRotation m_CameraRotation;
 		float m_LastMouseX;
 		float m_LastMouseY;

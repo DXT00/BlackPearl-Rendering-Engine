@@ -96,6 +96,7 @@ target_include_directories(
         PRIVATE
       #  "${SANDBOX_DIR}/src"
         "${ROOT_DIR}/BlackPearl/include"
+        "${ROOT_DIR}/BlackPearl/include/BlackPearl"
         "${ROOT_DIR}/BlackPearl/vendor/glm"
         "${ROOT_DIR}/BlackPearl/vendor/spdlog/include"
         "${ROOT_DIR}/BlackPearl/vendor/assimp/include"

@@ -36,6 +36,10 @@ namespace BlackPearl {
 		BasePassRenderer* m_BasePassRenderer;
 		PBRRenderer* m_PBRRenderer;
 
+		//sky renderer
+
+		// bloom renderer
+
 
 		Scene* m_Scene = nullptr;
 	};

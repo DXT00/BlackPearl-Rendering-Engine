@@ -78,6 +78,8 @@ extern "C"{
 void android_main(struct android_app* state)
 {
     LOGI("[dxt00] in android main!!");
+
+    state->onInputEvent = BlackPearl::LuanchAndroid::HandleInput;
     std::string mainThreadName = "BP_GameThread";
     pthread_setname_np(pthread_self(),mainThreadName.c_str() );
 

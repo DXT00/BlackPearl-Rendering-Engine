@@ -14,6 +14,7 @@
 #include "Luanch/Android/AndroidEventManager.h"
 #include "BlackPearl/Core/Android/AndroidWindow.h"
 #include "Core/Android/AndroidJNI.h"
+#include "Luanch/Android/AndroidInputManager.h"
 
 #ifdef USE_ANDROID_JNI
 
@@ -422,7 +423,7 @@ namespace BlackPearl {
         state->looper = looper;
 
         state->onAppCmd = OnAppCommandCB;
-        // state->onInputEvent = HandleInputCB;
+        state->onInputEvent = LuanchAndroid::HandleInput;
 
 
 //    // window is initially invalid/locked.
@@ -448,6 +449,81 @@ namespace BlackPearl {
     struct android_app *GNativeAndroidApp = NULL;
 
     namespace LuanchAndroid {
+
+        static float lastX = 0, lastY = 0;
+        static bool isDragging = false;
+
+        int32_t HandleInput(struct android_app* app, AInputEvent* event) {
+            if (AInputEvent_getType(event) == AINPUT_EVENT_TYPE_MOTION) {
+                float x = AMotionEvent_getX(event, 0);
+                float y = AMotionEvent_getY(event, 0);
+
+                switch (AMotionEvent_getAction(event) & AMOTION_EVENT_ACTION_MASK) {
+                    case AMOTION_EVENT_ACTION_DOWN:
+                        lastX = x;
+                        lastY = y;
+                        isDragging = true;
+                        break;
+
+                    case AMOTION_EVENT_ACTION_MOVE:
+                        if (isDragging) {
+                            // 计算触摸位移差
+                            float dx = x - lastX;
+                            float dy = lastY - y; // Y轴取反（Android坐标原点在左上）
+                            GE_CORE_INFO("[dxt00] get rot dx_yaw:%f, dy_pitch%f", dx, dy);
+                            AndroidInputManager::GetInstance()->EnqueueInputRotationEvent(dx,dy);
+//                            // 更新相机角度
+//                            camera.yaw += dx * camera.sensitivity;
+//                            camera.pitch += dy * camera.sensitivity;
+//
+//                            // 限制俯仰角（避免翻转）
+//                            if (camera.pitch > 89.0f) camera.pitch = 89.0f;
+//                            if (camera.pitch < -89.0f) camera.pitch = -89.0f;
+//
+//                            // 更新相机朝向
+//                            glm::vec3 front;
+//                            front.x = cos(glm::radians(camera.yaw)) * cos(glm::radians(camera.pitch));
+//                            front.y = sin(glm::radians(camera.pitch));
+//                            front.z = sin(glm::radians(camera.yaw)) * cos(glm::radians(camera.pitch));
+//                            camera.front = glm::normalize(front);
+
+                            lastX = x;
+                            lastY = y;
+                        }
+
+                        if (AMotionEvent_getPointerCount(event) >= 2) {
+                            // 双指滑动控制移动
+                            float dx = AMotionEvent_getX(event, 1) - AMotionEvent_getX(event, 0);
+                            float dy = AMotionEvent_getY(event, 1) - AMotionEvent_getY(event, 0);
+                            AndroidInputManager::GetInstance()->EnqueueInputPositionEvent(dx,dy);
+                            GE_CORE_INFO("[dxt00] get pos dx:%f, dy%f", dx, dy);
+                            // 计算移动方向（右向量和前向量的叉积得到右方向）
+                          //  glm::vec3 right = glm::normalize(glm::cross(camera.front, camera.up));
+
+//                            // 双指水平滑动：左右移动
+//                            if (fabs(dx) > 10) {
+//                                camera.position += right * (dx > 0 ? camera.speed : -camera.speed);
+//                            }
+//
+//                            // 双指垂直滑动：前后移动
+//                            if (fabs(dy) > 10) {
+//                                camera.position += camera.front * (dy > 0 ? -camera.speed : camera.speed);
+//                            }
+                        }
+                        break;
+                        break;
+
+                    case AMOTION_EVENT_ACTION_UP:
+                        isDragging = false;
+                        break;
+
+
+
+                }
+            }
+            return 0;
+        }
+
         void InitAndriodThread(struct android_app *state) {
             GNativeAndroidApp = state;
             //  FTaskTagScope Scope(ETaskTag::EGameThread);

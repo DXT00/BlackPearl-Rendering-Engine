@@ -35,7 +35,7 @@ public:
 		m_SphereObj->SetPosition({ -0.4,0.0,-2.0 });
 
         GE_ERROR_JUDGE();
-		m_MainCamera->SetMoveSpeed(5.0f);
+		m_MainCamera->SetMoveSpeed(0.5f);
 		//m_Scene->AddObject(m_SphereObj);
 		m_Scene->AddObject(m_CubeObj);
         GE_ERROR_JUDGE();
