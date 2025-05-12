@@ -2,6 +2,7 @@
 #include "Renderer/Shader/MaterialShader.h"
 #include "BlackPearl/Core.h"
 #include "BlackPearl/Renderer/Shader/ShaderFactory.h"
+#include "Core/AssetManager.h"
 
 namespace BlackPearl {
     extern ShaderFactory* g_shaderFactory;
@@ -51,18 +52,7 @@ namespace BlackPearl {
 	std::string MaterialShader::ReadFile(const std::string& filepath)
 	{
 		std::string result;
-		std::ifstream in(filepath, std::ios::in | std::ios::binary);
-		if (in) {
-			in.seekg(0, std::ios::end);
-			int len = in.tellg();
-			result.resize(len);
-			in.seekg(0, std::ios::beg);
-			in.read(&result[0], result.size());
-			in.close();
-		}
-		else {
-			GE_ASSERT("Could not open file '{0}'", filepath);
-		}
+        result = AssetManager::LoadGlslFile(filepath);
 		return result;
 	}
 
@@ -98,7 +88,35 @@ namespace BlackPearl {
 
             std::string front = shaderSources[ShaderType::Pixel].substr(pos, eol - pos + 1);
             std::string res = shaderSources[ShaderType::Pixel].substr(eol);
+#ifdef GE_PLATFORM_ANDROID
+            //use gles 300
+            front = "//"+front;// 注释掉 pc OpenGL version
+            std::string glesVersion = "#version 310 es\r\n";
+            // 添加 common structure
+            shaderSources[ShaderType::Pixel] =  glesVersion+ commonSource + res;
+#else
             shaderSources[ShaderType::Pixel] = front + commonSource + res;
+
+#endif
+
+        }
+        //change to gles version if it is andriod platform
+        if (shaderSources.find(ShaderType::VertexShader) != shaderSources.end()) {
+            size_t pos = shaderSources[ShaderType::VertexShader].find("#version", 0);//find找不到会返回npos
+            GE_ASSERT(pos != std::string::npos, "Syntax error");
+
+            size_t eol = shaderSources[ShaderType::VertexShader].find_first_of("\r\n", pos);
+            GE_ASSERT(eol != std::string::npos, "Syntax error");
+
+            std::string front = shaderSources[ShaderType::VertexShader].substr(pos, eol - pos + 1);
+            std::string res = shaderSources[ShaderType::VertexShader].substr(eol);
+#ifdef GE_PLATFORM_ANDROID
+            //use gles 300
+            front = "//"+front;// 注释掉 pc OpenGL version
+            std::string glesVersion = "#version 310 es\r\n";
+            shaderSources[ShaderType::VertexShader] =  glesVersion +  res;
+#endif
+
         }
         return shaderSources;
 	}

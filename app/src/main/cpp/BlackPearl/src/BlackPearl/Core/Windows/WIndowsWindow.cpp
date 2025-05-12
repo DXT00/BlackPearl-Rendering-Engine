@@ -156,9 +156,14 @@ std::pair<float, float> WindowsWindow::GetMousePosition()
 }
 math::vector<int, 2> WindowsWindow::GetCurWindowSize()
 {
-    int width;
+    RECT windowRect;
+    GetWindowRect(m_WindowHandle, &windowRect);
+
+    int width = windowRect.right - windowRect.left;  // 窗口总宽度（含边框）
+    int height = windowRect.bottom - windowRect.top; // 窗口总高度（含标题栏）
+   /* int width;
     int height;
-    glfwGetWindowSize(m_Window, &width, &height);
+    glfwGetWindowSize(m_Window, &width, &height);*/
     return math::vector<int, 2>(width, height);
 }
 }

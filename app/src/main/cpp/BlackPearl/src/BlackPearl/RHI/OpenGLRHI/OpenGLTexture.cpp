@@ -125,6 +125,10 @@ namespace BlackPearl {
             desc.height = m_Height;
 
             m_Format = format;
+            m_InnerFormat = OpenGLUtil::convertTextureInnerFormat(desc.format);
+            auto fm = OpenGLUtil::convertTextureFormatAndDataType(desc.format);
+            m_DataType = fm.second;
+
 
             if(!m_Path.empty() && fileData){
                 textureData = fileData;
@@ -147,17 +151,22 @@ namespace BlackPearl {
         //glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, format, GL_UNSIGNED_BYTE, data);
 
         glTexImage2D(GL_TEXTURE_2D, 0, m_InnerFormat, m_Width, m_Height, 0, m_Format, m_DataType, (const void*)textureData);
-
+        GE_ERROR_JUDGE();
         if (m_Wrap != -1) {
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, m_Wrap);
+            GE_ERROR_JUDGE();
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, m_Wrap);
+            GE_ERROR_JUDGE();
+
         }
 
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, m_MinFilter);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, m_MagFilter);
+        GE_ERROR_JUDGE();
 
         if (_desc.generateMipmap)
             glGenerateMipmap(GL_TEXTURE_2D);//为当前绑定的纹理自动生成所有需要的多级渐远纹理
+        GE_ERROR_JUDGE();
 
         if (loadFromImage)
             stbi_image_free_util(textureData);

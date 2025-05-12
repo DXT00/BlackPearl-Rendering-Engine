@@ -903,11 +903,14 @@ GE_CORE_INFO(#StringEnum":%s" , ((const char*)glGetString(StringEnum)));
 	Device::Device()
 	{
         // opengl context and driver init
+        // for android , egl init
         PlatformInitOpenGL();
-
+        //GE_ERROR_JUDGE();
 		m_Context = new OpenGLContext();
+        //GE_ERROR_JUDGE();
+        // for android , egl context setup, such as: vao ,fbo
 		m_Context->PlatformDevice = PlatformCreateOpenGLDevice();
-
+       // GE_ERROR_JUDGE();
 		InitRHICapabilitiesForGL();
 
 		assert(PlatformOpenGLCurrentContext(m_Context->PlatformDevice) == CONTEXT_Shared);

@@ -15,8 +15,15 @@ namespace BlackPearl
             EGLDisplay eglDisplay = AndroidEGL::GetInstance()->GetDisplay();
             EGLSurface eglSurface = AndroidEGL::GetInstance()->GetSurface();
             int32_t SyncInterval = FAndroidPlatformRHIFramePacer::GetLegacySyncInterval();
-            eglSwapInterval(eglDisplay, SyncInterval);
+           // eglSwapInterval(eglDisplay, SyncInterval);
+            GE_ERROR_JUDGE_EGL();
+            if (eglDisplay == EGL_NO_DISPLAY || eglSurface == EGL_NO_SURFACE) {
+                GE_CORE_WARN("EGL not initialized!");
+                return false;
+            }
+
             eglSwapBuffers(eglDisplay, eglSurface);
+            return true;
         }
 
     static bool GGetTimeStampsSucceededThisFrame = true;

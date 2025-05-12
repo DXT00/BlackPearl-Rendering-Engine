@@ -53,7 +53,7 @@ namespace BlackPearl {
 	void OpenGLViewport::Resize(uint32_t InSizeX, uint32_t InSizeY, bool bInIsFullscreen)
 	{
 
-
+        GE_ERROR_JUDGE();
 		if ((InSizeX == m_SizeX) && (InSizeY == m_SizeY) && (bInIsFullscreen == m_bIsFullscreen))
 		{
 			return;
@@ -77,13 +77,17 @@ namespace BlackPearl {
 			textureDesc.isRenderTarget = true;
 
 			m_DefaultBackBuffers[i] = m_Device->createTexture(textureDesc);
-		}
+            GE_ERROR_JUDGE();
+
+        }
 		for (uint32_t index = 0; index < GL_BACKBUFFER_CNT; index++)
 		{
 			FramebufferDesc fboDesc;
 			fboDesc.addColorAttachment(m_DefaultBackBuffers[index]);
 			m_DefaultFramebuffers[index] = m_Device->createFramebuffer(fboDesc);
-		}
+            GE_ERROR_JUDGE();
+
+        }
 		for (uint32_t index = 0; index < GL_BACKBUFFER_CNT; index++) {
 
 			PlatformResizeGLContext(m_Device->m_Context->PlatformDevice, OpenGLContext, InSizeX, InSizeY, bInIsFullscreen, bWasFullscreen,OpenGLUtil::convertTextureDimension(m_DefaultBackBuffers[index]->getDesc().dimension), static_cast<Texture*>(m_DefaultBackBuffers[index].Get())->GetRendererID());

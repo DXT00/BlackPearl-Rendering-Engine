@@ -15,22 +15,11 @@ namespace BlackPearl{
     unsigned char* WindowsAssetManager::LoadImage(const std::string& relPath, int &width ,int& height, int& channels){
 
 
-
-
-
-        //unsigned char* data = stbi_load_util(m_Path.c_str(), &width, &height, &nrChannels, 0);
-
         // 示例：用 stb_image 加载图片（假设是 PNG/JPG）
         int _w, _h, _c;
 
         unsigned char* imageData =  stbi_load_util(relPath.c_str(), &_w, &_h, &_c, 0);
 
-
-
-        //std::vector<unsigned char> TextContents;
-
-
-            //std::vector<unsigned char> TextContents;
 
         if (imageData) {
             width = _w;
@@ -43,6 +32,23 @@ namespace BlackPearl{
 
         return imageData;
 
+    }
+    std::string WindowsAssetManager::LoadGlslFile(const std::string& relPath)
+    {
+        std::string result;
+        std::ifstream in(relPath, std::ios::in | std::ios::binary);
+        if (in) {
+            in.seekg(0, std::ios::end);
+            int len = in.tellg();
+            result.resize(len);
+            in.seekg(0, std::ios::beg);
+            in.read(&result[0], result.size());
+            in.close();
+        }
+        else {
+            GE_ASSERT("Could not open file '{0}'", filepath);
+        }
+        return result;
     }
 
     bool WindowsAssetManager::IsFileExist(const std::string &relPath) {

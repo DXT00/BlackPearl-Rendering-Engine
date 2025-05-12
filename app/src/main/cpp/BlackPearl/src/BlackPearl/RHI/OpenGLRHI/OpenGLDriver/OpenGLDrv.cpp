@@ -36,21 +36,23 @@ namespace BlackPearl {
 		// Intel HD4000 under <= 10.8.4 requires GL_DITHER disabled or dithering will occur on any channel < 8bits.
 		// No other driver does this but we don't need GL_DITHER on anyway.
 		glDisable(GL_DITHER);
-
+        GE_ERROR_JUDGE();
 		if (FOpenGL::SupportsFramebufferSRGBEnable())
 		{
 			// Render targets with TexCreate_SRGB should do sRGB conversion like in D3D11
 			glEnable(GL_FRAMEBUFFER_SRGB);
+            GE_ERROR_JUDGE();
 		}
 
 		// Engine always expects seamless cubemap, so enable it if available
 		if (ExtensionsString.find("GL_ARB_seamless_cube_map")!= std::string::npos)
 		{
 			glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
+            GE_ERROR_JUDGE();
 		}
 
-#if PLATFORM_WINDOWS || PLATFORM_LINUX
-		if (OpenGLConsoleVariables::bUseGlClipControlIfAvailable && ExtensionsString.Contains(TEXT("GL_ARB_clip_control")) && !FOpenGL::IsAndroidGLESCompatibilityModeEnabled())
+#ifdef GE_PLATFORM_WINDOWS //|| defined(GE_PLATFORM_LINUX)
+		if (ExtensionsString.find(("GL_ARB_clip_control")) != std::string::npos && !FOpenGL::IsAndroidGLESCompatibilityModeEnabled())
 		{
 			FOpenGL::EnableSupportsClipControl();
 			glClipControl(GL_UPPER_LEFT, GL_ZERO_TO_ONE);

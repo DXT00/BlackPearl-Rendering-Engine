@@ -149,7 +149,7 @@ project "BlackPearl"
 	{
 		"GLFW_INCLUDE_NONE",
 		"GE_API_OPENGL",
-		"USE_IMGUI"  --premake 默认 windows 平台， 可以使用imgui
+		--"USE_IMGUI"  --premake 默认 windows 平台， 可以使用imgui
 			
 	}
    	flags

@@ -99,13 +99,15 @@ namespace BlackPearl {
 			FOpenGL::SupportsPixelLocalStorage() && FOpenGL::SupportsShaderDepthStencilFetch())
 		{
 			glEnable(GL_SHADER_PIXEL_LOCAL_STORAGE_EXT);
-		}
+            GE_ERROR_JUDGE();
+
+        }
 #endif
 
 #ifdef GE_PLATFORM_ANDROID
 		if (FAndroidOpenGL::RequiresAdrenoTilingModeHint())
 		{
-			FAndroidOpenGL::EnableAdrenoTilingModeHint(passName ==("SceneColorRendering"));
+			FAndroidOpenGL::EnableAdrenoTilingModeHint(passName ==("BasePass"));
 		}
 #endif
 	}
@@ -370,7 +372,6 @@ namespace BlackPearl {
 	void CommandList::_setRenderTargets(uint32_t NumSimultaneousRenderTargets, const FRHIRenderTargetView* NewRenderTargetsRHI, const FRHIDepthRenderTargetView* NewDepthStencilTargetRHI)
 	{
 		assert(NumSimultaneousRenderTargets <= c_MaxRenderTargets);
-		GE_ERROR_JUDGE();
 
 		FMemory::Memset(m_Device->PendingState.RenderTargets, 0, sizeof(m_Device->PendingState.RenderTargets));
 		FMemory::Memset(m_Device->PendingState.RenderTargetMipmapLevels, 0, sizeof(m_Device->PendingState.RenderTargetMipmapLevels));
@@ -865,7 +866,9 @@ namespace BlackPearl {
 			// Use the default framebuffer (screen back/depth buffer)
 			return GL_NONE;
 		}
+        //GE_ERROR_JUDGE_EGL();
 
+        GE_ERROR_JUDGE();
 		// Not found. Preparing new one.
 		GLuint Framebuffer;
 		glGenFramebuffers(1, &Framebuffer);

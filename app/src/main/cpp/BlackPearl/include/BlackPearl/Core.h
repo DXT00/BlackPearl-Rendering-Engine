@@ -35,7 +35,7 @@
 #define GE_ASSERT(x) {if(!(x)){GE_CORE_ERROR("Assertion Failed");DEBUG_BREAK();}}
 #else
 //#define GE_ASSERT(x,msg)// {if(!(x)){LOGI("Assertion Failed: %s",msg);DEBUG_BREAK();}}
-#define GE_ASSERT(x,...) //{if(!(x)){LOGI("Assertion Failed"); DEBUG_BREAK();}}
+#define GE_ASSERT(x,...) //{if(!(x)){GE_CORE_INFO(msg); DEBUG_BREAK();}}
 #define GE_ASSERT(...)
 #endif
 
@@ -70,6 +70,7 @@
 #define GE_SAVE_FREE_ARRAY(p) {if(p!=nullptr){free(p);p = nullptr;}}
 
 #ifdef GE_PLATFORM_WINDOWS
+#ifdef GE_API_OPENGL
 #define GE_ERROR_JUDGE()\
 {\
 	GLenum err = glGetError();\
@@ -92,6 +93,8 @@
 	else{\
 		GE_CORE_ERROR("no such err type!"); }\
 }
+#endif
+
 #elif defined GE_PLATFORM_ANDROID
 #define GE_ERROR_JUDGE()\
 {\

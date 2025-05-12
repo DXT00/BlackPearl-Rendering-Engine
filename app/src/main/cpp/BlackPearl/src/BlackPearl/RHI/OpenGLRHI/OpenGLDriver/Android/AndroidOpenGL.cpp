@@ -39,7 +39,7 @@ namespace BlackPearl {
     int32_t FAndroidOpenGL::GLMinorVersion = 0;
 
     bool FAndroidOpenGL::bSupportsImageExternal = false;
-    bool FAndroidOpenGL::bRequiresAdrenoTilingHint = true;
+    bool FAndroidOpenGL::bRequiresAdrenoTilingHint = false;
 
 //static TAutoConsoleVariable<int32_t> CVarEnableAdrenoTilingHint(
 //	("r.Android.EnableAdrenoTilingHint"),
@@ -161,8 +161,10 @@ namespace BlackPearl {
 
        // extern void InitDebugContext();
 
-        bRunningUnderRenderDoc = glIsEnabled(GL_DEBUG_TOOL_EXT) != GL_FALSE;
-
+        bRunningUnderRenderDoc = false;//
+        // 如果未找到 GL_EXT_debug_tool 扩展，那么使用 GL_DEBUG_TOOL_EXT 将导致 GL_INVALID_ENUM 错误。
+        // glIsEnabled(GL_DEBUG_TOOL_EXT) != GL_FALSE;
+        GE_ERROR_JUDGE();
         //FPlatformMisc::LowLevelOutputDebugString(("FPlatformOpenGLDevice:Init"));
         bool bCreateSurface = !AndroidThunkCpp_IsOculusMobileApplication();
         AndroidEGL::GetInstance()->InitSurface(false, bCreateSurface);
@@ -477,10 +479,16 @@ namespace BlackPearl {
         if (AndroidEGL::GetInstance()->IsOfflineSurfaceRequired()) {
             Device->TargetDirty = true;
             glBindFramebuffer(GL_FRAMEBUFFER, Context->ViewportFramebuffer);
+            GE_ERROR_JUDGE();
+
             glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, BackBufferTarget, BackBufferResource, 0);
+            GE_ERROR_JUDGE();
+
         }
 
         glViewport(0, 0, SizeX, SizeY);
+        GE_ERROR_JUDGE();
+
         GE_ASSERT(glViewport);
     }
 
@@ -799,6 +807,7 @@ namespace BlackPearl {
             ExtensionsString.find(("GL_QCOM_shader_framebuffer_fetch_noncoherent")) !=std::string::npos &&
             ExtensionsString.find(("GL_EXT_shader_framebuffer_fetch")) != std::string::npos) {
             glEnable(GL_FRAMEBUFFER_FETCH_NONCOHERENT_QCOM);
+            GE_ERROR_JUDGE();
         }
     }
 
@@ -810,8 +819,11 @@ namespace BlackPearl {
         if (bEnable && CVarEnableAdrenoTilingHint!= 0) {
             glEnable(GL_BINNING_CONTROL_HINT_QCOM);
             glHint(GL_BINNING_CONTROL_HINT_QCOM, GL_GPU_OPTIMIZED_QCOM);
+            GE_ERROR_JUDGE();
         } else {
             glDisable(GL_BINNING_CONTROL_HINT_QCOM);
+            GE_ERROR_JUDGE();
+
         }
     }
 

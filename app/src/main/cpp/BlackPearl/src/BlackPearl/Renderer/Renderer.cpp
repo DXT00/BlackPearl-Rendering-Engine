@@ -8,6 +8,7 @@
 #include "BlackPearl/Component/LightComponent/LightSources.h"
 #include "glm/gtc/matrix_transform.hpp"
 #include "Renderer/Mesh/Mesh.h"
+#include "Application.h"
 using namespace BlackPearl::math;
 #include <hlsl/core/view_cb.h>
 
@@ -48,7 +49,8 @@ namespace BlackPearl {
 		s_SceneData->CameraFront = camera.Front();
 		s_SceneData->ViewMatrix = camera.GetViewMatrix();
 		s_SceneData->ProjectionMatrix = camera.GetProjectionMatrix();
-		s_SceneData->SetViewport(RHIViewport(Configuration::WindowWidth, Configuration::WindowHeight));
+        math::vector<int, 2> windowSize = Application::Get().GetWindow().GetCurWindowSize();
+		s_SceneData->SetViewport(RHIViewport(windowSize[0], windowSize[1]));
 
 		s_SceneData->ViewFrustum = math::frustum(Math::ToFloat4x4(s_SceneData->ViewMatrix * s_SceneData->ProjectionMatrix), s_SceneData->ReverseZ);
 		for (Object* lightObj : lightSources.Get()) {

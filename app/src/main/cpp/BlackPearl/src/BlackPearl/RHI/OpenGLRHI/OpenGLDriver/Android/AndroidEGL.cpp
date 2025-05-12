@@ -221,6 +221,7 @@ void AndroidEGL::TerminateEGL()
 }
 
 /* Can be called from any thread */
+//将InContext 设置为当前context
 EGLBoolean AndroidEGL::SetCurrentContext(EGLContext InContext, EGLSurface InSurface)
 {
 	//VERIFY_EGL_SCOPE();
@@ -244,6 +245,7 @@ EGLBoolean AndroidEGL::SetCurrentContext(EGLContext InContext, EGLSurface InSurf
 		{
 			//if we have a valid context, and no surface then create a tiny pbuffer and use that temporarily
 			EGLSurface Surface = InSurface;
+            // 没有surface, 创建一个！
 			if (!bSupportsKHRSurfacelessContext && InContext != EGL_NO_CONTEXT && InSurface == EGL_NO_SURFACE)
 			{
 				GE_ASSERT(PImplData->auxSurface == EGL_NO_SURFACE, ("ERROR: PImplData->auxSurface already in use. PBuffer surface leak!"));
@@ -262,8 +264,9 @@ EGLBoolean AndroidEGL::SetCurrentContext(EGLContext InContext, EGLSurface InSurf
 				}
 				Surface = PImplData->auxSurface;
 			}
-
+            //设置 InContext 为当前context
 			Result = eglMakeCurrent(PImplData->eglDisplay, Surface, Surface, InContext);
+            GE_ERROR_JUDGE_EGL();
 			GE_ASSERT(Result == EGL_TRUE, ("ERROR: SetCurrentContext eglMakeCurrent failed : 0x%x"), eglGetError());
 		}
 	}
@@ -414,7 +417,9 @@ void AndroidEGL::InitEGL(APIVariant API)
 
 	EGLBoolean  result = 	eglInitialize(PImplData->eglDisplay, 0 , 0);
 	GE_ASSERT( result == EGL_TRUE, ("elgInitialize error: 0x%x "), eglGetError());
-
+    if(result!=EGL_TRUE){
+        GE_CORE_ERROR("elgInitialize error: 0x%x ", eglGetError());
+    }
 	// Get the EGL Extension list to determine what is supported
 	std::string Extensions = std::string( eglQueryString( PImplData->eglDisplay, EGL_EXTENSIONS));
 
@@ -931,7 +936,6 @@ void AndroidEGL::SetCurrentSharedContext()
 void AndroidEGL::AcquireCurrentRenderingContext()
 {
 	SetCurrentRenderingContext();
-
 	if (!PImplData->DummyFrameBuffer)
 	{
 		// Dummy FBO we bind right after SwapBuffers to tell driver that backbuffer is no longer in use by the App

@@ -12,7 +12,6 @@
 namespace BlackPearl{
 
     extern AAssetManager * AndroidThunkCpp_GetAssetManager();
-
     // Android 相对路径 是基于 assets目录，需要去除 assets/
     std::string removeAssetsPrefix(const std::string& path) {
         const std::string prefix = "assets/";
@@ -24,10 +23,8 @@ namespace BlackPearl{
     }
 
 
-
-    unsigned char* AndroidAssetManager::LoadImage(const std::string& relPath, int& width ,int& height, int& channels){
-
 #if USE_ANDROID_JNI
+    AAsset* GetAsset(const std::string& relPath){
         std::string assetRelPath = removeAssetsPrefix(relPath);
         AAssetManager* AssetMgr = AndroidThunkCpp_GetAssetManager();
         AAsset* asset = AAssetManager_open(AssetMgr, assetRelPath.c_str(), AASSET_MODE_BUFFER);
@@ -36,10 +33,19 @@ namespace BlackPearl{
             GE_CORE_ERROR( "Failed to open asset: %s", relPath.c_str());
             return nullptr;
         }
+        return asset;
+    }
+#endif
 
 
+    unsigned char* AndroidAssetManager::LoadImage(const std::string& relPath, int& width ,int& height, int& channels){
+
+#if USE_ANDROID_JNI
 
 
+        AAsset* asset = GetAsset(relPath);
+        if(!asset)
+            return nullptr;
         // 获取文件数据
         const void* fileData = AAsset_getBuffer(asset);
         off_t fileSize = AAsset_getLength(asset);
@@ -73,6 +79,32 @@ namespace BlackPearl{
 #endif
         return nullptr;
     }
+
+    std::string AndroidAssetManager::LoadGlslFile(const std::string &relPath) {
+#if USE_ANDROID_JNI
+         AAsset* asset = GetAsset(relPath);
+         if(!asset)
+             return nullptr;
+
+        // 获取文件长度
+        size_t length = AAsset_getLength(asset);
+        std::vector<char> buffer(length + 1);
+
+        // 读取文件内容
+        AAsset_read(asset, buffer.data(), length);
+        buffer[length] = '\0'; // 添加字符串结束符
+
+        // 关闭资源
+        AAsset_close(asset);
+
+        return std::string(buffer.data());
+#endif
+        return "";
+
+
+    }
+
+
 
     bool AndroidAssetManager::IsFileExist(const std::string &relPath) {
 

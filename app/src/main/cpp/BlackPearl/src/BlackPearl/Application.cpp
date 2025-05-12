@@ -113,21 +113,22 @@ namespace BlackPearl {
 			g_modelLoader = DBG_NEW D3D12ModelLoader();
 	#else
 			g_modelLoader = DBG_NEW ModelLoader();
-	#endif
+    #endif
+        //GE_ERROR_JUDGE();
 			g_modelLoader->RegisterDeviceManager(g_deviceManager);
-
+       // GE_ERROR_JUDGE();
 			m_LayerManager = DBG_NEW LayerManager();
 			m_LayerManager->RegisterDeviceManager(g_deviceManager);
-
+       // GE_ERROR_JUDGE();
 			g_objectManager->RegisterDeviceManager(g_deviceManager);
-
+       // GE_ERROR_JUDGE();
 			g_uiManager = DBG_NEW UIManager();
-
+      //  GE_ERROR_JUDGE();
 			g_shaderFactory = DBG_NEW ShaderFactory(g_deviceManager->GetDevice(), g_rootFileSystem, "assets/shaders/spv");
-			
+       // GE_ERROR_JUDGE();
 			g_materialManager->RegisterDeviceManager(g_deviceManager);
 			g_materialManager->Init();
-
+        ///GE_ERROR_JUDGE();
 		m_StartTimeMs = 0;// duration_cast<milliseconds>(system_clock::now().time_since_epoch());
 	}
 

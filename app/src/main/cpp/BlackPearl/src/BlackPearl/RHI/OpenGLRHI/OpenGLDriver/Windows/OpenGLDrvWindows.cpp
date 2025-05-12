@@ -919,10 +919,12 @@ void PlatformBindContextVAO(FPlatformOpenGLDevice* Device) {
 		glGetIntegerv(GL_VERTEX_ARRAY_BINDING, &currentVAO);
 
 		if (currentVAO == static_cast<GLint>(Device->RenderingContext.VertexArrayObject)) {
-			std::cout << "VAO " << Device->RenderingContext.VertexArrayObject << " �Ѱ�����Ч��" << std::endl;
+			GE_CORE_INFO("VAO %d", Device->RenderingContext.VertexArrayObject);
+			//std::cout << "VAO " << Device->RenderingContext.VertexArrayObject << " �Ѱ�����Ч��" << std::endl;
 		}
 		else {
-			std::cerr << "VAO " << Device->RenderingContext.VertexArrayObject << " δ�󶨻���Ч��" << std::endl;
+			GE_CORE_WARN("VAO invalid %d", Device->RenderingContext.VertexArrayObject);
+			//std::cerr << "VAO " << Device->RenderingContext.VertexArrayObject << " δ�󶨻���Ч��" << std::endl;
 		}
 		glBindVertexArray(Device->RenderingContext.VertexArrayObject);
 

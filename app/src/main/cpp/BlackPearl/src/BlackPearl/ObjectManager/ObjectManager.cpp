@@ -167,11 +167,20 @@ namespace BlackPearl {
 //			{ElementDataType::Float2,"aTexCoords",false,2}
 //		};
 //#endif
+        //GE_ERROR_JUDGE();
 
 		std::shared_ptr<Mesh> mesh = std::make_shared<Mesh>(meshFilter.get(), material, layout);
-		obj->AddComponent<MeshRenderer>(mesh);
+      //  GE_ERROR_JUDGE();
+
+        obj->AddComponent<MeshRenderer>(mesh);
+       // GE_ERROR_JUDGE();
+
 		AABB box = BoundingBoxBuilder::Build(obj);
-		obj->AddComponent<BoundingBox>(box);
+      //  GE_ERROR_JUDGE();
+
+        obj->AddComponent<BoundingBox>(box);
+      //  GE_ERROR_JUDGE();
+
 		m_Objs.push_back(obj);
 		return obj;
 
