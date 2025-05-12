@@ -1219,7 +1219,7 @@ bool AndroidEGL::IsOfflineSurfaceRequired()
 //		// setBuffersTransform doesn't work on arm and powerVR GPU devices
 //		|| (CVarAndroidGLESFlipYMethod.GetValueOnAnyThread() == 0 && (GRHIVendorId == 0x13B5 || GRHIVendorId == 0x1010));
 
-    return false;
+    return true;
 }
 
 ///

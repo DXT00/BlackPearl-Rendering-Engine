@@ -36,10 +36,13 @@
         </provider>
 
         <activity
-            android:name="android.app.NativeActivity"
+            android:name="com.example.blackpearl.MainNativeActivity"
             android:exported="true"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="landscape"
+            android:launchMode="singleTask"
+            android:resizeableActivity="false"
+            android:debuggable="true"
             tools:ignore="DiscouragedApi">
             <meta-data
                 android:name="android.app.lib_name"

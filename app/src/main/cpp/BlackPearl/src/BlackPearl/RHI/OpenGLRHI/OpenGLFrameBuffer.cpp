@@ -17,6 +17,7 @@ namespace BlackPearl {
     {
         desc = _desc;
         glGenFramebuffers(1, &m_Fbo);
+        GE_ERROR_JUDGE();
 
     }
     Framebuffer::~Framebuffer()

@@ -28,7 +28,9 @@ public:
 		m_CubeObj = CreateCube("assets/shaders/Cube.glsl", "assets/texture/wood.png");
         GE_ERROR_JUDGE();
 		m_CubeObj->GetComponent<BlackPearl::Transform>()->SetScale({ 0.2,0.2,0.2 });
-		m_SphereObj->GetComponent<BlackPearl::Transform>()->SetScale({ 0.5,0.5,0.5 });
+        m_CubeObj->GetComponent<BlackPearl::Transform>()->SetRotation({0,30,0});
+
+        m_SphereObj->GetComponent<BlackPearl::Transform>()->SetScale({ 0.5,0.5,0.5 });
 		m_CubeObj->SetPosition({ 0.0,0.0,-2.0 });
 		m_SphereObj->SetPosition({ -0.4,0.0,-2.0 });
 
