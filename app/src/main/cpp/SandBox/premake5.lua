@@ -20,7 +20,9 @@ project "Sandbox"
 		"assets/shaders_hlsl/**.hlsl",
 		
 	}
-
+	removefiles  { ".*/.vshistory/**.cpp" }
+	removefiles  { ".*/.vshistory/**.h" }
+	removefiles  { ".*/.vshistory/.*" }
 	filter { "files:Sandbox/assets/shaders_hlsl/**.hlsl" }
 	filter { "files:**.hlsl" }
 		flags("ExcludeFromBuild")
@@ -35,7 +37,7 @@ project "Sandbox"
 	includedirs
 	{
 		"../BlackPearl/vendor/spdlog/include",
-		"../BlackPearl/src",
+		--"../BlackPearl/src",
 		"../BlackPearl/include",
 		"../BlackPearl/vendor",
 		"../BlackPearl/vendor/stb",
@@ -54,7 +56,8 @@ project "Sandbox"
 
 	defines
 	{
-		"GE_API_OPENGL"
+		"GE_API_OPENGL",
+		"USE_IMGUI"
 	}
 	
 	links

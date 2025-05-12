@@ -5,13 +5,24 @@
 #include "BlackPearl/Application.h"
 #include "BlackPearl/RHI/DynamicRHI.h"
 #include "BlackPearl/EntryPoint.h"
-
+#include "Layers/PbrRenderingLayer.h"
+#include "Layers/RHIRenderGraphLayer.h"
 enum RenderSample {
-
+    BP_PbrRendering,
     BP_RHIRenderGraphLayer
 };
 
+std::string RenderSampleName(RenderSample sample){
+    switch (sample) {
+        case BP_PbrRendering:
+            return "BP_PbrRenderering";
+        case BP_RHIRenderGraphLayer:
+            return "BP_RHIRenderGraph";
+        default:
+            return "BP_Unknown";
 
+    }
+}
 class SandBoxAndroid :public BlackPearl::Application {
 
 public:
@@ -23,8 +34,7 @@ public:
 
 
 
-        BlackPearl::Layer* layer = NULL;
-        const std::string layer_name = renderer + "Layer";
+        const std::string layer_name = RenderSampleName(renderer) + "Layer";
 
 //        if (renderer == BP_VkTest) {
 //           // layer = DBG_NEW VkTestLayer(layer_name);
@@ -35,16 +45,22 @@ public:
 //        else if (renderer == BP_VkRayTracing) {
 //           // layer = DBG_NEW VkRayTracingLayer(layer_name);
 //        }
-        if (renderer == BP_RHIRenderGraphLayer) {
-          //  layer = DBG_NEW VkRHIRenderGraphLayer(layer_name);
+        if (renderer == BP_PbrRendering) {
+            layer = DBG_NEW PbrRenderingLayer(layer_name);
         }
-        if(layer)
-            GetLayerManager()->PushLayer(layer);
+        if (renderer == BP_RHIRenderGraphLayer) {
+            layer = DBG_NEW RHIRenderGraphLayer(layer_name);
+        }
+
     }
     virtual ~SandBoxAndroid() {
 
     }
-
+    virtual void Init() override{
+        BlackPearl::Application::Init();
+        if(layer)
+            GetLayerManager()->PushLayer(layer);
+    }
 private:
     BlackPearl::AppVersion selectAppVersion(RenderSample sample) {
 //        if (sample <= BP_VkRayTracing) {
@@ -56,6 +72,8 @@ private:
 
         return BlackPearl::AppVersion::VERSION_1_0;
     }
+    BlackPearl::Layer* layer = NULL;
+
 };
 
 BlackPearl::Application* BlackPearl::CreateApplication(INSTANCE_HANDLE hInstance, int nShowCmd, struct android_app* state) {

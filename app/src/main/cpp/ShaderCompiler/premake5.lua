@@ -13,14 +13,22 @@ project "ShaderCompiler"
 		"src/**.h",
 		"src/**.cpp",
 	}
-
+	excludes {
+        "**/.vshistory/**",  -- 排除整个文件夹
+    }
+	
+	removefiles  { ".*/.vshistory/**.cpp" }
+    removefiles  { ".*/.vshistory/**.h" }
+    removefiles  { ".*/.vshistory/.*" }
+	removefiles  { ".*/.vshistory/**.*" }
 
 	includedirs
 	{
+		"../BlackPearl/include",
 		"../BlackPearl/src",
 		"../BlackPearl/vendor/spdlog/include",
 		"../BlackPearl/vendor/GLFW/include",
-
+		"../%{IncludeDir.glm}",
 	}
 
 	libdirs{

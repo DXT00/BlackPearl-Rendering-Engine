@@ -16,7 +16,9 @@ project "SandboxDX"
 		
 	}
 
-
+   removefiles  { ".*/.vshistory/**.cpp" }
+   removefiles  { ".*/.vshistory/**.h" }
+   removefiles  { ".*/.vshistory/.*" }
 	filter { "files:SandboxDX/assets/shaders_hlsl/**.hlsl" }
 	filter { "files:**.hlsl" }
 		flags("ExcludeFromBuild")

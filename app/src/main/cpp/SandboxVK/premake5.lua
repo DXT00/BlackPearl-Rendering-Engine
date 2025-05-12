@@ -16,7 +16,9 @@ project "SandboxVK"
         "assets/shaders/**.frag",
         "assets/shaders/**.vert"
 	}
-
+	removefiles  { ".*/.vshistory/**.cpp" }
+	removefiles  { ".*/.vshistory/**.h" }
+	removefiles  { ".*/.vshistory/.*" }
 
 	--filter { "files:src/BlackPearl/RHI/OpenGLRHI/**.cpp" }
 	--filter { "files:src/BlackPearl/RHI/OpenGLRHI/**.h" }
