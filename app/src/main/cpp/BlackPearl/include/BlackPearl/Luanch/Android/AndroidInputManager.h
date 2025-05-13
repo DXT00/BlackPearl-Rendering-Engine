@@ -6,6 +6,8 @@
 #define BLACKPEARL_ANDROIDINPUTMANAGER_H
 #include "glm/glm.hpp"
 #include "BlackPearl/MainCamera/MainCamera.h"
+#include "Core/CriticalSection.h"
+#include "Core/ScopeLock.h"
 
 #include <queue>
 namespace BlackPearl{
@@ -34,11 +36,14 @@ namespace BlackPearl{
         FInputEventPacket DequeueAppEvent();
     protected:
         AndroidInputManager();
+        mutable FCriticalSection QueueMutex;
 
     private:
         static AndroidInputManager* sInstance;
-        pthread_mutex_t QueueMutex;
+       // pthread_mutex_t QueueMutex;
         std::queue<FInputEventPacket> Queue;
+
+
     };
 
 }

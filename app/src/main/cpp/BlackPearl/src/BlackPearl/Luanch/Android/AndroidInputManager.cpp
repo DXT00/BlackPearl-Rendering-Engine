@@ -1,6 +1,7 @@
 //
 // Created by DXT00 on 2025/5/12.
 //
+#include "pch.h"
 #include "Core.h"
 #include "Luanch/Android/AndroidInputManager.h"
 namespace BlackPearl
@@ -16,18 +17,22 @@ namespace BlackPearl
         return sInstance;
     }
     void AndroidInputManager::EnqueueInputRotationEvent(int dx, int dy){
+       
         FInputEventPacket Event;
         Event.event = CameraRotationDelta;
         Event.dx = dx; //yaw
         Event.dy = dy; //pitch
+        FScopeLock Lock(&QueueMutex);
 
-        int rc = pthread_mutex_lock(&QueueMutex);
-        GE_ASSERT(rc == 0);
         Queue.push(Event);
 
+       // int rc = pthread_mutex_lock(&QueueMutex);
+       // GE_ASSERT(rc == 0);
+      
 
-        rc = pthread_mutex_unlock(&QueueMutex);
-        GE_ASSERT(rc == 0);
+
+       // rc = pthread_mutex_unlock(&QueueMutex);
+       // GE_ASSERT(rc == 0);
 
     }
 
@@ -36,31 +41,36 @@ namespace BlackPearl
         Event.event = CameraPositionDelta;
         Event.dx = dx; //x
         Event.dy = dy; //y
+        FScopeLock Lock(&QueueMutex);
 
-        int rc = pthread_mutex_lock(&QueueMutex);
-        GE_ASSERT(rc == 0);
         Queue.push(Event);
 
 
-        rc = pthread_mutex_unlock(&QueueMutex);
+        /*int rc = pthread_mutex_lock(&QueueMutex);
         GE_ASSERT(rc == 0);
+     
+
+        rc = pthread_mutex_unlock(&QueueMutex);
+        GE_ASSERT(rc == 0);*/
 
     }
     AndroidInputManager::AndroidInputManager(){
-        pthread_mutex_init(&QueueMutex, NULL);
+      //  pthread_mutex_init(&QueueMutex, NULL);
 
     }
     FInputEventPacket AndroidInputManager::DequeueAppEvent()
     {
-        int rc = pthread_mutex_lock(&QueueMutex);
-        GE_ASSERT(rc == 0);
+        FScopeLock Lock(&QueueMutex);
+
+       // int rc = pthread_mutex_lock(&QueueMutex);
+        //GE_ASSERT(rc == 0);
 
         FInputEventPacket OutData;
         OutData = Queue.front();
         Queue.pop();
 
-        rc = pthread_mutex_unlock(&QueueMutex);
-        GE_ASSERT(rc == 0);
+       // rc = pthread_mutex_unlock(&QueueMutex);
+        //GE_ASSERT(rc == 0);
 
         //UE_LOG(LogAndroidEvents, Display, ("LogAndroidEvents::DequeueAppEvent : %u, [width=%d, height=%d], %s"), OutData.State, OutData.Data.WindowWidth, OutData.Data.WindowHeight, GetAppEventName(OutData.State))
 
