@@ -8,4 +8,13 @@ namespace BlackPearl {
    
 
 
+	void MaterialTemplateBlinPhong::FillMaterialConstants(ICommandList* cmdLIst, Material* material)
+	{
+	}
+
+	size_t MaterialTemplateBlinPhong::GetMaterialConstantSize()
+	{
+		return size_t();
+	}
+
 }

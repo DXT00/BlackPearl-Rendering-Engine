@@ -1,0 +1,608 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="glsl">
+      <UniqueIdentifier>{3765977C-239C-980D-CC88-7E10B89E140F}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="glsl\IndirectDraw">
+      <UniqueIdentifier>{E602ADBF-5219-AB55-9B90-367707E67BDD}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="glsl\animatedModel">
+      <UniqueIdentifier>{5A3C0B62-4620-CCB7-AF80-C60A9B83B639}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="glsl\basics">
+      <UniqueIdentifier>{BB5A7F55-2710-F84A-B004-F2211CB9EE4E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="glsl\batch">
+      <UniqueIdentifier>{C834590A-B4EC-9A57-1DF4-73B309CB3548}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="glsl\bsdf">
+      <UniqueIdentifier>{E572D40F-51DD-8886-9A1B-3A2C06C566DB}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="glsl\cloud">
+      <UniqueIdentifier>{7D42710A-69FA-B257-D201-8CB3BED84D48}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="glsl\common">
+      <UniqueIdentifier>{AFA2CE58-1B58-474E-A44C-412510013E52}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="glsl\gBuffer">
+      <UniqueIdentifier>{A78D203E-93F0-AFE2-3C76-E89828B87B65}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="glsl\gBufferProbe">
+      <UniqueIdentifier>{BF3EF684-2B55-F41A-74CC-7F3CE021C5A2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="glsl\gBufferVoxel">
+      <UniqueIdentifier>{55536185-C169-5F1B-0AE1-EA3C763630A3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="glsl\gBufferVoxelSVO">
+      <UniqueIdentifier>{AD7B74C3-990A-FE8C-4229-12882E970E33}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="glsl\gBufferVoxelSVO\buildTree">
+      <UniqueIdentifier>{DC8DAC34-C8B3-769B-B1F9-FB669DBE9B67}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="glsl\ibl">
+      <UniqueIdentifier>{3DBAC017-2987-1B23-52A0-09CB3ECC50B1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="glsl\lightProbes">
+      <UniqueIdentifier>{E9B47F08-D5AD-9E5A-FEDF-83DFEA377E66}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="glsl\map">
+      <UniqueIdentifier>{24CBC017-1098-1B23-39B1-09CB25DD50B1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="glsl\occlusionCulling">
+      <UniqueIdentifier>{03EF0400-6F5B-C0FA-384F-5858A47AE262}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="glsl\ocean">
+      <UniqueIdentifier>{0C4C450B-F803-8758-610B-60B44DE22149}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="glsl\pass">
+      <UniqueIdentifier>{9DD5DB0F-0940-9086-527E-412CBE276EDB}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="glsl\pbr">
+      <UniqueIdentifier>{0AD8C017-F6A4-1B23-1FBE-09CB0BEA50B1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="glsl\raytracing">
+      <UniqueIdentifier>{FAAAB8A1-6636-2666-6F47-A95ADB518266}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="glsl\shadowMap">
+      <UniqueIdentifier>{6A938AC8-5661-7ECE-3FF5-EEF42B625A33}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="glsl\shadowMap\directLight">
+      <UniqueIdentifier>{0C50ED02-F85F-99D3-6119-FEF14D48886C}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="glsl\shadowMap\pointLight">
+      <UniqueIdentifier>{3B94FEF2-A756-327D-F006-C1095C080B5B}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="glsl\terrain">
+      <UniqueIdentifier>{BB674A78-A7CA-D91C-5050-12D33C92A59F}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="glsl\voxelization">
+      <UniqueIdentifier>{12AD793D-7EC3-77D3-C73A-03F53390485B}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="glsl\voxelization\debug">
+      <UniqueIdentifier>{28CDCCAD-9404-1545-9D0E-796809C53B3E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="glsl\voxelization\visualization">
+      <UniqueIdentifier>{13C28F6E-7FA5-9EAE-88A8-CCEAF40A65FF}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="glsl\voxelization\voxelConeTracing">
+      <UniqueIdentifier>{5CB55A0F-48F1-5D79-B103-76709D5E0694}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="hlsl">
+      <UniqueIdentifier>{98F1977C-8428-990D-2D15-7F10192B150F}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="hlsl\core">
+      <UniqueIdentifier>{10615184-7CCB-05FB-C509-B7A031B3E34F}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="hlsl\passes">
+      <UniqueIdentifier>{967384FB-0229-FDF0-8B1D-F7C7F7D1F3F4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="hlsl\test">
+      <UniqueIdentifier>{27895A84-93F3-0EFB-DC31-C0A048DBEC4F}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="shaders\hlsl\core\align.h">
+      <Filter>hlsl\core</Filter>
+    </ClInclude>
+    <ClInclude Include="shaders\hlsl\core\bindless.h">
+      <Filter>hlsl\core</Filter>
+    </ClInclude>
+    <ClInclude Include="shaders\hlsl\core\blit_cb.h">
+      <Filter>hlsl\core</Filter>
+    </ClInclude>
+    <ClInclude Include="shaders\hlsl\core\bloom_cb.h">
+      <Filter>hlsl\core</Filter>
+    </ClInclude>
+    <ClInclude Include="shaders\hlsl\core\deferred_lighting_cb.h">
+      <Filter>hlsl\core</Filter>
+    </ClInclude>
+    <ClInclude Include="shaders\hlsl\core\depth_cb.h">
+      <Filter>hlsl\core</Filter>
+    </ClInclude>
+    <ClInclude Include="shaders\hlsl\core\forward_cb.h">
+      <Filter>hlsl\core</Filter>
+    </ClInclude>
+    <ClInclude Include="shaders\hlsl\core\gbuffer_cb.h">
+      <Filter>hlsl\core</Filter>
+    </ClInclude>
+    <ClInclude Include="shaders\hlsl\core\light_cb.h">
+      <Filter>hlsl\core</Filter>
+    </ClInclude>
+    <ClInclude Include="shaders\hlsl\core\light_probe_cb.h">
+      <Filter>hlsl\core</Filter>
+    </ClInclude>
+    <ClInclude Include="shaders\hlsl\core\light_types.h">
+      <Filter>hlsl\core</Filter>
+    </ClInclude>
+    <ClInclude Include="shaders\hlsl\core\material_cb.h">
+      <Filter>hlsl\core</Filter>
+    </ClInclude>
+    <ClInclude Include="shaders\hlsl\core\mipmapgen_cb.h">
+      <Filter>hlsl\core</Filter>
+    </ClInclude>
+    <ClInclude Include="shaders\hlsl\core\pixel_readback_cb.h">
+      <Filter>hlsl\core</Filter>
+    </ClInclude>
+    <ClInclude Include="shaders\hlsl\core\skinning_cb.h">
+      <Filter>hlsl\core</Filter>
+    </ClInclude>
+    <ClInclude Include="shaders\hlsl\core\sky_cb.h">
+      <Filter>hlsl\core</Filter>
+    </ClInclude>
+    <ClInclude Include="shaders\hlsl\core\ssao_cb.h">
+      <Filter>hlsl\core</Filter>
+    </ClInclude>
+    <ClInclude Include="shaders\hlsl\core\taa_cb.h">
+      <Filter>hlsl\core</Filter>
+    </ClInclude>
+    <ClInclude Include="shaders\hlsl\core\tonemapping_cb.h">
+      <Filter>hlsl\core</Filter>
+    </ClInclude>
+    <ClInclude Include="shaders\hlsl\core\transform_cb.h">
+      <Filter>hlsl\core</Filter>
+    </ClInclude>
+    <ClInclude Include="shaders\hlsl\core\view_cb.h">
+      <Filter>hlsl\core</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="shaders\hlsl\passes\bloom_ps.hlsl">
+      <Filter>hlsl\passes</Filter>
+    </FxCompile>
+    <FxCompile Include="shaders\hlsl\passes\cubemap_gs.hlsl">
+      <Filter>hlsl\passes</Filter>
+    </FxCompile>
+    <FxCompile Include="shaders\hlsl\passes\deferred_lighting_cs.hlsl">
+      <Filter>hlsl\passes</Filter>
+    </FxCompile>
+    <FxCompile Include="shaders\hlsl\passes\depth_ps.hlsl">
+      <Filter>hlsl\passes</Filter>
+    </FxCompile>
+    <FxCompile Include="shaders\hlsl\passes\depth_vs.hlsl">
+      <Filter>hlsl\passes</Filter>
+    </FxCompile>
+    <FxCompile Include="shaders\hlsl\passes\environment_map_ps.hlsl">
+      <Filter>hlsl\passes</Filter>
+    </FxCompile>
+    <FxCompile Include="shaders\hlsl\passes\exposure_cs.hlsl">
+      <Filter>hlsl\passes</Filter>
+    </FxCompile>
+    <FxCompile Include="shaders\hlsl\passes\forward_ps.hlsl">
+      <Filter>hlsl\passes</Filter>
+    </FxCompile>
+    <FxCompile Include="shaders\hlsl\passes\forward_vs.hlsl">
+      <Filter>hlsl\passes</Filter>
+    </FxCompile>
+    <FxCompile Include="shaders\hlsl\passes\gbuffer_ps.hlsl">
+      <Filter>hlsl\passes</Filter>
+    </FxCompile>
+    <FxCompile Include="shaders\hlsl\passes\gbuffer_vs.hlsl">
+      <Filter>hlsl\passes</Filter>
+    </FxCompile>
+    <FxCompile Include="shaders\hlsl\passes\histogram_cs.hlsl">
+      <Filter>hlsl\passes</Filter>
+    </FxCompile>
+    <FxCompile Include="shaders\hlsl\passes\joints.hlsl">
+      <Filter>hlsl\passes</Filter>
+    </FxCompile>
+    <FxCompile Include="shaders\hlsl\passes\light_probe.hlsl">
+      <Filter>hlsl\passes</Filter>
+    </FxCompile>
+    <FxCompile Include="shaders\hlsl\passes\material_id_ps.hlsl">
+      <Filter>hlsl\passes</Filter>
+    </FxCompile>
+    <FxCompile Include="shaders\hlsl\passes\mipmapgen_cs.hlsl">
+      <Filter>hlsl\passes</Filter>
+    </FxCompile>
+    <FxCompile Include="shaders\hlsl\passes\motion_vectors_ps.hlsl">
+      <Filter>hlsl\passes</Filter>
+    </FxCompile>
+    <FxCompile Include="shaders\hlsl\passes\pixel_readback_cs.hlsl">
+      <Filter>hlsl\passes</Filter>
+    </FxCompile>
+    <FxCompile Include="shaders\hlsl\passes\sky_ps.hlsl">
+      <Filter>hlsl\passes</Filter>
+    </FxCompile>
+    <FxCompile Include="shaders\hlsl\passes\ssao_blur_cs.hlsl">
+      <Filter>hlsl\passes</Filter>
+    </FxCompile>
+    <FxCompile Include="shaders\hlsl\passes\ssao_compute_cs.hlsl">
+      <Filter>hlsl\passes</Filter>
+    </FxCompile>
+    <FxCompile Include="shaders\hlsl\passes\ssao_deinterleave_cs.hlsl">
+      <Filter>hlsl\passes</Filter>
+    </FxCompile>
+    <FxCompile Include="shaders\hlsl\passes\taa_cs.hlsl">
+      <Filter>hlsl\passes</Filter>
+    </FxCompile>
+    <FxCompile Include="shaders\hlsl\passes\tonemapping_ps.hlsl">
+      <Filter>hlsl\passes</Filter>
+    </FxCompile>
+    <FxCompile Include="shaders\hlsl\test\forward_test_ps.hlsl">
+      <Filter>hlsl\test</Filter>
+    </FxCompile>
+    <FxCompile Include="shaders\hlsl\test\forward_test_vs.hlsl">
+      <Filter>hlsl\test</Filter>
+    </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="shaders\glsl\Cube.glsl">
+      <Filter>glsl</Filter>
+    </None>
+    <None Include="shaders\glsl\CubeReflection.glsl">
+      <Filter>glsl</Filter>
+    </None>
+    <None Include="shaders\glsl\CubeRefraction.glsl">
+      <Filter>glsl</Filter>
+    </None>
+    <None Include="shaders\glsl\FrameBuffer.glsl">
+      <Filter>glsl</Filter>
+    </None>
+    <None Include="shaders\glsl\IndirectDraw\Indirect.glsl">
+      <Filter>glsl\IndirectDraw</Filter>
+    </None>
+    <None Include="shaders\glsl\IronMan.glsl">
+      <Filter>glsl</Filter>
+    </None>
+    <None Include="shaders\glsl\IronManBlinnPhong.glsl">
+      <Filter>glsl</Filter>
+    </None>
+    <None Include="shaders\glsl\IronManReflection.glsl">
+      <Filter>glsl</Filter>
+    </None>
+    <None Include="shaders\glsl\NanoMode.glsl">
+      <Filter>glsl</Filter>
+    </None>
+    <None Include="shaders\glsl\Plane.glsl">
+      <Filter>glsl</Filter>
+    </None>
+    <None Include="shaders\glsl\PlaneBlinnPhong.glsl">
+      <Filter>glsl</Filter>
+    </None>
+    <None Include="shaders\glsl\PointLight.glsl">
+      <Filter>glsl</Filter>
+    </None>
+    <None Include="shaders\glsl\Quad.glsl">
+      <Filter>glsl</Filter>
+    </None>
+    <None Include="shaders\glsl\QuadDebug.glsl">
+      <Filter>glsl</Filter>
+    </None>
+    <None Include="shaders\glsl\SkyBox.glsl">
+      <Filter>glsl</Filter>
+    </None>
+    <None Include="shaders\glsl\SkyBoxMultiTexture.glsl">
+      <Filter>glsl</Filter>
+    </None>
+    <None Include="shaders\glsl\Sphere.glsl">
+      <Filter>glsl</Filter>
+    </None>
+    <None Include="shaders\glsl\Texture.glsl">
+      <Filter>glsl</Filter>
+    </None>
+    <None Include="shaders\glsl\animatedModel\animatedCubeMapDepthShader.glsl">
+      <Filter>glsl\animatedModel</Filter>
+    </None>
+    <None Include="shaders\glsl\animatedModel\animatedGBufferModel.glsl">
+      <Filter>glsl\animatedModel</Filter>
+    </None>
+    <None Include="shaders\glsl\animatedModel\animatedModel.glsl">
+      <Filter>glsl\animatedModel</Filter>
+    </None>
+    <None Include="shaders\glsl\basics\light.glsl">
+      <Filter>glsl\basics</Filter>
+    </None>
+    <None Include="shaders\glsl\batch\Batch.glsl">
+      <Filter>glsl\batch</Filter>
+    </None>
+    <None Include="shaders\glsl\bsdf\BSDF.glsl">
+      <Filter>glsl\bsdf</Filter>
+    </None>
+    <None Include="shaders\glsl\bsdf\CookBSDF.glsl">
+      <Filter>glsl\bsdf</Filter>
+    </None>
+    <None Include="shaders\glsl\bsdf\DisneyBSDF.glsl">
+      <Filter>glsl\bsdf</Filter>
+    </None>
+    <None Include="shaders\glsl\cloud\cloudRayMarching.glsl">
+      <Filter>glsl\cloud</Filter>
+    </None>
+    <None Include="shaders\glsl\cloud\noiseDebug3D.glsl">
+      <Filter>glsl\cloud</Filter>
+    </None>
+    <None Include="shaders\glsl\cloud\noiseGenerate3D.glsl">
+      <Filter>glsl\cloud</Filter>
+    </None>
+    <None Include="shaders\glsl\cloud\sceneRender.glsl">
+      <Filter>glsl\cloud</Filter>
+    </None>
+    <None Include="shaders\glsl\common\CommonStruct.glsl">
+      <Filter>glsl\common</Filter>
+    </None>
+    <None Include="shaders\glsl\common\TextureSample.glsl">
+      <Filter>glsl\common</Filter>
+    </None>
+    <None Include="shaders\glsl\gBuffer\gBuffer.glsl">
+      <Filter>glsl\gBuffer</Filter>
+    </None>
+    <None Include="shaders\glsl\gBufferProbe\FinalScreenQuad.glsl">
+      <Filter>glsl\gBufferProbe</Filter>
+    </None>
+    <None Include="shaders\glsl\gBufferProbe\SurroundSphereDebug.glsl">
+      <Filter>glsl\gBufferProbe</Filter>
+    </None>
+    <None Include="shaders\glsl\gBufferProbe\gBuffer.glsl">
+      <Filter>glsl\gBufferProbe</Filter>
+    </None>
+    <None Include="shaders\glsl\gBufferProbe\gBufferAmbientGIPass.glsl">
+      <Filter>glsl\gBufferProbe</Filter>
+    </None>
+    <None Include="shaders\glsl\gBufferProbe\gBufferDirectLightPass.glsl">
+      <Filter>glsl\gBufferProbe</Filter>
+    </None>
+    <None Include="shaders\glsl\gBufferProbe\gBufferPontLightPass.glsl">
+      <Filter>glsl\gBufferProbe</Filter>
+    </None>
+    <None Include="shaders\glsl\gBufferProbe\gBufferSSRGIPass.glsl">
+      <Filter>glsl\gBufferProbe</Filter>
+    </None>
+    <None Include="shaders\glsl\gBufferVoxel\FinalScreenQuad.glsl">
+      <Filter>glsl\gBufferVoxel</Filter>
+    </None>
+    <None Include="shaders\glsl\gBufferVoxel\GuassianFilter_horizontal.glsl">
+      <Filter>glsl\gBufferVoxel</Filter>
+    </None>
+    <None Include="shaders\glsl\gBufferVoxel\GuassianFilter_vertical.glsl">
+      <Filter>glsl\gBufferVoxel</Filter>
+    </None>
+    <None Include="shaders\glsl\gBufferVoxel\gBufferVoxel.glsl">
+      <Filter>glsl\gBufferVoxel</Filter>
+    </None>
+    <None Include="shaders\glsl\gBufferVoxel\gBuffer_ambientFilter_voxelConeTracingPBR.glsl">
+      <Filter>glsl\gBufferVoxel</Filter>
+    </None>
+    <None Include="shaders\glsl\gBufferVoxel\gBuffer_parallelLight_voxelConeTracingPBR.glsl">
+      <Filter>glsl\gBufferVoxel</Filter>
+    </None>
+    <None Include="shaders\glsl\gBufferVoxel\gBuffer_pointLight_voxelConeTracingPBR.glsl">
+      <Filter>glsl\gBufferVoxel</Filter>
+    </None>
+    <None Include="shaders\glsl\gBufferVoxel\renderVoxel.glsl">
+      <Filter>glsl\gBufferVoxel</Filter>
+    </None>
+    <None Include="shaders\glsl\gBufferVoxel\specularSample.glsl">
+      <Filter>glsl\gBufferVoxel</Filter>
+    </None>
+    <None Include="shaders\glsl\gBufferVoxelSVO\buildTree\leafStore.glsl">
+      <Filter>glsl\gBufferVoxelSVO\buildTree</Filter>
+    </None>
+    <None Include="shaders\glsl\gBufferVoxelSVO\buildTree\nodeAlloc.glsl">
+      <Filter>glsl\gBufferVoxelSVO\buildTree</Filter>
+    </None>
+    <None Include="shaders\glsl\gBufferVoxelSVO\buildTree\nodeFlag.glsl">
+      <Filter>glsl\gBufferVoxelSVO\buildTree</Filter>
+    </None>
+    <None Include="shaders\glsl\gBufferVoxelSVO\buildTree\nodeInit.glsl">
+      <Filter>glsl\gBufferVoxelSVO\buildTree</Filter>
+    </None>
+    <None Include="shaders\glsl\gBufferVoxelSVO\buildTree\renderNodeKd.glsl">
+      <Filter>glsl\gBufferVoxelSVO\buildTree</Filter>
+    </None>
+    <None Include="shaders\glsl\gBufferVoxelSVO\gBufferVoxel.glsl">
+      <Filter>glsl\gBufferVoxelSVO</Filter>
+    </None>
+    <None Include="shaders\glsl\gBufferVoxelSVO\pathTracing.glsl">
+      <Filter>glsl\gBufferVoxelSVO</Filter>
+    </None>
+    <None Include="shaders\glsl\gBufferVoxelSVO\pathTracingGBuffer.glsl">
+      <Filter>glsl\gBufferVoxelSVO</Filter>
+    </None>
+    <None Include="shaders\glsl\gBufferVoxelSVO\renderVoxel.glsl">
+      <Filter>glsl\gBufferVoxelSVO</Filter>
+    </None>
+    <None Include="shaders\glsl\gBufferVoxelSVO\svoTracing.glsl">
+      <Filter>glsl\gBufferVoxelSVO</Filter>
+    </None>
+    <None Include="shaders\glsl\gBufferVoxelSVO\svoTracing_new.glsl">
+      <Filter>glsl\gBufferVoxelSVO</Filter>
+    </None>
+    <None Include="shaders\glsl\gBufferVoxelSVO\voxelizationSVO.glsl">
+      <Filter>glsl\gBufferVoxelSVO</Filter>
+    </None>
+    <None Include="shaders\glsl\gBufferVoxelSVO\voxelizationSVO_new.glsl">
+      <Filter>glsl\gBufferVoxelSVO</Filter>
+    </None>
+    <None Include="shaders\glsl\ibl\background.glsl">
+      <Filter>glsl\ibl</Filter>
+    </None>
+    <None Include="shaders\glsl\ibl\brdf.glsl">
+      <Filter>glsl\ibl</Filter>
+    </None>
+    <None Include="shaders\glsl\ibl\hdrMapToCube.glsl">
+      <Filter>glsl\ibl</Filter>
+    </None>
+    <None Include="shaders\glsl\ibl\ibl.glsl">
+      <Filter>glsl\ibl</Filter>
+    </None>
+    <None Include="shaders\glsl\ibl\iblTexture.glsl">
+      <Filter>glsl\ibl</Filter>
+    </None>
+    <None Include="shaders\glsl\ibl\irradianceConvolution.glsl">
+      <Filter>glsl\ibl</Filter>
+    </None>
+    <None Include="shaders\glsl\ibl\prefilterMap.glsl">
+      <Filter>glsl\ibl</Filter>
+    </None>
+    <None Include="shaders\glsl\lightProbes\SH.glsl">
+      <Filter>glsl\lightProbes</Filter>
+    </None>
+    <None Include="shaders\glsl\lightProbes\iblSHTexture.glsl">
+      <Filter>glsl\lightProbes</Filter>
+    </None>
+    <None Include="shaders\glsl\lightProbes\iblTexture.glsl">
+      <Filter>glsl\lightProbes</Filter>
+    </None>
+    <None Include="shaders\glsl\lightProbes\lightProbe.glsl">
+      <Filter>glsl\lightProbes</Filter>
+    </None>
+    <None Include="shaders\glsl\map\map.glsl">
+      <Filter>glsl\map</Filter>
+    </None>
+    <None Include="shaders\glsl\occlusionCulling.glsl">
+      <Filter>glsl</Filter>
+    </None>
+    <None Include="shaders\glsl\occlusionCulling\clear.glsl">
+      <Filter>glsl\occlusionCulling</Filter>
+    </None>
+    <None Include="shaders\glsl\occlusionCulling\cull.glsl">
+      <Filter>glsl\occlusionCulling</Filter>
+    </None>
+    <None Include="shaders\glsl\occlusionCulling\depthMap.glsl">
+      <Filter>glsl\occlusionCulling</Filter>
+    </None>
+    <None Include="shaders\glsl\occlusionCulling\depthShow.glsl">
+      <Filter>glsl\occlusionCulling</Filter>
+    </None>
+    <None Include="shaders\glsl\occlusionCulling\fillCmds.glsl">
+      <Filter>glsl\occlusionCulling</Filter>
+    </None>
+    <None Include="shaders\glsl\occlusionCulling\hiz.glsl">
+      <Filter>glsl\occlusionCulling</Filter>
+    </None>
+    <None Include="shaders\glsl\occlusionCulling\indirectCull.glsl">
+      <Filter>glsl\occlusionCulling</Filter>
+    </None>
+    <None Include="shaders\glsl\ocean\Ocean.glsl">
+      <Filter>glsl\ocean</Filter>
+    </None>
+    <None Include="shaders\glsl\ocean\cs_FFTHorizontal.glsl">
+      <Filter>glsl\ocean</Filter>
+    </None>
+    <None Include="shaders\glsl\ocean\cs_FFTVertical.glsl">
+      <Filter>glsl\ocean</Filter>
+    </None>
+    <None Include="shaders\glsl\ocean\cs_GerstnerWaveGen.glsl">
+      <Filter>glsl\ocean</Filter>
+    </None>
+    <None Include="shaders\glsl\ocean\cs_InitialSpectrum.glsl">
+      <Filter>glsl\ocean</Filter>
+    </None>
+    <None Include="shaders\glsl\ocean\cs_NormalMap.glsl">
+      <Filter>glsl\ocean</Filter>
+    </None>
+    <None Include="shaders\glsl\ocean\cs_Phase.glsl">
+      <Filter>glsl\ocean</Filter>
+    </None>
+    <None Include="shaders\glsl\ocean\cs_Spectrum.glsl">
+      <Filter>glsl\ocean</Filter>
+    </None>
+    <None Include="shaders\glsl\pass\deferred_shading.glsl">
+      <Filter>glsl\pass</Filter>
+    </None>
+    <None Include="shaders\glsl\pass\forward_shading.glsl">
+      <Filter>glsl\pass</Filter>
+    </None>
+    <None Include="shaders\glsl\pbr\Pbr.glsl">
+      <Filter>glsl\pbr</Filter>
+    </None>
+    <None Include="shaders\glsl\pbr\PbrTexture.glsl">
+      <Filter>glsl\pbr</Filter>
+    </None>
+    <None Include="shaders\glsl\raytracing\ScreenQuad.glsl">
+      <Filter>glsl\raytracing</Filter>
+    </None>
+    <None Include="shaders\glsl\raytracing\rayTracingBVHNode.glsl">
+      <Filter>glsl\raytracing</Filter>
+    </None>
+    <None Include="shaders\glsl\raytracing\rayTracingBasic.glsl">
+      <Filter>glsl\raytracing</Filter>
+    </None>
+    <None Include="shaders\glsl\raytracing\rayTracingBasicSystem.glsl">
+      <Filter>glsl\raytracing</Filter>
+    </None>
+    <None Include="shaders\glsl\raytracing\rayTracingGenData_04.glsl">
+      <Filter>glsl\raytracing</Filter>
+    </None>
+    <None Include="shaders\glsl\raytracing\rayTracingMaterial.glsl">
+      <Filter>glsl\raytracing</Filter>
+    </None>
+    <None Include="shaders\glsl\raytracing\rayTracingSystemT.glsl">
+      <Filter>glsl\raytracing</Filter>
+    </None>
+    <None Include="shaders\glsl\shadowMap\directLight\DepthShader_ShadowMapLayer.glsl">
+      <Filter>glsl\shadowMap\directLight</Filter>
+    </None>
+    <None Include="shaders\glsl\shadowMap\directLight\Quad_ShadowMapLayer.glsl">
+      <Filter>glsl\shadowMap\directLight</Filter>
+    </None>
+    <None Include="shaders\glsl\shadowMap\directLight\ShadowMaping_ShadowMapLayer.glsl">
+      <Filter>glsl\shadowMap\directLight</Filter>
+    </None>
+    <None Include="shaders\glsl\shadowMap\pointLight\CubeMapDepthGen.glsl">
+      <Filter>glsl\shadowMap\pointLight</Filter>
+    </None>
+    <None Include="shaders\glsl\shadowMap\pointLight\CubeMapDepthShader.glsl">
+      <Filter>glsl\shadowMap\pointLight</Filter>
+    </None>
+    <None Include="shaders\glsl\shadowMap\pointLight\CubeMapShadowMapping.glsl">
+      <Filter>glsl\shadowMap\pointLight</Filter>
+    </None>
+    <None Include="shaders\glsl\shadowMap\pointLight\CubeMapShadowMappingPCSS.glsl">
+      <Filter>glsl\shadowMap\pointLight</Filter>
+    </None>
+    <None Include="shaders\glsl\terrain\Terrain.glsl">
+      <Filter>glsl\terrain</Filter>
+    </None>
+    <None Include="shaders\glsl\voxelization\debug\cube.glsl">
+      <Filter>glsl\voxelization\debug</Filter>
+    </None>
+    <None Include="shaders\glsl\voxelization\debug\quadTest.glsl">
+      <Filter>glsl\voxelization\debug</Filter>
+    </None>
+    <None Include="shaders\glsl\voxelization\debug\voxelizeTest.glsl">
+      <Filter>glsl\voxelization\debug</Filter>
+    </None>
+    <None Include="shaders\glsl\voxelization\visualization\voxelVisualization.glsl">
+      <Filter>glsl\voxelization\visualization</Filter>
+    </None>
+    <None Include="shaders\glsl\voxelization\visualization\worldPosition.glsl">
+      <Filter>glsl\voxelization\visualization</Filter>
+    </None>
+    <None Include="shaders\glsl\voxelization\voxelConeTracing\voxelConeTracing.glsl">
+      <Filter>glsl\voxelization\voxelConeTracing</Filter>
+    </None>
+    <None Include="shaders\glsl\voxelization\voxelConeTracing\voxelConeTracingPBR.glsl">
+      <Filter>glsl\voxelization\voxelConeTracing</Filter>
+    </None>
+    <None Include="shaders\glsl\voxelization\voxelization.glsl">
+      <Filter>glsl\voxelization</Filter>
+    </None>
+    <None Include="shaders\glsl\voxelization\voxelizationEnlarge.glsl">
+      <Filter>glsl\voxelization</Filter>
+    </None>
+    <None Include="shaders\glsl\voxelization\voxelizationPBR.glsl">
+      <Filter>glsl\voxelization</Filter>
+    </None>
+  </ItemGroup>
+</Project>

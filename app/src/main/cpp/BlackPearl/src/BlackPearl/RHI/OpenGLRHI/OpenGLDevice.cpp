@@ -2077,7 +2077,7 @@ GE_CORE_INFO(#StringEnum":%s" , ((const char*)glGetString(StringEnum)));
 	}
 	void Device::UpdateScissorRectInOpenGLContext(FOpenGLContextState& ContextState)
 	{
-		if (ContextState.bScissorEnabled != PendingState.bScissorEnabled)
+		//if (ContextState.bScissorEnabled != PendingState.bScissorEnabled)
 		{
 			if (PendingState.bScissorEnabled)
 			{

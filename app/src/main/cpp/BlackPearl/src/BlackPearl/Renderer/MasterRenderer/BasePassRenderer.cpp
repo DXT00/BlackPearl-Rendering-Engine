@@ -4,7 +4,7 @@
 #include "BlackPearl/RHI/RHIInputLayout.h"
 #include "BlackPearl/RHI/Common/RHIUtils.h"
 #include "BlackPearl/Renderer/Material/MaterialBindingCache.h"
-#include "BlackPearl/Component/LightComponent/ParallelLight.h"
+#include "BlackPearl/Component/LightComponent/DirectionLight.h"
 #include "hlsl/core/forward_cb.h"
 namespace BlackPearl {
     BasePassRenderer::BasePassRenderer(IDevice* device)
@@ -181,7 +181,7 @@ namespace BlackPearl {
         
         for (const auto& lightObj : lightSouces->GetParallelLights())
         {
-           Light* light =  lightObj->GetComponent<ParallelLight>();
+           Light* light =  lightObj->GetComponent<DirectionLight>();
             if (light->shadowMap)
             {
                 shadowMapTexture = light->shadowMap->GetTexture();

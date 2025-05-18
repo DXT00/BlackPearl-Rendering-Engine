@@ -15,10 +15,11 @@ namespace BlackPearl {
 	void ShaderFactory::ClearCache()
 	{
 	}
-	ShaderHandle ShaderFactory::CreateShaderFromSource(const std::string& srcCode, const char* entryName, ShaderType shaderType, const std::vector<ShaderMacro>* pDefines) {
+	ShaderHandle ShaderFactory::CreateShaderFromSource(const std::string& srcCode, const char* entryName, ShaderType shaderType, const std::vector<ShaderMacro>* pDefines, const std::string& filepath) {
 		ShaderDesc desc = ShaderDesc(shaderType);
 		desc.srcCode = srcCode;
 		desc.createFromSource = true;
+		desc.filePath = filepath;
 		return m_Device->createShader(desc, nullptr, 0);
 	}
 

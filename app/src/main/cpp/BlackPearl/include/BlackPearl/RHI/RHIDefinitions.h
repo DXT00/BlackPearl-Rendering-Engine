@@ -624,8 +624,8 @@ namespace BlackPearl {
             constexpr StencilOpDesc& setStencilFunc(ComparisonFunc value) { stencilFunc = value; return *this; }
         };
         bool            bTwoSidedStencilMode = false;
-        bool            depthTestEnable = true;
-        bool            depthWriteEnable = true;
+        bool            depthTestEnable = false;
+        bool            depthWriteEnable = false;
         ComparisonFunc  depthFunc = ComparisonFunc::Less;
         bool            stencilEnable = false;
         uint8_t         stencilReadMask = 0xff;
@@ -712,8 +712,8 @@ namespace BlackPearl {
 
     struct RasterState
     {
-        RasterFillMode fillMode = RasterFillMode::Solid;
-        RasterCullMode cullMode = RasterCullMode::Back;
+        RasterFillMode fillMode = RasterFillMode::Fill;
+        RasterCullMode cullMode = RasterCullMode::None;
         bool frontCounterClockwise = false;
         bool depthClipEnable = false;
         bool scissorEnable = false;

@@ -8,7 +8,8 @@ namespace BlackPearl {
 #define BIT(x) 1<<x
 	enum EventType {
 		KeyPressed, KeyReleased, KeyTyped,
-		MouseButtonPressed, MouseButtonReleased, MouseMoved, MouseScrolled
+		MouseButtonPressed, MouseButtonReleased, MouseMoved, MouseScrolled,
+		WindowClose,WIndowResize
 	};
 	enum EventCategory {
 		EventNone = 0,
@@ -16,7 +17,8 @@ namespace BlackPearl {
 		EventCategoryInput = BIT(1),
 		EventCategoryKeyBoard = BIT(2),
 		EventCategoryMouse = BIT(3),
-		EventCategoryMouseButton = BIT(4)
+		EventCategoryMouseButton = BIT(4),
+		EventCategoryWindow = BIT(5)
 	};
 	class Event
 	{

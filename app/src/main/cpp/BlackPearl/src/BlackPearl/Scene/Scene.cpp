@@ -34,6 +34,10 @@ namespace BlackPearl {
 	{
 		m_LightSources = lightSources;
 	}
+	void Scene::SetSkyBox(Object* skybox)
+	{
+		m_Skybox = skybox;
+	}
 	LightSources* Scene::GetLightSources() const
 	{
 		return m_LightSources;

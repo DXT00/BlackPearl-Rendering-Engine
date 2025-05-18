@@ -3,10 +3,12 @@
 #include "BlackPearl/Core.h"
 #include "BlackPearl/Renderer/Shader/ShaderFactory.h"
 #include "Core/AssetManager.h"
-
+#include "Renderer/Shader/GLSLIncluder.h"
 namespace BlackPearl {
     extern ShaderFactory* g_shaderFactory;
 
+    namespace fs = std::filesystem;
+   
     static ShaderType ShaderTypeFromString(const std::string& type) {
 
         if (type == "vertex")
@@ -34,18 +36,18 @@ namespace BlackPearl {
         m_GlslCode = ReadFile(m_ShaderPath);
         std::unordered_map<ShaderType, std::string> shaderSources = PreProcess(m_GlslCode, commonSource);
         if (shaderSources.find(ShaderType::VertexShader) != shaderSources.end()) {
-            m_VertexShader = g_shaderFactory->CreateShaderFromSource(shaderSources[ShaderType::VertexShader], "main", ShaderType::VertexShader);
+            m_VertexShader = g_shaderFactory->CreateShaderFromSource(shaderSources[ShaderType::VertexShader], "main", ShaderType::VertexShader, nullptr, m_ShaderPath);
         } 
         if (shaderSources.find(ShaderType::Pixel) != shaderSources.end()) {
-            m_PixelShader = g_shaderFactory->CreateShaderFromSource(shaderSources[ShaderType::Pixel], "main", ShaderType::Pixel);
+            m_PixelShader = g_shaderFactory->CreateShaderFromSource(shaderSources[ShaderType::Pixel], "main", ShaderType::Pixel, nullptr, m_ShaderPath);
 
         }
         if (shaderSources.find(ShaderType::Geometry) != shaderSources.end()) {
-            m_GeometryShader = g_shaderFactory->CreateShaderFromSource(shaderSources[ShaderType::Geometry], "main", ShaderType::Geometry);
+            m_GeometryShader = g_shaderFactory->CreateShaderFromSource(shaderSources[ShaderType::Geometry], "main", ShaderType::Geometry, nullptr, m_ShaderPath);
 
         }
         if (shaderSources.find(ShaderType::Compute) != shaderSources.end()) {
-            m_ComputeShader = g_shaderFactory->CreateShaderFromSource(shaderSources[ShaderType::Compute], "main", ShaderType::Compute);
+            m_ComputeShader = g_shaderFactory->CreateShaderFromSource(shaderSources[ShaderType::Compute], "main", ShaderType::Compute, nullptr, m_ShaderPath);
 
         }
 	}
@@ -54,6 +56,10 @@ namespace BlackPearl {
 		std::string result;
         result = AssetManager::LoadGlslFile(filepath);
 		return result;
+
+     
+ 
+
 	}
 
 	std::unordered_map<ShaderType, std::string> MaterialShader::PreProcess(const std::string& source, const std::string& commonSource)
@@ -78,6 +84,30 @@ namespace BlackPearl {
                     : nextLinePos));//string::npos表示source的末尾位置
 
         }
+
+        //todo::查找#include ,包含头文件
+        std::unordered_set<std::string> includedFiles;
+
+        GLSLIncluder includer({ 
+            "assets/shaders/hlsl/core",
+            "assets/shaders"
+            ""
+            });
+
+        std::string fullShaderPS, fullShaderVS;
+            // 直接处理字符串
+        if (shaderSources.find(ShaderType::Pixel) != shaderSources.end()) {
+            fullShaderPS = includer.processIncludes(shaderSources[ShaderType::Pixel]);
+            shaderSources[ShaderType::Pixel] = fullShaderPS;
+        }
+
+        if (shaderSources.find(ShaderType::VertexShader) != shaderSources.end()) {
+            fullShaderVS = includer.processIncludes(shaderSources[ShaderType::VertexShader]);
+            shaderSources[ShaderType::VertexShader] = fullShaderVS;
+
+        }
+
+
         //add common struct source
         if (shaderSources.find(ShaderType::Pixel) != shaderSources.end()) {
             size_t pos = shaderSources[ShaderType::Pixel].find("#version", 0);//find找不到会返回npos

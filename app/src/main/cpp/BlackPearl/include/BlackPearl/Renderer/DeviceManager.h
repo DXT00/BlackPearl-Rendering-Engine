@@ -25,6 +25,7 @@
 #include "BlackPearl/RHI/RHIDevice.h"
 #include "BlackPearl/RHI/RHIDefinitions.h"
 #include "BlackPearl/RHI/DynamicRHI.h"
+#include "Timestep/Timestep.h"
 #include <list>
 #if GE_API_VULKAN
 #include <vulkan/vulkan_core.h>
@@ -115,7 +116,7 @@ namespace BlackPearl {
         void AddRenderGraphToBack(RenderGraph* pController);
         void RemoveRenderGraph(RenderGraph* pController);
 
-        void Run();
+        void Run(Timestep ts);
 
         // returns the size of the window in screen coordinates
         void GetWindowDimensions(int& width, int& height);

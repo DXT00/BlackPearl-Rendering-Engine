@@ -5,6 +5,9 @@ namespace BlackPearl {
 	class MaterialTemplateBlinPhong : public MaterialTemplate
 	{
 	public:
+        virtual void FillMaterialConstants(ICommandList* cmdLIst, Material* material) override;
+        virtual size_t GetMaterialConstantSize() override;
+
 		MaterialTemplateBlinPhong() {
             m_Type = MaterialTemplateType::kBlinPhon;
             //TODO::

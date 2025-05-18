@@ -33,7 +33,7 @@ namespace BlackPearl {
 		void ShowTransform(Transform* comp, Object* obj);
 		void ShowLightProbe(LightProbe* probe, Object* obj);
 		void ShowPointLight(PointLight* pointLight);
-		void ShowParallelLight(ParallelLight* parallelLight);
+		void ShowParallelLight(DirectionLight* parallelLight);
 		void ShowCamera(PerspectiveCamera* perspectiveCamera);
 		void ShowCamera(MainCamera* mainCamera);
 		void ShowTerrian(Object* obj);

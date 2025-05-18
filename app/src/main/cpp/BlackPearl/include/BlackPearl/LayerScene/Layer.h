@@ -6,10 +6,11 @@
 #include "BlackPearl/Object/Object.h"
 #include "BlackPearl/ObjectManager/ObjectManager.h"
 #include "BlackPearl/Component/LightComponent/Light.h"
-#include "BlackPearl/Component/LightComponent/ParallelLight.h"
+#include "BlackPearl/Component/LightComponent/DirectionLight.h"
 #include "BlackPearl/Component/LightComponent/PointLight.h"
 #include "BlackPearl/Component/LightComponent/LightSources.h"
 #include "BlackPearl/Timestep/Timestep.h"
+#include "BlackPearl/Timestep/SystemTime.h"
 #include "BlackPearl/Component/TransformComponent/Transform.h"
 #include "BlackPearl/Component/CameraComponent/PerspectiveCamera.h"
 #include "BlackPearl/Component/MeshRendererComponent/MeshRenderer.h"
@@ -29,6 +30,8 @@
 #include "BlackPearl/Luanch/Android/AndroidInputManager.h"
 #endif
 #include "hlsl/core/material_cb.h"
+#include "Timestep/SystemTime.h"
+
 using namespace std::chrono;
 
 namespace BlackPearl {
@@ -53,6 +56,7 @@ namespace BlackPearl {
 			m_CameraRotation.Pitch = m_MainCamera->Pitch();
 
 			/*Status*/
+			SystemTime::Start();
 			m_StartTimeMs = duration_cast<milliseconds>(system_clock::now().time_since_epoch());
 
 		}
@@ -128,14 +132,14 @@ namespace BlackPearl {
 			const bool createMeshlet = false,
 			const bool isMeshletModel = false,
 			MeshletOption options = MeshletOption());
-		Object* CreateCube(const std::string& shaderPath = "assets/shaders/Cube.glsl", const std::string& texturePath = "", const std::string& name = "Cube");
-		Object* CreateSphere(const float radius, const unsigned int stackCount, const unsigned int sectorCount, const std::string& shaderPath = "assets/shaders/Sphere.glsl", const std::string& texturePath = "", const std::string& name = "Sphere");
-		Object* CreatePlane(const std::string& shaderPath = "assets/shaders/Plane.glsl", const std::string& texturePath = "assets/texture/wood.png", const std::string& name = "Plane");
-		Object* CreateSkyBox(const std::vector<std::string>& textureFaces, const std::string& shaderPath = "assets/shaders/SkyBox.glsl", const std::string& name = "SkyBox");
+		Object* CreateCube(const std::string& shaderPath = "assets/shaders/glsl/Cube.glsl", const std::string& texturePath = "", const std::string& name = "Cube");
+		Object* CreateSphere(const float radius, const unsigned int stackCount, const unsigned int sectorCount, const std::string& shaderPath = "assets/shaders/glsl/Sphere.glsl", const std::string& texturePath = "", const std::string& name = "Sphere");
+		Object* CreatePlane(const std::string& shaderPath = "assets/shaders/glsl/Plane.glsl", const std::string& texturePath = "assets/texture/wood.png", const std::string& name = "Plane");
+		Object* CreateSkyBox(const std::vector<std::string>& textureFaces, const std::string& shaderPath = "assets/shaders/glsl/SkyBox.glsl", const std::string& name = "SkyBox");
 		//TODO::Quad ��TexturePath�ͻ��bug...
-		Object* CreateQuad(const std::string& shaderPath = "assets/shaders/Quad.glsl", const std::string& texturePath = "", const std::string& name = "Quad");
+		Object* CreateQuad(const std::string& shaderPath = "assets/shaders/glsl/Quad.glsl", const std::string& texturePath = "", const std::string& name = "Quad");
 
-		Object* CreateLightProbe(ProbeType type, const std::string& shaderPath = "assets/shaders/lightProbes/lightProbe.glsl", const std::string& texturePath = "", const std::string& name = "LightProbe");
+		Object* CreateLightProbe(ProbeType type, const std::string& shaderPath = "assets/shaders/glsl/lightProbes/lightProbe.glsl", const std::string& texturePath = "", const std::string& name = "LightProbe");
 		Object* CreateProbeGrid(MapManager* mapManager, ProbeType type, math::float3 probeNums, math::float3 offsets, float space);
 		MainCamera* CreateCamera(const std::string& name = "Camera");
 		BatchNode* CreateBatchNode(std::vector<Object*> objs, bool dynamic, const std::string& name = "BatchNode");
@@ -151,7 +155,7 @@ namespace BlackPearl {
 //todo:: android  platform
 #ifdef GE_PLATFORM_WINDOWS
 			float maxMoveDelta = 5 * m_MainCamera->GetMoveSpeed();
-			float moveDelta = m_MainCamera->GetMoveSpeed() * ts;
+			float moveDelta = m_MainCamera->GetMoveSpeed();// *ts;
 
 			if (moveDelta > maxMoveDelta)
 				moveDelta = maxMoveDelta;

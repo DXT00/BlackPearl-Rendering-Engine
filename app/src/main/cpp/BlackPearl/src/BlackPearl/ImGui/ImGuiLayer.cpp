@@ -179,7 +179,7 @@ namespace BlackPearl {
 
 		if (ImGui::CollapsingHeader("Create")) {
 
-			const char* const entityItems[] = { "Empty","ParallelLight","PointLight","SpotLight","IronMan","Deer","OldHouse","Bunny","Cube","Plane" };
+			const char* const entityItems[] = { "Empty","DirectionLight","PointLight","SpotLight","IronMan","Deer","OldHouse","Bunny","Cube","Plane" };
 			static int entityIdx = -1;
 			if (ImGui::Combo("CreateEntity", &entityIdx, entityItems, 10))
 			{
@@ -191,7 +191,7 @@ namespace BlackPearl {
 					break;
 				case 1:
 					GE_CORE_INFO("Creating PointLight...");
-					Layer::CreateLight(LightType::ParallelLight);
+					Layer::CreateLight(LightType::DirectionLight);
 					break;
 				case 2:
 					GE_CORE_INFO("Creating PointLight...");
@@ -203,7 +203,7 @@ namespace BlackPearl {
 					break;
 				case 4:
 					GE_CORE_INFO("Creating IronMan ...");
-					Layer::CreateModel("assets/models/IronMan/IronMan.obj", "assets/shaders/IronMan.glsl", false, "IronMan");
+					Layer::CreateModel("assets/models/IronMan/IronMan.obj", "assets/shaders/glsl/IronMan.glsl", false, "IronMan");
 					break;
 				case 5:
 					GE_CORE_INFO("Creating Deer ...");
@@ -218,7 +218,7 @@ namespace BlackPearl {
 					//Layer::CreateModel("assets/models/u2k69vpbqpds-newbb8/BB8 New/bb8.obj", "assets/shaders/IronMan.glsl");
 					//Layer::CreateModel("assets/models/99-intergalactic_spaceship-obj/Intergalactic_Spaceship-(Wavefront).obj", "assets/shaders/IronMan.glsl");
 					//Layer::CreateModel("assets/models/rc8c1qtjiygw-O/Organodron City/Organodron City.obj", "assets/shaders/IronMan.glsl");
-					Layer::CreateModel("assets/models/OldHouse/Gost House/3D models/Gost House (5).obj", "assets/shaders/IronMan.glsl", false, "OldHouse");
+					Layer::CreateModel("assets/models/OldHouse/Gost House/3D models/Gost House (5).obj", "assets/shaders/glsl/IronMan.glsl", false, "OldHouse");
 
 					break;
 				case 7:
@@ -267,9 +267,9 @@ namespace BlackPearl {
 		ImGui::Begin("Inspector");
 
 
-		/*float pos[] = { m_Sun->GetComponent<ParallelLight>()->GetDirection().x, m_Sun->GetComponent<ParallelLight>()->GetDirection().y, m_Sun->GetComponent<ParallelLight>()->GetDirection().z };
+		/*float pos[] = { m_Sun->GetComponent<DirectionLight>()->GetDirection().x, m_Sun->GetComponent<DirectionLight>()->GetDirection().y, m_Sun->GetComponent<DirectionLight>()->GetDirection().z };
 		ImGui::DragFloat3("m_LightPos", pos, 0.1f, -100.0f, 100.0f, "%.3f ");
-		m_Sun->GetComponent<ParallelLight>()->SetDirection({ pos[0],pos[1],pos[2] });*/
+		m_Sun->GetComponent<DirectionLight>()->SetDirection({ pos[0],pos[1],pos[2] });*/
 
 		/*
 				ImGui::DragFloat("near_plane", &ShadowMapRenderer::s_NearPlane, 0.5f, -50.0f, 100.0f, "%.3f ");
@@ -348,8 +348,8 @@ namespace BlackPearl {
 			if (currentObj->HasComponent < PointLight>()) {
 				ShowPointLight(currentObj->GetComponent<PointLight>());
 			}
-			if (currentObj->HasComponent < ParallelLight>()) {
-				ShowParallelLight(currentObj->GetComponent<ParallelLight>());
+			if (currentObj->HasComponent < DirectionLight>()) {
+				ShowParallelLight(currentObj->GetComponent<DirectionLight>());
 			}
 			if (currentObj->HasComponent<PerspectiveCamera>()) {
 				if (currentObj == m_MainCamera->GetObj()) {
@@ -741,7 +741,7 @@ namespace BlackPearl {
 
 	}
 
-	void ImGuiLayer::ShowParallelLight(ParallelLight* parallelLight)
+	void ImGuiLayer::ShowParallelLight(DirectionLight* parallelLight)
 	{
 		auto props = parallelLight->GetLightProps();
 		math::float3 direction = parallelLight->GetDirection();

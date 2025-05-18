@@ -126,7 +126,8 @@ namespace BlackPearl {
 		{ BP_KEY_RIGHT_ALT          ,346},
 		{ BP_KEY_RIGHT_SUPER        ,347},
 		{ BP_KEY_MENU               ,348},
-		{ BP_MOUSE_BUTTON_RIGHT     ,1}
+		{ BP_MOUSE_BUTTON_RIGHT     ,1},
+		{ BP_MOUSE_BUTTON_LEFT     ,0 }
 	};
 
 	std::map<int, int> KeyCodes::s_D3D12KeyMap = {
@@ -136,11 +137,13 @@ namespace BlackPearl {
 		{BP_KEY_Q      ,VK_Q},
 		{BP_KEY_S      ,VK_S},
 		{BP_KEY_W      ,VK_W},
-		{BP_MOUSE_BUTTON_RIGHT, VK_MOUSERIGHT}
+		{BP_MOUSE_BUTTON_RIGHT, VK_MOUSERIGHT},
+		{ BP_MOUSE_BUTTON_LEFT, VK_MOUSELEFT }
+
 	};
 	int KeyCodes::Get(int key)
 	{
-		if (DynamicRHI::g_RHIType == DynamicRHI::Type::OpenGL || DynamicRHI::g_RHIType == DynamicRHI::Type::Vulkan) {
+		if ( DynamicRHI::g_RHIType == DynamicRHI::Type::Vulkan) {
 			if (s_OpenGLKeyMap.find(key) != s_OpenGLKeyMap.end()) {
 				return s_OpenGLKeyMap[key];
 
@@ -148,8 +151,9 @@ namespace BlackPearl {
 				GE_CORE_ERROR("can't find key %s" , std::to_string(key).c_str());
 				return -1;
 			}
-	}
-		else if (DynamicRHI::g_RHIType == DynamicRHI::Type::D3D12) {
+		}
+		//windows platform
+		else if (DynamicRHI::g_RHIType == DynamicRHI::Type::D3D12 || DynamicRHI::g_RHIType == DynamicRHI::Type::OpenGL ) {
 			if (s_D3D12KeyMap.find(key) != s_D3D12KeyMap.end()) {
 				return s_D3D12KeyMap[key];
 			}

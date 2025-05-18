@@ -1,11 +1,16 @@
 #pragma once
 #include "MaterialTemplate.h"
+#include "hlsl/core/material_cb.h"
 
 namespace BlackPearl {
+    class Material; 
+    class ICommandList;
+
 	class MaterialTemplatePBR : public MaterialTemplate
 	{
 	public:
-
+        virtual void FillMaterialConstants(ICommandList* cmdLIst, Material* material) override;
+        virtual size_t GetMaterialConstantSize() override;
 		MaterialTemplatePBR() {
 
             m_Type = MaterialTemplateType::kPBR;
@@ -21,6 +26,7 @@ namespace BlackPearl {
             };
 
 		}
+        MaterialConstants material_cb;
 	};
 
 }

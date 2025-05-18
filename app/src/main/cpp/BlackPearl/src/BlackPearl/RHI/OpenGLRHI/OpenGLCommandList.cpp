@@ -298,6 +298,7 @@ namespace BlackPearl {
 			OpenGLUniformBuffer* ubo = static_cast<OpenGLUniformBuffer*>(buffer);
 			glBindBuffer(GL_UNIFORM_BUFFER, ubo->rendererID);
 			glBufferData(GL_UNIFORM_BUFFER, dataSize, data, buffer->desc.isDynamic ? GL_DYNAMIC_DRAW : GL_STATIC_DRAW);
+			//glBufferData(GL_UNIFORM_BUFFER, dataSize, data, GL_DYNAMIC_DRAW);
 		}
 		GE_ERROR_JUDGE();
 	}
@@ -1118,9 +1119,7 @@ namespace BlackPearl {
 			state.viewport.scissorRects[0].maxX, state.viewport.scissorRects[0].maxY);
 
 	
-		//uniform buffer + texture, sampler...
-		//_bindBindingSets(state.bindings);
-		
+
 
 		setBoundShaderState(
 			m_Device->RHICreateBoundShaderState_Internal(
@@ -1372,9 +1371,16 @@ namespace BlackPearl {
 	}
 	void CommandList::beginMarker(const char* name)
 	{
+//		if (glCheckExtension("GL_EXT_debug_marker")) {
+//			glInsertEventMarkerEXT(0, "My Render Pass");  // 插入事件标记
+			//glPushGroupMarkerEXT(0, name);         // 开始一个调试组
+			// ... 渲染代码 ...
+			
+	//	}
 	}
 	void CommandList::endMarker()
 	{
+		//glPopGroupMarkerEXT();                       // 结束调试组
 	}
 	void CommandList::setEnableAutomaticBarriers(bool enable)
 	{
@@ -1550,6 +1556,7 @@ namespace BlackPearl {
 			OpenGLUniformBuffer* ubo = static_cast<OpenGLUniformBuffer*>(_ubo.first);
 			if (ContextState.UniformBuffers[bindIndex] != ubo->rendererID){
 				FOpenGL::BindBufferBase(GL_UNIFORM_BUFFER, _ubo.second, ubo->rendererID);
+				GE_ERROR_JUDGE();
 				ContextState.UniformBuffers[bindIndex] = ubo->rendererID;
 			}
 			bindIndex++;
@@ -1566,7 +1573,7 @@ namespace BlackPearl {
 			if (ContextState.UAVsBuffers[bindIndex].Resource != ssbo->rendererID) {
 				//glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo->rendererID);
 				FOpenGL::BindBufferBase(GL_SHADER_STORAGE_BUFFER, _ssbo.second, ssbo->rendererID);
-
+				GE_ERROR_JUDGE();
 				ContextState.UAVsBuffers[bindIndex].Resource = ssbo->rendererID;
 			}
 			bindIndex++;
@@ -1586,6 +1593,7 @@ namespace BlackPearl {
 
 			if (ContextState.Textures[bindIndex].Resource != tex->GetRendererID()) {
 				glActiveTexture(GL_TEXTURE0 + slot);
+				GE_ERROR_JUDGE();
 				ContextState.ActiveTexture = slot;
 				ContextState.Textures[bindIndex].Resource = tex->GetRendererID();
 
@@ -1629,12 +1637,14 @@ namespace BlackPearl {
 				if (ContextState.SamplerStates[bindIndex] != PendingSampler)
 				{
 					FOpenGL::BindSampler(bindIndex, PendingSampler ? PendingSampler->Resource : 0);
+					GE_ERROR_JUDGE();
 					ContextState.SamplerStates[bindIndex] = PendingSampler;
 				}
 			}
 			else if (targetDim != GL_TEXTURE_BUFFER)
 			{
 				FOpenGL::BindSampler(bindIndex, 0);
+				GE_ERROR_JUDGE();
 				ContextState.SamplerStates[bindIndex] = nullptr;
 				ApplyTextureStage(ContextState, bindIndex, ContextState.Textures[bindIndex], PendingState.SamplerStates[bindIndex]);
 			}
@@ -1666,7 +1676,7 @@ namespace BlackPearl {
 				ContextState.UAVsTextures[bindIndex].Access = OpenGLUtil::convertTextureAccess(img->getDesc().access);
 				ContextState.UAVsTextures[bindIndex].bLayered = img->getDesc().isLayer;
 				ContextState.UAVsTextures[bindIndex].Layer = img->getDesc().layer;
-
+				GE_ERROR_JUDGE();
 
 			}
 			bindIndex++;
@@ -1779,8 +1789,10 @@ namespace BlackPearl {
 		IBuffer* buf = IndexBuffer;
 		if (buf)
 			m_Device->PendingState.ibo = static_cast<Buffer*>(buf)->rendererID;
-		else
+		else {
 			m_Device->PendingState.ibo = 0;
+			GE_CORE_WARN("no indexbuffer found");
+		}
 	}
 
 	void CommandList::setVertexBufferState(const std::vector<VertexBufferBinding>& vertexBuffers)

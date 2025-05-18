@@ -13,7 +13,7 @@ namespace BlackPearl {
 			: RenderGraph(deviceManager)
 		{ }
 		virtual void Init(Scene* scene);
-		virtual void Render(IFramebuffer* framebuffer, IView* View);
+		virtual void Render(Timestep ts, IFramebuffer* framebuffer, IView* View);
 	private:
 		void BuildOpacityMicromaps(ICommandList* commandList, uint32_t frameIndex);
 		void BuildTLAS(ICommandList* commandList, uint32_t frameIndex) const;

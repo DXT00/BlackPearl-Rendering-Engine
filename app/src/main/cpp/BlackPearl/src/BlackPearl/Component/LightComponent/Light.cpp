@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "Component/LightComponent/Light.h"
-#include "Component/LightComponent/ParallelLight.h"
+#include "Component/LightComponent/DirectionLight.h"
 #include "Component/LightComponent/PointLight.h"
 #include "Component/LightComponent/SpotLight.h"
 namespace BlackPearl {
@@ -10,8 +10,8 @@ namespace BlackPearl {
 		
 		switch (type)
 		{
-		case LightType::ParallelLight:
-			return DBG_NEW ParallelLight(props);
+		case LightType::DirectionLight:
+			return DBG_NEW DirectionLight(props);
 		case LightType::PointLight:
 			return DBG_NEW PointLight(props);
 		case LightType::SpotLight:

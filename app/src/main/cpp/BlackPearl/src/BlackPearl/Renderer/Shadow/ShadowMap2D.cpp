@@ -10,12 +10,12 @@ namespace BlackPearl {
 	{
 	}
 
-	bool ShadowMap2D::SetupWholeSceneDirectionalLightView(const ParallelLight& light, box3_arg sceneBounds, float fadeRangeWorld)
+	bool ShadowMap2D::SetupWholeSceneDirectionalLightView(const DirectionLight& light, box3_arg sceneBounds, float fadeRangeWorld)
 	{
 		return false;
 	}
 
-	bool ShadowMap2D::SetupDynamicDirectionalLightView(const ParallelLight& light, float3 anchor, float3 halfShadowBoxSize, float3 preViewTranslation, float fadeRangeWorld)
+	bool ShadowMap2D::SetupDynamicDirectionalLightView(const DirectionLight& light, float3 anchor, float3 halfShadowBoxSize, float3 preViewTranslation, float fadeRangeWorld)
 	{
 		return false;
 	}

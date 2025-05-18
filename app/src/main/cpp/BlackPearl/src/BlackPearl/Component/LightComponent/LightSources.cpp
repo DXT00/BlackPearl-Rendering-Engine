@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "Component/LightComponent/LightSources.h"
 #include "Component/LightComponent/PointLight.h"
-#include "Component/LightComponent/ParallelLight.h"
+#include "Component/LightComponent/DirectionLight.h"
 #include "Component/LightComponent/SpotLight.h"
 #include "BlackPearl/Config.h"
 #include "Component/LightComponent/Light.h"
@@ -20,8 +20,8 @@ namespace BlackPearl {
 			AddPointLight(light);
 
 		}
-		if (light->HasComponent<ParallelLight>()) {
-			m_Lights.push_back(light->GetComponent<ParallelLight>());
+		if (light->HasComponent<DirectionLight>()) {
+			m_Lights.push_back(light->GetComponent<DirectionLight>());
 			AddParallelLight(light);
 		}
 

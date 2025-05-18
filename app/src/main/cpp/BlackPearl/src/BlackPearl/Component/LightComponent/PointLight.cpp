@@ -61,7 +61,7 @@ namespace BlackPearl {
 		std::shared_ptr<Material> lightMaterial;
 		std::shared_ptr<Material::TextureMaps> texture(DBG_NEW Material::TextureMaps());
 
-		lightMaterial.reset(DBG_NEW Material("assets/shaders/PointLight.glsl", texture, m_LightProp.diffuse, m_LightProp.diffuse, m_LightProp.diffuse, m_LightProp.diffuse));
+		lightMaterial.reset(DBG_NEW Material("assets/shaders/glsl/PointLight.glsl", texture, m_LightProp.diffuse, m_LightProp.diffuse, m_LightProp.diffuse, m_LightProp.diffuse));
 		VertexBufferLayout layout = {
 			{ElementDataType::Float3,"aPos",false,0}
 		};
@@ -83,7 +83,7 @@ namespace BlackPearl {
 
 		//std::shared_ptr<VertexBuffer> pointLightVertexBuffer;
 		//pointLightVertexBuffer.reset(DBG_NEW VertexBuffer(lightVertices));
-		//m_Shader.reset(DBG_NEW Shader("assets/shaders/PointLight.glsl"));
+		//m_Shader.reset(DBG_NEW Shader("assets/shaders/glsl/PointLight.glsl"));
 		//m_VertexArray.reset(DBG_NEW VertexArray());
 		//pointLightVertexBuffer->SetBufferLayout({
 		//	{ElementDataType::Float3,"aPos",false}

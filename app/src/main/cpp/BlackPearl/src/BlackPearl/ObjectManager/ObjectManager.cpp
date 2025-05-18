@@ -1,13 +1,13 @@
 #include "pch.h"
 #include "ObjectManager/ObjectManager.h"
 #include "BlackPearl/Component/LightComponent/LightSources.h"
-#include "BlackPearl/Component/LightComponent/ParallelLight.h"
+#include "BlackPearl/Component/LightComponent/DirectionLight.h"
 #include "BlackPearl/Component/LightComponent/PointLight.h"
 #include "BlackPearl/Component/LightComponent/SpotLight.h"
 #include "BlackPearl/Component/LightProbeComponent/LightProbeComponent.h"
 #include "BlackPearl/Component/MeshRendererComponent/MeshRenderer.h"
 #include "BlackPearl/Component/LightComponent/PointLight.h"
-#include "BlackPearl/Component/LightComponent/ParallelLight.h"
+#include "BlackPearl/Component/LightComponent/DirectionLight.h"
 #include "BlackPearl/Component/LightComponent/SpotLight.h"
 #include "BlackPearl/Component/MeshRendererComponent/MeshRenderer.h"
 #include "BlackPearl/Component/MeshFilterComponent/CubeMeshFilter.h"
@@ -56,8 +56,8 @@ namespace BlackPearl {
 		info->SetObjectType(ObjectType::OT_Light);
 		switch (type)
 		{
-		case LightType::ParallelLight: {
-			auto lightComponent = Obj->AddComponent<ParallelLight>();
+		case LightType::DirectionLight: {
+			auto lightComponent = Obj->AddComponent<DirectionLight>();
 			lightSources->AddLight(Obj);
 			break;
 		}
@@ -285,6 +285,7 @@ namespace BlackPearl {
 		desc.magFilter = FilterMode::Linear;
 		desc.wrap = SamplerAddressMode::ClampToEdge;
 		desc.format = Format::RGB8_UNORM;
+		desc.dimension = TextureDimension::TextureCube;
 		desc.faces = textureFaces;
 
 

@@ -12,14 +12,17 @@ project "SandboxVK"
 	{
 		"src/**.h",
 		"src/**.cpp",
-		"assets/shaders/spv/**.spv",
-        "assets/shaders/**.frag",
-        "assets/shaders/**.vert"
+		"../assets/shaders/spv/**.spv",
+        "../assets/shaders/**.frag",
+        "../assets/shaders/**.vert"
 	}
 	removefiles  { ".*/.vshistory/**.cpp" }
 	removefiles  { ".*/.vshistory/**.h" }
 	removefiles  { ".*/.vshistory/.*" }
-
+	excludes {
+        "**/.vshistory/**",  -- 排除整个文件夹
+    }
+	
 	--filter { "files:src/BlackPearl/RHI/OpenGLRHI/**.cpp" }
 	--filter { "files:src/BlackPearl/RHI/OpenGLRHI/**.h" }
 	--filter { "files:src/BlackPearl/Renderer/Buffer/D3D12Buffer/**.h" }
@@ -34,7 +37,7 @@ project "SandboxVK"
 		"../BlackPearl/src",
 		"../BlackPearl/include",
 		"../BlackPearl/vendor",
-		"../BlackPearl/assets/shaders",
+		"../assets/shaders",
 		"../%{IncludeDir.glm}",
 		"../%{IncludeDir.GLFW}",
 		"../%{IncludeDir.assimp}",

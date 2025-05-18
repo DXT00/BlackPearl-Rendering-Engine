@@ -154,6 +154,15 @@ namespace BlackPearl {
         return {ScreenRect.width(), ScreenRect.height()};
     }
 
+    unsigned int AndroidWindow::GetHeight()
+    {
+        return GetCurWindowSize().x;
+    }
+
+    unsigned int AndroidWindow::GetWidth()
+    {
+        return GetCurWindowSize().y;
+    }
 
     std::shared_ptr<AndroidWindow> AndroidWindow::Make() {
         //return std::shared_ptr<AndroidWindow>(new AndroidWindow());

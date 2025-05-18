@@ -5,6 +5,7 @@
 #include "BlackPearl/Renderer/MasterRenderer/BasicRenderer.h"
 #include "BlackPearl/Renderer/Renderer.h"
 #include "BlackPearl/Renderer/CommonRenderPass.h"
+#include "Timestep/Timestep.h"
 
 namespace BlackPearl {
     //class DeviceManager;
@@ -21,7 +22,7 @@ namespace BlackPearl {
         virtual ~RenderGraph() = default;
 
        
-        virtual void Render(IFramebuffer* framebuffer, IView* View) { }
+        virtual void Render(Timestep ts, IFramebuffer* framebuffer, IView* View) { }
         virtual void Animate(float fElapsedTimeSeconds) { }
         virtual void BackBufferResizing() { }
         virtual void BackBufferResized(const uint32_t width, const uint32_t height, const uint32_t sampleCount) { }
@@ -41,6 +42,11 @@ namespace BlackPearl {
         [[nodiscard]] IDevice* GetDevice() const { return m_DeviceManager->GetDevice();
         }
         [[nodiscard]] uint32_t GetFrameIndex() const { return m_DeviceManager->GetFrameIndex(); }
+
+        //如果支持, 优先使用 single pass
+        bool SupportSinglePass(bool msaaSample);
+        //如果支持, 优先使用 PLS
+        bool SupportPLS();
 
     protected:
         DeviceManager* m_DeviceManager = nullptr;

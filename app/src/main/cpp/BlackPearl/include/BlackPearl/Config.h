@@ -19,7 +19,7 @@ namespace BlackPearl {
 		static const unsigned int WindowHeight = 300;// 300;//540;// 540;1080
 
 		//���ز���
-		static const unsigned int MSAA_SAMPLES = 4;
+		static const unsigned int MSAA_SAMPLES = 1;
 
 		//VSync
 		static const bool Vsync = true;

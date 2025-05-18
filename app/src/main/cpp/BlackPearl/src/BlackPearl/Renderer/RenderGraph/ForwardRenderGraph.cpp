@@ -3,54 +3,75 @@
 #include "BlackPearl/Renderer/CullingManager.h"
 #include "BlackPearl/FileSystem/FileSystem.h"
 #include "BlackPearl/Renderer/MasterRenderer/BasePassRenderer.h"
+#include "RHI/OpenGLRHI/OpenGLDriver/OpenGLFunctions.h"
 namespace BlackPearl {
 	extern CullingManager* g_cullingManager;
 	extern RootFileSystem* g_rootFileSystem;
 	void ForwardRenderGraph::Init(Scene* scene) {
 		m_CommandList = GetDevice()->createCommandList();
-		m_ShaderFactory = std::make_shared<ShaderFactory>(m_DeviceManager->GetDevice(), g_rootFileSystem, "assets/shaders/spv");
+		//m_ShaderFactory = std::make_shared<ShaderFactory>(m_DeviceManager->GetDevice(), g_rootFileSystem, "assets/shaders/spv");
 		m_Scene = scene;
+		
 		_CreateRenderTagets();
 		
-		////PrePass
-		//m_IndirectCullRenderer = DBG_NEW IndirectCullRenderer();
-		//m_IndirectCullRenderer->Init(scene);
+
 
 		//BasePass
 		//m_BasePassRenderer = DBG_NEW BasePassRenderer(m_DeviceManager->GetDevice());
-		m_PBRRenderer = DBG_NEW PBRRenderer(m_DeviceManager->GetDevice());
-
+        m_ForwardBasePassRenderer = DBG_NEW ForwardBasePassRenderer(m_DeviceManager->GetDevice());
+		m_SkyboxRenderer = DBG_NEW SkyboxRenderer(m_DeviceManager->GetDevice());
 
 		BasePassRenderer::CreateParameters params;
-		//params.materialBindings = std::make_shared<MaterialBindingCache>(m_DeviceManager->GetDevice(),);
-		//m_BasePassRenderer->Init(m_DeviceManager->GetDevice(), m_ShaderFactory, params);
-		m_PBRRenderer->Init();
 
+        m_ForwardBasePassRenderer->Init();
+		m_SkyboxRenderer->Init();
 
-		//PostProcessPass
 		/*m_PostProcessRenderer = DBG_NEW PostProcessRenderer();
 		m_PostProcessRenderer->Init(GetDevice(), m_ShaderFactory);*/
 		
-		AddPass(m_PBRRenderer);
+		AddPass(m_SkyboxRenderer);
+		AddPass(m_ForwardBasePassRenderer);
+
 		//AddPass(m_IndirectCullRenderer);
 		//AddPass(m_BasePassRenderer);
 		//AddPass(m_PostProcessRenderer);
 	}
 
-	void ForwardRenderGraph::Render(IFramebuffer* framebuffer, IView* View)
-	{
-		m_CommandList->open();
-//		m_BasePassRenderer->PrepareLights(m_CommandList, m_Scene->GetLightSources(), math::float3(1.0), math::float3(1.0,0.0,1.0), m_Scene->GetLightProbes());
-		//m_BasePassRenderer->Render(m_CommandList, framebuffer, m_Scene);
-		m_PBRRenderer->Render(m_CommandList, framebuffer, m_Scene);
+	void ForwardRenderGraph::Render(Timestep ts, IFramebuffer* framebuffer, IView* View) {
 
-		//m_PostProcessRenderer->Render(m_CommandList, PostProcessRenderer::RenderPassType::Debug_BlendDebugViz,
-		//	m_ConstantBuffer, miniConstants, m_FrameBuffer, *m_RenderTargets, m_RenderTargets->OutputColor);
+		if (SupportSinglePass(Configuration::MSAA_SAMPLES)) {
+			RenderSinglePass(ts, framebuffer, View);
+		}
+		else {
+			RenderMultiPass(ts, framebuffer, View);
+		}
+	}
+	void ForwardRenderGraph::RenderSinglePass(Timestep ts, IFramebuffer* framebuffer, IView* View)
+	{
+
+
+		m_CommandList->open();
+
+		FRHIRenderPassInfo RPInfo(framebuffer->getDesc().colorAttachments[0].texture, ERenderTargetActions::Load_Store);
+		m_CommandList->beginRenderPass(RPInfo, "BasePass");
+
+		m_SkyboxRenderer->Render(m_CommandList, framebuffer, m_Scene);
+        m_ForwardBasePassRenderer->Render(m_CommandList, framebuffer, m_Scene);
+
+		m_CommandList->endRenderPass();
+
+		//PostProcessPass GI
+		//voxel cone tracing
+
 		m_CommandList->close();
 
 		GetDevice()->executeCommandList(m_CommandList);
-
 	}
+	void ForwardRenderGraph::RenderMultiPass(Timestep ts, IFramebuffer* framebuffer, IView* View)
+	{
+	}
+
+
 
 	void ForwardRenderGraph::_CreateRenderTagets()
 	{

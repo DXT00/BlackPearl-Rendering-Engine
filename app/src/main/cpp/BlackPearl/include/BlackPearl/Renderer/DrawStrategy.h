@@ -59,6 +59,9 @@ namespace BlackPearl {
         virtual std::vector<Object*> GetDrawObjects() const = 0;
 
         virtual ~IDrawStrategy() = default;
+
+        static std::vector<DrawItem> ObjectToDrawItem(Object* obj);
+
     };
 
     class PassthroughDrawStrategy : public IDrawStrategy

@@ -21,7 +21,7 @@ project "BlackPearl"
 		"./vendor/glm/glm/**.hpp",
 		--"./vendor/glm/glm/**.inl",
 		"./vendor/stb/**.h",
-		"./assets/shaders/hlsl/core/**.h",
+		"../assets/shaders/hlsl/core/**.h",
 		"!**/.vshistory/**"
 	}
 	excludes {
@@ -64,7 +64,7 @@ project "BlackPearl"
 		--"../%{IncludeDir.OpenGL}",
 		"./vendor",
 		"./vendor/GLEW",
-		"./assets/shaders/"
+		"../assets/shaders/"
 	}
 
 

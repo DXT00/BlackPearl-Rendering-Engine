@@ -22,7 +22,7 @@
 #include "Input.h"
 #include "Event/Event.h"
 #include "Event/MouseEvent.h"
-#include "Component/LightComponent/ParallelLight.h"
+#include "Component/LightComponent/DirectionLight.h"
 #include "Component/LightComponent/PointLight.h"
 #include "Component/LightComponent/SpotLight.h"
 #include "BlackPearl/Entity/Entity.h"
@@ -152,6 +152,7 @@ namespace BlackPearl {
 				m_TotalSecond++;
 				s_AppAverageFPS = (double)s_TotalFrameNum / m_TotalSecond;
 				GE_CORE_INFO("AverageFPS = %s" ,std::to_string(s_AppAverageFPS).c_str());
+
 			}
 
 
@@ -168,8 +169,9 @@ namespace BlackPearl {
 #ifdef GE_PLATFORM_ANDROID
             FAppEventManager::GetInstance()->Tick();
 #endif
-            m_LayerManager->OnUpdateLayers(ts);
 			m_Window->OnUpdate();
+
+            m_LayerManager->OnUpdateLayers(ts);
 
 		}
 		//render loop

@@ -36,10 +36,10 @@ namespace BlackPearl {
 	{
 		m_Props = Props();
 		m_TextureMaps = textureMaps;
-		m_MaterialColors.SetAmbientColor(ambientColor);
-		m_MaterialColors.SetDiffuseColor(diffuseColor);
-		m_MaterialColors.SetSpecularColor(specularColor);
-		m_MaterialColors.SetEmissionColor(emissiveColor);
+		m_MaterialColors.ambientColor = ambientColor;
+		m_MaterialColors.diffuseColor = diffuseColor;
+		m_MaterialColors.specularColor = specularColor;
+		m_MaterialColors.emissiveColor = emissiveColor;
 		if (!shaderPath.empty()) {
 			m_MaterialShader = new MaterialShader(shaderPath);
 		}
@@ -57,6 +57,14 @@ namespace BlackPearl {
 	{
 	}
 
+	void Material::UploadConstantsBuffer(ICommandList* commandList)
+	{
+		if (materialTemplate) {
+			materialTemplate->FillMaterialConstants(commandList, this);
+		}
+		
+	}
+
 	void Material::SetShader(const std::string& shaderPath)
 	{
 		m_MaterialShader = new MaterialShader(shaderPath);
@@ -66,29 +74,7 @@ namespace BlackPearl {
 		m_MaterialShader = shader;
 
 	}
-	void Material::SetMaterialColor(MaterialColor::Color color)
-	{
-		m_MaterialColors.SetColor(color);
-	}
 
-	void Material::SetMaterialColorDiffuseColor(const math::float3& color)
-	{
-		m_MaterialColors.SetDiffuseColor(color);
-		//m_Type = Type::DIFFUSE;
-
-	}
-	void Material::SetMaterialColorSpecularColor(const math::float3& color)
-	{
-		m_MaterialColors.SetSpecularColor(color);
-		//m_Type = Type::SPECULAR;
-	}
-	void Material::SetMaterialColorEmissionColor(const math::float3& color)
-	{
-		m_MaterialColors.SetEmissionColor(color);
-		//m_Type = Type::EMISSION;
-
-
-	}
 	void Material::SetId(uint32_t _matId)
 	{
 		m_MatId = _matId;
@@ -209,58 +195,7 @@ namespace BlackPearl {
 		m_RTXType = materialType;
 	}
 
-	MaterialConstants Material::FillMaterialConstants()
-	{
-		MaterialConstants material_cb;
-        //MaterialColor::Color color =  m_MaterialColors.Get();
-		material_cb.materialID = m_MatId;
-		material_cb.diffuseColor =  m_MaterialColors.Get().diffuseColor;
-		material_cb.specularColor = m_MaterialColors.Get().specularColor;
-		material_cb.ambientColor = m_MaterialColors.Get().ambientColor;
-		material_cb.emissiveColor = m_MaterialColors.Get().emissiveColor;
-		material_cb.roughnessValue = 0.5f;
-		material_cb.metalnessValue = 0.5f;
-		material_cb.aoValue = 1.0f;
-		material_cb.shininess = 64.0f;
-
-		material_cb.props.isBinnLight = m_Props.isBinnLight;
-		material_cb.props.isPBRTextureSample = m_Props.isPBRTextureSample;
-		material_cb.props.isDiffuseTextureSample = m_Props.isDiffuseTextureSample;
-		material_cb.props.isSpecularTextureSample = m_Props.isSpecularTextureSample;
-		material_cb.props.isHeightTextureSample = m_Props.isHeightTextureSample;
-		material_cb.props.isEmissionTextureSample = m_Props.isEmissionTextureSample;
-		material_cb.props.isRefractMaterial = m_Props.isRefractMaterial;
-		material_cb.props.isDoubleSided = m_Props.isDoubleSided;
-
-		if(m_TextureMaps->diffuseTextureMap)
-			material_cb.flags |= MaterialFlags_UseBaseOrDiffuseTexture;
-		if (m_TextureMaps->specularTextureMap)
-			material_cb.flags |= MaterialFlags_UseSpecularTexture;
-		if (m_TextureMaps->emissionTextureMap)
-			material_cb.flags |= MaterialFlags_UseEmissiveTexture;
-
-		if (m_TextureMaps->normalTextureMap)
-			material_cb.flags |= MaterialFlags_UseNormalTexture;
-		if (m_TextureMaps->heightTextureMap)
-			material_cb.flags |= MaterialFlags_UseHeightMapTexture;
-		if (m_TextureMaps->cubeTextureMap)
-			material_cb.flags |= MaterialFlags_UseCubeMapTexture;
-		if (m_TextureMaps->depthTextureMap)
-			material_cb.flags |= MaterialFlags_UseDepthTexture;
-		if (m_TextureMaps->aoMap)
-			material_cb.flags |= MaterialFlags_UseOcclusionTexture;
-		if (m_TextureMaps->roughnessMap)
-			material_cb.flags |= MaterialFlags_UseRoughnessTexture;
-		if (m_TextureMaps->mentallicMap)
-			material_cb.flags |= MaterialFlags_UseMetalTexture;
-		if (m_TextureMaps->opacityMap)
-			material_cb.flags |= MaterialFlags_UseOpacityTexture;
-		if (m_TextureMaps->transmissionTexture)
-			material_cb.flags |= MaterialFlags_UseTransmissionTexture;
-
-		return material_cb;
-	}
-
+	
 	void Material::_CreateMaterialConstantBuffer()
 	{
 		BufferDesc bufferDesc;

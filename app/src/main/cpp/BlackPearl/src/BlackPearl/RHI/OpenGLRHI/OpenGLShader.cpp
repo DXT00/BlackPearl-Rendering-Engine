@@ -3,7 +3,7 @@
 //#include <glad/glad.h>
 #include "OpenGLShader.h"
 #include <BlackPearl/Core.h>
-#include "BlackPearl/Component/LightComponent/ParallelLight.h"
+#include "BlackPearl/Component/LightComponent/DirectionLight.h"
 #include "BlackPearl/Component/LightComponent/PointLight.h"
 #include "BlackPearl/Component/LightComponent/SpotLight.h"
 #include "BlackPearl/Component/LightComponent/Light.h"
@@ -36,7 +36,7 @@ namespace BlackPearl
 
     // Helper to verify a compiled shader 
 // returns true if shader was compiled without any errors or errors should be ignored
-    static bool VerifyShaderCompilation(GLuint Resource, GLenum type)
+    bool Shader::VerifyShaderCompilation(GLuint Resource, GLenum type)
     {
        // VERIFY_GL_SCOPE();
         // Verify that an OpenGL shader has compiled successfully.
@@ -74,7 +74,8 @@ namespace BlackPearl
                     else if (type == GL_TESS_EVALUATION_SHADER)shaderType = "tessellation evaluation shader";
 
 
-                    GE_CORE_ERROR("%s compile failed :%s", shaderType.c_str(), infoLog.data());
+                    GE_CORE_ERROR("%s,%s compile failed :%s",m_ShaderPath.c_str(), shaderType.c_str(), infoLog.data());
+                 //   GE_CORE_ERROR("{0} compile failed :{1}", shaderType.c_str(), infoLog.data());
                     GE_ASSERT(false, "Shader compliation failure!")
                     
                     return false;
@@ -128,6 +129,7 @@ namespace BlackPearl
     Shader::Shader(const ShaderDesc &_desc, const void *binaryCode, size_t binarySize) 
     {
         desc = _desc;
+        m_ShaderPath = desc.filePath;
         // 后续启动时加载二进制数据
         GLuint newProgram = glCreateProgram();
         //load_from_file("shader.bin", &binary, &binaryLength);
@@ -168,6 +170,8 @@ namespace BlackPearl
         }*/
         if (desc.createFromSource) {
             m_GlslCode = desc.srcCode;
+            m_ShaderPath = desc.filePath;
+
         }
         else {
             m_ShaderPath = desc.filePath;
@@ -393,9 +397,9 @@ namespace BlackPearl
         this->SetUniform1i("u_PointLightNums", lightSources.GetPointLightNum());
         for (auto lightObj: lightSources.Get()) {
 
-            if (lightObj->HasComponent<ParallelLight>()) {
-                auto lightSource = lightObj->GetComponent<ParallelLight>();
-                this->SetUniform1ui("u_LightType", (unsigned int) LightType::ParallelLight);
+            if (lightObj->HasComponent<DirectionLight>()) {
+                auto lightSource = lightObj->GetComponent<DirectionLight>();
+                this->SetUniform1ui("u_LightType", (unsigned int) LightType::DirectionLight);
                 this->SetUniform1i("u_HasParallelLight", 1);
                 this->SetUniformVec3f("u_ParallelLight.ambient", lightSource->GetLightProps().ambient);
                 this->SetUniformVec3f("u_ParallelLight.diffuse", lightSource->GetLightProps().diffuse);

@@ -44,19 +44,19 @@ namespace BlackPearl{
 			m_PerObjectShadows.push_back(planarShadowMap);
 		}
 	}
-	bool CascadedShadowMap::SetupForPlanarView(const ParallelLight& light, frustum viewFrustum, float maxShadowDistance, float lightSpaceZUp, float lightSpaceZDown, float exponent, float3 preViewTranslation, int numberOfCascades)
+	bool CascadedShadowMap::SetupForPlanarView(const DirectionLight& light, frustum viewFrustum, float maxShadowDistance, float lightSpaceZUp, float lightSpaceZDown, float exponent, float3 preViewTranslation, int numberOfCascades)
 	{
 		return false;
 	}
-	bool CascadedShadowMap::SetupForPlanarViewStable(const ParallelLight& light, frustum projectionFrustum, affine3 inverseViewMatrix, float maxShadowDistance, float lightSpaceZUp, float lightSpaceZDown, float exponent, float3 preViewTranslation, int numberOfCascades)
+	bool CascadedShadowMap::SetupForPlanarViewStable(const DirectionLight& light, frustum projectionFrustum, affine3 inverseViewMatrix, float maxShadowDistance, float lightSpaceZUp, float lightSpaceZDown, float exponent, float3 preViewTranslation, int numberOfCascades)
 	{
 		return false;
 	}
-	bool CascadedShadowMap::SetupForCubemapView(const ParallelLight& light, float3 center, float maxShadowDistance, float lightSpaceZUp, float lightSpaceZDown, float exponent, int numberOfCascades)
+	bool CascadedShadowMap::SetupForCubemapView(const DirectionLight& light, float3 center, float maxShadowDistance, float lightSpaceZUp, float lightSpaceZDown, float exponent, int numberOfCascades)
 	{
 		return false;
 	}
-	bool CascadedShadowMap::SetupPerObjectShadow(const ParallelLight& light, uint32_t object, const box3& objectBounds)
+	bool CascadedShadowMap::SetupPerObjectShadow(const DirectionLight& light, uint32_t object, const box3& objectBounds)
 	{
 		return false;
 	}

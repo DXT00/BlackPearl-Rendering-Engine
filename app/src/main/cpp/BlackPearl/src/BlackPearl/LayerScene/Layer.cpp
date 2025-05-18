@@ -97,14 +97,14 @@ namespace BlackPearl {
 		m_BackGroundObjsList.push_back(cube4);
 		m_BackGroundObjsList.push_back(cube5);
 
-		Object* deer = CreateModel("assets/models/deer/Deer.obj", "assets/shaders/IronMan.glsl", false, "Deer");
+		Object* deer = CreateModel("assets/models/deer/Deer.obj", "assets/shaders/glsl/IronMan.glsl", false, "Deer");
 		deer->GetComponent<Transform>()->SetInitScale(glm::vec3(0.003));
 		deer->GetComponent<Transform>()->SetInitPosition({ -0.5f,0.0f,2.5f });
 		deer->GetComponent<Transform>()->SetInitRotation({ 0.0f,68.0f,0.0f });
 		deer->GetComponent<MeshRenderer>()->SetIsBackGroundObjects(true);
 		m_BackGroundObjsList.push_back(deer);
 
-		Object* bunny = CreateModel("assets/models/bunny/bunny.obj", "assets/shaders/IronMan.glsl", false, "Bunny");
+		Object* bunny = CreateModel("assets/models/bunny/bunny.obj", "assets/shaders/glsl/IronMan.glsl", false, "Bunny");
 		bunny->GetComponent<Transform>()->SetInitScale(glm::vec3(0.5));
 		bunny->GetComponent<Transform>()->SetInitPosition({ 0.6f,0.0f,3.0f });
 		bunny->GetComponent<Transform>()->SetInitRotation({ 0.0f,-30.0f,0.0f });
@@ -128,7 +128,7 @@ namespace BlackPearl {
 		light->GetComponent<Transform>()->SetInitPosition({ 0.0,1.25,9.0 });
 		light->GetComponent<MeshRenderer>()->SetIsShadowObjects(false);
 
-		Object* deer = CreateModel("assets/models/deer/Deer.obj", "assets/shaders/IronMan.glsl", false, "Deer");
+		Object* deer = CreateModel("assets/models/deer/Deer.obj", "assets/shaders/glsl/IronMan.glsl", false, "Deer");
 		deer->GetComponent<Transform>()->SetInitScale(glm::vec3(0.003));
 		//deer->GetComponent<Transform>()->SetPosition({ -0.5f,0.0f,2.5f });
 		deer->GetComponent<Transform>()->SetInitPosition({ -0.5f,-1.5f,-0.5f });
@@ -137,7 +137,7 @@ namespace BlackPearl {
 		m_BackGroundObjsList.push_back(deer);
 		m_ShadowObjsList.push_back(deer);
 
-		Object* bunny = CreateModel("assets/models/bunny/bunny.obj", "assets/shaders/IronMan.glsl", false, "Bunny");
+		Object* bunny = CreateModel("assets/models/bunny/bunny.obj", "assets/shaders/glsl/IronMan.glsl", false, "Bunny");
 		bunny->GetComponent<Transform>()->SetInitScale(glm::vec3(0.5));
 		//bunny->GetComponent<Transform>()->SetPosition({ 0.6f,0.0f,3.0f });
 		bunny->GetComponent<Transform>()->SetInitPosition({ 0.6f,-1.5f,-0.0f });
@@ -199,7 +199,7 @@ namespace BlackPearl {
 	
 	void Layer::LoadChurchScene()
 	{
-		Object* church = CreateModel("assets/models/crytek-sponza/sponza.obj", "assets/shaders/IronMan.glsl", false, "Church");
+		Object* church = CreateModel("assets/models/crytek-sponza/sponza.obj", "assets/shaders/glsl/IronMan.glsl", false, "Church");
 
 		//Object* church = CreateModel("assets/models/sponza_obj/sponza.obj", "assets/shaders/IronMan.glsl", false, "Church");
 		church->GetComponent<Transform>()->SetInitScale(glm::vec3(0.006));//0.02
@@ -399,7 +399,7 @@ namespace BlackPearl {
 
 		if (modelName == "House") {
 			//house model
-			staticModel = CreateModel("assets/models/Alpine/Alpine_chalet.obj", "assets/shaders/IronMan.glsl", false, "House");
+			staticModel = CreateModel("assets/models/Alpine/Alpine_chalet.obj", "assets/shaders/glsl/IronMan.glsl", false, "House");
 			TextureHandle housealbedoTexture = device->createTexture(TextureDesc(TextureType::DiffuseMap, "assets/models/Alpine/Diffuse_map.png"));
 			TextureHandle houseroughnessTexture = device->createTexture(TextureDesc(TextureType::RoughnessMap, "assets/models/Alpine/Roughness_map.png"));
 			TextureHandle housementallicTexture = device->createTexture(TextureDesc(TextureType::MentallicMap, "assets/models/Alpine/Metallic_map.png"));
@@ -420,19 +420,19 @@ namespace BlackPearl {
 		}
 
 		else if (modelName == "Church") {
-			staticModel = CreateModel("assets/models/sponza_obj/sponza.obj", "assets/shaders/IronMan.glsl", false, "Church");
+			staticModel = CreateModel("assets/models/sponza_obj/sponza.obj", "assets/shaders/glsl/IronMan.glsl", false, "Church");
 			staticModel->GetComponent<BlackPearl::Transform>()->SetInitScale(glm::vec3(0.001f));
 			staticModel->GetComponent<BlackPearl::MeshRenderer>()->SetIsBackGroundObjects(true);
 		}
 		else if (modelName == "Bunny") {
-			staticModel = CreateModel("assets/models/bunny/bunny.obj", "assets/shaders/IronMan.glsl", false, "Bunny");
+			staticModel = CreateModel("assets/models/bunny/bunny.obj", "assets/shaders/glsl/IronMan.glsl", false, "Bunny");
 			staticModel->GetComponent<Transform>()->SetInitScale(glm::vec3(0.5));
 			staticModel->GetComponent<Transform>()->SetInitPosition({ 0.6f,0.0f,3.0f });
 			staticModel->GetComponent<Transform>()->SetInitRotation({ 0.0f,-30.0f,0.0f });
 			staticModel->GetComponent<MeshRenderer>()->SetIsBackGroundObjects(true);
 		}
 		else if (modelName == "Deer") {
-			staticModel = CreateModel("assets/models/deer/Deer.obj", "assets/shaders/IronMan.glsl", false, "Deer");
+			staticModel = CreateModel("assets/models/deer/Deer.obj", "assets/shaders/glsl/IronMan.glsl", false, "Deer");
 			staticModel->GetComponent<Transform>()->SetInitScale(glm::vec3(0.003));
 			staticModel->GetComponent<Transform>()->SetInitPosition({ -0.5f,0.0f,2.5f });
 			staticModel->GetComponent<Transform>()->SetInitRotation({ 0.0f,68.0f,0.0f });
@@ -462,7 +462,7 @@ namespace BlackPearl {
 			staticModel->GetComponent<MeshRenderer>()->SetIsBackGroundObjects(true);
 
 		}if (modelName == "Sword") {
-			staticModel = CreateModel("assets/models/sword/OBJ/Big_Sword_OBJ.obj", "assets/shaders/pbr/PbrTexture.glsl", false, "Sword");
+			staticModel = CreateModel("assets/models/sword/OBJ/Big_Sword_OBJ.obj", "assets/shaders/pbr/glsl/PbrTexture.glsl", false, "Sword");
 			TextureHandle SwordalbedoTexture = device->createTexture(TextureDesc(TextureType::DiffuseMap, "assets/models/sword/textures/Big Sword_Base_Color_Map.jpg"));
 			TextureHandle SwordaoTexture = device->createTexture(TextureDesc(TextureType::AoMap, "assets/models/sword/textures/Big Sword_AO_Map.jpg"));
 			TextureHandle SwordroughnessTexture = device->createTexture(TextureDesc(TextureType::RoughnessMap, "assets/models/sword/textures/Big Sword_Roughness_Map.jpg"));
@@ -607,7 +607,7 @@ namespace BlackPearl {
 	{
 		Object* dynamicModel = nullptr;
 		if (modelName == "Boy") {
-			dynamicModel = CreateModel("assets/models-animation/people/character Texture.dae", "assets/shaders/animatedModel/animatedModel.glsl", true, "Boy");
+			dynamicModel = CreateModel("assets/models-animation/people/character Texture.dae", "assets/shaders/glsl/animatedModel/animatedModel.glsl", true, "Boy");
 			dynamicModel->GetComponent<BlackPearl::Transform>()->SetInitScale({ 0.2f,0.2f,0.2f });
 			dynamicModel->GetComponent<BlackPearl::Transform>()->SetInitRotation({ -90.0f,0.0f,0.0f });
 			dynamicModel->GetComponent<BlackPearl::Transform>()->SetInitPosition({ 3.0f,-1.6f,0.0f });
@@ -616,7 +616,7 @@ namespace BlackPearl {
 		else if (modelName == "Robot") {
 
 			auto device = m_DeviceManager->GetDevice();
-			dynamicModel = CreateModel("assets/models-animation/56-sphere-bot-basic/Sphere-Bot Basic/Armature_001-(COLLADA_3 (COLLAborative Design Activity)).dae", "assets/shaders/animatedModel/animatedModel.glsl", true, "Robot");
+			dynamicModel = CreateModel("assets/models-animation/56-sphere-bot-basic/Sphere-Bot Basic/Armature_001-(COLLADA_3 (COLLAborative Design Activity)).dae", "assets/shaders/glsl/animatedModel/animatedModel.glsl", true, "Robot");
 			TextureHandle RobotAoTexture = device->createTexture(TextureDesc(TextureType::AoMap, "assets/models-animation/56-sphere-bot-basic/Sphere-Bot Basic/Sphere_Bot_ao.jpg"));
 			TextureHandle RobotRoughnessTexture = device->createTexture(TextureDesc(TextureType::RoughnessMap, "assets/models-animation/56-sphere-bot-basic/Sphere-Bot Basic/Sphere_Bot_rough.jpg"));
 			TextureHandle RobotMentallicTexture = device->createTexture(TextureDesc(TextureType::MentallicMap, "assets/models-animation/56-sphere-bot-basic/Sphere-Bot Basic/Sphere_Bot_metalness.jpg"));
@@ -630,13 +630,13 @@ namespace BlackPearl {
 			dynamicModel->GetComponent<MeshRenderer>()->SetIsPBRObject(true);
 		}
 		else if (modelName == "Frog") {
-			dynamicModel = CreateModel("assets/models-animation/frog/frog.dae.txt", "assets/shaders/animatedModel/animatedModel.glsl", true, "Frog");
+			dynamicModel = CreateModel("assets/models-animation/frog/frog.dae.txt", "assets/shaders/glsl/animatedModel/animatedModel.glsl", true, "Frog");
 			dynamicModel->GetComponent<BlackPearl::Transform>()->SetInitScale({ 0.5f,0.5f,0.5f });
 			dynamicModel->GetComponent<BlackPearl::Transform>()->SetInitRotation({ 90.0f,180.0f,0.0f });
 			dynamicModel->GetComponent<BlackPearl::Transform>()->SetInitPosition({ -3.0f,-1.6f,0.0f });
 		}
 		else if (modelName == "Cleaner") {
-			dynamicModel = CreateModel("assets/models-animation/boblampclean.md5mesh", "assets/shaders/animatedModel/animatedModel.glsl", true, "Cleaner");
+			dynamicModel = CreateModel("assets/models-animation/boblampclean.md5mesh", "assets/shaders/glsl/animatedModel/animatedModel.glsl", true, "Cleaner");
 			dynamicModel->GetComponent<BlackPearl::Transform>()->SetInitScale({ 0.05f,0.05f,0.05f });
 			dynamicModel->GetComponent<BlackPearl::Transform>()->SetInitRotation({ 90.0f,180.0f,180.0f });
 			dynamicModel->GetComponent<BlackPearl::Transform>()->SetInitPosition({ 0.0f,-1.6f,0.0f });

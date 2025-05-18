@@ -77,4 +77,29 @@ namespace BlackPearl {
 	{
 		return nullptr;
 	}
+
+	std::vector<DrawItem> IDrawStrategy::ObjectToDrawItem(Object* obj)
+	{
+		std::vector<DrawItem> drawItems;
+		MeshRenderer* renderer = obj->GetComponent<MeshRenderer>();
+		Transform* transform = obj->GetComponent<Transform>();
+		for (const auto& mesh : renderer->GetMeshes())
+		{
+			///mesh->UpdateInstanceBuffer(transform);
+
+			// һ��DrawItem ��Ӧһ��mesh
+			DrawItem item;
+			//item.instance = meshInstance;
+			item.mesh = mesh.get();
+			item.transform = transform;
+			//item.geometry = geometry.get();
+			item.material = mesh->material.get();
+			item.buffers = item.mesh->buffers.get();
+			item.cullMode = (item.material->GetProps().isDoubleSided) ? RasterCullMode::None : RasterCullMode::Back;
+			item.distanceToCamera = 0;
+			drawItems.push_back(item);
+		}
+		return drawItems;
+
+	}
 }

@@ -2,7 +2,7 @@
 #include "ShadowMap.h"
 #include "BlackPearl/Renderer/Renderer.h"
 #include "BlackPearl/RHI/RHIDevice.h"
-#include "BlackPearl/Component/LightComponent/ParallelLight.h"
+#include "BlackPearl/Component/LightComponent/DirectionLight.h"
 namespace BlackPearl {
     using namespace math;
 	class ShadowMap2D: public IShadowMap
@@ -29,12 +29,12 @@ namespace BlackPearl {
             const RHIViewport& viewport);
 
         bool SetupWholeSceneDirectionalLightView(
-            const ParallelLight& light,
+            const DirectionLight& light,
             box3_arg sceneBounds,
             float fadeRangeWorld = 0.f);
 
         bool SetupDynamicDirectionalLightView(
-            const ParallelLight& light,
+            const DirectionLight& light,
             float3 anchor,
             float3 halfShadowBoxSize,
             float3 preViewTranslation = 0.f,

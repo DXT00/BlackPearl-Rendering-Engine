@@ -76,7 +76,7 @@ namespace BlackPearl {
     {
         m_vRenderGraphs.remove(pRenderGraph);
     }
-    void DeviceManager::Run()
+    void DeviceManager::Run(Timestep ts)
     {
         BeginFrame();
 
@@ -84,7 +84,7 @@ namespace BlackPearl {
 
         for (auto it : m_vRenderGraphs)
         {
-            it->Render(framebuffer, Renderer::GetSceneData());
+            it->Render(ts, framebuffer, Renderer::GetSceneData());
         }
         Present();
         ++m_FrameIndex;

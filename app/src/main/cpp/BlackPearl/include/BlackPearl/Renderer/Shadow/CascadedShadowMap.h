@@ -2,7 +2,7 @@
 #include "ShadowMap.h"
 #include "BlackPearl/Renderer/Renderer.h"
 #include "BlackPearl/RHI/RHIDevice.h"
-#include "BlackPearl/Component/LightComponent/ParallelLight.h"
+#include "BlackPearl/Component/LightComponent/DirectionLight.h"
 namespace BlackPearl {
     class ShadowMap2D;
 
@@ -26,7 +26,7 @@ namespace BlackPearl {
 
         // Computes the cascade projections based on the view frustum, shadow distance, and the distribution exponent.
         bool SetupForPlanarView(
-            const ParallelLight& light,
+            const DirectionLight& light,
             frustum viewFrustum,
             float maxShadowDistance,
             float lightSpaceZUp,
@@ -39,7 +39,7 @@ namespace BlackPearl {
         // the shadow map texels have the same world space projections when the camera turns or moves.
         // The downside of this algorithm is that the cascades are often larger than necessary.
         bool SetupForPlanarViewStable(
-            const ParallelLight& light,
+            const DirectionLight& light,
             frustum projectionFrustum,
             affine3 inverseViewMatrix,
             float maxShadowDistance,
@@ -51,7 +51,7 @@ namespace BlackPearl {
 
         // Computes the cascade projections to cover an omnidirectional view from a given point. The cascades are all centered on that point.
         bool SetupForCubemapView(
-            const ParallelLight& light,
+            const DirectionLight& light,
             float3 center,
             float maxShadowDistance, float lightSpaceZUp,
             float lightSpaceZDown,
@@ -59,7 +59,7 @@ namespace BlackPearl {
             int numberOfCascades = -1);
 
         // Computes a simple directional shadow projection that covers a given world space box.
-        bool SetupPerObjectShadow(const ParallelLight& light, uint32_t object, const box3& objectBounds);
+        bool SetupPerObjectShadow(const DirectionLight& light, uint32_t object, const box3& objectBounds);
 
         void SetupProxyViews();
 

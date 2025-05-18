@@ -23,7 +23,7 @@ namespace BlackPearl {
 
 
     }
-    void RayTracingRenderGraph::Render(IFramebuffer* framebuffer, IView* View)
+    void RayTracingRenderGraph::Render(Timestep ts, IFramebuffer* framebuffer, IView* View)
     {
         BuildOpacityMicromaps(m_CommandList, GetFrameIndex());
         BuildTLAS(m_CommandList, GetFrameIndex());

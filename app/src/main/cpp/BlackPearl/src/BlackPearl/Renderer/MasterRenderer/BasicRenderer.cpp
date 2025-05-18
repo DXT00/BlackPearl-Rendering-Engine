@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "Renderer/MasterRenderer/BasicRenderer.h"
 #include "BlackPearl/Component/LightComponent/LightSources.h"
-#include "BlackPearl/Component/LightComponent/ParallelLight.h"
+#include "BlackPearl/Component/LightComponent/DirectionLight.h"
 #include "BlackPearl/Component/LightComponent/PointLight.h"
 #include "BlackPearl/Component/LightComponent/SpotLight.h"
 
@@ -22,6 +22,9 @@
 #include "BlackPearl/RHI/OpenGLRHI/OpenGLShader.h"
 #include "BlackPearl/RHI/OpenGLRHI/OpenGLDriver/OpenGLFunctions.h"
 #endif
+#include "hlsl/core/forward_cb.h"
+#include "hlsl/core/transform_cb.h"
+#include "BlackPearl/RHI/Common/RHIUtils.h"
 
 namespace BlackPearl {
 	extern ShaderFactory* g_shaderFactory;
@@ -31,12 +34,34 @@ namespace BlackPearl {
 	BasicRenderer::BasicRenderer(IDevice* device)
 	{
 		m_Device = device;
-		//m_MaterialBindingsCache.reset(DBG_NEW MaterialBindingCache());
 
-		/*if (GetModuleHandle(L"WinPixGpuCapturer.dll") == 0)
-		{
-			LoadLibrary(HLSLPixDebugger::GetLatestWinPixGpuCapturerPath_Cpp17().c_str());
-		}*/
+		auto samplerDesc = SamplerDesc()
+			.setAllAddressModes(SamplerAddressMode::Border)
+			.setBorderColor(1.0f);
+		m_ShadowSampler = m_Device->createSampler(samplerDesc);
+
+		m_ForwardViewCB = m_Device->createBuffer(RHIUtils::CreateStaticConstantBufferDesc(sizeof(ForwardShadingViewConstants), "ForwardShadingViewConstants"));
+
+		m_ObjectTransformCB = m_Device->createBuffer(RHIUtils::CreateStaticConstantBufferDesc(sizeof(TransformConstants), "TransformConstants"));
+	
+	
+		RHIBindingLayoutDesc viewLayoutDesc;
+		viewLayoutDesc.visibility = ShaderType::All;
+		viewLayoutDesc.bindings = {
+				RHIBindingLayoutItem::RT_VolatileConstantBuffer(0),
+				RHIBindingLayoutItem::RT_VolatileConstantBuffer(1)
+		};
+
+		BindingSetDesc viewBindingSetDesc;
+		viewBindingSetDesc.bindings = {
+				BindingSetItem::ConstantBuffer(0, m_ForwardViewCB),
+				BindingSetItem::ConstantBuffer(1, m_ObjectTransformCB),
+
+		};
+		m_ViewBindinglayout = m_Device->createBindingLayout(viewLayoutDesc);
+		m_ViewBindingset = m_Device->createBindingSet(viewBindingSetDesc, m_ViewBindinglayout);
+
+	
 	}
 
 	BasicRenderer::~BasicRenderer()
@@ -130,7 +155,7 @@ namespace BlackPearl {
 		//		shader->SetUniform1i("u_IsPBRObjects", 0);
 
 		//	}
-		//	if (obj->HasComponent<PointLight>() || obj->HasComponent<ParallelLight>() || obj->HasComponent<SpotLight>()) {
+		//	if (obj->HasComponent<PointLight>() || obj->HasComponent<DirectionLight>() || obj->HasComponent<SpotLight>()) {
 		//		PrepareBasicShaderParameters(meshes[i], shader, true, textureBeginIdx);
 		//	}
 		//	else
@@ -192,7 +217,7 @@ namespace BlackPearl {
 		//GE_ERROR_JUDGE();
 
 		//for (int i = 0; i < meshes.size(); i++) {
-		//	if (obj->HasComponent<PointLight>() || obj->HasComponent<ParallelLight>() || obj->HasComponent<SpotLight>())
+		//	if (obj->HasComponent<PointLight>() || obj->HasComponent<DirectionLight>() || obj->HasComponent<SpotLight>())
 		//		PrepareBasicShaderParameters(meshes[i], shader, true, textureBeginIdx);
 		//	else
 		//		PrepareBasicShaderParameters(meshes[i], shader, false, textureBeginIdx);
@@ -274,7 +299,7 @@ namespace BlackPearl {
 		//GE_ERROR_JUDGE();
 
 		//for (int i = 0; i < meshes.size(); i++) {
-		//	if (obj->HasComponent<PointLight>() || obj->HasComponent<ParallelLight>() || obj->HasComponent<SpotLight>())
+		//	if (obj->HasComponent<PointLight>() || obj->HasComponent<DirectionLight>() || obj->HasComponent<SpotLight>())
 		//		PrepareBasicShaderParameters(meshes[i], shader, true, textureBeginIdx);
 		//	else
 		//		PrepareBasicShaderParameters(meshes[i], shader, false, textureBeginIdx);
@@ -821,8 +846,14 @@ namespace BlackPearl {
 	void BasicRenderer::_UploadTransformBuffers(ICommandList* commandList, Transform* trans, GraphicsState& state)
 	{
 		glm::mat4 mat = trans->GetTransformMatrix();
-		commandList->writeBuffer(m_ObjectTransformCB, &mat,
-			1 * sizeof(glm::mat4));
+		glm::mat4 matInv = glm::inverse(trans->GetTransformMatrix());
+
+		TransformConstants transConstant {};
+		transConstant.matModel = Math::ToFloat4x4(mat);
+		transConstant.matInvModel = Math::ToFloat4x4(matInv);
+
+		commandList->writeBuffer(m_ObjectTransformCB, &transConstant,
+			 sizeof(TransformConstants));
 	}
 
     bool BasicRenderer::SetupMaterial(const Material* material, RasterCullMode cullMode, const GraphicsPipelineDesc& pipelineDesc, GraphicsState& state) {
@@ -889,8 +920,8 @@ namespace BlackPearl {
 
 		int id = 0;
 		for (const auto& item : drawStrategy->GetDrawItems()) {
-			if (id > 0)
-				break;
+			/*if (id > 0)
+				break;*/
 			if (item.material == nullptr)
 				continue;
 			GE_ERROR_JUDGE();
@@ -901,18 +932,16 @@ namespace BlackPearl {
 			graphicsPSO.shadingRateState = view->GetVariableRateShadingState();
 
 			GraphicsPipelineDesc psoDesc;
-
+			psoDesc.depthStencilState.enableDepthTest();
+			psoDesc.depthStencilState.enableDepthWrite();
 			psoDesc.depthStencilState.setDepthFunc(ComparisonFunc::LessOrEqual);
 			psoDesc.blendState.alphaToCoverageEnable = false;
 			psoDesc.rasterState.frontCounterClockwise = true;
 			psoDesc.rasterState.cullMode = RasterCullMode::Back;
 			psoDesc.primType = PrimitiveType::TriangleList;
-			// input layout 是mesh传过来的？
 			psoDesc.inputLayout = m_Device->createInputLayout(item.mesh->GetVertexBufferLayout());//shaderParms[ShaderType::VertexShader].inputLayout;
-			//psoDesc.BoundShaderState.VertexDeclarationRHI = GetVertexDeclarationFVector4();
 			GE_ERROR_JUDGE();
 
-			//TODO :: opengl 分开 vs, ps
 			psoDesc.VS = item.material->GetShader()->GetVertexShader();
 			psoDesc.PS = item.material->GetShader()->GetPixelShader();
 			psoDesc.bFromPSOFileCache = false;
@@ -929,39 +958,14 @@ namespace BlackPearl {
 			GE_ERROR_JUDGE();
             SetupInputBuffers(cmdList, const_cast<BufferGroup*>(item.buffers), item.transform, graphicsPSO);
 
-//			graphicsPSO.indexBuffer = indexBuffer;
-//			graphicsPSO.vertexBuffers = vertexBuffers;
 
 			//TODO::GetAndOrCreateGraphicsPipelineState
 		   // SetGraphicsPipelineState(cmdList, graphicsPSO, 0);
            // SetShaderParametersLegacyVS
 			cmdList->setGraphicsState(graphicsPSO);
 
-
-			DrawArguments args;
-			if (item.mesh->m_IndicesCount == 0) {
-				args.drawIndex = false;
-				args.vertexCount = item.mesh->m_VerticeArrayCount;
-			}
-			else {
-				args.drawIndex = true;
-				//buffers->indexBuffer, buffers->indexData.data(), buffers->indexData.size() * sizeof(uint32_t)
-				args.indices = item.mesh->buffers->indexData;
-				unsigned int indicesNum = item.mesh->GetIndicesSize() / sizeof(unsigned int);
-				args.vertexCount = indicesNum;// numIndices;
-
-			}
-			args.instanceCount = 1;
-			args.startVertexLocation = item.mesh->vertexOffset;// +item.geometry.vertexOffsetInMesh;
-			args.startIndexLocation = item.mesh->indexOffset;// +item.geometry.indexOffsetInMesh;
-			args.startInstanceLocation = 0;// item.instance.GetInstanceIndex();
-
-
-			if (args.drawIndex)
-				cmdList->drawIndexed(args);
-			else
-				cmdList->draw(args);
-
+			Draw(cmdList,item);
+		
 			/* }
 			 RHICmdList.EndRenderPass();
 
@@ -973,5 +977,34 @@ namespace BlackPearl {
 		
 	}
 
+	void BasicRenderer::Draw(ICommandList* cmdList, const DrawItem& item)
+	{
+		DrawArguments args;
+		if (item.mesh->m_IndicesCount == 0) {
+			args.drawIndex = false;
+			args.vertexCount = item.mesh->m_VerticeArrayCount;
+		}
+		else {
+			args.drawIndex = true;
+			//buffers->indexBuffer, buffers->indexData.data(), buffers->indexData.size() * sizeof(uint32_t)
+			args.indices = item.mesh->buffers->indexData;
+			unsigned int indicesNum = item.mesh->GetIndicesSize() / sizeof(unsigned int);
+			args.vertexCount = indicesNum;// numIndices;
+
+		}
+		args.instanceCount = 1;
+		args.startVertexLocation = item.mesh->vertexOffset;// +item.geometry.vertexOffsetInMesh;
+		args.startIndexLocation = item.mesh->indexOffset;// +item.geometry.indexOffsetInMesh;
+		args.startInstanceLocation = 0;// item.instance.GetInstanceIndex();
+
+
+		if (args.drawIndex)
+			cmdList->drawIndexed(args);
+		else
+			cmdList->draw(args);
+
+	}
+
+	
 
 }

@@ -15,6 +15,8 @@ namespace BlackPearl {
 		glGenBuffers(1, &rendererID);
 
 		AllocatedSize = _desc.byteSize;
+
+		
 		//check(IsInRenderingThread());
 		//FRHICommandListImmediate& RHICmdList = FRHICommandListExecutor::GetImmediateCommandList();
 

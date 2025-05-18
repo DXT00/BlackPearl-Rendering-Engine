@@ -2,7 +2,7 @@
 //#include <glad/glad.h>
 #include "Renderer/Renderer.h"
 #include "BlackPearl/Component/LightComponent/Light.h"
-#include "BlackPearl/Component/LightComponent/ParallelLight.h"
+#include "BlackPearl/Component/LightComponent/DirectionLight.h"
 #include "BlackPearl/Component/LightComponent/PointLight.h"
 #include "BlackPearl/Component/LightComponent/SpotLight.h"
 #include "BlackPearl/Component/LightComponent/LightSources.h"
@@ -55,7 +55,7 @@ namespace BlackPearl {
 		s_SceneData->ViewFrustum = math::frustum(Math::ToFloat4x4(s_SceneData->ViewMatrix * s_SceneData->ProjectionMatrix), s_SceneData->ReverseZ);
 		for (Object* lightObj : lightSources.Get()) {
 			//std::shared_ptr<Light> lightSource(lightObj->GetComponent<Light>());
-			if (lightObj->HasComponent<ParallelLight>()) {
+			if (lightObj->HasComponent<DirectionLight>()) {
 			}
 			if (lightObj->HasComponent<PointLight>()) {
 				//std::dynamic_pointer_cast<PointLight>(lightSource)->GetShader()->Bind();//一定要记得先Bind()指定是哪一个Shader!

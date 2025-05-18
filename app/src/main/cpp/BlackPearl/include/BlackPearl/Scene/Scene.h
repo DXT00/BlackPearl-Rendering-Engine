@@ -26,6 +26,8 @@ namespace BlackPearl {
 		//void AddLights(Object* obj);
 		//void GetLights();
 		void SetLightSources(LightSources* lightSources);
+		void SetSkyBox(Object* skybox);
+
 		LightSources* GetLightSources() const;
 		void SetLightProbes(const std::vector<std::shared_ptr<LightProbe>>& lightSources);
 		std::vector<std::shared_ptr<LightProbe>> GetLightProbes() const;
@@ -53,6 +55,8 @@ namespace BlackPearl {
 			return m_RootNode;
 		}
 		DemoType GetDemoType() { return m_DemoType; }
+
+		Object* GetSkyBox() { return m_Skybox; }
 
 		IDescriptorTable* GetDescriptorTable() const { return m_DescriptorTableMgr ? m_DescriptorTableMgr->GetDescriptorTable() : nullptr; }
 
@@ -85,6 +89,9 @@ namespace BlackPearl {
 		Node* m_RootNode;
 
 		LightSources* m_LightSources;
+		
+		//Ä¬ÈÏÒ»¸ö skybox
+		Object* m_Skybox = nullptr;
 
 		std::vector<std::shared_ptr<LightProbe>> m_LightProbes;
 

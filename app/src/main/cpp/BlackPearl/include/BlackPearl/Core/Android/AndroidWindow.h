@@ -47,7 +47,8 @@ namespace BlackPearl {
         void* GetNativeWindow() const override {
             return nullptr;
         }
-
+        virtual unsigned int GetHeight() override;
+        virtual unsigned int GetWidth() override;
            // void*  m_WindowHandle = nullptr;
 
         /** Create a new AndroidWindow.

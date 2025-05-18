@@ -32,7 +32,7 @@ namespace BlackPearl {
 	{
 		//int width = Configuration::WindowWidth / col;
 		//int height = Configuration::WindowHeight / row;
-		//std::shared_ptr<Shader> shader(DBG_NEW Shader("assets/shaders/raytracing/ScreenQuad.glsl"));
+		//std::shared_ptr<Shader> shader(DBG_NEW Shader("assets/shaders/glsl/raytracing/ScreenQuad.glsl"));
 		//BasicRenderer* basicRenderer = new BasicRenderer();
 
 		////gBuffer->Bind();
@@ -61,7 +61,7 @@ namespace BlackPearl {
 	void CommonFunc::ShowTexture(glm::vec4 viewPort, Object* quad, TextureHandle texture, bool isMipmap, int lod)
 	{
 		
-		/*std::shared_ptr<Shader> shader(DBG_NEW Shader("assets/shaders/raytracing/ScreenQuad.glsl"));
+		/*std::shared_ptr<Shader> shader(DBG_NEW Shader("assets/shaders/glsl/raytracing/ScreenQuad.glsl"));
 		BasicRenderer* basicRenderer = new BasicRenderer();
 	
 		glViewport(viewPort.x, viewPort.y, viewPort.z, viewPort.w);

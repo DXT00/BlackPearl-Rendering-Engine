@@ -1,6 +1,7 @@
 #pragma once
 #include "BlackPearl/RHI/RHIDefinitions.h"
 #include "BlackPearl/RHI/RHIShader.h"
+#include "Renderer/Shader/GLSLIncluder.h"
 
 namespace BlackPearl {
 	//兼容旧的 shader 文件： .glsl里包含.vert 和 .frag
@@ -23,7 +24,7 @@ namespace BlackPearl {
 
 		std::string m_ShaderPath;
 		std::string m_GlslCode;
-		std::string m_CommonStructPath = "assets/shaders/common/CommonStruct.glsl";
+		std::string m_CommonStructPath = "assets/shaders/glsl/common/CommonStruct.glsl";
 
 
 		ShaderHandle m_VertexShader = nullptr;
@@ -31,7 +32,7 @@ namespace BlackPearl {
 		ShaderHandle m_GeometryShader = nullptr;
 		ShaderHandle m_ComputeShader = nullptr;
 
-
+		GLSLIncluder m_GlslIncluder;
 	};
 
 

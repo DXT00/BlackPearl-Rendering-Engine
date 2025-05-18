@@ -39,7 +39,7 @@ namespace BlackPearl {
         void ClearCache();
 
        ShaderHandle CreateShader(const char* fileName, const char* entryName, ShaderType shaderType, const std::vector<ShaderMacro>* pDefines = nullptr);
-       ShaderHandle CreateShaderFromSource(const std::string& srcCode, const char* entryName, ShaderType shaderType, const std::vector<ShaderMacro>* pDefines = nullptr);
+       ShaderHandle CreateShaderFromSource(const std::string& srcCode, const char* entryName, ShaderType shaderType, const std::vector<ShaderMacro>* pDefines = nullptr, const std::string& filepath = "");
 
        ShaderHandle CreateShader(const char* fileName, const char* entryName,const ShaderDesc& desc, const std::vector<ShaderMacro>* pDefines = nullptr);
        ShaderLibraryHandle CreateShaderLibrary(const char* fileName, const std::vector<ShaderMacro>* pDefines = nullptr);

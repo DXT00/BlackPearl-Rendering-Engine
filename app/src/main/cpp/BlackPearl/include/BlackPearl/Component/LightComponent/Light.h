@@ -9,7 +9,7 @@ using namespace BlackPearl::math;
 namespace BlackPearl {
 
 	enum class LightType {
-		ParallelLight = 0,
+		DirectionLight = 0,
 		PointLight,
 		SpotLight
 	};
@@ -26,6 +26,12 @@ namespace BlackPearl {
 			float intensity;
 			float area;
 			float shadowBias;
+			/* angularSize（角大小）是一个关键概念，用于描述 物体或像素在视线方向上的张角（即从观察者视角看，物体占据的角度范围）。它的单位通常是 弧度（radians）。以下是具体解释：
+			1. angularSize 的定义
+			物理意义：表示某个物体（如太阳、像素）在观察者眼中的 视觉大小。
+			例如：太阳的角大小约为 0.53°（≈0.0092 弧度），月亮类似。
+			*/
+			float angularSize = 0.53f;
 			Props() : ambient(math::float3(0.0f)), diffuse(math::float3(0.0f)), specular(math::float3(0.0f)), emission(math::float3(0.0f)),intensity(1.0f), area(1.0f), shadowBias(0.08) {}
 			Props(math::float3 ambient, math::float3 diffuse, math::float3 specular, math::float3 emission,float intensity, float area = 1.0, float shadowBias = 0.08 )
 				: ambient(ambient), diffuse(diffuse), specular(specular),emission(emission),intensity(intensity), area(area), shadowBias(shadowBias){}
@@ -64,6 +70,8 @@ namespace BlackPearl {
 			m_LightProp.intensity = props.intensity;
 			m_LightProp.area = props.area;
 			m_LightProp.shadowBias = props.shadowBias;
+			m_LightProp.angularSize = props.angularSize;
+
 		}
 	
 

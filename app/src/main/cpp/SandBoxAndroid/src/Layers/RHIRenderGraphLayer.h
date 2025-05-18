@@ -60,7 +60,7 @@ public:
         //Update Camera, Materials ..
 		m_DeviceManager->UpdateWindowSize();
         GE_ERROR_JUDGE();
-		m_DeviceManager->Run();
+		m_DeviceManager->Run(ts);
 
 		//m_RenderGraph->Render(m_DeviceManager->GetFrameBuffer(), BlackPearl::Renderer::GetSceneData());
 		

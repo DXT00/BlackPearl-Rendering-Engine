@@ -13,6 +13,18 @@ namespace BlackPearl {
 		TextureHandle whiteTexture2DArray;
 		TextureHandle blackCubeMapArray;
 
+		TextureHandle LightingTexture;
+		TextureHandle LightingTextureResolve; //for mass
+
+		TextureHandle DepthTexture;
+		TextureHandle DepthTextureResolve;    //for mass
+
+		TextureHandle GbufferA;
+		TextureHandle GbufferB;
+		TextureHandle GbufferC;
+		TextureHandle GbufferD;
+
+
 	};
 	class MaterialManager
 	{

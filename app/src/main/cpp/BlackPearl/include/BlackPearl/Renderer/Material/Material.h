@@ -97,6 +97,9 @@ namespace BlackPearl {
 
 		~Material();
 
+		void UploadConstantsBuffer(ICommandList* commandList);
+
+
 		MaterialShader*				 GetShader()const { return m_MaterialShader; }
 		std::shared_ptr<TextureMaps> GetTextureMaps()const { return m_TextureMaps; }
 		MaterialColor                GetMaterialColor()const { return m_MaterialColors; }
@@ -108,10 +111,6 @@ namespace BlackPearl {
 		void SetShader(MaterialShader* shader);
 		void SetTexture(ITexture* texture);
 		void SetSampler(ISampler* sampler);
-		void SetMaterialColor(MaterialColor::Color color);
-		void SetMaterialColorDiffuseColor(const math::float3& color);
-		void SetMaterialColorSpecularColor(const math::float3& color);
-		void SetMaterialColorEmissionColor(const math::float3& color);
 		void SetId(uint32_t _matId);
 		uint32_t GetId() const;
 
@@ -147,7 +146,6 @@ namespace BlackPearl {
 		bool isDirty = true;
 		MaterialDomain domain = MaterialDomain::Opaque;
 		BufferHandle materialConstants;
-		MaterialConstants FillMaterialConstants();
 		MaterialTemplate* materialTemplate;
 		MaterialTemplateType materialTemplateType = MaterialTemplateType::kPBR;
 		std::vector<MaterialResourceBinding> customBindingDesc;

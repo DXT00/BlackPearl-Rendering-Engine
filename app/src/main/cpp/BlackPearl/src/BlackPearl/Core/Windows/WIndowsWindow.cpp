@@ -8,17 +8,114 @@
 #include "Core/Windows/WindowsWindow.h"
 #include "BlackPearl/Event/MouseEvent.h"
 #include "BlackPearl/Application.h"
+#include "Event/KeyEvent.h"
+#include "Event/MouseEvent.h"
+#include "Event/WindowEvent.h"
+#include <windowsx.h>
 namespace BlackPearl {
 
-    static LRESULT CALLBACK PC_PlatformGLWndproc(HWND hWnd, uint32_t Message, WPARAM wParam, LPARAM lParam)
-{
-    return DefWindowProc(hWnd, Message, wParam, lParam);
-}
+	static LRESULT CALLBACK PC_PlatformGLWndproc(HWND hWnd, uint32_t Message, WPARAM wParam, LPARAM lParam)
+	{
+        WindowsWindow* pWindow = reinterpret_cast<WindowsWindow*>(GetWindowLongPtr(hWnd, GWLP_USERDATA));
+		switch (Message) {
+		//case WM_NCHITTEST: {
+		//	LRESULT hit = DefWindowProc(hWnd, Message, wParam, lParam);
+		//	return (hit == HTCLIENT) ? HTCAPTION : hit; // 允许客户区拖动
+		//}
+        case WM_SETCURSOR: {
+            if (LOWORD(lParam) == HTCLIENT) {
+                // 在客户区强制设置为箭头光标
+                SetCursor(LoadCursor(NULL, IDC_ARROW));
+                return TRUE; // 表示已处理此消息
+            }
+            break;
+        }
+        case WM_MOUSEMOVE: {
+            int x = GET_X_LPARAM(lParam);
+            int y = GET_Y_LPARAM(lParam);
+            MouseMovedEvent* event = new MouseMovedEvent(x, y);
+            pWindow->ProcessEvent(event);
+            break;
+        }
+        case WM_KEYDOWN: {
+            if (wParam == VK_ESCAPE) {
+                PostMessage(hWnd, WM_CLOSE, 0, 0);
+            }
+            KeyPressedEvent *event = new KeyPressedEvent(wParam); // 需实现键码映射
+            pWindow->ProcessEvent(event);
+            break;
+        }
+        case WM_KEYUP: {
+    
+            KeyReleasedEvent* event = new KeyReleasedEvent(wParam); // 需实现键码映射
+            pWindow->ProcessEvent(event);
+            break;
+        }
+        case WM_LBUTTONDOWN: {
+            KeyPressedEvent* event = new KeyPressedEvent(KeyCodes::Get(BP_MOUSE_BUTTON_LEFT));
+            pWindow->ProcessEvent(event);
+            break;
+        }
+        case WM_RBUTTONDOWN: {
+            KeyPressedEvent* event = new KeyPressedEvent(KeyCodes::Get(BP_MOUSE_BUTTON_RIGHT));
+            pWindow->ProcessEvent(event);
+            break;
+        }
+        case WM_LBUTTONUP: {
+            KeyReleasedEvent* event = new KeyReleasedEvent(KeyCodes::Get(BP_MOUSE_BUTTON_LEFT));
+            pWindow->ProcessEvent(event);
+            break;
+        }
+        case WM_RBUTTONUP: {
+            KeyReleasedEvent* event = new KeyReleasedEvent(KeyCodes::Get(BP_MOUSE_BUTTON_RIGHT));
+            pWindow->ProcessEvent(event);
+            break;
+        }
+        case WM_SIZE: {
+            int width = LOWORD(lParam);
+            int height = HIWORD(lParam);
+           /* WindowResizeEvent event(width, height);
+            pWindow->EventCallback(event);*/
+            break;
+        }
+        case WM_CLOSE: {
+            WindowCloseEvent* event = new WindowCloseEvent();
+            pWindow->ProcessEvent(event);
+            DestroyWindow(hWnd);
+            break;
+        }
+        case WM_DESTROY: {
+            PostQuitMessage(0);
+            break;
+        }
+        default:
+            return DefWindowProc(hWnd, Message, wParam, lParam);
+		}
+		return DefWindowProc(hWnd, Message, wParam, lParam);
+	}
 
 
 static bool g_GLFWInitialized = false;
+
+
+void WindowsWindow::ProcessEvent(Event* event) {
+    m_Queue.push(event);
+	
+}
+unsigned int WindowsWindow::GetHeight() 
+{
+    return GetCurWindowSize().x;
+}
+unsigned int WindowsWindow::GetWidth() 
+{
+    return GetCurWindowSize().y;
+}
+//unsigned int __stdcall WindowThreadProc(void* param) {
+//}
+
 void WindowsWindow::Init()
 {
+    //EventCallback = ProcessEvent;
     ////glfw:initialize and configure
     //if (!g_GLFWInitialized) {
     //	int success = glfwInit();
@@ -70,9 +167,9 @@ void WindowsWindow::Init()
         //	HINSTANCE HInstance = (HINSTANCE)GetModuleHandle(NULL);
 
         // Initialize the window class.
-        WNDCLASSEX windowClass = { 0 };
+        WNDCLASSEX windowClass = {  };
         windowClass.cbSize = sizeof(WNDCLASSEX);
-        windowClass.style = CS_HREDRAW | CS_VREDRAW;
+        //windowClass.style = CS_HREDRAW | CS_VREDRAW;
         windowClass.lpfnWndProc = PC_PlatformGLWndproc;
         windowClass.hInstance = app.GetAppConf().hInstance;
         windowClass.hCursor = LoadCursor(NULL, IDC_ARROW);
@@ -105,54 +202,114 @@ void WindowsWindow::Init()
                                         windowClass.hInstance,
                                         this);
         ShowWindow(m_WindowHandle, SW_SHOW);
+        UpdateWindow(m_WindowHandle);
+        // 关键步骤：将 this 指针绑定到窗口
+        //WindowsWindow* pWindow = this; // 假设 this 是有效的 WindowsWindow 对象
+        SetWindowLongPtr(m_WindowHandle, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(this));
+    //    HANDLE hThread = (HANDLE)_beginthreadex(NULL, 0, WindowThreadProc, NULL, 0, NULL);
+
     }
 }
 void WindowsWindow::OnUpdate()
 {
     /*glfwSwapBuffers(m_Window);
     glfwPollEvents();*/
+   // UpdateWindow(m_WindowHandle);
+    MSG msg = {};
+    while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE )) {
+        TranslateMessage(&msg);
+        DispatchMessage(&msg);
+    }
 
 
+    while (!m_Queue.empty()) {
+        Event* event = m_Queue.front();
+        m_Queue.pop();
+        switch (event->GetEventType())
+        {
+        case EventType::WindowClose: {
+            m_ShouldClose = true;
+        }
+                                   break;
 
+        case EventType::KeyPressed: {
+            m_KeyPressMap[static_cast<KeyPressedEvent*>(event)->GetKeyCode()] = true;
+        }
+                                  break;
+        case EventType::KeyReleased: {
+            m_KeyPressMap[static_cast<KeyReleasedEvent*>(event)->GetKeyCode()] = false;
+        }
+                                   break;
+        case EventType::MouseMoved: {
+            m_Xpos = static_cast<MouseMovedEvent*>(event)->GetMouseX();
+            m_Ypos = static_cast<MouseMovedEvent*>(event)->GetMouseY();
+
+        }
+          break;
+
+        default:
+            break;
+        }
+        if (event)
+            delete event;
+    }
 
 }
 void WindowsWindow::SetCursorCallBack()
 {
-    glfwSetWindowUserPointer(m_Window, &m_Data);
+    //glfwSetWindowUserPointer(m_Window, &m_Data);
 
-    //set callback
-    glfwSetCursorPosCallback(m_Window, [](GLFWwindow* window, double xpos, double ypos) {
+    ////set callback
+    //glfwSetCursorPosCallback(m_Window, [](GLFWwindow* window, double xpos, double ypos) {
 
-        MouseMovedEvent event(xpos, ypos);
+    //    MouseMovedEvent event(xpos, ypos);
 
-        WindowData data = *(WindowData*)glfwGetWindowUserPointer(window);
-        data.EventCallback(event);
+    //    WindowData data = *(WindowData*)glfwGetWindowUserPointer(window);
+    //    data.EventCallback(event);
 
-    });
+    //});
 }
 bool WindowsWindow::ShouldClose()
 {
-    if (glfwGetKey(m_Window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
+   /* if (glfwGetKey(m_Window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
         glfwSetWindowShouldClose(m_Window, true);
         return true;
     }
-    return false;
+    return false;*/
+    return m_ShouldClose;
 }
 bool WindowsWindow::IsKeyPressed(int keycode)
 {
-    int status = glfwGetKey(m_Window, keycode);
-    return status == GLFW_PRESS || status == GLFW_REPEAT;
+    if (m_KeyPressMap.find(keycode) != m_KeyPressMap.end()) {
+      
+        bool press = m_KeyPressMap[keycode];
+        m_KeyPressMap[keycode] = false;
+        return press;
+    }
+    else {
+        return false;
+    }
+   /*     int status = glfwGetKey(m_Window, keycode);
+    return status == GLFW_PRESS || status == GLFW_REPEAT;*/
 }
 bool WindowsWindow::IsMouseButtonPressed(int button)
 {
-    int status = glfwGetMouseButton(m_Window, button);
-    return status == GLFW_PRESS;
+    /*int status = glfwGetMouseButton(m_Window, button);
+    return status == GLFW_PRESS;*/
+
+    if (m_KeyPressMap.find(button) != m_KeyPressMap.end()) {
+        return m_KeyPressMap[button];
+    }
+    else {
+        return false;
+    }
 }
 std::pair<float, float> WindowsWindow::GetMousePosition()
 {
-    double xpos, ypos;
+    /*double xpos, ypos;
     glfwGetCursorPos(m_Window, &xpos, &ypos);
-    return { (float)xpos,(float)ypos };
+    return { (float)xpos,(float)ypos };*/
+    return { m_Xpos, m_Ypos };
 }
 math::vector<int, 2> WindowsWindow::GetCurWindowSize()
 {

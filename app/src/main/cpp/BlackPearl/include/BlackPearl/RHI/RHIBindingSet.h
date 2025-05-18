@@ -105,8 +105,8 @@ namespace BlackPearl {
             result.name = name;
             result.type = RHIResourceType::RT_Texture_SRV;
             result.resourceHandle = texture;
-            result.format = format;
-            result.dimension = dimension;
+            result.format = texture->getDesc().format;
+            result.dimension = texture->getDesc().dimension;
             result.subresources = subresources;
             result.unused = 0;
             return result;

@@ -24,9 +24,9 @@
 //#include "Layers/CloudRenderLayer.h"
 //#include "Layers/WaterRenderLayer.h"
 //#include "Layers/SSRLayer.h"
-#include "Layers/RHIRenderGraphLayer.h"
-#include "BlackPearl\Application.h"
-#include "BlackPearl\EntryPoint.h"
+#include "BlackPearl/LayersApp/RHIRenderGraphLayer.h"
+#include "BlackPearl/Application.h"
+#include "BlackPearl/EntryPoint.h"
 enum RenderSample {
 	BP_ShadowMapPointLight,
 	BP_VoxelConeTracing,

@@ -43,7 +43,7 @@ namespace BlackPearl {
 		//m_DebugQuadObj = debugQuadObj;
 		//glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
 		glEnable(GL_MULTISAMPLE);
-		m_VoxelConeTracingShader.reset(DBG_NEW Shader("assets/shaders/voxelization/voxelConeTracing/voxelConeTracingPBR.glsl"));
+		m_VoxelConeTracingShader.reset(DBG_NEW Shader("assets/shaders/glsl/voxelization/voxelConeTracing/voxelConeTracingPBR.glsl"));
 		InitVoxelization();
 		InitVoxelVisualization(viewportWidth, viewportHeight);
 
@@ -52,7 +52,7 @@ namespace BlackPearl {
 		//m_FrontBackCubeTestShader.reset(DBG_NEW Shader("assets/shaders/voxelization/debug/quadTest.glsl"));
 
 		/*pbr BRDF LUT shader*/
-		m_SpecularBRDFLutShader.reset(DBG_NEW Shader("assets/shaders/ibl/brdf.glsl"));
+		m_SpecularBRDFLutShader.reset(DBG_NEW Shader("assets/shaders/glsl/ibl/brdf.glsl"));
 		const std::vector<GLfloat> textureImage2D(4 * 256 * 256 , 0.0f);
 		RenderSpecularBRDFLUTMap();
 
@@ -62,8 +62,8 @@ namespace BlackPearl {
 
 	void VoxelConeTracingRenderer::InitVoxelization()
 	{
-		m_VoxelizationShader.reset(DBG_NEW Shader("assets/shaders/voxelization/voxelizationPBR.glsl"));
-		//m_VoxelizationShader.reset(DBG_NEW Shader("assets/shaders/voxelization/voxelization.glsl"));
+		m_VoxelizationShader.reset(DBG_NEW Shader("assets/shaders/glsl/voxelization/voxelizationPBR.glsl"));
+		//m_VoxelizationShader.reset(DBG_NEW Shader("assets/shaders/glsl/voxelization/voxelization.glsl"));
 
 		const std::vector<GLfloat> texture3D(4 * m_VoxelTextureSize*m_VoxelTextureSize*m_VoxelTextureSize, 0.0f);
 		m_VoxelTexture = DBG_NEW Texture3D(texture3D, m_VoxelTextureSize, m_VoxelTextureSize, m_VoxelTextureSize, true);
@@ -71,8 +71,8 @@ namespace BlackPearl {
 	void VoxelConeTracingRenderer::InitVoxelVisualization(unsigned int viewportWidth, unsigned int viewportHeight)
 	{
 		//Shaders
-		m_WorldPositionShader.reset(DBG_NEW Shader("assets/shaders/voxelization/visualization/worldPosition.glsl"));
-		m_VoxelVisualizationShader.reset(DBG_NEW Shader("assets/shaders/voxelization/visualization/voxelVisualization.glsl"));
+		m_WorldPositionShader.reset(DBG_NEW Shader("assets/shaders/glsl/voxelization/visualization/worldPosition.glsl"));
+		m_VoxelVisualizationShader.reset(DBG_NEW Shader("assets/shaders/glsl/voxelization/visualization/voxelVisualization.glsl"));
 
 	}
 

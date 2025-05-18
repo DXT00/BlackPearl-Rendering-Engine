@@ -5,7 +5,7 @@
 
 #include "BlackPearl/Window.h"
 #include "WindowsWindowContext.h"
-
+#include <queue>
 namespace BlackPearl {
     //TODO:: Distinguish between Android and pc versions
     class WindowsWindow : public Window
@@ -28,12 +28,21 @@ namespace BlackPearl {
 
         math::vector<int, 2> GetCurWindowSize() override;
 
+        void ProcessEvent(Event* event);
+
+        virtual unsigned int GetHeight() override;
+        virtual unsigned int GetWidth() override;
     private:
         GLFWwindow* m_Window;
         std::unique_ptr<Context> m_Context;
 
         HWND m_WindowHandle;
+        bool m_ShouldClose = false;
 
+        double m_Xpos;
+        double m_Ypos;
+        std::unordered_map<int, bool> m_KeyPressMap;
+        std::queue<Event*> m_Queue;
     };
     typedef WindowsWindow OpenGLWindow;
 }

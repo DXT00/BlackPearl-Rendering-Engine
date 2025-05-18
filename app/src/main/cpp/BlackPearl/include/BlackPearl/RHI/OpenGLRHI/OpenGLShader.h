@@ -46,7 +46,7 @@ namespace BlackPearl {
 		void SetUniformVec2f(const std::string& name, const math::float2& value) const;
 		void SetUniformVec2i(const std::string& name, const glm::ivec2& value) const;
 		
-
+		bool Shader::VerifyShaderCompilation(GLuint Resource, GLenum type);
 		std::string GetPath() { return m_ShaderPath; }
 		const ShaderDesc& getDesc() const override { return desc; }
 		void getBytecode(const void** ppBytecode, size_t* pSize) const override;
@@ -70,7 +70,7 @@ namespace BlackPearl {
 		std::string m_GlslCode;
 
 		std::string m_FragmentCommonStruct;
-		std::string m_CommonStructPath="assets/shaders/common/CommonStruct.glsl";
+		std::string m_CommonStructPath="assets/shaders/glsl/common/CommonStruct.glsl";
 
 		/*
 		 

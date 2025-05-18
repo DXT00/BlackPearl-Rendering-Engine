@@ -1,11 +1,12 @@
 #pragma once
 #include "RenderGraph.h"
-#include "BlackPearl/Renderer/RenderTargets.h"
+#include "Renderer/RenderTargets.h"
 //#include "BlackPearl/Renderer/MasterRenderer/IndirectCullRenderer.h"
 //#include "BlackPearl/Renderer/MasterRenderer/PostProcessRenderer.h"
-#include "BlackPearl/Renderer/MasterRenderer/BasePassRenderer.h"
-#include "BlackPearl/Renderer/Renderer.h"
-#include "BlackPearl/Renderer/MasterRenderer/PBRRenderer.h"
+#include "Renderer/Renderer.h"
+#include "Renderer/MasterRenderer/ForwardBasePassRenderer.h"
+#include "Renderer/MasterRenderer/SkyboxRenderer.h"
+#include "Timestep/Timestep.h"
 namespace BlackPearl {
 	class ForwardRenderGraph : public RenderGraph
 	{
@@ -14,11 +15,15 @@ namespace BlackPearl {
 			: RenderGraph(deviceManager)
 		{ }
 		virtual void Init(Scene* scene);
-		virtual void Render(IFramebuffer* framebuffer, IView* View);
+		virtual void Render(Timestep ts, IFramebuffer* framebuffer, IView* View);
+	
+
+		void RenderSinglePass(Timestep ts, IFramebuffer* framebuffer, IView* View);
+		void RenderMultiPass(Timestep ts, IFramebuffer* framebuffer, IView* View);
+
 	private:
 
 		void _CreateRenderTagets();
-		IFramebuffer* m_FrameBuffer;
 
 		CommandListHandle                    m_CommandList;
 		BufferHandle                         m_ConstantBuffer;
@@ -33,9 +38,9 @@ namespace BlackPearl {
 		glm::vec4 m_BackgroundColor1 = { 1.0f,1.0f,1.0f,1.0f };
 		//PostProcessRenderer* m_PostProcessRenderer;
 		//IndirectCullRenderer* m_IndirectCullRenderer;
-		BasePassRenderer* m_BasePassRenderer;
-		PBRRenderer* m_PBRRenderer;
-
+		//BasePassRenderer* m_BasePassRenderer;
+		ForwardBasePassRenderer* m_ForwardBasePassRenderer;
+		SkyboxRenderer* m_SkyboxRenderer;
 		//sky renderer
 
 		// bloom renderer

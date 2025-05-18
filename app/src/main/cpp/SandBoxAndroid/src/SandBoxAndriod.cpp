@@ -6,7 +6,7 @@
 #include "BlackPearl/RHI/DynamicRHI.h"
 #include "BlackPearl/EntryPoint.h"
 #include "Layers/PbrRenderingLayer.h"
-#include "Layers/RHIRenderGraphLayer.h"
+#include "BlackPearl/LayersApp/RHIRenderGraphLayer.h"
 enum RenderSample {
     BP_PbrRendering,
     BP_RHIRenderGraphLayer

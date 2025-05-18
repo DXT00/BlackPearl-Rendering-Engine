@@ -29,8 +29,8 @@ namespace BlackPearl {
 		virtual std::pair<float, float> GetMousePosition() = 0;
 		virtual math::vector<int, 2> GetCurWindowSize() = 0;
 
-		inline unsigned int GetHeight() const { return m_Data.Height; }
-		inline unsigned int GetWidth() const { return m_Data.Width; }
+		virtual unsigned int GetHeight() = 0; 
+		virtual unsigned int GetWidth() = 0;
 		inline std::string GetTitle() const { return m_Data.Title; }
 		inline void SetAppCallBack(const std::function<void(Event&)>& callback) { m_Data.EventCallback = callback; }
 		virtual void* GetNativeWindow() const = 0;
