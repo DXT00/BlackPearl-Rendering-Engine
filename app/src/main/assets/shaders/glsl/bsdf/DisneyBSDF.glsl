@@ -4,16 +4,9 @@
 #define INV_PI 0.3183098861837907
 #define EPSILON 1e-6
 
-#include <material_cb.h>
+#include <assets/shaders/hlsl/core/light_cb.h>
 
-// Geometry structure
-struct SurfaceGeometry {
-    vec3 position;
-    vec3 normal;
-    vec3 viewDir;
-    vec3 tangent;
-    vec3 bitangent;
-};
+#include <assets/shaders/hlsl/core/material_cb.h>
 
 // Helper functions
 float sqr(float x) { return x * x; }
@@ -189,8 +182,8 @@ vec4 ShadeSurface(in LightConstants light, in SurfaceGeometry geom, in DisneyMat
     // Combine with light color
     vec3 color = brdf * light.color;
     
-    // Add emission
-    color += material.emission;
+    // Add emissive
+    color += material.emissive;
     
     // Output final color with alpha
     fragColor = vec4(color, material.alpha);
@@ -199,6 +192,88 @@ vec4 ShadeSurface(in LightConstants light, in SurfaceGeometry geom, in DisneyMat
 
 }
 
+
+DisneyMaterialConstant CreateDisneyBSDFMaterial(SurfaceGeometry geom, DisneyMaterialConstant consts, vec2 texcoord){
+	 MaterialTextureSample textures = SampleMaterialTexturesAuto(texcoord);
+    /*
+      SurfaceGeometry geom;
+      geom.position = vPosition;
+      geom.normal = normalize(vNormal);
+      geom.viewDir = normalize(-vPosition); // Assuming eye is at (0,0,0)
+      geom.tangent = normalize(vTangent);
+      geom.bitangent = normalize(cross(geom.normal, geom.tangent));
+    
+    */
+
+    vec3 nn = normalize(geom.normal);
+    vec3 nt = normalize(geom.tangent);
+    mat3x3 tbn = mat3x3(nt, cross(nn, nt), nn);
+
+	// normal map
+#if USE_NORMAL_MAP
+    // tbn basis
+    vec3 N = tbn * textures.normal * 2.0 - 1.0);
+#else
+    vec3 N = nn;
+#endif
+
+    // albedo/specular base
+#if USE_ALBEDO_MAP
+    result.baseColor = textures.albedo;
+#else
+    result.baseColor = consts.albedo.xyz;
+#endif
+
+    // roughness
+#if USE_ROUGHNESS_MAP
+    result.roughness = textures.metalRoughOrSpecular.y;
+    result.metallic =  textures.metalRoughOrSpecular.z;
+#else
+    result.roughness = consts.roughness;
+    result.metallic = consts.metalness;
+#endif
+
+#if USE_EMISSIVE_MAP
+    result.emissive = textures.emissive.xyz;
+#else
+    result.emissive = consts.emissive;
+#endif
+
+//#if USE_TRANSMISSION_MAP
+//    result.transmission = textures.transmission.xyz;
+//#else
+//    result.transmission = consts.transmission;
+//#endif
+
+//#if USE_AO_MAP
+//   result.ao = textures.occlusion.y;
+//#else
+//   result.ao = consts.ao;
+//#endif
+    result.flags = consts.flags;
+    result.materialID = consts.materialID;
+    
+    result.subsurface = consts.subsurface;
+    result.subsurfaceRadius = consts.subsurfaceRadius;
+    result.subsurfaceColor = consts.subsurfaceColor;
+    result.specular = consts.specular;
+    result.specularTint = consts.specularTint;
+    result.anisotropic = consts.anisotropic;
+    result.anisotropicRotation = consts.anisotropicRotation;
+    result.sheen = consts.sheen;
+    result.sheenTint = consts.sheenTint;
+    result.clearcoat = consts.clearcoat;
+    result.clearcoatRoughness = consts.clearcoatRoughness;
+    result.ior = consts.ior;
+    result.transmission = consts.transmission;
+    result.transmissionRoughness = consts.transmissionRoughness;
+    result.alpha = consts.alpha;
+
+
+    return result;
+
+
+}
 
 //// Example usage in a fragment shader
 //uniform DisneyMaterialConstant uMaterial;
@@ -227,8 +302,8 @@ vec4 ShadeSurface(in LightConstants light, in SurfaceGeometry geom, in DisneyMat
 //    // Combine with light color
 //    vec3 color = brdf * uLightColor;
 //    
-//    // Add emission
-//    color += uMaterial.emission;
+//    // Add emissive
+//    color += uMaterial.emissive;
 //    
 //    // Output final color with alpha
 //    fragColor = vec4(color, uMaterial.alpha);

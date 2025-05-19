@@ -1,108 +1,19 @@
 
-#ifdef GL_ES
-precision mediump float;  // 必须声明精度（ES 要求）
-#endif
-
-#define float3 vec3
-#define float4 vec4
-#define float4x4 mat4
-
-
-const int MaterialFlags_UseSpecularGlossModel            = 0x00000001;
-const int MaterialFlags_DoubleSided                      = 0x00000002;
-const int MaterialFlags_UseMetalRoughOrSpecularTexture   = 0x00000004;
-const int MaterialFlags_UseBaseOrDiffuseTexture          = 0x00000008;
-const int MaterialFlags_UseEmissiveTexture               = 0x00000010;
-const int MaterialFlags_UseNormalTexture                 = 0x00000020;
-const int MaterialFlags_UseOcclusionTexture              = 0x00000040;
-const int MaterialFlags_UseTransmissionTexture           = 0x00000080;
-const int MaterialFlags_ThinSurface                      = 0x00000100;
-const int MaterialFlags_PSDExclude                       = 0x00000200;
-const int MaterialFlags_UseHeightMapTexture              = 0x00000400;
-const int MaterialFlags_UseCubeMapTexture                = 0x00000800;
-const int MaterialFlags_UseDepthTexture                  = 0x00001000;
-const int MaterialFlags_UseSpecularTexture               = 0x00002000;
-const int MaterialFlags_UseRoughnessTexture              = 0x00004000;
-const int MaterialFlags_UseMetalTexture                  = 0x00008000;
-const int MaterialFlags_UseOpacityTexture                = 0x00010000;
-
-struct Material{
-	vec3 ambientColor;
-	vec3 diffuseColor;
-	vec3 specularColor;
-	vec3 emissionColor;
-	float roughnessValue;
-	float mentallicValue;
-	float aoValue;
-	sampler2D diffuse; //or call it albedo
-	sampler2D specular;
-	sampler2D emission;
-	sampler2D normal;
-	sampler2D height;
-	sampler2D depth;
-	sampler2D ao;
-	sampler2D roughness;
-	sampler2D mentallic;	
-	samplerCube cube;
-	float shininess;
-	float specularDiffusion;
-	float diffuseReflectivity;
-	float specularReflectivity;
-	float transparency;
-	bool  isBlinnLight;
-	float emissivity;
-//	int   isTextureSample;
-//	int   isDiffuseTextureSample;
-//	int   isSpecularTextureSample;
-//	int   isMetallicTextureSample;
-	float refractiveIndex;
+struct MaterialTextureSample
+{
+    float4 albedo;
+    float4 metalRoughOrSpecular;
+    float4 normal;
+    float4 emissive;
+    float4 occlusion;
+    float4 transmission;
 };
-
-
-struct Settings{
-	bool  isBlinnLight;
-	int   isAmbientTextureSample;
-	int   isDiffuseTextureSample;
-	int   isSpecularTextureSample;
-	int   isHeightTextureSample;
-	int   isEmissionTextureSample;
-	int   isPBRTextureSample;//normalMap,aoMap,metallicMap
-	bool  directLight;
-	bool  indirectDiffuseLight;
-	bool  indirectSpecularLight;
-	bool  shadows;
-	float GICoeffs;
-	float SSRGICoeffs;
-	bool  hdr;
-	bool  guassian_horiziotal;
-	bool  guassian_vertical;
-	bool  guassian_mipmap;
-	bool  showBlurArea;
-};
-
-struct Props {
-    //Enable texture
-    float shininess;
-    float refractIndex;
-    bool  isBinnLight;
-    int  isPBRTextureSample;//�Ƿ�ʹ������-->���� ao,normal,metalllic,roughness
-    int  isDiffuseTextureSample;
-    int  isSpecularTextureSample;
-    int  isHeightTextureSample;
-    int  isEmissionTextureSample;
-    int isRefractMaterial;
-    int isDoubleSided;
-};
-
-
-
-
 
 
 // 4. 默认材质值函数
 MaterialTextureSample DefaultMaterialTextures() {
     MaterialTextureSample s;
-    s.baseOrDiffuse = vec4(1.0);
+    s.albedo = vec4(1.0);
     s.metalRoughOrSpecular = vec4(0.0);
     s.emissive = vec4(0.0);
     s.normal = vec4(0.5, 0.5, 1.0, 1.0); // 默认法线 (0,0,1)
@@ -111,12 +22,13 @@ MaterialTextureSample DefaultMaterialTextures() {
     return s;
 }
 
+
 // 5. 转换 SampleMaterialTexturesAuto 函数
 MaterialTextureSample SampleMaterialTexturesAuto(vec2 texCoord) {
     MaterialTextureSample values = DefaultMaterialTextures();
 
    // if ((g_Material.flags & MaterialFlags_UseBaseOrDiffuseTexture) != 0) { // MaterialFlags_UseBaseOrDiffuseTexture
-        values.baseOrDiffuse = texture(t_BaseOrDiffuse, texCoord);
+        values.albedo = texture(t_BaseOrDiffuse, texCoord);
   //  }
 
     if ((g_Material.flags & MaterialFlags_UseMetalRoughOrSpecularTexture) != 0) { // MaterialFlags_UseMetalRoughOrSpecularTexture
@@ -147,7 +59,7 @@ MaterialTextureSample SampleMaterialTexturesLevel(vec2 texCoord, float lod) {
     MaterialTextureSample values = DefaultMaterialTextures();
 
     if ((g_Material.flags & MaterialFlags_UseBaseOrDiffuseTexture) != 0) {
-        values.baseOrDiffuse = textureLod(t_BaseOrDiffuse, texCoord, lod);
+        values.albedo = textureLod(t_BaseOrDiffuse, texCoord, lod);
     }
 
     if ((g_Material.flags & MaterialFlags_UseMetalRoughOrSpecularTexture) != 0) {
@@ -178,7 +90,7 @@ MaterialTextureSample SampleMaterialTexturesGrad(vec2 texCoord, vec2 ddx, vec2 d
     MaterialTextureSample values = DefaultMaterialTextures();
 
     if ((g_Material.flags & MaterialFlags_UseBaseOrDiffuseTexture) != 0) {
-        values.baseOrDiffuse = textureGrad(t_BaseOrDiffuse, texCoord, ddx, ddy);
+        values.albedo = textureGrad(t_BaseOrDiffuse, texCoord, ddx, ddy);
     }
 
     if ((g_Material.flags & MaterialFlags_UseMetalRoughOrSpecularTexture) != 0) {
@@ -204,25 +116,25 @@ MaterialTextureSample SampleMaterialTexturesGrad(vec2 texCoord, vec2 ddx, vec2 d
     return values;
 }
 
-struct MaterialSample
-{
-    float3 shadingNormal;
-    float3 geometryNormal;
-    float3 diffuseAlbedo; // BRDF input Cdiff
-    float3 specularF0; // BRDF input F0
-    float3 emissiveColor;
-    float opacity;
-    float occlusion;
-    float roughness;
-    float3 baseColor; // native in metal-rough, derived in spec-gloss
-    float metalness; // native in metal-rough, derived in spec-gloss
-    float transmission;
-    float diffuseTransmission;
-    bool hasMetalRoughParams; // indicates that 'baseColor' and 'metalness' are valid
-    float ior;
-    float shadowNoLFadeout;
-};
-
+//struct MaterialSample
+//{
+//    float3 shadingNormal;
+//    float3 geometryNormal;
+//    float3 diffuseAlbedo; // BRDF input Cdiff
+//    float3 specularF0; // BRDF input F0
+//    float3 emissiveColor;
+//    float opacity;
+//    float occlusion;
+//    float roughness;
+//    float3 baseColor; // native in metal-rough, derived in spec-gloss
+//    float metalness; // native in metal-rough, derived in spec-gloss
+//    float transmission;
+//    float diffuseTransmission;
+//    bool hasMetalRoughParams; // indicates that 'baseColor' and 'metalness' are valid
+//    float ior;
+//    float shadowNoLFadeout;
+//};
+//
 MaterialSample DefaultMaterialSample()
 {
     MaterialSample result;
@@ -269,7 +181,7 @@ MaterialSample EvaluateSceneMaterial(float3 normal, float4 tangent, MaterialCons
     }
     else
     {
-        result.baseColor = material.baseOrDiffuseColor.rgb * textures.baseOrDiffuse.rgb;
+        result.baseColor = material.baseOrDiffuseColor.rgb * textures.albedo.rgb;
         result.roughness = material.roughness * textures.metalRoughOrSpecular.g;
         result.metalness = material.metalness * textures.metalRoughOrSpecular.b;
         result.hasMetalRoughParams = true;
@@ -290,7 +202,7 @@ MaterialSample EvaluateSceneMaterial(float3 normal, float4 tangent, MaterialCons
     
     result.opacity = material.opacity;
     if (material.flags & MaterialFlags_UseBaseOrDiffuseTexture)
-        result.opacity *= textures.baseOrDiffuse.a;
+        result.opacity *= textures.albedo.a;
     result.opacity = saturate(result.opacity);
 
     result.transmission = material.transmissionFactor;

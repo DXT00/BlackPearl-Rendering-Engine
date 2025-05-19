@@ -7,49 +7,21 @@ layout(binding = 4) uniform sampler2D t_Occlusion;
 layout(binding = 5) uniform sampler2D t_Transmission;
 
 
-// 3. 定义材质采样结构体
-struct MaterialTextureSample {
-    vec4 baseOrDiffuse;
-    vec4 metalRoughOrSpecular;
-    vec4 emissive;
-    vec4 normal;
-    vec4 occlusion;
-    vec4 transmission;
-};
-
-
+#include <assets/shaders/glsl/common/TextureSample.glsl>
 
 #ifdef COOK
-#include <assets/shaders/glsl/CookBSDF.glsl>
 
-// 1. 替换 HLSL 的 cbuffer 为 GLSL 的 uniform buffer
+#include <assets/shaders/glsl/bsdf/CookBSDF.glsl>
 layout(std140, binding = 7) uniform MaterialUBO  { // MATERIAL_CB_SLOT -> binding=7
-
-   MaterialConstants g_Material
-
+   MaterialConstants g_Mat;
 };
 
+#elif defined (Disney)
 
-MaterialConstant CreateCookBSDFMaterial(){
-
-}
-
-
-#endif
-
-#ifdef Disney
-#include <assets/shaders/glsl/DisneyBSDF.glsl>
-
-// 1. 替换 HLSL 的 cbuffer 为 GLSL 的 uniform buffer
+#include <assets/shaders/glsl/bsdf/DisneyBSDF.glsl>
 layout(std140, binding = 7) uniform MaterialUBO { // MATERIAL_CB_SLOT -> binding=7
-
-  DisneyMaterialConstant g_Material
-
+  DisneyMaterialConstant g_Mat;
 } ;
 
-
-DisneyMaterialConstant CreateDisneyBSDFMaterial(){
-
-}
 
 #endif

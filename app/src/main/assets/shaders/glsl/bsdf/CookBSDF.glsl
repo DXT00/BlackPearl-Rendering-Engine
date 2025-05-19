@@ -5,6 +5,7 @@ Cook-Torrance BSDF Model
 
 #include <assets/shaders/hlsl/core/light_cb.h>
 
+#include <assets/shaders/hlsl/core/material_cb.h>
 
 in vec2 v_texcoord; // texture coords
 in vec3 v_normal;   // normal
@@ -272,12 +273,80 @@ vec4 ShadeSurface(in LightConstants light, in SurfaceGeometry geom, in MaterialC
     // Combine with light color
     vec3 color = brdf * light.color;
     
-    // Add emission
-    color += material.emission;
+    // Add emissive
+    color += material.emissive;
     
     // Output final color with alpha
     fragColor = vec4(color, material.alpha);
 
     return fragColor;
 
+}
+
+MaterialConstant CreateCookBSDFMaterial(SurfaceGeometry geom,  MaterialConstant consts, vec2 texcoord){
+	MaterialConstant result;
+    MaterialTextureSample textures = SampleMaterialTexturesAuto(texcoord);
+    /*
+      SurfaceGeometry geom;
+      geom.position = vPosition;
+      geom.normal = normalize(vNormal);
+      geom.viewDir = normalize(-vPosition); // Assuming eye is at (0,0,0)
+      geom.tangent = normalize(vTangent);
+      geom.bitangent = normalize(cross(geom.normal, geom.tangent));
+    
+    */
+
+    vec3 nn = normalize(geom.normal);
+    vec3 nt = normalize(geom.tangent);
+    mat3x3 tbn = mat3x3(nt, cross(nn, nt), nn);
+
+	// normal map
+#if USE_NORMAL_MAP
+    // tbn basis
+    vec3 N = tbn * textures.normal * 2.0 - 1.0);
+#else
+    vec3 N = nn;
+#endif
+
+    // albedo/specular base
+#if USE_ALBEDO_MAP
+    result.albedo = textures.albedo;
+#else
+    result.albedo = consts.albedo.xyz;
+#endif
+
+    // roughness
+#if USE_ROUGHNESS_MAP
+    result.roughness = textures.metalRoughOrSpecular.y;
+    result.metallic =  textures.metalRoughOrSpecular.z;
+#else
+    result.roughness = consts.roughness;
+    result.metallic = consts.metalness;
+#endif
+
+#if USE_EMISSIVE_MAP
+    result.emissive = textures.emissive.xyz;
+#else
+    result.emissive = consts.emissive;
+#endif
+
+#if USE_TRANSMISSION_MAP
+    result.transmission = textures.transmission.xyz;
+#else
+    result.transmission = consts.transmission;
+#endif
+
+#if USE_AO_MAP
+   result.ao = textures.occlusion.y;
+#else
+   result.ao = consts.ao;
+#endif
+    result.ior = consts.ior;
+    result.flags = consts.flags;
+    result.materialID = consts.materialID;
+    result.domain = consts.domain;
+    result.opacity = consts.opacity;
+    result.alphaThreshold = consts.alphaThreshold;
+
+    return result;
 }
