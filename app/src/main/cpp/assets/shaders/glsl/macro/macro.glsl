@@ -1,0 +1,20 @@
+
+
+#define ALLOW_STATIC_LIGHTING 1
+#define MOBILE_SHADINGMODEL_SUPPORT 0
+
+#define COOK 1
+#define Disney 0
+
+#define USE_TBN 0
+
+#define VULKAN_PROFILE 0
+#define METAL_PROFILE 0
+
+#define USE_GLES_FBF_DEFERRED 0
+
+#define USE_POINTLIGHT_SHADOW 0
+
+#define COOK_BLINN 0
+#define COOK_BLINN 1
+#define COOK_GGX 0

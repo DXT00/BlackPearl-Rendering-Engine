@@ -1,0 +1,321 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Dist|x64">
+      <Configuration>Dist</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{583885F2-44DA-AFC8-2D95-C31C19D63619}</ProjectGuid>
+    <IgnoreWarnCompileDuplicatedFilename>true</IgnoreWarnCompileDuplicatedFilename>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>assets</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Dist|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Dist|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>.\</OutDir>
+    <IntDir>Debug\</IntDir>
+    <TargetName>assets</TargetName>
+    <TargetExt>.exe</TargetExt>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>.\</OutDir>
+    <IntDir>Release\</IntDir>
+    <TargetName>assets</TargetName>
+    <TargetExt>.exe</TargetExt>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Dist|x64'">
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>.\</OutDir>
+    <IntDir>Dist\</IntDir>
+    <TargetName>assets</TargetName>
+    <TargetExt>.exe</TargetExt>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>GLFW_INCLUDE_NONE;GE_PLATFORM_WINDOWS;GE_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>shaders\glsl\.vshistory\Cube.glsl;shaders\glsl\.vshistory\SkyBoxMultiTexture.glsl;shaders\glsl\bsdf\.vshistory\BSDF.glsl;shaders\glsl\bsdf\.vshistory\CookBSDF.glsl;shaders\glsl\bsdf\.vshistory\CookTorranceBSDF.glsl;shaders\glsl\bsdf\.vshistory\DisneyBSDF.glsl;shaders\glsl\common\.vshistory\CommonDeferredStruct.glsl;shaders\glsl\common\.vshistory\CommonDepth.glsl;shaders\glsl\common\.vshistory\CommonGbufferStruct.glsl;shaders\glsl\common\.vshistory\CommonOctahedral.glsl;shaders\glsl\common\.vshistory\CommonStruct.glsl;shaders\glsl\common\.vshistory\CommonTransformStruct.glsl;shaders\glsl\common\.vshistory\CommonViewStruct.glsl;shaders\glsl\common\.vshistory\CommonViewTransformStruct.glsl;shaders\glsl\common\.vshistory\TextureSample.glsl;shaders\glsl\deferred_shading\.vshistory\deferred_shading.glsl;shaders\glsl\deferred_shading\.vshistory\deferred_shading_bsdf.glsl;shaders\glsl\deferred_shading\.vshistory\deferred_shading_bsdf_cook.glsl;shaders\glsl\deferred_shading\.vshistory\deferred_shading_bsdf_direction_light.glsl;shaders\glsl\deferred_shading\.vshistory\deferred_shading_bsdf_point_light.glsl;shaders\glsl\deferred_shading\.vshistory\forward_shading.glsl;shaders\glsl\forward_shading\.vshistory\forward_shading.glsl;shaders\glsl\gBuffer\.vshistory\gBuffer.glsl;shaders\glsl\gBuffer\.vshistory\gBufferPass.glsl;shaders\glsl\macro\.vshistory\macro.glsl;shaders\glsl\pbr\.vshistory\bsdf.glsl;shaders\glsl\pbr\.vshistory\DisneyBSDF.glsl;shaders\hlsl\core\.vshistory\material_cb.h;shaders\hlsl\core\.vshistory\sky_cb.h;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <Optimization>Disabled</Optimization>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>GLFW_INCLUDE_NONE;GE_PLATFORM_WINDOWS;GE_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>shaders\glsl\.vshistory\Cube.glsl;shaders\glsl\.vshistory\SkyBoxMultiTexture.glsl;shaders\glsl\bsdf\.vshistory\BSDF.glsl;shaders\glsl\bsdf\.vshistory\CookBSDF.glsl;shaders\glsl\bsdf\.vshistory\CookTorranceBSDF.glsl;shaders\glsl\bsdf\.vshistory\DisneyBSDF.glsl;shaders\glsl\common\.vshistory\CommonDeferredStruct.glsl;shaders\glsl\common\.vshistory\CommonDepth.glsl;shaders\glsl\common\.vshistory\CommonGbufferStruct.glsl;shaders\glsl\common\.vshistory\CommonOctahedral.glsl;shaders\glsl\common\.vshistory\CommonStruct.glsl;shaders\glsl\common\.vshistory\CommonTransformStruct.glsl;shaders\glsl\common\.vshistory\CommonViewStruct.glsl;shaders\glsl\common\.vshistory\CommonViewTransformStruct.glsl;shaders\glsl\common\.vshistory\TextureSample.glsl;shaders\glsl\deferred_shading\.vshistory\deferred_shading.glsl;shaders\glsl\deferred_shading\.vshistory\deferred_shading_bsdf.glsl;shaders\glsl\deferred_shading\.vshistory\deferred_shading_bsdf_cook.glsl;shaders\glsl\deferred_shading\.vshistory\deferred_shading_bsdf_direction_light.glsl;shaders\glsl\deferred_shading\.vshistory\deferred_shading_bsdf_point_light.glsl;shaders\glsl\deferred_shading\.vshistory\forward_shading.glsl;shaders\glsl\forward_shading\.vshistory\forward_shading.glsl;shaders\glsl\gBuffer\.vshistory\gBuffer.glsl;shaders\glsl\gBuffer\.vshistory\gBufferPass.glsl;shaders\glsl\macro\.vshistory\macro.glsl;shaders\glsl\pbr\.vshistory\bsdf.glsl;shaders\glsl\pbr\.vshistory\DisneyBSDF.glsl;shaders\hlsl\core\.vshistory\material_cb.h;shaders\hlsl\core\.vshistory\sky_cb.h;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <Optimization>Full</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <StringPooling>true</StringPooling>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Dist|x64'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>GLFW_INCLUDE_NONE;GE_PLATFORM_WINDOWS;GE_DIST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>shaders\glsl\.vshistory\Cube.glsl;shaders\glsl\.vshistory\SkyBoxMultiTexture.glsl;shaders\glsl\bsdf\.vshistory\BSDF.glsl;shaders\glsl\bsdf\.vshistory\CookBSDF.glsl;shaders\glsl\bsdf\.vshistory\CookTorranceBSDF.glsl;shaders\glsl\bsdf\.vshistory\DisneyBSDF.glsl;shaders\glsl\common\.vshistory\CommonDeferredStruct.glsl;shaders\glsl\common\.vshistory\CommonDepth.glsl;shaders\glsl\common\.vshistory\CommonGbufferStruct.glsl;shaders\glsl\common\.vshistory\CommonOctahedral.glsl;shaders\glsl\common\.vshistory\CommonStruct.glsl;shaders\glsl\common\.vshistory\CommonTransformStruct.glsl;shaders\glsl\common\.vshistory\CommonViewStruct.glsl;shaders\glsl\common\.vshistory\CommonViewTransformStruct.glsl;shaders\glsl\common\.vshistory\TextureSample.glsl;shaders\glsl\deferred_shading\.vshistory\deferred_shading.glsl;shaders\glsl\deferred_shading\.vshistory\deferred_shading_bsdf.glsl;shaders\glsl\deferred_shading\.vshistory\deferred_shading_bsdf_cook.glsl;shaders\glsl\deferred_shading\.vshistory\deferred_shading_bsdf_direction_light.glsl;shaders\glsl\deferred_shading\.vshistory\deferred_shading_bsdf_point_light.glsl;shaders\glsl\deferred_shading\.vshistory\forward_shading.glsl;shaders\glsl\forward_shading\.vshistory\forward_shading.glsl;shaders\glsl\gBuffer\.vshistory\gBuffer.glsl;shaders\glsl\gBuffer\.vshistory\gBufferPass.glsl;shaders\glsl\macro\.vshistory\macro.glsl;shaders\glsl\pbr\.vshistory\bsdf.glsl;shaders\glsl\pbr\.vshistory\DisneyBSDF.glsl;shaders\hlsl\core\.vshistory\material_cb.h;shaders\hlsl\core\.vshistory\sky_cb.h;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <Optimization>Full</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <StringPooling>true</StringPooling>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="shaders\hlsl\core\align.h" />
+    <ClInclude Include="shaders\hlsl\core\bindless.h" />
+    <ClInclude Include="shaders\hlsl\core\blit_cb.h" />
+    <ClInclude Include="shaders\hlsl\core\bloom_cb.h" />
+    <ClInclude Include="shaders\hlsl\core\deferred_lighting_cb.h" />
+    <ClInclude Include="shaders\hlsl\core\depth_cb.h" />
+    <ClInclude Include="shaders\hlsl\core\forward_cb.h" />
+    <ClInclude Include="shaders\hlsl\core\gbuffer_cb.h" />
+    <ClInclude Include="shaders\hlsl\core\light_cb.h" />
+    <ClInclude Include="shaders\hlsl\core\light_probe_cb.h" />
+    <ClInclude Include="shaders\hlsl\core\light_types.h" />
+    <ClInclude Include="shaders\hlsl\core\material_cb.h" />
+    <ClInclude Include="shaders\hlsl\core\mipmapgen_cb.h" />
+    <ClInclude Include="shaders\hlsl\core\pixel_readback_cb.h" />
+    <ClInclude Include="shaders\hlsl\core\skinning_cb.h" />
+    <ClInclude Include="shaders\hlsl\core\sky_cb.h" />
+    <ClInclude Include="shaders\hlsl\core\ssao_cb.h" />
+    <ClInclude Include="shaders\hlsl\core\taa_cb.h" />
+    <ClInclude Include="shaders\hlsl\core\tonemapping_cb.h" />
+    <ClInclude Include="shaders\hlsl\core\transform_cb.h" />
+    <ClInclude Include="shaders\hlsl\core\view_cb.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="shaders\hlsl\passes\bloom_ps.hlsl" />
+    <FxCompile Include="shaders\hlsl\passes\cubemap_gs.hlsl" />
+    <FxCompile Include="shaders\hlsl\passes\deferred_lighting_cs.hlsl" />
+    <FxCompile Include="shaders\hlsl\passes\depth_ps.hlsl" />
+    <FxCompile Include="shaders\hlsl\passes\depth_vs.hlsl" />
+    <FxCompile Include="shaders\hlsl\passes\environment_map_ps.hlsl" />
+    <FxCompile Include="shaders\hlsl\passes\exposure_cs.hlsl" />
+    <FxCompile Include="shaders\hlsl\passes\forward_ps.hlsl" />
+    <FxCompile Include="shaders\hlsl\passes\forward_vs.hlsl" />
+    <FxCompile Include="shaders\hlsl\passes\gbuffer_ps.hlsl" />
+    <FxCompile Include="shaders\hlsl\passes\gbuffer_vs.hlsl" />
+    <FxCompile Include="shaders\hlsl\passes\histogram_cs.hlsl" />
+    <FxCompile Include="shaders\hlsl\passes\joints.hlsl" />
+    <FxCompile Include="shaders\hlsl\passes\light_probe.hlsl" />
+    <FxCompile Include="shaders\hlsl\passes\material_id_ps.hlsl" />
+    <FxCompile Include="shaders\hlsl\passes\mipmapgen_cs.hlsl" />
+    <FxCompile Include="shaders\hlsl\passes\motion_vectors_ps.hlsl" />
+    <FxCompile Include="shaders\hlsl\passes\pixel_readback_cs.hlsl" />
+    <FxCompile Include="shaders\hlsl\passes\sky_ps.hlsl" />
+    <FxCompile Include="shaders\hlsl\passes\ssao_blur_cs.hlsl" />
+    <FxCompile Include="shaders\hlsl\passes\ssao_compute_cs.hlsl" />
+    <FxCompile Include="shaders\hlsl\passes\ssao_deinterleave_cs.hlsl" />
+    <FxCompile Include="shaders\hlsl\passes\taa_cs.hlsl" />
+    <FxCompile Include="shaders\hlsl\passes\tonemapping_ps.hlsl" />
+    <FxCompile Include="shaders\hlsl\test\forward_test_ps.hlsl" />
+    <FxCompile Include="shaders\hlsl\test\forward_test_vs.hlsl" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="shaders\glsl\Cube.glsl" />
+    <None Include="shaders\glsl\CubeReflection.glsl" />
+    <None Include="shaders\glsl\CubeRefraction.glsl" />
+    <None Include="shaders\glsl\FrameBuffer.glsl" />
+    <None Include="shaders\glsl\IndirectDraw\Indirect.glsl" />
+    <None Include="shaders\glsl\IronMan.glsl" />
+    <None Include="shaders\glsl\IronManBlinnPhong.glsl" />
+    <None Include="shaders\glsl\IronManReflection.glsl" />
+    <None Include="shaders\glsl\NanoMode.glsl" />
+    <None Include="shaders\glsl\Plane.glsl" />
+    <None Include="shaders\glsl\PlaneBlinnPhong.glsl" />
+    <None Include="shaders\glsl\PointLight.glsl" />
+    <None Include="shaders\glsl\Quad.glsl" />
+    <None Include="shaders\glsl\QuadDebug.glsl" />
+    <None Include="shaders\glsl\SkyBox.glsl" />
+    <None Include="shaders\glsl\SkyBoxMultiTexture.glsl" />
+    <None Include="shaders\glsl\Sphere.glsl" />
+    <None Include="shaders\glsl\Texture.glsl" />
+    <None Include="shaders\glsl\animatedModel\animatedCubeMapDepthShader.glsl" />
+    <None Include="shaders\glsl\animatedModel\animatedGBufferModel.glsl" />
+    <None Include="shaders\glsl\animatedModel\animatedModel.glsl" />
+    <None Include="shaders\glsl\basics\light.glsl" />
+    <None Include="shaders\glsl\batch\Batch.glsl" />
+    <None Include="shaders\glsl\bsdf\BSDF.glsl" />
+    <None Include="shaders\glsl\bsdf\CookBSDF.glsl" />
+    <None Include="shaders\glsl\bsdf\DisneyBSDF.glsl" />
+    <None Include="shaders\glsl\cloud\cloudRayMarching.glsl" />
+    <None Include="shaders\glsl\cloud\noiseDebug3D.glsl" />
+    <None Include="shaders\glsl\cloud\noiseGenerate3D.glsl" />
+    <None Include="shaders\glsl\cloud\sceneRender.glsl" />
+    <None Include="shaders\glsl\common\CommonDeferredStruct.glsl" />
+    <None Include="shaders\glsl\common\CommonDepth.glsl" />
+    <None Include="shaders\glsl\common\CommonForwardStruct.glsl" />
+    <None Include="shaders\glsl\common\CommonGbufferStruct.glsl" />
+    <None Include="shaders\glsl\common\CommonMath.glsl" />
+    <None Include="shaders\glsl\common\CommonOctahedral.glsl" />
+    <None Include="shaders\glsl\common\CommonStruct.glsl" />
+    <None Include="shaders\glsl\common\CommonTransformStruct.glsl" />
+    <None Include="shaders\glsl\common\CommonViewStruct.glsl" />
+    <None Include="shaders\glsl\common\TextureSample.glsl" />
+    <None Include="shaders\glsl\deferred_shading\deferred_shading_bsdf_direction_light.glsl" />
+    <None Include="shaders\glsl\deferred_shading\deferred_shading_bsdf_ibl.glsl" />
+    <None Include="shaders\glsl\deferred_shading\deferred_shading_bsdf_point_light.glsl" />
+    <None Include="shaders\glsl\forward_shading\forward_shading.glsl" />
+    <None Include="shaders\glsl\gBuffer\gBuffer.glsl" />
+    <None Include="shaders\glsl\gBuffer\gBufferPass_Bak.glsl" />
+    <None Include="shaders\glsl\gBuffer\gBuffer_pass.glsl" />
+    <None Include="shaders\glsl\gBufferProbe\FinalScreenQuad.glsl" />
+    <None Include="shaders\glsl\gBufferProbe\SurroundSphereDebug.glsl" />
+    <None Include="shaders\glsl\gBufferProbe\gBuffer.glsl" />
+    <None Include="shaders\glsl\gBufferProbe\gBufferAmbientGIPass.glsl" />
+    <None Include="shaders\glsl\gBufferProbe\gBufferDirectLightPass.glsl" />
+    <None Include="shaders\glsl\gBufferProbe\gBufferPontLightPass.glsl" />
+    <None Include="shaders\glsl\gBufferProbe\gBufferSSRGIPass.glsl" />
+    <None Include="shaders\glsl\gBufferVoxel\FinalScreenQuad.glsl" />
+    <None Include="shaders\glsl\gBufferVoxel\GuassianFilter_horizontal.glsl" />
+    <None Include="shaders\glsl\gBufferVoxel\GuassianFilter_vertical.glsl" />
+    <None Include="shaders\glsl\gBufferVoxel\gBufferVoxel.glsl" />
+    <None Include="shaders\glsl\gBufferVoxel\gBuffer_ambientFilter_voxelConeTracingPBR.glsl" />
+    <None Include="shaders\glsl\gBufferVoxel\gBuffer_parallelLight_voxelConeTracingPBR.glsl" />
+    <None Include="shaders\glsl\gBufferVoxel\gBuffer_pointLight_voxelConeTracingPBR.glsl" />
+    <None Include="shaders\glsl\gBufferVoxel\renderVoxel.glsl" />
+    <None Include="shaders\glsl\gBufferVoxel\specularSample.glsl" />
+    <None Include="shaders\glsl\gBufferVoxelSVO\buildTree\leafStore.glsl" />
+    <None Include="shaders\glsl\gBufferVoxelSVO\buildTree\nodeAlloc.glsl" />
+    <None Include="shaders\glsl\gBufferVoxelSVO\buildTree\nodeFlag.glsl" />
+    <None Include="shaders\glsl\gBufferVoxelSVO\buildTree\nodeInit.glsl" />
+    <None Include="shaders\glsl\gBufferVoxelSVO\buildTree\renderNodeKd.glsl" />
+    <None Include="shaders\glsl\gBufferVoxelSVO\gBufferVoxel.glsl" />
+    <None Include="shaders\glsl\gBufferVoxelSVO\pathTracing.glsl" />
+    <None Include="shaders\glsl\gBufferVoxelSVO\pathTracingGBuffer.glsl" />
+    <None Include="shaders\glsl\gBufferVoxelSVO\renderVoxel.glsl" />
+    <None Include="shaders\glsl\gBufferVoxelSVO\svoTracing.glsl" />
+    <None Include="shaders\glsl\gBufferVoxelSVO\svoTracing_new.glsl" />
+    <None Include="shaders\glsl\gBufferVoxelSVO\voxelizationSVO.glsl" />
+    <None Include="shaders\glsl\gBufferVoxelSVO\voxelizationSVO_new.glsl" />
+    <None Include="shaders\glsl\ibl\background.glsl" />
+    <None Include="shaders\glsl\ibl\brdf.glsl" />
+    <None Include="shaders\glsl\ibl\hdrMapToCube.glsl" />
+    <None Include="shaders\glsl\ibl\ibl.glsl" />
+    <None Include="shaders\glsl\ibl\iblTexture.glsl" />
+    <None Include="shaders\glsl\ibl\irradianceConvolution.glsl" />
+    <None Include="shaders\glsl\ibl\prefilterMap.glsl" />
+    <None Include="shaders\glsl\lightProbes\SH.glsl" />
+    <None Include="shaders\glsl\lightProbes\iblSHTexture.glsl" />
+    <None Include="shaders\glsl\lightProbes\iblTexture.glsl" />
+    <None Include="shaders\glsl\lightProbes\lightProbe.glsl" />
+    <None Include="shaders\glsl\macro\macro.glsl" />
+    <None Include="shaders\glsl\map\map.glsl" />
+    <None Include="shaders\glsl\occlusionCulling.glsl" />
+    <None Include="shaders\glsl\occlusionCulling\clear.glsl" />
+    <None Include="shaders\glsl\occlusionCulling\cull.glsl" />
+    <None Include="shaders\glsl\occlusionCulling\depthMap.glsl" />
+    <None Include="shaders\glsl\occlusionCulling\depthShow.glsl" />
+    <None Include="shaders\glsl\occlusionCulling\fillCmds.glsl" />
+    <None Include="shaders\glsl\occlusionCulling\hiz.glsl" />
+    <None Include="shaders\glsl\occlusionCulling\indirectCull.glsl" />
+    <None Include="shaders\glsl\ocean\Ocean.glsl" />
+    <None Include="shaders\glsl\ocean\cs_FFTHorizontal.glsl" />
+    <None Include="shaders\glsl\ocean\cs_FFTVertical.glsl" />
+    <None Include="shaders\glsl\ocean\cs_GerstnerWaveGen.glsl" />
+    <None Include="shaders\glsl\ocean\cs_InitialSpectrum.glsl" />
+    <None Include="shaders\glsl\ocean\cs_NormalMap.glsl" />
+    <None Include="shaders\glsl\ocean\cs_Phase.glsl" />
+    <None Include="shaders\glsl\ocean\cs_Spectrum.glsl" />
+    <None Include="shaders\glsl\pbr\Pbr.glsl" />
+    <None Include="shaders\glsl\pbr\PbrTexture.glsl" />
+    <None Include="shaders\glsl\raytracing\ScreenQuad.glsl" />
+    <None Include="shaders\glsl\raytracing\rayTracingBVHNode.glsl" />
+    <None Include="shaders\glsl\raytracing\rayTracingBasic.glsl" />
+    <None Include="shaders\glsl\raytracing\rayTracingBasicSystem.glsl" />
+    <None Include="shaders\glsl\raytracing\rayTracingGenData_04.glsl" />
+    <None Include="shaders\glsl\raytracing\rayTracingMaterial.glsl" />
+    <None Include="shaders\glsl\raytracing\rayTracingSystemT.glsl" />
+    <None Include="shaders\glsl\shadowMap\directLight\DepthShader_ShadowMapLayer.glsl" />
+    <None Include="shaders\glsl\shadowMap\directLight\Quad_ShadowMapLayer.glsl" />
+    <None Include="shaders\glsl\shadowMap\directLight\ShadowMaping_ShadowMapLayer.glsl" />
+    <None Include="shaders\glsl\shadowMap\pointLight\CubeMapDepthGen.glsl" />
+    <None Include="shaders\glsl\shadowMap\pointLight\CubeMapDepthShader.glsl" />
+    <None Include="shaders\glsl\shadowMap\pointLight\CubeMapShadowMapping.glsl" />
+    <None Include="shaders\glsl\shadowMap\pointLight\CubeMapShadowMappingPCSS.glsl" />
+    <None Include="shaders\glsl\terrain\Terrain.glsl" />
+    <None Include="shaders\glsl\voxelization\debug\cube.glsl" />
+    <None Include="shaders\glsl\voxelization\debug\quadTest.glsl" />
+    <None Include="shaders\glsl\voxelization\debug\voxelizeTest.glsl" />
+    <None Include="shaders\glsl\voxelization\visualization\voxelVisualization.glsl" />
+    <None Include="shaders\glsl\voxelization\visualization\worldPosition.glsl" />
+    <None Include="shaders\glsl\voxelization\voxelConeTracing\voxelConeTracing.glsl" />
+    <None Include="shaders\glsl\voxelization\voxelConeTracing\voxelConeTracingPBR.glsl" />
+    <None Include="shaders\glsl\voxelization\voxelization.glsl" />
+    <None Include="shaders\glsl\voxelization\voxelizationEnlarge.glsl" />
+    <None Include="shaders\glsl\voxelization\voxelizationPBR.glsl" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
