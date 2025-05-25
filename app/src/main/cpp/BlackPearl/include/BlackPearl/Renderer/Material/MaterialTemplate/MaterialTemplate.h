@@ -2,8 +2,10 @@
 
 #include "../MaterialResouceBinding.h"
 
-namespace BlackPearl {
 
+namespace BlackPearl {
+    class Material;
+    class ICommandList;
 	enum MaterialTemplateType {
 		kBlinPhon,
 		kPBR,

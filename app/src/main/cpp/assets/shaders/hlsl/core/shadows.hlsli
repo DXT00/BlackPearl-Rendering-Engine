@@ -74,7 +74,7 @@ float2 EvaluateShadowGather16(Texture2DArray ShadowMapArray, SamplerState Shadow
     float2 offset = frac(uvzShadow.xy * shadowMapTextureSize + (-0.5 + 1.0 / 512.0));
 
     // Calculate weights for the samples based on a 2px-radius biquadratic filter
-    static const float radius = 2.0;
+    const float radius = 2.0;
     float4 xOffsets = offset.x + float4(1, 0, -1, -2);
     float4 yOffsets = offset.y + float4(1, 0, -1, -2);
 
@@ -117,7 +117,7 @@ float2 EvaluateShadowPCF(Texture2DArray ShadowMapArray, SamplerComparisonState S
     return float2(shadow * fade, fade);
 }
 
-static const float2 g_ShadowSamplePositions[] = {
+const float2 g_ShadowSamplePositions[] = {
 
     // Poisson disk with 16 points : 0 - 15
   float2(-0.3935238f, 0.7530643f),

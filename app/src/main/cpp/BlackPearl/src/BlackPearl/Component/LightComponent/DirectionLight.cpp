@@ -75,4 +75,14 @@ namespace BlackPearl {
 		//m_LightProp.specular = { 1.0f, 1.0f,1.0f };
 
 	}
+
+    void DirectionLight::FillLightConstants(LightConstants& lightConstants) {
+
+        lightConstants = DefaultLightConstants();
+        lightConstants.direction = m_Direction;
+        lightConstants.lightType = LightType_Directional;
+        lightConstants.color = m_LightProp.diffuse;
+
+       
+    }
 }

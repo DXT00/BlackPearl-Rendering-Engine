@@ -56,6 +56,12 @@ namespace BlackPearl
 		void RenderPassTemplate(ICommandList* cmdList, IFramebuffer* framebuffer, IView* view, IDrawStrategy* drawStrategy, const ShaderParameters* shaderParms);
 		void Draw(ICommandList* cmdList, const DrawItem& item);
 		
+        void PrepareLights(
+            ICommandList* commandList,
+            LightSources* lights);
+
+
+
 		DeviceHandle m_Device;
 		std::shared_ptr<MaterialBindingCache> m_MaterialBindingsCache;
 

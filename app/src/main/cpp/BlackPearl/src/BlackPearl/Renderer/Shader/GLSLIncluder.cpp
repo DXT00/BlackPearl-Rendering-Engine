@@ -31,7 +31,7 @@ namespace BlackPearl {
          }*/
         for (size_t i = 0; i < searchPaths.size(); i++)
         {
-            std::string filePath = searchPaths[i] + "/" + filename;
+            std::string filePath = searchPaths[i].empty()? filename: (searchPaths[i] + "/" + filename);
             if (AssetManager::IsFileExist(filePath)) {
                 content = AssetManager::LoadGlslFile(filePath);
                 resolvedPath = filename;
@@ -42,26 +42,26 @@ namespace BlackPearl {
         return false;
     }
     bool isIncludeCommented(const std::string& code, size_t includePos) {
-        // 1. ¼ì²éµ¥ĞĞ×¢ÊÍ "//"
+        // 1. æ£€æŸ¥å•è¡Œæ³¨é‡Š "//"
         size_t lineStart = code.rfind('\n', includePos);
         lineStart = (lineStart == std::string::npos) ? 0 : lineStart + 1;
 
         if (code.find("//", lineStart) < includePos) {
-            return true; // ±»µ¥ĞĞ×¢ÊÍ
+            return true; // è¢«å•è¡Œæ³¨é‡Š
         }
 
-        // 2. ¼ì²é¶àĞĞ×¢ÊÍ "/* ... */"
+        // 2. æ£€æŸ¥å¤šè¡Œæ³¨é‡Š "/* ... */"
         size_t blockCommentStart = code.rfind("/*", includePos);
         if (blockCommentStart != std::string::npos) {
             size_t blockCommentEnd = code.rfind("*/", includePos);
             if (blockCommentEnd == std::string::npos || blockCommentEnd < blockCommentStart) {
-                return true; // ÔÚ¶àĞĞ×¢ÊÍ¿éÄÚ
+                return true; // åœ¨å¤šè¡Œæ³¨é‡Šå—å†…
             }
         }
 
         return false;
     }
-    // Ö±½Ó´¦Àí×Ö·û´®°æ±¾µÄ GLSL ´úÂë
+    // ç›´æ¥å¤„ç†å­—ç¬¦ä¸²ç‰ˆæœ¬çš„ GLSL ä»£ç 
     std::string GLSLIncluder::processIncludes(const std::string& glslCode, const std::string& currentDir) {
         std::string result;
         size_t pos = 0;
@@ -72,10 +72,10 @@ namespace BlackPearl {
         }
 
         while (pos < glslCode.length()) {
-            // ²éÕÒÏÂÒ»¸ö #include Ö¸Áî
+            // æŸ¥æ‰¾ä¸‹ä¸€ä¸ª #include æŒ‡ä»¤
             size_t includeStart = glslCode.find("#include", pos);
             if (includeStart == std::string::npos) {
-                // Ã»ÓĞ¸ü¶à include Ö¸ÁîÁË£¬Ìí¼ÓÊ£Óà²¿·Ö
+                // æ²¡æœ‰æ›´å¤š include æŒ‡ä»¤äº†ï¼Œæ·»åŠ å‰©ä½™éƒ¨åˆ†
                 result += glslCode.substr(pos);
                 break;
             }
@@ -83,21 +83,21 @@ namespace BlackPearl {
      
 
             if (isIncludeCommented(glslCode, includeStart)) {
-                // ²»ÊÇÓĞĞ§µÄ include Ö¸Áî£¬Ìø¹ı
-                result += glslCode.substr(pos, includeStart - pos + 8); // +8 ÊÇ "#include" µÄ³¤¶È
+                // ä¸æ˜¯æœ‰æ•ˆçš„ include æŒ‡ä»¤ï¼Œè·³è¿‡
+                result += glslCode.substr(pos, includeStart - pos + 8); // +8 æ˜¯ "#include" çš„é•¿åº¦
                 pos = includeStart + 8;
                 continue;
             }
 
-            // Ìí¼Ó #include Ö®Ç°µÄÄÚÈİ
+            // æ·»åŠ  #include ä¹‹å‰çš„å†…å®¹
             result += glslCode.substr(pos, includeStart - pos);
 
-            // ÌáÈ¡ÎÄ¼şÃû
+            // æå–æ–‡ä»¶å
             size_t fileStart = glslCode.find_first_of("\"<", includeStart);
             if (fileStart == std::string::npos) {
                  size_t fileStart = glslCode.find_first_of("\"", includeStart);
                  if (fileStart == std::string::npos) {
-                     // ¸ñÊ½´íÎó£¬±£ÁôÔ­Ö¸Áî
+                     // æ ¼å¼é”™è¯¯ï¼Œä¿ç•™åŸæŒ‡ä»¤
                      result += glslCode.substr(includeStart, 8);
                      pos = includeStart + 8;
                      continue;
@@ -109,7 +109,7 @@ namespace BlackPearl {
             char endQuoteChar = (quoteChar == '<') ? '>' : '"';
             size_t fileEnd = glslCode.find(endQuoteChar, fileStart + 1);
             if (fileEnd == std::string::npos) {
-                // ¸ñÊ½´íÎó£¬±£ÁôÔ­Ö¸Áî
+                // æ ¼å¼é”™è¯¯ï¼Œä¿ç•™åŸæŒ‡ä»¤
                 GE_CORE_WARN("Include format invalid!");
                 result += glslCode.substr(includeStart, 8);
                 pos = includeStart + 8;
@@ -118,14 +118,14 @@ namespace BlackPearl {
 
             std::string filename = glslCode.substr(fileStart + 1, fileEnd - fileStart - 1);
 
-            // ´¦Àí°üº¬ÎÄ¼ş
+            // å¤„ç†åŒ…å«æ–‡ä»¶
             if (m_includedFiles.count(filename) == 0) {
                 std::string fileContent;
                 std::string resolvedPath;
                 if (findIncludeFile(filename, tempSearchPaths, resolvedPath, fileContent)) {
                     m_includedFiles.insert(filename);
 
-                    // µİ¹é´¦Àí°üº¬ÎÄ¼şÖĞµÄ include
+                    // é€’å½’å¤„ç†åŒ…å«æ–‡ä»¶ä¸­çš„ include
                     std::string includedDir = fs::path(resolvedPath).parent_path().string();
                     std::string processedContent = processIncludes(fileContent, includedDir);
 
@@ -135,7 +135,7 @@ namespace BlackPearl {
                 }
                 else {
                     std::cerr << "Error: Could not open include file '" << filename << "'\n";
-                    // ±£ÁôÔ­Ê¼Ö¸Áî
+                    // ä¿ç•™åŸå§‹æŒ‡ä»¤
                     result += glslCode.substr(includeStart, fileEnd - includeStart + 1);
                 }
             }

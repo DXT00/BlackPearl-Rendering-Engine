@@ -230,8 +230,8 @@ namespace BlackPearl {
 
         ForwardShadingLightConstants constants = {};
 
-        constants.shadowMapTextureSize = float2(shadowMapTextureSize);
-        constants.shadowMapTextureSizeInv = 1.f / constants.shadowMapTextureSize;
+        //constants.shadowMapTextureSize = float2(shadowMapTextureSize);
+        //constants.shadowMapTextureSizeInv = 1.f / constants.shadowMapTextureSize;
 
         int numShadows = 0;
         std::vector<Light*> lights = lightSouces->GetLights();
@@ -242,7 +242,7 @@ namespace BlackPearl {
             LightConstants& lightConstants = constants.lights[constants.numLights];
             light->FillLightConstants(lightConstants);
 
-            if (light->shadowMap)
+          /*  if (light->shadowMap)
             {
                 for (uint32_t cascade = 0; cascade < light->shadowMap->GetNumberOfCascades(); cascade++)
                 {
@@ -263,12 +263,12 @@ namespace BlackPearl {
                         ++numShadows;
                     }
                 }
-            }
+            }*/
 
             ++constants.numLights;
         }
 
-        constants.ambientColorTop = float4(ambientColorTop, 0.f);
+    /*    constants.ambientColorTop = float4(ambientColorTop, 0.f);
         constants.ambientColorBottom = float4(ambientColorBottom, 0.f);
 
         for (const auto& probe : lightProbes)
@@ -283,7 +283,7 @@ namespace BlackPearl {
 
             if (constants.numLightProbes >= FORWARD_MAX_LIGHT_PROBES)
                 break;
-        }
+        }*/
 
         commandList->writeBuffer(m_ForwardLightCB, &constants, sizeof(constants));
 

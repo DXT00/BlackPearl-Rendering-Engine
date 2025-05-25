@@ -3,29 +3,10 @@
 #include "BlackPearl/RHI/RHIDevice.h"
 #include "BlackPearl/RHI/RHITexture.h"
 #include "BlackPearl/Renderer/DeviceManager.h"
+#include "Renderer/GbufferInfo.h"
 namespace BlackPearl {
 
-	struct SystemTextures {
-		TextureHandle blackTexture;
-		TextureHandle grayTexture;
-		TextureHandle whiteTexture;
-		TextureHandle blackTexture2DArray;
-		TextureHandle whiteTexture2DArray;
-		TextureHandle blackCubeMapArray;
 
-		TextureHandle LightingTexture;
-		TextureHandle LightingTextureResolve; //for mass
-
-		TextureHandle DepthTexture;
-		TextureHandle DepthTextureResolve;    //for mass
-
-		TextureHandle GbufferA;
-		TextureHandle GbufferB;
-		TextureHandle GbufferC;
-		TextureHandle GbufferD;
-
-
-	};
 	class MaterialManager
 	{
 	public:
@@ -50,11 +31,10 @@ namespace BlackPearl {
 		}
 
 
-	public:
-		SystemTextures systemTextures;
+    
 
 	private:
-		void _CreateSystemTextures(DeviceHandle device);
+		//void _CreateSystemTextures(DeviceHandle device);
 
 		std::unordered_map<uint32_t, std::shared_ptr<Material>> m_MaterialDB;
 		uint32_t m_MatMaxId = 0;

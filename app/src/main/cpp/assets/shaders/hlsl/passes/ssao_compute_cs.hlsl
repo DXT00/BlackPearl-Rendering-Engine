@@ -46,7 +46,7 @@ cbuffer c_Ssao : register(b0)
 // and angle also increasing linearly with a step of 4.5678 radians.
 // Plotted on x-y dimensions, it looks pretty much random, but is intended
 // to make more samples closer to the center because they have greater weight.
-static const float2 g_SamplePositions[] = {
+const float2 g_SamplePositions[] = {
   float2(-0.016009523, -0.10995169),
   float2(-0.159746436, 0.047527402),
   float2(0.09339819, 0.201641995),
@@ -66,7 +66,7 @@ static const float2 g_SamplePositions[] = {
 };
 
 // Blue noise
-static const float g_RandomValues[16] = {
+const float g_RandomValues[16] = {
     0.059, 0.529, 0.176, 0.647,
     0.765, 0.294, 0.882, 0.412,
     0.235, 0.706, 0.118, 0.588,

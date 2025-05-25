@@ -23,7 +23,7 @@
 #ifndef UTILS_HLSLI
 #define UTILS_HLSLI
 
-static const float K_PI = 3.14159265;
+onst float K_PI = 3.14159265;
 
 float square(float x) { return x * x; }
 float2 square(float2 x) { return x * x; }

@@ -1,4 +1,8 @@
 
+#ifndef BP_COMMON_H
+#define BP_COMMON_H
+
+
 #ifdef GL_ES
 	precision mediump float;  // 必须声明精度（ES 要求）
 
@@ -10,9 +14,21 @@
 	#define half3x4 mediump mat3x4	 
 	#define half4x4 mediump mat4	
 
+    #define float2 vec2
 	#define float3 vec3  //默认16bit,中等精度
 	#define float4 vec4
-	#define float4x4 mat4
+    #define float3x3 mat3
+    #define float4x4 mat4
+
+    #define int2 ivec2
+	#define int3 ivec3
+	#define int4 ivec4
+
+    
+    #define uint2 uvec2
+	#define uint3 uvec3
+	#define uint4 uvec4
+
 #else //PC opengl/vuljan
 
 	#define half  float	
@@ -23,9 +39,21 @@
 	#define half3x4  mat3x4	 
 	#define half4x4  mat4	
 
+    #define float2 vec2
 	#define float3 vec3
 	#define float4 vec4
+    #define float3x3 mat3
 	#define float4x4 mat4
+
+
+    #define int2 ivec2
+	#define int3 ivec3
+	#define int4 ivec4
+
+    #define uint2 uvec2
+	#define uint3 uvec3
+	#define uint4 uvec4
+
 #endif
 
 
@@ -49,9 +77,9 @@ const int MaterialFlags_UseMetalTexture                  = 0x00008000;
 const int MaterialFlags_UseOpacityTexture                = 0x00010000;
 
 
-static const int ShadingModel_Unlit = 0;
-static const int ShadingModel_DefaultLit = 1;
-static const int ShadingModel_Disney = 2;
+const int ShadingModel_Unlit = 0;
+const int ShadingModel_DefaultLit = 1;
+const int ShadingModel_Disney = 2;
 
 
 
@@ -111,22 +139,7 @@ struct Settings{
 
 
 
-void getTBN(in vec3 fragPos,in vec2 texCoord, in vec3 N, out vec3 T, out vec3 B)
-{
-    //vec3 tangentNormal =  2.0* texture(u_Material.normal, texCoord).xyz- vec3(1.0);
-	//vec3 tangentNormal =  2.0* normal- vec3(1.0);
 
-    vec3 Q1  = dFdx(fragPos);
-    vec3 Q2  = dFdy(fragPos);
-    vec2 st1 = dFdx(texCoord);
-    vec2 st2 = dFdy(texCoord);
-
-    N   = normalize(N);
-    vec3 T  = normalize(Q1*st2.t - Q2*st1.t);
-    vec3 B  = -normalize(cross(N, T));
-    //mat3 TBN = mat3(T, B, N);
-
-}
 
 float Luminance( float3 linearColor )
 {
@@ -143,5 +156,4 @@ struct SurfaceGeometry {
     vec3 bitangent;
 };
 
-
-
+#endif //COMMON_H

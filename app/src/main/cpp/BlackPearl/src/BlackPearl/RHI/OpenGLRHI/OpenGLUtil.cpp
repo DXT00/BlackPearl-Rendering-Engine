@@ -297,6 +297,13 @@ namespace BlackPearl {
 		case Format::RGBA16_FLOAT:
 			return std::make_pair<GLenum, GLenum>(GL_RGBA, GL_FLOAT);
 
+        case Format::R11G11B10_FLOAT:
+            return std::make_pair<GLenum, GLenum>(GL_RGB, GL_FLOAT);
+        case Format::R10G10B10A2_UNORM:
+            return std::make_pair<GLenum, GLenum>(GL_RGBA, GL_UNSIGNED_BYTE);
+
+        case Format::D32S8:
+            return std::make_pair<GLenum, GLenum>(GL_DEPTH_STENCIL, GL_FLOAT_32_UNSIGNED_INT_24_8_REV);
 
 		case Format::D16:
 		case Format::D32:
@@ -342,14 +349,24 @@ namespace BlackPearl {
 		case Format::RGBA16_FLOAT:
 			return GL_RGBA16F;
 
+        case Format::R11G11B10_FLOAT:
+            return GL_R11F_G11F_B10F;
+
+        case Format::R10G10B10A2_UNORM:
+            return GL_RGB10_A2;
 		// gles depth attachment support: https://lumverse.feishu.cn/docx/F9TKd7UhLozzU5xOGqic0zgPnie#share-LDoZdXbgzobiSLxmJYccXljWnNm
 		case Format::D16:
 			return GL_DEPTH_COMPONENT16;
         case Format::D24:
             return GL_DEPTH_COMPONENT24;  //only for pc ,gles 3+
+        case Format::D32S8:
+            return GL_DEPTH32F_STENCIL8; //only for pc OpenGL 3.0+
+
 #ifdef GE_PLATFORM_WINDOWS
 		case Format::D32: //only for pc opengl
 			return GL_DEPTH_COMPONENT32;
+
+
 #elif defined(GE_PLATFORM_ANDROID)
        case Format::D32_FLOAT: //only for anfroid gles
            return GL_DEPTH_COMPONENT32F;

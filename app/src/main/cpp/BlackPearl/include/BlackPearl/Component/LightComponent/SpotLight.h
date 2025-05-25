@@ -5,7 +5,7 @@ namespace BlackPearl {
 	class SpotLight :public Light
 	{
 	public:
-		struct Attenuation { //Ë¥¼õÏµÊı
+		struct Attenuation { //è¡°å‡ç³»æ•°
 			unsigned int maxDistance;
 			float constant;
 			float linear;
@@ -56,9 +56,9 @@ namespace BlackPearl {
 				}
 
 			}
-			//Ä¬ÈÏ¾àÀë50 constant(1.0f),linear(0.09f),quadratic(0.032){}
-			//Ä¬ÈÏ¾àÀë3250constant(1.0f),linear(0.0014f),quadratic(0.000007)
-			//²é±í£ºhttps://learnopengl-cn.github.io/02%20Lighting/05%20Light%20casters/
+			//é»˜è®¤è·ç¦»50 constant(1.0f),linear(0.09f),quadratic(0.032){}
+			//é»˜è®¤è·ç¦»3250constant(1.0f),linear(0.0014f),quadratic(0.000007)
+			//æŸ¥è¡¨ï¼šhttps://learnopengl-cn.github.io/02%20Lighting/05%20Light%20casters/
 		};
 		SpotLight(Props props = Props())
 			:Light(),m_Position({ 2.2f,1.0f,2.0f }), m_Direction({ -0.2f, -1.0f, -0.3f }), m_CutOffAngle(glm::cos(glm::radians(10.0f))), m_OuterCutOffAngle(glm::cos(glm::radians(11.0f)))
@@ -85,9 +85,11 @@ namespace BlackPearl {
 
 		inline Attenuation GetAttenuation() const { return m_Attenuation; }
 		virtual inline LightType GetType() override { return LightType::SpotLight; }
+        virtual void FillLightConstants(LightConstants& lightConstants) override;
+
 	private:
-		float m_CutOffAngle;//ÄÚÇĞ¹ã½Ç´óĞ¡ £¨ÄÚÔ²×¶£©
-		float m_OuterCutOffAngle; //Íâ¹ãÇĞ½Ç´óĞ¡ (ÍâÔ²×¶)
+		float m_CutOffAngle;//å†…åˆ‡å¹¿è§’å¤§å° ï¼ˆå†…åœ†é”¥ï¼‰
+		float m_OuterCutOffAngle; //å¤–å¹¿åˆ‡è§’å¤§å° (å¤–åœ†é”¥)
 		glm::vec3 m_Position;
 		glm::vec3 m_Direction;
 		Attenuation m_Attenuation;

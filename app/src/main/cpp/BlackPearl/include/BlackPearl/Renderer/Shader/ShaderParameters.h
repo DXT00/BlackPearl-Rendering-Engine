@@ -10,7 +10,8 @@ namespace BlackPearl {
         std::vector<BindingLayoutHandle> bindingLayouts;
         std::vector<BindingSetHandle> bindingSets;
         // };
-
+        ShaderHandle VertexShader = nullptr;
+        ShaderHandle PixelShader = nullptr;
         // IInputLayout* inputLayout;
         // ShaderBindings shaderbinding;
          //s[ShaderType::NUM_COMPILE_SHADER_STAGES]

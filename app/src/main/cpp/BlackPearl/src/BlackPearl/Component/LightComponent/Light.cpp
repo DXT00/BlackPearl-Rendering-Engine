@@ -22,7 +22,7 @@ namespace BlackPearl {
 		}
 		return nullptr;
 	}
-	void Light::FillLightConstants(LightConstants& lightConstants) const
+	void Light::FillLightConstants(LightConstants& lightConstants)
 	{
 		lightConstants.color = m_LightProp.diffuse;
 		lightConstants.shadowCascades = int4(-1);

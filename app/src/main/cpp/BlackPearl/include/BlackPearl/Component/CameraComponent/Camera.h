@@ -10,7 +10,7 @@ namespace BlackPearl {
 	{
 
 	public:
-		enum {
+		enum CameraType{
 			Orthographic,
 			Perspective
 		};
@@ -39,13 +39,18 @@ namespace BlackPearl {
 
 				Right = glm::normalize(glm::cross(Front, WorldUp));
 				Up = glm::normalize(glm::cross(Right, Front));
-				//D3D12是左手坐标系
+				//D3D12鏄乏鎵嬪潗鏍囩郴
 				/*if (g_RHIType == DynamicRHI::Type::D3D12) {
 					Right = -Right;
 				}*/
 			}
 		};
 
+        Camera(CameraType type) :
+            Component(BaseComponent::Type::Camera),
+            m_Type(type) {
+
+        }
 		virtual ~Camera() = default;
 		inline glm::vec3 GetPosition() const { return m_Position; }
 		inline glm::vec3 GetRotation() const { return glm::vec3(m_ViewMatrixProps.Pitch, m_ViewMatrixProps.Yaw,0.0f); }
@@ -56,7 +61,7 @@ namespace BlackPearl {
 		inline float Yaw() const { return m_ViewMatrixProps.Yaw; }
 		inline float Pitch() const { return m_ViewMatrixProps.Pitch; }
 
-
+        CameraType GetType() const { return m_Type; }
 
 		inline const glm::mat4& GetViewMatrix() const { return m_ViewMatrix; }
 		inline const glm::mat4& GetProjectionMatrix() const { return m_ProjectionMatrix; }
@@ -81,9 +86,8 @@ namespace BlackPearl {
 		inline void SetProjectionMatrix(glm::mat4 projection) { m_ProjectionMatrix = projection; m_ProjectionViewMatrix = m_ProjectionMatrix * m_ViewMatrix; }
 		inline void SetViewProjectionMatrix(glm::mat4 viewProjection) { m_ProjectionViewMatrix = viewProjection; }
 		//static Camera* Create(unsigned int type, const std::initializer_list<float> &projectionMatrixProps, const ViewMatrixProps &viewMatrixProps = ViewMatrixProps());
-		Camera():
-		Component(BaseComponent::Type::Camera){}//TODO::
-		static Camera * Create(unsigned int type);
+	
+		static Camera * Create(CameraType type);
 
 		ViewMatrixProps GetViewMatrixProps() const { return m_ViewMatrixProps; }
 	protected:
@@ -94,7 +98,7 @@ namespace BlackPearl {
 
 		ViewMatrixProps m_ViewMatrixProps;
 
-
+        CameraType m_Type;
 
 	};
 

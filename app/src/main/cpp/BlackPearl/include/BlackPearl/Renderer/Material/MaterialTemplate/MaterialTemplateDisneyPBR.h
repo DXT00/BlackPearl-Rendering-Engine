@@ -1,10 +1,13 @@
 #pragma once
 #include "MaterialTemplate.h"
+using namespace BlackPearl::math;
+
 #include "hlsl/core/material_cb.h"
-class ICommandList;
 
 namespace BlackPearl {
     class Material;
+    class ICommandList;
+
 	class MaterialTemplateDisneyPBR : public MaterialTemplate
 	{
 	public:

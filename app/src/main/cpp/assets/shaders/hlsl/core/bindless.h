@@ -20,7 +20,9 @@
 * DEALINGS IN THE SOFTWARE.
 */
 
-#pragma once
+#ifndef  BINDLESS_CB_H
+#define  BINDLESS_CB_H
+
 
 #include "material_cb.h"
 
@@ -73,12 +75,12 @@ struct InstanceData
 
 #ifndef __cplusplus
 
-static const uint c_SizeOfTriangleIndices = 12;
-static const uint c_SizeOfPosition = 12;
-static const uint c_SizeOfTexcoord = 8;
-static const uint c_SizeOfNormal = 4;
-static const uint c_SizeOfJointIndices = 8;
-static const uint c_SizeOfJointWeights = 16;
+ const uint c_SizeOfTriangleIndices = 12;
+ const uint c_SizeOfPosition = 12;
+ const uint c_SizeOfTexcoord = 8;
+ const uint c_SizeOfNormal = 4;
+ const uint c_SizeOfJointIndices = 8;
+ const uint c_SizeOfJointWeights = 16;
 
 GeometryData LoadGeometryData(ByteAddressBuffer buffer, uint offset)
 {
@@ -164,4 +166,5 @@ MaterialConstants LoadMaterialConstants(ByteAddressBuffer buffer, uint offset)
 
 #endif
 
-//#endif // BINDLESS_H_
+#endif // ! BINDLESS_CB_H
+

@@ -4,7 +4,7 @@
 #include "Renderer/Shader/GLSLIncluder.h"
 
 namespace BlackPearl {
-	//¼æÈİ¾ÉµÄ shader ÎÄ¼ş£º .glslÀï°üº¬.vert ºÍ .frag
+	//å…¼å®¹æ—§çš„ shader æ–‡ä»¶ï¼š .glslé‡ŒåŒ…å«.vert å’Œ .frag
 	class MaterialShader
 	{
 	public:
@@ -25,6 +25,7 @@ namespace BlackPearl {
 		std::string m_ShaderPath;
 		std::string m_GlslCode;
 		std::string m_CommonStructPath = "assets/shaders/glsl/common/CommonStruct.glsl";
+        std::string m_MacroPath = "assets/shaders/glsl/macro/macro.glsl";
 
 
 		ShaderHandle m_VertexShader = nullptr;

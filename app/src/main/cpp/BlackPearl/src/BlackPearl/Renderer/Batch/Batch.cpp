@@ -121,7 +121,7 @@ namespace BlackPearl {
 			CopyMeshBufferToBatchBuffer(baseVertexCnt, m_Weight1Buffer, mesh->GetWeight1Buffer(), mesh, WEIGHT1_SLOT, 4);
 			std::fill(m_ObjIdBuffer + baseVertexCnt, m_ObjIdBuffer + baseVertexCnt + meshVetCnt, objId);
 			std::shared_ptr<Material> material = mesh->GetMaterial();
-			MaterialColor::Color materialColor = material->GetMaterialColor().Get();
+			MaterialColor materialColor = material->GetMaterialColor();
 			float diffuse[3] = { materialColor.diffuseColor.x,materialColor.diffuseColor.y,materialColor.diffuseColor.z };
 			uint32_t floatsize = sizeof(float);
 

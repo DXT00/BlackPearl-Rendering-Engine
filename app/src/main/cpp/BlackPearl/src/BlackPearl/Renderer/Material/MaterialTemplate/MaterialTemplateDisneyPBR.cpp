@@ -55,7 +55,7 @@ namespace BlackPearl {
 		material_cb.ior = 0.0;
 		material_cb.transmission = 0.0;
 		material_cb.transmissionRoughness = 0.0;
-		material_cb.emission = 0.0;
+		material_cb.emissive = 0.0;
 		material_cb.alpha = 1.0;
 
 		cmdLIst->writeBuffer(material->materialConstants,

@@ -1,5 +1,8 @@
 #pragma once
 #include "MaterialTemplate.h"
+#include "Math/Math.h"
+using namespace BlackPearl::math;
+
 #include "hlsl/core/material_cb.h"
 
 namespace BlackPearl {

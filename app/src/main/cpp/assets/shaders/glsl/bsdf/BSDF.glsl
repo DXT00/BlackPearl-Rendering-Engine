@@ -1,6 +1,6 @@
 
 
-#include <assets/shaders/glsl/common/TextureSample.glsl>
+#include <assets/shaders/glsl/common/CommonTextureSample.glsl>
 
 #if COOK
 	#include <assets/shaders/glsl/bsdf/CookBSDF.glsl>

@@ -1,3 +1,7 @@
+
+#ifndef BP_COMMON_MATH_H
+#define BP_COMMON_MATH_H
+
 // GLSL: emulate HLSL-style select
 vec2 select(bvec2 cond, vec2 a, vec2 b) {
     return vec2(
@@ -42,3 +46,5 @@ float square(float x) {
 float saturate(float x) {
     return clamp(x, 0.0, 1.0);
 }
+
+#endif

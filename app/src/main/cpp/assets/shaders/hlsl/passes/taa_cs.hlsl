@@ -57,11 +57,11 @@ Texture2D<float> t_HistoryClampRelaxMask : register(t3);
 groupshared float4 s_ColorsAndLengths[BUFFER_Y][BUFFER_X];
 groupshared float2 s_MotionVectors[BUFFER_Y][BUFFER_X];
 
-static const float pq_m1 = 0.1593017578125;
-static const float pq_m2 = 78.84375;
-static const float pq_c1 = 0.8359375;
-static const float pq_c2 = 18.8515625;
-static const float pq_c3 = 18.6875;
+const float pq_m1 = 0.1593017578125;
+const float pq_m2 = 78.84375;
+const float pq_c1 = 0.8359375;
+const float pq_c2 = 18.8515625;
+const float pq_c3 = 18.6875;
 
 float3 PQDecode(float3 image)
 {

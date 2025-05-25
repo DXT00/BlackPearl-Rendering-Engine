@@ -67,7 +67,7 @@ public:
 		InputCheck(ts);
 
 
-		BlackPearl::Renderer::BeginScene(*(m_MainCamera->GetObj()->GetComponent<BlackPearl::PerspectiveCamera>()), *GetLightSources());
+		BlackPearl::Renderer::BeginScene((m_MainCamera->GetObj()->GetComponent<BlackPearl::PerspectiveCamera>()), *GetLightSources());
 		//Update Camera, Materials ..
 		m_DeviceManager->UpdateWindowSize();
 

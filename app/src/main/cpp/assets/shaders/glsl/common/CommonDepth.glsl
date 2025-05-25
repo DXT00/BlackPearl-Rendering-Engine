@@ -1,3 +1,7 @@
+
+#ifndef BP_COMMON_DEPTH_H
+#define BP_COMMON_DEPTH_H
+
 // also see ConvertToDeviceZ()
 // @param DeviceZ value that is stored in the depth buffer (Z/W) range: [0,1]
 // @return SceneDepth (linear in view Space) range: [near, far]
@@ -40,3 +44,5 @@ float ConvertToDeviceZ(float SceneDepth, int near, int far)
 	float zInBuffer =  (z_ndc + 1.0) / 2.0; // 转换到 [0, 1]
     return zInBuffer;
 }
+
+#endif

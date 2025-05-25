@@ -67,18 +67,18 @@ struct ForwardShadingViewConstants
 
 struct ForwardShadingLightConstants
 {
-    ALIGN(8) float2      shadowMapTextureSize;
+   /* ALIGN(8) float2      shadowMapTextureSize;
     ALIGN(8) float2      shadowMapTextureSizeInv;
     ALIGN(16) float4      ambientColorTop;
     ALIGN(16) float4      ambientColorBottom;
 
-    ALIGN(8) uint2       padding;
+    ALIGN(8) uint2       padding;*/
     ALIGN(4) uint        numLights;
-    ALIGN(4) uint        numLightProbes;
+   // ALIGN(4) uint        numLightProbes;
 
     LightConstants lights[FORWARD_MAX_LIGHTS];
-    ShadowConstants shadows[FORWARD_MAX_SHADOWS];
-    LightProbeConstants lightProbes[FORWARD_MAX_LIGHT_PROBES];
+  /*  ShadowConstants shadows[FORWARD_MAX_SHADOWS];
+    LightProbeConstants lightProbes[FORWARD_MAX_LIGHT_PROBES];*/
 };
 
 #endif // FORWARD_CB_H

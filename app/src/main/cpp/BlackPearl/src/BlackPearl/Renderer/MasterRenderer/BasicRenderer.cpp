@@ -942,8 +942,8 @@ namespace BlackPearl {
 			psoDesc.inputLayout = m_Device->createInputLayout(item.mesh->GetVertexBufferLayout());//shaderParms[ShaderType::VertexShader].inputLayout;
 			GE_ERROR_JUDGE();
 
-			psoDesc.VS = item.material->GetShader()->GetVertexShader();
-			psoDesc.PS = item.material->GetShader()->GetPixelShader();
+			psoDesc.VS = shaderParms->VertexShader? shaderParms->VertexShader: item.material->GetShader()->GetVertexShader();
+			psoDesc.PS = shaderParms->PixelShader ? shaderParms->PixelShader : item.material->GetShader()->GetPixelShader();
 			psoDesc.bFromPSOFileCache = false;
             for (int j = 0; j < shaderParms[ShaderType::Pixel].bindingLayouts.size(); ++j) {
                 psoDesc.bindingLayouts.push_back(shaderParms[ShaderType::Pixel].bindingLayouts[j]);
@@ -1004,6 +1004,23 @@ namespace BlackPearl {
 			cmdList->draw(args);
 
 	}
+
+    void BasicRenderer::PrepareLights(ICommandList* commandList, LightSources* lightSouces)
+    {
+        ITexture* shadowMapTexture = nullptr;
+        int2 shadowMapTextureSize = 0;
+
+        for (const auto& lightObj : lightSouces->GetParallelLights())
+        {
+            Light* light = lightObj->GetComponent<DirectionLight>();
+            if (light->shadowMap)
+            {
+                shadowMapTexture = light->shadowMap->GetTexture();
+                shadowMapTextureSize = light->shadowMap->GetTextureSize();
+                break;
+            }
+        }
+    }
 
 	
 

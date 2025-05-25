@@ -21,6 +21,13 @@ include_directories(
 		shaders/hlsl/**.hlsl,
 		shaders/hlsl/**.h,
 )
+
+target_include_directories(
+		assets
+		PUBLIC
+		"shaders/glsl"
+		"../"
+)
 # 源文件
 # Add source files
 file(GLOB_RECURSE SHADER_FILES 

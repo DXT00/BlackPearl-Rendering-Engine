@@ -87,7 +87,7 @@ float GetPerceivedBrightness(float3 color)
     return sqrt(0.299 * color.r * color.r + 0.587 * color.g * color.g + 0.114 * color.b * color.b);
 }
 
-static const float c_DielectricSpecular = 0.04;
+const float c_DielectricSpecular = 0.04;
 
 float SolveMetalness(float diffuse, float specular, float oneMinusSpecularStrength)
 {

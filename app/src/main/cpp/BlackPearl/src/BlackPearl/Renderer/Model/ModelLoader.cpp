@@ -605,24 +605,24 @@ namespace BlackPearl {
 
 		aiColor3D color(0.f, 0.f, 0.f);
 		if (AI_SUCCESS == material->Get(AI_MATKEY_COLOR_DIFFUSE, color))
-			colors.SetDiffuseColor(math::float3(color.r, color.g, color.b));
+			colors.diffuseColor = (math::float3(color.r, color.g, color.b));
 		//colors.push_back(MaterialColor(MaterialColor::Type::DiffuseColor,));
 
 		color = { 0.f, 0.f, 0.f };
 		if (AI_SUCCESS == material->Get(AI_MATKEY_COLOR_AMBIENT, color))
-			colors.SetAmbientColor(math::float3(color.r, color.g, color.b));
+			colors.ambientColor = (math::float3(color.r, color.g, color.b));
 
 		//colors.push_back(MaterialColor(MaterialColor::Type::AmbientColor, math::float3(color.r, color.g, color.b)));
 
 		color = { 0.f, 0.f, 0.f };
 
 		if (AI_SUCCESS == material->Get(AI_MATKEY_COLOR_SPECULAR, color))
-			colors.SetSpecularColor(math::float3(color.r, color.g, color.b));
+			colors.specularColor = (math::float3(color.r, color.g, color.b));
 
 		color = { 0.f, 0.f, 0.f };
 
 		if (AI_SUCCESS == material->Get(AI_MATKEY_COLOR_EMISSIVE, color))
-			colors.SetEmissionColor(math::float3(color.r, color.g, color.b));
+			colors.emissiveColor = (math::float3(color.r, color.g, color.b));
 		//colors.push_back(MaterialColor(MaterialColor::Type::SpecularColor, math::float3(color.r, color.g, color.b)));
 
 	}

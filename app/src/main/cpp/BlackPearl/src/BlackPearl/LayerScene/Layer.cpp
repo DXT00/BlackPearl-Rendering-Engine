@@ -23,6 +23,8 @@
 #ifdef GE_API_D3D12
 #include "BlackPearl/Renderer/Buffer/D3D12Buffer/D3D12Buffer.h"
 #endif
+using namespace BlackPearl::math;
+
 #include "hlsl/core/material_cb.h"
 namespace BlackPearl {
 	static int buttonNum = 0;
@@ -80,11 +82,11 @@ namespace BlackPearl {
 		cube4->GetComponent<MeshRenderer>()->SetIsBackGroundObjects(true);
 		cube5->GetComponent<MeshRenderer>()->SetIsBackGroundObjects(true);
 
-		cube1->GetComponent<MeshRenderer>()->GetMeshes()[0]->GetMaterial()->SetMaterialColorSpecularColor({ 0,0,0 });
-		cube2->GetComponent<MeshRenderer>()->GetMeshes()[0]->GetMaterial()->SetMaterialColorSpecularColor({ 0,0,0 });
-		cube3->GetComponent<MeshRenderer>()->GetMeshes()[0]->GetMaterial()->SetMaterialColorSpecularColor({ 0,0,0 });
-		cube4->GetComponent<MeshRenderer>()->GetMeshes()[0]->GetMaterial()->SetMaterialColorSpecularColor({ 0,0,0 });
-		cube5->GetComponent<MeshRenderer>()->GetMeshes()[0]->GetMaterial()->SetMaterialColorSpecularColor({ 0,0,0 });
+		//cube1->GetComponent<MeshRenderer>()->GetMeshes()[0]->GetMaterial()->SetMaterialColorSpecularColor({ 0,0,0 });
+		//cube2->GetComponent<MeshRenderer>()->GetMeshes()[0]->GetMaterial()->SetMaterialColorSpecularColor({ 0,0,0 });
+		//cube3->GetComponent<MeshRenderer>()->GetMeshes()[0]->GetMaterial()->SetMaterialColorSpecularColor({ 0,0,0 });
+		//cube4->GetComponent<MeshRenderer>()->GetMeshes()[0]->GetMaterial()->SetMaterialColorSpecularColor({ 0,0,0 });
+		//cube5->GetComponent<MeshRenderer>()->GetMeshes()[0]->GetMaterial()->SetMaterialColorSpecularColor({ 0,0,0 });
 
 		cube1->GetComponent<MeshRenderer>()->GetMeshes()[0]->GetMaterial()->SetMaterialColorDiffuseColor({ 0,0.294f,1.0f });
 		cube2->GetComponent<MeshRenderer>()->GetMeshes()[0]->GetMaterial()->SetMaterialColorDiffuseColor({ 1,0.267f,0 });
@@ -171,11 +173,11 @@ namespace BlackPearl {
 		cube4->GetComponent<MeshRenderer>()->SetIsBackGroundObjects(true);
 		cube5->GetComponent<MeshRenderer>()->SetIsBackGroundObjects(true);
 
-		cube1->GetComponent<MeshRenderer>()->GetMeshes()[0]->GetMaterial()->SetMaterialColorSpecularColor({ 0,0,0 });
+		/*cube1->GetComponent<MeshRenderer>()->GetMeshes()[0]->GetMaterial()->SetMaterialColorSpecularColor({ 0,0,0 });
 		cube2->GetComponent<MeshRenderer>()->GetMeshes()[0]->GetMaterial()->SetMaterialColorSpecularColor({ 0,0,0 });
 		cube3->GetComponent<MeshRenderer>()->GetMeshes()[0]->GetMaterial()->SetMaterialColorSpecularColor({ 0,0,0 });
 		cube4->GetComponent<MeshRenderer>()->GetMeshes()[0]->GetMaterial()->SetMaterialColorSpecularColor({ 0,0,0 });
-		cube5->GetComponent<MeshRenderer>()->GetMeshes()[0]->GetMaterial()->SetMaterialColorSpecularColor({ 0,0,0 });
+		cube5->GetComponent<MeshRenderer>()->GetMeshes()[0]->GetMaterial()->SetMaterialColorSpecularColor({ 0,0,0 });*/
 
 		cube1->GetComponent<MeshRenderer>()->GetMeshes()[0]->GetMaterial()->SetMaterialColorDiffuseColor({ 0,0.294f,1.0f });
 		cube2->GetComponent<MeshRenderer>()->GetMeshes()[0]->GetMaterial()->SetMaterialColorDiffuseColor({ 1,0.267f,0 });
@@ -342,7 +344,6 @@ namespace BlackPearl {
 					cube->GetComponent<Transform>()->SetInitScale({ 0.5f * cubeSize, 0.5f * cubeSize, 0.5f * cubeSize });
 					//std::shared_ptr<Texture> cubeTexture(DBG_NEW Texture(TextureType::DiffuseMap, "assets/texture/wood.png"));
 					cube->GetComponent<MeshRenderer>()->GetMeshes()[0]->GetMaterial()->SetMaterialColorDiffuseColor({ (1.0f / num) * i,(1.0f / num) * j,(1.0f / num) * k });
-					cube->GetComponent<MeshRenderer>()->GetMeshes()[0]->GetMaterial()->SetMaterialColorSpecularColor({ 0.0f,0.0f,0.0f });
 
 					//cube->GetComponent<MeshRenderer>()->SetTextureSamples(false);
 					cube->GetComponent<MeshRenderer>()->SetIsBackGroundObjects(true);
@@ -374,7 +375,6 @@ namespace BlackPearl {
 					cube->GetComponent<Transform>()->SetInitScale({ 0.5f * cubeSize, 0.5f * cubeSize, 0.5f * cubeSize });
 					//std::shared_ptr<Texture> cubeTexture(DBG_NEW Texture(Texture::Type::DiffuseMap, "assets/texture/wood.png"));
 					cube->GetComponent<MeshRenderer>()->GetMeshes()[0]->GetMaterial()->SetMaterialColorDiffuseColor({ (1.0f / num) * i,(1.0f / num) * j,(1.0f / num) * k });
-					cube->GetComponent<MeshRenderer>()->GetMeshes()[0]->GetMaterial()->SetMaterialColorSpecularColor({ 0.0f,0.0f,0.0f });
 
 					//cube->GetComponent<MeshRenderer>()->SetTextureSamples(false);
 					cube->GetComponent<MeshRenderer>()->SetIsBackGroundObjects(true);

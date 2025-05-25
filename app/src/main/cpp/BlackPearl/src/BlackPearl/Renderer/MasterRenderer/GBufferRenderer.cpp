@@ -15,7 +15,9 @@
 #include "glm/glm.hpp"
 #include "BlackPearl/Renderer/DeviceManager.h"
 #include "BlackPearl/RHI/OpenGLRHI/OpenGLTexture.h"
-
+#ifdef GE_API_OPENGL
+#include "BlackPearl/RHI/OpenGLRHI/OpenGLDriver/OpenGLFunctions.h"
+#endif
 namespace BlackPearl {
 
 
@@ -50,7 +52,6 @@ namespace BlackPearl {
 		m_LightPassFrameBuffer->UnBind();
 */
 
-		m_GBufferShader = DBG_NEW MaterialShader("assets/shaders/glsl/gBuffer/gBuffer.glsl");
 		
 
 
@@ -60,13 +61,43 @@ namespace BlackPearl {
 
 	void GBufferRenderer::Render(ICommandList* commandList, IFramebuffer* targetFramebuffer, Scene* scene)
 	{
+
+        commandList->beginMarker("GBufferPass");
+        GE_ERROR_JUDGE();
+
+
+
+        SceneData* view = Renderer::GetSceneData();
+        GE_ERROR_JUDGE();
+
+        SceneData* preView = Renderer::GetPreSceneData();
+        GE_ERROR_JUDGE();
+
+        SetupView(commandList, view, preView);
+
+        m_DrawStrategy->PrepareForView(scene, *view);
+        GE_ERROR_JUDGE();
+
+        RenderPassTemplate(commandList, targetFramebuffer, view, m_DrawStrategy, m_ShaderParameters);
+
+
+        commandList->endMarker();
 	}
 
 	void GBufferRenderer::Init()
 	{
+        m_DrawStrategy = DBG_NEW InstancedOpaqueDrawStrategy();
+        ShaderDesc desc = ShaderDesc(ShaderType::All);
+        desc.debugName = "GbufferShader";
+        m_GBufferShader = DBG_NEW MaterialShader("assets/shaders/glsl/gBuffer/gBuffer_pass.glsl");
 
-		m_IsInitialized = true;
-	}
+
+        m_ShaderParameters[ShaderType::Pixel].bindingLayouts.push_back(m_ViewBindinglayout);
+        m_ShaderParameters[ShaderType::Pixel].bindingSets.push_back(m_ViewBindingset);
+        m_ShaderParameters->PixelShader  = m_GBufferShader->GetPixelShader();
+        m_ShaderParameters->VertexShader = m_GBufferShader->GetVertexShader();
+
+    }
 
 
 

@@ -1,4 +1,7 @@
 
+#ifndef BP_COMMON_LIGHT_H
+#define BP_COMMON_LIGHT_H
+
 #include <assets/shaders/glsl/common/CommonMath.glsl>
 
 
@@ -73,3 +76,5 @@ float GetLocalLightAttenuation(
 
 	return LightMask;
 }
+
+#endif //COMMON_LIGHT_H

@@ -10,7 +10,6 @@ uniform mat4 u_View;
 out vec3 v_Direction;
 
 #include <assets/shaders/glsl/common/CommonViewStruct.glsl>
-#include <assets/shaders/glsl/common/CommonDeferredStruct.glsl>
 
 void main()
 {
@@ -138,7 +137,7 @@ void main(){
      float scatterStrength = 0.2;//clamp(1.0 - viewHeight, 0.0, 1.0); // near horizon = more scattering
 
     if (viewDir.y > 0.0) {
-      float cosTheta = dot(viewDir, -1.0*normalize(g_SkyConstants.ubo.directionToLight));
+      float cosTheta = dot(viewDir, -1.0*normalize(g_SkyConstants.directionToLight));
 
     // Compute phase functions
     float rayleighPhase = phaseRayleigh(cosTheta);
@@ -151,12 +150,12 @@ void main(){
     vec3 rayleigh = betaRayleigh * rayleighPhase;
     vec3 mie = betaMie * miePhase;
 
-    vec3 totalScattering = (rayleigh + mie) * opticalDepth * g_SkyConstants.ubo.lightIntensity*g_SkyConstants.ubo.lightColor;//u_SunIntensity
+    vec3 totalScattering = (rayleigh + mie) * opticalDepth * g_SkyConstants.lightIntensity*g_SkyConstants.lightColor;//u_SunIntensity
 
  
     }else{
 
-        totalScattering =  g_SkyConstants.ubo.groundColor;
+        totalScattering =  g_SkyConstants.groundColor;
         scatterStrength = 0.8;//
     }
   
@@ -176,18 +175,18 @@ void main(){
 
 //    vec3 direction = normalize(v_Direction);
 //    float angularSizeOfPixel = 0.5;//max(length(ddx(direction)), length(ddy(direction)));
-//    float elevation = asin(clamp(dot(direction, g_SkyConstants.ubo.directionUp), -1.0, 1.0));
-//    float top = smoothstep(0.f, g_SkyConstants.ubo.horizonSize, elevation);
-//    float bottom = smoothstep(0.f, g_SkyConstants.ubo.horizonSize, -elevation);
-//    vec3 environment = mix(mix(g_SkyConstants.ubo.horizonColor, g_SkyConstants.ubo.groundColor, bottom), g_SkyConstants.ubo.skyColor, top);
+//    float elevation = asin(clamp(dot(direction, g_SkyConstants.directionUp), -1.0, 1.0));
+//    float top = smoothstep(0.f, g_SkyConstants.horizonSize, elevation);
+//    float bottom = smoothstep(0.f, g_SkyConstants.horizonSize, -elevation);
+//    vec3 environment = mix(mix(g_SkyConstants.horizonColor, g_SkyConstants.groundColor, bottom), g_SkyConstants.skyColor, top);
 //
-//    float angleToLight = acos(saturate(dot(direction, g_SkyConstants.ubo.directionToLight)));
-//    float halfAngularSize = g_SkyConstants.ubo.angularSizeOfLight * 0.5;
+//    float angleToLight = acos(saturate(dot(direction, g_SkyConstants.directionToLight)));
+//    float halfAngularSize = g_SkyConstants.angularSizeOfLight * 0.5;
 //    float lightIntensity = saturate(1.0 - smoothstep(halfAngularSize - angularSizeOfPixel * 2, halfAngularSize + angularSizeOfPixel * 2, angleToLight));
 //    lightIntensity = pow(lightIntensity, 4.0);
-//    float glowInput = saturate(2.0 * (1.0 - smoothstep(halfAngularSize - g_SkyConstants.ubo.glowSize, halfAngularSize + g_SkyConstants.ubo.glowSize, angleToLight)));
-//    float glowIntensity = g_SkyConstants.ubo.glowIntensity * pow(glowInput, g_SkyConstants.ubo.glowSharpness);
-//    vec3 light = max(lightIntensity, glowIntensity) * g_SkyConstants.ubo.lightColor;
+//    float glowInput = saturate(2.0 * (1.0 - smoothstep(halfAngularSize - g_SkyConstants.glowSize, halfAngularSize + g_SkyConstants.glowSize, angleToLight)));
+//    float glowIntensity = g_SkyConstants.glowIntensity * pow(glowInput, g_SkyConstants.glowSharpness);
+//    vec3 light = max(lightIntensity, glowIntensity) * g_SkyConstants.lightColor;
 //    
 //    FragColor = vec4( environment + light,1.0);
 }

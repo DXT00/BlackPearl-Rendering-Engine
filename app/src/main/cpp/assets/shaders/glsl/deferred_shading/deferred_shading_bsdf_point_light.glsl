@@ -7,9 +7,8 @@ precision mediump float;  // 必须声明精度（ES 要求）
 #endif
 
 layout(location = 0) in vec3 aPos;
-layout(location = 1) in vec3 aPrePos;
+layout(location = 1) in vec3 aNormal;
 layout(location = 2) in vec2 aTexCoords;
-layout(location = 3) in vec3 aNormal;
 
 out vec2 v_TexCoord;
 out vec3 v_Normal;
@@ -22,11 +21,9 @@ out vec3 v_FragPos;
 
 void main()
 {
-    gl_Position = g_View.matProjectionView * g_Transform.matModel * vec4(aPos,1.0);
+  	v_TexCoord = aTexCoords;
 
-    v_TexCoord = aTexCoords;
-    v_FragPos = vec3(g_Transform.matModel* vec4(aPos,1.0));
-    v_Normal =  mat3(g_Transform.matInvModel)* aNormal;
+	gl_Position = vec4(aPos,1.0);
 
 }
 
@@ -43,7 +40,7 @@ in vec2 v_TexCoord;
 
 #include <assets/shaders/glsl/common/CommonViewStruct.glsl>
 #include <assets/shaders/glsl/common/CommonDeferredStruct.glsl>
-
+#include <assets/shaders/glsl/common/CommonTransform.glsl>
 void main(){
 
 

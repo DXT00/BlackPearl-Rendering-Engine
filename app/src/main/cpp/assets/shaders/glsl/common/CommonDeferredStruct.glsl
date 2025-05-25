@@ -1,10 +1,13 @@
+#ifndef BP_COMMON_DEFERRED_STRUCT_H
+#define BP_COMMON_DEFERRED_STRUCT_H
+
 #include <forward_cb.h>
 
 /* deferred_shading_bsdf_xx pass */
 
 layout(std140, binding = 8) uniform ForwardShadingUBO {
     ForwardShadingLightConstants g_DeferredLight;
-} ;
+};
 
 
 // SceneColor and Gbuffer Textures
@@ -16,5 +19,7 @@ layout(binding = 3) uniform sampler2D t_gGbufferC; // BaseColor.xyz + reserve(pr
 layout(binding = 4) uniform sampler2D t_gSceneDepth; //default depth texture
 
 #if USE_POINTLIGHT_SHADOW
-layout(binding = 5) uniform samplerCube t_gShadowMapCube; //default depth texture
+layout(binding = 5) uniform samplerCube t_gShadowCubeMap; //default depth texture
+#endif
+
 #endif

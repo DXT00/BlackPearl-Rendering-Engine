@@ -1,5 +1,7 @@
 
 
+#ifndef BP_COMMON_OCTAHEDRAL_H
+#define BP_COMMON_OCTAHEDRAL_H
 #include <assets/glsl/common/CommonMath.glsl>
 
 // Octahedron Normal Vectors
@@ -35,3 +37,5 @@ float2 UnitVectorToHemiOctahedron(float3 N)
 	N.xy /= dot( 1, abs(N) );
 	return float2( N.x + N.y, N.x - N.y );
 }
+
+#endif //COMMON_OCTAHEDRAL_H

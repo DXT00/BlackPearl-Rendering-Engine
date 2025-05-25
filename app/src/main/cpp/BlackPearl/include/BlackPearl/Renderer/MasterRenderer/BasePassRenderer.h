@@ -63,7 +63,7 @@ namespace BlackPearl {
         void SetPushConstants(ICommandList* commandList, GraphicsState& state, DrawArguments& args) override { }
         void PrepareLights(
             ICommandList* commandList,
-            LightSources* lights,
+            LightSources* lightSouces,
             math::float3 ambientColorTop,
             math::float3 ambientColorBottom,
             const std::vector<std::shared_ptr<LightProbe>>& lightProbes);

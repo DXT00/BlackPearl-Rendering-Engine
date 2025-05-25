@@ -1,7 +1,9 @@
 #pragma once
 #include"Log.h"
 
-
+//#ifdef GE_API_OPENGL
+//#include "BlackPearl/RHI/OpenGLRHI/OpenGLDriver/OpenGLFunctions.h"
+//#endif
 
 #ifdef GE_PLATFORM_WINDOWS
 #define PLATFORM_HEADER_NAME Windows
@@ -93,6 +95,8 @@
 	else{\
 		GE_CORE_ERROR("no such err type!"); }\
 }
+#else 
+    #define GE_ERROR_JUDGE() 
 #endif
 
 #elif defined GE_PLATFORM_ANDROID

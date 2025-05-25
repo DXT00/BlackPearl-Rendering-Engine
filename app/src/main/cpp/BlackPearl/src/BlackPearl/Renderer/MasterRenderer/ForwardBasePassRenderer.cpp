@@ -3,9 +3,10 @@
 #include "BlackPearl/RHI/Common/RHIUtils.h"
 #include "hlsl/core/forward_cb.h"
 #include "hlsl/core/transform_cb.h"
-#include "BlackPearl/RHI/OpenGLRHI/OpenGLDriver/OpenGLFunctions.h"
 #include "BlackPearl/Core.h"
-
+#ifdef GE_API_OPENGL
+#include "BlackPearl/RHI/OpenGLRHI/OpenGLDriver/OpenGLFunctions.h"
+#endif
 namespace BlackPearl {
 
 
@@ -43,8 +44,6 @@ namespace BlackPearl {
     {
         commandList->beginMarker("BasePass");
         GE_ERROR_JUDGE();
-
-    
 
         SceneData* view = Renderer::GetSceneData();
         GE_ERROR_JUDGE();

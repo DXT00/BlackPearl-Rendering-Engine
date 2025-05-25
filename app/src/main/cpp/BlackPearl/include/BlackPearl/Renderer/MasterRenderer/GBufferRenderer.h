@@ -44,9 +44,9 @@ namespace BlackPearl {
 
 		/**** shader ****/
 		/* write pos,normal,color to gBuffer */
-		MaterialShader* m_GBufferShader;
+		MaterialShader* m_GBufferShader = nullptr;
 
-		
+        ShaderParameters m_ShaderParameters[ShaderType::NUM_COMPILE_SHADER_STAGES];
 	
 		unsigned int m_K = 3;// 5;// 5;// 5;// 2;
 		//
@@ -54,6 +54,10 @@ namespace BlackPearl {
 		///*renderer for dynamic objects*/
 		//AnimatedModelRenderer* m_AnimatedModelRenderer;
 		//SkyboxRenderer* m_SkyboxRenderer;
+
+
+        InstancedOpaqueDrawStrategy* m_DrawStrategy;
+
 
 
 	};

@@ -73,7 +73,7 @@ namespace BlackPearl
                     else if (type == GL_TESS_CONTROL_SHADER)shaderType = "tessellation control shader";
                     else if (type == GL_TESS_EVALUATION_SHADER)shaderType = "tessellation evaluation shader";
 
-
+                    GE_CORE_ERROR("{0},{1} compile failed :{2}", m_ShaderPath.c_str(), shaderType.c_str(), infoLog.data());
                     GE_CORE_ERROR("%s,%s compile failed :%s",m_ShaderPath.c_str(), shaderType.c_str(), infoLog.data());
                  //   GE_CORE_ERROR("{0} compile failed :{1}", shaderType.c_str(), infoLog.data());
                     GE_ASSERT(false, "Shader compliation failure!")

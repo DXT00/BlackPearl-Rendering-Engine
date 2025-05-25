@@ -145,4 +145,15 @@ namespace BlackPearl {
 						break;
 				}
 	}
+
+
+    void PointLight::FillLightConstants(LightConstants& lightConstants) {
+
+        lightConstants = DefaultLightConstants();
+        lightConstants.lightType = LightType_Point;
+        lightConstants.position = Math::ToFloat3(m_Position);
+        lightConstants.color = m_LightProp.diffuse;
+        lightConstants.radius = m_Attenuation.maxDistance;
+        lightConstants.invRadius = 1.0 / lightConstants.radius;
+    }
 }

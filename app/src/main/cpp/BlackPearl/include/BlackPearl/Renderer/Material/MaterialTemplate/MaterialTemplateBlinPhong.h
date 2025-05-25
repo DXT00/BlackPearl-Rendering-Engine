@@ -2,6 +2,8 @@
 #include "MaterialTemplate.h"
 
 namespace BlackPearl {
+    class Material;
+    class ICommandList;
 	class MaterialTemplateBlinPhong : public MaterialTemplate
 	{
 	public:

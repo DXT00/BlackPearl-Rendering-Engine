@@ -13,7 +13,11 @@ namespace BlackPearl {
 		m_RootObj = g_objectManager->CreateGroup("root object");
 		m_RootNode = DBG_NEW SingleNode(m_RootObj);
 		PrimitiveOctree = DBG_NEW ScenePrimitiveOctree(AABB(math::float3(0.0), math::float3(GE_OLD_HALF_WORLD_MAX)));
-	}
+        
+        m_FullScreenObj = g_objectManager->CreateQuad("assets/shaders/glsl/Quad.glsl","","FullScreenObj");
+
+    
+    }
 
 	Scene::~Scene()
 	{

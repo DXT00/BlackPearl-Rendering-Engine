@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "Renderer/Shader/MaterialShader.h"
 #include "BlackPearl/Core.h"
 #include "BlackPearl/Renderer/Shader/ShaderFactory.h"
@@ -33,6 +33,8 @@ namespace BlackPearl {
 	{
 		m_ShaderPath = filepath;
         std::string commonSource = ReadFile(m_CommonStructPath);
+        std::string macroSource = ReadFile(m_MacroPath);
+        commonSource = macroSource + commonSource;
         m_GlslCode = ReadFile(m_ShaderPath);
         std::unordered_map<ShaderType, std::string> shaderSources = PreProcess(m_GlslCode, commonSource);
         if (shaderSources.find(ShaderType::VertexShader) != shaderSources.end()) {
@@ -90,21 +92,22 @@ namespace BlackPearl {
 
         GLSLIncluder includer({ 
             "assets/shaders/hlsl/core",
-            "assets/shaders"
-            ""
+            "assets/shaders",
+            "./"
             });
 
         std::string fullShaderPS, fullShaderVS;
             // 直接处理字符串
-        if (shaderSources.find(ShaderType::Pixel) != shaderSources.end()) {
-            fullShaderPS = includer.processIncludes(shaderSources[ShaderType::Pixel]);
-            shaderSources[ShaderType::Pixel] = fullShaderPS;
-        }
 
         if (shaderSources.find(ShaderType::VertexShader) != shaderSources.end()) {
             fullShaderVS = includer.processIncludes(shaderSources[ShaderType::VertexShader]);
             shaderSources[ShaderType::VertexShader] = fullShaderVS;
 
+        }
+
+        if (shaderSources.find(ShaderType::Pixel) != shaderSources.end()) {
+            fullShaderPS = includer.processIncludes(shaderSources[ShaderType::Pixel]);
+            shaderSources[ShaderType::Pixel] = fullShaderPS;
         }
 
 
@@ -144,10 +147,15 @@ namespace BlackPearl {
             //use gles 300
             front = "//"+front;// 注释掉 pc OpenGL version
             std::string glesVersion = "#version 310 es\r\n";
-            shaderSources[ShaderType::VertexShader] =  glesVersion +  res;
-#endif
+            shaderSources[ShaderType::VertexShader] =  glesVersion + commonSource + res;
+#else
+            shaderSources[ShaderType::VertexShader] = front + commonSource + res;
 
+#endif
         }
+        GE_CORE_INFO("Shader {0}---------------\n, ---------vertex---------\n {1}\n, -----------pixel------------\n {2} \n", m_ShaderPath.c_str(), shaderSources[ShaderType::VertexShader].c_str(), shaderSources[ShaderType::Pixel].c_str());
+
+        GE_CORE_INFO("Shader %s\n, vertex: %s\n, pixel: %s \n", m_ShaderPath.c_str(), shaderSources[ShaderType::VertexShader].c_str(), shaderSources[ShaderType::Pixel].c_str());
         return shaderSources;
 	}
 }

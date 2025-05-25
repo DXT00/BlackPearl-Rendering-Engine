@@ -19,8 +19,9 @@ out vec2 TexCoords;
 
 
 
-uniform mat4 u_Model;
-uniform mat4 u_ProjectionView;
+
+//uniform mat4 u_Model;
+//uniform mat4 u_ProjectionView;
 
 void main()
 {
@@ -35,13 +36,12 @@ void main()
 #version 450 core
 
 
-#include <assets/shaders/glsl/pbr/DisneyBSDF.glsl>
-
 
 out vec4 FragColor;
 in vec2 TexCoords;
 
-
+#include <assets/shaders/glsl/common/CommonForwardStruct.glsl>
+#include <assets/shaders/glsl/common/CommonTextureSample.glsl>
 
 void main(){
     MaterialTextureSample texSamples = SampleMaterialTexturesAuto(TexCoords);

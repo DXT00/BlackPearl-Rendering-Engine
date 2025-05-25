@@ -15,7 +15,7 @@ namespace BlackPearl {
 
 	size_t MaterialTemplateCustom::GetMaterialConstantSize()
 	{
-		return s0;
+		return 0;
 	}
 
 }

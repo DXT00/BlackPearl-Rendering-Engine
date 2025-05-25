@@ -29,6 +29,9 @@
 #else
 #include "BlackPearl/Luanch/Android/AndroidInputManager.h"
 #endif
+
+using namespace BlackPearl::math;
+
 #include "hlsl/core/material_cb.h"
 #include "Timestep/SystemTime.h"
 

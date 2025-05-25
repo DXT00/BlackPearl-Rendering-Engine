@@ -7,11 +7,12 @@
 #include "BlackPearl/RHI/RHITexture.h"
 #include "BlackPearl/Math/Math.h"
 #include "BlackPearl/Renderer/Shader/MaterialShader.h"
+using namespace BlackPearl::math;
+
 #include "hlsl/core/material_cb.h"
 #include "MaterialTemplate/MaterialTemplate.h"
 #include "MaterialResouceBinding.h"
 
-using namespace BlackPearl::math;
 
 
 namespace BlackPearl {
@@ -113,7 +114,10 @@ namespace BlackPearl {
 		void SetSampler(ISampler* sampler);
 		void SetId(uint32_t _matId);
 		uint32_t GetId() const;
-
+        void SetMaterialColor(const MaterialColor& color) { m_MaterialColors = color; }
+        void SetMaterialColorDiffuseColor(float3 diffuse) {
+            m_MaterialColors.diffuseColor = diffuse;
+        }
 		void SetProps(const Props& props);
 		void SetShininess(float shininess);
 		void SetBinnLight(bool isBinnLight);

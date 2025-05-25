@@ -39,7 +39,7 @@ namespace BlackPearl {
 		}
 		else {
 			std::shared_ptr<math::float3> color;
-			color.reset(DBG_NEW math::float3(material->GetMaterialColor().Get().diffuseColor));
+			color.reset(DBG_NEW math::float3(material->GetMaterialColor().diffuseColor));
 			m_Color2Vec[color].push_back(m_MatData.size());
 
 		}
@@ -63,7 +63,7 @@ namespace BlackPearl {
 		}
 		else {
 			std::shared_ptr<math::float3> color;
-			color.reset(DBG_NEW math::float3(material->GetMaterialColor().Get().specularColor));
+			color.reset(DBG_NEW math::float3(material->GetMaterialColor().specularColor));
 			m_Color2Vec[color].push_back(m_MatData.size());
 
 		}

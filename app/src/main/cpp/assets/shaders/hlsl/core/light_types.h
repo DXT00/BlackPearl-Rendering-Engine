@@ -28,11 +28,15 @@ constexpr int LightType_None = 0;
 constexpr int LightType_Directional = 1;
 constexpr int LightType_Spot = 2;
 constexpr int LightType_Point = 3;
+constexpr int LightType_Rect = 4;
+
 #else
-static const int LightType_None = 0;
-static const int LightType_Directional = 1;
-static const int LightType_Spot = 2;
-static const int LightType_Point = 3;
+const int LightType_None = 0;
+const int LightType_Directional = 1;
+const int LightType_Spot = 2;
+const int LightType_Point = 3;
+const int LightType_Rect = 4;
+
 #endif
 
 #endif // LIGHT_CB_H

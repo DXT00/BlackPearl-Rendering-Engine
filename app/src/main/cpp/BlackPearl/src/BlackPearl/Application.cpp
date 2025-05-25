@@ -36,6 +36,7 @@
 #include "BlackPearl/Config.h"
 #include "BlackPearl/UI/UIManager.h"
 #include "BlackPearl/Renderer/Shader/ShaderFactory.h"
+#include "BlackPearl/Renderer/SystemTextures.h"
 #ifdef GE_PLATFORM_ANDROID
 #include "Luanch/Android/AndroidEventManager.h"
 #endif
@@ -128,6 +129,8 @@ namespace BlackPearl {
        // GE_ERROR_JUDGE();
 			g_materialManager->RegisterDeviceManager(g_deviceManager);
 			g_materialManager->Init();
+
+            SystemTexture::Get().Init(g_deviceManager->GetDevice());
         ///GE_ERROR_JUDGE();
 		m_StartTimeMs = 0;// duration_cast<milliseconds>(system_clock::now().time_since_epoch());
 	}

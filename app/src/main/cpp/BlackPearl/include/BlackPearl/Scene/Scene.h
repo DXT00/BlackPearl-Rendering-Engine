@@ -57,7 +57,7 @@ namespace BlackPearl {
 		DemoType GetDemoType() { return m_DemoType; }
 
 		Object* GetSkyBox() { return m_Skybox; }
-
+        Object* GetFullScreenObj() { return m_FullScreenObj; }
 		IDescriptorTable* GetDescriptorTable() const { return m_DescriptorTableMgr ? m_DescriptorTableMgr->GetDescriptorTable() : nullptr; }
 
 
@@ -90,8 +90,12 @@ namespace BlackPearl {
 
 		LightSources* m_LightSources;
 		
-		//Ĭ��һ�� skybox
+		//默认一个 skybox
 		Object* m_Skybox = nullptr;
+
+        // 全屏object， 用于后效等全屏绘制
+        Object* m_FullScreenObj = nullptr;
+
 
 		std::vector<std::shared_ptr<LightProbe>> m_LightProbes;
 

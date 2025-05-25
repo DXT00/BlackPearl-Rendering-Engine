@@ -9,4 +9,13 @@ namespace BlackPearl {
 	{
 		
 	}
+
+    void SpotLight::FillLightConstants(LightConstants& lightConstants) {
+
+
+        lightConstants = DefaultLightConstants();
+        lightConstants.lightType = LightType_Spot;
+        lightConstants.color = m_LightProp.diffuse;
+
+    }
 }

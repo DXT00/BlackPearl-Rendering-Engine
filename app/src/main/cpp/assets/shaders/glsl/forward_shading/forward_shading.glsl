@@ -50,6 +50,7 @@ void main()
 #include <assets/shaders/glsl/common/CommonViewStruct.glsl>
 
 #include <assets/shaders/glsl/common/CommonForwardStruct.glsl>
+#include <assets/shaders/glsl/common/CommonTransform.glsl>
 
 
 

@@ -3,6 +3,7 @@
 //
 #pragma once
 #include "BasicRenderer.h"
+#include "hlsl/core/forward_cb.h"
 namespace BlackPearl
 {
     class DeferredShadingRenderer : public BasicRenderer
@@ -14,7 +15,7 @@ namespace BlackPearl
         void Render(ICommandList* commandList, IFramebuffer* targetFramebuffer, Scene* scene);
 
 
-        static void FillShaderParameters();
+        void FillShaderParameters(LightSources* lightSource, ForwardShadingLightConstants& output);
 
     private:
         static float CalculateSphereRadius(Object* pointLight);
@@ -33,6 +34,24 @@ namespace BlackPearl
         // todo:: use cluster lighting instead
         Object* m_SurroundSphere = nullptr;
         std::shared_ptr<MaterialShader> m_SphereDeBugShader;
+
+
+        /* write pos,normal,color to gBuffer */
+        MaterialShader* m_DeferredPointLightShader = nullptr;
+        MaterialShader* m_DeferredDirectionLightShader = nullptr;
+        MaterialShader* m_DeferredIBLShader = nullptr;
+
+        ShaderParameters m_ShaderParameters[ShaderType::NUM_COMPILE_SHADER_STAGES];
+
+
+        BufferHandle        m_LightsCB;
+        BindingLayoutHandle m_DeferredShadingBindingLayout;
+        BindingSetHandle    m_DeferredShadingBindingSet;
+
+        GraphicsPipelineHandle m_DeferredShadingPointLightPso = nullptr;
+        GraphicsPipelineHandle m_DeferredShadingDirectionLightPso = nullptr;
+        GraphicsPipelineHandle m_DeferredShadingIBLPso = nullptr;
+
 
 
     };

@@ -60,9 +60,9 @@ namespace BlackPearl {
 				}
 
 			}
-			//默认距离50 constant(1.0f),linear(0.09f),quadratic(0.032){}
-			//默认距离3250constant(1.0f),linear(0.0014f),quadratic(0.000007)
-			//查表：https://learnopengl-cn.github.io/02%20Lighting/05%20Light%20casters/
+			//榛樿璺濈50 constant(1.0f),linear(0.09f),quadratic(0.032){}
+			//榛樿璺濈3250constant(1.0f),linear(0.0014f),quadratic(0.000007)
+			//鏌ヨ〃锛歨ttps://learnopengl-cn.github.io/02%20Lighting/05%20Light%20casters/
 		};
 		PointLight(Props props = Props())
 			:Light() {
@@ -101,6 +101,9 @@ namespace BlackPearl {
 
 
 		}
+        void SetPosition(const glm::vec3& position) { m_Position = position; }
+        glm::vec3 GetPosition() const { return m_Position; }
+
 		inline void SetAttenuation(const Attenuation& attenuation) { m_Attenuation = attenuation;}
 		inline void SetAttenuation(unsigned int maxdistance) { m_Attenuation.maxDistance = maxdistance; UpdateAttenuation(maxdistance); }
 		void UpdateAttenuation(unsigned int maxdistance);
@@ -112,14 +115,17 @@ namespace BlackPearl {
 		unsigned int GetShadowMapHeight() const { return m_ShadowMapPointLightHeight; }
 
 		inline std::shared_ptr<Mesh> GetMeshes()const { return m_Mesh; }
+        virtual void FillLightConstants(LightConstants& lightConstants) override;
 
 	private:
 		std::shared_ptr<Mesh> m_Mesh;
 		Attenuation m_Attenuation;
-		/* 每个PointLight都有一个采集它周围深度的ShadowMap */
+		/* 姣忎釜PointLight閮芥湁涓�涓噰闆嗗畠鍛ㄥ洿娣卞害鐨凷hadowMap */
 		TextureHandle m_ShadowMap;
 		unsigned int m_ShadowMapPointLightWidth = 1024;
 		unsigned int m_ShadowMapPointLightHeight = 1024;
+
+        glm::vec3 m_Position;
 	};
 
 }

@@ -14,7 +14,7 @@ namespace BlackPearl {
 
 	size_t MaterialTemplateBlinPhong::GetMaterialConstantSize()
 	{
-		return size_t();
+		return 0;
 	}
 
 }

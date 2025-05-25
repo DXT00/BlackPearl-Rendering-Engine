@@ -15,14 +15,19 @@ namespace BlackPearl {
 	{
 
 		material_cb.materialID = material->GetId();
-		material_cb.diffuseColor = material->GetMaterialColor().diffuseColor;
-		material_cb.specularColor = material->GetMaterialColor().specularColor;
-		material_cb.ambientColor = material->GetMaterialColor().ambientColor;
-		material_cb.emissiveColor = material->GetMaterialColor().emissiveColor;
+		//material_cb.diffuseColor = material->GetMaterialColor().diffuseColor;
+		//material_cb.specularColor = material->GetMaterialColor().specularColor;
+		//material_cb.ambientColor = material->GetMaterialColor().ambientColor;
+		//material_cb.emissiveColor = material->GetMaterialColor().emissiveColor;
 		material_cb.roughness = 0.5f;
 		material_cb.metalness = 0.5f;
 		material_cb.ao = 1.0f;
-		material_cb.shininess = 64.0f;
+		material_cb.specular = 0.04f;
+        material_cb.albedo = material->GetMaterialColor().diffuseColor;
+        material_cb.emissive = material->GetMaterialColor().emissiveColor;
+        material_cb.transmission = material->GetMaterialColor().subsurfaceColor;
+
+	//	material_cb.shininess = 64.0f;
 
 		//material_cb.props.isBinnLight = m_Props.isBinnLight;
 		//material_cb.props.isPBRTextureSample = m_Props.isPBRTextureSample;

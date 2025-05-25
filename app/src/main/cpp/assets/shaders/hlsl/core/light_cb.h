@@ -38,10 +38,7 @@
 //using namespace BlackPearl::math;
 //#endif
 
-const int LightType_Directional = 0;
-const int LightType_Spot = 1;
-const int LightType_Point = 2;
-const int LightType_Rect = 3;
+
 
 
 struct ShadowConstants
@@ -88,8 +85,30 @@ struct LightConstants
 
 
 };
+#ifdef __cplusplus
 
-};
+inline LightConstants DefaultLightConstants() {
+    LightConstants lightConstants;
+    lightConstants.direction = float3(0.0);
+    lightConstants.lightType = LightType_Directional;
+
+    lightConstants.position = float3(0.0);
+    lightConstants.radius = 1.0;
+    lightConstants.invRadius = 1.0;
+    lightConstants.bInverseSquared = 0;	/** Whether to use inverse squared falloff. */
+    lightConstants.color = float3(1.0);
+    lightConstants.intensity = 1.0; // illuminance (lm/m2) for directional lights, luminous intensity (lm/sr) for positional lights
+    lightConstants.angularSizeOrInvRange = 30.0f;   // angular size for directional lights, 1/range for spot and point lights
+    lightConstants.innerAngle = 10.0f;
+    lightConstants.outerAngle = 30.0f;
+    lightConstants.outOfBoundsShadow = 1.0f;
+    lightConstants.shadowCascades = int4(0);
+    lightConstants.perObjectShadows = int4(0);
+    lightConstants.shadowChannel = int4(0);
+    lightConstants.falloffExponent = 2.0f;
+    return lightConstants;
+}
+#endif
 
 struct LightProbeConstants
 {

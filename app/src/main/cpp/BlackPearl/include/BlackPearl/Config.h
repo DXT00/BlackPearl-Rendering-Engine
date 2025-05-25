@@ -18,7 +18,7 @@ namespace BlackPearl {
 		static const unsigned int WindowWidth = 300;  ///300;//960;// 1920 1024x768 
 		static const unsigned int WindowHeight = 300;// 300;//540;// 540;1080
 
-		//���ز���
+        //多重采样
 		static const unsigned int MSAA_SAMPLES = 1;
 
 		//VSync
@@ -41,13 +41,14 @@ namespace BlackPearl {
 		// ------------------------------------------
 		// Shadow map
 		// ------------------------------------------
-		/*����ÿ�� PointLight �� m_ShadowRaduis ���巶Χ�ڵ�����Żử��shadow */
+        /*对于每个 PointLight 在 m_ShadowRaduis 球体范围内的物体才会画出shadow */
 		static const float ShadowMapPointLightRadius;
+
 
 		// ------------------------------------------
 		// light probe environment map	and specular map resolution
 		// ------------------------------------------
-		/* prefilterMap.glsl���	float resolution =512.0;ҲҪ�� */
+        /* prefilterMap.glsl里的	float resolution =512.0;也要改 */
 		static const float EnvironmantMapResolution;
 		//static const float GICoeefs;
 
@@ -78,7 +79,7 @@ namespace BlackPearl {
 		// Batch rendering limit
 		//-----------------------------------------------
 		//if exceed MaxObjsInABatch objs in one batch shader compiler will give an error:
-		//��offset for relative array access outside supported range��
+		//"offset for relative array access outside supported range"
 		// no sulution yet, details: https://forums.developer.nvidia.com/t/bug-compiler-issues-internal-error-offset-for-relative-array-access-outside-supported-range/46430
 		static const unsigned int MaxObjsInABatch = 300;
 
@@ -90,6 +91,11 @@ namespace BlackPearl {
 		static const char* GetShaderTypeName();
 
 		/* OpenGL settings*/
+
+        //-----------------------------------------------
+        // Render Pipeline settings
+        //-----------------------------------------------
+        static const bool bDeferredShading;
 	};
 	struct ShaderConfig {
 

@@ -38,26 +38,40 @@ namespace BlackPearl {
 		//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	}
 
-	void Renderer::BeginScene(const Camera & camera, const LightSources& lightSources)
+	void Renderer::BeginScene(Camera *camera, const LightSources& lightSources)
 	{
 		s_PreSceneData = s_SceneData;
 		s_SceneData->LightSources = lightSources;
-		s_SceneData->ProjectionViewMatrix = camera.GetProjectionViewMatrix();
-		s_SceneData->CameraPosition = camera.GetPosition();
-		s_SceneData->CameraRotation = camera.GetRotation();
+		s_SceneData->ProjectionViewMatrix = camera->GetProjectionViewMatrix();
+		s_SceneData->CameraPosition = camera->GetPosition();
+		s_SceneData->CameraRotation = camera->GetRotation();
 
-		s_SceneData->CameraFront = camera.Front();
-		s_SceneData->ViewMatrix = camera.GetViewMatrix();
-		s_SceneData->ProjectionMatrix = camera.GetProjectionMatrix();
+		s_SceneData->CameraFront = camera->Front();
+		s_SceneData->ViewMatrix = camera->GetViewMatrix();
+		s_SceneData->ProjectionMatrix = camera->GetProjectionMatrix();
         math::vector<int, 2> windowSize = Application::Get().GetWindow().GetCurWindowSize();
 		s_SceneData->SetViewport(RHIViewport(windowSize[0], windowSize[1]));
 
 		s_SceneData->ViewFrustum = math::frustum(Math::ToFloat4x4(s_SceneData->ViewMatrix * s_SceneData->ProjectionMatrix), s_SceneData->ReverseZ);
-		for (Object* lightObj : lightSources.Get()) {
+        if (camera->GetType() == Camera::CameraType::Perspective) {
+            s_SceneData->zNear = static_cast<PerspectiveCamera*>(camera)->GetZnear();
+            s_SceneData->zFar = static_cast<PerspectiveCamera*>(camera)->GetZfar();
+
+
+        }
+        //TODO:: set light PreExposure params
+        s_SceneData->PreExposure = 1.0f;
+        
+        
+        for (Object* lightObj : lightSources.Get()) {
 			//std::shared_ptr<Light> lightSource(lightObj->GetComponent<Light>());
 			if (lightObj->HasComponent<DirectionLight>()) {
 			}
 			if (lightObj->HasComponent<PointLight>()) {
+
+                glm::vec3 pos = lightObj->GetComponent<Transform>()->GetPosition();
+
+                lightObj->GetComponent<PointLight>()->SetPosition(pos);
 				//std::dynamic_pointer_cast<PointLight>(lightSource)->GetShader()->Bind();//一定要记得先Bind()指定是哪一个Shader!
 				//glm::mat4 model = glm::mat4(1.0f);
 				//model = glm::translate(model, std::dynamic_pointer_cast<PointLight>(lightSource)->GetPosition());
@@ -73,7 +87,8 @@ namespace BlackPearl {
 			}
 			if (lightObj->HasComponent<SpotLight>()) {
 				auto lightSource = lightObj->GetComponent<SpotLight>();
-				lightSource->UpdatePositionAndDirection(camera.GetPosition(), camera.Front());
+              
+				lightSource->UpdatePositionAndDirection(camera->GetPosition(), camera->Front());
 			}
 
 
@@ -186,6 +201,10 @@ namespace BlackPearl {
 		constants.cameraRot = Math::ToFloat3(CameraRotation);
 		constants.viewportSize = math::float2(m_Viewport.width(), m_Viewport.height());
 		constants.viewportOrigin = math::float2(m_Viewport.minX, m_Viewport.minY);
+        constants.viewportSizeInv = math::float2(1.0/m_Viewport.minX, 1.0/m_Viewport.minY);
+        constants.zFar = zFar;
+        constants.zNear = zNear;
+        constants.preExposure = PreExposure;
 
 	}
 	

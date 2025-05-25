@@ -7,21 +7,44 @@
 #include "RHI/Common/FormatInfo.h"
 namespace BlackPearl
 {
+    int32_t TargetLighting = 0; //IndirectLight*ao + Emissive + Fog.rgb
+    int32_t TargetGBufferA = 1; //encode normal.xy
+    int32_t TargetGBufferB = 2; //Metallic	Specular Roughness	ShadingModelID / 255.0
+    int32_t TargetGBufferC = 3; //BaseColor	PrecomputedShadow
+
+
+    GbufferTarget GetTargetByName(const GbufferInfo& info, const std::string& name) {
+        if (name == "GBufferA") {
+            if (TargetGBufferA < info.numTargets) {
+                return info.targets[TargetGBufferA];
+            }
+        }
+        else if (name == "GBufferB") {
+            if (TargetGBufferB < info.numTargets) {
+                return info.targets[TargetGBufferB];
+            }
+        }
+        else if (name == "GBufferC") {
+            if (TargetGBufferC < info.numTargets) {
+                return info.targets[TargetGBufferC];
+            }
+        }
+        GE_CORE_ERROR("unknown Gbuffer name %s", name.c_str());
+        return GbufferTarget();
+    }
 
 
     static GbufferInfo GetPCGbuffer(const PlatformGbufferConfig& config)
     {
         GbufferInfo info;
-        int32_t TargetLighting = 0; //IndirectLight*ao + Emissive + Fog.rgb
-        int32_t TargetGBufferA = 1; //encode normal.xy
-        int32_t TargetGBufferB = 2; //Metallic	Specular Roughness	ShadingModelID / 255.0
-        int32_t TargetGBufferC = 3; //BaseColor	PrecomputedShadow
-
+        
         info.targets[TargetLighting].format = Format::R11G11B10_FLOAT;
         if (config.bHighPresision) {
             info.targets[TargetGBufferA].format = Format::RGBA16_FLOAT;
             info.targets[TargetGBufferB].format = Format::RGBA16_FLOAT;
             info.targets[TargetGBufferC].format = Format::RGBA16_FLOAT;
+
+
 
         }
         else {
@@ -30,7 +53,12 @@ namespace BlackPearl
             info.targets[TargetGBufferC].format = Format::RGBA8_UNORM;
 
         }
-
+        info.targets[TargetGBufferA].name = "GBufferA";
+        info.targets[TargetGBufferB].name = "GBufferB";
+        info.targets[TargetGBufferC].name = "GBufferC";
+        info.targets[TargetLighting].name = "SceneColor";
+        info.numTargets = 4;
+        return info;
     }
     /*
      *
@@ -77,10 +105,14 @@ namespace BlackPearl
     {
 #ifdef GE_PLATFORM_ANDROID
         return GetMobileGbuffer(config);
-#elif defined(GE_PLATFORM_PC)
+#elif defined(GE_PLATFORM_WINDOWS)
         return GetPCGbuffer(config);
 #endif
+        GE_CORE_ERROR("Unknown platform");
+        return GbufferInfo();
+
     }
+
 
 
 }

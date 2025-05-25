@@ -28,13 +28,16 @@ namespace BlackPearl {
 	class SceneData : public IView
 	{
 	public:
-		SceneData()
-			: ProjectionViewMatrix(glm::mat4(1.0)),
-			ViewMatrix(glm::mat4(1.0)),
-			ProjectionMatrix(glm::mat4(1.0)),
-			CameraPosition(glm::vec3(0.0)),
-			CameraRotation(glm::vec3(0.0)),
-			CameraFront(glm::vec3(0.0))
+        SceneData()
+            : ProjectionViewMatrix(glm::mat4(1.0)),
+            ViewMatrix(glm::mat4(1.0)),
+            ProjectionMatrix(glm::mat4(1.0)),
+            CameraPosition(glm::vec3(0.0)),
+            CameraRotation(glm::vec3(0.0)),
+            CameraFront(glm::vec3(0.0)),
+            zNear(0.01),
+            zFar(100.0f),
+            PreExposure(1.0f)
 			{
 				ViewFrustum = math::frustum(Math::ToFloat4x4(ViewMatrix* ProjectionMatrix), ReverseZ);
 		    }
@@ -67,6 +70,8 @@ namespace BlackPearl {
 
 		glm::vec3 CameraFront;
 		LightSources LightSources;
+        float zNear, zFar;
+        float PreExposure;
 
 		virtual void SetViewport(RHIViewport viewport) override;
 		virtual ViewportState GetViewportState() const override;
@@ -91,10 +96,10 @@ namespace BlackPearl {
 		Renderer();
 		~Renderer();
 		static void Init();
-		static void BeginScene(const Camera& camera, const LightSources& lightSources);//Ã¿´ÎUpdate¶¼Òªµ÷ÓÃBeginSceneÒ»´Î£¬ÒòÎªCameraµÄViewProjection Matrix»á¸Ä±ä
-		/*Ä¬ÈÏ scene ÊÇ default camera*/
-		static void Submit(const std::shared_ptr<VertexArray>& vertexArray, IShader* shader, const glm::mat4& model = glm::mat4(1.0f), SceneData* sceneData= GetSceneData());//SubmmitÇ°¼ÇµÃµ÷ÓÃ BeginScene()!
-		static void Submit(const std::shared_ptr<VertexArray>& vertexArray, IShader* shader, float* model, uint32_t objCnt, SceneData* sceneData = GetSceneData());//SubmmitÇ°¼ÇµÃµ÷ÓÃ BeginScene()!
+		static void BeginScene(Camera* camera, const LightSources& lightSources);//æ¯æ¬¡Updateéƒ½è¦è°ƒç”¨BeginSceneä¸€æ¬¡ï¼Œå› ä¸ºCameraçš„ViewProjection Matrixä¼šæ”¹å˜
+		/*é»˜è®¤ scene æ˜¯ default camera*/
+		static void Submit(const std::shared_ptr<VertexArray>& vertexArray, IShader* shader, const glm::mat4& model = glm::mat4(1.0f), SceneData* sceneData= GetSceneData());//Submmitå‰è®°å¾—è°ƒç”¨ BeginScene()!
+		static void Submit(const std::shared_ptr<VertexArray>& vertexArray, IShader* shader, float* model, uint32_t objCnt, SceneData* sceneData = GetSceneData());//Submmitå‰è®°å¾—è°ƒç”¨ BeginScene()!
 		void Submit(const std::shared_ptr<VertexArray>& vertexArray, IShader* shader, SceneData* sceneData);
 
 		static SceneData* GetSceneData() { return s_SceneData; }

@@ -5,6 +5,7 @@
 #include "BlackPearl/RHI/RHIDefinitions.h"
 #include "BlackPearl/Core.h"
 #include "Renderer/Material/MaterialManager.h"
+#include "Renderer/SystemTextures.h"
 namespace BlackPearl {
     extern MaterialManager* g_materialManager;
 
@@ -124,7 +125,7 @@ namespace BlackPearl {
 
         }
         else {
-            return BindingSetItem::Texture_SRV(slot,  g_materialManager->systemTextures.whiteTexture.Get());
+            return BindingSetItem::Texture_SRV(slot,  SystemTexture::Get().whiteTexture.Get());
 
         }
     }

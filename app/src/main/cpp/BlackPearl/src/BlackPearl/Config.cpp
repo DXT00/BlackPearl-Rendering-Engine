@@ -37,9 +37,11 @@ namespace BlackPearl {
 	//const VoxelConeTracingRenderer::RenderingMode Configuration::RenderingMode = VoxelConeTracingRenderer::RenderingMode::VOXEL_CONE_TRACING;
 	const float Configuration::ShadowMapPointLightRadius = 30.0f;
 
-	/* ������ˣ�prefilterMap.glsl���	float resolution =512.0;ҲҪ�� */
+    /* prefilterMap.glsl里的	float resolution =512.0;也要改 */
 	const float Configuration::EnvironmantMapResolution = 64.0;// 256.0f;
 	
+    const bool Configuration::bDeferredShading = true;
+
 
 	const char* ShaderConfig::AMBIENT_COLOR   = "u_Material.ambientColor";
 	const char* ShaderConfig::DIFFUSE_COLOR   = "u_Material.diffuseColor";

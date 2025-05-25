@@ -5,15 +5,18 @@ namespace BlackPearl {
 	class LightSources
 	{
 	public:
-		LightSources()
-			:m_PointLightNums(0) {};
+        LightSources() {}
 		~LightSources() {
 			m_LightSources.clear();
 		
 		};
 		void AddLight(Object* light);
-		inline unsigned int const GetPointLightNum()const { return m_PointLightNums; }
-		inline std::vector<Object*> Get()const { return m_LightSources; }
+        inline unsigned int const GetPointLightNum()const { return m_PontLights.size(); }
+        inline unsigned int const GetParallelLightNum()const { return m_ParallelLights.size(); }
+        inline unsigned int const GetSpotLightNum()const { return m_SpotLights.size(); }
+        inline unsigned int const GetLightsNum()const { return m_Lights.size(); }
+
+        inline std::vector<Object*> Get()const { return m_LightSources; }
 		std::vector<Light*> GetLights()const { return m_Lights; }
 
 		std::vector<Object*> GetPointLights() const { return m_PontLights; }
@@ -24,7 +27,7 @@ namespace BlackPearl {
 		void AddPointLight(Object* pointLight);
 		void AddParallelLight(Object* parallelLight);
 		void AddSpotLight(Object* spotLight);
-		/*所有类型的Light*/
+		/*鎵�鏈夌被鍨嬬殑Light*/
 		std::vector<Object*> m_LightSources;
 		std::vector<Object*> m_PontLights;
 		std::vector<Object*> m_ParallelLights;
@@ -32,7 +35,6 @@ namespace BlackPearl {
 		std::vector<Light*>  m_Lights;
 
 
-		unsigned int m_PointLightNums;
 
 
 	};

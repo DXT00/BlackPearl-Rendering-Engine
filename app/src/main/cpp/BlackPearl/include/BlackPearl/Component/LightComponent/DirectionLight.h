@@ -1,5 +1,6 @@
 #pragma once
 #include "Light.h"
+#include "hlsl/core/light_cb.h"
 namespace BlackPearl {
 
 	class DirectionLight :public Light
@@ -25,7 +26,7 @@ namespace BlackPearl {
 		}
 		virtual inline LightType GetType() override { return LightType::DirectionLight; }
 
-		
+        virtual void FillLightConstants(LightConstants& lightConstants) override;
 
 		//	virtual std::shared_ptr<VertexArray> GetVertexArray()override { return m_VertexArray; };
 		//	virtual std::shared_ptr<Shader> GetShader() override { return m_Shader; };

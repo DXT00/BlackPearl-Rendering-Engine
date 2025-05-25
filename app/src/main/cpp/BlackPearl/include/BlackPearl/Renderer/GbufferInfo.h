@@ -3,6 +3,7 @@
 //
 #pragma once
 #include "pch.h"
+#include <string>
 #include "RHI/Common/FormatInfo.h"
 namespace BlackPearl{
     //TODO::区分
@@ -27,11 +28,13 @@ namespace BlackPearl{
     struct GbufferTarget{
         Format format;
         bool isSrgb;
+        std::string name;
 
         GbufferTarget()
         {
             format = Format::UNKNOWN;
             isSrgb = false;
+            name = "";
         }
     };
 
@@ -43,8 +46,8 @@ namespace BlackPearl{
 
     };
 
-
-    static GbufferInfo GetGbufferInfo(const PlatformGbufferConfig& config);
+    GbufferTarget GetTargetByName(const GbufferInfo& info, const std::string& name);
+    GbufferInfo GetGbufferInfo(const PlatformGbufferConfig& config);
 
 
 }

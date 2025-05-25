@@ -9,10 +9,9 @@
 
 namespace BlackPearl {
 
-	Camera * Camera::Create(unsigned int type)
+	Camera * Camera::Create(CameraType type)
 	
 	{
-		
 		switch (type)
 		{
 		case Orthographic:

@@ -75,12 +75,13 @@ namespace BlackPearl {
 		}
 	
 
-		void FillLightConstants(LightConstants& lightConstants) const;
 	public:        
 		std::shared_ptr<IShadowMap> shadowMap = nullptr;
 		int shadowChannel = -1;
+        virtual void FillLightConstants(LightConstants& lightConstants);
 
 	protected:
+
 		Props m_LightProp;
 		Props m_LightLastProp;
 

@@ -1,4 +1,7 @@
 
+#ifndef BP_COMMON_TEXTURESAMPLE_H
+#define BP_COMMON_TEXTURESAMPLE_H
+
 struct MaterialTextureSample
 {
     float4 albedo;
@@ -27,27 +30,27 @@ MaterialTextureSample DefaultMaterialTextures() {
 MaterialTextureSample SampleMaterialTexturesAuto(vec2 texCoord) {
     MaterialTextureSample values = DefaultMaterialTextures();
 
-   // if ((g_Material.flags & MaterialFlags_UseBaseOrDiffuseTexture) != 0) { // MaterialFlags_UseBaseOrDiffuseTexture
+   // if ((g_Mat.flags & MaterialFlags_UseBaseOrDiffuseTexture) != 0) { // MaterialFlags_UseBaseOrDiffuseTexture
         values.albedo = texture(t_BaseOrDiffuse, texCoord);
   //  }
 
-    if ((g_Material.flags & MaterialFlags_UseMetalRoughOrSpecularTexture) != 0) { // MaterialFlags_UseMetalRoughOrSpecularTexture
+    if ((g_Mat.flags & MaterialFlags_UseMetalRoughOrSpecularTexture) != 0) { // MaterialFlags_UseMetalRoughOrSpecularTexture
         values.metalRoughOrSpecular = texture(t_MetalRoughOrSpecular, texCoord);
     }
 
-    if ((g_Material.flags & MaterialFlags_UseEmissiveTexture) != 0) { // MaterialFlags_UseEmissiveTexture
+    if ((g_Mat.flags & MaterialFlags_UseEmissiveTexture) != 0) { // MaterialFlags_UseEmissiveTexture
         values.emissive = texture(t_Emissive, texCoord);
     }
 
-    if ((g_Material.flags & MaterialFlags_UseNormalTexture) != 0) { // MaterialFlags_UseNormalTexture
+    if ((g_Mat.flags & MaterialFlags_UseNormalTexture) != 0) { // MaterialFlags_UseNormalTexture
         values.normal = texture(t_Normal, texCoord);
     }
 
-    if ((g_Material.flags & MaterialFlags_UseOcclusionTexture) != 0) { // MaterialFlags_UseOcclusionTexture
+    if ((g_Mat.flags & MaterialFlags_UseOcclusionTexture) != 0) { // MaterialFlags_UseOcclusionTexture
         values.occlusion = texture(t_Occlusion, texCoord);
     }
 
-    if ((g_Material.flags & MaterialFlags_UseTransmissionTexture) != 0) { // MaterialFlags_UseTransmissionTexture
+    if ((g_Mat.flags & MaterialFlags_UseTransmissionTexture) != 0) { // MaterialFlags_UseTransmissionTexture
         values.transmission = texture(t_Transmission, texCoord);
     }
 
@@ -58,27 +61,27 @@ MaterialTextureSample SampleMaterialTexturesAuto(vec2 texCoord) {
 MaterialTextureSample SampleMaterialTexturesLevel(vec2 texCoord, float lod) {
     MaterialTextureSample values = DefaultMaterialTextures();
 
-    if ((g_Material.flags & MaterialFlags_UseBaseOrDiffuseTexture) != 0) {
+    if ((g_Mat.flags & MaterialFlags_UseBaseOrDiffuseTexture) != 0) {
         values.albedo = textureLod(t_BaseOrDiffuse, texCoord, lod);
     }
 
-    if ((g_Material.flags & MaterialFlags_UseMetalRoughOrSpecularTexture) != 0) {
+    if ((g_Mat.flags & MaterialFlags_UseMetalRoughOrSpecularTexture) != 0) {
         values.metalRoughOrSpecular = textureLod(t_MetalRoughOrSpecular, texCoord, lod);
     }
 
-    if ((g_Material.flags & MaterialFlags_UseEmissiveTexture) != 0) {
+    if ((g_Mat.flags & MaterialFlags_UseEmissiveTexture) != 0) {
         values.emissive = textureLod(t_Emissive, texCoord, lod);
     }
 
-    if ((g_Material.flags & MaterialFlags_UseNormalTexture) != 0) {
+    if ((g_Mat.flags & MaterialFlags_UseNormalTexture) != 0) {
         values.normal = textureLod(t_Normal, texCoord, lod);
     }
 
-    if ((g_Material.flags & MaterialFlags_UseOcclusionTexture) != 0) {
+    if ((g_Mat.flags & MaterialFlags_UseOcclusionTexture) != 0) {
         values.occlusion = textureLod(t_Occlusion, texCoord, lod);
     }
 
-    if ((g_Material.flags & MaterialFlags_UseTransmissionTexture) != 0) {
+    if ((g_Mat.flags & MaterialFlags_UseTransmissionTexture) != 0) {
         values.transmission = textureLod(t_Transmission, texCoord, lod);
     }
 
@@ -89,27 +92,27 @@ MaterialTextureSample SampleMaterialTexturesLevel(vec2 texCoord, float lod) {
 MaterialTextureSample SampleMaterialTexturesGrad(vec2 texCoord, vec2 ddx, vec2 ddy) {
     MaterialTextureSample values = DefaultMaterialTextures();
 
-    if ((g_Material.flags & MaterialFlags_UseBaseOrDiffuseTexture) != 0) {
+    if ((g_Mat.flags & MaterialFlags_UseBaseOrDiffuseTexture) != 0) {
         values.albedo = textureGrad(t_BaseOrDiffuse, texCoord, ddx, ddy);
     }
 
-    if ((g_Material.flags & MaterialFlags_UseMetalRoughOrSpecularTexture) != 0) {
+    if ((g_Mat.flags & MaterialFlags_UseMetalRoughOrSpecularTexture) != 0) {
         values.metalRoughOrSpecular = textureGrad(t_MetalRoughOrSpecular, texCoord, ddx, ddy);
     }
 
-    if ((g_Material.flags & MaterialFlags_UseEmissiveTexture) != 0) {
+    if ((g_Mat.flags & MaterialFlags_UseEmissiveTexture) != 0) {
         values.emissive = textureGrad(t_Emissive, texCoord, ddx, ddy);
     }
 
-    if ((g_Material.flags & MaterialFlags_UseNormalTexture) != 0) {
+    if ((g_Mat.flags & MaterialFlags_UseNormalTexture) != 0) {
         values.normal = textureGrad(t_Normal, texCoord, ddx, ddy);
     }
 
-    if ((g_Material.flags & MaterialFlags_UseOcclusionTexture) != 0) {
+    if ((g_Mat.flags & MaterialFlags_UseOcclusionTexture) != 0) {
         values.occlusion = textureGrad(t_Occlusion, texCoord, ddx, ddy);
     }
 
-    if ((g_Material.flags & MaterialFlags_UseTransmissionTexture) != 0) {
+    if ((g_Mat.flags & MaterialFlags_UseTransmissionTexture) != 0) {
         values.transmission = textureGrad(t_Transmission, texCoord, ddx, ddy);
     }
 
@@ -226,3 +229,4 @@ MaterialSample EvaluateSceneMaterial(float3 normal, float4 tangent, MaterialCons
 
     return result;
 }
+#endif //COMMON_TEXTURESAMPLE_H

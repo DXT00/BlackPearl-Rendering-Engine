@@ -14,8 +14,7 @@ namespace BlackPearl {
 		m_LightSources.push_back(light);
 		if (light->HasComponent<PointLight>()) {
 
-			GE_ASSERT(m_PointLightNums <= Configuration::MaxComponents, "m_PointLightNums > Configuration::MaxComponents !");
-			m_PointLightNums++;
+		
 			m_Lights.push_back(light->GetComponent<PointLight>());
 			AddPointLight(light);
 

@@ -1,3 +1,5 @@
+#ifndef BP_COMMON_GBUFFER_STRUCT_H
+#define BP_COMMON_GBUFFER_STRUCT_H
 
 /* gBuffer_pass */
 
@@ -19,3 +21,7 @@ layout(std140, binding = 7) uniform MaterialUBO { // MATERIAL_CB_SLOT -> binding
   DisneyMaterialConstant g_Mat;
 };
 #endif
+
+
+
+#endif //COMMON_GBUFFER_STRUCT_H
