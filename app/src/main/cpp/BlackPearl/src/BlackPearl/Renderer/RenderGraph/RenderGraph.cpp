@@ -16,7 +16,7 @@ namespace BlackPearl {
         if (GSupportsShaderFramebufferFetch || GSupportsShaderDepthStencilFetch)
             return true;
 #elif defined(GE_PLATFORM_WINDOWS)
-        return true;
+        return Configuration::bUseSinglePass;
 #endif
 #endif
 

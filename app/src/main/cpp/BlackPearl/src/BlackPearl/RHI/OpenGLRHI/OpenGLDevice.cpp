@@ -262,7 +262,7 @@ namespace BlackPearl
 	TextureHandle Device::createTexture(const TextureDesc& d)
 	{
 		Texture* texture = nullptr;
-		if (d.type == TextureType::CubeMap) {
+		if (d.type == TextureType::CubeMap || d.dimension == TextureDimension::TextureCube) {
 			texture = DBG_NEW CubeMapTexture(d);
 		}
 		else if (d.type == TextureType::Image2DMap) {

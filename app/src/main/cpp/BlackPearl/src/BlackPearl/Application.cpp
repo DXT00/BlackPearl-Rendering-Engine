@@ -154,8 +154,12 @@ namespace BlackPearl {
 				m_StartTimeMs = currentTimeMs;
 				m_TotalSecond++;
 				s_AppAverageFPS = (double)s_TotalFrameNum / m_TotalSecond;
-				GE_CORE_INFO("AverageFPS = %s" ,std::to_string(s_AppAverageFPS).c_str());
 
+#ifdef GE_PLATFORM_WINDOWS
+                GE_CORE_INFO("AverageFPS = {0}", std::to_string(s_AppAverageFPS).c_str());
+#else
+				GE_CORE_INFO("AverageFPS = %s" ,std::to_string(s_AppAverageFPS).c_str());
+#endif
 			}
 
 

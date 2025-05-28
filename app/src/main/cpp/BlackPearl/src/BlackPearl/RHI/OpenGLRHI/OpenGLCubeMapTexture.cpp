@@ -25,6 +25,7 @@ namespace BlackPearl {
 	void CubeMapTexture::LoadCubeMap()
 	{
 		glBindTexture(GL_TEXTURE_CUBE_MAP, m_TextureID);
+        GE_ERROR_JUDGE();
 
 		for (unsigned int i = 0; i < 6; i++)
 		{
@@ -38,7 +39,7 @@ namespace BlackPearl {
 					return;
 				}
 				GLenum format;
-				switch (nrChannels) //注意不同图片有不同的通道数！
+				switch (nrChannels) //娉ㄦ剰涓嶅悓鍥剧墖鏈変笉鍚岀殑閫氶亾鏁帮紒
 				{
 				case 1:
 					format = GL_RED;
@@ -80,7 +81,7 @@ namespace BlackPearl {
 			else
 			{
 				glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, m_InnerFormat, m_Width, m_Height, 0, m_Format, m_DataType, NULL);
-
+                GE_ERROR_JUDGE();
 				//std::cout << "Cubemap texture failed to load at path: " << faces[i] << std::endl;
 				//stbi_image_free(data);
 			}
@@ -93,9 +94,11 @@ namespace BlackPearl {
 
 		if (desc.generateMipmap || desc.mipLevelsCnt >0)
 			glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
+        GE_ERROR_JUDGE();
 
 
 		glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
+        GE_ERROR_JUDGE();
 
 	}
 	//void CubeMapTexture::LoadCubeMap(const int width, const int height, unsigned int minFilter, unsigned int maxFilter, int wrap,int internalFormat,int format, int dataType,bool generateMipmap)

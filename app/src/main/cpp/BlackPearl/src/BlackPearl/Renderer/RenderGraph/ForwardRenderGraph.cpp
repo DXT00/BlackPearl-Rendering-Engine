@@ -68,6 +68,23 @@ namespace BlackPearl {
 	}
 	void ForwardRenderGraph::RenderMultiPass(Timestep ts, IFramebuffer* framebuffer, IView* View)
 	{
+        //todo::
+        m_CommandList->open();
+
+        FRHIRenderPassInfo RPInfo(framebuffer->getDesc().colorAttachments[0].texture, ERenderTargetActions::Load_Store);
+        m_CommandList->beginRenderPass(RPInfo, "BasePass");
+
+        m_SkyboxRenderer->Render(m_CommandList, framebuffer, m_Scene);
+        m_ForwardBasePassRenderer->Render(m_CommandList, framebuffer, m_Scene);
+
+        m_CommandList->endRenderPass();
+
+        //PostProcessPass GI
+        //voxel cone tracing
+
+        m_CommandList->close();
+
+        GetDevice()->executeCommandList(m_CommandList);
 	}
 
 

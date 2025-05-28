@@ -1539,7 +1539,7 @@ namespace BlackPearl {
 			}
 		}
 
-
+        GE_ERROR_JUDGE();
 
 		_commitSSBOs(ssbos, ContextState);
 		_commitTexturesAndSamplers(textures, samplers, ContextState);
@@ -1551,6 +1551,7 @@ namespace BlackPearl {
 	//todo:: buffer 合并
 	void Device::_commitUBOs(const std::vector<std::pair<Buffer*, uint32_t>>& ubos, FOpenGLContextState& ContextState)
 	{
+        GE_ERROR_JUDGE();
 		int bindIndex = 0;
 		for (auto& _ubo : ubos) {
 			OpenGLUniformBuffer* ubo = static_cast<OpenGLUniformBuffer*>(_ubo.first);
@@ -1584,6 +1585,7 @@ namespace BlackPearl {
 
 	void Device::_commitTexturesAndSamplers(const std::vector<std::pair<Texture*, uint32_t>>& textures, const std::vector<std::pair<Sampler*, uint32_t>>& samplers, FOpenGLContextState& ContextState)
 	{
+        GE_ERROR_JUDGE();
 		int bindIndex = 0;
        // if (textures.empty()) {
             //reset texture
@@ -1615,6 +1617,7 @@ namespace BlackPearl {
 				if (targetDim == ContextStateDim)
 				{
 					glBindTexture(targetDim, tex->GetRendererID());
+                    GE_ERROR_JUDGE();
 				}
 				else
 				{
@@ -1622,11 +1625,13 @@ namespace BlackPearl {
 					{
 						// Unbind different texture target on the same stage, to avoid OpenGL keeping its data, and potential driver problems.
 						glBindTexture(ContextStateDim, 0);
+                        GE_ERROR_JUDGE();
 					}
 
 					if (targetDim != GL_NONE)
 					{
 						glBindTexture(targetDim, tex->GetRendererID());
+                        GE_ERROR_JUDGE();
 					}
 				}
 				ContextState.Textures[bindIndex].Dimension = targetDim;
@@ -1810,6 +1815,7 @@ namespace BlackPearl {
 
 	void CommandList::setVertexBufferState(const std::vector<VertexBufferBinding>& vertexBuffers)
 	{
+        m_Device->PendingState.vbos.clear();
 		for (size_t i = 0; i < vertexBuffers.size(); i++)
 		{
 			IBuffer* buf = vertexBuffers[i].buffer;

@@ -42,6 +42,7 @@ namespace BlackPearl {
 
         textureDesc.dimension = TextureDimension::TextureCube;
         textureDesc.debugName = "BlackCubeMap";
+        textureDesc.type = TextureType::CubeMap;
         blackCubeMap = device->createTexture(textureDesc);
 
 

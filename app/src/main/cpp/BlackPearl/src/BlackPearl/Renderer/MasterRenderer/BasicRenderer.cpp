@@ -934,7 +934,7 @@ namespace BlackPearl {
 			GraphicsPipelineDesc psoDesc;
 			psoDesc.depthStencilState.enableDepthTest();
 			psoDesc.depthStencilState.enableDepthWrite();
-			psoDesc.depthStencilState.setDepthFunc(ComparisonFunc::Less);
+			psoDesc.depthStencilState.setDepthFunc(ComparisonFunc::LessOrEqual);
            
 			psoDesc.blendState.alphaToCoverageEnable = false;
 			psoDesc.rasterState.frontCounterClockwise = true;

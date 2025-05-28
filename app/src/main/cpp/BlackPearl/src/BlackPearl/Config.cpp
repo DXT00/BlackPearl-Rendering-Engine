@@ -41,6 +41,7 @@ namespace BlackPearl {
 	const float Configuration::EnvironmantMapResolution = 64.0;// 256.0f;
 	
     const bool Configuration::bDeferredShading = true;
+    const bool Configuration::bUseSinglePass = false;
 
 
 	const char* ShaderConfig::AMBIENT_COLOR   = "u_Material.ambientColor";

@@ -33,7 +33,7 @@ public:
         }
 
 		m_Scene = DBG_NEW BlackPearl::Scene();
-		m_SphereObj = CreateSphere(0.5, 64, 64);
+		m_SphereObj = CreateSphere(0.5, 64, 64, "assets/shaders/glsl/Cube.glsl", "assets/texture/wood.png");
 		m_CubeObj = CreateCube("assets/shaders/glsl/Cube.glsl", "assets/texture/wood.png");
 		m_SkyBox = CreateSkyBox(
 			{ "assets/skybox/skybox/right.jpg",

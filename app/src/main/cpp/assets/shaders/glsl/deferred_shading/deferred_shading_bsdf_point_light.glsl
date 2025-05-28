@@ -31,9 +31,13 @@ void main()
 #type fragment
 #version 450 core
 
+#ifdef DEFERRED_SHADING_PASS
+#undef DEFERRED_SHADING_PASS
+#endif
+
 #define DEFERRED_SHADING_PASS 1
-#include <assets/shaders/glsl/bsdf/BSDF.glsl>
-#include <assets/shaders/glsl/gBuffer.glsl>
+
+
 
 out vec4 FragColor;
 in vec2 v_TexCoord;
@@ -41,24 +45,20 @@ in vec2 v_TexCoord;
 #include <assets/shaders/glsl/common/CommonViewStruct.glsl>
 #include <assets/shaders/glsl/common/CommonDeferredStruct.glsl>
 #include <assets/shaders/glsl/common/CommonTransform.glsl>
+#include <assets/shaders/glsl/bsdf/BSDF.glsl>
+#include <assets/shaders/glsl/gBuffer/gBuffer.glsl>
+
 void main(){
 
-
-
-    GBufferData GBuffer = DecodeGBuffer(t_gGbufferA, t_gGbufferB, t_gGbufferC);
+    GBufferData GBuffer = DecodeGBuffer(v_TexCoord);
 
     float2 pixelPos = v_TexCoord * g_View.viewportSize; //v_TexCoord range [0,1]
     
-    float3 worldPos = ScreenSpaceToWorldPosition(pixelPos, Gbuffer.Depth);
-
-   
-    
-    
-
+    float3 worldPos = ScreenSpaceToWorldPosition(pixelPos, GBuffer.Depth);
 
       SurfaceGeometry geom;
       geom.position = worldPos;
-      geom.normal = Gbuffer.WorldNormal;
+      geom.normal = GBuffer.WorldNormal;
       geom.viewDir = normalize(g_View.cameraPos - worldPos); // Assuming eye is at (0,0,0)
 #if USE_TBN
 //      todo:: GBuffer.WorldTangent = half3(0); //TODO:: get Aniso flag
@@ -76,16 +76,22 @@ void main(){
 #elif (Disney)
     DisneyMaterialSample mat = GetMaterialFromGBuffer(GBuffer);
 #endif
-    mat.emissive = t_gSceneColor.xyz;
+    mat.emissive = texture(t_gSceneColor,v_TexCoord).rgb;
 
    for(uint nLight = 0; nLight < g_DeferredLight.numLights; nLight++)
    {
-       LightConstants light = g_DeferredLight.lights[i];
+       LightConstants light = g_DeferredLight.lights[nLight];
        FragColor += ShadeSurface(light, geom, mat);
    }
    half IndirectIrradiance = GBuffer.IndirectIrradiance;
     
     //direct light
 
-    //ibl
+//    //ibl
+//    if(v_TexCoord.x <0.5 && v_TexCoord.y < 0.5){
+//     FragColor = vec4(1,0,0,1);
+//    }else{
+//        FragColor = texture(t_gGbufferA,v_TexCoord);//vec4(texture(t_gGbufferC,v_TexCoord).xyz,1.0);
+//
+//    }
 }

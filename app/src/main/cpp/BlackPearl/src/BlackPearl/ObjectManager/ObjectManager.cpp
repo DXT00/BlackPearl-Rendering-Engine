@@ -206,7 +206,7 @@ namespace BlackPearl {
 			desc.wrap = SamplerAddressMode::ClampToEdge;
 			desc.format = Format::RGBA8_UNORM;
 			desc.generateMipmap = true;
-			//texture->diffuseTextureMap = m_Device->createTexture(desc);
+			texture->diffuseTextureMap = m_Device->createTexture(desc);
 		}
 
 		material.reset(DBG_NEW Material(shaderPath, texture, { 1.0,1.0,1.0 }, { 1.0,1.0,1.0 }, { 1.0,1.0,1.0 }, {}));

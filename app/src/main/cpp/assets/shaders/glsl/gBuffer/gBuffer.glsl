@@ -1,6 +1,8 @@
 
 #include <assets/shaders/glsl/common/CommonOctahedral.glsl>
 
+#include <assets/shaders/glsl/common/CommonDepth.glsl>
+
 #include <assets/shaders/glsl/bsdf/BSDF.glsl>
 
 #include <material_cb.h>
@@ -76,40 +78,42 @@ float DecodeIndirectIrradiance(float IndirectIrradiance)
 }
 
 
-void MobileFetchGBuffer(in float2 UV, out half4 GBufferA, out half4 GBufferB, out half4 GBufferC, out float SceneDepth)
+void MobileFetchGBuffer(in float2 UV, in out half4 GBufferA, in out half4 GBufferB, in out half4 GBufferC, in out float SceneDepth)
 {
 #if DEFERRED_SHADING_PASS
-#if VULKAN_PROFILE
-	GBufferA = VulkanSubpassFetch1(); 
-	GBufferB = VulkanSubpassFetch2(); 
-	GBufferC = VulkanSubpassFetch3();
-
-	SceneDepth = ConvertFromDeviceZ(VulkanSubpassDepthFetch());
-#elif METAL_PROFILE
-	GBufferA = SubpassFetchRGBA_1(); 
-	GBufferB = SubpassFetchRGBA_2(); 
-	GBufferC = SubpassFetchRGBA_3(); 
-
-	SceneDepth = ConvertFromDeviceZ(SubpassFetchR_4());
-#elif USE_GLES_FBF_DEFERRED
-	GBufferA = GLSubpassFetch1(); 
-	GBufferB = GLSubpassFetch2(); 
-	GBufferC = GLSubpassFetch3();  // PLS is limited to 128bits
-	SceneDepth = ConvertFromDeviceZ(DepthbufferFetchES2());
-#else
-	GBufferA = textureLod(t_gGbufferA, UV, 0); 
-	GBufferB = textureLod(t_gGbufferB, UV, 0);
-	GBufferC = textureLod(t_gGbufferC, UV, 0);
-
-	SceneDepth = ConvertFromDeviceZ(textureLod(t_gSceneDepth, UV, 0).r);
-#endif
+//#if VULKAN_PROFILE
+//	GBufferA = VulkanSubpassFetch1(); 
+//	GBufferB = VulkanSubpassFetch2(); 
+//	GBufferC = VulkanSubpassFetch3();
+//
+//	SceneDepth = ConvertFromDeviceZ(VulkanSubpassDepthFetch(), g_View.zNear, g_View.zFar);
+//#elif METAL_PROFILE
+//	GBufferA = SubpassFetchRGBA_1(); 
+//	GBufferB = SubpassFetchRGBA_2(); 
+//	GBufferC = SubpassFetchRGBA_3(); 
+//
+//	SceneDepth = ConvertFromDeviceZ(SubpassFetchR_4(), g_View.zNear, g_View.zFar);
+//#elif USE_GLES_FBF_DEFERRED
+//	GBufferA = GLSubpassFetch1(); 
+//	GBufferB = GLSubpassFetch2(); 
+//	GBufferC = GLSubpassFetch3();  // PLS is limited to 128bits
+//	SceneDepth = ConvertFromDeviceZ(DepthbufferFetchES2(), g_View.zNear, g_View.zFar);
+//#else
+//	GBufferA = textureLod(t_gGbufferA, UV, 0); 
+//	GBufferB = textureLod(t_gGbufferB, UV, 0);
+//	GBufferC = textureLod(t_gGbufferC, UV, 0);
+    GBufferA = texture(t_gGbufferA, UV); 
+	GBufferB = texture(t_gGbufferB, UV);
+	GBufferC = texture(t_gGbufferC, UV);
+	SceneDepth = ConvertFromDeviceZ(textureLod(t_gSceneDepth, UV, 0).r, g_View.zNear, g_View.zFar);
+//#endif
 
 #endif //DEFERRED_SHADING_PASS
 }
 
 
 
-GBufferData MobileDecodeGBuffer(half4 InGBufferA, half4 InGBufferB, half4 InGBufferC)
+GBufferData MobileDecodeGBuffer(in half4 InGBufferA, in half4 InGBufferB, in half4 InGBufferC)
 {
 	GBufferData GBuffer;
 	GBuffer.WorldNormal = OctahedronToUnitVector(InGBufferA.xy * 2.0f - 1.0f);
@@ -132,7 +136,7 @@ GBufferData MobileDecodeGBuffer(half4 InGBufferA, half4 InGBufferB, half4 InGBuf
     	GBuffer.ShadingModelID =  (ShadingModel_DefaultLit);
     #endif
 	//GBuffer.SelectiveOutputMask = 0;
-	GBuffer.BaseColor = DecodeBaseColor(InGBufferC.rgb);
+	GBuffer.BaseColor = InGBufferC.rgb;//DecodeBaseColor(InGBufferC.rgb);
 #if ALLOW_STATIC_LIGHTING
 	GBuffer.AO = 1;
 	//GBuffer.PrecomputedShadowFactors = half4(InGBufferC.a, 1, 1, 1);
@@ -167,7 +171,7 @@ GBufferData MobileFetchAndDecodeGBuffer(in float2 UV)
 }
 
 
-GBufferData DecodeGBuffer(vec2 texcoord)
+GBufferData DecodeGBuffer(in float2 texcoord)
 {
     return MobileFetchAndDecodeGBuffer(texcoord);
 }

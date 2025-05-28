@@ -8,9 +8,9 @@
 
 //https://blog.csdn.net/qq_32095699/article/details/148117198?sharetype=blogdetail&sharerId=148117198&sharerefer=PC&sharesource=qq_32095699&spm=1011.2480.3001.8118
 
-float ConvertFromDeviceZ(float DeviceZ, int near, int far)
+float ConvertFromDeviceZ(float DeviceZ, float near, float far)
 {
-	float z = depth * 2.0 - 1.0;//Back to NDC coordinate
+	float z = DeviceZ * 2.0 - 1.0;//Back to NDC coordinate
 	float z_view =  2.0 * near * far /(far + near - DeviceZ * (far - near));
 	//float zInworldUnit = (zInworld - near)/(far -near);
 

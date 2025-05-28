@@ -96,6 +96,7 @@ namespace BlackPearl {
         // Render Pipeline settings
         //-----------------------------------------------
         static const bool bDeferredShading;
+        static const bool bUseSinglePass;
 	};
 	struct ShaderConfig {
 

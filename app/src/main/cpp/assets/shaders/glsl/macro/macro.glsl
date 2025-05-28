@@ -37,7 +37,7 @@
 
 
 //texture
-#define USE_ALBEDO_MAP 0
+#define USE_ALBEDO_MAP 1
 #define USE_NORMAL_MAP 0
 #define USE_ROUGHNESS_MAP 0
 #define USE_EMISSIVE_MAP 0

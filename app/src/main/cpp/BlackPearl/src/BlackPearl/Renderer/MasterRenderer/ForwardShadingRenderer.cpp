@@ -22,8 +22,7 @@ namespace BlackPearl {
     {
         
         m_DrawStrategy = DBG_NEW InstancedOpaqueDrawStrategy();
-        ShaderDesc desc = ShaderDesc(ShaderType::All);
-        desc.debugName = "PbrShader";
+
         m_ForwardShadingShader = DBG_NEW MaterialShader("assets/shaders/glsl/forward_shading/forward_shading.glsl");
 
 
