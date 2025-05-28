@@ -374,6 +374,8 @@ MaterialSample CreateCookBSDFMaterial(in SurfaceGeometry geom, in MaterialConsta
     result.ior = consts.ior;
     result.flags = consts.flags;
     result.materialID = consts.materialID;
+    result.shadingModelID = consts.shadingModelID;
+
     result.domain = consts.domain;
     result.opacity = consts.opacity;
     result.alphaThreshold = consts.alphaThreshold;

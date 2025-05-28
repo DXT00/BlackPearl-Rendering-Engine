@@ -13,6 +13,7 @@
 // snorm	10:10:10	0.04228 0.09598
 // oct		12:12		0.02091 0.05874
 
+//doc: https://blog.csdn.net/qq_32095699/article/details/148279336
 float2 UnitVectorToOctahedron(float3 N)
 {
 	N.xy /= dot( float3(1.0), abs(N) );

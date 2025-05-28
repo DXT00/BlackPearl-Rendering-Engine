@@ -54,6 +54,8 @@ void main(){
 #include <assets/shaders/glsl/common/CommonTransform.glsl>
 
 #include <assets/shaders/glsl/gBuffer/gBuffer.glsl>
+
+#include <assets/shaders/glsl/common/CommonOctahedral.glsl>
 //
 /* MRT */
 /* render to gBuffer */
@@ -109,17 +111,17 @@ void main(){
 
 	GBuffer.IndirectIrradiance = IndirectIrradiance;
 
+    half4 bufferA;
+    half4 bufferB;
+    half4 bufferC;
+
 	MobileEncodeGBuffer(GBuffer, gGbufferA, gGbufferB, gGbufferC);
 
 	//fog + emissive 
 	vec4 sceneColor = vec4(mat.emissive,1.0);
     	gSceneColor = sceneColor;
 
-    gGbufferA = vec4(gGbufferA.xyz,1.0);
-    gGbufferB = vec4(normalize(GBuffer.WorldNormal) * 0.5f + 0.5f,1.0);
-////    gGbufferC = vec4(1.0);
-////
-//	gSceneColor = vec4(1.0);
+
 
 
 }

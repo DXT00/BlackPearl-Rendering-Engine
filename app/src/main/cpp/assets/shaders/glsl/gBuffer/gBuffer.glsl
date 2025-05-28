@@ -175,10 +175,10 @@ GBufferData DecodeGBuffer(vec2 texcoord)
 
 /** Mobile specific encoding of GBuffer data */
 void MobileEncodeGBuffer(
-	GBufferData GBuffer,
-	out half4 OutGBufferA,
-	out half4 OutGBufferB,
-	out half4 OutGBufferC
+	in GBufferData GBuffer,
+	inout half4 OutGBufferA,
+	inout half4 OutGBufferB,
+	inout half4 OutGBufferC
 )
 {
 	if (GBuffer.ShadingModelID == ShadingModel_Unlit)
