@@ -161,4 +161,8 @@ namespace BlackPearl {
         std::string currentDir = fs::path(filePath).parent_path().string();
         return processIncludes(content, currentDir);
     }
+    void GLSLIncluder::reset()
+    {
+        m_includedFiles.clear();
+    }
 }

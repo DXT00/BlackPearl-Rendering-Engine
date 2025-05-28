@@ -42,14 +42,13 @@ void main()
 #type fragment
 #version 450 core
 
-
+#include <assets/shaders/glsl/common/CommonForwardStruct.glsl>
 #include <assets/shaders/glsl/bsdf/BSDF.glsl>
 
 #include <forward_cb.h>
 
 #include <assets/shaders/glsl/common/CommonViewStruct.glsl>
 
-#include <assets/shaders/glsl/common/CommonForwardStruct.glsl>
 #include <assets/shaders/glsl/common/CommonTransform.glsl>
 
 
@@ -63,7 +62,7 @@ in vec3	v_Tangent;
 #endif
 void main(){
 
-
+      FragColor = vec4(0.0);
   
 	  SurfaceGeometry geom;
       geom.position = v_FragPos;
@@ -84,7 +83,7 @@ void main(){
 
    for(uint nLight = 0; nLight < g_ForwardLight.numLights; nLight++)
    {
-       LightConstants light = g_ForwardLight.lights[i];
+       LightConstants light = g_ForwardLight.lights[nLight];
        FragColor += ShadeSurface(light, geom, mat);
    }
     

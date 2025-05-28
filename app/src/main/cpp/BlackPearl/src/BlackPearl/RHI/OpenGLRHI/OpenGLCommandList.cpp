@@ -378,7 +378,7 @@ namespace BlackPearl {
 		FMemory::Memset(m_Device->PendingState.RenderTargetMipmapLevels, 0, sizeof(m_Device->PendingState.RenderTargetMipmapLevels));
 		FMemory::Memset(m_Device->PendingState.RenderTargetArrayIndex, 0, sizeof(m_Device->PendingState.RenderTargetArrayIndex));
 		m_Device->PendingState.FirstNonzeroRenderTarget = -1;
-
+        m_Device->PendingState.NumColorRenderTargets = NumSimultaneousRenderTargets;
 		for (int32_t RenderTargetIndex = NumSimultaneousRenderTargets - 1; RenderTargetIndex >= 0; --RenderTargetIndex)
 		{
 			m_Device->PendingState.RenderTargets[RenderTargetIndex] = static_cast<Texture*>(NewRenderTargetsRHI[RenderTargetIndex].Texture);
@@ -516,8 +516,8 @@ namespace BlackPearl {
 		bool bClearDepth = RenderTargetsInfo.bClearDepth;
 
 		Color ClearColors[c_MaxRenderTargets];
-		float DepthClear = 0.0;
-		uint32_t StencilClear = 0;
+		float DepthClear = 1.0;
+		uint32_t StencilClear = 1;
 		//TODO::
 		for (int32_t i = 0; i < RenderTargetsInfo.NumColorRenderTargets; ++i)
 		{
@@ -529,13 +529,13 @@ namespace BlackPearl {
 				{
 					bClearColor |= RenderTargetsInfo.ColorRenderTarget[i].LoadAction == ERenderTargetLoadAction::ENoAction;
 
-					ClearColors[i] = Color(0.0f);// ClearValue.ColorBinding == EClearBinding::EColorBound ? ClearValue.GetClearColor() : FLinearColor::Black;
+					ClearColors[i] = Color(0.0f, 0.0f, 0.0f, 1.0f);// ClearValue.ColorBinding == EClearBinding::EColorBound ? ClearValue.GetClearColor() : FLinearColor::Black;
 				}
 				else if (bClearColor)
 				{
 					//checkf(ClearValue.ColorBinding == EClearBinding::EColorBound, TEXT("Texture: %s does not have a color bound for fast clears"), *RenderTargetsInfo.ColorRenderTarget[i].Texture->GetName().GetPlainNameString());
 
-					ClearColors[i] = Color(0.0f);// ClearValue.GetClearColor();
+					ClearColors[i] = Color(0.0f, 0.0f , 0.0f ,1.0f);// ClearValue.GetClearColor();
 				}
 			}
 		}
@@ -1585,13 +1585,26 @@ namespace BlackPearl {
 	void Device::_commitTexturesAndSamplers(const std::vector<std::pair<Texture*, uint32_t>>& textures, const std::vector<std::pair<Sampler*, uint32_t>>& samplers, FOpenGLContextState& ContextState)
 	{
 		int bindIndex = 0;
+       // if (textures.empty()) {
+            //reset texture
+            /*glBindTexture(GL_TEXTURE_2D, 0);
+            glBindTexture(GL_TEXTURE_3D, 0);
+            glBindTexture(GL_TEXTURE_CUBE_MAP, 0);*/
+
+            for (size_t i = 0; i < ContextState.Textures.size(); i++)
+            {
+                ContextState.Textures[i].Reset();
+            }
+
+      //  }
 		for (auto& _tex : textures) {
 			Texture* tex = static_cast<Texture*>(_tex.first);
 			uint32_t slot = _tex.second;
 			GLenum targetDim = OpenGLUtil::convertTextureDimension(tex->getDesc().dimension);
 			GLenum ContextStateDim = ContextState.Textures[bindIndex].Dimension;
 
-			if (ContextState.Textures[bindIndex].Resource != tex->GetRendererID()) {
+			if (ContextState.Textures[bindIndex].Resource != tex->GetRendererID()) 
+            {
 				glActiveTexture(GL_TEXTURE0 + slot);
 				GE_ERROR_JUDGE();
 				ContextState.ActiveTexture = slot;

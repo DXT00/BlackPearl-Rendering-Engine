@@ -6,7 +6,7 @@ layout(location = 1) in vec3 aNormal;
 layout(location = 2) in vec2 aTexCoords;
 
 uniform mat4 u_Model;
-uniform mat4 u_TranInverseModel;//transpose(inverse(u_Model))-->×îºÃÔÚcpuÔËËãÍêÔÙ´«½øÀ´!
+uniform mat4 u_TranInverseModel;//transpose(inverse(u_Model))-->æœ€å¥½åœ¨cpuè¿ç®—å®Œå†ä¼ è¿›æ¥!
 uniform mat4 u_ProjectionView;
 
 out vec2 v_TexCoord;
@@ -53,7 +53,7 @@ struct PointLight{
 //
 //	float shininess;
 //	bool isBlinnLight;
-//	int  isTextureSample;//ÅĞ¶ÏÊÇ·ñÊ¹ÓÃtexture,»òÕßÖ»ÓĞcolor
+//	int  isTextureSample;//åˆ¤æ–­æ˜¯å¦ä½¿ç”¨texture,æˆ–è€…åªæœ‰color
 //
 //}u_Material;
 //
@@ -119,8 +119,8 @@ vec3 FresnelSchlickRoughness(float cosTheta, vec3 F0, float roughness){
 }
 vec3 BRDF(vec3 Kd,vec3 Ks,vec3 specular){
 	
-	vec3 fLambert = u_Material.diffuseColor/PI;//diffuseColor Ïàµ±ÓÚ albedo
-	return Kd * fLambert+  specular;//specular ÖĞÒÑ¾­ÓĞKs(Ks=F)ÁË£¬²»ĞèÒªÔÙ³ËÒÔKs *
+	vec3 fLambert = u_Material.diffuseColor/PI;//diffuseColor ç›¸å½“äº albedo
+	return Kd * fLambert+  specular;//specular ä¸­å·²ç»æœ‰Ks(Ks=F)äº†ï¼Œä¸éœ€è¦å†ä¹˜ä»¥Ks *
 }
 vec3 LightRadiance(vec3 fragPos,PointLight light){
 	float attenuation = calculateAttenuation(light,fragPos);
@@ -161,7 +161,7 @@ void main(){
         // be above 1.0 (unless the surface emits light); to preserve this
         // relationship the diffuse component (kD) should equal 1.0 - kS.
 		vec3 Kd = vec3(1.0)-Ks;
-		 // multiply kD by the inverse metalness such that only non-metals 
+		 // multiply kD by the inverse metallic such that only non-metals 
         // have diffuse lighting, or a linear blend if partly metal (pure metals
         // have no diffuse light).
 		Kd *= (1.0 - u_metallic);

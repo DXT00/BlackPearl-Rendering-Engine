@@ -4,7 +4,7 @@
 //#include "BlackPearl/Renderer/MasterRenderer/IndirectCullRenderer.h"
 //#include "BlackPearl/Renderer/MasterRenderer/PostProcessRenderer.h"
 #include "Renderer/Renderer.h"
-#include "Renderer/MasterRenderer/ForwardBasePassRenderer.h"
+#include "Renderer/MasterRenderer/ForwardShadingRenderer.h"
 #include "Renderer/MasterRenderer/SkyboxRenderer.h"
 #include "Timestep/Timestep.h"
 namespace BlackPearl {
@@ -14,7 +14,7 @@ namespace BlackPearl {
 		explicit ForwardRenderGraph(DeviceManager* deviceManager)
 			: RenderGraph(deviceManager)
 		{ }
-		virtual void Init(Scene* scene);
+		virtual void Init(Scene* scene) override;
 		virtual void Render(Timestep ts, IFramebuffer* framebuffer, IView* View);
 	
 
@@ -39,7 +39,7 @@ namespace BlackPearl {
 		//PostProcessRenderer* m_PostProcessRenderer;
 		//IndirectCullRenderer* m_IndirectCullRenderer;
 		//BasePassRenderer* m_BasePassRenderer;
-		ForwardBasePassRenderer* m_ForwardBasePassRenderer;
+		ForwardShadingRenderer* m_ForwardBasePassRenderer;
 		SkyboxRenderer* m_SkyboxRenderer;
 		//sky renderer
 

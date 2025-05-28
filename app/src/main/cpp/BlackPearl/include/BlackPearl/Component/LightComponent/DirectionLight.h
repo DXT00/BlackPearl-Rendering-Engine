@@ -7,7 +7,7 @@ namespace BlackPearl {
 	{
 	public:
 		DirectionLight(Props props = Props())
-			:Light(),m_Direction(math::float3( -0.2f, -1.0f, -0.3f )) {
+			:Light(),m_Direction(math::float3( 0.2f, -1.0f, -0.3f )) {
 			SetProps(props);
 
 			Init();

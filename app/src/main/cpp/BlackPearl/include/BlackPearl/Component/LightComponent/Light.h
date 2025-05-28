@@ -32,7 +32,7 @@ namespace BlackPearl {
 			例如：太阳的角大小约为 0.53°（≈0.0092 弧度），月亮类似。
 			*/
 			float angularSize = 0.53f;
-			Props() : ambient(math::float3(0.0f)), diffuse(math::float3(0.0f)), specular(math::float3(0.0f)), emission(math::float3(0.0f)),intensity(1.0f), area(1.0f), shadowBias(0.08) {}
+			Props() : ambient(math::float3(1.0f)), diffuse(math::float3(1.0f)), specular(math::float3(0.0f)), emission(math::float3(0.0f)),intensity(1.0f), area(1.0f), shadowBias(0.08) {}
 			Props(math::float3 ambient, math::float3 diffuse, math::float3 specular, math::float3 emission,float intensity, float area = 1.0, float shadowBias = 0.08 )
 				: ambient(ambient), diffuse(diffuse), specular(specular),emission(emission),intensity(intensity), area(area), shadowBias(shadowBias){}
 			bool operator==(Props& rhs) const {

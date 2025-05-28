@@ -15,7 +15,7 @@
 #include "BlackPearl/Renderer/RenderCommand.h"
 //#include "BlackPearl/Renderer/MasterRenderer/MasterRenderer.h"
 //#include "BlackPearl/Renderer/MasterRenderer/VoxelConeTracingRenderer.h"
-#include "BlackPearl/Renderer/MasterRenderer/ForwardBasePassRenderer.h"
+#include "BlackPearl/Renderer/MasterRenderer/ForwardShadingRenderer.h"
 //#include "BlackPearl/Renderer/MasterRenderer/IBLRenderer.h"
 #include "BlackPearl/Renderer/MasterRenderer/BasicRenderer.h"
 //#include "BlackPearl/Renderer/MasterRenderer/IBLProbesRenderer.h"

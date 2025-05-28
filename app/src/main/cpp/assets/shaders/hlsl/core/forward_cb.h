@@ -25,12 +25,7 @@
 
 #include "light_cb.h"
 #include "view_cb.h"
-//#ifdef GE_SHADERCOMPILE
-//
-//#else
-//#include "BlackPearl/Math/Math.h"
-//using namespace BlackPearl::math;
-//#endif
+
 #define FORWARD_MAX_LIGHTS 16
 #define FORWARD_MAX_SHADOWS 16
 #define FORWARD_MAX_LIGHT_PROBES 16
@@ -41,17 +36,6 @@ struct ForwardShadingViewConstants
     ALIGN(8) float2      viewportOrigin;
     ALIGN(8) float2      viewportSize;
     ALIGN(8) float2      viewportSizeInv;
-
-    //float2      viewportSizeInv;
-    //float2      pixelOffset;
-
-    //float2      clipToWindowScale;
-    //float2      clipToWindowBias;
-
-    //float2      windowToClipScale;
-    //float2      windowToClipBias;
-
-    //float4      cameraDirectionOrPosition;
 
     ALIGN(16) float4x4 matProjectionView;
     ALIGN(16) float4x4 matView;

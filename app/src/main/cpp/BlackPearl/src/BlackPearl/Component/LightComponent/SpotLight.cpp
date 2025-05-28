@@ -16,6 +16,7 @@ namespace BlackPearl {
         lightConstants = DefaultLightConstants();
         lightConstants.lightType = LightType_Spot;
         lightConstants.color = m_LightProp.diffuse;
-
+        lightConstants.innerAngle = m_CutOffAngle;
+        lightConstants.innerAngle = m_OuterCutOffAngle;
     }
 }

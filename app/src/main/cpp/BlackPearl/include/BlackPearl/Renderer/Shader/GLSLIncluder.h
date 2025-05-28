@@ -6,29 +6,29 @@ namespace BlackPearl {
 
     class GLSLIncluder {
     public:
-        // ¹¹Ôìº¯Êı£¬¿ÉÒÔÉèÖÃËÑË÷Â·¾¶
+        // æ„é€ å‡½æ•°ï¼Œå¯ä»¥è®¾ç½®æœç´¢è·¯å¾„
         GLSLIncluder(const std::vector<std::string>& searchPaths = {})
             : m_searchPaths(searchPaths) {
-            // Ìí¼Óµ±Ç°Ä¿Â¼×÷ÎªÄ¬ÈÏËÑË÷Â·¾¶
+            // æ·»åŠ å½“å‰ç›®å½•ä½œä¸ºé»˜è®¤æœç´¢è·¯å¾„
             if (m_searchPaths.empty()) {
                 m_searchPaths.push_back("");
             }
         }
         std::string processIncludes(const std::string& source, const std::string& currentDir = "");
         std::string loadShader(const std::string& filePath);
-
+        void reset();
     private:
         std::vector<std::string> m_searchPaths;
-        std::set<std::string> m_includedFiles; // ¸ú×ÙÒÑ°üº¬µÄÎÄ¼ş£¬·ÀÖ¹Ñ­»·°üº¬
+        std::set<std::string> m_includedFiles; // è·Ÿè¸ªå·²åŒ…å«çš„æ–‡ä»¶ï¼Œé˜²æ­¢å¾ªç¯åŒ…å«
 
-        // ¼ì²éÊÇ·ñÊÇ#includeÖ¸Áî
+        // æ£€æŸ¥æ˜¯å¦æ˜¯#includeæŒ‡ä»¤
         bool isIncludeDirective(const std::string& line) {
             size_t pos = line.find("#include");
             if (pos == std::string::npos) {
                 return false;
             }
 
-            // ¼ì²éÇ°ÃæÊÇ·ñÖ»ÓĞ¿Õ°××Ö·û
+            // æ£€æŸ¥å‰é¢æ˜¯å¦åªæœ‰ç©ºç™½å­—ç¬¦
             for (size_t i = 0; i < pos; ++i) {
                 if (!std::isspace(line[i])) {
                     return false;
@@ -38,7 +38,7 @@ namespace BlackPearl {
             return true;
         }
 
-        // ´Ó#includeÖ¸ÁîÖĞÌáÈ¡ÎÄ¼şÃû
+        // ä»#includeæŒ‡ä»¤ä¸­æå–æ–‡ä»¶å
         std::string extractIncludeFilename(const std::string& line) {
             size_t start = line.find('"');
             if (start == std::string::npos) {
@@ -61,7 +61,7 @@ namespace BlackPearl {
             }
         }
 
-        // ÔÚËÑË÷Â·¾¶ÖĞ²éÕÒ°üº¬ÎÄ¼ş
+        // åœ¨æœç´¢è·¯å¾„ä¸­æŸ¥æ‰¾åŒ…å«æ–‡ä»¶
         bool findIncludeFile(const std::string& filename,
             const std::vector<std::string>& searchPaths,
             std::string& resolvedPath,

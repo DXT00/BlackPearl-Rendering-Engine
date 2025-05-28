@@ -54,7 +54,7 @@ void main(){
 //      geom.bitangent = normalize(cross(geom.normal, geom.tangent));
 
 
-    GbufferData GBuffer = DecodeGbuffer(t_gGbufferA, t_gGbufferB, t_gGbufferC);
+    GBufferData GBuffer = DecodeGbuffer(t_gGbufferA, t_gGbufferB, t_gGbufferC);
 
 
 #if COOK

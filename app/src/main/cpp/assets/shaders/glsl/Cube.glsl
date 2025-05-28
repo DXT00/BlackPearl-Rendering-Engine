@@ -46,7 +46,4 @@ in vec2 TexCoords;
 void main(){
     MaterialTextureSample texSamples = SampleMaterialTexturesAuto(TexCoords);
 	FragColor = texSamples.albedo;//vec4(1.0,1.0,0.0,1.0);// vec4(u_Material.diffuseColor,0.2);
-//	FragColor =  vec4(1.0,0.0,0.0,1.0);//texture(u_Material.diffuse,TexCoords);//*vec4(u_Material.diffuseColor,1.0);
-//	float depth = LinearizeDepth(gl_FragCoord.z)/far;
-//	FragColor=vec4(vec3(depth),1.0);
 }

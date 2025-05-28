@@ -16,32 +16,36 @@ project "Sandbox"
 		"src/Layers/**.h",
 		"src/Layers/**.cpp",
 		"src/Sandbox.cpp",
-
-		"assets/shaders_hlsl/**.hlsl",
+        "../assets/shaders/hlsl/core/**.h",
 		
 	}
+	excludes {
+        "**/.vshistory/**",  -- 排除整个文件夹
+    }
+	
 	removefiles  { ".*/.vshistory/**.cpp" }
 	removefiles  { ".*/.vshistory/**.h" }
 	removefiles  { ".*/.vshistory/.*" }
-	filter { "files:Sandbox/assets/shaders_hlsl/**.hlsl" }
-	filter { "files:**.hlsl" }
-		flags("ExcludeFromBuild")
-		shadermodel("6.3")
-		shaderobjectfileoutput("bin/"..outputdir.."/%{prj.name}/%{file.basename}"..".cso")
-		shaderheaderfileoutput("./assets/shaders_hlsl_h/%{file.basename}.hlsl.h")
-		shadervariablename("g_p".."%{file.basename}")
-		shaderentry ""
-	filter {}
-	files { "%{prj.name}/assets/shaders_hlsl_h/**.hlsl.h"; }
+	--filter { "files:../assets/shaders_hlsl/**.hlsl" }
+	--filter { "files:**.hlsl" }
+	--	flags("ExcludeFromBuild")
+	--	shadermodel("6.3")
+	--	shaderobjectfileoutput("bin/"..outputdir.."/%{prj.name}/%{file.basename}"..".cso")
+	--	shaderheaderfileoutput("../assets/shaders_hlsl_h/%{file.basename}.hlsl.h")
+	--	shadervariablename("g_p".."%{file.basename}")
+	--	shaderentry ""
+	--filter {}
+	--files { "../assets/shaders_hlsl_h/**.hlsl.h"; }
 
 	includedirs
 	{
 		"../BlackPearl/vendor/spdlog/include",
 		--"../BlackPearl/src",
 		"../BlackPearl/include",
+		"../BlackPearl/include/BlackPearl",
 		"../BlackPearl/vendor",
 		"../BlackPearl/vendor/stb",
-		"../BlackPearl/assets/shaders",
+		--"../assets/shaders",
 		"../%{IncludeDir.glm}",
 		"../%{IncludeDir.GLFW}",
 		"../%{IncludeDir.assimp}",
@@ -51,13 +55,14 @@ project "Sandbox"
 		"../%{IncludeDir.Glad}",
 		"../%{IncludeDir.glslShader}",
 		--"../%{IncludeDir.vulkan}"
+        "../assets/shaders/"
 
 	}
 
 	defines
 	{
 		"GE_API_OPENGL",
-		"USE_IMGUI"
+		--"USE_IMGUI"
 	}
 	
 	links

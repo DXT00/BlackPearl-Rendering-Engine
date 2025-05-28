@@ -48,7 +48,8 @@ void main()
 #version 450 core
 out vec4 FragColor;
 in vec3 TexCoords;
-//#define float3 vec3
+
+#include <assets/shaders/glsl/common/CommonMath.glsl>
 
 struct SkyConstants
 {
@@ -100,8 +101,7 @@ layout(binding = 3) uniform samplerCube u_Skybox2;
 
 in vec3 v_Direction;
 
-// Constants
-const float PI = 3.14159265359;
+
 
 const vec3 betaRayleigh = vec3(5.5e-6, 13.0e-6, 22.4e-6); // R, G, B (scattering coefficient)
 const vec3 betaMie = vec3(21e-6);                         // Mie coefficient (gray)
@@ -120,13 +120,7 @@ float phaseMie(float cosTheta)
     float g2 = mieG * mieG;
     return (3.0 / (8.0 * PI)) * ((1.0 - g2) * (1.0 + cosTheta * cosTheta)) / pow(1.0 + g2 - 2.0 * mieG * cosTheta, 1.5);
 }
-float saturate(float x) {
-    return clamp(x, 0.0, 1.0);
-}
 
-vec3 saturate(vec3 v) {
-    return clamp(v, 0.0, 1.0);
-}
 void main(){
 
     vec3 viewDir = normalize(v_Direction);

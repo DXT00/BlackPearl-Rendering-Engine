@@ -1,8 +1,7 @@
 
 // Constants
-#define PI 3.141592653589793
-#define INV_PI 0.3183098861837907
-#define EPSILON 1e-6
+#include <assets/shaders/glsl/common/CommonMath.glsl>
+
 
 #include <assets/shaders/hlsl/core/light_cb.h>
 
@@ -232,7 +231,7 @@ DisneyMaterialSample CreateDisneyBSDFMaterial(SurfaceGeometry geom, DisneyMateri
     result.metallic =  textures.metalRoughOrSpecular.z;
 #else
     result.roughness = consts.roughness;
-    result.metallic = consts.metalness;
+    result.metallic = consts.metallic;
 #endif
 
 #if USE_EMISSIVE_MAP

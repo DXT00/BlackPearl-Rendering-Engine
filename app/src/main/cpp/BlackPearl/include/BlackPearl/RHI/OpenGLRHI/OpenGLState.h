@@ -117,6 +117,16 @@ struct FTextureStage
 		, NumMips(0)
 	{
 	}
+
+    void Reset() {
+            Texture = NULL;
+            SRV = NULL;
+            Dimension = GL_NONE;
+            Resource = 0;
+            LimitMip = -1;
+            bHasMips = false;
+            NumMips = 0;
+    }
 };
 
 struct FUAVStage
@@ -343,6 +353,7 @@ struct FOpenGLRHIState final : public FOpenGLCommonState
 	Texture*							RenderTargets[c_MaxRenderTargets];
 	uint32_t							RenderTargetMipmapLevels[c_MaxRenderTargets];
 	uint32_t							RenderTargetArrayIndex[c_MaxRenderTargets];
+    uint32_t                            NumColorRenderTargets;
 	Texture* DepthStencil;
 	ERenderTargetStoreAction		StencilStoreAction;
 	uint32_t						DepthTargetWidth;

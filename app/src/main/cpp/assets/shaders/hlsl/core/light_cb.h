@@ -71,8 +71,8 @@ struct LightConstants
     ALIGN(4) float intensity; // illuminance (lm/m2) for directional lights, luminous intensity (lm/sr) for positional lights
 
     ALIGN(4) float angularSizeOrInvRange;   // angular size for directional lights, 1/range for spot and point lights
-    ALIGN(4) float innerAngle;
-    ALIGN(4) float outerAngle;
+    ALIGN(4) float innerAngle; //  default :  glm::cos(glm::radians(10.0f))
+    ALIGN(4) float outerAngle; // default : glm::cos(glm::radians(11.0f))
     ALIGN(4) float outOfBoundsShadow;
 
     ALIGN(4) int4 shadowCascades;
@@ -99,8 +99,8 @@ inline LightConstants DefaultLightConstants() {
     lightConstants.color = float3(1.0);
     lightConstants.intensity = 1.0; // illuminance (lm/m2) for directional lights, luminous intensity (lm/sr) for positional lights
     lightConstants.angularSizeOrInvRange = 30.0f;   // angular size for directional lights, 1/range for spot and point lights
-    lightConstants.innerAngle = 10.0f;
-    lightConstants.outerAngle = 30.0f;
+    lightConstants.innerAngle = 1.0f;
+    lightConstants.outerAngle = 0.0f;
     lightConstants.outOfBoundsShadow = 1.0f;
     lightConstants.shadowCascades = int4(0);
     lightConstants.perObjectShadows = int4(0);

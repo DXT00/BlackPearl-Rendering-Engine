@@ -2,6 +2,8 @@
 #ifndef BP_COMMON_TEXTURESAMPLE_H
 #define BP_COMMON_TEXTURESAMPLE_H
 
+#include <assets/shaders/glsl/common/CommonMaterialStruct.glsl>
+
 struct MaterialTextureSample
 {
     float4 albedo;
@@ -138,95 +140,95 @@ MaterialTextureSample SampleMaterialTexturesGrad(vec2 texCoord, vec2 ddx, vec2 d
 //    float shadowNoLFadeout;
 //};
 //
-MaterialSample DefaultMaterialSample()
-{
-    MaterialSample result;
-    result.shadingNormal = float3(0);
-    result.geometryNormal = float3(0);
-    result.diffuseAlbedo = float3(0);
-    result.specularF0 = float3(0);
-    result.emissiveColor = float3(0);
-    result.opacity = 1.0;
-    result.occlusion = 1.0;
-    result.roughness = 0.0;
-    result.baseColor = float3(0);
-    result.metalness = 0.0;
-    result.transmission = 0.0;
-    result.diffuseTransmission = 0.0;
-    result.hasMetalRoughParams = false;
-    result.ior = 1.5;
-    return result;
-}
+//MaterialSample DefaultMaterialSample()
+//{
+//    MaterialSample result;
+//    result.shadingNormal = float3(0);
+//    result.geometryNormal = float3(0);
+//    result.diffuseAlbedo = float3(0);
+//    result.specularF0 = float3(0);
+//    result.emissiveColor = float3(0);
+//    result.opacity = 1.0;
+//    result.occlusion = 1.0;
+//    result.roughness = 0.0;
+//    result.baseColor = float3(0);
+//    result.metalness = 0.0;
+//    result.transmission = 0.0;
+//    result.diffuseTransmission = 0.0;
+//    result.hasMetalRoughParams = false;
+//    result.ior = 1.5;
+//    return result;
+//}
 const float c_DielectricSpecular = 0.04;
 
-
-MaterialSample EvaluateSceneMaterial(float3 normal, float4 tangent, MaterialConstants material, MaterialTextureSample textures)
-{
-    MaterialSample result = DefaultMaterialSample();
-    result.geometryNormal = normalize(normal);
-    result.shadingNormal = result.geometryNormal;
-    
-    if (material.flags & MaterialFlags_UseSpecularGlossModel)
-    {
-        float3 diffuseColor = material.baseOrDiffuseColor.rgb * textures.baseOrDiffuse.rgb;
-        float3 specularColor = material.specularColor.rgb * textures.metalRoughOrSpecular.rgb;
-        result.roughness = 1.0 - textures.metalRoughOrSpecular.a * (1.0 - material.roughness);
-
-#if ENABLE_METAL_ROUGH_RECONSTRUCTION
-        ConvertSpecularGlossToMetalRough(diffuseColor, specularColor, result.baseColor, result.metalness);
-        result.hasMetalRoughParams = true;
-#endif
-
-        // Compute the BRDF inputs for the specular-gloss model
-        // https://github.com/KhronosGroup/glTF/blob/master/extensions/2.0/Khronos/KHR_materials_pbrSpecularGlossiness/README.md#specular---glossiness
-        result.diffuseAlbedo = diffuseColor * (1.0 - max(specularColor.r, max(specularColor.g, specularColor.b)));
-        result.specularF0 = specularColor;
-    }
-    else
-    {
-        result.baseColor = material.baseOrDiffuseColor.rgb * textures.albedo.rgb;
-        result.roughness = material.roughness * textures.metalRoughOrSpecular.g;
-        result.metalness = material.metalness * textures.metalRoughOrSpecular.b;
-        result.hasMetalRoughParams = true;
-
-        // Compute the BRDF inputs for the metal-rough model
-        // https://github.com/KhronosGroup/glTF/tree/master/specification/2.0#metal-brdf-and-dielectric-brdf
-        result.diffuseAlbedo = lerp(result.baseColor * (1.0 - c_DielectricSpecular), 0.0, result.metalness);
-        result.specularF0 = lerp(c_DielectricSpecular, result.baseColor.rgb, result.metalness);
-    }
-    
-    result.occlusion = 1.0;
-    if (material.flags & MaterialFlags_UseOcclusionTexture)
-    {
-        result.occlusion = textures.occlusion.r;
-    }
-
-    result.occlusion = lerp(1.0, result.occlusion, material.occlusionStrength);
-    
-    result.opacity = material.opacity;
-    if (material.flags & MaterialFlags_UseBaseOrDiffuseTexture)
-        result.opacity *= textures.albedo.a;
-    result.opacity = saturate(result.opacity);
-
-    result.transmission = material.transmissionFactor;
-    result.diffuseTransmission = material.diffuseTransmissionFactor;
-    if (material.flags & MaterialFlags_UseTransmissionTexture)
-    {
-        result.transmission *= textures.transmission.r;
-        result.diffuseTransmission *= textures.transmission.r;
-    }
-    
-    result.emissiveColor = material.emissiveColor;
-    if (material.flags & MaterialFlags_UseEmissiveTexture)
-        result.emissiveColor *= textures.emissive.rgb;
-
-    if (material.flags & MaterialFlags_UseNormalTexture)
-        ApplyNormalMap(result, tangent, textures.normal, material.normalTextureScale);
-
-    result.ior = material.ior;
-    
-    result.shadowNoLFadeout = material.shadowNoLFadeout;
-
-    return result;
-}
+//
+//MaterialSample EvaluateSceneMaterial(float3 normal, float4 tangent, MaterialConstants material, MaterialTextureSample textures)
+//{
+//    MaterialSample result = DefaultMaterialSample();
+//    result.geometryNormal = normalize(normal);
+//    result.shadingNormal = result.geometryNormal;
+//    
+//    if (material.flags & MaterialFlags_UseSpecularGlossModel)
+//    {
+//        float3 diffuseColor = material.baseOrDiffuseColor.rgb * textures.baseOrDiffuse.rgb;
+//        float3 specularColor = material.specularColor.rgb * textures.metalRoughOrSpecular.rgb;
+//        result.roughness = 1.0 - textures.metalRoughOrSpecular.a * (1.0 - material.roughness);
+//
+//#if ENABLE_METAL_ROUGH_RECONSTRUCTION
+//        ConvertSpecularGlossToMetalRough(diffuseColor, specularColor, result.baseColor, result.metalness);
+//        result.hasMetalRoughParams = true;
+//#endif
+//
+//        // Compute the BRDF inputs for the specular-gloss model
+//        // https://github.com/KhronosGroup/glTF/blob/master/extensions/2.0/Khronos/KHR_materials_pbrSpecularGlossiness/README.md#specular---glossiness
+//        result.diffuseAlbedo = diffuseColor * (1.0 - max(specularColor.r, max(specularColor.g, specularColor.b)));
+//        result.specularF0 = specularColor;
+//    }
+//    else
+//    {
+//        result.baseColor = material.baseOrDiffuseColor.rgb * textures.albedo.rgb;
+//        result.roughness = material.roughness * textures.metalRoughOrSpecular.g;
+//        result.metalness = material.metalness * textures.metalRoughOrSpecular.b;
+//        result.hasMetalRoughParams = true;
+//
+//        // Compute the BRDF inputs for the metal-rough model
+//        // https://github.com/KhronosGroup/glTF/tree/master/specification/2.0#metal-brdf-and-dielectric-brdf
+//        result.diffuseAlbedo = lerp(result.baseColor * (1.0 - c_DielectricSpecular), 0.0, result.metalness);
+//        result.specularF0 = lerp(c_DielectricSpecular, result.baseColor.rgb, result.metalness);
+//    }
+//    
+//    result.occlusion = 1.0;
+//    if (material.flags & MaterialFlags_UseOcclusionTexture)
+//    {
+//        result.occlusion = textures.occlusion.r;
+//    }
+//
+//    result.occlusion = lerp(1.0, result.occlusion, material.occlusionStrength);
+//    
+//    result.opacity = material.opacity;
+//    if (material.flags & MaterialFlags_UseBaseOrDiffuseTexture)
+//        result.opacity *= textures.albedo.a;
+//    result.opacity = saturate(result.opacity);
+//
+//    result.transmission = material.transmissionFactor;
+//    result.diffuseTransmission = material.diffuseTransmissionFactor;
+//    if (material.flags & MaterialFlags_UseTransmissionTexture)
+//    {
+//        result.transmission *= textures.transmission.r;
+//        result.diffuseTransmission *= textures.transmission.r;
+//    }
+//    
+//    result.emissiveColor = material.emissiveColor;
+//    if (material.flags & MaterialFlags_UseEmissiveTexture)
+//        result.emissiveColor *= textures.emissive.rgb;
+//
+//    if (material.flags & MaterialFlags_UseNormalTexture)
+//        ApplyNormalMap(result, tangent, textures.normal, material.normalTextureScale);
+//
+//    result.ior = material.ior;
+//    
+//    result.shadowNoLFadeout = material.shadowNoLFadeout;
+//
+//    return result;
+//}
 #endif //COMMON_TEXTURESAMPLE_H

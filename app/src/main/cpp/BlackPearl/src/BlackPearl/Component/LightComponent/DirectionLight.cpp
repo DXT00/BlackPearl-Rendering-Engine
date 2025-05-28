@@ -81,8 +81,8 @@ namespace BlackPearl {
         lightConstants = DefaultLightConstants();
         lightConstants.direction = m_Direction;
         lightConstants.lightType = LightType_Directional;
-        lightConstants.color = m_LightProp.diffuse;
-
+        lightConstants.color = float3(1.0, 1.0, 0.0);// m_LightProp.diffuse;
+        lightConstants.intensity = 3.0f;
        
     }
 }

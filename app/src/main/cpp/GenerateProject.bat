@@ -1,3 +1,6 @@
+@echo off
+cd /d "%~dp0
+
 call vendor\bin\premake\premake5.exe vs2022 --RenderAPI=opengl
 
 
@@ -26,7 +29,7 @@ if not exist "%DEST1%" mkdir "%DEST1%"
 if not exist "%DEST2%" mkdir "%DEST2%"
 
 :: 使用robocopy复制并排除.vshistory目录， 复制到SandBox 运行时资源路径
-robocopy "%SOURCE%" "%DEST1%" /E /XD ".vshistory" /XF "premake5.lua" /COPYALL /R:1 /W:1 /NP /LOG:%~dp0copy_log1.txt
+robocopy "%SOURCE%" "%DEST1%" /E /XD ".vshistory" /XF "premake5.lua" /XF "CMakeLists.txt" /COPYALL /R:1 /W:1 /NP /LOG:%~dp0copy_log1.txt
 :: 检查结果
 if %ERRORLEVEL% LSS 8 (
     echo copy to SandBox assets success!

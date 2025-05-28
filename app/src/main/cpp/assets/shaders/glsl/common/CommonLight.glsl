@@ -49,7 +49,7 @@ float GetLocalLightAttenuation(
 	float3 L = ToLight * 1.0 / sqrt(DistanceSqr);
 
 	float LightMask;
-	if (light.bInverseSquared)
+	if (light.bInverseSquared!=0)
 	{
 		LightMask = square( saturate( 1 - square( DistanceSqr * square(light.invRadius) ) ) );
 		// This extra attenuation has been added for supporting existing 'legacy' shading model on mobile. 
@@ -63,12 +63,16 @@ float GetLocalLightAttenuation(
 		LightMask = RadialAttenuation(ToLight * light.invRadius, light.falloffExponent);
 	}
 
-	if (LightData.bSpotLight)
+	if (light.lightType == LightType_Spot)
 	{
-		LightMask *= SpotAttenuation(L, -light.Direction, light.outerAngle);
+    
+        const float CosOuterCone = light.innerAngle;
+        const float CosInnerCone = light.outerAngle;
+        const float InvCosConeDifference = 1.0f / (CosInnerCone - CosOuterCone);
+		LightMask *= SpotAttenuation(L, -light.direction, vec2(CosOuterCone,InvCosConeDifference ));
 	}
 
-	if( LightData.bRectLight )
+	if(light.lightType == LightType_Rect)
 	{
 		// Rect normal points away from point
 		LightMask = dot( light.direction, L ) < 0 ? 0 : LightMask;

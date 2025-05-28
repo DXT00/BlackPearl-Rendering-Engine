@@ -8,7 +8,21 @@ namespace BlackPearl {
     extern ShaderFactory* g_shaderFactory;
 
     namespace fs = std::filesystem;
-   
+    static std::string get_filename(const std::string& path) {
+        size_t pos = path.find_last_of("/\\");
+        if (pos != std::string::npos) {
+            return path.substr(pos + 1);
+        }
+        return path;
+    }
+
+    static void StoreShader(const std::string& shaderCode, const std::string name) {
+        // 写入UTF-8文件
+        std::ofstream out(name, std::ios::binary);
+        std::string text = shaderCode;
+        out.write(text.c_str(), text.size());
+
+    }
     static ShaderType ShaderTypeFromString(const std::string& type) {
 
         if (type == "vertex")
@@ -106,6 +120,7 @@ namespace BlackPearl {
         }
 
         if (shaderSources.find(ShaderType::Pixel) != shaderSources.end()) {
+            includer.reset();
             fullShaderPS = includer.processIncludes(shaderSources[ShaderType::Pixel]);
             shaderSources[ShaderType::Pixel] = fullShaderPS;
         }
@@ -154,6 +169,8 @@ namespace BlackPearl {
 #endif
         }
         GE_CORE_INFO("Shader {0}---------------\n, ---------vertex---------\n {1}\n, -----------pixel------------\n {2} \n", m_ShaderPath.c_str(), shaderSources[ShaderType::VertexShader].c_str(), shaderSources[ShaderType::Pixel].c_str());
+        StoreShader(shaderSources[ShaderType::VertexShader], get_filename(m_ShaderPath)+"_vert");
+        StoreShader(shaderSources[ShaderType::Pixel], get_filename(m_ShaderPath) + "_frag");
 
         GE_CORE_INFO("Shader %s\n, vertex: %s\n, pixel: %s \n", m_ShaderPath.c_str(), shaderSources[ShaderType::VertexShader].c_str(), shaderSources[ShaderType::Pixel].c_str());
         return shaderSources;

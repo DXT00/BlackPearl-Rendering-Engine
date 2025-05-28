@@ -171,7 +171,7 @@ namespace BlackPearl {
 
 		std::shared_ptr<Mesh> mesh = std::make_shared<Mesh>(meshFilter.get(), material, layout);
       //  GE_ERROR_JUDGE();
-
+        mesh->name = "Cube";
         obj->AddComponent<MeshRenderer>(mesh);
        // GE_ERROR_JUDGE();
 
@@ -206,7 +206,7 @@ namespace BlackPearl {
 			desc.wrap = SamplerAddressMode::ClampToEdge;
 			desc.format = Format::RGBA8_UNORM;
 			desc.generateMipmap = true;
-			texture->diffuseTextureMap = m_Device->createTexture(desc);
+			//texture->diffuseTextureMap = m_Device->createTexture(desc);
 		}
 
 		material.reset(DBG_NEW Material(shaderPath, texture, { 1.0,1.0,1.0 }, { 1.0,1.0,1.0 }, { 1.0,1.0,1.0 }, {}));
@@ -227,7 +227,8 @@ namespace BlackPearl {
 //#endif
 
 		std::shared_ptr<Mesh> mesh = std::make_shared<Mesh>(meshFilter.get(), material, layout);
-		obj->AddComponent<MeshRenderer>(mesh);
+        mesh->name = "Sphere";
+        obj->AddComponent<MeshRenderer>(mesh);
 
 		AABB box = BoundingBoxBuilder::Build(obj);
 		obj->AddComponent<BoundingBox>(box);

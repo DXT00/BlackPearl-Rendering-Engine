@@ -6,8 +6,8 @@ namespace BlackPearl {
 	struct MaterialColor
 	{
 
-		math::float3 ambientColor = math::float3(0.0);
-		math::float3 diffuseColor = math::float3(0.0);
+		math::float3 ambientColor = math::float3(1.0);
+		math::float3 diffuseColor = math::float3(1.0);
 		math::float3 specularColor = math::float3(0.0);
 		math::float3 emissiveColor = math::float3(0.0);
 		math::float3 subsurfaceColor = math::float3(0.0);

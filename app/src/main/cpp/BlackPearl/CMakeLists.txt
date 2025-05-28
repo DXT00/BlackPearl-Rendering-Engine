@@ -34,7 +34,7 @@ set(RENDER_API "opengl")
 file(GLOB_RECURSE SRC_FILES LIST_DIRECTORIES false
         "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/include/*.h"
-        "${CMAKE_CURRENT_SOURCE_DIR}/assets/shaders/hlsl/core/**.h"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../assets/shaders/hlsl/core/**.h"
 )
 
 list(FILTER SRC_FILES EXCLUDE REGEX "/.vshistory/.*")
@@ -109,7 +109,7 @@ set(INCLUDE_DIR
         "${CMAKE_CURRENT_SOURCE_DIR}/include"
         "${CMAKE_CURRENT_SOURCE_DIR}/include/BlackPearl"
         "${CMAKE_CURRENT_SOURCE_DIR}/include/BlackPearl/Core"
-        "${CMAKE_CURRENT_SOURCE_DIR}/assets/shaders/"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../assets/shaders/"
         "${VENDOR_DIR}"
         "${VENDOR_DIR}/spdlog/include"
 )

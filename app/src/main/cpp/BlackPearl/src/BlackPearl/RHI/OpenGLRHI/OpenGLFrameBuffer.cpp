@@ -98,14 +98,19 @@ namespace BlackPearl {
                 FOpenGL::ReadBuffer(PendingState.FirstNonzeroRenderTarget >= 0 ? GL_COLOR_ATTACHMENT0 + PendingState.FirstNonzeroRenderTarget : GL_NONE);
                 GE_ERROR_JUDGE();
                 GLenum err = glGetError();
-                GLenum DrawFramebuffers[c_MaxRenderTargets];
+                //GLenum DrawFramebuffers[c_MaxRenderTargets];
+                std::vector< GLenum> DrawFramebuffers;
                 const GLint MaxDrawBuffers = GMaxOpenGLDrawBuffers;
 
                 for (int32_t RenderTargetIndex = 0; RenderTargetIndex < MaxDrawBuffers; ++RenderTargetIndex)
                 {
-                    DrawFramebuffers[RenderTargetIndex] = PendingState.RenderTargets[RenderTargetIndex] ? GL_COLOR_ATTACHMENT0 + RenderTargetIndex : GL_NONE;
+                    if(PendingState.RenderTargets[RenderTargetIndex])
+                        DrawFramebuffers.push_back(GL_COLOR_ATTACHMENT0 + RenderTargetIndex);
+                    //DrawFramebuffers[RenderTargetIndex] = PendingState.RenderTargets[RenderTargetIndex] ? GL_COLOR_ATTACHMENT0 + RenderTargetIndex : GL_NONE;
                 }
-                FOpenGL::DrawBuffers(MaxDrawBuffers, DrawFramebuffers);
+                //FOpenGL::DrawBuffers(MaxDrawBuffers, DrawFramebuffers);
+
+                FOpenGL::DrawBuffers(DrawFramebuffers.size(), DrawFramebuffers.data());
                 GE_ERROR_JUDGE();
 
             }

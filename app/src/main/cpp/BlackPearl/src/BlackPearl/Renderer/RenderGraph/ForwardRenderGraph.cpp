@@ -18,10 +18,9 @@ namespace BlackPearl {
 
 		//BasePass
 		//m_BasePassRenderer = DBG_NEW BasePassRenderer(m_DeviceManager->GetDevice());
-        m_ForwardBasePassRenderer = DBG_NEW ForwardBasePassRenderer(m_DeviceManager->GetDevice());
+        m_ForwardBasePassRenderer = DBG_NEW ForwardShadingRenderer(m_DeviceManager->GetDevice());
 		m_SkyboxRenderer = DBG_NEW SkyboxRenderer(m_DeviceManager->GetDevice());
 
-		BasePassRenderer::CreateParameters params;
 
         m_ForwardBasePassRenderer->Init();
 		m_SkyboxRenderer->Init();

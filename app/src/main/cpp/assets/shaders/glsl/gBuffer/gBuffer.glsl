@@ -1,10 +1,12 @@
 
-#include <assets/glsl/common/CommonOctahedral.glsl>
+#include <assets/shaders/glsl/common/CommonOctahedral.glsl>
 
+#include <assets/shaders/glsl/bsdf/BSDF.glsl>
 
+#include <material_cb.h>
 
 // all values that are output by the forward rendering pass
-struct FGBufferData
+struct GBufferData
 {
 	// normalized
 	half3 WorldNormal;
@@ -36,7 +38,7 @@ struct FGBufferData
 	// Bit mask for occlusion of the diffuse indirect samples
 	//uint DiffuseIndirectSampleOcclusion;
 	// 0..255 
-	uint ShadingModelID;
+	int ShadingModelID;
     // in world space (linear value), can be used to reconstruct world position,
 	// only valid when decoding the GBuffer as the value gets reconstructed from the Z buffer
 	half Depth;
@@ -73,9 +75,10 @@ float DecodeIndirectIrradiance(float IndirectIrradiance)
 	return (1.0/g_View.preExposure) * (exp2( LogL * 16 - 8 ) - LogBlackPoint);	// 1 exp2, 1 smad, 1 ssub
 }
 
+
 void MobileFetchGBuffer(in float2 UV, out half4 GBufferA, out half4 GBufferB, out half4 GBufferC, out float SceneDepth)
 {
-
+#if DEFERRED_SHADING_PASS
 #if VULKAN_PROFILE
 	GBufferA = VulkanSubpassFetch1(); 
 	GBufferB = VulkanSubpassFetch2(); 
@@ -101,30 +104,14 @@ void MobileFetchGBuffer(in float2 UV, out half4 GBufferA, out half4 GBufferB, ou
 	SceneDepth = ConvertFromDeviceZ(textureLod(t_gSceneDepth, UV, 0).r);
 #endif
 
-
+#endif //DEFERRED_SHADING_PASS
 }
-#endif //MOBILE_DEFERRED_SHADING
 
-FGBufferData MobileFetchAndDecodeGBuffer(in float2 UV)
+
+
+GBufferData MobileDecodeGBuffer(half4 InGBufferA, half4 InGBufferB, half4 InGBufferC)
 {
-	FGBufferData GBuffer = (FGBufferData)0;
-	float SceneDepth = 0; 
-	half4 GBufferA = 0;
-	half4 GBufferB = 0;
-	half4 GBufferC = 0;
-	MobileFetchGBuffer(UV, GBufferA, GBufferB, GBufferC, SceneDepth);
-	GBuffer = MobileDecodeGBuffer(GBufferA, GBufferB, GBufferC, GBufferD);
-	GBuffer.Depth = SceneDepth;
-    GBuffer.WorldTangent = half3(0); //TODO:: get Aniso flag
-   
-	return GBuffer;
-}
-#endif //SHADING_PATH_MOBILE
-
-
-GbufferData MobileDecodeGBuffer(half4 InGBufferA, half4 InGBufferB, half4 InGBufferC)
-{
-	GbufferData GBuffer = (GbufferData)0;
+	GBufferData GBuffer;
 	GBuffer.WorldNormal = OctahedronToUnitVector(InGBufferA.xy * 2.0f - 1.0f);
 #if ALLOW_STATIC_LIGHTING
 	GBuffer.IndirectIrradiance = DecodeIndirectIrradiance(InGBufferA.z);
@@ -139,17 +126,21 @@ GbufferData MobileDecodeGBuffer(half4 InGBufferA, half4 InGBufferB, half4 InGBuf
 	// Note: must match GetShadingModelId standalone function logic
 	// Also Note: SimpleElementPixelShader directly sets SV_Target2 ( GBufferB ) to indicate unlit.
 	// An update there will be required if this layout changes.
-	GBuffer.ShadingModelID = MOBILE_SHADINGMODEL_SUPPORT ? (uint)round(InGBufferB.a * 255.0f) : SHADINGMODELID_DEFAULT_LIT;
+#if MOBILE_SHADINGMODEL_SUPPORT
+    	GBuffer.ShadingModelID =  (round(InGBufferB.a * 255.0f));
+#else
+    	GBuffer.ShadingModelID =  (ShadingModel_DefaultLit);
+    #endif
 	//GBuffer.SelectiveOutputMask = 0;
 	GBuffer.BaseColor = DecodeBaseColor(InGBufferC.rgb);
 #if ALLOW_STATIC_LIGHTING
-	GBuffer.GBufferAO = 1;
+	GBuffer.AO = 1;
 	//GBuffer.PrecomputedShadowFactors = half4(InGBufferC.a, 1, 1, 1);
 #else
-	GBuffer.GBufferAO = InGBufferC.a;
+	GBuffer.AO = InGBufferC.a;
 	//GBuffer.PrecomputedShadowFactors = 1.0;
 #endif
-
+    GBuffer.Anisotropy = 0;
 	// derived from BaseColor, Metalness, Specular
 	{
 		GBuffer.SpecularColor = ComputeF0(GBuffer.Specular, GBuffer.BaseColor, GBuffer.Metallic);
@@ -159,7 +150,24 @@ GbufferData MobileDecodeGBuffer(half4 InGBufferA, half4 InGBufferB, half4 InGBuf
 }
 
 
-GbufferData DecodeGBuffer(vec2 texcoord)
+
+GBufferData MobileFetchAndDecodeGBuffer(in float2 UV)
+{
+	GBufferData GBuffer;
+	float SceneDepth = 0.0; 
+	half4 GBufferA = half4(0.0);
+	half4 GBufferB = half4(0.0);
+	half4 GBufferC = half4(0.0);
+	MobileFetchGBuffer(UV, GBufferA, GBufferB, GBufferC, SceneDepth);
+	GBuffer = MobileDecodeGBuffer(GBufferA, GBufferB, GBufferC);
+	GBuffer.Depth = SceneDepth;
+    GBuffer.WorldTangent = half3(0); //TODO:: get Aniso flag
+   
+	return GBuffer;
+}
+
+
+GBufferData DecodeGBuffer(vec2 texcoord)
 {
     return MobileFetchAndDecodeGBuffer(texcoord);
 }
@@ -167,7 +175,7 @@ GbufferData DecodeGBuffer(vec2 texcoord)
 
 /** Mobile specific encoding of GBuffer data */
 void MobileEncodeGBuffer(
-	GbufferData GBuffer,
+	GBufferData GBuffer,
 	out half4 OutGBufferA,
 	out half4 OutGBufferB,
 	out half4 OutGBufferC
@@ -175,15 +183,15 @@ void MobileEncodeGBuffer(
 {
 	if (GBuffer.ShadingModelID == ShadingModel_Unlit)
 	{
-		OutGBufferA = 0;
-		OutGBufferB = 0;
-		OutGBufferC = 0;
+		OutGBufferA = half4(0.0);
+		OutGBufferB = half4(0.0);
+		OutGBufferC = half4(0.0);
 	}
 	else
 	{
 		OutGBufferA.rg = UnitVectorToOctahedron(normalize(GBuffer.WorldNormal)) * 0.5f + 0.5f;
 #if ALLOW_STATIC_LIGHTING
-		OutGBufferA.b = EncodeIndirectIrradiance(GBuffer.IndirectIrradiance * GBuffer.GBufferAO);
+		OutGBufferA.b = EncodeIndirectIrradiance(GBuffer.IndirectIrradiance * GBuffer.AO);
 #else
 		OutGBufferA.b = 1;
 #endif
@@ -196,16 +204,16 @@ void MobileEncodeGBuffer(
 
 		OutGBufferC.rgb = EncodeBaseColor( GBuffer.BaseColor );
 #if ALLOW_STATIC_LIGHTING
-		OutGBufferC.a = GBuffer.PrecomputedShadowFactors.x;
+		OutGBufferC.a = GBuffer.AO;//todo::GBuffer.PrecomputedShadowFactors.x;
 #else
-		OutGBufferC.a = GBuffer.GBufferAO;
+		OutGBufferC.a = GBuffer.AO;
 #endif
 }
 }
 
 
-#ifdef COOK
-MaterialSample GetMaterialFromGBuffer(GbufferData GBuffer){
+#if COOK
+MaterialSample GetMaterialFromGBuffer(GBufferData GBuffer){
 	MaterialSample mat;
 	mat.shadingNormal = GBuffer.WorldNormal;
     mat.flags = 0; //not use
@@ -215,19 +223,19 @@ MaterialSample GetMaterialFromGBuffer(GbufferData GBuffer){
     mat.opacity = 1; // Cook-torrance default to Opaque material
     mat.alphaThreshold = 0; // not use, Gbuffer default to opacity /mask object
     mat.roughness = GBuffer.Roughness;
-    mat.metalness = GBuffer.Metallic;
-    mat.specular = GBuffer.Specular
+    mat.metallic = GBuffer.Metallic;
+    mat.specular = GBuffer.Specular;
     mat.ao = GBuffer.AO;
     mat.albedo = GBuffer.BaseColor;
-    mat.emissive = 0;// 不在Gbuffer 处理, 在 SceneColor
-    mat.transmission = 0;// not use,
+    mat.emissive =  half3(0.0);// 不在Gbuffer 处理, 在 SceneColor
+    mat.transmission = half3(0.0);// not use,
     mat.ior = 0;//  not use,
-
+    return mat;
 }
 
-GbufferData GetGBufferFormMatetial(SurfaceGeometry geom, MaterialSample mat){
+GBufferData GetGBufferFormMatetial(SurfaceGeometry geom, MaterialSample mat){
 
-	GbufferData GBuffer;
+	GBufferData GBuffer;
 
     GBuffer.WorldNormal = mat.shadingNormal;
 	GBuffer.WorldTangent = geom.tangent;
@@ -247,29 +255,29 @@ GbufferData GetGBufferFormMatetial(SurfaceGeometry geom, MaterialSample mat){
 	GBuffer.ShadingModelID =  mat.shadingModelID;
 	GBuffer.AO = mat.ao;
 	GBuffer.Anisotropy = 0;
+    GBuffer.PerObjectGBufferData = 1.0; //reserve channel
+    GBuffer.Depth = 1.0; //not get from mat, use default temporary
+
 	return GBuffer;
 }
 
 
-#elif defined(Disney)
+#elif (Disney)
 
-DisneyMaterialSample GetMaterialFromGBuffer(GbufferData gbufferData){
+DisneyMaterialSample GetMaterialFromGBuffer(GBufferData gbufferData){
 
-
+    DisneyMaterialSample ret;
+    //TODO::
+    return ret;
 }
 
-GbufferData GetGBufferFormMatetial(SurfaceGeometry geom, DisneyMaterialSample mat){
+GBufferData GetGBufferFormMatetial(SurfaceGeometry geom, DisneyMaterialSample mat){
 
 
 }
 #endif
 
-#endif
 
-SurfaceGeometry GetGeometryFromGBuffer(GbufferData gbufferData){
-
-
-}
 
 
 

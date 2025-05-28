@@ -2,6 +2,11 @@
 #ifndef BP_COMMON_MATH_H
 #define BP_COMMON_MATH_H
 
+
+#define PI 3.1415926
+
+#define INV_PI 0.3183098861837907
+#define EPSILON 1e-6
 // GLSL: emulate HLSL-style select
 vec2 select(bvec2 cond, vec2 a, vec2 b) {
     return vec2(
@@ -20,7 +25,7 @@ vec3 select(bvec3 cond, vec3 a, vec3 b) {
 }
 
 // 可扩展版本（适用于 vec4）
-vec3 select(bvec4 cond, vec4 a, vec4 b) {
+vec4 select(bvec4 cond, vec4 a, vec4 b) {
     return vec4(
         cond.x ? a.x : b.x,
         cond.y ? a.y : b.y,
@@ -47,4 +52,7 @@ float saturate(float x) {
     return clamp(x, 0.0, 1.0);
 }
 
+vec3 saturate(vec3 v) {
+    return clamp(v, 0.0, 1.0);
+}
 #endif

@@ -300,7 +300,7 @@ namespace BlackPearl {
         case Format::R11G11B10_FLOAT:
             return std::make_pair<GLenum, GLenum>(GL_RGB, GL_FLOAT);
         case Format::R10G10B10A2_UNORM:
-            return std::make_pair<GLenum, GLenum>(GL_RGBA, GL_UNSIGNED_BYTE);
+            return std::make_pair<GLenum, GLenum>(GL_RGBA, GL_UNSIGNED_INT_2_10_10_10_REV);
 
         case Format::D32S8:
             return std::make_pair<GLenum, GLenum>(GL_DEPTH_STENCIL, GL_FLOAT_32_UNSIGNED_INT_24_8_REV);

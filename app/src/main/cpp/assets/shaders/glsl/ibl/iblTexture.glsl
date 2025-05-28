@@ -7,7 +7,7 @@ layout(location = 1) in vec3 aNormal;
 layout(location = 2) in vec2 aTexCoords;
 
 uniform mat4 u_Model;
-uniform mat4 u_TranInverseModel;//transpose(inverse(u_Model))-->×îºÃÔÚcpuÔËËãÍêÔÙ´«½øÀ´!
+uniform mat4 u_TranInverseModel;//transpose(inverse(u_Model))-->æœ€å¥½åœ¨cpuè¿ç®—å®Œå†ä¼ è¿›æ¥!
 uniform mat4 u_ProjectionView;
 
 out vec2 v_TexCoord;
@@ -66,7 +66,7 @@ float kd=0.1;
 float ks=0.1;
 
 
-//TODO::·¨ÏßÌùÍ¼
+//TODO::æ³•çº¿è´´å›¾
 vec3 getNormalFromMap()
 {
     vec3 tangentNormal =  2.0* texture(u_Material.normal, v_TexCoord).xyz- vec3(1.0);
@@ -119,8 +119,8 @@ vec3 FresnelSchlickRoughness(float cosTheta, vec3 F0, float roughness){
 }
 vec3 BRDF(vec3 Kd,vec3 Ks,vec3 specular,vec3 albedo){
 	
-	vec3 fLambert = albedo/PI;//diffuseColor Ïàµ±ÓÚ albedo
-	return Kd * fLambert+  specular;//specular ÖĞÒÑ¾­ÓĞKs(Ks=F)ÁË£¬²»ĞèÒªÔÙ³ËÒÔKs *
+	vec3 fLambert = albedo/PI;//diffuseColor ç›¸å½“äº albedo
+	return Kd * fLambert+  specular;//specular ä¸­å·²ç»æœ‰Ks(Ks=F)äº†ï¼Œä¸éœ€è¦å†ä¹˜ä»¥Ks *
 }
 vec3 LightRadiance(vec3 fragPos,PointLight light){
 	float attenuation = calculateAttenuation(light,fragPos);
@@ -257,7 +257,7 @@ void main(){
 		    // be above 1.0 (unless the surface emits light); to preserve this
 		    // relationship the diffuse component (kD) should equal 1.0 - kS.
 			vec3 Kd = vec3(1.0)-Ks;
-			 // multiply kD by the inverse metalness such that only non-metals 
+			 // multiply kD by the inverse metallic such that only non-metals 
 		    // have diffuse lighting, or a linear blend if partly metal (pure metals
 		    // have no diffuse light).
 			Kd *= (1.0 - metallic);
@@ -317,7 +317,7 @@ void main(){
 		
 		vec3 prefileredColor = vec3(0.0,0.0,0.0) ;//= vec3(1.0,1.0,1.0);
 
-		/*specular MapÖ»È¡×î½üµÄÒ»¸ö*/
+		/*specular Mapåªå–æœ€è¿‘çš„ä¸€ä¸ª*/
 		prefileredColor = textureLod(u_PrefilterMap,R,4).rgb;
 //		for(int i=0;i<u_Kprobes;i++){
 //			prefileredColor+= u_ProbeWeight[i]*textureLod(u_PrefilterMap[i],R,roughness*MAX_REFLECTION_LOD).rgb;

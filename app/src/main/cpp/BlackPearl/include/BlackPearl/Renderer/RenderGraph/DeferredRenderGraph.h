@@ -12,7 +12,7 @@ namespace BlackPearl {
 			: RenderGraph(deviceManager)
 		{
 		}
-		virtual void Init(Scene* scene);
+		virtual void Init(Scene* scene) override;
 		virtual void Render(Timestep ts, IFramebuffer* framebuffer, IView* View);
 
 		void RenderSinglePass(Timestep ts, IFramebuffer* framebuffer, IView* View);
@@ -20,6 +20,8 @@ namespace BlackPearl {
 
 
 	private:
+
+        void InitRT();
 		// RenderTarget:
 
 		std::vector<ITexture*> m_ColorRTs;

@@ -29,6 +29,9 @@
 	#define uint3 uvec3
 	#define uint4 uvec4
 
+    #define bool2 bvec2
+	#define bool3 bvec3
+	#define bool4 bvec4
 #else //PC opengl/vuljan
 
 	#define half  float	
@@ -54,32 +57,12 @@
 	#define uint3 uvec3
 	#define uint4 uvec4
 
+    #define bool2 bvec2
+	#define bool3 bvec3
+	#define bool4 bvec4
+
 #endif
 
-
-
-const int MaterialFlags_UseSpecularGlossModel            = 0x00000001;
-const int MaterialFlags_DoubleSided                      = 0x00000002;
-const int MaterialFlags_UseMetalRoughOrSpecularTexture   = 0x00000004;
-const int MaterialFlags_UseBaseOrDiffuseTexture          = 0x00000008;
-const int MaterialFlags_UseEmissiveTexture               = 0x00000010;
-const int MaterialFlags_UseNormalTexture                 = 0x00000020;
-const int MaterialFlags_UseOcclusionTexture              = 0x00000040;
-const int MaterialFlags_UseTransmissionTexture           = 0x00000080;
-const int MaterialFlags_ThinSurface                      = 0x00000100;
-const int MaterialFlags_PSDExclude                       = 0x00000200;
-const int MaterialFlags_UseHeightMapTexture              = 0x00000400;
-const int MaterialFlags_UseCubeMapTexture                = 0x00000800;
-const int MaterialFlags_UseDepthTexture                  = 0x00001000;
-const int MaterialFlags_UseSpecularTexture               = 0x00002000;
-const int MaterialFlags_UseRoughnessTexture              = 0x00004000;
-const int MaterialFlags_UseMetalTexture                  = 0x00008000;
-const int MaterialFlags_UseOpacityTexture                = 0x00010000;
-
-
-const int ShadingModel_Unlit = 0;
-const int ShadingModel_DefaultLit = 1;
-const int ShadingModel_Disney = 2;
 
 
 
@@ -108,10 +91,6 @@ struct Material{
 	float transparency;
 	bool  isBlinnLight;
 	float emissivity;
-//	int   isTextureSample;
-//	int   isDiffuseTextureSample;
-//	int   isSpecularTextureSample;
-//	int   isMetallicTextureSample;
 	float refractiveIndex;
 };
 
@@ -156,4 +135,4 @@ struct SurfaceGeometry {
     vec3 bitangent;
 };
 
-#endif //COMMON_H
+#endif //BP_COMMON_H

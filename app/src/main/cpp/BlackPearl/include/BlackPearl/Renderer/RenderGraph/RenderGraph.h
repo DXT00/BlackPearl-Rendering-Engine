@@ -16,7 +16,7 @@ namespace BlackPearl {
         explicit RenderGraph(DeviceManager* deviceManager)
             : m_DeviceManager(deviceManager)
         { }
-        virtual void Init() {}
+        virtual void Init(Scene* scene) {}
         void AddPass(BasicRenderer* renderer);
        // void OnPreRender() {}
         virtual ~RenderGraph() = default;

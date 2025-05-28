@@ -1,36 +1,8 @@
-/*
-* Copyright (c) 2014-2021, NVIDIA CORPORATION. All rights reserved.
-*
-* Permission is hereby granted, free of charge, to any person obtaining a
-* copy of this software and associated documentation files (the "Software"),
-* to deal in the Software without restriction, including without limitation
-* the rights to use, copy, modify, merge, publish, distribute, sublicense,
-* and/or sell copies of the Software, and to permit persons to whom the
-* Software is furnished to do so, subject to the following conditions:
-*
-* The above copyright notice and this permission notice shall be included in
-* all copies or substantial portions of the Software.
-*
-* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
-* THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-* FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-* DEALINGS IN THE SOFTWARE.
-*/
+
 
 #ifndef MATERIAL_CB_H
 #define MATERIAL_CB_H
 #include "align.h"
-//
-#ifdef GE_SHADERCOMPILE
-
-#else
-//#include "BlackPearl/Math/Math.h"
-//using namespace BlackPearl::math;
-#endif
-
 
 const int MaterialDomain_Opaque                   = 0;
 const int MaterialDomain_AlphaTested              = 1;
@@ -69,7 +41,6 @@ const int ShadingModel_DefaultLit = 1;
 const int ShadingModel_Disney = 2;
 
 
-// NOTE: adjust LoadMaterialConstants(...) in bindless.h when changing this structure
 
 
 
@@ -78,15 +49,13 @@ struct Props {
     float shininess;
     float refractIndex;
     bool  isBinnLight;
-    int  isPBRTextureSample;//�Ƿ�ʹ������-->���� ao,normal,metalllic,roughness
+    int  isPBRTextureSample;
     int  isDiffuseTextureSample;
     int  isSpecularTextureSample;
     int  isHeightTextureSample;
     int  isEmissionTextureSample;
     int isRefractMaterial;
     int isDoubleSided;
-
-
 
 };
 
@@ -101,15 +70,8 @@ struct MaterialSample {
     ALIGN(4) int     domain;
     ALIGN(4) float   opacity;
     ALIGN(4) float   alphaThreshold; // for alpha tested materials
-    //for bindless texture
-    //  ALIGN(4) uint    baseOrDiffuseTextureIndex;
-    //  ALIGN(4) uint    metalRoughOrSpecularTextureIndex;
-    //  ALIGN(4) uint    emissiveTextureIndex;
-    //  ALIGN(4) uint    normalTextureIndex;
-    //  ALIGN(4) uint    occlusionTextureIndex;
-    //  ALIGN(4) uint    transmissionTextureIndex;
     ALIGN(4) float roughness;
-    ALIGN(4) float metalness;
+    ALIGN(4) float metallic;
     ALIGN(4) float specular;
     ALIGN(4) float ao;
     ALIGN(16) float3 albedo;
@@ -158,15 +120,8 @@ struct MaterialConstants
     ALIGN(4) int     domain;
     ALIGN(4) float   opacity;
     ALIGN(4) float   alphaThreshold; // for alpha tested materials
-//for bindless texture
-//  ALIGN(4) uint    baseOrDiffuseTextureIndex;
-//  ALIGN(4) uint    metalRoughOrSpecularTextureIndex;
-//  ALIGN(4) uint    emissiveTextureIndex;
-//  ALIGN(4) uint    normalTextureIndex;
-//  ALIGN(4) uint    occlusionTextureIndex;
-//  ALIGN(4) uint    transmissionTextureIndex;
     ALIGN(4) float roughness;
-    ALIGN(4) float metalness;
+    ALIGN(4) float metallic;
     ALIGN(4) float specular;
     ALIGN(4) float ao;
     ALIGN(16) float3 albedo;

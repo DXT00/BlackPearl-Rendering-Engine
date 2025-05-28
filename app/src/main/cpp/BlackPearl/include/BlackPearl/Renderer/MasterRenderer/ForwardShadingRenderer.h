@@ -8,14 +8,15 @@
 #include "BlackPearl/Object/Object.h"
 #include "BlackPearl/Renderer/Shader/MaterialShader.h"
 #include "BlackPearl/Renderer/Shader/ShaderParameters.h"
+#include "hlsl/core/forward_cb.h"
 
 namespace BlackPearl {
 
 	extern ShaderFactory* g_shaderFactory;
-	class ForwardBasePassRenderer: public BasicRenderer//public GeometryRenderer
+	class ForwardShadingRenderer: public BasicRenderer//public GeometryRenderer
 	{
 	public:
-		ForwardBasePassRenderer(IDevice* device)
+		ForwardShadingRenderer(IDevice* device)
 		:BasicRenderer(device)
 		{
 			
@@ -26,13 +27,17 @@ namespace BlackPearl {
 		void Init();
 		void Render(const std::vector<Object*>& objs);
 		void Render(ICommandList* commandList, IFramebuffer* targetFramebuffer, Scene* scene);
+        void FillShaderParameters(LightSources* lightSource, ForwardShadingLightConstants& output);
 
 		void Render(Object* obj);
-		MaterialShader* GetShader() const { return m_PbrShader; }
-		~ForwardBasePassRenderer();
+		MaterialShader* GetShader() const { return m_ForwardShadingShader; }
+		~ForwardShadingRenderer();
 
 	private:
-		MaterialShader* m_PbrShader = nullptr;
+        BufferHandle        m_LightsCB;
+        BindingLayoutHandle m_ForwardLightsBindingLayout;
+        BindingSetHandle    m_ForwardLightsBindingSet;
+		MaterialShader* m_ForwardShadingShader = nullptr;
 
 		InstancedOpaqueDrawStrategy* m_DrawStrategy;
 

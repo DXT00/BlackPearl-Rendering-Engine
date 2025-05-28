@@ -104,7 +104,7 @@ target_include_directories(
         "${ROOT_DIR}/BlackPearl/vendor/spdlog/include"
         "${ROOT_DIR}/BlackPearl/vendor/assimp/include"
         "${ANDROID_NDK}/sources/android/native_app_glue"
-        "${ROOT_DIR}/assets/shaders/"
+        "${ROOT_DIR}/../assets/shaders/"
 )
 set_target_properties(SandBoxAndroid PROPERTIES
         LINK_FLAGS "-Wl,--export-dynamic"
@@ -192,16 +192,16 @@ if(ANDROID)
 #            "${OUTPUT_Shaders_DIR}"
 #    )
 
-    # 定义源文件夹和目标文件夹
-    set(SHADERS_SOURCE_DIR "${INPUT_Shaders_DIR}")
-    set(SHADERS_DEST_DIR "${OUTPUT_Shaders_DIR}")
-
-    # 调用函数（在目标构建完成后执行）
-    copy_if_md5_changed(
-            "${SHADERS_SOURCE_DIR}"
-            "${SHADERS_DEST_DIR}"
-            ${PROJECT_NAME}  # 关联的目标（通常是可执行文件或库）
-    )
+#    # 定义源文件夹和目标文件夹
+#    set(SHADERS_SOURCE_DIR "${INPUT_Shaders_DIR}")
+#    set(SHADERS_DEST_DIR "${OUTPUT_Shaders_DIR}")
+#
+#    # 调用函数（在目标构建完成后执行）
+#    copy_if_md5_changed(
+#            "${SHADERS_SOURCE_DIR}"
+#            "${SHADERS_DEST_DIR}"
+#            ${PROJECT_NAME}  # 关联的目标（通常是可执行文件或库）
+#    )
 
 
 

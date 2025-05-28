@@ -23,7 +23,7 @@ namespace BlackPearl{
         ShaderDesc desc = ShaderDesc(ShaderType::All);
         desc.debugName = "DeferredShadingShader";
         //TODO:: 不需要多个不同light的shader， 通过宏来决定用哪个函数
-        m_DeferredPointLightShader = DBG_NEW MaterialShader("assets/shaders/glsl/bsdf/deferred_shading/deferred_shading_bsdf_point_light.glsl");
+        m_DeferredPointLightShader = DBG_NEW MaterialShader("assets/shaders/glsl/deferred_shading/deferred_shading_bsdf_point_light.glsl");
 
 
         m_ShaderParameters[ShaderType::VertexShader].bindingLayouts.push_back(m_ViewBindinglayout);
@@ -57,7 +57,7 @@ namespace BlackPearl{
 
         };
         m_DeferredShadingBindingLayout = m_Device->createBindingLayout(layoutDesc);
-        m_LightsCB = m_Device->createBuffer(RHIUtils::CreateStaticConstantBufferDesc(sizeof(ForwardShadingLightConstants), "SkyConstants"));
+        m_LightsCB = m_Device->createBuffer(RHIUtils::CreateStaticConstantBufferDesc(sizeof(ForwardShadingLightConstants), "ForwardShadingLightConstants"));
 
         BindingSetDesc bindingSetDesc;
         bindingSetDesc.bindings = {
@@ -218,10 +218,7 @@ namespace BlackPearl{
             GE_ERROR_JUDGE();
 
 
-            if (scene->GetLightSources()->GetParallelLights().empty()) {
-                GE_CORE_ERROR("no direction light found in SkyPass");
-                return;
-            }
+          
             ForwardShadingLightConstants lightConstants{};
             FillShaderParameters(scene->GetLightSources(), lightConstants);
 

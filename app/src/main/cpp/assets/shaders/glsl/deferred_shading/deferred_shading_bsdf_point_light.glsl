@@ -31,8 +31,8 @@ void main()
 #type fragment
 #version 450 core
 
-
-#include <assets/shaders/glsl/pbr/BSDF.glsl>
+#define DEFERRED_SHADING_PASS 1
+#include <assets/shaders/glsl/bsdf/BSDF.glsl>
 #include <assets/shaders/glsl/gBuffer.glsl>
 
 out vec4 FragColor;
@@ -45,7 +45,7 @@ void main(){
 
 
 
-    GbufferData GBuffer = DecodeGbuffer(t_gGbufferA, t_gGbufferB, t_gGbufferC);
+    GBufferData GBuffer = DecodeGBuffer(t_gGbufferA, t_gGbufferB, t_gGbufferC);
 
     float2 pixelPos = v_TexCoord * g_View.viewportSize; //v_TexCoord range [0,1]
     

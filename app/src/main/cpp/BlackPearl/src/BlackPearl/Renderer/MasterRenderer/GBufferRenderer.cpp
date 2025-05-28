@@ -24,40 +24,25 @@ namespace BlackPearl {
 	GBufferRenderer::GBufferRenderer(IDevice* device)
     : BasicRenderer(device)
 	{
-		/*m_GBuffer.reset(DBG_NEW GBuffer(m_TextureWidth, m_TexxtureHeight));
-		TextureDesc desc;
-		desc.type = TextureType::None;
-		desc.width = m_TextureWidth;
-		desc.height = m_TexxtureHeight;
-		desc.minFilter = FilterMode::Linear;
-		desc.magFilter = FilterMode::Linear;
-		desc.wrap = SamplerAddressMode::ClampToEdge;
-		desc.format = Format::RGBA16_FLOAT;
-		desc.generateMipmap = true;*/
-
-		//m_SSRTestTexture = device->createTexture(desc);
-		//m_SSRTestTexture.reset(DBG_NEW Texture(Texture::Type::None, m_TextureWidth, m_TexxtureHeight, false, GL_LINEAR, GL_LINEAR, GL_RGBA16F, GL_RGBA, GL_CLAMP_TO_EDGE, GL_FLOAT));
-
-
-	
-		//m_HDRPostProcessTexture.reset(DBG_NEW Texture(Texture::Type::None, m_TextureWidth, m_TexxtureHeight, false, GL_LINEAR, GL_LINEAR, GL_RGBA16F, GL_RGBA, GL_CLAMP_TO_EDGE, GL_FLOAT));
 		
-		//m_HDRPostProcessTexture = device->createTexture(desc);
-		
-		/*m_LightPassFrameBuffer.reset(DBG_NEW FrameBuffer());
-		m_LightPassFrameBuffer->Bind();
-		m_LightPassFrameBuffer->AttachRenderBuffer(m_TextureWidth, m_TexxtureHeight);
-		m_LightPassFrameBuffer->AttachColorTexture(m_HDRPostProcessTexture, 0);
-		m_LightPassFrameBuffer->AttachColorTexture(m_SSRTestTexture, 1);
-		m_LightPassFrameBuffer->UnBind();
-*/
-
-		
-
-
-		//m_SkyboxRenderer = DBG_NEW SkyboxRenderer();
-
 	}
+
+    void GBufferRenderer::Init()
+    {
+        m_DrawStrategy = DBG_NEW InstancedOpaqueDrawStrategy();
+        ShaderDesc desc = ShaderDesc(ShaderType::All);
+        desc.debugName = "GbufferShader";
+        m_GBufferShader = DBG_NEW MaterialShader("assets/shaders/glsl/gBuffer/gBuffer_pass.glsl");
+
+
+        m_ShaderParameters[ShaderType::Pixel].bindingLayouts.push_back(m_ViewBindinglayout);
+        m_ShaderParameters[ShaderType::Pixel].bindingSets.push_back(m_ViewBindingset);
+        m_ShaderParameters->PixelShader = m_GBufferShader->GetPixelShader();
+        m_ShaderParameters->VertexShader = m_GBufferShader->GetVertexShader();
+
+    }
+
+
 
 	void GBufferRenderer::Render(ICommandList* commandList, IFramebuffer* targetFramebuffer, Scene* scene)
 	{
@@ -83,22 +68,6 @@ namespace BlackPearl {
 
         commandList->endMarker();
 	}
-
-	void GBufferRenderer::Init()
-	{
-        m_DrawStrategy = DBG_NEW InstancedOpaqueDrawStrategy();
-        ShaderDesc desc = ShaderDesc(ShaderType::All);
-        desc.debugName = "GbufferShader";
-        m_GBufferShader = DBG_NEW MaterialShader("assets/shaders/glsl/gBuffer/gBuffer_pass.glsl");
-
-
-        m_ShaderParameters[ShaderType::Pixel].bindingLayouts.push_back(m_ViewBindinglayout);
-        m_ShaderParameters[ShaderType::Pixel].bindingSets.push_back(m_ViewBindingset);
-        m_ShaderParameters->PixelShader  = m_GBufferShader->GetPixelShader();
-        m_ShaderParameters->VertexShader = m_GBufferShader->GetVertexShader();
-
-    }
-
 
 
 

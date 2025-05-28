@@ -25,7 +25,9 @@ project "BlackPearl"
 		"!**/.vshistory/**"
 	}
 	excludes {
-        "**/.vshistory/**",  -- 排除整个文件夹
+        "**/.vshistory/**.*",  -- 排除整个文件夹
+		"../assets/shaders/hlsl/core/.vshistory/**.*",
+		"../assets/**/.vshistory/**.*"
     }
 	
    removefiles  { ".*/.vshistory/**.cpp" }

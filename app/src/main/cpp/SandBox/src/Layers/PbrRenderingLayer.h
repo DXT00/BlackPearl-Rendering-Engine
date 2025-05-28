@@ -7,7 +7,7 @@
 //#include "BlackPearl/ImGui/imgui.h"
 //#include "BlackPearl/ImGui/imfilebrowser.h"
 #include <glm/gtc/type_ptr.hpp>
-#include "Renderer/MasterRenderer/ForwardBasePassRenderer.h"
+#include "Renderer/MasterRenderer/ForwardShadingRenderer.h"
 using namespace BlackPearl;
 
 class PbrRenderingLayer :public BlackPearl::Layer {
@@ -23,7 +23,7 @@ public:
 
 		m_SphereObj = CreateSphere(0.5, 64, 64);
 		//Scene
-		m_PBRRenderer = DBG_NEW ForwardBasePassRenderer(m_DeviceManager->GetDevice());
+		m_PBRRenderer = DBG_NEW ForwardShadingRenderer(m_DeviceManager->GetDevice());
 
 		//m_SphereObj->GetComponent<BlackPearl::MeshRenderer>()->SetShaders(m_PBRRenderer->GetShader());
 		
@@ -81,7 +81,7 @@ public:
 
 		// render
 		RenderCommand::SetClearColor(m_BackgroundColor);
-		Renderer::BeginScene(*(m_MainCamera->GetObj()->GetComponent<PerspectiveCamera>()), *GetLightSources());
+		Renderer::BeginScene(m_MainCamera->GetObj()->GetComponent<PerspectiveCamera>(), *GetLightSources());
 
 		//m_PBRRenderer->GetShader()->SetUniformVec3f("u_albedo", { 0.5f, 0.0f, 0.0f });
 		//m_PBRRenderer->GetShader()->SetUniform1f("u_ao", 1.0f);
@@ -144,6 +144,6 @@ private:
 
 
 	//Renderer
-	ForwardBasePassRenderer* m_PBRRenderer;
+	ForwardShadingRenderer* m_PBRRenderer;
 	
 };

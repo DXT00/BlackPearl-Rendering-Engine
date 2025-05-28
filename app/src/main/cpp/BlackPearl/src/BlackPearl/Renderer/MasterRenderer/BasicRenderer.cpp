@@ -862,10 +862,10 @@ namespace BlackPearl {
 		//TODO:: ��pass context
 		PipelineKey key;// = context.keyTemplate;
 		key.value = material->GetId();
-		key.bits.cullMode = cullMode;
+		/*key.bits.cullMode = cullMode;
 		key.bits.domain = material->domain;
 		key.bits.frontCounterClockwise = true;
-		key.bits.reverseDepth = false;
+		key.bits.reverseDepth = false;*/
 
 		state.pipeline = PipelineStateCache::GetAndOrCreateGraphicsPipelineState(m_Device, pipelineDesc, key, state);
 		
@@ -934,7 +934,8 @@ namespace BlackPearl {
 			GraphicsPipelineDesc psoDesc;
 			psoDesc.depthStencilState.enableDepthTest();
 			psoDesc.depthStencilState.enableDepthWrite();
-			psoDesc.depthStencilState.setDepthFunc(ComparisonFunc::LessOrEqual);
+			psoDesc.depthStencilState.setDepthFunc(ComparisonFunc::Less);
+           
 			psoDesc.blendState.alphaToCoverageEnable = false;
 			psoDesc.rasterState.frontCounterClockwise = true;
 			psoDesc.rasterState.cullMode = RasterCullMode::Back;
@@ -952,7 +953,7 @@ namespace BlackPearl {
             for (int j = 0; j < shaderParms[ShaderType::Pixel].bindingSets.size(); ++j) {
                 graphicsPSO.bindings.push_back(shaderParms[ShaderType::Pixel].bindingSets[j]);
             }
-
+            const_cast<Material*>(item.material)->UploadConstantsBuffer(cmdList);
 			GE_ERROR_JUDGE();
             SetupMaterial(item.material, item.cullMode, psoDesc, graphicsPSO);
 			GE_ERROR_JUDGE();
@@ -963,7 +964,7 @@ namespace BlackPearl {
 		   // SetGraphicsPipelineState(cmdList, graphicsPSO, 0);
            // SetShaderParametersLegacyVS
 			cmdList->setGraphicsState(graphicsPSO);
-
+          
 			Draw(cmdList,item);
 		
 			/* }

@@ -41,8 +41,27 @@ namespace BlackPearl {
 		void ShowShader(std::string imguiShaders, int meshIndex, int& itemIndex, int offset);
 		void ShowTextures(std::string imguiShaders, int meshIndex, int& itemIndex, TextureType textureType, TextureType& type, int offset);
 		void ShowMaterialProps(Props& imGuiProps);
-
-
+        HWND GetNativeWindow() const { return m_hImGuiWnd; }
+        ImGuiIO* GetIO() { return m_IO; }
+        HWND m_hImGuiWnd;
+        HDC         m_hImGuiDC;
+        HGLRC       m_hImGuiRC;
+        ImGuiIO* m_IO;
+        void InitImGUI();
+        void CreateImguiWindow();
+        HDC         m_hBackupDC;
+        HGLRC       m_hBackupRC;
+        GLuint vao;
+    private:
+        //HWND m_hImGuiWnd;
+        //HDC         m_hImGuiDC;
+        //HGLRC       m_hImGuiRC;
+        //ImGuiIO* m_IO;
+        //void InitImGUI();
+        //void CreateImguiWindow();
+        //HDC         m_hBackupDC;
+        //HGLRC       m_hBackupRC;
+ 
 	};
 
 }

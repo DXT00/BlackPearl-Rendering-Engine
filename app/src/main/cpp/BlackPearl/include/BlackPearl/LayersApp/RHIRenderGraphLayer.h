@@ -3,7 +3,10 @@
 #include "BlackPearl/Renderer/RenderTargets.h"
 #include "BlackPearl/Renderer/RenderGraph/RenderGraph.h"
 #include "BlackPearl/Renderer/RenderGraph/ForwardRenderGraph.h"
-#include "BlackPearl\LayerScene\Layer.h"
+#include "BlackPearl/Renderer/RenderGraph/DeferredRenderGraph.h"
+#include "BlackPearl/LayerScene/Layer.h"
+#include "Component/LightComponent/DirectionLight.h"
+#include "Component/LightComponent/PointLight.h"
 
 class RHIRenderGraphLayer :public BlackPearl::Layer {
 public:
@@ -20,7 +23,14 @@ public:
 
 	}
 	void OnSetup() override {
-		m_RenderGraph = DBG_NEW BlackPearl::ForwardRenderGraph(m_DeviceManager);
+        if (Configuration::bDeferredShading) {
+            m_RenderGraph = DBG_NEW BlackPearl::DeferredRenderGraph(m_DeviceManager);
+
+        }
+        else {
+            m_RenderGraph = DBG_NEW BlackPearl::ForwardRenderGraph(m_DeviceManager);
+
+        }
 
 		m_Scene = DBG_NEW BlackPearl::Scene();
 		m_SphereObj = CreateSphere(0.5, 64, 64);
@@ -43,7 +53,7 @@ public:
 		m_MainCamera->SetMoveSpeed(0.5f);
 
 		m_DirectionLight = CreateLight(BlackPearl::LightType::DirectionLight, "DirectionLight");
-
+        m_DirectionLight->GetComponent<DirectionLight>()->SetDirection({ 0.2f, -1.0f, 0.2f });
 		//m_Scene->AddObject(m_SphereObj);
 		m_Scene->AddObject(m_CubeObj);
 		m_Scene->AddObject(m_SphereObj);
@@ -84,7 +94,7 @@ public:
 private:
 
 	BlackPearl::Scene* m_Scene;
-	BlackPearl::ForwardRenderGraph* m_RenderGraph;
+	BlackPearl::RenderGraph* m_RenderGraph;
 
 	BlackPearl::Object* m_CubeObj;
 	BlackPearl::Object* m_SphereObj;

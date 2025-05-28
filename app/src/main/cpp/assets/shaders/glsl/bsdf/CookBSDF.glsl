@@ -7,7 +7,7 @@ Cook-Torrance BSDF Model
 
 #include <assets/shaders/hlsl/core/material_cb.h>
 #include <assets/shaders/glsl/common/CommonLight.glsl>
-
+#include <assets/shaders/glsl/common/CommonMath.glsl>
 //in vec2 v_texcoord; // texture coords
 //in vec3 v_normal;   // normal
 //in vec3 v_binormal; // binormal (for TBN basis calc)
@@ -36,18 +36,15 @@ Cook-Torrance BSDF Model
 //uniform sampler2D iblbrdf; // IBL BRDF normalization precalculated tex
 //
 //   
-#define PI 3.1415926
 
 
-//// constant light position, only one light source for testing (treated as point light)
-//const vec4 light_pos = vec4(-2, 3, -2, 1);
-//
-//
-// handy value clamping to 0 - 1 range
-float saturate(in float value)
+// compute fresnel specular factor for given base specular and product
+// product could be NdV or VdH depending on used technique
+vec3 fresnel_factor(in vec3 f0, in float product)
 {
-    return clamp(value, 0.0, 1.0);
+    return mix(f0, vec3(1.0), pow(1.01 - product, 5.0));
 }
+
 
 
 // phong (lambertian) diffuse term
@@ -56,21 +53,6 @@ float phong_diffuse()
     return (1.0 / PI);
 }
 
-half DielectricSpecularToF0(half Specular)
-{
-	return half(0.08f * Specular);
-}
-
-
-half3 ComputeF0(half Specular, half3 BaseColor, half Metallic)
-{
-	return lerp(DielectricSpecularToF0(Specular).xxx, BaseColor, Metallic.xxx);
-}
-
-float3 ComputeF90(float3 F0, float3 EdgeColor, float Metallic)
-{
-	return lerp(1.0, EdgeColor, Metallic.xxx);
-}
 
 // following functions are copies of UE4
 // for computing cook-torrance specular lighting terms
@@ -99,12 +81,32 @@ float D_GGX(in float roughness, in float NdH)
     return m2 / (PI * d * d);
 }
 
+float Geometry_SchlickGGX(float NdotV,float roughness){
+	return NdotV/(NdotV*(1.0-roughness)+roughness);
+}
+
+float GeometrySmith(vec3 N,vec3 V,vec3 L,float roughness){
+	float NdotV = max(dot(N,V),0.001);
+	float NdotL = max(dot(N,L),0.001);
+	float ggx1 = Geometry_SchlickGGX(NdotV,roughness);
+	float ggx2 = Geometry_SchlickGGX(NdotL,roughness);
+
+	return ggx1*ggx2;
+}
+
+
 float G_schlick(in float roughness, in float NdV, in float NdL)
 {
-    float k = roughness * roughness * 0.5;
-    float V = NdV * (1.0 - k) + k;
-    float L = NdL * (1.0 - k) + k;
-    return 0.25 / (V * L);
+//    float k = roughness * roughness * 0.5;
+//    float V = NdV * (1.0 - k) + k;
+//    float L = NdL * (1.0 - k) + k;
+//    return 0.25 / (V * L);
+
+
+	float ggx1 = Geometry_SchlickGGX(NdV,roughness);
+	float ggx2 = Geometry_SchlickGGX(NdL,roughness);
+
+	return ggx1*ggx2;
 }
 
 
@@ -130,15 +132,15 @@ vec3 blinn_specular(in float NdH, in vec3 specular, in float roughness)
 // cook-torrance specular calculation                      
 vec3 cooktorrance_specular(in float NdL, in float NdV, in float NdH, in vec3 specular, in float roughness)
 {
-#ifdef COOK_BLINN
+#if COOK_BLINN
     float D = D_blinn(roughness, NdH);
-#endif
 
-#ifdef COOK_BECKMANN
+
+#elif COOK_BECKMANN
     float D = D_beckmann(roughness, NdH);
-#endif
 
-#ifdef COOK_GGX
+
+#elif COOK_GGX
     float D = D_GGX(roughness, NdH);
 #endif
 
@@ -151,23 +153,39 @@ vec3 cooktorrance_specular(in float NdL, in float NdV, in float NdH, in vec3 spe
     正面区域（NdV 大）：rim ≈ 1.0，不改变光照。
     
     */
-    float rim = 1.0;
-    rim = mix(1.0 - roughness * rim * 0.9, 1.0, NdV);
-
-    return (1.0 / rim) * specular * G * D;
+//    float rim = 0.2;
+//    rim = mix(1.0 - roughness * rim * 0.9, 1.0, NdV);
+//
+//    return (1.0 / rim) * specular * G * D;
+    vec3 F = specular;
+    //CookTorrance
+	vec3 nominator    = D * G * F;
+    float denominator = 4.0 * max(NdV, 0.0) * max(NdL, 0.0) + 0.001; 
+    //vec3 specular     = nominator / denominator;
+    vec3 Ks = nominator / denominator;
+    return Ks;
 }
 
+
+vec3 BRDF(vec3 Kd,vec3 Ks,vec3 specular, vec3 base){
+	
+	vec3 fLambert = base/PI;//diffuseColor 相当于 albedo
+	return Kd * fLambert +  specular;//specular 中已经有Ks(Ks=F)了，不需要再乘以Ks *
+
+    //	return  base;//+  specular;//specular 中已经有Ks(Ks=F)了，不需要再乘以Ks *
+
+}
                       
 vec3 evaluateCookBRDF(MaterialSample mat, SurfaceGeometry geom, LightConstants light) {
- 
+    vec3 color = vec3(0.0);
     // point light direction to point in view space
     vec3 local_light_pos = light.position;
 
     // light attenuation
-    float A = GetLocalLightAttenuation(geom.position, light.position)
+    float A = GetLocalLightAttenuation(geom.position, light);
 
     // L, V, H vectors
-    vec3 L = normalize(lightDir);
+    vec3 L = normalize(-light.direction);
     vec3 V = normalize(geom.viewDir);
     vec3 H = normalize(L + V);
 //    vec3 nn = normalize(geom.normal);
@@ -187,7 +205,7 @@ vec3 evaluateCookBRDF(MaterialSample mat, SurfaceGeometry geom, LightConstants l
 
     // mix between metal and non-metal material, for non-metal
     // constant base specular factor of 0.04 grey is used
-    vec3 specular = mix(vec3(0.04), base, metallic);
+    vec3 specular = mix(vec3(0.04), base, metallic.xxx);
 
     // diffuse IBL term ::TODO
     //    I know that my IBL cubemap has diffuse pre-integrated value in 10th MIP level
@@ -205,7 +223,7 @@ vec3 evaluateCookBRDF(MaterialSample mat, SurfaceGeometry geom, LightConstants l
 
     // compute material reflectance
 
-    float NdL = max(0.0, dot(N, L));
+    float NdL = max(0.001, dot(N, L));
     float NdV = max(0.001, dot(N, V));
     float NdH = max(0.001, dot(N, H));
     float HdV = max(0.001, dot(H, V));
@@ -215,72 +233,86 @@ vec3 evaluateCookBRDF(MaterialSample mat, SurfaceGeometry geom, LightConstants l
     // so it will be calcuated inside ifdefs
 
 
-#if PHONG
-    // specular reflectance with PHONG
-    vec3 specfresnel = fresnel_factor(specular, NdV);
-    vec3 specref = phong_specular(V, L, N, specfresnel, roughness);
-#endif
+//#if PHONG
+//    // specular reflectance with PHONG
+//    vec3 specfresnel = fresnel_factor(specular, NdV);
+//    vec3 specref = phong_specular(V, L, N, specfresnel, roughness);
+//#endif
+//
+//#if BLINN
+//    // specular reflectance with BLINN
+//    vec3 specfresnel = fresnel_factor(specular, HdV);
+//    vec3 specref = blinn_specular(NdH, specfresnel, roughness);
+//#endif
 
-#if BLINN
-    // specular reflectance with BLINN
-    vec3 specfresnel = fresnel_factor(specular, HdV);
-    vec3 specref = blinn_specular(NdH, specfresnel, roughness);
-#endif
-
-#if COOK
+//#if COOK
     // specular reflectance with COOK-TORRANCE
     vec3 specfresnel = fresnel_factor(specular, HdV);
     vec3 specref = cooktorrance_specular(NdL, NdV, NdH, specfresnel, roughness);
-#endif
+//#endif
 
-    specref *= vec3(NdL);
+    //specref *= vec3(NdL);
 
     // diffuse is common for any model
-    vec3 diffref = (vec3(1.0) - specfresnel) * phong_diffuse() * NdL;
+    vec3 Ks = specfresnel;
+    vec3 Kd = vec3(1.0)-Ks;
 
-    
-    // compute lighting
-    vec3 reflected_light = vec3(0);
-    vec3 diffuse_light = vec3(0); // initial value == constant ambient light
+    Kd *= (1.0 - metallic);
 
-    // point light
-    vec3 light_color = vec3(1.0) * A;
-    reflected_light += specref * light.color;
-    diffuse_light += diffref * light.color;
-
-    // IBL lighting :TODO::
-//    vec2 brdf = texture2D(iblbrdf, vec2(roughness, 1.0 - NdV)).xy;
-//    vec3 iblspec = min(vec3(0.99), fresnel_factor(specular, NdV) * brdf.x + brdf.y);
-//    reflected_light += iblspec * envspec;
-//    diffuse_light += envdiff * (1.0 / PI);
+    vec3 result = BRDF(Kd,Ks,specref, base) * light.color * NdL;
+//    vec3 diffref = Kd * phong_diffuse() * NdL;
 //
-    // final result
-    vec3 result =
-        diffuse_light * mix(base, vec3(0.0), metallic) +
-        reflected_light;
+//    
+//    // compute lighting
+//    vec3 reflected_light = vec3(0);
+//    vec3 diffuse_light = vec3(0); // initial value == constant ambient light
+//
+//    // point light
+//    vec3 light_color = vec3(1.0);// * A;
+//    reflected_light += specref * light.color;
+//    diffuse_light += diffref * light.color;
+//
+//    // IBL lighting :TODO::
+////    vec2 brdf = texture2D(iblbrdf, vec2(roughness, 1.0 - NdV)).xy;
+////    vec3 iblspec = min(vec3(0.99), fresnel_factor(specular, NdV) * brdf.x + brdf.y);
+////    reflected_light += iblspec * envspec;
+////    diffuse_light += envdiff * (1.0 / PI);
+////
+//    // final result
+////    vec3 result =
+////        diffuse_light * (base, vec3(0.0), metallic) +
+////        reflected_light;
+//    vec3 result =
+//        diffuse_light *  mix(base, vec3(0.0), metallic) +
+//        reflected_light;
+//
 
-    color = vec4(result, 1);
+
+    color = result;
+    
+
+    return  color;
 }
 
-vec4 ShadeSurface(in LightConstants light, in SurfaceGeometry geom, in MaterialSample material){
-
+vec4 ShadeSurface(in LightConstants light, in SurfaceGeometry geom, in MaterialSample material)
+{
+    vec4 fragColor = vec4(1.0);
    //Evaluate BRDF
     vec3 brdf = evaluateCookBRDF(material, geom, light);
     
     // Combine with light color
-    vec3 color = brdf * light.color;
+    vec3 color = brdf * light.color *  light.intensity;// 
     
     // Add emissive
-    color += material.emissive;
+    //color = color + material.emissive;
     
     // Output final color with alpha
-    fragColor = vec4(color, material.alpha);
+    fragColor = vec4(color.xyz, material.opacity);
 
     return fragColor;
-
 }
 
-MaterialSample CreateCookBSDFMaterial(SurfaceGeometry geom, MaterialConstant consts, vec2 texcoord){
+MaterialSample CreateCookBSDFMaterial(in SurfaceGeometry geom, in MaterialConstants consts, vec2 texcoord){
 	MaterialSample result;
     MaterialTextureSample textures = SampleMaterialTexturesAuto(texcoord);
     /*
@@ -307,7 +339,7 @@ MaterialSample CreateCookBSDFMaterial(SurfaceGeometry geom, MaterialConstant con
 
     // albedo/specular base
 #if USE_ALBEDO_MAP
-    result.albedo = textures.albedo;
+    result.albedo = textures.albedo.xyz;
 #else
     result.albedo = consts.albedo.xyz;
 #endif
@@ -318,7 +350,7 @@ MaterialSample CreateCookBSDFMaterial(SurfaceGeometry geom, MaterialConstant con
     result.metallic  =  textures.metalRoughOrSpecular.z;
 #else
     result.roughness = consts.roughness;
-    result.metallic  = consts.metalness;
+    result.metallic  = consts.metallic;
 #endif
 
 #if USE_EMISSIVE_MAP

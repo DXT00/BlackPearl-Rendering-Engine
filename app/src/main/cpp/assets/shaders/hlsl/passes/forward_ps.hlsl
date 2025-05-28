@@ -206,7 +206,7 @@ void main(
         // Transmissive behavoir is undefined on specular-gloss materials by the glTF spec, but it is
         // possible that the application creates such material regardless.
 
-        o_backgroundBlendFactor.rgb *= surfaceMaterial.baseColor * (1.0 - surfaceMaterial.metalness);
+        o_backgroundBlendFactor.rgb *= surfaceMaterial.baseColor * (1.0 - surfaceMaterial.metallic);
     }
 
     o_backgroundBlendFactor.a = 1.0;
