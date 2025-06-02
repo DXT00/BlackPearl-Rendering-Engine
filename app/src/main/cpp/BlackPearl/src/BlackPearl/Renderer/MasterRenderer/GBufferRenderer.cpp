@@ -18,6 +18,7 @@
 #ifdef GE_API_OPENGL
 #include "BlackPearl/RHI/OpenGLRHI/OpenGLDriver/OpenGLFunctions.h"
 #endif
+#include "RHI/RHIGlobals.h"
 namespace BlackPearl {
 
 
@@ -29,10 +30,18 @@ namespace BlackPearl {
 
     void GBufferRenderer::Init()
     {
+        std::vector<std::string> extends;
+
+#ifdef GE_PLATFORM_ANDROID
+        if (GSupportsPixelLocalStorage) {
+            extends.push_back("#extension GL_EXT_shader_pixel_local_storage : require");
+        }
+#endif
+
         m_DrawStrategy = DBG_NEW InstancedOpaqueDrawStrategy();
         ShaderDesc desc = ShaderDesc(ShaderType::All);
         desc.debugName = "GbufferShader";
-        m_GBufferShader = DBG_NEW MaterialShader("assets/shaders/glsl/gBuffer/gBuffer_pass.glsl");
+        m_GBufferShader = DBG_NEW MaterialShader("assets/shaders/glsl/gBuffer/gBuffer_pass.glsl",&extends);
 
 
         m_ShaderParameters[ShaderType::Pixel].bindingLayouts.push_back(m_ViewBindinglayout);

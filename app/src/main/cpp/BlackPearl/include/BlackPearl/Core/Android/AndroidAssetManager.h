@@ -3,21 +3,23 @@
 //
 #pragma once
 #include <string>
-namespace BlackPearl{
+namespace BlackPearl {
     class AndroidAssetManager {
     public:
         //static unsigned char* LoadImage(const std::string& relPath, int &width ,int& height, int& channels);
-        static bool IsFileExist(const std::string& relPath);
+        static bool IsFileExist(const std::string &relPath);
 
-        static unsigned char* LoadImage(const std::string& relPath, int& width ,int& height, int& channels);
-        static std::string  LoadGlslFile(const std::string& relPath);
+        static unsigned char *LoadImage(const std::string &relPath, int &width, int &height, int &channels);
 
-        };
+        static std::string LoadGlslFile(const std::string &relPath);
+
+        static void StoreGLSLShader( const std::string &shaderCode, const std::string &name);
 
 
+
+    };
 
     typedef AndroidAssetManager AssetManager;
 
 }
-
 

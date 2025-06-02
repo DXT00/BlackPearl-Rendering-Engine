@@ -76,3 +76,4 @@ include "BlackPearl"
 
 include "ShaderCompiler"
 
+include "assets"

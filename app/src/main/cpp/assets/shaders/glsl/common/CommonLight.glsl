@@ -49,9 +49,9 @@ float GetLocalLightAttenuation(
 	float3 L = ToLight * 1.0 / sqrt(DistanceSqr);
 
 	float LightMask;
-	if (light.bInverseSquared!=0)
+	if (light.bInverseSquared != 0)
 	{
-		LightMask = square( saturate( 1 - square( DistanceSqr * square(light.invRadius) ) ) );
+		LightMask = square( saturate( 1.0 - square( DistanceSqr * square(light.invRadius) ) ) );
 		// This extra attenuation has been added for supporting existing 'legacy' shading model on mobile. 
 		// This is not needed for Strata which unifies all lighting paths
 #if SHADING_PATH_MOBILE 
@@ -66,16 +66,16 @@ float GetLocalLightAttenuation(
 	if (light.lightType == LightType_Spot)
 	{
     
-        const float CosOuterCone = light.innerAngle;
-        const float CosInnerCone = light.outerAngle;
-        const float InvCosConeDifference = 1.0f / (CosInnerCone - CosOuterCone);
+        float CosOuterCone = light.innerAngle;
+        float CosInnerCone = light.outerAngle;
+        float InvCosConeDifference = 1.0f / (CosInnerCone - CosOuterCone);
 		LightMask *= SpotAttenuation(L, -light.direction, vec2(CosOuterCone,InvCosConeDifference ));
 	}
 
 	if(light.lightType == LightType_Rect)
 	{
 		// Rect normal points away from point
-		LightMask = dot( light.direction, L ) < 0 ? 0 : LightMask;
+		LightMask = dot( light.direction, L ) < 0.0 ? 0.0 : LightMask;
 	}
 
 	return LightMask;

@@ -6,13 +6,21 @@
 #ifdef GL_ES
 	precision mediump float;  // 必须声明精度（ES 要求）
 
-	#define half mediump float	
-	#define half2 mediump vec2	
-	#define half3  mediump vec3	
-	#define half4  mediump vec4	
-	#define half3x3 mediump mat3	
-	#define half3x4 mediump mat3x4	 
-	#define half4x4 mediump mat4	
+	#define half float
+	#define half2  vec2
+	#define half3    vec3
+	#define half4   vec4
+	#define half3x3  mat3
+	#define half3x4  mat3x4
+	#define half4x4  mat4
+
+//    #define half float
+//	#define half2 mediump float2
+//	#define half3  mediump  vec3
+//	#define half4  mediump vec4
+//	#define half3x3 mediump mat3
+//	#define half3x4 mediump mat3x4
+//	#define half4x4 mediump mat4
 
     #define float2 vec2
 	#define float3 vec3  //默认16bit,中等精度
@@ -62,8 +70,6 @@
 	#define bool4 bvec4
 
 #endif
-
-
 
 
 struct Material{

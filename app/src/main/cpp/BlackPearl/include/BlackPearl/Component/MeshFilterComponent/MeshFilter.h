@@ -20,8 +20,8 @@ namespace BlackPearl {
 		std::vector<math::float3> positionData;
 		std::vector<math::float3> prePositionData;
 
+		std::vector<math::float2> texcoordData;
 		std::vector<math::float2> texcoord1Data;
-		std::vector<math::float2> texcoord2Data;
 		std::vector<math::float3> normalData;
 		std::vector<math::float3> tangentData;
 		std::vector<math::float3> bitangentData;

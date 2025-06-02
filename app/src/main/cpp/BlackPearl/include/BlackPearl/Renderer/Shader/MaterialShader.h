@@ -8,7 +8,7 @@ namespace BlackPearl {
 	class MaterialShader
 	{
 	public:
-		MaterialShader(const std::string& filepath);
+		MaterialShader(const std::string& filepath, std::vector<std::string>* extentions = nullptr);
 		
 		std::string GetPath() const {
 			return m_ShaderPath;
@@ -33,7 +33,11 @@ namespace BlackPearl {
 		ShaderHandle m_GeometryShader = nullptr;
 		ShaderHandle m_ComputeShader = nullptr;
 
-		GLSLIncluder m_GlslIncluder;
+
+
+        GLSLIncluder m_GlslIncluder;
+
+
 	};
 
 

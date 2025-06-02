@@ -25,8 +25,10 @@ namespace BlackPearl {
 
         IBuffer* indirectParams = nullptr;
 
+        InputLayoutHandle inputLayout = nullptr;
 
-        //¶¼ÔÚpipelineµÄdescÀï
+
+        //éƒ½åœ¨pipelineçš„descé‡Œ
 
        /* FBoundShaderStateInput			BoundShaderState;
         BlendState* BlendState;

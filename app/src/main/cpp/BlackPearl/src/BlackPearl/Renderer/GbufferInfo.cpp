@@ -76,16 +76,16 @@ namespace BlackPearl
      * */
     static GbufferInfo GetMobileGbuffer(const PlatformGbufferConfig& config)
     {
-        GbufferInfo info;
+        //GbufferInfo info;
         GbufferInfo Info = GetPCGbuffer(config);
         bool bUsingPixelLocalStorage = GSupportsPixelLocalStorage && GSupportsShaderDepthStencilFetch;
         if (bUsingPixelLocalStorage)
         {
-            info.numTargets = 1;
+            Info.numTargets = 1;
         }
         else
         {
-            info.numTargets = 4;
+            Info.numTargets = 4;
 //            if (MobileUsesExtenedGBuffer(Params.ShaderPlatform))
 //            {
 //                info.numTargets++;
@@ -98,6 +98,7 @@ namespace BlackPearl
 //                info.numTargets++;
 //            }
         }
+        return Info;
     }
 
 

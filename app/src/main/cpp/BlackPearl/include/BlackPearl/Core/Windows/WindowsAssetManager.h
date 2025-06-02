@@ -13,6 +13,7 @@ namespace BlackPearl {
 
         static unsigned char * LoadImage(const std::string &relPath, int &width, int &height, int &channels);
         static std::string  LoadGlslFile(const std::string& relPath);
+        static void StoreGLSLShader( const std::string &shaderCode, const std::string &name);
 
     };
 

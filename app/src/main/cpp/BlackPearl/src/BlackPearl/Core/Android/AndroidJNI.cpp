@@ -16,6 +16,7 @@
 
 #include <android/asset_manager.h>
 #include <android/asset_manager_jni.h>
+#include <android/native_activity.h>
 
 namespace BlackPearl{
     
@@ -23,6 +24,7 @@ namespace BlackPearl{
 #define JNI_CURRENT_VERSION JNI_VERSION_1_6
 
 JavaVM* GJavaVM = nullptr;
+ANativeActivity* GNativeActivity = nullptr;
 jclass GGameActivityClassID;
 jobject GGameActivityThis;
 

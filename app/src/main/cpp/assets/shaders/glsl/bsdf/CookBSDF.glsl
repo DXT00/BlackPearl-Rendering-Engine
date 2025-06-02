@@ -205,7 +205,7 @@ vec3 evaluateCookBRDF(MaterialSample mat, SurfaceGeometry geom, LightConstants l
 
     // mix between metal and non-metal material, for non-metal
     // constant base specular factor of 0.04 grey is used
-    vec3 specular = mix(vec3(0.04), base, metallic.xxx);
+    vec3 specular = mix(vec3(0.04), base, vec3(metallic));
 
     // diffuse IBL term ::TODO
     //    I know that my IBL cubemap has diffuse pre-integrated value in 10th MIP level

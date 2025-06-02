@@ -1,9 +1,10 @@
 #type vertex
 #version 450 core
 
-layout(location = 0) in vec3 aPos;
-layout(location = 1) in vec3 aNormal;
-layout(location = 2) in vec2 aTexCoords;
+layout(location = Slot_aPos) in vec3 aPos;
+layout(location = Slot_aTexCoords) in vec2 aTexCoords;
+layout(location = Slot_aNormal) in vec3 aNormal;
+
 
 #if USE_TBN
 layout(location = 3) in vec3 aTangent;
@@ -46,6 +47,34 @@ void main(){
 
 #type fragment
 #version 450 core
+
+
+
+#if SHADING_PATH_MOBILE
+
+
+//#extension GL_EXT_shader_pixel_local_storage : require
+
+__pixel_local_outEXT OutPLS
+{
+    layout(r11f_g11f_b10f) vec3 gSceneColor;
+    layout(rgb10_a2) vec4 gGbufferA;
+    layout(rgba8) vec4 gGbufferB;
+    layout(rgba8) vec4 gGbufferC;
+};
+
+#else
+
+/* MRT */
+/* render to gBuffer */
+layout (location = 0) out vec4 gSceneColor; //use for emissive color and fog
+layout (location = 1) out vec4 gGbufferA;  //encode normal.xy + Encode IndirectIrradiance + reserve
+layout (location = 2) out vec4 gGbufferB; // Metallic + Specular + Roughness + ShadingModelID / 255.0
+layout (location = 3) out vec4 gGbufferC; // BaseColor + PrecomputedShadow
+
+#endif
+
+
 //
 #include <assets/shaders/glsl/common/CommonGbufferStruct.glsl>
 
@@ -56,13 +85,7 @@ void main(){
 #include <assets/shaders/glsl/gBuffer/gBuffer.glsl>
 
 #include <assets/shaders/glsl/common/CommonOctahedral.glsl>
-//
-/* MRT */
-/* render to gBuffer */
-layout (location = 0) out vec4 gSceneColor; //use for emissive color and fog
-layout (location = 1) out vec4 gGbufferA;  //encode normal.xy + Encode IndirectIrradiance + reserve
-layout (location = 2) out vec4 gGbufferB; // Metallic + Specular + Roughness + ShadingModelID / 255.0
-layout (location = 3) out vec4 gGbufferC; // BaseColor + PrecomputedShadow
+
 
 ///* 存储全局光照中的 diffuse 和specular (vec3 ambient =  (Kd*diffuse+specular) * ao;)的颜色*/
 //layout (location = 4) out vec4 gAmbientGI_AO; //GIAmbient + u_Material.ao

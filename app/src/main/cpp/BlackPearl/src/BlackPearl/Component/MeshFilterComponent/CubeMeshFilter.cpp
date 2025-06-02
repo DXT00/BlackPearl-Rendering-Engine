@@ -97,38 +97,40 @@ namespace BlackPearl {
 		//};
 	
 
-		// Cube vertices positions and corresponding triangle normals.
+		// Cube vertices positions and corresponding triangle normals. total 24 point , The sequence must be:
+        //Slot_aPos,Slot_aPrePos, Slot_aNormal, Slot_aTexCoords
 		std::vector<float>  vertices =
 		{
-			-1.0f, 1.0f, -1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
-			1.0f,  1.0f, -1.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f,
-			1.0f,  1.0f,  1.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f,
-			-1.0f, 1.0f,  1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f,
+            // pos               //prePos,              normal,               uv
+			-1.0f, 1.0f, -1.0f,   -1.0f, 1.0f, -1.0f,    0.0f, 1.0f, 0.0f,  0.0f, 1.0f,
+			1.0f,  1.0f, -1.0f,   1.0f,  1.0f, -1.0f,    0.0f, 1.0f, 0.0f,  1.0f, 1.0f,
+			1.0f,  1.0f,  1.0f,   1.0f,  1.0f,  1.0f,    0.0f, 1.0f, 0.0f,  1.0f, 0.0f,
+			-1.0f, 1.0f,  1.0f,   -1.0f, 1.0f,  1.0f,    0.0f, 1.0f, 0.0f,  0.0f, 0.0f,
+                                                                            
+			-1.0f, -1.0f, -1.0f,  -1.0f, -1.0f, -1.0f,  0.0f, -1.0f, 0.0f,  0.0f, 1.0f,
+			1.0f,  -1.0f, -1.0f,  1.0f,  -1.0f, -1.0f,  0.0f, -1.0f, 0.0f,  1.0f, 1.0f,
+			1.0f,  -1.0f,  1.0f,  1.0f,  -1.0f,  1.0f,  0.0f, -1.0f, 0.0f,  1.0f, 0.0f,
+			-1.0f, -1.0f,  1.0f,  -1.0f, -1.0f,  1.0f,  0.0f, -1.0f, 0.0f,  0.0f, 0.0f,
+                                                                            
+			-1.0f, -1.0f,  1.0f, -1.0f, -1.0f,  1.0f,   -1.0f, 0.0f, 0.0f,  0.0f, 1.0f,
+			-1.0f, -1.0f, -1.0f, -1.0f, -1.0f, -1.0f,   -1.0f, 0.0f, 0.0f,  1.0f, 1.0f,
+			-1.0f,  1.0f, -1.0f, -1.0f,  1.0f, -1.0f,   -1.0f, 0.0f, 0.0f,  1.0f, 0.0f,
+			-1.0f,  1.0f,  1.0f, -1.0f,  1.0f,  1.0f,   -1.0f, 0.0f, 0.0f,  0.0f, 0.0f,
 
-			-1.0f, -1.0f, -1.0f, 0.0f, -1.0f, 0.0f, 0.0f, 1.0f,
-			1.0f,  -1.0f, -1.0f, 0.0f, -1.0f, 0.0f, 1.0f, 1.0f,
-			1.0f,  -1.0f,  1.0f, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f,
-			-1.0f, -1.0f,  1.0f, 0.0f, -1.0f, 0.0f, 0.0f, 0.0f,
+			1.0f, -1.0f,  1.0f,  1.0f, -1.0f,  1.0f,   1.0f, 0.0f, 0.0f,    1.0f, 1.0f,
+			1.0f, -1.0f, -1.0f,  1.0f, -1.0f, -1.0f,   1.0f, 0.0f, 0.0f,    0.0f, 1.0f,
+			1.0f,  1.0f, -1.0f,  1.0f,  1.0f, -1.0f,   1.0f, 0.0f, 0.0f,    0.0f, 0.0f,
+			1.0f,  1.0f,  1.0f,  1.0f,  1.0f,  1.0f,   1.0f, 0.0f, 0.0f,    1.0f, 0.0f,
 
-			-1.0f, -1.0f,  1.0f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
-			-1.0f, -1.0f, -1.0f, -1.0f, 0.0f, 0.0f, 1.0f, 1.0f,
-			-1.0f,  1.0f, -1.0f, -1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
-			-1.0f,  1.0f,  1.0f, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+			-1.0f, -1.0f, -1.0f, -1.0f, -1.0f, -1.0f,   0.0f, 0.0f, -1.0f,  0.0f, 1.0f, 
+			 1.0f, -1.0f, -1.0f,  1.0f, -1.0f, -1.0f,   0.0f, 0.0f, -1.0f,  1.0f, 1.0f,
+			 1.0f,  1.0f, -1.0f,  1.0f,  1.0f, -1.0f,   0.0f, 0.0f, -1.0f,  1.0f, 0.0f,
+			-1.0f,  1.0f, -1.0f, -1.0f,  1.0f, -1.0f,   0.0f, 0.0f, -1.0f,  0.0f, 0.0f,
 
-			1.0f, -1.0f,  1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f,
-			1.0f, -1.0f, -1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
-			1.0f,  1.0f, -1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
-			1.0f,  1.0f,  1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
-
-			-1.0f, -1.0f, -1.0f, 0.0f, 0.0f, -1.0f, 0.0f, 1.0f, 
-			 1.0f, -1.0f, -1.0f, 0.0f, 0.0f, -1.0f, 1.0f, 1.0f,
-			 1.0f,  1.0f, -1.0f, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f,
-			-1.0f,  1.0f, -1.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f,
-
-			-1.0f, -1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
-			 1.0f, -1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f,
-			 1.0f,  1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f,
-			-1.0f,  1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f
+			-1.0f, -1.0f, 1.0f,  -1.0f, -1.0f, 1.0f,   0.0f, 0.0f, 1.0f,    0.0f, 1.0f,
+			 1.0f, -1.0f, 1.0f,   1.0f, -1.0f, 1.0f,   0.0f, 0.0f, 1.0f,    1.0f, 1.0f,
+			 1.0f,  1.0f, 1.0f,   1.0f,  1.0f, 1.0f,   0.0f, 0.0f, 1.0f,    1.0f, 0.0f,
+			-1.0f,  1.0f, 1.0f,  -1.0f,  1.0f, 1.0f,   0.0f, 0.0f, 1.0f,    0.0f, 0.0f
 		};
 
 		SetVertices(vertices);
@@ -169,12 +171,15 @@ namespace BlackPearl {
 			23,20,22
 		};
 		SetIndices(indices);
-		for (size_t i = 0; i < (int)vertices.size()/8; i++)
+
+        int dataPerVertex = 11;//pos+prePos+normal+uv, 
+
+		for (size_t i = 0; i < (int)vertices.size()/ dataPerVertex; i++)
 		{
-			positionData.push_back({ vertices[i * 8],vertices[i * 8 + 1],vertices[i * 8 + 2] });
-			prePositionData.push_back({ vertices[i * 8],vertices[i * 8 + 1],vertices[i * 8 + 2] });
-			normalData.push_back({ vertices[i * 8 + 3],vertices[i * 8 + 4] ,vertices[i * 8 + 5] });
-			texcoord1Data.push_back({ vertices[i * 8 + 6],vertices[i * 8 + 7] });
+			positionData.push_back({ vertices[i * dataPerVertex],vertices[i * dataPerVertex + 1],vertices[i * dataPerVertex + 2] });
+			prePositionData.push_back({ vertices[i * dataPerVertex + 3],vertices[i * dataPerVertex + 4],vertices[i * dataPerVertex + 5] });
+			normalData.push_back({ vertices[i * dataPerVertex + 6],vertices[i * dataPerVertex + 7] ,vertices[i * dataPerVertex + 8] });
+			texcoordData.push_back({ vertices[i * dataPerVertex + 9],vertices[i * dataPerVertex + 10] });
 		}
 		indexData = indices;
 	}

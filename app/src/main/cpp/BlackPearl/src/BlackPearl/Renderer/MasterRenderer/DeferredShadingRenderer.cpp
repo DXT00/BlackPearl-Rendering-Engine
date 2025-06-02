@@ -146,6 +146,7 @@ namespace BlackPearl{
         graphicsPSO.pipeline = m_DeferredShadingPointLightPso;
         graphicsPSO.bindings.push_back(m_DeferredShadingBindingSet);
         graphicsPSO.bindings.push_back(m_ViewBindingset);
+        graphicsPSO.inputLayout = psoDesc.inputLayout;
         /*for (int j = 0; j < shaderParms[ShaderType::Pixel].bindingLayouts.size(); ++j) {
             psoDesc.bindingLayouts.push_back(shaderParms[ShaderType::Pixel].bindingLayouts[j]);
         }

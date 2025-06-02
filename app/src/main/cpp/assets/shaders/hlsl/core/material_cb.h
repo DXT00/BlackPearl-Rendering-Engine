@@ -64,7 +64,7 @@ struct MaterialSample {
     ALIGN(4) float3  shadingNormal;
 
 
-    ALIGN(4) unsigned int flags;
+    ALIGN(4) int flags;
     ALIGN(4) int     materialID;
     ALIGN(4) int     shadingModelID;
     ALIGN(4) int     domain;
@@ -85,7 +85,7 @@ struct MaterialSample {
 struct DisneyMaterialSample {
     ALIGN(4) float3  shadingNormal;
 
-    ALIGN(4) unsigned int flags;
+    ALIGN(4) int flags;
     ALIGN(4) int     materialID;
 
     ALIGN(16) float3 baseColor;
@@ -114,7 +114,7 @@ struct DisneyMaterialSample {
 //Cook-Torrancce
 struct MaterialConstants
 {
-    ALIGN(4) unsigned int flags;
+    ALIGN(4) int flags;
     ALIGN(4) int     materialID;
     ALIGN(4) int     shadingModelID;
     ALIGN(4) int     domain;
@@ -136,7 +136,7 @@ struct MaterialConstants
 //https://docs.blender.org/manual/en/2.80/render/shader_nodes/shader/principled.html
 struct DisneyMaterialConstant {
 
-    ALIGN(4) unsigned int flags;
+    ALIGN(4) int flags;
     ALIGN(4) int     materialID;
 
     ALIGN(16) float3 baseColor;

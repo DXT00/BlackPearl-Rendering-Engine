@@ -106,7 +106,7 @@ namespace BlackPearl {
 
     private:
         void _UploadIndexBuffers(ICommandList* commandList, BufferGroup* buffers, GraphicsState& state);
-        void _UploadVertexBuffers(ICommandList* commandList, BufferGroup* buffers, GraphicsState& state);
+        void _UploadVertexBuffers(ICommandList* commandList, BufferGroup* buffers, GraphicsState& state, InputLayoutHandle inputLayout);
         void _UploadInstanceBuffers(ICommandList* commandList, BufferGroup* buffers, Transform* trans, GraphicsState& state);
 
    

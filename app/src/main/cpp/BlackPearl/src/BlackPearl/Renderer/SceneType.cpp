@@ -337,8 +337,8 @@ VertexAttributeDesc GetVertexAttributeDesc(VertexAttribute attribute, const char
         result.elementType = ElementDataType::Float3;
         result.elementStride = sizeof(math::float3);
         break;
+    case VertexAttribute::TexCoord:
     case VertexAttribute::TexCoord1:
-    case VertexAttribute::TexCoord2:
        // result.format = Format::RG32_FLOAT;
         result.elementType = ElementDataType::Float2;
 

@@ -1205,6 +1205,7 @@ GE_CORE_INFO(#StringEnum":%s" , ((const char*)glGetString(StringEnum)));
 		if (ContextState.ArrayBufferBound != Buffer)
 		{
 			glBindBuffer(GL_ARRAY_BUFFER, Buffer);
+            GE_ERROR_JUDGE();
 			ContextState.ArrayBufferBound = Buffer;
 		}
 
@@ -1217,6 +1218,7 @@ GE_CORE_INFO(#StringEnum":%s" , ((const char*)glGetString(StringEnum)));
 		if (ContextState.ElementArrayBufferBound != PendingState.ibo)
 		{
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, PendingState.ibo);
+            GE_ERROR_JUDGE();
 			ContextState.ElementArrayBufferBound = PendingState.ibo;
 		}
 
@@ -1489,7 +1491,7 @@ GE_CORE_INFO(#StringEnum":%s" , ((const char*)glGetString(StringEnum)));
 			uint32_t attriNum = VertexDeclaration->getNumAttributes();
 			uint32_t nonInterleaveStride = 0;
 			glBindBuffer(GL_ARRAY_BUFFER, Streams[0].VertexBufferResource);
-
+            GE_ERROR_JUDGE();
 			for (int32_t ElementIndex = 0; ElementIndex < attriNum; ElementIndex++)
 			{
 				VertexAttributeDesc& VertexElement = VertexDeclaration->inputDesc[ElementIndex];
@@ -1515,7 +1517,7 @@ GE_CORE_INFO(#StringEnum":%s" , ((const char*)glGetString(StringEnum)));
 						//	(Attr.bNormalized != VertexElement.bNormalized) ||
 						//	(Attr.bShouldConvertToFloat != VertexElement.bShouldConvertToFloat))
 						{
-							FOpenGL::BindVertexBuffer(VertexElement.location, Streams[VertexElement.location].VertexBufferResource, nonInterleaveStride, VertexElement.elementSizeByte);
+							FOpenGL::BindVertexBuffer(VertexElement.location, Streams[StreamIndex].VertexBufferResource, nonInterleaveStride, VertexElement.elementSizeByte);
 							glEnableVertexAttribArray(AttributeIndex);
 
 							if (!VertexElement.bShouldConvertToFloat)
@@ -2073,11 +2075,13 @@ GE_CORE_INFO(#StringEnum":%s" , ((const char*)glGetString(StringEnum)));
 				glStencilMask(PendingState.DepthStencilState.stencilWriteMask);
 				ContextState.DepthStencilState.stencilWriteMask = PendingState.DepthStencilState.stencilWriteMask;
 			}
-		}
+            GE_ERROR_JUDGE();
+
+        }
 	}
 	void Device::UpdateScissorRectInOpenGLContext(FOpenGLContextState& ContextState)
 	{
-		//if (ContextState.bScissorEnabled != PendingState.bScissorEnabled)
+		if (ContextState.bScissorEnabled != PendingState.bScissorEnabled)
 		{
 			if (PendingState.bScissorEnabled)
 			{
@@ -2088,7 +2092,9 @@ GE_CORE_INFO(#StringEnum":%s" , ((const char*)glGetString(StringEnum)));
 				glDisable(GL_SCISSOR_TEST);
 			}
 			ContextState.bScissorEnabled = PendingState.bScissorEnabled;
-		}
+            GE_ERROR_JUDGE();
+
+        }
 
 		if (PendingState.bScissorEnabled &&
 			ContextState.Scissor != PendingState.Scissor)
@@ -2110,6 +2116,7 @@ GE_CORE_INFO(#StringEnum":%s" , ((const char*)glGetString(StringEnum)));
 				PendingState.Viewport.minY,
 				PendingState.Viewport.maxX - PendingState.Viewport.minX,
 				PendingState.Viewport.maxY - PendingState.Viewport.minY);
+            GE_ERROR_JUDGE();
 
 			ContextState.Viewport = PendingState.Viewport;
 		}

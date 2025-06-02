@@ -57,10 +57,10 @@ namespace BlackPearl {
 
 		m_CommandList->beginRenderPass(RPInfo, "DeferredSinglePass");
 
-	    m_SkyboxRenderer->Render(m_CommandList, m_DeferredFramebuffer, m_Scene);
+	  //  m_SkyboxRenderer->Render(m_CommandList, framebuffer, m_Scene);
 		m_GbufferRenderer->Render(m_CommandList, framebuffer, m_Scene);
 		m_CommandList->nextSubpass();
-		m_DeferredShadingRenderer->Render(m_CommandList, m_DeferredFramebuffer, m_Scene);
+		m_DeferredShadingRenderer->Render(m_CommandList, framebuffer, m_Scene);
 
 		m_CommandList->endRenderPass();
 		m_CommandList->close();

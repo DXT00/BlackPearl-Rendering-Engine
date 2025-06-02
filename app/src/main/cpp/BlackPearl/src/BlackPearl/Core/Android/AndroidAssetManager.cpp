@@ -9,9 +9,13 @@
 #include "Core/Android/AndroidAssetManager.h"
 #include "Core/Memory.h"
 #include <string>
+#include <android/native_activity.h>
+
 namespace BlackPearl{
 
     extern AAssetManager * AndroidThunkCpp_GetAssetManager();
+    extern ANativeActivity *GNativeActivity;
+
     // Android 相对路径 是基于 assets目录，需要去除 assets/
     std::string removeAssetsPrefix(const std::string& path) {
         const std::string prefix = "assets/";
@@ -123,4 +127,29 @@ namespace BlackPearl{
     }
 
 
-}
+    void AndroidAssetManager::StoreGLSLShader( const std::string& shaderCode, const std::string& name) {
+
+#if USE_ANDROID_JNI
+        // 获取外部存储路径（需确保有权限）
+        const char* extPath = GNativeActivity->externalDataPath;
+        if (!extPath) {
+            GE_CORE_ERROR("StoreShader: External storage not available");
+            return;
+        }
+
+        // 拼接完整文件路径
+        std::string fullPath = std::string(extPath) + "/" + name;
+
+        // 写入文件（二进制模式，避免换行符转换）
+        std::ofstream out(fullPath, std::ios::binary);
+        if (out) {
+            out.write(shaderCode.c_str(), shaderCode.size());
+            out.close();
+            GE_CORE_INFO("StoreShader :Saved to: %s", fullPath.c_str());
+        } else {
+            GE_CORE_ERROR("StoreShader Failed to write file");
+        }
+#endif
+    }
+
+} // BlackPearl

@@ -147,6 +147,7 @@ namespace BlackPearl {
 		graphicsPSO.pipeline = m_SkyboxPso;
 		graphicsPSO.bindings.push_back(m_SkyboxBindingSet);
 		graphicsPSO.bindings.push_back(m_ViewBindingset);
+        graphicsPSO.inputLayout = psoDesc.inputLayout;
 		/*for (int j = 0; j < shaderParms[ShaderType::Pixel].bindingLayouts.size(); ++j) {
 			psoDesc.bindingLayouts.push_back(shaderParms[ShaderType::Pixel].bindingLayouts[j]);
 		}

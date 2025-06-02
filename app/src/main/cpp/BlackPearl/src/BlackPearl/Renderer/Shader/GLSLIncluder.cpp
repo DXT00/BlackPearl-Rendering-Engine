@@ -37,6 +37,7 @@ namespace BlackPearl {
                 resolvedPath = filename;
                 return true;
             }
+
         }
         
         return false;
@@ -134,7 +135,8 @@ namespace BlackPearl {
                     result += "\n// [End of include: " + filename + "]\n";
                 }
                 else {
-                    std::cerr << "Error: Could not open include file '" << filename << "'\n";
+                    GE_CORE_ERROR("Error: Could not open include file %s\n" , filename.c_str());
+                    //std::cerr << "Error: Could not open include file '" << filename << "'\n";
                     // 保留原始指令
                     result += glslCode.substr(includeStart, fileEnd - includeStart + 1);
                 }

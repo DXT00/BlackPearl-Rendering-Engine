@@ -1,7 +1,7 @@
 #pragma once
 #include "../RHIInputLayout.h"
 #include "BlackPearl/RHI/OpenGLRHI/OpenGLDriver/OpenGLThirdParty.h"
-
+#include "hlsl/core/slot_cb.h"
 
 namespace BlackPearl {
 	class InputLayout :public RefCounter<IInputLayout>
@@ -10,14 +10,17 @@ namespace BlackPearl {
 		InputLayout(const VertexBufferLayout& _layout);
 		VertexBufferLayout layout;
 
-        std::vector<VertexAttributeDesc> inputDesc;
+        VertexAttributeDesc inputDesc[Slot_Num];
 
       /*  std::vector<VkVertexInputBindingDescription> bindingDesc;
         std::vector<VkVertexInputAttributeDescription> attributeDesc;*/
 
         uint32_t getNumAttributes() const override;
         const VertexAttributeDesc* getAttributeDesc(uint32_t index) const override;
-	};
+	
+    private:
+       void _fillInputDesc(int slot, const BufferElement& element);
+    };
 
 
 	/*static uint32_t ShaderDataTypeToBufferType(const ElementDataType& type) {

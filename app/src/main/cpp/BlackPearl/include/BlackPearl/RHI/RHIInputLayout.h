@@ -100,7 +100,7 @@ namespace BlackPearl {
 			Location(location) {
 		}
 
-		uint32_t GetElementCount() {
+		uint32_t GetElementCount() const{
 			switch (Type) {
 			case ElementDataType::Int:      return 1;
 			case ElementDataType::Int2:     return 2;

@@ -1,6 +1,10 @@
 
 #define COMPILE_SHADER 1
 
+//platform
+#define SHADING_PATH_MOBILE 0
+
+
 //lighting
 #define ALLOW_STATIC_LIGHTING 1
 

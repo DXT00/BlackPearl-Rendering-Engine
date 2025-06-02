@@ -34,6 +34,7 @@
 #include "BlackPearl/Math/frustum.h"
 #include "BlackPearl/RHI/RHITexture.h"
 #include "BlackPearl/Renderer/DescriptorTableManager.h"
+#include "hlsl/core/slot_cb.h"
 //#include "BlackPearl/Renderer/Buffer/Buffer.h"
 struct MaterialConstants;
 struct LightConstants;
@@ -82,7 +83,7 @@ namespace BlackPearl
         std::string mimeType;
     };
 
-    enum class VertexAttribute
+    /*enum class VertexAttribute
     {
         Position,
         PrevPosition,
@@ -96,7 +97,24 @@ namespace BlackPearl
         JointWeights,
 
         Count
+    };*/
+
+    enum class VertexAttribute
+    {
+        Position = Slot_aPos,
+        PrevPosition = Slot_aPrePos,
+        TexCoord = Slot_aTexCoords,
+        TexCoord1 = Slot_aTexCoords1,
+        Normal = Slot_aNormal,
+        Tangent = Slot_aTangent,
+        Transform = Slot_aTransform,
+        PrevTransform = Slot_aPrevTransform,
+        JointIndices = Slot_aJointIndices,
+        JointWeights = Slot_aJointWeights,
+
+        Count = Slot_Num
     };
+
 
     VertexAttributeDesc GetVertexAttributeDesc(VertexAttribute attribute, const char* name, uint32_t location);
 
@@ -209,7 +227,7 @@ namespace BlackPearl
     {
         BufferHandle indexBuffer;
         BufferHandle vertexBuffer;
-        // ´æ´¢ transform ĞÅÏ¢£¬°üÀ¨scale, translate, rotate
+        // å­˜å‚¨ transform ä¿¡æ¯ï¼ŒåŒ…æ‹¬scale, translate, rotate
         BufferHandle instanceBuffer;
 
         BufferDesc indexBufferDesc;
@@ -224,13 +242,13 @@ namespace BlackPearl
         VertexBufferLayout vertexBufferLayout;
 
         std::vector<uint32_t> indexData;
-        //std::vector<float> vertexData; ²»ĞèÒªvertexData, Èç¹ûÓĞ¹Ç÷ÀµÄ»° vectorÀàĞÍ»á²»Ò»Ñù
-        //×îºóÍ¨¹ıwriteBuffer À´Ğ´
+        //std::vector<float> vertexData; ä¸éœ€è¦vertexData, å¦‚æœæœ‰éª¨éª¼çš„è¯ vectorç±»å‹ä¼šä¸ä¸€æ ·
+        //æœ€åé€šè¿‡writeBuffer æ¥å†™
         std::vector<math::float3> positionData;
         std::vector<math::float3> prePositionData;
 
+        std::vector<math::float2> texcoordData;
         std::vector<math::float2> texcoord1Data;
-        std::vector<math::float2> texcoord2Data;
         std::vector<math::float3> normalData;
         std::vector<math::float3> tangentData;
         std::vector<math::float3> bitangentData;
@@ -252,7 +270,9 @@ namespace BlackPearl
         //std::vector<math::float4> weightData;
 
         [[nodiscard]] bool hasAttribute(VertexAttribute attr) const { return vertexBufferRanges[int(attr)].byteSize != 0; }
-        BufferRange& getVertexBufferRange(VertexAttribute attr) { return vertexBufferRanges[int(attr)]; }
+        BufferRange& getVertexBufferRange(VertexAttribute attr) { 
+            return vertexBufferRanges[int(attr)]; 
+        }
         [[nodiscard]] const BufferRange& getVertexBufferRange(VertexAttribute attr) const { return vertexBufferRanges[int(attr)]; }
     };
 

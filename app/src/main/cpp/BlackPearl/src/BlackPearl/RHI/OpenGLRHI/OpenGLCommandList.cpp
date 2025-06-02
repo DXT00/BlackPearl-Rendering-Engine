@@ -1307,7 +1307,7 @@ namespace BlackPearl {
 				}
 
 				//HGLRC currentContext = wglGetCurrentContext();
-				GE_ERROR_JUDGE();
+				//GE_ERROR_JUDGE();
 				//FOpenGL::DrawRangeElements(GL_TRIANGLES, 0, args.vertexCount-1, NumElements, GL_UNSIGNED_SHORT, (void*)(0));
 				glDrawElements(GL_TRIANGLES, NumElements, GL_UNSIGNED_INT, 0);
 				GE_ERROR_JUDGE();
@@ -1316,6 +1316,7 @@ namespace BlackPearl {
 			else
 			{
 				glDrawElements(DrawMode, NumElements, IndexType, (void*)(uint64_t)(StartIndex));
+                GE_ERROR_JUDGE();
 			}
 		}
 		//GOpenGLKickHint.OnDrawCall(ContextState);
@@ -1809,7 +1810,7 @@ namespace BlackPearl {
 			m_Device->PendingState.ibo = static_cast<Buffer*>(buf)->rendererID;
 		else {
 			m_Device->PendingState.ibo = 0;
-			GE_CORE_WARN("no indexbuffer found");
+			GE_CORE_ERROR("no indexbuffer found");
 		}
 	}
 

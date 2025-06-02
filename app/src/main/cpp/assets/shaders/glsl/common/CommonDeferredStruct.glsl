@@ -10,11 +10,32 @@ layout(std140, binding = 8) uniform ForwardShadingUBO {
 };
 
 
+#if SHADING_PATH_MOBILE
+
+// inout rather than out
+
+#extension GL_EXT_shader_pixel_local_storage : require
+
+#extension GL_ARM_shader_framebuffer_fetch_depth_stencil : require
+
+__pixel_local_inEXT InPLS
+{
+    layout(r11f_g11f_b10f) vec3 t_gSceneColor;
+    layout(rgb10_a2) vec4 t_gGbufferA;
+    layout(rgba8) vec4 t_gGbufferB;
+    layout(rgba8) vec4 t_gGbufferC;
+
+};
+
+
+#else
 // SceneColor and Gbuffer Textures
 layout(binding = 0) uniform sampler2D t_gSceneColor; //use for emissive color and fog
 layout(binding = 1) uniform sampler2D t_gGbufferA;  //encode normal.xy + Encode IndirectIrradiance + reserve
 layout(binding = 2) uniform sampler2D t_gGbufferB; // Metallic + Specular + Roughness + ShadingModelID / 255.0
 layout(binding = 3) uniform sampler2D t_gGbufferC; // BaseColor.xyz + reserve(precompute shadow)
+
+#endif
 
 layout(binding = 4) uniform sampler2D t_gSceneDepth; //default depth texture
 

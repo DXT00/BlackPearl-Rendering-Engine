@@ -58,6 +58,12 @@ namespace BlackPearl{
         return file.good(); // 文件可打开则存在
 
     }
+    void WindowsAssetManager::StoreGLSLShader(const std::string &shaderCode, const std::string &name) {
+        // 写入UTF-8文件
+        std::ofstream out(name, std::ios::binary);
+        std::string text = shaderCode;
+        out.write(text.c_str(), text.size());
 
+    }
 
 }

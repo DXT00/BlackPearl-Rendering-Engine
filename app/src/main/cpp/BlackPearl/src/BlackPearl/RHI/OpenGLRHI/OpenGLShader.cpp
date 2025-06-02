@@ -73,8 +73,11 @@ namespace BlackPearl
                     else if (type == GL_TESS_CONTROL_SHADER)shaderType = "tessellation control shader";
                     else if (type == GL_TESS_EVALUATION_SHADER)shaderType = "tessellation evaluation shader";
 
+#ifdef GE_PLATFORM_WINDOWS
                     GE_CORE_ERROR("{0},{1} compile failed :{2}", m_ShaderPath.c_str(), shaderType.c_str(), infoLog.data());
+#else
                     GE_CORE_ERROR("%s,%s compile failed :%s",m_ShaderPath.c_str(), shaderType.c_str(), infoLog.data());
+#endif
                  //   GE_CORE_ERROR("{0} compile failed :{1}", shaderType.c_str(), infoLog.data());
                     GE_ASSERT(false, "Shader compliation failure!")
                     
@@ -1182,6 +1185,7 @@ namespace BlackPearl
                 LinkedProgram = LinkProgram(VertexShader, PixelShader, GeometryShader, IBindingSet);
 
                 if (LinkedProgram == NULL) {
+                    GE_CORE_ERROR("fail to link program");
 #if DEBUG_GL_SHADERS
                     if (VertexShader)
                     {

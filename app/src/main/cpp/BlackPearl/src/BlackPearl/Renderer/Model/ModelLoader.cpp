@@ -216,7 +216,7 @@ namespace BlackPearl {
 		std::vector<float3>& normalData = buffers->normalData;
 		std::vector<float3>& tangentData = buffers->tangentData;
 		std::vector<float3>& bitangentData = buffers->bitangentData;
-		std::vector<float2>& texcoord1Data = buffers->texcoord1Data;
+		std::vector<float2>& texcoordData = buffers->texcoordData;
 
 		std::vector<uint32_t> &indicesData = buffers->indexData;
 		std::vector<uint32_t> &jointIdData = buffers->jointIdData;
@@ -278,7 +278,7 @@ namespace BlackPearl {
 				texCoords.x = aimesh->mTextureCoords[0][i].x;
 				texCoords.y = aimesh->mTextureCoords[0][i].y;
 			}
-			texcoord1Data.push_back(texCoords);
+			texcoordData.push_back(texCoords);
 			vertex.texCoords = texCoords;
 
 			if (hasAnimation && m_CurrentModel->desc.animationInfo.boneDatas.size() >= 0) {
@@ -352,7 +352,7 @@ namespace BlackPearl {
 		std::vector<float3>& normalData = buffers->normalData;
 		std::vector<float3>& tangentData = buffers->tangentData;
 		std::vector<float3>& bitangentData = buffers->bitangentData;
-		std::vector<float2>& texcoord1Data = buffers->texcoord1Data;
+		std::vector<float2>& texcoordData = buffers->texcoordData;
 
 		std::vector<uint32_t>& indicesData = buffers->indexData;
 		std::vector<uint32_t>& jointIdData = buffers->jointIdData;
@@ -432,7 +432,7 @@ namespace BlackPearl {
 					texCoords.x = aimesh->mTextureCoords[0][idx].x;
 					texCoords.y = aimesh->mTextureCoords[0][idx].y;
 				}
-				texcoord1Data.push_back(texCoords);
+				texcoordData.push_back(texCoords);
 				//glmInsertVector(textCords, vertexData);
 				vertex.texCoords = texCoords;
 
@@ -978,16 +978,16 @@ namespace BlackPearl {
 				buffers->tangentData.size() * sizeof(buffers->tangentData[0]), bufferDesc.byteSize);
 		}
 
+		if (!buffers->texcoordData.empty())
+		{
+			AppendBufferRange(buffers->getVertexBufferRange(VertexAttribute::TexCoord),
+				buffers->texcoordData.size() * sizeof(buffers->texcoordData[0]), bufferDesc.byteSize);
+		}
+
 		if (!buffers->texcoord1Data.empty())
 		{
 			AppendBufferRange(buffers->getVertexBufferRange(VertexAttribute::TexCoord1),
 				buffers->texcoord1Data.size() * sizeof(buffers->texcoord1Data[0]), bufferDesc.byteSize);
-		}
-
-		if (!buffers->texcoord2Data.empty())
-		{
-			AppendBufferRange(buffers->getVertexBufferRange(VertexAttribute::TexCoord2),
-				buffers->texcoord2Data.size() * sizeof(buffers->texcoord2Data[0]), bufferDesc.byteSize);
 		}
 
 		if (!buffers->jointIdData.empty())

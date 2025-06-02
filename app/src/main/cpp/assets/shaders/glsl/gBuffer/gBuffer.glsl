@@ -66,7 +66,7 @@ float EncodeIndirectIrradiance(float IndirectIrradiance)
 	float L = IndirectIrradiance;
 	L *= g_View.preExposure; // Apply pre-exposure as a mean to prevent compression overflow.
 	const float LogBlackPoint = 0.00390625;	// exp2(-8);
-	return log2( L + LogBlackPoint ) / 16 + 0.5;
+	return log2( L + LogBlackPoint ) / 16.0 + 0.5;
 }
 
 float DecodeIndirectIrradiance(float IndirectIrradiance)
@@ -74,11 +74,11 @@ float DecodeIndirectIrradiance(float IndirectIrradiance)
 	// LogL -> L
 	float LogL = IndirectIrradiance;
 	const float LogBlackPoint = 0.00390625;	// exp2(-8);
-	return (1.0/g_View.preExposure) * (exp2( LogL * 16 - 8 ) - LogBlackPoint);	// 1 exp2, 1 smad, 1 ssub
+	return (1.0/g_View.preExposure) * (exp2( LogL * 16.0 - 8.0 ) - LogBlackPoint);	// 1 exp2, 1 smad, 1 ssub
 }
 
 
-void MobileFetchGBuffer(in float2 UV, in out half4 GBufferA, in out half4 GBufferB, in out half4 GBufferC, in out float SceneDepth)
+void MobileFetchGBuffer(in float2 UV, inout half4 GBufferA, inout half4 GBufferB, inout half4 GBufferC, inout float SceneDepth)
 {
 #if DEFERRED_SHADING_PASS
 //#if VULKAN_PROFILE
@@ -120,7 +120,7 @@ GBufferData MobileDecodeGBuffer(in half4 InGBufferA, in half4 InGBufferB, in hal
 #if ALLOW_STATIC_LIGHTING
 	GBuffer.IndirectIrradiance = DecodeIndirectIrradiance(InGBufferA.z);
 #else
-	GBuffer.IndirectIrradiance = 1;
+	GBuffer.IndirectIrradiance = 1.0;
 #endif
 	GBuffer.PerObjectGBufferData = InGBufferA.a;
 
@@ -138,13 +138,13 @@ GBufferData MobileDecodeGBuffer(in half4 InGBufferA, in half4 InGBufferB, in hal
 	//GBuffer.SelectiveOutputMask = 0;
 	GBuffer.BaseColor = InGBufferC.rgb;//DecodeBaseColor(InGBufferC.rgb);
 #if ALLOW_STATIC_LIGHTING
-	GBuffer.AO = 1;
+	GBuffer.AO = 1.0;
 	//GBuffer.PrecomputedShadowFactors = half4(InGBufferC.a, 1, 1, 1);
 #else
 	GBuffer.AO = InGBufferC.a;
 	//GBuffer.PrecomputedShadowFactors = 1.0;
 #endif
-    GBuffer.Anisotropy = 0;
+    GBuffer.Anisotropy = 0.0;
 	// derived from BaseColor, Metalness, Specular
 	{
 		GBuffer.SpecularColor = ComputeF0(GBuffer.Specular, GBuffer.BaseColor, GBuffer.Metallic);
@@ -197,14 +197,14 @@ void MobileEncodeGBuffer(
 #if ALLOW_STATIC_LIGHTING
 		OutGBufferA.b = EncodeIndirectIrradiance(GBuffer.IndirectIrradiance * GBuffer.AO);
 #else
-		OutGBufferA.b = 1;
+		OutGBufferA.b = 1.0;
 #endif
 		OutGBufferA.a = GBuffer.PerObjectGBufferData;		
 
 		OutGBufferB.r = GBuffer.Metallic;
 		OutGBufferB.g = GBuffer.Specular;
 		OutGBufferB.b = GBuffer.Roughness;
-		OutGBufferB.a = GBuffer.ShadingModelID / 255.0;
+		OutGBufferB.a = float(GBuffer.ShadingModelID) / 255.0f;
 
 		OutGBufferC.rgb = EncodeBaseColor( GBuffer.BaseColor );
 #if ALLOW_STATIC_LIGHTING
@@ -224,8 +224,8 @@ MaterialSample GetMaterialFromGBuffer(GBufferData GBuffer){
     mat.materialID = // not use
     mat.shadingModelID = GBuffer.ShadingModelID;
     mat.domain = MaterialDomain_Opaque; // Cook-torrance default to Opaque material
-    mat.opacity = 1; // Cook-torrance default to Opaque material
-    mat.alphaThreshold = 0; // not use, Gbuffer default to opacity /mask object
+    mat.opacity = 1.0; // Cook-torrance default to Opaque material
+    mat.alphaThreshold = 0.0; // not use, Gbuffer default to opacity /mask object
     mat.roughness = GBuffer.Roughness;
     mat.metallic = GBuffer.Metallic;
     mat.specular = GBuffer.Specular;
@@ -233,7 +233,7 @@ MaterialSample GetMaterialFromGBuffer(GBufferData GBuffer){
     mat.albedo = GBuffer.BaseColor;
     mat.emissive =  half3(0.0);// 不在Gbuffer 处理, 在 SceneColor
     mat.transmission = half3(0.0);// not use,
-    mat.ior = 0;//  not use,
+    mat.ior = 0.0;//  not use,
     return mat;
 }
 
@@ -258,7 +258,7 @@ GBufferData GetGBufferFormMatetial(SurfaceGeometry geom, MaterialSample mat){
 	GBuffer.Roughness = mat.roughness;
 	GBuffer.ShadingModelID =  mat.shadingModelID;
 	GBuffer.AO = mat.ao;
-	GBuffer.Anisotropy = 0;
+	GBuffer.Anisotropy = 0.0;
     GBuffer.PerObjectGBufferData = 1.0; //reserve channel
     GBuffer.Depth = 1.0; //not get from mat, use default temporary
 

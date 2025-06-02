@@ -155,10 +155,10 @@ namespace BlackPearl {
 		material.reset(DBG_NEW Material(shaderPath, texture, { 1.0,1.0,1.0 }, { 1.0,1.0,1.0 }, { 1.0,1.0,1.0 }, {0.0,0.0,0.0}));
 //#if GE_API_VULKAN
 		VertexBufferLayout layout = {
-			{ElementDataType::Float3,"aPos",false,0},
-			{ElementDataType::Float3,"aPrePos",false,1},
-			{ElementDataType::Float2,"aTexCoords",false,2},
-			{ElementDataType::Float3,"aNormal",false,3},
+			{ElementDataType::Float3,"aPos",false,Slot_aPos},
+			{ElementDataType::Float3,"aPrePos",false,Slot_aPrePos},
+             {ElementDataType::Float3,"aNormal",false,Slot_aNormal},
+			{ElementDataType::Float2,"aTexCoords",false,Slot_aTexCoords},
 		};
 //#else
 //		VertexBufferLayout layout = {
@@ -213,10 +213,11 @@ namespace BlackPearl {
 		//TODO:: �޸�glsl shader ������vertex layout
 //#if GE_API_VULKAN
 		VertexBufferLayout layout = {
-			{ElementDataType::Float3,"aPos",false,0},
-			{ElementDataType::Float3,"aPrePos",false,1},
-			{ElementDataType::Float2,"aTexCoords",false,2},
-			{ElementDataType::Float3,"aNormal",false,3},
+			{ElementDataType::Float3,"aPos",false,Slot_aPos},
+			{ElementDataType::Float3,"aPrePos",false,Slot_aPrePos},
+            {ElementDataType::Float3,"aNormal",false,Slot_aNormal},
+			{ElementDataType::Float2,"aTexCoords",false,Slot_aTexCoords},
+		
 		};
 //#else
 //		VertexBufferLayout layout = {
@@ -260,9 +261,9 @@ namespace BlackPearl {
 
 		material.reset(DBG_NEW Material(shaderPath, texture, {}, { 0.2,0.2,0.0 }, {}, {}));
 		VertexBufferLayout layout = {
-		{ElementDataType::Float3,"aPos",false,0},
-		{ElementDataType::Float3,"aNormal",false,1},
-		{ElementDataType::Float2,"aTexCoords",false,2}
+		{ElementDataType::Float3,"aPos",false,Slot_aPos},
+		{ElementDataType::Float3,"aNormal",false,Slot_aNormal},
+		{ElementDataType::Float2,"aTexCoords",false,Slot_aTexCoords}
 		};
 		std::shared_ptr<Mesh> mesh = std::make_shared<Mesh>(meshFilter.get(), material, layout);
 		obj->AddComponent<MeshRenderer>(mesh);
@@ -295,7 +296,7 @@ namespace BlackPearl {
 		material.reset(DBG_NEW Material(shaderPath, texture, {}, { 0.2,0.2,0.0 }, {}, {}));
 		material->SetRTXType(Material::RTXType::RTX_DIFFUSE);
 		VertexBufferLayout layout = {
-		{ElementDataType::Float3,"aPos",false,0},
+		{ElementDataType::Float3,"aPos",false,Slot_aPos},
 		};
 		std::shared_ptr<Mesh> mesh = std::make_shared<Mesh>(meshFilter.get(), material, layout);
 		obj->AddComponent<MeshRenderer>(mesh);
@@ -420,9 +421,9 @@ namespace BlackPearl {
 		material.reset(DBG_NEW Material(shaderPath, texture, {}, { 0.2,0.5,0.6 }, {}, {}));
 
 		VertexBufferLayout layout = {
-		{ElementDataType::Float3,"aPos",false,0},
-		{ElementDataType::Float3,"aNormal",false,1},
-		{ElementDataType::Float2,"aTexCoords",false,2}
+		{ElementDataType::Float3,"aPos",false,Slot_aPos},
+		{ElementDataType::Float3,"aNormal",false,Slot_aNormal},
+		{ElementDataType::Float2,"aTexCoords",false,Slot_aTexCoords}
 
 		};
 		std::shared_ptr<Mesh> mesh(DBG_NEW Mesh(meshFilter.get(), material, layout));

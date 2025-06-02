@@ -14,17 +14,37 @@ precision mediump float;  // 必须声明精度（ES 要求）
 //#if USE_TBN
 //layout(location = 4) in vec3 aTangent;
 //#endif
-layout(location = 0) in vec3 aPos;
-layout(location = 1) in vec3 aNormal;
-layout(location = 2) in vec2 aTexCoords;
 
-#if USE_TBN
-layout(location = 3) in vec3 aTangent;
-#endif
+
+//layout(location = Slot_aPos) in vec3 aPos;
+//layout(location = Slot_aPrePos) in vec3 aPrePos;
+//layout(location = Slot_aTexCoords) in vec2 aTexCoords;
+//layout(location = Slot_aNormal) in vec3 aNormal;
+//
+//
+//#if USE_TBN
+//layout(location = Slot_aTangent) in vec3 aTangent;
+//#endif
+//
+
+layout(location = Slot_aPos) in vec3 aPos;
+layout(location = Slot_aPrePos) in vec3 aPrePos;
+layout(location = Slot_aNormal) in vec3 aNormal;
+layout(location = Slot_aTexCoords) in vec2 aTexCoords;
+
+//layout(location = 0) in vec3 aPos;
+//layout(location = 1) in vec3 aPrePos;
+//layout(location = 2) in vec2 aTexCoords;
+//layout(location = 3) in vec3 aNormal;
+
+//#if USE_TBN
+//layout(location = 3) in vec3 aTangent;
+//#endif
 
 out vec2 v_TexCoord;
 out vec3 v_Normal;
 out vec3 v_FragPos;
+out vec3 v_FragPrePos;
 #if USE_TBN
 out vec3 v_Tangent;
 #endif
@@ -39,6 +59,7 @@ void main()
 
     v_TexCoord = aTexCoords;
     v_FragPos = vec3(g_Transform.matModel* vec4(aPos,1.0));
+    v_FragPrePos = vec3(g_Transform.matModel* vec4(aPrePos,1.0));
     v_Normal =  mat3(g_Transform.matInvModel)* aNormal;
 #if USE_TBN
 	v_Tangent =  mat3(g_Transform.matInvModel)*aTangent;

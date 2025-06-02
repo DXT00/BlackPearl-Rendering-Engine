@@ -6,9 +6,10 @@
 precision mediump float;  // 必须声明精度（ES 要求）
 #endif
 
-layout(location = 0) in vec3 aPos;
-layout(location = 1) in vec3 aNormal;
-layout(location = 2) in vec2 aTexCoords;
+layout(location = Slot_aPos) in vec3 aPos;
+layout(location = Slot_aPrePos) in vec3 aPrePos;
+layout(location = Slot_aTexCoords) in vec2 aTexCoords;
+layout(location = Slot_aNormal) in vec3 aNormal;
 
 out vec2 v_TexCoord;
 out vec3 v_Normal;

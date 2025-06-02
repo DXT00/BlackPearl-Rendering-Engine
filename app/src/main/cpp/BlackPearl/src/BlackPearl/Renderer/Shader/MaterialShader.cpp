@@ -4,6 +4,8 @@
 #include "BlackPearl/Renderer/Shader/ShaderFactory.h"
 #include "Core/AssetManager.h"
 #include "Renderer/Shader/GLSLIncluder.h"
+#include "Core/AssetManager.h"
+#include "hlsl/core/slot_cb.h"
 namespace BlackPearl {
     extern ShaderFactory* g_shaderFactory;
 
@@ -16,11 +18,10 @@ namespace BlackPearl {
         return path;
     }
 
-    static void StoreShader(const std::string& shaderCode, const std::string name) {
-        // 写入UTF-8文件
-        std::ofstream out(name, std::ios::binary);
-        std::string text = shaderCode;
-        out.write(text.c_str(), text.size());
+    static void StoreShader(const std::string& shaderCode, const std::string& name) {
+
+        AssetManager::StoreGLSLShader(shaderCode, name);
+//android 平台 store后要跑.bat
 
     }
     static ShaderType ShaderTypeFromString(const std::string& type) {
@@ -41,14 +42,30 @@ namespace BlackPearl {
         return ShaderType::Invalid;
     }
 
+    std::string ReadExtentions(std::vector<std::string>* extensions){
+        std::string ret;
+        if(!extensions)
+            return ret;
+        for (int i = 0; i < extensions->size(); ++i) {
+            ret+= (*extensions)[i];
+            ret+="\r\n";
+        }
+        return ret;
+    }
 
-
-	MaterialShader::MaterialShader(const std::string& filepath)
+	MaterialShader::MaterialShader(const std::string& filepath, std::vector<std::string>* extensions)
 	{
+        m_GlslIncluder = GLSLIncluder({
+            "assets/shaders/hlsl/core",
+            "assets/shaders",
+            ""
+            });
+
 		m_ShaderPath = filepath;
-        std::string commonSource = ReadFile(m_CommonStructPath);
+        std::string extentions = ReadExtentions(extensions);
+        std::string commonSource = ReadFile(m_CommonStructPath);// m_GlslIncluder.processIncludes(ReadFile(m_CommonStructPath));
         std::string macroSource = ReadFile(m_MacroPath);
-        commonSource = macroSource + commonSource;
+        commonSource = extentions + macroSource + commonSource;
         m_GlslCode = ReadFile(m_ShaderPath);
         std::unordered_map<ShaderType, std::string> shaderSources = PreProcess(m_GlslCode, commonSource);
         if (shaderSources.find(ShaderType::VertexShader) != shaderSources.end()) {
@@ -78,6 +95,38 @@ namespace BlackPearl {
 
 	}
 
+    static void CompileInputLocation(std::string& source) {
+
+        std::unordered_map<std::string, int> slotMap;
+
+        slotMap["Slot_aPos"] = Slot_aPos;
+        slotMap["Slot_aPrePos"] = Slot_aPrePos;
+        slotMap["Slot_aTexCoords"] = Slot_aTexCoords;
+        slotMap["Slot_aNormal"] = Slot_aNormal;
+        slotMap["Slot_aTangent"] = Slot_aTangent;;
+        slotMap["Slot_aJointIndices"] = Slot_aJointIndices;
+        slotMap["Slot_aJointWeights"] = Slot_aJointWeights;
+        slotMap["Slot_aTexCoords1"] = Slot_aTexCoords1;
+        slotMap["Slot_aTransform "] = Slot_aTransform;
+        slotMap["Slot_aPrevTransform"] = Slot_aPrevTransform;
+
+
+        auto it = slotMap.begin();
+        for (; it != slotMap.end(); it++)
+        {
+
+            size_t pos = source.find(it->first);
+            while (pos != std::string::npos) {
+                source.replace(pos, it->first.length(), std::to_string(it->second));
+                pos = source.find(it->first, pos + std::to_string(it->second).length());
+            }
+
+
+        }
+
+
+    }
+
 	std::unordered_map<ShaderType, std::string> MaterialShader::PreProcess(const std::string& source, const std::string& commonSource)
 	{
         GE_ASSERT((!source.empty()), "shader source code is empty");
@@ -100,28 +149,22 @@ namespace BlackPearl {
                     : nextLinePos));//string::npos表示source的末尾位置
 
         }
-
         //todo::查找#include ,包含头文件
         std::unordered_set<std::string> includedFiles;
-
-        GLSLIncluder includer({ 
-            "assets/shaders/hlsl/core",
-            "assets/shaders",
-            "./"
-            });
-
+        
         std::string fullShaderPS, fullShaderVS;
             // 直接处理字符串
 
         if (shaderSources.find(ShaderType::VertexShader) != shaderSources.end()) {
-            fullShaderVS = includer.processIncludes(shaderSources[ShaderType::VertexShader]);
+            m_GlslIncluder.reset();
+            fullShaderVS = m_GlslIncluder.processIncludes(shaderSources[ShaderType::VertexShader]);
             shaderSources[ShaderType::VertexShader] = fullShaderVS;
 
         }
 
         if (shaderSources.find(ShaderType::Pixel) != shaderSources.end()) {
-            includer.reset();
-            fullShaderPS = includer.processIncludes(shaderSources[ShaderType::Pixel]);
+            m_GlslIncluder.reset();
+            fullShaderPS = m_GlslIncluder.processIncludes(shaderSources[ShaderType::Pixel]);
             shaderSources[ShaderType::Pixel] = fullShaderPS;
         }
 
@@ -165,14 +208,20 @@ namespace BlackPearl {
             shaderSources[ShaderType::VertexShader] =  glesVersion + commonSource + res;
 #else
             shaderSources[ShaderType::VertexShader] = front + commonSource + res;
-
+            CompileInputLocation(shaderSources[ShaderType::VertexShader]);
 #endif
+
+            //attribute 字符穿替换
+
+
         }
-        GE_CORE_INFO("Shader {0}---------------\n, ---------vertex---------\n {1}\n, -----------pixel------------\n {2} \n", m_ShaderPath.c_str(), shaderSources[ShaderType::VertexShader].c_str(), shaderSources[ShaderType::Pixel].c_str());
         StoreShader(shaderSources[ShaderType::VertexShader], get_filename(m_ShaderPath)+"_vert");
         StoreShader(shaderSources[ShaderType::Pixel], get_filename(m_ShaderPath) + "_frag");
-
-        GE_CORE_INFO("Shader %s\n, vertex: %s\n, pixel: %s \n", m_ShaderPath.c_str(), shaderSources[ShaderType::VertexShader].c_str(), shaderSources[ShaderType::Pixel].c_str());
+#ifdef GE_PLATFORM_WINDOWS
+        GE_CORE_INFO("Shader {0}---------------\n, ---------vertex---------\n {1}\n, -----------pixel------------\n {2} \n", m_ShaderPath.c_str(), shaderSources[ShaderType::VertexShader].c_str(), shaderSources[ShaderType::Pixel].c_str());
+#elif defined(GE_PLATFORM_ANDROID)
+        GE_CORE_INFO("Shader %s---------------\n, ---------------vertex---------------: %s\n, ---------------pixel---------------: %s \n", m_ShaderPath.c_str(), shaderSources[ShaderType::VertexShader].c_str(), shaderSources[ShaderType::Pixel].c_str());
+#endif
         return shaderSources;
 	}
 }

@@ -34,6 +34,8 @@ namespace BlackPearl {
     static bool bAppIsActive_EventThread = false;
 
     extern JavaVM *GJavaVM;
+    extern ANativeActivity *GNativeActivity;
+
     extern void BlockRendering();
 
     // called whenever the app loses loses window or pause.
@@ -555,7 +557,7 @@ namespace BlackPearl {
             GJavaVM = state->activity->vm;
             JNIEnv* env = state->activity->env;
             state->activity->vm->GetEnv((void **)&Env, JNI_CURRENT_VERSION);
-
+            GNativeActivity = state->activity;
 
           //  AndroidApplication::InitializeJavaEnv(BlackPearl::GJavaVM, JNI_CURRENT_VERSION, FJavaWrapper::GameActivityThis);
           //  FJavaWrapper::FindClassesAndMethods(Env);

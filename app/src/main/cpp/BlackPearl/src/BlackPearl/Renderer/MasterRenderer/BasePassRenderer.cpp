@@ -6,6 +6,7 @@
 #include "BlackPearl/Renderer/Material/MaterialBindingCache.h"
 #include "BlackPearl/Component/LightComponent/DirectionLight.h"
 #include "hlsl/core/forward_cb.h"
+#include "hlsl/core/slot_cb.h"
 namespace BlackPearl {
     BasePassRenderer::BasePassRenderer(IDevice* device)
         :GeometryRenderer(device)
@@ -131,7 +132,7 @@ namespace BlackPearl {
 
         _UploadIndexBuffers(commandList, buffers, state);
         _UploadInstanceBuffers(commandList, buffers, trans, state);
-        _UploadVertexBuffers(commandList, buffers, state);
+        _UploadVertexBuffers(commandList, buffers, state, state.inputLayout);
 
 
         //buffers->vertexBuffer = m_Device->createBuffer(buffers->vertexBufferDesc);
@@ -337,10 +338,10 @@ namespace BlackPearl {
         //    GetVertexAttributeDesc(VertexAttribute::Transform, "TRANSFORM", 4),
         //};
         VertexBufferLayout layout = {
-            {ElementDataType::Float3,"aPos",false,0},
-            {ElementDataType::Float3,"aPrePos",false,1},
-            {ElementDataType::Float2,"aTexCoords",false,2},
-            {ElementDataType::Float3,"aNormal",false,3},
+            {ElementDataType::Float3,"aPos",false, Slot_aPos},
+            {ElementDataType::Float3,"aPrePos",false,Slot_aPrePos},
+            {ElementDataType::Float2,"aTexCoords",false,Slot_aTexCoords},
+            {ElementDataType::Float3,"aNormal",false,Slot_aNormal},
         };
 
         return m_Device->createInputLayout(layout);
@@ -530,7 +531,7 @@ namespace BlackPearl {
 
     }
 
-    void BasePassRenderer::_UploadVertexBuffers(ICommandList* commandList, BufferGroup* buffers, GraphicsState& state)
+    void BasePassRenderer::_UploadVertexBuffers(ICommandList* commandList, BufferGroup* buffers, GraphicsState& state, InputLayoutHandle inputLayout)
     {
 
         if (!buffers->vertexBuffer) {
@@ -538,7 +539,14 @@ namespace BlackPearl {
 
             commandList->beginTrackingBufferState(buffers->vertexBuffer, ResourceStates::Common);
 
-            //TODO:: ���䲻ͬ��vertex attribute
+
+
+
+
+
+
+
+            //TODO:: 通过InputLayout 验证
             uint32_t slot = 0;
             if (buffers->hasAttribute(VertexAttribute::Position) && !buffers->positionData.empty()) {
                 const auto& range = buffers->getVertexBufferRange(VertexAttribute::Position);
@@ -552,11 +560,11 @@ namespace BlackPearl {
                 std::vector<float3>().swap(buffers->prePositionData);
 
             }
-            if (buffers->hasAttribute(VertexAttribute::TexCoord1) && !buffers->texcoord1Data.empty()) {
+            if (buffers->hasAttribute(VertexAttribute::TexCoord1) && !buffers->texcoordData.empty()) {
 
                 const auto& range = buffers->getVertexBufferRange(VertexAttribute::TexCoord1);
-                commandList->writeBuffer(buffers->vertexBuffer, buffers->texcoord1Data.data(), range.byteSize, range.byteOffset);
-                std::vector<float2>().swap(buffers->texcoord1Data);
+                commandList->writeBuffer(buffers->vertexBuffer, buffers->texcoordData.data(), range.byteSize, range.byteOffset);
+                std::vector<float2>().swap(buffers->texcoordData);
 
             }
             if (buffers->hasAttribute(VertexAttribute::Normal) && !buffers->normalData.empty()) {

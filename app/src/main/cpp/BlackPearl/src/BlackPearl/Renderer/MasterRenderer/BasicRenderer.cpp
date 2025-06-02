@@ -24,6 +24,8 @@
 #endif
 #include "hlsl/core/forward_cb.h"
 #include "hlsl/core/transform_cb.h"
+#include "hlsl/core/slot_cb.h"
+
 #include "BlackPearl/RHI/Common/RHIUtils.h"
 
 namespace BlackPearl {
@@ -693,49 +695,87 @@ namespace BlackPearl {
 
     }
 
-    void BasicRenderer::_UploadVertexBuffers(ICommandList* cmdList, BufferGroup* buffers, GraphicsState& state)
+    static void _WriteSlotAttribute(ICommandList* cmdList, int slot, BufferGroup* buffers) {
+
+        if (slot == Slot_aPos && !buffers->positionData.empty()) {
+            const auto& range = buffers->getVertexBufferRange(VertexAttribute::Position);
+            cmdList->writeBuffer(buffers->vertexBuffer, buffers->positionData.data(), range.byteSize, range.byteOffset);
+          //  std::vector<float3>().swap(buffers->positionData);
+        }
+        else if (slot == Slot_aPrePos && !buffers->prePositionData.empty()) {
+            const auto& range = buffers->getVertexBufferRange(VertexAttribute::PrevPosition);
+
+            cmdList->writeBuffer(buffers->vertexBuffer, buffers->prePositionData.data(), range.byteSize, range.byteOffset);
+          //  std::vector<float3>().swap(buffers->prePositionData);
+        }
+        else if (slot == Slot_aNormal && !buffers->normalData.empty()) {
+            const auto& range = buffers->getVertexBufferRange(VertexAttribute::Normal);
+            cmdList->writeBuffer(buffers->vertexBuffer, buffers->normalData.data(), range.byteSize, range.byteOffset);
+            //  std::vector<float3>().swap(buffers->normalData);
+        }
+        else if (slot == Slot_aTexCoords && !buffers->texcoordData.empty()) {
+            const auto& range = buffers->getVertexBufferRange(VertexAttribute::TexCoord);
+            cmdList->writeBuffer(buffers->vertexBuffer, buffers->texcoordData.data(), range.byteSize, range.byteOffset);
+         //   std::vector<float2>().swap(buffers->texcoordData);
+        }
+        else if (slot == Slot_aTangent && !buffers->tangentData.empty()) {
+            const auto& range = buffers->getVertexBufferRange(VertexAttribute::Tangent);
+            cmdList->writeBuffer(buffers->vertexBuffer, buffers->tangentData.data(), range.byteSize, range.byteOffset);
+         //   std::vector<float3>().swap(buffers->tangentData);
+        }
+        else if (slot == Slot_aJointIndices) {
+            GE_CORE_ERROR("Incomplte yet");
+        }
+        else if (slot == Slot_aJointWeights) {
+            GE_CORE_ERROR("Incomplte yet");
+
+        }
+        else if (slot == Slot_aTexCoords1) {
+            GE_CORE_ERROR("Incomplte yet");
+
+        }
+        else if (slot == Slot_aTransform) {
+            GE_CORE_ERROR("Incomplte yet");
+
+        }
+        else if (slot == Slot_aPrevTransform) {
+            GE_CORE_ERROR("Incomplte yet");
+
+        }
+        else {
+            GE_CORE_ERROR("Invalid slot attribute");
+        }
+    }
+
+    void BasicRenderer::_UploadVertexBuffers(ICommandList* cmdList, BufferGroup* buffers, GraphicsState& state, InputLayoutHandle inputLayout)
     {
 
         if (!buffers->vertexBuffer) {
+            if (!inputLayout) {
+                GE_CORE_ERROR("inputLayout is null");
+                return;
+            }
+
             buffers->vertexBuffer = m_Device->createBuffer(buffers->vertexBufferDesc);
 
             cmdList->beginTrackingBufferState(buffers->vertexBuffer, ResourceStates::Common);
 
-            //TODO:: ���䲻ͬ��vertex attribute
-            uint32_t slot = 0;
-            if (buffers->hasAttribute(VertexAttribute::Position) && !buffers->positionData.empty()) {
-                const auto& range = buffers->getVertexBufferRange(VertexAttribute::Position);
-                cmdList->writeBuffer(buffers->vertexBuffer, buffers->positionData.data(), range.byteSize, range.byteOffset);
-                std::vector<float3>().swap(buffers->positionData);
-            }
-            if (buffers->hasAttribute(VertexAttribute::PrevPosition) && !buffers->prePositionData.empty()) {
 
-                const auto& range = buffers->getVertexBufferRange(VertexAttribute::PrevPosition);
-                cmdList->writeBuffer(buffers->vertexBuffer, buffers->prePositionData.data(), range.byteSize, range.byteOffset);
-                std::vector<float3>().swap(buffers->prePositionData);
+            //TODO:: 验证slot
+            for (size_t slot = 0; slot < Slot_Num; slot++)
+            {
+                if(buffers->hasAttribute(VertexAttribute(slot)))
+                    _WriteSlotAttribute(cmdList, slot, buffers);
+                
+
+
 
             }
-            if (buffers->hasAttribute(VertexAttribute::TexCoord1) && !buffers->texcoord1Data.empty()) {
 
-                const auto& range = buffers->getVertexBufferRange(VertexAttribute::TexCoord1);
-                cmdList->writeBuffer(buffers->vertexBuffer, buffers->texcoord1Data.data(), range.byteSize, range.byteOffset);
-                std::vector<float2>().swap(buffers->texcoord1Data);
 
-            }
-            if (buffers->hasAttribute(VertexAttribute::Normal) && !buffers->normalData.empty()) {
 
-                const auto& range = buffers->getVertexBufferRange(VertexAttribute::Normal);
-                cmdList->writeBuffer(buffers->vertexBuffer, buffers->normalData.data(), range.byteSize, range.byteOffset);
-                std::vector<float3>().swap(buffers->normalData);
 
-            }
-            if (buffers->hasAttribute(VertexAttribute::Tangent) && !buffers->tangentData.empty()) {
-
-                const auto& range = buffers->getVertexBufferRange(VertexAttribute::Tangent);
-                cmdList->writeBuffer(buffers->vertexBuffer, buffers->tangentData.data(), range.byteSize, range.byteOffset);
-                std::vector<float3>().swap(buffers->tangentData);
-
-            }
+            
 
             ResourceStates state_ = ResourceStates::VertexBuffer | ResourceStates::ShaderResource;
 
@@ -896,7 +936,7 @@ namespace BlackPearl {
 		_UploadTransformBuffers(cmdList, trans, state);
 		GE_ERROR_JUDGE();
 
-		_UploadVertexBuffers(cmdList, buffers, state);
+		_UploadVertexBuffers(cmdList, buffers, state, state.inputLayout);
 
     }
 
@@ -919,6 +959,7 @@ namespace BlackPearl {
 	{
 
 		int id = 0;
+        GE_ERROR_JUDGE();
 		for (const auto& item : drawStrategy->GetDrawItems()) {
 			/*if (id > 0)
 				break;*/
@@ -953,6 +994,7 @@ namespace BlackPearl {
             for (int j = 0; j < shaderParms[ShaderType::Pixel].bindingSets.size(); ++j) {
                 graphicsPSO.bindings.push_back(shaderParms[ShaderType::Pixel].bindingSets[j]);
             }
+            graphicsPSO.inputLayout = psoDesc.inputLayout;
             const_cast<Material*>(item.material)->UploadConstantsBuffer(cmdList);
 			GE_ERROR_JUDGE();
             SetupMaterial(item.material, item.cullMode, psoDesc, graphicsPSO);
@@ -964,9 +1006,9 @@ namespace BlackPearl {
 		   // SetGraphicsPipelineState(cmdList, graphicsPSO, 0);
            // SetShaderParametersLegacyVS
 			cmdList->setGraphicsState(graphicsPSO);
-          
+            GE_ERROR_JUDGE();
 			Draw(cmdList,item);
-		
+            GE_ERROR_JUDGE();
 			/* }
 			 RHICmdList.EndRenderPass();
 

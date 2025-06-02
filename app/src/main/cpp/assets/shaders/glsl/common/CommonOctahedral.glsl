@@ -17,18 +17,18 @@
 float2 UnitVectorToOctahedron(float3 N)
 {
 	N.xy /= dot( float3(1.0), abs(N) );
-	if( N.z <= 0 )
+	if( N.z <= 0.0 )
 	{
-		N.xy = ( float2(1.0) - abs(N.yx) ) * select( bool2(N.x>0 , N.y>0), float2(1,1), float2(-1,-1) );
+		N.xy = ( float2(1.0) - abs(N.yx) ) * select( bool2(N.x>0.0 , N.y>0.0), float2(1,1), float2(-1,-1) );
 	}
 	return N.xy;
 }
 
 float3 OctahedronToUnitVector( float2 Oct )
 {
-	float3 N = float3( Oct, 1 - dot( float2(1.0), abs(Oct) ) );
-	float t = max( -N.z, 0 );
-	N.xy += select( bool2(N.x>0 , N.y>0), float2(-t, -t), float2(t, t));
+	float3 N = float3( Oct, 1.0 - dot( float2(1.0), abs(Oct) ) );
+	float t = max( -N.z, 0.0 );
+	N.xy += select( bool2(N.x>0.0 , N.y>0.0), float2(-t, -t), float2(t, t));
 	return normalize(N);
 }
 

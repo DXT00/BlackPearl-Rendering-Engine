@@ -64,7 +64,7 @@ namespace BlackPearl {
 		buffers->indexData = filter->indexData;
 		buffers->positionData = filter->positionData;
 		buffers->prePositionData = filter->prePositionData;
-		buffers->texcoord1Data = filter->texcoord1Data;
+		buffers->texcoordData = filter->texcoordData;
 		buffers->normalData = filter->normalData;
 		buffers->tangentData = filter->tangentData;
 		buffers->bitangentData = filter->bitangentData;
@@ -108,19 +108,19 @@ namespace BlackPearl {
 
 		}
 
+		if (!buffers->texcoordData.empty())
+		{
+			_AppendBufferRange(buffers->getVertexBufferRange(VertexAttribute::TexCoord),
+				buffers->texcoordData.size() * sizeof(buffers->texcoordData[0]), bufferDesc.byteSize);
+			bufferDesc.vertexCnt = buffers->texcoordData.size();
+
+		}
+
 		if (!buffers->texcoord1Data.empty())
 		{
 			_AppendBufferRange(buffers->getVertexBufferRange(VertexAttribute::TexCoord1),
 				buffers->texcoord1Data.size() * sizeof(buffers->texcoord1Data[0]), bufferDesc.byteSize);
 			bufferDesc.vertexCnt = buffers->texcoord1Data.size();
-
-		}
-
-		if (!buffers->texcoord2Data.empty())
-		{
-			_AppendBufferRange(buffers->getVertexBufferRange(VertexAttribute::TexCoord2),
-				buffers->texcoord2Data.size() * sizeof(buffers->texcoord2Data[0]), bufferDesc.byteSize);
-			bufferDesc.vertexCnt = buffers->texcoord2Data.size();
 
 		}
 
@@ -165,7 +165,9 @@ namespace BlackPearl {
 
 		buffers->vertexBufferDesc = bufferDesc;
 
-
+        if (bufferDesc.byteSize != m_VerticeSize) {
+            GE_CORE_ERROR("vertex buffer invalid! may cause draw error");
+        }
 
 		BufferDesc IndexbufferDesc;
 		IndexbufferDesc.isIndexBuffer = true;
@@ -365,6 +367,10 @@ namespace BlackPearl {
 		if (tessellation)
 			SetTessellation(verticesPerTessPatch);
 		g_materialManager->AddMaterial(material);
+        
+        //TODO::should _InitBufferGroup
+        GE_CORE_ERROR("Invalid function");
+
 
 	};
 
@@ -380,7 +386,7 @@ namespace BlackPearl {
 		m_NeedTessellation(tessellation)
 	{
 		buffers = std::make_shared<BufferGroup>();
-		std::vector<float> vertices = meshFilter->GetVertices();
+		std::vector<float> vertices = meshFilter->GetVertices(); //有问题，和buffergroup 冲突了
 		std::vector<uint32_t> indices = meshFilter->GetIndices();
 		m_IndicesCount = indices.size();
 		m_IndicesSize = m_IndicesCount * sizeof(uint32_t);

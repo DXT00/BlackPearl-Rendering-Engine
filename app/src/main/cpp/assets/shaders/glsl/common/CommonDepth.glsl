@@ -35,7 +35,7 @@ M_proj =
 		z_c = { -(f+n)/(f-n)} * z_v  -(2fn)/(f-n)
 
 */
-float ConvertToDeviceZ(float SceneDepth, int near, int far)
+float ConvertToDeviceZ(float SceneDepth, float near, float far)
 {  
     float z_view = SceneDepth;
     float A = -(far + near) / (far - near);

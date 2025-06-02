@@ -13,7 +13,7 @@ namespace BlackPearl {
         return true; //subpass
 #elif defined(GE_API_OPENGL)
 #ifdef GE_PLATFORM_ANDROID //android use gles
-        if (GSupportsShaderFramebufferFetch || GSupportsShaderDepthStencilFetch)
+        if (GSupportsShaderFramebufferFetch || GSupportsShaderDepthStencilFetch || GSupportsPixelLocalStorage)
             return true;
 #elif defined(GE_PLATFORM_WINDOWS)
         return Configuration::bUseSinglePass;

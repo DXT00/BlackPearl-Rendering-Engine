@@ -27,6 +27,11 @@ namespace BlackPearl {
 				vertices.push_back(x);
 				vertices.push_back(y);
 				vertices.push_back(z);
+                //pre position
+                vertices.push_back(x);
+                vertices.push_back(y);
+                vertices.push_back(z);
+
 				positionData.push_back({ x,y,z });
 				prePositionData.push_back({ x,y,z });
 				//normal
@@ -38,7 +43,7 @@ namespace BlackPearl {
 				vertices.push_back((float)j / m_SectorCount);
 				vertices.push_back((float)i / m_StackCount);
 
-				texcoord1Data.push_back({ (float)j / m_SectorCount ,(float)i / m_StackCount });
+				texcoordData.push_back({ (float)j / m_SectorCount ,(float)i / m_StackCount });
 			}
 		}
 
