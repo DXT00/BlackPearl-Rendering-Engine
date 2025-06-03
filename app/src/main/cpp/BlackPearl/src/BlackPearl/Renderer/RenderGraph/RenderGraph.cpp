@@ -13,10 +13,15 @@ namespace BlackPearl {
         return true; //subpass
 #elif defined(GE_API_OPENGL)
 #ifdef GE_PLATFORM_ANDROID //android use gles
-        if (GSupportsShaderFramebufferFetch || GSupportsShaderDepthStencilFetch || GSupportsPixelLocalStorage)
+        if (GSupportsShaderFramebufferFetch || (GSupportsShaderDepthStencilFetch && GSupportsPixelLocalStorage))
             return true;
 #elif defined(GE_PLATFORM_WINDOWS)
-        return Configuration::bUseSinglePass;
+#ifdef GE_API_OPENGL
+        return false;// default to mlti pass
+#else
+        return Configuration::bUseSinglePass; //if vulkan, can use subpass
+
+#endif
 #endif
 #endif
 

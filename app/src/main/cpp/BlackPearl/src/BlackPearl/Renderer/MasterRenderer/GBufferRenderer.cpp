@@ -17,8 +17,10 @@
 #include "BlackPearl/RHI/OpenGLRHI/OpenGLTexture.h"
 #ifdef GE_API_OPENGL
 #include "BlackPearl/RHI/OpenGLRHI/OpenGLDriver/OpenGLFunctions.h"
+#include "RHI/OpenGLRHI/OpenGLDriver/OpenGLDrvPrivate.h"
 #endif
 #include "RHI/RHIGlobals.h"
+#include "Core/AssetManager.h"
 namespace BlackPearl {
 
 
@@ -31,17 +33,50 @@ namespace BlackPearl {
     void GBufferRenderer::Init()
     {
         std::vector<std::string> extends;
-
+        std::vector<std::string> macros;
+        //glSurfaceView.setEGLContextClientVersion(3);
 #ifdef GE_PLATFORM_ANDROID
-        if (GSupportsPixelLocalStorage) {
+        std::string ExtensionsString;
+        const char* GlGetStringOutput = (const char*)glGetString(GL_EXTENSIONS);
+        if (GlGetStringOutput)
+        {
+            ExtensionsString += std::string(GlGetStringOutput);
+            ExtensionsString += (" ");
+        }
+//        bool bSupportsShaderMRTFramebufferFetch = ExtensionsString.find(("GL_EXT_shader_framebuffer_fetch"))  != std::string::npos||
+//                                             ExtensionsString.find(("GL_NV_shader_framebuffer_fetch")) != std::string::npos;
+//
+//        bool bSupportsPixelLocalStorage = ExtensionsString.find(("GL_EXT_shader_pixel_local_storage")) != std::string::npos;
+//        bool  bSupportsShaderDepthStencilFetch = ExtensionsString.find(
+//                ("GL_ARM_shader_framebuffer_fetch_depth_stencil")) != std::string::npos;
+        AssetManager::StoreGLSLShader( ExtensionsString, "ExtensionsString.glsl");
+
+
+        EOpenGLCurrentContext ContextType = (EOpenGLCurrentContext) AndroidEGL::GetInstance()->GetCurrentContextType();
+
+        if (ContextType == CONTEXT_Rendering) {
+                GE_CORE_INFO("Current context: CONTEXT_Rendering");
+        } else if (ContextType == CONTEXT_Shared) {
+            GE_CORE_INFO("Current context: CONTEXT_Shared");
+
+        } else {
+            GE_CORE_INFO("Current context: Invalid context");
+
+        }
+        //= FOpenGL::SupportsPixelLocalStorage();  = bSupportsPixelLocalStorage
+       if (GSupportsPixelLocalStorage && GSupportsShaderDepthStencilFetch)
+        {
             extends.push_back("#extension GL_EXT_shader_pixel_local_storage : require");
+            extends.push_back("#extension GL_ARM_shader_framebuffer_fetch_depth_stencil : require");
+            macros.push_back("#define USE_GLES_PLS 1");
+
         }
 #endif
 
         m_DrawStrategy = DBG_NEW InstancedOpaqueDrawStrategy();
         ShaderDesc desc = ShaderDesc(ShaderType::All);
         desc.debugName = "GbufferShader";
-        m_GBufferShader = DBG_NEW MaterialShader("assets/shaders/glsl/gBuffer/gBuffer_pass.glsl",&extends);
+        m_GBufferShader = DBG_NEW MaterialShader("assets/shaders/glsl/gBuffer/gBuffer_pass.glsl",&extends, &macros);
 
 
         m_ShaderParameters[ShaderType::Pixel].bindingLayouts.push_back(m_ViewBindinglayout);

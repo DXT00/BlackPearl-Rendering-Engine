@@ -22,7 +22,7 @@ public:
 
 		m_SphereObj = CreateSphere(0.5, 64, 64);
 		//Scene
-		m_PBRRenderer = DBG_NEW BlackPearl::PBRRenderer(m_DeviceManager->GetDevice());
+		m_PBRRenderer = DBG_NEW BlackPearl::ForwardShadingRenderer(m_DeviceManager->GetDevice());
 
 		//m_SphereObj->GetComponent<BlackPearl::MeshRenderer>()->SetShaders(m_PBRRenderer->GetShader());
 		
@@ -80,7 +80,7 @@ public:
 
 		// render
 		RenderCommand::SetClearColor(m_BackgroundColor);
-		Renderer::BeginScene(*(m_MainCamera->GetObj()->GetComponent<PerspectiveCamera>()), *GetLightSources());
+		Renderer::BeginScene((m_MainCamera->GetObj()->GetComponent<PerspectiveCamera>()), *GetLightSources());
 
 		//m_PBRRenderer->GetShader()->SetUniformVec3f("u_albedo", { 0.5f, 0.0f, 0.0f });
 		//m_PBRRenderer->GetShader()->SetUniform1f("u_ao", 1.0f);
@@ -143,6 +143,6 @@ private:
 
 
 	//Renderer
-	PBRRenderer* m_PBRRenderer;
+    ForwardShadingRenderer* m_PBRRenderer;
 	
 };

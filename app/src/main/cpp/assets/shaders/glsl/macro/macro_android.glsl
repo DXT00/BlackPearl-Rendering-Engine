@@ -1,12 +1,12 @@
 
-/***************************** default pc macro **************************************/
+/***************************** default android macro **************************************/
 #ifndef COMPILE_SHADER
 #define COMPILE_SHADER 1
 #endif
 
 //platform
 #ifndef SHADING_PATH_MOBILE
-#define SHADING_PATH_MOBILE 0
+#define SHADING_PATH_MOBILE 1
 #endif
 
 //lighting
@@ -110,6 +110,6 @@
 #define USE_AO_MAP 0
 #endif
 //end if macro.glsl
-/***************************** end of default pc macro **************************************/
+/***************************** end of default android macro **************************************/
 
 

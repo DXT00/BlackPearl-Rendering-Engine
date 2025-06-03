@@ -50,7 +50,7 @@ void main(){
 
 
 
-#if SHADING_PATH_MOBILE
+#if USE_GLES_PLS
 
 
 //#extension GL_EXT_shader_pixel_local_storage : require
@@ -61,13 +61,13 @@ __pixel_local_outEXT OutPLS
     layout(rgb10_a2) vec4 gGbufferA;
     layout(rgba8) vec4 gGbufferB;
     layout(rgba8) vec4 gGbufferC;
-};
+} pls;
 
 #else
 
 /* MRT */
 /* render to gBuffer */
-layout (location = 0) out vec4 gSceneColor; //use for emissive color and fog
+layout (location = 0) out vec3 gSceneColor; //use for emissive color and fog
 layout (location = 1) out vec4 gGbufferA;  //encode normal.xy + Encode IndirectIrradiance + reserve
 layout (location = 2) out vec4 gGbufferB; // Metallic + Specular + Roughness + ShadingModelID / 255.0
 layout (location = 3) out vec4 gGbufferC; // BaseColor + PrecomputedShadow
@@ -133,16 +133,29 @@ void main(){
 
 
 	GBuffer.IndirectIrradiance = IndirectIrradiance;
+	//fog + emissive
+	vec3 sceneColor = mat.emissive;//vec4(mat.emissive,1.0);
 
     half4 bufferA;
     half4 bufferB;
     half4 bufferC;
 
-	MobileEncodeGBuffer(GBuffer, gGbufferA, gGbufferB, gGbufferC);
+	MobileEncodeGBuffer(GBuffer, bufferA, bufferB, bufferC);
 
-	//fog + emissive 
-	vec4 sceneColor = vec4(mat.emissive,1.0);
-    	gSceneColor = sceneColor;
+
+
+	#if USE_GLES_PLS
+	    	pls.gSceneColor = sceneColor;
+	    	pls.gGbufferA = bufferA;
+	    	pls.gGbufferB = bufferB;
+	    	pls.gGbufferC = bufferC;
+
+	#else
+	    	gSceneColor = sceneColor;
+	    	gGbufferA = bufferA;
+            gGbufferB = bufferB;
+            gGbufferC = bufferC;
+	#endif
 
 
 

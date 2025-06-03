@@ -81,32 +81,41 @@ float DecodeIndirectIrradiance(float IndirectIrradiance)
 void MobileFetchGBuffer(in float2 UV, inout half4 GBufferA, inout half4 GBufferB, inout half4 GBufferC, inout float SceneDepth)
 {
 #if DEFERRED_SHADING_PASS
-//#if VULKAN_PROFILE
-//	GBufferA = VulkanSubpassFetch1(); 
-//	GBufferB = VulkanSubpassFetch2(); 
-//	GBufferC = VulkanSubpassFetch3();
-//
-//	SceneDepth = ConvertFromDeviceZ(VulkanSubpassDepthFetch(), g_View.zNear, g_View.zFar);
-//#elif METAL_PROFILE
-//	GBufferA = SubpassFetchRGBA_1(); 
-//	GBufferB = SubpassFetchRGBA_2(); 
-//	GBufferC = SubpassFetchRGBA_3(); 
-//
-//	SceneDepth = ConvertFromDeviceZ(SubpassFetchR_4(), g_View.zNear, g_View.zFar);
-//#elif USE_GLES_FBF_DEFERRED
-//	GBufferA = GLSubpassFetch1(); 
-//	GBufferB = GLSubpassFetch2(); 
-//	GBufferC = GLSubpassFetch3();  // PLS is limited to 128bits
-//	SceneDepth = ConvertFromDeviceZ(DepthbufferFetchES2(), g_View.zNear, g_View.zFar);
-//#else
-//	GBufferA = textureLod(t_gGbufferA, UV, 0); 
+#if VULKAN_PROFILE
+	GBufferA = VulkanSubpassFetch1();
+	GBufferB = VulkanSubpassFetch2();
+	GBufferC = VulkanSubpassFetch3();
+
+	SceneDepth = ConvertFromDeviceZ(VulkanSubpassDepthFetch(), g_View.zNear, g_View.zFar);
+#elif METAL_PROFILE
+	GBufferA = SubpassFetchRGBA_1();
+	GBufferB = SubpassFetchRGBA_2();
+	GBufferC = SubpassFetchRGBA_3();
+
+	SceneDepth = ConvertFromDeviceZ(SubpassFetchR_4(), g_View.zNear, g_View.zFar);
+#elif USE_GLES_FBF_DEFERRED
+	GBufferA = GLSubpassFetch1();
+	GBufferB = GLSubpassFetch2();
+	GBufferC = GLSubpassFetch3();  // PLS is limited to 128bits
+	SceneDepth = ConvertFromDeviceZ(DepthbufferFetchES2(), g_View.zNear, g_View.zFar);
+#elif USE_GLES_PLS
+    	GBufferA = pls.t_gGbufferA;
+    	GBufferB = pls.t_gGbufferB;
+    	GBufferC = pls.t_gGbufferC;  // PLS is limited to 128bits
+    	//SceneDepth = ConvertFromDeviceZ(DepthbufferFetchES2(), g_View.zNear, g_View.zFar);
+
+    	SceneDepth = gl_LastFragDepthARM;//ConvertFromDeviceZ(textureLod(t_gSceneDepth, UV, 0.0).r, g_View.zNear, g_View.zFar);
+#else
+//	GBufferA = textureLod(t_gGbufferA, UV, 0);
 //	GBufferB = textureLod(t_gGbufferB, UV, 0);
 //	GBufferC = textureLod(t_gGbufferC, UV, 0);
-    GBufferA = texture(t_gGbufferA, UV); 
+    GBufferA = texture(t_gGbufferA, UV);
 	GBufferB = texture(t_gGbufferB, UV);
 	GBufferC = texture(t_gGbufferC, UV);
-	SceneDepth = ConvertFromDeviceZ(textureLod(t_gSceneDepth, UV, 0).r, g_View.zNear, g_View.zFar);
-//#endif
+	SceneDepth = ConvertFromDeviceZ(texture(t_gSceneDepth, UV).r, g_View.zNear, g_View.zFar);
+
+//	SceneDepth = ConvertFromDeviceZ(textureLod(t_gSceneDepth, UV, 0).r, g_View.zNear, g_View.zFar);
+#endif
 
 #endif //DEFERRED_SHADING_PASS
 }

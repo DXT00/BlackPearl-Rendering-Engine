@@ -9,6 +9,7 @@
 #include "Core/CriticalSection.h"
 #include "Core/PlatformMisc.h"
 #include "Core/PlatformProc.h"
+#include "Core/Android/AndroidPlatformMisc.h"
 #endif
 
 #ifdef _DEBUG
@@ -53,6 +54,7 @@ int main(_In_ INSTANCE_HANDLE hInstance, _In_opt_ INSTANCE_HANDLE hPrevInstance,
 #elif defined GE_PLATFORM_ANDROID
 #include "jni.h"
 
+
 namespace BlackPearl{
     extern FCriticalSection GAndroidWindowLock;
     extern volatile bool  GWindowInit;
@@ -80,9 +82,10 @@ void android_main(struct android_app* state)
     LOGI("[dxt00] in android main!!");
 
     state->onInputEvent = BlackPearl::LuanchAndroid::HandleInput;
-    std::string mainThreadName = "BP_GameThread";
-    pthread_setname_np(pthread_self(),mainThreadName.c_str() );
-
+    //std::string mainThreadName = "BP_GameThread";
+    pthread_setname_np(pthread_self(),"BP_GameThread" );
+    uint32_t EventThreadID = BlackPearl::FPlatformTLS::GetCurrentThreadId();
+    BlackPearl::FAndroidMisc::RegisterThreadName("BP_GameThread", EventThreadID);
     // Make sure glue isn't stripped. (not needed in ndk-15)
 #if PLATFORM_ANDROID_NDK_VERSION < 150000
     //app_dummy();

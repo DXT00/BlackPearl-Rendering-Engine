@@ -12,6 +12,8 @@
 #ifdef GE_API_OPENGL
 #include "RHI/OpenGLRHI/OpenGLDriver/OpenGLFunctions.h"
 #endif
+#include "RHI/RHIGlobals.h"
+
 namespace BlackPearl{
     DeferredShadingRenderer::DeferredShadingRenderer(IDevice* device)
     : BasicRenderer(device){
@@ -20,9 +22,21 @@ namespace BlackPearl{
 
     void DeferredShadingRenderer::Init()
     {
-   
+        std::vector<std::string> extends;
+        std::vector<std::string> macros;
+#ifdef GE_PLATFORM_ANDROID
+        if  (GSupportsPixelLocalStorage && GSupportsShaderDepthStencilFetch)
+        {
+            extends.push_back("#extension GL_EXT_shader_pixel_local_storage : require");
+            extends.push_back("#extension GL_ARM_shader_framebuffer_fetch_depth_stencil : require");
+            macros.push_back("#define USE_GLES_PLS 1");
+
+        }
+#endif
+        macros.push_back("#define DEFERRED_SHADING_PASS 1");
+
         //TODO:: 不需要多个不同light的shader， 通过宏来决定用哪个函数
-        m_DeferredPointLightShader = DBG_NEW MaterialShader("assets/shaders/glsl/deferred_shading/deferred_shading_bsdf_point_light.glsl");
+        m_DeferredPointLightShader = DBG_NEW MaterialShader("assets/shaders/glsl/deferred_shading/deferred_shading_bsdf_point_light.glsl", &extends, &macros);
 
 
         

@@ -7,6 +7,7 @@
 #include "BlackPearl/LayerScene/Layer.h"
 #include "Component/LightComponent/DirectionLight.h"
 #include "Component/LightComponent/PointLight.h"
+#include "RHI/RHIGlobals.h"
 
 class RHIRenderGraphLayer :public BlackPearl::Layer {
 public:
@@ -53,8 +54,16 @@ public:
 		m_MainCamera->SetMoveSpeed(0.5f);
 
 		m_DirectionLight = CreateLight(BlackPearl::LightType::DirectionLight, "DirectionLight");
+
+#ifdef GE_PLATFORM_ANDROID
+        if(GSupportsPixelLocalStorage && GSupportsShaderDepthStencilFetch)
+            m_DirectionLight->GetComponent<DirectionLight>()->SetDirection({ 0.2f, -1.0f, 0.2f });
+        else
+            m_DirectionLight->GetComponent<DirectionLight>()->SetDirection({ -0.2f, 1.0f, -0.2f });
+#elif defined(GE_PLATFORM_WINDOWS)
         m_DirectionLight->GetComponent<DirectionLight>()->SetDirection({ 0.2f, -1.0f, 0.2f });
-		//m_Scene->AddObject(m_SphereObj);
+#endif
+        //m_Scene->AddObject(m_SphereObj);
 		m_Scene->AddObject(m_CubeObj);
 		m_Scene->AddObject(m_SphereObj);
 

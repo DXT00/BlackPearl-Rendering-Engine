@@ -8,7 +8,7 @@ namespace BlackPearl {
 	class MaterialShader
 	{
 	public:
-		MaterialShader(const std::string& filepath, std::vector<std::string>* extentions = nullptr);
+		MaterialShader(const std::string& filepath, std::vector<std::string>* extentions = nullptr, std::vector<std::string>* macros = nullptr);
 		
 		std::string GetPath() const {
 			return m_ShaderPath;
@@ -25,8 +25,12 @@ namespace BlackPearl {
 		std::string m_ShaderPath;
 		std::string m_GlslCode;
 		std::string m_CommonStructPath = "assets/shaders/glsl/common/CommonStruct.glsl";
+#ifdef GE_PLATFORM_WINDOWS
         std::string m_MacroPath = "assets/shaders/glsl/macro/macro.glsl";
+#elif defined(GE_PLATFORM_ANDROID)
+        std::string m_MacroPath = "assets/shaders/glsl/macro/macro_android.glsl";
 
+#endif
 
 		ShaderHandle m_VertexShader = nullptr;
 		ShaderHandle m_PixelShader = nullptr;

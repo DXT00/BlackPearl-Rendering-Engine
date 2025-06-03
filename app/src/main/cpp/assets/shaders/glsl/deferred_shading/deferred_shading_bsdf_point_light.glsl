@@ -7,9 +7,8 @@ precision mediump float;  // 必须声明精度（ES 要求）
 #endif
 
 layout(location = Slot_aPos) in vec3 aPos;
-layout(location = Slot_aPrePos) in vec3 aPrePos;
-layout(location = Slot_aTexCoords) in vec2 aTexCoords;
 layout(location = Slot_aNormal) in vec3 aNormal;
+layout(location = Slot_aTexCoords) in vec2 aTexCoords;
 
 out vec2 v_TexCoord;
 out vec3 v_Normal;
@@ -32,15 +31,12 @@ void main()
 #type fragment
 #version 450 core
 
-#ifdef DEFERRED_SHADING_PASS
-#undef DEFERRED_SHADING_PASS
+
+
+#if !USE_GLES_PLS
+out vec4 FragColor;
 #endif
 
-#define DEFERRED_SHADING_PASS 1
-
-
-
-out vec4 FragColor;
 in vec2 v_TexCoord;
 
 #include <assets/shaders/glsl/common/CommonViewStruct.glsl>
@@ -77,15 +73,31 @@ void main(){
 #elif (Disney)
     DisneyMaterialSample mat = GetMaterialFromGBuffer(GBuffer);
 #endif
+
+#if USE_GLES_PLS
+    mat.emissive = pls.t_gSceneColor.rgb;
+#else
     mat.emissive = texture(t_gSceneColor,v_TexCoord).rgb;
 
-   for(uint nLight = 0; nLight < g_DeferredLight.numLights; nLight++)
+#endif
+
+   for(uint nLight = 0u; nLight < uint(g_DeferredLight.numLights); nLight++)
    {
        LightConstants light = g_DeferredLight.lights[nLight];
+#if USE_GLES_PLS
+       pls.t_gSceneColor += ShadeSurface(light, geom, mat).rgb;
+#else
        FragColor += ShadeSurface(light, geom, mat);
+#endif
    }
    half IndirectIrradiance = GBuffer.IndirectIrradiance;
-    
+#if USE_GLES_PLS
+    pls.t_gGbufferA = vec4(0.0);
+    pls.t_gGbufferB = vec4(0.0);
+    pls.t_gGbufferC = vec4(0.0);
+
+    //pls.t_gSceneColor = vec3(1.0,1.0,0.0);
+#endif
     //direct light
 
 //    //ibl

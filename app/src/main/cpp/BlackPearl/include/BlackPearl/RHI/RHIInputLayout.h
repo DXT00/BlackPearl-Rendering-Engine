@@ -209,6 +209,7 @@ namespace BlackPearl {
     struct VertexAttributeDesc
     {
 		std::string name;
+        bool isValid = false;
         //Format format = Format::UNKNOWN;
 		ElementDataType elementType = ElementDataType::Float3;
 

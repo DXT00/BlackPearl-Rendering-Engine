@@ -1492,9 +1492,12 @@ GE_CORE_INFO(#StringEnum":%s" , ((const char*)glGetString(StringEnum)));
 			uint32_t nonInterleaveStride = 0;
 			glBindBuffer(GL_ARRAY_BUFFER, Streams[0].VertexBufferResource);
             GE_ERROR_JUDGE();
-			for (int32_t ElementIndex = 0; ElementIndex < attriNum; ElementIndex++)
+			for (int32_t ElementIndex = 0; ElementIndex < Slot_Num; ElementIndex++)
 			{
 				VertexAttributeDesc& VertexElement = VertexDeclaration->inputDesc[ElementIndex];
+                if (!VertexElement.isValid)
+                    continue;
+
 				uint32_t AttributeIndex = VertexElement.location;
 				const uint32_t StreamIndex = VertexElement.streamIndex;
 				//only setup/track attributes actually in use

@@ -46,14 +46,28 @@ namespace BlackPearl {
         std::string ret;
         if(!extensions)
             return ret;
-        for (int i = 0; i < extensions->size(); ++i) {
+        for (int i = 0; i <  (*extensions).size(); ++i) {
             ret+= (*extensions)[i];
             ret+="\r\n";
         }
+        GE_CORE_INFO("add extentions %s",ret.c_str());
         return ret;
     }
 
-	MaterialShader::MaterialShader(const std::string& filepath, std::vector<std::string>* extensions)
+    std::string ReadMacros(std::vector<std::string>* macros){
+        std::string ret;
+        if(!macros)
+            return ret;
+        for (int i = 0; i <  (*macros).size(); ++i) {
+            ret+= (*macros)[i];
+            ret+="\r\n";
+        }
+        GE_CORE_INFO("add macros %s",ret.c_str());
+        return ret;
+    }
+
+
+    MaterialShader::MaterialShader(const std::string& filepath, std::vector<std::string>* extensions, std::vector<std::string>* macros)
 	{
         m_GlslIncluder = GLSLIncluder({
             "assets/shaders/hlsl/core",
@@ -64,7 +78,7 @@ namespace BlackPearl {
 		m_ShaderPath = filepath;
         std::string extentions = ReadExtentions(extensions);
         std::string commonSource = ReadFile(m_CommonStructPath);// m_GlslIncluder.processIncludes(ReadFile(m_CommonStructPath));
-        std::string macroSource = ReadFile(m_MacroPath);
+        std::string macroSource = ReadMacros(macros) + "\r\n" + ReadFile(m_MacroPath);
         commonSource = extentions + macroSource + commonSource;
         m_GlslCode = ReadFile(m_ShaderPath);
         std::unordered_map<ShaderType, std::string> shaderSources = PreProcess(m_GlslCode, commonSource);
@@ -208,9 +222,9 @@ namespace BlackPearl {
             shaderSources[ShaderType::VertexShader] =  glesVersion + commonSource + res;
 #else
             shaderSources[ShaderType::VertexShader] = front + commonSource + res;
-            CompileInputLocation(shaderSources[ShaderType::VertexShader]);
-#endif
 
+#endif
+            CompileInputLocation(shaderSources[ShaderType::VertexShader]);
             //attribute 字符穿替换
 
 

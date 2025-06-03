@@ -171,7 +171,7 @@ JNIEnv* AndroidJavaEnv::GetJavaEnv( bool bRequireGlobalThis /*= true*/ )
 //        const std::string& ThreadName = FThreadManager::GetThreadName(ThreadId);
 //        auto Name = StringCast<char>(*ThreadName);
         //Args.name = Name.Get();
-        if (!Args.name)
+        //if (std::string(Args.name).empty())
         {
             Args.name = FAndroidMisc::GetThreadName(ThreadId);
         }

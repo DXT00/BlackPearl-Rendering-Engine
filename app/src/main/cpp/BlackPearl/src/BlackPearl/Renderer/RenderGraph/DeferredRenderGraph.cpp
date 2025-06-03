@@ -20,11 +20,14 @@ namespace BlackPearl {
         m_SkyboxRenderer = DBG_NEW SkyboxRenderer(m_DeviceManager->GetDevice());
         m_GbufferRenderer = DBG_NEW GBufferRenderer(m_DeviceManager->GetDevice());
         m_DeferredShadingRenderer = DBG_NEW DeferredShadingRenderer(m_DeviceManager->GetDevice());
+        m_PlsCopyRenderer = DBG_NEW GrabPassRenderer(m_DeviceManager->GetDevice());
+        m_GrabPassRenderer = DBG_NEW GrabPassRenderer(m_DeviceManager->GetDevice());
 
         m_SkyboxRenderer->Init();
         m_GbufferRenderer->Init();
         m_DeferredShadingRenderer->Init();
-
+        m_GrabPassRenderer->Init(SystemTexture::Get().SceneColor);
+        m_PlsCopyRenderer->Init(nullptr, true);
         /*m_PostProcessRenderer = DBG_NEW PostProcessRenderer();
         m_PostProcessRenderer->Init(GetDevice(), m_ShaderFactory);*/
 
@@ -47,22 +50,43 @@ namespace BlackPearl {
 	{
         m_CommandList->open();
 
-		FRHIRenderPassInfo RPInfo(
-            m_ColorRTs.size(),
-			m_ColorRTs.data(),
-			ERenderTargetActions::Clear_Store,
-            SystemTexture::Get().SceneDepth,
-            EDepthStencilTargetActions::ClearDepthStencil_StoreDepthStencil);
+        {
+            FRHIRenderPassInfo RPInfo(
+                    m_ColorRTs.size(),
+                    m_ColorRTs.data(),
+                    ERenderTargetActions::Clear_Store,
+                    SystemTexture::Get().SceneDepth,
+                    EDepthStencilTargetActions::ClearDepthStencil_StoreDepthStencil);
 
+            RPInfo.SubpassHint = ESubpassHint::DeferredShadingSubpass;
+            m_CommandList->beginRenderPass(RPInfo, "DeferredSinglePass");
 
-		m_CommandList->beginRenderPass(RPInfo, "DeferredSinglePass");
+            //
+            m_GbufferRenderer->Render(m_CommandList, framebuffer, m_Scene);
+            m_CommandList->nextSubpass();
+            m_DeferredShadingRenderer->Render(m_CommandList, framebuffer, m_Scene);
 
-	  //  m_SkyboxRenderer->Render(m_CommandList, framebuffer, m_Scene);
-		m_GbufferRenderer->Render(m_CommandList, framebuffer, m_Scene);
-		m_CommandList->nextSubpass();
-		m_DeferredShadingRenderer->Render(m_CommandList, framebuffer, m_Scene);
+           // pls-->scenecolor
+            m_PlsCopyRenderer->Render(m_CommandList, framebuffer, m_Scene);
 
-		m_CommandList->endRenderPass();
+            m_CommandList->endRenderPass();
+        }
+
+        {
+            //Grab pass: SceneColor-->default framebuffer
+//            FRHIRenderPassInfo GrabPassInfo(framebuffer->getDesc().colorAttachments[0].texture,
+//                                            ERenderTargetActions::Load_Store);
+            FRHIRenderPassInfo GrabPassInfo(framebuffer->getDesc().colorAttachments[0].texture,
+                                             ERenderTargetActions::Load_Store,
+                                             SystemTexture::Get().SceneDepth,
+                                             EDepthStencilTargetActions::LoadDepthStencil_StoreDepthStencil);
+            m_CommandList->beginRenderPass(GrabPassInfo, "GrabPass");
+
+            m_GrabPassRenderer->Render(m_CommandList, framebuffer, m_Scene);
+            m_SkyboxRenderer->Render(m_CommandList, framebuffer, m_Scene);
+            m_CommandList->endRenderPass();
+
+        }
 		m_CommandList->close();
 	}
 	void DeferredRenderGraph::RenderMultiPass(Timestep ts, IFramebuffer* framebuffer, IView* View)
@@ -80,21 +104,24 @@ namespace BlackPearl {
                 EDepthStencilTargetActions::ClearDepthStencil_StoreDepthStencil);
 
             m_CommandList->beginRenderPass(RPInfo, "DeferredGbufferPass");
-            //todo:: sky在哪里画好？
-            m_SkyboxRenderer->Render(m_CommandList, framebuffer, m_Scene);
 
             m_GbufferRenderer->Render(m_CommandList, framebuffer, m_Scene);
             m_CommandList->endRenderPass();
         }
 
         {
-            FRHIRenderPassInfo RPShadingInfo(framebuffer->getDesc().colorAttachments[0].texture, ERenderTargetActions::Load_Store);
+            FRHIRenderPassInfo RPShadingInfo(framebuffer->getDesc().colorAttachments[0].texture,
+                                             ERenderTargetActions::Load_Store,
+                                             SystemTexture::Get().SceneDepth,
+                                             EDepthStencilTargetActions::LoadDepthStencil_StoreDepthStencil);
          /*   FRHIRenderPassInfo RPShadingInfo(
                 SystemTexture::Get().SceneColor,
                 ERenderTargetActions::Load_Store);*/
             m_CommandList->beginRenderPass(RPShadingInfo, "DeferredShadingPass");
 
             m_DeferredShadingRenderer->Render(m_CommandList, framebuffer, m_Scene);
+            //todo:: sky在哪里画好？
+            m_SkyboxRenderer->Render(m_CommandList, framebuffer, m_Scene);
 
             m_CommandList->endRenderPass();
         }

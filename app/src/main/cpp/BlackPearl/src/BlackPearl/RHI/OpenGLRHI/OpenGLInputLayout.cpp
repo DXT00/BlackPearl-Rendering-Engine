@@ -8,6 +8,7 @@ namespace BlackPearl {
             GE_CORE_ERROR("mismatch of location");
             return;
         }
+        inputDesc[slot].isValid = true;
         inputDesc[slot].bNormalized = element.Normalized;
         inputDesc[slot].location = element.Location;
         inputDesc[slot].elementStride = layout.GetStride();

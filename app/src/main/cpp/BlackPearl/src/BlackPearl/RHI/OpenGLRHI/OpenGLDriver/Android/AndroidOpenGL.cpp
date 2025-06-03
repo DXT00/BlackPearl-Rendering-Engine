@@ -157,7 +157,7 @@ namespace BlackPearl {
 
     void FPlatformOpenGLDevice::Init() {
         // Initialize frame pacer
-        FPlatformRHIFramePacer::Init(new AndroidOpenGLFramePacer());
+      //  FPlatformRHIFramePacer::Init(new AndroidOpenGLFramePacer());
 
        // extern void InitDebugContext();
 
@@ -251,7 +251,22 @@ namespace BlackPearl {
 //        }
         if (bPresent) {
             AndroidEGL::GetInstance()->UpdateBuffersTransform();
-            FPlatformRHIFramePacer::SwapBuffers(bLockToVsync);
+            //FPlatformRHIFramePacer::SwapBuffers(bLockToVsync);
+
+
+            EGLDisplay eglDisplay = AndroidEGL::GetInstance()->GetDisplay();
+            EGLSurface eglSurface = AndroidEGL::GetInstance()->GetSurface();
+            //int32_t SyncInterval = FAndroidPlatformRHIFramePacer::GetLegacySyncInterval();
+            // eglSwapInterval(eglDisplay, SyncInterval);
+            GE_ERROR_JUDGE_EGL();
+            if (eglDisplay == EGL_NO_DISPLAY || eglSurface == EGL_NO_SURFACE) {
+                GE_CORE_WARN("EGL not initialized!");
+                return false;
+            }
+
+            eglSwapBuffers(eglDisplay, eglSurface);
+
+
         }
 //        static IConsoleVariable *CVar = IConsoleManager::Get().FindConsoleVariable(
 //                ("a.UseFrameTimeStampsForPacing"));

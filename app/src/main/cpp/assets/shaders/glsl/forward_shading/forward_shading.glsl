@@ -109,7 +109,7 @@ void main(){
     DisneyMaterialSample mat = CreateDisneyBSDFMaterial(geom, g_Mat, v_TexCoord);
 #endif
 
-   for(uint nLight = 0; nLight < g_ForwardLight.numLights; nLight++)
+   for(uint nLight = 0u; nLight < uint(g_ForwardLight.numLights); nLight++)
    {
        LightConstants light = g_ForwardLight.lights[nLight];
        FragColor += ShadeSurface(light, geom, mat);
