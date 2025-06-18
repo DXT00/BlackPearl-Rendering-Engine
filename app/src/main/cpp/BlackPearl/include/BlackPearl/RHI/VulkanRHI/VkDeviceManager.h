@@ -24,6 +24,7 @@ namespace BlackPearl {
 		
 	protected:
 		virtual FramebufferHandle GetCurrentFramebuffer() override;
+        void CreateDevice() override;
 
 		bool CreateViewport(uint32_t width, uint32_t height, Format format, bool bFullScreen) override;
 		void DestroyViewport() override;
@@ -102,7 +103,7 @@ namespace BlackPearl {
 		}
 
 	private:
-		//TODO:: swapchain ·â×°µ½viewport
+		//TODO:: swapchain ï¿½ï¿½×°ï¿½ï¿½viewport
 		RHIViewport* m_Viewport = nullptr;
 
 		std::vector<FramebufferHandle> m_SwapChainFramebuffers;

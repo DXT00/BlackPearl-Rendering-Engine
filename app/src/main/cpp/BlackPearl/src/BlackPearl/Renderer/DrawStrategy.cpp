@@ -3,6 +3,7 @@
 #include "BlackPearl/Renderer/CullingManager.h"
 #include "BlackPearl/Component/MeshRendererComponent/MeshRenderer.h"
 #include "BlackPearl/Component/TransformComponent/Transform.h"
+#include "Timestep/TimeCounter.h"
 
 namespace BlackPearl {
 	extern CullingManager* g_cullingManager;
@@ -20,7 +21,9 @@ namespace BlackPearl {
 	}
 	void InstancedOpaqueDrawStrategy::PrepareForView(Scene* Scene, const IView& view)
 	{
-		std::vector<bool> OutVisibleNodes;
+        SCOPE_TIME_COUNTER(Gbuffer_DrawStrategy)
+
+        std::vector<bool> OutVisibleNodes;
 		m_VisibleObjs =  g_cullingManager->CullOctree(Scene, view, OutVisibleNodes);
 		
 		_PrepareDrawItems();

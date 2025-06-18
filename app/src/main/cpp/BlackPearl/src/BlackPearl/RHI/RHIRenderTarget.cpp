@@ -48,6 +48,42 @@ namespace BlackPearl {
 		ColorRenderTargets[0].Action = ColorAction;
 	}
 
+    FRHIRenderPassInfo::FRHIRenderPassInfo(ITexture* ColorRT, ERenderTargetActions ColorAction, ITexture* DepthRT, EDepthStencilTargetActions DepthActions, uint8_t InMipIndex, int32_t InArraySlice)
+    {
+        GE_ASSERT(ColorRT, "invald color rt");
+        auto target = ColorRenderTargets[0].RenderTarget;
+        ColorRenderTargets[0].RenderTarget = ColorRT;
+        ColorRenderTargets[0].ResolveTarget = nullptr;
+        ColorRenderTargets[0].ArraySlice = InArraySlice;
+        ColorRenderTargets[0].MipIndex = InMipIndex;
+        ColorRenderTargets[0].Action = ColorAction;
+
+
+        DepthStencilRenderTarget.DepthStencilTarget = DepthRT;
+        DepthStencilRenderTarget.Action = DepthActions;
+        DepthStencilRenderTarget.ExclusiveDepthStencil = FExclusiveDepthStencil::DepthWrite_StencilWrite;// FExclusiveDepthStencil::DepthNop_StencilNop;
+        DepthStencilRenderTarget.ResolveTarget = nullptr;
+    }
+
+
+    // one Color , no depth, no resolve, multi mip, multi array slice, such as cubemap
+    FRHIRenderPassInfo::FRHIRenderPassInfo(int32_t NumColorSlice, ITexture* ColorRTs, ERenderTargetActions ColorAction, uint8_t* InMipIndex, int32_t* InArraySlice, ITexture* DepthRT, EDepthStencilTargetActions DepthActions)
+    {
+        GE_ASSERT(NumColorSlice > 0, "invald color slcie num");
+        //for (int32_t Index = 0; Index < 1; ++Index)
+        {
+            GE_ASSERT(ColorRTs, "invald color rt");
+            ColorRenderTargets[0].RenderTarget = ColorRTs;
+            ColorRenderTargets[0].ArraySlice = InArraySlice[0];
+            ColorRenderTargets[0].Action = ColorAction;
+            ColorRenderTargets[0].MipIndex = InMipIndex[0];
+        }
+        DepthStencilRenderTarget.DepthStencilTarget = DepthRT;
+        DepthStencilRenderTarget.Action = DepthActions;
+        DepthStencilRenderTarget.ExclusiveDepthStencil = FExclusiveDepthStencil::DepthNop_StencilNop;
+        DepthStencilRenderTarget.ResolveTarget = nullptr;
+    }
+
 	// Color MRTs, no depth
 	FRHIRenderPassInfo::FRHIRenderPassInfo(int32_t NumColorRTs, ITexture* ColorRTs[], ERenderTargetActions ColorAction)
 	{
@@ -164,6 +200,22 @@ namespace BlackPearl {
 		DepthStencilRenderTarget.Action = DepthActions;
 		DepthStencilRenderTarget.ExclusiveDepthStencil = InEDS;
 		FMemory::Memzero(&ColorRenderTargets[1], sizeof(FColorEntry) * (c_MaxRenderTargets - 1));
+
+
+        //GE_ASSERT(NumColorSlice > 0, "invald color slcie num");
+        ////for (int32_t Index = 0; Index < 1; ++Index)
+        //{
+        //    GE_ASSERT(ColorRTs, "invald color rt");
+        //    ColorRenderTargets[0].RenderTarget = ColorRTs;
+        //    ColorRenderTargets[0].ArraySlice = InArraySlice[0];
+        //    ColorRenderTargets[0].Action = ColorAction;
+        //    ColorRenderTargets[0].MipIndex = InMipIndex[0];
+        //}
+        //DepthStencilRenderTarget.DepthStencilTarget = DepthRT;
+        //DepthStencilRenderTarget.Action = DepthActions;
+        //DepthStencilRenderTarget.ExclusiveDepthStencil = FExclusiveDepthStencil::DepthNop_StencilNop;
+        //DepthStencilRenderTarget.ResolveTarget = nullptr;
+
 	}
 
 	// Color and depth with resolve

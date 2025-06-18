@@ -2,47 +2,85 @@
 #include "Component/LightProbeComponent/LightProbeComponent.h"
 
 namespace BlackPearl {
-	//LightProbeComponent::LightProbeComponent(ProbeType type)
-	//{
-	//	//GE_ASSERT(cubeObj, "cubeObj is nullptr");
-	//	m_Type = type;
-	////	m_LightProbeObj = cubeObj;
-	//	/*������ӽǶ�Ӧ*/
-	///*	m_LightProbeObj->GetComponent<Transform>()->SetRotation({ 0.0f, -90.0f, 0.0f });
-	//	m_LightProbeObj->GetComponent<MeshRenderer>()->SetIsShadowObjects(false);
-	//	m_LightProbeObj->GetComponent<MeshRenderer>()->SetIsBackGroundObjects(false);*/
-
-	//	/*	m_Camera = DBG_NEW MainCamera(camera);
-	//		m_Camera->GetObj()->GetComponent<BlackPearl::PerspectiveCamera>()->SetFov(90.0f);
-	//		m_Camera->GetObj()->GetComponent<BlackPearl::PerspectiveCamera>()->SetWidth(m_EnvironmentCubeMapResolution);
-	//		m_Camera->GetObj()->GetComponent<BlackPearl::PerspectiveCamera>()->SetHeight(m_EnvironmentCubeMapResolution);
-	//		m_Camera->GetObj()->GetComponent<BlackPearl::PerspectiveCamera>()->SetZfar(13.0f);*/
-
-	//	//SetScale({ 0.3,0.3,0.3 });
 
 
-	//	//m_HdrEnvironmentCubeMap.reset(DBG_NEW CubeMapTexture(Texture::Type::CubeMap, m_EnvironmentCubeMapResolution, m_EnvironmentCubeMapResolution, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR, GL_CLAMP_TO_EDGE, GL_RGB16F, GL_RGB, GL_FLOAT, true));
-	////	m_DiffuseIrradianceCubeMap.reset(DBG_NEW CubeMapTexture(Texture::CubeMap, m_DiffuseCubeMapResolution, m_DiffuseCubeMapResolution, GL_LINEAR, GL_LINEAR, GL_CLAMP_TO_EDGE, GL_RGB16F, GL_RGB, GL_FLOAT, true));
-	//	if (type == ProbeType::REFLECTION_PROBE)
-	//		m_SpecularPrefilterCubeMap.reset(DBG_NEW CubeMapTexture(Texture::CubeMap, m_SpecularCubeMapResolution, m_SpecularCubeMapResolution, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR, GL_CLAMP_TO_EDGE, GL_RGB16F, GL_RGB, GL_FLOAT, true));
-	//	if (type == ProbeType::DIFFUSE_PROBE)
-	//		m_SHCoeffs.assign(9, std::vector<float>(3, 0.0f));
+    LightProbe::LightProbe(ProbeType type, ProbeStorageType storageType)
+        :Component(Component::Type::LightProbe) {
+        m_Type = type;
+        m_StorageType = storageType;
+        m_Zfar = 13.0f;
+        if (type == ProbeType::REFLECTION_PROBE)
+        {
+            TextureDesc desc;
+            desc.type = TextureType::CubeMap;
+            desc.width = m_SpecularCubeMapResolution;
+            desc.height = m_SpecularCubeMapResolution;
+            desc.minFilter = FilterMode::Linear_Mip_Linear;
+            desc.magFilter = FilterMode::Linear;
+            desc.wrap = SamplerAddressMode::ClampToEdge;
+            desc.format = Format::RGBA8_UNORM;
+            desc.generateMipmap = true;
 
-	//}
+            m_SpecularPrefilterCubeMap = g_deviceManager->GetDevice()->createTexture(desc);
 
-	//void LightProbeComponent::SetPosition(glm::vec3 pos)
-	//{
-	//	m_LightProbeObj->GetComponent<Transform>()->SetPosition(pos);
-	//}
+        }
+        if (type == ProbeType::DIFFUSE_PROBE
+            && (m_StorageType == PT_SH ||
+                m_StorageType == CubeMap)) {
 
-	//void LightProbeComponent::SetScale(glm::vec3 size)
-	//{
-	//	m_Size = size;
-	//	m_LightProbeObj->GetComponent<Transform>()->SetScale(size);
-	//}
+            // if type is CubeMap ,can release cubemap after create SH by ReleaseLdrEnvironmentCubeMap
+            TextureDesc desc;
+            desc.type = TextureType::CubeMap;
+            desc.width = m_EnvironmentCubeMapResolution;
+            desc.height = m_EnvironmentCubeMapResolution;
+            desc.minFilter = FilterMode::Linear_Mip_Linear;
+            desc.magFilter = FilterMode::Linear;
+            desc.wrap = SamplerAddressMode::ClampToEdge;
+            desc.format = Format::RGBA8_UNORM;
+            desc.generateMipmap = true;
+            desc.mipLevelsCnt = m_MaxMipmapLevel;
+            desc.dimension = TextureDimension::TextureCube;
+            m_LdrEnvironmentCubeMap = g_deviceManager->GetDevice()->createTexture(desc);
 
+
+           
+            m_SHCoeffs.assign(9, std::vector<float>(3, 0.0f));
+
+        }
+
+
+        //for diffuse and specular probe
+        TextureDesc depthDesc;
+        depthDesc.width = m_EnvironmentCubeMapResolution;
+        depthDesc.height = m_EnvironmentCubeMapResolution;
+        depthDesc.mipLevelsCnt = m_MaxMipmapLevel;
+        depthDesc.sampleCount = Configuration::MSAA_SAMPLES;
+        depthDesc.format = Format::D32S8;
+        depthDesc.type = TextureType::DepthMap;
+        depthDesc.dimension = TextureDimension::Texture2D;
+
+        m_DepthBuffer = g_deviceManager->GetDevice()->createTexture(depthDesc);
+
+    }
 
 	
+	void LightProbe::ReleaseHdrEnvironmentCubeMap()
+	{
+        if(m_HdrEnvironmentCubeMap.Get())
+            delete m_HdrEnvironmentCubeMap.Get();
+
+        m_HdrEnvironmentCubeMap = nullptr;
+    }
+
+	void LightProbe::ReleaseLdrEnvironmentCubeMap()
+	{
+        if (m_LdrEnvironmentCubeMap.Get())
+            delete m_LdrEnvironmentCubeMap.Get();
+
+        m_LdrEnvironmentCubeMap = nullptr;
+
+	}
+
 	void LightProbe::FillLightProbeConstants(LightProbeConstants& lightProbeConstants) const
 	{
 		//TODO::

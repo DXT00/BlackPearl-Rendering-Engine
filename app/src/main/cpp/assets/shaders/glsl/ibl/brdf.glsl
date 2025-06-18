@@ -1,8 +1,14 @@
 #type vertex
-#version 430 core
-layout(location =0) in vec3 aPos;
-layout(location =1) in vec3 aNormal;
-layout(location = 2) in vec2 aTexCoords;
+
+#version 450 core
+
+#ifdef GL_ES
+precision mediump float;  // å¿…é¡»å£°æ˜ç²¾åº¦ï¼ˆES è¦æ±‚ï¼‰
+#endif
+
+layout(location = Slot_aPos) in vec3 aPos;
+layout(location = Slot_aNormal) in vec3 aNormal;
+layout(location = Slot_aTexCoords) in vec2 aTexCoords;
 
 out vec2 v_TexCoord;
 
@@ -66,7 +72,7 @@ vec3 ImportanceSampleGGX(vec2 Xi,vec3 N,float roughness){
 	H.y = sinTheta*sin(phi);
 	H.z = cosTheta;
 
-	//×ª»»µ½fragment µÄÊÀ½ç×ø±êÏµ
+	//è½¬æ¢åˆ°fragment çš„ä¸–ç•Œåæ ‡ç³»
 	vec3 up = abs(N.z)<0.999?vec3(0.0,0.0,1.0):vec3(1.0,0.0,0.0);
 	vec3 tangent = normalize(cross(up,N));
 	vec3 bitangent = cross(N,tangent);

@@ -205,21 +205,11 @@ namespace BlackPearl {
     extern ImmediateCommandList GImmediateCmdList;
 
     // Global functions
-    FORCEINLINE void RHIAcquireThreadOwnership()
-    {
-        return GImmediateCmdList.AcquireThreadOwnership();
-    }
+     void RHIAcquireThreadOwnership();
 
-    FORCEINLINE void RHIReleaseThreadOwnership()
-    {
-        return GImmediateCmdList.ReleaseThreadOwnership();
-    }
+     void RHIReleaseThreadOwnership();
 
-    FORCEINLINE int32_t RHIGetSyncInterval()
-    {
-        return math::max(Configuration::SyncInterval, 0);
-    }
-
+     int32_t RHIGetSyncInterval();
 
 
 

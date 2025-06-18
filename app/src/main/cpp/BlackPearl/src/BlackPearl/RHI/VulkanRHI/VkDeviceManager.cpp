@@ -697,11 +697,8 @@ namespace BlackPearl {
 	{
 		return m_SwapChainFramebuffers[m_SwapChainIndex];
 	}
-
-	bool VKDeviceManager::CreateViewport(uint32_t width, uint32_t height, Format format, bool bFullScreen)
-	{
-		
-		if (m_DeviceParams.enableDebugRuntime)
+    void VKDeviceManager::CreateDevice(){
+        	if (m_DeviceParams.enableDebugRuntime)
 		{
 			enabledExtensions.instance.insert("VK_EXT_debug_report");
 			enabledExtensions.layers.insert("VK_LAYER_KHRONOS_validation");
@@ -769,6 +766,11 @@ namespace BlackPearl {
 		deviceDesc.bufferDeviceAddressSupported = true;
 
 		m_NvrhiDevice = Device::createDevice(deviceDesc);
+
+    }
+	bool VKDeviceManager::CreateViewport(uint32_t width, uint32_t height, Format format, bool bFullScreen)
+	{
+		
 
 		/*if (m_DeviceParams.enableNvrhiValidationLayer)
 		{

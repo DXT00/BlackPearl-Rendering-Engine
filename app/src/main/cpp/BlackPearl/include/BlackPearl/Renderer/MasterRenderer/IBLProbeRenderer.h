@@ -5,17 +5,36 @@
 #pragma once
 #include "Renderer/MasterRenderer/BasicRenderer.h"
 #include "RHI/RHIDevice.h"
-
+#include "MainCamera/MainCamera.h"
+#include "ForwardShadingRenderer.h"
+#include "SkyboxRenderer.h"
 namespace BlackPearl{
 
+    struct CubeMapKey {
+        int width, height;
+        int mipCnt;
+        int format;
+
+        std::string ToString() {
+            return std::to_string(width) + "_"
+                + std::to_string(height) + "_"
+                + std::to_string(mipCnt) + "_"
+                + std::to_string(format);
+        }
+
+    };
     class IBLProbeRenderer: public BasicRenderer
     {
     public:
-        IBLProbeRenderer(IDevice* device):
-            BasicRenderer(device){ }
+        IBLProbeRenderer(IDevice* device);
 
         void Init();
-        void Render(ICommandList* commandList, IFramebuffer* targetFramebuffer, Scene* scene);
+        void Render(ICommandList* cmdList, IFramebuffer* targetFramebuffer, Scene* scene);
+        void UpdateProbeCamera(Object* probe);
+
+  
+
+        void RenderSpecularBRDFLUTMap(ICommandList* cmdList, IFramebuffer* targetFramebuffer, Scene* scene);
 
 
         static void FillShaderParameters();
@@ -24,20 +43,48 @@ namespace BlackPearl{
 
     private:
 
-        float m_TotalTimeIntervalS = 50.0f;//second
-        float m_StateIntervalS = m_TotalTimeIntervalS / 3.0f;
+
+        void UpdateDiffuseProbesMap(ICommandList* cmdList, IFramebuffer* targetFramebuffer, Scene* scene, Object* diffuseProbe);
+        void UpdateReflectionProbesMap(ICommandList* cmdList, IFramebuffer* targetFramebuffer, Scene* scene, Object* diffuseProbe);
+        /*render environment CubeMap of each probe */
+        TextureHandle RenderEnvironmerntCubeMaps(ICommandList* cmdList, Scene* scene,  Object* probes);
+        //void RenderDiffuseIrradianceMap(const LightSources* lightSources, std::vector<Object*> objects, Object *probe);
+        void RenderSpecularPrefilterMap(ICommandList* cmdList, IFramebuffer* targetFramebuffer, const LightSources* lightSources, Object* probe, TextureHandle environmentMap);
+
+        void RenderSHImage(Object* probe, TextureHandle environmentMap);
 
 
-        //MaterialShader* m_SSRPassShader = nullptr;
 
-        TextureHandle   m_SkyboxTexture[3];
-        BufferHandle    m_SkyCB;
 
-        //TODO:: Skybox Material;
-        BindingLayoutHandle m_SkyboxBindingLayout;
-        BindingSetHandle    m_SkyboxBindingSet;
-        GraphicsPipelineHandle m_SkyboxPso = nullptr;
+    private:
+      
+        /*draw lighprobes shader*/
+        MaterialShader*     m_LightProbeShader = nullptr;
+        /*shader*/
+        MaterialShader*		m_IBLShader = nullptr; //scene renderer
+        MaterialShader*		m_IrradianceShader = nullptr; //create diffuse irradianceCubeMap
+        MaterialShader*		m_SpecularPrefilterShader = nullptr; //specular prefilter shader
+        MaterialShader*		m_SpecularBRDFLutShader = nullptr;  // brdf LUT shader
+        MaterialShader*		m_PbrShader = nullptr;
+        MaterialShader*		m_NonPbrShader = nullptr;
+        MainCamera* m_ProbeCamera;
 
+     
+        InstancedOpaqueDrawStrategy* m_DrawStrategy;
+
+
+        GraphicsPipelineHandle m_BrdfLUTPso = nullptr;
+
+
+        ForwardShadingRenderer* m_EnvironmentMapRenderer = nullptr;
+        SkyboxRenderer* m_EnvironmentMapSkyboxRenderer = nullptr;
+
+        BufferHandle    m_SpecularPrefilterCB;
+        GraphicsPipelineHandle m_SpecularPrefilterPso = nullptr;
+
+
+
+        bool m_IsInitial = false;
 
     };
 }

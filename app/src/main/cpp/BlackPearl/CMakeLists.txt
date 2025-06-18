@@ -177,6 +177,22 @@ if(ANDROID)
 
     # 设置目标属性（禁用无关警告）
     target_compile_options(android_native_app_glue PRIVATE -Wno-unused-parameter)
+
+
+############################## 创建 cpufeatures 库 ##########################
+
+
+    # 添加 cpufeatures 库
+    add_library(cpufeatures STATIC
+            ${ANDROID_NDK}/sources/android/cpufeatures/cpu-features.c)
+    include_directories(
+            "${ANDROID_NDK}/sources/android/cpufeatures"
+    )
+
+#    target_link_libraries(BlackPearl
+#            cpufeatures  # 链接 cpufeatures
+#            )
+
 endif()
 
 
@@ -235,6 +251,7 @@ if(${RENDER_API} STREQUAL "opengl")
                 GLESv3
                 assimp
                 android_native_app_glue
+                cpufeatures
                 #android
                 spdlog::spdlog_header_only
         )

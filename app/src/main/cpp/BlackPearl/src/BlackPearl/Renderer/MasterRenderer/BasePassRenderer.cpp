@@ -57,13 +57,13 @@ namespace BlackPearl {
     }
     void BasePassRenderer::Render(ICommandList* commandList, IFramebuffer* targetFramebuffer, Scene* scene)
     {
-        commandList->beginMarker("BasePass");
+       // commandList->beginMarker("BasePass");
         SceneData* view = Renderer::GetSceneData();
         SceneData* preView = Renderer::GetPreSceneData();
 
         m_DrawStrategy->PrepareForView(scene, *view);
         RenderView(commandList, targetFramebuffer, view, preView, m_DrawStrategy, this);
-        commandList->endMarker();
+       // commandList->endMarker();
    
     }
     void BasePassRenderer::SetupView(ICommandList* commandList, const IView* view, const IView* viewPrev)

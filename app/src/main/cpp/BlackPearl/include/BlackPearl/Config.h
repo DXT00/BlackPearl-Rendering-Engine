@@ -21,8 +21,8 @@ namespace BlackPearl {
         //多重采样
 		static const unsigned int MSAA_SAMPLES = 1;
 
-		//VSync
-		static const bool Vsync = true;
+		//VSync 默认禁用垂直同步
+		static const bool Vsync = true;//false;
         static int32_t SyncInterval;
 		//static const VoxelConeTracingRenderer::RenderingMode RenderingMode; 
 		static const bool MobileMultiView = false; //for vr
@@ -90,6 +90,10 @@ namespace BlackPearl {
 		/* shader path settings*/
 		static const char* GetShaderTypeName();
 
+        /* if gl program store to bin file*/
+        static const bool bCacheGLProgram;
+
+
 		/* OpenGL settings*/
 
         //-----------------------------------------------
@@ -97,6 +101,9 @@ namespace BlackPearl {
         //-----------------------------------------------
         static const bool bDeferredShading;
         static const bool bUseSinglePass;
+        static const bool bUseIBL;
+
+
 	};
 	struct ShaderConfig {
 

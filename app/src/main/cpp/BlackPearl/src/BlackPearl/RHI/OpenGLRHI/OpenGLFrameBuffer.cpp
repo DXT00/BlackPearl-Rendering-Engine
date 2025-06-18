@@ -130,5 +130,37 @@ namespace BlackPearl {
         }
     }
 
+    //切换到Cubemap某一面渲染
+    void Device::BindPendingFramebufferTextureTarget(FOpenGLContextState& ContextState)
+    {
+      
+
+        if (PendingState.SubViewEnabled)
+        {
+
+            if (PendingState.Framebuffer)
+            {
+                if (ContextState.FramebufferTextureID != PendingState.FramebufferTextureID
+                   || ContextState.FramebufferTextureTarget != PendingState.FramebufferTextureTarget
+                    || ContextState.FramebufferTextureMipLevel != PendingState.FramebufferTextureMipLevel
+                    ) 
+                {
+                    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, PendingState.FramebufferTextureTarget, PendingState.FramebufferTextureID, PendingState.FramebufferTextureMipLevel);
+                    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+                }
+
+            }
+
+            ContextState.FramebufferTextureID = PendingState.FramebufferTextureID;
+            ContextState.FramebufferTextureTarget = PendingState.FramebufferTextureTarget;
+
+            ContextState.FramebufferTextureMipLevel = PendingState.FramebufferTextureMipLevel;
+
+            ContextState.SubViewEnabled = PendingState.SubViewEnabled;
+
+        }
+    }
+
+  
 
 }

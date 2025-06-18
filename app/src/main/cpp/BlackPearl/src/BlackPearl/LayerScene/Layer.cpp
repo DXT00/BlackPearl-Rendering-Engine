@@ -692,24 +692,28 @@ namespace BlackPearl {
 		m_ObjectsList.push_back(obj);
 		return obj;
 	}
-	Object* Layer::CreatePlane(const std::string& shaderPath, const std::string& texturePath, const std::string& name)
+	
+    Object* Layer::CreatePlane(const std::string& shaderPath, const std::string& texturePath, const std::string& name)
 	{
 		Object* obj = g_objectManager->CreatePlane(shaderPath, texturePath, name);
 		m_ObjectsList.push_back(obj);
 		return obj;
 	}
+
 	Object* Layer::CreateSkyBox(const std::vector<std::string>& textureFaces, const std::string& shaderPath, const std::string& name)
 	{
 		Object* obj = g_objectManager->CreateSkyBox(textureFaces, shaderPath, name);
 		m_ObjectsList.push_back(obj);
 		return obj;
 	}
+
 	Object* Layer::CreateQuad(const std::string& shaderPath, const std::string& texturePath, const std::string& name)
 	{
 		Object* obj = g_objectManager->CreateQuad(shaderPath, texturePath, name);
 		m_ObjectsList.push_back(obj);
 		return obj;
 	}
+
 	Object* Layer::CreateLightProbe(ProbeType type, const std::string& shaderPath, const std::string& texturePath, const std::string& name)
 	{
 
@@ -719,6 +723,7 @@ namespace BlackPearl {
 		(type == ProbeType::DIFFUSE_PROBE) ? m_DiffuseLightProbes.push_back(probe) : m_ReflectionLightProbes.push_back(probe);
 		return probe;
 	}
+
 	Object* Layer::CreateProbeGrid(MapManager* mapManager, ProbeType type, math::float3 probeNums, math::float3 offsets, float space)
 	{
 		std::string objName = (type == ProbeType::DIFFUSE_PROBE) ? "Kd ProbesGrid" : "Ks ProbeGrid";

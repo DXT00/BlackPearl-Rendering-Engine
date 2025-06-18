@@ -14,42 +14,30 @@ namespace BlackPearl {
 		DIFFUSE_PROBE,
 		REFLECTION_PROBE
 	};
+
+    enum ProbeStorageType {
+        PT_CubeMap,
+        PT_SH,
+        PT_Texture2D //ddgi
+    };
+
 	class LightProbe :public Component<LightProbe>
 	{
 	public:
 		
-		LightProbe(ProbeType type)
-			:Component(Component::Type::LightProbe){
-		
-			m_Type = type;
-			m_Zfar = 13.0f;
-			if (type == ProbeType::REFLECTION_PROBE) {
-				TextureDesc desc;
-				desc.type = TextureType::CubeMap;
-				desc.width = m_SpecularCubeMapResolution;
-				desc.height = m_SpecularCubeMapResolution;
-				desc.minFilter = FilterMode::Linear_Mip_Linear;
-				desc.magFilter = FilterMode::Linear;
-				desc.wrap = SamplerAddressMode::ClampToEdge;
-				desc.format = Format::RGB16_FLOAT;
-				desc.generateMipmap = true;
-
-				m_SpecularPrefilterCubeMap = g_deviceManager->GetDevice()->createTexture(desc);
-				//m_SpecularPrefilterCubeMap.reset(DBG_NEW CubeMapTexture(Texture::CubeMap, m_SpecularCubeMapResolution, m_SpecularCubeMapResolution, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR, GL_CLAMP_TO_EDGE, GL_RGB16F, GL_RGB, GL_FLOAT, true));
-
-			}
-			if (type == ProbeType::DIFFUSE_PROBE)
-				m_SHCoeffs.assign(9, std::vector<float>(3, 0.0f));
-		
-		
-		}
+        LightProbe(ProbeType type, ProbeStorageType storageType = ProbeStorageType::PT_SH);
 		/* probe's view matrix */
 		glm::mat4	GetViewMatrix()const { return m_ViewMatrix; }
 
 		/* Textures */
-		//std::shared_ptr<CubeMapTexture> GetHdrEnvironmentCubeMap()const    { return m_HdrEnvironmentCubeMap; }
+        TextureHandle GetHdrEnvironmentCubeMap()const { return m_HdrEnvironmentCubeMap; }
+        TextureHandle GetLdrEnvironmentCubeMap()const { return m_LdrEnvironmentCubeMap; }
+        TextureHandle GetDepthBuffer() const { return m_DepthBuffer; }
+        void ReleaseHdrEnvironmentCubeMap();
+        void ReleaseLdrEnvironmentCubeMap();
+
+
 		TextureHandle GetSpecularPrefilterCubeMap()const { GE_ASSERT(m_Type == ProbeType::REFLECTION_PROBE, "is not a reflection probe"); return m_SpecularPrefilterCubeMap; }
-		//std::shared_ptr<CubeMapTexture> GetDiffuseIrradianceCubeMap()const { return m_DiffuseIrradianceCubeMap; }
 		TextureHandle GetSpecularBrdfLutMap()const { return m_SpecularBrdfLutMap; }
 
 		/* resolution */
@@ -64,9 +52,8 @@ namespace BlackPearl {
 		void SetSHCoeffs(std::vector<std::vector<float>>& SHCoeffs) { GE_ASSERT(m_Type == ProbeType::DIFFUSE_PROBE, "is not a diffuse probe"); m_SHCoeffs = SHCoeffs; }
 		std::vector<std::vector<float>> GetCoeffis()const { GE_ASSERT(m_Type == ProbeType::DIFFUSE_PROBE, "is not a diffuse probe"); return m_SHCoeffs; }
 
-		ProbeType GetType()const { return m_Type; }
-		/*cubeObj*/
-	//	Object* GetObj()const { return m_LightProbeObj; }
+		ProbeType GetType() const { return m_Type; }
+        ProbeStorageType GetStorageType() const { return m_StorageType; }
 
 		void SetAreaId(unsigned int areaId) { m_AreaId = areaId; }
 		unsigned int GetAreaId()const { return m_AreaId; }
@@ -90,25 +77,29 @@ namespace BlackPearl {
 		/* probe's view matrix */
 		glm::mat4 m_ViewMatrix = glm::mat4(1.0f);
 		/* Textures */
-		TextureHandle m_HdrEnvironmentCubeMap = nullptr;
+		TextureHandle m_HdrEnvironmentCubeMap = nullptr; // get from hdr image
+        TextureHandle m_LdrEnvironmentCubeMap = nullptr; // rendered by probe camera
+        TextureHandle m_DepthBuffer = nullptr; // depth of environment cube map
+
 		TextureHandle m_SpecularPrefilterCubeMap = nullptr;
-		TextureHandle		m_SpecularBrdfLutMap = nullptr;
-		unsigned int m_MaxMipmapLevel = 5;
+		TextureHandle m_SpecularBrdfLutMap = nullptr;
+		unsigned int m_MaxMipmapLevel = 2;
 
 		unsigned int					m_SampleCounts = 1024;
 		unsigned int					m_EnvironmentCubeMapResolution = Configuration::EnvironmantMapResolution;// 512;// 128;
 		unsigned int					m_SpecularCubeMapResolution = Configuration::EnvironmantMapResolution;// 512;// 128;
 		float       					m_Zfar;//perspective cube range from 0 to zFar
-		//glm::vec3 m_Size;
-		//Object* m_LightProbeObj;
 
 		std::vector<std::vector<float>> m_SHCoeffs;
 		ProbeType m_Type;
+        ProbeStorageType m_StorageType = ProbeStorageType::PT_SH;
 
-		//¼ÇÂ¼Õâ¸öprobeÔÚÄÄ¸öÇøÓò,Ö»ÓĞdiffuse probe»®·ÖÇøÓò
+
+
+		//è®°å½•è¿™ä¸ªprobeåœ¨å“ªä¸ªåŒºåŸŸ,åªæœ‰diffuse probeåˆ’åˆ†åŒºåŸŸ
 		unsigned int m_AreaId;
 
-		// m_ExcludeObjsId ÖĞµÄobjects²»»á±»äÖÈ¾µ½environmentCubeMapÉÏ£¡
+		// m_ExcludeObjsId ä¸­çš„objectsä¸ä¼šè¢«æ¸²æŸ“åˆ°environmentCubeMapä¸Šï¼
 		std::vector< uint64_t> m_ExcludeObjsId;
 
 		bool m_UpdateSpecularMapEveryFrame = false;

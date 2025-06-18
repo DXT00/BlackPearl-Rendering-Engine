@@ -18,6 +18,7 @@ namespace BlackPearl {
         }
 
     protected:
+        void CreateDevice() override;
         bool CreateViewport(uint32_t width, uint32_t height, Format format, bool bFullScreen) override;
         void DestroyViewport() override;
         virtual void ResizeViewport() override;

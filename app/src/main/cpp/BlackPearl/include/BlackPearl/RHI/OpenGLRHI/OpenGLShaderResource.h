@@ -6,11 +6,12 @@
 #include "../RHIShader.h"
 #include "BlackPearl/Renderer/Shader/CrossCompilerCommon.h"
 #include "BlackPearl/Renderer/Shader/ShaderParameters.h"
+#include "OpenGLProgramCache.h"
 
 namespace BlackPearl {
 
 
-
+    class BindingSet;
 	struct FPackedArrayInfo
 	{
 		uint16_t	Size;		// Bytes
@@ -153,64 +154,7 @@ namespace BlackPearl {
 			return 0;
 		}
 	};
-	// unique identifier for a program. (composite of shader keys)
-	class FOpenGLProgramKey
-	{
-	public:
-		FOpenGLProgramKey() {}
 
-		/*friend bool operator == (const FOpenGLProgramKey& A, const FOpenGLProgramKey& B)
-		{
-			bool bHashMatch = true;
-			for (uint32_t i = 0; i < ShaderType::NUM_COMPILE_SHADER_STAGES && bHashMatch; ++i)
-			{
-				bHashMatch = A.ShaderHashes[i] == B.ShaderHashes[i];
-			}
-			return bHashMatch;
-		}
-
-		friend bool operator != (const FOpenGLProgramKey& A, const FOpenGLProgramKey& B)
-		{
-			return !(A == B);
-		}
-
-		friend uint32_t GetTypeHash(const FOpenGLProgramKey& Key)
-		{
-			return FCrc::MemCrc32(Key.ShaderHashes, sizeof(Key.ShaderHashes));
-		}*/
-
-		/*friend FArchive& operator<<(FArchive& Ar, FOpenGLProgramKey& HashSet)
-		{
-			for (int32 Stage = 0; Stage < CrossCompiler::NUM_SHADER_STAGES; Stage++)
-			{
-				Ar << HashSet.ShaderHashes[Stage];
-			}
-			return Ar;
-		}*/
-
-	/*	FString ToString() const
-		{
-			FString retme;
-			if (ShaderHashes[CrossCompiler::SHADER_STAGE_VERTEX] != FSHAHash())
-			{
-				retme = TEXT("Program V_") + ShaderHashes[CrossCompiler::SHADER_STAGE_VERTEX].ToString();
-				retme += TEXT("_P_") + ShaderHashes[CrossCompiler::SHADER_STAGE_PIXEL].ToString();
-				return retme;
-			}
-			else if (ShaderHashes[CrossCompiler::SHADER_STAGE_COMPUTE] != FSHAHash())
-			{
-				retme = TEXT("Program C_") + ShaderHashes[CrossCompiler::SHADER_STAGE_COMPUTE].ToString();
-				return retme;
-			}
-			else
-			{
-				retme = TEXT("Program with unset key");
-				return retme;
-			}
-		}
-
-		FSHAHash ShaderHashes[CrossCompiler::NUM_SHADER_STAGES];*/
-	};
 
 	class FOpenGLCompiledShaderKey
 	{
@@ -247,6 +191,53 @@ namespace BlackPearl {
 		uint32_t CodeSize = 0;
 		uint32_t CodeCRC = 0;
 	};
+
+
+    class FOpenGLLinkedProgramConfiguration
+    {
+    public:
+
+        struct ShaderInfo
+        {
+            FOpenGLShaderBindings Bindings;
+            GLuint Resource;
+            FOpenGLCompiledShaderKey ShaderKey; // This is the key to the shader within FOpenGLCompiledShader container
+            bool bValid; // To mark that stage is valid for this program, even when shader Resource could be zero
+        } Shaders[ShaderType::NUM_COMPILE_SHADER_STAGES];
+
+
+        FOpenGLProgramKey ProgramKey;
+        std::vector<BindingSet*> bindingSet;
+
+        FOpenGLLinkedProgramConfiguration()
+        {
+            for (int32_t Stage = 0; Stage < ShaderType::NUM_COMPILE_SHADER_STAGES; Stage++)
+            {
+                Shaders[Stage].Resource = 0;
+                Shaders[Stage].bValid = false;
+            }
+        }
+
+        friend bool operator ==(const FOpenGLLinkedProgramConfiguration& A, const FOpenGLLinkedProgramConfiguration& B)
+        {
+            bool bEqual = true;
+            for (int32_t Stage = 0; Stage < ShaderType::NUM_COMPILE_SHADER_STAGES && bEqual; Stage++)
+            {
+                bEqual &= A.Shaders[Stage].Resource == B.Shaders[Stage].Resource;
+                bEqual &= A.Shaders[Stage].bValid == B.Shaders[Stage].bValid;
+                bEqual &= A.Shaders[Stage].Bindings == B.Shaders[Stage].Bindings;
+            }
+            return bEqual;
+        }
+        //TODO::
+        friend uint32_t GetTypeHash(const FOpenGLLinkedProgramConfiguration& Config)
+        {
+            assert(0);
+            return 0;
+            //return GetTypeHash(Config.ProgramKey);
+        }
+    };
+
 	/**
 	 * Caching of OpenGL uniform parameters.
 	 */

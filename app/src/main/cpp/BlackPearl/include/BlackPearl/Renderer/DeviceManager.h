@@ -154,9 +154,10 @@ namespace BlackPearl {
 
 
         DeviceManager() = default;
+        virtual void CreateDevice() = 0;
 
         bool CreateWindowDeviceAndSwapChain(const DeviceCreationParameters& params, const char* windowTitle);
-        bool CreateViewport(const DeviceCreationParameters& params);
+        virtual bool CreateViewport(const DeviceCreationParameters& params);
 
         void BackBufferResized();
         virtual void BackBufferResizedInner() = 0;

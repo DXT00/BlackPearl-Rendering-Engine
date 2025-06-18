@@ -4,6 +4,8 @@
 #include "BlackPearl/FileSystem/FileSystem.h"
 #include "BlackPearl/Renderer/MasterRenderer/BasePassRenderer.h"
 #include "RHI/OpenGLRHI/OpenGLDriver/OpenGLFunctions.h"
+#include "Renderer/SystemTextures.h"
+
 namespace BlackPearl {
 	extern CullingManager* g_cullingManager;
 	extern RootFileSystem* g_rootFileSystem;
@@ -51,7 +53,9 @@ namespace BlackPearl {
 
 		m_CommandList->open();
 
-		FRHIRenderPassInfo RPInfo(framebuffer->getDesc().colorAttachments[0].texture, ERenderTargetActions::Load_Store);
+		FRHIRenderPassInfo RPInfo(framebuffer->getDesc().colorAttachments[0].texture, ERenderTargetActions::Load_Store,
+            SystemTexture::Get().SceneDepth,
+            EDepthStencilTargetActions::LoadDepthStencil_StoreDepthStencil);
 		m_CommandList->beginRenderPass(RPInfo, "BasePass");
 
 		m_SkyboxRenderer->Render(m_CommandList, framebuffer, m_Scene);

@@ -161,7 +161,7 @@ namespace BlackPearl {
             for (size_t i = 0; i < gBufferInfo.numTargets; i++) {
              
                 colorDesc.debugName = gBufferInfo.targets[i].name;
-                colorDesc.format = gBufferInfo.targets[i].format; //不需要alpha, R11G11B10_FLOAT, tonemapping后再写到alpha texture
+                colorDesc.format = gBufferInfo.targets[i].format; //R10G10B10A2_UNORM, pc和 mobile pls 同步
                 if (gBufferInfo.targets[i].name == "SceneColor") 
                     SceneColor = device->createTexture(colorDesc);
         

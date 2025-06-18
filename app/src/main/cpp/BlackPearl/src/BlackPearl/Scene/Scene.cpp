@@ -47,15 +47,27 @@ namespace BlackPearl {
 		return m_LightSources;
 	}
 
-	void Scene::SetLightProbes(const std::vector<std::shared_ptr<LightProbe>>& probes)
-	{
-		m_LightProbes = probes;
-	}
 
-	std::vector<std::shared_ptr<LightProbe>> Scene::GetLightProbes() const
-	{
-		return m_LightProbes;
-	}
+
+    void Scene::SetDiffuseLightProbes(const std::vector<Object*>& probes)
+    {
+        m_DiffuseLightProbes = probes;
+    }
+
+    std::vector<Object*> Scene::GetDiffuseLightProbes() const
+    {
+        return m_DiffuseLightProbes;
+    }
+
+    void Scene::SetReflectLightProbes(const std::vector<Object*>& probes)
+    {
+        m_ReflectionLightProbes = probes;
+    }
+
+    std::vector<Object*> Scene::GetReflectLightProbes() const
+    {
+        return m_ReflectionLightProbes;
+    }
 	void Scene::SetDesctiptorTableMgr(const std::shared_ptr<DescriptorTableManager>& descriptorTable)
 	{
 		m_DescriptorTableMgr = descriptorTable;

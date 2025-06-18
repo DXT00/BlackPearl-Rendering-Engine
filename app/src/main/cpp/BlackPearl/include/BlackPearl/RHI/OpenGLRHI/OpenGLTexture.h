@@ -86,7 +86,11 @@ namespace BlackPearl {
 
 		/*void SetSampler(SamplerHandle sampler);
 		SamplerHandle GetSampler() const;*/
-
+        friend uint32_t GetTypeHash(const Texture& Binding)
+        {
+           
+            return 0;
+        }
 	protected:
 		unsigned int m_TextureID;
 		int m_Width = 0;

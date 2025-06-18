@@ -36,10 +36,10 @@ namespace BlackPearl {
 		switch (op)
 		{
 		case ComparisonFunc::Never:
-			return GL_LESS;
+			return GL_NEVER;
 
 		case ComparisonFunc::Less:
-			return GL_LEQUAL;
+			return GL_LESS;
 
 		case ComparisonFunc::Equal:
 			return GL_EQUAL;
@@ -57,7 +57,7 @@ namespace BlackPearl {
 			return GL_GEQUAL;
 
 		case ComparisonFunc::Always:
-			return GL_EQUAL;
+			return GL_ALWAYS;
 
 		default:
 			GE_INVALID_ENUM();

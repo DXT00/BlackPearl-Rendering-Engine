@@ -5,6 +5,7 @@
 #include "Renderer/GbufferInfo.h"
 #include "RHI/RHIGlobals.h"
 #include "RHI/Common/FormatInfo.h"
+#include "Renderer/RenderGraph/RenderGraph.h"
 namespace BlackPearl
 {
     int32_t TargetLighting = 0; //IndirectLight*ao + Emissive + Fog.rgb
@@ -38,7 +39,7 @@ namespace BlackPearl
     {
         GbufferInfo info;
         
-        info.targets[TargetLighting].format = Format::R11G11B10_FLOAT;
+        info.targets[TargetLighting].format = Format::RGBA8_UNORM;//Format::R11G11B10_FLOAT;
         if (config.bHighPresision) {
             info.targets[TargetGBufferA].format = Format::RGBA16_FLOAT;
             info.targets[TargetGBufferB].format = Format::RGBA16_FLOAT;
@@ -48,7 +49,7 @@ namespace BlackPearl
 
         }
         else {
-            info.targets[TargetGBufferA].format = Format::R10G10B10A2_UNORM;
+            info.targets[TargetGBufferA].format = Format::RGBA8_UNORM;//R10G10B10A2_UNORM;
             info.targets[TargetGBufferB].format = Format::RGBA8_UNORM;
             info.targets[TargetGBufferC].format = Format::RGBA8_UNORM;
 
@@ -78,7 +79,7 @@ namespace BlackPearl
     {
         //GbufferInfo info;
         GbufferInfo Info = GetPCGbuffer(config);
-        bool bUsingPixelLocalStorage = GSupportsPixelLocalStorage && GSupportsShaderDepthStencilFetch;
+        bool bUsingPixelLocalStorage = RenderGraph::SupportPLS();
         if (bUsingPixelLocalStorage)
         {
             Info.numTargets = 1;

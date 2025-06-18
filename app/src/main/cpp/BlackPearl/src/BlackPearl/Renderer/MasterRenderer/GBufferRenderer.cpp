@@ -21,6 +21,8 @@
 #endif
 #include "RHI/RHIGlobals.h"
 #include "Core/AssetManager.h"
+#include "Renderer/RenderGraph/RenderGraph.h"
+
 namespace BlackPearl {
 
 
@@ -64,7 +66,7 @@ namespace BlackPearl {
 
         }
         //= FOpenGL::SupportsPixelLocalStorage();  = bSupportsPixelLocalStorage
-       if (GSupportsPixelLocalStorage && GSupportsShaderDepthStencilFetch)
+       if (RenderGraph::SupportPLS())
         {
             extends.push_back("#extension GL_EXT_shader_pixel_local_storage : require");
             extends.push_back("#extension GL_ARM_shader_framebuffer_fetch_depth_stencil : require");
@@ -90,10 +92,10 @@ namespace BlackPearl {
 
 	void GBufferRenderer::Render(ICommandList* commandList, IFramebuffer* targetFramebuffer, Scene* scene)
 	{
+        SCOPE_TIME_COUNTER(GBuffer);
 
-        commandList->beginMarker("GBufferPass");
+       // commandList->beginMarker("GBufferPass");
         GE_ERROR_JUDGE();
-
 
 
         SceneData* view = Renderer::GetSceneData();
@@ -110,7 +112,7 @@ namespace BlackPearl {
         RenderPassTemplate(commandList, targetFramebuffer, view, m_DrawStrategy, m_ShaderParameters);
 
 
-        commandList->endMarker();
+     //   commandList->endMarker();
 	}
 
 

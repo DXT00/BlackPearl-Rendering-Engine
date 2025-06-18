@@ -5,6 +5,7 @@
 #include "RHI/OpenGLRHI/OpenGLContext.h"
 #include "RHI/OpenGLRHI/OpenGLTexture.h"
 #include "BlackPearl/Core.h"
+#include "Renderer/SystemTextures.h"
 namespace BlackPearl {
 
 
@@ -63,25 +64,30 @@ namespace BlackPearl {
 		m_SizeY = InSizeY;
 		bool bWasFullscreen = m_bIsFullscreen;
 		m_bIsFullscreen = bInIsFullscreen;
-
+        if(GL_BACKBUFFER_CNT!=1){
+            GE_CORE_ERROR("multi back buffer not support");
+        }
 
 		for (size_t i = 0; i < GL_BACKBUFFER_CNT; i++)
 		{
-			TextureDesc textureDesc;
-			textureDesc.width = InSizeX;
-			textureDesc.height = InSizeY;
-			textureDesc.format = m_PixelFormat;
-			textureDesc.debugName = "GL backbuffer image " + std::to_string(i);
-			textureDesc.initialState = ResourceStates::Present;
-			textureDesc.keepInitialState = true;
-			textureDesc.isRenderTarget = true;
+//			TextureDesc textureDesc;
+//			textureDesc.width = InSizeX;
+//			textureDesc.height = InSizeY;
+//			textureDesc.format = m_PixelFormat;
+//			textureDesc.debugName = "GL backbuffer image " + std::to_string(i);
+//			textureDesc.initialState = ResourceStates::Present;
+//			textureDesc.keepInitialState = true;
+//			textureDesc.isRenderTarget = true;
 
-			m_DefaultBackBuffers[i] = m_Device->createTexture(textureDesc);
+			m_DefaultBackBuffers[i] = SystemTexture::Get().SceneColor;//m_Device->createTexture(textureDesc);
             GE_ERROR_JUDGE();
 
         }
 		for (uint32_t index = 0; index < GL_BACKBUFFER_CNT; index++)
 		{
+            if(GL_BACKBUFFER_CNT!=1){
+                GE_CORE_ERROR("multi back buffer not support");
+            }
 			FramebufferDesc fboDesc;
 			fboDesc.addColorAttachment(m_DefaultBackBuffers[index]);
 			m_DefaultFramebuffers[index] = m_Device->createFramebuffer(fboDesc);

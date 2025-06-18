@@ -17,13 +17,18 @@ layout(std140, binding = 8) uniform ForwardShadingUBO {
 
 __pixel_localEXT InPLS
 {
-    layout(r11f_g11f_b10f) vec3 t_gSceneColor;
-    layout(rgb10_a2) vec4 t_gGbufferA;
+//    layout(r11f_g11f_b10f) vec3 t_gSceneColor;
+//    layout(rgb10_a2) vec4 t_gGbufferA;
+//    layout(rgba8) vec4 t_gGbufferB;
+//    layout(rgba8) vec4 t_gGbufferC;
+// pls 必须是四个通道
+    layout(rgb10_a2) vec4 t_gSceneColor;
+    layout(rgba8) vec4 t_gGbufferA;
     layout(rgba8) vec4 t_gGbufferB;
     layout(rgba8) vec4 t_gGbufferC;
-
 }pls;
 
+//layout(binding = 0) uniform sampler2D t_gSceneColor;
 
 #else
 // SceneColor and Gbuffer Textures

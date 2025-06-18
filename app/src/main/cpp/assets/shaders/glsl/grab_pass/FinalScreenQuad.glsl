@@ -31,7 +31,7 @@ in vec2 v_TexCoord;
 #if USE_GLES_PLS
 
 __pixel_localEXT FragData {
-    layout(r11f_g11f_b10f) vec3 t_gSceneColor;
+    layout(rgb10_a2)  vec4 t_gSceneColor;
 } pls;
 
 #else

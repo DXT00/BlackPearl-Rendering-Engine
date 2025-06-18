@@ -15,7 +15,7 @@ namespace BlackPearl {
 			: RenderGraph(deviceManager)
 		{ }
 		virtual void Init(Scene* scene) override;
-		virtual void Render(Timestep ts, IFramebuffer* framebuffer, IView* View);
+		virtual void Render(Timestep ts, IFramebuffer* framebuffer, IView* View) override;
 	
 
 		void RenderSinglePass(Timestep ts, IFramebuffer* framebuffer, IView* View);

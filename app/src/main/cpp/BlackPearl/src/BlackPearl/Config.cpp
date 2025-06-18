@@ -7,7 +7,7 @@
 
 namespace BlackPearl {
 
-    int32_t Configuration::SyncInterval = 0;
+    int32_t Configuration::SyncInterval = 1;
 
 	void Configuration::SyncGPU()
 	{
@@ -42,8 +42,10 @@ namespace BlackPearl {
 	
     const bool Configuration::bDeferredShading = true;
 
-    const bool Configuration::bUseSinglePass = false;
+    const bool Configuration::bUseSinglePass = true;
+    const bool Configuration::bCacheGLProgram = false;
 
+    const bool Configuration::bUseIBL = true;
 
 	const char* ShaderConfig::AMBIENT_COLOR   = "u_Material.ambientColor";
 	const char* ShaderConfig::DIFFUSE_COLOR   = "u_Material.diffuseColor";

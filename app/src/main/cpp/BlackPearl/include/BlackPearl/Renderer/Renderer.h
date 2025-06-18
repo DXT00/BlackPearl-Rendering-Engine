@@ -11,6 +11,7 @@
 using namespace BlackPearl::math;
 #include "hlsl/core/view_cb.h"
 #include "hlsl/core/forward_cb.h"
+#include "glm/glm.hpp"
 namespace BlackPearl {
 
 	class IView {
@@ -28,39 +29,14 @@ namespace BlackPearl {
 	class SceneData : public IView
 	{
 	public:
-        SceneData()
-            : ProjectionViewMatrix(glm::mat4(1.0)),
-            ViewMatrix(glm::mat4(1.0)),
-            ProjectionMatrix(glm::mat4(1.0)),
-            CameraPosition(glm::vec3(0.0)),
-            CameraRotation(glm::vec3(0.0)),
-            CameraFront(glm::vec3(0.0)),
-            zNear(0.01),
-            zFar(100.0f),
-            PreExposure(1.0f)
-			{
-				ViewFrustum = math::frustum(Math::ToFloat4x4(ViewMatrix* ProjectionMatrix), ReverseZ);
-		    }
-
-		SceneData(const glm::mat4& pvMat,
-			const glm::mat4& vMat,
-			const glm::mat4& pMat,
-			const glm::vec3& camPos,
-			const glm::vec3& camRot,
-			const glm::vec3& camFront,
-			const LightSources& lightSource)
-			:ProjectionViewMatrix(pvMat),
-			ViewMatrix(vMat),
-			ProjectionMatrix(pMat),
-			CameraPosition(camPos),
-			CameraRotation(camRot),
-			CameraFront(camFront),
-			LightSources(lightSource)
-		{
-			ViewFrustum = math::frustum(Math::ToFloat4x4(ViewMatrix * ProjectionMatrix), ReverseZ);
-
-		}
-
+        SceneData();
+        SceneData(const glm::mat4& pvMat,
+            const glm::mat4& vMat,
+            const glm::mat4& pMat,
+            const glm::vec3& camPos,
+            const glm::vec3& camRot,
+            const glm::vec3& camFront,
+            const class LightSources& lightSource);
 
 		glm::mat4 ProjectionViewMatrix;
 		glm::mat4 ViewMatrix;
@@ -78,6 +54,8 @@ namespace BlackPearl {
 		virtual VariableRateShadingState GetVariableRateShadingState() const override;
 		virtual math::frustum GetViewFrustum() const override;
 		virtual void FillPlanarViewConstants(ForwardShadingViewConstants& constants) const override;
+        void EnableSubview(bool en);
+        void SetSubViewId(uint32_t id);
 
 		RHIViewport m_Viewport;
 		RHIRect m_ScissorRect;
@@ -86,7 +64,15 @@ namespace BlackPearl {
 		math::frustum ViewFrustum = math::frustum::empty();
 		//TODO::
 		bool ReverseZ = false;
+        uint32_t subViewId = 0;
+        uint32_t subViewMip = 0; 
+        uint32_t subViewTexTarget = 0;
+        uint32_t subViewTextureId = 0;
+
+        bool bIsSubview = false;
 	};
+
+
 
 	class Renderer
 	{

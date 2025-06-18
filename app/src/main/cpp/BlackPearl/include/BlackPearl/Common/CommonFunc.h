@@ -83,6 +83,13 @@ namespace BlackPearl {
         return (size + (alignment - 1)) & ~(alignment - 1);
     }
 #endif
+    template <typename T>
+    FORCEINLINE constexpr T Align(T Val, uint64_t Alignment)
+    {
+       // static_assert(TIsIntegral<T>::Value || TIsPointer<T>::Value, "Align expects an integer or pointer type");
+
+        return (T)(((uint64_t)Val + Alignment - 1) & ~(Alignment - 1));
+    }
 
     template<typename T> T Align(T size, T alignment)
     {

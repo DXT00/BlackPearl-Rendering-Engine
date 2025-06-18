@@ -69,13 +69,13 @@ namespace BlackPearl {
 
     void ForwardShadingRenderer::Render(ICommandList* commandList, IFramebuffer* targetFramebuffer, Scene* scene)
     {
-        commandList->beginMarker("BasePass");
+       // commandList->beginMarker("BasePass");
         GE_ERROR_JUDGE();
 
-        SceneData* view = Renderer::GetSceneData();
+        SceneData* view = m_CustumView ? m_CustumView: Renderer::GetSceneData();
         GE_ERROR_JUDGE();
 
-        SceneData* preView = Renderer::GetPreSceneData();
+        SceneData* preView = m_CustumView ? nullptr: Renderer::GetPreSceneData();
         GE_ERROR_JUDGE();
 
         SetupView(commandList, view, preView);
@@ -90,7 +90,7 @@ namespace BlackPearl {
         RenderPassTemplate(commandList, targetFramebuffer, view, m_DrawStrategy, m_ShaderParameters);
 
         
-        commandList->endMarker();
+       // commandList->endMarker();
     }
 
     void ForwardShadingRenderer::FillShaderParameters(LightSources* lightSource, ForwardShadingLightConstants& output)
@@ -116,6 +116,11 @@ namespace BlackPearl {
 
     ForwardShadingRenderer::~ForwardShadingRenderer()
     {
+    }
+
+    void ForwardShadingRenderer::SetCustomView(SceneData* view)
+    {
+        m_CustumView = view;
     }
 
 }

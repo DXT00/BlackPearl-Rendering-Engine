@@ -8,8 +8,9 @@
 #include "BlackPearl/RHI/RHIShader.h"
 #include <BlackPearl/Renderer/Renderer.h>
 #include "OpenGLShaderResource.h"
+#include "OpenGLProgramCache.h"
 #include "BlackPearl/RHI/OpenGLRHI/OpenGLDriver/OpenGLFunctions.h"
-
+#include "Core/Codec/SHA265.h"
 namespace BlackPearl {
 
 	class LightSources;
@@ -50,7 +51,7 @@ namespace BlackPearl {
 		std::string GetPath() { return m_ShaderPath; }
 		const ShaderDesc& getDesc() const override { return desc; }
 		void getBytecode(const void** ppBytecode, size_t* pSize) const override;
-
+        CrcHash GetHash() const { return m_CodeHash; }
         GLuint m_ShaderID = 0;
 		/** External bindings for this shader. */
 		FOpenGLShaderBindings Bindings;
@@ -71,7 +72,7 @@ namespace BlackPearl {
 
 		std::string m_FragmentCommonStruct;
 		std::string m_CommonStructPath="assets/shaders/glsl/common/CommonStruct.glsl";
-
+        CrcHash m_CodeHash;
 		/*
 		 
 		  
@@ -124,50 +125,6 @@ namespace BlackPearl {
 
 	
 	
-	class FOpenGLLinkedProgramConfiguration
-	{
-	public:
-
-		struct ShaderInfo
-		{
-			FOpenGLShaderBindings Bindings;
-			GLuint Resource;
-			FOpenGLCompiledShaderKey ShaderKey; // This is the key to the shader within FOpenGLCompiledShader container
-			bool bValid; // To mark that stage is valid for this program, even when shader Resource could be zero
-		}
-		Shaders[ShaderType::NUM_COMPILE_SHADER_STAGES];
-		FOpenGLProgramKey ProgramKey;
-		std::vector<BindingSet*> bindingSet;
-
-		FOpenGLLinkedProgramConfiguration()
-		{
-			for (int32_t Stage = 0; Stage < ShaderType::NUM_COMPILE_SHADER_STAGES; Stage++)
-			{
-				Shaders[Stage].Resource = 0;
-				Shaders[Stage].bValid = false;
-			}
-		}
-
-		friend bool operator ==(const FOpenGLLinkedProgramConfiguration& A, const FOpenGLLinkedProgramConfiguration& B)
-		{
-			bool bEqual = true;
-			for (int32_t Stage = 0; Stage < ShaderType::NUM_COMPILE_SHADER_STAGES && bEqual; Stage++)
-			{
-				bEqual &= A.Shaders[Stage].Resource == B.Shaders[Stage].Resource;
-				bEqual &= A.Shaders[Stage].bValid == B.Shaders[Stage].bValid;
-				bEqual &= A.Shaders[Stage].Bindings == B.Shaders[Stage].Bindings;
-			}
-			return bEqual;
-		}
-		//TODO::
-		friend uint32_t GetTypeHash(const FOpenGLLinkedProgramConfiguration& Config)
-		{
-			assert(0);
-			return 0;
-			//return GetTypeHash(Config.ProgramKey);
-		}
-	};
-
 
 	class FOpenGLLinkedProgram {
 	public:

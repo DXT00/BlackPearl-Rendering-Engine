@@ -10,21 +10,17 @@ namespace BlackPearl {
     bool RenderGraph::SupportSinglePass(bool msaaSample)
     {
 #ifdef GE_API_VULKAN
-        return true; //subpass
+        return Configuration::bUseSinglePass; //subpass
 #elif defined(GE_API_OPENGL)
 #ifdef GE_PLATFORM_ANDROID //android use gles
+        if(!Configuration::bUseSinglePass)
+            return false;
         if (GSupportsShaderFramebufferFetch || (GSupportsShaderDepthStencilFetch && GSupportsPixelLocalStorage))
             return true;
 #elif defined(GE_PLATFORM_WINDOWS)
-#ifdef GE_API_OPENGL
         return false;// default to mlti pass
-#else
-        return Configuration::bUseSinglePass; //if vulkan, can use subpass
-
 #endif
 #endif
-#endif
-
         return false;
 
     }
@@ -32,7 +28,7 @@ namespace BlackPearl {
     {
 #ifdef GE_API_OPENGL
 #ifdef GE_PLATFORM_ANDROID
-        if (GSupportsPixelLocalStorage && GSupportsShaderDepthStencilFetch)
+        if (Configuration::bUseSinglePass && GSupportsPixelLocalStorage && GSupportsShaderDepthStencilFetch)
             return true;
 #endif
 #endif

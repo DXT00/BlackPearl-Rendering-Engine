@@ -14,15 +14,11 @@
 #include "BlackPearl/Core/PlatformTime.h"
 #include "BlackPearl/Core/PlatformProc.h"
 
-//#include "Android/AndroidApplication.h"
-//#include "AudioDevice.h"
-//#include "Misc/CallbackDevice.h"
+
 #include <android/native_window.h>
 #include <android/native_window_jni.h>
-//#include "IHeadMountedDisplay.h"
-//#include "IXRTrackingSystem.h"
-//#include "RenderingThread.h"
-//#include "UnrealEngine.h"
+
+#include "Timestep/TimeCounter.h"
 
 namespace BlackPearl
 {
@@ -88,6 +84,7 @@ static const char* GetAppEventName(EAppEventState State)
 //app->Run()里Tick()
 void FAppEventManager::Tick()
 {
+    SCOPE_TIME_COUNTER(FAppEventManager_Tick)
    // GE_ASSERT(IsInGameThread());
     while (!Queue.empty())
     {

@@ -1,7 +1,8 @@
 #pragma once
-#include "BlackPearl/RHI/RHIDefinitions.h"
-#include "BlackPearl/RHI/RefCountPtr.h"
-#include "BlackPearl/RHI/RHICommandList.h"
+#include "RHI/RHIDefinitions.h"
+#include "RHI/RefCountPtr.h"
+#include "RHI/RHICommandList.h"
+#include "OpenGLState.h"
 
 namespace BlackPearl {
     class OpenGLContext;
@@ -105,6 +106,10 @@ namespace BlackPearl {
         void setViewport(float minX, float minY, float minZ, float maxX, float maxY, float maxZ);
         void setScissorRect(bool bEnable, uint32_t minX, uint32_t minY, uint32_t maxX, uint32_t maxY);
 
+
+        void setSubView(bool bEnable, GLenum FramebufferTextureTarget, GLint FramebufferTextureMipLevel, GLint FramebufferTextureID);
+
+
         virtual bool hasTiledGPU() override;
 
     private:
@@ -158,7 +163,7 @@ namespace BlackPearl {
 
 
         void _setRenderTargets(uint32_t NumSimultaneousRenderTargets, const FRHIRenderTargetView* NewRenderTargets, const FRHIDepthRenderTargetView* NewDepthStencilTarget);
-        void _setRenderTargets(FramebufferHandle framebuffer);
+      //  void _setRenderTargets(FramebufferHandle framebuffer);
 
         void _setRenderTargetsAndClear(const FRHISetRenderTargetsInfo& RenderTargetsInfo);
         void _clearCurrentFramebufferWithCurrentScissor(FOpenGLContextState& ContextState, int8_t ClearType, int32_t NumClearColors, const Color* ClearColorArray, float Depth, uint32_t Stencil);

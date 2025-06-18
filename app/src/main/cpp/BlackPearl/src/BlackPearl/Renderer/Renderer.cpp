@@ -6,11 +6,13 @@
 #include "BlackPearl/Component/LightComponent/PointLight.h"
 #include "BlackPearl/Component/LightComponent/SpotLight.h"
 #include "BlackPearl/Component/LightComponent/LightSources.h"
+
 #include "glm/gtc/matrix_transform.hpp"
 #include "Renderer/Mesh/Mesh.h"
 #include "Application.h"
 using namespace BlackPearl::math;
 #include <hlsl/core/view_cb.h>
+
 
 namespace BlackPearl {
 
@@ -139,6 +141,74 @@ namespace BlackPearl {
 		vertexArray->Bind();*/
 	}
 
+
+    SceneData::SceneData()
+        : ProjectionViewMatrix(glm::mat4(1.0)),
+        ViewMatrix(glm::mat4(1.0)),
+        ProjectionMatrix(glm::mat4(1.0)),
+        CameraPosition(glm::vec3(0.0)),
+        CameraRotation(glm::vec3(0.0)),
+        CameraFront(glm::vec3(0.0)),
+        zNear(0.01),
+        zFar(100.0f),
+        PreExposure(1.0f)
+    {
+        ViewFrustum = math::frustum(Math::ToFloat4x4(ViewMatrix * ProjectionMatrix), ReverseZ);
+
+    }
+
+    SceneData::SceneData(
+        const glm::mat4& pvMat,
+        const glm::mat4& vMat, 
+        const glm::mat4& pMat, 
+        const glm::vec3& camPos,
+        const glm::vec3& camRot,
+        const glm::vec3& camFront,
+        const class LightSources& lightSource):
+        ProjectionViewMatrix(pvMat),
+        ViewMatrix(vMat),
+        ProjectionMatrix(pMat),
+        CameraPosition(camPos),
+        CameraRotation(camRot),
+        CameraFront(camFront),
+        LightSources(lightSource),
+        zNear(0.01),
+        zFar(100.0f),
+        PreExposure(1.0f)
+    {
+
+        ViewFrustum = math::frustum(Math::ToFloat4x4(ViewMatrix * ProjectionMatrix), ReverseZ);
+      
+    }
+
+   /* SceneData::SceneData(
+        const glm::mat4& pvMat,
+        const glm::mat4& vMat,
+        const glm::mat4& pMat,
+        const glm::vec3& camPos,
+        const glm::vec3& camRot,
+        const glm::vec3& camFront,
+        const LightSources& lightSource)
+        :
+        ProjectionViewMatrix(pvMat),
+        ViewMatrix(vMat),
+        ProjectionMatrix(pMat),
+        CameraPosition(camPos),
+        CameraRotation(camRot),
+        CameraFront(camFront),
+        LightSources(lightSource),
+        zNear(0.01),
+        zFar(100.0f),
+        PreExposure(1.0f)
+    {
+        ViewFrustum = math::frustum(Math::ToFloat4x4(ViewMatrix * ProjectionMatrix), ReverseZ);
+        math::vector<int, 2> windowSize = Application::Get().GetWindow().GetCurWindowSize();
+        SetViewport(RHIViewport(windowSize[0], windowSize[1]));
+
+    }*/
+
+
+
 	void SceneData::SetViewport(RHIViewport viewport)
 	{
 		if (viewport == m_Viewport)
@@ -194,6 +264,10 @@ namespace BlackPearl {
 		//	: float4(GetViewOrigin(), 1.f);
 
 		//constants.pixelOffset = GetPixelOffset();
+        if (m_Viewport.width() == 0 && m_Viewport.height()) {
+            GE_CORE_ERROR("please SetViewport() before fill parameters");
+        }
+
 		constants.matProjectionView =  Math::ToFloat4x4(ProjectionViewMatrix);
 		constants.matView = Math::ToFloat4x4(ViewMatrix);
 		constants.matProjection = Math::ToFloat4x4(ProjectionMatrix);
@@ -207,5 +281,15 @@ namespace BlackPearl {
         constants.preExposure = PreExposure;
 
 	}
+
+    void SceneData::EnableSubview(bool en)
+    {
+        bIsSubview = en;
+    }
+
+    void SceneData::SetSubViewId(uint32_t id)
+    {
+        bIsSubview = id;
+    }
 	
 }

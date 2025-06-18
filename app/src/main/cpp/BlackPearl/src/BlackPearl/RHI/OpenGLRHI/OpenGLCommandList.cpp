@@ -12,10 +12,12 @@
 #include "RHI/OpenGLRHI/OpenGLFrameBuffer.h"
 #include "RHI/OpenGLRHI/OpenGLSampler.h"
 #include "RHI/OpenGLRHI/OpenGLUtil.h"
+#include "RHI/OpenGLRHI/OpenGLRenderTraget.h"
 #include "BlackPearl/Config.h"
 #include "BlackPearl/RHI/RHIGlobals.h"
 #include "BlackPearl/RHI/OpenGLRHI/OpenGLDriver/OpenGLDrvPrivate.h"
 #include "BlackPearl/RHI/RHIRenderTarget.h"
+#include "Renderer/RenderGraph/RenderGraph.h"
 namespace BlackPearl {
 	struct FPlatformOpenGLDevice;
 	inline void FindPrimitiveType(PrimitiveType InPrimitiveType, uint32_t InNumPrimitives, GLenum& DrawMode, GLsizei& NumElements)
@@ -46,6 +48,27 @@ namespace BlackPearl {
 			break;
 		}
 	}
+
+    static void ConditionallyAllocateRenderbufferStorage(Texture& RenderTarget)
+    {
+        /*if (RenderTarget.bMultisampleRenderbuffer &&
+            RenderTarget.GetAllocatedStorageForMip(0, 0) == false)
+        {
+            check(RenderTarget.IsMultisampled());
+            check(RenderTarget.Target == GL_RENDERBUFFER);
+
+            GLuint TextureID = RenderTarget.GetRawResourceName();
+            const FRHITextureDesc& Desc = RenderTarget.GetDesc();
+            const FOpenGLTextureFormat& GLFormat = GOpenGLTextureFormats[Desc.Format];
+            const bool bSRGB = EnumHasAnyFlags(Desc.Flags, TexCreate_SRGB);
+
+            glBindRenderbuffer(GL_RENDERBUFFER, TextureID);
+            FOpenGL::RenderbufferStorageMultisample(GL_RENDERBUFFER, Desc.NumSamples, GLFormat.InternalFormat[bSRGB], Desc.Extent.X, Desc.Extent.Y);
+            glBindRenderbuffer(GL_RENDERBUFFER, 0);
+
+            RenderTarget.SetAllocatedStorage(true);*/
+        //}
+    }
 	// Replaces RenderTargets with ResoveTargets to utilize GL_EXT_multisampled_render_to_texture
 	static int32_t SetupMultisampleRenderingInfo(FRHISetRenderTargetsInfo& RTInfo)
 	{
@@ -78,12 +101,12 @@ namespace BlackPearl {
 	void CommandList::beginRenderPass(const FRHIRenderPassInfo& renderPassInfo, const std::string& passName)
 	{
 		GE_ERROR_JUDGE();
-
+        beginMarker(passName.c_str());
 		FRHISetRenderTargetsInfo RTInfo;
 		renderPassInfo.ConvertToRenderTargetsInfo(RTInfo);
 		// Begin GL_EXT_multisampled_render_to_texture if any
 		m_Device->PendingState.NumRenderingSamples = SetupMultisampleRenderingInfo(RTInfo);
-		_setRenderTargetsAndClear(RTInfo);
+		this->_setRenderTargetsAndClear(RTInfo);
 		GE_ERROR_JUDGE();
 
 		m_Device->RenderPassInfo = renderPassInfo;
@@ -96,7 +119,7 @@ namespace BlackPearl {
 
 #ifdef GE_PLATFORM_ANDROID
 		if (m_Device->RenderPassInfo.SubpassHint == ESubpassHint::DeferredShadingSubpass &&
-			FOpenGL::SupportsPixelLocalStorage() && FOpenGL::SupportsShaderDepthStencilFetch())
+			RenderGraph::SupportPLS())
 		{
 			glEnable(GL_SHADER_PIXEL_LOCAL_STORAGE_EXT);
             GE_ERROR_JUDGE();
@@ -154,15 +177,18 @@ namespace BlackPearl {
 
 		FRHIRenderTargetView RTV(nullptr, ERenderTargetLoadAction::ENoAction);
 		FRHIDepthRenderTargetView DepthRTV(nullptr, ERenderTargetLoadAction::ENoAction, ERenderTargetStoreAction::ENoAction);
-		_setRenderTargets(1, &RTV, &DepthRTV);
+		this->_setRenderTargets(1, &RTV, &DepthRTV);
 
 #if GE_PLATFORM_ANDROID
 		if (m_Device->RenderPassInfo.SubpassHint == ESubpassHint::DeferredShadingSubpass &&
-			FOpenGL::SupportsPixelLocalStorage() && FOpenGL::SupportsShaderDepthStencilFetch())
+                RenderGraph::SupportPLS())
 		{
 			glDisable(GL_SHADER_PIXEL_LOCAL_STORAGE_EXT);
 		}
 #endif
+
+        endMarker();
+
 	}
 	void CommandList::nextSubpass()
 	{
@@ -370,209 +396,10 @@ namespace BlackPearl {
 
 		//}
 	}
-	void CommandList::_setRenderTargets(uint32_t NumSimultaneousRenderTargets, const FRHIRenderTargetView* NewRenderTargetsRHI, const FRHIDepthRenderTargetView* NewDepthStencilTargetRHI)
-	{
-		assert(NumSimultaneousRenderTargets <= c_MaxRenderTargets);
 
-		FMemory::Memset(m_Device->PendingState.RenderTargets, 0, sizeof(m_Device->PendingState.RenderTargets));
-		FMemory::Memset(m_Device->PendingState.RenderTargetMipmapLevels, 0, sizeof(m_Device->PendingState.RenderTargetMipmapLevels));
-		FMemory::Memset(m_Device->PendingState.RenderTargetArrayIndex, 0, sizeof(m_Device->PendingState.RenderTargetArrayIndex));
-		m_Device->PendingState.FirstNonzeroRenderTarget = -1;
-        m_Device->PendingState.NumColorRenderTargets = NumSimultaneousRenderTargets;
-		for (int32_t RenderTargetIndex = NumSimultaneousRenderTargets - 1; RenderTargetIndex >= 0; --RenderTargetIndex)
-		{
-			m_Device->PendingState.RenderTargets[RenderTargetIndex] = static_cast<Texture*>(NewRenderTargetsRHI[RenderTargetIndex].Texture);
-			m_Device->PendingState.RenderTargetMipmapLevels[RenderTargetIndex] = NewRenderTargetsRHI[RenderTargetIndex].MipIndex;
-			m_Device->PendingState.RenderTargetArrayIndex[RenderTargetIndex] = NewRenderTargetsRHI[RenderTargetIndex].ArraySliceIndex;
-
-			if (m_Device->PendingState.RenderTargets[RenderTargetIndex])
-			{
-				m_Device->PendingState.FirstNonzeroRenderTarget = (int32_t)RenderTargetIndex;
-			}
-		}
-
-		Texture* NewDepthStencilRT = static_cast<Texture*>(NewDepthStencilTargetRHI ? NewDepthStencilTargetRHI->Texture : nullptr);
-
-		m_Device->PendingState.DepthStencil = NewDepthStencilRT;
-		m_Device->PendingState.StencilStoreAction = NewDepthStencilTargetRHI ? NewDepthStencilTargetRHI->GetStencilStoreAction() : ERenderTargetStoreAction::ENoAction;
-		m_Device->PendingState.DepthTargetWidth = NewDepthStencilRT ? NewDepthStencilRT->getDesc().width : 0u;
-		m_Device->PendingState.DepthTargetHeight = NewDepthStencilRT ? NewDepthStencilRT->getDesc().height : 0u;
-
-		if (m_Device->PendingState.FirstNonzeroRenderTarget == -1 && !m_Device->PendingState.DepthStencil)
-		{
-			// Special case - invalid setup, but sometimes performed by the engine
-
-			m_Device->PendingState.Framebuffer = 0;
-			m_Device->PendingState.bFramebufferSetupInvalid = true;
-			return;
-		}
-
-		m_Device->PendingState.Framebuffer = _getOpenGLFramebuffer(NumSimultaneousRenderTargets, m_Device->PendingState.RenderTargets, m_Device->PendingState.RenderTargetArrayIndex, m_Device->PendingState.RenderTargetMipmapLevels, m_Device->PendingState.DepthStencil, m_Device->PendingState.NumRenderingSamples);
-		m_Device->PendingState.bFramebufferSetupInvalid = false;
-
-		if (m_Device->PendingState.FirstNonzeroRenderTarget != -1)
-		{
-			// Set viewport size to new render target size.
-			m_Device->PendingState.Viewport.minX = 0;
-			m_Device->PendingState.Viewport.minY = 0;
-
-			const TextureDesc& Desc = NewRenderTargetsRHI[m_Device->PendingState.FirstNonzeroRenderTarget].Texture->getDesc();
-
-			uint32_t MipIndex = NewRenderTargetsRHI[m_Device->PendingState.FirstNonzeroRenderTarget].MipIndex;
-			uint32_t Width = math::max<uint32_t>(1, Desc.width >> MipIndex);
-			uint32_t Height = math::max<uint32_t>(1, Desc.height >> MipIndex);
-
-			m_Device->PendingState.Viewport.maxX = m_Device->PendingState.RenderTargetWidth = Width;
-			m_Device->PendingState.Viewport.maxY = m_Device->PendingState.RenderTargetHeight = Height;
-		}
-		else if (NewDepthStencilTargetRHI)
-		{
-			// Set viewport size to new depth target size.
-			m_Device->PendingState.Viewport.minX = 0;
-			m_Device->PendingState.Viewport.minY = 0;
-			m_Device->PendingState.Viewport.maxX = NewDepthStencilTargetRHI->Texture->getDesc().width;
-			m_Device->PendingState.Viewport.maxY = NewDepthStencilTargetRHI->Texture->getDesc().height;
-		}
-	}
-	void CommandList::_setRenderTargets(FramebufferHandle framebuffer)
-	{
-		//assert(framebuffer->getDesc().getRenderTargetCnt() <= c_MaxRenderTargets);
-
-		//FMemory::Memset(m_Device->PendingState.RenderTargets, 0, sizeof(m_Device->PendingState.RenderTargets));
-		//FMemory::Memset(m_Device->PendingState.RenderTargetMipmapLevels, 0, sizeof(m_Device->PendingState.RenderTargetMipmapLevels));
-		//FMemory::Memset(m_Device->PendingState.RenderTargetArrayIndex, 0, sizeof(m_Device->PendingState.RenderTargetArrayIndex));
-		//m_Device->PendingState.FirstNonzeroRenderTarget = -1;
-
-		//for (int32_t RenderTargetIndex = framebuffer->getDesc().colorAttachments.size() - 1; RenderTargetIndex >= 0; --RenderTargetIndex)
-		//{
-		//	m_Device->PendingState.RenderTargets[RenderTargetIndex] = static_cast<Texture*>(framebuffer->getDesc().colorAttachments[RenderTargetIndex].texture);
-		//	m_Device->PendingState.RenderTargetMipmapLevels[RenderTargetIndex] = framebuffer->getDesc().colorAttachments[RenderTargetIndex].texture->getDesc().mipLevelsCnt;
-		//	m_Device->PendingState.RenderTargetArrayIndex[RenderTargetIndex] = framebuffer->getDesc().colorAttachments[RenderTargetIndex].texture->getDesc().arraySize;;// NewRenderTargetsRHI[RenderTargetIndex].ArraySliceIndex;
-
-		//	if (m_Device->PendingState.RenderTargets[RenderTargetIndex])
-		//	{
-		//		m_Device->PendingState.FirstNonzeroRenderTarget = (int32_t)RenderTargetIndex;
-		//	}
-		//}
-
-		//Texture* NewDepthStencilRT = static_cast<Texture*>(framebuffer->getDesc().depthAttachment.texture);
-
-		//m_Device->PendingState.DepthStencil = NewDepthStencilRT;
-		//m_Device->PendingState.StencilStoreAction = framebuffer->getDesc().depthAttachment.texture ? framebuffer->getDesc().depthAttachment.texture->GetStencilStoreAction() : ERenderTargetStoreAction::ENoAction;
-		//m_Device->PendingState.DepthTargetWidth = NewDepthStencilRT ? NewDepthStencilRT->getDesc().width : 0u;
-		//m_Device->PendingState.DepthTargetHeight = NewDepthStencilRT ? NewDepthStencilRT->getDesc().height : 0u;
-
-		//if (m_Device->PendingState.FirstNonzeroRenderTarget == -1 && !m_Device->PendingState.DepthStencil)
-		//{
-		//	// Special case - invalid setup, but sometimes performed by the engine
-
-		//	m_Device->PendingState.Framebuffer = 0;
-		//	m_Device->PendingState.bFramebufferSetupInvalid = true;
-		//	return;
-		//}
-
-		//m_Device->PendingState.Framebuffer = static_cast<Framebuffer*>(framebuffer.Get())->GetRenderID(); //_getOpenGLFramebuffer(NumSimultaneousRenderTargets, m_Device->PendingState.RenderTargets, m_Device->PendingState.RenderTargetArrayIndex, m_Device->PendingState.RenderTargetMipmapLevels, m_Device->PendingState.DepthStencil, m_Device->PendingState.NumRenderingSamples);
-		//m_Device->PendingState.bFramebufferSetupInvalid = false;
-
-		//if (m_Device->PendingState.FirstNonzeroRenderTarget != -1)
-		//{
-		//	// Set viewport size to new render target size.
-		//	m_Device->PendingState.Viewport.minX = 0;
-		//	m_Device->PendingState.Viewport.minY = 0;
-
-		//	const TextureDesc& Desc = NewRenderTargetsRHI[m_Device->PendingState.FirstNonzeroRenderTarget].Texture->getDesc();
-
-		//	uint32_t MipIndex = NewRenderTargetsRHI[m_Device->PendingState.FirstNonzeroRenderTarget].MipIndex;
-		//	uint32_t Width = math::max<uint32_t>(1, Desc.width >> MipIndex);
-		//	uint32_t Height = math::max<uint32_t>(1, Desc.height >> MipIndex);
-
-		//	m_Device->PendingState.Viewport.maxX = m_Device->PendingState.RenderTargetWidth = Width;
-		//	m_Device->PendingState.Viewport.maxY = m_Device->PendingState.RenderTargetHeight = Height;
-		//}
-		//else if (NewDepthStencilTargetRHI)
-		//{
-		//	// Set viewport size to new depth target size.
-		//	m_Device->PendingState.Viewport.minX = 0;
-		//	m_Device->PendingState.Viewport.minY = 0;
-		//	m_Device->PendingState.Viewport.maxX = NewDepthStencilTargetRHI->Texture->getDesc().width;
-		//	m_Device->PendingState.Viewport.maxY = NewDepthStencilTargetRHI->Texture->getDesc().height;
-		//}
-	}
-	void CommandList::_setRenderTargetsAndClear(const FRHISetRenderTargetsInfo& RenderTargetsInfo)
-	{
-		this->_setRenderTargets(RenderTargetsInfo.NumColorRenderTargets,
-			RenderTargetsInfo.ColorRenderTarget,
-			&RenderTargetsInfo.DepthStencilRenderTarget);
-
-		/**
-		 * Convert all load action from NoAction to Clear for tiled GPU on OpenGL platform to avoid an unnecessary load action.
-		 */
-		GE_ERROR_JUDGE();
-
-		bool bIsTiledGPU = hasTiledGPU();
-
-		bool bClearColor = RenderTargetsInfo.bClearColor;
-		bool bClearStencil = RenderTargetsInfo.bClearStencil;
-		bool bClearDepth = RenderTargetsInfo.bClearDepth;
-
-		Color ClearColors[c_MaxRenderTargets];
-		float DepthClear = 1.0;
-		uint32_t StencilClear = 1;
-		//TODO::
-		for (int32_t i = 0; i < RenderTargetsInfo.NumColorRenderTargets; ++i)
-		{
-			if (RenderTargetsInfo.ColorRenderTarget[i].Texture != nullptr)
-			{
-				//const FClearValueBinding& ClearValue = RenderTargetsInfo.ColorRenderTarget[i].Texture->GetClearBinding();
-
-				if (bIsTiledGPU)
-				{
-					bClearColor |= RenderTargetsInfo.ColorRenderTarget[i].LoadAction == ERenderTargetLoadAction::ENoAction;
-
-					ClearColors[i] = Color(0.0f, 0.0f, 0.0f, 1.0f);// ClearValue.ColorBinding == EClearBinding::EColorBound ? ClearValue.GetClearColor() : FLinearColor::Black;
-				}
-				else if (bClearColor)
-				{
-					//checkf(ClearValue.ColorBinding == EClearBinding::EColorBound, TEXT("Texture: %s does not have a color bound for fast clears"), *RenderTargetsInfo.ColorRenderTarget[i].Texture->GetName().GetPlainNameString());
-
-					ClearColors[i] = Color(0.0f, 0.0f , 0.0f ,1.0f);// ClearValue.GetClearColor();
-				}
-			}
-		}
-
-		if (RenderTargetsInfo.DepthStencilRenderTarget.Texture != nullptr)
-		{
-			//const FClearValueBinding& ClearValue = RenderTargetsInfo.DepthStencilRenderTarget.Texture->GetClearBinding();
-
-			if (bIsTiledGPU)
-			{
-				bClearStencil |= RenderTargetsInfo.DepthStencilRenderTarget.StencilLoadAction == ERenderTargetLoadAction::ENoAction;
-
-				bClearDepth |= RenderTargetsInfo.DepthStencilRenderTarget.DepthLoadAction == ERenderTargetLoadAction::ENoAction;
-
-				/*if (ClearValue.ColorBinding == EClearBinding::EDepthStencilBound)
-				{
-					ClearValue.GetDepthStencil(DepthClear, StencilClear);
-				}*/
-			}
-			else if (bClearDepth || bClearStencil)
-			{
-				//checkf(ClearValue.ColorBinding == EClearBinding::EDepthStencilBound, TEXT("Texture: %s does not have a DS value bound for fast clears"), *RenderTargetsInfo.DepthStencilRenderTarget.Texture->GetName().GetPlainNameString());
-
-				//ClearValue.GetDepthStencil(DepthClear, StencilClear);
-			}
-		}
-
-		if (bClearColor || bClearStencil || bClearDepth)
-		{
-			this->clearMRT(bClearColor, RenderTargetsInfo.NumColorRenderTargets, ClearColors, bClearDepth, DepthClear, bClearStencil, StencilClear);
-		}
-	}
 	void CommandList::beginDrawingViewport(RHIViewport* viewport, ITexture* renderTarget)
 	{
 		OpenGLViewport* Viewport = static_cast<OpenGLViewport*>(viewport);
-
-		//SCOPE_CYCLE_COUNTER(STAT_OpenGLPresentTime);
 
 		GE_ASSERT(!m_Device->DrawingViewport, "DrawingViewport is not nullptr");
 		m_Device->DrawingViewport = Viewport;
@@ -582,7 +409,6 @@ namespace BlackPearl {
 		if (CurrentContext != CONTEXT_Rendering)
 		{
 			GE_ASSERT(CurrentContext == CONTEXT_Shared, "invalid current context");
-			//check(!bIsRenderingContextAcquired || !GUseThreadedRendering);
 
 			m_Device->bRevertToSharedContextAfterDrawingViewport = true;
 			PlatformRenderingContextSetup(m_Device->m_Context->PlatformDevice);
@@ -592,12 +418,12 @@ namespace BlackPearl {
 		if (renderTarget)
 		{
 			FRHIRenderTargetView RTV(renderTarget, ERenderTargetLoadAction::ELoad);
-			_setRenderTargets(1, &RTV, nullptr);
+			this->_setRenderTargets(1, &RTV, nullptr);
 		}
 		else
 		{
 			FRHIRenderTargetView RTV(m_Device->DrawingViewport->GetBackBuffer(), ERenderTargetLoadAction::ELoad);
-			_setRenderTargets(1, &RTV, nullptr);
+			this->_setRenderTargets(1, &RTV, nullptr);
 		}
 
 	/*	if (IsValidRef(CustomPresent))
@@ -605,8 +431,398 @@ namespace BlackPearl {
 			CustomPresent->BeginDrawing();
 		}*/
 	}
+    void CommandList::_setRenderTargetsAndClear(const FRHISetRenderTargetsInfo& RenderTargetsInfo)
+    {
+        _setRenderTargets(RenderTargetsInfo.NumColorRenderTargets,
+                          RenderTargetsInfo.ColorRenderTarget,
+                          &RenderTargetsInfo.DepthStencilRenderTarget);
 
-	// Raster operations.
+        /**
+         * Convert all load action from NoAction to Clear for tiled GPU on OpenGL platform to avoid an unnecessary load action.
+         */
+        GE_ERROR_JUDGE();
+
+        bool bIsTiledGPU = hasTiledGPU();
+
+        bool bClearColor = RenderTargetsInfo.bClearColor;
+        bool bClearStencil = RenderTargetsInfo.bClearStencil;
+        bool bClearDepth = RenderTargetsInfo.bClearDepth;
+
+        Color ClearColors[c_MaxRenderTargets];
+        float DepthClear = 1.0;
+        uint32_t StencilClear = 1;
+        //TODO::
+        for (int32_t i = 0; i < RenderTargetsInfo.NumColorRenderTargets; ++i)
+        {
+            if (RenderTargetsInfo.ColorRenderTarget[i].Texture != nullptr)
+            {
+                //const FClearValueBinding& ClearValue = RenderTargetsInfo.ColorRenderTarget[i].Texture->GetClearBinding();
+
+                if (bIsTiledGPU)
+                {
+                    bClearColor |= RenderTargetsInfo.ColorRenderTarget[i].LoadAction == ERenderTargetLoadAction::ENoAction;
+
+                    ClearColors[i] = Color(0.0f, 0.0f, 0.0f, 1.0f);// ClearValue.ColorBinding == EClearBinding::EColorBound ? ClearValue.GetClearColor() : FLinearColor::Black;
+                }
+                else if (bClearColor)
+                {
+                    //checkf(ClearValue.ColorBinding == EClearBinding::EColorBound, TEXT("Texture: %s does not have a color bound for fast clears"), *RenderTargetsInfo.ColorRenderTarget[i].Texture->GetName().GetPlainNameString());
+
+                    ClearColors[i] = Color(0.0f, 0.0f, 0.0f, 1.0f);// ClearValue.GetClearColor();
+                }
+            }
+        }
+
+        if (RenderTargetsInfo.DepthStencilRenderTarget.Texture != nullptr)
+        {
+            //const FClearValueBinding& ClearValue = RenderTargetsInfo.DepthStencilRenderTarget.Texture->GetClearBinding();
+
+            if (bIsTiledGPU)
+            {
+                bClearStencil |= RenderTargetsInfo.DepthStencilRenderTarget.StencilLoadAction == ERenderTargetLoadAction::ENoAction;
+
+                bClearDepth |= RenderTargetsInfo.DepthStencilRenderTarget.DepthLoadAction == ERenderTargetLoadAction::ENoAction;
+
+                /*if (ClearValue.ColorBinding == EClearBinding::EDepthStencilBound)
+                {
+                    ClearValue.GetDepthStencil(DepthClear, StencilClear);
+                }*/
+            }
+            else if (bClearDepth || bClearStencil)
+            {
+                //checkf(ClearValue.ColorBinding == EClearBinding::EDepthStencilBound, TEXT("Texture: %s does not have a DS value bound for fast clears"), *RenderTargetsInfo.DepthStencilRenderTarget.Texture->GetName().GetPlainNameString());
+
+                //ClearValue.GetDepthStencil(DepthClear, StencilClear);
+            }
+        }
+
+        if (bClearColor || bClearStencil || bClearDepth)
+        {
+            clearMRT(bClearColor, RenderTargetsInfo.NumColorRenderTargets, ClearColors, bClearDepth, DepthClear, bClearStencil, StencilClear);
+        }
+    }
+
+    GLuint CommandList::_getOpenGLFramebuffer(uint32_t NumSimultaneousRenderTargets, Texture** RenderTargets, const uint32_t* ArrayIndices, const uint32_t* MipmapLevels, Texture* DepthStencilTarget)
+    {
+        const int32_t NumRenderingSamples = 1;
+        return _getOpenGLFramebuffer(NumSimultaneousRenderTargets, RenderTargets, ArrayIndices, MipmapLevels, DepthStencilTarget, NumRenderingSamples);
+    }
+
+    GLuint CommandList::_getOpenGLFramebuffer(uint32_t NumSimultaneousRenderTargets, Texture** RenderTargets, const uint32_t* ArrayIndices, const uint32_t* MipmapLevels, Texture* DepthStencilTarget, int32_t NumRenderingSamples)
+    {
+        const bool bRenderTargetsDefined = (RenderTargets != nullptr) && RenderTargets[0];
+
+        uint32_t FramebufferRet = FOpenGLFramebufferCache::Get().Find(FOpenGLFramebufferKey(NumSimultaneousRenderTargets, RenderTargets, ArrayIndices, MipmapLevels, DepthStencilTarget, NumRenderingSamples, PlatformOpenGLCurrentContext(m_Device->m_Context->PlatformDevice)));
+
+        if (FramebufferRet > 0)
+        {
+            // Found and is valid. We never store zero as a result, increasing all results by 1 to avoid range overlap.
+            return FramebufferRet - 1;
+        }
+
+        // Check for rendering to screen back buffer.
+        if (NumSimultaneousRenderTargets > 0 && bRenderTargetsDefined && RenderTargets[0]->GetRendererID() == GL_NONE)
+        {
+            // Use the default framebuffer (screen back/depth buffer)
+            return GL_NONE;
+        }
+        //GE_ERROR_JUDGE_EGL();
+
+        GE_ERROR_JUDGE();
+        // Not found. Preparing new one.
+        GLuint Framebuffer;
+        glGenFramebuffers(1, &Framebuffer);
+        GE_ERROR_JUDGE();
+
+        //VERIFY_GL(glGenFramebuffer)
+        glBindFramebuffer(GL_FRAMEBUFFER, Framebuffer);
+        //VERIFY_GL(glBindFramebuffer)
+        GE_ERROR_JUDGE();
+
+        static const bool CVarMobileMultiView = Configuration::MobileMultiView;
+
+        // Allocate mobile multi-view frame buffer if enabled and supported.
+        // Multi-view doesn't support read buffers, explicitly disable and only bind GL_DRAW_FRAMEBUFFER
+        // TODO: We can't reliably use packed depth stencil?
+        const bool bValidMultiViewDepthTarget = !DepthStencilTarget || DepthStencilTarget->getDesc().dimension == TextureDimension::Texture2DArray;
+        const bool bUsingArrayTextures = (bRenderTargetsDefined) ? (RenderTargets[0]->getDesc().dimension == TextureDimension::Texture2DArray && bValidMultiViewDepthTarget) : false;
+        const bool bMultiViewCVar = CVarMobileMultiView;
+
+        if (bUsingArrayTextures && FOpenGL::SupportsMobileMultiView() && bMultiViewCVar)
+        {
+            Texture* const RenderTarget = RenderTargets[0];
+            glBindFramebuffer(GL_FRAMEBUFFER, 0);
+            glBindFramebuffer(GL_DRAW_FRAMEBUFFER, Framebuffer);
+
+            if (NumRenderingSamples > 1)
+            {
+                FOpenGL::FramebufferTextureMultisampleMultiviewOVR(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, RenderTarget->GetRendererID(), 0, NumRenderingSamples, 0, 2);
+                //VERIFY_GL(glFramebufferTextureMultisampleMultiviewOVR);
+                GE_ERROR_JUDGE();
+
+                if (DepthStencilTarget)
+                {
+                    FOpenGL::FramebufferTextureMultisampleMultiviewOVR(GL_DRAW_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, DepthStencilTarget->GetRendererID(), 0, NumRenderingSamples, 0, 2);
+                    //VERIFY_GL(glFramebufferTextureMultisampleMultiviewOVR);
+                }
+            }
+            else
+            {
+                FOpenGL::FramebufferTextureMultiviewOVR(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, RenderTarget->GetRendererID(), 0, 0, 2);
+                //VERIFY_GL(glFramebufferTextureMultiviewOVR);
+
+                if (DepthStencilTarget)
+                {
+                    FOpenGL::FramebufferTextureMultiviewOVR(GL_DRAW_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, DepthStencilTarget->GetRendererID(), 0, 0, 2);
+                    //VERIFY_GL(glFramebufferTextureMultiviewOVR);
+                }
+            }
+            GE_ERROR_JUDGE();
+
+            FOpenGL::CheckFrameBuffer();
+            GE_ERROR_JUDGE();
+
+            FOpenGL::ReadBuffer(GL_NONE);
+            FOpenGL::DrawBuffer(GL_COLOR_ATTACHMENT0);
+            GE_ERROR_JUDGE();
+
+            FOpenGLFramebufferCache::Get().Add(FOpenGLFramebufferKey(NumSimultaneousRenderTargets, RenderTargets, ArrayIndices, MipmapLevels, DepthStencilTarget, NumRenderingSamples, PlatformOpenGLCurrentContext(m_Device->m_Context->PlatformDevice)), Framebuffer+1);
+
+            return Framebuffer;
+        }
+        int32_t FirstNonzeroRenderTarget = -1;
+        for (int32_t RenderTargetIndex = NumSimultaneousRenderTargets - 1; RenderTargetIndex >= 0 && bRenderTargetsDefined; --RenderTargetIndex)
+        {
+            Texture* RenderTarget = RenderTargets[RenderTargetIndex];
+            if (!RenderTarget)
+            {
+                continue;
+            }
+
+            if (ArrayIndices == NULL || ArrayIndices[RenderTargetIndex] == -1)
+            {
+                // If no index was specified, bind the entire object, rather than a slice
+                GLenum dim = OpenGLUtil::convertTextureDimension(RenderTarget->getDesc().dimension);
+                switch (dim)
+                {
+                    case GL_RENDERBUFFER:
+                    {
+                        //todo:: renderbuffer 分开处理
+                        // lazily allocate render buffer storage in case it's multisampled
+                        ConditionallyAllocateRenderbufferStorage(*RenderTarget);
+                        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + RenderTargetIndex, GL_RENDERBUFFER, RenderTarget->GetRendererID());
+                        break;
+                    }
+                    case GL_TEXTURE_2D:
+                    case GL_TEXTURE_EXTERNAL_OES:
+                    case GL_TEXTURE_2D_MULTISAMPLE:
+                    {
+                        if (NumRenderingSamples > 1)
+                        {
+                            // GL_EXT_multisampled_render_to_texture
+                            FOpenGL::FramebufferTexture2DMultisample(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + RenderTargetIndex, dim, RenderTarget->GetRendererID(), MipmapLevels[RenderTargetIndex], NumRenderingSamples);
+                        }
+                        else
+                        {
+                            FOpenGL::FramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + RenderTargetIndex, dim, RenderTarget->GetRendererID(), MipmapLevels[RenderTargetIndex]);
+                        }
+                        break;
+                    }
+                    case GL_TEXTURE_3D:
+                    case GL_TEXTURE_2D_ARRAY:
+                    case GL_TEXTURE_CUBE_MAP:
+                    case GL_TEXTURE_CUBE_MAP_ARRAY:
+                        FOpenGL::FramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + RenderTargetIndex, RenderTarget->GetRendererID(), MipmapLevels[RenderTargetIndex]);
+                        break;
+                    default:
+                        FOpenGL::FramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + RenderTargetIndex, GL_RENDERBUFFER, RenderTarget->GetRendererID());
+                        break;
+                }
+            }
+            else
+            {
+                GLenum dim = OpenGLUtil::convertTextureDimension(RenderTarget->getDesc().dimension);
+
+                // Bind just one slice of the object
+                switch (dim)
+                {
+                    case GL_RENDERBUFFER:
+                    {
+                        assert(ArrayIndices[RenderTargetIndex] == 0);
+                        // lazily allocate render buffer storage in case it's multisampled
+                        ConditionallyAllocateRenderbufferStorage(*RenderTarget);
+                        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + RenderTargetIndex, GL_RENDERBUFFER, RenderTarget->GetRendererID());
+                        break;
+                    }
+                    case GL_TEXTURE_2D:
+                    case GL_TEXTURE_EXTERNAL_OES:
+                    case GL_TEXTURE_2D_MULTISAMPLE:
+                    {
+                        assert(ArrayIndices[RenderTargetIndex] == 0);
+                        if (NumRenderingSamples > 1)
+                        {
+                            // GL_EXT_multisampled_render_to_texture
+                            FOpenGL::FramebufferTexture2DMultisample(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + RenderTargetIndex, dim, RenderTarget->GetRendererID(), MipmapLevels[RenderTargetIndex], NumRenderingSamples);
+                        }
+                        else
+                        {
+                            FOpenGL::FramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + RenderTargetIndex, dim, RenderTarget->GetRendererID(), MipmapLevels[RenderTargetIndex]);
+                        }
+                        break;
+                    }
+                    case GL_TEXTURE_3D:
+                        FOpenGL::FramebufferTexture3D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + RenderTargetIndex, dim, RenderTarget->GetRendererID(), MipmapLevels[RenderTargetIndex], ArrayIndices[RenderTargetIndex]);
+                        break;
+                    case GL_TEXTURE_CUBE_MAP:
+                        assert(ArrayIndices[RenderTargetIndex] < 6);
+                        FOpenGL::FramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + RenderTargetIndex, GL_TEXTURE_CUBE_MAP_POSITIVE_X + ArrayIndices[RenderTargetIndex], RenderTarget->GetRendererID(), MipmapLevels[RenderTargetIndex]);
+                        break;
+                    case GL_TEXTURE_2D_ARRAY:
+                    case GL_TEXTURE_CUBE_MAP_ARRAY:
+                        FOpenGL::FramebufferTextureLayer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + RenderTargetIndex, RenderTarget->GetRendererID(), MipmapLevels[RenderTargetIndex], ArrayIndices[RenderTargetIndex]);
+                        break;
+                    default:
+                        assert(ArrayIndices[RenderTargetIndex] == 0);
+                        FOpenGL::FramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + RenderTargetIndex, GL_RENDERBUFFER, RenderTarget->GetRendererID());
+                        break;
+                }
+            }
+            FirstNonzeroRenderTarget = RenderTargetIndex;
+        }
+
+        if (DepthStencilTarget)
+        {
+            GLenum dim = OpenGLUtil::convertTextureDimension(DepthStencilTarget->getDesc().dimension);
+
+            switch (dim)
+            {
+                case GL_TEXTURE_2D:
+                case GL_TEXTURE_EXTERNAL_OES:
+                case GL_TEXTURE_2D_MULTISAMPLE:
+                {
+                    FOpenGL::FramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, dim, DepthStencilTarget->GetRendererID(), 0);
+                    //				FOpenGL::FramebufferTexture2D(GL_FRAMEBUFFER, DepthStencilTarget->Attachment, dim, DepthStencilTarget->GetRendererID(), 0);
+
+                    break;
+                }
+                case GL_RENDERBUFFER:
+                {
+                    // lazily allocate render buffer storage in case it's multisampled
+                    ConditionallyAllocateRenderbufferStorage(*DepthStencilTarget);
+                    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, DepthStencilTarget->GetRendererID());
+                    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_RENDERBUFFER, DepthStencilTarget->GetRendererID());
+                    //VERIFY_GL(glFramebufferRenderbuffer);
+                    break;
+                }
+                case GL_TEXTURE_3D:
+                case GL_TEXTURE_2D_ARRAY:
+                case GL_TEXTURE_CUBE_MAP:
+                case GL_TEXTURE_CUBE_MAP_ARRAY:
+                    //TODO::
+                    //FOpenGL::FramebufferTexture(GL_FRAMEBUFFER, DepthStencilTarget->Attachment, DepthStencilTarget->GetRendererID(), 0);
+                    break;
+                default:
+                    //FOpenGL::FramebufferRenderbuffer(GL_FRAMEBUFFER, DepthStencilTarget->Attachment, GL_RENDERBUFFER, DepthStencilTarget->GetRendererID());
+                    break;
+            }
+        }
+
+        if (FirstNonzeroRenderTarget != -1)
+        {
+            FOpenGL::ReadBuffer(GL_COLOR_ATTACHMENT0 + FirstNonzeroRenderTarget);
+            FOpenGL::DrawBuffer(GL_COLOR_ATTACHMENT0 + FirstNonzeroRenderTarget);
+        }
+        else
+        {
+            FOpenGL::ReadBuffer(GL_NONE);
+            FOpenGL::DrawBuffer(GL_NONE);
+        }
+
+        //  End frame can bind NULL / NULL
+        //  An FBO with no attachments is framebuffer incomplete (INCOMPLETE_MISSING_ATTACHMENT)
+        //  In this case just delete the FBO and map in the default
+        //  In GL 4.x, NULL/NULL is valid and can be done =by specifying a default width/height
+        if (FirstNonzeroRenderTarget == -1 && !DepthStencilTarget)
+        {
+            glDeleteFramebuffers(1, &Framebuffer);
+            Framebuffer = 0;
+            glBindFramebuffer(GL_FRAMEBUFFER, Framebuffer);
+        }
+
+        FOpenGL::CheckFrameBuffer();
+
+        FOpenGLFramebufferCache::Get().Add(FOpenGLFramebufferKey(NumSimultaneousRenderTargets, RenderTargets, ArrayIndices, MipmapLevels, DepthStencilTarget, NumRenderingSamples, PlatformOpenGLCurrentContext(m_Device->m_Context->PlatformDevice)), Framebuffer+1);
+
+        return Framebuffer;
+    }
+
+    void CommandList::_setRenderTargets(uint32_t NumSimultaneousRenderTargets, const FRHIRenderTargetView* NewRenderTargetsRHI, const FRHIDepthRenderTargetView* NewDepthStencilTargetRHI)
+    {
+        assert(NumSimultaneousRenderTargets <= c_MaxRenderTargets);
+
+        FMemory::Memset(m_Device->PendingState.RenderTargets, 0, sizeof(m_Device->PendingState.RenderTargets));
+        FMemory::Memset(m_Device->PendingState.RenderTargetMipmapLevels, 0, sizeof(m_Device->PendingState.RenderTargetMipmapLevels));
+        FMemory::Memset(m_Device->PendingState.RenderTargetArrayIndex, 0, sizeof(m_Device->PendingState.RenderTargetArrayIndex));
+        m_Device->PendingState.FirstNonzeroRenderTarget = -1;
+        m_Device->PendingState.NumColorRenderTargets = NumSimultaneousRenderTargets;
+        for (int32_t RenderTargetIndex = NumSimultaneousRenderTargets - 1; RenderTargetIndex >= 0; --RenderTargetIndex)
+        {
+            m_Device->PendingState.RenderTargets[RenderTargetIndex] = static_cast<Texture*>(NewRenderTargetsRHI[RenderTargetIndex].Texture);
+            m_Device->PendingState.RenderTargetMipmapLevels[RenderTargetIndex] = NewRenderTargetsRHI[RenderTargetIndex].MipIndex;
+            m_Device->PendingState.RenderTargetArrayIndex[RenderTargetIndex] = NewRenderTargetsRHI[RenderTargetIndex].ArraySliceIndex;
+
+            if (m_Device->PendingState.RenderTargets[RenderTargetIndex])
+            {
+                m_Device->PendingState.FirstNonzeroRenderTarget = (int32_t)RenderTargetIndex;
+            }
+        }
+
+        Texture* NewDepthStencilRT = static_cast<Texture*>(NewDepthStencilTargetRHI ? NewDepthStencilTargetRHI->Texture : nullptr);
+
+        m_Device->PendingState.DepthStencil = NewDepthStencilRT;
+        m_Device->PendingState.StencilStoreAction = NewDepthStencilTargetRHI ? NewDepthStencilTargetRHI->GetStencilStoreAction() : ERenderTargetStoreAction::ENoAction;
+        m_Device->PendingState.DepthTargetWidth = NewDepthStencilRT ? NewDepthStencilRT->getDesc().width : 0u;
+        m_Device->PendingState.DepthTargetHeight = NewDepthStencilRT ? NewDepthStencilRT->getDesc().height : 0u;
+
+        if (m_Device->PendingState.FirstNonzeroRenderTarget == -1 && !m_Device->PendingState.DepthStencil)
+        {
+            // Special case - invalid setup, but sometimes performed by the engine
+
+            m_Device->PendingState.Framebuffer = 0;
+            m_Device->PendingState.bFramebufferSetupInvalid = true;
+            return;
+        }
+
+        m_Device->PendingState.Framebuffer = _getOpenGLFramebuffer(NumSimultaneousRenderTargets, m_Device->PendingState.RenderTargets, m_Device->PendingState.RenderTargetArrayIndex, m_Device->PendingState.RenderTargetMipmapLevels, m_Device->PendingState.DepthStencil, m_Device->PendingState.NumRenderingSamples);
+        m_Device->PendingState.bFramebufferSetupInvalid = false;
+
+        if (m_Device->PendingState.FirstNonzeroRenderTarget != -1)
+        {
+            // Set viewport size to new render target size.
+            m_Device->PendingState.Viewport.minX = 0;
+            m_Device->PendingState.Viewport.minY = 0;
+
+            const TextureDesc& Desc = NewRenderTargetsRHI[m_Device->PendingState.FirstNonzeroRenderTarget].Texture->getDesc();
+
+            uint32_t MipIndex = NewRenderTargetsRHI[m_Device->PendingState.FirstNonzeroRenderTarget].MipIndex;
+            uint32_t Width = math::max<uint32_t>(1, Desc.width >> MipIndex);
+            uint32_t Height = math::max<uint32_t>(1, Desc.height >> MipIndex);
+
+            m_Device->PendingState.Viewport.maxX = m_Device->PendingState.RenderTargetWidth = Width;
+            m_Device->PendingState.Viewport.maxY = m_Device->PendingState.RenderTargetHeight = Height;
+        }
+        else if (NewDepthStencilTargetRHI)
+        {
+            // Set viewport size to new depth target size.
+            m_Device->PendingState.Viewport.minX = 0;
+            m_Device->PendingState.Viewport.minY = 0;
+            m_Device->PendingState.Viewport.maxX = NewDepthStencilTargetRHI->Texture->getDesc().width;
+            m_Device->PendingState.Viewport.maxY = NewDepthStencilTargetRHI->Texture->getDesc().height;
+        }
+    }
+
+
+    // Raster operations.
 	static inline void ClearCurrentDepthStencilWithCurrentScissor(int8_t ClearType, float Depth, uint32_t Stencil)
 	{
 		switch (ClearType)
@@ -632,6 +848,7 @@ namespace BlackPearl {
 	void CommandList::_clearCurrentFramebufferWithCurrentScissor(FOpenGLContextState& ContextState, int8_t ClearType, int32_t NumClearColors, const Color* ClearColorArray, float Depth, uint32_t Stencil)
 	{
 		//VERIFY_GL_SCOPE();
+        GE_ERROR_JUDGE();
 
 		// Clear color buffers
 		if (ClearType & CT_Color)
@@ -830,273 +1047,8 @@ namespace BlackPearl {
 
 	}
 
-	static void ConditionallyAllocateRenderbufferStorage(Texture& RenderTarget)
-	{
-		/*if (RenderTarget.bMultisampleRenderbuffer &&
-			RenderTarget.GetAllocatedStorageForMip(0, 0) == false)
-		{
-			check(RenderTarget.IsMultisampled());
-			check(RenderTarget.Target == GL_RENDERBUFFER);
 
-			GLuint TextureID = RenderTarget.GetRawResourceName();
-			const FRHITextureDesc& Desc = RenderTarget.GetDesc();
-			const FOpenGLTextureFormat& GLFormat = GOpenGLTextureFormats[Desc.Format];
-			const bool bSRGB = EnumHasAnyFlags(Desc.Flags, TexCreate_SRGB);
-
-			glBindRenderbuffer(GL_RENDERBUFFER, TextureID);
-			FOpenGL::RenderbufferStorageMultisample(GL_RENDERBUFFER, Desc.NumSamples, GLFormat.InternalFormat[bSRGB], Desc.Extent.X, Desc.Extent.Y);
-			glBindRenderbuffer(GL_RENDERBUFFER, 0);
-
-			RenderTarget.SetAllocatedStorage(true);*/
-		//}
-	}
-	
-	GLuint CommandList::_getOpenGLFramebuffer(uint32_t NumSimultaneousRenderTargets, Texture** RenderTargets, const uint32_t* ArrayIndices, const uint32_t* MipmapLevels, Texture* DepthStencilTarget)
-	{
-		const int32_t NumRenderingSamples = 1;
-		return _getOpenGLFramebuffer(NumSimultaneousRenderTargets, RenderTargets, ArrayIndices, MipmapLevels, DepthStencilTarget, NumRenderingSamples);
-	}
-
-	GLuint CommandList::_getOpenGLFramebuffer(uint32_t NumSimultaneousRenderTargets, Texture** RenderTargets, const uint32_t* ArrayIndices, const uint32_t* MipmapLevels, Texture* DepthStencilTarget, int32_t NumRenderingSamples)
-	{
-		const bool bRenderTargetsDefined = (RenderTargets != nullptr) && RenderTargets[0];
-
-		// Check for rendering to screen back buffer.
-		if (NumSimultaneousRenderTargets > 0 && bRenderTargetsDefined && RenderTargets[0]->GetRendererID() == GL_NONE)
-		{
-			// Use the default framebuffer (screen back/depth buffer)
-			return GL_NONE;
-		}
-        //GE_ERROR_JUDGE_EGL();
-
-        GE_ERROR_JUDGE();
-		// Not found. Preparing new one.
-		GLuint Framebuffer;
-		glGenFramebuffers(1, &Framebuffer);
-		GE_ERROR_JUDGE();
-
-		//VERIFY_GL(glGenFramebuffer)
-		glBindFramebuffer(GL_FRAMEBUFFER, Framebuffer);
-		//VERIFY_GL(glBindFramebuffer)
-		GE_ERROR_JUDGE();
-
-		static const bool CVarMobileMultiView = Configuration::MobileMultiView;
-
-		// Allocate mobile multi-view frame buffer if enabled and supported.
-		// Multi-view doesn't support read buffers, explicitly disable and only bind GL_DRAW_FRAMEBUFFER
-		// TODO: We can't reliably use packed depth stencil?
-		const bool bValidMultiViewDepthTarget = !DepthStencilTarget || DepthStencilTarget->getDesc().dimension == TextureDimension::Texture2DArray;
-		const bool bUsingArrayTextures = (bRenderTargetsDefined) ? (RenderTargets[0]->getDesc().dimension == TextureDimension::Texture2DArray && bValidMultiViewDepthTarget) : false;
-		const bool bMultiViewCVar = CVarMobileMultiView;
-
-		if (bUsingArrayTextures && FOpenGL::SupportsMobileMultiView() && bMultiViewCVar)
-		{
-			Texture* const RenderTarget = RenderTargets[0];
-			glBindFramebuffer(GL_FRAMEBUFFER, 0);
-			glBindFramebuffer(GL_DRAW_FRAMEBUFFER, Framebuffer);
-
-			if (NumRenderingSamples > 1)
-			{
-				FOpenGL::FramebufferTextureMultisampleMultiviewOVR(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, RenderTarget->GetRendererID(), 0, NumRenderingSamples, 0, 2);
-				//VERIFY_GL(glFramebufferTextureMultisampleMultiviewOVR);
-				GE_ERROR_JUDGE();
-
-				if (DepthStencilTarget)
-				{
-					FOpenGL::FramebufferTextureMultisampleMultiviewOVR(GL_DRAW_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, DepthStencilTarget->GetRendererID(), 0, NumRenderingSamples, 0, 2);
-					//VERIFY_GL(glFramebufferTextureMultisampleMultiviewOVR);
-				}
-			}
-			else
-			{
-				FOpenGL::FramebufferTextureMultiviewOVR(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, RenderTarget->GetRendererID(), 0, 0, 2);
-				//VERIFY_GL(glFramebufferTextureMultiviewOVR);
-
-				if (DepthStencilTarget)
-				{
-					FOpenGL::FramebufferTextureMultiviewOVR(GL_DRAW_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, DepthStencilTarget->GetRendererID(), 0, 0, 2);
-					//VERIFY_GL(glFramebufferTextureMultiviewOVR);
-				}
-			}
-			GE_ERROR_JUDGE();
-
-			FOpenGL::CheckFrameBuffer();
-			GE_ERROR_JUDGE();
-
-			FOpenGL::ReadBuffer(GL_NONE);
-			FOpenGL::DrawBuffer(GL_COLOR_ATTACHMENT0);
-			GE_ERROR_JUDGE();
-
-			//GetOpenGLFramebufferCache().Add(FOpenGLFramebufferKey(NumSimultaneousRenderTargets, RenderTargets, ArrayIndices, MipmapLevels, DepthStencilTarget, NumRenderingSamples, PlatformOpenGLCurrentContext(PlatformDevice)), Framebuffer + 1);
-
-			return Framebuffer;
-		}
-		int32_t FirstNonzeroRenderTarget = -1;
-		for (int32_t RenderTargetIndex = NumSimultaneousRenderTargets - 1; RenderTargetIndex >= 0 && bRenderTargetsDefined; --RenderTargetIndex)
-		{
-			Texture* RenderTarget = RenderTargets[RenderTargetIndex];
-			if (!RenderTarget)
-			{
-				continue;
-			}
-
-			if (ArrayIndices == NULL || ArrayIndices[RenderTargetIndex] == -1)
-			{
-				// If no index was specified, bind the entire object, rather than a slice
-				GLenum dim = OpenGLUtil::convertTextureDimension(RenderTarget->getDesc().dimension);
-				switch (dim)
-				{
-				case GL_RENDERBUFFER:
-				{
-					//todo:: renderbuffer 分开处理
-					// lazily allocate render buffer storage in case it's multisampled
-					ConditionallyAllocateRenderbufferStorage(*RenderTarget);
-					glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + RenderTargetIndex, GL_RENDERBUFFER, RenderTarget->GetRendererID());
-					break;
-				}
-				case GL_TEXTURE_2D:
-				case GL_TEXTURE_EXTERNAL_OES:
-				case GL_TEXTURE_2D_MULTISAMPLE:
-				{
-					if (NumRenderingSamples > 1)
-					{
-						// GL_EXT_multisampled_render_to_texture
-						FOpenGL::FramebufferTexture2DMultisample(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + RenderTargetIndex, dim, RenderTarget->GetRendererID(), MipmapLevels[RenderTargetIndex], NumRenderingSamples);
-					}
-					else
-					{
-						FOpenGL::FramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + RenderTargetIndex, dim, RenderTarget->GetRendererID(), MipmapLevels[RenderTargetIndex]);
-					}
-					break;
-				}
-				case GL_TEXTURE_3D:
-				case GL_TEXTURE_2D_ARRAY:
-				case GL_TEXTURE_CUBE_MAP:
-				case GL_TEXTURE_CUBE_MAP_ARRAY:
-					FOpenGL::FramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + RenderTargetIndex, RenderTarget->GetRendererID(), MipmapLevels[RenderTargetIndex]);
-					break;
-				default:
-					FOpenGL::FramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + RenderTargetIndex, GL_RENDERBUFFER, RenderTarget->GetRendererID());
-					break;
-				}
-			}
-			else
-			{
-				GLenum dim = OpenGLUtil::convertTextureDimension(RenderTarget->getDesc().dimension);
-
-				// Bind just one slice of the object
-				switch (dim)
-				{
-				case GL_RENDERBUFFER:
-				{
-					assert(ArrayIndices[RenderTargetIndex] == 0);
-					// lazily allocate render buffer storage in case it's multisampled
-					ConditionallyAllocateRenderbufferStorage(*RenderTarget);
-					glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + RenderTargetIndex, GL_RENDERBUFFER, RenderTarget->GetRendererID());
-					break;
-				}
-				case GL_TEXTURE_2D:
-				case GL_TEXTURE_EXTERNAL_OES:
-				case GL_TEXTURE_2D_MULTISAMPLE:
-				{
-					assert(ArrayIndices[RenderTargetIndex] == 0);
-					if (NumRenderingSamples > 1)
-					{
-						// GL_EXT_multisampled_render_to_texture
-						FOpenGL::FramebufferTexture2DMultisample(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + RenderTargetIndex, dim, RenderTarget->GetRendererID(), MipmapLevels[RenderTargetIndex], NumRenderingSamples);
-					}
-					else
-					{
-						FOpenGL::FramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + RenderTargetIndex, dim, RenderTarget->GetRendererID(), MipmapLevels[RenderTargetIndex]);
-					}
-					break;
-				}
-				case GL_TEXTURE_3D:
-					FOpenGL::FramebufferTexture3D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + RenderTargetIndex, dim, RenderTarget->GetRendererID(), MipmapLevels[RenderTargetIndex], ArrayIndices[RenderTargetIndex]);
-					break;
-				case GL_TEXTURE_CUBE_MAP:
-					assert(ArrayIndices[RenderTargetIndex] < 6);
-					FOpenGL::FramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + RenderTargetIndex, GL_TEXTURE_CUBE_MAP_POSITIVE_X + ArrayIndices[RenderTargetIndex], RenderTarget->GetRendererID(), MipmapLevels[RenderTargetIndex]);
-					break;
-				case GL_TEXTURE_2D_ARRAY:
-				case GL_TEXTURE_CUBE_MAP_ARRAY:
-					FOpenGL::FramebufferTextureLayer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + RenderTargetIndex, RenderTarget->GetRendererID(), MipmapLevels[RenderTargetIndex], ArrayIndices[RenderTargetIndex]);
-					break;
-				default:
-					assert(ArrayIndices[RenderTargetIndex] == 0);
-					FOpenGL::FramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + RenderTargetIndex, GL_RENDERBUFFER, RenderTarget->GetRendererID());
-					break;
-				}
-			}
-			FirstNonzeroRenderTarget = RenderTargetIndex;
-		}
-
-		if (DepthStencilTarget)
-		{
-			GLenum dim = OpenGLUtil::convertTextureDimension(DepthStencilTarget->getDesc().dimension);
-
-			switch (dim)
-			{
-			case GL_TEXTURE_2D:
-			case GL_TEXTURE_EXTERNAL_OES:
-			case GL_TEXTURE_2D_MULTISAMPLE:
-			{
-				FOpenGL::FramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, dim, DepthStencilTarget->GetRendererID(), 0);
-				//				FOpenGL::FramebufferTexture2D(GL_FRAMEBUFFER, DepthStencilTarget->Attachment, dim, DepthStencilTarget->GetRendererID(), 0);
-
-				break;
-			}
-			case GL_RENDERBUFFER:
-			{
-				// lazily allocate render buffer storage in case it's multisampled
-				ConditionallyAllocateRenderbufferStorage(*DepthStencilTarget);
-				glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, DepthStencilTarget->GetRendererID());
-				glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_RENDERBUFFER, DepthStencilTarget->GetRendererID());
-				//VERIFY_GL(glFramebufferRenderbuffer);
-				break;
-			}
-			case GL_TEXTURE_3D:
-			case GL_TEXTURE_2D_ARRAY:
-			case GL_TEXTURE_CUBE_MAP:
-			case GL_TEXTURE_CUBE_MAP_ARRAY:
-				//TODO::
-				//FOpenGL::FramebufferTexture(GL_FRAMEBUFFER, DepthStencilTarget->Attachment, DepthStencilTarget->GetRendererID(), 0);
-				break;
-			default:
-				//FOpenGL::FramebufferRenderbuffer(GL_FRAMEBUFFER, DepthStencilTarget->Attachment, GL_RENDERBUFFER, DepthStencilTarget->GetRendererID());
-				break;
-			}
-		}
-
-		if (FirstNonzeroRenderTarget != -1)
-		{
-			FOpenGL::ReadBuffer(GL_COLOR_ATTACHMENT0 + FirstNonzeroRenderTarget);
-			FOpenGL::DrawBuffer(GL_COLOR_ATTACHMENT0 + FirstNonzeroRenderTarget);
-		}
-		else
-		{
-			FOpenGL::ReadBuffer(GL_NONE);
-			FOpenGL::DrawBuffer(GL_NONE);
-		}
-
-		//  End frame can bind NULL / NULL 
-		//  An FBO with no attachments is framebuffer incomplete (INCOMPLETE_MISSING_ATTACHMENT)
-		//  In this case just delete the FBO and map in the default
-		//  In GL 4.x, NULL/NULL is valid and can be done =by specifying a default width/height
-		if (FirstNonzeroRenderTarget == -1 && !DepthStencilTarget)
-		{
-			glDeleteFramebuffers(1, &Framebuffer);
-			Framebuffer = 0;
-			glBindFramebuffer(GL_FRAMEBUFFER, Framebuffer);
-		}
-
-		FOpenGL::CheckFrameBuffer();
-
-		//GetOpenGLFramebufferCache().Add(FOpenGLFramebufferKey(NumSimultaneousRenderTargets, RenderTargets, ArrayIndices, MipmapLevels, DepthStencilTarget, NumRenderingSamples, PlatformOpenGLCurrentContext(PlatformDevice)), Framebuffer + 1);
-
-		return Framebuffer;
-	}
-	void CommandList::setGraphicsState(const GraphicsState& state)
+    void CommandList::setGraphicsState(const GraphicsState& state)
 	{
 		//bind uniformbuffer
 
@@ -1118,7 +1070,7 @@ namespace BlackPearl {
 		setScissorRect(true, state.viewport.scissorRects[0].minX, state.viewport.scissorRects[0].minY,
 			state.viewport.scissorRects[0].maxX, state.viewport.scissorRects[0].maxY);
 
-	
+        setSubView(state.enableSubView, state.subViewTexTarget, state.subViewMip, state.subViewTextureId);
 
 
 		setBoundShaderState(
@@ -1209,7 +1161,9 @@ namespace BlackPearl {
 		//{
 			m_Device->BindPendingFramebuffer(ContextState);
 			GE_ERROR_JUDGE();
+            m_Device->BindPendingFramebufferTextureTarget(ContextState);
 
+            GE_ERROR_JUDGE();
 			m_Device->SetPendingBlendStateForActiveRenderTargets(ContextState);
 			GE_ERROR_JUDGE();
 
@@ -1372,6 +1326,8 @@ namespace BlackPearl {
 	}
 	void CommandList::beginMarker(const char* name)
 	{
+        static int groupId = 0;
+        glPushDebugGroup(GL_DEBUG_SOURCE_APPLICATION, groupId++, -1, name);
 //		if (glCheckExtension("GL_EXT_debug_marker")) {
 //			glInsertEventMarkerEXT(0, "My Render Pass");  // 插入事件标记
 			//glPushGroupMarkerEXT(0, name);         // 开始一个调试组
@@ -1381,6 +1337,7 @@ namespace BlackPearl {
 	}
 	void CommandList::endMarker()
 	{
+        glPopDebugGroup();
 		//glPopGroupMarkerEXT();                       // 结束调试组
 	}
 	void CommandList::setEnableAutomaticBarriers(bool enable)
@@ -1449,6 +1406,19 @@ namespace BlackPearl {
 		m_Device->PendingState.Scissor.maxX = maxX;
 		m_Device->PendingState.Scissor.maxY = maxY;
 	}
+
+    void CommandList::setSubView(bool bEnable, GLenum FramebufferTextureTarget, GLint FramebufferTextureMipLevel, GLint FramebufferTextureID)
+    {
+        m_Device->PendingState.SubViewEnabled = bEnable;
+        if (bEnable) {
+            m_Device->PendingState.FramebufferTextureTarget = FramebufferTextureTarget;
+            m_Device->PendingState.FramebufferTextureMipLevel = FramebufferTextureMipLevel;
+            m_Device->PendingState.FramebufferTextureID = FramebufferTextureID;
+        }
+
+
+
+    }
 
 	bool CommandList::hasTiledGPU()
 	{

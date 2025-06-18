@@ -18,7 +18,7 @@
 #include "BlackPearl/Core/Android/AndroidPlatformMisc.h"
 #include "RHI/RHIGlobals.h"
 #include "RHI/OpenGLRHI/OpenGLViewport.h"
-
+#include "Timestep/TimeCounter.h"
 
 namespace BlackPearl {
 
@@ -250,6 +250,8 @@ namespace BlackPearl {
 //            bPresent = Viewport.GetCustomPresent()->Present(SyncInterval);
 //        }
         if (bPresent) {
+            SCOPE_TIME_COUNTER(eglSwapBuffers)
+
             AndroidEGL::GetInstance()->UpdateBuffersTransform();
             //FPlatformRHIFramePacer::SwapBuffers(bLockToVsync);
 
@@ -257,16 +259,32 @@ namespace BlackPearl {
             EGLDisplay eglDisplay = AndroidEGL::GetInstance()->GetDisplay();
             EGLSurface eglSurface = AndroidEGL::GetInstance()->GetSurface();
             //int32_t SyncInterval = FAndroidPlatformRHIFramePacer::GetLegacySyncInterval();
-            // eglSwapInterval(eglDisplay, SyncInterval);
             GE_ERROR_JUDGE_EGL();
             if (eglDisplay == EGL_NO_DISPLAY || eglSurface == EGL_NO_SURFACE) {
                 GE_CORE_WARN("EGL not initialized!");
                 return false;
             }
 
+            //glFinish();
+            if(Configuration::Vsync)
+                eglSwapInterval(eglDisplay, Configuration::SyncInterval); //default to 60fps
+            else
+                eglSwapInterval(eglDisplay, 0);
+
             eglSwapBuffers(eglDisplay, eglSurface);
-
-
+            GE_ERROR_JUDGE_EGL();
+            if (eglDisplay == EGL_NO_DISPLAY || eglSurface == EGL_NO_SURFACE) {
+                GE_CORE_ERROR("Invalid EGLDisplay or EGLSurface");
+            }
+//            const char* extensions = eglQueryString(eglDisplay, EGL_EXTENSIONS);
+//            if (!strstr(extensions, "EGL_EXT_swap_control")) {
+//                GE_CORE_ERROR("EGL_EXT_swap_control not supported!");
+//            }
+//
+//            EGLint interval = -1;
+//            eglQuerySurface(eglDisplay, eglSurface, EGL_SWAP_INTERVAL_EXT, &interval);
+            GE_ERROR_JUDGE_EGL();
+            //GE_CORE_INFO("Current swap interval: %d", interval);
         }
 //        static IConsoleVariable *CVar = IConsoleManager::Get().FindConsoleVariable(
 //                ("a.UseFrameTimeStampsForPacing"));

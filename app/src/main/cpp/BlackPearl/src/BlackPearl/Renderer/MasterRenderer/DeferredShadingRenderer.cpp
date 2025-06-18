@@ -13,6 +13,8 @@
 #include "RHI/OpenGLRHI/OpenGLDriver/OpenGLFunctions.h"
 #endif
 #include "RHI/RHIGlobals.h"
+#include "Renderer/RenderGraph/RenderGraph.h"
+#include "Timestep/TimeCounter.h"
 
 namespace BlackPearl{
     DeferredShadingRenderer::DeferredShadingRenderer(IDevice* device)
@@ -25,7 +27,7 @@ namespace BlackPearl{
         std::vector<std::string> extends;
         std::vector<std::string> macros;
 #ifdef GE_PLATFORM_ANDROID
-        if  (GSupportsPixelLocalStorage && GSupportsShaderDepthStencilFetch)
+        if  (RenderGraph::SupportPLS())
         {
             extends.push_back("#extension GL_EXT_shader_pixel_local_storage : require");
             extends.push_back("#extension GL_ARM_shader_framebuffer_fetch_depth_stencil : require");
@@ -83,39 +85,10 @@ namespace BlackPearl{
     }
     void DeferredShadingRenderer::Render(ICommandList* cmdList, IFramebuffer* targetFramebuffer, Scene* scene)
     {
+        SCOPE_TIME_COUNTER(DeferredShading);
 
-        ///* When we get here the depth buffer is already populated and the stencil pass
-        // depends on it, but it does not write to it.
-        // */
 
-        ///* following use default frameBuffer! ������Ȼ���-->ʹ�� sphere ͶӰ����άƽ�棬ֻ��sphereͶӰ���fragment�Ż��� */
-        //glDepthMask(GL_FALSE);
-        ///* disable DEPTH_TEST �����е� glClear(GL_DEPTH_BUFFER_BIT) ʧЧ */
-        //glDisable(GL_DEPTH_TEST);
-        ///* blending multiple sphere fragment */
-        //glEnable(GL_BLEND);
-        //glBlendEquation(GL_FUNC_ADD);
-        //glBlendFunc(GL_ONE, GL_ONE);
-        //m_GBuffer->UnBind();
-
-        //m_LightPassFrameBuffer->Bind();
-        //m_LightPassFrameBuffer->BindRenderBuffer();
-        //glViewport(0, 0, m_TextureWidth, m_TexxtureHeight);
-        //glClear(GL_COLOR_BUFFER_BIT);
-
-        ///* AmbientGI pass */
-        //m_AmbientGIPassShader->Bind();
-
-        //m_AmbientGIPassShader->SetUniform1i("gAmbientGI_AO", 2);
-        //glActiveTexture(GL_TEXTURE2);
-        //m_GBuffer->GetAmbientGIAOTexture()->Bind();
-
-        //m_AmbientGIPassShader->SetUniformVec2f("gScreenSize", glm::vec2(m_TextureWidth, m_TexxtureHeight));
-        //m_AmbientGIPassShader->SetUniform1f("u_Settings.GICoeffs", s_GICoeffs);
-
-        //DrawObject(m_GIQuad, m_AmbientGIPassShader);
-
-        cmdList->beginMarker("DeferredShading");
+      //  cmdList->beginMarker("DeferredShading");
         LightSources* lightSources = scene->GetLightSources();
 
         SceneData* view = Renderer::GetSceneData();
@@ -185,7 +158,7 @@ namespace BlackPearl{
         Draw(cmdList, drawItem);
 
         //cmdList->endRenderPass();
-        cmdList->endMarker();
+      //  cmdList->endMarker();
 
         
     }

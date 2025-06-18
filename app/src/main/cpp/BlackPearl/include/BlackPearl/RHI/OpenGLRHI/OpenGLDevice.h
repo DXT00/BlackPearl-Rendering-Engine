@@ -13,7 +13,7 @@
 #include "../OpenGLRHI/OpenGLDriver/OpenGLDrvPrivate.h"
 #include "BlackPearl/Core/Container/TBitArray.h"
 #include "OpenGLState.h"
-
+#include "OpenGLShaderResource.h"
 namespace BlackPearl {
 
     class OpenGLViewport;
@@ -120,6 +120,9 @@ namespace BlackPearl {
 
 		/** needs to be called before each draw call */
 		void BindPendingFramebuffer(FOpenGLContextState& ContextState);
+        /* use for cubemap*/
+        void BindPendingFramebufferTextureTarget(FOpenGLContextState& ContextState);
+
 		void UpdateRasterizerStateInOpenGLContext(FOpenGLContextState& ContextState);
 		void UpdateDepthStencilStateInOpenGLContext(FOpenGLContextState& ContextState);
 		void UpdateScissorRectInOpenGLContext(FOpenGLContextState& ContextState);
@@ -256,7 +259,7 @@ namespace BlackPearl {
 			/**
 			 * Link vertex and pixel shaders in to an OpenGL program.
 			 */
-			FOpenGLLinkedProgram* LinkProgram(Shader* vertexShader, Shader* pixelShader, Shader* geometryShader, const std::vector<IBindingSet*>& bindingSets);
+			FOpenGLLinkedProgram* LinkProgram(const FOpenGLLinkedProgramConfiguration& config, Shader* vertexShader, Shader* pixelShader, Shader* geometryShader, const std::vector<IBindingSet*>& bindingSets);
 			//void SetRenderTargets(uint32_t NumSimultaneousRenderTargets, const FRHIRenderTargetView* NewRenderTargets, const FRHIDepthRenderTargetView* NewDepthStencilTarget);
 
 			void _commitUBOs(const std::vector<std::pair<Buffer*, uint32_t>>& ubos, FOpenGLContextState& ContextState);

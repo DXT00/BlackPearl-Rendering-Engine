@@ -15,6 +15,12 @@ namespace BlackPearl {
         IGraphicsPipeline* pipeline = nullptr;
         IFramebuffer* framebuffer = nullptr;
         ViewportState viewport;
+        bool enableSubView = false;
+        uint32_t subViewId;
+        uint32_t subViewMip;
+        uint32_t subViewTexTarget;
+        uint32_t subViewTextureId;
+
         Color blendConstantColor{};
         VariableRateShadingState shadingRateState;
 

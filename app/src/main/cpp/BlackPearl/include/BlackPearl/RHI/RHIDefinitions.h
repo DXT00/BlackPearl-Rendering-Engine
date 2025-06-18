@@ -772,8 +772,7 @@ namespace BlackPearl {
     enum ShaderType : uint16_t
     {
 
-        Invalid = 0,
-        VertexShader,
+        VertexShader = 0,
         Pixel,
         Geometry,
         Hull,
@@ -798,6 +797,7 @@ namespace BlackPearl {
         AllRayTracing,
 
         All,
+        Invalid = 0xFF
     };
     NVRHI_ENUM_CLASS_FLAG_OPERATORS(ShaderType)
 

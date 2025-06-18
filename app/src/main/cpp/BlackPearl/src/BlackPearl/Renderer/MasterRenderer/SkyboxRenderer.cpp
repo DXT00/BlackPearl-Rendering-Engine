@@ -7,6 +7,7 @@
 #include "Core.h"
 #include "BlackPearl/RHI/Common/RHIUtils.h"
 #include "Timestep/SystemTime.h"
+#include "Timestep/TimeCounter.h"
 
 namespace BlackPearl {
 	extern DeviceManager* g_deviceManager;
@@ -86,11 +87,13 @@ namespace BlackPearl {
 	}
 	void SkyboxRenderer::Render(ICommandList* cmdList, IFramebuffer* targetFramebuffer, Scene* scene)
 	{
-		if (!scene->GetSkyBox()) {
+        SCOPE_TIME_COUNTER(Skybox);
+
+        if (!scene->GetSkyBox()) {
 			GE_CORE_WARN("no skybox found");
 			return;
 		}
-		cmdList->beginMarker("SkyPass");
+		//cmdList->beginMarker("SkyPass");
 
 		/*FRHIRenderPassInfo RPInfo(targetFramebuffer->getDesc().colorAttachments[0].texture, ERenderTargetActions::Clear_Store);
 		cmdList->beginRenderPass(RPInfo, "SkyPass");*/
@@ -181,7 +184,7 @@ namespace BlackPearl {
 		Draw(cmdList, drawItem);
 
 		//cmdList->endRenderPass();
-		cmdList->endMarker();
+		//cmdList->endMarker();
 	}
 	
 	

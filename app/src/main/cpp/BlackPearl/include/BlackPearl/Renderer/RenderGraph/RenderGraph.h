@@ -44,9 +44,9 @@ namespace BlackPearl {
         [[nodiscard]] uint32_t GetFrameIndex() const { return m_DeviceManager->GetFrameIndex(); }
 
         //如果支持, 优先使用 single pass
-        bool SupportSinglePass(bool msaaSample);
+        static bool SupportSinglePass(bool msaaSample);
         //如果支持, 优先使用 PLS
-        bool SupportPLS();
+        static bool SupportPLS();
 
     protected:
         DeviceManager* m_DeviceManager = nullptr;

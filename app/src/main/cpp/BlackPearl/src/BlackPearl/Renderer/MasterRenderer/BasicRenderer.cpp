@@ -27,7 +27,7 @@
 #include "hlsl/core/slot_cb.h"
 
 #include "BlackPearl/RHI/Common/RHIUtils.h"
-
+#include "Timestep/TimeCounter.h"
 namespace BlackPearl {
 	extern ShaderFactory* g_shaderFactory;
 
@@ -940,9 +940,11 @@ namespace BlackPearl {
 
     }
 
-	void BasicRenderer::SetupView(ICommandList* commandList, const IView* view, const IView* viewPrev)
+	void BasicRenderer::SetupView(ICommandList* commandList, IView* view, IView* viewPrev)
 	{
+
 		// auto& context = static_cast<Context&>(abstractContext);
+        SCOPE_TIME_COUNTER(Gbuffer_SetupView)
 
 		ForwardShadingViewConstants viewConstants = {};
 		view->FillPlanarViewConstants(viewConstants);
@@ -952,14 +954,23 @@ namespace BlackPearl {
 		/*  context.keyTemplate.bits.frontCounterClockwise = view->IsMirrored();
 		  context.keyTemplate.bits.reverseDepth = view->IsReverseDepth();*/
 
+        bool isSubview = static_cast<SceneData*>(view) == nullptr ? false : static_cast<SceneData*>(view)->bIsSubview;
 
+        //SceneData* subview = static_cast<SceneData*>(view);
+        //graphicsPSO.subViewId = subview->subViewId;
+        //graphicsPSO.subViewMip = subview->subViewMip;
+        //graphicsPSO.subViewTexTarget = subview->subViewTexTarget;
+        //graphicsPSO.subViewTextureId = subview->subViewTextureId;
+        //commandList->setSubView(isSubview,)
 	}
 
 	void BasicRenderer::RenderPassTemplate(ICommandList* cmdList, IFramebuffer* framebuffer, IView* view, IDrawStrategy* drawStrategy, const ShaderParameters* shaderParms)
 	{
+        SCOPE_TIME_COUNTER(Gbuffer_RenderPassTemplate)
 
 		int id = 0;
         GE_ERROR_JUDGE();
+        //一个subview 可以画多个obj
 		for (const auto& item : drawStrategy->GetDrawItems()) {
 			/*if (id > 0)
 				break;*/
@@ -971,11 +982,22 @@ namespace BlackPearl {
 			graphicsPSO.framebuffer = framebuffer;
 			graphicsPSO.viewport = view->GetViewportState();
 			graphicsPSO.shadingRateState = view->GetVariableRateShadingState();
+            graphicsPSO.enableSubView = static_cast<SceneData*>(view) == nullptr ? false : static_cast<SceneData*>(view)->bIsSubview;
+            if (graphicsPSO.enableSubView) {
+                SceneData* subview = static_cast<SceneData*>(view);
+                graphicsPSO.subViewId = subview->subViewId;
+                graphicsPSO.subViewMip = subview->subViewMip;
+                graphicsPSO.subViewTexTarget = subview->subViewTexTarget;
+                graphicsPSO.subViewTextureId = subview->subViewTextureId;
+            }
+
+
+
 
 			GraphicsPipelineDesc psoDesc;
 			psoDesc.depthStencilState.enableDepthTest();
 			psoDesc.depthStencilState.enableDepthWrite();
-			psoDesc.depthStencilState.setDepthFunc(ComparisonFunc::LessOrEqual);
+			psoDesc.depthStencilState.setDepthFunc(ComparisonFunc::Less);
            
 			psoDesc.blendState.alphaToCoverageEnable = false;
 			psoDesc.rasterState.frontCounterClockwise = true;
@@ -1000,7 +1022,6 @@ namespace BlackPearl {
             SetupMaterial(item.material, item.cullMode, psoDesc, graphicsPSO);
 			GE_ERROR_JUDGE();
             SetupInputBuffers(cmdList, const_cast<BufferGroup*>(item.buffers), item.transform, graphicsPSO);
-
 
 			//TODO::GetAndOrCreateGraphicsPipelineState
 		   // SetGraphicsPipelineState(cmdList, graphicsPSO, 0);

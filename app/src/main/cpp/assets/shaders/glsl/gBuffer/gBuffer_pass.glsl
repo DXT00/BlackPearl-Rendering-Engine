@@ -54,15 +54,14 @@ void main(){
 
 
 //#extension GL_EXT_shader_pixel_local_storage : require
-
 __pixel_local_outEXT OutPLS
 {
-    layout(r11f_g11f_b10f) vec3 gSceneColor;
-    layout(rgb10_a2) vec4 gGbufferA;
+    layout(rgb10_a2) vec4 gSceneColor;
+    layout(rgba8) vec4 gGbufferA;
     layout(rgba8) vec4 gGbufferB;
     layout(rgba8) vec4 gGbufferC;
 } pls;
-
+layout(early_fragment_tests) in;
 #else
 
 /* MRT */
@@ -117,7 +116,7 @@ void main(){
     getTBN(v_FragPos, v_TexCoord, v_Normal, geom.tangent, geom.bitangent);
 #endif
 
-	
+
 #if COOK
     MaterialSample mat = CreateCookBSDFMaterial(geom, g_Mat, v_TexCoord);
 #elif (Disney)
@@ -145,7 +144,7 @@ void main(){
 
 
 	#if USE_GLES_PLS
-	    	pls.gSceneColor = sceneColor;
+	    	pls.gSceneColor = vec4(sceneColor,1.0);//half4(1.0);//
 	    	pls.gGbufferA = bufferA;
 	    	pls.gGbufferB = bufferB;
 	    	pls.gGbufferC = bufferC;

@@ -40,6 +40,7 @@
 #ifdef GE_PLATFORM_ANDROID
 #include "Luanch/Android/AndroidEventManager.h"
 #endif
+#include "Timestep/TimeCounter.h"
 namespace BlackPearl {
 
 	Log* g_Log = nullptr;
@@ -130,7 +131,7 @@ namespace BlackPearl {
 			g_materialManager->RegisterDeviceManager(g_deviceManager);
 			g_materialManager->Init();
 
-            SystemTexture::Get().Init(g_deviceManager->GetDevice());
+
         ///GE_ERROR_JUDGE();
 		m_StartTimeMs = 0;// duration_cast<milliseconds>(system_clock::now().time_since_epoch());
 	}
@@ -138,7 +139,7 @@ namespace BlackPearl {
 	void Application::Run()
 	{
 		while (!ShouldEngineExit()) {
-
+            SCOPE_TIME_COUNTER(FPS)
 			double currentTimeMs = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
 			double runtimeSecond = (currentTimeMs - m_StartTimeMs) / 1000.0f;
 
@@ -174,6 +175,7 @@ namespace BlackPearl {
 
 			BasicRenderer::s_DrawCallCnt = 0;
 #ifdef GE_PLATFORM_ANDROID
+
             FAppEventManager::GetInstance()->Tick();
 #endif
 			m_Window->OnUpdate();

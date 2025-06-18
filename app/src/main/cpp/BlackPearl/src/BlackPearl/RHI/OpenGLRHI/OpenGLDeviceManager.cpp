@@ -5,7 +5,7 @@
 #include "RHI/OpenGLRHI/OpenGLViewport.h"
 #include "RHI/OpenGLRHI/OpenGLDriver/OpenGLDrvPrivate.h"
 #include "BlackPearl/Application.h"
-
+#include "Renderer/SystemTextures.h"
 namespace BlackPearl {
 
     /**
@@ -20,13 +20,18 @@ namespace BlackPearl {
         return m_NvrhiDevice;
 
     }
-
+    void OpenGLDeviceManager::CreateDevice(){
+        m_NvrhiDevice = Device::createDevice();
+    }
     bool OpenGLDeviceManager::CreateViewport(uint32_t width, uint32_t height, Format format, bool bFullScreen) {
 
 
-        m_NvrhiDevice = Device::createDevice();
+
 
         m_CommandList = GetDevice()->createCommandList();
+
+
+
 
         m_Viewport = static_cast<OpenGLViewport *>(GetDevice()->createViewport(
                 Application::Get().GetWindow().GetNativeWindow(), width, height, format, bFullScreen));

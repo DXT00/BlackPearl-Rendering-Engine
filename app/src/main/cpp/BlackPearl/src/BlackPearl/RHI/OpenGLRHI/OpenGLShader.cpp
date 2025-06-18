@@ -23,7 +23,7 @@
 #include "BlackPearl/RHI/RHIShader.h"
 #include "BlackPearl/Renderer/Shader/CrossCompilerCommon.h"
 #include "RHI\OpenGLRHI\OpenGLDriver\OpenGLThirdParty.h"
-
+#include "OpenGLProgramCache.h"
 namespace BlackPearl
 {
     
@@ -392,6 +392,8 @@ namespace BlackPearl
             const bool bSuccessfullyCompiled = VerifyShaderCompilation(m_ShaderID, shaderType);
             GE_ASSERT(bSuccessfullyCompiled, "shader compile failed");
 
+            //todo:: 后面改成binary file的hash
+           m_CodeHash.Hash =  CrcHash::Crc32((uint8_t*)m_GlslCode.c_str(), m_GlslCode.length());
         }
     }
 
@@ -884,56 +886,43 @@ namespace BlackPearl
 
         FOpenGLLinkedProgramConfiguration Config;
 
-        assert(VertexShaderRHI);
-        assert(PixelShaderRHI);
-
-        VertexShader->Compile(GL_VERTEX_SHADER);
-        PixelShader->Compile(GL_FRAGMENT_SHADER);
-
         // Fill-in the configuration
         Config.Shaders[ShaderType::VertexShader].Bindings = VertexShader->Bindings;
         Config.Shaders[ShaderType::VertexShader].Resource = VertexShader->m_ShaderID;
         Config.Shaders[ShaderType::VertexShader].ShaderKey = VertexShader->ShaderCodeKey;
         Config.Shaders[ShaderType::VertexShader].bValid = true;
+
+
+        Config.Shaders[ShaderType::Pixel].Bindings = PixelShader->Bindings;
+        Config.Shaders[ShaderType::Pixel].Resource = PixelShader->m_ShaderID;
+        Config.Shaders[ShaderType::Pixel].ShaderKey = PixelShader->ShaderCodeKey;
+        Config.Shaders[ShaderType::Pixel].bValid = true;
+
         for (size_t i = 0; i < bindingSet.size(); i++)
         {
             BindingSet* bs = static_cast<BindingSet*>(bindingSet[i]);
             Config.bindingSet.push_back(bs);
         }
-       // Config.bindingSet = bindingSet;
-        //Config.ProgramKey.ShaderHashes[ShaderType::VertexShader] = VertexShaderRHI->GetHash();
+
+        Config.ProgramKey.ShaderHashes[ShaderType::VertexShader] = VertexShader->GetHash();
+        Config.ProgramKey.ShaderHashes[ShaderType::Pixel] = PixelShader->GetHash();
 
         if (GeometryShaderRHI)
         {
-            assert(VertexShader);
-            GeometryShader->Compile(GL_GEOMETRY_SHADER);
-            BindShaderStage(Config, ShaderType::Geometry, GeometryShaderRHI, ShaderType::VertexShader, VertexShaderRHI);
-            //Config.ProgramKey.ShaderHashes[ShaderType::Geometry] = GeometryShaderRHI->GetHash();
             Config.Shaders[ShaderType::Geometry].ShaderKey = GeometryShader->ShaderCodeKey;
             Config.Shaders[ShaderType::Geometry].bValid = true;
+            Config.ProgramKey.ShaderHashes[ShaderType::Geometry] = GeometryShader->GetHash();
         }
 
-        assert(GeometryShaderRHI || VertexShaderRHI);
-        if (GeometryShaderRHI)
-        {
-            BindShaderStage(Config, ShaderType::Pixel, PixelShaderRHI, ShaderType::Geometry, GeometryShaderRHI);
-        }
-        else
-        {
-            BindShaderStage(Config, ShaderType::Pixel, PixelShaderRHI, ShaderType::VertexShader, VertexShaderRHI);
-        }
-        //Config.ProgramKey.ShaderHashes[ShaderType::Pixel] = PixelShaderRHI->GetHash();
-        Config.Shaders[ShaderType::Pixel].ShaderKey = PixelShader->ShaderCodeKey;
-        Config.Shaders[ShaderType::Pixel].bValid = true;
+       
 
 
         return Config;
     };
 
 
-    FOpenGLLinkedProgram* Device::LinkProgram(Shader* vertexShader, Shader* pixelShader, Shader* geometryShader, const std::vector<IBindingSet*>& bindingSets)
+    FOpenGLLinkedProgram* Device::LinkProgram(const FOpenGLLinkedProgramConfiguration& config, Shader* vertexShader, Shader* pixelShader, Shader* geometryShader, const std::vector<IBindingSet*>& bindingSets)
     {
-        FOpenGLLinkedProgramConfiguration Config = CreateConfig(vertexShader, pixelShader, geometryShader, bindingSets);
 
         // Make sure we have OpenGL context set up, and invalidate the parameters cache and current program (as we'll link a new one soon)
         GetContextStateForCurrentContext().Program = -1;
@@ -949,6 +938,10 @@ namespace BlackPearl
         //        check((Config.Shaders[ShaderType::Pixel].Resource == 0) !=
         //              (Config.Shaders[ShaderType::Compute].Resource == 0));
         //
+
+		//program cache
+
+
         GLuint Program = 0;
         FOpenGL::GenProgramPipelines(1, &Program);
         GE_ERROR_JUDGE();
@@ -994,7 +987,7 @@ namespace BlackPearl
 
         FOpenGL::BindProgramPipeline(Program);
 
-        FOpenGLLinkedProgram* LinkedProgram = new FOpenGLLinkedProgram(Config, Program);
+        FOpenGLLinkedProgram* LinkedProgram = new FOpenGLLinkedProgram(config, Program);
 
         LinkedProgram->ConfigureBindingSets(OGL_FIRST_UNIFORM_BUFFER);
         //ConfigureStageStates(LinkedProgram);
@@ -1149,91 +1142,97 @@ namespace BlackPearl
 
        // TODO:: add OpenGLProgramsCache
         // Check if we already have such a program in released programs cache. Use it, if we do.
-        FOpenGLLinkedProgram *LinkedProgram = 0;
+        Shader* VertexShader = static_cast<Shader*>(VertexShaderRHI);
+        Shader* PixelShader = static_cast<Shader*>(PixelShaderRHI);
+        Shader* GeometryShader = static_cast<Shader*>(GeometryShaderRHI);
 
-    
+        if (!VertexShader) {
+            GE_CORE_ERROR("no vertex shader found");
+        }
+        if (!PixelShader) {
+            GE_CORE_ERROR("no pixel shader found");
+        }
+        FOpenGLProgramKey prgramKey;
+        prgramKey.ShaderHashes[ShaderType::VertexShader] = VertexShader->GetHash();
+        prgramKey.ShaderHashes[ShaderType::Pixel] = PixelShader->GetHash();
+        if (GeometryShader) {
+            prgramKey.ShaderHashes[ShaderType::Pixel] = GeometryShader->GetHash();
+
+        }
+        FOpenGLLinkedProgram* LinkedProgram = FGLProgramCache::Get()->GetGLProgram(prgramKey);
         if (!LinkedProgram) {
-            //FOpenGLLinkedProgram* CachedProgram = GetOpenGLProgramsCache().Find(Config.ProgramKey, true);
-            //if (!CachedProgram)
-            //{
-            //	// ensure that pending request for this program has been completed before
-            //	if (FOpenGLProgramBinaryCache::CheckSinglePendingGLProgramCreateRequest(Config.ProgramKey))
-            //	{
-            //		CachedProgram = GetOpenGLProgramsCache().Find(Config.ProgramKey, true);
-            //	}
-            //}
+            
 
-            //if (CachedProgram)
-            //{
-            //	LinkedProgram = CachedProgram;
-            //	if (!LinkedProgram->bConfigIsInitalized)
-            //	{
-            //		LinkedProgram->SetConfig(Config);
-            //		// We now have the config for this program, we must configure the program for use.
-            //		ConfigureGLProgramStageStates(LinkedProgram);
-            //	}
-            //}
-            //else
-            //{
-                //OGL_BINARYCACHE_STATS_MARKBINARYCACHEMISS(Config.ProgramKey, true);
+                //compile shaders
+                VertexShader->Compile(GL_VERTEX_SHADER);
+                PixelShader->Compile(GL_FRAGMENT_SHADER);
+                if(GeometryShader)
+                    GeometryShader->Compile(GL_GEOMETRY_SHADER);
 
-                Shader* VertexShader = static_cast<Shader*>(VertexShaderRHI);
-                Shader* PixelShader = static_cast<Shader*>(PixelShaderRHI);
-                Shader* GeometryShader = static_cast<Shader*>(GeometryShaderRHI);
+                FOpenGLLinkedProgramConfiguration Config = CreateConfig(VertexShaderRHI, PixelShaderRHI, GeometryShaderRHI, IBindingSet);
 
                 // Link program, using the data provided in config
-                LinkedProgram = LinkProgram(VertexShader, PixelShader, GeometryShader, IBindingSet);
+                LinkedProgram = LinkProgram(Config, VertexShader, PixelShader, GeometryShader, IBindingSet);
 
                 if (LinkedProgram == NULL) {
                     GE_CORE_ERROR("fail to link program");
-#if DEBUG_GL_SHADERS
-                    if (VertexShader)
-                    {
-                        UE_LOG(LogRHI, Error, TEXT("Vertex Shader:\n%s"), ANSI_TO_TCHAR(VertexShader->GlslCode.GetData()));
-                    }
-                    if (PixelShader)
-                    {
-                        UE_LOG(LogRHI, Error, TEXT("Pixel Shader:\n%s"), ANSI_TO_TCHAR(PixelShader->GlslCode.GetData()));
-                    }
-                    if (GeometryShader)
-                    {
-                        UE_LOG(LogRHI, Error, TEXT("Geometry Shader:\n%s"), ANSI_TO_TCHAR(GeometryShader->GlslCode.GetData()));
-                    }
-#endif //DEBUG_GL_SHADERS
+
                     /*FName LinkFailurePanic = bFromPSOFileCache ? FName("FailedProgramLinkDuringPrecompile") : FName("FailedProgramLink");
                     RHIGetPanicDelegate().ExecuteIfBound(LinkFailurePanic);
                     UE_LOG(LogRHI, Fatal, TEXT("Failed to link program [%s]. Current total programs: %d, precompile: %d"), *Config.ProgramKey.ToString(), GNumPrograms, (uint32)bFromPSOFileCache);*/
                 } else {
                     //TODO:: Cache program
-                    //if (ShouldCacheAllProgramBinaries() &&
-                    //    FOpenGLProgramBinaryCache::RequiresCaching(Config.ProgramKey)) {
-                    //    // In precache mode we can put any newly compiled programs in the binary cache
-                    //    FOpenGLProgramBinary CompiledProgram = UE::OpenGL::GetProgramBinaryFromGLProgram(
-                    //            LinkedProgram->Program);
-                    //    FOpenGLProgramBinaryCache::CacheProgramBinary(Config.ProgramKey,
-                    //                                                  TUniqueObj<FOpenGLProgramBinary>(
-                    //                                                          MoveTemp(CompiledProgram)));
-                    //}
+                    if (Configuration::bCacheGLProgram) {
 
-                    //GetOpenGLProgramsCache().Add(Config.ProgramKey, LinkedProgram);
+
+                        GLint BinaryLength = -1;
+                        glGetProgramiv(LinkedProgram->Program, GL_PROGRAM_BINARY_LENGTH, &BinaryLength);
+                        if (BinaryLength > 0)
+                        {
+                            std::vector<uint8_t> binary(BinaryLength);
+                            GLenum binaryFormat;
+                            FOpenGL::GetProgramBinary(LinkedProgram->Program, BinaryLength, nullptr, &binaryFormat, binary.data());
+
+                           
+                        }
+
+
+
+                        //// 保存到文件
+                        //std::ofstream out("shader.bin", std::ios::binary);
+                        //out.write(reinterpret_cast<char*>(&binaryFormat), sizeof(GLenum));
+                        //out.write(reinterpret_cast<char*>(binary.data()), binarySize);
+
+                        //// In precache mode we can put any newly compiled programs in the binary cache
+                        //FOpenGLProgramBinary CompiledProgram = FOpenGL::GetProgramBinaryFromGLProgram(
+                        //        LinkedProgram->Program);
+                        //FOpenGLProgramBinaryCache::CacheProgramBinary(Config.ProgramKey,
+                        //                                              TUniqueObj<FOpenGLProgramBinary>(
+                        //                                                      MoveTemp(CompiledProgram)));
+                    }
+
+                    FGLProgramCache::Get()->AddGLProgram(Config.ProgramKey, LinkedProgram);
                 }
 
-                return new BoundShaderState(
-                    VertexDeclarationRHI,
-                    VertexShader,
-                    PixelShader,
-                    GeometryShader,
-                    LinkedProgram
-                );
-           // }
+               
         }
-
-        //assert(VertexDeclarationRHI);
-
-        //FOpenGLVertexDeclaration* VertexDeclaration = ResourceCast(VertexDeclarationRHI);
+        
+        else {
+            FOpenGL::BindProgramPipeline(LinkedProgram->Program);
+        }
+        
+        return new BoundShaderState(
+            VertexDeclarationRHI,
+            VertexShader,
+            PixelShader,
+            GeometryShader,
+            LinkedProgram
+        );
 
       
-        //}
+
+      
+   
     }
 
     struct FOpenGLUniformName

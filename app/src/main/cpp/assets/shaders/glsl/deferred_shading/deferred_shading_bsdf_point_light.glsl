@@ -46,11 +46,14 @@ in vec2 v_TexCoord;
 #include <assets/shaders/glsl/gBuffer/gBuffer.glsl>
 
 void main(){
+    vec2 uv = v_TexCoord;
+#if USE_GLES_PLS
+    uv = vec2(uv.x, 1.0-uv.y);
+#endif
+    GBufferData GBuffer = DecodeGBuffer(uv);
 
-    GBufferData GBuffer = DecodeGBuffer(v_TexCoord);
+    float2 pixelPos = uv * g_View.viewportSize; //v_TexCoord range [0,1]
 
-    float2 pixelPos = v_TexCoord * g_View.viewportSize; //v_TexCoord range [0,1]
-    
     float3 worldPos = ScreenSpaceToWorldPosition(pixelPos, GBuffer.Depth);
 
       SurfaceGeometry geom;
@@ -61,10 +64,10 @@ void main(){
 //      todo:: GBuffer.WorldTangent = half3(0); //TODO:: get Aniso flag
 //      geom.tangent = normalize(v_Tangent);
 //      geom.bitangent = normalize(cross(geom.normal, geom.tangent));
-      getTBN(geom.normal, v_TexCoord, geom.normal, geom.tangent, geom.bitangent);
+      getTBN(geom.normal, uv, geom.normal, geom.tangent, geom.bitangent);
 
 #else
-      getTBN(worldPos, v_TexCoord, geom.normal, geom.tangent, geom.bitangent);
+      getTBN(worldPos, uv, geom.normal, geom.tangent, geom.bitangent);
 #endif
 
 
@@ -77,27 +80,30 @@ void main(){
 #if USE_GLES_PLS
     mat.emissive = pls.t_gSceneColor.rgb;
 #else
-    mat.emissive = texture(t_gSceneColor,v_TexCoord).rgb;
+    mat.emissive = texture(t_gSceneColor,uv).rgb;
 
 #endif
-
-   for(uint nLight = 0u; nLight < uint(g_DeferredLight.numLights); nLight++)
+    vec4 sceneColor = vec4(0.0);
+   //for(uint nLight = 0u; nLight < uint(g_DeferredLight.numLights); nLight++)
    {
-       LightConstants light = g_DeferredLight.lights[nLight];
+       LightConstants light = g_DeferredLight.lights[0];
 #if USE_GLES_PLS
-       pls.t_gSceneColor += ShadeSurface(light, geom, mat).rgb;
+       sceneColor += ShadeSurface(light, geom, mat);
 #else
        FragColor += ShadeSurface(light, geom, mat);
 #endif
    }
    half IndirectIrradiance = GBuffer.IndirectIrradiance;
 #if USE_GLES_PLS
-    pls.t_gGbufferA = vec4(0.0);
-    pls.t_gGbufferB = vec4(0.0);
-    pls.t_gGbufferC = vec4(0.0);
+//    pls.t_gGbufferA = vec4(0.0);
+//    pls.t_gGbufferB = vec4(0.0);
+//    pls.t_gGbufferC = vec4(0.0);
 
-    //pls.t_gSceneColor = vec3(1.0,1.0,0.0);
+    pls.t_gSceneColor =sceneColor;
 #endif
+
+
+
     //direct light
 
 //    //ibl

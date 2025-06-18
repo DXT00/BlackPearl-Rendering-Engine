@@ -60,6 +60,11 @@ namespace BlackPearl {
         Object* GetFullScreenObj() { return m_FullScreenObj; }
 		IDescriptorTable* GetDescriptorTable() const { return m_DescriptorTableMgr ? m_DescriptorTableMgr->GetDescriptorTable() : nullptr; }
 
+        void SetDiffuseLightProbes(const std::vector<Object*>& probes);
+        std::vector<Object*> GetDiffuseLightProbes() const;
+
+        void SetReflectLightProbes(const std::vector<Object*>& probes);
+        std::vector<Object*> GetReflectLightProbes() const;
 
 		/** An octree containing the primitives in the scene. */
 		ScenePrimitiveOctree *PrimitiveOctree;
@@ -97,8 +102,9 @@ namespace BlackPearl {
         Object* m_FullScreenObj = nullptr;
 
 
-		std::vector<std::shared_ptr<LightProbe>> m_LightProbes;
-
+        /* light probe */
+        std::vector<Object*> m_DiffuseLightProbes;
+        std::vector<Object*> m_ReflectionLightProbes;
 	private:
 		void _AddNode(Node* node);
 

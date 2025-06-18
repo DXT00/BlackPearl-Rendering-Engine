@@ -67,11 +67,7 @@ add_library(native_app_glue STATIC
 set(CMAKE_SHARED_LINKER_FLAGS
         "${CMAKE_SHARED_LINKER_FLAGS} -u ANativeActivity_onCreate -u JNI_OnLoad")
 
-#
-#set_target_properties(native_app_glue PROPERTIES
-#        INTERFACE_INCLUDE_DIRECTORIES ${ANDROID_NDK}/sources/android/native_app_glue
-#        VISIBILITY_INTERFACE_PUBLIC ON
-#)
+
 
 
 ############################## 链接库 ##########################
@@ -85,8 +81,6 @@ add_library(
         SHARED
         ${src-files}
 )
-#target_include_directories(SandBoxAndroid PRIVATE
-#        ${ANDROID_NDK}/sources/android/native_app_glue)
 
 target_link_directories(${PROJECT_NAME} PUBLIC
         "${ROOT_DIR}/bin/${OUTPUT_DIR}/BlackPearl"
@@ -104,6 +98,7 @@ target_include_directories(
         "${ROOT_DIR}/BlackPearl/vendor/spdlog/include"
         "${ROOT_DIR}/BlackPearl/vendor/assimp/include"
         "${ANDROID_NDK}/sources/android/native_app_glue"
+        "${ANDROID_NDK}/sources/android/cpufeatures"
         "${ROOT_DIR}/../assets/shaders/"
 )
 set_target_properties(SandBoxAndroid PROPERTIES
@@ -122,6 +117,7 @@ target_link_libraries(
             spdlog
             assimp
             native_app_glue
+            cpufeatures
 )
 
 # ======================================================

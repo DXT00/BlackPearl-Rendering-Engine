@@ -63,7 +63,7 @@ project "BlackPearl"
 		"../%{IncludeDir.directxtex}",
 		"../%{IncludeDir.directxmesh}",
 		"../%{IncludeDir.ShaderMake}",
-		--"../%{IncludeDir.OpenGL}",
+        "../%{IncludeDir.OpenSSL}",
 		"./vendor",
 		"./vendor/GLEW",
 		"../assets/shaders/"
@@ -83,7 +83,8 @@ project "BlackPearl"
     --"./vendor/imgui/bin/".. outputdir .. "/ImGui",
 	"./vendor/vulkan/1.3.290.0/Lib",
 	"./vendor/ShaderMake/build/Debug",
-
+    --"./vendor/OpenSSL/1.1.1t/lib/Win64/VS2015/Release"
+    --"./vendor/OpenSSL_1.1.1t/lib/Win64/Debug"
 	}
 
 
@@ -133,6 +134,16 @@ project "BlackPearl"
 		--"assimp",
 		"opengl32",
 		"assimp-vc142-mtd.lib", 
+    --   "kernel32",
+    --    "WS2_32",
+    --    "GDI32", 
+    --    "ADVAPI32", 
+    --    "crypt32",
+    --    "USER32",
+	--	 "winhttp",
+
+    --     "libssl",
+     --   "libcrypto"
    }
 
 
@@ -183,6 +194,8 @@ project "BlackPearl"
 		"vulkan-1",
 		--"assimp-vc140-mt.lib"
 		"assimp-vc142-mtd",
+        "libssl",
+        "libcrypto"
    }
    defines
    {
@@ -221,6 +234,8 @@ project "BlackPearl"
 		"opengl32.lib",
 		--"assimp-vc140-mt.lib"
 		"assimp-vc142-mtd.lib",
+        "libssl",
+        "libcrypto"
 
 	}
 	defines

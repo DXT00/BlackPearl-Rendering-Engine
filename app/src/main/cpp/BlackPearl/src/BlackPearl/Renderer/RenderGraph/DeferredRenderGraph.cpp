@@ -5,8 +5,12 @@
 #include "Renderer/Material/MaterialManager.h"
 #ifdef GE_API_OPENGL
 #include "RHI/OpenGLRHI/OpenGLDriver/OpenGLFunctions.h"
+//#include <EGL/eglext.h>
+//#include <EGL/eglplatform.h>
+
 #endif
 #include "Renderer/SystemTextures.h"
+#include "Timestep/TimeCounter.h"
 namespace BlackPearl {
 
     extern MaterialManager* g_materialManager;
@@ -51,6 +55,7 @@ namespace BlackPearl {
         m_CommandList->open();
 
         {
+            SCOPE_TIME_COUNTER(Deferred_SinglePass0)
             FRHIRenderPassInfo RPInfo(
                     m_ColorRTs.size(),
                     m_ColorRTs.data(),
@@ -61,30 +66,38 @@ namespace BlackPearl {
             RPInfo.SubpassHint = ESubpassHint::DeferredShadingSubpass;
             m_CommandList->beginRenderPass(RPInfo, "DeferredSinglePass");
 
-            //
+            m_SkyboxRenderer->Render(m_CommandList, framebuffer, m_Scene);
+
             m_GbufferRenderer->Render(m_CommandList, framebuffer, m_Scene);
+
             m_CommandList->nextSubpass();
             m_DeferredShadingRenderer->Render(m_CommandList, framebuffer, m_Scene);
 
-           // pls-->scenecolor
+           // pls-->SceneColor
             m_PlsCopyRenderer->Render(m_CommandList, framebuffer, m_Scene);
-
+// 在渲染结束时手动刷新
+//            if (GL_EXT_shader_pixel_local_storage) {
+//                glMemoryBarrierEXT(GL_SHADER_PIXEL_LOCAL_BARRIER_BIT_EXT);
+//            }
+            //glFlush();
             m_CommandList->endRenderPass();
         }
 
         {
-            //Grab pass: SceneColor-->default framebuffer
+//            //Grab pass: SceneColor-->default framebuffer
+//            SCOPE_TIME_COUNTER(Deferred_SinglePass1)
+//
 //            FRHIRenderPassInfo GrabPassInfo(framebuffer->getDesc().colorAttachments[0].texture,
-//                                            ERenderTargetActions::Load_Store);
-            FRHIRenderPassInfo GrabPassInfo(framebuffer->getDesc().colorAttachments[0].texture,
-                                             ERenderTargetActions::Load_Store,
-                                             SystemTexture::Get().SceneDepth,
-                                             EDepthStencilTargetActions::LoadDepthStencil_StoreDepthStencil);
-            m_CommandList->beginRenderPass(GrabPassInfo, "GrabPass");
-
-            m_GrabPassRenderer->Render(m_CommandList, framebuffer, m_Scene);
-            m_SkyboxRenderer->Render(m_CommandList, framebuffer, m_Scene);
-            m_CommandList->endRenderPass();
+//                                             ERenderTargetActions::Load_Store,
+//                                             SystemTexture::Get().SceneDepth,
+//                                             EDepthStencilTargetActions::LoadDepthStencil_StoreDepthStencil);
+//            m_CommandList->beginRenderPass(GrabPassInfo, "GrabPass");
+//
+//            m_GrabPassRenderer->Render(m_CommandList, framebuffer, m_Scene);
+//
+//            m_SkyboxRenderer->Render(m_CommandList, framebuffer, m_Scene);
+//
+//            m_CommandList->endRenderPass();
 
         }
 		m_CommandList->close();
@@ -96,31 +109,30 @@ namespace BlackPearl {
         m_CommandList->open();
 
         {
+            SCOPE_TIME_COUNTER(Deferred_MultiPass0)
             FRHIRenderPassInfo RPInfo(
                 m_ColorRTs.size(),
                 m_ColorRTs.data(),
-                ERenderTargetActions::Load_Store,
+                ERenderTargetActions::Clear_Store,
                 SystemTexture::Get().SceneDepth,
                 EDepthStencilTargetActions::ClearDepthStencil_StoreDepthStencil);
 
             m_CommandList->beginRenderPass(RPInfo, "DeferredGbufferPass");
-
             m_GbufferRenderer->Render(m_CommandList, framebuffer, m_Scene);
+
             m_CommandList->endRenderPass();
         }
 
         {
+            SCOPE_TIME_COUNTER(Deferred_MultiPass1)
+
             FRHIRenderPassInfo RPShadingInfo(framebuffer->getDesc().colorAttachments[0].texture,
-                                             ERenderTargetActions::Load_Store,
+                                             ERenderTargetActions::Clear_Store,
                                              SystemTexture::Get().SceneDepth,
                                              EDepthStencilTargetActions::LoadDepthStencil_StoreDepthStencil);
-         /*   FRHIRenderPassInfo RPShadingInfo(
-                SystemTexture::Get().SceneColor,
-                ERenderTargetActions::Load_Store);*/
-            m_CommandList->beginRenderPass(RPShadingInfo, "DeferredShadingPass");
 
+            m_CommandList->beginRenderPass(RPShadingInfo, "DeferredShadingPass");
             m_DeferredShadingRenderer->Render(m_CommandList, framebuffer, m_Scene);
-            //todo:: sky在哪里画好？
             m_SkyboxRenderer->Render(m_CommandList, framebuffer, m_Scene);
 
             m_CommandList->endRenderPass();
@@ -130,11 +142,11 @@ namespace BlackPearl {
 	}
     void DeferredRenderGraph::InitRT()
     {
-            FramebufferDesc fboDesc;
             bool bUsingPixelLocalStorage = SupportPLS();
 
             if (bUsingPixelLocalStorage)
             {
+
                 m_ColorRTs.push_back(SystemTexture::Get().SceneColor);
             }
             else
@@ -146,11 +158,7 @@ namespace BlackPearl {
 
 
             }
-            for (size_t i = 0; i < m_ColorRTs.size(); i++)
-            {
-                fboDesc.addColorAttachment(m_ColorRTs[i]);
-            }
-           // m_DeferredFramebuffer = GetDevice()->createFramebuffer(fboDesc);
+           
 
         
        

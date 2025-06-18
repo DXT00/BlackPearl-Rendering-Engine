@@ -9,7 +9,7 @@
 #include "RHI/OpenGLRHI/OpenGLShader.h"
 #include "RHI/OpenGLRHI/OpenGLSampler.h"
 #include "BlackPearl/RHI/RHIGlobals.h"
-#include "BlackPearl/RHI/OpenGLRHI/OpenGLProgramBinaryFileCache.h"
+#include "BlackPearl/RHI/OpenGLRHI/OpenGLProgramCache.h"
 #include "RHI/OpenGLRHI/OpenGLState.h"
 #include "RHI/OpenGLRHI/OpenGLBuffer.h"
 #include "RHI/OpenGLRHI/OpenGLInputLayout.h"
@@ -926,7 +926,7 @@ GE_CORE_INFO(#StringEnum":%s" , ((const char*)glGetString(StringEnum)));
 		/*FSamplerStateInitializerRHI PointSamplerStateParams(SF_Point, AM_Clamp, AM_Clamp, AM_Clamp);
 		PointSamplerState = this->RHICreateSamplerState(PointSamplerStateParams);*/
 
-#if GE_PLATFORM_WINDOWS
+#ifdef GE_PLATFORM_WINDOWS
 
 
 		GOpenGLDedicatedVideoMemory = FOpenGL::GetVideoMemorySize();

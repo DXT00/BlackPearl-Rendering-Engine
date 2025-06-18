@@ -246,7 +246,10 @@ namespace BlackPearl {
         FRHIRenderPassInfo& operator=(const FRHIRenderPassInfo&) = default;
 		// Color, no depth, optional resolve, optional mip, optional array slice
 		explicit FRHIRenderPassInfo(ITexture* ColorRT, ERenderTargetActions ColorAction, ITexture* ResolveRT = nullptr, uint8_t InMipIndex = 0, int32_t InArraySlice = -1);
-		// Color MRTs, no depth
+        explicit FRHIRenderPassInfo(ITexture* ColorRT, ERenderTargetActions ColorAction , ITexture* DepthRT, EDepthStencilTargetActions DepthActions, uint8_t InMipIndex, int32_t InArraySlice);
+
+        
+        // Color MRTs, no depth
 		explicit FRHIRenderPassInfo(int32_t NumColorRTs, ITexture* ColorRTs[], ERenderTargetActions ColorAction);
 		// Color MRTs, no depth
 		explicit FRHIRenderPassInfo(int32_t NumColorRTs, ITexture* ColorRTs[], ERenderTargetActions ColorAction, ITexture* ResolveTargets[]);
@@ -254,7 +257,9 @@ namespace BlackPearl {
 		explicit FRHIRenderPassInfo(int32_t NumColorRTs, ITexture* ColorRTs[], ERenderTargetActions ColorAction, ITexture* DepthRT, EDepthStencilTargetActions DepthActions, FExclusiveDepthStencil InEDS = FExclusiveDepthStencil::DepthWrite_StencilWrite);
 		// Color MRTs and depth
 		explicit FRHIRenderPassInfo(int32_t NumColorRTs, ITexture* ColorRTs[], ERenderTargetActions ColorAction, ITexture* ResolveRTs[], ITexture* DepthRT, EDepthStencilTargetActions DepthActions, ITexture* ResolveDepthRT, FExclusiveDepthStencil InEDS = FExclusiveDepthStencil::DepthWrite_StencilWrite);
-		// Depth, no color
+        // one Color , no depth, no resolve, multi mip, multi array slice, such as cubemap
+        explicit FRHIRenderPassInfo(int32_t NumColorSlice, ITexture* ColorRTs, ERenderTargetActions ColorAction, uint8_t* InMipIndex, int32_t* InArraySlice, ITexture* DepthRT, EDepthStencilTargetActions DepthActions);
+            // Depth, no color
 		explicit FRHIRenderPassInfo(ITexture* DepthRT, EDepthStencilTargetActions DepthActions, ITexture* ResolveDepthRT = nullptr, FExclusiveDepthStencil InEDS = FExclusiveDepthStencil::DepthWrite_StencilWrite);
 		// Depth, no color, occlusion queries
 		explicit FRHIRenderPassInfo(ITexture* DepthRT, uint32_t InNumOcclusionQueries, EDepthStencilTargetActions DepthActions, ITexture* ResolveDepthRT = nullptr, FExclusiveDepthStencil InEDS = FExclusiveDepthStencil::DepthWrite_StencilWrite);

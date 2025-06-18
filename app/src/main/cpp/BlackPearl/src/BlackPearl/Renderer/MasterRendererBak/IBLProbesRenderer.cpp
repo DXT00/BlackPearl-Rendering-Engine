@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "BlackPearl/Core.h"
 #include "IBLProbesRenderer.h"
 #include "BlackPearl/Renderer/Renderer.h"
@@ -99,7 +99,7 @@ namespace BlackPearl {
 
 		}
 
-		for (auto it = reflectionProbes.begin(); it != reflectionProbes.end(); it++) {
+		for (auto& it = reflectionProbes.begin(); it != reflectionProbes.end(); it++) {
 
 			Object* probe = *it;
 			UpdateReflectionProbesMap(lightSources, objects, dynamicObjs, timeInSecond, skyBox, probe);
@@ -119,7 +119,7 @@ namespace BlackPearl {
 	{
 		GE_ASSERT(m_IsInitial, "please initial IBLProbesRenderer first! IBLProbesRenderer::init()");
 
-		for (auto it = diffuseProbes.begin(); it != diffuseProbes.end(); it++) {
+		for (auto& it = diffuseProbes.begin(); it != diffuseProbes.end(); it++) {
 
 			Object* probe = *it;
 			UpdateDiffuseProbesMap(lightSources, objects, dynamicObjs, timeInSecond, skyBox, probe);

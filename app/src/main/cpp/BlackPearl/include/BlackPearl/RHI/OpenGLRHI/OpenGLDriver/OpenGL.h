@@ -350,13 +350,13 @@ public:
 
 	static FORCEINLINE void CheckFrameBuffer()
 	{
-#if UE_BUILD_DEBUG || UE_BUILD_DEVELOPMENT 
+//#if UE_BUILD_DEBUG || UE_BUILD_DEVELOPMENT 
 		GLenum CompleteResult = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 		if (CompleteResult != GL_FRAMEBUFFER_COMPLETE)
 		{
-				UE_LOG(LogRHI, Fatal,TEXT("Framebuffer not complete. Status = 0x%x"), CompleteResult);
+				GE_CORE_ERROR("Framebuffer not complete. Status = {0}", CompleteResult);
 		}
-#endif 
+//#endif 
 	}
 
 	static FORCEINLINE void BufferSubData(GLenum Target, GLintptr Offset, GLsizeiptr Size, const GLvoid* Data)	{ glBufferSubData(Target, Offset, Size, Data); }

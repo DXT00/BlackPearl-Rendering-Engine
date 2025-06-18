@@ -226,6 +226,11 @@ struct FOpenGLContextState final : public FOpenGLCommonState
 	uint32_t						StencilRef;
 	BlendState						BlendState;
 	GLuint							Framebuffer;
+    bool                            SubViewEnabled;
+    GLenum							FramebufferTextureTarget;
+    GLint                           FramebufferTextureMipLevel;
+    GLuint                           FramebufferTextureID;
+
 	uint32_t						RenderTargetWidth;
 	uint32_t						RenderTargetHeight;
 	GLuint							OcclusionQuery;
@@ -279,6 +284,10 @@ struct FOpenGLContextState final : public FOpenGLCommonState
 	FOpenGLContextState()
 		: StencilRef(0)
 		, Framebuffer(0)
+        , SubViewEnabled(false)
+        , FramebufferTextureTarget(0)
+        , FramebufferTextureMipLevel(0)
+        , FramebufferTextureID(0)
 		, Program(0)
 		, ActiveTexture(GL_TEXTURE0)
 		, bScissorEnabled(false)
@@ -333,6 +342,11 @@ struct FOpenGLRHIState final : public FOpenGLCommonState
 	uint32_t							StencilRef;
 	//FOpenGLBlendState				BlendState;
 	GLuint							Framebuffer;
+    bool                            SubViewEnabled;
+    GLenum                          FramebufferTextureTarget;
+    GLint                           FramebufferTextureMipLevel;
+    GLuint                           FramebufferTextureID;
+
 	bool							bScissorEnabled;
 	RHIRect							Scissor;
 	RHIViewport						Viewport;
@@ -401,6 +415,10 @@ struct FOpenGLRHIState final : public FOpenGLCommonState
 	FOpenGLRHIState()
 		: StencilRef(0)
 		, Framebuffer(0)
+        , SubViewEnabled(false)
+        , FramebufferTextureTarget(0)
+        , FramebufferTextureMipLevel(0)
+        , FramebufferTextureID(0)
 		, bScissorEnabled(false)
 		, DepthMinZ(0.0f)
 		, DepthMaxZ(1.0f)

@@ -41,10 +41,10 @@ static PFN_ANativeWindow_setBuffersTransform ANativeWindow_setBuffersTransform_A
 //	ECVF_RenderThreadSafe);
 //
 
-const  int EGLMinRedBits		= 5;
-const  int EGLMinGreenBits		= 6;
-const  int EGLMinBlueBits		= 5;
-const  int EGLMinAlphaBits		= 0;
+const  int EGLMinRedBits		= 8;//5;
+const  int EGLMinGreenBits		= 8;//6;
+const  int EGLMinBlueBits		= 8;//5;
+const  int EGLMinAlphaBits		= 2;//0;
 const  int EGLMinDepthBits		= 16;
 const  int EGLMinStencilBits	= 8; // This is required for UMG clipping
 const  int EGLMinSampleBuffers	= 0;
@@ -473,12 +473,13 @@ void AndroidEGL::InitEGL(APIVariant API)
 		eglGetConfigAttrib(PImplData->eglDisplay, EGLConfigList[i], EGL_RED_SIZE, &ResultValue); r = ResultValue;
 		eglGetConfigAttrib(PImplData->eglDisplay, EGLConfigList[i], EGL_GREEN_SIZE, &ResultValue); g = ResultValue;
 		eglGetConfigAttrib(PImplData->eglDisplay, EGLConfigList[i], EGL_BLUE_SIZE, &ResultValue); b = ResultValue;
-		eglGetConfigAttrib(PImplData->eglDisplay, EGLConfigList[i], EGL_ALPHA_SIZE, &ResultValue); a = ResultValue;
+		eglGetConfigAttrib(PImplData->eglDisplay, .[i], EGL_ALPHA_SIZE, &ResultValue); a = ResultValue;
 		eglGetConfigAttrib(PImplData->eglDisplay, EGLConfigList[i], EGL_DEPTH_SIZE, &ResultValue); d = ResultValue;
 		eglGetConfigAttrib(PImplData->eglDisplay, EGLConfigList[i], EGL_STENCIL_SIZE, &ResultValue); s = ResultValue;
 		eglGetConfigAttrib(PImplData->eglDisplay, EGLConfigList[i], EGL_SAMPLE_BUFFERS, &ResultValue); sb = ResultValue;
 		eglGetConfigAttrib(PImplData->eglDisplay, EGLConfigList[i], EGL_SAMPLES, &ResultValue); sc = ResultValue;
 
+        GE_CORE_INFO("Chosen config: R%u G%u B%u A%u\n", r, g, b, a);
 		// Optional, Tegra-specific non-linear depth buffer, which allows for much better
 		// effective depth range in relatively limited bit-depths (e.g. 16-bit)
 		int bNonLinearDepth = 0;
@@ -535,6 +536,18 @@ void AndroidEGL::InitEGL(APIVariant API)
 	int ResultValue = 0 ;
 	eglGetConfigAttrib(PImplData->eglDisplay, EGLConfigList[0], EGL_DEPTH_SIZE, &ResultValue); PImplData->DepthSize = ResultValue;
 	eglGetConfigAttrib(PImplData->eglDisplay, EGLConfigList[0], EGL_NATIVE_VISUAL_ID, &ResultValue);PImplData->NativeVisualID = ResultValue;
+
+    int r, g, b, a, d, s, sb, sc, nvi;
+    eglGetConfigAttrib(PImplData->eglDisplay, EGLConfigList[0], EGL_RED_SIZE, &ResultValue); r = ResultValue;
+    eglGetConfigAttrib(PImplData->eglDisplay, EGLConfigList[0], EGL_GREEN_SIZE, &ResultValue); g = ResultValue;
+    eglGetConfigAttrib(PImplData->eglDisplay, EGLConfigList[0], EGL_BLUE_SIZE, &ResultValue); b = ResultValue;
+    eglGetConfigAttrib(PImplData->eglDisplay, EGLConfigList[0], EGL_ALPHA_SIZE, &ResultValue); a = ResultValue;
+    eglGetConfigAttrib(PImplData->eglDisplay, EGLConfigList[0], EGL_DEPTH_SIZE, &ResultValue); d = ResultValue;
+    eglGetConfigAttrib(PImplData->eglDisplay, EGLConfigList[0], EGL_STENCIL_SIZE, &ResultValue); s = ResultValue;
+    eglGetConfigAttrib(PImplData->eglDisplay, EGLConfigList[0], EGL_SAMPLE_BUFFERS, &ResultValue); sb = ResultValue;
+    eglGetConfigAttrib(PImplData->eglDisplay, EGLConfigList[0], EGL_SAMPLES, &ResultValue); sc = ResultValue;
+
+    GE_CORE_INFO("Chosen config: R%u G%u B%u A%u\n", r, g, b, a);
 #endif
 }
 
@@ -927,7 +940,7 @@ void AndroidEGL::SetCurrentSharedContext()
 	}
 	else
 	{
-        GE_CORE_WARN("[dxt00] SetCurrentContext: SingleThreadedContext in SetCurrentSharedContext()")
+        //GE_CORE_WARN("[dxt00] SetCurrentContext: SingleThreadedContext in SetCurrentSharedContext()")
 
         SetCurrentContext(PImplData->SingleThreadedContext.eglContext, PImplData->SingleThreadedContext.eglSurface);
 	}
@@ -970,7 +983,7 @@ void AndroidEGL::SetCurrentRenderingContext()
 	}
 	else
 	{
-        GE_CORE_WARN("[dxt00] SetCurrentContext: SingleThreadedContext in SetCurrentRenderingContext()")
+       // GE_CORE_WARN("[dxt00] SetCurrentContext: SingleThreadedContext in SetCurrentRenderingContext()")
 		SetCurrentContext(PImplData->SingleThreadedContext.eglContext, PImplData->SingleThreadedContext.eglSurface);
 	}
 }

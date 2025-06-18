@@ -33,6 +33,8 @@ namespace BlackPearl {
 		MaterialShader* GetShader() const { return m_ForwardShadingShader; }
 		~ForwardShadingRenderer();
 
+        void SetCustomView(SceneData* view);
+
 	private:
         BufferHandle        m_LightsCB;
         BindingLayoutHandle m_ForwardLightsBindingLayout;
@@ -40,7 +42,7 @@ namespace BlackPearl {
 		MaterialShader* m_ForwardShadingShader = nullptr;
 
 		InstancedOpaqueDrawStrategy* m_DrawStrategy;
-
+        SceneData* m_CustumView = nullptr;
 
         ShaderParameters m_ShaderParameters[ShaderType::NUM_COMPILE_SHADER_STAGES];
 	};

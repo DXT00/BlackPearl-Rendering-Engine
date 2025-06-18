@@ -18,10 +18,10 @@ namespace BlackPearl {
         return path;
     }
 
+    //android 平台 store后要跑 GetShaderFromAndroid.bat
     static void StoreShader(const std::string& shaderCode, const std::string& name) {
 
         AssetManager::StoreGLSLShader(shaderCode, name);
-//android 平台 store后要跑.bat
 
     }
     static ShaderType ShaderTypeFromString(const std::string& type) {
@@ -38,7 +38,8 @@ namespace BlackPearl {
             return ShaderType::TessellationControl;
         if (type == "tessellation_evaluation_shader")
             return ShaderType::TesselationEvaluation;
-        //GE_ASSERT(false, "Unknown shader type!");
+        
+        GE_CORE_ERROR("Unknown shader type!");
         return ShaderType::Invalid;
     }
 
@@ -78,7 +79,7 @@ namespace BlackPearl {
 		m_ShaderPath = filepath;
         std::string extentions = ReadExtentions(extensions);
         std::string commonSource = ReadFile(m_CommonStructPath);// m_GlslIncluder.processIncludes(ReadFile(m_CommonStructPath));
-        std::string macroSource = ReadMacros(macros) + "\r\n" + ReadFile(m_MacroPath);
+        std::string macroSource = "\r\n" + ReadMacros(macros) + "\r\n" + ReadFile(m_MacroPath);
         commonSource = extentions + macroSource + commonSource;
         m_GlslCode = ReadFile(m_ShaderPath);
         std::unordered_map<ShaderType, std::string> shaderSources = PreProcess(m_GlslCode, commonSource);
@@ -153,7 +154,7 @@ namespace BlackPearl {
             GE_ASSERT(eol != std::string::npos, "Syntax error");
             size_t begin = pos + typeTockenLength + 1;
             std::string type = source.substr(begin, eol - begin);
-            GE_ASSERT(ShaderTypeFromString(type), "Invalid shader type specified");
+            GE_ASSERT(ShaderTypeFromString(type) != ShaderType::Invalid, "Invalid shader type specified");
 
             size_t nextLinePos = source.find_first_not_of("\r\n", eol);
             pos = source.find(typeToken, nextLinePos);

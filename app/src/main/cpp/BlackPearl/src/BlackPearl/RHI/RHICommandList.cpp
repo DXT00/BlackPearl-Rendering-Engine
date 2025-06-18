@@ -35,5 +35,20 @@ namespace BlackPearl {
             g_deviceManager->GetDevice()->releaseThreadOwnership();
     }
 
+    void RHIAcquireThreadOwnership()
+    {
+        return GImmediateCmdList.AcquireThreadOwnership();
+    }
+
+    void RHIReleaseThreadOwnership()
+    {
+        return GImmediateCmdList.ReleaseThreadOwnership();
+    }
+
+    int32_t RHIGetSyncInterval()
+    {
+        return math::max(Configuration::SyncInterval, 0);
+    }
+
 
 }

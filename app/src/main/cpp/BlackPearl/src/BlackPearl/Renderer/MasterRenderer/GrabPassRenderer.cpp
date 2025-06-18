@@ -8,7 +8,8 @@
 #endif
 #include "Renderer/MasterRenderer/GrabPassRenderer.h"
 #include "RHI/RHIGlobals.h"
-
+#include "Renderer/RenderGraph/RenderGraph.h"
+#include "Timestep/TimeCounter.h"
 namespace BlackPearl{
     bool GrabPassRenderer::s_HDR = true;
 
@@ -23,7 +24,7 @@ namespace BlackPearl{
         std::vector<std::string> extends;
         std::vector<std::string> macros;
 #ifdef GE_PLATFORM_ANDROID
-        if  (m_bPlsCopy && GSupportsPixelLocalStorage && GSupportsShaderDepthStencilFetch)
+        if  (m_bPlsCopy && RenderGraph::SupportPLS())
         {
             extends.push_back("#extension GL_EXT_shader_pixel_local_storage : require");
             extends.push_back("#extension GL_ARM_shader_framebuffer_fetch_depth_stencil : require");
@@ -59,21 +60,15 @@ namespace BlackPearl{
 
     }
     void GrabPassRenderer::Render(ICommandList* cmdList, IFramebuffer* targetFramebuffer, Scene* scene){
+        SCOPE_TIME_COUNTER(GrabPass);
 
-        //glViewport(0, 0, m_TextureWidth, m_TexxtureHeight);
 
-        //glClear(GL_COLOR_BUFFER_BIT);
-        //m_FinalScreenShader->Bind();
-        //m_FinalScreenShader->SetUniform1i("u_FinalScreenTexture", 0);
-        //m_FinalScreenShader->SetUniform1f("u_Settings.hdr", s_HDR);
-        //glActiveTexture(GL_TEXTURE0);
-        //m_HDRPostProcessTexture->Bind();  // shading pass 生成的texture
-        //DrawObject(m_FinalScreenQuad, m_FinalScreenShader);
+
 
 
 
         //Deferred Shading Material
-        cmdList->beginMarker("GrabPass");
+        //cmdList->beginMarker("GrabPass");
 
         SceneData* view = Renderer::GetSceneData();
         GE_ERROR_JUDGE();
@@ -142,7 +137,7 @@ namespace BlackPearl{
         Draw(cmdList, drawItem);
 
         //cmdList->endRenderPass();
-        cmdList->endMarker();
+      //  cmdList->endMarker();
 
 
     }

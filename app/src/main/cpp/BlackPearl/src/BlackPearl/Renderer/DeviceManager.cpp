@@ -4,10 +4,15 @@
 #include "BlackPearl/RHI/RHIFrameBuffer.h"
 #include "BlackPearl/Math/vector.h"
 #include "BlackPearl/Application.h"
+#include "Renderer/SystemTextures.h"
+
 namespace BlackPearl {
     void DeviceManager::Init(const DeviceCreationParameters& params)
     {
         m_FirstFrame = true;
+        CreateDevice();
+
+        SystemTexture::Get().Init(GetDevice());
         CreateViewport(params);
     }
     DeviceManager* DeviceManager::Create(DynamicRHI::Type api)

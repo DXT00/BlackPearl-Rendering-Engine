@@ -15,7 +15,7 @@
 #include "BlackPearl/Core.h"
 #include "BlackPearl/Core/PlatformProc.h"
 #include "BlackPearl\RHI\Common\RHIUtils.h"
-// Copyright Epic Games, Inc. All Rights Reserved.
+#include "Timestep/TimeCounter.h"
 
 
 
@@ -573,6 +573,7 @@ bool PlatformBlitToViewport(FPlatformOpenGLDevice* Device, const OpenGLViewport&
 
 		if (bPresent)
 		{
+            SCOPE_TIME_COUNTER(PC_SwapBuffers);
 			int32_t RealSyncInterval = bLockToVsync ? SyncInterval : 0;
 			if (wglSwapIntervalEXT_ProcAddress && Context->SyncInterval != RealSyncInterval)
 			{

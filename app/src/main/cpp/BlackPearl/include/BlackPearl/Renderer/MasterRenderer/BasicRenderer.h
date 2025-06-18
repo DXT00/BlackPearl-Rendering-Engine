@@ -49,7 +49,7 @@ namespace BlackPearl
 		void PrepareBasicShaderParameters(std::shared_ptr<class Mesh> mesh,IShader* shader, bool isLight = false, unsigned int textureBeginIdx = 2);
 	
 	protected:
-		void SetupView(ICommandList* commandList, const IView* view, const IView* viewPrev);
+		void SetupView(ICommandList* commandList,  IView* view,  IView* viewPrev);
 
         void SetupInputBuffers(ICommandList* cmdList, BufferGroup* buffers, Transform* trans, GraphicsState& state);
         bool SetupMaterial(const Material* material, RasterCullMode cullMode, const GraphicsPipelineDesc& pipelineDesc, GraphicsState& state);
