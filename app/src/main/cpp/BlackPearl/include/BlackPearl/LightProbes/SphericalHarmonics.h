@@ -17,7 +17,7 @@ namespace BlackPearl {
 	{
 	public:
 		/* input: environmentMap,output SHCoeffs[9]*/
-		static std::vector<std::vector<float>> UpdateCoeffs(TextureHandle environmentCubeMap);
+		static std::vector<float3> UpdateCoeffs(TextureHandle environmentCubeMap);
 		static float texelSolidAngle(int x,int y,unsigned int width,unsigned int height);
 		static float areaElement(float x, float y);
 		static void InitialCubeMapVector(unsigned int cubeMapWidth);

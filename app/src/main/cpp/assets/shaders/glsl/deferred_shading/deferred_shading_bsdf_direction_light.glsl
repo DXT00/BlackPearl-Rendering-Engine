@@ -6,10 +6,9 @@
 precision mediump float;  // 必须声明精度（ES 要求）
 #endif
 
-layout(location = 0) in vec3 aPos;
-layout(location = 1) in vec3 aPrePos;
-layout(location = 2) in vec2 aTexCoords;
-layout(location = 3) in vec3 aNormal;
+layout(location = Slot_aPos) in vec3 aPos;
+layout(location = Slot_aNormal) in vec3 aNormal;
+layout(location = Slot_aTexCoords) in vec2 aTexCoords;
 
 out vec2 v_TexCoord;
 out vec3 v_Normal;
@@ -17,16 +16,14 @@ out vec3 v_FragPos;
 
 
 #include <assets/shaders/glsl/common/CommonViewStruct.glsl>
-#include <assets/shaders/glsl/common/CommonDeferredStruct.glsl>
 
+#include <assets/shaders/glsl/common/CommonTransformStruct.glsl>
 
 void main()
 {
-    gl_Position = g_View.matProjectionView * g_Transform.matModel * vec4(aPos,1.0);
+  	v_TexCoord = aTexCoords;
 
-    v_TexCoord = aTexCoords;
-    v_FragPos = vec3(g_Transform.matModel* vec4(aPos,1.0));
-    v_Normal =  mat3(g_Transform.matInvModel)* aNormal;
+	gl_Position = vec4(aPos,1.0);
 
 }
 
@@ -35,26 +32,43 @@ void main()
 #version 450 core
 
 
-#include <assets/shaders/pbr/BSDF.glsl>
 
-#include <assets/shaders/glsl/common/CommonDeferredStruct.glsl>
-
-
+#if !USE_GLES_PLS
 out vec4 FragColor;
+#endif
+
 in vec2 v_TexCoord;
 
+#include <assets/shaders/glsl/common/CommonViewStruct.glsl>
+#include <assets/shaders/glsl/common/CommonDeferredStruct.glsl>
+#include <assets/shaders/glsl/common/CommonTransform.glsl>
+#include <assets/shaders/glsl/bsdf/BSDF.glsl>
+#include <assets/shaders/glsl/gBuffer/gBuffer.glsl>
 
 void main(){
-//	SurfaceGeometry geom;
-//      geom.position = v_FragPos;
-//      geom.normal = normalize(v_Normal);
-      //TODO::
-//      geom.viewDir = normalize(-vPosition); // Assuming eye is at (0,0,0)
-//      geom.tangent = normalize(vTangent);
+    vec2 uv = v_TexCoord;
+#if USE_GLES_PLS
+    uv = vec2(uv.x, 1.0-uv.y);
+#endif
+    GBufferData GBuffer = DecodeGBuffer(uv);
+
+    float2 pixelPos = uv * g_View.viewportSize; //v_TexCoord range [0,1]
+
+    float3 worldPos = ScreenSpaceToWorldPosition(pixelPos, GBuffer.Depth);
+
+      SurfaceGeometry geom;
+      geom.position = worldPos;
+      geom.normal = GBuffer.WorldNormal;
+      geom.viewDir = normalize(g_View.cameraPos - worldPos); // Assuming eye is at (0,0,0)
+#if USE_TBN
+//      todo:: GBuffer.WorldTangent = half3(0); //TODO:: get Aniso flag
+//      geom.tangent = normalize(v_Tangent);
 //      geom.bitangent = normalize(cross(geom.normal, geom.tangent));
+      getTBN(geom.normal, uv, geom.normal, geom.tangent, geom.bitangent);
 
-
-    GBufferData GBuffer = DecodeGbuffer(t_gGbufferA, t_gGbufferB, t_gGbufferC);
+#else
+      getTBN(worldPos, uv, geom.normal, geom.tangent, geom.bitangent);
+#endif
 
 
 #if COOK
@@ -62,17 +76,41 @@ void main(){
 #elif (Disney)
     DisneyMaterialSample mat = GetMaterialFromGBuffer(GBuffer);
 #endif
-    mat.emissive = t_gSceneColor.xyz;
 
-   for(uint nLight = 0; nLight < g_ForwardLight.numLights; nLight++)
+#if USE_GLES_PLS
+    mat.emissive = pls.t_gSceneColor.rgb;
+#else
+    mat.emissive = texture(t_gSceneColor,uv).rgb;
+
+#endif
+    vec4 sceneColor = vec4(0.0);
+   //for(uint nLight = 0u; nLight < uint(g_DeferredLight.numLights); nLight++)
    {
-       LightConstants light = g_ForwardLight.lights[i];
-       FragColor += ShadeSurface(light, geom, mat);
-
+       LightConstants light = g_DeferredLight.light;
+#if USE_GLES_PLS
+       sceneColor = ShadeSurface(light, geom, mat);
+#else
+       FragColor = ShadeSurface(light, geom, mat);
+#endif
    }
    half IndirectIrradiance = GBuffer.IndirectIrradiance;
-    
+#if USE_GLES_PLS
+//    pls.t_gGbufferA = vec4(0.0);
+//    pls.t_gGbufferB = vec4(0.0);
+//    pls.t_gGbufferC = vec4(0.0);
+
+    pls.t_gSceneColor =sceneColor;
+#endif
+
+
+
     //direct light
 
-    //ibl
+//    //ibl
+//    if(v_TexCoord.x <0.5 && v_TexCoord.y < 0.5){
+//     FragColor = vec4(1,0,0,1);
+//    }else{
+//        FragColor = texture(t_gGbufferA,v_TexCoord);//vec4(texture(t_gGbufferC,v_TexCoord).xyz,1.0);
+//
+//    }
 }

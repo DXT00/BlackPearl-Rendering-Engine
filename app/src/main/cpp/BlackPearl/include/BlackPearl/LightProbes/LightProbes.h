@@ -10,7 +10,7 @@ namespace BlackPearl {
 	class IBLProbesRenderer;
 
 	/*Logical LightProbe*/
-	/*Ã¿¸öprobe ¶¼ÓÉÒ»¸ö CubeObj ´ú±í*/
+	/*æ¯ä¸ªprobe éƒ½ç”±ä¸€ä¸ª CubeObj ä»£è¡¨*/
 	class LightProbe
 	{
 	
@@ -48,8 +48,8 @@ namespace BlackPearl {
 		void SetScale(glm::vec3 size);
 
 		/*SH Coefficients set*/
-		void SetSHCoeffs(std::vector<std::vector<float>>& SHCoeffs) { GE_ASSERT(m_Type == Type::DIFFUSE, "is not a diffuse probe"); m_SHCoeffs = SHCoeffs; }
-		std::vector<std::vector<float>> GetCoeffis()const { GE_ASSERT(m_Type == Type::DIFFUSE, "is not a diffuse probe"); return m_SHCoeffs; }
+		void SetSHCoeffs(std::vector<float3>& SHCoeffs) { GE_ASSERT(m_Type == Type::DIFFUSE, "is not a diffuse probe"); m_SHCoeffs = SHCoeffs; }
+		std::vector<float3> GetCoeffis()const { GE_ASSERT(m_Type == Type::DIFFUSE, "is not a diffuse probe"); return m_SHCoeffs; }
 
 		Type GetType()const { return m_Type; }
 		/*cubeObj*/
@@ -74,10 +74,10 @@ namespace BlackPearl {
 		glm::vec3 m_Size;
 		Object* m_LightProbeObj;
 
-		std::vector<std::vector<float>> m_SHCoeffs;
+		std::vector<float3> m_SHCoeffs;
 		Type m_Type;
 		
-		//¼ÇÂ¼Õâ¸öprobeÔÚÄÄ¸öÇøÓò,Ö»ÓĞdiffuse probe»®·ÖÇøÓò
+		//è®°å½•è¿™ä¸ªprobeåœ¨å“ªä¸ªåŒºåŸŸ,åªæœ‰diffuse probeåˆ’åˆ†åŒºåŸŸ
 		unsigned int m_AreaId;
 	};
 

@@ -106,6 +106,7 @@ namespace BlackPearl {
             light->FillLightConstants(lightConst);
             output.lights[i] = lightConst;
         }
+        output.numLightProbes = 0;
     }
 
     void ForwardShadingRenderer::Render(Object* obj)

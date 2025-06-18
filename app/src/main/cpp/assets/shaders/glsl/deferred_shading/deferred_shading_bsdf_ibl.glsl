@@ -6,10 +6,9 @@
 precision mediump float;  // 必须声明精度（ES 要求）
 #endif
 
-layout(location = 0) in vec3 aPos;
-layout(location = 1) in vec3 aPrePos;
-layout(location = 2) in vec2 aTexCoords;
-layout(location = 3) in vec3 aNormal;
+layout(location = Slot_aPos) in vec3 aPos;
+layout(location = Slot_aNormal) in vec3 aNormal;
+layout(location = Slot_aTexCoords) in vec2 aTexCoords;
 
 out vec2 v_TexCoord;
 out vec3 v_Normal;
@@ -17,15 +16,14 @@ out vec3 v_FragPos;
 
 
 #include <assets/shaders/glsl/common/CommonViewStruct.glsl>
-#include <assets/shaders/glsl/common/CommonDeferredStruct.glsl>
+
+#include <assets/shaders/glsl/common/CommonTransformStruct.glsl>
 
 void main()
 {
-    gl_Position = g_View.matProjectionView * g_Transform.matModel * vec4(aPos,1.0);
+  	v_TexCoord = aTexCoords;
 
-    v_TexCoord = aTexCoords;
-    v_FragPos = vec3(g_Transform.matModel* vec4(aPos,1.0));
-    v_Normal =  mat3(g_Transform.matInvModel)* aNormal;
+	gl_Position = vec4(aPos,1.0);
 
 }
 
@@ -34,37 +32,144 @@ void main()
 #version 450 core
 
 
-#include <assets/shaders/pbr/BSDF.glsl>
 
-#include <forward_cb.h>
-
-
-layout(std140, binding = 8) uniform ForwardShadingUBO {
-    ForwardShadingLightConstants g_ForwardLight;
-
-} ;
-
-
+#if !USE_GLES_PLS
 out vec4 FragColor;
+#endif
+
 in vec2 v_TexCoord;
 
-layout (location = 0) out vec4 gSceneColor; //use for emissive color and fog
-layout (location = 1) out vec4 gGbufferA;  //encode normal.xy + Encode IndirectIrradiance + reserve
-layout (location = 2) out vec4 gGbufferB; // Metallic + Specular + Roughness + ShadingModelID / 255.0
-layout (location = 3) out vec4 gGbufferC; 
+#include <assets/shaders/glsl/common/CommonViewStruct.glsl>
+#include <assets/shaders/glsl/common/CommonDeferredStruct.glsl>
+#include <assets/shaders/glsl/common/CommonTransform.glsl>
+#include <assets/shaders/glsl/bsdf/BSDF.glsl>
+#include <assets/shaders/glsl/gBuffer/gBuffer.glsl>
+
+
+
+vec3 SHDiffuse(const int probeIndex,const vec3 normal){
+	float x = normal.x;
+	float y = normal.y;
+	float z = normal.z;
+    LightProbeConstants probe = g_DeferredLight.lightProbes[probeIndex];
+
+	vec3 result = (
+		probe.SHCoeffs[0] +
+		
+		probe.SHCoeffs[1] * x +
+		probe.SHCoeffs[2] * y +
+		probe.SHCoeffs[3] * z +
+		
+		probe.SHCoeffs[4] * z * x +
+		probe.SHCoeffs[5] * y * z +
+		probe.SHCoeffs[6] * y * x +
+		probe.SHCoeffs[7] * (3.0 * z * z - 1.0) +
+		probe.SHCoeffs[8] * (x*x - y*y)
+  );
+
+  return max(result, vec3(0.0));
+}
+vec3 FresnelSchlickRoughness(float cosTheta, vec3 F0, float roughness){
+	return F0 + (max(vec3(1.0 - roughness), F0) - F0) * pow(1.0 - cosTheta, 5.0);
+}
+
+vec3 CalculateAmbientGI(vec3 worldPos, vec3 N, vec3 V, vec3 albedo, float metallic, float roughness, float ao){
+
+//	vec3 albedo = pow(texture(u_Material.diffuse,v_TexCoord).rgb,vec3(2.2));
+//	float metallic = texture(u_Material.mentallic, v_TexCoord).r;
+//    float roughness = texture(u_Material.roughness, v_TexCoord).r;
+//    float ao = texture(u_Material.ao, v_TexCoord).r;
+	//vec3 normal = texture(u_Material.normal,v_TexCoord).xyz;
+	//normal = normalize(normal);
+//	vec3 N = getNormalFromMap(v_FragPos,v_TexCoord);
+//
+//	vec3 V = normalize(u_CameraViewPos-v_FragPos);
+	vec3 R = reflect(-V,N);
+
+	vec3 F0 = vec3(0.04);
+	F0 = mix(F0,albedo,metallic);
+
+	//ambient lightings (we now use IBL as the ambient term)!
+	vec3 F =  FresnelSchlickRoughness(max(dot(N, V), 0.0), F0, roughness);
+	vec3 Ks = F;
+	vec3 Kd = vec3(1.0)-Ks;
+	Kd = Kd * (1.0 - metallic);
+	vec3 environmentIrradiance = vec3(0.0);//= vec3(1.0,1.0,1.0);
+	uint kProbe = g_DeferredLight.numLightProbes;
+    float totalWeight = 0;
+    for(uint i=0u; i< kProbe; i++){
+        float d = length(g_DeferredLight.lightProbes[i].pos - worldPos);
+        totalWeight += 1.0/d*d;
+    }
+
+	for(int i=0;i< kProbe;i++){
+        float d = length(g_DeferredLight.lightProbes[i].pos - worldPos);
+        float w = 1.0/d*d;
+        w = w/totalWeight;
+        w = max(0.001,w);
+		environmentIrradiance += w * SHDiffuse(i,N);// u_ProbeWeight[i]*texture(u_IrradianceMap[i],N).rgb;
+
+	}
+	vec3 diffuse = environmentIrradiance*albedo;
+//
+//	//sample both the prefilter map and the BRDF lut and combine them together as per the Split-Sum approximation to get the IBL specular part
+//	const float MAX_REFLECTION_LOD = 4.0;//1.0;
+//	//sample MAX_REFLECTION_LOD level mipmap everytime !
+//	/*specular Map只取最近的一个*/
+//	vec3 prefileredColor = textureLod(u_PrefilterMap,R,roughness*MAX_REFLECTION_LOD).rgb;//= vec3(1.0,1.0,1.0);
+//
+//
+////	for(int i=0;i<u_Kprobes;i++){
+////		prefileredColor+= u_ProbeWeight[i]*textureLod(u_PrefilterMap[i],R,roughness*MAX_REFLECTION_LOD).rgb;
+////	//	prefileredColor*= textureLod(u_PrefilterMap[i],R,roughness*MAX_REFLECTION_LOD).rgb;
+////
+////	}
+//	vec2 brdf = texture(u_BrdfLUTMap,vec2(max(dot(N,V),0.0),roughness)).rg;
+//
+//	vec3 specular = prefileredColor * (F*brdf.x+brdf.y);
+//	vec3 ambient =  (Kd*diffuse+specular) * ao;
+//
+////	 ambient = ambient / (ambient + vec3(1.0));
+////	//gamma correction
+////    ambient = pow(ambient, vec3(1.0/2.2));  
+//	return ambient;
+
+
+	diffuse = diffuse / (diffuse + vec3(1.0));
+	diffuse = pow(diffuse, vec3(1.0/2.2)); 
+    return diffuse;
+
+}
+
+
+
+
 
 
 void main(){
-//	SurfaceGeometry geom;
-//      geom.position = v_FragPos;
-//      geom.normal = normalize(v_Normal);
-      //TODO::
-//      geom.viewDir = normalize(-vPosition); // Assuming eye is at (0,0,0)
-//      geom.tangent = normalize(vTangent);
+    vec2 uv = v_TexCoord;
+#if USE_GLES_PLS
+    uv = vec2(uv.x, 1.0-uv.y);
+#endif
+    GBufferData GBuffer = DecodeGBuffer(uv);
+
+    float2 pixelPos = uv * g_View.viewportSize; //v_TexCoord range [0,1]
+
+    float3 worldPos = ScreenSpaceToWorldPosition(pixelPos, GBuffer.Depth);
+
+      SurfaceGeometry geom;
+      geom.position = worldPos;
+      geom.normal = GBuffer.WorldNormal;
+      geom.viewDir = normalize(g_View.cameraPos - worldPos); // Assuming eye is at (0,0,0)
+#if USE_TBN
+//      todo:: GBuffer.WorldTangent = half3(0); //TODO:: get Aniso flag
+//      geom.tangent = normalize(v_Tangent);
 //      geom.bitangent = normalize(cross(geom.normal, geom.tangent));
+      getTBN(geom.normal, uv, geom.normal, geom.tangent, geom.bitangent);
 
-
-    GBufferData GBuffer = DecodeGbuffer(gGbufferA, gGbufferB, gGbufferC);
+#else
+      getTBN(worldPos, uv, geom.normal, geom.tangent, geom.bitangent);
+#endif
 
 
 #if COOK
@@ -73,15 +178,36 @@ void main(){
     DisneyMaterialSample mat = GetMaterialFromGBuffer(GBuffer);
 #endif
 
-   for(uint nLight = 0; nLight < g_ForwardLight.numLights; nLight++)
-   {
-       LightConstants light = g_ForwardLight.lights[i];
-       FragColor += ShadeSurface(light, geom, mat);
+#if USE_GLES_PLS
+    mat.emissive = pls.t_gSceneColor.rgb;
+#else
+    mat.emissive = texture(t_gSceneColor,uv).rgb;
 
-   }
-   half IndirectIrradiance = GBuffer.IndirectIrradiance;
-    
+#endif
+
+
+    vec3 IBL = CalculateAmbientGI(worldPos, geom.normal, geom.viewDir, mat.albedo, mat.metallic, mat.roughness, mat.ao);
+
+
+
+
+#if USE_GLES_PLS
+       pls.t_gSceneColor = vec4( mat.emissive + IBL,1.0);
+ #else
+       FragColor =  vec4( mat.emissive + IBL,1.0);
+#endif
+   
+   //half IndirectIrradiance = GBuffer.IndirectIrradiance;
     //direct light
 
-    //ibl
+//    //ibl
+//    if(v_TexCoord.x <0.5 && v_TexCoord.y < 0.5){
+//     FragColor = vec4(1,0,0,1);
+//    }else{
+//        FragColor = texture(t_gGbufferA,v_TexCoord);//vec4(texture(t_gGbufferC,v_TexCoord).xyz,1.0);
+//
+//    }
+
+
+
 }

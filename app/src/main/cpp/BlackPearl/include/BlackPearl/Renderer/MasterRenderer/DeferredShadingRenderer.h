@@ -3,9 +3,14 @@
 //
 #pragma once
 #include "BasicRenderer.h"
-#include "hlsl/core/forward_cb.h"
+#include "hlsl/core/deferred_lighting_cb.h"
 namespace BlackPearl
 {
+    enum ShadingType {
+        ST_DirectionLight,
+        ST_PointLight,
+        ST_IBL
+    };
     class DeferredShadingRenderer : public BasicRenderer
     {
         public:
@@ -14,8 +19,13 @@ namespace BlackPearl
         void Init();
         void Render(ICommandList* commandList, IFramebuffer* targetFramebuffer, Scene* scene);
 
+        void RenderDirectionLights(ICommandList* commandList, IFramebuffer* targetFramebuffer, Scene* scene);
+        void RenderPointLights(ICommandList* commandList, IFramebuffer* targetFramebuffer, Scene* scene);
+        void RenderIBLProbes(ICommandList* commandList, IFramebuffer* targetFramebuffer, Scene* scene);
 
-        void FillShaderParameters(LightSources* lightSource, ForwardShadingLightConstants& output);
+
+        void FillLightsParameters(Light* light, DeferredLightingConstants& output);
+        void FillProbesParameters(const std::vector<Object*>& probes, DeferredLightingConstants& output);
 
     private:
         static float CalculateSphereRadius(Object* pointLight);

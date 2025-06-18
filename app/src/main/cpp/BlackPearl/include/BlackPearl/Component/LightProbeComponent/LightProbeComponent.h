@@ -49,8 +49,8 @@ namespace BlackPearl {
 	
 
 		/*SH Coefficients set*/
-		void SetSHCoeffs(std::vector<std::vector<float>>& SHCoeffs) { GE_ASSERT(m_Type == ProbeType::DIFFUSE_PROBE, "is not a diffuse probe"); m_SHCoeffs = SHCoeffs; }
-		std::vector<std::vector<float>> GetCoeffis()const { GE_ASSERT(m_Type == ProbeType::DIFFUSE_PROBE, "is not a diffuse probe"); return m_SHCoeffs; }
+		void SetSHCoeffs(std::vector<float3>& SHCoeffs) { GE_ASSERT(m_Type == ProbeType::DIFFUSE_PROBE, "is not a diffuse probe"); m_SHCoeffs = SHCoeffs; }
+		std::vector<float3> GetCoeffis()const { GE_ASSERT(m_Type == ProbeType::DIFFUSE_PROBE, "is not a diffuse probe"); return m_SHCoeffs; }
 
 		ProbeType GetType() const { return m_Type; }
         ProbeStorageType GetStorageType() const { return m_StorageType; }
@@ -67,7 +67,7 @@ namespace BlackPearl {
 		bool GetDynamicSpecularMap() { return m_UpdateSpecularMapEveryFrame; }
 		void SetDynamicSpecularMap(bool dynamic) { m_UpdateSpecularMapEveryFrame = dynamic; }
 	
-		void FillLightProbeConstants(LightProbeConstants& lightProbeConstants) const;
+		void FillLightProbeConstants(const float3& pos, LightProbeConstants& lightProbeConstants) const;
 
 	public:
 		bool enabled = true;
@@ -83,14 +83,14 @@ namespace BlackPearl {
 
 		TextureHandle m_SpecularPrefilterCubeMap = nullptr;
 		TextureHandle m_SpecularBrdfLutMap = nullptr;
-		unsigned int m_MaxMipmapLevel = 2;
+		unsigned int m_MaxMipmapLevel = 1;
 
 		unsigned int					m_SampleCounts = 1024;
 		unsigned int					m_EnvironmentCubeMapResolution = Configuration::EnvironmantMapResolution;// 512;// 128;
 		unsigned int					m_SpecularCubeMapResolution = Configuration::EnvironmantMapResolution;// 512;// 128;
 		float       					m_Zfar;//perspective cube range from 0 to zFar
 
-		std::vector<std::vector<float>> m_SHCoeffs;
+		std::vector<float3> m_SHCoeffs;
 		ProbeType m_Type;
         ProbeStorageType m_StorageType = ProbeStorageType::PT_SH;
 

@@ -26,7 +26,10 @@
 #include "light_cb.h"
 #include "view_cb.h"
 
-#define FORWARD_MAX_LIGHTS 16
+#define FORWARD_MAX_LIGHTS 20
+
+#define FORWARD_MAX_DIRECTION_LIGHTS 1
+#define FORWARD_MAX_POINT_LIGHTS 16
 #define FORWARD_MAX_SHADOWS 16
 #define FORWARD_MAX_LIGHT_PROBES 16
 #include "align.h"
@@ -48,6 +51,7 @@ struct ForwardShadingViewConstants
 
     ALIGN(4) float preExposure;
 };
+    
 
 struct ForwardShadingLightConstants
 {
@@ -58,11 +62,15 @@ struct ForwardShadingLightConstants
 
     ALIGN(8) uint2       padding;*/
     ALIGN(4) uint        numLights;
-   // ALIGN(4) uint        numLightProbes;
+ /*   ALIGN(4) uint        numDirectionLights;
+    ALIGN(4) uint        numPointLights;*/
+    ALIGN(4) uint        numLightProbes;
 
     LightConstants lights[FORWARD_MAX_LIGHTS];
-  /*  ShadowConstants shadows[FORWARD_MAX_SHADOWS];
-    LightProbeConstants lightProbes[FORWARD_MAX_LIGHT_PROBES];*/
+    //LightConstants pointLights[FORWARD_MAX_POINT_LIGHTS];
+
+  /*  ShadowConstants shadows[FORWARD_MAX_SHADOWS];*/
+    LightProbeConstants lightProbes[FORWARD_MAX_LIGHT_PROBES];
 };
 
 #endif // FORWARD_CB_H

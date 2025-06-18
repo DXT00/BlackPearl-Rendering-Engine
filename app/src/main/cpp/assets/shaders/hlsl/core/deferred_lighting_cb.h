@@ -26,9 +26,10 @@
 #include "light_cb.h"
 #include "view_cb.h"
 
-#define DEFERRED_MAX_LIGHTS 16
+#define DEFERRED_MAX_DIRECTION_LIGHTS 1
+#define DEFERRED_MAX_POINT_LIGHTS 16
 #define DEFERRED_MAX_SHADOWS 16
-#define DEFERRED_MAX_LIGHT_PROBES 16
+#define DEFERRED_MAX_LIGHT_PROBES 32
 
 //#ifndef GE_SHADERCOMPILE
 //
@@ -37,9 +38,10 @@
 //
 //#endif
 
+// one light per fullscreen drawcall (can be point light, direction light..)
 struct DeferredLightingConstants
 {
-    PlanarViewConstants view;
+   /* PlanarViewConstants view;
 
     float2      shadowMapTextureSize;
     int         enableAmbientOcclusion;
@@ -56,10 +58,12 @@ struct DeferredLightingConstants
     float2      randomOffset;
     float2      padding2;
 
-    float4      noisePattern[4];
-
-    LightConstants lights[DEFERRED_MAX_LIGHTS];
-    ShadowConstants shadows[DEFERRED_MAX_SHADOWS];
+    float4      noisePattern[4];*/
+    //only for diffuse probe now
+    ALIGN(4)  uint  numLightProbes;
+  
+    LightConstants light;
+  //  ShadowConstants shadows[DEFERRED_MAX_SHADOWS];
     LightProbeConstants lightProbes[DEFERRED_MAX_LIGHT_PROBES];
 };
 

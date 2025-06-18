@@ -79,7 +79,7 @@ namespace BlackPearl {
 //			textureDesc.keepInitialState = true;
 //			textureDesc.isRenderTarget = true;
 
-			m_DefaultBackBuffers[i] = SystemTexture::Get().SceneColor;//m_Device->createTexture(textureDesc);
+			m_DefaultBackBuffers[i] = SystemTexture::Get().GetBackBuffer();//m_Device->createTexture(textureDesc);
             GE_ERROR_JUDGE();
 
         }

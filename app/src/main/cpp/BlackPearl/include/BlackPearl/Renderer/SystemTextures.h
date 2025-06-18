@@ -20,6 +20,9 @@ namespace BlackPearl {
        TextureHandle blackCubeMapArray;
        TextureHandle blackCubeMap;
 
+       //Default back buffer rendertarget
+       TextureHandle DefaultRT;
+
        //Gbuffer textures
        TextureHandle SceneColor;
        TextureHandle SceneColorResolve; //for mass, todo
@@ -36,11 +39,14 @@ namespace BlackPearl {
        TextureHandle ShadowCubeMap;
 
        SystemTexture();
+
+       TextureHandle GetBackBuffer();
     private:
         PlatformGbufferConfig m_GbufferConfig;
 
         bool m_isValid;
 
+        void InitDefaultRT(DeviceHandle device);
         void InitDefaultTextures(DeviceHandle device);
         void InitGbufferTextures(DeviceHandle device);
         void InitSceneTextures(DeviceHandle device);

@@ -34,7 +34,7 @@ namespace BlackPearl {
 
 		}
 		if (type == Type::DIFFUSE)
-			m_SHCoeffs.assign(9, std::vector<float>(3, 0.0f));
+			m_SHCoeffs.assign(9, float3(0.0));
 	}
 
 	void LightProbe::SetPosition(glm::vec3 pos)

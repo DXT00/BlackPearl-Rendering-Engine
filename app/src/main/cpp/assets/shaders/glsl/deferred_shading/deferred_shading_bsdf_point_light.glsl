@@ -86,7 +86,7 @@ void main(){
     vec4 sceneColor = vec4(0.0);
    //for(uint nLight = 0u; nLight < uint(g_DeferredLight.numLights); nLight++)
    {
-       LightConstants light = g_DeferredLight.lights[0];
+       LightConstants light = g_DeferredLight.light;
 #if USE_GLES_PLS
        sceneColor += ShadeSurface(light, geom, mat);
 #else
@@ -99,7 +99,7 @@ void main(){
 //    pls.t_gGbufferB = vec4(0.0);
 //    pls.t_gGbufferC = vec4(0.0);
 
-    pls.t_gSceneColor =sceneColor;
+    pls.t_gSceneColor = sceneColor;
 #endif
 
 

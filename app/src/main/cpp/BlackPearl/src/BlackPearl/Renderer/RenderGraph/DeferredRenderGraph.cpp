@@ -50,6 +50,7 @@ namespace BlackPearl {
 			RenderMultiPass(ts, framebuffer, View);
 		}
 	}
+	// 直接 draw 到 defualt frambuffer -- >也就是 SceneColor 上
 	void DeferredRenderGraph::RenderSinglePass(Timestep ts, IFramebuffer* framebuffer, IView* View)
 	{
         m_CommandList->open();
@@ -116,27 +117,52 @@ namespace BlackPearl {
                 ERenderTargetActions::Clear_Store,
                 SystemTexture::Get().SceneDepth,
                 EDepthStencilTargetActions::ClearDepthStencil_StoreDepthStencil);
-
+            //draw emissive to sceneColor
             m_CommandList->beginRenderPass(RPInfo, "DeferredGbufferPass");
             m_GbufferRenderer->Render(m_CommandList, framebuffer, m_Scene);
 
             m_CommandList->endRenderPass();
+           
         }
 
         {
             SCOPE_TIME_COUNTER(Deferred_MultiPass1)
 
-            FRHIRenderPassInfo RPShadingInfo(framebuffer->getDesc().colorAttachments[0].texture,
+            FRHIRenderPassInfo RPShadingInfo(SystemTexture::Get().SceneColor,
                                              ERenderTargetActions::Clear_Store,
                                              SystemTexture::Get().SceneDepth,
                                              EDepthStencilTargetActions::LoadDepthStencil_StoreDepthStencil);
-
+            //draw direct light, indirect light to sceneColor
             m_CommandList->beginRenderPass(RPShadingInfo, "DeferredShadingPass");
             m_DeferredShadingRenderer->Render(m_CommandList, framebuffer, m_Scene);
+            //draw skybox
+
             m_SkyboxRenderer->Render(m_CommandList, framebuffer, m_Scene);
 
             m_CommandList->endRenderPass();
         }
+
+        {
+            SCOPE_TIME_COUNTER(Deferred_MultiPass2)
+
+                FRHIRenderPassInfo RPShadingInfo(SystemTexture::Get().DefaultRT,
+                    ERenderTargetActions::Clear_Store
+                  );
+            //draw direct light, indirect light to sceneColor
+            m_CommandList->beginRenderPass(RPShadingInfo, "ToneMapping");
+            m_DeferredShadingRenderer->Render(m_CommandList, framebuffer, m_Scene);
+            //draw skybox
+
+            m_SkyboxRenderer->Render(m_CommandList, framebuffer, m_Scene);
+
+            m_CommandList->endRenderPass();
+        }
+
+
+
+
+
+
 
         m_CommandList->close();
 	}

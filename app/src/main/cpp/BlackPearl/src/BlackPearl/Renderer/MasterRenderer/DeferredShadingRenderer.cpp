@@ -38,8 +38,9 @@ namespace BlackPearl{
         macros.push_back("#define DEFERRED_SHADING_PASS 1");
 
         //TODO:: 不需要多个不同light的shader， 通过宏来决定用哪个函数
-        m_DeferredPointLightShader = DBG_NEW MaterialShader("assets/shaders/glsl/deferred_shading/deferred_shading_bsdf_point_light.glsl", &extends, &macros);
-
+        m_DeferredDirectionLightShader  = DBG_NEW MaterialShader("assets/shaders/glsl/deferred_shading/deferred_shading_bsdf_direction_light.glsl", &extends, &macros);
+        m_DeferredPointLightShader = DBG_NEW MaterialShader("assets/shaders/glsl/deferred_shading/deferred_shading_bsdf_point_light.glsl", &extends, &macros);;
+        m_DeferredIBLShader = DBG_NEW MaterialShader("assets/shaders/glsl/deferred_shading/deferred_shading_bsdf_ibl.glsl", &extends, &macros);;
 
         
 
@@ -54,11 +55,11 @@ namespace BlackPearl{
             RHIBindingLayoutItem::RT_Texture_SRV(3),
             RHIBindingLayoutItem::RT_Texture_SRV(4),
             RHIBindingLayoutItem::RT_Texture_SRV(5),
-            RHIBindingLayoutItem::RT_VolatileConstantBuffer(8) //           ForwardShadingLightConstants
+            RHIBindingLayoutItem::RT_VolatileConstantBuffer(8) //           DeferredLightingConstants
 
         };
         m_DeferredShadingBindingLayout = m_Device->createBindingLayout(layoutDesc);
-        m_LightsCB = m_Device->createBuffer(RHIUtils::CreateStaticConstantBufferDesc(sizeof(ForwardShadingLightConstants), "ForwardShadingLightConstants"));
+        m_LightsCB = m_Device->createBuffer(RHIUtils::CreateStaticConstantBufferDesc(sizeof(DeferredLightingConstants), "DeferredLightingConstants"));
 
         BindingSetDesc bindingSetDesc;
         bindingSetDesc.bindings = {
@@ -78,84 +79,16 @@ namespace BlackPearl{
         m_ShaderParameters[ShaderType::Pixel].bindingLayouts.push_back(m_DeferredShadingBindingLayout);
         m_ShaderParameters[ShaderType::Pixel].bindingSets.push_back(m_DeferredShadingBindingSet);
 
-        m_ShaderParameters->PixelShader = m_DeferredPointLightShader->GetPixelShader();
-        m_ShaderParameters->VertexShader = m_DeferredPointLightShader->GetVertexShader();
+        m_ShaderParameters->PixelShader = m_DeferredDirectionLightShader->GetPixelShader();
+        m_ShaderParameters->VertexShader = m_DeferredDirectionLightShader->GetVertexShader();
 
 
     }
     void DeferredShadingRenderer::Render(ICommandList* cmdList, IFramebuffer* targetFramebuffer, Scene* scene)
     {
-        SCOPE_TIME_COUNTER(DeferredShading);
-
-
-      //  cmdList->beginMarker("DeferredShading");
-        LightSources* lightSources = scene->GetLightSources();
-
-        SceneData* view = Renderer::GetSceneData();
-        GE_ERROR_JUDGE();
-
-        SceneData* preView = Renderer::GetPreSceneData();
-        GE_ERROR_JUDGE();
-
-        SetupView(cmdList, view, preView);
-
-
-        DrawItem drawItem = IDrawStrategy::ObjectToDrawItem(scene->GetFullScreenObj())[0];
-
-        GraphicsState graphicsPSO;
-        graphicsPSO.framebuffer = targetFramebuffer;
-        graphicsPSO.viewport = view->GetViewportState();
-        graphicsPSO.shadingRateState = view->GetVariableRateShadingState();
-
-        GraphicsPipelineDesc psoDesc;
-
-        psoDesc.depthStencilState.setDepthFunc(ComparisonFunc::LessOrEqual);
-        psoDesc.depthStencilState.enableDepthTest();
-        psoDesc.depthStencilState.disableDepthWrite();
-        psoDesc.depthStencilState.disableStencil();
-
-        psoDesc.blendState.alphaToCoverageEnable = false;
-        psoDesc.rasterState.frontCounterClockwise = true;
-        psoDesc.rasterState.cullMode = RasterCullMode::None;
-        psoDesc.primType = PrimitiveType::TriangleList;
-        psoDesc.inputLayout = m_Device->createInputLayout(drawItem.mesh->GetVertexBufferLayout());
-
-        psoDesc.VS = m_DeferredPointLightShader->GetVertexShader();
-        psoDesc.PS = m_DeferredPointLightShader->GetPixelShader();
-        psoDesc.bFromPSOFileCache = false;
-        psoDesc.bindingLayouts.push_back(m_DeferredShadingBindingLayout);
-        psoDesc.bindingLayouts.push_back(m_ViewBindinglayout);
-
-
-        if (!m_DeferredShadingPointLightPso) {
-            m_DeferredShadingPointLightPso = m_Device->createGraphicsPipeline(psoDesc, targetFramebuffer);
-        }
-        graphicsPSO.pipeline = m_DeferredShadingPointLightPso;
-        graphicsPSO.bindings.push_back(m_DeferredShadingBindingSet);
-        graphicsPSO.bindings.push_back(m_ViewBindingset);
-        graphicsPSO.inputLayout = psoDesc.inputLayout;
-        /*for (int j = 0; j < shaderParms[ShaderType::Pixel].bindingLayouts.size(); ++j) {
-            psoDesc.bindingLayouts.push_back(shaderParms[ShaderType::Pixel].bindingLayouts[j]);
-        }
-
-        for (int j = 0; j < shaderParms[ShaderType::Pixel].bindingSets.size(); ++j) {
-            graphicsPSO.bindings.push_back(shaderParms[ShaderType::Pixel].bindingSets[j]);
-        }*/
-
-        /*GE_ERROR_JUDGE();
-        SetupMaterial(drawItem.material, drawItem.cullMode, psoDesc, graphicsPSO);*/
-        SetupInputBuffers(cmdList, const_cast<BufferGroup*>(drawItem.buffers), drawItem.transform, graphicsPSO);
-        GE_ERROR_JUDGE();
-
-
-
-        ForwardShadingLightConstants lightConstants{};
-        FillShaderParameters(scene->GetLightSources(), lightConstants);
-
-        cmdList->writeBuffer(m_LightsCB, &lightConstants, sizeof(ForwardShadingLightConstants));
-        cmdList->setGraphicsState(graphicsPSO);
-
-        Draw(cmdList, drawItem);
+       
+        RenderDirectionLights(cmdList, targetFramebuffer, scene);
+        RenderIBLProbes(cmdList, targetFramebuffer, scene);
 
         //cmdList->endRenderPass();
       //  cmdList->endMarker();
@@ -163,21 +96,273 @@ namespace BlackPearl{
         
     }
 
-    void DeferredShadingRenderer::FillShaderParameters(LightSources* lightSource, ForwardShadingLightConstants& output)
+    void DeferredShadingRenderer::RenderDirectionLights(ICommandList* cmdList, IFramebuffer* targetFramebuffer, Scene* scene)
     {
-        if (lightSource->GetLightsNum() > FORWARD_MAX_LIGHTS) {
-            GE_CORE_ERROR("light number %d exceed limit %d", lightSource->GetLightsNum(), FORWARD_MAX_LIGHTS);
+        SCOPE_TIME_COUNTER(DeferredShading);
+
+
+        LightSources* lightSources = scene->GetLightSources();
+        if (lightSources->GetParallelLightNum() > DEFERRED_MAX_DIRECTION_LIGHTS) {
+            GE_CORE_ERROR("light number %d exceed limit %d", lightSources->GetParallelLightNum(), DEFERRED_MAX_DIRECTION_LIGHTS);
+            return;
         }
-        output.numLights = lightSource->GetLightsNum();
-        for (size_t i = 0; i < math::min(FORWARD_MAX_LIGHTS, (int)lightSource->GetLightsNum()); i++)
+
+
+        for (size_t i = 0; i < lightSources->GetParallelLightNum(); i++)
         {
-            LightConstants lightConst;
-            Light* light = lightSource->GetLights()[i];
-            light->FillLightConstants(lightConst);
-            output.lights[i] = lightConst;
+            SceneData* view = Renderer::GetSceneData();
+            GE_ERROR_JUDGE();
+
+            SceneData* preView = Renderer::GetPreSceneData();
+            GE_ERROR_JUDGE();
+
+            SetupView(cmdList, view, preView);
+
+
+            DrawItem drawItem = IDrawStrategy::ObjectToDrawItem(scene->GetFullScreenObj())[0];
+
+            GraphicsState graphicsPSO;
+            graphicsPSO.framebuffer = targetFramebuffer;
+            graphicsPSO.viewport = view->GetViewportState();
+            graphicsPSO.shadingRateState = view->GetVariableRateShadingState();
+
+            GraphicsPipelineDesc psoDesc;
+
+            psoDesc.depthStencilState.setDepthFunc(ComparisonFunc::LessOrEqual);
+            psoDesc.depthStencilState.enableDepthTest();
+            psoDesc.depthStencilState.disableDepthWrite();
+            psoDesc.depthStencilState.disableStencil();
+
+            psoDesc.blendState.alphaToCoverageEnable = false;
+            psoDesc.rasterState.frontCounterClockwise = true;
+            psoDesc.rasterState.cullMode = RasterCullMode::None;
+            psoDesc.primType = PrimitiveType::TriangleList;
+            psoDesc.inputLayout = m_Device->createInputLayout(drawItem.mesh->GetVertexBufferLayout());
+
+            psoDesc.VS = m_DeferredDirectionLightShader->GetVertexShader();
+            psoDesc.PS = m_DeferredDirectionLightShader->GetPixelShader();
+            psoDesc.bFromPSOFileCache = false;
+            psoDesc.bindingLayouts.push_back(m_DeferredShadingBindingLayout);
+            psoDesc.bindingLayouts.push_back(m_ViewBindinglayout);
+
+
+            if (!m_DeferredShadingDirectionLightPso) {
+                m_DeferredShadingDirectionLightPso = m_Device->createGraphicsPipeline(psoDesc, targetFramebuffer);
+            }
+            graphicsPSO.pipeline = m_DeferredShadingDirectionLightPso;
+            graphicsPSO.bindings.push_back(m_DeferredShadingBindingSet);
+            graphicsPSO.bindings.push_back(m_ViewBindingset);
+            graphicsPSO.inputLayout = psoDesc.inputLayout;
+            /*for (int j = 0; j < shaderParms[ShaderType::Pixel].bindingLayouts.size(); ++j) {
+                psoDesc.bindingLayouts.push_back(shaderParms[ShaderType::Pixel].bindingLayouts[j]);
+            }
+
+            for (int j = 0; j < shaderParms[ShaderType::Pixel].bindingSets.size(); ++j) {
+                graphicsPSO.bindings.push_back(shaderParms[ShaderType::Pixel].bindingSets[j]);
+            }*/
+
+            /*GE_ERROR_JUDGE();
+            SetupMaterial(drawItem.material, drawItem.cullMode, psoDesc, graphicsPSO);*/
+            SetupInputBuffers(cmdList, const_cast<BufferGroup*>(drawItem.buffers), drawItem.transform, graphicsPSO);
+            GE_ERROR_JUDGE();
+
+
+            DeferredLightingConstants lightConstants{};
+            FillLightsParameters(lightSources->GetParallelLights()[i]->GetComponent<DirectionLight>(), lightConstants);
+
+            cmdList->writeBuffer(m_LightsCB, &lightConstants, sizeof(DeferredLightingConstants));
+            cmdList->setGraphicsState(graphicsPSO);
+
+            Draw(cmdList, drawItem);
+
+        }
+
+       
+
+    }
+
+    void DeferredShadingRenderer::RenderPointLights(ICommandList* cmdList, IFramebuffer* targetFramebuffer, Scene* scene)
+    {
+
+
+        LightSources* lightSources = scene->GetLightSources();
+        if (lightSources->GetPointLightNum() > DEFERRED_MAX_POINT_LIGHTS) {
+            GE_CORE_ERROR("light number %d exceed limit %d", lightSources->GetPointLightNum(), DEFERRED_MAX_POINT_LIGHTS);
+            return;
+        }
+
+
+        for (size_t i = 0; i < lightSources->GetPointLightNum(); i++)
+        {
+            SceneData* view = Renderer::GetSceneData();
+            GE_ERROR_JUDGE();
+
+            SceneData* preView = Renderer::GetPreSceneData();
+            GE_ERROR_JUDGE();
+
+            SetupView(cmdList, view, preView);
+
+
+            DrawItem drawItem = IDrawStrategy::ObjectToDrawItem(scene->GetFullScreenObj())[0];
+
+            GraphicsState graphicsPSO;
+            graphicsPSO.framebuffer = targetFramebuffer;
+            graphicsPSO.viewport = view->GetViewportState();
+            graphicsPSO.shadingRateState = view->GetVariableRateShadingState();
+
+            GraphicsPipelineDesc psoDesc;
+
+            psoDesc.depthStencilState.setDepthFunc(ComparisonFunc::LessOrEqual);
+            psoDesc.depthStencilState.enableDepthTest();
+            psoDesc.depthStencilState.disableDepthWrite();
+            psoDesc.depthStencilState.disableStencil();
+
+            psoDesc.blendState.alphaToCoverageEnable = false;
+            psoDesc.rasterState.frontCounterClockwise = true;
+            psoDesc.rasterState.cullMode = RasterCullMode::None;
+            psoDesc.primType = PrimitiveType::TriangleList;
+            psoDesc.inputLayout = m_Device->createInputLayout(drawItem.mesh->GetVertexBufferLayout());
+
+            psoDesc.VS = m_DeferredPointLightShader->GetVertexShader();
+            psoDesc.PS = m_DeferredPointLightShader->GetPixelShader();
+            psoDesc.bFromPSOFileCache = false;
+            psoDesc.bindingLayouts.push_back(m_DeferredShadingBindingLayout);
+            psoDesc.bindingLayouts.push_back(m_ViewBindinglayout);
+
+
+            if (!m_DeferredShadingPointLightPso) {
+                m_DeferredShadingPointLightPso = m_Device->createGraphicsPipeline(psoDesc, targetFramebuffer);
+            }
+            graphicsPSO.pipeline = m_DeferredShadingPointLightPso;
+            graphicsPSO.bindings.push_back(m_DeferredShadingBindingSet);
+            graphicsPSO.bindings.push_back(m_ViewBindingset);
+            graphicsPSO.inputLayout = psoDesc.inputLayout;
+            /*for (int j = 0; j < shaderParms[ShaderType::Pixel].bindingLayouts.size(); ++j) {
+                psoDesc.bindingLayouts.push_back(shaderParms[ShaderType::Pixel].bindingLayouts[j]);
+            }
+
+            for (int j = 0; j < shaderParms[ShaderType::Pixel].bindingSets.size(); ++j) {
+                graphicsPSO.bindings.push_back(shaderParms[ShaderType::Pixel].bindingSets[j]);
+            }*/
+
+            /*GE_ERROR_JUDGE();
+            SetupMaterial(drawItem.material, drawItem.cullMode, psoDesc, graphicsPSO);*/
+            SetupInputBuffers(cmdList, const_cast<BufferGroup*>(drawItem.buffers), drawItem.transform, graphicsPSO);
+            GE_ERROR_JUDGE();
+
+
+            DeferredLightingConstants lightConstants{};
+            FillLightsParameters(lightSources->GetParallelLights()[i]->GetComponent<PointLight>(), lightConstants);
+
+            cmdList->writeBuffer(m_LightsCB, &lightConstants, sizeof(DeferredLightingConstants));
+            cmdList->setGraphicsState(graphicsPSO);
+
+            Draw(cmdList, drawItem);
+
         }
     }
 
+    void DeferredShadingRenderer::RenderIBLProbes(ICommandList* cmdList, IFramebuffer* targetFramebuffer, Scene* scene)
+    {
+       
+        if (scene->GetDiffuseLightProbes().size() > DEFERRED_MAX_LIGHT_PROBES) {
+            GE_CORE_ERROR("light number %d exceed limit %d", scene->GetDiffuseLightProbes().size(), DEFERRED_MAX_LIGHT_PROBES);
+            return;
+        }
+
+
+        //for (size_t i = 0; i < lightSources->GetPointLightNum(); i++)
+       // {
+            SceneData* view = Renderer::GetSceneData();
+            GE_ERROR_JUDGE();
+
+            SceneData* preView = Renderer::GetPreSceneData();
+            GE_ERROR_JUDGE();
+
+            SetupView(cmdList, view, preView);
+
+
+            DrawItem drawItem = IDrawStrategy::ObjectToDrawItem(scene->GetFullScreenObj())[0];
+
+            GraphicsState graphicsPSO;
+            graphicsPSO.framebuffer = targetFramebuffer;
+            graphicsPSO.viewport = view->GetViewportState();
+            graphicsPSO.shadingRateState = view->GetVariableRateShadingState();
+
+            GraphicsPipelineDesc psoDesc;
+
+            psoDesc.depthStencilState.setDepthFunc(ComparisonFunc::LessOrEqual);
+            psoDesc.depthStencilState.enableDepthTest();
+            psoDesc.depthStencilState.disableDepthWrite();
+            psoDesc.depthStencilState.disableStencil();
+
+            psoDesc.blendState.alphaToCoverageEnable = false;
+            psoDesc.rasterState.frontCounterClockwise = true;
+            psoDesc.rasterState.cullMode = RasterCullMode::None;
+            psoDesc.primType = PrimitiveType::TriangleList;
+            psoDesc.inputLayout = m_Device->createInputLayout(drawItem.mesh->GetVertexBufferLayout());
+
+            psoDesc.VS = m_DeferredIBLShader->GetVertexShader();
+            psoDesc.PS = m_DeferredIBLShader->GetPixelShader();
+            psoDesc.bFromPSOFileCache = false;
+            psoDesc.bindingLayouts.push_back(m_DeferredShadingBindingLayout);
+            psoDesc.bindingLayouts.push_back(m_ViewBindinglayout);
+
+
+            if (!m_DeferredShadingIBLPso) {
+                m_DeferredShadingIBLPso = m_Device->createGraphicsPipeline(psoDesc, targetFramebuffer);
+            }
+            graphicsPSO.pipeline = m_DeferredShadingIBLPso;
+            graphicsPSO.bindings.push_back(m_DeferredShadingBindingSet);
+            graphicsPSO.bindings.push_back(m_ViewBindingset);
+            graphicsPSO.inputLayout = psoDesc.inputLayout;
+            /*for (int j = 0; j < shaderParms[ShaderType::Pixel].bindingLayouts.size(); ++j) {
+                psoDesc.bindingLayouts.push_back(shaderParms[ShaderType::Pixel].bindingLayouts[j]);
+            }
+
+            for (int j = 0; j < shaderParms[ShaderType::Pixel].bindingSets.size(); ++j) {
+                graphicsPSO.bindings.push_back(shaderParms[ShaderType::Pixel].bindingSets[j]);
+            }*/
+
+            /*GE_ERROR_JUDGE();
+            SetupMaterial(drawItem.material, drawItem.cullMode, psoDesc, graphicsPSO);*/
+            SetupInputBuffers(cmdList, const_cast<BufferGroup*>(drawItem.buffers), drawItem.transform, graphicsPSO);
+            GE_ERROR_JUDGE();
+
+
+            DeferredLightingConstants lightConstants{};
+            FillProbesParameters(scene->GetDiffuseLightProbes(), lightConstants);
+
+            cmdList->writeBuffer(m_LightsCB, &lightConstants, sizeof(DeferredLightingConstants));
+            cmdList->setGraphicsState(graphicsPSO);
+
+            Draw(cmdList, drawItem);
+
+      //  }
+    }
+
+    void DeferredShadingRenderer::FillLightsParameters(Light* light, DeferredLightingConstants& output)
+    {
+            output.numLightProbes = 0;
+           
+            LightConstants lightConst;
+         
+            light->FillLightConstants(lightConst);
+            output.light = lightConst;
+       
+    }
+
+    void DeferredShadingRenderer::FillProbesParameters(const std::vector<Object*>& probes, DeferredLightingConstants& output)
+    {
+        output.numLightProbes = probes.size();
+        for (size_t i = 0; i < probes.size(); i++)
+        {
+            LightProbeConstants probeConst;
+            probes[i]->GetComponent<LightProbe>()->FillLightProbeConstants(Math::ToFloat3(probes[i]->GetComponent<Transform>()->GetPosition()), probeConst);
+            output.lightProbes[i] = probeConst;
+        }
+
+    }
 
     float DeferredShadingRenderer::CalculateSphereRadius(Object* pointLight)
     {

@@ -403,18 +403,7 @@ namespace BlackPearl
        
 
 
-        //std::shared_ptr<FrameBuffer> frameBuffer = std::make_shared<FrameBuffer>();
-        ////	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        //GE_ERROR_JUDGE();
-        //frameBuffer->Bind();
-        ////glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        //GE_ERROR_JUDGE();
-        //frameBuffer->AttachCubeMapColorTexture(0, environmentCubeMap);
-        //GE_ERROR_JUDGE();
-        ////TODO::
-        //frameBuffer->AttachRenderBuffer(environmentCubeMap->getDesc().width, environmentCubeMap->getDesc().height);
-        //GE_ERROR_JUDGE();
-
+       
         std::vector<int32_t> InArraySlice = { 0,1,2,3,4,5 };
         std::vector<uint8_t> InMipIndex(6, 0);
 
@@ -437,18 +426,10 @@ namespace BlackPearl
         );*/
 
         cmdList->beginRenderPass(RPInfo, "EnvironmerntCubeMaps_Pass_mip");
-
+        //只画一层mip, diffuse map 再generate mipmap
         for (unsigned int mip = 0; mip < environmentCubeMap->getDesc().mipLevelsCnt; mip++)
         {
-           // frameBuffer->Bind();
-
-          //  frameBuffer->BindRenderBuffer();
            
-            //GE_ERROR_JUDGE();
-            //glViewport(0, 0, mipMapSize.x, mipMapSize.y);
-            //// Render the scene to environment cubemap (single pass).
-
-            //GE_ERROR_JUDGE();
             std::string name = "mip" + std::to_string(mip);
             cmdList->beginMarker(name.c_str());
 
@@ -456,14 +437,6 @@ namespace BlackPearl
 
             for (unsigned int i = 0; i < 6; i++)
             {
-                //TODO:: abstract out rhi
-#ifdef GE_API_OPENGL
-               // glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-              /*  glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, static_cast<Texture*>(environmentCubeMap.Get())->GetRendererID(), mip);
-            
-                glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);*/
-#endif
 
 
                 SceneData* view = DBG_NEW SceneData({ ProbeProjectionViews[i] ,ProbeView[i],projection,probe->GetComponent<Transform>()->GetPosition(),{},cameraComponent->Front(), *scene->GetLightSources()});
@@ -485,50 +458,11 @@ namespace BlackPearl
                 m_EnvironmentMapRenderer->Render(cmdList, nullptr, scene);
                 m_EnvironmentMapSkyboxRenderer->Render(cmdList, nullptr, scene);
 
-          
-             
-
-
-                //for (auto obj : objects) {
-
-                //    std::vector<uint64_t> excludeObjs = probe->GetComponent<LightProbe>()->GetExcludeObjectsId();
-                //    bool drawEnable = true;
-                //    for (uint64_t id : excludeObjs) {
-                //        if (obj->GetId().id == id) {
-                //            drawEnable = false;
-                //            break;
-                //        }
-                //    }
-                //    if (drawEnable) {
-                //        if (obj->GetComponent<MeshRenderer>()->GetIsPBRObject()) {
-                //            m_PbrShader->Bind();
-                //            DrawObject(obj, m_PbrShader, scene, 4);
-                //            GE_ERROR_JUDGE();
-                //        }
-                //        else {
-                //            m_NonPbrShader->Bind();
-                //            DrawObject(obj, m_NonPbrShader, scene, 4);
-                //            GE_ERROR_JUDGE();
-                //        }
-
-                //    }
-
-                //}
-                //if (skyBox != nullptr) {
-                //    glDepthFunc(GL_LEQUAL);
-                //    m_SkyboxRenderer->Render(skyBox, timeInSecond, scene);
-                //    //m_SkyboxRenderer->Render(skyBox,scene);
-
-                //    //					DrawObject(skyBox, scene);
-                //    glDepthFunc(GL_LESS);
-                //}
-
-            
+         
                 delete view;
                 view = nullptr;
 
             }
-
 
             cmdList->endMarker();
 
@@ -539,10 +473,7 @@ namespace BlackPearl
 
         cmdList->endRenderPass();
 
-       /* frameBuffer->UnBind();
-        GE_ERROR_JUDGE();
-        frameBuffer->CleanUp();
-        GE_ERROR_JUDGE();*/
+   
 
         return environmentCubeMap;
     }

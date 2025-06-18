@@ -104,12 +104,14 @@ namespace BlackPearl {
 	return OutCachedState;
 }
 
+    //todo:: pso key 要考虑 shader
 	GraphicsPipelineHandle PipelineStateCache::GetAndOrCreateGraphicsPipelineState(DeviceHandle device, const GraphicsPipelineDesc& pipelineDesc, const PipelineKey& Initializer, GraphicsState& psoState)
 	{
-		if (GGraphicsPipelineCache.find(Initializer.value) != GGraphicsPipelineCache.end()) {
+	/*	if (GGraphicsPipelineCache.find(Initializer.value) != GGraphicsPipelineCache.end()) {
 			return GGraphicsPipelineCache[Initializer.value];
 		}
-		else {
+		else */
+        {
 			GraphicsPipelineHandle pso = device->createGraphicsPipeline(pipelineDesc, psoState.framebuffer);
 			GGraphicsPipelineCache[Initializer.value] = pso;
 			return pso;

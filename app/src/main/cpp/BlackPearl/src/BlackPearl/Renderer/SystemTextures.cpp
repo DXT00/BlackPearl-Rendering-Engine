@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Renderer/SystemTextures.h"
 #include "Renderer/GbufferInfo.h"
+#include "Renderer/RenderGraph/RenderGraph.h"
 #include "Application.h"
 #include "Config.h"
 
@@ -18,6 +19,27 @@ namespace BlackPearl {
     {
 
     }
+
+    TextureHandle SystemTexture::GetBackBuffer()
+    {
+        if (RenderGraph::SupportSinglePass(Configuration::MSAA_SAMPLES))
+            return SceneColor;
+        else {
+            return DefaultRT;
+        }
+    }
+
+    void SystemTexture::InitDefaultRT(DeviceHandle device)
+    {
+        TextureDesc textureDesc;
+        textureDesc.width = Application::Get().GetWindow().GetCurWindowSize().x;
+        textureDesc.height = Application::Get().GetWindow().GetCurWindowSize().y;
+        textureDesc.mipLevelsCnt = 1;
+        textureDesc.sampleCount = Configuration::MSAA_SAMPLES;
+        textureDesc.debugName = "DefaultRT";
+        DefaultRT = device->createTexture(textureDesc);
+
+    }   
 
     void SystemTexture::InitDefaultTextures(DeviceHandle device)
     {

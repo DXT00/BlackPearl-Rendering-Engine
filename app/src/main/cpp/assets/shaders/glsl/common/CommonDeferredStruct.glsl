@@ -1,12 +1,12 @@
 #ifndef BP_COMMON_DEFERRED_STRUCT_H
 #define BP_COMMON_DEFERRED_STRUCT_H
 
-#include <forward_cb.h>
+#include <deferred_lighting_cb.h>
 
 /* deferred_shading_bsdf_xx pass */
 
-layout(std140, binding = 8) uniform ForwardShadingUBO {
-    ForwardShadingLightConstants g_DeferredLight;
+layout(std140, binding = 8) uniform DeferredShadingUBO {
+    DeferredLightingConstants g_DeferredLight;
 };
 
 
