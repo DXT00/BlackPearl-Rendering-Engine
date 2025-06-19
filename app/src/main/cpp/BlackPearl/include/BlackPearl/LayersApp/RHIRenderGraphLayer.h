@@ -59,7 +59,8 @@ public:
         //else
         //    m_DirectionLight->GetComponent<DirectionLight>()->SetDirection({ -0.2f, 1.0f, -0.2f });
 #elif defined(GE_PLATFORM_WINDOWS)
-        m_DirectionLight->GetComponent<DirectionLight>()->SetDirection({ 0.2f, -1.0f, 0.2f });
+        m_DirectionLight->GetComponent<DirectionLight>()->SetDirection({ -0.2f, 1.0f, -0.2f });
+      //  m_DirectionLight->GetComponent<DirectionLight>()->SetDirection({ 0.2f, -1.0f, 0.2f });
 #endif
         //m_Scene->AddObject(m_SphereObj);
         m_Scene->AddObject(m_CubeObj);

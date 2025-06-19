@@ -4,6 +4,7 @@
 #include "Renderer/MasterRenderer/GBufferRenderer.h"
 #include "Renderer/MasterRenderer/DeferredShadingRenderer.h"
 #include "Renderer/MasterRenderer/GrabPassRenderer.h"
+#include "Renderer/MasterRenderer/ToneMappingRenderer.h"
 namespace BlackPearl {
 	class DeferredRenderGraph :public RenderGraph
 	{
@@ -36,6 +37,8 @@ namespace BlackPearl {
 		DeferredShadingRenderer* m_DeferredShadingRenderer;
         GrabPassRenderer* m_GrabPassRenderer;
         GrabPassRenderer* m_PlsCopyRenderer;
+
+        ToneMappingRenderer* m_ToneMappingRenderer;
 
         FramebufferHandle m_DeferredFramebuffer;
 	};

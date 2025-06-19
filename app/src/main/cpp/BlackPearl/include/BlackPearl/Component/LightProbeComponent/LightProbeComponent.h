@@ -5,7 +5,7 @@
 #include "BlackPearl/Renderer/DeviceManager.h"
 #include "BlackPearl/Math/Math.h"
 using namespace BlackPearl::math;
-
+#include "hlsl/core/light_probe_cb.h"
 #include "hlsl/core/light_cb.h"
 namespace BlackPearl {
 	extern DeviceManager* g_deviceManager;
@@ -49,8 +49,8 @@ namespace BlackPearl {
 	
 
 		/*SH Coefficients set*/
-		void SetSHCoeffs(std::vector<float3>& SHCoeffs) { GE_ASSERT(m_Type == ProbeType::DIFFUSE_PROBE, "is not a diffuse probe"); m_SHCoeffs = SHCoeffs; }
-		std::vector<float3> GetCoeffis()const { GE_ASSERT(m_Type == ProbeType::DIFFUSE_PROBE, "is not a diffuse probe"); return m_SHCoeffs; }
+		void SetSHCoeffs(std::vector<float4>& SHCoeffs) { GE_ASSERT(m_Type == ProbeType::DIFFUSE_PROBE, "is not a diffuse probe"); m_SHCoeffs = SHCoeffs; }
+		std::vector<float4> GetCoeffis()const { GE_ASSERT(m_Type == ProbeType::DIFFUSE_PROBE, "is not a diffuse probe"); return m_SHCoeffs; }
 
 		ProbeType GetType() const { return m_Type; }
         ProbeStorageType GetStorageType() const { return m_StorageType; }
@@ -90,7 +90,7 @@ namespace BlackPearl {
 		unsigned int					m_SpecularCubeMapResolution = Configuration::EnvironmantMapResolution;// 512;// 128;
 		float       					m_Zfar;//perspective cube range from 0 to zFar
 
-		std::vector<float3> m_SHCoeffs;
+		std::vector<float4> m_SHCoeffs;
 		ProbeType m_Type;
         ProbeStorageType m_StorageType = ProbeStorageType::PT_SH;
 

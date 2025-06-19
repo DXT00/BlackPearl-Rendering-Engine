@@ -26,12 +26,16 @@ namespace BlackPearl {
         m_DeferredShadingRenderer = DBG_NEW DeferredShadingRenderer(m_DeviceManager->GetDevice());
         m_PlsCopyRenderer = DBG_NEW GrabPassRenderer(m_DeviceManager->GetDevice());
         m_GrabPassRenderer = DBG_NEW GrabPassRenderer(m_DeviceManager->GetDevice());
+        m_ToneMappingRenderer = DBG_NEW ToneMappingRenderer(m_DeviceManager->GetDevice());
+
 
         m_SkyboxRenderer->Init();
         m_GbufferRenderer->Init();
         m_DeferredShadingRenderer->Init();
         m_GrabPassRenderer->Init(SystemTexture::Get().SceneColor);
         m_PlsCopyRenderer->Init(nullptr, true);
+
+        m_ToneMappingRenderer->Init(SystemTexture::Get().SceneColor);
         /*m_PostProcessRenderer = DBG_NEW PostProcessRenderer();
         m_PostProcessRenderer->Init(GetDevice(), m_ShaderFactory);*/
 
@@ -148,20 +152,15 @@ namespace BlackPearl {
                 FRHIRenderPassInfo RPShadingInfo(SystemTexture::Get().DefaultRT,
                     ERenderTargetActions::Clear_Store
                   );
-            //draw direct light, indirect light to sceneColor
+            //gamma correction, tonemapping
             m_CommandList->beginRenderPass(RPShadingInfo, "ToneMapping");
-            m_DeferredShadingRenderer->Render(m_CommandList, framebuffer, m_Scene);
-            //draw skybox
+            m_ToneMappingRenderer->Render(m_CommandList, framebuffer, m_Scene);
 
-            m_SkyboxRenderer->Render(m_CommandList, framebuffer, m_Scene);
 
             m_CommandList->endRenderPass();
         }
 
-
-
-
-
+        
 
 
         m_CommandList->close();

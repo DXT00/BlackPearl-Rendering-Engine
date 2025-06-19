@@ -37,6 +37,7 @@ namespace BlackPearl {
         textureDesc.mipLevelsCnt = 1;
         textureDesc.sampleCount = Configuration::MSAA_SAMPLES;
         textureDesc.debugName = "DefaultRT";
+        textureDesc.format = Format::RGBA8_UNORM;
         DefaultRT = device->createTexture(textureDesc);
 
     }   
@@ -219,7 +220,9 @@ namespace BlackPearl {
     }
     void SystemTexture::Init(DeviceHandle device)
     {
+
         InitDefaultTextures(device);
+        InitDefaultRT(device);
         InitGbufferTextures(device);
         InitSceneTextures(device);
         InitShadowTextures(device);

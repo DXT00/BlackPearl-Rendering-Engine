@@ -134,6 +134,18 @@ namespace BlackPearl{
             psoDesc.depthStencilState.disableStencil();
 
             psoDesc.blendState.alphaToCoverageEnable = false;
+
+            for (auto& target: psoDesc.blendState.targets)
+            {
+                target.blendEnable = true;
+                target.blendOp = BlendOp::Add;
+                target.srcBlend = BlendFactor::One;
+                target.destBlend = BlendFactor::One;
+                target.srcBlendAlpha = BlendFactor::One;
+                target.destBlendAlpha = BlendFactor::One;
+                target.blendOpAlpha = BlendOp::Add;
+            }
+
             psoDesc.rasterState.frontCounterClockwise = true;
             psoDesc.rasterState.cullMode = RasterCullMode::None;
             psoDesc.primType = PrimitiveType::TriangleList;

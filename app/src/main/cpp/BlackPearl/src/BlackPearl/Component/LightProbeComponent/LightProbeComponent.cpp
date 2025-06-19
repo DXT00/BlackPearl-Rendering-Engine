@@ -44,7 +44,7 @@ namespace BlackPearl {
 
 
            
-            m_SHCoeffs.assign(9, float3(0.0f));
+            m_SHCoeffs.assign(9, float4(0.0f));
 
         }
 
@@ -60,6 +60,7 @@ namespace BlackPearl {
         depthDesc.dimension = TextureDimension::Texture2D;
 
         m_DepthBuffer = g_deviceManager->GetDevice()->createTexture(depthDesc);
+        static_assert(sizeof(LightProbeConstants) == 160, "Size mismatch with GLSL std140!");
 
     }
 

@@ -42,7 +42,7 @@ namespace BlackPearl {
 	
     const bool Configuration::bDeferredShading = true;
 
-    const bool Configuration::bUseSinglePass = true;
+    const bool Configuration::bUseSinglePass = false;
     const bool Configuration::bCacheGLProgram = false;
 
     const bool Configuration::bUseIBL = true;

@@ -127,7 +127,10 @@ vec3 CalculateAmbientGI(vec3 worldPos, vec3 N, vec3 V, vec3 albedo, float metall
 //	vec2 brdf = texture(u_BrdfLUTMap,vec2(max(dot(N,V),0.0),roughness)).rg;
 //
 //	vec3 specular = prefileredColor * (F*brdf.x+brdf.y);
-//	vec3 ambient =  (Kd*diffuse+specular) * ao;
+
+	vec3 specular = vec3(0.0);
+
+	vec3 ambient =  (Kd*diffuse+specular) * ao;
 //
 ////	 ambient = ambient / (ambient + vec3(1.0));
 ////	//gamma correction
@@ -135,9 +138,8 @@ vec3 CalculateAmbientGI(vec3 worldPos, vec3 N, vec3 V, vec3 albedo, float metall
 //	return ambient;
 
 
-	diffuse = diffuse / (diffuse + vec3(1.0));
-	diffuse = pow(diffuse, vec3(1.0/2.2)); 
-    return diffuse;
+	
+    return ambient;
 
 }
 
@@ -194,7 +196,7 @@ void main(){
 #if USE_GLES_PLS
        pls.t_gSceneColor = vec4( mat.emissive + IBL,1.0);
  #else
-       FragColor =  vec4( mat.emissive + IBL,1.0);
+       FragColor =  vec4(  IBL,1.0);//mat.emissive +
 #endif
    
    //half IndirectIrradiance = GBuffer.IndirectIrradiance;

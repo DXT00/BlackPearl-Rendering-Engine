@@ -20,17 +20,28 @@
 * DEALINGS IN THE SOFTWARE.
 */
 
-#ifndef DEPTH_CB_H
-#define DEPTH_CB_H
+#ifndef TONEMAPPING_CB_H
+#define TONEMAPPING_CB_H
 //#ifdef COMPILE_IN_BLACKPEARL
 //#include "BlackPearl/Math/Math.h"
 //using namespace BlackPearl::math;
 //#endif
 
+
+
+#include "align.h"
+
+const uint PostProcess_Exposure = 0x1;
+const uint PostProcess_Tonemapping = 0x2;
+const uint PostProcess_Gamma = 0x4;
+
+
 struct ToneMappingConstants
 {
     uint2 viewOrigin;
     uint2 viewSize;
+
+    uint flag;
 
     float logLuminanceScale;
     float logLuminanceBias;
@@ -51,4 +62,4 @@ struct ToneMappingConstants
     float2 colorLUTTextureSizeInv;
 };
 
-#endif // DEPTH_CB_H
+#endif // TONEMAPPING_CB_H

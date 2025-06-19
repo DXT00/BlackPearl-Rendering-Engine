@@ -1000,6 +1000,8 @@ namespace BlackPearl {
 			psoDesc.depthStencilState.setDepthFunc(ComparisonFunc::Less);
            
 			psoDesc.blendState.alphaToCoverageEnable = false;
+
+
 			psoDesc.rasterState.frontCounterClockwise = true;
 			psoDesc.rasterState.cullMode = RasterCullMode::Back;
 			psoDesc.primType = PrimitiveType::TriangleList;

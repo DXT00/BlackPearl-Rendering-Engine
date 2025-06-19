@@ -25,6 +25,7 @@
 
 #include "light_cb.h"
 #include "view_cb.h"
+#include "light_probe_cb.h"
 
 #define FORWARD_MAX_LIGHTS 20
 

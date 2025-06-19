@@ -22,6 +22,8 @@
 
 #ifndef LIGHT_PROBE_CB_H
 #define LIGHT_PROBE_CB_H
+
+#include "align.h"
 //#ifdef GE_SHADERCOMPILE
 //
 //#else
@@ -29,12 +31,35 @@
 //using namespace BlackPearl::math;
 //#endif
 
-struct LightProbeConstants
-{
-    uint sampleCount;
-    float lodBias;
-    float roughness;
-    float inputCubeSize;
-};
+//struct LightProbeConstants
+//{
+//    uint sampleCount;
+//    float lodBias;
+//    float roughness;
+//    float inputCubeSize;
+//};
 
+
+struct ALIGN(16) LightProbeConstants
+{
+    /*   ALIGN(4) float diffuseScale;
+       ALIGN(4) float specularScale;
+       ALIGN(4) float mipLevels;
+       ALIGN(4) float padding1;
+
+       ALIGN(4) uint diffuseArrayIndex;
+       ALIGN(4) uint specularArrayIndex;
+       ALIGN(8) uint2 padding2;
+
+       ALIGN(16) float4 frustumPlanes[6];*/
+    ALIGN(16) float3 pos;
+    //每个 SHCoeffs[i] 必须是 16 字节对齐, 使用 float4
+    ALIGN(16) float4 SHCoeffs[9];
+
+
+
+
+
+
+};
 #endif // LIGHT_PROBE_CB_H

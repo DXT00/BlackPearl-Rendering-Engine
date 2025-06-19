@@ -110,22 +110,6 @@ inline LightConstants DefaultLightConstants() {
 }
 #endif
 
-struct LightProbeConstants
-{
- /*   ALIGN(4) float diffuseScale;
-    ALIGN(4) float specularScale;
-    ALIGN(4) float mipLevels;
-    ALIGN(4) float padding1;
 
-    ALIGN(4) uint diffuseArrayIndex;
-    ALIGN(4) uint specularArrayIndex;
-    ALIGN(8) uint2 padding2;
-
-    ALIGN(16) float4 frustumPlanes[6];*/
-    ALIGN(16) float3 pos;
-    ALIGN(16) float3 SHCoeffs[9];
-
-
-};
 
 #endif // LIGHT_CB_H

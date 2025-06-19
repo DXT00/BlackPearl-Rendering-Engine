@@ -275,7 +275,7 @@ namespace BlackPearl {
 		constants.cameraRot = Math::ToFloat3(CameraRotation);
 		constants.viewportSize = math::float2(m_Viewport.width(), m_Viewport.height());
 		constants.viewportOrigin = math::float2(m_Viewport.minX, m_Viewport.minY);
-        constants.viewportSizeInv = math::float2(1.0/m_Viewport.minX, 1.0/m_Viewport.minY);
+        constants.viewportSizeInv = math::float2(1.0/ constants.viewportSize.x, 1.0/ constants.viewportSize.y);
         constants.zFar = zFar;
         constants.zNear = zNear;
         constants.preExposure = PreExposure;

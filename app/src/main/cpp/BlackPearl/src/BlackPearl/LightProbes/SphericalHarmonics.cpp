@@ -54,9 +54,9 @@ namespace BlackPearl {
 	}
 	// give me a cubemap, its size and number of channels
 	// and i'll give you spherical harmonics
-	std::vector<float3> SphericalHarmonics::UpdateCoeffs(TextureHandle environmentCubeMap)
+	std::vector<float4> SphericalHarmonics::UpdateCoeffs(TextureHandle environmentCubeMap)
 	{
-		std::vector<float3> SHCoeffs(9, float3(0.0));
+		std::vector<float4> SHCoeffs(9, float4(0.0));
 		float size = environmentCubeMap->getDesc().width * environmentCubeMap->getDesc().height * 3;
 		/*float* bufferPosX = new float[size];
 		float* bufferNegX = new float[size];
