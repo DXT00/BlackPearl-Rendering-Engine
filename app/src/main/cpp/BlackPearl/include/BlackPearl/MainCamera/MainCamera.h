@@ -6,7 +6,14 @@ namespace BlackPearl {
     struct CameraRotation {
         float Yaw;
         float Pitch;
-
+        CameraRotation() {
+            Yaw = 0.0f;
+            Pitch = 0.0f;
+        }
+        CameraRotation(float yaw, float pitch) {
+            Yaw = yaw;
+            Pitch = pitch;
+        }
     };
 	class MainCamera
 	{
@@ -18,6 +25,7 @@ namespace BlackPearl {
 
 		}
 		glm::vec3 GetPosition() const;
+        glm::vec3 GetRotation() const;
 		float Yaw() const;
 		float Pitch() const;
 		glm::vec3 Front() const;

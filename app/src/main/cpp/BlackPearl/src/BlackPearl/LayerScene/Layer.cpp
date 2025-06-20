@@ -720,7 +720,10 @@ namespace BlackPearl {
 		Object* probe = g_objectManager->CreateLightProbe(type, shaderPath, texturePath, name + (type == ProbeType::DIFFUSE_PROBE ? "_kd" : "_ks"));
 		m_ObjectsList.push_back(probe);
 		//m_ObjectsList.push_back(probe->GetCamera()->GetObj());
-		(type == ProbeType::DIFFUSE_PROBE) ? m_DiffuseLightProbes.push_back(probe) : m_ReflectionLightProbes.push_back(probe);
+        if (type == ProbeType::DIFFUSE_PROBE)
+            m_DiffuseLightProbes.push_back(probe);
+        else
+            m_ReflectionLightProbes.push_back(probe);
 		return probe;
 	}
 

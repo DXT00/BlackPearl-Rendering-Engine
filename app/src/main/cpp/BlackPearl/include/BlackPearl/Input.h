@@ -1,7 +1,7 @@
 #pragma once
 #include <utility>
 namespace BlackPearl {
-
+    class MainCamera;
 	class Input {
 
 	public:
@@ -12,8 +12,15 @@ namespace BlackPearl {
 		static float GetMouseY();
 		inline static bool IsFirstMouse() { return s_FirstMouse; }
 		inline static void SetFirstMouse(bool flag) { s_FirstMouse = flag; }
+
+        static void Update(MainCamera* mainCamera, float ts);
 	private:
-		static bool s_FirstMouse;//µÚÒ»´Î»ñÈ¡Êó±êÎ»ÖÃ
+		static bool s_FirstMouse;//ç¬¬ä¸€æ¬¡è·å–é¼ æ ‡ä½ç½®
+
+
+        static float m_LastMouseX;
+        static float m_LastMouseY;
+
 
 	};
 }

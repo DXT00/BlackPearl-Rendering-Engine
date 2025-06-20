@@ -338,27 +338,34 @@ FPlatformOpenGLDevice* PlatformCreateOpenGLDevice()
 static void ContextMakeCurrent(HDC DC, HGLRC RC, FPlatformOpenGLDevice* platformDevice)
 {
 	if (!platformDevice) {
-		GE_CORE_WARN("[ContextMakeCurrent] no device Other or invalid context");
+        GE_CORE_INFO("[ContextMakeCurrent] no device Other or invalid context");
 	}
 	else {
 		if (RC == platformDevice->RenderingContext.OpenGLContext)	// most common case
 		{
-			GE_CORE_WARN("[ContextMakeCurrent] Rendering context ");
+            //printf("current context (renderid) = %p\n", wglGetCurrentContext());
+			GE_CORE_INFO("[ContextMakeCurrent] Rendering context ");
 
 		}
 		else if (RC == platformDevice->SharedContext.OpenGLContext)
 		{
-			GE_CORE_WARN("[ContextMakeCurrent] Shared context ");
+           // printf("current context (shared) = %p\n", wglGetCurrentContext());
+
+            GE_CORE_INFO("[ContextMakeCurrent] Shared context ");
 
 		}
 		else if (RC)
 		{
-			GE_CORE_WARN("[ContextMakeCurrent] Other context ");
+           // printf("current context (Other) = %p\n", wglGetCurrentContext());
+
+            GE_CORE_INFO("[ContextMakeCurrent] Other context ");
 
 		}
 		else
 		{
-			GE_CORE_WARN("[ContextMakeCurrent] invalid context ");
+            //printf("current context (invalid) = %p\n", wglGetCurrentContext());
+
+            GE_CORE_INFO("[ContextMakeCurrent] invalid context ");
 		}
 	}
 	
@@ -368,6 +375,8 @@ static void ContextMakeCurrent(HDC DC, HGLRC RC, FPlatformOpenGLDevice* platform
 	{
 		Result = wglMakeCurrent(nullptr, nullptr);
 	}
+    printf("current context after [ContextMakeCurrent]  = %p\n", wglGetCurrentContext());
+
 	GE_ASSERT(Result, "fail to make current context");
 }
 
@@ -405,6 +414,8 @@ FPlatformOpenGLContext* PlatformCreateOpenGLContext(FPlatformOpenGLDevice* Devic
 	assert(Context->OpenGLContext);
 	{
 		FScopeContext Scope(Context);
+        GE_CORE_INFO("[ContextMakeCurrent] HWND OpenGLContext->DeviceContext")
+
 		InitDefaultGLContextState();
 		glGenFramebuffers(1, &Context->ViewportFramebuffer);
 	}
@@ -483,7 +494,7 @@ void PlatformDestroyOpenGLContext(FPlatformOpenGLDevice* Device, FPlatformOpenGL
 	PlatformReleaseOpenGLContext(Device, Context);
 	delete Context;
 }
-
+//ui 等绘制完
 /**
  * Main function for transferring data to on-screen buffers.
  * On Windows it temporarily switches OpenGL context, on Mac only context's output view.
@@ -580,8 +591,20 @@ bool PlatformBlitToViewport(FPlatformOpenGLDevice* Device, const OpenGLViewport&
 				wglSwapIntervalEXT_ProcAddress(RealSyncInterval);
 				Context->SyncInterval = RealSyncInterval;
 			}
+          //  GE_CORE_INFO("[ContextMakeCurrent] SwapBuffers OpenGLContext->DeviceContext")
+              //  wglMakeCurrent(Context->DeviceContext, Context->OpenGLContext);
 
-			::SwapBuffers(Context->DeviceContext);
+                printf("current context (render) glBlitFramebuffer = %p\n", wglGetCurrentContext());
+                // 加载 wglSwapIntervalEXT
+                //auto wglSwapIntervalEXT =
+                //    (PFNWGLSWAPINTERVALEXTPROC)wglGetProcAddress("wglSwapIntervalEXT");
+                //if (wglSwapIntervalEXT) {
+                //    // 启用 VSync
+                //    wglSwapIntervalEXT(1);
+                //}
+
+               
+           SwapBuffers(Context->DeviceContext);
 		}
 	}
 	return true;

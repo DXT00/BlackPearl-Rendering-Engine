@@ -47,6 +47,48 @@ namespace BlackPearl {
 			RenderMultiPass(ts, framebuffer, View);
 		}
 	}
+	void ForwardRenderGraph::RenderUI(Timestep ts, IFramebuffer* framebuffer, IView* View)
+	{
+        //m_CommandList->open();
+        //FRHIRenderPassInfo RPInfo(framebuffer->getDesc().colorAttachments[0].texture, ERenderTargetActions::Load_Store,
+        //    SystemTexture::Get().SceneDepth,
+        //    EDepthStencilTargetActions::LoadDepthStencil_StoreDepthStencil);
+        //m_CommandList->beginRenderPass(RPInfo, "UIPass");
+        //ImGui_ImplOpenGL3_NewFrame();
+        //ImGui_ImplWin32_NewFrame();
+        //ImGui::NewFrame();
+
+
+
+
+
+
+
+        //ImGui::Render();
+        //GE_ERROR_JUDGE();
+        //ImGuiIO& io = ImGui::GetIO(); (void)io;
+
+     
+        //ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+        //if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+        //{
+
+        //    HDC         dc = wglGetCurrentDC();
+        //    HGLRC       rc = wglGetCurrentContext();
+
+        //    auto context = wglGetCurrentContext();
+        //    ImGui::UpdatePlatformWindows();
+        //    ImGui::RenderPlatformWindowsDefault();
+        //    wglMakeCurrent(dc, rc);
+        //    // 恢复 OpenGL 上下文
+        //    //glfwMakeContextCurrent(backup_current_context);
+
+
+        //}
+
+        //m_CommandList->endRenderPass();
+
+	}
 	void ForwardRenderGraph::RenderSinglePass(Timestep ts, IFramebuffer* framebuffer, IView* View)
 	{
 

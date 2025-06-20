@@ -85,6 +85,7 @@ namespace BlackPearl {
     }
 
     void OpenGLDeviceManager::BeginFrame() {
+        UpdateWindowSize();
         _RHIBeginDrawingViewport(m_Viewport, nullptr);
     }
 

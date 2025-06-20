@@ -113,7 +113,10 @@ namespace BlackPearl {
 		);
 
 
-
+        bool								bRevertToSharedContextAfterDrawingViewport;
+        /* store opengl context*/
+//FPlatformOpenGLDevice* m_PlatformDevice = nullptr;
+        OpenGLContext* m_Context;
 	protected:
 		void InitializeStateResources();
 		FOpenGLContextState& GetContextStateForCurrentContext(bool bAssertIfInvalid = true);
@@ -199,9 +202,7 @@ namespace BlackPearl {
 		FOpenGLRHIState					PendingState;
 
 
-		/* store opengl context*/
-		//FPlatformOpenGLDevice* m_PlatformDevice = nullptr;
-		OpenGLContext *m_Context;
+
 		
 		/** Per-context state caching */
 		FOpenGLContextState InvalidContextState;
@@ -232,7 +233,6 @@ namespace BlackPearl {
 				/** A list of all viewport RHIs that have been created. */
 		std::vector<OpenGLViewport*>        Viewports;
 		OpenGLViewport*						DrawingViewport = nullptr;
-		bool								bRevertToSharedContextAfterDrawingViewport;
 
 		bool								bIsRenderingContextAcquired;
 

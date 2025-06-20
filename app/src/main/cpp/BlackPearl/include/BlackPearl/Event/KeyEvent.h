@@ -30,7 +30,7 @@ namespace BlackPearl {
 			m_KeyCode(key) {
 		}
 
-		virtual inline EventType GetEventType()const override { return KeyPressed; };
+		virtual inline EventType GetEventType()const override { return KeyReleased; };
 		virtual inline int GetEventCategory() const override { return EventCategoryInput | EventCategoryKeyBoard; }
 		virtual const char* GetName() const override { return "KeyPressedEvent"; }
 		virtual inline std::string ToString() const override {

@@ -11,9 +11,17 @@
 #include "Component/CameraComponent/PerspectiveCamera.h"
 #include "Component/LightProbeComponent/LightProbeComponent.h"
 #include "Component/TerrainComponent/TerrainComponent.h"
+#include "BlackPearl/Renderer/DeviceManager.h"
+#include "Renderer/SystemTextures.h"
 
 #ifdef GE_API_OPENGL
+#include "RHI/OpenGLRHI/OpenGLDriver/OpenGLDrvPrivate.h"
 #include "RHI/OpenGLRHI/OpenGLDriver/OpenGLFunctions.h"
+#include "RHI/OpenGLRHI/OpenGLDriver/Windows/OpenGLDrvWindows.h"
+#include "RHI/OpenGLRHI/OpenGLViewport.h"
+#include "RHI/OpenGLRHI/OpenGLDevice.h""
+#include "RHI/OpenGLRHI/OpenGLContext.h"
+
 #endif
 //#define IMGUI_IMPL_OPENGL_LOADER_GLAD
 //
@@ -22,6 +30,11 @@
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 namespace BlackPearl {
+    class FScopeContext;
+    struct FPlatformOpenGLDevice;
+    extern DeviceManager* g_deviceManager;
+
+    HGLRC g_RenderContextRC;
     // Win32 窗口过程
     LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
     
@@ -44,13 +57,37 @@ namespace BlackPearl {
     }
 
     // 初始化 OpenGL
-    bool InitOpenGL(HWND hWnd, HDC& hDC, HGLRC& hRC) {
-        hDC = GetDC(hWnd);
-        PIXELFORMATDESCRIPTOR pfd = { sizeof(PIXELFORMATDESCRIPTOR), 1, PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER, PFD_TYPE_RGBA, 32, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 24, 8, 0, 0, 0, 0, 0, 0 };
-        int pixelFormat = ChoosePixelFormat(hDC, &pfd);
-        SetPixelFormat(hDC, pixelFormat, &pfd);
-        hRC = wglCreateContext(hDC);
-        wglMakeCurrent(hDC, hRC);
+    bool ImGuiLayer::InitOpenGL(HWND hWnd) {
+
+        OpenGLViewport* viewPort = static_cast<OpenGLViewport*>(g_deviceManager->GetViewport());
+        HDC mainDC = viewPort->GetGLContext()->DeviceContext;
+        HGLRC mainRC = viewPort->GetGLContext()->OpenGLContext;
+
+        Device* device = static_cast<Device*>(g_deviceManager->GetDevice());
+
+       // m_ImGuiContext = PlatformCreateOpenGLContext(device->m_Context->PlatformDevice, hWnd);
+
+
+       // m_hImGuiDC = mainDC;// m_ImGuiContext->DeviceContext;
+       // //m_hImGuiRC = mainRC;// m_ImGuiContext->OpenGLContext;
+
+
+
+       //// hDC = mainDC;
+
+       //// PIXELFORMATDESCRIPTOR pfd = { sizeof(PIXELFORMATDESCRIPTOR), 1, PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER, PFD_TYPE_RGBA, 32, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 24, 8, 0, 0, 0, 0, 0, 0 };
+       //// int pixelFormat = ChoosePixelFormat(hDC, &pfd);
+       //// SetPixelFormat(hDC, pixelFormat, &pfd);
+       // m_hImGuiRC = wglCreateContext(mainDC);
+
+
+       // // 在使用 hglrc_imgui 前，建立资源共享：
+       // if (!wglShareLists(mainRC, m_hImGuiRC)) {
+       //     DWORD err = GetLastError();
+       //     printf("wglShareLists failed: %lu\n", err);
+       // }
+
+       // wglMakeCurrent(m_hImGuiDC, m_hImGuiRC);
         return true;
     }
 
@@ -60,13 +97,15 @@ namespace BlackPearl {
         WNDCLASSEX wc = { sizeof(WNDCLASSEX), CS_OWNDC, WndProc, 0, 0, GetModuleHandle(nullptr), nullptr, nullptr, nullptr, nullptr, L"ImGuiWin32Class", nullptr };
         RegisterClassEx(&wc);*/
 
-        WNDCLASSEX windowClass = {  };
-        windowClass.cbSize = sizeof(WNDCLASSEX);
-        //windowClass.style = CS_HREDRAW | CS_VREDRAW;
-        windowClass.lpfnWndProc = WndProc;
-        windowClass.hInstance = Application::Get().GetAppConf().hInstance;
-        windowClass.hCursor = LoadCursor(NULL, IDC_ARROW);
-        windowClass.lpszClassName = L"BlackPearl_IMGUI";
+        //WNDCLASSEX windowClass = {  };
+        //windowClass.cbSize = sizeof(WNDCLASSEX);
+        ////windowClass.style = CS_HREDRAW | CS_VREDRAW;
+        //windowClass.lpfnWndProc = WndProc;
+        //windowClass.hInstance = Application::Get().GetAppConf().hInstance;
+        //windowClass.hCursor = LoadCursor(NULL, IDC_ARROW);
+        //windowClass.lpszClassName = L"BlackPearl_IMGUI";
+
+        WNDCLASSEX windowClass = { sizeof(WNDCLASSEX), CS_CLASSDC, WndProc, 0L, 0L, GetModuleHandle(NULL), NULL, NULL, NULL, NULL, L"BlackPearl_IMGUI", NULL };
         RegisterClassEx(&windowClass);
         //g_hWnd = CreateWindowEx(0, wc.lpszClassName, L"Dear ImGui OpenGL + Win32",
         //    WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, 1280, 720,
@@ -75,6 +114,80 @@ namespace BlackPearl {
             WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, width, height,
             nullptr, nullptr, windowClass.hInstance, nullptr);
         //return CreateWindow(wc.lpszClassName, title, WS_OVERLAPPEDWINDOW, x, y, width, height, nullptr, nullptr, wc.hInstance, nullptr);
+    }
+    // 存到 Viewport UserData 中
+    struct WindowData { HWND hwnd; HDC hdc; HGLRC hglrc; };
+    void My_CreateWindow(ImGuiViewport* viewport)
+    {
+        // 创建 Win32 窗口
+        WNDCLASSEX wc = { sizeof(WNDCLASSEX), CS_OWNDC, DefWindowProc, 0, 0,
+                          GetModuleHandle(NULL), NULL, NULL, NULL, NULL,
+                          L"ImGuiExample", NULL };
+        RegisterClassEx(&wc);
+
+        HWND hwnd = CreateWindowW(L"ImGuiExample", L"ImGui Child Window",
+            WS_OVERLAPPEDWINDOW,
+            (int)viewport->Pos.x, (int)viewport->Pos.y,
+            (int)viewport->Size.x, (int)viewport->Size.y,
+            NULL, NULL, wc.hInstance, NULL);
+        viewport->PlatformHandle = hwnd;
+        //viewport->PlatformHandleRaw = hwnd;
+
+        HDC hdc = GetDC(hwnd);
+
+        PIXELFORMATDESCRIPTOR pfd = { sizeof(PIXELFORMATDESCRIPTOR), 1,
+            PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER,
+            PFD_TYPE_RGBA, 32, 0,0,0,0,0,0,0,0,0,0,0,0,0,
+            24, 8, 0, PFD_MAIN_PLANE, 0, 0, 0, 0 };
+
+        int pf = ChoosePixelFormat(hdc, &pfd);
+        SetPixelFormat(hdc, pf, &pfd);
+
+        HGLRC hglrc = wglCreateContext(hdc);
+
+
+        OpenGLViewport* viewPort = static_cast<OpenGLViewport*>(g_deviceManager->GetViewport());
+        HDC mainDC = viewPort->GetGLContext()->DeviceContext;
+        HGLRC mainRC = viewPort->GetGLContext()->OpenGLContext;
+
+        // 关键点：共享主上下文资源！
+        wglShareLists(mainRC, hglrc);
+
+       
+        WindowData* data = new WindowData{ hwnd, hdc, hglrc };
+        viewport->RendererUserData = data;
+
+        ShowWindow(hwnd, SW_SHOW);
+        UpdateWindow(hwnd);
+    }
+
+    void My_RenderWindow(ImGuiViewport* viewport, void*)
+    {
+        auto* data = (WindowData*)viewport->RendererUserData;
+        wglMakeCurrent(data->hdc, data->hglrc);
+
+        ImGui_ImplOpenGL3_RenderDrawData(viewport->DrawData);
+    }
+
+    void My_SwapBuffers(ImGuiViewport* viewport, void*)
+    {
+        auto* data = (WindowData*)viewport->RendererUserData;
+        ::SwapBuffers(data->hdc);
+    }
+
+    void My_DestroyWindow(ImGuiViewport* viewport)
+    {
+        auto* data = (WindowData*)viewport->RendererUserData;
+        if (data) {
+            wglMakeCurrent(nullptr, nullptr);
+            wglDeleteContext(data->hglrc);
+            ReleaseDC((HWND)viewport->PlatformHandle, data->hdc);
+            delete data;
+        }
+
+        DestroyWindow((HWND)viewport->PlatformHandle);
+        viewport->PlatformHandle = nullptr;
+        viewport->RendererUserData = nullptr;
     }
 
 
@@ -87,22 +200,30 @@ namespace BlackPearl {
         ImGuiIO& io = ImGui::GetIO(); (void)io;
         io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;       // Enable Keyboard Controls
         //io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
-        io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;           // Enable Docking
-        io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;         // Enable Multi-Viewport / Platform Windows
-        //io.ConfigFlags |= ImGuiConfigFlags_ViewportsNoTaskBarIcons;
-        //io.ConfigFlags |= ImGuiConfigFlags_ViewportsNoMerge;
-        m_IO = &io;
+       io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;           // Enable Docking
+
+  //     io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;         // Enable Multi-Viewport / Platform Windows
+
+
+        //io.ConfigFlags |= ImGuiConfigFlags_DpiEnableScaleViewports;
+        //io.ConfigFlags |= ImGuiConfigFlags_DpiEnableScaleFonts;
+
+        //io.FontGlobalScale = 1.0f; // 确保缩放为 1.0（默认值）
+        //ImGui::GetStyle().ScaleAllSizes(1.0f); // 缩放样式
+
+        //io.ConfigViewportsNoAutoMerge = false;
+      //  m_IO = &io;
         //// Setup Dear ImGui style
-        //ImGui::StyleColorsDark();
+     //   ImGui::StyleColorsDark();
         ////ImGui::StyleColorsClassic();
 
         //// When viewports are enabled we tweak WindowRounding/WindowBg so platform windows can look identical to regular ones.
-        //ImGuiStyle& style = ImGui::GetStyle();
-        //if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
-        //{
-        //    style.WindowRounding = 0.0f;
-        //    style.Colors[ImGuiCol_WindowBg].w = 1.0f;
-        //}
+        ImGuiStyle& style = ImGui::GetStyle();
+        if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+        {
+            style.WindowRounding = 0.0f;
+            style.Colors[ImGuiCol_WindowBg].w = 1.0f;
+        }
 
         Application& app = Application::Get();
         // void* window = (Application::Get().GetWindow().GetNativeWindow());
@@ -111,37 +232,69 @@ namespace BlackPearl {
         ImGui_ImplWin32_Init(m_hImGuiWnd);
         ImGui_ImplOpenGL3_Init("#version 410");
 
+        // 设置平台窗口回调
+   /*     ImGuiPlatformIO& platform_io = ImGui::GetPlatformIO();
+        platform_io.Platform_CreateWindow = My_CreateWindow;
+        platform_io.Platform_DestroyWindow = My_DestroyWindow;
+        platform_io.Platform_RenderWindow = My_RenderWindow;
+        platform_io.Platform_SwapBuffers = My_SwapBuffers;*/
 
-   /*     glGenVertexArrays(1, &vao);
-        glBindVertexArray(vao);*/
+
     }
 
     void ImGuiLayer::CreateImguiWindow()
     {
 
-        // 创建 ImGui 窗口
-        m_hImGuiWnd = CreateWin32Window(L"ImGui Control Window", 1400, 100, 300, 300);
-        SetWindowLongPtr(m_hImGuiWnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(this));
+ 
+        m_hImGuiWnd = static_cast<HWND>(Application::Get().GetWindow().GetNativeWindow());
 
-        ShowWindow(m_hImGuiWnd, SW_SHOW);
-        UpdateWindow(m_hImGuiWnd);
-
-        if (!m_hImGuiWnd || !InitOpenGL(m_hImGuiWnd, m_hImGuiDC, m_hImGuiRC)) {
+        if (!InitOpenGL(m_hImGuiWnd)) {
             GE_CORE_ERROR("Fail to create imguiWindow");
             return;
         }
 
-
     }
+
+
+    void ImGuiLayer::OnSetup()
+    {
+        m_CommandList = m_DeviceManager->GetDevice()->createCommandList();
+    }
+
     void ImGuiLayer::OnAttach()
 	{
-        m_hBackupDC = wglGetCurrentDC();
-        m_hBackupRC = wglGetCurrentContext();
+        printf("current context init imgui = %p\n", wglGetCurrentContext());
+
+        Device* device = static_cast<Device*>(g_deviceManager->GetDevice());
+
+         m_hBackupDC = wglGetCurrentDC();
+         m_hBackupRC = wglGetCurrentContext();
+
+      PlatformRenderingContextSetup(device->m_Context->PlatformDevice);
+
+
+
+
+       // g_RenderContextRC = m_hImGuiRC;
+      //  assert(device->m_Context->PlatformDevice->RenderingContext);
+        printf("current context  init imgui = %p\n", wglGetCurrentContext());
+        //ImGui_ImplWin32_EnableDpiAwareness();
         CreateImguiWindow();
-      
+       // ShowWindow(m_hImGuiWnd, SW_SHOWDEFAULT);
+       // UpdateWindow(m_hImGuiWnd);
+
         InitImGUI();
+           
+
+
 
         wglMakeCurrent(m_hBackupDC, m_hBackupRC);
+
+       
+
+        printf("current context after init imgui = %p\n", wglGetCurrentContext());
+
+
 	}
 
 	void ImGuiLayer::OnDetach()
@@ -158,23 +311,57 @@ namespace BlackPearl {
 
 	void ImGuiLayer::OnImguiRender()
 	{
-        /*wglMakeCurrent(m_hImGuiDC, m_hImGuiRC);
-        ImGui::NewFrame();
-		
-		ImGui::ShowDemoWindow(&show);*/
-        static bool show = true;
-        //ImGui::SetNextWindowCollapsed(false, ImGuiCond_Always); // 强制窗口展开
-        //ImGui::SetNextWindowSize(ImVec2(300, 300), ImGuiCond_FirstUseEver); // 设置默认大小
-		//bool ret = ImGui::Begin("Settings", &show);
-  //      ImGui::ShowMetricsWindow(); // 显示 ImGui 的调试窗口
-  //      GE_ERROR_JUDGE();
-  //     
+        printf("current context OnImguiRender imgui = %p\n", wglGetCurrentContext());
 
-  //      if (ret) {
-  //          GE_CORE_WARN("fail to open IMGUI Settings");
-  //     }
-		//ImGui::ColorEdit3("Suqare Color", (m_BackgroundColor));
-		//ImGui::End();
+        //wglMakeCurrent(m_hImGuiDC, m_hImGuiRC);
+     /*   ImGui::NewFrame();*/
+		 static bool show = true;
+		ImGui::ShowDemoWindow(&show);
+
+        auto a = ImGui::GetIO().DisplayFramebufferScale;
+
+
+        ImVec2 main_viewport_pos = ImGui::GetMainViewport()->Pos;
+        ImGui::SetNextWindowPos(ImVec2(main_viewport_pos.x *0.5, main_viewport_pos.y*0.5), ImGuiCond_FirstUseEver);
+        ImGui::SetNextWindowSize(ImVec2(50, 50), ImGuiCond_FirstUseEver);
+
+
+        ImGui::Begin("Hello, world!");
+        float bgColor[3] = { 0.2f, 0.3f, 0.4f };
+        bool s = ImGui::ColorEdit3("Suqare Color", bgColor);
+        ImGui::Text("Hello!");
+        ImGui::End();
+
+    
+  /*      static bool show = true;
+        ImGui::ShowDemoWindow();*/
+
+      //  ImGuiIO& io = ImGui::GetIO();
+      //  ImVec2 center = ImVec2(io.DisplaySize.x * 0.5f, io.DisplaySize.y * 0.5f);
+
+      //  ImGui::SetNextWindowPos(center, ImGuiCond_FirstUseEver, ImVec2(0.5f, 0.5f)); // anchor居中
+      //  ImGui::SetNextWindowSize(ImVec2(50, 50), ImGuiCond_FirstUseEver);
+
+      //  ImGui::Begin("Hello, world!");             //, NULL, 0             // Create a window called "Hello, world!" and append into it.
+      //  ImGui::Text("Hello!");
+      ////  ImGui::ColorEdit3("Suqare Color", (m_BackgroundColor));
+      //////  ImGui::Text("This is some useful text.");               // Display some text (you can use a format strings too)
+      ////  int value = 42;
+      ////  ImGui::Text("Value: %d", value);
+      //  ImGui::End();
+
+      //  ImGui::ShowMetricsWindow(); // 显示 ImGui 的调试窗口
+      //  ImGui::SetNextWindowSize(ImVec2(100.0, 20.0));
+		bool ret = ImGui::Begin("Settings");
+        
+       
+
+        if (!ret) {
+            GE_CORE_WARN("fail to open IMGUI Settings");
+       }
+       
+		ImGui::ColorEdit3("Suqare Color", (m_BackgroundColor));
+		ImGui::End();
 
         GE_ERROR_JUDGE();
 		//ImGui::Begin("GI Settings");
@@ -872,29 +1059,56 @@ namespace BlackPearl {
 	//}
 	void ImGuiLayer::Begin()
 	{
-        // 备份当前 OpenGL 上下文
-        m_hBackupDC = wglGetCurrentDC();
-        m_hBackupRC = wglGetCurrentContext();
+        //// 备份当前 OpenGL 上下文
+        //m_hBackupDC = wglGetCurrentDC();
+        //m_hBackupRC = wglGetCurrentContext();
+        //wglMakeCurrent(m_hImGuiDC, m_hImGuiRC);
+
+        printf("current context begin imgui = %p\n", wglGetCurrentContext());
+
         // 渲染 ImGui 窗口
-        wglMakeCurrent(m_hImGuiDC, m_hImGuiRC);
         //glBindVertexArray(vao);
         GE_ERROR_JUDGE();
 
-        MSG msg = {};
-        while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
-            TranslateMessage(&msg);
-            DispatchMessage(&msg);
-        }
+        //MSG msg = {};
+        //while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
+        //    TranslateMessage(&msg);
+        //    DispatchMessage(&msg);
+        //}
 
         // 显示窗口
       //  ShowWindow(m_hImGuiWnd, SW_SHOW);
       //  UpdateWindow(m_hImGuiWnd);
         GE_CORE_INFO("[ContextMakeCurrent] IMGUI context");
 
+
+        m_CommandList->open();
+        FRHIRenderPassInfo RPInfo(SystemTexture::Get().GetBackBuffer(), ERenderTargetActions::Load_Store,
+            SystemTexture::Get().SceneDepth,
+            EDepthStencilTargetActions::LoadDepthStencil_StoreDepthStencil);
+        m_CommandList->beginRenderPass(RPInfo, "UIPass");
+
+        ImGuiIO& io = ImGui::GetIO(); //(void)io;
+        int display_w, display_h;
+        display_w = io.DisplaySize.x;
+        display_h = io.DisplaySize.y;
+        //  int window_w, window_h;
+         // 逻辑窗口分辨率
+        math::vector<int, 2> windowSize = Application::Get().GetWindow().GetCurWindowSize();
+        // 计算缩放因子（如果 framebuffer_size != window_size）
+        float scale_x = (float)io.DisplaySize.x / (float)windowSize.x;
+        float scale_y = (float)io.DisplaySize.y / (float)windowSize.y;
+
+        // 修正鼠标坐标
+        //io.MousePos = ImVec2((float)mouse_x * scale_x, (float)mouse_y * scale_y);
+
+        std::pair<float, float>&& mousePos = Input::GetMousePosition();
+        io.MousePos = ImVec2(mousePos.first * scale_x, mousePos.second * scale_y);
+
 		ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplWin32_NewFrame();
 		ImGui::NewFrame();
-        bool show_demo_window = true;
+        bool show_demo_window = false;
         if (show_demo_window)
             ImGui::ShowDemoWindow(&show_demo_window);
         GE_ERROR_JUDGE();
@@ -903,41 +1117,56 @@ namespace BlackPearl {
 
 	void ImGuiLayer::End()
 	{
-	/*	ImGuiIO& io = ImGui::GetIO();
-		Application& app = Application::Get();
-		io.DisplaySize = ImVec2((float)app.GetWindow().GetWidth(), (float)app.GetWindow().GetHeight());*/
 
-        if (ImGui::Begin("Control Panel") ){
-            ImGui::Text("Hello, ImGui in a separate window!");
-            ImGui::End();
-        }
-      
 		// Rendering
+
+
+        glClipControl(GL_UPPER_LEFT, GL_ZERO_TO_ONE);
 		ImGui::Render();
         GE_ERROR_JUDGE();
+        ImGuiIO& io = ImGui::GetIO(); //(void)io;
 
-        glViewport(0, 0, (int)m_IO->DisplaySize.x, (int)m_IO->DisplaySize.y);
-        glClearColor(0.45f, 0.55f, 0.60f, 1.00f);
-        glClear(GL_COLOR_BUFFER_BIT);
+
+     
+
+       // glViewport(0, 0, (int)io.DisplaySize.x, (int)io.DisplaySize.y);
+       // glClearColor(0.45f, 0.55f, 0.60f, 1.00f);
+      //  glClear(GL_COLOR_BUFFER_BIT);
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-		if (m_IO->ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+
+        m_CommandList->endRenderPass();
+
+        m_CommandList->close();
+
+		if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
 		{
             
-			//GLFWwindow* backup_current_context = glfwGetCurrentContext();
+            HDC         dc = wglGetCurrentDC();
+            HGLRC       rc = wglGetCurrentContext();
+
+            auto context = wglGetCurrentContext();
 			ImGui::UpdatePlatformWindows();
 			ImGui::RenderPlatformWindowsDefault();
-
+            wglMakeCurrent(dc, rc);
             // 恢复 OpenGL 上下文
 			//glfwMakeContextCurrent(backup_current_context);
            
 
 		}
+        
         GE_ERROR_JUDGE();
+        printf("current context end imgui = %p\n", wglGetCurrentContext());
+        //SwapBuffers(m_hImGuiDC); // 交换缓冲区
 
-       ::SwapBuffers(m_hImGuiDC); // 交换缓冲区
-        wglMakeCurrent(m_hBackupDC, m_hBackupRC);
 
+        //wglMakeCurrent(m_hBackupDC, m_hBackupRC);
 
+      /*  Device* device = static_cast<Device*>(g_deviceManager->GetDevice());
+        if (device->bRevertToSharedContextAfterDrawingViewport)
+        {
+            PlatformSharedContextSetup(device->m_Context->PlatformDevice);
+            device->bRevertToSharedContextAfterDrawingViewport = false;
+        }*/
 
         //HDC  g_hDC =  GetDC(static_cast<HWND>(app.GetWindow().GetNativeWindow()));
 

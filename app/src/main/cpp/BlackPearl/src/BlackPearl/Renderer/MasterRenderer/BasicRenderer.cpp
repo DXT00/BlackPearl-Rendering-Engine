@@ -944,7 +944,7 @@ namespace BlackPearl {
 	{
 
 		// auto& context = static_cast<Context&>(abstractContext);
-        SCOPE_TIME_COUNTER(Gbuffer_SetupView)
+        //SCOPE_TIME_COUNTER(Gbuffer_SetupView)
 
 		ForwardShadingViewConstants viewConstants = {};
 		view->FillPlanarViewConstants(viewConstants);
@@ -966,7 +966,7 @@ namespace BlackPearl {
 
 	void BasicRenderer::RenderPassTemplate(ICommandList* cmdList, IFramebuffer* framebuffer, IView* view, IDrawStrategy* drawStrategy, const ShaderParameters* shaderParms)
 	{
-        SCOPE_TIME_COUNTER(Gbuffer_RenderPassTemplate)
+       // SCOPE_TIME_COUNTER(Gbuffer_RenderPassTemplate)
 
 		int id = 0;
         GE_ERROR_JUDGE();

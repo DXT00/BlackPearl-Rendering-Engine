@@ -12,21 +12,33 @@
 #include "Event/MouseEvent.h"
 #include "Event/WindowEvent.h"
 #include <windowsx.h>
+#ifdef USE_IMGUI
+#include "ImGui/imgui.h"
+#include "ImGui/imgui_impl_opengl3.h"
+#include "ImGui/imgui_impl_win32.h"
+#endif
+#ifdef USE_IMGUI
+extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
+#endif
 namespace BlackPearl {
 
 	static LRESULT CALLBACK PC_PlatformGLWndproc(HWND hWnd, uint32_t Message, WPARAM wParam, LPARAM lParam)
 	{
+#ifdef USE_IMGUI
+		if (ImGui_ImplWin32_WndProcHandler(hWnd, Message, wParam, lParam))
+			return true;
+#endif
         WindowsWindow* pWindow = reinterpret_cast<WindowsWindow*>(GetWindowLongPtr(hWnd, GWLP_USERDATA));
 		switch (Message) {
 		//case WM_NCHITTEST: {
 		//	LRESULT hit = DefWindowProc(hWnd, Message, wParam, lParam);
-		//	return (hit == HTCLIENT) ? HTCAPTION : hit; // ÔÊĞí¿Í»§ÇøÍÏ¶¯
+		//	return (hit == HTCLIENT) ? HTCAPTION : hit; // å…è®¸å®¢æˆ·åŒºæ‹–åŠ¨
 		//}
         case WM_SETCURSOR: {
             if (LOWORD(lParam) == HTCLIENT) {
-                // ÔÚ¿Í»§ÇøÇ¿ÖÆÉèÖÃÎª¼ıÍ·¹â±ê
+                // åœ¨å®¢æˆ·åŒºå¼ºåˆ¶è®¾ç½®ä¸ºç®­å¤´å…‰æ ‡
                 SetCursor(LoadCursor(NULL, IDC_ARROW));
-                return TRUE; // ±íÊ¾ÒÑ´¦Àí´ËÏûÏ¢
+                return TRUE; // è¡¨ç¤ºå·²å¤„ç†æ­¤æ¶ˆæ¯
             }
             break;
         }
@@ -41,13 +53,13 @@ namespace BlackPearl {
             if (wParam == VK_ESCAPE) {
                 PostMessage(hWnd, WM_CLOSE, 0, 0);
             }
-            KeyPressedEvent *event = new KeyPressedEvent(wParam); // ĞèÊµÏÖ¼üÂëÓ³Éä
+            KeyPressedEvent *event = new KeyPressedEvent(wParam); // éœ€å®ç°é”®ç æ˜ å°„
             pWindow->ProcessEvent(event);
             break;
         }
         case WM_KEYUP: {
     
-            KeyReleasedEvent* event = new KeyReleasedEvent(wParam); // ĞèÊµÏÖ¼üÂëÓ³Éä
+            KeyReleasedEvent* event = new KeyReleasedEvent(wParam); // éœ€å®ç°é”®ç æ˜ å°„
             pWindow->ProcessEvent(event);
             break;
         }
@@ -203,8 +215,8 @@ void WindowsWindow::Init()
                                         this);
         ShowWindow(m_WindowHandle, SW_SHOW);
         UpdateWindow(m_WindowHandle);
-        // ¹Ø¼ü²½Öè£º½« this Ö¸Õë°ó¶¨µ½´°¿Ú
-        //WindowsWindow* pWindow = this; // ¼ÙÉè this ÊÇÓĞĞ§µÄ WindowsWindow ¶ÔÏó
+        // å…³é”®æ­¥éª¤ï¼šå°† this æŒ‡é’ˆç»‘å®šåˆ°çª—å£
+        //WindowsWindow* pWindow = this; // å‡è®¾ this æ˜¯æœ‰æ•ˆçš„ WindowsWindow å¯¹è±¡
         SetWindowLongPtr(m_WindowHandle, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(this));
     //    HANDLE hThread = (HANDLE)_beginthreadex(NULL, 0, WindowThreadProc, NULL, 0, NULL);
 
@@ -298,6 +310,7 @@ bool WindowsWindow::IsMouseButtonPressed(int button)
     return status == GLFW_PRESS;*/
 
     if (m_KeyPressMap.find(button) != m_KeyPressMap.end()) {
+
         return m_KeyPressMap[button];
     }
     else {
@@ -316,8 +329,8 @@ math::vector<int, 2> WindowsWindow::GetCurWindowSize()
     RECT windowRect;
     GetWindowRect(m_WindowHandle, &windowRect);
 
-    int width = windowRect.right - windowRect.left;  // ´°¿Ú×Ü¿í¶È£¨º¬±ß¿ò£©
-    int height = windowRect.bottom - windowRect.top; // ´°¿Ú×Ü¸ß¶È£¨º¬±êÌâÀ¸£©
+    int width = windowRect.right - windowRect.left;  // çª—å£æ€»å®½åº¦ï¼ˆå«è¾¹æ¡†ï¼‰
+    int height = windowRect.bottom - windowRect.top; // çª—å£æ€»é«˜åº¦ï¼ˆå«æ ‡é¢˜æ ï¼‰
    /* int width;
     int height;
     glfwGetWindowSize(m_Window, &width, &height);*/

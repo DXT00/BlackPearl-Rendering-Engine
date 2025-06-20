@@ -36,6 +36,11 @@ namespace BlackPearl{
 
 
 
+
+
+
+
+
 /** This function is handled separately because it is used to get a real context. */
 extern PFNWGLCREATECONTEXTATTRIBSARBPROC wglCreateContextAttribsARB;
 
@@ -203,5 +208,8 @@ public:
 };
 
 typedef FWindowsOpenGL FOpenGL;
+
+
+
 
 }

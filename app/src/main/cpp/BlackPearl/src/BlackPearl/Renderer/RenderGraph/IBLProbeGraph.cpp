@@ -35,6 +35,14 @@ namespace BlackPearl {
 	}
 	void IBLProbeGraph::Render(Timestep ts, IFramebuffer* framebuffer, IView* View) {
 
+        if (Configuration::bUpdateProbePerFrame) {
+            bIsProbesDirty = true;
+
+        }
+        
+        if (!bIsProbesDirty)
+            return;
+
         m_CommandList->open();
 
         //pass 0 render brdf lut
@@ -53,6 +61,9 @@ namespace BlackPearl {
         //pass 1 render diffuse probes and reflect probes
         m_IBLProbeRenderer->Render(m_CommandList, framebuffer, m_Scene);
         m_CommandList->close();
+
+
+        bIsProbesDirty = false;
 	}
 
 

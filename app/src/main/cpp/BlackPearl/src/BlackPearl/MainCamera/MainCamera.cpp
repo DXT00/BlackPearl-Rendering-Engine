@@ -9,6 +9,11 @@ namespace BlackPearl {
 		return m_CameraObj->GetComponent<Transform>()->GetPosition();
 	}
 	
+    glm::vec3 MainCamera::GetRotation() const {
+        return m_CameraObj->GetComponent<PerspectiveCamera>()->GetRotation();
+
+    }
+
 	float MainCamera::Yaw() const
 	{
 		return m_CameraObj->GetComponent<PerspectiveCamera>()->Yaw();

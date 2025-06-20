@@ -38,6 +38,7 @@ using namespace BlackPearl::math;
 using namespace std::chrono;
 
 namespace BlackPearl {
+    class Application;
 	extern ObjectManager* g_objectManager;
 
 	class Layer
@@ -61,6 +62,8 @@ namespace BlackPearl {
 			/*Status*/
 			SystemTime::Start();
 			m_StartTimeMs = duration_cast<milliseconds>(system_clock::now().time_since_epoch());
+            m_DiffuseLightProbes.resize(0);
+            m_ReflectionLightProbes.resize(0);
 
 		}
 		virtual ~Layer() {
@@ -155,110 +158,123 @@ namespace BlackPearl {
 
 		void InputCheck(float ts)
 		{
-//todo:: android  platform
-#ifdef GE_PLATFORM_WINDOWS
-			float maxMoveDelta = 5 * m_MainCamera->GetMoveSpeed();
-			float moveDelta = m_MainCamera->GetMoveSpeed();// *ts;
 
-			if (moveDelta > maxMoveDelta)
-				moveDelta = maxMoveDelta;
-
-			if (Input::IsKeyPressed(KeyCodes::Get(BP_KEY_W))) {
-				/*if (DynamicRHI::g_RHIType == DynamicRHI::Type::Vulkan) {
-					m_CameraPosition -= m_MainCamera->Front() * moveDelta;
-				}*/
-				//else {
-					m_CameraPosition += m_MainCamera->Front() * moveDelta;
-				//}
-			}
-			else if (Input::IsKeyPressed(KeyCodes::Get(BP_KEY_S))) {
-				/*if (DynamicRHI::g_RHIType == DynamicRHI::Type::Vulkan) {
-					m_CameraPosition += m_MainCamera->Front() * moveDelta;
-				}
-				else {*/
-					m_CameraPosition -= m_MainCamera->Front() * moveDelta;
-				//}
-			}
-			if (Input::IsKeyPressed(KeyCodes::Get(BP_KEY_A))) {
-				if (DynamicRHI::g_RHIType == DynamicRHI::Type::D3D12) {
-					m_CameraPosition -= (-m_MainCamera->Right()) * moveDelta;
-				}
-				else if (DynamicRHI::g_RHIType == DynamicRHI::Type::OpenGL ||
-					DynamicRHI::g_RHIType == DynamicRHI::Type::Vulkan) {
-					m_CameraPosition -= m_MainCamera->Right() * moveDelta;
-				}
-			}
-			else if (Input::IsKeyPressed(KeyCodes::Get(BP_KEY_D))) {
-				if (DynamicRHI::g_RHIType == DynamicRHI::Type::D3D12) {
-					m_CameraPosition += (-m_MainCamera->Right()) * moveDelta;
-				}
-				else if (DynamicRHI::g_RHIType == DynamicRHI::Type::OpenGL ||
-					DynamicRHI::g_RHIType == DynamicRHI::Type::Vulkan) {
-					m_CameraPosition += m_MainCamera->Right() * moveDelta;
-				}
-			}
-			if (Input::IsKeyPressed(KeyCodes::Get(BP_KEY_E))) {
-				m_CameraPosition += m_MainCamera->Up() * moveDelta;
-			}
-			else if (Input::IsKeyPressed(KeyCodes::Get(BP_KEY_Q))) {
-				m_CameraPosition -= m_MainCamera->Up() * moveDelta;
-			}
-			// ---------------------Rotation--------------------------------------
-
-			float posx = Input::GetMouseX();
-			float posy = Input::GetMouseY();
-			if (Input::IsMouseButtonPressed(KeyCodes::Get(BP_MOUSE_BUTTON_RIGHT))) {
-				if (Input::IsFirstMouse()) {
-					Input::SetFirstMouse(false);
-					m_LastMouseX = posx;
-					m_LastMouseY = posy;
-				}
-				float diffx = posx - m_LastMouseX;
-				float diffy = -posy + m_LastMouseY;
-
-				m_LastMouseX = posx;
-				m_LastMouseY = posy;
-
-				float deltaX = diffx * ts * m_MainCamera->GetRotateSpeed();
-				float deltaY = diffy * ts * m_MainCamera->GetRotateSpeed();
-
-				float maxRotDelta = 3 * m_MainCamera->GetRotateSpeed();
-				if (deltaX > maxRotDelta)
-					deltaX = maxRotDelta;
-				if (deltaY > maxRotDelta)
-					deltaY = maxRotDelta;
-
-				//GE_CORE_INFO("Cam deltaX = " + std::to_string(deltaX) + "Cam deltaY =" + std::to_string(deltaY));
-
-				float raoteSpeed = m_MainCamera->GetRotateSpeed();
-				m_CameraRotation.Yaw += deltaX ;
-				m_CameraRotation.Pitch += deltaY ;
-
-				if (m_CameraRotation.Pitch > 89.0f)
-					m_CameraRotation.Pitch = 89.0f;
-				if (m_CameraRotation.Pitch < -89.0f)
-					m_CameraRotation.Pitch = -89.0f;
-
-				if (m_CameraRotation.Yaw > 0.0f)
-					m_CameraRotation.Yaw = 0.0f;
-				if (m_CameraRotation.Yaw < -360.0f)
-					m_CameraRotation.Yaw = -360.0f;
-
-				m_MainCamera->SetRotation({ m_CameraRotation.Pitch, m_CameraRotation.Yaw, 0.0f });
-			}
-			else {
-				m_LastMouseX = posx;//lastMouse时刻记录当前坐标位置，防止再次点击右键时，发生抖动！
-				m_LastMouseY = posy;
-			}
-
-			m_MainCamera->SetPosition(m_CameraPosition);
-
-			//GE_CORE_INFO("Cam Pos = " + std::to_string(m_CameraPosition.x) + "," + std::to_string(m_CameraPosition.y) + "," + std::to_string(m_CameraPosition.z));
-			//GE_CORE_INFO("Cam Pitch = " + std::to_string(m_CameraRotation.Pitch) + "Cam Yaw =" + std::to_string(m_CameraRotation.Yaw));
-#else
-
-            AndroidInputManager::GetInstance()->Tick(m_MainCamera,m_CameraPosition, m_CameraRotation);
-#endif
+            Input::Update(m_MainCamera, ts);
+////todo:: android  platform
+//#ifdef GE_PLATFORM_WINDOWS
+//			float maxMoveDelta = 5 * m_MainCamera->GetMoveSpeed();
+//			float moveDelta = m_MainCamera->GetMoveSpeed();// *ts;
+//
+//			if (moveDelta > maxMoveDelta)
+//				moveDelta = maxMoveDelta;
+//
+//			if (Input::IsKeyPressed(KeyCodes::Get(BP_KEY_W))) {
+//				/*if (DynamicRHI::g_RHIType == DynamicRHI::Type::Vulkan) {
+//					m_CameraPosition -= m_MainCamera->Front() * moveDelta;
+//				}*/
+//				//else {
+//					m_CameraPosition += m_MainCamera->Front() * moveDelta;
+//				//}
+//			}
+//			else if (Input::IsKeyPressed(KeyCodes::Get(BP_KEY_S))) {
+//				/*if (DynamicRHI::g_RHIType == DynamicRHI::Type::Vulkan) {
+//					m_CameraPosition += m_MainCamera->Front() * moveDelta;
+//				}
+//				else {*/
+//					m_CameraPosition -= m_MainCamera->Front() * moveDelta;
+//				//}
+//			}
+//			if (Input::IsKeyPressed(KeyCodes::Get(BP_KEY_A))) {
+//				if (DynamicRHI::g_RHIType == DynamicRHI::Type::D3D12) {
+//					m_CameraPosition -= (-m_MainCamera->Right()) * moveDelta;
+//				}
+//				else if (DynamicRHI::g_RHIType == DynamicRHI::Type::OpenGL ||
+//					DynamicRHI::g_RHIType == DynamicRHI::Type::Vulkan) {
+//					m_CameraPosition -= m_MainCamera->Right() * moveDelta;
+//				}
+//			}
+//			else if (Input::IsKeyPressed(KeyCodes::Get(BP_KEY_D))) {
+//				if (DynamicRHI::g_RHIType == DynamicRHI::Type::D3D12) {
+//					m_CameraPosition += (-m_MainCamera->Right()) * moveDelta;
+//				}
+//				else if (DynamicRHI::g_RHIType == DynamicRHI::Type::OpenGL ||
+//					DynamicRHI::g_RHIType == DynamicRHI::Type::Vulkan) {
+//					m_CameraPosition += m_MainCamera->Right() * moveDelta;
+//				}
+//			}
+//			if (Input::IsKeyPressed(KeyCodes::Get(BP_KEY_E))) {
+//				m_CameraPosition += m_MainCamera->Up() * moveDelta;
+//			}
+//			else if (Input::IsKeyPressed(KeyCodes::Get(BP_KEY_Q))) {
+//				m_CameraPosition -= m_MainCamera->Up() * moveDelta;
+//			}
+//			// ---------------------Rotation--------------------------------------
+//
+//			float posx = Input::GetMouseX();
+//			float posy = Input::GetMouseY();
+//			if (Input::IsMouseButtonPressed(KeyCodes::Get(BP_MOUSE_BUTTON_RIGHT))) {
+//				if (Input::IsFirstMouse()) {
+//					Input::SetFirstMouse(false);
+//					m_LastMouseX = posx;
+//					m_LastMouseY = posy;
+//				}
+//				float diffx = posx - m_LastMouseX;
+//				float diffy = -posy + m_LastMouseY;
+//
+//				m_LastMouseX = posx;
+//				m_LastMouseY = posy;
+//                math::vector<int, 2> windowSize = Application::Get().GetWindow().GetCurWindowSize();
+//
+//                float degreesPerPixelX = (m_MainCamera->Fov() / (float)windowSize.x);// *camera.data.aspect;
+//                float degreesPerPixelY = (m_MainCamera->Fov() / (float)windowSize.y);
+//
+//
+//
+//				float deltaX = diffx * degreesPerPixelX * m_MainCamera->GetRotateSpeed();//ts *
+//				float deltaY = diffy * degreesPerPixelY * m_MainCamera->GetRotateSpeed();//ts *
+//
+//				//float maxRotDelta = 3 * m_MainCamera->GetRotateSpeed();
+//				//if (deltaX > maxRotDelta)
+//				//	deltaX = maxRotDelta;
+//				//if (deltaY > maxRotDelta)
+//				//	deltaY = maxRotDelta;
+//
+//				//GE_CORE_INFO("Cam deltaX = " + std::to_string(deltaX) + "Cam deltaY =" + std::to_string(deltaY));
+//
+//				float raoteSpeed = m_MainCamera->GetRotateSpeed();
+//				m_CameraRotation.Yaw += deltaX ;
+//				m_CameraRotation.Pitch += deltaY ;
+//
+//			/*	if (m_CameraRotation.Pitch > 89.0f)
+//					m_CameraRotation.Pitch = 89.0f;
+//				if (m_CameraRotation.Pitch < -89.0f)
+//					m_CameraRotation.Pitch = -89.0f;*/
+//
+//			/*	if (m_CameraRotation.Yaw > 0.0f)
+//					m_CameraRotation.Yaw = 0.0f;
+//				if (m_CameraRotation.Yaw < -360.0f)
+//					m_CameraRotation.Yaw = -360.0f;*/
+//                if (math::abs(m_CameraRotation.Pitch) >= 90) m_CameraRotation.Pitch = 0.f;
+//
+//                if (math::abs(m_CameraRotation.Yaw) >= 360.0) m_CameraRotation.Yaw = 0.f;
+//
+//
+//
+//				m_MainCamera->SetRotation({ m_CameraRotation.Pitch, m_CameraRotation.Yaw, 0.0f });
+//			}
+//			else {
+//				m_LastMouseX = posx;//lastMouse时刻记录当前坐标位置，防止再次点击右键时，发生抖动！
+//				m_LastMouseY = posy;
+//			}
+//
+//			m_MainCamera->SetPosition(m_CameraPosition);
+//
+//			//GE_CORE_INFO("Cam Pos = " + std::to_string(m_CameraPosition.x) + "," + std::to_string(m_CameraPosition.y) + "," + std::to_string(m_CameraPosition.z));
+//			//GE_CORE_INFO("Cam Pitch = " + std::to_string(m_CameraRotation.Pitch) + "Cam Yaw =" + std::to_string(m_CameraRotation.Yaw));
+//#else
+//
+//            AndroidInputManager::GetInstance()->Tick(m_MainCamera,m_CameraPosition, m_CameraRotation);
+//#endif
 		}
 
 	protected:

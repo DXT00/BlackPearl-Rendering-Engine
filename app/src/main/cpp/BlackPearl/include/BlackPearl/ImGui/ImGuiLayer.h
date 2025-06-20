@@ -9,14 +9,14 @@
 //#include "imgui_impl_glfw.h"
 
 namespace BlackPearl {
-
+    class FPlatformOpenGLContext;
 	class ImGuiLayer :public Layer
 	{
 	public:
 		ImGuiLayer(const std::string& name)
 			:Layer(name) {}
 		virtual ~ImGuiLayer() = default;
-
+        virtual void OnSetup() override;
 		virtual void OnAttach() override;
 		virtual void OnDetach() override;
 		virtual void OnUpdate(Timestep ts) override;
@@ -26,7 +26,7 @@ namespace BlackPearl {
 		void Begin();
 		void End();
 
-
+        bool InitOpenGL(HWND hWnd);
 		//Editor Functions
 
 		void ShowMeshRenderer(MeshRenderer* comp);
@@ -53,6 +53,11 @@ namespace BlackPearl {
         HGLRC       m_hBackupRC;
         GLuint vao;
     private:
+
+        FPlatformOpenGLContext* m_ImGuiContext;
+
+        CommandListHandle       m_CommandList = nullptr;
+
         //HWND m_hImGuiWnd;
         //HDC         m_hImGuiDC;
         //HGLRC       m_hImGuiRC;

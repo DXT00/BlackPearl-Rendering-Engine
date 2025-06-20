@@ -21,7 +21,7 @@ namespace BlackPearl {
 	}
 	void InstancedOpaqueDrawStrategy::PrepareForView(Scene* Scene, const IView& view)
 	{
-        SCOPE_TIME_COUNTER(Gbuffer_DrawStrategy)
+       // SCOPE_TIME_COUNTER(Gbuffer_DrawStrategy)
 
         std::vector<bool> OutVisibleNodes;
 		m_VisibleObjs =  g_cullingManager->CullOctree(Scene, view, OutVisibleNodes);

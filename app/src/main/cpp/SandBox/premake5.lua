@@ -54,6 +54,7 @@ project "Sandbox"
 		"../%{IncludeDir.OpenGL}",
 		"../%{IncludeDir.Glad}",
 		"../%{IncludeDir.glslShader}",
+        "../%{IncludeDir.OpenSSL}",
 		--"../%{IncludeDir.vulkan}"
         "../assets/shaders/"
 
@@ -62,13 +63,18 @@ project "Sandbox"
 	defines
 	{
 		"GE_API_OPENGL",
-		--"USE_IMGUI"
+		"USE_IMGUI"
 	}
-	
+	libdirs{
+
+    "../BlackPearl/vendor/OpenSSL_1.1.1t/lib/Win64/Debug"
+
+	}
 	links
 	{
 		"BlackPearl",
 		"ImGui",
+        --"libssl",
 		"Glad",--for imgui
 		--"ShaderMakeBlob",
 		--"assimp",
@@ -80,6 +86,15 @@ project "Sandbox"
 		--"dxguid.lib",
 		--"vulkan-1.lib",
 		--"directxtex.lib",
+        --"kernel32",
+        -- "WS2_32",
+        -- "GDI32", 
+        -- "ADVAPI32", 
+        -- "crypt32",
+        -- "USER32",
+		-- "winhttp",
+      -- "libssl",
+     --  "libcrypto"
 	}
 
 	filter "system:windows"

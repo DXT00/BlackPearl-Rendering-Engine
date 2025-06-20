@@ -83,7 +83,7 @@ namespace BlackPearl {
     }
     void DeviceManager::Run(Timestep ts)
     {
-        BeginFrame();
+        //BeginFrame();
 
         IFramebuffer* framebuffer = GetCurrentFramebuffer();
 
@@ -91,8 +91,17 @@ namespace BlackPearl {
         {
             it->Render(ts, framebuffer, Renderer::GetSceneData());
         }
-        Present();
-        ++m_FrameIndex;
+        //Present();
+
+    }
+    void DeviceManager::RunUI(Timestep ts)
+    {
+        IFramebuffer* framebuffer = GetCurrentFramebuffer();
+
+        for (auto it : m_vRenderGraphs)
+        {
+            it->RenderUI(ts, framebuffer, Renderer::GetSceneData());
+        }
 
     }
     void DeviceManager::GetWindowDimensions(int& width, int& height)

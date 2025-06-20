@@ -117,6 +117,7 @@ namespace BlackPearl {
         void RemoveRenderGraph(RenderGraph* pController);
 
         void Run(Timestep ts);
+        void RunUI(Timestep ts);
 
         // returns the size of the window in screen coordinates
         void GetWindowDimensions(int& width, int& height);
@@ -129,6 +130,8 @@ namespace BlackPearl {
         virtual void BeginFrame() = 0;
         virtual void Present() = 0;
         void UpdateWindowSize();
+        virtual RHIViewport* GetViewport() { return nullptr; }
+        uint32_t m_FrameIndex = 0;
 
     protected:
         bool m_windowVisible = false;
@@ -150,7 +153,6 @@ namespace BlackPearl {
         double m_FrameTimeSum = 0.0;
         int m_NumberOfAccumulatedFrames = 0;
 
-        uint32_t m_FrameIndex = 0;
 
 
         DeviceManager() = default;

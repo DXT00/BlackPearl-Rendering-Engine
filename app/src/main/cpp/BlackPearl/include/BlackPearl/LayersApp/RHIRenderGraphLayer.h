@@ -50,6 +50,7 @@ public:
 
 
         m_MainCamera->SetMoveSpeed(0.5f);
+        m_MainCamera->SetRotateSpeed(5.0f);
 
         m_DirectionLight = CreateLight(LightType::DirectionLight, "DirectionLight");
 
@@ -125,7 +126,7 @@ public:
 
 		Renderer::BeginScene((m_MainCamera->GetObj()->GetComponent<PerspectiveCamera>()), *GetLightSources());
 		//Update Camera, Materials ..
-		m_DeviceManager->UpdateWindowSize();
+		//m_DeviceManager->UpdateWindowSize();
 
 		m_DeviceManager->Run(ts);
 
@@ -133,6 +134,12 @@ public:
 		
 		
 	}
+
+    virtual void OnImguiRender() override {
+
+
+
+    }
 
 	void OnAttach() override {
 	}

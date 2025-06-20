@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "BlackPearl/RHI/RHIDevice.h"
 #include "BlackPearl/Renderer/DeviceManager.h"
+#include "RHI/RHIDefinitions.h"
+#include "OpenGLViewport.h"
 namespace BlackPearl {
 
     class OpenGLViewport;
@@ -28,7 +30,7 @@ namespace BlackPearl {
         void BeginFrame() override;
         void Present() override;
 
-
+        virtual RHIViewport* GetViewport()  override { return m_Viewport; };
         virtual void _RHIBeginDrawingViewport(RHIViewport* viewport, ITexture* renderTarget) override;
         virtual void _RHIEndDrawingViewport(RHIViewport* viewport) override;
 

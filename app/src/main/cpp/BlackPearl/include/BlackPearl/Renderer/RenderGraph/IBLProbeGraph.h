@@ -41,6 +41,9 @@ namespace BlackPearl {
         /*texture*/
         TextureHandle m_SpecularBrdfLUTTexture = nullptr;
         bool bRenderBRDFLUT = false;
+
+
+        bool bIsProbesDirty = true;
 	};
 
 }

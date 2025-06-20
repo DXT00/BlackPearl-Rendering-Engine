@@ -501,10 +501,14 @@ namespace BlackPearl
 		{
 			return RenderingContextState;
 		}
-		else
+		else if(ContextType == CONTEXT_Shared)
 		{
 			return SharedContextState;
 		}
+        else {
+            GE_CORE_ERROR("Invalid context");
+            return InvalidContextState;
+        }
 	}
 
 	static void InitRHICapabilitiesForGL() {

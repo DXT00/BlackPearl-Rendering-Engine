@@ -1,7 +1,8 @@
 #include "pch.h"
 //#include <glad/glad.h>
+#ifdef GE_API_OPENGL
 #include "BlackPearl/RHI/OpenGLRHI/OpenGLDriver/OpenGLFunctions.h"
-
+#endif
 #include "Config.h"
 #include "BlackPearl/RHI/DynamicRHI.h"
 
@@ -11,11 +12,13 @@ namespace BlackPearl {
 
 	void Configuration::SyncGPU()
 	{
+#ifdef GE_API_OPENGL
 		GLsync sync_fence = glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0);
 		GLenum wait_return = GL_UNSIGNALED;
 		while (wait_return != GL_ALREADY_SIGNALED && wait_return != GL_CONDITION_SATISFIED)
 			wait_return = glClientWaitSync(sync_fence, GL_SYNC_FLUSH_COMMANDS_BIT, 1);
 		glDeleteSync(sync_fence);
+#endif
 	}
 	const char* Configuration::GetShaderTypeName()
 	{
@@ -39,7 +42,8 @@ namespace BlackPearl {
 
     /* prefilterMap.glsl里的	float resolution =512.0;也要改 */
 	const float Configuration::EnvironmantMapResolution = 64.0;// 256.0f;
-	
+    const bool  Configuration::bUpdateProbePerFrame = false;
+
     const bool Configuration::bDeferredShading = true;
 
     const bool Configuration::bUseSinglePass = false;
