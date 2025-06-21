@@ -13,8 +13,8 @@ namespace BlackPearl {
     public:
         WindowsWindow()
                 :Window() {
-            Init();
-            SetCursorCallBack();
+          //  Init();
+          //  SetCursorCallBack();
         }
         void Init() override;
         void OnUpdate() override;
@@ -43,6 +43,9 @@ namespace BlackPearl {
         double m_Ypos;
         std::unordered_map<int, bool> m_KeyPressMap;
         std::queue<Event*> m_Queue;
+
+        uint32_t m_CurrentWidth = Configuration::WindowWidth;
+         uint32_t m_CurrentHeight = Configuration::WindowHeight;
     };
     typedef WindowsWindow OpenGLWindow;
 }

@@ -94,13 +94,13 @@ namespace BlackPearl {
         //Present();
 
     }
-    void DeviceManager::RunUI(Timestep ts)
+    void DeviceManager::RunUI()
     {
         IFramebuffer* framebuffer = GetCurrentFramebuffer();
 
         for (auto it : m_vRenderGraphs)
         {
-            it->RenderUI(ts, framebuffer, Renderer::GetSceneData());
+            it->RenderUI(framebuffer, Renderer::GetSceneData());
         }
 
     }

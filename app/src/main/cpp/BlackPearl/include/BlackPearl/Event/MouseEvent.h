@@ -9,10 +9,10 @@ namespace BlackPearl {
 		MouseMovedEvent(double x, double y) :
 			m_Xpos(x), m_Ypos(y) {}
 
-		virtual inline EventType GetEventType()const override { return MouseMoved; };
-		virtual inline int GetEventCategory() const override { return EventCategoryInput | EventCategoryMouse; }
+		virtual  EventType GetEventType()const override { return MouseMoved; };
+		virtual  int GetEventCategory() const override { return EventCategoryInput | EventCategoryMouse; }
 		virtual const char* GetName() const override { return "MouseMovedEvent"; }
-		virtual inline std::string ToString() const override {
+		virtual  std::string ToString() const override {
 			std::stringstream ss;
 			ss << "MouseMovedEvent" << GetMouseX() << "," << GetMouseY();
 			return ss.str();

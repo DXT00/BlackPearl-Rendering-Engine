@@ -117,7 +117,7 @@ namespace BlackPearl {
         void RemoveRenderGraph(RenderGraph* pController);
 
         void Run(Timestep ts);
-        void RunUI(Timestep ts);
+        void RunUI();
 
         // returns the size of the window in screen coordinates
         void GetWindowDimensions(int& width, int& height);

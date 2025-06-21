@@ -6,7 +6,6 @@
 #include "GL/glew.h"
 
 #include "Core/Windows/WindowsWindow.h"
-#include "BlackPearl/Event/MouseEvent.h"
 #include "BlackPearl/Application.h"
 #include "Event/KeyEvent.h"
 #include "Event/MouseEvent.h"
@@ -29,7 +28,9 @@ namespace BlackPearl {
 			return true;
 #endif
         WindowsWindow* pWindow = reinterpret_cast<WindowsWindow*>(GetWindowLongPtr(hWnd, GWLP_USERDATA));
-		switch (Message) {
+		if(!pWindow)
+            return DefWindowProc(hWnd, Message, wParam, lParam);
+        switch (Message) {
 		//case WM_NCHITTEST: {
 		//	LRESULT hit = DefWindowProc(hWnd, Message, wParam, lParam);
 		//	return (hit == HTCLIENT) ? HTCAPTION : hit; // 允许客户区拖动
@@ -84,12 +85,14 @@ namespace BlackPearl {
             break;
         }
         case WM_SIZE: {
+            // 不包括边框栏
             int width = LOWORD(lParam);
             int height = HIWORD(lParam);
-           /* WindowResizeEvent event(width, height);
-            pWindow->EventCallback(event);*/
-            break;
+            WindowResizeEvent* event = new WindowResizeEvent(width, height);
+            pWindow->ProcessEvent(event);
+           
         }
+         return 0;
         case WM_CLOSE: {
             WindowCloseEvent* event = new WindowCloseEvent();
             pWindow->ProcessEvent(event);
@@ -127,6 +130,7 @@ unsigned int WindowsWindow::GetWidth()
 
 void WindowsWindow::Init()
 {
+
     //EventCallback = ProcessEvent;
     ////glfw:initialize and configure
     //if (!g_GLFWInitialized) {
@@ -160,6 +164,20 @@ void WindowsWindow::Init()
         //	WNDCLASS wc;
 
         bInitializedWindowClass = true;
+
+
+
+        // 1. 定义窗口样式（和 CreateWindowEx 一致）
+        DWORD dwStyle = WS_OVERLAPPEDWINDOW | WS_VISIBLE;
+        // 2. 计算窗口矩形（RECT 的 right/bottom 是宽度和高度）
+        RECT windowRect = { 0, 0, Configuration::WindowWidth, Configuration::WindowHeight }; // 客户区目标大小
+        AdjustWindowRectEx(&windowRect, dwStyle, FALSE, 0); // 调整窗口大小
+
+        // 3. 创建窗口时使用调整后的尺寸(包括边框栏）
+        int adjustedWidth = windowRect.right - windowRect.left;
+        int adjustedHeight = windowRect.bottom - windowRect.top;
+
+
         //	//FMemory::Memzero(wc);
         //	memset(&wc, 0, sizeof(WNDCLASS));
 
@@ -188,8 +206,8 @@ void WindowsWindow::Init()
         windowClass.lpszClassName = L"BlackPearl";
         RegisterClassEx(&windowClass);
 
-        int32_t WinX = Configuration::WindowWidth;
-        int32_t WinY = Configuration::WindowHeight;
+        int32_t WinX = adjustedWidth;
+        int32_t WinY = adjustedHeight;
         /*FParse::Value(FCommandLine::Get(), TEXT("WinX="), WinX);
         FParse::Value(FCommandLine::Get(), TEXT("WinY="), WinY);*/
 
@@ -205,7 +223,7 @@ void WindowsWindow::Init()
         m_WindowHandle = CreateWindowEx(NULL,
                                         windowClass.lpszClassName,
                                         windowClass.lpszClassName, /*title*/
-                                        WS_OVERLAPPEDWINDOW,
+                                        dwStyle,
                                         CW_USEDEFAULT, CW_USEDEFAULT,
                                         WinX,
                                         WinY,
@@ -242,8 +260,11 @@ void WindowsWindow::OnUpdate()
         case EventType::WindowClose: {
             m_ShouldClose = true;
         }
-                                   break;
-
+        break;
+        case EventType::WIndowResize: {
+            m_CurrentWidth = static_cast<WindowResizeEvent*>(event)->GetWidth();
+            m_CurrentHeight = static_cast<WindowResizeEvent*>(event)->GetHeight();
+        }
         case EventType::KeyPressed: {
             m_KeyPressMap[static_cast<KeyPressedEvent*>(event)->GetKeyCode()] = true;
         }
@@ -334,7 +355,7 @@ math::vector<int, 2> WindowsWindow::GetCurWindowSize()
    /* int width;
     int height;
     glfwGetWindowSize(m_Window, &width, &height);*/
-    return math::vector<int, 2>(width, height);
+    return math::vector<int, 2>(m_CurrentWidth, m_CurrentHeight);
 }
 }
 

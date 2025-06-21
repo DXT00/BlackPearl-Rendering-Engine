@@ -5,7 +5,9 @@
 namespace BlackPearl {
 	Window* OpenGLDynamicRHI::InitWindow()
 	{
-		return DBG_NEW OpenGLWindow();
+        Window* ret = DBG_NEW OpenGLWindow();
+        ret->Init();
+        return ret;
 	}
 
 	void OpenGLDynamicRHI::InitRHI()

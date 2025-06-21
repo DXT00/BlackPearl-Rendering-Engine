@@ -47,7 +47,7 @@ namespace BlackPearl {
 			RenderMultiPass(ts, framebuffer, View);
 		}
 	}
-	void ForwardRenderGraph::RenderUI(Timestep ts, IFramebuffer* framebuffer, IView* View)
+	void ForwardRenderGraph::RenderUI(IFramebuffer* framebuffer, IView* View)
 	{
         //m_CommandList->open();
         //FRHIRenderPassInfo RPInfo(framebuffer->getDesc().colorAttachments[0].texture, ERenderTargetActions::Load_Store,

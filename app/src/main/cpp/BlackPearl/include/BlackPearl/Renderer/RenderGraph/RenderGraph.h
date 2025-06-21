@@ -23,7 +23,7 @@ namespace BlackPearl {
 
        
         virtual void Render(Timestep ts, IFramebuffer* framebuffer, IView* View) { }
-        virtual void RenderUI(Timestep ts, IFramebuffer* framebuffer, IView* View) {}
+        virtual void RenderUI(IFramebuffer* framebuffer, IView* View) {}
 
         virtual void Animate(float fElapsedTimeSeconds) { }
         virtual void BackBufferResizing() { }

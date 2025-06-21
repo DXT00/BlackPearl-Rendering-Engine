@@ -137,6 +137,7 @@ public:
 
     virtual void OnImguiRender() override {
 
+        m_DeviceManager->RunUI();
 
 
     }

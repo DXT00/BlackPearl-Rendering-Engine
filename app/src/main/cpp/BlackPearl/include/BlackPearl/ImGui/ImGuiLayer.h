@@ -26,8 +26,7 @@ namespace BlackPearl {
 		void Begin();
 		void End();
 
-        bool InitOpenGL(HWND hWnd);
-		//Editor Functions
+
 
 		void ShowMeshRenderer(MeshRenderer* comp);
 		void ShowTransform(Transform* comp, Object* obj);
@@ -57,7 +56,6 @@ namespace BlackPearl {
         FPlatformOpenGLContext* m_ImGuiContext;
 
         CommandListHandle       m_CommandList = nullptr;
-
         //HWND m_hImGuiWnd;
         //HDC         m_hImGuiDC;
         //HGLRC       m_hImGuiRC;

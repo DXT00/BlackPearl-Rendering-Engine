@@ -17,7 +17,7 @@ namespace BlackPearl {
 		virtual void Init(Scene* scene) override;
 		virtual void Render(Timestep ts, IFramebuffer* framebuffer, IView* View) override;
 	
-        virtual void RenderUI(Timestep ts, IFramebuffer* framebuffer, IView* View) override;
+        virtual void RenderUI(IFramebuffer* framebuffer, IView* View) override;
 
 		void RenderSinglePass(Timestep ts, IFramebuffer* framebuffer, IView* View);
 		void RenderMultiPass(Timestep ts, IFramebuffer* framebuffer, IView* View);
