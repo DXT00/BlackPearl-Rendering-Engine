@@ -22,7 +22,7 @@ namespace BlackPearl {
 		static const unsigned int MSAA_SAMPLES = 1;
 
 		//VSync 默认禁用垂直同步
-		static const bool Vsync = true;//false;
+		static const bool Vsync = false;//false;
         static int32_t SyncInterval;
 		//static const VoxelConeTracingRenderer::RenderingMode RenderingMode; 
 		static const bool MobileMultiView = false; //for vr
@@ -102,7 +102,8 @@ namespace BlackPearl {
         //-----------------------------------------------
         static const bool bDeferredShading;
         static const bool bUseSinglePass;
-        static const bool bUseIBL;
+        static  bool bUseIBL;
+        static  bool bUseDirectLight;
 
 
 	};

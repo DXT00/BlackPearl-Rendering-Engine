@@ -148,7 +148,7 @@ namespace BlackPearl {
 
 			if (runtimeSecond > 1.0f) {
 
-				s_AppFPS = m_FrameNum;
+				//s_AppFPS = 1000.0f/Count_FPS.GetRuntime();
 				//GE_CORE_INFO("FPS = " + std::to_string(s_AppFPS) );
 				s_TotalFrameNum += m_FrameNum;
 

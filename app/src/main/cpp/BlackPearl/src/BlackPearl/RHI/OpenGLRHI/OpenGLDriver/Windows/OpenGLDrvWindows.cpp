@@ -596,12 +596,16 @@ bool PlatformBlitToViewport(FPlatformOpenGLDevice* Device, const OpenGLViewport&
 
                 printf("current context (render) glBlitFramebuffer = %p\n", wglGetCurrentContext());
                 // 加载 wglSwapIntervalEXT
-                //auto wglSwapIntervalEXT =
-                //    (PFNWGLSWAPINTERVALEXTPROC)wglGetProcAddress("wglSwapIntervalEXT");
-                //if (wglSwapIntervalEXT) {
-                //    // 启用 VSync
-                //    wglSwapIntervalEXT(1);
-                //}
+                auto wglSwapIntervalEXT =
+                    (PFNWGLSWAPINTERVALEXTPROC)wglGetProcAddress("wglSwapIntervalEXT");
+                if (wglSwapIntervalEXT && Configuration::Vsync) {
+                    // 启用 VSync
+                    wglSwapIntervalEXT(1);
+                }
+                else {
+                    wglSwapIntervalEXT(0);
+
+                }
 
                
            SwapBuffers(Context->DeviceContext);

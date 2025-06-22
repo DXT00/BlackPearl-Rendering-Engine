@@ -26,13 +26,15 @@ namespace BlackPearl {
         TimeLocalCounter(const std::string eventStr);
         ~TimeLocalCounter();
 
-
+        double GetRuntime() const { return m_RuntimeMs; }
 
     private:
         void Start();
         void End();
         double m_LocalStartTimeMs;
         std::string m_EventStr;
+        double m_RuntimeMs = 0.0;
+
     };
 
 

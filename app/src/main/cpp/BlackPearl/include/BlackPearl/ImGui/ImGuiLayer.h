@@ -26,7 +26,9 @@ namespace BlackPearl {
 		void Begin();
 		void End();
 
-
+        void ShowPerformance();
+        void ShowHierarchy();
+        void ShowConfiguration();
 
 		void ShowMeshRenderer(MeshRenderer* comp);
 		void ShowTransform(Transform* comp, Object* obj);

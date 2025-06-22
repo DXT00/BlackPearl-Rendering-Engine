@@ -233,215 +233,12 @@ namespace BlackPearl {
 
 
 
-        	ImGui::Begin("Performance");
-        	ImGui::Text("FPS = %.3lf", Application::s_AppFPS);
-        	ImGui::Text("AvgFPS = %.3lf", Application::s_AppAverageFPS);
-        	ImGui::Separator();
-        	ImGui::Text("s_TotalFrameNum = %d", Application::s_TotalFrameNum);
-        //	ImGui::Text("DrawCalls per frame = %.3lf", (double)BasicRenderer::s_DrawCallCnt);
+        ShowPerformance();
 
-        	//ImGui::Text("DrawCalls per frame = %.3lf", (double)Application::s_TotalFrameNum/BasicRenderer::s_DrawCallCnt);
-        	ImGui::Text("Objs num = %d", (int)m_ObjectsList.size());
-        	ImGui::Text("BackGround Objs num = %d", (int)m_BackGroundObjsList.size());
+        ShowHierarchy();
 
-        	ImGui::End();
+        ShowConfiguration();
 
-
-
-        static Object* currentObj = nullptr;
-        ImGui::Begin("Hierarchy");
-        if (ImGui::CollapsingHeader("Create")) {
-
-        	const char* const entityItems[] = { "Empty","DirectionLight","PointLight","SpotLight","IronMan","Deer","OldHouse","Bunny","Cube","Plane" };
-        	static int entityIdx = -1;
-        	if (ImGui::Combo("CreateEntity", &entityIdx, entityItems, 10))
-        	{
-        		switch (entityIdx)
-        		{
-        		case 0:
-        			GE_CORE_INFO("Creating Empty...");
-        			Layer::CreateEmpty();
-        			break;
-        		case 1:
-        			GE_CORE_INFO("Creating PointLight...");
-        			Layer::CreateLight(LightType::DirectionLight);
-        			break;
-        		case 2:
-        			GE_CORE_INFO("Creating PointLight...");
-        			Layer::CreateLight(LightType::PointLight);
-        			break;
-        		case 3:
-        			GE_CORE_INFO("Creating SpotLight ...");
-        			Layer::CreateLight(LightType::SpotLight);
-        			break;
-        		case 4:
-        			GE_CORE_INFO("Creating IronMan ...");
-        			Layer::CreateModel("assets/models/IronMan/IronMan.obj", "assets/shaders/glsl/IronMan.glsl", false, "IronMan");
-        			break;
-        		case 5:
-        			GE_CORE_INFO("Creating Deer ...");
-        			//Layer::CreateModel("assets/models/u2k69vpbqpds-newbb8/BB8 New/bb8.obj", "assets/shaders/IronMan.glsl");
-        			//Layer::CreateModel("assets/models/99-intergalactic_spaceship-obj/Intergalactic_Spaceship-(Wavefront).obj", "assets/shaders/IronMan.glsl");
-        			//Layer::CreateModel("assets/models/rc8c1qtjiygw-O/Organodron City/Organodron City.obj", "assets/shaders/IronMan.glsl");
-        			LoadStaticBackGroundObject("Deer");
-
-        			break;
-        		case 6:
-        			GE_CORE_INFO("Creating OldHouse ...");
-        			//Layer::CreateModel("assets/models/u2k69vpbqpds-newbb8/BB8 New/bb8.obj", "assets/shaders/IronMan.glsl");
-        			//Layer::CreateModel("assets/models/99-intergalactic_spaceship-obj/Intergalactic_Spaceship-(Wavefront).obj", "assets/shaders/IronMan.glsl");
-        			//Layer::CreateModel("assets/models/rc8c1qtjiygw-O/Organodron City/Organodron City.obj", "assets/shaders/IronMan.glsl");
-        			Layer::CreateModel("assets/models/OldHouse/Gost House/3D models/Gost House (5).obj", "assets/shaders/glsl/IronMan.glsl", false, "OldHouse");
-
-        			break;
-        		case 7:
-        			GE_CORE_INFO("Creating Bunny ...");
-        			LoadStaticBackGroundObject("Bunny");
-        			//Layer::CreateModel("assets/models/u2k69vpbqpds-newbb8/BB8 New/bb8.obj", "assets/shaders/IronMan.glsl");
-        			//Layer::CreateModel("assets/models/99-intergalactic_spaceship-obj/Intergalactic_Spaceship-(Wavefront).obj", "assets/shaders/IronMan.glsl");
-        			//Layer::CreateModel("assets/models/rc8c1qtjiygw-O/Organodron City/Organodron City.obj", "assets/shaders/IronMan.glsl");
-        			//Layer::CreateModel("assets/models/bunny/bunny.obj", "assets/shaders/IronMan.glsl", false, "Bunny");
-        		case 8:
-        			GE_CORE_INFO("Creating Cube ...");
-        			Layer::CreateCube();
-        			break;
-        		case 9:
-        			GE_CORE_INFO("Creating Plane ...");
-        			Layer::CreatePlane();
-        			break;
-        		}
-        	}
-        }
-        if (ImGui::BeginTabBar("TabBar 0", ImGuiTabBarFlags_None))
-        {
-        	if (ImGui::BeginTabItem("Scene")) {
-        		std::vector<Object*> objsList = GetObjects();		//TODO::
-        		ImGui::ListBoxHeader("CurrentEntities", (int)objsList.size(), 10);
-
-        		for (int n = 0; n < objsList.size(); n++) {
-        			//ImGui::Text("%s", objsList[n].c_str());
-        			bool is_selected = (currentObj != nullptr && currentObj->GetName() == objsList[n]->GetName());
-        			if (ImGui::Selectable(objsList[n]->GetName().c_str(), is_selected)) {
-        				currentObj = objsList[n];
-        				GE_CORE_INFO(objsList[n]->GetName() + "is selected")
-        			}
-
-        			if (is_selected)
-        				ImGui::SetItemDefaultFocus();
-        		}
-        		ImGui::ListBoxFooter();
-        		ImGui::EndTabItem();
-        	}
-        	//}
-        }
-        ImGui::EndTabBar();
-        ImGui::End();
-        //////////////////Inspector/////////////////////////
-        ImGui::Begin("Inspector");
-
-
-        /*float pos[] = { m_Sun->GetComponent<DirectionLight>()->GetDirection().x, m_Sun->GetComponent<DirectionLight>()->GetDirection().y, m_Sun->GetComponent<DirectionLight>()->GetDirection().z };
-        ImGui::DragFloat3("m_LightPos", pos, 0.1f, -100.0f, 100.0f, "%.3f ");
-        m_Sun->GetComponent<DirectionLight>()->SetDirection({ pos[0],pos[1],pos[2] });*/
-
-        /*
-        		ImGui::DragFloat("near_plane", &ShadowMapRenderer::s_NearPlane, 0.5f, -50.0f, 100.0f, "%.3f ");
-        		ImGui::DragFloat("far_plane", &ShadowMapRenderer::s_FarPlane, 0.5f, -50.0f, 100.0f, "%.3f ");*/
-
-        if (currentObj != nullptr) {
-
-
-        	if (currentObj->HasComponent< Transform>()) {
-        		if (currentObj->GetComponent<BasicInfo>()->GetType() == OT_BatchNode) {
-
-        		}
-        		else {
-        			ShowTransform(currentObj->GetComponent<Transform>(), currentObj);
-
-        		}
-
-        	}
-        	if (currentObj->HasComponent< LightProbe>()) {
-        		ShowLightProbe(currentObj->GetComponent<LightProbe>(), currentObj);
-
-        	}
-        	if (currentObj->HasComponent< MeshRenderer>()) {
-        		ShowMeshRenderer(currentObj->GetComponent<MeshRenderer>());
-        		/*backGroundObj list*/
-
-        		bool isBackGroundObj = currentObj->GetComponent<MeshRenderer>()->GetIsBackGroundObjects();
-        		ImGui::Checkbox("isBackGroundObj", &isBackGroundObj);
-        		//TODO:: ���Բ��� bitset
-        		if (isBackGroundObj) {
-        			std::vector<Object*>::const_iterator it = std::find(m_BackGroundObjsList.begin(), m_BackGroundObjsList.end(), currentObj);
-        			if (it == m_BackGroundObjsList.end()) {
-        				m_BackGroundObjsList.push_back(currentObj);
-        				currentObj->GetComponent<MeshRenderer>()->SetIsBackGroundObjects(true);
-        			}
-
-        		}
-        		else {
-        			std::vector<Object*>::const_iterator it;// = m_BackGroundObjsList.begin();
-        			for (it = m_BackGroundObjsList.begin(); it != m_BackGroundObjsList.end(); it++) {
-        				if ((*it)->GetId() == currentObj->GetId()) {
-        					m_BackGroundObjsList.erase(it);
-        					currentObj->GetComponent<MeshRenderer>()->SetIsBackGroundObjects(false);
-
-        					break;
-        				}
-        			}
-        		}
-
-        		/*shadowObj list*/
-        		bool isShadowObj = currentObj->GetComponent<MeshRenderer>()->GetIsShadowObjects();
-        		ImGui::Checkbox("isShadowObj", &isShadowObj);
-        		//TODO:: ���Բ��� bitset
-        		if (isShadowObj) {
-        			std::vector<Object*>::const_iterator it = std::find(m_ShadowObjsList.begin(), m_ShadowObjsList.end(), currentObj);
-        			if (it == m_ShadowObjsList.end()) {
-        				m_ShadowObjsList.push_back(currentObj);
-        				currentObj->GetComponent<MeshRenderer>()->SetIsShadowObjects(true);
-        			}
-
-        		}
-        		else {
-        			std::vector<Object*>::const_iterator it;// = m_BackGroundObjsList.begin();
-        			for (it = m_ShadowObjsList.begin(); it != m_ShadowObjsList.end(); it++) {
-        				if ((*it)->GetId() == currentObj->GetId()) {
-        					m_ShadowObjsList.erase(it);
-        					currentObj->GetComponent<MeshRenderer>()->SetIsShadowObjects(false);
-
-        					break;
-        				}
-        			}
-        		}
-
-
-        	}
-        	if (currentObj->HasComponent < PointLight>()) {
-        		ShowPointLight(currentObj->GetComponent<PointLight>());
-        	}
-        	if (currentObj->HasComponent < DirectionLight>()) {
-        		ShowParallelLight(currentObj->GetComponent<DirectionLight>());
-        	}
-        	if (currentObj->HasComponent<PerspectiveCamera>()) {
-        		if (currentObj == m_MainCamera->GetObj()) {
-        			ShowCamera(m_MainCamera);
-        		}
-        		else {
-        			ShowCamera(currentObj->GetComponent<PerspectiveCamera>());
-
-        		}
-
-        	}
-        	if (currentObj->HasComponent<TerrainComponent>()) {
-        		ShowTerrian(currentObj);
-
-        	}
-
-        }
-
-        ImGui::End();
         m_fileDialog.Display();
 
     }
@@ -820,11 +617,11 @@ namespace BlackPearl {
         math::float3 direction = parallelLight->GetDirection();
 
         float dir[] = { direction.x,direction.y,direction.z };
-        ImGui::DragFloat3("position", dir, 0.05f, 0.0f, 1.0f, "%.3f ");
+        ImGui::DragFloat3("direction", dir, 0.05f, -1.0f, 1.0f, "%.3f ");
         parallelLight->SetDirection({ dir[0],dir[1],dir[2] });
 
         float intensity = parallelLight->GetLightProps().intensity;
-        ImGui::DragFloat3("direction", (props.emission));
+        //ImGui::DragFloat3("direction", (props.emission));
 
         ImGui::ColorEdit3("ambient Color", (props.ambient));
         ImGui::ColorEdit3("diffuse Color", (props.diffuse));
@@ -895,6 +692,233 @@ namespace BlackPearl {
         printf("current context end imgui = %p\n", wglGetCurrentContext());
 
 
+    }
+    void ImGuiLayer::ShowPerformance()
+    {
+        ImGui::Begin("Performance");
+        ImGui::Text("FPS = %.3lf", Application::s_AppFPS);
+        ImGui::Text("AvgFPS = %.3lf", Application::s_AppAverageFPS);
+        ImGui::Separator();
+        ImGui::Text("s_TotalFrameNum = %d", Application::s_TotalFrameNum);
+        //	ImGui::Text("DrawCalls per frame = %.3lf", (double)BasicRenderer::s_DrawCallCnt);
+
+         //ImGui::Text("DrawCalls per frame = %.3lf", (double)Application::s_TotalFrameNum/BasicRenderer::s_DrawCallCnt);
+        ImGui::Text("Objs num = %d", (int)m_ObjectsList.size());
+        ImGui::Text("BackGround Objs num = %d", (int)m_BackGroundObjsList.size());
+
+        ImGui::End();
+    }
+
+    void ImGuiLayer::ShowHierarchy()
+    {
+
+        static Object* currentObj = nullptr;
+        ImGui::Begin("Hierarchy");
+        if (ImGui::CollapsingHeader("Create")) {
+
+            const char* const entityItems[] = { "Empty","DirectionLight","PointLight","SpotLight","IronMan","Deer","OldHouse","Bunny","Cube","Plane" };
+            static int entityIdx = -1;
+            if (ImGui::Combo("CreateEntity", &entityIdx, entityItems, 10))
+            {
+                switch (entityIdx)
+                {
+                case 0:
+                    GE_CORE_INFO("Creating Empty...");
+                    Layer::CreateEmpty();
+                    break;
+                case 1:
+                    GE_CORE_INFO("Creating PointLight...");
+                    Layer::CreateLight(LightType::DirectionLight);
+                    break;
+                case 2:
+                    GE_CORE_INFO("Creating PointLight...");
+                    Layer::CreateLight(LightType::PointLight);
+                    break;
+                case 3:
+                    GE_CORE_INFO("Creating SpotLight ...");
+                    Layer::CreateLight(LightType::SpotLight);
+                    break;
+                case 4:
+                    GE_CORE_INFO("Creating IronMan ...");
+                    Layer::CreateModel("assets/models/IronMan/IronMan.obj", "assets/shaders/glsl/IronMan.glsl", false, "IronMan");
+                    break;
+                case 5:
+                    GE_CORE_INFO("Creating Deer ...");
+                    //Layer::CreateModel("assets/models/u2k69vpbqpds-newbb8/BB8 New/bb8.obj", "assets/shaders/IronMan.glsl");
+                    //Layer::CreateModel("assets/models/99-intergalactic_spaceship-obj/Intergalactic_Spaceship-(Wavefront).obj", "assets/shaders/IronMan.glsl");
+                    //Layer::CreateModel("assets/models/rc8c1qtjiygw-O/Organodron City/Organodron City.obj", "assets/shaders/IronMan.glsl");
+                    LoadStaticBackGroundObject("Deer");
+
+                    break;
+                case 6:
+                    GE_CORE_INFO("Creating OldHouse ...");
+                    //Layer::CreateModel("assets/models/u2k69vpbqpds-newbb8/BB8 New/bb8.obj", "assets/shaders/IronMan.glsl");
+                    //Layer::CreateModel("assets/models/99-intergalactic_spaceship-obj/Intergalactic_Spaceship-(Wavefront).obj", "assets/shaders/IronMan.glsl");
+                    //Layer::CreateModel("assets/models/rc8c1qtjiygw-O/Organodron City/Organodron City.obj", "assets/shaders/IronMan.glsl");
+                    Layer::CreateModel("assets/models/OldHouse/Gost House/3D models/Gost House (5).obj", "assets/shaders/glsl/IronMan.glsl", false, "OldHouse");
+
+                    break;
+                case 7:
+                    GE_CORE_INFO("Creating Bunny ...");
+                    LoadStaticBackGroundObject("Bunny");
+                    //Layer::CreateModel("assets/models/u2k69vpbqpds-newbb8/BB8 New/bb8.obj", "assets/shaders/IronMan.glsl");
+                    //Layer::CreateModel("assets/models/99-intergalactic_spaceship-obj/Intergalactic_Spaceship-(Wavefront).obj", "assets/shaders/IronMan.glsl");
+                    //Layer::CreateModel("assets/models/rc8c1qtjiygw-O/Organodron City/Organodron City.obj", "assets/shaders/IronMan.glsl");
+                    //Layer::CreateModel("assets/models/bunny/bunny.obj", "assets/shaders/IronMan.glsl", false, "Bunny");
+                case 8:
+                    GE_CORE_INFO("Creating Cube ...");
+                    Layer::CreateCube();
+                    break;
+                case 9:
+                    GE_CORE_INFO("Creating Plane ...");
+                    Layer::CreatePlane();
+                    break;
+                }
+            }
+        }
+        if (ImGui::BeginTabBar("TabBar 0", ImGuiTabBarFlags_None))
+        {
+            if (ImGui::BeginTabItem("Scene")) {
+                std::vector<Object*> objsList = GetObjects();		//TODO::
+                ImGui::ListBoxHeader("CurrentEntities", (int)objsList.size(), 10);
+
+                for (int n = 0; n < objsList.size(); n++) {
+                    //ImGui::Text("%s", objsList[n].c_str());
+                    bool is_selected = (currentObj != nullptr && currentObj->GetName() == objsList[n]->GetName());
+                    if (ImGui::Selectable(objsList[n]->GetName().c_str(), is_selected)) {
+                        currentObj = objsList[n];
+                        GE_CORE_INFO(objsList[n]->GetName() + "is selected")
+                    }
+
+                    if (is_selected)
+                        ImGui::SetItemDefaultFocus();
+                }
+                ImGui::ListBoxFooter();
+                ImGui::EndTabItem();
+            }
+            //}
+        }
+        ImGui::EndTabBar();
+        ImGui::End();
+        //////////////////Inspector/////////////////////////
+        ImGui::Begin("Inspector");
+
+
+        /*float pos[] = { m_Sun->GetComponent<DirectionLight>()->GetDirection().x, m_Sun->GetComponent<DirectionLight>()->GetDirection().y, m_Sun->GetComponent<DirectionLight>()->GetDirection().z };
+        ImGui::DragFloat3("m_LightPos", pos, 0.1f, -100.0f, 100.0f, "%.3f ");
+        m_Sun->GetComponent<DirectionLight>()->SetDirection({ pos[0],pos[1],pos[2] });*/
+
+        /*
+                ImGui::DragFloat("near_plane", &ShadowMapRenderer::s_NearPlane, 0.5f, -50.0f, 100.0f, "%.3f ");
+                ImGui::DragFloat("far_plane", &ShadowMapRenderer::s_FarPlane, 0.5f, -50.0f, 100.0f, "%.3f ");*/
+
+        if (currentObj != nullptr) {
+
+            if (currentObj->HasComponent< Transform>()) {
+                if (currentObj->GetComponent<BasicInfo>()->GetType() == OT_BatchNode) {
+
+                }
+                else {
+                    ShowTransform(currentObj->GetComponent<Transform>(), currentObj);
+
+                }
+
+            }
+            if (currentObj->HasComponent< LightProbe>()) {
+                ShowLightProbe(currentObj->GetComponent<LightProbe>(), currentObj);
+
+            }
+            if (currentObj->HasComponent< MeshRenderer>()) {
+                ShowMeshRenderer(currentObj->GetComponent<MeshRenderer>());
+                /*backGroundObj list*/
+
+                bool isBackGroundObj = currentObj->GetComponent<MeshRenderer>()->GetIsBackGroundObjects();
+                ImGui::Checkbox("isBackGroundObj", &isBackGroundObj);
+                //TODO:: ���Բ��� bitset
+                if (isBackGroundObj) {
+                    std::vector<Object*>::const_iterator it = std::find(m_BackGroundObjsList.begin(), m_BackGroundObjsList.end(), currentObj);
+                    if (it == m_BackGroundObjsList.end()) {
+                        m_BackGroundObjsList.push_back(currentObj);
+                        currentObj->GetComponent<MeshRenderer>()->SetIsBackGroundObjects(true);
+                    }
+
+                }
+                else {
+                    std::vector<Object*>::const_iterator it;// = m_BackGroundObjsList.begin();
+                    for (it = m_BackGroundObjsList.begin(); it != m_BackGroundObjsList.end(); it++) {
+                        if ((*it)->GetId() == currentObj->GetId()) {
+                            m_BackGroundObjsList.erase(it);
+                            currentObj->GetComponent<MeshRenderer>()->SetIsBackGroundObjects(false);
+
+                            break;
+                        }
+                    }
+                }
+
+                /*shadowObj list*/
+                bool isShadowObj = currentObj->GetComponent<MeshRenderer>()->GetIsShadowObjects();
+                ImGui::Checkbox("isShadowObj", &isShadowObj);
+                //TODO:: ���Բ��� bitset
+                if (isShadowObj) {
+                    std::vector<Object*>::const_iterator it = std::find(m_ShadowObjsList.begin(), m_ShadowObjsList.end(), currentObj);
+                    if (it == m_ShadowObjsList.end()) {
+                        m_ShadowObjsList.push_back(currentObj);
+                        currentObj->GetComponent<MeshRenderer>()->SetIsShadowObjects(true);
+                    }
+
+                }
+                else {
+                    std::vector<Object*>::const_iterator it;// = m_BackGroundObjsList.begin();
+                    for (it = m_ShadowObjsList.begin(); it != m_ShadowObjsList.end(); it++) {
+                        if ((*it)->GetId() == currentObj->GetId()) {
+                            m_ShadowObjsList.erase(it);
+                            currentObj->GetComponent<MeshRenderer>()->SetIsShadowObjects(false);
+
+                            break;
+                        }
+                    }
+                }
+
+
+            }
+            if (currentObj->HasComponent < PointLight>()) {
+                ShowPointLight(currentObj->GetComponent<PointLight>());
+            }
+            if (currentObj->HasComponent < DirectionLight>()) {
+                ShowParallelLight(currentObj->GetComponent<DirectionLight>());
+            }
+            if (currentObj->HasComponent<PerspectiveCamera>()) {
+                if (currentObj == m_MainCamera->GetObj()) {
+                    ShowCamera(m_MainCamera);
+                }
+                else {
+                    ShowCamera(currentObj->GetComponent<PerspectiveCamera>());
+
+                }
+
+            }
+            if (currentObj->HasComponent<TerrainComponent>()) {
+                ShowTerrian(currentObj);
+
+            }
+
+        }
+
+        ImGui::End();
+    }
+
+
+    void ImGuiLayer::ShowConfiguration()
+    {
+        ImGui::Begin("Config");
+        ImGui::Text("DeferredShading: %s ", Configuration::bDeferredShading ? "true":"false");
+        ImGui::Text("bUseSinglePass: %s ", Configuration::bUseSinglePass ? "true" : "false");
+        ImGui::Text("bUseIBL: %s ", Configuration::bUseIBL ? "true" : "false");
+        ImGui::Checkbox("IBL", &Configuration::bUseIBL);
+        ImGui::Checkbox("Direct Light", &Configuration::bUseDirectLight);
+
+        ImGui::Text("Vsync: %s ", Configuration::Vsync ? "true" : "false");
+        ImGui::End();
     }
 }
 #endif

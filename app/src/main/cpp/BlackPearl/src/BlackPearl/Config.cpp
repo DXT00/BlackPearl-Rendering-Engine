@@ -49,7 +49,8 @@ namespace BlackPearl {
     const bool Configuration::bUseSinglePass = false;
     const bool Configuration::bCacheGLProgram = false;
 
-    const bool Configuration::bUseIBL = true;
+     bool Configuration::bUseIBL = true;
+     bool Configuration::bUseDirectLight = true;
 
 	const char* ShaderConfig::AMBIENT_COLOR   = "u_Material.ambientColor";
 	const char* ShaderConfig::DIFFUSE_COLOR   = "u_Material.diffuseColor";
