@@ -1,37 +1,26 @@
 #type vertex
 #version 430 core
-layout(location = 0) in vec3 aPos;
-layout(location = 1) in vec3 aNormal;
-layout(location = 2) in vec2 aTexCoords;
 
-out vec3 TexCoords;
+
+layout(location = Slot_aPos) in vec3 aPos;
+layout(location = Slot_aTexCoords) in vec2 aTexCoords;
+layout(location = Slot_aNormal) in vec3 aNormal;
+
+out vec2 v_TexCoord;
 out vec3 v_Normal;
+out vec3 v_FragPos;
 
-uniform mat4 u_Model;
-uniform mat4 u_ProjectionView;
-uniform mat4 u_Projection;
-uniform mat4 u_View;
-uniform mat4 u_TranInverseModel;//transpose(inverse(u_Model))-->最好在cpu运算完再传进来!
+
+#include <assets/shaders/glsl/common/CommonViewStruct.glsl>
+#include <assets/shaders/glsl/common/CommonTransformStruct.glsl>
 
 void main()
 {
-	TexCoords = aPos;
-	v_Normal = aNormal;//mat3(u_TranInverseModel)* aNormal;
+    gl_Position = g_View.matProjectionView * g_Transform.matModel * vec4(aPos,1.0);
 
-	gl_Position = u_ProjectionView*u_Model*vec4(aPos,1.0);
-
-	//gl_Position = pos.xyww;
-	/*
-	
-	在坐标系统教程中，我们说过在顶点着色器运行后执行透视划分，
-	即用gl_Position的xyz坐标除以它的w分量。
-	我们还从深度测试教程中得知，最终分割的z分量等于那个顶点的深度值。
-	利用这个信息，我们可以设置输出位置的z分量等于它的w分量，
-	这将导致z分量总是等于1.0，因为当应用透视除法时，
-	它的z分量转换成w / w = 1.0:
-	使得sykbox的位置一直在最后头
-	
-	*/
+    v_TexCoord = aTexCoords;
+    v_FragPos = vec3(g_Transform.matModel* vec4(aPos,1.0));
+    v_Normal =  mat3(g_Transform.matInvModel)* aNormal;
 }
 
 
@@ -39,36 +28,24 @@ void main()
 #type fragment
 #version 430 core
 out vec4 FragColor;
-in vec3 TexCoords;
+in vec3 v_TexCoord;
 in vec3 v_Normal;
 
-//uniform struct Material{
-//	vec3 ambientColor;
-//	vec3 diffuseColor;
-//	vec3 specularColor;
-//	vec3 emissionColor;
-//	sampler2D diffuse;
-//	sampler2D specular;
-//	sampler2D emission;
-//	sampler2D normal;
-//	sampler2D height;
-//	samplerCube cube;
-//	float shininess;
+#include <light_probe_cb.h>
+
+layout(std140, binding = 8) uniform ProbeUBO {
+    LightProbeConstants g_Probe;
+};
+
+
+
+//uniform Material u_Material;
 //
-//}u_Material;
-uniform Material u_Material;
+//uniform samplerCube cubeMap;
+//
+//uniform int u_ProbeType;
 
-uniform samplerCube cubeMap;
 
-uniform int u_ProbeType;
-
-float near = 0.1; 
-float far  = 100.0; 
-float LinearizeDepth(float depth){
-	float z = depth*2.0-1.0;//Back to NDC coordinate
-	return 2.0*near*far /(far+near - z*(far - near));
-
-}
 //vec3 SHDiffuse(const vec3 sh[9],const vec3 n){
 //	
 //		//------------------------------------------------------------------
@@ -130,7 +107,7 @@ float LinearizeDepth(float depth){
 //
 //
 //}
-uniform vec3 u_SHCoeffs[9];
+//uniform vec3 u_SHCoeffs[9];
 
 vec3 SHDiffuse(const vec3 normal){
 	float x = normal.x;
@@ -138,18 +115,18 @@ vec3 SHDiffuse(const vec3 normal){
 	float z = normal.z;
 
 	vec3 result = (
-		u_SHCoeffs[0] +
-		
-		u_SHCoeffs[1] * x +
-		u_SHCoeffs[2] * y +
-		u_SHCoeffs[3] * z +
-		
-		u_SHCoeffs[4] * z * x +
-		u_SHCoeffs[5] * y * z +
-		u_SHCoeffs[6] * y * x +
-		u_SHCoeffs[7] * (3.0 * z * z - 1.0) +
-		u_SHCoeffs[8] * (x*x - y*y)
-  );
+		g_Probe.SHCoeffs[0] +
+
+		g_Probe.SHCoeffs[1] * x +
+		g_Probe.SHCoeffs[2] * y +
+		g_Probe.SHCoeffs[3] * z +
+
+		g_Probe.SHCoeffs[4] * z * x +
+		g_Probe.SHCoeffs[5] * y * z +
+		g_Probe.SHCoeffs[6] * y * x +
+		g_Probe.SHCoeffs[7] * (3.0 * z * z - 1.0) +
+		g_Probe.SHCoeffs[8] * (x*x - y*y)
+  ).xyz;
 
   return max(result, vec3(0.0));
 
@@ -202,31 +179,20 @@ vec3 SHDiffuse(const vec3 normal){
 //	return col;
 //
 //}
-//binding = 0 对应 GL_TEXTURE0
+//binding = 0 瀵瑰簲 GL_TEXTURE0
 void main(){
 	
 	
-	int uProbeType = u_ProbeType;
+	int uProbeType = g_Probe.probeType;
     vec3 N   = normalize(v_Normal);
 	//vec3 color=LoadSHCoeffs(SHCoeffs,N);
 	vec3 color;
-	if(uProbeType==0)//diffuse Probe
+	if(uProbeType == PT_DIFFUSE_PROBE)//diffuse Probe
 		color = SHDiffuse(N);
-	else
-		color =textureLod(u_Material.cube,TexCoords,0).rgb;
-
-	//vec3 color =SHDiffuse(N);//imageLoad(u_Image,ivec2(4,0)).rgb;//
-	
-		//vec3 color =texture(u_Material.diffuse,TexCoords.xy).rgb;
-
-//	color = color/(color+vec3(1.0));
-//	color = pow(color,vec3(1.0/2.2));
+//	else  //todo::
+//		color = textureLod(u_Material.cube,TexCoords,0).rgb;
 //
-//	if(color.x<=0.0||color.y<=0.0||color.z<=0.0)
-//		FragColor = vec4(1.0,0.0,0.0,1.0);
-//		else
-//				FragColor = vec4(0.0,1.0,0.0,1.0);
-	color = pow(color,vec3(1.0/2.2));
+
 
 	FragColor = vec4(color,1.0);
 

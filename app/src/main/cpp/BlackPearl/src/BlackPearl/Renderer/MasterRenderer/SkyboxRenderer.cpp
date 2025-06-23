@@ -98,17 +98,17 @@ namespace BlackPearl {
 		/*FRHIRenderPassInfo RPInfo(targetFramebuffer->getDesc().colorAttachments[0].texture, ERenderTargetActions::Clear_Store);
 		cmdList->beginRenderPass(RPInfo, "SkyPass");*/
 
-		SceneData* view = Renderer::GetSceneData();
-		GE_ERROR_JUDGE();
+        SceneData* view = m_CustumView ? m_CustumView : Renderer::GetSceneData();
+        GE_ERROR_JUDGE();
 
-		SceneData* preView = Renderer::GetPreSceneData();
-		GE_ERROR_JUDGE();
+        SceneData* preView = m_CustumView ? nullptr : Renderer::GetPreSceneData();
+        GE_ERROR_JUDGE();
 
 		SetupView(cmdList, view, preView);
 
 		double timeSecond = SystemTime::GetRuntimeFromStartMs() / 1000.0f;
 		float currentTimeS = fmod(timeSecond ,m_TotalTimeIntervalS);
-		int state = int(currentTimeS / m_StateIntervalS);
+        int state = 0;// int(currentTimeS / m_StateIntervalS);
 		int nextState = state + 1;
 		float stateFactor = nextState * m_StateIntervalS - currentTimeS; 
 		float nextStateFactor = currentTimeS - state * m_StateIntervalS;
@@ -123,6 +123,17 @@ namespace BlackPearl {
 		graphicsPSO.framebuffer = targetFramebuffer;
 		graphicsPSO.viewport = view->GetViewportState();
 		graphicsPSO.shadingRateState = view->GetVariableRateShadingState();
+        graphicsPSO.enableSubView = static_cast<SceneData*>(view) == nullptr ? false : static_cast<SceneData*>(view)->bIsSubview;
+
+        if (graphicsPSO.enableSubView) {
+            SceneData* subview = static_cast<SceneData*>(view);
+            graphicsPSO.subViewId = subview->subViewId;
+            graphicsPSO.subViewMip = subview->subViewMip;
+            graphicsPSO.subViewTexTarget = subview->subViewTexTarget;
+            graphicsPSO.subViewTextureId = subview->subViewTextureId;
+        }
+
+
 
 		GraphicsPipelineDesc psoDesc;
 
@@ -187,7 +198,11 @@ namespace BlackPearl {
 		//cmdList->endMarker();
 	}
 	
-	
+    void SkyboxRenderer::SetCustomView(SceneData* view)
+    {
+        m_CustumView = view;
+    }
+
 
 	void SkyboxRenderer::FillShaderParameters(const DirectionLight& light, const SkyParameters& input, SkyConstants& output)
 	{

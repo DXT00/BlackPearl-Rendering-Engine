@@ -35,7 +35,7 @@ namespace BlackPearl{
   
 
         void RenderSpecularBRDFLUTMap(ICommandList* cmdList, IFramebuffer* targetFramebuffer, Scene* scene);
-
+        void RenderProbes(ICommandList* cmdList, IFramebuffer* targetFramebuffer, Scene* scene);
 
         static void FillShaderParameters();
 
@@ -53,13 +53,13 @@ namespace BlackPearl{
 
         void RenderSHImage(Object* probe, TextureHandle environmentMap);
 
-
+        void _RenderProbe(ICommandList* cmdList, IFramebuffer* targetFramebuffer, Scene* scene, Object* probe);
 
 
     private:
       
         /*draw lighprobes shader*/
-        MaterialShader*     m_LightProbeShader = nullptr;
+        MaterialShader*     m_ProbeDebugShader = nullptr;
         /*shader*/
         MaterialShader*		m_IBLShader = nullptr; //scene renderer
         MaterialShader*		m_IrradianceShader = nullptr; //create diffuse irradianceCubeMap
@@ -82,7 +82,11 @@ namespace BlackPearl{
         BufferHandle    m_SpecularPrefilterCB;
         GraphicsPipelineHandle m_SpecularPrefilterPso = nullptr;
 
-
+        //TODO:: Probe Material;
+        BindingLayoutHandle m_ProbeBindingLayout;
+        BindingSetHandle    m_ProbeBindingSet;
+        GraphicsPipelineHandle m_ProbePso = nullptr;
+        BufferHandle    m_ProbeCB;
 
         bool m_IsInitial = false;
 

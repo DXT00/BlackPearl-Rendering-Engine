@@ -42,15 +42,17 @@ namespace BlackPearl {
 
     /* prefilterMap.glsl里的	float resolution =512.0;也要改 */
 	const float Configuration::EnvironmantMapResolution = 64.0;// 256.0f;
-    const bool  Configuration::bUpdateProbePerFrame = false;
+    bool Configuration::bUpdateProbePerFrame = false;
 
-    const bool Configuration::bDeferredShading = true;
+    bool Configuration::bDeferredShading = true;
 
-    const bool Configuration::bUseSinglePass = false;
+    bool Configuration::bUseSinglePass = false;
     const bool Configuration::bCacheGLProgram = false;
 
-     bool Configuration::bUseIBL = true;
-     bool Configuration::bUseDirectLight = true;
+    bool Configuration::bUseIBL = true;
+    bool Configuration::bShowProbes = false;
+
+    bool Configuration::bUseDirectLight = true;
 
 	const char* ShaderConfig::AMBIENT_COLOR   = "u_Material.ambientColor";
 	const char* ShaderConfig::DIFFUSE_COLOR   = "u_Material.diffuseColor";

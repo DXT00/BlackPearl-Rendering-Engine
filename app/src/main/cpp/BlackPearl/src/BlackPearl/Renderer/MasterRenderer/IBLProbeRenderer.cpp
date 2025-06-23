@@ -17,6 +17,8 @@
 #include "RHI/OpenGLRHI/OpenGLTexture.h"
 #include "RHI/OpenGLRHI/OpenGLDriver/OpenGLDrv.h"
 #endif
+#include "Timestep/TimeCounter.h"
+#include "RHI/Common/RHIUtils.h"
 namespace BlackPearl
 {
 
@@ -32,7 +34,7 @@ namespace BlackPearl
     void IBLProbeRenderer::Init()
     {
 
-        //m_LightProbeShader = DBG_NEW MaterialShader("assets/shaders/glsl/lightProbes/lightProbe.glsl");
+        m_ProbeDebugShader = DBG_NEW MaterialShader("assets/shaders/glsl/lightProbes/lightProbe.glsl");
         //m_IBLShader = DBG_NEW MaterialShader("assets/shaders/glsl/lightProbes/iblSHTexture.glsl");
         //m_IrradianceShader = DBG_NEW MaterialShader("assets/shaders/glsl/ibl/irradianceConvolution.glsl");
         m_SpecularBRDFLutShader = DBG_NEW MaterialShader("assets/shaders/glsl/ibl/brdf.glsl");
@@ -51,6 +53,28 @@ namespace BlackPearl
        // m_BrdfLUTQuadObj = brdfLUTQuadObj;
         m_EnvironmentMapRenderer->Init();
         m_EnvironmentMapSkyboxRenderer->Init();
+
+
+
+
+        //Debug Probe Material
+        RHIBindingLayoutDesc layoutDesc;
+        layoutDesc.visibility = ShaderType::Pixel;
+        layoutDesc.bindings = {
+            RHIBindingLayoutItem::RT_VolatileConstantBuffer(8),
+        };
+        m_ProbeBindingLayout = m_Device->createBindingLayout(layoutDesc);
+        m_ProbeCB = m_Device->createBuffer(RHIUtils::CreateStaticConstantBufferDesc(sizeof(LightConstants), "LightConstants"));
+
+        BindingSetDesc bindingSetDesc;
+        bindingSetDesc.bindings = {
+            BindingSetItem::ConstantBuffer(8, m_ProbeCB),
+        };
+        m_ProbeBindingSet = m_Device->createBindingSet(bindingSetDesc, m_ProbeBindingLayout);
+
+
+
+
         m_IsInitial = true;
 
     }
@@ -337,10 +361,110 @@ namespace BlackPearl
 
     }
 
+    void IBLProbeRenderer::RenderProbes(ICommandList* cmdList, IFramebuffer* targetFramebuffer, Scene* scene)
+    {
+        SCOPE_TIME_COUNTER(DrawProbes);
+
+        
+        for (const auto& it : scene->GetDiffuseLightProbes()) {
+
+            Object* probe = it;
+            _RenderProbe(cmdList, targetFramebuffer, scene, it);
+
+        }
+
+        for (const auto& it : scene->GetReflectLightProbes())
+        {
+            Object* probe = it;
+            _RenderProbe(cmdList, targetFramebuffer, scene, it);
+
+        }
+
+
+        //cmdList->beginMarker("SkyPass");
+
+        /*FRHIRenderPassInfo RPInfo(targetFramebuffer->getDesc().colorAttachments[0].texture, ERenderTargetActions::Clear_Store);
+        cmdList->beginRenderPass(RPInfo, "SkyPass");*/
+
+
+    }
+
     void IBLProbeRenderer::RenderSHImage(Object* probe, TextureHandle environmentMap)
     {
         auto coeffs = SphericalHarmonics::UpdateCoeffs(environmentMap);
         probe->GetComponent<LightProbe>()->SetSHCoeffs(coeffs);
+    }
+
+    void IBLProbeRenderer::_RenderProbe(ICommandList* cmdList, IFramebuffer* targetFramebuffer, Scene* scene, Object* probe)
+    {
+
+        SceneData* view = Renderer::GetSceneData();
+        GE_ERROR_JUDGE();
+
+        SceneData* preView = Renderer::GetPreSceneData();
+        GE_ERROR_JUDGE();
+
+        SetupView(cmdList, view, preView);
+
+
+
+        DrawItem drawItem = IDrawStrategy::ObjectToDrawItem(probe)[0];
+
+        GraphicsState graphicsPSO;
+        graphicsPSO.framebuffer = targetFramebuffer;
+        graphicsPSO.viewport = view->GetViewportState();
+        graphicsPSO.shadingRateState = view->GetVariableRateShadingState();
+
+        GraphicsPipelineDesc psoDesc;
+
+        psoDesc.depthStencilState.setDepthFunc(ComparisonFunc::LessOrEqual);
+        psoDesc.depthStencilState.enableDepthTest();
+        psoDesc.depthStencilState.disableDepthWrite();
+        psoDesc.depthStencilState.disableStencil();
+
+        psoDesc.blendState.alphaToCoverageEnable = false;
+        psoDesc.rasterState.frontCounterClockwise = true;
+        psoDesc.rasterState.cullMode = RasterCullMode::None;
+        psoDesc.primType = PrimitiveType::TriangleList;
+        psoDesc.inputLayout = m_Device->createInputLayout(drawItem.mesh->GetVertexBufferLayout());
+
+        psoDesc.VS = m_ProbeDebugShader->GetVertexShader();
+        psoDesc.PS = m_ProbeDebugShader->GetPixelShader();
+        psoDesc.bFromPSOFileCache = false;
+        psoDesc.bindingLayouts.push_back(m_ProbeBindingLayout);
+        psoDesc.bindingLayouts.push_back(m_ViewBindinglayout);
+
+
+        if (!m_ProbePso) {
+            m_ProbePso = m_Device->createGraphicsPipeline(psoDesc, targetFramebuffer);
+        }
+        graphicsPSO.pipeline = m_ProbePso;
+        graphicsPSO.bindings.push_back(m_ProbeBindingSet);
+        graphicsPSO.bindings.push_back(m_ViewBindingset);
+        graphicsPSO.inputLayout = psoDesc.inputLayout;
+        /*for (int j = 0; j < shaderParms[ShaderType::Pixel].bindingLayouts.size(); ++j) {
+            psoDesc.bindingLayouts.push_back(shaderParms[ShaderType::Pixel].bindingLayouts[j]);
+        }
+
+        for (int j = 0; j < shaderParms[ShaderType::Pixel].bindingSets.size(); ++j) {
+            graphicsPSO.bindings.push_back(shaderParms[ShaderType::Pixel].bindingSets[j]);
+        }*/
+
+        /*GE_ERROR_JUDGE();
+        SetupMaterial(drawItem.material, drawItem.cullMode, psoDesc, graphicsPSO);*/
+        SetupInputBuffers(cmdList, const_cast<BufferGroup*>(drawItem.buffers), drawItem.transform, graphicsPSO);
+        GE_ERROR_JUDGE();
+
+
+
+        LightProbeConstants probeConst;
+
+        probe->GetComponent<LightProbe>()->FillLightProbeConstants(probe->GetComponent<LightProbe>()->GetType(), Math::ToFloat3(probe->GetComponent<Transform>()->GetPosition()), probeConst);
+        cmdList->writeBuffer(m_ProbeCB, &probeConst, sizeof(LightProbeConstants));
+        cmdList->setGraphicsState(graphicsPSO);
+
+        Draw(cmdList, drawItem);
+
     }
 
     void IBLProbeRenderer::FillShaderParameters()
@@ -454,8 +578,10 @@ namespace BlackPearl
                     view->zNear = cameraComponent->GetZnear();
                     view->zFar = cameraComponent->GetZfar();
                 }
-                m_EnvironmentMapRenderer->SetCustomView(view);
-                m_EnvironmentMapRenderer->Render(cmdList, nullptr, scene);
+             //   m_EnvironmentMapRenderer->SetCustomView(view);
+            //    m_EnvironmentMapRenderer->Render(cmdList, nullptr, scene);
+
+                m_EnvironmentMapSkyboxRenderer->SetCustomView(view);
                 m_EnvironmentMapSkyboxRenderer->Render(cmdList, nullptr, scene);
 
          

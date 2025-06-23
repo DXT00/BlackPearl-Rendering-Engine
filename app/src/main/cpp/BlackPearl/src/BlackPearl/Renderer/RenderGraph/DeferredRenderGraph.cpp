@@ -27,15 +27,20 @@ namespace BlackPearl {
         m_PlsCopyRenderer = DBG_NEW GrabPassRenderer(m_DeviceManager->GetDevice());
         m_GrabPassRenderer = DBG_NEW GrabPassRenderer(m_DeviceManager->GetDevice());
         m_ToneMappingRenderer = DBG_NEW ToneMappingRenderer(m_DeviceManager->GetDevice());
-
+        m_IBLProbeRenderer = DBG_NEW IBLProbeRenderer(m_DeviceManager->GetDevice());
 
         m_SkyboxRenderer->Init();
         m_GbufferRenderer->Init();
         m_DeferredShadingRenderer->Init();
         m_GrabPassRenderer->Init(SystemTexture::Get().SceneColor);
         m_PlsCopyRenderer->Init(nullptr, true);
+        m_IBLProbeRenderer->Init();
 
         m_ToneMappingRenderer->Init(SystemTexture::Get().SceneColor);
+        
+        
+      
+        
         /*m_PostProcessRenderer = DBG_NEW PostProcessRenderer();
         m_PostProcessRenderer->Init(GetDevice(), m_ShaderFactory);*/
 
@@ -139,9 +144,15 @@ namespace BlackPearl {
             //draw direct light, indirect light to sceneColor
             m_CommandList->beginRenderPass(RPShadingInfo, "DeferredShadingPass");
             m_DeferredShadingRenderer->Render(m_CommandList, framebuffer, m_Scene);
+            
             //draw skybox
-
             m_SkyboxRenderer->Render(m_CommandList, framebuffer, m_Scene);
+
+            //draw probes
+            if (Configuration::bUseIBL && Configuration::bShowProbes) {
+                m_IBLProbeRenderer->RenderProbes(m_CommandList, framebuffer, m_Scene);
+            }
+
 
             m_CommandList->endRenderPass();
         }

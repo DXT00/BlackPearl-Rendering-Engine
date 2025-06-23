@@ -384,7 +384,7 @@ namespace BlackPearl{
         for (size_t i = 0; i < probes.size(); i++)
         {
             LightProbeConstants probeConst;
-            probes[i]->GetComponent<LightProbe>()->FillLightProbeConstants(Math::ToFloat3(probes[i]->GetComponent<Transform>()->GetPosition()), probeConst);
+            probes[i]->GetComponent<LightProbe>()->FillLightProbeConstants(probes[i]->GetComponent<LightProbe>()->GetType(), Math::ToFloat3(probes[i]->GetComponent<Transform>()->GetPosition()), probeConst);
             output.lightProbes[i] = probeConst;
         }
 

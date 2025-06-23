@@ -45,7 +45,7 @@ in vec2 v_TexCoord;
 #include <assets/shaders/glsl/bsdf/BSDF.glsl>
 #include <assets/shaders/glsl/gBuffer/gBuffer.glsl>
 
-
+const float K_PI = 3.14159265;
 
 vec3 SHDiffuse(const int probeIndex,const vec3 normal){
 	float x = normal.x;
@@ -65,14 +65,16 @@ vec3 SHDiffuse(const int probeIndex,const vec3 normal){
 		probe.SHCoeffs[6] * y * x +
 		probe.SHCoeffs[7] * (3.0 * z * z - 1.0) +
 		probe.SHCoeffs[8] * (x*x - y*y)
-  );
+  ).xyz;
 
   return max(result, vec3(0.0));
 }
+
+
 vec3 FresnelSchlickRoughness(float cosTheta, vec3 F0, float roughness){
 	return F0 + (max(vec3(1.0 - roughness), F0) - F0) * pow(1.0 - cosTheta, 5.0);
 }
-
+// only diffuse
 vec3 CalculateAmbientGI(vec3 worldPos, vec3 N, vec3 V, vec3 albedo, float metallic, float roughness, float ao){
 
 //	vec3 albedo = pow(texture(u_Material.diffuse,v_TexCoord).rgb,vec3(2.2));
@@ -94,23 +96,30 @@ vec3 CalculateAmbientGI(vec3 worldPos, vec3 N, vec3 V, vec3 albedo, float metall
 	vec3 Ks = F;
 	vec3 Kd = vec3(1.0)-Ks;
 	Kd = Kd * (1.0 - metallic);
-	vec3 environmentIrradiance = vec3(0.0);//= vec3(1.0,1.0,1.0);
+	vec3 environmentIrradiance = vec3(0.0);
+
 	uint kProbe = g_DeferredLight.numLightProbes;
     float totalWeight = 0;
-    for(uint i=0u; i< kProbe; i++){
+
+
+    for(uint i = 0u; i< kProbe; i++){
         float d = length(g_DeferredLight.lightProbes[i].pos - worldPos);
         totalWeight += 1.0/d*d;
     }
 
 	for(int i=0;i< kProbe;i++){
+
         float d = length(g_DeferredLight.lightProbes[i].pos - worldPos);
         float w = 1.0/d*d;
         w = w/totalWeight;
         w = max(0.001,w);
 		environmentIrradiance += w * SHDiffuse(i,N);// u_ProbeWeight[i]*texture(u_IrradianceMap[i],N).rgb;
-
 	}
-	vec3 diffuse = environmentIrradiance*albedo;
+
+
+	vec3 diffuse = environmentIrradiance * albedo / K_PI;
+
+
 //
 //	//sample both the prefilter map and the BRDF lut and combine them together as per the Split-Sum approximation to get the IBL specular part
 //	const float MAX_REFLECTION_LOD = 4.0;//1.0;
@@ -130,15 +139,12 @@ vec3 CalculateAmbientGI(vec3 worldPos, vec3 N, vec3 V, vec3 albedo, float metall
 
 	vec3 specular = vec3(0.0);
 
-	vec3 ambient =  (Kd*diffuse+specular) * ao;
-//
-////	 ambient = ambient / (ambient + vec3(1.0));
-////	//gamma correction
-////    ambient = pow(ambient, vec3(1.0/2.2));  
-//	return ambient;
+	//vec3 ambient =  (Kd*diffuse+specular) * ao;
 
 
-	
+
+    vec3 ambient =  diffuse * ao; // 只有diffuse 时与Kd 无关 （Kd的计算与 V 方向相关了）
+
     return ambient;
 
 }
@@ -161,7 +167,7 @@ void main(){
 
       SurfaceGeometry geom;
       geom.position = worldPos;
-      geom.normal = GBuffer.WorldNormal;
+      geom.normal = normalize(GBuffer.WorldNormal);
       geom.viewDir = normalize(g_View.cameraPos - worldPos); // Assuming eye is at (0,0,0)
 #if USE_TBN
 //      todo:: GBuffer.WorldTangent = half3(0); //TODO:: get Aniso flag

@@ -11,21 +11,21 @@ namespace BlackPearl {
 	extern DeviceManager* g_deviceManager;
 
 	enum ProbeType {
-		DIFFUSE_PROBE,
-		REFLECTION_PROBE
+		DIFFUSE_PROBE = PT_DIFFUSE_PROBE,
+		REFLECTION_PROBE = PT_REFLECTION_PROBE
 	};
 
     enum ProbeStorageType {
-        PT_CubeMap,
-        PT_SH,
-        PT_Texture2D //ddgi
+        PS_CubeMap,
+        PS_SH,
+        PS_Texture2D //ddgi
     };
 
 	class LightProbe :public Component<LightProbe>
 	{
 	public:
 		
-        LightProbe(ProbeType type, ProbeStorageType storageType = ProbeStorageType::PT_SH);
+        LightProbe(ProbeType type, ProbeStorageType storageType = ProbeStorageType::PS_SH);
 		/* probe's view matrix */
 		glm::mat4	GetViewMatrix()const { return m_ViewMatrix; }
 
@@ -67,7 +67,7 @@ namespace BlackPearl {
 		bool GetDynamicSpecularMap() { return m_UpdateSpecularMapEveryFrame; }
 		void SetDynamicSpecularMap(bool dynamic) { m_UpdateSpecularMapEveryFrame = dynamic; }
 	
-		void FillLightProbeConstants(const float3& pos, LightProbeConstants& lightProbeConstants) const;
+		void FillLightProbeConstants(ProbeType type, const float3& pos, LightProbeConstants& lightProbeConstants) const;
 
 	public:
 		bool enabled = true;
@@ -92,7 +92,7 @@ namespace BlackPearl {
 
 		std::vector<float4> m_SHCoeffs;
 		ProbeType m_Type;
-        ProbeStorageType m_StorageType = ProbeStorageType::PT_SH;
+        ProbeStorageType m_StorageType = ProbeStorageType::PS_SH;
 
 
 

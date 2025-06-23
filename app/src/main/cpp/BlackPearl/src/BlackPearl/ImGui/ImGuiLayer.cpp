@@ -911,13 +911,23 @@ namespace BlackPearl {
     void ImGuiLayer::ShowConfiguration()
     {
         ImGui::Begin("Config");
-        ImGui::Text("DeferredShading: %s ", Configuration::bDeferredShading ? "true":"false");
-        ImGui::Text("bUseSinglePass: %s ", Configuration::bUseSinglePass ? "true" : "false");
-        ImGui::Text("bUseIBL: %s ", Configuration::bUseIBL ? "true" : "false");
-        ImGui::Checkbox("IBL", &Configuration::bUseIBL);
-        ImGui::Checkbox("Direct Light", &Configuration::bUseDirectLight);
-
         ImGui::Text("Vsync: %s ", Configuration::Vsync ? "true" : "false");
+
+
+        ImGui::Separator();
+        ImGui::Text("Pipeline Settings");
+        ImGui::Checkbox("bDeferredShading", &Configuration::bDeferredShading);
+        ImGui::Checkbox("bUseSinglePass", &Configuration::bUseSinglePass);
+
+        ImGui::Checkbox("bUseIBL", &Configuration::bUseIBL);
+        ImGui::Checkbox("bUseDirectLight", &Configuration::bUseDirectLight);
+
+        ImGui::Separator();
+        ImGui::Text("Probes Settings");
+        ImGui::Checkbox("bUpdateProbePerFrame", &Configuration::bUpdateProbePerFrame);
+        ImGui::Checkbox("bShowProbes", &Configuration::bShowProbes);
+
+
         ImGui::End();
     }
 }

@@ -38,9 +38,10 @@
 //    float roughness;
 //    float inputCubeSize;
 //};
+const int PT_DIFFUSE_PROBE = 0;
+const int PT_REFLECTION_PROBE = 1;
 
-
-struct ALIGN(16) LightProbeConstants
+struct LightProbeConstants // ALIGN(16)
 {
     /*   ALIGN(4) float diffuseScale;
        ALIGN(4) float specularScale;
@@ -52,13 +53,10 @@ struct ALIGN(16) LightProbeConstants
        ALIGN(8) uint2 padding2;
 
        ALIGN(16) float4 frustumPlanes[6];*/
+    ALIGN(4)  int probeType;
     ALIGN(16) float3 pos;
     //每个 SHCoeffs[i] 必须是 16 字节对齐, 使用 float4
     ALIGN(16) float4 SHCoeffs[9];
-
-
-
-
 
 
 };

@@ -36,6 +36,7 @@ namespace BlackPearl {
 			const DirectionLight& light,
 			const SkyParameters& input,
 			SkyConstants& output);
+        void SetCustomView(SceneData* view);
 
 	private:
 
@@ -54,6 +55,7 @@ namespace BlackPearl {
 		BindingSetHandle    m_SkyboxBindingSet;
 		GraphicsPipelineHandle m_SkyboxPso = nullptr;
 
+        SceneData* m_CustumView = nullptr;
 
 	};
 }

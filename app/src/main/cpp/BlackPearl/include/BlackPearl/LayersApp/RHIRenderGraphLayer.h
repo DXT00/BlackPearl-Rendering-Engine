@@ -76,7 +76,7 @@ public:
             m_MapManager = DBG_NEW MapManager(Configuration::MapSize, Configuration::AreaSize);
 
             m_DiffuseLightProbeGrid = CreateProbeGrid(m_MapManager, ProbeType::DIFFUSE_PROBE,
-                math::float3(4, 2, 4), math::float3(0.2f, -1.0f, 0.2f), 5);
+                math::float3(1, 1, 1), math::float3(0.0f, 1.0f, -0.2f), 5);
 
           /*  m_ReflectLightProbeGrid = CreateProbeGrid(m_MapManager, ProbeType::REFLECTION_PROBE,
                 math::float3(2, 1, 1), math::float3(0.2f, -1.0f, 0.2f), 6);*/

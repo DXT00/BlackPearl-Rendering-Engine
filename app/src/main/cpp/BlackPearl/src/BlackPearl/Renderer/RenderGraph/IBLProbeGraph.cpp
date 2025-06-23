@@ -27,12 +27,8 @@ namespace BlackPearl {
       
 
 
-      
-
-       
-
-
 	}
+
 	void IBLProbeGraph::Render(Timestep ts, IFramebuffer* framebuffer, IView* View) {
 
         if (Configuration::bUpdateProbePerFrame) {

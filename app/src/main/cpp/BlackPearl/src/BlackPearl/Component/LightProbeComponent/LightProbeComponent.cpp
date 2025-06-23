@@ -25,8 +25,8 @@ namespace BlackPearl {
 
         }
         if (type == ProbeType::DIFFUSE_PROBE
-            && (m_StorageType == PT_SH ||
-                m_StorageType == CubeMap)) {
+            && (m_StorageType == PS_SH ||
+                m_StorageType == PS_CubeMap)) {
 
             // if type is CubeMap ,can release cubemap after create SH by ReleaseLdrEnvironmentCubeMap
             TextureDesc desc;
@@ -60,7 +60,7 @@ namespace BlackPearl {
         depthDesc.dimension = TextureDimension::Texture2D;
 
         m_DepthBuffer = g_deviceManager->GetDevice()->createTexture(depthDesc);
-        static_assert(sizeof(LightProbeConstants) == 160, "Size mismatch with GLSL std140!");
+        static_assert(sizeof(LightProbeConstants) == 176, "Size mismatch with GLSL std140!");
 
     }
 
@@ -82,7 +82,7 @@ namespace BlackPearl {
 
 	}
 
-	void LightProbe::FillLightProbeConstants(const float3& pos, LightProbeConstants& lightProbeConstants) const
+	void LightProbe::FillLightProbeConstants(ProbeType type, const float3& pos, LightProbeConstants& lightProbeConstants) const
 	{
 		//TODO::
 		//lightProbeConstants.diffuseArrayIndex = 0;// diffuseArrayIndex;
@@ -101,6 +101,7 @@ namespace BlackPearl {
             lightProbeConstants.SHCoeffs[i] = m_SHCoeffs[i];
         }
         lightProbeConstants.pos = pos;
+        lightProbeConstants.probeType = type;
 	}
 
 }

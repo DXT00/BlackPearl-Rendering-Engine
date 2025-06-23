@@ -1,6 +1,7 @@
 #pragma once
 #include "RenderGraph.h"
 #include "Renderer/MasterRenderer/SkyboxRenderer.h"
+#include "Renderer/MasterRenderer/IBLProbeRenderer.h"
 #include "Renderer/MasterRenderer/GBufferRenderer.h"
 #include "Renderer/MasterRenderer/DeferredShadingRenderer.h"
 #include "Renderer/MasterRenderer/GrabPassRenderer.h"
@@ -33,6 +34,9 @@ namespace BlackPearl {
 		Scene* m_Scene = nullptr;
 
 		SkyboxRenderer* m_SkyboxRenderer;
+
+        IBLProbeRenderer* m_IBLProbeRenderer;
+
 		GBufferRenderer* m_GbufferRenderer;
 		DeferredShadingRenderer* m_DeferredShadingRenderer;
         GrabPassRenderer* m_GrabPassRenderer;
