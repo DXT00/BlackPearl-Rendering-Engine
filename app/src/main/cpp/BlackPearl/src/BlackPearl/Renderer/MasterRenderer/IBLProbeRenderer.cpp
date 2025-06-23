@@ -578,8 +578,8 @@ namespace BlackPearl
                     view->zNear = cameraComponent->GetZnear();
                     view->zFar = cameraComponent->GetZfar();
                 }
-             //   m_EnvironmentMapRenderer->SetCustomView(view);
-            //    m_EnvironmentMapRenderer->Render(cmdList, nullptr, scene);
+                m_EnvironmentMapRenderer->SetCustomView(view);
+                m_EnvironmentMapRenderer->Render(cmdList, nullptr, scene);
 
                 m_EnvironmentMapSkyboxRenderer->SetCustomView(view);
                 m_EnvironmentMapSkyboxRenderer->Render(cmdList, nullptr, scene);

@@ -147,9 +147,9 @@ namespace BlackPearl {
                 {
                     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, PendingState.FramebufferTextureTarget, PendingState.FramebufferTextureID, PendingState.FramebufferTextureMipLevel);
                     // 清除该面的颜色缓冲区
-                    GLfloat clearColor[4] = { 0.0f, 0.0f, 0.0f, 1.0f }; // RGBA
+                    //GLfloat clearColor[4] = { 0.0f, 0.0f, 0.0f, 1.0f }; // RGBA
 
-                    FOpenGL::ClearBufferfv(GL_COLOR, 0, clearColor);
+                   // FOpenGL::ClearBufferfv(GL_COLOR, 0, clearColor);
 
                     
                   //  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

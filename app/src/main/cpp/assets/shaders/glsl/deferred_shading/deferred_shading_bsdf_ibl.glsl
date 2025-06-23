@@ -99,20 +99,20 @@ vec3 CalculateAmbientGI(vec3 worldPos, vec3 N, vec3 V, vec3 albedo, float metall
 	vec3 environmentIrradiance = vec3(0.0);
 
 	uint kProbe = g_DeferredLight.numLightProbes;
-    float totalWeight = 0;
+    float totalWeight = 0.0;
 
 
     for(uint i = 0u; i< kProbe; i++){
         float d = length(g_DeferredLight.lightProbes[i].pos - worldPos);
-        totalWeight += 1.0/d*d;
+        totalWeight += 1.0 / d*d;
     }
 
 	for(int i=0;i< kProbe;i++){
 
         float d = length(g_DeferredLight.lightProbes[i].pos - worldPos);
-        float w = 1.0/d*d;
-        w = w/totalWeight;
-        w = max(0.001,w);
+        float w = 1.0 / d*d;
+        w = w / totalWeight;
+        w = max(0.001,w); 
 		environmentIrradiance += w * SHDiffuse(i,N);// u_ProbeWeight[i]*texture(u_IrradianceMap[i],N).rgb;
 	}
 

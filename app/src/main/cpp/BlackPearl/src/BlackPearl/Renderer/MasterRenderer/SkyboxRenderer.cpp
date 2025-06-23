@@ -108,7 +108,7 @@ namespace BlackPearl {
 
 		double timeSecond = SystemTime::GetRuntimeFromStartMs() / 1000.0f;
 		float currentTimeS = fmod(timeSecond ,m_TotalTimeIntervalS);
-        int state = 0;// int(currentTimeS / m_StateIntervalS);
+        int state =  int(currentTimeS / m_StateIntervalS);
 		int nextState = state + 1;
 		float stateFactor = nextState * m_StateIntervalS - currentTimeS; 
 		float nextStateFactor = currentTimeS - state * m_StateIntervalS;
