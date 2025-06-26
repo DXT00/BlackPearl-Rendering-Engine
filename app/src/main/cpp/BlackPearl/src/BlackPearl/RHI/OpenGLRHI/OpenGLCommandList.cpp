@@ -315,7 +315,7 @@ namespace BlackPearl {
 			glBindBuffer(GL_DRAW_INDIRECT_BUFFER, ibo->rendererID);
 			glBufferData(GL_DRAW_INDIRECT_BUFFER, dataSize, data, buffer->desc.isDynamic ? GL_DYNAMIC_DRAW : GL_STATIC_DRAW);
 		}
-		else if (buffer->desc.isDrawIndirectArgs) {
+		else if (buffer->desc.canHaveUAVs) {
 			ShaderStorageBuffer* ssbo = static_cast<ShaderStorageBuffer*>(buffer);
 			glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo->rendererID);
 			glBufferData(GL_SHADER_STORAGE_BUFFER, dataSize, data, buffer->desc.isDynamic ? GL_DYNAMIC_DRAW : GL_STATIC_DRAW);
@@ -1073,12 +1073,13 @@ namespace BlackPearl {
         setSubView(state.enableSubView, state.subViewTexTarget, state.subViewMip, state.subViewTextureId);
 
 
-		setBoundShaderState(
-			m_Device->RHICreateBoundShaderState_Internal(
-				state.pipeline->desc.inputLayout.Get(),
-				state.pipeline->desc.VS.Get(),
-				state.pipeline->desc.PS.Get(),
-				state.pipeline->desc.GS.Get(),
+        setBoundShaderState(
+            m_Device->RHICreateBoundShaderState_Internal(
+                state.pipeline->desc.inputLayout.Get(),
+                state.pipeline->desc.VS.Get(),
+                state.pipeline->desc.PS.Get(),
+                state.pipeline->desc.GS.Get(),
+                nullptr,
 				state.bindings,
 				state.pipeline->desc.bFromPSOFileCache
 			)
@@ -1284,9 +1285,39 @@ namespace BlackPearl {
 	}
 	void CommandList::setComputeState(const ComputeState& state)
 	{
+    
+        setBoundShaderState(
+            m_Device->RHICreateBoundShaderState_Internal(
+                nullptr,
+                nullptr,
+                nullptr,
+                nullptr,
+                state.pipeline->getDesc().CS.Get(),
+                state.bindings,
+                false
+            )
+        );
+
+ 
+
+        /*if (bApplyAdditionalState)
+        {
+            ApplyStaticUniformBuffers(PsoInit.BoundShaderState.VertexShaderRHI, ResourceCast(PsoInit.BoundShaderState.VertexShaderRHI));
+            ApplyStaticUniformBuffers(PsoInit.BoundShaderState.GetGeometryShader(), ResourceCast(PsoInit.BoundShaderState.GetGeometryShader()));
+            ApplyStaticUniformBuffers(PsoInit.BoundShaderState.PixelShaderRHI, ResourceCast(PsoInit.BoundShaderState.PixelShaderRHI));
+        }*/
+
+        // Store the PSO's primitive (after since IRHICommandContext::RHISetGraphicsPipelineState sets the BSS)
 	}
 	void CommandList::dispatch(uint32_t groupsX, uint32_t groupsY, uint32_t groupsZ)
 	{
+        FOpenGLContextState& ContextState = m_Device->GetContextStateForCurrentContext();
+
+        m_Device->CommitDescriptorSets(ContextState);
+        GE_ERROR_JUDGE();
+        FOpenGL::MemoryBarrier(GL_ALL_BARRIER_BITS);
+        FOpenGL::DispatchCompute(groupsX, groupsY, groupsZ);
+        FOpenGL::MemoryBarrier(GL_ALL_BARRIER_BITS);
 	}
 	void CommandList::dispatchIndirect(uint32_t offsetBytes)
 	{

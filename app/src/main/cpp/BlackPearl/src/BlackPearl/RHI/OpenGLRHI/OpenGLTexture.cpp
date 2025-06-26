@@ -194,6 +194,7 @@ namespace BlackPearl {
         m_Type = desc.type;
         m_Width = desc.width;
         m_Height = desc.height;
+		m_Depth = desc.depth;
         auto fm = OpenGLUtil::convertTextureFormatAndDataType(desc.format);
         m_Format = fm.first;
         m_DataType = fm.second;

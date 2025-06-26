@@ -103,6 +103,7 @@ namespace BlackPearl {
         static  bool bDeferredShading;
         static  bool bUseSinglePass;
         static  bool bUseIBL;
+        static  bool bUseSDF;
         static  bool bShowProbes;
         static  bool bUseDirectLight;
 

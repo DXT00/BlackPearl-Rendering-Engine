@@ -6,8 +6,9 @@
 #include "Renderer/MasterRenderer/BasicRenderer.h"
 #include "RHI/RHIDevice.h"
 #include "MainCamera/MainCamera.h"
-#include "ForwardShadingRenderer.h"
-#include "SkyboxRenderer.h"
+#include "Renderer/MasterRenderer/ForwardShadingRenderer.h"
+#include "Renderer/MasterRenderer/SkyboxRenderer.h"
+#include "ProbeRenderer.h"
 namespace BlackPearl{
 
     struct CubeMapKey {
@@ -23,7 +24,7 @@ namespace BlackPearl{
         }
 
     };
-    class IBLProbeRenderer: public BasicRenderer
+    class IBLProbeRenderer: public BasicRenderer, public ProbeRenderer
     {
     public:
         IBLProbeRenderer(IDevice* device);
@@ -37,7 +38,7 @@ namespace BlackPearl{
         void RenderSpecularBRDFLUTMap(ICommandList* cmdList, IFramebuffer* targetFramebuffer, Scene* scene);
         void RenderProbes(ICommandList* cmdList, IFramebuffer* targetFramebuffer, Scene* scene);
 
-        static void FillShaderParameters();
+        void FillShaderParameters();
 
         static float s_GICoeffs;
 

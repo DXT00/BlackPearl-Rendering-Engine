@@ -95,6 +95,7 @@ namespace BlackPearl {
 		unsigned int m_TextureID;
 		int m_Width = 0;
 		int m_Height = 0;
+        int m_Depth = 0;
 		int m_CurLod = 0;
 		std::string m_Path;
 		TextureType m_Type;

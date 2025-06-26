@@ -7,12 +7,13 @@
 #include "Renderer/MasterRenderer/GI/IBLProbeRenderer.h"
 #include "Renderer/Renderer.h"
 #include "Renderer/DeviceManager.h"
+#include "Renderer/MasterRenderer/GlobalDFRenderer.h"
 #include "Timestep/Timestep.h"
 namespace BlackPearl {
-	class IBLProbeGraph :public RenderGraph
+	class SDFBakeGraph :public RenderGraph
 	{
 	public:
-		explicit IBLProbeGraph(DeviceManager* deviceManager)
+		explicit SDFBakeGraph(DeviceManager* deviceManager)
 			: RenderGraph(deviceManager)
 		{
 		}
@@ -34,7 +35,7 @@ namespace BlackPearl {
 		CommandListHandle    m_CommandList;
 		Scene* m_Scene = nullptr;
 
-        IBLProbeRenderer* m_IBLProbeRenderer;
+        GlobalDFRenderer* m_GDFRnderer = nullptr;
 
         FramebufferHandle m_DeferredFramebuffer;
 

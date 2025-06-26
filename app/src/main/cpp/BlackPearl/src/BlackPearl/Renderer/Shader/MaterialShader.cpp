@@ -20,8 +20,8 @@ namespace BlackPearl {
 
     //android 平台 store后要跑 GetShaderFromAndroid.bat
     static void StoreShader(const std::string& shaderCode, const std::string& name) {
-
-        AssetManager::StoreGLSLShader(shaderCode, name);
+        if(!shaderCode.empty())
+            AssetManager::StoreGLSLShader(shaderCode, name);
 
     }
     static ShaderType ShaderTypeFromString(const std::string& type) {
@@ -183,6 +183,12 @@ namespace BlackPearl {
             shaderSources[ShaderType::Pixel] = fullShaderPS;
         }
 
+        if (shaderSources.find(ShaderType::Compute) != shaderSources.end()) {
+            m_GlslIncluder.reset();
+            fullShaderPS = m_GlslIncluder.processIncludes(shaderSources[ShaderType::Compute]);
+            shaderSources[ShaderType::Compute] = fullShaderPS;
+        }
+
 
         //add common struct source
         if (shaderSources.find(ShaderType::Pixel) != shaderSources.end()) {
@@ -230,8 +236,33 @@ namespace BlackPearl {
 
 
         }
+
+        //change to gles version if it is andriod platform
+        if (shaderSources.find(ShaderType::Compute) != shaderSources.end()) {
+            size_t pos = shaderSources[ShaderType::Compute].find("#version", 0);//find找不到会返回npos
+            GE_ASSERT(pos != std::string::npos, "Syntax error");
+
+            size_t eol = shaderSources[ShaderType::Compute].find_first_of("\r\n", pos);
+            GE_ASSERT(eol != std::string::npos, "Syntax error");
+
+            std::string front = shaderSources[ShaderType::Compute].substr(pos, eol - pos + 1);
+            std::string res = shaderSources[ShaderType::Compute].substr(eol);
+#ifdef GE_PLATFORM_ANDROID
+            //use gles 300
+            front = "//" + front;// 注释掉 pc OpenGL version
+            std::string glesVersion = "#version 310 es\r\n";
+            shaderSources[ShaderType::Compute] = glesVersion + commonSource + res;
+#else
+            shaderSources[ShaderType::Compute] = front + commonSource + res;
+
+#endif
+  
+
+        }
         StoreShader(shaderSources[ShaderType::VertexShader], get_filename(m_ShaderPath)+"_vert");
         StoreShader(shaderSources[ShaderType::Pixel], get_filename(m_ShaderPath) + "_frag");
+        StoreShader(shaderSources[ShaderType::Compute], get_filename(m_ShaderPath) + "_comp");
+
 //#ifdef GE_PLATFORM_WINDOWS
 //        GE_CORE_INFO("Shader {0}---------------\n, ---------vertex---------\n {1}\n, -----------pixel------------\n {2} \n", m_ShaderPath.c_str(), shaderSources[ShaderType::VertexShader].c_str(), shaderSources[ShaderType::Pixel].c_str());
 //#elif defined(GE_PLATFORM_ANDROID)

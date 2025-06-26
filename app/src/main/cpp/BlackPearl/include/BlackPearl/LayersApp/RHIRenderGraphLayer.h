@@ -5,6 +5,7 @@
 #include "BlackPearl/Renderer/RenderGraph/ForwardRenderGraph.h"
 #include "BlackPearl/Renderer/RenderGraph/DeferredRenderGraph.h"
 #include "BlackPearl/Renderer/RenderGraph/IBLProbeGraph.h"
+#include "BlackPearl/Renderer/RenderGraph/SDFBakeGraph.h"
 
 #include "BlackPearl/LayerScene/Layer.h"
 #include "Component/LightComponent/DirectionLight.h"
@@ -94,6 +95,8 @@ public:
 
         
         m_IBLRenderGraph = DBG_NEW IBLProbeGraph(m_DeviceManager);
+        m_SDFBakeGraph = DBG_NEW SDFBakeGraph(m_DeviceManager);
+
         if (Configuration::bDeferredShading) {
             m_RenderGraph = DBG_NEW DeferredRenderGraph(m_DeviceManager);
         }
@@ -105,6 +108,10 @@ public:
         if(Configuration::bUseIBL){
             m_IBLRenderGraph->Init(m_Scene);
             m_DeviceManager->AddRenderGraphToBack(m_IBLRenderGraph);
+        }
+        if (Configuration::bUseSDF) {
+            m_SDFBakeGraph->Init(m_Scene);
+            m_DeviceManager->AddRenderGraphToBack(m_SDFBakeGraph);
         }
 
 
@@ -150,7 +157,7 @@ private:
     //Graph
 	RenderGraph* m_RenderGraph;
     RenderGraph* m_IBLRenderGraph;
-
+    RenderGraph* m_SDFBakeGraph;
 
     //Scene
     Scene* m_Scene;

@@ -30,5 +30,20 @@ namespace BlackPearl {
 		const OpenGLContext& m_Context;
 	};
 
+
+    class ComputePipeline :public RefCounter<IComputePipeline>
+    {
+    public:
+        ComputePipelineDesc desc;
+
+        ComputePipeline(ComputePipelineDesc _desc) :
+            desc(_desc) {
+
+        }
+        ~ComputePipeline() {}
+
+        const ComputePipelineDesc& getDesc() const  override { return desc; }
+
+    };
 }
 

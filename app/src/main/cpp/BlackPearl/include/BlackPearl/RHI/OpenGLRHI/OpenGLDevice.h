@@ -108,6 +108,7 @@ namespace BlackPearl {
 			IShader* VertexShaderRHI,
 			IShader* PixelShaderRHI,
 			IShader* GeometryShaderRHI,
+            IShader* ComputeShaderRHI,
 			const std::vector<IBindingSet*>& IBindingSet,
 			bool bFromPSOFileCache
 		);
@@ -259,7 +260,7 @@ namespace BlackPearl {
 			/**
 			 * Link vertex and pixel shaders in to an OpenGL program.
 			 */
-			FOpenGLLinkedProgram* LinkProgram(const FOpenGLLinkedProgramConfiguration& config, Shader* vertexShader, Shader* pixelShader, Shader* geometryShader, const std::vector<IBindingSet*>& bindingSets);
+			FOpenGLLinkedProgram* LinkProgram(const FOpenGLLinkedProgramConfiguration& config, Shader* vertexShader, Shader* pixelShader, Shader* geometryShader, Shader* computeShader, const std::vector<IBindingSet*>& bindingSets);
 			//void SetRenderTargets(uint32_t NumSimultaneousRenderTargets, const FRHIRenderTargetView* NewRenderTargets, const FRHIDepthRenderTargetView* NewDepthStencilTarget);
 
 			void _commitUBOs(const std::vector<std::pair<Buffer*, uint32_t>>& ubos, FOpenGLContextState& ContextState);

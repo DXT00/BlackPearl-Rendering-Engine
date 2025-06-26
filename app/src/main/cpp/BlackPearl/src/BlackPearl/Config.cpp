@@ -50,6 +50,8 @@ namespace BlackPearl {
     const bool Configuration::bCacheGLProgram = false;
 
     bool Configuration::bUseIBL = true;
+    bool Configuration::bUseSDF = true;
+
     bool Configuration::bShowProbes = false;
 
     bool Configuration::bUseDirectLight = true;

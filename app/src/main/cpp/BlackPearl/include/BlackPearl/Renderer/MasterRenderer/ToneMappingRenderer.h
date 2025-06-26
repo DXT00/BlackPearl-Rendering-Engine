@@ -16,7 +16,7 @@ namespace BlackPearl {
             void Render(ICommandList * commandList, IFramebuffer * targetFramebuffer, Scene * scene);
 
 
-            static void FillShaderParameters(ToneMappingConstants& output);
+            void FillShaderParameters(ToneMappingConstants& output);
 
         private:
             MaterialShader* m_ToneMappingShader;

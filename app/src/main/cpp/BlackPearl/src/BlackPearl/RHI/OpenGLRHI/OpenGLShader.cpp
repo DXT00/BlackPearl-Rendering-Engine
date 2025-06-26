@@ -878,25 +878,37 @@ namespace BlackPearl
         ShaderInfo.Resource = NextStageResource;*/
     }
 
-    static FOpenGLLinkedProgramConfiguration CreateConfig(IShader* VertexShaderRHI, IShader* PixelShaderRHI, IShader* GeometryShaderRHI, std::vector<IBindingSet*> bindingSet)
+    static FOpenGLLinkedProgramConfiguration CreateConfig(IShader* VertexShaderRHI, IShader* PixelShaderRHI, IShader* GeometryShaderRHI, IShader* ComputeShaderRHI, std::vector<IBindingSet*> bindingSet)
     {
         Shader* VertexShader   = static_cast<Shader*>(VertexShaderRHI);
         Shader* PixelShader    = static_cast<Shader*>(PixelShaderRHI);
         Shader* GeometryShader = static_cast<Shader*>(GeometryShaderRHI);
+        Shader* ComputeShader = static_cast<Shader*>(ComputeShaderRHI);
 
         FOpenGLLinkedProgramConfiguration Config;
 
         // Fill-in the configuration
-        Config.Shaders[ShaderType::VertexShader].Bindings = VertexShader->Bindings;
-        Config.Shaders[ShaderType::VertexShader].Resource = VertexShader->m_ShaderID;
-        Config.Shaders[ShaderType::VertexShader].ShaderKey = VertexShader->ShaderCodeKey;
-        Config.Shaders[ShaderType::VertexShader].bValid = true;
+        if (VertexShader) {
+            Config.Shaders[ShaderType::VertexShader].Bindings = VertexShader->Bindings;
+            Config.Shaders[ShaderType::VertexShader].Resource = VertexShader->m_ShaderID;
+            Config.Shaders[ShaderType::VertexShader].ShaderKey = VertexShader->ShaderCodeKey;
+            Config.Shaders[ShaderType::VertexShader].bValid = true;
+        }
 
 
-        Config.Shaders[ShaderType::Pixel].Bindings = PixelShader->Bindings;
-        Config.Shaders[ShaderType::Pixel].Resource = PixelShader->m_ShaderID;
-        Config.Shaders[ShaderType::Pixel].ShaderKey = PixelShader->ShaderCodeKey;
-        Config.Shaders[ShaderType::Pixel].bValid = true;
+        if (PixelShader) {
+            Config.Shaders[ShaderType::Pixel].Bindings = PixelShader->Bindings;
+            Config.Shaders[ShaderType::Pixel].Resource = PixelShader->m_ShaderID;
+            Config.Shaders[ShaderType::Pixel].ShaderKey = PixelShader->ShaderCodeKey;
+            Config.Shaders[ShaderType::Pixel].bValid = true;
+        }
+        if (ComputeShader) {
+            Config.Shaders[ShaderType::Compute].Bindings = ComputeShader->Bindings;
+            Config.Shaders[ShaderType::Compute].Resource = ComputeShader->m_ShaderID;
+            Config.Shaders[ShaderType::Compute].ShaderKey = ComputeShader->ShaderCodeKey;
+            Config.Shaders[ShaderType::Compute].bValid = true;
+        }
+
 
         for (size_t i = 0; i < bindingSet.size(); i++)
         {
@@ -904,8 +916,10 @@ namespace BlackPearl
             Config.bindingSet.push_back(bs);
         }
 
-        Config.ProgramKey.ShaderHashes[ShaderType::VertexShader] = VertexShader->GetHash();
-        Config.ProgramKey.ShaderHashes[ShaderType::Pixel] = PixelShader->GetHash();
+        if (VertexShader)
+            Config.ProgramKey.ShaderHashes[ShaderType::VertexShader] = VertexShader->GetHash();
+        if (PixelShader)
+            Config.ProgramKey.ShaderHashes[ShaderType::Pixel] = PixelShader->GetHash();
 
         if (GeometryShaderRHI)
         {
@@ -914,14 +928,20 @@ namespace BlackPearl
             Config.ProgramKey.ShaderHashes[ShaderType::Geometry] = GeometryShader->GetHash();
         }
 
-       
+        if (ComputeShaderRHI)
+        {
+            Config.Shaders[ShaderType::Compute].ShaderKey = ComputeShader->ShaderCodeKey;
+            Config.Shaders[ShaderType::Compute].bValid = true;
+            Config.ProgramKey.ShaderHashes[ShaderType::Compute] = ComputeShader->GetHash();
+        }
+
 
 
         return Config;
     };
 
 
-    FOpenGLLinkedProgram* Device::LinkProgram(const FOpenGLLinkedProgramConfiguration& config, Shader* vertexShader, Shader* pixelShader, Shader* geometryShader, const std::vector<IBindingSet*>& bindingSets)
+    FOpenGLLinkedProgram* Device::LinkProgram(const FOpenGLLinkedProgramConfiguration& config, Shader* vertexShader, Shader* pixelShader, Shader* geometryShader, Shader* computeShader, const std::vector<IBindingSet*>& bindingSets)
     {
 
         // Make sure we have OpenGL context set up, and invalidate the parameters cache and current program (as we'll link a new one soon)
@@ -963,6 +983,13 @@ namespace BlackPearl
             FOpenGL::UseProgramStages(Program, GL_GEOMETRY_SHADER_BIT,
                 geometryShader->m_ShaderID);
             shaderIds.push_back(geometryShader->m_ShaderID);
+
+        }
+
+        if (computeShader && computeShader->m_ShaderID) {
+            FOpenGL::UseProgramStages(Program, GL_COMPUTE_SHADER_BIT,
+                computeShader->m_ShaderID);
+            shaderIds.push_back(computeShader->m_ShaderID);
 
         }
         GE_ERROR_JUDGE();
@@ -1134,6 +1161,7 @@ namespace BlackPearl
             IShader *VertexShaderRHI,
             IShader *PixelShaderRHI,
             IShader *GeometryShaderRHI,
+            IShader* ComputeShaderRHI,
             const std::vector<IBindingSet*>& IBindingSet,
             bool bFromPSOFileCache
     ) {
@@ -1145,18 +1173,33 @@ namespace BlackPearl
         Shader* VertexShader = static_cast<Shader*>(VertexShaderRHI);
         Shader* PixelShader = static_cast<Shader*>(PixelShaderRHI);
         Shader* GeometryShader = static_cast<Shader*>(GeometryShaderRHI);
+        Shader* ComputeShader = static_cast<Shader*>(ComputeShaderRHI);
 
-        if (!VertexShader) {
+       /* if (!VertexShader) {
             GE_CORE_ERROR("no vertex shader found");
         }
         if (!PixelShader) {
             GE_CORE_ERROR("no pixel shader found");
-        }
+        }*/
         FOpenGLProgramKey prgramKey;
-        prgramKey.ShaderHashes[ShaderType::VertexShader] = VertexShader->GetHash();
-        prgramKey.ShaderHashes[ShaderType::Pixel] = PixelShader->GetHash();
+
+
+        if (VertexShader) {
+            prgramKey.ShaderHashes[ShaderType::VertexShader] = VertexShader->GetHash();
+
+        }
+
+        if (PixelShader) {
+            prgramKey.ShaderHashes[ShaderType::Pixel] = PixelShader->GetHash();
+
+        }
+
+        if (ComputeShader) {
+            prgramKey.ShaderHashes[ShaderType::Compute] = ComputeShader->GetHash();
+
+        }
         if (GeometryShader) {
-            prgramKey.ShaderHashes[ShaderType::Pixel] = GeometryShader->GetHash();
+            prgramKey.ShaderHashes[ShaderType::Geometry] = GeometryShader->GetHash();
 
         }
         FOpenGLLinkedProgram* LinkedProgram = FGLProgramCache::Get()->GetGLProgram(prgramKey);
@@ -1164,15 +1207,18 @@ namespace BlackPearl
             
 
                 //compile shaders
-                VertexShader->Compile(GL_VERTEX_SHADER);
-                PixelShader->Compile(GL_FRAGMENT_SHADER);
+                if (VertexShader)
+                    VertexShader->Compile(GL_VERTEX_SHADER);
+                if (PixelShader)
+                    PixelShader->Compile(GL_FRAGMENT_SHADER);
                 if(GeometryShader)
                     GeometryShader->Compile(GL_GEOMETRY_SHADER);
-
-                FOpenGLLinkedProgramConfiguration Config = CreateConfig(VertexShaderRHI, PixelShaderRHI, GeometryShaderRHI, IBindingSet);
+                if (ComputeShader)
+                    ComputeShader->Compile(GL_COMPUTE_SHADER);
+                FOpenGLLinkedProgramConfiguration Config = CreateConfig(VertexShaderRHI, PixelShaderRHI, GeometryShaderRHI, ComputeShaderRHI, IBindingSet);
 
                 // Link program, using the data provided in config
-                LinkedProgram = LinkProgram(Config, VertexShader, PixelShader, GeometryShader, IBindingSet);
+                LinkedProgram = LinkProgram(Config, VertexShader, PixelShader, GeometryShader, ComputeShader, IBindingSet);
 
                 if (LinkedProgram == NULL) {
                     GE_CORE_ERROR("fail to link program");

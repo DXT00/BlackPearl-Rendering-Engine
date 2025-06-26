@@ -15,7 +15,7 @@ namespace BlackPearl {
         void Render(ICommandList* commandList, IFramebuffer* targetFramebuffer, Scene* scene);
 
 
-        static void FillShaderParameters();
+        void FillShaderParameters();
         static bool s_HDR;
 
     private:

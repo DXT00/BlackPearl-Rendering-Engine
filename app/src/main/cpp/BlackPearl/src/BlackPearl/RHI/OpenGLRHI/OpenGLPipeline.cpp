@@ -11,7 +11,12 @@ namespace BlackPearl {
 	void GraphicsPipeline::getNumUniformBuffers(uint32_t** unifromBuffers)
 	{
 	}
+    ComputePipelineHandle Device::createComputePipeline(const ComputePipelineDesc& desc)
+    {
+        ComputePipeline* pso = new ComputePipeline(desc);
 
+        return ComputePipelineHandle(pso);
+    }
 	//TODO:: framebuffer is gl default framebuffer, _fb is NULL
 	GraphicsPipelineHandle Device::createGraphicsPipeline(const GraphicsPipelineDesc& desc, IFramebuffer* _fb)
 	{

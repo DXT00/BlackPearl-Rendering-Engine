@@ -15,6 +15,7 @@
 #include "RHI/OpenGLRHI/OpenGLInputLayout.h"
 #include "RHI/OpenGLRHI/OpenGLUtil.h"
 #include "RHI/OpenGLRHI/OpenGLFrameBuffer.h"
+#include "RHI/OpenGLRHI/OpenGLTexture3D.h"
 #include "RHI/OpenGLRHI/OpenGLBoundShaderState.h"
 #include "BlackPearl/Application.h"
 #include "BlackPearl/Log.h"
@@ -270,6 +271,11 @@ namespace BlackPearl
 			texture = DBG_NEW ImageTexture2D(d, d.data);
 
 		}
+        else if (d.type == TextureType::Image3DMap || d.dimension == TextureDimension::Texture3D) {
+
+            texture = DBG_NEW Texture3D(d);
+
+        }
 		else {
 			texture = DBG_NEW Texture(d);
 		}
@@ -310,10 +316,7 @@ namespace BlackPearl
 		return MemoryRequirements();
 	}
 
-	ComputePipelineHandle Device::createComputePipeline(const ComputePipelineDesc& desc)
-	{
-		return ComputePipelineHandle();
-	}
+	
 
 	MeshletPipelineHandle Device::createMeshletPipeline(const MeshletPipelineDesc& desc, IFramebuffer* fb)
 	{

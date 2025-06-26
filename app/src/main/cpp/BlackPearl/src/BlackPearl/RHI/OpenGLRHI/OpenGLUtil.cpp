@@ -276,11 +276,14 @@ namespace BlackPearl {
 		{
 		case Format::R8_UNORM:
 			return std::make_pair<GLenum, GLenum>(GL_RED, GL_UNSIGNED_BYTE);
+        case Format::R16_FLOAT:
+            return std::make_pair<GLenum, GLenum>(GL_RED, GL_FLOAT);
 		case Format::R32_FLOAT:
 			return std::make_pair<GLenum, GLenum>(GL_RED, GL_FLOAT);
 
 		case Format::RG16_FLOAT:
 			return std::make_pair<GLenum, GLenum>(GL_RG, GL_FLOAT);
+
 
 		case Format::RGB8_UNORM:
 			return std::make_pair<GLenum, GLenum>(GL_RGB, GL_UNSIGNED_BYTE);
@@ -326,6 +329,10 @@ namespace BlackPearl {
 			return GL_RED;
 		case Format::R32_FLOAT:
 			return GL_R32F;
+
+        case Format::R16_FLOAT:
+            return GL_R16F;
+
 		case Format::RG16_FLOAT:
 			return GL_RG16F;
 

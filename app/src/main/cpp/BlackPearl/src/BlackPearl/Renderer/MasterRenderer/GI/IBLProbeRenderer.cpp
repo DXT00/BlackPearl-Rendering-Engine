@@ -3,7 +3,7 @@
 //
 #include "pch.h"
 
-#include "Renderer/MasterRenderer/IBLProbeRenderer.h"
+#include "Renderer/MasterRenderer/GI/IBLProbeRenderer.h"
 #include "RHI/RHIDevice.h"
 #include "RHI/OpenGLRHI/OpenGLDriver/OpenGLFunctions.h"
 #include "LightProbes/SphericalHarmonics.h"

@@ -31,7 +31,8 @@ namespace BlackPearl {
         RoughnessMap,
         MentallicMap,
         OpacityMap,
-        Image2DMap
+        Image2DMap,
+        Image3DMap
     };
 
     enum class TextureAccess {

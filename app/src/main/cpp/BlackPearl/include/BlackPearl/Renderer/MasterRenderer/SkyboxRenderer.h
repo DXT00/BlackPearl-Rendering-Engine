@@ -32,7 +32,7 @@ namespace BlackPearl {
 		void Init();
 		void Render(ICommandList* commandList, IFramebuffer* targetFramebuffer, Scene* scene);
 
-		static void FillShaderParameters(
+		void FillShaderParameters(
 			const DirectionLight& light,
 			const SkyParameters& input,
 			SkyConstants& output);

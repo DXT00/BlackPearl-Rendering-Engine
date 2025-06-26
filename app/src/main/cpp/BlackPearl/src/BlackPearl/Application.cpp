@@ -110,7 +110,7 @@ namespace BlackPearl {
 #define APP_VERSION VERSION_0_0
 
 		}
-        printf("current context after init g_deviceManager = %p\n", wglGetCurrentContext());
+       // printf("current context after init g_deviceManager = %p\n", wglGetCurrentContext());
 
 	#ifdef	GE_API_D3D12
 			g_modelLoader = DBG_NEW D3D12ModelLoader();
