@@ -1,6 +1,9 @@
 #pragma once
 #include "BlackPearl/Object/Object.h"
 #include "glm/glm.hpp"
+#include "Component/CameraComponent/PerspectiveCamera.h"
+#include "Component/CameraComponent/OrthographicCamera.h"
+
 /*Logical Camera*/
 namespace BlackPearl {
     struct CameraRotation {
@@ -20,6 +23,14 @@ namespace BlackPearl {
 	public:
 		MainCamera(Object* cameraObj) {
 			m_CameraObj = cameraObj;
+            if (m_CameraObj->HasComponent<PerspectiveCamera>()) {
+                m_Type = Camera::CameraType::Perspective;
+            }
+            else if (m_CameraObj->HasComponent<OrthographicCamera>()) {
+                m_Type = Camera::CameraType::Orthographic;
+            }
+
+
 		}
 		~MainCamera() {
 
@@ -47,6 +58,7 @@ namespace BlackPearl {
 		Object* GetObj() const { return m_CameraObj; }
 	private:
 		Object* m_CameraObj = nullptr;
+        Camera::CameraType m_Type;
 
 
 	};

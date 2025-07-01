@@ -5,7 +5,8 @@
 #include "BlackPearl/Renderer/RenderGraph/ForwardRenderGraph.h"
 #include "BlackPearl/Renderer/RenderGraph/DeferredRenderGraph.h"
 #include "BlackPearl/Renderer/RenderGraph/IBLProbeGraph.h"
-#include "BlackPearl/Renderer/RenderGraph/SDFBakeGraph.h"
+#include "BlackPearl/Renderer/RenderGraph/SDFGraph.h"
+#include "BlackPearl/Renderer/RenderGraph/VoxelGraph.h"
 
 #include "BlackPearl/LayerScene/Layer.h"
 #include "Component/LightComponent/DirectionLight.h"
@@ -43,11 +44,11 @@ public:
              "assets/skybox/skybox/front.jpg",
              "assets/skybox/skybox/back.jpg",
             });
-        m_CubeObj->GetComponent<Transform>()->SetScale({ 0.2,0.2,0.2 });
-        m_CubeObj->GetComponent<Transform>()->SetRotation({ 0,30,0 });
-        m_SphereObj->GetComponent<Transform>()->SetScale({ 0.5,0.5,0.5 });
-        m_CubeObj->SetPosition({ 0.0,0.0,-2.0 });
-        m_SphereObj->SetPosition({ -0.4,0.0,-2.0 });
+        m_CubeObj->GetComponent<Transform>()->SetScale({ 20.0,20.0,20.0 });
+       // m_CubeObj->GetComponent<Transform>()->SetRotation({ 0,30,0 });
+        m_SphereObj->GetComponent<Transform>()->SetScale({ 20.0,20.0,20.0 });
+        m_CubeObj->SetPosition({ 25.0, 25.0,25.0 });
+        m_SphereObj->SetPosition({ -25.0,-25.0,-25.0 });
 
 
         m_MainCamera->SetMoveSpeed(0.5f);
@@ -74,9 +75,8 @@ public:
 
         if (Configuration::bUseIBL) {
         
-            m_MapManager = DBG_NEW MapManager(Configuration::MapSize, Configuration::AreaSize);
 
-            m_DiffuseLightProbeGrid = CreateProbeGrid(m_MapManager, ProbeType::DIFFUSE_PROBE,
+            m_DiffuseLightProbeGrid = CreateProbeGrid(ProbeType::DIFFUSE_PROBE,
                 math::float3(2, 2, 1), math::float3(0.0f, 1.0f, -0.2f), 5);
 
           /*  m_ReflectLightProbeGrid = CreateProbeGrid(m_MapManager, ProbeType::REFLECTION_PROBE,
@@ -95,7 +95,8 @@ public:
 
         
         m_IBLRenderGraph = DBG_NEW IBLProbeGraph(m_DeviceManager);
-        m_SDFBakeGraph = DBG_NEW SDFBakeGraph(m_DeviceManager);
+        m_SDFBakeGraph = DBG_NEW SDFGraph(m_DeviceManager);
+        m_VoxelGraph = DBG_NEW VoxelGraph(m_DeviceManager);
 
         if (Configuration::bDeferredShading) {
             m_RenderGraph = DBG_NEW DeferredRenderGraph(m_DeviceManager);
@@ -113,7 +114,12 @@ public:
             m_SDFBakeGraph->Init(m_Scene);
             m_DeviceManager->AddRenderGraphToBack(m_SDFBakeGraph);
         }
+       
+        if (Configuration::bUseVoxel) {
 
+            m_VoxelGraph->Init(m_Scene);
+            m_DeviceManager->AddRenderGraphToBack(m_VoxelGraph);
+        }
 
 
 
@@ -158,6 +164,7 @@ private:
 	RenderGraph* m_RenderGraph;
     RenderGraph* m_IBLRenderGraph;
     RenderGraph* m_SDFBakeGraph;
+    RenderGraph* m_VoxelGraph;
 
     //Scene
     Scene* m_Scene;

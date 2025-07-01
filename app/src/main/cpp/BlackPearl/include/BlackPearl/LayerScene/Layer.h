@@ -146,7 +146,7 @@ namespace BlackPearl {
 		Object* CreateQuad(const std::string& shaderPath = "assets/shaders/glsl/Quad.glsl", const std::string& texturePath = "", const std::string& name = "Quad");
 
 		Object* CreateLightProbe(ProbeType type, const std::string& shaderPath = "assets/shaders/glsl/lightProbes/lightProbe.glsl", const std::string& texturePath = "", const std::string& name = "LightProbe");
-		Object* CreateProbeGrid(MapManager* mapManager, ProbeType type, math::float3 probeNums, math::float3 offsets, float space);
+		Object* CreateProbeGrid(ProbeType type, math::float3 probeNums, math::float3 offsets, float space);
 		MainCamera* CreateCamera(const std::string& name = "Camera");
 		BatchNode* CreateBatchNode(std::vector<Object*> objs, bool dynamic, const std::string& name = "BatchNode");
 

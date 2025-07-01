@@ -2,6 +2,8 @@
 #include "Math/vector.h"
 #include "RHI/RHITexture.h"
 #include "RHI/RHICommandList.h"
+#include "Scene/Scene.h"
+#include "AABB/AABB.h"
 namespace BlackPearl {
 
 
@@ -90,7 +92,7 @@ namespace BlackPearl {
         GlobalDistanceField() {
 
         }
-        void Init();
+        void Init(Scene* scene);
         void Update(const math::float3& cameraPos);
 
 
@@ -106,7 +108,7 @@ namespace BlackPearl {
 
     private:
 
-        void InitClipmaps();
+        void InitClipmaps(Scene* scene);
         void UpdateClipmapCenters(const math::float3& CameraPos);
 
     };

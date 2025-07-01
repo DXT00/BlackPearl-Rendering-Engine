@@ -13,6 +13,9 @@
 #include "RHI/OpenGLRHI/OpenGLSampler.h"
 #include "RHI/OpenGLRHI/OpenGLUtil.h"
 #include "RHI/OpenGLRHI/OpenGLRenderTraget.h"
+#include "RHI/OpenGLRHI/OpenGLCubeMapTexture.h"
+#include "RHI/OpenGLRHI/OpenGLImageTexture2D.h"
+#include "RHI/OpenGLRHI/OpenGLTexture3D.h"
 #include "BlackPearl/Config.h"
 #include "BlackPearl/RHI/RHIGlobals.h"
 #include "BlackPearl/RHI/OpenGLRHI/OpenGLDriver/OpenGLDrvPrivate.h"
@@ -261,6 +264,34 @@ namespace BlackPearl {
 	}
 	void CommandList::clearTextureFloat(ITexture* texture, TextureSubresourceSet subresources, const Color& clearColor)
 	{
+
+        Texture* tex = static_cast<Texture*>(texture);
+        TextureDesc d = texture->getDesc();
+        if (d.type == TextureType::CubeMap || d.dimension == TextureDimension::TextureCube) {
+            //todo::
+        }
+        else if (d.type == TextureType::Image2DMap) {
+            //todo::
+
+        }
+        else if (d.type == TextureType::Image3DMap || d.dimension == TextureDimension::Texture3D) {
+
+            float colors[4];
+            colors[0] = clearColor.r;
+            colors[1] = clearColor.g;
+            colors[2] = clearColor.b;
+            colors[3] = clearColor.a;
+            Texture3D* tex3D = static_cast<Texture3D*>(tex);
+            tex3D->Clear(colors);
+
+        }
+        else {
+            //todo::
+        }
+
+        GE_ASSERT(texture, "texture is nullptr");
+
+
 	}
 	void CommandList::clearDepthStencilTexture(ITexture* texture, TextureSubresourceSet subresources, bool clearDepth, float depth, bool clearStencil, uint8_t stencil)
 	{
@@ -340,7 +371,7 @@ namespace BlackPearl {
 	}
 	void CommandList::setBoundShaderState(IBoundShaderState* state)
 	{
-        BoundShaderState* BoundShaderState_ = static_cast<BoundShaderState*>(state);
+        BoundShaderState* BoundShaderState_ = dynamic_cast<BoundShaderState*>(state);
 		m_Device->PendingState.BoundShaderState = BoundShaderState_;
 
 		// Prevent transient bound shader states from being recreated for each use by keeping a history of the most recently used bound shader states.
@@ -1464,14 +1495,14 @@ namespace BlackPearl {
 
 	void Device::CommitDescriptorSets(FOpenGLContextState& ContextState)
 	{
-
-		std::vector<BindingSet*>& bindingSets = PendingState.BoundShaderState->LinkedProgram->Config.bindingSet;
+        //binding set 不应该放到config里
+        std::vector<BindingSet*>& bindingSets = PendingState.BoundShaderState->BindingSets;
 
 		std::vector<std::pair<Texture*, uint32_t>> textures;
 		std::vector<std::pair<Texture*, uint32_t>> images;
 		std::vector<std::pair<Sampler*, uint32_t>> samplers;
-		std::vector<std::pair<Buffer*, uint32_t>>  ubos;
-		std::vector<std::pair<Buffer*, uint32_t>>  ssbos;
+		std::vector<std::pair<Buffer*,  uint32_t>> ubos;
+		std::vector<std::pair<Buffer*,  uint32_t>> ssbos;
 
 		for (BindingSet* set : bindingSets) {
 

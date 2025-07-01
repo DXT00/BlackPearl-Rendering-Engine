@@ -28,6 +28,7 @@
 //#include "BlackPearl/Math/Math.h"
 //using namespace BlackPearl::math;
 //#endif
+#include "align.h"
 
 struct ProceduralSkyShaderParameters
 {
@@ -62,25 +63,25 @@ struct SkyConstants
 
     ProceduralSkyShaderParameters params;*/
 
-    alignas(16) float3 directionToLight;
+    ALIGN(16) float3 directionToLight;
     float angularSizeOfLight;
 
-    alignas(16) float3 lightColor;
+    ALIGN(16) float3 lightColor;
     float glowSize;
 
-    alignas(16) float3 skyColor;
+    ALIGN(16) float3 skyColor;
     float glowIntensity;
 
-    alignas(16) float3 horizonColor;
+    ALIGN(16) float3 horizonColor;
     float horizonSize;
 
-    alignas(16) float3 groundColor;
+    ALIGN(16) float3 groundColor;
     float glowSharpness;
 
-    alignas(16) float3 directionUp;
+    ALIGN(16) float3 directionUp;
     float lightIntensity;
 
-    alignas(16) float3 factors;
+    ALIGN(16) float3 factors;
 
 
 };

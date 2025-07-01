@@ -1,12 +1,12 @@
 #include "pch.h"
 #include "Renderer/SDF/GlobalDistanceField.h"
 #include "Renderer/DeviceManager.h"
-
+#include "Scene/Scene.h"
 namespace BlackPearl {
     extern DeviceManager* g_deviceManager;
 
-    void GlobalDistanceField::Init() {
-        InitClipmaps();
+    void GlobalDistanceField::Init(Scene* scene) {
+        InitClipmaps(scene);
     }
 
     void GlobalDistanceField::Update(const math::float3& cameraPos) {
@@ -14,14 +14,14 @@ namespace BlackPearl {
     }
 
 
-    void GlobalDistanceField::InitClipmaps()
+    void GlobalDistanceField::InitClipmaps(Scene* scene)
     {
         // 多层clipmap
         for (int i = 0; i < NumClipMapLevels; i++) {
             ClipmapLevel level;
             level.VoxelSize = 1.0f * std::pow(2, i); // 层级越高，体素越大
             level.Extent = ClipDim * level.VoxelSize;
-            level.Center = math::float3(0.0f);
+            level.Center = math::float3(0.0);
             std::vector<float> texture3D(1.0 * ClipDim * ClipDim * ClipDim, 0.0f);
 
             TextureDesc desc;

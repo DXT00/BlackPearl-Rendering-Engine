@@ -3,10 +3,7 @@
 layout(location = Slot_aPos) in vec3 aPos;
 out vec3 TexCoords;
 		
-uniform mat4 u_Model;
-//uniform mat4 u_ProjectionView;
-uniform mat4 u_Projection;
-uniform mat4 u_View;
+
 out vec3 v_Direction;
 
 #include <assets/shaders/glsl/common/CommonViewStruct.glsl>
@@ -51,33 +48,35 @@ in vec3 TexCoords;
 
 #include <assets/shaders/glsl/common/CommonMath.glsl>
 
-struct SkyConstants
-{
-    vec3 directionToLight;
-    float angularSizeOfLight;
-
-    vec3 lightColor;
-    float glowSize;
-
-    vec3 skyColor;
-    float glowIntensity;
-
-    vec3 horizonColor;
-    float horizonSize;
-
-    vec3 groundColor;
-    float glowSharpness;
-
-    vec3 directionUp;
-    float lightIntensity;
-    //float pad1;
-
-    vec3 factors;
-	//float pad2;
-
-   
-};
-
+#include <sky_cb.h>
+//
+//struct SkyConstants
+//{
+//    vec3 directionToLight;
+//    float angularSizeOfLight;
+//
+//    vec3 lightColor;
+//    float glowSize;
+//
+//    vec3 skyColor;
+//    float glowIntensity;
+//
+//    vec3 horizonColor;
+//    float horizonSize;
+//
+//    vec3 groundColor;
+//    float glowSharpness;
+//
+//    vec3 directionUp;
+//    float lightIntensity;
+//    //float pad1;
+//
+//    vec3 factors;
+//	//float pad2;
+//
+//   
+//};
+//
 /*
 	std140 对齐规则：
 	标量（float/int）：对齐到 4 字节。
@@ -127,8 +126,8 @@ void main(){
     vec3 totalScattering = vec3(0.0);
     float viewHeight = max(dot(viewDir, vec3(0,1,0)), 0.0);
 
-        //散射比例， 用于混合散射颜色和skybox颜色
-     float scatterStrength = 0.2;//clamp(1.0 - viewHeight, 0.0, 1.0); // near horizon = more scattering
+    //散射比例， 用于混合散射颜色和skybox颜色
+    float scatterStrength = 0.2;//clamp(1.0 - viewHeight, 0.0, 1.0); // near horizon = more scattering
 
     if (viewDir.y > 0.0) {
       float cosTheta = dot(viewDir, -1.0*normalize(g_SkyConstants.directionToLight));
@@ -164,7 +163,7 @@ void main(){
 
 
     vec3 finalColor = mix(skyBoxColor.xyz, totalScattering, scatterStrength);
-    finalColor = pow(finalColor, vec3(1.0 / 2.2)); // gamma correction
+   // finalColor = pow(finalColor, vec3(1.0 / 2.2)); // gamma correction
     FragColor = vec4(finalColor, 1.0);
 
 //    vec3 direction = normalize(v_Direction);

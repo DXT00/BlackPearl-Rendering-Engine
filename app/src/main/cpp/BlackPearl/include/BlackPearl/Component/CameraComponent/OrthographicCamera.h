@@ -25,6 +25,7 @@ namespace BlackPearl {
 		
 		
 		}
+        void SetRange(float left, float right, float top, float bottom);
 		virtual ~OrthographicCamera() = default;
 
 

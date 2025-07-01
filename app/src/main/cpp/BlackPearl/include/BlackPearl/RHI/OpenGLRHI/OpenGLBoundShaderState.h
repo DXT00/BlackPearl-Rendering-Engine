@@ -3,10 +3,20 @@
 #include "BlackPearl\RHI\RHIBoundShaderState.h"
 #include "BlackPearl\Core\Container\TBitArray.h"
 #include "OpenGLShader.h"
+#include "OpenGLBindingSet.h"
 namespace BlackPearl {
 	
 	class FOpenGLLinkedProgram;
 
+    /*
+    
+        for (size_t i = 0; i < bindingSet.size(); i++)
+        {
+            BindingSet* bs = dynamic_cast<BindingSet*>(bindingSet[i]);
+            Config.bindingSet.push_back(bs);
+        }
+
+    */
 	class BoundShaderState : public RefCounter<IBoundShaderState>
 	{
 	public:
@@ -15,7 +25,8 @@ namespace BlackPearl {
 			, IShader* VertexShader
 			, IShader* PixelShader
 			, IShader* GeometryShader,
-			FOpenGLLinkedProgram* _LinkedProgram
+			FOpenGLLinkedProgram* _LinkedProgram,
+            const std::vector<IBindingSet*>& bindingSet
 		) /*: IBoundShaderState(
 			InVertexDeclarationRHI
 			, VertexShader
@@ -30,10 +41,18 @@ namespace BlackPearl {
 			GeometryShaderRHI = GeometryShader;
 #endif
 			LinkedProgram = _LinkedProgram;
+
+            for (size_t i = 0; i < bindingSet.size(); i++)
+            {
+                BindingSet* bs = dynamic_cast<BindingSet*>(bindingSet[i]);
+                BindingSets.push_back(bs);
+            }
+
 		}
-		//uint16_t StreamStrides[MaxVertexElementCount];
 
 		FOpenGLLinkedProgram* LinkedProgram;
+        std::vector<BindingSet*> BindingSets;
+
 		//TRefCountPtr<FOpenGLVertexDeclaration> VertexDeclaration;
 	
 		const TBitArray& GetTextureNeeds(int32_t& OutMaxTextureStageUsed);

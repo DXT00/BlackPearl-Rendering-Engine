@@ -6,10 +6,7 @@
 #include "BlackPearl/Component/LightComponent/SpotLight.h"
 #include "BlackPearl/Component/LightProbeComponent/LightProbeComponent.h"
 #include "BlackPearl/Component/MeshRendererComponent/MeshRenderer.h"
-#include "BlackPearl/Component/LightComponent/PointLight.h"
-#include "BlackPearl/Component/LightComponent/DirectionLight.h"
-#include "BlackPearl/Component/LightComponent/SpotLight.h"
-#include "BlackPearl/Component/MeshRendererComponent/MeshRenderer.h"
+
 #include "BlackPearl/Component/MeshFilterComponent/CubeMeshFilter.h"
 #include "BlackPearl/Component/MeshFilterComponent/SphereMeshFilter.h"
 #include "BlackPearl/Component/MeshFilterComponent/PlaneMeshFilter.h"
@@ -17,6 +14,8 @@
 #include "BlackPearl/Component/MeshFilterComponent/SkyBoxMeshFilter.h"
 #include "BlackPearl/Component/LightProbeComponent/LightProbeComponent.h"
 #include "BlackPearl/Component/CameraComponent/PerspectiveCamera.h"
+#include "BlackPearl/Component/CameraComponent/OrthographicCamera.h"
+
 #include "BlackPearl/RHI/RHITexture.h"
 #include "BlackPearl/Component/BasicInfoComponent/BasicInfo.h"
 #include "BlackPearl/Component/BoundingBoxComponent/BoundingBox.h"
@@ -324,10 +323,14 @@ namespace BlackPearl {
 		return obj;
 	}
 
-	MainCamera* ObjectManager::CreateCamera(const std::string& name)
+	MainCamera* ObjectManager::CreateCamera(const std::string& name, Camera::CameraType type)
 	{
 		Object* obj = CreateEmpty(name);
-		std::shared_ptr<PerspectiveCamera> cameraComponent = obj->AddComponent<PerspectiveCamera>();
+        if(type == Camera::CameraType::Perspective)
+		   obj->AddComponent<PerspectiveCamera>();
+        else if (type == Camera::CameraType::Orthographic) {
+           obj->AddComponent<OrthographicCamera>();
+        }
 		auto info = obj->AddComponent<BasicInfo>();
 		info->SetObjectType(ObjectType::OT_Camera);
 

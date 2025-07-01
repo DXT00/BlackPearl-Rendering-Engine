@@ -3,24 +3,26 @@
 #include"Area.h"
 #include<glm/glm.hpp>
 #include<BlackPearl/Object/Object.h>
+#include "Core.h"
 namespace BlackPearl {
 	//Map is a Cube
 	class MapManager
 	{
 	public:
-		MapManager(unsigned int mapSize,unsigned int areaSize)
+		MapManager(float mapSize, float areaSize)
 		:m_MapSize(mapSize),m_AreaSize(areaSize){
 			m_HalfMapSize = m_MapSize / 2.0;
 			m_AreaCount = mapSize / areaSize;
 			m_TotalAreaCount = m_AreaCount * m_AreaCount * m_AreaCount;
-			for (int y = 0; y < m_AreaCount; y++)
+			for (uint32_t y = 0; y < m_AreaCount; y++)
 			{
-				for (int z = 0; z < m_AreaCount; z++)
+				for (uint32_t z = 0; z < m_AreaCount; z++)
 				{
-					for (int x = 0; x < m_AreaCount; x++)
+					for (uint32_t x = 0; x < m_AreaCount; x++)
 					{
 						unsigned int areaId = x + z * m_AreaCount + y * m_AreaCount * m_AreaCount;
-						m_AreasList.push_back(Area(areaId, areaSize,x,y,z));
+						m_AreasList.push_back(DBG_NEW Area(areaId, areaSize,x,y,z, m_HalfMapSize));
+                       // GE_ASSERT(i == areaId, "areaId error");
 					}
 				}
 
@@ -30,26 +32,31 @@ namespace BlackPearl {
 		unsigned int GetAreaSize()const { return m_AreaSize; }
 		unsigned int GetHalfMapSize()const { return m_HalfMapSize; }
 
-		Area GetArea(unsigned int areaId);
+		Area* GetArea(unsigned int areaId);
 		int CalculateAreaId(glm::vec3 pos);
 		std::set<unsigned int> FindNearByArea(glm::vec3 pos);
 		unsigned int AddProbeIdToArea(glm::vec3 probePos,unsigned int probeId);
-		//判断probe是否跨区
+		//鍒ゆ柇probe鏄惁璺ㄥ尯
 		void UpdateProbesArea(std::vector<Object*> probes);
-		std::vector<Area> GetAreasList()const { return m_AreasList; }
+		std::vector<Area*> GetAreasList()const { 
+            return m_AreasList; 
+        
+        }
 		
-		//GBufferRender::RenderSceneWithGBufferAndProbes中设置为false
+		//GBufferRender::RenderSceneWithGBufferAndProbes涓缃负false
 		bool m_ProbeGridPosChanged = false;
+
+        void AddObjectToArea(Object* obj);
 
 	private:
 		unsigned int m_AreaCount;//one dimemsion
 		unsigned int m_TotalAreaCount;
-		unsigned int m_MapSize;
-		unsigned int m_HalfMapSize;
+        float m_MapSize;
+		float m_HalfMapSize;
 
 		unsigned int m_AreaSize;
 		float m_Border = 2.0f;
-		std::vector<Area> m_AreasList;
+		std::vector<Area*> m_AreasList;
 	};
 
 

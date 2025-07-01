@@ -921,13 +921,25 @@ namespace BlackPearl {
 
         ImGui::Checkbox("bUseIBL", &Configuration::bUseIBL);
         ImGui::Checkbox("bUseDirectLight", &Configuration::bUseDirectLight);
+        ImGui::Checkbox("bUseVoxel", &Configuration::bUseVoxel);
 
         ImGui::Separator();
         ImGui::Text("Probes Settings");
         ImGui::Checkbox("bUpdateProbePerFrame", &Configuration::bUpdateProbePerFrame);
         ImGui::Checkbox("bShowProbes", &Configuration::bShowProbes);
 
-
+        ImGui::Separator();
+        ImGui::Text("DebugView");
+        static DebugView::Type db_type = DebugView::Type::DV_Lit;
+        for (int n = 0; n < (int)DebugView::Type::DV_Cnt; n++) {
+            //ImGui::Text("%s", objsList[n].c_str());
+            bool is_selected = ((int)db_type == n);
+            if (ImGui::Selectable(DebugView::ToString((DebugView::Type)n).c_str(), is_selected)) {
+                db_type = (DebugView::Type)n;
+            }
+            Configuration::DebugView = db_type;
+            
+        }
         ImGui::End();
     }
 }

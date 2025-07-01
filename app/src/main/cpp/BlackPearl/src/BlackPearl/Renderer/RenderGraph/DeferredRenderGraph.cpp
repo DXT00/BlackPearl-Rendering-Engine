@@ -52,6 +52,9 @@ namespace BlackPearl {
 	}
 	void DeferredRenderGraph::Render(Timestep ts, IFramebuffer* framebuffer, IView* View) {
 		
+        if (Configuration::DebugView != DebugView::DV_Lit)
+            return;
+
 		if (SupportSinglePass(Configuration::MSAA_SAMPLES)) {
 			RenderSinglePass(ts, framebuffer, View);
 		}
@@ -160,7 +163,7 @@ namespace BlackPearl {
         {
             SCOPE_TIME_COUNTER(Deferred_MultiPass2)
 
-                FRHIRenderPassInfo RPShadingInfo(SystemTexture::Get().DefaultRT,
+                FRHIRenderPassInfo RPShadingInfo(SystemTexture::Get().GetBackBuffer(),
                     ERenderTargetActions::Clear_Store
                   );
             //gamma correction, tonemapping

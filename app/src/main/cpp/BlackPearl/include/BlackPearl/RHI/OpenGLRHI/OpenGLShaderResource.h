@@ -199,7 +199,7 @@ namespace BlackPearl {
 
         struct ShaderInfo
         {
-            FOpenGLShaderBindings Bindings;
+           // FOpenGLShaderBindings Bindings;
             GLuint Resource;
             FOpenGLCompiledShaderKey ShaderKey; // This is the key to the shader within FOpenGLCompiledShader container
             bool bValid; // To mark that stage is valid for this program, even when shader Resource could be zero
@@ -207,7 +207,7 @@ namespace BlackPearl {
 
 
         FOpenGLProgramKey ProgramKey;
-        std::vector<BindingSet*> bindingSet;
+       // std::vector<BindingSet*> bindingSet;
 
         FOpenGLLinkedProgramConfiguration()
         {
@@ -225,7 +225,7 @@ namespace BlackPearl {
             {
                 bEqual &= A.Shaders[Stage].Resource == B.Shaders[Stage].Resource;
                 bEqual &= A.Shaders[Stage].bValid == B.Shaders[Stage].bValid;
-                bEqual &= A.Shaders[Stage].Bindings == B.Shaders[Stage].Bindings;
+               // bEqual &= A.Shaders[Stage].Bindings == B.Shaders[Stage].Bindings;
             }
             return bEqual;
         }

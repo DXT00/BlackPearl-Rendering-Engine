@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "Renderer/RenderGraph/SDFBakeGraph.h"
+#include "Renderer/RenderGraph/SDFGraph.h"
 #include "Application.h"
 #include "Renderer/GbufferInfo.h"
 #include "Renderer/Material/MaterialManager.h"
@@ -15,27 +15,26 @@ namespace BlackPearl {
 
     extern MaterialManager* g_materialManager;
 
-	void SDFBakeGraph::Init(Scene* scene) {
+	void SDFGraph::Init(Scene* scene) {
 		m_CommandList = GetDevice()->createCommandList();
 		m_Scene = scene;
 
         InitRT();
 
         m_GDFRnderer = DBG_NEW GlobalDFRenderer(m_DeviceManager->GetDevice());
-      
         m_GDFRnderer->Init(m_Scene);
       
 
 
 	}
 
-	void SDFBakeGraph::Render(Timestep ts, IFramebuffer* framebuffer, IView* View) {
+	void SDFGraph::Render(Timestep ts, IFramebuffer* framebuffer, IView* View) {
 
        
 
         m_CommandList->open();
 
-        //pass 1 render diffuse probes and reflect probes
+        //render global df arround camera
         m_GDFRnderer->Render(m_CommandList, framebuffer, m_Scene);
         m_CommandList->close();
         bIsProbesDirty = false;
@@ -45,7 +44,7 @@ namespace BlackPearl {
 
 	
 
-    void SDFBakeGraph::InitRT()
+    void SDFGraph::InitRT()
     {
        
 

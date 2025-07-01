@@ -78,19 +78,19 @@ namespace BlackPearl {
 
 		//return kProbes;
 		math::float3 pos = objPos;
-		Area currentArea = mapManager->GetArea(mapManager->CalculateAreaId(Math::ToVec3(pos)));
+		Area* currentArea = mapManager->GetArea(mapManager->CalculateAreaId(Math::ToVec3(pos)));
 		std::set<unsigned int> nearByArea = mapManager->FindNearByArea(Math::ToVec3(pos));
 
 		std::vector<unsigned int> nearByProbes;
 		std::set<unsigned int>::iterator it;
 		for (it = nearByArea.begin(); it != nearByArea.end(); it++) {
-			Area area = mapManager->GetArea(*it);
-			for (auto probeIdx : area.GetProbesId())
+			Area* area = mapManager->GetArea(*it);
+			for (auto probeIdx : area->GetProbesId())
 			{
 				nearByProbes.push_back(probeIdx);
 			}
 		}
-		for (auto probeIdx : currentArea.GetProbesId())
+		for (auto probeIdx : currentArea->GetProbesId())
 		{
 			nearByProbes.push_back(probeIdx);
 		}

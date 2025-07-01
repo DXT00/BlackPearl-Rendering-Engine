@@ -167,28 +167,33 @@ namespace BlackPearl {
         //todo::查找#include ,包含头文件
         std::unordered_set<std::string> includedFiles;
         
-        std::string fullShaderPS, fullShaderVS;
+        std::string fullShader;
             // 直接处理字符串
 
         if (shaderSources.find(ShaderType::VertexShader) != shaderSources.end()) {
             m_GlslIncluder.reset();
-            fullShaderVS = m_GlslIncluder.processIncludes(shaderSources[ShaderType::VertexShader]);
-            shaderSources[ShaderType::VertexShader] = fullShaderVS;
+            fullShader = m_GlslIncluder.processIncludes(shaderSources[ShaderType::VertexShader]);
+            shaderSources[ShaderType::VertexShader] = fullShader;
 
         }
 
         if (shaderSources.find(ShaderType::Pixel) != shaderSources.end()) {
             m_GlslIncluder.reset();
-            fullShaderPS = m_GlslIncluder.processIncludes(shaderSources[ShaderType::Pixel]);
-            shaderSources[ShaderType::Pixel] = fullShaderPS;
+            fullShader = m_GlslIncluder.processIncludes(shaderSources[ShaderType::Pixel]);
+            shaderSources[ShaderType::Pixel] = fullShader;
         }
 
         if (shaderSources.find(ShaderType::Compute) != shaderSources.end()) {
             m_GlslIncluder.reset();
-            fullShaderPS = m_GlslIncluder.processIncludes(shaderSources[ShaderType::Compute]);
-            shaderSources[ShaderType::Compute] = fullShaderPS;
+            fullShader = m_GlslIncluder.processIncludes(shaderSources[ShaderType::Compute]);
+            shaderSources[ShaderType::Compute] = fullShader;
         }
 
+        if (shaderSources.find(ShaderType::Geometry) != shaderSources.end()) {
+            m_GlslIncluder.reset();
+            fullShader = m_GlslIncluder.processIncludes(shaderSources[ShaderType::Geometry]);
+            shaderSources[ShaderType::Geometry] = fullShader;
+        }
 
         //add common struct source
         if (shaderSources.find(ShaderType::Pixel) != shaderSources.end()) {
@@ -259,9 +264,34 @@ namespace BlackPearl {
   
 
         }
+
+        //change to gles version if it is andriod platform
+        if (shaderSources.find(ShaderType::Geometry) != shaderSources.end()) {
+            size_t pos = shaderSources[ShaderType::Geometry].find("#version", 0);//find找不到会返回npos
+            GE_ASSERT(pos != std::string::npos, "Syntax error");
+
+            size_t eol = shaderSources[ShaderType::Geometry].find_first_of("\r\n", pos);
+            GE_ASSERT(eol != std::string::npos, "Syntax error");
+
+            std::string front = shaderSources[ShaderType::Geometry].substr(pos, eol - pos + 1);
+            std::string res = shaderSources[ShaderType::Geometry].substr(eol);
+#ifdef GE_PLATFORM_ANDROID
+            //use gles 300
+            front = "//" + front;// 注释掉 pc OpenGL version
+            std::string glesVersion = "#version 310 es\r\n";
+            shaderSources[ShaderType::Geometry] = glesVersion + commonSource + res;
+#else
+            shaderSources[ShaderType::Geometry] = front + commonSource + res;
+
+#endif
+
+
+        }
         StoreShader(shaderSources[ShaderType::VertexShader], get_filename(m_ShaderPath)+"_vert");
         StoreShader(shaderSources[ShaderType::Pixel], get_filename(m_ShaderPath) + "_frag");
         StoreShader(shaderSources[ShaderType::Compute], get_filename(m_ShaderPath) + "_comp");
+        StoreShader(shaderSources[ShaderType::Geometry], get_filename(m_ShaderPath) + "_geom");
+
 
 //#ifdef GE_PLATFORM_WINDOWS
 //        GE_CORE_INFO("Shader {0}---------------\n, ---------vertex---------\n {1}\n, -----------pixel------------\n {2} \n", m_ShaderPath.c_str(), shaderSources[ShaderType::VertexShader].c_str(), shaderSources[ShaderType::Pixel].c_str());

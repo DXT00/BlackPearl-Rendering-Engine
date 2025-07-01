@@ -163,7 +163,7 @@ namespace BlackPearl {
 		};
 		FStagePackedUniformInfo	StagePackedUniformInfo[CrossCompiler::NUM_SHADER_STAGES];
 		void ConfigureShaderStage(int Stage, uint32_t FirstUniformBuffer);
-		void ConfigureBindingSets(uint32_t FirstUniformBuffer);
+		//void ConfigureBindingSets(uint32_t FirstUniformBuffer);
 		// FOpenGLLinkedProgram(Shader* vertexShader, Shader pixelShader, Shader* geometryShader);
 		GLuint		Program;
 		bool		bDrawn;

@@ -38,10 +38,12 @@ namespace BlackPearl {
 			SkyConstants& output);
         void SetCustomView(SceneData* view);
 
+        static float m_TotalTimeIntervalS;//second
+        static float m_StateIntervalS;
+
 	private:
 
-		float m_TotalTimeIntervalS = 50.0f;//second
-		float m_StateIntervalS = m_TotalTimeIntervalS / 3.0f;
+
 
 
 

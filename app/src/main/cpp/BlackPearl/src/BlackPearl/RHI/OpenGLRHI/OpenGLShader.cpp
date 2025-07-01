@@ -672,191 +672,191 @@ namespace BlackPearl
             return *Location;
         }
         else*/
-        {
-           // int64_t& Loc = Locations.Emplace(UniformBlockName);
-            int64_t Loc = (int64_t)FOpenGL::GetUniformBlockIndex(Program, UniformBlockName.c_str());
-            return Loc;
-        }
-    }
+    //    {
+    //       // int64_t& Loc = Locations.Emplace(UniformBlockName);
+    //        int64_t Loc = (int64_t)FOpenGL::GetUniformBlockIndex(Program, UniformBlockName.c_str());
+    //        return Loc;
+    //    }
+    //}
 
-     void FOpenGLLinkedProgram::ConfigureBindingSets(uint32_t FirstUniformBuffer) {
-        GLuint program = Program;
-        uint32_t uniforBufferIndex = 0;
-        static const GLint FirstTextureUnit[ShaderType::NUM_COMPILE_SHADER_STAGES] =
-        {
-            FOpenGL::GetFirstVertexTextureUnit(),
-            FOpenGL::GetFirstPixelTextureUnit(),
-            FOpenGL::GetFirstGeometryTextureUnit(),
-            0,
-            0,
-            FOpenGL::GetFirstComputeTextureUnit()
-        };
+    // void FOpenGLLinkedProgram::ConfigureBindingSets(uint32_t FirstUniformBuffer) {
+    //    GLuint program = Program;
+    //    uint32_t uniforBufferIndex = 0;
+    //    static const GLint FirstTextureUnit[ShaderType::NUM_COMPILE_SHADER_STAGES] =
+    //    {
+    //        FOpenGL::GetFirstVertexTextureUnit(),
+    //        FOpenGL::GetFirstPixelTextureUnit(),
+    //        FOpenGL::GetFirstGeometryTextureUnit(),
+    //        0,
+    //        0,
+    //        FOpenGL::GetFirstComputeTextureUnit()
+    //    };
 
-        static const GLint MaxTextureUnit[ShaderType::NUM_COMPILE_SHADER_STAGES] =
-        {
-            FOpenGL::GetMaxVertexTextureImageUnits(),
-            FOpenGL::GetMaxTextureImageUnits(),
-            FOpenGL::GetMaxGeometryTextureImageUnits(),
-            0,
-            0,
-            FOpenGL::GetMaxComputeTextureImageUnits()
-        };
+    //    static const GLint MaxTextureUnit[ShaderType::NUM_COMPILE_SHADER_STAGES] =
+    //    {
+    //        FOpenGL::GetMaxVertexTextureImageUnits(),
+    //        FOpenGL::GetMaxTextureImageUnits(),
+    //        FOpenGL::GetMaxGeometryTextureImageUnits(),
+    //        0,
+    //        0,
+    //        FOpenGL::GetMaxComputeTextureImageUnits()
+    //    };
 
-        static const GLint FirstUAVUnit[ShaderType::NUM_COMPILE_SHADER_STAGES] =
-        {
-            FOpenGL::GetFirstVertexUAVUnit(),
-            FOpenGL::GetFirstPixelUAVUnit(),
-            OGL_UAV_NOT_SUPPORTED_FOR_GRAPHICS_UNIT,
-            OGL_UAV_NOT_SUPPORTED_FOR_GRAPHICS_UNIT,
-            OGL_UAV_NOT_SUPPORTED_FOR_GRAPHICS_UNIT,
-            FOpenGL::GetFirstComputeUAVUnit()
-        };
+    //    static const GLint FirstUAVUnit[ShaderType::NUM_COMPILE_SHADER_STAGES] =
+    //    {
+    //        FOpenGL::GetFirstVertexUAVUnit(),
+    //        FOpenGL::GetFirstPixelUAVUnit(),
+    //        OGL_UAV_NOT_SUPPORTED_FOR_GRAPHICS_UNIT,
+    //        OGL_UAV_NOT_SUPPORTED_FOR_GRAPHICS_UNIT,
+    //        OGL_UAV_NOT_SUPPORTED_FOR_GRAPHICS_UNIT,
+    //        FOpenGL::GetFirstComputeUAVUnit()
+    //    };
 
 
 
-       // std::vector<FPackedUniformInfo>& PackedBuffers = StagePackedUniformInfo[Stage].PackedUniformBufferInfos[UB];
+    //   // std::vector<FPackedUniformInfo>& PackedBuffers = StagePackedUniformInfo[Stage].PackedUniformBufferInfos[UB];
 
-        //const FOpenGLLinkedProgramConfiguration& Config = LinkedProgram->Config;
-         std::vector<BindingSet*>& bindingSets = Config.bindingSet;
-         for (size_t i = 0; i < bindingSets.size(); i++)
-         {
-             BindingSet* bs = bindingSets[i];
-             for (const BindingSetItem& binding: bs->getDesc()->bindings)
-             {
-                 switch (binding.type)
-                 {
-                 case RHIResourceType::RT_Texture_SRV:            
-                 case RHIResourceType::RT_Texture_UAV:
-                 {
-                     Texture* texture = static_cast<Texture*>(binding.resourceHandle);
-                     GLint Location = glGetUniformLocation(Program, binding.name.c_str());
-                     if ((int32_t)Location != -1) {
-                         FPackedUniformInfo Info = { Location, CrossCompiler::PACKED_TYPEINDEX_IMAGE, binding.name };
-                         PackedUniformImages.push_back(Info);
-                     }
-                 }
+    //    //const FOpenGLLinkedProgramConfiguration& Config = LinkedProgram->Config;
+    //     std::vector<BindingSet*>& bindingSets = Config.bindingSet;
+    //     for (size_t i = 0; i < bindingSets.size(); i++)
+    //     {
+    //         BindingSet* bs = bindingSets[i];
+    //         for (const BindingSetItem& binding: bs->getDesc()->bindings)
+    //         {
+    //             switch (binding.type)
+    //             {
+    //             case RHIResourceType::RT_Texture_SRV:            
+    //             case RHIResourceType::RT_Texture_UAV:
+    //             {
+    //                 Texture* texture = static_cast<Texture*>(binding.resourceHandle);
+    //                 GLint Location = glGetUniformLocation(Program, binding.name.c_str());
+    //                 if ((int32_t)Location != -1) {
+    //                     FPackedUniformInfo Info = { Location, CrossCompiler::PACKED_TYPEINDEX_IMAGE, binding.name };
+    //                     PackedUniformImages.push_back(Info);
+    //                 }
+    //             }
 
-                 break;
+    //             break;
 
-                 case RHIResourceType::RT_TypedBuffer_SRV:
-                 case RHIResourceType::RT_TypedBuffer_UAV:
-                 {
-                     //for vulkan
-                    /* Buffer* buffer = static_cast<Buffer*>(binding.resourceHandle);
-                     GLint Location = glGetUniformLocation(Program, binding.name.c_str());
+    //             case RHIResourceType::RT_TypedBuffer_SRV:
+    //             case RHIResourceType::RT_TypedBuffer_UAV:
+    //             {
+    //                 //for vulkan
+    //                /* Buffer* buffer = static_cast<Buffer*>(binding.resourceHandle);
+    //                 GLint Location = glGetUniformLocation(Program, binding.name.c_str());
 
-                     FPackedUniformInfo Info = { Location, CrossCompiler::PACKED_TYPEINDEX_IMAGE, binding.name };
-                     PackedUniformImages.push_back(Info);*/
-                    
-                 }
-                 break;
+    //                 FPackedUniformInfo Info = { Location, CrossCompiler::PACKED_TYPEINDEX_IMAGE, binding.name };
+    //                 PackedUniformImages.push_back(Info);*/
+    //                
+    //             }
+    //             break;
 
-                 case RHIResourceType::RT_StructuredBuffer_SRV:
-                 case RHIResourceType::RT_StructuredBuffer_UAV:
-                 case RHIResourceType::RT_RawBuffer_SRV:
-                 case RHIResourceType::RT_RawBuffer_UAV:
-                 case RHIResourceType::RT_ConstantBuffer:
-                 case RHIResourceType::RT_VolatileConstantBuffer:
-                 {
-                     Buffer* buffer = static_cast<Buffer*>(binding.resourceHandle);
-                     GLint Location = glGetUniformLocation(Program, binding.name.c_str());
-                     if ((int32_t)Location != -1) {
-                         FPackedUniformInfo Info = { Location, CrossCompiler::PACKED_TYPEINDEX_BUFFER, binding.name };
-                         PackedUniformBuffers.push_back(Info);
-                     }
-                   /*  Name.Buffer[1] = 'b';
-                     Name.Buffer[2] = 0;
-                     Name.Buffer[3] = 0;
-                     Name.Buffer[4] = 0;
-                     for (int32 BufferIndex = 0; BufferIndex < Config.Shaders[Stage].Bindings.NumUniformBuffers; ++BufferIndex)*/
-                     {
-                        // SetIndex(Name.Buffer, 2, BufferIndex);
-                         GLint Location = GetOpenGLProgramUniformBlockIndex(Program, binding.name);
+    //             case RHIResourceType::RT_StructuredBuffer_SRV:
+    //             case RHIResourceType::RT_StructuredBuffer_UAV:
+    //             case RHIResourceType::RT_RawBuffer_SRV:
+    //             case RHIResourceType::RT_RawBuffer_UAV:
+    //             case RHIResourceType::RT_ConstantBuffer:
+    //             case RHIResourceType::RT_VolatileConstantBuffer:
+    //             {
+    //                 Buffer* buffer = static_cast<Buffer*>(binding.resourceHandle);
+    //                 GLint Location = glGetUniformLocation(Program, binding.name.c_str());
+    //                 if ((int32_t)Location != -1) {
+    //                     FPackedUniformInfo Info = { Location, CrossCompiler::PACKED_TYPEINDEX_BUFFER, binding.name };
+    //                     PackedUniformBuffers.push_back(Info);
+    //                 }
+    //               /*  Name.Buffer[1] = 'b';
+    //                 Name.Buffer[2] = 0;
+    //                 Name.Buffer[3] = 0;
+    //                 Name.Buffer[4] = 0;
+    //                 for (int32 BufferIndex = 0; BufferIndex < Config.Shaders[Stage].Bindings.NumUniformBuffers; ++BufferIndex)*/
+    //                 {
+    //                    // SetIndex(Name.Buffer, 2, BufferIndex);
+    //                     GLint Location = GetOpenGLProgramUniformBlockIndex(Program, binding.name);
 
-                         if (Location >= 0)
-                         {
-                             FPackedUniformInfo Info = { Location, CrossCompiler::PACKED_TYPEINDEX_BUFFER, binding.name };
+    //                     if (Location >= 0)
+    //                     {
+    //                         FPackedUniformInfo Info = { Location, CrossCompiler::PACKED_TYPEINDEX_BUFFER, binding.name };
 
-                             GetOpenGLProgramUniformBlockBinding(Program, Location, FirstUniformBuffer + uniforBufferIndex++);
-                         }
-                     }
-                 }
+    //                         GetOpenGLProgramUniformBlockBinding(Program, Location, FirstUniformBuffer + uniforBufferIndex++);
+    //                     }
+    //                 }
+    //             }
 
-                 break;
+    //             break;
 
-                 case RHIResourceType::RT_Sampler:
-                 {
-                     const auto& sampler = static_cast<Sampler*>(binding.resourceHandle);
-                    
-                     GLint Location = glGetUniformLocation(Program, binding.name.c_str());
-                     if ((int32_t)Location != -1) {
-                        FPackedUniformInfo Info = { Location, CrossCompiler::PACKED_TYPEINDEX_SAMPLER, binding.name };
-                        PackedUniformImages.push_back(Info);
-                     }
-                 }
+    //             case RHIResourceType::RT_Sampler:
+    //             {
+    //                 const auto& sampler = static_cast<Sampler*>(binding.resourceHandle);
+    //                
+    //                 GLint Location = glGetUniformLocation(Program, binding.name.c_str());
+    //                 if ((int32_t)Location != -1) {
+    //                    FPackedUniformInfo Info = { Location, CrossCompiler::PACKED_TYPEINDEX_SAMPLER, binding.name };
+    //                    PackedUniformImages.push_back(Info);
+    //                 }
+    //             }
 
-                 break;
+    //             break;
 
-                 case RHIResourceType::RT_RayTracingAccelStruct:
-                     RHIUtils::NotImplemented();
-                     break;
+    //             case RHIResourceType::RT_RayTracingAccelStruct:
+    //                 RHIUtils::NotImplemented();
+    //                 break;
 
-                 case RHIResourceType::RT_PushConstants:
-                     RHIUtils::NotSupported();
-                     break;
+    //             case RHIResourceType::RT_PushConstants:
+    //                 RHIUtils::NotSupported();
+    //                 break;
 
-                 case RHIResourceType::RT_None:
-                 case RHIResourceType::RT_Count:
-                 default:
-                     RHIUtils::InvalidEnum();
-                     break;
-                 }
-             }
-         }
+    //             case RHIResourceType::RT_None:
+    //             case RHIResourceType::RT_Count:
+    //             default:
+    //                 RHIUtils::InvalidEnum();
+    //                 break;
+    //             }
+    //         }
+    //     }
 
     }
     static void ConfigureStageStates(FOpenGLLinkedProgram* LinkedProgram)
     {
-        const FOpenGLLinkedProgramConfiguration& Config = LinkedProgram->Config;
+        //const FOpenGLLinkedProgramConfiguration& Config = LinkedProgram->Config;
 
-        if (Config.Shaders[ShaderType::VertexShader].bValid)
-        {
-            LinkedProgram->ConfigureShaderStage(
-                ShaderType::VertexShader,
-                OGL_FIRST_UNIFORM_BUFFER
-            );
-            //assert(LinkedProgram->StagePackedUniformInfo[ShaderType::VertexShader].PackedUniformInfos.Num() <= Config.Shaders[ShaderType::VertexShader].Bindings.PackedGlobalArrays.Num());
-        }
+        //if (Config.Shaders[ShaderType::VertexShader].bValid)
+        //{
+        //    LinkedProgram->ConfigureShaderStage(
+        //        ShaderType::VertexShader,
+        //        OGL_FIRST_UNIFORM_BUFFER
+        //    );
+        //    //assert(LinkedProgram->StagePackedUniformInfo[ShaderType::VertexShader].PackedUniformInfos.Num() <= Config.Shaders[ShaderType::VertexShader].Bindings.PackedGlobalArrays.Num());
+        //}
 
-        if (Config.Shaders[ShaderType::Pixel].bValid)
-        {
-            LinkedProgram->ConfigureShaderStage(
-                ShaderType::Pixel,
-                OGL_FIRST_UNIFORM_BUFFER +
-                Config.Shaders[ShaderType::VertexShader].Bindings.NumUniformBuffers
-            );
-           // assert(LinkedProgram->StagePackedUniformInfo[ShaderType::Pixel].PackedUniformInfos.Num() <= Config.Shaders[ShaderType::Pixel].Bindings.PackedGlobalArrays.Num());
-        }
+        //if (Config.Shaders[ShaderType::Pixel].bValid)
+        //{
+        //    LinkedProgram->ConfigureShaderStage(
+        //        ShaderType::Pixel,
+        //        OGL_FIRST_UNIFORM_BUFFER +
+        //        Config.Shaders[ShaderType::VertexShader].Bindings.NumUniformBuffers
+        //    );
+        //   // assert(LinkedProgram->StagePackedUniformInfo[ShaderType::Pixel].PackedUniformInfos.Num() <= Config.Shaders[ShaderType::Pixel].Bindings.PackedGlobalArrays.Num());
+        //}
 
-        if (Config.Shaders[ShaderType::Geometry].bValid)
-        {
-            LinkedProgram->ConfigureShaderStage(
-                ShaderType::Geometry,
-                OGL_FIRST_UNIFORM_BUFFER +
-                Config.Shaders[ShaderType::VertexShader].Bindings.NumUniformBuffers +
-                Config.Shaders[ShaderType::Pixel].Bindings.NumUniformBuffers
-            );
-           // assert(LinkedProgram->StagePackedUniformInfo[ShaderType::Geometry].PackedUniformInfos.Num() <= Config.Shaders[ShaderType::Geometry].Bindings.PackedGlobalArrays.Num());
-        }
+        //if (Config.Shaders[ShaderType::Geometry].bValid)
+        //{
+        //    LinkedProgram->ConfigureShaderStage(
+        //        ShaderType::Geometry,
+        //        OGL_FIRST_UNIFORM_BUFFER +
+        //        Config.Shaders[ShaderType::VertexShader].Bindings.NumUniformBuffers +
+        //        Config.Shaders[ShaderType::Pixel].Bindings.NumUniformBuffers
+        //    );
+        //   // assert(LinkedProgram->StagePackedUniformInfo[ShaderType::Geometry].PackedUniformInfos.Num() <= Config.Shaders[ShaderType::Geometry].Bindings.PackedGlobalArrays.Num());
+        //}
 
-        if (Config.Shaders[ShaderType::Compute].bValid)
-        {
-            LinkedProgram->ConfigureShaderStage(
-                ShaderType::Compute,
-                OGL_FIRST_UNIFORM_BUFFER
-            );
-            //assert(LinkedProgram->StagePackedUniformInfo[ShaderType::Compute].PackedUniformInfos.Num() <= Config.Shaders[ShaderType::Compute].Bindings.PackedGlobalArrays.Num());
-        }
+        //if (Config.Shaders[ShaderType::Compute].bValid)
+        //{
+        //    LinkedProgram->ConfigureShaderStage(
+        //        ShaderType::Compute,
+        //        OGL_FIRST_UNIFORM_BUFFER
+        //    );
+        //    //assert(LinkedProgram->StagePackedUniformInfo[ShaderType::Compute].PackedUniformInfos.Num() <= Config.Shaders[ShaderType::Compute].Bindings.PackedGlobalArrays.Num());
+        //}
     }
 
 
@@ -878,7 +878,7 @@ namespace BlackPearl
         ShaderInfo.Resource = NextStageResource;*/
     }
 
-    static FOpenGLLinkedProgramConfiguration CreateConfig(IShader* VertexShaderRHI, IShader* PixelShaderRHI, IShader* GeometryShaderRHI, IShader* ComputeShaderRHI, std::vector<IBindingSet*> bindingSet)
+    static FOpenGLLinkedProgramConfiguration CreateConfig(IShader* VertexShaderRHI, IShader* PixelShaderRHI, IShader* GeometryShaderRHI, IShader* ComputeShaderRHI )//std::vector<IBindingSet*> bindingSet
     {
         Shader* VertexShader   = static_cast<Shader*>(VertexShaderRHI);
         Shader* PixelShader    = static_cast<Shader*>(PixelShaderRHI);
@@ -889,7 +889,7 @@ namespace BlackPearl
 
         // Fill-in the configuration
         if (VertexShader) {
-            Config.Shaders[ShaderType::VertexShader].Bindings = VertexShader->Bindings;
+           // Config.Shaders[ShaderType::VertexShader].Bindings = VertexShader->Bindings;
             Config.Shaders[ShaderType::VertexShader].Resource = VertexShader->m_ShaderID;
             Config.Shaders[ShaderType::VertexShader].ShaderKey = VertexShader->ShaderCodeKey;
             Config.Shaders[ShaderType::VertexShader].bValid = true;
@@ -897,43 +897,56 @@ namespace BlackPearl
 
 
         if (PixelShader) {
-            Config.Shaders[ShaderType::Pixel].Bindings = PixelShader->Bindings;
+         //   Config.Shaders[ShaderType::Pixel].Bindings = PixelShader->Bindings;
             Config.Shaders[ShaderType::Pixel].Resource = PixelShader->m_ShaderID;
             Config.Shaders[ShaderType::Pixel].ShaderKey = PixelShader->ShaderCodeKey;
             Config.Shaders[ShaderType::Pixel].bValid = true;
         }
+
         if (ComputeShader) {
-            Config.Shaders[ShaderType::Compute].Bindings = ComputeShader->Bindings;
+           // Config.Shaders[ShaderType::Compute].Bindings = ComputeShader->Bindings;
             Config.Shaders[ShaderType::Compute].Resource = ComputeShader->m_ShaderID;
             Config.Shaders[ShaderType::Compute].ShaderKey = ComputeShader->ShaderCodeKey;
             Config.Shaders[ShaderType::Compute].bValid = true;
         }
 
-
-        for (size_t i = 0; i < bindingSet.size(); i++)
-        {
-            BindingSet* bs = static_cast<BindingSet*>(bindingSet[i]);
-            Config.bindingSet.push_back(bs);
+        if (GeometryShader) {
+           // Config.Shaders[ShaderType::Geometry].Bindings = GeometryShader->Bindings;
+            Config.Shaders[ShaderType::Geometry].Resource = GeometryShader->m_ShaderID;
+            Config.Shaders[ShaderType::Geometry].ShaderKey = GeometryShader->ShaderCodeKey;
+            Config.Shaders[ShaderType::Geometry].bValid = true;
         }
+
+
+    /*    for (size_t i = 0; i < bindingSet.size(); i++)
+        {
+            BindingSet* bs = dynamic_cast<BindingSet*>(bindingSet[i]);
+            Config.bindingSet.push_back(bs);
+        }*/
 
         if (VertexShader)
             Config.ProgramKey.ShaderHashes[ShaderType::VertexShader] = VertexShader->GetHash();
         if (PixelShader)
             Config.ProgramKey.ShaderHashes[ShaderType::Pixel] = PixelShader->GetHash();
-
-        if (GeometryShaderRHI)
-        {
-            Config.Shaders[ShaderType::Geometry].ShaderKey = GeometryShader->ShaderCodeKey;
-            Config.Shaders[ShaderType::Geometry].bValid = true;
-            Config.ProgramKey.ShaderHashes[ShaderType::Geometry] = GeometryShader->GetHash();
-        }
-
-        if (ComputeShaderRHI)
-        {
-            Config.Shaders[ShaderType::Compute].ShaderKey = ComputeShader->ShaderCodeKey;
-            Config.Shaders[ShaderType::Compute].bValid = true;
+        if (ComputeShader)
             Config.ProgramKey.ShaderHashes[ShaderType::Compute] = ComputeShader->GetHash();
-        }
+        if (GeometryShader)
+            Config.ProgramKey.ShaderHashes[ShaderType::Geometry] = GeometryShader->GetHash();
+
+
+        //if (GeometryShaderRHI)
+        //{
+        //    Config.Shaders[ShaderType::Geometry].ShaderKey = GeometryShader->ShaderCodeKey;
+        //    Config.Shaders[ShaderType::Geometry].bValid = true;
+        //    Config.ProgramKey.ShaderHashes[ShaderType::Geometry] = GeometryShader->GetHash();
+        //}
+
+        //if (ComputeShaderRHI)
+        //{
+        //    Config.Shaders[ShaderType::Compute].ShaderKey = ComputeShader->ShaderCodeKey;
+        //    Config.Shaders[ShaderType::Compute].bValid = true;
+        //    Config.ProgramKey.ShaderHashes[ShaderType::Compute] = ComputeShader->GetHash();
+        //}
 
 
 
@@ -941,7 +954,7 @@ namespace BlackPearl
     };
 
 
-    FOpenGLLinkedProgram* Device::LinkProgram(const FOpenGLLinkedProgramConfiguration& config, Shader* vertexShader, Shader* pixelShader, Shader* geometryShader, Shader* computeShader, const std::vector<IBindingSet*>& bindingSets)
+    FOpenGLLinkedProgram* Device::LinkProgram(const FOpenGLLinkedProgramConfiguration& config, Shader* vertexShader, Shader* pixelShader, Shader* geometryShader, Shader* computeShader)//, const std::vector<IBindingSet*>& bindingSets
     {
 
         // Make sure we have OpenGL context set up, and invalidate the parameters cache and current program (as we'll link a new one soon)
@@ -1016,7 +1029,7 @@ namespace BlackPearl
 
         FOpenGLLinkedProgram* LinkedProgram = new FOpenGLLinkedProgram(config, Program);
 
-        LinkedProgram->ConfigureBindingSets(OGL_FIRST_UNIFORM_BUFFER);
+      //  LinkedProgram->ConfigureBindingSets(OGL_FIRST_UNIFORM_BUFFER);
         //ConfigureStageStates(LinkedProgram);
 
         //#if ENABLE_UNIFORM_BUFFER_LAYOUT_VERIFICATION
@@ -1215,10 +1228,10 @@ namespace BlackPearl
                     GeometryShader->Compile(GL_GEOMETRY_SHADER);
                 if (ComputeShader)
                     ComputeShader->Compile(GL_COMPUTE_SHADER);
-                FOpenGLLinkedProgramConfiguration Config = CreateConfig(VertexShaderRHI, PixelShaderRHI, GeometryShaderRHI, ComputeShaderRHI, IBindingSet);
+                FOpenGLLinkedProgramConfiguration Config = CreateConfig(VertexShaderRHI, PixelShaderRHI, GeometryShaderRHI, ComputeShaderRHI);
 
                 // Link program, using the data provided in config
-                LinkedProgram = LinkProgram(Config, VertexShader, PixelShader, GeometryShader, ComputeShader, IBindingSet);
+                LinkedProgram = LinkProgram(Config, VertexShader, PixelShader, GeometryShader, ComputeShader);
 
                 if (LinkedProgram == NULL) {
                     GE_CORE_ERROR("fail to link program");
@@ -1272,7 +1285,8 @@ namespace BlackPearl
             VertexShader,
             PixelShader,
             GeometryShader,
-            LinkedProgram
+            LinkedProgram,
+            IBindingSet
         );
 
       

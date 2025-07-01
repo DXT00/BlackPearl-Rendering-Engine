@@ -104,7 +104,7 @@ namespace BlackPearl {
 		// 
 		//�ĳ�compute shader
 		//Upload texture buffer
-		glTexStorage3D(GL_TEXTURE_3D, desc.mipLevelsCnt, GL_RGBA8, m_Width, m_Height, m_Depth);
+		//glTexStorage3D(GL_TEXTURE_3D, desc.mipLevelsCnt, m_InnerFormat, m_Width, m_Height, m_Depth);
 		GE_ERROR_JUDGE();
 
 		std::vector<GLubyte> clearData(m_Width*m_Height*m_Depth * 4);
@@ -113,8 +113,7 @@ namespace BlackPearl {
 		}
 
 
-		// �ϴ����ݵ�����
-		glTexSubImage3D(GL_TEXTURE_3D, 0, 0, 0, 0, 64, 64, 64, GL_RGBA, GL_UNSIGNED_BYTE, clearData.data());
+        glTexSubImage3D(GL_TEXTURE_3D, 0, 0, 0, 0, m_Width, m_Height, m_Depth, m_Format, m_DataType, clearData.data());//Upload level0
 		glBindTexture(GL_TEXTURE_3D, previousBoundTextureID);
 	}
 	//void Texture3D::Clear(GLuint clearColor[4])

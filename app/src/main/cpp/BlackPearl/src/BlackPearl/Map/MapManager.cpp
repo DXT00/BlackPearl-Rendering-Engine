@@ -4,7 +4,7 @@
 #include "BlackPearl/Component/LightProbeComponent/LightProbeComponent.h"
 #include "BlackPearl/Component/TransformComponent/Transform.h"
 namespace BlackPearl {
-	Area MapManager::GetArea(unsigned int areaId)
+	Area* MapManager::GetArea(unsigned int areaId)
 	{
 		GE_ASSERT(areaId < m_AreasList.size(), "areaId>=m_AreasList.size()!");
 		return m_AreasList[areaId];
@@ -15,9 +15,9 @@ namespace BlackPearl {
 		unsigned int halfMapSize = m_MapSize / 2.0;
 		if (abs(pos.x) < halfMapSize && abs(pos.y) < halfMapSize && abs(pos.z) < halfMapSize) {
 			pos += glm::vec3(halfMapSize, halfMapSize, halfMapSize);
-			int x = pos.x / m_AreaCount;
-			int y = pos.y / m_AreaCount;
-			int z = pos.z / m_AreaCount;
+			int x = pos.x / m_AreaSize;
+			int y = pos.y / m_AreaSize;
+			int z = pos.z / m_AreaSize;
 			return  x + z * m_AreaCount + y * m_AreaCount * m_AreaCount;
 		}
 		else
@@ -34,7 +34,7 @@ namespace BlackPearl {
 		std::set<unsigned int> nearByArea;
 		unsigned int areaId = CalculateAreaId(pos);
 		unsigned int nearById;
-		Area area = m_AreasList[areaId];
+		Area area = *m_AreasList[areaId];
 	
 		//26 direction
 		glm::vec3 positivePos = pos + glm::vec3(halfMapSize, halfMapSize, halfMapSize);
@@ -203,7 +203,7 @@ namespace BlackPearl {
 	{
 		unsigned int areaId = CalculateAreaId(probePos);
 		GE_ASSERT(areaId != -1, "probe position out of Map range!");
-		m_AreasList[areaId].AddProbeId(probeId);
+		m_AreasList[areaId]->AddProbeId(probeId);
 		return areaId;
 	}
 
@@ -216,12 +216,18 @@ namespace BlackPearl {
 			unsigned int probeId = i;
 			if (lastAreaId != newAreaId) {
 			
-				m_AreasList[lastAreaId].DeleteProbeId(i);
-				m_AreasList[newAreaId].AddProbeId(i);
+				m_AreasList[lastAreaId]->DeleteProbeId(i);
+				m_AreasList[newAreaId]->AddProbeId(i);
 				m_ProbeGridPosChanged = true;
 			}
 		}
 	}
+
+    void MapManager::AddObjectToArea(Object* obj)
+    {
+        uint32_t areaId = CalculateAreaId(obj->GetComponent<Transform>()->GetPosition());
+        m_AreasList[areaId]->AddObject(obj);
+    }
 
 
 }

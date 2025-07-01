@@ -41,6 +41,8 @@
 #include "Luanch/Android/AndroidEventManager.h"
 #endif
 #include "Timestep/TimeCounter.h"
+#include "Map/MapManager.h"
+
 namespace BlackPearl {
 
 	Log* g_Log = nullptr;
@@ -53,6 +55,7 @@ namespace BlackPearl {
 	RootFileSystem* g_rootFileSystem = DBG_NEW RootFileSystem();
 	UIManager* g_uiManager = nullptr;
 	ShaderFactory* g_shaderFactory = nullptr;
+    MapManager* g_mapManager = DBG_NEW MapManager(Configuration::MapSize, Configuration::AreaSize);
 
 	double Application::s_AppFPS = 0.0f;
 	double Application::s_AppAverageFPS = 0.0f;

@@ -40,7 +40,7 @@ namespace BlackPearl {
 			const bool isMeshletModel = false,
 			MeshletOption options = MeshletOption());
 
-		Object* CreateCube(const std::string& shaderPath,const std::string& texturePath, const std::string& name);
+		Object* CreateCube(const std::string& shaderPath = "", const std::string& texturePath = "", const std::string& name = "Cube");
 		Object* CreateSphere(const float radius, const unsigned int stackCount, const unsigned int sectorCount, const std::string& shaderPath, const std::string& texturePath, const std::string& name);
 		Object* CreatePlane(const std::string& shaderPath, const std::string& texturePath, const std::string& name);
 		Object* CreateSkyBox(const std::vector<std::string>& textureFaces, const std::string& shaderPath, const std::string& name);
@@ -49,12 +49,12 @@ namespace BlackPearl {
 		BatchNode* CreateBatchNode(std::vector<Object*> objs, bool dynamic, const std::string& name);
 		/*Blending Object, include logical and actual properties*/
 		Object* CreateLightProbe(ProbeType type, const std::string& shaderPath, const std::string& texturePath, const std::string& name);
-		MainCamera* CreateCamera(const std::string& name);
+		MainCamera* CreateCamera(const std::string& name, Camera::CameraType type = Camera::CameraType::Perspective);
 		Object* CreateGroup(const std::string name);
 		Object* CreateBVHNode(const std::vector<Object*>& objs, const std::string name = "BVHNode");
 		Object* CreateBVHNode(const std::vector<Vertex>& mesh_vertex, const std::string name = "BVHNode");
 		Object* CreateTriangle(const std::vector<Vertex>& points, const std::string name = "Triangle");
-		//RayTracing ¹ÜÏßµÄTransform
+		//RayTracing ç®¡çº¿çš„Transform
 		Object* CreateRTXTransformNode(const glm::mat4& transform_mat, Object* bvh_node, std::shared_ptr<Material> rtx_material = nullptr, const std::string name = "RayTracingTansform");
 		
 		std::vector<Object*> GetObjects();

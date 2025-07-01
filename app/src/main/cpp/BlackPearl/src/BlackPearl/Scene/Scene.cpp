@@ -4,8 +4,12 @@
 #include "BlackPearl/Component/BoundingBoxComponent/BoundingBox.h"
 #include "BlackPearl/LayerScene/Layer.h"
 #include "BlackPearl/Config.h"
+#include "Map/MapManager.h"
+
 
 namespace BlackPearl {
+    extern MapManager* g_mapManager;
+
 	Scene::Scene(DemoType type)
 	{
 		m_DemoType = type;
@@ -78,6 +82,7 @@ namespace BlackPearl {
 		_AddNode(singleNode);
 		m_ObjectList.push_back(obj);
 		PrimitiveOctree->AddElement(*singleNode);
+        g_mapManager->AddObjectToArea(obj);
 	}
 
 	void Scene::_AddNode(Node* node)

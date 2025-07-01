@@ -23,10 +23,13 @@
 #ifdef GE_API_D3D12
 #include "BlackPearl/Renderer/Buffer/D3D12Buffer/D3D12Buffer.h"
 #endif
+#include "Map/MapManager.h"
+
 using namespace BlackPearl::math;
 
 #include "hlsl/core/material_cb.h"
 namespace BlackPearl {
+    extern MapManager* g_mapManager;
 	static int buttonNum = 0;
 	void Layer::OnImguiRender()
 	{
@@ -727,7 +730,7 @@ namespace BlackPearl {
 		return probe;
 	}
 
-	Object* Layer::CreateProbeGrid(MapManager* mapManager, ProbeType type, math::float3 probeNums, math::float3 offsets, float space)
+	Object* Layer::CreateProbeGrid(ProbeType type, math::float3 probeNums, math::float3 offsets, float space)
 	{
 		std::string objName = (type == ProbeType::DIFFUSE_PROBE) ? "Kd ProbesGrid" : "Ks ProbeGrid";
 		Object* obj = CreateEmpty(objName);
@@ -743,7 +746,7 @@ namespace BlackPearl {
 					glm::vec3 probePos = { offsets.x + xx,offsets.y + yy,offsets.z + zz };
 					probe->GetComponent<Transform>()->SetInitPosition(probePos);
 					if (type == ProbeType::DIFFUSE_PROBE) {
-						unsigned int areaId = mapManager->AddProbeIdToArea(probePos, idx);
+						unsigned int areaId = g_mapManager->AddProbeIdToArea(probePos, idx);
 						probe->GetComponent<LightProbe>()->SetAreaId(areaId);
 					}
 

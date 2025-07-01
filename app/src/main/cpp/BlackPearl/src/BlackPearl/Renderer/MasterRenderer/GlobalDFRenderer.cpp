@@ -13,10 +13,11 @@ namespace BlackPearl {
     {
     }
 
-
+    //todo::  这里还要做 相机范围内的物体裁剪，根据 mesh df 更新， 中心是相机中心， 实时更新
+    //https://dev.epicgames.com/documentation/zh-cn/unreal-engine/mesh-distance-fields-in-unreal-engine
     void GlobalDFRenderer::Init(Scene* scene) {
         m_GDFBakeShader = DBG_NEW MaterialShader("assets/shaders/glsl/sdf/sdfBake.glsl");
-		m_GDF.Init();
+		m_GDF.Init(scene);
         m_GDFCB = m_Device->createBuffer(RHIUtils::CreateStaticConstantBufferDesc(sizeof(GlobalDistanceFieldConstants), "GlobalDistanceFieldConstants"));
         
         BufferDesc sceneObjsDesc;

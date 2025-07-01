@@ -1,5 +1,6 @@
 #pragma once
 #include<bitset>
+#include"Renderer/DebugView.h"
 namespace BlackPearl {
 	//һ��Entity���32��Component
 	//inline static void SyncGPU();
@@ -9,6 +10,7 @@ namespace BlackPearl {
 #ifdef GE_API_OPENGL
 #define GL_BACKBUFFER_CNT 1
 #endif
+ 
 	class Configuration {
 	public:
         static const bool GUseThreadedRendering = false;
@@ -24,8 +26,13 @@ namespace BlackPearl {
 		//VSync 默认禁用垂直同步
 		static const bool Vsync = false;//false;
         static int32_t SyncInterval;
+
+
 		//static const VoxelConeTracingRenderer::RenderingMode RenderingMode; 
-		static const bool MobileMultiView = false; //for vr
+		
+        
+        
+        static const bool MobileMultiView = false; //for vr
 		// ------------------------------------------
 		// Animaition Joints conut
 		// ------------------------------------------
@@ -59,7 +66,7 @@ namespace BlackPearl {
 		// Map config
 		// ------------------------------------------
 		static const unsigned int MapSize = 100;
-		static const unsigned int AreaSize = 10;
+		static const unsigned int AreaSize = 50;
 
 		//  ------------------------------------------
 		// Ray Tracing config
@@ -95,7 +102,7 @@ namespace BlackPearl {
         static const bool bCacheGLProgram;
 
 
-		/* OpenGL settings*/
+        static DebugView::Type DebugView;
 
         //-----------------------------------------------
         // Render Pipeline settings
@@ -104,8 +111,16 @@ namespace BlackPearl {
         static  bool bUseSinglePass;
         static  bool bUseIBL;
         static  bool bUseSDF;
+        static  bool bUseVoxel;
         static  bool bShowProbes;
         static  bool bUseDirectLight;
+
+
+        //-----------------------------------------------
+        // Voxel settings
+        //-----------------------------------------------
+        static uint32_t VoxelDim;
+        static uint32_t VoxelMipLevel;
 
 
 	};

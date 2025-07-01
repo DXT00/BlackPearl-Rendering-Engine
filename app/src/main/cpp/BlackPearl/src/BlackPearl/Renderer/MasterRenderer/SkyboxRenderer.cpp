@@ -11,6 +11,11 @@
 
 namespace BlackPearl {
 	extern DeviceManager* g_deviceManager;
+
+    float SkyboxRenderer::m_TotalTimeIntervalS = 50.0f;//second
+    float SkyboxRenderer::m_StateIntervalS = m_TotalTimeIntervalS / 3.0f;
+
+
 	SkyboxRenderer::SkyboxRenderer(IDevice* device)
 		:BasicRenderer(device)
 	{

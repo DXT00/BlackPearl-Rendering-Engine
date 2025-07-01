@@ -42,6 +42,10 @@ namespace BlackPearl {
 
     /* prefilterMap.glsl里的	float resolution =512.0;也要改 */
 	const float Configuration::EnvironmantMapResolution = 64.0;// 256.0f;
+
+
+    DebugView::Type Configuration::DebugView = DebugView::Type::DV_Voxel;
+
     bool Configuration::bUpdateProbePerFrame = false;
 
     bool Configuration::bDeferredShading = true;
@@ -51,10 +55,14 @@ namespace BlackPearl {
 
     bool Configuration::bUseIBL = true;
     bool Configuration::bUseSDF = true;
+    bool Configuration::bUseVoxel = true;
 
     bool Configuration::bShowProbes = false;
 
     bool Configuration::bUseDirectLight = true;
+
+    uint32_t Configuration::VoxelDim = 64;//64
+    uint32_t Configuration::VoxelMipLevel = 3;
 
 	const char* ShaderConfig::AMBIENT_COLOR   = "u_Material.ambientColor";
 	const char* ShaderConfig::DIFFUSE_COLOR   = "u_Material.diffuseColor";
