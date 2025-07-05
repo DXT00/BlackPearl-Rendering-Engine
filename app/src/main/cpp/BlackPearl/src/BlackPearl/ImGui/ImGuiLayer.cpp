@@ -919,9 +919,9 @@ namespace BlackPearl {
         ImGui::Checkbox("bDeferredShading", &Configuration::bDeferredShading);
         ImGui::Checkbox("bUseSinglePass", &Configuration::bUseSinglePass);
 
-        ImGui::Checkbox("bUseIBL", &Configuration::bUseIBL);
+       // ImGui::Checkbox("bUseIBL", &Configuration::bUseIBL);
         ImGui::Checkbox("bUseDirectLight", &Configuration::bUseDirectLight);
-        ImGui::Checkbox("bUseVoxel", &Configuration::bUseVoxel);
+        //ImGui::Checkbox("bUseVoxel", &Configuration::bUseVoxel);
 
         ImGui::Separator();
         ImGui::Text("Probes Settings");

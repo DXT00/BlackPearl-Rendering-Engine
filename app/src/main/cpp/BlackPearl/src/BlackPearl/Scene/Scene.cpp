@@ -5,6 +5,7 @@
 #include "BlackPearl/LayerScene/Layer.h"
 #include "BlackPearl/Config.h"
 #include "Map/MapManager.h"
+#include "LightProbes/LightProbeGrid.h"
 
 
 namespace BlackPearl {
@@ -72,6 +73,13 @@ namespace BlackPearl {
     {
         return m_ReflectionLightProbes;
     }
+
+    void Scene::AddLightProbeGrid(LightProbeGrid* grid)
+    {
+        m_LightProbeGrids.push_back(grid);
+    
+    }
+
 	void Scene::SetDesctiptorTableMgr(const std::shared_ptr<DescriptorTableManager>& descriptorTable)
 	{
 		m_DescriptorTableMgr = descriptorTable;

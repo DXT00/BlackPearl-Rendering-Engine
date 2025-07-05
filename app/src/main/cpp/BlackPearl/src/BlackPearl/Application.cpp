@@ -42,7 +42,7 @@
 #endif
 #include "Timestep/TimeCounter.h"
 #include "Map/MapManager.h"
-
+#include "Renderer/GIManager.h"
 namespace BlackPearl {
 
 	Log* g_Log = nullptr;
@@ -56,7 +56,7 @@ namespace BlackPearl {
 	UIManager* g_uiManager = nullptr;
 	ShaderFactory* g_shaderFactory = nullptr;
     MapManager* g_mapManager = DBG_NEW MapManager(Configuration::MapSize, Configuration::AreaSize);
-
+    GIManager* g_GIManager = DBG_NEW GIManager();
 	double Application::s_AppFPS = 0.0f;
 	double Application::s_AppAverageFPS = 0.0f;
 
@@ -64,6 +64,8 @@ namespace BlackPearl {
 	extern bool g_shouldEngineExit;
 	extern DynamicRHI* g_DynamicRHI;
 	long long Application::s_TotalFrameNum = 0;
+    long long Application::s_CurrentFrameNum = 0;
+
 	Application::Application(INSTANCE_HANDLE hInstance, int nShowCmd, DynamicRHI::Type rhiType, AppVersion version)
 	{
 		if (!g_DynamicRHI) {
@@ -146,9 +148,9 @@ namespace BlackPearl {
             SCOPE_TIME_COUNTER(FPS)
 			double currentTimeMs = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
 			double runtimeSecond = (currentTimeMs - m_StartTimeMs) / 1000.0f;
+            s_CurrentFrameNum = m_FrameNum;
 
 			m_FrameNum++;
-
 			if (runtimeSecond > 1.0f) {
 
 				//s_AppFPS = 1000.0f/Count_FPS.GetRuntime();

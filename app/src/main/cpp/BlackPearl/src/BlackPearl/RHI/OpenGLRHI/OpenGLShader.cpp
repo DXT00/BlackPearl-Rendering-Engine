@@ -64,7 +64,8 @@ namespace BlackPearl
                     GE_ERROR_JUDGE();
                     glDeleteShader(Resource);
                     GE_ERROR_JUDGE();
-
+                    GLint maxBindings;
+                    glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &maxBindings);
                     std::string shaderType;
                     if (type == GL_VERTEX_SHADER)shaderType = "vertex shader";
                     else if (type == GL_FRAGMENT_SHADER)shaderType = "fragment shader";

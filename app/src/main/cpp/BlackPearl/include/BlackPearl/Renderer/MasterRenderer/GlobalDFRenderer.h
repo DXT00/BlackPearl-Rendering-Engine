@@ -16,7 +16,7 @@ namespace BlackPearl {
         void VisualizeGDF();
     private:
         MaterialShader* m_GDFBakeShader = nullptr;
-        GlobalDistanceField m_GDF;
+        //GlobalDistanceField m_GDF;
 
         BufferHandle m_GDFCB;
         BufferHandle m_SceneObjectsCB;
@@ -25,6 +25,10 @@ namespace BlackPearl {
         std::vector<BindingSetHandle>    m_GDFBindingSets;
 
         ComputePipelineHandle m_GDFPso = nullptr;
+
+
+        InstancedOpaqueDrawStrategy* m_DrawStrategy;
+
     };
 
 }

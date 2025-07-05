@@ -8,7 +8,7 @@
 #include "MainCamera/MainCamera.h"
 #include "Renderer/MasterRenderer/ForwardShadingRenderer.h"
 #include "Renderer/MasterRenderer/SkyboxRenderer.h"
-#include "ProbeRenderer.h"
+#include "GIRenderer.h"
 namespace BlackPearl{
 
     struct CubeMapKey {
@@ -24,19 +24,19 @@ namespace BlackPearl{
         }
 
     };
-    class IBLProbeRenderer: public BasicRenderer, public ProbeRenderer
+    class IBLProbeRenderer: public BasicRenderer, public GIRenderer
     {
     public:
         IBLProbeRenderer(IDevice* device);
 
-        void Init();
+        void Init(Scene* scene);
         void Render(ICommandList* cmdList, IFramebuffer* targetFramebuffer, Scene* scene);
         void UpdateProbeCamera(Object* probe);
 
   
 
         void RenderSpecularBRDFLUTMap(ICommandList* cmdList, IFramebuffer* targetFramebuffer, Scene* scene);
-        void RenderProbes(ICommandList* cmdList, IFramebuffer* targetFramebuffer, Scene* scene);
+        void ShowProbes(ICommandList* cmdList, IFramebuffer* targetFramebuffer, Scene* scene);
 
         void FillShaderParameters();
 

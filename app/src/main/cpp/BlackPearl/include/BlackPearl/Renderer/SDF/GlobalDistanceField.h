@@ -90,21 +90,17 @@ namespace BlackPearl {
     {
     public:
         GlobalDistanceField() {
-
+            Valid = false;
         }
         void Init(Scene* scene);
         void Update(const math::float3& cameraPos);
-
-
-
-
         TextureHandle GlobalDistanceFieldMipTexture;   // 存储距离场的 3D 纹理
         float ClipDim = 64.0f;
 
         // 全局配置
         const int NumClipMapLevels = 3;
         std::vector<ClipmapLevel> Clipmaps;
-
+        bool Valid; //valid if GlobalDF has rendered in GlobalDFRenderer
 
     private:
 

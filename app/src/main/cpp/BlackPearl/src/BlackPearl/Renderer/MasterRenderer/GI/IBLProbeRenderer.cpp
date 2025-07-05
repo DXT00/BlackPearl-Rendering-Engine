@@ -31,15 +31,11 @@ namespace BlackPearl
     }
 
    
-    void IBLProbeRenderer::Init()
+    void IBLProbeRenderer::Init(Scene* scene)
     {
 
         m_ProbeDebugShader = DBG_NEW MaterialShader("assets/shaders/glsl/lightProbes/lightProbe.glsl");
-        //m_IBLShader = DBG_NEW MaterialShader("assets/shaders/glsl/lightProbes/iblSHTexture.glsl");
-        //m_IrradianceShader = DBG_NEW MaterialShader("assets/shaders/glsl/ibl/irradianceConvolution.glsl");
         m_SpecularBRDFLutShader = DBG_NEW MaterialShader("assets/shaders/glsl/ibl/brdf.glsl");
-       // m_PbrShader = DBG_NEW MaterialShader("assets/shaders/glsl/pbr/PbrTexture.glsl");
-       // m_NonPbrShader = DBG_NEW MaterialShader("assets/shaders/glsl/IronMan.glsl");
         m_SpecularPrefilterShader = DBG_NEW MaterialShader("assets/shaders/glsl/ibl/prefilterMap.glsl");
 
 
@@ -361,7 +357,7 @@ namespace BlackPearl
 
     }
 
-    void IBLProbeRenderer::RenderProbes(ICommandList* cmdList, IFramebuffer* targetFramebuffer, Scene* scene)
+    void IBLProbeRenderer::ShowProbes(ICommandList* cmdList, IFramebuffer* targetFramebuffer, Scene* scene)
     {
         SCOPE_TIME_COUNTER(DrawProbes);
 

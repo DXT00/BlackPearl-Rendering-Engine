@@ -35,7 +35,10 @@ namespace BlackPearl {
 		Area* GetArea(unsigned int areaId);
 		int CalculateAreaId(glm::vec3 pos);
 		std::set<unsigned int> FindNearByArea(glm::vec3 pos);
-		unsigned int AddProbeIdToArea(glm::vec3 probePos,unsigned int probeId);
+        uint32_t AddProbeIdToArea(glm::vec3 probePos,unsigned int probeId);
+
+
+
 		//判断probe是否跨区
 		void UpdateProbesArea(std::vector<Object*> probes);
 		std::vector<Area*> GetAreasList()const { 

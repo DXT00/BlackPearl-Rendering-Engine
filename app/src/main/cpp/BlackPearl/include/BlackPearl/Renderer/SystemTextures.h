@@ -2,6 +2,9 @@
 #include "BlackPearl/RHI/RHITexture.h"
 #include "BlackPearl/RHI/RHIDevice.h"
 #include "BlackPearl/Renderer/GbufferInfo.h"
+#include "Renderer/SDF/GlobalDistanceField.h"
+#include "Renderer/Voxel/Voxel.h"
+
 namespace BlackPearl {
     class SystemTexture {
  
@@ -35,8 +38,20 @@ namespace BlackPearl {
        TextureHandle GBufferC;
        TextureHandle GBufferD;
        
+       // Global SDF, initial in GlobalDFRenderer
+       GlobalDistanceField SceneGlobalDF;
+
+       // Scene Voxels, initial in VoxelConeTracingRenderer
+       std::vector<Voxel> SceneVoxels;
+
+
        //Shadow textures
        TextureHandle ShadowCubeMap;
+
+       //Skybox textures
+       TextureHandle SkyboxTexture0;
+       TextureHandle SkyboxTexture1;
+       TextureHandle SkyboxTexture2;
 
        SystemTexture();
 
@@ -51,6 +66,8 @@ namespace BlackPearl {
         void InitGbufferTextures(DeviceHandle device);
         void InitSceneTextures(DeviceHandle device);
         void InitShadowTextures(DeviceHandle device);
+        void InitSkyboxTextures(DeviceHandle device);
+
 
     };
 }

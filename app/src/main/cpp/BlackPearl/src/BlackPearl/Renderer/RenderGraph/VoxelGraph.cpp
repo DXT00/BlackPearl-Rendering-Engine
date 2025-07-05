@@ -33,12 +33,24 @@ namespace BlackPearl {
 
         m_CommandList->open();
 
+
+        if (Configuration::bUpdatVoxelsPerFrame) {
+            bIsVoxelsDirty = true;
+
+        }
+
+        if (bIsVoxelsDirty) {
+            m_VoxelRnderer->Render(m_CommandList, framebuffer, m_Scene, VoxelConeTracingRenderer::RenderingMode::VOXELIZE);
+            bIsVoxelsDirty = false;
+        }
+
         //render global df arround camera
         if (Configuration::DebugView == DebugView::DV_Voxel) {
             m_VoxelRnderer->Render(m_CommandList, framebuffer, m_Scene, VoxelConeTracingRenderer::RenderingMode::VOXELIZATION_VISUALIZATION);
+
         }
+
         m_CommandList->close();
-        bIsProbesDirty = false;
 	}
 
 

@@ -20,8 +20,8 @@ namespace BlackPearl {
 		enum RenderingMode {
 
 			VOXELIZATION_VISUALIZATION = 0, // Voxelization visualization.
-			VOXEL_CONE_TRACING = 1			// Global illumination using voxel cone tracing.
-		
+			VOXEL_CONE_TRACING = 1,			// Global illumination using voxel cone tracing.
+            VOXELIZE = 2            //Only voxelize for other pass
         };
 		
         VoxelConeTracingRenderer(IDevice* device);
@@ -113,7 +113,7 @@ namespace BlackPearl {
 		bool m_IsInitialize = false;
 
         // voxel 分区, 每个 area 一个voxel
-        std::vector<Voxel> m_Voxels;
+        //std::vector<Voxel> m_Voxels;
         TextureHandle m_DummyVoxelRT;
 
         //Voxel binding sets;
@@ -124,7 +124,6 @@ namespace BlackPearl {
 
         // Voxel orth view
         MainCamera* m_OrthCamera;
-
 
 
 

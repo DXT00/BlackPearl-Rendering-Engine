@@ -1,10 +1,10 @@
 #include "pch.h"
 #include "Renderer/MasterRenderer/VoxelConeTracingRenderer.h"
-#include "BlackPearl/Component/MeshRendererComponent/MeshRenderer.h"
-#include "BlackPearl/Component/TransformComponent/Transform.h"
-#include "BlackPearl/Component/LightComponent/PointLight.h"
-#include "BlackPearl/Renderer/DeviceManager.h"
-#include "BlackPearl/RHI/RHITexture.h"
+#include "Component/MeshRendererComponent/MeshRenderer.h"
+#include "Component/TransformComponent/Transform.h"
+#include "Component/LightComponent/PointLight.h"
+#include "Renderer/DeviceManager.h"
+#include "RHI/RHITexture.h"
 #include "ObjectManager/ObjectManager.h"
 #include "Timestep/TimeCounter.h"
 #include "Renderer/SystemTextures.h"
@@ -19,7 +19,7 @@
 #include "BlackPearl/RHI/Common/RHIUtils.h"
 #include "Config.h"
 #include "Renderer/MasterRenderer/SkyboxRenderer.h"
-#include "BlackPearl/Component/CameraComponent/OrthographicCamera.h"
+#include "Component/CameraComponent/OrthographicCamera.h"
 
 namespace BlackPearl {
 	extern DeviceManager* g_deviceManager;
@@ -90,7 +90,7 @@ namespace BlackPearl {
             GE_ASSERT(i == areas[i]->GetId());
             areas[i]->RegisterVoxelId(i);
 
-            m_Voxels.push_back(voxel);
+            SystemTexture::Get().SceneVoxels.push_back(voxel);
         }
 
 
@@ -153,44 +153,10 @@ namespace BlackPearl {
         //init voxel:
 
         // init skybox 
-        std::vector<std::string> morningBox = {
-            "assets/skybox/skybox1/SkyBrightMorning_Right.png",
-            "assets/skybox/skybox1/SkyBrightMorning_Left.png",
-            "assets/skybox/skybox1/SkyBrightMorning_Top.png",
-            "assets/skybox/skybox1/SkyBrightMorning_Bottom.png",
-            "assets/skybox/skybox1/SkyBrightMorning_Front.png",
-            "assets/skybox/skybox1/SkyBrightMorning_Back.png"
-        };
-        std::vector<std::string> sunSetBox = {
-            "assets/skybox/skybox1/SkyMorning_Right.png",
-            "assets/skybox/skybox1/SkyMorning_Left.png",
-            "assets/skybox/skybox1/SkyMorning_Top.png",
-            "assets/skybox/skybox1/SkyMorning_Bottom.png",
-            "assets/skybox/skybox1/SkyMorning_Front.png",
-            "assets/skybox/skybox1/SkyMorning_Back.png"
-        };
-        std::vector<std::string> nightBox = {
-            "assets/skybox/skybox1/SkyNight_Right.png",
-            "assets/skybox/skybox1/SkyNight_Left.png",
-            "assets/skybox/skybox1/SkyNight_Top.png",
-            "assets/skybox/skybox1/SkyNight_Bottom.png",
-            "assets/skybox/skybox1/SkyNight_Front.png",
-            "assets/skybox/skybox1/SkyNight_Back.png"
-        };
-
-        TextureDesc skyDesc;
-        skyDesc.type = TextureType::CubeMap;
-        skyDesc.minFilter = FilterMode::Linear;
-        skyDesc.magFilter = FilterMode::Linear;
-        skyDesc.wrap = SamplerAddressMode::ClampToEdge;
-        skyDesc.format = Format::RGB8_UNORM;
-        skyDesc.faces = nightBox;
-        skyDesc.dimension = TextureDimension::TextureCube;
-        m_SkyboxTexture[0] = g_deviceManager->GetDevice()->createTexture(skyDesc);
-        skyDesc.faces = morningBox;
-        m_SkyboxTexture[1] = g_deviceManager->GetDevice()->createTexture(skyDesc);
-        skyDesc.faces = sunSetBox;
-        m_SkyboxTexture[2] = g_deviceManager->GetDevice()->createTexture(skyDesc);
+  
+        m_SkyboxTexture[0] = SystemTexture::Get().SkyboxTexture0;
+        m_SkyboxTexture[1] = SystemTexture::Get().SkyboxTexture1;
+        m_SkyboxTexture[2] = SystemTexture::Get().SkyboxTexture2;
 
 
         //Skybox Material
@@ -258,7 +224,7 @@ namespace BlackPearl {
     	}
         cmdList->beginRenderPass(RPShadingInfo, "Voxilize");
         _VoxelizeScene(cmdList, targetFramebuffer, scene);
-        _VoxelizeSky(cmdList, targetFramebuffer, scene);
+      //  _VoxelizeSky(cmdList, targetFramebuffer, scene);
         cmdList->endRenderPass();
 
     }
@@ -391,6 +357,8 @@ namespace BlackPearl {
 		    case RenderingMode::VOXEL_CONE_TRACING:
 			    RenderScene(cmdList, targetFramebuffer, scene);
 			    break;
+            case RenderingMode::VOXELIZE:
+                break;
 		}
 	}
 
@@ -410,7 +378,7 @@ namespace BlackPearl {
         BindingSetDesc bindingSetDesc;
         bindingSetDesc.bindings = {
                     BindingSetItem::ConstantBuffer(8, m_VoxelVisualCB),
-                    BindingSetItem::Texture_SRV(0, m_Voxels[voxelId].voxelTexture,"VoxelTexture")
+                    BindingSetItem::Texture_SRV(0, SystemTexture::Get().SceneVoxels[voxelId].voxelTexture,"VoxelTexture")
         };
 
 
@@ -470,9 +438,9 @@ namespace BlackPearl {
 
         VoxelVisualConstants voxelVisualConstants{};
         voxelVisualConstants.areaExtent = g_mapManager->GetArea(areaId)->GetExtend();
-        voxelVisualConstants.center = m_Voxels[voxelId].center;
-        voxelVisualConstants.dimension = m_Voxels[voxelId].dimension;
-        voxelVisualConstants.mipLevel = m_Voxels[voxelId].mipLevel;
+        voxelVisualConstants.center = SystemTexture::Get().SceneVoxels[voxelId].center;
+        voxelVisualConstants.dimension = SystemTexture::Get().SceneVoxels[voxelId].dimension;
+        voxelVisualConstants.mipLevel = SystemTexture::Get().SceneVoxels[voxelId].mipLevel;
 
         cmdList->writeBuffer(m_VoxelVisualCB, &voxelVisualConstants, sizeof(VoxelVisualConstants));
 
@@ -669,7 +637,7 @@ namespace BlackPearl {
         };
         m_VoxelClearBindingLayout = m_Device->createBindingLayout(layoutDesc);
 
-        for (size_t i = 0; i < m_Voxels.size(); i++)
+        for (size_t i = 0; i < SystemTexture::Get().SceneVoxels.size(); i++)
         {
             ComputePipelineDesc psoDesc;
 
@@ -682,7 +650,7 @@ namespace BlackPearl {
 
             BindingSetDesc bindingSetDesc;
             bindingSetDesc.bindings = {
-                        BindingSetItem::Texture_UAV(0, m_Voxels[i].voxelTexture,"VoxelTexture"+std::to_string(i))
+                        BindingSetItem::Texture_UAV(0, SystemTexture::Get().SceneVoxels[i].voxelTexture,"VoxelTexture"+std::to_string(i))
             };
 
 
@@ -697,7 +665,7 @@ namespace BlackPearl {
 
 
             cmdList->setComputeState(computePSO);
-            cmdList->dispatch(m_Voxels[i].dimension/ 8, m_Voxels[i].dimension / 8, m_Voxels[i].dimension / 8);
+            cmdList->dispatch(SystemTexture::Get().SceneVoxels[i].dimension/ 8, SystemTexture::Get().SceneVoxels[i].dimension / 8, SystemTexture::Get().SceneVoxels[i].dimension / 8);
 
         }
         cmdList->endMarker();
@@ -719,7 +687,7 @@ namespace BlackPearl {
 
 
         const std::vector<Area*>& areas = g_mapManager->GetAreasList();
-        GE_ASSERT(areas.size() == m_Voxels.size());
+        GE_ASSERT(areas.size() == SystemTexture::Get().SceneVoxels.size());
         for (size_t i = 0; i < areas.size(); i++)
         {
             auto& objs = areas[i]->GetObjects();
@@ -729,14 +697,22 @@ namespace BlackPearl {
 
 
             uint32_t voxelId = areas[i]->GetVoxelId();
-            m_OrthCamera->SetPosition(Math::ToVec3(m_Voxels[voxelId].center));
+            m_OrthCamera->SetPosition(Math::ToVec3(SystemTexture::Get().SceneVoxels[voxelId].center));
             OrthographicCamera* cameraComponent = m_OrthCamera->GetObj()->GetComponent<OrthographicCamera>();
-            cameraComponent->SetRange(-m_Voxels[voxelId].areaExtend.x * 0.5, m_Voxels[voxelId].areaExtend.x * 0.5, -m_Voxels[voxelId].areaExtend.y * 0.5, m_Voxels[voxelId].areaExtend.y * 0.5);
+            cameraComponent->SetRange(
+                -SystemTexture::Get().SceneVoxels[voxelId].areaExtend.x * 0.5,
+                 SystemTexture::Get().SceneVoxels[voxelId].areaExtend.x * 0.5,
+                -SystemTexture::Get().SceneVoxels[voxelId].areaExtend.y * 0.5,
+                 SystemTexture::Get().SceneVoxels[voxelId].areaExtend.y * 0.5
+            );
             const glm::mat4& projection = cameraComponent->GetProjectionMatrix();
             const glm::mat4& view = cameraComponent->GetViewMatrix();
 
             SceneData* voxelView = DBG_NEW SceneData({ projection* view ,view,projection, m_OrthCamera->GetPosition(),{},cameraComponent->Front(),*scene->GetLightSources() });
-            voxelView->SetViewport(RHIViewport(m_Voxels[voxelId].areaExtend.x, m_Voxels[voxelId].areaExtend.y));
+            voxelView->SetViewport(RHIViewport(
+                SystemTexture::Get().SceneVoxels[voxelId].areaExtend.x,
+                SystemTexture::Get().SceneVoxels[voxelId].areaExtend.y
+            ));
             voxelView->zNear = -1.0f;
             voxelView->zFar = 1.0f;
 
@@ -747,7 +723,7 @@ namespace BlackPearl {
             bindingSetDesc.bindings = {
                 BindingSetItem::ConstantBuffer(8, m_VoxelCB),
                 //BindingSetItem::ConstantBuffer(8, m_ForwardLightCB),
-                BindingSetItem::Texture_UAV(0, m_Voxels[areas[i]->GetVoxelId()].voxelTexture)
+                BindingSetItem::Texture_UAV(0, SystemTexture::Get().SceneVoxels[areas[i]->GetVoxelId()].voxelTexture)
             };
             m_VoxelBindingSet = m_Device->createBindingSet(bindingSetDesc, m_VoxelBindingLayout);
 
@@ -801,9 +777,9 @@ namespace BlackPearl {
 
                   
                     VoxelConstants voxelConstants{};
-                    voxelConstants.center = m_Voxels[i].center;
+                    voxelConstants.center = SystemTexture::Get().SceneVoxels[i].center;
                     voxelConstants.areaExtent = areas[i]->GetExtend();
-                    voxelConstants.dimension = m_Voxels[i].dimension;
+                    voxelConstants.dimension = SystemTexture::Get().SceneVoxels[i].dimension;
 
 
 
@@ -829,7 +805,7 @@ namespace BlackPearl {
         viewState.addViewportAndScissorRect(RHIViewport(m_DummyVoxelRT.Get()->getDesc().width, m_DummyVoxelRT.Get()->getDesc().height));
 
         const std::vector<Area*>& areas = g_mapManager->GetAreasList();
-        GE_ASSERT(areas.size() == m_Voxels.size());
+        GE_ASSERT(areas.size() == SystemTexture::Get().SceneVoxels.size());
 
         // 设置sky trasform ，为了包围在voxel周围
         Object* sky = scene->GetSkyBox();
@@ -838,19 +814,19 @@ namespace BlackPearl {
  
 
 
-        for (size_t i = 0; i < m_Voxels.size(); i++) {
+        for (size_t i = 0; i < SystemTexture::Get().SceneVoxels.size(); i++) {
 
-            math::float3 voxelSize = math::float3(m_Voxels[i].areaExtend.x / (m_Voxels[i].dimension),
-                m_Voxels[i].areaExtend.y / m_Voxels[i].dimension,
-                m_Voxels[i].areaExtend.z/ m_Voxels[i].dimension
+            math::float3 voxelSize = math::float3(SystemTexture::Get().SceneVoxels[i].areaExtend.x / (SystemTexture::Get().SceneVoxels[i].dimension),
+                SystemTexture::Get().SceneVoxels[i].areaExtend.y / SystemTexture::Get().SceneVoxels[i].dimension,
+                SystemTexture::Get().SceneVoxels[i].areaExtend.z/ SystemTexture::Get().SceneVoxels[i].dimension
             );
-            sky->GetComponent<Transform>()->SetPosition(Math::ToVec3(m_Voxels[i].center));
-            sky->GetComponent<Transform>()->SetScale(Math::ToVec3(m_Voxels[i].areaExtend - 2.0f * voxelSize)); //防止超出边界
+            sky->GetComponent<Transform>()->SetPosition(Math::ToVec3(SystemTexture::Get().SceneVoxels[i].center));
+            sky->GetComponent<Transform>()->SetScale(Math::ToVec3(SystemTexture::Get().SceneVoxels[i].areaExtend - 2.0f * voxelSize)); //防止超出边界
             BindingSetDesc bindingSetDesc;
             bindingSetDesc.bindings = {
                 BindingSetItem::ConstantBuffer(8, m_VoxelCB),
                 //BindingSetItem::ConstantBuffer(8, m_ForwardLightCB),
-                BindingSetItem::Texture_UAV(0, m_Voxels[i].voxelTexture)
+                BindingSetItem::Texture_UAV(0, SystemTexture::Get().SceneVoxels[i].voxelTexture)
             };
 
             m_VoxelBindingSet = m_Device->createBindingSet(bindingSetDesc, m_VoxelBindingLayout);
@@ -905,9 +881,9 @@ namespace BlackPearl {
                 return;
             }
             VoxelConstants voxelConstants{};
-            voxelConstants.center = m_Voxels[i].center;
-            voxelConstants.areaExtent = m_Voxels[i].areaExtend;
-            voxelConstants.dimension = m_Voxels[i].dimension;
+            voxelConstants.center = SystemTexture::Get().SceneVoxels[i].center;
+            voxelConstants.areaExtent = SystemTexture::Get().SceneVoxels[i].areaExtend;
+            voxelConstants.dimension = SystemTexture::Get().SceneVoxels[i].dimension;
 
 
 

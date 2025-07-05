@@ -1,7 +1,7 @@
 #pragma once
 #include "RenderGraph.h"
 #include "Renderer/MasterRenderer/SkyboxRenderer.h"
-#include "Renderer/MasterRenderer/GI/IBLProbeRenderer.h"
+#include "Renderer/MasterRenderer/GI/GIRenderer.h"
 #include "Renderer/MasterRenderer/GBufferRenderer.h"
 #include "Renderer/MasterRenderer/DeferredShadingRenderer.h"
 #include "Renderer/MasterRenderer/GrabPassRenderer.h"
@@ -35,7 +35,7 @@ namespace BlackPearl {
 
 		SkyboxRenderer* m_SkyboxRenderer;
 
-        IBLProbeRenderer* m_IBLProbeRenderer;
+        GIRenderer* m_GIRenderer;
 
 		GBufferRenderer* m_GbufferRenderer;
 		DeferredShadingRenderer* m_DeferredShadingRenderer;

@@ -19,6 +19,7 @@ void main(){
 
 #include <forward_cb.h>
 #include <voxel_cb.h>
+#include <voxelization/voxelCommon.glsl>
 
 layout(std140, binding = 0) uniform ForwardShadingViewConstantsUBO {
    ForwardShadingViewConstants g_View;
@@ -31,37 +32,10 @@ layout(std140, binding = 8) uniform VoxelUBO {
 layout(binding = 0) uniform sampler3D texture3D;
 
 
-////uniform sampler3D texture3D; // Texture in which voxelization is stored.
-//uniform vec3 u_CameraViewPos; // World camera position.
-//
-//uniform vec3 u_CameraFront;
-//uniform vec3 u_CameraUp;
-//uniform vec3 u_CameraRight;
-//
-//uniform mat4 u_Projection;
-//uniform mat4 u_View;
-//uniform float u_ScreenWidth;
-//uniform float u_ScreenHeight;
-//uniform float u_VoxelDim;
-//
-//uniform int u_State; // Decides mipmap sample level.
-//uniform vec3 u_CubeSize;
-
-//in vec2 textureCoordinateFrag; 
 out vec4 color;
 
-// Scales and bias a given vector (i.e. from [-1, 1] to [0, 1]).
-vec3 scaleAndBias(vec3 p) { return 0.5f * p + vec3(0.5f); }
 
-// Returns true if p is inside the unity cube (+ e) centered on (0, 0, 0).
-bool isInsideCube(const vec3 p, float e) { return abs(p.x) < 1 + e && abs(p.y) < 1 + e && abs(p.z) < 1 + e; }
-//bool isInsideCube(const vec3 p, float e) 
-//{
-//	return	p.x < u_CameraViewPos.x + u_CubeSize.x && p.x > u_CameraViewPos.x - u_CubeSize.x &&
-//			p.y < u_CameraViewPos.y + u_CubeSize.y && p.y > u_CameraViewPos.y - u_CubeSize.y &&
-//			 p.z < u_CameraViewPos.z + u_CubeSize.z && p.z > u_CameraViewPos.z - u_CubeSize.z ;
-//
-//}
+
 vec3 GenRay(){
 	vec2 texcoord = vec2(gl_FragCoord.xy)/vec2(g_View.viewportSize.x, g_View.viewportSize.y);
 	texcoord = 2.0*texcoord - 1.0;

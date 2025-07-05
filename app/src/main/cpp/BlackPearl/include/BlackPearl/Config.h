@@ -10,7 +10,21 @@ namespace BlackPearl {
 #ifdef GE_API_OPENGL
 #define GL_BACKBUFFER_CNT 1
 #endif
- 
+    
+    enum GIMethod {
+        DDGI, //hardware raytracing or sdf sw tracing
+        RTXDI,  //hardware raytracing
+        IBL,    // world space SH
+        SSGI
+    };
+
+    enum DDGITraceType :uint32_t
+    {
+        SW_Trace,
+        HW_Trace
+    };
+
+
 	class Configuration {
 	public:
         static const bool GUseThreadedRendering = false;
@@ -60,7 +74,6 @@ namespace BlackPearl {
 		//static const float GICoeefs;
 
 		static void SyncGPU();
-        static bool bUpdateProbePerFrame;
 
 		// ------------------------------------------
 		// Map config
@@ -69,7 +82,7 @@ namespace BlackPearl {
 		static const unsigned int AreaSize = 50;
 
 		//  ------------------------------------------
-		// Ray Tracing config
+		// D3D12 Ray Tracing config
 		// ------------------------------------------
 		static const unsigned int MaxRayRecursionDepth = 3;
 
@@ -109,19 +122,38 @@ namespace BlackPearl {
         //-----------------------------------------------
         static  bool bDeferredShading;
         static  bool bUseSinglePass;
-        static  bool bUseIBL;
-        static  bool bUseSDF;
-        static  bool bUseVoxel;
+       // static  bool bUseIBL;
+       // static  bool bUseSDF;
+       // static  bool bUseVoxel;
         static  bool bShowProbes;
         static  bool bUseDirectLight;
+        static  bool bUseIndirectLight;
 
+        //-----------------------------------------------
+        // GI settings
+        //-----------------------------------------------
+        //GI Method
+        static GIMethod GIMethod;
+        //-----------------------------------------------
+        // IBLProbe settings
+        //-----------------------------------------------
+        static bool bUpdateProbePerFrame;
 
+      
         //-----------------------------------------------
         // Voxel settings
         //-----------------------------------------------
         static uint32_t VoxelDim;
         static uint32_t VoxelMipLevel;
+        static bool bUpdatVoxelsPerFrame;
 
+        //-----------------------------------------------
+        // DDGI settings
+        //-----------------------------------------------
+        static DDGITraceType DDIG_TraceType;
+        static bool    DDIG_InfiniteBounce;
+        static int32_t DDIG_RaysPerProbe;
+        static float   DDIG_Intensity;
 
 	};
 	struct ShaderConfig {

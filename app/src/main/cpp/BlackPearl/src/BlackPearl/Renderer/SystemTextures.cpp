@@ -170,6 +170,48 @@ namespace BlackPearl {
         ShadowCubeMap = blackCubeMap;
     }
 
+    void SystemTexture::InitSkyboxTextures(DeviceHandle device)
+    {
+        std::vector<std::string> morningBox = {
+            "assets/skybox/skybox1/SkyBrightMorning_Right.png",
+            "assets/skybox/skybox1/SkyBrightMorning_Left.png",
+            "assets/skybox/skybox1/SkyBrightMorning_Top.png",
+            "assets/skybox/skybox1/SkyBrightMorning_Bottom.png",
+            "assets/skybox/skybox1/SkyBrightMorning_Front.png",
+            "assets/skybox/skybox1/SkyBrightMorning_Back.png"
+        };
+        std::vector<std::string> sunSetBox = {
+            "assets/skybox/skybox1/SkyMorning_Right.png",
+            "assets/skybox/skybox1/SkyMorning_Left.png",
+            "assets/skybox/skybox1/SkyMorning_Top.png",
+            "assets/skybox/skybox1/SkyMorning_Bottom.png",
+            "assets/skybox/skybox1/SkyMorning_Front.png",
+            "assets/skybox/skybox1/SkyMorning_Back.png"
+        };
+        std::vector<std::string> nightBox = {
+            "assets/skybox/skybox1/SkyNight_Right.png",
+            "assets/skybox/skybox1/SkyNight_Left.png",
+            "assets/skybox/skybox1/SkyNight_Top.png",
+            "assets/skybox/skybox1/SkyNight_Bottom.png",
+            "assets/skybox/skybox1/SkyNight_Front.png",
+            "assets/skybox/skybox1/SkyNight_Back.png"
+        };
+        TextureDesc desc;
+        desc.type = TextureType::CubeMap;
+        desc.minFilter = FilterMode::Linear;
+        desc.magFilter = FilterMode::Linear;
+        desc.wrap = SamplerAddressMode::ClampToEdge;
+        desc.format = Format::RGB8_UNORM;
+        desc.faces = nightBox;
+        desc.dimension = TextureDimension::TextureCube;
+        SkyboxTexture0 = g_deviceManager->GetDevice()->createTexture(desc);
+        desc.faces = morningBox;
+        SkyboxTexture1 = g_deviceManager->GetDevice()->createTexture(desc);
+        desc.faces = sunSetBox;
+        SkyboxTexture2 = g_deviceManager->GetDevice()->createTexture(desc);
+
+    }
+
 
     void SystemTexture::InitSceneTextures(DeviceHandle device) {
 
@@ -226,7 +268,7 @@ namespace BlackPearl {
         InitGbufferTextures(device);
         InitSceneTextures(device);
         InitShadowTextures(device);
-
+        InitSkyboxTextures(device);
         m_isValid = true;
        
     }

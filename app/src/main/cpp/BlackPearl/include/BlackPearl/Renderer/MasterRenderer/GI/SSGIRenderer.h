@@ -1,13 +1,13 @@
 #pragma once
-#include "ProbeRenderer.h"
+#include "GIRenderer.h"
 namespace BlackPearl {
-    class SSGIRenderer : public ProbeRenderer
+    class SSGIRenderer : public GIRenderer
     {
     public:
         SSGIRenderer(IDevice* device);
-        virtual void Init() override {};
+        virtual void Init(Scene* scene) override {};
         virtual void Render(ICommandList* cmdList, IFramebuffer* targetFramebuffer, Scene* scene) override {};
-        virtual void RenderProbes(ICommandList* cmdList, IFramebuffer* targetFramebuffer, Scene* scene) override {};
+        virtual void ShowProbes(ICommandList* cmdList, IFramebuffer* targetFramebuffer, Scene* scene) override {};
     };
 }
 

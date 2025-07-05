@@ -7,13 +7,13 @@
 #include "BlackPearl/Renderer/RenderGraph/IBLProbeGraph.h"
 #include "BlackPearl/Renderer/RenderGraph/SDFGraph.h"
 #include "BlackPearl/Renderer/RenderGraph/VoxelGraph.h"
+#include "BlackPearl/Renderer/RenderGraph/DDGIGraph.h"
 
 #include "BlackPearl/LayerScene/Layer.h"
 #include "Component/LightComponent/DirectionLight.h"
 #include "Component/LightComponent/PointLight.h"
 #include "RHI/RHIGlobals.h"
 #include "Config.h"
-#include <Component/LightComponent/DirectionLight.h>
 
 
 class RHIRenderGraphLayer :public Layer {
@@ -73,7 +73,7 @@ public:
         m_Scene->SetSkyBox(m_SkyBox);
 
 
-        if (Configuration::bUseIBL) {
+        if (Configuration::GIMethod == GIMethod::IBL || Configuration::GIMethod == GIMethod::DDGI) {
         
 
             m_DiffuseLightProbeGrid = CreateProbeGrid(ProbeType::DIFFUSE_PROBE,
@@ -84,6 +84,9 @@ public:
         
             m_Scene->SetDiffuseLightProbes(m_DiffuseLightProbes);
             //m_Scene->SetReflectLightProbes(m_ReflectionLightProbes);
+
+
+            m_Scene->AddLightProbeGrid(m_DiffuseLightProbeGrid);
         }
 
 
@@ -94,10 +97,6 @@ public:
         SetupScene();
 
         
-        m_IBLRenderGraph = DBG_NEW IBLProbeGraph(m_DeviceManager);
-        m_SDFBakeGraph = DBG_NEW SDFGraph(m_DeviceManager);
-        m_VoxelGraph = DBG_NEW VoxelGraph(m_DeviceManager);
-
         if (Configuration::bDeferredShading) {
             m_RenderGraph = DBG_NEW DeferredRenderGraph(m_DeviceManager);
         }
@@ -106,22 +105,26 @@ public:
         }
 
 		
-        if(Configuration::bUseIBL){
-            m_IBLRenderGraph->Init(m_Scene);
-            m_DeviceManager->AddRenderGraphToBack(m_IBLRenderGraph);
+        if(Configuration::GIMethod == GIMethod::IBL){
+            m_GIGraph = DBG_NEW IBLProbeGraph(m_DeviceManager);
+
+            m_GIGraph->Init(m_Scene);
+            m_DeviceManager->AddRenderGraphToBack(m_GIGraph);
         }
-        if (Configuration::bUseSDF) {
+        else if (Configuration::GIMethod == GIMethod::DDGI) {
+            m_SDFBakeGraph = DBG_NEW SDFGraph(m_DeviceManager);
             m_SDFBakeGraph->Init(m_Scene);
             m_DeviceManager->AddRenderGraphToBack(m_SDFBakeGraph);
-        }
-       
-        if (Configuration::bUseVoxel) {
-
+           
+            m_VoxelGraph = DBG_NEW VoxelGraph(m_DeviceManager);
             m_VoxelGraph->Init(m_Scene);
             m_DeviceManager->AddRenderGraphToBack(m_VoxelGraph);
+
+            m_GIGraph = DBG_NEW DDGIGraph(m_DeviceManager);
+            m_GIGraph->Init(m_Scene);
+            m_DeviceManager->AddRenderGraphToBack(m_GIGraph);
         }
-
-
+      
 
         m_RenderGraph->Init(m_Scene);
         m_DeviceManager->AddRenderGraphToBack(m_RenderGraph);
@@ -162,7 +165,7 @@ private:
 
     //Graph
 	RenderGraph* m_RenderGraph;
-    RenderGraph* m_IBLRenderGraph;
+    RenderGraph* m_GIGraph;
     RenderGraph* m_SDFBakeGraph;
     RenderGraph* m_VoxelGraph;
 
@@ -176,8 +179,8 @@ private:
 
     //IBL Light probe
     MapManager* m_MapManager; // light probe Map
-    Object* m_DiffuseLightProbeGrid;
-    Object* m_ReflectLightProbeGrid;
+    LightProbeGrid* m_DiffuseLightProbeGrid;
+    LightProbeGrid* m_ReflectLightProbeGrid;
 
 
 };

@@ -7,19 +7,10 @@
 using namespace BlackPearl::math;
 #include "hlsl/core/light_probe_cb.h"
 #include "hlsl/core/light_cb.h"
+#include "LightProbes/LightProbeCommon.h"
 namespace BlackPearl {
 	extern DeviceManager* g_deviceManager;
 
-	enum ProbeType {
-		DIFFUSE_PROBE = PT_DIFFUSE_PROBE,
-		REFLECTION_PROBE = PT_REFLECTION_PROBE
-	};
-
-    enum ProbeStorageType {
-        PS_CubeMap,
-        PS_SH,
-        PS_Texture2D //ddgi
-    };
 
 	class LightProbe :public Component<LightProbe>
 	{

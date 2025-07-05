@@ -23,7 +23,7 @@ namespace BlackPearl {
 
         m_IBLProbeRenderer = DBG_NEW IBLProbeRenderer(m_DeviceManager->GetDevice());
       
-        m_IBLProbeRenderer->Init();
+        m_IBLProbeRenderer->Init(scene);
       
 
 

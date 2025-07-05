@@ -88,11 +88,10 @@ namespace BlackPearl{
     {
         if (Configuration::bUseDirectLight)
             RenderDirectionLights(cmdList, targetFramebuffer, scene);
-        if(Configuration::bUseIBL)
+        if(Configuration::bUseIndirectLight)
             RenderIBLProbes(cmdList, targetFramebuffer, scene);
 
-        //cmdList->endRenderPass();
-      //  cmdList->endMarker();
+
 
         
     }
@@ -166,16 +165,7 @@ namespace BlackPearl{
             graphicsPSO.bindings.push_back(m_DeferredShadingBindingSet);
             graphicsPSO.bindings.push_back(m_ViewBindingset);
             graphicsPSO.inputLayout = psoDesc.inputLayout;
-            /*for (int j = 0; j < shaderParms[ShaderType::Pixel].bindingLayouts.size(); ++j) {
-                psoDesc.bindingLayouts.push_back(shaderParms[ShaderType::Pixel].bindingLayouts[j]);
-            }
-
-            for (int j = 0; j < shaderParms[ShaderType::Pixel].bindingSets.size(); ++j) {
-                graphicsPSO.bindings.push_back(shaderParms[ShaderType::Pixel].bindingSets[j]);
-            }*/
-
-            /*GE_ERROR_JUDGE();
-            SetupMaterial(drawItem.material, drawItem.cullMode, psoDesc, graphicsPSO);*/
+           
             SetupInputBuffers(cmdList, const_cast<BufferGroup*>(drawItem.buffers), drawItem.transform, graphicsPSO);
             GE_ERROR_JUDGE();
 
@@ -250,16 +240,7 @@ namespace BlackPearl{
             graphicsPSO.bindings.push_back(m_DeferredShadingBindingSet);
             graphicsPSO.bindings.push_back(m_ViewBindingset);
             graphicsPSO.inputLayout = psoDesc.inputLayout;
-            /*for (int j = 0; j < shaderParms[ShaderType::Pixel].bindingLayouts.size(); ++j) {
-                psoDesc.bindingLayouts.push_back(shaderParms[ShaderType::Pixel].bindingLayouts[j]);
-            }
-
-            for (int j = 0; j < shaderParms[ShaderType::Pixel].bindingSets.size(); ++j) {
-                graphicsPSO.bindings.push_back(shaderParms[ShaderType::Pixel].bindingSets[j]);
-            }*/
-
-            /*GE_ERROR_JUDGE();
-            SetupMaterial(drawItem.material, drawItem.cullMode, psoDesc, graphicsPSO);*/
+          
             SetupInputBuffers(cmdList, const_cast<BufferGroup*>(drawItem.buffers), drawItem.transform, graphicsPSO);
             GE_ERROR_JUDGE();
 
@@ -284,8 +265,7 @@ namespace BlackPearl{
         }
 
 
-        //for (size_t i = 0; i < lightSources->GetPointLightNum(); i++)
-       // {
+     
             SceneData* view = Renderer::GetSceneData();
             GE_ERROR_JUDGE();
 
@@ -342,16 +322,7 @@ namespace BlackPearl{
             graphicsPSO.bindings.push_back(m_DeferredShadingBindingSet);
             graphicsPSO.bindings.push_back(m_ViewBindingset);
             graphicsPSO.inputLayout = psoDesc.inputLayout;
-            /*for (int j = 0; j < shaderParms[ShaderType::Pixel].bindingLayouts.size(); ++j) {
-                psoDesc.bindingLayouts.push_back(shaderParms[ShaderType::Pixel].bindingLayouts[j]);
-            }
-
-            for (int j = 0; j < shaderParms[ShaderType::Pixel].bindingSets.size(); ++j) {
-                graphicsPSO.bindings.push_back(shaderParms[ShaderType::Pixel].bindingSets[j]);
-            }*/
-
-            /*GE_ERROR_JUDGE();
-            SetupMaterial(drawItem.material, drawItem.cullMode, psoDesc, graphicsPSO);*/
+          
             SetupInputBuffers(cmdList, const_cast<BufferGroup*>(drawItem.buffers), drawItem.transform, graphicsPSO);
             GE_ERROR_JUDGE();
 
@@ -364,7 +335,7 @@ namespace BlackPearl{
 
             Draw(cmdList, drawItem);
 
-      //  }
+
     }
 
     void DeferredShadingRenderer::FillLightsParameters(Light* light, DeferredLightingConstants& output)

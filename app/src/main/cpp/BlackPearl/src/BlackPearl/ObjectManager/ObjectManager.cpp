@@ -12,7 +12,6 @@
 #include "BlackPearl/Component/MeshFilterComponent/PlaneMeshFilter.h"
 #include "BlackPearl/Component/MeshFilterComponent/QuadMeshFilter.h"
 #include "BlackPearl/Component/MeshFilterComponent/SkyBoxMeshFilter.h"
-#include "BlackPearl/Component/LightProbeComponent/LightProbeComponent.h"
 #include "BlackPearl/Component/CameraComponent/PerspectiveCamera.h"
 #include "BlackPearl/Component/CameraComponent/OrthographicCamera.h"
 

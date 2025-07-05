@@ -1,0 +1,798 @@
+#version 450 core
+
+
+/***************************** default pc macro **************************************/
+#ifndef COMPILE_SHADER
+#define COMPILE_SHADER 1
+#endif
+
+//platform
+#ifndef SHADING_PATH_MOBILE
+#define SHADING_PATH_MOBILE 0
+#endif
+
+//lighting
+#ifndef ALLOW_STATIC_LIGHTING
+#define ALLOW_STATIC_LIGHTING 1
+#endif
+
+// normal
+#ifndef USE_TBN
+#define USE_TBN 0
+#endif
+//platform
+#ifndef VULKAN_PROFILE
+#define VULKAN_PROFILE 0
+#endif
+
+#ifndef METAL_PROFILE
+#define METAL_PROFILE 0
+#endif
+
+#ifndef USE_GLES_FBF_DEFERRED
+#define USE_GLES_FBF_DEFERRED 0
+#endif
+
+#ifndef USE_GLES_PLS
+#define USE_GLES_PLS 0
+#endif
+
+#ifndef MOBILE_SHADINGMODEL_SUPPORT
+#define MOBILE_SHADINGMODEL_SUPPORT 0
+#endif
+
+//deferred shading
+#ifndef DEFERRED_SHADING_PASS
+#define DEFERRED_SHADING_PASS 0
+#endif
+
+// shadow
+#ifndef USE_POINTLIGHT_SHADOW
+#define USE_POINTLIGHT_SHADOW 0
+#endif
+
+// shading model
+#ifndef COOK
+#define COOK 1
+#endif
+
+#ifndef PHONG
+#define PHONG 0
+#endif
+
+#ifndef BLINN
+#define BLINN 0
+#endif
+
+#ifndef Disney
+#define Disney 0
+#endif
+
+//gbuffer
+#ifndef NONMETAL
+#define NONMETAL 0
+#endif
+
+// brdf specular part: D
+#ifndef COOK_BLINN
+#define COOK_BLINN 0
+#endif
+
+#ifndef COOK_BECKMANN
+#define COOK_BECKMANN 0
+#endif
+
+#ifndef COOK_GGX
+#define COOK_GGX 1
+#endif
+
+
+//texture
+#ifndef USE_ALBEDO_MAP
+#define USE_ALBEDO_MAP 1
+#endif
+
+#ifndef USE_NORMAL_MAP
+#define USE_NORMAL_MAP 0
+#endif
+
+#ifndef USE_ROUGHNESS_MAP
+#define USE_ROUGHNESS_MAP 0
+#endif
+
+#ifndef USE_EMISSIVE_MAP
+#define USE_EMISSIVE_MAP 0
+#endif
+
+#ifndef USE_TRANSMISSION_MAP
+#define USE_TRANSMISSION_MAP 0
+#endif
+
+#ifndef USE_AO_MAP
+#define USE_AO_MAP 0
+#endif
+//end if macro.glsl
+/***************************** end of default pc macro **************************************/
+
+
+
+#ifndef BP_COMMON_H
+#define BP_COMMON_H
+
+
+#ifdef GL_ES
+	precision mediump float;  // 必须声明精度（ES 要求）
+
+	#define half float
+	#define half2  vec2
+	#define half3    vec3
+	#define half4   vec4
+	#define half3x3  mat3
+	#define half3x4  mat3x4
+	#define half4x4  mat4
+
+//    #define half float
+//	#define half2 mediump float2
+//	#define half3  mediump  vec3
+//	#define half4  mediump vec4
+//	#define half3x3 mediump mat3
+//	#define half3x4 mediump mat3x4
+//	#define half4x4 mediump mat4
+
+    #define float2 vec2
+	#define float3 vec3  //默认16bit,中等精度
+	#define float4 vec4
+    #define float3x3 mat3
+    #define float4x4 mat4
+
+    #define int2 ivec2
+	#define int3 ivec3
+	#define int4 ivec4
+
+    
+    #define uint2 uvec2
+	#define uint3 uvec3
+	#define uint4 uvec4
+
+    #define bool2 bvec2
+	#define bool3 bvec3
+	#define bool4 bvec4
+#else //PC opengl/vuljan
+
+	#define half  float	
+	#define half2  vec2	
+	#define half3   vec3	
+	#define half4   vec4	
+	#define half3x3  mat3	
+	#define half3x4  mat3x4	 
+	#define half4x4  mat4	
+
+    #define float2 vec2
+	#define float3 vec3
+	#define float4 vec4
+    #define float3x3 mat3
+	#define float4x4 mat4
+
+
+    #define int2 ivec2
+	#define int3 ivec3
+	#define int4 ivec4
+
+    #define uint2 uvec2
+	#define uint3 uvec3
+	#define uint4 uvec4
+
+    #define bool2 bvec2
+	#define bool3 bvec3
+	#define bool4 bvec4
+
+#endif
+
+
+struct Material{
+	vec3 ambientColor;
+	vec3 diffuseColor;
+	vec3 specularColor;
+	vec3 emissionColor;
+	float roughnessValue;
+	float mentallicValue;
+	float aoValue;
+	sampler2D diffuse; //or call it albedo
+	sampler2D specular;
+	sampler2D emission;
+	sampler2D normal;
+	sampler2D height;
+	sampler2D depth;
+	sampler2D ao;
+	sampler2D roughness;
+	sampler2D mentallic;	
+	samplerCube cube;
+	float shininess;
+	float specularDiffusion;
+	float diffuseReflectivity;
+	float specularReflectivity;
+	float transparency;
+	bool  isBlinnLight;
+	float emissivity;
+	float refractiveIndex;
+};
+
+
+struct Settings{
+	bool  isBlinnLight;
+	int   isAmbientTextureSample;
+	int   isDiffuseTextureSample;
+	int   isSpecularTextureSample;
+	int   isHeightTextureSample;
+	int   isEmissionTextureSample;
+	int   isPBRTextureSample;//normalMap,aoMap,metallicMap
+	bool  directLight;
+	bool  indirectDiffuseLight;
+	bool  indirectSpecularLight;
+	bool  shadows;
+	float GICoeffs;
+	float SSRGICoeffs;
+	bool  hdr;
+	bool  guassian_horiziotal;
+	bool  guassian_vertical;
+	bool  guassian_mipmap;
+	bool  showBlurArea;
+};
+
+
+
+
+
+float Luminance( float3 linearColor )
+{
+	return dot( linearColor, float3( 0.3, 0.59, 0.11 ) );
+}
+
+
+// Geometry structure, in world coordinate
+struct SurfaceGeometry {
+    vec3 position;
+    vec3 normal;
+    vec3 viewDir;
+    vec3 tangent;
+    vec3 bitangent;
+};
+
+#endif //BP_COMMON_H
+
+layout(triangles) in;
+layout(triangle_strip,max_vertices = 3) out;
+
+in vec3 worldPositionGeom[];
+in vec3 normalGeom[];
+in vec3 texCoordGeom[];
+
+out vec3 worldPositionFrag;
+out vec3 normalFrag;
+out vec3 texCoordFrag;//v_TexCoord;
+
+
+//flat out int axisIndex;
+//uniform vec3 u_CameraViewPos;
+//uniform vec3 u_CubeSize;
+//out vec3 normal_worldPositionFrag;
+
+/*几何着色器后会进入光栅化阶段，因此需要把坐标转换的 [-1,1]的裁剪平面！！*/
+// [Start of include: voxel_cb.h]
+
+#ifndef VOXEL_CB_H
+#define VOXEL_CB_H
+// [Start of include: align.h]
+#ifndef ALINGN_H
+#define ALINGN_H
+#if COMPILE_SHADER
+#define ALIGN(X) 
+#else
+#define ALIGN(X) alignas(X)
+#endif
+#endif
+// [End of include: align.h]
+
+// [Start of include: light_types.h]
+/*
+* Copyright (c) 2014-2021, NVIDIA CORPORATION. All rights reserved.
+*
+* Permission is hereby granted, free of charge, to any person obtaining a
+* copy of this software and associated documentation files (the "Software"),
+* to deal in the Software without restriction, including without limitation
+* the rights to use, copy, modify, merge, publish, distribute, sublicense,
+* and/or sell copies of the Software, and to permit persons to whom the
+* Software is furnished to do so, subject to the following conditions:
+*
+* The above copyright notice and this permission notice shall be included in
+* all copies or substantial portions of the Software.
+*
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
+* THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+* FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+* DEALINGS IN THE SOFTWARE.
+*/
+
+#ifndef LIGHT_TYPES_H
+#define LIGHT_TYPES_H
+
+#ifdef __cplusplus
+constexpr int LightType_None = 0;
+constexpr int LightType_Directional = 1;
+constexpr int LightType_Spot = 2;
+constexpr int LightType_Point = 3;
+constexpr int LightType_Rect = 4;
+
+#else
+const int LightType_None = 0;
+const int LightType_Directional = 1;
+const int LightType_Spot = 2;
+const int LightType_Point = 3;
+const int LightType_Rect = 4;
+
+#endif
+
+#endif // LIGHT_CB_H
+// [End of include: light_types.h]
+
+
+
+struct VoxelConstants
+{
+    ALIGN(16) float3 areaExtent; // voxel 覆盖的区域大小，与MapManager 划分的area一致
+
+    ALIGN(16) float3 center;
+    ALIGN(16) float3 dimension;
+
+
+};
+
+struct VoxelVisualConstants
+{
+    ALIGN(16) float3 areaExtent; // voxel 覆盖的区域大小，与MapManager 划分的area一致
+
+    ALIGN(16) float3 center;
+    ALIGN(16) float3 dimension;
+
+
+    ALIGN(4) int mipLevel;
+
+
+};
+
+
+#endif // VOXEL_CB_H
+// [End of include: voxel_cb.h]
+
+
+// [Start of include: assets/shaders/glsl/common/CommonTransformStruct.glsl]
+
+#ifndef  BP_COMMON_TRAANSFORM_STRUCT_H
+#define  BP_COMMON_TRAANSFORM_STRUCT_H
+
+// [Start of include: transform_cb.h]
+#ifndef TRANSFORM_CB_H
+#define TRANSFORM_CB_H
+
+// [Already included: align.h]
+
+struct TransformConstants
+{
+    ALIGN(16) float4x4 matModel; 
+    ALIGN(16) float4x4 matInvModel;
+};
+#endif // TRANSFORM_CB_H
+// [End of include: transform_cb.h]
+
+
+
+
+layout(std140, binding = 1) uniform TransformConstantsUBO {
+    TransformConstants g_Transform;
+};
+
+#endif
+// [End of include: assets/shaders/glsl/common/CommonTransformStruct.glsl]
+
+// [Start of include: assets/shaders/glsl/common/CommonViewStruct.glsl]
+
+#ifndef  BP_COMMON_VIEW_STRUCT_H
+#define BP_COMMON_VIEW_STRUCT_H
+
+// [Start of include: forward_cb.h]
+/*
+* Copyright (c) 2014-2021, NVIDIA CORPORATION. All rights reserved.
+*
+* Permission is hereby granted, free of charge, to any person obtaining a
+* copy of this software and associated documentation files (the "Software"),
+* to deal in the Software without restriction, including without limitation
+* the rights to use, copy, modify, merge, publish, distribute, sublicense,
+* and/or sell copies of the Software, and to permit persons to whom the
+* Software is furnished to do so, subject to the following conditions:
+*
+* The above copyright notice and this permission notice shall be included in
+* all copies or substantial portions of the Software.
+*
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
+* THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+* FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+* DEALINGS IN THE SOFTWARE.
+*/
+
+#ifndef FORWARD_CB_H
+#define FORWARD_CB_H
+
+// [Start of include: light_cb.h]
+/*
+* Copyright (c) 2014-2021, NVIDIA CORPORATION. All rights reserved.
+*
+* Permission is hereby granted, free of charge, to any person obtaining a
+* copy of this software and associated documentation files (the "Software"),
+* to deal in the Software without restriction, including without limitation
+* the rights to use, copy, modify, merge, publish, distribute, sublicense,
+* and/or sell copies of the Software, and to permit persons to whom the
+* Software is furnished to do so, subject to the following conditions:
+*
+* The above copyright notice and this permission notice shall be included in
+* all copies or substantial portions of the Software.
+*
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
+* THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+* FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+* DEALINGS IN THE SOFTWARE.
+*/
+
+#ifndef LIGHT_CB_H
+#define LIGHT_CB_H
+// [Already included: align.h]
+
+// [Already included: light_types.h]
+
+//#ifdef GE_SHADERCOMPILE
+//
+//#else
+//#include "BlackPearl/Math/Math.h"
+//using namespace BlackPearl::math;
+//#endif
+
+//#if COMPILE_SHADER
+//
+//#else
+//#include "BlackPearl/Math/Math.h"
+//using namespace BlackPearl::math;
+//#endif
+
+
+
+
+struct ShadowConstants
+{
+    ALIGN(16) float4x4 matWorldToUvzwShadow;
+
+    ALIGN(8) float2 shadowFadeScale;
+    ALIGN(8) float2 shadowFadeBias;
+
+    ALIGN(8) float2 shadowMapCenterUV;
+    ALIGN(4) float shadowFalloffDistance;
+    ALIGN(4) int shadowMapArrayIndex;
+
+    ALIGN(8) float2 shadowMapSizeTexels;
+    ALIGN(8) float2 shadowMapSizeTexelsInv;
+};
+
+struct LightConstants
+{
+    ALIGN(16) float3 direction;
+    ALIGN(4) int lightType;
+
+    ALIGN(16) float3 position;
+    ALIGN(4) float radius;
+    ALIGN(4) float invRadius;
+
+    ALIGN(4) int bInverseSquared;	/** Whether to use inverse squared falloff. */
+
+    ALIGN(16) float3 color;
+    ALIGN(4) float intensity; // illuminance (lm/m2) for directional lights, luminous intensity (lm/sr) for positional lights
+
+    ALIGN(4) float angularSizeOrInvRange;   // angular size for directional lights, 1/range for spot and point lights
+    ALIGN(4) float innerAngle; //  default :  glm::cos(glm::radians(10.0f))
+    ALIGN(4) float outerAngle; // default : glm::cos(glm::radians(11.0f))
+    ALIGN(4) float outOfBoundsShadow;
+
+    ALIGN(4) int4 shadowCascades;
+    ALIGN(4) int4 perObjectShadows;
+
+    ALIGN(4) int4 shadowChannel;
+
+    ALIGN(4) float falloffExponent;
+
+
+
+};
+#ifdef __cplusplus
+
+inline LightConstants DefaultLightConstants() {
+    LightConstants lightConstants;
+    lightConstants.direction = float3(0.0);
+    lightConstants.lightType = LightType_Directional;
+
+    lightConstants.position = float3(0.0);
+    lightConstants.radius = 1.0;
+    lightConstants.invRadius = 1.0;
+    lightConstants.bInverseSquared = 0;	/** Whether to use inverse squared falloff. */
+    lightConstants.color = float3(1.0);
+    lightConstants.intensity = 1.0; // illuminance (lm/m2) for directional lights, luminous intensity (lm/sr) for positional lights
+    lightConstants.angularSizeOrInvRange = 30.0f;   // angular size for directional lights, 1/range for spot and point lights
+    lightConstants.innerAngle = 1.0f;
+    lightConstants.outerAngle = 0.0f;
+    lightConstants.outOfBoundsShadow = 1.0f;
+    lightConstants.shadowCascades = int4(0);
+    lightConstants.perObjectShadows = int4(0);
+    lightConstants.shadowChannel = int4(0);
+    lightConstants.falloffExponent = 2.0f;
+    return lightConstants;
+}
+#endif
+
+
+
+#endif // LIGHT_CB_H
+// [End of include: light_cb.h]
+
+// [Start of include: view_cb.h]
+/*
+* Copyright (c) 2014-2021, NVIDIA CORPORATION. All rights reserved.
+*
+* Permission is hereby granted, free of charge, to any person obtaining a
+* copy of this software and associated documentation files (the "Software"),
+* to deal in the Software without restriction, including without limitation
+* the rights to use, copy, modify, merge, publish, distribute, sublicense,
+* and/or sell copies of the Software, and to permit persons to whom the
+* Software is furnished to do so, subject to the following conditions:
+*
+* The above copyright notice and this permission notice shall be included in
+* all copies or substantial portions of the Software.
+*
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
+* THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+* FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+* DEALINGS IN THE SOFTWARE.
+*/
+
+#ifndef VIEW_CB_H
+#define VIEW_CB_H
+// [Already included: align.h]
+
+//#ifdef GE_SHADERCOMPILE
+//
+//#else
+//#include "BlackPearl/Math/Math.h"
+//using namespace BlackPearl::math;
+//#endif
+
+struct PlanarViewConstants
+{
+    //float4x4    matWorldToView;
+    //float4x4    matViewToClip;
+    //float4x4    matWorldToClip;
+    //float4x4    matClipToView;
+    //float4x4    matViewToWorld;
+    //float4x4    matClipToWorld;
+
+    //float4x4    matViewToClipNoOffset;
+    //float4x4    matWorldToClipNoOffset;
+    //float4x4    matClipToViewNoOffset;
+    //float4x4    matClipToWorldNoOffset;
+
+    ALIGN(8) float2      viewportOrigin;
+    ALIGN(8) float2      viewportSize;
+
+    //float2      viewportSizeInv;
+    //float2      pixelOffset;
+
+    //float2      clipToWindowScale;
+    //float2      clipToWindowBias;
+
+    //float2      windowToClipScale;
+    //float2      windowToClipBias;
+
+    //float4      cameraDirectionOrPosition;
+
+    ALIGN(16) float4x4 matProjectionView;
+    ALIGN(16) float4x4 matView;
+    ALIGN(16) float4x4 matProjection;
+    ALIGN(16) float3 cameraPos;
+    ALIGN(16) float3 cameraRot;
+
+};
+
+#endif // VIEW_CB_H
+// [End of include: view_cb.h]
+
+// [Start of include: light_probe_cb.h]
+/*
+* Copyright (c) 2014-2021, NVIDIA CORPORATION. All rights reserved.
+*
+* Permission is hereby granted, free of charge, to any person obtaining a
+* copy of this software and associated documentation files (the "Software"),
+* to deal in the Software without restriction, including without limitation
+* the rights to use, copy, modify, merge, publish, distribute, sublicense,
+* and/or sell copies of the Software, and to permit persons to whom the
+* Software is furnished to do so, subject to the following conditions:
+*
+* The above copyright notice and this permission notice shall be included in
+* all copies or substantial portions of the Software.
+*
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
+* THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+* FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+* DEALINGS IN THE SOFTWARE.
+*/
+
+#ifndef LIGHT_PROBE_CB_H
+#define LIGHT_PROBE_CB_H
+
+// [Already included: align.h]
+
+//#ifdef GE_SHADERCOMPILE
+//
+//#else
+//#include "BlackPearl/Math/Math.h"
+//using namespace BlackPearl::math;
+//#endif
+
+//struct LightProbeConstants
+//{
+//    uint sampleCount;
+//    float lodBias;
+//    float roughness;
+//    float inputCubeSize;
+//};
+const int PT_DIFFUSE_PROBE = 0;
+const int PT_REFLECTION_PROBE = 1;
+
+struct LightProbeConstants // ALIGN(16)
+{
+    /*   ALIGN(4) float diffuseScale;
+       ALIGN(4) float specularScale;
+       ALIGN(4) float mipLevels;
+       ALIGN(4) float padding1;
+
+       ALIGN(4) uint diffuseArrayIndex;
+       ALIGN(4) uint specularArrayIndex;
+       ALIGN(8) uint2 padding2;
+
+       ALIGN(16) float4 frustumPlanes[6];*/
+    ALIGN(4)  int probeType;
+    ALIGN(16) float3 pos;
+    //每个 SHCoeffs[i] 必须是 16 字节对齐, 使用 float4
+    ALIGN(16) float4 SHCoeffs[9];
+
+
+};
+#endif // LIGHT_PROBE_CB_H
+// [End of include: light_probe_cb.h]
+
+
+#define FORWARD_MAX_LIGHTS 20
+
+#define FORWARD_MAX_DIRECTION_LIGHTS 1
+#define FORWARD_MAX_POINT_LIGHTS 16
+#define FORWARD_MAX_SHADOWS 16
+#define FORWARD_MAX_LIGHT_PROBES 16
+// [Already included: align.h]
+
+struct ForwardShadingViewConstants
+{
+   // PlanarViewConstants view;
+    ALIGN(8) float2      viewportOrigin;
+    ALIGN(8) float2      viewportSize;
+    ALIGN(8) float2      viewportSizeInv;
+
+    ALIGN(16) float4x4 matProjectionView;
+    ALIGN(16) float4x4 matView;
+    ALIGN(16) float4x4 matProjection;
+    ALIGN(16) float3 cameraPos;
+    ALIGN(16) float3 cameraRot;
+
+    ALIGN(4) float zFar;
+    ALIGN(4) float zNear;
+
+    ALIGN(4) float preExposure;
+};
+    
+
+struct ForwardShadingLightConstants
+{
+   /* ALIGN(8) float2      shadowMapTextureSize;
+    ALIGN(8) float2      shadowMapTextureSizeInv;
+    ALIGN(16) float4      ambientColorTop;
+    ALIGN(16) float4      ambientColorBottom;
+
+    ALIGN(8) uint2       padding;*/
+    ALIGN(4) uint        numLights;
+ /*   ALIGN(4) uint        numDirectionLights;
+    ALIGN(4) uint        numPointLights;*/
+    ALIGN(4) uint        numLightProbes;
+
+    LightConstants lights[FORWARD_MAX_LIGHTS];
+    //LightConstants pointLights[FORWARD_MAX_POINT_LIGHTS];
+
+  /*  ShadowConstants shadows[FORWARD_MAX_SHADOWS];*/
+    LightProbeConstants lightProbes[FORWARD_MAX_LIGHT_PROBES];
+};
+
+#endif // FORWARD_CB_H
+// [End of include: forward_cb.h]
+
+
+layout(std140, binding = 0) uniform ForwardShadingViewConstantsUBO {
+   ForwardShadingViewConstants g_View;
+};
+#endif//BP_COMMON_VIEW_STRUCT_H
+// [End of include: assets/shaders/glsl/common/CommonViewStruct.glsl]
+
+
+layout(std140, binding = 8) uniform VoxelUBO {
+    VoxelConstants g_Voxel;
+};
+
+vec3 GetVoxelLocalPos(vec3 origin){
+     float voxelMinX = g_Voxel.center.x - g_Voxel.areaExtent.x * 0.5;
+     float voxelMinY = g_Voxel.center.y - g_Voxel.areaExtent.y * 0.5;
+     float voxelMinZ = g_Voxel.center.z - g_Voxel.areaExtent.z * 0.5;
+
+     return vec3(origin.x - voxelMinX,
+                 origin.y - voxelMinY,
+                 origin.z - voxelMinZ);
+
+}
+void main(){
+
+
+	vec3 p1 = worldPositionGeom[1] - worldPositionGeom[0];
+	vec3 p2 = worldPositionGeom[2] - worldPositionGeom[0];
+	vec3 p = abs(cross(p1, p2)); 
+
+	for(uint i = 0; i < 3; ++i){
+		worldPositionFrag = worldPositionGeom[i];
+		vec3 normal_worldPositionFrag = (worldPositionGeom[i]- g_Voxel.center) / g_Voxel.areaExtent; //worldPositionGeom[i];////GetVoxelLocalPos(worldPositionGeom[i]) / g_Voxel.areaExtent;//
+		normalFrag = normalGeom[i];
+		texCoordFrag = vec3(texCoordGeom[i].x,texCoordGeom[i].y,texCoordGeom[i].z);
+
+		if(p.z > p.x && p.z > p.y){
+			//axisIndex=0;
+			gl_Position = vec4(normal_worldPositionFrag.x, normal_worldPositionFrag.y, 0, 1);
+			// gl_Position =vec4(normal_worldPositionFrag.x, normal_worldPositionFrag.y, normal_worldPositionFrag.z, 1);
+		} 
+		else if (p.x > p.y && p.x > p.z){
+		//	axisIndex=1;
+			gl_Position = vec4(normal_worldPositionFrag.y, normal_worldPositionFrag.z, 0, 1);
+			//gl_Position =vec4(normal_worldPositionFrag.y, normal_worldPositionFrag.z, normal_worldPositionFrag.x, 1);
+		} 
+		else {
+			//axisIndex=2;
+			gl_Position =vec4(normal_worldPositionFrag.x, normal_worldPositionFrag.z, 0, 1);
+			//gl_Position =vec4(normal_worldPositionFrag.x, normal_worldPositionFrag.z, normal_worldPositionFrag.y, 1);
+		}
+		EmitVertex();
+	}
+    EndPrimitive();
+}
+
+

@@ -199,7 +199,7 @@ namespace BlackPearl {
 		return nearByArea;
 	}
 
-	unsigned int MapManager::AddProbeIdToArea(glm::vec3 probePos,unsigned int probeId)
+    uint32_t MapManager::AddProbeIdToArea(glm::vec3 probePos,unsigned int probeId)
 	{
 		unsigned int areaId = CalculateAreaId(probePos);
 		GE_ASSERT(areaId != -1, "probe position out of Map range!");

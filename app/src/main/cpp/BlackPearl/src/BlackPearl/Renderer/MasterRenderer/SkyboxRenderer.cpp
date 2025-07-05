@@ -8,6 +8,7 @@
 #include "BlackPearl/RHI/Common/RHIUtils.h"
 #include "Timestep/SystemTime.h"
 #include "Timestep/TimeCounter.h"
+#include "Renderer/SystemTextures.h"
 
 namespace BlackPearl {
 	extern DeviceManager* g_deviceManager;
@@ -25,45 +26,13 @@ namespace BlackPearl {
 
 	void SkyboxRenderer::Init()
 	{
-		std::vector<std::string> morningBox = {
-			"assets/skybox/skybox1/SkyBrightMorning_Right.png",
-			"assets/skybox/skybox1/SkyBrightMorning_Left.png",
-			"assets/skybox/skybox1/SkyBrightMorning_Top.png",
-			"assets/skybox/skybox1/SkyBrightMorning_Bottom.png",
-			"assets/skybox/skybox1/SkyBrightMorning_Front.png",
-			"assets/skybox/skybox1/SkyBrightMorning_Back.png"
-		};
-		std::vector<std::string> sunSetBox = {
-			"assets/skybox/skybox1/SkyMorning_Right.png",
-			"assets/skybox/skybox1/SkyMorning_Left.png",
-			"assets/skybox/skybox1/SkyMorning_Top.png",
-			"assets/skybox/skybox1/SkyMorning_Bottom.png",
-			"assets/skybox/skybox1/SkyMorning_Front.png",
-			"assets/skybox/skybox1/SkyMorning_Back.png"
-		};
-		std::vector<std::string> nightBox = {
-			"assets/skybox/skybox1/SkyNight_Right.png",
-			"assets/skybox/skybox1/SkyNight_Left.png",
-			"assets/skybox/skybox1/SkyNight_Top.png",
-			"assets/skybox/skybox1/SkyNight_Bottom.png",
-			"assets/skybox/skybox1/SkyNight_Front.png",
-			"assets/skybox/skybox1/SkyNight_Back.png"
-		};
+		
 		m_SkyboxShader = DBG_NEW MaterialShader("assets/shaders/glsl/SkyBoxMultiTexture.glsl");
 
-		TextureDesc desc;
-		desc.type = TextureType::CubeMap;
-		desc.minFilter = FilterMode::Linear;
-		desc.magFilter = FilterMode::Linear;
-		desc.wrap = SamplerAddressMode::ClampToEdge;
-		desc.format = Format::RGB8_UNORM;
-		desc.faces = nightBox;
-		desc.dimension = TextureDimension::TextureCube;
-		m_SkyboxTexture[0] = g_deviceManager->GetDevice()->createTexture(desc);
-		desc.faces = morningBox;
-		m_SkyboxTexture[1] = g_deviceManager->GetDevice()->createTexture(desc);
-		desc.faces = sunSetBox;
-		m_SkyboxTexture[2] = g_deviceManager->GetDevice()->createTexture(desc);
+
+		m_SkyboxTexture[0] = SystemTexture::Get().SkyboxTexture0;
+		m_SkyboxTexture[1] = SystemTexture::Get().SkyboxTexture1;
+		m_SkyboxTexture[2] = SystemTexture::Get().SkyboxTexture2;
 
 
 		//Skybox Material

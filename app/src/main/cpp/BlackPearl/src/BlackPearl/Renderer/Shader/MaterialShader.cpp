@@ -73,6 +73,7 @@ namespace BlackPearl {
         m_GlslIncluder = GLSLIncluder({
             "assets/shaders/hlsl/core",
             "assets/shaders",
+            "assets/shaders/glsl",
             ""
             });
 

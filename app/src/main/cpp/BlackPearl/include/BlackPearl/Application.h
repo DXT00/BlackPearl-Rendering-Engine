@@ -59,6 +59,7 @@ namespace BlackPearl {
 		static double s_AppFPS;
 		static double s_AppAverageFPS;
 		static long long s_TotalFrameNum;
+        static long long s_CurrentFrameNum;
 
 		static bool IsFullscreen();
 		static void SetWindowZorderToTopMost(bool setToTopMost);

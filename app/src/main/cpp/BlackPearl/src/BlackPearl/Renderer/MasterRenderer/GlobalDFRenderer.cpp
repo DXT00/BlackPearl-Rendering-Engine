@@ -5,6 +5,12 @@
 #include "hlsl/core/sdf_cb.h"
 #include "BlackPearl/Component/BoundingBoxComponent/BoundingBox.h"
 #include "Timestep/TimeCounter.h"
+#include "Renderer/SystemTextures.h"
+#ifdef GE_API_OPENGL
+#include "BlackPearl/RHI/OpenGLRHI/OpenGLDriver/OpenGLFunctions.h"
+#include "RHI/OpenGLRHI/OpenGLDriver/OpenGLDrvPrivate.h"
+#endif
+
 namespace BlackPearl {
 
 
@@ -17,9 +23,10 @@ namespace BlackPearl {
     //https://dev.epicgames.com/documentation/zh-cn/unreal-engine/mesh-distance-fields-in-unreal-engine
     void GlobalDFRenderer::Init(Scene* scene) {
         m_GDFBakeShader = DBG_NEW MaterialShader("assets/shaders/glsl/sdf/sdfBake.glsl");
-		m_GDF.Init(scene);
-        m_GDFCB = m_Device->createBuffer(RHIUtils::CreateStaticConstantBufferDesc(sizeof(GlobalDistanceFieldConstants), "GlobalDistanceFieldConstants"));
-        
+        SystemTexture::Get().SceneGlobalDF.Init(scene);
+        m_GDFCB = m_Device->createBuffer(RHIUtils::CreateStaticConstantBufferDesc(sizeof(GlobalSDFConstants), "GlobalSDFConstants"));
+        m_DrawStrategy = DBG_NEW InstancedOpaqueDrawStrategy();
+
         BufferDesc sceneObjsDesc;
         sceneObjsDesc.byteSize = sizeof(DFObjectConstants) * scene->GetObjects().size();
         sceneObjsDesc.structStride = sizeof(DFObjectConstants);
@@ -34,22 +41,22 @@ namespace BlackPearl {
         RHIBindingLayoutDesc layoutDesc;
         layoutDesc.visibility = ShaderType::Pixel;
         layoutDesc.bindings = {
-            RHIBindingLayoutItem::RT_VolatileConstantBuffer(8),     // GlobalDistanceFieldConstants
+            RHIBindingLayoutItem::RT_VolatileConstantBuffer(8),     // GlobalSDFConstants
             RHIBindingLayoutItem::RT_StructuredBuffer_UAV(9),		// DFObjectConstants
             RHIBindingLayoutItem::RT_Texture_UAV(0),
 
         };
         m_GDFBindingLayout = m_Device->createBindingLayout(layoutDesc);
 
-        for (int i = 0; i < m_GDF.NumClipMapLevels; i++) {
+        for (int i = 0; i < SystemTexture::Get().SceneGlobalDF.NumClipMapLevels; i++) {
 
-            auto& level = m_GDF.Clipmaps[i];
+            auto& level = SystemTexture::Get().SceneGlobalDF.Clipmaps[i];
 
             BindingSetDesc bindingSetDesc;
             bindingSetDesc.bindings = {
                 BindingSetItem::ConstantBuffer(8, m_GDFCB),
                 BindingSetItem::StructuredBuffer_SRV(9, m_SceneObjectsCB),
-                BindingSetItem::Texture_UAV(0, m_GDF.Clipmaps[i].MipTexture, "MipTexture" + std::to_string(i))
+                BindingSetItem::Texture_UAV(0, SystemTexture::Get().SceneGlobalDF.Clipmaps[i].MipTexture, "MipTexture" + std::to_string(i))
             };
             m_GDFBindingSets.push_back(m_Device->createBindingSet(bindingSetDesc, m_GDFBindingLayout));
 
@@ -62,22 +69,31 @@ namespace BlackPearl {
         cmdList->beginMarker("GlobalDF");
 		SceneData* view = Renderer::GetSceneData();
 
-		m_GDF.Update(Math::ToFloat3(view->CameraPosition));
+        SystemTexture::Get().SceneGlobalDF.Update(Math::ToFloat3(view->CameraPosition));
 
-		for (int i = 0; i < m_GDF.NumClipMapLevels; i++) {
+		for (int i = 0; i < SystemTexture::Get().SceneGlobalDF.NumClipMapLevels; i++) {
 
-			auto& level = m_GDF.Clipmaps[i];
+			auto& level = SystemTexture::Get().SceneGlobalDF.Clipmaps[i];
 
 
-            GlobalDistanceFieldConstants gdfConstants{};
-            gdfConstants.voxelSize = std::pow(2, i);
-            gdfConstants.clipmapCenter = m_GDF.Clipmaps[i].Center;
-            gdfConstants.clipmapDimension = m_GDF.ClipDim;
-			gdfConstants.objsCnt = scene->GetObjects().size();
-            cmdList->writeBuffer(m_GDFCB, &gdfConstants, sizeof(GlobalDistanceFieldConstants));
+            
 
 			std::vector<DFObjectConstants> objsConstants;
-			std::vector<Object*>& objs = scene->GetObjects();
+			
+            
+            SceneData* view = Renderer::GetSceneData();
+            GE_ERROR_JUDGE();
+
+            SceneData* preView = Renderer::GetPreSceneData();
+            GE_ERROR_JUDGE();
+
+            SetupView(cmdList, view, preView);
+            //获取 cpu 裁剪后的objects
+            m_DrawStrategy->PrepareForView(scene, *view);
+            
+           
+            
+            std::vector<Object*>& objs = m_DrawStrategy->GetDrawObjects();// scene->GetObjects();
 			for (size_t i = 0; i < objs.size(); i++)
 			{
 				DFObjectConstants objCnonst;
@@ -87,6 +103,15 @@ namespace BlackPearl {
 			}
 			int debug = sizeof(objsConstants);
 			cmdList->writeBuffer(m_SceneObjectsCB, objsConstants.data(), sizeof(DFObjectConstants)* objsConstants.size());
+
+
+
+            GlobalSDFConstants gdfConstants{};
+            gdfConstants.voxelSize = std::pow(2, i);
+            gdfConstants.clipmapCenter = SystemTexture::Get().SceneGlobalDF.Clipmaps[i].Center;
+            gdfConstants.clipmapDimension = SystemTexture::Get().SceneGlobalDF.ClipDim;
+            gdfConstants.objsCnt = m_DrawStrategy->GetDrawObjects().size();
+            cmdList->writeBuffer(m_GDFCB, &gdfConstants, sizeof(GlobalSDFConstants));
 
             ComputePipelineDesc psoDesc;
        
@@ -103,7 +128,7 @@ namespace BlackPearl {
 
 
             cmdList->setComputeState(computePSO);
-            cmdList->dispatch(m_GDF.ClipDim / 4, m_GDF.ClipDim / 4, m_GDF.ClipDim / 4);
+            cmdList->dispatch(SystemTexture::Get().SceneGlobalDF.ClipDim / 4, SystemTexture::Get().SceneGlobalDF.ClipDim / 4, SystemTexture::Get().SceneGlobalDF.ClipDim / 4);
 
 
 			//// 绑定当前 Clipmap 的 3D 纹理为存储目标
@@ -118,7 +143,10 @@ namespace BlackPearl {
 			//glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
 		}
     
+        SystemTexture::Get().SceneGlobalDF.Valid = true;
         cmdList->endMarker();
+
+
     }
 
     void GlobalDFRenderer::FillShaderParameters() {

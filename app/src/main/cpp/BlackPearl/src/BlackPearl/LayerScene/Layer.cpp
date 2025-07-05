@@ -24,7 +24,6 @@
 #include "BlackPearl/Renderer/Buffer/D3D12Buffer/D3D12Buffer.h"
 #endif
 #include "Map/MapManager.h"
-
 using namespace BlackPearl::math;
 
 #include "hlsl/core/material_cb.h"
@@ -730,34 +729,11 @@ namespace BlackPearl {
 		return probe;
 	}
 
-	Object* Layer::CreateProbeGrid(ProbeType type, math::float3 probeNums, math::float3 offsets, float space)
+    LightProbeGrid* Layer::CreateProbeGrid(ProbeType type, math::float3 probeNums, math::float3 offsets, float space)
 	{
-		std::string objName = (type == ProbeType::DIFFUSE_PROBE) ? "Kd ProbesGrid" : "Ks ProbeGrid";
-		Object* obj = CreateEmpty(objName);
-		unsigned int idx = 0;
-		for (unsigned int x = 0; x < probeNums.x; x++)
-		{
-			for (unsigned int y = 0; y < probeNums.y; y++)
-			{
-				for (unsigned int z = 0; z < probeNums.z; z++)
-				{
-					Object* probe = CreateLightProbe(type);
-					int xx = (x - probeNums.x / 2) * space, yy = (y - probeNums.y / 2) * space, zz = (z - probeNums.z / 2) * space;
-					glm::vec3 probePos = { offsets.x + xx,offsets.y + yy,offsets.z + zz };
-					probe->GetComponent<Transform>()->SetInitPosition(probePos);
-					if (type == ProbeType::DIFFUSE_PROBE) {
-						unsigned int areaId = g_mapManager->AddProbeIdToArea(probePos, idx);
-						probe->GetComponent<LightProbe>()->SetAreaId(areaId);
-					}
+        LightProbeGrid* grid = DBG_NEW LightProbeGrid(type, probeNums, offsets, space);
+        return grid;
 
-					idx++;
-					obj->AddChildObj(probe);
-
-				}
-
-			}
-		}
-		return obj;
 	}
 	Object* Layer::CreateModel(
 		const std::string& modelPath,

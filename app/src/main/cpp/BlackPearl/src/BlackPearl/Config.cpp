@@ -5,7 +5,7 @@
 #endif
 #include "Config.h"
 #include "BlackPearl/RHI/DynamicRHI.h"
-
+#include "Renderer/DDGI/DDGIpipelineInternal.h"
 namespace BlackPearl {
 
     int32_t Configuration::SyncInterval = 1;
@@ -43,26 +43,52 @@ namespace BlackPearl {
     /* prefilterMap.glsl里的	float resolution =512.0;也要改 */
 	const float Configuration::EnvironmantMapResolution = 64.0;// 256.0f;
 
-
-    DebugView::Type Configuration::DebugView = DebugView::Type::DV_Voxel;
-
-    bool Configuration::bUpdateProbePerFrame = false;
-
-    bool Configuration::bDeferredShading = true;
-
-    bool Configuration::bUseSinglePass = false;
     const bool Configuration::bCacheGLProgram = false;
 
-    bool Configuration::bUseIBL = true;
-    bool Configuration::bUseSDF = true;
-    bool Configuration::bUseVoxel = true;
+    DebugView::Type Configuration::DebugView = DebugView::Type::DV_Voxel;
+    
+    //-----------------------------------------------
+    // GI settings
+    //-----------------------------------------------
+    //GI Method
+    GIMethod Configuration::GIMethod = GIMethod::DDGI;
 
+    //-----------------------------------------------
+    // IBLProbe settings
+    //-----------------------------------------------
+    bool Configuration::bUpdateProbePerFrame = false;
+
+
+    //-----------------------------------------------
+    // Render Pipeline settings
+    //-----------------------------------------------
+    bool Configuration::bDeferredShading = true;
+    bool Configuration::bUseSinglePass = false;
+   // bool Configuration::bUseIBL = true;
+   // bool Configuration::bUseSDF = true;
+  //  bool Configuration::bUseVoxel = true;
     bool Configuration::bShowProbes = false;
-
     bool Configuration::bUseDirectLight = true;
+    bool Configuration::bUseIndirectLight = true;
 
+    //
+
+
+    //-----------------------------------------------
+    // Voxel settings
+    //-----------------------------------------------
     uint32_t Configuration::VoxelDim = 64;//64
     uint32_t Configuration::VoxelMipLevel = 3;
+    bool Configuration::bUpdatVoxelsPerFrame = true;
+
+    //-----------------------------------------------
+    // DDGI settings
+    //-----------------------------------------------
+    DDGITraceType Configuration::DDIG_TraceType = DDGITraceType::SW_Trace;
+    //volume settings
+    bool    Configuration::DDIG_InfiniteBounce = true;
+    int32_t Configuration::DDIG_RaysPerProbe = 256;
+    float   Configuration::DDIG_Intensity = 1.0f;
 
 	const char* ShaderConfig::AMBIENT_COLOR   = "u_Material.ambientColor";
 	const char* ShaderConfig::DIFFUSE_COLOR   = "u_Material.diffuseColor";

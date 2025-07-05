@@ -11,9 +11,12 @@
 #endif
 #include "Renderer/SystemTextures.h"
 #include "Timestep/TimeCounter.h"
+#include "Renderer/GIManager.h"
+
 namespace BlackPearl {
 
     extern MaterialManager* g_materialManager;
+    extern GIManager* g_GIManager;
 
 	void DeferredRenderGraph::Init(Scene* scene) {
 		m_CommandList = GetDevice()->createCommandList();
@@ -27,14 +30,14 @@ namespace BlackPearl {
         m_PlsCopyRenderer = DBG_NEW GrabPassRenderer(m_DeviceManager->GetDevice());
         m_GrabPassRenderer = DBG_NEW GrabPassRenderer(m_DeviceManager->GetDevice());
         m_ToneMappingRenderer = DBG_NEW ToneMappingRenderer(m_DeviceManager->GetDevice());
-        m_IBLProbeRenderer = DBG_NEW IBLProbeRenderer(m_DeviceManager->GetDevice());
+      //  m_GIRenderer = g_GIManager->CreateGIRenderer(m_DeviceManager->GetDevice(),GIMethod::DDGI);
 
         m_SkyboxRenderer->Init();
         m_GbufferRenderer->Init();
         m_DeferredShadingRenderer->Init();
         m_GrabPassRenderer->Init(SystemTexture::Get().SceneColor);
         m_PlsCopyRenderer->Init(nullptr, true);
-        m_IBLProbeRenderer->Init();
+    //    m_GIRenderer->Init(scene);
 
         m_ToneMappingRenderer->Init(SystemTexture::Get().SceneColor);
         
@@ -151,9 +154,9 @@ namespace BlackPearl {
             //draw skybox
             m_SkyboxRenderer->Render(m_CommandList, framebuffer, m_Scene);
 
-            //draw probes
-            if (Configuration::bUseIBL && Configuration::bShowProbes) {
-                m_IBLProbeRenderer->RenderProbes(m_CommandList, framebuffer, m_Scene);
+            //todo:: draw probes --> use gi manager
+            if (Configuration::bUseIndirectLight && Configuration::bShowProbes) {
+             //   m_GIRenderer->ShowProbes(m_CommandList, framebuffer, m_Scene);
             }
 
 

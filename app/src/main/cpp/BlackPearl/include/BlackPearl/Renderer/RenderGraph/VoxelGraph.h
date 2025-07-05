@@ -43,7 +43,7 @@ namespace BlackPearl {
         bool bRenderBRDFLUT = false;
 
 
-        bool bIsProbesDirty = true;
-	};
+        bool bIsVoxelsDirty = true;
+    };
 
 }

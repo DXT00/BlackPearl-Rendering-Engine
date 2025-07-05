@@ -47,6 +47,8 @@ namespace BlackPearl {
 		unsigned int m_Id;
 		std::vector<unsigned int> m_ProbesId;
         std::vector<Object*> m_Objects;
+        std::vector<Object*> m_Probes;
+        std::vector<Object*> m_ProbeGrid;
         uint32_t m_VoxelId; 
 
 	};

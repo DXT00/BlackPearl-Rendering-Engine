@@ -25,6 +25,9 @@
 #include "align.h"
 #include "light_types.h"
 
+
+#define MAX_CLIP_NUM 4
+
 struct DFObjectConstants
 {
     ALIGN(16) float3 extend; //extend
@@ -32,13 +35,27 @@ struct DFObjectConstants
 };
 
 
-struct GlobalDistanceFieldConstants
+struct GlobalSDFConstants
 {
     ALIGN(4) float voxelSize;
     ALIGN(16) float3 clipmapCenter;
     ALIGN(16) float3 clipmapDimension;
 
     ALIGN(4) int objsCnt;
+};
+
+
+
+
+
+struct GlobalSDFTraceConstants
+{
+    ALIGN(16) float4 clipPosDistance[MAX_CLIP_NUM]; //clipCenter -> xyz / distance -> clipExtend * 0.5
+    ALIGN(16) ALIGN(16)float4 clipVoxelSize; //clip0 - clip3 voxel size
+    ALIGN(4) uint clipCount;
+    ALIGN(4) float dimension;
+   /* float nearPlane;
+    float farPlane;*/
 };
 
 

@@ -8,8 +8,10 @@
 #include "BlackPearl/Component/LightProbeComponent/LightProbeComponent.h"
 #include "BlackPearl/Renderer/DescriptorTableManager.h"
 #include "BlackPearl/RHI/RHIDescriptorTable.h"
+#include "LightProbes/LightProbeCommon.h"
 
 namespace BlackPearl {
+    class LightProbeGrid;
 	class Scene
 	{
 	public:
@@ -66,6 +68,9 @@ namespace BlackPearl {
         void SetReflectLightProbes(const std::vector<Object*>& probes);
         std::vector<Object*> GetReflectLightProbes() const;
 
+
+        void AddLightProbeGrid(LightProbeGrid* grid);
+        std::vector<LightProbeGrid*> GetLightProbeGrid() const { return m_LightProbeGrids; }
 		/** An octree containing the primitives in the scene. */
 		ScenePrimitiveOctree *PrimitiveOctree;
 
@@ -105,6 +110,8 @@ namespace BlackPearl {
         /* light probe */
         std::vector<Object*> m_DiffuseLightProbes;
         std::vector<Object*> m_ReflectionLightProbes;
+
+        std::vector<LightProbeGrid*> m_LightProbeGrids;
 	private:
 		void _AddNode(Node* node);
 
