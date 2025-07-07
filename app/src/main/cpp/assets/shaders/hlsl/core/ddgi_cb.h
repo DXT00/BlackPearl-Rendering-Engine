@@ -33,4 +33,8 @@ struct DDGIRayConstants {
     ALIGN(4)  float intensity;
 };
 
+struct DDGIFrameConstants {
+    ALIGN(16)  int   firstFrame;
+};
+
 #endif // DDGI_CB_H

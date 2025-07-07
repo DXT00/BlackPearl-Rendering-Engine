@@ -80,17 +80,30 @@ vec3 octDecode(vec2 o)
 // Compute normalized oct coord, mapping top left of top left pixel to (-1,-1)
 vec2 normalizedOctCoord(ivec2 fragCoord, int probeSideLength)
 {
-    int probeWithBorderSide = probeSideLength + 2;
+//    int probeWithBorderSide = probeSideLength + 2;
+//
+//    vec2 octFragCoord = ivec2((fragCoord.x - 2) % probeWithBorderSide, (fragCoord.y - 2) % probeWithBorderSide);
+//    // Add back the half pixel to get pixel center normalized coordinates
+//    return (vec2(octFragCoord) + vec2(0.5f)) * (2.0f / float(probeSideLength)) - vec2(1.0f, 1.0f);
 
-    vec2 octFragCoord = ivec2((fragCoord.x - 2) % probeWithBorderSide, (fragCoord.y - 2) % probeWithBorderSide);
+    int probeWithBorderSide = probeSideLength;
+
+    vec2 octFragCoord = ivec2((fragCoord.x) % probeSideLength, (fragCoord.y) % probeSideLength);
     // Add back the half pixel to get pixel center normalized coordinates
-    return (vec2(octFragCoord) + vec2(0.5f)) * (2.0f / float(probeSideLength)) - vec2(1.0f, 1.0f);
+
+     return (vec2(octFragCoord)) * (2.0f / float(probeSideLength)) - vec2(1.0f, 1.0f); //range [-1,1]
+
+   // return (vec2(octFragCoord) + vec2(0.5f)) * (2.0f / float(probeSideLength)) - vec2(1.0f, 1.0f); //range [-1,1]
 }
 
 int getProbeId(vec2 texel, int width, int probeSideLength)
 {
-    int probeWithBorderSide = probeSideLength + 2;
-    int probesPerSide     = (width - 2) / probeWithBorderSide;
+//    int probeWithBorderSide = probeSideLength + 2;
+//    int probesPerSide     = (width - 2) / probeWithBorderSide;
+//    return int(texel.x / probeWithBorderSide) + probesPerSide * int(texel.y / probeWithBorderSide);
+
+    int probeWithBorderSide = probeSideLength; //8
+    int probesPerSide     = width / probeWithBorderSide; //
     return int(texel.x / probeWithBorderSide) + probesPerSide * int(texel.y / probeWithBorderSide);
 }
 

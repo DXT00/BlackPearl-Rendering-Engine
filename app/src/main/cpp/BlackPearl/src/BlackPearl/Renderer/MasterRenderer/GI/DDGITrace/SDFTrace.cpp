@@ -227,8 +227,12 @@ namespace BlackPearl {
         ddgiConst.normalBias = volume.normalBias;
         ddgiConst.ddgiGamma = volume.ddgiGamma;
 
+        ddgiConst.irradianceProbeSideLength = IrradianceOctSize;
         ddgiConst.irradianceTextureWidth = irradianceWidth;
         ddgiConst.irradianceTextureHeight = irradianceHeight;
+
+
+        ddgiConst.depthProbeSideLength = DepthOctSize;
         ddgiConst.depthTextureWidth = depthWidth;
         ddgiConst.depthTextureHeight = depthHeight;
         ddgiConst.raysPerProbe = volume.raysPerProbe;

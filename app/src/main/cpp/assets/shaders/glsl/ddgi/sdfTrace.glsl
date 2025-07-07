@@ -114,7 +114,7 @@ void main()
     vec3  rayOrigin = probeLocation(g_ddgi, probeId);
 
     //sphericalFibonacci 生成一个 均匀分布在球面上的方向向量（基于球面斐波那契分布）。 
-    vec3  direction  = normalize(mat3(g_pushConsts.randomOrientation) * sphericalFibonacci(rayId,g_ddgi.raysPerProbe));
+    vec3  direction  = normalize(mat3(g_pushConsts.randomOrientation) * sphericalFibonacci(rayId, g_ddgi.raysPerProbe));
 
    // Random random = randomInit(texCoords, g_pushConsts.numFrames);
 
@@ -179,7 +179,7 @@ void main()
     }
     
     imageStore(iRadiance, texCoords, vec4(radiance.xyz, 0.0f));
-    imageStore(iDirectionDistance, texCoords, vec4(direction,radiance.w));
+    imageStore(iDirectionDistance, texCoords, vec4(direction, radiance.w));
 }
 
 // ------------------------------------------------------------------------

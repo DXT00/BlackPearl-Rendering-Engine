@@ -26,32 +26,49 @@ namespace BlackPearl {
         
         virtual void ShowProbes(ICommandList* cmdList, IFramebuffer* targetFramebuffer, Scene* scene) override;
    
-    private:
 
-        void _InitVolumesAndPipeline(Scene* scene);
-
-        void _UpdateProbeIrradiance(ICommandList* cmdList, IFramebuffer* targetFramebuffer, Scene* scene);
-        void _UpdateProbeDistance(ICommandList* cmdList, IFramebuffer* targetFramebuffer, Scene* scene);
-
-        // sw tracing
-       // void GenerateGDF();
 
     private:
 
        
 
-
-        MaterialShader* m_ProbeUpdateShader = nullptr; 
+        MaterialShader* m_ProbeIrradianceUpdateShader = nullptr; 
+        MaterialShader* m_ProbeDepthUpdateShader = nullptr;
 
         std::vector<IrradianceVolume> m_Volumes;
         std::vector<DDGIPipelineInternal> m_Pipelines; // each volume has a pipline
 
-        
+        struct ProbeBindings {
+            BindingLayoutHandle layout;
+            BindingSetHandle    set;
+            BufferHandle        ddgiCB;
+            BufferHandle        frameCB;
+            ProbeBindings() {
+                layout = nullptr;
+                set = nullptr;
+                ddgiCB = nullptr;
+                frameCB = nullptr;
+            }
+
+        };
+        std::vector<ProbeBindings> m_ProbeUpdateBindings;
+        ComputePipelineHandle m_ProbeIrradianceUpdatePso;
+        ComputePipelineHandle m_ProbeDiatanceUpdatePso;
 
         RayTrace* m_Tracer = nullptr;
 
 
+    private:
 
+        void _InitVolumesAndPipeline(Scene* scene);
+        void _InitProbeUpdate(Scene* scene);
+
+        void _UpdateProbeIrradiance(ICommandList* cmdList, const IrradianceVolume& volume, const DDGIPipelineInternal& pipeline, const ProbeBindings& binidngs, Scene* scene);
+        void _UpdateProbeDistance(ICommandList* cmdList, const IrradianceVolume& volume, const DDGIPipelineInternal& pipeline, const ProbeBindings& binidngs, Scene* scene);
+
+        void _FillUpdateProbeShaderParameters(ICommandList* cmdList, const IrradianceVolume& volume,  const ProbeBindings& binidngs);
+        // sw tracing
+       // void GenerateGDF();
 
     };
 }
