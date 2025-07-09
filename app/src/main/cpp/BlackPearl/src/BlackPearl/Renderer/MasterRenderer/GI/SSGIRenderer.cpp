@@ -6,4 +6,8 @@ namespace BlackPearl {
     {
     }
 
+    void SSGIRenderer::RenderIndirectLight(ICommandList* commandList, IFramebuffer* targetFramebuffer, Scene* scene)
+    {
+    }
+
 }

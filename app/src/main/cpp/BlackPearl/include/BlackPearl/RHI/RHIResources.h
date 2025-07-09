@@ -6,6 +6,7 @@ namespace BlackPearl {
 	{
         RT_None,
         RT_Texture_SRV,            // vk - SampledImage VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE
+        //RT_Texture_SRV_ARRAY,      // 
         RT_Texture_UAV,            // vk - StorageImage VK_DESCRIPTOR_TYPE_STORAGE_IMAGE
         RT_Texture_InputAttachment, // vk - VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT
         RT_TypedBuffer_SRV,        // vk - UniformTexelBuffer VK_DESCRIPTOR_TYPE_UNIFORM_TEXEL_BUFFER

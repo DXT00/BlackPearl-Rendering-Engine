@@ -44,11 +44,11 @@ public:
              "assets/skybox/skybox/front.jpg",
              "assets/skybox/skybox/back.jpg",
             });
-        m_CubeObj->GetComponent<Transform>()->SetScale({ 20.0,20.0,20.0 });
+        m_CubeObj->GetComponent<Transform>()->SetScale({ 1.0,1.0,1.0 });
        // m_CubeObj->GetComponent<Transform>()->SetRotation({ 0,30,0 });
-        m_SphereObj->GetComponent<Transform>()->SetScale({ 20.0,20.0,20.0 });
-        m_CubeObj->SetPosition({ 25.0, 25.0,25.0 });
-        m_SphereObj->SetPosition({ -25.0,-25.0,-25.0 });
+        m_SphereObj->GetComponent<Transform>()->SetScale({ 2.0,2.0,2.0 });
+        m_CubeObj->SetPosition({ 5.0, 0.0,0.0 });
+        m_SphereObj->SetPosition({ -5.0,-0.0,-0.0 });
 
 
         m_MainCamera->SetMoveSpeed(0.5f);
@@ -62,7 +62,7 @@ public:
         //else
         //    m_DirectionLight->GetComponent<DirectionLight>()->SetDirection({ -0.2f, 1.0f, -0.2f });
 #elif defined(GE_PLATFORM_WINDOWS)
-        m_DirectionLight->GetComponent<DirectionLight>()->SetDirection({ -0.2f, 1.0f, -0.2f });
+        m_DirectionLight->GetComponent<DirectionLight>()->SetDirection({ 0.2f, -1.0f, 0.2f });
       //  m_DirectionLight->GetComponent<DirectionLight>()->SetDirection({ 0.2f, -1.0f, 0.2f });
 #endif
         //m_Scene->AddObject(m_SphereObj);
@@ -73,11 +73,13 @@ public:
         m_Scene->SetSkyBox(m_SkyBox);
 
 
-        if (Configuration::GIMethod == GIMethod::IBL || Configuration::GIMethod == GIMethod::DDGI) {
+        if (Configuration::bUseIndirectLight &&
+            (Configuration::GIMethod == GIMethod::IBL 
+                || Configuration::GIMethod == GIMethod::DDGI)) {
         
 
             m_DiffuseLightProbeGrid = CreateProbeGrid(ProbeType::DIFFUSE_PROBE,
-                math::float3(2, 2, 1), math::float3(0.0f, 1.0f, -0.2f), 5);
+                math::float3(2, 2, 2), math::float3(-10.0f, 0.0f, 0.0f), 10);
 
           /*  m_ReflectLightProbeGrid = CreateProbeGrid(m_MapManager, ProbeType::REFLECTION_PROBE,
                 math::float3(2, 1, 1), math::float3(0.2f, -1.0f, 0.2f), 6);*/
@@ -88,8 +90,9 @@ public:
 
             m_Scene->AddLightProbeGrid(m_DiffuseLightProbeGrid);
         }
+        auto gridPos = m_DiffuseLightProbeGrid->GridObj->GetComponent<Transform>()->GetPosition();
 
-
+        m_CubeObj->SetPosition(gridPos);
     }
 
 	void OnSetup() override {
@@ -104,26 +107,28 @@ public:
             m_RenderGraph = DBG_NEW ForwardRenderGraph(m_DeviceManager);
         }
 
-		
-        if(Configuration::GIMethod == GIMethod::IBL){
-            m_GIGraph = DBG_NEW IBLProbeGraph(m_DeviceManager);
+        if (Configuration::bUseIndirectLight) {
+            if (Configuration::GIMethod == GIMethod::IBL) {
+                m_GIGraph = DBG_NEW IBLProbeGraph(m_DeviceManager);
 
-            m_GIGraph->Init(m_Scene);
-            m_DeviceManager->AddRenderGraphToBack(m_GIGraph);
-        }
-        else if (Configuration::GIMethod == GIMethod::DDGI) {
-            m_SDFBakeGraph = DBG_NEW SDFGraph(m_DeviceManager);
-            m_SDFBakeGraph->Init(m_Scene);
-            m_DeviceManager->AddRenderGraphToBack(m_SDFBakeGraph);
-           
-            m_VoxelGraph = DBG_NEW VoxelGraph(m_DeviceManager);
-            m_VoxelGraph->Init(m_Scene);
-            m_DeviceManager->AddRenderGraphToBack(m_VoxelGraph);
+                m_GIGraph->Init(m_Scene);
+                m_DeviceManager->AddRenderGraphToBack(m_GIGraph);
+            }
+            else if (Configuration::GIMethod == GIMethod::DDGI) {
+                m_SDFBakeGraph = DBG_NEW SDFGraph(m_DeviceManager);
+                m_SDFBakeGraph->Init(m_Scene);
+                m_DeviceManager->AddRenderGraphToBack(m_SDFBakeGraph);
 
-            m_GIGraph = DBG_NEW DDGIGraph(m_DeviceManager);
-            m_GIGraph->Init(m_Scene);
-            m_DeviceManager->AddRenderGraphToBack(m_GIGraph);
+                m_VoxelGraph = DBG_NEW VoxelGraph(m_DeviceManager);
+                m_VoxelGraph->Init(m_Scene);
+                m_DeviceManager->AddRenderGraphToBack(m_VoxelGraph);
+
+                m_GIGraph = DBG_NEW DDGIGraph(m_DeviceManager);
+                m_GIGraph->Init(m_Scene);
+                m_DeviceManager->AddRenderGraphToBack(m_GIGraph);
+            }
         }
+       
       
 
         m_RenderGraph->Init(m_Scene);

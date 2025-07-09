@@ -13,6 +13,19 @@ float3 ScreenSpaceToWorldPosition(float2 pixelPos, float z_viewSpace)
     float4 worldPos = clipPos * inverse(g_View.matProjectionView);
     return worldPos.xyz;
 }
+
+// texCoords range [0,1]
+vec3 worldPositionFromDepth(vec2 texCoords, float ndcDepth, mat4 viewProjInv)
+{
+    vec2 screenPos = texCoords * 2.0 - 1.0; //[-1,1]
+    vec4 ndcPos = vec4(screenPos, ndcDepth, 1.0);
+    vec4 worldPos = viewProjInv * ndcPos;
+    worldPos = worldPos / worldPos.w;
+    return worldPos.xyz;
+}
+
+
+
 /*
 考虑一个三角形，其三个顶点的位置为 P1、P2、P3，对应的纹理坐标为 UV1、UV2、UV3。我们定义两个边向量和对应的纹理坐标差值：
 

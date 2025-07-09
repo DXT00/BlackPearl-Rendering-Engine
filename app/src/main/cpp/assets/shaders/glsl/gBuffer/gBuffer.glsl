@@ -112,7 +112,7 @@ void MobileFetchGBuffer(in float2 UV, inout half4 GBufferA, inout half4 GBufferB
     GBufferA = texture(t_gGbufferA, UV);
 	GBufferB = texture(t_gGbufferB, UV);
 	GBufferC = texture(t_gGbufferC, UV);
-	SceneDepth = ConvertFromDeviceZ(texture(t_gSceneDepth, UV).r, g_View.zNear, g_View.zFar);
+	SceneDepth = texture(t_gSceneDepth, UV).r;//ConvertFromDeviceZ(texture(t_gSceneDepth, UV).r, g_View.zNear, g_View.zFar);
 
 //	SceneDepth = ConvertFromDeviceZ(textureLod(t_gSceneDepth, UV, 0).r, g_View.zNear, g_View.zFar);
 #endif

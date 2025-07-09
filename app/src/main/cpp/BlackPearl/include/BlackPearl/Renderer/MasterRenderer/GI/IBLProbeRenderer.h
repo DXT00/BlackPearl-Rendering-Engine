@@ -9,6 +9,8 @@
 #include "Renderer/MasterRenderer/ForwardShadingRenderer.h"
 #include "Renderer/MasterRenderer/SkyboxRenderer.h"
 #include "GIRenderer.h"
+#include "hlsl/core/deferred_lighting_cb.h"
+
 namespace BlackPearl{
 
     struct CubeMapKey {
@@ -24,21 +26,24 @@ namespace BlackPearl{
         }
 
     };
+    class GIManager;
+
     class IBLProbeRenderer: public BasicRenderer, public GIRenderer
     {
     public:
-        IBLProbeRenderer(IDevice* device);
 
         void Init(Scene* scene);
-        void Render(ICommandList* cmdList, IFramebuffer* targetFramebuffer, Scene* scene);
-        void UpdateProbeCamera(Object* probe);
+        virtual void Render(ICommandList* cmdList, IFramebuffer* targetFramebuffer, Scene* scene) override;
+        virtual void RenderIndirectLight(ICommandList* commandList, IFramebuffer* targetFramebuffer, Scene* scene) override;
+        virtual void ShowProbes(ICommandList* cmdList, IFramebuffer* targetFramebuffer, Scene* scene) override;
 
-  
 
-        void RenderSpecularBRDFLUTMap(ICommandList* cmdList, IFramebuffer* targetFramebuffer, Scene* scene);
-        void ShowProbes(ICommandList* cmdList, IFramebuffer* targetFramebuffer, Scene* scene);
+
 
         void FillShaderParameters();
+        void FillProbesParameters(const std::vector<Object*>& probes, DeferredLightingConstants& output);
+        void RenderSpecularBRDFLUTMap(ICommandList* cmdList, IFramebuffer* targetFramebuffer, Scene* scene);
+        void UpdateProbeCamera(Object* probe);
 
         static float s_GICoeffs;
 
@@ -55,10 +60,14 @@ namespace BlackPearl{
         void RenderSHImage(Object* probe, TextureHandle environmentMap);
 
         void _RenderProbe(ICommandList* cmdList, IFramebuffer* targetFramebuffer, Scene* scene, Object* probe);
-
+        void _InitDeferredLighting();
+        void _InitProbeDebug();
+        void _InitProbeBake();
 
     private:
-      
+        friend class GIManager;
+        IBLProbeRenderer(IDevice* device);
+
         /*draw lighprobes shader*/
         MaterialShader*     m_ProbeDebugShader = nullptr;
         /*shader*/
@@ -90,6 +99,15 @@ namespace BlackPearl{
         BufferHandle    m_ProbeCB;
 
         bool m_IsInitial = false;
+
+        //Deferred IndirectLight shading
+        MaterialShader* m_DeferredIBLShader = nullptr;
+
+        BufferHandle        m_LightsCB;
+        BindingLayoutHandle m_DeferredShadingBindingLayout;
+        BindingSetHandle    m_DeferredShadingBindingSet;
+        GraphicsPipelineHandle m_DeferredShadingIBLPso = nullptr;
+
 
     };
 }

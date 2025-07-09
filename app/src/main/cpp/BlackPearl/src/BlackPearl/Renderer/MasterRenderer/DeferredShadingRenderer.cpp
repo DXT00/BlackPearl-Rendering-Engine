@@ -15,8 +15,9 @@
 #include "RHI/RHIGlobals.h"
 #include "Renderer/RenderGraph/RenderGraph.h"
 #include "Timestep/TimeCounter.h"
-
+#include "Renderer/GIManager.h"
 namespace BlackPearl{
+    extern GIManager* g_GIManager;
     DeferredShadingRenderer::DeferredShadingRenderer(IDevice* device)
     : BasicRenderer(device){
 
@@ -40,7 +41,6 @@ namespace BlackPearl{
         //TODO:: 不需要多个不同light的shader， 通过宏来决定用哪个函数
         m_DeferredDirectionLightShader  = DBG_NEW MaterialShader("assets/shaders/glsl/deferred_shading/deferred_shading_bsdf_direction_light.glsl", &extends, &macros);
         m_DeferredPointLightShader = DBG_NEW MaterialShader("assets/shaders/glsl/deferred_shading/deferred_shading_bsdf_point_light.glsl", &extends, &macros);;
-        m_DeferredIBLShader = DBG_NEW MaterialShader("assets/shaders/glsl/deferred_shading/deferred_shading_bsdf_ibl.glsl", &extends, &macros);;
 
         
 
@@ -88,8 +88,11 @@ namespace BlackPearl{
     {
         if (Configuration::bUseDirectLight)
             RenderDirectionLights(cmdList, targetFramebuffer, scene);
-        if(Configuration::bUseIndirectLight)
-            RenderIBLProbes(cmdList, targetFramebuffer, scene);
+        if (Configuration::bUseIndirectLight && g_GIManager->GetGIRenderer()) {
+            RenderIndirectLight(cmdList, targetFramebuffer, scene);
+            
+        }
+           // RenderIBLProbes(cmdList, targetFramebuffer, scene);
 
 
 
@@ -256,87 +259,92 @@ namespace BlackPearl{
         }
     }
 
-    void DeferredShadingRenderer::RenderIBLProbes(ICommandList* cmdList, IFramebuffer* targetFramebuffer, Scene* scene)
+    void DeferredShadingRenderer::RenderIndirectLight(ICommandList* commandList, IFramebuffer* targetFramebuffer, Scene* scene)
     {
-       
-        if (scene->GetDiffuseLightProbes().size() > DEFERRED_MAX_LIGHT_PROBES) {
-            GE_CORE_ERROR("light number %d exceed limit %d", scene->GetDiffuseLightProbes().size(), DEFERRED_MAX_LIGHT_PROBES);
-            return;
-        }
-
-
-     
-            SceneData* view = Renderer::GetSceneData();
-            GE_ERROR_JUDGE();
-
-            SceneData* preView = Renderer::GetPreSceneData();
-            GE_ERROR_JUDGE();
-
-            SetupView(cmdList, view, preView);
-
-
-            DrawItem drawItem = IDrawStrategy::ObjectToDrawItem(scene->GetFullScreenObj())[0];
-
-            GraphicsState graphicsPSO;
-            graphicsPSO.framebuffer = targetFramebuffer;
-            graphicsPSO.viewport = view->GetViewportState();
-            graphicsPSO.shadingRateState = view->GetVariableRateShadingState();
-
-            GraphicsPipelineDesc psoDesc;
-
-            psoDesc.depthStencilState.setDepthFunc(ComparisonFunc::LessOrEqual);
-            psoDesc.depthStencilState.enableDepthTest();
-            psoDesc.depthStencilState.disableDepthWrite();
-            psoDesc.depthStencilState.disableStencil();
-
-            psoDesc.blendState.alphaToCoverageEnable = false;
-
-            for (auto& target : psoDesc.blendState.targets)
-            {
-                target.blendEnable = true;
-                target.blendOp = BlendOp::Add;
-                target.srcBlend = BlendFactor::One;
-                target.destBlend = BlendFactor::One;
-                target.srcBlendAlpha = BlendFactor::One;
-                target.destBlendAlpha = BlendFactor::One;
-                target.blendOpAlpha = BlendOp::Add;
-            }
-
-
-            psoDesc.rasterState.frontCounterClockwise = true;
-            psoDesc.rasterState.cullMode = RasterCullMode::None;
-            psoDesc.primType = PrimitiveType::TriangleList;
-            psoDesc.inputLayout = m_Device->createInputLayout(drawItem.mesh->GetVertexBufferLayout());
-
-            psoDesc.VS = m_DeferredIBLShader->GetVertexShader();
-            psoDesc.PS = m_DeferredIBLShader->GetPixelShader();
-            psoDesc.bFromPSOFileCache = false;
-            psoDesc.bindingLayouts.push_back(m_DeferredShadingBindingLayout);
-            psoDesc.bindingLayouts.push_back(m_ViewBindinglayout);
-
-
-            if (!m_DeferredShadingIBLPso) {
-                m_DeferredShadingIBLPso = m_Device->createGraphicsPipeline(psoDesc, targetFramebuffer);
-            }
-            graphicsPSO.pipeline = m_DeferredShadingIBLPso;
-            graphicsPSO.bindings.push_back(m_DeferredShadingBindingSet);
-            graphicsPSO.bindings.push_back(m_ViewBindingset);
-            graphicsPSO.inputLayout = psoDesc.inputLayout;
-          
-            SetupInputBuffers(cmdList, const_cast<BufferGroup*>(drawItem.buffers), drawItem.transform, graphicsPSO);
-            GE_ERROR_JUDGE();
-
-
-            DeferredLightingConstants lightConstants{};
-            FillProbesParameters(scene->GetDiffuseLightProbes(), lightConstants);
-
-            cmdList->writeBuffer(m_LightsCB, &lightConstants, sizeof(DeferredLightingConstants));
-            cmdList->setGraphicsState(graphicsPSO);
-
-            Draw(cmdList, drawItem);
-
-
+        g_GIManager->GetGIRenderer()->RenderIndirectLight(commandList, targetFramebuffer, scene);
     }
+
+    //void DeferredShadingRenderer::RenderIBLProbes(ICommandList* cmdList, IFramebuffer* targetFramebuffer, Scene* scene)
+    //{
+    //   
+    //    if (scene->GetDiffuseLightProbes().size() > DEFERRED_MAX_LIGHT_PROBES) {
+    //        GE_CORE_ERROR("light number %d exceed limit %d", scene->GetDiffuseLightProbes().size(), DEFERRED_MAX_LIGHT_PROBES);
+    //        return;
+    //    }
+
+
+    // 
+    //        SceneData* view = Renderer::GetSceneData();
+    //        GE_ERROR_JUDGE();
+
+    //        SceneData* preView = Renderer::GetPreSceneData();
+    //        GE_ERROR_JUDGE();
+
+    //        SetupView(cmdList, view, preView);
+
+
+    //        DrawItem drawItem = IDrawStrategy::ObjectToDrawItem(scene->GetFullScreenObj())[0];
+
+    //        GraphicsState graphicsPSO;
+    //        graphicsPSO.framebuffer = targetFramebuffer;
+    //        graphicsPSO.viewport = view->GetViewportState();
+    //        graphicsPSO.shadingRateState = view->GetVariableRateShadingState();
+
+    //        GraphicsPipelineDesc psoDesc;
+
+    //        psoDesc.depthStencilState.setDepthFunc(ComparisonFunc::LessOrEqual);
+    //        psoDesc.depthStencilState.enableDepthTest();
+    //        psoDesc.depthStencilState.disableDepthWrite();
+    //        psoDesc.depthStencilState.disableStencil();
+
+    //        psoDesc.blendState.alphaToCoverageEnable = false;
+
+    //        for (auto& target : psoDesc.blendState.targets)
+    //        {
+    //            target.blendEnable = true;
+    //            target.blendOp = BlendOp::Add;
+    //            target.srcBlend = BlendFactor::One;
+    //            target.destBlend = BlendFactor::One;
+    //            target.srcBlendAlpha = BlendFactor::One;
+    //            target.destBlendAlpha = BlendFactor::One;
+    //            target.blendOpAlpha = BlendOp::Add;
+    //        }
+
+
+    //        psoDesc.rasterState.frontCounterClockwise = true;
+    //        psoDesc.rasterState.cullMode = RasterCullMode::None;
+    //        psoDesc.primType = PrimitiveType::TriangleList;
+    //        psoDesc.inputLayout = m_Device->createInputLayout(drawItem.mesh->GetVertexBufferLayout());
+
+    //        psoDesc.VS = m_DeferredIBLShader->GetVertexShader();
+    //        psoDesc.PS = m_DeferredIBLShader->GetPixelShader();
+    //        psoDesc.bFromPSOFileCache = false;
+    //        psoDesc.bindingLayouts.push_back(m_DeferredShadingBindingLayout);
+    //        psoDesc.bindingLayouts.push_back(m_ViewBindinglayout);
+
+
+    //        if (!m_DeferredShadingIBLPso) {
+    //            m_DeferredShadingIBLPso = m_Device->createGraphicsPipeline(psoDesc, targetFramebuffer);
+    //        }
+    //        graphicsPSO.pipeline = m_DeferredShadingIBLPso;
+    //        graphicsPSO.bindings.push_back(m_DeferredShadingBindingSet);
+    //        graphicsPSO.bindings.push_back(m_ViewBindingset);
+    //        graphicsPSO.inputLayout = psoDesc.inputLayout;
+    //      
+    //        SetupInputBuffers(cmdList, const_cast<BufferGroup*>(drawItem.buffers), drawItem.transform, graphicsPSO);
+    //        GE_ERROR_JUDGE();
+
+
+    //        DeferredLightingConstants lightConstants{};
+    //        FillProbesParameters(scene->GetDiffuseLightProbes(), lightConstants);
+
+    //        cmdList->writeBuffer(m_LightsCB, &lightConstants, sizeof(DeferredLightingConstants));
+    //        cmdList->setGraphicsState(graphicsPSO);
+
+    //        Draw(cmdList, drawItem);
+
+
+    //}
 
     void DeferredShadingRenderer::FillLightsParameters(Light* light, DeferredLightingConstants& output)
     {
@@ -349,17 +357,17 @@ namespace BlackPearl{
        
     }
 
-    void DeferredShadingRenderer::FillProbesParameters(const std::vector<Object*>& probes, DeferredLightingConstants& output)
-    {
-        output.numLightProbes = probes.size();
-        for (size_t i = 0; i < probes.size(); i++)
-        {
-            LightProbeConstants probeConst;
-            probes[i]->GetComponent<LightProbe>()->FillLightProbeConstants(probes[i]->GetComponent<LightProbe>()->GetType(), Math::ToFloat3(probes[i]->GetComponent<Transform>()->GetPosition()), probeConst);
-            output.lightProbes[i] = probeConst;
-        }
+    //void DeferredShadingRenderer::FillProbesParameters(const std::vector<Object*>& probes, DeferredLightingConstants& output)
+    //{
+    //    output.numLightProbes = probes.size();
+    //    for (size_t i = 0; i < probes.size(); i++)
+    //    {
+    //        LightProbeConstants probeConst;
+    //        probes[i]->GetComponent<LightProbe>()->FillLightProbeConstants(probes[i]->GetComponent<LightProbe>()->GetType(), Math::ToFloat3(probes[i]->GetComponent<Transform>()->GetPosition()), probeConst);
+    //        output.lightProbes[i] = probeConst;
+    //    }
 
-    }
+    //}
 
     float DeferredShadingRenderer::CalculateSphereRadius(Object* pointLight)
     {

@@ -34,42 +34,11 @@ namespace BlackPearl
     void IBLProbeRenderer::Init(Scene* scene)
     {
 
-        m_ProbeDebugShader = DBG_NEW MaterialShader("assets/shaders/glsl/lightProbes/lightProbe.glsl");
-        m_SpecularBRDFLutShader = DBG_NEW MaterialShader("assets/shaders/glsl/ibl/brdf.glsl");
-        m_SpecularPrefilterShader = DBG_NEW MaterialShader("assets/shaders/glsl/ibl/prefilterMap.glsl");
+        _InitProbeBake();
 
+        _InitDeferredLighting();
 
-        //多个probe共用一个camera
-        m_ProbeCamera = g_objectManager->CreateCamera("ProbeCamera");
-        m_ProbeCamera->GetObj()->GetComponent<PerspectiveCamera>()->SetFov(90.0f);
-        m_ProbeCamera->GetObj()->GetComponent<PerspectiveCamera>()->SetWidth(Configuration::EnvironmantMapResolution);
-        m_ProbeCamera->GetObj()->GetComponent<PerspectiveCamera>()->SetHeight(Configuration::EnvironmantMapResolution);
-        m_ProbeCamera->GetObj()->GetComponent<PerspectiveCamera>()->SetZfar(13.0f);
-
-       // m_BrdfLUTQuadObj = brdfLUTQuadObj;
-        m_EnvironmentMapRenderer->Init();
-        m_EnvironmentMapSkyboxRenderer->Init();
-
-
-
-
-        //Debug Probe Material
-        RHIBindingLayoutDesc layoutDesc;
-        layoutDesc.visibility = ShaderType::Pixel;
-        layoutDesc.bindings = {
-            RHIBindingLayoutItem::RT_VolatileConstantBuffer(8),
-        };
-        m_ProbeBindingLayout = m_Device->createBindingLayout(layoutDesc);
-        m_ProbeCB = m_Device->createBuffer(RHIUtils::CreateStaticConstantBufferDesc(sizeof(LightConstants), "LightConstants"));
-
-        BindingSetDesc bindingSetDesc;
-        bindingSetDesc.bindings = {
-            BindingSetItem::ConstantBuffer(8, m_ProbeCB),
-        };
-        m_ProbeBindingSet = m_Device->createBindingSet(bindingSetDesc, m_ProbeBindingLayout);
-
-
-
+        _InitProbeDebug();
 
         m_IsInitial = true;
 
@@ -377,13 +346,102 @@ namespace BlackPearl
         }
 
 
-        //cmdList->beginMarker("SkyPass");
-
-        /*FRHIRenderPassInfo RPInfo(targetFramebuffer->getDesc().colorAttachments[0].texture, ERenderTargetActions::Clear_Store);
-        cmdList->beginRenderPass(RPInfo, "SkyPass");*/
+       
 
 
     }
+
+    void IBLProbeRenderer::RenderIndirectLight(ICommandList* cmdList, IFramebuffer* targetFramebuffer, Scene* scene)
+    {
+        if (scene->GetDiffuseLightProbes().size() > DEFERRED_MAX_LIGHT_PROBES) {
+            GE_CORE_ERROR("light number %d exceed limit %d", scene->GetDiffuseLightProbes().size(), DEFERRED_MAX_LIGHT_PROBES);
+            return;
+        }
+
+
+
+        SceneData* view = Renderer::GetSceneData();
+        GE_ERROR_JUDGE();
+
+        SceneData* preView = Renderer::GetPreSceneData();
+        GE_ERROR_JUDGE();
+
+        SetupView(cmdList, view, preView);
+
+
+        DrawItem drawItem = IDrawStrategy::ObjectToDrawItem(scene->GetFullScreenObj())[0];
+
+        GraphicsState graphicsPSO;
+        graphicsPSO.framebuffer = targetFramebuffer;
+        graphicsPSO.viewport = view->GetViewportState();
+        graphicsPSO.shadingRateState = view->GetVariableRateShadingState();
+
+        GraphicsPipelineDesc psoDesc;
+
+        psoDesc.depthStencilState.setDepthFunc(ComparisonFunc::LessOrEqual);
+        psoDesc.depthStencilState.enableDepthTest();
+        psoDesc.depthStencilState.disableDepthWrite();
+        psoDesc.depthStencilState.disableStencil();
+
+        psoDesc.blendState.alphaToCoverageEnable = false;
+
+        for (auto& target : psoDesc.blendState.targets)
+        {
+            target.blendEnable = true;
+            target.blendOp = BlendOp::Add;
+            target.srcBlend = BlendFactor::One;
+            target.destBlend = BlendFactor::One;
+            target.srcBlendAlpha = BlendFactor::One;
+            target.destBlendAlpha = BlendFactor::One;
+            target.blendOpAlpha = BlendOp::Add;
+        }
+
+
+        psoDesc.rasterState.frontCounterClockwise = true;
+        psoDesc.rasterState.cullMode = RasterCullMode::None;
+        psoDesc.primType = PrimitiveType::TriangleList;
+        psoDesc.inputLayout = m_Device->createInputLayout(drawItem.mesh->GetVertexBufferLayout());
+
+        psoDesc.VS = m_DeferredIBLShader->GetVertexShader();
+        psoDesc.PS = m_DeferredIBLShader->GetPixelShader();
+        psoDesc.bFromPSOFileCache = false;
+        psoDesc.bindingLayouts.push_back(m_DeferredShadingBindingLayout);
+        psoDesc.bindingLayouts.push_back(m_ViewBindinglayout);
+
+
+        if (!m_DeferredShadingIBLPso) {
+            m_DeferredShadingIBLPso = m_Device->createGraphicsPipeline(psoDesc, targetFramebuffer);
+        }
+        graphicsPSO.pipeline = m_DeferredShadingIBLPso;
+        graphicsPSO.bindings.push_back(m_DeferredShadingBindingSet);
+        graphicsPSO.bindings.push_back(m_ViewBindingset);
+        graphicsPSO.inputLayout = psoDesc.inputLayout;
+
+        SetupInputBuffers(cmdList, const_cast<BufferGroup*>(drawItem.buffers), drawItem.transform, graphicsPSO);
+        GE_ERROR_JUDGE();
+
+
+        DeferredLightingConstants lightConstants{};
+        FillProbesParameters(scene->GetDiffuseLightProbes(), lightConstants);
+
+        cmdList->writeBuffer(m_LightsCB, &lightConstants, sizeof(DeferredLightingConstants));
+        cmdList->setGraphicsState(graphicsPSO);
+
+        Draw(cmdList, drawItem);
+    }
+
+    void IBLProbeRenderer::FillProbesParameters(const std::vector<Object*>& probes, DeferredLightingConstants& output)
+    {
+        output.numLightProbes = probes.size();
+        for (size_t i = 0; i < probes.size(); i++)
+        {
+            LightProbeConstants probeConst;
+            probes[i]->GetComponent<LightProbe>()->FillLightProbeConstants(probes[i]->GetComponent<LightProbe>()->GetType(), Math::ToFloat3(probes[i]->GetComponent<Transform>()->GetPosition()), probeConst);
+            output.lightProbes[i] = probeConst;
+        }
+
+    }
+
 
     void IBLProbeRenderer::RenderSHImage(Object* probe, TextureHandle environmentMap)
     {
@@ -460,6 +518,91 @@ namespace BlackPearl
         cmdList->setGraphicsState(graphicsPSO);
 
         Draw(cmdList, drawItem);
+
+    }
+
+    void IBLProbeRenderer::_InitDeferredLighting()
+    {
+
+        //Deferred Shading IBL Material
+        std::vector<std::string> extends;
+        std::vector<std::string> macros;
+#ifdef GE_PLATFORM_ANDROID
+        if (RenderGraph::SupportPLS())
+        {
+            extends.push_back("#extension GL_EXT_shader_pixel_local_storage : require");
+            extends.push_back("#extension GL_ARM_shader_framebuffer_fetch_depth_stencil : require");
+            macros.push_back("#define USE_GLES_PLS 1");
+
+        }
+#endif
+        macros.push_back("#define DEFERRED_SHADING_PASS 1");
+        m_DeferredIBLShader = DBG_NEW MaterialShader("assets/shaders/glsl/deferred_shading/deferred_shading_bsdf_ibl.glsl", &extends, &macros);;
+        RHIBindingLayoutDesc layoutDesc;
+        layoutDesc.visibility = ShaderType::Pixel;
+        layoutDesc.bindings = {
+            RHIBindingLayoutItem::RT_Texture_SRV(0),
+            RHIBindingLayoutItem::RT_Texture_SRV(1),
+            RHIBindingLayoutItem::RT_Texture_SRV(2),
+            RHIBindingLayoutItem::RT_Texture_SRV(3),
+            RHIBindingLayoutItem::RT_Texture_SRV(4),
+            RHIBindingLayoutItem::RT_Texture_SRV(5),
+            RHIBindingLayoutItem::RT_VolatileConstantBuffer(8) //           DeferredLightingConstants
+
+        };
+        m_DeferredShadingBindingLayout = m_Device->createBindingLayout(layoutDesc);
+        m_LightsCB = m_Device->createBuffer(RHIUtils::CreateStaticConstantBufferDesc(sizeof(DeferredLightingConstants), "DeferredLightingConstants"));
+
+        BindingSetDesc bindingSetDesc;
+        bindingSetDesc.bindings = {
+            BindingSetItem::Texture_SRV(0, SystemTexture::Get().SceneColor, "SceneColor"),
+            BindingSetItem::Texture_SRV(1, SystemTexture::Get().GBufferA, "GBufferA"),
+            BindingSetItem::Texture_SRV(2, SystemTexture::Get().GBufferB, "GBufferB"),
+            BindingSetItem::Texture_SRV(3, SystemTexture::Get().GBufferC, "GBufferC"),
+            BindingSetItem::Texture_SRV(4, SystemTexture::Get().SceneDepth, "SceneDepth"),
+            BindingSetItem::Texture_SRV(5, SystemTexture::Get().ShadowCubeMap, "ShadowCubeMap"),
+            BindingSetItem::ConstantBuffer(8, m_LightsCB),
+        };
+        m_DeferredShadingBindingSet = m_Device->createBindingSet(bindingSetDesc, m_DeferredShadingBindingLayout);
+
+
+    }
+
+    void IBLProbeRenderer::_InitProbeDebug()
+    {
+        m_ProbeDebugShader = DBG_NEW MaterialShader("assets/shaders/glsl/lightProbes/lightProbe.glsl");
+
+        //Debug Probe Material
+        RHIBindingLayoutDesc layoutDesc;
+        layoutDesc.visibility = ShaderType::Pixel;
+        layoutDesc.bindings = {
+            RHIBindingLayoutItem::RT_VolatileConstantBuffer(8),
+        };
+        m_ProbeBindingLayout = m_Device->createBindingLayout(layoutDesc);
+        m_ProbeCB = m_Device->createBuffer(RHIUtils::CreateStaticConstantBufferDesc(sizeof(LightConstants), "LightConstants"));
+
+        BindingSetDesc bindingSetDesc;
+        bindingSetDesc.bindings = {
+            BindingSetItem::ConstantBuffer(8, m_ProbeCB),
+        };
+        m_ProbeBindingSet = m_Device->createBindingSet(bindingSetDesc, m_ProbeBindingLayout);
+    }
+
+    void IBLProbeRenderer::_InitProbeBake()
+    {//assets/shaders/glsl/ibl/brdf.glsl");
+        m_SpecularPrefilterShader = DBG_NEW MaterialShader("assets/shaders/glsl/ibl/prefilterMap.glsl");
+
+
+        //多个probe共用一个camera
+        m_ProbeCamera = g_objectManager->CreateCamera("ProbeCamera");
+        m_ProbeCamera->GetObj()->GetComponent<PerspectiveCamera>()->SetFov(90.0f);
+        m_ProbeCamera->GetObj()->GetComponent<PerspectiveCamera>()->SetWidth(Configuration::EnvironmantMapResolution);
+        m_ProbeCamera->GetObj()->GetComponent<PerspectiveCamera>()->SetHeight(Configuration::EnvironmantMapResolution);
+        m_ProbeCamera->GetObj()->GetComponent<PerspectiveCamera>()->SetZfar(13.0f);
+
+        // m_BrdfLUTQuadObj = brdfLUTQuadObj;
+        m_EnvironmentMapRenderer->Init();
+        m_EnvironmentMapSkyboxRenderer->Init();
 
     }
 

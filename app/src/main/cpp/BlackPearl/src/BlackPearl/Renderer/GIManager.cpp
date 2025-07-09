@@ -9,20 +9,24 @@ namespace BlackPearl {
 
     GIRenderer* GIManager::CreateGIRenderer(IDevice* device, GIMethod method)
     {
+        GE_ASSERT(!m_GIRenderer, "Renderer has been created! only one GI method can be used");
         switch (method)
         {
         case BlackPearl::DDGI:
-            return  DBG_NEW DDGIRenderer(device);
+            m_GIRenderer =  DBG_NEW DDGIRenderer(device);
+            break;
         case BlackPearl::RTXDI:
             //todo::
             return nullptr;
         case BlackPearl::IBL:
-            return  DBG_NEW IBLProbeRenderer(device);
+            m_GIRenderer = DBG_NEW IBLProbeRenderer(device);
+            break;
         case BlackPearl::SSGI:
-            return  DBG_NEW SSGIRenderer(device);
+            m_GIRenderer = DBG_NEW SSGIRenderer(device);
+            break;
         default:
             break;
         }
-        return nullptr;
+        return m_GIRenderer;
     }
 }

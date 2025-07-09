@@ -21,11 +21,14 @@ namespace BlackPearl
 
         void RenderDirectionLights(ICommandList* commandList, IFramebuffer* targetFramebuffer, Scene* scene);
         void RenderPointLights(ICommandList* commandList, IFramebuffer* targetFramebuffer, Scene* scene);
-        void RenderIBLProbes(ICommandList* commandList, IFramebuffer* targetFramebuffer, Scene* scene);
+        void RenderIndirectLight(ICommandList* commandList, IFramebuffer* targetFramebuffer, Scene* scene);
+
+        
+        
+        //void RenderIBLProbes(ICommandList* commandList, IFramebuffer* targetFramebuffer, Scene* scene);
 
 
         void FillLightsParameters(Light* light, DeferredLightingConstants& output);
-        void FillProbesParameters(const std::vector<Object*>& probes, DeferredLightingConstants& output);
 
     private:
         static float CalculateSphereRadius(Object* pointLight);
@@ -49,7 +52,6 @@ namespace BlackPearl
         /* write pos,normal,color to gBuffer */
         MaterialShader* m_DeferredPointLightShader = nullptr;
         MaterialShader* m_DeferredDirectionLightShader = nullptr;
-        MaterialShader* m_DeferredIBLShader = nullptr;
 
         ShaderParameters m_ShaderParameters[ShaderType::NUM_COMPILE_SHADER_STAGES];
 
@@ -60,7 +62,6 @@ namespace BlackPearl
 
         GraphicsPipelineHandle m_DeferredShadingPointLightPso = nullptr;
         GraphicsPipelineHandle m_DeferredShadingDirectionLightPso = nullptr;
-        GraphicsPipelineHandle m_DeferredShadingIBLPso = nullptr;
 
 
 

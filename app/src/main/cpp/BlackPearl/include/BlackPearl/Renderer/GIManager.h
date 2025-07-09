@@ -13,6 +13,11 @@ namespace BlackPearl {
 	public:
         GIManager() = default;
         GIRenderer* CreateGIRenderer(IDevice* device, GIMethod method);
+        GIRenderer* GetGIRenderer() const {
+            return m_GIRenderer;
+        }
+    private:
+        GIRenderer* m_GIRenderer = nullptr;
 
 	};
 

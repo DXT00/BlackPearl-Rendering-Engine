@@ -17,10 +17,12 @@ namespace BlackPearl{
             , IShader* InVertexShaderRHI
             , IShader* InPixelShaderRHI
             , IShader* InGeometryShaderRHI
+            , IShader* InComputeShaderRHI
         )
             : VertexDeclarationRHI(InVertexDeclarationRHI)
             , VertexShaderRHI(InVertexShaderRHI)
             , PixelShaderRHI(InPixelShaderRHI)
+            , ComputeShaderRHI(InComputeShaderRHI)
 #if PLATFORM_SUPPORTS_GEOMETRY_SHADERS
             , GeometryShaderRHI(InGeometryShaderRHI)
 #endif
@@ -40,6 +42,7 @@ namespace BlackPearl{
 #endif
         IShader* GetVertexShader() const { return VertexShaderRHI; }
         IShader* GetPixelShader() const { return PixelShaderRHI; }
+        IShader* GetComputeShader() const { return ComputeShaderRHI; }
 
 #if PLATFORM_SUPPORTS_MESH_SHADERS
         IShader* GetMeshShader() const { return MeshShaderRHI; }
@@ -60,11 +63,14 @@ namespace BlackPearl{
         IShader* GetGeometryShader() const { return nullptr; }
         void SetGeometryShader(IShader*) {}
 #endif
-
+        IInputLayout* GetInputLayout() const { return VertexDeclarationRHI; }
+    
+    protected:
         IInputLayout* VertexDeclarationRHI = nullptr;
         IShader* VertexShaderRHI = nullptr;
         IShader* PixelShaderRHI = nullptr;
-    private:
+        IShader* ComputeShaderRHI = nullptr;
+
 #if PLATFORM_SUPPORTS_MESH_SHADERS
         IShader* MeshShaderRHI = nullptr;
         IShader* AmplificationShaderRHI = nullptr;

@@ -32,7 +32,7 @@ namespace BlackPearl {
 		unsigned int GetAreaSize()const { return m_AreaSize; }
 		unsigned int GetHalfMapSize()const { return m_HalfMapSize; }
 
-		Area* GetArea(unsigned int areaId);
+		Area* GetArea(int areaId);
 		int CalculateAreaId(glm::vec3 pos);
 		std::set<unsigned int> FindNearByArea(glm::vec3 pos);
         uint32_t AddProbeIdToArea(glm::vec3 probePos,unsigned int probeId);

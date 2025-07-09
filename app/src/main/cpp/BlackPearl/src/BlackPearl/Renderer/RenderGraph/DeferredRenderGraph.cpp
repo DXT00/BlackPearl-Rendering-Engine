@@ -65,6 +65,13 @@ namespace BlackPearl {
 			RenderMultiPass(ts, framebuffer, View);
 		}
 	}
+    void DeferredRenderGraph::RenderUI(IFramebuffer* framebuffer, IView* View)
+    {
+        if (Configuration::bUseIndirectLight
+            && g_GIManager->GetGIRenderer()) {
+            g_GIManager->GetGIRenderer()->RenderUI(framebuffer, View);
+        }
+    }
 	// 直接 draw 到 defualt frambuffer -- >也就是 SceneColor 上
 	void DeferredRenderGraph::RenderSinglePass(Timestep ts, IFramebuffer* framebuffer, IView* View)
 	{
@@ -155,8 +162,9 @@ namespace BlackPearl {
             m_SkyboxRenderer->Render(m_CommandList, framebuffer, m_Scene);
 
             //todo:: draw probes --> use gi manager
-            if (Configuration::bUseIndirectLight && Configuration::bShowProbes) {
-             //   m_GIRenderer->ShowProbes(m_CommandList, framebuffer, m_Scene);
+            if (Configuration::bUseIndirectLight && Configuration::bShowProbes
+                && g_GIManager->GetGIRenderer()) {
+                g_GIManager->GetGIRenderer()->ShowProbes(m_CommandList, framebuffer, m_Scene);
             }
 
 

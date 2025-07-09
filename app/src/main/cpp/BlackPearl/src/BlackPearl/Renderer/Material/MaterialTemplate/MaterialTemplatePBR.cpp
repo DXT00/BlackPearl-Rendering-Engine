@@ -26,7 +26,7 @@ namespace BlackPearl {
 		material_cb.roughness = 0.5f;
         material_cb.metallic = 0.1f;// 0.5f;
 		material_cb.ao = 1.0f;
-		material_cb.specular = 0.04f;
+        material_cb.specular = 0.5f;// 0.04f;
         material_cb.albedo = material->GetMaterialColor().diffuseColor;
         material_cb.emissive = material->GetMaterialColor().emissiveColor;
         material_cb.transmission = material->GetMaterialColor().subsurfaceColor;

@@ -34,7 +34,7 @@ namespace BlackPearl {
 		CommandListHandle    m_CommandList;
 		Scene* m_Scene = nullptr;
 
-        IBLProbeRenderer* m_IBLProbeRenderer;
+       GIRenderer* m_IBLProbeRenderer;
 
         FramebufferHandle m_DeferredFramebuffer;
 

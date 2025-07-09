@@ -9,7 +9,7 @@
 #include <sdf_cb.h>
 #include <voxel_cb.h>
 #include <ddgi_cb.h>
-
+#include <sky_cb.h>
 #include <common/CommonMath.glsl>
 #include <ddgi/ddgiCommon.glsl>
 #include <sdf/sdfCommon.glsl>
@@ -44,20 +44,26 @@ layout(binding = 1, std140)  uniform VoxelUBO {
 // Skybox sets
 //-----------------------------------------------
 
+
 layout(binding = 7) uniform samplerCube u_Skybox0;
 layout(binding = 8) uniform samplerCube u_Skybox1;
 layout(binding = 9) uniform samplerCube u_Skybox2;
 
+layout(binding = 2, std140) uniform SkyConstantsUbo {
+
+   SkyConstants g_SkyConstants;
+
+};
 
 //-----------------------------------------------
 // DDGI sets
 //-----------------------------------------------
 
-layout (binding = 2, std140) uniform DDGIUBO
+layout (binding = 3, std140) uniform DDGIUBO
 {
     DDGIConstants g_ddgi;
 };
-layout (binding = 3, std140) uniform DDGIRayUBO
+layout (binding = 4, std140) uniform DDGIRayUBO
 {
     DDGIRayConstants g_pushConsts;
 };
@@ -174,8 +180,14 @@ void main()
     }
     else
     {
+            vec4 skyBoxColor =// texture(u_Skybox0, TexCoords);
+	        g_SkyConstants.factors.x * texture(u_Skybox0,direction)
+				        +g_SkyConstants.factors.y * texture(u_Skybox1,direction)
+				        +g_SkyConstants.factors.z * texture(u_Skybox2,direction);//*vec4(u_Material.diffuseColor,1.0);
+
+
         //TODO::
-        radiance = vec4(texture(u_Skybox0, direction).rgb, GLOBAL_SDF_WORLD_SIZE);  
+        radiance = vec4(skyBoxColor.rgb, GLOBAL_SDF_WORLD_SIZE);  
     }
     
     imageStore(iRadiance, texCoords, vec4(radiance.xyz, 0.0f));

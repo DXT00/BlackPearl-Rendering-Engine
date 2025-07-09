@@ -9,13 +9,14 @@ project "BlackPearl"
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
 
-	pchheader "pch.h"
-	pchsource "./src/pch.cpp"
+	--pchheader "pch.h"
+--	pchsource "./src/pch.cpp"
 
 	files
 	{
 		"./include/**.h",
 		"./src/**.cpp",
+        "./src/**.c",
 		"./src/**.jpg",
 		"./src/**.png",
 		"./vendor/glm/glm/**.hpp",

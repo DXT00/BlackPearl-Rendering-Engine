@@ -4,8 +4,8 @@
 namespace BlackPearl {
 	//һ��Entity���32��Component
 	//inline static void SyncGPU();
-#define GE_OLD_WORLD_MAX			2097152.0						/* UE4 maximum world size */
-#define GE_OLD_HALF_WORLD_MAX		(GE_OLD_WORLD_MAX * 0.5)		/* UE4 half maximum world size */
+#define GE_OLD_WORLD_MAX			2097152.0						/* maximum world size */
+#define GE_OLD_HALF_WORLD_MAX		(GE_OLD_WORLD_MAX * 0.5)		/* half maximum world size */
 
 #ifdef GE_API_OPENGL
 #define GL_BACKBUFFER_CNT 1
@@ -78,8 +78,8 @@ namespace BlackPearl {
 		// ------------------------------------------
 		// Map config
 		// ------------------------------------------
-		static const unsigned int MapSize = 100;
-		static const unsigned int AreaSize = 50;
+		static const unsigned int MapSize = 500;
+		static const unsigned int AreaSize = 500;
 
 		//  ------------------------------------------
 		// D3D12 Ray Tracing config
@@ -154,6 +154,8 @@ namespace BlackPearl {
         static bool    DDIG_InfiniteBounce;
         static int32_t DDIG_RaysPerProbe;
         static float   DDIG_Intensity;
+        // max volume cnt in one area(init by MapManager)
+        static uint32_t DDGI_MAXVolumeCountInArea; 
 
 	};
 	struct ShaderConfig {

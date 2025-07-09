@@ -732,6 +732,16 @@ namespace BlackPearl {
     LightProbeGrid* Layer::CreateProbeGrid(ProbeType type, math::float3 probeNums, math::float3 offsets, float space)
 	{
         LightProbeGrid* grid = DBG_NEW LightProbeGrid(type, probeNums, offsets, space);
+
+        for (auto probe : grid->GridObj->GetChildObjs()) {
+
+            if (type == ProbeType::DIFFUSE_PROBE)
+                m_DiffuseLightProbes.push_back(probe);
+            else
+                m_ReflectionLightProbes.push_back(probe);
+        }
+
+
         return grid;
 
 	}

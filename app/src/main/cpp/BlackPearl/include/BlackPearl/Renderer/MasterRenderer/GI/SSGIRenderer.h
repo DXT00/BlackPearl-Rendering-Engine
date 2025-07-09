@@ -8,6 +8,8 @@ namespace BlackPearl {
         virtual void Init(Scene* scene) override {};
         virtual void Render(ICommandList* cmdList, IFramebuffer* targetFramebuffer, Scene* scene) override {};
         virtual void ShowProbes(ICommandList* cmdList, IFramebuffer* targetFramebuffer, Scene* scene) override {};
+        virtual void RenderIndirectLight(ICommandList* commandList, IFramebuffer* targetFramebuffer, Scene* scene) override;
+
     };
 }
 

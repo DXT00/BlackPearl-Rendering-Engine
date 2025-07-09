@@ -20,7 +20,7 @@ namespace BlackPearl {
 		virtual void Render(Timestep ts, IFramebuffer* framebuffer, IView* View) override;
 
 		
-
+        bool ShouldRender();
 
 	private:
 
@@ -31,7 +31,7 @@ namespace BlackPearl {
 		CommandListHandle    m_CommandList;
 		Scene* m_Scene = nullptr;
 
-        DDGIRenderer* m_DDGIRenderer;
+        GIRenderer* m_DDGIRenderer;
 
    
 

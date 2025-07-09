@@ -11,39 +11,47 @@ namespace BlackPearl {
     struct DDGIData {
 
     };
-
+    class GIManager;
     class RayTrace;
     class DDGIRenderer : public GIRenderer, public BasicRenderer
     {
     public:
-        DDGIRenderer(IDevice* device);
         virtual void Init(Scene* scene) override;
         virtual void Render(ICommandList* cmdList, IFramebuffer* targetFramebuffer, Scene* scene) override;
         
+        virtual void RenderIndirectLight(ICommandList* commandList, IFramebuffer* targetFramebuffer, Scene* scene) override;
+
+        virtual void RenderUI(IFramebuffer* framebuffer, IView* View) override;
+
+
         virtual void RayTraceVolumes(ICommandList* cmdList, IFramebuffer* targetFramebuffer, Scene* scene);
         virtual void UpdateVolumeProbe(ICommandList* cmdList, IFramebuffer* targetFramebuffer, Scene* scene);
 
-        
+
         virtual void ShowProbes(ICommandList* cmdList, IFramebuffer* targetFramebuffer, Scene* scene) override;
    
+        void _RenderProbe(ICommandList* cmdList, IFramebuffer* targetFramebuffer, Scene* scene, Object* probe);
 
 
     private:
+        friend class GIManager;
+        DDGIRenderer(IDevice* device);
 
        
 
         MaterialShader* m_ProbeIrradianceUpdateShader = nullptr; 
         MaterialShader* m_ProbeDepthUpdateShader = nullptr;
+        MaterialShader* m_ProbeGatherShader = nullptr;
 
         std::vector<IrradianceVolume> m_Volumes;
         std::vector<DDGIPipelineInternal> m_Pipelines; // each volume has a pipline
 
-        struct ProbeBindings {
+        struct ProbeUpdateBindings {
             BindingLayoutHandle layout;
             BindingSetHandle    set;
             BufferHandle        ddgiCB;
             BufferHandle        frameCB;
-            ProbeBindings() {
+            ProbeUpdateBindings() {
                 layout = nullptr;
                 set = nullptr;
                 ddgiCB = nullptr;
@@ -51,24 +59,71 @@ namespace BlackPearl {
             }
 
         };
-        std::vector<ProbeBindings> m_ProbeUpdateBindings;
-        ComputePipelineHandle m_ProbeIrradianceUpdatePso;
-        ComputePipelineHandle m_ProbeDiatanceUpdatePso;
+        std::vector<ProbeUpdateBindings> m_ProbeUpdateBindings;
+        ComputePipelineHandle m_ProbeIrradianceUpdatePso = nullptr;
+        ComputePipelineHandle m_ProbeDiatanceUpdatePso = nullptr;
 
         RayTrace* m_Tracer = nullptr;
 
+        struct ProbeGatherBindings {
+            BindingLayoutHandle layout;
+            BindingSetHandle    set;
+            BufferHandle        ddgiSSBO; 
+            BufferHandle        areaCB;
+            TextureHandle       outputIndirectLighting;
+            ProbeGatherBindings() {
+                layout = nullptr;
+                set = nullptr;
+                ddgiSSBO = nullptr;
+                areaCB = nullptr;
+            }
 
+        };
+        ProbeGatherBindings m_ProbeGatherBindings;
+        ComputePipelineHandle m_ProbeGatherPso = nullptr;
+
+
+
+        MaterialShader* m_ProbeDebugShader = nullptr;
+        //TODO:: Probe Material;
+        BindingLayoutHandle m_ProbeBindingLayout;
+        BindingSetHandle    m_ProbeBindingSet;
+        GraphicsPipelineHandle m_ProbePso = nullptr;
+        BufferHandle    m_ProbeCB;
+
+
+        //Deferred IndirectLight shading
+        MaterialShader* m_DeferredDDGIShader = nullptr;
+
+        BindingLayoutHandle m_DeferredShadingBindingLayout;
+        BindingSetHandle    m_DeferredShadingBindingSet;
+        GraphicsPipelineHandle m_DeferredShadingPso = nullptr;
+
+        struct UIData {
+            uint32_t numVolumeInArea;
+            int currentAreaId;
+        };
     private:
 
         void _InitVolumesAndPipeline(Scene* scene);
         void _InitProbeUpdate(Scene* scene);
+        void _InitProbeGather(Scene* scene);
+        void _InitDeferredLighting();
+        void _InitProbeDebug();
 
-        void _UpdateProbeIrradiance(ICommandList* cmdList, const IrradianceVolume& volume, const DDGIPipelineInternal& pipeline, const ProbeBindings& binidngs, Scene* scene);
-        void _UpdateProbeDistance(ICommandList* cmdList, const IrradianceVolume& volume, const DDGIPipelineInternal& pipeline, const ProbeBindings& binidngs, Scene* scene);
+        void _UpdateProbeIrradiance(ICommandList* cmdList, const IrradianceVolume& volume, const DDGIPipelineInternal& pipeline, const ProbeUpdateBindings& binidngs, Scene* scene);
+        void _UpdateProbeDistance(ICommandList* cmdList, const IrradianceVolume& volume, const DDGIPipelineInternal& pipeline, const ProbeUpdateBindings& binidngs, Scene* scene);
 
-        void _FillUpdateProbeShaderParameters(ICommandList* cmdList, const IrradianceVolume& volume,  const ProbeBindings& binidngs);
+        //Indirect lighint
+        void _ProbeGather(ICommandList* cmdList, IFramebuffer* targetFramebuffer, Scene* scene);
+        void _IndirectShading(ICommandList* cmdList, IFramebuffer* targetFramebuffer, Scene* scene);
+
+        void _FillUpdateProbeShaderParameters(ICommandList* cmdList, const IrradianceVolume& volume,  const ProbeUpdateBindings& binidngs);
         // sw tracing
        // void GenerateGDF();
+
+        uint32_t m_LastWrite = 0;
+        UIData m_UI;
 
     };
 }

@@ -1,5 +1,6 @@
 
-
+#ifndef BP_BSDF_H
+#define BP_BSDF_H
 #include <assets/shaders/glsl/common/CommonTextureSample.glsl>
 
 
@@ -25,4 +26,6 @@ float3 ComputeF90(float3 F0, float3 EdgeColor, float Metallic)
 	#include <assets/shaders/glsl/bsdf/CookBSDF.glsl>
 #elif (Disney)
 	#include <assets/shaders/glsl/bsdf/DisneyBSDF.glsl>
+#endif
+
 #endif

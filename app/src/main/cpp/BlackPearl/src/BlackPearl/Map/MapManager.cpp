@@ -4,9 +4,12 @@
 #include "BlackPearl/Component/LightProbeComponent/LightProbeComponent.h"
 #include "BlackPearl/Component/TransformComponent/Transform.h"
 namespace BlackPearl {
-	Area* MapManager::GetArea(unsigned int areaId)
+	Area* MapManager::GetArea(int areaId)
 	{
-		GE_ASSERT(areaId < m_AreasList.size(), "areaId>=m_AreasList.size()!");
+        if (areaId >- m_AreasList.size() || areaId < 0) {
+            GE_CORE_WARN("invalid area");
+            return nullptr;
+        }
 		return m_AreasList[areaId];
 	}
 
@@ -20,8 +23,11 @@ namespace BlackPearl {
 			int z = pos.z / m_AreaSize;
 			return  x + z * m_AreaCount + y * m_AreaCount * m_AreaCount;
 		}
-		else
-			return -1;
+        else {
+            GE_CORE_WARN("invalid area id");
+            return -1;
+
+        }
 
 	}
 

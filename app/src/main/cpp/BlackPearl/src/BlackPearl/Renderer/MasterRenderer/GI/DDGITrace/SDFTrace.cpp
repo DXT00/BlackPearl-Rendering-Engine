@@ -11,6 +11,8 @@
 #include "RHI/Common/RHIUtils.h"
 #include "Renderer/SystemTextures.h"
 #include "Math/vector.h"
+#include "hlsl/core/sky_cb.h"
+#include "Renderer/MasterRenderer/SkyboxRenderer.h"
 
 namespace BlackPearl {
     extern MapManager* g_mapManager;
@@ -18,7 +20,7 @@ namespace BlackPearl {
     void SDFTrace::Init(IDevice* device)
     {
         m_Device = device;
-        m_SDFGIShader = DBG_NEW MaterialShader("assets/shaders/glsl/ddgi/sdfTrace.glsl");
+        m_SDFGIShader = DBG_NEW MaterialShader("assets/shaders/glsl/ddgi/probeSDFTrace.glsl");
        
         _InitBindingsSDF();
         _InitBindingsVoxel();
@@ -32,6 +34,25 @@ namespace BlackPearl {
     void SDFTrace::Execute(ICommandList* cmdList, const IrradianceVolume& volume, const DDGIPipelineInternal& pipeline, Scene* scene)
     {
         cmdList->beginMarker("SDFGITrace");
+
+
+        double timeSecond = SystemTime::GetRuntimeFromStartMs() / 1000.0f;
+        float currentTimeS = fmod(timeSecond, SkyboxRenderer::m_TotalTimeIntervalS);
+        int state = int(currentTimeS / SkyboxRenderer::m_StateIntervalS);
+        int nextState = state + 1;
+        float stateFactor = nextState * SkyboxRenderer::m_StateIntervalS - currentTimeS;
+        float nextStateFactor = currentTimeS - state * SkyboxRenderer::m_StateIntervalS;
+        nextState %= 3;
+        state %= 3;
+
+
+        SkyConstants skyConstants{};
+        skyConstants.factors[state] = stateFactor / SkyboxRenderer::m_StateIntervalS;
+        skyConstants.factors[nextState] = nextStateFactor / SkyboxRenderer::m_StateIntervalS;
+        skyConstants.factors[3 - state - nextState] = 0;
+
+        cmdList->writeBuffer(m_Bindings.skyCB, &skyConstants, sizeof(SkyConstants));
+
         ComputeState computePSO;
         computePSO.pipeline = m_SDFTracePso;
 
@@ -138,18 +159,25 @@ namespace BlackPearl {
         layoutDesc.bindings = {
             RHIBindingLayoutItem::RT_Texture_SRV(7),
             RHIBindingLayoutItem::RT_Texture_SRV(8),
-            RHIBindingLayoutItem::RT_Texture_SRV(9)
+            RHIBindingLayoutItem::RT_Texture_SRV(9),
+            RHIBindingLayoutItem::RT_VolatileConstantBuffer(2),
+
 
         };
         m_Bindings.skyboxLayout = m_Device->createBindingLayout(layoutDesc);
+        m_Bindings.skyCB = m_Device->createBuffer(RHIUtils::CreateStaticConstantBufferDesc(sizeof(SkyConstants), "SkyConstants"));
 
         BindingSetDesc bindingSetDesc;
         bindingSetDesc.bindings = {
             BindingSetItem::Texture_SRV(7, SystemTexture::Get().SkyboxTexture0, "SkyboxTexture0"),
             BindingSetItem::Texture_SRV(8, SystemTexture::Get().SkyboxTexture1, "SkyboxTexture1"),
             BindingSetItem::Texture_SRV(9, SystemTexture::Get().SkyboxTexture2, "SkyboxTexture2"),
+            BindingSetItem::ConstantBuffer(2, m_Bindings.skyCB),
+
         };
         m_Bindings.skyboxSet = m_Device->createBindingSet(bindingSetDesc, m_Bindings.skyboxLayout);
+
+    
     }
 
     void SDFTrace::_InitBindingsDDGI()
@@ -159,8 +187,8 @@ namespace BlackPearl {
         RHIBindingLayoutDesc layoutDesc;
         layoutDesc.visibility = ShaderType::Compute;
         layoutDesc.bindings = {
-           RHIBindingLayoutItem::RT_ConstantBuffer(2),
-           RHIBindingLayoutItem::RT_ConstantBuffer(3)
+           RHIBindingLayoutItem::RT_ConstantBuffer(3),
+           RHIBindingLayoutItem::RT_ConstantBuffer(4)
 
         };
         m_Bindings.ddgiLayout = m_Device->createBindingLayout(layoutDesc);
@@ -169,8 +197,8 @@ namespace BlackPearl {
 
         BindingSetDesc bindingSetDesc;
         bindingSetDesc.bindings = {
-            BindingSetItem::ConstantBuffer(2, m_Bindings.ddgiCB),
-            BindingSetItem::ConstantBuffer(3, m_Bindings.ddgiRayCB)
+            BindingSetItem::ConstantBuffer(3, m_Bindings.ddgiCB),
+            BindingSetItem::ConstantBuffer(4, m_Bindings.ddgiRayCB)
         };
         m_Bindings.ddgiSet = m_Device->createBindingSet(bindingSetDesc, m_Bindings.ddgiLayout);
     }
@@ -279,7 +307,7 @@ namespace BlackPearl {
         cmdList->writeBuffer(m_Bindings.gdfCB, &gdfTraceConst, sizeof(GlobalSDFTraceConstants));
 
     }
-
+    // todo::ray 击中的不止当前voxel
     void SDFTrace::_FillVoxel(ICommandList* cmdList, const glm::vec3 camPos)
     {
        // GE_ASSERT(Configuration::bUseVoxel);

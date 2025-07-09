@@ -2,7 +2,8 @@
 /*
 Cook-Torrance BSDF Model
 */
-
+#ifndef BP_COOK_BSDF_H
+#define BP_COOK_BSDF_H
 #include <assets/shaders/hlsl/core/light_cb.h>
 
 #include <assets/shaders/hlsl/core/material_cb.h>
@@ -205,7 +206,7 @@ vec3 evaluateCookBRDF(MaterialSample mat, SurfaceGeometry geom, LightConstants l
 
     // mix between metal and non-metal material, for non-metal
     // constant base specular factor of 0.04 grey is used
-    vec3 specular = mix(vec3(0.04), base, vec3(metallic));
+    vec3 specular = ComputeF0(mat.specular, base, metallic);//mix(vec3(0.04), base, vec3(metallic));
 
     // diffuse IBL term ::TODO
     //    I know that my IBL cubemap has diffuse pre-integrated value in 10th MIP level
@@ -382,3 +383,4 @@ MaterialSample CreateCookBSDFMaterial(in SurfaceGeometry geom, in MaterialConsta
 
     return result;
 }
+#endif

@@ -77,10 +77,11 @@ namespace BlackPearl {
 
             }
         }
-        math::float3 pos = math::float3(
+        math::float3 endPos = offsets +  math::float3(
             (ProbeCounts.x - 1) * ProbeDistance,
             (ProbeCounts.y - 1) * ProbeDistance,
             (ProbeCounts.z - 1) * ProbeDistance);
+        math::float3 pos = (endPos + offsets) * float3(0.5);
         GridObj->GetComponent<Transform>()->SetPosition(Math::ToVec3(pos));
 
         math::float3 extend = (ProbeCounts - math::float3(1.0)) * ProbeDistance;

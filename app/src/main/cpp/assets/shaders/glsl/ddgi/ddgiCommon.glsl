@@ -3,6 +3,7 @@
 #define BP_DDGI_COMMON
 
 #include <ddgi_cb.h>
+#include <common/CommonMath.glsl>
 
 //struct DDGIUniform
 //{
@@ -150,96 +151,53 @@ int gridCoordToProbeIndex(in DDGIConstants ddgi, in ivec3 probeCoords)
 
 vec2 textureCoordFromDirection(vec3 dir, int probeIndex, int width, int height, int probeSideLength) 
 {
+//    vec2 normalizedOctCoord = octEncode(normalize(dir));
+//    vec2 normalizedOctCoordZeroOne = (normalizedOctCoord + vec2(1.0f)) * 0.5f;
+//
+//    float probeWithBorderSide = float(probeSideLength) + 2.0f;
+//
+//    vec2 octCoordNormalizedToTextureDimensions = (normalizedOctCoordZeroOne * float(probeSideLength)) / vec2(float(width), float(height));
+//
+//    int probesPerRow = (width - 2) / int(probeWithBorderSide); // how many probes in the texture altas
+//
+//    vec2 probeTopLeftPosition = vec2(mod(probeIndex, probesPerRow) * probeWithBorderSide,
+//        (probeIndex / probesPerRow) * probeWithBorderSide) + vec2(2.0f, 2.0f);
+//
+//    vec2 probeTopLeftPositionNormalized = vec2(probeTopLeftPosition) / vec2(float(width), float(height));
+//
+//    return vec2(probeTopLeftPositionNormalized + octCoordNormalizedToTextureDimensions);
+
     vec2 normalizedOctCoord = octEncode(normalize(dir));
     vec2 normalizedOctCoordZeroOne = (normalizedOctCoord + vec2(1.0f)) * 0.5f;
 
-    float probeWithBorderSide = float(probeSideLength) + 2.0f;
+    float probeWithBorderSide = float(probeSideLength) ;//+ 2.0f
 
     vec2 octCoordNormalizedToTextureDimensions = (normalizedOctCoordZeroOne * float(probeSideLength)) / vec2(float(width), float(height));
 
-    int probesPerRow = (width - 2) / int(probeWithBorderSide); // how many probes in the texture altas
+    int probesPerRow = (width) / int(probeWithBorderSide); //(width - 2) / int(probeWithBorderSide); // how many probes in the texture altas
 
     vec2 probeTopLeftPosition = vec2(mod(probeIndex, probesPerRow) * probeWithBorderSide,
-        (probeIndex / probesPerRow) * probeWithBorderSide) + vec2(2.0f, 2.0f);
+        (probeIndex / probesPerRow) * probeWithBorderSide) ;//+ vec2(2.0f, 2.0f);
 
     vec2 probeTopLeftPositionNormalized = vec2(probeTopLeftPosition) / vec2(float(width), float(height));
 
     return vec2(probeTopLeftPositionNormalized + octCoordNormalizedToTextureDimensions);
 }
+bool allGreaterZero(float3 v){
+    return v.x >0.0 &&v.y>0.0 &&v.z>0.0;
+}
+bool allLessZero(float3 v){
+    return v.x <0.0 &&v.y<0.0 &&v.z<0.0;
+}
+bool IsInsideDDGIVolume(in DDGIConstants ddgi, vec3 P){
+    
+    float3 volumeMin = ddgi.startPosition.xyz;
+    float3 volumeMax = ddgi.startPosition.xyz + ddgi.probeDistance.xyz * (ddgi.probeCounts.xyz - float3(1.0));
+
+    return allGreaterZero(P - volumeMin) && allLessZero(P - volumeMax) ;
+    //return clamp(ivec3((X - ddgi.startPosition.xyz) / ddgi.probeDistance.xyz), ivec3(0, 0, 0), ivec3(ddgi.probeCounts.xyz) - ivec3(1, 1, 1));
 
 
-////P vertex.position
-////N vertex.normal
-//vec3 sampleIrradiance(in DDGIConstants ddgi, vec3 P, vec3 N, vec3 Wo, sampler2D uIrradianceTexture, sampler2D uDepthTexture)
-//{
-//    ivec3 baseGridCoord = baseGridCoord(ddgi, P);
-//    vec3 baseProbePos   = gridCoordToPosition(ddgi, baseGridCoord);
-//    
-//    vec3  sumIrradiance = vec3(0.0f);
-//    float sumWeight = 0.0f;
-//
-//    vec3 alpha = clamp((P - baseProbePos) / ddgi.probeDistance.xyz, vec3(0.0f), vec3(1.0f));
-//
-//    for (int i = 0; i < 8; ++i) 
-//    {
-//        ivec3 offset = ivec3(i, i >> 1, i >> 2) & ivec3(1);
-//        ivec3 probeGridCoord = clamp(baseGridCoord + offset, ivec3(0), ddgi.probeCounts.xyz - ivec3(1));
-//        vec3 probePos = gridToPosition(ddgi, probeGridCoord);
-//
-//        vec3 trilinear = mix(1.0 - alpha, alpha, offset);
-//        float weight = 1.0;
-//
-//        // Smooth backface test
-//    
-//        vec3 dirToProbe = normalize(probePos - P);
-//        weight *= square(max(0.0001, (dot(dirToProbe, N) + 1.0) * 0.5)) + 0.2;
-//
-//        int probeIdx = gridCoordToProbeIndex(ddgi, probeGridCoord);
-//
-//
-//        // Moment visibility test
-//        vec3 vBias = (N + 3.0 * Wo) * ddgi.normalBias;
-//        vec3 probeToPoint = P - probePos + vBias;
-//        vec3 dir = normalize(-probeToPoint);
-//
-//        vec2 texCoord = textureCoordFromDirection(-dir, probeIdx, ddgi.depthTextureWidth, ddgi.depthTextureHeight, ddgi.depthProbeSideLength);
-//
-//        float dist = length(probeToPoint);
-//
-//        vec2 temp = textureLod(uDepthTexture, texCoord, 0.0f).rg;
-//        float mean = temp.x;
-//        float variance = abs(square(temp.x) - temp.y);
-//
-//        float chebyshevWeight = variance / (variance + square(max(dist - mean, 0.0)));
-//            
-//        chebyshevWeight = max(chebyshevWeight * chebyshevWeight * chebyshevWeight, 0.0);
-//
-//        weight *= (dist <= mean) ? 1.0 : chebyshevWeight;
-//
-//        weight = max(0.000001, weight);
-//                 
-//        vec3 irradianceDir = N;
-//
-//        texCoord = textureCoordFromDirection(normalize(irradianceDir), probeIdx, ddgi.irradianceTextureWidth, ddgi.irradianceTextureHeight, ddgi.irradianceProbeSideLength);
-//
-//        vec3 probeIrradiance = textureLod(uIrradianceTexture, texCoord, 0.0f).rgb;
-//     
-//        probeIrradiance = pow(probeIrradiance, vec3(ddgi.ddgiGamma * 0.5f));
-//
-//        const float crushThreshold = 0.2f;
-//        if (weight < crushThreshold)
-//            weight *= weight * weight * (1.0f / square(crushThreshold)); 
-//
-//        // Trilinear weights
-//        weight *= trilinear.x * trilinear.y * trilinear.z;
-//        sumIrradiance += weight * probeIrradiance;
-//        sumWeight += weight;
-//    }
-//
-//    vec3 netIrradiance = sumIrradiance / sumWeight;
-//    netIrradiance   *=netIrradiance; 
-//
-//    return 2 * PI * netIrradiance;
-//}
-//
+}
+
 #endif

@@ -24,9 +24,10 @@ namespace BlackPearl {
 			IInputLayout* InVertexDeclarationRHI
 			, IShader* VertexShader
 			, IShader* PixelShader
-			, IShader* GeometryShader,
-			FOpenGLLinkedProgram* _LinkedProgram,
-            const std::vector<IBindingSet*>& bindingSet
+			, IShader* GeometryShader
+            , IShader* ComputeShader
+			, FOpenGLLinkedProgram* _LinkedProgram
+            , const std::vector<IBindingSet*>& bindingSet
 		) /*: IBoundShaderState(
 			InVertexDeclarationRHI
 			, VertexShader
@@ -40,6 +41,7 @@ namespace BlackPearl {
 #if PLATFORM_SUPPORTS_GEOMETRY_SHADERS
 			GeometryShaderRHI = GeometryShader;
 #endif
+            ComputeShaderRHI = ComputeShader;
 			LinkedProgram = _LinkedProgram;
 
             for (size_t i = 0; i < bindingSet.size(); i++)

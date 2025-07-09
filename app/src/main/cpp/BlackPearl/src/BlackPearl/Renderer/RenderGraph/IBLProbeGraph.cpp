@@ -11,17 +11,18 @@
 #endif
 #include "Renderer/SystemTextures.h"
 #include "Timestep/TimeCounter.h"
+#include "Renderer/GIManager.h"
 namespace BlackPearl {
 
     extern MaterialManager* g_materialManager;
-
+    extern GIManager* g_GIManager;
 	void IBLProbeGraph::Init(Scene* scene) {
 		m_CommandList = GetDevice()->createCommandList();
 		m_Scene = scene;
 
         InitRT();
 
-        m_IBLProbeRenderer = DBG_NEW IBLProbeRenderer(m_DeviceManager->GetDevice());
+        m_IBLProbeRenderer = g_GIManager->CreateGIRenderer(GetDevice(), GIMethod::IBL);
       
         m_IBLProbeRenderer->Init(scene);
       
@@ -49,7 +50,7 @@ namespace BlackPearl {
                );
 
             m_CommandList->beginRenderPass(RPInfo, "BRDF_LUTPass");
-            m_IBLProbeRenderer->RenderSpecularBRDFLUTMap(m_CommandList, framebuffer, m_Scene);
+            dynamic_cast<IBLProbeRenderer*>(m_IBLProbeRenderer)->RenderSpecularBRDFLUTMap(m_CommandList, framebuffer, m_Scene);
             m_CommandList->endRenderPass();
             bRenderBRDFLUT = true;
         }

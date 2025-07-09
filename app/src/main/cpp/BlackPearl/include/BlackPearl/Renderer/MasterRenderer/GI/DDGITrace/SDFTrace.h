@@ -34,6 +34,7 @@ namespace BlackPearl {
 
             BindingLayoutHandle skyboxLayout;
             BindingSetHandle    skyboxSet;
+            BufferHandle        skyCB;
 
             BindingLayoutHandle ddgiLayout;
             BindingSetHandle    ddgiSet;

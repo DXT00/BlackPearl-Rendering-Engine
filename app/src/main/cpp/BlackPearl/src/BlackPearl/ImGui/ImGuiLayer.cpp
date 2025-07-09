@@ -921,12 +921,16 @@ namespace BlackPearl {
 
        // ImGui::Checkbox("bUseIBL", &Configuration::bUseIBL);
         ImGui::Checkbox("bUseDirectLight", &Configuration::bUseDirectLight);
+        ImGui::Checkbox("bUseIndirectLight", &Configuration::bUseIndirectLight);
+
         //ImGui::Checkbox("bUseVoxel", &Configuration::bUseVoxel);
 
         ImGui::Separator();
         ImGui::Text("Probes Settings");
         ImGui::Checkbox("bUpdateProbePerFrame", &Configuration::bUpdateProbePerFrame);
         ImGui::Checkbox("bShowProbes", &Configuration::bShowProbes);
+
+        ImGui::Text("DDGI Settings");
 
         ImGui::Separator();
         ImGui::Text("DebugView");

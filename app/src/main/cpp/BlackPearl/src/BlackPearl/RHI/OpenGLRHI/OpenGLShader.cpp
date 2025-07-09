@@ -1286,6 +1286,7 @@ namespace BlackPearl
             VertexShader,
             PixelShader,
             GeometryShader,
+            ComputeShader,
             LinkedProgram,
             IBindingSet
         );

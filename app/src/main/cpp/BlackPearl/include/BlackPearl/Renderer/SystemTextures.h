@@ -44,6 +44,9 @@ namespace BlackPearl {
        // Scene Voxels, initial in VoxelConeTracingRenderer
        std::vector<Voxel> SceneVoxels;
 
+       // DDGI output texture
+       TextureHandle DDGIIndirectLight;
+       TextureHandle DDGIReflection;
 
        //Shadow textures
        TextureHandle ShadowCubeMap;

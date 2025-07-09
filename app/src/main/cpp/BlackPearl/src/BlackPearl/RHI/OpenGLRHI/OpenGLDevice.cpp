@@ -1486,7 +1486,7 @@ GE_CORE_INFO(#StringEnum":%s" , ((const char*)glGetString(StringEnum)));
 		uint32_t StreamMask = ContextState.ActiveStreamMask;
 
 		//check(IsValidRef(PendingState.BoundShaderState));
-		InputLayout* VertexDeclaration = static_cast<InputLayout*>(PendingState.BoundShaderState->VertexDeclarationRHI);
+		InputLayout* VertexDeclaration = static_cast<InputLayout*>(PendingState.BoundShaderState->GetInputLayout());
 		//const CrossCompiler::FShaderBindingInOutMask& AttributeMask = PendingState.BoundShaderState->GetVertexShader()->Bindings.InOutMask;
 		// || AttributeMask.Bitmask != ContextState.VertexAttrs_EnabledBits
 //		if (ContextState.VertexDecl != VertexDeclaration)

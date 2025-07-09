@@ -86,9 +86,10 @@ namespace BlackPearl {
     //-----------------------------------------------
     DDGITraceType Configuration::DDIG_TraceType = DDGITraceType::SW_Trace;
     //volume settings
-    bool    Configuration::DDIG_InfiniteBounce = true;
-    int32_t Configuration::DDIG_RaysPerProbe = 256;
-    float   Configuration::DDIG_Intensity = 1.0f;
+    bool     Configuration::DDIG_InfiniteBounce = true;
+    int32_t  Configuration::DDIG_RaysPerProbe = 256;
+    float    Configuration::DDIG_Intensity = 1.0f;
+    uint32_t Configuration::DDGI_MAXVolumeCountInArea = 4;
 
 	const char* ShaderConfig::AMBIENT_COLOR   = "u_Material.ambientColor";
 	const char* ShaderConfig::DIFFUSE_COLOR   = "u_Material.diffuseColor";

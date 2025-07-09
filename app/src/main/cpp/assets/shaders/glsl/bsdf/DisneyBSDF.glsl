@@ -1,5 +1,9 @@
 
-// Constants
+
+
+#ifndef BP_DISNEY_BSDF_H
+#define BP_DISNEY_BSDF_H
+
 #include <assets/shaders/glsl/common/CommonMath.glsl>
 
 
@@ -309,3 +313,5 @@ DisneyMaterialSample CreateDisneyBSDFMaterial(SurfaceGeometry geom, DisneyMateri
 //    // Output final color with alpha
 //    fragColor = vec4(color, uMaterial.alpha);
 //}
+
+#endif

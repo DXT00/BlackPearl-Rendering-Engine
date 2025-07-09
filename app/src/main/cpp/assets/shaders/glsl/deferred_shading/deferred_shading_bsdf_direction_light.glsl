@@ -15,9 +15,8 @@ out vec3 v_Normal;
 out vec3 v_FragPos;
 
 
-#include <assets/shaders/glsl/common/CommonViewStruct.glsl>
-
-#include <assets/shaders/glsl/common/CommonTransformStruct.glsl>
+#include <common/CommonViewStruct.glsl>
+#include <common/CommonTransformStruct.glsl>
 
 void main()
 {
@@ -54,7 +53,8 @@ void main(){
 
     float2 pixelPos = uv * g_View.viewportSize; //v_TexCoord range [0,1]
 
-    float3 worldPos = ScreenSpaceToWorldPosition(pixelPos, GBuffer.Depth);
+    //float3 worldPos = ScreenSpaceToWorldPosition(pixelPos, GBuffer.Depth);
+    float3 worldPos = worldPositionFromDepth(uv, GBuffer.Depth, inverse(g_View.matProjectionView));
 
       SurfaceGeometry geom;
       geom.position = worldPos;

@@ -11,7 +11,11 @@
 #endif
 #include "Renderer/SystemTextures.h"
 #include "Timestep/TimeCounter.h"
+#include "Renderer/GIManager.h"
+
 namespace BlackPearl {
+    extern GIManager* g_GIManager;
+    extern MapManager* g_mapManager;
 
     extern MaterialManager* g_materialManager;
 
@@ -20,7 +24,8 @@ namespace BlackPearl {
 		m_Scene = scene;
 
 
-        m_DDGIRenderer = DBG_NEW DDGIRenderer(m_DeviceManager->GetDevice());
+        m_DDGIRenderer = g_GIManager->CreateGIRenderer(GetDevice(), GIMethod::DDGI);
+
       
         m_DDGIRenderer->Init(scene);
       
@@ -34,7 +39,8 @@ namespace BlackPearl {
 
         m_CommandList->open();
 
-   
+        if (!ShouldRender())
+            return;
         //pass 0 render volumes
         m_DDGIRenderer->Render(m_CommandList, framebuffer, m_Scene);
         m_CommandList->close();
@@ -42,6 +48,15 @@ namespace BlackPearl {
 
         bIsProbesDirty = false;
 	}
+
+    //render GI if camera is inside map
+    bool DDGIGraph::ShouldRender()
+    {
+        auto camPos = Renderer::GetSceneData()->CameraPosition;
+        int areaId = g_mapManager->CalculateAreaId(camPos);
+
+        return areaId >=0 && g_mapManager->GetArea(areaId);
+    }
 
 
 

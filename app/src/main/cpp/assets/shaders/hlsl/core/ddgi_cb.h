@@ -37,4 +37,9 @@ struct DDGIFrameConstants {
     ALIGN(16)  int   firstFrame;
 };
 
+struct DDGIAreaConstants {
+    ALIGN(16)  int   numVolumeInArea;
+};
+
+
 #endif // DDGI_CB_H
