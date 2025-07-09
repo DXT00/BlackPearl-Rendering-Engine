@@ -216,10 +216,12 @@ void main()
          const vec3 N  = OctahedronToUnitVector(texture(GBufferA,texCoord).xy * 2.0 - 1.0);//octohedralToDirection(texelFetch(GbufferA, currentCoord, 0).xy);
          const vec3 Wo = normalize(g_View.cameraPos - P);
          vec3 irradiance =  vec3(0.0);
-         if(IsInsideDDGIVolume(g_volumes[volumeId], P)){
+       //  if(IsInsideDDGIVolume(g_volumes[volumeId], P))
+         {
              irradiance = sampleIrradiance(g_volumes[volumeId], P, N, Wo, volumeId); //vec3(1.0,0.0,0.0);//
+            // irradiance = P;//vec3(sceneZ,0.0,0.0);//vec3(1.0,0.0,0.0);
          }
-         //irradiance = P;//vec3(sceneZ,0.0,0.0);//vec3(1.0,0.0,0.0);
+         
          imageStore(outColor, currentCoord, vec4(irradiance, 1.0f));
     
     }
