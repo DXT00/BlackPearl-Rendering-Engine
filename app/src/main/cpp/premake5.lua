@@ -62,7 +62,8 @@ IncludeDir["ShaderMake"]  = "BlackPearl/vendor/ShaderMake/include"
 
 IncludeDir["hlslShader"] = "SandboxDX/assets/shaders_hlsl_h"
 -- use system lib and gl include
-IncludeDir["OpenGL"] = "BlackPearl/vendor/OpenGL/include"
+IncludeDir["OpenGL"]  = "BlackPearl/vendor/OpenGL/include"
+IncludeDir["OpenFBX"] = "BlackPearl/vendor/OpenFBX/include"
 
 
 

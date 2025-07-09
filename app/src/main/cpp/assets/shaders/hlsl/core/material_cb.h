@@ -47,6 +47,7 @@ const int ShadingModel_Disney = 2;
 struct Props {
     //Enable texture
     float shininess;
+    float roughness;
     float refractIndex;
     bool  isBinnLight;
     int  isPBRTextureSample;

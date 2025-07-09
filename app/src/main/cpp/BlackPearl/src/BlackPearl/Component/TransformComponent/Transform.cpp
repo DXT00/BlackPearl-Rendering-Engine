@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "Component/TransformComponent/Transform.h"
-
+#include <glm/gtc/quaternion.hpp>
+#include <glm/gtx/euler_angles.hpp>
+#include <glm/gtx/matrix_decompose.hpp>
 namespace BlackPearl {
 
 
@@ -17,6 +19,29 @@ namespace BlackPearl {
 		model = glm::scale(model, GetScale());
 
 		m_TransformMatrix = model;
+	}
+
+	void Transform::SetTransformMatrix(glm::mat4 worldMatrix)
+	{
+		m_TransformMatrix = worldMatrix;
+
+
+		m_LastPosition = m_Position;
+		m_LastRotation = m_Rotation;
+		m_LastScale = m_Scale;
+
+		m_Position = glm::vec3{ worldMatrix[3][0], worldMatrix[3][1], worldMatrix[3][2] };
+		m_Rotation = glm::degrees(glm::eulerAngles(glm::quat_cast(worldMatrix)));
+
+		glm::vec3 skew;
+		glm::vec3 localScale;
+		glm::quat localOrientation;
+		glm::vec3 localPosition;
+		glm::vec4 perspective;
+		glm::decompose(worldMatrix, localScale, localOrientation, localPosition, skew, perspective);
+
+		m_Scale = localScale;
+
 	}
 
 }

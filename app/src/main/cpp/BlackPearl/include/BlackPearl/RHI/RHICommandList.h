@@ -36,8 +36,6 @@ namespace BlackPearl {
     class IDevice;
     class DeviceManager;
 
-    extern DeviceManager* g_DeviceManager;
-
     struct CommandListParameters
     {
         // A command list with enableImmediateExecution = true maps to the immediate context on DX11.

@@ -120,6 +120,8 @@ namespace BlackPearl {
         }
 		void SetProps(const Props& props);
 		void SetShininess(float shininess);
+		void SetRoughness(float roughness);
+
 		void SetBinnLight(bool isBinnLight);
 		void SetPBRTextureSample(int isPBRTextureSample);
 		void SetTextureSampleDiffuse(int isTextureSampleDiffuse);

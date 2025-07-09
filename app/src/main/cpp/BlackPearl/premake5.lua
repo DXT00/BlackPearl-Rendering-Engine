@@ -64,7 +64,8 @@ project "BlackPearl"
 		"../%{IncludeDir.directxtex}",
 		"../%{IncludeDir.directxmesh}",
 		"../%{IncludeDir.ShaderMake}",
-        "../%{IncludeDir.OpenSSL}",
+       -- "../%{IncludeDir.OpenSSL}",
+		"../%{IncludeDir.OpenFBX}",
 		"./vendor",
 		"./vendor/GLEW",
 		"../assets/shaders/"
@@ -84,6 +85,7 @@ project "BlackPearl"
     --"./vendor/imgui/bin/".. outputdir .. "/ImGui",
 	"./vendor/vulkan/1.3.290.0/Lib",
 	"./vendor/ShaderMake/build/Debug",
+	"./vendor/OpenFBX/lib/Debug"
     --"./vendor/OpenSSL/1.1.1t/lib/Win64/VS2015/Release"
     --"./vendor/OpenSSL_1.1.1t/lib/Win64/Debug"
 	}
@@ -134,17 +136,8 @@ project "BlackPearl"
 		--"ShaderMakeBlob",
 		--"assimp",
 		"opengl32",
-		"assimp-vc142-mtd.lib", 
-    --   "kernel32",
-    --    "WS2_32",
-    --    "GDI32", 
-    --    "ADVAPI32", 
-    --    "crypt32",
-    --    "USER32",
-	--	 "winhttp",
-
-    --     "libssl",
-     --   "libcrypto"
+		"assimp-vc142-mtd.lib",
+        "OpenFBX",
    }
 
 

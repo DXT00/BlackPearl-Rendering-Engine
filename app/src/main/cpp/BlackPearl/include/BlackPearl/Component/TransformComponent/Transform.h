@@ -33,6 +33,7 @@ namespace BlackPearl {
 		void SetScale(const glm::vec3&scale)        { m_LastScale = m_Scale,m_Scale.x    = scale.x,    m_Scale.y = scale.y,       m_Scale.z = scale.z; UpdateTransformMatrix();}
 		void SetInitScale(const glm::vec3& scale) {  m_LastScale = scale, m_Scale.x = scale.x, m_Scale.y = scale.y, m_Scale.z = scale.z; UpdateTransformMatrix(); }
 
+		void SetTransformMatrix(glm::mat4);
 
 	private:
 		glm::vec3 m_Position = { 0.0f,0.0f,0.0f };

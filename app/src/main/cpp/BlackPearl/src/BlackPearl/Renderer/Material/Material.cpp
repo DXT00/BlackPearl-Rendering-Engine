@@ -148,6 +148,11 @@ namespace BlackPearl {
 		m_Props.shininess = shininess;
 	}
 
+	void Material::SetRoughness(float roughness)
+	{
+		m_Props.roughness = roughness;
+	}
+
 	void Material::SetRefractIdx(float idx) 
 	{
 		GE_ASSERT(m_Props.isRefractMaterial, "props.isRefractMaterial = 0");

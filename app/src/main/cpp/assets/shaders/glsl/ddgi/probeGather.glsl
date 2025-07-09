@@ -91,13 +91,13 @@ vec2 GetVolumeDepthTexture(int volumeId, vec2 uv){
 vec3 sampleIrradiance(in DDGIConstants ddgi, vec3 P, vec3 N, vec3 Wo, int samplerId)
 {
 
-    ivec3 baseGridCoord = baseGridCoord(ddgi, P); //P 所在probe的xyz id
+    ivec3 baseGridCoord = baseGridCoord(ddgi, P); //P 所在probe的xyz id, 如果P离volume很远，那就是最接近P的那个 probe
     vec3 baseProbePos   = gridCoordToPosition(ddgi, baseGridCoord); //P 所在probe的位置
     
     vec3  sumIrradiance = vec3(0.0f);
     float sumWeight = 0.0f;
 
-    vec3 alpha = clamp((P - baseProbePos) / ddgi.probeDistance.xyz, vec3(0.0f), vec3(1.0f));
+    vec3 alpha = clamp((P - baseProbePos) / ddgi.probeDistance.xyz, vec3(0.0f), vec3(1.0f)); //如果P离volume很远, alpha = 1,
 
     for (int i = 0; i < 8; ++i) 
     {
@@ -105,6 +105,7 @@ vec3 sampleIrradiance(in DDGIConstants ddgi, vec3 P, vec3 N, vec3 Wo, int sample
         ivec3 probeGridCoord = clamp(baseGridCoord + offset, ivec3(0), ddgi.probeCounts.xyz - ivec3(1)); //边界probe会clamp to edge
         vec3 probePos = gridToPosition(ddgi, probeGridCoord);
 
+        //TODO:: 是不是反了？mix(alpha, 1.0 - alpha, offset);
         vec3 trilinear = mix(1.0 - alpha, alpha, offset);
         float weight = 1.0;
 
