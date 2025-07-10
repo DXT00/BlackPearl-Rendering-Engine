@@ -372,7 +372,7 @@ namespace BlackPearl {
             );
         cmdList->beginRenderPass(RPShadingInfo, "VoxilizeVisualize");
 
-
+        // todo:: 收集附近8个体素
         uint32_t areaId = g_mapManager->CalculateAreaId(camPos);
         uint32_t voxelId = g_mapManager->GetArea(areaId)->GetVoxelId();
         BindingSetDesc bindingSetDesc;

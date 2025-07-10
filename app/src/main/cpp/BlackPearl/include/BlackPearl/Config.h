@@ -78,8 +78,8 @@ namespace BlackPearl {
 		// ------------------------------------------
 		// Map config
 		// ------------------------------------------
-		static const unsigned int MapSize = 500;
-		static const unsigned int AreaSize = 500;
+		static const unsigned int MapSize = 128;
+		static const unsigned int AreaSize = 128;
 
 		//  ------------------------------------------
 		// D3D12 Ray Tracing config

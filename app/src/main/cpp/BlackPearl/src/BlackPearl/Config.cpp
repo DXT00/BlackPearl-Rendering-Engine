@@ -77,7 +77,7 @@ namespace BlackPearl {
     //-----------------------------------------------
     // Voxel settings
     //-----------------------------------------------
-    uint32_t Configuration::VoxelDim = 64;//64
+    uint32_t Configuration::VoxelDim = 128;// 64;//64
     uint32_t Configuration::VoxelMipLevel = 3;
     bool Configuration::bUpdatVoxelsPerFrame = true;
 

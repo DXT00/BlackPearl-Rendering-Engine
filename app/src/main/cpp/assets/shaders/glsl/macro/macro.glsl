@@ -87,7 +87,7 @@
 
 //texture
 #ifndef USE_ALBEDO_MAP
-#define USE_ALBEDO_MAP 1
+#define USE_ALBEDO_MAP 0
 #endif
 
 #ifndef USE_NORMAL_MAP

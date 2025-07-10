@@ -33,7 +33,7 @@ public:
 
     void SetupScene() {
         std::vector<std::string> macros;
-        macros.push_back("#define USE_ALBEDO_MAP 1");
+       // macros.push_back("#define USE_ALBEDO_MAP 1");
         m_Scene = DBG_NEW Scene();
         // TODO:: 设置每个pass的材质
         m_SphereObj = CreateSphere(0.5, 64, 64, "assets/shaders/glsl/gBuffer/gBuffer_pass.glsl", &macros, "assets/texture/wood.png");

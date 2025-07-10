@@ -168,18 +168,22 @@ namespace BlackPearl {
 		Object* cube4 = CreateCube("assets/shaders/glsl/gBuffer/gBuffer_pass.glsl");
 		Object* cube5 = CreateCube("assets/shaders/glsl/gBuffer/gBuffer_pass.glsl");
 
-		//cube1->GetComponent<Transform>()->SetScale({ 20.0f,20.0f,20.0f });
+		cube1->GetComponent<Transform>()->SetScale({ 20.0f,20.0f,20.0f });
+        cube2->GetComponent<Transform>()->SetScale({ 20.0f,20.0f,20.0f });
+        cube3->GetComponent<Transform>()->SetScale({ 20.0f,20.0f,20.0f });
+        cube4->GetComponent<Transform>()->SetScale({ 20.0f,20.0f,20.0f });
+        cube5->GetComponent<Transform>()->SetScale({ 20.0f,20.0f,20.0f });
 
 		//cube1->GetComponent<Transform>()->SetPosition({ 2.0f,1.0f,3.0f });
 		//cube2->GetComponent<Transform>()->SetPosition({ 0.0f,1.0f,1.0f });
 		//cube3->GetComponent<Transform>()->SetPosition({ -2.0f,1.0f,3.0f });
 		//cube4->GetComponent<Transform>()->SetPosition({ 0.0f,3.0f,3.0f });
 		//cube5->GetComponent<Transform>()->SetPosition({ 0.0f,-1.0f,3.0f });
-		cube1->GetComponent<Transform>()->SetInitPosition({ 2.0f,-0.5f,-0.0f });
-		cube2->GetComponent<Transform>()->SetInitPosition({ 0.0f,-0.5f,-2.0f });
-		cube3->GetComponent<Transform>()->SetInitPosition({ -2.0f,-0.5f,-0.0f });
-		cube4->GetComponent<Transform>()->SetInitPosition({ 0.0f,1.5f,-0.0f });
-		cube5->GetComponent<Transform>()->SetInitPosition({ 0.0f,-2.5f,-0.0f });
+		cube1->GetComponent<Transform>()->SetInitPosition({ 40.0f,  0.0f,-0.0f });
+		cube2->GetComponent<Transform>()->SetInitPosition({ 0.0f,   0.0f,-20.0f });
+		cube3->GetComponent<Transform>()->SetInitPosition({ -40.0f, -0.0f,-0.0f });
+		cube4->GetComponent<Transform>()->SetInitPosition({ 0.0f,   40.0f,-0.0f });
+		cube5->GetComponent<Transform>()->SetInitPosition({ 0.0f,   -40.0f,-0.0f });
 
 		cube1->GetComponent<MeshRenderer>()->SetIsBackGroundObjects(true);
 		cube2->GetComponent<MeshRenderer>()->SetIsBackGroundObjects(true);
