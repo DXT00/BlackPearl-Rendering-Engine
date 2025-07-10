@@ -303,7 +303,7 @@ namespace BlackPearl {
         }
 
         gdfTraceConst.dimension = systemTex.SceneGlobalDF.ClipDim;
-
+        gdfTraceConst.clipCount = systemTex.SceneGlobalDF.NumClipMapLevels;
         cmdList->writeBuffer(m_Bindings.gdfCB, &gdfTraceConst, sizeof(GlobalSDFTraceConstants));
 
     }

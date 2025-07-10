@@ -180,7 +180,7 @@ namespace BlackPearl {
 		//cube4->GetComponent<Transform>()->SetPosition({ 0.0f,3.0f,3.0f });
 		//cube5->GetComponent<Transform>()->SetPosition({ 0.0f,-1.0f,3.0f });
 		cube1->GetComponent<Transform>()->SetInitPosition({ 40.0f,  0.0f,-0.0f });
-		cube2->GetComponent<Transform>()->SetInitPosition({ 0.0f,   0.0f,-20.0f });
+		cube2->GetComponent<Transform>()->SetInitPosition({ 0.0f,   0.0f,-40.0f });
 		cube3->GetComponent<Transform>()->SetInitPosition({ -40.0f, -0.0f,-0.0f });
 		cube4->GetComponent<Transform>()->SetInitPosition({ 0.0f,   40.0f,-0.0f });
 		cube5->GetComponent<Transform>()->SetInitPosition({ 0.0f,   -40.0f,-0.0f });

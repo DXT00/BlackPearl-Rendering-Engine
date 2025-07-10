@@ -179,7 +179,7 @@ GlobalSDFHit tracyGlobalSDF(in GlobalSDFTraceConstants data,
                 }
 
                 // Move 
-                stepTime += max(stepDistance * trace.stepScale, voxelSize);
+                stepTime +=  max(stepDistance * trace.stepScale, voxelSize);
             }
 
             hit.stepsCount += step;

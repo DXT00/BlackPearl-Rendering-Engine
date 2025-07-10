@@ -148,16 +148,25 @@ void main()
 
     if(isHit(hit))
     {
-        if (hit.hitSDF <= 0.0f && hit.hitTime <= g_sdfData.clipVoxelSize[0])
-        {
-            radiance = vec4(0, 0, 0, GLOBAL_SDF_WORLD_SIZE);
-        }
-        else
+        //hitSDF (setpDistance) 不会小于0吧？
+//        if (hit.hitSDF < 0.0f && hit.hitTime <= g_sdfData.clipVoxelSize[0]) //1.0
+//        {
+//            radiance = vec4(0, 0, 0, GLOBAL_SDF_WORLD_SIZE);
+//        }
+//        else
         {
             vec3 hitPosition = getHitPosition(hit,trace);
             //float surfaceThreshold = getGlobalSurfaceAtlasThreshold(g_sdfData, hit);
+            vec4 surfaceColor;
+            if(hit.hitCascade == 0u)
+                 surfaceColor = vec4(1.0,0.0,0.0,1.0);//GetSurfaceColorFromVoxel(hitPosition,voxelTexture3D, g_voxel);
+            else if(hit.hitCascade == 1u)
+                 surfaceColor = vec4(0.0,1.0,0.0,1.0);
 
-            vec4 surfaceColor = GetSurfaceColorFromVoxel(hitPosition,voxelTexture3D, g_voxel);
+           else if(hit.hitCascade == 2u)
+                 surfaceColor = vec4(0.0,0.0,1.0,1.0);
+            else if(hit.hitCascade == 3u)
+                 surfaceColor = vec4(1.0,1.0,0.0,1.0);
 
 //            sampleGlobalSurfaceAtlas(surfaceColor,ubo.data, 
 //                                atlasChunks.data,  

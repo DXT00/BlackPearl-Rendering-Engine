@@ -92,8 +92,8 @@ namespace BlackPearl {
             m_DrawStrategy->PrepareForView(scene, *view);
             
            
-            
-            std::vector<Object*>& objs = m_DrawStrategy->GetDrawObjects();// scene->GetObjects();
+            //TODO:: Objects Culling!
+            std::vector<Object*>& objs = scene->GetObjects();//  m_DrawStrategy->GetDrawObjects();// scene->GetObjects();
 			for (size_t i = 0; i < objs.size(); i++)
 			{
 				DFObjectConstants objCnonst;

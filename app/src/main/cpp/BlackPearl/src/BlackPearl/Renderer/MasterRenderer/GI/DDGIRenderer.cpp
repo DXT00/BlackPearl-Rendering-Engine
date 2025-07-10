@@ -102,11 +102,21 @@ namespace BlackPearl {
     void DDGIRenderer::ShowProbes(ICommandList* cmdList, IFramebuffer* targetFramebuffer, Scene* scene)
     {
         cmdList->beginMarker("DDGI_ShowProbes");
-        //todo:: use draw indirect!
-        for (const auto& it : scene->GetDiffuseLightProbes()) {
 
-            Object* probe = it;
-            _RenderProbe(cmdList, targetFramebuffer, scene, it);
+
+       
+
+        //todo:: use draw indirect!
+        for (int i = 0; i < scene->GetLightProbeGrid().size();i++) {
+
+       
+            for (auto probe : scene->GetLightProbeGrid()[i]->GridObj->GetChildObjs()) {
+
+   
+
+                _RenderProbe(cmdList, targetFramebuffer, scene, probe, m_Volumes[i], m_Pipelines[i]);
+
+            }
 
         }
         cmdList->endMarker();
@@ -302,15 +312,16 @@ namespace BlackPearl {
         layoutDesc.visibility = ShaderType::Pixel;
         layoutDesc.bindings = {
             RHIBindingLayoutItem::RT_VolatileConstantBuffer(8),
-        };
-        m_ProbeBindingLayout = m_Device->createBindingLayout(layoutDesc);
-        m_ProbeCB = m_Device->createBuffer(RHIUtils::CreateStaticConstantBufferDesc(sizeof(LightConstants), "LightConstants"));
+            RHIBindingLayoutItem::RT_VolatileConstantBuffer(9),
+            RHIBindingLayoutItem::RT_Texture_SRV(2)
 
-        BindingSetDesc bindingSetDesc;
-        bindingSetDesc.bindings = {
-            BindingSetItem::ConstantBuffer(8, m_ProbeCB),
+
+
         };
-        m_ProbeBindingSet = m_Device->createBindingSet(bindingSetDesc, m_ProbeBindingLayout);
+        m_ProbeDebugBindings.layout = m_Device->createBindingLayout(layoutDesc);
+        m_ProbeDebugBindings.probeCB = m_Device->createBuffer(RHIUtils::CreateStaticConstantBufferDesc(sizeof(LightProbeConstants), "LightProbeConstants"));
+        m_ProbeDebugBindings.volumeCB = m_Device->createBuffer(RHIUtils::CreateStaticConstantBufferDesc(sizeof(DDGIConstants), "DDGIConstants"));
+
     }
 
   
@@ -660,7 +671,7 @@ namespace BlackPearl {
 
 
 
-    void DDGIRenderer::_RenderProbe(ICommandList* cmdList, IFramebuffer* targetFramebuffer, Scene* scene, Object* probe)
+    void DDGIRenderer::_RenderProbe(ICommandList* cmdList, IFramebuffer* targetFramebuffer, Scene* scene, Object* probe, const IrradianceVolume& volume, const DDGIPipelineInternal& pipeline)
     {
         SceneData* view = Renderer::GetSceneData();
         GE_ERROR_JUDGE();
@@ -695,15 +706,62 @@ namespace BlackPearl {
         psoDesc.VS = m_ProbeDebugShader->GetVertexShader();
         psoDesc.PS = m_ProbeDebugShader->GetPixelShader();
         psoDesc.bFromPSOFileCache = false;
-        //psoDesc.bindingLayouts.push_back(m_ProbeBindingLayout);
+        psoDesc.bindingLayouts.push_back(m_ProbeDebugBindings.layout);
         psoDesc.bindingLayouts.push_back(m_ViewBindinglayout);
 
 
-        if (!m_ProbePso) {
-            m_ProbePso = m_Device->createGraphicsPipeline(psoDesc, targetFramebuffer);
+        if (!m_ProbeDebugPso) {
+            m_ProbeDebugPso = m_Device->createGraphicsPipeline(psoDesc, targetFramebuffer);
         }
-        graphicsPSO.pipeline = m_ProbePso;
-       // graphicsPSO.bindings.push_back(m_ProbeBindingSet);
+
+        BindingSetDesc bindingSetDesc;
+        bindingSetDesc.bindings = {
+            BindingSetItem::ConstantBuffer(8, m_ProbeDebugBindings.probeCB),
+            BindingSetItem::ConstantBuffer(9, m_ProbeDebugBindings.volumeCB),
+
+            BindingSetItem::Texture_SRV(2, pipeline.irradiance[m_LastWrite], "irradiance_input"),
+
+        };
+        BindingSetHandle    set = m_Device->createBindingSet(bindingSetDesc, m_ProbeDebugBindings.layout);
+
+
+        
+        DDGIConstants ddgiConst{};
+        const int32_t irradianceWidth = volume.currentIrrdance.Get()->getDesc().width;
+        const int32_t irradianceHeight = volume.currentIrrdance.Get()->getDesc().height;
+        const int32_t depthWidth = volume.currentDepth.Get()->getDesc().width;
+        const int32_t depthHeight = volume.currentDepth.Get()->getDesc().height;
+
+        ddgiConst.startPosition = volume.startPos;
+        ddgiConst.probeDistance = volume.probeDistance;
+        ddgiConst.probeCounts = int4(
+            volume.width / volume.probeDistance + 1,
+            volume.height / volume.probeDistance + 1,
+            volume.depth / volume.probeDistance + 1,
+            1);
+        ddgiConst.maxDistance = volume.probeDistance * 1.5f;
+        ddgiConst.depthSharpness = volume.depthSharpness;
+        ddgiConst.hysteresis = volume.hysteresis;
+        ddgiConst.normalBias = volume.normalBias;
+        ddgiConst.ddgiGamma = volume.ddgiGamma;
+
+
+        ddgiConst.irradianceProbeSideLength = IrradianceOctSize;
+        ddgiConst.irradianceTextureWidth = irradianceWidth;
+        ddgiConst.irradianceTextureHeight = irradianceHeight;
+
+        ddgiConst.depthProbeSideLength = DepthOctSize;
+        ddgiConst.depthTextureWidth = depthWidth;
+        ddgiConst.depthTextureHeight = depthHeight;
+        ddgiConst.raysPerProbe = volume.raysPerProbe;
+
+
+
+
+        cmdList->writeBuffer(m_ProbeDebugBindings.volumeCB, &ddgiConst, sizeof(DDGIConstants));
+
+        graphicsPSO.pipeline = m_ProbeDebugPso;
+        graphicsPSO.bindings.push_back(set);
         graphicsPSO.bindings.push_back(m_ViewBindingset);
         graphicsPSO.inputLayout = psoDesc.inputLayout;
         /*for (int j = 0; j < shaderParms[ShaderType::Pixel].bindingLayouts.size(); ++j) {
@@ -721,10 +779,14 @@ namespace BlackPearl {
 
 
 
-        LightProbeConstants probeConst;
-
+        LightProbeConstants probeConst{};
+        //probeConst.probeType = (int)ProbeType::DIFFUSE_PROBE;
+        //probeConst.pos = Math::ToFloat3(probe->GetComponent<Transform>()->GetPosition());
         probe->GetComponent<LightProbe>()->FillLightProbeConstants(probe->GetComponent<LightProbe>()->GetType(), Math::ToFloat3(probe->GetComponent<Transform>()->GetPosition()), probeConst);
-        cmdList->writeBuffer(m_ProbeCB, &probeConst, sizeof(LightProbeConstants));
+        cmdList->writeBuffer(m_ProbeDebugBindings.probeCB, &probeConst, sizeof(LightProbeConstants));
+
+
+
         cmdList->setGraphicsState(graphicsPSO);
 
         Draw(cmdList, drawItem);
