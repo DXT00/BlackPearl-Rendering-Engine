@@ -82,21 +82,22 @@ namespace BlackPearl {
         std::string commonSource = ReadFile(m_CommonStructPath);// m_GlslIncluder.processIncludes(ReadFile(m_CommonStructPath));
         std::string macroSource = "\r\n" + ReadMacros(macros) + "\r\n" + ReadFile(m_MacroPath);
         commonSource = extentions + macroSource + commonSource;
+        //这里要考虑变体的 hash
         m_GlslCode = ReadFile(m_ShaderPath);
-        std::unordered_map<ShaderType, std::string> shaderSources = PreProcess(m_GlslCode, commonSource);
-        if (shaderSources.find(ShaderType::VertexShader) != shaderSources.end()) {
-            m_VertexShader = g_shaderFactory->CreateShaderFromSource(shaderSources[ShaderType::VertexShader], "main", ShaderType::VertexShader, nullptr, m_ShaderPath);
+        m_ShaderSources = PreProcess(m_GlslCode, commonSource);
+        if (m_ShaderSources.find(ShaderType::VertexShader) != m_ShaderSources.end()) {
+            m_VertexShader = g_shaderFactory->CreateShaderFromSource(m_ShaderSources[ShaderType::VertexShader], "main", ShaderType::VertexShader, nullptr, m_ShaderPath);
         } 
-        if (shaderSources.find(ShaderType::Pixel) != shaderSources.end()) {
-            m_PixelShader = g_shaderFactory->CreateShaderFromSource(shaderSources[ShaderType::Pixel], "main", ShaderType::Pixel, nullptr, m_ShaderPath);
+        if (m_ShaderSources.find(ShaderType::Pixel) != m_ShaderSources.end()) {
+            m_PixelShader = g_shaderFactory->CreateShaderFromSource(m_ShaderSources[ShaderType::Pixel], "main", ShaderType::Pixel, nullptr, m_ShaderPath);
 
         }
-        if (shaderSources.find(ShaderType::Geometry) != shaderSources.end()) {
-            m_GeometryShader = g_shaderFactory->CreateShaderFromSource(shaderSources[ShaderType::Geometry], "main", ShaderType::Geometry, nullptr, m_ShaderPath);
+        if (m_ShaderSources.find(ShaderType::Geometry) != m_ShaderSources.end()) {
+            m_GeometryShader = g_shaderFactory->CreateShaderFromSource(m_ShaderSources[ShaderType::Geometry], "main", ShaderType::Geometry, nullptr, m_ShaderPath);
 
         }
-        if (shaderSources.find(ShaderType::Compute) != shaderSources.end()) {
-            m_ComputeShader = g_shaderFactory->CreateShaderFromSource(shaderSources[ShaderType::Compute], "main", ShaderType::Compute, nullptr, m_ShaderPath);
+        if (m_ShaderSources.find(ShaderType::Compute) != m_ShaderSources.end()) {
+            m_ComputeShader = g_shaderFactory->CreateShaderFromSource(m_ShaderSources[ShaderType::Compute], "main", ShaderType::Compute, nullptr, m_ShaderPath);
 
         }
 	}
@@ -216,6 +217,7 @@ namespace BlackPearl {
             shaderSources[ShaderType::Pixel] = front + commonSource + res;
 
 #endif
+            StoreShader(shaderSources[ShaderType::Pixel], get_filename(m_ShaderPath) + "_frag");
 
         }
         //change to gles version if it is andriod platform
@@ -240,6 +242,7 @@ namespace BlackPearl {
             CompileInputLocation(shaderSources[ShaderType::VertexShader]);
             //attribute 字符穿替换
 
+            StoreShader(shaderSources[ShaderType::VertexShader], get_filename(m_ShaderPath) + "_vert");
 
         }
 
@@ -263,6 +266,7 @@ namespace BlackPearl {
 
 #endif
   
+            StoreShader(shaderSources[ShaderType::Compute], get_filename(m_ShaderPath) + "_comp");
 
         }
 
@@ -286,12 +290,9 @@ namespace BlackPearl {
 
 #endif
 
+            StoreShader(shaderSources[ShaderType::Geometry], get_filename(m_ShaderPath) + "_geom");
 
         }
-        StoreShader(shaderSources[ShaderType::VertexShader], get_filename(m_ShaderPath)+"_vert");
-        StoreShader(shaderSources[ShaderType::Pixel], get_filename(m_ShaderPath) + "_frag");
-        StoreShader(shaderSources[ShaderType::Compute], get_filename(m_ShaderPath) + "_comp");
-        StoreShader(shaderSources[ShaderType::Geometry], get_filename(m_ShaderPath) + "_geom");
 
 
 //#ifdef GE_PLATFORM_WINDOWS

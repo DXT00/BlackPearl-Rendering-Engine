@@ -1,4 +1,6 @@
 #pragma once
+#include <iostream>
+#include "Core.h"
 namespace BlackPearl {
 
 
@@ -37,7 +39,8 @@ namespace BlackPearl {
 
         void message(MessageSeverity severity, const char* messageText) override
         {
-            std::cout << messageText << std::endl;
+            //std::cout << messageText << std::endl;
+            GE_CORE_INFO(messageText);
         }
     };
 }

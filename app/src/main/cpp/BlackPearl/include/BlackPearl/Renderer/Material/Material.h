@@ -91,6 +91,7 @@ namespace BlackPearl {
 			const std::string shaderPath, 
 			const std::shared_ptr<TextureMaps>& textureMaps,
 			math::float3 ambientColor, math::float3 diffuseColor, math::float3 specularColor, math::float3 emissiveColor,
+            std::vector<std::string>* macros = nullptr,
 			MaterialTemplateType templateType = MaterialTemplateType::kPBR,
 			const std::vector<MaterialResourceBinding>& customBindings
 			= std::vector<MaterialResourceBinding>()

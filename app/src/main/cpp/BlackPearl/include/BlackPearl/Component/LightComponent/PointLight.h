@@ -115,6 +115,9 @@ namespace BlackPearl {
 		unsigned int GetShadowMapHeight() const { return m_ShadowMapPointLightHeight; }
 
 		inline std::shared_ptr<Mesh> GetMeshes()const { return m_Mesh; }
+        void SetMesh(const std::shared_ptr<Mesh> mesh) {
+            m_Mesh = mesh;
+        }
         virtual void FillLightConstants(LightConstants& lightConstants) override;
 
 	private:

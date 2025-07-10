@@ -10,9 +10,10 @@
 #include "BlackPearl/Animation/Bone.h"
 #include "BlackPearl/Renderer/Model/Model.h"
 #include "BlackPearl/RHI/RHITexture.h"
+#include "Loader.h"
 namespace BlackPearl
 {
-    class ModelLoader
+    class ModelLoader: public Loader
     {
     protected:
         DeviceManager* m_DeviceManager;
@@ -62,7 +63,6 @@ namespace BlackPearl
 		void UpdateAABB(const math::float3& pos);
 
 	private:
-		void CreateMeshBuffers(std::shared_ptr<Mesh>& mesh);
 		void LoadAnimationInfo();
 
 	private:

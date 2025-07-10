@@ -12,60 +12,60 @@ namespace BlackPearl {
 	void PointLight::Init()
 	{
 
-		//data
-		std::vector<float> lightVertices = {
-			-0.5f, -0.5f, -0.5f,
-			 0.5f,  0.5f, -0.5f,
-			 0.5f, -0.5f, -0.5f,
-			 0.5f,  0.5f, -0.5f,
-			-0.5f, -0.5f, -0.5f,
-			-0.5f,  0.5f, -0.5f,
-			//Front face
-			-0.5f, -0.5f,  0.5f,
-			 0.5f, -0.5f,  0.5f,
-			 0.5f,  0.5f,  0.5f,
-			 0.5f,  0.5f,  0.5f,
-			-0.5f,  0.5f,  0.5f,
-			-0.5f, -0.5f,  0.5f,
-			//Left face
-			-0.5f,  0.5f,  0.5f,
-			-0.5f,  0.5f, -0.5f,
-			-0.5f, -0.5f, -0.5f,
-			-0.5f, -0.5f, -0.5f,
-			-0.5f, -0.5f,  0.5f,
-			-0.5f,  0.5f,  0.5f,
-			//Right face
-			 0.5f,  0.5f,  0.5f,
-			 0.5f, -0.5f, -0.5f,
-			 0.5f,  0.5f, -0.5f,
-			 0.5f, -0.5f, -0.5f,
-			 0.5f,  0.5f,  0.5f,
-			 0.5f, -0.5f,  0.5f,
-			 //Bottom face
-			-0.5f, -0.5f, -0.5f,
-			 0.5f, -0.5f, -0.5f,
-			 0.5f, -0.5f,  0.5f,
-			 0.5f, -0.5f,  0.5f,
-			-0.5f, -0.5f,  0.5f,
-			-0.5f, -0.5f, -0.5f,
-			//Top face
-			-0.5f,  0.5f, -0.5f,
-			 0.5f,  0.5f,  0.5f,
-			 0.5f,  0.5f, -0.5f,
-			 0.5f,  0.5f,  0.5f,
-			-0.5f,  0.5f, -0.5f,
-			-0.5f,  0.5f,  0.5f,
-		};
+		////data
+		//std::vector<float> lightVertices = {
+		//	-0.5f, -0.5f, -0.5f,
+		//	 0.5f,  0.5f, -0.5f,
+		//	 0.5f, -0.5f, -0.5f,
+		//	 0.5f,  0.5f, -0.5f,
+		//	-0.5f, -0.5f, -0.5f,
+		//	-0.5f,  0.5f, -0.5f,
+		//	//Front face
+		//	-0.5f, -0.5f,  0.5f,
+		//	 0.5f, -0.5f,  0.5f,
+		//	 0.5f,  0.5f,  0.5f,
+		//	 0.5f,  0.5f,  0.5f,
+		//	-0.5f,  0.5f,  0.5f,
+		//	-0.5f, -0.5f,  0.5f,
+		//	//Left face
+		//	-0.5f,  0.5f,  0.5f,
+		//	-0.5f,  0.5f, -0.5f,
+		//	-0.5f, -0.5f, -0.5f,
+		//	-0.5f, -0.5f, -0.5f,
+		//	-0.5f, -0.5f,  0.5f,
+		//	-0.5f,  0.5f,  0.5f,
+		//	//Right face
+		//	 0.5f,  0.5f,  0.5f,
+		//	 0.5f, -0.5f, -0.5f,
+		//	 0.5f,  0.5f, -0.5f,
+		//	 0.5f, -0.5f, -0.5f,
+		//	 0.5f,  0.5f,  0.5f,
+		//	 0.5f, -0.5f,  0.5f,
+		//	 //Bottom face
+		//	-0.5f, -0.5f, -0.5f,
+		//	 0.5f, -0.5f, -0.5f,
+		//	 0.5f, -0.5f,  0.5f,
+		//	 0.5f, -0.5f,  0.5f,
+		//	-0.5f, -0.5f,  0.5f,
+		//	-0.5f, -0.5f, -0.5f,
+		//	//Top face
+		//	-0.5f,  0.5f, -0.5f,
+		//	 0.5f,  0.5f,  0.5f,
+		//	 0.5f,  0.5f, -0.5f,
+		//	 0.5f,  0.5f,  0.5f,
+		//	-0.5f,  0.5f, -0.5f,
+		//	-0.5f,  0.5f,  0.5f,
+		//};
 
-		
-		std::shared_ptr<Material> lightMaterial;
-		std::shared_ptr<Material::TextureMaps> texture(DBG_NEW Material::TextureMaps());
+		//
+		//std::shared_ptr<Material> lightMaterial;
+		//std::shared_ptr<Material::TextureMaps> texture(DBG_NEW Material::TextureMaps());
 
-		lightMaterial.reset(DBG_NEW Material("assets/shaders/glsl/PointLight.glsl", texture, m_LightProp.diffuse, m_LightProp.diffuse, m_LightProp.diffuse, m_LightProp.diffuse));
-		VertexBufferLayout layout = {
-			{ElementDataType::Float3,"aPos",false,0}
-		};
-		m_Mesh = std::make_shared<Mesh>(lightVertices.data(), lightVertices.size(),nullptr, 0, lightMaterial, layout);//����û��indices!
+		//lightMaterial.reset(DBG_NEW Material("assets/shaders/glsl/PointLight.glsl", texture, m_LightProp.diffuse, m_LightProp.diffuse, m_LightProp.diffuse, m_LightProp.diffuse));
+		//VertexBufferLayout layout = {
+		//	{ElementDataType::Float3,"aPos",false,0}
+		//};
+		//m_Mesh = std::make_shared<Mesh>(lightVertices.data(), lightVertices.size(),nullptr, 0, lightMaterial, layout);//����û��indices!
 
 		TextureDesc desc;
 		desc.type = TextureType::CubeMap;

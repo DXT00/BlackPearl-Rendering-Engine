@@ -78,13 +78,14 @@ namespace BlackPearl {
         m_DrawStrategy = DBG_NEW InstancedOpaqueDrawStrategy();
         ShaderDesc desc = ShaderDesc(ShaderType::All);
         desc.debugName = "GbufferShader";
+        //todo:: 每个材质的 gpass 有可能不一样
         m_GBufferShader = DBG_NEW MaterialShader("assets/shaders/glsl/gBuffer/gBuffer_pass.glsl",&extends, &macros);
 
 
         m_ShaderParameters[ShaderType::Pixel].bindingLayouts.push_back(m_ViewBindinglayout);
         m_ShaderParameters[ShaderType::Pixel].bindingSets.push_back(m_ViewBindingset);
-        m_ShaderParameters->PixelShader = m_GBufferShader->GetPixelShader();
-        m_ShaderParameters->VertexShader = m_GBufferShader->GetVertexShader();
+    //    m_ShaderParameters->PixelShader = m_GBufferShader->GetPixelShader();
+    //    m_ShaderParameters->VertexShader = m_GBufferShader->GetVertexShader();
 
     }
 

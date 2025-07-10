@@ -31,7 +31,8 @@ namespace BlackPearl {
         std::string m_MacroPath = "assets/shaders/glsl/macro/macro_android.glsl";
 
 #endif
-
+        //hash code 需要用m_ShaderSources
+        std::unordered_map<ShaderType, std::string> m_ShaderSources;
 		ShaderHandle m_VertexShader = nullptr;
 		ShaderHandle m_PixelShader = nullptr;
 		ShaderHandle m_GeometryShader = nullptr;

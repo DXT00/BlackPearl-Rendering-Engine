@@ -24,6 +24,7 @@
 #include "BlackPearl/Renderer/Buffer/D3D12Buffer/D3D12Buffer.h"
 #endif
 #include "Map/MapManager.h"
+#include "Scene/Scene.h"
 using namespace BlackPearl::math;
 
 #include "hlsl/core/material_cb.h"
@@ -36,38 +37,38 @@ namespace BlackPearl {
 
 	}
 
-	void Layer::LoadScene(const std::string demoScene)
+	void Layer::LoadScene(Scene* scene, const std::string demoScene)
 	{
 		if (demoScene == "CornellScene")
-			LoadCornellScene();
+			LoadCornellScene(scene);
 		else if (demoScene == "SpheresScene")
-			LoadSpheresScene();
+			LoadSpheresScene(scene);
 		else if (demoScene == "SpheresSpecularProbeScene")
-			LoadSpheresSpecularProbeScene();
+			LoadSpheresSpecularProbeScene(scene);
 		else if (demoScene == "CubesScene")
-			LoadCubesScene();
+			LoadCubesScene(scene);
 		else if (demoScene == "SwordScene")
-			LoadSwordScene();
+			LoadSwordScene(scene);
 		else if (demoScene == "Church")
-			LoadChurchScene();
+			LoadChurchScene(scene);
 		else if (demoScene == "D3D12Models")
 			LoadD3D12ModelScene();
 
 
 	}
 
-	void Layer::LoadCornellScene()
+	void Layer::LoadCornellScene(Scene* scene)
 	{
 		/*create pointlights*/
 		Object* light = CreateLight(LightType::PointLight);
 		light->GetComponent<Transform>()->SetInitPosition({ 0.0,0.6,3.6 });
 		light->GetComponent<MeshRenderer>()->SetIsShadowObjects(false);
 
-		Object* cube1 = CreateCube();
-		Object* cube2 = CreateCube();
-		Object* cube3 = CreateCube();
-		Object* cube4 = CreateCube();
-		Object* cube5 = CreateCube();
+		Object* cube1 = CreateCube("assets/shaders/glsl/gBuffer/gBuffer_pass.glsl");
+		Object* cube2 = CreateCube("assets/shaders/glsl/gBuffer/gBuffer_pass.glsl");
+		Object* cube3 = CreateCube("assets/shaders/glsl/gBuffer/gBuffer_pass.glsl");
+		Object* cube4 = CreateCube("assets/shaders/glsl/gBuffer/gBuffer_pass.glsl");
+		Object* cube5 = CreateCube("assets/shaders/glsl/gBuffer/gBuffer_pass.glsl");
 
 		//cube1->GetComponent<Transform>()->SetScale({ 20.0f,20.0f,20.0f });
 
@@ -101,14 +102,14 @@ namespace BlackPearl {
 		m_BackGroundObjsList.push_back(cube4);
 		m_BackGroundObjsList.push_back(cube5);
 
-		Object* deer = CreateModel("assets/models/deer/Deer.obj", "assets/shaders/glsl/IronMan.glsl", false, "Deer");
+		Object* deer = CreateModel("assets/models/deer/Deer.obj", "assets/shaders/glsl/gBuffer/gBuffer_pass.glsl", false, "Deer");
 		deer->GetComponent<Transform>()->SetInitScale(glm::vec3(0.003));
 		deer->GetComponent<Transform>()->SetInitPosition({ -0.5f,0.0f,2.5f });
 		deer->GetComponent<Transform>()->SetInitRotation({ 0.0f,68.0f,0.0f });
 		deer->GetComponent<MeshRenderer>()->SetIsBackGroundObjects(true);
 		m_BackGroundObjsList.push_back(deer);
 
-		Object* bunny = CreateModel("assets/models/bunny/bunny.obj", "assets/shaders/glsl/IronMan.glsl", false, "Bunny");
+		Object* bunny = CreateModel("assets/models/bunny/bunny.obj", "assets/shaders/glsl/gBuffer/gBuffer_pass.glsl", false, "Bunny");
 		bunny->GetComponent<Transform>()->SetInitScale(glm::vec3(0.5));
 		bunny->GetComponent<Transform>()->SetInitPosition({ 0.6f,0.0f,3.0f });
 		bunny->GetComponent<Transform>()->SetInitRotation({ 0.0f,-30.0f,0.0f });
@@ -123,16 +124,25 @@ namespace BlackPearl {
 		m_ShadowObjsList.push_back(cube4);
 		m_ShadowObjsList.push_back(cube5);
 
+        scene->AddObject(deer);
+        scene->AddObject(bunny);
+        scene->AddObject(cube1);
+        scene->AddObject(cube2);
+        scene->AddObject(cube3);
+        scene->AddObject(cube4);
+        scene->AddObject(cube5);
 	}
 	
-	void Layer::LoadCornellScene1()
+	void Layer::LoadCornellScene1(Scene* scene)
 	{
 		/*create pointlights*/
 		Object* light = CreateLight(LightType::PointLight);
 		light->GetComponent<Transform>()->SetInitPosition({ 0.0,1.25,9.0 });
 		light->GetComponent<MeshRenderer>()->SetIsShadowObjects(false);
 
-		Object* deer = CreateModel("assets/models/deer/Deer.obj", "assets/shaders/glsl/IronMan.glsl", false, "Deer");
+        Object* deer = CreateModel("assets/models/deer/Deer.obj", "assets/shaders/glsl/gBuffer/gBuffer_pass.glsl", false, "Deer");
+
+//		Object* deer = CreateModel("assets/models/deer/Deer.obj", "assets/shaders/glsl/Cube.glsl", false, "Deer");
 		deer->GetComponent<Transform>()->SetInitScale(glm::vec3(0.003));
 		//deer->GetComponent<Transform>()->SetPosition({ -0.5f,0.0f,2.5f });
 		deer->GetComponent<Transform>()->SetInitPosition({ -0.5f,-1.5f,-0.5f });
@@ -141,7 +151,9 @@ namespace BlackPearl {
 		m_BackGroundObjsList.push_back(deer);
 		m_ShadowObjsList.push_back(deer);
 
-		Object* bunny = CreateModel("assets/models/bunny/bunny.obj", "assets/shaders/glsl/IronMan.glsl", false, "Bunny");
+        Object* bunny = CreateModel("assets/models/bunny/bunny.obj", "assets/shaders/glsl/gBuffer/gBuffer_pass.glsl", false, "Bunny");
+
+//		Object* bunny = CreateModel("assets/models/bunny/bunny.obj", "assets/shaders/glsl/Cube.glsl", false, "Bunny");
 		bunny->GetComponent<Transform>()->SetInitScale(glm::vec3(0.5));
 		//bunny->GetComponent<Transform>()->SetPosition({ 0.6f,0.0f,3.0f });
 		bunny->GetComponent<Transform>()->SetInitPosition({ 0.6f,-1.5f,-0.0f });
@@ -150,11 +162,11 @@ namespace BlackPearl {
 		m_BackGroundObjsList.push_back(bunny);
 		m_ShadowObjsList.push_back(bunny);
 
-		Object* cube1 = CreateCube();
-		Object* cube2 = CreateCube();
-		Object* cube3 = CreateCube();
-		Object* cube4 = CreateCube();
-		Object* cube5 = CreateCube();
+		Object* cube1 = CreateCube("assets/shaders/glsl/gBuffer/gBuffer_pass.glsl");
+		Object* cube2 = CreateCube("assets/shaders/glsl/gBuffer/gBuffer_pass.glsl");
+		Object* cube3 = CreateCube("assets/shaders/glsl/gBuffer/gBuffer_pass.glsl");
+		Object* cube4 = CreateCube("assets/shaders/glsl/gBuffer/gBuffer_pass.glsl");
+		Object* cube5 = CreateCube("assets/shaders/glsl/gBuffer/gBuffer_pass.glsl");
 
 		//cube1->GetComponent<Transform>()->SetScale({ 20.0f,20.0f,20.0f });
 
@@ -198,12 +210,19 @@ namespace BlackPearl {
 		m_ShadowObjsList.push_back(cube4);
 		m_ShadowObjsList.push_back(cube5);
 
+        scene->AddObject(cube1);
+        scene->AddObject(cube2);
+        scene->AddObject(cube3);
+        scene->AddObject(cube4);
+        scene->AddObject(cube5);
+        scene->AddObject(deer);
+        scene->AddObject(bunny);
 
 	}
 	
-	void Layer::LoadChurchScene()
+	void Layer::LoadChurchScene(Scene* scene)
 	{
-		Object* church = CreateModel("assets/models/crytek-sponza/sponza.obj", "assets/shaders/glsl/IronMan.glsl", false, "Church");
+		Object* church = CreateModel("assets/models/crytek-sponza/sponza.obj", "assets/shaders/glsl/Cube.glsl", false, "Church");
 
 		//Object* church = CreateModel("assets/models/sponza_obj/sponza.obj", "assets/shaders/IronMan.glsl", false, "Church");
 		church->GetComponent<Transform>()->SetInitScale(glm::vec3(0.006));//0.02
@@ -225,10 +244,12 @@ namespace BlackPearl {
 		light->GetComponent<MeshRenderer>()->SetIsShadowObjects(false);
 		light->GetComponent<PointLight>()->UpdateMesh({ {0,0,0} ,{1,1,1},{0,0,0},{0,0,0},1.0 });
 
+        scene->AddObject(church);
+        scene->AddObject(light);
 
 	}
 
-	void Layer::LoadSpheresScene()
+	void Layer::LoadSpheresScene(Scene* scene)
 	{
 		//Scene
 		Object* light = CreateLight(LightType::PointLight);
@@ -260,9 +281,13 @@ namespace BlackPearl {
 		m_ShadowObjsList.push_back(sphereObjRust);
 		//m_ShadowObjsList.push_back(cube);
 
+        scene->AddObject(sphereObjIron);
+        scene->AddObject(sphereObjStone);
+        scene->AddObject(sphereObjPlastic);
+        scene->AddObject(sphereObjRust);
 	}
 
-	void Layer::LoadSpheresSpecularProbeScene()
+	void Layer::LoadSpheresSpecularProbeScene(Scene* scene)
 	{
 		//Scene
 		Object* light = CreateLight(LightType::PointLight);
@@ -315,18 +340,26 @@ namespace BlackPearl {
 		m_ShadowObjsList.push_back(sphereObjPlastic);
 		m_ShadowObjsList.push_back(sphereObjRust);
 		m_ShadowObjsList.push_back(cube);
+
+        scene->AddObject(sphereObjIron);
+        scene->AddObject(sphereObjStone);
+        scene->AddObject(sphereObjPlastic);
+        scene->AddObject(sphereObjRust);
+        scene->AddObject(cube);
+
 	}
 
-	void Layer::LoadSwordScene()
+	void Layer::LoadSwordScene(Scene* scene)
 	{
 		IDevice* device = m_DeviceManager->GetDevice();
 		Object* sword = LoadStaticBackGroundObject("Sword");
 		m_ShadowObjsList.push_back(sword);
+        scene->AddObject(sword);
 
 
 	}
 
-	void Layer::LoadCubesScene()
+	void Layer::LoadCubesScene(Scene* scene)
 	{
 		float width = 16;
 		float height = width;
@@ -350,13 +383,14 @@ namespace BlackPearl {
 					//cube->GetComponent<MeshRenderer>()->SetTextureSamples(false);
 					cube->GetComponent<MeshRenderer>()->SetIsBackGroundObjects(true);
 					m_BackGroundObjsList.push_back(cube);
+                    scene->AddObject(cube);
 				}
 			}
 
 		}
 	}
 
-	std::vector<Object*> Layer::LoadCubesScene1(int cubeNum, glm::vec3 pos)
+	std::vector<Object*> Layer::LoadCubesScene1(Scene* scene, int cubeNum, glm::vec3 pos)
 	{
 		std::vector<Object*> objs;
 		float width = 16;
@@ -381,6 +415,7 @@ namespace BlackPearl {
 					//cube->GetComponent<MeshRenderer>()->SetTextureSamples(false);
 					cube->GetComponent<MeshRenderer>()->SetIsBackGroundObjects(true);
 					objs.push_back(cube);
+                    scene->AddObject(cube);
 					m_BackGroundObjsList.push_back(cube);
 
 				}
@@ -682,15 +717,15 @@ namespace BlackPearl {
 		m_ObjectsList.push_back(obj);
 		return obj;
 	}
-	Object* Layer::CreateCube(const std::string& shaderPath, const std::string& texturePath, const std::string& name) //TODO:
+	Object* Layer::CreateCube(const std::string& shaderPath, std::vector<std::string>* macros, const std::string& texturePath, const std::string& name) //TODO:
 	{
-		Object* obj = g_objectManager->CreateCube(shaderPath, texturePath, name);
+		Object* obj = g_objectManager->CreateCube(shaderPath, macros, texturePath, name);
 		m_ObjectsList.push_back(obj);
 		return obj;
 	}
-	Object* Layer::CreateSphere(const float radius, const unsigned int stackCount, const unsigned int sectorCount, const std::string& shaderPath, const std::string& texturePath, const std::string& name)
+	Object* Layer::CreateSphere(const float radius, const unsigned int stackCount, const unsigned int sectorCount, const std::string& shaderPath, std::vector<std::string>* macros, const std::string& texturePath, const std::string& name)
 	{
-		Object* obj = g_objectManager->CreateSphere(radius, stackCount, sectorCount, shaderPath, texturePath, name);
+		Object* obj = g_objectManager->CreateSphere(radius, stackCount, sectorCount, shaderPath, macros, texturePath, name);
 		m_ObjectsList.push_back(obj);
 		return obj;
 	}
@@ -760,6 +795,23 @@ namespace BlackPearl {
 		m_BackGroundObjsList.push_back(obj);
 		return obj;
 	}
+
+
+    Object* Layer::CreateFBXModel(
+        const std::string& modelPath,
+        const std::string& shaderPath,
+        const bool isAnimated,
+        const std::string& name,
+        const bool vertices_sorted,
+        const bool createMeshlet,
+        const bool isMeshletModel,
+        MeshletOption options)
+    {
+        Object* obj = g_objectManager->CreateFBXModel(modelPath, shaderPath, isAnimated, vertices_sorted, false, name, createMeshlet, isMeshletModel, options);
+        m_ObjectsList.push_back(obj);
+        m_BackGroundObjsList.push_back(obj);
+        return obj;
+    }
 	MainCamera* Layer::CreateCamera(const std::string& name) {
 
 		MainCamera* mainCamera = g_objectManager->CreateCamera(name);

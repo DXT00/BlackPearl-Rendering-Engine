@@ -32,10 +32,17 @@ public:
 	}
 
     void SetupScene() {
-
+        std::vector<std::string> macros;
+        macros.push_back("#define USE_ALBEDO_MAP 1");
         m_Scene = DBG_NEW Scene();
-        m_SphereObj = CreateSphere(0.5, 64, 64, "assets/shaders/glsl/Cube.glsl", "assets/texture/wood.png");
-        m_CubeObj = CreateCube("assets/shaders/glsl/Cube.glsl", "assets/texture/wood.png");
+        // TODO:: 设置每个pass的材质
+        m_SphereObj = CreateSphere(0.5, 64, 64, "assets/shaders/glsl/gBuffer/gBuffer_pass.glsl", &macros, "assets/texture/wood.png");
+        m_CubeObj = CreateCube("assets/shaders/glsl/gBuffer/gBuffer_pass.glsl", &macros, "assets/texture/wood.png");
+
+
+        //m_HouseModel = CreateFBXModel("assets/models/BurgerPiz/Models/BurgerPiz.fbx", "assets/shaders/glsl/Cube.glsl", false, "House");
+     //   LoadChurchScene();
+       LoadCornellScene1(m_Scene);
         m_SkyBox = CreateSkyBox(
             { "assets/skybox/skybox/right.jpg",
              "assets/skybox/skybox/left.jpg",
@@ -178,6 +185,8 @@ private:
     Scene* m_Scene;
 	Object* m_CubeObj;
 	Object* m_SphereObj;
+
+    Object* m_HouseModel;
 	Object* m_SkyBox;
 	Object* m_DirectionLight;
 

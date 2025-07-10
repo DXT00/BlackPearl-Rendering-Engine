@@ -25,11 +25,14 @@
 #include "BlackPearl/RHI/DynamicRHI.h"
 #include "BlackPearl/Math/Math.h"
 #include "BlackPearl/Renderer/Model/ModelLoader.h"
+#include "BlackPearl/FBX/FBXLoader.h"
+
 #include "BlackPearl/Renderer/Shader/MaterialShader.h"
 #include "BlackPearl/Renderer/Material/MaterialTemplate/MaterialTemplate.h"
 namespace BlackPearl {
 
 	extern ModelLoader* g_modelLoader;
+    extern FBXLoader* g_fbxLoader;
 
 	void ObjectManager::RegisterDeviceManager(DeviceManager* deviceManager)
 	{
@@ -63,9 +66,35 @@ namespace BlackPearl {
 			//TODO:: ���DirectX֧��
 			if (DynamicRHI::g_RHIType == DynamicRHI::Type::OpenGL) {
 
+
+
+                std::shared_ptr<CubeMeshFilter> meshFilter = Obj->AddComponent<CubeMeshFilter>();
+                Transform* transformComponent = Obj->GetComponent<Transform>();
+
+
+                std::shared_ptr<Material> material;
+                std::shared_ptr<Material::TextureMaps> texture(DBG_NEW Material::TextureMaps());
+
+              
+
+                material.reset(DBG_NEW Material("assets/shaders/glsl/PointLight.glsl", texture, { 1.0,1.0,1.0 }, { 1.0,1.0,1.0 }, { 1.0,1.0,1.0 }, { 0.0,0.0,0.0 }));
+                VertexBufferLayout layout = {
+                    {ElementDataType::Float3,"aPos",false,Slot_aPos},
+                    {ElementDataType::Float3,"aPrePos",false,Slot_aPrePos},
+                     {ElementDataType::Float3,"aNormal",false,Slot_aNormal},
+                    {ElementDataType::Float2,"aTexCoords",false,Slot_aTexCoords},
+                };
+               
+
+                std::shared_ptr<Mesh> mesh = std::make_shared<Mesh>(meshFilter.get(), material, layout);
+                //  GE_ERROR_JUDGE();
+                mesh->name = "PointLight";
+
+
 				std::shared_ptr<PointLight> lightComponent = Obj->AddComponent<PointLight>();
 				lightComponent->SetAttenuation(PointLight::Attenuation(200));
-				Obj->AddComponent<MeshRenderer>(lightComponent->GetMeshes());
+                lightComponent->SetMesh(mesh);
+				Obj->AddComponent<MeshRenderer>(mesh);
 			}
 			lightSources->AddLight(Obj);
 
@@ -124,7 +153,46 @@ namespace BlackPearl {
 
 	}
 
-	Object* ObjectManager::CreateCube(const std::string& shaderPath, const std::string& texturePath, const std::string& name)
+    Object* ObjectManager::CreateFBXModel(
+        const std::string& modelPath,
+        const std::string& shaderPath,
+        const bool isAnimated,
+        const bool vertices_sorted,
+        const bool addBondingBox,
+        const std::string& name,
+        const bool createMeshlet,
+        const bool isMeshletModel,
+        MeshletOption options)
+    {
+        std::shared_ptr<MaterialShader> shader;
+
+        shader.reset(DBG_NEW MaterialShader(shaderPath));
+
+        ModelDesc desc;
+        desc.bIsAnimated = isAnimated;
+        desc.bSortVerticces = vertices_sorted;
+        desc.bCreateMeshlet = createMeshlet;
+        desc.options = options;
+        desc.shader = shader;
+
+        Model* pModel = g_fbxLoader->load(modelPath, desc);
+        std::shared_ptr<Model> model(pModel);// = std::shared_ptr<Model>(pModel);
+        Object* obj = CreateEmpty(name);
+        std::shared_ptr<BasicInfo> info = obj->AddComponent<BasicInfo>();
+        info->SetObjectType(ObjectType::OT_Model);
+        Transform* transformComponent = obj->GetComponent<Transform>();
+        transformComponent->SetInitPosition({ 0.0f, 0.0f, 0.0f });
+        transformComponent->SetInitRotation({ 0.0,180.0,0.0 });
+        obj->AddComponent<MeshRenderer>(model);
+        if (model->GetAABB() && model->GetAABB()->IsValid()) {
+            obj->AddComponent<BoundingBox>(*(model->GetAABB()));
+        }
+        m_Objs.push_back(obj);
+        return obj;
+
+    }
+
+	Object* ObjectManager::CreateCube(const std::string& shaderPath, std::vector<std::string>* macros, const std::string& texturePath, const std::string& name)
 	{
 		Object* obj = CreateEmpty(name);
 		auto info = obj->AddComponent<BasicInfo>();
@@ -150,7 +218,7 @@ namespace BlackPearl {
 
 		}
 
-		material.reset(DBG_NEW Material(shaderPath, texture, { 1.0,1.0,1.0 }, { 1.0,1.0,1.0 }, { 1.0,1.0,1.0 }, {0.0,0.0,0.0}));
+		material.reset(DBG_NEW Material(shaderPath, texture, { 1.0,1.0,1.0 }, { 1.0,1.0,1.0 }, { 1.0,1.0,1.0 }, {0.0,0.0,0.0}, macros));
 //#if GE_API_VULKAN
 		VertexBufferLayout layout = {
 			{ElementDataType::Float3,"aPos",false,Slot_aPos},
@@ -184,7 +252,7 @@ namespace BlackPearl {
 
 	}
 
-	Object* ObjectManager::CreateSphere(const float radius, const unsigned int stackCount, const unsigned int sectorCount, const std::string& shaderPath, const std::string& texturePath, const std::string& name)
+	Object* ObjectManager::CreateSphere(const float radius, const unsigned int stackCount, const unsigned int sectorCount, const std::string& shaderPath, std::vector<std::string>* macros, const std::string& texturePath, const std::string& name)
 	{
 		Object* obj = CreateEmpty(name);
 		auto info = obj->AddComponent<BasicInfo>();
@@ -207,7 +275,7 @@ namespace BlackPearl {
 			texture->diffuseTextureMap = m_Device->createTexture(desc);
 		}
 
-		material.reset(DBG_NEW Material(shaderPath, texture, { 1.0,1.0,1.0 }, { 1.0,1.0,1.0 }, { 1.0,1.0,1.0 }, {}));
+		material.reset(DBG_NEW Material(shaderPath, texture, { 1.0,1.0,1.0 }, { 1.0,1.0,1.0 }, { 1.0,1.0,1.0 }, {}, macros));
 		//TODO:: �޸�glsl shader ������vertex layout
 //#if GE_API_VULKAN
 		VertexBufferLayout layout = {
@@ -307,7 +375,7 @@ namespace BlackPearl {
 
 	Object* ObjectManager::CreateLightProbe(ProbeType type, const std::string& shaderPath, const std::string& texturePath, const std::string& name)
 	{
-		Object* obj = CreateCube(shaderPath, texturePath, name);
+		Object* obj = CreateCube(shaderPath, nullptr, texturePath, name);
 		if (!obj->HasComponent<BasicInfo>()) {
 			obj->AddComponent<BasicInfo>();
 		}

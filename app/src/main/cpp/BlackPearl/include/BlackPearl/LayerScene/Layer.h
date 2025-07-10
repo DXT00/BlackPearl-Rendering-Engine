@@ -102,17 +102,17 @@ namespace BlackPearl {
 			m_DeviceManager = deviceMgr;
 		}
 
-		void LoadScene(const std::string demoScene);
-		void LoadCornellScene();
-		void LoadCornellScene1();
+		void LoadScene(Scene* scene, const std::string demoScene);
+		void LoadCornellScene(Scene* scene);
+		void LoadCornellScene1(Scene* scene);
 
-		void LoadChurchScene();
-		void LoadSpheresScene();
-		void LoadSpheresSpecularProbeScene();
+		void LoadChurchScene(Scene* scene);
+		void LoadSpheresScene(Scene* scene);
+		void LoadSpheresSpecularProbeScene(Scene* scene);
 
-		void LoadSwordScene();
-		void LoadCubesScene();
-		std::vector<Object*> LoadCubesScene1(int cubeNum, glm::vec3 pos);
+		void LoadSwordScene(Scene* scene);
+		void LoadCubesScene(Scene* scene);
+		std::vector<Object*> LoadCubesScene1(Scene* scene, int cubeNum, glm::vec3 pos);
 		void LoadD3D12ModelScene();
 
 		Object* LoadDynamicObject(const std::string modelName);
@@ -139,8 +139,20 @@ namespace BlackPearl {
 			const bool createMeshlet = false,
 			const bool isMeshletModel = false,
 			MeshletOption options = MeshletOption());
-		Object* CreateCube(const std::string& shaderPath = "assets/shaders/glsl/Cube.glsl", const std::string& texturePath = "", const std::string& name = "Cube");
-		Object* CreateSphere(const float radius, const unsigned int stackCount, const unsigned int sectorCount, const std::string& shaderPath = "assets/shaders/glsl/Sphere.glsl", const std::string& texturePath = "", const std::string& name = "Sphere");
+
+
+        Object* CreateFBXModel(
+            const std::string& modelPath,
+            const std::string& shaderPath,
+            const bool isAnimated,
+            const std::string& name = "FBXModel",
+            const bool vertices_sorted = false,
+            const bool createMeshlet = false,
+            const bool isMeshletModel = false,
+            MeshletOption options = MeshletOption());
+
+		Object* CreateCube(const std::string& shaderPath = "assets/shaders/glsl/Cube.glsl", std::vector<std::string>* macros = nullptr, const std::string& texturePath = "", const std::string& name = "Cube");
+		Object* CreateSphere(const float radius, const unsigned int stackCount, const unsigned int sectorCount, const std::string& shaderPath = "assets/shaders/glsl/Sphere.glsl", std::vector<std::string>* macros = nullptr, const std::string& texturePath = "", const std::string& name = "Sphere");
 		Object* CreatePlane(const std::string& shaderPath = "assets/shaders/glsl/Plane.glsl", const std::string& texturePath = "assets/texture/wood.png", const std::string& name = "Plane");
 		Object* CreateSkyBox(const std::vector<std::string>& textureFaces, const std::string& shaderPath = "assets/shaders/glsl/SkyBox.glsl", const std::string& name = "SkyBox");
 		//TODO::Quad ��TexturePath�ͻ��bug...

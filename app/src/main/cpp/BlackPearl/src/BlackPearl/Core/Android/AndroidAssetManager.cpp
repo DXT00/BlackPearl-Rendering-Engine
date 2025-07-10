@@ -151,7 +151,7 @@ namespace BlackPearl{
         }
 #endif
     }
-    const std::vector<uint8_t>& AndroidAssetManager::LoadBuffer(const std::string& relPath) {
+    voidAndroidAssetManager::LoadBuffer(const std::string& relPath, std::vector<uint8_t>& buffer) {
 
 #if USE_ANDROID_JNI
         AAsset* asset = GetAsset(relPath);
@@ -160,7 +160,7 @@ namespace BlackPearl{
 
         // 获取文件长度
         size_t length = AAsset_getLength(asset);
-        std::vector<uint8_t> buffer(length + 1);
+        buffer.resize(length + 1);
 
         // 读取文件内容
         AAsset_read(asset, buffer.data(), length);
@@ -169,7 +169,7 @@ namespace BlackPearl{
         // 关闭资源
         AAsset_close(asset);
 
-        return std::string(buffer.data());
+       // return std::string(buffer.data());
 
 #endif
     }

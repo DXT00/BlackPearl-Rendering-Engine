@@ -31,6 +31,7 @@ namespace BlackPearl {
 		math::float3 diffuseColor, 
 		math::float3 specularColor, 
 		math::float3 emissiveColor,
+        std::vector<std::string>* macros,
 		MaterialTemplateType templateType,
 		const std::vector<MaterialResourceBinding>& customBindings)
 	{
@@ -41,7 +42,7 @@ namespace BlackPearl {
 		m_MaterialColors.specularColor = specularColor;
 		m_MaterialColors.emissiveColor = emissiveColor;
 		if (!shaderPath.empty()) {
-			m_MaterialShader = new MaterialShader(shaderPath);
+			m_MaterialShader = new MaterialShader(shaderPath,nullptr, macros);
 		}
 		customBindingDesc = customBindings;
 //#if APP_VERSION == APP_VERSION_1_0

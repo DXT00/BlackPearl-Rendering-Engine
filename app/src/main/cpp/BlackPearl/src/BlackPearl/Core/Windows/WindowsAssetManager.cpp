@@ -66,18 +66,17 @@ namespace BlackPearl{
 
     }
 
-    const std::vector<uint8_t>& WindowsAssetManager::LoadBuffer(const std::string& relPath)
+    void WindowsAssetManager::LoadBuffer(const std::string& relPath, std::vector<uint8_t>& buffer)
     {
         std::ifstream file(relPath, std::ios::binary | std::ios::ate);
 
         std::streamsize size = file.tellg();
         file.seekg(0, std::ios::beg);
 
-        std::vector<uint8_t> buffer(size);
+        buffer.resize(size);
         if (!file.read(reinterpret_cast<char*>(buffer.data()), size)) {
             GE_ASSERT(0, "read binary file failed");
         }
-        return  buffer;
     }
 
 }

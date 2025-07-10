@@ -43,6 +43,7 @@
 #include "Timestep/TimeCounter.h"
 #include "Map/MapManager.h"
 #include "Renderer/GIManager.h"
+#include "FBX/FBXLoader.h"
 namespace BlackPearl {
 
 	Log* g_Log = nullptr;
@@ -52,6 +53,8 @@ namespace BlackPearl {
 	DeviceManager*   g_deviceManager = nullptr;
 	CullingManager* g_cullingManager = DBG_NEW CullingManager();
 	ModelLoader* g_modelLoader = nullptr;
+    FBXLoader* g_fbxLoader = nullptr;
+
 	RootFileSystem* g_rootFileSystem = DBG_NEW RootFileSystem();
 	UIManager* g_uiManager = nullptr;
 	ShaderFactory* g_shaderFactory = nullptr;
@@ -121,9 +124,11 @@ namespace BlackPearl {
 			g_modelLoader = DBG_NEW D3D12ModelLoader();
 	#else
 			g_modelLoader = DBG_NEW ModelLoader();
+            g_fbxLoader = DBG_NEW FBXLoader();
     #endif
         //GE_ERROR_JUDGE();
 			g_modelLoader->RegisterDeviceManager(g_deviceManager);
+            g_fbxLoader->RegisterDeviceManager(g_deviceManager);
        // GE_ERROR_JUDGE();
 			m_LayerManager = DBG_NEW LayerManager();
 			m_LayerManager->RegisterDeviceManager(g_deviceManager);

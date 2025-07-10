@@ -40,8 +40,19 @@ namespace BlackPearl {
 			const bool isMeshletModel = false,
 			MeshletOption options = MeshletOption());
 
-		Object* CreateCube(const std::string& shaderPath = "", const std::string& texturePath = "", const std::string& name = "Cube");
-		Object* CreateSphere(const float radius, const unsigned int stackCount, const unsigned int sectorCount, const std::string& shaderPath, const std::string& texturePath, const std::string& name);
+        Object* CreateFBXModel(
+            const std::string& modelPath,
+            const std::string& shaderPath,
+            const bool isAnimated,
+            const bool vertices_sorted,
+            const bool addBondingBox,
+            const std::string& name,
+            const bool createMeshlet = false,
+            const bool isMeshletModel = false,
+            MeshletOption options = MeshletOption());
+
+		Object* CreateCube(const std::string& shaderPath = "", std::vector<std::string>* macros = nullptr, const std::string& texturePath = "", const std::string& name = "Cube");
+		Object* CreateSphere(const float radius, const unsigned int stackCount, const unsigned int sectorCount, const std::string& shaderPath, std::vector<std::string>* macros, const std::string& texturePath, const std::string& name);
 		Object* CreatePlane(const std::string& shaderPath, const std::string& texturePath, const std::string& name);
 		Object* CreateSkyBox(const std::vector<std::string>& textureFaces, const std::string& shaderPath, const std::string& name);
 		Object* CreateQuad(const std::string& shaderPath , const std::string& texturePath, const std::string& name);
