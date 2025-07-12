@@ -168,6 +168,8 @@ void main()
             else if(hit.hitCascade == 3u)
                  surfaceColor = vec4(1.0,1.0,0.0,1.0);
 
+
+
 //            sampleGlobalSurfaceAtlas(surfaceColor,ubo.data, 
 //                                atlasChunks.data,  
 //                                cullObjects.data,  

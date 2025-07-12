@@ -94,6 +94,7 @@ GlobalSDFHit tracyGlobalSDF(in GlobalSDFTraceConstants data,
     for (uint clip = 0; clip < data.clipCount && hit.hitTime < 0.0f; clip++)
     {
         vec4  clipPosDistance    = data.clipPosDistance[clip];
+        float clipExtend         = data.clipPosDistance[clip].w * 2.0;
         float voxelSize          = data.clipVoxelSize[clip];
         float voxelHalf          = voxelSize * 0.5f;
         vec3  worldPosition      = trace.worldPosition + trace.worldDirection * (voxelSize * cascadeTraceStartBias);
@@ -140,7 +141,8 @@ GlobalSDFHit tracyGlobalSDF(in GlobalSDFTraceConstants data,
                 else if(clip == 3){
                     stepDistance = texture(clip3,clipUV).r;
                 }
-
+                stepDistance = stepDistance*2.0 -1.0;
+                stepDistance *= clipExtend;
 //                if (stepDistance < chunkSizeDistance)
 //                {
 //                    float stepDistanceTex = texture(tex,textureUV).r;

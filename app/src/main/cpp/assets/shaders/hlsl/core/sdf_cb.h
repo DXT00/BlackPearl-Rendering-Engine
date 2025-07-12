@@ -39,7 +39,7 @@ struct GlobalSDFConstants
 {
     ALIGN(4) float voxelSize;
     ALIGN(16) float3 clipmapCenter;
-    ALIGN(16) float3 clipmapDimension;
+    ALIGN(16) float3 clipmapDimension; //default x = y = z
 
     ALIGN(4) int objsCnt;
 };
