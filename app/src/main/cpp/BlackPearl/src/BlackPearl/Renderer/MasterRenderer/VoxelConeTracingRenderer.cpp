@@ -213,7 +213,7 @@ namespace BlackPearl {
 
         SCOPE_TIME_COUNTER(Voxelize)
             FRHIRenderPassInfo RPShadingInfo(m_DummyVoxelRT,
-                ERenderTargetActions::Load_Store
+                ERenderTargetActions::Clear_Store
             );
 
        if (clearVoxelizationFirst) {

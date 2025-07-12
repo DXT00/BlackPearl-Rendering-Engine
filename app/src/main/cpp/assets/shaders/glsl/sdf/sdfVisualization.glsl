@@ -67,8 +67,8 @@ struct ClipmapSample {
 ClipmapSample sampleClipmap(vec3 worldPos) {
     // 确定使用哪个clipmap层级(这里简单根据y高度选择), todo:: 默认3层 clip, 不是3层要做筛选
     int level = 0;
-    if (worldPos.y > g_sdfData.clipPosDistance[0].w || worldPos.y <  -g_sdfData.clipPosDistance[0].w) level = 1;
-    if (worldPos.y > g_sdfData.clipPosDistance[1].w || worldPos.y <  -g_sdfData.clipPosDistance[1].w) level = 2;
+    if (worldPos.y > g_View.cameraPos.y + g_sdfData.clipPosDistance[0].w || worldPos.y <  g_View.cameraPos.y -g_sdfData.clipPosDistance[0].w) level = 1;
+    if (worldPos.y > g_View.cameraPos.y + g_sdfData.clipPosDistance[1].w || worldPos.y <  g_View.cameraPos.y -g_sdfData.clipPosDistance[1].w) level = 2;
     
 
     float3 center = g_sdfData.clipPosDistance[level].xyz;
@@ -138,20 +138,20 @@ Ray generateRay(vec2 fragCoord, vec2 viewportSize, vec3 cameraPos, vec3 cameraFo
         ndc.y * cameraUp * tanFov
     );
 
-    // 返回光线
     return Ray(cameraPos, rayDir);
 }
-// 根据可视化模式着色
+
+
 vec3 shade(vec3 p, vec3 rd, ClipmapSample sam) {
 //    if (uVisualizationMode == 0) {
-//        // 模式0: 表面渲染
+//        // 表面渲染
 //        vec3 normal = calcNormal(p);
 //        vec3 lightDir = normalize(vec3(1.0, 1.0, -1.0));
 //        float diff = max(dot(normal, lightDir), 0.2);
 //        return vec3(diff);
 //    } 
 //    else if (uVisualizationMode == 1) {
-//        // 模式1: 显示clipmap层级
+//        
 //        if (sam.level == 0) return vec3(1.0, 0.0, 0.0); // 红: 最精细层
 //        if (sam.level == 1) return vec3(0.0, 1.0, 0.0); // 绿: 中间层
 //        return vec3(0.0, 0.0, 1.0); // 蓝: 最粗糙层

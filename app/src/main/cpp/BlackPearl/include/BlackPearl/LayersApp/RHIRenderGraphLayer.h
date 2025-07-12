@@ -14,6 +14,7 @@
 #include "Component/LightComponent/PointLight.h"
 #include "RHI/RHIGlobals.h"
 #include "Config.h"
+#include "Component/BoundingBoxComponent/BoundingBox.h"
 
 
 class RHIRenderGraphLayer :public Layer {
@@ -51,14 +52,17 @@ public:
              "assets/skybox/skybox/front.jpg",
              "assets/skybox/skybox/back.jpg",
             });
-        m_CubeObj->GetComponent<Transform>()->SetScale({ 1.0,1.0,1.0 });
+        m_CubeObj->GetComponent<Transform>()->SetScale({ 5.0,5.0,5.0 });
        // m_CubeObj->GetComponent<Transform>()->SetRotation({ 0,30,0 });
-        m_SphereObj->GetComponent<Transform>()->SetScale({ 2.0,2.0,2.0 });
+        m_SphereObj->GetComponent<Transform>()->SetScale({ 8.0,8.0,8.0 });
         m_CubeObj->SetPosition({ 5.0, 0.0,0.0 });
         m_SphereObj->SetPosition({ -5.0,-0.0,-0.0 });
 
-
-        m_MainCamera->SetMoveSpeed(0.5f);
+        m_SphereObj->GetComponent<BoundingBox>()->Get().UpdateTransform(m_SphereObj->GetComponent<Transform>()->GetTransformMatrix());
+        m_CubeObj->GetComponent<BoundingBox>()->Get().UpdateTransform(m_CubeObj->GetComponent<Transform>()->GetTransformMatrix());
+       
+        
+        m_MainCamera->SetMoveSpeed(0.2f);
         m_MainCamera->SetRotateSpeed(5.0f);
 
         m_DirectionLight = CreateLight(LightType::DirectionLight, "DirectionLight");
@@ -73,7 +77,7 @@ public:
       //  m_DirectionLight->GetComponent<DirectionLight>()->SetDirection({ 0.2f, -1.0f, 0.2f });
 #endif
         //m_Scene->AddObject(m_SphereObj);
-        m_Scene->AddObject(m_CubeObj);
+        //m_Scene->AddObject(m_CubeObj);
         m_Scene->AddObject(m_SphereObj);
 
         m_Scene->SetLightSources(GetLightSources());
@@ -86,7 +90,7 @@ public:
         
 
             m_DiffuseLightProbeGrid = CreateProbeGrid(ProbeType::DIFFUSE_PROBE,
-                math::float3(2, 2, 2), math::float3(-10.0f, 0.0f, 0.0f), 10);
+                math::float3(3, 3, 3), math::float3(-10.0f, 0.0f, -3.0f), 10);
 
           /*  m_ReflectLightProbeGrid = CreateProbeGrid(m_MapManager, ProbeType::REFLECTION_PROBE,
                 math::float3(2, 1, 1), math::float3(0.2f, -1.0f, 0.2f), 6);*/
@@ -122,13 +126,15 @@ public:
                 m_DeviceManager->AddRenderGraphToBack(m_GIGraph);
             }
             else if (Configuration::GIMethod == GIMethod::DDGI) {
+                m_VoxelGraph = DBG_NEW VoxelGraph(m_DeviceManager);
+                m_VoxelGraph->Init(m_Scene);
+                m_DeviceManager->AddRenderGraphToBack(m_VoxelGraph);
+
                 m_SDFBakeGraph = DBG_NEW SDFGraph(m_DeviceManager);
                 m_SDFBakeGraph->Init(m_Scene);
                 m_DeviceManager->AddRenderGraphToBack(m_SDFBakeGraph);
 
-                m_VoxelGraph = DBG_NEW VoxelGraph(m_DeviceManager);
-                m_VoxelGraph->Init(m_Scene);
-                m_DeviceManager->AddRenderGraphToBack(m_VoxelGraph);
+             
 
                 m_GIGraph = DBG_NEW DDGIGraph(m_DeviceManager);
                 m_GIGraph->Init(m_Scene);

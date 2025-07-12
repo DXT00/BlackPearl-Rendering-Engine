@@ -12,6 +12,7 @@
 #include "Renderer/SystemTextures.h"
 #include "Timestep/TimeCounter.h"
 namespace BlackPearl {
+    extern MapManager* g_mapManager;
 
     extern MaterialManager* g_materialManager;
 
@@ -28,10 +29,12 @@ namespace BlackPearl {
 
 	}
 
+
 	void VoxelGraph::Render(Timestep ts, IFramebuffer* framebuffer, IView* View) {
 
 
         m_CommandList->open();
+    //    m_CommandList->beginMarker("VoxelGraph");
 
 
         if (Configuration::bUpdatVoxelsPerFrame) {
@@ -45,10 +48,11 @@ namespace BlackPearl {
         }
 
         //render global df arround camera
-        if (Configuration::DebugView == DebugView::DV_Voxel) {
+        if (Configuration::DebugView == DebugView::DV_Voxel && ShouldRender()) {
             m_VoxelRnderer->Render(m_CommandList, framebuffer, m_Scene, VoxelConeTracingRenderer::RenderingMode::VOXELIZATION_VISUALIZATION);
 
         }
+       // m_CommandList->endMarker();
 
         m_CommandList->close();
 	}
@@ -56,6 +60,15 @@ namespace BlackPearl {
 
 
 	
+    //render Voxel if camera is inside map
+    bool VoxelGraph::ShouldRender()
+    {
+        auto camPos = Renderer::GetSceneData()->CameraPosition;
+        int areaId = g_mapManager->CalculateAreaId(camPos);
+
+        return areaId >= 0 && g_mapManager->GetArea(areaId);
+    }
+
 
     void VoxelGraph::InitRT()
     {

@@ -62,7 +62,7 @@ struct Ray {
 };
 
 Ray generateRay(vec2 fragCoord, vec2 viewportSize, vec3 cameraPos, vec3 cameraForward, vec3 cameraRight, vec3 cameraUp, float fov) {
-    // 将屏幕坐标转换到 NDC [-1,1]
+    // 将屏幕坐标gl_FragCoord.xy 转换到 NDC [-1,1]
     vec2 uv = fragCoord / viewportSize; //[0,1]
     uv.y = 1.0 - uv.y;
     vec2 ndc = (2.0 * uv ) - 1.0;

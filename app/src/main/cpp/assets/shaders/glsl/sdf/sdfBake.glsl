@@ -39,6 +39,7 @@ float boxSDF(vec3 p, vec3 center, vec3 halfExtent) {
     return length(max(d, 0.0)) + min(max(d.x, max(d.y, d.z)), 0.0);
 
     //float d = length(p - center) - max(halfExtent.x, max(halfExtent.y, halfExtent.z));
+    //return length(max(d, 0.0)) + min(max(d.x, max(d.y, d.z)), 0.0);
 
     //return d;
 

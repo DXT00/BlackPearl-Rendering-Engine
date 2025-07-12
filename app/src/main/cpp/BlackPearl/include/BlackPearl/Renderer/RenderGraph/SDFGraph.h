@@ -9,6 +9,7 @@
 #include "Renderer/DeviceManager.h"
 #include "Renderer/MasterRenderer/GlobalDFRenderer.h"
 #include "Timestep/Timestep.h"
+#include "Renderer/MasterRenderer/GrabPassRenderer.h"
 namespace BlackPearl {
 	class SDFGraph :public RenderGraph
 	{
@@ -35,7 +36,9 @@ namespace BlackPearl {
 		CommandListHandle    m_CommandList;
 		Scene* m_Scene = nullptr;
 
-        GlobalDFRenderer* m_GDFRnderer = nullptr;
+        GlobalDFRenderer* m_GDFRenderer = nullptr;
+        GrabPassRenderer* m_GDFDebugGrabRenderer = nullptr;
+
 
         FramebufferHandle m_DeferredFramebuffer;
 

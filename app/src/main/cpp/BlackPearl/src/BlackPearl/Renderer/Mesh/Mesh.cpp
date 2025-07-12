@@ -82,6 +82,9 @@ namespace BlackPearl {
 			_AppendBufferRange(buffers->getVertexBufferRange(VertexAttribute::Position),
 				buffers->positionData.size() * sizeof(buffers->positionData[0]), bufferDesc.byteSize);
 			bufferDesc.vertexCnt = buffers->positionData.size();
+
+
+            _InitLocalAABB(buffers->positionData);
 		}
 
 		if (!buffers->prePositionData.empty())
@@ -457,4 +460,21 @@ namespace BlackPearl {
 		range.byteSize = size;
 		currentBufferSize += range.byteSize;
 	}
+
+
+    void Mesh::_InitLocalAABB(const std::vector<math::float3>& posData)
+    {
+        
+        for (auto& pos : posData) {
+
+            m_MinLocalP.x = math::min(pos.x, m_MinLocalP.x);
+            m_MinLocalP.y = math::min(pos.y, m_MinLocalP.x);
+            m_MinLocalP.z = math::min(pos.z, m_MinLocalP.x);
+
+            m_MaxLocalP.x = math::max(pos.x, m_MaxLocalP.x);
+            m_MaxLocalP.y = math::max(pos.y, m_MaxLocalP.x);
+            m_MaxLocalP.z = math::max(pos.z, m_MaxLocalP.x);
+        }
+
+    }
 }

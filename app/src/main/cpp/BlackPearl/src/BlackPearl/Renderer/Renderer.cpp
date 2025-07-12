@@ -49,6 +49,13 @@ namespace BlackPearl {
 		s_SceneData->CameraRotation = camera->GetRotation();
 
 		s_SceneData->CameraFront = camera->Front();
+        s_SceneData->CameraRight = camera->Right();
+        s_SceneData->CameraUp = camera->Up();
+
+        if (camera->GetType() == Camera::CameraType::Perspective)
+            s_SceneData->CameraFov = static_cast<PerspectiveCamera*>(camera)->GetFov();
+        else
+            s_SceneData->CameraFov = 90.0f;
 		s_SceneData->ViewMatrix = camera->GetViewMatrix();
 		s_SceneData->ProjectionMatrix = camera->GetProjectionMatrix();
         math::vector<int, 2> windowSize = Application::Get().GetWindow().GetCurWindowSize();
@@ -273,6 +280,11 @@ namespace BlackPearl {
 		constants.matProjection = Math::ToFloat4x4(ProjectionMatrix);
 		constants.cameraPos = Math::ToFloat3(CameraPosition);
 		constants.cameraRot = Math::ToFloat3(CameraRotation);
+        constants.cameraFront = Math::ToFloat3(CameraFront);
+        constants.cameraRight = Math::ToFloat3(CameraRight);
+        constants.cameraUp = Math::ToFloat3(CameraUp);
+        constants.fov = CameraFov;
+
 		constants.viewportSize = math::float2(m_Viewport.width(), m_Viewport.height());
 		constants.viewportOrigin = math::float2(m_Viewport.minX, m_Viewport.minY);
         constants.viewportSizeInv = math::float2(1.0/ constants.viewportSize.x, 1.0/ constants.viewportSize.y);

@@ -593,6 +593,8 @@ namespace BlackPearl {
     void DDGIRenderer::_UpdateProbeDistance(ICommandList* cmdList, const IrradianceVolume& volume, const DDGIPipelineInternal& pipeline, const ProbeUpdateBindings& binidngs, Scene* scene)
     {
 		cmdList->beginMarker("DDGI_Update_ProbeDistance");
+
+
 		ComputeState computePSO;
 		computePSO.pipeline = m_ProbeDiatanceUpdatePso;
 
@@ -608,10 +610,11 @@ namespace BlackPearl {
 		_FillUpdateProbeShaderParameters(cmdList, volume, binidngs);
       
 		computePSO.bindings.push_back(binidngs.set);
-		
+
 
 		ComputePipelineDesc psoDesc;
 		psoDesc.bindingLayouts.push_back(binidngs.layout);
+
 		psoDesc.CS = m_ProbeDepthUpdateShader->GetComputeShader();
 
 		if (!m_ProbeDiatanceUpdatePso) {

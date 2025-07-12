@@ -19,7 +19,8 @@ namespace BlackPearl {
 		virtual void Init(Scene* scene) override;
 		virtual void Render(Timestep ts, IFramebuffer* framebuffer, IView* View) override;
 
-		
+        bool ShouldRender();
+
 
 
 	private:

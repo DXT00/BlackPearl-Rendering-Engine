@@ -3,12 +3,14 @@
 #include "Renderer/Shader/MaterialShader.h"
 #include "Renderer/SDF/GlobalDistanceField.h"
 #include "Renderer/Voxel/Voxel.h"
+#include "Renderer/MasterRenderer/BasicRenderer.h"
 
 namespace BlackPearl {
     class SDFTrace : public RayTrace
     {
     public:
-        SDFTrace() {
+        SDFTrace()
+        {
 
         }
         virtual ~SDFTrace(){}
@@ -67,7 +69,7 @@ namespace BlackPearl {
         // find current voxel
         void _FillShaderParameters(ICommandList* cmdList, const IrradianceVolume& volume, const DDGIPipelineInternal& pipeline, Scene* scene);
 
-        void _FillDDGI(ICommandList* cmdList, const IrradianceVolume& volume, const DDGIPipelineInternal& pipeline, Scene* scene);
+        void _FillDDGI(ICommandList* cmdList, const IrradianceVolume& volume, const DDGIPipelineInternal& pipeline, Scene* scene, const glm::vec3 camPos);
         void _FillGDF(ICommandList* cmdList, const IrradianceVolume& volume, const DDGIPipelineInternal& pipeline, Scene* scene);
         void _FillVoxel(ICommandList* cmdList, const glm::vec3 camPos);
         void _FillOutputImage(const DDGIPipelineInternal& currentVolume);

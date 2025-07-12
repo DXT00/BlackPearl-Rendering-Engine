@@ -21,10 +21,11 @@ namespace BlackPearl {
 
         InitRT();
 
-        m_GDFRnderer = DBG_NEW GlobalDFRenderer(m_DeviceManager->GetDevice());
-        m_GDFRnderer->Init(m_Scene);
+        m_GDFRenderer = DBG_NEW GlobalDFRenderer(m_DeviceManager->GetDevice());
+        m_GDFRenderer->Init(m_Scene);
       
-
+        m_GDFDebugGrabRenderer = DBG_NEW GrabPassRenderer(m_DeviceManager->GetDevice());
+        m_GDFDebugGrabRenderer->Init(m_GDFRenderer->GetGDFDebugTexture());
 
 	}
 
@@ -33,9 +34,25 @@ namespace BlackPearl {
        
 
         m_CommandList->open();
+      //  m_CommandList->beginMarker("SDFGraph");
 
         //render global df arround camera
-        m_GDFRnderer->Render(m_CommandList, framebuffer, m_Scene);
+        m_GDFRenderer->Render(m_CommandList, framebuffer, m_Scene);
+
+        if (Configuration::DebugView == DebugView::DV_SDF) {
+           FRHIRenderPassInfo RPShadingInfo(SystemTexture::Get().GetBackBuffer(),
+                        ERenderTargetActions::Clear_Store
+                    );
+           m_CommandList->beginRenderPass(RPShadingInfo, "ShowGDF");
+
+            m_GDFRenderer->ShowGDF(m_CommandList, framebuffer, m_Scene);
+
+         
+            //m_GDFDebugGrabRenderer->Render(m_CommandList, framebuffer, m_Scene);
+            m_CommandList->endRenderPass();
+        }
+       // m_CommandList->endMarker();
+
         m_CommandList->close();
         bIsProbesDirty = false;
 	}

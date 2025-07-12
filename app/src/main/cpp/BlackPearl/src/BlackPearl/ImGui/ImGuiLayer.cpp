@@ -649,6 +649,9 @@ namespace BlackPearl {
             EDepthStencilTargetActions::LoadDepthStencil_StoreDepthStencil);
         m_CommandList->beginRenderPass(RPInfo, "UIPass");
 
+        glEnable(GL_DEPTH_TEST);
+        glDepthFunc(GL_ALWAYS);    // 确保UI总是通过测试
+        glDepthMask(GL_TRUE);         // 允许写入深度缓冲
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplWin32_NewFrame();
         ImGui::NewFrame();
