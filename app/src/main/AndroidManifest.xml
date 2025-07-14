@@ -22,18 +22,19 @@
         android:requestLegacyExternalStorage="true"
         android:hardwareAccelerated="false"
         android:hasCode="true"
-        android:name="androidx.multidex.MultiDexApplication"
         tools:ignore="HardcodedDebugMode">
+<!--        android:name="androidx.multidex.MultiDexApplication"-->
+
 
         <!-- 在这里添加 Startup Provider -->
-        <provider
-            android:name="androidx.startup.InitializationProvider"
-            android:authorities="${applicationId}.androidx-startup"
-            android:exported="false">
-            <meta-data
-                android:name="androidx.work.WorkManagerInitializer"
-                android:value="androidx.startup" />
-        </provider>
+<!--        <provider-->
+<!--            android:name="androidx.startup.InitializationProvider"-->
+<!--            android:authorities="${applicationId}.androidx-startup"-->
+<!--            android:exported="false">-->
+<!--            <meta-data-->
+<!--                android:name="androidx.work.WorkManagerInitializer"-->
+<!--                android:value="androidx.startup" />-->
+<!--        </provider>-->
 
         <activity
             android:name="com.example.blackpearl.MainNativeActivity"
