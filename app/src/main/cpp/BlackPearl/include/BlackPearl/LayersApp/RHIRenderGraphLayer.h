@@ -62,7 +62,7 @@ public:
         m_CubeObj->GetComponent<BoundingBox>()->Get().UpdateTransform(m_CubeObj->GetComponent<Transform>()->GetTransformMatrix());
        
         
-        m_MainCamera->SetMoveSpeed(0.2f);
+        m_MainCamera->SetMoveSpeed(1.0f);
         m_MainCamera->SetRotateSpeed(5.0f);
 
         m_DirectionLight = CreateLight(LightType::DirectionLight, "DirectionLight");

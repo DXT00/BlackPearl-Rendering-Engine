@@ -176,7 +176,62 @@ vec3 BRDF(vec3 Kd,vec3 Ks,vec3 specular, vec3 base){
     //	return  base;//+  specular;//specular 中已经有Ks(Ks=F)了，不需要再乘以Ks *
 
 }
-                      
+// GGX/Towbridge-Reitz normal distribution function.
+// Uses Disney's reparametrization of alpha = roughness^2
+float ndfGGX(float cosLh, float roughness)
+{
+    float alpha = roughness * roughness;
+    float alphaSq = alpha * alpha;
+
+    float denom = (cosLh * cosLh) * (alphaSq - 1.0) + 1.0;
+    return alphaSq / (PI * denom * denom);
+}
+
+
+
+
+// Shlick's approximation of the Fresnel factor.
+vec3 fresnelSchlick(vec3 F0, float cosTheta)
+{
+    return F0 + (1.0 - F0) * pow(clamp(1.0 - cosTheta, 0.0, 1.0), 5.0);
+}
+// Single term for separable Schlick-GGX below.
+float gaSchlickG1(float cosTheta, float k)
+{
+    return cosTheta / (cosTheta * (1.0 - k) + k);
+}
+
+// Schlick-GGX approximation of geometric attenuation function using Smith's method.
+float gaSchlickGGX(float cosLi, float NdotV, float roughness)
+{
+    float r = roughness + 1.0;
+    float k = (r * r) / 8.0; // Epic suggests using this roughness remapping for analytic lights.
+    return gaSchlickG1(cosLi, k) * gaSchlickG1(NdotV, k);
+}
+
+
+vec3 BRDF(in vec3 albedo, in vec3 normal, in float roughness, in float metallic, in vec3 view, in vec3 halfV, in vec3 lightDir)
+{
+   // float EPSILON = 0.00001f;
+    vec3 Fdielectric = vec3(0.04f);
+
+    vec3 F0 = mix(Fdielectric, albedo.rgb, metallic);
+
+    float cosLi = max(0.0, dot(normal, lightDir));
+    float cosLh = max(0.0, dot(normal, halfV));
+    float NdotV = max(0.0, dot(normal, view));
+
+    vec3 F = fresnelSchlick(F0, max(dot(halfV, view), 0.0));
+    float D = ndfGGX(cosLh, roughness);
+    float G = gaSchlickGGX(cosLi, NdotV, roughness);
+
+    vec3 kd = (1.0 - F) * (1.0 - metallic);
+    vec3 diffuseBRDF = kd * albedo.xyz / PI;
+    vec3 specularBRDF = (F * D * G) / max(0.01, 4.0 * cosLi * NdotV);
+    return diffuseBRDF + specularBRDF;
+}
+
+
 vec3 evaluateCookBRDF(MaterialSample mat, SurfaceGeometry geom, LightConstants light) {
     vec3 color = vec3(0.0);
     // point light direction to point in view space
@@ -209,6 +264,7 @@ vec3 evaluateCookBRDF(MaterialSample mat, SurfaceGeometry geom, LightConstants l
 
     vec3 base = mat.albedo;
 
+   // return base;
     float roughness = mat.roughness;
 
     // material params
@@ -305,14 +361,36 @@ vec3 evaluateCookBRDF(MaterialSample mat, SurfaceGeometry geom, LightConstants l
     return  color;
 }
 
+
 vec4 ShadeSurface(in LightConstants light, in SurfaceGeometry geom, in MaterialSample material)
 {
     vec4 fragColor = vec4(1.0);
-   //Evaluate BRDF
-    vec3 brdf = evaluateCookBRDF(material, geom, light);
+    vec3 L;
+    if (light.lightType == LightType_Directional)
+    {
+        L = normalize(-light.direction);
+    }
+    else if (light.lightType == LightType_Point || light.lightType == LightType_Spot)
+    {
+
+        L = normalize(light.position - geom.position);
+    }
+    //todo:: spot
+    vec3 V = normalize(geom.viewDir);
+    vec3 H = normalize(L + V);
+
+    // light attenuation
+    float A = GetLocalLightAttenuation(geom.position, light);
+
+
+    //vec3 BRDF(in vec3 albedo, in vec3 normal, in float roughness, in float metallic, in vec3 view, in vec3 halfV, in vec3 lightDir)
+    vec3 brdf = BRDF(material.albedo, material.shadingNormal, material.roughness, material.metallic, V, H, L);
+
+
+  //  vec3 brdf = evaluateCookBRDF(material, geom, light);
     
     // Combine with light color
-    vec3 color = brdf * light.color *  light.intensity;// 
+    vec3 color = brdf * light.color * A * light.intensity;// 
     
     // Add emissive
     //color = color + material.emissive;

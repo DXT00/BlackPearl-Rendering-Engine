@@ -55,7 +55,7 @@ void main(){
 
       SurfaceGeometry geom;
       geom.position = worldPos;
-      geom.normal = GBuffer.WorldNormal;
+      geom.normal = normalize(GBuffer.WorldNormal);
       geom.viewDir = normalize(g_View.cameraPos - worldPos); // Assuming eye is at (0,0,0)
 
       getTBN(worldPos, v_TexCoord, geom.normal, geom.tangent, geom.bitangent);

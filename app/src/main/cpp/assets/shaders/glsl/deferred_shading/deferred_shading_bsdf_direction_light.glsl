@@ -58,7 +58,7 @@ void main(){
 
       SurfaceGeometry geom;
       geom.position = worldPos;
-      geom.normal = GBuffer.WorldNormal;
+      geom.normal = normalize(GBuffer.WorldNormal);
       geom.viewDir = normalize(g_View.cameraPos - worldPos); // Assuming eye is at (0,0,0)
 #if USE_TBN
 //      todo:: GBuffer.WorldTangent = half3(0); //TODO:: get Aniso flag
@@ -90,7 +90,7 @@ void main(){
 #if USE_GLES_PLS
        sceneColor = ShadeSurface(light, geom, mat);
 #else
-       FragColor = ShadeSurface(light, geom, mat);
+       FragColor = ShadeSurface(light, geom, mat); //
 #endif
    }
    half IndirectIrradiance = GBuffer.IndirectIrradiance;

@@ -56,12 +56,13 @@ void main(){
 
     float2 pixelPos = uv * g_View.viewportSize; //v_TexCoord range [0,1]
 
-    float3 worldPos = worldPositionFromDepth(uv, GBuffer.Depth, inverse(g_View.matProjectionView));// ScreenSpaceToWorldPosition(pixelPos, GBuffer.Depth);
+    float3 worldPos = ScreenSpaceToWorldPosition(pixelPos, GBuffer.Depth);
+    //// 
     //float3 worldPos = v_FragPos;//worldPositionFromDepth(uv, GBuffer.Depth, inverse(g_View.matProjectionView));
 
       SurfaceGeometry geom;
       geom.position = worldPos;
-      geom.normal = GBuffer.WorldNormal;
+      geom.normal = normalize(GBuffer.WorldNormal);
       geom.viewDir = normalize(g_View.cameraPos - worldPos); // Assuming eye is at (0,0,0)
 #if USE_TBN
 //      todo:: GBuffer.WorldTangent = half3(0); //TODO:: get Aniso flag

@@ -40,8 +40,8 @@ float SpotAttenuation(float3 L, float3 SpotDirection, float2 SpotAngles)
 
 
 float GetLocalLightAttenuation(
-	float3 fragPos, 
-	LightConstants light)
+	in float3 fragPos, 
+	in LightConstants light)
 {
 	float3 ToLight = light.position - fragPos;
 		
@@ -49,6 +49,14 @@ float GetLocalLightAttenuation(
 	float3 L = ToLight * 1.0 / sqrt(DistanceSqr);
 
 	float LightMask;
+
+	if (light.lightType == LightType_Directional) {
+
+		return 1.0;
+	}
+
+
+
 	if (light.bInverseSquared != 0)
 	{
 		LightMask = square( saturate( 1.0 - square( DistanceSqr * square(light.invRadius) ) ) );

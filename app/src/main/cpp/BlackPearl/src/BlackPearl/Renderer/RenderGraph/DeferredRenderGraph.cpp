@@ -154,7 +154,7 @@ namespace BlackPearl {
             SCOPE_TIME_COUNTER(Deferred_MultiPass1)
 
             FRHIRenderPassInfo RPShadingInfo(SystemTexture::Get().SceneColor,
-                                             ERenderTargetActions::Clear_Store,
+                                             ERenderTargetActions::Load_Store,
                                              SystemTexture::Get().SceneDepth,
                                              EDepthStencilTargetActions::LoadDepthStencil_StoreDepthStencil);
             //draw direct light, indirect light to sceneColor
@@ -170,7 +170,7 @@ namespace BlackPearl {
                 g_GIManager->GetGIRenderer()->ShowProbes(m_CommandList, framebuffer, m_Scene);
             }
 
-            m_DeferredShadingRenderer->ShowPointLight(m_CommandList, framebuffer, m_Scene);
+            //m_DeferredShadingRenderer->ShowPointLight(m_CommandList, framebuffer, m_Scene);
             m_CommandList->endRenderPass();
         }
 

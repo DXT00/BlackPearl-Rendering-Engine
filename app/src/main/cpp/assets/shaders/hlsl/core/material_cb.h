@@ -62,7 +62,7 @@ struct Props {
 
 // material deal with texture sample, use for shading
 struct MaterialSample {
-    ALIGN(4) float3  shadingNormal;
+    ALIGN(16) float3  shadingNormal;
 
 
     ALIGN(4) int flags;
@@ -84,7 +84,7 @@ struct MaterialSample {
 
 // material deal with texture sample , use for shading
 struct DisneyMaterialSample {
-    ALIGN(4) float3  shadingNormal;
+    ALIGN(16) float3  shadingNormal;
 
     ALIGN(4) int flags;
     ALIGN(4) int     materialID;

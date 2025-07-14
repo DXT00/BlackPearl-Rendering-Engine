@@ -128,6 +128,7 @@ namespace BlackPearl {
         static  bool bShowProbes;
         static  bool bUseDirectLight;
         static  bool bUseIndirectLight;
+        static  bool bShowPointLight;
 
         //-----------------------------------------------
         // GI settings

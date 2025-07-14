@@ -70,6 +70,7 @@ namespace BlackPearl {
     bool Configuration::bShowProbes = false;
     bool Configuration::bUseDirectLight = true;
     bool Configuration::bUseIndirectLight = true;
+    bool Configuration::bShowPointLight = false;
 
     //
 

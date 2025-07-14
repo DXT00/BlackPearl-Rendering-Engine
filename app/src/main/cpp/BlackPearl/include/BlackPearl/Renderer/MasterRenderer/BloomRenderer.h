@@ -42,7 +42,7 @@ namespace BlackPearl {
         BindingLayoutHandle m_BloomBlurBindingLayout;
         BindingLayoutHandle m_BloomApplyBindingLayout;
 
-        engine::BindingCache m_BindingCache;
+        //engine::BindingCache m_BindingCache;
 
 	};
 

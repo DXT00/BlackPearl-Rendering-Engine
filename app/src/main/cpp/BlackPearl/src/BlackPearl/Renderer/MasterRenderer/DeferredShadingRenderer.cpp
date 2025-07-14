@@ -90,10 +90,13 @@ namespace BlackPearl{
             cmdList->beginMarker("RenderDirectionLight");
             RenderDirectionLights(cmdList, targetFramebuffer, scene);
             cmdList->endMarker();
-            cmdList->beginMarker("RenderPointLight");
 
-            RenderPointLights(cmdList, targetFramebuffer, scene);
-            cmdList->endMarker();
+            if (Configuration::bShowPointLight) {
+                cmdList->beginMarker("RenderPointLight");
+                RenderPointLights(cmdList, targetFramebuffer, scene);
+                cmdList->endMarker();
+            }
+
 
         }
 
@@ -163,7 +166,7 @@ namespace BlackPearl{
             }
 
             psoDesc.rasterState.frontCounterClockwise = true;
-            psoDesc.rasterState.cullMode = RasterCullMode::Back;
+            psoDesc.rasterState.cullMode = RasterCullMode::None;
             psoDesc.primType = PrimitiveType::TriangleList;
             psoDesc.inputLayout = m_Device->createInputLayout(drawItem.mesh->GetVertexBufferLayout());
 
@@ -348,7 +351,7 @@ else
 
         SetupView(cmdList, view, preView);
 
-        glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+      //  glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
 
        // DrawItem drawItem = IDrawStrategy::ObjectToDrawItem(scene->GetPointLightSphere())[0];
         DrawItem drawItem = IDrawStrategy::ObjectToDrawItem(scene->GetFullScreenObj())[0];
@@ -363,7 +366,6 @@ else
         psoDesc.depthStencilState.setDepthFunc(ComparisonFunc::LessOrEqual);
         psoDesc.depthStencilState.enableDepthTest();
         psoDesc.depthStencilState.disableDepthWrite();
-
         psoDesc.depthStencilState.disableStencil();
         //psoDesc.depthStencilState.enableStencil();
         //psoDesc.depthStencilState.stencilRefValue = 1; //stencil == 1 就写入
@@ -374,8 +376,6 @@ else
 
         psoDesc.blendState.alphaToCoverageEnable = false;
 
-
-        psoDesc.blendState.alphaToCoverageEnable = false;
 
         for (auto& target : psoDesc.blendState.targets)
         {
@@ -389,7 +389,7 @@ else
         }
 
         psoDesc.rasterState.frontCounterClockwise = true;
-        psoDesc.rasterState.cullMode = RasterCullMode::Back;
+        psoDesc.rasterState.cullMode = RasterCullMode::None;
         psoDesc.primType = PrimitiveType::TriangleList;
         psoDesc.inputLayout = m_Device->createInputLayout(drawItem.mesh->GetVertexBufferLayout());
 

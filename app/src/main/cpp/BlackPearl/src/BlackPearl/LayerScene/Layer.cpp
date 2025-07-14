@@ -149,8 +149,8 @@ namespace BlackPearl {
 		deer->GetComponent<Transform>()->SetInitPosition({ -0.5f,-1.5f,-0.5f });
 		deer->GetComponent<Transform>()->SetInitRotation({ 0.0f,68.0f,0.0f });
 		deer->GetComponent<MeshRenderer>()->SetIsBackGroundObjects(true);
-		m_BackGroundObjsList.push_back(deer);
-		m_ShadowObjsList.push_back(deer);
+		//m_BackGroundObjsList.push_back(deer);
+		//m_ShadowObjsList.push_back(deer);
 
         Object* bunny = CreateModel("assets/models/bunny/bunny.obj", "assets/shaders/glsl/gBuffer/gBuffer_pass.glsl", false, "Bunny");
 
@@ -160,8 +160,8 @@ namespace BlackPearl {
 		bunny->GetComponent<Transform>()->SetInitPosition({ 0.6f,-1.5f,-0.0f });
 		bunny->GetComponent<Transform>()->SetInitRotation({ 0.0f,-30.0f,0.0f });
 		bunny->GetComponent<MeshRenderer>()->SetIsBackGroundObjects(true);
-		m_BackGroundObjsList.push_back(bunny);
-		m_ShadowObjsList.push_back(bunny);
+		//m_BackGroundObjsList.push_back(bunny);
+		//m_ShadowObjsList.push_back(bunny);
 
 		Object* cube1 = CreateCube("assets/shaders/glsl/gBuffer/gBuffer_pass.glsl");
 		Object* cube2 = CreateCube("assets/shaders/glsl/gBuffer/gBuffer_pass.glsl");

@@ -977,7 +977,7 @@ namespace BlackPearl {
        // ImGui::Checkbox("bUseIBL", &Configuration::bUseIBL);
         ImGui::Checkbox("bUseDirectLight", &Configuration::bUseDirectLight);
         ImGui::Checkbox("bUseIndirectLight", &Configuration::bUseIndirectLight);
-
+        ImGui::Checkbox("bUsePointLight", &Configuration::bShowPointLight);
         //ImGui::Checkbox("bUseVoxel", &Configuration::bUseVoxel);
 
         ImGui::Separator();
