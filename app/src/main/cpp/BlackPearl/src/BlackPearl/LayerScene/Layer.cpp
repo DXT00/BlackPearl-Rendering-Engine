@@ -199,8 +199,8 @@ namespace BlackPearl {
 		cube5->GetComponent<MeshRenderer>()->GetMeshes()[0]->GetMaterial()->SetMaterialColorSpecularColor({ 0,0,0 });*/
 
 		cube1->GetComponent<MeshRenderer>()->GetMeshes()[0]->GetMaterial()->SetMaterialColorDiffuseColor({ 0,0.294f,1.0f });
-		//cube2->GetComponent<MeshRenderer>()->GetMeshes()[0]->GetMaterial()->SetMaterialColorDiffuseColor({ 1,0.267f,0 });
-        cube2->GetComponent<MeshRenderer>()->GetMeshes()[0]->GetMaterial()->SetMaterialColorDiffuseColor({ 1,0,0 });
+		cube2->GetComponent<MeshRenderer>()->GetMeshes()[0]->GetMaterial()->SetMaterialColorDiffuseColor({ 1,0.267f,0 });
+        //cube2->GetComponent<MeshRenderer>()->GetMeshes()[0]->GetMaterial()->SetMaterialColorDiffuseColor({ 1,0,0 });
 
 		cube3->GetComponent<MeshRenderer>()->GetMeshes()[0]->GetMaterial()->SetMaterialColorDiffuseColor({ 0,1,0 });
 		cube4->GetComponent<MeshRenderer>()->GetMeshes()[0]->GetMaterial()->SetMaterialColorDiffuseColor({ 0.204f,0,1 });

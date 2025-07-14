@@ -550,7 +550,7 @@ namespace BlackPearl {
         for (auto mesh : imGuiMeshes)
             mesh->GetMaterial()->SetShininess(imGuiShininess);
 
-        ImGui::SliderFloat("roughness", &imGuiRoughness, 0.f, 1.f);
+        ImGui::DragFloat("roughness", &imGuiRoughness, 0.5f, 0.0f, 1.0f, "%.3f ");
         for (auto mesh : imGuiMeshes)
             mesh->GetMaterial()->SetRoughness(imGuiRoughness);
 

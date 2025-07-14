@@ -19,6 +19,7 @@ namespace BlackPearl {
 		:m_MaterialShader(shader), m_TextureMaps(textureMaps), m_MaterialColors(materialColors), m_Props(Props()), customBindingDesc(customBindings)
 		
 	{
+		_InitProp();
 //#if APP_VERSION == APP_VERSION_1_0
 		_CreateMaterialConstantBuffer();
 //#endif
@@ -36,6 +37,8 @@ namespace BlackPearl {
 		const std::vector<MaterialResourceBinding>& customBindings)
 	{
 		m_Props = Props();
+		_InitProp();
+
 		m_TextureMaps = textureMaps;
 		m_MaterialColors.ambientColor = ambientColor;
 		m_MaterialColors.diffuseColor = diffuseColor;
@@ -56,6 +59,20 @@ namespace BlackPearl {
 
 	Material::~Material()
 	{
+	}
+
+	void Material::_InitProp()
+	{
+		m_Props.shininess = 64.0f;
+		m_Props.roughness = 0.5f;
+		m_Props.refractIndex = 1.5;
+		m_Props.isBinnLight = false;
+		m_Props.isPBRTextureSample = 0;
+		m_Props.isDiffuseTextureSample = 0;
+		m_Props.isSpecularTextureSample = 0;
+		m_Props.isEmissionTextureSample = 0;
+		m_Props.isHeightTextureSample = 0;
+		m_Props.isRefractMaterial = 0;
 	}
 
 	void Material::UploadConstantsBuffer(ICommandList* commandList)

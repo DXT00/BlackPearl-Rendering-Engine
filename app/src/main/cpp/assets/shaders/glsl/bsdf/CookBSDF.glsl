@@ -390,7 +390,7 @@ vec4 ShadeSurface(in LightConstants light, in SurfaceGeometry geom, in MaterialS
   //  vec3 brdf = evaluateCookBRDF(material, geom, light);
     
     // Combine with light color
-    vec3 color = brdf * light.color * A * light.intensity;// 
+    vec3 color = brdf * light.color * light.intensity;// * A 
     
     // Add emissive
     //color = color + material.emissive;
