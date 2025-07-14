@@ -5,8 +5,7 @@
 #include "Renderer/Material/MaterialManager.h"
 #ifdef GE_API_OPENGL
 #include "RHI/OpenGLRHI/OpenGLDriver/OpenGLFunctions.h"
-//#include <EGL/eglext.h>
-//#include <EGL/eglplatform.h>
+
 
 #endif
 #include "Renderer/SystemTextures.h"

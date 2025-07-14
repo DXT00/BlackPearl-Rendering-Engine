@@ -88,15 +88,15 @@ android {
 }
 
 dependencies {
-    implementation libs.startup.runtime
-    implementation libs.work.runtime
+   // implementation libs.startup.runtime
+  //  implementation libs.work.runtime
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.constraintlayout)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
-    implementation(libs.multidex)
+ //   implementation(libs.multidex)
 
 
 

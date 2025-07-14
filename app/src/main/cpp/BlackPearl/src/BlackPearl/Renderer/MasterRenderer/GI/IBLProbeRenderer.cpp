@@ -19,6 +19,7 @@
 #endif
 #include "Timestep/TimeCounter.h"
 #include "RHI/Common/RHIUtils.h"
+#include "Renderer/RenderGraph/RenderGraph.h"
 namespace BlackPearl
 {
 

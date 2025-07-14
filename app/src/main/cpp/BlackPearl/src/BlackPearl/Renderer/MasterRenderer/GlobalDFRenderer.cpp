@@ -96,7 +96,7 @@ namespace BlackPearl {
             
            
             //TODO:: Objects Culling!
-            std::vector<Object*>& objs = scene->GetObjects();//  m_DrawStrategy->GetDrawObjects();// scene->GetObjects();
+            const std::vector<Object*>& objs = scene->GetObjects();//  m_DrawStrategy->GetDrawObjects();// scene->GetObjects();
 			for (size_t j = 0; j < objs.size(); j++)
 			{
 				DFObjectConstants objCnonst;

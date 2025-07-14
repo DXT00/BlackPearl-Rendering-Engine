@@ -96,12 +96,13 @@ namespace BlackPearl {
 
 
     void DDGIRenderer::RenderUI(IFramebuffer* framebuffer, IView* View) {
+#ifdef USE_IMGUI
         ImGui::Begin("DDGI Settings");
         ImGui::Text("numVolumeInArea: %d ", m_UI.numVolumeInArea);
         ImGui::Text("currentAreaId: %d ", m_UI.currentAreaId);
 
         ImGui::End();
-
+#endif
     }
 
     void DDGIRenderer::ShowProbes(ICommandList* cmdList, IFramebuffer* targetFramebuffer, Scene* scene)

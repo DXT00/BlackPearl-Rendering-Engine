@@ -53,8 +53,9 @@ namespace BlackPearl {
 	DeviceManager*   g_deviceManager = nullptr;
 	CullingManager* g_cullingManager = DBG_NEW CullingManager();
 	ModelLoader* g_modelLoader = nullptr;
+#ifdef USE_FBX
     FBXLoader* g_fbxLoader = nullptr;
-
+#endif
 	RootFileSystem* g_rootFileSystem = DBG_NEW RootFileSystem();
 	UIManager* g_uiManager = nullptr;
 	ShaderFactory* g_shaderFactory = nullptr;
@@ -124,12 +125,16 @@ namespace BlackPearl {
 			g_modelLoader = DBG_NEW D3D12ModelLoader();
 	#else
 			g_modelLoader = DBG_NEW ModelLoader();
+#ifdef USE_FBX
             g_fbxLoader = DBG_NEW FBXLoader();
+#endif
     #endif
         //GE_ERROR_JUDGE();
 			g_modelLoader->RegisterDeviceManager(g_deviceManager);
+#ifdef USE_FBX
             g_fbxLoader->RegisterDeviceManager(g_deviceManager);
-       // GE_ERROR_JUDGE();
+#endif
+            // GE_ERROR_JUDGE();
 			m_LayerManager = DBG_NEW LayerManager();
 			m_LayerManager->RegisterDeviceManager(g_deviceManager);
        // GE_ERROR_JUDGE();

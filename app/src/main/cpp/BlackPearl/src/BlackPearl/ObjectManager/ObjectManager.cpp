@@ -34,8 +34,9 @@
 namespace BlackPearl {
 
 	extern ModelLoader* g_modelLoader;
+#ifdef USE_FBX
     extern FBXLoader* g_fbxLoader;
-
+#endif
 	void ObjectManager::RegisterDeviceManager(DeviceManager* deviceManager)
 	{
 		m_DeviceManager = deviceManager;
@@ -166,6 +167,7 @@ namespace BlackPearl {
         const bool isMeshletModel,
         MeshletOption options)
     {
+#ifdef USE_FBX
         std::shared_ptr<MaterialShader> shader;
 
         shader.reset(DBG_NEW MaterialShader(shaderPath));
@@ -191,6 +193,10 @@ namespace BlackPearl {
         }
         m_Objs.push_back(obj);
         return obj;
+#else
+        return nullptr;
+#endif
+
 
     }
 

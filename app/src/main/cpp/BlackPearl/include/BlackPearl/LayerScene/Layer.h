@@ -116,7 +116,7 @@ namespace BlackPearl {
 		void LoadD3D12ModelScene();
 
 		Object* LoadDynamicObject(const std::string modelName);
-		Object* LoadStaticBackGroundObject(const std::string modelName);
+		Object* LoadStaticBackGroundObject(const std::string modelName, const std::string& shaderPath = "");
 
 		inline std::string GetString() { return m_DebugName; }
 

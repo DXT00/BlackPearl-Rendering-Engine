@@ -43,6 +43,9 @@ public:
 
         //m_HouseModel = CreateFBXModel("assets/models/BurgerPiz/Models/BurgerPiz.fbx", "assets/shaders/glsl/Cube.glsl", false, "House");
      //   LoadChurchScene();
+
+      // Object* model = LoadStaticBackGroundObject("Church", "assets/shaders/glsl/gBuffer/gBuffer_pass.glsl");
+      // m_Scene->AddObject(model);
        LoadCornellScene1(m_Scene);
         m_SkyBox = CreateSkyBox(
             { "assets/skybox/skybox/right.jpg",

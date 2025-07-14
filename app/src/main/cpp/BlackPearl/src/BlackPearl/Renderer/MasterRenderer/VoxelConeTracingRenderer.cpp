@@ -690,7 +690,7 @@ namespace BlackPearl {
         GE_ASSERT(areas.size() == SystemTexture::Get().SceneVoxels.size());
         for (size_t i = 0; i < areas.size(); i++)
         {
-            auto& objs = areas[i]->GetObjects();
+            const auto& objs = areas[i]->GetObjects();
 
             if (objs.empty())
                 continue;

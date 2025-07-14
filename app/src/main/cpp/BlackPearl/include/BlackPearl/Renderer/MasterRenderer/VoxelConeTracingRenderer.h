@@ -5,6 +5,7 @@
 #include "BlackPearl/RHI/RHITexture.h"
 #include "Renderer/Voxel/Voxel.h"
 #include "MainCamera/MainCamera.h"
+#include "Scene/Scene.h"
 
 namespace BlackPearl {
 

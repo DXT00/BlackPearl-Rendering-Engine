@@ -16,6 +16,7 @@
 
 namespace BlackPearl {
 
+#ifdef USE_FBX
     extern DeviceManager* g_deviceManager;
 
 
@@ -590,7 +591,7 @@ namespace BlackPearl {
 
             for (int32_t i = 0; i < scene->getMeshCount(); ++i)
             {
-                auto& mesh = processMesh(model, (const ofbx::Mesh*)scene->getMesh(i), orientation);
+                const auto& mesh = processMesh(model, (const ofbx::Mesh*)scene->getMesh(i), orientation);
                 if (mesh) {
                     model->meshes.push_back(mesh);
 
@@ -654,5 +655,5 @@ namespace BlackPearl {
 
         return model;
     }
-
+#endif
 }

@@ -453,14 +453,15 @@ namespace BlackPearl {
 
 	}
 
-	Object* Layer::LoadStaticBackGroundObject(const std::string modelName)
+	Object* Layer::LoadStaticBackGroundObject(const std::string modelName, const std::string& shaderPath)
 	{
 		Object* staticModel = nullptr;
 		IDevice* device = m_DeviceManager->GetDevice();
 
+        std::string shader = shaderPath.empty() ? "assets/shaders/glsl/IronMan.glsl" : shaderPath;
 		if (modelName == "House") {
 			//house model
-			staticModel = CreateModel("assets/models/Alpine/Alpine_chalet.obj", "assets/shaders/glsl/IronMan.glsl", false, "House");
+			staticModel = CreateModel("assets/models/Alpine/Alpine_chalet.obj", shader, false, "House");
 			TextureHandle housealbedoTexture = device->createTexture(TextureDesc(TextureType::DiffuseMap, "assets/models/Alpine/Diffuse_map.png"));
 			TextureHandle houseroughnessTexture = device->createTexture(TextureDesc(TextureType::RoughnessMap, "assets/models/Alpine/Roughness_map.png"));
 			TextureHandle housementallicTexture = device->createTexture(TextureDesc(TextureType::MentallicMap, "assets/models/Alpine/Metallic_map.png"));
@@ -481,26 +482,28 @@ namespace BlackPearl {
 		}
 
 		else if (modelName == "Church") {
-			staticModel = CreateModel("assets/models/sponza_obj/sponza.obj", "assets/shaders/glsl/IronMan.glsl", false, "Church");
-			staticModel->GetComponent<BlackPearl::Transform>()->SetInitScale(glm::vec3(0.001f));
+			staticModel = CreateModel("assets/models/sponza_obj/sponza.obj", shader, false, "Church");
+			staticModel->GetComponent<BlackPearl::Transform>()->SetInitScale(glm::vec3(0.003f));
+            staticModel->GetComponent<BlackPearl::Transform>()->SetInitPosition({ 0.0f,0.0f,0.0f });
+
 			staticModel->GetComponent<BlackPearl::MeshRenderer>()->SetIsBackGroundObjects(true);
 		}
 		else if (modelName == "Bunny") {
-			staticModel = CreateModel("assets/models/bunny/bunny.obj", "assets/shaders/glsl/IronMan.glsl", false, "Bunny");
+			staticModel = CreateModel("assets/models/bunny/bunny.obj", shader, false, "Bunny");
 			staticModel->GetComponent<Transform>()->SetInitScale(glm::vec3(0.5));
 			staticModel->GetComponent<Transform>()->SetInitPosition({ 0.6f,0.0f,3.0f });
 			staticModel->GetComponent<Transform>()->SetInitRotation({ 0.0f,-30.0f,0.0f });
 			staticModel->GetComponent<MeshRenderer>()->SetIsBackGroundObjects(true);
 		}
 		else if (modelName == "Deer") {
-			staticModel = CreateModel("assets/models/deer/Deer.obj", "assets/shaders/glsl/IronMan.glsl", false, "Deer");
+			staticModel = CreateModel("assets/models/deer/Deer.obj", shader, false, "Deer");
 			staticModel->GetComponent<Transform>()->SetInitScale(glm::vec3(0.003));
 			staticModel->GetComponent<Transform>()->SetInitPosition({ -0.5f,0.0f,2.5f });
 			staticModel->GetComponent<Transform>()->SetInitRotation({ 0.0f,68.0f,0.0f });
 			staticModel->GetComponent<MeshRenderer>()->SetIsBackGroundObjects(true);
 
 		}
-		if (modelName == "WoodCube") {
+        else if (modelName == "WoodCube") {
 			staticModel = CreateCube();
 			TextureDesc desc;
 			desc.type = TextureType::DiffuseMap;
@@ -522,7 +525,7 @@ namespace BlackPearl {
 			staticModel->GetComponent<MeshRenderer>()->SetTextureDiffuseSamples(true);
 			staticModel->GetComponent<MeshRenderer>()->SetIsBackGroundObjects(true);
 
-		}if (modelName == "Sword") {
+		}else if (modelName == "Sword") {
 			staticModel = CreateModel("assets/models/sword/OBJ/Big_Sword_OBJ.obj", "assets/shaders/pbr/glsl/PbrTexture.glsl", false, "Sword");
 			TextureHandle SwordalbedoTexture = device->createTexture(TextureDesc(TextureType::DiffuseMap, "assets/models/sword/textures/Big Sword_Base_Color_Map.jpg"));
 			TextureHandle SwordaoTexture = device->createTexture(TextureDesc(TextureType::AoMap, "assets/models/sword/textures/Big Sword_AO_Map.jpg"));
@@ -661,6 +664,13 @@ namespace BlackPearl {
 			GE_CORE_ERROR("no such name: %s !" , modelName.c_str())
 		}
 		m_BackGroundObjsList.push_back(staticModel);
+
+
+        staticModel->GetComponent<BoundingBox>()->Get().UpdateTransform(staticModel->GetComponent<Transform>()->GetTransformMatrix());
+
+
+
+
 		return staticModel;
 	}
 

@@ -96,7 +96,10 @@ message(STATUS "SRC_FILES=${SRC_FILES}")
 
 
 # 创建静态库目标
-add_library(BlackPearl STATIC ${SRC_FILES})
+add_library(BlackPearl STATIC ${SRC_FILES}
+        include/BlackPearl/Renderer/MasterRenderer/VoxelConeTracingRenderer.h
+        src/BlackPearl/Renderer/MasterRenderer/VoxelConeTracingRenderer.cpp
+)
 
 # 宏定义
 add_definitions(
@@ -170,6 +173,7 @@ if(ANDROID)
     # 添加 native_app_glue 的源文件（需编译为静态库）
     set(ANDROID_NATIVE_APP_GLUE_SRC
             ${ANDROID_NDK}/sources/android/native_app_glue/android_native_app_glue.c
+
     )
 
     # 将 native_app_glue 编译为静态库

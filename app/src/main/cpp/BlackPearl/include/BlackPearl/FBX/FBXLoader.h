@@ -4,10 +4,12 @@
 #include <memory>
 #include "RHI/RHIResources.h"
 #include "Renderer/Model/Model.h"
-#include "OpenFBX/include/ofbx.h"
+
 #include "Renderer/Mesh/Mesh.h"
 #include "Renderer/Model/Loader.h"
 #include "Renderer/Shader/MaterialShader.h"
+#ifdef USE_FBX
+#include "OpenFBX/include/ofbx.h"
 using namespace ofbx;
 
 namespace BlackPearl {
@@ -49,3 +51,4 @@ namespace BlackPearl {
 
 
 }
+#endif
