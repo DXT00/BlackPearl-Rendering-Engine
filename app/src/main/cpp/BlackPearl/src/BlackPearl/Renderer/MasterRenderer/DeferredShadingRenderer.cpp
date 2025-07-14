@@ -40,9 +40,9 @@ namespace BlackPearl{
 
         //TODO:: 不需要多个不同light的shader， 通过宏来决定用哪个函数
         m_DeferredDirectionLightShader  = DBG_NEW MaterialShader("assets/shaders/glsl/deferred_shading/deferred_shading_bsdf_direction_light.glsl", &extends, &macros);
-        m_DeferredPointLightShader = DBG_NEW MaterialShader("assets/shaders/glsl/deferred_shading/deferred_shading_bsdf_point_light.glsl", &extends, &macros);;
-
-        
+        m_DeferredPointLightShader = DBG_NEW MaterialShader("assets/shaders/glsl/deferred_shading/deferred_shading_bsdf_point_light.glsl", &extends, &macros);
+        m_DeferredPointLightStencilShader = DBG_NEW MaterialShader("assets/shaders/glsl/deferred_shading/deferred_shading_bsdf_point_light_sphere.glsl", &extends, &macros);
+        m_DeferredPointLightDebugShader = DBG_NEW MaterialShader("assets/shaders/glsl/light/pointlight_Debug.glsl", &extends, &macros);
 
 
         //Deferred Shading Material
@@ -86,11 +86,24 @@ namespace BlackPearl{
     }
     void DeferredShadingRenderer::Render(ICommandList* cmdList, IFramebuffer* targetFramebuffer, Scene* scene)
     {
-        if (Configuration::bUseDirectLight)
+        if (Configuration::bUseDirectLight) {
+            cmdList->beginMarker("RenderDirectionLight");
             RenderDirectionLights(cmdList, targetFramebuffer, scene);
+            cmdList->endMarker();
+            cmdList->beginMarker("RenderPointLight");
+
+            RenderPointLights(cmdList, targetFramebuffer, scene);
+            cmdList->endMarker();
+
+        }
+
+
         if (Configuration::bUseIndirectLight && g_GIManager->GetGIRenderer()) {
+            cmdList->beginMarker("RenderIndirectLight");
+
             RenderIndirectLight(cmdList, targetFramebuffer, scene);
-            
+            cmdList->endMarker();
+
         }
            // RenderIBLProbes(cmdList, targetFramebuffer, scene);
 
@@ -150,7 +163,7 @@ namespace BlackPearl{
             }
 
             psoDesc.rasterState.frontCounterClockwise = true;
-            psoDesc.rasterState.cullMode = RasterCullMode::None;
+            psoDesc.rasterState.cullMode = RasterCullMode::Back;
             psoDesc.primType = PrimitiveType::TriangleList;
             psoDesc.inputLayout = m_Device->createInputLayout(drawItem.mesh->GetVertexBufferLayout());
 
@@ -197,9 +210,236 @@ namespace BlackPearl{
             return;
         }
 
+        //方法2： 只绘制sphere， 需要双面渲染，有overdraw（单面渲染相机到sphere内部，无法绘制）
 
+        /*
+            方法1：绘制sphere mask,再绘制sphere， 相机到sphere内部时，depth test fail的情况下依旧渲染！
+
+            使用：glStencilOp(GL_KEEP, GL_INCR, GL_KEEP); depth 失败时， stencil值原来为0，现在加1， 还是写入！
+            关键函数：glStencilOp
+
+                void glStencilOp(GLenum sfail, GLenum dpfail, GLenum dppass);
+                参数含义：
+
+                sfail：Stencil test 失败时的操作；
+
+                dpfail：Stencil test 通过但 Depth Test 失败 时的操作；
+
+                dppass：Stencil test 和 Depth Test 都通过时的操作。
+         */
         for (size_t i = 0; i < lightSources->GetPointLightNum(); i++)
         {
+            PointLight* pointLight = lightSources->GetPointLights()[i]->GetComponent<PointLight>();
+
+//glm::vec3(pointLight->GetAttenuation().maxDistance)
+            pointLight->SetPosition(lightSources->GetPointLights()[i]->GetComponent<Transform>()->GetPosition());
+            scene->GetPointLightSphere()->GetComponent<Transform>()->SetPosition(lightSources->GetPointLights()[i]->GetComponent<Transform>()->GetPosition());
+            scene->GetPointLightSphere()->GetComponent<Transform>()->SetScale(glm::vec3(pointLight->GetRadius()));
+            
+            
+          //  _RenderPointLightMask(cmdList, targetFramebuffer, scene, pointLight);
+
+
+            _RenderPointLight(cmdList, targetFramebuffer, scene, pointLight);
+      
+
+        }
+    }
+    void DeferredShadingRenderer::_RenderPointLightMask(ICommandList* cmdList, IFramebuffer* targetFramebuffer, Scene* scene, PointLight* pointLight)
+    {
+        LightSources* lightSources = scene->GetLightSources();
+        SceneData* view = Renderer::GetSceneData();
+        GE_ERROR_JUDGE();
+
+        SceneData* preView = Renderer::GetPreSceneData();
+        GE_ERROR_JUDGE();
+
+        SetupView(cmdList, view, preView);
+
+
+        DrawItem drawItem = IDrawStrategy::ObjectToDrawItem(scene->GetPointLightSphere())[0];
+
+        GraphicsState graphicsPSO;
+        graphicsPSO.framebuffer = targetFramebuffer;
+        graphicsPSO.viewport = view->GetViewportState();
+        graphicsPSO.shadingRateState = view->GetVariableRateShadingState();
+
+        GraphicsPipelineDesc psoDesc;
+
+        glClearStencil(0);
+        glClear(GL_STENCIL_BUFFER_BIT);
+        glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
+
+        /*
+        
+        
+// === 判断摄像机是否在光体积内 ===
+bool cameraInside = distance(cameraPos, lightPos) < lightRadius;
+
+if (cameraInside)
+{
+    // 摄像机在光体积内 → 使用 Z-fail 策略
+    glCullFace(GL_BACK); // 剔除背面（只绘制正面）
+    glStencilOp(GL_KEEP, GL_INCR, GL_KEEP); // Depth fail 时 +1
+}
+else
+{
+    // 摄像机在光体积外 → 使用 Z-pass 策略
+    glCullFace(GL_FRONT); // 剔除正面（只绘制背面）
+    glStencilOp(GL_KEEP, GL_KEEP, GL_INCR); // Depth pass 时 +1
+}
+
+        */
+
+
+        psoDesc.depthStencilState.enableStencil();
+        psoDesc.depthStencilState.setStencilWriteMask(0xff);
+        psoDesc.depthStencilState.setStencilReadMask(0xff); 
+        psoDesc.depthStencilState.stencilRefValue = 0;
+        psoDesc.depthStencilState.frontFaceStencil.setStencilFunc(ComparisonFunc::Always);
+        psoDesc.depthStencilState.frontFaceStencil.setPassOp(StencilOp::Keep);
+        psoDesc.depthStencilState.frontFaceStencil.setFailOp(StencilOp::Keep);
+        psoDesc.depthStencilState.frontFaceStencil.setDepthFailOp(StencilOp::IncrementAndClamp);
+
+        psoDesc.depthStencilState.setDepthFunc(ComparisonFunc::LessOrEqual);
+        psoDesc.depthStencilState.enableDepthTest();
+        psoDesc.depthStencilState.disableDepthWrite();
+
+        psoDesc.blendState.alphaToCoverageEnable = false;
+        psoDesc.rasterState.frontCounterClockwise = true;
+        psoDesc.rasterState.cullMode = RasterCullMode::Back;
+        psoDesc.primType = PrimitiveType::TriangleList;
+        psoDesc.inputLayout = m_Device->createInputLayout(drawItem.mesh->GetVertexBufferLayout());
+
+        psoDesc.VS = m_DeferredPointLightStencilShader->GetVertexShader();
+        psoDesc.PS = m_DeferredPointLightStencilShader->GetPixelShader();
+        psoDesc.bFromPSOFileCache = false;
+        psoDesc.bindingLayouts.push_back(m_ViewBindinglayout);
+
+
+        if (!m_DeferredShadingPointLightMaskPso) {
+            m_DeferredShadingPointLightMaskPso = m_Device->createGraphicsPipeline(psoDesc, targetFramebuffer);
+        }
+        graphicsPSO.pipeline = m_DeferredShadingPointLightMaskPso;
+        graphicsPSO.bindings.push_back(m_ViewBindingset);
+        graphicsPSO.inputLayout = psoDesc.inputLayout;
+
+        SetupInputBuffers(cmdList, const_cast<BufferGroup*>(drawItem.buffers), drawItem.transform, graphicsPSO);
+        GE_ERROR_JUDGE();
+
+
+        //DeferredLightingConstants lightConstants{};
+        //FillLightsParameters(pointLight, lightConstants);
+
+        //cmdList->writeBuffer(m_LightsCB, &lightConstants, sizeof(DeferredLightingConstants));
+        cmdList->setGraphicsState(graphicsPSO);
+
+        Draw(cmdList, drawItem);
+    }
+
+    void DeferredShadingRenderer::_RenderPointLight(ICommandList* cmdList, IFramebuffer* targetFramebuffer, Scene* scene, PointLight* pointLight)
+    {
+        LightSources* lightSources = scene->GetLightSources();
+        SceneData* view = Renderer::GetSceneData();
+        GE_ERROR_JUDGE();
+
+        SceneData* preView = Renderer::GetPreSceneData();
+        GE_ERROR_JUDGE();
+
+        SetupView(cmdList, view, preView);
+
+        glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+
+       // DrawItem drawItem = IDrawStrategy::ObjectToDrawItem(scene->GetPointLightSphere())[0];
+        DrawItem drawItem = IDrawStrategy::ObjectToDrawItem(scene->GetFullScreenObj())[0];
+
+        GraphicsState graphicsPSO;
+        graphicsPSO.framebuffer = targetFramebuffer;
+        graphicsPSO.viewport = view->GetViewportState();
+        graphicsPSO.shadingRateState = view->GetVariableRateShadingState();
+
+        GraphicsPipelineDesc psoDesc;
+
+        psoDesc.depthStencilState.setDepthFunc(ComparisonFunc::LessOrEqual);
+        psoDesc.depthStencilState.enableDepthTest();
+        psoDesc.depthStencilState.disableDepthWrite();
+
+        psoDesc.depthStencilState.disableStencil();
+        //psoDesc.depthStencilState.enableStencil();
+        //psoDesc.depthStencilState.stencilRefValue = 1; //stencil == 1 就写入
+        //psoDesc.depthStencilState.frontFaceStencil.setStencilFunc(ComparisonFunc::Equal);
+        //psoDesc.depthStencilState.setStencilWriteMask(0x00);  // 不再修改 stencil
+        //psoDesc.depthStencilState.setStencilReadMask(0xff);  //
+
+
+        psoDesc.blendState.alphaToCoverageEnable = false;
+
+
+        psoDesc.blendState.alphaToCoverageEnable = false;
+
+        for (auto& target : psoDesc.blendState.targets)
+        {
+            target.blendEnable = true;
+            target.blendOp = BlendOp::Add;
+            target.srcBlend = BlendFactor::One;
+            target.destBlend = BlendFactor::One;
+            target.srcBlendAlpha = BlendFactor::One;
+            target.destBlendAlpha = BlendFactor::One;
+            target.blendOpAlpha = BlendOp::Add;
+        }
+
+        psoDesc.rasterState.frontCounterClockwise = true;
+        psoDesc.rasterState.cullMode = RasterCullMode::Back;
+        psoDesc.primType = PrimitiveType::TriangleList;
+        psoDesc.inputLayout = m_Device->createInputLayout(drawItem.mesh->GetVertexBufferLayout());
+
+        psoDesc.VS = m_DeferredPointLightShader->GetVertexShader();
+        psoDesc.PS = m_DeferredPointLightShader->GetPixelShader();
+        psoDesc.bFromPSOFileCache = false;
+        psoDesc.bindingLayouts.push_back(m_DeferredShadingBindingLayout);
+        psoDesc.bindingLayouts.push_back(m_ViewBindinglayout);
+
+
+        if (!m_DeferredShadingPointLightPso) {
+            m_DeferredShadingPointLightPso = m_Device->createGraphicsPipeline(psoDesc, targetFramebuffer);
+        }
+        graphicsPSO.pipeline = m_DeferredShadingPointLightPso;
+        graphicsPSO.bindings.push_back(m_DeferredShadingBindingSet);
+        graphicsPSO.bindings.push_back(m_ViewBindingset);
+        graphicsPSO.inputLayout = psoDesc.inputLayout;
+
+        SetupInputBuffers(cmdList, const_cast<BufferGroup*>(drawItem.buffers), drawItem.transform, graphicsPSO);
+        GE_ERROR_JUDGE();
+
+
+        DeferredLightingConstants lightConstants{};
+        FillLightsParameters(pointLight, lightConstants);
+
+        cmdList->writeBuffer(m_LightsCB, &lightConstants, sizeof(DeferredLightingConstants));
+        cmdList->setGraphicsState(graphicsPSO);
+
+        Draw(cmdList, drawItem);
+    }
+
+    void DeferredShadingRenderer::RenderIndirectLight(ICommandList* commandList, IFramebuffer* targetFramebuffer, Scene* scene)
+    {
+        g_GIManager->GetGIRenderer()->RenderIndirectLight(commandList, targetFramebuffer, scene);
+    }
+
+    void DeferredShadingRenderer::ShowPointLight(ICommandList* cmdList, IFramebuffer* targetFramebuffer, Scene* scene)
+    {
+        LightSources* lightSources = scene->GetLightSources();
+        if (lightSources->GetPointLightNum() > DEFERRED_MAX_POINT_LIGHTS) {
+            GE_CORE_ERROR("light number %d exceed limit %d", lightSources->GetPointLightNum(), DEFERRED_MAX_POINT_LIGHTS);
+            return;
+        }
+
+        for (size_t i = 0; i < lightSources->GetPointLightNum(); i++) {
+
+            PointLight* pointLight = lightSources->GetPointLights()[i]->GetComponent<PointLight>();
+
+            Object* obj = lightSources->GetPointLights()[i];
+
             SceneData* view = Renderer::GetSceneData();
             GE_ERROR_JUDGE();
 
@@ -209,7 +449,7 @@ namespace BlackPearl{
             SetupView(cmdList, view, preView);
 
 
-            DrawItem drawItem = IDrawStrategy::ObjectToDrawItem(scene->GetFullScreenObj())[0];
+            DrawItem drawItem = IDrawStrategy::ObjectToDrawItem(obj)[0];
 
             GraphicsState graphicsPSO;
             graphicsPSO.framebuffer = targetFramebuffer;
@@ -222,17 +462,18 @@ namespace BlackPearl{
             psoDesc.depthStencilState.enableDepthTest();
             psoDesc.depthStencilState.disableDepthWrite();
             psoDesc.depthStencilState.disableStencil();
+ 
 
             psoDesc.blendState.alphaToCoverageEnable = false;
+
             psoDesc.rasterState.frontCounterClockwise = true;
-            psoDesc.rasterState.cullMode = RasterCullMode::None;
+            psoDesc.rasterState.cullMode = RasterCullMode::Back;
             psoDesc.primType = PrimitiveType::TriangleList;
             psoDesc.inputLayout = m_Device->createInputLayout(drawItem.mesh->GetVertexBufferLayout());
 
-            psoDesc.VS = m_DeferredPointLightShader->GetVertexShader();
-            psoDesc.PS = m_DeferredPointLightShader->GetPixelShader();
+            psoDesc.VS = m_DeferredPointLightDebugShader->GetVertexShader();
+            psoDesc.PS = m_DeferredPointLightDebugShader->GetPixelShader();
             psoDesc.bFromPSOFileCache = false;
-            psoDesc.bindingLayouts.push_back(m_DeferredShadingBindingLayout);
             psoDesc.bindingLayouts.push_back(m_ViewBindinglayout);
 
 
@@ -240,28 +481,17 @@ namespace BlackPearl{
                 m_DeferredShadingPointLightPso = m_Device->createGraphicsPipeline(psoDesc, targetFramebuffer);
             }
             graphicsPSO.pipeline = m_DeferredShadingPointLightPso;
-            graphicsPSO.bindings.push_back(m_DeferredShadingBindingSet);
             graphicsPSO.bindings.push_back(m_ViewBindingset);
             graphicsPSO.inputLayout = psoDesc.inputLayout;
-          
+
             SetupInputBuffers(cmdList, const_cast<BufferGroup*>(drawItem.buffers), drawItem.transform, graphicsPSO);
             GE_ERROR_JUDGE();
 
-
-            DeferredLightingConstants lightConstants{};
-            FillLightsParameters(lightSources->GetParallelLights()[i]->GetComponent<PointLight>(), lightConstants);
-
-            cmdList->writeBuffer(m_LightsCB, &lightConstants, sizeof(DeferredLightingConstants));
             cmdList->setGraphicsState(graphicsPSO);
 
             Draw(cmdList, drawItem);
-
         }
-    }
 
-    void DeferredShadingRenderer::RenderIndirectLight(ICommandList* commandList, IFramebuffer* targetFramebuffer, Scene* scene)
-    {
-        g_GIManager->GetGIRenderer()->RenderIndirectLight(commandList, targetFramebuffer, scene);
     }
 
     //void DeferredShadingRenderer::RenderIBLProbes(ICommandList* cmdList, IFramebuffer* targetFramebuffer, Scene* scene)
@@ -371,7 +601,8 @@ namespace BlackPearl{
 
     float DeferredShadingRenderer::CalculateSphereRadius(Object* pointLight)
     {
-       /* auto lightProps = pointLight->GetComponent<PointLight>()->GetLightProps();
+        float s_AttenuationItensity = 1.0;
+      auto lightProps = pointLight->GetComponent<PointLight>()->GetLightProps();
         auto attenuation = pointLight->GetComponent<PointLight>()->GetAttenuation();
         math::float3 lightDiffuse = lightProps.diffuse;
         float constant = attenuation.constant;
@@ -384,8 +615,8 @@ namespace BlackPearl{
 
         float distance = (-linear + sqrtf(linear * linear - 4 * quadratic * (constant - 256.0f / s_AttenuationItensity * maxChannel))) / (2 * quadratic);
 
-        return distance;*/
-        return 0;
+        return distance;
     }
+
 
 }

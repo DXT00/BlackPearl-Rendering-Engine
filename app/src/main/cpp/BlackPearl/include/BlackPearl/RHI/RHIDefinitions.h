@@ -609,7 +609,12 @@ namespace BlackPearl {
         GreaterOrEqual = 7,
         Always = 8
     };
-
+    /*
+    glStencilFunc(GLenum func, GLint ref, GLuint mask);
+    glStencilFunc(GL_ALWAYS, 0, 0xFF)
+    这个 0 是 参考值 ref（reference value），是用来和 stencil 缓冲区的值进行比较的“参考值”
+    含义如果等于0就写入 0xFF
+    */
     struct DepthStencilState
     {
         struct StencilOpDesc
@@ -714,7 +719,7 @@ namespace BlackPearl {
     struct RasterState
     {
         RasterFillMode fillMode = RasterFillMode::Fill;
-        RasterCullMode cullMode = RasterCullMode::None;
+        RasterCullMode cullMode = RasterCullMode::Back;
         bool frontCounterClockwise = false;
         bool depthClipEnable = false;
         bool scissorEnable = false;

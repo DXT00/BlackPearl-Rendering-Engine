@@ -14,6 +14,7 @@
 #include "RHI/OpenGLRHI/OpenGLDriver/OpenGLDrv.h"
 #endif
 #include "Renderer/Renderer.h"
+#include "Renderer/RenderGraph/RenderGraph.h"
 namespace BlackPearl {
     extern MapManager* g_mapManager;
 
@@ -702,7 +703,7 @@ namespace BlackPearl {
 
         psoDesc.blendState.alphaToCoverageEnable = false;
         psoDesc.rasterState.frontCounterClockwise = true;
-        psoDesc.rasterState.cullMode = RasterCullMode::None;
+        psoDesc.rasterState.cullMode = RasterCullMode::Back;
         psoDesc.primType = PrimitiveType::TriangleList;
         psoDesc.inputLayout = m_Device->createInputLayout(drawItem.mesh->GetVertexBufferLayout());
 

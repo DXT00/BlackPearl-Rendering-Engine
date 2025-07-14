@@ -170,7 +170,7 @@ namespace BlackPearl {
                 g_GIManager->GetGIRenderer()->ShowProbes(m_CommandList, framebuffer, m_Scene);
             }
 
-
+            m_DeferredShadingRenderer->ShowPointLight(m_CommandList, framebuffer, m_Scene);
             m_CommandList->endRenderPass();
         }
 

@@ -15,7 +15,7 @@ namespace BlackPearl {
 
         static void StoreGLSLShader( const std::string &shaderCode, const std::string &name);
 
-        static void LoadBuffer(const std::string& relPath, std::vector<uint8_t>& buffer)
+        static void LoadBuffer(const std::string& relPath, std::vector<uint8_t>& buffer);
 
     };
 

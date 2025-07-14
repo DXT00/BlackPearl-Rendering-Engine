@@ -410,7 +410,7 @@ namespace BlackPearl {
 
         psoDesc.blendState.alphaToCoverageEnable = false;
         psoDesc.rasterState.frontCounterClockwise = true;
-        psoDesc.rasterState.cullMode = RasterCullMode::None;
+        psoDesc.rasterState.cullMode = RasterCullMode::Back;
         psoDesc.primType = PrimitiveType::TriangleList;
         psoDesc.inputLayout = m_Device->createInputLayout(drawItem.mesh->GetVertexBufferLayout());
 
@@ -846,7 +846,7 @@ namespace BlackPearl {
 
             psoDesc.blendState.alphaToCoverageEnable = false;
             psoDesc.rasterState.frontCounterClockwise = true;
-            psoDesc.rasterState.cullMode = RasterCullMode::None;
+            psoDesc.rasterState.cullMode = RasterCullMode::Back;
             psoDesc.primType = PrimitiveType::TriangleList;
             psoDesc.inputLayout = m_Device->createInputLayout(drawItem.mesh->GetVertexBufferLayout());
 

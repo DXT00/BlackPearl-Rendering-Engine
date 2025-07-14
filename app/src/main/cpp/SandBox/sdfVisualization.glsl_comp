@@ -1,0 +1,317 @@
+#version 450 core
+
+
+/***************************** default pc macro **************************************/
+#ifndef COMPILE_SHADER
+#define COMPILE_SHADER 1
+#endif
+
+//platform
+#ifndef SHADING_PATH_MOBILE
+#define SHADING_PATH_MOBILE 0
+#endif
+
+//lighting
+#ifndef ALLOW_STATIC_LIGHTING
+#define ALLOW_STATIC_LIGHTING 1
+#endif
+
+// normal
+#ifndef USE_TBN
+#define USE_TBN 0
+#endif
+//platform
+#ifndef VULKAN_PROFILE
+#define VULKAN_PROFILE 0
+#endif
+
+#ifndef METAL_PROFILE
+#define METAL_PROFILE 0
+#endif
+
+#ifndef USE_GLES_FBF_DEFERRED
+#define USE_GLES_FBF_DEFERRED 0
+#endif
+
+#ifndef USE_GLES_PLS
+#define USE_GLES_PLS 0
+#endif
+
+#ifndef MOBILE_SHADINGMODEL_SUPPORT
+#define MOBILE_SHADINGMODEL_SUPPORT 0
+#endif
+
+//deferred shading
+#ifndef DEFERRED_SHADING_PASS
+#define DEFERRED_SHADING_PASS 0
+#endif
+
+// shadow
+#ifndef USE_POINTLIGHT_SHADOW
+#define USE_POINTLIGHT_SHADOW 0
+#endif
+
+// shading model
+#ifndef COOK
+#define COOK 1
+#endif
+
+#ifndef PHONG
+#define PHONG 0
+#endif
+
+#ifndef BLINN
+#define BLINN 0
+#endif
+
+#ifndef Disney
+#define Disney 0
+#endif
+
+//gbuffer
+#ifndef NONMETAL
+#define NONMETAL 0
+#endif
+
+// brdf specular part: D
+#ifndef COOK_BLINN
+#define COOK_BLINN 0
+#endif
+
+#ifndef COOK_BECKMANN
+#define COOK_BECKMANN 0
+#endif
+
+#ifndef COOK_GGX
+#define COOK_GGX 1
+#endif
+
+
+//texture
+#ifndef USE_ALBEDO_MAP
+#define USE_ALBEDO_MAP 0
+#endif
+
+#ifndef USE_NORMAL_MAP
+#define USE_NORMAL_MAP 0
+#endif
+
+#ifndef USE_ROUGHNESS_MAP
+#define USE_ROUGHNESS_MAP 0
+#endif
+
+#ifndef USE_EMISSIVE_MAP
+#define USE_EMISSIVE_MAP 0
+#endif
+
+#ifndef USE_TRANSMISSION_MAP
+#define USE_TRANSMISSION_MAP 0
+#endif
+
+#ifndef USE_AO_MAP
+#define USE_AO_MAP 0
+#endif
+//end if macro.glsl
+/***************************** end of default pc macro **************************************/
+
+
+
+#ifndef BP_COMMON_H
+#define BP_COMMON_H
+
+
+#ifdef GL_ES
+	precision mediump float;  // 必须声明精度（ES 要求）
+
+	#define half float
+	#define half2  vec2
+	#define half3    vec3
+	#define half4   vec4
+	#define half3x3  mat3
+	#define half3x4  mat3x4
+	#define half4x4  mat4
+
+//    #define half float
+//	#define half2 mediump float2
+//	#define half3  mediump  vec3
+//	#define half4  mediump vec4
+//	#define half3x3 mediump mat3
+//	#define half3x4 mediump mat3x4
+//	#define half4x4 mediump mat4
+
+    #define float2 vec2
+	#define float3 vec3  //默认16bit,中等精度
+	#define float4 vec4
+    #define float3x3 mat3
+    #define float4x4 mat4
+
+    #define int2 ivec2
+	#define int3 ivec3
+	#define int4 ivec4
+
+    
+    #define uint2 uvec2
+	#define uint3 uvec3
+	#define uint4 uvec4
+
+    #define bool2 bvec2
+	#define bool3 bvec3
+	#define bool4 bvec4
+#else //PC opengl/vuljan
+
+	#define half  float	
+	#define half2  vec2	
+	#define half3   vec3	
+	#define half4   vec4	
+	#define half3x3  mat3	
+	#define half3x4  mat3x4	 
+	#define half4x4  mat4	
+
+    #define float2 vec2
+	#define float3 vec3
+	#define float4 vec4
+    #define float3x3 mat3
+	#define float4x4 mat4
+
+
+    #define int2 ivec2
+	#define int3 ivec3
+	#define int4 ivec4
+
+    #define uint2 uvec2
+	#define uint3 uvec3
+	#define uint4 uvec4
+
+    #define bool2 bvec2
+	#define bool3 bvec3
+	#define bool4 bvec4
+
+#endif
+
+
+struct Material{
+	vec3 ambientColor;
+	vec3 diffuseColor;
+	vec3 specularColor;
+	vec3 emissionColor;
+	float roughnessValue;
+	float mentallicValue;
+	float aoValue;
+	sampler2D diffuse; //or call it albedo
+	sampler2D specular;
+	sampler2D emission;
+	sampler2D normal;
+	sampler2D height;
+	sampler2D depth;
+	sampler2D ao;
+	sampler2D roughness;
+	sampler2D mentallic;	
+	samplerCube cube;
+	float shininess;
+	float specularDiffusion;
+	float diffuseReflectivity;
+	float specularReflectivity;
+	float transparency;
+	bool  isBlinnLight;
+	float emissivity;
+	float refractiveIndex;
+};
+
+
+struct Settings{
+	bool  isBlinnLight;
+	int   isAmbientTextureSample;
+	int   isDiffuseTextureSample;
+	int   isSpecularTextureSample;
+	int   isHeightTextureSample;
+	int   isEmissionTextureSample;
+	int   isPBRTextureSample;//normalMap,aoMap,metallicMap
+	bool  directLight;
+	bool  indirectDiffuseLight;
+	bool  indirectSpecularLight;
+	bool  shadows;
+	float GICoeffs;
+	float SSRGICoeffs;
+	bool  hdr;
+	bool  guassian_horiziotal;
+	bool  guassian_vertical;
+	bool  guassian_mipmap;
+	bool  showBlurArea;
+};
+
+
+
+
+
+float Luminance( float3 linearColor )
+{
+	return dot( linearColor, float3( 0.3, 0.59, 0.11 ) );
+}
+
+
+// Geometry structure, in world coordinate
+struct SurfaceGeometry {
+    vec3 position;
+    vec3 normal;
+    vec3 viewDir;
+    vec3 tangent;
+    vec3 bitangent;
+};
+
+#endif //BP_COMMON_H
+//
+//layout(local_size_y = 8,local_size_y = 8, local_size_z = 8) in;
+//
+//
+//#ifdef GL_ES
+//precision mediump float;  // 必须声明精度（ES 要求）
+//#endif
+//
+//
+//#include <sdf_cb.h>
+////uniform sampler3D uClipSDF1;
+////uniform sampler3D uClipSDF2;
+////uniform sampler3D SceneDepth;
+//
+//
+//layout(std140, binding = 8) uniform GDFUbo {
+//    GlobalSDFConstants g_Gdf;
+//};
+//
+////layout(binding = 1, r16f) uniform image2D uClipSDF0;
+//
+//layout(binding = 1) uniform sampler3D uClipSDF0;  
+//
+//layout(binding = 2, r16f) uniform writeonly image2D t_SDFDebugTexture;
+//
+//#include <common/CommonViewStruct.glsl>
+//
+//
+//
+//void main() {
+//        //64*64
+//        vec3 texCoords   =  vec3(gl_GlobalInvocationID.xyz);
+//        vec3 worldPos = g_Gdf.clipmapCenter + (texCoords - g_Gdf.clipmapDimension *0.5) * g_Gdf.voxelSize;
+//        
+//        
+//        vec4 ndcPos = g_View.matProjectionView * vec4(worldPos,1.0); // [-1,1]
+//        ndcPos = ndcPos / ndcPos.w;
+//        if(abs(ndcPos.x)>1 ||  abs(ndcPos.y)>1 ||abs(ndcPos.z)>1)
+//            return;
+//
+//        vec3 uv = (ndcPos.xyz + vec3(1.0)) * 0.5;
+//
+//        float dist = textureLod(uClipSDF0, texCoords/g_Gdf.clipmapDimension, 0).r;
+//         dist = dist*2.0 -1.0;
+//         dist *= (g_Gdf.clipmapDimension.x* g_Gdf.voxelSize);
+//        imageStore(t_SDFDebugTexture, ivec2(g_View.viewportSize * uv.xy), vec4(dist));
+////       //  float sceneZ = ConvertFromDeviceZ(depth, g_View.zNear, g_View.zFar);
+////         const vec3 P  = worldPositionFromDepth(v_TexCoord, depth, inverse(g_View.matProjectionView));
+////
+////
+////
+////    float d_raw = texture(uClipSDF, uvw).r;
+////    float d = remap(d_raw);
+////    FragColor = vec4(falseColor(d), 1.0);
+//}
+//

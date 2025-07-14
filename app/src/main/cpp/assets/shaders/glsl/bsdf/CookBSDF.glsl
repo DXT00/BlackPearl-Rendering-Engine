@@ -186,7 +186,17 @@ vec3 evaluateCookBRDF(MaterialSample mat, SurfaceGeometry geom, LightConstants l
     float A = GetLocalLightAttenuation(geom.position, light);
 
     // L, V, H vectors
-    vec3 L = normalize(-light.direction);
+    vec3 L;
+    if(light.lightType == LightType_Directional)
+	{
+		 L = normalize(-light.direction);
+	}
+    else if(light.lightType == LightType_Point || light.lightType == LightType_Spot)
+	{
+   
+		 L = normalize(light.position -  geom.position);
+	}
+    //todo:: spot
     vec3 V = normalize(geom.viewDir);
     vec3 H = normalize(L + V);
 //    vec3 nn = normalize(geom.normal);
@@ -260,7 +270,7 @@ vec3 evaluateCookBRDF(MaterialSample mat, SurfaceGeometry geom, LightConstants l
 
     Kd *= (1.0 - metallic);
 
-    vec3 result = BRDF(Kd,Ks,specref, base) * light.color * NdL;
+    vec3 result = BRDF(Kd,Ks, specref, base) * light.color * NdL;// * A
 //    vec3 diffref = Kd * phong_diffuse() * NdL;
 //
 //    
