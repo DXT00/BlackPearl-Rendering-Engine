@@ -20,7 +20,6 @@ namespace BlackPearl {
 		virtual void Render(Timestep ts, IFramebuffer* framebuffer, IView* View) override;
 
 		
-        bool ShouldRender();
 
 	private:
 

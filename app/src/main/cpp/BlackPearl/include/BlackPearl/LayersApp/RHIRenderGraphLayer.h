@@ -54,9 +54,9 @@ public:
             });
         m_CubeObj->GetComponent<Transform>()->SetScale({ 5.0,5.0,5.0 });
        // m_CubeObj->GetComponent<Transform>()->SetRotation({ 0,30,0 });
-        m_SphereObj->GetComponent<Transform>()->SetScale({ 8.0,8.0,8.0 });
+        m_SphereObj->GetComponent<Transform>()->SetScale({ 10.0,10.0,10.0 });
         m_CubeObj->SetPosition({ 5.0, 0.0,0.0 });
-        m_SphereObj->SetPosition({ -5.0,-0.0,-0.0 });
+        m_SphereObj->SetPosition({ -3.0,-0.0,-0.0 });
 
         m_SphereObj->GetComponent<BoundingBox>()->Get().UpdateTransform(m_SphereObj->GetComponent<Transform>()->GetTransformMatrix());
         m_CubeObj->GetComponent<BoundingBox>()->Get().UpdateTransform(m_CubeObj->GetComponent<Transform>()->GetTransformMatrix());
@@ -90,7 +90,7 @@ public:
         
 
             m_DiffuseLightProbeGrid = CreateProbeGrid(ProbeType::DIFFUSE_PROBE,
-                math::float3(3, 3, 3), math::float3(-10.0f, -2.0f, -3.0f), 10);
+                math::float3(3, 3, 3), math::float3(-10.0f, -2.5f, -3.0f), 10);
 
           /*  m_ReflectLightProbeGrid = CreateProbeGrid(m_MapManager, ProbeType::REFLECTION_PROBE,
                 math::float3(2, 1, 1), math::float3(0.2f, -1.0f, 0.2f), 6);*/

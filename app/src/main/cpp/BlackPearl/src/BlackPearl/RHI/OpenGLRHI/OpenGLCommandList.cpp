@@ -1622,9 +1622,9 @@ namespace BlackPearl {
 		int bindIndex = 0;
        // if (textures.empty()) {
             //reset texture
-            /*glBindTexture(GL_TEXTURE_2D, 0);
+            glBindTexture(GL_TEXTURE_2D, 0);
             glBindTexture(GL_TEXTURE_3D, 0);
-            glBindTexture(GL_TEXTURE_CUBE_MAP, 0);*/
+            glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 
             for (size_t i = 0; i < ContextState.Textures.size(); i++)
             {
@@ -1638,7 +1638,7 @@ namespace BlackPearl {
 			GLenum targetDim = OpenGLUtil::convertTextureDimension(tex->getDesc().dimension);
 			GLenum ContextStateDim = ContextState.Textures[bindIndex].Dimension;
 
-			if (ContextState.Textures[bindIndex].Resource != tex->GetRendererID()) 
+			//if (ContextState.Textures[bindIndex].Resource != tex->GetRendererID()) 
             {
 				glActiveTexture(GL_TEXTURE0 + slot);
 				GE_ERROR_JUDGE();

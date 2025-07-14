@@ -31,6 +31,7 @@ namespace BlackPearl {
         virtual void ShowProbes(ICommandList* cmdList, IFramebuffer* targetFramebuffer, Scene* scene) override;
    
 
+        virtual void ProbeGather(ICommandList* cmdList, IFramebuffer* targetFramebuffer, Scene* scene) override;
 
     private:
         friend class GIManager;
@@ -112,6 +113,7 @@ namespace BlackPearl {
         struct UIData {
             uint32_t numVolumeInArea;
             int currentAreaId;
+            float hysteresisOfLastFrame;
         };
     private:
 
@@ -126,7 +128,6 @@ namespace BlackPearl {
         void _RenderProbe(ICommandList* cmdList, IFramebuffer* targetFramebuffer, Scene* scene, Object* probe, const IrradianceVolume& volume, const DDGIPipelineInternal& pipeline);
 
         //Indirect lighint
-        void _ProbeGather(ICommandList* cmdList, IFramebuffer* targetFramebuffer, Scene* scene);
         void _IndirectShading(ICommandList* cmdList, IFramebuffer* targetFramebuffer, Scene* scene);
 
         void _FillUpdateProbeShaderParameters(ICommandList* cmdList, const IrradianceVolume& volume,  const ProbeUpdateBindings& binidngs);

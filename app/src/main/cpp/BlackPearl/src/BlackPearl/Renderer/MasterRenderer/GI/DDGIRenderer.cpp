@@ -42,9 +42,13 @@ namespace BlackPearl {
         UpdateVolumeProbe(cmdList, targetFramebuffer, scene);
     }
 
+
+
+
+
     void DDGIRenderer::RenderIndirectLight(ICommandList* commandList, IFramebuffer* targetFramebuffer, Scene* scene)
     {
-        _ProbeGather(commandList, targetFramebuffer, scene);
+        //_ProbeGather(commandList, targetFramebuffer, scene);
         _IndirectShading(commandList, targetFramebuffer, scene);
     }
 
@@ -124,7 +128,7 @@ namespace BlackPearl {
 
     }
 	
-    void DDGIRenderer::_ProbeGather(ICommandList* cmdList, IFramebuffer* targetFramebuffer, Scene* scene)
+    void DDGIRenderer::ProbeGather(ICommandList* cmdList, IFramebuffer* targetFramebuffer, Scene* scene)
 	{
         // 获取当前area 的 Volumes
 
@@ -148,8 +152,8 @@ namespace BlackPearl {
             auto volumePos = scene->GetLightProbeGrid()[i]->GridObj->GetComponent<Transform>()->GetPosition();
             int volumeAreaId = g_mapManager->CalculateAreaId(volumePos);
 
-            if (volumeAreaId != areaId)
-                continue;
+           /* if (volumeAreaId != areaId)
+                continue;*/
 
             IrradianceVolume& volume = m_Volumes[i];
 
@@ -187,13 +191,14 @@ namespace BlackPearl {
 
 
         }
+        GE_ASSERT(ddgiConsts.size() < 4, "volume cnt should not large then 4 now");
         cmdList->writeBuffer(m_ProbeGatherBindings.ddgiSSBO, ddgiConsts.data(), sizeof(DDGIConstants) * ddgiConsts.size());
 
         DDGIAreaConstants areaConst{};
         areaConst.numVolumeInArea = ddgiConsts.size();
         cmdList->writeBuffer(m_ProbeGatherBindings.areaCB, &areaConst, sizeof(DDGIAreaConstants));
         BindingSetDesc bindingSetDesc;
-		bindingSetDesc.bindings.push_back(BindingSetItem::Texture_UAV(4, m_ProbeGatherBindings.outputIndirectLighting));
+		bindingSetDesc.bindings.push_back(BindingSetItem::Texture_UAV(0, m_ProbeGatherBindings.outputIndirectLighting));
 		int slot = 0;
         for (size_t i = 0; i < pipelines.size(); i++)
         {
@@ -202,7 +207,7 @@ namespace BlackPearl {
             bindingSetDesc.bindings.push_back(BindingSetItem::Texture_SRV(slot++, pipelines[i].depth[m_LastWrite]));
 
         }
-		while (slot < 4) {
+		while (slot < 8) {
 			bindingSetDesc.bindings.push_back(BindingSetItem::Texture_SRV(slot++, SystemTexture::Get().blackTexture));
 		}
         bindingSetDesc.bindings.push_back(BindingSetItem::Texture_SRV(8, SystemTexture::Get().SceneDepth));
@@ -480,17 +485,17 @@ namespace BlackPearl {
         RHIBindingLayoutDesc layoutDesc;
         layoutDesc.visibility = ShaderType::Compute;
         layoutDesc.bindings = {
-            RHIBindingLayoutItem::RT_Texture_UAV(4),
+            RHIBindingLayoutItem::RT_Texture_UAV(0),
             RHIBindingLayoutItem::RT_Texture_SRV(0),
             RHIBindingLayoutItem::RT_Texture_SRV(1),
             RHIBindingLayoutItem::RT_Texture_SRV(2),
             RHIBindingLayoutItem::RT_Texture_SRV(3),
-   //         RHIBindingLayoutItem::RT_Texture_SRV(4),
-   //         RHIBindingLayoutItem::RT_Texture_SRV(5),
-   //         RHIBindingLayoutItem::RT_Texture_SRV(6),
-   //         RHIBindingLayoutItem::RT_Texture_SRV(7),
-   //         RHIBindingLayoutItem::RT_Texture_SRV(8),
-			//RHIBindingLayoutItem::RT_Texture_SRV(9),
+            RHIBindingLayoutItem::RT_Texture_SRV(4),
+            RHIBindingLayoutItem::RT_Texture_SRV(5),
+            RHIBindingLayoutItem::RT_Texture_SRV(6),
+            RHIBindingLayoutItem::RT_Texture_SRV(7),
+            RHIBindingLayoutItem::RT_Texture_SRV(8),
+			RHIBindingLayoutItem::RT_Texture_SRV(9),
 
             RHIBindingLayoutItem::RT_StructuredBuffer_UAV(5),
             RHIBindingLayoutItem::RT_ConstantBuffer(6)

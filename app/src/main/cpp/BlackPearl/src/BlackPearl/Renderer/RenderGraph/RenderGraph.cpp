@@ -2,7 +2,11 @@
 #include "Renderer/RenderGraph/RenderGraph.h"
 #include "Renderer/DeviceManager.h"
 #include "RHI/RHIGlobals.h"
+#include "Map/Mapmanager.h"
+
 namespace BlackPearl {
+    extern MapManager* g_mapManager;
+
     void RenderGraph::AddPass(BasicRenderer* renderer)
     {
         mRenderPasses.push_back(renderer);
@@ -33,5 +37,14 @@ namespace BlackPearl {
 #endif
 #endif
         return false;
+    }
+
+    //render GI if camera is inside map
+    bool RenderGraph::ShouldRender()
+    {
+        auto camPos = Renderer::GetSceneData()->CameraPosition;
+        int areaId = g_mapManager->CalculateAreaId(camPos);
+
+        return areaId >= 0 && g_mapManager->GetArea(areaId);
     }
 }

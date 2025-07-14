@@ -233,12 +233,12 @@ namespace BlackPearl {
 		m_ShadowObjsList.push_back(cube5);
 
         scene->AddObject(cube1);
-        scene->AddObject(cube2);
+       // scene->AddObject(cube2);
         scene->AddObject(cube3);
         scene->AddObject(cube4);
         scene->AddObject(cube5);
-        scene->AddObject(deer);
-        scene->AddObject(bunny);
+        //scene->AddObject(deer);
+        //scene->AddObject(bunny);
 
 		//scene->AddObject(Room);
 

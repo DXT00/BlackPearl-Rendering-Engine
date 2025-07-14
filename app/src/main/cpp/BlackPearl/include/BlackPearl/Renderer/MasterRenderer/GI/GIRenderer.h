@@ -14,6 +14,9 @@ namespace BlackPearl {
         virtual void RenderIndirectLight(ICommandList* commandList, IFramebuffer* targetFramebuffer, Scene* scene) = 0;
 
         virtual void RenderUI(IFramebuffer* framebuffer, IView* View) {}
+
+        virtual void ProbeGather(ICommandList* cmdList, IFramebuffer* targetFramebuffer, Scene* scene) {};
+
     };
 
 

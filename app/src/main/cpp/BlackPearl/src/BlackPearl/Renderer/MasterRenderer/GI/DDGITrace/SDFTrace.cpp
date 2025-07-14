@@ -310,7 +310,7 @@ namespace BlackPearl {
         cmdList->writeBuffer(m_Bindings.gdfCB, &gdfTraceConst, sizeof(GlobalSDFTraceConstants));
 
     }
-    // todo::ray 击中的不止当前voxel
+    // todo::ray 击中的不止当前voxel, sdf覆盖 范围内的voxel 和 volume grid都有做更新
     void SDFTrace::_FillVoxel(ICommandList* cmdList, const glm::vec3 camPos)
     {
        // GE_ASSERT(Configuration::bUseVoxel);

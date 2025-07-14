@@ -84,7 +84,7 @@ namespace BlackPearl{
 
 
     }
-    void DeferredShadingRenderer::Render(ICommandList* cmdList, IFramebuffer* targetFramebuffer, Scene* scene)
+    void DeferredShadingRenderer::Render(ICommandList* cmdList, IFramebuffer* targetFramebuffer, Scene* scene, bool renderGI)
     {
         if (Configuration::bUseDirectLight) {
             cmdList->beginMarker("RenderDirectionLight");
@@ -101,7 +101,7 @@ namespace BlackPearl{
         }
 
 
-        if (Configuration::bUseIndirectLight && g_GIManager->GetGIRenderer()) {
+        if (Configuration::bUseIndirectLight && g_GIManager->GetGIRenderer() && renderGI) {
             cmdList->beginMarker("RenderIndirectLight");
 
             RenderIndirectLight(cmdList, targetFramebuffer, scene);

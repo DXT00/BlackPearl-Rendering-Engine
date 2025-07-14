@@ -42,6 +42,7 @@ namespace BlackPearl {
         if (!ShouldRender())
             return;
         //pass 0 render volumes
+        //scene 中的所有volume都更新
         m_DDGIRenderer->Render(m_CommandList, framebuffer, m_Scene);
         
       //  m_CommandList->endMarker();
@@ -50,14 +51,7 @@ namespace BlackPearl {
         bIsProbesDirty = false;
 	}
 
-    //render GI if camera is inside map
-    bool DDGIGraph::ShouldRender()
-    {
-        auto camPos = Renderer::GetSceneData()->CameraPosition;
-        int areaId = g_mapManager->CalculateAreaId(camPos);
-
-        return areaId >=0 && g_mapManager->GetArea(areaId);
-    }
+ 
 
 
 

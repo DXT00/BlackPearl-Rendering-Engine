@@ -18,7 +18,7 @@ namespace BlackPearl
         DeferredShadingRenderer(IDevice* device);
 
         void Init();
-        void Render(ICommandList* commandList, IFramebuffer* targetFramebuffer, Scene* scene);
+        void Render(ICommandList* commandList, IFramebuffer* targetFramebuffer, Scene* scene, bool renderGI);
 
         void RenderDirectionLights(ICommandList* commandList, IFramebuffer* targetFramebuffer, Scene* scene);
         void RenderPointLights(ICommandList* commandList, IFramebuffer* targetFramebuffer, Scene* scene);

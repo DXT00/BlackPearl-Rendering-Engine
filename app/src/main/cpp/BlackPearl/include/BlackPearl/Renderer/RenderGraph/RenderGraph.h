@@ -21,7 +21,8 @@ namespace BlackPearl {
        // void OnPreRender() {}
         virtual ~RenderGraph() = default;
 
-       
+        virtual bool ShouldRender();
+
         virtual void Render(Timestep ts, IFramebuffer* framebuffer, IView* View) { }
         virtual void RenderUI(IFramebuffer* framebuffer, IView* View) {}
 

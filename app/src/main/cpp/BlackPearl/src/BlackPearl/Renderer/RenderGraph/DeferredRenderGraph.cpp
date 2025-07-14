@@ -97,7 +97,10 @@ namespace BlackPearl {
             m_GbufferRenderer->Render(m_CommandList, framebuffer, m_Scene);
 
             m_CommandList->nextSubpass();
-            m_DeferredShadingRenderer->Render(m_CommandList, framebuffer, m_Scene);
+
+            bool renderGI = false;
+
+            m_DeferredShadingRenderer->Render(m_CommandList, framebuffer, m_Scene, renderGI);
 
            // pls-->SceneColor
             m_PlsCopyRenderer->Render(m_CommandList, framebuffer, m_Scene);
@@ -149,6 +152,10 @@ namespace BlackPearl {
             m_CommandList->endRenderPass();
            
         }
+        bool renderGI = true;// ShouldRender();
+        if(renderGI)
+            g_GIManager->GetGIRenderer()->ProbeGather(m_CommandList, framebuffer, m_Scene);
+
 
         {
             SCOPE_TIME_COUNTER(Deferred_MultiPass1)
@@ -159,7 +166,7 @@ namespace BlackPearl {
                                              EDepthStencilTargetActions::LoadDepthStencil_StoreDepthStencil);
             //draw direct light, indirect light to sceneColor
             m_CommandList->beginRenderPass(RPShadingInfo, "DeferredShadingPass");
-            m_DeferredShadingRenderer->Render(m_CommandList, framebuffer, m_Scene);
+            m_DeferredShadingRenderer->Render(m_CommandList, framebuffer, m_Scene, renderGI);
             
             //draw skybox
             m_SkyboxRenderer->Render(m_CommandList, framebuffer, m_Scene);

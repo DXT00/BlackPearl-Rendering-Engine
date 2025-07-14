@@ -43,6 +43,7 @@ namespace BlackPearl {
         }
 
         if (bIsVoxelsDirty) {
+            //scene 中所有area都更新
             m_VoxelRnderer->Render(m_CommandList, framebuffer, m_Scene, VoxelConeTracingRenderer::RenderingMode::VOXELIZE);
             bIsVoxelsDirty = false;
         }
