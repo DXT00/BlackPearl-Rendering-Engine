@@ -29,6 +29,8 @@
 
 #include "BlackPearl/Renderer/Shader/MaterialShader.h"
 #include "BlackPearl/Renderer/Material/MaterialTemplate/MaterialTemplate.h"
+#include "hlsl/core/slot_cb.h"
+
 namespace BlackPearl {
 
 	extern ModelLoader* g_modelLoader;

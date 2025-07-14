@@ -68,7 +68,7 @@ namespace BlackPearl {
    // bool Configuration::bUseSDF = true;
   //  bool Configuration::bUseVoxel = true;
     bool Configuration::bShowProbes = false;
-    bool Configuration::bUseDirectLight = true;
+    bool Configuration::bUseDirectLight = false;
     bool Configuration::bUseIndirectLight = true;
     bool Configuration::bShowPointLight = false;
 

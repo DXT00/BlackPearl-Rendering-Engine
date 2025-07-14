@@ -11,6 +11,7 @@
 #include "Renderer/DeviceManager.h"
 #include "Component/TransformComponent/Transform.h"
 #include "Renderer/Mesh/Vertex.h"
+#include "hlsl/core/slot_cb.h"
 //#include "Component/BoundingBoxComponent/BoundingBox.h"
 
 namespace BlackPearl {
@@ -383,23 +384,23 @@ namespace BlackPearl {
 
 
         VertexBufferLayout layout = {
-            {ElementDataType::Float3,"aPos",false,0},
-            {ElementDataType::Float3,"aNormal",false,1},
-            {ElementDataType::Float2,"aTexCoords",false,2}
+            {ElementDataType::Float3,"aPos",false,Slot_aPos},
+            {ElementDataType::Float3,"aNormal",false,Slot_aNormal},
+            {ElementDataType::Float2,"aTexCoords",false,Slot_aTexCoords}
         };
 
 
         if (tangents) {
-            layout.AddElement({ ElementDataType::Float3,"aTangent",false,3 });
-            layout.AddElement({ ElementDataType::Float3,"aBitangent",false,4 });
+            layout.AddElement({ ElementDataType::Float3,"aTangent",false,Slot_aTangent });
+           // layout.AddElement({ ElementDataType::Float3,"aBitangent",false,4 });
         }
         if (hasAnimation) {
-            layout.AddElement({ ElementDataType::Int4,"aJointIndices",false,5 });
-            layout.AddElement({ ElementDataType::Int4,"aJointIndices1",false,5 });
-            layout.AddElement({ ElementDataType::Int4,"aJointIndices2",false,7 });
-            layout.AddElement({ ElementDataType::Int4,"aWeights",false,8 });
-            layout.AddElement({ ElementDataType::Int4,"aWeights1",false,9 });
-            layout.AddElement({ ElementDataType::Int4,"aWeight2",false,10 });
+            layout.AddElement({ ElementDataType::Int4,"aJointIndices",false,Slot_aJointIndices });
+            //layout.AddElement({ ElementDataType::Int4,"aJointIndices1",false,5 });
+            //layout.AddElement({ ElementDataType::Int4,"aJointIndices2",false,7 });
+            layout.AddElement({ ElementDataType::Int4,"aWeights",false,Slot_aJointWeights });
+            //layout.AddElement({ ElementDataType::Int4,"aWeights1",false,9 });
+            //layout.AddElement({ ElementDataType::Int4,"aWeight2",false,10 });
 
         }
 
@@ -558,7 +559,11 @@ namespace BlackPearl {
         if (generatedTangents)
             delete[] generatedTangents;
 
-        buffers->vertexBufferLayout = layout;
+
+        mesh->m_IndicesCount = indicesData.size();
+        mesh->m_IndicesSize = mesh->m_IndicesCount * sizeof(uint32_t);
+        mesh->m_VertexBufferLayout = layout;
+        //buffers->vertexBufferLayout = layout;
 
         //   mesh->material = m_CurentModelMaterials[aimesh->mMaterialIndex];
 

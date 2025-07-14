@@ -239,7 +239,7 @@ namespace BlackPearl
         std::shared_ptr<DescriptorHandle> instnaceBufferDescriptor;
         std::array<BufferRange, size_t(VertexAttribute::Count)> vertexBufferRanges;
 
-        VertexBufferLayout vertexBufferLayout;
+        //VertexBufferLayout vertexBufferLayout;
 
         std::vector<uint32_t> indexData;
         //std::vector<float> vertexData; 不需要vertexData, 如果有骨骼的话 vector类型会不一样

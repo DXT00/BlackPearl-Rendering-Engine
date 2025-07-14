@@ -110,6 +110,7 @@ namespace BlackPearl {
 		uint32_t					 m_VerticeSize = 0; //m_VerticeSize = m_VerticeArrayCount* sizeof(float)
 		uint32_t					 m_VerticeCount = 0; // one vertex has multiple attributes, a vertex = (pos.xyz, normal.xyz, tex.xy..), m_VerticeCount is the number of attribute vertex
 		uint32_t					 m_VerticeArrayCount = 0;
+		VertexBufferLayout           m_VertexBufferLayout;
 
 		int globalMeshIndex = 0;
 
@@ -149,7 +150,6 @@ namespace BlackPearl {
 		void Init(uint32_t verticesSize);
 		void ParseAttributes(const VertexBufferLayout& layout);
 		std::shared_ptr<VertexArray> m_VertexArray;
-		VertexBufferLayout           m_VertexBufferLayout;
 
 		
 		//rt::AccelStructHandle accelStruct; // for use by applications
