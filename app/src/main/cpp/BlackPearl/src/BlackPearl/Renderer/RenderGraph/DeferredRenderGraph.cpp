@@ -58,12 +58,15 @@ namespace BlackPearl {
         if (Configuration::DebugView != DebugView::DV_Lit)
             return;
 
+      //  m_CommandList->beginMarker("DeferredRenderGraph");
+
 		if (SupportSinglePass(Configuration::MSAA_SAMPLES)) {
 			RenderSinglePass(ts, framebuffer, View);
 		}
 		else {
 			RenderMultiPass(ts, framebuffer, View);
 		}
+     //   m_CommandList->endMarker();
 	}
     void DeferredRenderGraph::RenderUI(IFramebuffer* framebuffer, IView* View)
     {
@@ -167,7 +170,7 @@ namespace BlackPearl {
                 g_GIManager->GetGIRenderer()->ShowProbes(m_CommandList, framebuffer, m_Scene);
             }
 
-
+            m_DeferredShadingRenderer->ShowPointLight(m_CommandList, framebuffer, m_Scene);
             m_CommandList->endRenderPass();
         }
 

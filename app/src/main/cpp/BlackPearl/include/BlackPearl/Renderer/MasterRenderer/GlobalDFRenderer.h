@@ -13,9 +13,15 @@ namespace BlackPearl {
         void Render(ICommandList* commandList, IFramebuffer* targetFramebuffer, Scene* scene);
         void FillShaderParameters();
 
-        void VisualizeGDF();
+        void ShowGDF(ICommandList* cmdList, IFramebuffer* targetFramebuffer, Scene* scene);
+
+        TextureHandle GetGDFDebugTexture() const{ return m_GDFDebugBinding.debugOutput; }
     private:
+
+        void _InitGDFDebug();
         MaterialShader* m_GDFBakeShader = nullptr;
+        MaterialShader* m_GDFDebugShader = nullptr;
+
         //GlobalDistanceField m_GDF;
 
         BufferHandle m_GDFCB;
@@ -25,6 +31,18 @@ namespace BlackPearl {
         std::vector<BindingSetHandle>    m_GDFBindingSets;
 
         ComputePipelineHandle m_GDFPso = nullptr;
+
+
+        struct GDFDebugBinding {
+
+            BindingLayoutHandle layout;
+            BindingSetHandle     set;
+            BufferHandle        gdfCb;
+            TextureHandle       debugOutput;
+
+        };
+        GraphicsPipelineHandle m_GDFDebugPso = nullptr;
+        GDFDebugBinding         m_GDFDebugBinding;
 
 
         InstancedOpaqueDrawStrategy* m_DrawStrategy;

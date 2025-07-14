@@ -14,4 +14,26 @@ namespace BlackPearl {
 	{
 		m_RegisterSpace = registerSpace;
 	}
+
+
+    std::string MaterialTemplate::ToString() {
+        switch (m_Type)
+        {
+        case BlackPearl::kBlinPhon:
+            return "kBlinPhon";
+        case BlackPearl::kPBR:
+            return "kPBR";
+
+        case BlackPearl::kDisneyPBR:
+            return "kDisneyPBR";
+
+        case BlackPearl::kCustom:
+            return "kCustom";
+
+        default:
+            break;
+        }
+        return "UnknownTemplate";
+
+    }
 }

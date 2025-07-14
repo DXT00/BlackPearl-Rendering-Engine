@@ -15,16 +15,17 @@ out vec3 v_Normal;
 out vec3 v_FragPos;
 
 
-#include <assets/shaders/glsl/common/CommonViewStruct.glsl>
-
-#include <assets/shaders/glsl/common/CommonTransformStruct.glsl>
+#include <common/CommonViewStruct.glsl>
+#include <common/CommonTransformStruct.glsl>
 
 void main()
 {
   	v_TexCoord = aTexCoords;
 
 	gl_Position = vec4(aPos,1.0);
-
+    // vec4 pos  = (g_Transform.matModel * vec4(aPos,1.0));
+   //  v_FragPos = pos.xyz;
+    //gl_Position = g_View.matProjectionView * g_Transform.matModel * vec4(aPos,1.0);
 }
 
 
@@ -38,6 +39,7 @@ out vec4 FragColor;
 #endif
 
 in vec2 v_TexCoord;
+in vec3 v_FragPos;
 
 #include <assets/shaders/glsl/common/CommonViewStruct.glsl>
 #include <assets/shaders/glsl/common/CommonDeferredStruct.glsl>
@@ -54,8 +56,8 @@ void main(){
 
     float2 pixelPos = uv * g_View.viewportSize; //v_TexCoord range [0,1]
 
-    //float3 worldPos = ScreenSpaceToWorldPosition(pixelPos, GBuffer.Depth);
-    float3 worldPos = worldPositionFromDepth(uv, GBuffer.Depth, inverse(g_View.matProjectionView));
+    float3 worldPos = worldPositionFromDepth(uv, GBuffer.Depth, inverse(g_View.matProjectionView));// ScreenSpaceToWorldPosition(pixelPos, GBuffer.Depth);
+    //float3 worldPos = v_FragPos;//worldPositionFromDepth(uv, GBuffer.Depth, inverse(g_View.matProjectionView));
 
       SurfaceGeometry geom;
       geom.position = worldPos;
@@ -89,9 +91,9 @@ void main(){
    {
        LightConstants light = g_DeferredLight.light;
 #if USE_GLES_PLS
-       sceneColor += ShadeSurface(light, geom, mat);
+       sceneColor = ShadeSurface(light, geom, mat);
 #else
-       FragColor += ShadeSurface(light, geom, mat);
+       FragColor = ShadeSurface(light, geom, mat);
 #endif
    }
    half IndirectIrradiance = GBuffer.IndirectIrradiance;
@@ -100,7 +102,7 @@ void main(){
 //    pls.t_gGbufferB = vec4(0.0);
 //    pls.t_gGbufferC = vec4(0.0);
 
-    pls.t_gSceneColor = sceneColor;
+    pls.t_gSceneColor =sceneColor;
 #endif
 
 

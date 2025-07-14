@@ -60,6 +60,7 @@ namespace BlackPearl {
 
 		Object* GetSkyBox() { return m_Skybox; }
         Object* GetFullScreenObj() { return m_FullScreenObj; }
+        Object* GetPointLightSphere() { return m_SphereObj; }
 		IDescriptorTable* GetDescriptorTable() const { return m_DescriptorTableMgr ? m_DescriptorTableMgr->GetDescriptorTable() : nullptr; }
 
         void SetDiffuseLightProbes(const std::vector<Object*>& probes);
@@ -106,6 +107,8 @@ namespace BlackPearl {
         // 全屏object， 用于后效等全屏绘制
         Object* m_FullScreenObj = nullptr;
 
+        // point light sphere，用于绘制sphere模板
+        Object* m_SphereObj = nullptr;
 
         /* light probe */
         std::vector<Object*> m_DiffuseLightProbes;

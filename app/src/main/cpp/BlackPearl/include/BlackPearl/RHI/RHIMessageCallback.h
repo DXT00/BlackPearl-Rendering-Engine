@@ -40,7 +40,7 @@ namespace BlackPearl {
         void message(MessageSeverity severity, const char* messageText) override
         {
             //std::cout << messageText << std::endl;
-            GE_CORE_INFO(messageText);
+            GE_CORE_INFO("RHICallbackMsg: %s",messageText);
         }
     };
 }

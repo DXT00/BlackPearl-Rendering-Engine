@@ -31,12 +31,19 @@ out vec4 FragColor;
 in vec3 v_TexCoord;
 in vec3 v_Normal;
 
-//#include <light_probe_cb.h>
+#include <light_probe_cb.h>
+#include<ddgi/ddgiCommon.glsl>
 
-//layout(std140, binding = 8) uniform ProbeUBO {
-//    LightProbeConstants g_Probe;
-//};
-//
+layout(std140, binding = 8) uniform ProbeUBO {
+    LightProbeConstants g_Probe;
+};
+
+layout(std140, binding = 9) uniform DDGIUbo {
+	DDGIConstants g_volume;
+};
+
+
+layout(binding = 2)  uniform sampler2D  uIrradiance;
 
 void main(){
 	
@@ -50,8 +57,18 @@ void main(){
 //	else  //todo::
 //		color = textureLod(u_Material.cube,TexCoords,0).rgb;
 //
+    ivec3 baseGridCoord = baseGridCoord(g_volume, g_Probe.pos); 
+    int probeIdx = gridCoordToProbeIndex(g_volume, baseGridCoord);
 
-    color = vec3(1.0,1.0,1.0);
-	FragColor = vec4(color,1.0);
+
+    
+    vec2 texCoord = textureCoordFromDirection(N, probeIdx, g_volume.depthTextureWidth, g_volume.depthTextureHeight, g_volume.depthProbeSideLength);
+
+    //float dist = length(probeToPoint);
+
+    vec3 irradiance = textureLod(uIrradiance, texCoord, 0.0f).rgb;
+
+    //color = vec3(1.0,1.0,1.0);
+	FragColor = vec4(irradiance,1.0);
 
 }

@@ -44,8 +44,12 @@ namespace BlackPearl {
 		glm::vec3 CameraPosition;
 		glm::vec3 CameraRotation;
 
+
 		glm::vec3 CameraFront;
-		LightSources LightSources;
+        glm::vec3 CameraRight;
+        glm::vec3 CameraUp;
+        float     CameraFov;
+        LightSources LightSources;
         float zNear, zFar;
         float PreExposure;
 

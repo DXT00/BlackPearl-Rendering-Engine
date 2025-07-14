@@ -1,13 +1,14 @@
 #include "pch.h"
-#include "BlackPearl/Application.h"
-#include "BlackPearl/LayerScene/Layer.h"
-#include "BlackPearl/Component/LightComponent/PointLight.h"
-#include "BlackPearl/Component/CameraComponent/PerspectiveCamera.h"
-#include "BlackPearl/Component/LightProbeComponent/LightProbeComponent.h"
-#include "BlackPearl/Component/TerrainComponent/TerrainComponent.h"
-#include "BlackPearl/Renderer/Model/Model.h"
+#include "Application.h"
+#include "LayerScene/Layer.h"
+#include "Component/LightComponent/PointLight.h"
+#include "Component/CameraComponent/PerspectiveCamera.h"
+#include "Component/LightProbeComponent/LightProbeComponent.h"
+#include "Component/TerrainComponent/TerrainComponent.h"
+#include "Component/BoundingBoxComponent/BoundingBox.h"
+#include "Renderer/Model/Model.h"
 //#include "BlackPearl/Renderer/Shader/Shader.h"
-#include "BlackPearl\ImGui\imgui.h"
+#include "ImGui/imgui.h"
 #include <glm/gtc/type_ptr.hpp>
 #include <stdio.h>
 #include <stdlib.h>
@@ -180,7 +181,7 @@ namespace BlackPearl {
 		//cube4->GetComponent<Transform>()->SetPosition({ 0.0f,3.0f,3.0f });
 		//cube5->GetComponent<Transform>()->SetPosition({ 0.0f,-1.0f,3.0f });
 		cube1->GetComponent<Transform>()->SetInitPosition({ 40.0f,  0.0f,-0.0f });
-		cube2->GetComponent<Transform>()->SetInitPosition({ 0.0f,   0.0f,-20.0f });
+		cube2->GetComponent<Transform>()->SetInitPosition({ 0.0f,   0.0f,-40.0f });
 		cube3->GetComponent<Transform>()->SetInitPosition({ -40.0f, -0.0f,-0.0f });
 		cube4->GetComponent<Transform>()->SetInitPosition({ 0.0f,   40.0f,-0.0f });
 		cube5->GetComponent<Transform>()->SetInitPosition({ 0.0f,   -40.0f,-0.0f });
@@ -198,11 +199,21 @@ namespace BlackPearl {
 		cube5->GetComponent<MeshRenderer>()->GetMeshes()[0]->GetMaterial()->SetMaterialColorSpecularColor({ 0,0,0 });*/
 
 		cube1->GetComponent<MeshRenderer>()->GetMeshes()[0]->GetMaterial()->SetMaterialColorDiffuseColor({ 0,0.294f,1.0f });
-		cube2->GetComponent<MeshRenderer>()->GetMeshes()[0]->GetMaterial()->SetMaterialColorDiffuseColor({ 1,0.267f,0 });
-		cube3->GetComponent<MeshRenderer>()->GetMeshes()[0]->GetMaterial()->SetMaterialColorDiffuseColor({ 1,1,1 });
+		//cube2->GetComponent<MeshRenderer>()->GetMeshes()[0]->GetMaterial()->SetMaterialColorDiffuseColor({ 1,0.267f,0 });
+        cube2->GetComponent<MeshRenderer>()->GetMeshes()[0]->GetMaterial()->SetMaterialColorDiffuseColor({ 1,0,0 });
+
+		cube3->GetComponent<MeshRenderer>()->GetMeshes()[0]->GetMaterial()->SetMaterialColorDiffuseColor({ 0,1,0 });
 		cube4->GetComponent<MeshRenderer>()->GetMeshes()[0]->GetMaterial()->SetMaterialColorDiffuseColor({ 0.204f,0,1 });
 		cube5->GetComponent<MeshRenderer>()->GetMeshes()[0]->GetMaterial()->SetMaterialColorDiffuseColor({ 1,0,0 });
-		m_BackGroundObjsList.push_back(cube1);
+		
+        cube1->GetComponent<BoundingBox>()->Get().UpdateTransform(cube1->GetComponent<Transform>()->GetTransformMatrix());
+        cube2->GetComponent<BoundingBox>()->Get().UpdateTransform(cube2->GetComponent<Transform>()->GetTransformMatrix());
+        cube3->GetComponent<BoundingBox>()->Get().UpdateTransform(cube3->GetComponent<Transform>()->GetTransformMatrix());
+        cube4->GetComponent<BoundingBox>()->Get().UpdateTransform(cube4->GetComponent<Transform>()->GetTransformMatrix());
+        cube5->GetComponent<BoundingBox>()->Get().UpdateTransform(cube5->GetComponent<Transform>()->GetTransformMatrix());
+        
+      
+        m_BackGroundObjsList.push_back(cube1);
 		m_BackGroundObjsList.push_back(cube2);
 		m_BackGroundObjsList.push_back(cube3);
 		m_BackGroundObjsList.push_back(cube4);
@@ -219,8 +230,8 @@ namespace BlackPearl {
         scene->AddObject(cube3);
         scene->AddObject(cube4);
         scene->AddObject(cube5);
-        scene->AddObject(deer);
-        scene->AddObject(bunny);
+     /*   scene->AddObject(deer);
+        scene->AddObject(bunny);*/
 
 	}
 	

@@ -153,7 +153,8 @@ namespace BlackPearl {
         lightConstants.lightType = LightType_Point;
         lightConstants.position = Math::ToFloat3(m_Position);
         lightConstants.color = m_LightProp.diffuse;
-        lightConstants.radius = m_Attenuation.maxDistance;
+        lightConstants.radius = m_Radius;
         lightConstants.invRadius = 1.0 / lightConstants.radius;
+        lightConstants.intensity = m_LightProp.intensity;
     }
 }

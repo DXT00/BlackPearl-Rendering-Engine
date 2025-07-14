@@ -30,7 +30,6 @@ namespace BlackPearl {
 
         virtual void ShowProbes(ICommandList* cmdList, IFramebuffer* targetFramebuffer, Scene* scene) override;
    
-        void _RenderProbe(ICommandList* cmdList, IFramebuffer* targetFramebuffer, Scene* scene, Object* probe);
 
 
     private:
@@ -42,6 +41,7 @@ namespace BlackPearl {
         MaterialShader* m_ProbeIrradianceUpdateShader = nullptr; 
         MaterialShader* m_ProbeDepthUpdateShader = nullptr;
         MaterialShader* m_ProbeGatherShader = nullptr;
+        MaterialShader* m_ProbeDebugShader = nullptr;
 
         std::vector<IrradianceVolume> m_Volumes;
         std::vector<DDGIPipelineInternal> m_Pipelines; // each volume has a pipline
@@ -83,13 +83,23 @@ namespace BlackPearl {
         ComputePipelineHandle m_ProbeGatherPso = nullptr;
 
 
+        struct ProbeDebugBindings {
+            //TODO:: Probe Material;
+            BindingLayoutHandle layout;
+            BindingSetHandle    set;
+            BufferHandle        probeCB;
+            BufferHandle        volumeCB;
 
-        MaterialShader* m_ProbeDebugShader = nullptr;
-        //TODO:: Probe Material;
-        BindingLayoutHandle m_ProbeBindingLayout;
+        };
+        ProbeDebugBindings m_ProbeDebugBindings;
+        GraphicsPipelineHandle m_ProbeDebugPso = nullptr;
+      /*  BindingLayoutHandle m_ProbeBindingLayout;
         BindingSetHandle    m_ProbeBindingSet;
-        GraphicsPipelineHandle m_ProbePso = nullptr;
+       
         BufferHandle    m_ProbeCB;
+        BufferHandle    m_VolumeCB;*/
+
+
 
 
         //Deferred IndirectLight shading
@@ -113,6 +123,7 @@ namespace BlackPearl {
 
         void _UpdateProbeIrradiance(ICommandList* cmdList, const IrradianceVolume& volume, const DDGIPipelineInternal& pipeline, const ProbeUpdateBindings& binidngs, Scene* scene);
         void _UpdateProbeDistance(ICommandList* cmdList, const IrradianceVolume& volume, const DDGIPipelineInternal& pipeline, const ProbeUpdateBindings& binidngs, Scene* scene);
+        void _RenderProbe(ICommandList* cmdList, IFramebuffer* targetFramebuffer, Scene* scene, Object* probe, const IrradianceVolume& volume, const DDGIPipelineInternal& pipeline);
 
         //Indirect lighint
         void _ProbeGather(ICommandList* cmdList, IFramebuffer* targetFramebuffer, Scene* scene);

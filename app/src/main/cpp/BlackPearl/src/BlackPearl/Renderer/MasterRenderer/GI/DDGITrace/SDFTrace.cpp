@@ -36,6 +36,8 @@ namespace BlackPearl {
         cmdList->beginMarker("SDFGITrace");
 
 
+
+
         double timeSecond = SystemTime::GetRuntimeFromStartMs() / 1000.0f;
         float currentTimeS = fmod(timeSecond, SkyboxRenderer::m_TotalTimeIntervalS);
         int state = int(currentTimeS / SkyboxRenderer::m_StateIntervalS);
@@ -103,11 +105,11 @@ namespace BlackPearl {
         RHIBindingLayoutDesc layoutDesc;
         layoutDesc.visibility = ShaderType::Compute;
         layoutDesc.bindings = {
-            RHIBindingLayoutItem::RT_Texture_SRV(0),
-            RHIBindingLayoutItem::RT_Texture_SRV(1),
-            RHIBindingLayoutItem::RT_Texture_SRV(2),
-            RHIBindingLayoutItem::RT_Texture_SRV(3),
-            RHIBindingLayoutItem::RT_ConstantBuffer(0)
+            RHIBindingLayoutItem::RT_Texture_UAV(0),
+            RHIBindingLayoutItem::RT_Texture_UAV(1),
+            RHIBindingLayoutItem::RT_Texture_UAV(2),
+            RHIBindingLayoutItem::RT_Texture_UAV(3),
+            RHIBindingLayoutItem::RT_ConstantBuffer(1)
 
         };
         m_Bindings.gdfLayout = m_Device->createBindingLayout(layoutDesc);
@@ -115,11 +117,11 @@ namespace BlackPearl {
 
         BindingSetDesc bindingSetDesc;
         bindingSetDesc.bindings = {
-            BindingSetItem::Texture_SRV(0, systemTex.SceneGlobalDF.Clipmaps[0].MipTexture, "clip0"),
-            BindingSetItem::Texture_SRV(1, systemTex.SceneGlobalDF.Clipmaps[1].MipTexture, "clip1"),
-            BindingSetItem::Texture_SRV(2, systemTex.SceneGlobalDF.Clipmaps[2].MipTexture, "clip2"),
-            BindingSetItem::Texture_SRV(3, systemTex.blackTexture, "clip3"),
-            BindingSetItem::ConstantBuffer(0, m_Bindings.gdfCB)
+            BindingSetItem::Texture_UAV(0, systemTex.SceneGlobalDF.Clipmaps[0].MipTexture, "clip0"),
+            BindingSetItem::Texture_UAV(1, systemTex.SceneGlobalDF.Clipmaps[1].MipTexture, "clip1"),
+            BindingSetItem::Texture_UAV(2, systemTex.SceneGlobalDF.Clipmaps[2].MipTexture, "clip2"),
+            BindingSetItem::Texture_UAV(3, systemTex.blackTexture, "clip3"),
+            BindingSetItem::ConstantBuffer(1, m_Bindings.gdfCB)
         };
         m_Bindings.gdfSet = m_Device->createBindingSet(bindingSetDesc, m_Bindings.gdfLayout);
     }
@@ -132,7 +134,7 @@ namespace BlackPearl {
         layoutDesc.visibility = ShaderType::Compute;
         layoutDesc.bindings = {
             RHIBindingLayoutItem::RT_Texture_SRV(5),
-            RHIBindingLayoutItem::RT_ConstantBuffer(1)
+            RHIBindingLayoutItem::RT_ConstantBuffer(2)
 
         };
         m_Bindings.voxelLayout = m_Device->createBindingLayout(layoutDesc);
@@ -160,7 +162,7 @@ namespace BlackPearl {
             RHIBindingLayoutItem::RT_Texture_SRV(7),
             RHIBindingLayoutItem::RT_Texture_SRV(8),
             RHIBindingLayoutItem::RT_Texture_SRV(9),
-            RHIBindingLayoutItem::RT_VolatileConstantBuffer(2),
+            RHIBindingLayoutItem::RT_VolatileConstantBuffer(3),
 
 
         };
@@ -172,7 +174,7 @@ namespace BlackPearl {
             BindingSetItem::Texture_SRV(7, SystemTexture::Get().SkyboxTexture0, "SkyboxTexture0"),
             BindingSetItem::Texture_SRV(8, SystemTexture::Get().SkyboxTexture1, "SkyboxTexture1"),
             BindingSetItem::Texture_SRV(9, SystemTexture::Get().SkyboxTexture2, "SkyboxTexture2"),
-            BindingSetItem::ConstantBuffer(2, m_Bindings.skyCB),
+            BindingSetItem::ConstantBuffer(3, m_Bindings.skyCB),
 
         };
         m_Bindings.skyboxSet = m_Device->createBindingSet(bindingSetDesc, m_Bindings.skyboxLayout);
@@ -187,8 +189,8 @@ namespace BlackPearl {
         RHIBindingLayoutDesc layoutDesc;
         layoutDesc.visibility = ShaderType::Compute;
         layoutDesc.bindings = {
-           RHIBindingLayoutItem::RT_ConstantBuffer(3),
-           RHIBindingLayoutItem::RT_ConstantBuffer(4)
+           RHIBindingLayoutItem::RT_ConstantBuffer(4),
+           RHIBindingLayoutItem::RT_ConstantBuffer(5)
 
         };
         m_Bindings.ddgiLayout = m_Device->createBindingLayout(layoutDesc);
@@ -197,8 +199,8 @@ namespace BlackPearl {
 
         BindingSetDesc bindingSetDesc;
         bindingSetDesc.bindings = {
-            BindingSetItem::ConstantBuffer(3, m_Bindings.ddgiCB),
-            BindingSetItem::ConstantBuffer(4, m_Bindings.ddgiRayCB)
+            BindingSetItem::ConstantBuffer(4, m_Bindings.ddgiCB),
+            BindingSetItem::ConstantBuffer(5, m_Bindings.ddgiRayCB)
         };
         m_Bindings.ddgiSet = m_Device->createBindingSet(bindingSetDesc, m_Bindings.ddgiLayout);
     }
@@ -210,8 +212,8 @@ namespace BlackPearl {
         RHIBindingLayoutDesc layoutDesc;
         layoutDesc.visibility = ShaderType::Compute;
         layoutDesc.bindings = {
-            RHIBindingLayoutItem::RT_Texture_UAV(0),
-            RHIBindingLayoutItem::RT_Texture_UAV(1)
+            RHIBindingLayoutItem::RT_Texture_UAV(4),
+            RHIBindingLayoutItem::RT_Texture_UAV(5)
 
         };
         m_Bindings.outputLayout = m_Device->createBindingLayout(layoutDesc);
@@ -222,17 +224,18 @@ namespace BlackPearl {
 
     void SDFTrace::_FillShaderParameters(ICommandList* cmdList, const IrradianceVolume& volume, const DDGIPipelineInternal& pipeline, Scene* scene)
     {
-        _FillGDF(cmdList, volume, pipeline, scene);
-        _FillDDGI(cmdList, volume, pipeline, scene);
-
         auto camPos = Renderer::GetSceneData()->CameraPosition;
+
+        _FillGDF(cmdList, volume, pipeline, scene);
+        _FillDDGI(cmdList, volume, pipeline, scene, camPos);
+
         _FillVoxel(cmdList, camPos);
 
         _FillOutputImage(pipeline);
 
     }
 
-    void SDFTrace::_FillDDGI(ICommandList* cmdList, const IrradianceVolume& volume, const DDGIPipelineInternal& pipeline, Scene* scene)
+    void SDFTrace::_FillDDGI(ICommandList* cmdList, const IrradianceVolume& volume, const DDGIPipelineInternal& pipeline, Scene* scene, const glm::vec3 camPos)
     {
 
         DDGIConstants ddgiConst{};
@@ -281,7 +284,7 @@ namespace BlackPearl {
         ddgiRayConst.infiniteBounces = (volume.infiniteBounce && Application::s_CurrentFrameNum != 0) ? 1 : 0;
         ddgiRayConst.intensity = volume.intensity;
         ddgiRayConst.numFrames = Application::s_CurrentFrameNum;
-
+        ddgiRayConst.cameraPos = Math::ToFloat3(camPos);
         cmdList->writeBuffer(m_Bindings.ddgiRayCB, &ddgiRayConst, sizeof(DDGIRayConstants));
     }
 
@@ -303,7 +306,7 @@ namespace BlackPearl {
         }
 
         gdfTraceConst.dimension = systemTex.SceneGlobalDF.ClipDim;
-
+        gdfTraceConst.clipCount = systemTex.SceneGlobalDF.NumClipMapLevels;
         cmdList->writeBuffer(m_Bindings.gdfCB, &gdfTraceConst, sizeof(GlobalSDFTraceConstants));
 
     }
@@ -316,7 +319,7 @@ namespace BlackPearl {
         BindingSetDesc bindingSetDesc;
         bindingSetDesc.bindings = {
                     BindingSetItem::Texture_SRV(5, SystemTexture::Get().SceneVoxels[voxelId].voxelTexture,"VoxelTexture"),
-                    BindingSetItem::ConstantBuffer(1, m_Bindings.voxelCB)
+                    BindingSetItem::ConstantBuffer(2, m_Bindings.voxelCB)
         };
 
 
@@ -340,8 +343,8 @@ namespace BlackPearl {
 
         BindingSetDesc bindingSetDesc;
         bindingSetDesc.bindings = {
-            BindingSetItem::Texture_UAV(0, m_Bindings.traceRadiance, "traceRadiance"),
-            BindingSetItem::Texture_UAV(1, m_Bindings.traceDirectionDistance, "traceDirectionDistance"),
+            BindingSetItem::Texture_UAV(4, m_Bindings.traceRadiance, "traceRadiance"),
+            BindingSetItem::Texture_UAV(5, m_Bindings.traceDirectionDistance, "traceDirectionDistance"),
 
         };
         m_Bindings.outputSet = m_Device->createBindingSet(bindingSetDesc, m_Bindings.outputLayout);

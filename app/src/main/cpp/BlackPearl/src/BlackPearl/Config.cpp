@@ -45,7 +45,7 @@ namespace BlackPearl {
 
     const bool Configuration::bCacheGLProgram = false;
 
-    DebugView::Type Configuration::DebugView = DebugView::Type::DV_Voxel;
+    DebugView::Type Configuration::DebugView = DebugView::Type::DV_Lit;
     
     //-----------------------------------------------
     // GI settings

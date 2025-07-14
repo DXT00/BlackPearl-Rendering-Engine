@@ -62,134 +62,14 @@ vec2 lineHitAABB(vec3 lineStart, vec3 lineEnd, vec3 boxMin, vec3 boxMax)
 }
 
 
-void GetClipmap(int id, out sampler3D clip){
+int GetClipmapLevel(vec3 worldPos, vec3 cameraPos, in GlobalSDFTraceConstants data){
+    int level = 0;
+    for(int i = 1; i < int(data.clipCount); i++){
 
+        if (worldPos.y > cameraPos.y + data.clipPosDistance[i-1].w || worldPos.y <  cameraPos.y - data.clipPosDistance[i-1].w) 
+            level = i;
 
-}
-
-
-GlobalSDFHit tracyGlobalSDF(in GlobalSDFTraceConstants data, 
-                            sampler3D clip0, 
-                            sampler3D clip1, 
-                            sampler3D clip2, 
-                            sampler3D clip3, 
-                            in GlobalSDFTrace trace, 
-                            float cascadeTraceStartBias)
-{
-    GlobalSDFHit hit;
-    hit.stepsCount = 0;
-    hit.hitTime = -1.0f;
-    hit.hitNormal = vec3(0);
-    hit.hitCascade = 0;
-    hit.hitSDF = 0.0;
-
-    float traceMaxDistance = min(trace.maxDistance, data.clipPosDistance[ data.clipCount - 1 ].w * 2);
-    
-    float chunkSizeDistance     = float(GLOBAL_SDF_RASTERIZE_CHUNK_SIZE) /  data.dimension;  // Size of the chunk in SDF distance (0-1)
-    float chunkMarginDistance   = float(GLOBAL_SDF_RASTERIZE_CHUNK_MARGIN) / data.dimension; // Size of the chunk margin in SDF distance (0-1)
-    
-    float nextIntersectionStart = 0.0f;
-    vec3  traceEndPosition = trace.worldPosition + trace.worldDirection * traceMaxDistance;
-
-    for (uint clip = 0; clip < data.clipCount && hit.hitTime < 0.0f; clip++)
-    {
-        vec4  clipPosDistance    = data.clipPosDistance[clip];
-        float voxelSize          = data.clipVoxelSize[clip];
-        float voxelHalf          = voxelSize * 0.5f;
-        vec3  worldPosition      = trace.worldPosition + trace.worldDirection * (voxelSize * cascadeTraceStartBias);
-
-        vec2 intersections  = lineHitAABB(worldPosition, traceEndPosition, clipPosDistance.xyz - clipPosDistance.www, clipPosDistance.xyz + clipPosDistance.www);
-        intersections.xy    *= traceMaxDistance;
-        intersections.x     = max(intersections.x, nextIntersectionStart);
-
-        float stepTime      = intersections.x;
-//        if (intersections.x >= intersections.y)// closest is greater than furthest
-//        {
-//            stepTime = intersections.y;
-//        }
-//        else
-//        {
-//            // Skip the current clip, tracing on the next clip
-//            nextIntersectionStart = intersections.y;
-//        }
-
-        if (intersections.x < intersections.y)
-        {
-
-            nextIntersectionStart = intersections.y;
-
-            //Raymarching
-            uint step = 0;
-            for (; step < 250 && stepTime < intersections.y; step++)
-            {
-                vec3 stepPosition = worldPosition + trace.worldDirection * stepTime;
-
-                float clipExtend;
-                vec3  clipUV;//, textureUV;
-                getGlobalSDFCascadeUV(data, clip, stepPosition, clipExtend, clipUV);
-                 float stepDistance;
-                if(clip == 0){
-                    stepDistance = texture(clip0,clipUV).r;
-                }
-                else if(clip == 1){
-                    stepDistance = texture(clip1,clipUV).r;
-                }
-                else if(clip == 2){
-                    stepDistance = texture(clip2,clipUV).r;
-                }
-                else if(clip == 3){
-                    stepDistance = texture(clip3,clipUV).r;
-                }
-
-//                if (stepDistance < chunkSizeDistance)
-//                {
-//                    float stepDistanceTex = texture(tex,textureUV).r;
-//                    if (stepDistanceTex < chunkMarginDistance * 2)
-//                    {
-//                        stepDistance = stepDistanceTex;
-//                    }
-//                }
-//                else
-//                {
-//                    stepDistance = chunkSizeDistance;
-//                }
-//
-                //stepDistance *= clipExtend;
-
-                float minSurfaceThickness = voxelHalf * clamp(stepTime / voxelSize, 0.0, 1.0);
-                if (stepDistance < minSurfaceThickness)
-                {
-                    hit.hitTime = max(stepTime + stepDistance - minSurfaceThickness, 0.0f);
-                    hit.hitCascade = clip;
-                    hit.hitSDF = stepDistance;
-                    if (trace.needsHitNormal)
-                    {
-                        // Calculate hit normal from SDF gradient
-                        //dU/dX, dU/dY
-//                        float texelOffset = 1.0f / data.dimension;
-//                        float xp = texture(tex, vec3(textureUV.x + texelOffset, textureUV.y, textureUV.z)).r;
-//                        float xn = texture(tex, vec3(textureUV.x - texelOffset, textureUV.y, textureUV.z)).r;
-//                        float yp = texture(tex, vec3(textureUV.x, textureUV.y + texelOffset, textureUV.z)).r;
-//                        float yn = texture(tex, vec3(textureUV.x, textureUV.y - texelOffset, textureUV.z)).r;
-//                        float zp = texture(tex, vec3(textureUV.x, textureUV.y, textureUV.z + texelOffset)).r;
-//                        float zn = texture(tex, vec3(textureUV.x, textureUV.y, textureUV.z - texelOffset)).r;
-//                        hit.hitNormal = normalize(vec3(xp - xn, yp - yn, zp - zn));
-                    }
-                    break;
-                }
-
-                // Move 
-                stepTime += max(stepDistance * trace.stepScale, voxelSize);
-            }
-
-            hit.stepsCount += step;
-
-        
-        }
-       
     }
-    return hit;
+    return level;
 }
-
-
 #endif

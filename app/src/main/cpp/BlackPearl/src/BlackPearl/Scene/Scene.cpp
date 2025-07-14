@@ -20,7 +20,7 @@ namespace BlackPearl {
 		PrimitiveOctree = DBG_NEW ScenePrimitiveOctree(AABB(math::float3(0.0), math::float3(GE_OLD_HALF_WORLD_MAX)));
         
         m_FullScreenObj = g_objectManager->CreateQuad("assets/shaders/glsl/Quad.glsl","","FullScreenObj");
-
+        m_SphereObj = g_objectManager->CreateSphere(1.5,64,64,"",nullptr,"", "PonitLightSphere");
     
     }
 

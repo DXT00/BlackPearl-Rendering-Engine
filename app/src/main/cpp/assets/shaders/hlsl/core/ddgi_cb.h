@@ -31,6 +31,7 @@ struct DDGIRayConstants {
     ALIGN(4)  uint  infiniteBounces;
     ALIGN(4)  int   numLights;
     ALIGN(4)  float intensity;
+    ALIGN(16) float3  cameraPos;
 };
 
 struct DDGIFrameConstants {

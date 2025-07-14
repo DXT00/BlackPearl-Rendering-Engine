@@ -46,6 +46,10 @@ struct ForwardShadingViewConstants
     ALIGN(16) float4x4 matProjection;
     ALIGN(16) float3 cameraPos;
     ALIGN(16) float3 cameraRot;
+    ALIGN(16) float3 cameraFront;
+    ALIGN(16) float3 cameraRight;
+    ALIGN(16) float3 cameraUp;
+    ALIGN(4) float fov;
 
     ALIGN(4) float zFar;
     ALIGN(4) float zNear;

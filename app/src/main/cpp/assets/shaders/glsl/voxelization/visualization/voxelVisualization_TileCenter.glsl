@@ -36,13 +36,7 @@ out vec4 color;
 
 
 
-vec3 GenRay(){
-	vec2 texcoord = vec2(gl_FragCoord.xy)/vec2(g_View.viewportSize.x, g_View.viewportSize.y);
-	texcoord = 2.0*texcoord - 1.0;
-    texcoord.y = 1.0 -texcoord.y;
-    vec3 end = (inverse(g_View.matProjectionView) * vec4(texcoord, -1.0, 1)).xyz;
-	return normalize(end - g_View.cameraPos);
-}
+
 
 vec3 GetVoxelLocalPos(vec3 origin){
      float voxelMinX = g_VoxelVisual.center.x - g_VoxelVisual.areaExtent.x * 0.5;
@@ -54,6 +48,36 @@ vec3 GetVoxelLocalPos(vec3 origin){
                  origin.z - voxelMinZ);
 
 }
+vec3 GenRay(){
+	vec2 texcoord = vec2(gl_FragCoord.xy)/vec2(g_View.viewportSize.x, g_View.viewportSize.y);
+	texcoord = 2.0*texcoord - 1.0;
+    texcoord.y = 1.0 -texcoord.y;
+    vec3 end = (inverse(g_View.matProjectionView) * vec4(texcoord, -1.0, 1)).xyz;
+	return normalize(end - g_View.cameraPos);
+}
+
+struct Ray {
+    vec3 origin;
+    vec3 direction;
+};
+
+Ray generateRay(vec2 fragCoord, vec2 viewportSize, vec3 cameraPos, vec3 cameraForward, vec3 cameraRight, vec3 cameraUp, float fov) {
+    // 将屏幕坐标gl_FragCoord.xy 转换到 NDC [-1,1]
+    vec2 uv = fragCoord / viewportSize; //[0,1]
+    uv.y = 1.0 - uv.y;
+    vec2 ndc = (2.0 * uv ) - 1.0;
+
+    // 计算光线方向（透视投影）
+    float tanFov = tan(fov / 2.0);
+    vec3 rayDir = normalize(
+        cameraForward + 
+        ndc.x * cameraRight * tanFov * (viewportSize.x / viewportSize.y) + 
+        ndc.y * cameraUp * tanFov
+    );
+
+    // 返回光线
+    return Ray(cameraPos, rayDir);
+}
 
 void main() {
 	const int mipmapLevel = g_VoxelVisual.mipLevel;
@@ -61,6 +85,10 @@ void main() {
 	// Initialize ray.
 	 vec3 origin = g_View.cameraPos;
      vec3 originInVoxel = (origin - g_VoxelVisual.center);// / g_VoxelVisual.areaExtent; //GetVoxelLocalPos(origin);
+
+
+
+     Ray ray = generateRay(gl_FragCoord.xy, g_View.viewportSize,g_View.cameraPos, g_View.cameraFront, g_View.cameraRight, g_View.cameraUp, g_View.fov);
 
 //	 vec2 textureCoordinateFrag= vec2(gl_FragCoord.xy)/vec2(u_ScreenWidth, u_ScreenHeight);
 //	 textureCoordinateFrag = 2.0*textureCoordinateFrag - 1.0;
@@ -72,7 +100,7 @@ void main() {
     
     float maxExtend =  max(g_VoxelVisual.areaExtent.x, max(g_VoxelVisual.areaExtent.y, g_VoxelVisual.areaExtent.z));
 	float rayLength = maxExtend;// length(stop-origin);
-	vec3 direction = GenRay();
+	vec3 direction = ray.direction;//GenRay();
 
      
     float maxDim = max(g_VoxelVisual.dimension.x , max(g_VoxelVisual.dimension.y,g_VoxelVisual.dimension.z));

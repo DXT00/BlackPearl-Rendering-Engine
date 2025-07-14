@@ -23,6 +23,9 @@
 #include "RHI/OpenGLRHI/OpenGLContext.h"
 
 #endif
+
+#include "Renderer/Material/MaterialTemplate/MaterialTemplatePBR.h"
+
 //#define IMGUI_IMPL_OPENGL_LOADER_GLAD
 //
 //#include "examples/imgui_impl_opengl3.cpp"
@@ -145,8 +148,8 @@ namespace BlackPearl {
     {
         printf("current context OnImguiRender imgui = %p\n", wglGetCurrentContext());
 
-        static bool show = false;
-        ImGui::ShowDemoWindow(&show);
+        //static bool show = false;
+        //ImGui::ShowDemoWindow(&show);
 
 
         //ImGui::Begin("GI Settings");
@@ -381,8 +384,40 @@ namespace BlackPearl {
 
     }
 
-    void ImGuiLayer::ShowMaterialProps(Props& imGuiProps)
+    void ImGuiLayer::ShowMaterialTemplate(MaterialTemplate* matTemplate)
     {
+        ImGui::TextColored({ 1.0,0.64,0.0,1.0 }, "MaterialTemplate: %s", matTemplate->ToString().c_str());
+
+        if (matTemplate->GetType() == MaterialTemplateType::kPBR) {
+            MaterialTemplatePBR* pbr = dynamic_cast<MaterialTemplatePBR*>(matTemplate);
+
+            float opacity = pbr->material_cb.opacity;
+            ImGui::SliderFloat("opacity", &opacity, 0.f, 1.f);
+            pbr->material_cb.opacity = opacity;
+
+            float alphaThreshold = pbr->material_cb.alphaThreshold;
+            ImGui::SliderFloat("alphaThreshold", &alphaThreshold, 0.f, 1.f);
+            pbr->material_cb.alphaThreshold = alphaThreshold;
+
+            float metallic = pbr->material_cb.metallic;
+            ImGui::SliderFloat("metallic", &metallic, 0.f, 1.f);
+            pbr->material_cb.metallic = metallic;
+
+            float ao = pbr->material_cb.ao;
+            ImGui::SliderFloat("ao", &ao, 0.f, 1.f);
+            pbr->material_cb.ao = ao;
+
+            float specular = pbr->material_cb.specular;
+            ImGui::SliderFloat("specular", &specular, 0.f, 1.f);
+            pbr->material_cb.specular = specular;
+
+
+            float ior = pbr->material_cb.ior;
+            ImGui::SliderFloat("ior", &ior, 0.f, 1.f);
+            pbr->material_cb.ior = ior;
+
+
+        }
     }
 
     void ImGuiLayer::ShowMeshRenderer(MeshRenderer* comp)
@@ -500,6 +535,7 @@ namespace BlackPearl {
         ImGui::TextColored({ 1.0,0.64,0.0,1.0 }, "Material Properties");
         Props imGuiProps = imGuiMeshes[0]->GetMaterial()->GetProps();//TODO::Ĭ������mesh ��Material::Props ��һ����
         float imGuiShininess = imGuiProps.shininess;
+        float imGuiRoughness = imGuiProps.roughness;
         bool  imGUiBlinnLight = imGuiProps.isBinnLight;
         bool  imGUiIsPBRTextureSample = (bool)imGuiProps.isPBRTextureSample;
         bool  imGUiIsDifussTextureSample = (bool)imGuiProps.isDiffuseTextureSample;
@@ -514,6 +550,10 @@ namespace BlackPearl {
         for (auto mesh : imGuiMeshes)
             mesh->GetMaterial()->SetShininess(imGuiShininess);
 
+        ImGui::SliderFloat("roughness", &imGuiRoughness, 0.f, 1.f);
+        for (auto mesh : imGuiMeshes)
+            mesh->GetMaterial()->SetRoughness(imGuiRoughness);
+
 
         ImGui::Checkbox("usePPBRTexture", &imGUiIsPBRTextureSample);
         for (auto mesh : imGuiMeshes)
@@ -527,9 +567,7 @@ namespace BlackPearl {
         for (auto mesh : imGuiMeshes)
             mesh->GetMaterial()->SetTextureSampleSpecular((int)imGUiIsSpecularTextureSample);
 
-        /*ImGui::Checkbox("useMetallicTexture", &imGUiIsMetallicrTextureSample);
-        for (auto mesh : imGuiMeshes)
-            mesh->GetMaterial()->SetTextureSampleMetallic((int)imGUiIsMetallicrTextureSample);*/
+
 
         for (int i = 0; i < imGuiMeshes.size(); i++) {
             MaterialColor color = imGuiMeshes[i]->GetMaterial()->GetMaterialColor();
@@ -543,8 +581,15 @@ namespace BlackPearl {
             //mesh->GetMaterial()->SetMaterialColorEmissionColor(color.emissionColor);
             imGuiMeshes[i]->SetMaterialColor(color);
 
+
+            ImGui::Separator();
+            ShowMaterialTemplate(imGuiMeshes[i]->GetMaterial()->materialTemplate);
+
+
+
         }
 
+       
 
     }
 
@@ -583,6 +628,7 @@ namespace BlackPearl {
 
     void ImGuiLayer::ShowPointLight(PointLight* pointLight)
     {
+        ImGui::TextColored({ 1.0,0.64,0.0,1.0 }, "PointLight");
         //if (comp->GetType() == LightType::PointLight) {
             //auto pointLight = std::dynamic_pointer_cast<PointLight>(comp);
         //auto color = pointLight->GetMeshes()->GetMaterial()->GetMaterialColor().Get();
@@ -591,6 +637,7 @@ namespace BlackPearl {
         float intensity = pointLight->GetLightProps().intensity;
         float area = pointLight->GetLightProps().area;
         float bias = pointLight->GetLightProps().shadowBias;
+        float radius = pointLight->GetRadius();
 
         ImGui::ColorEdit3("ambient Color", props.ambient);
         ImGui::ColorEdit3("diffuse Color", props.diffuse);
@@ -600,12 +647,18 @@ namespace BlackPearl {
         ImGui::DragFloat("intensity", &intensity, 0.1f, 0.1, 100);
         ImGui::DragFloat("lightSize", &area, 0.1f, 0.1, 100);
         ImGui::DragFloat("shadowBias", &bias, 0.001f, 0.001, 100);
+        
+        ImGui::SliderFloat("radius", &radius, 0.01f, 100.0f);
+        pointLight->SetRadius(radius);
+
+        
         //ImGui::DragInt("pcfSamplesCnt", &ShadowMapPointLightRenderer::s_PCFSamplesCnt, 1, 2, 60);
 
         pointLight->SetAttenuation(attenuation);
         Light::Props pros = { props.ambient ,props.diffuse,props.specular,props.emission,intensity };
         pros.area = area;
         pros.shadowBias = bias;
+
 
         pointLight->UpdateMesh(pros);
 
@@ -649,6 +702,9 @@ namespace BlackPearl {
             EDepthStencilTargetActions::LoadDepthStencil_StoreDepthStencil);
         m_CommandList->beginRenderPass(RPInfo, "UIPass");
 
+        glEnable(GL_DEPTH_TEST);
+        glDepthFunc(GL_ALWAYS);    // 确保UI总是通过测试
+        glDepthMask(GL_TRUE);         // 允许写入深度缓冲
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplWin32_NewFrame();
         ImGui::NewFrame();
@@ -814,7 +870,7 @@ namespace BlackPearl {
 
         if (currentObj != nullptr) {
 
-            if (currentObj->HasComponent< Transform>()) {
+            if (currentObj->HasComponent<Transform>()) {
                 if (currentObj->GetComponent<BasicInfo>()->GetType() == OT_BatchNode) {
 
                 }
@@ -824,17 +880,16 @@ namespace BlackPearl {
                 }
 
             }
-            if (currentObj->HasComponent< LightProbe>()) {
+            if (currentObj->HasComponent<LightProbe>()) {
                 ShowLightProbe(currentObj->GetComponent<LightProbe>(), currentObj);
 
             }
-            if (currentObj->HasComponent< MeshRenderer>()) {
+            if (currentObj->HasComponent<MeshRenderer>()) {
                 ShowMeshRenderer(currentObj->GetComponent<MeshRenderer>());
                 /*backGroundObj list*/
 
                 bool isBackGroundObj = currentObj->GetComponent<MeshRenderer>()->GetIsBackGroundObjects();
                 ImGui::Checkbox("isBackGroundObj", &isBackGroundObj);
-                //TODO:: ���Բ��� bitset
                 if (isBackGroundObj) {
                     std::vector<Object*>::const_iterator it = std::find(m_BackGroundObjsList.begin(), m_BackGroundObjsList.end(), currentObj);
                     if (it == m_BackGroundObjsList.end()) {
@@ -881,10 +936,10 @@ namespace BlackPearl {
 
 
             }
-            if (currentObj->HasComponent < PointLight>()) {
+            if (currentObj->HasComponent <PointLight>()) {
                 ShowPointLight(currentObj->GetComponent<PointLight>());
             }
-            if (currentObj->HasComponent < DirectionLight>()) {
+            if (currentObj->HasComponent <DirectionLight>()) {
                 ShowParallelLight(currentObj->GetComponent<DirectionLight>());
             }
             if (currentObj->HasComponent<PerspectiveCamera>()) {

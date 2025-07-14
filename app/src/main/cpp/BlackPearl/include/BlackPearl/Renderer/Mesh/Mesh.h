@@ -145,6 +145,7 @@ namespace BlackPearl {
 		void _InitBufferGroup(const MeshFilter* filter);
 		void _AppendBufferRange(BufferRange& range, size_t size, uint64_t& currentBufferSize);
 
+        void _InitLocalAABB(const std::vector<math::float3>& posData);
 		void Init(uint32_t verticesSize);
 		void ParseAttributes(const VertexBufferLayout& layout);
 		std::shared_ptr<VertexArray> m_VertexArray;

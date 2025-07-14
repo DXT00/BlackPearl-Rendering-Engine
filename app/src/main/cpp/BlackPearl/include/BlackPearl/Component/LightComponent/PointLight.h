@@ -120,6 +120,10 @@ namespace BlackPearl {
         }
         virtual void FillLightConstants(LightConstants& lightConstants) override;
 
+        void SetRadius(float r) {
+            m_Radius = r;
+        }
+        float GetRadius() const { return m_Radius; }
 	private:
 		std::shared_ptr<Mesh> m_Mesh;
 		Attenuation m_Attenuation;
@@ -129,6 +133,8 @@ namespace BlackPearl {
 		unsigned int m_ShadowMapPointLightHeight = 1024;
 
         glm::vec3 m_Position;
+
+        float m_Radius = 0.5f;
 	};
 
 }

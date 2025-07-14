@@ -10,6 +10,7 @@
 
 namespace BlackPearl {
     class FPlatformOpenGLContext;
+    class MaterialTemplate;
 	class ImGuiLayer :public Layer
 	{
 	public:
@@ -41,7 +42,7 @@ namespace BlackPearl {
 
 		void ShowShader(std::string imguiShaders, int meshIndex, int& itemIndex, int offset);
 		void ShowTextures(std::string imguiShaders, int meshIndex, int& itemIndex, TextureType textureType, TextureType& type, int offset);
-		void ShowMaterialProps(Props& imGuiProps);
+		void ShowMaterialTemplate(MaterialTemplate* matTemplate);
         HWND GetNativeWindow() const { return m_hImGuiWnd; }
         ImGuiIO* GetIO() { return m_IO; }
         HWND m_hImGuiWnd;

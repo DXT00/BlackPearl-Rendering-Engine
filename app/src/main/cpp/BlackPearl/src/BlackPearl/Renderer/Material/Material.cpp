@@ -135,7 +135,25 @@ namespace BlackPearl {
 		std::shared_ptr<Texture>texture(DBG_NEW Texture(type, image, GL_LINEAR, GL_LINEAR, GL_RGBA, GL_CLAMP_TO_EDGE, GL_UNSIGNED_BYTE));
 		SetTexture(texture);
 	}*/
+    void Material::SetMaterialColor(const MaterialColor& color) {
+        if (materialTemplate->GetType() == MaterialTemplateType::kPBR) {
+            MaterialTemplatePBR* pbr = dynamic_cast<MaterialTemplatePBR*>(materialTemplate);
+            pbr->material_cb.albedo = color.diffuseColor;
+            pbr->material_cb.emissive = color.emissiveColor;
+            pbr->material_cb.transmission = color.subsurfaceColor;
 
+        }
+        m_MaterialColors = color;
+    }
+
+    void Material::SetMaterialColorDiffuseColor(float3 diffuse) {
+        if (materialTemplate->GetType() == MaterialTemplateType::kPBR) {
+            MaterialTemplatePBR* pbr = dynamic_cast<MaterialTemplatePBR*>(materialTemplate);
+            pbr->material_cb.albedo = diffuse;
+
+        }
+        m_MaterialColors.diffuseColor = diffuse;
+    }
 	void Material::SetProps(const Props & props)
 	{
 		m_Props.isBinnLight = props.isBinnLight;
@@ -152,6 +170,11 @@ namespace BlackPearl {
 	void Material::SetRoughness(float roughness)
 	{
 		m_Props.roughness = roughness;
+        if (materialTemplate->GetType() == MaterialTemplateType::kPBR) {
+            MaterialTemplatePBR* pbr = dynamic_cast<MaterialTemplatePBR*>(materialTemplate);
+            pbr->material_cb.roughness = roughness;
+
+        }
 	}
 
 	void Material::SetRefractIdx(float idx) 

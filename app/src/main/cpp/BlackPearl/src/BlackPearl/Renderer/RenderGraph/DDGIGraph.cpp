@@ -36,15 +36,16 @@ namespace BlackPearl {
 	void DDGIGraph::Render(Timestep ts, IFramebuffer* framebuffer, IView* View) {
 
        
-
         m_CommandList->open();
+       // m_CommandList->beginMarker("DDGIGraph");
 
         if (!ShouldRender())
             return;
         //pass 0 render volumes
         m_DDGIRenderer->Render(m_CommandList, framebuffer, m_Scene);
+        
+      //  m_CommandList->endMarker();
         m_CommandList->close();
-
 
         bIsProbesDirty = false;
 	}

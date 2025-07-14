@@ -115,10 +115,8 @@ namespace BlackPearl {
 		void SetSampler(ISampler* sampler);
 		void SetId(uint32_t _matId);
 		uint32_t GetId() const;
-        void SetMaterialColor(const MaterialColor& color) { m_MaterialColors = color; }
-        void SetMaterialColorDiffuseColor(float3 diffuse) {
-            m_MaterialColors.diffuseColor = diffuse;
-        }
+        void SetMaterialColor(const MaterialColor& color);
+        void SetMaterialColorDiffuseColor(float3 diffuse);
 		void SetProps(const Props& props);
 		void SetShininess(float shininess);
 		void SetRoughness(float roughness);
