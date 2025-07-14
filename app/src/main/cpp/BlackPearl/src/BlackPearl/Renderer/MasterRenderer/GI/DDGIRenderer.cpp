@@ -127,6 +127,16 @@ namespace BlackPearl {
     void DDGIRenderer::_ProbeGather(ICommandList* cmdList, IFramebuffer* targetFramebuffer, Scene* scene)
 	{
         // 获取当前area 的 Volumes
+
+        SceneData* view = Renderer::GetSceneData();
+        GE_ERROR_JUDGE();
+
+        SceneData* preView = Renderer::GetPreSceneData();
+        GE_ERROR_JUDGE();
+
+        SetupView(cmdList, view, preView);
+
+
         auto camPos = Renderer::GetSceneData()->CameraPosition;
         int areaId = g_mapManager->CalculateAreaId(camPos);
         m_UI.currentAreaId = areaId;
@@ -183,7 +193,7 @@ namespace BlackPearl {
         areaConst.numVolumeInArea = ddgiConsts.size();
         cmdList->writeBuffer(m_ProbeGatherBindings.areaCB, &areaConst, sizeof(DDGIAreaConstants));
         BindingSetDesc bindingSetDesc;
-		bindingSetDesc.bindings.push_back(BindingSetItem::Texture_UAV(0, m_ProbeGatherBindings.outputIndirectLighting));
+		bindingSetDesc.bindings.push_back(BindingSetItem::Texture_UAV(4, m_ProbeGatherBindings.outputIndirectLighting));
 		int slot = 0;
         for (size_t i = 0; i < pipelines.size(); i++)
         {
@@ -192,14 +202,13 @@ namespace BlackPearl {
             bindingSetDesc.bindings.push_back(BindingSetItem::Texture_SRV(slot++, pipelines[i].depth[m_LastWrite]));
 
         }
-		while (slot < 8) {
+		while (slot < 4) {
 			bindingSetDesc.bindings.push_back(BindingSetItem::Texture_SRV(slot++, SystemTexture::Get().blackTexture));
 		}
         bindingSetDesc.bindings.push_back(BindingSetItem::Texture_SRV(8, SystemTexture::Get().SceneDepth));
         bindingSetDesc.bindings.push_back(BindingSetItem::Texture_SRV(9, SystemTexture::Get().GBufferA));
-        bindingSetDesc.bindings.push_back(BindingSetItem::StructuredBuffer_SRV(2, m_ProbeGatherBindings.ddgiSSBO));
-        bindingSetDesc.bindings.push_back(BindingSetItem::ConstantBuffer(3, m_ProbeGatherBindings.areaCB));
-
+        bindingSetDesc.bindings.push_back(BindingSetItem::StructuredBuffer_SRV(5, m_ProbeGatherBindings.ddgiSSBO));
+        bindingSetDesc.bindings.push_back(BindingSetItem::ConstantBuffer(6, m_ProbeGatherBindings.areaCB));
           
         m_ProbeGatherBindings.set = m_Device->createBindingSet(bindingSetDesc, m_ProbeGatherBindings.layout);
 
@@ -211,10 +220,12 @@ namespace BlackPearl {
 
 
         computePSO.bindings.push_back(m_ProbeGatherBindings.set);
+        computePSO.bindings.push_back(m_ViewBindingset);
 
 
         ComputePipelineDesc psoDesc;
         psoDesc.bindingLayouts.push_back(m_ProbeGatherBindings.layout);
+        psoDesc.bindingLayouts.push_back(m_ViewBindinglayout);
         psoDesc.CS = m_ProbeGatherShader->GetComputeShader();
 
         if (!m_ProbeGatherPso) {
@@ -254,8 +265,8 @@ namespace BlackPearl {
 
         GraphicsPipelineDesc psoDesc;
 
-        psoDesc.depthStencilState.setDepthFunc(ComparisonFunc::LessOrEqual);
-        psoDesc.depthStencilState.enableDepthTest();
+       // psoDesc.depthStencilState.setDepthFunc(ComparisonFunc::LessOrEqual);
+        psoDesc.depthStencilState.disableDepthTest();
         psoDesc.depthStencilState.disableDepthWrite();
         psoDesc.depthStencilState.disableStencil();
 
@@ -263,7 +274,7 @@ namespace BlackPearl {
 
         for (auto& target : psoDesc.blendState.targets)
         {
-            target.blendEnable = true;
+            target.blendEnable = false;// true;
             target.blendOp = BlendOp::Add;
             target.srcBlend = BlendFactor::One;
             target.destBlend = BlendFactor::One;
@@ -469,20 +480,20 @@ namespace BlackPearl {
         RHIBindingLayoutDesc layoutDesc;
         layoutDesc.visibility = ShaderType::Compute;
         layoutDesc.bindings = {
-            RHIBindingLayoutItem::RT_Texture_UAV(0),
+            RHIBindingLayoutItem::RT_Texture_UAV(4),
             RHIBindingLayoutItem::RT_Texture_SRV(0),
             RHIBindingLayoutItem::RT_Texture_SRV(1),
             RHIBindingLayoutItem::RT_Texture_SRV(2),
             RHIBindingLayoutItem::RT_Texture_SRV(3),
-            RHIBindingLayoutItem::RT_Texture_SRV(4),
-            RHIBindingLayoutItem::RT_Texture_SRV(5),
-            RHIBindingLayoutItem::RT_Texture_SRV(6),
-            RHIBindingLayoutItem::RT_Texture_SRV(7),
-            RHIBindingLayoutItem::RT_Texture_SRV(8),
-			RHIBindingLayoutItem::RT_Texture_SRV(9),
+   //         RHIBindingLayoutItem::RT_Texture_SRV(4),
+   //         RHIBindingLayoutItem::RT_Texture_SRV(5),
+   //         RHIBindingLayoutItem::RT_Texture_SRV(6),
+   //         RHIBindingLayoutItem::RT_Texture_SRV(7),
+   //         RHIBindingLayoutItem::RT_Texture_SRV(8),
+			//RHIBindingLayoutItem::RT_Texture_SRV(9),
 
-            RHIBindingLayoutItem::RT_StructuredBuffer_UAV(2),
-            RHIBindingLayoutItem::RT_ConstantBuffer(3)
+            RHIBindingLayoutItem::RT_StructuredBuffer_UAV(5),
+            RHIBindingLayoutItem::RT_ConstantBuffer(6)
         };
 
 

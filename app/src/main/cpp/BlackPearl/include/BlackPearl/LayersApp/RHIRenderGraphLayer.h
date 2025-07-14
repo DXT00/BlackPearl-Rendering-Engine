@@ -90,7 +90,7 @@ public:
         
 
             m_DiffuseLightProbeGrid = CreateProbeGrid(ProbeType::DIFFUSE_PROBE,
-                math::float3(3, 3, 3), math::float3(-10.0f, 0.0f, -3.0f), 10);
+                math::float3(3, 3, 3), math::float3(-10.0f, -2.0f, -3.0f), 10);
 
           /*  m_ReflectLightProbeGrid = CreateProbeGrid(m_MapManager, ProbeType::REFLECTION_PROBE,
                 math::float3(2, 1, 1), math::float3(0.2f, -1.0f, 0.2f), 6);*/

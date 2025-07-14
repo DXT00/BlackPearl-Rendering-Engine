@@ -8,27 +8,27 @@
 layout(local_size_x = NUM_THREADS_X, local_size_y = NUM_THREADS_Y, local_size_z = 1) in;
 
 
-layout(binding = 0, rgba16f) uniform image2D outColor;
+layout(binding = 4, rgba16f) uniform image2D outColor;
 layout(binding = 0)  uniform sampler2D  uIrradiance0;
 layout(binding = 1)  uniform sampler2D  uDepth0;
 layout(binding = 2)  uniform sampler2D  uIrradiance1;
 layout(binding = 3)  uniform sampler2D  uDepth1;
-layout(binding = 4)  uniform sampler2D  uIrradiance2;
-layout(binding = 5)  uniform sampler2D  uDepth2;
-layout(binding = 6)  uniform sampler2D  uIrradiance3;
-layout(binding = 7)  uniform sampler2D  uDepth3;
+//layout(binding = 4)  uniform sampler2D  uIrradiance2;
+//layout(binding = 5)  uniform sampler2D  uDepth2;
+//layout(binding = 6)  uniform sampler2D  uIrradiance3;
+//layout(binding = 7)  uniform sampler2D  uDepth3;
 
 
 layout(binding = 8) uniform sampler2D SceneDepth;//uDepthSampler;
 layout(binding = 9) uniform sampler2D GBufferA;//uNormalSampler;encode normal.xy + Encode IndirectIrradiance + reserve
 
-layout(std140, binding = 2) buffer DDGIUbo {
+layout(std140, binding = 5) buffer DDGIUbo {
 	DDGIConstants g_volumes[];
 };
 
 //
 
-layout(std140, binding = 3) uniform volumesInfoUbo
+layout(std140, binding = 6) uniform volumesInfoUbo
 {
     DDGIAreaConstants g_areaInfo;
 };
@@ -49,11 +49,11 @@ vec3 GetVolumeIrradianceTexture(int volumeId,  vec2 uv){
     }else if(volumeId == 1){
        return textureLod(uIrradiance1, uv, 0.0f).rgb;
 
-    }else if(volumeId == 2){
+    }/*else if(volumeId == 2){
        return textureLod(uIrradiance2, uv, 0.0f).rgb;
     }else if(volumeId == 3){
        return textureLod(uIrradiance3, uv, 0.0f).rgb;
-    }
+    }*/
     return vec3(0.0);
 
 }
@@ -64,11 +64,11 @@ vec2 GetVolumeDepthTexture(int volumeId, vec2 uv){
 
     }else if(volumeId == 1){
     return textureLod(uDepth1, uv, 0.0f).rg;
-    }else if(volumeId == 2){
+    }/*else if(volumeId == 2){
     return textureLod(uDepth2, uv, 0.0f).rg;
     }else if(volumeId == 3){
     return textureLod(uDepth3, uv, 0.0f).rg;
-    }
+    }*/
 
     return vec2(0.0);
 }
@@ -167,7 +167,11 @@ vec3 worldPositionFromDepth(vec2 texCoords, float ndcDepth, mat4 viewProjInv)
 {
     vec2 screenPos = texCoords * 2.0 - 1.0; //[-1,1]
     vec4 ndcPos = vec4(screenPos, ndcDepth, 1.0);
-    vec4 worldPos = viewProjInv * ndcPos;
+    ndcPos.z = ndcDepth * 2.0 - 1.0;
+
+   // vec4 worldPos = viewProjInv * ndcPos;
+    vec4 worldPos = inverse(g_View.matView) * inverse(g_View.matProjection) * ndcPos;
+
     worldPos = worldPos / worldPos.w;
     return worldPos.xyz;
 }
@@ -184,7 +188,7 @@ float3 ScreenSpaceToWorldPosition(float2 pixelPos, float z_viewSpace)
 {    
     float4 viewPos = float4(pixelPos.x, pixelPos.y, z_viewSpace, 1.0);
     float4 clipPos = g_View.matProjection* viewPos;
-    float4 worldPos = clipPos * inverse(g_View.matProjectionView);
+    float4 worldPos = clipPos * inverse(g_View.matView) * inverse(g_View.matProjection);
     return worldPos.xyz;
 }
 void main()
@@ -214,13 +218,14 @@ void main()
        //  float sceneZ = ConvertFromDeviceZ(depth, g_View.zNear, g_View.zFar);
          const vec3 P  = worldPositionFromDepth(texCoord, depth, inverse(g_View.matProjectionView));
          
-         const vec3 N  = OctahedronToUnitVector(texture(GBufferA,texCoord).xy * 2.0 - 1.0);//octohedralToDirection(texelFetch(GbufferA, currentCoord, 0).xy);
+         const vec3 N  = normalize(OctahedronToUnitVector(texture(GBufferA,texCoord).xy * 2.0 - 1.0));//octohedralToDirection(texelFetch(GbufferA, currentCoord, 0).xy);
+         
          const vec3 Wo = normalize(g_View.cameraPos - P);
          vec3 irradiance =  vec3(0.0);
        //  if(IsInsideDDGIVolume(g_volumes[volumeId], P))
          {
-             irradiance = sampleIrradiance(g_volumes[volumeId], P, N, Wo, volumeId); //vec3(1.0,0.0,0.0);//
-            // irradiance = P;//vec3(sceneZ,0.0,0.0);//vec3(1.0,0.0,0.0);
+            irradiance = sampleIrradiance(g_volumes[volumeId], P, N, Wo, volumeId); //vec3(1.0,0.0,0.0);//
+            // irradiance = P;// vec3(depth);// P;//vec3(sceneZ,0.0,0.0);//vec3(1.0,0.0,0.0);
          }
          
          imageStore(outColor, currentCoord, vec4(irradiance, 1.0f));

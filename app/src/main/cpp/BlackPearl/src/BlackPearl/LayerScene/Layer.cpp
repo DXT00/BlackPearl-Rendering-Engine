@@ -141,10 +141,17 @@ namespace BlackPearl {
 		light->GetComponent<Transform>()->SetInitPosition({ 0.0,1.25,9.0 });
 		light->GetComponent<MeshRenderer>()->SetIsShadowObjects(false);
 
+
+		//Object* Room = CreateModel("assets/models/Doc10/12123.obj", "assets/shaders/glsl/gBuffer/gBuffer_pass.glsl", false, "Room");
+
+
+
         Object* deer = CreateModel("assets/models/deer/Deer.obj", "assets/shaders/glsl/gBuffer/gBuffer_pass.glsl", false, "Deer");
 
+
+
 //		Object* deer = CreateModel("assets/models/deer/Deer.obj", "assets/shaders/glsl/Cube.glsl", false, "Deer");
-		deer->GetComponent<Transform>()->SetInitScale(glm::vec3(0.003));
+		deer->GetComponent<Transform>()->SetInitScale(glm::vec3(0.02));
 		//deer->GetComponent<Transform>()->SetPosition({ -0.5f,0.0f,2.5f });
 		deer->GetComponent<Transform>()->SetInitPosition({ -0.5f,-1.5f,-0.5f });
 		deer->GetComponent<Transform>()->SetInitRotation({ 0.0f,68.0f,0.0f });
@@ -155,7 +162,7 @@ namespace BlackPearl {
         Object* bunny = CreateModel("assets/models/bunny/bunny.obj", "assets/shaders/glsl/gBuffer/gBuffer_pass.glsl", false, "Bunny");
 
 //		Object* bunny = CreateModel("assets/models/bunny/bunny.obj", "assets/shaders/glsl/Cube.glsl", false, "Bunny");
-		bunny->GetComponent<Transform>()->SetInitScale(glm::vec3(0.5));
+		bunny->GetComponent<Transform>()->SetInitScale(glm::vec3(1.5));
 		//bunny->GetComponent<Transform>()->SetPosition({ 0.6f,0.0f,3.0f });
 		bunny->GetComponent<Transform>()->SetInitPosition({ 0.6f,-1.5f,-0.0f });
 		bunny->GetComponent<Transform>()->SetInitRotation({ 0.0f,-30.0f,0.0f });
@@ -225,13 +232,15 @@ namespace BlackPearl {
 		m_ShadowObjsList.push_back(cube4);
 		m_ShadowObjsList.push_back(cube5);
 
-        //scene->AddObject(cube1);
-        //scene->AddObject(cube2);
-        //scene->AddObject(cube3);
-        //scene->AddObject(cube4);
-        //scene->AddObject(cube5);
+        scene->AddObject(cube1);
+        scene->AddObject(cube2);
+        scene->AddObject(cube3);
+        scene->AddObject(cube4);
+        scene->AddObject(cube5);
         scene->AddObject(deer);
         scene->AddObject(bunny);
+
+		//scene->AddObject(Room);
 
 	}
 	

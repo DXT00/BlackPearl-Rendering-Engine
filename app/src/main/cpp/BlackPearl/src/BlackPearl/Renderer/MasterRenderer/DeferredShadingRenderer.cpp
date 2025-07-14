@@ -147,8 +147,8 @@ namespace BlackPearl{
 
             GraphicsPipelineDesc psoDesc;
 
-            psoDesc.depthStencilState.setDepthFunc(ComparisonFunc::LessOrEqual);
-            psoDesc.depthStencilState.enableDepthTest();
+           // psoDesc.depthStencilState.setDepthFunc(ComparisonFunc::LessOrEqual);
+            psoDesc.depthStencilState.disableDepthTest();
             psoDesc.depthStencilState.disableDepthWrite();
             psoDesc.depthStencilState.disableStencil();
 

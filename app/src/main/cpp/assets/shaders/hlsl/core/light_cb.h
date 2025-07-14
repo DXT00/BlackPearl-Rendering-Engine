@@ -97,7 +97,7 @@ inline LightConstants DefaultLightConstants() {
     lightConstants.invRadius = 1.0;
     lightConstants.bInverseSquared = 0;	/** Whether to use inverse squared falloff. */
     lightConstants.color = float3(1.0);
-    lightConstants.intensity = 1.0; // illuminance (lm/m2) for directional lights, luminous intensity (lm/sr) for positional lights
+    lightConstants.intensity = 0.3; // illuminance (lm/m2) for directional lights, luminous intensity (lm/sr) for positional lights
     lightConstants.angularSizeOrInvRange = 30.0f;   // angular size for directional lights, 1/range for spot and point lights
     lightConstants.innerAngle = 1.0f;
     lightConstants.outerAngle = 0.0f;
