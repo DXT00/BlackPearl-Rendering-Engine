@@ -42,7 +42,6 @@ out vec4 FragColor;
 in vec2 TexCoords;
 
 #include <assets/shaders/glsl/common/CommonForwardStruct.glsl>
-#include <assets/shaders/glsl/common/CommonTextureSample.glsl>
 
 void main(){
     MaterialTextureSample texSamples = SampleMaterialTexturesAuto(TexCoords);

@@ -309,8 +309,15 @@ namespace BlackPearl {
             return std::make_pair<GLenum, GLenum>(GL_DEPTH_STENCIL, GL_FLOAT_32_UNSIGNED_INT_24_8_REV);
 
 		case Format::D16:
-		case Format::D32:
+#ifdef GE_PLATFORM_WINDOWS
+        case Format::D32: //only for pc opengl
 			return std::make_pair<GLenum, GLenum>(GL_DEPTH_COMPONENT, GL_FLOAT);
+
+
+#elif defined(GE_PLATFORM_ANDROID)
+            case Format::D32_FLOAT: //only for anfroid gles
+            return std::make_pair<GLenum, GLenum>(GL_DEPTH_COMPONENT, GL_FLOAT);
+#endif
 
 		default:
 			GE_ASSERT(0, "unsupport now");

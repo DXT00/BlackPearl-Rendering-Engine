@@ -38,7 +38,7 @@ out vec4 FragColor;
 #endif
 
 in vec2 v_TexCoord;
-
+#include <material_cb.h>
 #include <common/CommonMath.glsl>
 #include <common/CommonViewStruct.glsl>
 #include <common/CommonDeferredStruct.glsl>

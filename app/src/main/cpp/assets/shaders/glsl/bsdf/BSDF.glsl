@@ -1,7 +1,7 @@
 
 #ifndef BP_BSDF_H
 #define BP_BSDF_H
-#include <assets/shaders/glsl/common/CommonTextureSample.glsl>
+//#include <assets/shaders/glsl/common/CommonTextureSample.glsl>
 
 
 half DielectricSpecularToF0(half Specular)

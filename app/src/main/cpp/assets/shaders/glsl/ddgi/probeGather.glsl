@@ -8,15 +8,15 @@
 layout(local_size_x = NUM_THREADS_X, local_size_y = NUM_THREADS_Y, local_size_z = 1) in;
 
 
-layout(binding = 4, rgba16f) uniform image2D outColor;
+layout(binding = 0, rgba16f) uniform image2D outColor;
 layout(binding = 0)  uniform sampler2D  uIrradiance0;
 layout(binding = 1)  uniform sampler2D  uDepth0;
 layout(binding = 2)  uniform sampler2D  uIrradiance1;
 layout(binding = 3)  uniform sampler2D  uDepth1;
-//layout(binding = 4)  uniform sampler2D  uIrradiance2;
-//layout(binding = 5)  uniform sampler2D  uDepth2;
-//layout(binding = 6)  uniform sampler2D  uIrradiance3;
-//layout(binding = 7)  uniform sampler2D  uDepth3;
+layout(binding = 4)  uniform sampler2D  uIrradiance2;
+layout(binding = 5)  uniform sampler2D  uDepth2;
+layout(binding = 6)  uniform sampler2D  uIrradiance3;
+layout(binding = 7)  uniform sampler2D  uDepth3;
 
 
 layout(binding = 8) uniform sampler2D SceneDepth;//uDepthSampler;
@@ -49,11 +49,11 @@ vec3 GetVolumeIrradianceTexture(int volumeId,  vec2 uv){
     }else if(volumeId == 1){
        return textureLod(uIrradiance1, uv, 0.0f).rgb;
 
-    }/*else if(volumeId == 2){
+    }else if(volumeId == 2){
        return textureLod(uIrradiance2, uv, 0.0f).rgb;
     }else if(volumeId == 3){
        return textureLod(uIrradiance3, uv, 0.0f).rgb;
-    }*/
+    }
     return vec3(0.0);
 
 }
@@ -64,11 +64,11 @@ vec2 GetVolumeDepthTexture(int volumeId, vec2 uv){
 
     }else if(volumeId == 1){
     return textureLod(uDepth1, uv, 0.0f).rg;
-    }/*else if(volumeId == 2){
+    }else if(volumeId == 2){
     return textureLod(uDepth2, uv, 0.0f).rg;
     }else if(volumeId == 3){
     return textureLod(uDepth3, uv, 0.0f).rg;
-    }*/
+    }
 
     return vec2(0.0);
 }
@@ -144,7 +144,7 @@ vec3 sampleIrradiance(in DDGIConstants ddgi, vec3 P, vec3 N, vec3 Wo, int sample
 
         vec3 probeIrradiance = GetVolumeIrradianceTexture(samplerId, texCoord);
      
-      //  probeIrradiance = pow(probeIrradiance, vec3(ddgi.ddgiGamma * 0.5f));
+        probeIrradiance = pow(probeIrradiance, vec3(ddgi.ddgiGamma * 0.5f));
 
         const float crushThreshold = 0.2f;
         if (weight < crushThreshold)
@@ -157,7 +157,7 @@ vec3 sampleIrradiance(in DDGIConstants ddgi, vec3 P, vec3 N, vec3 Wo, int sample
     }
 
     vec3 netIrradiance = sumIrradiance / sumWeight;
-   // netIrradiance   *= netIrradiance; 
+    netIrradiance   *= netIrradiance; 
 
     return netIrradiance;// 2 * PI * netIrradiance;
 }
@@ -218,7 +218,7 @@ void main()
        //  float sceneZ = ConvertFromDeviceZ(depth, g_View.zNear, g_View.zFar);
          const vec3 P  = worldPositionFromDepth(texCoord, depth, inverse(g_View.matProjectionView));
          
-         const vec3 N  = normalize(OctahedronToUnitVector(texture(GBufferA,texCoord).xy * 2.0 - 1.0));//octohedralToDirection(texelFetch(GbufferA, currentCoord, 0).xy);
+         const vec3 N  = normalize(OctahedronToUnitVector(texelFetch(GBufferA, currentCoord, 0).xy * 2.0 - 1.0));//octohedralToDirection(texelFetch(GbufferA, currentCoord, 0).xy);
          
          const vec3 Wo = normalize(g_View.cameraPos - P);
          vec3 irradiance =  vec3(0.0);
