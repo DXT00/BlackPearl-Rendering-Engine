@@ -153,7 +153,7 @@ namespace BlackPearl {
            
         }
         bool renderGI = true;// ShouldRender();
-        if(renderGI)
+        if(Configuration::bUseIndirectLight && g_GIManager->GetGIRenderer() && renderGI)
             g_GIManager->GetGIRenderer()->ProbeGather(m_CommandList, framebuffer, m_Scene);
 
 

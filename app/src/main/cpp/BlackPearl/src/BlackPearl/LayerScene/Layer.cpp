@@ -145,9 +145,9 @@ namespace BlackPearl {
 		//Object* Room = CreateModel("assets/models/Doc10/12123.obj", "assets/shaders/glsl/gBuffer/gBuffer_pass.glsl", false, "Room");
 
 
+#ifdef GE_PLATFORM_WINDOWS
 
         Object* deer = CreateModel("assets/models/deer/Deer.obj", "assets/shaders/glsl/gBuffer/gBuffer_pass.glsl", false, "Deer");
-
 
 
 //		Object* deer = CreateModel("assets/models/deer/Deer.obj", "assets/shaders/glsl/Cube.glsl", false, "Deer");
@@ -170,6 +170,9 @@ namespace BlackPearl {
 		//m_BackGroundObjsList.push_back(bunny);
 		//m_ShadowObjsList.push_back(bunny);
 
+        //scene->AddObject(deer);
+        //scene->AddObject(bunny);
+#endif
 		Object* cube1 = CreateCube("assets/shaders/glsl/gBuffer/gBuffer_pass.glsl");
 		Object* cube2 = CreateCube("assets/shaders/glsl/gBuffer/gBuffer_pass.glsl");
 		Object* cube3 = CreateCube("assets/shaders/glsl/gBuffer/gBuffer_pass.glsl");
@@ -237,8 +240,7 @@ namespace BlackPearl {
         scene->AddObject(cube3);
         scene->AddObject(cube4);
         scene->AddObject(cube5);
-        //scene->AddObject(deer);
-        //scene->AddObject(bunny);
+
 
 		//scene->AddObject(Room);
 

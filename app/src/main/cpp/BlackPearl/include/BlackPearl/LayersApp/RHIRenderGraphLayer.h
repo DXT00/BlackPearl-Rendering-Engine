@@ -58,8 +58,8 @@ public:
         m_CubeObj->GetComponent<Transform>()->SetScale({ 5.0,5.0,5.0 });
        // m_CubeObj->GetComponent<Transform>()->SetRotation({ 0,30,0 });
         m_SphereObj->GetComponent<Transform>()->SetScale({ 10.0,10.0,10.0 });
-        m_CubeObj->SetPosition({ 5.0, 0.0,0.0 });
-        m_SphereObj->SetPosition({ -3.0,-0.0,-0.0 });
+        m_CubeObj->SetPosition({ 5.0, 0.0,-2.0 });
+        m_SphereObj->SetPosition({ -3.0,-0.0,-2.0 });
 
         m_SphereObj->GetComponent<BoundingBox>()->Get().UpdateTransform(m_SphereObj->GetComponent<Transform>()->GetTransformMatrix());
         m_CubeObj->GetComponent<BoundingBox>()->Get().UpdateTransform(m_CubeObj->GetComponent<Transform>()->GetTransformMatrix());
