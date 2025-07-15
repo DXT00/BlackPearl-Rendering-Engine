@@ -74,8 +74,11 @@ namespace BlackPearl {
 		desc.minFilter = FilterMode::Nearest_Mip_Nearnest;
 		desc.magFilter = FilterMode::Nearest;
 		desc.wrap = SamplerAddressMode::ClampToEdge;
-		desc.format = Format::D32;
-		desc.generateMipmap = true;
+#ifdef GE_PLATFORM_WINDOWS
+        desc.format = Format::D32;
+#elif defined(GE_PLATFORM_ANDROID)
+        desc.format = Format::D32_FLOAT;
+#endif		desc.generateMipmap = true;
 		m_DepthTexture = g_deviceManager->GetDevice()->createTexture(desc);
 
 		//m_DepthTexture.reset(DBG_NEW Texture(Texture::Type::DepthMap, Configuration::WindowWidth, Configuration::WindowHeight, true/*isDepth*/, GL_NEAREST_MIPMAP_NEAREST, GL_NEAREST, GL_DEPTH_COMPONENT32, GL_DEPTH_COMPONENT, GL_CLAMP_TO_EDGE, GL_FLOAT, true/*genmipmap*/));

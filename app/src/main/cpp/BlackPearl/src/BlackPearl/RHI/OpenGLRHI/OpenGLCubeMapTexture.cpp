@@ -91,9 +91,13 @@ namespace BlackPearl {
 		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, m_Wrap);
 		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, m_Wrap);
 		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, m_Wrap);
+        GE_ERROR_JUDGE();
 
-		if (desc.generateMipmap || desc.mipLevelsCnt >0)
-			glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
+		if (desc.generateMipmap || desc.mipLevelsCnt > 1){
+            GE_ASSERT(m_MinFilter == GL_LINEAR_MIPMAP_LINEAR,"mipmap filter should be GL_LINEAR_MIPMAP_LINEAR");
+            glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
+
+        }
         GE_ERROR_JUDGE();
 
 

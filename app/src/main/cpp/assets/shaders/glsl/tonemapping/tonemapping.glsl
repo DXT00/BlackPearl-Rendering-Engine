@@ -78,7 +78,12 @@ void main(){
 //#if USE_GLES_PLS
 //    vec3 color = pls.t_gSceneColor.rgb;
 //#else
-    vec3 color = texture(t_gSceneColor, v_TexCoord).rgb;
+#ifdef GL_ES
+    vec2 uv = vec2(v_TexCoord.x, 1.0- v_TexCoord.y);
+#else
+    vec2 uv = v_TexCoord;
+#endif
+    vec3 color = texture(t_gSceneColor, uv).rgb;
 
 
 

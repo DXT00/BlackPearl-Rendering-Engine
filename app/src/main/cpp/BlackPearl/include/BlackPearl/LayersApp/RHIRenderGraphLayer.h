@@ -58,8 +58,8 @@ public:
         m_CubeObj->GetComponent<Transform>()->SetScale({ 5.0,5.0,5.0 });
        // m_CubeObj->GetComponent<Transform>()->SetRotation({ 0,30,0 });
         m_SphereObj->GetComponent<Transform>()->SetScale({ 10.0,10.0,10.0 });
-        m_CubeObj->SetPosition({ 5.0, 0.0,0.0 });
-        m_SphereObj->SetPosition({ -3.0,-0.0,-0.0 });
+        m_CubeObj->SetPosition({ 5.0, 0.0,-2.0 });
+        m_SphereObj->SetPosition({ -3.0,-0.0,-2.0 });
 
         m_SphereObj->GetComponent<BoundingBox>()->Get().UpdateTransform(m_SphereObj->GetComponent<Transform>()->GetTransformMatrix());
         m_CubeObj->GetComponent<BoundingBox>()->Get().UpdateTransform(m_CubeObj->GetComponent<Transform>()->GetTransformMatrix());
@@ -67,7 +67,7 @@ public:
         
         m_MainCamera->SetMoveSpeed(1.0f);
         m_MainCamera->SetRotateSpeed(5.0f);
-
+        m_MainCamera->SetPosition(glm::vec3(0.0, 0.0, 60.0f));
         m_DirectionLight = CreateLight(LightType::DirectionLight, "DirectionLight");
 
 #ifdef GE_PLATFORM_ANDROID
@@ -103,10 +103,11 @@ public:
 
 
             m_Scene->AddLightProbeGrid(m_DiffuseLightProbeGrid);
-        }
-        auto gridPos = m_DiffuseLightProbeGrid->GridObj->GetComponent<Transform>()->GetPosition();
+            auto gridPos = m_DiffuseLightProbeGrid->GridObj->GetComponent<Transform>()->GetPosition();
 
-        m_CubeObj->SetPosition(gridPos);
+            m_CubeObj->SetPosition(gridPos);
+        }
+
     }
 
 	void OnSetup() override {

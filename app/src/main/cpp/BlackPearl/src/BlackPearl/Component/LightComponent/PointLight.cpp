@@ -74,7 +74,11 @@ namespace BlackPearl {
 		desc.minFilter = FilterMode::Nearest;
 		desc.magFilter = FilterMode::Nearest;
 		desc.wrap = SamplerAddressMode::ClampToEdge;
+#ifdef GE_PLATFORM_WINDOWS
 		desc.format = Format::D32;
+#elif defined(GE_PLATFORM_ANDROID)
+        desc.format = Format::D32_FLOAT;
+#endif
 		m_ShadowMap = g_deviceManager->GetDevice()->createTexture(desc);
 
 

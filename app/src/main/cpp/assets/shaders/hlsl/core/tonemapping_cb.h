@@ -31,9 +31,9 @@
 
 #include "align.h"
 
-const uint PostProcess_Exposure = 0x1;
-const uint PostProcess_Tonemapping = 0x2;
-const uint PostProcess_Gamma = 0x4;
+const uint PostProcess_Exposure = 0x1u;
+const uint PostProcess_Tonemapping = 0x2u;
+const uint PostProcess_Gamma = 0x4u;
 
 
 struct ToneMappingConstants

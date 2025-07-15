@@ -242,7 +242,7 @@ DisneyMaterialSample CreateDisneyBSDFMaterial(SurfaceGeometry geom, DisneyMateri
 
     // albedo/specular base
 #if USE_ALBEDO_MAP
-    result.baseColor = textures.albedo;
+    result.baseColor = textures.albedo.xyz;
 #else
     result.baseColor = consts.baseColor.xyz;
 #endif

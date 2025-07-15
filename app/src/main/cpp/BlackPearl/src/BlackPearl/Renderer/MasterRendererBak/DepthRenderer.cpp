@@ -32,7 +32,11 @@ namespace BlackPearl {
 		desc.minFilter = FilterMode::Nearest_Mip_Nearnest;
 		desc.magFilter = FilterMode::Nearest;
 		desc.wrap = SamplerAddressMode::ClampToEdge;
-		desc.format = Format::D32;
+#ifdef GE_PLATFORM_WINDOWS
+        desc.format = Format::D32;
+#elif defined(GE_PLATFORM_ANDROID)
+        desc.format = Format::D32_FLOAT;
+#endif
 		desc.generateMipmap = true;
 
 
