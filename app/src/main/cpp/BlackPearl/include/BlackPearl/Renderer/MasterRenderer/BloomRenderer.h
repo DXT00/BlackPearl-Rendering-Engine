@@ -10,7 +10,11 @@ namespace BlackPearl {
         void Init();
         void Render(ICommandList* commandList, IFramebuffer* targetFramebuffer, Scene* scene);
 
+        void RenderUI( IFramebuffer* targetFramebuffer, IView* View);
+        struct UIData {
         
+            float sigmaInPixels;
+        };
 	private:
 
 
@@ -38,10 +42,17 @@ namespace BlackPearl {
         std::vector<PerViewData> m_PerViewData;
         BufferHandle m_BloomHBlurCB;
         BufferHandle m_BloomVBlurCB;
-        ShaderHandle m_BloomBlurPixelShader;
         BindingLayoutHandle m_BloomBlurBindingLayout;
         BindingLayoutHandle m_BloomApplyBindingLayout;
 
+
+
+        MaterialShader* m_BloomBlurPixelShader = nullptr;
+        UIData m_UI;
+
+
+
+        float  m_PassCnt = 3;
         //engine::BindingCache m_BindingCache;
 
 	};

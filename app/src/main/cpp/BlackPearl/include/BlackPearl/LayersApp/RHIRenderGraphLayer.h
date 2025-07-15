@@ -67,7 +67,7 @@ public:
         
         m_MainCamera->SetMoveSpeed(1.0f);
         m_MainCamera->SetRotateSpeed(5.0f);
-
+        m_MainCamera->SetPosition(glm::vec3(0.0, 0.0, 60.0f));
         m_DirectionLight = CreateLight(LightType::DirectionLight, "DirectionLight");
 
 #ifdef GE_PLATFORM_ANDROID
@@ -103,10 +103,12 @@ public:
 
 
             m_Scene->AddLightProbeGrid(m_DiffuseLightProbeGrid);
-        }
-        auto gridPos = m_DiffuseLightProbeGrid->GridObj->GetComponent<Transform>()->GetPosition();
 
-        m_CubeObj->SetPosition(gridPos);
+            auto gridPos = m_DiffuseLightProbeGrid->GridObj->GetComponent<Transform>()->GetPosition();
+
+            m_CubeObj->SetPosition(gridPos);
+        }
+
     }
 
 	void OnSetup() override {
