@@ -20,7 +20,7 @@ Windows
 
 Android:
 Test on two devices:
-Android 10 Mali/ Android 12 Andreno
+Android 10 Mali/ Android 12 Adreno
 
 ## Featrues
 1) IBL
@@ -35,6 +35,7 @@ Android 10 Mali/ Android 12 Andreno
 10) Simple Shadowmap, PCSS
 11) Terrain
 12) SSR
+13) RHI support Vulkan, OpenGL, GLES
 
 
 
@@ -42,6 +43,16 @@ Android 10 Mali/ Android 12 Andreno
 Dynamic Global illumination PPT-DXT00 Master thesis
 
 https://github.com/DXT00/BlackPearl-Rendering-Engine/blob/master/Dynamic%20Global%20illumination%20PPT-DXT00%20Master%20thesis.pdf
+
+## SDF Based DDGI 
+### dynamic enviroment light (day and night shifting)
+
+`Wiki`: https://github.com/DXT00/BlackPearl-Rendering-Engine/wiki/Global-DF-Based-DDGI
+
+![DDGI0](/app/src/main/cpp/results/DDGI0.png)
+![DDGI1](/app/src/main/cpp/results/DDGI1.png)
+![DDGI2](/app/src/main/cpp/results/DDGI2.png)
+
 
 ## CubeMap Based Light probe GI 
 
@@ -62,9 +73,6 @@ https://github.com/DXT00/BlackPearl-Rendering-Engine/blob/master/Dynamic%20Globa
 
 ### indirect diffuse light
 ![3Dtexture_coneTracing](/app/src/main/cpp/results/3Dtexture_coneTracing3.png)
-
-## SDF Based DDGI 
-
 
 
 
