@@ -121,6 +121,7 @@ public:
 
 
             m_Scene->AddLightProbeGrid(m_DiffuseLightProbeGrid);
+
             auto gridPos = m_DiffuseLightProbeGrid->GridObj->GetComponent<Transform>()->GetPosition();
 
             m_CubeObj->SetPosition(gridPos);
