@@ -6,6 +6,7 @@
 #include "Renderer/Shader/GLSLIncluder.h"
 #include "Core/AssetManager.h"
 #include "hlsl/core/slot_cb.h"
+#include "Renderer/RenderGraph/RenderGraph.h"
 namespace BlackPearl {
     extern ShaderFactory* g_shaderFactory;
 
@@ -70,6 +71,8 @@ namespace BlackPearl {
 
     MaterialShader::MaterialShader(const std::string& filepath, std::vector<std::string>* extensions, std::vector<std::string>* macros)
 	{
+
+
         m_GlslIncluder = GLSLIncluder({
             "assets/shaders/hlsl/core",
             "assets/shaders",

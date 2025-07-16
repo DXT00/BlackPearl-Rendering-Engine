@@ -34,11 +34,21 @@ public:
 
     void SetupScene() {
         std::vector<std::string> macros;
-       // macros.push_back("#define USE_ALBEDO_MAP 1");
+        std::vector<std::string> extensions;
+        //macros.push_back("#define USE_ALBEDO_MAP 1");
+
+        if (RenderGraph::SupportPLS())
+        {
+            extensions.push_back("#extension GL_EXT_shader_pixel_local_storage : require");
+            extensions.push_back("#extension GL_ARM_shader_framebuffer_fetch_depth_stencil : require");
+            macros.push_back("#define USE_GLES_PLS 1");
+
+        }
+
         m_Scene = DBG_NEW Scene();
         // TODO:: 设置每个pass的材质
-        m_SphereObj = CreateSphere(0.5, 64, 64, "assets/shaders/glsl/gBuffer/gBuffer_pass.glsl", &macros, "assets/texture/wood.png");
-        m_CubeObj = CreateCube("assets/shaders/glsl/gBuffer/gBuffer_pass.glsl", &macros, "assets/texture/wood.png");
+        m_SphereObj = CreateSphere(0.5, 64, 64, "assets/shaders/glsl/gBuffer/gBuffer_pass.glsl", &macros, &extensions, "assets/texture/wood.png");
+        m_CubeObj = CreateCube("assets/shaders/glsl/gBuffer/gBuffer_pass.glsl", &macros,  &extensions, "assets/texture/wood.png");
 
 
         //m_HouseModel = CreateFBXModel("assets/models/BurgerPiz/Models/BurgerPiz.fbx", "assets/shaders/glsl/Cube.glsl", false, "House");
@@ -63,10 +73,18 @@ public:
 
         m_SphereObj->GetComponent<BoundingBox>()->Get().UpdateTransform(m_SphereObj->GetComponent<Transform>()->GetTransformMatrix());
         m_CubeObj->GetComponent<BoundingBox>()->Get().UpdateTransform(m_CubeObj->GetComponent<Transform>()->GetTransformMatrix());
-       
-        
+
+#ifdef GE_PLATFORM_ANDROID
+        m_MainCamera->SetMoveSpeed(0.2f);
+        m_MainCamera->SetRotateSpeed(0.05f);
+
+#elif defined(GE_PLATFORM_WINDOWS)
         m_MainCamera->SetMoveSpeed(1.0f);
         m_MainCamera->SetRotateSpeed(5.0f);
+
+#endif
+
+
         m_MainCamera->SetPosition(glm::vec3(0.0, 0.0, 60.0f));
         m_DirectionLight = CreateLight(LightType::DirectionLight, "DirectionLight");
 

@@ -95,11 +95,8 @@ void main(){
    }
    half IndirectIrradiance = GBuffer.IndirectIrradiance;
 #if USE_GLES_PLS
-//    pls.t_gGbufferA = vec4(0.0);
-//    pls.t_gGbufferB = vec4(0.0);
-//    pls.t_gGbufferC = vec4(0.0);
 
-    pls.t_gSceneColor =sceneColor;
+    pls.t_gSceneColor = sceneColor;//vec4(pls.t_gGbufferC.rgb,1.0);//vec4(1.0,1.0,0.0,1.0);//sceneColor + vec4(mat.emissive,0.0);
 #endif
 
 

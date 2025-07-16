@@ -92,7 +92,6 @@ namespace BlackPearl {
             RPInfo.SubpassHint = ESubpassHint::DeferredShadingSubpass;
             m_CommandList->beginRenderPass(RPInfo, "DeferredSinglePass");
 
-            m_SkyboxRenderer->Render(m_CommandList, framebuffer, m_Scene);
 
             m_GbufferRenderer->Render(m_CommandList, framebuffer, m_Scene);
 
@@ -102,8 +101,12 @@ namespace BlackPearl {
 
             m_DeferredShadingRenderer->Render(m_CommandList, framebuffer, m_Scene, renderGI);
 
-           // pls-->SceneColor
+           // pls-->SceneColor(equal to BackBuffer)
             m_PlsCopyRenderer->Render(m_CommandList, framebuffer, m_Scene);
+
+
+            //m_SkyboxRenderer->Render(m_CommandList, framebuffer, m_Scene);
+
 // 在渲染结束时手动刷新
 //            if (GL_EXT_shader_pixel_local_storage) {
 //                glMemoryBarrierEXT(GL_SHADER_PIXEL_LOCAL_BARRIER_BIT_EXT);
@@ -167,7 +170,7 @@ namespace BlackPearl {
             //draw direct light, indirect light to sceneColor
             m_CommandList->beginRenderPass(RPShadingInfo, "DeferredShadingPass");
             m_DeferredShadingRenderer->Render(m_CommandList, framebuffer, m_Scene, renderGI);
-            
+
             //draw skybox
             m_SkyboxRenderer->Render(m_CommandList, framebuffer, m_Scene);
 

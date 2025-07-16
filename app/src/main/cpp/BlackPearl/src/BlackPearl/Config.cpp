@@ -63,7 +63,7 @@ namespace BlackPearl {
     // Render Pipeline settings
     //-----------------------------------------------
     bool Configuration::bDeferredShading = true;
-    bool Configuration::bUseSinglePass = false;
+    bool Configuration::bUseSinglePass = true;
    // bool Configuration::bUseIBL = true;
    // bool Configuration::bUseSDF = true;
   //  bool Configuration::bUseVoxel = true;

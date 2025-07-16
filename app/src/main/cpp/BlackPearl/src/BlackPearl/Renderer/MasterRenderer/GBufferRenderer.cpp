@@ -78,7 +78,7 @@ namespace BlackPearl {
         m_DrawStrategy = DBG_NEW InstancedOpaqueDrawStrategy();
         ShaderDesc desc = ShaderDesc(ShaderType::All);
         desc.debugName = "GbufferShader";
-        //todo:: 每个材质的 gpass 有可能不一样
+        //todo:: 每个材质的 gpass 有可能不一样, USE_GLES_PLS 的 extends, macros，统一需要再创建材质的Material Shader时内部加， m_GBufferShader 没用到，后面可以删除
         m_GBufferShader = DBG_NEW MaterialShader("assets/shaders/glsl/gBuffer/gBuffer_pass.glsl",&extends, &macros);
 
 

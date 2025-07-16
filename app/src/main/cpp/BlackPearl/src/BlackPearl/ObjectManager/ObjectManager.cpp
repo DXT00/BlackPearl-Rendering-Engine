@@ -200,7 +200,7 @@ namespace BlackPearl {
 
     }
 
-	Object* ObjectManager::CreateCube(const std::string& shaderPath, std::vector<std::string>* macros, const std::string& texturePath, const std::string& name)
+	Object* ObjectManager::CreateCube(const std::string& shaderPath, std::vector<std::string>* macros, std::vector<std::string>* extensions, const std::string& texturePath, const std::string& name)
 	{
 		Object* obj = CreateEmpty(name);
 		auto info = obj->AddComponent<BasicInfo>();
@@ -226,7 +226,7 @@ namespace BlackPearl {
 
 		}
 
-		material.reset(DBG_NEW Material(shaderPath, texture, { 1.0,1.0,1.0 }, { 1.0,1.0,1.0 }, { 1.0,1.0,1.0 }, {0.0,0.0,0.0}, macros));
+		material.reset(DBG_NEW Material(shaderPath, texture, { 1.0,1.0,1.0 }, { 1.0,1.0,1.0 }, { 1.0,1.0,1.0 }, {0.0,0.0,0.0}, macros, extensions));
 //#if GE_API_VULKAN
 		VertexBufferLayout layout = {
 			{ElementDataType::Float3,"aPos",false,Slot_aPos},
@@ -260,7 +260,7 @@ namespace BlackPearl {
 
 	}
 
-	Object* ObjectManager::CreateSphere(const float radius, const unsigned int stackCount, const unsigned int sectorCount, const std::string& shaderPath, std::vector<std::string>* macros, const std::string& texturePath, const std::string& name)
+	Object* ObjectManager::CreateSphere(const float radius, const unsigned int stackCount, const unsigned int sectorCount, const std::string& shaderPath, std::vector<std::string>* macros, std::vector<std::string>* extensions, const std::string& texturePath, const std::string& name)
 	{
 		Object* obj = CreateEmpty(name);
 		auto info = obj->AddComponent<BasicInfo>();
@@ -283,7 +283,7 @@ namespace BlackPearl {
 			texture->diffuseTextureMap = m_Device->createTexture(desc);
 		}
 
-		material.reset(DBG_NEW Material(shaderPath, texture, { 1.0,1.0,1.0 }, { 1.0,1.0,1.0 }, { 1.0,1.0,1.0 }, {}, macros));
+		material.reset(DBG_NEW Material(shaderPath, texture, { 1.0,1.0,1.0 }, { 1.0,1.0,1.0 }, { 1.0,1.0,1.0 }, {}, macros, extensions));
 		//TODO:: �޸�glsl shader ������vertex layout
 //#if GE_API_VULKAN
 		VertexBufferLayout layout = {
@@ -383,7 +383,7 @@ namespace BlackPearl {
 
 	Object* ObjectManager::CreateLightProbe(ProbeType type, const std::string& shaderPath, const std::string& texturePath, const std::string& name)
 	{
-		Object* obj = CreateCube(shaderPath, nullptr, texturePath, name);
+		Object* obj = CreateCube(shaderPath, nullptr, nullptr, texturePath, name);
 		if (!obj->HasComponent<BasicInfo>()) {
 			obj->AddComponent<BasicInfo>();
 		}

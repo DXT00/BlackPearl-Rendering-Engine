@@ -4,6 +4,9 @@
 #include "pch.h"
 #include "Core.h"
 #include "Luanch/Android/AndroidInputManager.h"
+
+#include "Application.h"
+
 namespace BlackPearl
 {
     AndroidInputManager* AndroidInputManager::sInstance = NULL;
@@ -90,9 +93,18 @@ namespace BlackPearl
             {
                 case CameraRotationDelta:
                 {
+                    math::vector<int, 2> windowSize = Application::Get().GetWindow().GetCurWindowSize();
+
+                    float degreesPerPixelX = (m_MainCamera->Fov() / (float)windowSize.x);// *camera.data.aspect;
+                    float degreesPerPixelY = (m_MainCamera->Fov() / (float)windowSize.y);
+
+
                     float maxRotDelta = 2 * m_MainCamera->GetRotateSpeed();
                     float deltaX = Event.dx;
                     float deltaY = Event.dy;
+
+                     deltaX = deltaX * degreesPerPixelX ;//ts *
+                     deltaY = deltaY * degreesPerPixelY ;//ts *
 
                     if (deltaX > maxRotDelta)
                         deltaX = maxRotDelta;
@@ -112,6 +124,8 @@ namespace BlackPearl
                         cameraRot.Yaw = 0.0f;
                     if (cameraRot.Yaw < -360.0f)
                         cameraRot.Yaw = -360.0f;
+
+
 
                     GE_CORE_WARN("[dxt00] main camera set rot, yaw:%f, pitch: %f, speed=%f", cameraRot.Pitch, cameraRot.Yaw, m_MainCamera->GetRotateSpeed());
                     m_MainCamera->SetRotation({ cameraRot.Pitch, cameraRot.Yaw, 0.0f });

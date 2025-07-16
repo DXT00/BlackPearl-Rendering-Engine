@@ -12,14 +12,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <stdio.h>
 #include <stdlib.h>
-//#include "BlackPearl/Renderer/MasterRenderer/IBLRenderer.h"
-//#include "BlackPearl/Renderer/MasterRenderer/IBLProbesRenderer.h"
-//#include "BlackPearl/Renderer/MasterRenderer/ShadowMapPointLightRenderer.h"
-//#include "BlackPearl/Renderer/MasterRenderer/GBufferRenderer.h"
-//#include "BlackPearl/Renderer/MasterRenderer/VoxelConeTracingRenderer.h"
-//#include "BlackPearl/Renderer/MasterRenderer/VoxelConeTracingDeferredRenderer.h"
-//#include "BlackPearl/Renderer/MasterRenderer/VoxelConeTracingSVORenderer.h"
-//#include "BlackPearl/Renderer/MasterRenderer/CloudRenderer.h"
+#include "Renderer/RenderGraph/RenderGraph.h"
 #include "BlackPearl/Application.h"
 #ifdef GE_API_D3D12
 #include "BlackPearl/Renderer/Buffer/D3D12Buffer/D3D12Buffer.h"
@@ -136,7 +129,19 @@ namespace BlackPearl {
 	
 	void Layer::LoadCornellScene1(Scene* scene)
 	{
-		/*create pointlights*/
+        std::vector<std::string> macros;
+        std::vector<std::string> extensions;
+
+        if (RenderGraph::SupportPLS())
+        {
+            extensions.push_back("#extension GL_EXT_shader_pixel_local_storage : require");
+            extensions.push_back("#extension GL_ARM_shader_framebuffer_fetch_depth_stencil : require");
+            macros.push_back("#define USE_GLES_PLS 1");
+
+        }
+
+
+        /*create pointlights*/
 		Object* light = CreateLight(LightType::PointLight);
 		light->GetComponent<Transform>()->SetInitPosition({ 0.0,1.25,9.0 });
 		light->GetComponent<MeshRenderer>()->SetIsShadowObjects(false);
@@ -173,11 +178,11 @@ namespace BlackPearl {
         //scene->AddObject(deer);
         //scene->AddObject(bunny);
 #endif
-		Object* cube1 = CreateCube("assets/shaders/glsl/gBuffer/gBuffer_pass.glsl");
-		Object* cube2 = CreateCube("assets/shaders/glsl/gBuffer/gBuffer_pass.glsl");
-		Object* cube3 = CreateCube("assets/shaders/glsl/gBuffer/gBuffer_pass.glsl");
-		Object* cube4 = CreateCube("assets/shaders/glsl/gBuffer/gBuffer_pass.glsl");
-		Object* cube5 = CreateCube("assets/shaders/glsl/gBuffer/gBuffer_pass.glsl");
+		Object* cube1 = CreateCube("assets/shaders/glsl/gBuffer/gBuffer_pass.glsl" ,&macros, &extensions);
+		Object* cube2 = CreateCube("assets/shaders/glsl/gBuffer/gBuffer_pass.glsl", &macros, &extensions);
+		Object* cube3 = CreateCube("assets/shaders/glsl/gBuffer/gBuffer_pass.glsl", &macros, &extensions);
+		Object* cube4 = CreateCube("assets/shaders/glsl/gBuffer/gBuffer_pass.glsl", &macros, &extensions);
+		Object* cube5 = CreateCube("assets/shaders/glsl/gBuffer/gBuffer_pass.glsl", &macros, &extensions);
 
 		cube1->GetComponent<Transform>()->SetScale({ 20.0f,20.0f,20.0f });
         cube2->GetComponent<Transform>()->SetScale({ 20.0f,20.0f,20.0f });
@@ -753,15 +758,15 @@ namespace BlackPearl {
 		m_ObjectsList.push_back(obj);
 		return obj;
 	}
-	Object* Layer::CreateCube(const std::string& shaderPath, std::vector<std::string>* macros, const std::string& texturePath, const std::string& name) //TODO:
+	Object* Layer::CreateCube(const std::string& shaderPath, std::vector<std::string>* macros, std::vector<std::string>* extensions, const std::string& texturePath, const std::string& name) //TODO:
 	{
-		Object* obj = g_objectManager->CreateCube(shaderPath, macros, texturePath, name);
+		Object* obj = g_objectManager->CreateCube(shaderPath, macros, extensions, texturePath, name);
 		m_ObjectsList.push_back(obj);
 		return obj;
 	}
-	Object* Layer::CreateSphere(const float radius, const unsigned int stackCount, const unsigned int sectorCount, const std::string& shaderPath, std::vector<std::string>* macros, const std::string& texturePath, const std::string& name)
+	Object* Layer::CreateSphere(const float radius, const unsigned int stackCount, const unsigned int sectorCount, const std::string& shaderPath, std::vector<std::string>* macros, std::vector<std::string>* extensions, const std::string& texturePath, const std::string& name)
 	{
-		Object* obj = g_objectManager->CreateSphere(radius, stackCount, sectorCount, shaderPath, macros, texturePath, name);
+		Object* obj = g_objectManager->CreateSphere(radius, stackCount, sectorCount, shaderPath, macros, extensions, texturePath, name);
 		m_ObjectsList.push_back(obj);
 		return obj;
 	}

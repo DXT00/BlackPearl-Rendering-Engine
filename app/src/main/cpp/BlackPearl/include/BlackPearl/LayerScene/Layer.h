@@ -151,8 +151,8 @@ namespace BlackPearl {
             const bool isMeshletModel = false,
             MeshletOption options = MeshletOption());
 
-		Object* CreateCube(const std::string& shaderPath = "assets/shaders/glsl/Cube.glsl", std::vector<std::string>* macros = nullptr, const std::string& texturePath = "", const std::string& name = "Cube");
-		Object* CreateSphere(const float radius, const unsigned int stackCount, const unsigned int sectorCount, const std::string& shaderPath = "assets/shaders/glsl/Sphere.glsl", std::vector<std::string>* macros = nullptr, const std::string& texturePath = "", const std::string& name = "Sphere");
+		Object* CreateCube(const std::string& shaderPath = "assets/shaders/glsl/Cube.glsl", std::vector<std::string>* macros = nullptr, std::vector<std::string>* extensions = nullptr, const std::string& texturePath = "", const std::string& name = "Cube");
+		Object* CreateSphere(const float radius, const unsigned int stackCount, const unsigned int sectorCount, const std::string& shaderPath = "assets/shaders/glsl/Sphere.glsl", std::vector<std::string>* macros = nullptr, std::vector<std::string>* extensions = nullptr, const std::string& texturePath = "", const std::string& name = "Sphere");
 		Object* CreatePlane(const std::string& shaderPath = "assets/shaders/glsl/Plane.glsl", const std::string& texturePath = "assets/texture/wood.png", const std::string& name = "Plane");
 		Object* CreateSkyBox(const std::vector<std::string>& textureFaces, const std::string& shaderPath = "assets/shaders/glsl/SkyBox.glsl", const std::string& name = "SkyBox");
 		//TODO::Quad ��TexturePath�ͻ��bug...

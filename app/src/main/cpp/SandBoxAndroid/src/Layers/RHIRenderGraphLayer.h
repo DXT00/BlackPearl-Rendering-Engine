@@ -36,6 +36,8 @@ public:
 
         GE_ERROR_JUDGE();
 		m_MainCamera->SetMoveSpeed(0.5f);
+
+        m_MainCamera->SetPosition(glm::vec3(0.0, 0.0, 60.0f));
 		//m_Scene->AddObject(m_SphereObj);
 		m_Scene->AddObject(m_CubeObj);
         GE_ERROR_JUDGE();
